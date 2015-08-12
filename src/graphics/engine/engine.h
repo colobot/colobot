@@ -1308,16 +1308,16 @@ protected:
     CSystemUtils*     m_systemUtils;
     CSoundInterface*  m_sound;
     CDevice*          m_device;
-    std::unique_ptr<COldModelManager> m_modelManager;
-    CText*            m_text;
-    CLightManager*    m_lightMan;
-    CParticle*        m_particle;
-    CWater*           m_water;
-    CCloud*           m_cloud;
-    CLightning*       m_lightning;
-    CPlanet*          m_planet;
     CTerrain*         m_terrain;
-    CPauseManager*    m_pause;
+    std::unique_ptr<COldModelManager> m_modelManager;
+    std::unique_ptr<CText>            m_text;
+    std::unique_ptr<CLightManager>    m_lightMan;
+    std::unique_ptr<CParticle>        m_particle;
+    std::unique_ptr<CWater>           m_water;
+    std::unique_ptr<CCloud>           m_cloud;
+    std::unique_ptr<CLightning>       m_lightning;
+    std::unique_ptr<CPlanet>          m_planet;
+    std::unique_ptr<CPauseManager>    m_pause;
     std::unique_ptr<CPyroManager> m_pyroManager;
 
     //! Last encountered error

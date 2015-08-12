@@ -40,6 +40,19 @@
 namespace Gfx
 {
 
+/**
+ * \struct MultisizeFont
+ * \brief Font with multiple possible sizes
+ */
+struct MultisizeFont
+{
+    std::string fileName;
+    std::map<int, std::unique_ptr<CachedFont>> fonts;
+
+    explicit MultisizeFont(const std::string &fn)
+        : fileName(fn) {}
+};
+
 
 /**
  * \struct CachedFont
@@ -47,14 +60,28 @@ namespace Gfx
  */
 struct CachedFont
 {
-    TTF_Font* font;
+    std::unique_ptr<CSDLFileWrapper> fontFile;
+    TTF_Font* font = nullptr;
     std::map<UTF8Char, CharTexture> cache;
 
-    CachedFont() : font(nullptr) {}
+    CachedFont(std::unique_ptr<CSDLFileWrapper> fontFile, int pointSize)
+        : fontFile(std::move(fontFile))
+    {
+        font = TTF_OpenFontRW(this->fontFile->GetHandler(), 0, pointSize);
+    }
+
+    ~CachedFont()
+    {
+        if (font != nullptr)
+            TTF_CloseFont(font);
+    }
 };
 
 
+namespace
+{
 const Math::IntPoint REFERENCE_SIZE(800, 600);
+} // anonymous namespace
 
 
 CText::CText(CEngine* engine)
@@ -84,12 +111,12 @@ bool CText::Create()
         return false;
     }
 
-    m_fonts[FONT_COLOBOT]        = new MultisizeFont("fonts/dvu_sans.ttf");
-    m_fonts[FONT_COLOBOT_BOLD]   = new MultisizeFont("fonts/dvu_sans_bold.ttf");
-    m_fonts[FONT_COLOBOT_ITALIC] = new MultisizeFont("fonts/dvu_sans_italic.ttf");
+    m_fonts[FONT_COLOBOT]        = MakeUnique<MultisizeFont>("fonts/dvu_sans.ttf");
+    m_fonts[FONT_COLOBOT_BOLD]   = MakeUnique<MultisizeFont>("fonts/dvu_sans_bold.ttf");
+    m_fonts[FONT_COLOBOT_ITALIC] = MakeUnique<MultisizeFont>("fonts/dvu_sans_italic.ttf");
 
-    m_fonts[FONT_COURIER]        = new MultisizeFont("fonts/dvu_sans_mono.ttf");
-    m_fonts[FONT_COURIER_BOLD]   = new MultisizeFont("fonts/dvu_sans_mono_bold.ttf");
+    m_fonts[FONT_COURIER]        = MakeUnique<MultisizeFont>("fonts/dvu_sans_mono.ttf");
+    m_fonts[FONT_COURIER_BOLD]   = MakeUnique<MultisizeFont>("fonts/dvu_sans_mono_bold.ttf");
 
     for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
     {
@@ -104,27 +131,11 @@ bool CText::Create()
 
 void CText::Destroy()
 {
-    for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
-    {
-        MultisizeFont* mf = (*it).second;
-
-        for (auto jt = mf->fonts.begin(); jt != mf->fonts.end(); ++jt)
-        {
-            CachedFont* cf = (*jt).second;
-
-            TTF_CloseFont(cf->font);
-
-            cf->font = nullptr;
-            delete cf;
-        }
-
-        mf->fonts.clear();
-        delete mf;
-    }
-
     m_fonts.clear();
 
     m_lastCachedFont = nullptr;
+    m_lastFontType = FONT_COLOBOT;
+    m_lastFontSize = 0;
 
     TTF_Quit();
 }
@@ -141,25 +152,23 @@ std::string CText::GetError()
 
 void CText::FlushCache()
 {
-    for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
+    for (auto& multisizeFont : m_fonts)
     {
-        MultisizeFont *mf = (*it).second;
-        for (auto jt = mf->fonts.begin(); jt != mf->fonts.end(); ++jt)
+        for (auto& cachedFont : multisizeFont.second->fonts)
         {
-            CachedFont *f = (*jt).second;
-            for (auto ct = f->cache.begin(); ct != f->cache.end(); ++ct)
+            for (auto& charTexture : cachedFont.second->cache)
             {
                 Texture tex;
-                tex.id = (*ct).second.id;
+                tex.id = charTexture.second.id;
                 m_device->DestroyTexture(tex);
             }
-            f->cache.clear();
+            cachedFont.second->cache.clear();
         }
     }
 
+    m_lastCachedFont = nullptr;
     m_lastFontType = FONT_COLOBOT;
     m_lastFontSize = 0;
-    m_lastCachedFont = nullptr;
 }
 
 int CText::GetTabSize()
@@ -695,7 +704,9 @@ void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &
     }
 }
 
-void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end)
+void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars,
+                                std::vector<FontMetaChar>::iterator format,
+                                std::vector<FontMetaChar>::iterator end)
 {
     unsigned int index = 0;
     unsigned int totalLength = text.length();
@@ -704,7 +715,7 @@ void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &
         UTF8Char ch;
 
         FontType font = FONT_COLOBOT;
-        if(format + index != end)
+        if (format + index != end)
             font = static_cast<FontType>(*(format + index) & FONT_MASK_FONT);
 
         int len;
@@ -935,10 +946,11 @@ CachedFont* CText::GetOrOpenFont(FontType font, float size)
     Math::IntPoint windowSize = m_engine->GetWindowSize();
     int pointSize = static_cast<int>(size * (windowSize.Length() / REFERENCE_SIZE.Length()));
 
-    if (m_lastCachedFont != nullptr)
+    if (m_lastCachedFont != nullptr &&
+        m_lastFontType == font &&
+        m_lastFontSize == pointSize)
     {
-        if (m_lastFontType == font && m_lastFontSize == pointSize)
-            return m_lastCachedFont;
+        return m_lastCachedFont;
     }
 
     auto it = m_fonts.find(font);
@@ -948,12 +960,12 @@ CachedFont* CText::GetOrOpenFont(FontType font, float size)
         return nullptr;
     }
 
-    MultisizeFont* mf = (*it).second;
+    MultisizeFont* mf = it->second.get();
 
     auto jt = mf->fonts.find(pointSize);
     if (jt != mf->fonts.end())
     {
-        m_lastCachedFont = (*jt).second;
+        m_lastCachedFont = jt->second.get();
         m_lastFontType = font;
         m_lastFontSize = pointSize;
         return m_lastCachedFont;
@@ -966,20 +978,15 @@ CachedFont* CText::GetOrOpenFont(FontType font, float size)
         return nullptr;
     }
 
-    SDL_RWops* handler = file->ReleaseHandler();
-
-    m_lastCachedFont = new CachedFont();
-    m_lastCachedFont->font = TTF_OpenFontRW(handler, 1, pointSize);
-    if (m_lastCachedFont->font == nullptr)
+    auto newFont = MakeUnique<CachedFont>(std::move(file), pointSize);
+    if (newFont->font == nullptr)
     {
-        SDL_RWclose(handler);
         m_error = std::string("TTF_OpenFont error ") + std::string(TTF_GetError());
-        delete m_lastCachedFont;
         return nullptr;
     }
 
-    mf->fonts[pointSize] = m_lastCachedFont;
-
+    m_lastCachedFont = newFont.get();
+    mf->fonts[pointSize] = std::move(newFont);
     return m_lastCachedFont;
 }
 

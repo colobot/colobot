@@ -145,7 +145,7 @@ public:
 
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height);
 
-    virtual void* GetFrameBufferPixels() const;
+    virtual std::unique_ptr<CFrameBufferPixels> GetFrameBufferPixels() const;
 
     virtual CFramebuffer* GetFramebuffer(std::string name);
 

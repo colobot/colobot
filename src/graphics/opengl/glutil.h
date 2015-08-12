@@ -22,7 +22,11 @@
 // config.h must be included first
 #include "common/config.h"
 
+#include "common/make_unique.h"
+
 #include "graphics/core/device.h"
+
+#include "math/intpoint.h"
 
 #include <GL/glew.h>
 
@@ -69,5 +73,23 @@ GLenum TranslateTextureCoordinateGen(int index);
 GLint LoadShader(GLint type, const char* filename);
 
 GLint LinkProgram(int count, GLint shaders[]);
+
+class CGLFrameBufferPixels : public CFrameBufferPixels
+{
+public:
+    CGLFrameBufferPixels(std::size_t size)
+        : m_pixels(MakeUniqueArray<GLubyte>(size))
+    {}
+
+    void* GetPixelsData() override
+    {
+        return static_cast<void*>(m_pixels.get());
+    }
+
+private:
+    std::unique_ptr<GLubyte[]> m_pixels;
+};
+
+std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(Math::IntPoint size);
 
 } // namespace Gfx

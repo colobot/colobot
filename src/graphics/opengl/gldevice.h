@@ -160,7 +160,7 @@ public:
 
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height) override;
 
-    virtual void* GetFrameBufferPixels() const override;
+    virtual std::unique_ptr<CFrameBufferPixels> GetFrameBufferPixels() const override;
 
     virtual CFramebuffer* GetFramebuffer(std::string name) override;
 
@@ -221,7 +221,7 @@ private:
     std::set<Texture> m_allTextures;
 
     //! Map of framebuffers
-    std::map<std::string, CFramebuffer*> m_framebuffers;
+    std::map<std::string, std::unique_ptr<CFramebuffer>> m_framebuffers;
 
     //! Type of vertex structure
     enum VertexType

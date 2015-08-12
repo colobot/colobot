@@ -359,7 +359,7 @@ void CNullDevice::CopyFramebufferToTexture(Texture& texture, int xOffset, int yO
 {
 }
 
-void* CNullDevice::GetFrameBufferPixels() const
+std::unique_ptr<CFrameBufferPixels> CNullDevice::GetFrameBufferPixels() const
 {
     return nullptr;
 }

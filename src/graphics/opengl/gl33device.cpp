@@ -24,6 +24,7 @@
 #include "common/config_file.h"
 #include "common/image.h"
 #include "common/logger.h"
+#include "common/make_unique.h"
 
 #include "graphics/engine/engine.h"
 
@@ -383,7 +384,7 @@ bool CGL33Device::Create()
     framebufferParams.height = m_config.size.y;
     framebufferParams.depth = m_config.depthSize;
 
-    m_framebuffers["default"] = new CDefaultFramebuffer(framebufferParams);
+    m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
 
     GetLogger()->Info("CDevice created successfully\n");
 
@@ -397,11 +398,8 @@ void CGL33Device::Destroy()
     glDeleteProgram(m_shaderProgram);
 
     // delete framebuffers
-    for (std::map<std::string, CFramebuffer*>::iterator i = m_framebuffers.begin(); i != m_framebuffers.end(); i++)
-    {
-        i->second->Destroy();
-        delete i->second;
-    }
+    for (auto& framebuffer : m_framebuffers)
+        framebuffer.second->Destroy();
 
     m_framebuffers.clear();
 
@@ -1879,26 +1877,18 @@ void CGL33Device::CopyFramebufferToTexture(Texture& texture, int xOffset, int yO
     glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
 }
 
-void* CGL33Device::GetFrameBufferPixels() const
+std::unique_ptr<CFrameBufferPixels> CGL33Device::GetFrameBufferPixels() const
 {
-    GLubyte* pixels = new GLubyte[4 * m_config.size.x * m_config.size.y];
-
-    glReadPixels(0, 0, m_config.size.x, m_config.size.y, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-
-    unsigned int* p = static_cast<unsigned int*> ( static_cast<void*>(pixels) );
-
-    for (int i = 0; i < m_config.size.x * m_config.size.y; ++i)
-        p[i] |= 0xFF000000;
-
-    return static_cast<void*>(p);
+    return GetGLFrameBufferPixels(m_config.size);
 }
 
 CFramebuffer* CGL33Device::GetFramebuffer(std::string name)
 {
-    if (m_framebuffers.find(name) != m_framebuffers.end())
-        return m_framebuffers[name];
-    else
+    auto it = m_framebuffers.find(name);
+    if (it == m_framebuffers.end())
         return nullptr;
+
+    return it->second.get();
 }
 
 CFramebuffer* CGL33Device::CreateFramebuffer(std::string name, const FramebufferParams& params)
@@ -1908,14 +1898,13 @@ CFramebuffer* CGL33Device::CreateFramebuffer(std::string name, const Framebuffer
     {
         return nullptr;
     }
-    else
-    {
-        CGLFramebuffer* framebuffer = new CGLFramebuffer(params);
-        framebuffer->Create();
 
-        m_framebuffers[name] = framebuffer;
-        return framebuffer;
-    }
+    auto framebuffer = MakeUnique<CGLFramebuffer>(params);
+    framebuffer->Create();
+
+    CFramebuffer* framebufferPtr = framebuffer.get();
+    m_framebuffers[name] = std::move(framebuffer);
+    return framebufferPtr;
 }
 
 void CGL33Device::DeleteFramebuffer(std::string name)
@@ -1923,14 +1912,11 @@ void CGL33Device::DeleteFramebuffer(std::string name)
     // can't delete default framebuffer
     if (name == "default") return;
 
-    auto position = m_framebuffers.find(name);
-
-    if (position != m_framebuffers.end())
+    auto it = m_framebuffers.find(name);
+    if (it != m_framebuffers.end())
     {
-        position->second->Destroy();
-        delete position->second;
-
-        m_framebuffers.erase(position);
+        it->second->Destroy();
+        m_framebuffers.erase(it);
     }
 }
 

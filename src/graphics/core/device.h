@@ -34,6 +34,7 @@
 #include "math/intpoint.h"
 #include "math/matrix.h"
 
+#include <memory>
 #include <string>
 
 
@@ -245,6 +246,14 @@ enum RenderTarget
     RENDER_TARGET_STENCIL
 };
 
+class CFrameBufferPixels
+{
+public:
+    virtual ~CFrameBufferPixels() {}
+
+    virtual void* GetPixelsData() = 0;
+};
+
 /**
  * \class CDevice
  * \brief Abstract interface of graphics device
@@ -408,7 +417,7 @@ public:
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height) = 0;
 
     //! Returns the pixels of the entire screen
-    virtual void* GetFrameBufferPixels() const = 0;
+    virtual std::unique_ptr<CFrameBufferPixels> GetFrameBufferPixels() const = 0;
 
     //! Returns framebuffer with given name or nullptr if it doesn't exist
     virtual CFramebuffer* GetFramebuffer(std::string name) = 0;

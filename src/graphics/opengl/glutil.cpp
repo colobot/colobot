@@ -216,12 +216,11 @@ GLint LoadShader(GLint type, const char* filename)
         GLint len;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
 
-        GLchar *message = new GLchar[len + 1];
-        glGetShaderInfoLog(shader, len + 1, nullptr, message);
+        auto message = MakeUniqueArray<GLchar>(len + 1);
+        glGetShaderInfoLog(shader, len + 1, nullptr, message.get());
 
-        GetLogger()->Error("Shader compilation error occured!\n%s\n", message);
+        GetLogger()->Error("Shader compilation error occured!\n%s\n", message.get());
 
-        delete[] message;
         glDeleteShader(shader);
         return 0;
     }
@@ -249,12 +248,11 @@ GLint LinkProgram(int count, GLint shaders[])
         GLint len;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
 
-        GLchar *message = new GLchar[len + 1];
-        glGetProgramInfoLog(program, len + 1, nullptr, message);
+        auto message = MakeUniqueArray<GLchar>(len + 1);
+        glGetProgramInfoLog(program, len + 1, nullptr, message.get());
 
-        GetLogger()->Error("Shader program linking error occured!\n%s\n", message);
+        GetLogger()->Error("Shader program linking error occured!\n%s\n", message.get());
 
-        delete[] message;
         glDeleteProgram(program);
 
         return 0;
@@ -263,4 +261,19 @@ GLint LinkProgram(int count, GLint shaders[])
     return program;
 }
 
+std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(Math::IntPoint size)
+{
+    auto pixels = MakeUnique<CGLFrameBufferPixels>(4 * size.x * size.y);
+
+    glReadPixels(0, 0, size.x, size.y, GL_RGBA, GL_UNSIGNED_BYTE, pixels->GetPixelsData());
+
+    GLuint* p = static_cast<GLuint*> ( pixels->GetPixelsData() );
+
+    for (int i = 0; i < size.x * size.y; ++i)
+        p[i] |= 0xFF000000;
+
+    return pixels;
 }
+
+
+} // namespace Gfx

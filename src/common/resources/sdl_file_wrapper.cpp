@@ -71,16 +71,6 @@ SDL_RWops* CSDLFileWrapper::GetHandler()
     return m_rwops;
 }
 
-SDL_RWops* CSDLFileWrapper::ReleaseHandler()
-{
-    SDL_RWops* rwops = m_rwops;
-    m_rwops = nullptr;
-
-    // Destructor will not call SDL_FreeRW, so we must take care of it ourselves
-    rwops->close = SDLCloseWithFreeRW;
-    return rwops;
-}
-
 bool CSDLFileWrapper::IsOpen() const
 {
     return m_rwops != nullptr;
@@ -91,23 +81,19 @@ int CSDLFileWrapper::SDLClose(SDL_RWops *context, bool freeRW)
     if (context == nullptr)
         return 0;
 
-    if (CheckSDLContext(context))
+    if (!CheckSDLContext(context))
+        return 1;
+
+    if (context->hidden.unknown.data1 != nullptr)
     {
-        if (context->hidden.unknown.data1 != nullptr)
-        {
-            PHYSFS_close(static_cast<PHYSFS_File *>(context->hidden.unknown.data1));
-            context->hidden.unknown.data1 = nullptr;
-        }
-
-        if (freeRW)
-        {
-            SDL_FreeRW(context);
-        }
-
-        return 0;
+        PHYSFS_close(static_cast<PHYSFS_File *>(context->hidden.unknown.data1));
+        context->hidden.unknown.data1 = nullptr;
     }
 
-    return 1;
+    if (freeRW)
+        SDL_FreeRW(context);
+
+    return 0;
 }
 
 int CSDLFileWrapper::SDLCloseWithoutFreeRW(SDL_RWops *context)

@@ -29,8 +29,9 @@
 
 #include "math/point.h"
 
-#include <vector>
 #include <map>
+#include <memory>
+#include <vector>
 
 
 // Graphics module namespace
@@ -185,28 +186,14 @@ struct UTF8Char
  */
 struct CharTexture
 {
-    unsigned int id;
+    unsigned int id = 0;
     Math::Point texSize;
     Math::Point charSize;
-
-    CharTexture() : id(0) {}
 };
 
 // Definition is private - in text.cpp
 struct CachedFont;
-
-/**
- * \struct MultisizeFont
- * \brief Font with multiple possible sizes
- */
-struct MultisizeFont
-{
-    std::string fileName;
-    std::map<int, CachedFont*> fonts;
-
-    MultisizeFont(const std::string &fn)
-        : fileName(fn) {}
-};
+struct MultisizeFont;
 
 /**
  * \enum SpecialChar
@@ -339,7 +326,7 @@ protected:
     float        m_defaultSize;
     int          m_tabSize;
 
-    std::map<FontType, MultisizeFont*> m_fonts;
+    std::map<FontType, std::unique_ptr<MultisizeFont>> m_fonts;
 
     FontType     m_lastFontType;
     int          m_lastFontSize;

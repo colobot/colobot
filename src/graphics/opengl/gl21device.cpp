@@ -356,7 +356,7 @@ bool CGL21Device::Create()
     framebufferParams.height = m_config.size.y;
     framebufferParams.depth = m_config.depthSize;
 
-    m_framebuffers["default"] = new CDefaultFramebuffer(framebufferParams);
+    m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
 
     m_framebufferSupport = DetectFramebufferSupport();
     if (m_framebufferSupport != FBS_NONE)
@@ -375,11 +375,8 @@ void CGL21Device::Destroy()
     glDeleteProgram(m_program);
 
     // delete framebuffers
-    for (std::map<std::string, CFramebuffer*>::iterator i = m_framebuffers.begin(); i != m_framebuffers.end(); i++)
-    {
-        i->second->Destroy();
-        delete i->second;
-    }
+    for (auto& framebuffer : m_framebuffers)
+        framebuffer.second->Destroy();
 
     m_framebuffers.clear();
 
@@ -1706,26 +1703,18 @@ void CGL21Device::CopyFramebufferToTexture(Texture& texture, int xOffset, int yO
     glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
 }
 
-void* CGL21Device::GetFrameBufferPixels()const
+std::unique_ptr<CFrameBufferPixels> CGL21Device::GetFrameBufferPixels() const
 {
-    GLubyte* pixels = new GLubyte[4 * m_config.size.x * m_config.size.y];
-
-    glReadPixels(0, 0, m_config.size.x, m_config.size.y, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-
-    unsigned int* p = static_cast<unsigned int*> ( static_cast<void*>(pixels) );
-
-    for (int i = 0; i < m_config.size.x * m_config.size.y; ++i)
-        p[i] |= 0xFF000000;
-
-    return static_cast<void*>(p);
+    return GetGLFrameBufferPixels(m_config.size);
 }
 
 CFramebuffer* CGL21Device::GetFramebuffer(std::string name)
 {
-    if (m_framebuffers.find(name) != m_framebuffers.end())
-        return m_framebuffers[name];
-    else
+    auto it = m_framebuffers.find(name);
+    if (it == m_framebuffers.end())
         return nullptr;
+
+    return it->second.get();
 }
 
 CFramebuffer* CGL21Device::CreateFramebuffer(std::string name, const FramebufferParams& params)
@@ -1735,22 +1724,21 @@ CFramebuffer* CGL21Device::CreateFramebuffer(std::string name, const Framebuffer
     {
         return nullptr;
     }
+
+    std::unique_ptr<CFramebuffer> framebuffer;
+
+    if (m_framebufferSupport == FBS_ARB)
+        framebuffer = MakeUnique<CGLFramebuffer>(params);
+    else if (m_framebufferSupport == FBS_EXT)
+        framebuffer = MakeUnique<CGLFramebufferEXT>(params);
     else
-    {
-        CFramebuffer *framebuffer;
+        return nullptr;
 
-        if (m_framebufferSupport == FBS_ARB)
-            framebuffer = new CGLFramebuffer(params);
-        else if (m_framebufferSupport == FBS_EXT)
-            framebuffer = new CGLFramebufferEXT(params);
-        else
-            return nullptr;
+    framebuffer->Create();
 
-        framebuffer->Create();
-
-        m_framebuffers[name] = framebuffer;
-        return framebuffer;
-    }
+    CFramebuffer* framebufferPtr = framebuffer.get();
+    m_framebuffers[name] = std::move(framebuffer);
+    return framebufferPtr;
 }
 
 void CGL21Device::DeleteFramebuffer(std::string name)
@@ -1758,14 +1746,11 @@ void CGL21Device::DeleteFramebuffer(std::string name)
     // can't delete default framebuffer
     if (name == "default") return;
 
-    auto position = m_framebuffers.find(name);
-
-    if (position != m_framebuffers.end())
+    auto it = m_framebuffers.find(name);
+    if (it != m_framebuffers.end())
     {
-        position->second->Destroy();
-        delete position->second;
-
-        m_framebuffers.erase(position);
+        it->second->Destroy();
+        m_framebuffers.erase(it);
     }
 }
 

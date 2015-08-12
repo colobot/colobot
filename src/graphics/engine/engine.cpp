@@ -209,19 +209,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
 
 CEngine::~CEngine()
 {
-    m_app       = nullptr;
-    m_sound     = nullptr;
-    m_device    = nullptr;
-    m_text      = nullptr;
-    m_lightMan  = nullptr;
-    m_particle  = nullptr;
-    m_water     = nullptr;
-    m_cloud     = nullptr;
-    m_lightning = nullptr;
-    m_planet    = nullptr;
-    m_terrain   = nullptr;
-    m_pause     = nullptr;
-
     m_systemUtils->DestroyTimeStamp(m_lastFrameTime);
     m_lastFrameTime = nullptr;
     m_systemUtils->DestroyTimeStamp(m_currentFrameTime);
@@ -250,17 +237,17 @@ CPyroManager* CEngine::GetPyroManager()
 
 CText* CEngine::GetText()
 {
-    return m_text;
+    return m_text.get();
 }
 
 CLightManager* CEngine::GetLightManager()
 {
-    return m_lightMan;
+    return m_lightMan.get();
 }
 
 CParticle* CEngine::GetParticle()
 {
-    return m_particle;
+    return m_particle.get();
 }
 
 CTerrain* CEngine::GetTerrain()
@@ -270,22 +257,22 @@ CTerrain* CEngine::GetTerrain()
 
 CWater* CEngine::GetWater()
 {
-    return m_water;
+    return m_water.get();
 }
 
 CLightning* CEngine::GetLightning()
 {
-    return m_lightning;
+    return m_lightning.get();
 }
 
 CPlanet* CEngine::GetPlanet()
 {
-    return m_planet;
+    return m_planet.get();
 }
 
 CCloud* CEngine::GetCloud()
 {
-    return m_cloud;
+    return m_cloud.get();
 }
 
 void CEngine::SetTerrain(CTerrain* terrain)
@@ -300,14 +287,14 @@ bool CEngine::Create()
 
     m_modelManager = MakeUnique<COldModelManager>(this);
     m_pyroManager = MakeUnique<CPyroManager>();
-    m_lightMan   = new CLightManager(this);
-    m_text       = new CText(this);
-    m_particle   = new CParticle(this);
-    m_water      = new CWater(this);
-    m_cloud      = new CCloud(this);
-    m_lightning  = new CLightning(this);
-    m_planet     = new CPlanet(this);
-    m_pause      = new CPauseManager();
+    m_lightMan   = MakeUnique<CLightManager>(this);
+    m_text       = MakeUnique<CText>(this);
+    m_particle   = MakeUnique<CParticle>(this);
+    m_water      = MakeUnique<CWater>(this);
+    m_cloud      = MakeUnique<CCloud>(this);
+    m_lightning  = MakeUnique<CLightning>(this);
+    m_planet     = MakeUnique<CPlanet>(this);
+    m_pause      = MakeUnique<CPauseManager>();
 
     m_lightMan->SetDevice(m_device);
     m_particle->SetDevice(m_device);
@@ -357,29 +344,14 @@ void CEngine::Destroy()
         m_shadowMap = Texture();
     }
 
-    delete m_pause;
-    m_pause = nullptr;
-
-    delete m_lightMan;
-    m_lightMan = nullptr;
-
-    delete m_text;
-    m_text = nullptr;
-
-    delete m_particle;
-    m_particle = nullptr;
-
-    delete m_water;
-    m_water = nullptr;
-
-    delete m_cloud;
-    m_cloud = nullptr;
-
-    delete m_lightning;
-    m_lightning = nullptr;
-
-    delete m_planet;
-    m_planet = nullptr;
+    m_pause.reset();
+    m_lightMan.reset();
+    m_text.reset();
+    m_particle.reset();
+    m_water.reset();
+    m_cloud.reset();
+    m_lightning.reset();
+    m_planet.reset();
 }
 
 void CEngine::ResetAfterDeviceChanged()
@@ -490,7 +462,8 @@ void CEngine::WriteScreenShot(const std::string& fileName)
     auto data = MakeUnique<WriteScreenShotData>();
     data->img = MakeUnique<CImage>(Math::IntPoint(m_size.x, m_size.y));
 
-    data->img->SetDataPixels(m_device->GetFrameBufferPixels());
+    auto pixels = m_device->GetFrameBufferPixels();
+    data->img->SetDataPixels(pixels->GetPixelsData());
     data->img->FlipVertically();
 
     data->fileName = fileName;

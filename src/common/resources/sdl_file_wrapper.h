@@ -36,9 +36,6 @@ public:
     bool IsOpen() const;
     SDL_RWops* GetHandler();
 
-    // TODO: this is kind of hacked for SDL_ttf, which keeps SDL_RWops open
-    SDL_RWops* ReleaseHandler();
-
 private:
     static int SDLSeek(SDL_RWops *context, int offset, int whence);
     static int SDLRead(SDL_RWops *context, void *ptr, int size, int maxnum);

@@ -29,10 +29,11 @@
 #include "graphics/opengl/glframebuffer.h"
 #include "graphics/opengl/glutil.h"
 
+#include <map>
+#include <memory>
+#include <set>
 #include <string>
 #include <vector>
-#include <set>
-#include <map>
 
 
 // Graphics module namespace
@@ -140,7 +141,7 @@ public:
 
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height) override;
 
-    virtual void* GetFrameBufferPixels() const override;
+    virtual std::unique_ptr<CFrameBufferPixels> GetFrameBufferPixels() const override;
 
     virtual CFramebuffer* GetFramebuffer(std::string name) override;
 
@@ -243,7 +244,7 @@ private:
     GLuint m_currentVAO = 0;
 
     //! Map of framebuffers
-    std::map<std::string, CFramebuffer*> m_framebuffers;
+    std::map<std::string, std::unique_ptr<CFramebuffer>> m_framebuffers;
 
     //! Shader program
     GLuint m_shaderProgram = 0;
