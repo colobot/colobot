@@ -86,8 +86,6 @@ static float debug_arm2 = 0.0f;
 static float debug_arm3 = 0.0f;
 #endif
 
-const int MAXTRACERECORD = 1000;
-
 
 // Object's constructor.
 
@@ -95,14 +93,14 @@ COldObject::COldObject(int id)
     : CObject(id, OBJECT_NULL)
     , CInteractiveObject(m_implementedInterfaces)
     , CTransportableObject(m_implementedInterfaces)
-    , CTaskExecutorObject(m_implementedInterfaces)
-    , CProgrammableObject(m_implementedInterfaces)
+    , CTaskExecutorObjectImpl(m_implementedInterfaces, this)
+    , CProgrammableObjectImpl(m_implementedInterfaces, this)
     , CJostleableObject(m_implementedInterfaces)
     , CCarrierObject(m_implementedInterfaces)
     , CPoweredObject(m_implementedInterfaces)
     , CMovableObject(m_implementedInterfaces)
     , CControllableObject(m_implementedInterfaces)
-    , CPowerContainerObject(m_implementedInterfaces)
+    , CPowerContainerObjectImpl(m_implementedInterfaces, this)
 {
     // A bit of a hack since we don't have subclasses yet, set externally in SetProgrammable()
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
@@ -132,7 +130,6 @@ COldObject::COldObject(int id)
     m_cargo  = 0;
     m_transporter = 0;
     m_transporterLink = 0;
-    m_energy   = 1.0f;
     m_shield   = 1.0f;
     m_range    = 0.0f;
     m_transparency = 0.0f;
@@ -185,21 +182,10 @@ COldObject::COldObject(int id)
         m_partiSel[i] = -1;
     }
 
-    m_cmdLine.clear();
-
-    m_activity = true;
-
-    m_currentProgram = nullptr;
-    m_bActiveVirus = false;
     m_time = 0.0f;
     m_burnTime = 0.0f;
 
     m_buttonAxe    = EVENT_NULL;
-
-    m_scriptRun = nullptr;
-    m_soluceName[0] = 0;
-
-    m_traceRecord = false;
 
     DeleteAllCrashSpheres();
 }
@@ -806,7 +792,7 @@ void COldObject::Write(CLevelParserLine* line)
 
     // Sets the parameters of the command line.
     CLevelParserParamVec cmdline;
-    for(float value : m_cmdLine)
+    for(float value : GetCmdLine())
     {
         cmdline.push_back(MakeUnique<CLevelParserParam>(value));
     }
@@ -820,7 +806,7 @@ void COldObject::Write(CLevelParserLine* line)
 
     if ( Implements(ObjectInterfaceType::Programmable) )
     {
-        line->AddParam("bVirusActive", MakeUnique<CLevelParserParam>(m_bActiveVirus));
+        line->AddParam("bVirusActive", MakeUnique<CLevelParserParam>(GetActiveVirus()));
     }
 
     if ( Implements(ObjectInterfaceType::TaskExecutor) )
@@ -891,7 +877,7 @@ void COldObject::Read(CLevelParserLine* line)
 
     if (Implements(ObjectInterfaceType::Programmable))
     {
-        m_bActiveVirus = line->GetParam("bVirusActive")->AsBool(false);
+        SetActiveVirus(line->GetParam("bVirusActive")->AsBool(false));
     }
 
     if (Implements(ObjectInterfaceType::TaskExecutor))
@@ -1382,29 +1368,6 @@ float COldObject::GetInfoReturn()
     return m_infoReturn;
 }
 
-void COldObject::SetCmdLine(unsigned int rank, float value)
-{
-    if (rank == m_cmdLine.size())
-    {
-        m_cmdLine.push_back(value);
-    }
-    else if (rank < m_cmdLine.size())
-    {
-        m_cmdLine[rank] = value;
-    }
-    else
-    {
-        // should never happen
-        assert(false);
-    }
-}
-
-float COldObject::GetCmdLine(unsigned int rank)
-{
-    if ( rank >= m_cmdLine.size() )  return 0.0f;
-    return m_cmdLine[rank];
-}
-
 
 // Returns matrices of an object portion.
 
@@ -1735,10 +1698,10 @@ void COldObject::FlatParent()
 
 void COldObject::UpdateEnergyMapping()
 {
-    if (Math::IsEqual(m_energy, m_lastEnergy, 0.01f))
+    if (Math::IsEqual(GetEnergyLevel(), m_lastEnergy, 0.01f))
         return;
 
-    m_lastEnergy = m_energy;
+    m_lastEnergy = GetEnergyLevel();
 
     Gfx::Material mat;
     mat.diffuse = Gfx::Color(1.0f, 1.0f, 1.0f);  // white
@@ -1763,7 +1726,7 @@ void COldObject::UpdateEnergyMapping()
         b = 3.0f;  // dimensions of the battery (according to y)
     }
 
-    float i = 0.50f+0.25f*m_energy;  // origin
+    float i = 0.50f+0.25f*GetEnergyLevel();  // origin
     float s = i+0.25f;  // width
 
     float au = (s-i)/(b-a);
@@ -1822,15 +1785,8 @@ bool COldObject::EventProcess(const Event &event)
 #endif
     }
 
-    if ( m_foregroundTask != nullptr )
-    {
-        m_foregroundTask->EventProcess(event);
-    }
-
-    if ( m_backgroundTask != nullptr )
-    {
-        m_backgroundTask->EventProcess(event);
-    }
+    // NOTE: This should be called befoce CProgrammableObjectImpl::EventProcess, see the other note inside this function
+    if (!CTaskExecutorObjectImpl::EventProcess(event)) return true;
 
     if ( m_physics != nullptr )
     {
@@ -1845,14 +1801,6 @@ bool COldObject::EventProcess(const Event &event)
                 m_main->DeselectAll();
             }
             return false;
-        }
-    }
-
-    if (Implements(ObjectInterfaceType::Programmable))
-    {
-        if ( GetRuin() && m_currentProgram != nullptr )
-        {
-            StopProgram();
         }
     }
 
@@ -1990,6 +1938,8 @@ bool COldObject::EventProcess(const Event &event)
         if (!m_motion->EventProcess(event)) return false;
     }
 
+    if (!CProgrammableObjectImpl::EventProcess(event)) return true;
+
     if ( event.type == EVENT_FRAME )
     {
         return EventFrame(event);
@@ -2024,28 +1974,6 @@ bool COldObject::EventFrame(const Event &event)
     UpdateMapping();
     UpdateTransformObject();
     UpdateSelectParticle();
-
-    if (Implements(ObjectInterfaceType::Programmable))
-    {
-        if ( GetActivity() )
-        {
-            if ( m_currentProgram != nullptr )  // current program?
-            {
-                if ( m_currentProgram->script->Continue() )
-                {
-                    StopProgram();
-                }
-            }
-
-            if ( m_traceRecord )  // registration of the design in progress?
-            {
-                TraceRecordFrame();
-            }
-        }
-    }
-
-    // NOTE: This MUST be called AFTER CScriptFunctions::Process, otherwise weird stuff may happen to scripts
-    EndedTask();
 
     return true;
 }
@@ -2291,25 +2219,6 @@ float COldObject::GetAbsTime()
     return m_aTime;
 }
 
-
-// Management of energy contained in a battery.
-// Single subject possesses the battery energy, but not the vehicle that carries the battery!
-
-void COldObject::SetEnergyLevel(float level)
-{
-    if ( level < 0.0f )  level = 0.0f;
-    if ( level > 1.0f )  level = 1.0f;
-    m_energy = level;
-}
-
-float COldObject::GetEnergyLevel()
-{
-    if ( m_type != OBJECT_POWER   &&
-         m_type != OBJECT_ATOMIC  &&
-         m_type != OBJECT_STATION &&
-         m_type != OBJECT_ENERGY  )  return 0.0f;
-    return m_energy;
-}
 
 float COldObject::GetCapacity()
 {
@@ -3310,603 +3219,25 @@ Error COldObject::StartTaskGunGoal(float dirV, float dirH)
     return err;
 }
 
-// Indicates whether the object is busy with a task.
-
-bool COldObject::IsForegroundTask()
-{
-    return (m_foregroundTask.get() != nullptr);
-}
-
-bool COldObject::IsBackgroundTask()
-{
-    return (m_backgroundTask.get() != nullptr);
-}
-
-CTaskManager* COldObject::GetForegroundTask()
-{
-    return m_foregroundTask.get();
-}
-
-CTaskManager* COldObject::GetBackgroundTask()
-{
-    return m_backgroundTask.get();
-}
-
-// Stops the current task.
-
-void COldObject::StopForegroundTask()
-{
-    if (m_foregroundTask != nullptr)
-    {
-        m_foregroundTask->Abort();
-        m_foregroundTask.reset();
-    }
-}
-
-// Stops the current secondary task.
-
-void COldObject::StopBackgroundTask()
-{
-    if (m_backgroundTask != nullptr)
-    {
-        m_backgroundTask->Abort();
-        m_backgroundTask.reset();
-    }
-}
-
-// Completes the task when the time came.
-
-Error COldObject::EndedTask()
-{
-    if (m_backgroundTask.get() != nullptr)  // current task?
-    {
-        Error err = m_backgroundTask->IsEnded();
-        if ( err != ERR_CONTINUE )  // job ended?
-        {
-            m_backgroundTask.reset();
-            UpdateInterface();
-        }
-    }
-
-    if (m_foregroundTask.get() != nullptr)  // current task?
-    {
-        Error err = m_foregroundTask->IsEnded();
-        if ( err != ERR_CONTINUE )  // job ended?
-        {
-            m_foregroundTask.reset();
-            UpdateInterface();
-        }
-        return err;
-    }
-
-    return ERR_STOP;
-}
-
-// Management of the activity of an object.
-
-void COldObject::SetActivity(bool activity)
-{
-    m_activity = activity;
-}
-
-bool COldObject::GetActivity()
-{
-    return m_activity;
-}
-
 void COldObject::UpdateInterface()
 {
     if (m_objectInterface != nullptr && GetSelect())
     {
         m_objectInterface->UpdateInterface();
     }
+
+    CreateSelectParticle();
+    m_main->UpdateShortcuts();
 }
-
-
-
-// Stops the running program.
 
 void COldObject::StopProgram()
 {
-    StopForegroundTask();
+    CProgrammableObjectImpl::StopProgram();
 
-    if ( m_type == OBJECT_HUMAN ||
-         m_type == OBJECT_TECH  )  return;
-
-    if ( m_currentProgram != nullptr )
-    {
-        m_currentProgram->script->Stop();
-    }
-
-    m_currentProgram = nullptr;
-
+    //TODO: I don't want CProgrammableObjectImpl to depend on motion and physics, refactor this somehow
     m_physics->SetMotorSpeedX(0.0f);
     m_physics->SetMotorSpeedY(0.0f);
     m_physics->SetMotorSpeedZ(0.0f);
 
     m_motion->SetAction(-1);
-
-    UpdateInterface();
-    m_main->UpdateShortcuts();
-    CreateSelectParticle();
-}
-
-
-// Introduces a virus into a program.
-// Returns true if it was inserted.
-
-bool COldObject::IntroduceVirus()
-{
-    if(m_program.size() == 0) return false;
-
-    for ( int i=0 ; i<50 ; i++ )
-    {
-        int j = rand()%m_program.size();
-        if ( m_program[j]->script->IntroduceVirus() )  // tries to introduce
-        {
-            m_bActiveVirus = true;  // active virus
-            return true;
-        }
-    }
-    return false;
-}
-
-// Active Virus indicates that the object is contaminated. Unlike ch'tites (??? - Programerus)
-// letters which automatically disappear after a while,
-// ActiveVirus does not disappear after you edit the program
-// (Even if the virus is not fixed).
-
-
-void COldObject::SetActiveVirus(bool bActive)
-{
-    m_bActiveVirus = bActive;
-
-    if ( !m_bActiveVirus )  // virus disabled?
-    {
-        SetVirusMode(false);  // chtites (??? - Programerus) letters also
-    }
-}
-
-bool COldObject::GetActiveVirus()
-{
-    return m_bActiveVirus;
-}
-
-// Indicates whether a program is running.
-
-bool COldObject::IsProgram()
-{
-    return m_currentProgram != nullptr;
-}
-
-// Starts a program.
-
-void COldObject::RunProgram(Program* program)
-{
-    if ( program->script->Run() )
-    {
-        m_currentProgram = program;  // start new program
-        UpdateInterface();
-        CreateSelectParticle();
-        m_main->UpdateShortcuts();
-        if(GetTrainer())
-            m_main->StartMissionTimer();
-    }
-}
-
-
-// Returns the current program.
-
-int COldObject::GetProgram()
-{
-    if(m_currentProgram == nullptr)
-        return -1;
-
-    for(unsigned int i = 0; i < m_program.size(); i++)
-    {
-        if(m_program[i].get() == m_currentProgram)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
-
-// Name management scripts to load.
-
-void COldObject::SetScriptRun(Program* program)
-{
-    m_scriptRun = program;
-}
-
-Program* COldObject::GetScriptRun()
-{
-    return m_scriptRun;
-}
-
-void COldObject::SetSoluceName(char *name)
-{
-    strcpy(m_soluceName, name);
-}
-
-char* COldObject::GetSoluceName()
-{
-    return m_soluceName;
-}
-
-
-// Load a script solution, in the first free script.
-// If there is already an identical script, nothing is loaded.
-
-bool COldObject::ReadSoluce(char* filename)
-{
-    Program* prog = AddProgram();
-
-    if ( !ReadProgram(prog, filename) )  return false;  // load solution
-    prog->readOnly = true;
-
-    for(unsigned int i = 0; i < m_program.size(); i++)
-    {
-        if(m_program[i].get() == prog) continue;
-
-        //TODO: This is bad. It's very sensitive to things like \n vs \r\n etc.
-        if ( m_program[i]->script->Compare(prog->script.get()) )  // the same already?
-        {
-            m_program[i]->readOnly = true; // Mark is as read-only
-            RemoveProgram(prog);
-            return false;
-        }
-    }
-
-    return true;
-}
-
-// Load a script with a text file.
-
-bool COldObject::ReadProgram(Program* program, const char* filename)
-{
-    if ( program->script->ReadScript(filename) )  return true;
-
-    return false;
-}
-
-// Indicates whether a program is compiled correctly.
-
-bool COldObject::GetCompile(Program* program)
-{
-    return program->script->GetCompile();
-}
-
-// Saves a script in a text file.
-
-bool COldObject::WriteProgram(Program* program, const char* filename)
-{
-    if ( program->script->WriteScript(filename) )  return true;
-
-    return false;
-}
-
-
-// Load a stack of script implementation from a file.
-
-bool COldObject::ReadStack(FILE *file)
-{
-    short       op;
-
-    fRead(&op, sizeof(short), 1, file);
-    if ( op == 1 )  // run ?
-    {
-        fRead(&op, sizeof(short), 1, file);  // program rank
-        if ( op >= 0 )
-        {
-            assert(op < static_cast<int>(m_program.size())); //TODO: is it good?
-
-            //TODO: m_selScript = op;
-
-            if ( !m_program[op]->script->ReadStack(file) )  return false;
-        }
-    }
-
-    return true;
-}
-
-// Save the script implementation stack of a file.
-
-bool COldObject::WriteStack(FILE *file)
-{
-    short       op;
-
-    if ( m_currentProgram != nullptr &&  // current program?
-         m_currentProgram->script->IsRunning() )
-    {
-        op = 1;  // run
-        fWrite(&op, sizeof(short), 1, file);
-
-        op = GetProgram();
-        fWrite(&op, sizeof(short), 1, file);
-
-        return m_currentProgram->script->WriteStack(file);
-    }
-
-    op = 0;  // stop
-    fWrite(&op, sizeof(short), 1, file);
-    return true;
-}
-
-
-
-// Start of registration of the design.
-
-void COldObject::TraceRecordStart()
-{
-    if (m_traceRecord)
-    {
-        TraceRecordStop();
-    }
-
-    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion.get());
-    assert(motionVehicle != nullptr);
-
-    m_traceRecord = true;
-
-    m_traceOper = TO_STOP;
-
-    m_tracePos = GetPosition();
-    m_traceAngle = GetRotationY();
-
-    if ( motionVehicle->GetTraceDown() )  // pencil down?
-    {
-        m_traceColor = motionVehicle->GetTraceColor();
-    }
-    else    // pen up?
-    {
-        m_traceColor = TraceColor::Default;
-    }
-
-    m_traceRecordBuffer = MakeUniqueArray<TraceRecord>(MAXTRACERECORD);
-    m_traceRecordIndex = 0;
-}
-
-// Saving the current drawing.
-
-void COldObject::TraceRecordFrame()
-{
-    TraceOper   oper = TO_STOP;
-    Math::Vector    pos;
-    float       angle, len, speed;
-
-    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion.get());
-    assert(motionVehicle != nullptr);
-
-    speed = m_physics->GetLinMotionX(MO_REASPEED);
-    if ( speed > 0.0f )  oper = TO_ADVANCE;
-    if ( speed < 0.0f )  oper = TO_RECEDE;
-
-    speed = m_physics->GetCirMotionY(MO_REASPEED);
-    if ( speed != 0.0f )  oper = TO_TURN;
-
-    TraceColor color = TraceColor::Default;
-    if ( motionVehicle->GetTraceDown() )  // pencil down?
-    {
-        color = motionVehicle->GetTraceColor();
-    }
-
-    if ( oper != m_traceOper ||
-         color != m_traceColor )
-    {
-        if ( m_traceOper == TO_ADVANCE ||
-             m_traceOper == TO_RECEDE  )
-        {
-            pos = GetPosition();
-            len = Math::DistanceProjected(pos, m_tracePos);
-            TraceRecordOper(m_traceOper, len);
-        }
-        if ( m_traceOper == TO_TURN )
-        {
-            angle = GetRotationY()-m_traceAngle;
-            TraceRecordOper(m_traceOper, angle);
-        }
-
-        if ( color != m_traceColor )
-        {
-            TraceRecordOper(TO_PEN, static_cast<float>(color));
-        }
-
-        m_traceOper = oper;
-        m_tracePos = GetPosition();
-        m_traceAngle = GetRotationY();
-        m_traceColor = color;
-    }
-}
-
-// End of the registration of the design. Program generates the CBOT.
-
-void COldObject::TraceRecordStop()
-{
-    TraceOper   lastOper, curOper;
-    float       lastParam, curParam;
-
-    m_traceRecord = false;
-
-    std::stringstream buffer;
-    buffer << "extern void object::AutoDraw()\n{\n";
-
-    lastOper = TO_STOP;
-    lastParam = 0.0f;
-    for ( int i=0 ; i<m_traceRecordIndex ; i++ )
-    {
-        curOper = m_traceRecordBuffer[i].oper;
-        curParam = m_traceRecordBuffer[i].param;
-
-        if ( curOper == lastOper )
-        {
-            if ( curOper == TO_PEN )
-            {
-                lastParam = curParam;
-            }
-            else
-            {
-                lastParam += curParam;
-            }
-        }
-        else
-        {
-            TraceRecordPut(buffer, lastOper, lastParam);
-            lastOper = curOper;
-            lastParam = curParam;
-        }
-    }
-    TraceRecordPut(buffer, lastOper, lastParam);
-
-    m_traceRecordBuffer.reset();
-
-    buffer << "}\n";
-
-    Program* prog = AddProgram();
-    prog->script->SendScript(buffer.str().c_str());
-}
-
-// Saves an instruction CBOT.
-
-bool COldObject::TraceRecordOper(TraceOper oper, float param)
-{
-    int     i;
-
-    i = m_traceRecordIndex;
-    if ( i >= MAXTRACERECORD )  return false;
-
-    m_traceRecordBuffer[i].oper = oper;
-    m_traceRecordBuffer[i].param = param;
-
-    m_traceRecordIndex = i+1;
-    return true;
-}
-
-// Generates an instruction CBOT.
-
-bool COldObject::TraceRecordPut(std::stringstream& buffer, TraceOper oper, float param)
-{
-    if ( oper == TO_ADVANCE )
-    {
-        param /= g_unit;
-        buffer << "\tmove(" << std::fixed << std::setprecision(1) << param << ");\n";
-    }
-
-    if ( oper == TO_RECEDE )
-    {
-        param /= g_unit;
-        buffer << "\tmove(-" << std::fixed << std::setprecision(1) << param << ");\n";
-    }
-
-    if ( oper == TO_TURN )
-    {
-        param = -param*180.0f/Math::PI;
-        buffer << "\tturn(" << static_cast<int>(param) << ");\n";
-    }
-
-    if ( oper == TO_PEN )
-    {
-        TraceColor color = static_cast<TraceColor>(static_cast<int>(param));
-        if ( color == TraceColor::Default )
-            buffer << "\tpenup();\n";
-        else
-            buffer << "\tpendown(" << TraceColorName(color) << ");\n";
-    }
-
-    return true;
-}
-
-bool COldObject::IsTraceRecord()
-{
-    return m_traceRecord;
-}
-
-Program* COldObject::AddProgram()
-{
-    auto program = MakeUnique<Program>();
-    program->script = MakeUnique<CScript>(this);
-    program->readOnly = false;
-    program->runnable = true;
-
-    Program* prog = program.get();
-    AddProgram(std::move(program));
-    return prog;
-}
-
-void COldObject::AddProgram(std::unique_ptr<Program> program)
-{
-    m_program.push_back(std::move(program));
-    UpdateInterface();
-}
-
-void COldObject::RemoveProgram(Program* program)
-{
-    if(m_currentProgram == program)
-    {
-        StopProgram();
-    }
-    m_program.erase(
-        std::remove_if(m_program.begin(), m_program.end(),
-            [program](std::unique_ptr<Program>& prog) { return prog.get() == program; }),
-        m_program.end());
-}
-
-Program* COldObject::CloneProgram(Program* program)
-{
-    Program* newprog = AddProgram();
-
-    // TODO: Is there any reason CScript doesn't have a function to get the program code directly?
-    Ui::CEdit* edit = new Ui::CEdit();
-    edit->SetMaxChar(Ui::EDITSTUDIOMAX);
-    program->script->PutScript(edit, "");
-    newprog->script->GetScript(edit);
-    delete edit;
-
-    return newprog;
-}
-
-std::vector<std::unique_ptr<Program>>& COldObject::GetPrograms()
-{
-    return m_program;
-}
-
-int COldObject::GetProgramCount()
-{
-    return static_cast<int>(m_program.size());
-}
-
-int COldObject::GetProgramIndex(Program* program)
-{
-    for(unsigned int i = 0; i < m_program.size(); i++)
-    {
-        if(m_program[i].get() == program)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
-Program* COldObject::GetProgram(int index)
-{
-    if(index < 0 || index >= static_cast<int>(m_program.size()))
-        return nullptr;
-
-    return m_program[index].get();
-}
-
-Program* COldObject::GetOrAddProgram(int index)
-{
-    if(index < 0)
-        return nullptr;
-
-    if(index < static_cast<int>(m_program.size()))
-        return m_program[index].get();
-
-    for(int i = m_program.size(); i < index; i++)
-    {
-        AddProgram();
-    }
-    return AddProgram();
 }

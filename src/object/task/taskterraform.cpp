@@ -203,10 +203,10 @@ Error CTaskTerraform::Start()
     ObjectType  type;
 
     m_bError = true;  // operation impossible
-    if ( !m_physics->GetLand() )  return ERR_TERRA_VEH;
+    if ( !m_physics->GetLand() )  return ERR_WRONG_BOT;
 
     type = m_object->GetType();
-    if ( type != OBJECT_MOBILErt )  return ERR_TERRA_VEH;
+    if ( type != OBJECT_MOBILErt )  return ERR_WRONG_BOT;
 
     power = m_object->GetPower();
     if ( power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer) )  return ERR_TERRA_ENERGY;

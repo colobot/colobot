@@ -61,13 +61,13 @@ public:
 
     virtual void SetScriptRun(Program* rank) = 0;
     virtual Program* GetScriptRun() = 0;
-    virtual void SetSoluceName(char *name) = 0;
-    virtual char* GetSoluceName() = 0;
+    virtual void SetSoluceName(const std::string& name) = 0;
+    virtual const std::string& GetSoluceName() = 0;
 
-    virtual bool ReadSoluce(char* filename) = 0;
-    virtual bool ReadProgram(Program* program, const char* filename) = 0;
+    virtual bool ReadSoluce(const std::string& filename) = 0;
+    virtual bool ReadProgram(Program* program, const std::string& filename) = 0;
     virtual bool GetCompile(Program* program) = 0;
-    virtual bool WriteProgram(Program* program, const char* filename) = 0;
+    virtual bool WriteProgram(Program* program, const std::string& filename) = 0;
     virtual bool ReadStack(FILE *file) = 0;
     virtual bool WriteStack(FILE *file) = 0;
 

@@ -139,7 +139,7 @@ Error CTaskPen::Start(bool bDown, TraceColor color)
     m_bError = true;  // operation impossible
 
     type = m_object->GetType();
-    if ( type != OBJECT_MOBILEdr )  return ERR_FIRE_VEH;
+    if ( type != OBJECT_MOBILEdr )  return ERR_WRONG_BOT;
 
     m_bError = false;  // ok
 

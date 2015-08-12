@@ -487,6 +487,8 @@ void CScript::Stop()
 {
     if ( !m_bRun )  return;
 
+    m_taskExecutor->StopForegroundTask();
+
     if( m_botProg != 0 )
     {
         m_botProg->Stop();

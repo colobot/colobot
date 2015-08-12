@@ -287,10 +287,10 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
     }
 
     ObjectType type = m_object->GetType();
-    if ( type != OBJECT_MOBILErs )  return ERR_SHIELD_VEH;
+    if ( type != OBJECT_MOBILErs )  return ERR_WRONG_BOT;
 
     m_bError = true;  // operation impossible
-    if ( !m_physics->GetLand() )  return ERR_SHIELD_VEH;
+    if ( !m_physics->GetLand() )  return ERR_WRONG_BOT;
 
     CObject* power = m_object->GetPower();
     if (power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer))  return ERR_SHIELD_ENERGY;

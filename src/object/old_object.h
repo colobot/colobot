@@ -37,6 +37,10 @@
 #include "object/interface/task_executor_object.h"
 #include "object/interface/transportable_object.h"
 
+#include "object/implementation/power_container_impl.h"
+#include "object/implementation/programmable_impl.h"
+#include "object/implementation/task_executor_impl.h"
+
 // The father of all parts must always be the part number zero!
 const int OBJECTMAXPART         = 40;
 
@@ -58,21 +62,6 @@ struct ObjectPart
     Math::Matrix matWorld;
 };
 
-enum TraceOper
-{
-    TO_STOP         = 0,    // stop
-    TO_ADVANCE      = 1,    // advance
-    TO_RECEDE       = 2,    // back
-    TO_TURN         = 3,    // rotate
-    TO_PEN          = 4,    // color change
-};
-
-struct TraceRecord
-{
-    TraceOper   oper;
-    float       param;
-};
-
 namespace Ui
 {
 class CObjectInterface;
@@ -82,14 +71,14 @@ class CObjectInterface;
 class COldObject : public CObject,
                    public CInteractiveObject,
                    public CTransportableObject,
-                   public CTaskExecutorObject,
-                   public CProgrammableObject,
+                   public CTaskExecutorObjectImpl,
+                   public CProgrammableObjectImpl,
                    public CJostleableObject,
                    public CCarrierObject,
                    public CPoweredObject,
                    public CMovableObject,
                    public CControllableObject,
-                   public CPowerContainerObject
+                   public CPowerContainerObjectImpl
 {
     friend class CObjectFactory;
     friend class CObjectManager;
@@ -185,9 +174,6 @@ public:
     CObject*    GetTransporter() override;
     void        SetTransporterPart(int part) override;
 
-    void        SetCmdLine(unsigned int rank, float value);
-    float       GetCmdLine(unsigned int rank) override;
-
     Math::Matrix*   GetRotateMatrix(int part);
     Math::Matrix*   GetWorldMatrix(int part) override;
 
@@ -198,9 +184,6 @@ public:
     Character*  GetCharacter() override;
 
     float       GetAbsTime();
-
-    void        SetEnergyLevel(float level) override;
-    float       GetEnergyLevel() override;
 
     float       GetCapacity() override;
 
@@ -237,9 +220,6 @@ public:
 
     void        SetSelectable(bool bMode);
     bool        GetSelectable() override;
-
-    void        SetActivity(bool activity) override;
-    bool        GetActivity() override;
 
     void        SetVisible(bool bVisible);
 
@@ -318,53 +298,9 @@ public:
     Error       StartTaskShield(TaskShieldMode mode, float delay = 1000.0f) override;
     Error       StartTaskGunGoal(float dirV, float dirH) override;
 
-    bool        IsForegroundTask() override;
-    bool        IsBackgroundTask() override;
-    CTaskManager* GetForegroundTask() override;
-    CTaskManager* GetBackgroundTask() override;
-    void        StopForegroundTask() override;
-    void        StopBackgroundTask() override;
+    void        UpdateInterface() override;
 
-    void        UpdateInterface();
-
-    bool        IsProgram() override;
-    void        RunProgram(Program* program) override;
-    int         GetProgram() override;
     void        StopProgram() override;
-
-    bool        IntroduceVirus() override;
-    void        SetActiveVirus(bool bActive) override;
-    bool        GetActiveVirus() override;
-
-    void        SetScriptRun(Program* rank) override;
-    Program*    GetScriptRun() override;
-    void        SetSoluceName(char *name) override;
-    char*       GetSoluceName() override;
-
-    bool        ReadSoluce(char* filename) override;
-    bool        ReadProgram(Program* program, const char* filename) override;
-    bool        GetCompile(Program* program) override;
-    bool        WriteProgram(Program* program, const char* filename) override;
-    bool        ReadStack(FILE *file) override;
-    bool        WriteStack(FILE *file) override;
-
-    Program*    AddProgram() override;
-    void        AddProgram(std::unique_ptr<Program> program) override;
-    void        RemoveProgram(Program* program) override;
-    Program*    CloneProgram(Program* program) override;
-
-    std::vector<std::unique_ptr<Program>>& GetPrograms() override;
-    int         GetProgramCount() override;
-    Program*    GetProgram(int index) override;
-    Program*    GetOrAddProgram(int index) override;
-    int         GetProgramIndex(Program* program) override;
-
-    //! Start recording trace
-    void        TraceRecordStart() override;
-    //! Stop recording trace and generate CBot program
-    void        TraceRecordStop() override;
-    //! Returns true if trace recording is in progress
-    bool        IsTraceRecord() override;
 
 protected:
     bool        EventFrame(const Event &event);
@@ -381,13 +317,6 @@ protected:
     void TransformCameraCollisionSphere(Math::Sphere& collisionSphere) override;
 
     Error       EndedTask();
-
-    //! Save current status to recording buffer
-    void        TraceRecordFrame();
-    //! Save this operation to recording buffer
-    bool        TraceRecordOper(TraceOper oper, float param);
-    //! Convert this recording operation to CBot instruction
-    bool        TraceRecordPut(std::stringstream& buffer, TraceOper oper, float param);
 
 protected:
     Gfx::CEngine*       m_engine;
@@ -417,7 +346,6 @@ protected:
     CObject*    m_cargo;             // object transported
     CObject*    m_transporter;            // object with the latter
     int     m_transporterLink;            // part
-    float       m_energy;           // energy contained (if battery)
     float       m_lastEnergy;
     float       m_shield;           // shield
     float       m_range;            // flight range
@@ -462,30 +390,8 @@ protected:
 
     float m_infoReturn;
 
-    std::vector<float> m_cmdLine;
-
-    bool m_activity;
-    std::unique_ptr<CTaskManager>  m_foregroundTask;
-    std::unique_ptr<CTaskManager>  m_backgroundTask;
-
-    std::vector<std::unique_ptr<Program>> m_program;
-    Program*            m_currentProgram;
-
-    bool                m_bActiveVirus;
-
-    Program*            m_scriptRun;
-    char                m_soluceName[50];
-
     EventType           m_buttonAxe;
 
     float               m_time;
     float               m_burnTime;
-
-    bool                m_traceRecord;
-    TraceOper           m_traceOper;
-    Math::Vector        m_tracePos;
-    float               m_traceAngle;
-    TraceColor          m_traceColor;
-    int                 m_traceRecordIndex;
-    std::unique_ptr<TraceRecord[]> m_traceRecordBuffer;
 };

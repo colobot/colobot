@@ -153,7 +153,7 @@ Error CAutoFactory::StartAction(int param)
         m_speed    = 1.0f/3.0f;
         return ERR_OK;
     }
-    return ERR_GENERIC;
+    return ERR_UNKNOWN;
 }
 
 
@@ -219,10 +219,10 @@ bool CAutoFactory::EventProcess(const Event &event)
         type = ObjectTypeFromFactoryButton(event.type);
 
         Error err = StartAction(type);
-        if( err != ERR_OK && err != ERR_GENERIC )
+        if( err != ERR_OK && err != ERR_UNKNOWN )
             m_main->DisplayError(err, m_object);
 
-        if( err != ERR_GENERIC )
+        if( err != ERR_UNKNOWN )
             return false;
     }
 

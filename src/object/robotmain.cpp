@@ -3710,7 +3710,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                     if (soluce && oldObj->Implements(ObjectInterfaceType::Programmable) && line->GetParam("soluce")->IsDefined())
                         dynamic_cast<CProgrammableObject*>(oldObj)
-                            ->SetSoluceName(const_cast<char*>(line->GetParam("soluce")->AsPath("ai").c_str()));
+                            ->SetSoluceName(line->GetParam("soluce")->AsPath("ai"));
 
                     if (line->GetParam("reset")->AsBool(false))
                         oldObj->SetAnimateOnReset(true);
@@ -4717,8 +4717,8 @@ void CRobotMain::CompileScript(bool soluce)
 
         if (soluce)
         {
-            char* name = programmable->GetSoluceName();
-            if (name[0] != 0)
+            std::string name = programmable->GetSoluceName();
+            if (!name.empty())
             {
                 programmable->ReadSoluce(name);  // load solution
             }

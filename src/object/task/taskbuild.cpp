@@ -646,7 +646,7 @@ Error CTaskBuild::FlatFloor()
     if ( m_type == OBJECT_PARA     )  radius = 20.0f;
     if ( m_type == OBJECT_INFO     )  radius =  5.0f;
     if ( m_type == OBJECT_DESTROYER)  radius = 20.0f;
-    //if ( radius == 0.0f )  return ERR_GENERIC;
+    //if ( radius == 0.0f )  return ERR_UNKNOWN;
 
     center = m_metal->GetPosition();
     angle = m_terrain->GetFineSlope(center);

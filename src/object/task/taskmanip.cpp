@@ -308,7 +308,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
     if ( m_arm != TMA_FFRONT &&
          m_arm != TMA_FBACK  &&
          m_arm != TMA_POWER  &&
-         m_arm != TMA_GRAB   )  return ERR_MANIP_VEH;
+         m_arm != TMA_GRAB   )  return ERR_WRONG_BOT;
 
     m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 
@@ -374,7 +374,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
          type != OBJECT_MOBILEta &&
          type != OBJECT_MOBILEwa &&
          type != OBJECT_MOBILEia &&
-         type != OBJECT_MOBILEsa )  return ERR_MANIP_VEH;
+         type != OBJECT_MOBILEsa )  return ERR_WRONG_BOT;
 
     if ( m_bSubm )  // submarine?
     {

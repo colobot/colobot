@@ -1400,9 +1400,6 @@ msgstr ""
 msgid "Unknown command"
 msgstr ""
 
-msgid "Inappropriate bot"
-msgstr ""
-
 msgid "Impossible when flying"
 msgstr ""
 
@@ -1595,6 +1592,9 @@ msgid "\"%s\" missing in this exercise"
 msgstr ""
 
 msgid "Do not use in this exercise"
+msgstr ""
+
+msgid "Inappropriate bot"
 msgstr ""
 
 msgid "Building completed"

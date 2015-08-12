@@ -140,7 +140,7 @@ Error CTaskSearch::Start()
     if ( type != OBJECT_MOBILEfs &&
          type != OBJECT_MOBILEts &&
          type != OBJECT_MOBILEws &&
-         type != OBJECT_MOBILEis )  return ERR_SEARCH_VEH;
+         type != OBJECT_MOBILEis )  return ERR_WRONG_BOT;
 
     m_hand     = TSH_DOWN;
     m_phase    = TSP_DOWN;

@@ -92,13 +92,13 @@ Error CTaskFireAnt::Start(Math::Vector impact)
     m_impact = impact;
 
     m_bError = true;  // operation impossible
-    if ( !m_physics->GetLand() )  return ERR_FIRE_VEH;
+    if ( !m_physics->GetLand() )  return ERR_WRONG_BOT;
 
     type = m_object->GetType();
-    if ( type != OBJECT_ANT )  return ERR_FIRE_VEH;
+    if ( type != OBJECT_ANT )  return ERR_WRONG_BOT;
 
     // Insect on its back?
-    if ( m_object->GetFixed() )  return ERR_FIRE_VEH;
+    if ( m_object->GetFixed() )  return ERR_WRONG_BOT;
 
     m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 

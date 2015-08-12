@@ -101,7 +101,7 @@ Error CAutoResearch::StartAction(int param)
 {
     if ( m_phase != ALP_WAIT )
     {
-        return ERR_GENERIC;
+        return ERR_UNKNOWN;
     }
 
     m_research = static_cast<ResearchType>(param);
@@ -167,7 +167,7 @@ bool CAutoResearch::EventProcess(const Event &event)
 
     if ( m_object->GetSelect() )  // center selected?
     {
-        Error err = ERR_GENERIC;
+        Error err = ERR_UNKNOWN;
         if ( event.type == EVENT_OBJECT_RTANK   ) err = StartAction(RESEARCH_TANK);
         if ( event.type == EVENT_OBJECT_RFLY    ) err = StartAction(RESEARCH_FLY);
         if ( event.type == EVENT_OBJECT_RTHUMP  ) err = StartAction(RESEARCH_THUMP);
@@ -177,10 +177,10 @@ bool CAutoResearch::EventProcess(const Event &event)
         if ( event.type == EVENT_OBJECT_RSHIELD ) err = StartAction(RESEARCH_SHIELD);
         if ( event.type == EVENT_OBJECT_RATOMIC ) err = StartAction(RESEARCH_ATOMIC);
 
-        if( err != ERR_OK && err != ERR_GENERIC )
+        if( err != ERR_OK && err != ERR_UNKNOWN )
             m_main->DisplayError(err, m_object);
 
-        if( err != ERR_GENERIC )
+        if( err != ERR_UNKNOWN )
             return false;
     }
 

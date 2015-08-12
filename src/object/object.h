@@ -83,6 +83,9 @@ public:
     //! Reads object properties from line in level file
     virtual void Read(CLevelParserLine* line) = 0;
 
+    //! Updates all interface controls
+    virtual void UpdateInterface() {};
+
     //! Check if object implements the given type of interface
     inline bool Implements(ObjectInterfaceType type) const
     {

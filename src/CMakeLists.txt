@@ -150,6 +150,9 @@ set(BASE_SOURCES
     object/auto/autopowerstation.cpp
     object/auto/autotower.cpp
     object/drive_type.cpp
+    object/implementation/power_container_impl.cpp
+    object/implementation/programmable_impl.cpp
+    object/implementation/task_executor_impl.cpp
     object/level/parser.cpp
     object/level/parserexceptions.cpp
     object/level/parserline.cpp

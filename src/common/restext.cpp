@@ -581,9 +581,8 @@ void InitializeRestext()
 
 
 
-    stringsErr[ERR_GENERIC]         = TR("Internal error - tell the developers");
+    stringsErr[ERR_UNKNOWN]         = TR("Internal error - tell the developers");
     stringsErr[ERR_CMD]             = TR("Unknown command");
-    stringsErr[ERR_MANIP_VEH]       = TR("Inappropriate bot");
     stringsErr[ERR_MANIP_FLY]       = TR("Impossible when flying");
     stringsErr[ERR_MANIP_BUSY]      = TR("Already carrying something");
     stringsErr[ERR_MANIP_NIL]       = TR("Nothing to grab");
@@ -608,24 +607,19 @@ void InitializeRestext()
     stringsErr[ERR_SEARCH_FLY]      = TR("Impossible when flying");
     stringsErr[ERR_BUILD_DISABLED]  = TR("Can not produce this object in this mission");
     stringsErr[ERR_BUILD_RESEARCH]  = TR("Can not produce not researched object");
-    stringsErr[ERR_SEARCH_VEH]      = TR("Inappropriate bot");
     stringsErr[ERR_SEARCH_MOTOR]    = TR("Impossible when moving");
-    stringsErr[ERR_TERRA_VEH]       = TR("Inappropriate bot");
     stringsErr[ERR_TERRA_ENERGY]    = TR("Not enough energy");
     stringsErr[ERR_TERRA_FLOOR]     = TR("Ground inappropriate");
     stringsErr[ERR_TERRA_BUILDING]  = TR("Building too close");
     stringsErr[ERR_TERRA_OBJECT]    = TR("Object too close");
-    stringsErr[ERR_RECOVER_VEH]     = TR("Inappropriate bot");
     stringsErr[ERR_RECOVER_ENERGY]  = TR("Not enough energy");
     stringsErr[ERR_RECOVER_NULL]    = TR("Nothing to recycle");
-    stringsErr[ERR_SHIELD_VEH]      = TR("Inappropriate bot");
     stringsErr[ERR_SHIELD_ENERGY]   = TR("No more energy");
     stringsErr[ERR_MOVE_IMPOSSIBLE] = TR("Error in instruction move");
     stringsErr[ERR_FIND_IMPOSSIBLE] = TR("Object not found");
     stringsErr[ERR_GOTO_IMPOSSIBLE] = TR("Goto: inaccessible destination");
     stringsErr[ERR_GOTO_ITER]       = TR("Goto: inaccessible destination");
     stringsErr[ERR_GOTO_BUSY]       = TR("Goto: destination occupied");
-    stringsErr[ERR_FIRE_VEH]        = TR("Inappropriate bot");
     stringsErr[ERR_FIRE_ENERGY]     = TR("Not enough energy");
     stringsErr[ERR_FIRE_FLY]        = TR("Impossible when flying");
     stringsErr[ERR_CONVERT_EMPTY]   = TR("No titanium ore to convert");
@@ -674,6 +668,7 @@ void InitializeRestext()
     stringsErr[ERR_ENEMY_OBJECT]    = TR("Unable to control enemy objects");
     stringsErr[ERR_OBLIGATORYTOKEN] = TR("\"%s\" missing in this exercise");
     stringsErr[ERR_PROHIBITEDTOKEN] = TR("Do not use in this exercise");
+    stringsErr[ERR_WRONG_BOT]       = TR("Inappropriate bot");
 
     stringsErr[INFO_BUILD]          = TR("Building completed");
     stringsErr[INFO_CONVERT]        = TR("Titanium available");

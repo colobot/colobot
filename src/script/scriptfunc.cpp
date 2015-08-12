@@ -718,8 +718,8 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     CObject* factory = static_cast<CObject*>(thisclass->GetUserPtr());
     if (factory == nullptr)
     {
-        exception = ERR_GENERIC;
-        result->SetValInt(ERR_GENERIC);
+        exception = ERR_UNKNOWN;
+        result->SetValInt(ERR_UNKNOWN);
         GetLogger()->Error("in object.factory() - factory is nullptr");
         return false;
     }
@@ -736,8 +736,8 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         CAutoFactory* automat = static_cast<CAutoFactory*>(factory->GetAuto());
         if (automat == nullptr)
         {
-            exception = ERR_GENERIC;
-            result->SetValInt(ERR_GENERIC);
+            exception = ERR_UNKNOWN;
+            result->SetValInt(ERR_UNKNOWN);
             GetLogger()->Error("in object.factory() - automat is nullptr");
             return false;
         }
@@ -752,7 +752,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
                 if ( err == ERR_OK ) automat->SetProgram(program);
             }
             else
-                err = ERR_GENERIC;
+                err = ERR_UNKNOWN;
         }
     }
     else
@@ -824,7 +824,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
                     err = automat->StartAction(type);
                 }
                 else
-                    err = ERR_GENERIC;
+                    err = ERR_UNKNOWN;
             }
             else
                 err = ERR_BUILD_DISABLED;
@@ -1417,7 +1417,7 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
          oType != OBJECT_HUMAN    &&
          oType != OBJECT_TECH      )
     {
-        err = ERR_MANIP_VEH; // Wrong object
+        err = ERR_WRONG_BOT; // Wrong object
     }
     else
     {
@@ -2475,10 +2475,10 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
     // only shielder can use shield()
     if (pThis->GetType() != OBJECT_MOBILErs)
     {
-        result->SetValInt(ERR_MANIP_VEH);  // return error
+        result->SetValInt(ERR_WRONG_BOT);  // return error
         if (script->m_errMode == ERM_STOP)
         {
-            exception = ERR_MANIP_VEH;
+            exception = ERR_WRONG_BOT;
             return false;
         }
         return true;

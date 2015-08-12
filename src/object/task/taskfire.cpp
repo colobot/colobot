@@ -287,7 +287,7 @@ Error CTaskFire::Start(float delay)
          type != OBJECT_MOBILEti &&
          type != OBJECT_MOBILEwi &&
          type != OBJECT_MOBILEii &&
-         type != OBJECT_MOBILErc )  return ERR_FIRE_VEH;
+         type != OBJECT_MOBILErc )  return ERR_WRONG_BOT;
 
 //? if ( !m_physics->GetLand() )  return ERR_FIRE_FLY;
 

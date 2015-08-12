@@ -183,7 +183,7 @@ Error CTaskManager::StartTaskShield(TaskShieldMode mode, float delay)
     {
         return (static_cast<CTaskShield*>(m_task))->Start(mode, delay);
     }
-    return ERR_GENERIC;
+    return ERR_UNKNOWN;
 }
 
 // Shoots.
@@ -233,7 +233,7 @@ bool CTaskManager::EventProcess(const Event &event)
 
 Error CTaskManager::IsEnded()
 {
-    if ( m_task == 0 )  return ERR_GENERIC;
+    if ( m_task == 0 )  return ERR_UNKNOWN;
     return m_task->IsEnded();
 }
 

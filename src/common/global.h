@@ -32,11 +32,10 @@
 enum Error
 {
     ERR_OK                = 0,        //! <  ok
-    ERR_GENERIC           = 1,        //! <  any error
+    ERR_UNKNOWN           = 1,        //! <  any error
     ERR_CONTINUE          = 2,        //! <  continues
     ERR_STOP              = 3,        //! <  stops
     ERR_CMD               = 4,        //! <  unknown command
-    ERR_MANIP_VEH         = 100,      //! <  inappropriate vehicle
     ERR_MANIP_FLY         = 101,      //! <  impossible in flight
     ERR_MANIP_BUSY        = 102,      //! <  taking: hands already occupied
     ERR_MANIP_NIL         = 103,      //! <  taking: nothing has to take
@@ -61,21 +60,16 @@ enum Error
     ERR_BUILD_DISABLED    = 132,      //! <  built: can not produce this object in this mission
     ERR_BUILD_RESEARCH    = 133,      //! <  built: can not produce not researched object
     ERR_SEARCH_FLY        = 140,      //! <  not possible in flight
-    ERR_SEARCH_VEH        = 141,      //! <  inappropriate vehicle
     ERR_SEARCH_MOTOR      = 142,      //! <  impossible in movement
-    ERR_TERRA_VEH         = 150,      //! <  inappropriate vehicle
     ERR_TERRA_ENERGY      = 151,      //! <  not enough energy
     ERR_TERRA_FLOOR       = 152,      //! <  inappropriate ground
     ERR_TERRA_BUILDING    = 153,      //! <  building too close
     ERR_TERRA_OBJECT      = 154,      //! <  object too close
-    ERR_FIRE_VEH          = 160,      //! <  inappropriate vehicle
     ERR_FIRE_ENERGY       = 161,      //! <  not enough energy
     ERR_FIRE_FLY          = 162,      //! <  not possible in flight
-    ERR_RECOVER_VEH       = 170,      //! <  inappropriate vehicle
     ERR_RECOVER_ENERGY    = 171,      //! <  not enough energy
     ERR_RECOVER_NULL      = 172,      //! <  lack of ruin
     ERR_CONVERT_EMPTY     = 180,      //! <  no stone was transformed
-    ERR_SHIELD_VEH        = 190,      //! <  inappropriate vehicle
     ERR_SHIELD_ENERGY     = 191,      //! <  not enough energy
     ERR_MOVE_IMPOSSIBLE   = 200,      //! <  move impossible
     ERR_FIND_IMPOSSIBLE   = 201,      //! <  find impossible
@@ -128,6 +122,7 @@ enum Error
     ERR_OBLIGATORYTOKEN   = 800,      //! <  compulsory instruction missing
     ERR_PROHIBITEDTOKEN   = 801,      //! <  instruction prohibited
     ERR_AIM_IMPOSSIBLE    = 900,      //! <  cannot aim at specified angle(s)
+    ERR_WRONG_BOT         = 910,      //! <  inappropriate bot
 
     INFO_FIRST            = 10000,    //! <  first information
     INFO_BUILD            = 10001,    //! <  construction builded

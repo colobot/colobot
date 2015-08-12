@@ -120,7 +120,7 @@ Error CAutoLabo::StartAction(int param)
 {
     if ( m_phase != ALAP_WAIT )
     {
-        return ERR_GENERIC;
+        return ERR_UNKNOWN;
     }
 
     m_research = static_cast<ResearchType>(param);
@@ -175,14 +175,14 @@ bool CAutoLabo::EventProcess(const Event &event)
 
     if ( m_object->GetSelect() )  // center selected?
     {
-        Error err = ERR_GENERIC;
+        Error err = ERR_UNKNOWN;
         if ( event.type == EVENT_OBJECT_RiPAW   ) err = StartAction(RESEARCH_iPAW);
         if ( event.type == EVENT_OBJECT_RiGUN   ) err = StartAction(RESEARCH_iGUN);
 
-        if( err != ERR_OK && err != ERR_GENERIC )
+        if( err != ERR_OK && err != ERR_UNKNOWN )
             m_main->DisplayError(err, m_object);
 
-        if( err != ERR_GENERIC )
+        if( err != ERR_UNKNOWN )
             return false;
     }
 

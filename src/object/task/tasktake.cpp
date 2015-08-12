@@ -110,7 +110,7 @@ Error CTaskTake::Start()
 
     ObjectType type = m_object->GetType();
     if ( type != OBJECT_HUMAN &&
-         type != OBJECT_TECH  )  return ERR_MANIP_VEH;
+         type != OBJECT_TECH  )  return ERR_WRONG_BOT;
 
     m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 

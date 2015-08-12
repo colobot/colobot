@@ -936,7 +936,7 @@ Error CTaskGoto::IsEnded()
         {
             m_physics->SetMotorSpeedX(0.0f);  // stops the advance
             m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
-            m_error = ERR_GENERIC;
+            m_error = ERR_UNKNOWN;
             return m_error;
         }
         if ( m_time >= 1.0f )

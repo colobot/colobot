@@ -180,10 +180,10 @@ bool CTaskRecover::EventProcess(const Event &event)
 Error CTaskRecover::Start()
 {
     m_bError = true;  // operation impossible
-    if ( !m_physics->GetLand() )  return ERR_RECOVER_VEH;
+    if ( !m_physics->GetLand() )  return ERR_WRONG_BOT;
 
     ObjectType type = m_object->GetType();
-    if ( type != OBJECT_MOBILErr )  return ERR_RECOVER_VEH;
+    if ( type != OBJECT_MOBILErr )  return ERR_WRONG_BOT;
 
     assert(m_object->Implements(ObjectInterfaceType::Powered));
     CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
