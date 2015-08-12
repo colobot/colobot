@@ -1504,13 +1504,13 @@ bool CPhysics::EventFrame(const Event &event)
             }
             FloorAngle(pos, tAngle);  // calculates the angle with the ground
         }
-#if 1
+
         if ( pos.y < m_water->GetLevel(m_object) )  // underwater?
         {
             h *= 0.5f;
             m_fallingHeight = 0.0f; // can't fall underwater
         }
-#endif
+
 //?     m_linMotion.terrainSpeed.x = -tAngle.z*m_linMotion.terrainForce.x*h;
 //?     m_linMotion.terrainSpeed.z =  tAngle.x*m_linMotion.terrainForce.z*h;
 //?     m_linMotion.terrainSpeed.x = -sinf(tAngle.z)*Math::PI*0.5f*m_linMotion.terrainForce.x*h;
@@ -3341,7 +3341,6 @@ void CPhysics::MotorParticle(float aTime, float rTime)
 
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS, 2.0f, 10.0f);
 
-#if 1
             pos = Math::Vector(-1.6f, -0.5f, 0.0f);
             pos = Transform(*mat, pos);
 
@@ -3369,7 +3368,6 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             dim.y = dim.x;
 
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIEJECT, 0.3f, 10.0f);
-#endif
         }
     }
 
@@ -3464,7 +3462,6 @@ void CPhysics::MotorParticle(float aTime, float rTime)
 
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS, 2.0f, 10.0f);
 
-#if 1
             pos = Math::Vector(0.0f, 1.0f, 0.0f);
             pos = Transform(*mat, pos);
 
@@ -3492,7 +3489,6 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             dim.y = dim.x;
 
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIEJECT, 0.5f, 10.0f);
-#endif
         }
     }
 

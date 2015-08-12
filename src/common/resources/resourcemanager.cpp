@@ -157,7 +157,7 @@ bool CResourceManager::RemoveDirectory(const std::string& directory)
         try
         {
             std::string path = writeDir + "/" + CleanPath(directory);
-            #ifdef PLATFORM_WINDOWS
+            #if PLATFORM_WINDOWS
             fs::remove_all(CSystemUtilsWindows::UTF8_Decode(path));
             #else
             fs::remove_all(path);
@@ -247,7 +247,7 @@ bool CResourceManager::Move(const std::string& from, const std::string& to)
         {
             std::string path_from = writeDir + "/" + CleanPath(from);
             std::string path_to = writeDir + "/" + CleanPath(to);
-            #ifdef PLATFORM_WINDOWS
+            #if PLATFORM_WINDOWS
             fs::rename(CSystemUtilsWindows::UTF8_Decode(path_from), CSystemUtilsWindows::UTF8_Decode(path_to));
             #else
             fs::rename(path_from, path_to);

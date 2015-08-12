@@ -33,7 +33,6 @@
 #include <stdio.h>
 
 
-#define ADJUST_ANGLE 0                  // 1 -> adjusts the angles of the members
 const float START_TIME = 1000.0f;       // beginning of the relative time
 
 
@@ -46,11 +45,6 @@ CMotionAnt::CMotionAnt(COldObject* object) : CMotion(object)
     m_armTimeAbs     = START_TIME;
     m_armTimeMarch   = START_TIME;
     m_armTimeAction  = START_TIME;
-    m_armTimeIndex   = 0;
-    m_armPartIndex   = 0;
-    m_armMemberIndex = 0;
-    m_armLastAction  = -1;
-    m_bArmStop = false;
     m_lastParticle = 0.0f;
 }
 
@@ -388,36 +382,6 @@ bool CMotionAnt::EventProcess(const Event &event)
         return EventFrame(event);
     }
 
-    if ( event.type == EVENT_KEY_DOWN )
-    {
-#if ADJUST_ANGLE
-        int     i;
-
-        if ( event.param == 'A' )  m_armTimeIndex++;
-        if ( m_armTimeIndex >= 3 )  m_armTimeIndex = 0;
-
-        if ( event.param == 'Q' )  m_armPartIndex++;
-        if ( m_armPartIndex >= 3 )  m_armPartIndex = 0;
-
-        if ( event.param == 'W' )  m_armMemberIndex++;
-        if ( m_armMemberIndex >= 3 )  m_armMemberIndex = 0;
-
-        i  = m_armMemberIndex*3;
-        i += m_armPartIndex*3*3;
-        i += m_armTimeIndex*3*3*3;
-//?     i += 3*3*3*3;
-
-        if ( event.param == 'E' )  m_armAngles[i+0] += 5;
-        if ( event.param == 'D' )  m_armAngles[i+0] -= 5;
-        if ( event.param == 'R' )  m_armAngles[i+1] += 5;
-        if ( event.param == 'F' )  m_armAngles[i+1] -= 5;
-        if ( event.param == 'T' )  m_armAngles[i+2] += 5;
-        if ( event.param == 'G' )  m_armAngles[i+2] -= 5;
-
-        if ( event.param == 'Y' )  m_bArmStop = !m_bArmStop;
-#endif
-    }
-
     return true;
 }
 
@@ -489,10 +453,6 @@ bool CMotionAnt::EventFrame(const Event &event)
         {
             if ( i < 3 )  prog = Math::Mod(m_armMember+(2.0f-(i%3))*0.33f+0.0f, 1.0f);
             else          prog = Math::Mod(m_armMember+(2.0f-(i%3))*0.33f+0.3f, 1.0f);
-            if ( m_bArmStop )
-            {
-                prog = static_cast< float >(m_armTimeIndex/3.0f);
-            }
             if ( prog < 0.33f )  // t0..t1 ?
             {
                 prog = prog/0.33f;  // 0..1
@@ -574,15 +534,6 @@ bool CMotionAnt::EventFrame(const Event &event)
             m_object->SetPartRotationZ(3+3*i+2, Math::Smooth(m_object->GetPartRotationZ(3+3*i+2), Math::PropAngle( tSt[8],  tNd[8], prog), time));
         }
     }
-
-#if ADJUST_ANGLE
-    if ( m_object->GetSelect() )
-    {
-        char s[100];
-        sprintf(s, "A:time=%d Q:part=%d W:member=%d", m_armTimeIndex, m_armPartIndex, m_armMemberIndex);
-        m_engine->SetInfoText(4, s);
-    }
-#endif
 
     if ( m_actionType == MAS_PREPARE )  // prepares the shooting?
     {
@@ -832,4 +783,3 @@ bool CMotionAnt::EventFrame(const Event &event)
 
     return true;
 }
-

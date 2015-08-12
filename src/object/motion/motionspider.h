@@ -61,14 +61,7 @@ protected:
 protected:
     float       m_armMember;
     float       m_armTimeAbs;
-    float       m_armTimeMarch;
     float       m_armTimeAction;
     short       m_armAngles[3*4*4*3*3 + 3*4*4*6];
-    int         m_armTimeIndex;
-    int         m_armPartIndex;
-    int         m_armMemberIndex;
-    int         m_armLastAction;
-    bool        m_bArmStop;
     float       m_lastParticle;
 };
-

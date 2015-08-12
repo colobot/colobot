@@ -326,15 +326,9 @@ bool CMotionToto::EventFrame(const Event &event)
     }
     else
     {
-#if 0
-        distance = 30.0f-progress*24.5f;  // remoteness
-        shift    = 18.0f-progress*15.4f;  // shift is left
-        verti    = 10.0f-progress* 9.6f;  // shift at the top
-#else
         distance = 30.0f-progress*18.0f;  // remoteness
         shift    = 18.0f-progress*11.0f;  // shift is left
         verti    = 10.0f-progress* 8.0f;  // shift at the top
-#endif
 
         if ( m_actionType == -1 &&
              (m_type == OBJECT_HUMAN    ||
@@ -481,7 +475,6 @@ bool CMotionToto::EventFrame(const Event &event)
     aAntenna.z -= angle;  // leans forward
 
     // Calculates the residual motion.
-#if 1
     vibLin.y += (sinf(m_time*2.00f)*0.5f+
                  sinf(m_time*2.11f)*0.2f)*(1.0f-progress);
 
@@ -496,7 +489,6 @@ bool CMotionToto::EventFrame(const Event &event)
     vibCir.y += (sinf(m_time*Math::PI* 1.07f)*(Math::PI/ 10.0f)+
                  sinf(m_time*Math::PI* 1.19f)*(Math::PI/ 17.0f)+
                  sinf(m_time*Math::PI* 1.57f)*(Math::PI/ 31.0f))*(1.0f-progress);
-#endif
 
     // Calculates the animations in action.
     if ( m_actionType == MT_ERROR )  // no-no?
@@ -851,4 +843,3 @@ void CMotionToto::SetLinkType(ObjectType type)
 {
     m_type = type;
 }
-

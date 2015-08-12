@@ -2662,20 +2662,6 @@ void CEdit::Insert(char character)
             MoveChar(-1, false, false);
             MoveChar(-1, false, false);
         }
-#if 0
-        else if ( character == '(' )
-        {
-            InsertOne(character);
-            InsertOne(')');
-            MoveChar(-1, false, false);
-        }
-        else if ( character == '[' )
-        {
-            InsertOne(character);
-            InsertOne(']');
-            MoveChar(-1, false, false);
-        }
-#endif
         else if ( character == '\t' )
         {
             for ( i=0 ; i<m_engine->GetEditIndentValue() ; i++ )

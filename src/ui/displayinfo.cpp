@@ -774,14 +774,6 @@ void CDisplayInfo::UpdateIndexButton()
         }
     }
 
-#if 0
-    button = (CButton*)pw->SearchControl(EVENT_HYPER_COPY);
-    if ( button != 0 )
-    {
-        button->SetState(STATE_VISIBLE, m_index==SATCOM_LOADING);
-    }
-#endif
-
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
     if ( edit != 0 )
     {

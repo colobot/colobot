@@ -222,26 +222,6 @@ bool CAuto::CreateInterface(bool bSelect)
         pw->CreateButton(pos, ddim, 12, EVENT_OBJECT_DELETE);
     }
 
-#if 0
-    pos.x = ox+sx*12.4f;
-    pos.y = oy+sy*1;
-    pw->CreateButton(pos, dim, 63, EVENT_OBJECT_BHELP);
-
-    pos.x = ox+sx*12.4f;
-    pos.y = oy+sy*0;
-    pw->CreateButton(pos, dim, 19, EVENT_OBJECT_HELP);
-
-    if ( m_main->GetSceneSoluce() )
-    {
-        pos.x = ox+sx*13.4f;
-        pos.y = oy+sy*1;
-        pw->CreateButton(pos, dim, 20, EVENT_OBJECT_SOLUCE);
-    }
-
-    pos.x = ox+sx*13.4f;
-    pos.y = oy+sy*0;
-    pw->CreateButton(pos, dim, 10, EVENT_OBJECT_DESELECT);
-#else
     pos.x = ox+sx*12.3f;
     pos.y = oy+sy*-0.1f;
     ddim.x = dim.x*1.0f;
@@ -263,7 +243,6 @@ bool CAuto::CreateInterface(bool bSelect)
     pos.x = ox+sx*13.4f;
     pos.y = oy+sy*0;
     pw->CreateButton(pos, dim, 10, EVENT_OBJECT_DESELECT);
-#endif
 
     pos.x = ox+sx*14.9f;
     pos.y = oy+sy*0;

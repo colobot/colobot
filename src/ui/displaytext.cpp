@@ -130,22 +130,6 @@ void CDisplayText::DisplayError(Error err, Math::Vector goal, float height,
 {
     if ( err == ERR_OK )  return;
 
-#if 0
-    type = TT_INFO;
-    if ( err < INFO_FIRST )
-    {
-        type = TT_ERROR;
-    }
-    if ( err == ERR_TOWER_POWER    ||
-         err == ERR_RESEARCH_POWER ||
-         err == ERR_ENERGY_EMPTY   ||
-         err == ERR_LABO_NULL      ||
-         err == ERR_NUCLEAR_EMPTY  ||
-         err == ERR_CONVERT_EMPTY  )
-    {
-        type = TT_WARNING;
-    }
-#else
     TextType type = TT_WARNING;
     if ( err >= INFO_FIRST )
     {
@@ -160,7 +144,6 @@ void CDisplayText::DisplayError(Error err, Math::Vector goal, float height,
     {
         type = TT_ERROR;
     }
-#endif
 
     std::string text;
     GetResource(RES_ERR, err, text);
@@ -572,4 +555,3 @@ CObject* CDisplayText::SearchToto()
 }
 
 } // namespace Ui
-

@@ -408,7 +408,6 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_GPROGRESS]    = TR("Still working ...");
     stringsEvent[EVENT_OBJECT_GRADAR]       = TR("Number of insects detected");
     stringsEvent[EVENT_OBJECT_GINFO]        = TR("Transmitted information");
-    stringsEvent[EVENT_OBJECT_COMPASS]      = TR("Compass");
     stringsEvent[EVENT_OBJECT_MAPZOOM]      = TR("Zoom mini-map");
     stringsEvent[EVENT_OBJECT_CAMERA]       = TR("Camera (\\key camera;)");
     stringsEvent[EVENT_OBJECT_CAMERAleft]   = TR("Camera to left");

@@ -230,13 +230,6 @@ CShortcut* CInterface::CreateShortcut(Math::Point pos, Math::Point dim, int icon
     return CreateControl<CShortcut>(pos, dim, icon, eventMsg);
 }
 
-// Creates a new compass.
-
-CCompass* CInterface::CreateCompass(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
-{
-    return CreateControl<CCompass>(pos, dim, icon, eventMsg);
-}
-
 // Creates a new target.
 
 CTarget* CInterface::CreateTarget(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)

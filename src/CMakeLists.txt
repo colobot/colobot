@@ -219,7 +219,6 @@ set(BASE_SOURCES
     ui/controls/button.cpp
     ui/controls/check.cpp
     ui/controls/color.cpp
-    ui/controls/compass.cpp
     ui/controls/control.cpp
     ui/controls/edit.cpp
     ui/controls/editvalue.cpp

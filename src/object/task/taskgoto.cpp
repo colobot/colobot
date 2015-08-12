@@ -380,23 +380,6 @@ bool CTaskGoto::EventProcess(const Event &event)
             return true;
         }
 
-#if 0
-        pos = m_object->GetPosition();
-        a = m_object->GetRotationY();
-        g = Math::RotateAngle(m_goal.x-pos.x, pos.z-m_goal.z);  // CW !
-        cirSpeed = Math::Direction(a, g)*1.0f;
-        if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
-        if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
-
-        dist = Math::DistanceProjected(m_goal, pos);
-        linSpeed = dist/(m_physics->GetLinStopLength()*1.5f);
-        if ( linSpeed >  1.0f )  linSpeed =  1.0f;
-
-        if ( dist < 20.0f && fabs(cirSpeed) >= 0.5f )
-        {
-            linSpeed = 0.0f;  // turns first, then advance
-        }
-#else
         pos = m_object->GetPosition();
 
         rot.x = m_goal.x-pos.x;
@@ -435,7 +418,6 @@ bool CTaskGoto::EventProcess(const Event &event)
         {
             linSpeed = 0.0f;  // turns first, then advance
         }
-#endif
 
         m_physics->SetMotorSpeedZ(cirSpeed);  // turns left / right
         m_physics->SetMotorSpeedX(linSpeed);  // advance
@@ -1343,51 +1325,6 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
 
 void CTaskGoto::ComputeRepulse(Math::Point &dir)
 {
-#if 0
-    Math::Vector    iPos, oPos;
-    Math::Point     repulse;
-    CObject     *pObj;
-    float       dist, iRadius, oRadius;
-    int         i;
-
-    dir.x = 0.0f;
-    dir.y = 0.0f;
-
-    m_object->GetCrashSphere(0, iPos, iRadius);
-
-    for ( i=0 ; i<1000000 ; i++ )
-    {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-
-        if ( pObj == m_object )  continue;
-        if (IsObjectBeingTransported(pObj))  continue;
-
-        oPos = pObj->GetPosition();
-        dist = Math::Distance(oPos, m_goalObject);
-        if ( dist <= 1.0f )  continue;
-
-        pObj->GetGlobalSphere(oPos, oRadius);
-        oRadius += iRadius+m_physics->GetLinStopLength()*1.1f;
-        dist = Math::DistanceProjected(oPos, iPos);
-        if ( dist <= oRadius )
-        {
-            repulse.x = iPos.x-oPos.x;
-            repulse.y = iPos.z-oPos.z;
-
-//?         dist = 0.2f-(0.2f*dist/oRadius);
-            dist = powf(dist/oRadius, 2.0f);
-            dist = 0.2f-0.2f*dist;
-            repulse.x *= dist;
-            repulse.y *= dist;
-//?         repulse.x /= dist;
-//?         repulse.y /= dist;
-
-            dir.x += repulse.x;
-            dir.y += repulse.y;
-        }
-    }
-#else
     ObjectType  iType, oType;
     Math::Point     repulse;
     float       gDist, add, addi, fac, dist;
@@ -1549,7 +1486,6 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
             }
         }
     }
-#endif
 }
 
 // Calculates the force of vertical repulsion according to barriers.
@@ -2167,4 +2103,3 @@ bool CTaskGoto::BitmapTestDot(int rank, int x, int y)
 
     return m_bmArray[rank*m_bmLine*m_bmSize + m_bmLine*y + x/8] & (1<<x%8);
 }
-

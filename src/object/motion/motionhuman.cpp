@@ -41,7 +41,6 @@
 
 
 
-#define ADJUST_ANGLE 0       // 1 -> adjusts the angles of the members
 const int ADJUST_ACTION = (3*3*3*3*MH_SPEC+3*3*3*MHS_SATCOM);
 
 const float START_TIME = 1000.0f;       // beginning of the relative time
@@ -421,7 +420,6 @@ void CMotionHuman::CreatePhysics(ObjectType type)
     int member_swim[] =
     {
     //  x1,y1,z1,   x2,y2,z2,   x3,y3,z3,
-#if 1
         130,-70,200,    10,20,55,   0,0,0,      // arms/thighs/-
         115,-125,0, -5,0,-110,  0,0,0,      // forearm/legs/-
         0,0,0,      -5,10,-5,   0,0,0,      // hands/feet/-
@@ -433,33 +431,6 @@ void CMotionHuman::CreatePhysics(ObjectType type)
         130,-100,220,5,0,0,     0,0,0,      // arms/thighs/-
         150,5,0,    -5,0,-15,   0,0,0,      // forearm/legs/-
         0,0,0,      -5,30,-20,  0,0,0,      // hands/feet/-
-#endif
-#if 0
-        130,-70,200,5,0,0,      0,0,0,      // arms/thighs/-
-        115,-125,0, -5,0,-15,   0,0,0,      // forearm/legs/-
-        0,0,0,      -5,30,-20,  0,0,0,      // hands/feet/-
-                                            //
-        130,-95,115,    10,20,55,   0,0,0,      // arms/thighs/-
-        75,-50,25,  -5,0,-110,  0,0,0,      // forearm/legs/-
-        0,0,0,      -5,10,-5,   0,0,0,      // hands/feet/-
-                                            //
-        130,-100,220,   55,5,5,     0,0,0,      // arms/thighs/-
-        150,5,0,    -5,0,-15,   0,0,0,      // forearm/legs/-
-        0,0,0,      -5,5,-30,   0,0,0,      // hands/feet/-
-#endif
-#if 0
-        130,-70,200,    55,5,5,     0,0,0,      // arms/thighs/-
-        115,-125,0, -5,0,-15,   0,0,0,      // forearm/legs/-
-        0,0,0,      -5,5,-30,   0,0,0,      // hands/feet/-
-                                            //
-        130,-95,115,    5,0,0,      0,0,0,      // arms/thighs/-
-        75,-50,25,  -5,0,-15,   0,0,0,      // forearm/legs/-
-        0,0,0,      -5,30,-20,  0,0,0,      // hands/feet/-
-                                            //
-        130,-100,220,   10,20,55,   0,0,0,      // arms/thighs/-
-        150,5,0,    -5,0,-110,  0,0,0,      // forearm/legs/-
-        0,0,0,      -5,10,-5,   0,0,0,      // hands/feet/-
-#endif
     };
 
     int member_spec[] =
@@ -630,43 +601,6 @@ bool CMotionHuman::EventProcess(const Event &event)
         return EventFrame(event);
     }
 
-    if ( event.type == EVENT_KEY_DOWN )
-    {
-#if ADJUST_ANGLE
-        int     i;
-
-        if ( event.param == 'A' )  m_armTimeIndex++;
-        if ( m_armTimeIndex >= 3 )  m_armTimeIndex = 0;
-
-        if ( event.param == 'Q' )  m_armPartIndex++;
-        if ( m_armPartIndex >= 3 )  m_armPartIndex = 0;
-
-        if ( event.param == 'W' )  m_armMemberIndex++;
-        if ( m_armMemberIndex >= 3 )  m_armMemberIndex = 0;
-
-        i  = m_armMemberIndex*3;
-        i += m_armPartIndex*3*3;
-        i += m_armTimeIndex*3*3*3;
-        i += ADJUST_ACTION;
-
-        if ( event.param == 'E' )  m_armAngles[i+0] += 5;
-        if ( event.param == 'D' )  m_armAngles[i+0] -= 5;
-        if ( event.param == 'R' )  m_armAngles[i+1] += 5;
-        if ( event.param == 'F' )  m_armAngles[i+1] -= 5;
-        if ( event.param == 'T' )  m_armAngles[i+2] += 5;
-        if ( event.param == 'G' )  m_armAngles[i+2] -= 5;
-
-        if ( event.param == 'Y' )  m_bArmStop = !m_bArmStop;
-
-        if ( event.param == 'Y' )
-        {
-            char s[100];
-            sprintf(s, "index dans table = %d %d %d\n", i, i+9, i+18);
-            OutputDebugString(s);
-        }
-#endif
-    }
-
     return true;
 }
 
@@ -722,40 +656,10 @@ bool CMotionHuman::EventFrame(const Event &event)
 
     bSwim = m_physics->GetSwim();
 
-#if 0
     rot = m_physics->GetCirMotionY(MO_MOTSPEED);
-    s = m_physics->GetLinMotionX(MO_REASPEED)*2.0f;
-    a = m_physics->GetLinMotionX(MO_TERSPEED);
-    if ( a < 0.0f )  // rises?
-    {
-        if ( s > 0.0f && s <  20.0f )  s = 20.0f;  // moving slowly?
-//?     if ( s < 0.0f && s > -10.0f )  s =  0.0f;  // falling slowly?
-    }
-    if ( a > 0.0f && !bSwim )  // falls?
-    {
-        if ( s > 0.0f && s <  10.0f )  s =   0.0f;  // moving slowly?
-//?     if ( s < 0.0f && s >  -5.0f )  s =  -5.0f;  // falling slowly?
-    }
-    a = fabs(rot*12.0f);
-
-    if ( !m_physics->GetLand() && !bSwim )  // in flight?
-    {
-        s = 0.0f;
-    }
-
-    if (IsObjectCarryingCargo(m_object))  // carries something?
-    {
-        s *= 1.3f;
-    }
-#else
-    rot = m_physics->GetCirMotionY(MO_MOTSPEED);
-#if 0
-    s = m_physics->GetLinMotionX(MO_REASPEED);
-#else
     a = m_physics->GetLinMotionX(MO_REASPEED);
     s = m_physics->GetLinMotionX(MO_MOTSPEED)*0.2f;
     if ( fabs(a) > fabs(s) )  s = a;  // the highest value
-#endif
     a = m_physics->GetLinMotionX(MO_TERSPEED);
     if ( a < 0.0f )  // rises?
     {
@@ -779,7 +683,6 @@ bool CMotionHuman::EventFrame(const Event &event)
     {
         s *= 1.3f;
     }
-#endif
 
     m_time += event.rTime;
     m_armTimeAbs += event.rTime;
@@ -1028,7 +931,6 @@ bool CMotionHuman::EventFrame(const Event &event)
             bb = sinf(m_time*3.1f)*aa;  tSt[8] += bb;  tNd[8] += bb;
         }
 
-#if 1
         if ( i%2 == 1           &&  // leg?
              m_actionType == -1 )   // no special action?
         {
@@ -1093,7 +995,6 @@ bool CMotionHuman::EventFrame(const Event &event)
             tSt[8] -= aa;
             tNd[8] -= aa;    // increases the angle Z of the foot
         }
-#endif
 
         if ( m_actionType == MHS_DEADw )   // drowned?
         {
@@ -1141,15 +1042,6 @@ bool CMotionHuman::EventFrame(const Event &event)
             m_object->SetPartRotationZ(2+3*i+2, Math::Smooth(m_object->GetPartRotationZ(2+3*i+2), Math::PropAngle( tSt[8],  tNd[8], prog), time));
         }
     }
-
-#if ADJUST_ANGLE
-    if ( m_object->GetSelect() )
-    {
-        char s[100];
-        sprintf(s, "A:time=%d Q:part=%d W:member=%d", m_armTimeIndex, m_armPartIndex, m_armMemberIndex);
-        m_engine->SetInfoText(4, s);
-    }
-#endif
 
     // calculates the height lowering as a function
     // of the position of the legs.

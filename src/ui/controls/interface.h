@@ -32,7 +32,6 @@
 #include "ui/controls/button.h"
 #include "ui/controls/check.h"
 #include "ui/controls/color.h"
-#include "ui/controls/compass.h"
 #include "ui/controls/control.h"
 #include "ui/controls/edit.h"
 #include "ui/controls/editvalue.h"
@@ -80,7 +79,6 @@ public:
     CSlider*    CreateSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CEnumSlider* CreateEnumSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CShortcut*  CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CCompass*   CreateCompass(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CTarget*    CreateTarget(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CMap*       CreateMap(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 

@@ -233,16 +233,6 @@ CGauge* CWindow::CreateGauge(Math::Point pos, Math::Point dim, int icon, EventTy
     return CreateControl<CGauge>(pos, dim, icon, eventMsg);
 }
 
-// Creates a new compass.
-
-CCompass* CWindow::CreateCompass(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
-{
-    if (eventMsg == EVENT_NULL)
-        eventMsg = GetUniqueEventType();
-
-    return CreateControl<CCompass>(pos, dim, icon, eventMsg);
-}
-
 // Creates a new target.
 
 CTarget* CWindow::CreateTarget(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)

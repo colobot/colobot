@@ -60,7 +60,6 @@ protected:
     float       m_armTimeAbs;
     float       m_armMember;
     float       m_canonTime;
-    float       m_lastTimeCanon;
     Math::Vector    m_wheelLastPos;
     Math::Vector    m_wheelLastAngle;
     Math::Vector    m_posKey;

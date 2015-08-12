@@ -359,18 +359,6 @@ bool CAutoFactory::EventProcess(const Event &event)
             {
                 m_lastParticle = m_time;
 
-#if 0
-                pos = m_cargoPos;
-                pos.x += (Math::Rand()-0.5f)*20.0f;
-                pos.z += (Math::Rand()-0.5f)*20.0f;
-                pos.y += 1.0f;
-                speed.x = (Math::Rand()-0.5f)*12.0f;
-                speed.z = (Math::Rand()-0.5f)*12.0f;
-                speed.y = Math::Rand()*12.0f;
-                dim.x = Math::Rand()*12.0f+10.0f;
-                dim.y = dim.x;
-                m_particle->CreateParticle(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
-#else
                 mat = m_object->GetWorldMatrix(0);
                 pos = Math::Vector(-12.0f, 20.0f, -4.0f);  // position of chimney
                 pos = Math::Transform(*mat, pos);
@@ -383,7 +371,6 @@ bool CAutoFactory::EventProcess(const Event &event)
                 dim.x = Math::Rand()*1.5f+1.0f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE3, 4.0f);
-#endif
             }
         }
         else

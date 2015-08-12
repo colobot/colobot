@@ -64,7 +64,6 @@ CMotionVehicle::CMotionVehicle(COldObject* object) : CMotion(object)
     m_armTimeAbs    = 1000.0f;
     m_armMember     = 1000.0f;
     m_canonTime     = 0.0f;
-    m_lastTimeCanon = 0.0f;
     m_wheelLastPos   = Math::Vector(0.0f, 0.0f, 0.0f);
     m_wheelLastAngle = Math::Vector(0.0f, 0.0f, 0.0f);
     m_posKey         = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -1838,27 +1837,6 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
             sinf(m_canonTime*1.3f)*0.15f+
             sinf(m_canonTime*2.7f)*0.05f;
     m_object->SetPartRotationX(2, angle);
-
-#if 0
-    m_lastTimeCanon -= event.rTime;
-    if ( m_lastTimeCanon <= 0.0f )
-    {
-        m_lastTimeCanon = m_engine->ParticuleAdapt(0.5f+Math::Rand()*0.5f);
-
-        pos = m_object->GetPosition();
-        pos.y += 8.0f;
-        speed.y = 7.0f+Math::Rand()*3.0f;
-        speed.x = (Math::Rand()-0.5f)*2.0f;
-        speed.z = 2.0f+Math::Rand()*2.0f;
-        if ( Math::Rand() < 0.5f )  speed.z = -speed.z;
-        mat = m_object->GetRotateMatrix(0);
-        speed = Transform(*mat, speed);
-        dim.x = Math::Rand()*0.1f+0.1f;
-        if ( bOnBoard )  dim.x *= 0.4f;
-        dim.y = dim.x;
-        m_particule->CreateParticule(pos, speed, dim, PARTIORGANIC2, 2.0f, 10.0f);
-    }
-#endif
 
     return true;
 }

@@ -944,7 +944,6 @@ void CMap::DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point
 
     n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-#if 1
     vertex[0] = Gfx::VertexTex2(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,uv1.y));
     vertex[1] = Gfx::VertexTex2(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv1.x,uv2.y));
     vertex[2] = Gfx::VertexTex2(Math::Vector(p5.x, p5.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
@@ -952,13 +951,6 @@ void CMap::DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point
     vertex[4] = Gfx::VertexTex2(Math::Vector(p4.x, p4.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
 
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 5);
-#else
-    vertex[0] = Gfx::VertexTex2(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv1.x,uv1.y));
-    vertex[1] = Gfx::VertexTex2(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv1.x,uv2.y));
-    vertex[2] = Gfx::VertexTex2(Math::Vector(p4.x, p4.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
-
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLES, vertex, 3);
-#endif
     m_engine->AddStatisticTriangle(3);
 }
 

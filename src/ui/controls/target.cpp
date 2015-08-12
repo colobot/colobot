@@ -55,40 +55,6 @@ bool CTarget::Create(Math::Point pos, Math::Point dim, int icon, EventType event
 
 bool CTarget::EventProcess(const Event &event)
 {
-#if 0
-    if ( (m_state & STATE_VISIBLE) == 0 )  return true;
-    if ( m_state & STATE_DEAD )  return true;
-
-    CControl::EventProcess(event);
-
-    if ( event.type == EVENT_MOUSE_MOVE )
-    {
-        if ( CControl::Detect(event.mousePos) )
-        {
-            m_engine->SetMouseType(Gfx::ENG_MOUSE_TARGET);
-            Event newEvent = event;
-            newEvent.type = m_eventType;
-            m_event->AddEvent(newEvent);
-            return false;
-        }
-    }
-
-    if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-         event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT &&
-         (m_state & STATE_VISIBLE)        &&
-         (m_state & STATE_ENABLE)         )
-    {
-        if ( CControl::Detect(event.mousePos) )
-        {
-            Event newEvent = event;
-            newEvent.type = EVENT_OBJECT_FIRE;
-            m_event->AddEvent(newEvent);
-            return false;
-        }
-    }
-
-    return true;
-#else
     CObject*    pObj;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return true;
@@ -134,7 +100,6 @@ bool CTarget::EventProcess(const Event &event)
     }
 
     return true;
-#endif
 }
 
 
@@ -150,32 +115,18 @@ void CTarget::Draw()
 
 bool CTarget::GetTooltip(Math::Point pos, std::string &name)
 {
-#if 0
-    if ( (m_state&STATE_VISIBLE) && Detect(pos) )  // in the window?
-    {
-        strcpy(name, m_tooltip);
-        return true;  // does not detect objects below!
-    }
-
-    return false;
-#else
-//? CObject*    pObj;
-
     if ( (m_state & STATE_VISIBLE) == 0 )  return false;
 
     if ( (m_state&STATE_VISIBLE) && Detect(pos) )  // in the window?
     {
-//?     pObj = DetectFriendObject(pos);
-//?     if ( pObj == 0 )
         if ( !m_main->GetFriendAim() )
         {
-             m_tooltip = name;
+            m_tooltip = name;
             return true;  // does not detect objects below!
         }
     }
 
     return false;
-#endif
 }
 
 

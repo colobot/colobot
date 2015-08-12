@@ -44,14 +44,5 @@ protected:
     float       m_armMember;
     float       m_armTimeAbs;
     float       m_armTimeMarch;
-    float       m_armTimeAction;
     short       m_armAngles[3*3*3*3*10];
-    int         m_armTimeIndex;
-    int         m_armPartIndex;
-    int         m_armMemberIndex;
-    int         m_armLastAction;
-    int         m_specAction;
-    float       m_specTime;
-    bool        m_bArmStop;
 };
-

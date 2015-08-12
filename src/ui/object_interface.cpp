@@ -677,35 +677,6 @@ bool CObjectInterface::EventProcess(const Event &event)
             m_main->ResetObject();  // reset all objects
             UpdateInterface();
         }
-
-#if 0
-        if ( event.param == 'T' )
-        {
-            Math::Vector    p1, p2;
-            float       h;
-            p1 = m_object->GetPosition();
-            h = m_terrain->GetFloorLevel(p1);
-            p2 = p1;
-            p1.x -= 20.0f;
-            p1.z -= 20.0f;
-            p2.x += 20.0f;
-            p2.z += 20.0f;
-            m_terrain->Terraform(p1, p2, h+1.0f);
-        }
-        if ( event.param == 'R' )
-        {
-            Math::Vector    p1, p2;
-            float       h;
-            p1 = m_object->GetPosition();
-            h = m_terrain->GetFloorLevel(p1);
-            p2 = p1;
-            p1.x -= 20.0f;
-            p1.z -= 20.0f;
-            p2.x += 20.0f;
-            p2.z += 20.0f;
-            m_terrain->Terraform(p1, p2, h-1.0f);
-        }
-#endif
     }
 
     if ( err != ERR_OK )
@@ -1343,26 +1314,6 @@ bool CObjectInterface::CreateInterface(bool bSelect)
 
     if ( m_object->GetToy() && !m_object->GetManual() )
     {
-#if 0
-        ddim.x = dim.x*0.66f;
-        ddim.y = dim.y*0.66f;
-        pos.x = ox+sx*10.0f;
-        pos.y = oy+sy*0.66f;
-        pb = pw->CreateButton(pos, ddim, 55, EVENT_OBJECT_CAMERAleft);
-        pb->SetImmediat(true);
-        pos.x = ox+sx*(10.0f+0.66f*2.0f);
-        pos.y = oy+sy*0.66f;
-        pb = pw->CreateButton(pos, ddim, 48, EVENT_OBJECT_CAMERAright);
-        pb->SetImmediat(true);
-        pos.x = ox+sx*(10.0f+0.66f);
-        pos.y = oy+sy*(0.66f*2.0f);
-        pb = pw->CreateButton(pos, ddim, 49, EVENT_OBJECT_CAMERAnear);
-        pb->SetImmediat(true);
-        pos.x = ox+sx*(10.0f+0.66f);
-        pos.y = oy+sy*0.0f;
-        pb = pw->CreateButton(pos, ddim, 50, EVENT_OBJECT_CAMERAaway);
-        pb->SetImmediat(true);
-#else
         pos.x = ox+sx*9.0f;
         pos.y = oy+sy*0;
         pb = pw->CreateButton(pos, dim, 55, EVENT_OBJECT_CAMERAleft);
@@ -1379,7 +1330,6 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pos.y = oy+sy*0;
         pb = pw->CreateButton(pos, dim, 50, EVENT_OBJECT_CAMERAaway);
         pb->SetImmediat(true);
-#endif
     }
 
     pos.x = ox+sx*13.4f;
@@ -1462,23 +1412,6 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pw->CreateGauge(pos, ddim, 3, EVENT_OBJECT_GSHIELD);
     }
 
-#if 0
-    if ( false )
-    {
-        pos.x = 505.0f/640.0f;
-        pos.y =   3.0f/480.0f;
-        ddim.x = 33.0f/640.0f;
-        ddim.y = 33.0f/480.0f;
-        pw->CreateCompass(pos, ddim, 0, EVENT_OBJECT_COMPASS);
-
-        pc = (CCompass*)pw->SearchControl(EVENT_OBJECT_COMPASS);
-        if ( pc != 0 )
-        {
-            pc->SetState(STATE_VISIBLE, m_main->GetShowMap());
-        }
-    }
-#endif
-
     if ( type == OBJECT_MOBILEfc ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEwc ||
@@ -1541,12 +1474,11 @@ void CObjectInterface::UpdateInterface(float rTime)
 {
     CWindow*    pw;
     CButton*    pb;
-    CCompass*   pc;
     CGroup*     pgr;
     CTarget*    ptg;
     Math::Vector    pos, hPos;
     Math::Point     ppos;
-    float       angle, range;
+    float       range;
     int         icon;
     bool        bOnBoard;
 
@@ -1643,15 +1575,6 @@ void CObjectInterface::UpdateInterface(float rTime)
         pg->SetIcon(icon);
     }
 
-    pc = static_cast< CCompass* >(pw->SearchControl(EVENT_OBJECT_COMPASS));
-    if ( pc != 0 )
-    {
-        angle = -(m_object->GetRotationY()+Math::PI/2.0f);
-        pc->SetDirection(angle);
-
-        pc->SetState(STATE_VISIBLE, m_main->GetShowMap());
-    }
-
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_OBJECT_REC));
     if ( pb != 0 )
     {
@@ -1672,23 +1595,11 @@ void CObjectInterface::UpdateInterface(float rTime)
     {
         if ( bOnBoard )
         {
-#if 0
-            angle = m_object->GetGunGoalV();
-            if ( m_object->GetType() != OBJECT_MOBILErc )
-            {
-                angle += 10.0f*Math::PI/360.0f;
-            }
-            ppos.x = 0.5f-(64.0f/640.0f)/2.0f;
-            ppos.y = 0.5f-(64.0f/480.0f)/2.0f;
-            ppos.y += sinf(angle)*0.6f;
-            pgr->SetPos(ppos);
-#else
             ppos.x = 0.50f-(64.0f/640.0f)/2.0f;
             ppos.y = 0.50f-(64.0f/480.0f)/2.0f;
             ppos.x += m_object->GetGunGoalH()/2.0f;
             ppos.y += m_object->GetGunGoalV()/1.3f;
             pgr->SetPos(ppos);
-#endif
             pgr->SetState(STATE_VISIBLE, !m_main->GetFriendAim());
         }
         else

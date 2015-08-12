@@ -217,18 +217,6 @@ bool CAutoPowerStation::EventProcess(const Event &event)
         dim.y = 1.5f;
         m_particle->CreateParticle(ppos, speed, dim, Gfx::PARTIBLITZ, 1.0f, 0.0f, 0.0f);
 
-#if 0
-        ppos = pos;
-        ppos.y += 1.0f;
-        ppos.x += (Math::Rand()-0.5f)*3.0f;
-        ppos.z += (Math::Rand()-0.5f)*3.0f;
-        speed.x = 0.0f;
-        speed.z = 0.0f;
-        speed.y = 2.5f+Math::Rand()*6.0f;
-        dim.x = Math::Rand()*1.5f+1.0f;
-        dim.y = dim.x;
-        m_particle->CreateParticle(ppos, speed, dim, Gfx::PARTISMOKE3, 4.0f);
-#else
         ppos = pos;
         ppos.y += 1.0f;
         ppos.x += (Math::Rand()-0.5f)*3.0f;
@@ -239,7 +227,6 @@ bool CAutoPowerStation::EventProcess(const Event &event)
         dim.x = Math::Rand()*1.0f+0.6f;
         dim.y = dim.x;
         m_particle->CreateParticle(ppos, speed, dim, Gfx::PARTIVAPOR, 3.0f);
-#endif
     }
 
     if ( big < 0.0f )  big = 0.0f;

@@ -142,9 +142,7 @@ bool CButton::EventProcess(const Event &event)
 void CButton::Draw()
 {
     Math::Point pos, dim, uv1, uv2;
-#if !_NEWLOOK
     float   dp;
-#endif
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
@@ -168,7 +166,6 @@ void CButton::Draw()
 
     CControl::Draw();
 
-#if !_NEWLOOK
     if ( m_name[0] != 0                &&  // button with the name?
          (m_state & STATE_CARD  ) == 0 &&
          (m_state & STATE_SIMPLY) == 0 )
@@ -205,7 +202,6 @@ void CButton::Draw()
         pos.x = m_pos.x + m_dim.x - 5.0f / 640.0f - 3.0f / 640.0f;
         DrawIcon(pos, dim, uv1, uv2, 0.0f);
     }
-#endif
 }
 
 
@@ -237,4 +233,3 @@ bool CButton::GetRepeat()
 }
 
 }
-

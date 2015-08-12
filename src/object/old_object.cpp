@@ -66,26 +66,10 @@
 #include <iomanip>
 
 
-
-#define ADJUST_ONBOARD  0       // 1 -> adjusts the camera ONBOARD
-#define ADJUST_ARM  0           // 1 -> adjusts the manipulator arm
 const float VIRUS_DELAY     = 60.0f;        // duration of virus infection
 const float LOSS_SHIELD     = 0.24f;        // loss of the shield by shot
 const float LOSS_SHIELD_H   = 0.10f;        // loss of the shield for humans
 const float LOSS_SHIELD_M   = 0.02f;        // loss of the shield for the laying
-
-#if ADJUST_ONBOARD
-static float debug_x = 0.0f;
-static float debug_y = 0.0f;
-static float debug_z = 0.0f;
-#endif
-
-#if ADJUST_ARM
-static float debug_arm1 = 0.0f;
-static float debug_arm2 = 0.0f;
-static float debug_arm3 = 0.0f;
-#endif
-
 
 // Object's constructor.
 
@@ -213,27 +197,6 @@ void COldObject::DeleteObject(bool bAll)
 
     if ( !bAll )
     {
-#if 0
-        type = m_camera->GetType();
-        if ( (type == Gfx::CAM_TYPE_BACK   ||
-              type == Gfx::CAM_TYPE_FIX    ||
-              type == Gfx::CAM_TYPE_EXPLO  ||
-              type == Gfx::CAM_TYPE_ONBOARD) &&
-             m_camera->GetControllingObject() == this )
-        {
-            obj = m_main->SearchNearest(GetPosition(), this);
-            if ( obj == 0 )
-            {
-                m_camera->SetControllingObject(0);
-                m_camera->SetType(Gfx::CAM_TYPE_FREE);
-            }
-            else
-            {
-                m_camera->SetControllingObject(obj);
-                m_camera->SetType(Gfx::CAM_TYPE_BACK);
-            }
-        }
-#endif
         m_engine->GetPyroManager()->CutObjectLink(this);
 
         if ( m_bSelect )
@@ -1018,16 +981,10 @@ void COldObject::FloorAdjust()
     pos = GetPosition();
     if ( m_terrain->GetNormal(n, pos) )
     {
-#if 0
-        SetRotationX( sinf(n.z));
-        SetRotationZ(-sinf(n.x));
-        SetRotationY(0.0f);
-#else
         a = GetRotationY();
         nn = Math::RotatePoint(-a, Math::Point(n.z, n.x));
         SetRotationX( sinf(nn.x));
         SetRotationZ(-sinf(nn.y));
-#endif
     }
 }
 
@@ -1745,46 +1702,6 @@ void COldObject::UpdateEnergyMapping()
 
 bool COldObject::EventProcess(const Event &event)
 {
-    if ( event.type == EVENT_KEY_DOWN )
-    {
-#if ADJUST_ONBOARD
-        if ( m_bSelect )
-        {
-            if ( event.param == 'E' )  debug_x += 0.1f;
-            if ( event.param == 'D' )  debug_x -= 0.1f;
-            if ( event.param == 'R' )  debug_y += 0.1f;
-            if ( event.param == 'F' )  debug_y -= 0.1f;
-            if ( event.param == 'T' )  debug_z += 0.1f;
-            if ( event.param == 'G' )  debug_z -= 0.1f;
-        }
-#endif
-#if ADJUST_ARM
-        if ( m_bSelect )
-        {
-            if ( event.param == 'X' )  debug_arm1 += 5.0f*Math::PI/180.0f;
-            if ( event.param == 'C' )  debug_arm1 -= 5.0f*Math::PI/180.0f;
-            if ( event.param == 'V' )  debug_arm2 += 5.0f*Math::PI/180.0f;
-            if ( event.param == 'B' )  debug_arm2 -= 5.0f*Math::PI/180.0f;
-            if ( event.param == 'N' )  debug_arm3 += 5.0f*Math::PI/180.0f;
-            if ( event.param == 'M' )  debug_arm3 -= 5.0f*Math::PI/180.0f;
-            if ( event.param == 'X' ||
-                 event.param == 'C' ||
-                 event.param == 'V' ||
-                 event.param == 'B' ||
-                 event.param == 'N' ||
-                 event.param == 'M' )
-            {
-                SetPartRotationZ(1, debug_arm1);
-                SetPartRotationZ(2, debug_arm2);
-                SetPartRotationZ(3, debug_arm3);
-                char s[100];
-                sprintf(s, "a=%.2f b=%.2f c=%.2f", debug_arm1*180.0f/Math::PI, debug_arm2*180.0f/Math::PI, debug_arm3*180.0f/Math::PI);
-                m_engine->SetInfoText(5, s);
-            }
-        }
-#endif
-    }
-
     // NOTE: This should be called befoce CProgrammableObjectImpl::EventProcess, see the other note inside this function
     if (!CTaskExecutorObjectImpl::EventProcess(event)) return true;
 
@@ -2153,14 +2070,6 @@ void COldObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
         eye.y = 4.8f;
         eye.z = 0.0f;
     }
-#if ADJUST_ONBOARD
-    eye.x += debug_x;
-    eye.y += debug_y;
-    eye.z += debug_z;
-    char s[100];
-    sprintf(s, "x=%.2f y=%.2f z=%.2f", eye.x, eye.y, eye.z);
-    m_engine->SetInfoText(4, s);
-#endif
 
     if ( type == Gfx::CAM_TYPE_BACK )
     {

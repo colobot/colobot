@@ -1046,33 +1046,6 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
     }
 
-#if 0
-    if ( power > 0.0f )  // creates a battery?
-    {
-        CObject*    pPower;
-
-        pPower = new CObject();
-        pPower->obj->SetType(power<=1.0f?OBJECT_POWER:OBJECT_ATOMIC);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
-        pPower->obj->SetObjectRank(0, rank);
-
-        if ( power <= 1.0f )  m_oldModelManager->AddModelReference("power.mod", false, rank, obj->GetTeam());
-        else                  m_oldModelManager->AddModelReference("atomic.mod", false, rank, obj->GetTeam());
-
-        pPower->obj->SetPosition(GetCharacter()->posPower);
-        pPower->obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
-        pPower->obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.5f));
-
-        pPower->SetTransporter(obj.get());
-        SetPower(pPower);
-
-        if ( power <= 1.0f )  pPower->obj->SetEnergyLevel(power);
-        else                  pPower->obj->SetEnergyLevel(power/100.0f);
-    }
-#endif
-
     pos = obj->GetPosition();
     pos.y += height;
     obj->SetPosition(pos);  // to display the shadows immediately
@@ -2600,30 +2573,6 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
     obj->SetToy(toy);
 
     float showLimitRadius = 0.0f;
-#if 0
-    if ( type == OBJECT_MOBILEfc ||
-         type == OBJECT_MOBILEtc ||
-         type == OBJECT_MOBILEwc ||
-         type == OBJECT_MOBILEic )  // fireball cannon?
-    {
-        showLimitRadius = 160.0f;
-    }
-    if ( type == OBJECT_MOBILEfi ||
-         type == OBJECT_MOBILEti ||
-         type == OBJECT_MOBILEwi ||
-         type == OBJECT_MOBILEii )  // orgaball cannon?
-    {
-        showLimitRadius = 160.0f;
-    }
-    if ( type == OBJECT_MOBILErc )  // phazer cannon?
-    {
-        showLimitRadius = 160.0f;
-    }
-    if ( type == OBJECT_MOBILErs )  // robot shield?
-    {
-        showLimitRadius = 50.0f;
-    }
-#endif
     if ( type == OBJECT_MOBILErt )  // robot thumper?
     {
         showLimitRadius = 400.0f;

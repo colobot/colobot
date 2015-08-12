@@ -27,17 +27,6 @@
 #include "object/old_object.h"
 
 
-
-#define ADJUST_ANGLE 0       // 1 -> adjusts the angles of the members
-
-
-#if ADJUST_ANGLE
-static float g_flag1 = 6.00f;
-static float g_flag2 = 0.10f;
-static float g_flag3 = 2.00f;
-#endif
-
-
 // Object's constructor.
 
 CAutoFlag::CAutoFlag(COldObject* object) : CAuto(object)
@@ -100,18 +89,6 @@ bool CAutoFlag::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-#if ADJUST_ANGLE
-    if ( event.type == EVENT_KEYDOWN )
-    {
-        if ( event.param == 'E' )  g_flag1 += 0.1f;
-        if ( event.param == 'D' )  g_flag1 -= 0.1f;
-        if ( event.param == 'R' )  g_flag2 += 0.1f;
-        if ( event.param == 'F' )  g_flag2 -= 0.1f;
-        if ( event.param == 'T' )  g_flag3 += 0.1f;
-        if ( event.param == 'G' )  g_flag3 -= 0.1f;
-    }
-#endif
-
     if ( m_engine->GetPause() )  return true;
     if ( event.type != EVENT_FRAME )  return true;
 
@@ -138,19 +115,10 @@ bool CAutoFlag::EventProcess(const Event &event)
 
     for ( i=0 ; i<4 ; i++ )
     {
-#if ADJUST_ANGLE
-        angle = sinf(m_time*g_flag1+i*2.0f)*((i+g_flag3)*g_flag2);
-#else
         angle = sinf(m_time*6.0f+i*2.0f)*((i+2.0f)*0.1f);
-#endif
         m_object->SetPartRotationY(1+i, angle);
     }
 
-#if ADJUST_ANGLE
-    char s[100];
-    sprintf(s, "a=%.2f b=%.2f c=%.2f", g_flag1, g_flag2, g_flag3);
-    m_engine->SetInfoText(4, s);
-#endif
     return true;
 }
 
@@ -161,4 +129,3 @@ Error CAutoFlag::GetError()
 {
     return ERR_OK;
 }
-

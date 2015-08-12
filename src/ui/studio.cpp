@@ -46,7 +46,6 @@
 
 #include "ui/controls/check.h"
 #include "ui/controls/color.h"
-#include "ui/controls/compass.h"
 #include "ui/controls/control.h"
 #include "ui/controls/edit.h"
 #include "ui/controls/group.h"
