@@ -66,11 +66,6 @@ enum ObjectType
     OBJECT_BULLET           = 36,   //! < OrgaMatter
     OBJECT_BBOX             = 37,   //! < BlackBox
     OBJECT_TNT              = 38,   //! < TNT
-    OBJECT_SCRAP1           = 40,   //! < Scrap1 (metal)
-    OBJECT_SCRAP2           = 41,   //! < Scrap2 (metal)
-    OBJECT_SCRAP3           = 42,   //! < Scrap3 (metal)
-    OBJECT_SCRAP4           = 43,   //! < Scrap4 (plastic)
-    OBJECT_SCRAP5           = 44,   //! < Scrap5 (plastic)
     OBJECT_MARKPOWER        = 50,   //! < PowerSpot
     OBJECT_MARKSTONE        = 51,   //! < TitaniumSpot
     OBJECT_MARKURANIUM      = 52,   //! < UraniumSpot

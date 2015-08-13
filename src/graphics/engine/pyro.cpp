@@ -169,12 +169,6 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         m_power = true;
         m_posPower = m_pos;
     }
-    if ( oType == OBJECT_SCRAP4 ||
-         oType == OBJECT_SCRAP5 )  // plastic material?
-    {
-        m_power = true;
-        m_posPower = m_pos;
-    }
 
     // Plays the sound of a pyrotechnic effect.
     if ( type == PT_FRAGT  ||

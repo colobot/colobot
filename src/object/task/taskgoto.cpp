@@ -1033,26 +1033,8 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
 
     type = pObj->GetType();
 
-    if ( type == OBJECT_FRET         ||
-         type == OBJECT_STONE        ||
-         type == OBJECT_URANIUM      ||
-         type == OBJECT_METAL        ||
-         type == OBJECT_POWER        ||
-         type == OBJECT_ATOMIC       ||
-         type == OBJECT_BULLET       ||
-         type == OBJECT_BBOX         ||
-         type == OBJECT_KEYa         ||
-         type == OBJECT_KEYb         ||
-         type == OBJECT_KEYc         ||
-         type == OBJECT_KEYd         ||
-         type == OBJECT_TNT          ||
-         type == OBJECT_SCRAP1       ||
-         type == OBJECT_SCRAP2       ||
-         type == OBJECT_SCRAP3       ||
-         type == OBJECT_SCRAP4       ||
-         type == OBJECT_SCRAP5       ||
-         type == OBJECT_BOMB         ||
-         type == OBJECT_RUINmobilew1 ||
+    if ( pObj->Implements(ObjectInterfaceType::Transportable) ||
+         type == OBJECT_RUINmobilew1 || // TODO: CRecoverableObject?
          type == OBJECT_RUINmobilew2 ||
          type == OBJECT_RUINmobilet1 ||
          type == OBJECT_RUINmobilet2 ||
@@ -1426,23 +1408,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 
         if ( bAlien )
         {
-            if ( oType == OBJECT_STONE   ||
-                 oType == OBJECT_URANIUM ||
-                 oType == OBJECT_METAL   ||
-                 oType == OBJECT_POWER   ||
-                 oType == OBJECT_ATOMIC  ||
-                 oType == OBJECT_BULLET  ||
-                 oType == OBJECT_BBOX    ||
-                 oType == OBJECT_KEYa    ||
-                 oType == OBJECT_KEYb    ||
-                 oType == OBJECT_KEYc    ||
-                 oType == OBJECT_KEYd    ||
-                 oType == OBJECT_TNT     ||
-                 oType == OBJECT_SCRAP1  ||
-                 oType == OBJECT_SCRAP2  ||
-                 oType == OBJECT_SCRAP3  ||
-                 oType == OBJECT_SCRAP4  ||
-                 oType == OBJECT_SCRAP5  ||
+            if ( pObj->Implements(ObjectInterfaceType::Transportable) ||
                  oType == OBJECT_BOMB    ||
                 (oType >= OBJECT_PLANT0    &&
                  oType <= OBJECT_PLANT19   ) ||
