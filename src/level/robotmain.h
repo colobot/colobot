@@ -287,7 +287,7 @@ public:
     void        SelectPlayer(std::string playerName);
     CPlayerProfile* GetPlayerProfile();
 
-    bool        IsBusy();
+    bool        IOIsBusy();
     bool        IOWriteScene(std::string filename, std::string filecbot, std::string filescreenshot, char *info);
     void        IOWriteSceneFinished();
     CObject*    IOReadScene(std::string filename, std::string filecbot);

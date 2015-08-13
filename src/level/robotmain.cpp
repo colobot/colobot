@@ -77,6 +77,7 @@
 
 #include "object/task/task.h"
 #include "object/task/taskbuild.h"
+#include "object/task/taskmanager.h"
 #include "object/task/taskmanip.h"
 
 #include "physics/physics.h"
@@ -2363,8 +2364,11 @@ bool CRobotMain::EventFrame(const Event &event)
             m_levelCategory == LevelCategory::FreeGame    ||
             m_levelCategory == LevelCategory::CustomLevels )
         {
-            m_autosaveLast = m_gameTimeAbsolute;
-            Autosave();
+            if (!IOIsBusy())
+            {
+                m_autosaveLast = m_gameTimeAbsolute;
+                Autosave();
+            }
         }
     }
 
@@ -4804,7 +4808,7 @@ char*  CRobotMain::GetNewScriptName(ObjectType type, int rank)
 
 
 //! Seeks if an object occupies in a spot, to prevent a backup of the game
-bool CRobotMain::IsBusy()
+bool CRobotMain::IOIsBusy()
 {
     if (CScriptFunctions::m_numberOfOpenFiles > 0) return true;
 
@@ -4812,6 +4816,7 @@ bool CRobotMain::IsBusy()
     {
         if (! obj->Implements(ObjectInterfaceType::TaskExecutor)) continue;
 
+        if (obj->Implements(ObjectInterfaceType::Programmable) && dynamic_cast<CProgrammableObject*>(obj)->IsProgram()) continue; // TODO: I'm not sure if this is correct but this is how it worked earlier
         if (dynamic_cast<CTaskExecutorObject*>(obj)->IsForegroundTask()) return true;
     }
     return false;

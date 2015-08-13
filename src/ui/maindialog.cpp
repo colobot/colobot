@@ -209,7 +209,7 @@ void CMainDialog::StartPauseMenu()
         pos.y = 0.62f;
         pb = pw->CreateButton(pos, dim, -1, EVENT_INTERFACE_WRITE);
         pb->SetState(STATE_SHADOW);
-        if ( m_main->IsBusy() )  // current task?
+        if ( m_main->IOIsBusy() )  // current task?
         {
             pb->ClearState(STATE_ENABLE);
         }
