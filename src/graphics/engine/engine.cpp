@@ -2748,7 +2748,7 @@ float CEngine::GetFogStart(int rank)
 void CEngine::SetBackground(const std::string& name, Color up, Color down,
                             Color cloudUp, Color cloudDown, bool full, bool scale)
 {
-    if (m_backgroundTex.Valid())
+    if (m_backgroundTex.Valid() && name != m_backgroundName)
     {
         DeleteTexture(m_backgroundTex);
         m_backgroundTex.SetInvalid();
@@ -2762,7 +2762,7 @@ void CEngine::SetBackground(const std::string& name, Color up, Color down,
     m_backgroundFull      = full;
     m_backgroundScale     = scale;
 
-    if (! m_backgroundName.empty())
+    if (! m_backgroundName.empty() && !m_backgroundTex.Valid())
     {
         TextureCreateParams params = m_defaultTexParams;
         params.padToNearestPowerOfTwo = true;
@@ -2784,7 +2784,7 @@ void CEngine::GetBackground(std::string& name, Color& up, Color& down,
 
 void CEngine::SetForegroundName(const std::string& name)
 {
-    if (m_foregroundTex.Valid())
+    if (m_foregroundTex.Valid() && name != m_foregroundName)
     {
         DeleteTexture(m_foregroundTex);
         m_foregroundTex.SetInvalid();
@@ -2792,7 +2792,7 @@ void CEngine::SetForegroundName(const std::string& name)
 
     m_foregroundName = name;
 
-    if (! m_foregroundName.empty())
+    if (! m_foregroundName.empty() && !m_foregroundTex.Valid())
         m_foregroundTex = LoadTexture(m_foregroundName);
 }
 
