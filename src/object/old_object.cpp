@@ -1936,7 +1936,7 @@ void COldObject::UpdateEnergyMapping()
 bool COldObject::EventProcess(const Event &event)
 {
     // NOTE: This should be called befoce CProgrammableObjectImpl::EventProcess, see the other note inside this function
-    if (!CTaskExecutorObjectImpl::EventProcess(event)) return true;
+    if (!CTaskExecutorObjectImpl::EventProcess(event)) return false;
 
     if ( m_physics != nullptr )
     {
@@ -2088,7 +2088,7 @@ bool COldObject::EventProcess(const Event &event)
         if (!m_motion->EventProcess(event)) return false;
     }
 
-    if (!CProgrammableObjectImpl::EventProcess(event)) return true;
+    if (!CProgrammableObjectImpl::EventProcess(event)) return false;
 
     if ( event.type == EVENT_FRAME )
     {
@@ -3392,7 +3392,10 @@ void COldObject::StopProgram()
     m_physics->SetMotorSpeedY(0.0f);
     m_physics->SetMotorSpeedZ(0.0f);
 
-    m_motion->SetAction(-1);
+    if (m_type != OBJECT_HUMAN) // Be sure not to stop the death animation!
+    {
+        m_motion->SetAction(-1);
+    }
 }
 
 // State management of the pencil drawing robot.
