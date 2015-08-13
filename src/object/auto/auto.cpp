@@ -25,10 +25,12 @@
 #include "common/event.h"
 #include "common/make_unique.h"
 
-#include "object/old_object.h"
+#include "level/robotmain.h"
 
-#include "object/level/parserline.h"
-#include "object/level/parserparam.h"
+#include "level/parser/parserline.h"
+#include "level/parser/parserparam.h"
+
+#include "object/old_object.h"
 
 #include "ui/controls/gauge.h"
 #include "ui/controls/interface.h"

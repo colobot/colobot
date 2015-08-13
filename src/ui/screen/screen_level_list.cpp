@@ -25,9 +25,9 @@
 
 #include "common/resources/resourcemanager.h"
 
-#include "object/player_profile.h"
+#include "level/player_profile.h"
 
-#include "object/level/parser.h"
+#include "level/parser/parser.h"
 
 #include "ui/maindialog.h"
 

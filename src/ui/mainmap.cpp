@@ -22,6 +22,8 @@
 
 #include "app/app.h"
 
+#include "level/robotmain.h"
+
 
 namespace Ui
 {

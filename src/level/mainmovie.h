@@ -18,7 +18,7 @@
  */
 
 /**
- * \file object/mainmovie.h
+ * \file level/mainmovie.h
  * \brief CMainMovie - control over movie sequences
  */
 

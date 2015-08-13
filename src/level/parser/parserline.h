@@ -18,13 +18,13 @@
  */
 
 /**
- * \file object/level/parserline.h
+ * \file level/parser/parserline.h
  * \brief Class for one line from level file
  */
 
 #pragma once
 
-#include "object/level/parserparam.h"
+#include "level/parser/parserparam.h"
 
 #include <string>
 #include <map>

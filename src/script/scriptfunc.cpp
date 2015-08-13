@@ -33,11 +33,14 @@
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 
+#include "level/robotmain.h"
+
+#include "level/parser/parser.h"
+
 #include "math/all.h"
 
 #include "object/object.h"
 #include "object/object_manager.h"
-#include "object/robotmain.h"
 
 #include "object/auto/auto.h"
 #include "object/auto/autobase.h"
@@ -46,8 +49,6 @@
 #include "object/interface/programmable_object.h"
 #include "object/interface/task_executor_object.h"
 #include "object/interface/trace_drawing_object.h"
-
-#include "object/level/parser.h"
 
 #include "object/subclass/exchange_post.h"
 

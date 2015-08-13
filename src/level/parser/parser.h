@@ -18,21 +18,21 @@
  */
 
 /**
- * \file object/level/parser.h
+ * \file level/parser/parser.h
  * \brief Parser for level files
  */
 
 #pragma once
 
-#include "object/level_category.h"
+#include "level/level_category.h"
 
 #include "common/make_unique.h"
 
-#include "object/robotmain.h"
+#include "level/robotmain.h"
 
-#include "object/level/parserexceptions.h"
-#include "object/level/parserline.h"
-#include "object/level/parserparam.h"
+#include "level/parser/parserexceptions.h"
+#include "level/parser/parserline.h"
+#include "level/parser/parserparam.h"
 
 #include <string>
 #include <vector>

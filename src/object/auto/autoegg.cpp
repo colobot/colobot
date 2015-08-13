@@ -24,6 +24,9 @@
 
 #include "graphics/engine/pyro_manager.h"
 
+#include "level/parser/parserline.h"
+#include "level/parser/parserparam.h"
+
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
@@ -31,9 +34,6 @@
 
 #include "object/interface/programmable_object.h"
 #include "object/interface/transportable_object.h"
-
-#include "object/level/parserline.h"
-#include "object/level/parserparam.h"
 
 
 // Object's constructor.

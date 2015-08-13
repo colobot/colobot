@@ -31,11 +31,13 @@
 
 #include "common/resources/resourcemanager.h"
 
+#include "level/robotmain.h"
+#include "level/player_profile.h"
+
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
 
 #include "object/object.h"
-#include "object/player_profile.h"
 
 #include "object/interface/programmable_object.h"
 

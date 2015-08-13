@@ -25,9 +25,9 @@
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
 
-#include "math/geometry.h"
+#include "level/robotmain.h"
 
-#include "object/robotmain.h"
+#include "math/geometry.h"
 
 
 // Graphics module namespace

@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "object/level/parserparam.h"
+#include "level/parser/parserparam.h"
 
 #include "app/app.h"
 
@@ -26,9 +26,9 @@
 
 #include "common/resources/resourcemanager.h"
 
-#include "object/robotmain.h"
+#include "level/robotmain.h"
 
-#include "object/level/parser.h"
+#include "level/parser/parser.h"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>

@@ -125,6 +125,15 @@ set(BASE_SOURCES
     graphics/model/model_manager.cpp
     graphics/model/model_mesh.cpp
     graphics/model/model_output.cpp
+    level/level_category.cpp
+    level/mainmovie.cpp
+    level/player_profile.cpp
+    level/robotmain.cpp
+    level/scene_conditions.cpp
+    level/parser/parser.cpp
+    level/parser/parserexceptions.cpp
+    level/parser/parserline.cpp
+    level/parser/parserparam.cpp
     object/auto/auto.cpp
     object/auto/autobase.cpp
     object/auto/autoconvert.cpp
@@ -154,12 +163,6 @@ set(BASE_SOURCES
     object/implementation/power_container_impl.cpp
     object/implementation/programmable_impl.cpp
     object/implementation/task_executor_impl.cpp
-    object/level/parser.cpp
-    object/level/parserexceptions.cpp
-    object/level/parserline.cpp
-    object/level/parserparam.cpp
-    object/level_category.cpp
-    object/mainmovie.cpp
     object/motion/motion.cpp
     object/motion/motionant.cpp
     object/motion/motionbee.cpp
@@ -175,9 +178,6 @@ set(BASE_SOURCES
     object/object_manager.cpp
     object/old_object.cpp
     object/old_object_interface.cpp
-    object/player_profile.cpp
-    object/robotmain.cpp
-    object/scene_conditions.cpp
     object/task/task.cpp
     object/task/taskadvance.cpp
     object/task/taskbuild.cpp

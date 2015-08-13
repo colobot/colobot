@@ -26,7 +26,7 @@
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
 
-#include "object/robotmain.h"
+#include "level/robotmain.h"
 
 template<> CSettings* CSingleton<CSettings>::m_instance = nullptr;
 

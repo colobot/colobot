@@ -22,6 +22,8 @@
 
 #include "app/app.h"
 
+#include "level/robotmain.h"
+
 #include <boost/range/adaptor/reversed.hpp>
 
 

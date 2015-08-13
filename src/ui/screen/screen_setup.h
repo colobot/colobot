@@ -21,7 +21,7 @@
 
 #include "ui/screen/screen.h"
 
-#include "object/robotmain.h"
+#include "level/robotmain.h"
 
 class CSettings;
 

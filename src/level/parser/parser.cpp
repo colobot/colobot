@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "object/level/parser.h"
+#include "level/parser/parser.h"
 
 #include "app/app.h"
 
@@ -28,9 +28,9 @@
 #include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
 
-#include "object/robotmain.h"
+#include "level/robotmain.h"
 
-#include "object/level/parserexceptions.h"
+#include "level/parser/parserexceptions.h"
 
 #include <string>
 #include <exception>

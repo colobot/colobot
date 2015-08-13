@@ -32,10 +32,6 @@
 
 #include "common/resources/resourcemanager.h"
 
-#include "object/robotmain.h"
-
-#include "object/level/parser.h"
-
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 

@@ -24,13 +24,15 @@
 
 #include "graphics/engine/terrain.h"
 
+#include "level/parser/parserline.h"
+#include "level/parser/parserparam.h"
+
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/level/parserline.h"
-#include "object/level/parserparam.h"
+#include "sound/sound.h"
 
 #include "ui/controls/interface.h"
 #include "ui/controls/window.h"
@@ -536,4 +538,3 @@ Error CAutoDerrick::GetError()
     if ( m_phase == ADP_WAIT )  return ERR_DERRICK_NULL;
     return ERR_OK;
 }
-

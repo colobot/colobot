@@ -23,7 +23,7 @@
 
 #include "common/logger.h"
 
-#include "object/level/parser.h"
+#include "level/parser/parser.h"
 
 #include "ui/controls/button.h"
 #include "ui/controls/group.h"

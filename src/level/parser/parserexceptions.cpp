@@ -17,9 +17,9 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "object/level/parserexceptions.h"
+#include "level/parser/parserexceptions.h"
 
-#include "object/level/parser.h"
+#include "level/parser/parser.h"
 
 #include <boost/lexical_cast.hpp>
 

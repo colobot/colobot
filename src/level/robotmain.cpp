@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "object/robotmain.h"
+#include "level/robotmain.h"
 
 #include "CBot/CBotDll.h"
 
@@ -53,20 +53,21 @@
 
 #include "graphics/model/model_manager.h"
 
+#include "level/mainmovie.h"
+#include "level/player_profile.h"
+#include "level/scene_conditions.h"
+
+#include "level/parser/parser.h"
+
 #include "math/const.h"
 #include "math/geometry.h"
 
-#include "object/mainmovie.h"
 #include "object/object.h"
 #include "object/object_create_exception.h"
 #include "object/object_manager.h"
-#include "object/player_profile.h"
-#include "object/scene_conditions.h"
 
 #include "object/auto/auto.h"
 #include "object/auto/autobase.h"
-
-#include "object/level/parser.h"
 
 #include "object/motion/motion.h"
 #include "object/motion/motionhuman.h"

@@ -25,15 +25,18 @@
 #include "graphics/engine/planet.h"
 #include "graphics/engine/terrain.h"
 
+#include "level/robotmain.h"
+
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
 #include "object/old_object.h"
-#include "object/robotmain.h"
 
 #include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
+
+#include "sound/sound.h"
 
 #include "ui/controls/interface.h"
 #include "ui/controls/window.h"

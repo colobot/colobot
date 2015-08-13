@@ -21,7 +21,7 @@
 
 #include "ui/screen/screen.h"
 
-#include "object/level_category.h"
+#include "level/level_category.h"
 
 #include <map>
 #include <vector>

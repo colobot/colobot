@@ -18,7 +18,7 @@
  */
 
 /**
- * \file object/robotmain.h
+ * \file level/robotmain.h
  * \brief CRobotMain - main class of Colobot game engine
  */
 
@@ -29,12 +29,13 @@
 #include "common/global.h"
 #include "common/singleton.h"
 
+#include "level/level_category.h"
+#include "level/mainmovie.h"
+
 #include "graphics/engine/camera.h"
 #include "graphics/engine/particle.h"
 
 #include "object/drive_type.h"
-#include "object/level_category.h"
-#include "object/mainmovie.h"
 #include "object/mission_type.h"
 #include "object/object_type.h"
 #include "object/tool_type.h"

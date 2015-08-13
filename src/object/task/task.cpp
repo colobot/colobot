@@ -22,8 +22,9 @@
 
 #include "app/app.h"
 
+#include "level/robotmain.h"
+
 #include "object/old_object.h"
-#include "object/robotmain.h"
 
 #include "object/interface/programmable_object.h"
 

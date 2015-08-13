@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
-#include "object/level_category.h"
+#include "level/level_category.h"
 
 #include <map>
 

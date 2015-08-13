@@ -21,10 +21,14 @@
 
 #include "app/app.h"
 
+#include "level/robotmain.h"
+
 #include "common/logger.h"
 #include "common/stringutils.h"
 
-#include "object/player_profile.h"
+#include "level/player_profile.h"
+
+#include "sound/sound.h"
 
 #include "ui/controls/button.h"
 #include "ui/controls/edit.h"

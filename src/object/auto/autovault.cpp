@@ -22,16 +22,17 @@
 
 #include "common/make_unique.h"
 
+#include "level/robotmain.h"
+
+#include "level/parser/parserline.h"
+#include "level/parser/parserparam.h"
+
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
 #include "object/old_object.h"
-#include "object/robotmain.h"
 
 #include "object/interface/transportable_object.h"
-
-#include "object/level/parserline.h"
-#include "object/level/parserparam.h"
 
 #include "ui/controls/interface.h"
 #include "ui/controls/window.h"
@@ -556,4 +557,3 @@ CObject* CAutoVault::SearchVehicle()
     }
     return nullptr;
 }
-

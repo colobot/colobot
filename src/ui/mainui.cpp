@@ -29,7 +29,7 @@
 
 #include "common/resources/resourcemanager.h"
 
-#include "object/robotmain.h"
+#include "level/robotmain.h"
 
 #include "sound/sound.h"
 

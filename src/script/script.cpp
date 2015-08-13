@@ -32,8 +32,9 @@
 #include "graphics/engine/engine.h"
 #include "graphics/engine/text.h"
 
+#include "level/robotmain.h"
+
 #include "object/old_object.h"
-#include "object/robotmain.h"
 
 #include "script/cbottoken.h"
 

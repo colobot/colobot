@@ -17,12 +17,12 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "object/level/parserline.h"
+#include "level/parser/parserline.h"
 
 #include "common/logger.h"
 #include "common/make_unique.h"
 
-#include "object/level/parser.h"
+#include "level/parser/parser.h"
 
 CLevelParserLine::CLevelParserLine(std::string command)
 {

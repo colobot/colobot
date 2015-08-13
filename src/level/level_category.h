@@ -29,7 +29,7 @@ enum class LevelCategory
     CustomLevels = 4,
     Max,
 
-    // These are custom types not runnable by the user
+    // These are special types not runnable by the user
     Win,
     Lost,
     Perso,

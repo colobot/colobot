@@ -34,17 +34,18 @@
 #include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
 
+#include "level/robotmain.h"
+
+#include "level/parser/parserexceptions.h"
+#include "level/parser/parserline.h"
+#include "level/parser/parserparam.h"
+
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
-#include "object/robotmain.h"
 
 #include "object/auto/auto.h"
 #include "object/auto/autojostle.h"
-
-#include "object/level/parserexceptions.h"
-#include "object/level/parserline.h"
-#include "object/level/parserparam.h"
 
 #include "object/motion/motion.h"
 #include "object/motion/motionvehicle.h"

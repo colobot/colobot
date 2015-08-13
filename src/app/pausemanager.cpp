@@ -23,7 +23,7 @@
 
 #include "common/logger.h"
 
-#include "object/robotmain.h"
+#include "level/robotmain.h"
 
 
 template<> CPauseManager* CSingleton<CPauseManager>::m_instance = nullptr;

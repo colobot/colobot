@@ -22,7 +22,7 @@
 #include "common/restext.h"
 #include "common/stringutils.h"
 
-#include "object/robotmain.h"
+#include "level/robotmain.h"
 
 #include "graphics/model/model_crash_sphere.h"
 

@@ -33,9 +33,10 @@
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/particle.h"
 
+#include "level/robotmain.h"
+
 #include "object/object.h"
 #include "object/object_manager.h"
-#include "object/robotmain.h"
 
 #include "object/interface/movable_object.h"
 

@@ -21,10 +21,10 @@
 
 #include "app/app.h"
 
-#include "object/player_profile.h"
-#include "object/robotmain.h"
-
 #include "graphics/engine/camera.h"
+
+#include "level/player_profile.h"
+#include "level/robotmain.h"
 
 #include "ui/controls/button.h"
 #include "ui/controls/color.h"

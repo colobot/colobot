@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "object/level_category.h"
+#include "level/level_category.h"
 
 #include <memory>
 #include <string>

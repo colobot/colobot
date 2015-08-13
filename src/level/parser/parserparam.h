@@ -18,7 +18,7 @@
  */
 
 /**
- * \file object/level/parserparam.h
+ * \file level/parser/parserparam.h
  * \brief Value of command argument in level file
  */
 

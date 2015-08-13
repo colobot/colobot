@@ -18,7 +18,7 @@
  */
 
 /**
- * \file object/scene_conditions.h
+ * \file level/scene_conditions.h
  * \brief Classes for managing conditions in scene files
  */
 

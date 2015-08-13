@@ -32,7 +32,6 @@
 #include "common/stringutils.h"
 
 #include "object/object_type.h"
-#include "object/robotmain.h"
 
 #include <libintl.h>
 #include <SDL_keyboard.h>

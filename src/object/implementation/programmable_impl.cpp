@@ -19,11 +19,12 @@
 
 #include "object/implementation/programmable_impl.h"
 
+#include "level/robotmain.h"
+
 #include "math/all.h"
 
 #include "object/object.h"
 #include "object/old_object.h"
-#include "object/robotmain.h"
 
 #include "object/interface/controllable_object.h"
 #include "object/interface/task_executor_object.h"

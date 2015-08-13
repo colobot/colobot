@@ -29,8 +29,8 @@
 #include "common/make_unique.h"
 #include "common/settings.h"
 
-#include "object/player_profile.h"
-#include "object/robotmain.h"
+#include "level/robotmain.h"
+#include "level/player_profile.h"
 
 #include "sound/sound.h"
 

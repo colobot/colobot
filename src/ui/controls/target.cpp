@@ -20,6 +20,8 @@
 
 #include "ui/controls/target.h"
 
+#include "level/robotmain.h"
+
 #include "object/object_manager.h"
 #include "object/old_object.h"
 

@@ -22,10 +22,10 @@
 #include "common/logger.h"
 #include "common/stringutils.h"
 
-#include "object/level/parser.h"
+#include "level/player_profile.h"
+#include "level/robotmain.h"
 
-#include "object/player_profile.h"
-#include "object/robotmain.h"
+#include "level/parser/parser.h"
 
 #include "ui/screen/screen_level_list.h"
 
@@ -223,7 +223,7 @@ void CScreenIO::IOWriteScene()
     if ( sel == -1 ) return;
 
     pe->GetText(info, 100);
-    
+
     m_interface->DeleteControl(EVENT_WINDOW5);
 
     std::string dir;

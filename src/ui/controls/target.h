@@ -27,8 +27,6 @@
 
 #include "graphics/engine/engine.h"
 
-#include "object/robotmain.h"
-
 #include "ui/controls/control.h"
 
 #include <string>
@@ -55,4 +53,3 @@ protected:
 
 
 }
-

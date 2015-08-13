@@ -33,19 +33,20 @@
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 
+#include "level/robotmain.h"
+
+#include "level/parser/parserline.h"
+#include "level/parser/parserparam.h"
+
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
 #include "object/old_object.h"
-#include "object/robotmain.h"
 
 #include "object/interface/carrier_object.h"
 #include "object/interface/jostleable_object.h"
 #include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
-
-#include "object/level/parserline.h"
-#include "object/level/parserparam.h"
 
 #include "object/motion/motion.h"
 #include "object/motion/motionhuman.h"

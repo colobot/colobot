@@ -31,11 +31,12 @@
 #include "graphics/engine/text.h"
 #include "graphics/engine/water.h"
 
+#include "level/robotmain.h"
+
 #include "math/geometry.h"
 
 #include "object/object.h"
 #include "object/object_manager.h"
-#include "object/robotmain.h"
 
 #include <cstring>
 

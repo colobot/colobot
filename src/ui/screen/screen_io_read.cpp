@@ -21,6 +21,8 @@
 
 #include "app/app.h"
 
+#include "level/robotmain.h"
+
 #include "ui/controls/button.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/image.h"

@@ -28,10 +28,11 @@
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
 
+#include "level/robotmain.h"
+
 #include "math/geometry.h"
 
 #include "object/object.h"
-#include "object/robotmain.h"
 
 #include "sound/sound.h"
 

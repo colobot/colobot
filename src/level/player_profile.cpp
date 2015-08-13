@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "object/player_profile.h"
+#include "level/player_profile.h"
 
 #include "common/config_file.h"
 #include "common/logger.h"
@@ -28,9 +28,9 @@
 #include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
 
-#include "object/robotmain.h"
+#include "level/robotmain.h"
 
-#include "object/level/parser.h"
+#include "level/parser/parser.h"
 
 
 void PlayerApperance::DefPerso()

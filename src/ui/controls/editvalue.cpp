@@ -24,7 +24,7 @@
 #include "common/make_unique.h"
 #include "common/misc.h"
 
-#include "object/robotmain.h"
+#include "level/robotmain.h"
 
 #include "ui/controls/button.h"
 #include "ui/controls/edit.h"

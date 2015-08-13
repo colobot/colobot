@@ -18,7 +18,7 @@
  */
 
 /**
- * \file object/level/parserexceptions.h
+ * \file level/parser/parserexceptions.h
  * \brief Exceptions that could be thrown in level parser
  */
 

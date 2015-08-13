@@ -20,7 +20,7 @@
 
 #include "graphics/core/color.h"
 
-#include "object/level_category.h"
+#include "level/level_category.h"
 
 #include <string>
 #include <map>

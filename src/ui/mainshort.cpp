@@ -24,6 +24,8 @@
 
 #include "common/logger.h"
 
+#include "level/robotmain.h"
+
 #include "object/object.h"
 #include "object/object_manager.h"
 

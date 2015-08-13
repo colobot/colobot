@@ -39,7 +39,8 @@
 #include "graphics/opengl/glutil.h"
 
 #include "object/object_manager.h"
-#include "object/robotmain.h"
+
+#include "level/robotmain.h"
 
 #ifdef OPENAL_SOUND
     #include "sound/oalsound/alsound.h"

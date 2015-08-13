@@ -32,7 +32,7 @@ class CSystemUtils;
 
 /**
  *  \class CPathManager
- *  \brief Class for managing data/lang/save paths, and %something% replacements
+ *  \brief Class for managing data/lang/save paths
  */
 class CPathManager : public CSingleton<CPathManager>
 {

@@ -32,9 +32,9 @@
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
 
-#include "object/level/parser.h"
+#include "graphics/engine/engine.h"
 
-#include "object/robotmain.h"
+#include "level/parser/parser.h"
 
 #include "ui/controls/scroll.h"
 

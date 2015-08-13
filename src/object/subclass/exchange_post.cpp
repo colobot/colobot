@@ -24,11 +24,13 @@
 
 #include "graphics/engine/oldmodelmanager.h"
 
+#include "level/parser/parserexceptions.h"
+#include "level/parser/parserline.h"
+#include "level/parser/parserparam.h"
+
 #include "object/object_create_params.h"
 
-#include "object/level/parserexceptions.h"
-#include "object/level/parserline.h"
-#include "object/level/parserparam.h"
+#include "sound/sound.h"
 
 #include "ui/controls/interface.h"
 #include "ui/controls/list.h"

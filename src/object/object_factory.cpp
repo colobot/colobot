@@ -28,11 +28,12 @@
 
 #include "graphics/model/model_manager.h"
 
+#include "level/robotmain.h"
+
 #include "math/geometry.h"
 
 #include "object/object_create_params.h"
 #include "object/old_object.h"
-#include "object/robotmain.h"
 
 #include "object/auto/autobase.h"
 #include "object/auto/autoconvert.h"

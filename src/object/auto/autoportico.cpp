@@ -22,8 +22,9 @@
 
 #include "common/stringutils.h"
 
+#include "level/robotmain.h"
+
 #include "object/old_object.h"
-#include "object/robotmain.h"
 
 
 const int PARAM_DEPOSE = 2;     // run=2 -> deposits the spaceship

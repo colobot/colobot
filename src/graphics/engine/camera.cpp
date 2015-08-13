@@ -27,12 +27,13 @@
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 
+#include "level/robotmain.h"
+
 #include "math/const.h"
 #include "math/geometry.h"
 
 #include "object/object.h"
 #include "object/object_manager.h"
-#include "object/robotmain.h"
 
 #include "object/interface/carrier_object.h"
 #include "object/interface/movable_object.h"

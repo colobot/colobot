@@ -27,9 +27,9 @@
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 
-#include "math/geometry.h"
+#include "level/robotmain.h"
 
-#include "object/robotmain.h"
+#include "math/geometry.h"
 
 #include "object/interface/controllable_object.h"
 #include "object/interface/transportable_object.h"

@@ -31,6 +31,8 @@
 #include "object/interface/carrier_object.h"
 #include "object/interface/powered_object.h"
 
+#include "sound/sound.h"
+
 #include "ui/controls/gauge.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/window.h"

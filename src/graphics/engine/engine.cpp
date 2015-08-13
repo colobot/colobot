@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 #include "app/input.h"
+#include "app/pausemanager.h"
 #include "app/system.h"
 
 #include "common/image.h"
@@ -48,6 +49,8 @@
 
 #include "graphics/model/model_mesh.h"
 #include "graphics/model/model_shadow_spot.h"
+
+#include "level/robotmain.h"
 
 #include "math/geometry.h"
 

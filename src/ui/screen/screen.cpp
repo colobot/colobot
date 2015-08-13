@@ -25,7 +25,7 @@
 
 #include "graphics/engine/engine.h"
 
-#include "object/robotmain.h"
+#include "level/robotmain.h"
 
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"
