@@ -22,6 +22,7 @@
 #include "object/object_interface_type.h"
 
 #include <memory>
+#include <string>
 #include <vector>
 
 class CScript;
