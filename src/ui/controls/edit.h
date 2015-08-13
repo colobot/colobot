@@ -39,10 +39,6 @@ class CScroll;
 const int EDITSTUDIOMAX     = 20000;
 //! maximum total number of lines
 const int EDITLINEMAX       = 1000;
-//! maximum total number of lines with images
-const int EDITIMAGEMAX      = 100;
-//! maximum number of links
-const int EDITLINKMAX       = 100;
 //! max number of levels preserves
 const int EDITHISTORYMAX    = 50;
 
@@ -256,11 +252,9 @@ protected:
     int     m_lineTotal;            // number lines used (in m_lineOffset)
     int     m_lineOffset[EDITLINEMAX];
     char        m_lineIndent[EDITLINEMAX];
-    int     m_imageTotal;
-    ImageLine   m_image[EDITIMAGEMAX];
-    HyperLink   m_link[EDITLINKMAX];
-    int     m_markerTotal;
-    HyperMarker m_marker[EDITLINKMAX];
+    std::vector<ImageLine> m_image;
+    std::vector<HyperLink> m_link;
+    std::vector<HyperMarker> m_marker;
     int     m_historyTotal;
     int     m_historyCurrent;
     HyperHistory    m_history[EDITHISTORYMAX];
@@ -281,4 +275,3 @@ protected:
 
 
 }
-

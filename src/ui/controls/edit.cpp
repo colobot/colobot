@@ -115,13 +115,11 @@ CEdit::CEdit()
     m_cursor1       = 0;
     m_cursor2       = 0;
     m_column        = 0;
-    m_imageTotal    = 0;
 
     m_timeLastScroll = 0.0f;
     m_timeBlink = 0.0f;
     m_time = 0.0f;
     m_historyCurrent = 0;
-    m_markerTotal = 0;
     m_bMulti = false;
     m_lineDescent = 0.0f;
     m_timeLastClick = 0.0f;
@@ -640,9 +638,7 @@ void CEdit::MouseClick(Math::Point mouse)
 
 void CEdit::MouseRelease(Math::Point mouse)
 {
-    int     i, j, rank;
-
-    i = MouseDetect(mouse);
+    int i = MouseDetect(mouse);
     if ( i == -1 )  return;
 
     if ( !m_bEdit )
@@ -650,8 +646,8 @@ void CEdit::MouseRelease(Math::Point mouse)
         if ( m_format.size() > 0 && i < m_len && m_cursor1 == m_cursor2 &&
             (m_format[i]&Gfx::FONT_MASK_HIGHLIGHT) == Gfx::FONT_HIGHLIGHT_LINK) //TODO
         {
-            rank = -1;
-            for ( j=0 ; j<=i ; j++ )
+            int rank = -1;
+            for ( int j=0 ; j<=i ; j++ )
             {
                 if ( (j == 0 || (m_format[j-1]&Gfx::FONT_MASK_HIGHLIGHT) != Gfx::FONT_HIGHLIGHT_LINK) && // TODO check if good
                      (m_format[j+0]&Gfx::FONT_MASK_HIGHLIGHT) == Gfx::FONT_HIGHLIGHT_LINK) // TODO
@@ -659,6 +655,7 @@ void CEdit::MouseRelease(Math::Point mouse)
                     rank ++;
                 }
             }
+            assert(static_cast<unsigned int>(rank) < m_link.size());
             HyperJump(m_link[rank].name, m_link[rank].marker);
         }
     }
@@ -783,18 +780,12 @@ void CEdit::HyperHome(std::string filename)
 
 void CEdit::HyperJump(std::string name, std::string marker)
 {
-    std::string filename;
-    std:: string sMarker;
-    int     i, line, pos;
-
     if ( m_historyCurrent >= 0 )
     {
         m_history[m_historyCurrent].firstLine = m_lineFirst;
     }
 
-    sMarker = marker;
-
-    filename = name + std::string(".txt");
+    std::string filename = name + std::string(".txt");
     filename = InjectLevelPathsForCurrentLevel(filename, "help/%lng%");
     boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
 
@@ -802,20 +793,17 @@ void CEdit::HyperJump(std::string name, std::string marker)
     {
         Justif();
 
-        line = 0;
-        for ( i=0 ; i<m_markerTotal ; i++ )
+        int line = 0;
+        auto it = std::find_if(m_marker.begin(), m_marker.end(), [&marker](HyperMarker hyperMarker) { return hyperMarker.name == marker; });
+        if(it != m_marker.end())
         {
-            if (sMarker == m_marker[i].name)
+            int pos = it->pos;
+            for ( int i=0 ; i<m_lineTotal ; i++ )
             {
-                pos = m_marker[i].pos;
-                for ( i=0 ; i<m_lineTotal ; i++ )
+                if ( pos >= m_lineOffset[i] )
                 {
-                    if ( pos >= m_lineOffset[i] )
-                    {
-                        line = i;
-                    }
+                    line = i;
                 }
-                break;
             }
         }
 
@@ -896,7 +884,7 @@ void CEdit::Draw()
 {
     Math::Point     pos, ppos, dim, start, end;
     float       size = 0.0f, indentLength = 0.0f;
-    int         i, j, beg, len, c1, c2, o1, o2, eol, iIndex, line;
+    int         i, j, beg, len, c1, c2, o1, o2, eol, line;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
@@ -1017,7 +1005,8 @@ void CEdit::Draw()
                 line ++;
             }
 
-            iIndex = m_text[beg];  // character = index in m_image
+            unsigned int iIndex = m_text[beg];  // character = index in m_image
+            assert(iIndex < m_image.size());
             pos.y -= m_lineHeight*(line-1);
             DrawImage(pos, m_image[iIndex].name,
                       m_image[iIndex].width*(m_fontSize/Gfx::FONT_SIZE_SMALL),
@@ -1426,12 +1415,9 @@ int GetValueParam(std::string cmd, int rank)
 
 void CEdit::FreeImage()
 {
-    std::string filename;
-
-    for (int i = 0 ; i < m_imageTotal; i++ )
+    for (auto& image : m_image)
     {
-        filename = m_image[i].name + ".png";
-        m_engine->DeleteTexture(filename);
+        m_engine->DeleteTexture(image.name + ".png");
     }
 }
 
@@ -1450,7 +1436,7 @@ void CEdit::LoadImage(std::string name)
 
 bool CEdit::ReadText(std::string filename, int addSize)
 {
-    int         len, i, j, n, font, iIndex, iLines, iCount, iLink;
+    int         len, i, j, n, font, iLines, iCount;
     char        iName[50];
     float       iWidth;
     InputSlot   slot;
@@ -1493,10 +1479,9 @@ bool CEdit::ReadText(std::string filename, int addSize)
 
     bInSoluce = false;
     font = m_fontType;
-    iIndex = 0;
-    iLink = 0;
-    m_imageTotal = 0;
-    m_markerTotal = 0;
+    m_image.clear();
+    m_marker.clear();
+    m_link.clear();
     i = j = 0;
     bBOL = true;
     while ( i < m_len )
@@ -1590,12 +1575,10 @@ bool CEdit::ReadText(std::string filename, int addSize)
         {
             if ( m_bSoluce || !bInSoluce )
             {
-                if ( iLink < EDITLINKMAX )
-                {
-                    m_link[iLink].name = GetNameParam(buffer.data()+i+3, 0);
-                    m_link[iLink].marker = GetNameParam(buffer.data()+i+3, 1);
-                    iLink ++;
-                }
+                HyperLink link;
+                link.name = GetNameParam(buffer.data()+i+3, 0);
+                link.marker = GetNameParam(buffer.data()+i+3, 1);
+                m_link.push_back(link);
                 font &= ~Gfx::FONT_MASK_HIGHLIGHT;
             }
             i += strchr(buffer.data()+i, ';')-(buffer.data()+i)+1;
@@ -1607,12 +1590,10 @@ bool CEdit::ReadText(std::string filename, int addSize)
         {
             if ( m_bSoluce || !bInSoluce )
             {
-                if ( m_markerTotal < EDITLINKMAX )
-                {
-                    m_marker[m_markerTotal].name = GetNameParam(buffer.data()+i+3, 0);
-                    m_marker[m_markerTotal].pos = j;
-                    m_markerTotal ++;
-                }
+                HyperMarker marker;
+                marker.name = GetNameParam(buffer.data()+i+3, 0);
+                marker.pos = j;
+                m_marker.push_back(marker);
             }
             i += strchr(buffer.data()+i, ';')-(buffer.data()+i)+1;
         }
@@ -1627,7 +1608,6 @@ bool CEdit::ReadText(std::string filename, int addSize)
         {
             if ( m_bSoluce || !bInSoluce )
             {
-
                 strcpy(iName, GetNameParam(buffer.data()+i+7, 0).c_str());
 
 //?             iWidth = m_lineHeight*RetValueParam(buffer.data()+i+7, 1);
@@ -1639,17 +1619,14 @@ bool CEdit::ReadText(std::string filename, int addSize)
                 // A part of image per line of text.
                 for ( iCount=0 ; iCount<iLines ; iCount++ )
                 {
-                    if (iIndex >= EDITIMAGEMAX)
-                    {
-                        GetLogger()->Warn("Too many images, current limit is %d image lines. This limit will be removed in the future.\n", EDITIMAGEMAX);
-                        break;
-                    }
-                    m_image[iIndex].name = iName;
-                    m_image[iIndex].offset = static_cast<float>(iCount) / static_cast<float>(iLines);
-                    m_image[iIndex].height = 1.0f/iLines;
-                    m_image[iIndex].width = iWidth*0.75f;
+                    ImageLine image;
+                    image.name = iName;
+                    image.offset = static_cast<float>(iCount) / static_cast<float>(iLines);
+                    image.height = 1.0f/iLines;
+                    image.width = iWidth*0.75f;
 
-                    m_text[j] = static_cast<char>(iIndex++);  // as an index into m_image
+                    m_image.push_back(image);
+                    m_text[j] = static_cast<char>(m_image.size()-1);  // as an index into m_image
                     m_format[j] = Gfx::FONT_MASK_IMAGE;
                     j ++;
                 }
@@ -1840,7 +1817,6 @@ bool CEdit::ReadText(std::string filename, int addSize)
         }
     }
     m_len = j;
-    m_imageTotal = iIndex;
 
     Justif();
     ColumnFix();
