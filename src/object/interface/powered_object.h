@@ -66,6 +66,22 @@ inline float GetObjectEnergy(CObject* object)
     return energy;
 }
 
+inline float GetObjectEnergyLevel(CObject* object)
+{
+    float energy = 0.0f;
+
+    if (object->Implements(ObjectInterfaceType::Powered))
+    {
+        CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
+        if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
+        {
+            energy = dynamic_cast<CPowerContainerObject*>(power)->GetEnergyLevel();
+        }
+    }
+
+    return energy;
+}
+
 inline bool ObjectHasPowerCell(CObject* object)
 {
     return object->Implements(ObjectInterfaceType::Powered) &&

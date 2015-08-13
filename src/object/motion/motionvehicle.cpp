@@ -1791,7 +1791,7 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
         bOnBoard = true;
     }
 
-    float energy = GetObjectEnergy(m_object);
+    float energy = GetObjectEnergyLevel(m_object);
     if (energy == 0.0f)  return true;
 
     factor = 0.5f+energy*0.5f;
