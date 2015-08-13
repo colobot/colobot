@@ -21,6 +21,8 @@
 
 #include "object/object_interface_type.h"
 
+#include <string>
+
 enum class TraceColor
 {
     Default = -1,

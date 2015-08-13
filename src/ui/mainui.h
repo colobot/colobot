@@ -20,6 +20,8 @@
 
 #include "level/robotmain.h"
 
+#include <array>
+#include <string>
 #include <vector>
 
 

@@ -21,6 +21,9 @@
 
 #include "object/object_interface_type.h"
 
+class CPhysics;
+class CMotion;
+
 /**
  * \class CMovableObject
  * \brief Interface for objects that can move (have an engine)
