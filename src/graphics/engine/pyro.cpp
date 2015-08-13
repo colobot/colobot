@@ -2198,7 +2198,7 @@ CObject* CPyro::FallSearchBeeExplo()
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( obj->Implements(ObjectInterfaceType::Destroyable) )  continue;
+        if ( !obj->Implements(ObjectInterfaceType::Destroyable) )  continue;
 
         if (IsObjectBeingTransported(obj)) continue;
 
