@@ -363,11 +363,6 @@ ObjectType CLevelParserParam::ToObjectType(std::string value)
     if (value == "KeyC"              ) return OBJECT_KEYc;
     if (value == "KeyD"              ) return OBJECT_KEYd;
     if (value == "TNT"               ) return OBJECT_TNT;
-    if (value == "Scrap1"            ) return OBJECT_SCRAP1;
-    if (value == "Scrap2"            ) return OBJECT_SCRAP2;
-    if (value == "Scrap3"            ) return OBJECT_SCRAP3;
-    if (value == "Scrap4"            ) return OBJECT_SCRAP4;
-    if (value == "Scrap5"            ) return OBJECT_SCRAP5;
     if (value == "Mine"              ) return OBJECT_BOMB;
     if (value == "Firework"          ) return OBJECT_WINFIRE;
     if (value == "Bag"               ) return OBJECT_BAG;
@@ -518,11 +513,6 @@ const std::string CLevelParserParam::FromObjectType(ObjectType value)
     if (value == OBJECT_KEYc        ) return "KeyC";
     if (value == OBJECT_KEYd        ) return "KeyD";
     if (value == OBJECT_TNT         ) return "TNT";
-    if (value == OBJECT_SCRAP1      ) return "Scrap1";
-    if (value == OBJECT_SCRAP2      ) return "Scrap2";
-    if (value == OBJECT_SCRAP3      ) return "Scrap3";
-    if (value == OBJECT_SCRAP4      ) return "Scrap4";
-    if (value == OBJECT_SCRAP5      ) return "Scrap5";
     if (value == OBJECT_BOMB        ) return "Mine";
     if (value == OBJECT_WINFIRE     ) return "Firework";
     if (value == OBJECT_BAG         ) return "Bag";

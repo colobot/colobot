@@ -389,10 +389,7 @@ CObject* CAutoPowerPlant::SearchMetal()
     if ( obj == nullptr )  return nullptr;
 
     ObjectType type = obj->GetType();
-    if ( type == OBJECT_METAL  ||
-         type == OBJECT_SCRAP1 ||
-         type == OBJECT_SCRAP2 ||
-         type == OBJECT_SCRAP3 )  return obj;
+    if ( type == OBJECT_METAL )  return obj;
 
     return nullptr;
 }
@@ -511,10 +508,7 @@ Error CAutoPowerPlant::GetError()
     if (obj == nullptr)  return ERR_ENERGY_EMPTY;
     ObjectType type = obj->GetType();
     if ( type == OBJECT_POWER )  return ERR_OK;
-    if ( type != OBJECT_METAL  &&
-         type != OBJECT_SCRAP1 &&
-         type != OBJECT_SCRAP2 &&
-         type != OBJECT_SCRAP3 )  return ERR_ENERGY_BAD;
+    if ( type != OBJECT_METAL )  return ERR_ENERGY_BAD;
 
     return ERR_OK;
 }

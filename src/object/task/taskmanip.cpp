@@ -725,7 +725,6 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
 {
     CObject    *pBest;
     Math::Vector    iPos, oPos;
-    ObjectType  type;
     float       min, distance;
 
     iPos   = m_object->GetPosition();
@@ -734,21 +733,7 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
     pBest = 0;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        type = pObj->GetType();
-
-        if ( type != OBJECT_FRET    &&
-             type != OBJECT_STONE   &&
-             type != OBJECT_URANIUM &&
-             type != OBJECT_BULLET  &&
-             type != OBJECT_METAL   &&
-             type != OBJECT_POWER   &&
-             type != OBJECT_ATOMIC  &&
-             type != OBJECT_BBOX    &&
-             type != OBJECT_KEYa    &&
-             type != OBJECT_KEYb    &&
-             type != OBJECT_KEYc    &&
-             type != OBJECT_KEYd    &&
-             type != OBJECT_TNT     )  continue;
+        if ( !pObj->Implements(ObjectInterfaceType::Transportable) )  continue;
 
         if (IsObjectBeingTransported(pObj))  continue;
         if ( pObj->GetLock() )  continue;
@@ -777,7 +762,6 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
 {
     CObject     *pBest;
     Math::Vector    iPos, oPos;
-    ObjectType  type;
     float       min, iAngle, bAngle, aLimit, dLimit, f;
 
     iPos   = m_object->GetPosition();
@@ -801,26 +785,7 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
     bAngle = 0.0f;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        type = pObj->GetType();
-
-        if ( type != OBJECT_FRET    &&
-             type != OBJECT_STONE   &&
-             type != OBJECT_URANIUM &&
-             type != OBJECT_BULLET  &&
-             type != OBJECT_METAL   &&
-             type != OBJECT_POWER   &&
-             type != OBJECT_ATOMIC  &&
-             type != OBJECT_BBOX    &&
-             type != OBJECT_KEYa    &&
-             type != OBJECT_KEYb    &&
-             type != OBJECT_KEYc    &&
-             type != OBJECT_KEYd    &&
-             type != OBJECT_TNT     &&
-             type != OBJECT_SCRAP1  &&
-             type != OBJECT_SCRAP2  &&
-             type != OBJECT_SCRAP3  &&
-             type != OBJECT_SCRAP4  &&
-             type != OBJECT_SCRAP5  )  continue;
+        if ( !pObj->Implements(ObjectInterfaceType::Transportable) )  continue;
 
         if (IsObjectBeingTransported(pObj))  continue;
         if ( pObj->GetLock() )  continue;
@@ -865,7 +830,6 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
 {
     CObject     *pBest;
     Math::Vector    iPos, oPos;
-    ObjectType  type;
     float       min, iAngle, bAngle, aLimit, dLimit, f;
 
     iPos   = m_object->GetPosition();
@@ -888,26 +852,7 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
     bAngle = 0.0f;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        type = pObj->GetType();
-
-        if ( type != OBJECT_FRET    &&
-             type != OBJECT_STONE   &&
-             type != OBJECT_URANIUM &&
-             type != OBJECT_BULLET  &&
-             type != OBJECT_METAL   &&
-             type != OBJECT_POWER   &&
-             type != OBJECT_ATOMIC  &&
-             type != OBJECT_BBOX    &&
-             type != OBJECT_KEYa    &&
-             type != OBJECT_KEYb    &&
-             type != OBJECT_KEYc    &&
-             type != OBJECT_KEYd    &&
-             type != OBJECT_TNT     &&
-             type != OBJECT_SCRAP1  &&
-             type != OBJECT_SCRAP2  &&
-             type != OBJECT_SCRAP3  &&
-             type != OBJECT_SCRAP4  &&
-             type != OBJECT_SCRAP5  )  continue;
+        if ( !pObj->Implements(ObjectInterfaceType::Transportable) )  continue;
 
         if (IsObjectBeingTransported(pObj))  continue;
         if ( pObj->GetLock() )  continue;
@@ -983,39 +928,8 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
         if ( pObj == m_object )  continue;  // yourself?
 
         ObjectType type = pObj->GetType();
-        if ( type != OBJECT_MOBILEfa &&
-             type != OBJECT_MOBILEta &&
-             type != OBJECT_MOBILEwa &&
-             type != OBJECT_MOBILEia &&
-             type != OBJECT_MOBILEfc &&
-             type != OBJECT_MOBILEtc &&
-             type != OBJECT_MOBILEwc &&
-             type != OBJECT_MOBILEic &&
-             type != OBJECT_MOBILEfi &&
-             type != OBJECT_MOBILEti &&
-             type != OBJECT_MOBILEwi &&
-             type != OBJECT_MOBILEii &&
-             type != OBJECT_MOBILEfs &&
-             type != OBJECT_MOBILEts &&
-             type != OBJECT_MOBILEws &&
-             type != OBJECT_MOBILEis &&
-             type != OBJECT_MOBILErt &&
-             type != OBJECT_MOBILErc &&
-             type != OBJECT_MOBILErr &&
-             type != OBJECT_MOBILErs &&
-             type != OBJECT_MOBILEsa &&
-             type != OBJECT_MOBILEtg &&
-             type != OBJECT_MOBILEft &&
-             type != OBJECT_MOBILEtt &&
-             type != OBJECT_MOBILEwt &&
-             type != OBJECT_MOBILEit &&
-             type != OBJECT_TOWER    &&
-             type != OBJECT_RESEARCH &&
-             type != OBJECT_ENERGY   &&
-             type != OBJECT_LABO     &&
-             type != OBJECT_NUCLEAR  )  continue;
+        if ( !pObj->Implements(ObjectInterfaceType::Powered) )  continue;
 
-        assert(pObj->Implements(ObjectInterfaceType::Powered));
         CObject* power = dynamic_cast<CPoweredObject*>(pObj)->GetPower();
         if (power != nullptr)
         {

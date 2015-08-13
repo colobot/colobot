@@ -66,15 +66,7 @@ int CSceneCondition::CountObjects()
             if (IsObjectBeingTransported(obj)) continue;
         }
 
-        // TODO: I really hate those fragments that hardcode subcategories into one in random places in code, we should refactor that at some point
         ObjectType type = obj->GetType();
-        if (type == OBJECT_SCRAP2 ||
-            type == OBJECT_SCRAP3 ||
-            type == OBJECT_SCRAP4 ||
-            type == OBJECT_SCRAP5)  // wastes?
-        {
-            type = OBJECT_SCRAP1;
-        }
 
         ToolType tool = GetToolFromObject(type);
         DriveType drive = GetDriveFromObject(type);

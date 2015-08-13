@@ -66,7 +66,6 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_KEYc        )  return "KeyC";
     if ( type == OBJECT_KEYd        )  return "KeyD";
     if ( type == OBJECT_TNT         )  return "TNT";
-    if ( type == OBJECT_SCRAP1      )  return "Scrap";
     if ( type == OBJECT_BOMB        )  return "Mine";
     if ( type == OBJECT_BARRIER1    )  return "Barrier";
     if ( type == OBJECT_WAYPOINT    )  return "WayPoint";
@@ -169,7 +168,6 @@ std::string GetHelpFilename(ObjectType type)
     if ( type == OBJECT_KEYc        )  helpfile = "object/key";
     if ( type == OBJECT_KEYd        )  helpfile = "object/key";
     if ( type == OBJECT_TNT         )  helpfile = "object/tnt";
-    if ( type == OBJECT_SCRAP1      )  helpfile = "object/scrap";
     if ( type == OBJECT_BOMB        )  helpfile = "object/mine";
     if ( type == OBJECT_BARRIER1    )  helpfile = "object/barrier";
     if ( type == OBJECT_WAYPOINT    )  helpfile = "object/waypoint";

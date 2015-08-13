@@ -1921,121 +1921,12 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         if (transporter != nullptr && !transporter->GetActive()) continue;
         if (obj->GetProxyActivate()) continue;
 
-        CObject* target = nullptr;
-        ObjectType type = obj->GetType();
-        if ( type == OBJECT_PORTICO      ||
-             type == OBJECT_BASE         ||
-             type == OBJECT_DERRICK      ||
-             type == OBJECT_FACTORY      ||
-             type == OBJECT_REPAIR       ||
-             type == OBJECT_DESTROYER    ||
-             type == OBJECT_STATION      ||
-             type == OBJECT_CONVERT      ||
-             type == OBJECT_TOWER        ||
-             type == OBJECT_RESEARCH     ||
-             type == OBJECT_RADAR        ||
-             type == OBJECT_INFO         ||
-             type == OBJECT_ENERGY       ||
-             type == OBJECT_LABO         ||
-             type == OBJECT_NUCLEAR      ||
-             type == OBJECT_PARA         ||
-             type == OBJECT_SAFE         ||
-             type == OBJECT_HUSTON       ||
-             type == OBJECT_TARGET1      ||
-             type == OBJECT_TARGET2      ||
-             type == OBJECT_START        ||
-             type == OBJECT_END          ||
-             type == OBJECT_STONE        ||
-             type == OBJECT_URANIUM      ||
-             type == OBJECT_BULLET       ||
-             type == OBJECT_METAL        ||
-             type == OBJECT_BBOX         ||
-             type == OBJECT_KEYa         ||
-             type == OBJECT_KEYb         ||
-             type == OBJECT_KEYc         ||
-             type == OBJECT_KEYd         ||
-             type == OBJECT_TNT          ||
-             type == OBJECT_SCRAP1       ||
-             type == OBJECT_SCRAP2       ||
-             type == OBJECT_SCRAP3       ||
-             type == OBJECT_SCRAP4       ||
-             type == OBJECT_SCRAP5       ||
-             type == OBJECT_BOMB         ||
-             type == OBJECT_BAG          ||
-             type == OBJECT_WAYPOINT     ||
-             type == OBJECT_FLAGb        ||
-             type == OBJECT_FLAGr        ||
-             type == OBJECT_FLAGg        ||
-             type == OBJECT_FLAGy        ||
-             type == OBJECT_FLAGv        ||
-             type == OBJECT_MARKPOWER    ||
-             type == OBJECT_MARKSTONE    ||
-             type == OBJECT_MARKURANIUM  ||
-             type == OBJECT_MARKKEYa     ||
-             type == OBJECT_MARKKEYb     ||
-             type == OBJECT_MARKKEYc     ||
-             type == OBJECT_MARKKEYd     ||
-             type == OBJECT_HUMAN        ||
-             type == OBJECT_TECH         ||
-             type == OBJECT_TOTO         ||
-             type == OBJECT_MOBILEfa     ||
-             type == OBJECT_MOBILEta     ||
-             type == OBJECT_MOBILEwa     ||
-             type == OBJECT_MOBILEia     ||
-             type == OBJECT_MOBILEfc     ||
-             type == OBJECT_MOBILEtc     ||
-             type == OBJECT_MOBILEwc     ||
-             type == OBJECT_MOBILEic     ||
-             type == OBJECT_MOBILEfi     ||
-             type == OBJECT_MOBILEti     ||
-             type == OBJECT_MOBILEwi     ||
-             type == OBJECT_MOBILEii     ||
-             type == OBJECT_MOBILEfs     ||
-             type == OBJECT_MOBILEts     ||
-             type == OBJECT_MOBILEws     ||
-             type == OBJECT_MOBILEis     ||
-             type == OBJECT_MOBILErt     ||
-             type == OBJECT_MOBILErc     ||
-             type == OBJECT_MOBILErr     ||
-             type == OBJECT_MOBILErs     ||
-             type == OBJECT_MOBILEsa     ||
-             type == OBJECT_MOBILEtg     ||
-             type == OBJECT_MOBILEft     ||
-             type == OBJECT_MOBILEtt     ||
-             type == OBJECT_MOBILEwt     ||
-             type == OBJECT_MOBILEit     ||
-             type == OBJECT_MOBILEdr     ||
-             type == OBJECT_MOTHER       ||
-             type == OBJECT_ANT          ||
-             type == OBJECT_SPIDER       ||
-             type == OBJECT_BEE          ||
-             type == OBJECT_WORM         ||
-             type == OBJECT_EGG          ||
-             type == OBJECT_RUINmobilew1 ||
-             type == OBJECT_RUINmobilew2 ||
-             type == OBJECT_RUINmobilet1 ||
-             type == OBJECT_RUINmobilet2 ||
-             type == OBJECT_RUINmobiler1 ||
-             type == OBJECT_RUINmobiler2 ||
-             type == OBJECT_RUINfactory  ||
-             type == OBJECT_RUINdoor     ||
-             type == OBJECT_RUINsupport  ||
-             type == OBJECT_RUINradar    ||
-             type == OBJECT_RUINconvert  ||
-             type == OBJECT_RUINbase     ||
-             type == OBJECT_RUINhead     ||
-             type == OBJECT_APOLLO1      ||
-             type == OBJECT_APOLLO2      ||
-             type == OBJECT_APOLLO3      ||
-             type == OBJECT_APOLLO4      ||
-             type == OBJECT_APOLLO5      )
+        CObject* target = obj;
+        if (obj->GetType() == OBJECT_POWER || obj->GetType() == OBJECT_ATOMIC)
         {
-            target = obj;
-        }
-        else if (type == OBJECT_POWER || type == OBJECT_ATOMIC)
-        {
+            assert(obj->Implements(ObjectInterfaceType::Transportable));
             target = dynamic_cast<CTransportableObject*>(obj)->GetTransporter();  // battery connected
-            if (!target) target = obj; // standalone battery
+            if (target == nullptr) target = obj; // standalone battery
         }
 
         for (int j = 0; j < OBJECTMAXPART; j++)
@@ -2052,74 +1943,24 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
 //! Indicates whether an object is selectable
 bool CRobotMain::IsSelectable(CObject* obj)
 {
+    if (obj->GetType() == OBJECT_TOTO) return true;
     if (!obj->Implements(ObjectInterfaceType::Controllable)) return false;
-    if (!dynamic_cast<CControllableObject*>(obj)->GetSelectable()) return false;
 
-    ObjectType type = obj->GetType();
-    if ( type == OBJECT_HUMAN    ||
-         type == OBJECT_TOTO     ||
-         type == OBJECT_MOBILEfa ||
-         type == OBJECT_MOBILEta ||
-         type == OBJECT_MOBILEwa ||
-         type == OBJECT_MOBILEia ||
-         type == OBJECT_MOBILEfc ||
-         type == OBJECT_MOBILEtc ||
-         type == OBJECT_MOBILEwc ||
-         type == OBJECT_MOBILEic ||
-         type == OBJECT_MOBILEfi ||
-         type == OBJECT_MOBILEti ||
-         type == OBJECT_MOBILEwi ||
-         type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEfs ||
-         type == OBJECT_MOBILEts ||
-         type == OBJECT_MOBILEws ||
-         type == OBJECT_MOBILEis ||
-         type == OBJECT_MOBILErt ||
-         type == OBJECT_MOBILErc ||
-         type == OBJECT_MOBILErr ||
-         type == OBJECT_MOBILErs ||
-         type == OBJECT_MOBILEsa ||
-         type == OBJECT_MOBILEft ||
-         type == OBJECT_MOBILEtt ||
-         type == OBJECT_MOBILEwt ||
-         type == OBJECT_MOBILEit ||
-         type == OBJECT_MOBILEdr ||
-         type == OBJECT_APOLLO2  ||
-         type == OBJECT_BASE     ||
-         type == OBJECT_DERRICK  ||
-         type == OBJECT_FACTORY  ||
-         type == OBJECT_REPAIR   ||
-         type == OBJECT_DESTROYER||
-         type == OBJECT_STATION  ||
-         type == OBJECT_CONVERT  ||
-         type == OBJECT_TOWER    ||
-         type == OBJECT_RESEARCH ||
-         type == OBJECT_RADAR    ||
-         type == OBJECT_INFO     ||
-         type == OBJECT_ENERGY   ||
-         type == OBJECT_LABO     ||
-         type == OBJECT_NUCLEAR  ||
-         type == OBJECT_PARA     ||
-         type == OBJECT_SAFE     ||
-         type == OBJECT_HUSTON   )
+    if (!m_selectInsect)
     {
-        return true;
-    }
-
-    if (m_selectInsect)
-    {
-        if ( type == OBJECT_MOTHER   ||
-             type == OBJECT_ANT      ||
-             type == OBJECT_SPIDER   ||
-             type == OBJECT_BEE      ||
-             type == OBJECT_WORM     ||
-             type == OBJECT_MOBILEtg )
+        // TODO: Some function in CControllableObject
+        if ( obj->GetType() == OBJECT_MOTHER   ||
+             obj->GetType() == OBJECT_ANT      ||
+             obj->GetType() == OBJECT_SPIDER   ||
+             obj->GetType() == OBJECT_BEE      ||
+             obj->GetType() == OBJECT_WORM     ||
+             obj->GetType() == OBJECT_MOBILEtg )
         {
-            return true;
+            return false;
         }
     }
 
-    return false;
+    return dynamic_cast<CControllableObject*>(obj)->GetSelectable();
 }
 
 

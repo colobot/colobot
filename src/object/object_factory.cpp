@@ -147,11 +147,6 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_KEYc:
         case OBJECT_KEYd:
         case OBJECT_TNT:
-        case OBJECT_SCRAP1:
-        case OBJECT_SCRAP2:
-        case OBJECT_SCRAP3:
-        case OBJECT_SCRAP4:
-        case OBJECT_SCRAP5:
         case OBJECT_BOMB:
         case OBJECT_WAYPOINT:
         case OBJECT_SHOW:
@@ -1088,11 +1083,6 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     if ( type == OBJECT_KEYc        )  name = "keyc.mod";
     if ( type == OBJECT_KEYd        )  name = "keyd.mod";
     if ( type == OBJECT_TNT         )  name = "tnt.mod";
-    if ( type == OBJECT_SCRAP1      )  name = "scrap1.mod";
-    if ( type == OBJECT_SCRAP2      )  name = "scrap2.mod";
-    if ( type == OBJECT_SCRAP3      )  name = "scrap3.mod";
-    if ( type == OBJECT_SCRAP4      )  name = "scrap4.mod";
-    if ( type == OBJECT_SCRAP5      )  name = "scrap5.mod";
     if ( type == OBJECT_BOMB        )  name = "bomb.mod";
     if ( type == OBJECT_WAYPOINT    )  name = "waypoint.mod";
     if ( type == OBJECT_SHOW        )  name = "show.mod";

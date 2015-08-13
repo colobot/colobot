@@ -556,12 +556,7 @@ void COldObject::DestroyObject(DestructionType type)
              m_type == OBJECT_ATOMIC  ||
              m_type == OBJECT_BULLET  ||
              m_type == OBJECT_BBOX    ||
-             m_type == OBJECT_TNT     ||
-             m_type == OBJECT_SCRAP1  ||
-             m_type == OBJECT_SCRAP2  ||
-             m_type == OBJECT_SCRAP3  ||
-             m_type == OBJECT_SCRAP4  ||
-             m_type == OBJECT_SCRAP5  )  // (*)
+             m_type == OBJECT_TNT     )  // (*)
         {
             CScriptFunctions::DestroyObjectVar(m_botVar, false);
         }
@@ -696,22 +691,43 @@ void COldObject::SetType(ObjectType type)
     }
 
     // TODO: Another temporary hack
-    if ( m_type == OBJECT_MOTHER   ||
-         m_type == OBJECT_ANT      ||
-         m_type == OBJECT_SPIDER   ||
-         m_type == OBJECT_BEE      ||
-         m_type == OBJECT_WORM     ||
-         m_type == OBJECT_APOLLO2  ||
-         m_type == OBJECT_MOBILEdr ||
-         m_type == OBJECT_CONTROLLER ||
-         m_type == OBJECT_HUMAN    ||
-         m_type == OBJECT_TECH      )
+    if (m_type == OBJECT_MOBILEfa ||
+        m_type == OBJECT_MOBILEta ||
+        m_type == OBJECT_MOBILEwa ||
+        m_type == OBJECT_MOBILEia ||
+        m_type == OBJECT_MOBILEfc ||
+        m_type == OBJECT_MOBILEtc ||
+        m_type == OBJECT_MOBILEwc ||
+        m_type == OBJECT_MOBILEic ||
+        m_type == OBJECT_MOBILEfi ||
+        m_type == OBJECT_MOBILEti ||
+        m_type == OBJECT_MOBILEwi ||
+        m_type == OBJECT_MOBILEii ||
+        m_type == OBJECT_MOBILEfs ||
+        m_type == OBJECT_MOBILEts ||
+        m_type == OBJECT_MOBILEws ||
+        m_type == OBJECT_MOBILEis ||
+        m_type == OBJECT_MOBILErt ||
+        m_type == OBJECT_MOBILErc ||
+        m_type == OBJECT_MOBILErr ||
+        m_type == OBJECT_MOBILErs ||
+        m_type == OBJECT_MOBILEsa ||
+        m_type == OBJECT_MOBILEtg ||
+        m_type == OBJECT_MOBILEft ||
+        m_type == OBJECT_MOBILEtt ||
+        m_type == OBJECT_MOBILEwt ||
+        m_type == OBJECT_MOBILEit ||
+        m_type == OBJECT_TOWER    ||
+        m_type == OBJECT_RESEARCH ||
+        m_type == OBJECT_ENERGY   ||
+        m_type == OBJECT_LABO     ||
+        m_type == OBJECT_NUCLEAR   )
     {
-        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Powered)] = false;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Powered)] = true;
     }
     else
     {
-        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Powered)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Powered)] = false;
     }
 
     // TODO: Hacking some more
@@ -720,11 +736,6 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_POWER    ||
          m_type == OBJECT_ATOMIC   ||
          m_type == OBJECT_TNT      ||
-         m_type == OBJECT_SCRAP1   ||
-         m_type == OBJECT_SCRAP2   ||
-         m_type == OBJECT_SCRAP3   ||
-         m_type == OBJECT_SCRAP4   ||
-         m_type == OBJECT_SCRAP5   ||
          m_type == OBJECT_BULLET   ||
          m_type == OBJECT_EGG      ||
          m_type == OBJECT_BOMB     ||
@@ -802,6 +813,83 @@ void COldObject::SetType(ObjectType type)
 
     // TODO: #TooMuchHacking
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::ShieldedAutoRegen)] = (m_type == OBJECT_HUMAN);
+
+    // TODO: Hacking in progress...
+    if ( m_type == OBJECT_FRET    ||
+         m_type == OBJECT_STONE   ||
+         m_type == OBJECT_URANIUM ||
+         m_type == OBJECT_BULLET  ||
+         m_type == OBJECT_METAL   ||
+         m_type == OBJECT_POWER   ||
+         m_type == OBJECT_ATOMIC  ||
+         m_type == OBJECT_BBOX    ||
+         m_type == OBJECT_KEYa    ||
+         m_type == OBJECT_KEYb    ||
+         m_type == OBJECT_KEYc    ||
+         m_type == OBJECT_KEYd    ||
+         m_type == OBJECT_TNT     )
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Transportable)] = true;
+    }
+    else
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Transportable)] = false;
+    }
+
+    // TODO: You have been hacked!
+    if (m_type == OBJECT_HUMAN    ||
+        m_type == OBJECT_TOTO     ||
+        m_type == OBJECT_MOBILEfa ||
+        m_type == OBJECT_MOBILEta ||
+        m_type == OBJECT_MOBILEwa ||
+        m_type == OBJECT_MOBILEia ||
+        m_type == OBJECT_MOBILEfc ||
+        m_type == OBJECT_MOBILEtc ||
+        m_type == OBJECT_MOBILEwc ||
+        m_type == OBJECT_MOBILEic ||
+        m_type == OBJECT_MOBILEfi ||
+        m_type == OBJECT_MOBILEti ||
+        m_type == OBJECT_MOBILEwi ||
+        m_type == OBJECT_MOBILEii ||
+        m_type == OBJECT_MOBILEfs ||
+        m_type == OBJECT_MOBILEts ||
+        m_type == OBJECT_MOBILEws ||
+        m_type == OBJECT_MOBILEis ||
+        m_type == OBJECT_MOBILErt ||
+        m_type == OBJECT_MOBILErc ||
+        m_type == OBJECT_MOBILErr ||
+        m_type == OBJECT_MOBILErs ||
+        m_type == OBJECT_MOBILEsa ||
+        m_type == OBJECT_MOBILEft ||
+        m_type == OBJECT_MOBILEtt ||
+        m_type == OBJECT_MOBILEwt ||
+        m_type == OBJECT_MOBILEit ||
+        m_type == OBJECT_MOBILEdr ||
+        m_type == OBJECT_APOLLO2  ||
+        m_type == OBJECT_BASE     ||
+        m_type == OBJECT_DERRICK  ||
+        m_type == OBJECT_FACTORY  ||
+        m_type == OBJECT_REPAIR   ||
+        m_type == OBJECT_DESTROYER||
+        m_type == OBJECT_STATION  ||
+        m_type == OBJECT_CONVERT  ||
+        m_type == OBJECT_TOWER    ||
+        m_type == OBJECT_RESEARCH ||
+        m_type == OBJECT_RADAR    ||
+        m_type == OBJECT_INFO     ||
+        m_type == OBJECT_ENERGY   ||
+        m_type == OBJECT_LABO     ||
+        m_type == OBJECT_NUCLEAR  ||
+        m_type == OBJECT_PARA     ||
+        m_type == OBJECT_SAFE     ||
+        m_type == OBJECT_HUSTON   )
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Controllable)] = true;
+    }
+    else
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Controllable)] = false;
+    }
 
 
     if ( m_type == OBJECT_MOBILEwc ||
@@ -2312,11 +2400,6 @@ float COldObject::GetShield()
          m_type == OBJECT_KEYc     ||
          m_type == OBJECT_KEYd     ||
          m_type == OBJECT_TNT      ||
-         m_type == OBJECT_SCRAP1   ||
-         m_type == OBJECT_SCRAP2   ||
-         m_type == OBJECT_SCRAP3   ||
-         m_type == OBJECT_SCRAP4   ||
-         m_type == OBJECT_SCRAP5   ||
          m_type == OBJECT_BOMB     ||
          m_type == OBJECT_WAYPOINT ||
          m_type == OBJECT_FLAGb    ||

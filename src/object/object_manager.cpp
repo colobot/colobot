@@ -305,14 +305,6 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
                 oType = OBJECT_RUINmobilew1;  // any ruin
             }
 
-            if ( oType == OBJECT_SCRAP2 ||
-                oType == OBJECT_SCRAP3 ||
-                oType == OBJECT_SCRAP4 ||
-                oType == OBJECT_SCRAP5 )  // wastes?
-            {
-                oType = OBJECT_SCRAP1;  // any waste
-            }
-
             if ( oType == OBJECT_BARRIER2 ||
                 oType == OBJECT_BARRIER3 )  // barriers?
             {
