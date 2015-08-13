@@ -202,7 +202,16 @@ void CObjectManager::DestroyTeam(int team)
     for (CObject* object : GetAllObjects())
     {
         if (object->GetTeam() == team)
-            object->ExplodeObject(ExplosionType::Bang, 1.0f);
+        {
+            if (object->Implements(ObjectInterfaceType::Destroyable))
+            {
+                dynamic_cast<CDestroyableObject*>(object)->DestroyObject(DestructionType::Explosion);
+            }
+            else
+            {
+                DeleteObject(object);
+            }
+        }
     }
 }
 

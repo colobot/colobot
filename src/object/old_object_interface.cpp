@@ -25,11 +25,6 @@ void COldObjectInterface::Simplify()
     throw std::logic_error("Simplify: not implemented!");
 }
 
-bool COldObjectInterface::ExplodeObject(ExplosionType type, float force)
-{
-    throw std::logic_error("ExplodeObject: not implemented!");
-}
-
 void COldObjectInterface::DeletePart(int part)
 {
     throw std::logic_error("DeletePart: not implemented!");

@@ -43,7 +43,7 @@ enum PyroType
     PT_SHOTT    = 9,        //! < hit technical object
     PT_SHOTH    = 10,       //! < hit human
     PT_SHOTM    = 11,       //! < hit queen
-    PT_SHOTW    = 12,       //! < hit under water
+    PT_SHOTW    = 12,       //! < hit under water (TODO: check if unused)
     PT_EGG      = 13,       //! < break the egg
     PT_BURNT    = 14,       //! < burning of technical object
     PT_BURNO    = 15,       //! < burning of organic object

@@ -68,9 +68,6 @@
 
 
 const float VIRUS_DELAY     = 60.0f;        // duration of virus infection
-const float LOSS_SHIELD     = 0.24f;        // loss of the shield by shot
-const float LOSS_SHIELD_H   = 0.10f;        // loss of the shield for humans
-const float LOSS_SHIELD_M   = 0.02f;        // loss of the shield for the laying
 
 // Object's constructor.
 
@@ -331,192 +328,208 @@ void COldObject::Simplify()
 }
 
 
-// Detonates an object, when struck by a shot.
-// If false is returned, the object is still screwed.
-// If true is returned, the object is destroyed.
-
-bool COldObject::ExplodeObject(ExplosionType type, float force)
+bool COldObject::DamageObject(DamageType type, float force)
 {
-    assert(Implements(ObjectInterfaceType::Destroyable));
-    assert(Implements(ObjectInterfaceType::Shielded) || Implements(ObjectInterfaceType::Fragile));
+    assert(Implements(ObjectInterfaceType::Damageable));
+    assert(!Implements(ObjectInterfaceType::Destroyable) || Implements(ObjectInterfaceType::Shielded) || Implements(ObjectInterfaceType::Fragile));
 
-    if ( type == ExplosionType::Burn )
+    if ( m_bDead )  return false;
+
+    if ( m_type == OBJECT_ANT    ||
+         m_type == OBJECT_WORM   ||
+         m_type == OBJECT_SPIDER ||
+         m_type == OBJECT_BEE     )
     {
-        if ( Implements(ObjectInterfaceType::Fragile) )  // object that isn't burning?
-        {
-            type = ExplosionType::Bang;
-            force = 1.0f;
-        }
+        // Fragile, but can have fire effect
+        // TODO: IsBurnable()
+        force = -1.0f;
+    }
+    else if ( Implements(ObjectInterfaceType::Fragile) )
+    {
+        if ( m_type == OBJECT_BOMB && type != DamageType::Explosive ) return false; // Mine can't be destroyed by shooting
+
+        DestroyObject(DestructionType::Explosion);
+        return true;
     }
 
-    if ( type == ExplosionType::Bang )
+    if ( type != DamageType::Phazer && m_type == OBJECT_MOTHER ) return false; // AlienQueen can be destroyed only by PhazerShooter
+
+    if ( type == DamageType::Organic )
     {
         // TODO: I don't understand, why does it apply damage only once every 0.5 second?
         if ( m_shotTime < 0.5f )  return false;
         m_shotTime = 0.0f;
     }
 
-    if ( m_type == OBJECT_HUMAN && m_bDead )  return false;
-
-    bool deadAlready = true;
     float loss = 1.0f;
-    if ( Implements(ObjectInterfaceType::Shielded) )
+    bool dead = true;
+    if (Implements(ObjectInterfaceType::Shielded))
     {
-        // Calculate the power lost by the explosion.
-        loss = force;
-        if ( loss == 0.0f )
+        float magnifyDamage = m_magnifyDamage * m_main->GetGlobalMagnifyDamage();
+        if (force >= 0)
         {
-            if ( m_type == OBJECT_HUMAN )
+            // Calculate the shield lost by the explosion
+            if ( force == 0.0f ) // use default?
             {
-                loss = LOSS_SHIELD_H;
-            }
-            else if ( m_type == OBJECT_MOTHER )
-            {
-                loss = LOSS_SHIELD_M;
+                if ( m_type == OBJECT_HUMAN || m_type == OBJECT_MOTHER )
+                {
+                    loss = 0.1f;
+                }
+                else
+                {
+                    loss = 0.24f;
+                }
             }
             else
             {
-                loss = LOSS_SHIELD;
+                loss = force;
             }
-        }
-        loss *= m_magnifyDamage;
-        loss *= m_main->GetGlobalMagnifyDamage();
+            loss *= magnifyDamage;
+            if (loss > 1.0f) loss = 1.0f;
 
-        // Decreases the power of the shield.
-        float shield = GetShield();
-        shield -= loss;
-        SetShield(shield);
-
-        deadAlready = (shield <= 0.0f);
-    }
-
-    Gfx::PyroType pyroType = Gfx::PT_NULL;
-    if ( !deadAlready )  // not dead yet?
-    {
-        if ( type == ExplosionType::Water )
-        {
-            if ( m_type == OBJECT_HUMAN )
-            {
-                pyroType = Gfx::PT_SHOTH;
-            }
-            else
-            {
-                pyroType = Gfx::PT_SHOTW;
-            }
+            // Decreases the the shield
+            float shield = GetShield();
+            shield -= loss;
+            SetShield(shield);
         }
         else
         {
-            if ( m_type == OBJECT_HUMAN )
+            if ( magnifyDamage != 0.0f )
             {
-                pyroType = Gfx::PT_SHOTH;
-            }
-            else if ( m_type == OBJECT_MOTHER )
-            {
-                pyroType = Gfx::PT_SHOTM;
-            }
-            else
-            {
-                pyroType = Gfx::PT_SHOTT;
+                // Dead immediately
+                SetShield(0.0f);
             }
         }
+        dead = (GetShield() <= 0.0f);
     }
-    else    // completely dead?
+
+    if (dead && Implements(ObjectInterfaceType::Destroyable))
     {
-        if ( type == ExplosionType::Burn )  // burning?
+        if (type == DamageType::Fire)
         {
-            if ( m_type == OBJECT_MOTHER ||
-                 m_type == OBJECT_ANT    ||
-                 m_type == OBJECT_SPIDER ||
-                 m_type == OBJECT_BEE    ||
-                 m_type == OBJECT_WORM   ||
-                 m_type == OBJECT_BULLET )
-            {
-                pyroType = Gfx::PT_BURNO;
-                SetBurn(true);
-            }
-            else if ( m_type == OBJECT_HUMAN )
-            {
-                pyroType = Gfx::PT_DEADG;
-            }
-            else
-            {
-                pyroType = Gfx::PT_BURNT;
-                SetBurn(true);
-            }
-            SetVirusMode(false);
+            DestroyObject(DestructionType::Burn);
         }
-        else if ( type == ExplosionType::Water )
+        else
         {
-            if ( m_type == OBJECT_HUMAN )
-            {
-                pyroType = Gfx::PT_DEADW;
-            }
-            else
-            {
-                pyroType = Gfx::PT_FRAGW;
-            }
+            DestroyObject(DestructionType::Explosion);
         }
-        else if ( type == ExplosionType::Bang )   // explosion?
-        {
-            if ( m_type == OBJECT_ANT    ||
-                 m_type == OBJECT_SPIDER ||
-                 m_type == OBJECT_BEE    ||
-                 m_type == OBJECT_WORM   )
-            {
-                pyroType = Gfx::PT_EXPLOO;
-            }
-            else if ( m_type == OBJECT_MOTHER ||
-                      m_type == OBJECT_NEST   ||
-                      m_type == OBJECT_BULLET )
-            {
-                pyroType = Gfx::PT_FRAGO;
-            }
-            else if ( m_type == OBJECT_HUMAN )
-            {
-                pyroType = Gfx::PT_DEADG;
-            }
-            else if ( m_type == OBJECT_BASE     ||
-                      m_type == OBJECT_DERRICK  ||
-                      m_type == OBJECT_FACTORY  ||
-                      m_type == OBJECT_STATION  ||
-                      m_type == OBJECT_CONVERT  ||
-                      m_type == OBJECT_REPAIR   ||
-                      m_type == OBJECT_DESTROYER||
-                      m_type == OBJECT_TOWER    ||
-                      m_type == OBJECT_NEST     ||
-                      m_type == OBJECT_RESEARCH ||
-                      m_type == OBJECT_RADAR    ||
-                      m_type == OBJECT_INFO     ||
-                      m_type == OBJECT_ENERGY   ||
-                      m_type == OBJECT_LABO     ||
-                      m_type == OBJECT_NUCLEAR  ||
-                      m_type == OBJECT_PARA     ||
-                      m_type == OBJECT_SAFE     ||
-                      m_type == OBJECT_HUSTON   ||
-                      m_type == OBJECT_START    ||
-                      m_type == OBJECT_END      )  // building?
-            {
-                pyroType = Gfx::PT_FRAGT;
-            }
-            else if ( m_type == OBJECT_MOBILEtg )
-            {
-                pyroType = Gfx::PT_FRAGT;
-            }
-            else
-            {
-                pyroType = Gfx::PT_EXPLOT;
-            }
-
-            loss = 1.0f;
-        }
+        return true;
     }
 
-    if (pyroType != Gfx::PT_NULL)
+    if ( m_type == OBJECT_HUMAN )
     {
-        m_engine->GetPyroManager()->Create(pyroType, this, loss);
+        m_engine->GetPyroManager()->Create(Gfx::PT_SHOTH, this, loss);
+    }
+    else if ( m_type == OBJECT_MOTHER )
+    {
+        m_engine->GetPyroManager()->Create(Gfx::PT_SHOTM, this, loss);
+    }
+    else
+    {
+        m_engine->GetPyroManager()->Create(Gfx::PT_SHOTT, this, loss);
     }
 
-    if ( !deadAlready )  return false;  // not dead yet
+    return false;
+}
+
+void COldObject::DestroyObject(DestructionType type)
+{
+    assert(Implements(ObjectInterfaceType::Destroyable));
+
+    if(type == DestructionType::NoEffect) assert(!!"DestructionType::NoEffect should not be passed to DestroyObject()!");
+    assert(type != DestructionType::Drowned || m_type == OBJECT_HUMAN);
+
+    if ( m_bDead )  return;
+
+    if (Implements(ObjectInterfaceType::Shielded))
+    {
+        SetShield(0.0f);
+    }
+
+    Gfx::PyroType pyroType;
+    if ( type == DestructionType::Explosion )   // explosion?
+    {
+        if ( m_type == OBJECT_ANT    ||
+             m_type == OBJECT_SPIDER ||
+             m_type == OBJECT_BEE    ||
+             m_type == OBJECT_WORM   )
+        {
+            pyroType = Gfx::PT_EXPLOO;
+        }
+        else if ( m_type == OBJECT_MOTHER ||
+                  m_type == OBJECT_NEST   ||
+                  m_type == OBJECT_BULLET )
+        {
+            pyroType = Gfx::PT_FRAGO;
+        }
+        else if ( m_type == OBJECT_HUMAN )
+        {
+            pyroType = Gfx::PT_DEADG;
+        }
+        else if ( m_type == OBJECT_BASE     ||
+                  m_type == OBJECT_DERRICK  ||
+                  m_type == OBJECT_FACTORY  ||
+                  m_type == OBJECT_STATION  ||
+                  m_type == OBJECT_CONVERT  ||
+                  m_type == OBJECT_REPAIR   ||
+                  m_type == OBJECT_DESTROYER||
+                  m_type == OBJECT_TOWER    ||
+                  m_type == OBJECT_NEST     ||
+                  m_type == OBJECT_RESEARCH ||
+                  m_type == OBJECT_RADAR    ||
+                  m_type == OBJECT_INFO     ||
+                  m_type == OBJECT_ENERGY   ||
+                  m_type == OBJECT_LABO     ||
+                  m_type == OBJECT_NUCLEAR  ||
+                  m_type == OBJECT_PARA     ||
+                  m_type == OBJECT_SAFE     ||
+                  m_type == OBJECT_HUSTON   ||
+                  m_type == OBJECT_START    ||
+                  m_type == OBJECT_END      )  // building?
+        {
+            pyroType = Gfx::PT_FRAGT;
+        }
+        else if ( m_type == OBJECT_MOBILEtg )
+        {
+            pyroType = Gfx::PT_FRAGT;
+        }
+        else
+        {
+            pyroType = Gfx::PT_EXPLOT;
+        }
+    }
+    else if ( type == DestructionType::ExplosionWater )
+    {
+        pyroType = Gfx::PT_FRAGW;
+    }
+    else if ( type == DestructionType::Burn )  // burning?
+    {
+        if ( m_type == OBJECT_MOTHER ||
+             m_type == OBJECT_ANT    ||
+             m_type == OBJECT_SPIDER ||
+             m_type == OBJECT_BEE    ||
+             m_type == OBJECT_WORM   ||
+             m_type == OBJECT_BULLET )
+        {
+            pyroType = Gfx::PT_BURNO;
+            SetBurn(true);
+        }
+        else if ( m_type == OBJECT_HUMAN )
+        {
+            pyroType = Gfx::PT_DEADG;
+        }
+        else
+        {
+            pyroType = Gfx::PT_BURNT;
+            SetBurn(true);
+        }
+        SetVirusMode(false);
+    }
+    else if ( type == DestructionType::Drowned )
+    {
+        pyroType = Gfx::PT_DEADW;
+    }
+    m_engine->GetPyroManager()->Create(pyroType, this);
 
     if ( Implements(ObjectInterfaceType::Programmable) )
     {
@@ -553,8 +566,6 @@ bool COldObject::ExplodeObject(ExplosionType type, float force)
             CScriptFunctions::DestroyObjectVar(m_botVar, false);
         }
     }
-
-    return true;
 }
 
 // (*)  If a robot or cosmonaut dies, the subject must continue to exist,
@@ -715,13 +726,19 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_SCRAP4   ||
          m_type == OBJECT_SCRAP5   ||
          m_type == OBJECT_BULLET   ||
-         m_type == OBJECT_EGG       )
+         m_type == OBJECT_EGG      ||
+         m_type == OBJECT_BOMB     ||
+         m_type == OBJECT_ANT      ||
+         m_type == OBJECT_WORM     ||
+         m_type == OBJECT_SPIDER   ||
+         m_type == OBJECT_BEE       )
     {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = false;
     }
-    else if( m_type == OBJECT_HUMAN ||
+    else if (m_type == OBJECT_HUMAN ||
          m_type == OBJECT_MOBILEfa ||
          m_type == OBJECT_MOBILEta ||
          m_type == OBJECT_MOBILEwa ||
@@ -743,7 +760,6 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILErr ||
          m_type == OBJECT_MOBILErs ||
          m_type == OBJECT_MOBILEsa ||
-         m_type == OBJECT_MOBILEtg ||
          m_type == OBJECT_MOBILEft ||
          m_type == OBJECT_MOBILEtt ||
          m_type == OBJECT_MOBILEwt ||
@@ -761,11 +777,21 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_ENERGY   ||
          m_type == OBJECT_LABO     ||
          m_type == OBJECT_NUCLEAR  ||
-         m_type == OBJECT_PARA      )
+         m_type == OBJECT_PARA     ||
+         m_type == OBJECT_MOTHER    )
     {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = false;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = true;
+    }
+    else if (m_type == OBJECT_HUSTON ||
+             m_type == OBJECT_BASE    )
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = false;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = false;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = false;
     }
     else
     {
@@ -3328,5 +3354,65 @@ float COldObject::GetShieldFullRegenTime()
 {
     if (m_type == OBJECT_HUMAN) return 120.0f;
     assert(false);
+    return 0.0f;
+}
+
+float COldObject::GetLightningHitProbability()
+{
+    if ( m_type == OBJECT_BASE     ||
+         m_type == OBJECT_DERRICK  ||
+         m_type == OBJECT_FACTORY  ||
+         m_type == OBJECT_REPAIR   ||
+         m_type == OBJECT_DESTROYER||
+         m_type == OBJECT_STATION  ||
+         m_type == OBJECT_CONVERT  ||
+         m_type == OBJECT_TOWER    ||
+         m_type == OBJECT_RESEARCH ||
+         m_type == OBJECT_RADAR    ||
+         m_type == OBJECT_INFO     ||
+         m_type == OBJECT_ENERGY   ||
+         m_type == OBJECT_LABO     ||
+         m_type == OBJECT_NUCLEAR  ||
+         m_type == OBJECT_PARA     ||
+         m_type == OBJECT_SAFE     ||
+         m_type == OBJECT_HUSTON   )  // building?
+    {
+        return 1.0f;
+    }
+    if ( m_type == OBJECT_METAL    ||
+         m_type == OBJECT_POWER    ||
+         m_type == OBJECT_ATOMIC   ) // resource?
+    {
+        return 0.3f;
+    }
+    if ( m_type == OBJECT_MOBILEfa ||
+         m_type == OBJECT_MOBILEta ||
+         m_type == OBJECT_MOBILEwa ||
+         m_type == OBJECT_MOBILEia ||
+         m_type == OBJECT_MOBILEfc ||
+         m_type == OBJECT_MOBILEtc ||
+         m_type == OBJECT_MOBILEwc ||
+         m_type == OBJECT_MOBILEic ||
+         m_type == OBJECT_MOBILEfi ||
+         m_type == OBJECT_MOBILEti ||
+         m_type == OBJECT_MOBILEwi ||
+         m_type == OBJECT_MOBILEii ||
+         m_type == OBJECT_MOBILEfs ||
+         m_type == OBJECT_MOBILEts ||
+         m_type == OBJECT_MOBILEws ||
+         m_type == OBJECT_MOBILEis ||
+         m_type == OBJECT_MOBILErt ||
+         m_type == OBJECT_MOBILErc ||
+         m_type == OBJECT_MOBILErr ||
+         m_type == OBJECT_MOBILErs ||
+         m_type == OBJECT_MOBILEsa ||
+         m_type == OBJECT_MOBILEft ||
+         m_type == OBJECT_MOBILEtt ||
+         m_type == OBJECT_MOBILEwt ||
+         m_type == OBJECT_MOBILEit ||
+         m_type == OBJECT_MOBILEdr )  // robot?
+    {
+        return 0.5f;
+    }
     return 0.0f;
 }

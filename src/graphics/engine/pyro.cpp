@@ -2198,55 +2198,7 @@ CObject* CPyro::FallSearchBeeExplo()
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        ObjectType oType = obj->GetType();
-        if ( oType != OBJECT_HUMAN    &&
-             oType != OBJECT_MOBILEfa &&
-             oType != OBJECT_MOBILEta &&
-             oType != OBJECT_MOBILEwa &&
-             oType != OBJECT_MOBILEia &&
-             oType != OBJECT_MOBILEfc &&
-             oType != OBJECT_MOBILEtc &&
-             oType != OBJECT_MOBILEwc &&
-             oType != OBJECT_MOBILEic &&
-             oType != OBJECT_MOBILEfi &&
-             oType != OBJECT_MOBILEti &&
-             oType != OBJECT_MOBILEwi &&
-             oType != OBJECT_MOBILEii &&
-             oType != OBJECT_MOBILEfs &&
-             oType != OBJECT_MOBILEts &&
-             oType != OBJECT_MOBILEws &&
-             oType != OBJECT_MOBILEis &&
-             oType != OBJECT_MOBILErt &&
-             oType != OBJECT_MOBILErc &&
-             oType != OBJECT_MOBILErr &&
-             oType != OBJECT_MOBILErs &&
-             oType != OBJECT_MOBILEsa &&
-             oType != OBJECT_MOBILEtg &&
-             oType != OBJECT_MOBILEft &&
-             oType != OBJECT_MOBILEtt &&
-             oType != OBJECT_MOBILEwt &&
-             oType != OBJECT_MOBILEit &&
-             oType != OBJECT_MOBILEdr &&
-             oType != OBJECT_BASE     &&
-             oType != OBJECT_DERRICK  &&
-             oType != OBJECT_STATION  &&
-             oType != OBJECT_FACTORY  &&
-             oType != OBJECT_REPAIR   &&
-             oType != OBJECT_DESTROYER&&
-             oType != OBJECT_CONVERT  &&
-             oType != OBJECT_TOWER    &&
-             oType != OBJECT_RESEARCH &&
-             oType != OBJECT_RADAR    &&
-             oType != OBJECT_INFO     &&
-             oType != OBJECT_ENERGY   &&
-             oType != OBJECT_LABO     &&
-             oType != OBJECT_NUCLEAR  &&
-             oType != OBJECT_PARA     &&
-             oType != OBJECT_SAFE     &&
-             oType != OBJECT_HUSTON   &&
-             oType != OBJECT_METAL    &&
-             oType != OBJECT_POWER    &&
-             oType != OBJECT_ATOMIC   )  continue;
+        if ( obj->Implements(ObjectInterfaceType::Destroyable) )  continue;
 
         if (IsObjectBeingTransported(obj)) continue;
 
@@ -2260,7 +2212,7 @@ CObject* CPyro::FallSearchBeeExplo()
                 return obj;
         }
 
-        if ( oType == OBJECT_BASE )
+        if ( obj->GetType() == OBJECT_BASE )
         {
             float distance = Math::Distance(oPos, bulletCrashSphere.sphere.pos);
             if (distance < 25.0f)
@@ -2317,7 +2269,8 @@ void CPyro::FallProgress(float rTime)
             {
                 if (floor)  // reaches the ground?
                 {
-                    m_object->ExplodeObject(ExplosionType::Bang, 0.0f);  // start explosion
+                    assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+                    dynamic_cast<CDestroyableObject*>(m_object)->DestroyObject(DestructionType::Explosion);
                 }
             }
             else
@@ -2332,13 +2285,15 @@ void CPyro::FallProgress(float rTime)
                 }
                 else
                 {
-                    if (obj->ExplodeObject(ExplosionType::Bang, 1.0f))  // start explosion
+                    assert(obj->Implements(ObjectInterfaceType::Damageable));
+                    if (dynamic_cast<CDamageableObject*>(obj)->DamageObject(DamageType::FallingObject))
                     {
                         DeleteObject(true, true);  // removes the ball
                     }
                     else
                     {
-                        m_object->ExplodeObject(ExplosionType::Bang, 0.0f);  // start explosion
+                        assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+                        dynamic_cast<CDestroyableObject*>(m_object)->DestroyObject(DestructionType::Explosion);
                     }
                 }
             }

@@ -47,6 +47,7 @@ enum class ObjectInterfaceType
     PowerContainer, //!< objects that hold power
     Ranged, //!< objects that have a operation range to be displayed after pressing button in the UI
     TraceDrawing, //!< objects that can draw wheel trace
+    Damageable, //!< objects that generate particles when hit
     Destroyable, //!< objects that can be destroyed (base for Shielded and Fragile)
     Fragile, //!< objects that are destroyed immediately after hit
     Shielded, //!< objects that can be destroyed after the shield goes down to 0

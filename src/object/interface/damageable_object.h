@@ -1,0 +1,53 @@
+/*
+ * This file is part of the Colobot: Gold Edition source code
+ * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * http://epsiteс.ch; http://colobot.info; http://github.com/colobot
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://gnu.org/licenses
+ */
+
+#pragma once
+
+#include "object/object_interface_type.h"
+
+enum class DamageType
+{
+    Fire          = 1, //!< fire damage (AlienSpider or Shooter), burns on destruction
+    Organic       = 2, //!< organical damage (AlienAnt or OrgaShooter), explodes on destruction
+    Phazer        = 3, //!< damage from PhazerShooter, explodes on destruction
+    Tower         = 4, //!< damage from DefenseTower, explodes on destruction
+    FallingObject = 5, //!< damaged by an falling object (OrgaMatter dropped by an AlienWasp), explodes on destruction
+    Explosive     = 6, //!< destroyed by an explosive, explodes on destruction
+    Collision     = 7, //!< damage after one object hits another, explodes on destruction
+    Lightning     = 8, //!< struck by lightning, explodes on destruction
+    Fall          = 9, //!< fall damage, explodes on destruction
+};
+
+/**
+ * \class CDamageableObject
+ * \brief Interface for objects that generate particles when hit
+ */
+class CDamageableObject
+{
+public:
+    explicit CDamageableObject(ObjectInterfaceTypes& types)
+    {
+        types[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
+    }
+    virtual ~CDamageableObject()
+    {}
+
+    //! Damage the object, with the given force. Returns true if the object has been fully destroyed (if the object is destroyable). force < 0 => destroy immediately (default), force == 0 => default damage values
+    virtual bool DamageObject(DamageType type, float force = -1.0f) = 0;
+};

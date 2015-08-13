@@ -19,7 +19,16 @@
 
 #pragma once
 
-#include "object/object_interface_type.h"
+#include "object/interface/damageable_object.h"
+
+enum class DestructionType
+{
+    NoEffect       = 0, //!< no effect, just disappear (only for MissionController constants, do not actually pass this to DestroyObject)
+    Explosion      = 1, //!< explosion
+    ExplosionWater = 2, //!< explosion underwater
+    Burn           = 3, //!< burning
+    Drowned        = 4, //!< drowned (only for Me)
+};
 
 /**
  * \class CDestroyableObject
@@ -27,13 +36,20 @@
  *
  * NOTE: None of the objects should inherit this class directly. Instead, inherit one of the subclasses (CShieldedObject or CFragileObject)
  */
-class CDestroyableObject
+class CDestroyableObject : public CDamageableObject
 {
 public:
     explicit CDestroyableObject(ObjectInterfaceTypes& types)
+        : CDamageableObject(types)
     {
         types[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
     }
     virtual ~CDestroyableObject()
     {}
+
+    //! Destroy the object immediately. Use this only if you are 100% sure this is what you want, because object with magnifyDamage=0 should be able to bypass all damage. It's recommended to use CDamageableObject::DamageObject() instead.
+    virtual void DestroyObject(DestructionType type) = 0;
+
+    //! Returns the distance modifier for lightning, used to modify hit probability. Value in range [0..1], where 0 is never and 1 is normal probability
+    virtual float GetLightningHitProbability() = 0;
 };

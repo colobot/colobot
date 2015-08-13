@@ -175,8 +175,8 @@ bool CAutoDestroyer::EventProcess(const Event &event)
             scrap = SearchPlastic();
             if ( scrap != nullptr )
             {
-                //m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, scrap);
-                scrap->ExplodeObject(ExplosionType::Bang, 1.0f);
+                assert(scrap->Implements(ObjectInterfaceType::Destroyable));
+                dynamic_cast<CDestroyableObject*>(scrap)->DestroyObject(DestructionType::Explosion);
             }
             m_bExplo = true;
         }
@@ -283,57 +283,9 @@ CObject* CAutoDestroyer::SearchPlastic()
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        ObjectType type = obj->GetType();
-        //if ( type != OBJECT_SCRAP4 &&
-        //     type != OBJECT_SCRAP5 )  continue;
-        if ( type != OBJECT_FRET     &&
-             type != OBJECT_STONE    &&
-             type != OBJECT_URANIUM  &&
-             type != OBJECT_METAL    &&
-             type != OBJECT_POWER    &&
-             type != OBJECT_ATOMIC   &&
-             type != OBJECT_TNT      &&
-             type != OBJECT_SCRAP1   &&
-             type != OBJECT_SCRAP2   &&
-             type != OBJECT_SCRAP3   &&
-             type != OBJECT_SCRAP4   &&
-             type != OBJECT_SCRAP5   &&
-             // Robots:
-             type != OBJECT_HUMAN    &&
-             type != OBJECT_MOBILEfa &&
-             type != OBJECT_MOBILEta &&
-             type != OBJECT_MOBILEwa &&
-             type != OBJECT_MOBILEia &&
-             type != OBJECT_MOBILEfc &&
-             type != OBJECT_MOBILEtc &&
-             type != OBJECT_MOBILEwc &&
-             type != OBJECT_MOBILEic &&
-             type != OBJECT_MOBILEfi &&
-             type != OBJECT_MOBILEti &&
-             type != OBJECT_MOBILEwi &&
-             type != OBJECT_MOBILEii &&
-             type != OBJECT_MOBILEfs &&
-             type != OBJECT_MOBILEts &&
-             type != OBJECT_MOBILEws &&
-             type != OBJECT_MOBILEis &&
-             type != OBJECT_MOBILErt &&
-             type != OBJECT_MOBILErc &&
-             type != OBJECT_MOBILErr &&
-             type != OBJECT_MOBILErs &&
-             type != OBJECT_MOBILEsa &&
-             type != OBJECT_MOBILEtg &&
-             type != OBJECT_MOBILEft &&
-             type != OBJECT_MOBILEtt &&
-             type != OBJECT_MOBILEwt &&
-             type != OBJECT_MOBILEit &&
-             type != OBJECT_MOBILEdr &&
-             type != OBJECT_MOTHER   &&
-             type != OBJECT_ANT      &&
-             type != OBJECT_SPIDER   &&
-             type != OBJECT_BEE      &&
-             type != OBJECT_WORM      ) continue;
-
-
+        if (!obj->Implements(ObjectInterfaceType::Destroyable)) continue;
+        if (obj->GetType() == OBJECT_HUMAN || obj->GetType() == OBJECT_TECH) continue;
+        
         Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);
         if ( dist <= 5.0f )  return obj;

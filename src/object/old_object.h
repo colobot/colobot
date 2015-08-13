@@ -105,7 +105,9 @@ public:
     ~COldObject();
 
     void        Simplify() override;
-    bool        ExplodeObject(ExplosionType type, float force = 1.0f) override;
+
+    bool        DamageObject(DamageType type, float force = -1.0f) override;
+    void        DestroyObject(DestructionType type) override;
 
     bool EventProcess(const Event& event) override;
     void        UpdateMapping();
@@ -320,6 +322,8 @@ public:
 
     bool        IsRepairable() override;
     float       GetShieldFullRegenTime() override;
+
+    float       GetLightningHitProbability() override;
 
 protected:
     bool        EventFrame(const Event &event);

@@ -46,6 +46,7 @@
 #include "object/auto/autobase.h"
 #include "object/auto/autofactory.h"
 
+#include "object/interface/destroyable_object.h"
 #include "object/interface/programmable_object.h"
 #include "object/interface/task_executor_object.h"
 #include "object/interface/trace_drawing_object.h"
@@ -886,25 +887,19 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     return true;
 }
 
-// Compilation of the instruction "delete(rank[, exploType[, force]])".
+// Compilation of the instruction "delete(rank[, exploType])".
 
 CBotTypResult CScriptFunctions::cDelete(CBotVar* &var, void* user)
 {
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
 
-    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    if ( var->GetType() != CBotTypInt )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
     if ( var != 0 )
     {
         if ( var->GetType() != CBotTypInt ) return CBotTypResult(CBotErrBadNum);
         var = var->GetNext();
-
-        if ( var != 0 )
-        {
-            if ( var->GetType() > CBotTypDouble ) return CBotTypResult(CBotErrBadNum);
-            var = var->GetNext();
-        }
     }
 
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
@@ -912,23 +907,18 @@ CBotTypResult CScriptFunctions::cDelete(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypFloat);
 }
 
-// Instruction "delete(rank[, exploType[, force]])".
+// Instruction "delete(rank[, exploType])".
 
 bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    int         exploType = 0;
-    float       force = 1.0f;
+    int rank;
+    DestructionType exploType = DestructionType::Explosion;
 
-    int rank = var->GetValInt();
+    rank = var->GetValInt();
     var->GetNext();
     if ( var != 0 )
     {
-        exploType = var->GetValInt();
-        var->GetNext();
-        if ( var != 0 )
-        {
-            force = var->GetValFloat();
-        }
+        exploType = static_cast<DestructionType>(var->GetValInt());
     }
 
     CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
@@ -938,9 +928,9 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
     }
     else
     {
-        if ( exploType != 0 )
+        if ( exploType != DestructionType::NoEffect && obj->Implements(ObjectInterfaceType::Destroyable) )
         {
-            obj->ExplodeObject(static_cast<ExplosionType>(exploType), force);
+            dynamic_cast<CDestroyableObject*>(obj)->DestroyObject(static_cast<DestructionType>(exploType));
         }
         else
         {
@@ -3624,10 +3614,11 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("FilterEnemy",       FILTER_ENEMY);
     CBotProgram::DefineNum("FilterNeutral",     FILTER_NEUTRAL);
 
-    CBotProgram::DefineNum("ExplosionNone",  0);
-    CBotProgram::DefineNum("ExplosionBang",  static_cast<int>(ExplosionType::Bang));
-    CBotProgram::DefineNum("ExplosionBurn",  static_cast<int>(ExplosionType::Burn));
-    CBotProgram::DefineNum("ExplosionWater", static_cast<int>(ExplosionType::Water));
+    CBotProgram::DefineNum("DestructionNone",           static_cast<int>(DestructionType::NoEffect));
+    CBotProgram::DefineNum("DestructionExplosion",      static_cast<int>(DestructionType::Explosion));
+    CBotProgram::DefineNum("DestructionExplosionWater", static_cast<int>(DestructionType::ExplosionWater));
+    CBotProgram::DefineNum("DestructionBurn",           static_cast<int>(DestructionType::Burn));
+    CBotProgram::DefineNum("DestructionDrowned",        static_cast<int>(DestructionType::Drowned));
 
     CBotProgram::DefineNum("ResultNotEnded",  ERR_MISSION_NOTERM);
     CBotProgram::DefineNum("ResultLost",      INFO_LOST);

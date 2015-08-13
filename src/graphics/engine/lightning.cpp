@@ -37,6 +37,7 @@
 
 #include "object/auto/autopowercaptor.h"
 
+#include "object/interface/destroyable_object.h"
 #include "object/interface/transportable_object.h"
 
 
@@ -103,6 +104,7 @@ bool CLightning::EventFrame(const Event &event)
                 m_pos = obj->GetPosition();
                 m_terrain->AdjustToFloor(m_pos, true);
 
+                // TODO: CLightningConductorObject
                 ObjectType type = obj->GetType();
                 if (type == OBJECT_BASE)
                 {
@@ -118,7 +120,8 @@ bool CLightning::EventFrame(const Event &event)
                 }
                 else
                 {
-                    obj->ExplodeObject(ExplosionType::Bang, 1.0f);
+                    assert(obj->Implements(ObjectInterfaceType::Destroyable));
+                    dynamic_cast<CDestroyableObject*>(obj)->DamageObject(DamageType::Lightning);
                 }
             }
 
@@ -329,64 +332,12 @@ CObject* CLightning::SearchObject(Math::Vector pos)
         {
             paraObj.push_back(obj);
             paraObjPos.push_back(obj->GetPosition());
+            continue;
         }
 
-        float detect = 0.0f;
-        if ( type == OBJECT_BASE     ||
-             type == OBJECT_DERRICK  ||
-             type == OBJECT_FACTORY  ||
-             type == OBJECT_REPAIR   ||
-             type == OBJECT_DESTROYER||
-             type == OBJECT_STATION  ||
-             type == OBJECT_CONVERT  ||
-             type == OBJECT_TOWER    ||
-             type == OBJECT_RESEARCH ||
-             type == OBJECT_RADAR    ||
-             type == OBJECT_INFO     ||
-             type == OBJECT_ENERGY   ||
-             type == OBJECT_LABO     ||
-             type == OBJECT_NUCLEAR  ||
-             type == OBJECT_PARA     ||
-             type == OBJECT_SAFE     ||
-             type == OBJECT_HUSTON   )
-        {
-            detect = m_magnetic;
-        }
-        if ( type == OBJECT_METAL    ||
-             type == OBJECT_POWER    ||
-             type == OBJECT_ATOMIC   )
-        {
-            detect = m_magnetic*0.3f;
-        }
-        if ( type == OBJECT_MOBILEfa ||
-             type == OBJECT_MOBILEta ||
-             type == OBJECT_MOBILEwa ||
-             type == OBJECT_MOBILEia ||
-             type == OBJECT_MOBILEfc ||
-             type == OBJECT_MOBILEtc ||
-             type == OBJECT_MOBILEwc ||
-             type == OBJECT_MOBILEic ||
-             type == OBJECT_MOBILEfi ||
-             type == OBJECT_MOBILEti ||
-             type == OBJECT_MOBILEwi ||
-             type == OBJECT_MOBILEii ||
-             type == OBJECT_MOBILEfs ||
-             type == OBJECT_MOBILEts ||
-             type == OBJECT_MOBILEws ||
-             type == OBJECT_MOBILEis ||
-             type == OBJECT_MOBILErt ||
-             type == OBJECT_MOBILErc ||
-             type == OBJECT_MOBILErr ||
-             type == OBJECT_MOBILErs ||
-             type == OBJECT_MOBILEsa ||
-             type == OBJECT_MOBILEft ||
-             type == OBJECT_MOBILEtt ||
-             type == OBJECT_MOBILEwt ||
-             type == OBJECT_MOBILEit ||
-             type == OBJECT_MOBILEdr )
-        {
-            detect = m_magnetic*0.5f;
-        }
+        if (!obj->Implements(ObjectInterfaceType::Destroyable)) continue;
+
+        float detect = m_magnetic * dynamic_cast<CDestroyableObject*>(obj)->GetLightningHitProbability();
         if (detect == 0.0f) continue;
 
         Math::Vector oPos = obj->GetPosition();

@@ -38,6 +38,8 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 
+#include "object/interface/damageable_object.h"
+
 #include <cstring>
 
 
@@ -62,12 +64,6 @@ bool IsAlien(ObjectType type)
              type == OBJECT_BULLET   ||
              type == OBJECT_EGG      ||
              type == OBJECT_MOBILEtg );
-}
-
-//! Check if an object can be destroyed, but is not an enemy
-bool IsSoft(CObject* object)
-{
-    return object->Implements(ObjectInterfaceType::Destroyable) && !IsAlien(object->GetType());
 }
 
 CParticle::CParticle(CEngine* engine)
@@ -953,10 +949,8 @@ void CParticle::FrameParticle(float rTime)
             m_particle[i].goal = m_particle[i].pos;
             if (object != nullptr)
             {
-                if (object->GetType() == OBJECT_MOTHER)
-                    object->ExplodeObject(ExplosionType::Bang, 0.1f);
-                else
-                    object->ExplodeObject(ExplosionType::Bang, 0.0f);
+                assert(object->Implements(ObjectInterfaceType::Damageable));
+                dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Phazer, 0.0f);
             }
 
             m_particle[i].zoom = 1.0f-(m_particle[i].time-m_particle[i].duration);
@@ -1157,7 +1151,8 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    object->ExplodeObject(ExplosionType::Burn, 0.0f);
+                    assert(object->Implements(ObjectInterfaceType::Damageable));
+                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire, 0.0f);
 
                     m_exploGunCounter++;
 
@@ -1238,7 +1233,8 @@ void CParticle::FrameParticle(float rTime)
                         if (object->GetType() != OBJECT_HUMAN)
                             Play(SOUND_TOUCH, m_particle[i].pos, 1.0f);
 
-                        object->ExplodeObject(ExplosionType::Bang, 0.0f);  // starts explosion
+                        assert(object->Implements(ObjectInterfaceType::Damageable));
+                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.0f);  // starts explosion
                     }
                 }
             }
@@ -1280,7 +1276,8 @@ void CParticle::FrameParticle(float rTime)
                     }
                     else
                     {
-                        object->ExplodeObject(ExplosionType::Burn, 1.0f);  // starts explosion
+                        assert(object->Implements(ObjectInterfaceType::Damageable));
+                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire);  // starts explosion
                     }
                 }
             }
@@ -1336,7 +1333,8 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    object->ExplodeObject(ExplosionType::Bang, 0.0f);
+                    assert(object->Implements(ObjectInterfaceType::Damageable));
+                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.0f);
 
                     m_exploGunCounter ++;
 
@@ -2411,7 +2409,10 @@ void CParticle::FrameParticle(float rTime)
                 CObject* object = SearchObjectRay(m_particle[i].pos, m_particle[i].goal,
                                          m_particle[i].type, m_particle[i].objFather);
                 if (object != nullptr)
-                    object->ExplodeObject(ExplosionType::Bang, 0.0f);
+                {
+                    assert(object->Implements(ObjectInterfaceType::Damageable));
+                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Tower);
+                }
             }
 
             ts.x = 0.00f;
@@ -3589,29 +3590,27 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
         if (type == PARTIGUN1)  // fireball shooting?
         {
             if (oType == OBJECT_MOTHER)  continue;
-            if (!obj->Implements(ObjectInterfaceType::Destroyable))  continue;
         }
         else if (type == PARTIGUN2)  // shooting insect?
         {
-            if (!IsSoft(obj))  continue;
+            if (IsAlien(obj->GetType()))  continue;
         }
         else if (type == PARTIGUN3)  // suiciding spider?
         {
-            if (!IsSoft(obj))  continue;
+            if (!IsAlien(obj->GetType()))  continue;
         }
         else if (type == PARTIGUN4)  // orgaball shooting?
         {
             if (oType == OBJECT_MOTHER)  continue;
-            if (!obj->Implements(ObjectInterfaceType::Destroyable))  continue;
         }
         else if (type == PARTITRACK11)  // phazer shooting?
         {
-            if (!obj->Implements(ObjectInterfaceType::Destroyable))  continue;
         }
         else
         {
             continue;
         }
+        if (!obj->Implements(ObjectInterfaceType::Damageable))  continue;
 
         Math::Vector oPos = obj->GetPosition();
 

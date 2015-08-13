@@ -1573,7 +1573,7 @@ bool CPhysics::EventFrame(const Event &event)
     if ( m_bLand && m_fallingHeight != 0.0f ) // if fell
     {
         float force = (m_fallingHeight - m_object->GetPosition().y) * m_fallDamageFraction;
-        m_object->ExplodeObject(ExplosionType::Bang, force);
+        m_object->DamageObject(DamageType::Fall, force);
         m_fallingHeight = 0.0f;
     }
 
@@ -1775,10 +1775,13 @@ void CPhysics::WaterFrame(float aTime, float rTime)
 
     if ( !m_object->GetActive() )  return;
 
-    if ( m_water->GetLava()      ||
-         (type == OBJECT_HUMAN   &&
-          m_object->GetOption() != 0 ) ||  // human without a helmet?
-         type == OBJECT_MOBILEfa ||
+    if (type == OBJECT_HUMAN && m_object->GetOption() != 0 )  // human without a helmet?)
+    {
+        assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+        dynamic_cast<CDestroyableObject*>(m_object)->DestroyObject(DestructionType::Drowned);
+    }
+    else if ( m_water->GetLava() ||
+         type == OBJECT_MOBILEfa || // TODO: A function in CObject to check if object is waterproof or not
          type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEia ||
@@ -1803,9 +1806,12 @@ void CPhysics::WaterFrame(float aTime, float rTime)
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
          type == OBJECT_MOBILEdr ||
-         type == OBJECT_APOLLO2  )  // vehicle not underwater?
+         type == OBJECT_APOLLO2  )
     {
-        m_object->ExplodeObject(ExplosionType::Water, 1.0f);  // starts explosion
+        if (m_object->Implements(ObjectInterfaceType::Destroyable))
+        {
+            dynamic_cast<CDestroyableObject*>(m_object)->DestroyObject(DestructionType::ExplosionWater);
+        }
     }
 }
 
@@ -2697,91 +2703,78 @@ bool CPhysics::ExploOther(ObjectType iType,
 {
     JostleObject(pObj, 1.0f);  // shakes the object
 
-    if ( force > 50.0f &&
-         (oType == OBJECT_FRET  ||
-          oType == OBJECT_METAL ) )
+    if (pObj->Implements(ObjectInterfaceType::Fragile))
     {
-        m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, pObj);  // total destruction
+        // TODO: CFragileObject::GetDestructionForce (I can't do this now because you can't inherit both in COldObject ~krzys_h)
+        DamageType damageType = DamageType::Collision;
+        float destructionForce = 50.0f; // Titanium, PowerCell, NuclearCell, default
+        if (pObj->GetType() == OBJECT_STONE   ) { destructionForce = 25.0f; } // TitaniumOre
+        if (pObj->GetType() == OBJECT_URANIUM ) { destructionForce = 25.0f; } // UraniumOre
+        if (pObj->GetType() == OBJECT_MOBILEtg) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // TargetBot
+        if (pObj->GetType() == OBJECT_TNT     ) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // TNT
+        if (pObj->GetType() == OBJECT_BOMB    ) { destructionForce =  0.0f; damageType = DamageType::Explosive; } // Mine
+
+        if ( force > destructionForce )
+        {
+            dynamic_cast<CDamageableObject*>(pObj)->DamageObject(damageType);
+        }
     }
 
-    if ( force > 50.0f &&
-         (oType == OBJECT_POWER   ||
-          oType == OBJECT_ATOMIC  ) )
+    if ( force > 25.0f )
     {
-        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // total destruction
-    }
+        // TODO: Some function in CShieldedObject. GetCollisionResistance()?
+        if (oType == OBJECT_DERRICK  ||
+            oType == OBJECT_FACTORY  ||
+            oType == OBJECT_STATION  ||
+            oType == OBJECT_CONVERT  ||
+            oType == OBJECT_REPAIR   ||
+            oType == OBJECT_DESTROYER||
+            oType == OBJECT_TOWER    ||
+            oType == OBJECT_RESEARCH ||
+            oType == OBJECT_RADAR    ||
+            oType == OBJECT_INFO     ||
+            oType == OBJECT_ENERGY   ||
+            oType == OBJECT_LABO     ||
+            oType == OBJECT_NUCLEAR  ||
+            oType == OBJECT_PARA     ||
+            oType == OBJECT_SAFE     ||
+            oType == OBJECT_HUSTON    )  // building?
+        {
+            assert(pObj->Implements(ObjectInterfaceType::Damageable));
+            dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Collision, force/400.0f);
+        }
 
-    if ( force > 25.0f &&
-         (oType == OBJECT_STONE   ||
-          oType == OBJECT_URANIUM ) )
-    {
-        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // total destruction
-    }
-
-    if ( force > 25.0f &&
-         (oType == OBJECT_DERRICK  ||
-          oType == OBJECT_FACTORY  ||
-          oType == OBJECT_STATION  ||
-          oType == OBJECT_CONVERT  ||
-          oType == OBJECT_REPAIR   ||
-          oType == OBJECT_DESTROYER||
-          oType == OBJECT_TOWER    ||
-          oType == OBJECT_RESEARCH ||
-          oType == OBJECT_RADAR    ||
-          oType == OBJECT_INFO     ||
-          oType == OBJECT_ENERGY   ||
-          oType == OBJECT_LABO     ||
-          oType == OBJECT_NUCLEAR  ||
-          oType == OBJECT_PARA     ||
-          oType == OBJECT_SAFE     ||
-          oType == OBJECT_HUSTON   ) )  // building?
-    {
-        pObj->ExplodeObject(ExplosionType::Bang, force/400.0f);
-    }
-
-    if ( force > 25.0f &&
-         (oType == OBJECT_MOBILEwa ||
-          oType == OBJECT_MOBILEta ||
-          oType == OBJECT_MOBILEfa ||
-          oType == OBJECT_MOBILEia ||
-          oType == OBJECT_MOBILEwc ||
-          oType == OBJECT_MOBILEtc ||
-          oType == OBJECT_MOBILEfc ||
-          oType == OBJECT_MOBILEic ||
-          oType == OBJECT_MOBILEwi ||
-          oType == OBJECT_MOBILEti ||
-          oType == OBJECT_MOBILEfi ||
-          oType == OBJECT_MOBILEii ||
-          oType == OBJECT_MOBILEws ||
-          oType == OBJECT_MOBILEts ||
-          oType == OBJECT_MOBILEfs ||
-          oType == OBJECT_MOBILEis ||
-          oType == OBJECT_MOBILErt ||
-          oType == OBJECT_MOBILErc ||
-          oType == OBJECT_MOBILErr ||
-          oType == OBJECT_MOBILErs ||
-          oType == OBJECT_MOBILEsa ||
-          oType == OBJECT_MOBILEwt ||
-          oType == OBJECT_MOBILEtt ||
-          oType == OBJECT_MOBILEft ||
-          oType == OBJECT_MOBILEit ||
-          oType == OBJECT_MOBILEdr ||
-          oType == OBJECT_APOLLO2  ) )  // vehicle?
-    {
-        pObj->ExplodeObject(ExplosionType::Bang, force/200.0f);
-    }
-
-    if ( force > 10.0f &&
-         (oType == OBJECT_MOBILEtg ||
-          oType == OBJECT_TNT      ) )
-    {
-        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // total destruction
-    }
-
-    if ( force > 0.0f &&
-         oType == OBJECT_BOMB )
-    {
-        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // total destruction
+        if (oType == OBJECT_MOBILEwa ||
+            oType == OBJECT_MOBILEta ||
+            oType == OBJECT_MOBILEfa ||
+            oType == OBJECT_MOBILEia ||
+            oType == OBJECT_MOBILEwc ||
+            oType == OBJECT_MOBILEtc ||
+            oType == OBJECT_MOBILEfc ||
+            oType == OBJECT_MOBILEic ||
+            oType == OBJECT_MOBILEwi ||
+            oType == OBJECT_MOBILEti ||
+            oType == OBJECT_MOBILEfi ||
+            oType == OBJECT_MOBILEii ||
+            oType == OBJECT_MOBILEws ||
+            oType == OBJECT_MOBILEts ||
+            oType == OBJECT_MOBILEfs ||
+            oType == OBJECT_MOBILEis ||
+            oType == OBJECT_MOBILErt ||
+            oType == OBJECT_MOBILErc ||
+            oType == OBJECT_MOBILErr ||
+            oType == OBJECT_MOBILErs ||
+            oType == OBJECT_MOBILEsa ||
+            oType == OBJECT_MOBILEwt ||
+            oType == OBJECT_MOBILEtt ||
+            oType == OBJECT_MOBILEft ||
+            oType == OBJECT_MOBILEit ||
+            oType == OBJECT_MOBILEdr ||
+            oType == OBJECT_APOLLO2   )  // vehicle?
+        {
+            assert(pObj->Implements(ObjectInterfaceType::Damageable));
+            dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Collision, force/200.0f);
+        }
     }
 
     return false;
@@ -2794,118 +2787,99 @@ bool CPhysics::ExploOther(ObjectType iType,
 
 int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 {
+    if (!m_object->Implements(ObjectInterfaceType::Damageable)) return 1;
 
-    if ( force > 10.0f &&
-         (oType == OBJECT_TNT      ||
-          oType == OBJECT_MOBILEtg ) )
+    // TODO: CExplosiveObject? derrives from CFragileObject
+    float destructionForce = -1.0f; // minimal force required to destroy an object using this explosive, default: not explosive
+    if ( oType == OBJECT_TNT      ) destructionForce = 10.0f; // TNT
+    if ( oType == OBJECT_MOBILEtg ) destructionForce = 10.0f; // TargetBot
+    if ( oType == OBJECT_BOMB     ) destructionForce =  0.0f; // Mine
+
+    if ( force > destructionForce && destructionForce >= 0.0f )
     {
-        Gfx::PyroType type;
-        if ( iType == OBJECT_HUMAN )  type = Gfx::PT_DEADG;
-        else                          type = Gfx::PT_EXPLOT;
-        m_engine->GetPyroManager()->Create(type, m_object);  // total destruction
+        dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Explosive);
         return 2;
     }
 
-    if ( force > 0.0f &&
-         oType == OBJECT_BOMB )
+    if ( force > 25.0f )
     {
-        Gfx::PyroType type;
-        if ( iType == OBJECT_HUMAN )
+        if ( iType == OBJECT_HUMAN    ||
+             iType == OBJECT_MOBILEwa ||
+             iType == OBJECT_MOBILEta ||
+             iType == OBJECT_MOBILEfa ||
+             iType == OBJECT_MOBILEia ||
+             iType == OBJECT_MOBILEwc ||
+             iType == OBJECT_MOBILEtc ||
+             iType == OBJECT_MOBILEfc ||
+             iType == OBJECT_MOBILEic ||
+             iType == OBJECT_MOBILEwi ||
+             iType == OBJECT_MOBILEti ||
+             iType == OBJECT_MOBILEfi ||
+             iType == OBJECT_MOBILEii ||
+             iType == OBJECT_MOBILEws ||
+             iType == OBJECT_MOBILEts ||
+             iType == OBJECT_MOBILEfs ||
+             iType == OBJECT_MOBILEis ||
+             iType == OBJECT_MOBILErt ||
+             iType == OBJECT_MOBILErc ||
+             iType == OBJECT_MOBILErr ||
+             iType == OBJECT_MOBILErs ||
+             iType == OBJECT_MOBILEsa ||
+             iType == OBJECT_MOBILEwt ||
+             iType == OBJECT_MOBILEtt ||
+             iType == OBJECT_MOBILEft ||
+             iType == OBJECT_MOBILEit ||
+             iType == OBJECT_MOBILEdr ||
+             iType == OBJECT_APOLLO2  )  // vehicle?
         {
-            type = Gfx::PT_DEADG;
-        }
-        else if ( iType == OBJECT_ANT    ||
-                  iType == OBJECT_SPIDER ||
-                  iType == OBJECT_BEE    )
-        {
-            type = Gfx::PT_EXPLOO;
-        }
-        else
-        {
-            type = Gfx::PT_EXPLOT;
-        }
-        m_engine->GetPyroManager()->Create(type, m_object);  // total destruction
-        return 2;
-    }
+            if ( oType == OBJECT_DERRICK  ||
+                 oType == OBJECT_FACTORY  ||
+                 oType == OBJECT_STATION  ||
+                 oType == OBJECT_CONVERT  ||
+                 oType == OBJECT_REPAIR   ||
+                 oType == OBJECT_DESTROYER||
+                 oType == OBJECT_TOWER    ||
+                 oType == OBJECT_RESEARCH ||
+                 oType == OBJECT_RADAR    ||
+                 oType == OBJECT_INFO     ||
+                 oType == OBJECT_ENERGY   ||
+                 oType == OBJECT_LABO     ||
+                 oType == OBJECT_NUCLEAR  ||
+                 oType == OBJECT_PARA     ||
+                 oType == OBJECT_SAFE     ||
+                 oType == OBJECT_HUSTON   )  // building?
+            {
+                force /= 200.0f;
+            }
+            else if ( oType == OBJECT_MOTHER ||
+                      oType == OBJECT_ANT    ||
+                      oType == OBJECT_SPIDER ||
+                      oType == OBJECT_BEE    ||
+                      oType == OBJECT_WORM   )  // insect?
+            {
+                force /= 400.0f;
+            }
+            else
+            if ( oType == OBJECT_FRET  ||
+                 oType == OBJECT_STONE ||
+                 oType == OBJECT_METAL )
+            {
+                force /= 500.0f;
+            }
+            else
+            if ( oType == OBJECT_URANIUM ||
+                 oType == OBJECT_POWER   ||
+                 oType == OBJECT_ATOMIC  )
+            {
+                force /= 100.0f;
+            }
+            else
+            {
+                force /= 200.0f;
+            }
 
-    if ( force > 25.0f &&
-         (iType == OBJECT_HUMAN    ||
-          iType == OBJECT_MOBILEwa ||
-          iType == OBJECT_MOBILEta ||
-          iType == OBJECT_MOBILEfa ||
-          iType == OBJECT_MOBILEia ||
-          iType == OBJECT_MOBILEwc ||
-          iType == OBJECT_MOBILEtc ||
-          iType == OBJECT_MOBILEfc ||
-          iType == OBJECT_MOBILEic ||
-          iType == OBJECT_MOBILEwi ||
-          iType == OBJECT_MOBILEti ||
-          iType == OBJECT_MOBILEfi ||
-          iType == OBJECT_MOBILEii ||
-          iType == OBJECT_MOBILEws ||
-          iType == OBJECT_MOBILEts ||
-          iType == OBJECT_MOBILEfs ||
-          iType == OBJECT_MOBILEis ||
-          iType == OBJECT_MOBILErt ||
-          iType == OBJECT_MOBILErc ||
-          iType == OBJECT_MOBILErr ||
-          iType == OBJECT_MOBILErs ||
-          iType == OBJECT_MOBILEsa ||
-          iType == OBJECT_MOBILEwt ||
-          iType == OBJECT_MOBILEtt ||
-          iType == OBJECT_MOBILEft ||
-          iType == OBJECT_MOBILEit ||
-          iType == OBJECT_MOBILEdr ||
-          iType == OBJECT_APOLLO2  ) )  // vehicle?
-    {
-        if ( oType == OBJECT_DERRICK  ||
-             oType == OBJECT_FACTORY  ||
-             oType == OBJECT_STATION  ||
-             oType == OBJECT_CONVERT  ||
-             oType == OBJECT_REPAIR   ||
-             oType == OBJECT_DESTROYER||
-             oType == OBJECT_TOWER    ||
-             oType == OBJECT_RESEARCH ||
-             oType == OBJECT_RADAR    ||
-             oType == OBJECT_INFO     ||
-             oType == OBJECT_ENERGY   ||
-             oType == OBJECT_LABO     ||
-             oType == OBJECT_NUCLEAR  ||
-             oType == OBJECT_PARA     ||
-             oType == OBJECT_SAFE     ||
-             oType == OBJECT_HUSTON   )  // building?
-        {
-            force /= 200.0f;
+            if ( dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Collision, force) )  return 2;
         }
-        else
-        if ( oType == OBJECT_MOTHER ||
-             oType == OBJECT_ANT    ||
-             oType == OBJECT_SPIDER ||
-             oType == OBJECT_BEE    ||
-             oType == OBJECT_WORM   )  // insect?
-        {
-            force /= 400.0f;
-        }
-        else
-        if ( oType == OBJECT_FRET  ||
-             oType == OBJECT_STONE ||
-             oType == OBJECT_METAL )
-        {
-            force /= 500.0f;
-        }
-        else
-        if ( oType == OBJECT_URANIUM ||
-             oType == OBJECT_POWER   ||
-             oType == OBJECT_ATOMIC  )
-        {
-            force /= 100.0f;
-        }
-        else
-        {
-            force /= 200.0f;
-        }
-
-        if ( m_object->ExplodeObject(ExplosionType::Bang, force) )  return 2;
     }
 
     return 1;

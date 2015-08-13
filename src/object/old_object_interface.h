@@ -50,20 +50,12 @@ struct Character
     Math::Vector posPower;       // position of the battery
 };
 
-enum class ExplosionType
-{
-    Bang  = 1,
-    Burn  = 2,
-    Water = 3,
-};
-
 class COldObjectInterface
 {
 public:
     virtual ~COldObjectInterface() {}
 
     virtual void        Simplify();
-    virtual bool        ExplodeObject(ExplosionType type, float force = 1.0f);
     virtual void        DeletePart(int part);
     virtual void        SetType(ObjectType type);
 
