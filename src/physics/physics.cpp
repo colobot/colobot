@@ -2542,7 +2542,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
             }
         }
 
-        if ( oType == OBJECT_TARGET2 )
+        if ( oType == OBJECT_TARGET2 && !pObj->GetLock() )
         {
             Math::Vector oPos = pObj->GetPosition();
             distance = Math::Distance(oPos, iPos);
