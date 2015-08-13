@@ -366,7 +366,7 @@ bool COldObject::DamageObject(DamageType type, float force)
     if (Implements(ObjectInterfaceType::Shielded))
     {
         float magnifyDamage = m_magnifyDamage * m_main->GetGlobalMagnifyDamage();
-        if (force >= 0)
+        if (force != std::numeric_limits<float>::infinity())
         {
             // Calculate the shield lost by the explosion
             if ( force == 0.0f ) // use default?

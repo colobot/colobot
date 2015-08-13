@@ -106,7 +106,7 @@ public:
 
     void        Simplify() override;
 
-    bool        DamageObject(DamageType type, float force = -1.0f) override;
+    bool        DamageObject(DamageType type, float force = std::numeric_limits<float>::infinity()) override;
     void        DestroyObject(DestructionType type) override;
 
     bool EventProcess(const Event& event) override;

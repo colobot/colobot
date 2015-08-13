@@ -21,6 +21,8 @@
 
 #include "object/object_interface_type.h"
 
+#include <limits>
+
 enum class DamageType
 {
     Fire          = 1, //!< fire damage (AlienSpider or Shooter), burns on destruction
@@ -48,7 +50,7 @@ public:
     virtual ~CDamageableObject()
     {}
 
-    //! Damage the object, with the given force. Returns true if the object has been fully destroyed (assuming the object is destroyable, of course). force < 0 => destroy immediately (default), force == 0 => default damage values
-    // NOTE: You should never assume that after this function exits, the object is destroyed, unless it returns true. Even if you specify force = -1, if may still sometimes decide not to destroy the object.
-    virtual bool DamageObject(DamageType type, float force = -1.0f) = 0;
+    //! Damage the object, with the given force. Returns true if the object has been fully destroyed (assuming the object is destroyable, of course). force == infinity => destroy immediately (default), force == 0 => default damage values
+    // NOTE: You should never assume that after this function exits, the object is destroyed, unless it returns true. Even if you specify force = infinity, if may still sometimes decide not to destroy the object.
+    virtual bool DamageObject(DamageType type, float force = std::numeric_limits<float>::infinity()) = 0;
 };
