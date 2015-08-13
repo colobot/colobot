@@ -57,7 +57,6 @@ CTaskManip::CTaskManip(COldObject* object) : CTask(object)
     m_hand = TMH_OPEN;
 
     assert(m_object->Implements(ObjectInterfaceType::Carrier));
-    assert(m_object->Implements(ObjectInterfaceType::Powered));
 }
 
 // Object's destructor.
@@ -289,7 +288,7 @@ bool TestFriend(ObjectType oType, ObjectType fType)
 Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 {
     ObjectType   type;
-    CObject      *front, *other, *power;
+    CObject      *front, *other;
     float        iAngle, dist, len;
     float        fDist, fAngle, oDist, oAngle, oHeight;
     Math::Vector pos, fPos, oPos;
@@ -362,12 +361,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         return ERR_OK;
     }
 
-    m_energy = 0.0f;
-    power = m_object->GetPower();
-    if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
-    {
-        m_energy = dynamic_cast<CPowerContainerObject*>(power)->GetEnergy();
-    }
+    m_energy = GetObjectEnergy(m_object);
 
     if ( !m_physics->GetLand() )  return ERR_MANIP_FLY;
 
@@ -453,6 +447,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         }
         if ( m_arm == TMA_POWER )
         {
+            assert(m_object->Implements(ObjectInterfaceType::Powered));
             if (m_object->GetPower() == nullptr)  return ERR_MANIP_NIL;
         }
     }
@@ -481,6 +476,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         }
         if ( m_arm == TMA_POWER )
         {
+            assert(m_object->Implements(ObjectInterfaceType::Powered));
             if (m_object->GetPower() != nullptr)  return ERR_MANIP_OCC;
         }
     }
@@ -1101,6 +1097,7 @@ bool CTaskManip::TransporterTakeObject()
 
     if (m_arm == TMA_POWER)  // takes battery in the back?
     {
+        assert(m_object->Implements(ObjectInterfaceType::Powered));
         CObject* cargo = m_object->GetPower();
         if (cargo == nullptr)  return false;  // no battery?
         assert(cargo->Implements(ObjectInterfaceType::Transportable));
@@ -1195,6 +1192,7 @@ bool CTaskManip::TransporterDeposeObject()
 
     if (m_arm == TMA_POWER)  // deposits battery in the back?
     {
+        assert(m_object->Implements(ObjectInterfaceType::Powered));
         CObject* cargo = m_object->GetCargo();
         if (cargo == nullptr)  return false;  // nothing transported?
         assert(cargo->Implements(ObjectInterfaceType::Transportable));
