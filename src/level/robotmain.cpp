@@ -3778,6 +3778,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             CompileScript(soluce);  // compiles all scripts
 
         m_ui->GetLoadingScreen()->SetProgress(1.0f, RT_LOADING_FINISHED);
+        if (m_ui->GetLoadingScreen()->IsVisible())
+        {
+            // Force render of the "Loading finished" screen
+            // TODO: For some reason, rendering of the first frame after the simulation starts is very slow
+            // We're doing this because it looks weird when the progress bar is finished but it still says "Loading programs"
+            m_app->Render();
+        }
 
         if (!resetObject)
         {

@@ -329,6 +329,9 @@ public:
     //! Renders the image in window
     void        Render();
 
+    //! Renders the image in window if needed
+    void        RenderIfNeeded(int updateRate);
+
 protected:
     //! Creates the window's SDL_Surface
     bool CreateVideoSurface();
@@ -420,6 +423,9 @@ protected:
     float           m_simulationSpeed;
     bool            m_simulationSuspended;
     //@}
+
+    SystemTimeStamp* m_manualFrameLast;
+    SystemTimeStamp* m_manualFrameTime;
 
     //! Graphics device to use
     std::string     m_graphics;

@@ -154,7 +154,7 @@ void CScreenLoading::SetProgress(float progress, const std::string& text, const 
     {
         SetBackground("textures/interface/interface.png");
         m_engine->SetBackForce(true);
-        m_app->Render();
+        m_app->RenderIfNeeded(60);
     }
 
     m_lastProgress = progress;

@@ -136,6 +136,9 @@ CApplication::CApplication(CSystemUtils* systemUtils)
     m_curTimeStamp = m_systemUtils->CreateTimeStamp();
     m_lastTimeStamp = m_systemUtils->CreateTimeStamp();
 
+    m_manualFrameLast = m_systemUtils->CreateTimeStamp();
+    m_manualFrameTime = m_systemUtils->CreateTimeStamp();
+
     for (int i = 0; i < PCNT_MAX; ++i)
     {
         m_performanceCounters[i][0] = m_systemUtils->CreateTimeStamp();
@@ -165,6 +168,9 @@ CApplication::~CApplication()
     m_systemUtils->DestroyTimeStamp(m_baseTimeStamp);
     m_systemUtils->DestroyTimeStamp(m_curTimeStamp);
     m_systemUtils->DestroyTimeStamp(m_lastTimeStamp);
+
+    m_systemUtils->DestroyTimeStamp(m_manualFrameLast);
+    m_systemUtils->DestroyTimeStamp(m_manualFrameTime);
 
     for (int i = 0; i < PCNT_MAX; ++i)
     {
@@ -1314,6 +1320,19 @@ void CApplication::Render()
     if (m_deviceConfig.doubleBuf)
         SDL_GL_SwapBuffers();
     StopPerformanceCounter(PCNT_SWAP_BUFFERS);
+}
+
+void CApplication::RenderIfNeeded(int updateRate)
+{
+    m_systemUtils->GetCurrentTimeStamp(m_manualFrameTime);
+    long long diff = m_systemUtils->TimeStampExactDiff(m_manualFrameLast, m_manualFrameTime);
+    if (diff < 1e9f / updateRate)
+    {
+        return;
+    }
+    m_systemUtils->CopyTimeStamp(m_manualFrameLast, m_manualFrameTime);
+
+    Render();
 }
 
 void CApplication::SuspendSimulation()
