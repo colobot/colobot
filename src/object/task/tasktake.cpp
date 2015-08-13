@@ -48,7 +48,6 @@ CTaskTake::CTaskTake(COldObject* object) : CTask(object)
     m_arm  = TTA_NEUTRAL;
 
     assert(m_object->Implements(ObjectInterfaceType::Carrier));
-    assert(m_object->Implements(ObjectInterfaceType::Powered));
 }
 
 // Object's destructor.
