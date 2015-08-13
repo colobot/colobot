@@ -770,6 +770,8 @@ Texture CGL33Device::CreateTexture(ImageData *data, const TextureCreateParams &p
 
     SDL_FreeSurface(convertedSurface);
 
+    m_allTextures.insert(result);
+
     // Restore the previous state of 1st stage
     glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
 
