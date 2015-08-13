@@ -2524,6 +2524,8 @@ void CEngine::DeleteTexture(const Texture& tex)
 
 void CEngine::FlushTextureCache()
 {
+    m_device->DestroyAllTextures();
+
     m_texNameMap.clear();
     m_revTexNameMap.clear();
     m_texBlacklist.clear();
