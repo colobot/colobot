@@ -54,9 +54,6 @@ public:
     void SetNiceReset(bool niceReset);
     bool GetNiceReset();
 
-    void SetHimselfDamage(bool himselfDamage);
-    bool GetHimselfDamage();
-
     void SetSystemMouse(bool systemMouse);
     bool GetSystemMouse();
 
@@ -95,7 +92,6 @@ protected:
     bool m_soluce4;
     bool m_movies;
     bool m_niceReset;
-    bool m_himselfDamage;
     bool m_systemMouse;
 
     float           m_fontSize;

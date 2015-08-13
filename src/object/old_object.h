@@ -37,6 +37,7 @@
 #include "object/interface/powered_object.h"
 #include "object/interface/programmable_object.h"
 #include "object/interface/ranged_object.h"
+#include "object/interface/shielded_auto_regen_object.h"
 #include "object/interface/task_executor_object.h"
 #include "object/interface/trace_drawing_object.h"
 #include "object/interface/transportable_object.h"
@@ -84,7 +85,8 @@ class COldObject : public CObject,
                    public CControllableObject,
                    public CPowerContainerObjectImpl,
                    public CRangedObject,
-                   public CTraceDrawingObject
+                   public CTraceDrawingObject,
+                   public CShieldedAutoRegenObject
 {
     friend class CObjectFactory;
     friend class CObjectManager;
@@ -103,7 +105,7 @@ public:
     ~COldObject();
 
     void        Simplify() override;
-    bool        ExplodeObject(ExplosionType type, float force, float decay=1.0f) override;
+    bool        ExplodeObject(ExplosionType type, float force = 1.0f) override;
 
     bool EventProcess(const Event& event) override;
     void        UpdateMapping();
@@ -315,6 +317,9 @@ public:
     void        SetTraceColor(TraceColor color) override;
     float       GetTraceWidth() override;
     void        SetTraceWidth(float width) override;
+
+    bool        IsRepairable() override;
+    float       GetShieldFullRegenTime() override;
 
 protected:
     bool        EventFrame(const Event &event);

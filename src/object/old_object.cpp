@@ -88,6 +88,7 @@ COldObject::COldObject(int id)
     , CPowerContainerObjectImpl(m_implementedInterfaces, this)
     , CRangedObject(m_implementedInterfaces)
     , CTraceDrawingObject(m_implementedInterfaces)
+    , CShieldedAutoRegenObject(m_implementedInterfaces)
 {
     // A bit of a hack since we don't have subclasses yet, set externally in SetProgrammable()
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
@@ -290,7 +291,7 @@ void COldObject::DeleteObject(bool bAll)
     if ( !bAll )  m_main->CreateShortcuts();
 }
 
-// Simplifies a object (he was the programmable, among others).
+// Simplifies a object (destroys all logic classes, making it a static object)
 
 void COldObject::Simplify()
 {
@@ -307,17 +308,17 @@ void COldObject::Simplify()
         m_physics->DeleteObject();
         m_physics.reset();
     }
+    if ( m_motion != nullptr )
+    {
+        m_motion->DeleteObject();
+        m_motion.reset();
+    }
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Movable)] = false;
 
     if ( m_objectInterface != nullptr )
     {
         m_objectInterface->DeleteObject();
         m_objectInterface.reset();
-    }
-
-    if ( m_motion != nullptr )
-    {
-        m_motion->DeleteObject();
-        m_motion.reset();
     }
 
     if ( m_auto != nullptr )
@@ -334,71 +335,63 @@ void COldObject::Simplify()
 // If false is returned, the object is still screwed.
 // If true is returned, the object is destroyed.
 
-bool COldObject::ExplodeObject(ExplosionType type, float force, float decay)
+bool COldObject::ExplodeObject(ExplosionType type, float force)
 {
-    Gfx::PyroType    pyroType;
-    float       loss, shield;
+    assert(Implements(ObjectInterfaceType::Destroyable));
+    assert(Implements(ObjectInterfaceType::Shielded) || Implements(ObjectInterfaceType::Fragile));
 
     if ( type == ExplosionType::Burn )
     {
-        if ( m_type == OBJECT_MOBILEtg ||
-             m_type == OBJECT_METAL    ||
-             m_type == OBJECT_POWER    ||
-             m_type == OBJECT_ATOMIC   ||
-             m_type == OBJECT_TNT      ||
-             m_type == OBJECT_SCRAP1   ||
-             m_type == OBJECT_SCRAP2   ||
-             m_type == OBJECT_SCRAP3   ||
-             m_type == OBJECT_SCRAP4   ||
-             m_type == OBJECT_SCRAP5   ||
-             m_type == OBJECT_BULLET   ||
-             m_type == OBJECT_EGG      )  // object that isn't burning?
+        if ( Implements(ObjectInterfaceType::Fragile) )  // object that isn't burning?
         {
             type = ExplosionType::Bang;
             force = 1.0f;
-            decay = 1.0f;
         }
     }
 
     if ( type == ExplosionType::Bang )
     {
+        // TODO: I don't understand, why does it apply damage only once every 0.5 second?
         if ( m_shotTime < 0.5f )  return false;
         m_shotTime = 0.0f;
     }
 
     if ( m_type == OBJECT_HUMAN && m_bDead )  return false;
 
-    // Calculate the power lost by the explosion.
-    if ( force == 0.0f )
+    bool deadAlready = true;
+    float loss = 1.0f;
+    if ( Implements(ObjectInterfaceType::Shielded) )
     {
-        if ( m_type == OBJECT_HUMAN )
-        {
-            loss = LOSS_SHIELD_H;
-        }
-        else if ( m_type == OBJECT_MOTHER )
-        {
-            loss = LOSS_SHIELD_M;
-        }
-        else
-        {
-            loss = LOSS_SHIELD;
-        }
-    }
-    else
-    {
+        // Calculate the power lost by the explosion.
         loss = force;
+        if ( loss == 0.0f )
+        {
+            if ( m_type == OBJECT_HUMAN )
+            {
+                loss = LOSS_SHIELD_H;
+            }
+            else if ( m_type == OBJECT_MOTHER )
+            {
+                loss = LOSS_SHIELD_M;
+            }
+            else
+            {
+                loss = LOSS_SHIELD;
+            }
+        }
+        loss *= m_magnifyDamage;
+        loss *= m_main->GetGlobalMagnifyDamage();
+
+        // Decreases the power of the shield.
+        float shield = GetShield();
+        shield -= loss;
+        SetShield(shield);
+
+        deadAlready = (shield <= 0.0f);
     }
-    loss *= m_magnifyDamage;
-    loss *= m_main->GetGlobalMagnifyDamage();
-    loss *= decay;
 
-    // Decreases the power of the shield.
-    shield = GetShield();
-    shield -= loss;
-    if ( shield < 0.0f )  shield = 0.0f;
-    SetShield(shield);
-
-    if ( shield > 0.0f )  // not dead yet?
+    Gfx::PyroType pyroType = Gfx::PT_NULL;
+    if ( !deadAlready )  // not dead yet?
     {
         if ( type == ExplosionType::Water )
         {
@@ -463,7 +456,7 @@ bool COldObject::ExplodeObject(ExplosionType type, float force, float decay)
                 pyroType = Gfx::PT_FRAGW;
             }
         }
-        else    // explosion?
+        else if ( type == ExplosionType::Bang )   // explosion?
         {
             if ( m_type == OBJECT_ANT    ||
                  m_type == OBJECT_SPIDER ||
@@ -513,23 +506,23 @@ bool COldObject::ExplodeObject(ExplosionType type, float force, float decay)
             {
                 pyroType = Gfx::PT_EXPLOT;
             }
-        }
 
-        loss = 1.0f;
+            loss = 1.0f;
+        }
     }
 
-    m_engine->GetPyroManager()->Create(pyroType, this, loss);
-
-    if ( shield == 0.0f )  // dead?
+    if (pyroType != Gfx::PT_NULL)
     {
-        if ( Implements(ObjectInterfaceType::Programmable) )
-        {
-            StopProgram();
-        }
-        m_main->SaveOneScript(this);
+        m_engine->GetPyroManager()->Create(pyroType, this, loss);
     }
 
-    if ( shield > 0.0f )  return false;  // not dead yet
+    if ( !deadAlready )  return false;  // not dead yet
+
+    if ( Implements(ObjectInterfaceType::Programmable) )
+    {
+        StopProgram();
+    }
+    m_main->SaveOneScript(this);
 
     if ( GetSelect() )
     {
@@ -709,6 +702,81 @@ void COldObject::SetType(ObjectType type)
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Powered)] = true;
     }
+
+    // TODO: Hacking some more
+    if ( m_type == OBJECT_MOBILEtg ||
+         m_type == OBJECT_METAL    ||
+         m_type == OBJECT_POWER    ||
+         m_type == OBJECT_ATOMIC   ||
+         m_type == OBJECT_TNT      ||
+         m_type == OBJECT_SCRAP1   ||
+         m_type == OBJECT_SCRAP2   ||
+         m_type == OBJECT_SCRAP3   ||
+         m_type == OBJECT_SCRAP4   ||
+         m_type == OBJECT_SCRAP5   ||
+         m_type == OBJECT_BULLET   ||
+         m_type == OBJECT_EGG       )
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = false;
+    }
+    else if( m_type == OBJECT_HUMAN ||
+         m_type == OBJECT_MOBILEfa ||
+         m_type == OBJECT_MOBILEta ||
+         m_type == OBJECT_MOBILEwa ||
+         m_type == OBJECT_MOBILEia ||
+         m_type == OBJECT_MOBILEfc ||
+         m_type == OBJECT_MOBILEtc ||
+         m_type == OBJECT_MOBILEwc ||
+         m_type == OBJECT_MOBILEic ||
+         m_type == OBJECT_MOBILEfi ||
+         m_type == OBJECT_MOBILEti ||
+         m_type == OBJECT_MOBILEwi ||
+         m_type == OBJECT_MOBILEii ||
+         m_type == OBJECT_MOBILEfs ||
+         m_type == OBJECT_MOBILEts ||
+         m_type == OBJECT_MOBILEws ||
+         m_type == OBJECT_MOBILEis ||
+         m_type == OBJECT_MOBILErt ||
+         m_type == OBJECT_MOBILErc ||
+         m_type == OBJECT_MOBILErr ||
+         m_type == OBJECT_MOBILErs ||
+         m_type == OBJECT_MOBILEsa ||
+         m_type == OBJECT_MOBILEtg ||
+         m_type == OBJECT_MOBILEft ||
+         m_type == OBJECT_MOBILEtt ||
+         m_type == OBJECT_MOBILEwt ||
+         m_type == OBJECT_MOBILEit ||
+         m_type == OBJECT_FACTORY  ||
+         m_type == OBJECT_REPAIR   ||
+         m_type == OBJECT_DESTROYER||
+         m_type == OBJECT_DERRICK  ||
+         m_type == OBJECT_STATION  ||
+         m_type == OBJECT_CONVERT  ||
+         m_type == OBJECT_TOWER    ||
+         m_type == OBJECT_RESEARCH ||
+         m_type == OBJECT_RADAR    ||
+         m_type == OBJECT_INFO     ||
+         m_type == OBJECT_ENERGY   ||
+         m_type == OBJECT_LABO     ||
+         m_type == OBJECT_NUCLEAR  ||
+         m_type == OBJECT_PARA      )
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = false;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = true;
+    }
+    else
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = false;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = false;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = false;
+    }
+
+    // TODO: #TooMuchHacking
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::ShieldedAutoRegen)] = (m_type == OBJECT_HUMAN);
+
 
     if ( m_type == OBJECT_MOBILEwc ||
          m_type == OBJECT_MOBILEtc ||
@@ -1943,6 +2011,11 @@ bool COldObject::EventFrame(const Event &event)
     UpdateTransformObject();
     UpdateSelectParticle();
 
+    if (Implements(ObjectInterfaceType::ShieldedAutoRegen))
+    {
+        SetShield(GetShield() + event.rTime*(1.0f/GetShieldFullRegenTime()));
+    }
+
     return true;
 }
 
@@ -2195,6 +2268,8 @@ bool COldObject::IsRechargeable()
 
 void COldObject::SetShield(float level)
 {
+    if (level > 1.0f) level = 1.0f;
+    if (level < 0.0f) level = 0.0f;
     m_shield = level;
 }
 
@@ -3241,4 +3316,17 @@ float COldObject::GetTraceWidth()
 void COldObject::SetTraceWidth(float width)
 {
     m_traceWidth = width;
+}
+
+bool COldObject::IsRepairable()
+{
+    if (m_type == OBJECT_HUMAN) return false;
+    return true;
+}
+
+float COldObject::GetShieldFullRegenTime()
+{
+    if (m_type == OBJECT_HUMAN) return 120.0f;
+    assert(false);
+    return 0.0f;
 }

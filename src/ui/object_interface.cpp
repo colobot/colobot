@@ -1339,31 +1339,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pw->CreateButton(pos, dim, 10, EVENT_OBJECT_DESELECT);
     }
 
-    if ( type == OBJECT_MOBILEfa ||
-         type == OBJECT_MOBILEta ||
-         type == OBJECT_MOBILEwa ||
-         type == OBJECT_MOBILEia ||
-         type == OBJECT_MOBILEfc ||
-         type == OBJECT_MOBILEtc ||
-         type == OBJECT_MOBILEwc ||
-         type == OBJECT_MOBILEic ||
-         type == OBJECT_MOBILEfi ||
-         type == OBJECT_MOBILEti ||
-         type == OBJECT_MOBILEwi ||
-         type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEfs ||
-         type == OBJECT_MOBILEts ||
-         type == OBJECT_MOBILEws ||
-         type == OBJECT_MOBILEis ||
-         type == OBJECT_MOBILErt ||
-         type == OBJECT_MOBILErc ||
-         type == OBJECT_MOBILErr ||
-         type == OBJECT_MOBILErs ||
-         type == OBJECT_MOBILEsa ||
-         type == OBJECT_MOBILEft ||
-         type == OBJECT_MOBILEtt ||
-         type == OBJECT_MOBILEwt ||
-         type == OBJECT_MOBILEit )  // vehicle?
+    if ( m_object->Implements(ObjectInterfaceType::Powered) )  // vehicle?
     {
         pos.x = ox+sx*14.5f;
         pos.y = oy+sy*0;
@@ -1372,34 +1348,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pw->CreateGauge(pos, ddim, 0, EVENT_OBJECT_GENERGY);
     }
 
-    if ( type == OBJECT_HUMAN    ||
-         type == OBJECT_TECH     ||
-         type == OBJECT_MOBILEfa ||
-         type == OBJECT_MOBILEta ||
-         type == OBJECT_MOBILEwa ||
-         type == OBJECT_MOBILEia ||
-         type == OBJECT_MOBILEfc ||
-         type == OBJECT_MOBILEtc ||
-         type == OBJECT_MOBILEwc ||
-         type == OBJECT_MOBILEic ||
-         type == OBJECT_MOBILEfi ||
-         type == OBJECT_MOBILEti ||
-         type == OBJECT_MOBILEwi ||
-         type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEfs ||
-         type == OBJECT_MOBILEts ||
-         type == OBJECT_MOBILEws ||
-         type == OBJECT_MOBILEis ||
-         type == OBJECT_MOBILErt ||
-         type == OBJECT_MOBILErc ||
-         type == OBJECT_MOBILErr ||
-         type == OBJECT_MOBILErs ||
-         type == OBJECT_MOBILEsa ||
-         type == OBJECT_MOBILEtg ||
-         type == OBJECT_MOBILEft ||
-         type == OBJECT_MOBILEtt ||
-         type == OBJECT_MOBILEwt ||
-         type == OBJECT_MOBILEit )  // vehicle?
+    if ( m_object->Implements(ObjectInterfaceType::Shielded) )  // vehicle?
     {
         pos.x = ox+sx*14.9f;
         pos.y = oy+sy*0;
@@ -1534,7 +1483,8 @@ void CObjectInterface::UpdateInterface(float rTime)
     pg = static_cast< CGauge* >(pw->SearchControl(EVENT_OBJECT_GSHIELD));
     if ( pg != 0 )
     {
-        pg->SetLevel(m_object->GetShield());
+        assert(m_object->Implements(ObjectInterfaceType::Shielded));
+        pg->SetLevel(dynamic_cast<CShieldedObject*>(m_object)->GetShield());
     }
 
     pg = static_cast< CGauge* >(pw->SearchControl(EVENT_OBJECT_GRANGE));

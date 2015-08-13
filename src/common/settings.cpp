@@ -38,7 +38,6 @@ CSettings::CSettings()
     m_soluce4        = true;
     m_movies         = true;
     m_niceReset      = true;
-    m_himselfDamage  = true;
     m_systemMouse    = false;
 
     m_fontSize  = 19.0f;
@@ -78,7 +77,6 @@ void CSettings::SaveSettings()
     GetConfigFile().SetIntProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().SetIntProperty("Setup", "Movies", m_movies);
     GetConfigFile().SetIntProperty("Setup", "NiceReset", m_niceReset);
-    GetConfigFile().SetIntProperty("Setup", "HimselfDamage", m_himselfDamage);
     GetConfigFile().SetIntProperty("Setup", "CameraScroll", camera->GetCameraScroll());
     GetConfigFile().SetIntProperty("Setup", "CameraInvertX", camera->GetCameraInvertX());
     GetConfigFile().SetIntProperty("Setup", "CameraInvertY", camera->GetCameraInvertY());
@@ -167,9 +165,6 @@ void CSettings::LoadSettings()
 
     if (GetConfigFile().GetIntProperty("Setup", "NiceReset", iValue))
         m_niceReset = iValue;
-
-    if (GetConfigFile().GetIntProperty("Setup", "HimselfDamage", iValue))
-        m_himselfDamage = iValue;
 
     if (GetConfigFile().GetIntProperty("Setup", "CameraScroll", iValue))
         camera->SetCameraScroll(iValue);
@@ -376,15 +371,6 @@ void CSettings::SetNiceReset(bool niceReset)
 bool CSettings::GetNiceReset()
 {
     return m_niceReset;
-}
-
-void CSettings::SetHimselfDamage(bool himselfDamage)
-{
-    m_himselfDamage = himselfDamage;
-}
-bool CSettings::GetHimselfDamage()
-{
-    return m_himselfDamage;
 }
 
 void CSettings::SetSystemMouse(bool systemMouse)

@@ -112,14 +112,6 @@ void CScreenSetupGame::CreateInterface()
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
     pos.y -= ddim.y/2;
 
-
-    //?     pos.y -= 0.048f;
-    //?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_NICERST);
-    //?     pc->SetState(STATE_SHADOW);
-    //?     pos.y -= 0.048f;
-    //?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_HIMSELF);
-    //?     pc->SetState(STATE_SHADOW);
-
     ddim.x = dim.x*6;
     ddim.y = dim.y*0.5f;
     pos.x = ox+sx*10;
@@ -221,12 +213,6 @@ bool CScreenSetupGame::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_NICERST:
             m_settings->SetNiceReset(!m_settings->GetNiceReset());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
-
-        case EVENT_INTERFACE_HIMSELF:
-            m_settings->SetHimselfDamage(!m_settings->GetHimselfDamage());
             ChangeSetupButtons();
             UpdateSetupButtons();
             break;
@@ -352,12 +338,6 @@ void CScreenSetupGame::UpdateSetupButtons()
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_settings->GetNiceReset());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_HIMSELF));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_CHECK, m_settings->GetHimselfDamage());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SCROLL));

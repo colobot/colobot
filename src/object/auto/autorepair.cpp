@@ -83,7 +83,7 @@ bool CAutoRepair::EventProcess(const Event &event)
     CObject*    vehicle;
     Math::Vector    pos, speed;
     Math::Point     dim;
-    float       angle, shield;
+    float       angle;
 
     CAuto::EventProcess(event);
 
@@ -144,16 +144,16 @@ bool CAutoRepair::EventProcess(const Event &event)
     if ( m_phase == ARP_REPAIR )
     {
         vehicle = SearchVehicle();
+        if (vehicle != nullptr)
+            assert(vehicle->Implements(ObjectInterfaceType::Shielded));
 
         if ( m_progress < 1.0f ||
-             (vehicle != 0 && vehicle->GetShield() < 1.0f) )
+             (vehicle != nullptr && dynamic_cast<CShieldedObject*>(vehicle)->GetShield() < 1.0f) )
         {
-            if ( vehicle != 0 )
+            if ( vehicle != nullptr )
             {
-                shield = vehicle->GetShield();
-                shield += event.rTime*0.2f;
-                if ( shield > 1.0f )  shield = 1.0f;
-                vehicle->SetShield(shield);
+                CShieldedObject* shielded = dynamic_cast<CShieldedObject*>(vehicle);
+                shielded->SetShield(shielded->GetShield() + event.rTime*0.2f);
             }
 
             if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
@@ -241,34 +241,8 @@ CObject* CAutoRepair::SearchVehicle()
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        ObjectType type = obj->GetType();
-        if ( type != OBJECT_MOBILEfa &&
-             type != OBJECT_MOBILEta &&
-             type != OBJECT_MOBILEwa &&
-             type != OBJECT_MOBILEia &&
-             type != OBJECT_MOBILEfc &&
-             type != OBJECT_MOBILEtc &&
-             type != OBJECT_MOBILEwc &&
-             type != OBJECT_MOBILEic &&
-             type != OBJECT_MOBILEfi &&
-             type != OBJECT_MOBILEti &&
-             type != OBJECT_MOBILEwi &&
-             type != OBJECT_MOBILEii &&
-             type != OBJECT_MOBILEfs &&
-             type != OBJECT_MOBILEts &&
-             type != OBJECT_MOBILEws &&
-             type != OBJECT_MOBILEis &&
-             type != OBJECT_MOBILErt &&
-             type != OBJECT_MOBILErc &&
-             type != OBJECT_MOBILErr &&
-             type != OBJECT_MOBILErs &&
-             type != OBJECT_MOBILEsa &&
-             type != OBJECT_MOBILEtg &&
-             type != OBJECT_MOBILEft &&
-             type != OBJECT_MOBILEtt &&
-             type != OBJECT_MOBILEwt &&
-             type != OBJECT_MOBILEit &&
-             type != OBJECT_MOBILEdr )  continue;
+        if ( !obj->Implements(ObjectInterfaceType::Shielded) ) continue;
+        if ( !dynamic_cast<CShieldedObject*>(obj)->IsRepairable() )  continue;
 
         if ( obj->Implements(ObjectInterfaceType::Movable) && !dynamic_cast<CMovableObject*>(obj)->GetPhysics()->GetLand() )  continue;  // in flight?
 

@@ -1201,8 +1201,8 @@ void CRobotMain::ExecuteCmd(char *cmd)
         if (strcmp(cmd, "addhusky") == 0)
         {
             CObject* object = GetSelect();
-            if (object != nullptr)
-                object->SetMagnifyDamage(object->GetMagnifyDamage()*0.1f);
+            if (object != nullptr && object->Implements(ObjectInterfaceType::Shielded))
+                dynamic_cast<CShieldedObject*>(object)->SetMagnifyDamage(dynamic_cast<CShieldedObject*>(object)->GetMagnifyDamage()*0.1f);
             return;
         }
 
@@ -1240,7 +1240,8 @@ void CRobotMain::ExecuteCmd(char *cmd)
                         dynamic_cast<CPowerContainerObject*>(power)->SetEnergyLevel(1.0f);
                 }
 
-                object->SetShield(1.0f);
+                if (object->Implements(ObjectInterfaceType::Shielded))
+                    dynamic_cast<CShieldedObject*>(object)->SetShield(1.0f);
 
                 if (object->Implements(ObjectInterfaceType::JetFlying))
                     dynamic_cast<CJetFlyingObject*>(object)->SetReactorRange(1.0f);
@@ -1267,8 +1268,8 @@ void CRobotMain::ExecuteCmd(char *cmd)
         if (strcmp(cmd, "fullshield") == 0)
         {
             CObject* object = GetSelect();
-            if (object != nullptr)
-                object->SetShield(1.0f);
+            if (object != nullptr && object->Implements(ObjectInterfaceType::Shielded))
+                dynamic_cast<CShieldedObject*>(object)->SetShield(1.0f);
             return;
         }
 
@@ -3487,7 +3488,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "LevelController" && m_sceneReadPath.empty())
             {
                 m_controller = m_objMan->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER, 100.0f);
-                m_controller->SetMagnifyDamage(100.0f);
                 if (m_controller->Implements(ObjectInterfaceType::Programmable))
                 {
                     CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(m_controller);
@@ -5815,11 +5815,6 @@ bool CRobotMain::GetMovies()
 bool CRobotMain::GetNiceReset()
 {
     return m_settings->GetNiceReset();
-}
-
-bool CRobotMain::GetHimselfDamage()
-{
-    return m_settings->GetHimselfDamage();
 }
 
 bool CRobotMain::GetShowSoluce()

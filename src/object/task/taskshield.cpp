@@ -543,21 +543,15 @@ void CTaskShield::IncreaseShield()
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        ObjectType type = obj->GetType();
-        if ( type == OBJECT_MOTHER ||
-             type == OBJECT_ANT    ||
-             type == OBJECT_SPIDER ||
-             type == OBJECT_BEE    ||
-             type == OBJECT_WORM   )  continue;
+        if (!obj->Implements(ObjectInterfaceType::Shielded));
+        CShieldedObject* shielded = dynamic_cast<CShieldedObject*>(shielded);
+        if (!shielded->IsRepairable()) continue; // NOTE: Looks like the original code forgot to check that
 
         Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, m_shieldPos);
         if ( dist <= GetRadius()+10.0f )
         {
-            float shield = obj->GetShield();
-            shield += 0.1f;
-            if ( shield > 1.0f )  shield = 1.0f;
-            obj->SetShield(shield);
+            shielded->SetShield(shielded->GetShield() + 0.1f);
         }
     }
 }

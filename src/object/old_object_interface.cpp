@@ -25,7 +25,7 @@ void COldObjectInterface::Simplify()
     throw std::logic_error("Simplify: not implemented!");
 }
 
-bool COldObjectInterface::ExplodeObject(ExplosionType type, float force, float decay)
+bool COldObjectInterface::ExplodeObject(ExplosionType type, float force)
 {
     throw std::logic_error("ExplodeObject: not implemented!");
 }
@@ -104,16 +104,6 @@ Character* COldObjectInterface::GetCharacter()
     throw std::logic_error("GetCharacter: not implemented!");
 }
 
-void COldObjectInterface::SetShield(float level)
-{
-    throw std::logic_error("SetShield: not implemented!");
-}
-
-float COldObjectInterface::GetShield()
-{
-    throw std::logic_error("GetShield: not implemented!");
-}
-
 
 void COldObjectInterface::SetFixed(bool bFixed)
 {
@@ -134,17 +124,6 @@ void COldObjectInterface::SetVirusMode(bool bEnable)
 bool COldObjectInterface::GetVirusMode()
 {
     throw std::logic_error("GetVirusMode: not implemented!");
-}
-
-
-void COldObjectInterface::SetMagnifyDamage(float factor)
-{
-    throw std::logic_error("SetMagnifyDamage: not implemented!");
-}
-
-float COldObjectInterface::GetMagnifyDamage()
-{
-    throw std::logic_error("GetMagnifyDamage: not implemented!");
 }
 
 

@@ -235,7 +235,6 @@ public:
     bool        GetSoluce4();
     bool        GetMovies();
     bool        GetNiceReset();
-    bool        GetHimselfDamage();
     bool        GetShowSoluce();
     bool        GetSceneSoluce();
     bool        GetShowAll();

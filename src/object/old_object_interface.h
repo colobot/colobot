@@ -63,7 +63,7 @@ public:
     virtual ~COldObjectInterface() {}
 
     virtual void        Simplify();
-    virtual bool        ExplodeObject(ExplosionType type, float force, float decay=1.0f);
+    virtual bool        ExplodeObject(ExplosionType type, float force = 1.0f);
     virtual void        DeletePart(int part);
     virtual void        SetType(ObjectType type);
 
@@ -92,12 +92,6 @@ public:
     virtual Character*  GetCharacter();
 
     virtual void        FlatParent();
-
-    // This goes to CShieldedObject (probably will inherit from CDestroyableObject)
-    virtual void        SetShield(float level);
-    virtual float       GetShield();
-    virtual void        SetMagnifyDamage(float factor);
-    virtual float       GetMagnifyDamage();
 
     // This goes to CBaseAlien or something like that
     virtual void        SetFixed(bool bFixed);

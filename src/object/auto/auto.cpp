@@ -246,11 +246,14 @@ bool CAuto::CreateInterface(bool bSelect)
     pos.y = oy+sy*0;
     pw->CreateButton(pos, dim, 10, EVENT_OBJECT_DESELECT);
 
-    pos.x = ox+sx*14.9f;
-    pos.y = oy+sy*0;
-    ddim.x = 14.0f/640.0f;
-    ddim.y = 66.0f/480.0f;
-    pw->CreateGauge(pos, ddim, 3, EVENT_OBJECT_GSHIELD);
+    if ( m_object->Implements(ObjectInterfaceType::Shielded) )
+    {
+        pos.x = ox+sx*14.9f;
+        pos.y = oy+sy*0;
+        ddim.x = 14.0f/640.0f;
+        ddim.y = 66.0f/480.0f;
+        pw->CreateGauge(pos, ddim, 3, EVENT_OBJECT_GSHIELD);
+    }
 
     UpdateInterface();
     m_lastUpdateTime = 0.0f;
@@ -340,7 +343,8 @@ void CAuto::UpdateInterface(float rTime)
     pg = static_cast<Ui::CGauge*>(pw->SearchControl(EVENT_OBJECT_GSHIELD));
     if ( pg != nullptr )
     {
-        pg->SetLevel(m_object->GetShield());
+        assert(m_object->Implements(ObjectInterfaceType::Shielded));
+        pg->SetLevel(dynamic_cast<CShieldedObject*>(m_object)->GetShield());
     }
 
     pg = static_cast<Ui::CGauge*>(pw->SearchControl(EVENT_OBJECT_GPROGRESS));

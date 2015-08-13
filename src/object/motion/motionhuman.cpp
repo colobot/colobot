@@ -613,7 +613,7 @@ bool CMotionHuman::EventFrame(const Event &event)
     float       s, a, prog, rTime[2], lTime[2], time, rot, hr, hl;
     float       al, ar, af;
     float       tSt[9], tNd[9];
-    float       aa, bb, shield, deadFactor = 0.0f, level;
+    float       aa, bb, deadFactor = 0.0f, level;
     int         i, ii, st, nd, action, legAction, armAction;
     bool        bOnBoard, bSwim;
 
@@ -647,11 +647,6 @@ bool CMotionHuman::EventFrame(const Event &event)
     {
         m_object->SetCirVibration(Math::Vector(0.0f, m_main->GetPersoAngle()+0.2f, 0.0f));
     }
-
-    shield = m_object->GetShield();
-    shield += event.rTime*(1.0f/120.0f);  // regeneration in 120 seconds
-    if ( shield > 1.0f )  shield = 1.0f;
-    m_object->SetShield(shield);
 
     bSwim = m_physics->GetSwim();
 

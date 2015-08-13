@@ -50,55 +50,6 @@ const float FOG_HSUP    = 10.0f;
 const float FOG_HINF    = 100.0f;
 
 
-//! Check if an object can be destroyed, but is not an enemy
-bool IsSoft(ObjectType type)
-{
-    return ( type == OBJECT_HUMAN    ||
-             type == OBJECT_MOBILEfa ||
-             type == OBJECT_MOBILEta ||
-             type == OBJECT_MOBILEwa ||
-             type == OBJECT_MOBILEia ||
-             type == OBJECT_MOBILEfc ||
-             type == OBJECT_MOBILEtc ||
-             type == OBJECT_MOBILEwc ||
-             type == OBJECT_MOBILEic ||
-             type == OBJECT_MOBILEfi ||
-             type == OBJECT_MOBILEti ||
-             type == OBJECT_MOBILEwi ||
-             type == OBJECT_MOBILEii ||
-             type == OBJECT_MOBILEfs ||
-             type == OBJECT_MOBILEts ||
-             type == OBJECT_MOBILEws ||
-             type == OBJECT_MOBILEis ||
-             type == OBJECT_MOBILErt ||
-             type == OBJECT_MOBILErc ||
-             type == OBJECT_MOBILErr ||
-             type == OBJECT_MOBILErs ||
-             type == OBJECT_MOBILEsa ||
-             type == OBJECT_MOBILEft ||
-             type == OBJECT_MOBILEtt ||
-             type == OBJECT_MOBILEwt ||
-             type == OBJECT_MOBILEit ||
-             type == OBJECT_MOBILEdr ||  // robot?
-             type == OBJECT_METAL    ||
-             type == OBJECT_POWER    ||
-             type == OBJECT_ATOMIC   ||  // cargo?
-             type == OBJECT_DERRICK  ||
-             type == OBJECT_STATION  ||
-             type == OBJECT_FACTORY  ||
-             type == OBJECT_REPAIR   ||
-             type == OBJECT_DESTROYER||
-             type == OBJECT_CONVERT  ||
-             type == OBJECT_TOWER    ||
-             type == OBJECT_RESEARCH ||
-             type == OBJECT_RADAR    ||
-             type == OBJECT_INFO     ||
-             type == OBJECT_ENERGY   ||
-             type == OBJECT_LABO     ||
-             type == OBJECT_NUCLEAR  ||
-             type == OBJECT_PARA     );  // building?
-}
-
 //! Check if an object is a destroyable enemy
 bool IsAlien(ObjectType type)
 {
@@ -113,11 +64,10 @@ bool IsAlien(ObjectType type)
              type == OBJECT_MOBILEtg );
 }
 
-//! Returns the damping factor for friendly fire
-float GetDecay(ObjectType type)
+//! Check if an object can be destroyed, but is not an enemy
+bool IsSoft(CObject* object)
 {
-    if (IsSoft(type))  return 0.004f;
-    return 1.0f;
+    return object->Implements(ObjectInterfaceType::Destroyable) && !IsAlien(object->GetType());
 }
 
 CParticle::CParticle(CEngine* engine)
@@ -1006,7 +956,7 @@ void CParticle::FrameParticle(float rTime)
                 if (object->GetType() == OBJECT_MOTHER)
                     object->ExplodeObject(ExplosionType::Bang, 0.1f);
                 else
-                    object->ExplodeObject(ExplosionType::Bang, 0.0f, GetDecay(object->GetType()));
+                    object->ExplodeObject(ExplosionType::Bang, 0.0f);
             }
 
             m_particle[i].zoom = 1.0f-(m_particle[i].time-m_particle[i].duration);
@@ -1207,7 +1157,7 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    object->ExplodeObject(ExplosionType::Burn, 0.0f, GetDecay(object->GetType()));
+                    object->ExplodeObject(ExplosionType::Burn, 0.0f);
 
                     m_exploGunCounter++;
 
@@ -1386,7 +1336,7 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    object->ExplodeObject(ExplosionType::Bang, 0.0f, GetDecay(object->GetType()));
+                    object->ExplodeObject(ExplosionType::Bang, 0.0f);
 
                     m_exploGunCounter ++;
 
@@ -3609,8 +3559,6 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
 {
     if (m_main->GetMovieLock()) return nullptr;  // current movie?
 
-    bool himself = m_main->GetHimselfDamage();
-
     float min = 5.0f;
     if (type == PARTIGUN2) min = 2.0f;  // shooting insect?
     if (type == PARTIGUN3) min = 3.0f;  // suiciding spider?
@@ -3641,48 +3589,24 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
         if (type == PARTIGUN1)  // fireball shooting?
         {
             if (oType == OBJECT_MOTHER)  continue;
-            if (himself)  // damage is oneself?
-            {
-                if ( !IsAlien(oType) &&
-                     !IsSoft(oType)  )  continue;
-            }
-            else    // damage only to enemies?
-            {
-                if (!IsAlien(oType))  continue;
-            }
+            if (!obj->Implements(ObjectInterfaceType::Destroyable))  continue;
         }
         else if (type == PARTIGUN2)  // shooting insect?
         {
-            if (!IsSoft(oType))  continue;
+            if (!IsSoft(obj))  continue;
         }
         else if (type == PARTIGUN3)  // suiciding spider?
         {
-            if (!IsSoft(oType))  continue;
+            if (!IsSoft(obj))  continue;
         }
         else if (type == PARTIGUN4)  // orgaball shooting?
         {
             if (oType == OBJECT_MOTHER)  continue;
-            if (himself)  // damage is oneself?
-            {
-                if ( !IsAlien(oType) &&
-                     !IsSoft(oType)  )  continue;
-            }
-            else    // damage only to enemies?
-            {
-                if (!IsAlien(oType))  continue;
-            }
+            if (!obj->Implements(ObjectInterfaceType::Destroyable))  continue;
         }
         else if (type == PARTITRACK11)  // phazer shooting?
         {
-            if (himself)  // damage is oneself?
-            {
-                if ( !IsAlien(oType) &&
-                     !IsSoft(oType)  )  continue;
-            }
-            else    // damage only to enemies?
-            {
-                if (!IsAlien(oType))  continue;
-            }
+            if (!obj->Implements(ObjectInterfaceType::Destroyable))  continue;
         }
         else
         {

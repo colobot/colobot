@@ -3877,7 +3877,8 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 
     // Updates the shield level of the object.
     pVar = pVar->GetNext();  // "shieldLevel"
-    value = object->GetShield();
+    if ( !obj->Implements(ObjectInterfaceType::Shielded) ) value = 1.0f;
+    else value = dynamic_cast<CShieldedObject*>(object)->GetShield();
     pVar->SetValFloat(value);
 
     // Updates the temperature of the reactor.

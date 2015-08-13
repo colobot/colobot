@@ -43,7 +43,7 @@ CExchangePost::CExchangePost(int id)
     : COldObject(id)
     , m_infoUpdate(false)
 {
-    m_type = OBJECT_INFO;
+    SetType(OBJECT_INFO);
 }
 
 std::unique_ptr<CExchangePost> CExchangePost::Create(
