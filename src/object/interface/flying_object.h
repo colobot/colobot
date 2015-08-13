@@ -27,7 +27,7 @@
  * \class CFlyingObject
  * \brief Interface for objects that can fly
  */
-class CFlyingObject : CMovableObject
+class CFlyingObject : public CMovableObject
 {
 public:
     explicit CFlyingObject(ObjectInterfaceTypes& types)

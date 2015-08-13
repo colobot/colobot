@@ -86,9 +86,12 @@ COldObject::COldObject(int id)
     , CControllableObject(m_implementedInterfaces)
     , CPowerContainerObjectImpl(m_implementedInterfaces, this)
     , CRangedObject(m_implementedInterfaces)
+    , CTraceDrawingObject(m_implementedInterfaces)
 {
     // A bit of a hack since we don't have subclasses yet, set externally in SetProgrammable()
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
+    // Another hack, see SetMovable()
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Movable)] = false;
     // Another hack
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Jostleable)] = false;
 
@@ -170,6 +173,12 @@ COldObject::COldObject(int id)
     m_burnTime = 0.0f;
 
     m_buttonAxe    = EVENT_NULL;
+
+    m_reactorRange       = 1.0f;
+
+    m_traceDown = false;
+    m_traceColor = TraceColor::Black;
+    m_traceWidth = 0.5f;
 
     DeleteAllCrashSpheres();
 }
@@ -2235,6 +2244,18 @@ float COldObject::GetRange()
     return m_range;
 }
 
+void COldObject::SetReactorRange(float reactorRange)
+{
+    if (reactorRange > 1.0f) reactorRange = 1.0f;
+    if (reactorRange < 0.0f) reactorRange = 0.0f;
+    m_reactorRange = reactorRange;
+}
+
+float COldObject::GetReactorRange()
+{
+    return m_reactorRange;
+}
+
 
 // Management of transparency of the object.
 
@@ -2858,17 +2879,6 @@ CPhysics* COldObject::GetPhysics()
     return m_physics.get();
 }
 
-void COldObject::SetPhysics(std::unique_ptr<CPhysics> physics)
-{
-    m_physics = std::move(physics);
-}
-
-// TODO: Temporary hack until we'll have subclasses for objects
-void COldObject::SetProgrammable(bool programmable)
-{
-    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = programmable;
-}
-
 // Returns the movement associated to the object.
 
 CMotion* COldObject::GetMotion()
@@ -2876,9 +2886,18 @@ CMotion* COldObject::GetMotion()
     return m_motion.get();
 }
 
-void COldObject::SetMotion(std::unique_ptr<CMotion> motion)
+// TODO: Temporary hack until we'll have subclasses for objects
+void COldObject::SetProgrammable()
+{
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = true;
+}
+
+// TODO: Another hack
+void COldObject::SetMovable(std::unique_ptr<CMotion> motion, std::unique_ptr<CPhysics> physics)
 {
     m_motion = std::move(motion);
+    m_physics = std::move(physics);
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Movable)] = true;
 }
 
 // Returns the controller associated to the object.
@@ -3028,10 +3047,10 @@ Error COldObject::StartTaskPen(bool down, TraceColor color)
     assert(motionVehicle != nullptr);
 
     if (color == TraceColor::Default)
-        color = motionVehicle->GetTraceColor();
+        color = GetTraceColor();
 
-    motionVehicle->SetTraceDown(down);
-    motionVehicle->SetTraceColor(color);
+    SetTraceDown(down);
+    SetTraceColor(color);
 
     m_physics->SetMotorSpeedX(0.0f);
     m_physics->SetMotorSpeedY(0.0f);
@@ -3189,4 +3208,36 @@ void COldObject::StopProgram()
     m_physics->SetMotorSpeedZ(0.0f);
 
     m_motion->SetAction(-1);
+}
+
+// State management of the pencil drawing robot.
+
+bool COldObject::GetTraceDown()
+{
+    return m_traceDown;
+}
+
+void COldObject::SetTraceDown(bool down)
+{
+    m_traceDown = down;
+}
+
+TraceColor COldObject::GetTraceColor()
+{
+    return m_traceColor;
+}
+
+void COldObject::SetTraceColor(TraceColor color)
+{
+    m_traceColor = color;
+}
+
+float COldObject::GetTraceWidth()
+{
+    return m_traceWidth;
+}
+
+void COldObject::SetTraceWidth(float width)
+{
+    m_traceWidth = width;
 }

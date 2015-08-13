@@ -38,7 +38,6 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
-#include "object/trace_color.h"
 
 #include "object/auto/auto.h"
 #include "object/auto/autobase.h"
@@ -46,10 +45,9 @@
 
 #include "object/interface/programmable_object.h"
 #include "object/interface/task_executor_object.h"
+#include "object/interface/trace_drawing_object.h"
 
 #include "object/level/parser.h"
-
-#include "object/motion/motionvehicle.h"
 
 #include "object/subclass/exchange_post.h"
 
@@ -2886,8 +2884,18 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
     float       width;
     Error       err;
 
-    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(pThis->GetMotion());
-    assert(motionVehicle != nullptr);
+    if (!pThis->Implements(ObjectInterfaceType::TraceDrawing))
+    {
+        result->SetValInt(ERR_WRONG_OBJ);
+        if ( script->m_errMode == ERM_STOP )
+        {
+            exception = ERR_WRONG_OBJ;
+            return false;
+        }
+        return true;
+    }
+
+    CTraceDrawingObject* traceDrawing = dynamic_cast<CTraceDrawingObject*>(pThis);
 
     exception = 0;
 
@@ -2896,7 +2904,7 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
         color = var->GetValInt();
         if ( color <  0 )  color =  0;
         if ( color > static_cast<int>(TraceColor::Max) )  color = static_cast<int>(TraceColor::Max);
-        motionVehicle->SetTraceColor(static_cast<TraceColor>(color));
+        traceDrawing->SetTraceColor(static_cast<TraceColor>(color));
 
         var = var->GetNext();
         if ( var != 0 )
@@ -2904,16 +2912,16 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
             width = var->GetValFloat();
             if ( width < 0.1f )  width = 0.1f;
             if ( width > 1.0f )  width = 1.0f;
-            motionVehicle->SetTraceWidth(width);
+            traceDrawing->SetTraceWidth(width);
         }
     }
-    motionVehicle->SetTraceDown(true);
+    traceDrawing->SetTraceDown(true);
 
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
         if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
         {
-            err = script->m_taskExecutor->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
+            err = script->m_taskExecutor->StartTaskPen(traceDrawing->GetTraceDown(), traceDrawing->GetTraceColor());
             if ( err != ERR_OK )
             {
                 script->m_taskExecutor->StopForegroundTask();
@@ -2942,20 +2950,27 @@ bool CScriptFunctions::rPenUp(CBotVar* var, CBotVar* result, int& exception, voi
     CObject*    pThis = script->m_object;
     Error       err;
 
-    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(pThis->GetMotion());
-    assert(motionVehicle != nullptr);
-
     exception = 0;
 
-    motionVehicle->SetTraceDown(false);
+    if (!pThis->Implements(ObjectInterfaceType::TraceDrawing))
+    {
+        result->SetValInt(ERR_WRONG_OBJ);
+        if ( script->m_errMode == ERM_STOP )
+        {
+            exception = ERR_WRONG_OBJ;
+            return false;
+        }
+        return true;
+    }
+
+    CTraceDrawingObject* traceDrawing = dynamic_cast<CTraceDrawingObject*>(pThis);
+    traceDrawing->SetTraceDown(false);
 
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
         if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
         {
-            motionVehicle->SetTraceDown(false);
-
-            err = script->m_taskExecutor->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
+            err = script->m_taskExecutor->StartTaskPen(traceDrawing->GetTraceDown(), traceDrawing->GetTraceColor());
             if ( err != ERR_OK )
             {
                 script->m_taskExecutor->StopForegroundTask();
@@ -2985,21 +3000,31 @@ bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, 
     int         color;
     Error       err;
 
-    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(pThis->GetMotion());
-    assert(motionVehicle != nullptr);
-
     exception = 0;
+
+    if (!pThis->Implements(ObjectInterfaceType::TraceDrawing))
+    {
+        result->SetValInt(ERR_WRONG_OBJ);
+        if ( script->m_errMode == ERM_STOP )
+        {
+            exception = ERR_WRONG_OBJ;
+            return false;
+        }
+        return true;
+    }
+
+    CTraceDrawingObject* traceDrawing = dynamic_cast<CTraceDrawingObject*>(pThis);
 
     color = var->GetValInt();
     if ( color <  0 )  color =  0;
     if ( color > static_cast<int>(TraceColor::Max) )  color = static_cast<int>(TraceColor::Max);
-    motionVehicle->SetTraceColor(static_cast<TraceColor>(color));
+    traceDrawing->SetTraceColor(static_cast<TraceColor>(color));
 
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
         if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
         {
-            err = script->m_taskExecutor->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
+            err = script->m_taskExecutor->StartTaskPen(traceDrawing->GetTraceDown(), traceDrawing->GetTraceColor());
             if ( err != ERR_OK )
             {
                 script->m_taskExecutor->StopForegroundTask();
@@ -3024,16 +3049,29 @@ bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, 
 
 bool CScriptFunctions::rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*    pThis = static_cast<CScript*>(user)->m_object;
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     float       width;
 
-    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(pThis->GetMotion());
-    assert(motionVehicle != nullptr);
+    exception = 0;
+
+    if (!pThis->Implements(ObjectInterfaceType::TraceDrawing))
+    {
+        result->SetValInt(ERR_WRONG_OBJ);
+        if ( script->m_errMode == ERM_STOP )
+        {
+            exception = ERR_WRONG_OBJ;
+            return false;
+        }
+        return true;
+    }
+
+    CTraceDrawingObject* traceDrawing = dynamic_cast<CTraceDrawingObject*>(pThis);
 
     width = var->GetValFloat();
     if ( width < 0.1f )  width = 0.1f;
     if ( width > 1.0f )  width = 1.0f;
-    motionVehicle->SetTraceWidth(width);
+    traceDrawing->SetTraceWidth(width);
     return true;
 }
 
@@ -3843,8 +3881,8 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 
     // Updates the temperature of the reactor.
     pVar = pVar->GetNext();  // "temperature"
-    if ( physics == 0 )  value = 0.0f;
-    else                 value = 1.0f-physics->GetReactorRange();
+    if ( !obj->Implements(ObjectInterfaceType::JetFlying) )  value = 0.0f;
+    else value = 1.0f-dynamic_cast<CJetFlyingObject*>(object)->GetReactorRange();
     pVar->SetValFloat(value);
 
     // Updates the height above the ground.
@@ -3869,7 +3907,7 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
         }
         else if (power->Implements(ObjectInterfaceType::Old))
         {
-            pVar->SetPointer(dynamic_cast<COldObject*>(power)->GetBotVar());
+            pVar->SetPointer(power->GetBotVar());
         }
     }
 
@@ -3884,7 +3922,7 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
         }
         else if (cargo->Implements(ObjectInterfaceType::Old))
         {
-            pVar->SetPointer(dynamic_cast<COldObject*>(cargo)->GetBotVar());
+            pVar->SetPointer(cargo->GetBotVar());
         }
     }
 

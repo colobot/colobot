@@ -2553,7 +2553,7 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
     {
         auto motion = MakeUnique<CMotionToto>(obj.get());
         motion->Create(pos, angle, type, 1.0f, m_oldModelManager);
-        obj->SetMotion(std::move(motion));
+        obj->SetMovable(std::move(motion), nullptr);
         return std::move(obj);
     }
 
@@ -2591,9 +2591,8 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
 
     motion->Create(pos, angle, type, power, m_oldModelManager);
 
-    obj->SetProgrammable(true);
-    obj->SetMotion(std::move(motion));
-    obj->SetPhysics(std::move(physics));
+    obj->SetProgrammable();
+    obj->SetMovable(std::move(motion), std::move(physics));
 
     return std::move(obj);
 }
@@ -2641,9 +2640,8 @@ CObjectUPtr CObjectFactory::CreateInsect(const ObjectCreateParams& params)
 
     motion->Create(pos, angle, type, 0.0f, m_oldModelManager);
 
-    obj->SetMotion(std::move(motion));
-    obj->SetPhysics(std::move(physics));
-    obj->SetProgrammable(true);
+    obj->SetProgrammable();
+    obj->SetMovable(std::move(motion), std::move(physics));
 
     return std::move(obj);
 }

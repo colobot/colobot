@@ -410,9 +410,8 @@ void CProgrammableObjectImpl::TraceRecordStart()
         TraceRecordStop();
     }
 
-    assert(m_object->Implements(ObjectInterfaceType::Old)); // TODO
-    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(dynamic_cast<COldObjectInterface*>(m_object)->GetMotion());
-    assert(motionVehicle != nullptr);
+    assert(m_object->Implements(ObjectInterfaceType::TraceDrawing));
+    CTraceDrawingObject* traceDrawing = dynamic_cast<CTraceDrawingObject*>(m_object);
 
     m_traceRecord = true;
 
@@ -421,9 +420,9 @@ void CProgrammableObjectImpl::TraceRecordStart()
     m_tracePos = m_object->GetPosition();
     m_traceAngle = m_object->GetRotationY();
 
-    if ( motionVehicle->GetTraceDown() )  // pencil down?
+    if ( traceDrawing->GetTraceDown() )  // pencil down?
     {
-        m_traceColor = motionVehicle->GetTraceColor();
+        m_traceColor = traceDrawing->GetTraceColor();
     }
     else    // pen up?
     {
@@ -442,11 +441,10 @@ void CProgrammableObjectImpl::TraceRecordFrame()
     Math::Vector    pos;
     float       angle, len, speed;
 
-    assert(m_object->Implements(ObjectInterfaceType::Old)); // TODO
-    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(dynamic_cast<COldObjectInterface*>(m_object)->GetMotion());
-    assert(motionVehicle != nullptr);
+    assert(m_object->Implements(ObjectInterfaceType::TraceDrawing));
+    CTraceDrawingObject* traceDrawing = dynamic_cast<CTraceDrawingObject*>(m_object);
 
-    CPhysics* physics = dynamic_cast<COldObjectInterface*>(m_object)->GetPhysics();
+    CPhysics* physics = dynamic_cast<CMovableObject*>(m_object)->GetPhysics();
 
     speed = physics->GetLinMotionX(MO_REASPEED);
     if ( speed > 0.0f )  oper = TO_ADVANCE;
@@ -456,9 +454,9 @@ void CProgrammableObjectImpl::TraceRecordFrame()
     if ( speed != 0.0f )  oper = TO_TURN;
 
     TraceColor color = TraceColor::Default;
-    if ( motionVehicle->GetTraceDown() )  // pencil down?
+    if ( traceDrawing->GetTraceDown() )  // pencil down?
     {
-        color = motionVehicle->GetTraceColor();
+        color = traceDrawing->GetTraceColor();
     }
 
     if ( oper != m_traceOper ||

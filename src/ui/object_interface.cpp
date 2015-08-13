@@ -887,14 +887,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         }
     }
 
-    if ( type == OBJECT_HUMAN    ||
-         type == OBJECT_MOBILEfa ||
-         type == OBJECT_MOBILEfc ||
-         type == OBJECT_MOBILEfi ||
-         type == OBJECT_MOBILEfs ||
-         type == OBJECT_MOBILEft ||
-         type == OBJECT_BEE      ||
-         type == OBJECT_CONTROLLER)  // driving?
+    if ( m_object->Implements(ObjectInterfaceType::Flying) )
     {
         pos.x = ox+sx*6.4f;
         pos.y = oy+sy*0;
@@ -906,15 +899,16 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pb = pw->CreateButton(pos, dim, 28, EVENT_OBJECT_GASUP);
         pb->SetImmediat(true);
 
-        if ( (type != OBJECT_HUMAN       &&
-              type != OBJECT_CONTROLLER) ||
-              m_object->GetOption() != 2  )
+        if ( m_object->Implements(ObjectInterfaceType::JetFlying) )
         {
-            pos.x = ox+sx*15.3f;
-            pos.y = oy+sy*0;
-            ddim.x = 14.0f/640.0f;
-            ddim.y = 66.0f/480.0f;
-            pw->CreateGauge(pos, ddim, 2, EVENT_OBJECT_GRANGE);
+            if ( type != OBJECT_HUMAN || m_object->GetOption() != 2 ) // if not Me without a jetpack, display reactor temperature
+            {
+                pos.x = ox+sx*15.3f;
+                pos.y = oy+sy*0;
+                ddim.x = 14.0f/640.0f;
+                ddim.y = 66.0f/480.0f;
+                pw->CreateGauge(pos, ddim, 2, EVENT_OBJECT_GRANGE);
+            }
         }
     }
 
@@ -1544,8 +1538,9 @@ void CObjectInterface::UpdateInterface(float rTime)
     pg = static_cast< CGauge* >(pw->SearchControl(EVENT_OBJECT_GRANGE));
     if ( pg != 0 )
     {
+        assert(m_object->Implements(ObjectInterfaceType::JetFlying));
         icon = 2;  // blue/red
-        range = m_physics->GetReactorRange();
+        range = dynamic_cast<CJetFlyingObject*>(m_object)->GetReactorRange();
 
         if ( range < 0.2f && range != 0.0f && !m_physics->GetLand() )
         {
@@ -1863,8 +1858,10 @@ void CObjectInterface::UpdateInterface()
         CheckInterface(pw, EVENT_OBJECT_MFRONT, m_manipStyle==EVENT_OBJECT_MFRONT);
     }
 
-    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion);
-    if (motionVehicle != nullptr && motionVehicle->GetTraceDown())
+    CTraceDrawingObject* traceDrawing = nullptr;
+    if (m_object->Implements(ObjectInterfaceType::TraceDrawing))
+        traceDrawing = dynamic_cast<CTraceDrawingObject*>(m_object);
+    if (traceDrawing != nullptr && traceDrawing->GetTraceDown())
     {
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_PEN0));
         if ( pb != 0 )
@@ -1872,7 +1869,7 @@ void CObjectInterface::UpdateInterface()
             pb->ClearState(STATE_CHECK);
         }
 
-        TraceColor color = motionVehicle->GetTraceColor();
+        TraceColor color = traceDrawing->GetTraceColor();
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN1));
         if ( pc != 0 )
         {

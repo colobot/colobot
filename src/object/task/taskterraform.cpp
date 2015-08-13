@@ -370,8 +370,8 @@ bool CTaskTerraform::Terraform()
         }
         else
         {
-            motion = pObj->GetMotion();
-            if ( motion == 0 )  continue;
+            if ( !pObj->Implements(ObjectInterfaceType::Movable) == 0 )  continue;
+            motion = dynamic_cast<CMovableObject*>(pObj)->GetMotion();
 
             dist = Math::Distance(m_terraPos, pObj->GetPosition());
             if ( dist > ACTION_RADIUS )  continue;

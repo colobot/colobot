@@ -21,7 +21,8 @@
 
 #include "object/object.h"
 #include "object/object_interface_type.h"
-#include "object/trace_color.h"
+
+#include "object/interface/trace_drawing_object.h"
 
 #include "object/task/taskflag.h"
 #include "object/task/taskgoto.h"

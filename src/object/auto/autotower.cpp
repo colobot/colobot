@@ -279,9 +279,9 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
 //?     if ( g_researchDone & RESEARCH_QUICK )
         if ( false )
         {
-            CPhysics* physics = obj->GetPhysics();
-            if ( physics != nullptr )
+            if ( obj->Implements(ObjectInterfaceType::Movable) )
             {
+                CPhysics* physics = dynamic_cast<CMovableObject*>(obj)->GetPhysics();
                 float speed = fabs(physics->GetLinMotionX(MO_REASPEED));
                 if ( speed > 20.0f )  continue;  // moving too fast?
             }

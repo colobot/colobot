@@ -211,16 +211,6 @@ bool COldObjectInterface::GetActive()
 }
 
 
-CPhysics* COldObjectInterface::GetPhysics()
-{
-    throw std::logic_error("GetPhysics: not implemented!");
-}
-
-CMotion* COldObjectInterface::GetMotion()
-{
-    throw std::logic_error("GetMotion: not implemented!");
-}
-
 CAuto* COldObjectInterface::GetAuto()
 {
     throw std::logic_error("GetAuto: not implemented!");

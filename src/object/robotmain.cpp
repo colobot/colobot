@@ -1241,9 +1241,8 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
                 object->SetShield(1.0f);
 
-                CPhysics* physics = object->GetPhysics();
-                if (physics != nullptr)
-                    physics->SetReactorRange(1.0f);
+                if (object->Implements(ObjectInterfaceType::JetFlying))
+                    dynamic_cast<CJetFlyingObject*>(object)->SetReactorRange(1.0f);
             }
             return;
         }
@@ -1277,9 +1276,8 @@ void CRobotMain::ExecuteCmd(char *cmd)
             CObject* object = GetSelect();
             if (object != nullptr)
             {
-                CPhysics* physics = object->GetPhysics();
-                if (physics != nullptr)
-                    physics->SetReactorRange(1.0f);
+                if (object->Implements(ObjectInterfaceType::JetFlying))
+                    dynamic_cast<CJetFlyingObject*>(object)->SetReactorRange(1.0f);
             }
             return;
         }
@@ -1416,8 +1414,8 @@ void CRobotMain::StartDisplayInfo(int index, bool movie)
 
     if (!m_editLock && movie && !m_movie->IsExist() && human)
     {
-        CMotion* motion = obj->GetMotion();
-        if (motion != nullptr && motion->GetAction() == -1)
+        assert(obj->Implements(ObjectInterfaceType::Movable));
+        if (dynamic_cast<CMovableObject*>(obj)->GetMotion()->GetAction() == -1)
         {
             m_movieInfoIndex = index;
             m_movie->Start(MM_SATCOMopen, 2.5f);
@@ -1784,9 +1782,9 @@ void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
     CObject* toto = SearchToto();
     if (toto != nullptr)
     {
-        CMotionToto* mt = static_cast<CMotionToto*>(toto->GetMotion());
-        if (mt != nullptr)
-            mt->SetLinkType(type);
+        assert(toto->Implements(ObjectInterfaceType::Movable));
+        CMotionToto* mt = static_cast<CMotionToto*>(dynamic_cast<CMovableObject*>(toto)->GetMotion());
+        mt->SetLinkType(type);
     }
 }
 
@@ -2848,9 +2846,9 @@ void CRobotMain::ScenePerso()
     {
         obj->SetDrawFront(true);  // draws the interface
 
-        CMotionHuman* mh = static_cast<CMotionHuman*>(obj->GetMotion());
-        if (mh != nullptr)
-            mh->StartDisplayPerso();
+        assert(obj->Implements(ObjectInterfaceType::Movable));
+        CMotionHuman* mh = static_cast<CMotionHuman*>(dynamic_cast<CMovableObject*>(obj)->GetMotion());
+        mh->StartDisplayPerso();
     }
 }
 
@@ -3572,7 +3570,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (m_fixScene && type == OBJECT_HUMAN)
                 {
-                    CMotion* motion = obj->GetMotion();
+                    assert(obj->Implements(ObjectInterfaceType::Movable));
+                    CMotion* motion = dynamic_cast<CMovableObject*>(obj)->GetMotion();
                     if (m_phase == PHASE_WIN ) motion->SetAction(MHS_WIN,  0.4f);
                     if (m_phase == PHASE_LOST) motion->SetAction(MHS_LOST, 0.5f);
                 }

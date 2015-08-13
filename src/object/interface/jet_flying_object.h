@@ -27,7 +27,7 @@
  * \class CJetFlyingObject
  * \brief Interface for objects that can fly using a jet engine
  */
-class CJetFlyingObject : CFlyingObject
+class CJetFlyingObject : public CFlyingObject
 {
 public:
     explicit CJetFlyingObject(ObjectInterfaceTypes& types)
@@ -38,8 +38,15 @@ public:
     virtual ~CJetFlyingObject()
     {}
 
+    // TODO: Refactor naming of these functions
+
     //! Sets jet engine heating speed (bigger = slower, 0 for infinite)
     virtual void SetRange(float range) = 0;
     //! Returns jet engine heating speed (bigger = slower, 0 for infinite)
     virtual float GetRange() = 0;
+
+    //! Sets current jet engine heat level (this is actually how much is left before it overheats, so smaller = more hot)
+    virtual void SetReactorRange(float reactorRange) = 0;
+    //! Returns current jet engine heat level (this is actually how much is left before it overheats, so smaller = more hot)
+    virtual float GetReactorRange() = 0;
 };

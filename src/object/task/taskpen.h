@@ -24,9 +24,9 @@
 
 #include "object/task/task.h"
 
-#include "math/vector.h"
+#include "object/interface/trace_drawing_object.h"
 
-#include "object/trace_color.h"
+#include "math/vector.h"
 
 
 enum TaskPenPhase

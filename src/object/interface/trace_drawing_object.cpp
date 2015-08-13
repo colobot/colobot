@@ -16,7 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
-#include "object/trace_color.h"
+
+#include "object/interface/trace_drawing_object.h"
 
 std::string TraceColorName(TraceColor color)
 {

@@ -767,7 +767,7 @@ Error CTaskGoto::IsEnded()
     if ( m_phase == TGP_BEAMWCOLD )  // expects cool reactor?
     {
         if ( m_altitude != 0.0f &&
-             m_physics->GetReactorRange() < 1.0f )  return ERR_CONTINUE;
+             (m_object->Implements(ObjectInterfaceType::JetFlying) && dynamic_cast<CJetFlyingObject*>(m_object)->GetReactorRange() < 1.0f) )  return ERR_CONTINUE;
         m_phase = TGP_BEAMUP;
     }
 
@@ -789,7 +789,7 @@ Error CTaskGoto::IsEnded()
     if ( m_phase == TGP_BEAMGOTO )  // goto dot list ?
     {
         if ( m_altitude != 0.0f &&
-             m_physics->GetReactorRange() < 0.1f )  // overheating?
+             (m_object->Implements(ObjectInterfaceType::JetFlying) && dynamic_cast<CJetFlyingObject*>(m_object)->GetReactorRange() < 0.1f) )  // overheating?
         {
             m_physics->SetMotorSpeedX(0.0f);  // stops the advance
             m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation

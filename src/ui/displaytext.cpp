@@ -30,6 +30,8 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 
+#include "object/interface/movable_object.h"
+
 #include "object/motion/motion.h"
 #include "object/motion/motiontoto.h"
 
@@ -250,27 +252,26 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     m_textLines[nLine] = line;
 
     toto = SearchToto();
-    if ( toto != 0 )
+    if ( toto != nullptr )
     {
-        motion = toto->GetMotion();
-        if ( motion != 0 )
+        assert(toto->Implements(ObjectInterfaceType::Movable));
+        motion = dynamic_cast<CMovableObject*>(toto)->GetMotion();
+
+        if ( type == TT_ERROR )
         {
-            if ( type == TT_ERROR )
-            {
-                motion->SetAction(MT_ERROR, 4.0f);
-            }
-            if ( type == TT_WARNING )
-            {
-                motion->SetAction(MT_WARNING, 4.0f);
-            }
-            if ( type == TT_INFO )
-            {
-                motion->SetAction(MT_INFO, 4.0f);
-            }
-            if ( type == TT_MESSAGE )
-            {
-                motion->SetAction(MT_MESSAGE, 4.0f);
-            }
+            motion->SetAction(MT_ERROR, 4.0f);
+        }
+        if ( type == TT_WARNING )
+        {
+            motion->SetAction(MT_WARNING, 4.0f);
+        }
+        if ( type == TT_INFO )
+        {
+            motion->SetAction(MT_INFO, 4.0f);
+        }
+        if ( type == TT_MESSAGE )
+        {
+            motion->SetAction(MT_MESSAGE, 4.0f);
         }
     }
 

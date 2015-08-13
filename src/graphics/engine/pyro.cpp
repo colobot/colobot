@@ -269,9 +269,11 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     {
         m_object->SetDead(true);
 
-        CMotion* motion = m_object->GetMotion();
-        if (motion != nullptr)
+        if ( obj->Implements(ObjectInterfaceType::Movable) )
+        {
+            CMotion* motion = dynamic_cast<CMovableObject*>(obj)->GetMotion();
             motion->SetAction(MHS_DEADg, 1.0f);
+        }
 
         m_camera->StartCentering(m_object, Math::PI*0.5f, 99.9f, 0.0f, 1.5f);
         m_camera->StartOver(CAM_OVER_EFFECT_FADEOUT_WHITE, m_pos, 1.0f);
@@ -282,9 +284,9 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     {
         m_object->SetDead(true);
 
-        CMotion* motion = m_object->GetMotion();
-        if ( motion != nullptr )
+        if ( obj->Implements(ObjectInterfaceType::Movable) )
         {
+            CMotion* motion = dynamic_cast<CMovableObject*>(obj)->GetMotion();
             motion->SetAction(MHS_DEADw, 4.0f);
         }
         m_camera->StartCentering(m_object, Math::PI*0.5f, 99.9f, 0.0f, 3.0f);

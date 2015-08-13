@@ -37,6 +37,8 @@
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 
+#include "object/interface/movable_object.h"
+
 #include "object/motion/motion.h"
 #include "object/motion/motiontoto.h"
 
@@ -74,7 +76,7 @@ CDisplayInfo::CDisplayInfo()
     m_infoFinalDim = m_infoActualPos = m_infoNormalDim = Math::Point(1.00f, 1.00f);
 
     m_lightSuppl = -1;
-    m_toto = 0;
+    m_toto = nullptr;
     m_bSoluce = false;
     m_initPause = PAUSE_NONE;
     m_bEditLock = false;
@@ -96,7 +98,6 @@ bool CDisplayInfo::EventProcess(const Event &event)
     Ui::CWindow*        pw;
     Ui::CEdit*          edit;
     Ui::CSlider*        slider;
-    CMotionToto*    toto;
 
     if ( event.type == EVENT_FRAME )
     {
@@ -106,13 +107,12 @@ bool CDisplayInfo::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE )
     {
-        if ( m_toto != 0 )
+        if ( m_toto != nullptr )
         {
-            toto = static_cast<CMotionToto*>(m_toto->GetMotion());
-            if ( toto != 0 )
-            {
-                toto->SetMousePos(event.mousePos);
-            }
+            assert(m_toto->Implements(ObjectInterfaceType::Movable));
+            CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject*>(m_toto)->GetMotion());
+            assert(toto != nullptr);
+            toto->SetMousePos(event.mousePos);
         }
     }
 
@@ -346,7 +346,6 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     Ui::CEdit*          edit;
     Ui::CButton*        button;
     Ui::CSlider*        slider;
-    CMotionToto*        toto;
 
     m_index = index;
     m_bSoluce = bSoluce;
@@ -446,15 +445,14 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     m_particle->SetFrameUpdate(Gfx::SH_WORLD, false);  // particles break into world
 
     m_toto = SearchToto();
-    if ( m_toto != 0 )
+    if ( m_toto != nullptr )
     {
         m_toto->SetDrawFront(true);
 
-        toto = static_cast<CMotionToto*>(m_toto->GetMotion());
-        if ( toto != 0 )
-        {
-            toto->StartDisplayInfo();
-        }
+        assert(m_toto->Implements(ObjectInterfaceType::Movable));
+        CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject*>(m_toto)->GetMotion());
+        assert(toto != nullptr);
+        toto->StartDisplayInfo();
     }
 
     light.type    = Gfx::LIGHT_DIRECTIONAL;
@@ -814,7 +812,6 @@ void CDisplayInfo::UpdateCopyButton()
 void CDisplayInfo::StopDisplayInfo()
 {
     Ui::CWindow*        pw;
-    CMotionToto*    toto;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
     if ( pw == 0 )  return;
@@ -842,13 +839,12 @@ void CDisplayInfo::StopDisplayInfo()
     m_particle->FlushParticle(Gfx::SH_FRONT);
     m_particle->FlushParticle(Gfx::SH_INTERFACE);
 
-    if ( m_toto != 0 )
+    if ( m_toto != nullptr )
     {
-        toto = static_cast<CMotionToto*>(m_toto->GetMotion());
-        if ( toto != 0 )
-        {
-            toto->StopDisplayInfo();
-        }
+        assert(m_toto->Implements(ObjectInterfaceType::Movable));
+        CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject*>(m_toto)->GetMotion());
+        assert(toto != nullptr);
+        toto->StopDisplayInfo();
     }
 
     m_light->DeleteLight(m_lightSuppl);

@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #pragma once
 
-#include <string>
+#include "object/object_interface_type.h"
 
-enum class TraceColor : int
+enum class TraceColor
 {
     Default = -1,
 
@@ -44,5 +45,26 @@ enum class TraceColor : int
     RedArrow = 17,
     Max,
 };
-
 std::string TraceColorName(TraceColor c);
+
+/**
+ * \class CTraceDrawingObject
+ * \brief Interface for objects that can draw wheel trace (at the moment, all movable objects)
+ */
+class CTraceDrawingObject
+{
+public:
+    explicit CTraceDrawingObject(ObjectInterfaceTypes& types)
+    {
+        types[static_cast<int>(ObjectInterfaceType::TraceDrawing)] = true;
+    }
+    virtual ~CTraceDrawingObject()
+    {}
+
+    virtual bool        GetTraceDown() = 0;
+    virtual void        SetTraceDown(bool down) = 0;
+    virtual TraceColor  GetTraceColor() = 0;
+    virtual void        SetTraceColor(TraceColor color) = 0;
+    virtual float       GetTraceWidth() = 0;
+    virtual void        SetTraceWidth(float width) = 0;
+};

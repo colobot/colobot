@@ -68,10 +68,6 @@ CMotionVehicle::CMotionVehicle(COldObject* object) : CMotion(object)
     m_wheelLastAngle = Math::Vector(0.0f, 0.0f, 0.0f);
     m_posKey         = Math::Vector(0.0f, 0.0f, 0.0f);
     m_bFlyFix = false;
-
-    m_bTraceDown = false;
-    m_traceColor = TraceColor::Black;  // black
-    m_traceWidth = 0.5f;
 }
 
 // Object's destructor.
@@ -1859,38 +1855,4 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
                                       left, 1.0f, 8.0f, 192.0f, 256.0f);
     }
 
-}
-
-
-
-// State management of the pencil drawing robot.
-
-bool CMotionVehicle::GetTraceDown()
-{
-    return m_bTraceDown;
-}
-
-void CMotionVehicle::SetTraceDown(bool bDown)
-{
-    m_bTraceDown = bDown;
-}
-
-TraceColor CMotionVehicle::GetTraceColor()
-{
-    return m_traceColor;
-}
-
-void CMotionVehicle::SetTraceColor(TraceColor color)
-{
-    m_traceColor = color;
-}
-
-float CMotionVehicle::GetTraceWidth()
-{
-    return m_traceWidth;
-}
-
-void CMotionVehicle::SetTraceWidth(float width)
-{
-    m_traceWidth = width;
 }

@@ -268,8 +268,7 @@ CObject* CAutoRepair::SearchVehicle()
              type != OBJECT_MOBILEit &&
              type != OBJECT_MOBILEdr )  continue;
 
-        CPhysics* physics = obj->GetPhysics();
-        if ( physics != nullptr && !physics->GetLand() )  continue;  // in flight?
+        if ( obj->Implements(ObjectInterfaceType::Movable) && !dynamic_cast<CMovableObject*>(obj)->GetPhysics()->GetLand() )  continue;  // in flight?
 
         Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);
@@ -323,4 +322,3 @@ bool CAutoRepair::Read(CLevelParserLine* line)
 
     return true;
 }
-

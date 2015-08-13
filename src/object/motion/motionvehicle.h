@@ -22,9 +22,6 @@
 
 #include "object/motion/motion.h"
 
-#include "object/trace_color.h"
-
-
 
 class CMotionVehicle : public CMotion
 {
@@ -35,13 +32,6 @@ public:
     void        DeleteObject(bool bAll=false);
     void        Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager);
     bool        EventProcess(const Event &event);
-
-    bool        GetTraceDown();
-    void        SetTraceDown(bool bDown);
-    TraceColor  GetTraceColor();
-    void        SetTraceColor(TraceColor color);
-    float       GetTraceWidth();
-    void        SetTraceWidth(float width);
 
 protected:
     void        CreatePhysics(ObjectType type);
@@ -64,7 +54,4 @@ protected:
     Math::Vector    m_wheelLastAngle;
     Math::Vector    m_posKey;
     bool        m_bFlyFix;
-    bool        m_bTraceDown;
-    TraceColor  m_traceColor;
-    float       m_traceWidth;
 };

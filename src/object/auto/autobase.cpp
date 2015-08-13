@@ -1246,9 +1246,9 @@ void CAutoBase::FreezeCargo(bool freeze)
         if ( dist < 32.0f )
         {
             m_cargoObjects.insert(obj);
-            CPhysics* physics = obj->GetPhysics();
-            if ( physics != nullptr )
+            if ( obj->Implements(ObjectInterfaceType::Movable) )
             {
+                CPhysics* physics = dynamic_cast<CMovableObject*>(obj)->GetPhysics();
                 physics->SetFreeze(freeze);
             }
         }

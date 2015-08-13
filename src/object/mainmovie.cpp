@@ -27,6 +27,8 @@
 #include "object/object.h"
 #include "object/robotmain.h"
 
+#include "object/interface/movable_object.h"
+
 #include "object/motion/motionhuman.h"
 
 
@@ -67,7 +69,6 @@ bool CMainMovie::Start(MainMovieType type, float time)
     Math::Matrix*   mat;
     Math::Vector    pos;
     CObject*    pObj;
-    CMotion*    motion;
 
     m_type = type;
     m_speed = 1.0f/time;
@@ -76,17 +77,14 @@ bool CMainMovie::Start(MainMovieType type, float time)
     if ( m_type == MM_SATCOMopen )
     {
         pObj = m_main->SearchHuman();
-        if ( pObj == 0 )
+        if ( pObj == nullptr )
         {
             m_type = MM_NONE;  // it's over!
             return true;
         }
 
-        motion = pObj->GetMotion();
-        if ( motion != 0 )
-        {
-            motion->SetAction(MHS_SATCOM, 0.5f);  // reads the SatCom
-        }
+        assert(pObj->Implements(ObjectInterfaceType::Movable));
+        dynamic_cast<CMovableObject*>(pObj)->GetMotion()->SetAction(MHS_SATCOM, 0.5f);  // reads the SatCom
 
         m_camera->GetCamera(m_initialEye, m_initialLookat);
         m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
@@ -105,13 +103,10 @@ bool CMainMovie::Start(MainMovieType type, float time)
     if ( m_type == MM_SATCOMclose )
     {
         pObj = m_main->SearchHuman();
-        if ( pObj != 0 )
+        if ( pObj != nullptr )
         {
-            motion = pObj->GetMotion();
-            if ( motion != 0 )
-            {
-                motion->SetAction(-1);  // finishes reading SatCom
-            }
+            assert(pObj->Implements(ObjectInterfaceType::Movable));
+            dynamic_cast<CMovableObject*>(pObj)->GetMotion()->SetAction(-1);  // finishes reading SatCom
         }
 
         m_camera->SetType(Gfx::CAM_TYPE_BACK);
@@ -126,18 +121,14 @@ bool CMainMovie::Start(MainMovieType type, float time)
 bool CMainMovie::Stop()
 {
     CObject*    pObj;
-    CMotion*    motion;
 
     if ( m_type == MM_SATCOMopen )
     {
         pObj = m_main->SearchHuman();
-        if ( pObj != 0 )
+        if ( pObj != nullptr )
         {
-            motion = pObj->GetMotion();
-            if ( motion != 0 )
-            {
-                motion->SetAction(-1);  // finishes reading SatCom
-            }
+            assert(pObj->Implements(ObjectInterfaceType::Movable));
+            dynamic_cast<CMovableObject*>(pObj)->GetMotion()->SetAction(-1);  // finishes reading SatCom
         }
     }
 
@@ -232,4 +223,3 @@ MainMovieType CMainMovie::GetStopType()
 {
     return m_stopType;
 }
-

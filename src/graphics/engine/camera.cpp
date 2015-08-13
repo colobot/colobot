@@ -35,6 +35,7 @@
 #include "object/robotmain.h"
 
 #include "object/interface/carrier_object.h"
+#include "object/interface/movable_object.h"
 #include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
 
@@ -1468,8 +1469,10 @@ bool CCamera::EventFrameBack(const Event &event)
 
         m_eyePt = RotateView(lookatPt, h, v, d);
 
-        CPhysics* physics = m_cameraObj->GetPhysics();
-        if ( (physics != NULL) && physics->GetLand() )  // ground?
+        bool ground = true;
+        if (m_cameraObj->Implements(ObjectInterfaceType::Movable))
+            ground = dynamic_cast<CMovableObject*>(m_cameraObj)->GetPhysics()->GetLand();
+        if ( ground )  // ground?
         {
             Math::Vector pos = lookatPt + (lookatPt - m_eyePt);
             float floor = m_terrain->GetHeightToFloor(pos) - 4.0f;

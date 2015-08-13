@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "object/trace_color.h"
+#include "object/interface/trace_drawing_object.h"
 
 #include "object/task/task.h"
 #include "object/task/taskflag.h"

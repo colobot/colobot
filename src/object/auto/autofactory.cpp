@@ -385,13 +385,11 @@ bool CAutoFactory::EventProcess(const Event &event)
             }
 
             vehicle = SearchVehicle();
-            if ( vehicle != 0 )
+            if ( vehicle != nullptr )
             {
-                physics = vehicle->GetPhysics();
-                if ( physics != 0 )
-                {
-                    physics->SetFreeze(false);  // can move
-                }
+                assert(vehicle->Implements(ObjectInterfaceType::Movable));
+                physics = dynamic_cast<CMovableObject*>(vehicle)->GetPhysics();
+                physics->SetFreeze(false);  // can move
 
                 vehicle->SetLock(false);  // vehicle useable
                 vehicle->SetRotationY(m_object->GetRotationY()+Math::PI);
@@ -656,11 +654,9 @@ bool CAutoFactory::CreateVehicle()
 
     vehicle->SetLock(true);  // not usable
 
-    CPhysics* physics = vehicle->GetPhysics();
-    if ( physics != nullptr )
-    {
-        physics->SetFreeze(true);  // it doesn't move
-    }
+    assert(vehicle->Implements(ObjectInterfaceType::Movable));
+    CPhysics* physics = dynamic_cast<CMovableObject*>(vehicle)->GetPhysics();
+    physics->SetFreeze(true);  // it doesn't move
 
     if (vehicle->Implements(ObjectInterfaceType::Programmable))
     {

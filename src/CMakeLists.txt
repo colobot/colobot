@@ -150,6 +150,7 @@ set(BASE_SOURCES
     object/auto/autopowerstation.cpp
     object/auto/autotower.cpp
     object/drive_type.cpp
+    object/interface/trace_drawing_object.cpp
     object/implementation/power_container_impl.cpp
     object/implementation/programmable_impl.cpp
     object/implementation/task_executor_impl.cpp
@@ -199,7 +200,6 @@ set(BASE_SOURCES
     object/task/taskturn.cpp
     object/task/taskwait.cpp
     object/tool_type.cpp
-    object/trace_color.cpp
     object/subclass/exchange_post.cpp
     object/subclass/static_object.cpp
     physics/physics.cpp

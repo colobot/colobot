@@ -21,8 +21,7 @@
 
 #include "object/interface/interactive_object.h"
 #include "object/interface/programmable_object.h"
-
-#include "object/trace_color.h"
+#include "object/interface/trace_drawing_object.h"
 
 #include "math/vector.h"
 

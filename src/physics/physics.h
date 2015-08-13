@@ -30,7 +30,8 @@
 #include "math/vector.h"
 
 #include "object/object_type.h"
-#include "object/trace_color.h"
+
+#include "object/interface/trace_drawing_object.h"
 
 
 class CObject;
@@ -148,8 +149,6 @@ public:
     bool        GetCollision();
     void        SetFreeze(bool bFreeze);
     bool        GetFreeze();
-    void        SetReactorRange(float range);
-    float       GetReactorRange();
 
     void        SetMotorSpeed(Math::Vector speed);
     void        SetMotorSpeedX(float speed);
@@ -236,7 +235,6 @@ protected:
     Math::Vector    m_wheelParticlePos[2];
     float       m_absorbWater;
     float       m_reactorTemperature;
-    float       m_reactorRange;
     float       m_timeReactorFail;
     float       m_timeUnderWater;
     float       m_lastEnergy;

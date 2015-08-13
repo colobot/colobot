@@ -99,7 +99,6 @@ CPhysics::CPhysics(COldObject* object)
     m_bWheelParticleBrake = false;
     m_absorbWater        = 0.0f;
     m_reactorTemperature = 0.0f;
-    m_reactorRange       = 1.0f;
     m_timeReactorFail    = 0.0f;
     m_lastEnergy = 0.0f;
     m_lastSoundWater = 0.0f;
@@ -164,7 +163,7 @@ bool CPhysics::Write(CLevelParserLine* line)
     {
         if ( m_object->Implements(ObjectInterfaceType::JetFlying) )
         {
-            line->AddParam("reactorRange", MakeUnique<CLevelParserParam>(GetReactorRange()));
+            line->AddParam("reactorRange", MakeUnique<CLevelParserParam>(m_object->GetReactorRange()));
         }
         line->AddParam("land", MakeUnique<CLevelParserParam>(GetLand()));
     }
@@ -182,7 +181,7 @@ bool CPhysics::Read(CLevelParserLine* line)
     {
         if ( m_object->Implements(ObjectInterfaceType::JetFlying) )
         {
-            SetReactorRange(line->GetParam("reactorRange")->AsFloat());
+            m_object->SetReactorRange(line->GetParam("reactorRange")->AsFloat());
         }
         SetLand(line->GetParam("land")->AsBool());
     }
@@ -289,19 +288,6 @@ void CPhysics::SetFreeze(bool bFreeze)
 bool CPhysics::GetFreeze()
 {
     return m_bFreeze;
-}
-
-
-// Returns the range of the reactor.
-
-void CPhysics::SetReactorRange(float range)
-{
-    m_reactorRange = range;
-}
-
-float CPhysics::GetReactorRange()
-{
-    return m_reactorRange;
 }
 
 
@@ -862,15 +848,15 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
     if ( m_object->Implements(ObjectInterfaceType::JetFlying) &&
          dynamic_cast<CJetFlyingObject*>(m_object)->GetRange() > 0.0f )  // limited flight range?
     {
+        CJetFlyingObject* jetFlying = dynamic_cast<CJetFlyingObject*>(m_object);
         if ( m_bLand || m_bSwim || m_bObstacle )  // on the ground or in the water?
         {
             factor = 1.0f;
             if ( m_bObstacle )  factor = 3.0f;  // in order to leave!
             if ( m_bSwim )  factor = 3.0f;  // cools faster in water
-            m_reactorRange += rTime*(1.0f/5.0f)*factor;
-            if ( m_reactorRange > 1.0f )
+            jetFlying->SetReactorRange(jetFlying->GetReactorRange() + rTime*(1.0f/5.0f)*factor);
+            if ( jetFlying->GetReactorRange() == 1.0f )
             {
-                m_reactorRange = 1.0f;
                 if ( m_bLowLevel && m_object->GetSelect() )  // beep cool?
                 {
                     m_sound->Play(SOUND_INFO, m_object->GetPosition(), 1.0f, 2.0f);
@@ -881,12 +867,11 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         }
         else    // in flight?
         {
-            m_reactorRange -= rTime*(1.0f/dynamic_cast<CJetFlyingObject*>(m_object)->GetRange());
-            if ( m_reactorRange < 0.0f )  m_reactorRange = 0.0f;
-            if ( m_reactorRange < 0.5f )  m_bLowLevel = true;
+            jetFlying->SetReactorRange(jetFlying->GetReactorRange() - rTime*(1.0f/jetFlying->GetRange()));
+            if ( jetFlying->GetReactorRange() < 0.5f )  m_bLowLevel = true;
         }
 
-        if ( m_reactorRange == 0.0f )  // reactor tilt?
+        if ( jetFlying->GetReactorRange() == 0.0f )  // reactor tilt?
         {
             motorSpeed.y = -1.0f;  // grave
             SetFalling();
@@ -966,7 +951,12 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         pos = m_object->GetPosition();
         h = m_terrain->GetFlyingLimit(pos, type==OBJECT_BEE);
         h += m_object->GetCharacter()->height;
-        if ( motorSpeed.y > 0.0f && m_reactorRange > 0.1f && pos.y < h )
+        bool reactorCool = true;
+        if ( m_object->Implements(ObjectInterfaceType::JetFlying) )
+        {
+            reactorCool = dynamic_cast<CJetFlyingObject*>(m_object)->GetReactorRange() > 0.1f;
+        }
+        if ( motorSpeed.y > 0.0f && reactorCool && pos.y < h )
         {
             m_bLand = false;  // take off
             SetMotor(true);
@@ -2103,7 +2093,7 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
         m_soundChannelSlide = -1;
     }
 
-    if ( m_reactorRange > 0.0f )
+    if ( !m_object->Implements(ObjectInterfaceType::JetFlying) || dynamic_cast<CJetFlyingObject*>(m_object)->GetReactorRange() > 0.0f )
     {
         if ( m_soundChannel == -1 )
         {
@@ -2384,10 +2374,13 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 
     if ( m_floorHeight == 0.0f )  // ground plate?
     {
-        CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion);
-        if (motionVehicle != nullptr && motionVehicle->GetTraceDown())
+        CTraceDrawingObject* traceDrawing = nullptr;
+        if (m_object->Implements(ObjectInterfaceType::TraceDrawing))
+            traceDrawing = dynamic_cast<CTraceDrawingObject*>(m_object);
+
+        if (traceDrawing != nullptr && traceDrawing->GetTraceDown())
         {
-            WheelParticle(motionVehicle->GetTraceColor(), motionVehicle->GetTraceWidth()*g_unit);
+            WheelParticle(traceDrawing->GetTraceColor(), traceDrawing->GetTraceWidth()*g_unit);
         }
         else
         {
@@ -2461,7 +2454,6 @@ void CPhysics::FloorAngle(const Math::Vector &pos, Math::Vector &angle)
 
 int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 {
-    CPhysics*       ph;
     Math::Matrix    matRotate;
     Math::Vector    iPos, oAngle, oSpeed;
     float           distance, force, volume;
@@ -2616,8 +2608,11 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                         m_linMotion.currentSpeed.y = 0.0f;
                     }
 
-                    ph = pObj->GetPhysics();
-                    if ( ph != 0 )
+
+                    CPhysics* ph = nullptr;
+                    if (pObj->Implements(ObjectInterfaceType::Movable))
+                        ph = dynamic_cast<CMovableObject*>(pObj)->GetPhysics();
+                    if ( ph != nullptr )
                     {
                         oAngle = pObj->GetRotation();
                         oSpeed = Normalize(oPos-iPos)*force;
@@ -3281,7 +3276,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         }
         else    // in flight?
         {
-            if ( !m_bMotor || m_reactorRange == 0.0f )  return;
+            if ( !m_bMotor || (m_object->Implements(ObjectInterfaceType::JetFlying) && dynamic_cast<CJetFlyingObject*>(m_object)->GetReactorRange() == 0.0f) )  return;
 
             if ( m_reactorTemperature < 1.0f )  // not too hot?
             {
@@ -3411,7 +3406,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         }
         else    // in flight?
         {
-            if ( !m_bMotor || m_reactorRange == 0.0f )  return;
+            if ( !m_bMotor || (m_object->Implements(ObjectInterfaceType::JetFlying) && dynamic_cast<CJetFlyingObject*>(m_object)->GetReactorRange() == 0.0f) )  return;
 
             if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.02f) )  return;
             m_lastMotorParticle = aTime;

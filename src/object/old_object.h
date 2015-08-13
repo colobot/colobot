@@ -38,6 +38,7 @@
 #include "object/interface/programmable_object.h"
 #include "object/interface/ranged_object.h"
 #include "object/interface/task_executor_object.h"
+#include "object/interface/trace_drawing_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "object/implementation/power_container_impl.h"
@@ -82,16 +83,16 @@ class COldObject : public CObject,
                    public CJetFlyingObject,
                    public CControllableObject,
                    public CPowerContainerObjectImpl,
-                   public CRangedObject
+                   public CRangedObject,
+                   public CTraceDrawingObject
 {
     friend class CObjectFactory;
     friend class CObjectManager;
 
 protected:
     void        DeleteObject(bool bAll=false);
-    void        SetPhysics(std::unique_ptr<CPhysics> physics);
-    void        SetProgrammable(bool programmable);
-    void        SetMotion(std::unique_ptr<CMotion> motion);
+    void        SetProgrammable();
+    void        SetMovable(std::unique_ptr<CMotion> motion, std::unique_ptr<CPhysics> physics);
     void        SetAuto(std::unique_ptr<CAuto> automat);
     void        SetOption(int option);
     void        SetJostlingSphere(const Math::Sphere& sphere);
@@ -197,6 +198,9 @@ public:
 
     void        SetRange(float delay) override;
     float       GetRange() override;
+
+    void        SetReactorRange(float reactorRange) override;
+    float       GetReactorRange() override;
 
     void        SetTransparency(float value) override;
 
@@ -305,6 +309,13 @@ public:
 
     void        StopProgram() override;
 
+    bool        GetTraceDown() override;
+    void        SetTraceDown(bool down) override;
+    TraceColor  GetTraceColor() override;
+    void        SetTraceColor(TraceColor color) override;
+    float       GetTraceWidth() override;
+    void        SetTraceWidth(float width) override;
+
 protected:
     bool        EventFrame(const Event &event);
     void        VirusFrame(float rTime);
@@ -394,4 +405,10 @@ protected:
 
     float       m_time;
     float       m_burnTime;
+
+    float       m_reactorRange;
+
+    bool        m_traceDown;
+    TraceColor  m_traceColor;
+    float       m_traceWidth;
 };

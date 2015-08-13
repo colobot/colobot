@@ -24,6 +24,10 @@
 /**
  * \class CMovableObject
  * \brief Interface for objects that can move (have an engine)
+ *
+ * TODO: Currently, it just returns pointers to CPhysics and CMotion.
+ *       These classes should be probably merged with CObject,
+ *       and maybe even split into some more interfaces.
  */
 class CMovableObject
 {
@@ -34,4 +38,9 @@ public:
     }
     virtual ~CMovableObject()
     {}
+
+    //! Returns CPhysics instance associated with this object. If the object implements Movable interface, and type != OBJECT_TOTO, this can be assumed to be != nullptr
+    virtual CPhysics* GetPhysics() = 0;
+    //! Returns CMotion instance associated with this object. If the object implements Movable interface, this can be assumed to be != nullptr
+    virtual CMotion* GetMotion() = 0;
 };

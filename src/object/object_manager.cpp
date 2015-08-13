@@ -254,7 +254,6 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
 CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float thisAngle, std::vector<ObjectType> type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
 {
     CObject     *pObj, *pBest;
-    CPhysics*   physics;
     Math::Vector    iPos, oPos;
     float       best, iAngle, d, a;
     ObjectType  oType;
@@ -319,13 +318,21 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
 
         if ( filter_flying == FILTER_ONLYLANDING )
         {
-            physics = pObj->GetPhysics();
-            if ( physics != nullptr && !physics->GetLand() )  continue;
+            if ( pObj->Implements(ObjectInterfaceType::Movable) )
+            {
+                CPhysics* physics = dynamic_cast<CMovableObject*>(pObj)->GetPhysics();
+                if ( physics != nullptr )
+                {
+                    if ( !physics->GetLand() )  continue;
+                }
+            }
         }
         if ( filter_flying == FILTER_ONLYFLYING )
         {
-            physics = pObj->GetPhysics();
-            if ( physics != nullptr && physics->GetLand() )  continue;
+            if ( !pObj->Implements(ObjectInterfaceType::Movable) ) continue;
+            CPhysics* physics = dynamic_cast<CMovableObject*>(pObj)->GetPhysics();
+            if ( physics == nullptr ) continue;
+            if ( physics->GetLand() ) continue;
         }
 
         if ( filter_team != 0 && pObj->GetTeam() != filter_team )

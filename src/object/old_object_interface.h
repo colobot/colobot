@@ -126,9 +126,6 @@ public:
     virtual bool        GetRuin();
     virtual bool        GetActive();
 
-    virtual CPhysics*   GetPhysics();
-    virtual CMotion*    GetMotion();
-
     // This will be eventually removed after refactoring to subclasses
     virtual CAuto*      GetAuto();
 
