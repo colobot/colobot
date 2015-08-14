@@ -63,10 +63,42 @@ void CScreenSetupGraphics::CreateInterface()
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
+
+    pos.x = ox+sx*3;
+    pos.y = 0.65f;
+    ddim.x = dim.x*2.2f;
+    ddim.y = 18.0f/480.0f;
+    pv = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_PARTI);
+    pv->SetState(STATE_SHADOW);
+    pv->SetMinValue(0.0f);
+    pv->SetMaxValue(2.0f);
+    pos.x += 0.13f;
+    pos.y -= 0.015f;
+    ddim.x = 0.40f;
+    GetResource(RES_EVENT, EVENT_INTERFACE_PARTI, name);
+    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL10, name);
+    pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+
+    pos.x = ox+sx*3;
+    pos.y = 0.59f;
+    ddim.x = dim.x*2.2f;
+    ddim.y = 18.0f/480.0f;
+    pv = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_CLIP);
+    pv->SetState(STATE_SHADOW);
+    pv->SetMinValue(0.5f);
+    pv->SetMaxValue(2.0f);
+    pos.x += 0.13f;
+    pos.y -= 0.015f;
+    ddim.x = 0.40f;
+    GetResource(RES_EVENT, EVENT_INTERFACE_CLIP, name);
+    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL11, name);
+    pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+
     ddim.x = dim.x*6;
     ddim.y = dim.y*0.5f;
     pos.x = ox+sx*3;
-    pos.y = 0.65f;
+    pos.y = 0.53f;
+    pos.y -= 0.048f*0.5f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_DIRTY);
     pc->SetState(STATE_SHADOW);
     pos.y -= 0.048f;
@@ -82,42 +114,6 @@ void CScreenSetupGraphics::CreateInterface()
 
     pos.x = ox+sx*8.5f;
     pos.y = 0.65f;
-    ddim.x = dim.x*2.2f;
-    ddim.y = 18.0f/480.0f;
-    pv = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_PARTI);
-    pv->SetState(STATE_SHADOW);
-    pv->SetMinValue(0.0f);
-    pv->SetMaxValue(2.0f);
-    pos.x += 0.13f;
-    pos.y -= 0.015f;
-    ddim.x = 0.40f;
-    GetResource(RES_EVENT, EVENT_INTERFACE_PARTI, name);
-    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL10, name);
-    pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-
-    pos.x = ox+sx*8.5f;
-    pos.y = 0.59f;
-    ddim.x = dim.x*2.2f;
-    ddim.y = 18.0f/480.0f;
-    pv = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_CLIP);
-    pv->SetState(STATE_SHADOW);
-    pv->SetMinValue(0.5f);
-    pv->SetMaxValue(2.0f);
-    pos.x += 0.13f;
-    pos.y -= 0.015f;
-    ddim.x = 0.40f;
-    GetResource(RES_EVENT, EVENT_INTERFACE_CLIP, name);
-    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL11, name);
-    pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-
-    pos.x = ox+sx*8.5f;
-    pos.y = 0.53f;
-    ddim.x = dim.x*2.2f;
-    ddim.y = 18.0f/480.0f;
-    //
-
-    pos.x = ox+sx*8.5f;
-    pos.y = 0.475f;
     ddim.x = dim.x*3;
     ddim.y = dim.y*0.5f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SHADOW);
@@ -160,7 +156,7 @@ void CScreenSetupGraphics::CreateInterface()
 
 
     pos.x = ox+sx*12.5f;
-    pos.y = 0.455f;
+    pos.y = 0.63f;
     ddim.x = dim.x*2.2f;
     ddim.y = 18.0f/480.0f;
     pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_MSAA);
@@ -179,7 +175,7 @@ void CScreenSetupGraphics::CreateInterface()
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
     pos.x = ox+sx*12.5f;
-    pos.y = 0.385f;
+    pos.y = 0.56f;
     ddim.x = dim.x*2.2f;
     ddim.y = 18.0f/480.0f;
     pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_TEXTURE_FILTER);
@@ -197,7 +193,7 @@ void CScreenSetupGraphics::CreateInterface()
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
     pos.x = ox+sx*12.5f;
-    pos.y = 0.315f;
+    pos.y = 0.49f;
     ddim.x = dim.x*2.2f;
     ddim.y = 18.0f/480.0f;
     pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_TEXTURE_MIPMAP);
@@ -211,7 +207,7 @@ void CScreenSetupGraphics::CreateInterface()
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
     pos.x = ox+sx*12.5f;
-    pos.y = 0.245f;
+    pos.y = 0.42f;
     ddim.x = dim.x*2.2f;
     ddim.y = 18.0f/480.0f;
     pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_TEXTURE_ANISOTROPY);
