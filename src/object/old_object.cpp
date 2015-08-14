@@ -374,14 +374,7 @@ bool COldObject::DamageObject(DamageType type, float force)
             // Calculate the shield lost by the explosion
             if ( force == 0.0f ) // use default?
             {
-                if ( m_type == OBJECT_HUMAN || m_type == OBJECT_MOTHER )
-                {
-                    loss = 0.1f;
-                }
-                else
-                {
-                    loss = 0.24f;
-                }
+                loss = 0.002f;
             }
             else
             {
