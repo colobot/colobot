@@ -41,6 +41,7 @@
 #include "object/tool_type.h"
 
 #include <deque>
+#include <stdexcept>
 
 enum Phase
 {
