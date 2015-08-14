@@ -176,15 +176,15 @@ bool CPhysics::Write(CLevelParserLine* line)
 
 bool CPhysics::Read(CLevelParserLine* line)
 {
-    m_motorSpeed = line->GetParam("motor")->AsPoint();
+    m_motorSpeed = line->GetParam("motor")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
 
     if ( m_object->Implements(ObjectInterfaceType::Flying) )
     {
         if ( m_object->Implements(ObjectInterfaceType::JetFlying) )
         {
-            m_object->SetReactorRange(line->GetParam("reactorRange")->AsFloat());
+            m_object->SetReactorRange(line->GetParam("reactorRange")->AsFloat(1.0f));
         }
-        SetLand(line->GetParam("land")->AsBool());
+        SetLand(line->GetParam("land")->AsBool(true));
     }
 
     return true;

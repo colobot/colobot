@@ -45,10 +45,13 @@
 #include "object/object_manager.h"
 
 #include "object/auto/auto.h"
+#include "object/auto/autobase.h"
 #include "object/auto/autojostle.h"
 
 #include "object/motion/motion.h"
 #include "object/motion/motionvehicle.h"
+
+#include "object/subclass/exchange_post.h"
 
 #include "object/task/taskmanager.h"
 
@@ -979,7 +982,7 @@ void COldObject::Write(CLevelParserLine* line)
 
     if ( GetAnimateOnReset() )
     {
-        line->AddParam("resetCap", MakeUnique<CLevelParserParam>(GetAnimateOnReset()));
+        line->AddParam("reset", MakeUnique<CLevelParserParam>(GetAnimateOnReset()));
     }
 
     if ( m_bVirusMode )
@@ -1030,42 +1033,110 @@ void COldObject::Write(CLevelParserLine* line)
 
 void COldObject::Read(CLevelParserLine* line)
 {
-    Gfx::CameraType cType = line->GetParam("camera")->AsCameraType(Gfx::CAM_TYPE_NULL);
-    if ( cType != Gfx::CAM_TYPE_NULL )
-    {
-        SetCameraType(cType);
-    }
+    Math::Vector zoom = line->GetParam("zoom")->AsPoint(Math::Vector(1.0f, 1.0f, 1.0f));
+    if (zoom.x != 1.0f || zoom.y != 1.0f || zoom.z != 1.0f)
+        SetScale(zoom);
 
+    if (line->GetParam("camera")->IsDefined())
+        SetCameraType(line->GetParam("camera")->AsCameraType());
     SetCameraDist(line->GetParam("cameraDist")->AsFloat(50.0f));
     SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
-    SetEnergyLevel(line->GetParam("energy")->AsFloat(0.0f));
-    SetShield(line->GetParam("shield")->AsFloat(1.0f));
-    SetSelectable(line->GetParam("selectable")->AsBool(true));
-    SetFixed(line->GetParam("fixed")->AsBool(false));
-    SetCollisions(line->GetParam("clip")->AsBool(true));
-    SetLock(line->GetParam("lock")->AsBool(false));
+
+    if (line->GetParam("pyro")->IsDefined())
+        m_engine->GetPyroManager()->Create(line->GetParam("pyro")->AsPyroType(), this);
+
     SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
     SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
-    SetRange(line->GetParam("range")->AsFloat(30.0f));
-    SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
+    SetCollisions(line->GetParam("clip")->AsBool(true));
+    SetAnimateOnReset(line->GetParam("reset")->AsBool(false));
+    if (Implements(ObjectInterfaceType::Controllable))
+    {
+        SetSelectable(line->GetParam("selectable")->AsBool(true));
+    }
+    if (Implements(ObjectInterfaceType::JetFlying))
+    {
+        SetRange(line->GetParam("range")->AsFloat(30.0f));
+    }
+    if (Implements(ObjectInterfaceType::Shielded))
+    {
+        SetShield(line->GetParam("shield")->AsFloat(1.0f));
+        SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
+    }
+    if (Implements(ObjectInterfaceType::Programmable))
+    {
+        SetCheckToken(!line->GetParam("checkToken")->IsDefined() ? GetSelectable() : line->GetParam("checkToken")->AsBool(true));
+
+        if (line->GetParam("cmdline")->IsDefined())
+        {
+            const auto& cmdline = line->GetParam("cmdline")->AsArray();
+            for (unsigned int i = 0; i < cmdline.size(); i++)
+            {
+                SetCmdLine(i, cmdline[i]->AsFloat());
+            }
+        }
+    }
+
+    if (m_type == OBJECT_INFO)
+    {
+        CExchangePost* exchangePost = dynamic_cast<CExchangePost*>(this);
+        assert(exchangePost != nullptr);
+        exchangePost->ReadInfo(line);
+    }
+
+    // SetManual will affect bot speed
+    if (m_type == OBJECT_MOBILEdr)
+    {
+        // TODO: Merge these two settings?
+        SetManual(!GetTrainer());
+    }
+
+    // AlienWorm time up/down
+    // TODO: Refactor function names
+    if (m_type == OBJECT_WORM)
+    {
+        assert(Implements(ObjectInterfaceType::Movable));
+        CMotion* motion = GetMotion();
+        if (line->GetParam("param")->IsDefined())
+        {
+            const auto& p = line->GetParam("param")->AsArray();
+            for (unsigned int i = 0; i < 10 && i < p.size(); i++)
+            {
+                motion->SetParam(i, p[i]->AsFloat());
+            }
+        }
+    }
+
+    if (m_auto != nullptr)
+    {
+        // TODO: Is it used for anything else than AlienEggs?
+        m_auto->SetType(line->GetParam("autoType")->AsObjectType(OBJECT_NULL));
+        for (int i = 0; i < 5; i++)
+        {
+            std::string op = "autoValue" + boost::lexical_cast<std::string>(i+1); // autoValue1..autoValue5
+            m_auto->SetValue(i, line->GetParam(op)->AsFloat(0.0f));
+        }
+        m_auto->SetString(const_cast<char*>(line->GetParam("autoString")->AsPath("ai", "").c_str()));
+
+        int i = line->GetParam("run")->AsInt(-1);
+        if (i != -1)
+        {
+            if (i != PARAM_FIXSCENE && !m_main->GetMovies()) i = 0;
+            m_auto->Start(i);  // starts the film
+        }
+    }
+
+
+    // Everthing below is for use only by saved scenes
+    if (line->GetParam("energy")->IsDefined())
+        SetEnergyLevel(line->GetParam("energy")->AsFloat());
+    SetFixed(line->GetParam("fixed")->AsBool(false));
+    SetLock(line->GetParam("lock")->AsBool(false));
     SetGunGoalV(line->GetParam("aimV")->AsFloat(0.0f));
     SetGunGoalH(line->GetParam("aimH")->AsFloat(0.0f));
 
-    SetAnimateOnReset(line->GetParam("resetCap")->AsBool(false));
     m_bBurn = line->GetParam("burnMode")->AsBool(false);
     m_bVirusMode = line->GetParam("virusMode")->AsBool(false);
     m_virusTime = line->GetParam("virusTime")->AsFloat(0.0f);
-
-    // Sets the parameters of the command line.
-    if (line->GetParam("cmdline")->IsDefined())
-    {
-        int i = 0;
-        for (auto& p : line->GetParam("cmdline")->AsArray())
-        {
-            SetCmdLine(i, p->AsFloat());
-            i++;
-        }
-    }
 
     if ( m_motion != nullptr )
     {

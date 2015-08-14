@@ -139,30 +139,13 @@ CObject* CObjectManager::CreateObject(ObjectCreateParams params)
     return objectPtr;
 }
 
-CObject* CObjectManager::CreateObject(Math::Vector pos,
-                                      float angle,
-                                      ObjectType type,
-                                      float power,
-                                      float zoom,
-                                      float height,
-                                      bool trainer,
-                                      bool toy,
-                                      int option,
-                                      int team,
-                                      int id)
+CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType type, float power)
 {
     ObjectCreateParams params;
     params.pos = pos;
     params.angle = angle;
     params.type = type;
     params.power = power;
-    params.zoom = zoom;
-    params.height = height;
-    params.trainer = trainer;
-    params.toy = toy;
-    params.option = option;
-    params.team = team;
-    params.id = id;
 
     return CreateObject(params);
 }

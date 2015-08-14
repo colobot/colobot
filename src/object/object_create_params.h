@@ -29,7 +29,6 @@ struct ObjectCreateParams
     float angle;
     ObjectType type;
     float power;
-    float zoom;
     float height;
     bool trainer;
     bool toy;
@@ -43,7 +42,6 @@ struct ObjectCreateParams
         angle = 0.0f;
         type = OBJECT_NULL;
         power = -1.0f;
-        zoom = 1.0f;
         height = 0.0f;
         trainer = false;
         toy = false;

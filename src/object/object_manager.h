@@ -139,17 +139,7 @@ public:
     //! Creates an object
     //@{
     CObject*  CreateObject(ObjectCreateParams params);
-    CObject*  CreateObject(Math::Vector pos,
-                           float angle,
-                           ObjectType type,
-                           float power = -1.f,
-                           float zoom = 1.f,
-                           float height = 0.f,
-                           bool trainer = false,
-                           bool toy = false,
-                           int option = 0,
-                           int team = 0,
-                           int id = -1);
+    CObject*  CreateObject(Math::Vector pos, float angle, ObjectType type, float power = -1.0f);
     //@}
 
     //! Deletes the object

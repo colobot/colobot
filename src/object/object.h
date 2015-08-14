@@ -27,6 +27,7 @@
 #include "object/crash_sphere.h"
 #include "object/object_interface_type.h"
 #include "object/old_object_interface.h"
+#include "object/object_create_params.h"
 
 #include <vector>
 
@@ -82,6 +83,8 @@ public:
     virtual void Write(CLevelParserLine* line) = 0;
     //! Reads object properties from line in level file
     virtual void Read(CLevelParserLine* line) = 0;
+    //! Reads params required for object creation
+    static ObjectCreateParams ReadCreateParams(CLevelParserLine* line);
 
     //! Updates all interface controls
     virtual void UpdateInterface() {};

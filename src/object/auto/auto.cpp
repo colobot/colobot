@@ -417,11 +417,11 @@ bool CAuto::Write(CLevelParserLine* line)
 
 bool CAuto::Read(CLevelParserLine* line)
 {
-    m_type = line->GetParam("aType")->AsObjectType();
-    m_bBusy = line->GetParam("aBusy")->AsBool();
-    m_time = line->GetParam("aTime")->AsFloat();
-    m_progressTime = line->GetParam("aProgressTime")->AsFloat();
-    m_progressTotal = line->GetParam("aProgressTotal")->AsFloat();
+    m_type = line->GetParam("aType")->AsObjectType(m_type);
+    m_bBusy = line->GetParam("aBusy")->AsBool(m_bBusy);
+    m_time = line->GetParam("aTime")->AsFloat(m_time);
+    m_progressTime = line->GetParam("aProgressTime")->AsFloat(m_progressTime);
+    m_progressTotal = line->GetParam("aProgressTotal")->AsFloat(m_progressTotal);
 
     return false;
 }

@@ -67,7 +67,6 @@
 #include "object/object_manager.h"
 
 #include "object/auto/auto.h"
-#include "object/auto/autobase.h"
 
 #include "object/motion/motion.h"
 #include "object/motion/motionhuman.h"
@@ -1589,8 +1588,11 @@ void CRobotMain::StartDisplayVisit(EventType event)
         m_visitArrow = nullptr;
     }
 
-    Math::Vector goal = m_displayText->GetVisitGoal(event);
-    m_visitArrow = m_objMan->CreateObject(goal, 0.0f, OBJECT_SHOW, -1.0f, 1.0f, 10.0f);
+    ObjectCreateParams params;
+    params.pos = m_displayText->GetVisitGoal(event);
+    params.type = OBJECT_SHOW;
+    params.height = 10.0f;
+    m_visitArrow = m_objMan->CreateObject(params);
 
     m_visitPos = m_visitArrow->GetPosition();
     m_visitPosArrow = m_visitPos;
@@ -3289,7 +3291,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "LevelController" && m_sceneReadPath.empty())
             {
-                m_controller = m_objMan->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER, 100.0f);
+                m_controller = m_objMan->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER);
                 if (m_controller->Implements(ObjectInterfaceType::Programmable))
                 {
                     CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(m_controller);
@@ -3306,137 +3308,49 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "CreateObject" && m_sceneReadPath.empty())
             {
-                ObjectType type = line->GetParam("type")->AsObjectType();
+                ObjectCreateParams params = CObject::ReadCreateParams(line.get());
 
                 float objectProgress = static_cast<float>(rankObj) / static_cast<float>(numObjects);
                 std::string details = StrUtils::ToString<int>(rankObj+1)+" / "+StrUtils::ToString<int>(numObjects);
                 #if DEV_BUILD
                 // Object categories may spoil the level a bit, so hide them in release builds
-                details += ": "+CLevelParserParam::FromObjectType(type);
+                details += ": "+CLevelParserParam::FromObjectType(params.type);
                 #endif
                 m_ui->GetLoadingScreen()->SetProgress(0.25f+objectProgress*0.5f, RT_LOADING_OBJECTS, details);
 
-                Math::Vector pos = line->GetParam("pos")->AsPoint()*g_unit;
-                float dirAngle = line->GetParam("dir")->AsFloat(0.0f)*Math::PI;
-                bool trainer;
-                CObject* obj = nullptr;
                 try
                 {
-                    obj = m_objMan->CreateObject(
-                        pos, dirAngle,
-                        type,
-                        line->GetParam("power")->AsFloat(1.0f),
-                        line->GetParam("z")->AsFloat(1.0f),
-                        line->GetParam("h")->AsFloat(0.0f),
-                        trainer = line->GetParam("trainer")->AsBool(false),
-                        line->GetParam("toy")->AsBool(false),
-                        line->GetParam("option")->AsInt(0),
-                        line->GetParam("team")->AsInt(0)
-                    );
-                }
-                catch (const CObjectCreateException& e)
-                {
-                    GetLogger()->Error("Error loading level object: %s\n", e.what());
-                    throw;
-                }
+                    CObject* obj = m_objMan->CreateObject(params);
+                    obj->Read(line.get());
 
-                if (m_fixScene && type == OBJECT_HUMAN)
-                {
-                    assert(obj->Implements(ObjectInterfaceType::Movable));
-                    CMotion* motion = dynamic_cast<CMovableObject*>(obj)->GetMotion();
-                    if (m_phase == PHASE_WIN ) motion->SetAction(MHS_WIN,  0.4f);
-                    if (m_phase == PHASE_LOST) motion->SetAction(MHS_LOST, 0.5f);
-                }
-
-                if (obj->Implements(ObjectInterfaceType::Old)) // TODO: temporary hack
-                {
-                    COldObject* oldObj = dynamic_cast<COldObject*>(obj);
-
-                    oldObj->SetDefRank(rankObj); // TODO: do we really need this?
-
-                    if (type == OBJECT_BASE)
-                        m_base = oldObj;
-
-                    if (line->GetParam("select")->AsBool(false))
-                        sel = oldObj;
-
-                    // TODO: everything below should go to CObject::Read() function
-                    // In fact, we could give CLevelParserLine as parameter to CreateObject() in the first place
-
-                    Gfx::CameraType cType = line->GetParam("camera")->AsCameraType(Gfx::CAM_TYPE_NULL);
-                    if (cType != Gfx::CAM_TYPE_NULL)
-                        oldObj->SetCameraType(cType);
-
-                    oldObj->SetCameraDist(line->GetParam("cameraDist")->AsFloat(50.0f));
-                    oldObj->SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
-
-                    Gfx::PyroType pType = line->GetParam("pyro")->AsPyroType(Gfx::PT_NULL);
-                    if (pType != Gfx::PT_NULL)
+                    if (m_fixScene && obj->GetType() == OBJECT_HUMAN)
                     {
-                        m_engine->GetPyroManager()->Create(pType, oldObj);
+                        assert(obj->Implements(ObjectInterfaceType::Movable));
+                        CMotion* motion = dynamic_cast<CMovableObject*>(obj)->GetMotion();
+                        if (m_phase == PHASE_WIN ) motion->SetAction(MHS_WIN,  0.4f);
+                        if (m_phase == PHASE_LOST) motion->SetAction(MHS_LOST, 0.5f);
                     }
 
-                    if (type == OBJECT_INFO)
+                    if (obj->Implements(ObjectInterfaceType::Controllable) && line->GetParam("select")->AsBool(false))
+                        sel = obj;
+
+                    if (obj->GetType() == OBJECT_BASE)
+                        m_base = obj;
+
+                    if (obj->Implements(ObjectInterfaceType::Old))
+                        dynamic_cast<COldObject*>(obj)->SetDefRank(rankObj); // TODO: do we really need this?
+
+                    if (obj->Implements(ObjectInterfaceType::Programmable))
                     {
-                        CExchangePost* exchangePost = static_cast<CExchangePost*>(oldObj);
-                        exchangePost->ReadInfo(line.get());
-                    }
+                        CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
 
-                    // Sets the parameters of the command line.
-                    if (line->GetParam("cmdline")->IsDefined())
-                    {
-                        const auto& cmdline = line->GetParam("cmdline")->AsArray();
-                        for (unsigned int i = 0; i < cmdline.size(); i++)
-                        {
-                            oldObj->SetCmdLine(i, cmdline[i]->AsFloat());
-                        }
-                    }
-
-                    bool selectable = line->GetParam("selectable")->AsBool(true);
-                    oldObj->SetSelectable(selectable);
-                    oldObj->SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
-                    oldObj->SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
-                    oldObj->SetRange(line->GetParam("range")->AsFloat(30.0f));
-                    oldObj->SetShield(line->GetParam("shield")->AsFloat(1.0f));
-                    oldObj->SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
-                    oldObj->SetCollisions(line->GetParam("clip")->AsBool(true));
-                    oldObj->SetCheckToken(!line->GetParam("checkToken")->IsDefined() ? trainer || !selectable : line->GetParam("checkToken")->AsBool(true));
-                    // SetManual will affect bot speed
-                    if (type == OBJECT_MOBILEdr)
-                    {
-                        oldObj->SetManual(!trainer);
-                    }
-
-                    Math::Vector zoom = line->GetParam("zoom")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
-                    if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
-                        oldObj->SetScale(zoom);
-
-                    // only used in AlienWorm lines
-                    if (type == OBJECT_WORM)
-                    {
-                        CMotion* motion = oldObj->GetMotion();
-                        if (motion != nullptr && line->GetParam("param")->IsDefined())
-                        {
-                            const auto& p = line->GetParam("param")->AsArray();
-                            for (unsigned int i = 0; i < 10 && i < p.size(); i++)
-                            {
-                                motion->SetParam(i, p[i]->AsFloat());
-                            }
-                        }
-                    }
-
-                    int run = -1;
-                    std::map<int, Program*> loadedPrograms;
-                    if (oldObj->Implements(ObjectInterfaceType::Programmable))
-                    {
-                        CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(oldObj);
-
+                        std::map<int, Program*> loadedPrograms;
                         bool allFilled = true;
                         for (int i = 0; i < 10 || allFilled; i++)
                         {
-                            std::string op = "script" + boost::lexical_cast<std::string>(i+1); // script1..script10
-                            std::string opReadOnly = "scriptReadOnly" + boost::lexical_cast<std::string>(i+1); // scriptReadOnly1..scriptReadOnly10
-                            std::string opRunnable = "scriptRunnable" + boost::lexical_cast<std::string>(i+1); // scriptRunnable1..scriptRunnable10
+                            std::string op = "script" + StrUtils::ToString<int>(i+1); // script1..script10
+                            std::string opReadOnly = "scriptReadOnly" + StrUtils::ToString<int>(i+1); // scriptReadOnly1..scriptReadOnly10
+                            std::string opRunnable = "scriptRunnable" + StrUtils::ToString<int>(i+1); // scriptRunnable1..scriptRunnable10
                             if (line->GetParam(op)->IsDefined())
                             {
                                 Program* program = programmable->AddProgram();
@@ -3454,37 +3368,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         int i = line->GetParam("run")->AsInt(0);
                         if (i != 0)
                         {
-                            run = i-1;
-                            programmable->SetScriptRun(loadedPrograms[run]);
-                        }
-                    }
-                    CAuto* automat = oldObj->GetAuto();
-                    if (automat != nullptr)
-                    {
-                        type = line->GetParam("autoType")->AsObjectType(OBJECT_NULL);
-                        automat->SetType(type);
-                        for (int i = 0; i < 5; i++)
-                        {
-                            std::string op = "autoValue" + boost::lexical_cast<std::string>(i+1); // autoValue1..autoValue5
-                            automat->SetValue(i, line->GetParam(op)->AsFloat(0.0f));
-                        }
-                        automat->SetString(const_cast<char*>(line->GetParam("autoString")->AsPath("ai", "").c_str()));
-
-                        int i = line->GetParam("run")->AsInt(-1);
-                        if (i != -1)
-                        {
-                            if (i != PARAM_FIXSCENE &&
-                                !m_settings->GetMovies()) i = 0;
-                            automat->Start(i);  // starts the film
+                            programmable->SetScriptRun(loadedPrograms[i-1]);
                         }
                     }
 
-                    if (soluce && oldObj->Implements(ObjectInterfaceType::Programmable) && line->GetParam("soluce")->IsDefined())
-                        dynamic_cast<CProgrammableObject*>(oldObj)
-                            ->SetSoluceName(line->GetParam("soluce")->AsPath("ai"));
-
-                    if (line->GetParam("reset")->AsBool(false))
-                        oldObj->SetAnimateOnReset(true);
+                    if (soluce && obj->Implements(ObjectInterfaceType::Programmable) && line->GetParam("soluce")->IsDefined())
+                        dynamic_cast<CProgrammableObject*>(obj)->SetSoluceName(line->GetParam("soluce")->AsPath("ai"));
+                }
+                catch (const CObjectCreateException& e)
+                {
+                    GetLogger()->Error("Error loading level object: %s\n", e.what());
+                    throw;
                 }
 
                 rankObj ++;
@@ -3764,11 +3658,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (m_base == nullptr &&  // no main base?
             !m_fixScene)    // interractive scene?
         {
-            CObject* obj;
+            CObject* obj = sel;
             if (sel == nullptr)
                 obj = SearchHuman();
-            else
-                obj = sel;
 
             if (obj != nullptr)
             {
@@ -3810,6 +3702,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
 void CRobotMain::LevelLoadingError(const std::string& error, const std::runtime_error& exception, Phase exitPhase)
 {
+    m_ui->ShowLoadingScreen(false);
+
     GetLogger()->Error("%s\n", error.c_str());
     GetLogger()->Error("%s\n", exception.what());
     ChangePhase(exitPhase);
@@ -4947,55 +4841,45 @@ void CRobotMain::IOWriteSceneFinished()
 //! Resumes the game
 CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, const std::string& objCounterText, float objectProgress, int objRank)
 {
-    Math::Vector pos  = line->GetParam("pos")->AsPoint()*g_unit;
-    Math::Vector dir  = line->GetParam("angle")->AsPoint()*(Math::PI/180.0f);
-    Math::Vector zoom = line->GetParam("zoom")->AsPoint();
-
-    ObjectType type = line->GetParam("type")->AsObjectType();
-    int id = line->GetParam("id")->AsInt();
+    ObjectCreateParams params = CObject::ReadCreateParams(line);
+    params.power = -1.0f;
+    params.id = line->GetParam("id")->AsInt();
 
     std::string details = objCounterText;
     #if DEV_BUILD
     // Object categories may spoil the level a bit, so hide them in release builds
-    details += ": "+CLevelParserParam::FromObjectType(type);
+    details += ": "+CLevelParserParam::FromObjectType(params.type);
     #endif
     m_ui->GetLoadingScreen()->SetProgress(0.25f+objectProgress*0.5f, RT_LOADING_OBJECTS_SAVED, details);
 
-    bool trainer = line->GetParam("trainer")->AsBool(false);
-    bool toy = line->GetParam("toy")->AsBool(false);
-    int option = line->GetParam("option")->AsInt(0);
-    int team = line->GetParam("team")->AsInt(0);
-
-    CObject* obj = m_objMan->CreateObject(pos, dir.y, type, 0.0f, 1.0f, 0.0f, trainer, toy, option, team, id);
+    CObject* obj = m_objMan->CreateObject(params);
 
     if (obj->Implements(ObjectInterfaceType::Old))
     {
         COldObject* oldObj = dynamic_cast<COldObject*>(obj);
 
-        oldObj->SetDefRank(objRank);
-        oldObj->SetPosition(pos);
-        oldObj->SetRotation(dir);
+        oldObj->SetRotation(line->GetParam("angle")->AsPoint() * Math::DEG_TO_RAD); // Who decided to call this argument differently than in main scene files? :/
+        // TODO: Also, why doesn't CStaticObject implement SetRotation?
 
-        if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
-            oldObj->SetScale(zoom);
+        oldObj->SetDefRank(objRank);
 
         for (int i = 1; i < OBJECTMAXPART; i++)
         {
             if (oldObj->GetObjectRank(i) == -1) continue;
 
-            pos = line->GetParam(std::string("p")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
+            Math::Vector pos = line->GetParam(std::string("p")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
             if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
             {
                 oldObj->SetPartPosition(i, pos*g_unit);
             }
 
-            dir = line->GetParam(std::string("a")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
+            Math::Vector dir = line->GetParam(std::string("a")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
             if (dir.x != 0.0f || dir.y != 0.0f || dir.z != 0.0f)
             {
                 oldObj->SetPartRotation(i, dir*(Math::PI/180.0f));
             }
 
-            zoom = line->GetParam(std::string("z")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
+            Math::Vector zoom = line->GetParam(std::string("z")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
             if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
             {
                 oldObj->SetPartScale(i, zoom);
@@ -5003,7 +4887,7 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
         }
     }
 
-    if (type == OBJECT_BASE) m_base = obj;
+    if (obj->GetType() == OBJECT_BASE) m_base = obj;
 
     obj->Read(line);
 

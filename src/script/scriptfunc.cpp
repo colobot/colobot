@@ -1557,7 +1557,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         type == OBJECT_WORM   )
     {
         object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
-        CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_EGG, 0.0f);
+        CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_EGG);
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
             dynamic_cast<CProgrammableObject*>(object)->SetActivity(false);

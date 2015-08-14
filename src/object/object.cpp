@@ -24,6 +24,9 @@
 
 #include "level/robotmain.h"
 
+#include "level/parser/parserline.h"
+#include "level/parser/parserparam.h"
+
 #include "graphics/model/model_crash_sphere.h"
 
 #include "script/scriptfunc.h"
@@ -49,6 +52,22 @@ CObject::CObject(int id, ObjectType type)
 CObject::~CObject()
 {
     CScriptFunctions::DestroyObjectVar(m_botVar, true);
+}
+
+ObjectCreateParams CObject::ReadCreateParams(CLevelParserLine* line)
+{
+    ObjectCreateParams params;
+    params.pos = line->GetParam("pos")->AsPoint()*g_unit;
+    params.angle = line->GetParam("dir")->AsFloat(0.0f)*Math::PI;
+    params.type = line->GetParam("type")->AsObjectType();
+    params.power = line->GetParam("power")->AsFloat(1.0f);
+    params.height = line->GetParam("h")->AsFloat(0.0f);
+    params.trainer = line->GetParam("trainer")->AsBool(false);
+    params.toy = line->GetParam("toy")->AsBool(false); // TODO: Remove
+    params.option = line->GetParam("option")->AsInt(0);
+    params.team = line->GetParam("team")->AsInt(0);
+    //params.id = line->GetParam("id")->AsInt(-1);
+    return params;
 }
 
 void CObject::SetCrashSpheres(const std::vector<Gfx::ModelCrashSphere>& crashSpheres)
