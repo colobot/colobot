@@ -65,12 +65,12 @@ protected:
     CObject*    SearchAlien();
 
 protected:
-    ObjectType      m_type;
-    float           m_value;
+    ObjectType      m_type = OBJECT_NULL;
+    float           m_value = 0.0f;
     std::string     m_alienProgramName;
-    int             m_param;
-    AutoEggPhase    m_phase;
-    float           m_progress;
-    float           m_speed;
+    int             m_param = 0;
+    AutoEggPhase    m_phase = AEP_NULL;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
 };
 

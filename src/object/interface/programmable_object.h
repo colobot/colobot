@@ -31,8 +31,8 @@ struct Program
 {
     std::unique_ptr<CScript> script;
     std::string filename;
-    bool        readOnly;
-    bool        runnable;
+    bool        readOnly = false;
+    bool        runnable = false;
 };
 
 /**

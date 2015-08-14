@@ -21,6 +21,7 @@
 #include "object/task/taskgoto.h"
 
 #include "common/event.h"
+#include "common/make_unique.h"
 
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
@@ -1965,7 +1966,7 @@ bool CTaskGoto::BitmapOpen()
     BitmapClose();
 
     m_bmSize = static_cast<int>(3200.0f/BM_DIM_STEP);
-    m_bmArray = new unsigned char[m_bmSize*m_bmSize/8*2]();
+    m_bmArray = MakeUniqueArray<unsigned char>(m_bmSize*m_bmSize/8*2);
 
     m_bmOffset = m_bmSize/2;
     m_bmLine = m_bmSize/8;
@@ -1982,8 +1983,7 @@ bool CTaskGoto::BitmapOpen()
 
 bool CTaskGoto::BitmapClose()
 {
-    delete[] m_bmArray;
-    m_bmArray = 0;
+    m_bmArray.reset();
     return true;
 }
 

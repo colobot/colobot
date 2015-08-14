@@ -64,15 +64,15 @@ protected:
     bool        IsFreeDeposeObject(Math::Vector pos);
 
 protected:
-    TaskTakeOrder   m_order;
-    TaskTakeArm     m_arm;
-    int             m_step;
-    float           m_speed;
-    float           m_progress;
-    float           m_height;
-    bool            m_bError;
-    bool            m_bTurn;
-    float           m_angle;
-    ObjectType      m_cargoType;
+    TaskTakeOrder   m_order = TTO_TAKE;
+    TaskTakeArm     m_arm = TTA_NEUTRAL;
+    int             m_step = 0;
+    float           m_speed = 0.0f;
+    float           m_progress = 0.0f;
+    float           m_height = 0.0f;
+    bool            m_bError = false;
+    bool            m_bTurn = false;
+    float           m_angle = 0.0f;
+    ObjectType      m_cargoType = OBJECT_NULL;
 };
 

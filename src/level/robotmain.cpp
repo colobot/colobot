@@ -142,7 +142,6 @@ CRobotMain::CRobotMain()
 
     m_engine     = Gfx::CEngine::GetInstancePointer();
     m_oldModelManager = m_engine->GetModelManager();
-    m_modelManager = MakeUnique<Gfx::CModelManager>();
     m_lightMan   = m_engine->GetLightManager();
     m_particle   = m_engine->GetParticle();
     m_water      = m_engine->GetWater();
@@ -151,23 +150,24 @@ CRobotMain::CRobotMain()
     m_planet     = m_engine->GetPlanet();
     m_pause      = CPauseManager::GetInstancePointer();
     m_input      = CInput::GetInstancePointer();
-    m_settings   = new CSettings();
 
-    m_interface   = new Ui::CInterface();
-    m_terrain     = new Gfx::CTerrain();
-    m_camera      = new Gfx::CCamera();
-    m_displayText = new Ui::CDisplayText();
-    m_movie       = new CMainMovie();
+    m_modelManager = MakeUnique<Gfx::CModelManager>();
+    m_settings    = MakeUnique<CSettings>();
+    m_interface   = MakeUnique<Ui::CInterface>();
+    m_terrain     = MakeUnique<Gfx::CTerrain>();
+    m_camera      = MakeUnique<Gfx::CCamera>();
+    m_displayText = MakeUnique<Ui::CDisplayText>();
+    m_movie       = MakeUnique<CMainMovie>();
     m_ui          = MakeUnique<Ui::CMainUserInterface>();
-    m_short       = new Ui::CMainShort();
-    m_map         = new Ui::CMainMap();
-    m_displayInfo = nullptr;
+    m_short       = MakeUnique<Ui::CMainShort>();
+    m_map         = MakeUnique<Ui::CMainMap>();
 
-    m_objMan = new CObjectManager(m_engine,
-                                  m_terrain,
-                                  m_oldModelManager,
-                                  m_modelManager.get(),
-                                  m_particle);
+    m_objMan = MakeUnique<CObjectManager>(
+        m_engine,
+        m_terrain.get(),
+        m_oldModelManager,
+        m_modelManager.get(),
+        m_particle);
 
     m_time = 0.0f;
     m_gameTime = 0.0f;
@@ -266,7 +266,7 @@ CRobotMain::CRobotMain()
         m_showLimit[i].link = 0;
     }
 
-    m_engine->SetTerrain(m_terrain);
+    m_engine->SetTerrain(m_terrain.get());
 
     m_app->SetMouseMode(MOUSE_ENGINE);
 
@@ -286,55 +286,26 @@ CRobotMain::CRobotMain()
 //! Destructor of robot application
 CRobotMain::~CRobotMain()
 {
-    delete m_settings;
-    m_settings = nullptr;
-
-    delete m_displayText;
-    m_displayText = nullptr;
-
-    delete m_interface;
-    m_interface = nullptr;
-
-    delete m_terrain;
-    m_terrain = nullptr;
-
-    delete m_camera;
-    m_camera = nullptr;
-
-    delete m_displayText;
-    m_displayText = nullptr;
-
-    delete m_movie;
-    m_movie = nullptr;
-
-    delete m_short;
-    m_short = nullptr;
-
-    delete m_map;
-    m_map = nullptr;
-
-    delete m_objMan;
-    m_objMan = nullptr;
 }
 
 Gfx::CCamera* CRobotMain::GetCamera()
 {
-    return m_camera;
+    return m_camera.get();
 }
 
 Gfx::CTerrain* CRobotMain::GetTerrain()
 {
-    return m_terrain;
+    return m_terrain.get();
 }
 
 Ui::CInterface* CRobotMain::GetInterface()
 {
-    return m_interface;
+    return m_interface.get();
 }
 
 Ui::CDisplayText* CRobotMain::GetDisplayText()
 {
-    return m_displayText;
+    return m_displayText.get();
 }
 
 void CRobotMain::ResetAfterDeviceChanged()
@@ -1415,7 +1386,7 @@ void CRobotMain::StartDisplayInfo(const std::string& filename, int index)
 
     bool soluce = m_ui->GetSceneSoluce();
 
-    m_displayInfo = new Ui::CDisplayInfo();
+    m_displayInfo = MakeUnique<Ui::CDisplayInfo>();
     m_displayInfo->StartDisplayInfo(filename, index, soluce);
 
     m_infoIndex = index;
@@ -1436,8 +1407,7 @@ void CRobotMain::StopDisplayInfo()
 
     m_displayInfo->StopDisplayInfo();
 
-    delete m_displayInfo;
-    m_displayInfo = nullptr;
+    m_displayInfo.reset();
 
     if (!m_editLock)
     {
@@ -4978,9 +4948,8 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
                 assert(obj->Implements(ObjectInterfaceType::Carrier)); // TODO: exception?
                 assert(obj->Implements(ObjectInterfaceType::Old));
                 dynamic_cast<CCarrierObject*>(obj)->SetCargo(cargo);
-                CTaskManip* task = new CTaskManip(dynamic_cast<COldObject*>(obj));
+                auto task = MakeUnique<CTaskManip>(dynamic_cast<COldObject*>(obj));
                 task->Start(TMO_AUTO, TMA_GRAB);  // holds the object!
-                delete task;
             }
 
             if (power != nullptr)

@@ -28,14 +28,14 @@
 
 struct LevelInfo
 {
-    int     numTry;
-    bool    bPassed;
+    int     numTry = 0;
+    bool    bPassed = false;
 };
 
 struct PlayerApperance
 {
-    int     face;           // face
-    int     glasses;        // glasses
+    int     face = 0;           // face
+    int     glasses = 0;        // glasses
     Gfx::Color   colorHair;      // hair color
     Gfx::Color   colorCombi;     // spacesuit volor
     Gfx::Color   colorBand;      // strips color
@@ -48,11 +48,9 @@ struct SavedScene
     std::string path;
     std::string name;
 
-    SavedScene(std::string _path = "", std::string _name = "")
-    {
-        path = _path;
-        name = _name;
-    }
+    SavedScene(std::string path = "", std::string name = "")
+        : path(path), name(name)
+    {}
 };
 
 class CPlayerProfile

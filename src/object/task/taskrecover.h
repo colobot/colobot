@@ -55,16 +55,16 @@ protected:
     CObject*    SearchRuin();
 
 protected:
-    TaskRecoverPhase m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_time;
-    float           m_angle;
-    float           m_lastParticle;
-    bool            m_bError;
-    CObject*        m_ruin;
-    CObject*        m_metal;
+    TaskRecoverPhase m_phase = TRP_TURN;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_time = 0.0f;
+    float           m_angle = 0.0f;
+    float           m_lastParticle = 0.0f;
+    bool            m_bError = false;
+    CObject*        m_ruin = nullptr;
+    CObject*        m_metal = nullptr;
     Math::Vector    m_recoverPos;
-    int             m_soundChannel;
+    int             m_soundChannel = 0;
 };
 

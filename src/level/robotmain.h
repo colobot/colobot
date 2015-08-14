@@ -113,9 +113,9 @@ const int MAXNEWSCRIPTNAME = 20;
 
 struct NewScriptName
 {
-    bool        used;
-    ObjectType  type;
-    char        name[40];
+    bool        used = false;
+    ObjectType  type = OBJECT_NULL;
+    char        name[40] = {0};
 };
 
 
@@ -127,14 +127,14 @@ const int MAXSCENE = 999;
 
 struct ShowLimit
 {
-    bool            used;
+    bool            used = false;
     Math::Vector    pos;
-    float           radius;
-    int             total;
-    int             parti[MAXSHOWPARTI];
-    CObject*        link;
-    float           duration;
-    float           time;
+    float           radius = 0.0f;
+    int             total = 0;
+    int             parti[MAXSHOWPARTI] = {0};
+    CObject*        link = nullptr;
+    float           duration = 0.0f;
+    float           time = 0.0f;
 };
 
 
@@ -417,156 +417,156 @@ protected:
 
 
 protected:
-    CController*        m_ctrl;
-    CApplication*       m_app;
-    CObjectManager*     m_objMan;
-    CEventQueue*        m_eventQueue;
-    CMainMovie*         m_movie;
-    Gfx::CEngine*       m_engine;
-    Gfx::CParticle*     m_particle;
-    Gfx::CWater*        m_water;
-    Gfx::CCloud*        m_cloud;
-    Gfx::CLightning*    m_lightning;
-    Gfx::CPlanet*       m_planet;
-    Gfx::COldModelManager* m_oldModelManager;
+    CController*        m_ctrl = nullptr;
+    CApplication*       m_app = nullptr;
+    CEventQueue*        m_eventQueue = nullptr;
+    Gfx::CEngine*       m_engine = nullptr;
+    Gfx::CParticle*     m_particle = nullptr;
+    Gfx::CWater*        m_water = nullptr;
+    Gfx::CCloud*        m_cloud = nullptr;
+    Gfx::CLightning*    m_lightning = nullptr;
+    Gfx::CPlanet*       m_planet = nullptr;
+    Gfx::COldModelManager* m_oldModelManager = nullptr;
+    Gfx::CLightManager* m_lightMan = nullptr;
+    CSoundInterface*    m_sound = nullptr;
+    CPauseManager*      m_pause = nullptr;
+    CInput*             m_input = nullptr;
+    std::unique_ptr<CObjectManager> m_objMan;
+    std::unique_ptr<CMainMovie> m_movie;
     std::unique_ptr<Gfx::CModelManager> m_modelManager;
-    Gfx::CLightManager* m_lightMan;
-    Gfx::CTerrain*      m_terrain;
-    Gfx::CCamera*       m_camera;
+    std::unique_ptr<Gfx::CTerrain> m_terrain;
+    std::unique_ptr<Gfx::CCamera> m_camera;
     std::unique_ptr<Ui::CMainUserInterface> m_ui;
-    Ui::CMainShort*     m_short;
-    Ui::CMainMap*       m_map;
-    Ui::CInterface*     m_interface;
-    Ui::CDisplayText*   m_displayText;
-    Ui::CDisplayInfo*   m_displayInfo;
-    CSoundInterface*    m_sound;
-    CPauseManager*      m_pause;
-    CInput*             m_input;
-    CSettings*          m_settings;
+    std::unique_ptr<Ui::CMainShort> m_short;
+    std::unique_ptr<Ui::CMainMap> m_map;
+    std::unique_ptr<Ui::CInterface> m_interface;
+    std::unique_ptr<Ui::CDisplayInfo> m_displayInfo;
+    std::unique_ptr<Ui::CDisplayText> m_displayText;
+    std::unique_ptr<CSettings> m_settings;
 
     //! Progress of loaded player
     std::unique_ptr<CPlayerProfile> m_playerProfile;
 
 
     //! Time since level start, including pause and intro movie
-    float           m_time;
+    float           m_time = 0.0f;
     //! Playing time since level start
-    float           m_gameTime;
+    float           m_gameTime = 0.0f;
     //! Playing time since level start, not dependent on simulation speed
-    float           m_gameTimeAbsolute;
+    float           m_gameTimeAbsolute = 0.0f;
 
     LevelCategory   m_levelCategory;
-    int             m_levelChap;
-    int             m_levelRank;
+    int             m_levelChap = 0;
+    int             m_levelRank = 0;
     std::string     m_sceneReadPath;
 
-    float           m_winDelay;
-    float           m_lostDelay;
-    bool            m_fixScene;        // scene fixed, no interraction
-    CObject*        m_base;        // OBJECT_BASE exists in mission
+    float           m_winDelay = 0.0f;
+    float           m_lostDelay = 0.0f;
+    bool            m_fixScene = false;        // scene fixed, no interraction
+    CObject*        m_base = nullptr;        // OBJECT_BASE exists in mission
     Math::Point     m_lastMousePos;
-    CObject*        m_selectObject;
+    CObject*        m_selectObject = nullptr;
 
-    Phase           m_phase;
-    int             m_cameraRank;
+    Phase           m_phase = PHASE_WELCOME1;
+    int             m_cameraRank = 0;
     Gfx::Color      m_color;
-    bool            m_freePhoto;
-    bool            m_cmdEdit;
-    bool            m_selectInsect;
-    bool            m_showSoluce;
-    bool            m_showAll;
-    bool            m_cheatRadar;
-    bool            m_shortCut;
+    bool            m_freePhoto = false;
+    bool            m_cmdEdit = false;
+    bool            m_selectInsect = false;
+    bool            m_showSoluce = false;
+    bool            m_showAll = false;
+    bool            m_cheatRadar = false;
+    bool            m_shortCut = false;
     std::string     m_audioTrack;
-    bool            m_audioRepeat;
+    bool            m_audioRepeat = false;
     std::string     m_satcomTrack;
-    bool            m_satcomRepeat;
+    bool            m_satcomRepeat = false;
     std::string     m_editorTrack;
-    bool            m_editorRepeat;
-    int             m_movieInfoIndex;
+    bool            m_editorRepeat = false;
+    int             m_movieInfoIndex = 0;
 
-    CObject*        m_controller;
+    CObject*        m_controller = nullptr;
 
-    MissionType     m_missionType;
-    bool            m_immediatSatCom;  // SatCom immediately?
-    bool            m_beginSatCom;     // messages SatCom poster?
-    bool            m_lockedSatCom;    // SatCom locked?
-    bool            m_movieLock;       // movie in progress?
-    bool            m_satComLock;      // call of SatCom is possible?
-    bool            m_editLock;        // edition in progress?
-    bool            m_editFull;        // edition in full screen?
-    bool            m_hilite;
-    bool            m_trainerPilot;    // remote trainer?
-    bool            m_friendAim;
-    bool            m_resetCreate;
-    bool            m_mapShow;
-    bool            m_mapImage;
-    char            m_mapFilename[100];
+    MissionType     m_missionType = MISSION_NORMAL;
+    bool            m_immediatSatCom = false;  // SatCom immediately?
+    bool            m_beginSatCom = false;     // messages SatCom poster?
+    bool            m_lockedSatCom = false;    // SatCom locked?
+    bool            m_movieLock = false;       // movie in progress?
+    bool            m_satComLock = false;      // call of SatCom is possible?
+    bool            m_editLock = false;        // edition in progress?
+    bool            m_editFull = false;        // edition in full screen?
+    bool            m_hilite = false;
+    bool            m_trainerPilot = false;    // remote trainer?
+    bool            m_friendAim = false;
+    bool            m_resetCreate = false;
+    bool            m_mapShow = false;
+    bool            m_mapImage = false;
+    char            m_mapFilename[100] = {};
 
-    bool            m_suspend;
-    PauseType       m_suspendInitPause;
-    Gfx::CameraType m_suspendInitCamera;
+    bool            m_suspend = false;
+    PauseType       m_suspendInitPause = PAUSE_NONE;
+    Gfx::CameraType m_suspendInitCamera = Gfx::CAM_TYPE_NULL;
 
     Math::Point     m_tooltipPos;
     std::string     m_tooltipName;
-    float           m_tooltipTime;
+    float           m_tooltipTime = 0.0f;
 
-    char            m_infoFilename[SATCOM_MAX][100]; // names of text files
-    CObject*        m_infoObject;
-    int             m_infoIndex;
-    int             m_infoPos[SATCOM_MAX];
-    int             m_infoUsed;
+    char            m_infoFilename[SATCOM_MAX][100] = {}; // names of text files
+    CObject*        m_infoObject = nullptr;
+    int             m_infoIndex = 0;
+    int             m_infoPos[SATCOM_MAX] = {};
+    int             m_infoUsed = 0;
 
-    char            m_title[100];
-    char            m_resume[500];
-    char            m_scriptName[100];
-    char            m_scriptFile[100];
-    int             m_endingWinRank;
-    int             m_endingLostRank;
-    bool            m_winTerminate;
+    char            m_title[100] = {};
+    char            m_resume[500] = {};
+    char            m_scriptName[100] = {};
+    char            m_scriptFile[100] = {};
+    int             m_endingWinRank = 0;
+    int             m_endingLostRank = 0;
+    bool            m_winTerminate = false;
 
-    float           m_globalMagnifyDamage;
+    float           m_globalMagnifyDamage = 0.0f;
 
-    bool            m_exitAfterMission;
+    bool            m_exitAfterMission = false;
 
-    bool            m_codeBattleInit;
-    bool            m_codeBattleStarted;
+    bool            m_codeBattleInit = false;
+    bool            m_codeBattleStarted = false;
 
     std::map<int, std::string> m_teamNames;
 
     NewScriptName   m_newScriptName[MAXNEWSCRIPTNAME];
 
-    float           m_cameraPan;
-    float           m_cameraZoom;
+    float           m_cameraPan = 0.0f;
+    float           m_cameraZoom = 0.0f;
 
-    EventType       m_visitLast;
-    CObject*        m_visitObject;
-    CObject*        m_visitArrow;
-    float           m_visitTime;
-    float           m_visitParticle;
+    EventType       m_visitLast = EVENT_NULL;
+    CObject*        m_visitObject = nullptr;
+    CObject*        m_visitArrow = nullptr;
+    float           m_visitTime = 0.0f;
+    float           m_visitParticle = 0.0f;
     Math::Vector    m_visitPos;
     Math::Vector    m_visitPosArrow;
 
     std::vector<std::unique_ptr<CSceneEndCondition>> m_endTake;
-    long            m_endTakeResearch;
-    float           m_endTakeWinDelay;
-    float           m_endTakeLostDelay;
+    long            m_endTakeResearch = 0;
+    float           m_endTakeWinDelay = 0.0f;
+    float           m_endTakeLostDelay = 0.0f;
 
     std::vector<std::unique_ptr<CAudioChangeCondition>> m_audioChange;
 
-    int             m_obligatoryTotal;
-    char            m_obligatoryToken[100][20];
-    int             m_prohibitedTotal;
-    char            m_prohibitedToken[100][20];
+    int             m_obligatoryTotal = 0;
+    char            m_obligatoryToken[100][20] = {};
+    int             m_prohibitedTotal = 0;
+    char            m_prohibitedToken[100][20] = {};
 
     //! Enabled buildings
-    int             m_build;
+    int             m_build = 0;
     //! Available researches
-    long            m_researchEnable;
+    long            m_researchEnable = 0;
     //! Done researches for each team
     std::map<int, int>  m_researchDone;
 
-    Error           m_missionResult;
+    Error           m_missionResult = ERR_OK;
 
     ShowLimit       m_showLimit[MAXSHOWLIMIT];
 
@@ -578,18 +578,18 @@ protected:
     Gfx::Color      m_colorNewGreen;
     Gfx::Color      m_colorRefWater;
     Gfx::Color      m_colorNewWater;
-    float           m_colorShiftWater;
+    float           m_colorShiftWater = 0.0f;
 
-    bool            m_missionTimerEnabled;
-    bool            m_missionTimerStarted;
-    float           m_missionTimer;
+    bool            m_missionTimerEnabled = false;
+    bool            m_missionTimerStarted = false;
+    float           m_missionTimer = 0.0f;
 
-    bool            m_autosave;
-    int             m_autosaveInterval;
-    int             m_autosaveSlots;
-    float           m_autosaveLast;
+    bool            m_autosave = false;
+    int             m_autosaveInterval = 0;
+    int             m_autosaveSlots = 0;
+    float           m_autosaveLast = 0.0f;
 
-    int             m_shotSaving;
+    int             m_shotSaving = 0;
 
     std::deque<CObject*> m_selectionHistory;
 };

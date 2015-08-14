@@ -28,6 +28,7 @@
 
 #include "common/global.h"
 
+#include <memory>
 #include <string>
 
 
@@ -101,31 +102,31 @@ protected:
     bool        Compile();
 
 protected:
-    COldObject*          m_object;
-    CTaskExecutorObject* m_taskExecutor;
+    COldObject*          m_object = nullptr;
+    CTaskExecutorObject* m_taskExecutor = nullptr;
 
-    Gfx::CEngine*       m_engine;
-    Ui::CInterface*     m_interface;
-    CBotProgram*        m_botProg;
-    CRobotMain*         m_main;
-    Gfx::CTerrain*      m_terrain;
-    Gfx::CWater*        m_water;
-    CPauseManager*      m_pause;
+    Gfx::CEngine*       m_engine = nullptr;
+    Ui::CInterface*     m_interface = nullptr;
+    std::unique_ptr<CBotProgram> m_botProg;
+    CRobotMain*         m_main = nullptr;
+    Gfx::CTerrain*      m_terrain = nullptr;
+    Gfx::CWater*        m_water = nullptr;
+    CPauseManager*      m_pause = nullptr;
 
-    int     m_ipf;          // number of instructions/second
-    int     m_errMode;      // what to do in case of error
-    int     m_len;          // length of the script (without <0>)
-    char*   m_script;       // script ends with <0>
-    bool    m_bRun;         // program during execution?
-    bool    m_bStepMode;        // step by step
-    bool    m_bContinue;        // external function to continue
-    bool    m_bCompile;     // compilation ok?
-    char    m_title[50];        // script title
-    char    m_mainFunction[50];
-    char    m_filename[50];     // file name
-    char    m_token[50];        // missing instruction
-    int     m_error;        // error (0=ok)
-    int     m_cursor1;
-    int     m_cursor2;
-    float   m_returnValue;
+    int     m_ipf = 0;          // number of instructions/second
+    int     m_errMode = 0;      // what to do in case of error
+    int     m_len = 0;          // length of the script (without <0>)
+    std::unique_ptr<char[]> m_script;       // script ends with <0>
+    bool    m_bRun = false;         // program during execution?
+    bool    m_bStepMode = false;        // step by step
+    bool    m_bContinue = false;        // external function to continue
+    bool    m_bCompile = false;     // compilation ok?
+    char    m_title[50] = {};        // script title
+    char    m_mainFunction[50] = {};
+    char    m_filename[50] = {};     // file name
+    char    m_token[50] = {};        // missing instruction
+    int     m_error = 0;        // error (0=ok)
+    int     m_cursor1 = 0;
+    int     m_cursor2 = 0;
+    float   m_returnValue = 0.0f;
 };

@@ -118,6 +118,7 @@ CPhysics::CPhysics(COldObject* object)
     m_fallingHeight = 0.0f;
     m_minFallingHeight = 20.0f;
     m_fallDamageFraction = 0.007f;
+    m_floorLevel = 0.0f;
 }
 
 // Object's destructor.

@@ -44,10 +44,10 @@ private:
     void Start(int param) override;
 
 protected:
-    float           m_force;
-    float           m_progress;
-    float           m_speed;
-    float           m_lastParticle;
-    Error           m_error;
+    float           m_force = 0.0f;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_lastParticle = 0.0f;
+    Error           m_error = ERR_OK;
 };
 

@@ -70,12 +70,12 @@ protected:
     void        SoundManip(float time, float amplitude, float frequency);
 
 protected:
-    AutoFactoryPhase    m_phase;
-    float               m_progress;
-    float               m_speed;
-    float               m_lastParticle;
+    AutoFactoryPhase    m_phase = AFP_WAIT;
+    float               m_progress = 0.0f;
+    float               m_speed = 0.0f;
+    float               m_lastParticle = 0.0f;
     Math::Vector        m_cargoPos;
-    int                 m_channelSound;
+    int                 m_channelSound = 0;
 
     std::string         m_program;
 };

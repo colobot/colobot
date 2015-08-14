@@ -19,7 +19,7 @@
 
 #include "object/implementation/power_container_impl.h"
 
-CPowerContainerObjectImpl::CPowerContainerObjectImpl(ObjectInterfaceTypes& types, CObject* object)
+CPowerContainerObjectImpl::CPowerContainerObjectImpl(ObjectInterfaceTypes& types)
     : CPowerContainerObject(types)
     , m_energyLevel(1.0f)
 {}

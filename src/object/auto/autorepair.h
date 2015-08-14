@@ -59,10 +59,10 @@ protected:
     CObject*    SearchVehicle();
 
 protected:
-    AutoRepairPhase m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_timeVirus;
-    float           m_lastParticle;
+    AutoRepairPhase m_phase = ARP_WAIT;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_timeVirus = 0.0f;
+    float           m_lastParticle = 0.0f;
 };
 

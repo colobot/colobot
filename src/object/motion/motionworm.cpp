@@ -47,7 +47,9 @@ const int WORM_PART = 7;        // number of parts of a worm
 
 // Object's constructor.
 
-CMotionWorm::CMotionWorm(COldObject* object) : CMotion(object)
+CMotionWorm::CMotionWorm(COldObject* object)
+    : CMotion(object),
+      m_armAngles()
 {
     m_timeUp         = 18.0f;
     m_timeDown       = 18.0f;
@@ -62,6 +64,7 @@ CMotionWorm::CMotionWorm(COldObject* object) : CMotion(object)
     m_armCirSpeed    = 0.0f;
     m_armLastAction  = -1;
     m_specAction     = -1;
+    m_specTime       = 0.0f;
     m_lastParticle  = 0.0f;
     m_bArmStop = false;
 }

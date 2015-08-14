@@ -56,10 +56,10 @@ protected:
     CObject*    SearchCargo();
 
 protected:
-    AutoNestPhase   m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_lastParticle;
+    AutoNestPhase   m_phase = ANP_WAIT;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_lastParticle = 0.0f;
     Math::Vector    m_cargoPos;
 };
 

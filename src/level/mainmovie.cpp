@@ -45,6 +45,11 @@ CMainMovie::CMainMovie()
     m_camera    = m_main->GetCamera();
     m_sound     = CApplication::GetInstancePointer()->GetSound();
 
+    m_progress = 0.0f;
+    m_stopType = MM_NONE;
+    m_type = MM_NONE;
+    m_speed = 0.0f;
+
     Flush();
 }
 

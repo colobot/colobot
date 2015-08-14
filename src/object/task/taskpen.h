@@ -57,16 +57,16 @@ protected:
     int         ColorToRank(TraceColor color);
 
 protected:
-    bool            m_bError;
-    TaskPenPhase    m_phase;
-    float           m_progress;
-    float           m_delay;
-    float           m_time;
-    float           m_lastParticle;
+    bool            m_bError = false;
+    TaskPenPhase    m_phase = TPP_UP;
+    float           m_progress = 0.0f;
+    float           m_delay = 0.0f;
+    float           m_time = 0.0f;
+    float           m_lastParticle = 0.0f;
     Math::Vector    m_supportPos;
 
-    float           m_timeUp;
-    float           m_oldAngle;
-    float           m_newAngle;
-    float           m_timeDown;
+    float           m_timeUp = 0.0f;
+    float           m_oldAngle = 0.0f;
+    float           m_newAngle = 0.0f;
+    float           m_timeDown = 0.0f;
 };

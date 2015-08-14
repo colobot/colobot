@@ -65,12 +65,12 @@ protected:
     CObject*    SearchPower();
 
 protected:
-    AutoPowerPlantPhase     m_phase;
-    float               m_progress;
-    float               m_speed;
-    float               m_timeVirus;
-    float               m_lastUpdateTime;
-    float               m_lastParticle;
-    int                 m_partiSphere;
+    AutoPowerPlantPhase     m_phase = AENP_STOP;
+    float               m_progress = 0.0f;
+    float               m_speed = 0.0;
+    float               m_timeVirus = 0.0f;
+    float               m_lastUpdateTime = 0.0f;
+    float               m_lastParticle = 0.0f;
+    int                 m_partiSphere = 0;
 };
 

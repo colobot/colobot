@@ -75,20 +75,21 @@ const float VIRUS_DELAY     = 60.0f;        // duration of virus infection
 // Object's constructor.
 
 COldObject::COldObject(int id)
-    : CObject(id, OBJECT_NULL)
-    , CInteractiveObject(m_implementedInterfaces)
-    , CTransportableObject(m_implementedInterfaces)
-    , CTaskExecutorObjectImpl(m_implementedInterfaces, this)
-    , CProgrammableObjectImpl(m_implementedInterfaces, this)
-    , CJostleableObject(m_implementedInterfaces)
-    , CCarrierObject(m_implementedInterfaces)
-    , CPoweredObject(m_implementedInterfaces)
-    , CJetFlyingObject(m_implementedInterfaces)
-    , CControllableObject(m_implementedInterfaces)
-    , CPowerContainerObjectImpl(m_implementedInterfaces, this)
-    , CRangedObject(m_implementedInterfaces)
-    , CTraceDrawingObject(m_implementedInterfaces)
-    , CShieldedAutoRegenObject(m_implementedInterfaces)
+    : CObject(id, OBJECT_NULL),
+      CInteractiveObject(m_implementedInterfaces),
+      CTransportableObject(m_implementedInterfaces),
+      CTaskExecutorObjectImpl(m_implementedInterfaces, this),
+      CProgrammableObjectImpl(m_implementedInterfaces, this),
+      CJostleableObject(m_implementedInterfaces),
+      CCarrierObject(m_implementedInterfaces),
+      CPoweredObject(m_implementedInterfaces),
+      CJetFlyingObject(m_implementedInterfaces),
+      CControllableObject(m_implementedInterfaces),
+      CPowerContainerObjectImpl(m_implementedInterfaces),
+      CRangedObject(m_implementedInterfaces),
+      CTraceDrawingObject(m_implementedInterfaces),
+      CShieldedAutoRegenObject(m_implementedInterfaces),
+      m_partiSel()
 {
     // A bit of a hack since we don't have subclasses yet, set externally in SetProgrammable()
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
@@ -111,7 +112,9 @@ COldObject::COldObject(int id)
     m_option = 0;
     m_name = "";
     m_shadowLight   = -1;
+    m_shadowHeight  = 0.0f;
     m_effectLight   = -1;
+    m_effectHeight  = 0.0f;
     m_linVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_cirVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_tilt   = Math::Vector(0.0f, 0.0f, 0.0f);

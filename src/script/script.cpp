@@ -66,12 +66,9 @@ CScript::CScript(COldObject* object)
     m_interface     = m_main->GetInterface();
     m_pause         = CPauseManager::GetInstancePointer();
 
-    m_botProg       = nullptr;
-
     m_ipf = CBOT_IPF;
     m_errMode = ERM_STOP;
     m_len = 0;
-    m_script = nullptr;
     m_bRun = false;
     m_bStepMode = false;
     m_bCompile = false;
@@ -86,12 +83,6 @@ CScript::CScript(COldObject* object)
 
 CScript::~CScript()
 {
-    delete m_botProg;
-    m_botProg = nullptr;
-
-    delete[] m_script;
-    m_script = nullptr;
-
     m_len = 0;
 }
 
@@ -106,7 +97,7 @@ void CScript::PutScript(Ui::CEdit* edit, const char* name)
     }
     else
     {
-        edit->SetText(m_script);
+        edit->SetText(m_script.get());
         edit->SetCursor(m_cursor2, m_cursor1);
         edit->ShowSelect();
     }
@@ -117,17 +108,12 @@ void CScript::PutScript(Ui::CEdit* edit, const char* name)
 
 bool CScript::GetScript(Ui::CEdit* edit)
 {
-    int     len;
+    int len = edit->GetTextLength();
+    m_script = MakeUniqueArray<char>(len+1);
 
-    delete[] m_script;
-    m_script = nullptr;
-
-    len = edit->GetTextLength();
-    m_script = new char[len+1];
-
-    edit->GetText(m_script, len+1);
+    edit->GetText(m_script.get(), len+1);
     edit->GetCursor(m_cursor2, m_cursor1);
-    m_len = strlen(m_script);
+    m_len = strlen(m_script.get());
 
     if ( !CheckToken() )
     {
@@ -159,9 +145,7 @@ bool CScript::GetCompile()
 
 bool CScript::IsEmpty()
 {
-    int     i;
-
-    for ( i=0 ; i<m_len ; i++ )
+    for (int i = 0; i < m_len; i++)
     {
         if ( m_script[i] != ' '  &&
              m_script[i] != '\n' )  return false;
@@ -194,7 +178,7 @@ bool CScript::CheckToken()
         used[i] = 0;  // token not used
     }
 
-    allBt = CBotToken::CompileTokens(m_script, error);
+    allBt = CBotToken::CompileTokens(m_script.get(), error);
     bt = allBt;
     while ( bt != 0 )
     {
@@ -259,17 +243,16 @@ bool CScript::Compile()
 
     if ( IsEmpty() )  // program exist?
     {
-        delete m_botProg;
-        m_botProg = 0;
+        m_botProg.reset();
         return true;
     }
 
-    if ( m_botProg == 0 )
+    if (m_botProg == nullptr)
     {
-        m_botProg = new CBotProgram(m_object->GetBotVar());
+        m_botProg = MakeUnique<CBotProgram>(m_object->GetBotVar());
     }
 
-    if ( m_botProg->Compile(m_script, liste, this) )
+    if ( m_botProg->Compile(m_script.get(), liste, this) )
     {
         if ( liste.GetSize() == 0 )
         {
@@ -344,7 +327,7 @@ void CScript::SetStepMode(bool bStep)
 
 bool CScript::Run()
 {
-    if( m_botProg == 0 )  return false;
+    if (m_botProg == nullptr)  return false;
     if ( m_script == nullptr || m_len == 0 )  return false;
     if ( m_mainFunction[0] == 0 ) return false;
 
@@ -368,7 +351,7 @@ bool CScript::Run()
 
 bool CScript::Continue()
 {
-    if( m_botProg == 0 )  return true;
+    if (m_botProg == nullptr)  return true;
     if ( !m_bRun )  return true;
 
     if ( m_bStepMode )  // step by step mode?
@@ -440,7 +423,7 @@ bool CScript::Continue()
 
 bool CScript::Step()
 {
-    if( m_botProg == 0 )  return true;
+    if (m_botProg == nullptr)  return true;
     if ( !m_bRun )  return true;
     if ( !m_bStepMode )  return false;
 
@@ -490,7 +473,7 @@ void CScript::Stop()
 
     m_taskExecutor->StopForegroundTask();
 
-    if( m_botProg != 0 )
+    if (m_botProg != nullptr)
     {
         m_botProg->Stop();
     }
@@ -521,7 +504,7 @@ bool CScript::GetCursor(int &cursor1, int &cursor2)
 
     cursor1 = cursor2 = 0;
 
-    if( m_botProg == 0 )  return false;
+    if (m_botProg == nullptr)  return false;
     if ( !m_bRun )  return false;
 
     m_botProg->GetRunPos(funcName, cursor1, cursor2);
@@ -631,7 +614,7 @@ void CScript::UpdateList(Ui::CList* list)
     const char  *progName, *funcName;
     int         total, select, level, cursor1, cursor2, rank;
 
-    if( m_botProg == 0 )  return;
+    if (m_botProg == nullptr) return;
 
     total  = list->GetTotal();
     select = list->GetSelect();
@@ -800,7 +783,7 @@ bool CScript::IntroduceVirus()
     int     found[11*2];
     for ( int i=0 ; i<11 ; i++ )
     {
-        int start = SearchToken(m_script, names[i*2]);
+        int start = SearchToken(m_script.get(), names[i*2]);
         if ( start != -1 )
         {
             found[iFound++] = i*2;
@@ -813,14 +796,13 @@ bool CScript::IntroduceVirus()
     int start = found[i+1];
     i     = found[i+0];
 
-    char* newScript = new char[m_len+strlen(names[i+1])+1];
-    strcpy(newScript, m_script);
-    delete[] m_script;
-    m_script = newScript;
+    auto newScript = MakeUniqueArray<char>(m_len + strlen(names[i+1]) + 1);
+    strcpy(newScript.get(), m_script.get());
+    m_script = std::move(newScript);
 
-    DeleteToken(m_script, start, strlen(names[i]));
-    InsertToken(m_script, start, names[i+1]);
-    m_len = strlen(m_script);
+    DeleteToken(m_script.get(), start, strlen(names[i]));
+    InsertToken(m_script.get(), start, names[i+1]);
+    m_len = strlen(m_script.get());
     Compile();  // recompile with the virus
 
     return true;
@@ -1000,8 +982,7 @@ bool CScript::ReadScript(const char* filename)
 
     if (!CResourceManager::Exists(filename))  return false;
 
-    delete[] m_script;
-    m_script = nullptr;
+    m_script.reset();
 
     edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
     edit->SetMaxChar(Ui::EDITSTUDIOMAX);
@@ -1016,18 +997,16 @@ bool CScript::ReadScript(const char* filename)
 
 bool CScript::WriteScript(const char* filename)
 {
-    Ui::CEdit*  edit;
-
     if ( m_script == nullptr )
     {
         CResourceManager::Remove(filename);
         return false;
     }
 
-    edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
+    Ui::CEdit* edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
     edit->SetMaxChar(Ui::EDITSTUDIOMAX);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
-    edit->SetText(m_script);
+    edit->SetText(m_script.get());
     edit->WriteText(filename);
     m_interface->DeleteControl(EVENT_EDIT9);
     return true;
@@ -1044,7 +1023,7 @@ bool CScript::ReadStack(FILE *file)
     fRead(&m_ipf, sizeof(int), 1, file);
     fRead(&m_errMode, sizeof(int), 1, file);
 
-    if ( m_botProg == 0 )  return false;
+    if (m_botProg == nullptr) return false;
     if ( !m_botProg->RestoreState(file) )  return false;
 
     m_bRun = true;
@@ -1073,7 +1052,7 @@ bool CScript::Compare(CScript* other)
 {
     if ( m_len != other->m_len )  return false;
 
-    return ( strcmp(m_script, other->m_script) == 0 );
+    return ( strcmp(m_script.get(), other->m_script.get()) == 0 );
 }
 
 

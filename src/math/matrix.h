@@ -70,14 +70,16 @@ struct Matrix
     float m[16];
 
     //! Creates the indentity matrix
-    inline Matrix()
+    Matrix()
+        : m()
     {
         LoadIdentity();
     }
 
     //! Creates the matrix from 1D array
     /** \a m matrix values in column-major order */
-    inline explicit Matrix(const float (&_m)[16])
+    explicit Matrix(const float (&_m)[16])
+        : m()
     {
         for (int i = 0; i < 16; ++i)
             m[i] = _m[i];
@@ -88,7 +90,8 @@ struct Matrix
      * The array's first index is row, second is column.
      * \param m array with values
      */
-    inline explicit Matrix(const float (&_m)[4][4])
+    explicit Matrix(const float (&_m)[4][4])
+        : m()
     {
         for (int c = 0; c < 4; ++c)
         {
@@ -105,7 +108,7 @@ struct Matrix
      * \param col column (1 to 4)
      * \param value value
      */
-    inline void Set(int row, int col, float value)
+    void Set(int row, int col, float value)
     {
         m[(col-1)*4+(row-1)] = value;
     }
@@ -116,20 +119,20 @@ struct Matrix
      * \param col column (1 to 4)
      * \returns value
      */
-    inline float Get(int row, int col)
+    float Get(int row, int col)
     {
         return m[(col-1)*4+(row-1)];
     }
 
     //! Loads the zero matrix
-    inline void LoadZero()
+    void LoadZero()
     {
         for (int i = 0; i < 16; ++i)
             m[i] = 0.0f;
     }
 
     //! Loads the identity matrix
-    inline void LoadIdentity()
+    void LoadIdentity()
     {
         LoadZero();
         /* (1,1) */ m[0 ] = 1.0f;
@@ -139,13 +142,13 @@ struct Matrix
     }
 
     //! Returns the struct cast to \c float* array; use with care!
-    inline float* Array()
+    float* Array()
     {
         return reinterpret_cast<float*>(this);
     }
 
     //! Transposes the matrix
-    inline void Transpose()
+    void Transpose()
     {
         /* (2,1) <-> (1,2) */ Swap(m[1 ], m[4 ]);
         /* (3,1) <-> (1,3) */ Swap(m[2 ], m[8 ]);
@@ -157,7 +160,7 @@ struct Matrix
 
     //! Calculates the determinant of the matrix
     /** \returns the determinant */
-    inline float Det() const
+    float Det() const
     {
         float result = 0.0f;
         for (int i = 0; i < 4; ++i)
@@ -173,7 +176,7 @@ struct Matrix
      * \param c  column (0 to 3)
      * \returns  the cofactor
      */
-    inline float Cofactor(int r, int c) const
+    float Cofactor(int r, int c) const
     {
         assert(r >= 0 && r <= 3);
         assert(c >= 0 && c <= 3);
@@ -356,7 +359,7 @@ struct Matrix
      * The determinant of the matrix must not be zero.
      * \returns the inverted matrix
      */
-    inline Matrix Inverse() const
+    Matrix Inverse() const
     {
         float d = Det();
         assert(! IsZero(d));
@@ -380,7 +383,7 @@ struct Matrix
      * \param right right-hand matrix
      * \returns multiplication result
      */
-    inline Matrix Multiply(const Matrix &right) const
+    Matrix Multiply(const Matrix &right) const
     {
         float result[16] = { 0.0f };
 

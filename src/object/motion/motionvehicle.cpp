@@ -48,16 +48,11 @@
 
 // Object's constructor.
 
-CMotionVehicle::CMotionVehicle(COldObject* object) : CMotion(object)
+CMotionVehicle::CMotionVehicle(COldObject* object)
+    : CMotion(object),
+      m_wheelTurn(),
+      m_flyPaw()
 {
-    for (int i = 0; i < 4; i++)
-    {
-        m_wheelTurn[i] = 0.0f;
-    }
-    for (int i = 0; i < 3; i++)
-    {
-        m_flyPaw[i] = 0.0f;
-    }
     m_posTrackLeft  = 0.0f;
     m_posTrackRight = 0.0f;
     m_partiReactor  = -1;

@@ -30,12 +30,12 @@
 
 struct HustonLens
 {
-    int                 parti;
-    Gfx::ParticleType   type;
+    int                 parti = 0;
+    Gfx::ParticleType   type = {};
     Math::Vector        pos;
-    float               dim;
-    float               total;
-    float               off;
+    float               dim = 0.0f;
+    float               total = 0.0f;
+    float               off = 0.0f;
 };
 
 
@@ -59,11 +59,9 @@ public:
     bool        CreateInterface(bool bSelect);
 
 protected:
-
-protected:
-    float       m_progress;
-    float       m_speed;
+    float       m_progress = 0.0f;
+    float       m_speed = 0.0f;
     HustonLens  m_lens[HUSTONMAXLENS];
-    int         m_lensTotal;
+    int         m_lensTotal = 0;
 };
 

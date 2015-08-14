@@ -38,12 +38,10 @@ public:
     Error   IsEnded();
 
 protected:
-
-protected:
-    float       m_angle;
-    float       m_startAngle;
-    float       m_finalAngle;
-    bool        m_bLeft;
-    bool        m_bError;
+    float       m_angle = 0.0f;
+    float       m_startAngle = 0.0f;
+    float       m_finalAngle = 0.0f;
+    bool        m_bLeft = false;
+    bool        m_bError = false;
 };
 

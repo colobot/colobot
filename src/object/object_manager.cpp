@@ -19,6 +19,7 @@
 
 #include "object/object_manager.h"
 
+#include "common/make_unique.h"
 
 #include "math/all.h"
 
@@ -43,7 +44,7 @@ CObjectManager::CObjectManager(Gfx::CEngine* engine,
                                Gfx::COldModelManager* oldModelManager,
                                Gfx::CModelManager* modelManager,
                                Gfx::CParticle* particle)
-  : m_objectFactory(new CObjectFactory(engine, terrain, oldModelManager, modelManager, particle))
+  : m_objectFactory(MakeUnique<CObjectFactory>(engine, terrain, oldModelManager, modelManager, particle))
   , m_nextId(0)
   , m_shouldCleanRemovedObjects(false)
 {

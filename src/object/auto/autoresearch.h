@@ -59,14 +59,14 @@ protected:
     void        FireStopUpdate(float progress, bool bLightOn);
 
 protected:
-    AutoResearchPhase   m_phase;
-    float               m_progress;
-    float               m_speed;
-    float               m_timeVirus;
-    float               m_lastUpdateTime;
-    float               m_lastParticle;
-    ResearchType        m_research;
-    int                 m_partiStop[6];
-    int                 m_channelSound;
+    AutoResearchPhase   m_phase = ALP_WAIT;
+    float               m_progress = 0.0f;
+    float               m_speed = 0.0f;
+    float               m_timeVirus = 0.0f;
+    float               m_lastUpdateTime = 0.0f;
+    float               m_lastParticle = 0.0f;
+    ResearchType        m_research = {};
+    int                 m_partiStop[6] = {};
+    int                 m_channelSound = 0;
 };
 

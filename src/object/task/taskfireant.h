@@ -54,13 +54,13 @@ protected:
 
 protected:
     Math::Vector    m_impact;
-    TaskFireAnt m_phase;
-    float       m_progress;
-    float       m_speed;
-    float       m_angle;
-    bool        m_bError;
-    bool        m_bFire;
-    float       m_time;
-    float       m_lastParticle;
+    TaskFireAnt m_phase = TFA_NULL;
+    float       m_progress = 0.0f;
+    float       m_speed = 0.0f;
+    float       m_angle = 0.0f;
+    bool        m_bError = false;
+    bool        m_bFire = false;
+    float       m_time = 0.0f;
+    float       m_lastParticle = 0.0f;
 };
 

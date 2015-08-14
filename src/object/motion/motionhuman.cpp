@@ -50,7 +50,9 @@ const float START_TIME = 1000.0f;       // beginning of the relative time
 
 // Object's constructor.
 
-CMotionHuman::CMotionHuman(COldObject* object) : CMotion(object)
+CMotionHuman::CMotionHuman(COldObject* object)
+    : CMotion(object),
+      m_armAngles()
 {
     m_partiReactor   = -1;
     m_armMember      = START_TIME;

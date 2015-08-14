@@ -39,15 +39,13 @@ public:
     bool        Abort();
 
 protected:
+    float       m_progress = 0.0f;
+    float       m_speed = 0.0f;
+    float       m_initialDirV = 0.0f;  // initial direction
+    float       m_finalDirV = 0.0f;    // direction to reach
+    float       m_initialDirH = 0.0f;  // initial direction
+    float       m_finalDirH = 0.0f;    // direction to reach
 
-protected:
-    float       m_progress;
-    float       m_speed;
-    float       m_initialDirV;  // initial direction
-    float       m_finalDirV;    // direction to reach
-    float       m_initialDirH;  // initial direction
-    float       m_finalDirH;    // direction to reach
-
-    bool        m_aimImpossible; // set to true if impossible aim was set
+    bool        m_aimImpossible = false; // set to true if impossible aim was set
 };
 

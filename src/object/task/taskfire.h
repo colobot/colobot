@@ -39,17 +39,15 @@ public:
     bool        Abort();
 
 protected:
-
-protected:
-    float       m_delay;
-    float       m_progress;
-    bool        m_bError;
-    bool        m_bRay;
-    bool        m_bOrganic;
-    float       m_time;
-    float       m_speed;
-    float       m_lastParticle;
-    float       m_lastSound;
-    int     m_soundChannel;
+    float       m_delay = 0.0f;
+    float       m_progress = 0.0f;
+    bool        m_bError = false;
+    bool        m_bRay = false;
+    bool        m_bOrganic = false;
+    float       m_time = 0.0f;
+    float       m_speed = 0.0f;
+    float       m_lastParticle = 0.0f;
+    float       m_lastSound = 0.0f;
+    int     m_soundChannel = 0;
 };
 

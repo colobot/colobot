@@ -29,6 +29,7 @@
 #include "object/task/taskmanip.h"
 #include "object/task/taskshield.h"
 
+#include <memory>
 
 
 class CTaskManager
@@ -64,7 +65,11 @@ public:
     bool    Abort();
 
 protected:
-    CTask*          m_task;
-    COldObject*        m_object;
-    bool            m_bPilot;
+    template<typename TaskType, typename... Args>
+    Error StartTask(Args&&... args);
+
+protected:
+    std::unique_ptr<CTask> m_task;
+    COldObject*     m_object = nullptr;
+    bool            m_bPilot = false;
 };

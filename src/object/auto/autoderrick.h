@@ -62,14 +62,14 @@ protected:
     bool        ExistKey();
 
 protected:
-    AutoDerrickPhase    m_phase;
-    float               m_progress;
-    float               m_speed;
-    float               m_timeVirus;
-    float               m_lastParticle;
-    float               m_lastTrack;
+    AutoDerrickPhase    m_phase = ADP_WAIT;
+    float               m_progress = 0.0f;
+    float               m_speed = 0.0f;
+    float               m_timeVirus = 0.0f;
+    float               m_lastParticle = 0.0f;
+    float               m_lastTrack = 0.0f;
     Math::Vector            m_cargoPos;
-    int                 m_soundChannel;
-    bool                m_bSoundFall;
+    int                 m_soundChannel = 0;
+    bool                m_bSoundFall = false;
 };
 

@@ -98,26 +98,26 @@ protected:
     void        UpdateInterface(float rTime);
 
 protected:
-    CEventQueue*        m_eventQueue;
-    Gfx::CEngine*       m_engine;
-    Gfx::CParticle*     m_particle;
-    Gfx::CTerrain*      m_terrain;
-    Gfx::CWater*        m_water;
-    Gfx::CCloud*        m_cloud;
-    Gfx::CPlanet*       m_planet;
-    Gfx::CLightning*    m_lightning;
-    Gfx::CCamera*       m_camera;
-    Ui::CInterface*     m_interface;
-    CRobotMain*         m_main;
-    COldObject*         m_object;
-    CSoundInterface*    m_sound;
+    CEventQueue*        m_eventQueue = nullptr;
+    Gfx::CEngine*       m_engine = nullptr;
+    Gfx::CParticle*     m_particle = nullptr;
+    Gfx::CTerrain*      m_terrain = nullptr;
+    Gfx::CWater*        m_water = nullptr;
+    Gfx::CCloud*        m_cloud = nullptr;
+    Gfx::CPlanet*       m_planet = nullptr;
+    Gfx::CLightning*    m_lightning = nullptr;
+    Gfx::CCamera*       m_camera = nullptr;
+    Ui::CInterface*     m_interface = nullptr;
+    CRobotMain*         m_main = nullptr;
+    COldObject*         m_object = nullptr;
+    CSoundInterface*    m_sound = nullptr;
 
-    ObjectType  m_type;
-    bool        m_bBusy;
-    bool        m_bMotor;
-    float       m_time;
-    float       m_lastUpdateTime;
-    float       m_progressTime;
-    float       m_progressTotal;
+    ObjectType  m_type = OBJECT_NULL;
+    bool        m_bBusy = false;
+    bool        m_bMotor = false;
+    float       m_time = 0.0f;
+    float       m_lastUpdateTime = 0.0f;
+    float       m_progressTime = 0.0f;
+    float       m_progressTotal = 0.0f;
 };
 

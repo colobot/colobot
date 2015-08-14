@@ -57,12 +57,12 @@ protected:
     void        ChargeObject(float rTime);
 
 protected:
-    AutoPowerCaptorPhase   m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_timeVirus;
-    float           m_lastParticle;
+    AutoPowerCaptorPhase   m_phase = APAP_WAIT;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_timeVirus = 0.0f;
+    float           m_lastParticle = 0.0f;
     Math::Vector        m_pos;
-    int             m_channelSound;
+    int             m_channelSound = 0;
 };
 

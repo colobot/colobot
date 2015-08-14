@@ -95,21 +95,21 @@ protected:
     void        EndTransit();
 
 protected:
-    AutoBasePhase   m_phase;
-    bool            m_bOpen;
-    float           m_progress;
-    float           m_speed;
-    float           m_lastParticle;
-    float           m_lastMotorParticle;
-    float           m_fogStart;
-    float           m_deepView;
+    AutoBasePhase   m_phase = ABP_WAIT;
+    bool            m_bOpen = false;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_lastParticle = 0.0f;
+    float           m_lastMotorParticle = 0.0f;
+    float           m_fogStart = 0.0f;
+    float           m_deepView = 0.0f;
     Math::Vector    m_pos;
     Math::Vector    m_posSound;
     Math::Vector    m_finalPos;
     Math::Vector    m_lastPos;
-    int             m_param;
-    int             m_soundChannel;
-    int             m_partiChannel[8];
+    int             m_param = 0;
+    int             m_soundChannel = 0;
+    int             m_partiChannel[8] = {};
 
     std::string     m_bgBack;
     std::string     m_bgName;

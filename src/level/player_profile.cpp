@@ -83,6 +83,8 @@ CPlayerProfile::CPlayerProfile(std::string playerName)
     GetConfigFile().Save();
 
     m_freegameLoaded = false;
+    m_freegameBuild = 0;
+    m_freegameResearch = 0;
 
     for(int i = 0; i < static_cast<int>(LevelCategory::Max); i++)
     {

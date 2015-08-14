@@ -82,25 +82,25 @@ protected:
     void        SoundManip(float time, float amplitude=1.0f, float frequency=1.0f);
 
 protected:
-    TaskManipOrder  m_order;
-    TaskManipArm    m_arm;
-    TaskManipHand   m_hand;
-    int             m_step;
-    float           m_speed;
-    float           m_progress;
-    float           m_initialAngle[5];
-    float           m_finalAngle[5];
-    float           m_height;
-    float           m_advanceLength;
-    float           m_energy;
-    bool            m_bError;
-    bool            m_bTurn;
-    bool            m_bSubm;
-    bool            m_bBee;
-    float           m_angle;
-    float           m_move;
+    TaskManipOrder  m_order = TMO_AUTO;
+    TaskManipArm    m_arm = TMA_NEUTRAL;
+    TaskManipHand   m_hand = TMH_OPEN;
+    int             m_step = 0;
+    float           m_speed = 0.0f;
+    float           m_progress = 0.0f;
+    float           m_initialAngle[5] = {};
+    float           m_finalAngle[5] = {};
+    float           m_height = 0.0f;
+    float           m_advanceLength = 0.0f;
+    float           m_energy = 0.0f;
+    bool            m_bError = false;
+    bool            m_bTurn = false;
+    bool            m_bSubm = false;
+    bool            m_bBee = false;
+    float           m_angle = false;
+    float           m_move = false;
     Math::Vector        m_targetPos;
-    float           m_timeLimit;
-    ObjectType      m_cargoType;
+    float           m_timeLimit = false;
+    ObjectType      m_cargoType = OBJECT_NULL;
 };
 

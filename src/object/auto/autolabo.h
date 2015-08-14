@@ -66,13 +66,13 @@ protected:
     void        SoundManip(float time, float amplitude, float frequency);
 
 protected:
-    AutoLaboPhase       m_phase;
-    float               m_progress;
-    float               m_speed;
-    float               m_timeVirus;
-    float               m_lastParticle;
-    ResearchType        m_research;
-    int                 m_partiRank[3];
-    int                 m_partiSphere;
-    int                 m_soundChannel;
+    AutoLaboPhase       m_phase = ALAP_WAIT;
+    float               m_progress = 0.0f;
+    float               m_speed = 0.0f;
+    float               m_timeVirus = 0.0f;
+    float               m_lastParticle = 0.0f;
+    ResearchType        m_research = {};
+    int                 m_partiRank[3] = {};
+    int                 m_partiSphere = 0;
+    int                 m_soundChannel = 0;
 };

@@ -39,9 +39,7 @@ public:
     bool        Abort();
 
 protected:
-
-protected:
-    float       m_time;
-    bool        m_bError;
+    float       m_time = 0.0f;
+    bool        m_bError = false;
 };
 

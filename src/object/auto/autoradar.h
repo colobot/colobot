@@ -54,14 +54,14 @@ protected:
     bool        SearchEnemy(Math::Vector &pos);
 
 protected:
-    AutoRadarPhase  m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_aTime;
-    float           m_timeVirus;
-    float           m_lastParticle;
-    float           m_angle;
-    float           m_start;
-    int             m_totalDetect;
+    AutoRadarPhase  m_phase = ARAP_WAIT;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_aTime = 0.0f;
+    float           m_timeVirus = 0.0f;
+    float           m_lastParticle =0.0f;
+    float           m_angle = 0.0f;
+    float           m_start = 0.0f;
+    int             m_totalDetect = 0;
 };
 

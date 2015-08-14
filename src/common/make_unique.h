@@ -43,6 +43,6 @@ template<typename T>
 inline std::unique_ptr<T[]> MakeUniqueArray(std::size_t size)
 {
     //@colobot-lint-exclude NakedNewRule
-    return std::unique_ptr<T[]>(new T[size]);
+    return std::unique_ptr<T[]>(new T[size]());
     //@end-colobot-lint-exclude
 }

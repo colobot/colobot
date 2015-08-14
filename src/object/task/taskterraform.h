@@ -53,13 +53,13 @@ protected:
     bool        Terraform();
 
 protected:
-    TaskTerraPhase  m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_time;
-    float           m_lastParticle;
-    int             m_soundChannel;
-    bool            m_bError;
+    TaskTerraPhase  m_phase = TTP_CHARGE;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_time = 0.0f;
+    float           m_lastParticle = 0.0f;
+    int             m_soundChannel = 0;
+    bool            m_bError = false;
     Math::Vector    m_terraPos;
 };
 

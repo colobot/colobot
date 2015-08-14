@@ -255,8 +255,14 @@ enum class CAutoInfo::Phase : unsigned int
 // Object's constructor.
 
 CAutoInfo::CAutoInfo(CExchangePost* object)
-    : CAuto(object)
-    , m_exchangePost(object)
+    : CAuto(object),
+      m_exchangePost(object),
+      m_phase(Phase::Wait),
+      m_progress(0.0f),
+      m_speed(0.0f),
+      m_timeVirus(0.0f),
+      m_lastParticle(0.0f),
+      m_lastVirus(0.0f)
 {
     Init();
 }

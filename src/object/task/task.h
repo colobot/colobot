@@ -74,17 +74,17 @@ public:
     virtual bool    Abort();
 
 protected:
-    Gfx::CEngine*       m_engine;
-    Gfx::CLightManager* m_lightMan;
-    Gfx::CParticle*     m_particle;
-    Gfx::CTerrain*      m_terrain;
-    Gfx::CWater*        m_water;
-    Gfx::CCamera*       m_camera;
-    CRobotMain*         m_main;
-    CSoundInterface*    m_sound;
+    Gfx::CEngine*       m_engine = nullptr;
+    Gfx::CLightManager* m_lightMan = nullptr;
+    Gfx::CParticle*     m_particle = nullptr;
+    Gfx::CTerrain*      m_terrain = nullptr;
+    Gfx::CWater*        m_water = nullptr;
+    Gfx::CCamera*       m_camera = nullptr;
+    CRobotMain*         m_main = nullptr;
+    CSoundInterface*    m_sound = nullptr;
 
-    COldObject*         m_object;
-    CProgrammableObject* m_programmable;
-    CMotion*            m_motion;
-    CPhysics*           m_physics;
+    COldObject*         m_object = nullptr;
+    CProgrammableObject* m_programmable = nullptr;
+    CMotion*            m_motion = nullptr;
+    CPhysics*           m_physics = nullptr;
 };

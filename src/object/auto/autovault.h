@@ -61,18 +61,18 @@ protected:
     CObject*    SearchVehicle();
 
 protected:
-    AutoVaultPhase   m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_timeVirus;
-    float           m_lastParticle;
-    int             m_channelSound;
-    bool            m_bLock;
-    int             m_countKeys;
-    float           m_actualAngle;
-    float           m_finalAngle;
-    bool            m_bKey[4];
+    AutoVaultPhase   m_phase = ASAP_WAIT;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_timeVirus = 0.0f;
+    float           m_lastParticle = 0.0f;
+    int             m_channelSound = 0;
+    bool            m_bLock = false;
+    int             m_countKeys = 0;
+    float           m_actualAngle = 0.0f;
+    float           m_finalAngle = 0.0f;
+    bool            m_bKey[4] = {};
     Math::Vector        m_keyPos[4];
-    int             m_keyParti[4];
+    int             m_keyParti[4] = {};
 };
 

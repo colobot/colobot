@@ -42,16 +42,20 @@
 #include <iomanip>
 
 CProgrammableObjectImpl::CProgrammableObjectImpl(ObjectInterfaceTypes& types, CObject* object)
-    : CProgrammableObject(types)
-    , m_object(object)
-    , m_activity(true)
-    , m_cmdLine()
-    , m_program()
-    , m_currentProgram(nullptr)
-    , m_activeVirus(false)
-    , m_scriptRun(nullptr)
-    , m_soluceName("")
-    , m_traceRecord(false)
+    : CProgrammableObject(types),
+      m_object(object),
+      m_activity(true),
+      m_cmdLine(),
+      m_program(),
+      m_currentProgram(nullptr),
+      m_activeVirus(false),
+      m_scriptRun(nullptr),
+      m_soluceName(""),
+      m_traceRecord(false),
+      m_traceOper(TO_STOP),
+      m_traceAngle(0.0f),
+      m_traceColor(TraceColor::Default),
+      m_traceRecordIndex(0)
 {
     //assert(m_object->Implements(ObjectInterfaceType::TaskExecutor));
 }
@@ -208,11 +212,10 @@ Program* CProgrammableObjectImpl::CloneProgram(Program* program)
     Program* newprog = AddProgram();
 
     // TODO: Is there any reason CScript doesn't have a function to get the program code directly?
-    Ui::CEdit* edit = new Ui::CEdit();
+    auto edit = MakeUnique<Ui::CEdit>();
     edit->SetMaxChar(Ui::EDITSTUDIOMAX);
-    program->script->PutScript(edit, "");
-    newprog->script->GetScript(edit);
-    delete edit;
+    program->script->PutScript(edit.get(), "");
+    newprog->script->GetScript(edit.get());
 
     return newprog;
 }

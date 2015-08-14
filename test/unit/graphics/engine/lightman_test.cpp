@@ -38,7 +38,8 @@ class LightManagerUT : public testing::Test
 protected:
     LightManagerUT() :
         m_engine(nullptr),
-        m_device(nullptr)
+        m_device(nullptr),
+        m_maxLightsCount(0)
     {}
     ~LightManagerUT() NOEXCEPT
     {}

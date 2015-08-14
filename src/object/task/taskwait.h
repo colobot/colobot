@@ -38,10 +38,8 @@ public:
     Error   IsEnded();
 
 protected:
-
-protected:
-    float       m_waitTime;
-    float       m_passTime;
-    bool        m_bEnded;
+    float       m_waitTime = 0.0f;
+    float       m_passTime = 0.0f;
+    bool        m_bEnded = false;
 };
 

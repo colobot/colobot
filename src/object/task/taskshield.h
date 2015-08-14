@@ -71,19 +71,19 @@ protected:
     float       GetRadius();
 
 protected:
-    TaskShieldPhase m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_time;
-    float           m_delay;
-    float           m_lastParticle;
-    float           m_lastRay;
-    float           m_lastIncrease;
-    float           m_energyUsed;
-    bool            m_bError;
+    TaskShieldPhase m_phase = TS_UP1;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_time = 0.0f;
+    float           m_delay = 0.0f;
+    float           m_lastParticle = 0.0f;
+    float           m_lastRay = 0.0f;
+    float           m_lastIncrease = 0.0f;
+    float           m_energyUsed = 0.0f;
+    bool            m_bError = false;
     Math::Vector    m_shieldPos;
-    int             m_rankSphere;
-    int             m_soundChannel;
-    int             m_effectLight;
+    int             m_rankSphere = 0;
+    int             m_soundChannel = 0;
+    int             m_effectLight = 0;
 };
 

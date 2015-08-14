@@ -26,6 +26,8 @@
 
 #include "math/vector.h"
 
+#include <memory>
+
 
 class CObject;
 
@@ -118,44 +120,44 @@ protected:
 protected:
     Math::Vector        m_goal;
     Math::Vector        m_goalObject;
-    float           m_angle;
-    float           m_altitude;
-    TaskGotoCrash   m_crashMode;
-    TaskGotoGoal    m_goalMode;
-    TaskGotoPhase   m_phase;
-    int             m_try;
-    Error           m_error;
-    bool            m_bTake;
-    float           m_stopLength;   // braking distance
-    float           m_time;
+    float           m_angle = 0.0f;
+    float           m_altitude = 0.0f;
+    TaskGotoCrash   m_crashMode = TGC_DEFAULT;
+    TaskGotoGoal    m_goalMode = TGG_DEFAULT;
+    TaskGotoPhase   m_phase = TGP_ADVANCE;
+    int             m_try = 0;
+    Error           m_error = ERR_OK;
+    bool            m_bTake = false;
+    float           m_stopLength = 0.0f;   // braking distance
+    float           m_time = 0.0f;
     Math::Vector        m_pos;
-    bool            m_bWorm;
-    bool            m_bApprox;
-    float           m_wormLastTime;
-    float           m_lastDistance;
+    bool            m_bWorm = false;
+    bool            m_bApprox = false;
+    float           m_wormLastTime = 0.0f;
+    float           m_lastDistance = 0.0f;
 
-    int             m_bmSize;       // width or height of the table
-    int             m_bmOffset;     // m_bmSize/2
-    int             m_bmLine;       // increment line m_bmSize/8
-    unsigned char*          m_bmArray;      // bit table
-    int             m_bmMinX, m_bmMinY;
-    int             m_bmMaxX, m_bmMaxY;
-    int             m_bmTotal;      // number of points in m_bmPoints
-    int             m_bmIndex;      // index in m_bmPoints
+    int             m_bmSize = 0;       // width or height of the table
+    int             m_bmOffset = 0;     // m_bmSize/2
+    int             m_bmLine = 0;       // increment line m_bmSize/8
+    std::unique_ptr<unsigned char[]> m_bmArray;      // bit table
+    int             m_bmMinX = 0, m_bmMinY = 0;
+    int             m_bmMaxX = 0, m_bmMaxY = 0;
+    int             m_bmTotal = 0;      // number of points in m_bmPoints
+    int             m_bmIndex = 0;      // index in m_bmPoints
     Math::Vector        m_bmPoints[MAXPOINTS+2];
-    char            m_bmIter[MAXPOINTS+2];
-    int             m_bmIterCounter;
-    CObject*        m_bmCargoObject;
-    float           m_bmFinalMove;  // final advance distance
-    float           m_bmFinalDist;  // effective distance to advance
+    char            m_bmIter[MAXPOINTS+2] = {};
+    int             m_bmIterCounter = 0;
+    CObject*        m_bmCargoObject = nullptr;
+    float           m_bmFinalMove = 0.0f;  // final advance distance
+    float           m_bmFinalDist = 0.0f;  // effective distance to advance
     Math::Vector        m_bmFinalPos;   // initial position before advance
-    float           m_bmTimeLimit;
-    int             m_bmStep;
+    float           m_bmTimeLimit = 0.0f;
+    int             m_bmStep = 0;
     Math::Vector        m_bmWatchDogPos;
-    float           m_bmWatchDogTime;
+    float           m_bmWatchDogTime = 0.0f;
     Math::Vector        m_leakPos;      // initial position leak
-    float           m_leakDelay;
-    float           m_leakTime;
-    bool            m_bLeakRecede;
+    float           m_leakDelay = 0.0f;
+    float           m_leakTime = 0.0f;
+    bool            m_bLeakRecede = false;
 };
 

@@ -61,14 +61,14 @@ protected:
     void    DeleteMark(ObjectType type);
 
 protected:
-    TaskSearchHand  m_hand;
-    TaskSearchPhase m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_time;
-    float           m_lastParticle;
-    float           m_initialAngle[3];
-    float           m_finalAngle[3];
-    bool            m_bError;
+    TaskSearchHand  m_hand = TSH_UP;
+    TaskSearchPhase m_phase = TSP_DOWN;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_time = 0.0f;
+    float           m_lastParticle = 0.0f;
+    float           m_initialAngle[3] = {};
+    float           m_finalAngle[3] = {};
+    bool            m_bError = false;
 };
 

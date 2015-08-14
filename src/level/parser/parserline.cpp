@@ -25,18 +25,18 @@
 #include "level/parser/parser.h"
 
 CLevelParserLine::CLevelParserLine(std::string command)
-{
-    m_command = command;
-    m_levelFilename = "";
-    m_lineNumber = 0;
-}
+    : m_level(nullptr),
+      m_levelFilename(""),
+      m_lineNumber(0),
+      m_command(command)
+{}
 
 CLevelParserLine::CLevelParserLine(int lineNumber, std::string command)
-{
-    m_command = command;
-    m_levelFilename = "";
-    m_lineNumber = lineNumber;
-}
+    : m_level(nullptr),
+      m_levelFilename(""),
+      m_lineNumber(lineNumber),
+      m_command(command)
+{}
 
 int CLevelParserLine::GetLineNumber()
 {

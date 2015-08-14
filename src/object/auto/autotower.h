@@ -62,17 +62,17 @@ protected:
     void        FireStopUpdate(float progress, bool bLightOn);
 
 protected:
-    AutoTowerPhase  m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_timeVirus;
-    float           m_lastUpdateTime;
-    float           m_lastParticle;
+    AutoTowerPhase  m_phase = ATP_WAIT;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_timeVirus = 0.0f;
+    float           m_lastUpdateTime = 0.0f;
+    float           m_lastParticle = 0.0f;
     Math::Vector        m_targetPos;
-    float           m_angleYactual;
-    float           m_angleZactual;
-    float           m_angleYfinal;
-    float           m_angleZfinal;
-    int             m_partiStop[4];
+    float           m_angleYactual = 0.0f;
+    float           m_angleZactual = 0.0f;
+    float           m_angleYfinal = 0.0f;
+    float           m_angleZfinal = 0.0f;
+    int             m_partiStop[4] = {};
 };
 

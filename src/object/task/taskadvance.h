@@ -40,15 +40,13 @@ public:
     Error   IsEnded();
 
 protected:
-
-protected:
-    float       m_totalLength;
-    float       m_advanceLength;
-    float       m_direction;
-    float       m_timeLimit;
+    float       m_totalLength = 0.0f;
+    float       m_advanceLength = 0.0f;
+    float       m_direction = 0.0f;
+    float       m_timeLimit = 0.0f;
     Math::Vector    m_startPos;
-    float       m_lastDist;
-    float       m_fixTime;
-    bool        m_bError;
+    float       m_lastDist = 0.0f;
+    float       m_fixTime = 0.0f;
+    bool        m_bError = 0.0f;
 };
 

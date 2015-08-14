@@ -57,16 +57,16 @@ protected:
     void        UpdateTrackMapping(float left, float right);
 
 protected:
-    AutoPorticoPhase m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_cameraProgress;
-    float           m_cameraSpeed;
-    float           m_lastParticle;
+    AutoPorticoPhase m_phase = APOP_WAIT;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_cameraProgress = 0.0f;
+    float           m_cameraSpeed = 0.0f;
+    float           m_lastParticle = 0.0f;
     Math::Vector        m_finalPos;
     Math::Vector        m_startPos;
-    float           m_posTrack;
-    int             m_param;
-    int             m_soundChannel;
+    float           m_posTrack = 0.0f;
+    int             m_param = 0;
+    int             m_soundChannel = 0;
 };
 

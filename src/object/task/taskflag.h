@@ -56,8 +56,8 @@ protected:
     int         CountObject(ObjectType type);
 
 protected:
-    TaskFlagOrder   m_order;
-    float           m_time;
-    bool            m_bError;
+    TaskFlagOrder   m_order = TFL_CREATE;
+    float           m_time = 0.0f;
+    bool            m_bError = false;
 };
 

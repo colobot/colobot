@@ -62,11 +62,11 @@ protected:
     void        EnableInterface(Ui::CWindow *pw, EventType event, bool bState);
 
 protected:
-    AutoDestroyerPhase  m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_timeVirus;
-    float           m_lastParticle;
-    bool            m_bExplo;
+    AutoDestroyerPhase  m_phase = ADEP_WAIT;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_timeVirus = 0.0f;
+    float           m_lastParticle = 0.0f;
+    bool            m_bExplo = false;
 };
 

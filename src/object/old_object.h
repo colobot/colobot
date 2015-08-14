@@ -51,16 +51,16 @@ const int OBJECTMAXPART         = 40;
 
 struct ObjectPart
 {
-    bool         bUsed;
-    int          object;         // number of the object in CEngine
-    int          parentPart;     // number of father part
-    int          masterParti;        // master canal of the particle
+    bool         bUsed = false;
+    int          object = -1;         // number of the object in CEngine
+    int          parentPart = -1;     // number of father part
+    int          masterParti = -1;        // master canal of the particle
     Math::Vector position;
     Math::Vector angle;
     Math::Vector zoom;
-    bool         bTranslate;
-    bool         bRotate;
-    bool         bZoom;
+    bool         bTranslate = false;
+    bool         bRotate = false;
+    bool         bZoom = false;
     Math::Matrix matTranslate;
     Math::Matrix matRotate;
     Math::Matrix matTransform;

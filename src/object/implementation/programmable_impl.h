@@ -40,8 +40,8 @@ enum TraceOper
 
 struct TraceRecord
 {
-    TraceOper   oper;
-    float       param;
+    TraceOper   oper = TO_STOP;
+    float       param = 0.0f;
 };
 
 class CProgrammableObjectImpl : public CProgrammableObject

@@ -56,9 +56,9 @@ protected:
     bool        SearchTarget();
 
 protected:
-    AutoMushPhase   m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_lastParticle;
+    AutoMushPhase   m_phase = AMP_WAIT;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_lastParticle = 0.0f;
 };
 

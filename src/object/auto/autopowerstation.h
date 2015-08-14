@@ -47,14 +47,14 @@ protected:
     CObject*    SearchVehicle();
 
 protected:
-    float           m_progress;
-    float           m_speed;
-    float           m_timeVirus;
-    float           m_lastUpdateTime;
-    float           m_lastParticle;
-    int             m_soundChannel;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_timeVirus = 0.0f;
+    float           m_lastUpdateTime = 0.0f;
+    float           m_lastParticle = 0.0f;
+    int             m_soundChannel = 0;
     Math::Vector        m_cargoPos;
-    bool            m_bLastVirus;
-    float           m_energyVirus;
+    bool            m_bLastVirus = false;
+    float           m_energyVirus = 0.0f;
 };
 

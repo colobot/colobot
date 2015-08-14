@@ -40,10 +40,8 @@ public:
     Error       GetError();
 
 protected:
-
-protected:
-    float       m_strong;
-    int         m_param;
-    float       m_progress;
+    float       m_strong = 0.0f;
+    int         m_param = 0;
+    float       m_progress = 0.0f;
 };
 

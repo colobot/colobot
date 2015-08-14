@@ -42,9 +42,9 @@ protected:
     CExchangePost* FindExchangePost(float power);
 
 protected:
-    float           m_progress;
-    float           m_speed;
-    float           m_time;
-    bool            m_error;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_time = 0.0f;
+    bool            m_error = false;
 };
 

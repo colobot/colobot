@@ -39,6 +39,7 @@ public:
 
 protected:
     void    DeleteMark();
+
 protected:
-    bool    m_bExecuted;
+    bool    m_bExecuted = false;
 };

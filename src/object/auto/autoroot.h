@@ -41,7 +41,7 @@ public:
 protected:
 
 protected:
-    float           m_lastParticle;
+    float           m_lastParticle = 0.0f;
     Math::Vector        m_center;
 };
 
