@@ -806,6 +806,7 @@ void COldObject::SetType(ObjectType type)
     }
     else
     {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = false;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = false;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = false;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = false;
