@@ -442,7 +442,7 @@ void COldObject::DestroyObject(DestructionType type)
         SetShield(0.0f);
     }
 
-    Gfx::PyroType pyroType;
+    Gfx::PyroType pyroType = Gfx::PT_NULL;
     if ( type == DestructionType::Explosion )   // explosion?
     {
         if ( m_type == OBJECT_ANT    ||
@@ -525,6 +525,7 @@ void COldObject::DestroyObject(DestructionType type)
     {
         pyroType = Gfx::PT_DEADW;
     }
+    assert(pyroType != Gfx::PT_NULL);
     m_engine->GetPyroManager()->Create(pyroType, this);
 
     if ( Implements(ObjectInterfaceType::Programmable) )

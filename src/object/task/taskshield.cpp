@@ -544,7 +544,7 @@ void CTaskShield::IncreaseShield()
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if (!obj->Implements(ObjectInterfaceType::Shielded));
-        CShieldedObject* shielded = dynamic_cast<CShieldedObject*>(shielded);
+        CShieldedObject* shielded = dynamic_cast<CShieldedObject*>(obj);
         if (!shielded->IsRepairable()) continue; // NOTE: Looks like the original code forgot to check that
 
         Math::Vector oPos = obj->GetPosition();
