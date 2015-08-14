@@ -51,9 +51,6 @@ public:
     void SetMovies(bool movies);
     bool GetMovies();
 
-    void SetNiceReset(bool niceReset);
-    bool GetNiceReset();
-
     void SetSystemMouse(bool systemMouse);
     bool GetSystemMouse();
 
@@ -91,7 +88,6 @@ protected:
     bool m_interfaceRain;
     bool m_soluce4;
     bool m_movies;
-    bool m_niceReset;
     bool m_systemMouse;
 
     float           m_fontSize;

@@ -1670,12 +1670,6 @@ void CObjectInterface::UpdateInterface()
         EnableInterface(pw, EVENT_OBJECT_BDESTROYER,bEnable);
     }
 
-    pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_GFLAT));
-    if ( pb != 0 )
-    {
-        pb->SetState(STATE_VISIBLE, m_engine->GetGroundSpot());
-    }
-
     if ( type == OBJECT_HUMAN ||  // builder?
          type == OBJECT_TECH  )
     {

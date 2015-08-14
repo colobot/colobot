@@ -194,22 +194,15 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_FULL]      = TR("Full screen\\Full screen or window mode");
     stringsEvent[EVENT_INTERFACE_APPLY]     = TR("Apply changes\\Activates the changed settings");
 
-    stringsEvent[EVENT_INTERFACE_TOTO]      = TR("Robbie\\Your assistant");
-    stringsEvent[EVENT_INTERFACE_GROUND]    = TR("Marks on the ground\\Marks on the ground");
     stringsEvent[EVENT_INTERFACE_DIRTY]     = TR("Dust\\Dust and dirt on bots and buildings");
     stringsEvent[EVENT_INTERFACE_FOG]       = TR("Fog\\Fog");
-    stringsEvent[EVENT_INTERFACE_LENS]      = TR("Sunbeams\\Sunbeams in the sky");
-    stringsEvent[EVENT_INTERFACE_SKY]       = TR("Sky\\Clouds and nebulae");
-    stringsEvent[EVENT_INTERFACE_PLANET]    = TR("Planets and stars\\Astronomical objects in the sky");
     stringsEvent[EVENT_INTERFACE_LIGHT]     = TR("Dynamic lighting\\Mobile light sources");
     stringsEvent[EVENT_INTERFACE_PARTI]     = TR("Number of particles\\Explosions, dust, reflections, etc.");
     stringsEvent[EVENT_INTERFACE_CLIP]      = TR("Render distance\\Maximum visibility");
-    stringsEvent[EVENT_INTERFACE_GADGET]    = TR("Num of decorative objects\\Number of purely ornamental objects");
     stringsEvent[EVENT_INTERFACE_RAIN]      = TR("Particles in the interface\\Steam clouds and sparks in the interface");
     stringsEvent[EVENT_INTERFACE_GLINT]     = TR("Reflections on the buttons \\Shiny buttons");
     stringsEvent[EVENT_INTERFACE_TOOLTIP]   = TR("Help balloons\\Explain the function of the buttons");
     stringsEvent[EVENT_INTERFACE_MOVIES]    = TR("Film sequences\\Films before and after the missions");
-    stringsEvent[EVENT_INTERFACE_NICERST]   = TR("Exit film\\Film at the exit of exercises");
     stringsEvent[EVENT_INTERFACE_SCROLL]    = TR("Scrolling\\Scrolling when the mouse touches right or left border");
     stringsEvent[EVENT_INTERFACE_INVERTX]   = TR("Mouse inversion X\\Inversion of the scrolling direction on the X axis");
     stringsEvent[EVENT_INTERFACE_INVERTY]   = TR("Mouse inversion Y\\Inversion of the scrolling direction on the Y axis");

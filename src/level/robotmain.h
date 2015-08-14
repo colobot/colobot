@@ -234,7 +234,6 @@ public:
     bool        GetInterfaceGlint();
     bool        GetSoluce4();
     bool        GetMovies();
-    bool        GetNiceReset();
     bool        GetShowSoluce();
     bool        GetSceneSoluce();
     bool        GetShowAll();
@@ -408,7 +407,6 @@ protected:
     void        FrameVisit(float rTime);
     void        StopDisplayVisit();
     void        ExecuteCmd(char *cmd);
-    bool        TestGadgetQuantity(int rank);
     void        UpdateSpeedLabel();
 
     int         AutosaveRotate(bool freeOne);

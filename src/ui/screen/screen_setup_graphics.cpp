@@ -67,23 +67,7 @@ void CScreenSetupGraphics::CreateInterface()
     ddim.y = dim.y*0.5f;
     pos.x = ox+sx*3;
     pos.y = 0.65f;
-    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_GROUND);
-    pc->SetState(STATE_SHADOW);
-    if ( m_simulationSetup )
-    {
-        pc->SetState(STATE_DEAD);
-    }
-    pos.y -= 0.048f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_DIRTY);
-    pc->SetState(STATE_SHADOW);
-    pos.y -= 0.048f;
-    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SKY);
-    pc->SetState(STATE_SHADOW);
-    pos.y -= 0.048f;
-    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_LENS);
-    pc->SetState(STATE_SHADOW);
-    pos.y -= 0.048f;
-    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_PLANET);
     pc->SetState(STATE_SHADOW);
     pos.y -= 0.048f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_FOG);
@@ -130,21 +114,7 @@ void CScreenSetupGraphics::CreateInterface()
     pos.y = 0.53f;
     ddim.x = dim.x*2.2f;
     ddim.y = 18.0f/480.0f;
-    pv = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_GADGET);
-    pv->SetState(STATE_SHADOW);
-    if ( m_simulationSetup )
-    {
-        pv->SetState(STATE_DEAD);
-    }
-    pv->SetMinValue(0.0f);
-    pv->SetMaxValue(1.0f);
-    pos.x += 0.13f;
-    pos.y -= 0.015f;
-    ddim.x = 0.40f;
-    GetResource(RES_EVENT, EVENT_INTERFACE_GADGET, name);
-    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL13, name);
-    pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-
+    //
 
     pos.x = ox+sx*8.5f;
     pos.y = 0.475f;
@@ -289,12 +259,6 @@ bool CScreenSetupGraphics::EventProcess(const Event &event)
             UpdateSetupButtons();
             break;
 
-        case EVENT_INTERFACE_GROUND:
-            m_engine->SetGroundSpot(!m_engine->GetGroundSpot());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
-
         case EVENT_INTERFACE_DIRTY:
             m_engine->SetDirty(!m_engine->GetDirty());
             ChangeSetupButtons();
@@ -308,24 +272,6 @@ bool CScreenSetupGraphics::EventProcess(const Event &event)
             UpdateSetupButtons();
             break;
 
-        case EVENT_INTERFACE_LENS:
-            m_engine->SetLensMode(!m_engine->GetLensMode());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
-
-        case EVENT_INTERFACE_SKY:
-            m_engine->SetSkyMode(!m_engine->GetSkyMode());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
-
-        case EVENT_INTERFACE_PLANET:
-            m_engine->SetPlanetMode(!m_engine->GetPlanetMode());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
-
         case EVENT_INTERFACE_LIGHT:
             m_engine->SetLightMode(!m_engine->GetLightMode());
             ChangeSetupButtons();
@@ -334,7 +280,6 @@ bool CScreenSetupGraphics::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_PARTI:
         case EVENT_INTERFACE_CLIP:
-        case EVENT_INTERFACE_GADGET:
             ChangeSetupButtons();
             break;
 
@@ -449,12 +394,6 @@ void CScreenSetupGraphics::UpdateSetupButtons()
         pc->SetState(STATE_CHECK, !m_engine->GetShadowMapping() && m_engine->GetShadow());
     }
 
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_GROUND));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_CHECK, m_engine->GetGroundSpot());
-    }
-
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_DIRTY));
     if ( pc != 0 )
     {
@@ -465,24 +404,6 @@ void CScreenSetupGraphics::UpdateSetupButtons()
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_engine->GetFog());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_LENS));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_CHECK, m_engine->GetLensMode());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SKY));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_CHECK, m_engine->GetSkyMode());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_PLANET));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_CHECK, m_engine->GetPlanetMode());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_LIGHT));
@@ -502,13 +423,6 @@ void CScreenSetupGraphics::UpdateSetupButtons()
     if ( pv != 0 )
     {
         value = m_engine->GetClippingDistance();
-        pv->SetValue(value);
-    }
-
-    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_GADGET));
-    if ( pv != 0 )
-    {
-        value = m_engine->GetGadgetQuantity();
         pv->SetValue(value);
     }
 }
@@ -537,13 +451,6 @@ void CScreenSetupGraphics::ChangeSetupButtons()
     {
         value = pv->GetValue();
         m_engine->SetClippingDistance(value);
-    }
-
-    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_GADGET));
-    if ( pv != 0 )
-    {
-        value = pv->GetValue();
-        m_engine->SetGadgetQuantity(value);
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_FILTER));
@@ -600,12 +507,8 @@ void CScreenSetupGraphics::ChangeSetupQuality(int quality)
 
     bEnable = true; //(quality >= 0);
     m_engine->SetShadow(bEnable);
-    m_engine->SetGroundSpot(bEnable);
     m_engine->SetDirty(bEnable);
     m_engine->SetFog(bEnable);
-    m_engine->SetLensMode(bEnable);
-    m_engine->SetSkyMode(bEnable);
-    m_engine->SetPlanetMode(bEnable);
     m_engine->SetLightMode(bEnable);
     m_camera->SetOverBaseColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)); // TODO: color ok?
 
@@ -618,11 +521,6 @@ void CScreenSetupGraphics::ChangeSetupQuality(int quality)
     if ( quality == 0 )  value = 1.0f;
     if ( quality >  0 )  value = 2.0f;
     m_engine->SetClippingDistance(value);
-
-    if ( quality <  0 )  value = 0.5f;
-    if ( quality == 0 )  value = 1.0f;
-    if ( quality >  0 )  value = 1.0f;
-    m_engine->SetGadgetQuantity(value);
 
     if ( quality <  0 ) m_engine->SetMultiSample(1);
     if ( quality == 0 ) m_engine->SetMultiSample(2);

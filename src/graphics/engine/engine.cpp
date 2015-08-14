@@ -109,7 +109,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_render            = true;
     m_screenshotMode    = false;
     m_shadowVisible     = true;
-    m_groundSpotVisible = true;
     m_dirty             = true;
     m_fog               = true;
     m_secondTex         = "";
@@ -136,7 +135,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_lastClippingDistance = 1.0f;
     m_clippingDistance = 1.0f;
     m_terrainVision = 1000.0f;
-    m_gadgetQuantity = 1.0f;
     m_textureMipmapLevel = 1;
     m_textureAnisotropy = 1;
     m_shadowMapping = true;
@@ -146,12 +144,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_shadowRange = 0.0f;
     m_multisample = 2;
 
-    m_totoMode = true;
-    m_lensMode = true;
-    m_waterMode = true;
-    m_skyMode = true;
     m_backForce = true;
-    m_planetMode = true;
     m_lightMode = true;
     m_editIndentMode = true;
     m_editIndentValue = 4;
@@ -2112,10 +2105,10 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_FOG, true);
 
 
-    bool second = m_groundSpotVisible || m_dirty;
+    bool second = m_dirty;
 
-    if ( !m_groundSpotVisible && (state & ENG_RSTATE_SECOND) != 0 ) second = false;
-    if ( !m_dirty             && (state & ENG_RSTATE_SECOND) == 0 ) second = false;
+    // TODO: I'm pretty sure this is reversed and should be m_dirty instead of !m_dirty ~krzys_h
+    if ( !m_dirty && (state & ENG_RSTATE_SECOND) == 0 ) second = false;
 
     if ((state & ENG_RSTATE_DUAL_BLACK) && second)
     {
@@ -2590,16 +2583,6 @@ float CEngine::GetFocus()
     return m_focus;
 }
 
-void CEngine::SetGroundSpot(bool mode)
-{
-    m_groundSpotVisible = mode;
-}
-
-bool CEngine::GetGroundSpot()
-{
-    return m_groundSpotVisible;
-}
-
 void CEngine::SetShadow(bool mode)
 {
     m_shadowVisible = mode;
@@ -2849,19 +2832,6 @@ float CEngine::GetClippingDistance()
     return m_clippingDistance;
 }
 
-void CEngine::SetGadgetQuantity(float value)
-{
-    if (value < 0.0f) value = 0.0f;
-    if (value > 1.0f) value = 1.0f;
-
-    m_gadgetQuantity = value;
-}
-
-float CEngine::GetGadgetQuantity()
-{
-    return m_gadgetQuantity;
-}
-
 void CEngine::SetTextureFilterMode(TexFilter value)
 {
     if(m_defaultTexParams.filter == value && m_terrainTexParams.filter == value) return;
@@ -2982,56 +2952,6 @@ bool CEngine::GetShadowMappingQuality()
     return m_qualityShadows;
 }
 
-void CEngine::SetTotoMode(bool present)
-{
-    m_totoMode = present;
-}
-
-bool CEngine::GetTotoMode()
-{
-    return m_totoMode;
-}
-
-void CEngine::SetLensMode(bool present)
-{
-    m_lensMode = present;
-}
-
-bool CEngine::GetLensMode()
-{
-    return m_lensMode;
-}
-
-void CEngine::SetWaterMode(bool present)
-{
-    m_waterMode = present;
-}
-
-bool CEngine::GetWaterMode()
-{
-    return m_waterMode;
-}
-
-void CEngine::SetLightingMode(bool present)
-{
-    m_lightMode = present;
-}
-
-bool CEngine::GetLightingMode()
-{
-    return m_lightMode;
-}
-
-void CEngine::SetSkyMode(bool present)
-{
-    m_skyMode = present;
-}
-
-bool CEngine::GetSkyMode()
-{
-    return m_skyMode;
-}
-
 void CEngine::SetBackForce(bool present)
 {
     m_backForce = present;
@@ -3040,16 +2960,6 @@ void CEngine::SetBackForce(bool present)
 bool CEngine::GetBackForce()
 {
     return m_backForce;
-}
-
-void CEngine::SetPlanetMode(bool present)
-{
-    m_planetMode = present;
-}
-
-bool CEngine::GetPlanetMode()
-{
-    return m_planetMode;
 }
 
 void CEngine::SetLightMode(bool present)
@@ -3184,7 +3094,7 @@ void CEngine::Render()
     m_lightMan->UpdateLights();
 
     Color color;
-    if (m_skyMode && m_cloud->GetLevel() != 0.0f)  // clouds?
+    if (m_cloud->GetLevel() != 0.0f)  // clouds?
         color = m_backgroundCloudDown;
     else
         color = m_backgroundColorDown;
@@ -3220,11 +3130,10 @@ void CEngine::Draw3DScene()
 {
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
 
-    if (m_groundSpotVisible)
-        UpdateGroundSpotTextures();
+    UpdateGroundSpotTextures();
 
-    if (m_planetMode) DrawPlanet();  // draws the planets
-    if (m_skyMode) m_cloud->Draw();  // draws the clouds
+    DrawPlanet();  // draws the planets
+    m_cloud->Draw();  // draws the clouds
 
 
     // Display the objects
@@ -3240,7 +3149,7 @@ void CEngine::Draw3DScene()
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProj);
     m_device->SetTransform(TRANSFORM_VIEW, m_matView);
 
-    if (m_waterMode) m_water->DrawBack();  // draws water background
+    m_water->DrawBack();  // draws water background
 
     m_app->StartPerformanceCounter(PCNT_RENDER_TERRAIN);
 
@@ -3437,12 +3346,9 @@ void CEngine::Draw3DScene()
         m_lightMan->DebugDumpLights();
     }
 
-    if (m_waterMode)
-    {
-        m_app->StartPerformanceCounter(PCNT_RENDER_WATER);
-        m_water->DrawSurf(); // draws water surface
-        m_app->StopPerformanceCounter(PCNT_RENDER_WATER);
-    }
+    m_app->StartPerformanceCounter(PCNT_RENDER_WATER);
+    m_water->DrawSurf(); // draws water surface
+    m_app->StopPerformanceCounter(PCNT_RENDER_WATER);
 
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
@@ -3454,7 +3360,7 @@ void CEngine::Draw3DScene()
 
     m_lightning->Draw();                     // draws lightning
 
-    if (m_lensMode) DrawForegroundImage();   // draws the foreground
+    DrawForegroundImage();   // draws the foreground
 
     if (! m_overFront) DrawOverColor();      // draws the foreground color
 }
@@ -4458,7 +4364,7 @@ void CEngine::DrawShadow()
 
 void CEngine::DrawBackground()
 {
-    if (m_skyMode && m_cloud->GetLevel() != 0.0f)  // clouds ?
+    if (m_cloud->GetLevel() != 0.0f)  // clouds ?
     {
         if (m_backgroundCloudUp != m_backgroundCloudDown)  // degraded?
             DrawBackgroundGradient(m_backgroundCloudUp, m_backgroundCloudDown);
@@ -4469,7 +4375,7 @@ void CEngine::DrawBackground()
             DrawBackgroundGradient(m_backgroundColorUp, m_backgroundColorDown);
     }
 
-    if (m_backForce || (m_skyMode && !m_backgroundName.empty()) )
+    if (m_backForce || !m_backgroundName.empty() )
     {
         DrawBackgroundImage();  // image
     }

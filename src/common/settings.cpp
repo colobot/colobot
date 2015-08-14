@@ -37,7 +37,6 @@ CSettings::CSettings()
     m_interfaceRain  = true;
     m_soluce4        = true;
     m_movies         = true;
-    m_niceReset      = true;
     m_systemMouse    = false;
 
     m_fontSize  = 19.0f;
@@ -69,14 +68,11 @@ void CSettings::SaveSettings()
     Gfx::CCamera* camera = main->GetCamera();
     CSoundInterface* sound = app->GetSound();
 
-    GetConfigFile().SetIntProperty("Setup", "TotoMode", engine->GetTotoMode());
-
     GetConfigFile().SetIntProperty("Setup", "Tooltips", m_tooltips);
     GetConfigFile().SetIntProperty("Setup", "InterfaceGlint", m_interfaceGlint);
     GetConfigFile().SetIntProperty("Setup", "InterfaceRain", m_interfaceRain);
     GetConfigFile().SetIntProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().SetIntProperty("Setup", "Movies", m_movies);
-    GetConfigFile().SetIntProperty("Setup", "NiceReset", m_niceReset);
     GetConfigFile().SetIntProperty("Setup", "CameraScroll", camera->GetCameraScroll());
     GetConfigFile().SetIntProperty("Setup", "CameraInvertX", camera->GetCameraInvertX());
     GetConfigFile().SetIntProperty("Setup", "CameraInvertY", camera->GetCameraInvertY());
@@ -86,17 +82,12 @@ void CSettings::SaveSettings()
     GetConfigFile().SetIntProperty("Setup", "AutosaveInterval", main->GetAutosaveInterval());
     GetConfigFile().SetIntProperty("Setup", "AutosaveSlots", main->GetAutosaveSlots());
     GetConfigFile().SetIntProperty("Setup", "GroundShadow", engine->GetShadow());
-    GetConfigFile().SetIntProperty("Setup", "GroundSpot", engine->GetGroundSpot());
     GetConfigFile().SetIntProperty("Setup", "ObjectDirty", engine->GetDirty());
     GetConfigFile().SetIntProperty("Setup", "FogMode", engine->GetFog());
-    GetConfigFile().SetIntProperty("Setup", "LensMode", engine->GetLensMode());
-    GetConfigFile().SetIntProperty("Setup", "SkyMode", engine->GetSkyMode());
-    GetConfigFile().SetIntProperty("Setup", "PlanetMode", engine->GetPlanetMode());
     GetConfigFile().SetIntProperty("Setup", "LightMode", engine->GetLightMode());
     GetConfigFile().SetIntProperty("Setup", "UseJoystick", app->GetJoystickEnabled() ? app->GetJoystick().index : -1);
     GetConfigFile().SetFloatProperty("Setup", "ParticleDensity", engine->GetParticleDensity());
     GetConfigFile().SetFloatProperty("Setup", "ClippingDistance", engine->GetClippingDistance());
-    GetConfigFile().SetFloatProperty("Setup", "GadgetQuantity", engine->GetGadgetQuantity());
     GetConfigFile().SetIntProperty("Setup", "AudioVolume", sound->GetAudioVolume());
     GetConfigFile().SetIntProperty("Setup", "MusicVolume", sound->GetMusicVolume());
     GetConfigFile().SetIntProperty("Setup", "EditIndentMode", engine->GetEditIndentMode());
@@ -144,10 +135,6 @@ void CSettings::LoadSettings()
     int         iValue;
     std::string key;
 
-    if (GetConfigFile().GetIntProperty("Setup", "TotoMode", iValue))
-        engine->SetTotoMode(iValue);
-
-
     if (GetConfigFile().GetIntProperty("Setup", "Tooltips", iValue))
         m_tooltips = iValue;
 
@@ -162,9 +149,6 @@ void CSettings::LoadSettings()
 
     if (GetConfigFile().GetIntProperty("Setup", "Movies", iValue))
         m_movies = iValue;
-
-    if (GetConfigFile().GetIntProperty("Setup", "NiceReset", iValue))
-        m_niceReset = iValue;
 
     if (GetConfigFile().GetIntProperty("Setup", "CameraScroll", iValue))
         camera->SetCameraScroll(iValue);
@@ -193,9 +177,6 @@ void CSettings::LoadSettings()
     if (GetConfigFile().GetIntProperty("Setup", "GroundShadow", iValue))
         engine->SetShadow(iValue);
 
-    if (GetConfigFile().GetIntProperty("Setup", "GroundSpot", iValue))
-        engine->SetGroundSpot(iValue);
-
     if (GetConfigFile().GetIntProperty("Setup", "ObjectDirty", iValue))
         engine->SetDirty(iValue);
 
@@ -204,15 +185,6 @@ void CSettings::LoadSettings()
         engine->SetFog(iValue);
         camera->SetOverBaseColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)); // TODO: color ok?
     }
-
-    if (GetConfigFile().GetIntProperty("Setup", "LensMode", iValue))
-        engine->SetLensMode(iValue);
-
-    if (GetConfigFile().GetIntProperty("Setup", "SkyMode", iValue))
-        engine->SetSkyMode(iValue);
-
-    if (GetConfigFile().GetIntProperty("Setup", "PlanetMode", iValue))
-        engine->SetPlanetMode(iValue);
 
     if (GetConfigFile().GetIntProperty("Setup", "LightMode", iValue))
         engine->SetLightMode(iValue);
@@ -242,9 +214,6 @@ void CSettings::LoadSettings()
 
     if (GetConfigFile().GetFloatProperty("Setup", "ClippingDistance", fValue))
         engine->SetClippingDistance(fValue);
-
-    if (GetConfigFile().GetFloatProperty("Setup", "GadgetQuantity", fValue))
-        engine->SetGadgetQuantity(fValue);
 
     if (GetConfigFile().GetIntProperty("Setup", "AudioVolume", iValue))
         sound->SetAudioVolume(iValue);
@@ -362,15 +331,6 @@ void CSettings::SetMovies(bool movies)
 bool CSettings::GetMovies()
 {
     return m_movies;
-}
-
-void CSettings::SetNiceReset(bool niceReset)
-{
-    m_niceReset = niceReset;
-}
-bool CSettings::GetNiceReset()
-{
-    return m_niceReset;
 }
 
 void CSettings::SetSystemMouse(bool systemMouse)

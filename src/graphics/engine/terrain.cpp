@@ -578,7 +578,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
     std::string texName1;
     std::string texName2;
 
-    if ( step == 1 && m_engine->GetGroundSpot() )
+    if ( step == 1 )
     {
         int i = (ox/5) + (oy/5)*(m_mosaicCount/5);
         std::stringstream s;
@@ -1885,4 +1885,3 @@ float CTerrain::GetFlyingLimit(Math::Vector pos, bool noLimit)
 
 
 } // namespace Gfx
-

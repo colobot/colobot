@@ -258,13 +258,6 @@ bool CMotionToto::EventFrame(const Event &event)
         {
             bHidden = true;
         }
-        if ( !m_engine->GetTotoMode() )
-        {
-            if ( !m_main->GetEditLock() )  // current edition?
-            {
-                bHidden = true;
-            }
-        }
     }
 
     if ( bHidden )

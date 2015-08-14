@@ -421,9 +421,6 @@ msgstr "COLOBOT: Gold Edition"
 msgid "Command line"
 msgstr "Befehleingabe"
 
-msgid "Compass"
-msgstr "Kompass"
-
 msgid "Compilation ok (0 errors)"
 msgstr "Kompilieren OK (0 Fehler)"
 
@@ -546,9 +543,6 @@ msgstr "Start/Stop"
 msgid "Exercises\\Programming exercises"
 msgstr "Programmieren\\Programmierübungen"
 
-msgid "Exit film\\Film at the exit of exercises"
-msgstr "Zurücksetzen \\Kleine Show beim Zurücksetzen in den Übungen"
-
 msgid "Explode (\\key action;)"
 msgstr "Explodieren (\\key action;)"
 
@@ -627,9 +621,6 @@ msgstr "Freestyle"
 
 msgid "Free game\\Free game without a specific goal"
 msgstr "Freestyle\\Freies Spielen ohne vorgegebenes Ziel"
-
-msgid "Friendly fire\\Your shooting can damage your own objects "
-msgstr "Eigenbeschuss\\Ihre Einheiten werden von Ihren Waffen beschädigt"
 
 msgid "Full screen\\Full screen or window mode"
 msgstr "Vollbildschirm\\Vollbildschirm oder Fenster"
@@ -850,9 +841,6 @@ msgstr "Lunar Roving Vehicle"
 msgid "MSAA\\Multisample anti-aliasing"
 msgstr ""
 
-msgid "Marks on the ground\\Marks on the ground"
-msgstr "Markierungen\\Markierungen auf dem Boden"
-
 msgid "Maximize"
 msgstr "Großes Fenster"
 
@@ -1005,9 +993,6 @@ msgstr "Brennstoffzelle verfügbar"
 msgid "Nuclear power station"
 msgstr "Brennstoffzellenfabrik"
 
-msgid "Num of decorative objects\\Number of purely ornamental objects"
-msgstr "Anzahl Ziergegenstände\\Anzahl Gegenstände ohne Funktion"
-
 msgid "Number missing"
 msgstr "Es fehlt eine Zahl"
 
@@ -1088,9 +1073,6 @@ msgstr "Ansicht der Mission"
 
 msgid "Place occupied"
 msgstr "Stelle schon besetzt"
-
-msgid "Planets and stars\\Astronomical objects in the sky"
-msgstr "Planeten und Sterne\\Kreisende Planeten und Sterne"
 
 msgid "Plans for defense tower available"
 msgstr "Errichtung eines Geschützturms möglich"
@@ -1282,9 +1264,6 @@ msgstr "Alles zurücksetzen"
 msgid "Robbie"
 msgstr "Robby"
 
-msgid "Robbie\\Your assistant"
-msgstr "Robby\\Ihr Assistent"
-
 msgid "Ruin"
 msgstr "Gebäuderuine"
 
@@ -1401,9 +1380,6 @@ msgstr "Größe 4"
 msgid "Size 5"
 msgstr "Größe 5"
 
-msgid "Sky\\Clouds and nebulae"
-msgstr "Himmel\\Himmel und Wolken"
-
 msgid "Sniff (\\key action;)"
 msgstr "Schnüffeln (\\key action;)"
 
@@ -1490,9 +1466,6 @@ msgstr "Farbe des Anzugs:"
 
 msgid "Suit\\Astronaut suit"
 msgstr "Anzug\\Raumfahrtanzug"
-
-msgid "Sunbeams\\Sunbeams in the sky"
-msgstr "Sonnenstrahlen\\Sonnenstrahlen"
 
 msgid "Survival kit"
 msgstr "Überlebenskit"
@@ -1898,6 +1871,9 @@ msgstr "www.epsitec.com"
 #~ msgid "COLOBOT"
 #~ msgstr "COLOBOT"
 
+#~ msgid "Compass"
+#~ msgstr "Kompass"
+
 #~ msgid "Continue\\Continue the game"
 #~ msgstr "Weitermachen\\Weitermachen"
 
@@ -1914,11 +1890,26 @@ msgstr "www.epsitec.com"
 #~ msgid "Do you want to quit Colobot: Gold Edition?"
 #~ msgstr "Wollen Sie COLOBOT schließen ?"
 
+#~ msgid "Exit film\\Film at the exit of exercises"
+#~ msgstr "Zurücksetzen \\Kleine Show beim Zurücksetzen in den Übungen"
+
+#~ msgid "Friendly fire\\Your shooting can damage your own objects "
+#~ msgstr "Eigenbeschuss\\Ihre Einheiten werden von Ihren Waffen beschädigt"
+
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Hilfe über Begriff\\Hilfe über einen Begriff"
 
+#~ msgid "Marks on the ground\\Marks on the ground"
+#~ msgstr "Markierungen\\Markierungen auf dem Boden"
+
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Schatten unter der Maus\\Ein Schatten erscheint unter der Maus"
+
+#~ msgid "Num of decorative objects\\Number of purely ornamental objects"
+#~ msgstr "Anzahl Ziergegenstände\\Anzahl Gegenstände ohne Funktion"
+
+#~ msgid "Planets and stars\\Astronomical objects in the sky"
+#~ msgstr "Planeten und Sterne\\Kreisende Planeten und Sterne"
 
 #~ msgid "Quit the mission?"
 #~ msgstr "Mission abbrechen ?"
@@ -1926,8 +1917,17 @@ msgstr "www.epsitec.com"
 #~ msgid "Quit\\Quit COLOBOT"
 #~ msgstr "Schließen\\COLOBOT schließen"
 
+#~ msgid "Robbie\\Your assistant"
+#~ msgstr "Robby\\Ihr Assistent"
+
+#~ msgid "Sky\\Clouds and nebulae"
+#~ msgstr "Himmel\\Himmel und Wolken"
+
 #~ msgid "Speed 3.0x\\Three times faster"
 #~ msgstr "Geschwindigkeit 3.0x\\Spielgeschwindigkeit drei Mal schneller"
+
+#~ msgid "Sunbeams\\Sunbeams in the sky"
+#~ msgstr "Sonnenstrahlen\\Sonnenstrahlen"
 
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Qualität der Texturen\\Qualität der Anzeige"

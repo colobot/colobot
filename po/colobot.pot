@@ -369,25 +369,10 @@ msgstr ""
 msgid "Apply changes\\Activates the changed settings"
 msgstr ""
 
-msgid "Robbie\\Your assistant"
-msgstr ""
-
-msgid "Marks on the ground\\Marks on the ground"
-msgstr ""
-
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr ""
 
 msgid "Fog\\Fog"
-msgstr ""
-
-msgid "Sunbeams\\Sunbeams in the sky"
-msgstr ""
-
-msgid "Sky\\Clouds and nebulae"
-msgstr ""
-
-msgid "Planets and stars\\Astronomical objects in the sky"
 msgstr ""
 
 msgid "Dynamic lighting\\Mobile light sources"
@@ -397,9 +382,6 @@ msgid "Number of particles\\Explosions, dust, reflections, etc."
 msgstr ""
 
 msgid "Render distance\\Maximum visibility"
-msgstr ""
-
-msgid "Num of decorative objects\\Number of purely ornamental objects"
 msgstr ""
 
 msgid "Particles in the interface\\Steam clouds and sparks in the interface"
@@ -412,12 +394,6 @@ msgid "Help balloons\\Explain the function of the buttons"
 msgstr ""
 
 msgid "Film sequences\\Films before and after the missions"
-msgstr ""
-
-msgid "Exit film\\Film at the exit of exercises"
-msgstr ""
-
-msgid "Friendly fire\\Your shooting can damage your own objects "
 msgstr ""
 
 msgid "Scrolling\\Scrolling when the mouse touches right or left border"
@@ -960,9 +936,6 @@ msgid "Number of insects detected"
 msgstr ""
 
 msgid "Transmitted information"
-msgstr ""
-
-msgid "Compass"
 msgstr ""
 
 msgid "Zoom mini-map"

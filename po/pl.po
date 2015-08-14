@@ -424,9 +424,6 @@ msgstr "Colobot: Gold Edition"
 msgid "Command line"
 msgstr "Linia polecenia"
 
-msgid "Compass"
-msgstr "Kompas"
-
 msgid "Compilation ok (0 errors)"
 msgstr "Program skompilowany (0 błędów)"
 
@@ -548,9 +545,6 @@ msgstr "Wykonaj/Zatrzymaj"
 msgid "Exercises\\Programming exercises"
 msgstr "Ćwiczenia\\Ćwiczenia programistyczne"
 
-msgid "Exit film\\Film at the exit of exercises"
-msgstr "Końcowy film\\Film na zakończenie ćwiczeń"
-
 msgid "Explode (\\key action;)"
 msgstr "Wysadź (\\key action;)"
 
@@ -629,9 +623,6 @@ msgstr "Swobodna gra"
 
 msgid "Free game\\Free game without a specific goal"
 msgstr "Swobodna gra\\Swobodna gra bez konkretnych celów"
-
-msgid "Friendly fire\\Your shooting can damage your own objects "
-msgstr "Przyjacielski ogień\\Własne strzały uszkadzają Twoje obiekty"
 
 msgid "Full screen\\Full screen or window mode"
 msgstr "Pełny ekran\\Pełny ekran lub tryb okna"
@@ -851,9 +842,6 @@ msgstr "Pojazd Księżycowy"
 msgid "MSAA\\Multisample anti-aliasing"
 msgstr ""
 
-msgid "Marks on the ground\\Marks on the ground"
-msgstr "Znaki na ziemi\\Znaki na ziemi"
-
 msgid "Maximize"
 msgstr "Powiększ"
 
@@ -1004,9 +992,6 @@ msgstr "Wytworzono atomowe ogniwo elektryczne"
 msgid "Nuclear power station"
 msgstr "Elektrownia atomowa"
 
-msgid "Num of decorative objects\\Number of purely ornamental objects"
-msgstr "Ilość elementów dekoracyjnych \\Ilość elementów czysto dekoracyjnych"
-
 msgid "Number missing"
 msgstr "Brak liczby"
 
@@ -1088,9 +1073,6 @@ msgstr "Fotografia"
 
 msgid "Place occupied"
 msgstr "Miejsce zajęte"
-
-msgid "Planets and stars\\Astronomical objects in the sky"
-msgstr "Planety i gwiazdy\\Obiekty astronomiczne na niebie"
 
 msgid "Plans for defense tower available"
 msgstr "Dostępne plany wieży obronnej"
@@ -1279,9 +1261,6 @@ msgstr "Powrót do początku"
 msgid "Robbie"
 msgstr "Robbie"
 
-msgid "Robbie\\Your assistant"
-msgstr "Robbie\\Twój asystent"
-
 msgid "Ruin"
 msgstr "Ruiny"
 
@@ -1398,9 +1377,6 @@ msgstr "Wielkość 4"
 msgid "Size 5"
 msgstr "Wielkość 5"
 
-msgid "Sky\\Clouds and nebulae"
-msgstr "Niebo\\Chmury i mgławice"
-
 msgid "Sniff (\\key action;)"
 msgstr "Szukaj (\\key action;)"
 
@@ -1484,9 +1460,6 @@ msgstr "Kolor skafandra:"
 
 msgid "Suit\\Astronaut suit"
 msgstr "Skafander\\Skafander astronauty"
-
-msgid "Sunbeams\\Sunbeams in the sky"
-msgstr "Promienie słoneczne\\Promienie słoneczne na niebie"
 
 msgid "Survival kit"
 msgstr "Zestaw przetrwania"
@@ -1886,6 +1859,9 @@ msgstr "www.epsitec.com"
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
 
+#~ msgid "Compass"
+#~ msgstr "Kompas"
+
 #~ msgid "Continue\\Continue the game"
 #~ msgstr "Kontynuuj\\Kontynuuje grę"
 
@@ -1898,15 +1874,40 @@ msgstr "www.epsitec.com"
 #~ msgid "Do you want to quit Colobot: Gold Edition?"
 #~ msgstr "Czy na pewno chcesz opuścić grę Colobot: Gold Edition?"
 
+#~ msgid "Exit film\\Film at the exit of exercises"
+#~ msgstr "Końcowy film\\Film na zakończenie ćwiczeń"
+
+#~ msgid "Friendly fire\\Your shooting can damage your own objects "
+#~ msgstr "Przyjacielski ogień\\Własne strzały uszkadzają Twoje obiekty"
+
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr ""
 #~ "Pomoc dot. słów kluczowych\\Dokładniejsza pomoc na temat słów kluczowych"
 
+#~ msgid "Marks on the ground\\Marks on the ground"
+#~ msgstr "Znaki na ziemi\\Znaki na ziemi"
+
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Cień kursora myszy\\Dodaje cień kursorowi myszy"
 
+#~ msgid "Num of decorative objects\\Number of purely ornamental objects"
+#~ msgstr ""
+#~ "Ilość elementów dekoracyjnych \\Ilość elementów czysto dekoracyjnych"
+
+#~ msgid "Planets and stars\\Astronomical objects in the sky"
+#~ msgstr "Planety i gwiazdy\\Obiekty astronomiczne na niebie"
+
 #~ msgid "Quit the mission?"
 #~ msgstr "Opuścić misję?"
+
+#~ msgid "Robbie\\Your assistant"
+#~ msgstr "Robbie\\Twój asystent"
+
+#~ msgid "Sky\\Clouds and nebulae"
+#~ msgstr "Niebo\\Chmury i mgławice"
+
+#~ msgid "Sunbeams\\Sunbeams in the sky"
+#~ msgstr "Promienie słoneczne\\Promienie słoneczne na niebie"
 
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Tekstury\\Jakość tekstur "

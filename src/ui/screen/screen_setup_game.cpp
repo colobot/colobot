@@ -64,9 +64,6 @@ void CScreenSetupGame::CreateInterface()
     ddim.y = dim.y*0.5f;
     pos.x = ox+sx*3;
     pos.y = 0.65f;
-    //?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_TOTO);
-    //?     pc->SetState(STATE_SHADOW);
-    //?     pos.y -= 0.048f;
 
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_MOVIES);
     pc->SetState(STATE_SHADOW);
@@ -148,12 +145,6 @@ bool CScreenSetupGame::EventProcess(const Event &event)
 
     switch( event.type )
     {
-        case EVENT_INTERFACE_TOTO:
-            m_engine->SetTotoMode(!m_engine->GetTotoMode());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
-
         case EVENT_INTERFACE_TOOLTIP:
             m_settings->SetTooltips(!m_settings->GetTooltips());
             ChangeSetupButtons();
@@ -207,12 +198,6 @@ bool CScreenSetupGame::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_MOVIES:
             m_settings->SetMovies(!m_settings->GetMovies());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
-
-        case EVENT_INTERFACE_NICERST:
-            m_settings->SetNiceReset(!m_settings->GetNiceReset());
             ChangeSetupButtons();
             UpdateSetupButtons();
             break;
@@ -280,12 +265,6 @@ void CScreenSetupGame::UpdateSetupButtons()
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_TOTO));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_CHECK, m_engine->GetTotoMode());
-    }
-
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_TOOLTIP));
     if ( pc != 0 )
     {
@@ -332,12 +311,6 @@ void CScreenSetupGame::UpdateSetupButtons()
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_settings->GetMovies());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_NICERST));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_CHECK, m_settings->GetNiceReset());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SCROLL));

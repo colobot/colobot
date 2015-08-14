@@ -957,25 +957,22 @@ public:
     //@}
 
     //@{
-    //! Management of the global mode of marking
-    void            SetGroundSpot(bool mode);
-    bool            GetGroundSpot();
-    //@}
-
-    //@{
     //! Management of the global mode of shading
+    // NOTE: This is an user configuration setting
     void            SetShadow(bool mode);
     bool            GetShadow();
     //@}
 
     //@{
     //! Management of the global mode of contamination
+    // NOTE: This is an user configuration setting
     void            SetDirty(bool mode);
     bool            GetDirty();
     //@}
 
     //@{
     //! Management of the global mode of horizontal fog patches
+    // NOTE: This is an user configuration setting
     void            SetFog(bool mode);
     bool            GetFog();
     //@}
@@ -1052,6 +1049,7 @@ public:
 
     //@{
     //! Management of the particle density
+    // NOTE: This is an user configuration setting
     void            SetParticleDensity(float value);
     float           GetParticleDensity();
     //@}
@@ -1061,36 +1059,35 @@ public:
 
     //@{
     //! Management of the distance of clipping.
+    // NOTE: This is an user configuration setting
     void            SetClippingDistance(float value);
     float           GetClippingDistance();
     //@}
 
     //@{
-    //! The amount of management objects gadgets
-    void            SetGadgetQuantity(float value);
-    float           GetGadgetQuantity();
-    //@}
-
-    //@{
     //! Management the texture filter mode
+    // NOTE: This is an user configuration setting
     void            SetTextureFilterMode(TexFilter value);
     TexFilter       GetTextureFilterMode();
     //@}
 
     //@{
     //! Management the mipmap level for textures
+    // NOTE: This is an user configuration setting
     void            SetTextureMipmapLevel(int value);
     int             GetTextureMipmapLevel();
     //@}
 
     //@{
     //! Management the anisotropy level for textures
+    // NOTE: This is an user configuration setting
     void            SetTextureAnisotropyLevel(int value);
     int             GetTextureAnisotropyLevel();
     //@}
 
     //@{
     //! Management of shadow mapping
+    // NOTE: These are user configuration settings
     bool            IsShadowMappingSupported();
     void            SetShadowMapping(bool value);
     bool            GetShadowMapping();
@@ -1105,47 +1102,23 @@ public:
 
     //@{
     //! Management of shadow color
+    // NOTE: This is a setting configurable only in INI file
     void            SetShadowColor(float value);
     float           GetShadowColor();
     //@}
 
     //@{
     //! Management of shadow range
+    // NOTE: This is a setting configurable only in INI file
     void            SetShadowRange(float value);
     float           GetShadowRange();
     //@}
 
     //@{
     //! Management of shadow range
+    // NOTE: This is an user configuration setting
     void            SetMultiSample(int value);
     int             GetMultiSample();
-    //@}
-
-    //@{
-    //! Management mode of toto
-    void            SetTotoMode(bool present);
-    bool            GetTotoMode();
-    //@}
-
-    //@{
-    //! Management the mode of foreground
-    void            SetLensMode(bool present);
-    bool            GetLensMode();
-    //@}
-
-    //@{
-    //! Management the mode of water
-    void            SetWaterMode(bool present);
-    bool            GetWaterMode();
-    //@}
-
-    void            SetLightingMode(bool present);
-    bool            GetLightingMode();
-
-    //@{
-    //! Management the mode of sky
-    void            SetSkyMode(bool present);
-    bool            GetSkyMode();
     //@}
 
     //@{
@@ -1155,27 +1128,24 @@ public:
     //@}
 
     //@{
-    //! Management the mode of planets
-    void            SetPlanetMode(bool present);
-    bool            GetPlanetMode();
-    //@}
-
-    //@{
     //! Managing the mode of dynamic lights.
+    // NOTE: This is an user configuration setting
     void            SetLightMode(bool present);
     bool            GetLightMode();
     //@}
 
     //@{
-    // TODO: move to more appropriate class ?
     //! Management of the indentation mode while editing (CEdit)
+    // NOTE: This is an user configuration setting
+    // TODO: Move to CSettings
     void            SetEditIndentMode(bool autoIndent);
     bool            GetEditIndentMode();
     //@}
 
     //@{
-    // TODO: move to more appropriate class ?
     //! Management of tab indent when editing (CEdit)
+    // NOTE: This is an user configuration setting
+    // TODO: Move to CSettings
     void            SetEditIndentValue(int value);
     int             GetEditIndentValue();
     //@}
@@ -1390,10 +1360,6 @@ protected:
     Math::Vector    m_statisticPos;
     bool            m_updateGeometry;
     bool            m_updateStaticBuffers;
-    bool            m_groundSpotVisible;
-    bool            m_shadowVisible;
-    bool            m_dirty;
-    bool            m_fog;
     bool            m_firstGroundSpot;
     std::string     m_secondTex;
     bool            m_backgroundFull;
@@ -1411,21 +1377,19 @@ protected:
     Texture         m_foregroundTex;
     bool            m_drawWorld;
     bool            m_drawFront;
+    float           m_terrainVision;
+    bool            m_backForce;
+    float           m_tracePrecision;
+
+    bool            m_shadowVisible;
+    bool            m_dirty;
+    bool            m_fog;
     float           m_particleDensity;
     float           m_clippingDistance;
     float           m_lastClippingDistance;
-    float           m_terrainVision;
-    float           m_gadgetQuantity;
-    bool            m_totoMode;
-    bool            m_lensMode;
-    bool            m_waterMode;
-    bool            m_skyMode;
-    bool            m_backForce;
-    bool            m_planetMode;
     bool            m_lightMode;
     bool            m_editIndentMode;
     int             m_editIndentValue;
-    float           m_tracePrecision;
 
     Texture         m_shadowMap;
 

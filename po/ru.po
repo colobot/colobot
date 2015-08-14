@@ -415,9 +415,6 @@ msgstr ""
 msgid "Command line"
 msgstr "Командная строка"
 
-msgid "Compass"
-msgstr "Компас"
-
 msgid "Compilation ok (0 errors)"
 msgstr "Компиляция завершена (0 ошибок)"
 
@@ -540,9 +537,6 @@ msgstr "Выполнить/стоп"
 msgid "Exercises\\Programming exercises"
 msgstr "Упражнения\\Упражнения по программированию"
 
-msgid "Exit film\\Film at the exit of exercises"
-msgstr "Ролик при выходе\\Ролик во время выхода из упражнения"
-
 msgid "Explode (\\key action;)"
 msgstr ""
 
@@ -621,9 +615,6 @@ msgstr "Свободная игра"
 
 msgid "Free game\\Free game without a specific goal"
 msgstr "Свобод. игра\\Игра без четкой цели"
-
-msgid "Friendly fire\\Your shooting can damage your own objects "
-msgstr "Огонь по своим\\Вы можете повредить собственные объекты"
 
 msgid "Full screen\\Full screen or window mode"
 msgstr "Во весь экран\\Выбор полноэкранного или оконного режима"
@@ -843,9 +834,6 @@ msgstr "Луноход"
 msgid "MSAA\\Multisample anti-aliasing"
 msgstr ""
 
-msgid "Marks on the ground\\Marks on the ground"
-msgstr "Метки на земле\\Метки на земле"
-
 msgid "Maximize"
 msgstr "Развернуть"
 
@@ -998,9 +986,6 @@ msgstr "Доступна атомная батарея"
 msgid "Nuclear power station"
 msgstr "Завод атомных батарей (неперезаряж.)"
 
-msgid "Num of decorative objects\\Number of purely ornamental objects"
-msgstr "Количество декораций\\Количество декоративных объектов"
-
 msgid "Number missing"
 msgstr "Нет числа"
 
@@ -1083,9 +1068,6 @@ msgstr "Фотография"
 
 msgid "Place occupied"
 msgstr "Место занято"
-
-msgid "Planets and stars\\Astronomical objects in the sky"
-msgstr "Планеты и звезды\\Астрономические объекты в небе"
 
 msgid "Plans for defense tower available"
 msgstr "Доступны схемы защитной башни"
@@ -1277,9 +1259,6 @@ msgstr "Вернуться в начало"
 msgid "Robbie"
 msgstr "Робби"
 
-msgid "Robbie\\Your assistant"
-msgstr "Робби\\Ваш помощник"
-
 msgid "Ruin"
 msgstr "Руины"
 
@@ -1395,9 +1374,6 @@ msgstr "Размер 4"
 msgid "Size 5"
 msgstr "Размер 5"
 
-msgid "Sky\\Clouds and nebulae"
-msgstr "Небо\\Облака и туманности"
-
 msgid "Sniff (\\key action;)"
 msgstr "Искать (\\key action;)"
 
@@ -1482,9 +1458,6 @@ msgstr "Костюм:"
 
 msgid "Suit\\Astronaut suit"
 msgstr "Костюм\\Костюм астронавта"
-
-msgid "Sunbeams\\Sunbeams in the sky"
-msgstr "Солнечные лучи\\Солнечные лучи в небе"
 
 msgid "Survival kit"
 msgstr "Аптечка"
@@ -1890,6 +1863,9 @@ msgstr "www.epsitec.com"
 #~ msgid "COLOBOT"
 #~ msgstr "КОЛОБОТ"
 
+#~ msgid "Compass"
+#~ msgstr "Компас"
+
 #~ msgid "Continue\\Continue the game"
 #~ msgstr "Продолжить\\Продолжить игру"
 
@@ -1906,11 +1882,26 @@ msgstr "www.epsitec.com"
 #~ msgid "Do you want to quit Colobot: Gold Edition?"
 #~ msgstr "Вы хотите закрыть COLOBOT?"
 
+#~ msgid "Exit film\\Film at the exit of exercises"
+#~ msgstr "Ролик при выходе\\Ролик во время выхода из упражнения"
+
+#~ msgid "Friendly fire\\Your shooting can damage your own objects "
+#~ msgstr "Огонь по своим\\Вы можете повредить собственные объекты"
+
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Помощь по командам\\Более подробная справку по командам"
 
+#~ msgid "Marks on the ground\\Marks on the ground"
+#~ msgstr "Метки на земле\\Метки на земле"
+
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Тень мыши\\Мышь отбрасывает тень"
+
+#~ msgid "Num of decorative objects\\Number of purely ornamental objects"
+#~ msgstr "Количество декораций\\Количество декоративных объектов"
+
+#~ msgid "Planets and stars\\Astronomical objects in the sky"
+#~ msgstr "Планеты и звезды\\Астрономические объекты в небе"
 
 #~ msgid "Quit the mission?"
 #~ msgstr "Завершить миссию?"
@@ -1918,8 +1909,17 @@ msgstr "www.epsitec.com"
 #~ msgid "Quit\\Quit COLOBOT"
 #~ msgstr "Выход\\Выход из COLOBOT"
 
+#~ msgid "Robbie\\Your assistant"
+#~ msgstr "Робби\\Ваш помощник"
+
+#~ msgid "Sky\\Clouds and nebulae"
+#~ msgstr "Небо\\Облака и туманности"
+
 #~ msgid "Speed 3.0x\\Three times faster"
 #~ msgstr "Скорость 3.0х\\В три раза быстрее"
+
+#~ msgid "Sunbeams\\Sunbeams in the sky"
+#~ msgstr "Солнечные лучи\\Солнечные лучи в небе"
 
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Текстуры\\Качество текстур "

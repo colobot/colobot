@@ -1305,48 +1305,6 @@ void CRobotMain::ExecuteCmd(char *cmd)
         return;
     }
 
-    if (strcmp(cmd, "invshadow") == 0)
-    {
-        m_engine->SetShadow(!m_engine->GetShadow());
-        return;
-    }
-
-    if (strcmp(cmd, "invdirty") == 0)
-    {
-        m_engine->SetDirty(!m_engine->GetDirty());
-        return;
-    }
-
-    if (strcmp(cmd, "invfog") == 0)
-    {
-        m_engine->SetFog(!m_engine->GetFog());
-        return;
-    }
-
-    if (strcmp(cmd, "invlens") == 0)
-    {
-        m_engine->SetLensMode(!m_engine->GetLensMode());
-        return;
-    }
-
-    if (strcmp(cmd, "invwater") == 0)
-    {
-        m_engine->SetWaterMode(!m_engine->GetWaterMode());
-        return;
-    }
-
-    if (strcmp(cmd, "invsky") == 0)
-    {
-        m_engine->SetSkyMode(!m_engine->GetSkyMode());
-        return;
-    }
-
-    if (strcmp(cmd, "invplanet") == 0)
-    {
-        m_engine->SetPlanetMode(!m_engine->GetPlanetMode());
-        return;
-    }
-
     if (strcmp(cmd, "selectinsect") == 0)
     {
         m_selectInsect = !m_selectInsect;
@@ -3351,29 +3309,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 ObjectType type = line->GetParam("type")->AsObjectType();
 
-                int gadget = line->GetParam("gadget")->AsInt(-1);
-                if ( gadget == -1 )
-                {
-                    gadget = 0;
-                    if ( type == OBJECT_TECH ||
-                        (type >= OBJECT_PLANT0  &&
-                        type <= OBJECT_PLANT19 ) ||
-                        (type >= OBJECT_TREE0   &&
-                        type <= OBJECT_TREE5   ) ||
-                        (type >= OBJECT_QUARTZ0 &&
-                        type <= OBJECT_QUARTZ3 ) ||
-                        (type >= OBJECT_ROOT0   &&
-                        type <= OBJECT_ROOT4   ) )  // not ROOT5!
-                    {
-                        gadget = 1;
-                    }
-                }
-                if (gadget != 0)  // is this a gadget?
-                {
-                    if (!TestGadgetQuantity(rankGadget++)) continue;
-                }
-
-
                 float objectProgress = static_cast<float>(rankObj) / static_cast<float>(numObjects);
                 std::string details = StrUtils::ToString<int>(rankObj+1)+" / "+StrUtils::ToString<int>(numObjects);
                 #if DEV_BUILD
@@ -3402,16 +3337,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 }
                 catch (const CObjectCreateException& e)
                 {
-                    if (gadget)
-                    {
-                        GetLogger()->Warn("Error loading decorative object: %s\n", e.what());
-                        continue;
-                    }
-                    else
-                    {
-                        GetLogger()->Error("Error loading level object: %s\n", e.what());
-                        throw;
-                    }
+                    GetLogger()->Error("Error loading level object: %s\n", e.what());
+                    throw;
                 }
 
                 if (m_fixScene && type == OBJECT_HUMAN)
@@ -4090,39 +4017,6 @@ void CRobotMain::ChangeColor()
     // This loads the newly recolored textures to objects
     m_engine->LoadAllTextures();
 }
-
-//! Updates the number of unnecessary objects
-bool CRobotMain::TestGadgetQuantity(int rank)
-{
-    static int table10[10] = {0,1,0,0,0,0,0,0,0,0};
-    static int table20[10] = {0,1,0,0,0,1,0,0,0,0};
-    static int table30[10] = {0,1,0,1,0,1,0,0,0,0};
-    static int table40[10] = {0,1,0,1,0,1,0,1,0,0};
-    static int table50[10] = {0,1,0,1,0,1,0,1,0,1};
-    static int table60[10] = {0,1,0,1,1,1,0,1,0,1};
-    static int table70[10] = {0,1,0,1,1,1,0,1,1,1};
-    static int table80[10] = {0,1,1,1,1,1,0,1,1,1};
-    static int table90[10] = {0,1,1,1,1,1,1,1,1,1};
-
-    float percent = m_engine->GetGadgetQuantity();
-    if (percent == 0.0f) return false;
-    if (percent == 1.0f) return true;
-
-    int *table;
-         if (percent <= 0.15f) table = table10;
-    else if (percent <= 0.25f) table = table20;
-    else if (percent <= 0.35f) table = table30;
-    else if (percent <= 0.45f) table = table40;
-    else if (percent <= 0.55f) table = table50;
-    else if (percent <= 0.65f) table = table60;
-    else if (percent <= 0.75f) table = table70;
-    else if (percent <= 0.85f) table = table80;
-    else                       table = table90;
-
-    return table[rank%10];
-}
-
-
 
 //! Calculates the distance to the nearest object
 float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
@@ -5336,8 +5230,6 @@ void CRobotMain::ResetCreate()
     {
         CreateScene(m_ui->GetSceneSoluce(), false, true);
 
-        if (!GetNiceReset()) return;
-
         for (CObject* obj : m_objMan->GetAllObjects())
         {
             if (obj->GetAnimateOnReset())
@@ -5663,11 +5555,6 @@ bool CRobotMain::GetSoluce4()
 bool CRobotMain::GetMovies()
 {
     return m_settings->GetMovies();
-}
-
-bool CRobotMain::GetNiceReset()
-{
-    return m_settings->GetNiceReset();
 }
 
 bool CRobotMain::GetShowSoluce()
