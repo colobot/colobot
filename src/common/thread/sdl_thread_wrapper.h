@@ -42,16 +42,20 @@ public:
 
     void Start()
     {
-        m_thread = SDL_CreateThread([](void* data) -> int {
-            ThreadFunctionPtr func = *(static_cast<ThreadFunctionPtr*>(data));
-            func();
-            return 0;
-        }, &m_threadFunction);
+        m_thread = SDL_CreateThread(&StartThreadWithThreadFunction, &m_threadFunction);
     }
 
     SDL_Thread* operator*()
     {
         return m_thread;
+    }
+
+private:
+    static int StartThreadWithThreadFunction(void* data)
+    {
+        ThreadFunctionPtr func = *(static_cast<ThreadFunctionPtr*>(data));
+        func();
+        return 0;
     }
 
 private:

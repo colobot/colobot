@@ -28,6 +28,7 @@
 
 #include "common/global.h"
 
+#include <string>
 
 
 class COldObject;
