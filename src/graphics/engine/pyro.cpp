@@ -257,7 +257,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
          m_type == PT_FRAGO ||
          m_type == PT_FRAGW )
     {
-        m_engine->DeleteShadow(m_object->GetObjectRank(0));
+        m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
     }
 
     if ( m_type == PT_DEADG )
@@ -345,7 +345,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
          m_type == PT_EXPLOW )
     {
         CreateTriangle(obj, oType, 0);
-        m_engine->DeleteShadow(m_object->GetObjectRank(0));
+        m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
         ExploStart();
     }
 
@@ -376,7 +376,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         Math::Matrix* mat = obj->GetWorldMatrix(0);
         m_pos = Math::Transform(*mat, pos);
 
-        m_engine->DeleteShadow(m_object->GetObjectRank(0));
+        m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
     }
 
     if ( m_type != PT_EGG  &&

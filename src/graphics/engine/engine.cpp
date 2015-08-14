@@ -867,7 +867,7 @@ int CEngine::CreateObject()
 void CEngine::DeleteAllObjects()
 {
     m_objects.clear();
-    m_shadows.clear();
+    m_shadowSpots.clear();
 
     DeleteAllGroundSpots();
 }
@@ -880,7 +880,7 @@ void CEngine::DeleteObject(int objRank)
     m_objects[objRank].used = false;
 
     // Delete associated shadows
-    DeleteShadow(objRank);
+    DeleteShadowSpot(objRank);
 }
 
 void CEngine::SetObjectBaseRank(int objRank, int baseObjRank)
@@ -1281,7 +1281,7 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
 }
 
 
-void CEngine::CreateShadow(int objRank)
+void CEngine::CreateShadowSpot(int objRank)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1290,26 +1290,26 @@ void CEngine::CreateShadow(int objRank)
         return;
 
     int index = 0;
-    for ( ; index < static_cast<int>( m_shadows.size() ); index++)
+    for ( ; index < static_cast<int>( m_shadowSpots.size() ); index++)
     {
-        if (! m_shadows[index].used)
+        if (! m_shadowSpots[index].used)
         {
-            m_shadows[index].LoadDefault();
+            m_shadowSpots[index].LoadDefault();
             break;
         }
     }
 
-    if (index == static_cast<int>( m_shadows.size() ))
-        m_shadows.push_back(EngineShadow());
+    if (index == static_cast<int>( m_shadowSpots.size() ))
+        m_shadowSpots.push_back(EngineShadow());
 
-    m_shadows[index].used = true;
-    m_shadows[index].objRank = objRank;
-    m_shadows[index].height = 0.0f;
+    m_shadowSpots[index].used = true;
+    m_shadowSpots[index].objRank = objRank;
+    m_shadowSpots[index].height = 0.0f;
 
     m_objects[objRank].shadowRank = index;
 }
 
-void CEngine::DeleteShadow(int objRank)
+void CEngine::DeleteShadowSpot(int objRank)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1317,15 +1317,15 @@ void CEngine::DeleteShadow(int objRank)
     if (shadowRank == -1)
         return;
 
-    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadowSpots.size() ));
 
-    m_shadows[shadowRank].used = false;
-    m_shadows[shadowRank].objRank = -1;
+    m_shadowSpots[shadowRank].used = false;
+    m_shadowSpots[shadowRank].objRank = -1;
 
     m_objects[objRank].shadowRank = -1;
 }
 
-void CEngine::SetObjectShadowHide(int objRank, bool hide)
+void CEngine::SetObjectShadowSpotHide(int objRank, bool hide)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1333,12 +1333,12 @@ void CEngine::SetObjectShadowHide(int objRank, bool hide)
     if (shadowRank == -1)
         return;
 
-    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadowSpots.size() ));
 
-    m_shadows[shadowRank].hide = hide;
+    m_shadowSpots[shadowRank].hide = hide;
 }
 
-void CEngine::SetObjectShadowType(int objRank, EngineShadowType type)
+void CEngine::SetObjectShadowSpotType(int objRank, EngineShadowType type)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1346,12 +1346,12 @@ void CEngine::SetObjectShadowType(int objRank, EngineShadowType type)
     if (shadowRank == -1)
         return;
 
-    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadowSpots.size() ));
 
-    m_shadows[shadowRank].type = type;
+    m_shadowSpots[shadowRank].type = type;
 }
 
-void CEngine::SetObjectShadowPos(int objRank, const Math::Vector& pos)
+void CEngine::SetObjectShadowSpotPos(int objRank, const Math::Vector& pos)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1359,12 +1359,12 @@ void CEngine::SetObjectShadowPos(int objRank, const Math::Vector& pos)
     if (shadowRank == -1)
         return;
 
-    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadowSpots.size() ));
 
-    m_shadows[shadowRank].pos = pos;
+    m_shadowSpots[shadowRank].pos = pos;
 }
 
-void CEngine::SetObjectShadowAngle(int objRank, float angle)
+void CEngine::SetObjectShadowSpotAngle(int objRank, float angle)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1372,12 +1372,12 @@ void CEngine::SetObjectShadowAngle(int objRank, float angle)
     if (shadowRank == -1)
         return;
 
-    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadowSpots.size() ));
 
-    m_shadows[shadowRank].angle = angle;
+    m_shadowSpots[shadowRank].angle = angle;
 }
 
-void CEngine::SetObjectShadowRadius(int objRank, float radius)
+void CEngine::SetObjectShadowSpotRadius(int objRank, float radius)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1385,12 +1385,12 @@ void CEngine::SetObjectShadowRadius(int objRank, float radius)
     if (shadowRank == -1)
         return;
 
-    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadowSpots.size() ));
 
-    m_shadows[shadowRank].radius = radius;
+    m_shadowSpots[shadowRank].radius = radius;
 }
 
-void CEngine::SetObjectShadowIntensity(int objRank, float intensity)
+void CEngine::SetObjectShadowSpotIntensity(int objRank, float intensity)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1398,12 +1398,12 @@ void CEngine::SetObjectShadowIntensity(int objRank, float intensity)
     if (shadowRank == -1)
         return;
 
-    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadowSpots.size() ));
 
-    m_shadows[shadowRank].intensity = intensity;
+    m_shadowSpots[shadowRank].intensity = intensity;
 }
 
-void CEngine::SetObjectShadowHeight(int objRank, float height)
+void CEngine::SetObjectShadowSpotHeight(int objRank, float height)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1411,9 +1411,9 @@ void CEngine::SetObjectShadowHeight(int objRank, float height)
     if (shadowRank == -1)
         return;
 
-    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadowSpots.size() ));
 
-    m_shadows[shadowRank].height = height;
+    m_shadowSpots[shadowRank].height = height;
 }
 
 bool CEngine::GetHighlight(Math::Point &p1, Math::Point &p2)
@@ -4182,12 +4182,12 @@ void CEngine::DrawShadowSpots()
     float endDeepView = m_deepView[m_rankView];
 
     float lastIntensity = -1.0f;
-    for (int i = 0; i < static_cast<int>( m_shadows.size() ); i++)
+    for (int i = 0; i < static_cast<int>( m_shadowSpots.size() ); i++)
     {
-        if (m_shadows[i].hide || !m_shadows[i].used)
+        if (m_shadowSpots[i].hide || !m_shadowSpots[i].used)
             continue;
 
-        Math::Vector pos = m_shadows[i].pos;  // pos = center of the shadow on the ground
+        Math::Vector pos = m_shadowSpots[i].pos;  // pos = center of the shadow on the ground
 
         if (m_eyePt.y == pos.y)
             continue;  // camera at the same level?
@@ -4200,7 +4200,7 @@ void CEngine::DrawShadowSpots()
         if (m_eyePt.y > pos.y)  // camera on?
         {
             float height = m_eyePt.y-pos.y;
-            float h = m_shadows[i].radius;
+            float h = m_shadowSpots[i].radius;
             float max = height*0.5f;
             if ( h > max  )  h = max;
             if ( h > 4.0f )  h = 4.0f;
@@ -4218,7 +4218,7 @@ void CEngine::DrawShadowSpots()
         else    // camera underneath?
         {
             float height = pos.y-m_eyePt.y;
-            float h = m_shadows[i].radius;
+            float h = m_shadowSpots[i].radius;
             float max = height*0.1f;
             if ( h > max  )  h = max;
             if ( h > 4.0f )  h = 4.0f;
@@ -4236,20 +4236,20 @@ void CEngine::DrawShadowSpots()
 
         // The hFactor decreases the intensity and size increases more
         // the object is high relative to the ground.
-        float hFactor = m_shadows[i].height/20.0f;
+        float hFactor = m_shadowSpots[i].height/20.0f;
         if ( hFactor < 0.0f )  hFactor = 0.0f;
         if ( hFactor > 1.0f )  hFactor = 1.0f;
         hFactor = powf(1.0f-hFactor, 2.0f);
         if ( hFactor < 0.2f )  hFactor = 0.2f;
 
-        float radius = m_shadows[i].radius*1.5f;
+        float radius = m_shadowSpots[i].radius*1.5f;
         radius *= 2.0f-hFactor;  // greater if high
         radius *= 1.0f-d/D;  // smaller if close
 
 
         Math::Vector corner[4];
 
-        if (m_shadows[i].type == ENG_SHADOW_NORM)
+        if (m_shadowSpots[i].type == ENG_SHADOW_NORM)
         {
             corner[0].x = +radius;
             corner[0].z = +radius;
@@ -4274,27 +4274,27 @@ void CEngine::DrawShadowSpots()
         {
             Math::Point rot;
 
-            rot = Math::RotatePoint(-m_shadows[i].angle, Math::Point(radius, radius));
+            rot = Math::RotatePoint(-m_shadowSpots[i].angle, Math::Point(radius, radius));
             corner[0].x = rot.x;
             corner[0].z = rot.y;
             corner[0].y = 0.0f;
 
-            rot = Math::RotatePoint(-m_shadows[i].angle, Math::Point(-radius, radius));
+            rot = Math::RotatePoint(-m_shadowSpots[i].angle, Math::Point(-radius, radius));
             corner[1].x = rot.x;
             corner[1].z = rot.y;
             corner[1].y = 0.0f;
 
-            rot = Math::RotatePoint(-m_shadows[i].angle, Math::Point(radius, -radius));
+            rot = Math::RotatePoint(-m_shadowSpots[i].angle, Math::Point(radius, -radius));
             corner[2].x = rot.x;
             corner[2].z = rot.y;
             corner[2].y = 0.0f;
 
-            rot = Math::RotatePoint(-m_shadows[i].angle, Math::Point(-radius, -radius));
+            rot = Math::RotatePoint(-m_shadowSpots[i].angle, Math::Point(-radius, -radius));
             corner[3].x = rot.x;
             corner[3].z = rot.y;
             corner[3].y = 0.0f;
 
-            if (m_shadows[i].type == ENG_SHADOW_WORM)
+            if (m_shadowSpots[i].type == ENG_SHADOW_WORM)
             {
                 ts.x =  96.0f/256.0f;
                 ti.x = 128.0f/256.0f;
@@ -4306,10 +4306,10 @@ void CEngine::DrawShadowSpots()
             }
         }
 
-        corner[0] = Math::CrossProduct(corner[0], m_shadows[i].normal);
-        corner[1] = Math::CrossProduct(corner[1], m_shadows[i].normal);
-        corner[2] = Math::CrossProduct(corner[2], m_shadows[i].normal);
-        corner[3] = Math::CrossProduct(corner[3], m_shadows[i].normal);
+        corner[0] = Math::CrossProduct(corner[0], m_shadowSpots[i].normal);
+        corner[1] = Math::CrossProduct(corner[1], m_shadowSpots[i].normal);
+        corner[2] = Math::CrossProduct(corner[2], m_shadowSpots[i].normal);
+        corner[3] = Math::CrossProduct(corner[3], m_shadowSpots[i].normal);
 
         corner[0] += pos;
         corner[1] += pos;
@@ -4327,7 +4327,7 @@ void CEngine::DrawShadowSpots()
             Vertex(corner[2], n, Math::Point(ti.x, ti.y))
         };
 
-        float intensity = (0.5f+m_shadows[i].intensity*0.5f)*hFactor;
+        float intensity = (0.5f+m_shadowSpots[i].intensity*0.5f)*hFactor;
 
         // Decreases the intensity of the shade if you're in the area
         // between the beginning and the end of the fog.
@@ -4912,7 +4912,7 @@ int CEngine::GetEngineState(const ModelTriangle& triangle)
     return state;
 }
 
-void CEngine::UpdateObjectShadowNormal(int rank)
+void CEngine::UpdateObjectShadowSpotNormal(int rank)
 {
     assert(rank >= 0 && rank < static_cast<int>( m_objects.size() ));
 
@@ -4920,13 +4920,13 @@ void CEngine::UpdateObjectShadowNormal(int rank)
     if (shadowRank == -1)
         return;
 
-    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadowSpots.size() ));
 
     // Calculating the normal to the ground in nine strategic locations,
     // then perform a weighted average (the dots in the center are more important).
 
-    Math::Vector pos = m_shadows[shadowRank].pos;
-    float radius = m_shadows[shadowRank].radius;
+    Math::Vector pos = m_shadowSpots[shadowRank].pos;
+    float radius = m_shadowSpots[shadowRank].radius;
 
     Math::Vector n[20];
     Math::Vector norm;
@@ -4996,7 +4996,7 @@ void CEngine::UpdateObjectShadowNormal(int rank)
     }
     norm /= static_cast<float>(i);  // average vector
 
-    m_shadows[shadowRank].normal = norm;
+    m_shadowSpots[shadowRank].normal = norm;
 }
 
 int CEngine::AddStaticMesh(const std::string& key, const CModelMesh* mesh, const Math::Matrix& worldMatrix)
@@ -5027,20 +5027,20 @@ void CEngine::AddStaticMeshShadowSpot(int meshHandle, const ModelShadowSpot& sha
 {
     int objRank = meshHandle;
 
-    CreateShadow(objRank);
-    SetObjectShadowRadius(objRank, shadowSpot.radius);
-    SetObjectShadowIntensity(objRank, shadowSpot.intensity);
-    SetObjectShadowType(objRank, ENG_SHADOW_NORM);
-    SetObjectShadowHeight(objRank, 0.0f);
-    SetObjectShadowAngle(objRank, 0.0f);
-    UpdateObjectShadowNormal(objRank);
+    CreateShadowSpot(objRank);
+    SetObjectShadowSpotRadius(objRank, shadowSpot.radius);
+    SetObjectShadowSpotIntensity(objRank, shadowSpot.intensity);
+    SetObjectShadowSpotType(objRank, ENG_SHADOW_NORM);
+    SetObjectShadowSpotHeight(objRank, 0.0f);
+    SetObjectShadowSpotAngle(objRank, 0.0f);
+    UpdateObjectShadowSpotNormal(objRank);
 }
 
 void CEngine::DeleteStaticMesh(int meshHandle)
 {
     int objRank = meshHandle;
 
-    DeleteShadow(objRank);
+    DeleteShadowSpot(objRank);
     DeleteObject(objRank);
 }
 

@@ -1290,16 +1290,16 @@ void COldObject::SetPartPosition(int part, const Math::Vector &pos)
 
         Math::Vector shPos = pos;
         m_terrain->AdjustToFloor(shPos, true);
-        m_engine->SetObjectShadowPos(rank, shPos);
+        m_engine->SetObjectShadowSpotPos(rank, shPos);
 
         float height = 0.0f;
         if ( Implements(ObjectInterfaceType::Flying) )
         {
             height = pos.y-shPos.y;
         }
-        m_engine->SetObjectShadowHeight(rank, height);
+        m_engine->SetObjectShadowSpotHeight(rank, height);
 
-        m_engine->UpdateObjectShadowNormal(rank);
+        m_engine->UpdateObjectShadowSpotNormal(rank);
 
         if ( m_shadowLight != -1 )
         {
@@ -1331,7 +1331,7 @@ void COldObject::SetPartRotation(int part, const Math::Vector &angle)
 
     if ( part == 0 && !m_bFlat )  // main part?
     {
-        m_engine->SetObjectShadowAngle(m_objectPart[0].object, m_objectPart[0].angle.y);
+        m_engine->SetObjectShadowSpotAngle(m_objectPart[0].object, m_objectPart[0].angle.y);
     }
 }
 
@@ -1349,7 +1349,7 @@ void COldObject::SetPartRotationY(int part, float angle)
 
     if ( part == 0 && !m_bFlat )  // main part?
     {
-        m_engine->SetObjectShadowAngle(m_objectPart[0].object, m_objectPart[0].angle.y);
+        m_engine->SetObjectShadowSpotAngle(m_objectPart[0].object, m_objectPart[0].angle.y);
     }
 }
 
@@ -1533,7 +1533,7 @@ void COldObject::SetTransporter(CObject* transporter)
     m_transporter = transporter;
 
     // Invisible shadow if the object is transported.
-    m_engine->SetObjectShadowHide(m_objectPart[0].object, (m_transporter != 0));
+    m_engine->SetObjectShadowSpotHide(m_objectPart[0].object, (m_transporter != 0));
 }
 
 CObject* COldObject::GetTransporter()
@@ -1678,13 +1678,13 @@ bool COldObject::CreateShadowCircle(float radius, float intensity,
 
     zoom = GetScaleX();
 
-    m_engine->CreateShadow(m_objectPart[0].object);
+    m_engine->CreateShadowSpot(m_objectPart[0].object);
 
-    m_engine->SetObjectShadowRadius(m_objectPart[0].object, radius*zoom);
-    m_engine->SetObjectShadowIntensity(m_objectPart[0].object, intensity);
-    m_engine->SetObjectShadowHeight(m_objectPart[0].object, 0.0f);
-    m_engine->SetObjectShadowAngle(m_objectPart[0].object, m_objectPart[0].angle.y);
-    m_engine->SetObjectShadowType(m_objectPart[0].object, type);
+    m_engine->SetObjectShadowSpotRadius(m_objectPart[0].object, radius*zoom);
+    m_engine->SetObjectShadowSpotIntensity(m_objectPart[0].object, intensity);
+    m_engine->SetObjectShadowSpotHeight(m_objectPart[0].object, 0.0f);
+    m_engine->SetObjectShadowSpotAngle(m_objectPart[0].object, m_objectPart[0].angle.y);
+    m_engine->SetObjectShadowSpotType(m_objectPart[0].object, type);
 
     return true;
 }

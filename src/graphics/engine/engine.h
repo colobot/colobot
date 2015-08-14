@@ -842,20 +842,20 @@ public:
     int             DetectObject(Math::Point mouse);
 
     //! Creates a shadow for the given object
-    void            CreateShadow(int objRank);
+    void            CreateShadowSpot(int objRank);
     //! Deletes the shadow for given object
-    void            DeleteShadow(int objRank);
+    void            DeleteShadowSpot(int objRank);
 
     //@{
     //! Management of different shadow params
-    void            SetObjectShadowHide(int objRank, bool hide);
-    void            SetObjectShadowType(int objRank, EngineShadowType type);
-    void            SetObjectShadowPos(int objRank, const Math::Vector& pos);
-    void            SetObjectShadowAngle(int objRank, float angle);
-    void            SetObjectShadowRadius(int objRank, float radius);
-    void            SetObjectShadowIntensity(int objRank, float intensity);
-    void            SetObjectShadowHeight(int objRank, float height);
-    void            UpdateObjectShadowNormal(int objRank);
+    void            SetObjectShadowSpotHide(int objRank, bool hide);
+    void            SetObjectShadowSpotType(int objRank, EngineShadowType type);
+    void            SetObjectShadowSpotPos(int objRank, const Math::Vector& pos);
+    void            SetObjectShadowSpotAngle(int objRank, float angle);
+    void            SetObjectShadowSpotRadius(int objRank, float radius);
+    void            SetObjectShadowSpotIntensity(int objRank, float intensity);
+    void            SetObjectShadowSpotHeight(int objRank, float height);
+    void            UpdateObjectShadowSpotNormal(int objRank);
     //@}
 
     //! Lists the ranks of objects and subobjects selected
@@ -1330,7 +1330,7 @@ protected:
     //! Object parameters
     std::vector<EngineObject>     m_objects;
     //! Shadow list
-    std::vector<EngineShadow>     m_shadows;
+    std::vector<EngineShadow>     m_shadowSpots;
     //! Ground spot list
     std::vector<EngineGroundSpot> m_groundSpots;
     //! Ground mark

@@ -291,7 +291,7 @@ bool CMotionWorm::EventFrame(const Event &event)
         radius = radius*1.3f-0.3f;
         if ( radius < 0.0f )  radius = 0.0f;
         radius *= 5.0f;
-        m_engine->SetObjectShadowRadius(m_object->GetObjectRank(0), radius);
+        m_engine->SetObjectShadowSpotRadius(m_object->GetObjectRank(0), radius);
 
         pos.x = px+       sinf(m_armTimeMarch*4.0f+0.5f*i)*0.6f;
         pos.y = height[i]+sinf(m_armTimeMarch*4.0f+0.5f*i)*0.2f*m_armLinSpeed;
