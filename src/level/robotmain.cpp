@@ -106,6 +106,7 @@
 #include "ui/screen/screen_loading.h"
 
 #include <iomanip>
+#include <stdexcept>
 
 #include <clipboard/clipboard.h>
 #include <boost/lexical_cast.hpp>

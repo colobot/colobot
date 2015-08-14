@@ -31,6 +31,8 @@
 
 #include "script/scriptfunc.h"
 
+#include <stdexcept>
+
 
 CObject::CObject(int id, ObjectType type)
     : m_id(id)

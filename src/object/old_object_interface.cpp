@@ -19,6 +19,8 @@
 
 #include "object/old_object_interface.h"
 
+#include <stdexcept>
+
 
 void COldObjectInterface::Simplify()
 {
