@@ -288,6 +288,13 @@ bool CEngine::Create()
     m_size = m_app->GetVideoConfig().size;
     m_mouseSize = Math::Point(0.04f, 0.04f * (m_size.x / m_size.y));
 
+    // Use the setters to set defaults, because they automatically disable what is not supported
+    SetShadowMapping(m_shadowMapping);
+    SetShadowMappingQuality(m_qualityShadows);
+    SetShadowMappingOffscreen(m_offscreenShadowRendering);
+    SetShadowMappingOffscreenResolution(m_offscreenShadowRenderingResolution);
+    SetMultiSample(m_multisample);
+
     m_modelManager = MakeUnique<COldModelManager>(this);
     m_pyroManager = MakeUnique<CPyroManager>();
     m_lightMan   = MakeUnique<CLightManager>(this);

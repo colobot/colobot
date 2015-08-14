@@ -417,13 +417,14 @@ void CScreenSetupGraphics::UpdateSetupButtons()
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING));
     if ( pc != 0 )
     {
+        pc->SetState(STATE_ENABLE, m_engine->IsShadowMappingSupported());
         pc->SetState(STATE_CHECK, m_engine->GetShadowMapping());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING_QUALITY));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_ENABLE, m_engine->GetShadowMapping());
+        pc->SetState(STATE_ENABLE, m_engine->GetShadowMapping() && m_engine->IsShadowMappingQualitySupported());
         pc->SetState(STATE_CHECK, m_engine->GetShadowMapping() && m_engine->GetShadowMappingQuality());
     }
 
