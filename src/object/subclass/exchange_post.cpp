@@ -262,7 +262,7 @@ CAutoInfo::CAutoInfo(CExchangePost* object)
       m_speed(0.0f),
       m_timeVirus(0.0f),
       m_lastParticle(0.0f),
-      m_lastVirus(0.0f)
+      m_lastVirus(false)
 {
     Init();
 }

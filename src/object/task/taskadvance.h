@@ -47,6 +47,6 @@ protected:
     Math::Vector    m_startPos;
     float       m_lastDist = 0.0f;
     float       m_fixTime = 0.0f;
-    bool        m_bError = 0.0f;
+    bool        m_bError = false;
 };
 

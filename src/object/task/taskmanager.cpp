@@ -184,7 +184,7 @@ Error CTaskManager::StartTaskShield(TaskShieldMode mode, float delay)
 
 Error CTaskManager::StartTaskFire(float delay)
 {
-    m_bPilot = true; // TODO: this is set here, but never unset - is this right?
+    m_bPilot = true;
     return StartTask<CTaskFire>(delay);
 }
 
