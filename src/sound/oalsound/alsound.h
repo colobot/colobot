@@ -86,7 +86,6 @@ public:
     bool StopAll() override;
     bool MuteAll(bool mute) override;
 
-    bool PlayMusic(int rank, bool repeat, float fadeTime=2.0f) override;
     bool PlayMusic(const std::string &filename, bool repeat, float fadeTime=2.0f) override;
     bool RestartMusic() override;
     void SuspendMusic() override;
@@ -116,4 +115,3 @@ private:
     Math::Vector m_eye;
     Math::Vector m_lookat;
 };
-

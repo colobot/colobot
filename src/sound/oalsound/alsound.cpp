@@ -156,12 +156,12 @@ bool ALSound::Cache(SoundType sound, const std::string &filename)
 
 bool ALSound::CacheMusic(const std::string &filename)
 {
-    if (m_music.find("music/"+filename) == m_music.end())
+    if (m_music.find(filename) == m_music.end())
     {
         auto buffer = MakeUnique<Buffer>();
-        if (buffer->LoadFromFile("music/"+filename, static_cast<SoundType>(-1)))
+        if (buffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
         {
-            m_music["music/"+filename] = std::move(buffer);
+            m_music[filename] = std::move(buffer);
             return true;
         }
     }
@@ -175,7 +175,7 @@ bool ALSound::IsCached(SoundType sound)
 
 bool ALSound::IsCachedMusic(const std::string &filename)
 {
-    return m_music.find("music/"+filename) != m_music.end();
+    return m_music.find(filename) != m_music.end();
 }
 
 int ALSound::GetPriority(SoundType sound)
@@ -594,13 +594,6 @@ void ALSound::SetListener(const Math::Vector &eye, const Math::Vector &lookat)
 }
 
 
-bool ALSound::PlayMusic(int rank, bool repeat, float fadeTime)
-{
-    std::stringstream filename;
-    filename << "music" << std::setfill('0') << std::setw(3) << rank << ".ogg";
-    return PlayMusic(filename.str(), repeat, fadeTime);
-}
-
 bool ALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime)
 {
     if (!m_enabled)
@@ -611,10 +604,10 @@ bool ALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime
     Buffer *buffer = nullptr;
 
     // check if we have music in cache
-    if (m_music.find("music/"+filename) == m_music.end())
+    if (m_music.find(filename) == m_music.end())
     {
         GetLogger()->Debug("Music %s was not cached!\n", filename.c_str());
-        /* TODO: if (!boost::filesystem::exists("music/"+filename))
+        /* TODO: if (!boost::filesystem::exists(filename))
         {
             GetLogger()->Debug("Requested music %s was not found.\n", filename.c_str());
             return false;
@@ -622,16 +615,16 @@ bool ALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime
 
         auto newBuffer = MakeUnique<Buffer>();
         buffer = newBuffer.get();
-        if (!newBuffer->LoadFromFile("music/"+filename, static_cast<SoundType>(-1)))
+        if (!newBuffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
         {
             return false;
         }
-        m_music["music/"+filename] = std::move(newBuffer);
+        m_music[filename] = std::move(newBuffer);
     }
     else
     {
         GetLogger()->Debug("Music loaded from cache\n");
-        buffer = m_music["music/"+filename].get();
+        buffer = m_music[filename].get();
     }
 
     if (m_currentMusic)

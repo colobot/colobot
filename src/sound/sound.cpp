@@ -56,10 +56,10 @@ void CSoundInterface::CacheAll()
 
 void CSoundInterface::AddMusicFiles()
 {
-    CacheMusic("Intro1.ogg");
-    CacheMusic("Intro2.ogg");
-    CacheMusic("music010.ogg");
-    CacheMusic("music011.ogg");
+    CacheMusic("music/Intro1.ogg");
+    CacheMusic("music/Intro2.ogg");
+    CacheMusic("music/music010.ogg");
+    CacheMusic("music/music011.ogg");
 }
 
 bool CSoundInterface::Cache(SoundType sound, const std::string &file)
@@ -154,11 +154,6 @@ bool CSoundInterface::StopAll()
 }
 
 bool CSoundInterface::MuteAll(bool bMute)
-{
-    return true;
-}
-
-bool CSoundInterface::PlayMusic(int rank, bool repeat, float fadeTime)
 {
     return true;
 }

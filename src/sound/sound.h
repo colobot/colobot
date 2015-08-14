@@ -202,14 +202,6 @@ public:
     virtual bool MuteAll(bool mute);
 
     /** Start playing music
-     * \param rank - track number
-     * \param repeat - repeat playing
-     * \param fadeTime - time of transition between music
-     * \return return true on success
-     */
-    virtual bool PlayMusic(int rank, bool repeat, float fadeTime=2.0f);
-
-    /** Start playing music
      * \param filename - name of file to play
      * \param repeat - repeat playing
      * \param fadeTime - time of transition between music
@@ -248,4 +240,3 @@ public:
       */
      virtual void StopPauseMusic();
 };
-

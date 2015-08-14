@@ -2877,7 +2877,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 std::string filename = line->GetParam("filename")->AsPath("music");
                 m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, filename);
-                m_sound->CacheMusic(std::string("../")+filename);
+                m_sound->CacheMusic(filename);
                 continue;
             }
 
@@ -2885,7 +2885,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 auto audioChange = MakeUnique<CAudioChangeCondition>();
                 audioChange->Read(line.get());
-                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, CResourceManager::CleanPath("music/"+audioChange->music));
+                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, audioChange->music);
                 m_sound->CacheMusic(audioChange->music);
                 m_audioChange.push_back(std::move(audioChange));
                 continue;
@@ -2903,7 +2903,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     if (trackid != 0)
                     {
                         std::stringstream filenameStr;
-                        filenameStr << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
+                        filenameStr << "music/music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
                         m_audioTrack = filenameStr.str();
                     }
                     else
@@ -2915,7 +2915,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     if (line->GetParam("filename")->IsDefined())
                     {
-                        m_audioTrack = "../"+line->GetParam("filename")->AsPath("music");
+                        m_audioTrack = line->GetParam("filename")->AsPath("music");
                     }
                     else
                     {
@@ -2929,7 +2929,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (line->GetParam("satcom")->IsDefined())
                 {
-                    m_satcomTrack = "../"+line->GetParam("satcom")->AsPath("music");
+                    m_satcomTrack = line->GetParam("satcom")->AsPath("music");
                     m_satcomRepeat = line->GetParam("satcomRepeat")->AsBool(true);
                 }
                 else
@@ -2939,7 +2939,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (line->GetParam("editor")->IsDefined())
                 {
-                    m_editorTrack = "../"+line->GetParam("editor")->AsPath("music");
+                    m_editorTrack = line->GetParam("editor")->AsPath("music");
                     m_editorRepeat = line->GetParam("editorRepeat")->AsBool(true);
                 }
                 else
@@ -2949,18 +2949,18 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (!m_audioTrack.empty())
                 {
-                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, CResourceManager::CleanPath("music/"+m_audioTrack));
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_audioTrack);
                     m_sound->CacheMusic(m_audioTrack);
                 }
                 if (!m_satcomTrack.empty())
                 {
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_satcomTrack);
                     m_sound->CacheMusic(m_satcomTrack);
-                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, CResourceManager::CleanPath("music/"+m_satcomTrack));
                 }
                 if (!m_editorTrack.empty())
                 {
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_editorTrack);
                     m_sound->CacheMusic(m_editorTrack);
-                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, CResourceManager::CleanPath("music/"+m_editorTrack));
                 }
                 continue;
             }

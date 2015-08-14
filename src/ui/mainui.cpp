@@ -212,9 +212,9 @@ void CMainUserInterface::ChangePhase(Phase phase)
 
     if ( IsMainMenuPhase(m_phase) )
     {
-        if (!m_sound->IsPlayingMusic() && m_sound->IsCachedMusic("Intro1.ogg"))
+        if (!m_sound->IsPlayingMusic() && m_sound->IsCachedMusic("music/Intro1.ogg"))
         {
-            m_sound->PlayMusic("Intro1.ogg", false);
+            m_sound->PlayMusic("music/Intro1.ogg", false);
         }
     }
 
@@ -238,9 +238,9 @@ bool CMainUserInterface::EventProcess(const Event &event)
     {
         if ( IsMainMenuPhase(m_phase) )
         {
-            if (!m_sound->IsPlayingMusic() && m_sound->IsCachedMusic("Intro2.ogg"))
+            if (!m_sound->IsPlayingMusic() && m_sound->IsCachedMusic("music/Intro2.ogg"))
             {
-                m_sound->PlayMusic("Intro2.ogg", true);
+                m_sound->PlayMusic("music/Intro2.ogg", true);
             }
         }
 
