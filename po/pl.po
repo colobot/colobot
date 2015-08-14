@@ -188,9 +188,6 @@ msgstr "Wstecz\\Porusza do tyłu"
 msgid "Bad argument for \"new\""
 msgstr "Zły argument dla funkcji \"new\""
 
-msgid "Better shadow maps\\Shadow transparency and self shadowing"
-msgstr ""
-
 msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
 msgstr ""
 "Duże wcięcie\\2 lub 4 spacje wcięcia na każdy poziom zdefiniowany przez "
@@ -514,6 +511,9 @@ msgstr "Kurz\\Kurz i bród na robotach i budynkach"
 
 msgid "Dynamic lighting\\Mobile light sources"
 msgstr "Dynamiczne oświetlenie\\Ruchome źródła światła"
+
+msgid "Dynamic shadows\\Beautiful shadows!"
+msgstr ""
 
 msgid "Edit the selected program"
 msgstr "Edytuj zaznaczony program"
@@ -1183,6 +1183,9 @@ msgstr "Publiczny\\Folder ogólnodostępny"
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Wstrząsy przy wybuchach\\Ekran trzęsie się podczas wybuchów"
 
+msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
+msgstr ""
+
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr "Wyjdź\\Kończy grę Colobot: Gold Edition"
 
@@ -1326,9 +1329,6 @@ msgstr "Zaznacz astronautę\\Zaznacza astronautę"
 msgid "Semicolon terminator missing"
 msgstr "Brak średnika na końcu wiersza"
 
-msgid "Shadow mapping\\Beautiful shadows!"
-msgstr ""
-
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr ""
 
@@ -1359,7 +1359,8 @@ msgstr "Pokaż rozwiązanie"
 msgid "Sign \" : \" missing"
 msgstr "Brak znaku \" :\""
 
-msgid "Simple shadows\\Shadows on the ground"
+#, fuzzy
+msgid "Simple shadows\\Shadows spots on the ground"
 msgstr "Proste cienie\\Cienie na ziemi"
 
 msgid "Size 1"

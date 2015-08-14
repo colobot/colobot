@@ -957,13 +957,6 @@ public:
     //@}
 
     //@{
-    //! Management of the global mode of shading
-    // NOTE: This is an user configuration setting
-    void            SetShadow(bool mode);
-    bool            GetShadow();
-    //@}
-
-    //@{
     //! Management of the global mode of contamination
     // NOTE: This is an user configuration setting
     void            SetDirty(bool mode);
@@ -1198,8 +1191,8 @@ protected:
     //! Updates the textures used for drawing ground spot
     void        UpdateGroundSpotTextures();
 
-    //! Draws shadows
-    void        DrawShadow();
+    //! Draws old-style shadow spots
+    void        DrawShadowSpots();
     //! Draws the gradient background
     void        DrawBackground();
     //! Draws the gradient background
@@ -1381,7 +1374,6 @@ protected:
     bool            m_backForce;
     float           m_tracePrecision;
 
-    bool            m_shadowVisible;
     bool            m_dirty;
     bool            m_fog;
     float           m_particleDensity;

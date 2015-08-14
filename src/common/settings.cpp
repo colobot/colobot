@@ -81,7 +81,6 @@ void CSettings::SaveSettings()
     GetConfigFile().SetIntProperty("Setup", "Autosave", main->GetAutosave());
     GetConfigFile().SetIntProperty("Setup", "AutosaveInterval", main->GetAutosaveInterval());
     GetConfigFile().SetIntProperty("Setup", "AutosaveSlots", main->GetAutosaveSlots());
-    GetConfigFile().SetIntProperty("Setup", "GroundShadow", engine->GetShadow());
     GetConfigFile().SetIntProperty("Setup", "ObjectDirty", engine->GetDirty());
     GetConfigFile().SetIntProperty("Setup", "FogMode", engine->GetFog());
     GetConfigFile().SetIntProperty("Setup", "LightMode", engine->GetLightMode());
@@ -173,9 +172,6 @@ void CSettings::LoadSettings()
 
     if (GetConfigFile().GetIntProperty("Setup", "AutosaveSlots", iValue))
         main->SetAutosaveSlots(iValue);
-
-    if (GetConfigFile().GetIntProperty("Setup", "GroundShadow", iValue))
-        engine->SetShadow(iValue);
 
     if (GetConfigFile().GetIntProperty("Setup", "ObjectDirty", iValue))
         engine->SetDirty(iValue);

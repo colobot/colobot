@@ -2772,7 +2772,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_ui->GetLoadingScreen()->SetProgress(0.1f, RT_LOADING_LEVEL_SETTINGS);
 
         int rankObj = 0;
-        int rankGadget = 0;
         CObject* sel = 0;
 
         /*

@@ -116,7 +116,7 @@ void CScreenSetupGraphics::CreateInterface()
     pos.y = 0.65f;
     ddim.x = dim.x*3;
     ddim.y = dim.y*0.5f;
-    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SHADOW);
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SHADOW_SPOTS);
     pc->SetState(STATE_SHADOW);
     pos.y -= 0.048f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SHADOW_MAPPING);
@@ -124,10 +124,6 @@ void CScreenSetupGraphics::CreateInterface()
     pos.y -= 0.048f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SHADOW_MAPPING_QUALITY);
     pc->SetState(STATE_SHADOW);
-    if (!m_engine->IsShadowMappingQualitySupported())
-    {
-        pc->ClearState(STATE_ENABLE);
-    }
     pos.y -= 0.048f*1.5f;
 
     ddim.x = dim.x*2.2f;
@@ -139,7 +135,8 @@ void CScreenSetupGraphics::CreateInterface()
     };
     if (m_engine->GetDevice()->IsFramebufferSupported())
     {
-        for(int i = 128; i <= m_engine->GetDevice()->GetMaxTextureSize(); i *= 2)
+        const int MAX_SHADOW_TEXTURE_SIZE = 8192;
+        for(int i = 128; i <= Math::Min(m_engine->GetDevice()->GetMaxTextureSize(), MAX_SHADOW_TEXTURE_SIZE); i *= 2)
             shadowOptions[i] = StrUtils::ToString<int>(i)+"x"+StrUtils::ToString<int>(i);
         pes->SetPossibleValues(shadowOptions);
     }
@@ -249,43 +246,42 @@ bool CScreenSetupGraphics::EventProcess(const Event &event)
 
     switch( event.type )
     {
-        case EVENT_INTERFACE_SHADOW:
-            m_engine->SetShadow(!m_engine->GetShadow());
+        case EVENT_INTERFACE_PARTI:
+        case EVENT_INTERFACE_CLIP:
             ChangeSetupButtons();
-            UpdateSetupButtons();
             break;
 
         case EVENT_INTERFACE_DIRTY:
             m_engine->SetDirty(!m_engine->GetDirty());
-            ChangeSetupButtons();
             UpdateSetupButtons();
             break;
 
         case EVENT_INTERFACE_FOG:
             m_engine->SetFog(!m_engine->GetFog());
             m_camera->SetOverBaseColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)); // TODO: color ok?
-            ChangeSetupButtons();
             UpdateSetupButtons();
             break;
 
         case EVENT_INTERFACE_LIGHT:
             m_engine->SetLightMode(!m_engine->GetLightMode());
-            ChangeSetupButtons();
             UpdateSetupButtons();
             break;
 
-        case EVENT_INTERFACE_PARTI:
-        case EVENT_INTERFACE_CLIP:
-            ChangeSetupButtons();
+        case EVENT_INTERFACE_SHADOW_SPOTS:
+            m_engine->SetShadowMapping(false);
+            m_engine->SetShadowMappingQuality(false);
+            UpdateSetupButtons();
             break;
 
         case EVENT_INTERFACE_SHADOW_MAPPING:
-            m_engine->SetShadowMapping(!m_engine->GetShadowMapping());
+            m_engine->SetShadowMapping(true);
+            m_engine->SetShadowMappingQuality(false);
             UpdateSetupButtons();
             break;
 
         case EVENT_INTERFACE_SHADOW_MAPPING_QUALITY:
-            m_engine->SetShadowMappingQuality(!m_engine->GetShadowMappingQuality());
+            m_engine->SetShadowMapping(true);
+            m_engine->SetShadowMappingQuality(true);
             UpdateSetupButtons();
             break;
 
@@ -330,6 +326,72 @@ void CScreenSetupGraphics::UpdateSetupButtons()
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
+    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_PARTI));
+    if ( pv != 0 )
+    {
+        value = m_engine->GetParticleDensity();
+        pv->SetValue(value);
+    }
+
+    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_CLIP));
+    if ( pv != 0 )
+    {
+        value = m_engine->GetClippingDistance();
+        pv->SetValue(value);
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_DIRTY));
+    if ( pc != 0 )
+    {
+        pc->SetState(STATE_CHECK, m_engine->GetDirty());
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FOG));
+    if ( pc != 0 )
+    {
+        pc->SetState(STATE_CHECK, m_engine->GetFog());
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_LIGHT));
+    if ( pc != 0 )
+    {
+        pc->SetState(STATE_CHECK, m_engine->GetLightMode());
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_SPOTS));
+    if ( pc != 0 )
+    {
+        pc->SetState(STATE_CHECK, !m_engine->GetShadowMapping());
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING));
+    if ( pc != 0 )
+    {
+        pc->SetState(STATE_ENABLE, m_engine->IsShadowMappingSupported());
+        pc->SetState(STATE_CHECK, m_engine->GetShadowMapping() && !m_engine->GetShadowMappingQuality());
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING_QUALITY));
+    if ( pc != 0 )
+    {
+        pc->SetState(STATE_ENABLE, m_engine->IsShadowMappingQualitySupported());
+        pc->SetState(STATE_CHECK, m_engine->GetShadowMapping() && m_engine->GetShadowMappingQuality());
+    }
+
+    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING_BUFFER));
+    if ( pes != 0 )
+    {
+        pes->SetState(STATE_ENABLE, m_engine->GetShadowMapping() && m_engine->GetDevice()->IsFramebufferSupported());
+        if (!m_engine->GetShadowMappingOffscreen())
+        {
+            pes->SetVisibleValue(0);
+        }
+        else
+        {
+            pes->SetVisibleValue(m_engine->GetShadowMappingOffscreenResolution());
+        }
+    }
+
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_FILTER));
     if ( pes != 0 )
     {
@@ -353,73 +415,6 @@ void CScreenSetupGraphics::UpdateSetupButtons()
     if ( pes != 0 )
     {
         pes->SetVisibleValue(m_engine->GetMultiSample());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_ENABLE, m_engine->IsShadowMappingSupported());
-        pc->SetState(STATE_CHECK, m_engine->GetShadowMapping());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING_QUALITY));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_ENABLE, m_engine->GetShadowMapping() && m_engine->IsShadowMappingQualitySupported());
-        pc->SetState(STATE_CHECK, m_engine->GetShadowMapping() && m_engine->GetShadowMappingQuality());
-    }
-
-    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING_BUFFER));
-    if ( pes != 0 )
-    {
-        pes->SetState(STATE_ENABLE, m_engine->GetShadowMapping() && m_engine->GetDevice()->IsFramebufferSupported());
-        if (!m_engine->GetShadowMappingOffscreen())
-        {
-            pes->SetVisibleValue(0);
-        }
-        else
-        {
-            pes->SetVisibleValue(m_engine->GetShadowMappingOffscreenResolution());
-        }
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_ENABLE, !m_engine->GetShadowMapping());
-        pc->SetState(STATE_CHECK, !m_engine->GetShadowMapping() && m_engine->GetShadow());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_DIRTY));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_CHECK, m_engine->GetDirty());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FOG));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_CHECK, m_engine->GetFog());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_LIGHT));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_CHECK, m_engine->GetLightMode());
-    }
-
-    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_PARTI));
-    if ( pv != 0 )
-    {
-        value = m_engine->GetParticleDensity();
-        pv->SetValue(value);
-    }
-
-    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_CLIP));
-    if ( pv != 0 )
-    {
-        value = m_engine->GetClippingDistance();
-        pv->SetValue(value);
     }
 }
 
@@ -502,7 +497,6 @@ void CScreenSetupGraphics::ChangeSetupQuality(int quality)
     float   value;
 
     bEnable = true; //(quality >= 0);
-    m_engine->SetShadow(bEnable);
     m_engine->SetDirty(bEnable);
     m_engine->SetFog(bEnable);
     m_engine->SetLightMode(bEnable);

@@ -108,7 +108,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
 
     m_render            = true;
     m_screenshotMode    = false;
-    m_shadowVisible     = true;
     m_dirty             = true;
     m_fog               = true;
     m_secondTex         = "";
@@ -2583,16 +2582,6 @@ float CEngine::GetFocus()
     return m_focus;
 }
 
-void CEngine::SetShadow(bool mode)
-{
-    m_shadowVisible = mode;
-}
-
-bool CEngine::GetShadow()
-{
-    return m_shadowVisible;
-}
-
 void CEngine::SetShadowColor(float value)
 {
     m_shadowColor = value;
@@ -3207,9 +3196,9 @@ void CEngine::Draw3DScene()
     if (!m_qualityShadows)
         UseShadowMapping(false);
 
-    // Draws the shadows, if shadows enabled and shadow mapping disabled
-    if (m_shadowVisible && !m_shadowMapping)
-        DrawShadow();
+    // Draws the old-style shadow spots, if shadow mapping disabled
+    if (!m_shadowMapping)
+        DrawShadowSpots();
 
 
     m_app->StopPerformanceCounter(PCNT_RENDER_TERRAIN);
@@ -3829,7 +3818,7 @@ void CEngine::DrawInterface()
             if (! m_objects[objRank].used)
                 continue;
 
-            if (m_shadowVisible && m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+            if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
                 continue;
 
             if (! m_objects[objRank].drawFront)
@@ -4161,7 +4150,7 @@ void CEngine::UpdateGroundSpotTextures()
     m_firstGroundSpot = false;
 }
 
-void CEngine::DrawShadow()
+void CEngine::DrawShadowSpots()
 {
     m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);

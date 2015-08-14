@@ -180,9 +180,6 @@ msgstr "Reculer\\Moteur en arrière"
 msgid "Bad argument for \"new\""
 msgstr "Mauvais argument pour \"new\""
 
-msgid "Better shadow maps\\Shadow transparency and self shadowing"
-msgstr ""
-
 msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
 msgstr "Grande indentation\\Indente avec 2 ou 4 espaces"
 
@@ -507,6 +504,9 @@ msgstr "Salissures\\Salissures des robots et bâtiments"
 
 msgid "Dynamic lighting\\Mobile light sources"
 msgstr "Lumières dynamiques\\Éclairages mobiles"
+
+msgid "Dynamic shadows\\Beautiful shadows!"
+msgstr ""
 
 msgid "Edit the selected program"
 msgstr "Édite le programme sélectionné"
@@ -1179,6 +1179,9 @@ msgstr "Public\\Dossier commun à tous les joueurs"
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Secousses lors d'explosions\\L'écran vibre lors d'une explosion"
 
+msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
+msgstr ""
+
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr ""
 
@@ -1324,9 +1327,6 @@ msgstr "Sélectionner le cosmonaute\\Sélectionner le cosmonaute"
 msgid "Semicolon terminator missing"
 msgstr "Terminateur point-virgule non trouvé"
 
-msgid "Shadow mapping\\Beautiful shadows!"
-msgstr ""
-
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr ""
 
@@ -1358,7 +1358,7 @@ msgid "Sign \" : \" missing"
 msgstr "Séparateur \" : \" attendu"
 
 #, fuzzy
-msgid "Simple shadows\\Shadows on the ground"
+msgid "Simple shadows\\Shadows spots on the ground"
 msgstr "Ombres\\Ombres projetées au sol"
 
 msgid "Size 1"

@@ -180,9 +180,6 @@ msgstr "Назад\\Двигаться назад"
 msgid "Bad argument for \"new\""
 msgstr "Неверный аргумент для \"new\""
 
-msgid "Better shadow maps\\Shadow transparency and self shadowing"
-msgstr ""
-
 msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
 msgstr "Большой отступ\\Отступать на 2 или 4 пробела, в зависимости от скобок"
 
@@ -506,6 +503,9 @@ msgstr "Пыль\\Пыль и грязь на ботах и зданиях"
 
 msgid "Dynamic lighting\\Mobile light sources"
 msgstr "Динамическое освещение\\Подвижные источники света"
+
+msgid "Dynamic shadows\\Beautiful shadows!"
+msgstr ""
 
 msgid "Edit the selected program"
 msgstr "Изменить выбранную программу"
@@ -1179,6 +1179,9 @@ msgstr "Общее\\Общая папка"
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Землетряс. при взрывах\\Тряска экрана при взрывах"
 
+msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
+msgstr ""
+
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr ""
 
@@ -1322,9 +1325,6 @@ msgstr "Выбор астронавта\\Выбор астронавта"
 msgid "Semicolon terminator missing"
 msgstr "Отсутствует точка с запятой"
 
-msgid "Shadow mapping\\Beautiful shadows!"
-msgstr ""
-
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr ""
 
@@ -1356,7 +1356,7 @@ msgid "Sign \" : \" missing"
 msgstr "Знак \" : \" отсутствует"
 
 #, fuzzy
-msgid "Simple shadows\\Shadows on the ground"
+msgid "Simple shadows\\Shadows spots on the ground"
 msgstr "Тени\\Тени на земле"
 
 msgid "Size 1"

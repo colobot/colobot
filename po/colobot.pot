@@ -444,13 +444,13 @@ msgstr ""
 msgid "MSAA\\Multisample anti-aliasing"
 msgstr ""
 
-msgid "Simple shadows\\Shadows on the ground"
+msgid "Simple shadows\\Shadows spots on the ground"
 msgstr ""
 
-msgid "Shadow mapping\\Beautiful shadows!"
+msgid "Dynamic shadows\\Beautiful shadows!"
 msgstr ""
 
-msgid "Better shadow maps\\Shadow transparency and self shadowing"
+msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
 msgstr ""
 
 msgid "Shadow resolution\\Higher means better range and quality, but slower"

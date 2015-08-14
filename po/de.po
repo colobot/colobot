@@ -185,9 +185,6 @@ msgstr "Rückwärts\\Bewegung nach hinten"
 msgid "Bad argument for \"new\""
 msgstr "Falsche Argumente für \"new\""
 
-msgid "Better shadow maps\\Shadow transparency and self shadowing"
-msgstr ""
-
 msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
 msgstr "Einrücken mit 4 Leerstellen\\Einrücken mit 2 oder 4 Leerstellen"
 
@@ -512,6 +509,9 @@ msgstr "Schmutz\\Schmutz auf Robotern und Bauten"
 
 msgid "Dynamic lighting\\Mobile light sources"
 msgstr "Dynamische Beleuchtung\\Dynamische Beleuchtung"
+
+msgid "Dynamic shadows\\Beautiful shadows!"
+msgstr ""
 
 msgid "Edit the selected program"
 msgstr "Gewähltes Programm bearbeiten"
@@ -1183,6 +1183,9 @@ msgstr "Öffentlich\\Gemeinsamer Ordner für alle Spieler"
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Beben bei Explosionen\\Die Kamera bebt bei Explosionen"
 
+msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
+msgstr ""
+
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr ""
 
@@ -1328,9 +1331,6 @@ msgstr "Astronauten auswählen\\Astronauten auswählen"
 msgid "Semicolon terminator missing"
 msgstr "Es fehlt ein Strichpunkt \";\" am Ende der Anweisung"
 
-msgid "Shadow mapping\\Beautiful shadows!"
-msgstr ""
-
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr ""
 
@@ -1362,7 +1362,7 @@ msgid "Sign \" : \" missing"
 msgstr "Es fehlt ein Doppelpunkt \" : \""
 
 #, fuzzy
-msgid "Simple shadows\\Shadows on the ground"
+msgid "Simple shadows\\Shadows spots on the ground"
 msgstr "Schatten\\Schlagschatten auf dem Boden"
 
 msgid "Size 1"
