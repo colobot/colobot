@@ -30,7 +30,7 @@ const float TEST_TOLERANCE = 1e-5;
 // Test for rewritten function RotateAngle()
 TEST(GeometryTest, RotateAngleTest)
 {
-    EXPECT_TRUE(Math::IsEqual(Math::RotateAngle(0.0f, 0.0f), 0.0f, TEST_TOLERANCE));
+    EXPECT_TRUE(Math::IsEqual(Math::RotateAngle(0.0f, 0.0f), 2.0f, TEST_TOLERANCE));
 
     EXPECT_TRUE(Math::IsEqual(Math::RotateAngle(1.0f, 0.0f), 0.0f, TEST_TOLERANCE));
 
