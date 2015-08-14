@@ -2410,7 +2410,7 @@ bool CRobotMain::EventFrame(const Event &event)
             {
                 Math::Vector eye = m_engine->GetLookatPt();
                 float dist = Math::Distance(eye, obj->GetPosition());
-                if ( dist < obj->GetProxyActivate() )
+                if ( dist < obj->GetProxyDistance() )
                 {
                     obj->SetProxyActivate(false);
                     CreateShortcuts();
