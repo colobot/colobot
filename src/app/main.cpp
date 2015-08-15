@@ -135,43 +135,53 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     InitializeEventTypeTexts();
 
     int code = 0;
-    while (true)
+    try
     {
-        CApplication app(systemUtils.get()); // single instance of the application
-
-        ParseArgsStatus status = app.ParseArguments(argc, argv);
-        if (status == PARSE_ARGS_FAIL)
+        while (true)
         {
-            systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
-            return app.GetExitCode();
-        }
-        else if (status == PARSE_ARGS_HELP)
-        {
-            return app.GetExitCode();
-        }
+            CApplication app(systemUtils.get()); // single instance of the application
 
-
-        if (! app.Create())
-        {
-            code = app.GetExitCode();
-            if (code != 0 && !app.GetErrorMessage().empty())
+            ParseArgsStatus status = app.ParseArguments(argc, argv);
+            if (status == PARSE_ARGS_FAIL)
             {
-                systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app.GetErrorMessage());
+                systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
+                return app.GetExitCode();
             }
-            logger.Info("Didn't run main loop. Exiting with code %d\n", code);
-            return code;
+            else if (status == PARSE_ARGS_HELP)
+            {
+                return app.GetExitCode();
+            }
+
+
+            if (!app.Create())
+            {
+                code = app.GetExitCode();
+                if (code != 0 && !app.GetErrorMessage().empty())
+                {
+                    systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app.GetErrorMessage());
+                }
+                logger.Info("Didn't run main loop. Exiting with code %d\n", code);
+                return code;
+            }
+
+            code = app.Run();
+
+            bool restarting = app.IsRestarting();
+
+            if (!restarting)
+                break;
         }
-
-        code = app.Run();
-
-        bool restarting = app.IsRestarting();
-
-        if (!restarting)
-            break;
+    }
+    catch (std::exception& e)
+    {
+        CSignalHandlers::HandleUncaughtException(e);
+    }
+    catch (...)
+    {
+        CSignalHandlers::HandleOtherUncaughtException();
     }
 
     logger.Info("Exiting with code %d\n", code);
-
     return code;
 }
 

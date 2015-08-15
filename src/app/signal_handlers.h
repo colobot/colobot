@@ -28,6 +28,9 @@ class CSignalHandlers
 public:
     static void Init(CSystemUtils* systemUtils);
 
+    static void HandleUncaughtException(const std::exception& e);
+    static void HandleOtherUncaughtException();
+
 private:
     static void SignalHandler(int sig);
     static void UnhandledExceptionHandler();
