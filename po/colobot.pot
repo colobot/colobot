@@ -270,9 +270,6 @@ msgstr ""
 msgid "Restoring saved objects"
 msgstr ""
 
-msgid "Loading programs"
-msgstr ""
-
 msgid "Restoring CBot execution state"
 msgstr ""
 

@@ -152,7 +152,6 @@ void InitializeRestext()
     stringsText[RT_LOADING_TERRAIN]        = TR("Loading terrain");
     stringsText[RT_LOADING_OBJECTS]        = TR("Loading objects");
     stringsText[RT_LOADING_OBJECTS_SAVED]  = TR("Restoring saved objects");
-    stringsText[RT_LOADING_PROGRAMS]       = TR("Loading programs");
     stringsText[RT_LOADING_CBOT_SAVE]      = TR("Restoring CBot execution state");
     stringsText[RT_LOADING_FINISHED]       = TR("Loading finished!");
     stringsText[RT_LOADING_TERRAIN_RELIEF] = TR("Terrain relief");

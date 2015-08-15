@@ -826,9 +826,6 @@ msgstr ""
 msgid "Loading objects"
 msgstr "Liste der Objekte"
 
-msgid "Loading programs"
-msgstr ""
-
 msgid "Loading terrain"
 msgstr ""
 

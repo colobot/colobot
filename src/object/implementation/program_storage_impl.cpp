@@ -248,7 +248,7 @@ void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::string& userSourc
 
         if (i < m_program.size() && !m_program[i]->loadedFromLevel)
         {
-            GetLogger()->Trace("Loading program '%s' into user directory\n", filename.c_str());
+            GetLogger()->Trace("Saving program '%s' into user directory\n", filename.c_str());
             WriteProgram(m_program[i].get(), filename);
         }
         else

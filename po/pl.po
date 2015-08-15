@@ -826,9 +826,6 @@ msgstr "Wczytywanie muzyki"
 msgid "Loading objects"
 msgstr "Wczytywanie obiektów"
 
-msgid "Loading programs"
-msgstr "Wczytywanie programów"
-
 msgid "Loading terrain"
 msgstr "Wczytywanie terenu"
 
@@ -1884,6 +1881,9 @@ msgstr "www.epsitec.com"
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr ""
 #~ "Pomoc dot. słów kluczowych\\Dokładniejsza pomoc na temat słów kluczowych"
+
+#~ msgid "Loading programs"
+#~ msgstr "Wczytywanie programów"
 
 #~ msgid "Marks on the ground\\Marks on the ground"
 #~ msgstr "Znaki na ziemi\\Znaki na ziemi"

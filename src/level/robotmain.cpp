@@ -110,25 +110,13 @@
 #include <boost/lexical_cast.hpp>
 
 
-template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
-
-
-// TODO: remove once using std::string
-const int MAX_FNAME = 255;
-
-
-
-const float UNIT = 4.0f;
-
-
-
 // Global variables.
 
+const float UNIT = 4.0f;    // default for g_unit
 float   g_unit;             // conversion factor
 
 
-
-
+template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
 
 //! Constructor of robot application
 CRobotMain::CRobotMain()
@@ -3285,7 +3273,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 // Object categories may spoil the level a bit, so hide them in release builds
                 details += ": "+CLevelParserParam::FromObjectType(params.type);
                 #endif
-                m_ui->GetLoadingScreen()->SetProgress(0.25f+objectProgress*0.5f, RT_LOADING_OBJECTS, details);
+                m_ui->GetLoadingScreen()->SetProgress(0.25f+objectProgress*0.75f, RT_LOADING_OBJECTS, details);
 
                 try
                 {
@@ -4630,7 +4618,7 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const std::string& pro
     // Object categories may spoil the level a bit, so hide them in release builds
     details += ": "+CLevelParserParam::FromObjectType(params.type);
     #endif
-    m_ui->GetLoadingScreen()->SetProgress(0.25f+objectProgress*0.5f, RT_LOADING_OBJECTS_SAVED, details);
+    m_ui->GetLoadingScreen()->SetProgress(0.25f+objectProgress*0.7f, RT_LOADING_OBJECTS_SAVED, details);
 
     CObject* obj = m_objMan->CreateObject(params);
 
