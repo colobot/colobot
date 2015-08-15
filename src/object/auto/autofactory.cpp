@@ -34,6 +34,7 @@
 #include "object/old_object.h"
 
 #include "object/interface/programmable_object.h"
+#include "object/interface/program_storage_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
@@ -399,10 +400,9 @@ bool CAutoFactory::EventProcess(const Event &event)
 
                 if ( !m_program.empty() )
                 {
-                    if (vehicle->Implements(ObjectInterfaceType::Programmable))
+                    if (vehicle->Implements(ObjectInterfaceType::Programmable) && vehicle->Implements(ObjectInterfaceType::ProgramStorage))
                     {
-                        CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(vehicle);
-                        Program* program = programmable->AddProgram();
+                        Program* program = dynamic_cast<CProgramStorageObject*>(vehicle)->AddProgram();
 
                         if (boost::regex_search(m_program, boost::regex("^[A-Za-z0-9_]+$"))) // Public function name?
                         {
@@ -418,7 +418,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                             program->script->SendScript(m_program.c_str());
                         }
 
-                        programmable->RunProgram(program);
+                        dynamic_cast<CProgrammableObject*>(vehicle)->RunProgram(program);
                     }
                 }
             }
@@ -660,15 +660,15 @@ bool CAutoFactory::CreateVehicle()
     CPhysics* physics = dynamic_cast<CMovableObject*>(vehicle)->GetPhysics();
     physics->SetFreeze(true);  // it doesn't move
 
-    if (vehicle->Implements(ObjectInterfaceType::Programmable))
+    if (vehicle->Implements(ObjectInterfaceType::ProgramStorage))
     {
-        CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(vehicle);
+        CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(vehicle);
         for ( int i=0 ; ; i++ )
         {
             char* name = m_main->GetNewScriptName(m_type, i);
             if ( name == nullptr )  break;
-            Program* prog = programmable->GetOrAddProgram(i);
-            programmable->ReadProgram(prog, name);
+            Program* prog = programStorage->GetOrAddProgram(i);
+            programStorage->ReadProgram(prog, name);
             prog->readOnly = true;
         }
     }

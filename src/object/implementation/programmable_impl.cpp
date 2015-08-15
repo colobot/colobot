@@ -48,11 +48,8 @@ CProgrammableObjectImpl::CProgrammableObjectImpl(ObjectInterfaceTypes& types, CO
       m_object(object),
       m_activity(true),
       m_cmdLine(),
-      m_program(),
       m_currentProgram(nullptr),
-      m_activeVirus(false),
       m_scriptRun(nullptr),
-      m_soluceName(""),
       m_traceRecord(false),
       m_traceOper(TO_STOP),
       m_traceAngle(0.0f),
@@ -129,160 +126,16 @@ void CProgrammableObjectImpl::StopProgram()
     m_object->UpdateInterface();
 }
 
+Program* CProgrammableObjectImpl::GetCurrentProgram()
+{
+    return m_currentProgram;
+}
+
 bool CProgrammableObjectImpl::IsProgram()
 {
     return m_currentProgram != nullptr;
 }
 
-
-// Introduces a virus into a program.
-// Returns true if it was inserted.
-
-bool CProgrammableObjectImpl::IntroduceVirus()
-{
-    if(m_program.size() == 0) return false;
-
-    for ( int i=0 ; i<50 ; i++ )
-    {
-        int programIndex = rand() % m_program.size();
-        if ( m_program[programIndex]->script->IntroduceVirus() )  // tries to introduce
-        {
-            m_activeVirus = true;  // active virus
-            return true;
-        }
-    }
-    return false;
-}
-
-// Active Virus indicates that the object is contaminated. Unlike ch'tites (??? - Programerus)
-// letters which automatically disappear after a while,
-// ActiveVirus does not disappear after you edit the program
-// (Even if the virus is not fixed).
-
-void CProgrammableObjectImpl::SetActiveVirus(bool bActive)
-{
-    m_activeVirus = bActive;
-
-    if ( !m_activeVirus )  // virus disabled?
-    {
-        m_object->SetVirusMode(false);  // chtites (??? - Programerus) letters also
-    }
-}
-
-bool CProgrammableObjectImpl::GetActiveVirus()
-{
-    return m_activeVirus;
-}
-
-
-Program* CProgrammableObjectImpl::AddProgram()
-{
-    assert(m_object->Implements(ObjectInterfaceType::Old)); //TODO
-    auto program = MakeUnique<Program>();
-    program->script = MakeUnique<CScript>(dynamic_cast<COldObject*>(this));
-    program->readOnly = false;
-    program->runnable = true;
-
-    Program* prog = program.get();
-    AddProgram(std::move(program));
-    return prog;
-}
-
-void CProgrammableObjectImpl::AddProgram(std::unique_ptr<Program> program)
-{
-    m_program.push_back(std::move(program));
-    m_object->UpdateInterface();
-}
-
-void CProgrammableObjectImpl::RemoveProgram(Program* program)
-{
-    if(m_currentProgram == program)
-    {
-        StopProgram();
-    }
-
-    m_program.erase(
-        std::remove_if(m_program.begin(), m_program.end(),
-            [program](std::unique_ptr<Program>& prog) { return prog.get() == program; }),
-        m_program.end());
-
-    m_object->UpdateInterface();
-}
-
-Program* CProgrammableObjectImpl::CloneProgram(Program* program)
-{
-    Program* newprog = AddProgram();
-
-    // TODO: Is there any reason CScript doesn't have a function to get the program code directly?
-    auto edit = MakeUnique<Ui::CEdit>();
-    edit->SetMaxChar(Ui::EDITSTUDIOMAX);
-    program->script->PutScript(edit.get(), "");
-    newprog->script->GetScript(edit.get());
-
-    return newprog;
-}
-
-std::vector<std::unique_ptr<Program>>& CProgrammableObjectImpl::GetPrograms()
-{
-    return m_program;
-}
-
-int CProgrammableObjectImpl::GetProgramCount()
-{
-    return static_cast<int>(m_program.size());
-}
-
-int CProgrammableObjectImpl::GetProgramIndex(Program* program)
-{
-    for(unsigned int i = 0; i < m_program.size(); i++)
-    {
-        if(m_program[i].get() == program)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
-int CProgrammableObjectImpl::GetProgram()
-{
-    if(m_currentProgram == nullptr)
-        return -1;
-
-    for(unsigned int i = 0; i < m_program.size(); i++)
-    {
-        if(m_program[i].get() == m_currentProgram)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
-Program* CProgrammableObjectImpl::GetProgram(int index)
-{
-    if(index < 0 || index >= static_cast<int>(m_program.size()))
-        return nullptr;
-
-    return m_program[index].get();
-}
-
-Program* CProgrammableObjectImpl::GetOrAddProgram(int index)
-{
-    if(index < 0)
-        return nullptr;
-
-    if(index < static_cast<int>(m_program.size()))
-        return m_program[index].get();
-
-    for(int i = m_program.size(); i < index; i++)
-    {
-        AddProgram();
-    }
-    return AddProgram();
-}
-
-// Name management scripts to load.
 
 void CProgrammableObjectImpl::SetScriptRun(Program* program)
 {
@@ -293,69 +146,6 @@ Program* CProgrammableObjectImpl::GetScriptRun()
 {
     return m_scriptRun;
 }
-
-void CProgrammableObjectImpl::SetSoluceName(const std::string& name)
-{
-    m_soluceName = name;
-}
-
-const std::string& CProgrammableObjectImpl::GetSoluceName()
-{
-    return m_soluceName;
-}
-
-
-// Load a script solution, in the first free script.
-// If there is already an identical script, nothing is loaded.
-
-bool CProgrammableObjectImpl::ReadSoluce(const std::string& filename)
-{
-    Program* prog = AddProgram();
-
-    if ( !ReadProgram(prog, filename) )  return false;  // load solution
-    prog->readOnly = true;
-
-    for(unsigned int i = 0; i < m_program.size(); i++)
-    {
-        if(m_program[i].get() == prog) continue;
-
-        //TODO: This is bad. It's very sensitive to things like \n vs \r\n etc.
-        if ( m_program[i]->script->Compare(prog->script.get()) )  // the same already?
-        {
-            m_program[i]->readOnly = true; // Mark is as read-only
-            RemoveProgram(prog);
-            return false;
-        }
-    }
-
-    return true;
-}
-
-// Load a script with a text file.
-
-bool CProgrammableObjectImpl::ReadProgram(Program* program, const std::string& filename)
-{
-    if ( program->script->ReadScript(filename.c_str()) )  return true;
-
-    return false;
-}
-
-// Indicates whether a program is compiled correctly.
-
-bool CProgrammableObjectImpl::GetCompile(Program* program)
-{
-    return program->script->GetCompile();
-}
-
-// Saves a script in a text file.
-
-bool CProgrammableObjectImpl::WriteProgram(Program* program, const std::string& filename)
-{
-    if ( program->script->WriteScript(filename.c_str()) )  return true;
-
-    return false;
-}
-
 
 // Load a stack of script implementation from a file.
 
@@ -369,11 +159,16 @@ bool CProgrammableObjectImpl::ReadStack(FILE *file)
         fRead(&op, sizeof(short), 1, file);  // program rank
         if ( op >= 0 )
         {
-            assert(op < static_cast<int>(m_program.size()));
-
-            //TODO: m_selScript = op;
-
-            if ( !m_program[op]->script->ReadStack(file) )  return false;
+            if (m_object->Implements(ObjectInterfaceType::ProgramStorage))
+            {
+                assert(op < static_cast<int>(dynamic_cast<CProgramStorageObject*>(m_object)->GetProgramCount()));
+                m_currentProgram = dynamic_cast<CProgramStorageObject*>(m_object)->GetProgram(op);
+                if ( !m_currentProgram->script->ReadStack(file) )  return false;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 
@@ -392,7 +187,11 @@ bool CProgrammableObjectImpl::WriteStack(FILE *file)
         op = 1;  // run
         fWrite(&op, sizeof(short), 1, file);
 
-        op = GetProgram();
+        op = -1;
+        if (m_object->Implements(ObjectInterfaceType::ProgramStorage))
+        {
+            op = dynamic_cast<CProgramStorageObject*>(m_object)->GetProgramIndex(m_currentProgram);
+        }
         fWrite(&op, sizeof(short), 1, file);
 
         return m_currentProgram->script->WriteStack(file);
@@ -536,7 +335,8 @@ void CProgrammableObjectImpl::TraceRecordStop()
 
     buffer << "}\n";
 
-    Program* prog = AddProgram();
+    assert(m_object->Implements(ObjectInterfaceType::ProgramStorage));
+    Program* prog = dynamic_cast<CProgramStorageObject*>(m_object)->AddProgram();
     prog->script->SendScript(buffer.str().c_str());
 }
 

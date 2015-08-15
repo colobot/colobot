@@ -77,6 +77,7 @@ COldObject::COldObject(int id)
       CInteractiveObject(m_implementedInterfaces),
       CTransportableObject(m_implementedInterfaces),
       CTaskExecutorObjectImpl(m_implementedInterfaces, this),
+      CProgramStorageObjectImpl(m_implementedInterfaces, this),
       CProgrammableObjectImpl(m_implementedInterfaces, this),
       CJostleableObject(m_implementedInterfaces),
       CCarrierObject(m_implementedInterfaces),
@@ -90,6 +91,7 @@ COldObject::COldObject(int id)
       m_partiSel()
 {
     // A bit of a hack since we don't have subclasses yet, set externally in SetProgrammable()
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::ProgramStorage)] = false;
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
     // Another hack, see SetMovable()
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Movable)] = false;
@@ -302,6 +304,7 @@ void COldObject::Simplify()
     }
     m_main->SaveOneScript(this);
 
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::ProgramStorage)] = false;
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
 
     if ( m_physics != nullptr )
@@ -3141,6 +3144,7 @@ CMotion* COldObject::GetMotion()
 // TODO: Temporary hack until we'll have subclasses for objects
 void COldObject::SetProgrammable()
 {
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::ProgramStorage)] = true;
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = true;
 }
 

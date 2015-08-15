@@ -33,6 +33,7 @@
 #include "object/old_object.h"
 
 #include "object/interface/programmable_object.h"
+#include "object/interface/program_storage_object.h"
 #include "object/interface/transportable_object.h"
 
 
@@ -189,11 +190,11 @@ bool CAutoEgg::EventProcess(const Event &event)
         if (alien->Implements(ObjectInterfaceType::Programmable))
         {
             CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(alien);
-
             programmable->SetActivity(false);
 
-            Program* program = programmable->AddProgram();
-            programmable->ReadProgram(program, m_alienProgramName.c_str());
+            CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(alien);
+            Program* program = programStorage->AddProgram();
+            programStorage->ReadProgram(program, m_alienProgramName.c_str());
             programmable->RunProgram(program);
         }
         Init();

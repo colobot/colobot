@@ -162,6 +162,7 @@ set(BASE_SOURCES
     object/interface/trace_drawing_object.cpp
     object/implementation/power_container_impl.cpp
     object/implementation/programmable_impl.cpp
+    object/implementation/program_storage_impl.cpp
     object/implementation/task_executor_impl.cpp
     object/motion/motion.cpp
     object/motion/motionant.cpp

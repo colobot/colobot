@@ -24,6 +24,7 @@
 class COldObject;
 class CTaskExecutorObject;
 class CProgrammableObject;
+class CProgramStorageObject;
 class CPhysics;
 class CMotion;
 class CRobotMain;
@@ -93,6 +94,7 @@ protected:
     COldObject*         m_object;
     CTaskExecutorObject* m_taskExecutor;
     CProgrammableObject* m_programmable;
+    CProgramStorageObject* m_programStorage;
     CPhysics*           m_physics;
     CMotion*            m_motion;
 

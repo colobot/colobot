@@ -65,6 +65,8 @@ CObjectInterface::CObjectInterface(COldObject* object)
     m_taskExecutor = dynamic_cast<CTaskExecutorObject*>(m_object);
     assert(object->Implements(ObjectInterfaceType::Programmable));
     m_programmable = dynamic_cast<CProgrammableObject*>(m_object);
+    assert(object->Implements(ObjectInterfaceType::ProgramStorage));
+    m_programStorage = dynamic_cast<CProgramStorageObject*>(m_object);
 
     m_physics     = m_object->GetPhysics();
     m_motion      = m_object->GetMotion();
@@ -195,8 +197,8 @@ bool CObjectInterface::EventProcess(const Event &event)
                 index = data->key-KEY(1);
             else if(data->key == KEY(0))
                 index = 9;
-            if(index < 0) index = m_programmable->GetProgramCount()-1;
-            if(index > static_cast<int>(m_programmable->GetProgramCount())-1) index = 0;
+            if(index < 0) index = m_programStorage->GetProgramCount()-1;
+            if(index > static_cast<int>(m_programStorage->GetProgramCount())-1) index = 0;
 
             if(GetSelScript() != index)
             {
@@ -229,9 +231,9 @@ bool CObjectInterface::EventProcess(const Event &event)
         {
             if ( !m_programmable->IsProgram() )
             {
-                if(m_selScript < m_programmable->GetProgramCount())
+                if(m_selScript < m_programStorage->GetProgramCount())
                 {
-                    m_programmable->RunProgram(m_programmable->GetProgram(m_selScript));
+                    m_programmable->RunProgram(m_programStorage->GetProgram(m_selScript));
                 }
             }
             else
@@ -242,9 +244,9 @@ bool CObjectInterface::EventProcess(const Event &event)
         if ( action == EVENT_OBJECT_PROGSTART )
         {
             m_main->SaveOneScript(m_object);
-            if(m_selScript < m_programmable->GetProgramCount())
+            if(m_selScript < m_programStorage->GetProgramCount())
             {
-                m_programmable->RunProgram(m_programmable->GetProgram(m_selScript));
+                m_programmable->RunProgram(m_programStorage->GetProgram(m_selScript));
             }
         }
         if ( action == EVENT_OBJECT_PROGSTOP )
@@ -264,8 +266,8 @@ bool CObjectInterface::EventProcess(const Event &event)
         if( action == EVENT_STUDIO_CLONE )
         {
             StopEditScript(false);
-            Program* newProgram = m_programmable->CloneProgram(m_programmable->GetProgram(m_selScript));
-            m_selScript = m_programmable->GetProgramIndex(newProgram);
+            Program* newProgram = m_programStorage->CloneProgram(m_programStorage->GetProgram(m_selScript));
+            m_selScript = m_programStorage->GetProgramIndex(newProgram);
             m_main->SaveOneScript(m_object);
 
             UpdateInterface();
@@ -305,9 +307,9 @@ bool CObjectInterface::EventProcess(const Event &event)
         }
         if ( action == EVENT_OBJECT_PROGEDIT )
         {
-            if(m_selScript < m_programmable->GetProgramCount())
+            if(m_selScript < m_programStorage->GetProgramCount())
             {
-                StartEditScript(m_programmable->GetProgram(m_selScript), m_main->GetScriptName());
+                StartEditScript(m_programStorage->GetProgram(m_selScript), m_main->GetScriptName());
             }
         }
 
@@ -318,8 +320,8 @@ bool CObjectInterface::EventProcess(const Event &event)
     {
         if( action == EVENT_OBJECT_PROGADD )
         {
-            Program* program = m_programmable->AddProgram();
-            m_selScript = m_programmable->GetProgramIndex(program);
+            Program* program = m_programStorage->AddProgram();
+            m_selScript = m_programStorage->GetProgramIndex(program);
             m_main->SaveOneScript(m_object);
 
             UpdateInterface();
@@ -333,11 +335,15 @@ bool CObjectInterface::EventProcess(const Event &event)
 
         if( action == EVENT_OBJECT_PROGREMOVE )
         {
-            if(m_selScript < m_programmable->GetProgramCount())
+            if(m_selScript < m_programStorage->GetProgramCount())
             {
-                m_programmable->RemoveProgram(m_programmable->GetProgram(m_selScript));
-                if(m_selScript >= m_programmable->GetProgramCount())
-                    m_selScript = m_programmable->GetProgramCount()-1;
+                if(m_programmable->GetCurrentProgram() == m_programStorage->GetProgram(m_selScript))
+                {
+                    m_programmable->StopProgram();
+                }
+                m_programStorage->RemoveProgram(m_programStorage->GetProgram(m_selScript));
+                if(m_selScript >= m_programStorage->GetProgramCount())
+                    m_selScript = m_programStorage->GetProgramCount()-1;
                 m_main->SaveOneScript(m_object);
 
                 UpdateInterface();
@@ -352,10 +358,10 @@ bool CObjectInterface::EventProcess(const Event &event)
 
         if( action == EVENT_OBJECT_PROGCLONE )
         {
-            if(m_selScript < m_programmable->GetProgramCount())
+            if(m_selScript < m_programStorage->GetProgramCount())
             {
-                m_programmable->CloneProgram(m_programmable->GetProgram(m_selScript));
-                m_selScript = m_programmable->GetProgramCount()-1;
+                m_programStorage->CloneProgram(m_programStorage->GetProgram(m_selScript));
+                m_selScript = m_programStorage->GetProgramCount()-1;
                 m_main->SaveOneScript(m_object);
 
                 UpdateInterface();
@@ -371,7 +377,7 @@ bool CObjectInterface::EventProcess(const Event &event)
 
         if( action == EVENT_OBJECT_PROGMOVEUP )
         {
-            std::iter_swap(m_programmable->GetPrograms().begin() + m_selScript, m_programmable->GetPrograms().begin() + m_selScript - 1);
+            std::iter_swap(m_programStorage->GetPrograms().begin() + m_selScript, m_programStorage->GetPrograms().begin() + m_selScript - 1);
             m_selScript--;
             m_main->SaveOneScript(m_object);
 
@@ -386,7 +392,7 @@ bool CObjectInterface::EventProcess(const Event &event)
 
         if( action == EVENT_OBJECT_PROGMOVEDOWN )
         {
-            std::iter_swap(m_programmable->GetPrograms().begin() + m_selScript, m_programmable->GetPrograms().begin() + m_selScript + 1);
+            std::iter_swap(m_programStorage->GetPrograms().begin() + m_selScript, m_programStorage->GetPrograms().begin() + m_selScript + 1);
             m_selScript++;
             m_main->SaveOneScript(m_object);
 
@@ -408,18 +414,18 @@ bool CObjectInterface::EventProcess(const Event &event)
 
     if ( action == EVENT_OBJECT_PROGEDIT )
     {
-        if(m_selScript < m_programmable->GetProgramCount())
+        if(m_selScript < m_programStorage->GetProgramCount())
         {
-            StartEditScript(m_programmable->GetProgram(m_selScript), m_main->GetScriptName());
+            StartEditScript(m_programStorage->GetProgram(m_selScript), m_main->GetScriptName());
         }
     }
 
     if ( action == EVENT_OBJECT_PROGRUN )
     {
         m_programmable->StopProgram();  // stops the current program
-        if(m_selScript < m_programmable->GetProgramCount())
+        if(m_selScript < m_programStorage->GetProgramCount())
         {
-            m_programmable->RunProgram(m_programmable->GetProgram(m_selScript));
+            m_programmable->RunProgram(m_programStorage->GetProgram(m_selScript));
         }
         UpdateInterface();
     }
@@ -728,7 +734,7 @@ void CObjectInterface::StopEditScript(bool bCancel)
     if ( !m_studio->StopEditScript(bCancel) )  return;
     m_studio.reset();
 
-    if ( !bCancel )  m_programmable->SetActiveVirus(false);
+    if ( !bCancel )  m_programStorage->SetActiveVirus(false);
 
     CreateInterface(true);  // puts the control buttons
 }
@@ -1614,13 +1620,13 @@ void CObjectInterface::UpdateInterface()
 
     bEnable = ( !m_taskExecutor->IsForegroundTask() && !m_programmable->IsProgram() ) && m_main->CanPlayerInteract();
 
-    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    !m_programmable->IsTraceRecord() && m_selScript < m_programmable->GetProgramCount() && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    !m_programmable->IsTraceRecord() && m_selScript < m_programStorage->GetProgramCount() && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bEnable && !m_programmable->IsTraceRecord());
     EnableInterface(pw, EVENT_OBJECT_PROGADD,     !m_programmable->IsProgram() && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  !m_programmable->IsProgram() && m_selScript < m_programmable->GetProgramCount() && !m_programmable->GetProgram(m_selScript)->readOnly && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   !m_programmable->IsProgram() && m_selScript < m_programmable->GetProgramCount() && m_programmable->GetProgram(m_selScript)->runnable && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGMOVEUP,  !m_programmable->IsProgram() && m_programmable->GetProgramCount() >= 2 && m_selScript > 0 && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGMOVEDOWN,!m_programmable->IsProgram() && m_programmable->GetProgramCount() >= 2 && m_selScript < m_programmable->GetProgramCount()-1 && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  !m_programmable->IsProgram() && m_selScript < m_programStorage->GetProgramCount() && !m_programStorage->GetProgram(m_selScript)->readOnly && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   !m_programmable->IsProgram() && m_selScript < m_programStorage->GetProgramCount() && m_programStorage->GetProgram(m_selScript)->runnable && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGMOVEUP,  !m_programmable->IsProgram() && m_programStorage->GetProgramCount() >= 2 && m_selScript > 0 && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGMOVEDOWN,!m_programmable->IsProgram() && m_programStorage->GetProgramCount() >= 2 && m_selScript < m_programStorage->GetProgramCount()-1 && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_LEFT,        bEnable);
     EnableInterface(pw, EVENT_OBJECT_RIGHT,       bEnable);
     EnableInterface(pw, EVENT_OBJECT_UP,          bEnable);
@@ -1760,11 +1766,11 @@ void CObjectInterface::UpdateInterface()
          type == OBJECT_CONTROLLER)  // vehicle?
     {
         bRun = false;
-        if ( m_selScript < m_programmable->GetProgramCount() )
+        if ( m_selScript < m_programStorage->GetProgramCount() )
         {
-            if(m_programmable->GetProgram(m_selScript)->runnable)
+            if(m_programStorage->GetProgram(m_selScript)->runnable)
             {
-                m_programmable->GetProgram(m_selScript)->script->GetTitle(title);
+                m_programStorage->GetProgram(m_selScript)->script->GetTitle(title);
                 if ( title[0] != 0 )
                 {
                     bRun = true;
@@ -1920,14 +1926,14 @@ void CObjectInterface::UpdateScript(CWindow *pw)
     if ( pl == 0 )  return;
 
     pl->Flush();
-    for ( int i = 0 ; i < m_programmable->GetProgramCount() ; i++ )
+    for ( int i = 0 ; i < m_programStorage->GetProgramCount() ; i++ )
     {
         sprintf(name, "%d", i+1);
 
-        m_programmable->GetProgram(i)->script->GetTitle(title);
+        m_programStorage->GetProgram(i)->script->GetTitle(title);
         if ( title[0] != 0 )
         {
-            if(!m_programmable->GetProgram(i)->readOnly)
+            if(!m_programStorage->GetProgram(i)->readOnly)
             {
                 sprintf(name, "%d: %s", i+1, title);
             }

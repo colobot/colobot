@@ -54,35 +54,14 @@ public:
 
     bool IsProgram() override;
     void RunProgram(Program* program) override;
-    int GetProgram() override;
+    Program* GetCurrentProgram() override;
     void StopProgram() override;
-
-    bool IntroduceVirus() override;
-    void SetActiveVirus(bool bActive) override;
-    bool GetActiveVirus() override;
 
     void SetScriptRun(Program* rank) override;
     Program* GetScriptRun() override;
-    void SetSoluceName(const std::string& name) override;
-    const std::string& GetSoluceName() override;
 
-    bool ReadSoluce(const std::string& filename) override;
-    bool ReadProgram(Program* program, const std::string& filename) override;
-    bool GetCompile(Program* program) override;
-    bool WriteProgram(Program* program, const std::string& filename) override;
     bool ReadStack(FILE *file) override;
     bool WriteStack(FILE *file) override;
-
-    Program* AddProgram() override;
-    void AddProgram(std::unique_ptr<Program> program) override;
-    void RemoveProgram(Program* program) override;
-    Program* CloneProgram(Program* program) override;
-
-    std::vector<std::unique_ptr<Program>>& GetPrograms() override;
-    int GetProgramCount() override;
-    Program* GetProgram(int index) override;
-    Program* GetOrAddProgram(int index) override;
-    int GetProgramIndex(Program* program) override;
 
     void TraceRecordStart() override;
     void TraceRecordStop() override;
@@ -111,13 +90,9 @@ private:
 
     std::vector<float>  m_cmdLine;
 
-    std::vector<std::unique_ptr<Program>> m_program;
     Program*            m_currentProgram;
 
-    bool                m_activeVirus;
-
     Program*            m_scriptRun;
-    std::string         m_soluceName;
 
     bool                m_traceRecord;
     TraceOper           m_traceOper;

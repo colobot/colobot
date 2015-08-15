@@ -3765,9 +3765,9 @@ Error CPhysics::GetError()
          type == OBJECT_APOLLO2  ||
          type == OBJECT_MOBILEdr )  return ERR_OK;
 
-    if (m_object->Implements(ObjectInterfaceType::Programmable))
+    if (m_object->Implements(ObjectInterfaceType::ProgramStorage))
     {
-        if ( dynamic_cast<CProgrammableObject*>(m_object)->GetActiveVirus() )
+        if ( dynamic_cast<CProgramStorageObject*>(m_object)->GetActiveVirus() )
         {
             return ERR_VEH_VIRUS;
         }

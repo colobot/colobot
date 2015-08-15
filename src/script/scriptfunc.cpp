@@ -1610,10 +1610,10 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         std::string name2 = InjectLevelPathsForCurrentLevel(name, "ai");
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
-            CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(object);
-            Program* program = programmable->AddProgram();
-            programmable->ReadProgram(program, name2.c_str());
-            programmable->RunProgram(program);
+            CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(object);
+            Program* program = programStorage->AddProgram();
+            programStorage->ReadProgram(program, name2.c_str());
+            dynamic_cast<CProgrammableObject*>(object)->RunProgram(program);
         }
     }
 

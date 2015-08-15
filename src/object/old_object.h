@@ -43,6 +43,7 @@
 #include "object/interface/transportable_object.h"
 
 #include "object/implementation/power_container_impl.h"
+#include "object/implementation/program_storage_impl.h"
 #include "object/implementation/programmable_impl.h"
 #include "object/implementation/task_executor_impl.h"
 
@@ -77,6 +78,7 @@ class COldObject : public CObject,
                    public CInteractiveObject,
                    public CTransportableObject,
                    public CTaskExecutorObjectImpl,
+                   public CProgramStorageObjectImpl,
                    public CProgrammableObjectImpl,
                    public CJostleableObject,
                    public CCarrierObject,
