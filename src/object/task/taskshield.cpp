@@ -543,7 +543,7 @@ void CTaskShield::IncreaseShield()
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (!obj->Implements(ObjectInterfaceType::Shielded));
+        if (!obj->Implements(ObjectInterfaceType::Shielded)) continue;
         CShieldedObject* shielded = dynamic_cast<CShieldedObject*>(obj);
         if (!shielded->IsRepairable()) continue; // NOTE: Looks like the original code forgot to check that
 
