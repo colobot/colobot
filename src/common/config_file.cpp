@@ -221,7 +221,8 @@ bool CConfigFile::GetBoolProperty(std::string section, std::string key, bool& va
         }
         else
         {
-            GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing bool property %s.%s (expected 0 or 1, not %d)\n", section, key, intValue);
+            GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing bool property %s.%s (expected 0 or 1, not %d)\n",
+                             section.c_str(), key.c_str(), intValue);
             return false;
         }
     }
