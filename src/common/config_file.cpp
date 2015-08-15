@@ -164,14 +164,7 @@ bool CConfigFile::GetStringProperty(std::string section, std::string key, std::s
     }
     catch (std::exception & e)
     {
-        if (m_loaded)
-        {
-            GetLogger()->Info("Error on parsing config file: %s\n", e.what());
-        }
-        else
-        {
-            GetLogger()->Trace("Error on parsing config file: %s\n", e.what());
-        }
+        GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s\n", e.what());
         return false;
     }
     return true;
@@ -201,14 +194,7 @@ bool CConfigFile::GetIntProperty(std::string section, std::string key, int &valu
     }
     catch (std::exception & e)
     {
-        if (m_loaded)
-        {
-            GetLogger()->Info("Error on parsing config file: %s\n", e.what());
-        }
-        else
-        {
-            GetLogger()->Trace("Error on parsing config file: %s\n", e.what());
-        }
+        GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s\n", e.what());
         return false;
     }
     return true;
@@ -225,7 +211,19 @@ bool CConfigFile::GetBoolProperty(std::string section, std::string key, bool& va
     bool result = GetIntProperty(section, key, intValue);
     if (result)
     {
-        value = intValue == 1;
+        if (intValue == 0)
+        {
+            value = false;
+        }
+        else if (intValue == 1)
+        {
+            value = true;
+        }
+        else
+        {
+            GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing bool property %s.%s (expected 0 or 1, not %d)\n", section, key, intValue);
+            return false;
+        }
     }
     return result;
 }
@@ -254,14 +252,7 @@ bool CConfigFile::GetFloatProperty(std::string section, std::string key, float &
     }
     catch (std::exception & e)
     {
-        if (m_loaded)
-        {
-            GetLogger()->Info("Error on parsing config file: %s\n", e.what());
-        }
-        else
-        {
-            GetLogger()->Trace("Error on parsing config file: %s\n", e.what());
-        }
+        GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s\n", e.what());
         return false;
     }
     return true;

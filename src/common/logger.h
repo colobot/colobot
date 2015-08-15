@@ -96,6 +96,13 @@ public:
     */
     void Error(const char *str, ...);
 
+    /** Write message to console or file with given log level
+    * \param logLevel - log level
+    * \param str - message to write
+    * \param ... - additional arguments
+    */
+    void Log(LogLevel logLevel, const char *str, ...);
+
     /** Set output file to write logs to
     * \param filename - output file to write to
     */

@@ -36,12 +36,10 @@ CLogger::CLogger()
     #endif
 }
 
-
 CLogger::~CLogger()
 {
     Close();
 }
-
 
 void CLogger::Log(LogLevel type, const char* str, va_list args)
 {
@@ -72,7 +70,6 @@ void CLogger::Log(LogLevel type, const char* str, va_list args)
     vfprintf(IsOpened() ? m_file : stderr, str, args);
 }
 
-
 void CLogger::Trace(const char* str, ...)
 {
     va_list args;
@@ -80,7 +77,6 @@ void CLogger::Trace(const char* str, ...)
     Log(LOG_TRACE, str, args);
     va_end(args);
 }
-
 
 void CLogger::Debug(const char* str, ...)
 {
@@ -90,7 +86,6 @@ void CLogger::Debug(const char* str, ...)
     va_end(args);
 }
 
-
 void CLogger::Info(const char* str, ...)
 {
     va_list args;
@@ -98,7 +93,6 @@ void CLogger::Info(const char* str, ...)
     Log(LOG_INFO, str, args);
     va_end(args);
 }
-
 
 void CLogger::Warn(const char* str, ...)
 {
@@ -108,7 +102,6 @@ void CLogger::Warn(const char* str, ...)
     va_end(args);
 }
 
-
 void CLogger::Error(const char* str, ...)
 {
     va_list args;
@@ -116,7 +109,6 @@ void CLogger::Error(const char* str, ...)
     Log(LOG_ERROR, str, args);
     va_end(args);
 }
-
 
 void CLogger::Message(const char* str, ...)
 {
@@ -126,13 +118,19 @@ void CLogger::Message(const char* str, ...)
     va_end(args);
 }
 
+void CLogger::Log(LogLevel logLevel, const char* str, ...)
+{
+    va_list args;
+    va_start(args, str);
+    Log(logLevel, str, args);
+    va_end(args);
+}
 
 void CLogger::SetOutputFile(std::string filename)
 {
     m_filename = filename;
     Open();
 }
-
 
 void CLogger::Open()
 {
@@ -142,25 +140,21 @@ void CLogger::Open()
         fprintf(stderr, "Could not create file %s\n", m_filename.c_str());
 }
 
-
 void CLogger::Close()
 {
     if (IsOpened())
         fclose(m_file);
 }
 
-
 bool CLogger::IsOpened()
 {
     return m_file != NULL;
 }
 
-
 void CLogger::SetLogLevel(LogLevel type)
 {
     m_logLevel = type;
 }
-
 
 bool CLogger::ParseLogLevel(const std::string& str, LogLevel& logLevel)
 {
