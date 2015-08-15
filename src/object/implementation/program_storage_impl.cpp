@@ -308,7 +308,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
             if (CResourceManager::Exists(filename))
             {
                 Program* program = GetOrAddProgram(i);
-                if(GetCompile(program)) continue; // If already loaded from level file, skip
+                if(GetCompile(program)) program = AddProgram(); // If original slot is already used, get a new one
                 GetLogger()->Trace("Loading program '%s' from user directory\n", filename.c_str());
                 ReadProgram(program, filename);
             }

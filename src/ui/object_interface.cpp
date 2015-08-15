@@ -1608,7 +1608,7 @@ void CObjectInterface::UpdateInterface()
     CButton*    pb;
     CSlider*    ps;
     CColor*     pc;
-    bool        bEnable, bFly, bRun;
+    bool        bFly, bRun;
     char        title[100];
 
     if ( !m_object->GetSelect() )  return;
@@ -1618,15 +1618,17 @@ void CObjectInterface::UpdateInterface()
 
     type = m_object->GetType();
 
-    bEnable = ( !m_taskExecutor->IsForegroundTask() && !m_programmable->IsProgram() ) && m_main->CanPlayerInteract();
+    bool bEnable = ( !m_taskExecutor->IsForegroundTask() && !m_programmable->IsProgram() ) && m_main->CanPlayerInteract();
+    bool bProgEnable = !m_programmable->IsProgram() && m_main->CanPlayerInteract();
+    bool scriptSelected = m_selScript >= 0 && m_selScript < m_programStorage->GetProgramCount();
 
-    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    !m_programmable->IsTraceRecord() && m_selScript < m_programStorage->GetProgramCount() && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bEnable && !m_programmable->IsTraceRecord());
-    EnableInterface(pw, EVENT_OBJECT_PROGADD,     !m_programmable->IsProgram() && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  !m_programmable->IsProgram() && m_selScript >= 0 && m_selScript < m_programStorage->GetProgramCount() && !m_programStorage->GetProgram(m_selScript)->readOnly && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   !m_programmable->IsProgram() && m_selScript >= 0 && m_selScript < m_programStorage->GetProgramCount() && m_programStorage->GetProgram(m_selScript)->runnable && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGMOVEUP,  !m_programmable->IsProgram() && m_programStorage->GetProgramCount() >= 2 && m_selScript > 0 && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGMOVEDOWN,!m_programmable->IsProgram() && m_programStorage->GetProgramCount() >= 2 && m_selScript >= 0 && m_selScript < m_programStorage->GetProgramCount()-1 && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    bProgEnable && !m_programmable->IsTraceRecord() && scriptSelected);
+    EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bProgEnable && !m_programmable->IsTraceRecord());
+    EnableInterface(pw, EVENT_OBJECT_PROGADD,     bProgEnable);
+    EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  bProgEnable && scriptSelected && !m_programStorage->GetProgram(m_selScript)->readOnly);
+    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   bProgEnable && scriptSelected && m_programStorage->GetProgram(m_selScript)->runnable);
+    EnableInterface(pw, EVENT_OBJECT_PROGMOVEUP,  bProgEnable && scriptSelected && m_programStorage->GetProgramCount() >= 2 && m_selScript > 0);
+    EnableInterface(pw, EVENT_OBJECT_PROGMOVEDOWN,bProgEnable && scriptSelected && m_programStorage->GetProgramCount() >= 2 && m_selScript < m_programStorage->GetProgramCount()-1);
     EnableInterface(pw, EVENT_OBJECT_LEFT,        bEnable);
     EnableInterface(pw, EVENT_OBJECT_RIGHT,       bEnable);
     EnableInterface(pw, EVENT_OBJECT_UP,          bEnable);
