@@ -180,97 +180,97 @@ Error CTaskExecutorObjectImpl::StartBackgroundTask(Args&&... args)
 
 Error CTaskExecutorObjectImpl::StartTaskTake()
 {
-	return StartForegroundTask<CTaskTake>();
+    return StartForegroundTask<CTaskTake>();
 }
 
 Error CTaskExecutorObjectImpl::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
 {
-	return StartForegroundTask<CTaskManip>(order, arm);
+    return StartForegroundTask<CTaskManip>(order, arm);
 }
 
 Error CTaskExecutorObjectImpl::StartTaskFlag(TaskFlagOrder order, int rank)
 {
-	return StartForegroundTask<CTaskFlag>(order, rank);
+    return StartForegroundTask<CTaskFlag>(order, rank);
 }
 
 Error CTaskExecutorObjectImpl::StartTaskBuild(ObjectType type)
 {
-	return StartForegroundTask<CTaskBuild>(type);
+    return StartForegroundTask<CTaskBuild>(type);
 }
 
 Error CTaskExecutorObjectImpl::StartTaskSearch()
 {
-	return StartForegroundTask<CTaskSearch>();
+    return StartForegroundTask<CTaskSearch>();
 }
 
 Error CTaskExecutorObjectImpl::StartTaskDeleteMark()
 {
-	return StartForegroundTask<CTaskDeleteMark>();
+    return StartForegroundTask<CTaskDeleteMark>();
 }
 
 Error CTaskExecutorObjectImpl::StartTaskTerraform()
 {
-	return StartForegroundTask<CTaskTerraform>();
+    return StartForegroundTask<CTaskTerraform>();
 }
 
 Error CTaskExecutorObjectImpl::StartTaskRecover()
 {
-	return StartForegroundTask<CTaskRecover>();
+    return StartForegroundTask<CTaskRecover>();
 }
 
 Error CTaskExecutorObjectImpl::StartTaskFire(float delay)
 {
-	return StartForegroundTask<CTaskFire>(delay);
+    return StartForegroundTask<CTaskFire>(delay);
 }
 
 Error CTaskExecutorObjectImpl::StartTaskFireAnt(Math::Vector impact)
 {
-	return StartForegroundTask<CTaskFireAnt>(impact);
+    return StartForegroundTask<CTaskFireAnt>(impact);
 }
 
 Error CTaskExecutorObjectImpl::StartTaskSpiderExplo()
 {
-	return StartForegroundTask<CTaskSpiderExplo>();
+    return StartForegroundTask<CTaskSpiderExplo>();
 }
 
 Error CTaskExecutorObjectImpl::StartTaskPen(bool down, TraceColor color)
 {
-	return StartForegroundTask<CTaskPen>(down, color);
+    return StartForegroundTask<CTaskPen>(down, color);
 }
 
 
 Error CTaskExecutorObjectImpl::StartTaskWait(float time)
 {
-	return StartForegroundTask<CTaskWait>(time);
+    return StartForegroundTask<CTaskWait>(time);
 }
 
 Error CTaskExecutorObjectImpl::StartTaskAdvance(float length)
 {
-	return StartForegroundTask<CTaskAdvance>(length);
+    return StartForegroundTask<CTaskAdvance>(length);
 }
 
 Error CTaskExecutorObjectImpl::StartTaskTurn(float angle)
 {
-	return StartForegroundTask<CTaskTurn>(angle);
+    return StartForegroundTask<CTaskTurn>(angle);
 }
 
 Error CTaskExecutorObjectImpl::StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode)
 {
-	return StartForegroundTask<CTaskGoto>(pos, altitude, goalMode, crashMode);
+    return StartForegroundTask<CTaskGoto>(pos, altitude, goalMode, crashMode);
 }
 
 Error CTaskExecutorObjectImpl::StartTaskInfo(const char *name, float value, float power, bool bSend)
 {
-	return StartForegroundTask<CTaskInfo>(name, value, power, bSend);
+    return StartForegroundTask<CTaskInfo>(name, value, power, bSend);
 }
 
 
 Error CTaskExecutorObjectImpl::StartTaskShield(TaskShieldMode mode, float delay)
 {
-	return StartBackgroundTask<CTaskShield>(mode, delay);
+    return StartBackgroundTask<CTaskShield>(mode, delay);
 }
 
 Error CTaskExecutorObjectImpl::StartTaskGunGoal(float dirV, float dirH)
 {
-	return StartBackgroundTask<CTaskGunGoal>(dirV, dirH);
+    return StartBackgroundTask<CTaskGunGoal>(dirV, dirH);
 }
