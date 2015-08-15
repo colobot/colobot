@@ -25,12 +25,14 @@
 
 #include "object/old_object.h"
 
+#include "physics/physics.h"
+
 #include "sound/sound.h"
 
 
 // Object's constructor.
 
-CTaskPen::CTaskPen(COldObject* object) : CTask(object)
+CTaskPen::CTaskPen(COldObject* object) : CForegroundTask(object)
 {
 }
 
@@ -135,6 +137,16 @@ Error CTaskPen::Start(bool bDown, TraceColor color)
     Math::Matrix*   mat;
     ObjectType  type;
     int         i;
+
+    if (color == TraceColor::Default)
+        color = m_object->GetTraceColor();
+
+    m_object->SetTraceDown(bDown);
+    m_object->SetTraceColor(color);
+
+    m_physics->SetMotorSpeedX(0.0f);
+    m_physics->SetMotorSpeedY(0.0f);
+    m_physics->SetMotorSpeedZ(0.0f);
 
     m_bError = true;  // operation impossible
 

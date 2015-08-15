@@ -35,7 +35,7 @@
 #include "physics/physics.h"
 
 
-CTaskDeleteMark::CTaskDeleteMark(COldObject* object) : CTask(object)
+CTaskDeleteMark::CTaskDeleteMark(COldObject* object) : CForegroundTask(object)
 {
     m_bExecuted = false;
 }

@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskturn.h
-
 #pragma once
 
 
@@ -26,7 +24,7 @@
 
 
 
-class CTaskTurn : public CTask
+class CTaskTurn : public CForegroundTask
 {
 public:
     CTaskTurn(COldObject* object);
@@ -44,4 +42,3 @@ protected:
     bool        m_bLeft = false;
     bool        m_bError = false;
 };
-

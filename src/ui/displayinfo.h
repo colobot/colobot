@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// displayinfo.h
-
 #pragma once
 
 #include "app/pausemanager.h"
@@ -101,4 +99,3 @@ protected:
 
 
 } // namespace Ui
-

@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskspiderexplo.h
-
 #pragma once
 
 
@@ -26,7 +24,7 @@
 
 
 
-class CTaskSpiderExplo : public CTask
+class CTaskSpiderExplo : public CForegroundTask
 {
 public:
     CTaskSpiderExplo(COldObject* object);
@@ -42,4 +40,3 @@ protected:
     float       m_time = 0.0f;
     bool        m_bError = false;
 };
-

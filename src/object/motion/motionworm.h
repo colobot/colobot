@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// motionworm.h
-
 #pragma once
 
 
@@ -62,4 +60,3 @@ protected:
     bool        m_bArmStop;
     float       m_lastParticle;
 };
-

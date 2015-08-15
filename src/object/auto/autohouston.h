@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autohouston.h
-
 #pragma once
 
 
@@ -64,4 +62,3 @@ protected:
     HustonLens  m_lens[HUSTONMAXLENS];
     int         m_lensTotal = 0;
 };
-

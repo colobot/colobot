@@ -34,7 +34,7 @@
 
 // Object's constructor.
 
-CTaskSpiderExplo::CTaskSpiderExplo(COldObject* object) : CTask(object)
+CTaskSpiderExplo::CTaskSpiderExplo(COldObject* object) : CForegroundTask(object)
 {
     m_time = 0.0f;
     m_bError = false;
@@ -107,4 +107,3 @@ bool CTaskSpiderExplo::Abort()
 {
     return true;
 }
-

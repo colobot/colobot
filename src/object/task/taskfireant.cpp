@@ -35,7 +35,7 @@
 
 // Object's constructor.
 
-CTaskFireAnt::CTaskFireAnt(COldObject* object) : CTask(object)
+CTaskFireAnt::CTaskFireAnt(COldObject* object) : CForegroundTask(object)
 {
     m_phase = TFA_NULL;
 }
@@ -212,4 +212,3 @@ bool CTaskFireAnt::Abort()
     m_motion->SetAction(-1);
     return true;
 }
-

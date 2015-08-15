@@ -43,7 +43,7 @@
 
 // Object's constructor.
 
-CTaskTake::CTaskTake(COldObject* object) : CTask(object)
+CTaskTake::CTaskTake(COldObject* object) : CForegroundTask(object)
 {
     m_arm  = TTA_NEUTRAL;
 

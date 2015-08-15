@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// target.h
-
 #pragma once
 
 #include "common/event.h"

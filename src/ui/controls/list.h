@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// list.h
-
 #pragma once
 
 
@@ -129,4 +127,3 @@ protected:
 
 
 } // namespace Ui
-

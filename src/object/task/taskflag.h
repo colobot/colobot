@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
-// taskflag.h
 
 #pragma once
 
@@ -37,7 +36,7 @@ enum TaskFlagOrder
 
 
 
-class CTaskFlag : public CTask
+class CTaskFlag : public CForegroundTask
 {
 public:
     CTaskFlag(COldObject* object);
@@ -60,4 +59,3 @@ protected:
     float           m_time = 0.0f;
     bool            m_bError = false;
 };
-

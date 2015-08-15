@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskgoto.h
-
 #pragma once
 
 
@@ -75,7 +73,7 @@ enum TaskGotoPhase
 
 
 
-class CTaskGoto : public CTask
+class CTaskGoto : public CForegroundTask
 {
 public:
     CTaskGoto(COldObject* object);
@@ -160,4 +158,3 @@ protected:
     float           m_leakTime = 0.0f;
     bool            m_bLeakRecede = false;
 };
-

@@ -43,7 +43,7 @@ const float RECOVER_DIST    = 11.8f;
 
 // Object's constructor.
 
-CTaskRecover::CTaskRecover(COldObject* object) : CTask(object)
+CTaskRecover::CTaskRecover(COldObject* object) : CForegroundTask(object)
 {
     m_ruin = 0;
     m_soundChannel = -1;

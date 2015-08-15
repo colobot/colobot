@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autobase.h
-
 #pragma once
 
 
@@ -119,4 +117,3 @@ protected:
     Gfx::Color      m_bgCloudDown;
     std::set<CObject*> m_cargoObjects;
 };
-

@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autoderrick.h
-
 #pragma once
 
 
@@ -72,4 +70,3 @@ protected:
     int                 m_soundChannel = 0;
     bool                m_bSoundFall = false;
 };
-

@@ -24,7 +24,6 @@
 #include <memory>
 
 class CObject;
-class CTaskManager;
 
 class CTaskExecutorObjectImpl : public CTaskExecutorObject
 {
@@ -37,40 +36,46 @@ public:
     bool IsForegroundTask() override;
     bool IsBackgroundTask() override;
 
-    CTaskManager* GetForegroundTask() override;
-    CTaskManager* GetBackgroundTask() override;
+    CForegroundTask* GetForegroundTask() override;
+    CBackgroundTask* GetBackgroundTask() override;
 
     void StopForegroundTask() override;
     void StopBackgroundTask() override;
 
-    Error StartTaskTake() { return ERR_WRONG_BOT; }
-    Error StartTaskManip(TaskManipOrder order, TaskManipArm arm) { return ERR_WRONG_BOT; }
-    Error StartTaskFlag(TaskFlagOrder order, int rank) { return ERR_WRONG_BOT; }
-    Error StartTaskBuild(ObjectType type) { return ERR_WRONG_BOT; }
-    Error StartTaskSearch() { return ERR_WRONG_BOT; }
-    Error StartTaskDeleteMark() { return ERR_WRONG_BOT; }
-    Error StartTaskTerraform() { return ERR_WRONG_BOT; }
-    Error StartTaskRecover() { return ERR_WRONG_BOT; }
-    Error StartTaskFire(float delay) { return ERR_WRONG_BOT; }
-    Error StartTaskFireAnt(Math::Vector impact) { return ERR_WRONG_BOT; }
-    Error StartTaskSpiderExplo() { return ERR_WRONG_BOT; }
-    Error StartTaskPen(bool down, TraceColor color = TraceColor::Default) { return ERR_WRONG_BOT; }
+    Error StartTaskTake() override;
+    Error StartTaskManip(TaskManipOrder order, TaskManipArm arm) override;
+    Error StartTaskFlag(TaskFlagOrder order, int rank) override;
+    Error StartTaskBuild(ObjectType type) override;
+    Error StartTaskSearch() override;
+    Error StartTaskDeleteMark() override;
+    Error StartTaskTerraform() override;
+    Error StartTaskRecover() override;
+    Error StartTaskFire(float delay) override;
+    Error StartTaskFireAnt(Math::Vector impact) override;
+    Error StartTaskSpiderExplo() override;
+    Error StartTaskPen(bool down, TraceColor color = TraceColor::Default) override;
 
-    Error StartTaskWait(float time) { return ERR_UNKNOWN; }
-    Error StartTaskAdvance(float length) { return ERR_UNKNOWN; }
-    Error StartTaskTurn(float angle) { return ERR_UNKNOWN; }
-    Error StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode) { return ERR_UNKNOWN; }
-    Error StartTaskInfo(const char *name, float value, float power, bool bSend) { return ERR_UNKNOWN; }
+    Error StartTaskWait(float time) override;
+    Error StartTaskAdvance(float length) override;
+    Error StartTaskTurn(float angle) override;
+    Error StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode) override;
+    Error StartTaskInfo(const char *name, float value, float power, bool bSend) override;
 
-    Error StartTaskShield(TaskShieldMode mode, float delay = 1000.0f) { return ERR_WRONG_BOT; }
-    Error StartTaskGunGoal(float dirV, float dirH) { return ERR_WRONG_BOT; }
+    Error StartTaskShield(TaskShieldMode mode, float delay = 1000.0f) override;
+    Error StartTaskGunGoal(float dirV, float dirH) override;
 
 private:
     Error EndedTask();
 
+    template<typename TaskType, typename... Args>
+    Error StartForegroundTask(Args&&... args);
+
+    template<typename TaskType, typename... Args>
+    Error StartBackgroundTask(Args&&... args);
+
 protected:
-    std::unique_ptr<CTaskManager> m_foregroundTask;
-    std::unique_ptr<CTaskManager> m_backgroundTask;
+    std::unique_ptr<CForegroundTask> m_foregroundTask;
+    std::unique_ptr<CBackgroundTask> m_backgroundTask;
 
 private:
     CObject* m_object;

@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskmanip.h
-
 #pragma once
 
 
@@ -58,7 +56,7 @@ enum TaskManipHand
 
 
 
-class CTaskManip : public CTask
+class CTaskManip : public CForegroundTask
 {
 public:
     CTaskManip(COldObject* object);
@@ -103,4 +101,3 @@ protected:
     float           m_timeLimit = 0.0f;
     ObjectType      m_cargoType = OBJECT_NULL;
 };
-

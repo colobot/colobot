@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autoflag.h
-
 #pragma once
 
 
@@ -44,4 +42,3 @@ protected:
     int         m_param = 0;
     float       m_progress = 0.0f;
 };
-

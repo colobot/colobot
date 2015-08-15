@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskterraform.h
-
 #pragma once
 
 
@@ -37,7 +35,7 @@ enum TaskTerraPhase
 
 
 
-class CTaskTerraform : public CTask
+class CTaskTerraform : public CForegroundTask
 {
 public:
     CTaskTerraform(COldObject* object);
@@ -62,4 +60,3 @@ protected:
     bool            m_bError = false;
     Math::Vector    m_terraPos;
 };
-

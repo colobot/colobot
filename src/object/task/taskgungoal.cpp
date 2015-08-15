@@ -27,7 +27,7 @@
 
 // Object's constructor.
 
-CTaskGunGoal::CTaskGunGoal(COldObject* object) : CTask(object)
+CTaskGunGoal::CTaskGunGoal(COldObject* object) : CBackgroundTask(object)
 {
     m_aimImpossible = false;
 }
@@ -164,4 +164,3 @@ bool CTaskGunGoal::Abort()
 {
     return true;
 }
-

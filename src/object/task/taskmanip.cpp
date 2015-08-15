@@ -51,7 +51,7 @@ const float MARGIN_BEE      = 5.0f;  //OK 1.9
 
 // Object's constructor.
 
-CTaskManip::CTaskManip(COldObject* object) : CTask(object)
+CTaskManip::CTaskManip(COldObject* object) : CForegroundTask(object)
 {
     m_arm  = TMA_NEUTRAL;
     m_hand = TMH_OPEN;

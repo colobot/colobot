@@ -47,7 +47,7 @@
 
 // Object's constructor.
 
-CTaskBuild::CTaskBuild(COldObject* object) : CTask(object)
+CTaskBuild::CTaskBuild(COldObject* object) : CForegroundTask(object)
 {
     int     i;
 

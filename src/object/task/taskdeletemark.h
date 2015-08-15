@@ -17,15 +17,13 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// tasksearch.h
-
 #pragma once
 
 
 #include "object/task/task.h"
 
 
-class CTaskDeleteMark : public CTask
+class CTaskDeleteMark : public CForegroundTask
 {
 public:
     CTaskDeleteMark(COldObject* object);

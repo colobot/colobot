@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskinfo.h
-
 #pragma once
 
 
@@ -26,7 +24,7 @@
 
 class CExchangePost;
 
-class CTaskInfo : public CTask
+class CTaskInfo : public CForegroundTask
 {
 public:
     CTaskInfo(COldObject* object);
@@ -47,4 +45,3 @@ protected:
     float           m_time = 0.0f;
     bool            m_error = false;
 };
-

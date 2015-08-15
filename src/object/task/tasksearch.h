@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// tasksearch.h
-
 #pragma once
 
 
@@ -43,7 +41,7 @@ enum TaskSearchPhase
 
 
 
-class CTaskSearch : public CTask
+class CTaskSearch : public CForegroundTask
 {
 public:
     CTaskSearch(COldObject* object);
@@ -71,4 +69,3 @@ protected:
     float           m_finalAngle[3] = {};
     bool            m_bError = false;
 };
-

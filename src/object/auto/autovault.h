@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autovault.h
-
 #pragma once
 
 
@@ -75,4 +73,3 @@ protected:
     Math::Vector        m_keyPos[4];
     int             m_keyParti[4] = {};
 };
-

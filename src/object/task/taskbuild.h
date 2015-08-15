@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskbuild.h
-
 #pragma once
 
 
@@ -49,7 +47,7 @@ enum TaskBuildPhase
 
 
 
-class CTaskBuild : public CTask
+class CTaskBuild : public CForegroundTask
 {
 public:
     CTaskBuild(COldObject* object);
@@ -89,4 +87,3 @@ protected:
     int             m_lightRank[TBMAXLIGHT] = {}; // lights for the effects
     int             m_soundChannel = 0;
 };
-

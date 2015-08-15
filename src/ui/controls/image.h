@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// image.h
-
 #pragma once
 
 
@@ -53,4 +51,3 @@ protected:
 
 
 }
-

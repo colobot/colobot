@@ -40,7 +40,7 @@
 
 // Object's constructor.
 
-CTaskFlag::CTaskFlag(COldObject* object) : CTask(object)
+CTaskFlag::CTaskFlag(COldObject* object) : CForegroundTask(object)
 {
 }
 

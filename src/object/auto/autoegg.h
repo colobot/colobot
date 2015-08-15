@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autoegg.h
-
 #pragma once
 
 
@@ -73,4 +71,3 @@ protected:
     float           m_progress = 0.0f;
     float           m_speed = 0.0f;
 };
-

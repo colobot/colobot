@@ -45,7 +45,7 @@ const float ACTION_RADIUS   = 400.0f;
 
 // Object's constructor.
 
-CTaskTerraform::CTaskTerraform(COldObject* object) : CTask(object)
+CTaskTerraform::CTaskTerraform(COldObject* object) : CForegroundTask(object)
 {
     m_lastParticle = 0.0f;
     m_soundChannel = -1;

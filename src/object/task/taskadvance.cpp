@@ -35,7 +35,7 @@
 
 // Object's constructor.
 
-CTaskAdvance::CTaskAdvance(COldObject* object) : CTask(object)
+CTaskAdvance::CTaskAdvance(COldObject* object) : CForegroundTask(object)
 {
 }
 
@@ -147,4 +147,3 @@ Error CTaskAdvance::IsEnded()
     }
     return ERR_CONTINUE;
 }
-

@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// label.h
-
 #pragma once
 
 
@@ -44,4 +42,3 @@ public:
 
 
 }
-

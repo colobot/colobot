@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autodestroyer.h
-
 #pragma once
 
 
@@ -69,4 +67,3 @@ protected:
     float           m_lastParticle = 0.0f;
     bool            m_bExplo = false;
 };
-

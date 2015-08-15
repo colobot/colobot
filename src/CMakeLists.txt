@@ -188,7 +188,6 @@ set(BASE_SOURCES
     object/task/taskgoto.cpp
     object/task/taskgungoal.cpp
     object/task/taskinfo.cpp
-    object/task/taskmanager.cpp
     object/task/taskmanip.cpp
     object/task/taskpen.cpp
     object/task/taskrecover.cpp

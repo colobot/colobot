@@ -75,7 +75,6 @@
 
 #include "object/task/task.h"
 #include "object/task/taskbuild.h"
-#include "object/task/taskmanager.h"
 #include "object/task/taskmanip.h"
 
 #include "physics/physics.h"

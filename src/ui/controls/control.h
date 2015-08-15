@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// control.h
-
 #pragma once
 
 #include "common/event.h"
@@ -145,4 +143,3 @@ protected:
 };
 
 } // namespace Ui
-

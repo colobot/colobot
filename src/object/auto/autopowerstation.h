@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autopowerstation.h
-
 #pragma once
 
 
@@ -57,4 +55,3 @@ protected:
     bool            m_bLastVirus = false;
     float           m_energyVirus = 0.0f;
 };
-

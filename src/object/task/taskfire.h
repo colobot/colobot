@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskfire.h
-
 #pragma once
 
 
@@ -26,7 +24,7 @@
 
 
 
-class CTaskFire : public CTask
+class CTaskFire : public CForegroundTask
 {
 public:
     CTaskFire(COldObject* object);
@@ -37,6 +35,7 @@ public:
     Error       Start(float delay);
     Error       IsEnded();
     bool        Abort();
+    bool        IsPilot();
 
 protected:
     float       m_delay = 0.0f;
@@ -50,4 +49,3 @@ protected:
     float       m_lastSound = 0.0f;
     int     m_soundChannel = 0;
 };
-

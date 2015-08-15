@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autopowerplant.h
-
 #pragma once
 
 
@@ -73,4 +71,3 @@ protected:
     float               m_lastParticle = 0.0f;
     int                 m_partiSphere = 0;
 };
-

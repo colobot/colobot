@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// task.h
-
 #pragma once
 
 
@@ -73,6 +71,12 @@ public:
     virtual bool    IsBusy();
     virtual bool    Abort();
 
+    //! Returns true if you can control the robot while the task is executing
+    virtual bool    IsPilot() = 0;
+
+    //! Returns true if this task is meant to be run as a background task
+    virtual bool    IsBackground() = 0;
+
 protected:
     Gfx::CEngine*       m_engine = nullptr;
     Gfx::CLightManager* m_lightMan = nullptr;
@@ -87,4 +91,22 @@ protected:
     CProgrammableObject* m_programmable = nullptr;
     CMotion*            m_motion = nullptr;
     CPhysics*           m_physics = nullptr;
+};
+
+class CForegroundTask : public CTask
+{
+public:
+    CForegroundTask(COldObject* object) : CTask(object) {}
+
+    bool IsBackground() final { return false; }
+    virtual bool IsPilot() { return false; }
+};
+
+class CBackgroundTask : public CTask
+{
+public:
+    CBackgroundTask(COldObject* object) : CTask(object) {}
+
+    bool IsBackground() final { return true; }
+    bool IsPilot() final { return true; }
 };

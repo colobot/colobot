@@ -29,7 +29,7 @@
 #include "object/task/taskmanip.h"
 #include "object/task/taskshield.h"
 
-class CTaskManager;
+class CTask;
 
 /**
  * \class CTaskExecutorObject
@@ -80,9 +80,9 @@ public:
     virtual bool IsBackgroundTask() = 0;
 
     //! Return the foreground task
-    virtual CTaskManager* GetForegroundTask() = 0;
+    virtual CForegroundTask* GetForegroundTask() = 0;
     //! Return the background task
-    virtual CTaskManager* GetBackgroundTask() = 0;
+    virtual CBackgroundTask* GetBackgroundTask() = 0;
 
     //! Stop foreground task
     virtual void StopForegroundTask() = 0;

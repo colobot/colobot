@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskwait.h
-
 #pragma once
 
 
@@ -26,7 +24,7 @@
 
 
 
-class CTaskWait : public CTask
+class CTaskWait : public CForegroundTask
 {
 public:
     CTaskWait(COldObject* object);
@@ -42,4 +40,3 @@ protected:
     float       m_passTime = 0.0f;
     bool        m_bEnded = false;
 };
-

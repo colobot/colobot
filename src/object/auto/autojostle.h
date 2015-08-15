@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autojostle.h
-
 #pragma once
 
 
@@ -50,4 +48,3 @@ protected:
     float           m_lastParticle = 0.0f;
     Error           m_error = ERR_OK;
 };
-

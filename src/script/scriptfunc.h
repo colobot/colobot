@@ -190,8 +190,9 @@ public:
     static int m_numberOfOpenFiles;
 
 private:
-    static bool     Process(CScript* script, CBotVar* result, int &exception);
-    static bool     ShouldProcessStop(Error err, int errMode);
+    static bool     WaitForForegroundTask(CScript* script, CBotVar* result, int &exception);
+    static bool     WaitForBackgroundTask(CScript* script, CBotVar* result, int &exception);
+    static bool     ShouldTaskStop(Error err, int errMode);
     static CExchangePost* FindExchangePost(CObject* object, float power);
 
     static bool     FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);

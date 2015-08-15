@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskshield.h
-
 #pragma once
 
 
@@ -51,7 +49,7 @@ enum TaskShieldMode
 
 
 
-class CTaskShield : public CTask
+class CTaskShield : public CBackgroundTask
 {
 public:
     CTaskShield(COldObject* object);
@@ -86,4 +84,3 @@ protected:
     int             m_soundChannel = 0;
     int             m_effectLight = 0;
 };
-

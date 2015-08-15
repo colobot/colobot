@@ -35,7 +35,7 @@
 
 // Object's constructor.
 
-CTaskSearch::CTaskSearch(COldObject* object) : CTask(object)
+CTaskSearch::CTaskSearch(COldObject* object) : CForegroundTask(object)
 {
     m_hand = TSH_UP;
 }

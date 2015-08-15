@@ -287,28 +287,6 @@ public:
     void SetScale(const Math::Vector& scale) override;
     Math::Vector GetScale() const override;
 
-    Error       StartTaskTake() override;
-    Error       StartTaskManip(TaskManipOrder order, TaskManipArm arm) override;
-    Error       StartTaskFlag(TaskFlagOrder order, int rank) override;
-    Error       StartTaskBuild(ObjectType type) override;
-    Error       StartTaskSearch() override;
-    Error       StartTaskDeleteMark() override;
-    Error       StartTaskTerraform() override;
-    Error       StartTaskRecover() override;
-    Error       StartTaskFire(float delay) override;
-    Error       StartTaskFireAnt(Math::Vector impact) override;
-    Error       StartTaskSpiderExplo() override;
-    Error       StartTaskPen(bool down, TraceColor color = TraceColor::Default) override;
-
-    Error       StartTaskWait(float time) override;
-    Error       StartTaskAdvance(float length) override;
-    Error       StartTaskTurn(float angle) override;
-    Error       StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode) override;
-    Error       StartTaskInfo(const char *name, float value, float power, bool bSend) override;
-
-    Error       StartTaskShield(TaskShieldMode mode, float delay = 1000.0f) override;
-    Error       StartTaskGunGoal(float dirV, float dirH) override;
-
     void        UpdateInterface() override;
 
     void        StopProgram() override;

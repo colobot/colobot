@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskrecover.h
-
 #pragma once
 
 
@@ -39,7 +37,7 @@ enum TaskRecoverPhase
 
 
 
-class CTaskRecover : public CTask
+class CTaskRecover : public CForegroundTask
 {
 public:
     CTaskRecover(COldObject* object);
@@ -67,4 +65,3 @@ protected:
     Math::Vector    m_recoverPos;
     int             m_soundChannel = 0;
 };
-

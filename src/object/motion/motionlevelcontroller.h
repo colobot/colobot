@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// motionlevelcontroller.h
-
 #pragma once
 
 
@@ -33,4 +31,3 @@ public:
     void        DeleteObject(bool bAll=false);
     void        Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager);
 };
-

@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autorepair.h
-
 #pragma once
 
 
@@ -65,4 +63,3 @@ protected:
     float           m_timeVirus = 0.0f;
     float           m_lastParticle = 0.0f;
 };
-

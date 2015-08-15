@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskgungoal.h
-
 #pragma once
 
 
@@ -26,7 +24,7 @@
 
 
 
-class CTaskGunGoal : public CTask
+class CTaskGunGoal : public CBackgroundTask
 {
 public:
     CTaskGunGoal(COldObject* object);
@@ -48,4 +46,3 @@ protected:
 
     bool        m_aimImpossible = false; // set to true if impossible aim was set
 };
-

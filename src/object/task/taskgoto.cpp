@@ -53,7 +53,7 @@ const float SAFETY_MARGIN   = 0.5f;     // Smallest distance between two objects
 
 // Object's constructor.
 
-CTaskGoto::CTaskGoto(COldObject* object) : CTask(object)
+CTaskGoto::CTaskGoto(COldObject* object) : CForegroundTask(object)
 {
     m_bmArray = 0;
 }

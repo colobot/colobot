@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// gauge.h
-
 #pragma once
 
 #include "ui/controls/control.h"
@@ -47,4 +45,3 @@ protected:
 
 
 }
-

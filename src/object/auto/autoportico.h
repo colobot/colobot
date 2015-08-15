@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autoportico.h
-
 #pragma once
 
 
@@ -69,4 +67,3 @@ protected:
     int             m_param = 0;
     int             m_soundChannel = 0;
 };
-

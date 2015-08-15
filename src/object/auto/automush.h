@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// automush.h
-
 #pragma once
 
 
@@ -61,4 +59,3 @@ protected:
     float           m_speed = 0.0f;
     float           m_lastParticle = 0.0f;
 };
-

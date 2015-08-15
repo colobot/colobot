@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autoconvert.h
-
 #pragma once
 
 
@@ -70,4 +68,3 @@ protected:
     bool                m_bSoundClose = false;
     int                 m_soundChannel = 0;
 };
-

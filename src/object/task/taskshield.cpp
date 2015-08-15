@@ -44,7 +44,7 @@ const float ENERGY_TIME = 20.0f;        // maximum duration if full battery
 
 // Object's constructor.
 
-CTaskShield::CTaskShield(COldObject* object) : CTask(object)
+CTaskShield::CTaskShield(COldObject* object) : CBackgroundTask(object)
 {
     m_rankSphere = -1;
     m_soundChannel = -1;

@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autoroot.h
-
 #pragma once
 
 
@@ -44,4 +42,3 @@ protected:
     float           m_lastParticle = 0.0f;
     Math::Vector        m_center;
 };
-

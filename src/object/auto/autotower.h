@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autotower.h
-
 #pragma once
 
 
@@ -75,4 +73,3 @@ protected:
     float           m_angleZfinal = 0.0f;
     int             m_partiStop[4] = {};
 };
-

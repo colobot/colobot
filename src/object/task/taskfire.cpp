@@ -38,7 +38,7 @@ const float ENERGY_FIREi    = (0.10f/2.5f); // energy consumed/organic
 
 // Object's constructor.
 
-CTaskFire::CTaskFire(COldObject* object) : CTask(object)
+CTaskFire::CTaskFire(COldObject* object) : CForegroundTask(object)
 {
     m_soundChannel = -1;
 
@@ -385,5 +385,10 @@ bool CTaskFire::Abort()
     }
 
 //? m_camera->StopCentering(m_object, 1.0f);
+    return true;
+}
+
+bool CTaskFire::IsPilot()
+{
     return true;
 }

@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// motiontoto.h
-
 #pragma once
 
 
@@ -70,4 +68,3 @@ protected:
     ObjectType  m_type;
     Math::Point     m_mousePos;
 };
-

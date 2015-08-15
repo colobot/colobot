@@ -31,7 +31,7 @@
 
 // Object's constructor.
 
-CTaskTurn::CTaskTurn(COldObject* object) : CTask(object)
+CTaskTurn::CTaskTurn(COldObject* object) : CForegroundTask(object)
 {
 }
 

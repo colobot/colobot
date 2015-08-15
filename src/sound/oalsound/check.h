@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// check.h
-
 #pragma once
 
 #include "common/logger.h"

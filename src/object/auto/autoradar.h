@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autoradar.h
-
 #pragma once
 
 
@@ -64,4 +62,3 @@ protected:
     float           m_start = 0.0f;
     int             m_totalDetect = 0;
 };
-

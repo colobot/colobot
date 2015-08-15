@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskadvance.h
-
 #pragma once
 
 
@@ -28,7 +26,7 @@
 
 
 
-class CTaskAdvance : public CTask
+class CTaskAdvance : public CForegroundTask
 {
 public:
     CTaskAdvance(COldObject* object);
@@ -49,4 +47,3 @@ protected:
     float       m_fixTime = 0.0f;
     bool        m_bError = false;
 };
-

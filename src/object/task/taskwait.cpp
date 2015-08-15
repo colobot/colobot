@@ -26,7 +26,7 @@
 
 // Object's constructor.
 
-CTaskWait::CTaskWait(COldObject* object) : CTask(object)
+CTaskWait::CTaskWait(COldObject* object) : CForegroundTask(object)
 {
 }
 
@@ -68,4 +68,3 @@ Error CTaskWait::IsEnded()
     if ( m_bEnded )  return ERR_STOP;
     return ERR_CONTINUE;
 }
-

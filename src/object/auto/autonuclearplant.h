@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autonuclearplant.h
-
 #pragma once
 
 
@@ -69,4 +67,3 @@ protected:
     Math::Vector            m_pos;
     int                 m_channelSound = 0;
 };
-

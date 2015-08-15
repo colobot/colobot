@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// tasktake.h
-
 #pragma once
 
 
@@ -44,7 +42,7 @@ enum TaskTakeArm
 
 
 
-class CTaskTake : public CTask
+class CTaskTake : public CForegroundTask
 {
 public:
     CTaskTake(COldObject* object);
@@ -75,4 +73,3 @@ protected:
     float           m_angle = 0.0f;
     ObjectType      m_cargoType = OBJECT_NULL;
 };
-

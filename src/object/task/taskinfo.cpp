@@ -34,7 +34,7 @@
 
 // Object's constructor.
 
-CTaskInfo::CTaskInfo(COldObject* object) : CTask(object)
+CTaskInfo::CTaskInfo(COldObject* object) : CForegroundTask(object)
     , m_progress(0.0f)
     , m_speed(0.0f)
     , m_time(0.0f)

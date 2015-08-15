@@ -54,8 +54,6 @@
 
 #include "object/subclass/exchange_post.h"
 
-#include "object/task/taskmanager.h"
-
 #include "physics/physics.h"
 
 #include "script/cbottoken.h"
@@ -1174,11 +1172,10 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
 
 // Monitoring a task.
 
-bool CScriptFunctions::Process(CScript* script, CBotVar* result, int &exception)
+bool CScriptFunctions::WaitForForegroundTask(CScript* script, CBotVar* result, int &exception)
 {
-    Error       err;
-
-    err = script->m_taskExecutor->GetForegroundTask()->IsEnded();
+    assert(script->m_taskExecutor->IsForegroundTask());
+    Error err = script->m_taskExecutor->GetForegroundTask()->IsEnded();
     if ( err != ERR_CONTINUE )  // task terminated?
     {
         script->m_taskExecutor->StopForegroundTask();
@@ -1187,7 +1184,31 @@ bool CScriptFunctions::Process(CScript* script, CBotVar* result, int &exception)
 
         if ( err == ERR_STOP )  err = ERR_OK;
         result->SetValInt(err);  // indicates the error or ok
-        if ( ShouldProcessStop(err, script->m_errMode) )
+        if ( ShouldTaskStop(err, script->m_errMode) )
+        {
+            exception = err;
+            return false;
+        }
+        return true;  // it's all over
+    }
+
+    script->m_bContinue = true;
+    return false;  // not done
+}
+
+bool CScriptFunctions::WaitForBackgroundTask(CScript* script, CBotVar* result, int &exception)
+{
+    assert(script->m_taskExecutor->IsBackgroundTask());
+    Error err = script->m_taskExecutor->GetBackgroundTask()->IsEnded();
+    if ( err != ERR_CONTINUE )  // task terminated?
+    {
+        script->m_taskExecutor->StopBackgroundTask();
+
+        script->m_bContinue = false;
+
+        if ( err == ERR_STOP )  err = ERR_OK;
+        result->SetValInt(err);  // indicates the error or ok
+        if ( ShouldTaskStop(err, script->m_errMode) )
         {
             exception = err;
             return false;
@@ -1202,7 +1223,7 @@ bool CScriptFunctions::Process(CScript* script, CBotVar* result, int &exception)
 
 // Returns true if error code means real error and exception must be thrown
 
-bool CScriptFunctions::ShouldProcessStop(Error err, int errMode)
+bool CScriptFunctions::ShouldTaskStop(Error err, int errMode)
 {
     // aim impossible  - not a real error
     if ( err == ERR_AIM_IMPOSSIBLE )
@@ -1305,7 +1326,7 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
             return true;
         }
     }
-    if ( !Process(script, result, exception) )  return false;  // not finished
+    if ( !WaitForForegroundTask(script, result, exception) )  return false;  // not finished
     result->SetValFloat(script->m_returnValue);
     return true;
 }
@@ -1436,7 +1457,7 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
         return true;
     }
 
-    return Process(script, result, exception);
+    return WaitForForegroundTask(script, result, exception);
 
 }
 
@@ -1880,7 +1901,7 @@ bool CScriptFunctions::rWait(CBotVar* var, CBotVar* result, int& exception, void
             return true;
         }
     }
-    return Process(script, result, exception);
+    return WaitForForegroundTask(script, result, exception);
 }
 
 // Instruction "move(dist)".
@@ -1909,7 +1930,7 @@ bool CScriptFunctions::rMove(CBotVar* var, CBotVar* result, int& exception, void
             return true;
         }
     }
-    return Process(script, result, exception);
+    return WaitForForegroundTask(script, result, exception);
 }
 
 // Instruction "turn(angle)".
@@ -1938,7 +1959,7 @@ bool CScriptFunctions::rTurn(CBotVar* var, CBotVar* result, int& exception, void
             return true;
         }
     }
-    return Process(script, result, exception);
+    return WaitForForegroundTask(script, result, exception);
 }
 
 // Compilation of the instruction "goto(pos, altitude, crash, goal)".
@@ -2018,7 +2039,7 @@ bool CScriptFunctions::rGoto(CBotVar* var, CBotVar* result, int& exception, void
             return true;
         }
     }
-    return Process(script, result, exception);
+    return WaitForForegroundTask(script, result, exception);
 }
 
 // Compilation "grab/drop(oper)".
@@ -2078,7 +2099,7 @@ bool CScriptFunctions::rGrab(CBotVar* var, CBotVar* result, int& exception, void
             return true;
         }
     }
-    return Process(script, result, exception);
+    return WaitForForegroundTask(script, result, exception);
 }
 
 // Instruction "drop(oper)".
@@ -2121,7 +2142,7 @@ bool CScriptFunctions::rDrop(CBotVar* var, CBotVar* result, int& exception, void
             return true;
         }
     }
-    return Process(script, result, exception);
+    return WaitForForegroundTask(script, result, exception);
 }
 
 // Instruction "sniff()".
@@ -2148,7 +2169,7 @@ bool CScriptFunctions::rSniff(CBotVar* var, CBotVar* result, int& exception, voi
             return true;
         }
     }
-    return Process(script, result, exception);
+    return WaitForForegroundTask(script, result, exception);
 }
 
 // Compilation of the instruction "receive(nom, power)".
@@ -2201,7 +2222,7 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
             return true;
         }
     }
-    if ( !Process(script, result, exception) )  return false;  // not finished
+    if ( !WaitForForegroundTask(script, result, exception) )  return false;  // not finished
 
     value = pThis->GetInfoReturn();
     if ( std::isnan(value) )
@@ -2276,7 +2297,7 @@ bool CScriptFunctions::rSend(CBotVar* var, CBotVar* result, int& exception, void
             return true;
         }
     }
-    return Process(script, result, exception);
+    return WaitForForegroundTask(script, result, exception);
 }
 
 // Seeks the nearest information terminal.
@@ -2406,7 +2427,7 @@ bool CScriptFunctions::rThump(CBotVar* var, CBotVar* result, int& exception, voi
             return true;
         }
     }
-    return Process(script, result, exception);
+    return WaitForForegroundTask(script, result, exception);
 }
 
 // Instruction "recycle()".
@@ -2433,7 +2454,7 @@ bool CScriptFunctions::rRecycle(CBotVar* var, CBotVar* result, int& exception, v
             return true;
         }
     }
-    return Process(script, result, exception);
+    return WaitForForegroundTask(script, result, exception);
 }
 
 // Compilation "shield(oper, radius)".
@@ -2591,7 +2612,7 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
             return true;
         }
     }
-    return Process(script, result, exception);
+    return WaitForForegroundTask(script, result, exception);
 }
 
 // Compilation of the instruction "aim(x, y)".
@@ -2621,7 +2642,7 @@ bool CScriptFunctions::rAim(CBotVar* var, CBotVar* result, int& exception, void*
 
     exception = 0;
 
-    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
+    if ( !script->m_taskExecutor->IsBackgroundTask() )  // no task in progress?
     {
         x = var->GetValFloat();
         var = var->GetNext();
@@ -2633,12 +2654,12 @@ bool CScriptFunctions::rAim(CBotVar* var, CBotVar* result, int& exception, void*
         }
         else if ( err != ERR_OK )
         {
-            script->m_taskExecutor->StopForegroundTask();
+            script->m_taskExecutor->StopBackgroundTask();
             result->SetValInt(err);  // shows the error
             return true;
         }
     }
-    return Process(script, result, exception);
+    return WaitForBackgroundTask(script, result, exception);
 }
 
 // Compilation of the instruction "motor(left, right)".
@@ -2926,7 +2947,7 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
                 return true;
             }
         }
-        return Process(script, result, exception);
+        return WaitForForegroundTask(script, result, exception);
     }
     else
     {
@@ -2975,7 +2996,7 @@ bool CScriptFunctions::rPenUp(CBotVar* var, CBotVar* result, int& exception, voi
                 return true;
             }
         }
-        return Process(script, result, exception);
+        return WaitForForegroundTask(script, result, exception);
     }
     else
     {
@@ -3029,7 +3050,7 @@ bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, 
                 return true;
             }
         }
-        return Process(script, result, exception);
+        return WaitForForegroundTask(script, result, exception);
     }
     else
     {

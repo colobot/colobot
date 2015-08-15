@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskpen.h
-
 #pragma once
 
 
@@ -38,7 +36,7 @@ enum TaskPenPhase
 
 
 
-class CTaskPen : public CTask
+class CTaskPen : public CForegroundTask
 {
 public:
     CTaskPen(COldObject* object);

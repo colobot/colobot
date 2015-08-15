@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskfireant.h
-
 #pragma once
 
 
@@ -38,7 +36,7 @@ enum TaskFireAnt
 
 
 
-class CTaskFireAnt : public CTask
+class CTaskFireAnt : public CForegroundTask
 {
 public:
     CTaskFireAnt(COldObject* object);
@@ -63,4 +61,3 @@ protected:
     float       m_time = 0.0f;
     float       m_lastParticle = 0.0f;
 };
-
