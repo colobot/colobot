@@ -56,7 +56,8 @@ void CSignalHandlers::SignalHandler(int sig)
     ReportError(signalStr);
 }
 
-// TODO: How portable across compilers is this?
+#if HAVE_DEMANGLE
+// For gcc and clang
 #include <cstdlib>
 #include <memory>
 #include <cxxabi.h>
@@ -67,9 +68,15 @@ std::string demangle(const char* name) {
         std::free
     };
 
-    return result != nullptr ? result.get() : name;
+    return (result != nullptr && status == 0) ? result.get() : name;
 }
-// END OF TODO
+#else
+// For MSVC and others
+// In MSVC typeinfo(e).name() should be already demangled
+std::string demangle(const char* name) {
+    return name;
+}
+#endif
 
 void CSignalHandlers::UnhandledExceptionHandler()
 {
