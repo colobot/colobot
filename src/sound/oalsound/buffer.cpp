@@ -68,9 +68,9 @@ bool Buffer::LoadFromFile(std::string filename, SoundType sound)
     }
 
     alGenBuffers(1, &m_buffer);
-    if (!m_buffer)
+    if (CheckOpenALError())
     {
-        GetLogger()->Warn("Could not create audio buffer\n");
+        GetLogger()->Warn("Could not create audio buffer. Code: %d\n", GetOpenALErrorCode());
         m_loaded = false;
         return false;
     }
