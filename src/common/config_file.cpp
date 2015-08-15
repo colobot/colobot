@@ -155,12 +155,12 @@ bool CConfigFile::SetStringProperty(std::string section, std::string key, std::s
     return true;
 }
 
-
-bool CConfigFile::GetStringProperty(std::string section, std::string key, std::string &buffer)
+bool CConfigFile::GetStringProperty(std::string section, std::string key, std::string &value)
 {
     try
     {
-        buffer = m_propertyTree.get<std::string>(section + "." + key);
+        std::string readValue = m_propertyTree.get<std::string>(section + "." + key);
+        value = std::move(readValue);
     }
     catch (std::exception & e)
     {
@@ -176,7 +176,6 @@ bool CConfigFile::GetStringProperty(std::string section, std::string key, std::s
     }
     return true;
 }
-
 
 bool CConfigFile::SetIntProperty(std::string section, std::string key, int value)
 {
@@ -193,12 +192,12 @@ bool CConfigFile::SetIntProperty(std::string section, std::string key, int value
     return true;
 }
 
-
 bool CConfigFile::GetIntProperty(std::string section, std::string key, int &value)
 {
     try
     {
-        value = m_propertyTree.get<int>(section + "." + key);
+        int readValue = m_propertyTree.get<int>(section + "." + key);
+        value = readValue;
     }
     catch (std::exception & e)
     {
@@ -215,6 +214,21 @@ bool CConfigFile::GetIntProperty(std::string section, std::string key, int &valu
     return true;
 }
 
+bool CConfigFile::SetBoolProperty(std::string section, std::string key, bool value)
+{
+    return SetIntProperty(section, key, value ? 1 : 0);
+}
+
+bool CConfigFile::GetBoolProperty(std::string section, std::string key, bool& value)
+{
+    int intValue = 0;
+    bool result = GetIntProperty(section, key, intValue);
+    if (result)
+    {
+        value = intValue == 1;
+    }
+    return result;
+}
 
 bool CConfigFile::SetFloatProperty(std::string section, std::string key, float value)
 {
@@ -231,12 +245,12 @@ bool CConfigFile::SetFloatProperty(std::string section, std::string key, float v
     return true;
 }
 
-
 bool CConfigFile::GetFloatProperty(std::string section, std::string key, float &value)
 {
     try
     {
-        value = m_propertyTree.get<float>(section + "." + key);
+        float readValue = m_propertyTree.get<float>(section + "." + key);
+        value = readValue;
     }
     catch (std::exception & e)
     {

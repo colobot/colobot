@@ -56,7 +56,7 @@ void CSettings::SaveResolutionSettings(const Gfx::DeviceConfig& config)
     std::ostringstream ss;
     ss << config.size.x << "x" << config.size.y;
     GetConfigFile().SetStringProperty("Setup", "Resolution", ss.str());
-    GetConfigFile().SetIntProperty("Setup", "Fullscreen", config.fullScreen);
+    GetConfigFile().SetBoolProperty("Setup", "Fullscreen", config.fullScreen);
     GetConfigFile().Save();
 }
 
@@ -68,30 +68,30 @@ void CSettings::SaveSettings()
     Gfx::CCamera* camera = main->GetCamera();
     CSoundInterface* sound = app->GetSound();
 
-    GetConfigFile().SetIntProperty("Setup", "Tooltips", m_tooltips);
-    GetConfigFile().SetIntProperty("Setup", "InterfaceGlint", m_interfaceGlint);
-    GetConfigFile().SetIntProperty("Setup", "InterfaceRain", m_interfaceRain);
-    GetConfigFile().SetIntProperty("Setup", "Soluce4", m_soluce4);
-    GetConfigFile().SetIntProperty("Setup", "Movies", m_movies);
-    GetConfigFile().SetIntProperty("Setup", "CameraScroll", camera->GetCameraScroll());
-    GetConfigFile().SetIntProperty("Setup", "CameraInvertX", camera->GetCameraInvertX());
-    GetConfigFile().SetIntProperty("Setup", "CameraInvertY", camera->GetCameraInvertY());
-    GetConfigFile().SetIntProperty("Setup", "InterfaceEffect", camera->GetEffect());
-    GetConfigFile().SetIntProperty("Setup", "Blood", camera->GetBlood());
-    GetConfigFile().SetIntProperty("Setup", "Autosave", main->GetAutosave());
+    GetConfigFile().SetBoolProperty("Setup", "Tooltips", m_tooltips);
+    GetConfigFile().SetBoolProperty("Setup", "InterfaceGlint", m_interfaceGlint);
+    GetConfigFile().SetBoolProperty("Setup", "InterfaceRain", m_interfaceRain);
+    GetConfigFile().SetBoolProperty("Setup", "Soluce4", m_soluce4);
+    GetConfigFile().SetBoolProperty("Setup", "Movies", m_movies);
+    GetConfigFile().SetBoolProperty("Setup", "CameraScroll", camera->GetCameraScroll());
+    GetConfigFile().SetBoolProperty("Setup", "CameraInvertX", camera->GetCameraInvertX());
+    GetConfigFile().SetBoolProperty("Setup", "CameraInvertY", camera->GetCameraInvertY());
+    GetConfigFile().SetBoolProperty("Setup", "InterfaceEffect", camera->GetEffect());
+    GetConfigFile().SetBoolProperty("Setup", "Blood", camera->GetBlood());
+    GetConfigFile().SetBoolProperty("Setup", "Autosave", main->GetAutosave());
     GetConfigFile().SetIntProperty("Setup", "AutosaveInterval", main->GetAutosaveInterval());
     GetConfigFile().SetIntProperty("Setup", "AutosaveSlots", main->GetAutosaveSlots());
-    GetConfigFile().SetIntProperty("Setup", "ObjectDirty", engine->GetDirty());
-    GetConfigFile().SetIntProperty("Setup", "FogMode", engine->GetFog());
-    GetConfigFile().SetIntProperty("Setup", "LightMode", engine->GetLightMode());
+    GetConfigFile().SetBoolProperty("Setup", "ObjectDirty", engine->GetDirty());
+    GetConfigFile().SetBoolProperty("Setup", "FogMode", engine->GetFog());
+    GetConfigFile().SetBoolProperty("Setup", "LightMode", engine->GetLightMode());
     GetConfigFile().SetIntProperty("Setup", "UseJoystick", app->GetJoystickEnabled() ? app->GetJoystick().index : -1);
     GetConfigFile().SetFloatProperty("Setup", "ParticleDensity", engine->GetParticleDensity());
     GetConfigFile().SetFloatProperty("Setup", "ClippingDistance", engine->GetClippingDistance());
     GetConfigFile().SetIntProperty("Setup", "AudioVolume", sound->GetAudioVolume());
     GetConfigFile().SetIntProperty("Setup", "MusicVolume", sound->GetMusicVolume());
-    GetConfigFile().SetIntProperty("Setup", "EditIndentMode", engine->GetEditIndentMode());
+    GetConfigFile().SetBoolProperty("Setup", "EditIndentMode", engine->GetEditIndentMode());
     GetConfigFile().SetIntProperty("Setup", "EditIndentValue", engine->GetEditIndentValue());
-    GetConfigFile().SetIntProperty("Setup", "SystemMouse", m_systemMouse);
+    GetConfigFile().SetBoolProperty("Setup", "SystemMouse", m_systemMouse);
 
     GetConfigFile().SetIntProperty("Setup", "MipmapLevel", engine->GetTextureMipmapLevel());
     GetConfigFile().SetIntProperty("Setup", "Anisotropy", engine->GetTextureAnisotropyLevel());
@@ -99,9 +99,10 @@ void CSettings::SaveSettings()
     GetConfigFile().SetFloatProperty("Setup", "ShadowRange", engine->GetShadowRange());
     GetConfigFile().SetIntProperty("Setup", "MSAA", engine->GetMultiSample());
     GetConfigFile().SetIntProperty("Setup", "FilterMode", engine->GetTextureFilterMode());
-    GetConfigFile().SetIntProperty("Setup", "ShadowMapping", engine->GetShadowMapping());
-    GetConfigFile().SetIntProperty("Setup", "ShadowMappingQuality", engine->GetShadowMappingQuality());
-    GetConfigFile().SetIntProperty("Setup", "ShadowMappingResolution", engine->GetShadowMappingOffscreen() ? engine->GetShadowMappingOffscreenResolution() : 0);
+    GetConfigFile().SetBoolProperty("Setup", "ShadowMapping", engine->GetShadowMapping());
+    GetConfigFile().SetBoolProperty("Setup", "ShadowMappingQuality", engine->GetShadowMappingQuality());
+    GetConfigFile().SetIntProperty("Setup", "ShadowMappingResolution",
+                                   engine->GetShadowMappingOffscreen() ? engine->GetShadowMappingOffscreenResolution() : 0);
 
     CInput::GetInstancePointer()->SaveKeyBindings();
 
@@ -112,7 +113,7 @@ void CSettings::SaveSettings()
     GetConfigFile().SetFloatProperty("Edit", "WindowPosY", m_windowPos.y);
     GetConfigFile().SetFloatProperty("Edit", "WindowDimX", m_windowDim.x);
     GetConfigFile().SetFloatProperty("Edit", "WindowDimY", m_windowDim.y);
-    GetConfigFile().SetIntProperty("Edit", "IOPublic", m_IOPublic);
+    GetConfigFile().SetBoolProperty("Edit", "IOPublic", m_IOPublic);
     GetConfigFile().SetFloatProperty("Edit", "IOPosX", m_IOPos.x);
     GetConfigFile().SetFloatProperty("Edit", "IOPosY", m_IOPos.y);
     GetConfigFile().SetFloatProperty("Edit", "IODimX", m_IODim.x);
@@ -130,42 +131,33 @@ void CSettings::LoadSettings()
     Gfx::CCamera* camera = main->GetCamera();
     CSoundInterface* sound = app->GetSound();
 
-    float       fValue;
-    int         iValue;
-    std::string key;
+    int iValue = 0;
+    float fValue = 0.0f;
+    bool bValue = false;
 
-    if (GetConfigFile().GetIntProperty("Setup", "Tooltips", iValue))
-        m_tooltips = iValue;
+    GetConfigFile().GetBoolProperty("Setup", "Tooltips", m_tooltips);
+    GetConfigFile().GetBoolProperty("Setup", "InterfaceGlint", m_interfaceGlint);
+    GetConfigFile().GetBoolProperty("Setup", "InterfaceRain", m_interfaceRain);
+    GetConfigFile().GetBoolProperty("Setup", "Soluce4", m_soluce4);
+    GetConfigFile().GetBoolProperty("Setup", "Movies", m_movies);
 
-    if (GetConfigFile().GetIntProperty("Setup", "InterfaceGlint", iValue))
-        m_interfaceGlint = iValue;
+    if (GetConfigFile().GetBoolProperty("Setup", "CameraScroll", bValue))
+        camera->SetCameraScroll(bValue);
 
-    if (GetConfigFile().GetIntProperty("Setup", "InterfaceRain", iValue))
-        m_interfaceRain = iValue;
+    if (GetConfigFile().GetBoolProperty("Setup", "CameraInvertX", bValue))
+        camera->SetCameraInvertX(bValue);
 
-    if (GetConfigFile().GetIntProperty("Setup", "Soluce4", iValue))
-        m_soluce4 = iValue;
+    if (GetConfigFile().GetBoolProperty("Setup", "CameraInvertY", bValue))
+        camera->SetCameraInvertY(bValue);
 
-    if (GetConfigFile().GetIntProperty("Setup", "Movies", iValue))
-        m_movies = iValue;
+    if (GetConfigFile().GetBoolProperty("Setup", "InterfaceEffect", bValue))
+        camera->SetEffect(bValue);
 
-    if (GetConfigFile().GetIntProperty("Setup", "CameraScroll", iValue))
-        camera->SetCameraScroll(iValue);
+    if (GetConfigFile().GetBoolProperty("Setup", "Blood", bValue))
+        camera->SetBlood(bValue);
 
-    if (GetConfigFile().GetIntProperty("Setup", "CameraInvertX", iValue))
-        camera->SetCameraInvertX(iValue);
-
-    if (GetConfigFile().GetIntProperty("Setup", "CameraInvertY", iValue))
-        camera->SetCameraInvertY(iValue);
-
-    if (GetConfigFile().GetIntProperty("Setup", "InterfaceEffect", iValue))
-        camera->SetEffect(iValue);
-
-    if (GetConfigFile().GetIntProperty("Setup", "Blood", iValue))
-        camera->SetBlood(iValue);
-
-    if (GetConfigFile().GetIntProperty("Setup", "Autosave", iValue))
-        main->SetAutosave(iValue);
+    if (GetConfigFile().GetBoolProperty("Setup", "Autosave", bValue))
+        main->SetAutosave(bValue);
 
     if (GetConfigFile().GetIntProperty("Setup", "AutosaveInterval", iValue))
         main->SetAutosaveInterval(iValue);
@@ -173,21 +165,21 @@ void CSettings::LoadSettings()
     if (GetConfigFile().GetIntProperty("Setup", "AutosaveSlots", iValue))
         main->SetAutosaveSlots(iValue);
 
-    if (GetConfigFile().GetIntProperty("Setup", "ObjectDirty", iValue))
-        engine->SetDirty(iValue);
+    if (GetConfigFile().GetBoolProperty("Setup", "ObjectDirty", bValue))
+        engine->SetDirty(bValue);
 
-    if (GetConfigFile().GetIntProperty("Setup", "FogMode", iValue))
+    if (GetConfigFile().GetBoolProperty("Setup", "FogMode", bValue))
     {
-        engine->SetFog(iValue);
+        engine->SetFog(bValue);
         camera->SetOverBaseColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)); // TODO: color ok?
     }
 
-    if (GetConfigFile().GetIntProperty("Setup", "LightMode", iValue))
-        engine->SetLightMode(iValue);
+    if (GetConfigFile().GetBoolProperty("Setup", "LightMode", bValue))
+        engine->SetLightMode(bValue);
 
     if (GetConfigFile().GetIntProperty("Setup", "UseJoystick", iValue))
     {
-        if(iValue >= 0)
+        if (iValue >= 0)
         {
             auto joysticks = app->GetJoystickList();
             for(const auto& joystick : joysticks)
@@ -217,15 +209,14 @@ void CSettings::LoadSettings()
     if (GetConfigFile().GetIntProperty("Setup", "MusicVolume", iValue))
         sound->SetMusicVolume(iValue);
 
-    if (GetConfigFile().GetIntProperty("Setup", "EditIndentMode", iValue))
-        engine->SetEditIndentMode(iValue);
+    if (GetConfigFile().GetBoolProperty("Setup", "EditIndentMode", bValue))
+        engine->SetEditIndentMode(bValue);
 
     if (GetConfigFile().GetIntProperty("Setup", "EditIndentValue", iValue))
         engine->SetEditIndentValue(iValue);
 
-    if (GetConfigFile().GetIntProperty("Setup", "SystemMouse", iValue))
+    if (GetConfigFile().GetBoolProperty("Setup", "SystemMouse", m_systemMouse))
     {
-        m_systemMouse = iValue;
         app->SetMouseMode(m_systemMouse ? MOUSE_SYSTEM : MOUSE_ENGINE);
     }
 
@@ -248,15 +239,15 @@ void CSettings::LoadSettings()
     if (GetConfigFile().GetIntProperty("Setup", "FilterMode", iValue))
         engine->SetTextureFilterMode(static_cast<Gfx::TexFilter>(iValue));
 
-    if (GetConfigFile().GetIntProperty("Setup", "ShadowMapping", iValue))
-        engine->SetShadowMapping(iValue);
+    if (GetConfigFile().GetBoolProperty("Setup", "ShadowMapping", bValue))
+        engine->SetShadowMapping(bValue);
 
-    if (GetConfigFile().GetIntProperty("Setup", "ShadowMappingQuality", iValue))
-        engine->SetShadowMappingQuality(iValue);
+    if (GetConfigFile().GetBoolProperty("Setup", "ShadowMappingQuality", bValue))
+        engine->SetShadowMappingQuality(bValue);
 
     if (GetConfigFile().GetIntProperty("Setup", "ShadowMappingResolution", iValue))
     {
-        if(iValue == 0)
+        if (iValue == 0)
         {
             engine->SetShadowMappingOffscreen(false);
         }
@@ -271,17 +262,17 @@ void CSettings::LoadSettings()
 
 
 
-    if (GetConfigFile().GetFloatProperty("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "WindowPosX",  fValue)) m_windowPos.x = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "WindowPosY",  fValue)) m_windowPos.y = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "WindowDimX",  fValue)) m_windowDim.x = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "WindowDimY",  fValue)) m_windowDim.y = fValue;
+    GetConfigFile().GetFloatProperty("Edit", "FontSize",    m_fontSize);
+    GetConfigFile().GetFloatProperty("Edit", "WindowPosX",  m_windowPos.x);
+    GetConfigFile().GetFloatProperty("Edit", "WindowPosY",  m_windowPos.y);
+    GetConfigFile().GetFloatProperty("Edit", "WindowDimX",  m_windowDim.x);
+    GetConfigFile().GetFloatProperty("Edit", "WindowDimY",  m_windowDim.y);
 
-    if (GetConfigFile().GetIntProperty  ("Edit", "IOPublic", iValue)) m_IOPublic = iValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "IOPosX",   fValue)) m_IOPos.x  = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "IOPosY",   fValue)) m_IOPos.y  = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "IODimX",   fValue)) m_IODim.x  = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "IODimY",   fValue)) m_IODim.y  = fValue;
+    GetConfigFile().GetBoolProperty ("Edit", "IOPublic", m_IOPublic);
+    GetConfigFile().GetFloatProperty("Edit", "IOPosX",   m_IOPos.x);
+    GetConfigFile().GetFloatProperty("Edit", "IOPosY",   m_IOPos.y);
+    GetConfigFile().GetFloatProperty("Edit", "IODimX",   m_IODim.x);
+    GetConfigFile().GetFloatProperty("Edit", "IODimY",   m_IODim.y);
 }
 
 void CSettings::SetTooltips(bool tooltips)
@@ -380,7 +371,7 @@ Math::Point CSettings::GetWindowDim()
 void CSettings::SetIOPublic(bool mode)
 {
     m_IOPublic = mode;
-    GetConfigFile().SetIntProperty("Edit", "IOPublic", m_IOPublic);
+    GetConfigFile().SetBoolProperty("Edit", "IOPublic", m_IOPublic);
     GetConfigFile().Save();
 }
 

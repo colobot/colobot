@@ -57,52 +57,48 @@ public:
     bool Save();
 
     /** Sets string value in section under specified key
-     * \param section
-     * \param key
-     * \param value
      * \return return true on success
      */
     bool SetStringProperty(std::string section, std::string key, std::string value);
 
     /** Gets string value in section under specified key
-     * \param section
-     * \param key
-     * \param buffer
      * \return return true on success
      */
-    bool GetStringProperty(std::string section, std::string key, std::string& buffer);
+    bool GetStringProperty(std::string section, std::string key, std::string& value);
 
     /** Sets int value in section under specified key
-     * \param section
-     * \param key
-     * \param value
      * \return return true on success
      */
     bool SetIntProperty(std::string section, std::string key, int value);
 
+    /** Sets bool value in section under specified key
+     * \return return true on success
+     */
+    bool SetBoolProperty(std::string section, std::string key, bool value);
+
     /** Gets int value in section under specified key
-     * \param section
-     * \param key
-     * \param value
+     * \a value will only be changed if key exists
      * \return return true on success
      */
     bool GetIntProperty(std::string section, std::string key, int &value);
 
     /** Sets float value in section under specified key
-     * \param section
-     * \param key
-     * \param value
+     * \a value will only be changed if key exists
      * \return return true on success
      */
     bool SetFloatProperty(std::string section, std::string key, float value);
 
     /** Gets float value in section under specified key
-     * \param section
-     * \param key
-     * \param value
+     * \a value will only be changed if key exists
      * \return return true on success
      */
     bool GetFloatProperty(std::string section, std::string key, float &value);
+
+    /** Gets bool value in section under specified key
+     * \a value will only be changed if key exists
+     * \return return true on success
+     */
+    bool GetBoolProperty(std::string section, std::string key, bool &value);
 
 private:
     boost::property_tree::ptree m_propertyTree;
