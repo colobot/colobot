@@ -20,7 +20,6 @@
 
 #include "object/auto/autolabo.h"
 
-#include "common/global.h"
 #include "common/make_unique.h"
 #include "common/misc.h"
 

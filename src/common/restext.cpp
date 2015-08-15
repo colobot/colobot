@@ -26,8 +26,8 @@
 
 #include "app/input.h"
 
+#include "common/error.h"
 #include "common/event.h"
-#include "common/global.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
 

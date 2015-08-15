@@ -19,6 +19,8 @@
 
 #include "object/implementation/programmable_impl.h"
 
+#include "common/global.h"
+
 #include "level/robotmain.h"
 
 #include "math/all.h"

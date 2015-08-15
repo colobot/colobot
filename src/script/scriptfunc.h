@@ -26,7 +26,7 @@
 
 #include "CBot/CBotDll.h"
 
-#include "common/global.h"
+#include "common/error.h"
 
 #include <string>
 #include <unordered_map>

@@ -32,6 +32,8 @@
 #include "object/interface/controllable_object.h"
 #include "object/interface/programmable_object.h"
 
+#include <algorithm>
+
 
 namespace Ui
 {

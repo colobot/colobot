@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include "common/error.h"
 #include "common/global.h"
 
 #include "math/vector.h"

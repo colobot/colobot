@@ -23,7 +23,7 @@
 
 
 #include "common/event.h"
-#include "common/global.h"
+#include "common/error.h"
 
 #include "object/object_type.h"
 
@@ -120,4 +120,3 @@ protected:
     float       m_progressTime = 0.0f;
     float       m_progressTotal = 0.0f;
 };
-

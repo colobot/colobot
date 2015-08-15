@@ -19,5 +19,16 @@
 
 #pragma once
 
-// TODO: move to CRobotMain
-extern float    g_unit;                 // conversion factor
+/**
+ * \enum Language
+ * \brief Application language
+ */
+enum Language
+{
+    LANGUAGE_ENV = -1,
+    LANGUAGE_ENGLISH = 0,
+    LANGUAGE_FRENCH = 1,
+    LANGUAGE_GERMAN = 2,
+    LANGUAGE_POLISH = 3,
+    LANGUAGE_RUSSIAN = 4
+};

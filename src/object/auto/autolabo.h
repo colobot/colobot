@@ -24,6 +24,8 @@
 
 #include "object/auto/auto.h"
 
+#include "level/research_type.h"
+
 
 class CPoweredObject;
 

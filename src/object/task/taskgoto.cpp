@@ -20,6 +20,7 @@
 
 #include "object/task/taskgoto.h"
 
+#include "common/global.h"
 #include "common/event.h"
 #include "common/make_unique.h"
 

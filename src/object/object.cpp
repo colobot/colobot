@@ -19,6 +19,7 @@
 
 #include "object/object.h"
 
+#include "common/global.h"
 #include "common/restext.h"
 #include "common/stringutils.h"
 

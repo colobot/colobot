@@ -24,6 +24,8 @@
 
 #include "object/auto/auto.h"
 
+#include "level/research_type.h"
+
 
 enum AutoResearchPhase
 {
@@ -69,4 +71,3 @@ protected:
     int                 m_partiStop[6] = {};
     int                 m_channelSound = 0;
 };
-

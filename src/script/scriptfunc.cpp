@@ -23,6 +23,7 @@
 
 #include "app/app.h"
 
+#include "common/global.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
 

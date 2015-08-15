@@ -21,6 +21,8 @@
 
 #include "app/app.h"
 
+#include "common/global.h"
+
 #include "graphics/core/color.h"
 
 #include "graphics/engine/terrain.h"

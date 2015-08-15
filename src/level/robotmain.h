@@ -26,11 +26,13 @@
 
 #include "app/pausemanager.h"
 
-#include "common/global.h"
+#include "common/error.h"
 #include "common/singleton.h"
 
+#include "level/build_type.h"
 #include "level/level_category.h"
 #include "level/mainmovie.h"
+#include "level/research_type.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/particle.h"

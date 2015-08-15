@@ -20,6 +20,8 @@
 
 #include "object/task/taskinfo.h"
 
+#include "common/global.h"
+
 #include "graphics/engine/particle.h"
 
 #include "object/object_manager.h"
@@ -152,4 +154,3 @@ CExchangePost* CTaskInfo::FindExchangePost(float power)
     return dynamic_cast<CExchangePost*>(
         CObjectManager::GetInstancePointer()->FindNearest(m_object, OBJECT_INFO, power/g_unit));
 }
-

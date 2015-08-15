@@ -26,8 +26,6 @@
 
 #include "CBot/CBotDll.h"
 
-#include "common/global.h"
-
 #include <memory>
 #include <string>
 

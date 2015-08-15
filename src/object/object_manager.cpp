@@ -19,6 +19,7 @@
 
 #include "object/object_manager.h"
 
+#include "common/global.h"
 #include "common/make_unique.h"
 
 #include "math/all.h"

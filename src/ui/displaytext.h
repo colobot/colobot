@@ -22,7 +22,7 @@
 #pragma once
 
 #include "common/event.h"
-#include "common/global.h"
+#include "common/error.h"
 
 #include <array>
 
@@ -106,4 +106,3 @@ protected:
 
 
 } // namespace Ui
-

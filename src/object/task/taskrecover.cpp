@@ -20,6 +20,8 @@
 
 #include "object/task/taskrecover.h"
 
+#include "common/global.h"
+
 #include "graphics/engine/particle.h"
 
 #include "level/robotmain.h"

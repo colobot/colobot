@@ -26,7 +26,7 @@
 
 
 #include "common/event.h"
-#include "common/global.h"
+#include "common/error.h"
 
 #include "graphics/core/color.h"
 
@@ -188,4 +188,3 @@ protected:
 
 
 } // namespace Gfx
-

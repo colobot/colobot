@@ -20,7 +20,6 @@
 
 #include "object/auto/autofactory.h"
 
-#include "common/global.h"
 #include "common/make_unique.h"
 
 #include "math/geometry.h"

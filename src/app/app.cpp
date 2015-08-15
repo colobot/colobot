@@ -25,6 +25,7 @@
 #include "app/input.h"
 #include "app/system.h"
 
+#include "common/config_file.h"
 #include "common/image.h"
 #include "common/key.h"
 #include "common/logger.h"

@@ -39,6 +39,8 @@
 #include "ui/controls/list.h"
 #include "ui/controls/window.h"
 
+#include <algorithm>
+
 namespace Ui
 {
 

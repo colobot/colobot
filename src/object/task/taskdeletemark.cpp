@@ -20,6 +20,8 @@
 
 #include "object/task/taskdeletemark.h"
 
+#include "common/global.h"
+
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
 

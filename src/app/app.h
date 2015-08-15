@@ -24,9 +24,8 @@
 
 #pragma once
 
-#include "common/config_file.h"
 #include "common/event.h"
-#include "common/global.h"
+#include "common/language.h"
 #include "common/singleton.h"
 
 #include "graphics/core/device.h"
@@ -43,12 +42,14 @@ class CController;
 class CSoundInterface;
 class CInput;
 class CPathManager;
+class CConfigFile;
 class CSystemUtils;
 struct SystemTimeStamp;
 
 namespace Gfx
 {
 class CEngine;
+struct DeviceConfig;
 }
 
 /**

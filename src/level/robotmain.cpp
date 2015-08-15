@@ -26,7 +26,6 @@
 
 #include "common/config_file.h"
 #include "common/event.h"
-#include "common/global.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
 #include "common/misc.h"
@@ -2253,7 +2252,7 @@ void CRobotMain::UpdateInfoText()
         if (obj != nullptr)
         {
             Math::Vector pos = obj->GetPosition();
-            m_engine->SetStatisticPos(pos);
+            m_engine->SetStatisticPos(pos / g_unit);
         }
     }
     m_engine->SetTimerDisplay(m_missionTimerEnabled && m_missionTimerStarted ? TimeFormat(m_missionTimer) : "");

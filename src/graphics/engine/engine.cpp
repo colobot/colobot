@@ -4820,7 +4820,7 @@ void CEngine::DrawStats()
     drawStatsValue(  "FPS",               m_fps);
     drawStatsLine();
     str.str("");
-    str << std::fixed << std::setprecision(2) << m_statisticPos.x/g_unit << "; " << m_statisticPos.z/g_unit;
+    str << std::fixed << std::setprecision(2) << m_statisticPos.x << "; " << m_statisticPos.z;
     drawStatsLine(   "Position",          str.str());
 }
 
