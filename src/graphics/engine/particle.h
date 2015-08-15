@@ -220,7 +220,7 @@ struct Track
     int             posUsed = 0.0f;    // number of positions in "pos"
     int             head = 0;       // head to write index
     Math::Vector    pos[MAXTRACKLEN];
-    float           len[MAXTRACKLEN] = {0.0f};
+    float           len[MAXTRACKLEN] = {};
 };
 
 struct WheelTrace
@@ -360,7 +360,7 @@ protected:
     int           m_wheelTraceIndex = 0;
     WheelTrace    m_wheelTrace[MAXWHEELTRACE];
     int           m_totalInterface[MAXPARTITYPE][SH_MAX] = {};
-    bool          m_frameUpdate[SH_MAX] = {false};
+    bool          m_frameUpdate[SH_MAX] = {};
     int           m_fogTotal = 0;
     int           m_fog[MAXPARTIFOG] = {};
     int           m_uniqueStamp = 0;

@@ -395,7 +395,7 @@ struct EngineGroundMark
     //! Phase of life
     EngineGroundMarkPhase  phase = ENG_GR_MARK_PHASE_NULL;
     //! Times for 3 life phases
-    float                       delay[3] = { 0.0f };
+    float                       delay[3] = {};
     //! Fixed time
     float                       fix = 0.0f;
     //! Position for marks

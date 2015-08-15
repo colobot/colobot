@@ -118,7 +118,7 @@ protected:
 
     struct Item
     {
-        char text[100] = {0};
+        char text[100] = {};
         bool check = false;
         bool enable = true;
     };

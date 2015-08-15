@@ -4758,7 +4758,7 @@ void CEngine::DrawStats()
 
     std::stringstream str;
 
-    auto drawStatsLine = [&](const std::string& name = "", const std::string& value = "")
+    auto drawStatsLine = [&](const std::string& name, const std::string& value)
     {
         if (!name.empty())
         {
@@ -4799,13 +4799,13 @@ void CEngine::DrawStats()
                         m_app->GetPerformanceCounterData(PCNT_RENDER_SHADOW_MAP);
 
     drawStatsCounter("Event processing", PCNT_EVENT_PROCESSING);
-    drawStatsLine();
+    drawStatsLine("", "");
     drawStatsCounter("Frame update",      PCNT_UPDATE_ALL);
     drawStatsValue  ("    Engine update",     engineUpdate);
     drawStatsCounter("    Particle update",   PCNT_UPDATE_PARTICLE);
     drawStatsCounter("    Game update",       PCNT_UPDATE_GAME);
     drawStatsValue(  "    Other update",      otherUpdate);
-    drawStatsLine();
+    drawStatsLine("", "");
     drawStatsCounter("Frame render",      PCNT_RENDER_ALL);
     drawStatsCounter("    Particle render",   PCNT_RENDER_PARTICLE);
     drawStatsCounter("    Water render",      PCNT_RENDER_WATER);
@@ -4815,10 +4815,10 @@ void CEngine::DrawStats()
     drawStatsCounter("    Shadow map render", PCNT_RENDER_SHADOW_MAP);
     drawStatsValue(  "    Other render",      otherRender);
     drawStatsCounter("Swap buffers & VSync",  PCNT_SWAP_BUFFERS);
-    drawStatsLine();
+    drawStatsLine("", "");
     drawStatsLine(   "Triangles",         StrUtils::ToString<int>(m_statisticTriangle));
     drawStatsValue(  "FPS",               m_fps);
-    drawStatsLine();
+    drawStatsLine("", "");
     str.str("");
     str << std::fixed << std::setprecision(2) << m_statisticPos.x << "; " << m_statisticPos.z;
     drawStatsLine(   "Position",          str.str());

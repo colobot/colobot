@@ -37,7 +37,7 @@ template<> CInput* CSingleton<CInput>::m_instance = nullptr;
 CInput::CInput()
     : m_keyPresses()
 {
-    m_keyTable =
+    m_keyTable = std::map<InputSlot, std::string>
     {
         { INPUT_SLOT_LEFT,     "left"    },
         { INPUT_SLOT_RIGHT,    "right"   },

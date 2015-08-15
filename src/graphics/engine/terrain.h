@@ -336,7 +336,7 @@ protected:
         //! Terrain hardness (defines e.g. sound of walking)
         float       hardness = 0.0f;
         //! IDs of neighbor materials: up, right, down, left
-        char        mat[4] = {0};
+        char        mat[4] = {};
     };
     //! Terrain materials
     std::vector<TerrainMaterial> m_materials;
@@ -350,7 +350,7 @@ protected:
         //! ID of material
         short       id = 0;
         //! IDs of neighbor materials: up, right, down, left
-        char        mat[4] = {0};
+        char        mat[4] = {};
     };
 
 

@@ -42,7 +42,7 @@ struct SoundOper
     float finalFrequency = 0.0f;
     float totalTime = 0.0f;
     float currentTime = 0.0f;
-    SoundNext nextOper = {};
+    SoundNext nextOper = SOPER_CONTINUE;
 };
 
 

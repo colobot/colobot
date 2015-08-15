@@ -170,7 +170,7 @@ struct OldModelHeader
     //! Total number of triangles
     int totalTriangles = 0;
     //! Reserved area
-    int reserved[10] = {0};
+    int reserved[10] = {};
 };
 
 
@@ -188,7 +188,7 @@ struct OldModelTriangleV1
     Vertex p2;
     Vertex p3;
     Material material;
-    char texName[20] = {0};
+    char texName[20] = {};
     float min = 0;
     float max = 0;
 };
@@ -207,7 +207,7 @@ struct OldModelTriangleV2
     Vertex p2;
     Vertex p3;
     Material material;
-    char texName[20] = {0};
+    char texName[20] = {};
     float min = 0.0f;
     float max = 0.0f;
     long state = 0;
@@ -231,7 +231,7 @@ struct OldModelTriangleV3
     VertexTex2 p2;
     VertexTex2 p3;
     Material   material;
-    char texName[20] = {0};
+    char texName[20] = {};
     float min = 0.0f;
     float max = 0.0f;
     long state = 0;

@@ -447,8 +447,8 @@ void CScreenSetupGraphics::ChangeSetupButtons()
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_FILTER));
     if ( pes != 0 )
     {
-        value = pes->GetVisibleValue();
-        m_engine->SetTextureFilterMode(static_cast<Gfx::TexFilter>(value));
+        int valueIndex = pes->GetVisibleValueIndex();
+        m_engine->SetTextureFilterMode(static_cast<Gfx::TexFilter>(valueIndex));
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_MIPMAP));

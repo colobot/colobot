@@ -268,7 +268,7 @@ private:
     GLint uni_ShadowTexture = 0;
 
     //! true enables texture
-    GLint uni_TextureEnabled[3] = {0};
+    GLint uni_TextureEnabled[3] = {};
 
     // Alpha test parameters
     //! true enables alpha test
@@ -289,7 +289,7 @@ private:
     //! true enables lighting
     GLint uni_LightingEnabled = 0;
     //! true enables light source
-    GLint uni_LightEnabled[8] = {0};
+    GLint uni_LightEnabled[8] = {};
 };
 
 

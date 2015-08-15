@@ -131,7 +131,7 @@ protected:
     CParticle*        m_particle = nullptr;
     CSoundInterface*  m_sound = nullptr;
 
-    WaterType       m_type[2] = {WATER_NULL, WATER_NULL};
+    WaterType       m_type[2] = {};
     std::string     m_fileName;
     //! Overall level
     float           m_level = 0.0f;

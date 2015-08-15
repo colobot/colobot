@@ -570,7 +570,7 @@ struct KeyEventData : public EventData
     //! NOTE: applicable only to EVENT_KEY_DOWN events!
     unsigned int unicode = 0;
     //! Input binding slot for this key
-    InputSlot slot = {};
+    InputSlot slot = INPUT_SLOT_LEFT;
 };
 
 /**
@@ -600,7 +600,7 @@ struct MouseButtonEventData : public EventData
     }
 
     //! The mouse button
-    MouseButton button = {};
+    MouseButton button = MOUSE_BUTTON_LEFT;
 };
 
 /**
@@ -625,7 +625,7 @@ struct MouseWheelEventData : public EventData
     }
 
     //! Wheel direction
-    WheelDirection dir = {};
+    WheelDirection dir = WHEEL_UP;
 };
 
 /**
@@ -712,6 +712,34 @@ struct Event
        mouseButtonsState(0),
        customParam(0)
     {}
+
+    Event(const Event&) = delete;
+    Event& operator=(const Event&) = delete;
+
+    // Workaround for MSVC2013
+    Event(Event&& other)
+        : type(std::move(other.type)),
+          rTime(std::move(other.rTime)),
+          motionInput(std::move(other.motionInput)),
+          kmodState(std::move(other.kmodState)),
+          mousePos(std::move(other.mousePos)),
+          mouseButtonsState(std::move(other.mouseButtonsState)),
+          customParam(std::move(other.customParam)),
+          data(std::move(other.data))
+    {}
+
+    Event& operator=(Event&& other)
+    {
+        type = std::move(other.type);
+        rTime = std::move(other.rTime);
+        motionInput = std::move(other.motionInput);
+        kmodState = std::move(other.kmodState);
+        mousePos = std::move(other.mousePos);
+        mouseButtonsState = std::move(other.mouseButtonsState);
+        customParam = std::move(other.customParam);
+        data = std::move(other.data);
+        return *this;
+    }
 
     //! Convenience function for getting appropriate EventData subclass
     template<typename EventDataSubclass>

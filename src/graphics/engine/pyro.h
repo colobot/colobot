@@ -174,7 +174,7 @@ protected:
         Math::Vector    finalAngle;
     };
     PyroBurnPart    m_burnPart[10];
-    int             m_burnKeepPart[10] = {0};
+    int             m_burnKeepPart[10] = {};
     float           m_burnFall = 0.0f;
 
     float           m_fallFloor = 0.0f;

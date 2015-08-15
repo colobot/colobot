@@ -40,6 +40,26 @@
 
 struct OldMusic
 {
+    OldMusic() = default;
+
+    OldMusic(const OldMusic&) = delete;
+    OldMusic& operator=(const OldMusic&) = delete;
+
+    // Workaround for MSVC2013
+    OldMusic(OldMusic&& other)
+      : music(std::move(other.music)),
+        fadeTime(std::move(other.fadeTime)),
+        currentTime(std::move(other.currentTime))
+    {}
+
+    OldMusic& operator=(OldMusic&& other)
+    {
+        music = std::move(other.music);
+        fadeTime = std::move(other.fadeTime);
+        currentTime = std::move(other.currentTime);
+        return *this;
+    }
+
     std::unique_ptr<Channel> music;
     float fadeTime = 0.0f;
     float currentTime = 0.0f;

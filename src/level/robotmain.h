@@ -117,7 +117,7 @@ struct NewScriptName
 {
     bool        used = false;
     ObjectType  type = OBJECT_NULL;
-    char        name[40] = {0};
+    char        name[40] = {};
 };
 
 
@@ -133,7 +133,7 @@ struct ShowLimit
     Math::Vector    pos;
     float           radius = 0.0f;
     int             total = 0;
-    int             parti[MAXSHOWPARTI] = {0};
+    int             parti[MAXSHOWPARTI] = {};
     CObject*        link = nullptr;
     float           duration = 0.0f;
     float           time = 0.0f;
