@@ -25,6 +25,7 @@
 #include "common/config.h"
 
 #include "app/app.h"
+#include "app/signal_handlers.h"
 #include "app/system.h"
 #if PLATFORM_WINDOWS
     #include "app/system_windows.h"
@@ -89,7 +90,7 @@ extern "C"
 
 int SDL_MAIN_FUNC(int argc, char *argv[])
 {
-    CLogger logger; // single istance of logger
+    CLogger logger; // single instance of logger
 
     // Workaround for character encoding in argv on Windows
     #if PLATFORM_WINDOWS
@@ -120,20 +121,22 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     LocalFree(wargv);
     #endif
 
+    logger.Info("%s starting\n", COLOBOT_FULLNAME);
+
+    auto systemUtils = CSystemUtils::Create(); // platform-specific utils
+    systemUtils->Init();
+
+    CSignalHandlers::Init(systemUtils.get());
+
     CResourceManager manager(argv[0]);
 
     // Initialize static string arrays
     InitializeRestext();
     InitializeEventTypeTexts();
 
-    logger.Info("%s starting\n", COLOBOT_FULLNAME);
-
     int code = 0;
     while (true)
     {
-        auto systemUtils = CSystemUtils::Create(); // platform-specific utils
-        systemUtils->Init();
-
         CApplication app(systemUtils.get()); // single instance of the application
 
         ParseArgsStatus status = app.ParseArguments(argc, argv);
@@ -173,4 +176,3 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 }
 
 } // extern "C"
-

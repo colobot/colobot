@@ -72,6 +72,7 @@ enum Phase
     PHASE_LOST,
     PHASE_QUIT_SCREEN,
 };
+std::string PhaseToString(Phase phase);
 bool IsInSimulationConfigPhase(Phase phase);
 bool IsPhaseWithWorld(Phase phase);
 bool IsMainMenuPhase(Phase phase);
@@ -166,6 +167,7 @@ public:
 
     void        ChangePhase(Phase phase);
     bool        ProcessEvent(Event &event);
+    Phase       GetPhase();
 
     bool        CreateShortcuts();
     void        ScenePerso();

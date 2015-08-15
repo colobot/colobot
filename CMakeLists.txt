@@ -44,6 +44,12 @@ endif()
 set(COLOBOT_VERSION_FULL "${COLOBOT_VERSION_MAJOR}.${COLOBOT_VERSION_MINOR}.${COLOBOT_VERSION_REVISION}${COLOBOT_VERSION_UNRELEASED}${COLOBOT_VERSION_RELEASE_CODENAME}")
 message(STATUS "Building Colobot \"${COLOBOT_VERSION_CODENAME}\" (${COLOBOT_VERSION_FULL})")
 
+set(BUILD_NUMBER 0)
+if(NOT "$ENV{BUILD_NUMBER}" STREQUAL "")
+    set(BUILD_NUMBER "$ENV{BUILD_NUMBER}")
+    message(STATUS "CI build #${BUILD_NUMBER}")
+endif()
+
 
 ##
 # Platform detection and some related checks
@@ -214,7 +220,7 @@ endif()
 
 # Warn about development build
 if(DEV_BUILD)
-    message("Building with development extensions")
+    message(STATUS "Building with development extensions")
 endif()
 
 
