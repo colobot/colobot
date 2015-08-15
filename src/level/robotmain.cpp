@@ -3294,9 +3294,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     if (obj->GetType() == OBJECT_BASE)
                         m_base = obj;
 
-                    if (obj->Implements(ObjectInterfaceType::Old))
-                        dynamic_cast<COldObject*>(obj)->SetDefRank(rankObj); // TODO: do we really need this?
-
                     if (obj->Implements(ObjectInterfaceType::ProgramStorage))
                     {
                         CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);

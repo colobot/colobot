@@ -115,10 +115,6 @@ public:
     // This will be eventually removed after refactoring to subclasses
     virtual CAuto*      GetAuto();
 
-    // TODO: We'll see if this is still needed after I refactor program storage later
-    virtual void        SetDefRank(int rank);
-    virtual int         GetDefRank();
-
     // CProgrammableObject or refactor
     virtual float GetInfoReturn();
 };

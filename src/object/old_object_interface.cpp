@@ -193,17 +193,6 @@ CAuto* COldObjectInterface::GetAuto()
 }
 
 
-void COldObjectInterface::SetDefRank(int rank)
-{
-    throw std::logic_error("SetDefRank: not implemented!");
-}
-
-int COldObjectInterface::GetDefRank()
-{
-    throw std::logic_error("GetDefRank: not implemented!");
-}
-
-
 void COldObjectInterface::FlatParent()
 {
     throw std::logic_error("FlatParent: not implemented!");

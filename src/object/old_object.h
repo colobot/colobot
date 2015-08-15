@@ -267,9 +267,6 @@ public:
     CMotion*    GetMotion() override;
     CAuto*      GetAuto() override;
 
-    void        SetDefRank(int rank) override;
-    int         GetDefRank() override;
-
     bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = Gfx::ENG_SHADOW_NORM);
     bool        CreateShadowLight(float height, Gfx::Color color);
     bool        CreateEffectLight(float height, Gfx::Color color);
@@ -376,7 +373,6 @@ protected:
     Gfx::CameraType  m_cameraType;
     float       m_cameraDist;
     bool        m_bCameraLock;
-    int         m_defRank;
     float       m_magnifyDamage;
     float       m_param;
 

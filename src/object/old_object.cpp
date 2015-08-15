@@ -148,7 +148,6 @@ COldObject::COldObject(int id)
     m_gunGoalV = 0.0f;
     m_gunGoalH = 0.0f;
     m_shieldRadius = 0.0f;
-    m_defRank = -1;
     m_magnifyDamage = 1.0f;
     m_param = 0.0f;
     m_infoReturn = NAN;
@@ -3168,17 +3167,6 @@ void COldObject::SetAuto(std::unique_ptr<CAuto> automat)
     m_auto = std::move(automat);
 }
 
-// Management of the position in the file definition.
-
-void COldObject::SetDefRank(int rank)
-{
-    m_defRank = rank;
-}
-
-int  COldObject::GetDefRank()
-{
-    return m_defRank;
-}
 
 Math::Vector COldObject::GetPosition() const
 {
