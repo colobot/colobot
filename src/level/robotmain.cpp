@@ -2279,16 +2279,16 @@ bool CRobotMain::EventFrame(const Event &event)
     }
 
     m_time += event.rTime;
-    if (!m_movieLock && m_pause->GetPause() == PAUSE_NONE)
+    if (!m_movieLock && !m_pause->GetPause())
     {
         m_gameTime += event.rTime;
         m_gameTimeAbsolute += m_app->GetRealRelTime() / 1e9f;
     }
 
-    if (!m_movieLock && m_pause->GetPause() == PAUSE_NONE && m_missionTimerStarted)
+    if (!m_movieLock && !m_pause->GetPause() && m_missionTimerStarted)
         m_missionTimer += event.rTime;
 
-    if (m_pause->GetPause() == PAUSE_NONE && m_autosave && m_gameTimeAbsolute >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL)
+    if (!m_pause->GetPause() && m_autosave && m_gameTimeAbsolute >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL)
     {
         if (m_levelCategory == LevelCategory::Missions    ||
             m_levelCategory == LevelCategory::FreeGame    ||
@@ -2522,7 +2522,7 @@ bool CRobotMain::EventFrame(const Event &event)
             m_codeBattleInit = true; // Will start on resume
         }
 
-        if (!m_codeBattleStarted && m_pause->GetPause() == PAUSE_NONE)
+        if (!m_codeBattleStarted && !m_pause->GetPause())
         {
             m_codeBattleStarted = true;
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));

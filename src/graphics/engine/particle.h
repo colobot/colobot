@@ -178,8 +178,8 @@ enum ParticlePhase
 
 struct Particle
 {
-    char            used = false;      // TRUE -> particle used
-    char            ray = false;       // TRUE -> ray with goal
+    bool            used = false;      // TRUE -> particle used
+    bool            ray = false;       // TRUE -> ray with goal
     unsigned short  uniqueStamp = 0;    // unique mark
     short           sheet = 0;      // sheet (0..n)
     ParticleType    type = {};       // type PARTI*

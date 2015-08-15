@@ -71,7 +71,7 @@ T ReadBinary(std::istream &istr)
 /**
  * false is 0; true is 1.
  */
-inline void WriteBinaryBool(float value, std::ostream &ostr)
+inline void WriteBinaryBool(bool value, std::ostream &ostr)
 {
     unsigned char v = value ? 1 : 0;
     IOUtils::WriteBinary<1, unsigned char>(v, ostr);
