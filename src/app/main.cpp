@@ -25,6 +25,7 @@
 #include "common/config.h"
 
 #include "app/app.h"
+#include "app/signal_handlers.h"
 #include "app/system.h"
 #if PLATFORM_WINDOWS
     #include "app/system_windows.h"
@@ -89,7 +90,7 @@ extern "C"
 
 int SDL_MAIN_FUNC(int argc, char *argv[])
 {
-    CLogger logger; // single istance of logger
+    CLogger logger; // single instance of logger
 
     // Workaround for character encoding in argv on Windows
     #if PLATFORM_WINDOWS
@@ -120,57 +121,68 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     LocalFree(wargv);
     #endif
 
+    logger.Info("%s starting\n", COLOBOT_FULLNAME);
+
+    auto systemUtils = CSystemUtils::Create(); // platform-specific utils
+    systemUtils->Init();
+
+    CSignalHandlers::Init(systemUtils.get());
+
     CResourceManager manager(argv[0]);
 
     // Initialize static string arrays
     InitializeRestext();
     InitializeEventTypeTexts();
 
-    logger.Info("%s starting\n", COLOBOT_FULLNAME);
-
     int code = 0;
-    while (true)
+    try
     {
-        auto systemUtils = CSystemUtils::Create(); // platform-specific utils
-        systemUtils->Init();
-
-        CApplication app(systemUtils.get()); // single instance of the application
-
-        ParseArgsStatus status = app.ParseArguments(argc, argv);
-        if (status == PARSE_ARGS_FAIL)
+        while (true)
         {
-            systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
-            return app.GetExitCode();
-        }
-        else if (status == PARSE_ARGS_HELP)
-        {
-            return app.GetExitCode();
-        }
+            CApplication app(systemUtils.get()); // single instance of the application
 
-
-        if (! app.Create())
-        {
-            code = app.GetExitCode();
-            if (code != 0 && !app.GetErrorMessage().empty())
+            ParseArgsStatus status = app.ParseArguments(argc, argv);
+            if (status == PARSE_ARGS_FAIL)
             {
-                systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app.GetErrorMessage());
+                systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
+                return app.GetExitCode();
             }
-            logger.Info("Didn't run main loop. Exiting with code %d\n", code);
-            return code;
+            else if (status == PARSE_ARGS_HELP)
+            {
+                return app.GetExitCode();
+            }
+
+
+            if (!app.Create())
+            {
+                code = app.GetExitCode();
+                if (code != 0 && !app.GetErrorMessage().empty())
+                {
+                    systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app.GetErrorMessage());
+                }
+                logger.Info("Didn't run main loop. Exiting with code %d\n", code);
+                return code;
+            }
+
+            code = app.Run();
+
+            bool restarting = app.IsRestarting();
+
+            if (!restarting)
+                break;
         }
-
-        code = app.Run();
-
-        bool restarting = app.IsRestarting();
-
-        if (!restarting)
-            break;
+    }
+    catch (std::exception& e)
+    {
+        CSignalHandlers::HandleUncaughtException(e);
+    }
+    catch (...)
+    {
+        CSignalHandlers::HandleOtherUncaughtException();
     }
 
     logger.Info("Exiting with code %d\n", code);
-
     return code;
 }
 
 } // extern "C"
-

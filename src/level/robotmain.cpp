@@ -323,6 +323,35 @@ void CRobotMain::LoadConfigFile()
     m_settings->LoadSettings();
 }
 
+std::string PhaseToString(Phase phase)
+{
+    if (phase == PHASE_WELCOME1) return "PHASE_WELCOME1";
+    if (phase == PHASE_WELCOME2) return "PHASE_WELCOME2";
+    if (phase == PHASE_WELCOME3) return "PHASE_WELCOME3";
+    if (phase == PHASE_PLAYER_SELECT) return "PHASE_PLAYER_SELECT";
+    if (phase == PHASE_APPERANCE) return "PHASE_APPERANCE";
+    if (phase == PHASE_MAIN_MENU) return "PHASE_MAIN_MENU";
+    if (phase == PHASE_LEVEL_LIST) return "PHASE_LEVEL_LIST";
+    if (phase == PHASE_SIMUL) return "PHASE_SIMUL";
+    if (phase == PHASE_SETUPd) return "PHASE_SETUPd";
+    if (phase == PHASE_SETUPg) return "PHASE_SETUPg";
+    if (phase == PHASE_SETUPp) return "PHASE_SETUPp";
+    if (phase == PHASE_SETUPc) return "PHASE_SETUPc";
+    if (phase == PHASE_SETUPs) return "PHASE_SETUPs";
+    if (phase == PHASE_SETUPds) return "PHASE_SETUPds";
+    if (phase == PHASE_SETUPgs) return "PHASE_SETUPgs";
+    if (phase == PHASE_SETUPps) return "PHASE_SETUPps";
+    if (phase == PHASE_SETUPcs) return "PHASE_SETUPcs";
+    if (phase == PHASE_SETUPss) return "PHASE_SETUPss";
+    if (phase == PHASE_WRITEs) return "PHASE_WRITEs";
+    if (phase == PHASE_READ) return "PHASE_READ";
+    if (phase == PHASE_READs) return "PHASE_READs";
+    if (phase == PHASE_WIN) return "PHASE_WIN";
+    if (phase == PHASE_LOST) return "PHASE_LOST";
+    if (phase == PHASE_QUIT_SCREEN) return "PHASE_QUIT_SCREEN";
+    return "(unknown)";
+}
+
 bool IsInSimulationConfigPhase(Phase phase)
 {
     return (phase >= PHASE_SETUPds && phase <= PHASE_SETUPss) || phase == PHASE_READs || phase == PHASE_WRITEs;
@@ -577,6 +606,11 @@ void CRobotMain::ChangePhase(Phase phase)
     }
 
     m_engine->LoadAllTextures();
+}
+
+Phase CRobotMain::GetPhase()
+{
+    return m_phase;
 }
 
 //! Processes an event

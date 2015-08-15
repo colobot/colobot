@@ -78,6 +78,7 @@ set(BASE_SOURCES
     app/controller.cpp
     app/input.cpp
     app/pausemanager.cpp
+    app/signal_handlers.cpp
     app/system.cpp
     app/${SYSTEM_CPP_MODULE}
     app/system_other.cpp
