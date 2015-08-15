@@ -48,9 +48,6 @@ public:
     virtual Program* GetCurrentProgram() = 0;
     virtual void StopProgram() = 0;
 
-    virtual void SetScriptRun(Program* rank) = 0;
-    virtual Program* GetScriptRun() = 0;
-
     virtual bool ReadStack(FILE *file) = 0;
     virtual bool WriteStack(FILE *file) = 0;
 

@@ -273,12 +273,8 @@ public:
     void        StartShowLimit();
     void        FrameShowLimit(float rTime);
 
-    void        CompileScript(bool soluce);
-    void        LoadOneScript(CObject *pObj);
-    void        LoadFileScript(CObject *pObj, const char* filename, int objRank);
     void        SaveAllScript();
     void        SaveOneScript(CObject *pObj);
-    void        SaveFileScript(CObject *pObj, const char* filename, int objRank);
     bool        SaveFileStack(CObject *pObj, FILE *file, int objRank);
     bool        ReadFileStack(CObject *pObj, FILE *file, int objRank);
 
@@ -293,8 +289,8 @@ public:
     bool        IOWriteScene(std::string filename, std::string filecbot, std::string filescreenshot, char *info);
     void        IOWriteSceneFinished();
     CObject*    IOReadScene(std::string filename, std::string filecbot);
-    void        IOWriteObject(CLevelParserLine *line, CObject* obj);
-    CObject*    IOReadObject(CLevelParserLine *line, const char* filename, const std::string& objCounterText, float objectProgress, int objRank);
+    void        IOWriteObject(CLevelParserLine *line, CObject* obj, const std::string& programDir, int objRank);
+    CObject*    IOReadObject(CLevelParserLine *line, const std::string& programDir, const std::string& objCounterText, float objectProgress, int objRank = -1);
 
     int         CreateSpot(Math::Vector pos, Gfx::Color color);
 

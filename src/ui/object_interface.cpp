@@ -1623,10 +1623,10 @@ void CObjectInterface::UpdateInterface()
     EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    !m_programmable->IsTraceRecord() && m_selScript < m_programStorage->GetProgramCount() && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bEnable && !m_programmable->IsTraceRecord());
     EnableInterface(pw, EVENT_OBJECT_PROGADD,     !m_programmable->IsProgram() && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  !m_programmable->IsProgram() && m_selScript < m_programStorage->GetProgramCount() && !m_programStorage->GetProgram(m_selScript)->readOnly && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   !m_programmable->IsProgram() && m_selScript < m_programStorage->GetProgramCount() && m_programStorage->GetProgram(m_selScript)->runnable && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  !m_programmable->IsProgram() && m_selScript >= 0 && m_selScript < m_programStorage->GetProgramCount() && !m_programStorage->GetProgram(m_selScript)->readOnly && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   !m_programmable->IsProgram() && m_selScript >= 0 && m_selScript < m_programStorage->GetProgramCount() && m_programStorage->GetProgram(m_selScript)->runnable && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_PROGMOVEUP,  !m_programmable->IsProgram() && m_programStorage->GetProgramCount() >= 2 && m_selScript > 0 && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGMOVEDOWN,!m_programmable->IsProgram() && m_programStorage->GetProgramCount() >= 2 && m_selScript < m_programStorage->GetProgramCount()-1 && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGMOVEDOWN,!m_programmable->IsProgram() && m_programStorage->GetProgramCount() >= 2 && m_selScript >= 0 && m_selScript < m_programStorage->GetProgramCount()-1 && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_LEFT,        bEnable);
     EnableInterface(pw, EVENT_OBJECT_RIGHT,       bEnable);
     EnableInterface(pw, EVENT_OBJECT_UP,          bEnable);

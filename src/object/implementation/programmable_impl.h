@@ -57,9 +57,6 @@ public:
     Program* GetCurrentProgram() override;
     void StopProgram() override;
 
-    void SetScriptRun(Program* rank) override;
-    Program* GetScriptRun() override;
-
     bool ReadStack(FILE *file) override;
     bool WriteStack(FILE *file) override;
 
@@ -91,8 +88,6 @@ private:
     std::vector<float>  m_cmdLine;
 
     Program*            m_currentProgram;
-
-    Program*            m_scriptRun;
 
     bool                m_traceRecord;
     TraceOper           m_traceOper;

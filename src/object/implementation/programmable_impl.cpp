@@ -49,7 +49,6 @@ CProgrammableObjectImpl::CProgrammableObjectImpl(ObjectInterfaceTypes& types, CO
       m_activity(true),
       m_cmdLine(),
       m_currentProgram(nullptr),
-      m_scriptRun(nullptr),
       m_traceRecord(false),
       m_traceOper(TO_STOP),
       m_traceAngle(0.0f),
@@ -136,16 +135,6 @@ bool CProgrammableObjectImpl::IsProgram()
     return m_currentProgram != nullptr;
 }
 
-
-void CProgrammableObjectImpl::SetScriptRun(Program* program)
-{
-    m_scriptRun = program;
-}
-
-Program* CProgrammableObjectImpl::GetScriptRun()
-{
-    return m_scriptRun;
-}
 
 // Load a stack of script implementation from a file.
 

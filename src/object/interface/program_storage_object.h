@@ -26,13 +26,14 @@
 #include <vector>
 
 class CScript;
+class CLevelParserLine;
 
 struct Program
 {
     std::unique_ptr<CScript> script;
-    std::string filename;
     bool        readOnly = false;
     bool        runnable = true;
+    bool        loadedFromLevel = false;
 };
 
 /**
@@ -56,7 +57,6 @@ public:
     virtual void SetSoluceName(const std::string& name) = 0;
     virtual const std::string& GetSoluceName() = 0;
 
-    virtual bool ReadSoluce(const std::string& filename) = 0;
     virtual bool ReadProgram(Program* program, const std::string& filename) = 0;
     virtual bool GetCompile(Program* program) = 0;
     virtual bool WriteProgram(Program* program, const std::string& filename) = 0;
@@ -71,4 +71,18 @@ public:
     virtual Program* GetProgram(int index) = 0;
     virtual Program* GetOrAddProgram(int index) = 0;
     virtual int GetProgramIndex(Program* program) = 0;
+
+    //! Set index for use in filename for saved programs (-1 to disable)
+    virtual void SetProgramStorageIndex(int programStorageIndex) = 0;
+    virtual int GetProgramStorageIndex() = 0;
+
+    //! Save all user programs
+    virtual void SaveAllUserPrograms(const std::string& userSource) = 0;
+    //! Load all programs when loading the level including previously saved user programs
+    virtual void LoadAllProgramsForLevel(CLevelParserLine* levelSource, const std::string& userSource, bool loadSoluce) = 0;
+
+    //! Save all programs when saving the saved scene
+    virtual void SaveAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource) = 0;
+    //! Load all programs when loading the saved scene
+    virtual void LoadAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource) = 0;
 };

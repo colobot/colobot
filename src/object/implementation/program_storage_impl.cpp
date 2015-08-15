@@ -20,8 +20,14 @@
 #include "object/implementation/programmable_impl.h"
 
 #include "common/global.h"
+#include "common/logger.h"
+#include "common/stringutils.h"
+
+#include "common/resources/resourcemanager.h"
 
 #include "level/robotmain.h"
+
+#include "level/parser/parserline.h"
 
 #include "math/all.h"
 
@@ -48,7 +54,9 @@ CProgramStorageObjectImpl::CProgramStorageObjectImpl(ObjectInterfaceTypes& types
       m_object(object),
       m_program(),
       m_activeVirus(false),
-      m_soluceName("")
+      m_soluceName(""),
+      m_programStorageIndex(-1),
+      m_allowProgramSave(true)
 {
 }
 
@@ -193,33 +201,6 @@ const std::string& CProgramStorageObjectImpl::GetSoluceName()
     return m_soluceName;
 }
 
-
-// Load a script solution, in the first free script.
-// If there is already an identical script, nothing is loaded.
-
-bool CProgramStorageObjectImpl::ReadSoluce(const std::string& filename)
-{
-    Program* prog = AddProgram();
-
-    if ( !ReadProgram(prog, filename) )  return false;  // load solution
-    prog->readOnly = true;
-
-    for(unsigned int i = 0; i < m_program.size(); i++)
-    {
-        if(m_program[i].get() == prog) continue;
-
-        //TODO: This is bad. It's very sensitive to things like \n vs \r\n etc.
-        if ( m_program[i]->script->Compare(prog->script.get()) )  // the same already?
-        {
-            m_program[i]->readOnly = true; // Mark is as read-only
-            RemoveProgram(prog);
-            return false;
-        }
-    }
-
-    return true;
-}
-
 // Load a script with a text file.
 
 bool CProgramStorageObjectImpl::ReadProgram(Program* program, const std::string& filename)
@@ -243,4 +224,149 @@ bool CProgramStorageObjectImpl::WriteProgram(Program* program, const std::string
     if ( program->script->WriteScript(filename.c_str()) )  return true;
 
     return false;
+}
+
+void CProgramStorageObjectImpl::SetProgramStorageIndex(int programStorageIndex)
+{
+    m_programStorageIndex = programStorageIndex;
+}
+
+int CProgramStorageObjectImpl::GetProgramStorageIndex()
+{
+    return m_programStorageIndex;
+}
+
+void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::string& userSource)
+{
+    if (!m_allowProgramSave) return;
+    if (m_programStorageIndex < 0) return;
+    GetLogger()->Debug("Saving user programs to '%s%.3d___.txt'\n", userSource.c_str(), m_programStorageIndex);
+
+    for (unsigned int i = 0; i <= 999; i++)
+    {
+        std::string filename = userSource + StrUtils::Format("%.3d%.3d.txt", m_programStorageIndex, i);
+
+        if (i < m_program.size() && !m_program[i]->loadedFromLevel)
+        {
+            GetLogger()->Trace("Loading program '%s' into user directory\n", filename.c_str());
+            WriteProgram(m_program[i].get(), filename);
+        }
+        else
+        {
+            CResourceManager::Remove(filename);
+        }
+    }
+}
+
+void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelSource, const std::string& userSource, bool loadSoluce)
+{
+    int run = levelSource->GetParam("run")->AsInt(0)-1;
+    bool allFilled = true;
+    for (int i = 0; i < 10 || allFilled; i++)
+    {
+        std::string op = "script" + StrUtils::ToString<int>(i+1); // script1..script10
+        std::string opReadOnly = "scriptReadOnly" + StrUtils::ToString<int>(i+1); // scriptReadOnly1..scriptReadOnly10
+        std::string opRunnable = "scriptRunnable" + StrUtils::ToString<int>(i+1); // scriptRunnable1..scriptRunnable10
+        if (levelSource->GetParam(op)->IsDefined())
+        {
+            std::string filename = levelSource->GetParam(op)->AsPath("ai");
+            GetLogger()->Trace("Loading program '%s' from level file\n", filename.c_str());
+            Program* program = AddProgram();
+            ReadProgram(program, filename);
+            program->readOnly = levelSource->GetParam(opReadOnly)->AsBool(true);
+            program->runnable = levelSource->GetParam(opRunnable)->AsBool(true);
+            program->loadedFromLevel = true;
+
+            if (m_object->Implements(ObjectInterfaceType::Programmable) && i == run)
+            {
+                dynamic_cast<CProgrammableObject*>(m_object)->RunProgram(program);
+            }
+        }
+        else
+        {
+            allFilled = false;
+        }
+    }
+
+    if (loadSoluce && levelSource->GetParam("soluce")->IsDefined())
+    {
+        std::string filename = levelSource->GetParam("soluce")->AsPath("ai");
+        GetLogger()->Trace("Loading program '%s' as soluce file\n", filename.c_str());
+        Program* program = AddProgram();
+        ReadProgram(program, filename);
+        program->readOnly = true;
+        program->runnable = false;
+        program->loadedFromLevel = true;
+    }
+
+    if (m_programStorageIndex >= 0)
+    {
+        GetLogger()->Debug("Loading user programs from '%s%.3d___.txt'\n", userSource.c_str(), m_programStorageIndex);
+        for (unsigned int i = 0; i <= 999; i++)
+        {
+            std::string filename = userSource + StrUtils::Format("%.3d%.3d.txt", m_programStorageIndex, i);
+            if (CResourceManager::Exists(filename))
+            {
+                Program* program = GetOrAddProgram(i);
+                if(GetCompile(program)) continue; // If already loaded from level file, skip
+                GetLogger()->Trace("Loading program '%s' from user directory\n", filename.c_str());
+                ReadProgram(program, filename);
+            }
+        }
+    }
+}
+
+void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource)
+{
+    levelSourceLine->AddParam("programStorageIndex", MakeUnique<CLevelParserParam>(m_programStorageIndex));
+    assert(m_programStorageIndex != -1);
+
+    GetLogger()->Debug("Saving saved scene programs to '%s/prog%.3d___.txt'\n", levelSource.c_str(), m_programStorageIndex);
+    for (int i = 0; i < 999; i++)
+    {
+        std::string filename = levelSource + StrUtils::Format("/prog%.3d%.3d.txt", m_programStorageIndex, i);
+        if (i >= static_cast<int>(m_program.size()))
+        {
+            CResourceManager::Remove(filename);
+            continue;
+        }
+
+        levelSourceLine->AddParam("scriptReadOnly" + StrUtils::ToString<int>(i+1), MakeUnique<CLevelParserParam>(m_program[i]->readOnly));
+        levelSourceLine->AddParam("scriptRunnable" + StrUtils::ToString<int>(i+1), MakeUnique<CLevelParserParam>(m_program[i]->runnable));
+        GetLogger()->Trace("Saving program '%s' to saved scene\n", filename.c_str());
+        WriteProgram(m_program[i].get(), filename);
+    }
+}
+
+void CProgramStorageObjectImpl::LoadAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource)
+{
+    m_programStorageIndex = levelSourceLine->GetParam("programStorageIndex")->AsInt(-1);
+    if(m_programStorageIndex == -1) return;
+
+    GetLogger()->Debug("Loading saved scene programs from '%s/prog%.3d___.txt'\n", levelSource.c_str(), m_programStorageIndex);
+    int run = levelSourceLine->GetParam("run")->AsInt(0)-1;
+    for (int i = 0; i <= 999; i++)
+    {
+        std::string opReadOnly = "scriptReadOnly" + StrUtils::ToString<int>(i+1); // scriptReadOnly1..scriptReadOnly10
+        std::string opRunnable = "scriptRunnable" + StrUtils::ToString<int>(i+1); // scriptRunnable1..scriptRunnable10
+
+        std::string filename = levelSource + StrUtils::Format("/prog%.3d%.3d.txt", m_programStorageIndex, i);
+        if (CResourceManager::Exists(filename))
+        {
+            GetLogger()->Trace("Loading program '%s' from saved scene\n", filename.c_str());
+            Program* program = GetOrAddProgram(i);
+            ReadProgram(program, filename);
+            program->readOnly = levelSourceLine->GetParam(opReadOnly)->AsBool(true);
+            program->runnable = levelSourceLine->GetParam(opRunnable)->AsBool(true);
+
+            if (m_object->Implements(ObjectInterfaceType::Programmable) && i == run)
+            {
+                dynamic_cast<CProgrammableObject*>(m_object)->RunProgram(program);
+            }
+        }
+    }
+
+    // Disable automatic user program storage now!!
+    // This is to prevent overwriting auto-saved user programs with older versions from saved scenes
+    m_allowProgramSave = false;
 }

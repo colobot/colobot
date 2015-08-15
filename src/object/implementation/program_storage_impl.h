@@ -40,7 +40,6 @@ public:
     void SetSoluceName(const std::string& name) override;
     const std::string& GetSoluceName() override;
 
-    bool ReadSoluce(const std::string& filename) override;
     bool ReadProgram(Program* program, const std::string& filename) override;
     bool GetCompile(Program* program) override;
     bool WriteProgram(Program* program, const std::string& filename) override;
@@ -55,6 +54,16 @@ public:
     Program* GetProgram(int index) override;
     Program* GetOrAddProgram(int index) override;
     int GetProgramIndex(Program* program) override;
+
+    void SetProgramStorageIndex(int programStorageIndex) override;
+    int GetProgramStorageIndex() override;
+
+    void SaveAllUserPrograms(const std::string& userSource) override;
+    void LoadAllProgramsForLevel(CLevelParserLine* levelSource, const std::string& userSource, bool loadSoluce) override;
+
+    void SaveAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource) override;
+    void LoadAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource) override;
+
 private:
     CObject* m_object;
 
@@ -64,4 +73,7 @@ private:
     bool                m_activeVirus;
 
     std::string         m_soluceName;
+
+    int m_programStorageIndex;
+    bool m_allowProgramSave;
 };
