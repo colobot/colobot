@@ -883,7 +883,12 @@ void COldObject::SetType(ObjectType type)
         m_type == OBJECT_NUCLEAR  ||
         m_type == OBJECT_PARA     ||
         m_type == OBJECT_SAFE     ||
-        m_type == OBJECT_HUSTON   )
+        m_type == OBJECT_HUSTON   ||
+        m_type == OBJECT_ANT      ||
+        m_type == OBJECT_WORM     ||
+        m_type == OBJECT_SPIDER   ||
+        m_type == OBJECT_BEE      ||
+        m_type == OBJECT_MOTHER    )
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Controllable)] = true;
     }
