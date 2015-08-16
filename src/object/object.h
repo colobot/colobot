@@ -190,8 +190,15 @@ public:
     //! Returns tooltip text for an object
     std::string GetTooltipText();
 
+    //! Set "lock" mode of an object (for example, a robot while it's being factored, or a building while it's built)
     void SetLock(bool lock);
+    //! Return "lock" mode of an object
     bool GetLock();
+
+    //! Is this object active (not dead)?
+    virtual bool GetActive() { return true; }
+    //! Is this object detectable (not dead and not underground)?
+    virtual bool GetDetectable() { return true; }
 
 protected:
     //! Transform crash sphere by object's world matrix

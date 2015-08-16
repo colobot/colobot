@@ -102,12 +102,6 @@ public:
     virtual float       GetParam();
     //@}
 
-    // Main CObject?
-    //! Is this object active (not dead)?
-    virtual bool        GetActive();
-    //! Is this object detectable (not dead and not underground)?
-    virtual bool        GetDetectable();
-
     // This will be eventually removed after refactoring to subclasses
     virtual CAuto*      GetAuto();
 

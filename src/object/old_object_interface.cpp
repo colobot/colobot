@@ -135,21 +135,6 @@ float COldObjectInterface::GetParam()
 }
 
 
-bool COldObjectInterface::GetActive()
-{
-    // TODO: temporary hack
-    return true;
-    //throw std::logic_error("GetActive: not implemented!");
-}
-
-bool COldObjectInterface::GetDetectable()
-{
-    // TODO: temporary hack
-    return true;
-    //throw std::logic_error("GetDetectable: not implemented!");
-}
-
-
 CAuto* COldObjectInterface::GetAuto()
 {
     throw std::logic_error("GetAuto: not implemented!");
