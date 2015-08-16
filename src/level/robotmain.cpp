@@ -4626,6 +4626,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     m_displayText->HideText(false);
     m_app->SetMouseMode(oldMouseMode);
 
+    m_app->ResetTimeAfterLoading();
     return true;
 }
 
