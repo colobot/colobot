@@ -3597,7 +3597,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
         }
         else if (type == PARTIGUN3)  // suiciding spider?
         {
-            if (!IsAlien(obj->GetType()))  continue;
+            if (IsAlien(obj->GetType()))  continue;
         }
         else if (type == PARTIGUN4)  // orgaball shooting?
         {
