@@ -892,6 +892,17 @@ void COldObject::SetType(ObjectType type)
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Controllable)] = false;
     }
 
+    // TODO: Another one? :/
+    if ( m_type == OBJECT_POWER  || // PowerCell
+         m_type == OBJECT_ATOMIC  ) // NuclearCell
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::PowerContainer)] = true;
+    }
+    else
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::PowerContainer)] = false;
+    }
+
 
     if ( m_type == OBJECT_MOBILEwc ||
          m_type == OBJECT_MOBILEtc ||
