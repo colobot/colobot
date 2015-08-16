@@ -262,7 +262,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     if ( m_type == PT_DEADG )
     {
-        m_object->SetDead(true);
+        assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+        dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Dead);
 
         assert(obj->Implements(ObjectInterfaceType::Movable));
         dynamic_cast<CMovableObject*>(obj)->GetMotion()->SetAction(MHS_DEADg, 1.0f);
@@ -274,7 +275,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     }
     if ( m_type == PT_DEADW )
     {
-        m_object->SetDead(true);
+        assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+        dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Dead);
 
         assert(obj->Implements(ObjectInterfaceType::Movable));
         dynamic_cast<CMovableObject*>(obj)->GetMotion()->SetAction(MHS_DEADw, 1.0f);
@@ -1530,7 +1532,8 @@ void CPyro::ExploStart()
 
     m_object->Simplify();
     m_object->SetLock(true);  // ruin not usable yet
-    m_object->SetExploding(true);  // being destroyed
+    assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+    dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Exploding);  // being destroyed
     m_object->FlatParent();
 
     if ( m_object->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
@@ -2172,12 +2175,13 @@ void CPyro::BurnTerminate()
         m_object->SetLock(false);
     }
 
-    m_object->SetBurn(false);  // ruin usable (c-e-d. recoverable)
+    assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+    dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Alive);  // ruin usable (c-e-d. recoverable)
 }
 
 void CPyro::FallStart()
 {
-    m_object->SetBurn(true);  // usable
+    m_object->SetLock(true);  // usable
 
     Math::Vector pos = m_object->GetPosition();
     m_fallFloor = m_terrain->GetFloorLevel(pos);
@@ -2308,7 +2312,7 @@ Error CPyro::FallIsEnded()
     if (pos.y > m_fallFloor) return ERR_CONTINUE;
 
     m_sound->Play(SOUND_BOUM, pos);
-    m_object->SetBurn(false);  // usable again
+    m_object->SetLock(false);  // usable again
 
     return ERR_STOP;
 }

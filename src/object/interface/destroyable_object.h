@@ -30,6 +30,14 @@ enum class DestructionType
     Drowned        = 4, //!< drowned (only for Me)
 };
 
+enum class DeathType
+{
+    Alive = -1, //!< not dead
+    Exploding,  //!< killed by explosion
+    Burning,    //!< killed by fire
+    Dead        //!< dead human
+};
+
 /**
  * \class CDestroyableObject
  * \brief Interface for objects that can be destroyed
@@ -53,4 +61,11 @@ public:
 
     //! Returns the distance modifier for CLightning, used to modify hit probability. Value in range [0..1], where 0 is never and 1 is normal probability
     virtual float GetLightningHitProbability() = 0;
+
+    //! Set the status that means the object is currently dying
+    virtual void        SetDying(DeathType deathType) = 0;
+    //! Return object death type
+    virtual DeathType   GetDying() = 0;
+    //! Is object currently dying?
+    virtual bool        IsDying() = 0;
 };

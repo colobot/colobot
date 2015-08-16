@@ -123,7 +123,7 @@ bool CMainShort::CreateShortcuts()
     std::vector<int> teams;
     for (CObject* object : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (!object->GetActive())
+        if (!object->GetDetectable())
             continue;
 
         if(GetShortcutIcon(object->GetType()) == -1)
@@ -144,7 +144,7 @@ bool CMainShort::CreateShortcuts()
     int rank = 0;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !pObj->GetActive() )  continue;
+        if ( !pObj->GetDetectable() )  continue;
         if ( pObj->Implements(ObjectInterfaceType::Controllable) && !dynamic_cast<CControllableObject*>(pObj)->GetSelectable() )  continue;
         if ( pObj->GetProxyActivate() )  continue;
 

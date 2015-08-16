@@ -102,15 +102,11 @@ public:
     virtual float       GetParam();
     //@}
 
-    // TODO: What to do with these?
-    virtual void        SetExploding(bool bExplo);
-    virtual bool        IsExploding();
-    virtual void        SetBurn(bool bBurn);
-    virtual bool        GetBurn();
-    virtual void        SetDead(bool bDead);
-    virtual bool        GetDead();
-    virtual bool        GetRuin();
+    // Main CObject?
+    //! Is this object active (not dead)?
     virtual bool        GetActive();
+    //! Is this object detectable (not dead and not underground)?
+    virtual bool        GetDetectable();
 
     // This will be eventually removed after refactoring to subclasses
     virtual CAuto*      GetAuto();

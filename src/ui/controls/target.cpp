@@ -140,7 +140,7 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !obj->GetActive() )  continue;
+        if ( !obj->GetDetectable() )  continue;
         if ( obj->GetProxyActivate() )  continue;
         if ( obj->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(obj)->GetSelect() )  continue;
 

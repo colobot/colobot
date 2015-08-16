@@ -234,7 +234,7 @@ public:
     void        SetSelectable(bool bMode);
     bool        GetSelectable() override;
 
-    void        SetVisible(bool bVisible);
+    void        SetUnderground(bool underground);
 
     void        SetCheckToken(bool bMode);
     bool        GetCheckToken();
@@ -245,14 +245,12 @@ public:
     void        SetParam(float value) override;
     float       GetParam() override;
 
-    void        SetExploding(bool bExplo) override;
-    bool        IsExploding() override;
-    void        SetBurn(bool bBurn) override;
-    bool        GetBurn() override;
-    void        SetDead(bool bDead) override;
-    bool        GetDead() override;
-    bool        GetRuin() override;
+    void        SetDying(DeathType deathType) override;
+    DeathType   GetDying() override;
+    bool        IsDying() override;
+
     bool        GetActive() override;
+    bool        GetDetectable() override;
 
     void        SetGunGoalV(float gunGoal);
     void        SetGunGoalH(float gunGoal);
@@ -358,11 +356,9 @@ protected:
     bool        m_bSelect;          // object selected
     bool        m_bSelectable;          // selectable object
     bool        m_bCheckToken;          // object with audited tokens
-    bool        m_bVisible;         // object active but undetectable
-    bool        m_bExplo;
+    bool        m_underground;         // object active but undetectable
     bool        m_bCargo;
-    bool        m_bBurn;
-    bool        m_bDead;
+    DeathType   m_dying;
     bool        m_bFlat;
     bool        m_bTrainer;         // drive vehicle (without remote)
     bool        m_bToy;             // toy key

@@ -135,55 +135,18 @@ float COldObjectInterface::GetParam()
 }
 
 
-void COldObjectInterface::SetExploding(bool bExplo)
-{
-    throw std::logic_error("SetExploding: not implemented!");
-}
-
-bool COldObjectInterface::IsExploding()
-{
-    // TODO: temporary hack
-    return false;
-    //throw std::logic_error("IsExploding: not implemented!");
-}
-
-
-void COldObjectInterface::SetBurn(bool bBurn)
-{
-    throw std::logic_error("SetBurn: not implemented!");
-}
-
-bool COldObjectInterface::GetBurn()
-{
-    // TODO: temporary hack
-    return false;
-    //throw std::logic_error("GetBurn: not implemented!");
-}
-
-void COldObjectInterface::SetDead(bool bDead)
-{
-    throw std::logic_error("SetDead: not implemented!");
-}
-
-bool COldObjectInterface::GetDead()
-{
-    // TODO: temporary hack
-    return false;
-    //throw std::logic_error("GetDead: not implemented!");
-}
-
-bool COldObjectInterface::GetRuin()
-{
-    // TODO: temporary hack
-    return false;
-    //throw std::logic_error("GetRuin: not implemented!");
-}
-
 bool COldObjectInterface::GetActive()
 {
     // TODO: temporary hack
-    return false;
+    return true;
     //throw std::logic_error("GetActive: not implemented!");
+}
+
+bool COldObjectInterface::GetDetectable()
+{
+    // TODO: temporary hack
+    return true;
+    //throw std::logic_error("GetDetectable: not implemented!");
 }
 
 

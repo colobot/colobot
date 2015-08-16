@@ -3580,7 +3580,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
     bool shield = false;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (!obj->GetActive()) continue;  // inactive?
+        if (!obj->GetDetectable()) continue;  // inactive?
         if (obj == father) continue;
 
         ObjectType oType = obj->GetType();
@@ -3677,7 +3677,7 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (!obj->GetActive()) continue;  // inactive?
+        if (!obj->GetDetectable()) continue;  // inactive?
         if (obj == father) continue;
 
         ObjectType oType = obj->GetType();

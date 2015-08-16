@@ -130,7 +130,7 @@ COldObject::COldObject(int id)
     m_bSelect = false;
     m_bSelectable = true;
     m_bCheckToken = true;
-    m_bVisible = true;
+    m_underground = false;
     m_bTrainer = false;
     m_bToy = false;
     m_bManual = false;
@@ -140,10 +140,8 @@ COldObject::COldObject(int id)
     m_bVirusMode = false;
     m_virusTime = 0.0f;
     m_lastVirusParticle = 0.0f;
-    m_bExplo = false;
     m_bCargo = false;
-    m_bBurn  = false;
-    m_bDead  = false;
+    m_dying = DeathType::Alive;
     m_bFlat  = false;
     m_gunGoalV = 0.0f;
     m_gunGoalH = 0.0f;
@@ -339,7 +337,7 @@ bool COldObject::DamageObject(DamageType type, float force)
     assert(Implements(ObjectInterfaceType::Damageable));
     assert(!Implements(ObjectInterfaceType::Destroyable) || Implements(ObjectInterfaceType::Shielded) || Implements(ObjectInterfaceType::Fragile));
 
-    if ( m_bDead )  return false;
+    if ( IsDying() )  return false;
 
     if ( m_type == OBJECT_ANT    ||
          m_type == OBJECT_WORM   ||
@@ -438,7 +436,7 @@ void COldObject::DestroyObject(DestructionType type)
     if(type == DestructionType::NoEffect) assert(!!"DestructionType::NoEffect should not be passed to DestroyObject()!");
     assert(type != DestructionType::Drowned || m_type == OBJECT_HUMAN);
 
-    if ( m_bDead )  return;
+    if ( IsDying() )  return;
 
     if (Implements(ObjectInterfaceType::Shielded))
     {
@@ -511,7 +509,7 @@ void COldObject::DestroyObject(DestructionType type)
              m_type == OBJECT_BULLET )
         {
             pyroType = Gfx::PT_BURNO;
-            SetBurn(true);
+            SetDying(DeathType::Burning);
         }
         else if ( m_type == OBJECT_HUMAN )
         {
@@ -520,7 +518,7 @@ void COldObject::DestroyObject(DestructionType type)
         else
         {
             pyroType = Gfx::PT_BURNT;
-            SetBurn(true);
+            SetDying(DeathType::Burning);
         }
         SetVirusMode(false);
     }
@@ -1147,7 +1145,8 @@ void COldObject::Read(CLevelParserLine* line)
     SetGunGoalV(line->GetParam("aimV")->AsFloat(0.0f));
     SetGunGoalH(line->GetParam("aimH")->AsFloat(0.0f));
 
-    m_bBurn = line->GetParam("burnMode")->AsBool(false);
+    if (line->GetParam("burnMode")->AsBool(false))
+        SetDying(DeathType::Burning);
     m_bVirusMode = line->GetParam("virusMode")->AsBool(false);
     m_virusTime = line->GetParam("virusTime")->AsFloat(0.0f);
 
@@ -2032,7 +2031,7 @@ bool COldObject::EventProcess(const Event &event)
                  m_type != OBJECT_SPIDER &&
                  m_type != OBJECT_BEE    )
             {
-                if ( !m_bDead )  m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
+                if ( !IsDying() )  m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
                 m_main->DeselectAll();
             }
             return false;
@@ -2056,7 +2055,7 @@ bool COldObject::EventProcess(const Event &event)
             float axeX = 0.0f;
             float axeY = 0.0f;
             float axeZ = 0.0f;
-            if ( m_bBurn )  // Gifted?
+            if ( GetDying() == DeathType::Burning )  // Burning?
             {
                 axeZ = -1.0f;  // tomb
 
@@ -2198,7 +2197,7 @@ bool COldObject::EventFrame(const Event &event)
 
     if ( m_engine->GetPause() && m_type != OBJECT_SHOW )  return true;
 
-    if ( m_bBurn )  m_burnTime += event.rTime;
+    if ( GetDying() == DeathType::Burning )  m_burnTime += event.rTime;
 
     m_aTime += event.rTime;
     m_shotTime += event.rTime;
@@ -2749,13 +2748,11 @@ bool COldObject::GetCheckToken()
 }
 
 
-// Management of the visibility of an object.
-// The object is not hidden or visually disabled, but ignores detections!
-// For example: underground worm.
+// Sets if this object is underground or not. Underground objects are not detectable. Used by AlienWorm
 
-void COldObject::SetVisible(bool bVisible)
+void COldObject::SetUnderground(bool underground)
 {
-    m_bVisible = bVisible;
+    m_underground = underground;
 }
 
 
@@ -2785,55 +2782,35 @@ float COldObject::GetParam()
 }
 
 
-// Management of the mode "current explosion" of an object.
-// An object in this mode is not saving.
-
-void COldObject::SetExploding(bool bExplo)
+void COldObject::SetDying(DeathType deathType)
 {
-    m_bExplo = bExplo;
-}
-
-bool COldObject::IsExploding()
-{
-    return m_bExplo;
-}
-
-// Management of the HS mode of an object.
-
-void COldObject::SetBurn(bool bBurn)
-{
-    m_bBurn = bBurn;
+    m_dying = deathType;
     m_burnTime = 0.0f;
-}
 
-bool COldObject::GetBurn()
-{
-    return m_bBurn;
-}
-
-void COldObject::SetDead(bool bDead)
-{
-    m_bDead = bDead;
-
-    if ( bDead && Implements(ObjectInterfaceType::Programmable) )
+    if ( IsDying() && Implements(ObjectInterfaceType::Programmable) )
     {
         StopProgram();  // stops the current task
     }
 }
 
-bool COldObject::GetDead()
+DeathType COldObject::GetDying()
 {
-    return m_bDead;
+    return m_dying;
 }
 
-bool COldObject::GetRuin()
+bool COldObject::IsDying()
 {
-    return m_bBurn|m_bFlat;
+    return m_dying != DeathType::Alive;
 }
 
 bool COldObject::GetActive()
 {
-    return !GetLock() && !m_bBurn && !m_bFlat && m_bVisible;
+    return !GetLock() && !IsDying() && !m_bFlat;
+}
+
+bool COldObject::GetDetectable()
+{
+    return GetActive() && !m_underground;
 }
 
 

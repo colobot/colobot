@@ -250,6 +250,7 @@ bool CMotionWorm::EventFrame(const Event &event)
     m_armTimeAbs   += event.rTime;
     m_armTimeMarch += event.rTime*m_armLinSpeed;
 
+    assert(m_object->Implements(ObjectInterfaceType::Destroyable));
     under = 0;  // no piece under the ground
     for ( i=0 ; i<WORM_PART+2 ; i++ )
     {
@@ -271,14 +272,14 @@ bool CMotionWorm::EventFrame(const Event &event)
         {
             h = 0.0f;
         }
-        if ( m_object->GetBurn() )  // is burning?
+        if ( dynamic_cast<CDestroyableObject*>(m_object)->IsDying() )  // is burning?
         {
             h = 0.0f;  // remains on earth
         }
         h += 0.3f;
         height[i] = h;
     }
-    m_object->SetVisible(under!=WORM_PART+2);
+    m_object->SetUnderground(under == WORM_PART+2);
 
     if ( !m_engine->IsVisiblePoint(m_object->GetPosition()) )  return true;
 

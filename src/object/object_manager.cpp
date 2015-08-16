@@ -273,7 +273,7 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
 
         if (pObj == nullptr) continue;
         if (IsObjectBeingTransported(pObj))  continue;
-        if ( !pObj->GetActive() )  continue;
+        if ( !pObj->GetDetectable() )  continue;
         if ( pObj->GetProxyActivate() )  continue;
 
         oType = pObj->GetType();

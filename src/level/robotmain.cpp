@@ -1864,13 +1864,13 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
 
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (!obj->GetActive()) continue;
+        if (!obj->GetDetectable()) continue;
 
         CObject* transporter = nullptr;
         if (obj->Implements(ObjectInterfaceType::Transportable))
             transporter = dynamic_cast<CTransportableObject*>(obj)->GetTransporter();
 
-        if (transporter != nullptr && !transporter->GetActive()) continue;
+        if (transporter != nullptr && !transporter->GetDetectable()) continue;
         if (obj->GetProxyActivate()) continue;
 
         CObject* target = obj;
@@ -1881,6 +1881,7 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
             if (target == nullptr) target = obj; // standalone battery
         }
 
+        if (!obj->Implements(ObjectInterfaceType::Old)) continue;
         for (int j = 0; j < OBJECTMAXPART; j++)
         {
             int rank = obj->GetObjectRank(j);
@@ -3884,7 +3885,7 @@ float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
     float min = 100000.0f;
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (!obj->GetActive()) continue;  // inactive?
+        if (!obj->GetDetectable()) continue;  // inactive?
         if (IsObjectBeingTransported(obj)) continue;
 
         if (obj == exclu)  continue;
@@ -4106,7 +4107,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* transporter)
     float tMax;
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (!obj->GetActive()) continue;  // inactive?
+        if (!obj->GetDetectable()) continue;  // inactive?
         if (IsObjectBeingTransported(obj)) continue;
 
         if (obj == metal) continue;
@@ -4547,9 +4548,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (obj->GetType() == OBJECT_FIX) continue;
         if (IsObjectBeingTransported(obj)) continue;
-        if (obj->GetBurn()) continue;
-        if (obj->GetDead()) continue;
-        if (obj->IsExploding()) continue;
+        if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(obj)->IsDying()) continue;
 
         if (obj->Implements(ObjectInterfaceType::Carrier))
         {
@@ -4603,9 +4602,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (obj->GetType() == OBJECT_FIX) continue;
         if (IsObjectBeingTransported(obj)) continue;
-
-        if (obj->GetBurn()) continue;
-        if (obj->GetDead()) continue;
+        if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(obj)->IsDying()) continue;
 
         if (!SaveFileStack(obj, file, objRank++))  break;
     }
@@ -4801,8 +4798,7 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
                     if (obj->GetType() == OBJECT_TOTO) continue;
                     if (obj->GetType() == OBJECT_FIX) continue;
                     if (IsObjectBeingTransported(obj)) continue;
-                    if (obj->GetBurn()) continue;
-                    if (obj->GetDead()) continue;
+                    if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(obj)->IsDying()) continue;
 
                     if (!ReadFileStack(obj, file, objRank++)) break;
                 }

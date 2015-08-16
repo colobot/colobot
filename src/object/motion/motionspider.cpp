@@ -359,11 +359,8 @@ bool CMotionSpider::EventFrame(const Event &event)
         m_armMember += a;
     }
 
-    if ( m_object->GetRuin() )  // destroyed?
-    {
-        m_actionType = MSS_RUIN;
-    }
-    if ( m_object->GetBurn() )  // burning?
+    assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+    if (dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning )  // burning?
     {
         if ( m_object->GetFixed() )
         {
@@ -373,6 +370,10 @@ bool CMotionSpider::EventFrame(const Event &event)
         {
             m_actionType = -1;
         }
+    }
+    else if ( dynamic_cast<CDestroyableObject*>(m_object)->IsDying() )  // destroyed?
+    {
+        m_actionType = MSS_RUIN;
     }
 
     for ( i=0 ; i<8 ; i++ )  // the 8 legs

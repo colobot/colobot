@@ -1147,7 +1147,7 @@ void CMap::UpdateObject(CObject* pObj)
     if ( !m_bEnable )  return;
     if ( m_totalFix >= m_totalMove )  return;  // full table?
 
-    if ( !pObj->GetActive() )  return;
+    if ( !pObj->GetDetectable() )  return;
     if ( pObj->Implements(ObjectInterfaceType::Controllable) && !dynamic_cast<CControllableObject*>(pObj)->GetSelectable() )  return;
     if ( pObj->GetProxyActivate() )  return;
     if (IsObjectBeingTransported(pObj))  return;

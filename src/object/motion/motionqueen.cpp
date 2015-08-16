@@ -392,7 +392,8 @@ bool CMotionQueen::EventFrame(const Event &event)
         }
     }
 
-    if ( !bStop && !m_object->GetRuin() )
+    assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+    if ( !bStop && !dynamic_cast<CDestroyableObject*>(m_object)->IsDying() )
     {
         a = Math::Mod(m_armTimeMarch, 1.0f);
         if ( a < 0.5f )  a = -1.0f+4.0f*a;  // -1..1

@@ -403,13 +403,14 @@ bool CMotionBee::EventFrame(const Event &event)
     m_actionType = -1;
     if (IsObjectCarryingCargo(m_object))  m_actionType = MBS_HOLD;  // carries the ball
 
-    if ( m_object->GetRuin() )  // destroyed?
-    {
-        m_actionType = MBS_RUIN;
-    }
-    if ( m_object->GetBurn() )  // burning?
+    assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+    if ( dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning )  // burning?
     {
         m_actionType = MBS_BURN;
+    }
+    else if ( dynamic_cast<CDestroyableObject*>(m_object)->IsDying() )  // destroyed?
+    {
+        m_actionType = MBS_RUIN;
     }
 
     for ( i=0 ; i<6 ; i++ )  // the six legs
@@ -473,14 +474,12 @@ bool CMotionBee::EventFrame(const Event &event)
 
     if ( m_physics->GetLand() )  // on the ground?
     {
-        if ( m_object->GetRuin() )
-        {
-        }
-        else if ( bStop || m_object->GetBurn() )
+        assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+        if ( bStop || dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning )
         {
             m_object->SetPartRotationZ(2, sinf(m_armTimeAbs*1.7f)*0.15f+0.35f);  // tail
         }
-        else
+        if ( !dynamic_cast<CDestroyableObject*>(m_object)->IsDying() )
         {
             a = Math::Mod(m_armTimeMarch, 1.0f);
             if ( a < 0.5f )  a = -1.0f+4.0f*a;  // -1..1

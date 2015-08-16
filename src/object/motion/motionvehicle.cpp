@@ -1677,7 +1677,8 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
         m_armMember += a;
     }
 
-    if ( m_object->GetRuin() )  // burn or explode?
+    assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+    if ( dynamic_cast<CDestroyableObject*>(m_object)->IsDying() )  // burn or explode?
     {
         action = 3;
     }

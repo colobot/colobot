@@ -818,7 +818,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         }
     }
 
-    if ( m_object->GetDead() )  // dead man?
+    if ( m_object->GetType() == OBJECT_HUMAN && dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Dead )  // dead man?
     {
         motorSpeed.x = 0.0f;
         motorSpeed.z = 0.0f;
@@ -1455,7 +1455,7 @@ bool CPhysics::EventFrame(const Event &event)
     iAngle = angle = m_object->GetRotation();
 
     // Accelerate is the descent, brake is the ascent.
-    if ( m_bFreeze || m_object->GetDead() )
+    if ( m_bFreeze || (m_object->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(m_object)->IsDying()) )
     {
         m_linMotion.terrainSpeed.x = 0.0f;
         m_linMotion.terrainSpeed.z = 0.0f;
@@ -1594,7 +1594,7 @@ void CPhysics::SoundMotor(float rTime)
 
     if ( type == OBJECT_MOTHER )
     {
-        if ( m_lastSoundInsect <= 0.0f && m_object->GetActive() )
+        if ( m_lastSoundInsect <= 0.0f && m_object->GetDetectable() )
         {
             m_sound->Play(SOUND_INSECTm, m_object->GetPosition());
             if ( m_bMotor )  m_lastSoundInsect = 0.4f+Math::Rand()*2.5f;
@@ -1603,7 +1603,8 @@ void CPhysics::SoundMotor(float rTime)
     }
     else if ( type == OBJECT_ANT )
     {
-        if ( m_object->GetBurn()  ||
+        assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+        if ( dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning ||
              m_object->GetFixed() )
         {
             if ( m_lastSoundInsect <= 0.0f )
@@ -1612,7 +1613,7 @@ void CPhysics::SoundMotor(float rTime)
                 m_lastSoundInsect = 0.4f+Math::Rand()*0.6f;
             }
         }
-        else if ( m_object->GetActive() )
+        else if ( m_object->GetDetectable() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1624,7 +1625,8 @@ void CPhysics::SoundMotor(float rTime)
     }
     else if ( type == OBJECT_BEE )
     {
-        if ( m_object->GetActive() )
+        assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+        if ( m_object->GetDetectable() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1633,7 +1635,7 @@ void CPhysics::SoundMotor(float rTime)
                 else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
             }
         }
-        else if ( m_object->GetBurn() )
+        else if ( dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1644,7 +1646,8 @@ void CPhysics::SoundMotor(float rTime)
     }
     else if ( type == OBJECT_WORM )
     {
-        if ( m_object->GetActive() )
+        assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+        if ( m_object->GetDetectable() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1653,7 +1656,7 @@ void CPhysics::SoundMotor(float rTime)
                 else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
             }
         }
-        else if ( m_object->GetBurn() )
+        else if ( dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1664,7 +1667,8 @@ void CPhysics::SoundMotor(float rTime)
     }
     else if ( type == OBJECT_SPIDER )
     {
-        if ( m_object->GetBurn()  ||
+        assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+        if ( dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning ||
              m_object->GetFixed() )
         {
             if ( m_lastSoundInsect <= 0.0f )
@@ -1673,7 +1677,7 @@ void CPhysics::SoundMotor(float rTime)
                 m_lastSoundInsect = 0.4f+Math::Rand()*0.6f;
             }
         }
-        else if ( m_object->GetActive() )
+        else if ( m_object->GetDetectable() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1687,7 +1691,7 @@ void CPhysics::SoundMotor(float rTime)
     {
         if ( !m_object->Implements(ObjectInterfaceType::Flying) )
         {
-            if ( m_bMotor && m_object->GetActive() )
+            if ( m_bMotor && m_object->GetDetectable() )
             {
                 SoundMotorFull(rTime, type);  // full diet
             }
@@ -1710,7 +1714,7 @@ void CPhysics::SoundMotor(float rTime)
         if ( m_object->Implements(ObjectInterfaceType::Flying) )
         {
             if ( m_bMotor && !m_bSwim &&
-                 m_object->GetActive() && !m_object->GetDead() )
+                 m_object->GetDetectable() )
             {
                 SoundReactorFull(rTime, type);  // full diet
             }
@@ -1774,7 +1778,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
     if ( type == OBJECT_TOTO )  return;
     if ( type == OBJECT_NULL )  return;
 
-    if ( !m_object->GetActive() )  return;
+    if ( !m_object->GetDetectable() )  return;
 
     if (type == OBJECT_HUMAN && m_object->GetOption() != 0 )  // human without a helmet?)
     {
@@ -2468,7 +2472,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     int             colType;
     ObjectType      iType, oType;
 
-    if ( m_object->GetRuin() )  return 0;  // is burning or exploding?
+    if ( m_object->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(m_object)->IsDying() )  return 0;  // is burning or exploding?
     if ( !m_object->GetCollisions() )  return 0;
 
     // iiPos = sphere center is the old position.
@@ -2487,8 +2491,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     {
         if ( pObj == m_object )  continue;  // yourself?
         if (IsObjectBeingTransported(pObj))  continue;
-        if ( pObj->GetRuin() )  continue;  // is burning or exploding?
-        if ( pObj->GetDead() )  continue;  // dead man?
+        if ( pObj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(pObj)->IsDying() )  continue;  // is burning or exploding?
 
         oType = pObj->GetType();
         if ( oType == OBJECT_NULL                             )  continue;
@@ -3443,7 +3446,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
 
     if ( (type == OBJECT_HUMAN || type == OBJECT_TECH) && m_bSwim )
     {
-        if ( !m_object->GetDead() )
+        if ( !m_object->Implements(ObjectInterfaceType::Destroyable) || dynamic_cast<CDestroyableObject*>(m_object)->GetDying() != DeathType::Dead )
         {
             h = Math::Mod(aTime, 5.0f);
             if ( h < 3.5f && ( h < 1.5f || h > 1.6f ) )  return;

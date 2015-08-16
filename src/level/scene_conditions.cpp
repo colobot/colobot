@@ -56,10 +56,7 @@ int CSceneCondition::CountObjects()
     int nb = 0;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        // Do not use GetActive () because an invisible worm (underground)
-        // should be regarded as existing here!
-        if (obj->GetLock()) continue;
-        if (obj->GetRuin()) continue;
+        if (!obj->GetActive()) continue;
 
         if (!this->countTransported)
         {

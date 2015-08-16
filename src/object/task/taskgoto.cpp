@@ -1271,7 +1271,7 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( obj == m_object )  continue;
-        if ( !obj->GetActive() )  continue;
+        if ( !obj->GetDetectable() )  continue;
         if (IsObjectBeingTransported(obj))  continue;
 
         for (const auto& objCrashSphere : obj->GetAllCrashSpheres())

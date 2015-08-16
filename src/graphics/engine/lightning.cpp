@@ -322,7 +322,7 @@ CObject* CLightning::SearchObject(Math::Vector pos)
     float min = 100000.0f;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (!obj->GetActive()) continue;  // inactive object?
+        if (!obj->GetDetectable()) continue;  // inactive object?
 
         if (IsObjectBeingTransported(obj)) continue;
 

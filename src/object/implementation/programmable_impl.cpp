@@ -65,7 +65,7 @@ bool CProgrammableObjectImpl::EventProcess(const Event &event)
 {
     if (event.type == EVENT_FRAME)
     {
-        if ( m_object->GetRuin() && IsProgram() )
+        if ( m_object->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(m_object)->IsDying() && IsProgram() )
         {
             StopProgram();
         }

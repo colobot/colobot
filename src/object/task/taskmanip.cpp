@@ -1258,7 +1258,7 @@ bool CTaskManip::IsFreeDeposeObject(Math::Vector pos)
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( obj == m_object )  continue;
-        if ( !obj->GetActive() )  continue;  // inactive?
+        if ( !obj->GetDetectable() )  continue;  // inactive?
         if (IsObjectBeingTransported(obj))  continue;
 
         for (const auto& crashSphere : obj->GetAllCrashSpheres())
