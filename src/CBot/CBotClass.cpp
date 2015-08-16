@@ -497,7 +497,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
     CBotCStack* pStk = pStack->TokenStack();
 
     inst = new CBotClassInst();
-    /// \TODO Need to be revised and fixed after adding unit tests
+    /// TODO Need to be revised and fixed after adding unit tests
     CBotToken token(pClass->GetName(), CBotString(), p->GetStart(), p->GetEnd());
     inst->SetToken(&token);
     CBotToken*  vartoken = p;

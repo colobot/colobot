@@ -18,7 +18,7 @@
  */
 
 /**
- * \file ui/key.h
+ * \file ui/control/key.h
  * \brief Key slot control
  */
 
@@ -69,4 +69,3 @@ protected:
 
 
 } // namespace Ui
-

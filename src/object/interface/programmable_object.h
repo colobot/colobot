@@ -43,13 +43,19 @@ public:
     virtual ~CProgrammableObject()
     {}
 
-    virtual bool IsProgram() = 0;
+    //! Start a program
     virtual void RunProgram(Program* program) = 0;
-    virtual Program* GetCurrentProgram() = 0;
+    //! Stop currently running program
     virtual void StopProgram() = 0;
+    //! Returns the currently running program, or nullptr if no program is running
+    virtual Program* GetCurrentProgram() = 0;
+    //! Check if a program is running
+    virtual bool IsProgram() = 0;
 
-    virtual bool ReadStack(FILE *file) = 0;
+    //! Save current execution status to file
     virtual bool WriteStack(FILE *file) = 0;
+    //! Read current execution status from file
+    virtual bool ReadStack(FILE *file) = 0;
 
     //! Start recording trace
     virtual void TraceRecordStart() = 0;

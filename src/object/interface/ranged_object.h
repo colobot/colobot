@@ -35,6 +35,6 @@ public:
     virtual ~CRangedObject()
     {}
 
-    //! Return object operation radius
+    //! Return object operation radius for display after clicking UI button
     virtual float GetShowLimitRadius() = 0;
 };

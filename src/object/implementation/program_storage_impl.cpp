@@ -54,7 +54,6 @@ CProgramStorageObjectImpl::CProgramStorageObjectImpl(ObjectInterfaceTypes& types
       m_object(object),
       m_program(),
       m_activeVirus(false),
-      m_soluceName(""),
       m_programStorageIndex(-1),
       m_allowProgramSave(true)
 {
@@ -63,8 +62,6 @@ CProgramStorageObjectImpl::CProgramStorageObjectImpl(ObjectInterfaceTypes& types
 CProgramStorageObjectImpl::~CProgramStorageObjectImpl()
 {}
 
-// Introduces a virus into a program.
-// Returns true if it was inserted.
 
 bool CProgramStorageObjectImpl::IntroduceVirus()
 {
@@ -82,11 +79,6 @@ bool CProgramStorageObjectImpl::IntroduceVirus()
     }
     return false;
 }
-
-// Active Virus indicates that the object is contaminated. Unlike ch'tites (??? - Programerus)
-// letters which automatically disappear after a while,
-// ActiveVirus does not disappear after you edit the program
-// (Even if the virus is not fixed).
 
 void CProgramStorageObjectImpl::SetActiveVirus(bool bActive)
 {
@@ -190,18 +182,6 @@ Program* CProgramStorageObjectImpl::GetOrAddProgram(int index)
 }
 
 
-void CProgramStorageObjectImpl::SetSoluceName(const std::string& name)
-{
-    m_soluceName = name;
-}
-
-const std::string& CProgramStorageObjectImpl::GetSoluceName()
-{
-    return m_soluceName;
-}
-
-// Load a script with a text file.
-
 bool CProgramStorageObjectImpl::ReadProgram(Program* program, const std::string& filename)
 {
     if ( program->script->ReadScript(filename.c_str()) )  return true;
@@ -209,21 +189,19 @@ bool CProgramStorageObjectImpl::ReadProgram(Program* program, const std::string&
     return false;
 }
 
-// Indicates whether a program is compiled correctly.
-
-bool CProgramStorageObjectImpl::GetCompile(Program* program)
-{
-    return program->script->GetCompile();
-}
-
-// Saves a script in a text file.
-
 bool CProgramStorageObjectImpl::WriteProgram(Program* program, const std::string& filename)
 {
     if ( program->script->WriteScript(filename.c_str()) )  return true;
 
     return false;
 }
+
+bool CProgramStorageObjectImpl::GetCompile(Program* program)
+{
+    return program->script->GetCompile();
+}
+
+
 
 void CProgramStorageObjectImpl::SetProgramStorageIndex(int programStorageIndex)
 {

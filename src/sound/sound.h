@@ -231,6 +231,7 @@ public:
 
     /** Start playing pause music
      * \param filename - name of file to play
+     * \param repeat - repeat playing
      * \return return true on success
      */
      virtual bool PlayPauseMusic(const std::string &filename, bool repeat);

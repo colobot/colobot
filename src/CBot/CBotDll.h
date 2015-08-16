@@ -895,7 +895,10 @@ public:
 #define TokenKeyVal            2200                // keywords representing the value (true, false, null, nan)
 #define TokenKeyOp            2300                // operators
 
-/** \class Responsible for token management */
+/**
+ * \class CBotToken
+ * Responsible for token management
+ */
 class CBotToken
 {
 private:
@@ -1022,7 +1025,7 @@ public:
 
 
 
-#if 0
+/*
 ////////////////////////////////////////////////////////////////////////
 // Examples of use
 // Definition classes and functions
@@ -1116,4 +1119,4 @@ bool rDoGoto( CBotVar* pVar, CBotVar* pResult, int& exception )
                                         // returns false if one had wait yet
 }
 
-#endif
+*/

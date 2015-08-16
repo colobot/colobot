@@ -47,6 +47,7 @@ enum class TraceColor
     RedArrow = 17,
     Max,
 };
+//! Convert TraceColor to a std::string
 std::string TraceColorName(TraceColor c);
 
 /**
@@ -63,10 +64,18 @@ public:
     virtual ~CTraceDrawingObject()
     {}
 
-    virtual bool        GetTraceDown() = 0;
+    //! Put the drawing pencil down
     virtual void        SetTraceDown(bool down) = 0;
-    virtual TraceColor  GetTraceColor() = 0;
+    //! Is the pencil down?
+    virtual bool        GetTraceDown() = 0;
+
+    //! Set color of the trace
     virtual void        SetTraceColor(TraceColor color) = 0;
-    virtual float       GetTraceWidth() = 0;
+    //! Return color of the trace
+    virtual TraceColor  GetTraceColor() = 0;
+
+    //! Set trace width
     virtual void        SetTraceWidth(float width) = 0;
+    //! Return trace width
+    virtual float       GetTraceWidth() = 0;
 };

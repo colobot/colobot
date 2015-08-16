@@ -164,7 +164,7 @@ public:
      * \param [in] bModif Not used. Probably need to be removed
      * \return Found variable
      */
-    CBotVar* FindVar(CBotToken& Token, bool bUpdate = false,
+    CBotVar* FindVar(CBotToken& pToken, bool bUpdate = false,
                                               bool bModif  = false);
 
     /**

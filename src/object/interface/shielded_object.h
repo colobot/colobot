@@ -36,9 +36,14 @@ public:
     virtual ~CShieldedObject()
     {}
 
+    //! Set shield level
     virtual void SetShield(float level) = 0;
+    //! Get shield level
     virtual float GetShield() = 0;
+
+    //! Set damage multiplier for the object (bigger = more damage, weaker shield)
     virtual void SetMagnifyDamage(float factor) = 0;
+    //! Return damage multiplier for the object (bigger = more damage, weaker shield)
     virtual float GetMagnifyDamage() = 0;
 
     //! Returns true if this object can be repaired in RepairStation

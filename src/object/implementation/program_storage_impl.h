@@ -37,12 +37,9 @@ public:
     void SetActiveVirus(bool bActive) override;
     bool GetActiveVirus() override;
 
-    void SetSoluceName(const std::string& name) override;
-    const std::string& GetSoluceName() override;
-
     bool ReadProgram(Program* program, const std::string& filename) override;
-    bool GetCompile(Program* program) override;
     bool WriteProgram(Program* program, const std::string& filename) override;
+    bool GetCompile(Program* program) override;
 
     Program* AddProgram() override;
     void AddProgram(std::unique_ptr<Program> program) override;
@@ -70,9 +67,7 @@ private:
 private:
     std::vector<std::unique_ptr<Program>> m_program;
 
-    bool                m_activeVirus;
-
-    std::string         m_soluceName;
+    bool m_activeVirus;
 
     int m_programStorageIndex;
     bool m_allowProgramSave;

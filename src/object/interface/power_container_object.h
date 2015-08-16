@@ -35,19 +35,25 @@ public:
     virtual ~CPowerContainerObject()
     {}
 
+    //! Set energy level (percentage), value in range [0..1]
     virtual void SetEnergyLevel(float level) = 0;
+    //! Get energy level (percentage), value in range [0..1]
     virtual float GetEnergyLevel() = 0;
 
+    //! Set amount of energy in the container, value in range [0..GetCapacity()]
     virtual void SetEnergy(float energy)
     {
         SetEnergyLevel(energy / GetCapacity());
     }
+    //! Get amount of energy in the container, value in range [0..GetCapacity()]
     virtual float GetEnergy()
     {
         return GetEnergyLevel() * GetCapacity();
     }
 
+    //! Return capacity of this power container
     virtual float GetCapacity() = 0;
 
+    //! Returns true if this power container can be recharged
     virtual bool IsRechargeable() = 0;
 };

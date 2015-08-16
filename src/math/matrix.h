@@ -61,8 +61,6 @@ m[3 ] m[7 ] m[11] m[15]
  *
  * All methods are made inline to maximize optimization.
  *
- * Unit tests for the structure and related functions are in module: math/test/matrix_test.cpp.
- *
  */
 struct Matrix
 {
@@ -88,7 +86,7 @@ struct Matrix
     //! Creates the matrix from 2D array
     /**
      * The array's first index is row, second is column.
-     * \param m array with values
+     * \param _m array with values
      */
     explicit Matrix(const float (&_m)[4][4])
         : m()
@@ -469,4 +467,3 @@ inline Math::Vector MatrixVectorMultiply(const Math::Matrix &m, const Math::Vect
 
 
 } // namespace Math
-

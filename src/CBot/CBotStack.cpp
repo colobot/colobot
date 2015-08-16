@@ -539,9 +539,9 @@ CBotVar* CBotStack::FindVar(long ident, bool bUpdate, bool bModif)
 }
 
 
-CBotVar* CBotStack::FindVar(CBotToken& Token, bool bUpdate, bool bModif)
+CBotVar* CBotStack::FindVar(CBotToken& pToken, bool bUpdate, bool bModif)
 {
-    CBotToken*    pt = &Token;
+    CBotToken*    pt = &pToken;
     return FindVar(pt, bUpdate, bModif);
 }
 
@@ -1502,4 +1502,3 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
 
     return false;
 }
-

@@ -36,10 +36,15 @@ public:
     virtual ~CTransportableObject()
     {}
 
+    //! Set transporter object that transports this object
     virtual void SetTransporter(CObject* transporter) = 0;
+    //! Return transported object
     virtual CObject* GetTransporter() = 0;
+
+    // TODO: This will have to be refactored while implementing new model format
     virtual void SetTransporterPart(int part) = 0;
 
+    //! Return true if the object is currently transported
     inline bool IsBeingTransported()
     {
         return GetTransporter() != nullptr;
