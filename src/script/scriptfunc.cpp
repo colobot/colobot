@@ -19,8 +19,6 @@
 
 #include "script/scriptfunc.h"
 
-#include "common/config.h"
-
 #include "app/app.h"
 
 #include "common/global.h"
@@ -62,11 +60,6 @@
 #include "sound/sound.h"
 
 #include "ui/displaytext.h"
-
-
-#if PLATFORM_WINDOWS
-    #include "app/system_windows.h"
-#endif
 
 
 // Compiling a procedure without any parameters.

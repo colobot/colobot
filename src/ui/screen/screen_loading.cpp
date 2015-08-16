@@ -19,8 +19,6 @@
 
 #include "ui/screen/screen_loading.h"
 
-#include "common/config.h"
-
 #include "app/app.h"
 
 #include "ui/controls/button.h"

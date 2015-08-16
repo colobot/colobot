@@ -19,8 +19,6 @@
 
 #include "ui/screen/screen_setup_sound.h"
 
-#include "common/config.h"
-
 #include "app/app.h"
 
 #include "common/settings.h"
