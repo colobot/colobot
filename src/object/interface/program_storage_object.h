@@ -33,7 +33,7 @@ struct Program
     std::unique_ptr<CScript> script;
     bool        readOnly = false;
     bool        runnable = true;
-    bool        loadedFromLevel = false;
+    std::string filename;
 };
 
 /**

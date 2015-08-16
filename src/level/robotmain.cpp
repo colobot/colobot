@@ -4301,7 +4301,6 @@ void CRobotMain::SaveAllScript()
 }
 
 //! Saves all programs of the robot.
-//! If a program does not exist, the corresponding file is destroyed.
 void CRobotMain::SaveOneScript(CObject *obj)
 {
     if (! obj->Implements(ObjectInterfaceType::ProgramStorage)) return;
