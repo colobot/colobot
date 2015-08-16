@@ -805,7 +805,7 @@ void PutKeyName(std::string& dst, const char* src)
 
 const char* GetResourceBase(ResType type, unsigned int num)
 {
-    const char *str = NULL;
+    const char *str = nullptr;
 
     assert(num >= 0);
 

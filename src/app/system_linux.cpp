@@ -100,10 +100,10 @@ std::string CSystemUtilsLinux::GetSaveDir()
 
     // Determine savegame dir according to XDG Base Directory Specification
     char *envXDG_DATA_HOME = getenv("XDG_CONFIG_DATA");
-    if (envXDG_DATA_HOME == NULL)
+    if (envXDG_DATA_HOME == nullptr)
     {
         char *envHOME = getenv("HOME");
-        if (envHOME == NULL)
+        if (envHOME == nullptr)
         {
             savegameDir = "/tmp/colobot-save";
         }

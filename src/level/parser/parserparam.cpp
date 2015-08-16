@@ -678,7 +678,7 @@ ToolType CLevelParserParam::AsToolType(ToolType def)
 
 Gfx::WaterType CLevelParserParam::ToWaterType(std::string value)
 {
-    if (value == "NULL") return Gfx::WATER_NULL;
+    if (value == "nullptr") return Gfx::WATER_NULL;
     if (value == "TT"  ) return Gfx::WATER_TT;
     if (value == "TO"  ) return Gfx::WATER_TO;
     if (value == "CT"  ) return Gfx::WATER_CT;

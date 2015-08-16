@@ -33,11 +33,11 @@ long CBotVar::m_identcpt = 0;
 
 CBotVar::CBotVar( )
 {
-    m_next    = NULL;
-    m_pMyThis = NULL;
-    m_pUserPtr = NULL;
-    m_InitExpr = NULL;
-    m_LimExpr = NULL;
+    m_next    = nullptr;
+    m_pMyThis = nullptr;
+    m_pUserPtr = nullptr;
+    m_InitExpr = nullptr;
+    m_LimExpr = nullptr;
     m_type  = -1;
     m_binit = InitType::UNDEF;
     m_ident = 0;
@@ -48,11 +48,11 @@ CBotVar::CBotVar( )
 CBotVarInt::CBotVarInt( const CBotToken* name )
 {
     m_token    = new CBotToken(name);
-    m_next    = NULL;
-    m_pMyThis = NULL;
-    m_pUserPtr = NULL;
-    m_InitExpr = NULL;
-    m_LimExpr = NULL;
+    m_next    = nullptr;
+    m_pMyThis = nullptr;
+    m_pUserPtr = nullptr;
+    m_InitExpr = nullptr;
+    m_LimExpr = nullptr;
     m_type  = CBotTypInt;
     m_binit = InitType::UNDEF;
     m_bStatic = false;
@@ -64,11 +64,11 @@ CBotVarInt::CBotVarInt( const CBotToken* name )
 CBotVarFloat::CBotVarFloat( const CBotToken* name )
 {
     m_token    = new CBotToken(name);
-    m_next    = NULL;
-    m_pMyThis = NULL;
-    m_pUserPtr = NULL;
-    m_InitExpr = NULL;
-    m_LimExpr = NULL;
+    m_next    = nullptr;
+    m_pMyThis = nullptr;
+    m_pUserPtr = nullptr;
+    m_InitExpr = nullptr;
+    m_LimExpr = nullptr;
     m_type  = CBotTypFloat;
     m_binit = InitType::UNDEF;
     m_bStatic = false;
@@ -80,11 +80,11 @@ CBotVarFloat::CBotVarFloat( const CBotToken* name )
 CBotVarString::CBotVarString( const CBotToken* name )
 {
     m_token    = new CBotToken(name);
-    m_next    = NULL;
-    m_pMyThis = NULL;
-    m_pUserPtr = NULL;
-    m_InitExpr = NULL;
-    m_LimExpr = NULL;
+    m_next    = nullptr;
+    m_pMyThis = nullptr;
+    m_pUserPtr = nullptr;
+    m_InitExpr = nullptr;
+    m_LimExpr = nullptr;
     m_type  = CBotTypString;
     m_binit = InitType::UNDEF;
     m_bStatic = false;
@@ -96,11 +96,11 @@ CBotVarString::CBotVarString( const CBotToken* name )
 CBotVarBoolean::CBotVarBoolean( const CBotToken* name )
 {
     m_token        = new CBotToken(name);
-    m_next        = NULL;
-    m_pMyThis    = NULL;
-    m_pUserPtr    = NULL;
-    m_InitExpr = NULL;
-    m_LimExpr = NULL;
+    m_next        = nullptr;
+    m_pMyThis    = nullptr;
+    m_pUserPtr    = nullptr;
+    m_InitExpr = nullptr;
+    m_LimExpr = nullptr;
     m_type        = CBotTypBoolean;
     m_binit        = InitType::UNDEF;
     m_bStatic = false;
@@ -109,7 +109,7 @@ CBotVarBoolean::CBotVarBoolean( const CBotToken* name )
     m_val        = 0;
 }
 
-CBotVarClass* CBotVarClass::m_ExClass = NULL;
+CBotVarClass* CBotVarClass::m_ExClass = nullptr;
 
 CBotVarClass::CBotVarClass( const CBotToken* name, const CBotTypResult& type)
 {
@@ -132,19 +132,19 @@ void CBotVarClass::InitCBotVarClass( const CBotToken* name, CBotTypResult& type 
          !type.Eq(CBotTypArrayBody)) assert(0);
 
     m_token        = new CBotToken(name);
-    m_next        = NULL;
-    m_pMyThis    = NULL;
-    m_pUserPtr    = OBJECTCREATED;//NULL;
-    m_InitExpr = NULL;
-    m_LimExpr = NULL;
-    m_pVar        = NULL;
+    m_next        = nullptr;
+    m_pMyThis    = nullptr;
+    m_pUserPtr    = OBJECTCREATED;//nullptr;
+    m_InitExpr = nullptr;
+    m_LimExpr = nullptr;
+    m_pVar        = nullptr;
     m_type        = type;
     if ( type.Eq(CBotTypArrayPointer) )    m_type.SetType( CBotTypArrayBody );
     else if ( !type.Eq(CBotTypArrayBody) ) m_type.SetType( CBotTypClass );
                                                  // officel type for this object
 
-    m_pClass    = NULL;
-    m_pParent    = NULL;
+    m_pClass    = nullptr;
+    m_pParent    = nullptr;
     m_binit        = InitType::UNDEF;
     m_bStatic    = false;
     m_mPrivate    = 0;
@@ -156,12 +156,12 @@ void CBotVarClass::InitCBotVarClass( const CBotToken* name, CBotTypResult& type 
     // TODO stands alone in the list (stands only in a list)
     if (m_ExClass) m_ExClass->m_ExPrev = this;
     m_ExNext  = m_ExClass;
-    m_ExPrev  = NULL;
+    m_ExPrev  = nullptr;
     m_ExClass = this;
 
     CBotClass* pClass = type.GetClass();
     CBotClass* pClass2 = pClass->GetParent();
-    if ( pClass2 != NULL )
+    if ( pClass2 != nullptr )
     {
         // also creates an instance of the parent class
         m_pParent = new CBotVarClass(name, CBotTypResult(type.GetType(),pClass2) ); //, nIdent);
@@ -177,10 +177,10 @@ CBotVarClass::~CBotVarClass( )
         assert(0);
 
     if ( m_pParent ) delete m_pParent;
-    m_pParent = NULL;
+    m_pParent = nullptr;
 
     // frees the indirect object if necessary
-//    if ( m_Indirect != NULL )
+//    if ( m_Indirect != nullptr )
 //        m_Indirect->DecrementUse();
 
     // removes the class list
@@ -188,8 +188,8 @@ CBotVarClass::~CBotVarClass( )
     else m_ExClass = m_ExNext;
 
     if ( m_ExNext ) m_ExNext->m_ExPrev = m_ExPrev;
-    m_ExPrev = NULL;
-    m_ExNext = NULL;
+    m_ExPrev = nullptr;
+    m_ExNext = nullptr;
 
     delete    m_pVar;
 }
@@ -215,7 +215,7 @@ void CBotVar::debug()
     if ( m_type.Eq(CBotTypClass) )
     {
         CBotVar*    pv = (static_cast<CBotVarClass*>(this))->m_pVar;
-        while (pv != NULL)
+        while (pv != nullptr)
         {
             pv->debug();
             pv = pv->GetNext();
@@ -232,14 +232,14 @@ void CBotVar::SetUserPtr(void* pUser)
 {
     m_pUserPtr = pUser;
     if (m_type.Eq(CBotTypPointer) &&
-        (static_cast<CBotVarPointer*>(this))->m_pVarClass != NULL )
+        (static_cast<CBotVarPointer*>(this))->m_pVarClass != nullptr )
         (static_cast<CBotVarPointer*>(this))->m_pVarClass->SetUserPtr(pUser);
 }
 
 void CBotVar::SetIdent(long n)
 {
     if (m_type.Eq(CBotTypPointer) &&
-        (static_cast<CBotVarPointer*>(this))->m_pVarClass != NULL )
+        (static_cast<CBotVarPointer*>(this))->m_pVarClass != nullptr )
         (static_cast<CBotVarPointer*>(this))->m_pVarClass->SetIdent(n);
 }
 
@@ -278,7 +278,7 @@ bool CBotVar::Save1State(FILE* pf)
 
 void CBotVar::Maj(void* pUser, bool bContinu)
 {
-/*    if (!bContinu && m_pMyThis != NULL)
+/*    if (!bContinu && m_pMyThis != nullptr)
         m_pMyThis->Maj(pUser, true);*/
 }
 
@@ -341,7 +341,7 @@ CBotVar* CBotVar::Create(const CBotToken* name, CBotTypResult type)
     }
 
     assert(0);
-    return NULL;
+    return nullptr;
 }
 
 CBotVar* CBotVar::Create( CBotVar* pVar )
@@ -412,7 +412,7 @@ CBotVar* CBotVar::Create( const char* n, CBotTypResult type)
     }
 
     assert(0);
-    return NULL;
+    return nullptr;
 }
 
 CBotVar* CBotVar::Create( const char* name, int type, CBotClass* pClass)
@@ -420,16 +420,16 @@ CBotVar* CBotVar::Create( const char* name, int type, CBotClass* pClass)
     CBotToken    token( name, "" );
     CBotVar*    pVar = Create( &token, type );
 
-    if ( type == CBotTypPointer && pClass == NULL )        // pointer "null" ?
+    if ( type == CBotTypPointer && pClass == nullptr )        // pointer "null" ?
         return pVar;
 
     if ( type == CBotTypClass || type == CBotTypPointer ||
          type == CBotTypIntrinsic )
     {
-        if (pClass == NULL)
+        if (pClass == nullptr)
         {
             delete pVar;
-            return NULL;
+            return nullptr;
         }
         pVar->SetClass( pClass );
     }
@@ -485,9 +485,9 @@ void CBotVar::SetInit(CBotVar::InitType bInit)
     if ( m_type.Eq(CBotTypPointer) && bInit == CBotVar::InitType::IS_POINTER )
     {
         CBotVarClass* instance = GetPointer();
-        if ( instance == NULL )
+        if ( instance == nullptr )
         {
-            instance = new CBotVarClass(NULL, m_type);
+            instance = new CBotVarClass(nullptr, m_type);
 //            instance->SetClass((static_cast<CBotVarPointer*>(this))->m_pClass);
             SetPointer(instance);
         }
@@ -497,7 +497,7 @@ void CBotVar::SetInit(CBotVar::InitType bInit)
     if ( m_type.Eq(CBotTypClass) || m_type.Eq(CBotTypIntrinsic) )
     {
         CBotVar*    p = (static_cast<CBotVarClass*>(this))->m_pVar;
-        while( p != NULL )
+        while( p != nullptr )
         {
             p->SetInit( bInit );
             p->m_pMyThis = static_cast<CBotVarClass*>(this);
@@ -524,31 +524,31 @@ CBotToken* CBotVar::GetToken()
 CBotVar* CBotVar::GetItem(const char* name)
 {
     assert(0);
-    return NULL;
+    return nullptr;
 }
 
 CBotVar* CBotVar::GetItemRef(int nIdent)
 {
     assert(0);
-    return NULL;
+    return nullptr;
 }
 
 CBotVar* CBotVar::GetItemList()
 {
     assert(0);
-    return NULL;
+    return nullptr;
 }
 
 CBotVar* CBotVar::GetItem(int row, bool bGrow)
 {
     assert(0);
-    return NULL;
+    return nullptr;
 }
 
 // check if a variable belongs to a given class
 bool CBotVar::IsElemOfClass(const char* name)
 {
-    CBotClass*    pc = NULL;
+    CBotClass*    pc = nullptr;
 
     if ( m_type.Eq(CBotTypPointer) )
     {
@@ -559,7 +559,7 @@ bool CBotVar::IsElemOfClass(const char* name)
         pc = (static_cast<CBotVarClass*>(this))->m_pClass;
     }
 
-    while ( pc != NULL )
+    while ( pc != nullptr )
     {
         if ( pc->GetName() == name ) return true;
         pc = pc->GetParent();
@@ -572,7 +572,7 @@ bool CBotVar::IsElemOfClass(const char* name)
 CBotVar* CBotVar::GetStaticVar()
 {
     // makes the pointer to the variable if it is static
-    if ( m_bStatic == 0 || m_pMyThis == NULL ) return this;
+    if ( m_bStatic == 0 || m_pMyThis == nullptr ) return this;
 
     CBotClass*    pClass = m_pMyThis->GetClass();
     return pClass->GetItem( m_token->GetString() );
@@ -587,7 +587,7 @@ CBotVar* CBotVar::GetNext()
 void CBotVar::AddNext(CBotVar* pVar)
 {
     CBotVar*    p = this;
-    while (p->m_next != NULL) p = p->m_next;
+    while (p->m_next != nullptr) p = p->m_next;
 
     p->m_next = pVar;
 }
@@ -616,7 +616,7 @@ void CBotVar::SetVal(CBotVar* var)
     case CBotTypClass:
         {
             delete (static_cast<CBotVarClass*>(this))->m_pVar;
-            (static_cast<CBotVarClass*>(this))->m_pVar = NULL;
+            (static_cast<CBotVarClass*>(this))->m_pVar = nullptr;
             Copy(var, false);
         }
         break;
@@ -661,7 +661,7 @@ void CBotVar::SetPointer(CBotVar* pVarClass)
 CBotVarClass* CBotVar::GetPointer()
 {
     assert(0);
-    return NULL;
+    return nullptr;
 }
 
 // All these functions must be defined in the subclasses
@@ -830,7 +830,7 @@ void CBotVar::SetClass(CBotClass* pClass)
 CBotClass* CBotVar::GetClass()
 {
     assert(0);
-    return NULL;
+    return nullptr;
 }
 
 /*
@@ -851,7 +851,7 @@ void CBotVarInt::Copy(CBotVar* pSrc, bool bName)
     m_type        = p->m_type;
     m_val        = p->m_val;
     m_binit        = p->m_binit;
-    m_pMyThis    = NULL;
+    m_pMyThis    = nullptr;
     m_pUserPtr    = p->m_pUserPtr;
 
     // identificator is the same (by défaut)
@@ -1064,8 +1064,8 @@ void CBotVarFloat::Copy(CBotVar* pSrc, bool bName)
     m_val        = p->m_val;
     m_binit        = p->m_binit;
 //-    m_bStatic    = p->m_bStatic;
-    m_next        = NULL;
-    m_pMyThis    = NULL;//p->m_pMyThis;
+    m_next        = nullptr;
+    m_pMyThis    = nullptr;//p->m_pMyThis;
     m_pUserPtr    = p->m_pUserPtr;
 
     // keeps indentificator the same (by default)
@@ -1225,8 +1225,8 @@ void CBotVarBoolean::Copy(CBotVar* pSrc, bool bName)
     m_val        = p->m_val;
     m_binit        = p->m_binit;
 //-    m_bStatic    = p->m_bStatic;
-    m_next        = NULL;
-    m_pMyThis    = NULL;//p->m_pMyThis;
+    m_next        = nullptr;
+    m_pMyThis    = nullptr;//p->m_pMyThis;
     m_pUserPtr    = p->m_pUserPtr;
 
     // keeps indentificator the same (by default)
@@ -1323,8 +1323,8 @@ void CBotVarString::Copy(CBotVar* pSrc, bool bName)
     m_val        = p->m_val;
     m_binit        = p->m_binit;
 //-    m_bStatic    = p->m_bStatic;
-    m_next        = NULL;
-    m_pMyThis    = NULL;//p->m_pMyThis;
+    m_next        = nullptr;
+    m_pMyThis    = nullptr;//p->m_pMyThis;
     m_pUserPtr    = p->m_pUserPtr;
 
     // keeps indentificator the same (by default)
@@ -1418,23 +1418,23 @@ void CBotVarClass::Copy(CBotVar* pSrc, bool bName)
         assert(0);       // "que faire du pParent";
     }
 
-//    m_next        = NULL;
+//    m_next        = nullptr;
     m_pUserPtr    = p->m_pUserPtr;
-    m_pMyThis    = NULL;//p->m_pMyThis;
+    m_pMyThis    = nullptr;//p->m_pMyThis;
     m_ItemIdent = p->m_ItemIdent;
 
     // keeps indentificator the same (by default)
     if (m_ident == 0 ) m_ident     = p->m_ident;
 
     delete        m_pVar;
-    m_pVar        = NULL;
+    m_pVar        = nullptr;
 
     CBotVar*    pv = p->m_pVar;
-    while( pv != NULL )
+    while( pv != nullptr )
     {
         CBotVar*    pn = CBotVar::Create(pv);
         pn->Copy( pv );
-        if ( m_pVar == NULL ) m_pVar = pn;
+        if ( m_pVar == nullptr ) m_pVar = pn;
         else m_pVar->AddNext(pn);
 
         pv = pv->GetNext();
@@ -1462,22 +1462,22 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
 
     // initializes the variables associated with this class
     delete m_pVar;
-    m_pVar = NULL;
+    m_pVar = nullptr;
 
-    if (pClass == NULL) return;
+    if (pClass == nullptr) return;
 
     CBotVar*    pv = pClass->GetVar();                // first on a list
-    while ( pv != NULL )
+    while ( pv != nullptr )
     {
         // seeks the maximum dimensions of the table
         CBotInstr*    p  = pv->m_LimExpr;                            // the different formulas
-        if ( p != NULL )
+        if ( p != nullptr )
         {
             CBotStack* pile = CBotStack::FirstStack();    // an independent stack
             int     n = 0;
             int     max[100];
 
-            while (p != NULL)
+            while (p != nullptr)
             {
                 while( pile->IsOk() && !p->Execute(pile) ) ;        // calculate size without interruptions
                 CBotVar*    v = pile->GetVar();                        // result
@@ -1495,7 +1495,7 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
         pn->SetStatic(pv->IsStatic());
         pn->SetPrivate(pv->GetPrivate());
 
-        if ( pv->m_InitExpr != NULL )                // expression for initialization?
+        if ( pv->m_InitExpr != nullptr )                // expression for initialization?
         {
 #if    STACKMEM
             CBotStack* pile = CBotStack::FirstStack();    // an independent stack
@@ -1504,7 +1504,7 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
 
             pile->Delete();
 #else
-            CBotStack* pile = new CBotStack(NULL);     // an independent stack
+            CBotStack* pile = new CBotStack(nullptr);     // an independent stack
             while(!pv->m_InitExpr->Execute(pile));    // evaluates the expression without timer
             pn->SetVal( pile->GetVar() ) ;
             delete pile;
@@ -1515,7 +1515,7 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
         pn->SetUniqNum(pv->GetUniqNum());    //++nIdent
         pn->m_pMyThis = this;
 
-        if ( m_pVar == NULL) m_pVar = pn;
+        if ( m_pVar == nullptr) m_pVar = pn;
         else m_pVar->AddNext( pn );
         pv = pv->GetNext();
     }
@@ -1529,17 +1529,17 @@ CBotClass* CBotVarClass::GetClass()
 
 void CBotVarClass::Maj(void* pUser, bool bContinu)
 {
-/*    if (!bContinu && m_pMyThis != NULL)
+/*    if (!bContinu && m_pMyThis != nullptr)
         m_pMyThis->Maj(pUser, true);*/
 
     // an update routine exist?
 
-    if ( m_pClass->m_rMaj == NULL ) return;
+    if ( m_pClass->m_rMaj == nullptr ) return;
 
     // retrieves the user pointer according to the class
     // or according to the parameter passed to CBotProgram::Run()
 
-    if ( m_pUserPtr != NULL) pUser = m_pUserPtr;
+    if ( m_pUserPtr != nullptr) pUser = m_pUserPtr;
     if ( pUser == OBJECTDELETED ||
          pUser == OBJECTCREATED ) return;
     m_pClass->m_rMaj( this, pUser );
@@ -1549,28 +1549,28 @@ CBotVar* CBotVarClass::GetItem(const char* name)
 {
     CBotVar*    p = m_pVar;
 
-    while ( p != NULL )
+    while ( p != nullptr )
     {
         if ( p->GetName() == name ) return p;
         p = p->GetNext();
     }
 
-    if ( m_pParent != NULL ) return m_pParent->GetItem(name);
-    return NULL;
+    if ( m_pParent != nullptr ) return m_pParent->GetItem(name);
+    return nullptr;
 }
 
 CBotVar* CBotVarClass::GetItemRef(int nIdent)
 {
     CBotVar*    p = m_pVar;
 
-    while ( p != NULL )
+    while ( p != nullptr )
     {
         if ( p->GetUniqNum() == nIdent ) return p;
         p = p->GetNext();
     }
 
-    if ( m_pParent != NULL ) return m_pParent->GetItemRef(nIdent);
-    return NULL;
+    if ( m_pParent != nullptr ) return m_pParent->GetItemRef(nIdent);
+    return nullptr;
 }
 
 // for the management of an array
@@ -1580,12 +1580,12 @@ CBotVar* CBotVarClass::GetItem(int n, bool bExtend)
 {
     CBotVar*    p = m_pVar;
 
-    if ( n < 0 ) return NULL;
-    if ( n > MAXARRAYSIZE ) return NULL;
+    if ( n < 0 ) return nullptr;
+    if ( n > MAXARRAYSIZE ) return nullptr;
 
-    if ( m_type.GetLimite() >= 0 && n >= m_type.GetLimite() ) return NULL;
+    if ( m_type.GetLimite() >= 0 && n >= m_type.GetLimite() ) return nullptr;
 
-    if ( p == NULL && bExtend )
+    if ( p == nullptr && bExtend )
     {
         p = CBotVar::Create("", m_type.GetTypElem());
         m_pVar = p;
@@ -1595,10 +1595,10 @@ CBotVar* CBotVarClass::GetItem(int n, bool bExtend)
 
     while ( n-- > 0 )
     {
-        if ( p->m_next == NULL )
+        if ( p->m_next == nullptr )
         {
             if ( bExtend ) p->m_next = CBotVar::Create("", m_type.GetTypElem());
-            if ( p->m_next == NULL ) return NULL;
+            if ( p->m_next == nullptr ) return nullptr;
         }
         p = p->m_next;
     }
@@ -1614,19 +1614,19 @@ CBotVar* CBotVarClass::GetItemList()
 
 CBotString CBotVarClass::GetValString()
 {
-//    if ( m_Indirect != NULL) return m_Indirect->GetValString();
+//    if ( m_Indirect != nullptr) return m_Indirect->GetValString();
 
     CBotString    res;
 
-    if ( m_pClass != NULL )                        // not used for an array
+    if ( m_pClass != nullptr )                        // not used for an array
     {
         res = m_pClass->GetName() + CBotString("( ");
 
         CBotVarClass*    my = this;
-        while ( my != NULL )
+        while ( my != nullptr )
         {
             CBotVar*    pv = my->m_pVar;
-            while ( pv != NULL )
+            while ( pv != nullptr )
             {
                 res += pv->GetName() + CBotString("=");
 
@@ -1640,10 +1640,10 @@ CBotString CBotVarClass::GetValString()
                     res += pv->GetValString();
                 }
                 pv = pv->GetNext();
-                if ( pv != NULL ) res += ", ";
+                if ( pv != nullptr ) res += ", ";
             }
             my = my->m_pParent;
-            if ( my != NULL )
+            if ( my != nullptr )
             {
                 res += ") extends ";
                 res += my->m_pClass->GetName();
@@ -1656,10 +1656,10 @@ CBotString CBotVarClass::GetValString()
         res = "( ";
 
         CBotVar*    pv = m_pVar;
-        while ( pv != NULL )
+        while ( pv != nullptr )
         {
             res += pv->GetValString();
-            if ( pv->GetNext() != NULL ) res += ", ";
+            if ( pv->GetNext() != nullptr ) res += ", ";
             pv = pv->GetNext();
         }
     }
@@ -1687,21 +1687,21 @@ void CBotVarClass::DecrementUse()
             // m_error is static in the stack
             // saves the value for return
             int    err, start, end;
-            CBotStack*    pile = NULL;
-            err = pile->GetError(start,end);    // stack == NULL it does not bother!
+            CBotStack*    pile = nullptr;
+            err = pile->GetError(start,end);    // stack == nullptr it does not bother!
 
             pile = CBotStack::FirstStack();        // clears the error
             CBotVar*    ppVars[1];
-            ppVars[0] = NULL;
+            ppVars[0] = nullptr;
 
             CBotVar*    pThis  = CBotVar::Create("this", CBotTypNullPointer);
             pThis->SetPointer(this);
-            CBotVar*    pResult = NULL;
+            CBotVar*    pResult = nullptr;
 
             CBotString    nom = "~" + m_pClass->GetName();
             long        ident = 0;
 
-            while ( pile->IsOk() && !m_pClass->ExecuteMethode(ident, nom, pThis, ppVars, pResult, pile, NULL)) ;    // waits for the end
+            while ( pile->IsOk() && !m_pClass->ExecuteMethode(ident, nom, pThis, ppVars, pResult, pile, nullptr)) ;    // waits for the end
 
             pile->ResetError(err, start,end);
 
@@ -1726,13 +1726,13 @@ CBotVarClass* CBotVarClass::Find(long id)
 {
     CBotVarClass*    p = m_ExClass;
 
-    while ( p != NULL )
+    while ( p != nullptr )
     {
         if ( p->m_ItemIdent == id ) return p;
         p = p->m_ExNext;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 bool CBotVarClass::Eq(CBotVar* left, CBotVar* right)
@@ -1740,7 +1740,7 @@ bool CBotVarClass::Eq(CBotVar* left, CBotVar* right)
     CBotVar*    l = left->GetItemList();
     CBotVar*    r = right->GetItemList();
 
-    while ( l != NULL && r != NULL )
+    while ( l != nullptr && r != nullptr )
     {
         if ( l->Ne(l, r) ) return false;
         l = l->GetNext();
@@ -1756,7 +1756,7 @@ bool CBotVarClass::Ne(CBotVar* left, CBotVar* right)
     CBotVar*    l = left->GetItemList();
     CBotVar*    r = right->GetItemList();
 
-    while ( l != NULL && r != NULL )
+    while ( l != nullptr && r != nullptr )
     {
         if ( l->Ne(l, r) ) return true;
         l = l->GetNext();
@@ -1776,20 +1776,20 @@ CBotVarArray::CBotVarArray(const CBotToken* name, CBotTypResult& type )
          !type.Eq(CBotTypArrayBody)) assert(0);
 
     m_token        = new CBotToken(name);
-    m_next        = NULL;
-    m_pMyThis    = NULL;
-    m_pUserPtr    = NULL;
+    m_next        = nullptr;
+    m_pMyThis    = nullptr;
+    m_pUserPtr    = nullptr;
 
     m_type        = type;
     m_type.SetType(CBotTypArrayPointer);
     m_binit        = CBotVar::InitType::UNDEF;
 
-    m_pInstance    = NULL;                        // the list of the array elements
+    m_pInstance    = nullptr;                        // the list of the array elements
 }
 
 CBotVarArray::~CBotVarArray()
 {
-    if ( m_pInstance != NULL ) m_pInstance->DecrementUse();    // the lowest reference
+    if ( m_pInstance != nullptr ) m_pInstance->DecrementUse();    // the lowest reference
 }
 
 // copy a variable into another
@@ -1804,12 +1804,12 @@ void CBotVarArray::Copy(CBotVar* pSrc, bool bName)
     m_type        = p->m_type;
     m_pInstance = p->GetPointer();
 
-    if ( m_pInstance != NULL )
+    if ( m_pInstance != nullptr )
          m_pInstance->IncrementUse();            // a reference increase
 
     m_binit        = p->m_binit;
 //-    m_bStatic    = p->m_bStatic;
-    m_pMyThis    = NULL;//p->m_pMyThis;
+    m_pMyThis    = nullptr;//p->m_pMyThis;
     m_pUserPtr    = p->m_pUserPtr;
 
     // keeps indentificator the same (by default)
@@ -1823,7 +1823,7 @@ void CBotVarArray::SetPointer(CBotVar* pVarClass)
     if ( m_pInstance == pVarClass) return;    // Special, not decrement and reincrement
                                             // because the decrement can destroy the object
 
-    if ( pVarClass != NULL )
+    if ( pVarClass != nullptr )
     {
         if ( pVarClass->GetType() == CBotTypArrayPointer )
              pVarClass = pVarClass->GetPointer();    // the real pointer to the object
@@ -1835,25 +1835,25 @@ void CBotVarArray::SetPointer(CBotVar* pVarClass)
         (static_cast<CBotVarClass*>(pVarClass))->IncrementUse();            // incement the reference
     }
 
-    if ( m_pInstance != NULL ) m_pInstance->DecrementUse();
+    if ( m_pInstance != nullptr ) m_pInstance->DecrementUse();
     m_pInstance = static_cast<CBotVarClass*>(pVarClass);
 }
 
 
 CBotVarClass* CBotVarArray::GetPointer()
 {
-    if ( m_pInstance == NULL ) return NULL;
+    if ( m_pInstance == nullptr ) return nullptr;
     return m_pInstance->GetPointer();
 }
 
 CBotVar* CBotVarArray::GetItem(int n, bool bExtend)
 {
-    if ( m_pInstance == NULL )
+    if ( m_pInstance == nullptr )
     {
-        if ( !bExtend ) return NULL;
+        if ( !bExtend ) return nullptr;
         // creates an instance of the table
 
-        CBotVarClass* instance = new CBotVarClass(NULL, m_type);
+        CBotVarClass* instance = new CBotVarClass(nullptr, m_type);
         SetPointer( instance );
     }
     return m_pInstance->GetItem(n, bExtend);
@@ -1861,13 +1861,13 @@ CBotVar* CBotVarArray::GetItem(int n, bool bExtend)
 
 CBotVar* CBotVarArray::GetItemList()
 {
-    if ( m_pInstance == NULL) return NULL;
+    if ( m_pInstance == nullptr) return nullptr;
     return m_pInstance->GetItemList();
 }
 
 CBotString CBotVarArray::GetValString()
 {
-    if ( m_pInstance == NULL ) return ( CBotString( "Null pointer" ) ) ;
+    if ( m_pInstance == nullptr ) return ( CBotString( "Null pointer" ) ) ;
     return m_pInstance->GetValString();
 }
 
@@ -1890,37 +1890,37 @@ CBotVarPointer::CBotVarPointer(const CBotToken* name, CBotTypResult& type )
          !type.Eq(CBotTypIntrinsic) ) assert(0);
 
     m_token        = new CBotToken(name);
-    m_next        = NULL;
-    m_pMyThis    = NULL;
-    m_pUserPtr    = NULL;
+    m_next        = nullptr;
+    m_pMyThis    = nullptr;
+    m_pUserPtr    = nullptr;
 
     m_type        = type;
     if ( !type.Eq(CBotTypNullPointer) )
         m_type.SetType(CBotTypPointer);                    // anyway, this is a pointer
     m_binit        = CBotVar::InitType::UNDEF;
-    m_pClass    = NULL;
-    m_pVarClass = NULL;                                    // will be defined by a SetPointer()
+    m_pClass    = nullptr;
+    m_pVarClass = nullptr;                                    // will be defined by a SetPointer()
 
     SetClass(type.GetClass() );
 }
 
 CBotVarPointer::~CBotVarPointer()
 {
-    if ( m_pVarClass != NULL ) m_pVarClass->DecrementUse();    // decrement reference
+    if ( m_pVarClass != nullptr ) m_pVarClass->DecrementUse();    // decrement reference
 }
 
 
 void CBotVarPointer::Maj(void* pUser, bool bContinu)
 {
-/*    if ( !bContinu && m_pMyThis != NULL )
+/*    if ( !bContinu && m_pMyThis != nullptr )
          m_pMyThis->Maj(pUser, false);*/
 
-    if ( m_pVarClass != NULL) m_pVarClass->Maj(pUser, false);
+    if ( m_pVarClass != nullptr) m_pVarClass->Maj(pUser, false);
 }
 
 CBotVar* CBotVarPointer::GetItem(const char* name)
 {
-    if ( m_pVarClass == NULL)                // no existing instance?
+    if ( m_pVarClass == nullptr)                // no existing instance?
         return m_pClass->GetItem(name);        // makes the pointer in the class itself
 
     return m_pVarClass->GetItem(name);
@@ -1928,7 +1928,7 @@ CBotVar* CBotVarPointer::GetItem(const char* name)
 
 CBotVar* CBotVarPointer::GetItemRef(int nIdent)
 {
-    if ( m_pVarClass == NULL)                // no existing instance?
+    if ( m_pVarClass == nullptr)                // no existing instance?
         return m_pClass->GetItemRef(nIdent);// makes the pointer to the class itself
 
     return m_pVarClass->GetItemRef(nIdent);
@@ -1936,14 +1936,14 @@ CBotVar* CBotVarPointer::GetItemRef(int nIdent)
 
 CBotVar* CBotVarPointer::GetItemList()
 {
-    if ( m_pVarClass == NULL) return NULL;
+    if ( m_pVarClass == nullptr) return nullptr;
     return m_pVarClass->GetItemList();
 }
 
 CBotString CBotVarPointer::GetValString()
 {
     CBotString    s = "Pointer to ";
-    if ( m_pVarClass == NULL ) s = "Null pointer" ;
+    if ( m_pVarClass == nullptr ) s = "Null pointer" ;
     else  s += m_pVarClass->GetValString();
     return s;
 }
@@ -1951,7 +1951,7 @@ CBotString CBotVarPointer::GetValString()
 
 void CBotVarPointer::ConstructorSet()
 {
-    if ( m_pVarClass != NULL) m_pVarClass->ConstructorSet();
+    if ( m_pVarClass != nullptr) m_pVarClass->ConstructorSet();
 }
 
 // initializes the pointer to the instance of a class
@@ -1963,7 +1963,7 @@ void CBotVarPointer::SetPointer(CBotVar* pVarClass)
     if ( m_pVarClass == pVarClass) return;    // special, not decrement and reincrement
                                             // because the decrement can destroy the object
 
-    if ( pVarClass != NULL )
+    if ( pVarClass != nullptr )
     {
         if ( pVarClass->GetType() == CBotTypPointer )
              pVarClass = pVarClass->GetPointer();    // the real pointer to the object
@@ -1978,26 +1978,26 @@ void CBotVarPointer::SetPointer(CBotVar* pVarClass)
         m_type = CBotTypResult(CBotTypPointer, m_pClass);    // what kind of a pointer
     }
 
-    if ( m_pVarClass != NULL ) m_pVarClass->DecrementUse();
+    if ( m_pVarClass != nullptr ) m_pVarClass->DecrementUse();
     m_pVarClass = static_cast<CBotVarClass*>(pVarClass);
 
 }
 
 CBotVarClass* CBotVarPointer::GetPointer()
 {
-    if ( m_pVarClass == NULL ) return NULL;
+    if ( m_pVarClass == nullptr ) return nullptr;
     return m_pVarClass->GetPointer();
 }
 
 void CBotVarPointer::SetIdent(long n)
 {
-    if ( m_pVarClass == NULL ) return;
+    if ( m_pVarClass == nullptr ) return;
     m_pVarClass->SetIdent( n );
 }
 
 long CBotVarPointer::GetIdent()
 {
-    if ( m_pVarClass == NULL ) return 0;
+    if ( m_pVarClass == nullptr ) return 0;
     return m_pVarClass->m_ItemIdent;
 }
 
@@ -2006,12 +2006,12 @@ void CBotVarPointer::SetClass(CBotClass* pClass)
 {
 //    int        nIdent = 0;
     m_type.m_pClass = m_pClass = pClass;
-    if ( m_pVarClass != NULL ) m_pVarClass->SetClass(pClass); //, nIdent);
+    if ( m_pVarClass != nullptr ) m_pVarClass->SetClass(pClass); //, nIdent);
 }
 
 CBotClass* CBotVarPointer::GetClass()
 {
-    if ( m_pVarClass != NULL ) return m_pVarClass->GetClass();
+    if ( m_pVarClass != nullptr ) return m_pVarClass->GetClass();
 
     return    m_pClass;
 }
@@ -2048,14 +2048,14 @@ void CBotVarPointer::Copy(CBotVar* pSrc, bool bName)
 //    m_pVarClass = p->m_pVarClass;
     m_pVarClass = p->GetPointer();
 
-    if ( m_pVarClass != NULL )
+    if ( m_pVarClass != nullptr )
          m_pVarClass->IncrementUse();            // incerement the reference
 
     m_pClass    = p->m_pClass;
     m_binit        = p->m_binit;
 //-    m_bStatic    = p->m_bStatic;
-    m_next        = NULL;
-    m_pMyThis    = NULL;//p->m_pMyThis;
+    m_next        = nullptr;
+    m_pMyThis    = nullptr;//p->m_pMyThis;
     m_pUserPtr    = p->m_pUserPtr;
 
     // keeps indentificator the same (by default)
@@ -2068,8 +2068,8 @@ bool CBotVarPointer::Eq(CBotVar* left, CBotVar* right)
     CBotVarClass*    r = right->GetPointer();
 
     if ( l == r ) return true;
-    if ( l == NULL && r->GetUserPtr() == OBJECTDELETED ) return true;
-    if ( r == NULL && l->GetUserPtr() == OBJECTDELETED ) return true;
+    if ( l == nullptr && r->GetUserPtr() == OBJECTDELETED ) return true;
+    if ( r == nullptr && l->GetUserPtr() == OBJECTDELETED ) return true;
     return false;
 }
 
@@ -2079,8 +2079,8 @@ bool CBotVarPointer::Ne(CBotVar* left, CBotVar* right)
     CBotVarClass*    r = right->GetPointer();
 
     if ( l == r ) return false;
-    if ( l == NULL && r->GetUserPtr() == OBJECTDELETED ) return false;
-    if ( r == NULL && l->GetUserPtr() == OBJECTDELETED ) return false;
+    if ( l == nullptr && r->GetUserPtr() == OBJECTDELETED ) return false;
+    if ( r == nullptr && l->GetUserPtr() == OBJECTDELETED ) return false;
     return true;
 }
 
@@ -2093,16 +2093,16 @@ bool CBotVarPointer::Ne(CBotVar* left, CBotVar* right)
 CBotTypResult::CBotTypResult(int type)
 {
     m_type        = type;
-    m_pNext        = NULL;
-    m_pClass    = NULL;
+    m_pNext        = nullptr;
+    m_pClass    = nullptr;
     m_limite    = -1;
 }
 
 CBotTypResult::CBotTypResult(int type, const char* name)
 {
     m_type        = type;
-    m_pNext        = NULL;
-    m_pClass    = NULL;
+    m_pNext        = nullptr;
+    m_pClass    = nullptr;
     m_limite    = -1;
 
     if ( type == CBotTypPointer ||
@@ -2117,7 +2117,7 @@ CBotTypResult::CBotTypResult(int type, const char* name)
 CBotTypResult::CBotTypResult(int type, CBotClass* pClass)
 {
     m_type        = type;
-    m_pNext        = NULL;
+    m_pNext        = nullptr;
     m_pClass    = pClass;
     m_limite    = -1;
 
@@ -2127,8 +2127,8 @@ CBotTypResult::CBotTypResult(int type, CBotClass* pClass)
 CBotTypResult::CBotTypResult(int type, CBotTypResult elem)
 {
     m_type        = type;
-    m_pNext        = NULL;
-    m_pClass    = NULL;
+    m_pNext        = nullptr;
+    m_pClass    = nullptr;
     m_limite    = -1;
 
     if ( type == CBotTypArrayPointer ||
@@ -2140,7 +2140,7 @@ CBotTypResult::CBotTypResult(const CBotTypResult& typ)
 {
     m_type        = typ.m_type;
     m_pClass    = typ.m_pClass;
-    m_pNext        = NULL;
+    m_pNext        = nullptr;
     m_limite    = typ.m_limite;
 
     if ( typ.m_pNext )
@@ -2151,8 +2151,8 @@ CBotTypResult::CBotTypResult()
 {
     m_type        = 0;
     m_limite    = -1;
-    m_pNext        = NULL;
-    m_pClass    = NULL;
+    m_pNext        = nullptr;
+    m_pClass    = nullptr;
 }
 
 CBotTypResult::~CBotTypResult()
@@ -2167,11 +2167,11 @@ int CBotTypResult::GetType(int mode) const
          m_type == CBotTypClass   ||
          m_type == CBotTypIntrinsic )
 
-         if ( m_pClass == NULL ) assert(0);
+         if ( m_pClass == nullptr ) assert(0);
 
 
     if ( m_type == CBotTypArrayPointer )
-         if ( m_pNext == NULL ) assert(0);
+         if ( m_pNext == nullptr ) assert(0);
 #endif
     if ( mode == 3 && m_type == CBotTypNullPointer ) return CBotTypPointer;
     return    m_type;
@@ -2207,7 +2207,7 @@ void CBotTypResult::SetArray( int* max )
     m_limite = *max;
     if (m_limite < 1) m_limite = -1;
 
-    if ( m_pNext != NULL )                    // last dimension?
+    if ( m_pNext != nullptr )                    // last dimension?
     {
         m_pNext->SetArray( max+1 );
     }
@@ -2242,8 +2242,8 @@ CBotTypResult&
     m_type = src.m_type;
     m_limite = src.m_limite;
     m_pClass = src.m_pClass;
-    m_pNext = NULL;
-    if ( src.m_pNext != NULL )
+    m_pNext = nullptr;
+    if ( src.m_pNext != nullptr )
     {
         m_pNext = new CBotTypResult(*src.m_pNext);
     }

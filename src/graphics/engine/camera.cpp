@@ -912,7 +912,7 @@ bool CCamera::IsCollision(Math::Vector &eye, Math::Vector lookat)
 bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
 {
     ObjectType iType;
-    if (m_cameraObj == NULL)
+    if (m_cameraObj == nullptr)
         iType = OBJECT_NULL;
     else
         iType = m_cameraObj->GetType();
@@ -1339,7 +1339,7 @@ bool CCamera::EventFrameDialog(const Event &event)
 bool CCamera::EventFrameBack(const Event &event)
 {
     ObjectType type;
-    if (m_cameraObj == NULL)
+    if (m_cameraObj == nullptr)
         type = OBJECT_NULL;
     else
         type = m_cameraObj->GetType();
@@ -1414,7 +1414,7 @@ bool CCamera::EventFrameBack(const Event &event)
     if (m_centeringAngleV == 99.9f) centeringV = 0.0f;
     if (m_centeringDist   ==  0.0f) centeringD = 0.0f;
 
-    if (m_cameraObj != NULL)
+    if (m_cameraObj != nullptr)
     {
         Math::Vector lookatPt = m_cameraObj->GetPosition();
              if (type == OBJECT_BASE ) lookatPt.y += 40.0f;
@@ -1517,7 +1517,7 @@ bool CCamera::EventFrameFix(const Event &event)
     if ((m_mouseDirH != 0) || (m_mouseDirV != 0))
         AbortCentering();  // special stops framing
 
-    if (m_cameraObj != NULL)
+    if (m_cameraObj != nullptr)
     {
         Math::Vector lookatPt = m_cameraObj->GetPosition();
 
@@ -1572,7 +1572,7 @@ bool CCamera::EventFrameExplo(const Event &event)
 
 bool CCamera::EventFrameOnBoard(const Event &event)
 {
-    if (m_cameraObj != NULL)
+    if (m_cameraObj != nullptr)
     {
         Math::Vector lookatPt, upVec;
         m_cameraObj->SetViewFromHere(m_eyePt, m_directionH, m_directionV,
@@ -1696,7 +1696,7 @@ Math::Vector CCamera::ExcludeObject(Math::Vector eye, Math::Vector lookat,
     for (int i = 0; i < 1000000; i++)
     {
         CObject* obj = static_cast<CObject*>( iMan->SearchInstance(CLASS_OBJECT, i) );
-        if (obj == NULL)
+        if (obj == nullptr)
             break;
 
         int j = 0;

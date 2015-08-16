@@ -189,20 +189,20 @@ public:
      * \brief Find variable by its token and returns a copy of it.
      * \param Token Token upon which search is performed
      * \param bUpdate Not used.
-     * \return Found variable, NULL if not found
+     * \return Found variable, nullptr if not found
      */
     CBotVar*        CopyVar(CBotToken& Token, bool bUpdate = false);
 
 
-    CBotStack*        AddStack(CBotInstr* instr = NULL, bool bBlock = false);    // extends the stack
-    CBotStack*        AddStackEOX(CBotCall* instr = NULL, bool bBlock = false);    // extends the stack
-    CBotStack*        RestoreStack(CBotInstr* instr = NULL);
-    CBotStack*        RestoreStackEOX(CBotCall* instr = NULL);
+    CBotStack*        AddStack(CBotInstr* instr = nullptr, bool bBlock = false);    // extends the stack
+    CBotStack*        AddStackEOX(CBotCall* instr = nullptr, bool bBlock = false);    // extends the stack
+    CBotStack*        RestoreStack(CBotInstr* instr = nullptr);
+    CBotStack*        RestoreStackEOX(CBotCall* instr = nullptr);
 
     CBotStack*        AddStack2(bool bBlock = false);                        // extends the stack
     bool            Return(CBotStack* pFils);                            // transmits the result over
     bool            ReturnKeep(CBotStack* pFils);                        // transmits the result without reducing the stack
-    bool            BreakReturn(CBotStack* pfils, const char* name = NULL);
+    bool            BreakReturn(CBotStack* pfils, const char* name = nullptr);
                                                                         // in case of eventual break
     bool            IfContinue(int state, const char* name);
                                                                         // or "continue"
@@ -224,7 +224,7 @@ public:
     long            GetVal();
 
     void            SetStartError(int pos);
-    void            SetError(int n, CBotToken* token = NULL);
+    void            SetError(int n, CBotToken* token = nullptr);
     void            SetPosError(CBotToken* token);
     void            ResetError(int n, int start, int end);
     void            SetBreak(int val, const char* name);
@@ -353,7 +353,7 @@ public:
     bool            CheckVarLocal(CBotToken* &pToken);
     CBotVar*        CopyVar(CBotToken& Token);    // finds and makes a copy
 
-    CBotCStack*        TokenStack(CBotToken* pToken = NULL, bool bBlock = false);
+    CBotCStack*        TokenStack(CBotToken* pToken = nullptr, bool bBlock = false);
     CBotInstr*        Return(CBotInstr* p, CBotCStack* pParent);    // transmits the result upper
     CBotFunction*    ReturnFunc(CBotFunction* p, CBotCStack* pParent);    // transmits the result upper
 
@@ -792,7 +792,7 @@ public:
                 CBotClassInst();
                 ~CBotClassInst();
     static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* pClass = NULL);
+    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* pClass = nullptr);
     bool        Execute(CBotStack* &pj);
     void        RestoreState(CBotStack* &pj, bool bMain);
 };
@@ -967,7 +967,7 @@ public:
                 CBotTwoOpExpr();
                 ~CBotTwoOpExpr();
     static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, int* pOperations = NULL);
+    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, int* pOperations = nullptr);
     bool        Execute(CBotStack* &pStack);
     void        RestoreState(CBotStack* &pj, bool bMain);
 };
@@ -1231,7 +1231,7 @@ public:
                 CBotVarInt( const CBotToken* name );
 //                ~CBotVarInt();
 
-    void        SetValInt(int val, const char* s = NULL);
+    void        SetValInt(int val, const char* s = nullptr);
     void        SetValFloat(float val);
     int            GetValInt();
     float        GetValFloat();
@@ -1282,7 +1282,7 @@ public:
                 CBotVarFloat( const CBotToken* name );
 //                ~CBotVarFloat();
 
-    void        SetValInt(int val, const char* s = NULL);
+    void        SetValInt(int val, const char* s = nullptr);
     void        SetValFloat(float val);
     int            GetValInt();
     float        GetValFloat();
@@ -1350,7 +1350,7 @@ public:
                 CBotVarBoolean( const CBotToken* name );
 //                ~CBotVarBoolean();
 
-    void        SetValInt(int val, const char* s = NULL);
+    void        SetValInt(int val, const char* s = nullptr);
     void        SetValFloat(float val);
     int            GetValInt();
     float        GetValFloat();
@@ -1674,8 +1674,8 @@ public:
     CBotFunction*    Compile(CBotToken* &p, CBotCStack* pStack, CBotFunction* pFunc, bool bLocal = true);
     static
     CBotFunction*    Compile1(CBotToken* &p, CBotCStack* pStack, CBotClass*    pClass);
-    bool            Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance = NULL);
-    void            RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance = NULL);
+    bool            Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance = nullptr);
+    void            RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance = nullptr);
 
     void            AddNext(CBotFunction* p);
     CBotTypResult    CompileCall(const char* name, CBotVar** ppVars, long& nIdent);

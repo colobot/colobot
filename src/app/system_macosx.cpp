@@ -39,7 +39,7 @@ inline std::string CFStringRefToStdString(CFStringRef str) {
 
     // 1st try for English system
     fullPath = const_cast<char*>(CFStringGetCStringPtr(str, encodingMethod));
-    if( fullPath == NULL )
+    if( fullPath == nullptr )
     {
         // 2nd try for Japanese system
         encodingMethod = kCFStringEncodingUTF8;
@@ -47,7 +47,7 @@ inline std::string CFStringRefToStdString(CFStringRef str) {
     }
 
     // for safer operation.
-    if( fullPath == NULL )
+    if( fullPath == nullptr )
     {
         CFIndex length = CFStringGetLength(str);
         fullPath = static_cast<char *>(malloc( length + 1 ));

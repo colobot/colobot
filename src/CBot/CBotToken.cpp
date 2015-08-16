@@ -37,16 +37,16 @@ long CBotToken::m_ListKeyNums[MAXDEFNUM];
 //! contructors
 CBotToken::CBotToken()
 {
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
     m_type = TokenTypVar;           // at the beginning a default variable type
     m_IdKeyWord = -1;
 }
 
 CBotToken::CBotToken(const CBotToken* pSrc)
 {
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 
     m_Text.Empty();
     m_Sep.Empty();
@@ -57,7 +57,7 @@ CBotToken::CBotToken(const CBotToken* pSrc)
     m_start     = 0;
     m_end       = 0;
 
-    if ( pSrc != NULL )
+    if ( pSrc != nullptr )
     {
 
         m_type      = pSrc->m_type;
@@ -75,8 +75,8 @@ CBotToken::CBotToken(const CBotString& mot, const CBotString& sep, int start, in
 {
     m_Text  = mot;                  // word (mot) found as token
     m_Sep   = sep;                  // separator
-    m_next  = NULL;
-    m_prev  = NULL;
+    m_next  = nullptr;
+    m_prev  = nullptr;
     m_start = start;
     m_end   = end;
 
@@ -87,9 +87,9 @@ CBotToken::CBotToken(const CBotString& mot, const CBotString& sep, int start, in
 CBotToken::CBotToken(const char* mot, const char* sep)
 {
     m_Text  = mot;
-    if ( sep != NULL ) m_Sep = sep;
-    m_next  = NULL;
-    m_prev  = NULL;
+    if ( sep != nullptr ) m_Sep = sep;
+    m_next  = nullptr;
+    m_prev  = nullptr;
 
     m_type = TokenTypVar;           // at the beginning a default variable type
     m_IdKeyWord = -1;
@@ -98,7 +98,7 @@ CBotToken::CBotToken(const char* mot, const char* sep)
 CBotToken::~CBotToken()
 {
     delete  m_next;                 // recursive
-    m_next = NULL;
+    m_next = nullptr;
 }
 
 void CBotToken::Free()
@@ -109,8 +109,8 @@ void CBotToken::Free()
 const CBotToken& CBotToken::operator=(const CBotToken& src)
 {
     delete m_next;
-    m_next      = NULL;
-    m_prev      = NULL;
+    m_next      = nullptr;
+    m_prev      = nullptr;
 
     m_Text      = src.m_Text;
     m_Sep       = src.m_Sep;
@@ -126,7 +126,7 @@ const CBotToken& CBotToken::operator=(const CBotToken& src)
 
 int CBotToken::GetType()
 {
-    if (this == NULL) return 0;
+    if (this == nullptr) return 0;
     if (m_type == TokenTypKeyWord) return m_IdKeyWord;
     return m_type;
 }
@@ -138,13 +138,13 @@ long CBotToken::GetIdKey()
 
 CBotToken* CBotToken::GetNext()
 {
-    if (this == NULL) return NULL;
+    if (this == nullptr) return nullptr;
     return      m_next;
 }
 
 CBotToken* CBotToken::GetPrev()
 {
-    if (this == NULL) return NULL;
+    if (this == nullptr) return nullptr;
     return      m_prev;
 }
 
@@ -153,7 +153,7 @@ void CBotToken::AddNext(CBotToken* p)
     CBotToken*  n = new CBotToken(p);
     CBotToken*  pt = this;
 
-    while ( pt->m_next != NULL ) pt = pt->m_next;
+    while ( pt->m_next != nullptr ) pt = pt->m_next;
 
     pt->m_next = n;
     n->m_prev = pt;
@@ -178,13 +178,13 @@ void CBotToken::SetString(const char* name)
 
 int CBotToken::GetStart()
 {
-    if (this == NULL) return -1;
+    if (this == nullptr) return -1;
     return m_start;
 }
 
 int CBotToken::GetEnd()
 {
-    if (this == NULL) return -1;
+    if (this == nullptr) return -1;
     return m_end;
 }
 
@@ -237,7 +237,7 @@ CBotToken*  CBotToken::NextToken(char* &program, int& error, bool first)
     char            c;
     bool            stop = first;
 
-    if (*program == 0) return NULL;
+    if (*program == 0) return nullptr;
 
     c   = *(program++);                 // next character
 
@@ -335,7 +335,7 @@ cc:             mot += c;
     {
         if (stop || c == 0 || CharInList(c, sep1))
         {
-            if (!first && mot.IsEmpty()) return NULL;   // end of the analysis
+            if (!first && mot.IsEmpty()) return nullptr;   // end of the analysis
 bis:
             while (CharInList(c, sep2))
             {
@@ -398,7 +398,7 @@ CBotToken* CBotToken::CompileTokens(const char* program, int& error)
     error = 0;
     prv = tokenbase = NextToken(p, error, true);
 
-    if (tokenbase == NULL) return NULL;
+    if (tokenbase == nullptr) return nullptr;
 
     tokenbase->m_start  = pos;
     pos += tokenbase->m_Text.GetLength();
@@ -406,7 +406,7 @@ CBotToken* CBotToken::CompileTokens(const char* program, int& error)
     pos += tokenbase->m_Sep.GetLength();
 
     char* pp = p;
-    while (NULL != (nxt = NextToken(p, error)))
+    while (nullptr != (nxt = NextToken(p, error)))
     {
         prv->m_next = nxt;              // added after
         nxt->m_prev = prv;

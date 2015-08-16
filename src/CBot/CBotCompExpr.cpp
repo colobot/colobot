@@ -29,7 +29,7 @@
 CBotCompExpr::CBotCompExpr()
 {
     m_leftop    =
-    m_rightop   = NULL;
+    m_rightop   = nullptr;
     name = "CBotCompExpr";
 }
 
@@ -48,7 +48,7 @@ CBotInstr* CBotCompExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotCStack* pStk = pStack->AddStack();
 
     CBotInstr*  left = CBotAddExpr::Compile( p, pStk );     // expression A + B left
-    if (left == NULL) return pStack->Return(NULL, pStk);    // error
+    if (left == nullptr) return pStack->Return(nullptr, pStk);    // error
 
     if ( p->GetType() == ID_HI ||
          p->GetType() == ID_LO ||
@@ -64,14 +64,14 @@ CBotInstr* CBotCompExpr::Compile(CBotToken* &p, CBotCStack* pStack)
         type1 = pStack->GetType();
 
         p = p->Next();
-        if ( NULL != (inst->m_rightop = CBotAddExpr::Compile( p, pStk )) )  // expression A + B right
+        if ( nullptr != (inst->m_rightop = CBotAddExpr::Compile( p, pStk )) )  // expression A + B right
         {
             type2 = pStack->GetType();
             // are the results compatible
             if ( type1 == type2 )
             {
                 inst->m_leftop = left;
-                pStk->SetVar(new CBotVar(NULL, CBotTypBoolean));
+                pStk->SetVar(new CBotVar(nullptr, CBotTypBoolean));
                                                             // the result is a boolean
                 return pStack->Return(inst, pStk);
             }
@@ -79,7 +79,7 @@ CBotInstr* CBotCompExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
         delete left;
         delete inst;
-        return pStack->Return(NULL, pStk);
+        return pStack->Return(nullptr, pStk);
     }
 
     return pStack->Return(left, pStk);
@@ -105,7 +105,7 @@ bool CBotCompExpr::Execute(CBotStack* &pStack)
     int     type1 = pStk1->GetType();
     int     type2 = pStk2->GetType();
 
-    CBotVar*    result = new CBotVar( NULL, CBotTypBoolean );
+    CBotVar*    result = new CBotVar( nullptr, CBotTypBoolean );
 
     switch (GetTokenType())
     {

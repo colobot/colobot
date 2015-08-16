@@ -27,7 +27,7 @@ CBotIf::CBotIf()
 {
     m_Condition =
     m_Block     =
-    m_BlockElse = NULL;         // NULL so that delete is not possible further
+    m_BlockElse = nullptr;         // nullptr so that delete is not possible further
     name = "CBotIf";            // debug
 }
 
@@ -45,14 +45,14 @@ CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     CBotToken*  pp = p;                         // preserves at the ^ token (starting instruction)
 
-    if (!IsOfType(p, ID_IF)) return NULL;       // should never happen
+    if (!IsOfType(p, ID_IF)) return nullptr;       // should never happen
 
     CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
 
     CBotIf* inst = new CBotIf();                // create the object
     inst->SetToken( pp );
 
-    if ( NULL != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
+    if ( nullptr != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
     {
         // the condition does exist
 
@@ -71,7 +71,7 @@ CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
                     // there is no correct block after the else
                     // frees the object, and transmits the error that is on the stack
                     delete inst;
-                    return pStack->Return(NULL, pStk);
+                    return pStack->Return(nullptr, pStk);
                 }
             }
 
@@ -83,7 +83,7 @@ CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
     // error, frees the object
     delete inst;
     // and transmits the error that is on the stack.
-    return pStack->Return(NULL, pStk);
+    return pStack->Return(nullptr, pStk);
 }
 
 
@@ -118,12 +118,12 @@ bool CBotIf :: Execute(CBotStack* &pj)
 
     if ( pile->GetVal() == true )                           // condition was true?
     {
-        if ( m_Block != NULL &&                             // block may be absent
+        if ( m_Block != nullptr &&                             // block may be absent
             !m_Block->Execute(pile) ) return false;         // interrupted here?
     }
     else
     {
-        if ( m_BlockElse != NULL &&                         // if there is an alternate block
+        if ( m_BlockElse != nullptr &&                         // if there is an alternate block
             !m_BlockElse->Execute(pile) ) return false; // interrupted here
     }
 
@@ -137,7 +137,7 @@ void CBotIf :: RestoreState(CBotStack* &pj, bool bMain)
     if ( !bMain ) return;
 
     CBotStack* pile = pj->RestoreStack(this);       // adds an item to the stack
-    if ( pile == NULL ) return;
+    if ( pile == nullptr ) return;
 
     // according to recovery, it may be in one of two states
     if( pile->GetState() == 0 )
@@ -152,12 +152,12 @@ void CBotIf :: RestoreState(CBotStack* &pj, bool bMain)
 
     if ( pile->GetVal() == true )                           // condition was true?
     {
-        if ( m_Block != NULL )                              // block may be absent
+        if ( m_Block != nullptr )                              // block may be absent
              m_Block->RestoreState(pile, bMain);            // interrupted here!
     }
     else
     {
-        if ( m_BlockElse != NULL )                          // if there is an alternate block
+        if ( m_BlockElse != nullptr )                          // if there is an alternate block
              m_BlockElse->RestoreState(pile, bMain);        // interrupted here!
     }
 }

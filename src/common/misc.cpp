@@ -257,5 +257,5 @@ void AddExt(char* filename, const char* ext)
 
 int GetCurrentTimestamp()
 {
-    return std::chrono::seconds(std::time(NULL)).count();
+    return std::chrono::seconds(std::time(nullptr)).count();
 }

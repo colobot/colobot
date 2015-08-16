@@ -196,7 +196,7 @@ private:
     //! Current lights enable status
     std::vector<bool> m_lightsEnabled;
 
-    //! Current textures; \c NULL value means unassigned
+    //! Current textures; \c nullptr value means unassigned
     std::vector<Texture> m_currentTextures;
     //! Current texture stages enable status
     std::vector<bool> m_texturesEnabled;

@@ -28,7 +28,7 @@ template<> CLogger* CSingleton<CLogger>::m_instance = nullptr;
 
 CLogger::CLogger()
 {
-    m_file = NULL;
+    m_file = nullptr;
     #if DEV_BUILD
     m_logLevel = LOG_DEBUG;
     #else
@@ -136,7 +136,7 @@ void CLogger::Open()
 {
     m_file = fopen(m_filename.c_str(), "w");
 
-    if (m_file == NULL)
+    if (m_file == nullptr)
         fprintf(stderr, "Could not create file %s\n", m_filename.c_str());
 }
 
@@ -148,7 +148,7 @@ void CLogger::Close()
 
 bool CLogger::IsOpened()
 {
-    return m_file != NULL;
+    return m_file != nullptr;
 }
 
 void CLogger::SetLogLevel(LogLevel type)

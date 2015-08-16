@@ -38,7 +38,7 @@ bool VarIsNAN(const CBotVar* var)
 CBotTwoOpExpr::CBotTwoOpExpr()
 {
     m_leftop    =
-    m_rightop   = NULL;         // NULL to be able to delete without other
+    m_rightop   = nullptr;         // nullptr to be able to delete without other
     name = "CBotTwoOpExpr";     // debug
 }
 
@@ -52,7 +52,7 @@ CBotLogicExpr::CBotLogicExpr()
 {
     m_condition =
     m_op1       =
-    m_op2       = NULL;         // NULL to be able to delete without other
+    m_op2       = nullptr;         // nullptr to be able to delete without other
     name = "CBotLogicExpr";     // debug
 }
 
@@ -135,7 +135,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 {
     int typemasque;
 
-    if ( pOperations == NULL ) pOperations = ListOp;
+    if ( pOperations == nullptr ) pOperations = ListOp;
     int* pOp = pOperations;
     while ( *pOp++ != 0 );              // follows the table
 
@@ -146,7 +146,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
                         CBotParExpr::Compile( p, pStk ) :       // expression (...) left
                         CBotTwoOpExpr::Compile( p, pStk, pOp ); // expression A * B left
 
-    if (left == NULL) return pStack->Return(NULL, pStk);        // if error,  transmit
+    if (left == nullptr) return pStack->Return(nullptr, pStk);        // if error,  transmit
 
     // did we expected the operand?
     int TypeOp = p->GetType();
@@ -160,7 +160,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
             if ( !type1.Eq(CBotTypBoolean) )
             {
                 pStk->SetError( TX_BADTYPE, p);
-                return pStack->Return(NULL, pStk);
+                return pStack->Return(nullptr, pStk);
             }
             CBotLogicExpr* inst = new CBotLogicExpr();
             inst->m_condition = left;
@@ -168,27 +168,27 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
             p = p->GetNext();                                       // skip the token of the operation
             inst->m_op1 = CBotExpression::Compile(p, pStk);
             CBotToken* pp = p;
-            if ( inst->m_op1 == NULL || !IsOfType( p, ID_DOTS ) )
+            if ( inst->m_op1 == nullptr || !IsOfType( p, ID_DOTS ) )
             {
                 pStk->SetError( TX_MISDOTS, p->GetStart());
                 delete inst;
-                return pStack->Return(NULL, pStk);
+                return pStack->Return(nullptr, pStk);
             }
             type1 = pStk->GetTypResult();
 
             inst->m_op2 = CBotExpression::Compile(p, pStk);
-            if ( inst->m_op2 == NULL )
+            if ( inst->m_op2 == nullptr )
             {
                 pStk->SetError( TX_ENDOF, p->GetStart() );
                 delete inst;
-                return pStack->Return(NULL, pStk);
+                return pStack->Return(nullptr, pStk);
             }
             type2 = pStk->GetTypResult();
             if (!TypeCompatible(type1, type2))
             {
                 pStk->SetError( TX_BAD2TYPE, pp );
                 delete inst;
-                return pStack->Return(NULL, pStk);
+                return pStack->Return(nullptr, pStk);
             }
 
             pStk->SetType(type1);       // the greatest of 2 types
@@ -204,7 +204,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 
         // looking statements that may be suitable for right
 
-        if ( NULL != (inst->m_rightop = CBotTwoOpExpr::Compile( p, pStk, pOp )) )
+        if ( nullptr != (inst->m_rightop = CBotTwoOpExpr::Compile( p, pStk, pOp )) )
                                                                 // expression (...) right
         {
             // there is an second operand acceptable
@@ -261,7 +261,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
                     {
                         pStk->SetError(TX_BAD2TYPE, &i->m_token);
                         delete i;
-                        return pStack->Return(NULL, pStk);
+                        return pStack->Return(nullptr, pStk);
                     }
 
                     if ( TypeRes != CBotTypString )
@@ -272,7 +272,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
                 CBotTypResult t(type1);
                     t.SetType(TypeRes);
                 // is a variable on the stack for the type of result
-                pStk->SetVar(CBotVar::Create(static_cast<CBotToken*>(NULL), t));
+                pStk->SetVar(CBotVar::Create(static_cast<CBotToken*>(nullptr), t));
 
                 // and returns the requested object
                 return pStack->Return(inst, pStk);
@@ -284,7 +284,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
         delete left;
         delete inst;
         // and transmits the error to the stack
-        return pStack->Return(NULL, pStk);
+        return pStack->Return(nullptr, pStk);
     }
 
     // if we are not dealing with an operation + or -
@@ -294,11 +294,11 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 }
 
 
-bool IsNan(CBotVar* left, CBotVar* right, int* err = NULL)
+bool IsNan(CBotVar* left, CBotVar* right, int* err = nullptr)
 {
     if ( VarIsNAN(left) || VarIsNAN(right) )
     {
-        if ( err != NULL ) *err = TX_OPNAN ;
+        if ( err != nullptr ) *err = TX_OPNAN ;
         return true;
     }
     return false;
@@ -322,14 +322,14 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
         // for OR and AND logic does not evaluate the second expression if not necessary
         if ( (GetTokenType() == ID_LOG_AND || GetTokenType() == ID_TXT_AND ) && pStk1->GetVal() == false )
         {
-            CBotVar*    res = CBotVar::Create( static_cast<CBotToken*>(NULL), CBotTypBoolean);
+            CBotVar*    res = CBotVar::Create( static_cast<CBotToken*>(nullptr), CBotTypBoolean);
             res->SetValInt(false);
             pStk1->SetVar(res);
             return pStack->Return(pStk1);               // transmits the result
         }
         if ( (GetTokenType() == ID_LOG_OR||GetTokenType() == ID_TXT_OR) && pStk1->GetVal() == true )
         {
-            CBotVar*    res = CBotVar::Create( static_cast<CBotToken*>(NULL), CBotTypBoolean);
+            CBotVar*    res = CBotVar::Create( static_cast<CBotToken*>(nullptr), CBotTypBoolean);
             res->SetValInt(true);
             pStk1->SetVar(res);
             return pStack->Return(pStk1);               // transmits the result
@@ -387,7 +387,7 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
     }
 
     // creates a variable for the result
-    CBotVar*    result = CBotVar::Create( static_cast<CBotToken*>(NULL), TypeRes);
+    CBotVar*    result = CBotVar::Create( static_cast<CBotToken*>(nullptr), TypeRes);
 
     // creates a variable to perform the calculation in the appropriate type
     TypeRes = MAX(type1.GetType(), type2.GetType());
@@ -400,8 +400,8 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
     CBotVar*    temp;
 
     if ( TypeRes == CBotTypPointer ) TypeRes = CBotTypNullPointer;
-    if ( TypeRes == CBotTypClass ) temp = CBotVar::Create( static_cast<CBotToken*>(NULL), CBotTypResult(CBotTypIntrinsic, type1.GetClass() ) );
-    else                           temp = CBotVar::Create( static_cast<CBotToken*>(NULL), TypeRes );
+    if ( TypeRes == CBotTypClass ) temp = CBotVar::Create( static_cast<CBotToken*>(nullptr), CBotTypResult(CBotTypIntrinsic, type1.GetClass() ) );
+    else                           temp = CBotVar::Create( static_cast<CBotToken*>(nullptr), TypeRes );
 
     int err = 0;
     // is a operation according to request
@@ -494,7 +494,7 @@ void CBotTwoOpExpr::RestoreState(CBotStack* &pStack, bool bMain)
 {
     if ( !bMain ) return;
     CBotStack* pStk1 = pStack->RestoreStack(this);  // adds an item to the stack
-    if ( pStk1 == NULL ) return;
+    if ( pStk1 == nullptr ) return;
 
     // according to recovery, it may be in one of two states
 
@@ -505,7 +505,7 @@ void CBotTwoOpExpr::RestoreState(CBotStack* &pStack, bool bMain)
     }
 
     CBotStack* pStk2 = pStk1->RestoreStack();           // adds an item to the stack
-    if ( pStk2 == NULL ) return;
+    if ( pStk2 == nullptr ) return;
 
     // second state, evaluates the right operand
     if ( pStk2->GetState() == 0 )
@@ -545,7 +545,7 @@ void CBotLogicExpr::RestoreState(CBotStack* &pStack, bool bMain)
     if ( !bMain ) return;
 
     CBotStack* pStk1 = pStack->RestoreStack(this);  // adds an item to the stack
-    if ( pStk1 == NULL ) return;
+    if ( pStk1 == nullptr ) return;
 
     if ( pStk1->GetState() == 0 )
     {

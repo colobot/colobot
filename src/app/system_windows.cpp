@@ -59,7 +59,7 @@ SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, cons
             break;
     }
 
-    switch (MessageBoxW(NULL, windowsMessage.c_str(), windowsTitle.c_str(), windowsType))
+    switch (MessageBoxW(nullptr, windowsMessage.c_str(), windowsTitle.c_str(), windowsType))
     {
         case IDOK:
             return SDR_OK;
@@ -92,16 +92,16 @@ long long int CSystemUtilsWindows::TimeStampExactDiff(SystemTimeStamp* before, S
 //! Converts a wide Unicode string to an UTF8 string
 std::string CSystemUtilsWindows::UTF8_Encode(const std::wstring& wstr)
 {
-    int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), NULL, 0, NULL, NULL);
+    int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), nullptr, 0, nullptr, nullptr);
     std::string strTo(size_needed, 0);
-    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), &strTo[0], size_needed, NULL, NULL);
+    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), &strTo[0], size_needed, nullptr, nullptr);
     return strTo;
 }
 
 //! Converts an UTF8 string to a wide Unicode String
 std::wstring CSystemUtilsWindows::UTF8_Decode(const std::string& str)
 {
-    int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.size()), NULL, 0);
+    int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.size()), nullptr, 0);
     std::wstring wstrTo(size_needed, 0);
     MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.size()), &wstrTo[0], size_needed);
     return wstrTo;
@@ -113,7 +113,7 @@ std::string CSystemUtilsWindows::GetSaveDir()
     std::string savegameDir;
 
     wchar_t* envUSERPROFILE = _wgetenv(L"USERPROFILE");
-    if (envUSERPROFILE == NULL)
+    if (envUSERPROFILE == nullptr)
     {
         savegameDir = "./saves";
     }
@@ -131,8 +131,8 @@ void CSystemUtilsWindows::Usleep(int usec)
    LARGE_INTEGER ft;
    ft.QuadPart = -(10 * usec); // Convert to 100 nanosecond interval, negative value indicates relative time
 
-   HANDLE timer = CreateWaitableTimer(NULL, TRUE, NULL);
-   SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0);
+   HANDLE timer = CreateWaitableTimer(nullptr, TRUE, nullptr);
+   SetWaitableTimer(timer, &ft, 0, nullptr, nullptr, 0);
    WaitForSingleObject(timer, INFINITE);
    CloseHandle(timer);
 }

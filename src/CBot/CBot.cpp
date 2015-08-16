@@ -28,7 +28,7 @@
 // (CBotInstr objects are never used directly)
 
 
-// compiles if the routine returns NULL is that the statement is false
+// compiles if the routine returns nullptr is that the statement is false
 // or misunderstood.
 // the error is then on the stack CBotCStack :: Isok () is false
 
@@ -42,10 +42,10 @@
 CBotInstr::CBotInstr()
 {
     name     = "CBotInstr";
-    m_next   = NULL;
-    m_next2b = NULL;
-    m_next3  = NULL;
-    m_next3b = NULL;
+    m_next   = nullptr;
+    m_next2b = nullptr;
+    m_next3  = nullptr;
+    m_next3b = nullptr;
 }
 
 CBotInstr::~CBotInstr()
@@ -135,21 +135,21 @@ CBotToken* CBotInstr::GetToken()
 void CBotInstr::AddNext(CBotInstr* n)
 {
     CBotInstr*    p = this;
-    while (p->m_next != NULL) p = p->m_next;
+    while (p->m_next != nullptr) p = p->m_next;
     p->m_next = n;
 }
 
 void CBotInstr::AddNext3(CBotInstr* n)
 {
     CBotInstr*    p = this;
-    while (p->m_next3 != NULL) p = p->m_next3;
+    while (p->m_next3 != nullptr) p = p->m_next3;
     p->m_next3 = n;
 }
 
 void CBotInstr::AddNext3b(CBotInstr* n)
 {
     CBotInstr*    p = this;
-    while (p->m_next3b != NULL) p = p->m_next3b;
+    while (p->m_next3b != nullptr) p = p->m_next3b;
     p->m_next3b = n;
 }
 
@@ -182,7 +182,7 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     CBotToken*    pp = p;
 
-    if (p == NULL) return NULL;
+    if (p == nullptr) return nullptr;
 
     int type = p->GetType();            // what is the next token
 
@@ -195,7 +195,7 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
          if (!IsOfTypeList(pp, ID_WHILE, ID_FOR, ID_DO, 0))
          {
              pStack->SetError(TX_LABEL, pp->GetStart());
-             return NULL;
+             return nullptr;
          }
     }
 
@@ -249,12 +249,12 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     case ID_ELSE:
         pStack->SetStartError(p->GetStart());
         pStack->SetError(TX_ELSEWITHOUTIF, p->GetEnd());
-        return NULL;
+        return nullptr;
 
     case ID_CASE:
         pStack->SetStartError(p->GetStart());
         pStack->SetError(TX_OUTCASE, p->GetEnd());
-        return NULL;
+        return nullptr;
     }
 
     pStack->SetStartError(p->GetStart());
@@ -263,14 +263,14 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     if (p->GetType() == TokenTypDef)
     {
         pStack->SetError(TX_RESERVED, p);
-        return NULL;
+        return nullptr;
     }
 
     // this might be an instance of class definnition
     CBotToken*    ppp = p;
     if (IsOfType(ppp, TokenTypVar))
     {
-        if (CBotClass::Find(p) != NULL)
+        if (CBotClass::Find(p) != nullptr)
         {
             // yes, compiles the declaration of the instance
             return CBotClassInst::Compile(p, pStack);
@@ -285,7 +285,7 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     }
     pStack->SetError(TX_ENDOF, p->GetStart());
     delete inst;
-    return NULL;
+    return nullptr;
 }
 
 bool CBotInstr::Execute(CBotStack* &pj)
@@ -363,11 +363,11 @@ CBotInstr* CBotBlock::Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal)
 
         pStack->SetError(TX_CLOSEBLK, p->GetStart());    // missing parenthesis
         delete inst;
-        return NULL;
+        return nullptr;
     }
 
     pStack->SetError(TX_OPENBLK, p->GetStart());
-    return NULL;
+    return nullptr;
 }
 
 CBotInstr* CBotBlock::CompileBlkOrInst(CBotToken* &p, CBotCStack* pStack, bool bLocal)
@@ -397,7 +397,7 @@ CBotInstr* CBotBlock::CompileBlkOrInst(CBotToken* &p, CBotCStack* pStack, bool b
 
 CBotListInstr::CBotListInstr()
 {
-    m_Instr        = NULL;
+    m_Instr        = nullptr;
     name = "CBotListInstr";
 }
 
@@ -414,7 +414,7 @@ CBotInstr* CBotListInstr::Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal
 
     while (true)
     {
-        if (p == NULL) break;
+        if (p == nullptr) break;
 
         if (IsOfType(p, ID_SEP)) continue;              // empty statement ignored
         if (p->GetType() == ID_CLBLK) break;
@@ -423,7 +423,7 @@ CBotInstr* CBotListInstr::Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal
         {
             pStack->SetError(TX_CLOSEBLK, p->GetStart());
             delete inst;
-            return pStack->Return(NULL, pStk);
+            return pStack->Return(nullptr, pStk);
         }
 
         CBotInstr* i = CBotBlock::CompileBlkOrInst(p, pStk);    // compiles next
@@ -431,10 +431,10 @@ CBotInstr* CBotListInstr::Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal
         if (!pStk->IsOk())
         {
             delete inst;
-            return pStack->Return(NULL, pStk);
+            return pStack->Return(nullptr, pStk);
         }
 
-        if (inst->m_Instr == NULL) inst->m_Instr = i;
+        if (inst->m_Instr == nullptr) inst->m_Instr = i;
         else inst->m_Instr->AddNext(i);                            // added a result
     }
     return pStack->Return(inst, pStk);
@@ -454,11 +454,11 @@ bool CBotListInstr::Execute(CBotStack* &pj)
     int        state = pile->GetState();
     while (state-->0) p = p->GetNext();                            // returns to the interrupted operation
 
-    if (p != NULL) while (true)
+    if (p != nullptr) while (true)
     {
         if (!p->Execute(pile)) return false;
         p = p->GetNext();
-        if (p == NULL) break;
+        if (p == nullptr) break;
         (void)pile->IncState();                                  // ready for next
     }
 
@@ -470,18 +470,18 @@ void CBotListInstr::RestoreState(CBotStack* &pj, bool bMain)
     if (!bMain) return;
 
     CBotStack*    pile = pj->RestoreStack(this);
-    if (pile == NULL) return;
+    if (pile == nullptr) return;
 
     CBotInstr*    p = m_Instr;                                    // the first expression
 
     int        state = pile->GetState();
-    while ( p != NULL && state-- > 0)
+    while ( p != nullptr && state-- > 0)
     {
         p->RestoreState(pile, false);
         p = p->GetNext();                            // returns to the interrupted operation
     }
 
-    if (p != NULL) p->RestoreState(pile, true);
+    if (p != nullptr) p->RestoreState(pile, true);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -506,7 +506,7 @@ CBotInstr* CBotLeftExprVar::Compile(CBotToken* &p, CBotCStack* pStack)
     if (p->GetType() != TokenTypVar)
     {
         pStack->SetError( TX_NOVAR, p->GetStart());
-        return NULL;
+        return nullptr;
     }
 
     CBotLeftExprVar* inst = new CBotLeftExprVar();
@@ -537,7 +537,7 @@ void CBotLeftExprVar::RestoreState(CBotStack* &pj, bool bMain)
     CBotVar*     var1;
 
     var1 = pj->FindVar(m_token.GetString());
-    if (var1 == NULL) assert(0);
+    if (var1 == nullptr) assert(0);
 
     var1->SetUniqNum(m_nIdent);                    // with the unique identifier
 }
@@ -553,8 +553,8 @@ void CBotLeftExprVar::RestoreState(CBotStack* &pj, bool bMain)
 
 CBotInstArray::CBotInstArray()
 {
-    m_var      = NULL;
-    m_listass = NULL;
+    m_var      = nullptr;
+    m_listass = nullptr;
     name = "CBotInstArray";
 }
 
@@ -575,7 +575,7 @@ CBotInstr* CBotInstArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
     inst->SetToken(vartoken);
 
     // determinse the expression is valid for the item on the left side
-    if (NULL != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
+    if (nullptr != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
     {
         if (pStk->CheckVarLocal(vartoken))                              // redefinition of the variable?
         {
@@ -618,7 +618,7 @@ CBotInstr* CBotInstArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
 
 error:
     delete inst;
-    return pStack->Return(NULL, pStk);
+    return pStack->Return(nullptr, pStk);
 }
 
 
@@ -636,7 +636,7 @@ bool CBotInstArray::Execute(CBotStack* &pj)
         CBotInstr*    p  = GetNext3b();                             // the different formulas
         int            nb = 0;
 
-        while (p != NULL)
+        while (p != nullptr)
         {
             pile = pile->AddStack();                                // little room to work
             nb++;
@@ -653,7 +653,7 @@ bool CBotInstArray::Execute(CBotStack* &pj)
         int     n = 0;
         int     max[100];
 
-        while (p != NULL)
+        while (p != nullptr)
         {
             pile = pile->AddStack();
             CBotVar*    v = pile->GetVar();                         // result
@@ -670,9 +670,9 @@ bool CBotInstArray::Execute(CBotStack* &pj)
 
         m_typevar.SetArray(max);                                    // store the limitations
 
-        // create simply a NULL pointer
+        // create simply a nullptr pointer
         CBotVar*    var = CBotVar::Create(m_var->GetToken(), m_typevar);
-        var->SetPointer(NULL);
+        var->SetPointer(nullptr);
         var->SetUniqNum((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent);
         pj->AddVar(var);
 
@@ -686,7 +686,7 @@ bool CBotInstArray::Execute(CBotStack* &pj)
 
     if (pile1->GetState() == 1)
     {
-        if (m_listass != NULL)                                      // there is the assignment for this table
+        if (m_listass != nullptr)                                      // there is the assignment for this table
         {
             CBotVar* pVar = pj->FindVar((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent);
 
@@ -708,23 +708,23 @@ void CBotInstArray::RestoreState(CBotStack* &pj, bool bMain)
     CBotStack*    pile1 = pj;
 
     CBotVar*    var = pj->FindVar(m_var->GetToken()->GetString());
-    if (var != NULL) var->SetUniqNum((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent);
+    if (var != nullptr) var->SetUniqNum((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent);
 
     if (bMain)
     {
         pile1 = pj->RestoreStack(this);
         CBotStack*    pile  = pile1;
-        if (pile == NULL) return;
+        if (pile == nullptr) return;
 
         if (pile1->GetState() == 0)
         {
             // seek the maximum dimension of the table
             CBotInstr*    p  = GetNext3b();
 
-            while (p != NULL)
+            while (p != nullptr)
             {
                 pile = pile->RestoreStack();
-                if (pile == NULL) return;
+                if (pile == nullptr) return;
                 if (pile->GetState() == 0)
                 {
                     p->RestoreState(pile, bMain);
@@ -733,7 +733,7 @@ void CBotInstArray::RestoreState(CBotStack* &pj, bool bMain)
                 p = p->GetNext3b();
             }
         }
-        if (pile1->GetState() == 1 && m_listass != NULL)
+        if (pile1->GetState() == 1 && m_listass != nullptr)
         {
             m_listass->RestoreState(pile1, bMain);
         }
@@ -763,7 +763,7 @@ void CBotEmpty :: RestoreState(CBotStack* &pj, bool bMain)
 
 CBotListArray::CBotListArray()
 {
-    m_expr    = NULL;
+    m_expr    = nullptr;
     name = "CBotListArray";
 }
 
@@ -796,7 +796,7 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
             type = type.GetTypElem();
 
             pStk->SetStartError(p->GetStart());
-            if (NULL == ( inst->m_expr = CBotListArray::Compile( p, pStk, type ) ))
+            if (nullptr == ( inst->m_expr = CBotListArray::Compile( p, pStk, type ) ))
             {
                 goto error;
             }
@@ -806,7 +806,7 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
                 pStk->SetStartError(p->GetStart());
 
                 CBotInstr* i = CBotListArray::Compile(p, pStk, type);
-                if (NULL == i)
+                if (nullptr == i)
                 {
                     goto error;
                 }
@@ -817,13 +817,13 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
         else
         {
             pStk->SetStartError(p->GetStart());
-            if (NULL == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
+            if (nullptr == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
             {
                 goto error;
             }
             CBotVar* pv = pStk->GetVar();                                       // result of the expression
 
-            if (pv == NULL || !TypesCompatibles( type, pv->GetTypResult()))     // compatible type?
+            if (pv == nullptr || !TypesCompatibles( type, pv->GetTypResult()))     // compatible type?
             {
                 pStk->SetError(TX_BADTYPE, p->GetStart());
                 goto error;
@@ -834,14 +834,14 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
                 pStk->SetStartError(p->GetStart());
 
                 CBotInstr* i = CBotTwoOpExpr::Compile(p, pStk) ;
-                if (NULL == i)
+                if (nullptr == i)
                 {
                     goto error;
                 }
 
                 CBotVar* pv = pStk->GetVar();                                   // result of the expression
 
-                if (pv == NULL || !TypesCompatibles( type, pv->GetTypResult())) // compatible type?
+                if (pv == nullptr || !TypesCompatibles( type, pv->GetTypResult())) // compatible type?
                 {
                     pStk->SetError(TX_BADTYPE, p->GetStart());
                     goto error;
@@ -861,7 +861,7 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
 
 error:
     delete inst;
-    return pStack->Return(NULL, pStk);
+    return pStack->Return(nullptr, pStk);
 }
 
 
@@ -876,7 +876,7 @@ bool CBotListArray::Execute(CBotStack* &pj, CBotVar* pVar)
 
     int n = 0;
 
-    for (; p != NULL ; n++, p = p->GetNext3())
+    for (; p != nullptr ; n++, p = p->GetNext3())
     {
         if (pile1->GetState() > n) continue;
 
@@ -895,7 +895,7 @@ void CBotListArray::RestoreState(CBotStack* &pj, bool bMain)
     if (bMain)
     {
         CBotStack*    pile  = pj->RestoreStack(this);
-        if (pile == NULL) return;
+        if (pile == nullptr) return;
 
         CBotInstr* p = m_expr;
 
@@ -915,9 +915,9 @@ void CBotListArray::RestoreState(CBotStack* &pj, bool bMain)
 
 CBotInt::CBotInt()
 {
-    m_next    = NULL;            // for multiple definitions
+    m_next    = nullptr;            // for multiple definitions
     m_var    =
-    m_expr    = NULL;
+    m_expr    = nullptr;
     name = "CBotInt";
 }
 
@@ -934,27 +934,27 @@ CBotInstr* CBotInstr::CompileArray(CBotToken* &p, CBotCStack* pStack, CBotTypRes
         if (!IsOfType(p, ID_CLBRK))
         {
             pStack->SetError(TX_CLBRK, p->GetStart());
-            return NULL;
+            return nullptr;
         }
 
         CBotInstr*    inst = CompileArray(p, pStack, CBotTypResult(CBotTypArrayPointer, type), false);
-        if (inst != NULL || !pStack->IsOk()) return inst;
+        if (inst != nullptr || !pStack->IsOk()) return inst;
     }
 
     // compiles an array declaration
-    if (first) return NULL ;
+    if (first) return nullptr ;
 
     CBotInstr* inst = CBotInstArray::Compile(p, pStack, type);
-    if (inst == NULL) return NULL;
+    if (inst == nullptr) return nullptr;
 
     if (IsOfType(p,  ID_COMMA)) // several definitions
     {
-        if (NULL != ( inst->m_next2b = CBotInstArray::CompileArray(p, pStack, type, false)))    // compiles next one
+        if (nullptr != ( inst->m_next2b = CBotInstArray::CompileArray(p, pStack, type, false)))    // compiles next one
         {
             return inst;
         }
         delete inst;
-        return NULL;
+        return nullptr;
     }
 
     if (IsOfType(p,  ID_SEP))                            // end of instruction
@@ -964,29 +964,29 @@ CBotInstr* CBotInstr::CompileArray(CBotToken* &p, CBotCStack* pStack, CBotTypRes
 
     delete inst;
     pStack->SetError(TX_ENDOF, p->GetStart());
-    return NULL;
+    return nullptr;
 }
 
 CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool noskip)
 {
-    CBotToken*    pp = cont ? NULL : p;        // no repetition of the token "int"
+    CBotToken*    pp = cont ? nullptr : p;        // no repetition of the token "int"
 
-    if (!cont && !IsOfType(p, ID_INT)) return NULL;
+    if (!cont && !IsOfType(p, ID_INT)) return nullptr;
 
     CBotInt*    inst = static_cast<CBotInt*>(CompileArray(p, pStack, CBotTypInt));
-    if (inst != NULL || !pStack->IsOk()) return inst;
+    if (inst != nullptr || !pStack->IsOk()) return inst;
 
     CBotCStack* pStk = pStack->TokenStack(pp);
 
     inst = new CBotInt();
 
-    inst->m_expr = NULL;
+    inst->m_expr = nullptr;
 
     CBotToken*    vartoken = p;
     inst->SetToken(vartoken);
 
     // determines the expression is valid for the item on the left side
-    if (NULL != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
+    if (nullptr != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
     {
         (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = CBotTypInt;
         if (pStk->CheckVarLocal(vartoken))  // redefinition of the variable
@@ -1012,7 +1012,7 @@ CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool n
 
             if (IsOfType(p,  ID_COMMA))     // several definition chained
             {
-                if (NULL != ( inst2->m_next2b = CBotInt::Compile(p, pStk, true, noskip)))    // compile the next one
+                if (nullptr != ( inst2->m_next2b = CBotInt::Compile(p, pStk, true, noskip)))    // compile the next one
                 {
                     return pStack->Return(inst2, pStk);
                 }
@@ -1023,7 +1023,7 @@ CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool n
 
         if (IsOfType(p,  ID_ASS))   // with an assignment?
         {
-            if (NULL == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
+            if (nullptr == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
             {
                 goto error;
             }
@@ -1044,7 +1044,7 @@ CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool n
 
         if (IsOfType(p,  ID_COMMA))     // chained several definitions
         {
-            if (NULL != ( inst->m_next2b = CBotInt::Compile(p, pStk, true, noskip)))    // compile next one
+            if (nullptr != ( inst->m_next2b = CBotInt::Compile(p, pStk, true, noskip)))    // compile next one
             {
                 return pStack->Return(inst, pStk);
             }
@@ -1060,7 +1060,7 @@ suite:
 
 error:
     delete inst;
-    return pStack->Return(NULL, pStk);
+    return pStack->Return(nullptr, pStk);
 }
 
 // execute the definition of the integer variable
@@ -1091,7 +1091,7 @@ void CBotInt::RestoreState(CBotStack* &pj, bool bMain)
     if (bMain)
     {
         pile = pj->RestoreStack(this);
-        if (pile == NULL) return;
+        if (pile == nullptr) return;
 
         if ( pile->GetState()==0)
         {
@@ -1115,7 +1115,7 @@ void CBotInt::RestoreState(CBotStack* &pj, bool bMain)
 CBotBoolean::CBotBoolean()
 {
     m_var    =
-    m_expr    = NULL;
+    m_expr    = nullptr;
     name = "CBotBoolean";
 }
 
@@ -1127,24 +1127,24 @@ CBotBoolean::~CBotBoolean()
 
 CBotInstr* CBotBoolean::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool noskip)
 {
-    CBotToken*    pp = cont ? NULL : p;
+    CBotToken*    pp = cont ? nullptr : p;
 
-    if (!cont && !IsOfType(p, ID_BOOLEAN, ID_BOOL)) return NULL;
+    if (!cont && !IsOfType(p, ID_BOOLEAN, ID_BOOL)) return nullptr;
 
     CBotBoolean*    inst = static_cast<CBotBoolean*>(CompileArray(p, pStack, CBotTypBoolean));
-    if (inst != NULL || !pStack->IsOk()) return inst;
+    if (inst != nullptr || !pStack->IsOk()) return inst;
 
     CBotCStack* pStk = pStack->TokenStack(pp);
 
     inst = new CBotBoolean();
 
-    inst->m_expr = NULL;
+    inst->m_expr = nullptr;
 
     CBotToken*    vartoken = p;
     inst->SetToken(vartoken);
-    CBotVar*    var = NULL;
+    CBotVar*    var = nullptr;
 
-    if (NULL != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
+    if (nullptr != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
     {
         (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = CBotTypBoolean;
         if (pStk->CheckVarLocal(vartoken))                    // redefinition of the variable
@@ -1172,7 +1172,7 @@ CBotInstr* CBotBoolean::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
 
         if (IsOfType(p,  ID_ASS))
         {
-            if (NULL == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
+            if (nullptr == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
             {
                 goto error;
             }
@@ -1191,7 +1191,7 @@ CBotInstr* CBotBoolean::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
 suite:
         if (IsOfType(p,  ID_COMMA))
         {
-            if (NULL != ( inst->m_next2b = CBotBoolean::Compile(p, pStk, true, noskip)))
+            if (nullptr != ( inst->m_next2b = CBotBoolean::Compile(p, pStk, true, noskip)))
             {
                 return pStack->Return(inst, pStk);
             }
@@ -1207,7 +1207,7 @@ suite:
 
 error:
     delete inst;
-    return pStack->Return(NULL, pStk);
+    return pStack->Return(nullptr, pStk);
 }
 
 // executes a boolean variable definition
@@ -1238,7 +1238,7 @@ void CBotBoolean::RestoreState(CBotStack* &pj, bool bMain)
     if (bMain)
     {
         pile = pj->RestoreStack(this);
-        if (pile == NULL) return;
+        if (pile == nullptr) return;
 
         if ( pile->GetState()==0)
         {
@@ -1263,7 +1263,7 @@ void CBotBoolean::RestoreState(CBotStack* &pj, bool bMain)
 CBotFloat::CBotFloat()
 {
     m_var    =
-    m_expr    = NULL;
+    m_expr    = nullptr;
     name = "CBotFloat";
 }
 
@@ -1275,24 +1275,24 @@ CBotFloat::~CBotFloat()
 
 CBotInstr* CBotFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool noskip)
 {
-    CBotToken*    pp = cont ? NULL : p;
+    CBotToken*    pp = cont ? nullptr : p;
 
-    if (!cont && !IsOfType(p, ID_FLOAT)) return NULL;
+    if (!cont && !IsOfType(p, ID_FLOAT)) return nullptr;
 
     CBotFloat*    inst = static_cast<CBotFloat*>(CompileArray(p, pStack, CBotTypFloat));
-    if (inst != NULL || !pStack->IsOk()) return inst;
+    if (inst != nullptr || !pStack->IsOk()) return inst;
 
     CBotCStack* pStk = pStack->TokenStack(pp);
 
     inst = new CBotFloat();
 
-    inst->m_expr = NULL;
+    inst->m_expr = nullptr;
 
     CBotToken*    vartoken = p;
-    CBotVar*    var = NULL;
+    CBotVar*    var = nullptr;
     inst->SetToken(vartoken);
 
-    if (NULL != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
+    if (nullptr != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
     {
         (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = CBotTypFloat;
         if (pStk->CheckVarLocal(vartoken))                    // redefinition of a variable
@@ -1318,7 +1318,7 @@ CBotInstr* CBotFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool
 
         if (IsOfType(p,  ID_ASS))
         {
-            if (NULL == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
+            if (nullptr == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
             {
                 goto error;
             }
@@ -1337,7 +1337,7 @@ CBotInstr* CBotFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool
 suite:
         if (IsOfType(p,  ID_COMMA))
         {
-            if (NULL != ( inst->m_next2b = CBotFloat::Compile(p, pStk, true, noskip)))
+            if (nullptr != ( inst->m_next2b = CBotFloat::Compile(p, pStk, true, noskip)))
             {
                 return pStack->Return(inst, pStk);
             }
@@ -1353,7 +1353,7 @@ suite:
 
 error:
     delete inst;
-    return pStack->Return(NULL, pStk);
+    return pStack->Return(nullptr, pStk);
 }
 
 // executes the definition of a real variable
@@ -1384,7 +1384,7 @@ void CBotFloat::RestoreState(CBotStack* &pj, bool bMain)
     if (bMain)
     {
         pile = pj->RestoreStack(this);
-        if (pile == NULL) return;
+        if (pile == nullptr) return;
 
         if ( pile->GetState()==0)
         {
@@ -1409,7 +1409,7 @@ void CBotFloat::RestoreState(CBotStack* &pj, bool bMain)
 CBotIString::CBotIString()
 {
     m_var    =
-    m_expr    = NULL;
+    m_expr    = nullptr;
     name = "CBotIString";
 }
 
@@ -1421,23 +1421,23 @@ CBotIString::~CBotIString()
 
 CBotInstr* CBotIString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool noskip)
 {
-    CBotToken*    pp = cont ? NULL : p;
+    CBotToken*    pp = cont ? nullptr : p;
 
-    if (!cont && !IsOfType(p, ID_STRING)) return NULL;
+    if (!cont && !IsOfType(p, ID_STRING)) return nullptr;
 
     CBotIString*    inst = static_cast<CBotIString*>(CompileArray(p, pStack, CBotTypString));
-    if (inst != NULL || !pStack->IsOk()) return inst;
+    if (inst != nullptr || !pStack->IsOk()) return inst;
 
     CBotCStack* pStk = pStack->TokenStack(pp);
 
     inst = new CBotIString();
 
-    inst->m_expr = NULL;
+    inst->m_expr = nullptr;
 
     CBotToken*    vartoken = p;
     inst->SetToken(vartoken);
 
-    if (NULL != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
+    if (nullptr != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
     {
         (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = CBotTypString;
         if (pStk->CheckVarLocal(vartoken))
@@ -1449,7 +1449,7 @@ CBotInstr* CBotIString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
 
         if (IsOfType(p,  ID_ASS))
         {
-            if (NULL == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
+            if (nullptr == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
             {
                 goto error;
             }
@@ -1468,7 +1468,7 @@ CBotInstr* CBotIString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
 
         if (IsOfType(p,  ID_COMMA))
         {
-            if (NULL != ( inst->m_next2b = CBotIString::Compile(p, pStk, true, noskip)))
+            if (nullptr != ( inst->m_next2b = CBotIString::Compile(p, pStk, true, noskip)))
             {
                 return pStack->Return(inst, pStk);
             }
@@ -1484,7 +1484,7 @@ CBotInstr* CBotIString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
 
 error:
     delete inst;
-    return pStack->Return(NULL, pStk);
+    return pStack->Return(nullptr, pStk);
 }
 
 // executes the definition of the string variable
@@ -1516,7 +1516,7 @@ void CBotIString::RestoreState(CBotStack* &pj, bool bMain)
     if (bMain)
     {
         pile = pj->RestoreStack(this);
-        if (pile == NULL) return;
+        if (pile == nullptr) return;
 
         if ( pile->GetState()==0)
         {
@@ -1541,8 +1541,8 @@ void CBotIString::RestoreState(CBotStack* &pj, bool bMain)
 
 CBotExpression::CBotExpression()
 {
-    m_leftop    = NULL;
-    m_rightop    = NULL;
+    m_leftop    = nullptr;
+    m_rightop    = nullptr;
     name = "CBotExpression";
 }
 
@@ -1568,36 +1568,36 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
                                  ID_ASSAND, ID_ASSXOR, ID_ASSOR,
                                  ID_ASSSL , ID_ASSSR,  ID_ASSASR, 0 ))
     {
-        if (inst->m_leftop == NULL)
+        if (inst->m_leftop == nullptr)
         {
             pStack->SetError(TX_BADLEFT, p->GetEnd());
             delete inst;
-            return NULL;
+            return nullptr;
         }
 
         inst->m_rightop = CBotExpression::Compile(p, pStack);
-        if (inst->m_rightop == NULL)
+        if (inst->m_rightop == nullptr)
         {
             delete inst;
-            return NULL;
+            return nullptr;
         }
 
         CBotTypResult    type1 = pStack->GetTypResult();
 
         // get the variable assigned to mark
-        CBotVar*    var = NULL;
+        CBotVar*    var = nullptr;
         inst->m_leftop->ExecuteVar(var, pStack);
-        if (var == NULL)
+        if (var == nullptr)
         {
             delete inst;
-            return NULL;
+            return nullptr;
         }
 
         if (OpType != ID_ASS && !var->IsDefined())
         {
             pStack->SetError(TX_NOTINIT, pp);
             delete inst;
-            return NULL;
+            return nullptr;
         }
 
         CBotTypResult type2 = var->GetTypResult();
@@ -1636,7 +1636,7 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
         {
             pStack->SetError(TX_BADTYPE, &inst->m_token);
             delete inst;
-            return NULL;
+            return nullptr;
         }
 
         return inst;        // compatible type?
@@ -1649,7 +1649,7 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
     pStack->SetError(0,0);                        // forget the error
 
     CBotInstr* i = CBotTwoOpExpr::Compile(p, pStack);    // tries without assignment
-    if (i != NULL && error == TX_PRIVATE && p->GetType() == ID_ASS)
+    if (i != nullptr && error == TX_PRIVATE && p->GetType() == ID_ASS)
         pStack->ResetError(error, start, end);
     return i;
 }
@@ -1662,15 +1662,15 @@ bool CBotExpression::Execute(CBotStack* &pj)
 
 //    CBotToken*    pToken = m_leftop->GetToken();
 
-    CBotVar*    pVar = NULL;
+    CBotVar*    pVar = nullptr;
 
     CBotStack*  pile1 = pile;
 
     CBotVar::InitType initKind = CBotVar::InitType::DEF;
-    CBotVar*    result = NULL;
+    CBotVar*    result = nullptr;
 
     // must be done before any indexes (stack can be changed)
-    if (!m_leftop->ExecuteVar(pVar, pile, NULL, false)) return false;    // variable before accessing the value on the right
+    if (!m_leftop->ExecuteVar(pVar, pile, nullptr, false)) return false;    // variable before accessing the value on the right
 
     if ( pile1->GetState()==0)
     {
@@ -1773,10 +1773,10 @@ void CBotExpression::RestoreState(CBotStack* &pj, bool bMain)
     if (bMain)
     {
 //        CBotToken*    pToken = m_leftop->GetToken();
-//        CBotVar*    pVar = NULL;
+//        CBotVar*    pVar = nullptr;
 
         CBotStack*    pile  = pj->RestoreStack(this);
-        if (pile == NULL) return;
+        if (pile == nullptr) return;
 
         CBotStack*  pile1 = pile;
 
@@ -1789,7 +1789,7 @@ void CBotExpression::RestoreState(CBotStack* &pj, bool bMain)
         m_leftop->RestoreStateVar(pile, false);
 
         CBotStack*    pile2 = pile->RestoreStack();
-        if (pile2 == NULL) return;
+        if (pile2 == nullptr) return;
 
         if ( pile2->GetState()==0)
         {
@@ -1816,7 +1816,7 @@ CBotInstr* CBotCondition::Compile(CBotToken* &p, CBotCStack* pStack)
     if (IsOfType(p, ID_OPENPAR))
     {
         CBotInstr* inst = CBotBoolExpr::Compile(p, pStack);
-        if (NULL != inst)
+        if (nullptr != inst)
         {
             if (IsOfType(p, ID_CLOSEPAR))
             {
@@ -1829,7 +1829,7 @@ CBotInstr* CBotCondition::Compile(CBotToken* &p, CBotCStack* pStack)
 
     pStack->SetError(TX_OPENPAR, p->GetStart());    // missing parenthesis
 
-    return NULL;
+    return nullptr;
 }
 
 
@@ -1848,7 +1848,7 @@ CBotInstr* CBotBoolExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
     CBotInstr* inst = CBotTwoOpExpr::Compile(p, pStack);
 
-    if (NULL != inst)
+    if (nullptr != inst)
     {
         if (pStack->GetTypResult().Eq(CBotTypBoolean))
         {
@@ -1858,7 +1858,7 @@ CBotInstr* CBotBoolExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 
     delete inst;
-    return NULL;
+    return nullptr;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1890,7 +1890,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     {
         CBotInstr* inst = CBotExpression::Compile(p, pStk);
 
-        if (NULL != inst)
+        if (nullptr != inst)
         {
             if (IsOfType(p, ID_CLOSEPAR))
             {
@@ -1899,12 +1899,12 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
             pStk->SetError(TX_CLOSEPAR, p->GetStart());
         }
         delete inst;
-        return pStack->Return(NULL, pStk);
+        return pStack->Return(nullptr, pStk);
     }
 
     // is this a unary operation?
     CBotInstr* inst = CBotExprUnaire::Compile(p, pStk);
-    if (inst != NULL || !pStk->IsOk())
+    if (inst != nullptr || !pStk->IsOk())
         return pStack->Return(inst, pStk);
 
     // is it a variable name?
@@ -1912,12 +1912,12 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     {
         // this may be a method call without the "this." before
         inst =  CBotExprVar::CompileMethode(p, pStk);
-        if (inst != NULL) return pStack->Return(inst, pStk);
+        if (inst != nullptr) return pStack->Return(inst, pStk);
 
 
         // is it a procedure call?
         inst =  CBotInstrCall::Compile(p, pStk);
-        if (inst != NULL || !pStk->IsOk())
+        if (inst != nullptr || !pStk->IsOk())
             return pStack->Return(inst, pStk);
 
 
@@ -1933,7 +1933,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
             {
                 pStk->SetError(TX_BADTYPE, pp);
                 delete inst;
-                return pStack->Return(NULL, pStk);
+                return pStack->Return(nullptr, pStk);
             }
 
             // recompile the variable for read-only
@@ -1959,18 +1959,18 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
         if (p->GetType() == TokenTypVar)
         {
-            if (NULL != (i->m_Instr =  CBotExprVar::Compile(p, pStk, PR_READ)))
+            if (nullptr != (i->m_Instr =  CBotExprVar::Compile(p, pStk, PR_READ)))
             {
                 if (pStk->GetType() >= CBotTypBoolean)
                 {
                     pStk->SetError(TX_BADTYPE, pp);
                     delete inst;
-                    return pStack->Return(NULL, pStk);
+                    return pStack->Return(nullptr, pStk);
                 }
                 return pStack->Return(i, pStk);
             }
             delete i;
-            return pStack->Return(NULL, pStk);
+            return pStack->Return(nullptr, pStk);
         }
     }
 
@@ -2026,7 +2026,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 
 
-    return pStack->Return(NULL, pStk);
+    return pStack->Return(nullptr, pStk);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -2039,7 +2039,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
 CBotPostIncExpr::CBotPostIncExpr()
 {
-    m_Instr = NULL;
+    m_Instr = nullptr;
     name    = "CBotPostIncExpr";
 }
 
@@ -2050,7 +2050,7 @@ CBotPostIncExpr::~CBotPostIncExpr()
 
 CBotPreIncExpr::CBotPreIncExpr()
 {
-    m_Instr = NULL;
+    m_Instr = nullptr;
     name    = "CBotPreIncExpr";
 }
 
@@ -2064,10 +2064,10 @@ bool CBotPostIncExpr::Execute(CBotStack* &pj)
     CBotStack*    pile1 = pj->AddStack(this);
     CBotStack*    pile2 = pile1;
 
-    CBotVar*    var1 = NULL;
+    CBotVar*    var1 = nullptr;
 
     // retrieves the variable fields and indexes according
-    if (!(static_cast<CBotExprVar*>(m_Instr))->ExecuteVar(var1, pile2, NULL, true)) return false;
+    if (!(static_cast<CBotExprVar*>(m_Instr))->ExecuteVar(var1, pile2, nullptr, true)) return false;
 
     pile1->SetState(1);
     pile1->SetCopyVar(var1);                                // places the result (before incrementation);
@@ -2096,11 +2096,11 @@ void CBotPostIncExpr::RestoreState(CBotStack* &pj, bool bMain)
     if (!bMain) return;
 
     CBotStack*    pile1 = pj->RestoreStack(this);
-    if (pile1 == NULL) return;
+    if (pile1 == nullptr) return;
 
     (static_cast<CBotExprVar*>(m_Instr))->RestoreStateVar(pile1, bMain);
 
-    if (pile1 != NULL) pile1->RestoreStack(this);
+    if (pile1 != nullptr) pile1->RestoreStack(this);
 }
 
 bool CBotPreIncExpr::Execute(CBotStack* &pj)
@@ -2116,7 +2116,7 @@ bool CBotPreIncExpr::Execute(CBotStack* &pj)
         CBotStack*    pile2 = pile;
         // retrieves the variable fields and indexes according
         // pile2 is modified on return
-        if (!(static_cast<CBotExprVar*>(m_Instr))->ExecuteVar(var1, pile2, NULL, true)) return false;
+        if (!(static_cast<CBotExprVar*>(m_Instr))->ExecuteVar(var1, pile2, nullptr, true)) return false;
 
         if (var1->IsNAN())
         {
@@ -2146,7 +2146,7 @@ void CBotPreIncExpr::RestoreState(CBotStack* &pj, bool bMain)
     if (!bMain) return;
 
     CBotStack*    pile = pj->RestoreStack(this);
-    if (pile == NULL) return;
+    if (pile == nullptr) return;
 
     if (pile->GetState() == 0)
     {
@@ -2167,7 +2167,7 @@ void CBotPreIncExpr::RestoreState(CBotStack* &pj, bool bMain)
 
 CBotExprUnaire::CBotExprUnaire()
 {
-    m_Expr = NULL;
+    m_Expr = nullptr;
     name = "CBotExprUnaire";
 }
 
@@ -2180,14 +2180,14 @@ CBotInstr* CBotExprUnaire::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     int op = p->GetType();
     CBotToken*    pp = p;
-    if (!IsOfTypeList( p, ID_ADD, ID_SUB, ID_LOG_NOT, ID_TXT_NOT, ID_NOT, 0 )) return NULL;
+    if (!IsOfTypeList( p, ID_ADD, ID_SUB, ID_LOG_NOT, ID_TXT_NOT, ID_NOT, 0 )) return nullptr;
 
     CBotCStack* pStk = pStack->TokenStack(pp);
 
     CBotExprUnaire* inst = new CBotExprUnaire();
     inst->SetToken(pp);
 
-    if (NULL != (inst->m_Expr = CBotParExpr::Compile( p, pStk )))
+    if (nullptr != (inst->m_Expr = CBotParExpr::Compile( p, pStk )))
     {
         if (op == ID_ADD && pStk->GetType() < CBotTypBoolean)        // only with the number
             return pStack->Return(inst, pStk);
@@ -2203,7 +2203,7 @@ CBotInstr* CBotExprUnaire::Compile(CBotToken* &p, CBotCStack* pStack)
         pStk->SetError(TX_BADTYPE, &inst->m_token);
     }
     delete inst;
-    return pStack->Return(NULL, pStk);
+    return pStack->Return(nullptr, pStk);
 }
 
 // executes unary expression
@@ -2244,7 +2244,7 @@ void CBotExprUnaire::RestoreState(CBotStack* &pj, bool bMain)
     if (!bMain) return;
 
     CBotStack*    pile = pj->RestoreStack(this);
-    if ( pile == NULL) return;
+    if ( pile == nullptr) return;
 
     if (pile->GetState() == 0)
     {
@@ -2262,7 +2262,7 @@ void CBotExprUnaire::RestoreState(CBotStack* &pj, bool bMain)
 
 CBotIndexExpr::CBotIndexExpr()
 {
-    m_expr    = NULL;
+    m_expr    = nullptr;
     name    = "CBotIndexExpr";
 }
 
@@ -2279,12 +2279,12 @@ bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
         assert(0);
 
     pVar = (static_cast<CBotVarArray*>(pVar))->GetItem(0, false);    // at compile time makes the element [0]
-    if (pVar == NULL)
+    if (pVar == nullptr)
     {
         pile->SetError(TX_OUTARRAY, m_token.GetEnd());
         return false;
     }
-    if (m_next3 != NULL) return m_next3->ExecuteVar(pVar, pile);
+    if (m_next3 != nullptr) return m_next3->ExecuteVar(pVar, pile);
     return true;
 }
 
@@ -2310,7 +2310,7 @@ bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
 
     CBotVar* p = pile->GetVar();    // result on the stack
 
-    if (p == NULL || p->GetType() > CBotTypDouble)
+    if (p == nullptr || p->GetType() > CBotTypDouble)
     {
         pile->SetError(TX_BADINDEX, prevToken);
         return pj->Return(pile);
@@ -2319,7 +2319,7 @@ bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
     int n = p->GetValInt();     // position in the table
 
     pVar = (static_cast<CBotVarArray*>(pVar))->GetItem(n, bExtend);
-    if (pVar == NULL)
+    if (pVar == nullptr)
     {
         pile->SetError(TX_OUTARRAY, prevToken);
         return pj->Return(pile);
@@ -2327,7 +2327,7 @@ bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
 
     pVar->Maj(pile->GetPUser(), true);
 
-    if ( m_next3 != NULL &&
+    if ( m_next3 != nullptr &&
          !m_next3->ExecuteVar(pVar, pile, prevToken, bStep, bExtend) ) return false;
 
     // does not release the stack
@@ -2338,7 +2338,7 @@ bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
 void CBotIndexExpr::RestoreStateVar(CBotStack* &pile, bool bMain)
 {
     pile = pile->RestoreStack();
-    if (pile == NULL) return;
+    if (pile == nullptr) return;
 
     if (bMain && pile->GetState() == 0)
     {
@@ -2381,13 +2381,13 @@ bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
         assert(0);
 
     pVar = pVar->GetItemRef(m_nIdent);
-    if (pVar == NULL)
+    if (pVar == nullptr)
     {
         pile->SetError(TX_NOITEM, &m_token);
         return false;
     }
 
-    if ( m_next3 != NULL &&
+    if ( m_next3 != nullptr &&
          !m_next3->ExecuteVar(pVar, pile) ) return false;
 
     return true;
@@ -2404,7 +2404,7 @@ bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
         assert(0);
 
     CBotVarClass* pItem = pVar->GetPointer();
-    if (pItem == NULL)
+    if (pItem == nullptr)
     {
         pile->SetError(TX_NULLPT, prevToken);
         return pj->Return(pile);
@@ -2418,7 +2418,7 @@ bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
     if (bStep && pile->IfStep()) return false;
 
     pVar = pVar->GetItemRef(m_nIdent);
-    if (pVar == NULL)
+    if (pVar == nullptr)
     {
         pile->SetError(TX_NOITEM, &m_token);
         return pj->Return(pile);
@@ -2434,7 +2434,7 @@ bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
     // request the update of the element, if applicable
     pVar->Maj(pile->GetPUser(), true);
 
-    if ( m_next3 != NULL &&
+    if ( m_next3 != nullptr &&
          !m_next3->ExecuteVar(pVar, pile, &m_token, bStep, bExtend) ) return false;
 
     // does not release the stack
@@ -2446,9 +2446,9 @@ bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
 void CBotFieldExpr::RestoreStateVar(CBotStack* &pj, bool bMain)
 {
     pj = pj->RestoreStack(this);
-    if (pj == NULL) return;
+    if (pj == nullptr) return;
 
-    if (m_next3 != NULL)
+    if (m_next3 != nullptr)
          m_next3->RestoreStateVar(pj, bMain);
 }
 
@@ -2491,7 +2491,7 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
         CBotVar*     var;
 
-        if (NULL != (var = pStk->FindVar(p)))   // seek if known variable
+        if (nullptr != (var = pStk->FindVar(p)))   // seek if known variable
         {
             inst->m_nIdent = var->GetUniqNum();
             if (inst->m_nIdent > 0 && inst->m_nIdent < 9000)
@@ -2530,7 +2530,7 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
                         var = (static_cast<CBotVarArray*>(var))->GetItem(0,true);    // gets the component [0]
 
-                        if (i->m_expr == NULL)
+                        if (i->m_expr == nullptr)
                         {
                             pStk->SetError(TX_BADINDEX, p->GetStart());
                             goto err;
@@ -2558,7 +2558,7 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
                         if (p->GetType() == TokenTypVar)                // must be a name
                         {
                             var = var->GetItem(p->GetString());            // get item correspondent
-                            if (var != NULL)
+                            if (var != nullptr)
                             {
                                 if ( var->IsPrivate(PR_READ) &&
                                      !pStk->GetBotCall()->m_bCompileClass)
@@ -2586,10 +2586,10 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
         pStk->SetError(TX_UNDEFVAR, p);
 err:
         delete inst;
-        return static_cast<CBotLeftExpr*> ( pStack->Return(NULL, pStk));
+        return static_cast<CBotLeftExpr*> ( pStack->Return(nullptr, pStk));
     }
 
-    return static_cast<CBotLeftExpr*> ( pStack->Return(NULL, pStk));
+    return static_cast<CBotLeftExpr*> ( pStack->Return(nullptr, pStk));
 }
 
 // runs, is a variable and assigns the result to the stack
@@ -2597,10 +2597,10 @@ bool CBotLeftExpr::Execute(CBotStack* &pj, CBotStack* array)
 {
     CBotStack*    pile = pj->AddStack();
 
-    CBotVar*     var1 = NULL;
-    CBotVar*     var2 = NULL;
+    CBotVar*     var1 = nullptr;
+    CBotVar*     var2 = nullptr;
     // fetch a variable (not copy)
-    if (!ExecuteVar(var1, array, NULL, false)) return false;
+    if (!ExecuteVar(var1, array, nullptr, false)) return false;
 
     if (pile->IfStep()) return false;
 
@@ -2636,9 +2636,9 @@ bool CBotLeftExpr::Execute(CBotStack* &pj, CBotStack* array)
 bool CBotLeftExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
 {
     pVar = pile->FindVar(m_token);
-    if (pVar == NULL) return false;
+    if (pVar == nullptr) return false;
 
-    if ( m_next3 != NULL &&
+    if ( m_next3 != nullptr &&
          !m_next3->ExecuteVar(pVar, pile) ) return false;
 
     return true;
@@ -2651,7 +2651,7 @@ bool CBotLeftExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevT
     pile = pile->AddStack(this);
 
     pVar = pile->FindVar(m_nIdent);
-    if (pVar == NULL)
+    if (pVar == nullptr)
     {
 #ifdef    _DEBUG
         assert(0);
@@ -2660,9 +2660,9 @@ bool CBotLeftExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevT
         return false;
     }
 
-    if (bStep && m_next3 == NULL && pile->IfStep()) return false;
+    if (bStep && m_next3 == nullptr && pile->IfStep()) return false;
 
-    if ( m_next3 != NULL &&
+    if ( m_next3 != nullptr &&
          !m_next3->ExecuteVar(pVar, pile, &m_token, bStep, true) ) return false;
 
     return true;
@@ -2671,9 +2671,9 @@ bool CBotLeftExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevT
 void CBotLeftExpr::RestoreStateVar(CBotStack* &pile, bool bMain)
 {
     pile = pile->RestoreStack(this);
-    if (pile == NULL) return;
+    if (pile == nullptr) return;
 
-    if (m_next3 != NULL)
+    if (m_next3 != nullptr)
          m_next3->RestoreStateVar(pile, bMain);
 }
 
@@ -2818,13 +2818,13 @@ CBotInstr* CBotExprNum::Compile(CBotToken* &p, CBotCStack* pStack)
 
     if (pStk->NextToken(p))
     {
-        CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), inst->m_numtype);
+        CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), inst->m_numtype);
         pStk->SetVar(var);
 
         return pStack->Return(inst, pStk);
     }
     delete inst;
-    return pStack->Return(NULL, pStk);
+    return pStack->Return(nullptr, pStk);
 }
 
 // execute, returns the corresponding number
@@ -2835,7 +2835,7 @@ bool CBotExprNum::Execute(CBotStack* &pj)
 
     if (pile->IfStep()) return false;
 
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), m_numtype);
+    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), m_numtype);
 
     CBotString    nombre ;
     if (m_token.GetType() == TokenTypDef)
@@ -2887,7 +2887,7 @@ CBotInstr* CBotExprAlpha::Compile(CBotToken* &p, CBotCStack* pStack)
     inst->SetToken(p);
     p = p->GetNext();
 
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypString);
+    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypString);
     pStk->SetVar(var);
 
     return pStack->Return(inst, pStk);
@@ -2901,7 +2901,7 @@ bool CBotExprAlpha::Execute(CBotStack* &pj)
 
     if (pile->IfStep()) return false;
 
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypString);
+    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypString);
 
     CBotString    chaine = m_token.GetString();
     chaine = chaine.Mid(1, chaine.GetLength()-2);    // removes the quotes
@@ -2936,7 +2936,7 @@ CBotExprBool::~CBotExprBool()
 CBotInstr* CBotExprBool::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     CBotCStack* pStk = pStack->TokenStack();
-    CBotExprBool* inst = NULL;
+    CBotExprBool* inst = nullptr;
 
     if ( p->GetType() == ID_TRUE ||
          p->GetType() == ID_FALSE )
@@ -2945,7 +2945,7 @@ CBotInstr* CBotExprBool::Compile(CBotToken* &p, CBotCStack* pStack)
         inst->SetToken(p);  // stores the operation false or true
         p = p->GetNext();
 
-        CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypBoolean);
+        CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypBoolean);
         pStk->SetVar(var);
     }
 
@@ -2960,7 +2960,7 @@ bool CBotExprBool::Execute(CBotStack* &pj)
 
     if (pile->IfStep()) return false;
 
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypBoolean);
+    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypBoolean);
 
     if (GetTokenType() == ID_TRUE)      var->SetValInt(1);
     else                              var->SetValInt(0);
@@ -2994,7 +2994,7 @@ bool CBotExprNull::Execute(CBotStack* &pj)
     CBotStack*    pile = pj->AddStack(this);
 
     if (pile->IfStep()) return false;
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypNullPointer);
+    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypNullPointer);
 
     var->SetInit(CBotVar::InitType::DEF);         // null pointer valid
     pile->SetVar(var);          // place on the stack
@@ -3026,7 +3026,7 @@ bool CBotExprNan::Execute(CBotStack* &pj)
     CBotStack*    pile = pj->AddStack(this);
 
     if (pile->IfStep()) return false;
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypInt);
+    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypInt);
 
     var->SetInit(CBotVar::InitType::IS_NAN);       // nan
     pile->SetVar(var);          // put on the stack
@@ -3069,7 +3069,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
 
         CBotVar*     var;
 
-        if (NULL != (var = pStk->FindVar(p)))   // seek if known variable
+        if (nullptr != (var = pStk->FindVar(p)))   // seek if known variable
         {
             int        ident = var->GetUniqNum();
             (static_cast<CBotExprVar*>(inst))->m_nIdent = ident;     // identifies variable by its number
@@ -3109,7 +3109,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
 
                         var = (static_cast<CBotVarArray*>(var))->GetItem(0,true);    // gets the component [0]
 
-                        if (i->m_expr == NULL)
+                        if (i->m_expr == nullptr)
                         {
                             pStk->SetError(TX_BADINDEX, p->GetStart());
                             goto err;
@@ -3143,7 +3143,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
                                 i->SetToken(pp);                            // keeps the name of the token
                                 inst->AddNext3(i);                          // add after
                                 var = var->GetItem(p->GetString());         // get item correspondent
-                                if (var != NULL)
+                                if (var != nullptr)
                                 {
                                     i->SetUniqNum(var->GetUniqNum());
                                     if ( var->IsPrivate() &&
@@ -3156,7 +3156,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
                             }
 
 
-                            if (var != NULL)
+                            if (var != nullptr)
                             {
                                 p = p->GetNext();   // skips the name
                                 continue;
@@ -3178,10 +3178,10 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
         pStk->SetError(TX_UNDEFVAR, p);
 err:
         delete inst;
-        return pStack->Return(NULL, pStk);
+        return pStack->Return(nullptr, pStk);
     }
 
-    return pStack->Return(NULL, pStk);
+    return pStack->Return(nullptr, pStk);
 }
 
 CBotInstr* CBotExprVar::CompileMethode(CBotToken* &p, CBotCStack* pStack)
@@ -3196,7 +3196,7 @@ CBotInstr* CBotExprVar::CompileMethode(CBotToken* &p, CBotCStack* pStack)
     {
         CBotToken pthis("this");
         CBotVar*     var = pStk->FindVar(pthis);
-        if (var == 0) return pStack->Return(NULL, pStk);
+        if (var == 0) return pStack->Return(nullptr, pStk);
 
         CBotInstr* inst = new CBotExprVar();
 
@@ -3224,7 +3224,7 @@ CBotInstr* CBotExprVar::CompileMethode(CBotToken* &p, CBotCStack* pStack)
         }
         delete inst;
     }
-    return pStack->Return(NULL, pStk);
+    return pStack->Return(nullptr, pStk);
 }
 
 
@@ -3232,14 +3232,14 @@ CBotInstr* CBotExprVar::CompileMethode(CBotToken* &p, CBotCStack* pStack)
 
 bool CBotExprVar::Execute(CBotStack* &pj)
 {
-    CBotVar*     pVar = NULL;
+    CBotVar*     pVar = nullptr;
     CBotStack*     pile  = pj->AddStack(this);
 
     CBotStack*     pile1 = pile;
 
     if (pile1->GetState() == 0)
     {
-        if (!ExecuteVar(pVar, pile, NULL, true)) return false;        // Get the variable fields and indexes according
+        if (!ExecuteVar(pVar, pile, nullptr, true)) return false;        // Get the variable fields and indexes according
 
         if (pVar) pile1->SetCopyVar(pVar);                            // place a copy on the stack
         else
@@ -3251,7 +3251,7 @@ bool CBotExprVar::Execute(CBotStack* &pj)
 
     pVar = pile1->GetVar();
 
-    if (pVar == NULL)
+    if (pVar == nullptr)
     {
         return pj->Return(pile1);
     }
@@ -3259,7 +3259,7 @@ bool CBotExprVar::Execute(CBotStack* &pj)
     if (pVar->IsUndefined())
     {
         CBotToken* pt = &m_token;
-        while (pt->GetNext() != NULL) pt = pt->GetNext();
+        while (pt->GetNext() != nullptr) pt = pt->GetNext();
         pile1->SetError(TX_NOTINIT, pt);
         return pj->Return(pile1);
     }
@@ -3271,7 +3271,7 @@ void CBotExprVar::RestoreState(CBotStack* &pj, bool bMain)
     if (!bMain) return;
 
     CBotStack*     pile  = pj->RestoreStack(this);
-    if (pile == NULL) return;
+    if (pile == nullptr) return;
 
     CBotStack*     pile1 = pile;
 
@@ -3292,7 +3292,7 @@ bool CBotExprVar::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToke
     if (bStep && m_nIdent>0 && pj->IfStep()) return false;
 
     pVar = pj->FindVar(m_nIdent, true);     // tries with the variable update if necessary
-    if (pVar == NULL)
+    if (pVar == nullptr)
     {
 #ifdef    _DEBUG
         assert(0);
@@ -3300,7 +3300,7 @@ bool CBotExprVar::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToke
         pj->SetError(1, &m_token);
         return false;
     }
-    if ( m_next3 != NULL &&
+    if ( m_next3 != nullptr &&
          !m_next3->ExecuteVar(pVar, pj, &m_token, bStep, false) )
             return false;   // field of an instance, table, methode
 
@@ -3313,9 +3313,9 @@ bool CBotExprVar::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToke
 void CBotExprVar::RestoreStateVar(CBotStack* &pj, bool bMain)
 {
     pj = pj->RestoreStack(this);
-    if (pj == NULL) return;
+    if (pj == nullptr) return;
 
-    if (m_next3 != NULL)
+    if (m_next3 != nullptr)
          m_next3->RestoreStateVar(pj, bMain);
 }
 
@@ -3326,7 +3326,7 @@ void CBotExprVar::RestoreStateVar(CBotStack* &pj, bool bMain)
 CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars)
 {
     bool        first = true;
-    CBotInstr*    ret = NULL;   // to return to the list
+    CBotInstr*    ret = nullptr;   // to return to the list
 
     CBotCStack*    pile = pStack;
     int            i = 0;
@@ -3347,19 +3347,19 @@ CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars)
 
             if (!pile->IsOk())
             {
-                return pStack->Return(NULL, pile);
+                return pStack->Return(nullptr, pile);
             }
 
-            if (ret == NULL) ret = param;
+            if (ret == nullptr) ret = param;
             else ret->AddNext(param);   // construct the list
 
-            if (param != NULL)
+            if (param != nullptr)
             {
                 if (pile->GetTypResult().Eq(99))
                 {
                     delete pStack->TokenStack();
                     pStack->SetError(TX_VOID, p->GetStart());
-                    return NULL;
+                    return nullptr;
                 }
                 ppVars[i] = pile->GetVar();
                 ppVars[i]->GetToken()->SetPos(start, end);
@@ -3371,10 +3371,10 @@ CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars)
 
             pStack->SetError(TX_CLOSEPAR, p->GetStart());
             delete pStack->TokenStack();
-            return NULL;
+            return nullptr;
         }
     }
-    ppVars[i] = NULL;
+    ppVars[i] = nullptr;
     return    ret;
 }
 
@@ -3386,7 +3386,7 @@ CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars)
 
 CBotInstrMethode::CBotInstrMethode()
 {
-    m_Parameters    = NULL;
+    m_Parameters    = nullptr;
     m_MethodeIdent  = 0;
     name = "CBotInstrMethode";
 }
@@ -3401,7 +3401,7 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
     CBotInstrMethode* inst = new CBotInstrMethode();
     inst->SetToken(p);  // corresponding token
 
-    if (NULL != var)
+    if (nullptr != var)
     {
         CBotToken*    pp = p;
         p = p->GetNext();
@@ -3427,7 +3427,7 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
                 {
                     pStack->SetError(inst->m_typRes.GetType(), pp);
                     delete    inst;
-                    return    NULL;
+                    return    nullptr;
                 }
                 // put the result on the stack to have something
                 if (inst->m_typRes.GetType() > 0)
@@ -3442,12 +3442,12 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
                 return inst;
             }
             delete inst;
-            return NULL;
+            return nullptr;
         }
     }
     pStack->SetError(1234, p);
     delete inst;
-    return NULL;
+    return nullptr;
 }
 
 // execute the method call
@@ -3457,7 +3457,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     CBotVar*    ppVars[1000];
     CBotStack*    pile1 = pj->AddStack(this, true);     // a place for the copy of This
 
-    if (pVar->GetPointer() == NULL)
+    if (pVar->GetPointer() == nullptr)
     {
         pj->SetError(TX_NULLPT, prevToken);
     }
@@ -3486,7 +3486,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     // and places the values on the stack
     // to be interrupted at any time
 
-    if (p != NULL) while ( true)
+    if (p != nullptr) while ( true)
     {
         if (pile2->GetState() == 0)
         {
@@ -3496,13 +3496,13 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
         ppVars[i++] = pile2->GetVar();              // construct the list of pointers
         pile2 = pile2->AddStack();                  // space on the stack for the result
         p = p->GetNext();
-        if ( p == NULL) break;
+        if ( p == nullptr) break;
     }
-    ppVars[i] = NULL;
+    ppVars[i] = nullptr;
 
     CBotClass*    pClass = CBotClass::Find(m_ClassName);
     CBotVar*    pThis  = pile1->FindVar(-2);
-    CBotVar*    pResult = NULL;
+    CBotVar*    pResult = nullptr;
     if (m_typRes.GetType() > 0) pResult = CBotVar::Create("", m_typRes);
     if (m_typRes.Eq(CBotTypClass))
     {
@@ -3515,7 +3515,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
                                  pResult, pile2, GetToken())) return false;
     if (pRes != pResult) delete pRes;
 
-    pVar = NULL;                // does not return value for this
+    pVar = nullptr;                // does not return value for this
     return pj->Return(pile2);   // release the entire stack
 }
 
@@ -3525,10 +3525,10 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
 
     CBotVar*    ppVars[1000];
     CBotStack*    pile1 = pile->RestoreStack(this);     // place for the copy of This
-    if (pile1 == NULL) return;
+    if (pile1 == nullptr) return;
 
     CBotStack*    pile2 = pile1->RestoreStack();        // and for the parameters coming
-    if (pile2 == NULL) return;
+    if (pile2 == nullptr) return;
 
     CBotVar*    pThis  = pile1->FindVar("this");
     pThis->SetUniqNum(-2);
@@ -3540,7 +3540,7 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
     // and places the values on the stack
     // to be interrupted at any time
 
-    if (p != NULL) while ( true)
+    if (p != nullptr) while ( true)
     {
         if (pile2->GetState() == 0)
         {
@@ -3549,15 +3549,15 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
         }
         ppVars[i++] = pile2->GetVar();      // construct the list of pointers
         pile2 = pile2->RestoreStack();
-        if (pile2 == NULL) return;
+        if (pile2 == nullptr) return;
 
         p = p->GetNext();
-        if ( p == NULL) break;
+        if ( p == nullptr) break;
     }
-    ppVars[i] = NULL;
+    ppVars[i] = nullptr;
 
     CBotClass*    pClass = CBotClass::Find(m_ClassName);
-//    CBotVar*    pResult = NULL;
+//    CBotVar*    pResult = nullptr;
 
 //    CBotVar*    pRes = pResult;
 
@@ -3591,7 +3591,7 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     // evaluate the parameters
     // and places the values on the stack
     // to be interrupted at any time
-    if (p != NULL) while ( true)
+    if (p != nullptr) while ( true)
     {
         if (pile2->GetState() == 0)
         {
@@ -3601,13 +3601,13 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
         ppVars[i++] = pile2->GetVar();              // construct the list of pointers
         pile2 = pile2->AddStack();                  // space on the stack for the results
         p = p->GetNext();
-        if ( p == NULL) break;
+        if ( p == nullptr) break;
     }
-    ppVars[i] = NULL;
+    ppVars[i] = nullptr;
 
     CBotClass*    pClass = CBotClass::Find(m_ClassName);
     CBotVar*    pThis  = pile1->FindVar("this");
-    CBotVar*    pResult = NULL;
+    CBotVar*    pResult = nullptr;
     if (m_typRes.GetType()>0) pResult = CBotVar::Create("", m_typRes);
     if (m_typRes.Eq(CBotTypClass))
     {
@@ -3636,7 +3636,7 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
 CBotNew::CBotNew()
 {
     name            = "CBotNew";
-    m_Parameters    = NULL;
+    m_Parameters    = nullptr;
     m_nMethodeIdent = 0;
 }
 
@@ -3647,16 +3647,16 @@ CBotNew::~CBotNew()
 CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     CBotToken* pp = p;
-    if (!IsOfType(p, ID_NEW)) return NULL;
+    if (!IsOfType(p, ID_NEW)) return nullptr;
 
     // verifies that the token is a class name
-    if (p->GetType() != TokenTypVar) return NULL;
+    if (p->GetType() != TokenTypVar) return nullptr;
 
     CBotClass* pClass = CBotClass::Find(p);
-    if (pClass == NULL)
+    if (pClass == nullptr)
     {
         pStack->SetError(TX_BADNEW, p);
-        return NULL;
+        return nullptr;
     }
 
     CBotNew* inst = new CBotNew();
@@ -3683,7 +3683,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
         int typ = r.GetType();
 
         // if there is no constructor, and no parameters either, it's ok
-        if (typ == TX_UNDEFCALL && inst->m_Parameters == NULL) typ = 0;
+        if (typ == TX_UNDEFCALL && inst->m_Parameters == nullptr) typ = 0;
         pVar->SetInit(CBotVar::InitType::DEF);    // mark the instance as init
 
         if (typ>20)
@@ -3693,7 +3693,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
         }
 
         // if the constructor does not exist, but there are parameters
-        if (typ<0 && inst->m_Parameters != NULL)
+        if (typ<0 && inst->m_Parameters != nullptr)
         {
             pStk->SetError(TX_NOCONST, &inst->m_vartoken);
             goto error;
@@ -3705,7 +3705,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 error:
     delete inst;
-    return pStack->Return(NULL, pStk);
+    return pStack->Return(nullptr, pStk);
 }
 
 // executes instruction "new"
@@ -3718,7 +3718,7 @@ bool CBotNew::Execute(CBotStack* &pj)
 
     CBotStack*    pile1 = pj->AddStack2();  //secondary stack
 
-    CBotVar*    pThis = NULL;
+    CBotVar*    pThis = nullptr;
 
     CBotToken*    pt = &m_vartoken;
     CBotClass*    pClass = CBotClass::Find(pt);
@@ -3739,7 +3739,7 @@ bool CBotNew::Execute(CBotStack* &pj)
     }
 
     // fetch the this pointer if it was interrupted
-    if ( pThis == NULL)
+    if ( pThis == nullptr)
     {
         pThis = pile1->GetVar();    // find the pointer
     }
@@ -3759,7 +3759,7 @@ bool CBotNew::Execute(CBotStack* &pj)
         // and places the values on the stack
         // to be interrupted at any time
 
-        if (p != NULL) while ( true)
+        if (p != nullptr) while ( true)
         {
             pile2 = pile2->AddStack();  // space on the stack for the result
             if (pile2->GetState() == 0)
@@ -3769,12 +3769,12 @@ bool CBotNew::Execute(CBotStack* &pj)
             }
             ppVars[i++] = pile2->GetVar();
             p = p->GetNext();
-            if ( p == NULL) break;
+            if ( p == nullptr) break;
         }
-        ppVars[i] = NULL;
+        ppVars[i] = nullptr;
 
         // create a variable for the result
-        CBotVar*    pResult = NULL;     // constructos still void
+        CBotVar*    pResult = nullptr;     // constructos still void
 
         if ( !pClass->ExecuteMethode(m_nMethodeIdent, pClass->GetName(),
                                      pThis, ppVars,
@@ -3791,7 +3791,7 @@ void CBotNew::RestoreState(CBotStack* &pj, bool bMain)
     if (!bMain) return;
 
     CBotStack*    pile = pj->RestoreStack(this);    //primary stack
-    if (pile == NULL) return;
+    if (pile == nullptr) return;
 
     CBotStack*    pile1 = pj->AddStack2();  //secondary stack
 
@@ -3823,10 +3823,10 @@ void CBotNew::RestoreState(CBotStack* &pj, bool bMain)
         // and places the values on the stack
         // to be interrupted at any time
 
-        if (p != NULL) while ( true)
+        if (p != nullptr) while ( true)
         {
             pile2 = pile2->RestoreStack();  // space on the stack for the result
-            if (pile2 == NULL) return;
+            if (pile2 == nullptr) return;
 
             if (pile2->GetState() == 0)
             {
@@ -3835,9 +3835,9 @@ void CBotNew::RestoreState(CBotStack* &pj, bool bMain)
             }
             ppVars[i++] = pile2->GetVar();
             p = p->GetNext();
-            if ( p == NULL) break;
+            if ( p == nullptr) break;
         }
-        ppVars[i] = NULL;
+        ppVars[i] = nullptr;
 
         pClass->RestoreMethode(m_nMethodeIdent, m_vartoken.GetString(), pThis,
                                ppVars, pile2)    ;        // interrupt here!

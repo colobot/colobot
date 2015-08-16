@@ -399,7 +399,7 @@ public:
                     CBotProgram(CBotVar* pInstance);
                     ~CBotProgram();
 
-    bool            Compile( const char* program, CBotStringArray& ListFonctions, void* pUser = NULL);
+    bool            Compile( const char* program, CBotStringArray& ListFonctions, void* pUser = nullptr);
     //                compiles the program given in text
     //                returns false if an error at compile
     //                see GetCompileError () to retrieve the error
@@ -428,7 +428,7 @@ public:
     //                returns false if the funtion name is not found
     //                the program does nothing, we must call Run () for this
 
-    bool            Run(void* pUser = NULL, int timer = -1);
+    bool            Run(void* pUser = nullptr, int timer = -1);
     //                executes the program
     //                returns false if the program was suspended
     //                returns true if the program ended with or without error
@@ -443,10 +443,10 @@ public:
     CBotVar*        GetStackVars(const char* &FunctionName, int level);
     //                provides the pointer to the variables on the execution stack
     //                level is an input parameter,  0 for the last level, -1, -2, etc. for the other levels
-    //                the return value (CBotVar *) is a variable list (or NULL)
+    //                the return value (CBotVar *) is a variable list (or nullptr)
     //                    that can be processed as the list of parameters received by a routine
     //                FunctionName gives the name of the function where are these variables
-    //                FunctionName == NULL means that is more in a program (depending on  level)
+    //                FunctionName == nullptr means that is more in a program (depending on  level)
 
     void            Stop();
     //                stops execution of the program
@@ -512,9 +512,9 @@ public:
 
 int    cMean(CBotVar* &pVar, CBotString& ClassName)
 {
-    if ( pVar == NULL ) return 6001;    // there is no parameter!
+    if ( pVar == nullptr ) return 6001;    // there is no parameter!
 
-    while ( pVar != NULL )
+    while ( pVar != nullptr )
     {
         if ( pVar->GetType() > CBotTypDouble ) return 6002;        // this is not a number
         pVar = pVar -> GetNext();
@@ -528,7 +528,7 @@ bool rMean(CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
     float total = 0;
     int   nb      = 0;
-    while (pVar != NULL)
+    while (pVar != nullptr)
     {
         total += pVar->GetValFloat();
         pVar = pVar->GetNext();
@@ -677,7 +677,7 @@ virtual                ~CBotVar( );                        // destructor
     virtual
     void            Copy(CBotVar* pSrc, bool bName = true);    // makes a copy of the variable
 
-    virtual void    SetValInt(int val, const char* name = NULL);
+    virtual void    SetValInt(int val, const char* name = nullptr);
                                                 // initialized with an integer value (#)
     /////////////////////////////////////////////////////////////////////////////////
 
@@ -743,7 +743,7 @@ virtual                ~CBotVar( );                        // destructor
 //    CBotVar*        GetMyThis();
 
     virtual
-    void            Maj(void* pUser = NULL, bool bContinue = true);
+    void            Maj(void* pUser = nullptr, bool bContinue = true);
 
     void            SetUniqNum(long n);
     long            GetUniqNum();
@@ -829,7 +829,7 @@ public:
     void            AddNext(CBotClass* pClass);
 
     CBotString        GetName();                    // gives the name of the class
-    CBotClass*        GetParent();                // gives the parent class (or NULL)
+    CBotClass*        GetParent();                // gives the parent class (or nullptr)
 
     // true if a class is derived (Extends) of another
     // return true also if the classes are identical
@@ -943,7 +943,7 @@ public:
                     CBotToken();
                     CBotToken(const CBotToken* pSrc);
                     CBotToken(const CBotString& mot, const CBotString& sep, int start=0, int end=0);
-                    CBotToken(const char* mot, const char* sep = NULL);
+                    CBotToken(const char* mot, const char* sep = nullptr);
 
     /**
      * \brief Destructor
@@ -1030,7 +1030,7 @@ public:
 
 // define the global class CPoint
 // --------------------------------
-    m_pClassPoint    = new CBotClass("CPoint", NULL);
+    m_pClassPoint    = new CBotClass("CPoint", nullptr);
     // adds the component ".x"
     m_pClassPoint->AddItem("x", CBotTypResult(CBotTypFloat));
     // adds the component ".y"
@@ -1078,7 +1078,7 @@ public:
 
 // build a stack for interpreter
 // --------------------------------------
-    CBotStack*    pStack = new CBotStack(NULL);
+    CBotStack*    pStack = new CBotStack(nullptr);
 
 // executes the main program
 // -------------------------
@@ -1105,11 +1105,11 @@ bool rDoGoto( CBotVar* pVar, CBotVar* pResult, int& exception )
     // or so
     CBotVar*    temp;
     temp = pVar->GetItem("x");            // is necessary for the object of type CPoint
-    ASSERT (temp != NULL && temp->GetType() == CBotTypFloat);
+    ASSERT (temp != nullptr && temp->GetType() == CBotTypFloat);
     m_PosToGo.x = temp->GetValFloat();
 
     temp = pVar->GetItem("y");            // is necessary for the object of type CPoint
-    ASSERT (temp != NULL && temp->GetType() == CBotTypFloat);
+    ASSERT (temp != nullptr && temp->GetType() == CBotTypFloat);
     m_PosToGo.y = temp->GetValFloat();
 
     return (m_CurentPos == m_PosToGo);    // makes true if the position is reached

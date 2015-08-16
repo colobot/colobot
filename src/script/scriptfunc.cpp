@@ -234,21 +234,21 @@ bool GetPoint(CBotVar* &var, int& exception, Math::Vector& pos)
     else
     {
         pX = var->GetItem("x");
-        if ( pX == NULL )
+        if ( pX == nullptr )
         {
             exception = CBotErrUndefItem;  return true;
         }
         pos.x = pX->GetValFloat()*g_unit;
 
         pY = var->GetItem("y");
-        if ( pY == NULL )
+        if ( pY == nullptr )
         {
             exception = CBotErrUndefItem;  return true;
         }
         pos.z = pY->GetValFloat()*g_unit;  // attention y -> z !
 
         pZ = var->GetItem("z");
-        if ( pZ == NULL )
+        if ( pZ == nullptr )
         {
             exception = CBotErrUndefItem;  return true;
         }
@@ -3144,14 +3144,14 @@ bool CScriptFunctions::FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar*
 
     // there may be a second parameter
     pVar = pVar->GetNext();
-    if ( pVar != NULL )
+    if ( pVar != nullptr )
     {
         // recover mode
         mode = pVar->GetValString();
         if ( mode != "r" && mode != "w" ) { Exception = CBotErrBadParam; return false; }
 
         // no third parameter
-        if ( pVar->GetNext() != NULL ) { Exception = CBotErrOverParam; return false; }
+        if ( pVar->GetNext() != nullptr ) { Exception = CBotErrOverParam; return false; }
     }
 
     // saves the file name
@@ -3202,7 +3202,7 @@ bool CScriptFunctions::FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar*
 bool CScriptFunctions::rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // accepts no parameters
-    if ( pVar == NULL ) return true;
+    if ( pVar == nullptr ) return true;
 
     return FileClassOpenFile(pThis, pVar, pResult, Exception);
 }
@@ -3211,7 +3211,7 @@ bool CScriptFunctions::rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pRes
 CBotTypResult CScriptFunctions::cfconstruct (CBotVar* pThis, CBotVar* &pVar)
 {
     // accepts no parameters
-    if ( pVar == NULL ) return CBotTypResult( 0 );
+    if ( pVar == nullptr ) return CBotTypResult( 0 );
 
     // must be a character string
     if ( pVar->GetType() != CBotTypString )
@@ -3219,13 +3219,13 @@ CBotTypResult CScriptFunctions::cfconstruct (CBotVar* pThis, CBotVar* &pVar)
 
     // there may be a second parameter
     pVar = pVar->GetNext();
-    if ( pVar != NULL )
+    if ( pVar != nullptr )
     {
         // which must be a string
         if ( pVar->GetType() != CBotTypString )
             return CBotTypResult( CBotErrBadString );
         // no third parameter
-        if ( pVar->GetNext() != NULL ) return CBotTypResult( CBotErrOverParam );
+        if ( pVar->GetNext() != nullptr ) return CBotTypResult( CBotErrOverParam );
     }
 
     // the result is void (constructor)
@@ -3269,7 +3269,7 @@ bool CScriptFunctions::rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResu
 bool CScriptFunctions::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // there must be a parameter
-    if ( pVar == NULL ) { Exception = CBotErrLowParam; return false; }
+    if ( pVar == nullptr ) { Exception = CBotErrLowParam; return false; }
 
     bool result = FileClassOpenFile(pThis, pVar, pResult, Exception);
     pResult->SetValInt(result);
@@ -3280,7 +3280,7 @@ bool CScriptFunctions::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, 
 CBotTypResult CScriptFunctions::cfopen (CBotVar* pThis, CBotVar* &pVar)
 {
     // there must be a parameter
-    if ( pVar == NULL ) return CBotTypResult( CBotErrLowParam );
+    if ( pVar == nullptr ) return CBotTypResult( CBotErrLowParam );
 
     // which must be a string
     if ( pVar->GetType() != CBotTypString )
@@ -3288,14 +3288,14 @@ CBotTypResult CScriptFunctions::cfopen (CBotVar* pThis, CBotVar* &pVar)
 
     // there may be a second parameter
     pVar = pVar->GetNext();
-    if ( pVar != NULL )
+    if ( pVar != nullptr )
     {
         // which must be a string
         if ( pVar->GetType() != CBotTypString )
             return CBotTypResult( CBotErrBadString );
 
         // no third parameter
-        if ( pVar->GetNext() != NULL ) return CBotTypResult( CBotErrOverParam );
+        if ( pVar->GetNext() != nullptr ) return CBotTypResult( CBotErrOverParam );
     }
 
     // the result is bool
@@ -3309,7 +3309,7 @@ CBotTypResult CScriptFunctions::cfopen (CBotVar* pThis, CBotVar* &pVar)
 bool CScriptFunctions::rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // it shouldn't be any parameters
-    if (pVar != NULL) { Exception = CBotErrOverParam; return false; }
+    if (pVar != nullptr) { Exception = CBotErrOverParam; return false; }
 
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
@@ -3346,7 +3346,7 @@ bool CScriptFunctions::rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult,
 CBotTypResult CScriptFunctions::cfclose (CBotVar* pThis, CBotVar* &pVar)
 {
     // it shouldn't be any parameters
-    if ( pVar != NULL ) return CBotTypResult( CBotErrOverParam );
+    if ( pVar != nullptr ) return CBotTypResult( CBotErrOverParam );
 
     // function returns a result "void"
     return CBotTypResult( 0 );
@@ -3358,7 +3358,7 @@ CBotTypResult CScriptFunctions::cfclose (CBotVar* pThis, CBotVar* &pVar)
 bool CScriptFunctions::rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // there must be a parameter
-    if ( pVar == NULL ) { Exception = CBotErrLowParam; return false; }
+    if ( pVar == nullptr ) { Exception = CBotErrLowParam; return false; }
 
     // which must be a character string
     if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
@@ -3394,13 +3394,13 @@ bool CScriptFunctions::rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult,
 CBotTypResult CScriptFunctions::cfwrite (CBotVar* pThis, CBotVar* &pVar)
 {
     // there must be a parameter
-    if ( pVar == NULL ) return CBotTypResult( CBotErrLowParam );
+    if ( pVar == nullptr ) return CBotTypResult( CBotErrLowParam );
 
     // which must be a character string
     if ( pVar->GetType() != CBotTypString ) return CBotTypResult( CBotErrBadString );
 
     // no other parameter
-    if ( pVar->GetNext() != NULL ) return CBotTypResult( CBotErrOverParam );
+    if ( pVar->GetNext() != nullptr ) return CBotTypResult( CBotErrOverParam );
 
     // the function returns a void result
     return CBotTypResult( 0 );
@@ -3412,7 +3412,7 @@ CBotTypResult CScriptFunctions::cfwrite (CBotVar* pThis, CBotVar* &pVar)
 bool CScriptFunctions::rfread(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // it shouldn't be any parameters
-    if (pVar != NULL) { Exception = CBotErrOverParam; return false; }
+    if (pVar != nullptr) { Exception = CBotErrOverParam; return false; }
 
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
@@ -3446,7 +3446,7 @@ bool CScriptFunctions::rfread(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, i
 CBotTypResult CScriptFunctions::cfread (CBotVar* pThis, CBotVar* &pVar)
 {
     // it should not be any parameter
-    if ( pVar != NULL ) return CBotTypResult( CBotErrOverParam );
+    if ( pVar != nullptr ) return CBotTypResult( CBotErrOverParam );
 
     // function returns a result "string"
     return CBotTypResult( CBotTypString );
@@ -3458,7 +3458,7 @@ CBotTypResult CScriptFunctions::cfread (CBotVar* pThis, CBotVar* &pVar)
 bool CScriptFunctions::rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // it should not be any parameter
-    if ( pVar != NULL ) { Exception = CBotErrOverParam; return false; }
+    if ( pVar != nullptr ) { Exception = CBotErrOverParam; return false; }
 
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
@@ -3483,7 +3483,7 @@ bool CScriptFunctions::rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, i
 CBotTypResult CScriptFunctions::cfeof (CBotVar* pThis, CBotVar* &pVar)
 {
     // it shouldn't be any parameter
-    if ( pVar != NULL ) return CBotTypResult( CBotErrOverParam );
+    if ( pVar != nullptr ) return CBotTypResult( CBotErrOverParam );
 
     // the function returns a boolean result
     return CBotTypResult( CBotTypBoolean );
@@ -3507,26 +3507,26 @@ CBotTypResult CScriptFunctions::cPointConstructor(CBotVar* pThis, CBotVar* &var)
 {
     if ( !pThis->IsElemOfClass("point") )  return CBotTypResult(CBotErrBadNum);
 
-    if ( var == NULL )  return CBotTypResult(0);  // ok if no parameter
+    if ( var == nullptr )  return CBotTypResult(0);  // ok if no parameter
 
     // First parameter (x):
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
     // Second parameter (y):
-    if ( var == NULL )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
     // Third parameter (z):
-    if ( var == NULL )  // only 2 parameters?
+    if ( var == nullptr )  // only 2 parameters?
     {
         return CBotTypResult(0);  // this function returns void
     }
 
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var != NULL )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
 
     return CBotTypResult(0);  // this function returns void
 }
@@ -3537,7 +3537,7 @@ bool CScriptFunctions::rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* 
 {
     CBotVar     *pX, *pY, *pZ;
 
-    if ( var == NULL )  return true;  // constructor with no parameters is ok
+    if ( var == nullptr )  return true;  // constructor with no parameters is ok
 
     if ( var->GetType() > CBotTypDouble )
     {
@@ -3545,14 +3545,14 @@ bool CScriptFunctions::rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* 
     }
 
     pX = pThis->GetItem("x");
-    if ( pX == NULL )
+    if ( pX == nullptr )
     {
         Exception = CBotErrUndefItem;  return false;
     }
     pX->SetValFloat( var->GetValFloat() );
     var = var->GetNext();
 
-    if ( var == NULL )
+    if ( var == nullptr )
     {
         Exception = CBotErrLowParam;  return false;
     }
@@ -3563,27 +3563,27 @@ bool CScriptFunctions::rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* 
     }
 
     pY = pThis->GetItem("y");
-    if ( pY == NULL )
+    if ( pY == nullptr )
     {
         Exception = CBotErrUndefItem;  return false;
     }
     pY->SetValFloat( var->GetValFloat() );
     var = var->GetNext();
 
-    if ( var == NULL )
+    if ( var == nullptr )
     {
         return true;  // ok with only two parameters
     }
 
     pZ = pThis->GetItem("z");
-    if ( pZ == NULL )
+    if ( pZ == nullptr )
     {
         Exception = CBotErrUndefItem;  return false;
     }
     pZ->SetValFloat( var->GetValFloat() );
     var = var->GetNext();
 
-    if ( var != NULL )
+    if ( var != nullptr )
     {
         Exception = CBotErrOverParam;  return false;
     }
@@ -3684,14 +3684,14 @@ void CScriptFunctions::Init()
     CBotClass* bc;
 
     // Add the class Point.
-    bc = new CBotClass("point", NULL, true);  // intrinsic class
+    bc = new CBotClass("point", nullptr, true);  // intrinsic class
     bc->AddItem("x", CBotTypFloat);
     bc->AddItem("y", CBotTypFloat);
     bc->AddItem("z", CBotTypFloat);
     bc->AddFunction("point", CScriptFunctions::rPointConstructor, CScriptFunctions::cPointConstructor);
 
     // Adds the class Object.
-    bc = new CBotClass("object", NULL);
+    bc = new CBotClass("object", nullptr);
     bc->AddItem("category",    CBotTypResult(CBotTypInt), PR_READ);
     bc->AddItem("position",    CBotTypResult(CBotTypClass, "point"), PR_READ);
     bc->AddItem("orientation", CBotTypResult(CBotTypFloat), PR_READ);
@@ -3722,7 +3722,7 @@ void CScriptFunctions::Init()
     // canal.close();   // close the file
 
     // create the class FILE
-    bc    = new CBotClass("file", NULL);
+    bc    = new CBotClass("file", nullptr);
     // adds the component ".filename"
     bc->AddItem("filename", CBotTypString);
     // adds the component ".handle"
@@ -3730,7 +3730,7 @@ void CScriptFunctions::Init()
 
     // define a constructor and a destructor
     bc->AddFunction("file", CScriptFunctions::rfconstruct, CScriptFunctions::cfconstruct );
-    bc->AddFunction("~file", CScriptFunctions::rfdestruct, NULL );
+    bc->AddFunction("~file", CScriptFunctions::rfdestruct, nullptr );
 
     // end of the methods associated
     bc->AddFunction("open", CScriptFunctions::rfopen, CScriptFunctions::cfopen );

@@ -1487,7 +1487,7 @@ VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntPoint
         videoFlags |= SDL_FULLSCREEN;
 
 
-    SDL_Rect **modes = SDL_ListModes(NULL, videoFlags);
+    SDL_Rect **modes = SDL_ListModes(nullptr, videoFlags);
 
     if (modes == reinterpret_cast<SDL_Rect **>(0) )
         return VIDEO_QUERY_NONE; // no modes available
@@ -1496,7 +1496,7 @@ VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntPoint
         return VIDEO_QUERY_ALL; // all resolutions are possible
 
 
-    for (int i = 0; modes[i] != NULL; ++i)
+    for (int i = 0; modes[i] != nullptr; ++i)
         resolutions.push_back(Math::IntPoint(modes[i]->w, modes[i]->h));
 
     return VIDEO_QUERY_OK;
@@ -1733,7 +1733,7 @@ void CApplication::SetLanguage(Language language)
     if (locale.empty())
     {
         const char* envLang = gl_locale_name(LC_MESSAGES, "LC_MESSAGES");
-        if (envLang == NULL)
+        if (envLang == nullptr)
         {
             GetLogger()->Error("Failed to get language from environment, setting default language\n");
             m_language = LANGUAGE_ENGLISH;

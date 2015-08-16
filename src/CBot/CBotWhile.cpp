@@ -40,7 +40,7 @@
 CBotWhile::CBotWhile()
 {
     m_Condition =
-    m_Block     = NULL;     // NULL so that delete is not possible further
+    m_Block     = nullptr;     // nullptr so that delete is not possible further
     name = "CBotWhile";     // debug
 }
 
@@ -62,12 +62,12 @@ CBotInstr* CBotWhile::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 
     inst->SetToken(p);
-    if (!IsOfType(p, ID_WHILE)) return NULL;    // should never happen
+    if (!IsOfType(p, ID_WHILE)) return nullptr;    // should never happen
 
     CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
                                                 // a bit of battery please (??)
 
-    if ( NULL != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
+    if ( nullptr != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
     {
         // the condition exists
 
@@ -85,7 +85,7 @@ CBotInstr* CBotWhile::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 
     delete inst;                                // error, frees the place
-    return pStack->Return(NULL, pStk);          // no object, the error is on the stack
+    return pStack->Return(nullptr, pStk);          // no object, the error is on the stack
 }
 
 // executes a "while" instruction
@@ -118,7 +118,7 @@ bool CBotWhile :: Execute(CBotStack* &pj)
 
     case 1:
         // evaluates the associated statement block
-        if ( m_Block != NULL &&
+        if ( m_Block != nullptr &&
             !m_Block->Execute(pile) )
         {
             if (pile->IfContinue(0, m_label)) continue; // if continued, will return to test
@@ -141,7 +141,7 @@ void CBotWhile :: RestoreState(CBotStack* &pj, bool bMain)
 {
     if ( !bMain ) return;
     CBotStack* pile = pj->RestoreStack(this);   // adds an item to the stack
-    if ( pile == NULL ) return;
+    if ( pile == nullptr ) return;
 
     switch( pile->GetState() )
     {                                           // there are two possible states (depending on recovery)
@@ -152,7 +152,7 @@ void CBotWhile :: RestoreState(CBotStack* &pj, bool bMain)
 
     case 1:
         // evaluates the associated statement block
-        if ( m_Block != NULL ) m_Block->RestoreState(pile, bMain);
+        if ( m_Block != nullptr ) m_Block->RestoreState(pile, bMain);
         return;
     }
 }
@@ -166,7 +166,7 @@ void CBotWhile :: RestoreState(CBotStack* &pj, bool bMain)
 CBotDo::CBotDo()
 {
     m_Condition =
-    m_Block     = NULL;     // NULL so that delete is not possible further
+    m_Block     = nullptr;     // nullptr so that delete is not possible further
     name = "CBotDo";        // debug
 }
 
@@ -189,7 +189,7 @@ CBotInstr* CBotDo::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 
     inst->SetToken(p);
-    if (!IsOfType(p, ID_DO)) return NULL;       // should never happen
+    if (!IsOfType(p, ID_DO)) return nullptr;       // should never happen
 
     CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
 
@@ -203,7 +203,7 @@ CBotInstr* CBotDo::Compile(CBotToken* &p, CBotCStack* pStack)
     {
         if (IsOfType(p, ID_WHILE))
         {
-            if ( NULL != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
+            if ( nullptr != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
             {
                 // the condition exists
                 if (IsOfType(p, ID_SEP))
@@ -217,7 +217,7 @@ CBotInstr* CBotDo::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 
     delete inst;                                // error, frees up
-    return pStack->Return(NULL, pStk);          // no object, the error is on the stack
+    return pStack->Return(nullptr, pStk);          // no object, the error is on the stack
 }
 
 // executes instruction "do"
@@ -234,7 +234,7 @@ bool CBotDo :: Execute(CBotStack* &pj)
     {                                                   // there are two possible states (depending on recovery)
     case 0:
         // evaluates the associated statement block
-        if ( m_Block != NULL &&
+        if ( m_Block != nullptr &&
             !m_Block->Execute(pile) )
         {
             if (pile->IfContinue(1, m_label)) continue; // if continued, will return to test
@@ -272,13 +272,13 @@ void CBotDo :: RestoreState(CBotStack* &pj, bool bMain)
     if ( !bMain ) return;
 
     CBotStack* pile = pj->RestoreStack(this);           // adds an item to the stack
-    if ( pile == NULL ) return;
+    if ( pile == nullptr ) return;
 
     switch( pile->GetState() )
     {                                                   // there are two possible states (depending on recovery)
     case 0:
         // restores the assosiated statement's block
-        if ( m_Block != NULL ) m_Block->RestoreState(pile, bMain);
+        if ( m_Block != nullptr ) m_Block->RestoreState(pile, bMain);
         return;
 
     case 1:
@@ -299,7 +299,7 @@ CBotFor::CBotFor()
     m_Init      =
     m_Test      =
     m_Incr      =
-    m_Block     = NULL;     // NULL so that delete is not possible further
+    m_Block     = nullptr;     // nullptr so that delete is not possible further
     name = "CBotFor";       // debug
 }
 
@@ -323,12 +323,12 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 
     inst->SetToken(p);
-    if (!IsOfType(p, ID_FOR)) return NULL;      // should never happen
+    if (!IsOfType(p, ID_FOR)) return nullptr;      // should never happen
 
     if ( !IsOfType(p, ID_OPENPAR))              // missing parenthesis ?
     {
         pStack->SetError(TX_OPENPAR, p->GetStart());
-        return NULL;
+        return nullptr;
     }
 
     CBotCStack* pStk = pStack->TokenStack(pp, true);    // un petit bout de pile svp
@@ -341,7 +341,7 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
         {
             pStack->SetError(TX_OPENPAR, p->GetStart());
             delete inst;
-            return pStack->Return(NULL, pStk);          // no object, the error is on the stack
+            return pStack->Return(nullptr, pStk);          // no object, the error is on the stack
         }
         inst->m_Test = CBotBoolExpr::Compile( p, pStk );
         if ( pStk->IsOk() )
@@ -350,7 +350,7 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
             {
                 pStack->SetError(TX_OPENPAR, p->GetStart());
                 delete inst;
-                return pStack->Return(NULL, pStk);          // no object, the error is on the stack
+                return pStack->Return(nullptr, pStk);          // no object, the error is on the stack
             }
             inst->m_Incr = CBotListExpression::Compile( p, pStk );
             if ( pStk->IsOk() )
@@ -369,7 +369,7 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 
     delete inst;                                // error, frees up
-    return pStack->Return(NULL, pStk);          // no object, the error is on the stack
+    return pStack->Return(nullptr, pStk);          // no object, the error is on the stack
 }
 
 // execution of instruction "for"
@@ -386,13 +386,13 @@ bool CBotFor :: Execute(CBotStack* &pj)
     {                                           // there are four possible states (depending on recovery)
     case 0:
         // initialize
-        if ( m_Init != NULL &&
+        if ( m_Init != nullptr &&
              !m_Init->Execute(pile) ) return false;     // interrupted here ?
         if (!pile->SetState(1)) return false;           // ready for further
 
     case 1:
         // evaluates the condition
-        if ( m_Test != NULL )                           // no strings attached? -> True!
+        if ( m_Test != nullptr )                           // no strings attached? -> True!
         {
             if (!m_Test->Execute(pile) ) return false;  // interrupted here ?
 
@@ -410,7 +410,7 @@ bool CBotFor :: Execute(CBotStack* &pj)
 
     case 2:
         // evaluates the associated statement block
-        if ( m_Block != NULL &&
+        if ( m_Block != nullptr &&
             !m_Block->Execute(pile) )
         {
             if (pile->IfContinue(3, m_label)) continue; // if continued, going on to incrementation
@@ -427,7 +427,7 @@ bool CBotFor :: Execute(CBotStack* &pj)
 
     case 3:
         // evalutate the incrementation
-        if ( m_Incr != NULL &&
+        if ( m_Incr != nullptr &&
             !m_Incr->Execute(pile) ) return false;      // interrupted here ?
 
         // returns to the test again
@@ -441,34 +441,34 @@ void CBotFor :: RestoreState(CBotStack* &pj, bool bMain)
     if ( !bMain ) return;
 
     CBotStack* pile = pj->RestoreStack(this);       // adds an item to the stack (variables locales)
-    if ( pile == NULL ) return;
+    if ( pile == nullptr ) return;
 
     switch( pile->GetState() )
     {                                           // there are four possible states (depending on recovery)
     case 0:
         // initialize
-        if ( m_Init != NULL ) m_Init->RestoreState(pile, true);     // interrupted here !
+        if ( m_Init != nullptr ) m_Init->RestoreState(pile, true);     // interrupted here !
         return;
 
     case 1:
-        if ( m_Init != NULL ) m_Init->RestoreState(pile, false);    // variables definitions
+        if ( m_Init != nullptr ) m_Init->RestoreState(pile, false);    // variables definitions
 
         // evaluates the condition
-        if ( m_Test != NULL ) m_Test->RestoreState(pile, true);     // interrupted here !
+        if ( m_Test != nullptr ) m_Test->RestoreState(pile, true);     // interrupted here !
         return;
 
     case 2:
-        if ( m_Init != NULL ) m_Init->RestoreState(pile, false);    // variable definitions
+        if ( m_Init != nullptr ) m_Init->RestoreState(pile, false);    // variable definitions
 
         // evaluates the associated statement block
-        if ( m_Block != NULL ) m_Block->RestoreState(pile, true);
+        if ( m_Block != nullptr ) m_Block->RestoreState(pile, true);
         return;
 
     case 3:
-        if ( m_Init != NULL ) m_Init->RestoreState(pile, false);    // variable definitions
+        if ( m_Init != nullptr ) m_Init->RestoreState(pile, false);    // variable definitions
 
         // evaluate the incrementation
-        if ( m_Incr != NULL ) m_Incr->RestoreState(pile, true);     // interrupted here !
+        if ( m_Incr != nullptr ) m_Incr->RestoreState(pile, true);     // interrupted here !
         return;
     }
 }
@@ -480,7 +480,7 @@ void CBotFor :: RestoreState(CBotStack* &pj, bool bMain)
 
 CBotListExpression::CBotListExpression()
 {
-    m_Expr  = NULL;
+    m_Expr  = nullptr;
     name = "CBotListExpression";
 }
 
@@ -494,10 +494,10 @@ CBotListExpression::~CBotListExpression()
 static CBotInstr* CompileInstrOrDefVar(CBotToken* &p, CBotCStack* pStack)
 {
     CBotInstr*  i = CBotInt::Compile( p, pStack, false, true );         // Is this a declaration of an integer?
-    if ( i== NULL ) i = CBotFloat::Compile( p, pStack, false, true );   // or a real number?
-    if ( i== NULL ) i = CBotBoolean::Compile( p, pStack, false, true ); // or a boolean?
-    if ( i== NULL ) i = CBotIString::Compile( p, pStack, false, true ); // ar a string?
-    if ( i== NULL ) i = CBotExpression::Compile( p, pStack );           // compiles an expression
+    if ( i== nullptr ) i = CBotFloat::Compile( p, pStack, false, true );   // or a real number?
+    if ( i== nullptr ) i = CBotBoolean::Compile( p, pStack, false, true ); // or a boolean?
+    if ( i== nullptr ) i = CBotIString::Compile( p, pStack, false, true ); // ar a string?
+    if ( i== nullptr ) i = CBotExpression::Compile( p, pStack );           // compiles an expression
     return i;
 }
 
@@ -515,13 +515,13 @@ CBotInstr* CBotListExpression::Compile(CBotToken* &p, CBotCStack* pStack)
             if ( !pStack->IsOk() )
             {
                 delete inst;
-                return NULL;                                    // no object, the error is on the stack
+                return nullptr;                                    // no object, the error is on the stack
             }
         }
         return inst;
     }
     delete inst;
-    return NULL;
+    return nullptr;
 }
 
 bool CBotListExpression::Execute(CBotStack* &pj)
@@ -532,11 +532,11 @@ bool CBotListExpression::Execute(CBotStack* &pj)
     int     state = pile->GetState();
     while (state-->0) p = p->GetNext();                         // returns to the interrupted operation
 
-    if ( p != NULL ) while (true)
+    if ( p != nullptr ) while (true)
     {
         if ( !p->Execute(pile) ) return false;
         p = p->GetNext();
-        if ( p == NULL ) break;
+        if ( p == nullptr ) break;
         if (!pile->IncState()) return false;                    // ready for next
     }
     return pj->Return(pile);
@@ -550,19 +550,19 @@ void CBotListExpression::RestoreState(CBotStack* &pj, bool bMain)
     if ( bMain )
     {
         pile = pj->RestoreStack();
-        if ( pile == NULL ) return;
+        if ( pile == nullptr ) return;
         state = pile->GetState();
     }
 
     CBotInstr*  p = m_Expr;                                     // the first expression
 
-    while (p != NULL && state-->0)
+    while (p != nullptr && state-->0)
     {
         p->RestoreState(pile, false);
         p = p->GetNext();                           // returns to the interrupted operation
     }
 
-    if ( p != NULL )
+    if ( p != nullptr )
     {
         p->RestoreState(pile, bMain);
     }
@@ -576,7 +576,7 @@ void CBotListExpression::RestoreState(CBotStack* &pj, bool bMain)
 CBotSwitch::CBotSwitch()
 {
     m_Value     =
-    m_Block     = NULL;         // NULL so that delete is not possible further
+    m_Block     = nullptr;         // nullptr so that delete is not possible further
     name = "CBotSwitch";        // debug
 }
 
@@ -593,13 +593,13 @@ CBotInstr* CBotSwitch::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotToken*  pp = p;                         // preserves at the ^ token (starting position)
 
     inst->SetToken(p);
-    if (!IsOfType(p, ID_SWITCH)) return NULL;   // should never happen
+    if (!IsOfType(p, ID_SWITCH)) return nullptr;   // should never happen
 
     CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
 
     if ( IsOfType(p, ID_OPENPAR ) )
     {
-        if ( NULL != (inst->m_Value = CBotExpression::Compile( p, pStk )) )
+        if ( nullptr != (inst->m_Value = CBotExpression::Compile( p, pStk )) )
         {
             if ( pStk->GetType() < CBotTypLong )
             {
@@ -616,46 +616,46 @@ CBotInstr* CBotSwitch::Compile(CBotToken* &p, CBotCStack* pStack)
                                 CBotCStack* pStk2 = pStk->TokenStack(p);    // un petit bout de pile svp
 
                                 CBotInstr* i = CBotCase::Compile( p, pStk2 );
-                                if (i == NULL)
+                                if (i == nullptr)
                                 {
                                     delete inst;
-                                    return pStack->Return(NULL, pStk2);
+                                    return pStack->Return(nullptr, pStk2);
                                 }
                                 delete pStk2;
-                                if ( inst->m_Block == NULL ) inst->m_Block = i;
+                                if ( inst->m_Block == nullptr ) inst->m_Block = i;
                                 else inst->m_Block->AddNext(i);
                                 continue;
                             }
 
-                            if ( inst->m_Block == NULL )
+                            if ( inst->m_Block == nullptr )
                             {
                                 pStk->SetError(TX_NOCASE, p->GetStart());
                                 delete inst;
-                                return pStack->Return(NULL, pStk);
+                                return pStack->Return(nullptr, pStk);
                             }
 
                             CBotInstr* i = CBotBlock::CompileBlkOrInst( p, pStk, true );
                             if ( !pStk->IsOk() )
                             {
                                 delete inst;
-                                return pStack->Return(NULL, pStk);
+                                return pStack->Return(nullptr, pStk);
                             }
                             inst->m_Block->AddNext(i);
 
-                            if ( p == NULL )
+                            if ( p == nullptr )
                             {
                                 pStk->SetError(TX_CLOSEBLK, -1);
                                 delete inst;
-                                return pStack->Return(NULL, pStk);
+                                return pStack->Return(nullptr, pStk);
                             }
                         }
                         DecLvl();
 
-                        if ( inst->m_Block == NULL )
+                        if ( inst->m_Block == nullptr )
                         {
                             pStk->SetError(TX_NOCASE, p->GetStart());
                             delete inst;
-                            return pStack->Return(NULL, pStk);
+                            return pStack->Return(nullptr, pStk);
                         }
                         // the statement block is ok
                         return pStack->Return(inst, pStk);  // return an object to the application
@@ -670,7 +670,7 @@ CBotInstr* CBotSwitch::Compile(CBotToken* &p, CBotCStack* pStack)
     pStk->SetError( TX_OPENPAR, p->GetStart());
 
     delete inst;                                // error, frees up
-    return pStack->Return(NULL, pStk);          // no object, the error is on the stack
+    return pStack->Return(nullptr, pStk);          // no object, the error is on the stack
 }
 
 // executes instruction "switch"
@@ -697,7 +697,7 @@ bool CBotSwitch :: Execute(CBotStack* &pj)
         int val = pile1->GetVal();                      // result of the value
 
         CBotStack* pile2 = pile1->AddStack();
-        while ( p != NULL )                             // search for the corresponding case in a list
+        while ( p != nullptr )                             // search for the corresponding case in a list
         {
             state++;
             if ( p->CompCase( pile2, val ) ) break;     // found the case
@@ -705,7 +705,7 @@ bool CBotSwitch :: Execute(CBotStack* &pj)
         }
         pile2->Delete();
 
-        if ( p == NULL ) return pj->Return(pile1);      // completed if nothing
+        if ( p == nullptr ) return pj->Return(pile1);      // completed if nothing
 
         if ( !pile1->SetState(state) ) return false;
     }
@@ -713,7 +713,7 @@ bool CBotSwitch :: Execute(CBotStack* &pj)
     p = m_Block;                                        // returns to the beginning
     while (state-->0) p = p->GetNext();                 // advance in the list
 
-    while( p != NULL )
+    while( p != nullptr )
     {
         if ( !p->Execute(pile1) ) return pj->BreakReturn(pile1);
         if ( !pile1->IncState() ) return false;
@@ -727,7 +727,7 @@ void CBotSwitch :: RestoreState(CBotStack* &pj, bool bMain)
     if ( !bMain ) return;
 
     CBotStack* pile1 = pj->RestoreStack(this);  // adds an item to the stack
-    if ( pile1 == NULL ) return;
+    if ( pile1 == nullptr ) return;
 
     CBotInstr*  p = m_Block;                    // first expression
 
@@ -744,13 +744,13 @@ void CBotSwitch :: RestoreState(CBotStack* &pj, bool bMain)
     }
 
 //  p = m_Block;                                // returns to the beginning
-    while ( p != NULL && state-- > 0 )
+    while ( p != nullptr && state-- > 0 )
     {
         p->RestoreState(pile1, false);
         p = p->GetNext();                       // advance in the list
     }
 
-    if( p != NULL )
+    if( p != nullptr )
     {
         p->RestoreState(pile1, true);
         return;
@@ -765,7 +765,7 @@ void CBotSwitch :: RestoreState(CBotStack* &pj, bool bMain)
 
 CBotCase::CBotCase()
 {
-    m_Value     = NULL;     // NULL so that delete is not possible further
+    m_Value     = nullptr;     // nullptr so that delete is not possible further
     name = "CBotCase";      // debug
 }
 
@@ -781,24 +781,24 @@ CBotInstr* CBotCase::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotToken*  pp = p;                         // preserves at the ^ token (starting position)
 
     inst->SetToken(p);
-    if (!IsOfType(p, ID_CASE, ID_DEFAULT)) return NULL;     // should never happen
+    if (!IsOfType(p, ID_CASE, ID_DEFAULT)) return nullptr;     // should never happen
 
     if ( pp->GetType() == ID_CASE )
     {
         pp = p;
         inst->m_Value = CBotExprNum::Compile(p, pStack);
-        if ( inst->m_Value == NULL )
+        if ( inst->m_Value == nullptr )
         {
             pStack->SetError( TX_BADNUM, pp );
             delete inst;
-            return NULL;
+            return nullptr;
         }
     }
     if ( !IsOfType( p, ID_DOTS ))
     {
         pStack->SetError( TX_MISDOTS, p->GetStart() );
         delete inst;
-        return NULL;
+        return nullptr;
     }
 
     return inst;
@@ -820,7 +820,7 @@ void CBotCase::RestoreState(CBotStack* &pj, bool bMain)
 
 bool CBotCase::CompCase(CBotStack* &pile, int val)
 {
-    if ( m_Value == NULL ) return true;         // "default" case
+    if ( m_Value == nullptr ) return true;         // "default" case
 
     while (!m_Value->Execute(pile));            // puts the value on the correspondent stack (without interruption)
     return (pile->GetVal() == val);             // compared with the given value
@@ -845,12 +845,12 @@ CBotInstr* CBotBreak::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotToken*  pp = p;                         // preserves at the ^ token (starting position)
     int type = p->GetType();
 
-    if (!IsOfType(p, ID_BREAK, ID_CONTINUE)) return NULL;   // should never happen
+    if (!IsOfType(p, ID_BREAK, ID_CONTINUE)) return nullptr;   // should never happen
 
     if ( !ChkLvl(CBotString(), type ) )
     {
         pStack->SetError(TX_BREAK, pp);
-        return NULL;                            // no object, the error is on the stack
+        return nullptr;                            // no object, the error is on the stack
     }
 
     CBotBreak*  inst = new CBotBreak();         // creates the object
@@ -864,7 +864,7 @@ CBotInstr* CBotBreak::Compile(CBotToken* &p, CBotCStack* pStack)
         {
             delete inst;
             pStack->SetError(TX_NOLABEL, pp);
-            return NULL;                            // no object, the error is on the stack
+            return nullptr;                            // no object, the error is on the stack
         }
     }
 
@@ -875,7 +875,7 @@ CBotInstr* CBotBreak::Compile(CBotToken* &p, CBotCStack* pStack)
     delete inst;
 
     pStack->SetError(TX_ENDOF, p->GetStart());
-    return NULL;                            // no object, the error is on the stack
+    return nullptr;                            // no object, the error is on the stack
 }
 
 // execution of statement "break" or "continu"
@@ -904,9 +904,9 @@ void CBotBreak :: RestoreState(CBotStack* &pj, bool bMain)
 
 CBotTry::CBotTry()
 {
-    m_ListCatch = NULL;
+    m_ListCatch = nullptr;
     m_FinalInst =
-    m_Block     = NULL;     // NULL so that delete is not possible further
+    m_Block     = nullptr;     // nullptr so that delete is not possible further
     name = "CBotTry";       // debug
 }
 
@@ -923,7 +923,7 @@ CBotInstr* CBotTry::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotToken*  pp = p;                         // preserves at the ^ token (starting position)
 
     inst->SetToken(p);
-    if (!IsOfType(p, ID_TRY)) return NULL;      // should never happen
+    if (!IsOfType(p, ID_TRY)) return nullptr;      // should never happen
 
     CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
 
@@ -948,7 +948,7 @@ CBotInstr* CBotTry::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 
     delete inst;                                // error, frees up
-    return pStack->Return(NULL, pStk);          // no object, the error is on the stack
+    return pStack->Return(nullptr, pStk);          // no object, the error is on the stack
 }
 
 // execution of instruction Try
@@ -972,7 +972,7 @@ bool CBotTry :: Execute(CBotStack* &pj)
     {
         if ( m_Block->Execute(pile1) )
         {
-            if ( m_FinalInst == NULL ) return pj->Return(pile1);
+            if ( m_FinalInst == nullptr ) return pj->Return(pile1);
             pile1->SetState(-2);                                // passes final
         }
 
@@ -996,7 +996,7 @@ bool CBotTry :: Execute(CBotStack* &pj)
     val = pile2->GetState();                                    // what error?
     pile0->SetState(1);                                         // marking the GetRunPos
 
-    if ( val >= 0 && state > 0 ) while ( pc != NULL )
+    if ( val >= 0 && state > 0 ) while ( pc != nullptr )
     {
         if ( --state <= 0 )
         {
@@ -1012,7 +1012,7 @@ bool CBotTry :: Execute(CBotStack* &pj)
 //              pile0->SetState(1);
 
                 if ( !pc->Execute(pile2) ) return false;        // performs the operation
-                if ( m_FinalInst == NULL )
+                if ( m_FinalInst == nullptr )
                     return pj->Return(pile2);                   // ends the try
 
                 pile1->SetState(-2);                            // passes final
@@ -1022,7 +1022,7 @@ bool CBotTry :: Execute(CBotStack* &pj)
         }
         pc = pc->m_next;
     }
-    if ( m_FinalInst != NULL &&
+    if ( m_FinalInst != nullptr &&
          pile1->GetState() > 0 && val != 0 ) pile1->SetState(-1);// if stop then made the final
 
     if (pile1->GetState() <= -1)
@@ -1037,7 +1037,7 @@ bool CBotTry :: Execute(CBotStack* &pj)
 
     pile1->SetState(0);                                         // returns to the evaluation
     pile0->SetState(0);                                         // returns to the evaluation
-    if ( val != 0 && m_ListCatch == NULL && m_FinalInst == NULL )
+    if ( val != 0 && m_ListCatch == nullptr && m_FinalInst == nullptr )
                             return pj->Return(pile2);           // ends the try without exception
 
     pile1->SetError(val);                                       // gives the error
@@ -1051,13 +1051,13 @@ void CBotTry :: RestoreState(CBotStack* &pj, bool bMain)
 
     int     val;
     CBotStack* pile1 = pj->RestoreStack(this);  // adds an item to the stack
-    if ( pile1 == NULL ) return;
+    if ( pile1 == nullptr ) return;
                                                     // or find in case of recovery
     CBotStack* pile0 = pj->AddStack2();             // adds an item to the secondary stack
-    if ( pile0 == NULL ) return;
+    if ( pile0 == nullptr ) return;
 
     CBotStack* pile2 = pile0->RestoreStack();
-    if ( pile2 == NULL ) return;
+    if ( pile2 == nullptr ) return;
 
     m_Block->RestoreState(pile1, bMain);
     if ( pile0->GetState() == 0 )
@@ -1072,7 +1072,7 @@ void CBotTry :: RestoreState(CBotStack* &pj, bool bMain)
     int state = pile1->GetState();                              // where were we ?
     val = pile2->GetState();                                    // what error ?
 
-    if ( val >= 0 && state > 0 ) while ( pc != NULL )
+    if ( val >= 0 && state > 0 ) while ( pc != nullptr )
     {
         if ( --state <= 0 )
         {
@@ -1107,8 +1107,8 @@ void CBotTry :: RestoreState(CBotStack* &pj, bool bMain)
 CBotCatch::CBotCatch()
 {
     m_Cond      =
-    m_Block     = NULL;     // NULL so that delete is not possible further
-    m_next      = NULL;
+    m_Block     = nullptr;     // nullptr so that delete is not possible further
+    m_next      = nullptr;
 
     name = "CBotCatch";     // debug
 }
@@ -1126,7 +1126,7 @@ CBotCatch* CBotCatch::Compile(CBotToken* &p, CBotCStack* pStack)
     pStack->SetStartError(p->GetStart());
 
     inst->SetToken(p);
-    if (!IsOfType(p, ID_CATCH)) return NULL;    // should never happen
+    if (!IsOfType(p, ID_CATCH)) return nullptr;    // should never happen
 
     if (IsOfType(p, ID_OPENPAR))
     {
@@ -1146,20 +1146,20 @@ CBotCatch* CBotCatch::Compile(CBotToken* &p, CBotCStack* pStack)
     }
     pStack->SetError(TX_OPENPAR, p->GetStart());
     delete inst;                                // error, frees up
-    return NULL;                                // no object, the error is on the stack
+    return nullptr;                                // no object, the error is on the stack
 }
 
 // execution of "catch"
 
 bool CBotCatch :: Execute(CBotStack* &pj)
 {
-    if ( m_Block == NULL ) return true;
+    if ( m_Block == nullptr ) return true;
     return m_Block->Execute(pj);                // executes the associated block
 }
 
 void CBotCatch :: RestoreState(CBotStack* &pj, bool bMain)
 {
-    if ( bMain && m_Block != NULL ) m_Block->RestoreState(pj, bMain);
+    if ( bMain && m_Block != nullptr ) m_Block->RestoreState(pj, bMain);
 }
 
 void CBotCatch :: RestoreCondState(CBotStack* &pj, bool bMain)
@@ -1175,7 +1175,7 @@ bool CBotCatch :: TestCatch(CBotStack* &pile, int val)
 
     if ( val > 0 || pile->GetType() != CBotTypBoolean )
     {
-        CBotVar* var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypBoolean);
+        CBotVar* var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypBoolean);
         var->SetValInt( pile->GetVal() == val );
         pile->SetVar(var);                          // calls on the stack
     }
@@ -1190,7 +1190,7 @@ bool CBotCatch :: TestCatch(CBotStack* &pile, int val)
 
 CBotThrow::CBotThrow()
 {
-    m_Value     = NULL;     // NULL so that delete is not possible further
+    m_Value     = nullptr;     // nullptr so that delete is not possible further
 
     name = "CBotThrow";     // debug
 }
@@ -1209,7 +1209,7 @@ CBotInstr* CBotThrow::Compile(CBotToken* &p, CBotCStack* pStack)
 
     CBotToken*  pp = p;                         // preserves at the ^ token (starting position)
 
-    if (!IsOfType(p, ID_THROW)) return NULL;    // should never happen
+    if (!IsOfType(p, ID_THROW)) return nullptr;    // should never happen
 
     inst->m_Value = CBotExpression::Compile( p, pStack );
 
@@ -1220,7 +1220,7 @@ CBotInstr* CBotThrow::Compile(CBotToken* &p, CBotCStack* pStack)
     pStack->SetError(TX_BADTYPE, pp);
 
     delete inst;                                // error, frees up
-    return NULL;                                // no object, the error is on the stack
+    return nullptr;                                // no object, the error is on the stack
 }
 
 // execution of instruction "throw"
@@ -1249,7 +1249,7 @@ void CBotThrow :: RestoreState(CBotStack* &pj, bool bMain)
     if ( !bMain ) return;
 
     CBotStack*  pile = pj->RestoreStack(this);
-    if ( pile == NULL ) return;
+    if ( pile == nullptr ) return;
 
     if ( pile->GetState() == 0 )
     {
@@ -1275,7 +1275,7 @@ CBotStartDebugDD::~CBotStartDebugDD()
 CBotInstr* CBotStartDebugDD::Compile(CBotToken* &p, CBotCStack* pStack)
 {
 
-    if (!IsOfType(p, ID_DEBUGDD)) return NULL;  // should never happen
+    if (!IsOfType(p, ID_DEBUGDD)) return nullptr;  // should never happen
 
     return new CBotStartDebugDD();          // creates the object
 

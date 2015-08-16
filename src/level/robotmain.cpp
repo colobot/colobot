@@ -4591,7 +4591,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
 
     // Writes the file of stacks of execution.
     FILE* file = fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "wb");
-    if (file == NULL) return false;
+    if (file == nullptr) return false;
 
     long version = 1;
     fWrite(&version, sizeof(long), 1, file);  // version of COLOBOT
@@ -4786,7 +4786,7 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
 
     // Reads the file of stacks of execution.
     FILE* file = fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "rb");
-    if (file != NULL)
+    if (file != nullptr)
     {
         long version;
         fRead(&version, sizeof(long), 1, file);  // version of COLOBOT
@@ -5644,7 +5644,7 @@ void CRobotMain::Autosave()
     std::string dir = m_playerProfile->GetSaveFile("autosave" + boost::lexical_cast<std::string>(id));
 
     char timestr[100];
-    TimeToAscii(time(NULL), timestr);
+    TimeToAscii(time(nullptr), timestr);
     std::string info = std::string("[AUTOSAVE] ")+timestr;
 
     m_playerProfile->SaveScene(dir, info);

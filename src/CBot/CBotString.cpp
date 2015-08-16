@@ -123,7 +123,7 @@ const std::map<EID,const char *> CBotString::s_keywordString =
 
 CBotString::CBotString()
 {
-    m_ptr = NULL;
+    m_ptr = nullptr;
     m_lg  = 0;
 }
 
@@ -138,7 +138,7 @@ CBotString::CBotString(const char* p)
 {
     m_lg = strlen(p);
 
-    m_ptr = NULL;
+    m_ptr = nullptr;
     if (m_lg>0)
     {
         m_ptr = new char[m_lg+1];
@@ -150,7 +150,7 @@ CBotString::CBotString(const CBotString& srcString)
 {
     m_lg = srcString.m_lg;
 
-    m_ptr = NULL;
+    m_ptr = nullptr;
     if (m_lg>0)
     {
         m_ptr = new char[m_lg+1];
@@ -163,7 +163,7 @@ CBotString::CBotString(const CBotString& srcString)
 
 int CBotString::GetLength()
 {
-    if (m_ptr == NULL) return 0;
+    if (m_ptr == nullptr) return 0;
     return strlen( m_ptr );
 }
 
@@ -351,7 +351,7 @@ bool CBotString::LoadString(unsigned int id)
         delete[] m_ptr;
 
     m_lg = strlen(str);
-    m_ptr = NULL;
+    m_ptr = nullptr;
     if (m_lg > 0)
     {
         m_ptr = new char[m_lg+1];
@@ -389,9 +389,9 @@ const CBotString& CBotString::operator+(const CBotString& stringSrc)
 {
     char* p = new char[m_lg+stringSrc.m_lg+1];
 
-    if (m_ptr!=NULL) strcpy(p, m_ptr);
+    if (m_ptr!=nullptr) strcpy(p, m_ptr);
     char* pp = p + m_lg;
-    if (stringSrc.m_ptr!=NULL) strcpy(pp, stringSrc.m_ptr);
+    if (stringSrc.m_ptr!=nullptr) strcpy(pp, stringSrc.m_ptr);
 
     delete[] m_ptr;
     m_ptr = p;
@@ -541,7 +541,7 @@ static char emptyString[] = {0};
 
 CBotString::operator const char * () const
 {
-    if (this == NULL || m_ptr == NULL) return emptyString;
+    if (this == nullptr || m_ptr == nullptr) return emptyString;
     return m_ptr;
 }
 
@@ -549,8 +549,8 @@ CBotString::operator const char * () const
 int CBotString::Compare(const char * lpsz) const
 {
     char* p = m_ptr;
-    if (lpsz  == NULL) lpsz = emptyString;
-    if (m_ptr == NULL) p = emptyString;
+    if (lpsz  == nullptr) lpsz = emptyString;
+    if (m_ptr == nullptr) p = emptyString;
     return strcmp(p, lpsz);    // wcscmp
 }
 
@@ -571,7 +571,7 @@ const char * CBotString::MapIdToString(EID id)
 
 CBotStringArray::CBotStringArray()
 {
-    m_pData = NULL;
+    m_pData = nullptr;
     m_nSize = m_nMaxSize = 0;
 }
 
@@ -639,10 +639,10 @@ void CBotStringArray::SetSize(int nNewSize)
 
         DestructElements(m_pData, m_nSize);
         delete[] reinterpret_cast<unsigned char *>(m_pData);
-        m_pData = NULL;
+        m_pData = nullptr;
         m_nSize = m_nMaxSize = 0;
     }
-    else if (m_pData == NULL)
+    else if (m_pData == nullptr)
     {
         // create one with exact size
         m_pData = reinterpret_cast<CBotString*> (new unsigned char[nNewSize * sizeof(CBotString)]);

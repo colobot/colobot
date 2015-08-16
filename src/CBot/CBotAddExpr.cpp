@@ -28,7 +28,7 @@
 CBotAddExpr::CBotAddExpr()
 {
     m_leftop    =
-    m_rightop   = NULL;         // NULL to be able to delete without further
+    m_rightop   = nullptr;         // nullptr to be able to delete without further
     name = "CBotAddExpr";       // debug
 }
 
@@ -48,7 +48,7 @@ CBotInstr* CBotAddExpr::Compile(CBotToken* &p, CBotStack* pStack)
     // looking statements that may be suitable to the left of the operation + or -
 
     CBotInstr*  left = CBotMulExpr::Compile( p, pStk );     // expression A * B left
-    if (left == NULL) return pStack->Return(NULL, pStk);    // if error, transmit
+    if (left == nullptr) return pStack->Return(nullptr, pStk);    // if error, transmit
 
     // do we have the token + or - next?
 
@@ -65,7 +65,7 @@ CBotInstr* CBotAddExpr::Compile(CBotToken* &p, CBotStack* pStack)
 
         // looking statements that may be suitable for right
 
-        if ( NULL != (inst->m_rightop = CBotAddExpr::Compile( p, pStk )) )  // expression (...) rigth
+        if ( nullptr != (inst->m_rightop = CBotAddExpr::Compile( p, pStk )) )  // expression (...) rigth
         {
             // there is an acceptable second operand
 
@@ -84,7 +84,7 @@ CBotInstr* CBotAddExpr::Compile(CBotToken* &p, CBotStack* pStack)
         delete left;
         delete inst;
         // and transmits the error that is on the stack
-        return pStack->Return(NULL, pStk);
+        return pStack->Return(nullptr, pStk);
     }
 
     // if we are not dealing with an operation + or -
@@ -126,7 +126,7 @@ bool CBotAddExpr::Execute(CBotStack* &pStack)
     int     type2 = pStk2->GetType();
 
     // creates a temporary variable to put the result
-    CBotVar*    result = new CBotVar( NULL, MAX(type1, type2));
+    CBotVar*    result = new CBotVar( nullptr, MAX(type1, type2));
 
     // is the operation as requested
     switch (GetTokenType())
