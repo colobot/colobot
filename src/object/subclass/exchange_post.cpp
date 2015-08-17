@@ -121,6 +121,7 @@ bool CExchangePost::SetInfo(const std::string& name, float value)
         if (info.name == name)
         {
             info.value = value;
+            m_infoUpdate = true;
             return true;
         }
     }
@@ -134,6 +135,7 @@ bool CExchangePost::SetInfo(const std::string& name, float value)
     info.name = name;
     info.value = value;
     m_infoList.push_back(info);
+    m_infoUpdate = true;
     return true;
 }
 
@@ -173,6 +175,7 @@ bool CExchangePost::DeleteInfo(const std::string& name)
         if (it->name == name)
         {
             m_infoList.erase(it);
+            m_infoUpdate = true;
             return true;
         }
     }
