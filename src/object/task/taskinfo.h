@@ -36,7 +36,6 @@ public:
     Error       IsEnded() override;
     bool        Abort() override;
 
-protected:
     CExchangePost* FindExchangePost(float power);
 
 protected:

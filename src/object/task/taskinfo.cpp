@@ -69,7 +69,6 @@ bool CTaskInfo::EventProcess(const Event &event)
 Error CTaskInfo::Start(const char *name, float value, float power, bool send)
 {
     m_error = true;
-    m_object->SetInfoReturn(NAN);
 
     CExchangePost* exchangePost = FindExchangePost(power);
     if (exchangePost == nullptr)
@@ -88,10 +87,8 @@ Error CTaskInfo::Start(const char *name, float value, float power, bool send)
     }
     else    // receive?
     {
-        auto infoValue = exchangePost->GetInfoValue(name);
-        if (infoValue != boost::none)
+        if (exchangePost->HasInfo(name))
         {
-            m_object->SetInfoReturn(*infoValue);
             op = 0;  // beginning of transmission (for terminal)
         }
     }

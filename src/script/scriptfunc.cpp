@@ -52,6 +52,8 @@
 
 #include "object/subclass/exchange_post.h"
 
+#include "object/task/taskinfo.h"
+
 #include "physics/physics.h"
 
 #include "script/cbottoken.h"
@@ -1320,7 +1322,7 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
         }
     }
     if ( !WaitForForegroundTask(script, result, exception) )  return false;  // not finished
-    result->SetValFloat(script->m_returnValue);
+    result->SetValFloat(*script->m_returnValue);
     return true;
 }
 
@@ -2186,11 +2188,10 @@ CBotTypResult CScriptFunctions::cReceive(CBotVar* &var, void* user)
 bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
-    CObject*    pThis = script->m_object;
     CBotString  cbs;
     Error       err;
     const char* p;
-    float       value, power;
+    float       power;
 
     exception = 0;
 
@@ -2207,24 +2208,26 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
             var = var->GetNext();
         }
 
-        err = script->m_taskExecutor->StartTaskInfo(static_cast<const char*>(p), 0.0f, power, false);
+        err = script->m_taskExecutor->StartTaskInfo(p, 0.0f, power, false);
         if ( err != ERR_OK )
         {
             script->m_taskExecutor->StopForegroundTask();
             result->SetInit(CBotVar::InitType::IS_NAN);
             return true;
         }
+
+        CExchangePost* exchangePost = dynamic_cast<CTaskInfo*>(script->m_taskExecutor->GetForegroundTask())->FindExchangePost(power);
+        script->m_returnValue = exchangePost->GetInfoValue(p);
     }
     if ( !WaitForForegroundTask(script, result, exception) )  return false;  // not finished
 
-    value = pThis->GetInfoReturn();
-    if ( std::isnan(value) )
+    if ( script->m_returnValue == boost::none )
     {
         result->SetInit(CBotVar::InitType::IS_NAN);
     }
     else
     {
-        result->SetValFloat(value);
+        result->SetValFloat(*script->m_returnValue);
     }
     return true;
 }

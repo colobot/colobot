@@ -64,7 +64,7 @@ public:
     {}
 
     //! Destroy the object immediately. Use this only if you are 100% sure this is what you want, because object with magnifyDamage=0 should be able to bypass all damage. It's recommended to use CDamageableObject::DamageObject() instead.
-    /* NOTE: After this function exits, you can assume the object has been definetly destroyed */
+    /** NOTE: After this function exits, you can assume the object has been definetly destroyed */
     virtual void DestroyObject(DestructionType type) = 0;
 
     //! Returns the distance modifier for CLightning, used to modify hit probability. Value in range [0..1], where 0 is never and 1 is normal probability

@@ -104,7 +104,4 @@ public:
 
     // This will be eventually removed after refactoring to subclasses
     virtual CAuto*      GetAuto();
-
-    // CProgrammableObject or refactor
-    virtual float GetInfoReturn();
 };

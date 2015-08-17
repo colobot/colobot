@@ -148,7 +148,6 @@ COldObject::COldObject(int id)
     m_shieldRadius = 0.0f;
     m_magnifyDamage = 1.0f;
     m_param = 0.0f;
-    m_infoReturn = NAN;
 
     m_character = Character();
     m_character.wheelFront = 1.0f;
@@ -1630,16 +1629,6 @@ CObject* COldObject::GetTransporter()
 void COldObject::SetTransporterPart(int part)
 {
     m_transporterLink = part;
-}
-
-void COldObject::SetInfoReturn(float value)
-{
-    m_infoReturn = value;
-}
-
-float COldObject::GetInfoReturn()
-{
-    return m_infoReturn;
 }
 
 

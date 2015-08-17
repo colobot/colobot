@@ -18,7 +18,7 @@
  */
 
 /**
- * \file ui/control/key.h
+ * \file ui/controls/key.h
  * \brief Key slot control
  */
 

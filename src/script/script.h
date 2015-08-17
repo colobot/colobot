@@ -28,6 +28,7 @@
 
 #include <memory>
 #include <string>
+#include <boost/optional.hpp>
 
 
 class COldObject;
@@ -126,5 +127,5 @@ protected:
     int     m_error = 0;        // error (0=ok)
     int     m_cursor1 = 0;
     int     m_cursor2 = 0;
-    float   m_returnValue = 0.0f;
+    boost::optional<float> m_returnValue = boost::none;
 };

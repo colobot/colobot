@@ -145,8 +145,3 @@ void COldObjectInterface::FlatParent()
 {
     throw std::logic_error("FlatParent: not implemented!");
 }
-
-float COldObjectInterface::GetInfoReturn()
-{
-    throw std::logic_error("GetInfoReturn: not implemented!");
-}

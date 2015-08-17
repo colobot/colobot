@@ -271,9 +271,6 @@ public:
 
     void        FlatParent() override;
 
-    void SetInfoReturn(float value);
-    float GetInfoReturn() override;
-
     void SetPosition(const Math::Vector& pos) override;
     Math::Vector GetPosition() const override;
 
@@ -379,8 +376,6 @@ protected:
     ObjectPart  m_objectPart[OBJECTMAXPART];
 
     int         m_partiSel[4];
-
-    float       m_infoReturn;
 
     EventType   m_buttonAxe;
 
