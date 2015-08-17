@@ -490,10 +490,10 @@ void CRobotMain::ChangePhase(Phase phase)
                 GetLogger()->Info("Trying to restore pre-crash state...\n");
                 assert(m_playerProfile != nullptr);
                 m_playerProfile->LoadScene("../../crashsave");
-                CResourceManager::RemoveDirectory("../../crashsave");
+                CResourceManager::RemoveDirectory("crashsave");
             }, [&]() {
                 GetLogger()->Info("Not restoring pre-crash state\n");
-                CResourceManager::RemoveDirectory("../../crashsave");
+                CResourceManager::RemoveDirectory("crashsave");
             });
         }
     }
