@@ -1462,7 +1462,6 @@ bool CMotionHuman::EventFrame(const Event &event)
         }
     }
 
-    assert(m_object->Implements(ObjectInterfaceType::Destroyable));
     // Management of the head.
     if ( m_actionType == MHS_TAKE ||  // takes?
          m_actionType == MHS_FLAG )   // takes?
@@ -1492,7 +1491,7 @@ bool CMotionHuman::EventFrame(const Event &event)
         m_object->SetPartRotationX(1, sinf(m_armTimeAbs*0.7f)*0.10f);
         m_object->SetPartRotationY(1, sinf(m_armTimeAbs*3.0f)*0.30f*factor);
     }
-    else if ( !dynamic_cast<CDestroyableObject*>(m_object)->IsDying() )  // dead?
+    else if ( m_object->Implements(ObjectInterfaceType::Destroyable) && !dynamic_cast<CDestroyableObject*>(m_object)->IsDying() )  // dead?
     {
         m_object->SetPartRotationZ(1, Math::Smooth(m_object->GetPartRotationZ(1), sinf(m_armTimeAbs*1.0f)*0.2f, event.rTime*5.0f));
         m_object->SetPartRotationX(1, sinf(m_armTimeAbs*1.1f)*0.1f);
