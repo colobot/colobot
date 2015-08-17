@@ -52,6 +52,7 @@
 
 #include "object/subclass/base_alien.h"
 #include "object/subclass/exchange_post.h"
+#include "object/subclass/shielder.h"
 
 #include "object/task/taskinfo.h"
 
@@ -2508,7 +2509,7 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
         }
         else    // up ?
         {
-            pThis->SetParam(radius);
+            dynamic_cast<CShielder*>(pThis)->SetShieldRadius(radius);
             err = script->m_taskExecutor->StartTaskShield(TSM_UP, 1000.0f);
             if ( err != ERR_OK )
             {
@@ -2526,7 +2527,7 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
         else    // up?
         {
             //?         result->SetValInt(1);  // shows the error
-            pThis->SetParam(radius);
+            dynamic_cast<CShielder*>(pThis)->SetShieldRadius(radius);
             script->m_taskExecutor->StartTaskShield(TSM_UPDATE, 0.0f);
         }
     }

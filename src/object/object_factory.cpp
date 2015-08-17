@@ -45,6 +45,7 @@
 #include "object/subclass/base_building.h"
 #include "object/subclass/base_robot.h"
 #include "object/subclass/exchange_post.h"
+#include "object/subclass/shielder.h"
 #include "object/subclass/static_object.h"
 
 #include "physics/physics.h"
@@ -248,7 +249,6 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_MOBILErt:
         case OBJECT_MOBILErc:
         case OBJECT_MOBILErr:
-        case OBJECT_MOBILErs:
         case OBJECT_MOBILEsa:
         case OBJECT_MOBILEtg:
         case OBJECT_MOBILEft:
@@ -258,6 +258,9 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_MOBILEdr:
         case OBJECT_APOLLO2:
             return CBaseRobot::Create(params, m_oldModelManager, m_engine);
+
+        case OBJECT_MOBILErs:
+            return CShielder::Create(params, m_oldModelManager, m_engine);
 
         default:
             break;

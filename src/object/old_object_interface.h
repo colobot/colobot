@@ -85,15 +85,6 @@ public:
     virtual void        SetVirusMode(bool bEnable);
     virtual bool        GetVirusMode();
 
-    // These go to Shielder subclass
-    //! Shielder radius (only while active) [0 or RADIUS_SHIELD_MIN..RADIUS_SHIELD_MAX]
-    virtual float       GetShieldRadius();
-    //! Shielder radius [0..1]
-    //@{
-    virtual void        SetParam(float value);
-    virtual float       GetParam();
-    //@}
-
     // This will be eventually removed after refactoring to subclasses
     virtual CAuto*      GetAuto();
 };

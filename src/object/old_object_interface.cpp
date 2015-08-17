@@ -52,11 +52,6 @@ void COldObjectInterface::SetDrawFront(bool bDraw)
     throw std::logic_error("SetDrawFront: not implemented!");
 }
 
-float COldObjectInterface::GetShieldRadius()
-{
-    throw std::logic_error("GetShieldRadius: not implemented!");
-}
-
 
 void COldObjectInterface::FloorAdjust()
 {
@@ -103,17 +98,6 @@ void COldObjectInterface::SetVirusMode(bool bEnable)
 bool COldObjectInterface::GetVirusMode()
 {
     throw std::logic_error("GetVirusMode: not implemented!");
-}
-
-
-void COldObjectInterface::SetParam(float value)
-{
-    throw std::logic_error("SetParam: not implemented!");
-}
-
-float COldObjectInterface::GetParam()
-{
-    throw std::logic_error("GetParam: not implemented!");
 }
 
 

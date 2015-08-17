@@ -40,6 +40,8 @@
 
 #include "object/interface/damageable_object.h"
 
+#include "object/subclass/shielder.h"
+
 #include <cstring>
 
 
@@ -1217,7 +1219,7 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    if (object->GetShieldRadius() > 0.0f)  // protected by shield?
+                    if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder*>(object)->GetActiveShieldRadius() > 0.0f)  // protected by shield?
                     {
                         CreateParticle(m_particle[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
                         if (m_lastTimeGunDel > 0.2f)
@@ -1263,7 +1265,7 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    if (object->GetShieldRadius() > 0.0f)
+                    if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder*>(object)->GetActiveShieldRadius() > 0.0f)
                     {
                         CreateParticle(m_particle[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
                         if (m_lastTimeGunDel > 0.2f)
@@ -3614,18 +3616,22 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
 
         Math::Vector oPos = obj->GetPosition();
 
-        if ( type == PARTIGUN2 ||  // shooting insect?
-             type == PARTIGUN3 )   // suiciding spider?
+        if (obj->GetType() == OBJECT_MOBILErs)
         {
-            // Test if the ball is entered into the sphere of a shield.
-            float shieldRadius = obj->GetShieldRadius();
-            if (shieldRadius > 0.0f)
+            CShielder* shielder = dynamic_cast<CShielder*>(obj);
+            if ( type == PARTIGUN2 ||  // shooting insect?
+                 type == PARTIGUN3 )   // suiciding spider?
             {
-                float dist = Math::Distance(oPos, pos);
-                if (dist <= shieldRadius)
+                // Test if the ball is entered into the sphere of a shield.
+                float shieldRadius = shielder->GetActiveShieldRadius();
+                if (shieldRadius > 0.0f)
                 {
-                    best = obj;
-                    shield = true;
+                    float dist = Math::Distance(oPos, pos);
+                    if (dist <= shieldRadius)
+                    {
+                        best = obj;
+                        shield = true;
+                    }
                 }
             }
         }

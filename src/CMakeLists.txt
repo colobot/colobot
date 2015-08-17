@@ -206,6 +206,7 @@ set(BASE_SOURCES
     object/subclass/base_robot.cpp
     object/subclass/base_vehicle.cpp
     object/subclass/exchange_post.cpp
+    object/subclass/shielder.cpp
     object/subclass/static_object.cpp
     physics/physics.cpp
     script/cbottoken.cpp

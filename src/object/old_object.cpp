@@ -147,7 +147,6 @@ COldObject::COldObject(int id)
     m_gunGoalH = 0.0f;
     m_shieldRadius = 0.0f;
     m_magnifyDamage = 1.0f;
-    m_param = 0.0f;
 
     m_character = Character();
     m_character.wheelFront = 1.0f;
@@ -659,11 +658,6 @@ void COldObject::SetType(ObjectType type)
     m_type = type;
     m_name = GetObjectName(m_type);
 
-    if ( m_type == OBJECT_MOBILErs )
-    {
-        m_param = 1.0f;  // shield up to default
-    }
-
     // TODO: Temporary hack
     if ( m_type == OBJECT_MOBILEfa || // WingedGrabber
          m_type == OBJECT_MOBILEfs || // WingedSniffer
@@ -1015,14 +1009,6 @@ void COldObject::Write(CLevelParserLine* line)
         line->AddParam("bVirusActive", MakeUnique<CLevelParserParam>(GetActiveVirus()));
     }
 
-    if ( Implements(ObjectInterfaceType::TaskExecutor) )
-    {
-        if ( m_type == OBJECT_MOBILErs )
-        {
-            line->AddParam("bShieldActive", MakeUnique<CLevelParserParam>(IsBackgroundTask()));
-        }
-    }
-
     if ( m_physics != nullptr )
     {
         m_physics->Write(line);
@@ -1153,17 +1139,6 @@ void COldObject::Read(CLevelParserLine* line)
         SetActiveVirus(line->GetParam("bVirusActive")->AsBool(false));
     }
 
-    if (Implements(ObjectInterfaceType::TaskExecutor))
-    {
-        if ( m_type == OBJECT_MOBILErs )
-        {
-            if( line->GetParam("bShieldActive")->AsBool(false) )
-            {
-                StartTaskShield(TSM_START);
-            }
-        }
-    }
-
     if ( m_physics != nullptr )
     {
         m_physics->Read(line);
@@ -1243,21 +1218,6 @@ Math::Sphere COldObject::GetJostlingSphere() const
     Math::Sphere transformedJostlingSphere = m_jostlingSphere;
     transformedJostlingSphere.pos = Math::Transform(m_objectPart[0].matWorld, transformedJostlingSphere.pos);
     return transformedJostlingSphere;
-}
-
-
-// Specifies the radius of the shield.
-
-void COldObject::SetShieldRadius(float radius)
-{
-    m_shieldRadius = radius;
-}
-
-// Returns the radius of the shield.
-
-float COldObject::GetShieldRadius()
-{
-    return m_shieldRadius;
 }
 
 
@@ -2742,19 +2702,6 @@ void COldObject::SetMagnifyDamage(float factor)
 float COldObject::GetMagnifyDamage()
 {
     return m_magnifyDamage;
-}
-
-
-// Management of free parameter.
-
-void COldObject::SetParam(float value)
-{
-    m_param = value;
-}
-
-float COldObject::GetParam()
-{
-    return m_param;
 }
 
 

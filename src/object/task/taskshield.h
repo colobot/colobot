@@ -47,6 +47,8 @@ enum TaskShieldMode
     TSM_START   = 4,    // start with shield up
 };
 
+class CShielder;
+
 
 
 class CTaskShield : public CBackgroundTask
@@ -62,6 +64,8 @@ public:
     bool        IsBusy();
     bool        Abort();
 
+    float       GetActiveRadius();
+
 protected:
     Error       Stop();
     bool        CreateLight(Math::Vector pos);
@@ -69,6 +73,7 @@ protected:
     float       GetRadius();
 
 protected:
+    CShielder*      m_shielder;
     TaskShieldPhase m_phase = TS_UP1;
     float           m_progress = 0.0f;
     float           m_speed = 0.0f;

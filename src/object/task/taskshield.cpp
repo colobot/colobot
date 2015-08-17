@@ -34,6 +34,8 @@
 
 #include "object/interface/powered_object.h"
 
+#include "object/subclass/shielder.h"
+
 #include "physics/physics.h"
 
 #include <string.h>
@@ -51,6 +53,7 @@ CTaskShield::CTaskShield(COldObject* object) : CBackgroundTask(object)
     m_effectLight = -1;
 
     assert(m_object->Implements(ObjectInterfaceType::Powered));
+    m_shielder = dynamic_cast<CShielder*>(object);
 }
 
 // Object's destructor.
@@ -255,8 +258,6 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
     {
         Math::Point dim;
 
-        m_object->SetShieldRadius(GetRadius());
-
         Math::Matrix* mat = m_object->GetWorldMatrix(0);
         Math::Vector pos = Math::Vector(7.0f, 15.0f, 0.0f);
         pos = Transform(*mat, pos);  // sphere position
@@ -333,8 +334,6 @@ Error CTaskShield::Stop()
 
     if ( m_phase == TS_SHIELD )
     {
-        m_object->SetShieldRadius(0.0f);
-
         if ( m_rankSphere != -1 )
         {
             m_particle->SetPhase(m_rankSphere, Gfx::PARPHEND, 3.0f);
@@ -379,8 +378,6 @@ Error CTaskShield::IsEnded()
 
     if ( m_phase == TS_SHIELD )
     {
-        m_object->SetShieldRadius(GetRadius());
-
         energy = GetObjectEnergy(m_object);
 
         if ( energy == 0.0f || m_delay <= 0.0f )
@@ -413,8 +410,6 @@ Error CTaskShield::IsEnded()
         pos.y = 1.0f+3.0f;
         pos.z = 0.0f;
         m_object->SetPartPosition(3, pos);
-
-        m_object->SetShieldRadius(GetRadius());
 
         pos = m_shieldPos;
         speed = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -471,8 +466,6 @@ bool CTaskShield::IsBusy()
 bool CTaskShield::Abort()
 {
     Math::Vector    pos;
-
-    m_object->SetShieldRadius(0.0f);
 
     pos.x = 7.0f;
     pos.y = 4.5f;
@@ -561,5 +554,10 @@ void CTaskShield::IncreaseShield()
 
 float CTaskShield::GetRadius()
 {
-    return RADIUS_SHIELD_MIN + (RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)*m_object->GetParam();
+    return RADIUS_SHIELD_MIN + (RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)*m_shielder->GetShieldRadius();
+}
+
+float CTaskShield::GetActiveRadius()
+{
+    return m_phase == TS_SHIELD ? GetRadius() : 0.0f;
 }

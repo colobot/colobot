@@ -130,9 +130,6 @@ public:
     int         GetShadowLight();
     int         GetEffectLight();
 
-    void        SetShieldRadius(float radius);
-    float       GetShieldRadius() override;
-
     void        SetFloorHeight(float height);
     void        FloorAdjust() override;
 
@@ -238,9 +235,6 @@ public:
 
     void        SetMagnifyDamage(float factor) override;
     float       GetMagnifyDamage() override;
-
-    void        SetParam(float value) override;
-    float       GetParam() override;
 
     void        SetDying(DeathType deathType) override;
     DeathType   GetDying() override;

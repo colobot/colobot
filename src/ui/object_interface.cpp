@@ -42,6 +42,8 @@
 #include "object/motion/motion.h"
 #include "object/motion/motionvehicle.h"
 
+#include "object/subclass/shielder.h"
+
 #include "physics/physics.h"
 
 #include "script/script.h"
@@ -584,7 +586,7 @@ bool CObjectInterface::EventProcess(const Event &event)
                 ps = static_cast< CSlider* >(pw->SearchControl(EVENT_OBJECT_DIMSHIELD));
                 if ( ps != 0 )
                 {
-                    m_object->SetParam((ps->GetVisibleValue()-(RADIUS_SHIELD_MIN/g_unit))/((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
+                    dynamic_cast<CShielder*>(m_object)->SetShieldRadius((ps->GetVisibleValue()-(RADIUS_SHIELD_MIN/g_unit))/((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
                 }
             }
         }
@@ -1708,7 +1710,7 @@ void CObjectInterface::UpdateInterface()
         ps = static_cast< CSlider* >(pw->SearchControl(EVENT_OBJECT_DIMSHIELD));
         if ( ps != 0 )
         {
-            ps->SetVisibleValue((RADIUS_SHIELD_MIN/g_unit)+m_object->GetParam()*((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
+            ps->SetVisibleValue((RADIUS_SHIELD_MIN/g_unit)+dynamic_cast<CShielder*>(m_object)->GetShieldRadius()*((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
         }
     }
 
