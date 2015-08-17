@@ -58,7 +58,7 @@ bool CGauge::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN )
     {
-        if ( CControl::Detect(event.mousePos) )
+        if ( CControl::Detect(event.mousePos) && TestState(STATE_VISIBLE) )
         {
             m_event->AddEvent(Event(m_eventType));
             return false;
@@ -147,4 +147,3 @@ float CGauge::GetLevel()
 
 
 }
-
