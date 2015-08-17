@@ -892,7 +892,6 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
                                        float &distance, float &angle,
                                        float &height)
 {
-    Character*  character;
     Math::Matrix*   mat;
     float       iAngle, oAngle, oLimit, aLimit, dLimit;
 

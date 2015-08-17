@@ -175,8 +175,8 @@ public:
 
     void        SetPower(CObject* power) override;
     CObject*    GetPower() override;
-    Math::Vector GetPowerPosition();
-    void         SetPowerPosition(const Math::Vector& powerPosition);
+    Math::Vector GetPowerPosition() override;
+    void         SetPowerPosition(const Math::Vector& powerPosition) override;
     void        SetCargo(CObject* cargo) override;
     CObject*    GetCargo() override;
     void        SetTransporter(CObject* transporter) override;

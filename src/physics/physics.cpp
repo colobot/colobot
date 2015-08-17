@@ -2958,7 +2958,6 @@ void CPhysics::FrameParticle(float aTime, float rTime)
 
 void CPhysics::PowerParticle(float factor, bool bBreak)
 {
-    Character*  character;
     Math::Matrix*   mat;
     Math::Vector    pos, ppos, eye, speed;
     Math::Point     dim;
@@ -2976,7 +2975,6 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
     }
 
     mat = m_object->GetWorldMatrix(0);
-    character = m_object->GetCharacter();
 
     pos = m_object->GetPowerPosition();
     pos.x -= 0.3f;
