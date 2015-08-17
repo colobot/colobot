@@ -288,7 +288,7 @@ public:
     CPlayerProfile* GetPlayerProfile();
 
     bool        IOIsBusy();
-    bool        IOWriteScene(std::string filename, std::string filecbot, std::string filescreenshot, char *info);
+    bool        IOWriteScene(std::string filename, std::string filecbot, std::string filescreenshot, const std::string& info, bool emergencySave = false);
     void        IOWriteSceneFinished();
     CObject*    IOReadScene(std::string filename, std::string filecbot);
     void        IOWriteObject(CLevelParserLine *line, CObject* obj, const std::string& programDir, int objRank);

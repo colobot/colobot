@@ -471,7 +471,7 @@ void CPlayerProfile::SaveScene(std::string dir, std::string info)
         CResourceManager::CreateDirectory(dir);
     }
 
-    CRobotMain::GetInstancePointer()->IOWriteScene(dir + "/data.sav", dir + "/cbot.run", dir + "/screen.png", const_cast<char*>(info.c_str()));
+    CRobotMain::GetInstancePointer()->IOWriteScene(dir + "/data.sav", dir + "/cbot.run", dir + "/screen.png", info.c_str());
 }
 
 void CPlayerProfile::LoadScene(std::string dir)

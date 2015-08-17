@@ -481,6 +481,23 @@ void CRobotMain::ChangePhase(Phase phase)
     pb->SetState(Ui::STATE_SIMPLY);
     pb->ClearState(Ui::STATE_VISIBLE);
 
+    if (m_phase == PHASE_PLAYER_SELECT)
+    {
+        if (CResourceManager::DirectoryExists("crashsave"))
+        {
+            GetLogger()->Info("Pre-crash save found!\n");
+            m_ui->GetDialog()->StartQuestion("Your game seems to have crashed. Do you want to restore pre-crash state?", false, false, false, [&]() {
+                GetLogger()->Info("Trying to restore pre-crash state...\n");
+                assert(m_playerProfile != nullptr);
+                m_playerProfile->LoadScene("../../crashsave");
+                CResourceManager::RemoveDirectory("../../crashsave");
+            }, [&]() {
+                GetLogger()->Info("Not restoring pre-crash state\n");
+                CResourceManager::RemoveDirectory("../../crashsave");
+            });
+        }
+    }
+
     m_ui->ChangePhase(m_phase);
     if (!resetWorld) return;
 
@@ -4486,11 +4503,14 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj, const std::
 }
 
 //! Saves the current game
-bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::string filescreenshot, char *info)
+bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::string filescreenshot, const std::string& info, bool emergencySave)
 {
-    // Render the indicator to show that we are working
-    ShowSaveIndicator(true);
-    m_app->Render(); // update
+    if (!emergencySave)
+    {
+        // Render the indicator to show that we are working
+        ShowSaveIndicator(true);
+        m_app->Render(); // update
+    }
 
     std::string dirname = filename.substr(0, filename.find_last_of("/"));
 
@@ -4609,21 +4629,24 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     CBotClass::SaveStaticState(file);
     fClose(file);
 
-    ShowSaveIndicator(false); // force hide for screenshot
-    MouseMode oldMouseMode = m_app->GetMouseMode();
-    m_app->SetMouseMode(MOUSE_NONE); // disable the mouse
-    m_displayText->HideText(true); // hide
-    m_engine->SetScreenshotMode(true);
+    if (!emergencySave)
+    {
+        ShowSaveIndicator(false); // force hide for screenshot
+        MouseMode oldMouseMode = m_app->GetMouseMode();
+        m_app->SetMouseMode(MOUSE_NONE); // disable the mouse
+        m_displayText->HideText(true); // hide
+        m_engine->SetScreenshotMode(true);
 
-    m_engine->Render(); // update (but don't show, we're not swapping buffers here!)
-    m_engine->WriteScreenShot(CResourceManager::GetSaveLocation() + "/" + filescreenshot); //TODO: Use PHYSFS?
-    m_shotSaving++;
+        m_engine->Render(); // update (but don't show, we're not swapping buffers here!)
+        m_engine->WriteScreenShot(CResourceManager::GetSaveLocation() + "/" + filescreenshot); //TODO: Use PHYSFS?
+        m_shotSaving++;
 
-    m_engine->SetScreenshotMode(false);
-    m_displayText->HideText(false);
-    m_app->SetMouseMode(oldMouseMode);
+        m_engine->SetScreenshotMode(false);
+        m_displayText->HideText(false);
+        m_app->SetMouseMode(oldMouseMode);
 
-    m_app->ResetTimeAfterLoading();
+        m_app->ResetTimeAfterLoading();
+    }
     return true;
 }
 

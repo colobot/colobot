@@ -21,6 +21,8 @@
 
 #include "common/config.h"
 
+#include "common/resources/resourcemanager.h"
+
 #include "app/system.h"
 
 #include "common/stringutils.h"
@@ -93,6 +95,8 @@ void CSignalHandlers::HandleOtherUncaughtException()
 
 void CSignalHandlers::ReportError(const std::string& errorMessage)
 {
+    static bool triedSaving = false;
+
     std::stringstream msg;
     msg << "Unhandled exception occured!" << std::endl;
     msg << "==============================" << std::endl;
@@ -109,21 +113,44 @@ void CSignalHandlers::ReportError(const std::string& errorMessage)
         msg << "You are running version " << COLOBOT_VERSION_DISPLAY << " from CI build #" << BUILD_NUMBER << std::endl;
     #endif
     msg << std::endl;
+    bool canSave = false;
+    CRobotMain* robotMain = nullptr;
     if (!CRobotMain::IsCreated())
     {
         msg << "CRobotMain instance does not seem to exist" << std::endl;
     }
     else
     {
-        CRobotMain* robotMain = CRobotMain::GetInstancePointer();
+        robotMain = CRobotMain::GetInstancePointer();
         msg << "The game was in phase " << PhaseToString(robotMain->GetPhase()) << " (ID=" << robotMain->GetPhase() << ")" << std::endl;
         msg << "Last started level was: category=" << GetLevelCategoryDir(robotMain->GetLevelCategory()) << " chap=" << robotMain->GetLevelChap() << " rank=" << robotMain->GetLevelRank() << std::endl;
+        canSave = (robotMain->GetPhase() == PHASE_SIMUL);
     }
     msg << "==============================" << std::endl;
     msg << std::endl;
     msg << "Sorry for inconvenience!";
 
     std::cerr << std::endl << msg.str() << std::endl;
+
     m_systemUtils->SystemDialog(SDT_ERROR, "Unhandled exception occured!", msg.str());
+
+    if (canSave && !triedSaving)
+    {
+        msg.str("");
+        msg << "You can try saving the game at the moment of a crash. Keep in mind, the game engine is in" << std::endl;
+        msg << "an unstable state so the saved game may be corrupted or even cause another crash." << std::endl;
+        msg << std::endl;
+        msg << "Do you want to try saving now?";
+
+        SystemDialogResult result = m_systemUtils->SystemDialog(SDT_YES_NO, "Try to save?", msg.str());
+        if (result == SDR_YES)
+        {
+            CResourceManager::CreateDirectory("crashsave");
+            robotMain->IOWriteScene("crashsave/data.sav", "crashsave/cbot.run", "crashsave/screen.png", "Backup at the moment of a crash", true);
+            m_systemUtils->SystemDialog(SDT_INFO, "Try to save?", "Saving finished.\nPlease restart the game now");
+        }
+        triedSaving = true;
+    }
+
     exit(1);
 }
