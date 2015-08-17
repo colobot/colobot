@@ -66,4 +66,10 @@ public:
     virtual void SetCameraLock(bool lock) = 0;
     //! Check if camera changes are disallowed
     virtual bool GetCameraLock() = 0;
+
+    //! Adjust camera parameters for the given object
+    /** TODO: Seems to be for onboard camera only? Check and rename appropriately */
+    virtual void AdjustCamera(Math::Vector &eye, float &dirH, float &dirV,
+                              Math::Vector &lookat, Math::Vector &upVec,
+                              Gfx::CameraType type) = 0;
 };

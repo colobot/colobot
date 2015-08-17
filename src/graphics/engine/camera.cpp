@@ -36,6 +36,7 @@
 #include "object/object_manager.h"
 
 #include "object/interface/carrier_object.h"
+#include "object/interface/controllable_object.h"
 #include "object/interface/movable_object.h"
 #include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
@@ -1574,9 +1575,9 @@ bool CCamera::EventFrameOnBoard(const Event &event)
 {
     if (m_cameraObj != nullptr)
     {
+        assert(m_cameraObj->Implements(ObjectInterfaceType::Controllable));
         Math::Vector lookatPt, upVec;
-        m_cameraObj->SetViewFromHere(m_eyePt, m_directionH, m_directionV,
-                                     lookatPt, upVec, m_type);
+        dynamic_cast<CControllableObject*>(m_cameraObj)->AdjustCamera(m_eyePt, m_directionH, m_directionV, lookatPt, upVec, m_type);
         Math::Vector eye    = m_effectOffset * 0.3f + m_eyePt;
         Math::Vector lookat = m_effectOffset * 0.3f + lookatPt;
 

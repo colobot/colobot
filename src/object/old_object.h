@@ -187,9 +187,9 @@ public:
     Math::Matrix*   GetRotateMatrix(int part);
     Math::Matrix*   GetWorldMatrix(int part) override;
 
-    void        SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
-                                Math::Vector &lookat, Math::Vector &upVec,
-                                Gfx::CameraType type) override;
+    void        AdjustCamera(Math::Vector &eye, float &dirH, float &dirV,
+                             Math::Vector &lookat, Math::Vector &upVec,
+                             Gfx::CameraType type) override;
 
     Character*  GetCharacter() override;
 

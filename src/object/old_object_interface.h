@@ -77,10 +77,6 @@ public:
 
     virtual Math::Matrix*   GetWorldMatrix(int part);
 
-    virtual void        SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
-                                Math::Vector &lookat, Math::Vector &upVec,
-                                Gfx::CameraType type);
-
     virtual Character*  GetCharacter();
 
     virtual void        FlatParent();

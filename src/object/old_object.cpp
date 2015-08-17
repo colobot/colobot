@@ -2293,7 +2293,7 @@ void COldObject::PartiFrame(float rTime)
 // Changes the perspective to view if it was like in the vehicle,
 // or behind the vehicle.
 
-void COldObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
+void COldObject::AdjustCamera(Math::Vector &eye, float &dirH, float &dirV,
                               Math::Vector  &lookat, Math::Vector &upVec,
                               Gfx::CameraType type)
 {

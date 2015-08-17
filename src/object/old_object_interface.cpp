@@ -89,13 +89,6 @@ Math::Matrix* COldObjectInterface::GetWorldMatrix(int part)
     throw std::logic_error("GetWorldMatrix: not implemented!");
 }
 
-void COldObjectInterface::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
-                                Math::Vector &lookat, Math::Vector &upVec,
-                                Gfx::CameraType type)
-{
-    throw std::logic_error("SetViewFromHere: not implemented!");
-}
-
 Character* COldObjectInterface::GetCharacter()
 {
     throw std::logic_error("GetCharacter: not implemented!");
