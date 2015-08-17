@@ -952,7 +952,7 @@ void CParticle::FrameParticle(float rTime)
             if (object != nullptr)
             {
                 assert(object->Implements(ObjectInterfaceType::Damageable));
-                dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Phazer, 0.0f);
+                dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Phazer, 0.002f);
             }
 
             m_particle[i].zoom = 1.0f-(m_particle[i].time-m_particle[i].duration);
@@ -1154,7 +1154,7 @@ void CParticle::FrameParticle(float rTime)
                 if (object != nullptr)
                 {
                     assert(object->Implements(ObjectInterfaceType::Damageable));
-                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire, 0.0f);
+                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire, 0.002f);
 
                     m_exploGunCounter++;
 
@@ -1236,7 +1236,7 @@ void CParticle::FrameParticle(float rTime)
                             Play(SOUND_TOUCH, m_particle[i].pos, 1.0f);
 
                         assert(object->Implements(ObjectInterfaceType::Damageable));
-                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.0f);  // starts explosion
+                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.2f);  // starts explosion
                     }
                 }
             }
@@ -1336,7 +1336,7 @@ void CParticle::FrameParticle(float rTime)
                 if (object != nullptr)
                 {
                     assert(object->Implements(ObjectInterfaceType::Damageable));
-                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.0f);
+                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.002f);
 
                     m_exploGunCounter ++;
 

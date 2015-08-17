@@ -371,15 +371,7 @@ bool COldObject::DamageObject(DamageType type, float force)
         if (force != std::numeric_limits<float>::infinity())
         {
             // Calculate the shield lost by the explosion
-            if ( force == 0.0f ) // use default?
-            {
-                loss = 0.002f;
-            }
-            else
-            {
-                loss = force;
-            }
-            loss *= magnifyDamage;
+            loss = force * magnifyDamage;
             if (loss > 1.0f) loss = 1.0f;
 
             // Decreases the the shield
