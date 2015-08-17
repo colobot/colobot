@@ -42,11 +42,11 @@ public:
     CTaskFireAnt(COldObject* object);
     ~CTaskFireAnt();
 
-    bool    EventProcess(const Event &event);
+    bool    EventProcess(const Event &event) override;
 
     Error   Start(Math::Vector impact);
-    Error   IsEnded();
-    bool    Abort();
+    Error   IsEnded() override;
+    bool    Abort() override;
 
 protected:
 

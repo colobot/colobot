@@ -42,17 +42,17 @@ public:
     CAutoConvert(COldObject* object);
     ~CAutoConvert();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false) override;
 
-    void        Init();
-    bool        EventProcess(const Event &event);
-    Error       GetError();
-    bool        Abort();
+    void        Init() override;
+    bool        EventProcess(const Event &event) override;
+    Error       GetError() override;
+    bool        Abort() override;
 
-    bool        CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect) override;
 
-    bool        Write(CLevelParserLine* line);
-    bool        Read(CLevelParserLine* line);
+    bool        Write(CLevelParserLine* line) override;
+    bool        Read(CLevelParserLine* line) override;
 
 protected:
     CObject*    SearchStone(ObjectType type);

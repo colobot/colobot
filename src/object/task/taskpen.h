@@ -42,11 +42,11 @@ public:
     CTaskPen(COldObject* object);
     ~CTaskPen();
 
-    bool        EventProcess(const Event &event);
+    bool        EventProcess(const Event &event) override;
 
     Error       Start(bool bDown, TraceColor color);
-    Error       IsEnded();
-    bool        Abort();
+    Error       IsEnded() override;
+    bool        Abort() override;
 
 protected:
     void        SoundManip(float time, float amplitude, float frequency);

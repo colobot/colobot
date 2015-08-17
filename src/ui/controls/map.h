@@ -72,9 +72,9 @@ public:
     CMap();
     ~CMap();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    bool        EventProcess(const Event &event);
-    void        Draw();
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
+    bool        EventProcess(const Event &event) override;
+    void        Draw() override;
 
     void        UpdateTerrain();
     void        UpdateTerrain(int bx, int by, int ex, int ey);

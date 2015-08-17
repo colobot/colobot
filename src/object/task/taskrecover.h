@@ -43,11 +43,11 @@ public:
     CTaskRecover(COldObject* object);
     ~CTaskRecover();
 
-    bool        EventProcess(const Event &event);
+    bool        EventProcess(const Event &event) override;
 
     Error       Start();
-    Error       IsEnded();
-    bool        Abort();
+    Error       IsEnded() override;
+    bool        Abort() override;
 
 protected:
     CObject*    SearchRuin();

@@ -30,10 +30,10 @@ public:
     CTaskTurn(COldObject* object);
     ~CTaskTurn();
 
-    bool    EventProcess(const Event &event);
+    bool    EventProcess(const Event &event) override;
 
     Error   Start(float angle);
-    Error   IsEnded();
+    Error   IsEnded() override;
 
 protected:
     float       m_angle = 0.0f;

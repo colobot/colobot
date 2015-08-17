@@ -41,17 +41,17 @@ public:
     CScroll();
     ~CScroll();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
 
-    void        SetPos(Math::Point pos);
-    void        SetDim(Math::Point dim);
+    void        SetPos(Math::Point pos) override;
+    void        SetDim(Math::Point dim) override;
 
-    bool        SetState(int state, bool bState);
-    bool        SetState(int state);
-    bool        ClearState(int state);
+    bool        SetState(int state, bool bState) override;
+    bool        SetState(int state) override;
+    bool        ClearState(int state) override;
 
-    bool        EventProcess(const Event &event);
-    void        Draw();
+    bool        EventProcess(const Event &event) override;
+    void        Draw() override;
 
     void        SetVisibleValue(float value);
     float       GetVisibleValue();

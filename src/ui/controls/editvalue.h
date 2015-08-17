@@ -51,13 +51,13 @@ public:
     CEditValue();
     virtual ~CEditValue();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 
-    void        SetPos(Math::Point pos);
-    void        SetDim(Math::Point dim);
+    void        SetPos(Math::Point pos) override;
+    void        SetDim(Math::Point dim) override;
 
-    bool        EventProcess(const Event &event);
-    void        Draw();
+    bool        EventProcess(const Event &event) override;
+    void        Draw() override;
 
     void        SetType(EditValueType type);
     EditValueType GetType();

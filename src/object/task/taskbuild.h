@@ -53,11 +53,11 @@ public:
     CTaskBuild(COldObject* object);
     ~CTaskBuild();
 
-    bool        EventProcess(const Event &event);
+    bool        EventProcess(const Event &event) override;
 
     Error       Start(ObjectType type);
-    Error       IsEnded();
-    bool        Abort();
+    Error       IsEnded() override;
+    bool        Abort() override;
 
 protected:
     Error       FlatFloor();

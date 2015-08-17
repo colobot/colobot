@@ -80,7 +80,7 @@ public:
     bool immediat = false;
 
     //! Read from line in scene file
-    virtual void Read(CLevelParserLine* line);
+    void Read(CLevelParserLine* line) override;
 
     //! Checks if lost condition is met
     bool CheckLost();
@@ -102,5 +102,5 @@ public:
     bool changed = false;
 
     //! Read from line in scene file
-    virtual void Read(CLevelParserLine* line);
+    void Read(CLevelParserLine* line) override;
 };

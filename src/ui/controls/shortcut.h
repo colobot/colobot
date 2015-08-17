@@ -32,11 +32,11 @@ public:
     CShortcut();
     ~CShortcut();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 
-    bool    EventProcess(const Event &event);
+    bool    EventProcess(const Event &event) override;
 
-    void    Draw();
+    void    Draw() override;
 
 protected:
     void    DrawVertex(int icon, float zoom);

@@ -42,11 +42,11 @@ public:
     CTaskFlag(COldObject* object);
     ~CTaskFlag();
 
-    bool        EventProcess(const Event &event);
+    bool        EventProcess(const Event &event) override;
 
     Error       Start(TaskFlagOrder order, int rank);
-    Error       IsEnded();
-    bool        Abort();
+    Error       IsEnded() override;
+    bool        Abort() override;
 
 protected:
     Error       CreateFlag(int rank);

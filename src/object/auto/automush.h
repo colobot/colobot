@@ -41,14 +41,14 @@ public:
     CAutoMush(COldObject* object);
     ~CAutoMush();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false) override;
 
-    void        Init();
-    bool        EventProcess(const Event &event);
-    Error       GetError();
+    void        Init() override;
+    bool        EventProcess(const Event &event) override;
+    Error       GetError() override;
 
-    bool        Write(CLevelParserLine* line);
-    bool        Read(CLevelParserLine* line);
+    bool        Write(CLevelParserLine* line) override;
+    bool        Read(CLevelParserLine* line) override;
 
 protected:
     bool        SearchTarget();

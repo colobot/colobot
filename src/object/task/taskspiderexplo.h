@@ -30,11 +30,11 @@ public:
     CTaskSpiderExplo(COldObject* object);
     ~CTaskSpiderExplo();
 
-    bool        EventProcess(const Event &event);
+    bool        EventProcess(const Event &event) override;
 
     Error       Start();
-    Error       IsEnded();
-    bool        Abort();
+    Error       IsEnded() override;
+    bool        Abort() override;
 
 protected:
     float       m_time = 0.0f;

@@ -73,22 +73,8 @@ void CNullDevice::SetTransform(TransformType type, const Math::Matrix &matrix)
 {
 }
 
-const Math::Matrix& CNullDevice::GetTransform(TransformType type)
-{
-    return m_matrix;
-}
-
-void CNullDevice::MultiplyTransform(TransformType type, const Math::Matrix &matrix)
-{
-}
-
 void CNullDevice::SetMaterial(const Material &material)
 {
-}
-
-const Material& CNullDevice::GetMaterial()
-{
-    return m_material;
 }
 
 int CNullDevice::GetMaxLightCount()
@@ -100,18 +86,8 @@ void CNullDevice::SetLight(int index, const Light &light)
 {
 }
 
-const Light& CNullDevice::GetLight(int index)
-{
-    return m_light;
-}
-
 void CNullDevice::SetLightEnabled(int index, bool enabled)
 {
-}
-
-bool CNullDevice::GetLightEnabled(int index)
-{
-    return false;
 }
 
 Texture CNullDevice::CreateTexture(CImage *image, const TextureCreateParams &params)
@@ -156,18 +132,8 @@ void CNullDevice::SetTexture(int index, unsigned int textureId)
 {
 }
 
-Texture CNullDevice::GetTexture(int index)
-{
-    return Texture();
-}
-
 void CNullDevice::SetTextureEnabled(int index, bool enabled)
 {
-}
-
-bool CNullDevice::GetTextureEnabled(int index)
-{
-    return false;
 }
 
 void CNullDevice::SetTextureStageParams(int index, const TextureStageParams &params)
@@ -180,11 +146,6 @@ void CNullDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode 
 
 void CNullDevice::SetTextureCoordGeneration(int index, TextureGenerationParams &params)
 {
-}
-
-TextureStageParams CNullDevice::GetTextureStageParams(int index)
-{
-    return TextureStageParams();
 }
 
 void CNullDevice::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount,
@@ -249,11 +210,6 @@ void CNullDevice::SetRenderState(RenderState state, bool enabled)
 {
 }
 
-bool CNullDevice::GetRenderState(RenderState state)
-{
-    return false;
-}
-
 void CNullDevice::SetColorMask(bool red, bool green, bool blue, bool alpha)
 {
 }
@@ -262,84 +218,36 @@ void CNullDevice::SetDepthTestFunc(CompFunc func)
 {
 }
 
-CompFunc CNullDevice::GetDepthTestFunc()
-{
-    return COMP_FUNC_NEVER;
-}
-
 void CNullDevice::SetDepthBias(float factor, float units)
 {
-}
-
-float CNullDevice::GetDepthBias()
-{
-    return 0.0f;
 }
 
 void CNullDevice::SetAlphaTestFunc(CompFunc func, float refValue)
 {
 }
 
-void CNullDevice::GetAlphaTestFunc(CompFunc &func, float &refValue)
-{
-
-    func = COMP_FUNC_NEVER;
-    refValue = 0.0f;
-}
-
 void CNullDevice::SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend)
 {
-}
-
-void CNullDevice::GetBlendFunc(BlendFunc &srcBlend, BlendFunc &dstBlend)
-{
-    srcBlend = BLEND_ZERO;
-    dstBlend = BLEND_ZERO;
 }
 
 void CNullDevice::SetClearColor(const Color &color)
 {
 }
 
-Color CNullDevice::GetClearColor()
-{
-    return Color(0.0f, 0.0f, 0.0f, 0.0f);
-}
-
 void CNullDevice::SetGlobalAmbient(const Color &color)
 {
-}
-
-Color CNullDevice::GetGlobalAmbient()
-{
-    return Color(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void CNullDevice::SetFogParams(FogMode mode, const Color &color, float start, float end, float density)
 {
 }
 
-void CNullDevice::GetFogParams(FogMode &mode, Color &color, float &start, float &end, float &density)
-{
-    //
-}
-
 void CNullDevice::SetCullMode(CullMode mode)
 {
 }
 
-CullMode CNullDevice::GetCullMode()
-{
-    return CULL_CW;
-}
-
 void CNullDevice::SetShadeModel(ShadeModel model)
 {
-}
-
-ShadeModel CNullDevice::GetShadeModel()
-{
-    return SHADE_FLAT;
 }
 
 void CNullDevice::SetShadowColor(float value)
@@ -348,11 +256,6 @@ void CNullDevice::SetShadowColor(float value)
 
 void CNullDevice::SetFillMode(FillMode mode)
 {
-}
-
-FillMode CNullDevice::GetFillMode()
-{
-    return FILL_POINT;
 }
 
 void CNullDevice::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)

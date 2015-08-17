@@ -34,10 +34,10 @@ public:
     CLabel();
     virtual ~CLabel();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    bool    EventProcess(const Event &event);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
+    bool    EventProcess(const Event &event) override;
 
-    void    Draw();
+    void    Draw() override;
 };
 
 

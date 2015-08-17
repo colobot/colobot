@@ -62,11 +62,11 @@ public:
     CTaskManip(COldObject* object);
     ~CTaskManip();
 
-    bool        EventProcess(const Event &event);
+    bool        EventProcess(const Event &event) override;
 
     Error       Start(TaskManipOrder order, TaskManipArm arm);
-    Error       IsEnded();
-    bool        Abort();
+    Error       IsEnded() override;
+    bool        Abort() override;
 
 protected:
     void        InitAngle();

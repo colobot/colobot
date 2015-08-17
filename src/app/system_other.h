@@ -42,12 +42,12 @@ struct SystemTimeStamp
 class CSystemUtilsOther : public CSystemUtils
 {
 public:
-    virtual void Init() override;
-    virtual SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
+    void Init() override;
+    SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
-    virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
-    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
+    void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
+    long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
 
-    virtual void Usleep(int usec) override;
+    void Usleep(int usec) override;
 };
 

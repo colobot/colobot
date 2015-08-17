@@ -72,15 +72,15 @@ public:
     CAutoBase(COldObject* object);
     ~CAutoBase();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false) override;
 
-    void        Init();
-    void        Start(int param);
-    bool        EventProcess(const Event &event);
-    bool        Abort();
-    Error       GetError();
+    void        Init() override;
+    void        Start(int param) override;
+    bool        EventProcess(const Event &event) override;
+    bool        Abort() override;
+    Error       GetError() override;
 
-    bool        CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect) override;
 
     Error       TakeOff(bool printMsg);
 

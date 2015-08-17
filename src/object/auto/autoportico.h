@@ -43,13 +43,13 @@ public:
     CAutoPortico(COldObject* object);
     ~CAutoPortico();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false) override;
 
-    void        Init();
-    void        Start(int param);
-    bool        EventProcess(const Event &event);
-    bool        Abort();
-    Error       GetError();
+    void        Init() override;
+    void        Start(int param) override;
+    bool        EventProcess(const Event &event) override;
+    bool        Abort() override;
+    Error       GetError() override;
 
 protected:
     void        UpdateTrackMapping(float left, float right);

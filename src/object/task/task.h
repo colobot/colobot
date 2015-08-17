@@ -99,7 +99,7 @@ public:
     CForegroundTask(COldObject* object) : CTask(object) {}
 
     bool IsBackground() final { return false; }
-    virtual bool IsPilot() { return false; }
+    bool IsPilot() override { return false; }
 };
 
 class CBackgroundTask : public CTask

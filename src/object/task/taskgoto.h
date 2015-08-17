@@ -79,10 +79,10 @@ public:
     CTaskGoto(COldObject* object);
     ~CTaskGoto();
 
-    bool        EventProcess(const Event &event);
+    bool        EventProcess(const Event &event) override;
 
     Error       Start(Math::Vector goal, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode);
-    Error       IsEnded();
+    Error       IsEnded() override;
 
 protected:
     CObject*    WormSearch(Math::Vector &impact);

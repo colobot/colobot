@@ -39,17 +39,17 @@ public:
     CAutoResearch(COldObject* object);
     ~CAutoResearch();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false) override;
 
-    void        Init();
-    Error       StartAction(int result);
-    bool        EventProcess(const Event &event);
-    Error       GetError();
+    void        Init() override;
+    Error       StartAction(int result) override;
+    bool        EventProcess(const Event &event) override;
+    Error       GetError() override;
 
-    bool        CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect) override;
 
-    bool        Write(CLevelParserLine* line);
-    bool        Read(CLevelParserLine* line);
+    bool        Write(CLevelParserLine* line) override;
+    bool        Read(CLevelParserLine* line) override;
 
 protected:
     void        UpdateInterface();

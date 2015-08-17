@@ -39,7 +39,7 @@ public:
     unsigned int GetVisibleValueIndex();
 
 protected:
-    std::string GetLabel();
+    std::string GetLabel() override;
 
 protected:
     std::vector<float> m_values;

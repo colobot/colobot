@@ -40,12 +40,12 @@ public:
     CAutoRadar(COldObject* object);
     ~CAutoRadar();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false) override;
 
-    void        Init();
-    bool        EventProcess(const Event &event);
-    bool        CreateInterface(bool bSelect);
-    Error       GetError();
+    void        Init() override;
+    bool        EventProcess(const Event &event) override;
+    bool        CreateInterface(bool bSelect) override;
+    Error       GetError() override;
 
 protected:
     void        UpdateInterface();

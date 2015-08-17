@@ -30,10 +30,10 @@ public:
     CTaskWait(COldObject* object);
     ~CTaskWait();
 
-    bool    EventProcess(const Event &event);
+    bool    EventProcess(const Event &event) override;
 
     Error   Start(float time);
-    Error   IsEnded();
+    Error   IsEnded() override;
 
 protected:
     float       m_waitTime = 0.0f;

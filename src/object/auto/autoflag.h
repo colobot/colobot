@@ -30,12 +30,12 @@ public:
     CAutoFlag(COldObject* object);
     ~CAutoFlag();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false) override;
 
-    void        Init();
-    void        Start(int param);
-    bool        EventProcess(const Event &event);
-    Error       GetError();
+    void        Init() override;
+    void        Start(int param) override;
+    bool        EventProcess(const Event &event) override;
+    Error       GetError() override;
 
 protected:
     float       m_strong = 0.0f;

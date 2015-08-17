@@ -43,18 +43,18 @@ public:
     CAutoFactory(COldObject* object);
     ~CAutoFactory();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false) override;
 
-    void        Init();
-    bool        EventProcess(const Event &event);
+    void        Init() override;
+    bool        EventProcess(const Event &event) override;
 
-    Error       StartAction(int param);
+    Error       StartAction(int param) override;
     void        SetProgram(const std::string& program);
 
-    bool        CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect) override;
 
-    bool        Write(CLevelParserLine* line);
-    bool        Read(CLevelParserLine* line);
+    bool        Write(CLevelParserLine* line) override;
+    bool        Read(CLevelParserLine* line) override;
 
 protected:
     void        UpdateInterface();

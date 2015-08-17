@@ -33,16 +33,16 @@ struct SystemTimeStamp
 class CSystemUtilsWindows : public CSystemUtils
 {
 public:
-    virtual void Init() override;
+    void Init() override;
 
-    virtual SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
+    SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
-    virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
-    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
+    void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
+    long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
 
-    virtual std::string GetSaveDir() override;
+    std::string GetSaveDir() override;
 
-    virtual void Usleep(int usec) override;
+    void Usleep(int usec) override;
 
 public:
     static std::string UTF8_Encode(const std::wstring &wstr);

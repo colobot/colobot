@@ -30,11 +30,11 @@ public:
     CAutoRoot(COldObject* object);
     ~CAutoRoot();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false) override;
 
-    void        Init();
-    bool        EventProcess(const Event &event);
-    Error       GetError();
+    void        Init() override;
+    bool        EventProcess(const Event &event) override;
+    Error       GetError() override;
 
 protected:
 

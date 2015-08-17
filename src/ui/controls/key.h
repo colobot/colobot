@@ -43,12 +43,12 @@ public:
     virtual ~CKey();
 
     //! Creates a new key slot button
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
     //! Management of an event
-    bool    EventProcess(const Event &event);
+    bool    EventProcess(const Event &event) override;
 
     //! Draws button
-    void    Draw();
+    void    Draw() override;
 
     //! Management of binding
     //@{

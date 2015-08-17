@@ -116,13 +116,13 @@ public:
 
     virtual ~CEdit();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 
-    void        SetPos(Math::Point pos);
-    void        SetDim(Math::Point dim);
+    void        SetPos(Math::Point pos) override;
+    void        SetDim(Math::Point dim) override;
 
-    bool        EventProcess(const Event &event);
-    void        Draw();
+    bool        EventProcess(const Event &event) override;
+    void        Draw() override;
 
     void        SetText(const char *text, bool bNew=true);
     void        GetText(char *buffer, int max);
@@ -176,7 +176,7 @@ public:
     bool        HyperTest(EventType event);
     bool        HyperGo(EventType event);
 
-    void        SetFontSize(float size);
+    void        SetFontSize(float size) override;
 
     bool        ClearFormat();
     bool        SetFormat(int cursor1, int cursor2, int format);

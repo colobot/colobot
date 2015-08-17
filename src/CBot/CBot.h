@@ -483,8 +483,8 @@ public:
                 ~CBotWhile();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 class CBotDo : public CBotInstr
@@ -499,8 +499,8 @@ public:
                 ~CBotDo();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 class CBotFor : public CBotInstr
@@ -517,8 +517,8 @@ public:
                 ~CBotFor();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 class CBotBreak : public CBotInstr
@@ -531,8 +531,8 @@ public:
                 ~CBotBreak();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 class CBotReturn : public CBotInstr
@@ -545,8 +545,8 @@ public:
                 ~CBotReturn();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -561,8 +561,8 @@ public:
                 ~CBotSwitch();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -576,9 +576,9 @@ public:
                 ~CBotCase();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
-    bool        CompCase(CBotStack* &pj, int val);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
+    bool        CompCase(CBotStack* &pj, int val) override;
 };
 
 class CBotCatch : public CBotInstr
@@ -595,8 +595,8 @@ public:
     static
     CBotCatch*    Compile(CBotToken* &p, CBotCStack* pStack);
     bool        TestCatch(CBotStack* &pj, int val);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
     void        RestoreCondState(CBotStack* &pj, bool bMain);
 };
 
@@ -612,8 +612,8 @@ public:
                 ~CBotTry();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 class CBotThrow : public CBotInstr
@@ -626,8 +626,8 @@ public:
                 ~CBotThrow();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -640,7 +640,7 @@ public:
                 ~CBotStartDebugDD();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
+    bool        Execute(CBotStack* &pj) override;
 };
 
 
@@ -656,8 +656,8 @@ public:
                 ~CBotIf();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -675,8 +675,8 @@ public:
                 ~CBotInt();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, bool cont = false, bool noskip = false);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 // definition of an array
@@ -695,8 +695,8 @@ public:
                 ~CBotInstArray();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResult type);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -713,15 +713,15 @@ public:
                 ~CBotListArray();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResult type);
-    bool        Execute(CBotStack* &pj, CBotVar* pVar);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj, CBotVar* pVar) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
 class CBotEmpty : public CBotInstr
 {
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 // defininition of a boolean
@@ -737,8 +737,8 @@ public:
                 ~CBotBoolean();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, bool cont = false, bool noskip=false);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -755,8 +755,8 @@ public:
                 ~CBotFloat();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, bool cont = false, bool noskip=false);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 // definition of an element string
@@ -772,8 +772,8 @@ public:
                 ~CBotIString();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, bool cont = false, bool noskip=false);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 // definition of an element of any class
@@ -793,8 +793,8 @@ public:
                 ~CBotClassInst();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* pClass = nullptr);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 class CBotCondition : public CBotInstr
@@ -823,9 +823,9 @@ public:
     CBotLeftExpr*    Compile(CBotToken* &p, CBotCStack* pStack);
     bool        Execute(CBotStack* &pStack, CBotStack* array);
 
-    bool        ExecuteVar(CBotVar* &pVar, CBotCStack* &pile);
+    bool        ExecuteVar(CBotVar* &pVar, CBotCStack* &pile) override;
     bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep);
-    void        RestoreStateVar(CBotStack* &pile, bool bMain);
+    void        RestoreStateVar(CBotStack* &pile, bool bMain) override;
 };
 
 
@@ -843,9 +843,9 @@ public:
     void        SetUniqNum(int num);
 //    static
 //    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        ExecuteVar(CBotVar* &pVar, CBotCStack* &pile);
-    bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep, bool bExtend);
-    void        RestoreStateVar(CBotStack* &pj, bool bMain);
+    bool        ExecuteVar(CBotVar* &pVar, CBotCStack* &pile) override;
+    bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep, bool bExtend) override;
+    void        RestoreStateVar(CBotStack* &pj, bool bMain) override;
 };
 
 // management of indices of the tables
@@ -862,9 +862,9 @@ public:
                 ~CBotIndexExpr();
 //    static
 //    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        ExecuteVar(CBotVar* &pVar, CBotCStack* &pile);
-    bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep, bool bExtend);
-    void        RestoreStateVar(CBotStack* &pj, bool bMain);
+    bool        ExecuteVar(CBotVar* &pVar, CBotCStack* &pile) override;
+    bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep, bool bExtend) override;
+    void        RestoreStateVar(CBotStack* &pj, bool bMain) override;
 };
 
 // expressions like
@@ -882,8 +882,8 @@ public:
                 ~CBotExpression();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pStack);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pStack) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 class CBotListExpression : public CBotInstr
@@ -896,8 +896,8 @@ public:
                 ~CBotListExpression();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pStack);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pStack) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 class CBotLogicExpr : public CBotInstr
@@ -913,8 +913,8 @@ public:
                 ~CBotLogicExpr();
 //    static
 //    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pStack);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pStack) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -952,8 +952,8 @@ public:
                 ~CBotExprUnaire();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pStack);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pStack) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 // all operations with two operands
@@ -968,8 +968,8 @@ public:
                 ~CBotTwoOpExpr();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, int* pOperations = nullptr);
-    bool        Execute(CBotStack* &pStack);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pStack) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -1000,8 +1000,8 @@ public:
                 ~CBotListInstr();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal = true);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -1020,8 +1020,8 @@ public:
                 ~CBotInstrCall();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 // a call of method
@@ -1045,9 +1045,9 @@ public:
                 ~CBotInstrMethode();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, CBotVar* pVar);
-    bool        Execute(CBotStack* &pj);
-    bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToken, bool bStep, bool bExtend);
-    void        RestoreStateVar(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToken, bool bStep, bool bExtend) override;
+    void        RestoreStateVar(CBotStack* &pj, bool bMain) override;
 };
 
 // expression for the variable name
@@ -1067,11 +1067,11 @@ public:
     static
     CBotInstr*    CompileMethode(CBotToken* &p, CBotCStack* pStack);
 
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
     bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep);
     bool        Execute2Var(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToken, bool bStep);
-    void        RestoreStateVar(CBotStack* &pj, bool bMain);
+    void        RestoreStateVar(CBotStack* &pj, bool bMain) override;
 };
 
 class CBotPostIncExpr : public CBotInstr
@@ -1085,8 +1085,8 @@ public:
                 ~CBotPostIncExpr();
 //    static
 //    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 class CBotPreIncExpr : public CBotInstr
@@ -1100,8 +1100,8 @@ public:
                 ~CBotPreIncExpr();
 //    static
 //    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -1118,8 +1118,8 @@ public:
                 ~CBotLeftExprVar();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -1133,8 +1133,8 @@ public:
 
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -1146,8 +1146,8 @@ public:
                 CBotExprNull();
                 ~CBotExprNull();
 
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 class CBotExprNan : public CBotInstr
@@ -1158,8 +1158,8 @@ public:
                 CBotExprNan();
                 ~CBotExprNan();
 
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 class CBotNew : public CBotInstr
@@ -1176,8 +1176,8 @@ public:
 
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 // expression representing a number
@@ -1194,8 +1194,8 @@ public:
                 ~CBotExprNum();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -1211,8 +1211,8 @@ public:
                 ~CBotExprAlpha();
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj);
-    void        RestoreState(CBotStack* &pj, bool bMain);
+    bool        Execute(CBotStack* &pj) override;
+    void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
 
@@ -1231,44 +1231,44 @@ public:
                 CBotVarInt( const CBotToken* name );
 //                ~CBotVarInt();
 
-    void        SetValInt(int val, const char* s = nullptr);
-    void        SetValFloat(float val);
-    int            GetValInt();
-    float        GetValFloat();
-    CBotString    GetValString();
+    void        SetValInt(int val, const char* s = nullptr) override;
+    void        SetValFloat(float val) override;
+    int            GetValInt() override;
+    float        GetValFloat() override;
+    CBotString    GetValString() override;
 
-    void        Copy(CBotVar* pSrc, bool bName=true);
+    void        Copy(CBotVar* pSrc, bool bName=true) override;
 
 
-    void        Add(CBotVar* left, CBotVar* right);    // addition
-    void        Sub(CBotVar* left, CBotVar* right);    // substraction
-    void        Mul(CBotVar* left, CBotVar* right);    // multiplication
-    int            Div(CBotVar* left, CBotVar* right);    // division
-    int            Modulo(CBotVar* left, CBotVar* right);    // remainder of division
-    void        Power(CBotVar* left, CBotVar* right);    // power
+    void        Add(CBotVar* left, CBotVar* right) override;    // addition
+    void        Sub(CBotVar* left, CBotVar* right) override;    // substraction
+    void        Mul(CBotVar* left, CBotVar* right) override;    // multiplication
+    int            Div(CBotVar* left, CBotVar* right) override;    // division
+    int            Modulo(CBotVar* left, CBotVar* right) override;    // remainder of division
+    void        Power(CBotVar* left, CBotVar* right) override;    // power
 
-    bool        Lo(CBotVar* left, CBotVar* right);
-    bool        Hi(CBotVar* left, CBotVar* right);
-    bool        Ls(CBotVar* left, CBotVar* right);
-    bool        Hs(CBotVar* left, CBotVar* right);
-    bool        Eq(CBotVar* left, CBotVar* right);
-    bool        Ne(CBotVar* left, CBotVar* right);
+    bool        Lo(CBotVar* left, CBotVar* right) override;
+    bool        Hi(CBotVar* left, CBotVar* right) override;
+    bool        Ls(CBotVar* left, CBotVar* right) override;
+    bool        Hs(CBotVar* left, CBotVar* right) override;
+    bool        Eq(CBotVar* left, CBotVar* right) override;
+    bool        Ne(CBotVar* left, CBotVar* right) override;
 
-    void        XOr(CBotVar* left, CBotVar* right);
-    void        Or(CBotVar* left, CBotVar* right);
-    void        And(CBotVar* left, CBotVar* right);
+    void        XOr(CBotVar* left, CBotVar* right) override;
+    void        Or(CBotVar* left, CBotVar* right) override;
+    void        And(CBotVar* left, CBotVar* right) override;
 
-    void        SL(CBotVar* left, CBotVar* right);
-    void        SR(CBotVar* left, CBotVar* right);
-    void        ASR(CBotVar* left, CBotVar* right);
+    void        SL(CBotVar* left, CBotVar* right) override;
+    void        SR(CBotVar* left, CBotVar* right) override;
+    void        ASR(CBotVar* left, CBotVar* right) override;
 
-    void        Neg();
-    void        Not();
-    void        Inc();
-    void        Dec();
+    void        Neg() override;
+    void        Not() override;
+    void        Inc() override;
+    void        Dec() override;
 
-    bool        Save0State(FILE* pf);
-    bool        Save1State(FILE* pf);
+    bool        Save0State(FILE* pf) override;
+    bool        Save1State(FILE* pf) override;
 
 };
 
@@ -1282,34 +1282,34 @@ public:
                 CBotVarFloat( const CBotToken* name );
 //                ~CBotVarFloat();
 
-    void        SetValInt(int val, const char* s = nullptr);
-    void        SetValFloat(float val);
-    int            GetValInt();
-    float        GetValFloat();
-    CBotString    GetValString();
+    void        SetValInt(int val, const char* s = nullptr) override;
+    void        SetValFloat(float val) override;
+    int            GetValInt() override;
+    float        GetValFloat() override;
+    CBotString    GetValString() override;
 
-    void        Copy(CBotVar* pSrc, bool bName=true);
+    void        Copy(CBotVar* pSrc, bool bName=true) override;
 
 
-    void        Add(CBotVar* left, CBotVar* right);    // addition
-    void        Sub(CBotVar* left, CBotVar* right);    // substraction
-    void        Mul(CBotVar* left, CBotVar* right);    // multiplication
-    int         Div(CBotVar* left, CBotVar* right);    // division
-    int            Modulo(CBotVar* left, CBotVar* right);    // remainder of division
-    void        Power(CBotVar* left, CBotVar* right);    // power
+    void        Add(CBotVar* left, CBotVar* right) override;    // addition
+    void        Sub(CBotVar* left, CBotVar* right) override;    // substraction
+    void        Mul(CBotVar* left, CBotVar* right) override;    // multiplication
+    int         Div(CBotVar* left, CBotVar* right) override;    // division
+    int            Modulo(CBotVar* left, CBotVar* right) override;    // remainder of division
+    void        Power(CBotVar* left, CBotVar* right) override;    // power
 
-    bool        Lo(CBotVar* left, CBotVar* right);
-    bool        Hi(CBotVar* left, CBotVar* right);
-    bool        Ls(CBotVar* left, CBotVar* right);
-    bool        Hs(CBotVar* left, CBotVar* right);
-    bool        Eq(CBotVar* left, CBotVar* right);
-    bool        Ne(CBotVar* left, CBotVar* right);
+    bool        Lo(CBotVar* left, CBotVar* right) override;
+    bool        Hi(CBotVar* left, CBotVar* right) override;
+    bool        Ls(CBotVar* left, CBotVar* right) override;
+    bool        Hs(CBotVar* left, CBotVar* right) override;
+    bool        Eq(CBotVar* left, CBotVar* right) override;
+    bool        Ne(CBotVar* left, CBotVar* right) override;
 
-    void        Neg();
-    void        Inc();
-    void        Dec();
+    void        Neg() override;
+    void        Inc() override;
+    void        Dec() override;
 
-    bool        Save1State(FILE* pf);
+    bool        Save1State(FILE* pf) override;
 };
 
 
@@ -1323,21 +1323,21 @@ public:
                 CBotVarString( const CBotToken* name );
 //                ~CBotVarString();
 
-    void        SetValString(const char* p);
-    CBotString    GetValString();
+    void        SetValString(const char* p) override;
+    CBotString    GetValString() override;
 
-    void        Copy(CBotVar* pSrc, bool bName=true);
+    void        Copy(CBotVar* pSrc, bool bName=true) override;
 
-    void        Add(CBotVar* left, CBotVar* right);    // addition
+    void        Add(CBotVar* left, CBotVar* right) override;    // addition
 
-    bool        Lo(CBotVar* left, CBotVar* right);
-    bool        Hi(CBotVar* left, CBotVar* right);
-    bool        Ls(CBotVar* left, CBotVar* right);
-    bool        Hs(CBotVar* left, CBotVar* right);
-    bool        Eq(CBotVar* left, CBotVar* right);
-    bool        Ne(CBotVar* left, CBotVar* right);
+    bool        Lo(CBotVar* left, CBotVar* right) override;
+    bool        Hi(CBotVar* left, CBotVar* right) override;
+    bool        Ls(CBotVar* left, CBotVar* right) override;
+    bool        Hs(CBotVar* left, CBotVar* right) override;
+    bool        Eq(CBotVar* left, CBotVar* right) override;
+    bool        Ne(CBotVar* left, CBotVar* right) override;
 
-    bool        Save1State(FILE* pf);
+    bool        Save1State(FILE* pf) override;
 };
 
 // class for the management of boolean
@@ -1350,22 +1350,22 @@ public:
                 CBotVarBoolean( const CBotToken* name );
 //                ~CBotVarBoolean();
 
-    void        SetValInt(int val, const char* s = nullptr);
-    void        SetValFloat(float val);
-    int            GetValInt();
-    float        GetValFloat();
-    CBotString    GetValString();
+    void        SetValInt(int val, const char* s = nullptr) override;
+    void        SetValFloat(float val) override;
+    int            GetValInt() override;
+    float        GetValFloat() override;
+    CBotString    GetValString() override;
 
-    void        Copy(CBotVar* pSrc, bool bName=true);
+    void        Copy(CBotVar* pSrc, bool bName=true) override;
 
-    void        And(CBotVar* left, CBotVar* right);
-    void        Or(CBotVar* left, CBotVar* right);
-    void        XOr(CBotVar* left, CBotVar* right);
-    void        Not();
-    bool        Eq(CBotVar* left, CBotVar* right);
-    bool        Ne(CBotVar* left, CBotVar* right);
+    void        And(CBotVar* left, CBotVar* right) override;
+    void        Or(CBotVar* left, CBotVar* right) override;
+    void        XOr(CBotVar* left, CBotVar* right) override;
+    void        Not() override;
+    bool        Eq(CBotVar* left, CBotVar* right) override;
+    bool        Ne(CBotVar* left, CBotVar* right) override;
 
-    bool        Save1State(FILE* pf);
+    bool        Save1State(FILE* pf) override;
 };
 
 
@@ -1394,38 +1394,38 @@ public:
                 ~CBotVarClass();
 //    void        InitCBotVarClass( const CBotToken* name, CBotTypResult& type, int &nIdent );
 
-    void        Copy(CBotVar* pSrc, bool bName=true);
-    void        SetClass(CBotClass* pClass); //, int &nIdent);
-    CBotClass*    GetClass();
-    CBotVar*    GetItem(const char* name);    // return an element of a class according to its name (*)
-    CBotVar*    GetItemRef(int nIdent);
+    void        Copy(CBotVar* pSrc, bool bName=true) override;
+    void        SetClass(CBotClass* pClass) override; //, int &nIdent);
+    CBotClass*    GetClass() override;
+    CBotVar*    GetItem(const char* name) override;    // return an element of a class according to its name (*)
+    CBotVar*    GetItemRef(int nIdent) override;
 
-    CBotVar*    GetItem(int n, bool bExtend);
-    CBotVar*    GetItemList();
+    CBotVar*    GetItem(int n, bool bExtend) override;
+    CBotVar*    GetItemList() override;
 
-    CBotString    GetValString();
+    CBotString    GetValString() override;
 
-    bool        Save1State(FILE* pf);
-    void        Maj(void* pUser, bool bContinue);
+    bool        Save1State(FILE* pf) override;
+    void        Maj(void* pUser, bool bContinue) override;
 
     void        IncrementUse();                // a reference to incrementation
     void        DecrementUse();                // a reference to decrementation
 
     CBotVarClass*
-                GetPointer();
+                GetPointer() override;
     void        SetItemList(CBotVar* pVar);
 
-    void        SetIdent(long n);
+    void        SetIdent(long n) override;
 
     static CBotVarClass* Find(long id);
 
 
 //    CBotVar*    GetMyThis();
 
-    bool        Eq(CBotVar* left, CBotVar* right);
-    bool        Ne(CBotVar* left, CBotVar* right);
+    bool        Eq(CBotVar* left, CBotVar* right) override;
+    bool        Ne(CBotVar* left, CBotVar* right) override;
 
-    void        ConstructorSet();
+    void        ConstructorSet() override;
 };
 
 
@@ -1442,27 +1442,27 @@ public:
                 CBotVarPointer( const CBotToken* name, CBotTypResult& type );
                 ~CBotVarPointer();
 
-    void        Copy(CBotVar* pSrc, bool bName=true);
-    void        SetClass(CBotClass* pClass);
-    CBotClass*    GetClass();
-    CBotVar*    GetItem(const char* name);    // return an element of a class according to its name (*)
-    CBotVar*    GetItemRef(int nIdent);
-    CBotVar*    GetItemList();
+    void        Copy(CBotVar* pSrc, bool bName=true) override;
+    void        SetClass(CBotClass* pClass) override;
+    CBotClass*    GetClass() override;
+    CBotVar*    GetItem(const char* name) override;    // return an element of a class according to its name (*)
+    CBotVar*    GetItemRef(int nIdent) override;
+    CBotVar*    GetItemList() override;
 
-    CBotString    GetValString();
-    void        SetPointer(CBotVar* p);
+    CBotString    GetValString() override;
+    void        SetPointer(CBotVar* p) override;
     CBotVarClass*
-                GetPointer();
+                GetPointer() override;
 
-    void        SetIdent(long n);            // associates an identification number (unique)
+    void        SetIdent(long n) override;            // associates an identification number (unique)
     long        GetIdent();                    // gives the identification number associated with
-    void        ConstructorSet();
+    void        ConstructorSet() override;
 
-    bool        Save1State(FILE* pf);
-    void        Maj(void* pUser, bool bContinue);
+    bool        Save1State(FILE* pf) override;
+    void        Maj(void* pUser, bool bContinue) override;
 
-    bool        Eq(CBotVar* left, CBotVar* right);
-    bool        Ne(CBotVar* left, CBotVar* right);
+    bool        Eq(CBotVar* left, CBotVar* right) override;
+    bool        Ne(CBotVar* left, CBotVar* right) override;
 };
 
 
@@ -1482,19 +1482,19 @@ public:
                 CBotVarArray( const CBotToken* name, CBotTypResult& type );
                 ~CBotVarArray();
 
-    void        SetPointer(CBotVar* p);
+    void        SetPointer(CBotVar* p) override;
     CBotVarClass*
-                GetPointer();
+                GetPointer() override;
 
-    void        Copy(CBotVar* pSrc, bool bName=true);
-    CBotVar*    GetItem(int n, bool bGrow=false);    // makes an element according to its numeric index
+    void        Copy(CBotVar* pSrc, bool bName=true) override;
+    CBotVar*    GetItem(int n, bool bGrow=false) override;    // makes an element according to its numeric index
                                                 // enlarged the table if necessary if bExtend
 //    CBotVar*    GetItem(const char* name);        // makes a element by  literal index
-    CBotVar*    GetItemList();                    // gives the first item in the list
+    CBotVar*    GetItemList() override;                    // gives the first item in the list
 
-    CBotString    GetValString();                    // gets the contents of the array into a string
+    CBotString    GetValString() override;                    // gets the contents of the array into a string
 
-    bool        Save1State(FILE* pf);
+    bool        Save1State(FILE* pf) override;
 };
 
 

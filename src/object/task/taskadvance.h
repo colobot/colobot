@@ -32,10 +32,10 @@ public:
     CTaskAdvance(COldObject* object);
     ~CTaskAdvance();
 
-    bool    EventProcess(const Event &event);
+    bool    EventProcess(const Event &event) override;
 
     Error   Start(float length);
-    Error   IsEnded();
+    Error   IsEnded() override;
 
 protected:
     float       m_totalLength = 0.0f;

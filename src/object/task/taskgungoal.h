@@ -30,11 +30,11 @@ public:
     CTaskGunGoal(COldObject* object);
     ~CTaskGunGoal();
 
-    bool        EventProcess(const Event &event);
+    bool        EventProcess(const Event &event) override;
 
     Error       Start(float dirV, float dirH);
-    Error       IsEnded();
-    bool        Abort();
+    Error       IsEnded() override;
+    bool        Abort() override;
 
 protected:
     float       m_progress = 0.0f;

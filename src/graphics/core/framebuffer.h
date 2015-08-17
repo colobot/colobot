@@ -122,40 +122,40 @@ public:
     explicit CDefaultFramebuffer(const FramebufferParams &params);
 
     //! Creates default framebuffer
-    virtual void Create() override;
+    void Create() override;
 
     //! Destroys default framebuffer
-    virtual void Destroy() override;
+    void Destroy() override;
 
     //! Returns true
-    virtual bool IsDefault() override;
+    bool IsDefault() override;
 
     //! Returns width of buffers in this framebuffer
-    virtual int GetWidth() override;
+    int GetWidth() override;
 
     //! Returns height of buffers in this framebuffer
-    virtual int GetHeight() override;
+    int GetHeight() override;
 
     //! Returns depth size in bits
-    virtual int GetDepth() override;
+    int GetDepth() override;
 
     //! Returns number of samples or 1 if multisampling is not supported
-    virtual int GetSamples() override;
+    int GetSamples() override;
 
     //! Returns texture that contains color buffer or 0 if not available
-    virtual int GetColorTexture() override;
+    int GetColorTexture() override;
 
     //! Returns texture that contains depth buffer or 0 if not available
-    virtual int GetDepthTexture() override;
+    int GetDepthTexture() override;
 
     //! Binds this framebuffer to context
-    virtual void Bind() override;
+    void Bind() override;
 
     //! Unbinds this framebuffer from context
-    virtual void Unbind() override;
+    void Unbind() override;
 
     //! Copies content of color buffer to screen
-    virtual void CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight) override;
+    void CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight) override;
 };
 
 } // end of Gfx

@@ -28,13 +28,13 @@
 class CSystemUtilsMacOSX : public CSystemUtilsOther
 {
 public:
-    virtual void Init() override;
+    void Init() override;
 
-    virtual std::string GetDataPath() override;
-    virtual std::string GetLangPath() override;
-    virtual std::string GetSaveDir() override;
+    std::string GetDataPath() override;
+    std::string GetLangPath() override;
+    std::string GetSaveDir() override;
 
-    virtual void Usleep(int usec) override;
+    void Usleep(int usec) override;
 
 private:
     std::string m_ASPath;

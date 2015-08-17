@@ -39,11 +39,11 @@ public:
     CTarget();
     ~CTarget();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
 
-    bool        EventProcess(const Event &event);
-    void        Draw();
-    bool        GetTooltip(Math::Point pos, std::string &name);
+    bool        EventProcess(const Event &event) override;
+    void        Draw() override;
+    bool        GetTooltip(Math::Point pos, std::string &name) override;
 
 protected:
     CObject*    DetectFriendObject(Math::Point pos);

@@ -57,12 +57,12 @@ public:
     CTaskShield(COldObject* object);
     ~CTaskShield();
 
-    bool        EventProcess(const Event &event);
+    bool        EventProcess(const Event &event) override;
 
     Error       Start(TaskShieldMode mode, float delay);
-    Error       IsEnded();
-    bool        IsBusy();
-    bool        Abort();
+    Error       IsEnded() override;
+    bool        IsBusy() override;
+    bool        Abort() override;
 
     float       GetActiveRadius();
 

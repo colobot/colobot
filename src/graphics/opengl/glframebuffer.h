@@ -51,29 +51,29 @@ protected:
 public:
     CGLFramebuffer(const FramebufferParams& params);
 
-    virtual void Create() override;
+    void Create() override;
 
-    virtual void Destroy() override;
+    void Destroy() override;
 
-    virtual bool IsDefault() override;
+    bool IsDefault() override;
 
-    virtual int GetWidth() override;
+    int GetWidth() override;
 
-    virtual int GetHeight() override;
+    int GetHeight() override;
 
-    virtual int GetDepth() override;
+    int GetDepth() override;
 
-    virtual int GetSamples() override;
+    int GetSamples() override;
 
-    virtual int GetColorTexture() override;
+    int GetColorTexture() override;
 
-    virtual int GetDepthTexture() override;
+    int GetDepthTexture() override;
 
-    virtual void Bind() override;
+    void Bind() override;
 
-    virtual void Unbind() override;
+    void Unbind() override;
 
-    virtual void CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight) override;
+    void CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight) override;
 };
 
 /**
@@ -101,29 +101,29 @@ protected:
 public:
     CGLFramebufferEXT(const FramebufferParams& params);
 
-    virtual void Create() override;
+    void Create() override;
 
-    virtual void Destroy() override;
+    void Destroy() override;
 
-    virtual bool IsDefault() override;
+    bool IsDefault() override;
 
-    virtual int GetWidth() override;
+    int GetWidth() override;
 
-    virtual int GetHeight() override;
+    int GetHeight() override;
 
-    virtual int GetDepth() override;
+    int GetDepth() override;
 
-    virtual int GetSamples() override;
+    int GetSamples() override;
 
-    virtual int GetColorTexture() override;
+    int GetColorTexture() override;
 
-    virtual int GetDepthTexture() override;
+    int GetDepthTexture() override;
 
-    virtual void Bind() override;
+    void Bind() override;
 
-    virtual void Unbind() override;
+    void Unbind() override;
 
-    virtual void CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight) override;
+    void CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight) override;
 };
 
 } // end of Gfx

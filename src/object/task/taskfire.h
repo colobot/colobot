@@ -30,12 +30,12 @@ public:
     CTaskFire(COldObject* object);
     ~CTaskFire();
 
-    bool        EventProcess(const Event &event);
+    bool        EventProcess(const Event &event) override;
 
     Error       Start(float delay);
-    Error       IsEnded();
-    bool        Abort();
-    bool        IsPilot();
+    Error       IsEnded() override;
+    bool        Abort() override;
+    bool        IsPilot() override;
 
 protected:
     float       m_delay = 0.0f;

@@ -37,11 +37,11 @@ public:
     CColor();
     virtual   ~CColor();
 
-    bool      Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+    bool      Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 
-    bool      EventProcess(const Event &event);
+    bool      EventProcess(const Event &event) override;
 
-    void      Draw();
+    void      Draw() override;
 
     void      SetRepeat(bool bRepeat);
     bool      GetRepeat();
