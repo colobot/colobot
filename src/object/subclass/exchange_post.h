@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "object/old_object.h"
+#include "object/subclass/base_building.h"
 
 #include "object/auto/auto.h"
 
@@ -43,7 +43,7 @@ class COldModelManager;
 class CEngine;
 }
 
-class CExchangePost : public COldObject
+class CExchangePost : public CBaseBuilding
 {
 public:
     CExchangePost(int id);

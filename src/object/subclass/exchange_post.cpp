@@ -40,11 +40,9 @@
 
 
 CExchangePost::CExchangePost(int id)
-    : COldObject(id)
+    : CBaseBuilding(id, OBJECT_INFO)
     , m_infoUpdate(false)
-{
-    SetType(OBJECT_INFO);
-}
+{}
 
 std::unique_ptr<CExchangePost> CExchangePost::Create(
     const ObjectCreateParams& params,

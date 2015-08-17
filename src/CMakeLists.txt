@@ -201,6 +201,10 @@ set(BASE_SOURCES
     object/task/taskturn.cpp
     object/task/taskwait.cpp
     object/tool_type.cpp
+    object/subclass/base_alien.cpp
+    object/subclass/base_building.cpp
+    object/subclass/base_robot.cpp
+    object/subclass/base_vehicle.cpp
     object/subclass/exchange_post.cpp
     object/subclass/static_object.cpp
     physics/physics.cpp
