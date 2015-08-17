@@ -21,6 +21,9 @@
 
 #include "common/make_unique.h"
 
+#include "level/parser/parserline.h"
+#include "level/parser/parserparam.h"
+
 #include "graphics/engine/oldmodelmanager.h"
 
 #include "object/object_create_params.h"
@@ -35,7 +38,8 @@
 
 
 CBaseAlien::CBaseAlien(int id, ObjectType type)
-    : CBaseVehicle(id, type)
+    : CBaseVehicle(id, type),
+      m_fixed(false)
 {}
 
 CBaseAlien::~CBaseAlien()
@@ -84,4 +88,29 @@ std::unique_ptr<CBaseAlien> CBaseAlien::Create(
     obj->SetMovable(std::move(motion), std::move(physics));
 
     return std::move(obj);
+}
+
+void CBaseAlien::SetFixed(bool fixed)
+{
+    m_fixed = fixed;
+}
+
+bool CBaseAlien::GetFixed()
+{
+    return m_fixed;
+}
+
+void CBaseAlien::Read(CLevelParserLine* line)
+{
+    COldObject::Read(line);
+
+    SetFixed(line->GetParam("fixed")->AsBool(false));
+}
+
+void CBaseAlien::Write(CLevelParserLine* line)
+{
+    COldObject::Write(line);
+
+    if (GetFixed())
+        line->AddParam("fixed", MakeUnique<CLevelParserParam>(GetFixed()));
 }

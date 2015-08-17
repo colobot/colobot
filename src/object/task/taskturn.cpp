@@ -26,6 +26,8 @@
 
 #include "object/old_object.h"
 
+#include "object/subclass/base_alien.h"
+
 #include "physics/physics.h"
 
 
@@ -50,7 +52,8 @@ bool CTaskTurn::EventProcess(const Event &event)
     if ( event.type != EVENT_FRAME )  return true;
 
     // Momentarily stationary object (ant on the back)?
-    if ( m_object->GetFixed() )
+    CBaseAlien* alien = dynamic_cast<CBaseAlien*>(m_object);
+    if ( alien != nullptr && alien->GetFixed() )
     {
         m_physics->SetMotorSpeedX(0.0f);  // stops the advance
         m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation

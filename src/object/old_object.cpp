@@ -51,6 +51,7 @@
 #include "object/motion/motion.h"
 #include "object/motion/motionvehicle.h"
 
+#include "object/subclass/base_alien.h"
 #include "object/subclass/exchange_post.h"
 
 #include "physics/physics.h"
@@ -134,7 +135,6 @@ COldObject::COldObject(int id)
     m_bTrainer = false;
     m_bToy = false;
     m_bManual = false;
-    m_bFixed = false;
     m_aTime = 0.0f;
     m_shotTime = 0.0f;
     m_bVirusMode = false;
@@ -961,11 +961,6 @@ void COldObject::Write(CLevelParserLine* line)
     if ( !GetSelectable() )
         line->AddParam("selectable", MakeUnique<CLevelParserParam>(GetSelectable()));
 
-    // TODO: doesn't seem to be used
-    // But it is, this is used by aliens after Thumper ~krzys_h
-    if ( GetFixed() )
-        line->AddParam("fixed", MakeUnique<CLevelParserParam>(GetFixed()));
-
     if ( !GetCollisions() )
         line->AddParam("clip", MakeUnique<CLevelParserParam>(GetCollisions()));
 
@@ -1139,7 +1134,6 @@ void COldObject::Read(CLevelParserLine* line)
     // Everthing below is for use only by saved scenes
     if (line->GetParam("energy")->IsDefined())
         SetEnergyLevel(line->GetParam("energy")->AsFloat());
-    SetFixed(line->GetParam("fixed")->AsBool(false));
     SetLock(line->GetParam("lock")->AsBool(false));
     SetGunGoalV(line->GetParam("aimV")->AsFloat(0.0f));
     SetGunGoalH(line->GetParam("aimH")->AsFloat(0.0f));
@@ -2048,20 +2042,25 @@ bool COldObject::EventProcess(const Event &event)
             {
                 axeZ = -1.0f;  // tomb
 
-                if ( !GetFixed() &&
-                     (m_type == OBJECT_ANT    ||
+                if ( (m_type == OBJECT_ANT    ||
                       m_type == OBJECT_SPIDER ||
                       m_type == OBJECT_WORM   ) )
                 {
-                    axeY = 2.0f;  // zigzag disorganized fast
-                    if ( m_type == OBJECT_WORM )  axeY = 5.0f;
-                    axeX = 0.5f+sinf(m_time* 1.0f)*0.5f+
-                                sinf(m_time* 6.0f)*2.0f+
-                                sinf(m_time*21.0f)*0.2f;
-                    float factor = 1.0f-m_burnTime/15.0f;  // slow motion
-                    if ( factor < 0.0f )  factor = 0.0f;
-                    axeY *= factor;
-                    axeX *= factor;
+                    // TODO: Move to CBaseAlien?
+                    CBaseAlien* alien = dynamic_cast<CBaseAlien*>(this);
+                    assert(alien != nullptr);
+                    if (!alien->GetFixed())
+                    {
+                        axeY = 2.0f;  // zigzag disorganized fast
+                        if ( m_type == OBJECT_WORM )  axeY = 5.0f;
+                        axeX = 0.5f+sinf(m_time* 1.0f)*0.5f+
+                                    sinf(m_time* 6.0f)*2.0f+
+                                    sinf(m_time*21.0f)*0.2f;
+                        float factor = 1.0f-m_burnTime/15.0f;  // slow motion
+                        if ( factor < 0.0f )  factor = 0.0f;
+                        axeY *= factor;
+                        axeX *= factor;
+                    }
                 }
             }
             m_physics->SetMotorSpeedX(axeY);  // move forward/move back
@@ -2535,18 +2534,6 @@ void COldObject::SetTransparency(float value)
             m_engine->SetObjectTransparency(m_objectPart[i].object, value);
         }
     }
-}
-
-// Indicates whether an object is stationary (ant on the back).
-
-void COldObject::SetFixed(bool bFixed)
-{
-    m_bFixed = bFixed;
-}
-
-bool COldObject::GetFixed()
-{
-    return m_bFixed;
 }
 
 

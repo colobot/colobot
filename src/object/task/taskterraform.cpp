@@ -35,6 +35,8 @@
 #include "object/motion/motionant.h"
 #include "object/motion/motionspider.h"
 
+#include "object/subclass/base_alien.h"
+
 #include "physics/physics.h"
 
 
@@ -377,21 +379,16 @@ bool CTaskTerraform::Terraform()
             dist = Math::Distance(m_terraPos, pObj->GetPosition());
             if ( dist > ACTION_RADIUS )  continue;
 
-            if ( type == OBJECT_ANT )
+            if ( type == OBJECT_ANT || type == OBJECT_SPIDER )
             {
                 assert(pObj->Implements(ObjectInterfaceType::TaskExecutor));
                 dynamic_cast<CTaskExecutorObject*>(pObj)->StopForegroundTask();
 
-                motion->SetAction(MAS_BACK1, 0.8f+Math::Rand()*0.3f);
-                pObj->SetFixed(true);  // not moving
-            }
-            if ( type == OBJECT_SPIDER )
-            {
-                assert(pObj->Implements(ObjectInterfaceType::TaskExecutor));
-                dynamic_cast<CTaskExecutorObject*>(pObj)->StopForegroundTask();
-
-                motion->SetAction(MSS_BACK1, 0.8f+Math::Rand()*0.3f);
-                pObj->SetFixed(true);  // not moving
+                int actionType = -1;
+                if (type == OBJECT_ANT)    actionType = MAS_BACK1;
+                if (type == OBJECT_SPIDER) actionType = MSS_BACK1;
+                motion->SetAction(actionType, 0.8f+Math::Rand()*0.3f);
+                dynamic_cast<CBaseAlien*>(pObj)->SetFixed(true);  // not moving
             }
         }
     }

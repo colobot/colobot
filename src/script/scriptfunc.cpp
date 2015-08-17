@@ -50,6 +50,7 @@
 #include "object/interface/task_executor_object.h"
 #include "object/interface/trace_drawing_object.h"
 
+#include "object/subclass/base_alien.h"
 #include "object/subclass/exchange_post.h"
 
 #include "object/task/taskinfo.h"
@@ -2695,7 +2696,7 @@ bool CScriptFunctions::rMotor(CBotVar* var, CBotVar* result, int& exception, voi
     if ( turn < -1.0f )  turn = -1.0f;
     if ( turn >  1.0f )  turn =  1.0f;
 
-    if ( pThis->GetFixed() )  // ant on the back?
+    if ( dynamic_cast<CBaseAlien*>(pThis) != nullptr && dynamic_cast<CBaseAlien*>(pThis)->GetFixed() )  // ant on the back?
     {
         speed = 0.0f;
         turn  = 0.0f;

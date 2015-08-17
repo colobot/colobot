@@ -44,4 +44,17 @@ public:
         const ObjectCreateParams& params,
         Gfx::COldModelManager* modelManager,
         Gfx::CEngine* engine);
+
+public:
+    //! Management of "temporarirly stationary" mode (alien on the back)
+    //@{
+    void SetFixed(bool fixed);
+    bool GetFixed();
+    //@}
+
+    void Write(CLevelParserLine* line) override;
+    void Read(CLevelParserLine* line) override;
+
+protected:
+    bool m_fixed;
 };

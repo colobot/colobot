@@ -52,6 +52,8 @@
 #include "object/motion/motionhuman.h"
 #include "object/motion/motionvehicle.h"
 
+#include "object/subclass/base_alien.h"
+
 #include "object/task/task.h"
 
 
@@ -1605,7 +1607,7 @@ void CPhysics::SoundMotor(float rTime)
     {
         assert(m_object->Implements(ObjectInterfaceType::Destroyable));
         if ( dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning ||
-             m_object->GetFixed() )
+             dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1669,7 +1671,7 @@ void CPhysics::SoundMotor(float rTime)
     {
         assert(m_object->Implements(ObjectInterfaceType::Destroyable));
         if ( dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning ||
-             m_object->GetFixed() )
+             dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {

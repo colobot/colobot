@@ -95,17 +95,6 @@ Character* COldObjectInterface::GetCharacter()
 }
 
 
-void COldObjectInterface::SetFixed(bool bFixed)
-{
-    throw std::logic_error("SetFixed: not implemented!");
-}
-
-bool COldObjectInterface::GetFixed()
-{
-    throw std::logic_error("GetFixed: not implemented!");
-}
-
-
 void COldObjectInterface::SetVirusMode(bool bEnable)
 {
     throw std::logic_error("SetVirusMode: not implemented!");

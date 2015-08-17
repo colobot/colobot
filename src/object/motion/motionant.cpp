@@ -27,6 +27,8 @@
 
 #include "object/old_object.h"
 
+#include "object/subclass/base_alien.h"
+
 #include "physics/physics.h"
 
 
@@ -427,7 +429,7 @@ bool CMotionAnt::EventFrame(const Event &event)
     assert(m_object->Implements(ObjectInterfaceType::Destroyable));
     if ( dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning )  // burning?
     {
-        if ( m_object->GetFixed() )
+        if ( dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )
         {
             m_actionType = MAS_BURN;
         }
@@ -722,7 +724,7 @@ bool CMotionAnt::EventFrame(const Event &event)
         if ( m_progress >= 1.0f )
         {
             SetAction(-1);
-            m_object->SetFixed(false);  // moving again
+            dynamic_cast<CBaseAlien*>(m_object)->SetFixed(false);  // moving again
         }
     }
     else

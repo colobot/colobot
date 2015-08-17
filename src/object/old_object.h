@@ -210,9 +210,6 @@ public:
 
     void        SetTransparency(float value) override;
 
-    void        SetFixed(bool bFixed) override;
-    bool        GetFixed() override;
-
     Math::Sphere GetJostlingSphere() const override;
     bool        JostleObject(float force) override;
 
@@ -360,7 +357,6 @@ protected:
     bool        m_bTrainer;         // drive vehicle (without remote)
     bool        m_bToy;             // toy key
     bool        m_bManual;          // manual control (Scribbler)
-    bool        m_bFixed;
     float       m_gunGoalV;
     float       m_gunGoalH;
     Gfx::CameraType  m_cameraType;

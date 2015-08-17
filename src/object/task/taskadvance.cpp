@@ -25,8 +25,9 @@
 #include "math/geometry.h"
 
 #include "object/object.h"
-
 #include "object/old_object.h"
+
+#include "object/subclass/base_alien.h"
 
 #include "physics/physics.h"
 
@@ -56,7 +57,8 @@ bool CTaskAdvance::EventProcess(const Event &event)
     m_fixTime += event.rTime;
 
     // Momentarily stationary object (ant on the back)?
-    if ( m_object->GetFixed() )
+    CBaseAlien* alien = dynamic_cast<CBaseAlien*>(m_object);
+    if ( alien != nullptr && alien->GetFixed() )
     {
         m_physics->SetMotorSpeedX(0.0f);  // stops the advance
         m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation

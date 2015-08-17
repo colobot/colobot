@@ -81,10 +81,6 @@ public:
 
     virtual void        FlatParent();
 
-    // This goes to CBaseAlien or something like that
-    virtual void        SetFixed(bool bFixed);
-    virtual bool        GetFixed();
-
     // Not sure. Maybe a separate interface, or maybe CControllableObject (buildings can have viruses too)
     virtual void        SetVirusMode(bool bEnable);
     virtual bool        GetVirusMode();

@@ -28,6 +28,8 @@
 
 #include "object/motion/motionant.h"
 
+#include "object/subclass/base_alien.h"
+
 #include "physics/physics.h"
 
 
@@ -58,7 +60,7 @@ bool CTaskFireAnt::EventProcess(const Event &event)
     if ( event.type != EVENT_FRAME )  return true;
     if ( m_bError )  return false;
 
-    if ( m_object->GetFixed() )  // insect on its back?
+    if ( dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )  // insect on its back?
     {
         m_bError = true;
         return false;
@@ -98,7 +100,7 @@ Error CTaskFireAnt::Start(Math::Vector impact)
     if ( type != OBJECT_ANT )  return ERR_WRONG_BOT;
 
     // Insect on its back?
-    if ( m_object->GetFixed() )  return ERR_WRONG_BOT;
+    if ( dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )  return ERR_WRONG_BOT;
 
     m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 
@@ -128,7 +130,7 @@ Error CTaskFireAnt::IsEnded()
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
-    if ( m_object->GetFixed() )  return ERR_STOP;  // insect on its back?
+    if ( dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )  return ERR_STOP;  // insect on its back?
 
     if ( m_phase == TFA_TURN )  // rotation ?
     {
