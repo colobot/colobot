@@ -24,20 +24,13 @@
 
 #pragma once
 
-#include "graphics/engine/camera.h"
-#include "graphics/engine/engine.h"
+#include "math/matrix.h"
+#include "math/vector.h"
 
 #include "object/object_type.h"
 
-#include "sound/sound_type.h"
 
-#include <string>
-
-class CPhysics;
-class CMotion;
 class CAuto;
-class CBotVar;
-class CScript;
 
 
 struct Character
@@ -47,7 +40,6 @@ struct Character
     float        wheelLeft = 0.0f;      // position Z of the left wheels
     float        wheelRight = 0.0f;     // position Z of the right wheels
     float        height = 0.0f;         // normal height on top of ground
-    Math::Vector posPower;       // position of the battery
 };
 
 class COldObjectInterface

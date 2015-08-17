@@ -421,8 +421,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
         }
 
         Math::Matrix* mat = pObj->GetWorldMatrix(0);
-        Character* character = pObj->GetCharacter();
-        Math::Vector oPos = Transform(*mat, character->posPower);
+        Math::Vector oPos = Math::Transform(*mat, dynamic_cast<CPoweredObject*>(pObj)->GetPowerPosition());
 
         float distance = fabs(Math::Distance(oPos, iPos) - (iRad+1.0f));
         if ( distance <= dLimit )
@@ -430,8 +429,8 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
             angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
             if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
             {
-                character = pObj->GetCharacter();
-                m_height = character->posPower.y;
+                Math::Vector powerPos = dynamic_cast<CPoweredObject*>(pObj)->GetPowerPosition();
+                m_height = powerPos.y;
                 return pObj;
             }
         }
@@ -538,8 +537,7 @@ bool CTaskTake::TransporterDeposeObject()
         dynamic_cast<CPoweredObject*>(other)->SetPower(cargo);
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(other);
 
-        Character* character = other->GetCharacter();
-        cargo->SetPosition(character->posPower);
+        cargo->SetPosition(dynamic_cast<CPoweredObject*>(other)->GetPowerPosition());
         cargo->SetRotationY(0.0f);
         cargo->SetRotationX(0.0f);
         cargo->SetRotationZ(0.0f);

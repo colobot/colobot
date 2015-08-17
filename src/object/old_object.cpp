@@ -1551,6 +1551,17 @@ CObject* COldObject::GetPower()
     return m_power;
 }
 
+void COldObject::SetPowerPosition(const Math::Vector& powerPosition)
+{
+    m_powerPosition = powerPosition;
+}
+
+Math::Vector COldObject::GetPowerPosition()
+{
+    return m_powerPosition;
+}
+
+
 // Management of the object transport.
 
 void COldObject::SetCargo(CObject* cargo)

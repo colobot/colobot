@@ -175,6 +175,8 @@ public:
 
     void        SetPower(CObject* power) override;
     CObject*    GetPower() override;
+    Math::Vector GetPowerPosition();
+    void         SetPowerPosition(const Math::Vector& powerPosition);
     void        SetCargo(CObject* cargo) override;
     CObject*    GetCargo() override;
     void        SetTransporter(CObject* transporter) override;
@@ -302,8 +304,6 @@ protected:
     void        TransformCrashSphere(Math::Sphere &crashSphere) override;
     void TransformCameraCollisionSphere(Math::Sphere& collisionSphere) override;
 
-    Error       EndedTask();
-
 protected:
     Gfx::CEngine*       m_engine;
     Gfx::CLightManager* m_lightMan;
@@ -329,6 +329,7 @@ protected:
     Math::Vector    m_cirVibration;         // circular vibration
     Math::Vector    m_tilt;          // tilt
     CObject*    m_power;            // battery used by the vehicle
+    Math::Vector m_powerPosition;
     CObject*    m_cargo;             // object transported
     CObject*    m_transporter;            // object with the latter
     int     m_transporterLink;            // part

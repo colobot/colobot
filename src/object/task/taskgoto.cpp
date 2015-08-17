@@ -1023,7 +1023,6 @@ CObject* CTaskGoto::SearchTarget(Math::Vector pos, float margin)
 bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
 {
     ObjectType  type;
-    Character*  character;
     Math::Matrix*   mat;
     Math::Vector    goal;
     float       dist, suppl;
@@ -1090,8 +1089,8 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
          type == OBJECT_MOBILEit ||
          type == OBJECT_MOBILEdr )
     {
-        character = pObj->GetCharacter();
-        pos = character->posPower;
+        assert(pObj->Implements(ObjectInterfaceType::Powered));
+        pos = dynamic_cast<CPoweredObject*>(pObj)->GetPowerPosition();
         pos.x -= TAKE_DIST+TAKE_DIST_OTHER+distance;
         mat = pObj->GetWorldMatrix(0);
         pos = Transform(*mat, pos);

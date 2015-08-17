@@ -297,7 +297,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 14.0f, 0.0f), 7.0f, SOUND_BOUMm, 0.45f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 8.0f, 0.0f), 12.0f));
 
-        obj->GetCharacter()->posPower = Math::Vector(7.5f, 3.0f, 0.0f);
+        obj->SetPowerPosition(Math::Vector(7.5f, 3.0f, 0.0f));
 
         obj->CreateShadowCircle(12.0f, 1.0f);
     }
@@ -350,7 +350,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  1.0f, 0.0f), 1.5f, SOUND_BOUMm, 0.45f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(-7.0f, 5.0f, 0.0f), 5.0f));
 
-        obj->GetCharacter()->posPower = Math::Vector(0.0f, 3.0f, 0.0f);
+        obj->SetPowerPosition(Math::Vector(0.0f, 3.0f, 0.0f));
         obj->SetEnergyLevel(params.power);  // initializes the energy level
 
         obj->CreateShadowCircle(6.0f, 0.5f);
@@ -411,7 +411,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f,  3.0f, -3.0f), 4.0f, SOUND_BOUMm, 0.45f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(-10.0f, 5.0f, 0.0f), 7.0f));
 
-        obj->GetCharacter()->posPower = Math::Vector(0.0f, 3.0f, 0.0f);
+        obj->SetPowerPosition(Math::Vector(0.0f, 3.0f, 0.0f));
 
         obj->CreateShadowCircle(7.0f, 0.5f);
     }
@@ -606,7 +606,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 24.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 5.0f, 0.0f), 7.0f));
 
-        obj->GetCharacter()->posPower = Math::Vector(5.0f, 3.0f, 0.0f);
+        obj->SetPowerPosition(Math::Vector(5.0f, 3.0f, 0.0f));
 
         obj->CreateShadowCircle(6.0f, 1.0f);
     }
@@ -631,7 +631,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector(22.0f,  1.0f, 0.0f),  1.5f, SOUND_BOUMm, 0.45f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 17.0f, 0.0f), 26.0f));
 
-        obj->GetCharacter()->posPower = Math::Vector(22.0f, 3.0f, 0.0f);
+        obj->SetPowerPosition(Math::Vector(22.0f, 3.0f, 0.0f));
 
         obj->CreateShadowCircle(21.0f, 1.0f);
     }

@@ -920,7 +920,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->CreateEffectLight(20.0f, color);
 
         CObject* powerCell = nullptr;
-        Math::Vector powerCellPos = m_object->GetCharacter()->posPower;
+        Math::Vector powerCellPos = m_object->GetPowerPosition();
         float powerCellAngle = 0.0f;
         if (power <= 1.0f)
         {
@@ -963,7 +963,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
         character->wheelBack  = 4.0f;
         character->wheelLeft  = 4.0f;
         character->wheelRight = 4.0f;
-        character->posPower   = Math::Vector(-3.2f, 3.0f, 0.0f);
+        m_object->SetPowerPosition(Math::Vector(-3.2f, 3.0f, 0.0f));
 
         m_physics->SetLinMotionX(MO_ADVSPEED, 20.0f);
         m_physics->SetLinMotionX(MO_RECSPEED, 10.0f);
@@ -989,7 +989,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
         character->wheelBack  = 3.0f;
         character->wheelLeft  = 4.0f;
         character->wheelRight = 4.0f;
-        character->posPower   = Math::Vector(-3.2f, 3.0f, 0.0f);
+        m_object->SetPowerPosition(Math::Vector(-3.2f, 3.0f, 0.0f));
 
         m_physics->SetLinMotionX(MO_ADVSPEED, 20.0f);
         m_physics->SetLinMotionX(MO_RECSPEED, 10.0f);
@@ -1018,7 +1018,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
         character->wheelBack  = 4.0f;
         character->wheelLeft  = 4.8f;
         character->wheelRight = 4.8f;
-        character->posPower   = Math::Vector(-3.2f, 3.0f, 0.0f);
+        m_object->SetPowerPosition(Math::Vector(-3.2f, 3.0f, 0.0f));
 
         m_physics->SetLinMotionX(MO_ADVSPEED, 15.0f);
         m_physics->SetLinMotionX(MO_RECSPEED,  8.0f);
@@ -1047,7 +1047,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
         character->wheelBack  = 4.0f;
         character->wheelLeft  = 5.0f;
         character->wheelRight = 5.0f;
-        character->posPower   = Math::Vector(-3.2f, 3.0f, 0.0f);
+        m_object->SetPowerPosition(Math::Vector(-3.2f, 3.0f, 0.0f));
 
         m_physics->SetLinMotionX(MO_ADVSPEED, 15.0f);
         m_physics->SetLinMotionX(MO_RECSPEED,  8.0f);
@@ -1078,7 +1078,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
         character->wheelBack  = 4.0f;
         character->wheelLeft  = 4.5f;
         character->wheelRight = 4.5f;
-        character->posPower   = Math::Vector(-3.2f, 3.0f, 0.0f);
+        m_object->SetPowerPosition(Math::Vector(-3.2f, 3.0f, 0.0f));
 
         m_physics->SetLinMotionX(MO_ADVSPEED, 50.0f);
         m_physics->SetLinMotionX(MO_RECSPEED, 50.0f);
@@ -1112,7 +1112,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
         character->wheelBack  = 5.0f;
         character->wheelLeft  = 6.0f;
         character->wheelRight = 6.0f;
-        character->posPower   = Math::Vector(-5.8f, 4.0f, 0.0f);
+        m_object->SetPowerPosition(Math::Vector(-5.8f, 4.0f, 0.0f));
 
         m_physics->SetLinMotionX(MO_ADVSPEED, 10.0f);
         m_physics->SetLinMotionX(MO_RECSPEED,  5.0f);
@@ -1138,7 +1138,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
         character->wheelBack  = 4.0f;
         character->wheelLeft  = 4.0f;
         character->wheelRight = 4.0f;
-        character->posPower   = Math::Vector(-5.0f, 3.0f, 0.0f);
+        m_object->SetPowerPosition(Math::Vector(-5.0f, 3.0f, 0.0f));
 
         m_physics->SetLinMotionX(MO_ADVSPEED, 15.0f);
         m_physics->SetLinMotionX(MO_RECSPEED, 10.0f);
@@ -1164,7 +1164,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
         character->wheelBack  = 4.0f;
         character->wheelLeft  = 4.0f;
         character->wheelRight = 4.0f;
-        character->posPower   = Math::Vector(-5.0f, 3.0f, 0.0f);
+        m_object->SetPowerPosition(Math::Vector(-5.0f, 3.0f, 0.0f));
 
         m_physics->SetLinMotionX(MO_ADVSPEED, 15.0f);
         m_physics->SetLinMotionX(MO_RECSPEED, 10.0f);

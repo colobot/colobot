@@ -2978,7 +2978,7 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
     mat = m_object->GetWorldMatrix(0);
     character = m_object->GetCharacter();
 
-    pos = character->posPower;
+    pos = m_object->GetPowerPosition();
     pos.x -= 0.3f;
     pos.y += 1.0f;  // battery center position
     pos = Transform(*mat, pos);

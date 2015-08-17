@@ -48,6 +48,11 @@ public:
     virtual CObject* GetPower() = 0;
     //! Sets power cell
     virtual void SetPower(CObject* power) = 0;
+
+    //! Returns the relative position of power cell
+    virtual Math::Vector GetPowerPosition() = 0;
+    //! Sets the relative position of power cell
+    virtual void SetPowerPosition(const Math::Vector& powerPosition) = 0;
 };
 
 inline float GetObjectEnergy(CObject* object)

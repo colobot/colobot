@@ -939,8 +939,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
         }
 
         mat = pObj->GetWorldMatrix(0);
-        character = pObj->GetCharacter();
-        Math::Vector oPos = Transform(*mat, character->posPower);
+        Math::Vector oPos = Transform(*mat, dynamic_cast<CPoweredObject*>(pObj)->GetPowerPosition());
 
         oAngle = pObj->GetRotationY();
         if ( type == OBJECT_TOWER    ||
@@ -975,8 +974,8 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
             angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
             if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
             {
-                character = pObj->GetCharacter();
-                height = character->posPower.y;
+                Math::Vector powerPos = dynamic_cast<CPoweredObject*>(pObj)->GetPowerPosition();
+                height = powerPos.y;
                 pos = oPos;
                 return pObj;
             }
@@ -1204,8 +1203,7 @@ bool CTaskManip::TransporterDeposeObject()
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(0);  // carried by the base
 
-        Character* character = m_object->GetCharacter();
-        cargo->SetPosition(character->posPower);
+        cargo->SetPosition(m_object->GetPowerPosition());
         cargo->SetRotationY(0.0f);
         cargo->SetRotationX(0.0f);
         cargo->SetRotationZ(0.0f);
@@ -1235,8 +1233,7 @@ bool CTaskManip::TransporterDeposeObject()
         dynamic_cast<CPoweredObject*>(other)->SetPower(cargo);
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(other);
 
-        Character* character = other->GetCharacter();
-        cargo->SetPosition(character->posPower);
+        cargo->SetPosition(dynamic_cast<CPoweredObject*>(other)->GetPowerPosition());
         cargo->SetRotationY(0.0f);
         cargo->SetRotationX(0.0f);
         cargo->SetRotationZ(0.0f);

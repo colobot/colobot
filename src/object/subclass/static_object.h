@@ -21,6 +21,7 @@
 
 #include "object/object.h"
 
+#include <memory>
 #include <unordered_map>
 
 namespace Gfx
@@ -28,6 +29,7 @@ namespace Gfx
 class CModelManager;
 class CEngine;
 class CModel;
+class CTerrain;
 } // namespace Gfx
 
 class CStaticObject;
