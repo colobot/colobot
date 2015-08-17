@@ -347,10 +347,10 @@ bool CStudio::EventFrame(const Event &event)
     if ( pw == nullptr )  return false;
 
     edit = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
-    if ( edit == 0 )  return false;
+    if ( edit == nullptr )  return false;
 
     list = static_cast< CList* >(pw->SearchControl(EVENT_STUDIO_LIST));
-    if ( list == 0 )  return false;
+    if ( list == nullptr )  return false;
 
     if ( !m_script->IsRunning() && m_bRunning )  // stop?
     {
@@ -874,7 +874,7 @@ bool CStudio::StopEditScript(bool bCancel)
     if ( !bCancel && !m_script->IsRunning() )
     {
         edit = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
-        if ( edit != 0 )
+        if ( edit != nullptr )
         {
             if ( !m_script->GetScript(edit) )  // compile
             {
@@ -909,7 +909,7 @@ void CStudio::SetInfoText(std::string text, bool bClickable)
     if ( pw == nullptr )  return;
 
     CList* list = static_cast< CList* >(pw->SearchControl(EVENT_STUDIO_LIST));
-    if ( list == 0 )  return;
+    if ( list == nullptr )  return;
 
     list->Flush();  // just text
     list->SetItemName(0, text.c_str());
@@ -945,7 +945,7 @@ void CStudio::ViewEditScript()
     if ( pw == nullptr )  return;
 
     edit = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
-    if ( edit == 0 )  return;
+    if ( edit == nullptr )  return;
 
     dim = m_engine->GetWindowSize();
     edit->SetFontSize(m_settings->GetFontSize()/(dim.x/640.0f));
@@ -997,7 +997,7 @@ void CStudio::UpdateButtons()
     if ( pw == nullptr )  return;
 
     edit = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
-    if ( edit == 0 )  return;
+    if ( edit == nullptr )  return;
 
     if ( m_bRunning )
     {
@@ -1014,47 +1014,47 @@ void CStudio::UpdateButtons()
 
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_CLONE));
-    if ( button == 0 )  return;
+    if ( button == nullptr )  return;
     button->SetState(STATE_ENABLE, m_program->runnable && !m_bRunning);
 
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_COMPILE));
-    if ( button == 0 )  return;
+    if ( button == nullptr )  return;
     button->SetState(STATE_ENABLE, m_program->runnable && !m_bRunning);
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_RUN));
-    if ( button == 0 )  return;
+    if ( button == nullptr )  return;
     button->SetIcon(m_bRunning?8:21);  // stop/run
     button->SetState(STATE_ENABLE, m_program->runnable || m_bRunning);
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_REALTIME));
-    if ( button == 0 )  return;
+    if ( button == nullptr )  return;
     button->SetIcon(m_bRealTime?64+22:64+21);
     button->SetState(STATE_ENABLE, (!m_bRunning || !m_script->IsContinue()));
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_STEP));
-    if ( button == 0 )  return;
+    if ( button == nullptr )  return;
     button->SetState(STATE_ENABLE, (m_bRunning && !m_bRealTime && !m_script->IsContinue()));
 
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_NEW));
-    if ( button == 0 )  return;
+    if ( button == nullptr )  return;
     button->SetState(STATE_ENABLE, !m_program->readOnly);
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_OPEN));
-    if ( button == 0 )  return;
+    if ( button == nullptr )  return;
     button->SetState(STATE_ENABLE, !m_program->readOnly);
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_UNDO));
-    if ( button == 0 )  return;
+    if ( button == nullptr )  return;
     button->SetState(STATE_ENABLE, !m_program->readOnly);
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_CUT));
-    if ( button == 0 )  return;
+    if ( button == nullptr )  return;
     button->SetState(STATE_ENABLE, !m_program->readOnly);
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_PASTE));
-    if ( button == 0 )  return;
+    if ( button == nullptr )  return;
     button->SetState(STATE_ENABLE, !m_program->readOnly);
 }
 
@@ -1249,7 +1249,7 @@ void CStudio::AdjustDialog()
         ddim.x = wdim.x-20.0f/640.0f;
         ddim.y = 20.0f/480.0f;
         pla = static_cast< CLabel* >(pw->SearchControl(EVENT_DIALOG_LABEL1));
-        if ( pla != 0 )
+        if ( pla != nullptr )
         {
             pla->SetPos(ppos);
             pla->SetDim(ddim);
@@ -1259,7 +1259,7 @@ void CStudio::AdjustDialog()
         ddim.y = nli*18.0f/480.0f+9.0f/480.0f;
         ppos.y = wpos.y+wdim.y-48.0f/480.0f-ddim.y;
         pli = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
-        if ( pli != 0 )
+        if ( pli != nullptr )
         {
             pli->SetPos(ppos);
             pli->SetDim(ddim);
@@ -1273,7 +1273,7 @@ void CStudio::AdjustDialog()
         ddim.x = 50.0f/640.0f;
         ddim.y = 20.0f/480.0f;
         pla = static_cast< CLabel* >(pw->SearchControl(EVENT_DIALOG_LABEL2));
-        if ( pla != 0 )
+        if ( pla != nullptr )
         {
             pla->SetPos(ppos);
             pla->SetDim(ddim);
@@ -1283,7 +1283,7 @@ void CStudio::AdjustDialog()
         ppos.y = wpos.y+36.0f/480.0f;
         ddim.x = wdim.x-170.0f/640.0f;
         pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));
-        if ( pe != 0 )
+        if ( pe != nullptr )
         {
             pe->SetPos(ppos);
             pe->SetDim(ddim);
@@ -1300,7 +1300,7 @@ void CStudio::AdjustDialog()
         ddim.x = 50.0f/640.0f;
         ddim.y = 16.0f/480.0f;
         pla = static_cast< CLabel* >(pw->SearchControl(EVENT_DIALOG_LABEL3));
-        if ( pla != 0 )
+        if ( pla != nullptr )
         {
             pla->SetPos(ppos);
             pla->SetDim(ddim);
@@ -1310,7 +1310,7 @@ void CStudio::AdjustDialog()
         ppos.y = wpos.y+12.0f/480.0f;
         ddim.x = 70.0f/640.0f;
         pc = static_cast< CCheck* >(pw->SearchControl(EVENT_DIALOG_CHECK1));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->SetPos(ppos);
             pc->SetDim(ddim);
@@ -1318,7 +1318,7 @@ void CStudio::AdjustDialog()
 
         ppos.x += 80.0f/640.0f;
         pc = static_cast< CCheck* >(pw->SearchControl(EVENT_DIALOG_CHECK2));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->SetPos(ppos);
             pc->SetDim(ddim);
@@ -1329,7 +1329,7 @@ void CStudio::AdjustDialog()
         ddim.x = 90.0f/640.0f;
         ddim.y = 23.0f/480.0f;
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_DIALOG_OK));
-        if ( pb != 0 )
+        if ( pb != nullptr )
         {
             pb->SetPos(ppos);
             pb->SetDim(ddim);
@@ -1337,7 +1337,7 @@ void CStudio::AdjustDialog()
 
         ppos.y -= 26.0f/480.0f;
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_DIALOG_CANCEL));
-        if ( pb != 0 )
+        if ( pb != nullptr )
         {
             pb->SetPos(ppos);
             pb->SetDim(ddim);
@@ -1428,7 +1428,7 @@ void CStudio::UpdateChangeList()
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
     pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
     pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));
     if ( pe == nullptr )  return;
 
@@ -1467,7 +1467,7 @@ void CStudio::UpdateChangeEdit()
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
     pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
 
     pl->SetSelect(-1);
 
@@ -1530,19 +1530,19 @@ void CStudio::UpdateDialogPublic()
     if ( pw == nullptr )  return;
 
     pc = static_cast< CCheck* >(pw->SearchControl(EVENT_DIALOG_CHECK1));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, !m_settings->GetIOPublic());
     }
 
     pc = static_cast< CCheck* >(pw->SearchControl(EVENT_DIALOG_CHECK2));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_settings->GetIOPublic());
     }
 
     pl = static_cast< CLabel* >(pw->SearchControl(EVENT_DIALOG_LABEL1));
-    if ( pl != 0 )
+    if ( pl != nullptr )
     {
         // GetResource(RES_TEXT, RT_IO_LIST, name); // TODO: unused?
         pl->SetName(SearchDirectory(false).c_str(), false);
@@ -1618,7 +1618,7 @@ bool CStudio::ReadProgram()
     if ( filename[0] == 0 )  return false;
 
     p = strstr(filename, ".txt");
-    if ( p == 0 || p != filename+strlen(filename)-4 )
+    if ( p == nullptr || p != filename+strlen(filename)-4 )
     {
         strcat(filename, ".txt");
     }
@@ -1656,7 +1656,7 @@ bool CStudio::WriteProgram()
     if ( filename[0] == 0 )  return false;
 
     p = strstr(filename, ".txt");
-    if ( p == 0 || p != filename+strlen(filename)-4 )
+    if ( p == nullptr || p != filename+strlen(filename)-4 )
     {
         strcat(filename, ".txt");
     }

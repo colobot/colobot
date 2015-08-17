@@ -173,9 +173,9 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
             if (data->key == KEY(ESCAPE))
             {
                 pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-                if ( pw == 0 )  break;
+                if ( pw == nullptr )  break;
                 pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NCANCEL));
-                if ( pb == 0 )  break;
+                if ( pb == nullptr )  break;
                 if ( pb->TestState(STATE_ENABLE) )
                 {
                     m_main->ChangePhase(PHASE_MAIN_MENU);
@@ -208,9 +208,9 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_NDELETE:
             pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-            if ( pw == 0 )  break;
+            if ( pw == nullptr )  break;
             pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-            if ( pl == 0 )  break;
+            if ( pl == nullptr )  break;
 
             GetResource(RES_TEXT, RT_DIALOG_DELGAME, name);
             gamer = pl->GetItemName(pl->GetSelect());
@@ -254,11 +254,11 @@ void CScreenPlayerSelect::UpdateNameControl()
     int         total, sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
-    if ( pe == 0 )  return;
+    if ( pe == nullptr )  return;
 
     std::string gamer = m_main->GetPlayerProfile()->GetName();
     total = pl->GetTotal();
@@ -266,25 +266,25 @@ void CScreenPlayerSelect::UpdateNameControl()
     pe->GetText(name, 100);
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NCANCEL));
-    if ( pb != 0 )
+    if ( pb != nullptr )
     {
         pb->SetState(STATE_ENABLE, !gamer.empty());
     }
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NDELETE));
-    if ( pb != 0 )
+    if ( pb != nullptr )
     {
         pb->SetState(STATE_ENABLE, total>0 && sel!=-1);
     }
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NOK));
-    if ( pb != 0 )
+    if ( pb != nullptr )
     {
         pb->SetState(STATE_ENABLE, name[0]!=0 || sel!=-1);
     }
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PERSO));
-    if ( pb != 0 )
+    if ( pb != nullptr )
     {
         pb->SetState(STATE_ENABLE, name[0]!=0 || sel!=-1);
     }
@@ -301,11 +301,11 @@ void CScreenPlayerSelect::UpdateNameList()
     int         total, i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
-    if ( pe == 0 )  return;
+    if ( pe == nullptr )  return;
 
     pe->GetText(name, 100);
     total = pl->GetTotal();
@@ -335,11 +335,11 @@ void CScreenPlayerSelect::UpdateNameEdit()
     int         sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
-    if ( pe == 0 )  return;
+    if ( pe == nullptr )  return;
 
     sel = pl->GetSelect();
     if ( sel == -1 )
@@ -368,11 +368,11 @@ void CScreenPlayerSelect::NameSelect()
     int         sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
-    if ( pe == 0 )  return;
+    if ( pe == nullptr )  return;
 
     pe->GetText(name, 100);
     sel  = pl->GetSelect();
@@ -401,9 +401,9 @@ bool CScreenPlayerSelect::NameCreate()
 
     GetLogger()->Info("Creating new player\n");
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
-    if ( pe == 0 )  return false;
+    if ( pe == nullptr )  return false;
 
     pe->GetText(name, 100);
     if ( name[0] == 0 )

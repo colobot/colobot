@@ -61,7 +61,7 @@ void CScreenSetupGraphics::CreateInterface()
 
     CScreenSetup::CreateInterface();
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
 
     pos.x = ox+sx*3;
@@ -324,62 +324,62 @@ void CScreenSetupGraphics::UpdateSetupButtons()
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_PARTI));
-    if ( pv != 0 )
+    if ( pv != nullptr )
     {
         value = m_engine->GetParticleDensity();
         pv->SetValue(value);
     }
 
     pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_CLIP));
-    if ( pv != 0 )
+    if ( pv != nullptr )
     {
         value = m_engine->GetClippingDistance();
         pv->SetValue(value);
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_DIRTY));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_engine->GetDirty());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FOG));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_engine->GetFog());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_LIGHT));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_engine->GetLightMode());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_SPOTS));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, !m_engine->GetShadowMapping());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_ENABLE, m_engine->IsShadowMappingSupported());
         pc->SetState(STATE_CHECK, m_engine->GetShadowMapping() && !m_engine->GetShadowMappingQuality());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING_QUALITY));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_ENABLE, m_engine->IsShadowMappingQualitySupported());
         pc->SetState(STATE_CHECK, m_engine->GetShadowMapping() && m_engine->GetShadowMappingQuality());
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING_BUFFER));
-    if ( pes != 0 )
+    if ( pes != nullptr )
     {
         pes->SetState(STATE_ENABLE, m_engine->GetShadowMapping() && m_engine->GetDevice()->IsFramebufferSupported());
         if (!m_engine->GetShadowMappingOffscreen())
@@ -393,26 +393,26 @@ void CScreenSetupGraphics::UpdateSetupButtons()
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_FILTER));
-    if ( pes != 0 )
+    if ( pes != nullptr )
     {
         pes->SetVisibleValue(m_engine->GetTextureFilterMode());
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_MIPMAP));
-    if ( pes != 0 )
+    if ( pes != nullptr )
     {
         pes->SetState(STATE_ENABLE, m_engine->GetTextureFilterMode() == Gfx::TEX_FILTER_TRILINEAR);
         pes->SetVisibleValue(m_engine->GetTextureMipmapLevel());
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_ANISOTROPY));
-    if ( pes != 0 )
+    if ( pes != nullptr )
     {
         pes->SetVisibleValue(m_engine->GetTextureAnisotropyLevel());
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_MSAA));
-    if ( pes != 0 )
+    if ( pes != nullptr )
     {
         pes->SetVisibleValue(m_engine->GetMultiSample());
     }
@@ -428,52 +428,52 @@ void CScreenSetupGraphics::ChangeSetupButtons()
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_PARTI));
-    if ( pv != 0 )
+    if ( pv != nullptr )
     {
         value = pv->GetValue();
         m_engine->SetParticleDensity(value);
     }
 
     pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_CLIP));
-    if ( pv != 0 )
+    if ( pv != nullptr )
     {
         value = pv->GetValue();
         m_engine->SetClippingDistance(value);
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_FILTER));
-    if ( pes != 0 )
+    if ( pes != nullptr )
     {
         int valueIndex = pes->GetVisibleValueIndex();
         m_engine->SetTextureFilterMode(static_cast<Gfx::TexFilter>(valueIndex));
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_MIPMAP));
-    if ( pes != 0 )
+    if ( pes != nullptr )
     {
         value = pes->GetVisibleValue();
         m_engine->SetTextureMipmapLevel(static_cast<int>(value));
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_ANISOTROPY));
-    if ( pes != 0 )
+    if ( pes != nullptr )
     {
         value = pes->GetVisibleValue();
         m_engine->SetTextureAnisotropyLevel(static_cast<int>(value));
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_MSAA));
-    if ( pes != 0 )
+    if ( pes != nullptr )
     {
         value = pes->GetVisibleValue();
         m_engine->SetMultiSample(static_cast<int>(value));
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING_BUFFER));
-    if ( pes != 0 )
+    if ( pes != nullptr )
     {
         value = pes->GetVisibleValue();
         if(value == 0)

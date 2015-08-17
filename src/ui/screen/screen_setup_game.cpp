@@ -56,7 +56,7 @@ void CScreenSetupGame::CreateInterface()
 
     CScreenSetup::CreateInterface();
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     ddim.x = dim.x*6;
     ddim.y = dim.y*0.5f;
@@ -261,94 +261,94 @@ void CScreenSetupGame::UpdateSetupButtons()
     CSlider*    ps;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_TOOLTIP));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_settings->GetTooltips());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_GLINT));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_settings->GetInterfaceGlint());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_RAIN));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_settings->GetInterfaceRain());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOUSE));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_settings->GetSystemMouse());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITMODE));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_engine->GetEditIndentMode());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITVALUE));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_engine->GetEditIndentValue()>2);
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE4));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_settings->GetSoluce4());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOVIES));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_settings->GetMovies());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SCROLL));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_camera->GetCameraScroll());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTX));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_camera->GetCameraInvertX());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTY));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_camera->GetCameraInvertY());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EFFECT));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_camera->GetEffect());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_BLOOD));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_camera->GetBlood());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_ENABLE));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_main->GetAutosave());
     }
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_INTERVAL));
-    if ( ps != 0 )
+    if ( ps != nullptr )
     {
         ps->SetState(STATE_ENABLE, m_main->GetAutosave());
         ps->SetVisibleValue(m_main->GetAutosaveInterval());
@@ -356,7 +356,7 @@ void CScreenSetupGame::UpdateSetupButtons()
     }
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_SLOTS));
-    if ( ps != 0 )
+    if ( ps != nullptr )
     {
         ps->SetState(STATE_ENABLE, m_main->GetAutosave());
         ps->SetVisibleValue(m_main->GetAutosaveSlots());
@@ -372,17 +372,17 @@ void CScreenSetupGame::ChangeSetupButtons()
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_INTERVAL));
-    if ( ps != 0 )
+    if ( ps != nullptr )
     {
         value = ps->GetVisibleValue();
         m_main->SetAutosaveInterval(static_cast<int>(round(value)));
     }
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_SLOTS));
-    if ( ps != 0 )
+    if ( ps != nullptr )
     {
         value = ps->GetVisibleValue();
         m_main->SetAutosaveSlots(static_cast<int>(round(value)));

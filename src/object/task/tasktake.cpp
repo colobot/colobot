@@ -309,7 +309,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     min = 1000000.0f;
-    pBest = 0;
+    pBest = nullptr;
     bAngle = 0.0f;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -361,7 +361,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
 CObject* CTaskTake::SearchFriendObject(float &angle,
                                        float dLimit, float aLimit)
 {
-    if (m_object->GetCrashSphereCount() == 0) return 0;
+    if (m_object->GetCrashSphereCount() == 0) return nullptr;
 
     auto crashSphere = m_object->GetFirstCrashSphere();
     Math::Vector iPos = crashSphere.sphere.pos;
@@ -436,7 +436,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
         }
     }
 
-    return 0;
+    return nullptr;
 }
 
 // Takes the object in front.

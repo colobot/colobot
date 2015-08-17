@@ -314,8 +314,8 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
             m_particle[i].time      = 0.0f;
             m_particle[i].phaseTime = 0.0f;
             m_particle[i].testTime  = 0.0f;
-            m_particle[i].objLink   = 0;
-            m_particle[i].objFather = 0;
+            m_particle[i].objLink   = nullptr;
+            m_particle[i].objFather = nullptr;
             m_particle[i].trackRank = -1;
 
             m_totalInterface[t][sheet] ++;
@@ -388,8 +388,8 @@ int CParticle::CreateFrag(Math::Vector pos, Math::Vector speed,
             m_particle[i].time      = 0.0f;
             m_particle[i].phaseTime = 0.0f;
             m_particle[i].testTime  = 0.0f;
-            m_particle[i].objLink   = 0;
-            m_particle[i].objFather = 0;
+            m_particle[i].objLink   = nullptr;
+            m_particle[i].objFather = nullptr;
             m_particle[i].trackRank = -1;
             m_triangle[i] = *triangle;
 
@@ -549,8 +549,8 @@ int CParticle::CreateRay(Math::Vector pos, Math::Vector goal,
             m_particle[i].time      = 0.0f;
             m_particle[i].phaseTime = 0.0f;
             m_particle[i].testTime  = 0.0f;
-            m_particle[i].objLink   = 0;
-            m_particle[i].objFather = 0;
+            m_particle[i].objLink   = nullptr;
+            m_particle[i].objFather = nullptr;
             m_particle[i].trackRank = -1;
 
             m_totalInterface[t][sheet] ++;
@@ -3578,7 +3578,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
     box2.y += min;
     box2.z += min;
 
-    CObject* best = 0;
+    CObject* best = nullptr;
     bool shield = false;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {

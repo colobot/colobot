@@ -93,7 +93,7 @@ void CAutoEgg::Init()
     CObject*    alien;
 
     alien = SearchAlien();
-    if ( alien == 0 )
+    if ( alien == nullptr )
     {
         m_phase    = AEP_NULL;
         m_progress = 0.0f;
@@ -234,7 +234,7 @@ Error CAutoEgg::IsEnded()
     }
 
     alien = SearchAlien();
-    if ( alien == 0 )  return ERR_STOP;
+    if ( alien == nullptr )  return ERR_STOP;
 
     if ( m_phase == AEP_INCUB )
     {

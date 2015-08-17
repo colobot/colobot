@@ -70,7 +70,7 @@
 
 CBotTypResult CScriptFunctions::cNull(CBotVar* &var, void* user)
 {
-    if ( var != 0 )  return CBotErrOverParam;
+    if ( var != nullptr )  return CBotErrOverParam;
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -83,10 +83,10 @@ CBotTypResult CScriptFunctions::cClassNull(CBotVar* thisclass, CBotVar* &var)
 
 CBotTypResult CScriptFunctions::cOneFloat(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -99,15 +99,15 @@ CBotTypResult CScriptFunctions::cClassOneFloat(CBotVar* thisclass, CBotVar* &var
 
 CBotTypResult CScriptFunctions::cTwoFloat(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -115,12 +115,12 @@ CBotTypResult CScriptFunctions::cTwoFloat(CBotVar* &var, void* user)
 
 CBotTypResult CScriptFunctions::cPoint(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
 
     if ( var->GetType() <= CBotTypDouble )
     {
         var = var->GetNext();
-        if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+        if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
         if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
         var = var->GetNext();
         //?     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
@@ -148,7 +148,7 @@ CBotTypResult CScriptFunctions::cOnePoint(CBotVar* &var, void* user)
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -156,11 +156,11 @@ CBotTypResult CScriptFunctions::cOnePoint(CBotVar* &var, void* user)
 
 CBotTypResult CScriptFunctions::cString(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypString &&
         var->GetType() >  CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -168,11 +168,11 @@ CBotTypResult CScriptFunctions::cString(CBotVar* &var, void* user)
 
 CBotTypResult CScriptFunctions::cStringString(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypString &&
         var->GetType() >  CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypString);
 }
 
@@ -180,10 +180,10 @@ CBotTypResult CScriptFunctions::cStringString(CBotVar* &var, void* user)
 
 CBotTypResult CScriptFunctions::cOneInt(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypInt )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypInt);
 }
 
@@ -191,10 +191,10 @@ CBotTypResult CScriptFunctions::cOneInt(CBotVar* &var, void* user)
 
 CBotTypResult CScriptFunctions::cOneIntReturnBool(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypInt )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypBoolean);
 }
 
@@ -203,7 +203,7 @@ CBotTypResult CScriptFunctions::cOneIntReturnBool(CBotVar* &var, void* user)
 
 bool FindList(CBotVar* array, int type)
 {
-    while ( array != 0 )
+    while ( array != nullptr )
     {
         if ( type == array->GetValInt() )  return true;
         array = array->GetNext();
@@ -426,13 +426,13 @@ bool CScriptFunctions::rTrunc(CBotVar* var, CBotVar* result, int& exception, voi
 
 CBotTypResult CScriptFunctions::cEndMission(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -456,13 +456,13 @@ bool CScriptFunctions::rEndMission(CBotVar* var, CBotVar* result, int& exception
 
 CBotTypResult CScriptFunctions::cPlayMusic(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -550,10 +550,10 @@ bool CScriptFunctions::rSetResearchDone(CBotVar* var, CBotVar* result, int& exce
 
 CBotTypResult CScriptFunctions::cGetObject(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
 
     return CBotTypResult(CBotTypPointer, "object");
 }
@@ -568,9 +568,9 @@ bool CScriptFunctions::rGetObjectById(CBotVar* var, CBotVar* result, int& except
     rank = var->GetValInt();
 
     pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->GetObjectById(rank));
-    if ( pObj == 0 )
+    if ( pObj == nullptr )
     {
-        result->SetPointer(0);
+        result->SetPointer(nullptr);
     }
     else
     {
@@ -592,7 +592,7 @@ bool CScriptFunctions::rGetObject(CBotVar* var, CBotVar* result, int& exception,
     pObj = CObjectManager::GetInstancePointer()->GetObjectByRank(rank);
     if ( pObj == nullptr )
     {
-        result->SetPointer(0);
+        result->SetPointer(nullptr);
     }
     else
     {
@@ -604,7 +604,7 @@ bool CScriptFunctions::rGetObject(CBotVar* var, CBotVar* result, int& exception,
 // Compilation of instruction "object.busy()"
 CBotTypResult CScriptFunctions::cBusy(CBotVar* thisclass, CBotVar* &var)
 {
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypBoolean);
 }
 
@@ -676,14 +676,14 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 
 CBotTypResult CScriptFunctions::cFactory(CBotVar* thisclass, CBotVar* &var)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var != 0 )
+    if ( var != nullptr )
     {
         if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadNum);
         var = var->GetNext();
-        if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+        if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     }
     return CBotTypResult(CBotTypFloat);
 }
@@ -703,7 +703,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     var = var->GetNext();
     CBotString cbs;
     const char* program;
-    if ( var != 0 )
+    if ( var != nullptr )
     {
         cbs = var->GetValString();
         program = cbs;
@@ -887,18 +887,18 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 
 CBotTypResult CScriptFunctions::cDelete(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
 
     if ( var->GetType() != CBotTypInt )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var != 0 )
+    if ( var != nullptr )
     {
         if ( var->GetType() != CBotTypInt ) return CBotTypResult(CBotErrBadNum);
         var = var->GetNext();
     }
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
 
     return CBotTypResult(CBotTypFloat);
 }
@@ -912,7 +912,7 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
 
     rank = var->GetValInt();
     var->GetNext();
-    if ( var != 0 )
+    if ( var != nullptr )
     {
         exploType = static_cast<DestructionType>(var->GetValInt());
     }
@@ -945,20 +945,20 @@ CBotTypResult CScriptFunctions::cSearch(CBotVar* &var, void* user)
     CBotVar*        array;
     CBotTypResult   ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() == CBotTypArrayPointer )
     {
         array = var->GetItemList();
-        if ( array == 0 )  return CBotTypResult(CBotTypPointer);
+        if ( array == nullptr )  return CBotTypResult(CBotTypPointer);
         if ( array->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     }
     else if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var != 0 )
+    if ( var != nullptr )
     {
         ret = cPoint(var, user);
         if ( ret.GetType() != 0 )  return ret;
-        if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+        if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     }
 
     return CBotTypResult(CBotTypPointer, "object");
@@ -986,7 +986,7 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
         bArray = false;
     }
     var = var->GetNext();
-    if ( var != 0 )
+    if ( var != nullptr )
     {
         if ( !GetPoint(var, exception, pos) )  return true;
     }
@@ -998,7 +998,7 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
     std::vector<ObjectType> type_v;
     if (bArray)
     {
-        while ( array != 0 )
+        while ( array != nullptr )
         {
             type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
             array = array->GetNext();
@@ -1014,9 +1014,9 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
 
     pBest = CObjectManager::GetInstancePointer()->Radar(pThis, pos, 0.0f, type_v, 0.0f, Math::PI*2.0f, 0.0f, 1000.0f, false, FILTER_NONE, true);
 
-    if ( pBest == 0 )
+    if ( pBest == nullptr )
     {
-        result->SetPointer(0);
+        result->SetPointer(nullptr);
     }
     else
     {
@@ -1033,34 +1033,34 @@ CBotTypResult CScriptFunctions::cRadar(CBotVar* &var, void* user)
 {
     CBotVar*    array;
 
-    if ( var == 0 )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
     if ( var->GetType() == CBotTypArrayPointer )
     {
         array = var->GetItemList();
-        if ( array == 0 )  return CBotTypResult(CBotTypPointer, "object");
+        if ( array == nullptr )  return CBotTypResult(CBotTypPointer, "object");
         if ( array->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // type
     }
     else if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // type
     var = var->GetNext();
-    if ( var == 0 )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // angle
     var = var->GetNext();
-    if ( var == 0 )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // focus
     var = var->GetNext();
-    if ( var == 0 )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // min
     var = var->GetNext();
-    if ( var == 0 )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // max
     var = var->GetNext();
-    if ( var == 0 )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // sense
     var = var->GetNext();
-    if ( var == 0 )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // filter
     var = var->GetNext();
-    if ( var == 0 )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
     return CBotTypResult(CBotErrOverParam);
 }
 
@@ -1078,7 +1078,7 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
     bool        bArray = false;
 
     type    = OBJECT_NULL;
-    array   = 0;
+    array   = nullptr;
     angle   = 0.0f;
     focus   = Math::PI*2.0f;
     minDist = 0.0f*g_unit;
@@ -1086,7 +1086,7 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
     sens    = 1.0f;
     filter  = FILTER_NONE;
 
-    if ( var != 0 )
+    if ( var != nullptr )
     {
         if ( var->GetType() == CBotTypArrayPointer )
         {
@@ -1100,32 +1100,32 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
         }
 
         var = var->GetNext();
-        if ( var != 0 )
+        if ( var != nullptr )
         {
             angle = -var->GetValFloat()*Math::PI/180.0f;
 
             var = var->GetNext();
-            if ( var != 0 )
+            if ( var != nullptr )
             {
                 focus = var->GetValFloat()*Math::PI/180.0f;
 
                 var = var->GetNext();
-                if ( var != 0 )
+                if ( var != nullptr )
                 {
                     minDist = var->GetValFloat();
 
                     var = var->GetNext();
-                    if ( var != 0 )
+                    if ( var != nullptr )
                     {
                         maxDist = var->GetValFloat();
 
                         var = var->GetNext();
-                        if ( var != 0 )
+                        if ( var != nullptr )
                         {
                             sens = var->GetValFloat();
 
                             var = var->GetNext();
-                            if ( var != 0 )
+                            if ( var != nullptr )
                             {
                                 filter = static_cast<RadarFilter>(var->GetValInt());
                             }
@@ -1139,7 +1139,7 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
     std::vector<ObjectType> type_v;
     if (bArray)
     {
-        while ( array != 0 )
+        while ( array != nullptr )
         {
             type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
             array = array->GetNext();
@@ -1157,7 +1157,7 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
 
     if ( pBest == nullptr )
     {
-        result->SetPointer(0);
+        result->SetPointer(nullptr);
     }
     else
     {
@@ -1237,10 +1237,10 @@ bool CScriptFunctions::ShouldTaskStop(Error err, int errMode)
 
 CBotTypResult CScriptFunctions::cDetect(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypBoolean);
 }
 
@@ -1261,9 +1261,9 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
     if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
         type    = OBJECT_NULL;
-        array   = 0;
+        array   = nullptr;
 
-        if ( var != 0 )
+        if ( var != nullptr )
         {
             if ( var->GetType() == CBotTypArrayPointer )
             {
@@ -1280,7 +1280,7 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
         std::vector<ObjectType> type_v;
         if (bArray)
         {
-            while ( array != 0 )
+            while ( array != nullptr )
             {
                 type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
                 array = array->GetNext();
@@ -1301,7 +1301,7 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
             script->m_main->StartDetectEffect(dynamic_cast<COldObject*>(pThis), pBest);
         }
 
-        if ( pBest == 0 )
+        if ( pBest == nullptr )
         {
             script->m_returnValue = 0.0f;
         }
@@ -1335,10 +1335,10 @@ CBotTypResult CScriptFunctions::cDirection(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
 
     return CBotTypResult(CBotTypFloat);
 }
@@ -1465,12 +1465,12 @@ CBotTypResult CScriptFunctions::cProduce(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
 
     if ( var->GetType() <= CBotTypDouble )
     {
         var = var->GetNext();
-        if ( var != 0 )
+        if ( var != nullptr )
         {
             if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
             var = var->GetNext();
@@ -1481,20 +1481,20 @@ CBotTypResult CScriptFunctions::cProduce(CBotVar* &var, void* user)
         ret = cPoint(var, user);
         if ( ret.GetType() != 0 )  return ret;
 
-        if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+        if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
         if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
         var = var->GetNext();
 
-        if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+        if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
         if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
         var = var->GetNext();
 
-        if ( var != 0 )
+        if ( var != nullptr )
         {
             if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
             var = var->GetNext();
 
-            if ( var != 0 )
+            if ( var != nullptr )
             {
                 if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
                 var = var->GetNext();
@@ -1502,7 +1502,7 @@ CBotTypResult CScriptFunctions::cProduce(CBotVar* &var, void* user)
         }
     }
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
 
     return CBotTypResult(CBotTypFloat);
 }
@@ -1625,15 +1625,15 @@ CBotTypResult CScriptFunctions::cDistance(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
 
     return CBotTypResult(CBotTypFloat);
 }
@@ -1675,23 +1675,23 @@ CBotTypResult CScriptFunctions::cSpace(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
+    if ( var == nullptr )  return CBotTypResult(CBotTypIntrinsic, "point");
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
+    if ( var == nullptr )  return CBotTypResult(CBotTypIntrinsic, "point");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
+    if ( var == nullptr )  return CBotTypResult(CBotTypIntrinsic, "point");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
+    if ( var == nullptr )  return CBotTypResult(CBotTypIntrinsic, "point");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypIntrinsic, "point");
 }
 
@@ -1709,7 +1709,7 @@ bool CScriptFunctions::rSpace(CBotVar* var, CBotVar* result, int& exception, voi
     rMax = 50.0f*g_unit;
     dist =  4.0f*g_unit;
 
-    if ( var == 0 )
+    if ( var == nullptr )
     {
         center = pThis->GetPosition();
     }
@@ -1717,17 +1717,17 @@ bool CScriptFunctions::rSpace(CBotVar* var, CBotVar* result, int& exception, voi
     {
         if ( !GetPoint(var, exception, center) )  return true;
 
-        if ( var != 0 )
+        if ( var != nullptr )
         {
             rMin = var->GetValFloat()*g_unit;
             var = var->GetNext();
 
-            if ( var != 0 )
+            if ( var != nullptr )
             {
                 rMax = var->GetValFloat()*g_unit;
                 var = var->GetNext();
 
-                if ( var != 0 )
+                if ( var != nullptr )
                 {
                     dist = var->GetValFloat()*g_unit;
                     var = var->GetNext();
@@ -1737,10 +1737,10 @@ bool CScriptFunctions::rSpace(CBotVar* var, CBotVar* result, int& exception, voi
     }
     script->m_main->FreeSpace(center, rMin, rMax, dist, pThis);
 
-    if ( result != 0 )
+    if ( result != nullptr )
     {
         pSub = result->GetItemList();
-        if ( pSub != 0 )
+        if ( pSub != nullptr )
         {
             pSub->SetValFloat(center.x/g_unit);
             pSub = pSub->GetNext();  // "y"
@@ -1756,27 +1756,27 @@ CBotTypResult CScriptFunctions::cFlatSpace(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
+    if ( var == nullptr )  return CBotTypResult(CBotTypIntrinsic, "point");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
+    if ( var == nullptr )  return CBotTypResult(CBotTypIntrinsic, "point");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
+    if ( var == nullptr )  return CBotTypResult(CBotTypIntrinsic, "point");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypIntrinsic, "point");
 }
 
@@ -1798,17 +1798,17 @@ bool CScriptFunctions::rFlatSpace(CBotVar* var, CBotVar* result, int& exception,
     flatMin = var->GetValFloat()*g_unit;
     var = var->GetNext();
 
-    if ( var != 0 )
+    if ( var != nullptr )
     {
         rMin = var->GetValFloat()*g_unit;
         var = var->GetNext();
 
-        if ( var != 0 )
+        if ( var != nullptr )
         {
             rMax = var->GetValFloat()*g_unit;
             var = var->GetNext();
 
-            if ( var != 0 )
+            if ( var != nullptr )
             {
                 dist = var->GetValFloat()*g_unit;
                 var = var->GetNext();
@@ -1817,10 +1817,10 @@ bool CScriptFunctions::rFlatSpace(CBotVar* var, CBotVar* result, int& exception,
     }
     script->m_main->FlatFreeSpace(center, flatMin, rMin, rMax, dist, pThis);
 
-    if ( result != 0 )
+    if ( result != nullptr )
     {
         pSub = result->GetItemList();
-        if ( pSub != 0 )
+        if ( pSub != nullptr )
         {
             pSub->SetValFloat(center.x/g_unit);
             pSub = pSub->GetNext();  // "y"
@@ -1839,15 +1839,15 @@ CBotTypResult CScriptFunctions::cFlatGround(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
 
     return CBotTypResult(CBotTypFloat);
 }
@@ -1965,23 +1965,23 @@ CBotTypResult CScriptFunctions::cGoto(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     return CBotTypResult(CBotErrOverParam);
 }
 
@@ -2006,17 +2006,17 @@ bool CScriptFunctions::rGoto(CBotVar* var, CBotVar* result, int& exception, void
         crash = TGC_DEFAULT;
         altitude = 0.0f*g_unit;
 
-        if ( var != 0 )
+        if ( var != nullptr )
         {
             altitude = var->GetValFloat()*g_unit;
 
             var = var->GetNext();
-            if ( var != 0 )
+            if ( var != nullptr )
             {
                 goal = static_cast<TaskGotoGoal>(var->GetValInt());
 
                 var = var->GetNext();
-                if ( var != 0 )
+                if ( var != nullptr )
                 {
                     crash = static_cast<TaskGotoCrash>(var->GetValInt());
                 }
@@ -2043,10 +2043,10 @@ bool CScriptFunctions::rGoto(CBotVar* var, CBotVar* result, int& exception, void
 
 CBotTypResult CScriptFunctions::cGrabDrop(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -2064,7 +2064,7 @@ bool CScriptFunctions::rGrab(CBotVar* var, CBotVar* result, int& exception, void
 
     if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        if ( var == 0 )
+        if ( var == nullptr )
         {
             type = TMA_FFRONT;
         }
@@ -2113,7 +2113,7 @@ bool CScriptFunctions::rDrop(CBotVar* var, CBotVar* result, int& exception, void
 
     if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        if ( var == 0 )  type = TMA_FFRONT;
+        if ( var == nullptr )  type = TMA_FFRONT;
         else             type = static_cast<TaskManipArm>(var->GetValInt());
 
         oType = pThis->GetType();
@@ -2173,15 +2173,15 @@ bool CScriptFunctions::rSniff(CBotVar* var, CBotVar* result, int& exception, voi
 
 CBotTypResult CScriptFunctions::cReceive(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -2204,7 +2204,7 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
         var = var->GetNext();
 
         power = 10.0f*g_unit;
-        if ( var != 0 )
+        if ( var != nullptr )
         {
             power = var->GetValFloat()*g_unit;
             var = var->GetNext();
@@ -2238,19 +2238,19 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
 
 CBotTypResult CScriptFunctions::cSend(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -2276,7 +2276,7 @@ bool CScriptFunctions::rSend(CBotVar* var, CBotVar* result, int& exception, void
         var = var->GetNext();
 
         power = 10.0f*g_unit;
-        if ( var != 0 )
+        if ( var != nullptr )
         {
             power = var->GetValFloat()*g_unit;
             var = var->GetNext();
@@ -2310,15 +2310,15 @@ CExchangePost* CScriptFunctions::FindExchangePost(CObject* object, float power)
 
 CBotTypResult CScriptFunctions::cDeleteInfo(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypBoolean);
+    if ( var == nullptr )  return CBotTypResult(CBotTypBoolean);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypBoolean);
 }
 
@@ -2358,15 +2358,15 @@ bool CScriptFunctions::rDeleteInfo(CBotVar* var, CBotVar* result, int& exception
 
 CBotTypResult CScriptFunctions::cTestInfo(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypBoolean);
+    if ( var == nullptr )  return CBotTypResult(CBotTypBoolean);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypBoolean);
 }
 
@@ -2459,15 +2459,15 @@ bool CScriptFunctions::rRecycle(CBotVar* var, CBotVar* result, int& exception, v
 
 CBotTypResult CScriptFunctions::cShield(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
 
     return CBotTypResult(CBotTypFloat);
 }
@@ -2546,22 +2546,22 @@ CBotTypResult CScriptFunctions::cFire(CBotVar* &var, void* user)
 
     if ( type == OBJECT_ANT )
     {
-        if ( var == 0 ) return CBotTypResult(CBotErrLowParam);
+        if ( var == nullptr ) return CBotTypResult(CBotErrLowParam);
         CBotTypResult ret = cPoint(var, user);
         if ( ret.GetType() != 0 )  return ret;
-        if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+        if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     }
     else if ( type == OBJECT_SPIDER )
     {
-        if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+        if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     }
     else
     {
-        if ( var != 0 )
+        if ( var != nullptr )
         {
             if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
             var = var->GetNext();
-            if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+            if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
         }
     }
     return CBotTypResult(CBotTypFloat);
@@ -2597,7 +2597,7 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
         }
         else
         {
-            if ( var == 0 )  delay = 0.0f;
+            if ( var == nullptr )  delay = 0.0f;
             else             delay = var->GetValFloat();
             if ( delay < 0.0f ) delay = -delay;
             err = script->m_taskExecutor->StartTaskFire(delay);
@@ -2617,15 +2617,15 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
 
 CBotTypResult CScriptFunctions::cAim(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
 
     return CBotTypResult(CBotTypFloat);
 }
@@ -2644,7 +2644,7 @@ bool CScriptFunctions::rAim(CBotVar* var, CBotVar* result, int& exception, void*
     {
         x = var->GetValFloat();
         var = var->GetNext();
-        var == 0 ? y=0.0f : y=var->GetValFloat();
+        var == nullptr ? y=0.0f : y=var->GetValFloat();
         err = script->m_taskExecutor->StartTaskGunGoal(x*Math::PI/180.0f, y*Math::PI/180.0f);
         if ( err == ERR_AIM_IMPOSSIBLE )
         {
@@ -2664,15 +2664,15 @@ bool CScriptFunctions::rAim(CBotVar* var, CBotVar* result, int& exception, void*
 
 CBotTypResult CScriptFunctions::cMotor(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
 
     return CBotTypResult(CBotTypFloat);
 }
@@ -2730,11 +2730,11 @@ CBotTypResult CScriptFunctions::cTopo(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     ret = CScriptFunctions::cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     return CBotTypResult(CBotErrOverParam);
 }
 
@@ -2760,16 +2760,16 @@ bool CScriptFunctions::rTopo(CBotVar* var, CBotVar* result, int& exception, void
 
 CBotTypResult CScriptFunctions::cMessage(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypString &&
         var->GetType() >  CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     return CBotTypResult(CBotErrOverParam);
 }
 
@@ -2787,7 +2787,7 @@ bool CScriptFunctions::rMessage(CBotVar* var, CBotVar* result, int& exception, v
 
     type = Ui::TT_MESSAGE;
     var = var->GetNext();
-    if ( var != 0 )
+    if ( var != nullptr )
     {
         type = static_cast<Ui::TextType>(var->GetValInt());
     }
@@ -2873,15 +2873,15 @@ bool CScriptFunctions::rAbsTime(CBotVar* var, CBotVar* result, int& exception, v
 
 CBotTypResult CScriptFunctions::cPenDown(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
     return CBotTypResult(CBotErrOverParam);
 }
 
@@ -2910,7 +2910,7 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
 
     exception = 0;
 
-    if ( var != 0 )
+    if ( var != nullptr )
     {
         color = var->GetValInt();
         if ( color <  0 )  color =  0;
@@ -2918,7 +2918,7 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
         traceDrawing->SetTraceColor(static_cast<TraceColor>(color));
 
         var = var->GetNext();
-        if ( var != 0 )
+        if ( var != nullptr )
         {
             width = var->GetValFloat();
             if ( width < 0.1f )  width = 0.1f;
@@ -3090,9 +3090,9 @@ bool CScriptFunctions::rPenWidth(CBotVar* var, CBotVar* result, int& exception, 
 
 CBotTypResult CScriptFunctions::cOneObject(CBotVar* &var, void* user)
 {
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     var = var->GetNext();
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
 
     return CBotTypResult(CBotErrOverParam);
 }
@@ -3900,7 +3900,7 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 
     // Updates the height above the ground.
     pVar = pVar->GetNext();  // "altitude"
-    if ( physics == 0 )  value = 0.0f;
+    if ( physics == nullptr )  value = 0.0f;
     else                 value = physics->GetFloorHeight();
     pVar->SetValFloat(value/g_unit);
 
@@ -3977,7 +3977,7 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 CBotVar* CScriptFunctions::CreateObjectVar(CObject* obj)
 {
     CBotClass* bc = CBotClass::Find("object");
-    if ( bc != 0 )
+    if ( bc != nullptr )
     {
         bc->AddUpdateFunc(CScriptFunctions::uObject);
     }

@@ -136,7 +136,7 @@ bool CAutoVault::EventProcess(const Event &event)
     if ( !m_bLock && CRobotMain::GetInstancePointer()->GetGameTime() < 1.0f )
     {
         pObj = SearchVehicle();
-        if ( pObj != 0 )
+        if ( pObj != nullptr )
         {
             pObj->SetLock(true);  // object not yet usable
             m_main->CreateShortcuts();
@@ -234,7 +234,7 @@ bool CAutoVault::EventProcess(const Event &event)
             DeleteKeys();
 
             pObj = SearchVehicle();
-            if ( pObj != 0 )
+            if ( pObj != nullptr )
             {
                 pObj->SetLock(false);  // object usable
                 m_main->CreateShortcuts();
@@ -320,7 +320,7 @@ bool CAutoVault::CreateInterface(bool bSelect)
     if ( !bSelect )  return true;
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
 
     ox = 3.0f/640.0f;
     oy = 3.0f/480.0f;

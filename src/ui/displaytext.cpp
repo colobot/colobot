@@ -188,7 +188,7 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     if ( !m_bEnable )  return;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
-    if ( pw == 0 )
+    if ( pw == nullptr )
     {
         pos.x = 0.0f;
         pos.y = 0.0f;
@@ -204,7 +204,7 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     for ( i=0 ; i<MAXDTLINE ; i++ )
     {
         group = static_cast<CGroup*>(pw->SearchControl(EventType(EVENT_DT_GROUP0+i)));
-        if ( group == 0 )  break;
+        if ( group == nullptr )  break;
         nLine ++;
     }
 
@@ -231,7 +231,7 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     ppos = pos;
     ppos.y -= hLine/2.0f;
     label = pw->CreateLabel(ppos, dim, -1, EventType(EVENT_DT_LABEL0+nLine), text);
-    if ( label != 0 )
+    if ( label != nullptr )
     {
         label->SetFontSize(FONTSIZE);
     }
@@ -330,24 +330,24 @@ void CDisplayText::HideText(bool bHide)
     m_bHide = bHide;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     for ( i=0 ; i<MAXDTLINE ; i++ )
     {
         pg = static_cast<Ui::CGroup*>(pw->SearchControl(EventType(EVENT_DT_GROUP0+i)));
-        if ( pg != 0 )
+        if ( pg != nullptr )
         {
             pg->SetState(STATE_VISIBLE, !bHide);
         }
 
         pl = static_cast<Ui::CLabel*>(pw->SearchControl(EventType(EVENT_DT_LABEL0+i)));
-        if ( pl != 0 )
+        if ( pl != nullptr )
         {
             pl->SetState(STATE_VISIBLE, !bHide);
         }
 
         pb = static_cast<CButton*>(pw->SearchControl(EventType(EVENT_DT_VISIT0+i)));
-        if ( pb != 0 )
+        if ( pb != nullptr )
         {
             pb->SetState(STATE_VISIBLE, !bHide);
         }
@@ -365,14 +365,14 @@ bool CDisplayText::ClearLastText()
     int         i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
 
     pb2 = static_cast<CButton*>(pw->SearchControl(EVENT_DT_VISIT0));
-    if ( pb2 == 0 )  return false;  // same not of first-line
+    if ( pb2 == nullptr )  return false;  // same not of first-line
     pg2 = static_cast<CGroup*>(pw->SearchControl(EVENT_DT_GROUP0));
-    if ( pg2 == 0 )  return false;
+    if ( pg2 == nullptr )  return false;
     pl2 = static_cast<CLabel*>(pw->SearchControl(EVENT_DT_LABEL0));
-    if ( pl2 == 0 )  return false;
+    if ( pl2 == nullptr )  return false;
 
     for ( i=0 ; i<MAXDTLINE-1 ; i++ )
     {
@@ -381,13 +381,13 @@ bool CDisplayText::ClearLastText()
         pl1 = pl2;
 
         pb2 = static_cast<CButton*>(pw->SearchControl(EventType(EVENT_DT_VISIT0+i+1)));
-        if ( pb2 == 0 )  break;
+        if ( pb2 == nullptr )  break;
 
         pg2 = static_cast<CGroup*>(pw->SearchControl(EventType(EVENT_DT_GROUP0+i+1)));
-        if ( pg2 == 0 )  break;
+        if ( pg2 == nullptr )  break;
 
         pl2 = static_cast<CLabel*>(pw->SearchControl(EventType(EVENT_DT_LABEL0+i+1)));
-        if ( pl2 == 0 )  break;
+        if ( pl2 == nullptr )  break;
 
         pb1->SetState(STATE_ENABLE, pb2->TestState(STATE_ENABLE));
         pg1->SetIcon(pg2->GetIcon());
@@ -454,7 +454,7 @@ float CDisplayText::GetIdealDist(CObject* pObj)
 {
     ObjectType  type;
 
-    if ( pObj == 0 )  return 40.0f;
+    if ( pObj == nullptr )  return 40.0f;
 
     type = pObj->GetType();
     if ( type == OBJECT_PORTICO )  return 200.0f;
@@ -473,7 +473,7 @@ float CDisplayText::GetIdealHeight(CObject* pObj)
 {
     ObjectType  type;
 
-    if ( pObj == 0 )  return 5.0f;
+    if ( pObj == nullptr )  return 5.0f;
 
     type = pObj->GetType();
     if ( type == OBJECT_DERRICK  )  return 35.0f;
@@ -505,12 +505,12 @@ void CDisplayText::ClearVisit()
     int         i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     for ( i=0 ; i<MAXDTLINE ; i++ )
     {
         pb = static_cast<CButton*>(pw->SearchControl(EventType(EVENT_DT_VISIT0+i)));
-        if ( pb == 0 )  break;
+        if ( pb == nullptr )  break;
         pb->SetIcon(14);  // eyes
     }
 }
@@ -527,9 +527,9 @@ void CDisplayText::SetVisit(EventType event)
     if ( i < 0 || i >= MAXDTLINE )  return;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pb = static_cast<CButton*>(pw->SearchControl(EventType(EVENT_DT_VISIT0+i)));
-    if ( pb == 0 )  return;
+    if ( pb == nullptr )  return;
     pb->SetIcon(48);  // >
 }
 
@@ -545,9 +545,9 @@ bool CDisplayText::IsVisit(EventType event)
     if ( i < 0 || i >= MAXDTLINE )  return false;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
     pb = static_cast<CButton*>(pw->SearchControl(EventType(EVENT_DT_VISIT0+i)));
-    if ( pb == 0 )  return false;
+    if ( pb == nullptr )  return false;
     return (pb->GetIcon() == 48);  // > ?
 }
 

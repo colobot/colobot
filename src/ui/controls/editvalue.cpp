@@ -275,7 +275,7 @@ void CEditValue::SetValue(float value, bool bSendMessage)
 {
     char    text[100];
 
-    if ( m_edit == 0 )  return;
+    if ( m_edit == nullptr )  return;
 
     text[0] = 0;
 
@@ -309,7 +309,7 @@ float CEditValue::GetValue()
     char    text[100];
     float   value = 0.0f;
 
-    if ( m_edit != 0 )
+    if ( m_edit != nullptr )
     {
         m_edit->GetText(text, 100);
         sscanf(text, "%f", &value);

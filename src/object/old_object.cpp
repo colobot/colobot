@@ -120,9 +120,9 @@ COldObject::COldObject(int id)
     m_cirVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_tilt   = Math::Vector(0.0f, 0.0f, 0.0f);
 
-    m_power = 0;
-    m_cargo  = 0;
-    m_transporter = 0;
+    m_power = nullptr;
+    m_cargo  = nullptr;
+    m_transporter = nullptr;
     m_transporterLink = 0;
     m_shield   = 1.0f;
     m_range    = 30.0f;
@@ -200,7 +200,7 @@ void COldObject::DeleteObject(bool bAll)
 
     if ( m_camera->GetControllingObject() == this )
     {
-        m_camera->SetControllingObject(0);
+        m_camera->SetControllingObject(nullptr);
     }
     m_main->RemoveFromSelectionHistory(this);
 
@@ -1573,7 +1573,7 @@ void COldObject::SetTransporter(CObject* transporter)
     m_transporter = transporter;
 
     // Invisible shadow if the object is transported.
-    m_engine->SetObjectShadowSpotHide(m_objectPart[0].object, (m_transporter != 0));
+    m_engine->SetObjectShadowSpotHide(m_objectPart[0].object, (m_transporter != nullptr));
 }
 
 CObject* COldObject::GetTransporter()
@@ -1729,7 +1729,7 @@ bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
     bool        bModif = false;
     int         parent;
 
-    if ( m_transporter != 0 )  // transported by transporter?
+    if ( m_transporter != nullptr )  // transported by transporter?
     {
         m_objectPart[part].bTranslate = true;
         m_objectPart[part].bRotate = true;
@@ -1788,7 +1788,7 @@ bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
     {
         parent = m_objectPart[part].parentPart;
 
-        if ( part == 0 && m_transporter != 0 )  // transported by a transporter?
+        if ( part == 0 && m_transporter != nullptr )  // transported by a transporter?
         {
             Math::Matrix*   matWorldTransporter;
             matWorldTransporter = m_transporter->GetWorldMatrix(m_transporterLink);

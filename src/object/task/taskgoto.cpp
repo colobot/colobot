@@ -57,7 +57,7 @@ const float SAFETY_MARGIN   = 0.5f;     // Smallest distance between two objects
 
 CTaskGoto::CTaskGoto(COldObject* object) : CForegroundTask(object)
 {
-    m_bmArray = 0;
+    m_bmArray = nullptr;
 }
 
 // Object's destructor.
@@ -150,7 +150,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
         pos = m_object->GetPosition();
 
-        if ( m_bmCargoObject == 0 )
+        if ( m_bmCargoObject == nullptr )
         {
             goal = m_goal;
             dist = 0.0f;
@@ -571,7 +571,7 @@ void CTaskGoto::WormFrame(float rTime)
         m_wormLastTime = 0.0f;
 
         pObj = WormSearch(impact);
-        if ( pObj != 0 )
+        if ( pObj != nullptr )
         {
             pos = m_object->GetPosition();
             dist = Math::Distance(pos, impact);
@@ -635,7 +635,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
     m_phase = TGP_ADVANCE;
     m_error = ERR_OK;
     m_try = 0;
-    m_bmCargoObject = 0;
+    m_bmCargoObject = nullptr;
     m_bmFinalMove = 0.0f;
 
     pos = m_object->GetPosition();
@@ -671,7 +671,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
     if ( !m_bApprox && m_crashMode != TGC_BEAM )
     {
         target = SearchTarget(goal, 1.0f);
-        if ( target != 0 )
+        if ( target != nullptr )
         {
             m_goal = target->GetPosition();
             dist = 0.0f;
@@ -690,7 +690,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
     if ( m_crashMode == TGC_BEAM )  // with the algorithm of rays?
     {
         target = SearchTarget(goal, 1.0f);
-        if ( target != 0 )
+        if ( target != nullptr )
         {
             m_goal = target->GetPosition();
             dist = 4.0f;
@@ -725,7 +725,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
 
         BeamStart();
 
-        if ( m_bmCargoObject == 0 )
+        if ( m_bmCargoObject == nullptr )
         {
             x = static_cast<int>((m_goal.x+1600.0f)/BM_DIM_STEP);
             y = static_cast<int>((m_goal.z+1600.0f)/BM_DIM_STEP);
@@ -1721,7 +1721,7 @@ bool CTaskGoto::BitmapTestLine(const Math::Vector &start, const Math::Vector &go
     float       distNoB2;
     int         i, max, x, y;
 
-    if ( m_bmArray == 0 )  return true;
+    if ( m_bmArray == nullptr )  return true;
 
     dist = Math::DistanceProjected(start, goal);
     if ( dist == 0.0f )  return true;

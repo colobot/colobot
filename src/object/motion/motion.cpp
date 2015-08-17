@@ -51,7 +51,7 @@ CMotion::CMotion(COldObject* object)
     m_camera    = m_main->GetCamera();
 
     m_object    = object;
-    m_physics   = 0;
+    m_physics   = nullptr;
 
     m_actionType = -1;
     m_actionTime = 0.0f;

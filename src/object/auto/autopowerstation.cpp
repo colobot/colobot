@@ -281,7 +281,7 @@ CObject* CAutoPowerStation::SearchVehicle()
         if ( dist <= 5.0f )  return obj;
     }
 
-    return 0;
+    return nullptr;
 }
 
 
@@ -316,7 +316,7 @@ bool CAutoPowerStation::CreateInterface(bool bSelect)
     if ( !bSelect )  return true;
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
 
     ox = 3.0f/640.0f;
     oy = 3.0f/480.0f;
@@ -354,10 +354,10 @@ void CAutoPowerStation::UpdateInterface(float rTime)
     if ( !m_object->GetSelect() )  return;
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
-    if ( pg != 0 )
+    if ( pg != nullptr )
     {
         pg->SetLevel(m_object->GetEnergy());
     }

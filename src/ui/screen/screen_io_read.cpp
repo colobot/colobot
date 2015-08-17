@@ -125,7 +125,7 @@ bool CScreenIORead::EventProcess(const Event &event)
     if (!m_inSimulation)
     {
         CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-        if ( pw == 0 )  return false;
+        if ( pw == nullptr )  return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
                 event.type == EVENT_INTERFACE_BACK   ||
@@ -138,7 +138,7 @@ bool CScreenIORead::EventProcess(const Event &event)
     else
     {
         CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-        if ( pw == 0 )  return false;
+        if ( pw == nullptr )  return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
                 event.type == EVENT_INTERFACE_BACK   ||

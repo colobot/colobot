@@ -318,7 +318,7 @@ CObject* CLightning::SearchObject(Math::Vector pos)
     paraObjPos.reserve(100);
 
     // Seeking the object closest to the point of impact of lightning.
-    CObject* bestObj = 0;
+    CObject* bestObj = nullptr;
     float min = 100000.0f;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {

@@ -395,7 +395,7 @@ Error CTaskBuild::Start(ObjectType type)
     if (IsObjectCarryingCargo(m_object))  return ERR_MANIP_BUSY;
 
     m_metal = SearchMetalObject(oAngle, 2.0f, 100.0f, Math::PI*0.25f, err);
-    if ( err == ERR_BUILD_METALNEAR && m_metal != 0 )
+    if ( err == ERR_BUILD_METALNEAR && m_metal != nullptr )
     {
         err = FlatFloor();
         if ( err != ERR_OK )  return err;
@@ -534,7 +534,7 @@ Error CTaskBuild::IsEnded()
         m_main->DisplayError(INFO_BUILD, m_buildingPos, 10.0f, 50.0f);
 
         automat = m_building->GetAuto();
-        if ( automat != 0 )
+        if ( automat != nullptr )
         {
             automat->Init();
         }
@@ -780,7 +780,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     min = 1000000.0f;
-    pBest = 0;
+    pBest = nullptr;
     bMetal = false;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -817,7 +817,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
         }
     }
 
-    if ( pBest == 0 )
+    if ( pBest == nullptr )
     {
         if ( bMetal )  err = ERR_BUILD_METALAWAY;  // too far
         else           err = ERR_BUILD_METALINEX;  // non-existent

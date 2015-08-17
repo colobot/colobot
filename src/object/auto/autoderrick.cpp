@@ -327,7 +327,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
 
         cargo = SearchCargo();
 
-        if ( cargo != 0 &&
+        if ( cargo != nullptr &&
              m_progress <= 0.5f &&
              m_lastParticle+m_engine->ParticleAdapt(0.1f) <= m_time )
         {
@@ -359,7 +359,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
 
         if ( m_progress < 1.0f )
         {
-            if ( cargo != 0 )
+            if ( cargo != nullptr )
             {
                 pos = cargo->GetPosition();
                 pos.y -= event.rTime*20.0f;  // grave
@@ -410,7 +410,7 @@ bool CAutoDerrick::CreateInterface(bool bSelect)
     if ( !bSelect )  return true;
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
 
     ox = 3.0f/640.0f;
     oy = 3.0f/480.0f;

@@ -415,13 +415,13 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
             front = SearchTakeFrontObject(true, fPos, fDist, fAngle);
             other = SearchOtherObject(true, oPos, oDist, oAngle, oHeight);
 
-            if ( front != 0 && fDist < oDist )
+            if ( front != nullptr && fDist < oDist )
             {
                 m_targetPos = fPos;
                 m_angle = fAngle;
                 m_move = 1.0f;  // advance required
             }
-            else if ( other != 0 && oDist < fDist )
+            else if ( other != nullptr && oDist < fDist )
             {
                 if (! ObjectHasPowerCell(other)) return ERR_MANIP_NIL;
                 m_targetPos = oPos;
@@ -438,7 +438,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         }
         if ( m_arm == TMA_FBACK )
         {
-            if ( SearchTakeBackObject(true, m_targetPos, fDist, m_angle) == 0 )
+            if ( SearchTakeBackObject(true, m_targetPos, fDist, m_angle) == nullptr )
             {
                 return ERR_MANIP_NIL;
             }
@@ -726,7 +726,7 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
     iPos   = m_object->GetPosition();
 
     min = 1000000.0f;
-    pBest = 0;
+    pBest = nullptr;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( !pObj->Implements(ObjectInterfaceType::Transportable) )  continue;
@@ -744,7 +744,7 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
             pBest = pObj;
         }
     }
-    if ( pBest != 0 )
+    if ( pBest != nullptr )
     {
         pos = pBest->GetPosition();
     }
@@ -777,7 +777,7 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
     }
 
     min = 1000000.0f;
-    pBest = 0;
+    pBest = nullptr;
     bAngle = 0.0f;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -805,7 +805,7 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
             bAngle = angle;
         }
     }
-    if ( pBest == 0 )
+    if ( pBest == nullptr )
     {
         distance = 1000000.0f;
         angle = 0.0f;
@@ -844,7 +844,7 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
     }
 
     min = 1000000.0f;
-    pBest = 0;
+    pBest = nullptr;
     bAngle = 0.0f;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -872,7 +872,7 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
             bAngle = angle;
         }
     }
-    if ( pBest == 0 )
+    if ( pBest == nullptr )
     {
         distance = 1000000.0f;
         angle = 0.0f;
@@ -898,9 +898,9 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
     distance = 1000000.0f;
     angle = 0.0f;
 
-    if ( m_bSubm )  return 0;  // impossible with the submarine
+    if ( m_bSubm )  return nullptr;  // impossible with the submarine
 
-    if (m_object->GetCrashSphereCount() == 0) return 0;
+    if (m_object->GetCrashSphereCount() == 0) return nullptr;
 
     Math::Vector iPos = m_object->GetFirstCrashSphere().sphere.pos;
 
@@ -983,7 +983,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
 
     distance = 1000000.0f;
     angle = 0.0f;
-    return 0;
+    return nullptr;
 }
 
 // Takes the object placed in front.
@@ -1164,7 +1164,7 @@ bool CTaskManip::TransporterDeposeObject()
         cargo->SetRotationZ(0.0f);
         cargo->FloorAdjust();  // plate well on the ground
 
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(0);
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(nullptr);
         m_object->SetCargo(nullptr);  // deposit
     }
 
@@ -1184,7 +1184,7 @@ bool CTaskManip::TransporterDeposeObject()
         cargo->SetRotationX(0.0f);
         cargo->SetRotationZ(0.0f);
 
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(0);
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(nullptr);
         m_object->SetCargo(nullptr);  // deposit
     }
 

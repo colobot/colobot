@@ -150,7 +150,7 @@ void CBotClass::Unlock()
     {
         m_ProgInLock[j] = m_ProgInLock[j+1];
     }
-    m_ProgInLock[i] = 0;
+    m_ProgInLock[i] = nullptr;
 }
 
 void CBotClass::FreeLock(CBotProgram* p)

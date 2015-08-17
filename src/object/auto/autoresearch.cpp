@@ -329,7 +329,7 @@ bool CAutoResearch::CreateInterface(bool bSelect)
     if ( !bSelect )  return true;
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
 
     dim.x = 33.0f/640.0f;
     dim.y = 33.0f/480.0f;
@@ -398,7 +398,7 @@ void CAutoResearch::UpdateInterface()
     CAuto::UpdateInterface();
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     DeadInterface(pw, EVENT_OBJECT_RTANK,   m_main->IsResearchEnabled(RESEARCH_TANK));
     DeadInterface(pw, EVENT_OBJECT_RFLY,    m_main->IsResearchEnabled(RESEARCH_FLY));
@@ -458,7 +458,7 @@ void CAutoResearch::OkayButton(Ui::CWindow *pw, EventType event)
     Ui::CControl*   control;
 
     control = pw->SearchControl(event);
-    if ( control == 0 )  return;
+    if ( control == nullptr )  return;
 
     control->SetState(Ui::STATE_OKAY, TestResearch(event));
 }

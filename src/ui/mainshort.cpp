@@ -320,7 +320,7 @@ CObject* CMainShort::DetectShort(Math::Point pos)
             }
         }
     }
-    return 0;
+    return nullptr;
 }
 
 // Reports the object with the mouse hovers over.

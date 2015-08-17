@@ -231,7 +231,7 @@ Error CTaskFlag::DeleteFlag()
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     pObj = SearchNearest(iPos, OBJECT_NULL);
-    if ( pObj == 0 )
+    if ( pObj == nullptr )
     {
         return ERR_FLAG_DELETE;
     }

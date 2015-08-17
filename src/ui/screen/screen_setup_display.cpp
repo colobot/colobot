@@ -61,7 +61,7 @@ void CScreenSetupDisplay::CreateInterface()
 
     CScreenSetup::CreateInterface();
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     std::vector<Math::IntPoint> modes;
     m_app->GetVideoResolutionList(modes, true, true);
@@ -133,9 +133,9 @@ bool CScreenSetupDisplay::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_FULL:
             pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-            if ( pw == 0 )  break;
+            if ( pw == nullptr )  break;
             pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
-            if ( pc == 0 )  break;
+            if ( pc == nullptr )  break;
 
             if ( pc->TestState(STATE_CHECK) )
             {
@@ -151,9 +151,9 @@ bool CScreenSetupDisplay::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_APPLY:
             pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-            if ( pw == 0 )  break;
+            if ( pw == nullptr )  break;
             pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_APPLY));
-            if ( pb == 0 )  break;
+            if ( pb == nullptr )  break;
             pb->ClearState(STATE_PRESS);
             pb->ClearState(STATE_HILIGHT);
             ChangeDisplay();
@@ -185,9 +185,9 @@ void CScreenSetupDisplay::UpdateDisplayMode()
     CList*      pl;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
     pl->Flush();
 
     std::vector<Math::IntPoint> modes;
@@ -216,14 +216,14 @@ void CScreenSetupDisplay::ChangeDisplay()
     bool        bFull;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
     m_setupSelMode = pl->GetSelect();
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
-    if ( pc == 0 )  return;
+    if ( pc == nullptr )  return;
     bFull = pc->TestState(STATE_CHECK);
     m_setupFull = bFull;
 
@@ -259,12 +259,12 @@ void CScreenSetupDisplay::UpdateApply()
     bool        bFull;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_APPLY));
 
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
     sel2 = pl->GetSelect();
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));

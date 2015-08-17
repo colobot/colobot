@@ -179,7 +179,7 @@ void CMainDialog::StartPauseMenu()
     m_dialogType = DialogType::PauseMenu;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     pos.x = 0.35f;
     pos.y = 0.60f;
@@ -257,7 +257,7 @@ void CMainDialog::StartQuestion(const std::string& text, bool warningYes, bool w
     m_callbackNo = no;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     pos.x = 0.00f;
     pos.y = 0.50f;
@@ -315,7 +315,7 @@ void CMainDialog::StartInformation(const std::string& title, const std::string& 
     m_callbackYes = ok;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     if(!title.empty())
         pw->SetName(title);
@@ -355,31 +355,31 @@ void CMainDialog::StartDialog(Math::Point dim, bool fireParticles)
     m_main->StartSuspend();
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
-    if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
-    if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW3));
-    if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-    if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
-    if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW7));
-    if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW8));
-    if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
 
     m_dialogFireParticles = fireParticles;
 
@@ -415,7 +415,7 @@ void CMainDialog::FrameDialog(float rTime)
 
     m_dialogTime += rTime;
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
-    if ( pw != 0 )
+    if ( pw != nullptr )
     {
         if ( m_dialogTime < 1.0f )
         {
@@ -510,31 +510,31 @@ void CMainDialog::StopDialog()
     CWindow*    pw;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw != 0 )  pw->SetState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->SetState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
-    if ( pw != 0 )  pw->SetState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->SetState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
-    if ( pw != 0 )  pw->SetState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->SetState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW3));
-    if ( pw != 0 )  pw->SetState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->SetState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-    if ( pw != 0 )  pw->SetState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->SetState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw != 0 )  pw->SetState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->SetState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
-    if ( pw != 0 )  pw->SetState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->SetState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW7));
-    if ( pw != 0 )  pw->SetState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->SetState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW8));
-    if ( pw != 0 )  pw->SetState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->SetState(STATE_ENABLE);
 
     m_main->StopSuspend();
     m_interface->DeleteControl(EVENT_WINDOW9);

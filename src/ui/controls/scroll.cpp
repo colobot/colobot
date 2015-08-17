@@ -150,8 +150,8 @@ bool CScroll::SetState(int state, bool bState)
 {
     if ( state & STATE_ENABLE )
     {
-        if ( m_buttonUp   != 0 )  m_buttonUp->SetState(state, bState);
-        if ( m_buttonDown != 0 )  m_buttonDown->SetState(state, bState);
+        if ( m_buttonUp   != nullptr )  m_buttonUp->SetState(state, bState);
+        if ( m_buttonDown != nullptr )  m_buttonDown->SetState(state, bState);
     }
 
     return CControl::SetState(state, bState);
@@ -161,8 +161,8 @@ bool CScroll::SetState(int state)
 {
     if ( state & STATE_ENABLE )
     {
-        if ( m_buttonUp   != 0 )  m_buttonUp->SetState(state);
-        if ( m_buttonDown != 0 )  m_buttonDown->SetState(state);
+        if ( m_buttonUp   != nullptr )  m_buttonUp->SetState(state);
+        if ( m_buttonDown != nullptr )  m_buttonDown->SetState(state);
     }
 
     return CControl::SetState(state);
@@ -172,8 +172,8 @@ bool CScroll::ClearState(int state)
 {
     if ( state & STATE_ENABLE )
     {
-        if ( m_buttonUp   != 0 )  m_buttonUp->ClearState(state);
-        if ( m_buttonDown != 0 )  m_buttonDown->ClearState(state);
+        if ( m_buttonUp   != nullptr )  m_buttonUp->ClearState(state);
+        if ( m_buttonDown != nullptr )  m_buttonDown->ClearState(state);
     }
 
     return CControl::ClearState(state);

@@ -303,7 +303,7 @@ bool CAutoLabo::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             power = m_object->GetPower();
-            if ( power != 0 )
+            if ( power != nullptr )
             {
                 power->SetScale(1.0f-m_progress);
             }
@@ -473,7 +473,7 @@ bool CAutoLabo::CreateInterface(bool bSelect)
     if ( !bSelect )  return true;
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
 
     dim.x = 33.0f/640.0f;
     dim.y = 33.0f/480.0f;
@@ -512,7 +512,7 @@ void CAutoLabo::UpdateInterface()
     CAuto::UpdateInterface();
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     DeadInterface(pw, EVENT_OBJECT_RiPAW, m_main->IsResearchEnabled(RESEARCH_iPAW));
     DeadInterface(pw, EVENT_OBJECT_RiGUN, m_main->IsResearchEnabled(RESEARCH_iGUN));
@@ -531,7 +531,7 @@ void CAutoLabo::OkayButton(Ui::CWindow *pw, EventType event)
     Ui::CControl*   control;
 
     control = pw->SearchControl(event);
-    if ( control == 0 )  return;
+    if ( control == nullptr )  return;
 
     control->SetState(Ui::STATE_OKAY, TestResearch(event));
 }

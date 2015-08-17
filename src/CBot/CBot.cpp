@@ -3196,7 +3196,7 @@ CBotInstr* CBotExprVar::CompileMethode(CBotToken* &p, CBotCStack* pStack)
     {
         CBotToken pthis("this");
         CBotVar*     var = pStk->FindVar(pthis);
-        if (var == 0) return pStack->Return(nullptr, pStk);
+        if (var == nullptr) return pStack->Return(nullptr, pStk);
 
         CBotInstr* inst = new CBotExprVar();
 

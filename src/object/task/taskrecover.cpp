@@ -45,7 +45,7 @@ const float RECOVER_DIST    = 11.8f;
 
 CTaskRecover::CTaskRecover(COldObject* object) : CForegroundTask(object)
 {
-    m_ruin = 0;
+    m_ruin = nullptr;
     m_soundChannel = -1;
 }
 
@@ -201,14 +201,14 @@ Error CTaskRecover::Start()
     m_recoverPos = pos;
 
     m_ruin = SearchRuin();
-    if ( m_ruin == 0 )  return ERR_RECOVER_NULL;
+    if ( m_ruin == nullptr )  return ERR_RECOVER_NULL;
     m_ruin->SetLock(true);  // ruin no longer usable
 
     Math::Vector iPos = m_object->GetPosition();
     Math::Vector oPos = m_ruin->GetPosition();
     m_angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
 
-    m_metal = 0;
+    m_metal = nullptr;
 
     m_phase    = TRP_TURN;
     m_progress = 0.0f;

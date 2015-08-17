@@ -183,7 +183,7 @@ bool CAutoTower::EventProcess(const Event &event)
             {
                 m_main->DisplayError(ERR_TOWER_ENERGY, m_object);
             }
-            if ( target == 0 || energy < ENERGY_FIRE )
+            if ( target == nullptr || energy < ENERGY_FIRE )
             {
                 m_phase    = ATP_ZERO;
                 m_progress = 0.0f;
@@ -409,7 +409,7 @@ bool CAutoTower::CreateInterface(bool bSelect)
     if ( !bSelect )  return true;
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
 
     ox = 3.0f/640.0f;
     oy = 3.0f/480.0f;
@@ -450,10 +450,10 @@ void CAutoTower::UpdateInterface(float rTime)
     if ( !m_object->GetSelect() )  return;
 
     Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     Ui::CGauge* pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
-    if ( pg != 0 )
+    if ( pg != nullptr )
     {
         float energy = GetObjectEnergy(m_object);
         pg->SetLevel(energy);

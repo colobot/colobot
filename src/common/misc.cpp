@@ -251,7 +251,7 @@ std::string TimeFormat(float time)
 
 void AddExt(char* filename, const char* ext)
 {
-    if ( strchr(filename, '.') != 0 )  return;  // already an extension?
+    if ( strchr(filename, '.') != nullptr )  return;  // already an extension?
     strcat(filename, ext);
 }
 

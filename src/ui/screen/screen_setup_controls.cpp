@@ -61,7 +61,7 @@ void CScreenSetupControls::CreateInterface()
 
     CScreenSetup::CreateInterface();
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     pos.x = ox+sx*3;
     pos.y = 320.0f/480.0f;
@@ -154,10 +154,10 @@ void CScreenSetupControls::UpdateSetupButtons()
     CCheck*     pc;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK));
-    if ( pc != 0 )
+    if ( pc != nullptr )
     {
         pc->SetState(STATE_ENABLE, m_app->GetJoystick().index >= 0);
         pc->SetState(STATE_CHECK, m_app->GetJoystickEnabled());

@@ -138,7 +138,7 @@ bool CAutoConvert::EventProcess(const Event &event)
         if ( m_progress >= 1.0f )
         {
             cargo = SearchStone(OBJECT_STONE);  // Has stone transformed?
-            if ( cargo == 0 || SearchVehicle() )
+            if ( cargo == nullptr || SearchVehicle() )
             {
                 m_phase    = ACP_WAIT;  // still waiting ...
                 m_progress = 0.0f;

@@ -134,7 +134,7 @@ Error CAutoFactory::StartAction(int param)
         m_type = type;
 
         cargo = SearchCargo();  // transform metal?
-        if ( cargo == 0 )
+        if ( cargo == nullptr )
         {
             return ERR_FACTORY_NULL;
         }
@@ -310,7 +310,7 @@ bool CAutoFactory::EventProcess(const Event &event)
             if ( !CreateVehicle() )
             {
                 cargo = SearchCargo();  // transform metal?
-                if ( cargo != 0 )
+                if ( cargo != nullptr )
                 {
                     cargo->SetLock(false);  // metal usable again
                 }
@@ -346,14 +346,14 @@ bool CAutoFactory::EventProcess(const Event &event)
             angle = powf(prog*10.0f, 2.0f)+m_object->GetRotationY();
 
             vehicle = SearchVehicle();
-            if ( vehicle != 0 )
+            if ( vehicle != nullptr )
             {
                 vehicle->SetRotationY(angle+Math::PI);
                 vehicle->SetScale(m_progress);
             }
 
             cargo = SearchCargo();  // transform metal?
-            if ( cargo != 0 )
+            if ( cargo != nullptr )
             {
                 cargo->SetScale(1.0f-m_progress);
             }
@@ -569,7 +569,7 @@ CObject* CAutoFactory::SearchCargo()
         if ( dist < 8.0f )  return obj;
     }
 
-    return 0;
+    return nullptr;
 }
 
 // Search if a vehicle is too close.

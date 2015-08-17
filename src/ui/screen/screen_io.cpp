@@ -174,9 +174,9 @@ void CScreenIO::IODeleteScene()
     CList*   pl;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
 
     int sel = pl->GetSelect();
     if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return;

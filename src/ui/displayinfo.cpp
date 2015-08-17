@@ -118,7 +118,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
     }
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-    if ( pw != 0 )
+    if ( pw != nullptr )
     {
         if ( event.type == pw->GetEventTypeClose() )
         {
@@ -155,7 +155,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
              event.type == EVENT_HYPER_NEXT )
         {
             edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
-            if ( edit != 0 )
+            if ( edit != nullptr )
             {
                 edit->HyperGo(event.type);
                 HyperUpdate();
@@ -166,35 +166,35 @@ bool CDisplayInfo::EventProcess(const Event &event)
         {
             CSettings::GetInstancePointer()->SetFontSize(9.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-            if ( slider != 0 )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
+            if ( slider != nullptr )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
         }
         if ( event.type == EVENT_HYPER_SIZE2 )  // size 2?
         {
             CSettings::GetInstancePointer()->SetFontSize(14.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-            if ( slider != 0 )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
+            if ( slider != nullptr )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
         }
         if ( event.type == EVENT_HYPER_SIZE3 )  // size 3?
         {
             CSettings::GetInstancePointer()->SetFontSize(19.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-            if ( slider != 0 )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
+            if ( slider != nullptr )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
         }
         if ( event.type == EVENT_HYPER_SIZE4 )  // size 4?
         {
             CSettings::GetInstancePointer()->SetFontSize(24.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-            if ( slider != 0 )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
+            if ( slider != nullptr )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
         }
 
         if ( event.type == EVENT_STUDIO_SIZE )  // size?
         {
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-            if ( slider == 0 )  return false;
+            if ( slider == nullptr )  return false;
             CSettings::GetInstancePointer()->SetFontSize(9.0f+slider->GetVisibleValue()*15.0f);
             ViewDisplayInfo();
         }
@@ -202,7 +202,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
         if ( event.type == EVENT_HYPER_COPY )  // copy ?
         {
             edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
-            if ( edit != 0 )
+            if ( edit != nullptr )
             {
                 edit->Copy();
             }
@@ -240,7 +240,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
             }
 //?         m_main->SetEditFull(m_bInfoMaximized);
             pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-            if ( pw != 0 )
+            if ( pw != nullptr )
             {
                 pw->SetMaximized(m_bInfoMaximized);
                 pw->SetMinimized(m_bInfoMinimized);
@@ -266,7 +266,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
             }
 //?         m_main->SetEditFull(m_bInfoMaximized);
             pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-            if ( pw != 0 )
+            if ( pw != nullptr )
             {
                 pw->SetMaximized(m_bInfoMaximized);
                 pw->SetMinimized(m_bInfoMinimized);
@@ -310,26 +310,26 @@ void CDisplayInfo::HyperUpdate()
     bool            bEnable;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
-    if ( edit == 0 )  return;
+    if ( edit == nullptr )  return;
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_HYPER_HOME));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         bEnable = edit->HyperTest(EVENT_HYPER_HOME);
         button->SetState(STATE_ENABLE, bEnable);
     }
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_HYPER_PREV));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         bEnable = edit->HyperTest(EVENT_HYPER_PREV);
         button->SetState(STATE_ENABLE, bEnable);
     }
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_HYPER_NEXT));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         bEnable = edit->HyperTest(EVENT_HYPER_NEXT);
         button->SetState(STATE_ENABLE, bEnable);
@@ -355,7 +355,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     if ( m_bEditLock )  // edition running program?
     {
         pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW3));
-        if ( pw != 0 )
+        if ( pw != nullptr )
         {
             pw->ClearState(STATE_ENABLE);  // CStudio inactive
         }
@@ -371,7 +371,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     pos = m_infoActualPos = m_infoFinalPos;
     dim = m_infoActualDim = m_infoFinalDim;
     pw = m_interface->CreateWindows(pos, dim, 4, EVENT_WINDOW4);
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 //? pw->SetClosable(true);
 //? GetResource(RES_TEXT, RT_DISINFO_TITLE, res);
 //? pw->SetName(res);
@@ -381,7 +381,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
 //? m_main->SetEditFull(m_bInfoMaximized);
 
     edit = pw->CreateEdit(pos, dim, 0, EVENT_EDIT1);
-    if ( edit == 0 )  return;
+    if ( edit == nullptr )  return;
     edit->SetState(STATE_SHADOW);
     edit->SetMultiFont(true);
     edit->SetMaxChar(10000);
@@ -483,7 +483,7 @@ void CDisplayInfo::AdjustDisplayInfo(Math::Point wpos, Math::Point wdim)
     wdim.y = 420.0f / 480.0f;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-    if ( pw != 0 )
+    if ( pw != nullptr )
     {
         pw->SetPos(wpos);
         pw->SetDim(wdim);
@@ -495,14 +495,14 @@ void CDisplayInfo::AdjustDisplayInfo(Math::Point wpos, Math::Point wdim)
     dim.x = 48.0f / 640.0f;
     dim.y = 48.0f / 480.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_HUSTON));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.y -= (48.0f + 4.0f) / 480.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_SAT));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
@@ -516,21 +516,21 @@ void CDisplayInfo::AdjustDisplayInfo(Math::Point wpos, Math::Point wdim)
 //? }
     pos.y -= (48.0f + 4.0f) / 480.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_LOADING));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.y -= (48.0f + 4.0f) / 480.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_PROG));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.y -= (48.0f + 4.0f) / 480.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_SOLUCE));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
@@ -541,7 +541,7 @@ void CDisplayInfo::AdjustDisplayInfo(Math::Point wpos, Math::Point wdim)
     dim.x = (48.0f - 10.0f) / 640.0f;
     dim.y = 24.0f / 480.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_OBJECT_INFOOK));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
@@ -552,7 +552,7 @@ void CDisplayInfo::AdjustDisplayInfo(Math::Point wpos, Math::Point wdim)
     dim.x = 462.0f / 640.0f;
     dim.y = 358.0f / 480.0f;
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
-    if ( edit != 0 )
+    if ( edit != nullptr )
     {
         edit->SetPos(pos);
         edit->SetDim(dim);
@@ -563,21 +563,21 @@ void CDisplayInfo::AdjustDisplayInfo(Math::Point wpos, Math::Point wdim)
     dim.x = 32.0f / 640.0f;
     dim.y = 32.0f / 480.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_HYPER_PREV));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x += 35.0f / 640.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_HYPER_NEXT));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x += 35.0f / 640.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_HYPER_HOME));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
@@ -585,28 +585,28 @@ void CDisplayInfo::AdjustDisplayInfo(Math::Point wpos, Math::Point wdim)
 
     pos.x += 50.0f / 640.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_HYPER_SIZE1));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x += 35.0f / 640.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_HYPER_SIZE2));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x += 35.0f / 640.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_HYPER_SIZE3));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x += 35.0f / 640.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_HYPER_SIZE4));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
@@ -614,7 +614,7 @@ void CDisplayInfo::AdjustDisplayInfo(Math::Point wpos, Math::Point wdim)
     pos.x += 35.0f / 640.0f;
     dim.x = 18.0f / 640.0f;
     slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-    if ( slider != 0 )
+    if ( slider != nullptr )
     {
         slider->SetPos(pos);
         slider->SetDim(dim);
@@ -622,7 +622,7 @@ void CDisplayInfo::AdjustDisplayInfo(Math::Point wpos, Math::Point wdim)
     pos.x += 50.0f / 640.0f;
     dim.x = 32.0f / 640.0f;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_HYPER_COPY));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
@@ -633,7 +633,7 @@ void CDisplayInfo::AdjustDisplayInfo(Math::Point wpos, Math::Point wdim)
     dim.x = 48.0f / 640.0f;
     dim.y = 40.0f / 480.0f;
     group = static_cast<Ui::CGroup*>(pw->SearchControl(EVENT_LABEL2));  // symbol SatCom
-    if ( group != 0 )
+    if ( group != nullptr )
     {
         group->SetPos(pos);
         group->SetDim(dim);
@@ -644,7 +644,7 @@ void CDisplayInfo::AdjustDisplayInfo(Math::Point wpos, Math::Point wdim)
     dim.x = 20.0f / 640.0f;
     dim.y = 20.0f / 480.0f;
     group = static_cast<Ui::CGroup*>(pw->SearchControl(EVENT_LABEL3));  // symbol stand-by
-    if ( group != 0 )
+    if ( group != nullptr )
     {
         group->SetPos(pos);
         group->SetDim(dim);
@@ -660,7 +660,7 @@ void CDisplayInfo::ChangeIndexButton(int index)
     char*       filename;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     if ( m_index != -1 )
     {
@@ -669,7 +669,7 @@ void CDisplayInfo::ChangeIndexButton(int index)
     m_index = index;
 
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
-    if ( edit != 0 )
+    if ( edit != nullptr )
     {
         filename = m_main->GetDisplayInfoName(m_index);
         edit->ReadText(filename);
@@ -702,10 +702,10 @@ void CDisplayInfo::UpdateIndexButton()
     };
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_HUSTON));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_HUSTON);
         filename = m_main->GetDisplayInfoName(SATCOM_HUSTON);
@@ -713,7 +713,7 @@ void CDisplayInfo::UpdateIndexButton()
     }
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_SAT));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_SAT);
         filename = m_main->GetDisplayInfoName(SATCOM_SAT);
@@ -729,7 +729,7 @@ void CDisplayInfo::UpdateIndexButton()
 //? }
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_LOADING));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_LOADING);
         filename = m_main->GetDisplayInfoName(SATCOM_LOADING);
@@ -737,7 +737,7 @@ void CDisplayInfo::UpdateIndexButton()
     }
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_PROG));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_PROG);
         filename = m_main->GetDisplayInfoName(SATCOM_PROG);
@@ -745,7 +745,7 @@ void CDisplayInfo::UpdateIndexButton()
     }
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_SOLUCE));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_SOLUCE);
         filename = m_main->GetDisplayInfoName(SATCOM_SOLUCE);
@@ -753,7 +753,7 @@ void CDisplayInfo::UpdateIndexButton()
     }
 
     group = static_cast<Ui::CGroup*>(pw->SearchControl(EVENT_LABEL1));
-    if ( group != 0 )
+    if ( group != nullptr )
     {
         if ( m_index == -1 )
         {
@@ -774,7 +774,7 @@ void CDisplayInfo::UpdateIndexButton()
     }
 
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
-    if ( edit != 0 )
+    if ( edit != nullptr )
     {
 //?     edit->SetHiliteCap(m_index==SATCOM_LOADING);
         edit->SetHighlightCap(true);
@@ -795,13 +795,13 @@ void CDisplayInfo::UpdateCopyButton()
 //? if ( m_index != SATCOM_LOADING )  return;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_HYPER_COPY));
-    if ( button == 0 )  return;
+    if ( button == nullptr )  return;
 
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
-    if ( edit == 0 )  return;
+    if ( edit == nullptr )  return;
 
     edit->GetCursor(c1, c2);
     button->SetState(STATE_ENABLE, c1!=c2);
@@ -815,14 +815,14 @@ void CDisplayInfo::StopDisplayInfo()
     Ui::CWindow*        pw;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     m_interface->DeleteControl(EVENT_WINDOW4);
 
     if ( m_bEditLock )  // editing running program?
     {
         pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW3));
-        if ( pw != 0 )
+        if ( pw != nullptr )
         {
             pw->SetState(STATE_ENABLE);  // CStudio operating
         }
@@ -861,10 +861,10 @@ void CDisplayInfo::SetPosition(int pos)
     Ui::CEdit*          edit;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
-    if ( edit == 0 )  return;
+    if ( edit == nullptr )  return;
 
     edit->SetFirstLine(pos);
 }
@@ -877,10 +877,10 @@ int CDisplayInfo::GetPosition()
     Ui::CEdit*          edit;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-    if ( pw == 0 )  return 0;
+    if ( pw == nullptr )  return 0;
 
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
-    if ( edit == 0 )  return 0;
+    if ( edit == nullptr )  return 0;
 
     return edit->GetFirstLine();
 }
@@ -896,10 +896,10 @@ void CDisplayInfo::ViewDisplayInfo()
     Math::IntPoint       dim;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
-    if ( edit == 0 )  return;
+    if ( edit == nullptr )  return;
 
     dim = m_engine->GetWindowSize();
     edit->SetFontSize(CSettings::GetInstancePointer()->GetFontSize()/(dim.x / 640.0f));

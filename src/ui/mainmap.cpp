@@ -362,12 +362,12 @@ CObject* CMainMap::DetectMap(Math::Point pos, bool &bInMap)
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
-        return 0;
+        return nullptr;
 
     bInMap = false;
     pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
     if (pm == nullptr)
-        return 0;
+        return nullptr;
     return pm->DetectObject(pos, bInMap);
 }
 

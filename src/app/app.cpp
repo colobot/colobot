@@ -96,7 +96,7 @@ struct ApplicationPrivate
         SDL_memset(&lastMouseMotionEvent, 0, sizeof(SDL_Event));
         surface = nullptr;
         joystick = nullptr;
-        joystickTimer = 0;
+        joystickTimer = nullptr;
     }
 };
 

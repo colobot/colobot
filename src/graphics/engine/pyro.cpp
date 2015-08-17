@@ -2313,7 +2313,7 @@ void CPyro::FallProgress(float rTime)
 
 Error CPyro::FallIsEnded()
 {
-    if (m_fallEnding || m_object == 0) return ERR_STOP;
+    if (m_fallEnding || m_object == nullptr) return ERR_STOP;
 
     Math::Vector pos = m_object->GetPosition();
     if (pos.y > m_fallFloor) return ERR_CONTINUE;

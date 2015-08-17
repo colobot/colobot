@@ -125,7 +125,7 @@ void CScreenIOWrite::CreateInterface()
 bool CScreenIOWrite::EventProcess(const Event &event)
 {
     CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
 
     if ( event.type == pw->GetEventTypeClose() ||
             event.type == EVENT_INTERFACE_BACK   ||

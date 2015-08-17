@@ -259,7 +259,7 @@ bool CScreenLevelList::EventProcess(const Event &event)
     CButton* pb;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
 
     if ( event.type == pw->GetEventTypeClose() ||
          event.type == EVENT_INTERFACE_BACK    ||
@@ -273,7 +273,7 @@ bool CScreenLevelList::EventProcess(const Event &event)
     {
         case EVENT_INTERFACE_CHAP:
             pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_CHAP));
-            if ( pl == 0 )  break;
+            if ( pl == nullptr )  break;
             m_chap[m_category] = pl->GetSelect();
             m_main->GetPlayerProfile()->SetSelectedChap(m_category, m_chap[m_category]+1);
             UpdateSceneList(m_chap[m_category], m_sel[m_category]);
@@ -282,7 +282,7 @@ bool CScreenLevelList::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_LIST:
             pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LIST));
-            if ( pl == 0 )  break;
+            if ( pl == nullptr )  break;
             m_sel[m_category] = pl->GetSelect();
             m_main->GetPlayerProfile()->SetSelectedRank(m_category, m_sel[m_category]+1);
             UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
@@ -290,7 +290,7 @@ bool CScreenLevelList::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_SOLUCE:
             pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE));
-            if ( pb == 0 )  break;
+            if ( pb == nullptr )  break;
             m_sceneSoluce = !m_sceneSoluce;
             pb->SetState(STATE_CHECK, m_sceneSoluce);
             break;
@@ -343,9 +343,9 @@ void CScreenLevelList::UpdateSceneChap(int &chap)
     bool        bPassed;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_CHAP));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
 
     pl->Flush();
 
@@ -424,9 +424,9 @@ void CScreenLevelList::UpdateSceneList(int chap, int &sel)
     bool        bPassed;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LIST));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
 
     pl->Flush();
 
@@ -491,11 +491,11 @@ void CScreenLevelList::ShowSoluceUpdate()
     m_sceneSoluce = false;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_RESUME));
-    if ( pe == 0 )  return;
+    if ( pe == nullptr )  return;
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE));
-    if ( pc == 0 )  return;
+    if ( pc == nullptr )  return;
 
     if ( m_main->GetShowSoluce() )
     {
@@ -523,12 +523,12 @@ void CScreenLevelList::UpdateSceneResume(int chap, int rank)
     bool        bPassed, bVisible;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_RESUME));
-    if ( pe == 0 )  return;
+    if ( pe == nullptr )  return;
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE));
 
-    if ( pc == 0 )
+    if ( pc == nullptr )
     {
         m_sceneSoluce = false;
     }

@@ -464,7 +464,7 @@ void CList::Draw()
                 for (int j = 0; j < 10; j++)
                 {
                     pe = strchr(pb, '\t');
-                    if ( pe == 0 )
+                    if ( pe == nullptr )
                         strcpy(text, pb);
                     else
                     {
@@ -473,7 +473,7 @@ void CList::Draw()
                     }
                     DrawCase(text, ppos, m_tabs[j], m_justifs[j]);
 
-                    if ( pe == 0 )
+                    if ( pe == nullptr )
                         break;
                     ppos.x += m_tabs[j];
                     pb = pe + 1;
@@ -675,7 +675,7 @@ void CList::SetItemName(int i, const char* name)
 char* CList::GetItemName(int i)
 {
     if ( i < 0 || i >= m_totalLine )
-        return 0;
+        return nullptr;
 
     return m_items[i].text;
 }

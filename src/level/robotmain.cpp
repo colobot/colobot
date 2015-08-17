@@ -171,15 +171,15 @@ CRobotMain::CRobotMain()
     m_phase       = PHASE_PLAYER_SELECT;
     m_cameraRank  = -1;
     m_visitLast   = EVENT_NULL;
-    m_visitObject = 0;
-    m_visitArrow  = 0;
+    m_visitObject = nullptr;
+    m_visitArrow  = nullptr;
     m_audioTrack  = "";
     m_audioRepeat = true;
     m_satcomTrack  = "";
     m_satcomRepeat = true;
     m_editorTrack  = "";
     m_editorRepeat = true;
-    m_selectObject = 0;
+    m_selectObject = nullptr;
     m_infoUsed     = 0;
 
     m_controller   = nullptr;
@@ -249,7 +249,7 @@ CRobotMain::CRobotMain()
     {
         m_showLimit[i].used = false;
         m_showLimit[i].total = 0;
-        m_showLimit[i].link = 0;
+        m_showLimit[i].link = nullptr;
     }
 
     m_engine->SetTerrain(m_terrain.get());
@@ -391,7 +391,7 @@ void CRobotMain::ChangePhase(Phase phase)
         {
             SaveAllScript();
             m_sound->StopMusic(0.0f);
-            m_camera->SetControllingObject(0);
+            m_camera->SetControllingObject(nullptr);
 
             if (m_gameTime > 10.0f)  // did you play at least 10 seconds?
             {
@@ -1579,7 +1579,7 @@ void CRobotMain::StartDisplayVisit(EventType event)
     }
 
     // Creates the "continue" button.
-    if (m_interface->SearchControl(EVENT_DT_END) == 0)
+    if (m_interface->SearchControl(EVENT_DT_END) == nullptr)
     {
         Math::Point pos, dim;
         pos.x = 10.0f/640.0f;
@@ -1590,7 +1590,7 @@ void CRobotMain::StartDisplayVisit(EventType event)
     }
 
     // Creates the arrow to show the place.
-    if (m_visitArrow != 0)
+    if (m_visitArrow != nullptr)
     {
         CObjectManager::GetInstancePointer()->DeleteObject(m_visitArrow);
         m_visitArrow = nullptr;
@@ -1621,7 +1621,7 @@ void CRobotMain::StartDisplayVisit(EventType event)
 //! Move the arrow to visit
 void CRobotMain::FrameVisit(float rTime)
 {
-    if (m_visitArrow == 0) return;
+    if (m_visitArrow == nullptr) return;
 
     // Moves the arrow.
     m_visitTime += rTime;
@@ -1669,10 +1669,10 @@ void CRobotMain::StopDisplayVisit()
     m_camera->StopVisit();
     m_displayText->ClearVisit();
     ChangePause(PAUSE_NONE);
-    if (m_visitObject != 0)
+    if (m_visitObject != nullptr)
     {
         SelectObject(m_visitObject, false);  // gives the command buttons
-        m_visitObject = 0;
+        m_visitObject = nullptr;
     }
 }
 
@@ -1837,7 +1837,7 @@ CObject* CRobotMain::SearchToto()
 CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
 {
     float min = 100000.0f;
-    CObject* best = 0;
+    CObject* best = nullptr;
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (obj == exclu) continue;
@@ -1907,7 +1907,7 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
             return target;
         }
     }
-    return 0;
+    return nullptr;
 }
 
 //! Indicates whether an object is selectable
@@ -1968,8 +1968,8 @@ void CRobotMain::HiliteClear()
         if (!obj->Implements(ObjectInterfaceType::Controllable)) continue;
         dynamic_cast<CControllableObject*>(obj)->SetHighlight(false);
     }
-    m_map->SetHighlight(0);
-    m_short->SetHighlight(0);
+    m_map->SetHighlight(nullptr);
+    m_short->SetHighlight(nullptr);
 
     m_hilite = false;
 }
@@ -2274,7 +2274,7 @@ void CRobotMain::AbortMovie()
         if (obj->Implements(ObjectInterfaceType::Old))
         {
             CAuto* automat = obj->GetAuto();
-            if (automat != 0)
+            if (automat != nullptr)
                 automat->Abort();
         }
     }
@@ -2783,7 +2783,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_ui->GetLoadingScreen()->SetProgress(0.1f, RT_LOADING_LEVEL_SETTINGS);
 
         int rankObj = 0;
-        CObject* sel = 0;
+        CObject* sel = nullptr;
 
         /*
         * NOTE: Moving frequently used lines to the top
@@ -3659,7 +3659,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (m_fixScene)
             m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
-        if (!m_sceneReadPath.empty() && sel != 0)  // loading file?
+        if (!m_sceneReadPath.empty() && sel != nullptr)  // loading file?
         {
             Math::Vector pos = sel->GetPosition();
             m_camera->Init(pos, pos, 0.0f);
@@ -3845,13 +3845,13 @@ void CRobotMain::ChangeColor()
         std::string teamStr = StrUtils::ToString<int>(team);
         if(team == 0) teamStr = "";
 
-        m_engine->ChangeTextureColor("textures/objects/base1.png"+teamStr,   "textures/objects/base1.png",   m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-        m_engine->ChangeTextureColor("textures/objects/convert.png"+teamStr, "textures/objects/convert.png", m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-        m_engine->ChangeTextureColor("textures/objects/derrick.png"+teamStr, "textures/objects/derrick.png", m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-        m_engine->ChangeTextureColor("textures/objects/factory.png"+teamStr, "textures/objects/factory.png", m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-        m_engine->ChangeTextureColor("textures/objects/lemt.png"+teamStr,    "textures/objects/lemt.png",    m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-        m_engine->ChangeTextureColor("textures/objects/roller.png"+teamStr,  "textures/objects/roller.png",  m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-        m_engine->ChangeTextureColor("textures/objects/search.png"+teamStr,  "textures/objects/search.png",  m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/base1.png"+teamStr,   "textures/objects/base1.png",   m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/convert.png"+teamStr, "textures/objects/convert.png", m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/derrick.png"+teamStr, "textures/objects/derrick.png", m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/factory.png"+teamStr, "textures/objects/factory.png", m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/lemt.png"+teamStr,    "textures/objects/lemt.png",    m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/roller.png"+teamStr,  "textures/objects/roller.png",  m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/search.png"+teamStr,  "textures/objects/search.png",  m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
 
         exclu[0] = Math::Point(  0.0f/256.0f, 160.0f/256.0f);
         exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // pencils
@@ -3885,12 +3885,12 @@ void CRobotMain::ChangeColor()
     // PARTIPLOUF0 and PARTIDROP :
     ts = Math::Point(0.500f, 0.500f);
     ti = Math::Point(0.875f, 0.750f);
-    m_engine->ChangeTextureColor("textures/effect00.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
+    m_engine->ChangeTextureColor("textures/effect00.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
 
     // PARTIFLIC :
     ts = Math::Point(0.00f, 0.75f);
     ti = Math::Point(0.25f, 1.00f);
-    m_engine->ChangeTextureColor("textures/effect02.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
+    m_engine->ChangeTextureColor("textures/effect02.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
 
     // This loads the newly recolored textures to objects
     m_engine->LoadAllTextures();
@@ -4198,7 +4198,7 @@ void CRobotMain::FlushShowLimit(int i)
     }
 
     m_showLimit[i].total = 0;
-    m_showLimit[i].link = 0;
+    m_showLimit[i].link = nullptr;
     m_showLimit[i].used = false;
 }
 
@@ -5873,7 +5873,7 @@ void CRobotMain::StartDetectEffect(COldObject* object, CObject* target)
     mat = object->GetWorldMatrix(0);
     pos = Math::Transform(*mat, Math::Vector(2.0f, 3.0f, 0.0f));
 
-    if ( target == 0 )
+    if ( target == nullptr )
     {
         goal = Math::Transform(*mat, Math::Vector(50.0f, 3.0f, 0.0f));
     }

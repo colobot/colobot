@@ -120,14 +120,14 @@ bool CAutoNest::EventProcess(const Event &event)
 
         if ( m_progress < 1.0f )
         {
-            if ( cargo != 0 )
+            if ( cargo != nullptr )
             {
                 cargo->SetScale(m_progress);
             }
         }
         else
         {
-            if ( cargo != 0 )
+            if ( cargo != nullptr )
             {
                 cargo->SetScale(1.0f);
                 cargo->SetLock(false);

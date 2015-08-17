@@ -55,7 +55,7 @@ void CScreenSetupSound::CreateInterface()
 
     CScreenSetup::CreateInterface();
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     pos.x = ox+sx*3;
     pos.y = 0.55f;
@@ -133,17 +133,17 @@ void CScreenSetupSound::UpdateSetupButtons()
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLSOUND));
-    if ( ps != 0 )
+    if ( ps != nullptr )
     {
         value = static_cast<float>(m_sound->GetAudioVolume());
         ps->SetVisibleValue(value);
     }
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLMUSIC));
-    if ( ps != 0 )
+    if ( ps != nullptr )
     {
         value = static_cast<float>(m_sound->GetMusicVolume());
         ps->SetVisibleValue(value);
@@ -159,17 +159,17 @@ void CScreenSetupSound::ChangeSetupButtons()
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLSOUND));
-    if ( ps != 0 )
+    if ( ps != nullptr )
     {
         value = ps->GetVisibleValue();
         m_sound->SetAudioVolume(static_cast<int>(value));
     }
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLMUSIC));
-    if ( ps != 0 )
+    if ( ps != nullptr )
     {
         value = ps->GetVisibleValue();
         m_sound->SetMusicVolume(static_cast<int>(value));

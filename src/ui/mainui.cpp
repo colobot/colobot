@@ -273,12 +273,12 @@ void CMainUserInterface::GlintMove()
     if ( m_phase == PHASE_SIMUL )  return;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     if ( m_phase == PHASE_MAIN_MENU )
     {
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTl));
-        if ( pg != 0 )
+        if ( pg != nullptr )
         {
             zoom.x = sinf(m_glintTime*0.23f);
             zoom.y = sinf(m_glintTime*0.37f);
@@ -292,7 +292,7 @@ void CMainUserInterface::GlintMove()
         }
 
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTr));
-        if ( pg != 0 )
+        if ( pg != nullptr )
         {
             zoom.x = sinf(m_glintTime*0.21f);
             zoom.y = sinf(m_glintTime*0.26f);
@@ -310,7 +310,7 @@ void CMainUserInterface::GlintMove()
          m_phase == PHASE_LEVEL_LIST  )
     {
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTl));
-        if ( pg != 0 )
+        if ( pg != nullptr )
         {
             zoom.x = sinf(m_glintTime*0.22f);
             zoom.y = sinf(m_glintTime*0.37f);
@@ -324,7 +324,7 @@ void CMainUserInterface::GlintMove()
         }
 
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTr));
-        if ( pg != 0 )
+        if ( pg != nullptr )
         {
             zoom.x = sinf(m_glintTime*0.19f);
             zoom.y = sinf(m_glintTime*0.28f);
@@ -350,7 +350,7 @@ void CMainUserInterface::GlintMove()
             m_phase == PHASE_SETUPss )
     {
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTu));
-        if ( pg != 0 )
+        if ( pg != nullptr )
         {
             zoom.y = sinf(m_glintTime*0.27f);
             pos.x = 0.10f;
@@ -363,7 +363,7 @@ void CMainUserInterface::GlintMove()
         }
 
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTr));
-        if ( pg != 0 )
+        if ( pg != nullptr )
         {
             zoom.x = sinf(m_glintTime*0.29f);
             zoom.y = sinf(m_glintTime*0.14f);
@@ -382,7 +382,7 @@ void CMainUserInterface::GlintMove()
          m_phase == PHASE_READs  )
     {
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTl));
-        if ( pg != 0 )
+        if ( pg != nullptr )
         {
             zoom.x = sinf(m_glintTime*0.22f);
             zoom.y = sinf(m_glintTime*0.37f);
@@ -396,7 +396,7 @@ void CMainUserInterface::GlintMove()
         }
 
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTr));
-        if ( pg != 0 )
+        if ( pg != nullptr )
         {
             zoom.x = sinf(m_glintTime*0.19f);
             zoom.y = sinf(m_glintTime*0.28f);

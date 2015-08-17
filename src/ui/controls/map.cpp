@@ -274,7 +274,7 @@ CObject* CMap::DetectObject(Math::Point pos, bool &bInMap)
          pos.y < m_pos.y ||
          pos.x > m_pos.x + m_dim.x ||
          pos.y > m_pos.y + m_dim.y )
-        return 0;
+        return nullptr;
 
     bInMap = true;
 
@@ -304,7 +304,7 @@ CObject* CMap::DetectObject(Math::Point pos, bool &bInMap)
         }
     }
     if ( best == -1 )
-        return 0;
+        return nullptr;
     return m_map[best].object;
 }
 
@@ -316,7 +316,7 @@ void CMap::SelectObject(Math::Point pos)
     bool bInMap;
 
     pObj = DetectObject(pos, bInMap);
-    if ( pObj != 0 )
+    if ( pObj != nullptr )
         m_main->SelectObject(pObj);
 }
 

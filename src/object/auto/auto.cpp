@@ -192,7 +192,7 @@ bool CAuto::CreateInterface(bool bSelect)
     dim.y = 86.0f/480.0f;
     m_interface->CreateWindows(pos, dim, 3, EVENT_WINDOW0);
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
 
     pos.x = 0.0f;
     pos.y = 64.0f/480.0f;

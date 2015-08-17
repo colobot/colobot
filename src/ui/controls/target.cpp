@@ -71,7 +71,7 @@ bool CTarget::EventProcess(const Event &event)
         if ( CControl::Detect(event.mousePos) )
         {
             pObj = DetectFriendObject(event.mousePos);
-            if ( pObj == 0 )
+            if ( pObj == nullptr )
             {
                 m_engine->SetMouseType(Gfx::ENG_MOUSE_TARGET);
 

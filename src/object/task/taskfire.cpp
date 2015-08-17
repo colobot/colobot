@@ -106,7 +106,7 @@ bool CTaskFire::EventProcess(const Event &event)
                 speed = Math::Vector(200.0f, 0.0f, 0.0f);
 
                 physics = m_object->GetPhysics();
-                if ( physics != 0 )
+                if ( physics != nullptr )
                 {
                     speed += physics->GetLinMotion(MO_REASPEED);
                 }
@@ -191,7 +191,7 @@ bool CTaskFire::EventProcess(const Event &event)
                 speed = Math::Vector(200.0f, 0.0f, 0.0f);
 
                 physics = m_object->GetPhysics();
-                if ( physics != 0 )
+                if ( physics != nullptr )
                 {
                     speed += physics->GetLinMotion(MO_REASPEED);
                 }

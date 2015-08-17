@@ -180,7 +180,7 @@ bool CScript::CheckToken()
 
     allBt = CBotToken::CompileTokens(m_script.get(), error);
     bt = allBt;
-    while ( bt != 0 )
+    while ( bt != nullptr )
     {
         bs = bt->GetString();
         token = bs;
@@ -529,7 +529,7 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
     const char  *p;
     int         index, type;
 
-    if ( var == 0 && baseName[0] != 0 )
+    if ( var == nullptr && baseName[0] != 0 )
     {
         sprintf(buffer, "%s = null;", baseName);
         list->SetItemName(rankList++, buffer);
@@ -537,7 +537,7 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
     }
 
     index = 0;
-    while ( var != 0 )
+    while ( var != nullptr )
     {
         var->Maj(nullptr, false);
         pStatic = var->GetStaticVar();  // finds the static element
@@ -621,7 +621,7 @@ void CScript::UpdateList(Ui::CList* list)
 
     list->Flush();  // empty list
     m_botProg->GetRunPos(progName, cursor1, cursor2);
-    if ( progName == 0 )  return;
+    if ( progName == nullptr )  return;
 
     level = 0;
     rank  = 0;
@@ -656,7 +656,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit)
     edit->ClearFormat();
 
     bt = CBotToken::CompileTokens(edit->GetText(), error);
-    while ( bt != 0 )
+    while ( bt != nullptr )
     {
         bs = bt->GetString();
         token = bs;
@@ -721,7 +721,7 @@ int SearchToken(char* script, const char* token)
     for ( i=0 ; i<lScript-lToken ; i++ )
     {
         p = strstr(script+i, token);
-        if ( p != 0 )
+        if ( p != nullptr )
         {
             found[iFound++] = p-script;
             if ( iFound >= 100 )  break;

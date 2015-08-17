@@ -140,10 +140,10 @@ bool CObjectInterface::EventProcess(const Event &event)
     if (isActionSlot)
     {
         pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-        if ( pw != 0 )
+        if ( pw != nullptr )
         {
             pc = pw->SearchControl(m_defaultEnter);
-            if ( pc != 0 )
+            if ( pc != nullptr )
             {
                 if ( pc->TestState(STATE_ENABLE) )
                 {
@@ -174,7 +174,7 @@ bool CObjectInterface::EventProcess(const Event &event)
         if (data->slot == INPUT_SLOT_ACTION && alt)
         {
             pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-            if ( pw != 0 )
+            if ( pw != nullptr )
             {
                 CButton* pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_PROGRUN));
                 if(pb != nullptr)
@@ -274,7 +274,7 @@ bool CObjectInterface::EventProcess(const Event &event)
 
             UpdateInterface();
             CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-            if ( pw != 0 )
+            if ( pw != nullptr )
             {
                 UpdateScript(pw);
             }
@@ -328,7 +328,7 @@ bool CObjectInterface::EventProcess(const Event &event)
 
             UpdateInterface();
             CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-            if ( pw != 0 )
+            if ( pw != nullptr )
             {
                 UpdateScript(pw);
             }
@@ -350,7 +350,7 @@ bool CObjectInterface::EventProcess(const Event &event)
 
                 UpdateInterface();
                 CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-                if ( pw != 0 )
+                if ( pw != nullptr )
                 {
                     UpdateScript(pw);
                 }
@@ -368,7 +368,7 @@ bool CObjectInterface::EventProcess(const Event &event)
 
                 UpdateInterface();
                 CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-                if ( pw != 0 )
+                if ( pw != nullptr )
                 {
                     UpdateScript(pw);
                 }
@@ -385,7 +385,7 @@ bool CObjectInterface::EventProcess(const Event &event)
 
             UpdateInterface();
             CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-            if ( pw != 0 )
+            if ( pw != nullptr )
             {
                 UpdateScript(pw);
             }
@@ -400,7 +400,7 @@ bool CObjectInterface::EventProcess(const Event &event)
 
             UpdateInterface();
             CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-            if ( pw != 0 )
+            if ( pw != nullptr )
             {
                 UpdateScript(pw);
             }
@@ -581,10 +581,10 @@ bool CObjectInterface::EventProcess(const Event &event)
         if ( action == EVENT_OBJECT_DIMSHIELD )
         {
             pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-            if ( pw != 0 )
+            if ( pw != nullptr )
             {
                 ps = static_cast< CSlider* >(pw->SearchControl(EVENT_OBJECT_DIMSHIELD));
-                if ( ps != 0 )
+                if ( ps != nullptr )
                 {
                     dynamic_cast<CShielder*>(m_object)->SetShieldRadius((ps->GetVisibleValue()-(RADIUS_SHIELD_MIN/g_unit))/((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
                 }
@@ -663,7 +663,7 @@ bool CObjectInterface::EventProcess(const Event &event)
             }
             UpdateInterface();
             pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-            if ( pw != 0 )
+            if ( pw != nullptr )
             {
                 UpdateScript(pw);
             }
@@ -676,7 +676,7 @@ bool CObjectInterface::EventProcess(const Event &event)
             }
             UpdateInterface();
             pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-            if ( pw != 0 )
+            if ( pw != nullptr )
             {
                 UpdateScript(pw);
             }
@@ -796,7 +796,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
     float       ox, oy, sx, sy;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw != 0 )
+    if ( pw != nullptr )
     {
         pw->Flush();  // destroys the window buttons
         m_interface->DeleteControl(EVENT_WINDOW0);  // destroys the window
@@ -812,7 +812,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
     dim.y =  86.0f/480.0f;
     m_interface->CreateWindows(pos, dim, 3, EVENT_WINDOW0);
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
 
     pos.x = 0.0f;
     pos.y = 64.0f/480.0f;
@@ -1451,7 +1451,7 @@ void CObjectInterface::UpdateInterface(float rTime)
     }
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     CGauge* pg = static_cast< CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
     if (pg != nullptr)
@@ -1489,14 +1489,14 @@ void CObjectInterface::UpdateInterface(float rTime)
     }
 
     pg = static_cast< CGauge* >(pw->SearchControl(EVENT_OBJECT_GSHIELD));
-    if ( pg != 0 )
+    if ( pg != nullptr )
     {
         assert(m_object->Implements(ObjectInterfaceType::Shielded));
         pg->SetLevel(dynamic_cast<CShieldedObject*>(m_object)->GetShield());
     }
 
     pg = static_cast< CGauge* >(pw->SearchControl(EVENT_OBJECT_GRANGE));
-    if ( pg != 0 )
+    if ( pg != nullptr )
     {
         assert(m_object->Implements(ObjectInterfaceType::JetFlying));
         icon = 2;  // blue/red
@@ -1531,7 +1531,7 @@ void CObjectInterface::UpdateInterface(float rTime)
     }
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_OBJECT_REC));
-    if ( pb != 0 )
+    if ( pb != nullptr )
     {
         if ( m_programmable->IsTraceRecord() && Math::Mod(m_time, 0.4f) >= 0.2f )
         {
@@ -1546,7 +1546,7 @@ void CObjectInterface::UpdateInterface(float rTime)
     bOnBoard = m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD;
 
     pgr = static_cast< CGroup* >(pw->SearchControl(EVENT_OBJECT_CROSSHAIR));
-    if ( pgr != 0 )
+    if ( pgr != nullptr )
     {
         if ( bOnBoard )
         {
@@ -1564,7 +1564,7 @@ void CObjectInterface::UpdateInterface(float rTime)
     }
 
     ptg = static_cast< CTarget* >(pw->SearchControl(EVENT_OBJECT_TARGET));
-    if ( ptg != 0 )
+    if ( ptg != nullptr )
     {
         if ( bOnBoard )
         {
@@ -1577,25 +1577,25 @@ void CObjectInterface::UpdateInterface(float rTime)
     }
 
     pgr = static_cast< CGroup* >(pw->SearchControl(EVENT_OBJECT_CORNERul));
-    if ( pgr != 0 )
+    if ( pgr != nullptr )
     {
         pgr->SetState(STATE_VISIBLE, bOnBoard);
     }
 
     pgr = static_cast< CGroup* >(pw->SearchControl(EVENT_OBJECT_CORNERur));
-    if ( pgr != 0 )
+    if ( pgr != nullptr )
     {
         pgr->SetState(STATE_VISIBLE, bOnBoard);
     }
 
     pgr = static_cast< CGroup* >(pw->SearchControl(EVENT_OBJECT_CORNERdl));
-    if ( pgr != 0 )
+    if ( pgr != nullptr )
     {
         pgr->SetState(STATE_VISIBLE, bOnBoard);
     }
 
     pgr = static_cast< CGroup* >(pw->SearchControl(EVENT_OBJECT_CORNERdr));
-    if ( pgr != 0 )
+    if ( pgr != nullptr )
     {
         pgr->SetState(STATE_VISIBLE, bOnBoard);
     }
@@ -1616,7 +1616,7 @@ void CObjectInterface::UpdateInterface()
     if ( !m_object->GetSelect() )  return;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     type = m_object->GetType();
 
@@ -1708,7 +1708,7 @@ void CObjectInterface::UpdateInterface()
         }
 
         ps = static_cast< CSlider* >(pw->SearchControl(EVENT_OBJECT_DIMSHIELD));
-        if ( ps != 0 )
+        if ( ps != nullptr )
         {
             ps->SetVisibleValue((RADIUS_SHIELD_MIN/g_unit)+dynamic_cast<CShielder*>(m_object)->GetShieldRadius()*((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
         }
@@ -1790,7 +1790,7 @@ void CObjectInterface::UpdateInterface()
         EnableInterface(pw, EVENT_OBJECT_PROGRUN, bRun && m_main->CanPlayerInteract());
 
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_PROGRUN));
-        if ( pb != 0 )
+        if ( pb != nullptr )
         {
             pb->SetIcon(!m_programmable->IsProgram() ? 21 : 8);  // run/stop
         }
@@ -1820,49 +1820,49 @@ void CObjectInterface::UpdateInterface()
     if (traceDrawing != nullptr && traceDrawing->GetTraceDown())
     {
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_PEN0));
-        if ( pb != 0 )
+        if ( pb != nullptr )
         {
             pb->ClearState(STATE_CHECK);
         }
 
         TraceColor color = traceDrawing->GetTraceColor();
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN1));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->SetState(STATE_CHECK, color == TraceColor::Black);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN2));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->SetState(STATE_CHECK, color == TraceColor::Yellow);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN3));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->SetState(STATE_CHECK, color == TraceColor::Orange);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN4));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->SetState(STATE_CHECK, color == TraceColor::Red);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN5));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->SetState(STATE_CHECK, color == TraceColor::Purple);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN6));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->SetState(STATE_CHECK, color == TraceColor::Blue);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN7));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->SetState(STATE_CHECK, color == TraceColor::Green);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN8));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->SetState(STATE_CHECK, color == TraceColor::Brown);
         }
@@ -1870,48 +1870,48 @@ void CObjectInterface::UpdateInterface()
     else
     {
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_PEN0));
-        if ( pb != 0 )
+        if ( pb != nullptr )
         {
             pb->SetState(STATE_CHECK);
         }
 
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN1));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->ClearState(STATE_CHECK);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN2));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->ClearState(STATE_CHECK);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN3));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->ClearState(STATE_CHECK);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN4));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->ClearState(STATE_CHECK);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN5));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->ClearState(STATE_CHECK);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN6));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->ClearState(STATE_CHECK);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN7));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->ClearState(STATE_CHECK);
         }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN8));
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
             pc->ClearState(STATE_CHECK);
         }
@@ -1927,7 +1927,7 @@ void CObjectInterface::UpdateScript(CWindow *pw)
     char        title[100];
 
     pl = static_cast< CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
 
     pl->Flush();
     for ( int i = 0 ; i < m_programStorage->GetProgramCount() ; i++ )
@@ -1962,10 +1962,10 @@ int CObjectInterface::GetSelScript()
     CList*      pl;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return -1;
+    if ( pw == nullptr )  return -1;
 
     pl = static_cast< CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
-    if ( pl == 0 )  return -1;
+    if ( pl == nullptr )  return -1;
 
     return pl->GetSelect();
 }
@@ -1978,10 +1978,10 @@ void CObjectInterface::SetSelScript(int index)
     CList*      pl;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     pl = static_cast< CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
 
     pl->SetSelect(index);
     pl->ShowSelect(true);
@@ -1997,10 +1997,10 @@ void CObjectInterface::BlinkScript(bool bEnable)
     if ( !m_object->GetSelect() )  return;  // robot not selected?
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
 
     pl = static_cast< CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
 
     pl->SetBlink(bEnable);
 }
@@ -2012,7 +2012,7 @@ void CObjectInterface::CheckInterface(CWindow *pw, EventType event, bool bState)
     CControl*   control;
 
     control = pw->SearchControl(event);
-    if ( control == 0 )  return;
+    if ( control == nullptr )  return;
 
     control->SetState(STATE_CHECK, bState);
 }
@@ -2024,7 +2024,7 @@ void CObjectInterface::EnableInterface(CWindow *pw, EventType event, bool bState
     CControl*   control;
 
     control = pw->SearchControl(event);
-    if ( control == 0 )  return;
+    if ( control == nullptr )  return;
 
     control->SetState(STATE_ENABLE, bState);
 }
@@ -2036,7 +2036,7 @@ void CObjectInterface::DeadInterface(CWindow *pw, EventType event, bool bState)
     CControl*   control;
 
     control = pw->SearchControl(event);
-    if ( control == 0 )  return;
+    if ( control == nullptr )  return;
 
     control->SetState(STATE_DEAD, !bState);
 }
@@ -2048,7 +2048,7 @@ void CObjectInterface::DefaultEnter(CWindow *pw, EventType event, bool bState)
     CControl*   control;
 
     control = pw->SearchControl(event);
-    if ( control == 0 )  return;
+    if ( control == nullptr )  return;
 
     if ( bState )
     {

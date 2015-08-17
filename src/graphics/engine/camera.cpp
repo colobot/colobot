@@ -83,7 +83,7 @@ CCamera::CCamera()
 
     m_type      = CAM_TYPE_FREE;
     m_smooth    = CAM_SMOOTH_NORM;
-    m_cameraObj = 0;
+    m_cameraObj = nullptr;
 
     m_eyeDistance = 10.0f;
     m_initDelay   =  0.0f;
@@ -350,7 +350,7 @@ void CCamera::SetType(CameraType type)
         m_addDirectionV = -Math::PI*0.05f;
 
         ObjectType oType;
-        if ( m_cameraObj == 0 )  oType = OBJECT_NULL;
+        if ( m_cameraObj == nullptr )  oType = OBJECT_NULL;
         else                     oType = m_cameraObj->GetType();
 
         m_backDist = 30.0f;

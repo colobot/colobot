@@ -143,7 +143,7 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
         if ( m_progress >= 1.0f )
         {
             cargo = SearchUranium();  // transform uranium?
-            if ( cargo == 0 || SearchVehicle() )
+            if ( cargo == nullptr || SearchVehicle() )
             {
                 m_phase    = ANUP_WAIT;  // still waiting ...
                 m_progress = 0.0f;
@@ -306,7 +306,7 @@ bool CAutoNuclearPlant::CreateInterface(bool bSelect)
     if ( !bSelect )  return true;
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
 
     ox = 3.0f/640.0f;
     oy = 3.0f/480.0f;

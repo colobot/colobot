@@ -162,11 +162,11 @@ bool CAutoDestroyer::EventProcess(const Event &event)
             if (m_main->GetSelect() == m_object)
             {
                 scrap = SearchPlastic();
-                if ( pw != 0 ) EnableInterface(pw, EVENT_OBJECT_BDESTROY, (scrap != 0));
+                if ( pw != nullptr ) EnableInterface(pw, EVENT_OBJECT_BDESTROY, (scrap != nullptr));
             }
         }
     }
-    else if ( pw != 0 ) EnableInterface(pw, EVENT_OBJECT_BDESTROY, false);
+    else if ( pw != nullptr ) EnableInterface(pw, EVENT_OBJECT_BDESTROY, false);
 
     if ( m_phase == ADEP_DOWN )
     {
@@ -269,7 +269,7 @@ bool CAutoDestroyer::CreateInterface(bool bSelect)
     pw->CreateButton(pos, ddim, 12, EVENT_OBJECT_BDESTROY);
 
     scrap = SearchPlastic();
-    EnableInterface(pw, EVENT_OBJECT_BDESTROY, (scrap != 0));
+    EnableInterface(pw, EVENT_OBJECT_BDESTROY, (scrap != nullptr));
 
     return true;
 }
@@ -345,7 +345,7 @@ void CAutoDestroyer::EnableInterface(Ui::CWindow *pw, EventType event, bool bSta
     Ui::CControl*   control;
 
     control = pw->SearchControl(event);
-    if ( control == 0 )  return;
+    if ( control == nullptr )  return;
 
     control->SetState(Ui::STATE_ENABLE, bState);
 }
