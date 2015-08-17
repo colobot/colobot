@@ -2030,13 +2030,13 @@ bool COldObject::EventProcess(const Event &event)
         else if (GetSelect())
         {
             bool canMove = true;
-            if (Implements(ObjectInterfaceType::Programmable))
-            {
-                canMove = canMove && !IsProgram();
-            }
             if (Implements(ObjectInterfaceType::TaskExecutor))
             {
                 canMove = canMove || (IsForegroundTask() && GetForegroundTask()->IsPilot());
+            }
+            if (Implements(ObjectInterfaceType::Programmable))
+            {
+                canMove = canMove && !IsProgram();
             }
 
             if ( canMove )
