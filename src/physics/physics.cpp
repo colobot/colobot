@@ -3667,7 +3667,6 @@ void CPhysics::WheelParticle(TraceColor color, float width)
     // Draw a trace on the ground.
     if ( color != TraceColor::Default )
     {
-        parti = static_cast<Gfx::ParticleType>(Gfx::PARTITRACE0+static_cast<int>(color));
         step = 2.0f;
         if ( color == TraceColor::BlackArrow ||
              color == TraceColor::RedArrow   )
@@ -3704,11 +3703,11 @@ void CPhysics::WheelParticle(TraceColor color, float width)
 
             if ( m_linMotion.realSpeed.x >= 0.0f )
             {
-                m_particle->CreateWheelTrace(m_wheelParticlePos[0], m_wheelParticlePos[1], wheel1, wheel2, parti);
+                m_particle->CreateWheelTrace(m_wheelParticlePos[0], m_wheelParticlePos[1], wheel1, wheel2, color);
             }
             else
             {
-                m_particle->CreateWheelTrace(m_wheelParticlePos[1], m_wheelParticlePos[0], wheel2, wheel1, parti);
+                m_particle->CreateWheelTrace(m_wheelParticlePos[1], m_wheelParticlePos[0], wheel2, wheel1, color);
             }
 
             m_wheelParticlePos[0] = wheel1;

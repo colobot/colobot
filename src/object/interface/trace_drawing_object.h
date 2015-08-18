@@ -23,6 +23,11 @@
 
 #include <string>
 
+namespace Gfx
+{
+struct Color;
+}
+
 enum class TraceColor
 {
     Default = -1,
@@ -49,6 +54,8 @@ enum class TraceColor
 };
 //! Convert TraceColor to a std::string
 std::string TraceColorName(TraceColor c);
+//! Return Gfx::Color for this TraceColor constants
+Gfx::Color TraceColorColor(TraceColor c);
 
 /**
  * \class CTraceDrawingObject

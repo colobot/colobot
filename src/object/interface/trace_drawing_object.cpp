@@ -19,28 +19,63 @@
 
 #include "object/interface/trace_drawing_object.h"
 
+#include "graphics/core/color.h"
+
+#include <cassert>
+
 std::string TraceColorName(TraceColor color)
 {
     switch(color)
     {
-        case TraceColor::White:      return "White";      break;
-        case TraceColor::Black:      return "Black";      break;
-        case TraceColor::Gray:       return "Gray";       break;
-        case TraceColor::LightGray:  return "LightGray";  break;
-        case TraceColor::Red:        return "Red";        break;
-        case TraceColor::Pink:       return "Pink";       break;
-        case TraceColor::Purple:     return "Purple";     break;
-        case TraceColor::Orange:     return "Orange";     break;
-        case TraceColor::Yellow:     return "Yellow";     break;
-        case TraceColor::Beige:      return "Beige";      break;
-        case TraceColor::Brown:      return "Brown";      break;
-        case TraceColor::Skin:       return "Skin";       break;
-        case TraceColor::Green:      return "Green";      break;
-        case TraceColor::LightGreen: return "LightGreen"; break;
-        case TraceColor::Blue:       return "Blue";       break;
-        case TraceColor::LightBlue:  return "LightBlue";  break;
-        case TraceColor::RedArrow:   return "RedArrow";   break;
-        case TraceColor::BlackArrow: return "BlackArrow"; break;
-        default:                     return "";           break;
+        case TraceColor::White:      return "White";
+        case TraceColor::Black:      return "Black";
+        case TraceColor::Gray:       return "Gray";
+        case TraceColor::LightGray:  return "LightGray";
+        case TraceColor::Red:        return "Red";
+        case TraceColor::Pink:       return "Pink";
+        case TraceColor::Purple:     return "Purple";
+        case TraceColor::Orange:     return "Orange";
+        case TraceColor::Yellow:     return "Yellow";
+        case TraceColor::Beige:      return "Beige";
+        case TraceColor::Brown:      return "Brown";
+        case TraceColor::Skin:       return "Skin";
+        case TraceColor::Green:      return "Green";
+        case TraceColor::LightGreen: return "LightGreen";
+        case TraceColor::Blue:       return "Blue";
+        case TraceColor::LightBlue:  return "LightBlue";
+        case TraceColor::RedArrow:   return "RedArrow";
+        case TraceColor::BlackArrow: return "BlackArrow";
+        default:
+            assert(false);
+            return "";
+    }
+}
+
+Gfx::Color TraceColorColor(TraceColor color)
+{
+    switch(color)
+    {
+        case TraceColor::White:      return Gfx::Color(1.000f, 1.000f, 1.000f, 1.0f);
+        case TraceColor::Black:      return Gfx::Color(0.000f, 0.000f, 0.000f, 1.0f);
+        case TraceColor::Gray:       return Gfx::Color(0.549f, 0.549f, 0.549f, 1.0f);
+        case TraceColor::LightGray:  return Gfx::Color(0.753f, 0.753f, 0.753f, 1.0f);
+        case TraceColor::Red:        return Gfx::Color(1.000f, 0.000f, 0.000f, 1.0f);
+        case TraceColor::Pink:       return Gfx::Color(1.000f, 0.627f, 0.753f, 1.0f);
+        case TraceColor::Purple:     return Gfx::Color(0.878f, 0.000f, 0.753f, 1.0f);
+        case TraceColor::Orange:     return Gfx::Color(1.000f, 0.627f, 0.000f, 1.0f);
+        case TraceColor::Yellow:     return Gfx::Color(1.000f, 1.000f, 0.000f, 1.0f);
+        case TraceColor::Beige:      return Gfx::Color(0.878f, 0.753f, 0.000f, 1.0f);
+        case TraceColor::Brown:      return Gfx::Color(0.627f, 0.361f, 0.000f, 1.0f);
+        case TraceColor::Skin:       return Gfx::Color(0.961f, 0.839f, 0.714f, 1.0f);
+        case TraceColor::Green:      return Gfx::Color(0.000f, 0.627f, 0.000f, 1.0f);
+        case TraceColor::LightGreen: return Gfx::Color(0.000f, 1.000f, 0.000f, 1.0f);
+        case TraceColor::Blue:       return Gfx::Color(0.000f, 0.000f, 0.753f, 1.0f);
+        case TraceColor::LightBlue:  return Gfx::Color(0.000f, 0.871f, 1.000f, 1.0f);
+        case TraceColor::BlackArrow: return TraceColorColor(TraceColor::Black);
+        case TraceColor::RedArrow:   return TraceColorColor(TraceColor::Red); //TODO: We could probably have all the colors available as arrows now
+
+        default:
+            assert(false);
+            return Gfx::Color();
     }
 }

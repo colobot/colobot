@@ -27,6 +27,8 @@
 
 #include "graphics/engine/engine.h"
 
+#include "object/interface/trace_drawing_object.h"
+
 #include "sound/sound_type.h"
 
 
@@ -150,24 +152,6 @@ enum ParticleType
     PARTIEXPLOG1    = 122,      //! < ball explosion 1
     PARTIEXPLOG2    = 123,      //! < ball explosion 2
     PARTIBASE       = 124,      //! < gases of spaceship
-    PARTITRACE0     = 140,      //! < trace
-    PARTITRACE1     = 141,      //! < trace
-    PARTITRACE2     = 142,      //! < trace
-    PARTITRACE3     = 143,      //! < trace
-    PARTITRACE4     = 144,      //! < trace
-    PARTITRACE5     = 145,      //! < trace
-    PARTITRACE6     = 146,      //! < trace
-    PARTITRACE7     = 147,      //! < trace
-    PARTITRACE8     = 148,      //! < trace
-    PARTITRACE9     = 149,      //! < trace
-    PARTITRACE10    = 150,      //! < trace
-    PARTITRACE11    = 151,      //! < trace
-    PARTITRACE12    = 152,      //! < trace
-    PARTITRACE13    = 153,      //! < trace
-    PARTITRACE14    = 154,      //! < trace
-    PARTITRACE15    = 155,      //! < trace
-    PARTITRACE16    = 156,      //! < trace
-    PARTITRACE17    = 157,      //! < trace
 };
 
 enum ParticlePhase
@@ -225,9 +209,8 @@ struct Track
 
 struct WheelTrace
 {
-    ParticleType    type = {};       // type PARTI*
-    Math::Vector    pos[4];     // rectangle positions
-    float           startTime = 0.0f;  // beginning of life
+    TraceColor      color = {};
+    Math::Vector    pos[4];
 };
 
 
@@ -277,7 +260,7 @@ public:
 
     //! Creates a tire mark
     void        CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2, const Math::Vector &p3,
-                                 const Math::Vector &p4, ParticleType type);
+                                 const Math::Vector &p4, TraceColor color);
 
     //! Removes all particles of a given type
     void        DeleteParticle(ParticleType type);

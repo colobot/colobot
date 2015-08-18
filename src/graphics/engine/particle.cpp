@@ -597,18 +597,17 @@ int CParticle::CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim
 
 void CParticle::CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2,
                                  const Math::Vector &p3, const Math::Vector &p4,
-                                 ParticleType type)
+                                 TraceColor color)
 {
     int max = MAXWHEELTRACE;
     int i = m_wheelTraceIndex++;
     if (m_wheelTraceIndex > max)  m_wheelTraceIndex = 0;
 
-    m_wheelTrace[i].type = type;
+    m_wheelTrace[i].color = color;
     m_wheelTrace[i].pos[0] = p1;  // ul
     m_wheelTrace[i].pos[1] = p2;  // dl
     m_wheelTrace[i].pos[2] = p3;  // ur
     m_wheelTrace[i].pos[3] = p4;  // dr
-    m_wheelTrace[i].startTime = m_absTime;
 
     if (m_terrain == nullptr)
         m_terrain = m_main->GetTerrain();
@@ -3310,139 +3309,58 @@ void CParticle::DrawParticleWheel(int i)
     float dist = Math::DistanceProjected(m_engine->GetEyePt(), m_wheelTrace[i].pos[0]);
     if (dist > 300.0f)  return;
 
-    Math::Vector pos[4];
-    pos[0] = m_wheelTrace[i].pos[0];
-    pos[1] = m_wheelTrace[i].pos[1];
-    pos[2] = m_wheelTrace[i].pos[2];
-    pos[3] = m_wheelTrace[i].pos[3];
+    if (m_wheelTrace[i].color == TraceColor::BlackArrow || m_wheelTrace[i].color == TraceColor::RedArrow)
+    {
+        m_engine->SetTexture("textures/effect03.png");
+        m_engine->SetState(ENG_RSTATE_ALPHA);
 
-    Math::Point ts;
+        Math::Vector pos[4];
+        pos[0] = m_wheelTrace[i].pos[0];
+        pos[1] = m_wheelTrace[i].pos[1];
+        pos[2] = m_wheelTrace[i].pos[2];
+        pos[3] = m_wheelTrace[i].pos[3];
 
-    if (m_wheelTrace[i].type == PARTITRACE0)  // white ground track?
-    {
-        ts.x =   8.0f/256.0f;
-        ts.y = 224.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE1)  // black ground track?
-    {
-        ts.x =   0.0f/256.0f;
-        ts.y = 224.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE2)  // gray ground track?
-    {
-        ts.x =   0.0f/256.0f;
-        ts.y = 232.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE3)  // light gray ground track?
-    {
-        ts.x =   8.0f/256.0f;
-        ts.y = 232.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE4)  // red ground track?
-    {
-        ts.x =  32.0f/256.0f;
-        ts.y = 224.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE5)  // pink ground track?
-    {
-        ts.x =  40.0f/256.0f;
-        ts.y = 224.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE6)  // violet ground track?
-    {
-        ts.x =  32.0f/256.0f;
-        ts.y = 232.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE7)  // orange ground track?
-    {
-        ts.x =  40.0f/256.0f;
-        ts.y = 232.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE8)  // yellow ground track?
-    {
-        ts.x =  16.0f/256.0f;
-        ts.y = 224.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE9)  // beige ground track?
-    {
-        ts.x =  24.0f/256.0f;
-        ts.y = 224.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE10)  // brown ground track?
-    {
-        ts.x =  16.0f/256.0f;
-        ts.y = 232.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE11)  // skin ground track?
-    {
-        ts.x =  24.0f/256.0f;
-        ts.y = 232.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE12)  // green ground track?
-    {
-        ts.x =  48.0f/256.0f;
-        ts.y = 224.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE13)  // light green ground track?
-    {
-        ts.x =  56.0f/256.0f;
-        ts.y = 224.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE14)  // blue ground track?
-    {
-        ts.x =  48.0f/256.0f;
-        ts.y = 232.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE15)  // light blue ground track?
-    {
-        ts.x =  56.0f/256.0f;
-        ts.y = 232.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE16)  // black arrow ground track?
-    {
-        ts.x = 160.0f/256.0f;
-        ts.y = 224.0f/256.0f;
-    }
-    else if (m_wheelTrace[i].type == PARTITRACE17)  // red arrow ground track?
-    {
-        ts.x = 176.0f/256.0f;
-        ts.y = 224.0f/256.0f;
+        Math::Vector n(0.0f, 1.0f, 0.0f);
+
+        Math::Point ts(160.0f/256.0f, 224.0f/256.0f);
+        Math::Point ti(ts.x+16.0f/256.0f, ts.y+16.0f/256.0f);
+
+        float dp = (1.0f/256.0f)/2.0f;
+        ts.x = ts.x+dp;
+        ts.y = ts.y+dp;
+        ti.x = ti.x-dp;
+        ti.y = ti.y-dp;
+
+        Vertex vertex[4];
+        vertex[0] = Vertex(pos[0], n, Math::Point(ts.x, ts.y));
+        vertex[1] = Vertex(pos[1], n, Math::Point(ti.x, ts.y));
+        vertex[2] = Vertex(pos[2], n, Math::Point(ts.x, ti.y));
+        vertex[3] = Vertex(pos[3], n, Math::Point(ti.x, ti.y));
+
+        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_wheelTrace[i].color));
+        m_engine->AddStatisticTriangle(2);
+
+        m_engine->SetState(ENG_RSTATE_OPAQUE_COLOR);
     }
     else
     {
-        return;
+        Math::Vector pos[4];
+        pos[0] = m_wheelTrace[i].pos[0];
+        pos[1] = m_wheelTrace[i].pos[1];
+        pos[2] = m_wheelTrace[i].pos[2];
+        pos[3] = m_wheelTrace[i].pos[3];
+
+        Math::Vector n(0.0f, 1.0f, 0.0f);
+
+        Vertex vertex[4];
+        vertex[0] = Vertex(pos[0], n);
+        vertex[1] = Vertex(pos[1], n);
+        vertex[2] = Vertex(pos[2], n);
+        vertex[3] = Vertex(pos[3], n);
+
+        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_wheelTrace[i].color));
+        m_engine->AddStatisticTriangle(2);
     }
-
-    Math::Point ti;
-
-    if ( m_wheelTrace[i].type == PARTITRACE16 ||
-         m_wheelTrace[i].type == PARTITRACE17 )
-    {
-        ti.x = ts.x+16.0f/256.0f;
-        ti.y = ts.y+16.0f/256.0f;
-    }
-    else
-    {
-        ti.x = ts.x+8.0f/256.0f;
-        ti.y = ts.y+8.0f/256.0f;
-    }
-
-    float dp = (1.0f/256.0f)/2.0f;
-    ts.x = ts.x+dp;
-    ts.y = ts.y+dp;
-    ti.x = ti.x-dp;
-    ti.y = ti.y-dp;
-
-    Math::Vector n(0.0f, 1.0f, 0.0f);
-
-    Vertex vertex[4];
-    vertex[0] = Vertex(pos[0], n, Math::Point(ts.x, ts.y));
-    vertex[1] = Vertex(pos[1], n, Math::Point(ti.x, ts.y));
-    vertex[2] = Vertex(pos[2], n, Math::Point(ts.x, ti.y));
-    vertex[3] = Vertex(pos[3], n, Math::Point(ti.x, ti.y));
-
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
-    m_engine->AddStatisticTriangle(2);
 }
 
 void CParticle::DrawParticle(int sheet)
@@ -3475,8 +3393,7 @@ void CParticle::DrawParticle(int sheet)
     // Draw tire marks.
     if (m_wheelTraceTotal > 0 && sheet == SH_WORLD)
     {
-        m_engine->SetTexture("textures/effect03.png");
-        m_engine->SetState(ENG_RSTATE_ALPHA);
+        m_engine->SetState(ENG_RSTATE_OPAQUE_COLOR);
         Math::Matrix matrix;
         matrix.LoadIdentity();
         m_device->SetTransform(TRANSFORM_WORLD, matrix);
