@@ -369,6 +369,7 @@ bool IsPhaseWithWorld(Phase phase)
 
 bool IsMainMenuPhase(Phase phase)
 {
+    if (phase == PHASE_APPERANCE) return true;
     return !IsPhaseWithWorld(phase);
 }
 
