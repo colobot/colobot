@@ -1,5 +1,15 @@
 # English
 
+
+
+
+
+
+
+
+
+
+
 Welcome to the Colobot: Gold Edition project code repository
 
 This is official repository for the open-source Colobot: Gold Edition project developed by TerranovaTeam, part of International Colobot Community (ICC, previously known as Polish Portal of Colobot/PPC) with the official site at: [colobot.info](http://colobot.info/).
