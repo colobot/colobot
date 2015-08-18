@@ -659,11 +659,11 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
         {
             if (hl == FONT_HIGHLIGHT_TOKEN)
             {
-                c = Color(0.612f, 0.475f, 0.208f, 1.0f); // #9C7935
+                c = Color(0.490f, 0.380f, 0.165f, 1.0f); // #7D612A
             }
             else if (hl == FONT_HIGHLIGHT_TYPE)
             {
-                c = Color(0.365f, 0.498f, 0.251f, 1.0f); // #5D7F40
+                c = Color(0.31f, 0.443f, 0.196f, 1.0f); // #4F7132
             }
             else if (hl == FONT_HIGHLIGHT_CONST)
             {
@@ -679,11 +679,11 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
             }
             else if (hl == FONT_HIGHLIGHT_KEYWORD)
             {
-                c = Color(0.267f, 0.478f, 0.655f, 1.0f); // #447AA7
+                c = Color(0.239f, 0.431f, 0.588f, 1.0f); // #3D6E96
             }
             else if (hl == FONT_HIGHLIGHT_STRING)
             {
-                c = Color(0.267f, 0.427f, 0.380f, 1.0f); // #446D61
+                c = Color(0.239f, 0.384f, 0.341f, 1.0f); // #3D6257
             }
             else
             {
