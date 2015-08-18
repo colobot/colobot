@@ -196,7 +196,9 @@ protected:
 
     void        DrawImage(Math::Point pos, std::string name, float width, float offset, float height, int nbLine);
     void        DrawBack(Math::Point pos, Math::Point dim);
-    void        DrawPart(Math::Point pos, Math::Point dim, int icon);
+
+    void        DrawHorizontalGradient(Math::Point pos, Math::Point dim, Gfx::Color color1, Gfx::Color color2);
+    void        DrawColor(Math::Point pos, Math::Point dim, Gfx::Color color);
 
     void        FreeImage();
     void        LoadImage(std::string name);

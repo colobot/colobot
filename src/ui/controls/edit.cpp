@@ -953,7 +953,7 @@ void CEdit::Draw()
             end.x   = dim.x-MARGX*2.0f;
             start.y = ppos.y-(m_bMulti?0.0f:MARGY1)-m_lineHeight*(BIG_FONT-1.0f);
             end.y   = m_lineHeight*BIG_FONT;
-            DrawPart(start, end, 2);  // blue gradient background ->
+            DrawHorizontalGradient(start, end, Gfx::Color(0.549f, 0.514f, 0.376f, 1.0f), Gfx::Color(0.733f, 0.706f, 0.600f, 1.0f));  // blue gradient background
 
             size *= BIG_FONT;
             ppos.y -= m_lineHeight*(BIG_FONT-1.0f);
@@ -967,7 +967,7 @@ void CEdit::Draw()
             end.x   = dim.x-MARGX*2.0f;
             start.y = ppos.y-(m_bMulti?0.0f:MARGY1);
             end.y   = m_lineHeight;
-            DrawPart(start, end, 2);  // blue gradient background ->
+            DrawHorizontalGradient(start, end, Gfx::Color(0.549f, 0.514f, 0.376f, 1.0f), Gfx::Color(0.733f, 0.706f, 0.600f, 1.0f));  // blue gradient background
         }
 
         // Subtitle \s;?
@@ -978,7 +978,7 @@ void CEdit::Draw()
             end.x   = dim.x-MARGX*2.0f;
             start.y = ppos.y-(m_bMulti?0.0f:MARGY1);
             end.y   = m_lineHeight;
-            DrawPart(start, end, 3);  // yellow background gradient ->
+            DrawHorizontalGradient(start, end, Gfx::Color(0.996f, 0.859f, 0.325f, 1.0f), Gfx::Color(0.996f, 0.953f, 0.792f, 1.0f));  // yellow background gradient
         }
 
         // Table \tab;?
@@ -989,7 +989,7 @@ void CEdit::Draw()
             end.x   = dim.x-MARGX*2.0f;
             start.y = ppos.y-(m_bMulti?0.0f:MARGY1);
             end.y   = m_lineHeight;
-            DrawPart(start, end, 11);  // fond orange d�grad� ->
+            DrawHorizontalGradient(start, end, Gfx::Color(0.996f, 0.675f, 0.329f, 1.0f), Gfx::Color(1.000f, 0.898f, 0.788f, 1.0f));  // fond orange d�grad� ->
         }
 
         // Image \image; ?
@@ -1043,7 +1043,7 @@ void CEdit::Draw()
             start.y = ppos.y-(m_bMulti?0.0f:MARGY1);
             end.y   = m_lineHeight;
             if ( m_format.size() > static_cast<unsigned int>(beg) && (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG)  end.y *= BIG_FONT;
-            DrawPart(start, end, 1);  // plain yellow background
+            DrawColor(start, end, Gfx::Color(1.000f, 0.620f, 0.075f, 1.0f));  // plain yellow background
         }
 
         eol = 16;  // >
@@ -1121,7 +1121,7 @@ void CEdit::Draw()
         pos.x -= 1.0f / 640.0f;
         dim.x = 2.0f / 640.0f;
         dim.y = m_lineHeight;
-        DrawPart(pos, dim, 0);  // red
+        DrawColor(pos, dim, Gfx::Color(1.0f, 0.0f, 0.0f, 1.0f));  // red
     }
 
     if (m_scroll != nullptr && !m_bGeneric)
@@ -1214,28 +1214,31 @@ void CEdit::DrawBack(Math::Point pos, Math::Point dim)
     }
 }
 
-// Draws an icon background.
-
-void CEdit::DrawPart(Math::Point pos, Math::Point dim, int icon)
+void CEdit::DrawHorizontalGradient(Math::Point pos, Math::Point dim, Gfx::Color color1, Gfx::Color color2)
 {
-    Math::Point     uv1, uv2;
-    float       dp;
+    m_engine->SetState(Gfx::ENG_RSTATE_OPAQUE_COLOR);
 
-    m_engine->SetTexture("textures/effect03.png");
-    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+    Math::Point p1, p2;
+    p1.x = pos.x;
+    p1.y = pos.y;
+    p2.x = pos.x + dim.x;
+    p2.y = pos.y + dim.y;
 
-    uv1.x = (16.0f/256.0f)*(icon%16);
-    uv1.y = (240.0f/256.0f);
-    uv2.x = (16.0f/256.0f)+uv1.x;
-    uv2.y = (16.0f/256.0f)+uv1.y;
+    Gfx::VertexCol quad[] =
+    {
+        Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color1),
+        Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color1),
+        Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color2),
+        Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color2)
+    };
 
-    dp = 0.5f/256.0f;
-    uv1.x += dp;
-    uv1.y += dp;
-    uv2.x -= dp;
-    uv2.y -= dp;
+    m_engine->GetDevice()->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, quad, 4);
+    m_engine->AddStatisticTriangle(2);
+}
 
-    DrawIcon(pos, dim, uv1, uv2);
+void CEdit::DrawColor(Math::Point pos, Math::Point dim, Gfx::Color color)
+{
+    DrawHorizontalGradient(pos, dim, color, color);
 }
 
 
