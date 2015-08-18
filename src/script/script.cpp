@@ -645,30 +645,33 @@ void CScript::UpdateList(Ui::CList* list)
 
 // Colorize the text according to syntax.
 
-void CScript::ColorizeScript(Ui::CEdit* edit)
+void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
 {
-    CBotToken*  bt;
-    CBotString  bs;
-    const char* token;
-    int         error, type, cursor1, cursor2;
-    Gfx::FontHighlight color;
+    if (rangeEnd > edit->GetMaxChar())
+        rangeEnd = edit->GetMaxChar();
 
-    edit->ClearFormat();
-    edit->SetFormat(0, edit->GetMaxChar(), Gfx::FONT_HIGHLIGHT_COMMENT); // anything not processed is a comment
+    edit->SetFormat(rangeStart, rangeEnd, Gfx::FONT_HIGHLIGHT_COMMENT); // anything not processed is a comment
 
-    bt = CBotToken::CompileTokens(edit->GetText(), error);
+    std::string text = edit->GetText();
+    text = text.substr(rangeStart, rangeEnd-rangeStart);
+
+    int error;
+    CBotToken* bt = CBotToken::CompileTokens(text.c_str(), error);
     while ( bt != nullptr )
     {
-        bs = bt->GetString();
-        token = bs;
-        type = bt->GetType();
+        CBotString bs = bt->GetString();
+        const char* token = bs;
+        int type = bt->GetType();
 
-        cursor1 = bt->GetStart();
-        cursor2 = bt->GetEnd();
+        int cursor1 = bt->GetStart();
+        int cursor2 = bt->GetEnd();
 
         if (cursor1 < 0 || cursor2 < 0 || cursor1 == cursor2 || type == 0) { bt = bt->GetNext(); continue; } // seems to be a bug in CBot engine (how does it even still work? D:)
 
-        color = Gfx::FONT_HIGHLIGHT_NONE;
+        cursor1 += rangeStart;
+        cursor2 += rangeStart;
+
+        Gfx::FontHighlight color = Gfx::FONT_HIGHLIGHT_NONE;
         if ((type == TokenTypVar || (type >= TokenKeyWord && type < TokenKeyWord+100)) && IsType(token)) // types (basic types are TokenKeyWord, classes are TokenTypVar)
         {
             color = Gfx::FONT_HIGHLIGHT_TYPE;

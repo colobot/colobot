@@ -36,6 +36,8 @@
 
 #include "level/parser/parser.h"
 
+#include "script/script.h"
+
 #include "ui/controls/scroll.h"
 
 #include <clipboard/clipboard.h>
@@ -978,7 +980,7 @@ void CEdit::Draw()
             end.x   = dim.x-MARGX*2.0f;
             start.y = ppos.y-(m_bMulti?0.0f:MARGY1);
             end.y   = m_lineHeight;
-            DrawHorizontalGradient(start, end, Gfx::Color(0.996f, 0.859f, 0.325f, 1.0f), Gfx::Color(0.996f, 0.953f, 0.792f, 1.0f));  // yellow background gradient
+            DrawHorizontalGradient(start, end, Gfx::Color(0.847f, 0.847f, 0.847f, 1.0f), Gfx::Color(0.996f, 0.953f, 0.792f, 1.0f));  // yellow background gradient
         }
 
         // Table \tab;?
@@ -1487,6 +1489,9 @@ bool CEdit::ReadText(std::string filename, int addSize)
     m_link.clear();
     i = j = 0;
     bBOL = true;
+    int cbotStart = 0;
+    bool cbotStarted = false;
+    bool inCbot = false;
     while ( i < m_len )
     {
         if ( m_bAutoIndent )
@@ -1518,6 +1523,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
                 {
                     font &= ~Gfx::FONT_MASK_FONT;
                     font |= Gfx::FONT_COLOBOT;
+                    inCbot = false;
                 }
                 i += 3;
             }
@@ -1527,6 +1533,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
                 {
                     font &= ~Gfx::FONT_MASK_FONT;
                     font |= Gfx::FONT_COURIER;
+                    inCbot = true;
                 }
                 i += 3;
             }
@@ -1554,6 +1561,11 @@ bool CEdit::ReadText(std::string filename, int addSize)
                 {
                     font &= ~Gfx::FONT_MASK_TITLE;
                     font |= Gfx::FONT_TITLE_LITTLE;
+                    if (inCbot && !cbotStarted)
+                    {
+                        cbotStart = j;
+                        cbotStarted = true;
+                    }
                 }
                 i += 3;
             }
@@ -1802,6 +1814,12 @@ bool CEdit::ReadText(std::string filename, int addSize)
         }
         else
         {
+            if (buffer[i] == '\n' && cbotStarted)
+            {
+                CScript::ColorizeScript(this, cbotStart, j);
+                cbotStarted = false;
+            }
+
             if ( m_bSoluce || !bInSoluce )
             {
                 m_text[j] = buffer[i];

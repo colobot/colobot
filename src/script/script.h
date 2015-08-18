@@ -78,7 +78,7 @@ public:
     bool        IsContinue();
     bool        GetCursor(int &cursor1, int &cursor2);
     void        UpdateList(Ui::CList* list);
-    void        ColorizeScript(Ui::CEdit* edit);
+    static void ColorizeScript(Ui::CEdit* edit, int rangeStart = 0, int rangeEnd = std::numeric_limits<int>::max());
     bool        IntroduceVirus();
 
     int         GetError();
