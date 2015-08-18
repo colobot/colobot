@@ -112,18 +112,21 @@ enum FontTitle
  * \enum FontHighlight
  * \brief Type of color highlight for text
  *
- * Bitmask in 3 bits left shifted 6 (mask 0x1c0)
+ * Bitmask in 4 bits left shifted 6 (mask 0x3c0)
  */
 enum FontHighlight
 {
     FONT_HIGHLIGHT_NONE      = 0x00 << 6,
-    FONT_HIGHLIGHT_LINK      = 0x01 << 6,
-    FONT_HIGHLIGHT_TOKEN     = 0x02 << 6,
-    FONT_HIGHLIGHT_TYPE      = 0x03 << 6,
-    FONT_HIGHLIGHT_CONST     = 0x04 << 6,
-    FONT_HIGHLIGHT_REM       = 0x05 << 6,
-    FONT_HIGHLIGHT_KEY       = 0x06 << 6,
-    FONT_HIGHLIGHT_TABLE     = 0x07 << 6,
+    FONT_HIGHLIGHT_LINK      = 0x01 << 6, //!< link underline
+    FONT_HIGHLIGHT_TABLE     = 0x02 << 6, //!< code background in SatCom
+    FONT_HIGHLIGHT_KEY       = 0x03 << 6, //!< background for keys in documentation in SatCom
+    FONT_HIGHLIGHT_TOKEN     = 0x04 << 6, //!< keywords in CBot scripts
+    FONT_HIGHLIGHT_TYPE      = 0x05 << 6, //!< types in CBot scripts
+    FONT_HIGHLIGHT_CONST     = 0x06 << 6, //!< constants in CBot scripts
+    FONT_HIGHLIGHT_THIS      = 0x07 << 6, //!< "this" keyword in CBot scripts
+    FONT_HIGHLIGHT_COMMENT   = 0x08 << 6, //!< comments in CBot scripts
+    FONT_HIGHLIGHT_KEYWORD   = 0x09 << 6, //!< builtin keywords in CBot scripts
+    FONT_HIGHLIGHT_STRING    = 0x0A << 6, //!< string literals in CBot scripts
 };
 
 /**
@@ -137,9 +140,9 @@ enum FontMask
     //! Mask for FontTitle
     FONT_MASK_TITLE = 0x030,
     //! Mask for FontHighlight
-    FONT_MASK_HIGHLIGHT = 0x1c0,
+    FONT_MASK_HIGHLIGHT = 0x3c0,
     //! Mask for image bit (TODO: not used?)
-    FONT_MASK_IMAGE = 0x200
+    FONT_MASK_IMAGE = 0x400
 };
 
 
