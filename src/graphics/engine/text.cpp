@@ -852,13 +852,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
 
         // For whatever reason ch.c1 is a SIGNED char, we need to fix that
         unsigned char icon = static_cast<unsigned char>(ch.c1);
-        if ( icon >= 192 )
-        {
-            icon -= 192;
-            m_engine->SetTexture("textures/effect03.png");
-            m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
-        }
-        else if ( icon >= 128 )
+        if ( icon >= 128 )
         {
             icon -= 128;
             m_engine->SetTexture("textures/interface/button3.png");

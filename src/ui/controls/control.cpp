@@ -515,13 +515,7 @@ void CControl::Draw()
         if ( m_state & STATE_DEAD )  return;
 
         icon = m_icon;
-        if ( icon >= 192 )
-        {
-            icon -= 192;
-            m_engine->SetTexture("textures/effect03.png");
-            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
-        }
-        else if ( icon >= 128 )
+        if ( icon >= 128 )
         {
             icon -= 128;
             m_engine->SetTexture("textures/interface/button3.png");
@@ -856,4 +850,3 @@ std::string CControl::GetResourceName(EventType eventType)
 
 
 }
-
