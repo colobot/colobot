@@ -140,12 +140,17 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !obj->GetDetectable() )  continue;
-        if ( obj->GetProxyActivate() )  continue;
-        if ( obj->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(obj)->GetSelect() )  continue;
+        CObject* target = obj;
+        if ( obj->Implements(ObjectInterfaceType::PowerContainer) && IsObjectBeingTransported(obj) )
+        {
+            target = dynamic_cast<CTransportableObject*>(obj)->GetTransporter();
+        }
 
-        CObject* target = nullptr;
-        ObjectType type = obj->GetType();
+        if ( !target->GetDetectable() )  continue;
+        if ( target->GetProxyActivate() )  continue;
+        if ( target->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(target)->GetSelect() )  continue;
+
+        ObjectType type = target->GetType();
         if ( type == OBJECT_DERRICK      ||
              type == OBJECT_FACTORY      ||
              type == OBJECT_REPAIR       ||
@@ -193,16 +198,6 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
              type == OBJECT_MOBILEdr     )
         {
             target = obj;
-        }
-        else if ( (type == OBJECT_POWER  ||
-                  type == OBJECT_ATOMIC ) &&
-             IsObjectBeingTransported(obj) )  // battery used?
-        {
-            target = dynamic_cast<CTransportableObject*>(obj)->GetTransporter();
-            if ( target->GetType() == OBJECT_MOBILEtg )
-            {
-                target = nullptr;
-            }
         }
 
         for (int j=0 ; j<OBJECTMAXPART ; j++ )

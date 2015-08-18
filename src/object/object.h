@@ -149,6 +149,8 @@ public:
     std::vector<CrashSphere> GetAllCrashSpheres();
     //! Removes all crash spheres
     void DeleteAllCrashSpheres();
+    //! Returns true if this object can collide with the other one
+    bool CanCollideWith(CObject* other);
 
     //! Returns sphere used to test for camera collisions
     Math::Sphere GetCameraCollisionSphere();

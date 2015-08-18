@@ -111,6 +111,35 @@ std::vector<CrashSphere> CObject::GetAllCrashSpheres()
     return allCrashSpheres;
 }
 
+bool CObject::CanCollideWith(CObject* other)
+{
+    ObjectType otherType = other->GetType();
+    if (m_type == OBJECT_WORM) return otherType == OBJECT_WORM;
+    if (m_type == OBJECT_MOTHER)
+    {
+        if (otherType == OBJECT_ANT) return false;
+        if (otherType == OBJECT_SPIDER) return false;
+        if (otherType == OBJECT_EGG) return false;
+    }
+    if (otherType == OBJECT_MOTHER)
+    {
+        if (m_type == OBJECT_ANT) return false;
+        if (m_type == OBJECT_SPIDER) return false;
+        if (m_type == OBJECT_EGG) return false;
+    }
+    if ( m_type == OBJECT_MOTHER ||
+         m_type == OBJECT_ANT    ||
+         m_type == OBJECT_SPIDER ||
+         m_type == OBJECT_WORM   ||
+         m_type == OBJECT_BEE    )
+    {
+        if (other->Implements(ObjectInterfaceType::Transportable)) return false;
+        if (otherType >= OBJECT_PLANT0 && otherType <= OBJECT_PLANT19) return false;
+        if (otherType >= OBJECT_MUSHROOM1 && otherType <= OBJECT_MUSHROOM2) return false;
+    }
+    return true;
+}
+
 Math::Vector CObject::GetPosition() const
 {
     return m_position;

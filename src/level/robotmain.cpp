@@ -1891,11 +1891,21 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         if (obj->GetProxyActivate()) continue;
 
         CObject* target = obj;
-        if (obj->GetType() == OBJECT_POWER || obj->GetType() == OBJECT_ATOMIC)
+        if (obj->Implements(ObjectInterfaceType::PowerContainer) && obj->Implements(ObjectInterfaceType::Transportable))
         {
-            assert(obj->Implements(ObjectInterfaceType::Transportable));
             target = dynamic_cast<CTransportableObject*>(obj)->GetTransporter();  // battery connected
-            if (target == nullptr) target = obj; // standalone battery
+            if (target == nullptr)
+            {
+                target = obj; // standalone battery
+            }
+            else
+            {
+                if (!target->Implements(ObjectInterfaceType::Powered) || dynamic_cast<CPoweredObject*>(target)->GetPower() != obj)
+                {
+                    // transported, but not in the power slot
+                    target = obj;
+                }
+            }
         }
 
         if (!obj->Implements(ObjectInterfaceType::Old)) continue;

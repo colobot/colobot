@@ -537,14 +537,7 @@ void COldObject::DestroyObject(DestructionType type)
 
     if ( m_botVar != nullptr )
     {
-        if ( m_type == OBJECT_STONE   ||
-             m_type == OBJECT_URANIUM ||
-             m_type == OBJECT_METAL   ||
-             m_type == OBJECT_POWER   ||
-             m_type == OBJECT_ATOMIC  ||
-             m_type == OBJECT_BULLET  ||
-             m_type == OBJECT_BBOX    ||
-             m_type == OBJECT_TNT     )  // (*)
+        if ( Implements(ObjectInterfaceType::Transportable) )  // (*)
         {
             CScriptFunctions::DestroyObjectVar(m_botVar, false);
         }
@@ -880,8 +873,10 @@ void COldObject::SetType(ObjectType type)
     }
 
     // TODO: Another one? :/
-    if ( m_type == OBJECT_POWER  || // PowerCell
-         m_type == OBJECT_ATOMIC  ) // NuclearCell
+    if ( m_type == OBJECT_POWER   || // PowerCell
+         m_type == OBJECT_ATOMIC  || // NuclearCell
+         m_type == OBJECT_STATION || // PowerStation
+         m_type == OBJECT_ENERGY   ) // PowerPlant
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::PowerContainer)] = true;
     }
@@ -2171,10 +2166,7 @@ bool COldObject::EventFrame(const Event &event)
 
 void COldObject::UpdateMapping()
 {
-    if ( m_type == OBJECT_POWER   ||
-         m_type == OBJECT_ATOMIC  ||
-         m_type == OBJECT_STATION ||
-         m_type == OBJECT_ENERGY  )
+    if ( Implements(ObjectInterfaceType::PowerContainer) )
     {
         UpdateEnergyMapping();
     }

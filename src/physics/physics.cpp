@@ -2496,43 +2496,12 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
         if ( pObj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(pObj)->IsDying() )  continue;  // is burning or exploding?
 
         oType = pObj->GetType();
-        if ( oType == OBJECT_NULL                             )  continue;
-        if ( oType == OBJECT_TOTO                             )  continue;
-//?     if ( iType == OBJECT_BEE    && oType == OBJECT_BEE    )  continue;
-        if ( iType == OBJECT_WORM   && oType != OBJECT_WORM   )  continue;
-        if ( iType != OBJECT_WORM   && oType == OBJECT_WORM   )  continue;
-        if ( iType == OBJECT_MOTHER && oType == OBJECT_ANT    )  continue;
-        if ( iType == OBJECT_ANT    && oType == OBJECT_MOTHER )  continue;
-        if ( iType == OBJECT_MOTHER && oType == OBJECT_SPIDER )  continue;
-        if ( iType == OBJECT_SPIDER && oType == OBJECT_MOTHER )  continue;
-        if ( iType == OBJECT_MOTHER && oType == OBJECT_EGG    )  continue;
-        if ( iType == OBJECT_EGG    && oType == OBJECT_MOTHER )  continue;
+        if ( oType == OBJECT_TOTO            )  continue;
+        if ( !m_object->CanCollideWith(pObj) )  continue;
 
         if (pObj->Implements(ObjectInterfaceType::Jostleable))
         {
             JostleObject(dynamic_cast<CJostleableObject*>(pObj), iPos, iRad);
-        }
-
-        if ( iType == OBJECT_MOTHER ||
-             iType == OBJECT_ANT    ||
-             iType == OBJECT_SPIDER ||
-             iType == OBJECT_WORM   ||
-             iType == OBJECT_BEE    )  // insect?
-        {
-            if ( oType == OBJECT_STONE   ||
-                 oType == OBJECT_URANIUM ||
-                 oType == OBJECT_METAL   ||
-                 oType == OBJECT_POWER   ||
-                 oType == OBJECT_ATOMIC  ||
-                 oType == OBJECT_BULLET  ||
-                 oType == OBJECT_BBOX    ||
-                 oType == OBJECT_KEYa    ||
-                 oType == OBJECT_KEYb    ||
-                 oType == OBJECT_KEYc    ||
-                 oType == OBJECT_KEYd    ||
-                 oType == OBJECT_TNT     ||
-                (oType >= OBJECT_PLANT0    && oType <= OBJECT_PLANT19  ) ||
-                (oType >= OBJECT_MUSHROOM1 && oType <= OBJECT_MUSHROOM2) )  continue;
         }
 
         if ( oType == OBJECT_WAYPOINT &&
@@ -2564,6 +2533,8 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
             Math::Vector oPos = crashSphere.sphere.pos;
             float oRad = crashSphere.sphere.radius;
 
+            // Aliens ignore small objects
+            // TODO: But why? :/
             if ( iType == OBJECT_MOTHER && oRad <= 1.2f )  continue;
             if ( iType == OBJECT_ANT    && oRad <= 1.2f )  continue;
             if ( iType == OBJECT_SPIDER && oRad <= 1.2f )  continue;
@@ -2966,7 +2937,8 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
     if (m_object->Implements(ObjectInterfaceType::Carrier))
     {
         CObject* cargo = dynamic_cast<CCarrierObject*>(m_object)->GetCargo();
-        if ( cargo != nullptr && cargo->GetType() == OBJECT_POWER &&
+        if ( cargo != nullptr && cargo->Implements(ObjectInterfaceType::PowerContainer) &&
+            dynamic_cast<CPowerContainerObject*>(cargo)->IsRechargeable() &&
             m_object->GetPartRotationZ(1) == ARM_STOCK_ANGLE1 )
         {
             bCarryPower = true;  // carries a battery

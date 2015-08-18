@@ -633,8 +633,7 @@ Error CTaskManip::IsEnded()
             {
                 if ( (m_arm == TMA_OTHER ||
                       m_arm == TMA_POWER ) &&
-                     (m_cargoType == OBJECT_POWER  ||
-                      m_cargoType == OBJECT_ATOMIC ) )
+                     m_object->GetCargo()->Implements(ObjectInterfaceType::PowerContainer) )
                 {
                     m_sound->Play(SOUND_POWEROFF, m_object->GetPosition());
                 }
@@ -656,8 +655,7 @@ Error CTaskManip::IsEnded()
             {
                 if ( (m_arm == TMA_OTHER ||
                       m_arm == TMA_POWER ) &&
-                     (m_cargoType == OBJECT_POWER  ||
-                      m_cargoType == OBJECT_ATOMIC ) )
+                     cargo->Implements(ObjectInterfaceType::PowerContainer) )
                 {
                     m_sound->Play(SOUND_POWERON, m_object->GetPosition());
                 }

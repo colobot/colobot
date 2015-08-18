@@ -131,19 +131,10 @@ Error CTaskTake::Start()
 
         if (other != nullptr && dynamic_cast<CPoweredObject*>(other)->GetPower() != nullptr)
         {
-            type = dynamic_cast<CPoweredObject*>(other)->GetPower()->GetType();
+            CObject* power = dynamic_cast<CPoweredObject*>(other)->GetPower();
+            type = power->GetType();
             if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
-            if ( type != OBJECT_STONE   &&
-                 type != OBJECT_BULLET  &&
-                 type != OBJECT_METAL   &&
-                 type != OBJECT_POWER   &&
-                 type != OBJECT_ATOMIC  &&
-                 type != OBJECT_BBOX    &&
-                 type != OBJECT_KEYa    &&
-                 type != OBJECT_KEYb    &&
-                 type != OBJECT_KEYc    &&
-                 type != OBJECT_KEYd    &&
-                 type != OBJECT_TNT     )  return ERR_MANIP_FRIEND;
+            if ( !power->Implements(ObjectInterfaceType::Transportable) )  return ERR_MANIP_FRIEND; // TODO: This makes no sense, probably redundant
 //?         m_camera->StartCentering(m_object, Math::PI*0.3f, -Math::PI*0.1f, 0.0f, 0.8f);
             m_arm = TTA_FRIEND;
         }
@@ -240,8 +231,7 @@ Error CTaskTake::IsEnded()
             if ( TransporterTakeObject() )
             {
                 if ( m_arm == TTA_FRIEND &&
-                     (m_cargoType == OBJECT_POWER  ||
-                      m_cargoType == OBJECT_ATOMIC ) )
+                     m_object->GetCargo()->Implements(ObjectInterfaceType::PowerContainer) )
                 {
                     m_sound->Play(SOUND_POWEROFF, m_object->GetPosition());
                 }
@@ -261,8 +251,7 @@ Error CTaskTake::IsEnded()
             CObject* cargo = m_object->GetCargo();
             TransporterDeposeObject();
             if ( m_arm == TTA_FRIEND &&
-                 (m_cargoType == OBJECT_POWER  ||
-                  m_cargoType == OBJECT_ATOMIC ) )
+                 cargo->Implements(ObjectInterfaceType::PowerContainer) )
             {
                 m_sound->Play(SOUND_POWERON, m_object->GetPosition());
             }
@@ -300,7 +289,6 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
 {
     CObject     *pBest;
     Math::Vector    iPos, oPos;
-    ObjectType  type;
     float       min, iAngle, bAngle, a, distance;
 
     iPos   = m_object->GetPosition();
@@ -312,20 +300,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
     bAngle = 0.0f;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        type = pObj->GetType();
-
-        if ( type != OBJECT_STONE   &&
-             type != OBJECT_URANIUM &&
-             type != OBJECT_BULLET  &&
-             type != OBJECT_METAL   &&
-             type != OBJECT_POWER   &&
-             type != OBJECT_ATOMIC  &&
-             type != OBJECT_BBOX    &&
-             type != OBJECT_KEYa    &&
-             type != OBJECT_KEYb    &&
-             type != OBJECT_KEYc    &&
-             type != OBJECT_KEYd    &&
-             type != OBJECT_TNT     )  continue;
+        if ( !pObj->Implements(ObjectInterfaceType::Transportable) )  continue;
 
         if (IsObjectBeingTransported(pObj))  continue;
         if ( pObj->GetLock() )  continue;
