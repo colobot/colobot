@@ -422,6 +422,7 @@ bool CAutoConvert::SearchVehicle()
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
+        if (obj == m_object) continue;
         ObjectType type = obj->GetType();
         if ( type == OBJECT_STONE ) continue;
 
