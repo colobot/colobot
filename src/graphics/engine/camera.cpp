@@ -960,8 +960,6 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
         if ( oType == OBJECT_HUMAN  ||
              oType == OBJECT_TECH   ||
              oType == OBJECT_TOTO   ||
-             oType == OBJECT_FIX    ||
-             oType == OBJECT_FRET   ||
              oType == OBJECT_ANT    ||
              oType == OBJECT_SPIDER ||
              oType == OBJECT_BEE    ||
@@ -1011,7 +1009,6 @@ bool CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
 
         ObjectType type = obj->GetType();
         if ( type == OBJECT_TOTO    ||
-             type == OBJECT_FRET    ||
              type == OBJECT_STONE   ||
              type == OBJECT_URANIUM ||
              type == OBJECT_METAL   ||

@@ -4421,8 +4421,6 @@ bool CRobotMain::IOIsBusy()
 //! Writes an object into the backup file
 void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj, const std::string& programDir, int objRank)
 {
-    if (obj->GetType() == OBJECT_FIX) return;
-
     line->AddParam("type", MakeUnique<CLevelParserParam>(obj->GetType()));
     line->AddParam("id", MakeUnique<CLevelParserParam>(obj->GetID()));
     line->AddParam("pos", MakeUnique<CLevelParserParam>(obj->GetPosition()/g_unit));
@@ -4566,7 +4564,6 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (obj->GetType() == OBJECT_TOTO) continue;
-        if (obj->GetType() == OBJECT_FIX) continue;
         if (IsObjectBeingTransported(obj)) continue;
         if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(obj)->IsDying()) continue;
 
@@ -4620,7 +4617,6 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (obj->GetType() == OBJECT_TOTO) continue;
-        if (obj->GetType() == OBJECT_FIX) continue;
         if (IsObjectBeingTransported(obj)) continue;
         if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(obj)->IsDying()) continue;
 
@@ -4819,7 +4815,6 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
                 for (CObject* obj : m_objMan->GetAllObjects())
                 {
                     if (obj->GetType() == OBJECT_TOTO) continue;
-                    if (obj->GetType() == OBJECT_FIX) continue;
                     if (IsObjectBeingTransported(obj)) continue;
                     if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(obj)->IsDying()) continue;
 

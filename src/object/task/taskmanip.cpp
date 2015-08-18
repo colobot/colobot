@@ -930,11 +930,6 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
         {
             if (power->GetLock())  continue;
             if (power->GetScaleY() != 1.0f)  continue;
-
-            // TODO: this is probably redundant
-            ObjectType powerType = power->GetType();
-            if ( powerType == OBJECT_NULL ||
-                 powerType == OBJECT_FIX  )  continue;
         }
 
         mat = pObj->GetWorldMatrix(0);

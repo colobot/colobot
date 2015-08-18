@@ -2866,8 +2866,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
                 force /= 400.0f;
             }
             else
-            if ( oType == OBJECT_FRET  ||
-                 oType == OBJECT_STONE ||
+            if ( oType == OBJECT_STONE ||
                  oType == OBJECT_METAL )
             {
                 force /= 500.0f;

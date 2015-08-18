@@ -110,7 +110,6 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_END:
             return CBaseBuilding::Create(params, m_oldModelManager, m_engine);
 
-        case OBJECT_FRET:
         case OBJECT_STONE:
         case OBJECT_URANIUM:
         case OBJECT_METAL:

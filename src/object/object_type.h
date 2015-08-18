@@ -32,8 +32,7 @@
  */
 enum ObjectType
 {
-    OBJECT_NULL             = 0,    //! < object destroyed
-    OBJECT_FIX              = 1,    //! < stationary scenery
+    OBJECT_NULL             = 0,
     OBJECT_PORTICO          = 2,    //! < Portico
     OBJECT_BASE             = 3,    //! < SpaceShip
     OBJECT_DERRICK          = 4,    //! < Derrick
@@ -57,7 +56,6 @@ enum ObjectType
     OBJECT_SAFE             = 22,   //! < Vault
     OBJECT_HUSTON           = 23,   //! < Houston
     OBJECT_DESTROYER        = 24,   //! < Destroyer
-    OBJECT_FRET             = 30,   //! < transportable (unused)
     OBJECT_STONE            = 31,   //! < TitaniumOre
     OBJECT_URANIUM          = 32,   //! < UraniumOre
     OBJECT_METAL            = 33,   //! < Titanium

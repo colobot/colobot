@@ -103,7 +103,7 @@ void CAutoDerrick::Init()
          res == Gfx::TR_KEY_C   ||
          res == Gfx::TR_KEY_D   )
     {
-        m_type = OBJECT_FRET;
+        m_type = OBJECT_NULL;
         if ( res == Gfx::TR_STONE   )  m_type = OBJECT_STONE;
         if ( res == Gfx::TR_URANIUM )  m_type = OBJECT_URANIUM;
         if ( res == Gfx::TR_KEY_A    )  m_type = OBJECT_KEYa;

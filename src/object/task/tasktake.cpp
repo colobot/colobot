@@ -133,8 +133,7 @@ Error CTaskTake::Start()
         {
             type = dynamic_cast<CPoweredObject*>(other)->GetPower()->GetType();
             if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
-            if ( type != OBJECT_FRET    &&
-                 type != OBJECT_STONE   &&
+            if ( type != OBJECT_STONE   &&
                  type != OBJECT_BULLET  &&
                  type != OBJECT_METAL   &&
                  type != OBJECT_POWER   &&
@@ -315,8 +314,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
     {
         type = pObj->GetType();
 
-        if ( type != OBJECT_FRET    &&
-             type != OBJECT_STONE   &&
+        if ( type != OBJECT_STONE   &&
              type != OBJECT_URANIUM &&
              type != OBJECT_BULLET  &&
              type != OBJECT_METAL   &&
@@ -414,10 +412,6 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
         {
             if ( power->GetLock() )  continue;
             if ( power->GetScaleY() != 1.0f )  continue;
-
-            ObjectType powerType = power->GetType();
-            if ( powerType == OBJECT_NULL ||
-                 powerType == OBJECT_FIX  )  continue;
         }
 
         Math::Matrix* mat = pObj->GetWorldMatrix(0);

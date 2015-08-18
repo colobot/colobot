@@ -109,7 +109,7 @@ COldObject::COldObject(int id)
     m_terrain     = m_main->GetTerrain();
     m_camera      = m_main->GetCamera();
 
-    m_type = OBJECT_FIX;
+    m_type = OBJECT_NULL;
     m_option = 0;
     m_name = "";
     m_shadowLight   = -1;
@@ -799,8 +799,7 @@ void COldObject::SetType(ObjectType type)
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::ShieldedAutoRegen)] = (m_type == OBJECT_HUMAN);
 
     // TODO: Hacking in progress...
-    if ( m_type == OBJECT_FRET    ||
-         m_type == OBJECT_STONE   ||
+    if ( m_type == OBJECT_STONE   ||
          m_type == OBJECT_URANIUM ||
          m_type == OBJECT_BULLET  ||
          m_type == OBJECT_METAL   ||
@@ -2424,30 +2423,7 @@ void COldObject::SetShield(float level)
 
 float COldObject::GetShield()
 {
-    if ( m_type == OBJECT_FRET     ||
-         m_type == OBJECT_STONE    ||
-         m_type == OBJECT_URANIUM  ||
-         m_type == OBJECT_BULLET   ||
-         m_type == OBJECT_METAL    ||
-         m_type == OBJECT_BBOX     ||
-         m_type == OBJECT_KEYa     ||
-         m_type == OBJECT_KEYb     ||
-         m_type == OBJECT_KEYc     ||
-         m_type == OBJECT_KEYd     ||
-         m_type == OBJECT_TNT      ||
-         m_type == OBJECT_BOMB     ||
-         m_type == OBJECT_WAYPOINT ||
-         m_type == OBJECT_FLAGb    ||
-         m_type == OBJECT_FLAGr    ||
-         m_type == OBJECT_FLAGg    ||
-         m_type == OBJECT_FLAGy    ||
-         m_type == OBJECT_FLAGv    ||
-         m_type == OBJECT_POWER    ||
-         m_type == OBJECT_ATOMIC   ||
-         m_type == OBJECT_ANT      ||
-         m_type == OBJECT_SPIDER   ||
-         m_type == OBJECT_BEE      ||
-         m_type == OBJECT_WORM     )  return 0.0f;
+    if (Implements(ObjectInterfaceType::Fragile))  return 0.0f;
     return m_shield;
 }
 
