@@ -3158,7 +3158,7 @@ bool CEdit::SetFormat(int cursor1, int cursor2, int format)
 
     for ( i=cursor1 ; i<cursor2 ; i++ )
     {
-        m_format.at(i) |= format;
+        m_format.at(i) = format;
     }
 
     return true;

@@ -654,6 +654,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit)
     Gfx::FontHighlight color;
 
     edit->ClearFormat();
+    edit->SetFormat(0, edit->GetMaxChar(), Gfx::FONT_HIGHLIGHT_COMMENT); // anything not processed is a comment
 
     bt = CBotToken::CompileTokens(edit->GetText(), error);
     while ( bt != nullptr )
@@ -664,39 +665,45 @@ void CScript::ColorizeScript(Ui::CEdit* edit)
 
         cursor1 = bt->GetStart();
         cursor2 = bt->GetEnd();
+
+        if (cursor1 < 0 || cursor2 < 0 || cursor1 == cursor2 || type == 0) { bt = bt->GetNext(); continue; } // seems to be a bug in CBot engine (how does it even still work? D:)
+
         color = Gfx::FONT_HIGHLIGHT_NONE;
-        if ( type >= TokenKeyWord && type < TokenKeyWord+100 )
-        {
-            color = Gfx::FONT_HIGHLIGHT_TOKEN;
-        }
-        if ( type >= TokenKeyDeclare && type < TokenKeyDeclare+100 )
+        if ((type == TokenTypVar || (type >= TokenKeyWord && type < TokenKeyWord+100)) && IsType(token)) // types (basic types are TokenKeyWord, classes are TokenTypVar)
         {
             color = Gfx::FONT_HIGHLIGHT_TYPE;
         }
-        if ( type >= TokenKeyVal && type < TokenKeyVal+100 )
+        else if (type == TokenTypVar && IsFunction(token)) // functions
+        {
+            color = Gfx::FONT_HIGHLIGHT_TOKEN;
+        }
+        else if (type == TokenTypVar && strcmp(token, "this") == 0) // this
+        {
+            color = Gfx::FONT_HIGHLIGHT_THIS;
+        }
+        else if (type >= TokenKeyWord && type < TokenKeyWord+100) // builtin keywords
+        {
+            color = Gfx::FONT_HIGHLIGHT_KEYWORD;
+        }
+        else if (type >= TokenKeyDeclare && type < TokenKeyDeclare+100) // TODO: no idea :P seems to never happen
+        {
+            color = Gfx::FONT_HIGHLIGHT_TYPE;
+        }
+        else if (type >= TokenKeyVal && type < TokenKeyVal+100) // true, false, null, nan
         {
             color = Gfx::FONT_HIGHLIGHT_CONST;
         }
-        if ( type == TokenTypVar || ( type >= TokenKeyWord && type < TokenKeyWord+100 ) || strcmp(token, "this") == 0 )
+        else if (type == TokenTypDef) // constants (object types etc.)
         {
-            if ( IsType(token) )
-            {
-                color = Gfx::FONT_HIGHLIGHT_TYPE;
-            }
-            else if ( IsFunction(token) || strcmp(token, "this") == 0 )
-            {
-                color = Gfx::FONT_HIGHLIGHT_TOKEN;
-            }
+            color = Gfx::FONT_HIGHLIGHT_CONST;
         }
-        if ( type == TokenTypDef )
+        else if (type == TokenTypString || type == TokenTypNum) // string literals and numbers
         {
-            color =Gfx::FONT_HIGHLIGHT_CONST;
+            color = Gfx::FONT_HIGHLIGHT_STRING;
         }
 
-        if ( cursor1 < cursor2 && color != Gfx::FONT_HIGHLIGHT_NONE )
-        {
-            edit->SetFormat(cursor1, cursor2, color);
-        }
+        assert(cursor1 < cursor2);
+        edit->SetFormat(cursor1, cursor2, color);
 
         bt = bt->GetNext();
     }
