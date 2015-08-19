@@ -200,6 +200,8 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
             target = obj;
         }
 
+        if (!target->Implements(ObjectInterfaceType::Old)) continue; // TODO: To be removed after COldObjectInterface is gone
+
         for (int j=0 ; j<OBJECTMAXPART ; j++ )
         {
             int rank = obj->GetObjectRank(j);
