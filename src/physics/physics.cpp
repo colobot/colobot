@@ -3659,7 +3659,6 @@ void CPhysics::WheelParticle(TraceColor color, float width)
 {
     Math::Matrix*       mat;
     Math::Vector        goal1, goal2, wheel1, wheel2;
-    Gfx::ParticleType   parti;
     float               dist1, dist2, step;
 
     mat = m_object->GetWorldMatrix(0);
