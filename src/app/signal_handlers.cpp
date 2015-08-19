@@ -97,6 +97,12 @@ void CSignalHandlers::ReportError(const std::string& errorMessage)
 {
     static bool triedSaving = false;
 
+    if (SDL_WasInit(SDL_INIT_VIDEO))
+    {
+        // Close the SDL window on crash, because otherwise the error doesn't show on in fullscreen mode and the game appears to freeze
+        SDL_Quit();
+    }
+
     std::stringstream msg;
     msg << "Unhandled exception occured!" << std::endl;
     msg << "==============================" << std::endl;
