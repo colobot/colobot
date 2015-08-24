@@ -2878,7 +2878,7 @@ void CPhysics::FrameParticle(float aTime, float rTime)
 
     //bFlash = false;
 
-    float energy = GetObjectEnergy(m_object);
+    float energy = GetObjectEnergyLevel(m_object);
 
     if ( energy != m_lastEnergy )  // change the energy level?
     {
@@ -2967,7 +2967,7 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
 
     if ( bCarryPower )  // carry a battery?
     {
-        pos = Math::Vector(3.0f, 5.6f, 0.0f);  // position of battery holder
+        pos = Math::Vector(3.0f, 5.6f, 0.0f);  // position of battery holder // TODO: Move to CTransportableObject
         pos = Transform(*mat, pos);
 
         speed.x = (Math::Rand()-0.5f)*12.0f;

@@ -86,7 +86,7 @@ enum ParticleType
     PARTISMOKE2     = 27,       //! < black smoke
     PARTISMOKE3     = 28,       //! < black smoke
     PARTIBLOOD      = 30,       //! < human blood
-    PARTIBLOODM     = 31,       //! < blood laying
+    PARTIBLOODM     = 31,       //! < AlienQueen blood
     PARTIVAPOR      = 32,       //! < steam
     PARTIVIRUS      = 33,       //! < virus (random letter)
     PARTIRAY1       = 43,       //! < ray 1 (turn)
