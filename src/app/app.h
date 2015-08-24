@@ -214,11 +214,6 @@ public:
     //! Returns the message of error (set to something if exit code is not 0)
     const std::string& GetErrorMessage() const;
 
-    //! Restart
-    void        Restart();
-    //! Should we restart after app quits?
-    bool        IsRestarting();
-
     //! Returns a list of possible video modes
     VideoQueryResult GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions,
                                             bool fullScreen, bool resizeable) const;
@@ -387,8 +382,6 @@ protected:
     bool            m_active;
     //! Bit array of active debug modes
     long            m_debugModes;
-    //! If we are restarting the app
-    bool            m_restart;
 
     //! Message to be displayed as error to the user
     std::string     m_errorMessage;

@@ -114,7 +114,6 @@ CApplication::CApplication(CSystemUtils* systemUtils)
     m_exitCode      = 0;
     m_active        = false;
     m_debugModes    = 0;
-    m_restart       = false;
 
     m_windowTitle = "Colobot: Gold Edition";
 
@@ -699,17 +698,6 @@ bool CApplication::CreateVideoSurface()
                                           m_deviceConfig.bpp, videoFlags);
 
     return true;
-}
-
-void CApplication::Restart()
-{
-    m_restart = true;
-    m_eventQueue->AddEvent(Event(EVENT_SYS_QUIT));
-}
-
-bool CApplication::IsRestarting()
-{
-    return m_restart;
 }
 
 bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)

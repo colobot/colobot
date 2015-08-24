@@ -100,14 +100,6 @@ void CScreenSetupDisplay::CreateInterface()
     pc->SetState(STATE_SHADOW);
     pc->SetState(STATE_CHECK, m_setupFull);
 
-    #if !PLATFORM_LINUX
-    ddim.x = 0.9f;
-    ddim.y = 0.1f;
-    pos.x = 0.05f;
-    pos.y = 0.20f;
-    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, "The game will be restarted in order to apply changes. All unsaved progress will be lost.");
-    #endif
-
     ddim.x = dim.x*6;
     ddim.y = dim.y*1;
     pos.x = ox+sx*10;
@@ -236,13 +228,7 @@ void CScreenSetupDisplay::ChangeDisplay()
 
     m_settings->SaveResolutionSettings(config);
 
-    #if !PLATFORM_LINUX
-    // Windows causes problems, so we'll restart the game
-    // Mac OS was not tested so let's restart just to be sure
-    m_app->Restart();
-    #else
     m_app->ChangeVideoConfig(config);
-    #endif
 }
 
 

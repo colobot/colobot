@@ -90,9 +90,6 @@ void CScreenSetup::CreateInterface()
     pb->SetState(STATE_SHADOW);
     pb->SetState(STATE_CARD);
     pb->SetState(STATE_CHECK, (m_tab == PHASE_SETUPd));
-    #if PLATFORM_WINDOWS
-    pb->SetState(STATE_ENABLE, !m_simulationSetup);
-    #endif
 
     pos.x += ddim.x+0.01f;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_SETUPg);

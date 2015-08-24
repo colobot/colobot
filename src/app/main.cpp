@@ -137,40 +137,32 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     int code = 0;
     try
     {
-        while (true)
+        CApplication app(systemUtils.get()); // single instance of the application
+
+        ParseArgsStatus status = app.ParseArguments(argc, argv);
+        if (status == PARSE_ARGS_FAIL)
         {
-            CApplication app(systemUtils.get()); // single instance of the application
-
-            ParseArgsStatus status = app.ParseArguments(argc, argv);
-            if (status == PARSE_ARGS_FAIL)
-            {
-                systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
-                return app.GetExitCode();
-            }
-            else if (status == PARSE_ARGS_HELP)
-            {
-                return app.GetExitCode();
-            }
-
-
-            if (!app.Create())
-            {
-                code = app.GetExitCode();
-                if (code != 0 && !app.GetErrorMessage().empty())
-                {
-                    systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app.GetErrorMessage());
-                }
-                logger.Info("Didn't run main loop. Exiting with code %d\n", code);
-                return code;
-            }
-
-            code = app.Run();
-
-            bool restarting = app.IsRestarting();
-
-            if (!restarting)
-                break;
+            systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
+            return app.GetExitCode();
         }
+        else if (status == PARSE_ARGS_HELP)
+        {
+            return app.GetExitCode();
+        }
+
+
+        if (!app.Create())
+        {
+            code = app.GetExitCode();
+            if (code != 0 && !app.GetErrorMessage().empty())
+            {
+                systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app.GetErrorMessage());
+            }
+            logger.Info("Didn't run main loop. Exiting with code %d\n", code);
+            return code;
+        }
+
+        code = app.Run();
     }
     catch (std::exception& e)
     {
