@@ -283,6 +283,7 @@ CObject* CAutoDestroyer::SearchPlastic()
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
+        if (obj == m_object) continue;
         if (!obj->Implements(ObjectInterfaceType::Destroyable)) continue;
         if (obj->GetType() == OBJECT_HUMAN || obj->GetType() == OBJECT_TECH) continue;
         
