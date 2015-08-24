@@ -2276,7 +2276,7 @@ void CPyro::FallProgress(float rTime)
             }
             else
             {
-                if (obj->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder*>(obj)->GetShieldRadius() > 0.0f)  // protected by shield?
+                if (obj->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder*>(obj)->GetActiveShieldRadius() > 0.0f)  // protected by shield?
                 {
                     m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f),
                                                 Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f, 0.0f, 0.0f);
