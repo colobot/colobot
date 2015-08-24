@@ -162,7 +162,6 @@ Error CTaskExecutorObjectImpl::StartBackgroundTask(Args&&... args)
         err = task->Start(std::forward<Args>(args)...);
         if (err != ERR_OK)
             m_backgroundTask.reset();
-        return err;
     }
     else
     {

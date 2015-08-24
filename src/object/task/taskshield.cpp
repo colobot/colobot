@@ -359,7 +359,6 @@ Error CTaskShield::Stop()
         {
             m_object->UpdateInterface();
         }
-        return ERR_CONTINUE;
     }
 
     return ERR_OK;
