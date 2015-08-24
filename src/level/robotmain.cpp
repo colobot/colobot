@@ -4740,6 +4740,7 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
     std::string dirname = filename.substr(0, filename.find_last_of("/"));
 
     CLevelParser levelParser(filename);
+    levelParser.SetLevelPaths(m_levelCategory, m_levelChap, m_levelRank);
     levelParser.Load();
     int numObjects = levelParser.CountLines("CreateObject") + levelParser.CountLines("CreatePower") + levelParser.CountLines("CreateFret");
 

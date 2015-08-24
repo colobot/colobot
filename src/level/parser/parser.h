@@ -69,6 +69,8 @@ public:
     //! Save file
     void Save();
 
+    //! Configure level paths for the given level
+    void SetLevelPaths(LevelCategory category, int chapter = 0, int rank = 0);
     //! Inject %something% paths
     std::string InjectLevelPaths(const std::string& path, const std::string& defaultDir = "");
 
@@ -102,6 +104,7 @@ private:
 inline std::string InjectLevelPathsForCurrentLevel(const std::string& path, const std::string& defaultDir = "")
 {
     CRobotMain* main = CRobotMain::GetInstancePointer();
-    auto levelParser = MakeUnique<CLevelParser>(main->GetLevelCategory(), main->GetLevelChap(), main->GetLevelRank());
+    auto levelParser = MakeUnique<CLevelParser>();
+    levelParser->SetLevelPaths(main->GetLevelCategory(), main->GetLevelChap(), main->GetLevelRank());
     return levelParser->InjectLevelPaths(path, defaultDir);
 }

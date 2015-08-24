@@ -52,26 +52,20 @@ CLevelParser::CLevelParser()
 }
 
 CLevelParser::CLevelParser(std::string filename)
+: CLevelParser()
 {
     m_filename = filename;
-
-    m_pathCat  = "";
-    m_pathChap = "";
-    m_pathLvl  = "";
 }
 
 CLevelParser::CLevelParser(std::string category, int chapter, int rank)
-{
-    m_filename = BuildScenePath(category, chapter, rank);
-
-    m_pathCat  = BuildCategoryPath(category);
-    m_pathChap = BuildScenePath(category, chapter, 0, false);
-    m_pathLvl  = BuildScenePath(category, chapter, rank, false);
-}
+: CLevelParser(BuildScenePath(category, chapter, rank))
+{}
 
 CLevelParser::CLevelParser(LevelCategory category, int chapter, int rank)
 : CLevelParser(GetLevelCategoryDir(category), chapter, rank)
-{}
+{
+    SetLevelPaths(category, chapter, rank);
+}
 
 std::string CLevelParser::BuildCategoryPath(std::string category)
 {
@@ -318,6 +312,13 @@ void CLevelParser::Save()
     }
 
     file.close();
+}
+
+void CLevelParser::SetLevelPaths(LevelCategory category, int chapter, int rank)
+{
+    m_pathCat  = BuildCategoryPath(category);
+    m_pathChap = chapter != 0 ? BuildScenePath(category, chapter, 0, false) : "";
+    m_pathLvl  = chapter != 0 && rank != 0 ? BuildScenePath(category, chapter, rank, false) : "";
 }
 
 std::string CLevelParser::InjectLevelPaths(const std::string& path, const std::string& defaultDir)
