@@ -375,12 +375,30 @@ void CEngine::ResetAfterDeviceChanged()
 
     FlushTextureCache();
 
-    // This prevents the "unable to open file shadow[00..15].png" messages
-    UpdateGroundSpotTextures();
-
     CRobotMain::GetInstancePointer()->ResetAfterDeviceChanged();
 
     LoadAllTextures();
+
+    for (int baseObjRank = 0; baseObjRank < static_cast<int>( m_baseObjects.size() ); baseObjRank++)
+    {
+        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+        if (! p1.used)
+            continue;
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            EngineBaseObjTexTier& p2 = p1.next[l2];
+
+            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+            {
+                EngineBaseObjDataTier& p3 = p2.next[l3];
+
+                m_device->DestroyStaticBuffer(p3.staticBufferId);
+                p3.staticBufferId = 0;
+                p3.updateStaticBuffer = true;
+            }
+        }
+    }
 }
 
 bool CEngine::ProcessEvent(const Event &event)
