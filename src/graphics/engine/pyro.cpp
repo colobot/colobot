@@ -2168,17 +2168,13 @@ void CPyro::BurnTerminate()
          m_burnType == OBJECT_START    ||
          m_burnType == OBJECT_END      )
     {
-        m_object->SetType(OBJECT_RUINfactory);  // others become a ruin
-        m_object->SetLock(false);
+        m_object->SetType(OBJECT_RUINfactory); // Ruin
     }
     else
     {
-        m_object->SetType(OBJECT_RUINmobilew1);  // others become a ruin
-        m_object->SetLock(false);
+        m_object->SetType(OBJECT_RUINmobilew1); // Wreck (recoverable by Recycler)
     }
-
-    assert(m_object->Implements(ObjectInterfaceType::Destroyable));
-    dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Alive);  // ruin usable (c-e-d. recoverable)
+    m_object->SetLock(false);
 }
 
 void CPyro::FallStart()

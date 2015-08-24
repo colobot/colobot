@@ -2699,7 +2699,7 @@ bool COldObject::IsDying()
 
 bool COldObject::GetActive()
 {
-    return !GetLock() && !IsDying() && !m_bFlat;
+    return !GetLock() && !(Implements(ObjectInterfaceType::Destroyable) && IsDying()) && !m_bFlat;
 }
 
 bool COldObject::GetDetectable()
