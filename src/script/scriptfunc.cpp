@@ -3883,7 +3883,7 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 
     // Updates the energy level of the object.
     pVar = pVar->GetNext();  // "energyLevel"
-    value = object->GetEnergy();
+    value = object->GetEnergyLevel();
     pVar->SetValFloat(value);
 
     // Updates the shield level of the object.
