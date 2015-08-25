@@ -5085,7 +5085,7 @@ Error CRobotMain::CheckEndMission(bool frame)
 
     if (m_missionResult == ERR_OK)
     {
-        if (m_endTakeWinDelay == -1.0f)
+        if (m_endTakeWinDelay == -1.0f && m_winDelay == 0.0f)
         {
             m_winDelay  = 1.0f;  // wins in one second
             m_lostDelay = 0.0f;
