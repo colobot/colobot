@@ -253,18 +253,23 @@ Gfx::Color CLevelParserParam::AsColor()
 
     ParseArray();
 
-    if (m_array.size() == 3) //RGB
-    {
-        return Gfx::Color(m_array[0]->AsFloat(), m_array[1]->AsFloat(), m_array[2]->AsFloat());
-    }
-    else if (m_array.size() == 4) //RGBA
-    {
-        return Gfx::Color(m_array[0]->AsFloat(), m_array[1]->AsFloat(), m_array[2]->AsFloat(), m_array[3]->AsFloat());
-    }
-    else
-    {
+    if (m_array.size() != 3 && m_array.size() != 4)
         throw CLevelParserExceptionBadParam(this, "color");
+
+    float red = m_array[0]->AsFloat();
+    float green = m_array[1]->AsFloat();
+    float blue = m_array[2]->AsFloat();
+    float alpha = (m_array.size() == 4) ? m_array[3]->AsFloat() : 1.0f;
+
+    if (red > 1.0f || green > 1.0f || blue > 1.0f || alpha > 1.0f)
+    {
+        red = red / 255.0f;
+        green = green / 255.0f;
+        blue = blue / 255.0f;
+        alpha = alpha / 255.0f;
     }
+
+    return Gfx::Color(red, green, blue, alpha);
 }
 
 Gfx::Color CLevelParserParam::AsColor(Gfx::Color def)
