@@ -2102,7 +2102,10 @@ bool COldObject::EventProcess(const Event &event)
 
     if ( m_auto != nullptr )
     {
-        m_auto->EventProcess(event);
+        if (!GetLock())
+        {
+            m_auto->EventProcess(event);
+        }
 
         if ( event.type == EVENT_FRAME &&
              m_auto->IsEnded() != ERR_CONTINUE )
