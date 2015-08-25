@@ -373,6 +373,8 @@ public:
 
     void        StartDetectEffect(COldObject* object, CObject* target);
 
+    bool        IsSelectable(CObject* pObj);
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -397,7 +399,6 @@ protected:
     void        RemoteCamera(float pan, float zoom, float rTime);
     void        KeyCamera(EventType event, InputSlot key);
     void        AbortMovie();
-    bool        IsSelectable(CObject* pObj);
     void        SelectOneObject(CObject* pObj, bool displayError=true);
     void        HelpObject();
     bool        DeselectObject();

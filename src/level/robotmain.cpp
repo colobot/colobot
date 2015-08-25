@@ -1921,6 +1921,7 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
 }
 
 //! Indicates whether an object is selectable
+// TODO: Refactor this, calling CControllableObject::GetSelectable should always be enough
 bool CRobotMain::IsSelectable(CObject* obj)
 {
     if (obj->GetType() == OBJECT_TOTO) return true;
