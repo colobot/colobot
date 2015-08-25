@@ -372,6 +372,7 @@ bool COldObject::DamageObject(DamageType type, float force)
         {
             // Calculate the shield lost by the explosion
             loss = force * magnifyDamage;
+            if (m_type == OBJECT_HUMAN) loss /= 2.5f; // Me is more resistant
             if (loss > 1.0f) loss = 1.0f;
 
             // Decreases the the shield
