@@ -304,8 +304,14 @@ void CRobotMain::ResetAfterDeviceChanged()
        m_phase == PHASE_SIMUL ||
        m_phase == PHASE_WIN ||
        m_phase == PHASE_LOST)
-    ChangeColor();
-    UpdateMap();
+    {
+        ChangeColor();
+        UpdateMap();
+    }
+
+    // Recreate the interface (needed if the aspect ratio changes)
+    m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+    CreateShortcuts();
 }
 
 

@@ -399,6 +399,12 @@ void CEngine::ResetAfterDeviceChanged()
             }
         }
     }
+
+    // Update the camera projection matrix for new aspect ratio
+    SetFocus(m_focus);
+
+    // Because reloading textures takes a long time
+    m_app->ResetTimeAfterLoading();
 }
 
 bool CEngine::ProcessEvent(const Event &event)
