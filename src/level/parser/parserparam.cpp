@@ -23,6 +23,7 @@
 
 #include "common/logger.h"
 #include "common/make_unique.h"
+#include "common/stringutils.h"
 
 #include "common/resources/resourcemanager.h"
 
@@ -259,10 +260,10 @@ Gfx::Color CLevelParserParam::AsColor()
 
         try
         {
-            red = stoul(m_value.substr(1, 2), nullptr, 16);
-            green = stoul(m_value.substr(3, 2), nullptr, 16);
-            blue = stoul(m_value.substr(5, 2), nullptr, 16);
-            alpha = (m_value.length() == 9) ? stoul(m_value.substr(7, 2), nullptr, 16) : 1.0f;
+            red = StrUtils::HexStringToInt(m_value.substr(1, 2));
+            green = StrUtils::HexStringToInt(m_value.substr(3, 2));
+            blue = StrUtils::HexStringToInt(m_value.substr(5, 2));
+            alpha = (m_value.length() == 9) ? StrUtils::HexStringToInt(m_value.substr(7, 2)) : 1.0f;
         }
         catch (...)
         {

@@ -59,6 +59,9 @@ T FromString(const std::string &str, bool *ok = nullptr)
     return value;
 }
 
+//! Converts string of hex characters to int
+unsigned int HexStringToInt(const std::string& str);
+
 //! Replacement for sprintf()
 std::string Format(const char *fmt, ...);
 

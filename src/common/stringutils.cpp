@@ -25,6 +25,15 @@
 #include <vector>
 
 
+unsigned int StrUtils::HexStringToInt(const std::string& str)
+{
+    std::stringstream ss;
+    ss << std::hex << str;
+    unsigned int x;
+    ss >> x;
+    return x;
+}
+
 namespace
 {
 
