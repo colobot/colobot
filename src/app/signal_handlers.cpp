@@ -75,7 +75,8 @@ std::string demangle(const char* name) {
 #else
 // For MSVC and others
 // In MSVC typeinfo(e).name() should be already demangled
-std::string demangle(const char* name) {
+std::string demangle(const char* name)
+{
     return name;
 }
 #endif
@@ -83,6 +84,18 @@ std::string demangle(const char* name) {
 void CSignalHandlers::UnhandledExceptionHandler()
 {
     std::exception_ptr exptr = std::current_exception();
+    if (!exptr)
+    {
+        std::stringstream ss;
+        ss << "std::terminate called without an exception";
+        #ifdef HAS_MSVC_EXCEPTION_BUG
+        ss << " [this is a known bug in MSVC]";
+        // see https://connect.microsoft.com/VisualStudio/feedback/details/988432/std-current-exception-returns-null-when-called-from-terminate-handler
+        #endif
+        ReportError(ss.str());
+        return;
+    }
+
     try
     {
         std::rethrow_exception(exptr);
