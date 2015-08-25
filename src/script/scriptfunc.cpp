@@ -1514,7 +1514,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 {
     CScript*    script = static_cast<CScript*>(user);
     CObject*    me = script->m_object;
-    const char* name = "";
+    std::string name = "";
     Math::Vector pos;
     float       angle = 0.0f;
     ObjectType  type = OBJECT_NULL;
@@ -1534,8 +1534,6 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
             power = var->GetValFloat();
         else
             power = -1.0f;
-
-        name = "";
     }
     else
     {
@@ -1550,7 +1548,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         if ( var != nullptr )
         {
             CBotString cbs = var->GetValString();
-            name = cbs;
+            name = static_cast<const char*>(cbs);
             var = var->GetNext();
             if ( var != nullptr )
             {
@@ -1563,7 +1561,6 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         }
         else
         {
-            name = "";
             power = -1.0f;
         }
     }
@@ -1589,12 +1586,12 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
             power = 1.0f;
         }
         object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type, power);
-        if ( object == nullptr )
+        if (object == nullptr)
         {
             result->SetValInt(1);  // error
             return true;
         }
-        if(type == OBJECT_MOBILEdr)
+        if (type == OBJECT_MOBILEdr)
         {
             assert(object->Implements(ObjectInterfaceType::Old)); // TODO: temporary hack
             dynamic_cast<COldObject*>(object)->SetManual(true);
@@ -1602,7 +1599,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         script->m_main->CreateShortcuts();
     }
 
-    if (name[0] != 0)
+    if (!name.empty())
     {
         std::string name2 = InjectLevelPathsForCurrentLevel(name, "ai");
         if (object->Implements(ObjectInterfaceType::Programmable))
