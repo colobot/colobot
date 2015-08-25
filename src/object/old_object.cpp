@@ -2030,7 +2030,7 @@ bool COldObject::EventProcess(const Event &event)
             bool canMove = true;
             if (Implements(ObjectInterfaceType::TaskExecutor))
             {
-                canMove = canMove || (IsForegroundTask() && GetForegroundTask()->IsPilot());
+                canMove = canMove && (!IsForegroundTask() || GetForegroundTask()->IsPilot());
             }
             if (Implements(ObjectInterfaceType::Programmable))
             {
