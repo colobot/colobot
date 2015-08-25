@@ -717,18 +717,11 @@ bool CRobotMain::ProcessEvent(Event &event)
     if (event.type == EVENT_SPEED)
         SetSpeed(1.0f);
 
-    if (event.type == EVENT_MOUSE_MOVE)
-    {
-        m_lastMousePos = event.mousePos;
-        HiliteObject(event.mousePos);
-    }
-
     if (!m_displayText->EventProcess(event))
         return false;
 
     if (event.type == EVENT_MOUSE_MOVE)
     {
-        m_lastMousePos = event.mousePos;
         HiliteObject(event.mousePos);
     }
 

@@ -76,7 +76,6 @@ bool CTarget::EventProcess(const Event &event)
                 m_engine->SetMouseType(Gfx::ENG_MOUSE_TARGET);
 
                 m_event->AddEvent(Event(m_eventType));
-                return false;
             }
             else
             {

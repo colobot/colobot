@@ -464,7 +464,6 @@ protected:
     float           m_lostDelay = 0.0f;
     bool            m_fixScene = false;        // scene fixed, no interraction
     CObject*        m_base = nullptr;        // OBJECT_BASE exists in mission
-    Math::Point     m_lastMousePos;
     CObject*        m_selectObject = nullptr;
 
     Phase           m_phase = PHASE_WELCOME1;
