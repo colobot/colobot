@@ -89,12 +89,8 @@ void CAutoDerrick::DeleteObject(bool all)
 
 void CAutoDerrick::Init()
 {
-    Math::Matrix*   mat;
-    Math::Vector    pos;
-    Gfx::TerrainRes  res;
-
-    pos = m_object->GetPosition();
-    res = m_terrain->GetResource(pos);
+    Math::Vector pos = m_object->GetPosition();
+    Gfx::TerrainRes res = m_terrain->GetResource(pos);
 
     if ( res == Gfx::TR_STONE   ||
          res == Gfx::TR_URANIUM ||
@@ -126,12 +122,15 @@ void CAutoDerrick::Init()
     m_timeVirus = 0.0f;
     m_lastParticle = 0.0f;
     m_lastTrack = 0.0f;
+}
 
-    pos = Math::Vector(7.0f, 0.0f, 0.0f);
-    mat = m_object->GetWorldMatrix(0);
+Math::Vector CAutoDerrick::GetCargoPos()
+{
+    Math::Vector pos = Math::Vector(7.0f, 0.0f, 0.0f);
+    Math::Matrix* mat = m_object->GetWorldMatrix(0);
     pos = Math::Transform(*mat, pos);
     m_terrain->AdjustToFloor(pos);
-    m_cargoPos = pos;
+    return pos;
 }
 
 
@@ -311,10 +310,11 @@ bool CAutoDerrick::EventProcess(const Event &event)
     {
         if ( m_progress == 0.0f )
         {
-            if ( SearchFree(m_cargoPos) )
+            Math::Vector cargoPos = GetCargoPos();
+            if ( SearchFree(cargoPos) )
             {
                 angle = m_object->GetRotationY();
-                CreateCargo(m_cargoPos, angle, m_type, 16.0f);
+                CreateCargo(cargoPos, angle, m_type, 16.0f);
             }
             else
             {
@@ -361,16 +361,17 @@ bool CAutoDerrick::EventProcess(const Event &event)
         {
             if ( cargo != nullptr )
             {
+                Math::Vector cargoPos = GetCargoPos();
                 pos = cargo->GetPosition();
                 pos.y -= event.rTime*20.0f;  // grave
-                if ( !m_bSoundFall && pos.y < m_cargoPos.y )
+                if ( !m_bSoundFall && pos.y < cargoPos.y )
                 {
-                    m_sound->Play(SOUND_BOUM, m_cargoPos);
+                    m_sound->Play(SOUND_BOUM, cargoPos);
                     m_bSoundFall = true;
                 }
-                if ( pos.y < m_cargoPos.y )
+                if ( pos.y < cargoPos.y )
                 {
-                    pos.y = m_cargoPos.y;
+                    pos.y = cargoPos.y;
                     cargo->SetLock(false);  // object usable
                 }
                 cargo->SetPosition(pos);
@@ -463,6 +464,7 @@ bool CAutoDerrick::Read(CLevelParserLine* line)
 
 CObject* CAutoDerrick::SearchCargo()
 {
+    Math::Vector cargoPos = GetCargoPos();
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         ObjectType type = obj->GetType();
@@ -470,8 +472,8 @@ CObject* CAutoDerrick::SearchCargo()
 
             Math::Vector oPos = obj->GetPosition();
 
-        if ( oPos.x == m_cargoPos.x &&
-             oPos.z == m_cargoPos.z )  return obj;
+        if ( oPos.x == cargoPos.x &&
+             oPos.z == cargoPos.z )  return obj;
     }
 
     return nullptr;
