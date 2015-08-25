@@ -251,15 +251,37 @@ Gfx::Color CLevelParserParam::AsColor()
     if (m_empty)
         throw CLevelParserExceptionMissingParam(this);
 
-    ParseArray();
+    float red, green, blue, alpha;
+    if (m_value.length() >= 1 && m_value[0] == '#')
+    {
+        if (m_value.length() != 7 && m_value.length() != 9)
+            throw CLevelParserExceptionBadParam(this, "color");
 
-    if (m_array.size() != 3 && m_array.size() != 4)
-        throw CLevelParserExceptionBadParam(this, "color");
+        try
+        {
+            red = std::stoul(m_value.substr(1, 2), nullptr, 16);
+            green = std::stoul(m_value.substr(3, 2), nullptr, 16);
+            blue = std::stoul(m_value.substr(5, 2), nullptr, 16);
+            alpha = (m_value.length() == 9) ? std::stoul(m_value.substr(7, 2), nullptr, 16) : 1.0f;
+        }
+        catch (...)
+        {
+            // TODO: Show original exception text
+            throw CLevelParserExceptionBadParam(this, "color");
+        }
+    }
+    else
+    {
+        ParseArray();
 
-    float red = m_array[0]->AsFloat();
-    float green = m_array[1]->AsFloat();
-    float blue = m_array[2]->AsFloat();
-    float alpha = (m_array.size() == 4) ? m_array[3]->AsFloat() : 1.0f;
+        if (m_array.size() != 3 && m_array.size() != 4)
+            throw CLevelParserExceptionBadParam(this, "color");
+
+        red = m_array[0]->AsFloat();
+        green = m_array[1]->AsFloat();
+        blue = m_array[2]->AsFloat();
+        alpha = (m_array.size() == 4) ? m_array[3]->AsFloat() : 1.0f;
+    }
 
     if (red > 1.0f || green > 1.0f || blue > 1.0f || alpha > 1.0f)
     {
