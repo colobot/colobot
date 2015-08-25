@@ -241,6 +241,7 @@ CObject* CAutoRepair::SearchVehicle()
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
+        if (obj == m_object) continue;
         if ( !obj->Implements(ObjectInterfaceType::Shielded) ) continue;
         if ( !dynamic_cast<CShieldedObject*>(obj)->IsRepairable() )  continue;
 
