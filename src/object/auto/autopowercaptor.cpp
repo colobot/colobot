@@ -272,7 +272,7 @@ void CAutoPowerCaptor::ChargeObject(float rTime)
             CObject* power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
             if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
             {
-                CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(obj);
+                CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);
                 if (powerContainer->IsRechargeable())
                 {
                     float energy = powerContainer->GetEnergy();
@@ -288,7 +288,7 @@ void CAutoPowerCaptor::ChargeObject(float rTime)
             CObject* power = dynamic_cast<CCarrierObject*>(obj)->GetCargo();
             if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
             {
-                CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(obj);
+                CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);
                 if (powerContainer->IsRechargeable())
                 {
                     float energy = powerContainer->GetEnergy();
