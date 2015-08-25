@@ -42,6 +42,7 @@ void CSignalHandlers::Init(CSystemUtils* systemUtils)
     signal(SIGABRT, SignalHandler);
     signal(SIGFPE,  SignalHandler);
     signal(SIGILL,  SignalHandler);
+    std::set_terminate(UnhandledExceptionHandler);
 }
 
 void CSignalHandlers::SignalHandler(int sig)
@@ -74,23 +75,29 @@ std::string demangle(const char* name) {
 #else
 // For MSVC and others
 // In MSVC typeinfo(e).name() should be already demangled
-std::string demangle(const char* name)
-{
+std::string demangle(const char* name) {
     return name;
 }
 #endif
 
-void CSignalHandlers::HandleUncaughtException(const std::exception& e)
+void CSignalHandlers::UnhandledExceptionHandler()
 {
-    std::stringstream ss;
-    ss << "Type: " << demangle(typeid(e).name()) << std::endl;
-    ss << "Message: " << e.what();
-    ReportError(ss.str());
-}
-
-void CSignalHandlers::HandleOtherUncaughtException()
-{
-    ReportError("Unknown unhandled exception (not inherited from std::exception)");
+    std::exception_ptr exptr = std::current_exception();
+    try
+    {
+        std::rethrow_exception(exptr);
+    }
+    catch (const std::exception& e)
+    {
+        std::stringstream ss;
+        ss << "Type: " << demangle(typeid(e).name()) << std::endl;
+        ss << "Message: " << e.what();
+        ReportError(ss.str());
+    }
+    catch (...)
+    {
+        ReportError("Unknown unhandled exception (not inherited from std::exception)");
+    }
 }
 
 void CSignalHandlers::ReportError(const std::string& errorMessage)

@@ -135,45 +135,34 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     InitializeEventTypeTexts();
 
     int code = 0;
-    try
+    CApplication app(systemUtils.get()); // single instance of the application
+
+    ParseArgsStatus status = app.ParseArguments(argc, argv);
+    if (status == PARSE_ARGS_FAIL)
     {
-        CApplication app(systemUtils.get()); // single instance of the application
-
-        ParseArgsStatus status = app.ParseArguments(argc, argv);
-        if (status == PARSE_ARGS_FAIL)
-        {
-            systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
-            return app.GetExitCode();
-        }
-        else if (status == PARSE_ARGS_HELP)
-        {
-            return app.GetExitCode();
-        }
-
-
-        if (!app.Create())
-        {
-            code = app.GetExitCode();
-            if (code != 0 && !app.GetErrorMessage().empty())
-            {
-                systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app.GetErrorMessage());
-            }
-            logger.Info("Didn't run main loop. Exiting with code %d\n", code);
-            return code;
-        }
-
-        code = app.Run();
+        systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
+        return app.GetExitCode();
     }
-    catch (std::exception& e)
+    else if (status == PARSE_ARGS_HELP)
     {
-        CSignalHandlers::HandleUncaughtException(e);
+        return app.GetExitCode();
     }
-    catch (...)
+
+    if (! app.Create())
     {
-        CSignalHandlers::HandleOtherUncaughtException();
+        code = app.GetExitCode();
+        if (code != 0 && !app.GetErrorMessage().empty())
+        {
+            systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app.GetErrorMessage());
+        }
+        logger.Info("Didn't run main loop. Exiting with code %d\n", code);
+        return code;
     }
+
+    code = app.Run();
 
     logger.Info("Exiting with code %d\n", code);
+
     return code;
 }
 
