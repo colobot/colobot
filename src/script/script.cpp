@@ -652,7 +652,8 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
 
     edit->SetFormat(rangeStart, rangeEnd, Gfx::FONT_HIGHLIGHT_COMMENT); // anything not processed is a comment
 
-    std::string text = edit->GetText();
+    // NOTE: Images are registered as index in some array, and that can be 0 which normally ends the string!
+    std::string text = std::string(edit->GetText(), edit->GetMaxChar());
     text = text.substr(rangeStart, rangeEnd-rangeStart);
 
     int error;
