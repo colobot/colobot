@@ -1490,7 +1490,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
     i = j = 0;
     bBOL = true;
     int cbotStart = 0;
-    bool cbotStarted = false;
+    bool inCbotBackground = false;
     bool inCbot = false;
     while ( i < m_len )
     {
@@ -1533,7 +1533,14 @@ bool CEdit::ReadText(std::string filename, int addSize)
                 {
                     font &= ~Gfx::FONT_MASK_FONT;
                     font |= Gfx::FONT_COURIER;
-                    inCbot = true;
+                    if (!inCbot)
+                    {
+                        if (inCbotBackground)
+                        {
+                            cbotStart = j;
+                        }
+                        inCbot = true;
+                    }
                 }
                 i += 3;
             }
@@ -1561,10 +1568,13 @@ bool CEdit::ReadText(std::string filename, int addSize)
                 {
                     font &= ~Gfx::FONT_MASK_TITLE;
                     font |= Gfx::FONT_TITLE_LITTLE;
-                    if (inCbot && !cbotStarted)
+                    if (!inCbotBackground)
                     {
-                        cbotStart = j;
-                        cbotStarted = true;
+                        if (inCbot)
+                        {
+                            cbotStart = j;
+                        }
+                        inCbotBackground = true;
                     }
                 }
                 i += 3;
@@ -1814,10 +1824,10 @@ bool CEdit::ReadText(std::string filename, int addSize)
         }
         else
         {
-            if (buffer[i] == '\n' && cbotStarted)
+            if (buffer[i] == '\n' && inCbotBackground)
             {
                 CScript::ColorizeScript(this, cbotStart, j);
-                cbotStarted = false;
+                inCbotBackground = false;
             }
 
             if ( m_bSoluce || !bInSoluce )
