@@ -259,10 +259,10 @@ Gfx::Color CLevelParserParam::AsColor()
 
         try
         {
-            red = std::stoul(m_value.substr(1, 2), nullptr, 16);
-            green = std::stoul(m_value.substr(3, 2), nullptr, 16);
-            blue = std::stoul(m_value.substr(5, 2), nullptr, 16);
-            alpha = (m_value.length() == 9) ? std::stoul(m_value.substr(7, 2), nullptr, 16) : 1.0f;
+            red = stoul(m_value.substr(1, 2), nullptr, 16);
+            green = stoul(m_value.substr(3, 2), nullptr, 16);
+            blue = stoul(m_value.substr(5, 2), nullptr, 16);
+            alpha = (m_value.length() == 9) ? stoul(m_value.substr(7, 2), nullptr, 16) : 1.0f;
         }
         catch (...)
         {
