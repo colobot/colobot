@@ -1335,7 +1335,6 @@ void CAutoBase::BeginTransit()
 
     bool full, scale;
     m_engine->GetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown, full, scale);
-    m_engine->DeleteTexture(m_bgName);
 
     m_engine->SetBackground(m_bgBack, Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1353,8 +1352,6 @@ void CAutoBase::EndTransit()
     m_engine->SetFogStart(m_fogStart);  // gives initial fog
     m_engine->SetDeepView(m_deepView);  // gives initial depth
     m_engine->ApplyChange();
-
-    m_engine->DeleteTexture(m_bgBack);
 
     m_engine->SetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown);
 
