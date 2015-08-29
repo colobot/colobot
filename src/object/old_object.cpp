@@ -948,8 +948,8 @@ void COldObject::Write(CLevelParserLine* line)
     if ( GetLock() )
         line->AddParam("lock", MakeUnique<CLevelParserParam>(GetLock()));
 	
-	if ( !GetActivity() )
-		line->AddParam("activity", MakeUnique<CLevelParserParam>(GetActivity()));
+    if ( !GetActivity() )
+        line->AddParam("activity", MakeUnique<CLevelParserParam>(GetActivity()));
 
     if ( GetProxyActivate() )
     {
@@ -1111,7 +1111,7 @@ void COldObject::Read(CLevelParserLine* line)
     if (line->GetParam("energy")->IsDefined())
         SetEnergyLevel(line->GetParam("energy")->AsFloat());
     SetLock(line->GetParam("lock")->AsBool(false));
-	SetActivity(line->GetParam("activity")->AsBool(true));
+    SetActivity(line->GetParam("activity")->AsBool(true));
     SetGunGoalV(line->GetParam("aimV")->AsFloat(0.0f));
     SetGunGoalH(line->GetParam("aimH")->AsFloat(0.0f));
 
