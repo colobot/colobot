@@ -1607,6 +1607,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(object);
             Program* program = programStorage->AddProgram();
             programStorage->ReadProgram(program, name2.c_str());
+            program->filename = name;
             dynamic_cast<CProgrammableObject*>(object)->RunProgram(program);
         }
     }

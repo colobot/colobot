@@ -4372,45 +4372,34 @@ bool CRobotMain::ReadFileStack(CObject *obj, FILE *file, int objRank)
 
 
 //! Empty the list
-bool CRobotMain::FlushNewScriptName()
+void CRobotMain::FlushNewScriptName()
 {
-    for (int i = 0; i < MAXNEWSCRIPTNAME; i++)
-        m_newScriptName[i].used = false;
-
-    return true;
+    m_newScriptName.clear();
 }
 
 //! Adds a script name
-bool CRobotMain::AddNewScriptName(ObjectType type, char *name)
+void CRobotMain::AddNewScriptName(ObjectType type, const std::string& name)
 {
-    for (int i = 0; i < MAXNEWSCRIPTNAME; i++)
-    {
-        if (!m_newScriptName[i].used)
-        {
-            m_newScriptName[i].used = true;
-            m_newScriptName[i].type = type;
-            strcpy(m_newScriptName[i].name, name);
-            return true;
-        }
-    }
-    return false;
+    NewScriptName newscript;
+    newscript.type = type;
+    newscript.name = name;
+    m_newScriptName.push_back(newscript);
 }
 
 //! Seeks a script name for a given type
-char*  CRobotMain::GetNewScriptName(ObjectType type, int rank)
+std::string CRobotMain::GetNewScriptName(ObjectType type, int rank)
 {
-    for (int i = 0; i < MAXNEWSCRIPTNAME; i++)
+    for (unsigned int i = 0; i < m_newScriptName.size(); i++)
     {
-        if (m_newScriptName[i].used &&
-            (m_newScriptName[i].type == type        ||
-             m_newScriptName[i].type == OBJECT_NULL))
+        if (m_newScriptName[i].type == type        ||
+            m_newScriptName[i].type == OBJECT_NULL  )
         {
             if (rank == 0) return m_newScriptName[i].name;
             else           rank --;
         }
     }
 
-    return nullptr;
+    return "";
 }
 
 

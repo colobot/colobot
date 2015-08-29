@@ -26,6 +26,7 @@
 
 #include "level/robotmain.h"
 
+#include "level/parser/parser.h"
 #include "level/parser/parserline.h"
 #include "level/parser/parserparam.h"
 
@@ -665,11 +666,12 @@ bool CAutoFactory::CreateVehicle()
         CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(vehicle);
         for ( int i=0 ; ; i++ )
         {
-            char* name = m_main->GetNewScriptName(m_type, i);
-            if ( name == nullptr )  break;
+            std::string name = m_main->GetNewScriptName(m_type, i);
+            if (name.empty()) break;
             Program* prog = programStorage->GetOrAddProgram(i);
-            programStorage->ReadProgram(prog, name);
+            programStorage->ReadProgram(prog, InjectLevelPathsForCurrentLevel(name));
             prog->readOnly = true;
+            prog->filename = name;
         }
     }
 

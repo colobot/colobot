@@ -112,13 +112,10 @@ class CDisplayText;
 class CDisplayInfo;
 }
 
-const int MAXNEWSCRIPTNAME = 20;
-
 struct NewScriptName
 {
-    bool        used = false;
     ObjectType  type = OBJECT_NULL;
-    char        name[40] = {};
+    std::string name = "";
 };
 
 
@@ -280,9 +277,9 @@ public:
     bool        SaveFileStack(CObject *pObj, FILE *file, int objRank);
     bool        ReadFileStack(CObject *pObj, FILE *file, int objRank);
 
-    bool        FlushNewScriptName();
-    bool        AddNewScriptName(ObjectType type, char *name);
-    char*       GetNewScriptName(ObjectType type, int rank);
+    void        FlushNewScriptName();
+    void        AddNewScriptName(ObjectType type, const std::string& name);
+    std::string GetNewScriptName(ObjectType type, int rank);
 
     void        SelectPlayer(std::string playerName);
     CPlayerProfile* GetPlayerProfile();
@@ -534,7 +531,7 @@ protected:
 
     std::map<int, std::string> m_teamNames;
 
-    NewScriptName   m_newScriptName[MAXNEWSCRIPTNAME];
+    std::vector<NewScriptName> m_newScriptName;
 
     float           m_cameraPan = 0.0f;
     float           m_cameraZoom = 0.0f;
