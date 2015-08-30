@@ -947,7 +947,7 @@ void COldObject::Write(CLevelParserLine* line)
 
     if ( GetLock() )
         line->AddParam("lock", MakeUnique<CLevelParserParam>(GetLock()));
-	
+
     if ( !GetActivity() )
         line->AddParam("activity", MakeUnique<CLevelParserParam>(GetActivity()));
 

@@ -286,7 +286,7 @@ CObject* CAutoDestroyer::SearchPlastic()
         if (obj == m_object) continue;
         if (!obj->Implements(ObjectInterfaceType::Destroyable)) continue;
         if (obj->GetType() == OBJECT_HUMAN || obj->GetType() == OBJECT_TECH) continue;
-        
+
         Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);
         if ( dist <= 5.0f )  return obj;
