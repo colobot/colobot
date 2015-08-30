@@ -209,7 +209,7 @@ struct Track
 
 struct WheelTrace
 {
-    TraceColor      color = {};
+    TraceColor      color = TraceColor::Black;
     Math::Vector    pos[4];
 };
 
