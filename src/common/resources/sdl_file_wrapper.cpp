@@ -128,22 +128,22 @@ int CSDLFileWrapper::SDLSeek(SDL_RWops *context, int offset, int whence)
             default:
             case RW_SEEK_SET:
             {
-                int result = PHYSFS_seek(file, offset);
-                return result > 0 ? offset : -1;
+				auto result = PHYSFS_seek(file, offset);
+                return (result != 0) ? offset : -1;
             }
 
             case RW_SEEK_CUR:
             {
                 int position = offset + PHYSFS_tell(file);
-                int result = PHYSFS_seek(file, position);
-                return result > 0 ? position : -1;
+				auto result = PHYSFS_seek(file, position);
+                return (result != 0) ? position : -1;
             }
 
             case RW_SEEK_END:
             {
                 int position = PHYSFS_fileLength(file) - offset;
-                int result = PHYSFS_seek(file, position);
-                return result > 0 ? position : -1;
+                auto result = PHYSFS_seek(file, position);
+                return (result != 0) ? position : -1;
             }
         }
     }
@@ -158,7 +158,8 @@ int CSDLFileWrapper::SDLRead(SDL_RWops *context, void *ptr, int size, int maxnum
         PHYSFS_File *file = static_cast<PHYSFS_File *>(context->hidden.unknown.data1);
         SDL_memset(ptr, 0, size * maxnum);
 
-        return PHYSFS_read(file, ptr, size, maxnum);
+		auto result = PHYSFS_read(file, ptr, size, maxnum);
+		return (result >= 0) ? result : 0;
     }
 
     return 0;
