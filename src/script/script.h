@@ -34,7 +34,6 @@
 class COldObject;
 class CTaskExecutorObject;
 class CRobotMain;
-class CPauseManager;
 class CScriptFunctions;
 
 namespace Ui
@@ -70,6 +69,7 @@ public:
     void        GetTitle(char* buffer);
 
     void        SetStepMode(bool bStep);
+    bool        GetStepMode();
     bool        Run();
     bool        Continue();
     bool        Step();
@@ -110,7 +110,6 @@ protected:
     CRobotMain*         m_main = nullptr;
     Gfx::CTerrain*      m_terrain = nullptr;
     Gfx::CWater*        m_water = nullptr;
-    CPauseManager*      m_pause = nullptr;
 
     int     m_ipf = 0;          // number of instructions/second
     int     m_errMode = 0;      // what to do in case of error

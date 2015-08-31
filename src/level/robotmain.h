@@ -89,6 +89,8 @@ class CAudioChangeCondition;
 class CPlayerProfile;
 class CSettings;
 class COldObject;
+class CPauseManager;
+struct ActivePause;
 
 namespace Gfx
 {
@@ -185,8 +187,6 @@ public:
     void        SetTracePrecision(float factor);
     float       GetTracePrecision();
 
-    void        ChangePause(PauseType pause);
-
     void        SetSpeed(float speed);
     float       GetSpeed();
 
@@ -256,7 +256,7 @@ public:
     void        UpdateChapterPassed();
 
     void        StartMusic();
-    void        StartPauseMusic(PauseType pause);
+    void        UpdatePause(PauseType pause);
     void        ClearInterface();
     void        ChangeColor();
 
@@ -465,10 +465,13 @@ protected:
     CObject*        m_selectObject = nullptr;
 
     Phase           m_phase = PHASE_WELCOME1;
+    ActivePause*    m_userPause = nullptr;
     int             m_cameraRank = 0;
     Gfx::Color      m_color;
     bool            m_freePhoto = false;
+    ActivePause*    m_freePhotoPause = nullptr;
     bool            m_cmdEdit = false;
+    ActivePause*    m_cmdEditPause = nullptr;
     bool            m_selectInsect = false;
     bool            m_showSoluce = false;
     bool            m_showAll = false;
@@ -500,8 +503,7 @@ protected:
     bool            m_mapImage = false;
     char            m_mapFilename[100] = {};
 
-    bool            m_suspend = false;
-    PauseType       m_suspendInitPause = PAUSE_NONE;
+    ActivePause*    m_suspend = nullptr;
     Gfx::CameraType m_suspendInitCamera = Gfx::CAM_TYPE_NULL;
 
     Math::Point     m_tooltipPos;
@@ -513,6 +515,7 @@ protected:
     int             m_infoIndex = 0;
     int             m_infoPos[SATCOM_MAX] = {};
     int             m_infoUsed = 0;
+    ActivePause*    m_satcomMoviePause = nullptr;
 
     char            m_title[100] = {};
     char            m_resume[500] = {};
@@ -543,6 +546,7 @@ protected:
     float           m_visitParticle = 0.0f;
     Math::Vector    m_visitPos;
     Math::Vector    m_visitPosArrow;
+    ActivePause*    m_visitPause = nullptr;
 
     std::vector<std::unique_ptr<CSceneEndCondition>> m_endTake;
     long            m_endTakeResearch = 0;

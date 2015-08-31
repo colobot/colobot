@@ -32,6 +32,8 @@
 
 #include "object/old_object.h"
 
+#include "sound/sound.h"
+
 
 #include <stdio.h>
 

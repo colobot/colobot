@@ -56,6 +56,8 @@
 
 #include "object/task/task.h"
 
+#include "sound/sound.h"
+
 
 
 const float LANDING_SPEED   = 3.0f;

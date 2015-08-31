@@ -21,6 +21,7 @@
 #include "ui/displayinfo.h"
 
 #include "app/app.h"
+#include "app/pausemanager.h"
 
 #include "common/misc.h"
 #include "common/restext.h"
@@ -79,7 +80,6 @@ CDisplayInfo::CDisplayInfo()
     m_lightSuppl = -1;
     m_toto = nullptr;
     m_bSoluce = false;
-    m_initPause = PAUSE_NONE;
     m_bEditLock = false;
     m_infoCamera = Gfx::CAM_TYPE_NULL;
     m_index = -1;
@@ -363,8 +363,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
 
     m_main->SetEditLock(true, false);
     m_main->SetEditFull(false);
-    m_initPause = m_pause->GetPauseType();
-    m_pause->SetPause(PAUSE_SATCOM);
+    m_satcomPause = m_pause->ActivatePause(PAUSE_SATCOM);
     m_infoCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_INFO);
 
@@ -829,9 +828,10 @@ void CDisplayInfo::StopDisplayInfo()
     }
     else
     {
-        m_pause->SetPause(m_initPause);
         m_main->SetEditLock(false, false);
     }
+    m_pause->DeactivatePause(m_satcomPause);
+    m_satcomPause = nullptr;
     m_camera->SetType(m_infoCamera);
 
     m_engine->SetDrawWorld(true);  // draws all on the interface

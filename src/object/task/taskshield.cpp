@@ -38,6 +38,8 @@
 
 #include "physics/physics.h"
 
+#include "sound/sound.h"
+
 #include <string.h>
 
 const float ENERGY_TIME = 20.0f;        // maximum duration if full battery

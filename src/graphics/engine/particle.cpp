@@ -42,6 +42,8 @@
 
 #include "object/subclass/shielder.h"
 
+#include "sound/sound.h"
+
 #include <cstring>
 
 

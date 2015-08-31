@@ -20,8 +20,6 @@
 
 #include "script/script.h"
 
-#include "app/pausemanager.h"
-
 #include "common/restext.h"
 #include "common/stringutils.h"
 
@@ -64,7 +62,6 @@ CScript::CScript(COldObject* object)
     m_terrain       = m_main->GetTerrain();
     m_water         = m_engine->GetWater();
     m_interface     = m_main->GetInterface();
-    m_pause         = CPauseManager::GetInstancePointer();
 
     m_ipf = CBOT_IPF;
     m_errMode = ERM_STOP;
@@ -322,6 +319,11 @@ void CScript::SetStepMode(bool bStep)
     m_bStepMode = bStep;
 }
 
+bool CScript::GetStepMode()
+{
+    return m_bStepMode;
+}
+
 
 // Runs the program from the beginning.
 
@@ -379,12 +381,7 @@ bool CScript::Continue()
                     GetError(s);
                     m_main->GetDisplayText()->DisplayText(s.c_str(), m_object, 10.0f, Ui::TT_ERROR);
                 }
-                m_pause->SetPause(PAUSE_EDITOR);  // gives pause
                 return true;
-            }
-            if ( !m_bContinue )
-            {
-                m_pause->SetPause(PAUSE_EDITOR);  // gives pause
             }
         }
 
@@ -427,10 +424,6 @@ bool CScript::Step()
     if ( !m_bRun )  return true;
     if ( !m_bStepMode )  return false;
 
-    // ??? m_engine->SetPause(false);
-    // TODO: m_app StepSimulation??? m_engine->StepSimulation(0.01f);  // advance of 10ms
-    // ??? m_engine->SetPause(true);
-
     if ( m_botProg->Run(this, 0) )  // step mode
     {
         m_botProg->GetError(m_error, m_cursor1, m_cursor2);
@@ -453,14 +446,6 @@ bool CScript::Step()
             m_main->GetDisplayText()->DisplayText(s.c_str(), m_object, 10.0f, Ui::TT_ERROR);
         }
         return true;
-    }
-
-    if ( m_bContinue )  // instuction "move", "goto", etc. ?
-    {
-        if (m_pause->GetPauseType() == PAUSE_EDITOR)
-        {
-            m_pause->ClearPause();  // removes the pause
-        }
     }
     return false;
 }

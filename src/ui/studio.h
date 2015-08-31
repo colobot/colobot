@@ -19,8 +19,6 @@
 
 #pragma once
 
-#include "app/pausemanager.h"
-
 #include "common/event.h"
 
 #include "graphics/engine/camera.h"
@@ -32,6 +30,8 @@ class CScript;
 class CSoundInterface;
 class CSettings;
 struct Program;
+class CPauseManager;
+struct ActivePause;
 
 namespace Ui
 {
@@ -114,7 +114,7 @@ protected:
     float        m_fixInfoTextTime;
     bool         m_bRunning;
     bool         m_bRealTime;
-    PauseType    m_initPause;
+    ActivePause* m_editorPause = nullptr;
     std::string  m_helpFilename;
 
     StudioDialog m_dialog;

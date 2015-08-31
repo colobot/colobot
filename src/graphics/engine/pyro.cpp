@@ -39,6 +39,8 @@
 
 #include "object/subclass/shielder.h"
 
+#include "sound/sound.h"
+
 
 // Graphics module namespace
 namespace Gfx

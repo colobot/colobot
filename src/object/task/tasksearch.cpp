@@ -32,6 +32,8 @@
 
 #include "physics/physics.h"
 
+#include "sound/sound.h"
+
 
 // Object's constructor.
 

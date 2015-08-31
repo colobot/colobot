@@ -25,6 +25,8 @@
 
 #include "level/parser/parser.h"
 
+#include "sound/sound.h"
+
 #include "ui/controls/button.h"
 #include "ui/controls/group.h"
 #include "ui/controls/interface.h"

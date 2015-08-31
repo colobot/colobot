@@ -23,6 +23,7 @@
 #include "CBot/CBotDll.h"
 
 #include "app/app.h"
+#include "app/pausemanager.h"
 
 #include "common/event.h"
 #include "common/logger.h"
@@ -92,7 +93,6 @@ CStudio::CStudio()
     m_bRealTime = true;
     m_bRunning  = false;
     m_fixInfoTextTime = 0.0f;
-    m_initPause = PAUSE_NONE;
     m_dialog = SD_NULL;
     m_editCamera = Gfx::CAM_TYPE_NULL;
 }
@@ -352,6 +352,22 @@ bool CStudio::EventFrame(const Event &event)
     list = static_cast< CList* >(pw->SearchControl(EVENT_STUDIO_LIST));
     if ( list == nullptr )  return false;
 
+    if (m_script->IsRunning() && (!m_script->GetStepMode() || m_script->IsContinue()))
+    {
+        if (m_editorPause != nullptr)
+        {
+            m_pause->DeactivatePause(m_editorPause);
+            m_editorPause = nullptr;
+        }
+    }
+    else
+    {
+        if (m_editorPause == nullptr)
+        {
+            m_editorPause = m_pause->ActivatePause(PAUSE_EDITOR);
+        }
+    }
+
     if ( !m_script->IsRunning() && m_bRunning )  // stop?
     {
         m_bRunning = false;
@@ -557,7 +573,6 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
 
     m_main->SetEditLock(true, true);
     m_main->SetEditFull(false);
-    m_initPause = m_pause->GetPauseType();
     m_main->SetSpeed(1.0f);
     m_editCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_EDIT);
@@ -889,7 +904,8 @@ bool CStudio::StopEditScript(bool bCancel)
 
     m_interface->DeleteControl(EVENT_WINDOW3);
 
-    m_pause->SetPause(m_initPause);
+    m_pause->DeactivatePause(m_editorPause);
+    m_editorPause = nullptr;
     m_sound->MuteAll(false);
     m_main->SetEditLock(false, true);
     m_camera->SetType(m_editCamera);
@@ -960,27 +976,22 @@ void CStudio::UpdateFlux()
     {
         if ( m_bRealTime )  // run?
         {
-            if(m_pause->GetPauseType() == PAUSE_EDITOR)
-            {
-                m_pause->ClearPause();
-                m_sound->MuteAll(false);
-            }
+            m_pause->DeactivatePause(m_editorPause);
+            m_editorPause = nullptr;
         }
         else    // step by step?
         {
-            if(!m_pause->GetPause())
+            if (m_editorPause == nullptr)
             {
-                m_pause->SetPause(PAUSE_EDITOR);
-                m_sound->MuteAll(true);
+                m_editorPause = m_pause->ActivatePause(PAUSE_EDITOR);
             }
         }
     }
     else    // stop?
     {
-        if(!m_pause->GetPause())
+        if (m_editorPause == nullptr)
         {
-            m_pause->SetPause(PAUSE_EDITOR);
-            m_sound->MuteAll(true);
+            m_editorPause = m_pause->ActivatePause(PAUSE_EDITOR);
         }
     }
 }

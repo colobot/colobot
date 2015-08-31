@@ -25,62 +25,66 @@
 
 #include "level/robotmain.h"
 
+#include <algorithm>
+
 
 template<> CPauseManager* CSingleton<CPauseManager>::m_instance = nullptr;
 
 
 CPauseManager::CPauseManager()
-{
-    m_sound = CApplication::GetInstancePointer()->GetSound();
-
-    m_pause = PAUSE_NONE;
-}
+{}
 
 CPauseManager::~CPauseManager()
+{}
+
+ActivePause* CPauseManager::ActivatePause(PauseType type)
 {
-    m_sound = nullptr;
+    assert(type != PAUSE_NONE);
+    GetLogger()->Debug("Activated pause mode - %s\n", GetPauseName(type).c_str());
+    auto pause = std::unique_ptr<ActivePause>(new ActivePause(type)); // TODO: Can't use MakeUnique here because the constructor is private
+    ActivePause* ptr = pause.get();
+    m_activePause.push_back(std::move(pause));
+    UpdatePause();
+    return ptr;
 }
 
-void CPauseManager::SetPause(PauseType pause)
+void CPauseManager::DeactivatePause(ActivePause* pause)
 {
-    if (pause != PAUSE_NONE)
-    {
-        if (m_pause != pause)
-        {
-            GetLogger()->Info("Game paused - %s\n", GetPauseName(pause).c_str());
-            CRobotMain::GetInstancePointer()->StartPauseMusic(pause);
-        }
+    if (pause == nullptr) return;
+    GetLogger()->Debug("Deactivated pause mode - %s\n", GetPauseName(pause->type).c_str());
+    m_activePause.erase(std::remove_if(
+        m_activePause.begin(), m_activePause.end(),
+        [&](const std::unique_ptr<ActivePause>& x) { return x.get() == pause; })
+    );
+    UpdatePause();
+}
 
-        m_pause = pause;
+void CPauseManager::FlushPause()
+{
+    m_activePause.clear();
+}
+
+bool CPauseManager::IsPause()
+{
+    return m_activePause.size() > 0;
+}
+
+void CPauseManager::UpdatePause()
+{
+    PauseType type = PAUSE_NONE;
+    if (m_activePause.size() > 0)
+        type = m_activePause[m_activePause.size()-1]->type;
+
+    if (type != PAUSE_NONE)
+    {
+        GetLogger()->Info("Game paused - %s\n", GetPauseName(type).c_str());
     }
     else
-        ClearPause();
-}
-
-void CPauseManager::ClearPause()
-{
-    if(m_pause != PAUSE_NONE)
     {
         GetLogger()->Info("Game resumed\n");
-        m_sound->StopPauseMusic();
     }
 
-    m_pause = PAUSE_NONE;
-}
-
-bool CPauseManager::GetPause()
-{
-    return m_pause != PAUSE_NONE;
-}
-
-bool CPauseManager::GetPause(PauseType pause)
-{
-    return m_pause == pause;
-}
-
-PauseType CPauseManager::GetPauseType()
-{
-    return m_pause;
+    CRobotMain::GetInstancePointer()->UpdatePause(type);
 }
 
 std::string CPauseManager::GetPauseName(PauseType pause)

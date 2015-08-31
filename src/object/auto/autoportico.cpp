@@ -26,6 +26,8 @@
 
 #include "object/old_object.h"
 
+#include "sound/sound.h"
+
 
 const int PARAM_DEPOSE = 2;     // run=2 -> deposits the spaceship
 

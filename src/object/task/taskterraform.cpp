@@ -39,6 +39,8 @@
 
 #include "physics/physics.h"
 
+#include "sound/sound.h"
+
 
 const float ENERGY_TERRA    = 0.40f;        // energy consumed by blow
 const float ACTION_RADIUS   = 400.0f;

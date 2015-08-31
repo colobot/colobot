@@ -43,6 +43,8 @@
 
 #include "physics/physics.h"
 
+#include "sound/sound.h"
+
 #include <string.h>
 
 // Object's constructor.

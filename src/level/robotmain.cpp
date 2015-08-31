@@ -23,6 +23,7 @@
 
 #include "app/app.h"
 #include "app/input.h"
+#include "app/pausemanager.h"
 
 #include "common/config_file.h"
 #include "common/event.h"
@@ -210,7 +211,6 @@ CRobotMain::CRobotMain()
     m_cheatRadar   = false;
     m_fixScene     = false;
     m_trainerPilot = false;
-    m_suspend      = false;
     m_friendAim    = false;
     m_resetCreate  = false;
     m_shortCut     = true;
@@ -431,7 +431,7 @@ void CRobotMain::ChangePhase(Phase phase)
         m_resetCreate = false;
         m_infoObject  = nullptr;
 
-        ChangePause(PAUSE_NONE);
+        m_pause->FlushPause();
         FlushDisplayInfo();
         m_engine->SetRankView(0);
         m_terrain->FlushRelief();
@@ -649,7 +649,8 @@ bool CRobotMain::ProcessEvent(Event &event)
             MainMovieType type = m_movie->GetStopType();
             if (type == MM_SATCOMopen)
             {
-                ChangePause(PAUSE_NONE);
+                m_pause->DeactivatePause(m_satcomMoviePause);
+                m_satcomMoviePause = nullptr;
                 SelectObject(m_infoObject, false);  // hands over the command buttons
                 m_map->ShowMap(m_mapShow);
                 m_displayText->HideText(false);
@@ -689,7 +690,7 @@ bool CRobotMain::ProcessEvent(Event &event)
             if (pe == nullptr) return false;
             pe->SetState(Ui::STATE_VISIBLE);
             m_interface->SetFocus(pe);
-            if (m_phase == PHASE_SIMUL) ChangePause(PAUSE_CHEAT);
+            if (m_phase == PHASE_SIMUL) m_cmdEditPause = m_pause->ActivatePause(PAUSE_CHEAT);
             m_cmdEdit = true;
         }
         return false;
@@ -704,7 +705,11 @@ bool CRobotMain::ProcessEvent(Event &event)
         pe->GetText(cmd, 50);
         pe->SetText("");
         pe->ClearState(Ui::STATE_VISIBLE);
-        if (m_phase == PHASE_SIMUL) ChangePause(PAUSE_NONE);
+        if (m_phase == PHASE_SIMUL)
+        {
+            m_pause->DeactivatePause(m_cmdEditPause);
+            m_cmdEditPause = nullptr;
+        }
         ExecuteCmd(cmd);
         m_cmdEdit = false;
         return false;
@@ -817,11 +822,17 @@ bool CRobotMain::ProcessEvent(Event &event)
                 }
                 if (data->slot == INPUT_SLOT_PAUSE)
                 {
-                    if (!m_movieLock && !m_editLock && !m_cmdEdit &&
-                        m_camera->GetType() != Gfx::CAM_TYPE_VISIT &&
-                        !m_movie->IsExist())
+                    if (m_userPause == nullptr)
                     {
-                        ChangePause(m_pause->GetPause(PAUSE_USER) || m_pause->GetPause(PAUSE_CODE_BATTLE_LOCK) ? PAUSE_NONE : PAUSE_USER);
+                        if (!m_pause->IsPause())
+                        {
+                            m_userPause = m_pause->ActivatePause(PAUSE_USER);
+                        }
+                    }
+                    else
+                    {
+                        m_pause->DeactivatePause(m_userPause);
+                        m_userPause = nullptr;
                     }
                 }
                 if (data->slot == INPUT_SLOT_CAMERA)
@@ -1160,12 +1171,13 @@ void CRobotMain::ExecuteCmd(char *cmd)
             if (m_freePhoto)
             {
                 m_camera->SetType(Gfx::CAM_TYPE_FREE);
-                ChangePause(PAUSE_PHOTO);
+                m_freePhotoPause = m_pause->ActivatePause(PAUSE_PHOTO);
             }
             else
             {
                 m_camera->SetType(Gfx::CAM_TYPE_BACK);
-                ChangePause(PAUSE_NONE);
+                m_pause->DeactivatePause(m_freePhotoPause);
+                m_freePhotoPause = nullptr;
             }
             return;
         }
@@ -1177,14 +1189,15 @@ void CRobotMain::ExecuteCmd(char *cmd)
             {
                 m_camera->SetType(Gfx::CAM_TYPE_FREE);
                 DeselectAll();  // removes the control buttons
-                ChangePause(PAUSE_PHOTO);
+                m_freePhotoPause = m_pause->ActivatePause(PAUSE_PHOTO);
                 m_map->ShowMap(false);
                 m_displayText->HideText(true);
             }
             else
             {
                 m_camera->SetType(Gfx::CAM_TYPE_BACK);
-                ChangePause(PAUSE_NONE);
+                m_pause->DeactivatePause(m_freePhotoPause);
+                m_freePhotoPause = nullptr;
                 m_map->ShowMap(m_mapShow);
                 m_displayText->HideText(false);
             }
@@ -1388,7 +1401,7 @@ void CRobotMain::StartDisplayInfo(int index, bool movie)
         {
             m_movieInfoIndex = index;
             m_movie->Start(MM_SATCOMopen, 2.5f);
-            ChangePause(PAUSE_SATCOMMOVIE);
+            m_satcomMoviePause = m_pause->ActivatePause(PAUSE_SATCOMMOVIE);
             m_infoObject = DeselectAll();  // removes the control buttons
             m_displayText->HideText(true);
             return;
@@ -1398,7 +1411,8 @@ void CRobotMain::StartDisplayInfo(int index, bool movie)
     if (m_movie->IsExist())
     {
         m_movie->Stop();
-        ChangePause(PAUSE_NONE);
+        m_pause->DeactivatePause(m_satcomMoviePause);
+        m_satcomMoviePause = nullptr;
         SelectObject(m_infoObject, false);  // hands over the command buttons
         m_displayText->HideText(false);
     }
@@ -1483,8 +1497,7 @@ void CRobotMain::StartSuspend()
 {
     m_sound->MuteAll(true);
     ClearInterface();
-    m_suspendInitPause = m_pause->GetPauseType();
-    m_pause->SetPause(PAUSE_DIALOG);
+    m_suspend = m_pause->ActivatePause(PAUSE_DIALOG);
     m_engine->SetOverFront(false);  // over flat behind
     CreateShortcuts();
 
@@ -1494,8 +1507,6 @@ void CRobotMain::StartSuspend()
 
     m_suspendInitCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
-
-    m_suspend = true;
 }
 
 //! End of dialogue during the game
@@ -1503,7 +1514,8 @@ void CRobotMain::StopSuspend()
 {
     m_sound->MuteAll(false);
     ClearInterface();
-    m_pause->SetPause(m_suspendInitPause);
+    m_pause->DeactivatePause(m_suspend);
+    m_suspend = nullptr;
     m_engine->SetOverFront(true);  // over flat front
     CreateShortcuts();
 
@@ -1513,8 +1525,6 @@ void CRobotMain::StopSuspend()
     m_displayText->HideText(false);
 
     m_camera->SetType(m_suspendInitCamera);
-
-    m_suspend = false;
 }
 
 
@@ -1615,7 +1625,7 @@ void CRobotMain::StartDisplayVisit(EventType event)
     m_camera->StartVisit(m_displayText->GetVisitGoal(event),
                          m_displayText->GetVisitDist(event));
     m_displayText->SetVisit(event);
-    ChangePause(PAUSE_VISIT);
+    m_visitPause = m_pause->ActivatePause(PAUSE_VISIT);
 }
 
 //! Move the arrow to visit
@@ -1668,7 +1678,8 @@ void CRobotMain::StopDisplayVisit()
 
     m_camera->StopVisit();
     m_displayText->ClearVisit();
-    ChangePause(PAUSE_NONE);
+    m_pause->DeactivatePause(m_visitPause);
+    m_visitPause = nullptr;
     if (m_visitObject != nullptr)
     {
         SelectObject(m_visitObject, false);  // gives the command buttons
@@ -2006,7 +2017,7 @@ void CRobotMain::HiliteObject(Math::Point pos)
         if (obj == nullptr) return;
     }
 
-    if (m_suspend) return;
+    if (m_suspend != nullptr) return;
 
     if (obj == nullptr)
     {
@@ -2329,16 +2340,16 @@ bool CRobotMain::EventFrame(const Event &event)
     }
 
     m_time += event.rTime;
-    if (!m_movieLock && !m_pause->GetPause())
+    if (!m_movieLock && !m_pause->IsPause())
     {
         m_gameTime += event.rTime;
         m_gameTimeAbsolute += m_app->GetRealRelTime() / 1e9f;
     }
 
-    if (!m_movieLock && !m_pause->GetPause() && m_missionTimerStarted)
+    if (!m_movieLock && !m_pause->IsPause() && m_missionTimerStarted)
         m_missionTimer += event.rTime;
 
-    if (!m_pause->GetPause() && m_autosave && m_gameTimeAbsolute >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL)
+    if (!m_pause->IsPause() && m_autosave && m_gameTimeAbsolute >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL)
     {
         if (m_levelCategory == LevelCategory::Missions    ||
             m_levelCategory == LevelCategory::FreeGame    ||
@@ -2460,7 +2471,7 @@ bool CRobotMain::EventFrame(const Event &event)
     }
 
     // Moves edition indicator.
-    if (m_editLock || m_pause->GetPause())  // edition in progress?
+    if (m_editLock || m_pause->IsPause())  // edition in progress?
     {
         Ui::CControl* pc = m_interface->SearchControl(EVENT_OBJECT_EDITLOCK);
         if (pc != nullptr)
@@ -2567,12 +2578,12 @@ bool CRobotMain::EventFrame(const Event &event)
         {
             // NOTE: It's important to do this AFTER the first update event finished processing
             //       because otherwise all robot parts are misplaced
-            ChangePause(PAUSE_CODE_BATTLE_LOCK);
+            m_userPause = m_pause->ActivatePause(PAUSE_CODE_BATTLE_LOCK);
             m_sound->MuteAll(false); // Allow sound
             m_codeBattleInit = true; // Will start on resume
         }
 
-        if (!m_codeBattleStarted && !m_pause->GetPause())
+        if (!m_codeBattleStarted && m_userPause != nullptr)
         {
             m_codeBattleStarted = true;
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
@@ -5305,20 +5316,6 @@ void CRobotMain::UpdateChapterPassed()
 }
 
 
-//! Changes on the pause mode
-void CRobotMain::ChangePause(PauseType pause)
-{
-    if (pause != PAUSE_NONE)
-        m_pause->SetPause(pause);
-    else
-        m_pause->ClearPause();
-
-    m_sound->MuteAll(m_pause->GetPause());
-    CreateShortcuts();
-    if (m_pause->GetPause()) HiliteClear();
-}
-
-
 //! Changes game speed
 void CRobotMain::SetSpeed(float speed)
 {
@@ -5484,11 +5481,18 @@ void CRobotMain::StartMusic()
     }
 }
 
-//! Starts pause music
-void CRobotMain::StartPauseMusic(PauseType pause)
+void CRobotMain::UpdatePause(PauseType pause)
 {
-    switch(pause)
+    m_sound->MuteAll(pause != PAUSE_NONE);
+    CreateShortcuts();
+    if (pause != PAUSE_NONE) HiliteClear();
+
+    switch (pause)
     {
+        case PAUSE_NONE:
+            m_sound->StopPauseMusic();
+            break;
+
         case PAUSE_EDITOR:
             if (m_editorTrack != "")
                 m_sound->PlayPauseMusic(m_editorTrack, m_editorRepeat);

@@ -38,6 +38,8 @@
 #include "ui/controls/interface.h"
 #include "ui/controls/window.h"
 
+#include "sound/sound.h"
+
 
 
 const float LABO_DELAY = 20.0f; // duration of the analysis

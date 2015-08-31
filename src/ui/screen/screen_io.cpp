@@ -27,6 +27,8 @@
 
 #include "level/parser/parser.h"
 
+#include "sound/sound.h"
+
 #include "ui/screen/screen_level_list.h"
 
 #include "ui/controls/button.h"

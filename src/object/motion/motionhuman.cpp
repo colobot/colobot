@@ -37,6 +37,8 @@
 
 #include "physics/physics.h"
 
+#include "sound/sound.h"
+
 
 #include <stdio.h>
 

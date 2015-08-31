@@ -26,6 +26,8 @@
 
 #include "graphics/engine/camera.h"
 
+#include "sound/sound.h"
+
 #include "ui/controls/button.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"

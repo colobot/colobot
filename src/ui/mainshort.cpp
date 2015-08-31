@@ -107,7 +107,7 @@ bool CMainShort::CreateShortcuts()
           m_engine->GetPause()) )  // hangs during edition?
     {
         m_interface->CreateShortcut(pos, dim, 128+6, EVENT_OBJECT_EDITLOCK);
-        if(!m_engine->GetPause() || CPauseManager::GetInstancePointer()->GetPauseType() == PAUSE_DIALOG)
+        if (!m_engine->GetPause())
             return true;
     }
     if (m_main->GetFreePhoto() && m_main->GetSelect() == nullptr)

@@ -40,6 +40,8 @@
 #include "object/interface/destroyable_object.h"
 #include "object/interface/transportable_object.h"
 
+#include "sound/sound.h"
+
 
 // Graphics module namespace
 namespace Gfx

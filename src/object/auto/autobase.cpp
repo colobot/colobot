@@ -41,6 +41,8 @@
 #include "ui/controls/interface.h"
 #include "ui/controls/window.h"
 
+#include "sound/sound.h"
+
 
 
 const float BASE_LAND_TIME          = 7.5f;     // hard landing

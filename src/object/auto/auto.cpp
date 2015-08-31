@@ -36,6 +36,8 @@
 #include "ui/controls/interface.h"
 #include "ui/controls/window.h"
 
+#include "sound/sound.h"
+
 
 // Object's constructor.
 

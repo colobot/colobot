@@ -37,6 +37,8 @@
 #include "ui/controls/interface.h"
 #include "ui/controls/window.h"
 
+#include "sound/sound.h"
+
 
 
 const float DERRICK_DELAY   = 10.0f;    // duration of the extraction

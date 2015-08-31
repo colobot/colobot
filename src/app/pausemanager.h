@@ -25,9 +25,9 @@
 
 #include "common/singleton.h"
 
-#include "sound/sound.h"
-
 #include <string>
+#include <vector>
+#include <memory>
 
 
 enum PauseType
@@ -44,23 +44,39 @@ enum PauseType
     PAUSE_CODE_BATTLE_LOCK
 };
 
+struct ActivePause
+{
+private:
+    friend class CPauseManager;
+
+    explicit ActivePause(PauseType type)
+    : type(type)
+    {}
+
+    ActivePause(const ActivePause&) = delete;
+    ActivePause& operator=(const ActivePause&) = delete;
+
+    PauseType type;
+};
+
 class CPauseManager : public CSingleton<CPauseManager>
 {
 public:
     CPauseManager();
     ~CPauseManager();
 
-    void SetPause(PauseType pause);
-    void ClearPause();
-    bool GetPause();
-    bool GetPause(PauseType pause);
-    PauseType GetPauseType();
+    ActivePause* ActivatePause(PauseType type);
+    void DeactivatePause(ActivePause* pause);
+
+    void FlushPause();
+
+    bool IsPause();
 
 private:
-    std::string GetPauseName(PauseType pause);
+    void UpdatePause();
+
+    static std::string GetPauseName(PauseType pause);
 
 private:
-    CSoundInterface* m_sound;
-
-    PauseType m_pause;
+    std::vector<std::unique_ptr<ActivePause>> m_activePause;
 };

@@ -514,7 +514,7 @@ void CEngine::WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data)
 
 bool CEngine::GetPause()
 {
-    return m_pause->GetPause();
+    return m_pause->IsPause();
 }
 
 void CEngine::SetShowStats(bool show)

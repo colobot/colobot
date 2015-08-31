@@ -19,8 +19,6 @@
 
 #pragma once
 
-#include "app/pausemanager.h"
-
 #include "common/event.h"
 
 #include "graphics/engine/camera.h"
@@ -30,6 +28,8 @@
 class CRobotMain;
 class CObject;
 class CEventQueue;
+class CPauseManager;
+struct ActivePause;
 
 struct Event;
 
@@ -92,7 +92,7 @@ protected:
     Math::Point     m_infoFinalDim;
     int         m_lightSuppl;
     bool        m_bEditLock;
-    PauseType   m_initPause;
+    ActivePause* m_satcomPause = nullptr;
     bool        m_bSoluce;
     CObject*    m_toto;
 };
