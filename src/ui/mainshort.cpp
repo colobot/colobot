@@ -113,9 +113,9 @@ bool CMainShort::CreateShortcuts()
     {
         return true;
     }
-    CPauseManager* pause = CPauseManager::GetInstancePointer();
+    PauseType pauseType = m_engine->GetPauseManager()->GetPauseType();
 
-    if (pause->GetPauseType() == PAUSE_SATCOM || pause->GetPauseType() == PAUSE_EDITOR || pause->GetPauseType() == PAUSE_DIALOG)
+    if (pauseType == PAUSE_SATCOM || pauseType == PAUSE_EDITOR || pauseType == PAUSE_DIALOG)
         return true;
 
     // Create new shortcuts

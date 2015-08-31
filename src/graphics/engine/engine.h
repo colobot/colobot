@@ -646,6 +646,8 @@ public:
     CPlanet*        GetPlanet();
     //! Returns the fog manager
     CCloud*         GetCloud();
+    //! Returns the pause manager
+    CPauseManager*  GetPauseManager();
 
     //! Sets the terrain object
     void            SetTerrain(CTerrain* terrain);

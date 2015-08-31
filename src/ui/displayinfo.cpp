@@ -69,7 +69,7 @@ CDisplayInfo::CDisplayInfo()
     m_main      = CRobotMain::GetInstancePointer();
     m_interface = m_main->GetInterface();
     m_camera    = m_main->GetCamera();
-    m_pause     = CPauseManager::GetInstancePointer();
+    m_pause     = m_engine->GetPauseManager();
 
     m_bInfoMaximized = true;
     m_bInfoMinimized = false;

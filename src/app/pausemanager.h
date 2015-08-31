@@ -23,8 +23,6 @@
  */
 #pragma once
 
-#include "common/singleton.h"
-
 #include <string>
 #include <vector>
 #include <memory>
@@ -59,7 +57,7 @@ private:
     PauseType type;
 };
 
-class CPauseManager : public CSingleton<CPauseManager>
+class CPauseManager
 {
 public:
     CPauseManager();

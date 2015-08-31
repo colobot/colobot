@@ -135,7 +135,7 @@ CRobotMain::CRobotMain()
     m_cloud      = m_engine->GetCloud();
     m_lightning  = m_engine->GetLightning();
     m_planet     = m_engine->GetPlanet();
-    m_pause      = CPauseManager::GetInstancePointer();
+    m_pause      = m_engine->GetPauseManager();
     m_input      = CInput::GetInstancePointer();
 
     m_modelManager = MakeUnique<Gfx::CModelManager>();

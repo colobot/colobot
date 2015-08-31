@@ -270,6 +270,11 @@ CCloud* CEngine::GetCloud()
     return m_cloud.get();
 }
 
+CPauseManager* CEngine::GetPauseManager()
+{
+    return m_pause.get();
+}
+
 void CEngine::SetTerrain(CTerrain* terrain)
 {
     m_terrain = terrain;

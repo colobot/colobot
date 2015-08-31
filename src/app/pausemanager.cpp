@@ -28,9 +28,6 @@
 #include <algorithm>
 
 
-template<> CPauseManager* CSingleton<CPauseManager>::m_instance = nullptr;
-
-
 CPauseManager::CPauseManager()
 {}
 
