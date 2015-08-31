@@ -2554,6 +2554,9 @@ void CEngine::FlushTextureCache()
 {
     m_device->DestroyAllTextures();
 
+    m_backgroundTex.SetInvalid();
+    m_foregroundTex.SetInvalid();
+
     m_texNameMap.clear();
     m_revTexNameMap.clear();
     m_texBlacklist.clear();
