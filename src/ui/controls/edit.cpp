@@ -2722,7 +2722,7 @@ void CEdit::InsertOne(char character)
 
     if ( static_cast<unsigned int>(m_cursor1) < m_format.size() )
     {
-        m_format[m_cursor1] = 0;
+        m_format[m_cursor1] = m_fontType;
     }
 
     m_cursor1++;
