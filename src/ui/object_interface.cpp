@@ -233,7 +233,7 @@ bool CObjectInterface::EventProcess(const Event &event)
         {
             if ( !m_programmable->IsProgram() )
             {
-                if(m_selScript < m_programStorage->GetProgramCount())
+                if (m_selScript < m_programStorage->GetProgramCount())
                 {
                     m_programmable->RunProgram(m_programStorage->GetProgram(m_selScript));
                 }
@@ -246,7 +246,7 @@ bool CObjectInterface::EventProcess(const Event &event)
         if ( action == EVENT_OBJECT_PROGSTART )
         {
             m_main->SaveOneScript(m_object);
-            if(m_selScript < m_programStorage->GetProgramCount())
+            if (m_selScript < m_programStorage->GetProgramCount())
             {
                 m_programmable->RunProgram(m_programStorage->GetProgram(m_selScript));
             }
@@ -1617,6 +1617,13 @@ void CObjectInterface::UpdateInterface()
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == nullptr )  return;
+
+    // This is needed because currently started program is loaded by CProgrammableObject
+    // TODO: Isn't there a better way to do it?
+    if (m_programmable->IsProgram())
+    {
+        SetSelScript(m_programStorage->GetProgramIndex(m_programmable->GetCurrentProgram()));
+    }
 
     type = m_object->GetType();
 
