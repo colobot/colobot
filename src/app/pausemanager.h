@@ -71,6 +71,7 @@ public:
     void FlushPause();
 
     bool IsPause();
+    PauseType GetPauseType();
 
 private:
     void UpdatePause();

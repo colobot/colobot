@@ -69,11 +69,16 @@ bool CPauseManager::IsPause()
     return m_activePause.size() > 0;
 }
 
+PauseType CPauseManager::GetPauseType()
+{
+    if (m_activePause.size() > 0)
+        return m_activePause[m_activePause.size()-1]->type;
+    return PAUSE_NONE;
+}
+
 void CPauseManager::UpdatePause()
 {
-    PauseType type = PAUSE_NONE;
-    if (m_activePause.size() > 0)
-        type = m_activePause[m_activePause.size()-1]->type;
+    PauseType type = GetPauseType();
 
     if (type != PAUSE_NONE)
     {

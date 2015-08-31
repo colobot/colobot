@@ -21,6 +21,7 @@
 #include "ui/mainshort.h"
 
 #include "app/app.h"
+#include "app/pausemanager.h"
 
 #include "common/logger.h"
 
@@ -107,13 +108,15 @@ bool CMainShort::CreateShortcuts()
           m_engine->GetPause()) )  // hangs during edition?
     {
         m_interface->CreateShortcut(pos, dim, 128+6, EVENT_OBJECT_EDITLOCK);
-        if (!m_engine->GetPause())
-            return true;
     }
     if (m_main->GetFreePhoto() && m_main->GetSelect() == nullptr)
     {
         return true;
     }
+    CPauseManager* pause = CPauseManager::GetInstancePointer();
+
+    if (pause->GetPauseType() == PAUSE_SATCOM || pause->GetPauseType() == PAUSE_EDITOR || pause->GetPauseType() == PAUSE_DIALOG)
+        return true;
 
     // Create new shortcuts
 
