@@ -5541,6 +5541,11 @@ const std::vector<std::string>& CRobotMain::GetCustomLevelList()
     return m_ui->GetCustomLevelList();
 }
 
+bool CRobotMain::IsLoading()
+{
+    return m_ui->GetLoadingScreen()->IsVisible();
+}
+
 void CRobotMain::StartMissionTimer()
 {
     if (m_missionTimerEnabled && !m_missionTimerStarted)

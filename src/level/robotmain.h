@@ -302,6 +302,9 @@ public:
     std::string GetCustomLevelName(int id);
     const std::vector<std::string>& GetCustomLevelList();
 
+    //! Returns true if the game is on the loading screen
+    bool        IsLoading();
+
     void        StartMissionTimer();
 
     void        SetAutosave(bool enable);

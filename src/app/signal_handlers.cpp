@@ -63,7 +63,8 @@ void CSignalHandlers::SignalHandler(int sig)
 #include <cstdlib>
 #include <memory>
 #include <cxxabi.h>
-std::string demangle(const char* name) {
+std::string demangle(const char* name)
+{
     int status;
     std::unique_ptr<char[], void(*)(void*)> result {
         abi::__cxa_demangle(name, nullptr, nullptr, &status),
@@ -150,7 +151,7 @@ void CSignalHandlers::ReportError(const std::string& errorMessage)
         robotMain = CRobotMain::GetInstancePointer();
         msg << "The game was in phase " << PhaseToString(robotMain->GetPhase()) << " (ID=" << robotMain->GetPhase() << ")" << std::endl;
         msg << "Last started level was: category=" << GetLevelCategoryDir(robotMain->GetLevelCategory()) << " chap=" << robotMain->GetLevelChap() << " rank=" << robotMain->GetLevelRank() << std::endl;
-        canSave = (robotMain->GetPhase() == PHASE_SIMUL);
+        canSave = (robotMain->GetPhase() == PHASE_SIMUL) && !robotMain->IsLoading();
     }
     msg << "==============================" << std::endl;
     msg << std::endl;
