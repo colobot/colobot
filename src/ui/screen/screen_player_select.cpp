@@ -468,6 +468,11 @@ void CScreenPlayerSelect::NameDelete()
     }
 
     pl->SetSelect(-1);
+    CEdit* pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
+    if (pe != nullptr)
+    {
+        pe->SetText("");
+    }
 
     ReadNameList();
     UpdateNameList();
