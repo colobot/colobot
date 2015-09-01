@@ -268,7 +268,6 @@ void InitializeRestext()
 
     stringsEvent[EVENT_INTERFACE_NEDIT]     = TR("\\New player name");
     stringsEvent[EVENT_INTERFACE_NOK]       = TR("OK\\Choose the selected player");
-    stringsEvent[EVENT_INTERFACE_NCANCEL]   = TR("Cancel\\Keep current player name");
     stringsEvent[EVENT_INTERFACE_NDELETE]   = TR("Delete player\\Deletes the player from the list");
     stringsEvent[EVENT_INTERFACE_NLABEL]    = TR("Player name");
 

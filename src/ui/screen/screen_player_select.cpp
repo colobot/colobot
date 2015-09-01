@@ -138,13 +138,6 @@ void CScreenPlayerSelect::CreateInterface()
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_NDELETE);
     pb->SetState(STATE_SHADOW);
 
-    pos.x = 380.0f/640.0f;
-    pos.y = 100.0f/480.0f;
-    ddim.x =100.0f/640.0f;
-    ddim.y = 32.0f/480.0f;
-    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_NCANCEL);
-    pb->SetState(STATE_SHADOW);
-
     SetBackground("textures/interface/interface.png");
     CreateVersionDisplay();
 
@@ -156,7 +149,6 @@ void CScreenPlayerSelect::CreateInterface()
 bool CScreenPlayerSelect::EventProcess(const Event &event)
 {
     CWindow* pw;
-    CButton* pb;
     CList*   pl;
     std::string name;
     char* gamer;
@@ -166,20 +158,9 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
         case EVENT_KEY_DOWN:
         {
             auto data = event.GetData<KeyEventData>();
-            if (data->key == KEY(RETURN))
+            if (data->key == KEY(RETURN) || data->key == KEY(ESCAPE))
             {
                 NameSelect();
-            }
-            if (data->key == KEY(ESCAPE))
-            {
-                pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-                if ( pw == nullptr )  break;
-                pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NCANCEL));
-                if ( pb == nullptr )  break;
-                if ( pb->TestState(STATE_ENABLE) )
-                {
-                    m_main->ChangePhase(PHASE_MAIN_MENU);
-                }
             }
             break;
         }
@@ -200,10 +181,6 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
         case EVENT_INTERFACE_PERSO:
             NameSelect();
             m_main->ChangePhase(PHASE_APPERANCE);
-            break;
-
-        case EVENT_INTERFACE_NCANCEL:
-            m_main->ChangePhase(PHASE_MAIN_MENU);
             break;
 
         case EVENT_INTERFACE_NDELETE:
@@ -260,16 +237,9 @@ void CScreenPlayerSelect::UpdateNameControl()
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
     if ( pe == nullptr )  return;
 
-    std::string gamer = m_main->GetPlayerProfile()->GetName();
     total = pl->GetTotal();
     sel   = pl->GetSelect();
     pe->GetText(name, 100);
-
-    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NCANCEL));
-    if ( pb != nullptr )
-    {
-        pb->SetState(STATE_ENABLE, !gamer.empty());
-    }
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NDELETE));
     if ( pb != nullptr )
