@@ -131,7 +131,10 @@ void CScreenLevelList::CreateInterface()
     pli->SetState(STATE_SHADOW);
     m_chap[m_category] = m_main->GetPlayerProfile()->GetSelectedChap(m_category)-1;
     UpdateSceneChap(m_chap[m_category]);
-    if ( m_category != LevelCategory::CustomLevels )  pli->SetState(STATE_EXTEND);
+    if ( m_category != LevelCategory::FreeGame && m_category != LevelCategory::CustomLevels ) // Don't show completion marks in free game and userlevels
+    {
+        pli->SetState(STATE_EXTEND);
+    }
 
     // Displays a list of missions:
     pos.x = ox+sx*9.5f;
@@ -154,7 +157,10 @@ void CScreenLevelList::CreateInterface()
     pli->SetState(STATE_SHADOW);
     m_sel[m_category] = m_main->GetPlayerProfile()->GetSelectedRank(m_category)-1;
     UpdateSceneList(m_chap[m_category], m_sel[m_category]);
-    if ( m_category != LevelCategory::CustomLevels )  pli->SetState(STATE_EXTEND);
+    if ( m_category != LevelCategory::FreeGame && m_category != LevelCategory::CustomLevels ) // Don't show completion marks in free game and userlevels
+    {
+        pli->SetState(STATE_EXTEND);
+    }
     pos = pli->GetPos();
     ddim = pli->GetDim();
 
