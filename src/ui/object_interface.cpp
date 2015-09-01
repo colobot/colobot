@@ -1777,9 +1777,9 @@ void CObjectInterface::UpdateInterface()
          type == OBJECT_CONTROLLER)  // vehicle?
     {
         bRun = false;
-        if ( m_selScript < m_programStorage->GetProgramCount() )
+        if (m_selScript >= 0 && m_selScript < m_programStorage->GetProgramCount())
         {
-            if(m_programStorage->GetProgram(m_selScript)->runnable)
+            if (m_programStorage->GetProgram(m_selScript)->runnable)
             {
                 m_programStorage->GetProgram(m_selScript)->script->GetTitle(title);
                 if ( title[0] != 0 )
