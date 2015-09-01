@@ -172,11 +172,11 @@ void CSignalHandlers::ReportError(const std::string& errorMessage)
         SystemDialogResult result = m_systemUtils->SystemDialog(SDT_YES_NO, "Try to save?", msg.str());
         if (result == SDR_YES)
         {
+            triedSaving = true;
             CResourceManager::CreateDirectory("crashsave");
             robotMain->IOWriteScene("crashsave/data.sav", "crashsave/cbot.run", "crashsave/screen.png", "Backup at the moment of a crash", true);
             m_systemUtils->SystemDialog(SDT_INFO, "Try to save?", "Saving finished.\nPlease restart the game now");
         }
-        triedSaving = true;
     }
 
     exit(1);
