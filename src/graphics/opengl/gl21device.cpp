@@ -884,26 +884,16 @@ void CGL21Device::SetTextureEnabled(int index, bool enabled)
     if (same)
         return; // nothing to do
 
-    glUniform1i(uni_TextureEnabled[index], enabled ? 1 : 0);
-
     UpdateTextureStatus();
 }
 
 void CGL21Device::UpdateTextureStatus()
 {
-    bool enabled = m_texturesEnabled[0] && (m_currentTextures[0].id != 0);
-    glUniform1i(uni_TextureEnabled[0], enabled ? 1 : 0);
-
-    /*
-    bool enabled = m_texturesEnabled[0] && m_currentTextures[0].id != 0;
-    glUniform1i(uni_PrimaryTextureEnabled, enabled ? 1 : 0);
-
-    enabled = m_texturesEnabled[1] && m_currentTextures[1].id != 0;
-    glUniform1i(uni_SecondaryTextureEnabled, enabled ? 1 : 0);
-
-    enabled = m_texturesEnabled[2] && m_currentTextures[2].id != 0;
-    glUniform1i(uni_ShadowTextureEnabled, enabled ? 1 : 0);
-    */
+    for (int i = 0; i < 3; i++)
+    {
+        bool enabled = m_texturesEnabled[i] && (m_currentTextures[i].id != 0);
+        glUniform1i(uni_TextureEnabled[i], enabled ? 1 : 0);
+    }
 }
 
 inline void CGL21Device::BindVBO(GLuint vbo)
