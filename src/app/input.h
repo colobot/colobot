@@ -154,6 +154,8 @@ private:
     //! Motion vector set by joystick axes
     Math::Vector    m_joyMotion;
 
+    //! Camera controls on the numpad
+    Math::Vector    m_cameraKeyMotion;
 
     //! Bindings for user inputs
     InputBinding    m_inputBindings[INPUT_SLOT_MAX];

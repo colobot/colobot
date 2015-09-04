@@ -132,6 +132,13 @@ void CInput::EventProcess(Event& event)
         if (data->slot == INPUT_SLOT_RIGHT) m_keyMotion.x =  1.0f;
         if (data->slot == INPUT_SLOT_GUP  ) m_keyMotion.z =  1.0f;
         if (data->slot == INPUT_SLOT_GDOWN) m_keyMotion.z = -1.0f;
+
+        if (data->slot == INPUT_SLOT_CAMERA_UP  ) m_cameraKeyMotion.z =  1.0f;
+        if (data->slot == INPUT_SLOT_CAMERA_DOWN) m_cameraKeyMotion.z = -1.0f;
+        if (data->key  == KEY(KP4)              ) m_cameraKeyMotion.x = -1.0f;
+        if (data->key  == KEY(KP6)              ) m_cameraKeyMotion.x =  1.0f;
+        if (data->key  == KEY(KP8)              ) m_cameraKeyMotion.y =  1.0f;
+        if (data->key  == KEY(KP2)              ) m_cameraKeyMotion.y = -1.0f;
     }
     else if (event.type == EVENT_KEY_UP)
     {
@@ -143,6 +150,13 @@ void CInput::EventProcess(Event& event)
         if (data->slot == INPUT_SLOT_RIGHT) m_keyMotion.x = 0.0f;
         if (data->slot == INPUT_SLOT_GUP  ) m_keyMotion.z = 0.0f;
         if (data->slot == INPUT_SLOT_GDOWN) m_keyMotion.z = 0.0f;
+
+        if (data->slot == INPUT_SLOT_CAMERA_UP  ) m_cameraKeyMotion.z = 0.0f;
+        if (data->slot == INPUT_SLOT_CAMERA_DOWN) m_cameraKeyMotion.z = 0.0f;
+        if (data->key  == KEY(KP4)              ) m_cameraKeyMotion.x = 0.0f;
+        if (data->key  == KEY(KP6)              ) m_cameraKeyMotion.x = 0.0f;
+        if (data->key  == KEY(KP8)              ) m_cameraKeyMotion.y = 0.0f;
+        if (data->key  == KEY(KP2)              ) m_cameraKeyMotion.y = 0.0f;
     }
     else if (event.type == EVENT_JOY_AXIS)
     {
@@ -171,6 +185,7 @@ void CInput::EventProcess(Event& event)
     }
 
     event.motionInput = Math::Clamp(m_joyMotion + m_keyMotion, Math::Vector(-1.0f, -1.0f, -1.0f), Math::Vector(1.0f, 1.0f, 1.0f));
+    event.cameraInput = m_cameraKeyMotion;
 }
 
 void CInput::MouseMove(Math::IntPoint pos)
@@ -204,6 +219,7 @@ void CInput::ResetKeyStates()
     m_kmodState = 0;
     m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
     m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_cameraKeyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
     for(int i=0; i<INPUT_SLOT_MAX; i++)
         m_keyPresses[i] = false;
 }

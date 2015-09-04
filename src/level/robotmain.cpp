@@ -1204,6 +1204,26 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
+        int camtype;
+        if (sscanf(cmd, "camtype %d", &camtype) > 0)
+        {
+            m_camera->SetType(static_cast<Gfx::CameraType>(camtype));
+            return;
+        }
+
+        float camspeed;
+        if (sscanf(cmd, "camspeed %f", &camspeed) > 0)
+        {
+            m_camera->SetCameraSpeed(camspeed);
+            return;
+        }
+
+        if (strcmp(cmd, "freecam") == 0)
+        {
+            m_camera->SetType(Gfx::CAM_TYPE_FREE);
+            return;
+        }
+
         if (strcmp(cmd, "noclip") == 0)
         {
             CObject* object = GetSelect();

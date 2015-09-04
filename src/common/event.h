@@ -720,6 +720,7 @@ struct Event
         : type(std::move(other.type)),
           rTime(std::move(other.rTime)),
           motionInput(std::move(other.motionInput)),
+          cameraInput(std::move(other.cameraInput)),
           kmodState(std::move(other.kmodState)),
           mousePos(std::move(other.mousePos)),
           mouseButtonsState(std::move(other.mouseButtonsState)),
@@ -732,6 +733,7 @@ struct Event
         type = std::move(other.type);
         rTime = std::move(other.rTime);
         motionInput = std::move(other.motionInput);
+        cameraInput = std::move(other.cameraInput);
         kmodState = std::move(other.kmodState);
         mousePos = std::move(other.mousePos);
         mouseButtonsState = std::move(other.mouseButtonsState);
@@ -762,6 +764,7 @@ struct Event
         clone.type = type;
         clone.rTime = rTime;
         clone.motionInput = motionInput;
+        clone.cameraInput = cameraInput;
         clone.kmodState = kmodState;
         clone.mousePos = mousePos;
         clone.mouseButtonsState = mouseButtonsState;
@@ -786,6 +789,10 @@ struct Event
     //! Motion vector set by keyboard or joystick (managed by CInput)
     //! Scope: all system events
     Math::Vector motionInput;
+
+    //! Motion vector set by numeric keyboard (managed by CInput)
+    //! Scope: all system events
+    Math::Vector cameraInput;
 
     //! Current state of keyboard modifier keys: bitmask made of KEY_MOD(...) macro values (from common/key.h)
     //! Scope: all system events

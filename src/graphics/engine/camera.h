@@ -218,6 +218,8 @@ public:
     //! Returns the default sprite to use for the mouse
     EngineMouseType GetMouseDef(Math::Point pos);
 
+    void        SetCameraSpeed(float speed);
+
 protected:
     //! Changes the camera according to the mouse moved
     bool        EventMouseMove(const Event &event);
