@@ -1224,6 +1224,12 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
+        if (strcmp(cmd, "invui") == 0)
+        {
+            m_engine->SetRenderInterface(!m_engine->GetRenderInterface());
+            return;
+        }
+
         if (strcmp(cmd, "noclip") == 0)
         {
             CObject* object = GetSelect();

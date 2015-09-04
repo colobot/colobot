@@ -107,6 +107,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_waterAddColor   = Color(0.0f, 0.0f, 0.0f, 0.0f);
 
     m_render            = true;
+    m_renderInterface   = true;
     m_screenshotMode    = false;
     m_dirty             = true;
     m_fog               = true;
@@ -535,6 +536,16 @@ bool CEngine::GetShowStats()
 void CEngine::SetRenderEnable(bool enable)
 {
     m_render = enable;
+}
+
+void CEngine::SetRenderInterface(bool enable)
+{
+    m_renderInterface = enable;
+}
+
+bool CEngine::GetRenderInterface()
+{
+    return m_renderInterface;
 }
 
 void CEngine::SetScreenshotMode(bool screenshotMode)
@@ -3144,9 +3155,12 @@ void CEngine::Render()
 
     UseMSAA(false);
 
-    m_app->StartPerformanceCounter(PCNT_RENDER_INTERFACE);
-    DrawInterface();
-    m_app->StopPerformanceCounter(PCNT_RENDER_INTERFACE);
+    if (m_renderInterface)
+    {
+        m_app->StartPerformanceCounter(PCNT_RENDER_INTERFACE);
+        DrawInterface();
+        m_app->StopPerformanceCounter(PCNT_RENDER_INTERFACE);
+    }
 
     // End the scene
     m_device->EndScene();

@@ -689,6 +689,9 @@ public:
     //! Enables/disables rendering
     void            SetRenderEnable(bool enable);
 
+    void            SetRenderInterface(bool enable);
+    bool            GetRenderInterface();
+
     //! Management of "screenshot mode" (disables interface particle rendering)
     //@{
     void            SetScreenshotMode(bool screenshotMode);
@@ -1297,6 +1300,8 @@ protected:
     bool            m_showStats;
     //! Rendering enabled?
     bool            m_render;
+    //! Render / hide the UI?
+    bool            m_renderInterface;
 
     //! Screenshot mode?
     bool            m_screenshotMode;
