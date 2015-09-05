@@ -1261,6 +1261,16 @@ bool CCamera::EventFrameFree(const Event &event)
             m_heightEye -= event.rTime * factor * m_speed;
     }
 
+
+    if ( m_input->GetKeyState(INPUT_SLOT_CAMERA_UP) )
+    {
+        m_heightLookat += event.rTime * factor * m_speed;
+    }
+    if ( m_input->GetKeyState(INPUT_SLOT_CAMERA_DOWN) )
+    {
+        m_heightLookat -= event.rTime * factor * m_speed;
+    }
+
     m_terrain->AdjustToBounds(m_eyePt, 10.0f);
 
     if (m_terrain->AdjustToFloor(m_eyePt, true))
