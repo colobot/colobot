@@ -2413,7 +2413,7 @@ bool CRobotMain::EventFrame(const Event &event)
             m_levelCategory == LevelCategory::FreeGame    ||
             m_levelCategory == LevelCategory::CustomLevels )
         {
-            if (!IOIsBusy())
+            if (!IOIsBusy() && m_missionType != MISSION_CODE_BATTLE)
             {
                 m_autosaveLast = m_gameTimeAbsolute;
                 Autosave();
