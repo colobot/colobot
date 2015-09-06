@@ -2637,7 +2637,6 @@ bool CRobotMain::EventFrame(const Event &event)
             // NOTE: It's important to do this AFTER the first update event finished processing
             //       because otherwise all robot parts are misplaced
             m_userPause = m_pause->ActivatePause(PAUSE_CODE_BATTLE_LOCK);
-            m_sound->MuteAll(false); // Allow sound
             m_codeBattleInit = true; // Will start on resume
         }
 
@@ -2649,6 +2648,7 @@ bool CRobotMain::EventFrame(const Event &event)
             // Deselect object, but keep camera attached to it
             CObject* obj = DeselectAll();
             SelectObject(obj, false); // this uses code battle selection mode already
+            m_camera->SetFixDirectionV(-0.25f*Math::PI);
 
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
         }
@@ -3597,7 +3597,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (line->GetParam("fadeIn")->AsBool(false))
                     m_camera->StartOver(Gfx::CAM_OVER_EFFECT_FADEIN_WHITE, Math::Vector(0.0f, 0.0f, 0.0f), 1.0f);
 
-                m_camera->SetFixDirection(line->GetParam("fixDirection")->AsFloat(0.25f)*Math::PI);
+                m_camera->SetFixDirectionH(line->GetParam("fixDirection")->AsFloat(0.25f)*Math::PI);
                 continue;
             }
 

@@ -160,8 +160,10 @@ public:
     float       GetDist();
 
     //! Manage angle mode CAM_TYPE_FIX
-    void        SetFixDirection(float angle);
-    float       GetFixDirection();
+    void        SetFixDirectionH(float angle);
+    float       GetFixDirectionH();
+    void        SetFixDirectionV(float angle);
+    float       GetFixDirectionV();
 
     //! Managing the triggering mode of the camera panning
     void        SetRemotePan(float value);

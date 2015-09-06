@@ -419,14 +419,24 @@ float CCamera::GetDist()
     return m_fixDist;
 }
 
-void CCamera::SetFixDirection(float angle)
+void CCamera::SetFixDirectionH(float angle)
 {
     m_fixDirectionH = angle;
 }
 
-float CCamera::GetFixDirection()
+float CCamera::GetFixDirectionH()
 {
     return m_fixDirectionH;
+}
+
+void CCamera::SetFixDirectionV(float angle)
+{
+    m_fixDirectionV = angle;
+}
+
+float CCamera::GetFixDirectionV()
+{
+    return m_fixDirectionV;
 }
 
 void CCamera::SetRemotePan(float value)
@@ -1531,6 +1541,7 @@ bool CCamera::EventFrameFix(const Event &event)
 
     // Up/Down
     m_fixDirectionV -= event.cameraInput.y * event.rTime * 0.7f * m_speed;
+    m_fixDirectionV = Math::Min(Math::Max(m_fixDirectionV, -0.5*Math::PI), 0.25*Math::PI);
 
     if ((m_mouseDirH != 0) || (m_mouseDirV != 0))
         AbortCentering();  // special stops framing
