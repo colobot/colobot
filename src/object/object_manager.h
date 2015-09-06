@@ -72,7 +72,12 @@ private:
     CObjectIteratorProxy(CObjectMapCIt currentIt, CObjectMapCIt endIt)
      : m_currentIt(currentIt)
      , m_endIt(endIt)
-    {}
+    {
+        while (m_currentIt != m_endIt && m_currentIt->second == nullptr)
+        {
+            ++m_currentIt;
+        }
+    }
 
 public:
     CObject* operator*()
