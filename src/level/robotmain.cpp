@@ -1818,14 +1818,32 @@ bool CRobotMain::SelectObject(CObject* obj, bool displayError)
 
     if (m_movieLock || m_editLock) return false;
     if (m_movie->IsExist()) return false;
-    if (obj == nullptr || !IsSelectable(obj)) return false;
+    if (obj != nullptr && !IsSelectable(obj)) return false;
 
     CObject* prev = DeselectAll();
 
-    if (prev != nullptr && prev != obj)
-       PushToSelectionHistory(prev);
+    if (m_missionType == MISSION_CODE_BATTLE && m_codeBattleStarted)
+    {
+        // During code battles, only change camera
+        if (obj != nullptr)
+        {
+            m_camera->SetControllingObject(obj);
+            m_camera->SetType(Gfx::CAM_TYPE_PLANE);
+        }
+        else
+        {
+            m_camera->SetType(Gfx::CAM_TYPE_FREE);
+        }
+    }
+    else
+    {
+        if (obj == nullptr) return false;
 
-    SelectOneObject(obj, displayError);
+        if (prev != nullptr && prev != obj)
+           PushToSelectionHistory(prev);
+
+        SelectOneObject(obj, displayError);
+    }
     m_short->UpdateShortcuts();
     return true;
 }
@@ -2627,6 +2645,11 @@ bool CRobotMain::EventFrame(const Event &event)
         {
             m_codeBattleStarted = true;
             DestroyCodeBattleInterface();
+
+            // Deselect object, but keep camera attached to it
+            CObject* obj = DeselectAll();
+            SelectObject(obj, false); // this uses code battle selection mode already
+
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
         }
     }
