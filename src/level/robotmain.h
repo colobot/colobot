@@ -198,7 +198,6 @@ public:
     bool        SelectObject(CObject* pObj, bool displayError=true);
     CObject*    GetSelectObject();
     CObject*    DeselectAll();
-    bool        DeleteObject();
 
     void        ResetObject();
     void        UpdateAudio(bool frame);
@@ -413,6 +412,7 @@ protected:
 
     int         AutosaveRotate(bool freeOne);
     void        Autosave();
+    bool        DestroySelectedObject();
     void        PushToSelectionHistory(CObject* obj);
     CObject*    PopFromSelectionHistory();
 

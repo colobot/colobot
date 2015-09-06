@@ -991,7 +991,7 @@ bool CRobotMain::ProcessEvent(Event &event)
 
             case EVENT_OBJECT_DELETE:
                 m_ui->GetDialog()->StartQuestion(RT_DIALOG_DELOBJ, true, false, false, [&]() {
-                    DeleteObject();
+                    DestroySelectedObject();
                 });
                 break;
 
@@ -1983,7 +1983,7 @@ bool CRobotMain::IsSelectable(CObject* obj)
 
 
 //! Deletes the selected object
-bool CRobotMain::DeleteObject()
+bool CRobotMain::DestroySelectedObject()
 {
     CObject* obj = GetSelect();
     if (obj == nullptr) return false;
