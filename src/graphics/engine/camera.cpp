@@ -1521,12 +1521,16 @@ bool CCamera::EventFrameFix(const Event &event)
         if (m_fixDist > 200.0f) m_fixDist = 200.0f;
     }
 
+    // Left/Right
     if (m_cameraScroll)
     {
-        // Left/Right
         m_fixDirectionH += m_mouseDirH * event.rTime * 1.0f * m_speed;
         m_fixDirectionH = Math::NormAngle(m_fixDirectionH);
     }
+    m_fixDirectionH += event.cameraInput.x * event.rTime * 0.7f * m_speed;
+
+    // Up/Down
+    m_fixDirectionV -= event.cameraInput.y * event.rTime * 0.7f * m_speed;
 
     if ((m_mouseDirH != 0) || (m_mouseDirV != 0))
         AbortCentering();  // special stops framing
