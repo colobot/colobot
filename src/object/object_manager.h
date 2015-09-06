@@ -66,13 +66,21 @@ using CObjectMapCIt = std::map<int, std::unique_ptr<CObject>>::const_iterator;
 
 class CObjectIteratorProxy
 {
+private:
+    friend class CObjectContainerProxy;
+
+    CObjectIteratorProxy(CObjectMapCIt currentIt, CObjectMapCIt endIt)
+     : m_currentIt(currentIt)
+     , m_endIt(endIt)
+    {}
+
 public:
-    inline CObject* operator*()
+    CObject* operator*()
     {
         return m_currentIt->second.get();
     }
 
-    inline void operator++()
+    void operator++()
     {
         do
         {
@@ -81,18 +89,10 @@ public:
         while (m_currentIt != m_endIt && m_currentIt->second == nullptr);
     }
 
-    inline bool operator!=(const CObjectIteratorProxy& other)
+    bool operator!=(const CObjectIteratorProxy& other)
     {
         return m_currentIt != other.m_currentIt;
     }
-
-private:
-    friend class CObjectContainerProxy;
-
-    CObjectIteratorProxy(CObjectMapCIt currentIt, CObjectMapCIt endIt)
-     : m_currentIt(currentIt)
-     , m_endIt(endIt)
-    {}
 
 private:
     CObjectMapCIt m_currentIt;
@@ -104,22 +104,31 @@ class CObjectContainerProxy
 private:
     friend class CObjectManager;
 
-    inline CObjectContainerProxy(const CObjectMap& map)
-     : m_map(map)
-    {}
+    CObjectContainerProxy(const CObjectMap& map, int& activeIteratorsCounter)
+     : m_map(map),
+       m_activeIteratorsCounter(activeIteratorsCounter)
+    {
+        ++m_activeIteratorsCounter;
+    }
 
 public:
-    inline CObjectIteratorProxy begin() const
+    ~CObjectContainerProxy()
+    {
+        --m_activeIteratorsCounter;
+    }
+
+    CObjectIteratorProxy begin() const
     {
         return CObjectIteratorProxy(m_map.begin(), m_map.end());
     }
-    inline CObjectIteratorProxy end() const
+    CObjectIteratorProxy end() const
     {
         return CObjectIteratorProxy(m_map.end(), m_map.end());
     }
 
 private:
     const CObjectMap& m_map;
+    int& m_activeIteratorsCounter;
 };
 
 /**
@@ -167,12 +176,10 @@ public:
     int CountObjectsImplementing(ObjectInterfaceType interface);
 
     //! Returns all objects
-    inline CObjectContainerProxy GetAllObjects()
+    CObjectContainerProxy GetAllObjects()
     {
-        if (m_shouldCleanRemovedObjects)
-            CleanRemovedObjects();
-
-        return CObjectContainerProxy(m_objects);
+        CleanRemovedObjectsIfNeeded();
+        return CObjectContainerProxy(m_objects, m_activeObjectIterators);
     }
 
     //! Finds an object, like radar() in CBot
@@ -241,11 +248,12 @@ public:
     //@}
 
 private:
-    void CleanRemovedObjects();
+    void CleanRemovedObjectsIfNeeded();
 
 private:
     CObjectMap m_objects;
     std::unique_ptr<CObjectFactory> m_objectFactory;
     int m_nextId;
+    int m_activeObjectIterators;
     bool m_shouldCleanRemovedObjects;
 };

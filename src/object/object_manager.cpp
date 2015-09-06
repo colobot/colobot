@@ -45,9 +45,14 @@ CObjectManager::CObjectManager(Gfx::CEngine* engine,
                                Gfx::COldModelManager* oldModelManager,
                                Gfx::CModelManager* modelManager,
                                Gfx::CParticle* particle)
-  : m_objectFactory(MakeUnique<CObjectFactory>(engine, terrain, oldModelManager, modelManager, particle))
-  , m_nextId(0)
-  , m_shouldCleanRemovedObjects(false)
+  : m_objectFactory(MakeUnique<CObjectFactory>(engine,
+                                               terrain,
+                                               oldModelManager,
+                                               modelManager,
+                                               particle)),
+    m_nextId(0),
+    m_activeObjectIterators(0),
+    m_shouldCleanRemovedObjects(false)
 {
 }
 
@@ -75,8 +80,14 @@ bool CObjectManager::DeleteObject(CObject* instance)
     return false;
 }
 
-void CObjectManager::CleanRemovedObjects()
+void CObjectManager::CleanRemovedObjectsIfNeeded()
 {
+    if (m_activeObjectIterators != 0)
+        return;
+
+    if (! m_shouldCleanRemovedObjects)
+        return;
+
     auto it = m_objects.begin();
     if (it != m_objects.end())
     {
