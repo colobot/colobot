@@ -367,6 +367,9 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     m_infoCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_INFO);
 
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
+    if (pw != nullptr) pw->ClearState(STATE_VISIBLE);
+
     pos = m_infoActualPos = m_infoFinalPos;
     dim = m_infoActualDim = m_infoFinalDim;
     pw = m_interface->CreateWindows(pos, dim, 4, EVENT_WINDOW4);
@@ -829,6 +832,9 @@ void CDisplayInfo::StopDisplayInfo()
     else
     {
         m_main->SetEditLock(false, false);
+
+        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
+        if (pw != nullptr) pw->SetState(STATE_VISIBLE);
     }
     m_pause->DeactivatePause(m_satcomPause);
     m_satcomPause = nullptr;

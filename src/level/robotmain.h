@@ -416,6 +416,9 @@ protected:
     void        PushToSelectionHistory(CObject* obj);
     CObject*    PopFromSelectionHistory();
 
+    void        CreateCodeBattleInterface();
+    void        DestroyCodeBattleInterface();
+
 
 protected:
     CController*        m_ctrl = nullptr;

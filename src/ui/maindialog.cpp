@@ -369,7 +369,7 @@ void CMainDialog::StartDialog(Math::Point dim, bool fireParticles)
     if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
-    if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->ClearState(STATE_VISIBLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW7));
     if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
@@ -524,7 +524,7 @@ void CMainDialog::StopDialog()
     if ( pw != nullptr )  pw->SetState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
-    if ( pw != nullptr )  pw->SetState(STATE_ENABLE);
+    if ( pw != nullptr )  pw->SetState(STATE_VISIBLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW7));
     if ( pw != nullptr )  pw->SetState(STATE_ENABLE);

@@ -129,16 +129,16 @@ enum EventType
     EVENT_EDIT8             = 78,
     EVENT_EDIT9             = 79,
 
-    EVENT_WINDOW0           = 80,   // the bottom panel
-    EVENT_WINDOW1           = 81,   // map
-    EVENT_WINDOW2           = 82,   // CDisplayText
-    EVENT_WINDOW3           = 83,   // CStudio
-    EVENT_WINDOW4           = 84,   // DisplayInfo
-    EVENT_WINDOW5           = 85,   // setup
-    EVENT_WINDOW6           = 86,
-    EVENT_WINDOW7           = 87,
-    EVENT_WINDOW8           = 88,
-    EVENT_WINDOW9           = 89,   // dialogue
+    EVENT_WINDOW0           = 80,   //!< object interface (CObjectInterface + CAuto classes)
+    EVENT_WINDOW1           = 81,   //!< CMainMap
+    EVENT_WINDOW2           = 82,   //!< CDisplayText
+    EVENT_WINDOW3           = 83,   //!< CStudio
+    EVENT_WINDOW4           = 84,   //!< CDisplayInfo
+    EVENT_WINDOW5           = 85,   //!< all menu windows
+    EVENT_WINDOW6           = 86,   //!< code battle interface
+    EVENT_WINDOW7           = 87,   //!< (unused)
+    EVENT_WINDOW8           = 88,   //!< (unused)
+    EVENT_WINDOW9           = 89,   //!< CMainDialog and CStudio file selector
 
     EVENT_LABEL0            = 90,
     EVENT_LABEL1            = 91,
@@ -530,6 +530,8 @@ enum EventType
     EVENT_STUDIO_STEP       = 2053,
 
     EVENT_WRITE_SCENE_FINISHED = 2100, //!< indicates end of writing scene (writing screenshot image)
+
+    EVENT_CODE_BATTLE_START = 2200, //!< button that starts the code battle
 
     //! Maximum value of standard events
     EVENT_STD_MAX,

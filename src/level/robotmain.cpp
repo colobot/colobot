@@ -678,6 +678,20 @@ bool CRobotMain::ProcessEvent(Event &event)
         return false;
     }
 
+    if (event.type == EVENT_UPDINTERFACE)
+    {
+        if (m_missionType == MISSION_CODE_BATTLE && !m_codeBattleStarted)
+        {
+            CreateCodeBattleInterface();
+        }
+    }
+
+    if (event.type == EVENT_CODE_BATTLE_START)
+    {
+        m_pause->DeactivatePause(m_userPause);
+        m_userPause = nullptr;
+    }
+
     // Management of the console.
     if (event.type == EVENT_KEY_DOWN &&
         event.GetData<KeyEventData>()->key == KEY(BACKQUOTE))  // Pause ?
@@ -2609,9 +2623,10 @@ bool CRobotMain::EventFrame(const Event &event)
             m_codeBattleInit = true; // Will start on resume
         }
 
-        if (!m_codeBattleStarted && m_userPause != nullptr)
+        if (!m_codeBattleStarted && m_userPause == nullptr)
         {
             m_codeBattleStarted = true;
+            DestroyCodeBattleInterface();
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
         }
     }
@@ -3730,6 +3745,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_eventQueue->AddEvent(Event(EVENT_QUIT));
 
     m_ui->ShowLoadingScreen(false);
+    if (m_missionType == MISSION_CODE_BATTLE)
+    {
+        CreateCodeBattleInterface();
+    }
     CreateShortcuts();
 }
 
@@ -5931,4 +5950,33 @@ void CRobotMain::StartDetectEffect(COldObject* object, CObject* target)
     }
 
     m_sound->Play(target != nullptr ? SOUND_BUILD : SOUND_RECOVER);
+}
+
+void CRobotMain::CreateCodeBattleInterface()
+{
+    Math::Point pos, ddim;
+
+    ddim.x = 100.0f/640.0f;
+    ddim.y = 100.0f/480.0f;
+    pos.x = 540.0f/640.0f;
+    pos.y = 100.0f/480.0f;
+    Ui::CWindow* pw = m_interface->CreateWindows(pos, ddim, 3, EVENT_WINDOW6);
+
+    ddim.x = 100.0f/640.0f;
+    ddim.y = 16.0f/480.0f;
+    pos.x = 540.0f/640.0f;
+    pos.y = 178.0f/480.0f;
+    pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, "Code battle");
+
+    float titleBarSize = (11.0f/64.0f); // this is from the texture
+    ddim.x = 80.0f/640.0f;
+    ddim.y = ((1-titleBarSize)*100.0f-20.0f)/480.0f;
+    pos.x = 550.0f/640.0f;
+    pos.y = 110.0f/480.0f;
+    pw->CreateButton(pos, ddim, 21, EVENT_CODE_BATTLE_START);
+}
+
+void CRobotMain::DestroyCodeBattleInterface()
+{
+    m_interface->DeleteControl(EVENT_WINDOW6);
 }
