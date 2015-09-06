@@ -1226,6 +1226,12 @@ EngineMouseType CCamera::GetMouseDef(Math::Point pos)
 
 bool CCamera::EventFrameFree(const Event &event)
 {
+    Math::Vector cameraInput = event.cameraInput;
+    if (m_cameraObj == nullptr)
+    {
+        cameraInput = Math::Clamp(cameraInput + event.motionInput, Math::Vector(-1.0f, -1.0f, -1.0f), Math::Vector(1.0f, 1.0f, 1.0f));
+    }
+
     float factor = m_heightEye * 0.5f + 30.0f;
 
     if ( m_mouseDirH != 0.0f )
@@ -1234,19 +1240,19 @@ bool CCamera::EventFrameFree(const Event &event)
         m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, m_mouseDirV * event.rTime * factor * m_speed);
 
     // Up/Down
-    m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, event.cameraInput.y * event.rTime * factor * m_speed);
+    m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, cameraInput.y * event.rTime * factor * m_speed);
 
     // Left/Right
     if ( event.kmodState & KEY_MOD(CTRL) )
     {
-        if ( event.cameraInput.x < 0.0f )
-            m_eyePt = Math::LookatPoint(m_eyePt, m_directionH + Math::PI / 2.0f, m_directionV, -event.cameraInput.x * event.rTime * factor * m_speed);
-        if ( event.cameraInput.x > 0.0f )
-            m_eyePt = Math::LookatPoint(m_eyePt, m_directionH - Math::PI / 2.0f, m_directionV,  event.cameraInput.x * event.rTime * factor * m_speed);
+        if ( cameraInput.x < 0.0f )
+            m_eyePt = Math::LookatPoint(m_eyePt, m_directionH + Math::PI / 2.0f, m_directionV, -cameraInput.x * event.rTime * factor * m_speed);
+        if ( cameraInput.x > 0.0f )
+            m_eyePt = Math::LookatPoint(m_eyePt, m_directionH - Math::PI / 2.0f, m_directionV,  cameraInput.x * event.rTime * factor * m_speed);
     }
     else
     {
-        m_directionH -= event.cameraInput.x * event.rTime * 0.7f * m_speed;
+        m_directionH -= cameraInput.x * event.rTime * 0.7f * m_speed;
     }
 
     // PageUp/PageDown

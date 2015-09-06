@@ -1825,9 +1825,9 @@ bool CRobotMain::SelectObject(CObject* obj, bool displayError)
     if (m_missionType == MISSION_CODE_BATTLE && m_codeBattleStarted)
     {
         // During code battles, only change camera
+        m_camera->SetControllingObject(obj);
         if (obj != nullptr)
         {
-            m_camera->SetControllingObject(obj);
             m_camera->SetType(Gfx::CAM_TYPE_PLANE);
         }
         else
