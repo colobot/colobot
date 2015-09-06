@@ -170,6 +170,7 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_PLANT17:
         case OBJECT_PLANT18:
         case OBJECT_PLANT19:
+        case OBJECT_TREE0:
         case OBJECT_TREE1:
         case OBJECT_TREE2:
         case OBJECT_TREE3:
@@ -666,6 +667,23 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
             obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 3.0f, 0.0f), 6.0f));
         }
         obj->SetJostlingSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 8.0f));
+
+        obj->CreateShadowCircle(8.0f, 0.5f);
+    }
+
+    if ( type == OBJECT_TREE0 )
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("tree0.mod", false, rank, obj->GetTeam());
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-1.0f, 10.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 17.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 1.0f, 27.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f));
 
         obj->CreateShadowCircle(8.0f, 0.5f);
     }

@@ -35,7 +35,8 @@
 
 const std::unordered_map<ObjectType, std::string, ObjectTypeHash> CStaticObject::m_staticModelNames =
 {
-    { OBJECT_TREE0, "tree0" }
+    // TODO: commenting out temporarily
+    //{ OBJECT_TREE0, "tree0" }
 };
 
 
