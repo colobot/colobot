@@ -124,10 +124,11 @@ CObject* CObjectManager::GetObjectById(unsigned int id)
 
 CObject* CObjectManager::GetObjectByRank(unsigned int id)
 {
-    if (id >= m_objects.size()) return nullptr;
-    auto it = m_objects.begin();
-    for (unsigned int i = 0; i < id; i++, ++it);
-    return it->second.get();
+    auto objects = GetAllObjects();
+    auto it = objects.begin();
+    for (unsigned int i = 0; i < id && it != objects.end(); i++, ++it);
+    if (it == objects.end()) return nullptr;
+    return *it;
 }
 
 CObject* CObjectManager::CreateObject(ObjectCreateParams params)
