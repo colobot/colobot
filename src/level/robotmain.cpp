@@ -1820,10 +1820,10 @@ bool CRobotMain::SelectObject(CObject* obj, bool displayError)
     if (m_movie->IsExist()) return false;
     if (obj != nullptr && !IsSelectable(obj)) return false;
 
-    CObject* prev = DeselectAll();
-
     if (m_missionType == MISSION_CODE_BATTLE && m_codeBattleStarted)
     {
+        DeselectAll();
+
         // During code battles, only change camera
         m_camera->SetControllingObject(obj);
         if (obj != nullptr)
@@ -1838,6 +1838,7 @@ bool CRobotMain::SelectObject(CObject* obj, bool displayError)
     else
     {
         if (obj == nullptr) return false;
+        CObject* prev = DeselectAll();
 
         if (prev != nullptr && prev != obj)
            PushToSelectionHistory(prev);
