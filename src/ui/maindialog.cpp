@@ -201,7 +201,7 @@ void CMainDialog::StartPauseMenu()
     if ( (m_main->GetLevelCategory() == LevelCategory::Missions    ||  // missions ?
          m_main->GetLevelCategory() == LevelCategory::FreeGame     ||  // free games?
          m_main->GetLevelCategory() == LevelCategory::CustomLevels ) &&   // user ?
-         !m_main->GetMissionType() == MISSION_CODE_BATTLE             )
+         m_main->GetMissionType() != MISSION_CODE_BATTLE             )
     {
         pos.y = 0.62f;
         pb = pw->CreateButton(pos, dim, -1, EVENT_INTERFACE_WRITE);
