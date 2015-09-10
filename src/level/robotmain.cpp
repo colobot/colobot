@@ -698,7 +698,7 @@ bool CRobotMain::ProcessEvent(Event &event)
     {
         if (m_phase != PHASE_PLAYER_SELECT &&
             !m_movie->IsExist()   &&
-            !m_movieLock && !m_editLock)
+            !m_movieLock && !m_editLock && !m_cmdEdit)
         {
             Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
             if (pe == nullptr) return false;
