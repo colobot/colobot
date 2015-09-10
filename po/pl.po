@@ -27,6 +27,9 @@ msgstr " Wyzwania w tym rozdziale:"
 msgid " Chapters:"
 msgstr " Rozdziały:"
 
+msgid " Custom levels:"
+msgstr " Własne poziomy:"
+
 msgid " Drivers:"
 msgstr " Sterowniki:"
 
@@ -36,8 +39,8 @@ msgstr " Ćwiczenia w tym rozdziale:"
 msgid " Free game on this planet:"
 msgstr " Swobodna gra na tej planecie:"
 
-msgid " Missions on this level:"
-msgstr " Misje na tym poziomie:"
+msgid " Levels in this chapter:"
+msgstr " Poziomy w tym rozdziale:"
 
 msgid " Missions on this planet:"
 msgstr " Misje na tej planecie:"
@@ -50,9 +53,6 @@ msgstr " Rozdzielczość:"
 
 msgid " Summary:"
 msgstr " Streszczenie:"
-
-msgid " User levels:"
-msgstr " Poziomy użytkownika:"
 
 msgid " or "
 msgstr " lub "
@@ -376,9 +376,6 @@ msgstr "Anuluj"
 msgid "Cancel\\Cancel all changes"
 msgstr "Anuluj\\Pomija wszystkie zmiany"
 
-msgid "Cancel\\Keep current player name"
-msgstr "Anuluj\\Zachowuje bieżące imię gracza"
-
 msgid "Challenges"
 msgstr "Wyzwania"
 
@@ -411,6 +408,12 @@ msgstr "Zamknij"
 
 msgid "Closing bracket missing "
 msgstr "Brak nawiasu zamykającego"
+
+msgid "Code battles"
+msgstr ""
+
+msgid "Code battles\\Program your robot to be the best of them all!"
+msgstr ""
 
 msgid "Colobot rules!"
 msgstr "Colobot rządzi!"
@@ -447,6 +450,9 @@ msgstr "Kopiuj (Ctrl+C)"
 
 msgid "Current mission saved"
 msgstr "Bieżąca misja zapisana"
+
+msgid "Custom levels\\Levels from mods created by the users"
+msgstr "Własne poziomy\\Poziomy z modyfikacji stworzonych przez użytkowników"
 
 msgid "Customize your appearance"
 msgstr "Dostosuj wygląd"
@@ -1356,9 +1362,8 @@ msgstr "Pokaż rozwiązanie"
 msgid "Sign \" : \" missing"
 msgstr "Brak znaku \" :\""
 
-#, fuzzy
 msgid "Simple shadows\\Shadows spots on the ground"
-msgstr "Proste cienie\\Cienie na ziemi"
+msgstr "Proste cienie\\Proste cienie na ziemi"
 
 msgid "Size 1"
 msgstr "Wielkość 1"
@@ -1638,9 +1643,6 @@ msgstr "Używaj joysticka\\Joystick lub klawiatura"
 msgid "User levels"
 msgstr "Poziomy użytkownika"
 
-msgid "User\\User levels"
-msgstr "Poziomy\\Poziomy użytkownika"
-
 msgid "Variable name missing"
 msgstr "Brak nazwy zmiennej"
 
@@ -1856,6 +1858,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
+
+#~ msgid "Cancel\\Keep current player name"
+#~ msgstr "Anuluj\\Zachowuje bieżące imię gracza"
 
 #~ msgid "Compass"
 #~ msgstr "Kompas"

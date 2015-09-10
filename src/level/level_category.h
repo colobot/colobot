@@ -23,11 +23,12 @@
 
 enum class LevelCategory
 {
-    Exercises = 0,
-    Challenges = 1,
-    Missions = 2,
-    FreeGame = 3,
-    CustomLevels = 4,
+    Exercises,
+    Challenges,
+    Missions,
+    FreeGame,
+    CodeBattles,
+    CustomLevels,
     Max,
 
     // These are special types not runnable by the user

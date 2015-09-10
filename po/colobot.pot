@@ -68,6 +68,9 @@ msgstr ""
 msgid "User levels"
 msgstr ""
 
+msgid "Code battles"
+msgstr ""
+
 msgid "Options"
 msgstr ""
 
@@ -89,7 +92,10 @@ msgstr ""
 msgid " Planets:"
 msgstr ""
 
-msgid " User levels:"
+msgid " Custom levels:"
+msgstr ""
+
+msgid " Levels in this chapter:"
 msgstr ""
 
 msgid " Exercises in the chapter:"
@@ -102,9 +108,6 @@ msgid " Missions on this planet:"
 msgstr ""
 
 msgid " Free game on this planet:"
-msgstr ""
-
-msgid " Missions on this level:"
 msgstr ""
 
 msgid " Summary:"
@@ -309,7 +312,10 @@ msgstr ""
 msgid "Free game\\Free game without a specific goal"
 msgstr ""
 
-msgid "User\\User levels"
+msgid "Code battles\\Program your robot to be the best of them all!"
+msgstr ""
+
+msgid "Custom levels\\Levels from mods created by the users"
 msgstr ""
 
 msgid "Change player\\Change player"
@@ -570,9 +576,6 @@ msgid "\\New player name"
 msgstr ""
 
 msgid "OK\\Choose the selected player"
-msgstr ""
-
-msgid "Cancel\\Keep current player name"
 msgstr ""
 
 msgid "Delete player\\Deletes the player from the list"

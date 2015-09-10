@@ -22,6 +22,10 @@ msgstr " Liste des défis du chapitre :"
 msgid " Chapters:"
 msgstr " Liste des chapitres :"
 
+#, fuzzy
+msgid " Custom levels:"
+msgstr " Niveaux supplémentaires :"
+
 msgid " Drivers:"
 msgstr " Pilotes :"
 
@@ -31,8 +35,9 @@ msgstr " Liste des exercices du chapitre :"
 msgid " Free game on this planet:"
 msgstr " Liste des jeux libres du chapitre :"
 
-msgid " Missions on this level:"
-msgstr " Missions du niveau :"
+#, fuzzy
+msgid " Levels in this chapter:"
+msgstr " Liste des exercices du chapitre :"
 
 msgid " Missions on this planet:"
 msgstr " Liste des missions du chapitre :"
@@ -45,9 +50,6 @@ msgstr " Résolutions :"
 
 msgid " Summary:"
 msgstr " Résumé :"
-
-msgid " User levels:"
-msgstr " Niveaux supplémentaires :"
 
 msgid " or "
 msgstr " ou "
@@ -366,9 +368,6 @@ msgstr "Annuler"
 msgid "Cancel\\Cancel all changes"
 msgstr "Annuler\\Annuler toutes les modifications"
 
-msgid "Cancel\\Keep current player name"
-msgstr "Annuler\\Conserver le joueur actuel"
-
 msgid "Challenges"
 msgstr "Défis"
 
@@ -402,6 +401,12 @@ msgstr "Fermer"
 
 msgid "Closing bracket missing "
 msgstr "Il manque une parenthèse fermante"
+
+msgid "Code battles"
+msgstr ""
+
+msgid "Code battles\\Program your robot to be the best of them all!"
+msgstr ""
 
 msgid "Colobot rules!"
 msgstr "Colobot est super!"
@@ -439,6 +444,9 @@ msgstr "Copier (Ctrl+c)"
 
 msgid "Current mission saved"
 msgstr "Enregistrement effectué"
+
+msgid "Custom levels\\Levels from mods created by the users"
+msgstr ""
 
 msgid "Customize your appearance"
 msgstr "Personnalisation de votre apparence"
@@ -1638,9 +1646,6 @@ msgstr "Utilise un joystick\\Joystick ou clavier"
 msgid "User levels"
 msgstr "Niveaux supplémentaires"
 
-msgid "User\\User levels"
-msgstr "Suppl.\\Niveaux supplémentaires"
-
 msgid "Variable name missing"
 msgstr "Nom d'une variable attendu"
 
@@ -1858,11 +1863,17 @@ msgstr "www.epsitec.com"
 #~ msgid " "
 #~ msgstr " "
 
+#~ msgid " Missions on this level:"
+#~ msgstr " Missions du niveau :"
+
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Bruitages 3D\\Positionnement sonore dans l'espace"
 
 #~ msgid "COLOBOT"
 #~ msgstr "COLOBOT"
+
+#~ msgid "Cancel\\Keep current player name"
+#~ msgstr "Annuler\\Conserver le joueur actuel"
 
 #~ msgid "Compass"
 #~ msgstr "Boussole"
@@ -1924,6 +1935,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Qualité des textures\\Qualité des images"
+
+#~ msgid "User\\User levels"
+#~ msgstr "Suppl.\\Niveaux supplémentaires"
 
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Retourner dans COLOBOT"

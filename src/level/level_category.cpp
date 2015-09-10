@@ -21,11 +21,14 @@
 
 #include <map>
 
+// NOTE: Because of how save filenames are built, the first letter of category directories MUST be unique!!
+// TODO: I'm not sure about "challenges" + "custom". It may be messing things up already right now.
 const std::map<LevelCategory, std::string> CATEGORY_DIR_MAP = {
     { LevelCategory::Missions,     "missions"     },
     { LevelCategory::FreeGame,     "freemissions" },
     { LevelCategory::Exercises,    "exercises"    },
     { LevelCategory::Challenges,   "challenges"   },
+    { LevelCategory::CodeBattles,  "battles"      },
     { LevelCategory::CustomLevels, "custom"       },
 
     { LevelCategory::Win,          "win"          },

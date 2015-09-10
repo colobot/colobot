@@ -65,31 +65,28 @@ void InitializeRestext()
     stringsText[RT_IO_NEW]           = TR("New ...");
     stringsText[RT_KEY_OR]           = TR(" or ");
 
-    stringsText[RT_TITLE_BASE]       = TR("Colobot: Gold Edition");
-    stringsText[RT_TITLE_INIT]       = TR("Colobot: Gold Edition");
+    stringsText[RT_TITLE_APPNAME]    = TR("Colobot: Gold Edition");
     stringsText[RT_TITLE_TRAINER]    = TR("Programming exercises");
     stringsText[RT_TITLE_DEFI]       = TR("Challenges");
     stringsText[RT_TITLE_MISSION]    = TR("Missions");
     stringsText[RT_TITLE_FREE]       = TR("Free game");
     stringsText[RT_TITLE_USER]       = TR("User levels");
+    stringsText[RT_TITLE_CODE_BATTLES]=TR("Code battles");
     stringsText[RT_TITLE_SETUP]      = TR("Options");
     stringsText[RT_TITLE_NAME]       = TR("Player's name");
     stringsText[RT_TITLE_PERSO]      = TR("Customize your appearance");
     stringsText[RT_TITLE_WRITE]      = TR("Save the current mission");
     stringsText[RT_TITLE_READ]       = TR("Load a saved mission");
 
-    stringsText[RT_PLAY_CHAPt]       = TR(" Chapters:");
-    stringsText[RT_PLAY_CHAPd]       = TR(" Chapters:");
-    stringsText[RT_PLAY_CHAPm]       = TR(" Planets:");
-    stringsText[RT_PLAY_CHAPf]       = TR(" Planets:");
-    stringsText[RT_PLAY_CHAPu]       = TR(" User levels:");
-    stringsText[RT_PLAY_CHAPte]      = TR(" Chapters:");
-    stringsText[RT_PLAY_LISTt]       = TR(" Exercises in the chapter:");
-    stringsText[RT_PLAY_LISTd]       = TR(" Challenges in the chapter:");
-    stringsText[RT_PLAY_LISTm]       = TR(" Missions on this planet:");
-    stringsText[RT_PLAY_LISTf]       = TR(" Free game on this planet:");
-    stringsText[RT_PLAY_LISTu]       = TR(" Missions on this level:");
-    stringsText[RT_PLAY_RESUME]      = TR(" Summary:");
+    stringsText[RT_PLAY_CHAP_CHAPTERS]   = TR(" Chapters:");
+    stringsText[RT_PLAY_CHAP_PLANETS]    = TR(" Planets:");
+    stringsText[RT_PLAY_CHAP_USERLVL]    = TR(" Custom levels:");
+    stringsText[RT_PLAY_LIST_LEVELS]     = TR(" Levels in this chapter:");
+    stringsText[RT_PLAY_LIST_EXERCISES]  = TR(" Exercises in the chapter:");
+    stringsText[RT_PLAY_LIST_CHALLENGES] = TR(" Challenges in the chapter:");
+    stringsText[RT_PLAY_LIST_MISSIONS]   = TR(" Missions on this planet:");
+    stringsText[RT_PLAY_LIST_FREEGAME]   = TR(" Free game on this planet:");
+    stringsText[RT_PLAY_RESUME]          = TR(" Summary:");
 
     stringsText[RT_SETUP_DEVICE]     = TR(" Drivers:");
     stringsText[RT_SETUP_MODE]       = TR(" Resolution:");
@@ -173,7 +170,8 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_DEFI]      = TR("Challenges\\Programming challenges");
     stringsEvent[EVENT_INTERFACE_MISSION]   = TR("Missions\\Select mission");
     stringsEvent[EVENT_INTERFACE_FREE]      = TR("Free game\\Free game without a specific goal");
-    stringsEvent[EVENT_INTERFACE_USER]      = TR("User\\User levels");
+    stringsEvent[EVENT_INTERFACE_CODE_BATTLES] = TR("Code battles\\Program your robot to be the best of them all!");
+    stringsEvent[EVENT_INTERFACE_USER]      = TR("Custom levels\\Levels from mods created by the users");
     stringsEvent[EVENT_INTERFACE_NAME]      = TR("Change player\\Change player");
     stringsEvent[EVENT_INTERFACE_SETUP]     = TR("Options\\Preferences");
     stringsEvent[EVENT_INTERFACE_AGAIN]     = TR("Restart\\Restart the mission from the beginning");

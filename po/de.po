@@ -26,6 +26,10 @@ msgstr " Liste der Challenges des Kapitels:"
 msgid " Chapters:"
 msgstr " Liste der Kapitel:"
 
+#, fuzzy
+msgid " Custom levels:"
+msgstr " Userlevels:"
+
 msgid " Drivers:"
 msgstr " Driver:"
 
@@ -35,8 +39,9 @@ msgstr " Liste der Übungen des Kapitels:"
 msgid " Free game on this planet:"
 msgstr " Liste der freien Levels des Planeten:"
 
-msgid " Missions on this level:"
-msgstr " Missionen des Userlevels:"
+#, fuzzy
+msgid " Levels in this chapter:"
+msgstr " Liste der Übungen des Kapitels:"
 
 msgid " Missions on this planet:"
 msgstr " Liste der Missionen des Planeten:"
@@ -49,9 +54,6 @@ msgstr " Auflösung:"
 
 msgid " Summary:"
 msgstr " Zusammenfassung:"
-
-msgid " User levels:"
-msgstr " Userlevels:"
 
 msgid " or "
 msgstr " oder "
@@ -371,9 +373,6 @@ msgstr "Abbrechen"
 msgid "Cancel\\Cancel all changes"
 msgstr "Abbrechen\\Editor schließen"
 
-msgid "Cancel\\Keep current player name"
-msgstr "Abbrechen\\Behält den bisherigen Spieler bei"
-
 msgid "Challenges"
 msgstr "Challenges"
 
@@ -407,6 +406,12 @@ msgstr "Schließen"
 
 msgid "Closing bracket missing "
 msgstr "Es fehlt eine geschlossene Klammer \")\""
+
+msgid "Code battles"
+msgstr ""
+
+msgid "Code battles\\Program your robot to be the best of them all!"
+msgstr ""
 
 msgid "Colobot rules!"
 msgstr "Colobot ist wunderbar!"
@@ -444,6 +449,9 @@ msgstr "Kopieren (Ctrl+c)"
 
 msgid "Current mission saved"
 msgstr "Mission gespeichert"
+
+msgid "Custom levels\\Levels from mods created by the users"
+msgstr ""
 
 msgid "Customize your appearance"
 msgstr "Aussehen einstellen"
@@ -1643,9 +1651,6 @@ msgstr "Joystick\\Joystick oder Tastatur"
 msgid "User levels"
 msgstr "Userlevels"
 
-msgid "User\\User levels"
-msgstr "User\\Userlevels"
-
 msgid "Variable name missing"
 msgstr "Es fehlt der Name einer Variable"
 
@@ -1862,11 +1867,17 @@ msgstr "www.epsitec.com"
 #~ msgid " "
 #~ msgstr " "
 
+#~ msgid " Missions on this level:"
+#~ msgstr " Missionen des Userlevels:"
+
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "3D-Geräusche\\Orten der Geräusche im Raum"
 
 #~ msgid "COLOBOT"
 #~ msgstr "COLOBOT"
+
+#~ msgid "Cancel\\Keep current player name"
+#~ msgstr "Abbrechen\\Behält den bisherigen Spieler bei"
 
 #~ msgid "Compass"
 #~ msgstr "Kompass"
@@ -1928,6 +1939,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Qualität der Texturen\\Qualität der Anzeige"
+
+#~ msgid "User\\User levels"
+#~ msgstr "User\\Userlevels"
 
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Zurück zu COLOBOT"

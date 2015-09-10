@@ -385,7 +385,7 @@ void CMainDialog::StartDialog(Math::Point dim, bool fireParticles)
     pw = m_interface->CreateWindows(pos, dim, m_dialogFireParticles ? 12 : 8, EVENT_WINDOW9);
     pw->SetState(STATE_SHADOW);
     std::string name;
-    GetResource(RES_TEXT, RT_TITLE_BASE, name);
+    GetResource(RES_TEXT, RT_TITLE_APPNAME, name);
     pw->SetName(name);
 
     m_dialogPos = pos;

@@ -57,7 +57,7 @@ void CScreenMainMenu::CreateInterface()
     ddim.y = 0.80f;
     pw = m_interface->CreateWindows(pos, ddim, 10, EVENT_WINDOW5);
 
-    GetResource(RES_TEXT, RT_TITLE_INIT, name);
+    GetResource(RES_TEXT, RT_TITLE_APPNAME, name);
     pw->SetName(name);
 
     pos.x  = 0.35f;
@@ -72,60 +72,51 @@ void CScreenMainMenu::CreateInterface()
     pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
     ddim.x = 0.20f;
-    ddim.y = dim.y*2.4f;
     pos.x = 0.40f;
-    pos.y = oy+sy*9.1f;
-    pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // yellow
+    ddim.y = dim.y*2.0f;
+    pos.y = oy+sy*9.5f;
+    pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // missions + freegame
     pg->SetState(STATE_SHADOW);
-    pos.y = oy+sy*6.8f;
-    pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orange
+    ddim.y = dim.y*2.95f;
+    pos.y = oy+sy*6.7f;
+    pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // exercises + challenges
     pg->SetState(STATE_SHADOW);
-    pos.y = oy+sy*3.9f;
-    pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // orange
+    ddim.y = dim.y*1.6f;
+    pos.y = oy+sy*3.4f;
+    pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // change player + settings
     pg->SetState(STATE_SHADOW);
     ddim.y = dim.y*1.2f;
     pos.y = oy+sy*1.9f;
-    pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
+    pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // quit
     pg->SetState(STATE_SHADOW);
 
     ddim.x = 0.18f;
-    ddim.y = dim.y*1;
+    ddim.y = dim.y*0.8f;
     pos.x = 0.41f;
 
-    pos.y = oy+sy*10.3f;
+    pos.y = oy+sy*10.5f;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MISSION);
     pb->SetState(STATE_SHADOW);
 
-    pos.y = oy+sy*9.2f;
+    pos.y = oy+sy*9.6f;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_FREE);
     pb->SetState(STATE_SHADOW);
 
-    pos.y = oy+sy*8.0f;
+    pos.y = oy+sy*8.6f;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_TRAINER);
     pb->SetState(STATE_SHADOW);
 
-    pos.y = oy+sy*6.9f;
+    pos.y = oy+sy*7.7f;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_DEFI);
     pb->SetState(STATE_SHADOW);
 
-    pos.y = oy+sy*5.1f;
-    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_SETUP);
+    pos.y = oy+sy*6.8f;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_CODE_BATTLES);
     pb->SetState(STATE_SHADOW);
 
-    pos.y = oy+sy*4.0f;
-    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_NAME);
-    pb->SetState(STATE_SHADOW);
-
-    pos.y = oy+sy*2.0f;
-    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_QUIT);
-    pb->SetState(STATE_SHADOW);
-
-    pos.x  = 447.0f/640.0f;
-    pos.y  = 313.0f/480.0f;
-    ddim.x = 0.09f;
+    pos.y = oy+sy*5.8f;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_USER);
     pb->SetState(STATE_SHADOW);
-
     try
     {
         CLevelParser levelParser("levels/custom/config.txt");
@@ -144,11 +135,20 @@ void CScreenMainMenu::CreateInterface()
         GetLogger()->Error("Failed loading userlevel button name: %s\n", e.what());
     }
 
-    /*pos.x  = 139.0f/640.0f;
-    pos.y  = 313.0f/480.0f;
-    ddim.x = 0.09f;
-    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PROTO);
-    pb->SetState(STATE_SHADOW);*/
+    ddim.y = dim.y*0.5f;
+    pos.y = oy+sy*4.35f;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_NAME);
+    pb->SetState(STATE_SHADOW);
+
+    ddim.y = dim.y*0.75f;
+    pos.y = oy+sy*3.5f;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_SETUP);
+    pb->SetState(STATE_SHADOW);
+
+    ddim.y = dim.y*1;
+    pos.y = oy+sy*2.0f;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_QUIT);
+    pb->SetState(STATE_SHADOW);
 
     pos.x  = 0.40f;
     ddim.x = 0.20f;
@@ -201,6 +201,11 @@ bool CScreenMainMenu::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_FREE:
             m_main->SetLevel(LevelCategory::FreeGame, 0, 0);
+            m_main->ChangePhase(PHASE_LEVEL_LIST);
+            break;
+
+        case EVENT_INTERFACE_CODE_BATTLES:
+            m_main->SetLevel(LevelCategory::CodeBattles, 0, 0);
             m_main->ChangePhase(PHASE_LEVEL_LIST);
             break;
 

@@ -24,6 +24,10 @@ msgstr " Задачи к главе:"
 msgid " Chapters:"
 msgstr " Разделы:"
 
+#, fuzzy
+msgid " Custom levels:"
+msgstr " Пользовательские уровни:"
+
 msgid " Drivers:"
 msgstr " Драйверы:"
 
@@ -33,8 +37,9 @@ msgstr " Упражнения в разделе:"
 msgid " Free game on this planet:"
 msgstr " Свободная игра на этой планете:"
 
-msgid " Missions on this level:"
-msgstr " Миссии на этом уровне:"
+#, fuzzy
+msgid " Levels in this chapter:"
+msgstr " Упражнения в разделе:"
 
 msgid " Missions on this planet:"
 msgstr "Миссии на этой планете:"
@@ -47,9 +52,6 @@ msgstr " Разрешение:"
 
 msgid " Summary:"
 msgstr " Итог:"
-
-msgid " User levels:"
-msgstr " Пользовательские уровни:"
 
 msgid " or "
 msgstr " или "
@@ -366,9 +368,6 @@ msgstr "Отмена"
 msgid "Cancel\\Cancel all changes"
 msgstr "Отмена\\Отменить все изменения"
 
-msgid "Cancel\\Keep current player name"
-msgstr "Отмена\\Отмена"
-
 msgid "Challenges"
 msgstr "Задания"
 
@@ -402,6 +401,12 @@ msgstr "Закрыть"
 
 msgid "Closing bracket missing "
 msgstr "Закрывающая скобка отсутствует"
+
+msgid "Code battles"
+msgstr ""
+
+msgid "Code battles\\Program your robot to be the best of them all!"
+msgstr ""
 
 msgid "Colobot rules!"
 msgstr "Правила игры!"
@@ -438,6 +443,9 @@ msgstr "Копировать (Ctrl+C)"
 
 msgid "Current mission saved"
 msgstr "Текущая миссия сохранена"
+
+msgid "Custom levels\\Levels from mods created by the users"
+msgstr ""
 
 msgid "Customize your appearance"
 msgstr "Настроить свой внешний вид"
@@ -1635,9 +1643,6 @@ msgstr "Использовать джойстик\\Джойстик или кл�
 msgid "User levels"
 msgstr "Пользовательские уровни"
 
-msgid "User\\User levels"
-msgstr "Польз.\\Пользовательские уровни"
-
 msgid "Variable name missing"
 msgstr "Нет имени переменной"
 
@@ -1854,11 +1859,17 @@ msgstr "www.epsitec.com"
 #~ msgid " "
 #~ msgstr " "
 
+#~ msgid " Missions on this level:"
+#~ msgstr " Миссии на этом уровне:"
+
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "3D-звук\\Стерео звук"
 
 #~ msgid "COLOBOT"
 #~ msgstr "КОЛОБОТ"
+
+#~ msgid "Cancel\\Keep current player name"
+#~ msgstr "Отмена\\Отмена"
 
 #~ msgid "Compass"
 #~ msgstr "Компас"
@@ -1920,6 +1931,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Текстуры\\Качество текстур "
+
+#~ msgid "User\\User levels"
+#~ msgstr "Польз.\\Пользовательские уровни"
 
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Вернуться в COLOBOT"
