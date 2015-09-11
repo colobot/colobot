@@ -335,8 +335,7 @@ void CInterface::SetFocus(CControl* focusControl)
     {
         if (control != nullptr)
         {
-            bool focus = control.get() == focusControl;
-            control->SetFocus(focus);
+            control->SetFocus(focusControl);
         }
     }
 }

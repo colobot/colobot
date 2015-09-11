@@ -281,9 +281,10 @@ bool CControl::GetTooltip(Math::Point pos, std::string &name)
 
 // Management of the focus.
 
-void CControl::SetFocus(bool bFocus)
+void CControl::SetFocus(CControl* focusControl)
 {
-    m_bFocus = bFocus;
+    // TODO: I don't like this, but it's needed for Ui::CWindow* to work properly
+    m_bFocus = focusControl == this;
 }
 
 bool CControl::GetFocus()

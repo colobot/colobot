@@ -114,6 +114,8 @@ public:
 
     void        Draw() override;
 
+    void        SetFocus(CControl* focusControl) override;
+
 protected:
     int         BorderDetect(Math::Point pos);
     void        AdjustButtons();

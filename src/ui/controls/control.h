@@ -94,7 +94,7 @@ public:
     virtual Gfx::FontType GetFontType();
     virtual bool          SetTooltip(std::string name);
     virtual bool          GetTooltip(Math::Point pos, std::string &name);
-    virtual void          SetFocus(bool bFocus);
+    virtual void          SetFocus(CControl* focusControl);
     virtual bool          GetFocus();
 
     virtual EventType     GetEventType();

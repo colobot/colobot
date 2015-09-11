@@ -1283,4 +1283,15 @@ void CWindow::DrawHach(Math::Point pos, Math::Point dim)
     while ( !bStop );
 }
 
+void CWindow::SetFocus(CControl* focusControl)
+{
+    for (auto& control : m_controls)
+    {
+        if (control != nullptr)
+        {
+            control->SetFocus(focusControl);
+        }
+    }
+}
+
 }
