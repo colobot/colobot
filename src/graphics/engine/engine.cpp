@@ -284,7 +284,7 @@ void CEngine::SetTerrain(CTerrain* terrain)
 bool CEngine::Create()
 {
     m_size = m_app->GetVideoConfig().size;
-    m_mouseSize = Math::Point(0.04f, 0.04f * (m_size.x / m_size.y));
+    m_mouseSize = Math::Point(0.04f, 0.04f * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
 
     // Use the setters to set defaults, because they automatically disable what is not supported
     SetShadowMapping(m_shadowMapping);
@@ -365,7 +365,7 @@ void CEngine::Destroy()
 void CEngine::ResetAfterDeviceChanged()
 {
     m_size = m_app->GetVideoConfig().size;
-    m_mouseSize = Math::Point(0.04f, 0.04f * (m_size.x / m_size.y));
+    m_mouseSize = Math::Point(0.04f, 0.04f * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
 
     if (m_shadowMap.id != 0)
     {
