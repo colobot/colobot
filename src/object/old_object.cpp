@@ -326,6 +326,9 @@ void COldObject::Simplify()
         m_auto.reset();
     }
 
+    m_power = nullptr;
+    m_cargo = nullptr;
+
     m_main->CreateShortcuts();
 }
 
