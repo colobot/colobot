@@ -3155,12 +3155,9 @@ void CEngine::Render()
 
     UseMSAA(false);
 
-    if (m_renderInterface)
-    {
-        m_app->StartPerformanceCounter(PCNT_RENDER_INTERFACE);
-        DrawInterface();
-        m_app->StopPerformanceCounter(PCNT_RENDER_INTERFACE);
-    }
+    m_app->StartPerformanceCounter(PCNT_RENDER_INTERFACE);
+    DrawInterface();
+    m_app->StopPerformanceCounter(PCNT_RENDER_INTERFACE);
 
     // End the scene
     m_device->EndScene();
@@ -3831,7 +3828,7 @@ void CEngine::DrawInterface()
 
     // Draw the entire interface
     Ui::CInterface* interface = CRobotMain::GetInstancePointer()->GetInterface();
-    if (interface != nullptr)
+    if (interface != nullptr && m_renderInterface)
     {
         interface->Draw();
     }
@@ -3840,7 +3837,7 @@ void CEngine::DrawInterface()
     m_lastState = -1;
     SetState(Gfx::ENG_RSTATE_NORMAL);
 
-    if (!m_screenshotMode)
+    if (!m_screenshotMode && m_renderInterface)
     {
         m_particle->DrawParticle(SH_INTERFACE);  // draws the particles of the interface
     }
@@ -3927,10 +3924,12 @@ void CEngine::DrawInterface()
         DrawOverColor();
 
     // At the end to not overlap
-    DrawHighlight();
+    if (m_renderInterface)
+        DrawHighlight();
     DrawTimer();
     DrawStats();
-    DrawMouse();
+    if (m_renderInterface)
+        DrawMouse();
 }
 
 void CEngine::UpdateGroundSpotTextures()
