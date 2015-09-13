@@ -1,18 +1,17 @@
-# Didier Raboud <odyx@debian.org>, 2012.
+# Didier Raboud <odyx@debian.org>, 2012, 2015.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Colobot 0.1.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: DATE\n"
-"PO-Revision-Date: 2012-12-27 14:07+0100\n"
+"PO-Revision-Date: 2015-09-13 12:12+0100\n"
 "Last-Translator: Didier Raboud <odyx@debian.org>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 1.4\n"
+"X-Generator: Lokalize 2.0\n"
 "X-Language: fr_FR\n"
 "X-Source-Language: en_US\n"
 
@@ -22,9 +21,8 @@ msgstr " Liste des défis du chapitre :"
 msgid " Chapters:"
 msgstr " Liste des chapitres :"
 
-#, fuzzy
 msgid " Custom levels:"
-msgstr " Niveaux supplémentaires :"
+msgstr " Niveaux spéciaux :"
 
 msgid " Drivers:"
 msgstr " Pilotes :"
@@ -35,9 +33,8 @@ msgstr " Liste des exercices du chapitre :"
 msgid " Free game on this planet:"
 msgstr " Liste des jeux libres du chapitre :"
 
-#, fuzzy
 msgid " Levels in this chapter:"
-msgstr " Liste des exercices du chapitre :"
+msgstr " Liste des niveaux du chapitre :"
 
 msgid " Missions on this planet:"
 msgstr " Liste des missions du chapitre :"
@@ -110,7 +107,7 @@ msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Accès aux solutions\\Programme \"4: Solution\" dans les exercices"
 
 msgid "Add new program"
-msgstr ""
+msgstr "Ajouter un nouveau  programme"
 
 msgid "Alien Queen"
 msgstr "Pondeuse"
@@ -131,7 +128,7 @@ msgid "Analyzes only organic matter"
 msgstr "N'analyse que la matière organique"
 
 msgid "Anisotropy level\\Anisotropy level"
-msgstr ""
+msgstr "Niveau d'anisotropie\\Niveau d'anisotropie"
 
 msgid "Ant"
 msgstr "Fourmi"
@@ -159,19 +156,20 @@ msgstr "Indentation automatique\\Pendant l'édition d'un programme"
 
 msgid "Autosave interval\\How often your game will autosave"
 msgstr ""
+"Intervalle d'auto-sauvegarde\\À quels intervalles les parties vont-t-elles "
+"êtres sauvegardées automatiquement"
 
 msgid "Autosave slots\\How many autosave slots you'll have"
-msgstr ""
+msgstr "Nombre d'auto-sauvegardes\\Combien d'auto-sauvegarde seront conservées"
 
 msgid "Autosave\\Enables autosave"
-msgstr ""
+msgstr "Auto-sauvegarde\\Active l'auto-sauvegarde"
 
 msgid "Back"
 msgstr "Page précédente"
 
-#, fuzzy
 msgid "Background sound :\\Volume of audio tracks"
-msgstr "Fond sonore :\\Volume des pistes audio du CD"
+msgstr "Fond sonore :\\Volume des pistes audio"
 
 msgid "Backward (\\key down;)"
 msgstr "Recule (\\key down;)"
@@ -337,6 +335,8 @@ msgstr "Caméra plus proche\\Avance la caméra"
 
 msgid "Camera down\\Decrease camera angle while visiting message origin"
 msgstr ""
+"Caméra plus basse\\Réduit l'angle de caméra lors de la vue de l'origine des "
+"messages"
 
 msgid "Camera nearest"
 msgstr "Caméra plus proche"
@@ -349,12 +349,14 @@ msgstr "Caméra à droite"
 
 msgid "Camera up\\Increase camera angle while visiting message origin"
 msgstr ""
+"Caméra plus haute\\Augmente l'angle de caméra lors de la vue de l'origine des "
+"messages"
 
 msgid "Can not create this; there are too many objects"
 msgstr "Création impossible; il y a trop d'objets"
 
 msgid "Can not produce not researched object"
-msgstr ""
+msgstr "Impossible de créer un objet n'ayant pas été recherché"
 
 msgid "Can not produce this object in this mission"
 msgstr "Impossible de créer cet objet dans cette mission"
@@ -390,11 +392,10 @@ msgid "Climb\\Increases the power of the jet"
 msgstr "Monter\\Augmenter la puissance du réacteur"
 
 msgid "Clone program"
-msgstr ""
+msgstr "Dupliquer le programme"
 
-#, fuzzy
 msgid "Clone selected program"
-msgstr "Édite le programme sélectionné"
+msgstr "Dupliquer le programme sélectionné"
 
 msgid "Close"
 msgstr "Fermer"
@@ -403,17 +404,17 @@ msgid "Closing bracket missing "
 msgstr "Il manque une parenthèse fermante"
 
 msgid "Code battles"
-msgstr ""
+msgstr "Batailles de code"
 
 msgid "Code battles\\Program your robot to be the best of them all!"
 msgstr ""
+"Batailles de code\\Programmez votre robot pour être le meilleur entre tous!"
 
 msgid "Colobot rules!"
 msgstr "Colobot est super!"
 
-#, fuzzy
 msgid "Colobot: Gold Edition"
-msgstr "COLOBOT: Gold Edition"
+msgstr "Colobot: Édition Gold"
 
 msgid "Command line"
 msgstr "Console de commande"
@@ -446,7 +447,7 @@ msgid "Current mission saved"
 msgstr "Enregistrement effectué"
 
 msgid "Custom levels\\Levels from mods created by the users"
-msgstr ""
+msgstr "Niveaux spéciaux\\Niveaux importés ou personnalisés"
 
 msgid "Customize your appearance"
 msgstr "Personnalisation de votre apparence"
@@ -457,9 +458,8 @@ msgstr "Couper (Ctrl+x)"
 msgid "Defense tower"
 msgstr "Tour de défense"
 
-#, fuzzy
 msgid "Delete mark"
-msgstr "Détruire"
+msgstr "Supprimer la marque"
 
 msgid "Delete player\\Deletes the player from the list"
 msgstr "Supprimer le joueur\\Supprimer le joueur de la liste"
@@ -514,7 +514,7 @@ msgid "Dynamic lighting\\Mobile light sources"
 msgstr "Lumières dynamiques\\Éclairages mobiles"
 
 msgid "Dynamic shadows\\Beautiful shadows!"
-msgstr ""
+msgstr "Ombres dynamiques\\Magnifiques ombres !"
 
 msgid "Edit the selected program"
 msgstr "Édite le programme sélectionné"
@@ -644,10 +644,10 @@ msgid "Gantry crane"
 msgstr "Portique"
 
 msgid "Generating"
-msgstr ""
+msgstr "Génération"
 
 msgid "Gold Edition development by:"
-msgstr "Edition d'Or développé par :"
+msgstr "Édition Gold développée par :"
 
 msgid "Goto: destination occupied"
 msgstr "Goto: Destination occupée"
@@ -815,21 +815,19 @@ msgid "Load\\Loads the selected mission"
 msgstr "Charger\\Charger la mission sélectionnée"
 
 msgid "Loading basic level settings"
-msgstr ""
+msgstr "Chargement des configurations de base du niveau"
 
-#, fuzzy
 msgid "Loading finished!"
-msgstr "Programme terminé"
+msgstr "Chargement terminé !"
 
 msgid "Loading music"
-msgstr ""
+msgstr "Chargement de la musique"
 
-#, fuzzy
 msgid "Loading objects"
-msgstr "Liste des objets"
+msgstr "Chargement des objets"
 
 msgid "Loading terrain"
-msgstr ""
+msgstr "Chargement du terrain"
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
 msgstr "Mini\\Qualité minimale (+ rapide)"
@@ -838,7 +836,7 @@ msgid "Lunar Roving Vehicle"
 msgstr "Lunar Roving Vehicle"
 
 msgid "MSAA\\Multisample anti-aliasing"
-msgstr ""
+msgstr "ACME\\Anticrénelage multiéchantillon"
 
 msgid "Maximize"
 msgstr "Taille maximale"
@@ -847,7 +845,7 @@ msgid "Minimize"
 msgstr "Taille réduite"
 
 msgid "Mipmap level\\Mipmap level"
-msgstr ""
+msgstr "Niveau de MIP mapping\\Niveau de MIP mapping"
 
 msgid "Mission name"
 msgstr "Nom de la mission"
@@ -866,13 +864,11 @@ msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
 msgstr ""
 "Inversion souris Y\\Inversion de la rotation lorsque la souris touche un bord"
 
-#, fuzzy
 msgid "Move selected program down"
-msgstr "Édite le programme sélectionné"
+msgstr "Déplace le programme sélectionné vers le bas"
 
-#, fuzzy
 msgid "Move selected program up"
-msgstr "Édite le programme sélectionné"
+msgstr "Déplace le programme sélectionné vers le haut"
 
 msgid "Mute\\No sound"
 msgstr "Silencieux\\Totalement silencieux"
@@ -902,7 +898,7 @@ msgid "Next object\\Selects the next object"
 msgstr "Sélectionner l'objet suivant\\Sélectionner l'objet suivant"
 
 msgid "No"
-msgstr ""
+msgstr "Non"
 
 msgid "No energy in the subsoil"
 msgstr "Pas d'énergie en sous-sol"
@@ -950,7 +946,7 @@ msgid "No uranium to transform"
 msgstr "Pas d'uranium à transformer"
 
 msgid "No userlevels installed!"
-msgstr ""
+msgstr "Pas de niveaux spéciaux installés !"
 
 msgid "Normal size"
 msgstr "Taille normale"
@@ -968,7 +964,7 @@ msgid "Not enough energy yet"
 msgstr "Pas encore assez d'énergie"
 
 msgid "Not found anything to destroy"
-msgstr ""
+msgstr "Rien trouvé à détruire"
 
 msgid "Not yet enough energy"
 msgstr "Pas encore assez d'énergie"
@@ -1064,7 +1060,7 @@ msgid "Pause/continue"
 msgstr "Pause/continuer"
 
 msgid "Pause\\Pause the game without opening menu"
-msgstr ""
+msgstr "Pause\\Mettre le jeu en pause sans ouvrir le menu"
 
 msgid "Phazer shooter"
 msgstr "Robot phazer"
@@ -1145,14 +1141,13 @@ msgid "Private\\Private folder"
 msgstr "Privé\\Dossier privé"
 
 msgid "Processing level file"
-msgstr ""
+msgstr "Analyse du fichier de niveau"
 
-#, fuzzy
 msgid "Program cloned"
-msgstr "Programme terminé"
+msgstr "Programme dupliqué"
 
 msgid "Program editor"
-msgstr "Edition du programme"
+msgstr "Édition du programme"
 
 msgid "Program finished"
 msgstr "Programme terminé"
@@ -1186,9 +1181,11 @@ msgstr "Secousses lors d'explosions\\L'écran vibre lors d'une explosion"
 
 msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
 msgstr ""
+"Ombres projetées\\Active la transparence des ombres et "
+"l'auto-ombrage"
 
 msgid "Quit\\Quit Colobot: Gold Edition"
-msgstr ""
+msgstr "Quitter\\Quitter Colobot : Édition Gold"
 
 msgid "Quit\\Quit the current mission or exercise"
 msgstr "Quitter la mission en cours\\Terminer un exercice ou une mssion"
@@ -1223,13 +1220,11 @@ msgstr "Vestige d'une mission Apollo"
 msgid "Remove a flag"
 msgstr "Enlève un drapeau"
 
-#, fuzzy
 msgid "Remove selected program"
-msgstr "Édite le programme sélectionné"
+msgstr "Supprimer le programme sélectionné"
 
-#, fuzzy
 msgid "Render distance\\Maximum visibility"
-msgstr "Profondeur de champ\\Distance de vue maximale"
+msgstr "Profondeur de champ\\Distance de vue maximale "
 
 msgid "Repair center"
 msgstr "Centre de réparation"
@@ -1334,6 +1329,8 @@ msgstr "Terminateur point-virgule non trouvé"
 
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr ""
+"Résolution des ombres\\Plus grand implique une meilleure qulité et amplitude, "
+"mais plus lent"
 
 msgid "Shield level"
 msgstr "Niveau du bouclier"
@@ -1362,9 +1359,8 @@ msgstr "Donne la solution"
 msgid "Sign \" : \" missing"
 msgstr "Séparateur \" : \" attendu"
 
-#, fuzzy
 msgid "Simple shadows\\Shadows spots on the ground"
-msgstr "Ombres\\Ombres projetées au sol"
+msgstr "Ombres simples\\Ombres projetées au sol"
 
 msgid "Size 1"
 msgstr "Taille 1"
@@ -1388,10 +1384,10 @@ msgid "Solution"
 msgstr "Solution"
 
 msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
-msgstr "Bruitages :\\Volume des moteurs, voix, etc."
+msgstr "Sons :\\Volume des moteurs, voix, etc."
 
 msgid "Sound\\Music and game sound volume"
-msgstr "Son\\Volumes bruitages & musiques"
+msgstr "Son\\Volumes des sons & musiques"
 
 msgid "Spaceship"
 msgstr "Vaisseau spatial"
@@ -1399,9 +1395,8 @@ msgstr "Vaisseau spatial"
 msgid "Spaceship ruin"
 msgstr "Epave de vaisseau spatial"
 
-#, fuzzy
 msgid "Speed 0.5x\\Half speed"
-msgstr "Vitesse 1.0x\\Vitesse normale"
+msgstr "Vitesse 0.5x\\Demi-vitesse"
 
 msgid "Speed 1.0x\\Normal speed"
 msgstr "Vitesse 1.0x\\Vitesse normale"
@@ -1412,17 +1407,14 @@ msgstr "Vitesse 1.5x\\Une fois et demi plus rapide"
 msgid "Speed 2.0x\\Double speed"
 msgstr "Vitesse 2.0x\\Deux fois plus rapide"
 
-#, fuzzy
 msgid "Speed 3.0x\\Triple speed"
-msgstr "Vitesse 2.0x\\Deux fois plus rapide"
+msgstr "Vitesse 3.0x\\Trois fois plus rapide "
 
-#, fuzzy
 msgid "Speed 4.0x\\Quadruple speed"
-msgstr "Vitesse 2.0x\\Deux fois plus rapide"
+msgstr "Vitesse 4.0x\\Quatre fois plus rapide"
 
-#, fuzzy
 msgid "Speed 6.0x\\Sextuple speed"
-msgstr "Vitesse 2.0x\\Deux fois plus rapide"
+msgstr "Vitesse 6.0x\\Six fois plus rapide"
 
 msgid "Spider"
 msgstr "Araignée"
@@ -1446,9 +1438,8 @@ msgstr "Standard\\Remet les couleurs standards"
 msgid "Start"
 msgstr "Départ"
 
-#, fuzzy
 msgid "Starting..."
-msgstr "Départ"
+msgstr "Lancement…"
 
 msgid "Still working ..."
 msgstr "Travail en cours ..."
@@ -1475,7 +1466,7 @@ msgid "Switch bots <-> buildings"
 msgstr "Permute robots <-> bâtiments"
 
 msgid "System mouse\\Use system mouse cursor"
-msgstr ""
+msgstr "Souris système\\Utiliser le curseur de la souris système"
 
 msgid "Take off to finish the mission"
 msgstr "Décolle pour terminer la mission"
@@ -1487,13 +1478,13 @@ msgid "Target bot"
 msgstr "Cible d'entraînement"
 
 msgid "Terrain relief"
-msgstr ""
+msgstr "Relief du terrain"
 
 msgid "Texture filtering\\Texture filtering"
-msgstr ""
+msgstr "Filtrage de textures\\Filtrage de textures"
 
 msgid "Textures"
-msgstr ""
+msgstr "Textures"
 
 msgid "The expression must return a boolean value"
 msgstr "L'expression doit ętre un boolean"
@@ -1521,7 +1512,7 @@ msgid "This class does not exist"
 msgstr "Cette classe n'existe pas"
 
 msgid "This is example code that cannot be run directly"
-msgstr ""
+msgstr "Ce code d'exemple ne peut pas être lancé directement"
 
 msgid "This is not a member of this class"
 msgstr "Cet élément n'existe pas dans cette classe"
@@ -1531,12 +1522,14 @@ msgstr "Cette étiquette n'existe pas"
 
 msgid "This menu is for userlevels from mods, but you didn't install any"
 msgstr ""
+"Ce menu donne accès aux niveaux spéciaux (importés ou personnalisés), mais "
+"aucun n'est installé."
 
 msgid "This object is not a member of a class"
 msgstr "L'objet n'est pas une instance d'une classe"
 
 msgid "This program is read-only, clone it to edit"
-msgstr ""
+msgstr "Ce programme est en lecture-seule, le dupliquer pour pouvoir l'éditer"
 
 msgid "Thump (\\key action;)"
 msgstr "Secoue (\\key action;)"
@@ -1614,7 +1607,7 @@ msgid "Type declaration missing"
 msgstr "Déclaration de type attendu"
 
 msgid "Unable to control enemy objects"
-msgstr ""
+msgstr "Impossible de contrôler les objets ennemis"
 
 msgid "Undo (Ctrl+z)"
 msgstr "Annuler (Ctrl+z)"
@@ -1719,7 +1712,7 @@ msgid "Yellow flag"
 msgstr "Drapeau jaune"
 
 msgid "Yes"
-msgstr ""
+msgstr "Oui"
 
 msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
 msgstr ""
@@ -1786,7 +1779,7 @@ msgid "\\Red flags"
 msgstr "\\Drapeaux rouges"
 
 msgid "\\Return to Colobot: Gold Edition"
-msgstr ""
+msgstr "\\Revenir à Colobot : Édition Gold"
 
 msgid "\\SatCom on standby"
 msgstr "\\Mettre le SatCom en veille"
@@ -1855,7 +1848,7 @@ msgid "\\c; (none)\\n;\n"
 msgstr "\\c; (aucun)\\n;\n"
 
 msgid "www.colobot.info"
-msgstr ""
+msgstr "www.colobot.info"
 
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
