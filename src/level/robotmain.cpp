@@ -692,6 +692,11 @@ bool CRobotMain::ProcessEvent(Event &event)
         m_userPause = nullptr;
     }
 
+    if (event.type == EVENT_CODE_BATTLE_SPECTATOR)
+    {
+        SetCodeBattleSpectatorMode(!m_codeBattleSpectator);
+    }
+
     // Management of the console.
     if (event.type == EVENT_KEY_DOWN &&
         event.GetData<KeyEventData>()->key == KEY(BACKQUOTE))  // Pause ?
@@ -1820,7 +1825,7 @@ bool CRobotMain::SelectObject(CObject* obj, bool displayError)
     if (m_movie->IsExist()) return false;
     if (obj != nullptr && !IsSelectable(obj)) return false;
 
-    if (m_missionType == MISSION_CODE_BATTLE && m_codeBattleStarted)
+    if (m_missionType == MISSION_CODE_BATTLE && m_codeBattleStarted && m_codeBattleSpectator)
     {
         DeselectAll();
 
@@ -2644,12 +2649,9 @@ bool CRobotMain::EventFrame(const Event &event)
         if (!m_codeBattleStarted && m_userPause == nullptr)
         {
             m_codeBattleStarted = true;
-            DestroyCodeBattleInterface();
+            CreateCodeBattleInterface();
 
-            // Deselect object, but keep camera attached to it
-            CObject* obj = DeselectAll();
-            SelectObject(obj, false); // this uses code battle selection mode already
-            m_camera->SetFixDirectionV(-0.25f*Math::PI);
+            SetCodeBattleSpectatorMode(true);
 
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
         }
@@ -5997,10 +5999,32 @@ void CRobotMain::CreateCodeBattleInterface()
     ddim.y = ((1-titleBarSize)*100.0f-20.0f)/480.0f;
     pos.x = 550.0f/640.0f;
     pos.y = 110.0f/480.0f;
-    pw->CreateButton(pos, ddim, 21, EVENT_CODE_BATTLE_START);
+    if (!m_codeBattleStarted)
+    {
+        pw->CreateButton(pos, ddim, 21, EVENT_CODE_BATTLE_START);
+    }
+    else
+    {
+        pw->CreateButton(pos, ddim, 13, EVENT_CODE_BATTLE_SPECTATOR);
+    }
 }
 
 void CRobotMain::DestroyCodeBattleInterface()
 {
     m_interface->DeleteControl(EVENT_WINDOW6);
+}
+
+void CRobotMain::SetCodeBattleSpectatorMode(bool mode)
+{
+
+    // Deselect object, but keep camera attached to it
+    CObject* obj = DeselectAll();
+    if (m_codeBattleSpectator)
+        obj = m_camera->GetControllingObject();
+
+    m_codeBattleSpectator = mode;
+    SelectObject(obj, false); // this uses code battle selection mode already
+
+    if (mode)
+        m_camera->SetFixDirectionV(-0.25f*Math::PI);
 }

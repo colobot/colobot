@@ -533,6 +533,7 @@ enum EventType
     EVENT_WRITE_SCENE_FINISHED = 2100, //!< indicates end of writing scene (writing screenshot image)
 
     EVENT_CODE_BATTLE_START = 2200, //!< button that starts the code battle
+    EVENT_CODE_BATTLE_SPECTATOR = 2201, //!< button that controls the code battle spectator camera
 
     //! Maximum value of standard events
     EVENT_STD_MAX,

@@ -418,6 +418,7 @@ protected:
 
     void        CreateCodeBattleInterface();
     void        DestroyCodeBattleInterface();
+    void        SetCodeBattleSpectatorMode(bool mode);
 
 
 protected:
@@ -537,6 +538,8 @@ protected:
 
     bool            m_codeBattleInit = false;
     bool            m_codeBattleStarted = false;
+    //! Code battle spectator mode, hides object UI, changes camera to CAM_TYPE_PLANE and allows for switching to free camera by clicking outside of any object
+    bool            m_codeBattleSpectator = true;
 
     std::map<int, std::string> m_teamNames;
 
