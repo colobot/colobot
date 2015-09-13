@@ -410,10 +410,10 @@ msgid "Closing bracket missing "
 msgstr "Brak nawiasu zamykającego"
 
 msgid "Code battles"
-msgstr ""
+msgstr "Programobitwy"
 
 msgid "Code battles\\Program your robot to be the best of them all!"
-msgstr ""
+msgstr "Programobitwy\\Zaprogramuj swego robota by był najlepszy ze wszystkich!"
 
 msgid "Colobot rules!"
 msgstr "Colobot rządzi!"
