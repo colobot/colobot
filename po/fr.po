@@ -107,7 +107,7 @@ msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Accès aux solutions\\Programme \"4: Solution\" dans les exercices"
 
 msgid "Add new program"
-msgstr "Ajouter un nouveau  programme"
+msgstr "Ajouter un nouveau programme"
 
 msgid "Alien Queen"
 msgstr "Pondeuse"
@@ -1439,7 +1439,7 @@ msgid "Start"
 msgstr "Départ"
 
 msgid "Starting..."
-msgstr "Lancement…"
+msgstr "Lancement..."
 
 msgid "Still working ..."
 msgstr "Travail en cours ..."
