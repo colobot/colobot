@@ -107,7 +107,6 @@
 #include <iomanip>
 #include <stdexcept>
 
-#include <clipboard/clipboard.h>
 #include <boost/lexical_cast.hpp>
 
 
@@ -931,7 +930,7 @@ bool CRobotMain::ProcessEvent(Event &event)
 
                         std::stringstream ss;
                         ss << line;
-                        widgetSetClipboardText(ss.str().c_str());
+                        SDL_SetClipboardText(ss.str().c_str());
                     }
                 }
                 break;

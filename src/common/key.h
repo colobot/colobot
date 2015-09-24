@@ -25,7 +25,8 @@
 #pragma once
 
 
-#include <SDL_keysym.h>
+#include <SDL_keycode.h>
+#define SDLK_LAST (SDLK_SCANCODE_MASK << 1) //TODO
 
 /* Key definitions are specially defined here so that it is clear in other parts of the code
   that these are used. It is to avoid having SDL-related enum values or #defines lying around
@@ -51,7 +52,7 @@ enum VirtualKmod
     VIRTUAL_KMOD_CTRL  = SDLK_LAST + 100, //! < control (left or right)
     VIRTUAL_KMOD_SHIFT = SDLK_LAST + 101, //! < shift (left or right)
     VIRTUAL_KMOD_ALT   = SDLK_LAST + 102, //! < alt (left or right)
-    VIRTUAL_KMOD_META  = SDLK_LAST + 103  //! < win key (left or right)
+    VIRTUAL_KMOD_GUI   = SDLK_LAST + 103  //! < windows logo (on windows/linux) or command (on mac os) key (left or right)
 };
 
 // Just syntax sugar

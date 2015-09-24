@@ -135,10 +135,10 @@ void CInput::EventProcess(Event& event)
 
         if (data->slot == INPUT_SLOT_CAMERA_UP  ) m_cameraKeyMotion.z =  1.0f;
         if (data->slot == INPUT_SLOT_CAMERA_DOWN) m_cameraKeyMotion.z = -1.0f;
-        if (data->key  == KEY(KP4)              ) m_cameraKeyMotion.x = -1.0f;
-        if (data->key  == KEY(KP6)              ) m_cameraKeyMotion.x =  1.0f;
-        if (data->key  == KEY(KP8)              ) m_cameraKeyMotion.y =  1.0f;
-        if (data->key  == KEY(KP2)              ) m_cameraKeyMotion.y = -1.0f;
+        if (data->key  == KEY(KP_4)             ) m_cameraKeyMotion.x = -1.0f;
+        if (data->key  == KEY(KP_6)             ) m_cameraKeyMotion.x =  1.0f;
+        if (data->key  == KEY(KP_8)             ) m_cameraKeyMotion.y =  1.0f;
+        if (data->key  == KEY(KP_2)             ) m_cameraKeyMotion.y = -1.0f;
     }
     else if (event.type == EVENT_KEY_UP)
     {
@@ -153,10 +153,10 @@ void CInput::EventProcess(Event& event)
 
         if (data->slot == INPUT_SLOT_CAMERA_UP  ) m_cameraKeyMotion.z = 0.0f;
         if (data->slot == INPUT_SLOT_CAMERA_DOWN) m_cameraKeyMotion.z = 0.0f;
-        if (data->key  == KEY(KP4)              ) m_cameraKeyMotion.x = 0.0f;
-        if (data->key  == KEY(KP6)              ) m_cameraKeyMotion.x = 0.0f;
-        if (data->key  == KEY(KP8)              ) m_cameraKeyMotion.y = 0.0f;
-        if (data->key  == KEY(KP2)              ) m_cameraKeyMotion.y = 0.0f;
+        if (data->key  == KEY(KP_4)             ) m_cameraKeyMotion.x = 0.0f;
+        if (data->key  == KEY(KP_6)             ) m_cameraKeyMotion.x = 0.0f;
+        if (data->key  == KEY(KP_8)             ) m_cameraKeyMotion.y = 0.0f;
+        if (data->key  == KEY(KP_2)             ) m_cameraKeyMotion.y = 0.0f;
     }
     else if (event.type == EVENT_JOY_AXIS)
     {
@@ -253,7 +253,7 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_GUP    ].primary   = VIRTUAL_KMOD(SHIFT);
     m_inputBindings[INPUT_SLOT_GDOWN  ].primary   = VIRTUAL_KMOD(CTRL);
     m_inputBindings[INPUT_SLOT_CAMERA ].primary   = KEY(SPACE);
-    m_inputBindings[INPUT_SLOT_DESEL  ].primary   = KEY(KP0);
+    m_inputBindings[INPUT_SLOT_DESEL  ].primary   = KEY(KP_0);
     m_inputBindings[INPUT_SLOT_ACTION ].primary   = KEY(RETURN);
     m_inputBindings[INPUT_SLOT_ACTION ].secondary = KEY(e);
     m_inputBindings[INPUT_SLOT_NEAR   ].primary   = KEY(KP_PLUS);

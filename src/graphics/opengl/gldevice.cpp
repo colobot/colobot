@@ -687,8 +687,8 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
         SDL_PixelFormat format;
         format.BytesPerPixel = 4;
         format.BitsPerPixel = 32;
-        format.alpha = 0;
-        format.colorkey = 0;
+        //format.alpha = 0; //TODO: ?
+        //format.colorkey = 0; //TODO: ?
         format.Aloss = format.Bloss = format.Gloss = format.Rloss = 0;
         format.Amask = 0xFF000000;
         format.Ashift = 24;

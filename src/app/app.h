@@ -72,18 +72,6 @@ struct JoystickDevice
 };
 
 /**
- * \enum VideoQueryResult
- * \brief Result of querying for available video resolutions
- */
-enum VideoQueryResult
-{
-    VIDEO_QUERY_ERROR,
-    VIDEO_QUERY_NONE,
-    VIDEO_QUERY_ALL,
-    VIDEO_QUERY_OK
-};
-
-/**
  * \enum ParseArgsStatus
  * \brief State of parsing commandline arguments
  */
@@ -215,8 +203,7 @@ public:
     const std::string& GetErrorMessage() const;
 
     //! Returns a list of possible video modes
-    VideoQueryResult GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions,
-                                            bool fullScreen, bool resizeable) const;
+    void        GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions, int display = 0) const;
 
     //! Returns the current video mode
     Gfx::DeviceConfig GetVideoConfig() const;
@@ -276,12 +263,6 @@ public:
 
     //! Updates the mouse position explicitly
     void        UpdateMouse();
-
-    //! Management of the grab mode for input (keyboard & mouse)
-    //@{
-    void        SetGrabInput(bool grab);
-    bool        GetGrabInput() const;
-    //@}
 
     //! Management of mouse mode
     //@{

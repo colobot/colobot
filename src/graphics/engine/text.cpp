@@ -1014,7 +1014,7 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
     int w = Math::NextPowerOfTwo(textSurface->w);
     int h = Math::NextPowerOfTwo(textSurface->h);
 
-    textSurface->flags = textSurface->flags & (~SDL_SRCALPHA);
+    //textSurface->flags = textSurface->flags & (~SDL_SRCALPHA); //TODO: ?
     SDL_Surface* textureSurface = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00,
                                                        0x000000ff, 0xff000000);
     SDL_BlitSurface(textSurface, nullptr, textureSurface, nullptr);

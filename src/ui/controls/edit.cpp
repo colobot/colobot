@@ -40,8 +40,7 @@
 
 #include "ui/controls/scroll.h"
 
-#include <clipboard/clipboard.h>
-
+#include <SDL.h>
 #include <boost/algorithm/string.hpp>
 
 #include <cstring>
@@ -2537,7 +2536,7 @@ bool CEdit::Copy(bool memorize_cursor)
     std::vector<char> text(len + 1, '\0');
     strncpy(text.data(), m_text.data() + start, len);
     text[len] = 0;
-    widgetSetClipboardText(text.data());
+    SDL_SetClipboardText(text.data()); //TODO: Move to CApplication
 
     if (memorize_cursor)
     {
@@ -2560,7 +2559,7 @@ bool CEdit::Paste()
         return false;
     }
 
-    text = widgetGetClipboardText();
+    text = SDL_GetClipboardText(); // TODO: Move to CApplication
 
     if ( text == nullptr )
     {

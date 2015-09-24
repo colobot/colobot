@@ -229,9 +229,9 @@ endif()
 ##
 
 find_package(OpenGL 1.4 REQUIRED)
-find_package(SDL 1.2.10 REQUIRED)
-find_package(SDL_image 1.2 REQUIRED)
-find_package(SDL_ttf 2.0 REQUIRED)
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 find_package(Gettext REQUIRED)
 find_package(PhysFS REQUIRED)
@@ -294,21 +294,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     set(USE_SDL_MAIN 1) # fixes SDL_main
     set(WINGETOPT 1) # use wingetopt library
 endif()
-
-##
-# Clipboard support needs X11 libraries
-##
-if(PLATFORM_GNU)
-    find_package(X11 REQUIRED)
-endif()
-
-
-##
-# Clipboard support
-##
-set(CLIPBOARD_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/clipboard/include)
-add_subdirectory(lib/clipboard)
-
 
 ##
 # Localename

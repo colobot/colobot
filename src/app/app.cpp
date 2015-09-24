@@ -79,8 +79,10 @@ Uint32 JoystickTimerCallback(Uint32 interval, void *);
  */
 struct ApplicationPrivate
 {
-    //! Display surface
-    SDL_Surface *surface;
+    //! Main game window
+    SDL_Window *window;
+    //! Main game OpenGL context
+    SDL_GLContext glcontext;
     //! Currently handled event
     SDL_Event currentEvent;
     //! Mouse motion event to be handled
@@ -94,9 +96,9 @@ struct ApplicationPrivate
     {
         SDL_memset(&currentEvent, 0, sizeof(SDL_Event));
         SDL_memset(&lastMouseMotionEvent, 0, sizeof(SDL_Event));
-        surface = nullptr;
+        window = nullptr;
         joystick = nullptr;
-        joystickTimer = nullptr;
+        joystickTimer = 0;
     }
 };
 
@@ -203,10 +205,16 @@ CApplication::~CApplication()
         m_private->joystick = nullptr;
     }
 
-    if (m_private->surface != nullptr)
+    if (m_private->glcontext != nullptr)
     {
-        SDL_FreeSurface(m_private->surface);
-        m_private->surface = nullptr;
+        SDL_GL_DeleteContext(m_private->glcontext);
+        m_private->glcontext = nullptr;
+    }
+
+    if (m_private->window != nullptr)
+    {
+        SDL_DestroyWindow(m_private->window);
+        m_private->window = nullptr;
     }
 
     IMG_Quit();
@@ -526,7 +534,7 @@ bool CApplication::Create()
         // GetVideoResolutionList() has to be called here because it is responsible
         // for list of resolutions in options menu, not calling it results in empty list
         std::vector<Math::IntPoint> modes;
-        GetVideoResolutionList(modes, true, true);
+        GetVideoResolutionList(modes);
 
         if ( GetConfigFile().GetStringProperty("Setup", "Resolution", sValue) && !m_resolutionOverride )
         {
@@ -560,7 +568,7 @@ bool CApplication::Create()
         if (! CreateVideoSurface())
             return false; // dialog is in function
 
-        if (m_private->surface == nullptr)
+        if (m_private->window == nullptr)
         {
             m_errorMessage = std::string("SDL error while setting video mode:\n") +
                             std::string(SDL_GetError());
@@ -568,13 +576,9 @@ bool CApplication::Create()
             m_exitCode = 4;
             return false;
         }
-
-        SDL_WM_SetCaption(m_windowTitle.c_str(), m_windowTitle.c_str());
     }
 
-    // Enable translating key codes of key press events to unicode chars
-    SDL_EnableUNICODE(1);
-    SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+    //SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL); //TODO: ?
 
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
@@ -651,7 +655,7 @@ bool CApplication::Create()
 
 bool CApplication::CreateVideoSurface()
 {
-    const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
+    /*const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
     if (videoInfo == nullptr)
     {
         m_errorMessage = std::string("SDL error while getting video info:\n ") +
@@ -659,23 +663,23 @@ bool CApplication::CreateVideoSurface()
         GetLogger()->Error(m_errorMessage.c_str());
         m_exitCode = 7;
         return false;
-    }
+    }*/
 
-    Uint32 videoFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE;
+    Uint32 videoFlags = SDL_WINDOW_OPENGL; // | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE
 
     // Use hardware surface if available
-    if (videoInfo->hw_available)
-        videoFlags |= SDL_HWSURFACE;
+    /*if (videoInfo->hw_available)
+        videoFlags |= SDL_HWSURFACE;*/
 
     // Enable hardware blit if available
-    if (videoInfo->blit_hw)
-        videoFlags |= SDL_HWACCEL;
+    /*if (videoInfo->blit_hw)
+        videoFlags |= SDL_HWACCEL;*/
 
     if (m_deviceConfig.fullScreen)
-        videoFlags |= SDL_FULLSCREEN;
+        videoFlags |= SDL_WINDOW_FULLSCREEN;
 
     if (m_deviceConfig.resizeable)
-        videoFlags |= SDL_RESIZABLE;
+        videoFlags |= SDL_WINDOW_RESIZABLE;
 
     // Set OpenGL attributes
 
@@ -694,8 +698,12 @@ bool CApplication::CreateVideoSurface()
     if (m_deviceConfig.hardwareAccel)
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-    m_private->surface = SDL_SetVideoMode(m_deviceConfig.size.x, m_deviceConfig.size.y,
-                                          m_deviceConfig.bpp, videoFlags);
+    m_private->window = SDL_CreateWindow(m_windowTitle.c_str(),
+                                         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                                         m_deviceConfig.size.x, m_deviceConfig.size.y,
+                                         videoFlags);
+
+    m_private->glcontext = SDL_GL_CreateContext(m_private->window);
 
     return true;
 }
@@ -707,8 +715,8 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
     m_lastDeviceConfig = m_deviceConfig;
     m_deviceConfig = newConfig;
 
-
-    SDL_FreeSurface(m_private->surface);
+    SDL_GL_DeleteContext(m_private->glcontext); //TODO: refactor this
+    SDL_DestroyWindow(m_private->window); // TODO: ?
 
     if (! CreateVideoSurface())
     {
@@ -717,7 +725,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
         return false;
     }
 
-    if (m_private->surface == nullptr)
+    if (m_private->window == nullptr)
     {
         if (! restore)
         {
@@ -899,14 +907,14 @@ int CApplication::Run()
         }
 
         // To be sure no old event remains
-        m_private->currentEvent.type = SDL_NOEVENT;
+        m_private->currentEvent.type = SDL_LASTEVENT;
 
         // Call SDL_PumpEvents() only once here
         // (SDL_PeepEvents() doesn't call it)
         if (m_active)
             SDL_PumpEvents();
 
-        m_private->lastMouseMotionEvent.type = SDL_NOEVENT;
+        m_private->lastMouseMotionEvent.type = SDL_LASTEVENT;
 
         bool haveEvent = true;
         while (haveEvent)
@@ -917,7 +925,7 @@ int CApplication::Run()
             // Use SDL_PeepEvents() if the app is active, so we can use idle time to
             // render the scene. Else, use SDL_WaitEvent() to avoid eating CPU time.
             if (m_active)
-                count = SDL_PeepEvents(&m_private->currentEvent, 1, SDL_GETEVENT, SDL_ALLEVENTS);
+                count = SDL_PeepEvents(&m_private->currentEvent, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT);
             else
                 count = SDL_WaitEvent(&m_private->currentEvent);
 
@@ -949,7 +957,7 @@ int CApplication::Run()
         }
 
         // Now, process the last received mouse motion
-        if (m_private->lastMouseMotionEvent.type != SDL_NOEVENT)
+        if (m_private->lastMouseMotionEvent.type != SDL_LASTEVENT)
         {
             m_private->currentEvent = m_private->lastMouseMotionEvent;
 
@@ -1048,13 +1056,32 @@ Event CApplication::ProcessSystemEvent()
     {
         event.type = EVENT_SYS_QUIT;
     }
-    else if (m_private->currentEvent.type == SDL_VIDEORESIZE)
+    else if (m_private->currentEvent.type == SDL_WINDOWEVENT)
     {
-        Gfx::DeviceConfig newConfig = m_deviceConfig;
-        newConfig.size.x = m_private->currentEvent.resize.w;
-        newConfig.size.y = m_private->currentEvent.resize.h;
-        if (newConfig.size != m_deviceConfig.size)
-            ChangeVideoConfig(newConfig);
+        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+            Gfx::DeviceConfig newConfig = m_deviceConfig;
+            newConfig.size.x = m_private->currentEvent.window.data1;
+            newConfig.size.y = m_private->currentEvent.window.data2;
+            if (newConfig.size != m_deviceConfig.size)
+                ChangeVideoConfig(newConfig);
+        }
+        // TODO: EVENT_ACTIVE
+        /*{
+            event.type = EVENT_ACTIVE;
+
+            auto data = MakeUnique<ActiveEventData>();
+
+            if (m_private->currentEvent.active.type & SDL_APPINPUTFOCUS)
+                data->flags |= ACTIVE_INPUT;
+            if (m_private->currentEvent.active.type & SDL_APPMOUSEFOCUS)
+                data->flags |= ACTIVE_MOUSE;
+            if (m_private->currentEvent.active.type & SDL_APPACTIVE)
+                data->flags |= ACTIVE_APP;
+
+            data->gain = m_private->currentEvent.active.gain == 1;
+
+            event.data = std::move(data);
+        }*/
     }
     else if ( (m_private->currentEvent.type == SDL_KEYDOWN) ||
               (m_private->currentEvent.type == SDL_KEYUP) )
@@ -1068,7 +1095,7 @@ Event CApplication::ProcessSystemEvent()
 
         data->virt = false;
         data->key = m_private->currentEvent.key.keysym.sym;
-        data->unicode = m_private->currentEvent.key.keysym.unicode;
+        data->unicode = m_private->currentEvent.key.keysym.sym; // TODO: use SDL_TEXTINPUT for this, and remove this field
         event.kmodState = m_private->currentEvent.key.keysym.mod;
 
         // Some keyboards return numerical enter keycode instead of normal enter
@@ -1079,47 +1106,38 @@ Event CApplication::ProcessSystemEvent()
         if (data->key == KEY(TAB) && ((event.kmodState & KEY_MOD(ALT)) != 0))
         {
             GetLogger()->Debug("Minimize to taskbar\n");
-            SDL_WM_IconifyWindow();
+            SDL_MinimizeWindow(m_private->window);
             event.type = EVENT_NULL;
         }
+
+        event.data = std::move(data);
+    }
+    else if (m_private->currentEvent.type == SDL_MOUSEWHEEL)
+    {
+        event.type = EVENT_MOUSE_WHEEL;
+
+        auto data = MakeUnique<MouseWheelEventData>();
+
+        if (m_private->currentEvent.wheel.y < 0) // TODO: properly use this value
+            data->dir = WHEEL_DOWN;
+        else
+            data->dir = WHEEL_UP;
 
         event.data = std::move(data);
     }
     else if ( (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) ||
          (m_private->currentEvent.type == SDL_MOUSEBUTTONUP) )
     {
-        if ((m_private->currentEvent.button.button == SDL_BUTTON_WHEELUP) ||
-            (m_private->currentEvent.button.button == SDL_BUTTON_WHEELDOWN))
-        {
+        auto data = MakeUnique<MouseButtonEventData>();
 
-            if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) // ignore the following up event
-            {
-                event.type = EVENT_MOUSE_WHEEL;
-
-                auto data = MakeUnique<MouseWheelEventData>();
-
-                if (m_private->currentEvent.button.button == SDL_BUTTON_WHEELDOWN)
-                    data->dir = WHEEL_DOWN;
-                else
-                    data->dir = WHEEL_UP;
-
-                event.data = std::move(data);
-            }
-
-        }
+        if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN)
+            event.type = EVENT_MOUSE_BUTTON_DOWN;
         else
-        {
-            auto data = MakeUnique<MouseButtonEventData>();
+            event.type = EVENT_MOUSE_BUTTON_UP;
 
-            if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN)
-                event.type = EVENT_MOUSE_BUTTON_DOWN;
-            else
-                event.type = EVENT_MOUSE_BUTTON_UP;
+        data->button = static_cast<MouseButton>(1 << m_private->currentEvent.button.button);
 
-            data->button = static_cast<MouseButton>(1 << m_private->currentEvent.button.button);
-
-            event.data = std::move(data);
-        }
+        event.data = std::move(data);
     }
     else if (m_private->currentEvent.type == SDL_MOUSEMOTION)
     {
@@ -1146,23 +1164,6 @@ Event CApplication::ProcessSystemEvent()
 
         auto data = MakeUnique<JoyButtonEventData>();
         data->button = m_private->currentEvent.jbutton.button;
-        event.data = std::move(data);
-    }
-    else if (m_private->currentEvent.type == SDL_ACTIVEEVENT)
-    {
-        event.type = EVENT_ACTIVE;
-
-        auto data = MakeUnique<ActiveEventData>();
-
-        if (m_private->currentEvent.active.type & SDL_APPINPUTFOCUS)
-            data->flags |= ACTIVE_INPUT;
-        if (m_private->currentEvent.active.type & SDL_APPMOUSEFOCUS)
-            data->flags |= ACTIVE_MOUSE;
-        if (m_private->currentEvent.active.type & SDL_APPACTIVE)
-            data->flags |= ACTIVE_APP;
-
-        data->gain = m_private->currentEvent.active.gain == 1;
-
         event.data = std::move(data);
     }
 
@@ -1307,7 +1308,7 @@ void CApplication::Render()
 
     StartPerformanceCounter(PCNT_SWAP_BUFFERS);
     if (m_deviceConfig.doubleBuf)
-        SDL_GL_SwapBuffers();
+        SDL_GL_SwapWindow(m_private->window);
     StopPerformanceCounter(PCNT_SWAP_BUFFERS);
 }
 
@@ -1447,47 +1448,17 @@ Gfx::DeviceConfig CApplication::GetVideoConfig() const
     return m_deviceConfig;
 }
 
-VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions,
-                                                      bool fullScreen, bool resizeable) const
+void CApplication::GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions, int display) const
 {
     resolutions.clear();
 
-    const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
-    if (videoInfo == nullptr)
-        return VIDEO_QUERY_ERROR;
+    for(int i = 0; i < SDL_GetNumDisplayModes(display); i++)
+    {
+        SDL_DisplayMode mode;
+        SDL_GetDisplayMode(display, i, &mode);
 
-    Uint32 videoFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE;
-
-    // Use hardware surface if available
-    if (videoInfo->hw_available)
-        videoFlags |= SDL_HWSURFACE;
-    else
-        videoFlags |= SDL_SWSURFACE;
-
-    // Enable hardware blit if available
-    if (videoInfo->blit_hw)
-        videoFlags |= SDL_HWACCEL;
-
-    if (resizeable)
-        videoFlags |= SDL_RESIZABLE;
-
-    if (fullScreen)
-        videoFlags |= SDL_FULLSCREEN;
-
-
-    SDL_Rect **modes = SDL_ListModes(nullptr, videoFlags);
-
-    if (modes == reinterpret_cast<SDL_Rect **>(0) )
-        return VIDEO_QUERY_NONE; // no modes available
-
-    if (modes == reinterpret_cast<SDL_Rect **>(-1) )
-        return VIDEO_QUERY_ALL; // all resolutions are possible
-
-
-    for (int i = 0; modes[i] != nullptr; ++i)
-        resolutions.push_back(Math::IntPoint(modes[i]->w, modes[i]->h));
-
-    return VIDEO_QUERY_OK;
+        resolutions.push_back(Math::IntPoint(mode.w, mode.h));
+    }
 }
 
 void CApplication::SetDebugModeActive(DebugMode mode, bool active)
@@ -1541,17 +1512,6 @@ bool CApplication::ParseDebugModes(const std::string& str, int& debugModes)
     return true;
 }
 
-void CApplication::SetGrabInput(bool grab)
-{
-    SDL_WM_GrabInput(grab ? SDL_GRAB_ON : SDL_GRAB_OFF);
-}
-
-bool CApplication::GetGrabInput() const
-{
-    int result = SDL_WM_GrabInput(SDL_GRAB_QUERY);
-    return result == SDL_GRAB_ON;
-}
-
 void CApplication::SetMouseMode(MouseMode mode)
 {
     m_mouseMode = mode;
@@ -1570,7 +1530,7 @@ void CApplication::MoveMouse(Math::Point pos)
 {
     Math::IntPoint windowPos = m_engine->InterfaceToWindowCoords(pos);
     m_input->MouseMove(windowPos);
-    SDL_WarpMouse(windowPos.x, windowPos.y);
+    SDL_WarpMouseInWindow(m_private->window, windowPos.x, windowPos.y);
 }
 
 std::vector<JoystickDevice> CApplication::GetJoystickList() const
@@ -1583,7 +1543,7 @@ std::vector<JoystickDevice> CApplication::GetJoystickList() const
     {
         JoystickDevice device;
         device.index = index;
-        device.name = SDL_JoystickName(index);
+        device.name = SDL_JoystickNameForIndex(index);
         result.push_back(device);
     }
 
