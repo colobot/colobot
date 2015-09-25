@@ -579,8 +579,6 @@ bool CApplication::Create()
         }
     }
 
-    //SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL); //TODO: ?
-
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
 
@@ -1002,30 +1000,34 @@ Event CApplication::ProcessSystemEvent()
     }
     else if (m_private->currentEvent.type == SDL_WINDOWEVENT)
     {
-        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+        {
             Gfx::DeviceConfig newConfig = m_deviceConfig;
             newConfig.size.x = m_private->currentEvent.window.data1;
             newConfig.size.y = m_private->currentEvent.window.data2;
             if (newConfig.size != m_deviceConfig.size)
                 ChangeVideoConfig(newConfig);
         }
-        // TODO: EVENT_ACTIVE
-        /*{
-            event.type = EVENT_ACTIVE;
 
-            auto data = MakeUnique<ActiveEventData>();
+        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_ENTER)
+        {
+            event.type = EVENT_MOUSE_ENTER;
+        }
 
-            if (m_private->currentEvent.active.type & SDL_APPINPUTFOCUS)
-                data->flags |= ACTIVE_INPUT;
-            if (m_private->currentEvent.active.type & SDL_APPMOUSEFOCUS)
-                data->flags |= ACTIVE_MOUSE;
-            if (m_private->currentEvent.active.type & SDL_APPACTIVE)
-                data->flags |= ACTIVE_APP;
+        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_LEAVE)
+        {
+            event.type = EVENT_MOUSE_LEAVE;
+        }
 
-            data->gain = m_private->currentEvent.active.gain == 1;
+        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+        {
+            event.type = EVENT_FOCUS_GAINED;
+        }
 
-            event.data = std::move(data);
-        }*/
+        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+        {
+            event.type = EVENT_FOCUS_LOST;
+        }
     }
     else if ( (m_private->currentEvent.type == SDL_KEYDOWN) ||
               (m_private->currentEvent.type == SDL_KEYUP) )
@@ -1188,13 +1190,6 @@ void CApplication::LogEvent(const Event &event)
                 {
                     auto data = event.GetData<JoyButtonEventData>();
                     l->Trace(" button = %d\n", data->button);
-                    break;
-                }
-                case EVENT_ACTIVE:
-                {
-                    auto data = event.GetData<ActiveEventData>();
-                    l->Trace(" flags = 0x%x\n", data->flags);
-                    l->Trace(" gain  = %s\n", data->gain ? "true" : "false");
                     break;
                 }
                 default:

@@ -62,23 +62,29 @@ enum EventType
     EVENT_MOUSE_WHEEL       = 5,
     //! Event sent after moving the mouse
     EVENT_MOUSE_MOVE        = 7,
+    //! Event sent when mouse enters the window
+    EVENT_MOUSE_ENTER       = 8,
+    //! Event sent when mouse leaves the window
+    EVENT_MOUSE_LEAVE       = 9,
+
     //! Event sent after pressing a key
-    EVENT_KEY_DOWN          = 8,
+    EVENT_KEY_DOWN          = 10,
     //! Event sent after releasing a key
-    EVENT_KEY_UP            = 9,
-
-    //! Event sent when application window loses/gains focus
-    EVENT_ACTIVE            = 10,
-
+    EVENT_KEY_UP            = 11,
     //! Event sent when user inputs some character
-    EVENT_TEXT_INPUT        = 11,
+    EVENT_TEXT_INPUT        = 12,
 
     //! Event sent after moving joystick axes
-    EVENT_JOY_AXIS          = 12,
+    EVENT_JOY_AXIS          = 13,
     //! Event sent after pressing a joystick button
-    EVENT_JOY_BUTTON_DOWN   = 13,
+    EVENT_JOY_BUTTON_DOWN   = 14,
     //! Event sent after releasing a joystick button
-    EVENT_JOY_BUTTON_UP     = 14,
+    EVENT_JOY_BUTTON_UP     = 15,
+
+    //! Event sent when the app winddow gains focus
+    EVENT_FOCUS_GAINED      = 16,
+    //! Event sent when the app winddow loses focus
+    EVENT_FOCUS_LOST        = 17,
 
     //!< Maximum value of system events
     EVENT_SYS_MAX,
@@ -676,38 +682,6 @@ struct JoyButtonEventData : public EventData
 
     //! The joystick button index
     unsigned char button = 0;
-};
-
-/**
- * \enum ActiveEventFlags
- * \brief Type of focus gained/lost
- */
-enum ActiveEventFlags
-{
-    //! Application window focus
-    ACTIVE_APP   = 0x01,
-    //! Input focus
-    ACTIVE_INPUT = 0x02,
-    //! Mouse focus
-    ACTIVE_MOUSE = 0x04
-
-};
-
-/**
- * \struct ActiveEventData
- * \brief Additional data for active event
- */
-struct ActiveEventData : public EventData
-{
-    std::unique_ptr<EventData> Clone() const override
-    {
-        return MakeUnique<ActiveEventData>(*this);
-    }
-
-    //! Flags (bitmask of enum values ActiveEventFlags)
-    unsigned char flags = 0;
-    //! True if the focus was gained; false otherwise
-    bool gain = false;
 };
 
 /**

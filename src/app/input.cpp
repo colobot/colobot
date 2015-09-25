@@ -330,6 +330,7 @@ InputSlot CInput::FindBinding(unsigned int key)
 void CInput::SaveKeyBindings()
 {
     std::stringstream key;
+    CConfigFile::GetInstancePointer()->SetStringProperty("Keybindings", "_Version", "SDL2");
     for (int i = 0; i < INPUT_SLOT_MAX; i++)
     {
         InputBinding b = GetInputBinding(static_cast<InputSlot>(i));
@@ -355,19 +356,22 @@ void CInput::LoadKeyBindings()
 {
     std::stringstream skey;
     std::string keys;
-    for (int i = 0; i < INPUT_SLOT_MAX; i++)
+    if (CConfigFile::GetInstancePointer()->GetStringProperty("Keybindings", "_Version", keys) && keys == "SDL2") // Keybindings from SDL1.2 are incompatible with SDL2 !!
     {
-        InputBinding b;
+        for (int i = 0; i < INPUT_SLOT_MAX; i++)
+        {
+            InputBinding b;
 
-        if (!CConfigFile::GetInstancePointer()->GetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], keys))
-            continue;
-        skey.clear();
-        skey.str(keys);
+            if (!CConfigFile::GetInstancePointer()->GetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], keys))
+                continue;
+            skey.clear();
+            skey.str(keys);
 
-        skey >> b.primary;
-        skey >> b.secondary;
+            skey >> b.primary;
+            skey >> b.secondary;
 
-        SetInputBinding(static_cast<InputSlot>(i), b);
+            SetInputBinding(static_cast<InputSlot>(i), b);
+        }
     }
 
     for (int i = 0; i < JOY_AXIS_SLOT_MAX; i++)

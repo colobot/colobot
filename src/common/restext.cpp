@@ -866,18 +866,17 @@ bool GetResource(ResType type, unsigned int num, std::string& text)
     }
     else
     {
-        // TODO: fix signed/unsigned comparations
-        if (num == KEY_INVALID)
+        if (num == static_cast<unsigned int>(KEY_INVALID))
             text.clear();
-        else if (num == VIRTUAL_KMOD_CTRL)
+        else if (num == static_cast<unsigned int>(VIRTUAL_KMOD(CTRL)))
             text = "Ctrl";
-        else if (num == VIRTUAL_KMOD_SHIFT)
+        else if (num == static_cast<unsigned int>(VIRTUAL_KMOD(SHIFT)))
             text = "Shift";
-        else if (num == VIRTUAL_KMOD_ALT)
+        else if (num == static_cast<unsigned int>(VIRTUAL_KMOD(ALT)))
             text = "Alt";
-        else if (num == VIRTUAL_KMOD_GUI)
+        else if (num == static_cast<unsigned int>(VIRTUAL_KMOD(GUI)))
             text = "Win"; // TODO: Better description of this key?
-        else if (num > VIRTUAL_JOY(0))
+        else if (num > static_cast<unsigned int>(VIRTUAL_JOY(0)))
         {
             text = gettext("Button %1");
             text = StrUtils::Replace(text, "%1", StrUtils::ToString<int>(1 + num - VIRTUAL_JOY(0)));
@@ -885,8 +884,6 @@ bool GetResource(ResType type, unsigned int num, std::string& text)
         else
         {
             text = SDL_GetKeyName(static_cast<SDL_Keycode>(num));
-            text = boost::regex_replace(text, boost::regex("\\[(.*)\\]"), "\\1");
-            text[0] = toupper(text[0]);
         }
         return true;
     }

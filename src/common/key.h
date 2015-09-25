@@ -26,7 +26,9 @@
 
 
 #include <SDL_keycode.h>
-#define SDLK_LAST (SDLK_SCANCODE_MASK << 1) //TODO
+
+// TODO: This is a bit ugly hack
+#define SDLK_LAST (SDLK_SCANCODE_MASK << 1)
 
 /* Key definitions are specially defined here so that it is clear in other parts of the code
   that these are used. It is to avoid having SDL-related enum values or #defines lying around
