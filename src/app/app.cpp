@@ -1399,8 +1399,10 @@ void CApplication::GetVideoResolutionList(std::vector<Math::IntPoint> &resolutio
     {
         SDL_DisplayMode mode;
         SDL_GetDisplayMode(display, i, &mode);
+        Math::IntPoint resolution = Math::IntPoint(mode.w, mode.h);
 
-        resolutions.push_back(Math::IntPoint(mode.w, mode.h));
+        if (std::find(resolutions.begin(), resolutions.end(), resolution) == resolutions.end())
+            resolutions.push_back(resolution);
     }
 }
 
