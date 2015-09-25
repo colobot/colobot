@@ -876,7 +876,7 @@ bool GetResource(ResType type, unsigned int num, std::string& text)
             text = "Alt";
         else if (num == static_cast<unsigned int>(VIRTUAL_KMOD(GUI)))
             text = "Win"; // TODO: Better description of this key?
-        else if (num > static_cast<unsigned int>(VIRTUAL_JOY(0)))
+        else if (num >= static_cast<unsigned int>(VIRTUAL_JOY(0)))
         {
             text = gettext("Button %1");
             text = StrUtils::Replace(text, "%1", StrUtils::ToString<int>(1 + num - VIRTUAL_JOY(0)));
