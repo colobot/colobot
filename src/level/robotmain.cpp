@@ -293,7 +293,15 @@ Ui::CDisplayText* CRobotMain::GetDisplayText()
     return m_displayText.get();
 }
 
-void CRobotMain::ResetAfterDeviceChanged()
+void CRobotMain::ResetAfterVideoConfigChanged()
+{
+    // Recreate the interface (needed if the aspect ratio changes)
+    // TODO: This can sometimes cause unwanted side effects, like hidden windows reappearing. To be fixed during CEGUI refactoring.
+    m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+    CreateShortcuts();
+}
+
+void CRobotMain::ReloadAllTextures()
 {
     if (m_phase == PHASE_SETUPds ||
        m_phase == PHASE_SETUPgs ||
@@ -307,10 +315,6 @@ void CRobotMain::ResetAfterDeviceChanged()
         ChangeColor();
         UpdateMap();
     }
-
-    // Recreate the interface (needed if the aspect ratio changes)
-    m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
-    CreateShortcuts();
 }
 
 

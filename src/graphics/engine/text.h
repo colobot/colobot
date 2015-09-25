@@ -28,6 +28,7 @@
 #include "graphics/core/color.h"
 
 #include "math/point.h"
+#include "math/intpoint.h"
 
 #include <map>
 #include <memory>
@@ -190,8 +191,8 @@ struct UTF8Char
 struct CharTexture
 {
     unsigned int id = 0;
-    Math::Point texSize;
-    Math::Point charSize;
+    Math::IntPoint texSize;
+    Math::IntPoint charSize;
 };
 
 // Definition is private - in text.cpp

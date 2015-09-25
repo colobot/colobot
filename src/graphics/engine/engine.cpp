@@ -362,55 +362,27 @@ void CEngine::Destroy()
     m_planet.reset();
 }
 
-void CEngine::ResetAfterDeviceChanged()
+void CEngine::ResetAfterVideoConfigChanged()
 {
     m_size = m_app->GetVideoConfig().size;
     m_mouseSize = Math::Point(0.04f, 0.04f * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
 
-    if (m_shadowMap.id != 0)
-    {
-        if (m_offscreenShadowRendering)
-            m_device->DeleteFramebuffer("shadow");
-        else
-            m_device->DestroyTexture(m_shadowMap);
-
-        m_shadowMap = Texture();
-    }
-
-    m_text->FlushCache();
-
-    FlushTextureCache();
-
-    CRobotMain::GetInstancePointer()->ResetAfterDeviceChanged();
-
-    LoadAllTextures();
-
-    for (int baseObjRank = 0; baseObjRank < static_cast<int>( m_baseObjects.size() ); baseObjRank++)
-    {
-        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
-        if (! p1.used)
-            continue;
-
-        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
-        {
-            EngineBaseObjTexTier& p2 = p1.next[l2];
-
-            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
-            {
-                EngineBaseObjDataTier& p3 = p2.next[l3];
-
-                m_device->DestroyStaticBuffer(p3.staticBufferId);
-                p3.staticBufferId = 0;
-                p3.updateStaticBuffer = true;
-            }
-        }
-    }
+    CRobotMain::GetInstancePointer()->ResetAfterVideoConfigChanged(); //TODO: Remove cross-reference to CRobotMain
 
     // Update the camera projection matrix for new aspect ratio
     SetFocus(m_focus);
 
-    // Because reloading textures takes a long time
-    m_app->ResetTimeAfterLoading();
+    // This needs to be recreated on resolution change
+    m_device->DeleteFramebuffer("multisample");
+}
+
+void CEngine::ReloadAllTextures()
+{
+    FlushTextureCache();
+    m_text->FlushCache();
+
+    CRobotMain::GetInstancePointer()->ReloadAllTextures(); //TODO: Remove cross-reference to CRobotMain
+    LoadAllTextures();
 }
 
 bool CEngine::ProcessEvent(const Event &event)
@@ -2875,7 +2847,7 @@ void CEngine::SetTextureFilterMode(TexFilter value)
 
     m_defaultTexParams.filter = m_terrainTexParams.filter = value;
     m_defaultTexParams.mipmap = m_terrainTexParams.mipmap = (value == TEX_FILTER_TRILINEAR);
-    ResetAfterDeviceChanged();
+    ReloadAllTextures();
 }
 
 TexFilter CEngine::GetTextureFilterMode()
@@ -2890,7 +2862,7 @@ void CEngine::SetTextureMipmapLevel(int value)
     if(m_textureMipmapLevel == value) return;
 
     m_textureMipmapLevel = value;
-    ResetAfterDeviceChanged();
+    ReloadAllTextures();
 }
 
 int CEngine::GetTextureMipmapLevel()
@@ -2906,7 +2878,7 @@ void CEngine::SetTextureAnisotropyLevel(int value)
     if(m_textureAnisotropy == value) return;
 
     m_textureAnisotropy = value;
-    ResetAfterDeviceChanged();
+    ReloadAllTextures();
 }
 
 int CEngine::GetTextureAnisotropyLevel()

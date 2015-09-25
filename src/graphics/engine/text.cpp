@@ -389,7 +389,7 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     auto it = cf->cache.find(ch);
     if (it != cf->cache.end())
     {
-        charSize = (*it).second.charSize;
+        charSize = m_engine->WindowToInterfaceSize((*it).second.charSize);
     }
     else
     {
@@ -926,8 +926,11 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
 
         CharTexture tex = GetCharTexture(ch, font, size);
 
-        Math::Point p1(pos.x, pos.y + tex.charSize.y - tex.texSize.y);
-        Math::Point p2(pos.x + tex.texSize.x, pos.y + tex.charSize.y);
+        Math::Point charSize = m_engine->WindowToInterfaceSize(tex.charSize);
+        Math::Point texSize  = m_engine->WindowToInterfaceSize(tex.texSize);
+
+        Math::Point p1(pos.x, pos.y + charSize.y - texSize.y);
+        Math::Point p2(pos.x + texSize.x, pos.y + charSize.y);
 
         Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
 
@@ -943,7 +946,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
         m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
         m_engine->AddStatisticTriangle(2);
 
-        pos.x += tex.charSize.x * width;
+        pos.x += charSize.x * width;
     }
 }
 
@@ -1038,8 +1041,8 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
     else
     {
         texture.id = tex.id;
-        texture.texSize =  m_engine->WindowToInterfaceSize(Math::IntPoint(textureSurface->w, textureSurface->h));
-        texture.charSize = m_engine->WindowToInterfaceSize(Math::IntPoint(textSurface->w, textSurface->h));
+        texture.texSize =  Math::IntPoint(textureSurface->w, textureSurface->h);
+        texture.charSize = Math::IntPoint(textSurface->w, textSurface->h);
     }
 
     SDL_FreeSurface(textSurface);

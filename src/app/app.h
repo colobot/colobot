@@ -369,8 +369,6 @@ protected:
 
     //! Current configuration of OpenGL display device
     Gfx::DeviceConfig m_deviceConfig;
-    //! Previous configuration of OpenGL display device
-    Gfx::DeviceConfig m_lastDeviceConfig;
 
     //! Text set as window title
     std::string     m_windowTitle;

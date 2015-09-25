@@ -164,7 +164,7 @@ bool CGL21Device::Create()
 {
     GetLogger()->Info("Creating CDevice - OpenGL 2.1\n");
 
-    /*static*/ bool glewInited = false;
+    static bool glewInited = false;
 
     if (!glewInited)
     {
@@ -396,8 +396,17 @@ void CGL21Device::ConfigChanged(const DeviceConfig& newConfig)
 
     // Reset state
     m_lighting = false;
-    Destroy();
-    Create();
+
+    glViewport(0, 0, m_config.size.x, m_config.size.y);
+
+    // create default framebuffer object
+    FramebufferParams framebufferParams;
+
+    framebufferParams.width = m_config.size.x;
+    framebufferParams.height = m_config.size.y;
+    framebufferParams.depth = m_config.depthSize;
+
+    m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
 }
 
 void CGL21Device::BeginScene()

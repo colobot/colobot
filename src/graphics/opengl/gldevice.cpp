@@ -160,7 +160,7 @@ bool CGLDevice::Create()
 {
     GetLogger()->Info("Creating CDevice - OpenGL 1.4\n");
 
-    /*static*/ bool glewInited = false;
+    static bool glewInited = false;
 
     if (!glewInited)
     {
@@ -337,8 +337,17 @@ void CGLDevice::ConfigChanged(const DeviceConfig& newConfig)
 
     // Reset state
     m_lighting = false;
-    Destroy();
-    Create();
+
+    glViewport(0, 0, m_config.size.x, m_config.size.y);
+
+    // create default framebuffer object
+    FramebufferParams framebufferParams;
+
+    framebufferParams.width = m_config.size.x;
+    framebufferParams.height = m_config.size.y;
+    framebufferParams.depth = m_config.depthSize;
+
+    m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
 }
 
 void CGLDevice::BeginScene()

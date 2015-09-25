@@ -655,25 +655,7 @@ bool CApplication::Create()
 
 bool CApplication::CreateVideoSurface()
 {
-    /*const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
-    if (videoInfo == nullptr)
-    {
-        m_errorMessage = std::string("SDL error while getting video info:\n ") +
-                         std::string(SDL_GetError());
-        GetLogger()->Error(m_errorMessage.c_str());
-        m_exitCode = 7;
-        return false;
-    }*/
-
-    Uint32 videoFlags = SDL_WINDOW_OPENGL; // | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE
-
-    // Use hardware surface if available
-    /*if (videoInfo->hw_available)
-        videoFlags |= SDL_HWSURFACE;*/
-
-    // Enable hardware blit if available
-    /*if (videoInfo->blit_hw)
-        videoFlags |= SDL_HWACCEL;*/
+    Uint32 videoFlags = SDL_WINDOW_OPENGL;
 
     if (m_deviceConfig.fullScreen)
         videoFlags |= SDL_WINDOW_FULLSCREEN;
@@ -710,54 +692,15 @@ bool CApplication::CreateVideoSurface()
 
 bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
 {
-    static bool restore = false;
-
-    m_lastDeviceConfig = m_deviceConfig;
     m_deviceConfig = newConfig;
 
-    SDL_GL_DeleteContext(m_private->glcontext); //TODO: refactor this
-    SDL_DestroyWindow(m_private->window); // TODO: ?
-
-    if (! CreateVideoSurface())
-    {
-        // Fatal error, so post the quit event
-        m_eventQueue->AddEvent(Event(EVENT_SYS_QUIT));
-        return false;
-    }
-
-    if (m_private->window == nullptr)
-    {
-        if (! restore)
-        {
-            std::string error = std::string("SDL error while setting video mode:\n") +
-                          std::string(SDL_GetError()) + std::string("\n") +
-                          std::string("Previous mode will be restored");
-            GetLogger()->Error(error.c_str());
-            m_systemUtils->SystemDialog( SDT_ERROR, "COLOBOT - Error", error);
-
-            restore = true;
-            ChangeVideoConfig(m_lastDeviceConfig);
-            return false;
-        }
-        else
-        {
-            restore = false;
-
-            std::string error = std::string("SDL error while restoring previous video mode:\n") +
-                          std::string(SDL_GetError());
-            GetLogger()->Error(error.c_str());
-            m_systemUtils->SystemDialog( SDT_ERROR, "COLOBOT - Fatal Error", error);
-
-
-            // Fatal error, so post the quit event
-            m_eventQueue->AddEvent(Event(EVENT_SYS_QUIT));
-            return false;
-        }
-    }
+    // TODO: Somehow this doesn't work for maximized windows (at least on Ubuntu)
+    SDL_SetWindowSize(m_private->window, m_deviceConfig.size.x, m_deviceConfig.size.y);
+    SDL_SetWindowFullscreen(m_private->window, m_deviceConfig.fullScreen ? SDL_WINDOW_FULLSCREEN : 0);
 
     m_device->ConfigChanged(m_deviceConfig);
 
-    m_engine->ResetAfterDeviceChanged();
+    m_engine->ResetAfterVideoConfigChanged();
 
     return true;
 }
