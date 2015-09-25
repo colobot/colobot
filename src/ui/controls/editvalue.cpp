@@ -184,20 +184,11 @@ bool CEditValue::EventProcess(const Event &event)
     }
 
     if (event.type == EVENT_MOUSE_WHEEL &&
-        event.GetData<MouseWheelEventData>()->dir == WHEEL_UP &&
         Detect(event.mousePos))
     {
-        float value = GetValue()+m_stepValue;
-        if ( value > m_maxValue )  value = m_maxValue;
-        SetValue(value, true);
-        HiliteValue(event);
-    }
-    if ( event.type == EVENT_MOUSE_WHEEL &&
-         event.GetData<MouseWheelEventData>()->dir == WHEEL_DOWN &&
-         Detect(event.mousePos))
-    {
-        float value = GetValue()-m_stepValue;
+        float value = GetValue() + (m_stepValue * event.GetData<MouseWheelEventData>()->y);
         if ( value < m_minValue )  value = m_minValue;
+        if ( value > m_maxValue )  value = m_maxValue;
         SetValue(value, true);
         HiliteValue(event);
     }

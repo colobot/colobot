@@ -280,16 +280,11 @@ bool CList::EventProcess(const Event &event)
     if (event.type == EVENT_MOUSE_WHEEL && Detect(event.mousePos))
     {
         auto data = event.GetData<MouseWheelEventData>();
-        if (data->dir == WHEEL_UP)
-        {
-            if (m_firstLine > 0)
-                m_firstLine--;
-        }
-        else
-        {
-            if (m_firstLine < m_totalLine - m_displayLine)
-                m_firstLine++;
-        }
+        m_firstLine -= data->y;
+        if (m_firstLine < 0)
+            m_firstLine = 0;
+        if (m_firstLine > m_totalLine - m_displayLine)
+            m_firstLine = m_totalLine - m_displayLine;
 
         UpdateScroll();
         UpdateButton();
@@ -855,4 +850,3 @@ void CList::MoveScroll()
 
 
 } // namespace Ui
-

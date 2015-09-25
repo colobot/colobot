@@ -254,14 +254,7 @@ bool CEdit::EventProcess(const Event &event)
         Detect(event.mousePos))
     {
         auto data = event.GetData<MouseWheelEventData>();
-        if (data->dir == WHEEL_UP)
-        {
-            Scroll(m_lineFirst - 3, true);
-        }
-        else
-        {
-            Scroll(m_lineFirst + 3, true);
-        }
+        Scroll(m_lineFirst - data->y, true);
         return true;
     }
 

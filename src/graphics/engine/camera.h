@@ -226,7 +226,7 @@ protected:
     //! Changes the camera according to the mouse moved
     bool        EventMouseMove(const Event &event);
     //! Mouse wheel operation
-    void        EventMouseWheel(WheelDirection dir);
+    void        EventMouseWheel(int dir);
     //! Changes the camera according to the time elapsed
     bool        EventFrame(const Event &event);
     //! Moves the point of view

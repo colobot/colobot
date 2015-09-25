@@ -273,18 +273,25 @@ bool CScroll::EventProcess(const Event &event)
     }
 
     if (event.type == EVENT_MOUSE_WHEEL &&
-        event.GetData<MouseWheelEventData>()->dir == WHEEL_UP &&
-        Detect(event.mousePos) &&
-        m_buttonUp != nullptr)
+        Detect(event.mousePos))
     {
-        m_event->AddEvent(Event(m_buttonUp->GetEventType()));
-    }
-    if (event.type == EVENT_MOUSE_WHEEL &&
-        event.GetData<MouseWheelEventData>()->dir == WHEEL_DOWN &&
-        Detect(event.mousePos) &&
-        m_buttonDown != nullptr)
-    {
-        m_event->AddEvent(Event(m_buttonDown->GetEventType()));
+        auto data = event.GetData<MouseWheelEventData>();
+        if (data->y > 0)
+        {
+            if (m_buttonUp != nullptr)
+            {
+                for (int i = 0; i < data->y; i++)
+                    m_event->AddEvent(Event(m_buttonUp->GetEventType()));
+            }
+        }
+        else
+        {
+            if (m_buttonDown != nullptr)
+            {
+                for (int i = 0; i < -(data->y); i++)
+                    m_event->AddEvent(Event(m_buttonDown->GetEventType()));
+            }
+        }
     }
 
     return true;
@@ -443,4 +450,3 @@ float CScroll::GetArrowStep()
 }
 
 } // namespace Ui
-

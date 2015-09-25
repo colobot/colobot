@@ -1065,7 +1065,7 @@ bool CCamera::EventProcess(const Event &event)
             break;
 
         case EVENT_MOUSE_WHEEL:
-            EventMouseWheel(event.GetData<MouseWheelEventData>()->dir);
+            EventMouseWheel(event.GetData<MouseWheelEventData>()->y);
             break;
 
         default:
@@ -1080,55 +1080,34 @@ bool CCamera::EventMouseMove(const Event &event)
     return true;
 }
 
-void CCamera::EventMouseWheel(WheelDirection dir)
+void CCamera::EventMouseWheel(int dir)
 {
     if (m_type == CAM_TYPE_BACK)
     {
-        if (dir == WHEEL_UP)
-        {
-            m_backDist -= 8.0f;
-            if (m_backDist < m_backMin)
-                m_backDist = m_backMin;
-        }
-        else if (dir == WHEEL_DOWN)
-        {
-            m_backDist += 8.0f;
-            if (m_backDist > 200.0f)
-                m_backDist = 200.0f;
-        }
+        m_backDist -= 8.0f*dir;
+        if (m_backDist < m_backMin)
+            m_backDist = m_backMin;
+        if (m_backDist > 200.0f)
+            m_backDist = 200.0f;
     }
 
     if ( m_type == CAM_TYPE_FIX   ||
          m_type == CAM_TYPE_PLANE )
     {
-        if (dir == WHEEL_UP)
-        {
-            m_fixDist -= 8.0f;
-            if (m_fixDist < 10.0f)
-                m_fixDist = 10.0f;
-        }
-        else if (dir == WHEEL_DOWN)
-        {
-            m_fixDist += 8.0f;
-            if (m_fixDist > 200.0f)
-                m_fixDist = 200.0f;
-        }
+        m_fixDist -= 8.0f*dir;
+        if (m_fixDist < 10.0f)
+            m_fixDist = 10.0f;
+        if (m_fixDist > 200.0f)
+            m_fixDist = 200.0f;
     }
 
     if ( m_type == CAM_TYPE_VISIT )
     {
-        if (dir == WHEEL_UP)
-        {
-            m_visitDist -= 8.0f;
-            if (m_visitDist < 20.0f)
-                m_visitDist = 20.0f;
-        }
-        else if (dir == WHEEL_DOWN)
-        {
-            m_visitDist += 8.0f;
-            if (m_visitDist > 200.0f)
-                m_visitDist = 200.0f;
-        }
+        m_visitDist -= 8.0f*dir;
+        if (m_visitDist < 20.0f)
+            m_visitDist = 20.0f;
+        if (m_visitDist > 200.0f)
+            m_visitDist = 200.0f;
     }
 }
 

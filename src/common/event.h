@@ -648,8 +648,10 @@ struct MouseWheelEventData : public EventData
         return MakeUnique<MouseWheelEventData>(*this);
     }
 
-    //! Wheel direction
-    WheelDirection dir = WHEEL_UP;
+    //! Amount scrolled vertically, positive value is away from the user
+    signed int y = 0;
+    //! Amount scrolled horizontally (if the mouse supports it), positive value is to the right
+    signed int x = 0;
 };
 
 /**

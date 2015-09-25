@@ -1069,11 +1069,8 @@ Event CApplication::ProcessSystemEvent()
         event.type = EVENT_MOUSE_WHEEL;
 
         auto data = MakeUnique<MouseWheelEventData>();
-
-        if (m_private->currentEvent.wheel.y < 0) // TODO: properly use this value
-            data->dir = WHEEL_DOWN;
-        else
-            data->dir = WHEEL_UP;
+        data->y = m_private->currentEvent.wheel.y;
+        data->x = m_private->currentEvent.wheel.x;
 
         event.data = std::move(data);
     }
@@ -1175,7 +1172,8 @@ void CApplication::LogEvent(const Event &event)
                 case EVENT_MOUSE_WHEEL:
                 {
                     auto data = event.GetData<MouseWheelEventData>();
-                    l->Trace(" dir = %s\n", (data->dir == WHEEL_DOWN) ? "WHEEL_DOWN" : "WHEEL_UP");
+                    l->Trace(" y = %d\n", data->y);
+                    l->Trace(" x = %d\n", data->x);
                     break;
                 }
                 case EVENT_JOY_AXIS:
