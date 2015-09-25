@@ -143,6 +143,11 @@ CEdit::CEdit()
 CEdit::~CEdit()
 {
     FreeImage();
+
+    if (m_bFocus)
+    {
+        CApplication::GetInstancePointer()->SetTextInput(false);
+    }
 }
 
 
@@ -473,15 +478,12 @@ bool CEdit::EventProcess(const Event &event)
         }
     }
 
-    if ( event.type == EVENT_KEY_DOWN && !bControl && m_bFocus )
+    if ( event.type == EVENT_TEXT_INPUT && !bControl && m_bFocus )
     {
-        auto data = event.GetData<KeyEventData>();
-        if (data->unicode >= ' ')
-        {
-            Insert(static_cast<char>(data->unicode)); // TODO: insert utf-8 char
-            SendModifEvent();
-            return true;
-        }
+        auto data = event.GetData<TextInputData>();
+        Insert(data->text[0]); // TODO: insert utf-8 char
+        SendModifEvent();
+        return true;
     }
 
     if ( event.type == EVENT_FOCUS )
@@ -3212,6 +3214,18 @@ void CEdit::UpdateScroll()
             value = 1.0f / (m_lineTotal - m_lineVisible);
             m_scroll->SetArrowStep(value);
         }
+    }
+}
+
+void CEdit::SetFocus(CControl* control)
+{
+    bool oldFocus = m_bFocus;
+    CControl::SetFocus(control);
+
+    if (oldFocus != m_bFocus)
+    {
+        // Start/stop text input mode, this toggles the on-screen keyboard
+        CApplication::GetInstancePointer()->SetTextInput(m_bFocus);
     }
 }
 

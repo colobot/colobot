@@ -97,6 +97,7 @@ struct ApplicationPrivate
         SDL_memset(&currentEvent, 0, sizeof(SDL_Event));
         SDL_memset(&lastMouseMotionEvent, 0, sizeof(SDL_Event));
         window = nullptr;
+        glcontext = nullptr;
         joystick = nullptr;
         joystickTimer = 0;
     }
@@ -1038,7 +1039,6 @@ Event CApplication::ProcessSystemEvent()
 
         data->virt = false;
         data->key = m_private->currentEvent.key.keysym.sym;
-        data->unicode = m_private->currentEvent.key.keysym.sym; // TODO: use SDL_TEXTINPUT for this, and remove this field
         event.kmodState = m_private->currentEvent.key.keysym.mod;
 
         // Some keyboards return numerical enter keycode instead of normal enter
@@ -1053,6 +1053,13 @@ Event CApplication::ProcessSystemEvent()
             event.type = EVENT_NULL;
         }
 
+        event.data = std::move(data);
+    }
+    else if (m_private->currentEvent.type == SDL_TEXTINPUT)
+    {
+        event.type = EVENT_TEXT_INPUT;
+        auto data = MakeUnique<TextInputData>();
+        data->text = m_private->currentEvent.text.text;
         event.data = std::move(data);
     }
     else if (m_private->currentEvent.type == SDL_MOUSEWHEEL)
@@ -1127,11 +1134,17 @@ void CApplication::LogEvent(const Event &event)
     };
 
     // Print the events in debug mode to test the code
-    if (IsDebugModeActive(DEBUG_SYS_EVENTS) || IsDebugModeActive(DEBUG_APP_EVENTS))
+    if (IsDebugModeActive(DEBUG_SYS_EVENTS) || IsDebugModeActive(DEBUG_UPDATE_EVENTS) || IsDebugModeActive(DEBUG_APP_EVENTS))
     {
         std::string eventType = ParseEventType(event.type);
 
-        if (IsDebugModeActive(DEBUG_SYS_EVENTS) && event.type <= EVENT_SYS_MAX)
+        if (IsDebugModeActive(DEBUG_UPDATE_EVENTS) && event.type == EVENT_FRAME)
+        {
+            l->Trace("Update event: %s\n", eventType.c_str());
+            PrintEventDetails();
+        }
+
+        if (IsDebugModeActive(DEBUG_SYS_EVENTS) && (event.type <= EVENT_SYS_MAX && event.type != EVENT_FRAME))
         {
             l->Trace("System event %s:\n", eventType.c_str());
             switch (event.type)
@@ -1142,7 +1155,12 @@ void CApplication::LogEvent(const Event &event)
                     auto data = event.GetData<KeyEventData>();
                     l->Trace(" virt    = %s\n", data->virt ? "true" : "false");
                     l->Trace(" key     = %d\n", data->key);
-                    l->Trace(" unicode = 0x%04x\n", data->unicode);
+                    break;
+                }
+                case EVENT_TEXT_INPUT:
+                {
+                    auto data = event.GetData<TextInputData>();
+                    l->Trace(" text = %s\n", data->text.c_str());
                     break;
                 }
                 case EVENT_MOUSE_BUTTON_DOWN:
@@ -1231,7 +1249,6 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
         auto data = MakeUnique<KeyEventData>();
         data->virt = true;
         data->key = VIRTUAL_JOY(sourceData->button);
-        data->unicode = 0;
         virtualEvent.data = std::move(data);
     }
     else
@@ -1430,6 +1447,10 @@ bool CApplication::ParseDebugModes(const std::string& str, int& debugModes)
         if (modeToken == "sys_events")
         {
             debugModes |= DEBUG_SYS_EVENTS;
+        }
+        else if (modeToken == "update_events")
+        {
+            debugModes |= DEBUG_UPDATE_EVENTS;
         }
         else if (modeToken == "app_events")
         {
@@ -1757,4 +1778,16 @@ void CApplication::UpdatePerformanceCountersData()
 bool CApplication::GetSceneTestMode()
 {
     return m_sceneTest;
+}
+
+void CApplication::SetTextInput(bool textInputEnabled)
+{
+    if (textInputEnabled)
+    {
+        SDL_StartTextInput();
+    }
+    else
+    {
+        SDL_StopTextInput();
+    }
 }

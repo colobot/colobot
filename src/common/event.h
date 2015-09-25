@@ -70,6 +70,9 @@ enum EventType
     //! Event sent when application window loses/gains focus
     EVENT_ACTIVE            = 10,
 
+    //! Event sent when user inputs some character
+    EVENT_TEXT_INPUT        = 11,
+
     //! Event sent after moving joystick axes
     EVENT_JOY_AXIS          = 12,
     //! Event sent after pressing a joystick button
@@ -569,12 +572,24 @@ struct KeyEventData : public EventData
     bool virt = false;
     //! Key symbol: KEY(...) macro value or virtual key VIRTUAL_... (from common/key.h)
     unsigned int key = 0;
-    //! Unicode character
-    //! NOTE: applicable only to EVENT_KEY_DOWN events!
-    unsigned int unicode = 0;
     //! Input binding slot for this key
-    InputSlot slot = INPUT_SLOT_LEFT;
+    InputSlot slot = INPUT_SLOT_MAX;
 };
+
+/**
+ * \struct TextInputData
+ * \brief Additional data for text input event
+ */
+ struct TextInputData : public EventData
+ {
+    std::unique_ptr<EventData> Clone() const override
+    {
+        return MakeUnique<TextInputData>(*this);
+    }
+
+    //! Text entered by the user (usually one character, UTF-8 encoded)
+    std::string text = "";
+ };
 
 /**
  * \enum MouseButton
