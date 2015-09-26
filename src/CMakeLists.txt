@@ -54,6 +54,7 @@ endif()
 
 # Configure file
 configure_file(common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
+configure_file(common/version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/version.h)
 
 set(OPENAL_SRC "")
 

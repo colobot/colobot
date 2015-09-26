@@ -19,7 +19,7 @@
 
 #include "app/app.h"
 
-#include "common/config.h"
+#include "common/version.h"
 
 #include "app/controller.h"
 #include "app/input.h"

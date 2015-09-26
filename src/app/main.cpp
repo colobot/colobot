@@ -23,6 +23,7 @@
  */
 
 #include "common/config.h"
+#include "common/version.h"
 
 #include "app/app.h"
 #include "app/signal_handlers.h"

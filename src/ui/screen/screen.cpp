@@ -19,7 +19,7 @@
 
 #include "ui/screen/screen.h"
 
-#include "common/config.h"
+#include "common/version.h"
 
 #include "app/app.h"
 
