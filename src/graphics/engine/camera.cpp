@@ -570,6 +570,8 @@ void CCamera::FlushEffect()
     m_effectForce    = 0.0f;
     m_effectProgress = 0.0f;
     m_effectOffset   = Math::Vector(0.0f, 0.0f, 0.0f);
+
+    CApplication::GetInstancePointer()->StopForceFeedbackEffect();
 }
 
 void CCamera::StartEffect(CameraEffect effect, Math::Vector pos, float force)
@@ -654,6 +656,25 @@ void CCamera::EffectFrame(const Event &event)
 
     force *= 1.0f-dist;
     m_effectOffset *= force;
+
+    float forceFeedback = force;
+    if (m_effectType == CAM_EFFECT_VIBRATION)
+    {
+        forceFeedback *= 0.5f;
+    }
+    if (m_effectType == CAM_EFFECT_PET)
+    {
+        forceFeedback *= 0.75f;
+    }
+    if (m_effectType == CAM_EFFECT_EXPLO)
+    {
+        forceFeedback *= 3.0f;
+    }
+    if (forceFeedback > 1.0f) forceFeedback = 1.0f;
+    if (forceFeedback >= 0.1f)
+    {
+        CApplication::GetInstancePointer()->PlayForceFeedbackEffect(forceFeedback);
+    }
 
     if (m_effectProgress >= 1.0f)
         FlushEffect();

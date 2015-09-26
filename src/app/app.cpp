@@ -91,6 +91,8 @@ struct ApplicationPrivate
     SDL_Joystick *joystick;
     //! Id of joystick timer
     SDL_TimerID joystickTimer;
+    //! Haptic subsystem for the joystick
+    SDL_Haptic *haptic;
 
     ApplicationPrivate()
     {
@@ -100,6 +102,7 @@ struct ApplicationPrivate
         glcontext = nullptr;
         joystick = nullptr;
         joystickTimer = 0;
+        haptic = nullptr;
     }
 };
 
@@ -516,6 +519,10 @@ bool CApplication::Create()
     {
         GetLogger()->Warn("Joystick subsystem init failed\nJoystick(s) will not be available\n");
     }
+    if (SDL_InitSubSystem(SDL_INIT_HAPTIC) < 0)
+    {
+        GetLogger()->Warn("Joystick haptic subsystem init failed\nForce feedback will not be available\n");
+    }
 
     if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) == 0)
     {
@@ -725,6 +732,20 @@ bool CApplication::OpenJoystick()
     // Create a timer for polling joystick state
     m_private->joystickTimer = SDL_AddTimer(JOYSTICK_TIMER_INTERVAL, JoystickTimerCallback, nullptr);
 
+    // Initialize haptic subsystem
+    m_private->haptic = SDL_HapticOpenFromJoystick(m_private->joystick);
+    if (m_private->haptic == nullptr)
+    {
+        GetLogger()->Warn("Haptic subsystem open failed\n");
+        return true;
+    }
+
+    if (SDL_HapticRumbleInit(m_private->haptic) != 0)
+    {
+        GetLogger()->Warn("Haptic rumble effect init failed\n");
+        return true;
+    }
+
     return true;
 }
 
@@ -733,6 +754,11 @@ void CApplication::CloseJoystick()
     // Timer will remove itself automatically
 
     GetLogger()->Info("Closing joystick\n");
+
+    StopForceFeedbackEffect();
+
+    SDL_HapticClose(m_private->haptic);
+    m_private->haptic = nullptr;
 
     SDL_JoystickClose(m_private->joystick);
     m_private->joystick = nullptr;
@@ -1783,4 +1809,21 @@ void CApplication::SetTextInput(bool textInputEnabled)
     {
         SDL_StopTextInput();
     }
+}
+
+void CApplication::PlayForceFeedbackEffect(float strength, int length)
+{
+    if (m_private->haptic == nullptr) return;
+
+    GetLogger()->Trace("Force feedback! length = %d ms, strength = %.2f\n", length, strength);
+    if (SDL_HapticRumblePlay(m_private->haptic, strength, length) != 0)
+    {
+        GetLogger()->Debug("Failed to play haptic effect\n");
+    }
+}
+
+void CApplication::StopForceFeedbackEffect()
+{
+    if (m_private->haptic == nullptr) return;
+    SDL_HapticRumbleStop(m_private->haptic);
 }

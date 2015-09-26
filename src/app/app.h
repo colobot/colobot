@@ -314,6 +314,11 @@ public:
     //! Renders the image in window if needed
     void        RenderIfNeeded(int updateRate);
 
+    //! Starts a force feedback effect on the joystick
+    void        PlayForceFeedbackEffect(float strength = 1.0f, int length = 999999);
+    //! Stops a force feedback effect on the joystick
+    void        StopForceFeedbackEffect();
+
 protected:
     //! Creates the window's SDL_Surface
     bool CreateVideoSurface();
