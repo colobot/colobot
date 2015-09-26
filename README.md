@@ -1,4 +1,4 @@
-# English
+# Colobot: Gold Edition
 
 Welcome to the Colobot: Gold Edition project code repository
 
