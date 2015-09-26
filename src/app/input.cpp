@@ -171,14 +171,14 @@ void CInput::EventProcess(Event& event)
 
         if (data->axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Y).axis)
         {
-            m_joyMotion.y = Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
+            m_joyMotion.y = -Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
             if (GetJoyAxisBinding(JOY_AXIS_SLOT_Y).invert)
                 m_joyMotion.y *= -1.0f;
         }
 
         if (data->axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Z).axis)
         {
-            m_joyMotion.z = Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
+            m_joyMotion.z = -Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
             if (GetJoyAxisBinding(JOY_AXIS_SLOT_Z).invert)
                 m_joyMotion.z *= -1.0f;
         }
