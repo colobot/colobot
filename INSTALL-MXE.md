@@ -18,40 +18,52 @@ To cross-compile Colobot using MXE:
    It already contains a universal Makefile for everything.
    Usage is simply `make name_of_package`.
    It will automatically check for dependencies, etc.
-   The packages will be installed in the MXE directory under `usr/`.
+   The packages will be installed in the MXE directory under `usr/i686-w64-mingw32.static`.
 
    You need to `make gcc` first for basic compiler and then do the same
    for some additional libraries. In the end, you should have the following
-   packages installed (this is the final listing of `usr/installed/`):
+   packages installed (this is the final listing of `usr/i686-w64-mingw32.static/installed/`):
     * binutils
     * boost
     * bzip2
-    * check-requirements
+    * cairo
+    * dbus
     * expat
     * flac
+    * fontconfig
     * freetype
+    * freetype-bootstrap
     * gcc
     * gcc-gmp
+    * gcc-isl
     * gcc-mpc
     * gcc-mpfr
     * gettext
     * glew
+    * glib
+    * harfbuzz
+    * icu4c
     * jpeg
+    * libffi
     * libiconv
     * libpng
     * libsndfile
-    * libtool
-    * mingwrt
+    * libwebp
+    * lzo
+    * mingw-w64
+    * mxe-conf
     * ogg
     * openal
+    * pcre
     * physfs
+    * pixman
+    * pkgconf
     * portaudio
-    * sdl
-    * sdl_image
-    * sdl_ttf
+    * sdl2
+    * sdl2_image
+    * sdl2_ttf
     * tiff
     * vorbis
-    * w32api
     * xz
     * zlib
 
@@ -60,7 +72,7 @@ To cross-compile Colobot using MXE:
    `mkdir build-mxe && cd build-mxe`
 
    In order to cross-compile a CMake project, you have to specify a CMake toolchain file.
-   MXE has such file in MXE's directory: `usr/i686-pc-mingw32/share/cmake/mxe-conf.cmake`
+   MXE has such file in MXE's directory: `usr/i686-w64-mingw32.static/share/cmake/mxe-conf.cmake`
    So you should use the following cmake command: `cmake -DCMAKE_TOOLCHAIN_FILE=/path/to/mxe-conf.cmake ..`
    CMake files in Colobot should detect that MXE is being used and they will
    modify flags, paths, etc. as required. You should not run into any problems.
@@ -74,6 +86,6 @@ To cross-compile Colobot using MXE:
    in MXE. Then you can create the NSIS installer that way:
    `PATH=/path/to/mxe/binaries:$PATH make package`
    where `/path/to/mxe/binaries` is path to cross-compiled MXE binaries available
-   in MXE's directory under `usr/i686-pc-mingw32/bin`.
+   in MXE's directory under `usr/i686-w64-mingw32.static/bin`.
    This will create a versioned colobot-$version.exe installer that will install Colobot
    in system directories, add a shortcut in the start menu and setup an uninstaller.

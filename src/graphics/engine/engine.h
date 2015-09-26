@@ -659,7 +659,7 @@ public:
     void            Destroy();
 
     //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
-    void            ResetAfterDeviceChanged();
+    void            ResetAfterVideoConfigChanged();
 
 
     //! Called once per frame, the call is the entry point for rendering
@@ -1270,6 +1270,9 @@ protected:
         std::string fileName;
     };
     static void WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data);
+
+    //! Reloads all textures
+    void ReloadAllTextures();
 
 protected:
     CApplication*     m_app;

@@ -27,8 +27,8 @@ unsigned int GetVirtualKey(unsigned int key)
         return VIRTUAL_KMOD(SHIFT);
     if(key == KEY(LALT) || key == KEY(RALT))
         return VIRTUAL_KMOD(ALT);
-    if(key == KEY(LMETA) || key == KEY(RMETA))
-        return VIRTUAL_KMOD(META);
+    if(key == KEY(LGUI) || key == KEY(RGUI))
+        return VIRTUAL_KMOD(GUI);
 
     if(key == KEY(KP_ENTER))
         return KEY(RETURN);

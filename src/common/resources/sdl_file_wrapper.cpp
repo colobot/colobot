@@ -52,11 +52,12 @@ CSDLFileWrapper::CSDLFileWrapper(const std::string& filename)
         return;
     }
 
-    m_rwops->type = PHYSFS_RWOPS_TYPE;
+    m_rwops->type = PHYSFS_RWOPS_TYPE; //TODO: Documentation recommends to leave SDL_RWOPS_UNKNOWN here for application-defined RWops. Did that change in SDL2?
     m_rwops->hidden.unknown.data1 = file;
     m_rwops->seek = SDLSeek;
     m_rwops->read = SDLRead;
     m_rwops->write = SDLWrite;
+    m_rwops->size = SDLSize;
     // This is safe because SDL_FreeRW will be called in destructor
     m_rwops->close = SDLCloseWithoutFreeRW;
 }
@@ -117,7 +118,7 @@ bool CSDLFileWrapper::CheckSDLContext(SDL_RWops *context)
     return true;
 }
 
-int CSDLFileWrapper::SDLSeek(SDL_RWops *context, int offset, int whence)
+Sint64 CSDLFileWrapper::SDLSeek(SDL_RWops *context, Sint64 offset, int whence)
 {
     if (CheckSDLContext(context))
     {
@@ -151,7 +152,12 @@ int CSDLFileWrapper::SDLSeek(SDL_RWops *context, int offset, int whence)
     return -1;
 }
 
-int CSDLFileWrapper::SDLRead(SDL_RWops *context, void *ptr, int size, int maxnum)
+Sint64 CSDLFileWrapper::SDLSize(SDL_RWops *context)
+{
+    return -1; // Not needed for now
+}
+
+size_t CSDLFileWrapper::SDLRead(SDL_RWops *context, void *ptr, size_t size, size_t maxnum)
 {
     if (CheckSDLContext(context))
     {
@@ -165,7 +171,8 @@ int CSDLFileWrapper::SDLRead(SDL_RWops *context, void *ptr, int size, int maxnum
     return 0;
 }
 
-int CSDLFileWrapper::SDLWrite(SDL_RWops *context, const void *ptr, int size, int num)
+size_t CSDLFileWrapper::SDLWrite(SDL_RWops *context, const void *ptr, size_t size, size_t num)
 {
+    assert(!!"Writing to CSDLFileWrapper is currently not supported");
     return 0;
 }

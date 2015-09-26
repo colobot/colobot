@@ -56,9 +56,9 @@ You will need:
  * recent compiler (GCC >= 4.7, or Clang >= 3.1) since we are using some features of C++11
  * CMake >= 2.8
  * Boost >= 1.51 (header files + components: filesystem and regex)
- * SDL >= 1.2.10
- * SDL_image >= 1.2
- * SDL_ttf >= 2.0
+ * SDL2
+ * SDL2_image
+ * SDL2_ttf
  * GLEW >= 1.8.0
  * libpng >= 1.2
  * gettext >= 0.18
@@ -72,7 +72,7 @@ You will need:
 
 On Ubuntu (and probably any other Debian-based system), you can use the following command to install all required packages:
 ```
-  $ apt-get install build-essential cmake libsdl1.2debian libsdl1.2-dev libsdl-image1.2 libsdl-image1.2-dev libsdl-ttf2.0-0 libsdl-ttf2.0-dev libsdl-mixer1.2 libsdl-mixer1.2-dev libsndfile1-dev libvorbis-dev libogg-dev libpng12-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools
+  $ apt-get install build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng12-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools
 ```
 
 Make sure you install the packages along with header files (often distributed in separate *-dev packages). If you miss any requirements,

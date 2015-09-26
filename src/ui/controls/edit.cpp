@@ -40,8 +40,7 @@
 
 #include "ui/controls/scroll.h"
 
-#include <clipboard/clipboard.h>
-
+#include <SDL.h>
 #include <boost/algorithm/string.hpp>
 
 #include <cstring>
@@ -144,6 +143,11 @@ CEdit::CEdit()
 CEdit::~CEdit()
 {
     FreeImage();
+
+    if (m_bFocus)
+    {
+        CApplication::GetInstancePointer()->SetTextInput(false);
+    }
 }
 
 
@@ -250,14 +254,7 @@ bool CEdit::EventProcess(const Event &event)
         Detect(event.mousePos))
     {
         auto data = event.GetData<MouseWheelEventData>();
-        if (data->dir == WHEEL_UP)
-        {
-            Scroll(m_lineFirst - 3, true);
-        }
-        else
-        {
-            Scroll(m_lineFirst + 3, true);
-        }
+        Scroll(m_lineFirst - data->y, true);
         return true;
     }
 
@@ -474,15 +471,12 @@ bool CEdit::EventProcess(const Event &event)
         }
     }
 
-    if ( event.type == EVENT_KEY_DOWN && !bControl && m_bFocus )
+    if ( event.type == EVENT_TEXT_INPUT && !bControl && m_bFocus )
     {
-        auto data = event.GetData<KeyEventData>();
-        if (data->unicode >= ' ')
-        {
-            Insert(static_cast<char>(data->unicode)); // TODO: insert utf-8 char
-            SendModifEvent();
-            return true;
-        }
+        auto data = event.GetData<TextInputData>();
+        Insert(data->text[0]); // TODO: insert utf-8 char
+        SendModifEvent();
+        return true;
     }
 
     if ( event.type == EVENT_FOCUS )
@@ -2537,7 +2531,7 @@ bool CEdit::Copy(bool memorize_cursor)
     std::vector<char> text(len + 1, '\0');
     strncpy(text.data(), m_text.data() + start, len);
     text[len] = 0;
-    widgetSetClipboardText(text.data());
+    SDL_SetClipboardText(text.data()); //TODO: Move to CApplication
 
     if (memorize_cursor)
     {
@@ -2560,7 +2554,7 @@ bool CEdit::Paste()
         return false;
     }
 
-    text = widgetGetClipboardText();
+    text = SDL_GetClipboardText(); // TODO: Move to CApplication
 
     if ( text == nullptr )
     {
@@ -3213,6 +3207,18 @@ void CEdit::UpdateScroll()
             value = 1.0f / (m_lineTotal - m_lineVisible);
             m_scroll->SetArrowStep(value);
         }
+    }
+}
+
+void CEdit::SetFocus(CControl* control)
+{
+    bool oldFocus = m_bFocus;
+    CControl::SetFocus(control);
+
+    if (oldFocus != m_bFocus)
+    {
+        // Start/stop text input mode, this toggles the on-screen keyboard
+        CApplication::GetInstancePointer()->SetTextInput(m_bFocus);
     }
 }
 

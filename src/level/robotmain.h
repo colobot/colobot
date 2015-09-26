@@ -162,7 +162,8 @@ public:
     void        CreateConfigFile();
     void        LoadConfigFile();
 
-    void        ResetAfterDeviceChanged();
+    void        ResetAfterVideoConfigChanged();
+    void        ReloadAllTextures();
 
     void        ChangePhase(Phase phase);
     bool        ProcessEvent(Event &event);

@@ -227,6 +227,8 @@ protected:
 
     void        UpdateScroll();
 
+    void        SetFocus(CControl* control) override;
+
 protected:
     std::unique_ptr<CScroll> m_scroll;           // vertical scrollbar on the right
 

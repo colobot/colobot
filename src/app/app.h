@@ -72,18 +72,6 @@ struct JoystickDevice
 };
 
 /**
- * \enum VideoQueryResult
- * \brief Result of querying for available video resolutions
- */
-enum VideoQueryResult
-{
-    VIDEO_QUERY_ERROR,
-    VIDEO_QUERY_NONE,
-    VIDEO_QUERY_ALL,
-    VIDEO_QUERY_OK
-};
-
-/**
  * \enum ParseArgsStatus
  * \brief State of parsing commandline arguments
  */
@@ -137,9 +125,10 @@ enum PerformanceCounter
 enum DebugMode
 {
     DEBUG_SYS_EVENTS = 1 << 0,
-    DEBUG_APP_EVENTS = 1 << 1,
-    DEBUG_EVENTS     = DEBUG_SYS_EVENTS | DEBUG_APP_EVENTS,
-    DEBUG_MODELS     = 1 << 2,
+    DEBUG_UPDATE_EVENTS = 1 << 1,
+    DEBUG_APP_EVENTS = 1 << 2,
+    DEBUG_EVENTS     = DEBUG_SYS_EVENTS | DEBUG_UPDATE_EVENTS | DEBUG_APP_EVENTS,
+    DEBUG_MODELS     = 1 << 3,
     DEBUG_ALL        = DEBUG_SYS_EVENTS | DEBUG_APP_EVENTS | DEBUG_MODELS
 };
 
@@ -215,8 +204,7 @@ public:
     const std::string& GetErrorMessage() const;
 
     //! Returns a list of possible video modes
-    VideoQueryResult GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions,
-                                            bool fullScreen, bool resizeable) const;
+    void        GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions, int display = 0) const;
 
     //! Returns the current video mode
     Gfx::DeviceConfig GetVideoConfig() const;
@@ -277,17 +265,15 @@ public:
     //! Updates the mouse position explicitly
     void        UpdateMouse();
 
-    //! Management of the grab mode for input (keyboard & mouse)
-    //@{
-    void        SetGrabInput(bool grab);
-    bool        GetGrabInput() const;
-    //@}
-
     //! Management of mouse mode
     //@{
     void        SetMouseMode(MouseMode mode);
     MouseMode   GetMouseMode() const;
     //@}
+
+    //! Enable/disable text input, this toggles the on-screen keyboard on some platforms
+    /** This also allows for writing in CJK languages (not tested!), see https://wiki.libsdl.org/Tutorials/TextInput for detailed explanation */
+    void        SetTextInput(bool textInputEnabled);
 
     //! Moves (warps) the mouse cursor to the specified position (in interface coords)
     void        MoveMouse(Math::Point pos);
@@ -388,8 +374,6 @@ protected:
 
     //! Current configuration of OpenGL display device
     Gfx::DeviceConfig m_deviceConfig;
-    //! Previous configuration of OpenGL display device
-    Gfx::DeviceConfig m_lastDeviceConfig;
 
     //! Text set as window title
     std::string     m_windowTitle;

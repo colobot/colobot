@@ -64,7 +64,7 @@ void CScreenSetupDisplay::CreateInterface()
     if ( pw == nullptr )  return;
 
     std::vector<Math::IntPoint> modes;
-    m_app->GetVideoResolutionList(modes, true, true);
+    m_app->GetVideoResolutionList(modes);
     for (auto it = modes.begin(); it != modes.end(); ++it)
     {
         if (it->x == m_app->GetVideoConfig().size.x && it->y == m_app->GetVideoConfig().size.y)
@@ -183,7 +183,7 @@ void CScreenSetupDisplay::UpdateDisplayMode()
     pl->Flush();
 
     std::vector<Math::IntPoint> modes;
-    m_app->GetVideoResolutionList(modes, true, true);
+    m_app->GetVideoResolutionList(modes);
     int i = 0;
     std::stringstream mode_text;
     for (Math::IntPoint mode : modes)
@@ -220,7 +220,7 @@ void CScreenSetupDisplay::ChangeDisplay()
     m_setupFull = bFull;
 
     std::vector<Math::IntPoint> modes;
-    m_app->GetVideoResolutionList(modes, true, true);
+    m_app->GetVideoResolutionList(modes);
 
     Gfx::DeviceConfig config = m_app->GetVideoConfig();
     config.size = modes[m_setupSelMode];
