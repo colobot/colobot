@@ -26,8 +26,12 @@
 
 #include "graphics/core/device.h"
 
+#include "graphics/core/material.h"
+
 #include "graphics/opengl/glframebuffer.h"
 #include "graphics/opengl/glutil.h"
+
+#include "math/matrix.h"
 
 #include <map>
 #include <memory>

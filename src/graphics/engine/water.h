@@ -24,13 +24,11 @@
 
 #pragma once
 
-
-#include "common/event.h"
-
 #include "graphics/engine/particle.h"
 
 
 class CSoundInterface;
+struct Event;
 
 
 // Graphics module namespace

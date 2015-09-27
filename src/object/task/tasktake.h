@@ -19,8 +19,9 @@
 
 #pragma once
 
-
 #include "object/task/task.h"
+
+#include "math/vector.h"
 
 #include "object/object_type.h"
 

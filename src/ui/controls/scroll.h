@@ -19,10 +19,9 @@
 
 #pragma once
 
+#include "ui/controls/control.h"
 
 #include "common/event.h"
-
-#include "ui/controls/control.h"
 
 #include <memory>
 

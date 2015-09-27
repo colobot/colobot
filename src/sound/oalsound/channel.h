@@ -24,9 +24,10 @@
 
 #pragma once
 
+#include "math/vector.h"
+
 #include "sound/sound.h"
 
-#include "sound/oalsound/buffer.h"
 #include "sound/oalsound/check.h"
 
 #include <string>
@@ -35,6 +36,8 @@
 
 #include <al.h>
 #include <alc.h>
+
+class Buffer;
 
 struct SoundOper
 {
@@ -56,47 +59,47 @@ public:
     bool Pause();
     bool Stop();
 
-    bool SetPosition(const Math::Vector &);
+    bool SetPosition(const Math::Vector &pos);
 
-    bool SetFrequency(float);
+    bool SetFrequency(float freq);
     float GetFrequency();
 
     float GetCurrentTime();
-    void SetCurrentTime(float);
+    void SetCurrentTime(float current);
     float GetDuration();
 
-    bool SetVolume(float);
+    bool SetVolume(float vol);
     float GetVolume();
-    void SetVolumeAtrib(float);
+    void SetVolumeAtrib(float volume);
     float GetVolumeAtrib();
 
     bool IsPlaying();
     bool IsReady();
     bool IsLoaded();
 
-    bool SetBuffer(Buffer *);
+    bool SetBuffer(Buffer *buffer);
 
     bool HasEnvelope();
     SoundOper& GetEnvelope();
     void PopEnvelope();
 
     int GetPriority();
-    void SetPriority(int);
+    void SetPriority(int pri);
 
-    void SetStartAmplitude(float);
-    void SetStartFrequency(float);
-    void SetChangeFrequency(float);
+    void SetStartAmplitude(float gain);
+    void SetStartFrequency(float freq);
+    void SetChangeFrequency(float freq);
 
     float GetStartAmplitude();
     float GetStartFrequency();
     float GetChangeFrequency();
     float GetInitFrequency();
 
-    void AddOper(SoundOper);
+    void AddOper(SoundOper oper);
     void ResetOper();
     SoundType GetSoundType();
-    void SetLoop(bool);
-    void Mute(bool);
+    void SetLoop(bool loop);
+    void Mute(bool mute);
     bool IsMuted();
 
     void Reset();

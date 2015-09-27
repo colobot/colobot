@@ -24,13 +24,16 @@
 
 #pragma once
 
-#include "common/event.h"
 #include "common/key.h"
 #include "common/singleton.h"
 
 #include "math/intpoint.h"
+#include "math/point.h"
+#include "math/vector.h"
 
 #include <map>
+
+struct Event;
 
 /**
  * \struct InputBinding

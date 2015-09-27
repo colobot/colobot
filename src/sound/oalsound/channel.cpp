@@ -20,6 +20,8 @@
 
 #include "sound/oalsound/channel.h"
 
+#include "sound/oalsound/buffer.h"
+
 Channel::Channel()
     : m_buffer(nullptr),
       m_source(0),

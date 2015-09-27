@@ -21,13 +21,6 @@
 
 #include "ui/screen/screen_setup.h"
 
-class CSettings;
-
-namespace Gfx
-{
-class CCamera;
-}
-
 namespace Ui
 {
 

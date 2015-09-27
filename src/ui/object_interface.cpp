@@ -22,6 +22,7 @@
 #include "app/app.h"
 
 #include "common/global.h"
+#include "common/restext.h"
 
 #include "graphics/core/color.h"
 
@@ -52,8 +53,15 @@
 
 #include "ui/studio.h"
 
+#include "ui/controls/button.h"
+#include "ui/controls/color.h"
+#include "ui/controls/gauge.h"
+#include "ui/controls/group.h"
 #include "ui/controls/interface.h"
+#include "ui/controls/label.h"
+#include "ui/controls/list.h"
 #include "ui/controls/slider.h"
+#include "ui/controls/target.h"
 #include "ui/controls/window.h"
 
 

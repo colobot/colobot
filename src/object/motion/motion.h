@@ -19,9 +19,9 @@
 
 #pragma once
 
-
-#include "common/event.h"
 #include "common/error.h"
+
+#include "math/vector.h"
 
 #include "object/object_type.h"
 
@@ -33,7 +33,7 @@ class CTerrain;
 class CWater;
 class CCamera;
 class COldModelManager;
-}
+} // namespace Gfx
 
 class CApplication;
 class CPhysics;
@@ -41,6 +41,7 @@ class COldObject;
 class CRobotMain;
 class CSoundInterface;
 class CLevelParserLine;
+struct Event;
 
 
 class CMotion

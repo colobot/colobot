@@ -26,6 +26,8 @@
 #include "common/logger.h"
 #include "common/make_unique.h"
 
+#include "graphics/core/light.h"
+
 #include "graphics/engine/engine.h"
 
 #include "graphics/opengl/glframebuffer.h"

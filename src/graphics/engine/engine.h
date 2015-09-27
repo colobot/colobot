@@ -46,7 +46,6 @@
 
 
 class CApplication;
-class CObject;
 class CSoundInterface;
 class CImage;
 class CPauseManager;

@@ -28,8 +28,6 @@
 namespace Gfx
 {
 
-struct ModelTriangle;
-
 /**
  * \class CModelMesh
  * \brief Mesh data saved in model file

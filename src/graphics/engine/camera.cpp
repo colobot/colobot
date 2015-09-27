@@ -23,6 +23,8 @@
 #include "app/app.h"
 #include "app/input.h"
 
+#include "common/event.h"
+
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
@@ -1086,7 +1088,7 @@ bool CCamera::EventProcess(const Event &event)
             break;
 
         case EVENT_MOUSE_WHEEL:
-            EventMouseWheel(event.GetData<MouseWheelEventData>()->y);
+            EventMouseWheel(event);
             break;
 
         default:
@@ -1101,8 +1103,10 @@ bool CCamera::EventMouseMove(const Event &event)
     return true;
 }
 
-void CCamera::EventMouseWheel(int dir)
+void CCamera::EventMouseWheel(const Event &event)
 {
+    auto dir = event.GetData<MouseWheelEventData>()->y;
+
     if (m_type == CAM_TYPE_BACK)
     {
         m_backDist -= 8.0f*dir;

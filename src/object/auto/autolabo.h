@@ -25,8 +25,6 @@
 #include "level/research_type.h"
 
 
-class CPoweredObject;
-
 enum AutoLaboPhase
 {
     ALAP_WAIT       = 1,

@@ -34,6 +34,7 @@
 #include "common/thread/resource_owning_thread.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/framebuffer.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/cloud.h"

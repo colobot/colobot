@@ -19,17 +19,22 @@
 
 #pragma once
 
-#include "common/event.h"
-
 #include "graphics/core/color.h"
 
 #include "math/point.h"
 
-#include "ui/controls/interface.h"
+class CObject;
+class CEventQueue;
 
+namespace Gfx
+{
+class CEngine;
+} // namespace Gfx
 
 namespace Ui
 {
+
+class CInterface;
 
 class CMainMap
 {
@@ -64,4 +69,4 @@ protected:
     bool            m_bFixImage;
 };
 
-}
+} // namespace Ui

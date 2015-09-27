@@ -19,8 +19,6 @@
 
 #pragma once
 
-#include "common/event.h"
-
 #include "graphics/engine/camera.h"
 
 #include <string>
@@ -32,6 +30,7 @@ class CSettings;
 struct Program;
 class CPauseManager;
 struct ActivePause;
+struct Event;
 
 namespace Ui
 {

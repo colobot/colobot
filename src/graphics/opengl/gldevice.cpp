@@ -25,6 +25,8 @@
 #include "common/image.h"
 #include "common/logger.h"
 
+#include "graphics/core/light.h"
+
 #include "graphics/engine/engine.h"
 
 #include "graphics/opengl/glframebuffer.h"

@@ -24,11 +24,14 @@
 
 #pragma once
 
-#include "math/matrix.h"
 #include "math/vector.h"
 
 #include "object/object_type.h"
 
+namespace Math
+{
+struct Matrix;
+} // namespace Math
 
 class CAuto;
 

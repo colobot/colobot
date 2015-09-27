@@ -19,11 +19,9 @@
 
 #pragma once
 
-
 #include "ui/controls/control.h"
 
 #include "common/event.h"
-#include "common/misc.h"
 
 namespace Ui
 {
@@ -41,4 +39,4 @@ public:
 };
 
 
-}
+} // namespace Ui

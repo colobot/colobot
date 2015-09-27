@@ -19,15 +19,9 @@
 
 #pragma once
 
-
 #include "ui/controls/control.h"
 
 #include <memory>
-
-namespace Gfx
-{
-class CEngine;
-}
 
 namespace Ui
 {
@@ -91,4 +85,4 @@ protected:
 };
 
 
-}
+} // namespace Ui

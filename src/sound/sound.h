@@ -24,11 +24,14 @@
 
 #pragma once
 
-#include "math/vector.h"
-
 #include "sound/sound_type.h"
 
 #include <string>
+
+namespace Math
+{
+struct Vector;
+} // namespace Math
 
 /*!
  * Maximum possible audio volume

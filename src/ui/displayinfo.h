@@ -19,8 +19,6 @@
 
 #pragma once
 
-#include "common/event.h"
-
 #include "graphics/engine/camera.h"
 
 #include <string>
@@ -30,7 +28,6 @@ class CObject;
 class CEventQueue;
 class CPauseManager;
 struct ActivePause;
-
 struct Event;
 
 namespace Gfx
@@ -38,7 +35,7 @@ namespace Gfx
 class CEngine;
 class CParticle;
 class CLightManager;
-}
+} // namespace Gfx
 
 namespace Ui
 {

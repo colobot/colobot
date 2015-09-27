@@ -21,11 +21,11 @@
 
 #include "object/object_interface_type.h"
 
-#include "object/interface/program_storage_object.h"
-
 #include <memory>
 #include <string>
 #include <vector>
+
+struct Program;
 
 /**
  * \class CProgrammableObject

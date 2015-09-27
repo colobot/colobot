@@ -24,6 +24,7 @@
 #include "level/robotmain.h"
 
 #include "common/logger.h"
+#include "common/misc.h"
 #include "common/stringutils.h"
 
 #include "level/player_profile.h"
@@ -34,6 +35,8 @@
 
 #include "ui/controls/button.h"
 #include "ui/controls/edit.h"
+#include "ui/controls/gauge.h"
+#include "ui/controls/group.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"
 #include "ui/controls/list.h"

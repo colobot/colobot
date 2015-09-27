@@ -40,6 +40,7 @@
 
 #include "object/object.h"
 
+#include "object/interface/program_storage_object.h"
 #include "object/interface/programmable_object.h"
 
 #include "script/cbottoken.h"
@@ -59,6 +60,7 @@
 #include "ui/controls/list.h"
 #include "ui/controls/map.h"
 #include "ui/controls/shortcut.h"
+#include "ui/controls/slider.h"
 #include "ui/controls/target.h"
 #include "ui/controls/window.h"
 

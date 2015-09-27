@@ -19,12 +19,16 @@
 
 #pragma once
 
-
 #include "object/task/task.h"
 
 #include "math/vector.h"
 
 #include <memory>
+
+namespace Math
+{
+struct Point;
+} // namespace Math;
 
 
 class CObject;

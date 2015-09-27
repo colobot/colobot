@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include "common/event.h"
+
 #include "object/object.h"
 
 #include "object/interface/carrier_object.h"

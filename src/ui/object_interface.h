@@ -29,7 +29,6 @@ class CPhysics;
 class CMotion;
 class CRobotMain;
 class CSoundInterface;
-class CLevelParserLine;
 struct Program;
 
 namespace Gfx

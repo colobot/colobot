@@ -19,13 +19,7 @@
 
 #pragma once
 
-
 #include "ui/controls/control.h"
-
-namespace Gfx
-{
-class CEngine;
-}
 
 namespace Ui
 {
@@ -41,11 +35,7 @@ public:
     bool    EventProcess(const Event &event) override;
 
     void    Draw() override;
-
-protected:
-
-protected:
 };
 
 
-}
+} // namespace Ui

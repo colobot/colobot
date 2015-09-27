@@ -19,8 +19,9 @@
 
 #pragma once
 
-#include "common/event.h"
 #include "common/restext.h"
+
+#include "math/point.h"
 
 #include <vector>
 #include <functional>
@@ -29,12 +30,13 @@
 class CSettings;
 class CSoundInterface;
 class CRobotMain;
+struct Event;
 
 namespace Gfx
 {
 class CEngine;
 class CParticle;
-}
+} // namespace Gfx
 
 namespace Ui
 {
@@ -50,7 +52,7 @@ public:
     bool    EventProcess(const Event &event);
 
 
-    typedef std::function<void()> DialogCallback;
+    using DialogCallback = std::function<void()>;
     void    StartQuestion(const std::string& text,
                           bool warningYes = false, bool warningNo = false,
                           bool fireParticles = false,

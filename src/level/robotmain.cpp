@@ -95,6 +95,7 @@
 
 #include "ui/controls/button.h"
 #include "ui/controls/edit.h"
+#include "ui/controls/group.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"
 #include "ui/controls/map.h"

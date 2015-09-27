@@ -24,8 +24,6 @@
 
 #pragma once
 
-
-#include "graphics/core/color.h"
 #include "graphics/core/light.h"
 
 #include "graphics/engine/engine.h"
@@ -36,6 +34,8 @@
 // Graphics module namespace
 namespace Gfx
 {
+
+struct Color;
 
 /**
  * \struct LightProgression

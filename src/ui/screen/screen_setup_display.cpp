@@ -23,6 +23,7 @@
 
 #include "app/app.h"
 
+#include "common/restext.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
 

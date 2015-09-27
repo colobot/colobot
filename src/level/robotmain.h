@@ -27,6 +27,7 @@
 #include "app/pausemanager.h"
 
 #include "common/error.h"
+#include "common/event.h"
 #include "common/singleton.h"
 
 #include "level/build_type.h"

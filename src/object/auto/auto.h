@@ -35,22 +35,20 @@ namespace Ui
 {
 class CInterface;
 class CWindow;
-} /* Ui */
+} // namespace Ui
 
 namespace Gfx
 {
 
 class CEngine;
 class CParticle;
-class CLightManager;
-class CTarrain;
+class CTerrain;
 class CWater;
 class CCloud;
 class CCamera;
 class CPlanet;
 class CLightning;
-class CTerrain;
-} /* Gfx */
+} // namespace Gfx
 
 
 class CAuto

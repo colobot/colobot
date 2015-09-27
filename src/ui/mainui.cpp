@@ -52,6 +52,7 @@
 #include "ui/screen/screen_welcome.h"
 
 #include "ui/controls/interface.h"
+#include "ui/controls/group.h"
 #include "ui/controls/label.h"
 #include "ui/controls/window.h"
 

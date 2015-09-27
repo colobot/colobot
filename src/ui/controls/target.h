@@ -19,15 +19,13 @@
 
 #pragma once
 
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/restext.h"
-
-#include "graphics/engine/engine.h"
-
 #include "ui/controls/control.h"
 
+#include "common/event.h"
+
 #include <string>
+
+class CObject;
 
 
 namespace Ui
@@ -50,4 +48,4 @@ protected:
 };
 
 
-}
+} // namespace Ui

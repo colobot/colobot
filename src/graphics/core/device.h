@@ -25,14 +25,9 @@
 #pragma once
 
 #include "graphics/core/color.h"
-#include "graphics/core/framebuffer.h"
-#include "graphics/core/light.h"
-#include "graphics/core/material.h"
 #include "graphics/core/texture.h"
-#include "graphics/core/vertex.h"
 
 #include "math/intpoint.h"
-#include "math/matrix.h"
 
 #include <memory>
 #include <string>
@@ -41,10 +36,24 @@
 class CImage;
 struct ImageData;
 
+namespace Math
+{
+struct Matrix;
+struct Vector;
+} // namespace Math
+
 
 // Graphics module namespace
 namespace Gfx
 {
+
+class CFramebuffer;
+struct FramebufferParams;
+struct Light;
+struct Material;
+struct Vertex;
+struct VertexCol;
+struct VertexTex2;
 
 /**
  * \struct DeviceConfig

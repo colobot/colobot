@@ -24,15 +24,13 @@
 
 #pragma once
 
-
-#include "common/event.h"
-
 #include "graphics/engine/engine.h"
 
 
 class CObject;
 class CRobotMain;
 class CInput;
+struct Event;
 
 
 // Graphics module namespace
@@ -226,7 +224,7 @@ protected:
     //! Changes the camera according to the mouse moved
     bool        EventMouseMove(const Event &event);
     //! Mouse wheel operation
-    void        EventMouseWheel(int dir);
+    void        EventMouseWheel(const Event& event);
     //! Changes the camera according to the time elapsed
     bool        EventFrame(const Event &event);
     //! Moves the point of view

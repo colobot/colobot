@@ -24,20 +24,18 @@
 
 #pragma once
 
-
-#include "common/event.h"
-
 #include "math/vector.h"
 
 
 class CRobotMain;
 class CSoundInterface;
+struct Event;
 
 namespace Gfx
 {
 class CCamera;
 class CEngine;
-}
+} // namespace Gfx
 
 enum MainMovieType
 {

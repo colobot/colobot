@@ -24,7 +24,6 @@
 
 #pragma once
 
-#include "graphics/core/material.h"
 #include "graphics/core/vertex.h"
 
 #include "math/const.h"
@@ -41,6 +40,7 @@ namespace Gfx
 
 class CEngine;
 class CWater;
+struct Material;
 
 
 //! Limit of slope considered a flat piece of land

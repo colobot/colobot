@@ -31,7 +31,6 @@ namespace Gfx
 {
 
 class CEngine;
-class CModelFile;
 
 /**
  * \class COldModelManager

@@ -34,7 +34,7 @@ namespace Gfx
 {
 class CEngine;
 class CParticle;
-}
+} // namespace Gfx
 
 namespace Ui
 {
