@@ -736,13 +736,13 @@ bool CApplication::OpenJoystick()
     m_private->haptic = SDL_HapticOpenFromJoystick(m_private->joystick);
     if (m_private->haptic == nullptr)
     {
-        GetLogger()->Warn("Haptic subsystem open failed\n");
+        GetLogger()->Warn("Haptic subsystem open failed: %s\n", SDL_GetError());
         return true;
     }
 
     if (SDL_HapticRumbleInit(m_private->haptic) != 0)
     {
-        GetLogger()->Warn("Haptic rumble effect init failed\n");
+        GetLogger()->Warn("Haptic rumble effect init failed: %s\n", SDL_GetError());
         return true;
     }
 
@@ -1818,7 +1818,7 @@ void CApplication::PlayForceFeedbackEffect(float strength, int length)
     GetLogger()->Trace("Force feedback! length = %d ms, strength = %.2f\n", length, strength);
     if (SDL_HapticRumblePlay(m_private->haptic, strength, length) != 0)
     {
-        GetLogger()->Debug("Failed to play haptic effect\n");
+        GetLogger()->Debug("Failed to play haptic effect: %s\n", SDL_GetError());
     }
 }
 
