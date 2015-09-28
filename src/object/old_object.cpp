@@ -732,7 +732,8 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_ANT      ||
          m_type == OBJECT_WORM     ||
          m_type == OBJECT_SPIDER   ||
-         m_type == OBJECT_BEE       )
+         m_type == OBJECT_BEE      ||
+         m_type == OBJECT_TEEN28    )
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;

@@ -54,6 +54,7 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_TARGET2     )  return "Target2";
     if ( type == OBJECT_START       )  return "StartArea";
     if ( type == OBJECT_END         )  return "GoalArea";
+    if ( type == OBJECT_TEEN34      )  return "Stone";
     if ( type == OBJECT_STONE       )  return "TitaniumOre";
     if ( type == OBJECT_URANIUM     )  return "UraniumOre";
     if ( type == OBJECT_METAL       )  return "Titanium";

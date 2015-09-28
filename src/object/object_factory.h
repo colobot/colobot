@@ -62,6 +62,7 @@ private:
     CObjectUPtr CreateBarrier(const ObjectCreateParams& params);
     CObjectUPtr CreatePlant(const ObjectCreateParams& params);
     CObjectUPtr CreateMushroom(const ObjectCreateParams& params);
+    CObjectUPtr CreateTeen(const ObjectCreateParams& params);
     CObjectUPtr CreateQuartz(const ObjectCreateParams& params);
     CObjectUPtr CreateRoot(const ObjectCreateParams& params);
     CObjectUPtr CreateHome(const ObjectCreateParams& params);

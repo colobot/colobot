@@ -147,6 +147,7 @@ set(BASE_SOURCES
     object/auto/autoflag.cpp
     object/auto/autohouston.cpp
     object/auto/autojostle.cpp
+    object/auto/autokid.cpp
     object/auto/autolabo.cpp
     object/auto/automush.cpp
     object/auto/autonest.cpp
