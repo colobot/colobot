@@ -304,7 +304,7 @@ bool CEdit::EventProcess(const Event &event)
     {
         bShift   = ( (event.kmodState & KEY_MOD(SHIFT) ) != 0 );
         #if PLATFORM_MACOSX
-        bControl = ( (event.kmodState & KEY_MOD(META) ) != 0);
+        bControl = ( (event.kmodState & KEY_MOD(GUI) ) != 0);
         #else
         bControl = ( (event.kmodState & KEY_MOD(CTRL) ) != 0);
         #endif
