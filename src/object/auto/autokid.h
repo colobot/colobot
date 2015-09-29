@@ -1,7 +1,7 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2014, Daniel Roux, EPSITEC SA & TerranovaTeam
- * http://epsiteс.ch; http://colobot.info; http://github.com/colobot
+ * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autokid.h
-
 #pragma once
 
 
@@ -31,18 +29,16 @@ public:
     CAutoKid(COldObject* object);
     ~CAutoKid();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool all = false);
 
     void        Init();
     bool        EventProcess(const Event &event);
     Error       GetError();
 
 protected:
-
-protected:
-    float       m_speed;
-    float       m_progress;
-    float       m_lastParticle;
-    int         m_soundChannel;
-    bool        m_bSilent;
+    float       m_speed = 0.0f;
+    float       m_progress = 0.0f;
+    float       m_lastParticle = 0.0f;
+    int         m_soundChannel = 0;
+    bool        m_silent = false;
 };

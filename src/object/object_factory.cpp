@@ -903,7 +903,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
     ObjectType type = params.type;
     int option = params.option;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    COldObjectUPtr obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
     obj->SetOption(option);
@@ -2563,7 +2563,7 @@ void CObjectFactory::AddObjectAuto(COldObject* obj)
          type == OBJECT_TEEN37 ||  // boat?
          type == OBJECT_TEEN38 )   // fan?
     {
-        objAuto.reset(new CAutoKid(obj));
+        objAuto = MakeUnique<CAutoKid>(obj);
     }
 
     if (objAuto != nullptr)

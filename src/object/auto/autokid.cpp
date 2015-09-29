@@ -1,7 +1,7 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2014, Daniel Roux, EPSITEC SA & TerranovaTeam
- * http://epsiteс.ch; http://colobot.info; http://github.com/colobot
+ * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,9 +53,9 @@ CAutoKid::~CAutoKid()
 
 // Destroys the object.
 
-void CAutoKid::DeleteObject(bool bAll)
+void CAutoKid::DeleteObject(bool all)
 {
-    CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(all);
 }
 
 
@@ -63,22 +63,20 @@ void CAutoKid::DeleteObject(bool bAll)
 
 void CAutoKid::Init()
 {
-    Math::Vector    pos;
-
     m_speed = 1.0f/1.0f;
     m_progress = 0.0f;
     m_lastParticle = 0.0f;
 
     if ( m_type == OBJECT_TEEN36 )  // trunk ?
     {
-        pos = m_object->GetPosition();
+        Math::Vector pos = m_object->GetPosition();
         m_speed = 1.0f/(1.0f+(Math::Mod(pos.x/10.0f-0.5f, 1.0f)*0.2f));
         m_progress = Math::Mod(pos.x/10.0f, 1.0f);
     }
 
     if ( m_type == OBJECT_TEEN37 )  // boat?
     {
-        pos = m_object->GetPosition();
+        Math::Vector pos = m_object->GetPosition();
         m_speed = 1.0f/(1.0f+(Math::Mod(pos.x/10.0f-0.5f, 1.0f)*0.2f))*2.5f;
         m_progress = Math::Mod(pos.x/10.0f, 1.0f);
     }
@@ -88,7 +86,7 @@ void CAutoKid::Init()
         if ( m_soundChannel == -1 )
         {
 //?         m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 1.0f, 0.5f, true);
-            m_bSilent = false;
+            m_silent = false;
         }
     }
 }
@@ -98,27 +96,24 @@ void CAutoKid::Init()
 
 bool CAutoKid::EventProcess(const Event &event)
 {
-    Math::Vector    vib, pos, speed;
-    Math::Point     dim;
-
     CAuto::EventProcess(event);
 
     if ( m_soundChannel != -1 )
     {
         if ( m_engine->GetPause() )
         {
-            if ( !m_bSilent )
+            if ( !m_silent )
             {
                 m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 0.1f, SOPER_CONTINUE);
-                m_bSilent = true;
+                m_silent = true;
             }
         }
         else
         {
-            if ( m_bSilent )
+            if ( m_silent )
             {
                 m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, 0.1f, SOPER_CONTINUE);
-                m_bSilent = false;
+                m_silent = false;
             }
         }
     }
@@ -130,6 +125,7 @@ bool CAutoKid::EventProcess(const Event &event)
 
     if ( m_type == OBJECT_TEEN36 )  // trunk?
     {
+        Math::Vector vib;
         vib.x = 0.0f;
         vib.y = sinf(m_progress)*1.0f;
         vib.z = 0.0f;
@@ -144,13 +140,16 @@ bool CAutoKid::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
+            Math::Vector pos;
             pos = m_object->GetPosition();
             pos.y = m_water->GetLevel()+1.0f;
             pos.x += (Math::Rand()-0.5f)*50.0f;
             pos.z += (Math::Rand()-0.5f)*50.0f;
+            Math::Vector speed;
             speed.y = 0.0f;
             speed.x = 0.0f;
             speed.z = 0.0f;
+            Math::Point dim;
             dim.x = 50.0f;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFLIC, 3.0f, 0.0f, 0.0f);
@@ -159,6 +158,7 @@ bool CAutoKid::EventProcess(const Event &event)
 
     if ( m_type == OBJECT_TEEN37 )  // boat?
     {
+        Math::Vector vib;
         vib.x = 0.0f;
         vib.y = sinf(m_progress)*1.0f;
         vib.z = 0.0f;
@@ -173,13 +173,16 @@ bool CAutoKid::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
+            Math::Vector pos;
             pos = m_object->GetPosition();
             pos.y = m_water->GetLevel()+1.0f;
             pos.x += (Math::Rand()-0.5f)*20.0f;
             pos.z += (Math::Rand()-0.5f)*20.0f;
+            Math::Vector speed;
             speed.y = 0.0f;
             speed.x = 0.0f;
             speed.z = 0.0f;
+            Math::Point dim;
             dim.x = 20.0f;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFLIC, 3.0f, 0.0f, 0.0f);
