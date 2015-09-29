@@ -89,7 +89,7 @@ The current layout is the following:
 extern "C"
 {
 
-int SDL_MAIN_FUNC(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     CLogger logger; // single instance of logger
 

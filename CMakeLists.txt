@@ -94,8 +94,6 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
 
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_macosx.cpp")
-
-    set(USE_SDL_MAIN 1) # fixes SDL_main
 else()
     message(STATUS "Build for other system")
     set(PLATFORM_WINDOWS 0)
@@ -291,7 +289,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     message(STATUS "Adding MSVC-specific options")
 
     set(CBOT_STATIC 1) # only this works for some reason
-    set(USE_SDL_MAIN 1) # fixes SDL_main
     set(WINGETOPT 1) # use wingetopt library
 endif()
 

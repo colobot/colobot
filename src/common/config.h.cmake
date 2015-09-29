@@ -16,8 +16,6 @@
 
 #cmakedefine OPENAL_SOUND
 
-#define SDL_MAIN_FUNC main
-
 #cmakedefine PORTABLE @PORTABLE@
 
 #define COLOBOT_DEFAULT_DATADIR "@COLOBOT_INSTALL_DATA_DIR@"
