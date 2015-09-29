@@ -125,7 +125,6 @@ private:
     static bool rMove(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rTurn(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rGoto(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rFind(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rGrab(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDrop(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rSniff(CBotVar* var, CBotVar* result, int& exception, void* user);

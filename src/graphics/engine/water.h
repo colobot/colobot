@@ -75,7 +75,6 @@ public:
     CWater(CEngine* engine);
     virtual ~CWater();
 
-    void        SetDevice(CDevice* device);
     bool        EventProcess(const Event &event);
     //! Removes all the water
     void        Flush();

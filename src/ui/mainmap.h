@@ -59,9 +59,6 @@ public:
     void        SetFixParam(float zoom, float ox, float oy, float angle, int mode, bool bDebug);
 
 protected:
-    void        CenterMap();
-
-protected:
     CEventQueue*    m_event;
     Gfx::CEngine*   m_engine;
     CInterface*     m_interface;

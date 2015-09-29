@@ -28,6 +28,7 @@
 
 #include <iostream>
 
+//@colobot-lint-exclude UndefinedFunctionRule
 
 struct SystemTimeStamp
 {
@@ -51,3 +52,4 @@ public:
     void Usleep(int usec) override;
 };
 
+//@end-colobot-lint-exclude

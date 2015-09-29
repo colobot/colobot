@@ -24,6 +24,7 @@
 
 #include "app/system.h"
 
+//@colobot-lint-exclude UndefinedFunctionRule
 
 struct SystemTimeStamp
 {
@@ -52,3 +53,4 @@ protected:
     long long m_counterFrequency = 0;
 };
 
+//@end-colobot-lint-exclude

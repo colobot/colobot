@@ -224,7 +224,6 @@ public:
     bool            GetRetVar(bool bRet);
     long            GetVal();
 
-    void            SetStartError(int pos);
     void            SetError(int n, CBotToken* token = nullptr);
     void            SetPosError(CBotToken* token);
     void            ResetError(int n, int start, int end);
@@ -985,8 +984,8 @@ public:
     static
     CBotInstr*    CompileBlkOrInst(CBotToken* &p, CBotCStack* pStack, bool bLocal = false);
 private:
-    CBotBlock();
-    CBotBlock(const CBotBlock &);
+    CBotBlock() = delete;
+    CBotBlock(const CBotBlock &) = delete;
 };
 
 
@@ -1071,7 +1070,6 @@ public:
     bool        Execute(CBotStack* &pj) override;
     void        RestoreState(CBotStack* &pj, bool bMain) override;
     bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep);
-    bool        Execute2Var(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToken, bool bStep);
     void        RestoreStateVar(CBotStack* &pj, bool bMain) override;
 };
 

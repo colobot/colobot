@@ -64,7 +64,6 @@ class CMainUserInterface
 public:
     CMainUserInterface();
     ~CMainUserInterface();
-    void    Create();
 
     CMainDialog* GetDialog();
 
