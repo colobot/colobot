@@ -16,13 +16,7 @@
 
 #cmakedefine OPENAL_SOUND
 
-#cmakedefine USE_SDL_MAIN @USE_SDL_MAIN@
-
-#ifdef USE_SDL_MAIN
-#define SDL_MAIN_FUNC SDL_main
-#else
 #define SDL_MAIN_FUNC main
-#endif
 
 #cmakedefine PORTABLE @PORTABLE@
 
