@@ -4580,6 +4580,7 @@ void CEngine::DrawOverColor()
     m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
     m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
+    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
     VertexCol vertex[4] =
     {
