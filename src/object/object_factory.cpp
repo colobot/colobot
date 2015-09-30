@@ -1136,14 +1136,12 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(20.0f, 20.0f), Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
 
         pos = Math::Transform(*mat, Math::Vector(-65.0f, 40.0f, 0.0f));
-        /* TODO: ?
         Gfx::Color color;
         color.r = 4.0f;
         color.g = 2.0f;
         color.b = 0.0f;  // yellow-orange
         color.a = 0.0f;
-        m_main->CreateSpot(pos, color);
-        */
+        CRobotMain::GetInstancePointer()->CreateSpot(pos, color); // TODO: Don't use singleton
     }
 
     if ( type == OBJECT_TEEN12 )  // coke
@@ -1399,15 +1397,13 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         pos = Math::Transform(*mat, Math::Vector(0.0f, 50.0f, 0.0f));
         m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(100.0f, 100.0f), Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
 
-        /* TODO: ?
         pos = Math::Transform(*mat, Math::Vector(0.0f, 50.0f, 0.0f));
         Gfx::Color color;
         color.r = 4.0f;
         color.g = 2.0f;
         color.b = 0.0f;  // yellow-orange
         color.a = 0.0f;
-        m_main->CreateSpot(pos, color);
-        */
+        CRobotMain::GetInstancePointer()->CreateSpot(pos, color); // TODO: Don't use singleton
     }
 
     if ( type == OBJECT_TEEN27 )  // large plant?
