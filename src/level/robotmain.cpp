@@ -3222,8 +3222,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "TerrainWater" && !resetObject)
             {
                 Math::Vector pos;
-                pos.x = line->GetParam("moxeX")->AsFloat(0.0f);
-                pos.y = line->GetParam("moxeY")->AsFloat(0.0f);
+                pos.x = line->GetParam("moveX")->AsFloat(0.0f);
+                pos.y = line->GetParam("moveY")->AsFloat(0.0f);
                 pos.z = pos.x;
                 m_water->Create(line->GetParam("air")->AsWaterType(Gfx::WATER_TT),
                                 line->GetParam("water")->AsWaterType(Gfx::WATER_TT),

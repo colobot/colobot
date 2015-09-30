@@ -45,7 +45,6 @@ namespace Gfx
 namespace
 {
 const int WATERLINE_PREALLOCATE_COUNT = 500;
-// TODO: remove the limit?
 const int VAPOR_SIZE = 10;
 } // anonymous namespace
 
