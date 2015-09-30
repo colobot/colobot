@@ -286,6 +286,22 @@ void COldObject::DeleteObject(bool bAll)
         }
     }
 
+    if (!bAll)
+    {
+        if (m_power != nullptr)
+        {
+            if (m_power->Implements(ObjectInterfaceType::Old))
+                dynamic_cast<COldObject*>(m_power)->DeleteObject(bAll);
+            m_power = nullptr;
+        }
+        if (m_cargo != nullptr)
+        {
+            if (m_cargo->Implements(ObjectInterfaceType::Old))
+                dynamic_cast<COldObject*>(m_cargo)->DeleteObject(bAll);
+            m_cargo = nullptr;
+        }
+    }
+
     if ( !bAll )  m_main->CreateShortcuts();
 }
 
@@ -535,19 +551,6 @@ void COldObject::DestroyObject(DestructionType type)
     m_main->RemoveFromSelectionHistory(this);
 
     m_team = 0; // Back to neutral on destruction
-
-    if (m_power != nullptr)
-    {
-        if (m_power->Implements(ObjectInterfaceType::Old))
-            dynamic_cast<COldObject*>(m_power)->m_transporter = nullptr;
-        m_power = nullptr;
-    }
-    if (m_cargo != nullptr)
-    {
-        if (m_cargo->Implements(ObjectInterfaceType::Old))
-            dynamic_cast<COldObject*>(m_cargo)->m_transporter = nullptr;
-        m_cargo = nullptr;
-    }
 
     if ( m_botVar != nullptr )
     {
