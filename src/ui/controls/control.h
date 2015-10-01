@@ -27,6 +27,7 @@
 
 class CRobotMain;
 class CSoundInterface;
+class CSettings;
 
 namespace Gfx
 {
@@ -120,6 +121,7 @@ protected:
     CEventQueue*      m_event;
     CRobotMain*       m_main;
     CSoundInterface*  m_sound;
+    CSettings*        m_settings;
 
     Math::Point       m_pos;          // corner upper / left
     Math::Point       m_dim;          // dimensions

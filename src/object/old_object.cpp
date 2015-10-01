@@ -26,6 +26,7 @@
 
 #include "common/global.h"
 #include "common/make_unique.h"
+#include "common/settings.h"
 #include "common/stringutils.h"
 
 #include "graphics/engine/lightman.h"
@@ -1118,7 +1119,7 @@ void COldObject::Read(CLevelParserLine* line)
         int i = line->GetParam("run")->AsInt(-1);
         if (i != -1)
         {
-            if (i != PARAM_FIXSCENE && !m_main->GetMovies()) i = 0;
+            if (i != PARAM_FIXSCENE && !CSettings::GetInstancePointer()->GetMovies()) i = 0;
             m_auto->Start(i);  // starts the film
         }
     }

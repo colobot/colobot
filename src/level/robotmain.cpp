@@ -5279,21 +5279,6 @@ char* CRobotMain::GetScriptFile()
 }
 
 
-bool CRobotMain::GetInterfaceGlint()
-{
-    return m_settings->GetInterfaceGlint();
-}
-
-bool CRobotMain::GetSoluce4()
-{
-    return m_settings->GetSoluce4();
-}
-
-bool CRobotMain::GetMovies()
-{
-    return m_settings->GetMovies();
-}
-
 bool CRobotMain::GetShowSoluce()
 {
     return m_showSoluce;

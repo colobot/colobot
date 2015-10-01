@@ -234,9 +234,6 @@ public:
     char*       GetScriptFile();
     bool        GetTrainerPilot();
     bool        GetFixScene();
-    bool        GetInterfaceGlint();
-    bool        GetSoluce4();
-    bool        GetMovies();
     bool        GetShowSoluce();
     bool        GetSceneSoluce();
     bool        GetShowAll();
