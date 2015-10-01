@@ -1431,10 +1431,8 @@ void CRobotMain::FlushDisplayInfo()
     for (int i = 0; i < SATCOM_MAX; i++)
     {
         m_infoFilename[i][0] = 0;
-        m_infoPos[i] = 0;
     }
     strcpy(m_infoFilename[SATCOM_OBJECT], "objects.txt");
-    m_infoIndex = 0;
 }
 
 //! Beginning of the displaying of instructions.
@@ -1491,10 +1489,7 @@ void CRobotMain::StartDisplayInfo(const std::string& filename, int index)
 
     m_displayInfo = MakeUnique<Ui::CDisplayInfo>();
     m_displayInfo->StartDisplayInfo(filename, index, soluce);
-
-    m_infoIndex = index;
-    if (index != -1)
-        m_displayInfo->SetPosition(m_infoPos[index]);
+    m_displayInfo->SetPosition(0);
 }
 
 //! End of displaying of instructions
@@ -1504,9 +1499,6 @@ void CRobotMain::StopDisplayInfo()
 
     if (m_movieInfoIndex != -1)  // film to read the SatCom?
         m_movie->Start(MM_SATCOMclose, 2.0f);
-
-    if (m_infoIndex != -1)
-        m_infoPos[m_infoIndex] = m_displayInfo->GetPosition();
 
     m_displayInfo->StopDisplayInfo();
 
@@ -1529,18 +1521,6 @@ void CRobotMain::StopDisplayInfo()
 char* CRobotMain::GetDisplayInfoName(int index)
 {
     return m_infoFilename[index];
-}
-
-//! Returns the name of the text display
-int CRobotMain::GetDisplayInfoPosition(int index)
-{
-    return m_infoPos[index];
-}
-
-//! Returns the name of the text display
-void CRobotMain::SetDisplayInfoPosition(int index, int pos)
-{
-    m_infoPos[index] = pos;
 }
 
 
@@ -1949,11 +1929,6 @@ CObject* CRobotMain::GetSelect()
             return obj;
     }
     return nullptr;
-}
-
-CObject* CRobotMain::SearchObject(ObjectType type)
-{
-    return m_objMan->FindNearest(nullptr, type);
 }
 
 //! Detects the object aimed by the mouse
@@ -2718,16 +2693,6 @@ bool CRobotMain::EventObject(const Event &event)
 }
 
 
-//! Calculates the point of arrival of the camera
-Math::Vector CRobotMain::LookatPoint(Math::Vector eye, float angleH, float angleV,
-                                  float length)
-{
-    Math::Vector lookat = eye;
-    lookat.z += length;
-
-    RotatePoint(eye, angleH, angleV, lookat);
-    return lookat;
-}
 
 //! Load the scene for the character
 void CRobotMain::ScenePerso()
@@ -5976,7 +5941,6 @@ void CRobotMain::DestroyCodeBattleInterface()
 
 void CRobotMain::SetCodeBattleSpectatorMode(bool mode)
 {
-
     // Deselect object, but keep camera attached to it
     CObject* obj = DeselectAll();
     if (m_codeBattleSpectator)

@@ -664,10 +664,6 @@ void CDisplayInfo::ChangeIndexButton(int index)
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
     if ( pw == nullptr )  return;
 
-    if ( m_index != -1 )
-    {
-        m_main->SetDisplayInfoPosition(m_index, GetPosition());
-    }
     m_index = index;
 
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
@@ -676,7 +672,7 @@ void CDisplayInfo::ChangeIndexButton(int index)
         filename = m_main->GetDisplayInfoName(m_index);
         edit->ReadText(filename);
         edit->HyperHome(std::string(filename));
-        SetPosition(m_main->GetDisplayInfoPosition(m_index));
+        SetPosition(0);
     }
 
     UpdateIndexButton();

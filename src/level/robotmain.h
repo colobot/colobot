@@ -217,8 +217,6 @@ public:
     void        StartDisplayInfo(const std::string& filename, int index);
     void        StopDisplayInfo();
     char*       GetDisplayInfoName(int index);
-    int         GetDisplayInfoPosition(int index);
-    void        SetDisplayInfoPosition(int index, int pos);
 
     void        StartSuspend();
     void        StopSuspend();
@@ -381,7 +379,6 @@ protected:
 
     void        LevelLoadingError(const std::string& error, const std::runtime_error& exception, Phase exitPhase = PHASE_LEVEL_LIST);
 
-    Math::Vector LookatPoint(Math::Vector eye, float angleH, float angleV, float length);
     int         CreateLight(Math::Vector direction, Gfx::Color color);
     void        HiliteClear();
     void        HiliteObject(Math::Point pos);
@@ -398,7 +395,6 @@ protected:
     bool        DeselectObject();
     void        DeleteAllObjects();
     void        UpdateInfoText();
-    CObject*    SearchObject(ObjectType type);
     void        StartDisplayVisit(EventType event);
     void        FrameVisit(float rTime);
     void        StopDisplayVisit();
@@ -513,8 +509,6 @@ protected:
 
     char            m_infoFilename[SATCOM_MAX][100] = {}; // names of text files
     CObject*        m_infoObject = nullptr;
-    int             m_infoIndex = 0;
-    int             m_infoPos[SATCOM_MAX] = {};
     int             m_infoUsed = 0;
     ActivePause*    m_satcomMoviePause = nullptr;
 
