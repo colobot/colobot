@@ -281,10 +281,10 @@ bool CList::EventProcess(const Event &event)
     {
         auto data = event.GetData<MouseWheelEventData>();
         m_firstLine -= data->y;
-        if (m_firstLine < 0)
-            m_firstLine = 0;
         if (m_firstLine > m_totalLine - m_displayLine)
             m_firstLine = m_totalLine - m_displayLine;
+        if (m_firstLine < 0)
+            m_firstLine = 0;
 
         UpdateScroll();
         UpdateButton();
