@@ -186,9 +186,6 @@ public:
     void        SetFriendAim(bool friendAim);
     bool        GetFriendAim();
 
-    void        SetTracePrecision(float factor);
-    float       GetTracePrecision();
-
     void        SetSpeed(float speed);
     float       GetSpeed();
 
@@ -228,10 +225,8 @@ public:
 
     float       GetGameTime();
 
-    char*       GetTitle();
-    char*       GetResume();
-    char*       GetScriptName();
-    char*       GetScriptFile();
+    const std::string& GetScriptName();
+    const std::string& GetScriptFile();
     bool        GetTrainerPilot();
     bool        GetFixScene();
     bool        GetShowSoluce();
@@ -523,10 +518,8 @@ protected:
     int             m_infoUsed = 0;
     ActivePause*    m_satcomMoviePause = nullptr;
 
-    char            m_title[100] = {};
-    char            m_resume[500] = {};
-    char            m_scriptName[100] = {};
-    char            m_scriptFile[100] = {};
+    std::string     m_scriptName = "";
+    std::string     m_scriptFile = "";
     int             m_endingWinRank = 0;
     int             m_endingLostRank = 0;
     bool            m_winTerminate = false;

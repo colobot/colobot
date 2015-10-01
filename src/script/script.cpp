@@ -848,7 +848,6 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     char    text[100];
     char    script[500];
     char    buffer[500];
-    char    *sf;
     int     cursor1, cursor2, len, i, j;
 
     std::string resStr;
@@ -883,12 +882,11 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     edit->ShowSelect();
     m_interface->SetFocus(edit);
 
-    sf = m_main->GetScriptFile();
-    if ( sf[0] != 0 )  // Load an empty program specific?
+    std::string sf = m_main->GetScriptFile();
+    if ( !sf.empty() )  // Load an empty program specific?
     {
-        std::string filename = sf;
         CInputStream stream;
-        stream.open(filename);
+        stream.open(sf);
 
         if (stream.is_open())
         {

@@ -2842,12 +2842,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_engine->SetSecondTexture("");
         m_engine->SetForegroundName("");
 
-        sprintf(m_title,  "%s %d.%d", GetLevelCategoryDir(m_levelCategory).c_str(), m_levelChap, m_levelRank);
-        sprintf(m_resume, "%s %d.%d", GetLevelCategoryDir(m_levelCategory).c_str(), m_levelChap, m_levelRank);
-        std::string scriptNameStr;
-        GetResource(RES_TEXT, RT_SCRIPT_NEW, scriptNameStr);
-        strcpy(m_scriptName, scriptNameStr.c_str());
-        m_scriptFile[0] = 0;
+        GetResource(RES_TEXT, RT_SCRIPT_NEW, m_scriptName);
+        m_scriptFile = "";
 
         m_missionType   = MISSION_NORMAL;
         m_codeBattleInit = false;
@@ -2890,25 +2886,25 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         {
             if (line->GetCommand() == "Title" && !resetObject)
             {
-                strcpy(m_title, line->GetParam("text")->AsString().c_str());
+                //strcpy(m_title, line->GetParam("text")->AsString().c_str());
                 continue;
             }
 
             if (line->GetCommand() == "Resume" && !resetObject)
             {
-                strcpy(m_resume, line->GetParam("text")->AsString().c_str());
+                //strcpy(m_resume, line->GetParam("text")->AsString().c_str());
                 continue;
             }
 
             if (line->GetCommand() == "ScriptName" && !resetObject)
             {
-                strcpy(m_scriptName, line->GetParam("text")->AsString().c_str());
+                m_scriptName = line->GetParam("text")->AsString();
                 continue;
             }
 
             if (line->GetCommand() == "ScriptFile" && !resetObject)
             {
-                strcpy(m_scriptFile, line->GetParam("name")->AsString().c_str());
+                m_scriptFile = line->GetParam("name")->AsString();
                 continue;
             }
 
@@ -5258,22 +5254,12 @@ bool CRobotMain::GetFixScene()
 }
 
 
-char* CRobotMain::GetTitle()
-{
-    return m_title;
-}
-
-char* CRobotMain::GetResume()
-{
-    return m_resume;
-}
-
-char* CRobotMain::GetScriptName()
+const std::string& CRobotMain::GetScriptName()
 {
     return m_scriptName;
 }
 
-char* CRobotMain::GetScriptFile()
+const std::string& CRobotMain::GetScriptFile()
 {
     return m_scriptFile;
 }
@@ -5513,18 +5499,6 @@ void CRobotMain::SetFriendAim(bool friendAim)
 bool CRobotMain::GetFriendAim()
 {
     return m_friendAim;
-}
-
-
-//! Management of the precision of drawing the ground
-void CRobotMain::SetTracePrecision(float factor)
-{
-    m_engine->SetTracePrecision(factor);
-}
-
-float CRobotMain::GetTracePrecision()
-{
-    return m_engine->GetTracePrecision();
 }
 
 

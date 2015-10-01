@@ -64,7 +64,7 @@ public:
 protected:
     bool        EventFrame(const Event &event);
 
-    void        StartEditScript(Program* program, char* name);
+    void        StartEditScript(Program* program, std::string name);
     void        StopEditScript(bool bCancel);
 
     void        GroundFlat();

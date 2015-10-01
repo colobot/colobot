@@ -288,8 +288,7 @@ bool CObjectInterface::EventProcess(const Event &event)
             }
             SetSelScript(m_selScript);
 
-            char text[] = "";
-            StartEditScript(newProgram, text);
+            StartEditScript(newProgram, "");
 
             std::string res;
             GetResource(RES_TEXT, RT_STUDIO_CLONED, res);
@@ -729,7 +728,7 @@ bool CObjectInterface::EventFrame(const Event &event)
 
 // Start editing a program.
 
-void CObjectInterface::StartEditScript(Program* program, char* name)
+void CObjectInterface::StartEditScript(Program* program, std::string name)
 {
     CreateInterface(false);  // removes the control buttons
 
