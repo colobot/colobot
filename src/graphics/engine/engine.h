@@ -645,8 +645,6 @@ public:
     CPlanet*        GetPlanet();
     //! Returns the fog manager
     CCloud*         GetCloud();
-    //! Returns the pause manager
-    CPauseManager*  GetPauseManager();
 
     //! Sets the terrain object
     void            SetTerrain(CTerrain* terrain);
@@ -676,8 +674,11 @@ public:
     void            WriteScreenShot(const std::string& fileName);
 
 
-    //! Get pause mode
-    TEST_VIRTUAL bool GetPause();
+    //@{
+    //! Management of animation pause mode
+    void            SetPause(bool pause);
+    bool            GetPause();
+    //@}
 
     //@{
     //! Management of displaying statistic information
@@ -1287,7 +1288,6 @@ protected:
     std::unique_ptr<CCloud>           m_cloud;
     std::unique_ptr<CLightning>       m_lightning;
     std::unique_ptr<CPlanet>          m_planet;
-    std::unique_ptr<CPauseManager>    m_pause;
     std::unique_ptr<CPyroManager> m_pyroManager;
 
     //! Last encountered error
@@ -1465,6 +1465,9 @@ protected:
     std::string     m_timerText;
 
     std::unordered_map<std::string, int> m_staticMeshBaseObjects;
+
+    //! Pause the animation updates
+    bool            m_pause = false;
 };
 
 

@@ -159,6 +159,7 @@ public:
     Gfx::CTerrain* GetTerrain();
     Ui::CInterface* GetInterface();
     Ui::CDisplayText* GetDisplayText();
+    CPauseManager* GetPauseManager();
 
     void        CreateConfigFile();
     void        LoadConfigFile();
@@ -182,7 +183,6 @@ public:
     bool        GetEditLock();
     void        SetEditFull(bool full);
     bool        GetEditFull();
-    bool        GetFreePhoto();
     void        SetFriendAim(bool friendAim);
     bool        GetFriendAim();
 
@@ -258,6 +258,7 @@ public:
 
     void        StartMusic();
     void        UpdatePause(PauseType pause);
+    void        UpdatePauseMusic(PauseMusic music);
     void        ClearInterface();
     void        ChangeColor();
 
@@ -436,10 +437,10 @@ protected:
     Gfx::COldModelManager* m_oldModelManager = nullptr;
     Gfx::CLightManager* m_lightMan = nullptr;
     CSoundInterface*    m_sound = nullptr;
-    CPauseManager*      m_pause = nullptr;
     CInput*             m_input = nullptr;
     std::unique_ptr<CObjectManager> m_objMan;
     std::unique_ptr<CMainMovie> m_movie;
+    std::unique_ptr<CPauseManager> m_pause;
     std::unique_ptr<Gfx::CModelManager> m_modelManager;
     std::unique_ptr<Gfx::CTerrain> m_terrain;
     std::unique_ptr<Gfx::CCamera> m_camera;
@@ -477,7 +478,6 @@ protected:
     ActivePause*    m_userPause = nullptr;
     int             m_cameraRank = 0;
     Gfx::Color      m_color;
-    bool            m_freePhoto = false;
     ActivePause*    m_freePhotoPause = nullptr;
     bool            m_cmdEdit = false;
     ActivePause*    m_cmdEditPause = nullptr;

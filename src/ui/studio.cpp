@@ -82,7 +82,7 @@ CStudio::CStudio()
     m_main      = CRobotMain::GetInstancePointer();
     m_interface = m_main->GetInterface();
     m_camera    = m_main->GetCamera();
-    m_pause     = m_engine->GetPauseManager();
+    m_pause     = m_main->GetPauseManager();
     m_settings  = CSettings::GetInstancePointer();
 
     m_program = nullptr;
@@ -356,17 +356,17 @@ bool CStudio::EventFrame(const Event &event)
 
     if (m_script->IsRunning() && (!m_script->GetStepMode() || m_script->IsContinue()))
     {
-        if (m_editorPause != nullptr)
+        if (m_runningPause != nullptr)
         {
-            m_pause->DeactivatePause(m_editorPause);
-            m_editorPause = nullptr;
+            m_pause->DeactivatePause(m_runningPause);
+            m_runningPause = nullptr;
         }
     }
     else
     {
-        if (m_editorPause == nullptr)
+        if (m_runningPause == nullptr)
         {
-            m_editorPause = m_pause->ActivatePause(PAUSE_EDITOR);
+            m_runningPause = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_MUTE_SOUND);
         }
     }
 
@@ -578,6 +578,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     m_main->SetSpeed(1.0f);
     m_editCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_EDIT);
+    m_editorPause = m_pause->ActivatePause(PAUSE_HIDE_SHORTCUTS, PAUSE_MUSIC_EDITOR);
 
     m_bRunning = m_script->IsRunning();
     m_bRealTime = m_bRunning;
@@ -914,7 +915,8 @@ bool CStudio::StopEditScript(bool bCancel)
 
     m_pause->DeactivatePause(m_editorPause);
     m_editorPause = nullptr;
-    m_sound->MuteAll(false);
+    m_pause->DeactivatePause(m_runningPause);
+    m_runningPause = nullptr;
     m_main->SetEditLock(false, true);
     m_camera->SetType(m_editCamera);
     return true;
@@ -984,22 +986,22 @@ void CStudio::UpdateFlux()
     {
         if ( m_bRealTime )  // run?
         {
-            m_pause->DeactivatePause(m_editorPause);
-            m_editorPause = nullptr;
+            m_pause->DeactivatePause(m_runningPause);
+            m_runningPause = nullptr;
         }
         else    // step by step?
         {
-            if (m_editorPause == nullptr)
+            if (m_runningPause == nullptr)
             {
-                m_editorPause = m_pause->ActivatePause(PAUSE_EDITOR);
+                m_runningPause = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_MUTE_SOUND);
             }
         }
     }
     else    // stop?
     {
-        if (m_editorPause == nullptr)
+        if (m_runningPause == nullptr)
         {
-            m_editorPause = m_pause->ActivatePause(PAUSE_EDITOR);
+            m_runningPause = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_MUTE_SOUND);
         }
     }
 }

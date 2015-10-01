@@ -69,7 +69,7 @@ CDisplayInfo::CDisplayInfo()
     m_main      = CRobotMain::GetInstancePointer();
     m_interface = m_main->GetInterface();
     m_camera    = m_main->GetCamera();
-    m_pause     = m_engine->GetPauseManager();
+    m_pause     = m_main->GetPauseManager();
 
     m_bInfoMaximized = true;
     m_bInfoMinimized = false;
@@ -363,7 +363,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
 
     m_main->SetEditLock(true, false);
     m_main->SetEditFull(false);
-    m_satcomPause = m_pause->ActivatePause(PAUSE_SATCOM);
+    m_satcomPause = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_HIDE_SHORTCUTS|PAUSE_MUTE_SOUND, PAUSE_MUSIC_SATCOM);
     m_infoCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_INFO);
 

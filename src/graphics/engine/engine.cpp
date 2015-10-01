@@ -22,7 +22,6 @@
 
 #include "app/app.h"
 #include "app/input.h"
-#include "app/pausemanager.h"
 #include "app/system.h"
 
 #include "common/image.h"
@@ -89,7 +88,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_planet     = nullptr;
     m_sound      = nullptr;
     m_terrain    = nullptr;
-    m_pause      = nullptr;
 
     m_showStats = false;
 
@@ -272,11 +270,6 @@ CCloud* CEngine::GetCloud()
     return m_cloud.get();
 }
 
-CPauseManager* CEngine::GetPauseManager()
-{
-    return m_pause.get();
-}
-
 void CEngine::SetTerrain(CTerrain* terrain)
 {
     m_terrain = terrain;
@@ -303,7 +296,6 @@ bool CEngine::Create()
     m_cloud      = MakeUnique<CCloud>(this);
     m_lightning  = MakeUnique<CLightning>(this);
     m_planet     = MakeUnique<CPlanet>(this);
-    m_pause      = MakeUnique<CPauseManager>();
 
     m_lightMan->SetDevice(m_device);
     m_particle->SetDevice(m_device);
@@ -353,7 +345,6 @@ void CEngine::Destroy()
         m_shadowMap = Texture();
     }
 
-    m_pause.reset();
     m_lightMan.reset();
     m_text.reset();
     m_particle.reset();
@@ -491,9 +482,14 @@ void CEngine::WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data)
     CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_WRITE_SCENE_FINISHED));
 }
 
+void CEngine::SetPause(bool pause)
+{
+    m_pause = pause;
+}
+
 bool CEngine::GetPause()
 {
-    return m_pause->IsPause();
+    return m_pause;
 }
 
 void CEngine::SetShowStats(bool show)
