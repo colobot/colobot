@@ -249,7 +249,7 @@ protected:
     bool        EventFrameScript(const Event &event);
 
     //! Specifies the location and direction of view to the 3D engine
-    void        SetViewTime(const Math::Vector &vEyePt, const Math::Vector &vLookatPt, float rTime);
+    void        SetViewTime(const Math::Vector &eyePt, const Math::Vector &lookatPt, float rTime);
     //! Avoid the obstacles
     bool        IsCollision(Math::Vector &eye, Math::Vector lookat);
     //! Avoid the obstacles

@@ -19,12 +19,11 @@
 
 #pragma once
 
-
 #include "object/task/task.h"
 
-#include "object/interface/trace_drawing_object.h"
-
 #include "math/vector.h"
+
+#include "object/interface/trace_drawing_object.h"
 
 
 enum TaskPenPhase

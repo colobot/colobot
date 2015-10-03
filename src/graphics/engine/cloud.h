@@ -74,7 +74,7 @@ public:
 
     //! Management of clouds
     //@{
-    void        SetEnabled(bool enable);
+    void        SetEnabled(bool enabled);
     bool        GetEnabled();
     //@}
 

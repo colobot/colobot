@@ -24,8 +24,6 @@
 #include "level/parser/parserline.h"
 #include "level/parser/parserparam.h"
 
-#include "graphics/engine/oldmodelmanager.h"
-
 #include "object/object_create_params.h"
 
 #include "object/motion/motionant.h"
@@ -87,7 +85,7 @@ std::unique_ptr<CBaseAlien> CBaseAlien::Create(
     obj->SetProgrammable();
     obj->SetMovable(std::move(motion), std::move(physics));
 
-    return std::move(obj);
+    return obj;
 }
 
 void CBaseAlien::SetFixed(bool fixed)

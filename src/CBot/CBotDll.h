@@ -610,6 +610,8 @@ virtual                ~CBotVar( );                        // destructor
     static
     CBotVar*        Create( CBotVar* pVar );
 
+    static void     Destroy(CBotVar* var);
+
 
     void            SetUserPtr(void* pUser);
     //                associate a user pointer to an instance
@@ -806,6 +808,8 @@ public:
     //                intrinsic mode gives a class that is not managed by pointers
 
                     ~CBotClass( );                            // destructor
+
+    static CBotClass* Create(const char* name, CBotClass* parent, bool intrinsic = false);
 
     bool            AddFunction(const char* name,
                                 bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),

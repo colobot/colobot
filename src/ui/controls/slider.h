@@ -34,7 +34,7 @@ public:
     CSlider();
     ~CSlider();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 
     void        SetPos(Math::Point pos) override;
     void        SetDim(Math::Point dim) override;

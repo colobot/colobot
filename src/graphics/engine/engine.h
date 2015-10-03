@@ -48,7 +48,6 @@
 class CApplication;
 class CSoundInterface;
 class CImage;
-class CPauseManager;
 class CSystemUtils;
 struct SystemTimeStamp;
 struct Event;
@@ -717,7 +716,7 @@ public:
     //@}
 
     //! Increments the triangle counter for the current frame
-    void            AddStatisticTriangle(int nb);
+    void            AddStatisticTriangle(int count);
     //! Returns the number of triangles in current frame
     int             GetStatisticTriangle();
 
@@ -778,7 +777,7 @@ public:
     // Objects
 
     //! Print debug info about an object
-    void            DebugObject(int rank);
+    void            DebugObject(int objRank);
 
     //! Creates a new object and returns its rank
     int             CreateObject();
@@ -942,7 +941,7 @@ public:
     void            SetTexture(const Texture& tex, int stage = 0);
 
     //! Deletes the given texture, unloading it and removing from cache
-    void            DeleteTexture(const std::string& name);
+    void            DeleteTexture(const std::string& texName);
     //! Deletes the given texture, unloading it and removing from cache
     void            DeleteTexture(const Texture& tex);
 
@@ -1215,7 +1214,7 @@ protected:
     //! Draws the mouse cursor
     void        DrawMouse();
     //! Draw part of mouse cursor sprite
-    void        DrawMouseSprite(Math::Point pos, Math::Point dim, int icon);
+    void        DrawMouseSprite(Math::Point pos, Math::Point size, int icon);
     //! Draw statistic texts
     void        DrawStats();
     //! Draw mission timer
@@ -1225,7 +1224,7 @@ protected:
     EngineBaseObjTexTier&  AddLevel2(EngineBaseObject& p1, const std::string& tex1Name, const std::string& tex2Name);
     //! Creates a new tier 3 object (data)
     EngineBaseObjDataTier& AddLevel3(EngineBaseObjTexTier &p3, EngineTriangleType type,
-                                     const Material& mat, int state);
+                                     const Material& material, int state);
 
     //! Create texture and add it to cache
     Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr);

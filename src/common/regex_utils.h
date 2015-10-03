@@ -26,11 +26,11 @@
 namespace RegexUtils
 {
 
-class AssertRegexMatchError : public std::runtime_error
+class CAssertRegexMatchError : public std::runtime_error
 {
 public:
-    explicit AssertRegexMatchError(const std::string& text,
-                                   const std::string& pattern) NOEXCEPT;
+    explicit CAssertRegexMatchError(const std::string& text,
+                                    const std::string& pattern) NOEXCEPT;
 };
 
 //! Match string with regex and return list of matches; throw exception on mismatch

@@ -699,12 +699,12 @@ bool CList::GetCheck(int i)
 
 // Specifies the bit "enable" for a box.
 
-void CList::SetEnable(int i, bool bMode)
+void CList::SetEnable(int i, bool enable)
 {
     if ( i < 0 || i >= m_totalLine )
         return;
 
-    m_items[i].enable = bMode;
+    m_items[i].enable = enable;
 }
 
 // Returns the bit "enable" for a box.

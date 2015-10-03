@@ -28,15 +28,14 @@
 #include <memory>
 
 
-Buffer::Buffer()
+CBuffer::CBuffer()
     : m_buffer(),
       m_sound(),
       m_loaded(false),
       m_duration(0.0f)
 {}
 
-
-Buffer::~Buffer()
+CBuffer::~CBuffer()
 {
     if (m_loaded)
     {
@@ -46,8 +45,7 @@ Buffer::~Buffer()
     }
 }
 
-
-bool Buffer::LoadFromFile(std::string filename, SoundType sound)
+bool CBuffer::LoadFromFile(std::string filename, SoundType sound)
 {
     m_sound = sound;
     GetLogger()->Debug("Loading audio file: %s\n", filename.c_str());
@@ -92,27 +90,22 @@ bool Buffer::LoadFromFile(std::string filename, SoundType sound)
     return true;
 }
 
-
-SoundType Buffer::GetSoundType()
+SoundType CBuffer::GetSoundType()
 {
     return m_sound;
 }
 
-
-ALuint Buffer::GetBuffer()
+ALuint CBuffer::GetBuffer()
 {
     return m_buffer;
 }
 
-
-bool Buffer::IsLoaded()
+bool CBuffer::IsLoaded()
 {
     return m_loaded;
 }
 
-
-float Buffer::GetDuration()
+float CBuffer::GetDuration()
 {
     return m_duration;
 }
-

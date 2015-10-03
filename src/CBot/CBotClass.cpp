@@ -72,6 +72,10 @@ CBotClass::~CBotClass()
     delete  m_next;         // releases all of them on this level
 }
 
+CBotClass* CBotClass::Create(const char* name, CBotClass* parent, bool intrinsic)
+{
+    return new CBotClass(name, parent, intrinsic);
+}
 
 void CBotClass::Free()
 {

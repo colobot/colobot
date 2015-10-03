@@ -404,19 +404,19 @@ InputSlot CInput::SearchKeyById(std::string id)
     return INPUT_SLOT_MAX;
 }
 
-std::string CInput::GetKeysString(InputBinding b)
+std::string CInput::GetKeysString(InputBinding binding)
 {
     std::ostringstream ss;
-    if ( b.primary != KEY_INVALID )
+    if ( binding.primary != KEY_INVALID )
     {
         std::string iNameStr;
-        if ( GetResource(RES_KEY, b.primary, iNameStr) )
+        if ( GetResource(RES_KEY, binding.primary, iNameStr) )
         {
             ss << iNameStr;
 
-            if ( b.secondary != KEY_INVALID )
+            if ( binding.secondary != KEY_INVALID )
             {
-                if ( GetResource(RES_KEY, b.secondary, iNameStr) )
+                if ( GetResource(RES_KEY, binding.secondary, iNameStr) )
                 {
                     std::string textStr;
                     GetResource(RES_TEXT, RT_KEY_OR, textStr);

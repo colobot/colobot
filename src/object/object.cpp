@@ -23,12 +23,12 @@
 #include "common/restext.h"
 #include "common/stringutils.h"
 
+#include "graphics/model/model_crash_sphere.h"
+
 #include "level/robotmain.h"
 
 #include "level/parser/parserline.h"
 #include "level/parser/parserparam.h"
-
-#include "graphics/model/model_crash_sphere.h"
 
 #include "script/scriptfunc.h"
 

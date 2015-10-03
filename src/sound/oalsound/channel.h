@@ -37,7 +37,7 @@
 #include <al.h>
 #include <alc.h>
 
-class Buffer;
+class CBuffer;
 
 struct SoundOper
 {
@@ -49,11 +49,11 @@ struct SoundOper
 };
 
 
-class Channel
+class CChannel
 {
 public:
-    Channel();
-    ~Channel();
+    CChannel();
+    ~CChannel();
 
     bool Play();
     bool Pause();
@@ -77,7 +77,7 @@ public:
     bool IsReady();
     bool IsLoaded();
 
-    bool SetBuffer(Buffer *buffer);
+    bool SetBuffer(CBuffer *buffer);
 
     bool HasEnvelope();
     SoundOper& GetEnvelope();
@@ -106,7 +106,7 @@ public:
     int GetId();
 
 private:
-    Buffer *m_buffer;
+    CBuffer *m_buffer;
     ALuint m_source;
 
     int m_priority;

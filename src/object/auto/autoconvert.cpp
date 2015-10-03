@@ -22,10 +22,10 @@
 
 #include "common/make_unique.h"
 
+#include "level/robotmain.h"
+
 #include "level/parser/parserline.h"
 #include "level/parser/parserparam.h"
-
-#include "level/robotmain.h"
 
 #include "math/geometry.h"
 
@@ -34,10 +34,10 @@
 
 #include "object/interface/transportable_object.h"
 
+#include "sound/sound.h"
+
 #include "ui/controls/interface.h"
 #include "ui/controls/window.h"
-
-#include "sound/sound.h"
 
 
 // Object's constructor.

@@ -77,7 +77,7 @@ public:
     void        SetCheck(int i, bool bMode);
     bool        GetCheck(int i);
 
-    void        SetEnable(int i, bool bEnable);
+    void        SetEnable(int i, bool enable);
     bool        GetEnable(int i);
 
     void        SetTabs(int i, float pos, Gfx::TextAlign justif=Gfx::TEXT_ALIGN_LEFT);

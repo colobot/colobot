@@ -502,15 +502,21 @@ void CRobotMain::ChangePhase(Phase phase)
         if (CResourceManager::DirectoryExists("crashsave"))
         {
             GetLogger()->Info("Pre-crash save found!\n");
-            m_ui->GetDialog()->StartQuestion("Your game seems to have crashed. Do you want to restore pre-crash state?", false, false, false, [&]() {
-                GetLogger()->Info("Trying to restore pre-crash state...\n");
-                assert(m_playerProfile != nullptr);
-                m_playerProfile->LoadScene("../../crashsave");
-                CResourceManager::RemoveDirectory("crashsave");
-            }, [&]() {
-                GetLogger()->Info("Not restoring pre-crash state\n");
-                CResourceManager::RemoveDirectory("crashsave");
-            });
+            m_ui->GetDialog()->StartQuestion(
+                "Your game seems to have crashed. Do you want to restore pre-crash state?", false, false, false,
+                [&]()
+                {
+                    GetLogger()->Info("Trying to restore pre-crash state...\n");
+                    assert(m_playerProfile != nullptr);
+                    m_playerProfile->LoadScene("../../crashsave");
+                    CResourceManager::RemoveDirectory("crashsave");
+                },
+                [&]()
+                {
+                    GetLogger()->Info("Not restoring pre-crash state\n");
+                    CResourceManager::RemoveDirectory("crashsave");
+                }
+            );
         }
     }
 
@@ -1018,9 +1024,13 @@ bool CRobotMain::ProcessEvent(Event &event)
                 break;
 
             case EVENT_OBJECT_DELETE:
-                m_ui->GetDialog()->StartQuestion(RT_DIALOG_DELOBJ, true, false, false, [&]() {
-                    DestroySelectedObject();
-                });
+                m_ui->GetDialog()->StartQuestion(
+                    RT_DIALOG_DELOBJ, true, false, false,
+                    [&]()
+                    {
+                        DestroySelectedObject();
+                    }
+                );
                 break;
 
             case EVENT_OBJECT_BHELP:
@@ -2256,9 +2266,9 @@ void CRobotMain::ChangeCamera()
 }
 
 //! Remote control the camera using the arrow keys
-void CRobotMain::KeyCamera(EventType type, InputSlot key)
+void CRobotMain::KeyCamera(EventType event, InputSlot key)
 {
-    if (type == EVENT_KEY_UP)
+    if (event == EVENT_KEY_UP)
     {
         if (key == INPUT_SLOT_LEFT)
         {
@@ -2290,7 +2300,7 @@ void CRobotMain::KeyCamera(EventType type, InputSlot key)
     assert(obj->Implements(ObjectInterfaceType::Controllable));
     if (!dynamic_cast<CControllableObject*>(obj)->GetTrainer()) return;
 
-    if (type == EVENT_KEY_DOWN)
+    if (event == EVENT_KEY_DOWN)
     {
         if (key == INPUT_SLOT_LEFT)
         {

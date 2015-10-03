@@ -19,9 +19,8 @@
 
 #pragma once
 
-
-#include "common/event.h"
 #include "common/error.h"
+#include "common/event.h"
 
 #include "object/object_type.h"
 
@@ -75,7 +74,7 @@ public:
     virtual Error   GetError();
 
     virtual bool    GetBusy();
-    virtual void    SetBusy(bool bBuse);
+    virtual void    SetBusy(bool busy);
     virtual void    InitProgressTotal(float total);
     virtual void    EventProgress(float rTime);
 

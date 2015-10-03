@@ -22,7 +22,7 @@
 
 #include <gtest/gtest.h>
 
-class SystemUtilsLinuxUT : public testing::Test
+class CSystemUtilsLinuxUT : public testing::Test
 {
 protected:
     static const long long SEC = 1000000000;
@@ -31,7 +31,7 @@ protected:
 };
 
 
-TEST_F(SystemUtilsLinuxUT, TimeStampDiff)
+TEST_F(CSystemUtilsLinuxUT, TimeStampDiff)
 {
     SystemTimeStamp before, after;
 

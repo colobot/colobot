@@ -59,8 +59,8 @@ namespace ModelInput
     VertexTex2 ReadBinaryVertexTex2(std::istream& stream);
     Material ReadBinaryMaterial(std::istream& stream);
 
-    std::string ReadLineString(std::istream& stream, const std::string& prefix);
-    void ReadValuePrefix(std::istream& stream, const std::string& prefix);
+    std::string ReadLineString(std::istream& stream, const std::string& expectedPrefix);
+    void ReadValuePrefix(std::istream& stream, const std::string& expectedPrefix);
     VertexTex2 ParseVertexTex2(const std::string& text);
     Material ParseMaterial(const std::string& text);
     Math::Vector ParseVector(const std::string& text);

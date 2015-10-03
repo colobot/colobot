@@ -93,7 +93,7 @@ protected:
     void        DeleteObject(bool primary, bool secondary);
 
     //! Creates an explosion with triangular form of particles
-    void        CreateTriangle(CObject* obj, ObjectType type, int part);
+    void        CreateTriangle(CObject* obj, ObjectType oType, int part);
 
     //! Starts the explosion of a vehicle
     void        ExploStart();

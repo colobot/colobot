@@ -27,8 +27,8 @@
 
 #include "graphics/core/color.h"
 
-#include "math/point.h"
 #include "math/intpoint.h"
+#include "math/point.h"
 
 #include <map>
 #include <memory>
@@ -309,7 +309,7 @@ public:
     CharTexture GetCharTexture(UTF8Char ch, FontType font, float size);
 
 protected:
-    CachedFont* GetOrOpenFont(FontType type, float size);
+    CachedFont* GetOrOpenFont(FontType font, float size);
     CharTexture CreateCharTexture(UTF8Char ch, CachedFont* font);
 
     void        DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,

@@ -4932,11 +4932,11 @@ int CEngine::GetEngineState(const ModelTriangle& triangle)
     return state;
 }
 
-void CEngine::UpdateObjectShadowSpotNormal(int rank)
+void CEngine::UpdateObjectShadowSpotNormal(int objRank)
 {
-    assert(rank >= 0 && rank < static_cast<int>( m_objects.size() ));
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    int shadowRank = m_objects[rank].shadowRank;
+    int shadowRank = m_objects[objRank].shadowRank;
     if (shadowRank == -1)
         return;
 

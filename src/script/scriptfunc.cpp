@@ -3680,14 +3680,14 @@ void CScriptFunctions::Init()
     CBotClass* bc;
 
     // Add the class Point.
-    bc = new CBotClass("point", nullptr, true);  // intrinsic class
+    bc = CBotClass::Create("point", nullptr, true);  // intrinsic class
     bc->AddItem("x", CBotTypFloat);
     bc->AddItem("y", CBotTypFloat);
     bc->AddItem("z", CBotTypFloat);
     bc->AddFunction("point", CScriptFunctions::rPointConstructor, CScriptFunctions::cPointConstructor);
 
     // Adds the class Object.
-    bc = new CBotClass("object", nullptr);
+    bc = CBotClass::Create("object", nullptr);
     bc->AddItem("category",    CBotTypResult(CBotTypInt), PR_READ);
     bc->AddItem("position",    CBotTypResult(CBotTypClass, "point"), PR_READ);
     bc->AddItem("orientation", CBotTypResult(CBotTypFloat), PR_READ);
@@ -3718,7 +3718,7 @@ void CScriptFunctions::Init()
     // canal.close();   // close the file
 
     // create the class FILE
-    bc    = new CBotClass("file", nullptr);
+    bc    = CBotClass::Create("file", nullptr);
     // adds the component ".filename"
     bc->AddItem("filename", CBotTypString);
     // adds the component ".handle"
@@ -3991,6 +3991,6 @@ void CScriptFunctions::DestroyObjectVar(CBotVar* botVar, bool permanent)
     if ( botVar == nullptr ) return;
 
     botVar->SetUserPtr(OBJECTDELETED);
-    if(permanent)
-        delete botVar;
+    if (permanent)
+        CBotVar::Destroy(botVar);
 }

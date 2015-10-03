@@ -31,14 +31,14 @@
 
 #include "sound/sound.h"
 
-#include "ui/screen/screen_level_list.h"
-
 #include "ui/controls/button.h"
 #include "ui/controls/edit.h"
-#include "ui/controls/interface.h"
 #include "ui/controls/image.h"
+#include "ui/controls/interface.h"
 #include "ui/controls/list.h"
 #include "ui/controls/window.h"
+
+#include "ui/screen/screen_level_list.h"
 
 #include <ctime>
 #include <cstring>

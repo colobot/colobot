@@ -32,8 +32,8 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/interface/programmable_object.h"
 #include "object/interface/program_storage_object.h"
+#include "object/interface/programmable_object.h"
 #include "object/interface/transportable_object.h"
 
 

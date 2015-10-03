@@ -25,7 +25,7 @@ std::string FormatAssertRegexMatchError(const std::string& text,
     return "Text \"" + text + "\" did not match regex \"" + pattern + "\"";
 }
 
-RegexUtils::AssertRegexMatchError::AssertRegexMatchError(
+RegexUtils::CAssertRegexMatchError::CAssertRegexMatchError(
     const std::string& text, const std::string& pattern) NOEXCEPT
     : std::runtime_error(FormatAssertRegexMatchError(text, pattern))
 {
@@ -37,7 +37,7 @@ boost::smatch RegexUtils::AssertRegexMatch(const std::string& text, const std::s
     boost::smatch matches;
     bool ok = boost::regex_match(text, matches, regex);
     if (!ok)
-        throw AssertRegexMatchError(text, pattern);
+        throw CAssertRegexMatchError(text, pattern);
 
     return matches;
 }

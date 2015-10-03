@@ -444,6 +444,11 @@ CBotVar* CBotVar::Create( const char* name, CBotClass* pClass)
     return        pVar;
 }
 
+void CBotVar::Destroy(CBotVar* var)
+{
+    delete var;
+}
+
 CBotTypResult CBotVar::GetTypResult(int mode)
 {
     CBotTypResult    r = m_type;

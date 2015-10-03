@@ -151,9 +151,9 @@ bool CLogger::IsOpened()
     return m_file != nullptr;
 }
 
-void CLogger::SetLogLevel(LogLevel type)
+void CLogger::SetLogLevel(LogLevel level)
 {
-    m_logLevel = type;
+    m_logLevel = level;
 }
 
 bool CLogger::ParseLogLevel(const std::string& str, LogLevel& logLevel)

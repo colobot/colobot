@@ -153,7 +153,7 @@ bool CSoundInterface::StopAll()
     return true;
 }
 
-bool CSoundInterface::MuteAll(bool bMute)
+bool CSoundInterface::MuteAll(bool mute)
 {
     return true;
 }

@@ -27,6 +27,20 @@
 
 #include <algorithm>
 
+struct ActivePause
+{
+    explicit ActivePause(PauseType type, PauseMusic music = PAUSE_MUSIC_NONE)
+        : type(type),
+          music(music)
+    {}
+
+    ActivePause(const ActivePause&) = delete;
+    ActivePause& operator=(const ActivePause&) = delete;
+
+    PauseType type;
+    PauseMusic music;
+};
+
 
 CPauseManager::CPauseManager()
 {
@@ -39,7 +53,7 @@ CPauseManager::~CPauseManager()
 ActivePause* CPauseManager::ActivatePause(PauseType type, PauseMusic music)
 {
     //GetLogger()->Debug("Activated pause mode - %s\n", GetPauseName(type).c_str());
-    auto pause = std::unique_ptr<ActivePause>(new ActivePause(type, music)); // TODO: Can't use MakeUnique here because the constructor is private
+    auto pause = MakeUnique<ActivePause>(type, music);
     ActivePause* ptr = pause.get();
     m_activePause.push_back(std::move(pause));
     Update();

@@ -30,13 +30,13 @@
 #include "common/event.h"
 #include "common/singleton.h"
 
+#include "graphics/engine/camera.h"
+#include "graphics/engine/particle.h"
+
 #include "level/build_type.h"
 #include "level/level_category.h"
 #include "level/mainmovie.h"
 #include "level/research_type.h"
-
-#include "graphics/engine/camera.h"
-#include "graphics/engine/particle.h"
 
 #include "object/drive_type.h"
 #include "object/mission_type.h"
@@ -193,8 +193,8 @@ public:
     void        SelectHuman();
     CObject*    SearchHuman();
     CObject*    SearchToto();
-    CObject*    SearchNearest(Math::Vector pos, CObject* pExclu);
-    bool        SelectObject(CObject* pObj, bool displayError=true);
+    CObject*    SearchNearest(Math::Vector pos, CObject* exclu);
+    bool        SelectObject(CObject* obj, bool displayError=true);
     CObject*    GetSelectObject();
     CObject*    DeselectAll();
 
@@ -259,15 +259,15 @@ public:
     void        HideDropZone(CObject* metal);
     void        ShowDropZone(CObject* metal, CObject* transporter);
     void        FlushShowLimit(int i);
-    void        SetShowLimit(int i, Gfx::ParticleType parti, CObject *pObj, Math::Vector pos,
+    void        SetShowLimit(int i, Gfx::ParticleType parti, CObject *obj, Math::Vector pos,
                              float radius, float duration=SHOWLIMITTIME);
     void        StartShowLimit();
     void        FrameShowLimit(float rTime);
 
     void        SaveAllScript();
-    void        SaveOneScript(CObject *pObj);
-    bool        SaveFileStack(CObject *pObj, FILE *file, int objRank);
-    bool        ReadFileStack(CObject *pObj, FILE *file, int objRank);
+    void        SaveOneScript(CObject *obj);
+    bool        SaveFileStack(CObject *obj, FILE *file, int objRank);
+    bool        ReadFileStack(CObject *obj, FILE *file, int objRank);
 
     void        FlushNewScriptName();
     void        AddNewScriptName(ObjectType type, const std::string& name);
@@ -365,7 +365,7 @@ public:
 
     void        StartDetectEffect(COldObject* object, CObject* target);
 
-    bool        IsSelectable(CObject* pObj);
+    bool        IsSelectable(CObject* obj);
 
 protected:
     bool        EventFrame(const Event &event);
@@ -390,7 +390,7 @@ protected:
     void        RemoteCamera(float pan, float zoom, float rTime);
     void        KeyCamera(EventType event, InputSlot key);
     void        AbortMovie();
-    void        SelectOneObject(CObject* pObj, bool displayError=true);
+    void        SelectOneObject(CObject* obj, bool displayError=true);
     void        HelpObject();
     bool        DeselectObject();
     void        DeleteAllObjects();

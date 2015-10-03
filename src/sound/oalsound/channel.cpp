@@ -22,7 +22,7 @@
 
 #include "sound/oalsound/buffer.h"
 
-Channel::Channel()
+CChannel::CChannel()
     : m_buffer(nullptr),
       m_source(0),
       m_priority(0),
@@ -49,8 +49,7 @@ Channel::Channel()
     }
 }
 
-
-Channel::~Channel()
+CChannel::~CChannel()
 {
     if (m_ready)
     {
@@ -62,8 +61,7 @@ Channel::~Channel()
     }
 }
 
-
-bool Channel::Play()
+bool CChannel::Play()
 {
     if (!m_ready || m_buffer == nullptr)
     {
@@ -81,7 +79,7 @@ bool Channel::Play()
     return true;
 }
 
-bool Channel::Pause()
+bool CChannel::Pause()
 {
     if (!m_ready || !IsPlaying())
     {
@@ -96,8 +94,7 @@ bool Channel::Pause()
     return true;
 }
 
-
-bool Channel::SetPosition(const Math::Vector &pos)
+bool CChannel::SetPosition(const Math::Vector &pos)
 {
     if (!m_ready || m_buffer == nullptr)
     {
@@ -113,8 +110,7 @@ bool Channel::SetPosition(const Math::Vector &pos)
     return true;
 }
 
-
-bool Channel::SetFrequency(float freq)
+bool CChannel::SetFrequency(float freq)
 {
     if (!m_ready || m_buffer == nullptr)
     {
@@ -130,8 +126,7 @@ bool Channel::SetFrequency(float freq)
     return true;
 }
 
-
-float Channel::GetFrequency()
+float CChannel::GetFrequency()
 {
     ALfloat freq;
     if (!m_ready || m_buffer == nullptr)
@@ -149,8 +144,7 @@ float Channel::GetFrequency()
     return freq;
 }
 
-
-bool Channel::SetVolume(float vol)
+bool CChannel::SetVolume(float vol)
 {
     if (!m_ready || vol < 0 || m_buffer == nullptr)
     {
@@ -166,8 +160,7 @@ bool Channel::SetVolume(float vol)
     return true;
 }
 
-
-float Channel::GetVolume()
+float CChannel::GetVolume()
 {
     ALfloat vol;
     if (!m_ready || m_buffer == nullptr)
@@ -185,87 +178,72 @@ float Channel::GetVolume()
     return vol;
 }
 
-
-void Channel::SetVolumeAtrib(float volume)
+void CChannel::SetVolumeAtrib(float volume)
 {
     m_volume = volume;
 }
 
-
-float Channel::GetVolumeAtrib()
+float CChannel::GetVolumeAtrib()
 {
     return m_volume;
 }
 
-
-
-int Channel::GetPriority()
+int CChannel::GetPriority()
 {
     return m_priority;
 }
 
-
-void Channel::SetPriority(int pri)
+void CChannel::SetPriority(int pri)
 {
     m_priority = pri;
 }
 
-
-void Channel::SetStartAmplitude(float gain)
+void CChannel::SetStartAmplitude(float gain)
 {
     m_startAmplitude = gain;
 }
 
-
-void Channel::SetStartFrequency(float freq)
+void CChannel::SetStartFrequency(float freq)
 {
     m_startFrequency = freq;
 }
 
-
-void Channel::SetChangeFrequency(float freq)
+void CChannel::SetChangeFrequency(float freq)
 {
     m_changeFrequency = freq;
 }
 
-
-float Channel::GetStartAmplitude()
+float CChannel::GetStartAmplitude()
 {
     return m_startAmplitude;
 }
 
-
-float Channel::GetStartFrequency()
+float CChannel::GetStartFrequency()
 {
     return m_startFrequency;
 }
 
-
-float Channel::GetChangeFrequency()
+float CChannel::GetChangeFrequency()
 {
     return m_changeFrequency;
 }
 
-
-float Channel::GetInitFrequency()
+float CChannel::GetInitFrequency()
 {
     return m_initFrequency;
 }
 
-
-void Channel::AddOper(SoundOper oper)
+void CChannel::AddOper(SoundOper oper)
 {
     m_oper.push_back(oper);
 }
 
-
-void Channel::ResetOper()
+void CChannel::ResetOper()
 {
     m_oper.clear();
 }
 
-
-SoundType Channel::GetSoundType()
+SoundType CChannel::GetSoundType()
 {
     if (!m_ready || m_buffer == nullptr)
     {
@@ -275,8 +253,7 @@ SoundType Channel::GetSoundType()
     return m_buffer->GetSoundType();
 }
 
-
-bool Channel::SetBuffer(Buffer *buffer)
+bool CChannel::SetBuffer(CBuffer *buffer)
 {
     if (!m_ready)
         return false;
@@ -299,7 +276,7 @@ bool Channel::SetBuffer(Buffer *buffer)
     return true;
 }
 
-bool Channel::IsPlaying()
+bool CChannel::IsPlaying()
 {
     ALint status;
     if (!m_ready || m_buffer == nullptr)
@@ -317,19 +294,17 @@ bool Channel::IsPlaying()
     return status == AL_PLAYING;
 }
 
-
-bool Channel::IsReady()
+bool CChannel::IsReady()
 {
     return m_ready;
 }
 
-bool Channel::IsLoaded()
+bool CChannel::IsLoaded()
 {
     return m_buffer != nullptr;
 }
 
-
-bool Channel::Stop()
+bool CChannel::Stop()
 {
     if (!m_ready || m_buffer == nullptr)
     {
@@ -345,8 +320,7 @@ bool Channel::Stop()
     return true;
 }
 
-
-float Channel::GetCurrentTime()
+float CChannel::GetCurrentTime()
 {
     if (!m_ready || m_buffer == nullptr)
     {
@@ -363,8 +337,7 @@ float Channel::GetCurrentTime()
     return current;
 }
 
-
-void Channel::SetCurrentTime(float current)
+void CChannel::SetCurrentTime(float current)
 {
     if (!m_ready || m_buffer == nullptr)
     {
@@ -378,8 +351,7 @@ void Channel::SetCurrentTime(float current)
     }
 }
 
-
-float Channel::GetDuration()
+float CChannel::GetDuration()
 {
     if (!m_ready || m_buffer == nullptr)
     {
@@ -389,50 +361,42 @@ float Channel::GetDuration()
     return m_buffer->GetDuration();
 }
 
-
-bool Channel::HasEnvelope()
+bool CChannel::HasEnvelope()
 {
     return m_oper.size() > 0;
 }
 
-
-SoundOper& Channel::GetEnvelope()
+SoundOper& CChannel::GetEnvelope()
 {
     return m_oper.front();
 }
 
-
-void Channel::PopEnvelope()
+void CChannel::PopEnvelope()
 {
     m_oper.pop_front();
 }
 
-
-void Channel::SetLoop(bool loop)
+void CChannel::SetLoop(bool loop)
 {
     m_loop = loop;
 }
 
-
-void Channel::Mute(bool mute)
+void CChannel::Mute(bool mute)
 {
     m_mute = mute;
 }
 
-
-bool Channel::IsMuted()
+bool CChannel::IsMuted()
 {
     return m_mute;
 }
 
-
-void Channel::Reset()
+void CChannel::Reset()
 {
     m_id++;
 }
 
-
-int Channel::GetId()
+int CChannel::GetId()
 {
     return m_id;
 }

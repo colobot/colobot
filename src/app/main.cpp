@@ -23,7 +23,6 @@
  */
 
 #include "common/config.h"
-#include "common/version.h"
 
 #include "app/app.h"
 #include "app/signal_handlers.h"
@@ -35,6 +34,7 @@
 #include "common/logger.h"
 #include "common/make_unique.h"
 #include "common/restext.h"
+#include "common/version.h"
 
 #include "common/resources/resourcemanager.h"
 

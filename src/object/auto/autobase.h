@@ -86,7 +86,7 @@ public:
 
 protected:
     void        UpdateInterface();
-    void        FreezeCargo(bool bFreeze);
+    void        FreezeCargo(bool freeze);
     void        MoveCargo();
     Error       CheckCloseDoor();
     void        BeginTransit();

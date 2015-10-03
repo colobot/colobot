@@ -131,7 +131,7 @@ public:
     //@}
 
     //! Seeks a InputSlot by id. Returns INPUT_SLOT_MAX if not found
-    InputSlot   SearchKeyById(std::string name);
+    InputSlot   SearchKeyById(std::string id);
 
     //! Returns string describing keys to be pressed
     //@{

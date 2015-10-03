@@ -859,8 +859,8 @@ void CCamera::FixCamera()
 }
 
 void CCamera::SetViewTime(const Math::Vector &eyePt,
-                               const Math::Vector &lookatPt,
-                               float rTime)
+                          const Math::Vector &lookatPt,
+                          float rTime)
 {
     Math::Vector eye, lookat;
 

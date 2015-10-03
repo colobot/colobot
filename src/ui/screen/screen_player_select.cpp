@@ -21,13 +21,12 @@
 
 #include "app/app.h"
 
-#include "level/robotmain.h"
-
 #include "common/logger.h"
 #include "common/misc.h"
 #include "common/stringutils.h"
 
 #include "level/player_profile.h"
+#include "level/robotmain.h"
 
 #include "sound/sound.h"
 
@@ -194,9 +193,13 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
 
             GetResource(RES_TEXT, RT_DIALOG_DELGAME, name);
             gamer = pl->GetItemName(pl->GetSelect());
-            m_dialog->StartQuestion(StrUtils::Format(name.c_str(), gamer), true, false, false, [&]() {
-                NameDelete();
-            });
+            m_dialog->StartQuestion(
+                StrUtils::Format(name.c_str(), gamer), true, false, false,
+                [&]()
+                {
+                    NameDelete();
+                }
+            );
             break;
 
         default:

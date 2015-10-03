@@ -448,7 +448,7 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
         m_lightMap[i] = -1;
 
     std::vector<DynamicLight> sortedLights = m_dynLights;
-    LightsComparator lightsComparator(m_engine->GetEyePt(), type);
+    CLightsComparator lightsComparator(m_engine->GetEyePt(), type);
     std::sort(sortedLights.begin(), sortedLights.end(), lightsComparator);
 
     int lightMapIndex = 0;
@@ -497,13 +497,13 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
 
 // -----------
 
-CLightManager::LightsComparator::LightsComparator(Math::Vector eyePos, EngineObjectType objectType)
+CLightManager::CLightsComparator::CLightsComparator(Math::Vector eyePos, EngineObjectType objectType)
 {
     m_eyePos = eyePos;
     m_objectType = objectType;
 }
 
-float CLightManager::LightsComparator::GetLightWeight(const DynamicLight& dynLight)
+float CLightManager::CLightsComparator::GetLightWeight(const DynamicLight& dynLight)
 {
     if (dynLight.priority == LIGHT_PRI_HIGHEST)
         return -1.0f;
@@ -519,7 +519,7 @@ float CLightManager::LightsComparator::GetLightWeight(const DynamicLight& dynLig
     return enabled ? ( (dynLight.light.position - m_eyePos).Length() * dynLight.priority ) : 10000.0f;
 }
 
-bool CLightManager::LightsComparator::operator()(const DynamicLight& left, const DynamicLight& right)
+bool CLightManager::CLightsComparator::operator()(const DynamicLight& left, const DynamicLight& right)
 {
     float leftWeight = GetLightWeight(left);
     float rightWeight = GetLightWeight(right);

@@ -19,8 +19,6 @@
 
 #include "app/app.h"
 
-#include "common/version.h"
-
 #include "app/controller.h"
 #include "app/input.h"
 #include "app/system.h"
@@ -32,6 +30,7 @@
 #include "common/make_unique.h"
 #include "common/pathman.h"
 #include "common/stringutils.h"
+#include "common/version.h"
 
 #include "common/resources/resourcemanager.h"
 
@@ -39,9 +38,9 @@
 
 #include "graphics/opengl/glutil.h"
 
-#include "object/object_manager.h"
-
 #include "level/robotmain.h"
+
+#include "object/object_manager.h"
 
 #ifdef OPENAL_SOUND
     #include "sound/oalsound/alsound.h"
@@ -479,7 +478,7 @@ bool CApplication::Create()
     #ifdef OPENAL_SOUND
     if (!m_headless)
     {
-        m_sound = MakeUnique<ALSound>();
+        m_sound = MakeUnique<CALSound>();
     }
     else
     {

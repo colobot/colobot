@@ -23,6 +23,8 @@
  */
 #pragma once
 
+#include "common/make_unique.h"
+
 #include <string>
 #include <vector>
 #include <memory>
@@ -63,22 +65,7 @@ enum PauseMusic
     PAUSE_MUSIC_SATCOM = 2,
 };
 
-struct ActivePause
-{
-private:
-    friend class CPauseManager;
-
-    explicit ActivePause(PauseType type, PauseMusic music = PAUSE_MUSIC_NONE)
-    : type(type)
-    , music(music)
-    {}
-
-    ActivePause(const ActivePause&) = delete;
-    ActivePause& operator=(const ActivePause&) = delete;
-
-    PauseType type;
-    PauseMusic music;
-};
+struct ActivePause;
 
 class CPauseManager
 {

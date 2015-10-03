@@ -31,7 +31,7 @@ public:
     }
 };
 
-class SystemUtilsWindowsUT : public testing::Test
+class CSystemUtilsWindowsUT : public testing::Test
 {
 protected:
     static const long long SEC = 1000000000;
@@ -39,7 +39,7 @@ protected:
     CSystemUtilsWindowsWrapper m_systemUtils;
 };
 
-TEST_F(SystemUtilsWindowsUT, TimeStampDiff)
+TEST_F(CSystemUtilsWindowsUT, TimeStampDiff)
 {
     m_systemUtils.SetFrequency(SEC);
 

@@ -37,7 +37,7 @@ public:
     CTarget();
     ~CTarget();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 
     bool        EventProcess(const Event &event) override;
     void        Draw() override;

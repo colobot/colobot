@@ -53,7 +53,7 @@ public:
     CObjectInterface(COldObject* object);
     ~CObjectInterface();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool all=false);
 
     bool        EventProcess(const Event &event);
     bool        CreateInterface(bool bSelect);

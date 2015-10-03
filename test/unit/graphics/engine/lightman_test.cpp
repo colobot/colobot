@@ -17,11 +17,11 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "graphics/engine/lightman.h"
-
 #include "common/make_unique.h"
 
 #include "graphics/core/device.h"
+
+#include "graphics/engine/lightman.h"
 
 #include <gtest/gtest.h>
 #include <hippomocks.h>
@@ -33,15 +33,15 @@ using namespace Gfx;
 using namespace HippoMocks;
 namespace ph = std::placeholders;
 
-class LightManagerUT : public testing::Test
+class CLightManagerUT : public testing::Test
 {
 protected:
-    LightManagerUT() :
+    CLightManagerUT() :
         m_engine(nullptr),
         m_device(nullptr),
         m_maxLightsCount(0)
     {}
-    ~LightManagerUT() NOEXCEPT
+    ~CLightManagerUT() NOEXCEPT
     {}
 
     void SetUp() override;
@@ -64,7 +64,7 @@ private:
     int m_maxLightsCount;
 };
 
-void LightManagerUT::SetUp()
+void CLightManagerUT::SetUp()
 {
     m_engine = m_mocks.Mock<CEngine>();
     m_device = m_mocks.Mock<CDevice>();
@@ -72,7 +72,7 @@ void LightManagerUT::SetUp()
     m_lightManager = MakeUnique<CLightManager>(m_engine);
 }
 
-void LightManagerUT::PrepareLightTesting(int maxLights, Math::Vector eyePos)
+void CLightManagerUT::PrepareLightTesting(int maxLights, Math::Vector eyePos)
 {
     m_maxLightsCount = maxLights;
 
@@ -80,12 +80,12 @@ void LightManagerUT::PrepareLightTesting(int maxLights, Math::Vector eyePos)
 
     m_lightManager->SetDevice(m_device);
 
-    m_mocks.OnCall(m_device, CDevice::SetLight).Do(std::bind(&LightManagerUT::CheckLight, this, ph::_1, ph::_2));
+    m_mocks.OnCall(m_device, CDevice::SetLight).Do(std::bind(&CLightManagerUT::CheckLight, this, ph::_1, ph::_2));
 
     m_mocks.OnCall(m_engine, CEngine::GetEyePt).Return(eyePos);
 }
 
-void LightManagerUT::CheckLightSorting(EngineObjectType objectType, const std::vector<int>& expectedLights)
+void CLightManagerUT::CheckLightSorting(EngineObjectType objectType, const std::vector<int>& expectedLights)
 {
     m_expectedLightTypes = expectedLights;
 
@@ -105,14 +105,14 @@ void LightManagerUT::CheckLightSorting(EngineObjectType objectType, const std::v
     m_lightManager->UpdateDeviceLights(objectType);
 }
 
-void LightManagerUT::CheckLight(int index, const Light& light)
+void CLightManagerUT::CheckLight(int index, const Light& light)
 {
     ASSERT_TRUE(index >= 0 && index < static_cast<int>( m_expectedLightTypes.size() ));
     ASSERT_EQ(m_expectedLightTypes[index], light.type);
 }
 
-void LightManagerUT::AddLight(int type, LightPriority priority, bool used, bool enabled,
-                              Math::Vector pos, EngineObjectType includeType, EngineObjectType excludeType)
+void CLightManagerUT::AddLight(int type, LightPriority priority, bool used, bool enabled,
+                               Math::Vector pos, EngineObjectType includeType, EngineObjectType excludeType)
 {
     int rank = m_lightManager->CreateLight(priority);
 
@@ -129,7 +129,7 @@ void LightManagerUT::AddLight(int type, LightPriority priority, bool used, bool 
         m_lightManager->DeleteLight(rank);
 }
 
-TEST_F(LightManagerUT, LightSorting_UnusedOrDisabledAreSkipped)
+TEST_F(CLightManagerUT, LightSorting_UnusedOrDisabledAreSkipped)
 {
     const int lightCount = 10;
     const Math::Vector eyePos(0.0f, 0.0f, 0.0f);
@@ -143,7 +143,7 @@ TEST_F(LightManagerUT, LightSorting_UnusedOrDisabledAreSkipped)
     CheckLightSorting(ENG_OBJTYPE_TERRAIN, expectedLights);
 }
 
-TEST_F(LightManagerUT, LightSorting_IncludeTypesAreIncluded)
+TEST_F(CLightManagerUT, LightSorting_IncludeTypesAreIncluded)
 {
     const int lightCount = 10;
     const Math::Vector eyePos(0.0f, 0.0f, 0.0f);
@@ -157,7 +157,7 @@ TEST_F(LightManagerUT, LightSorting_IncludeTypesAreIncluded)
     CheckLightSorting(ENG_OBJTYPE_TERRAIN, expectedLights);
 }
 
-TEST_F(LightManagerUT, LightSorting_ExcludeTypesAreExcluded)
+TEST_F(CLightManagerUT, LightSorting_ExcludeTypesAreExcluded)
 {
     const int lightCount = 10;
     const Math::Vector eyePos(0.0f, 0.0f, 0.0f);
@@ -171,7 +171,7 @@ TEST_F(LightManagerUT, LightSorting_ExcludeTypesAreExcluded)
     CheckLightSorting(ENG_OBJTYPE_TERRAIN, expectedLights);
 }
 
-TEST_F(LightManagerUT, LightSorting_SortingAccordingToDistance)
+TEST_F(CLightManagerUT, LightSorting_SortingAccordingToDistance)
 {
     const int lightCount = 3;
     const Math::Vector eyePos(0.0f, 0.0f, 0.0f);
