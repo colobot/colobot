@@ -246,7 +246,7 @@ void CEdit::MoveAdjust()
 
 bool CEdit::EventProcess(const Event &event)
 {
-    bool    bShift, bControl;
+    bool    bShift = false, bControl = false;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return true;
 
