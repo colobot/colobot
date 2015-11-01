@@ -209,47 +209,28 @@ CBotString CBotString::Right(int nCount) const
     return CBotString(chain);
 }
 
-CBotString CBotString::Mid(int nFirst, int nCount) const
+CBotString CBotString::Mid(int start, int lg)
 {
-    char chain[2000];
+    CBotString res;
 
-    // clamps nFirst to correct value
-    if(nFirst < 0) nFirst = 0;
-    if(nFirst > m_lg) nFirst = m_lg;
+    if (lg == -1) lg = 2000;
 
-    // clamp nCount to correct value
-    int remaining = m_lg - nFirst;
-    if(nCount > remaining) nCount = remaining;
-    if(nCount < 0) nCount = 0;
+    // clamp start to correct value
+    if (start < 0) start = 0;
+    if (start >= m_lg) return res;
 
-    int i;
-    for (i = nFirst; i < m_lg && i < 1999 && i <= nFirst + nCount; ++i)
-    {
-        chain[i] = m_ptr[i];
-    }
-    chain[i] = 0 ;
+    int remaining = m_lg - start;
+    if (lg > remaining) lg = remaining;
+    if (lg < 0) lg = 0;
 
-    return CBotString(chain);
+    char* p = new char[m_lg+1];
+    strcpy(p, m_ptr+start);
+    p[lg] = 0;
+
+    res = p;
+    delete[] p;
+    return res;
 }
-
-CBotString CBotString::Mid(int nFirst) const
-{
-    char chain[2000];
-
-    // clamp nFirst to correct value
-    if(nFirst < 0) nFirst = 0;
-    if(nFirst > m_lg) nFirst = m_lg;
-
-    int i;
-    for (i = nFirst; i < m_lg && i < 1999 ; ++i)
-    {
-        chain[i] = m_ptr[i];
-    }
-    chain[i] = 0 ;
-
-    return CBotString(chain);
-}
-
 
 int CBotString::Find(const char c)
 {
@@ -301,29 +282,6 @@ int CBotString::ReverseFind(const char * lpsz)
 bad:;
     }
     return -1;
-}
-
-CBotString CBotString::Mid(int start, int lg)
-{
-    CBotString res;
-
-    if (lg == -1) lg = 2000;
-
-    // clamp start to correct value
-    if (start < 0) start = 0;
-    if (start >= m_lg) return res;
-
-    int remaining = m_lg - start;
-    if (lg > remaining) lg = remaining;
-    if (lg < 0) lg = 0;
-
-    char* p = new char[m_lg+1];
-    strcpy(p, m_ptr+start);
-    p[lg] = 0;
-
-    res = p;
-    delete[] p;
-    return res;
 }
 
 void CBotString::MakeUpper()
@@ -453,9 +411,19 @@ const CBotString& CBotString::operator+=(const CBotString& str)
 {
     char* p = new char[m_lg+str.m_lg+1];
 
-    strcpy(p, m_ptr);
+    //-- Check if the pointer is not null befor trying to copy it
+    if(m_ptr != nullptr)
+    {
+        strcpy(p, m_ptr);
+    }
+
     char* pp = p + m_lg;
-    strcpy(pp, str.m_ptr);
+
+    //-- Check if the pointer is not null befor trying to copy it
+    if(str.m_ptr != nullptr)
+    {
+        strcpy(pp, str.m_ptr);
+    }
 
     m_lg = m_lg + str.m_lg;
 
@@ -546,6 +514,14 @@ CBotString::operator const char * () const
     return m_ptr;
 }
 
+const char* CBotString::CStr() const
+{
+    if (this == nullptr || m_ptr == nullptr)
+    {
+        return emptyString;
+    }
+    return m_ptr;
+}
 
 int CBotString::Compare(const char * lpsz) const
 {
