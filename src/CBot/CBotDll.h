@@ -250,37 +250,146 @@ private:
 
 
 ////////////////////////////////////////////////////////////////////////
-//
-// as part of MFC CString not used here.
-//
-// ( all functions are not implemented yet )
-
-/** \brief CBotString Class used to work on strings */
+/**
+ * \brief CBotString Class used to work on strings
+ */
 class CBotString
 {
 public:
+
+    /**
+     * \brief CBotString Default constructor.
+     */
     CBotString();
+
+    /**
+     * \brief CBotString
+     * \param p
+     */
     CBotString(const char* p);
+
+    /**
+     * \brief CBotString
+     * \param p
+     */
     CBotString(const CBotString& p);
+
+    /**
+     * \brief CBotString Destructor.
+     */
     ~CBotString();
 
-    void       Empty();
-    bool       IsEmpty() const;
-    int        GetLength();
-    int        Find(const char c);
-    int        Find(const char* lpsz);
-    int        ReverseFind(const char c);
-    int        ReverseFind(const char* lpsz);
-    bool       LoadString(unsigned int id);
-    CBotString Mid(int nFirst, int nCount) const;
-    CBotString Mid(int nFirst) const;
-    CBotString Mid(int start, int lg=-1);
-    CBotString Left(int nCount) const;
-    CBotString Right(int nCount) const;
-    int        Compare(const char* lpsz) const;
-    void       MakeUpper();
-    void       MakeLower();
+    /**
+     * \brief Empty Clear the internal string.
+     */
+    void Empty();
 
+    /**
+     * \brief IsEmpty Check if the string is empty.
+     * \return True if the sting is empty false otherwise.
+     */
+    bool IsEmpty() const;
+
+    /**
+     * \brief GetLength Get the string length.
+     * \return The size of the string.
+     */
+    int GetLength();
+
+    /**
+     * \brief Find Find the position of a character in a string starting from
+     *             the beginning of the string.
+     * \param c    The character to find.
+     * \return     The position of the character or -1 if the character was not
+     *             found.
+     * \see        ReverseFind(const char c)
+     */
+    int Find(const char c);
+
+    /**
+     * \brief Find Find the position of a string in a string starting from the
+     *             beginning of the string.
+     * \param lpsz The string to find.
+     * \return     The position of the string or -1 if the string was not
+     *             found.
+     * \see        ReverseFind(const char* lpsz)
+     */
+    int Find(const char* lpsz);
+
+    /**
+     * \brief Find Find the position of a character in a string starting from
+     *             the end of the string.
+     * \param c    The character to find.
+     * \return     The position of the character or -1 if the character was not
+     *             found.
+     * \see        Find(const char c)
+     */
+    int ReverseFind(const char c);
+
+    /**
+     * \brief Find Find the position of a string in a string starting from the
+     *             end of the string.
+     * \param lpsz The string to find.
+     * \return     The string of the character or -1 if the string was not
+     *             found.
+     * \see        Find(const char* lpsz)
+     */
+    int ReverseFind(const char* lpsz);
+
+    /**
+     * \brief LoadString Load the string associate with the id.
+     * \param id         The id to load.
+     * \return           True if the id exist false otherwise.
+     */
+    bool LoadString(unsigned int id);
+
+    /**
+     * \brief Mid    Return a part of a string from a starting index and until
+     *               the end of the string with a limited size.
+     * \param nFirst The start index of the character in the string.
+     * \param lg     The size limit. Default value is 2000.
+     * \return       The exctracted string.
+     */
+    CBotString Mid(int start, int lg=-1);
+
+    /**
+     * \brief Left   Return a part of a string starting from the left.
+     * \param nCount The number of character to retreive.
+     * \return       The exctracted string.
+     */
+    CBotString Left(int nCount) const;
+
+    /**
+     * \brief Right  Return a part of a string starting from the right.
+     * \param nCount The number of character to retreive.
+     * \return       The exctracted string.
+     */
+    CBotString Right(int nCount) const;
+
+    /**
+     * \brief Compare Compare a given string to an other.
+     * \param lpsz    The string to compare.
+     * \return        0 if the two string matches. Less than 0 if the current
+     *                string is less than lpsz. Greater than 0 if the current
+     *                string is greater than lpsz.
+     */
+    int Compare(const char* lpsz) const;
+
+    /**
+     * \brief MakeUpper Uppercase the string.
+     */
+    void MakeUpper();
+
+    /**
+     * \brief MakeLower Lowercase the string.
+     */
+    void MakeLower();
+
+    /**
+     * @brief CStr Convert the CBotString to a C string.
+     * @return     A C string string.
+     */
+    const char* CStr() const;
 
     /**
      * \brief Overloaded oprators to work on CBotString classes
@@ -311,19 +420,19 @@ public:
 
 private:
 
-    /** \brief Pointer to string */
+    //! \brief Pointer to string
     char* m_ptr;
 
-    /** \brief Length of the string */
+    //! \brief Length of the string
     int m_lg;
 
-    /** \brief Keeps the string corresponding to keyword ID */
-    static const std::map<EID,const char *> s_keywordString;
+    //! \brief Keeps the string corresponding to keyword ID
+    static const std::map<EID, const char *> s_keywordString;
 
     /**
-     * \brief MapIdToString maps given ID to its string equivalent
-     * \param id Provided identifier
-     * \return string if found, else NullString
+     * \brief MapIdToString Maps given ID to its string equivalent.
+     * \param id            Provided identifier.
+     * \return              String if found, else NullString.
      */
     static const char * MapIdToString(EID id);
 };

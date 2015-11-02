@@ -15,6 +15,7 @@ set(UT_SOURCES
     math/geometry_test.cpp
     math/matrix_test.cpp
     math/vector_test.cpp
+    CBot/CBotString_test.cpp
     ${PLATFORM_TESTS}
 )
 
