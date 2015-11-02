@@ -271,10 +271,13 @@ TEST(CBotString_Test, operatorAdd)
     CBotString botStr4("Colobot");
 
     //-- C string
-    const char cStr1[7] = "olobot";
+    const char* cStr1 = "olobot";
 
-    botStr1 + botStr2;
-    botStr1 + botStr3;
+    botStr1 = botStr1 + botStr2;
+    botStr1 = botStr1 + botStr3;
+    EXPECT_STREQ(botStr1.CStr(), botStr4.CStr());
+
+    botStr1 = "C" + botStr3;
     EXPECT_STREQ(botStr1.CStr(), botStr4.CStr());
 
     botStr1.Empty();

@@ -344,19 +344,11 @@ CBotString operator+(const CBotString& string, const char * lpsz)
     return s;
 }
 
-const CBotString& CBotString::operator+(const CBotString& stringSrc)
+CBotString CBotString::operator+(const CBotString& stringSrc)
 {
-    char* p = new char[m_lg+stringSrc.m_lg+1];
-
-    if (m_ptr!=nullptr) strcpy(p, m_ptr);
-    char* pp = p + m_lg;
-    if (stringSrc.m_ptr!=nullptr) strcpy(pp, stringSrc.m_ptr);
-
-    delete[] m_ptr;
-    m_ptr = p;
-    m_lg += stringSrc.m_lg;
-
-    return *this;
+    CBotString s(*this);
+    s += stringSrc;
+    return s;
 }
 
 const CBotString& CBotString::operator=(const char ch)
