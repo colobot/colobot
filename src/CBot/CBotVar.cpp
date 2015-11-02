@@ -1703,7 +1703,7 @@ void CBotVarClass::DecrementUse()
             pThis->SetPointer(this);
             CBotVar*    pResult = nullptr;
 
-            CBotString    nom = "~" + m_pClass->GetName();
+            CBotString    nom = CBotString("~") + m_pClass->GetName();
             long        ident = 0;
 
             while ( pile->IsOk() && !m_pClass->ExecuteMethode(ident, nom, pThis, ppVars, pResult, pile, nullptr)) ;    // waits for the end

@@ -397,7 +397,6 @@ public:
     const CBotString& operator=(const CBotString& stringSrc);
     const CBotString& operator=(const char ch);
     const CBotString& operator=(const char* pString);
-    friend CBotString operator+(const CBotString& string, const char* lpsz);
     CBotString operator+(const CBotString& str);
 
     const CBotString& operator+=(const char ch);

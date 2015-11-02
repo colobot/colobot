@@ -277,9 +277,6 @@ TEST(CBotString_Test, operatorAdd)
     botStr1 = botStr1 + botStr3;
     EXPECT_STREQ(botStr1.CStr(), botStr4.CStr());
 
-    botStr1 = "C" + botStr3;
-    EXPECT_STREQ(botStr1.CStr(), botStr4.CStr());
-
     botStr1.Empty();
     botStr1 = botStr2 + cStr1;
     EXPECT_STREQ(botStr1.CStr(), botStr4.CStr());

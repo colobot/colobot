@@ -216,7 +216,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
 
         if ( IsOfType(p, ID_NOT) )
         {
-            CBotToken d("~" + p->GetString());
+            CBotToken d(CBotString("~") + p->GetString());
             func->m_token = d;
         }
 

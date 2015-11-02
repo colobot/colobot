@@ -337,13 +337,6 @@ const CBotString& CBotString::operator=(const CBotString& stringSrc)
     return *this;
 }
 
-CBotString operator+(const CBotString& string, const char * lpsz)
-{
-    CBotString s(string);
-    s += lpsz;
-    return s;
-}
-
 CBotString CBotString::operator+(const CBotString& stringSrc)
 {
     CBotString s(*this);
