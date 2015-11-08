@@ -11,6 +11,7 @@ set(SOURCES
     CBotVar.cpp
     CBotWhile.cpp
     CBotInstr/CBotDo.cpp
+    CBotInstr/CBotFor.cpp
 )
 
 # Includes

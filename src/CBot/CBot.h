@@ -483,24 +483,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-class CBotFor : public CBotInstr
-{
-private:
-    CBotInstr*    m_Init;                // initial intruction
-    CBotInstr*    m_Test;                // test condition
-    CBotInstr*    m_Incr;                // instruction for increment
-    CBotInstr*    m_Block;            // instructions
-    CBotString    m_label;            // a label if there is
-
-public:
-                CBotFor();
-                ~CBotFor();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 class CBotBreak : public CBotInstr
 {
 private:

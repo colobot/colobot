@@ -37,6 +37,7 @@
 // Modules inlcude
 #include "CBot.h"
 #include "CBotInstr/CBotDo.h"
+#include "CBotInstr/CBotFor.h"
 
 // Local include
 
