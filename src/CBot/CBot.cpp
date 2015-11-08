@@ -41,6 +41,7 @@
 #include "CBotInstr/CBotSwitch.h"
 #include "CBotInstr/CBotBreak.h"
 #include "CBotInstr/CBotTry.h"
+#include "CBotInstr/CBotThrow.h"
 
 // Local include
 

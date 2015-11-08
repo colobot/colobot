@@ -497,19 +497,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-class CBotThrow : public CBotInstr
-{
-private:
-    CBotInstr*    m_Value;            // the value to send
-
-public:
-                CBotThrow();
-                ~CBotThrow();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
 
 
 class CBotIf : public CBotInstr
