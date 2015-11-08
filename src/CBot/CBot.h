@@ -497,25 +497,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-class CBotCatch : public CBotInstr
-{
-private:
-    CBotInstr*    m_Block;            // instructions
-    CBotInstr*    m_Cond;                //condition
-    CBotCatch*    m_next;                //following catch
-    friend class CBotTry;
-
-public:
-                CBotCatch();
-                ~CBotCatch();
-    static
-    CBotCatch*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        TestCatch(CBotStack* &pj, int val);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-    void        RestoreCondState(CBotStack* &pj, bool bMain);
-};
-
 class CBotThrow : public CBotInstr
 {
 private:

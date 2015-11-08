@@ -17,6 +17,7 @@ set(SOURCES
     CBotInstr/CBotCase.cpp
     CBotInstr/CBotBreak.cpp
     CBotInstr/CBotTry.cpp
+    CBotInstr/CBotCatch.cpp
 )
 
 # Includes

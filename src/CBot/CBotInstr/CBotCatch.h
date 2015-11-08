@@ -17,31 +17,31 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+#pragma once
+
 // Modules inlcude
 #include "CBot.h"
-#include "CBotCatch.h"
 
 // Local include
 
 // Global include
 
-
 /*!
- * \brief The CBotTry class Compiles instruction "try"
+ * \brief The CBotCatch class. Compiles instruction "catch".
  */
-class CBotTry : public CBotInstr
+class CBotCatch : public CBotInstr
 {
 public:
 
     /*!
-     * \brief CBotTry
+     * \brief CBotCatch
      */
-    CBotTry();
+    CBotCatch();
 
     /*!
-     * \brief ~CBotTry
+     * \brief CBotCatch
      */
-    ~CBotTry();
+    ~CBotCatch();
 
     /*!
      * \brief Compile
@@ -49,11 +49,18 @@ public:
      * \param pStack
      * \return
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
+    static CBotCatch* Compile(CBotToken* &p, CBotCStack* pStack);
 
     /*!
-     * \brief Execute Execution of instruction Try manages the return of
-     * exceptions stops (judgements) by suspension and "finally"
+     * \brief TestCatch Routine to see if the catch is to do or not.
+     * \param pj
+     * \param val
+     * \return
+     */
+    bool TestCatch(CBotStack* &pj, int val);
+
+    /*!
+     * \brief Execute Execution of "catch".
      * \param pj
      * \return
      */
@@ -66,12 +73,21 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
+    /*!
+     * \brief RestoreCondState
+     * \param pj
+     * \param bMain
+     */
+    void RestoreCondState(CBotStack* &pj, bool bMain);
+
+
 private:
     //! Instructions
     CBotInstr* m_Block;
-    //! Catches
-    CBotCatch* m_ListCatch;
-    //! Final instruction
-    CBotInstr* m_FinalInst;
+    //! Condition
+    CBotInstr* m_Cond;
+    //! Following catch
+    CBotCatch* m_next;
 
+    friend class CBotTry;
 };
