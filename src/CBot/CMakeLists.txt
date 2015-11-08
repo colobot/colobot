@@ -15,6 +15,7 @@ set(SOURCES
     CBotInstr/CBotListExpression.cpp
     CBotInstr/CBotSwitch.cpp
     CBotInstr/CBotCase.cpp
+    CBotInstr/CBotBreak.cpp
 )
 
 # Includes
