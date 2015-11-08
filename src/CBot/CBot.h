@@ -511,21 +511,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-class CBotCase : public CBotInstr
-{
-private:
-    CBotInstr*    m_Value;            // value to compare
-
-public:
-                CBotCase();
-                ~CBotCase();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-    bool        CompCase(CBotStack* &pj, int val) override;
-};
-
 class CBotCatch : public CBotInstr
 {
 private:
