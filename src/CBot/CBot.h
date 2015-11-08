@@ -516,22 +516,6 @@ public:
     void        RestoreCondState(CBotStack* &pj, bool bMain);
 };
 
-class CBotTry : public CBotInstr
-{
-private:
-    CBotInstr*    m_Block;            // instructions
-    CBotCatch*    m_ListCatch;        // catches
-    CBotInstr*    m_FinalInst;        // final instruction
-
-public:
-                CBotTry();
-                ~CBotTry();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 class CBotThrow : public CBotInstr
 {
 private:

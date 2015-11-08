@@ -40,6 +40,7 @@
 #include "CBotInstr/CBotFor.h"
 #include "CBotInstr/CBotSwitch.h"
 #include "CBotInstr/CBotBreak.h"
+#include "CBotInstr/CBotTry.h"
 
 // Local include
 
