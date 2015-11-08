@@ -17,26 +17,14 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-///////////////////////////////////////////////////////////////////////
-// This file defined the following statements:
-//      CBotWhile   "while (condition) {instructions}"
-//      CBotDo      "do {instructions} while (condition)"
-//      CBotFor     "for (init, condition, incr) {instructions}"
-//      CBotSwitch  "switch (val) {instructions}"
-//      CBotCase    "case val:"
-//      CBotBreak   "break", "break label", "continu", "continu label"
-//      CBotTry     "try {instructions}"
-//      CBotCatch   "catch (condition) {instructions}" or "finally"
-//      CBotThrow   "throw execption"
+// Modules inlcude
+#include "CBotWhile.h"
 
+// Local include
 
-#include "CBot.h"
+// Global include
 
-///////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////
-// compile an instruction "while"
-
+////////////////////////////////////////////////////////////////////////////////
 CBotWhile::CBotWhile()
 {
     m_Condition =
@@ -44,12 +32,14 @@ CBotWhile::CBotWhile()
     name = "CBotWhile";     // debug
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotWhile::~CBotWhile()
 {
     delete  m_Condition;    // frees the condition
     delete  m_Block;        // releases the block instruction
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotWhile::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     CBotWhile*  inst = new CBotWhile();         // creates the object
@@ -88,9 +78,8 @@ CBotInstr* CBotWhile::Compile(CBotToken* &p, CBotCStack* pStack)
     return pStack->Return(nullptr, pStk);          // no object, the error is on the stack
 }
 
-// executes a "while" instruction
-
-bool CBotWhile :: Execute(CBotStack* &pj)
+////////////////////////////////////////////////////////////////////////////////
+bool CBotWhile::Execute(CBotStack* &pj)
 {
     CBotStack* pile = pj->AddStack(this);   // adds an item to the stack
                                             // or find in case of recovery
@@ -137,7 +126,8 @@ bool CBotWhile :: Execute(CBotStack* &pj)
     }
 }
 
-void CBotWhile :: RestoreState(CBotStack* &pj, bool bMain)
+////////////////////////////////////////////////////////////////////////////////
+void CBotWhile::RestoreState(CBotStack* &pj, bool bMain)
 {
     if ( !bMain ) return;
     CBotStack* pile = pj->RestoreStack(this);   // adds an item to the stack

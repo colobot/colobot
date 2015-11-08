@@ -467,21 +467,7 @@ public:
     bool        IsOfClass(CBotString name);
 };
 
-class CBotWhile : public CBotInstr
-{
-private:
-    CBotInstr*    m_Condition;        // condition
-    CBotInstr*    m_Block;            // instructions
-    CBotString    m_label;            // a label if there is
 
-public:
-                CBotWhile();
-                ~CBotWhile();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
 
 class CBotReturn : public CBotInstr
 {

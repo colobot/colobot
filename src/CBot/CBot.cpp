@@ -42,6 +42,7 @@
 #include "CBotInstr/CBotBreak.h"
 #include "CBotInstr/CBotTry.h"
 #include "CBotInstr/CBotThrow.h"
+#include "CBotInstr/CBotWhile.h"
 
 // Local include
 
