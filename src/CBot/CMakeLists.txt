@@ -10,7 +10,16 @@ set(SOURCES
     CBotTwoOpExpr.cpp
     CBotVar.cpp
     CBotWhile.cpp
+    CBotInstr/CBotDo.cpp
 )
+
+# Includes
+set(LOCAL_INCLUDES
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+include_directories(${LOCAL_INCLUDES})
+
 
 if(CBOT_STATIC)
     add_library(CBot STATIC ${SOURCES})

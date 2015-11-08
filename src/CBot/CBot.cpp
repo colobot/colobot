@@ -34,9 +34,13 @@
 // the error is then on the stack CBotCStack :: Isok () is false
 
 
-
+// Modules inlcude
 #include "CBot.h"
+#include "CBotInstr/CBotDo.h"
 
+// Local include
+
+// Global include
 #include <cassert>
 
 
