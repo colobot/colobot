@@ -511,23 +511,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-
-class CBotSwitch : public CBotInstr
-{
-private:
-    CBotInstr*    m_Value;            // value to seek
-    CBotInstr*    m_Block;            // instructions
-
-public:
-                CBotSwitch();
-                ~CBotSwitch();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
-
 class CBotCase : public CBotInstr
 {
 private:

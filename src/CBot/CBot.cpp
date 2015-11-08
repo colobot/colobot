@@ -38,6 +38,7 @@
 #include "CBot.h"
 #include "CBotInstr/CBotDo.h"
 #include "CBotInstr/CBotFor.h"
+#include "CBotInstr/CBotSwitch.h"
 
 // Local include
 
