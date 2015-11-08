@@ -17,24 +17,21 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-
-//////////////////////////////////////////////////////////////////
-// Managing Tokens
-// the text of a program is first transformed
-// into a sequence of tokens for easy interpretation
-// it will only treat the case as an error
-// where there is an illegal character in a string
-
-
+// Modules inlcude
 #include "CBot.h"
+
+// Local include
+
+// Global include
 #include <cstdarg>
 
+////////////////////////////////////////////////////////////////////////////////
 CBotStringArray CBotToken::m_ListKeyWords;
 int CBotToken::m_ListIdKeyWords[200];
 CBotStringArray CBotToken::m_ListKeyDefine;
 long CBotToken::m_ListKeyNums[MAXDEFNUM];
 
-//! contructors
+////////////////////////////////////////////////////////////////////////////////
 CBotToken::CBotToken()
 {
     m_next = nullptr;
@@ -43,6 +40,7 @@ CBotToken::CBotToken()
     m_IdKeyWord = -1;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotToken::CBotToken(const CBotToken* pSrc)
 {
     m_next = nullptr;
@@ -71,6 +69,7 @@ CBotToken::CBotToken(const CBotToken* pSrc)
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotToken::CBotToken(const CBotString& mot, const CBotString& sep, int start, int end)
 {
     m_Text  = mot;                  // word (mot) found as token
@@ -95,17 +94,20 @@ CBotToken::CBotToken(const char* mot, const char* sep)
     m_IdKeyWord = -1;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotToken::~CBotToken()
 {
     delete  m_next;                 // recursive
     m_next = nullptr;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotToken::Free()
 {
     m_ListKeyDefine.SetSize(0);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 const CBotToken& CBotToken::operator=(const CBotToken& src)
 {
     delete m_next;
@@ -123,7 +125,7 @@ const CBotToken& CBotToken::operator=(const CBotToken& src)
     return *this;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetType()
 {
     if (this == nullptr) return 0;
@@ -131,69 +133,66 @@ int CBotToken::GetType()
     return m_type;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 long CBotToken::GetIdKey()
 {
     return m_IdKeyWord;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotToken* CBotToken::GetNext()
 {
     if (this == nullptr) return nullptr;
     return      m_next;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotToken* CBotToken::GetPrev()
 {
     if (this == nullptr) return nullptr;
     return      m_prev;
 }
 
-void CBotToken::AddNext(CBotToken* p)
-{
-    CBotToken*  n = new CBotToken(p);
-    CBotToken*  pt = this;
-
-    while ( pt->m_next != nullptr ) pt = pt->m_next;
-
-    pt->m_next = n;
-    n->m_prev = pt;
-}
-
-
-CBotString& CBotToken::GetString()
+////////////////////////////////////////////////////////////////////////////////
+CBotString CBotToken::GetString()
 {
     return  m_Text;
 }
 
-CBotString& CBotToken::GetSep()
+////////////////////////////////////////////////////////////////////////////////
+CBotString CBotToken::GetSep()
 {
     return  m_Sep;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotToken::SetString(const char* name)
 {
     m_Text = name;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetStart()
 {
     if (this == nullptr) return -1;
     return m_start;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetEnd()
 {
     if (this == nullptr) return -1;
     return m_end;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotToken::SetPos(int start, int end)
 {
     m_start = start;
     m_end   = end;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CharInList(const char c, const char* list)
 {
     int     i = 0;
@@ -205,6 +204,7 @@ bool CharInList(const char c, const char* list)
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool Char2InList(const char c, const char cc, const char* list)
 {
     int     i = 0;
@@ -225,11 +225,7 @@ static char    num[]  = "0123456789";                        // point (single) i
 static char    hexnum[]   = "0123456789ABCDEFabcdef";
 static char    nch[]  = "\"\r\n\t";                          // forbidden in chains
 
-//static char*  duo  = "+=-=*=/===!=<=>=++--///**/||&&";    // double operators
-
-// looking for the next token in a sentence
-// do not start with separators
-// which are made in the previous token
+////////////////////////////////////////////////////////////////////////////////
 CBotToken*  CBotToken::NextToken(char* &program, int& error, bool first)
 {
     CBotString      mot;                // the word which is found
@@ -389,6 +385,7 @@ bis:
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotToken* CBotToken::CompileTokens(const char* program, int& error)
 {
     CBotToken       *nxt, *prv, *tokenbase;
@@ -431,14 +428,13 @@ CBotToken* CBotToken::CompileTokens(const char* program, int& error)
     return tokenbase;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotToken::Delete(CBotToken* pToken)
 {
     delete pToken;
 }
 
-
-// search if a word is part of the keywords
-
+////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetKeyWords(const char* w)
 {
     int     i;
@@ -458,6 +454,7 @@ int CBotToken::GetKeyWords(const char* w)
     return -1;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotToken::GetKeyDefNum(const char* w, CBotToken* &token)
 {
     int     i;
@@ -476,12 +473,7 @@ bool CBotToken::GetKeyDefNum(const char* w, CBotToken* &token)
     return false;
 }
 
-
-/// \todo Fixme Figure out how this should work.
-
-// recreates the list of keywords and its IDs basing on some resources
-// defines of TokenKey.. are in CBotDll.h
-
+////////////////////////////////////////////////////////////////////////////////
 void CBotToken::LoadKeyWords()
 {
     CBotString      s;
@@ -517,6 +509,7 @@ void CBotToken::LoadKeyWords()
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotToken::DefineNum(const char* name, long val)
 {
     int     i;
@@ -533,6 +526,7 @@ bool CBotToken::DefineNum(const char* name, long val)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool IsOfType(CBotToken* &p, int type1, int type2)
 {
     if (p->GetType() == type1 ||
@@ -543,8 +537,8 @@ bool IsOfType(CBotToken* &p, int type1, int type2)
     }
     return false;
 }
-// Same with any number of arguments
-// There must be a zero as the last argument
+
+////////////////////////////////////////////////////////////////////////////////
 bool IsOfTypeList(CBotToken* &p, int type1, ...)
 {
     int     i = type1;

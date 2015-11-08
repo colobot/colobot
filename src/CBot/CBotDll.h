@@ -26,8 +26,13 @@
 
 #pragma once
 
-#include <stdio.h>
+// Modules inlcude
 #include "resource.h"
+
+// Local include
+
+// Global include
+#include <stdio.h>
 #include <map>
 #include <cstring>
 
@@ -989,151 +994,6 @@ public:
     bool            CheckCall(CBotToken* &pToken, CBotDefParam* pParam);
 
 };
-
-#define    MAXDEFNUM            1000                // limited number of DefineNum
-
-/////////////////////////////////////////////////////////////////////////////////////
-// Token management (tokens)
-
-#define TokenTypKeyWord        1                    // a keyword of the language (see TokenKeyWord)
-#define TokenTypNum            2                    // number
-#define TokenTypString         3                    // string
-#define TokenTypVar            4                    // a variable name
-#define TokenTypDef            5                    // value according DefineNum
-
-#define TokenKeyWord        2000                // keywords of the language
-#define TokenKeyDeclare        2100                // keywords of declarations (int, float,..)
-#define TokenKeyVal            2200                // keywords representing the value (true, false, null, nan)
-#define TokenKeyOp            2300                // operators
-
-/**
- * \class CBotToken
- * Responsible for token management
- */
-class CBotToken
-{
-private:
-    static
-    CBotStringArray    m_ListKeyWords;                // list of keywords of language
-    static
-    int                m_ListIdKeyWords[200];        // the corresponding codes
-
-    static
-    CBotStringArray    m_ListKeyDefine;            // names defined by a DefineNum
-    static
-    long            m_ListKeyNums[MAXDEFNUM];    // the ​​associated values
-
-private:
-    CBotToken*        m_next;                        // following in the list
-    CBotToken*        m_prev;
-    int                m_type;                        // type of Token
-    long            m_IdKeyWord;                // number of the keyword if it is a
-                                                // or value of the "define"
-
-    CBotString        m_Text;                        // word found as token
-    CBotString        m_Sep;                        //  following separators
-
-    int                m_start;                    // position in the original text (program)
-    int                m_end;                        // the same for the end of the token
-
-    /**
-     * \brief Check whether given parameter is a keyword
-     */
-    static
-    int                GetKeyWords(const char* w);    // is it a keyword?
-    static
-    bool            GetKeyDefNum(const char* w, CBotToken* &token);
-
-    /**
-     * \brief Loads the list of keywords
-     */
-    static
-    void            LoadKeyWords();
-
-public:
-    /**
-     * \brief Constructors
-     */
-                    CBotToken();
-                    CBotToken(const CBotToken* pSrc);
-                    CBotToken(const CBotString& mot, const CBotString& sep, int start=0, int end=0);
-                    CBotToken(const char* mot, const char* sep = nullptr);
-
-    /**
-     * \brief Destructor
-     */
-                    ~CBotToken();
-    /**
-     * \brief Returns the type of token
-     */
-    int                GetType();
-
-    /**
-     * \brief makes the string corresponding to this token
-     */
-    CBotString&        GetString();
-
-    /**
-     * \brief makes the following separator token
-     */
-    CBotString&        GetSep();
-
-    /**
-     * \brief position of the beginning in the text
-     */
-    int                GetStart();
-    /**
-     * \brief end position in the text
-     */
-    int                GetEnd();
-
-    /**
-     * \brief gives the next token in the list
-     */
-    CBotToken*        GetNext();
-    /**
-     * \brief gives the previous token in a list
-     */
-    CBotToken*        GetPrev();
-
-    /**
-     * \brief transforms the entire program
-     */
-    static
-    CBotToken*        CompileTokens(const char* p, int& error);
-
-    /**
-     * \brief releases the list
-     */
-    static
-    void            Delete(CBotToken* pToken);    // libère la liste
-
-
-    // fonctions non utiles en export
-    static
-    bool            DefineNum(const char* name, long val);
-    void            SetString(const char* name);
-
-    void            SetPos(int start, int end);
-    long            GetIdKey();
-    /**
-     * \brief adds a token (a copy)
-     */
-    void            AddNext(CBotToken* p);
-
-    /**
-     * finds the next token
-     */
-    static
-    CBotToken*        NextToken(char* &program, int& error, bool first = false);
-
-    const CBotToken&
-                    operator=(const CBotToken& src);
-
-    static
-    void            Free();
-};
-
 
 
 /*
