@@ -835,20 +835,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-class CBotListExpression : public CBotInstr
-{
-private:
-    CBotInstr*    m_Expr;                // the first expression to be evaluated
-
-public:
-                CBotListExpression();
-                ~CBotListExpression();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pStack) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 class CBotLogicExpr : public CBotInstr
 {
 private:
