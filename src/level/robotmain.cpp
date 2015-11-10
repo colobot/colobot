@@ -427,6 +427,12 @@ void CRobotMain::ChangePhase(Phase phase)
 
     m_phase = phase;
 
+    if (m_phase != PHASE_SIMUL)
+    {
+        Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
+        if ( pw != nullptr )  pw->ClearState(Ui::STATE_VISIBLE | Ui::STATE_ENABLE);
+    }
+
     if (resetWorld)
     {
         m_winDelay     = 0.0f;
@@ -5915,32 +5921,35 @@ void CRobotMain::StartDetectEffect(COldObject* object, CObject* target)
 
 void CRobotMain::CreateCodeBattleInterface()
 {
-    Math::Point pos, ddim;
-
-    ddim.x = 100.0f/640.0f;
-    ddim.y = 100.0f/480.0f;
-    pos.x = 540.0f/640.0f;
-    pos.y = 100.0f/480.0f;
-    Ui::CWindow* pw = m_interface->CreateWindows(pos, ddim, 3, EVENT_WINDOW6);
-
-    ddim.x = 100.0f/640.0f;
-    ddim.y = 16.0f/480.0f;
-    pos.x = 540.0f/640.0f;
-    pos.y = 178.0f/480.0f;
-    pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, "Code battle");
-
-    float titleBarSize = (11.0f/64.0f); // this is from the texture
-    ddim.x = 80.0f/640.0f;
-    ddim.y = ((1-titleBarSize)*100.0f-20.0f)/480.0f;
-    pos.x = 550.0f/640.0f;
-    pos.y = 110.0f/480.0f;
-    if (!m_codeBattleStarted)
+    if(m_phase == PHASE_SIMUL)
     {
-        pw->CreateButton(pos, ddim, 21, EVENT_CODE_BATTLE_START);
-    }
-    else
-    {
-        pw->CreateButton(pos, ddim, 13, EVENT_CODE_BATTLE_SPECTATOR);
+        Math::Point pos, ddim;
+
+        ddim.x = 100.0f/640.0f;
+        ddim.y = 100.0f/480.0f;
+        pos.x = 540.0f/640.0f;
+        pos.y = 100.0f/480.0f;
+        Ui::CWindow* pw = m_interface->CreateWindows(pos, ddim, 3, EVENT_WINDOW6);
+
+        ddim.x = 100.0f/640.0f;
+        ddim.y = 16.0f/480.0f;
+        pos.x = 540.0f/640.0f;
+        pos.y = 178.0f/480.0f;
+        pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, "Code battle");
+
+        float titleBarSize = (11.0f/64.0f); // this is from the texture
+        ddim.x = 80.0f/640.0f;
+        ddim.y = ((1-titleBarSize)*100.0f-20.0f)/480.0f;
+        pos.x = 550.0f/640.0f;
+        pos.y = 110.0f/480.0f;
+        if (!m_codeBattleStarted)
+        {
+            pw->CreateButton(pos, ddim, 21, EVENT_CODE_BATTLE_START);
+        }
+        else
+        {
+            pw->CreateButton(pos, ddim, 13, EVENT_CODE_BATTLE_SPECTATOR);
+        }
     }
 }
 
