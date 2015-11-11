@@ -19,6 +19,7 @@
 
 // Modules inlcude
 #include "CBotListExpression.h"
+#include "CBotExpression.h"
 
 // Local include
 

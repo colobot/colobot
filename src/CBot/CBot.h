@@ -708,25 +708,6 @@ public:
     void        RestoreStateVar(CBotStack* &pj, bool bMain) override;
 };
 
-// expressions like
-// x = a;
-// x * y + 3;
-
-class CBotExpression : public CBotInstr
-{
-private:
-    CBotLeftExpr*    m_leftop;            // left operand
-    CBotInstr*        m_rightop;            // right operant
-
-public:
-                CBotExpression();
-                ~CBotExpression();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pStack) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 

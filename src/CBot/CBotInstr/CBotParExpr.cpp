@@ -30,6 +30,7 @@
 #include "CBotNew.h"
 #include "CBotExprNull.h"
 #include "CBotExprNan.h"
+#include "CBotExpression.h"
 
 // Local include
 

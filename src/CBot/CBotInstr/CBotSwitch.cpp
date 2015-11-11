@@ -23,6 +23,7 @@
 #include "CBotSwitch.h"
 #include "CBotCase.h"
 #include "CBotBlock.h"
+#include "CBotExpression.h"
 
 // Local include
 

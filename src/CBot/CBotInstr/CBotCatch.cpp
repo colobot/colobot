@@ -20,6 +20,7 @@
 // Modules inlcude
 #include "CBotCatch.h"
 #include "CBotBlock.h"
+#include "CBotExpression.h"
 
 // Local include
 
