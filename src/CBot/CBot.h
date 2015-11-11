@@ -815,24 +815,6 @@ private:
     CBotBlock(const CBotBlock &) = delete;
 };
 
-
-// the content of a block of instructions ... ; ... ; ... ; ... ;
-class CBotListInstr : public CBotInstr
-{
-private:
-    CBotInstr*    m_Instr;            // instructions to do
-
-public:
-                CBotListInstr();
-                ~CBotListInstr();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal = true);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
-
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 

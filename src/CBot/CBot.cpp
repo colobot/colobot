@@ -54,6 +54,7 @@
 #include "CBotInstr/CBotPostIncExpr.h"
 #include "CBotInstr/CBotExprVar.h"
 #include "CBotInstr/CBotInstrCall.h"
+#include "CBotInstr/CBotListInstr.h"
 
 // Local include
 
@@ -407,101 +408,6 @@ CBotInstr* CBotBlock::CompileBlkOrInst(CBotToken* &p, CBotCStack* pStack, bool b
 // if (1 == 1) int x = 0;
 // where the variable x is known only in the block following the if
 
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-
-//////////////////////////////////////////////////////////////////////////////////////
-// compiles a list of instructions separated by semicolons
-
-CBotListInstr::CBotListInstr()
-{
-    m_Instr        = nullptr;
-    name = "CBotListInstr";
-}
-
-CBotListInstr::~CBotListInstr()
-{
-    delete    m_Instr;
-}
-
-CBotInstr* CBotListInstr::Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal)
-{
-    CBotCStack* pStk = pStack->TokenStack(p, bLocal);        // variables are local
-
-    CBotListInstr* inst = new CBotListInstr();
-
-    while (true)
-    {
-        if (p == nullptr) break;
-
-        if (IsOfType(p, ID_SEP)) continue;              // empty statement ignored
-        if (p->GetType() == ID_CLBLK) break;
-
-        if (IsOfType(p, 0))
-        {
-            pStack->SetError(TX_CLOSEBLK, p->GetStart());
-            delete inst;
-            return pStack->Return(nullptr, pStk);
-        }
-
-        CBotInstr* i = CBotBlock::CompileBlkOrInst(p, pStk);    // compiles next
-
-        if (!pStk->IsOk())
-        {
-            delete inst;
-            return pStack->Return(nullptr, pStk);
-        }
-
-        if (inst->m_Instr == nullptr) inst->m_Instr = i;
-        else inst->m_Instr->AddNext(i);                            // added a result
-    }
-    return pStack->Return(inst, pStk);
-}
-
-// executes a set of instructions
-
-bool CBotListInstr::Execute(CBotStack* &pj)
-{
-
-    CBotStack*    pile = pj->AddStack(this, true);                //needed for SetState()
-    if (pile->StackOver() ) return pj->Return( pile);
-
-
-    CBotInstr*    p = m_Instr;                                    // the first expression
-
-    int        state = pile->GetState();
-    while (state-->0) p = p->GetNext();                            // returns to the interrupted operation
-
-    if (p != nullptr) while (true)
-    {
-        if (!p->Execute(pile)) return false;
-        p = p->GetNext();
-        if (p == nullptr) break;
-        (void)pile->IncState();                                  // ready for next
-    }
-
-    return pj->Return(pile);
-}
-
-void CBotListInstr::RestoreState(CBotStack* &pj, bool bMain)
-{
-    if (!bMain) return;
-
-    CBotStack*    pile = pj->RestoreStack(this);
-    if (pile == nullptr) return;
-
-    CBotInstr*    p = m_Instr;                                    // the first expression
-
-    int        state = pile->GetState();
-    while ( p != nullptr && state-- > 0)
-    {
-        p->RestoreState(pile, false);
-        p = p->GetNext();                            // returns to the interrupted operation
-    }
-
-    if (p != nullptr) p->RestoreState(pile, true);
-}
 
 //////////////////////////////////////////////////////////////////////////////////////
 // defining an array of any type

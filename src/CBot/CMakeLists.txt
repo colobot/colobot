@@ -31,6 +31,7 @@ set(SOURCES
     CBotInstr/CBotExprVar.cpp
     CBotInstr/CBotInstrMethode.cpp
     CBotInstr/CBotInstrCall.cpp
+    CBotInstr/CBotListInstr.cpp
 )
 
 # Includes
