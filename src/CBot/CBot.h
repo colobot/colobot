@@ -617,26 +617,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-// definition of an element of any class
-
-class CBotClassInst : public CBotInstr
-{
-private:
-    CBotInstr*    m_var;                // variable to initialise
-    CBotClass*    m_pClass;            // reference to the class
-    CBotInstr*    m_Parameters;        // parameters to be evaluated for the contructor
-    CBotInstr*    m_expr;                // a value to put, if there is
-    bool        m_hasParams;        // has it parameters?
-    long        m_nMethodeIdent;
-
-public:
-                CBotClassInst();
-                ~CBotClassInst();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* pClass = nullptr);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
 
 #define    MAX(a,b)    ((a>b) ? a : b)
 

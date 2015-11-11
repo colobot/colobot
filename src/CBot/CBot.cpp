@@ -61,6 +61,8 @@
 #include "CBotInstr/CBotExpression.h"
 #include "CBotInstr/CBotIndexExpr.h"
 #include "CBotInstr/CBotFieldExpr.h"
+#include "CBotInstr/CBotClassInst.h"
+
 
 // Local include
 
