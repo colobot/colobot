@@ -565,23 +565,6 @@ class CBotEmpty : public CBotInstr
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-// defininition of a boolean
-
-class CBotBoolean : public CBotInstr
-{
-private:
-    CBotInstr*    m_var;                // variable to initialise
-    CBotInstr*    m_expr;                // a value to put, if there is
-
-public:
-                CBotBoolean();
-                ~CBotBoolean();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, bool cont = false, bool noskip=false);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 
