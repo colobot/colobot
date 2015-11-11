@@ -51,6 +51,7 @@
 #include "CBotInstr/CBotExprBool.h"
 #include "CBotInstr/CBotLeftExprVar.h"
 #include "CBotInstr/CBotPreIncExpr.h"
+#include "CBotInstr/CBotPostIncExpr.h"
 
 // Local include
 
@@ -1983,68 +1984,6 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     return pStack->Return(nullptr, pStk);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////////////
-// Management of pre-and post increment / decrement
-// There is no routine Compiles, the object is created directly
-// Compiles in CBotParExpr ::
-
-
-CBotPostIncExpr::CBotPostIncExpr()
-{
-    m_Instr = nullptr;
-    name    = "CBotPostIncExpr";
-}
-
-CBotPostIncExpr::~CBotPostIncExpr()
-{
-    delete    m_Instr;
-}
-
-bool CBotPostIncExpr::Execute(CBotStack* &pj)
-{
-    CBotStack*    pile1 = pj->AddStack(this);
-    CBotStack*    pile2 = pile1;
-
-    CBotVar*    var1 = nullptr;
-
-    // retrieves the variable fields and indexes according
-    if (!(static_cast<CBotExprVar*>(m_Instr))->ExecuteVar(var1, pile2, nullptr, true)) return false;
-
-    pile1->SetState(1);
-    pile1->SetCopyVar(var1);                                // places the result (before incrementation);
-
-    CBotStack* pile3 = pile2->AddStack(this);
-    if (pile3->IfStep()) return false;
-
-    if (var1->IsNAN())
-    {
-        pile1->SetError(TX_OPNAN, &m_token);
-    }
-
-    if (!var1->IsDefined())
-    {
-        pile1->SetError(TX_NOTINIT, &m_token);
-    }
-
-    if (GetTokenType() == ID_INC) var1->Inc();
-    else                          var1->Dec();
-
-    return pj->Return(pile1);                        // operation done, result on pile2
-}
-
-void CBotPostIncExpr::RestoreState(CBotStack* &pj, bool bMain)
-{
-    if (!bMain) return;
-
-    CBotStack*    pile1 = pj->RestoreStack(this);
-    if (pile1 == nullptr) return;
-
-    (static_cast<CBotExprVar*>(m_Instr))->RestoreStateVar(pile1, bMain);
-
-    if (pile1 != nullptr) pile1->RestoreStack(this);
-}
 
 //////////////////////////////////////////////////////////////////////////////////////
 // compile an unary expression
