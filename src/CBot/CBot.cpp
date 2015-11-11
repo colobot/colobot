@@ -47,6 +47,7 @@
 #include "CBotInstr/CBotExprNum.h"
 #include "CBotInstr/CBotNew.h"
 #include "CBotInstr/CBotExprNan.h"
+#include "CBotInstr/CBotExprNull.h"
 
 // Local include
 
@@ -2738,38 +2739,6 @@ bool CBotExprBool::Execute(CBotStack* &pj)
 }
 
 void CBotExprBool::RestoreState(CBotStack* &pj, bool bMain)
-{
-    if (bMain) pj->RestoreStack(this);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-// management of the operand "null"
-
-CBotExprNull::CBotExprNull()
-{
-    name = "CBotExprNull";
-}
-
-CBotExprNull::~CBotExprNull()
-{
-}
-
-// executes, returns an empty pointer
-
-bool CBotExprNull::Execute(CBotStack* &pj)
-{
-    CBotStack*    pile = pj->AddStack(this);
-
-    if (pile->IfStep()) return false;
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypNullPointer);
-
-    var->SetInit(CBotVar::InitType::DEF);         // null pointer valid
-    pile->SetVar(var);          // place on the stack
-    return pj->Return(pile);    // forwards below
-}
-
-void CBotExprNull::RestoreState(CBotStack* &pj, bool bMain)
 {
     if (bMain) pj->RestoreStack(this);
 }

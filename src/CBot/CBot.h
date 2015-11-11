@@ -963,20 +963,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-
-class CBotExprNull : public CBotInstr
-{
-private:
-
-public:
-                CBotExprNull();
-                ~CBotExprNull();
-
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 
