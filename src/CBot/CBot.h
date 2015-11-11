@@ -769,20 +769,6 @@ public:
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
 };
 
-// unary expression
-class CBotExprUnaire : public CBotInstr
-{
-private:
-    CBotInstr*    m_Expr;                // expression to be evaluated
-public:
-                CBotExprUnaire();
-                ~CBotExprUnaire();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pStack) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 // all operations with two operands
 
 class CBotTwoOpExpr : public CBotInstr
