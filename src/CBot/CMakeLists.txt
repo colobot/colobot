@@ -44,6 +44,7 @@ set(SOURCES
     CBotInstr/CBotCondition.cpp
     CBotInstr/CBotClassInst.cpp
     CBotInstr/CBotIString.cpp
+    CBotInstr/CBotFloat.cpp
 )
 
 # Includes

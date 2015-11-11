@@ -21,6 +21,7 @@
 #include "CBotListExpression.h"
 #include "CBotExpression.h"
 #include "CBotIString.h"
+#include "CBotFloat.h"
 
 // Local include
 
