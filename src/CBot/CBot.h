@@ -832,24 +832,6 @@ public:
 };
 
 
-class CBotInstrCall : public CBotInstr
-{
-private:
-    CBotInstr*    m_Parameters;        // the parameters to be evaluated
-//    int            m_typeRes;            // type of the result
-//    CBotString    m_RetClassName;        // class of the result
-    CBotTypResult
-                m_typRes;            // complete type of the result
-    long        m_nFuncIdent;        // id of a function
-
-public:
-                CBotInstrCall();
-                ~CBotInstrCall();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
 
 #define    MAX(a,b)    ((a>b) ? a : b)
 

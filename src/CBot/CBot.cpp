@@ -53,6 +53,7 @@
 #include "CBotInstr/CBotPreIncExpr.h"
 #include "CBotInstr/CBotPostIncExpr.h"
 #include "CBotInstr/CBotExprVar.h"
+#include "CBotInstr/CBotInstrCall.h"
 
 // Local include
 
