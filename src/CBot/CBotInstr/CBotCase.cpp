@@ -19,6 +19,7 @@
 
 // Modules inlcude
 #include "CBotCase.h"
+#include "CBotExprNum.h"
 
 // Local include
 

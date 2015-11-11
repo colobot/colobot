@@ -1006,25 +1006,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-// expression representing a number
-
-class CBotExprNum : public CBotInstr
-{
-private:
-    int            m_numtype;                    // et the type of number
-    long        m_valint;                    // value for an int
-    float        m_valfloat;                    // value for a float
-
-public:
-                CBotExprNum();
-                ~CBotExprNum();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
-
 
 #define    MAX(a,b)    ((a>b) ? a : b)
 
