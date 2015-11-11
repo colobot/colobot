@@ -46,6 +46,7 @@
 #include "CBotInstr/CBotExprAlpha.h"
 #include "CBotInstr/CBotExprNum.h"
 #include "CBotInstr/CBotNew.h"
+#include "CBotInstr/CBotExprNan.h"
 
 // Local include
 
@@ -2769,38 +2770,6 @@ bool CBotExprNull::Execute(CBotStack* &pj)
 }
 
 void CBotExprNull::RestoreState(CBotStack* &pj, bool bMain)
-{
-    if (bMain) pj->RestoreStack(this);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-// management of the operand "nan"
-
-CBotExprNan::CBotExprNan()
-{
-    name = "CBotExprNan";
-}
-
-CBotExprNan::~CBotExprNan()
-{
-}
-
-// executes, returns null pointer
-
-bool CBotExprNan::Execute(CBotStack* &pj)
-{
-    CBotStack*    pile = pj->AddStack(this);
-
-    if (pile->IfStep()) return false;
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypInt);
-
-    var->SetInit(CBotVar::InitType::IS_NAN);       // nan
-    pile->SetVar(var);          // put on the stack
-    return pj->Return(pile);    // forward below
-}
-
-void CBotExprNan::RestoreState(CBotStack* &pj, bool bMain)
 {
     if (bMain) pj->RestoreStack(this);
 }

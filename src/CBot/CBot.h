@@ -976,18 +976,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-class CBotExprNan : public CBotInstr
-{
-private:
-
-public:
-                CBotExprNan();
-                ~CBotExprNan();
-
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 
 #define    MAX(a,b)    ((a>b) ? a : b)
 
