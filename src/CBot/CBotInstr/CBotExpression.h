@@ -21,6 +21,7 @@
 
 // Modules inlcude
 #include "CBot.h"
+#include "CBotLeftExpr.h"
 
 // Local include
 

@@ -648,28 +648,6 @@ public:
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
 };
 
-
-// left operand
-// accept the expressions that be to the left of assignment
-
-class CBotLeftExpr : public CBotInstr
-{
-private:
-    long        m_nIdent;
-
-public:
-                CBotLeftExpr();
-                ~CBotLeftExpr();
-    static
-    CBotLeftExpr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pStack, CBotStack* array);
-
-    bool        ExecuteVar(CBotVar* &pVar, CBotCStack* &pile) override;
-    bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep);
-    void        RestoreStateVar(CBotStack* &pile, bool bMain) override;
-};
-
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 
