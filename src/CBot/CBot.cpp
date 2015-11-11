@@ -56,6 +56,7 @@
 #include "CBotInstr/CBotInstrCall.h"
 #include "CBotInstr/CBotListInstr.h"
 #include "CBotInstr/CBotExprUnaire.h"
+#include "CBotInstr/CBotBoolExpr.h"
 
 // Local include
 
@@ -1641,35 +1642,6 @@ CBotInstr* CBotCondition::Compile(CBotToken* &p, CBotCStack* pStack)
 
     pStack->SetError(TX_OPENPAR, p->GetStart());    // missing parenthesis
 
-    return nullptr;
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////
-// compile a statement such as "(condition)"
-// the condition must be Boolean
-//
-// this class has no constructor, because there is never an instance of this
-// class
-// the object returned by Compile is usually type CBotExpression
-//
-
-CBotInstr* CBotBoolExpr::Compile(CBotToken* &p, CBotCStack* pStack)
-{
-    pStack->SetStartError(p->GetStart());
-
-    CBotInstr* inst = CBotTwoOpExpr::Compile(p, pStack);
-
-    if (nullptr != inst)
-    {
-        if (pStack->GetTypResult().Eq(CBotTypBoolean))
-        {
-            return inst;
-        }
-        pStack->SetError(TX_NOTBOOL, p->GetStart());    // is not a boolean
-    }
-
-    delete inst;
     return nullptr;
 }
 

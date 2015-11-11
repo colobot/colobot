@@ -746,14 +746,6 @@ public:
 
 
 
-class CBotBoolExpr : public CBotInstr
-{
-private:
-
-public:
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-};
 
 // all operations with two operands
 
