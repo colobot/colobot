@@ -915,21 +915,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-class CBotPreIncExpr : public CBotInstr
-{
-private:
-    CBotInstr*    m_Instr;
-    friend class CBotParExpr;
-
-public:
-                CBotPreIncExpr();
-                ~CBotPreIncExpr();
-//    static
-//    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 

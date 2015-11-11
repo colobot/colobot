@@ -50,6 +50,7 @@
 #include "CBotInstr/CBotExprNull.h"
 #include "CBotInstr/CBotExprBool.h"
 #include "CBotInstr/CBotLeftExprVar.h"
+#include "CBotInstr/CBotPreIncExpr.h"
 
 // Local include
 
@@ -2001,17 +2002,6 @@ CBotPostIncExpr::~CBotPostIncExpr()
     delete    m_Instr;
 }
 
-CBotPreIncExpr::CBotPreIncExpr()
-{
-    m_Instr = nullptr;
-    name    = "CBotPreIncExpr";
-}
-
-CBotPreIncExpr::~CBotPreIncExpr()
-{
-    delete    m_Instr;
-}
-
 bool CBotPostIncExpr::Execute(CBotStack* &pj)
 {
     CBotStack*    pile1 = pj->AddStack(this);
@@ -2055,60 +2045,6 @@ void CBotPostIncExpr::RestoreState(CBotStack* &pj, bool bMain)
 
     if (pile1 != nullptr) pile1->RestoreStack(this);
 }
-
-bool CBotPreIncExpr::Execute(CBotStack* &pj)
-{
-    CBotStack*    pile = pj->AddStack(this);
-
-    if (pile->IfStep()) return false;
-
-    CBotVar*     var1;
-
-    if (pile->GetState() == 0)
-    {
-        CBotStack*    pile2 = pile;
-        // retrieves the variable fields and indexes according
-        // pile2 is modified on return
-        if (!(static_cast<CBotExprVar*>(m_Instr))->ExecuteVar(var1, pile2, nullptr, true)) return false;
-
-        if (var1->IsNAN())
-        {
-            pile->SetError(TX_OPNAN, &m_token);
-            return pj->Return(pile);    // operation performed
-        }
-
-        if (!var1->IsDefined())
-        {
-            pile->SetError(TX_NOTINIT, &m_token);
-            return pj->Return(pile);    // operation performed
-        }
-
-        if (GetTokenType() == ID_INC) var1->Inc();
-        else                          var1->Dec();  // ((CBotVarInt*)var1)->m_val
-
-        pile->IncState();
-    }
-
-    if (!m_Instr->Execute(pile)) return false;
-    return pj->Return(pile);    // operation performed
-}
-
-
-void CBotPreIncExpr::RestoreState(CBotStack* &pj, bool bMain)
-{
-    if (!bMain) return;
-
-    CBotStack*    pile = pj->RestoreStack(this);
-    if (pile == nullptr) return;
-
-    if (pile->GetState() == 0)
-    {
-        return;
-    }
-
-    m_Instr->RestoreState(pile, bMain);
-}
-
 
 //////////////////////////////////////////////////////////////////////////////////////
 // compile an unary expression
