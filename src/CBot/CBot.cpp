@@ -48,6 +48,7 @@
 #include "CBotInstr/CBotNew.h"
 #include "CBotInstr/CBotExprNan.h"
 #include "CBotInstr/CBotExprNull.h"
+#include "CBotInstr/CBotExprBool.h"
 
 // Local include
 
@@ -2688,59 +2689,6 @@ void CBotLeftExpr::RestoreStateVar(CBotStack* &pile, bool bMain)
 
     if (m_next3 != nullptr)
          m_next3->RestoreStateVar(pile, bMain);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-// compile a token representing true or false
-
-CBotExprBool::CBotExprBool()
-{
-    name = "CBotExprBool";
-}
-
-CBotExprBool::~CBotExprBool()
-{
-}
-
-CBotInstr* CBotExprBool::Compile(CBotToken* &p, CBotCStack* pStack)
-{
-    CBotCStack* pStk = pStack->TokenStack();
-    CBotExprBool* inst = nullptr;
-
-    if ( p->GetType() == ID_TRUE ||
-         p->GetType() == ID_FALSE )
-    {
-        inst = new CBotExprBool();
-        inst->SetToken(p);  // stores the operation false or true
-        p = p->GetNext();
-
-        CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypBoolean);
-        pStk->SetVar(var);
-    }
-
-    return pStack->Return(inst, pStk);
-}
-
-// executes, returns true or false
-
-bool CBotExprBool::Execute(CBotStack* &pj)
-{
-    CBotStack*    pile = pj->AddStack(this);
-
-    if (pile->IfStep()) return false;
-
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypBoolean);
-
-    if (GetTokenType() == ID_TRUE)      var->SetValInt(1);
-    else                              var->SetValInt(0);
-
-    pile->SetVar(var);  // put on the stack
-    return pj->Return(pile);    // forwards below
-}
-
-void CBotExprBool::RestoreState(CBotStack* &pj, bool bMain)
-{
-    if (bMain) pj->RestoreStack(this);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

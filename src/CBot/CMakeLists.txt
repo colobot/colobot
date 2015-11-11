@@ -24,6 +24,7 @@ set(SOURCES
     CBotInstr/CBotNew.cpp
     CBotInstr/CBotExprNan.cpp
     CBotInstr/CBotExprNull.cpp
+    CBotInstr/CBotExprBool.cpp
 )
 
 # Includes
