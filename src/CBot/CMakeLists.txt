@@ -43,6 +43,7 @@ set(SOURCES
     CBotInstr/CBotLeftExpr.cpp
     CBotInstr/CBotCondition.cpp
     CBotInstr/CBotClassInst.cpp
+    CBotInstr/CBotIString.cpp
 )
 
 # Includes

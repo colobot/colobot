@@ -600,23 +600,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-// definition of an element string
-
-class CBotIString : public CBotInstr
-{
-private:
-    CBotInstr*    m_var;                // variable to initialise
-    CBotInstr*    m_expr;                // a value to put, if there is
-
-public:
-                CBotIString();
-                ~CBotIString();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, bool cont = false, bool noskip=false);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 
 #define    MAX(a,b)    ((a>b) ? a : b)
 
