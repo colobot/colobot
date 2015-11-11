@@ -23,6 +23,8 @@
 
 #include "CBot.h"
 
+#include "CBotInstr/CBotBlock.h"
+
 #include <cassert>
 
 

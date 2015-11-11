@@ -22,6 +22,7 @@
 // Modules inlcude
 #include "CBotSwitch.h"
 #include "CBotCase.h"
+#include "CBotBlock.h"
 
 // Local include
 

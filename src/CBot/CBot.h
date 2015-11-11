@@ -799,22 +799,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-
-
-
-// an instruction block { .... }
-class CBotBlock : public CBotInstr
-{
-public:
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal = true);
-    static
-    CBotInstr*    CompileBlkOrInst(CBotToken* &p, CBotCStack* pStack, bool bLocal = false);
-private:
-    CBotBlock() = delete;
-    CBotBlock(const CBotBlock &) = delete;
-};
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 

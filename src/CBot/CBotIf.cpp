@@ -22,6 +22,8 @@
 
 #include "CBot.h"
 
+#include "CBotInstr/CBotBlock.h"
+
 // various constructors / destructors
 CBotIf::CBotIf()
 {

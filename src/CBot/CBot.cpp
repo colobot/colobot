@@ -357,58 +357,6 @@ bool CBotInstr::CompCase(CBotStack* &pj, int val)
     return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-
-
-//////////////////////////////////////////////////////////////////////////////////////
-// compiles a statement block " { i ; i ; } "
-
-// this class have no constructor because there is never an instance of this
-// class
-// the object returned by Compile is usually of type CBotListInstr
-
-
-CBotInstr* CBotBlock::Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal)
-{
-    pStack->SetStartError(p->GetStart());
-
-    if (IsOfType(p, ID_OPBLK))
-    {
-        CBotInstr* inst = CBotListInstr::Compile(p, pStack, bLocal);
-
-        if (IsOfType(p, ID_CLBLK))
-        {
-            return inst;
-        }
-
-        pStack->SetError(TX_CLOSEBLK, p->GetStart());    // missing parenthesis
-        delete inst;
-        return nullptr;
-    }
-
-    pStack->SetError(TX_OPENBLK, p->GetStart());
-    return nullptr;
-}
-
-CBotInstr* CBotBlock::CompileBlkOrInst(CBotToken* &p, CBotCStack* pStack, bool bLocal)
-{
-    // is this a new block
-    if (p->GetType() == ID_OPBLK) return CBotBlock::Compile(p, pStack);
-
-    // otherwise, look for a single statement instead
-
-    // to handle the case with local definition instruction (*)
-    CBotCStack* pStk = pStack->TokenStack(p, bLocal);
-
-    return pStack->Return( CBotInstr::Compile(p, pStk),    // a single instruction
-                           pStk);
-}
-
-// (*) is the case in the following statement
-// if (1 == 1) int x = 0;
-// where the variable x is known only in the block following the if
-
-
 //////////////////////////////////////////////////////////////////////////////////////
 // defining an array of any type
 // int a[12];

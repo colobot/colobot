@@ -19,6 +19,7 @@
 
 // Modules inlcude
 #include "CBotWhile.h"
+#include "CBotBlock.h"
 
 // Local include
 
