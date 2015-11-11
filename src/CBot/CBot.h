@@ -988,24 +988,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-class CBotNew : public CBotInstr
-{
-private:
-    CBotInstr*    m_Parameters;        // the parameters to be evaluated
-    long        m_nMethodeIdent;
-//    long        m_nThisIdent;
-    CBotToken    m_vartoken;
-
-public:
-                CBotNew();
-                ~CBotNew();
-
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 
 #define    MAX(a,b)    ((a>b) ? a : b)
 

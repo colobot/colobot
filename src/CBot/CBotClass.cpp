@@ -22,6 +22,7 @@
 //
 
 #include "CBot.h"
+#include "CBotInstr/CBotNew.h"
 
 
 CBotClass* CBotClass::m_ExClass = nullptr;
