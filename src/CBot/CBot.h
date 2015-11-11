@@ -638,16 +638,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-class CBotCondition : public CBotInstr
-{
-private:
-
-public:
-
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-};
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 

@@ -1348,37 +1348,6 @@ void CBotIString::RestoreState(CBotStack* &pj, bool bMain)
          m_next2b->RestoreState(pile, bMain);
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////////
-// compile a statement such as "(condition)"
-// the condition must be Boolean
-
-// this class has no constructor, because there is never an instance of this class
-// the object returned by Compile is usually type CBotExpression
-
-
-CBotInstr* CBotCondition::Compile(CBotToken* &p, CBotCStack* pStack)
-{
-    pStack->SetStartError(p->GetStart());
-    if (IsOfType(p, ID_OPENPAR))
-    {
-        CBotInstr* inst = CBotBoolExpr::Compile(p, pStack);
-        if (nullptr != inst)
-        {
-            if (IsOfType(p, ID_CLOSEPAR))
-            {
-                return inst;
-            }
-            pStack->SetError(TX_CLOSEPAR, p->GetStart());    // missing parenthesis
-        }
-        delete inst;
-    }
-
-    pStack->SetError(TX_OPENPAR, p->GetStart());    // missing parenthesis
-
-    return nullptr;
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////
 
 // compile a list of parameters

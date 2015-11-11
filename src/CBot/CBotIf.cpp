@@ -23,6 +23,7 @@
 #include "CBot.h"
 
 #include "CBotInstr/CBotBlock.h"
+#include "CBotInstr/CBotCondition.h"
 
 // various constructors / destructors
 CBotIf::CBotIf()

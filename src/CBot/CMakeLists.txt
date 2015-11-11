@@ -41,6 +41,7 @@ set(SOURCES
     CBotInstr/CBotIndexExpr.cpp
     CBotInstr/CBotFieldExpr.cpp
     CBotInstr/CBotLeftExpr.cpp
+    CBotInstr/CBotCondition.cpp
 )
 
 # Includes
