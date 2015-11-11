@@ -49,6 +49,7 @@
 #include "CBotInstr/CBotExprNan.h"
 #include "CBotInstr/CBotExprNull.h"
 #include "CBotInstr/CBotExprBool.h"
+#include "CBotInstr/CBotLeftExprVar.h"
 
 // Local include
 
@@ -497,68 +498,6 @@ void CBotListInstr::RestoreState(CBotStack* &pj, bool bMain)
 
     if (p != nullptr) p->RestoreState(pile, true);
 }
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////////////
-// compilation of an element to the left of an assignment
-
-CBotLeftExprVar::CBotLeftExprVar()
-{
-    name    = "CBotLeftExprVar";
-    m_typevar    = -1;
-    m_nIdent    =  0;
-}
-
-CBotLeftExprVar::~CBotLeftExprVar()
-{
-}
-
-CBotInstr* CBotLeftExprVar::Compile(CBotToken* &p, CBotCStack* pStack)
-{
-    // verifies that the token is a variable name
-    if (p->GetType() != TokenTypVar)
-    {
-        pStack->SetError( TX_NOVAR, p->GetStart());
-        return nullptr;
-    }
-
-    CBotLeftExprVar* inst = new CBotLeftExprVar();
-    inst->SetToken(p);
-    p = p->GetNext();
-
-    return inst;
-}
-
-// creates a variable and assigns the result to the stack
-bool CBotLeftExprVar::Execute(CBotStack* &pj)
-{
-    CBotVar*     var1;
-    CBotVar*     var2;
-
-    var1 = CBotVar::Create(m_token.GetString(), m_typevar);
-    var1->SetUniqNum(m_nIdent);                             // with the unique identifier
-    pj->AddVar(var1);                                       // place it on the stack
-
-    var2 = pj->GetVar();                                    // result on the stack
-    if (var2) var1->SetVal(var2);                           // do the assignment
-
-    return true;
-}
-
-void CBotLeftExprVar::RestoreState(CBotStack* &pj, bool bMain)
-{
-    CBotVar*     var1;
-
-    var1 = pj->FindVar(m_token.GetString());
-    if (var1 == nullptr) assert(0);
-
-    var1->SetUniqNum(m_nIdent);                    // with the unique identifier
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////
 // defining an array of any type

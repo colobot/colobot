@@ -930,24 +930,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-
-class CBotLeftExprVar : public CBotInstr
-{
-private:
-public:
-    CBotTypResult
-                m_typevar;            // type of variable declared
-    long        m_nIdent;            // unique identifier for that variable
-
-public:
-                CBotLeftExprVar();
-                ~CBotLeftExprVar();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 
