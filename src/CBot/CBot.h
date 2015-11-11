@@ -877,29 +877,6 @@ public:
     void        RestoreStateVar(CBotStack* &pj, bool bMain) override;
 };
 
-// expression for the variable name
-
-class CBotExprVar : public CBotInstr
-{
-private:
-    long        m_nIdent;
-    friend class CBotPostIncExpr;
-    friend class CBotPreIncExpr;
-
-public:
-                CBotExprVar();
-                ~CBotExprVar();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, int privat=PR_PROTECT);
-    static
-    CBotInstr*    CompileMethode(CBotToken* &p, CBotCStack* pStack);
-
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-    bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep);
-    void        RestoreStateVar(CBotStack* &pj, bool bMain) override;
-};
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 
