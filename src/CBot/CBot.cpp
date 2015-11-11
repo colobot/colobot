@@ -57,6 +57,7 @@
 #include "CBotInstr/CBotListInstr.h"
 #include "CBotInstr/CBotExprUnaire.h"
 #include "CBotInstr/CBotBoolExpr.h"
+#include "CBotInstr/CBotTwoOpExpr.h"
 
 // Local include
 

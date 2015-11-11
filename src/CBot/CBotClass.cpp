@@ -24,6 +24,7 @@
 #include "CBot.h"
 #include "CBotInstr/CBotNew.h"
 #include "CBotInstr/CBotLeftExprVar.h"
+#include "CBotInstr/CBotTwoOpExpr.h"
 
 CBotClass* CBotClass::m_ExClass = nullptr;
 

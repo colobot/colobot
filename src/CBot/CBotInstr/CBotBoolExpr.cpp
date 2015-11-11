@@ -19,6 +19,7 @@
 
 // Modules inlcude
 #include "CBotBoolExpr.h"
+#include "CBotTwoOpExpr.h"
 
 // Local include
 

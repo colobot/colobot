@@ -7,7 +7,6 @@ set(SOURCES
     CBotStack.cpp
     CBotString.cpp
     CBotToken.cpp
-    CBotTwoOpExpr.cpp
     CBotVar.cpp
     CBotInstr/CBotWhile.cpp
     CBotInstr/CBotDo.cpp
@@ -37,6 +36,7 @@ set(SOURCES
     CBotInstr/CBotParExpr.cpp
     CBotInstr/CBotBoolExpr.cpp
     CBotInstr/CBotLogicExpr.cpp
+    CBotInstr/CBotTwoOpExpr.cpp
 )
 
 # Includes

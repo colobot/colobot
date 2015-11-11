@@ -17,27 +17,18 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-///////////////////////////////////////////////////
-// expression of type  Opérande1 + Opérande2
-//                     Opérande1 > Opérande2
-
+// Modules inlcude
+#include "CBotTwoOpExpr.h"
+#include "CBotParExpr.h"
+#include "CBotLogicExpr.h"
 #include "CBot.h"
 
-#include "CBotInstr/CBotParExpr.h"
-#include "CBotInstr/CBotLogicExpr.h"
+// Local include
 
+// Global include
 #include <cassert>
 
-namespace
-{
-bool VarIsNAN(const CBotVar* var)
-{
-    return var->GetInit() > CBotVar::InitType::DEF;
-}
-}
-
-// various constructors
-
+////////////////////////////////////////////////////////////////////////////////
 CBotTwoOpExpr::CBotTwoOpExpr()
 {
     m_leftop    =
@@ -45,6 +36,7 @@ CBotTwoOpExpr::CBotTwoOpExpr()
     name = "CBotTwoOpExpr";     // debug
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotTwoOpExpr::~CBotTwoOpExpr()
 {
     delete  m_leftop;
@@ -116,8 +108,7 @@ bool TypeOk( int type, int test )
     }
 }
 
-// compiles a instruction of type A op B
-
+////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOperations)
 {
     int typemasque;
@@ -281,6 +272,11 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 }
 
 
+bool VarIsNAN(const CBotVar* var)
+{
+    return var->GetInit() > CBotVar::InitType::DEF;
+}
+
 bool IsNan(CBotVar* left, CBotVar* right, int* err = nullptr)
 {
     if ( VarIsNAN(left) || VarIsNAN(right) )
@@ -291,9 +287,7 @@ bool IsNan(CBotVar* left, CBotVar* right, int* err = nullptr)
     return false;
 }
 
-
-// performes the operation on two operands
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
 {
     CBotStack* pStk1 = pStack->AddStack(this);  // adds an item to the stack
@@ -477,6 +471,7 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
     return pStack->Return(pStk2);               // transmits the result
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotTwoOpExpr::RestoreState(CBotStack* &pStack, bool bMain)
 {
     if ( !bMain ) return;
@@ -501,21 +496,3 @@ void CBotTwoOpExpr::RestoreState(CBotStack* &pStack, bool bMain)
         return;
     }
 }
-
-#if 0
-void t()
-{
-    int x,y;
-    1>0 ? x = 0 : y = 0;
-}
-#endif
-
-#if 0
-void t(bool t)
-{
-    int  x;
-    x = 1 + t ? 1 : 3 + 4 * 2 ;
-    t ? 0 : "test";
-}
-#endif
-

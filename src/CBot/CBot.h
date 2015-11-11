@@ -727,23 +727,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-
-// all operations with two operands
-
-class CBotTwoOpExpr : public CBotInstr
-{
-private:
-    CBotInstr*    m_leftop;            // left element
-    CBotInstr*    m_rightop;            // right element
-public:
-                CBotTwoOpExpr();
-                ~CBotTwoOpExpr();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, int* pOperations = nullptr);
-    bool        Execute(CBotStack* &pStack) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 

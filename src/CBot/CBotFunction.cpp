@@ -24,6 +24,7 @@
 #include "CBot.h"
 
 #include "CBotInstr/CBotBlock.h"
+#include "CBotInstr/CBotTwoOpExpr.h"
 
 #include <cassert>
 
