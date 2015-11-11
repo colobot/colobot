@@ -1026,22 +1026,6 @@ public:
 
 
 
-// expression representing a string
-
-class CBotExprAlpha : public CBotInstr
-{
-private:
-
-public:
-                CBotExprAlpha();
-                ~CBotExprAlpha();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 

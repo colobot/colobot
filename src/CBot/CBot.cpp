@@ -43,6 +43,7 @@
 #include "CBotInstr/CBotTry.h"
 #include "CBotInstr/CBotThrow.h"
 #include "CBotInstr/CBotWhile.h"
+#include "CBotInstr/CBotExprAlpha.h"
 
 // Local include
 
@@ -2870,63 +2871,6 @@ void CBotExprNum::RestoreState(CBotStack* &pj, bool bMain)
 {
     if (bMain) pj->RestoreStack(this);
 }
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-
-//////////////////////////////////////////////////////////////////////////////////////
-// compile a token representing a string
-
-CBotExprAlpha::CBotExprAlpha()
-{
-    name    = "CBotExprAlpha";
-}
-
-CBotExprAlpha::~CBotExprAlpha()
-{
-}
-
-CBotInstr* CBotExprAlpha::Compile(CBotToken* &p, CBotCStack* pStack)
-{
-    CBotCStack* pStk = pStack->TokenStack();
-
-    CBotExprAlpha* inst = new CBotExprAlpha();
-
-    inst->SetToken(p);
-    p = p->GetNext();
-
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypString);
-    pStk->SetVar(var);
-
-    return pStack->Return(inst, pStk);
-}
-
-// execute, returns the corresponding string
-
-bool CBotExprAlpha::Execute(CBotStack* &pj)
-{
-    CBotStack*    pile = pj->AddStack(this);
-
-    if (pile->IfStep()) return false;
-
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypString);
-
-    CBotString    chaine = m_token.GetString();
-    chaine = chaine.Mid(1, chaine.GetLength()-2);    // removes the quotes
-
-    var->SetValString(chaine);                    // value of the number
-
-    pile->SetVar(var);                            // put on the stack
-
-    return pj->Return(pile);
-}
-
-void CBotExprAlpha::RestoreState(CBotStack* &pj, bool bMain)
-{
-    if (bMain) pj->RestoreStack(this);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
 
 
 //////////////////////////////////////////////////////////////////////////////////////
