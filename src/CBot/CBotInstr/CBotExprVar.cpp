@@ -19,6 +19,7 @@
 
 // Modules inlcude
 #include "CBotExprVar.h"
+#include "CBotInstrMethode.h"
 
 // Local include
 

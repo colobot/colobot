@@ -851,32 +851,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-// a call of method
-
-class CBotInstrMethode : public CBotInstr
-{
-private:
-    CBotInstr*    m_Parameters;        // the parameters to be evaluated
-//    int            m_typeRes;            // type of the result
-//    CBotString    m_RetClassName;        // class of the result
-    CBotTypResult
-                m_typRes;            // complete type of the result
-
-    CBotString    m_NomMethod;        // name of the method
-    long        m_MethodeIdent;        // identifier of the method
-//    long        m_nThisIdent;        // identifier for "this"
-    CBotString    m_ClassName;        // name of the class
-
-public:
-                CBotInstrMethode();
-                ~CBotInstrMethode();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, CBotVar* pVar);
-    bool        Execute(CBotStack* &pj) override;
-    bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToken, bool bStep, bool bExtend) override;
-    void        RestoreStateVar(CBotStack* &pj, bool bMain) override;
-};
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 
