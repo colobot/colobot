@@ -39,6 +39,7 @@ set(SOURCES
     CBotInstr/CBotTwoOpExpr.cpp
     CBotInstr/CBotExpression.cpp
     CBotInstr/CBotIndexExpr.cpp
+    CBotInstr/CBotFieldExpr.cpp
 )
 
 # Includes

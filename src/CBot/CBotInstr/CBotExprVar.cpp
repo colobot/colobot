@@ -22,6 +22,7 @@
 #include "CBotInstrMethode.h"
 #include "CBotExpression.h"
 #include "CBotIndexExpr.h"
+#include "CBotFieldExpr.h"
 
 // Local include
 

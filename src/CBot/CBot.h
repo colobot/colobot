@@ -670,27 +670,6 @@ public:
 };
 
 
-// management of the fields of an instance
-
-class CBotFieldExpr : public CBotInstr
-{
-private:
-    friend class CBotExpression;
-    int            m_nIdent;
-
-public:
-                CBotFieldExpr();
-                ~CBotFieldExpr();
-    void        SetUniqNum(int num);
-//    static
-//    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        ExecuteVar(CBotVar* &pVar, CBotCStack* &pile) override;
-    bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep, bool bExtend) override;
-    void        RestoreStateVar(CBotStack* &pj, bool bMain) override;
-};
-
-
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 
