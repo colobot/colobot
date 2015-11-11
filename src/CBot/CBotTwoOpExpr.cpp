@@ -23,6 +23,8 @@
 
 #include "CBot.h"
 
+#include "CBotInstr/CBotParExpr.h"
+
 #include <cassert>
 
 namespace

@@ -19,6 +19,7 @@
 
 // Modules inlcude
 #include "CBotExprUnaire.h"
+#include "CBotParExpr.h"
 
 // Local include
 

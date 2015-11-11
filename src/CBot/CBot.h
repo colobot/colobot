@@ -755,20 +755,6 @@ public:
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
 };
 
-
-
-// possibly an expression in parentheses ( ... )
-// there is never an instance of this class
-// being the object returned inside the parenthesis
-class CBotParExpr : public CBotInstr
-{
-private:
-
-public:
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-};
-
 // all operations with two operands
 
 class CBotTwoOpExpr : public CBotInstr
