@@ -59,6 +59,7 @@
 #include "CBotInstr/CBotBoolExpr.h"
 #include "CBotInstr/CBotTwoOpExpr.h"
 #include "CBotInstr/CBotExpression.h"
+#include "CBotInstr/CBotIndexExpr.h"
 
 // Local include
 
@@ -1376,103 +1377,6 @@ CBotInstr* CBotCondition::Compile(CBotToken* &p, CBotCStack* pStack)
 
     return nullptr;
 }
-
-//////////////////////////////////////////////////////////////////////////////////////
-// index management for arrays
-// array [ expression ]
-
-
-CBotIndexExpr::CBotIndexExpr()
-{
-    m_expr    = nullptr;
-    name    = "CBotIndexExpr";
-}
-
-CBotIndexExpr::~CBotIndexExpr()
-{
-    delete    m_expr;
-}
-
-// finds a field from the instance at compile time
-
-bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
-{
-    if (pVar->GetType(1) != CBotTypArrayPointer)
-        assert(0);
-
-    pVar = (static_cast<CBotVarArray*>(pVar))->GetItem(0, false);    // at compile time makes the element [0]
-    if (pVar == nullptr)
-    {
-        pile->SetError(TX_OUTARRAY, m_token.GetEnd());
-        return false;
-    }
-    if (m_next3 != nullptr) return m_next3->ExecuteVar(pVar, pile);
-    return true;
-}
-
-// attention, changes the pointer to the stack intentionally
-// place the index calculated on the additional stack
-
-
-bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep, bool bExtend)
-{
-    CBotStack*    pj = pile;
-
-    if (pVar->GetType(1) != CBotTypArrayPointer)
-        assert(0);
-
-    pile = pile->AddStack();
-
-    if (pile->GetState() == 0)
-    {
-        if (!m_expr->Execute(pile)) return false;
-        pile->IncState();
-    }
-    // handles array
-
-    CBotVar* p = pile->GetVar();    // result on the stack
-
-    if (p == nullptr || p->GetType() > CBotTypDouble)
-    {
-        pile->SetError(TX_BADINDEX, prevToken);
-        return pj->Return(pile);
-    }
-
-    int n = p->GetValInt();     // position in the table
-
-    pVar = (static_cast<CBotVarArray*>(pVar))->GetItem(n, bExtend);
-    if (pVar == nullptr)
-    {
-        pile->SetError(TX_OUTARRAY, prevToken);
-        return pj->Return(pile);
-    }
-
-    pVar->Maj(pile->GetPUser(), true);
-
-    if ( m_next3 != nullptr &&
-         !m_next3->ExecuteVar(pVar, pile, prevToken, bStep, bExtend) ) return false;
-
-    // does not release the stack
-    // to avoid recalculation of the index twice where appropriate
-    return true;
-}
-
-void CBotIndexExpr::RestoreStateVar(CBotStack* &pile, bool bMain)
-{
-    pile = pile->RestoreStack();
-    if (pile == nullptr) return;
-
-    if (bMain && pile->GetState() == 0)
-    {
-        m_expr->RestoreState(pile, true);
-        return;
-    }
-
-    if (m_next3)
-         m_next3->RestoreStateVar(pile, bMain);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////
 // field management in an instance (dot operator)

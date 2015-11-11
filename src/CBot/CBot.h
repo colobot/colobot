@@ -689,24 +689,7 @@ public:
     void        RestoreStateVar(CBotStack* &pj, bool bMain) override;
 };
 
-// management of indices of the tables
 
-class CBotIndexExpr : public CBotInstr
-{
-private:
-    CBotInstr*     m_expr;                    // expression for calculating the index
-    friend class CBotLeftExpr;
-    friend class CBotExprVar;
-
-public:
-                CBotIndexExpr();
-                ~CBotIndexExpr();
-//    static
-//    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        ExecuteVar(CBotVar* &pVar, CBotCStack* &pile) override;
-    bool        ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep, bool bExtend) override;
-    void        RestoreStateVar(CBotStack* &pj, bool bMain) override;
-};
 
 #define    MAX(a,b)    ((a>b) ? a : b)
 
