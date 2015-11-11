@@ -727,25 +727,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-class CBotLogicExpr : public CBotInstr
-{
-private:
-    CBotInstr*    m_condition;        // test to evaluate
-    CBotInstr*    m_op1;                // left element
-    CBotInstr*    m_op2;                // right element
-    friend class CBotTwoOpExpr;
-
-public:
-                CBotLogicExpr();
-                ~CBotLogicExpr();
-//    static
-//    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pStack) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
-
-
 
 // all operations with two operands
 

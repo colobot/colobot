@@ -24,6 +24,7 @@
 #include "CBot.h"
 
 #include "CBotInstr/CBotParExpr.h"
+#include "CBotInstr/CBotLogicExpr.h"
 
 #include <cassert>
 
@@ -49,22 +50,6 @@ CBotTwoOpExpr::~CBotTwoOpExpr()
     delete  m_leftop;
     delete  m_rightop;
 }
-
-CBotLogicExpr::CBotLogicExpr()
-{
-    m_condition =
-    m_op1       =
-    m_op2       = nullptr;         // nullptr to be able to delete without other
-    name = "CBotLogicExpr";     // debug
-}
-
-CBotLogicExpr::~CBotLogicExpr()
-{
-    delete  m_condition;
-    delete  m_op1;
-    delete  m_op2;
-}
-
 
 // type of operands accepted by operations
 #define     ENTIER      ((1<<CBotTypByte)|(1<<CBotTypShort)|(1<<CBotTypChar)|(1<<CBotTypInt)|(1<<CBotTypLong))
@@ -514,54 +499,6 @@ void CBotTwoOpExpr::RestoreState(CBotStack* &pStack, bool bMain)
     {
         m_rightop->RestoreState(pStk2, bMain);          // interrupted here!
         return;
-    }
-}
-
-
-bool CBotLogicExpr::Execute(CBotStack* &pStack)
-{
-    CBotStack* pStk1 = pStack->AddStack(this);  // adds an item to the stack
-                                                // or return in case of recovery
-//  if ( pStk1 == EOX ) return true;
-
-    if ( pStk1->GetState() == 0 )
-    {
-        if ( !m_condition->Execute(pStk1) ) return false;
-        if (!pStk1->SetState(1)) return false;
-    }
-
-    if ( pStk1->GetVal() == true )
-    {
-        if ( !m_op1->Execute(pStk1) ) return false;
-    }
-    else
-    {
-        if ( !m_op2->Execute(pStk1) ) return false;
-    }
-
-    return pStack->Return(pStk1);                   // transmits the result
-}
-
-void CBotLogicExpr::RestoreState(CBotStack* &pStack, bool bMain)
-{
-    if ( !bMain ) return;
-
-    CBotStack* pStk1 = pStack->RestoreStack(this);  // adds an item to the stack
-    if ( pStk1 == nullptr ) return;
-
-    if ( pStk1->GetState() == 0 )
-    {
-        m_condition->RestoreState(pStk1, bMain);
-        return;
-    }
-
-    if ( pStk1->GetVal() == true )
-    {
-        m_op1->RestoreState(pStk1, bMain);
-    }
-    else
-    {
-        m_op2->RestoreState(pStk1, bMain);
     }
 }
 
