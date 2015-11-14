@@ -49,6 +49,7 @@ set(SOURCES
     CBotInstr/CBotReturn.cpp
     CBotInstr/CBotIf.cpp
     CBotInstr/CBotListArray.cpp
+    CBotInstr/CBotInstArray.cpp
 )
 
 # Includes

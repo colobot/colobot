@@ -21,6 +21,7 @@
 #include "CBotBoolean.h"
 #include "CBotLeftExprVar.h"
 #include "CBotTwoOpExpr.h"
+#include "CBotInstArray.h"
 
 // Local include
 

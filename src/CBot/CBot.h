@@ -485,26 +485,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-// definition of an array
-
-class CBotInstArray : public CBotInstr
-{
-private:
-    CBotInstr*    m_var;                // the variables to initialize
-    CBotInstr*    m_listass;            // list of assignments for array
-    CBotTypResult
-                m_typevar;            // type of elements
-//    CBotString    m_ClassName;
-
-public:
-                CBotInstArray();
-                ~CBotInstArray();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResult type);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 
