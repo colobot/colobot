@@ -467,24 +467,6 @@ public:
     bool        IsOfClass(CBotString name);
 };
 
-
-
-class CBotReturn : public CBotInstr
-{
-private:
-    CBotInstr*    m_Instr;            // paramter of return
-
-public:
-                CBotReturn();
-                ~CBotReturn();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
-
-
 class CBotIf : public CBotInstr
 {
 private:
