@@ -20,6 +20,8 @@
 // Modules inlcude
 #include "CBotInstrMethode.h"
 
+#include "CBotStack.h"
+
 // Local include
 
 // Global include

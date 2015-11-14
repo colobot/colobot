@@ -22,7 +22,8 @@
 #include "CBotParExpr.h"
 #include "CBotLogicExpr.h"
 #include "CBotExpression.h"
-#include "CBot.h"
+
+#include "CBotStack.h"
 
 // Local include
 

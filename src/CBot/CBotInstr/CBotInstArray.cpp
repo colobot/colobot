@@ -25,6 +25,8 @@
 #include "CBotListArray.h"
 #include "CBotEmpty.h"
 
+#include "CBotStack.h"
+
 // Local include
 
 // Global include

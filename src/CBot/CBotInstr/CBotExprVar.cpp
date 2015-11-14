@@ -24,6 +24,8 @@
 #include "CBotIndexExpr.h"
 #include "CBotFieldExpr.h"
 
+#include "CBotStack.h"
+
 // Local include
 
 // Global include

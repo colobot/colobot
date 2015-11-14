@@ -21,6 +21,8 @@
 #include "CBotExprUnaire.h"
 #include "CBotParExpr.h"
 
+#include "CBotStack.h"
+
 // Local include
 
 // Global include

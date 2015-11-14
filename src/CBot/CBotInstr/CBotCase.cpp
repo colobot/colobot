@@ -21,6 +21,8 @@
 #include "CBotCase.h"
 #include "CBotExprNum.h"
 
+#include "CBotStack.h"
+
 // Local include
 
 // Global include

@@ -20,6 +20,8 @@
 // Modules inlcude
 #include "CBotExprNull.h"
 
+#include "CBotStack.h"
+
 // Local include
 
 // Global include

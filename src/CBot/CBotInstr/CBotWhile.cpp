@@ -22,6 +22,8 @@
 #include "CBotBlock.h"
 #include "CBotCondition.h"
 
+#include "CBotStack.h"
+
 // Local include
 
 // Global include

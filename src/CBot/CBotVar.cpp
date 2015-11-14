@@ -25,6 +25,8 @@
 
 #include "CBot.h"
 
+#include "CBotStack.h"
+
 #include <cassert>
 #include <cmath>
 #include <cstdio>

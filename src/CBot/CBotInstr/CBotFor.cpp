@@ -23,6 +23,8 @@
 #include "CBotBlock.h"
 #include "CBotBoolExpr.h"
 
+#include "CBotStack.h"
+
 // Local include
 
 // Global include

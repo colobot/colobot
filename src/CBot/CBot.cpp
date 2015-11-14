@@ -72,6 +72,8 @@
 #include "CBotInstr/CBotInstArray.h"
 #include "CBotInstr/CBotInt.h"
 
+#include "CBotStack.h"
+
 
 // Local include
 

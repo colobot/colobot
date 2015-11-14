@@ -23,6 +23,8 @@
 #include "CBotTwoOpExpr.h"
 #include "CBotInstArray.h"
 
+#include "CBotStack.h"
+
 // Local include
 
 // Global include

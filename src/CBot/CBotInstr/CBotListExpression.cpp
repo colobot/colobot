@@ -25,6 +25,8 @@
 #include "CBotBoolean.h"
 #include "CBotInt.h"
 
+#include "CBotStack.h"
+
 // Local include
 
 // Global include

@@ -21,6 +21,9 @@
 // database management of CBoT program
 
 #include "CBot.h"
+
+#include "CBotStack.h"
+
 #include <stdio.h>
 
 CBotProgram::CBotProgram()

@@ -29,6 +29,8 @@
 #include "CBotInstr/CBotEmpty.h"
 #include "CBotInstr/CBotListArray.h"
 
+#include "CBotStack.h"
+
 #include <cassert>
 
 
