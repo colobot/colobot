@@ -65,6 +65,7 @@
 #include "CBotInstr/CBotIString.h"
 #include "CBotInstr/CBotFloat.h"
 #include "CBotInstr/CBotBoolean.h"
+#include "CBotInstr/CBotEmpty.h"
 
 
 // Local include
@@ -563,19 +564,6 @@ void CBotInstArray::RestoreState(CBotStack* &pj, bool bMain)
     }
 
     if (m_next2b ) m_next2b->RestoreState( pile1, bMain);
-}
-
-// special case for empty indexes
-bool CBotEmpty :: Execute(CBotStack* &pj)
-{
-    CBotVar*    pVar = CBotVar::Create("", CBotTypInt);
-    pVar->SetValInt(-1);
-    pj->SetVar(pVar);
-    return true;
-}
-
-void CBotEmpty :: RestoreState(CBotStack* &pj, bool bMain)
-{
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

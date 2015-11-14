@@ -558,13 +558,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-
-class CBotEmpty : public CBotInstr
-{
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 
