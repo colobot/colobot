@@ -50,6 +50,7 @@ set(SOURCES
     CBotInstr/CBotIf.cpp
     CBotInstr/CBotListArray.cpp
     CBotInstr/CBotInstArray.cpp
+    CBotInstr/CBotInt.cpp
 )
 
 # Includes

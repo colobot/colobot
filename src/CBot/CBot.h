@@ -467,24 +467,6 @@ public:
     bool        IsOfClass(CBotString name);
 };
 
-// definition of an integer
-
-class CBotInt : public CBotInstr
-{
-private:
-    CBotInstr*    m_var;                // the variable to initialize
-    CBotInstr*    m_expr;                // a value to put, if there is
-///    CBotInstr*    m_next;                // several definitions chained
-
-public:
-                CBotInt();
-                ~CBotInt();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, bool cont = false, bool noskip = false);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 

@@ -23,6 +23,7 @@
 #include "CBotIString.h"
 #include "CBotFloat.h"
 #include "CBotBoolean.h"
+#include "CBotInt.h"
 
 // Local include
 
