@@ -505,24 +505,6 @@ public:
     void        RestoreState(CBotStack* &pj, bool bMain) override;
 };
 
-
-// definition of a assignment list for a table
-// int [ ] a [ ] = ( ( 1, 2, 3 ) , ( 3, 2, 1 ) ) ;
-
-class CBotListArray : public CBotInstr
-{
-private:
-    CBotInstr*    m_expr;                // an expression for an element
-                                    // others are linked with CBotInstr :: m_next3;
-public:
-                CBotListArray();
-                ~CBotListArray();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResult type);
-    bool        Execute(CBotStack* &pj, CBotVar* pVar) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
 #define    MAX(a,b)    ((a>b) ? a : b)
 
 

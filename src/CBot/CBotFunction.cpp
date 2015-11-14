@@ -27,6 +27,7 @@
 #include "CBotInstr/CBotTwoOpExpr.h"
 #include "CBotInstr/CBotExpression.h"
 #include "CBotInstr/CBotEmpty.h"
+#include "CBotInstr/CBotListArray.h"
 
 #include <cassert>
 
