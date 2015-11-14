@@ -17,15 +17,17 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-///////////////////////////////////////////////////////////////////////
-// instruction if (condition) operation1 else operation2;
-
-#include "CBot.h"
-
+// Modules inlcude
+#include "CBotIf.h"
 #include "CBotInstr/CBotBlock.h"
 #include "CBotInstr/CBotCondition.h"
 
-// various constructors / destructors
+// Local include
+
+// Global include
+
+
+////////////////////////////////////////////////////////////////////////////////
 CBotIf::CBotIf()
 {
     m_Condition =
@@ -34,6 +36,7 @@ CBotIf::CBotIf()
     name = "CBotIf";            // debug
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotIf::~CBotIf()
 {
     delete  m_Condition;        // frees the condition
@@ -41,9 +44,7 @@ CBotIf::~CBotIf()
     delete  m_BlockElse;        // frees the block of instruction2
 }
 
-// compilation (static routine)
-// called when the token "if" has been found
-
+////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     CBotToken*  pp = p;                         // preserves at the ^ token (starting instruction)
@@ -89,9 +90,7 @@ CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
     return pStack->Return(nullptr, pStk);
 }
 
-
-// execution of the instruction
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotIf :: Execute(CBotStack* &pj)
 {
     CBotStack* pile = pj->AddStack(this);       // adds an item to the stack
@@ -134,7 +133,7 @@ bool CBotIf :: Execute(CBotStack* &pj)
     return pj->Return(pile);
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 void CBotIf :: RestoreState(CBotStack* &pj, bool bMain)
 {
     if ( !bMain ) return;

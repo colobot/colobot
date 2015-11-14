@@ -67,6 +67,7 @@
 #include "CBotInstr/CBotBoolean.h"
 #include "CBotInstr/CBotEmpty.h"
 #include "CBotInstr/CBotReturn.h"
+#include "CBotInstr/CBotIf.h"
 
 
 // Local include

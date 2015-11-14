@@ -467,23 +467,6 @@ public:
     bool        IsOfClass(CBotString name);
 };
 
-class CBotIf : public CBotInstr
-{
-private:
-    CBotInstr*    m_Condition;        // condition
-    CBotInstr*    m_Block;            // instructions
-    CBotInstr*    m_BlockElse;        // instructions
-
-public:
-                CBotIf();
-                ~CBotIf();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-    void        RestoreState(CBotStack* &pj, bool bMain) override;
-};
-
-
 // definition of an integer
 
 class CBotInt : public CBotInstr

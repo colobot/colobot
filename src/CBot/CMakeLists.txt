@@ -2,7 +2,6 @@ set(SOURCES
     CBot.cpp
     CBotClass.cpp
     CBotFunction.cpp
-    CBotIf.cpp
     CBotProgram.cpp
     CBotStack.cpp
     CBotString.cpp
@@ -48,6 +47,7 @@ set(SOURCES
     CBotInstr/CBotBoolean.cpp
     CBotInstr/CBotEmpty.cpp
     CBotInstr/CBotReturn.cpp
+    CBotInstr/CBotIf.cpp
 )
 
 # Includes
