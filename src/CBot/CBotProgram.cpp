@@ -433,18 +433,6 @@ bool ReadLong(FILE* pf, long& w)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool WriteString(FILE* pf, CBotString s)
-{
-    size_t  lg1, lg2;
-
-    lg1 = s.GetLength();
-    if (!WriteWord(pf, lg1)) return false;
-
-    lg2 = fwrite(s, 1, lg1, pf );
-    return (lg1 == lg2);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool ReadString(FILE* pf, CBotString& s)
 {
     unsigned short  w;

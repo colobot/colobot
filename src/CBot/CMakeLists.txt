@@ -59,6 +59,7 @@ set(SOURCES
     CBotVar/CBotVarPointer.cpp
     CBotVar/CBotVarClass.cpp
     CBotVar/CBotVarBoolean.cpp
+    CBotVar/CBotVarString.cpp
 )
 
 # Includes

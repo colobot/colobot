@@ -115,3 +115,15 @@ bool WriteWord(FILE* pf, unsigned short w)
 
     return (lg == 1);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+bool WriteString(FILE* pf, CBotString s)
+{
+    size_t  lg1, lg2;
+
+    lg1 = s.GetLength();
+    if (!WriteWord(pf, lg1)) return false;
+
+    lg2 = fwrite(s, 1, lg1, pf );
+    return (lg1 == lg2);
+}

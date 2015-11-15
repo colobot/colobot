@@ -31,6 +31,7 @@
 #include "CBotVar/CBotVarPointer.h"
 #include "CBotVar/CBotVarClass.h"
 #include "CBotVar/CBotVarBoolean.h"
+#include "CBotVar/CBotVarString.h"
 
 #include "CBotDefines.h"
 #include "CBotClass.h"
@@ -85,22 +86,6 @@ CBotVarFloat::CBotVarFloat( const CBotToken* name )
     m_mPrivate = 0;
 
     m_val    = 0;
-}
-
-CBotVarString::CBotVarString( const CBotToken* name )
-{
-    m_token    = new CBotToken(name);
-    m_next    = nullptr;
-    m_pMyThis = nullptr;
-    m_pUserPtr = nullptr;
-    m_InitExpr = nullptr;
-    m_LimExpr = nullptr;
-    m_type  = CBotTypString;
-    m_binit = InitType::UNDEF;
-    m_bStatic = false;
-    m_mPrivate = 0;
-
-    m_val.Empty();
 }
 
 CBotVar::~CBotVar( )
@@ -1119,91 +1104,6 @@ bool CBotVarFloat::Ne(CBotVar* left, CBotVar* right)
 {
     return left->GetValFloat() != right->GetValFloat();
 }
-
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-// copy a variable into another
-void CBotVarString::Copy(CBotVar* pSrc, bool bName)
-{
-    CBotVarString*    p = static_cast<CBotVarString*>(pSrc);
-
-    if (bName)    *m_token    = *p->m_token;
-    m_type        = p->m_type;
-    m_val        = p->m_val;
-    m_binit        = p->m_binit;
-//-    m_bStatic    = p->m_bStatic;
-    m_next        = nullptr;
-    m_pMyThis    = nullptr;//p->m_pMyThis;
-    m_pUserPtr    = p->m_pUserPtr;
-
-    // keeps indentificator the same (by default)
-    if (m_ident == 0 ) m_ident     = p->m_ident;
-}
-
-
-void CBotVarString::SetValString(const char* p)
-{
-    m_val = p;
-    m_binit    = CBotVar::InitType::DEF;
-}
-
-CBotString CBotVarString::GetValString()
-{
-    if ( m_binit == CBotVar::InitType::UNDEF )
-    {
-        CBotString res;
-        res.LoadString(TX_UNDEF);
-        return res;
-    }
-    if ( m_binit == CBotVar::InitType::IS_NAN )
-    {
-        CBotString res;
-        res.LoadString(TX_NAN);
-        return res;
-    }
-
-    return    m_val;
-}
-
-
-void CBotVarString::Add(CBotVar* left, CBotVar* right)
-{
-    m_val = left->GetValString() + right->GetValString();
-    m_binit = CBotVar::InitType::DEF;
-}
-
-bool CBotVarString::Eq(CBotVar* left, CBotVar* right)
-{
-    return (left->GetValString() == right->GetValString());
-}
-
-bool CBotVarString::Ne(CBotVar* left, CBotVar* right)
-{
-    return (left->GetValString() != right->GetValString());
-}
-
-
-bool CBotVarString::Lo(CBotVar* left, CBotVar* right)
-{
-    return (left->GetValString() == right->GetValString());
-}
-
-bool CBotVarString::Hi(CBotVar* left, CBotVar* right)
-{
-    return (left->GetValString() == right->GetValString());
-}
-
-bool CBotVarString::Ls(CBotVar* left, CBotVar* right)
-{
-    return (left->GetValString() == right->GetValString());
-}
-
-bool CBotVarString::Hs(CBotVar* left, CBotVar* right)
-{
-    return (left->GetValString() == right->GetValString());
-}
-
 
 ////////////////////////////////////////////////////////////////
 

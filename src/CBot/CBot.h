@@ -316,35 +316,6 @@ public:
     bool        Save1State(FILE* pf) override;
 };
 
-
-// class for management of strings (String)
-class CBotVarString : public CBotVar
-{
-private:
-    CBotString    m_val;        // the value
-
-public:
-                CBotVarString( const CBotToken* name );
-//                ~CBotVarString();
-
-    void        SetValString(const char* p) override;
-    CBotString    GetValString() override;
-
-    void        Copy(CBotVar* pSrc, bool bName=true) override;
-
-    void        Add(CBotVar* left, CBotVar* right) override;    // addition
-
-    bool        Lo(CBotVar* left, CBotVar* right) override;
-    bool        Hi(CBotVar* left, CBotVar* right) override;
-    bool        Ls(CBotVar* left, CBotVar* right) override;
-    bool        Hs(CBotVar* left, CBotVar* right) override;
-    bool        Eq(CBotVar* left, CBotVar* right) override;
-    bool        Ne(CBotVar* left, CBotVar* right) override;
-
-    bool        Save1State(FILE* pf) override;
-};
-
-
 extern CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars);
 
 extern bool TypeCompatible( CBotTypResult& type1, CBotTypResult& type2, int op = 0 );
