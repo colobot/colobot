@@ -30,6 +30,7 @@
 #include "CBotVar/CBotVarArray.h"
 
 #include "CBotDefines.h"
+#include "CBotClass.h"
 
 #include <cassert>
 #include <cmath>

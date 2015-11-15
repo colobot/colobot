@@ -24,6 +24,7 @@
 #include "CBotInstArray.h"
 
 #include "CBotStack.h"
+#include "CBotClass.h"
 
 // Local include
 

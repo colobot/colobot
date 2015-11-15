@@ -20,6 +20,8 @@
 #include "level/robotmain.h"
 
 #include "CBot/CBotDll.h"
+// TODO must be replaced by CBot.h
+#include "CBot/CBotClass.h"
 
 #include "app/app.h"
 #include "app/input.h"

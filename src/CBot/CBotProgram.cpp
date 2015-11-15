@@ -24,7 +24,7 @@
 
 #include "CBotCall.h"
 #include "CBotStack.h"
-
+#include "CBotClass.h"
 #include "CBotUtils.h"
 
 #include <stdio.h>

@@ -17,21 +17,27 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/////////////////////////////////////////////////////////////////////
-// Management of variables of class type
-//
-
-#include "CBot.h"
-
-#include "CBotCall.h"
+// Modules inlcude
+#include "CBotClass.h"
 
 #include "CBotInstr/CBotNew.h"
 #include "CBotInstr/CBotLeftExprVar.h"
 #include "CBotInstr/CBotTwoOpExpr.h"
 
+#include "CBotCall.h"
+
+// Local include
+
+// Global include
+
+
+////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotClass::m_ExClass = nullptr;
 
-CBotClass::CBotClass(const char* name, CBotClass* pPapa, bool bIntrinsic)
+////////////////////////////////////////////////////////////////////////////////
+CBotClass::CBotClass(const char* name,
+                     CBotClass* pPapa,
+                     bool bIntrinsic)
 {
     m_pParent   = pPapa;
     m_name      = name;
@@ -60,6 +66,7 @@ CBotClass::CBotClass(const char* name, CBotClass* pPapa, bool bIntrinsic)
 
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotClass::~CBotClass()
 {
     // removes the list of class
@@ -77,11 +84,15 @@ CBotClass::~CBotClass()
     delete  m_next;         // releases all of them on this level
 }
 
-CBotClass* CBotClass::Create(const char* name, CBotClass* parent, bool intrinsic)
+////////////////////////////////////////////////////////////////////////////////
+CBotClass* CBotClass::Create(const char* name,
+                             CBotClass* parent,
+                             bool intrinsic)
 {
     return new CBotClass(name, parent, intrinsic);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotClass::Free()
 {
     while ( m_ExClass != nullptr )
@@ -90,6 +101,7 @@ void CBotClass::Free()
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotClass::Purge()
 {
     if ( this == nullptr ) return;
@@ -108,6 +120,7 @@ void CBotClass::Purge()
     m_next = nullptr;          // no longer belongs to this chain
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::Lock(CBotProgram* p)
 {
     int i = m_cptLock++;
@@ -144,6 +157,7 @@ bool CBotClass::Lock(CBotProgram* p)
     return false;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotClass::Unlock()
 {
     if ( --m_cptOne > 0 ) return ;
@@ -162,6 +176,7 @@ void CBotClass::Unlock()
     m_ProgInLock[i] = nullptr;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotClass::FreeLock(CBotProgram* p)
 {
     CBotClass* pClass = m_ExClass;
@@ -182,9 +197,10 @@ void CBotClass::FreeLock(CBotProgram* p)
     }
 }
 
-
-
-bool CBotClass::AddItem(CBotString name, CBotTypResult type, int mPrivate)
+////////////////////////////////////////////////////////////////////////////////
+bool CBotClass::AddItem(CBotString name,
+                        CBotTypResult type,
+                        int mPrivate)
 {
     CBotToken   token(name, CBotString());
     CBotClass*  pClass = type.GetClass();
@@ -207,7 +223,7 @@ bool CBotClass::AddItem(CBotString name, CBotTypResult type, int mPrivate)
     return AddItem( pVar );
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::AddItem(CBotVar* pVar)
 {
     pVar->SetUniqNum(++m_nbVar);
@@ -218,6 +234,7 @@ bool CBotClass::AddItem(CBotVar* pVar)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotClass::AddNext(CBotClass* pClass)
 {
     CBotClass*      p = this;
@@ -226,17 +243,20 @@ void CBotClass::AddNext(CBotClass* pClass)
     p->m_next = pClass;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotString  CBotClass::GetName()
 {
     return m_name;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotClass*  CBotClass::GetParent()
 {
     if ( this == nullptr ) return nullptr;
     return m_pParent;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool  CBotClass::IsChildOf(CBotClass* pClass)
 {
     CBotClass* p = this;
@@ -248,12 +268,13 @@ bool  CBotClass::IsChildOf(CBotClass* pClass)
     return false;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 CBotVar* CBotClass::GetVar()
 {
     return  m_pVar;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotVar* CBotClass::GetItem(const char* name)
 {
     CBotVar*    p = m_pVar;
@@ -267,6 +288,7 @@ CBotVar* CBotClass::GetItem(const char* name)
     return nullptr;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotVar* CBotClass::GetItemRef(int nIdent)
 {
     CBotVar*    p = m_pVar;
@@ -280,16 +302,19 @@ CBotVar* CBotClass::GetItemRef(int nIdent)
     return nullptr;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::IsIntrinsic()
 {
     return  m_bIntrinsic;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotClass::Find(CBotToken* &pToken)
 {
     return Find(pToken->GetString());
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotClass::Find(const char* name)
 {
     CBotClass*  p = m_ExClass;
@@ -303,9 +328,10 @@ CBotClass* CBotClass::Find(const char* name)
     return nullptr;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::AddFunction(const char* name,
-                                bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
-                                CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar))
+                            bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
+                            CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar))
 {
     // stores pointers to the two functions
     CBotCallMethode*    p = m_pCalls;
@@ -332,18 +358,19 @@ bool CBotClass::AddFunction(const char* name,
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::AddUpdateFunc( void rMaj ( CBotVar* pThis, void* pUser ) )
 {
     m_rMaj = rMaj;
     return true;
 }
 
-// compiles a method associated with an instance of class
-// the method can be declared by the user or AddFunction
-
+////////////////////////////////////////////////////////////////////////////////
 CBotTypResult CBotClass::CompileMethode(const char* name,
-                                        CBotVar* pThis, CBotVar** ppParams,
-                                        CBotCStack* pStack, long& nIdent)
+                                        CBotVar* pThis,
+                                        CBotVar** ppParams,
+                                        CBotCStack* pStack,
+                                        long& nIdent)
 {
     nIdent = 0; // forget the previous one if necessary
 
@@ -360,11 +387,13 @@ CBotTypResult CBotClass::CompileMethode(const char* name,
     return r;
 }
 
-// executes a method
-
-bool CBotClass::ExecuteMethode(long& nIdent, const char* name,
-                               CBotVar* pThis, CBotVar** ppParams,
-                               CBotVar* &pResult, CBotStack* &pStack,
+////////////////////////////////////////////////////////////////////////////////
+bool CBotClass::ExecuteMethode(long& nIdent,
+                               const char* name,
+                               CBotVar* pThis,
+                               CBotVar** ppParams,
+                               CBotVar* &pResult,
+                               CBotStack* &pStack,
                                CBotToken* pToken)
 {
     int ret = m_pCalls->DoCall(nIdent, name, pThis, ppParams, pResult, pStack, pToken);
@@ -382,17 +411,17 @@ bool CBotClass::ExecuteMethode(long& nIdent, const char* name,
     return ret;
 }
 
-// restored the execution stack
-
-void CBotClass::RestoreMethode(long& nIdent, const char* name, CBotVar* pThis,
-                               CBotVar** ppParams, CBotStack* &pStack)
+////////////////////////////////////////////////////////////////////////////////
+void CBotClass::RestoreMethode(long& nIdent,
+                               const char* name,
+                               CBotVar* pThis,
+                               CBotVar** ppParams,
+                               CBotStack* &pStack)
 {
     m_pMethod->RestoreCall(nIdent, name, pThis, ppParams, pStack, this);
 }
 
-
-
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::SaveStaticState(FILE* pf)
 {
     if (!WriteWord( pf, CBOTVERSION*2)) return false;
@@ -429,6 +458,7 @@ bool CBotClass::SaveStaticState(FILE* pf)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::RestoreStaticState(FILE* pf)
 {
     CBotString      ClassName, VarName;
@@ -466,9 +496,9 @@ bool CBotClass::RestoreStaticState(FILE* pf)
     return true;
 }
 
-// test if a procedure name is already defined somewhere
-
-bool CBotClass::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
+////////////////////////////////////////////////////////////////////////////////
+bool CBotClass::CheckCall(CBotToken* &pToken,
+                          CBotDefParam* pParam)
 {
     CBotString  name = pToken->GetString();
 
