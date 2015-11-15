@@ -19,6 +19,7 @@
 
 // Modules inlcude
 #include "CBotStack.h"
+#include "CBotCall.h"
 
 // Local include
 

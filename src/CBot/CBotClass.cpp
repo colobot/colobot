@@ -22,6 +22,9 @@
 //
 
 #include "CBot.h"
+
+#include "CBotCall.h"
+
 #include "CBotInstr/CBotNew.h"
 #include "CBotInstr/CBotLeftExprVar.h"
 #include "CBotInstr/CBotTwoOpExpr.h"

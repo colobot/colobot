@@ -29,7 +29,6 @@
 #include "CBotDll.h"                    // public definitions
 #include "CBotToken.h"                  // token management
 
-#define    STACKRUN    1                /// \def return execution directly on a suspended routine
 #define    STACKMEM    1                /// \def preserve memory for the execution stack
 #define    MAXSTACK    990              /// \def stack size reserved
 
@@ -525,58 +524,6 @@ extern void DEBUG( const char* text, int val, CBotStack* pile );
 #endif
 
 ///////////////////////////////////////////
-// class for routine calls (external)
-
-class CBotCall
-{
-private:
-    static
-    CBotCall*    m_ListCalls;
-    static
-    void*        m_pUser;
-    long        m_nFuncIdent;
-
-private:
-    CBotString    m_name;
-    bool        (*m_rExec) (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser) ;
-    CBotTypResult
-                (*m_rComp) (CBotVar* &pVar, void* pUser)    ;
-    CBotCall*    m_next;
-
-public:
-                CBotCall(const char* name,
-                         bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                         CBotTypResult rCompile (CBotVar* &pVar, void* pUser));
-                ~CBotCall();
-
-    static
-    bool        AddFunction(const char* name,
-                            bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                            CBotTypResult rCompile (CBotVar* &pVar, void* pUser));
-
-    static
-    CBotTypResult
-                CompileCall(CBotToken* &p, CBotVar** ppVars, CBotCStack* pStack, long& nIdent);
-    static
-    bool        CheckCall(const char* name);
-
-//    static
-//    int            DoCall(CBotToken* &p, CBotVar** ppVars, CBotStack* pStack, CBotTypResult& rettype);
-    static
-    int            DoCall(long& nIdent, CBotToken* token, CBotVar** ppVars, CBotStack* pStack, CBotTypResult& rettype);
-#if    STACKRUN
-    bool        Run(CBotStack* pStack);
-    static
-    bool        RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack* pStack);
-#endif
-
-    CBotString    GetName();
-    CBotCall*    Next();
-
-    static void    SetPUser(void* pUser);
-    static void    Free();
-};
-
 // class managing the methods declared by AddFunction on a class
 
 class CBotCallMethode
