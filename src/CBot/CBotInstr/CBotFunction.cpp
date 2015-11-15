@@ -17,9 +17,9 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-///////////////////////////////////////////////////////////////////////
-// compilation of various functions declared by the user
-//
+
+// Modules inlcude
+#include "CBotFunction.h"
 
 #include "CBot.h"
 
@@ -32,12 +32,13 @@
 #include "CBotStack.h"
 #include "CBotClass.h"
 
+// Local include
+
+// Global include
 #include <cassert>
 
 
-// various constructors / destructors
-// \TODO translation:to liberate all according to esteblished tree
-// pour libérer tout selon l'arbre établi
+////////////////////////////////////////////////////////////////////////////////
 CBotFunction::CBotFunction()
 {
     m_Param      = nullptr;            // empty parameter list
@@ -53,8 +54,10 @@ CBotFunction::CBotFunction()
     m_bSynchro    = false;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotFunction* CBotFunction::m_listPublic = nullptr;
 
+////////////////////////////////////////////////////////////////////////////////
 CBotFunction::~CBotFunction()
 {
     delete  m_Param;                // empty parameter list
@@ -80,16 +83,19 @@ CBotFunction::~CBotFunction()
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotFunction::IsPublic()
 {
     return m_bPublic;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotFunction::IsExtern()
 {
     return m_bExtern;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotFunction::GetPosition(int& start, int& stop, CBotGet modestart, CBotGet modestop)
 {
     start = m_extern.GetStart();
@@ -131,7 +137,7 @@ bool CBotFunction::GetPosition(int& start, int& stop, CBotGet modestart, CBotGet
     return true;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 CBotTypResult   ArrayType(CBotToken* &p, CBotCStack* pile, CBotTypResult type)
 {
     while ( IsOfType( p, ID_OPBRK ) )
@@ -146,6 +152,7 @@ CBotTypResult   ArrayType(CBotToken* &p, CBotCStack* pile, CBotTypResult type)
     return type;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotTypResult   TypeParam(CBotToken* &p, CBotCStack* pile)
 {
     CBotClass*  pClass = nullptr;
@@ -183,9 +190,7 @@ CBotTypResult   TypeParam(CBotToken* &p, CBotCStack* pile)
     return CBotTypResult( -1 );
 }
 
-// compiles a new function
-// bLocal allows of the declaration of parameters on the same level
-// as the elements belonging to the class for methods
+////////////////////////////////////////////////////////////////////////////////
 CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunction* finput, bool bLocal)
 {
     CBotToken*      pp;
@@ -298,7 +303,7 @@ bad:
     return pStack->ReturnFunc(nullptr, pStk);
 }
 
-// pre-compile a new function
+////////////////////////////////////////////////////////////////////////////////
 CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClass*  pClass)
 {
     CBotFunction* func = new CBotFunction();
@@ -385,6 +390,7 @@ bad:
 static int xx = 0;
 #endif
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
 {
     CBotStack*  pile = pj->AddStack(this, 2);               // one end of stack local to this function
@@ -434,7 +440,7 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
     return pj->Return(pile);
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
 {
     CBotStack*  pile = pj->RestoreStack(this);          // one end of stack local to this function
@@ -463,6 +469,7 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
     m_Block->RestoreState(pile2, true);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotFunction::AddNext(CBotFunction* p)
 {
     CBotFunction*   pp = this;
@@ -471,7 +478,7 @@ void CBotFunction::AddNext(CBotFunction* p)
     pp->m_next = p;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 CBotTypResult CBotFunction::CompileCall(const char* name, CBotVar** ppVars, long& nIdent)
 {
     nIdent = 0;
@@ -482,10 +489,7 @@ CBotTypResult CBotFunction::CompileCall(const char* name, CBotVar** ppVars, long
     return type;
 }
 
-
-// is a function according to its unique identifier
-// if the identifier is not found, looking by name and parameters
-
+////////////////////////////////////////////////////////////////////////////////
 CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const char* name, CBotVar** ppVars, CBotTypResult& TypeOrError, bool bPublic)
 {
     TypeOrError.SetType(TX_UNDEFCALL);      // no routine of the name
@@ -638,9 +642,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const char* name, CB
     return nullptr;
 }
 
-
-// fait un appel à une fonction
-
+////////////////////////////////////////////////////////////////////////////////
 int CBotFunction::DoCall(long& nIdent, const char* name, CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken)
 {
     CBotTypResult   type;
@@ -710,6 +712,7 @@ int CBotFunction::DoCall(long& nIdent, const char* name, CBotVar** ppVars, CBotS
     return -1;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotFunction::RestoreCall(long& nIdent, const char* name, CBotVar** ppVars, CBotStack* pStack)
 {
     CBotTypResult   type;
@@ -766,11 +769,7 @@ void CBotFunction::RestoreCall(long& nIdent, const char* name, CBotVar** ppVars,
     }
 }
 
-
-
-// makes call of a method
-// note: this is already on the stack, the pointer pThis is just to simplify
-
+////////////////////////////////////////////////////////////////////////////////
 int CBotFunction::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken, CBotClass* pClass)
 {
     CBotTypResult   type;
@@ -851,6 +850,7 @@ int CBotFunction::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBotVar
     return -1;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotFunction::RestoreCall(long& nIdent, const char* name, CBotVar* pThis, CBotVar** ppVars, CBotStack* pStack, CBotClass* pClass)
 {
     CBotTypResult   type;
@@ -883,7 +883,7 @@ void CBotFunction::RestoreCall(long& nIdent, const char* name, CBotVar* pThis, C
     }
 }
 
-// see if the "signature" of parameters is identical
+////////////////////////////////////////////////////////////////////////////////
 bool CBotFunction::CheckParam(CBotDefParam* pParam)
 {
     CBotDefParam*   pp = m_Param;
@@ -898,11 +898,13 @@ bool CBotFunction::CheckParam(CBotDefParam* pParam)
     return ( pp == nullptr && pParam == nullptr );
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotString CBotFunction::GetName()
 {
     return  m_token.GetString();
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotString CBotFunction::GetParams()
 {
     if ( m_Param == nullptr ) return CBotString("()");
@@ -921,11 +923,13 @@ CBotString CBotFunction::GetParams()
     return params;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotFunction* CBotFunction::Next()
 {
     return  m_next;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotFunction::AddPublic(CBotFunction* func)
 {
     if ( m_listPublic != nullptr )
@@ -941,19 +945,20 @@ void CBotFunction::AddPublic(CBotFunction* func)
 /////////////////////////////////////////////////////////////////////////
 // management of parameters
 
-
+////////////////////////////////////////////////////////////////////////////////
 CBotDefParam::CBotDefParam()
 {
     m_next   = nullptr;
     m_nIdent = 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotDefParam::~CBotDefParam()
 {
     delete  m_next;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 // compiles a list of parameters
 CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
 {
@@ -1014,6 +1019,7 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
     return nullptr;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotDefParam::AddNext(CBotDefParam* p)
 {
     CBotDefParam*   pp = this;
@@ -1022,7 +1028,7 @@ void CBotDefParam::AddNext(CBotDefParam* p)
     pp->m_next = p;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
 {
     int             i = 0;
@@ -1072,6 +1078,7 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotDefParam::RestoreState(CBotStack* &pj, bool bMain)
 {
 //    int             i = 0;
@@ -1086,21 +1093,25 @@ void CBotDefParam::RestoreState(CBotStack* &pj, bool bMain)
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
 int CBotDefParam::GetType()
 {
     return  m_type.GetType();
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotTypResult CBotDefParam::GetTypResult()
 {
     return  m_type;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotDefParam* CBotDefParam::GetNext()
 {
     return  m_next;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotString CBotDefParam::GetParamString()
 {
     CBotString  param;
@@ -1118,6 +1129,7 @@ CBotString CBotDefParam::GetParamString()
 // pre-compile a new class
 // analysis is complete except the body of routines
 
+////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 {
     if ( !IsOfType(p, ID_PUBLIC) )
@@ -1173,6 +1185,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
     return nullptr;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 {
     bool    bStatic = false;
@@ -1376,7 +1389,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
     return pStack->IsOk();
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     if ( !IsOfType(p, ID_PUBLIC) ) return nullptr;

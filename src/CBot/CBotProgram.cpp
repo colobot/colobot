@@ -25,6 +25,8 @@
 #include "CBotClass.h"
 #include "CBotUtils.h"
 
+#include "CBotInstr/CBotFunction.h"
+
 #include "StringFunctions.cpp"
 
 // Local include

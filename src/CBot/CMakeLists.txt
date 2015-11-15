@@ -1,7 +1,6 @@
 set(SOURCES
     CBot.cpp
     CBotClass.cpp
-    CBotFunction.cpp
     CBotProgram.cpp
     CBotStack.cpp
     CBotString.cpp
@@ -53,6 +52,7 @@ set(SOURCES
     CBotInstr/CBotListArray.cpp
     CBotInstr/CBotInstArray.cpp
     CBotInstr/CBotInt.cpp
+    CBotInstr/CBotFunction.cpp
     CBotVar/CBotVarArray.cpp
 )
 

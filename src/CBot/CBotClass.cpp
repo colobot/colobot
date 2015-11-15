@@ -23,6 +23,7 @@
 #include "CBotInstr/CBotNew.h"
 #include "CBotInstr/CBotLeftExprVar.h"
 #include "CBotInstr/CBotTwoOpExpr.h"
+#include "CBotInstr/CBotFunction.h"
 
 #include "CBotCall.h"
 
