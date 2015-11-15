@@ -490,37 +490,3 @@ extern float GetNumFloat( const char* p );
 #if 0
 extern void DEBUG( const char* text, int val, CBotStack* pile );
 #endif
-
-///////////////////////////////////////////
-// class managing the methods declared by AddFunction on a class
-
-class CBotCallMethode
-{
-private:
-    CBotString    m_name;
-    bool        (*m_rExec) (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
-    CBotTypResult
-                (*m_rComp) (CBotVar* pThis, CBotVar* &pVar);
-    CBotCallMethode*    m_next;
-    friend class CBotClass;
-    long        m_nFuncIdent;
-
-public:
-                CBotCallMethode(const char* name,
-                         bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
-                         CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar));
-                ~CBotCallMethode();
-
-    CBotTypResult
-                CompileCall(const char* name, CBotVar* pThis,
-                            CBotVar** ppVars, CBotCStack* pStack,
-                            long& nIdent);
-
-    int            DoCall(long& nIdent, const char* name, CBotVar* pThis, CBotVar** ppVars, CBotVar* &pResult, CBotStack* pStack, CBotToken* pFunc);
-
-    CBotString    GetName();
-    CBotCallMethode*    Next();
-    void        AddNext(CBotCallMethode* p);
-
-};
-

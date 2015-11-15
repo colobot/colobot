@@ -31,6 +31,7 @@
 #include "CBotCall.h"
 #include "CBotStack.h"
 #include "CBotUtils.h"
+#include "CBotCallMethode.h"
 
 // Local include
 
