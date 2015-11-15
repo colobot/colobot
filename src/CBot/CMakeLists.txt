@@ -61,6 +61,7 @@ set(SOURCES
     CBotVar/CBotVarBoolean.cpp
     CBotVar/CBotVarString.cpp
     CBotVar/CBotVarFloat.cpp
+    CBotVar/CBotVarInt.cpp
 )
 
 # Includes

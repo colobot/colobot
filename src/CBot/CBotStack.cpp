@@ -973,24 +973,6 @@ bool CBotVar::Save0State(FILE* pf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotVarInt::Save0State(FILE* pf)
-{
-    if ( !m_defnum.IsEmpty() )
-    {
-        if(!WriteWord(pf, 200 )) return false;            // special marker
-        if(!WriteString(pf, m_defnum)) return false;    // name of the value
-    }
-
-    return CBotVar::Save0State(pf);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool CBotVarInt::Save1State(FILE* pf)
-{
-    return WriteWord(pf, m_val);                            // the value of the variable
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CBotVarClass::Save1State(FILE* pf)
 {
     if ( !WriteType(pf, m_type) ) return false;

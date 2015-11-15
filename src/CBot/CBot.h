@@ -222,60 +222,6 @@ public:
 
 #define    MAX(a,b)    ((a>b) ? a : b)
 
-
-// class for the management of integer numbers (int)
-class CBotVarInt : public CBotVar
-{
-private:
-    int            m_val;            // the value
-    CBotString    m_defnum;        // the name if given by DefineNum
-    friend class CBotVar;
-
-public:
-                CBotVarInt( const CBotToken* name );
-//                ~CBotVarInt();
-
-    void        SetValInt(int val, const char* s = nullptr) override;
-    void        SetValFloat(float val) override;
-    int            GetValInt() override;
-    float        GetValFloat() override;
-    CBotString    GetValString() override;
-
-    void        Copy(CBotVar* pSrc, bool bName=true) override;
-
-
-    void        Add(CBotVar* left, CBotVar* right) override;    // addition
-    void        Sub(CBotVar* left, CBotVar* right) override;    // substraction
-    void        Mul(CBotVar* left, CBotVar* right) override;    // multiplication
-    int            Div(CBotVar* left, CBotVar* right) override;    // division
-    int            Modulo(CBotVar* left, CBotVar* right) override;    // remainder of division
-    void        Power(CBotVar* left, CBotVar* right) override;    // power
-
-    bool        Lo(CBotVar* left, CBotVar* right) override;
-    bool        Hi(CBotVar* left, CBotVar* right) override;
-    bool        Ls(CBotVar* left, CBotVar* right) override;
-    bool        Hs(CBotVar* left, CBotVar* right) override;
-    bool        Eq(CBotVar* left, CBotVar* right) override;
-    bool        Ne(CBotVar* left, CBotVar* right) override;
-
-    void        XOr(CBotVar* left, CBotVar* right) override;
-    void        Or(CBotVar* left, CBotVar* right) override;
-    void        And(CBotVar* left, CBotVar* right) override;
-
-    void        SL(CBotVar* left, CBotVar* right) override;
-    void        SR(CBotVar* left, CBotVar* right) override;
-    void        ASR(CBotVar* left, CBotVar* right) override;
-
-    void        Neg() override;
-    void        Not() override;
-    void        Inc() override;
-    void        Dec() override;
-
-    bool        Save0State(FILE* pf) override;
-    bool        Save1State(FILE* pf) override;
-
-};
-
 extern CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars);
 
 extern bool TypeCompatible( CBotTypResult& type1, CBotTypResult& type2, int op = 0 );
