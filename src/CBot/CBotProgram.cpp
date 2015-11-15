@@ -17,9 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-//////////////////////////////////////////////////////////////////////
-// database management of CBoT program
-
+// Modules inlcude
 #include "CBot.h"
 
 #include "CBotCall.h"
@@ -27,8 +25,14 @@
 #include "CBotClass.h"
 #include "CBotUtils.h"
 
+#include "StringFunctions.cpp"
+
+// Local include
+
+// Global include
 #include <stdio.h>
 
+////////////////////////////////////////////////////////////////////////////////
 CBotProgram::CBotProgram()
 {
     m_Prog      = nullptr;
@@ -41,6 +45,7 @@ CBotProgram::CBotProgram()
     m_Ident     = 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotProgram::CBotProgram(CBotVar* pInstance)
 {
     m_Prog      = nullptr;
@@ -53,7 +58,7 @@ CBotProgram::CBotProgram(CBotVar* pInstance)
     m_Ident     = 0;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 CBotProgram::~CBotProgram()
 {
 //  delete  m_pClass;
@@ -70,7 +75,7 @@ CBotProgram::~CBotProgram()
 #endif
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, void* pUser )
 {
     int         error = 0;
@@ -165,7 +170,7 @@ bool CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, 
     return (m_Prog != nullptr);
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::Start(const char* name)
 {
 #if STACKMEM
@@ -199,6 +204,7 @@ bool CBotProgram::Start(const char* name)
     return true;                                    // we are ready for Run ()
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetPosition(const char* name, int& start, int& stop, CBotGet modestart, CBotGet modestop)
 {
     CBotFunction* p = m_Prog;
@@ -214,6 +220,7 @@ bool CBotProgram::GetPosition(const char* name, int& start, int& stop, CBotGet m
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::Run(void* pUser, int timer)
 {
     bool    ok;
@@ -268,6 +275,7 @@ error:
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::Stop()
 {
 #if STACKMEM
@@ -279,8 +287,7 @@ void CBotProgram::Stop()
     m_pRun = nullptr;
 }
 
-
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetRunPos(const char* &FunctionName, int &start, int &end)
 {
     FunctionName = nullptr;
@@ -291,6 +298,7 @@ bool CBotProgram::GetRunPos(const char* &FunctionName, int &start, int &end)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotVar* CBotProgram::GetStackVars(const char* &FunctionName, int level)
 {
     FunctionName = nullptr;
@@ -299,26 +307,31 @@ CBotVar* CBotProgram::GetStackVars(const char* &FunctionName, int level)
     return m_pStack->GetStackVars(FunctionName, level);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::SetTimer(int n)
 {
     CBotStack::SetTimer( n );
 }
 
+////////////////////////////////////////////////////////////////////////////////
 int CBotProgram::GetError()
 {
     return m_ErrorCode;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::SetIdent(long n)
 {
     m_Ident = n;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 long CBotProgram::GetIdent()
 {
     return m_Ident;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetError(int& code, int& start, int& end)
 {
     code  = m_ErrorCode;
@@ -327,6 +340,7 @@ bool CBotProgram::GetError(int& code, int& start, int& end)
     return code > 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetError(int& code, int& start, int& end, CBotProgram* &pProg)
 {
     code    = m_ErrorCode;
@@ -336,6 +350,7 @@ bool CBotProgram::GetError(int& code, int& start, int& end, CBotProgram* &pProg)
     return code > 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotString CBotProgram::GetErrorText(int code)
 {
     CBotString TextError;
@@ -350,12 +365,13 @@ CBotString CBotProgram::GetErrorText(int code)
     return TextError;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 CBotFunction* CBotProgram::GetFunctions()
 {
     return  m_Prog;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::AddFunction(const char* name,
                               bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
                               CBotTypResult rCompile (CBotVar* &pVar, void* pUser))
@@ -364,7 +380,7 @@ bool CBotProgram::AddFunction(const char* name,
     return CBotCall::AddFunction(name, rExec, rCompile);
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 bool WriteWord(FILE* pf, unsigned short w)
 {
     size_t  lg;
@@ -374,6 +390,7 @@ bool WriteWord(FILE* pf, unsigned short w)
     return (lg == 1);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool ReadWord(FILE* pf, unsigned short& w)
 {
     size_t  lg;
@@ -383,6 +400,7 @@ bool ReadWord(FILE* pf, unsigned short& w)
     return (lg == 1);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool WriteFloat(FILE* pf, float w)
 {
     size_t  lg;
@@ -392,6 +410,7 @@ bool WriteFloat(FILE* pf, float w)
     return (lg == 1);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool ReadFloat(FILE* pf, float& w)
 {
     size_t  lg;
@@ -401,6 +420,7 @@ bool ReadFloat(FILE* pf, float& w)
     return (lg == 1);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool WriteLong(FILE* pf, long w)
 {
     size_t  lg;
@@ -410,6 +430,7 @@ bool WriteLong(FILE* pf, long w)
     return (lg == 1);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool ReadLong(FILE* pf, long& w)
 {
     size_t  lg;
@@ -419,6 +440,7 @@ bool ReadLong(FILE* pf, long& w)
     return (lg == 1);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool WriteString(FILE* pf, CBotString s)
 {
     size_t  lg1, lg2;
@@ -430,6 +452,7 @@ bool WriteString(FILE* pf, CBotString s)
     return (lg1 == lg2);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool ReadString(FILE* pf, CBotString& s)
 {
     unsigned short  w;
@@ -445,6 +468,7 @@ bool ReadString(FILE* pf, CBotString& s)
     return (lg1 == lg2);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool WriteType(FILE* pf, CBotTypResult type)
 {
     int typ = type.GetType();
@@ -464,6 +488,7 @@ bool WriteType(FILE* pf, CBotTypResult type)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool ReadType(FILE* pf, CBotTypResult& type)
 {
     unsigned short  w, ww;
@@ -494,13 +519,40 @@ bool ReadType(FILE* pf, CBotTypResult& type)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
+{
+    if ( pVar == nullptr ) return TX_LOWPARAM;
 
+    int i = 0;
+    pVar = pVar->GetItemList();
+
+    while ( pVar != nullptr )
+    {
+        i++;
+        pVar = pVar->GetNext();
+    }
+
+    pResult->SetValInt(i);
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
+{
+    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
+    if ( pVar->GetType() != CBotTypArrayPointer )
+                        return CBotTypResult( TX_BADPARAM );
+    return CBotTypResult( CBotTypInt );
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::DefineNum(const char* name, long val)
 {
     return CBotToken::DefineNum(name, val);
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::SaveState(FILE* pf)
 {
     if (!WriteWord( pf, CBOTVERSION)) return false;
@@ -519,7 +571,7 @@ bool CBotProgram::SaveState(FILE* pf)
     return true;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::RestoreState(FILE* pf)
 {
     unsigned short  w;
@@ -553,12 +605,43 @@ bool CBotProgram::RestoreState(FILE* pf)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 int CBotProgram::GetVersion()
 {
     return  CBOTVERSION;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+void CBotProgram::Init()
+{
+    CBotToken::DefineNum("CBotErrZeroDiv",       TX_DIVZERO);     // division by zero
+    CBotToken::DefineNum("CBotErrNotInit",       TX_NOTINIT);     // uninitialized variable
+    CBotToken::DefineNum("CBotErrBadThrow",      TX_BADTHROW);    // throw a negative value
+    //CBotToken::DefineNum("CBotErrNoRetVal",      6003);           // function did not return results // TODO: Not used. I'm pretty sure not returning a value crashes the game :P
+    CBotToken::DefineNum("CBotErrNoRun",         TX_NORUN);       // active Run () without a function // TODO: Is this actually a runtime error?
+    CBotToken::DefineNum("CBotErrUndefFunc",     TX_NOCALL);      // Calling a function that no longer exists
+    CBotToken::DefineNum("CBotErrUndefClass",    TX_NOCLASS);     // Class no longer exists
+    CBotToken::DefineNum("CBotErrNullPointer",   TX_NULLPT);      // Attempted to use a null pointer
+    CBotToken::DefineNum("CBotErrNan",           TX_OPNAN);       // Can't do operations on nan
+    CBotToken::DefineNum("CBotErrOutOfBounds",   TX_OUTARRAY);    // Attempted access out of bounds of an array
+    CBotToken::DefineNum("CBotErrStackOverflow", TX_STACKOVER);   // Stack overflow
+    CBotToken::DefineNum("CBotErrDeletedObject", TX_DELETEDPT);   // Attempted to use deleted object
 
+    CBotProgram::AddFunction("sizeof", rSizeOf, cSizeOf );
+
+    InitStringFunctions();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CBotProgram::Free()
+{
+    CBotToken::Free() ;
+    CBotCall ::Free() ;
+    CBotClass::Free() ;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 CBotCallMethode::CBotCallMethode(const char* name,
                    bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
                    CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar))
@@ -570,6 +653,7 @@ CBotCallMethode::CBotCallMethode(const char* name,
     m_nFuncIdent = CBotVar::NextUniqNum();
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotCallMethode::~CBotCallMethode()
 {
     delete m_next;
@@ -578,7 +662,7 @@ CBotCallMethode::~CBotCallMethode()
 
 // is acceptable by a call procedure name
 // and given parameters
-
+////////////////////////////////////////////////////////////////////////////////
 CBotTypResult CBotCallMethode::CompileCall(const char* name, CBotVar* pThis,
                                            CBotVar** ppVar, CBotCStack* pStack,
                                            long& nIdent)
@@ -607,17 +691,19 @@ CBotTypResult CBotCallMethode::CompileCall(const char* name, CBotVar* pThis,
     return CBotTypResult(-1);
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 CBotString CBotCallMethode::GetName()
 {
     return  m_name;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotCallMethode* CBotCallMethode::Next()
 {
     return  m_next;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotCallMethode::AddNext(CBotCallMethode* pt)
 {
     CBotCallMethode* p = this;
@@ -626,7 +712,7 @@ void CBotCallMethode::AddNext(CBotCallMethode* pt)
     p->m_next = pt;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 int CBotCallMethode::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBotVar** ppVars, CBotVar* &pResult, CBotStack* pStack, CBotToken* pToken)
 {
     CBotCallMethode*    pt = this;
@@ -697,60 +783,4 @@ int CBotCallMethode::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBot
     }
 
     return -1;
-}
-
-bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
-{
-    if ( pVar == nullptr ) return TX_LOWPARAM;
-
-    int i = 0;
-    pVar = pVar->GetItemList();
-
-    while ( pVar != nullptr )
-    {
-        i++;
-        pVar = pVar->GetNext();
-    }
-
-    pResult->SetValInt(i);
-    return true;
-}
-
-CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
-{
-    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
-    if ( pVar->GetType() != CBotTypArrayPointer )
-                        return CBotTypResult( TX_BADPARAM );
-    return CBotTypResult( CBotTypInt );
-}
-
-
-// TODO: Refactor this - including .cpp files is bad
-#include "StringFunctions.cpp"
-
-void CBotProgram::Init()
-{
-    CBotToken::DefineNum("CBotErrZeroDiv",       TX_DIVZERO);     // division by zero
-    CBotToken::DefineNum("CBotErrNotInit",       TX_NOTINIT);     // uninitialized variable
-    CBotToken::DefineNum("CBotErrBadThrow",      TX_BADTHROW);    // throw a negative value
-    //CBotToken::DefineNum("CBotErrNoRetVal",      6003);           // function did not return results // TODO: Not used. I'm pretty sure not returning a value crashes the game :P
-    CBotToken::DefineNum("CBotErrNoRun",         TX_NORUN);       // active Run () without a function // TODO: Is this actually a runtime error?
-    CBotToken::DefineNum("CBotErrUndefFunc",     TX_NOCALL);      // Calling a function that no longer exists
-    CBotToken::DefineNum("CBotErrUndefClass",    TX_NOCLASS);     // Class no longer exists
-    CBotToken::DefineNum("CBotErrNullPointer",   TX_NULLPT);      // Attempted to use a null pointer
-    CBotToken::DefineNum("CBotErrNan",           TX_OPNAN);       // Can't do operations on nan
-    CBotToken::DefineNum("CBotErrOutOfBounds",   TX_OUTARRAY);    // Attempted access out of bounds of an array
-    CBotToken::DefineNum("CBotErrStackOverflow", TX_STACKOVER);   // Stack overflow
-    CBotToken::DefineNum("CBotErrDeletedObject", TX_DELETEDPT);   // Attempted to use deleted object
-
-    CBotProgram::AddFunction("sizeof", rSizeOf, cSizeOf );
-
-    InitStringFunctions();
-}
-
-void CBotProgram::Free()
-{
-    CBotToken::Free() ;
-    CBotCall ::Free() ;
-    CBotClass::Free() ;
 }

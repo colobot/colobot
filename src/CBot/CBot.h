@@ -28,6 +28,7 @@
 #include "resource.h"
 #include "CBotDll.h"                    // public definitions
 #include "CBotToken.h"                  // token management
+#include "CBotProgram.h"
 
 #define    STACKMEM    1                /// \def preserve memory for the execution stack
 #define    MAXSTACK    990              /// \def stack size reserved
