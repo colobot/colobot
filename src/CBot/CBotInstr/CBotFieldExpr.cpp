@@ -23,6 +23,8 @@
 #include "CBotStack.h"
 #include "CBotClass.h"
 
+#include "CBotVar/CBotVarClass.h"
+
 // Local include
 
 // Global include

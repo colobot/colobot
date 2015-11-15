@@ -27,6 +27,7 @@
 #include "CBotClass.h"
 
 #include "CBotVar/CBotVarPointer.h"
+#include "CBotVar/CBotVarClass.h"
 
 // Local include
 

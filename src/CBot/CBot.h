@@ -373,65 +373,6 @@ public:
 };
 
 
-// class management class instances
-class CBotVarClass : public CBotVar
-{
-private:
-    static
-    CBotVarClass*    m_ExClass;        // list of existing instances at some point
-    CBotVarClass*    m_ExNext;        // for this general list
-    CBotVarClass*    m_ExPrev;        // for this general list
-
-private:
-    CBotClass*        m_pClass;        // the class definition
-    CBotVarClass*    m_pParent;        // the instance of a parent class
-    CBotVar*        m_pVar;            // contents
-    friend class    CBotVar;        // my daddy is a buddy WHAT? :D(\TODO mon papa est un copain )
-    friend class    CBotVarPointer;    // and also the pointer
-    int                m_CptUse;        // counter usage
-    long            m_ItemIdent;    // identifier (unique) of an instance
-    bool            m_bConstructor;    // set if a constructor has been called
-
-public:
-                CBotVarClass( const CBotToken* name, const CBotTypResult& type );
-//                CBotVarClass( const CBotToken* name, CBotTypResult& type, int &nIdent );
-                ~CBotVarClass();
-//    void        InitCBotVarClass( const CBotToken* name, CBotTypResult& type, int &nIdent );
-
-    void        Copy(CBotVar* pSrc, bool bName=true) override;
-    void        SetClass(CBotClass* pClass) override; //, int &nIdent);
-    CBotClass*    GetClass() override;
-    CBotVar*    GetItem(const char* name) override;    // return an element of a class according to its name (*)
-    CBotVar*    GetItemRef(int nIdent) override;
-
-    CBotVar*    GetItem(int n, bool bExtend) override;
-    CBotVar*    GetItemList() override;
-
-    CBotString    GetValString() override;
-
-    bool        Save1State(FILE* pf) override;
-    void        Maj(void* pUser, bool bContinue) override;
-
-    void        IncrementUse();                // a reference to incrementation
-    void        DecrementUse();                // a reference to decrementation
-
-    CBotVarClass*
-                GetPointer() override;
-    void        SetItemList(CBotVar* pVar);
-
-    void        SetIdent(long n) override;
-
-    static CBotVarClass* Find(long id);
-
-
-//    CBotVar*    GetMyThis();
-
-    bool        Eq(CBotVar* left, CBotVar* right) override;
-    bool        Ne(CBotVar* left, CBotVar* right) override;
-
-    void        ConstructorSet() override;
-};
-
 extern CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars);
 
 extern bool TypeCompatible( CBotTypResult& type1, CBotTypResult& type2, int op = 0 );

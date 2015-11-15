@@ -22,7 +22,7 @@
 #include "CBotToken.h"
 #include "CBot.h"
 #include "CBotClass.h"
-
+#include "CBotVarClass.h"
 // Local include
 
 // Global include

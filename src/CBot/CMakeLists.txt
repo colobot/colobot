@@ -57,6 +57,7 @@ set(SOURCES
     CBotInstr/CBotFunction.cpp
     CBotVar/CBotVarArray.cpp
     CBotVar/CBotVarPointer.cpp
+    CBotVar/CBotVarClass.cpp
 )
 
 # Includes

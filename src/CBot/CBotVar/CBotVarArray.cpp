@@ -19,6 +19,7 @@
 
 // Modules inlcude
 #include "CBotVarArray.h"
+#include "CBotVarClass.h"
 
 // Local include
 
