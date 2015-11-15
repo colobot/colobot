@@ -468,39 +468,6 @@ public:
     bool        Ne(CBotVar* left, CBotVar* right) override;
 };
 
-
-// classe pour les tableaux
-
-#define    MAXARRAYSIZE    9999
-
-class CBotVarArray : public CBotVar
-{
-private:
-    CBotVarClass*
-                m_pInstance;                // instance manager of table
-
-    friend class CBotVar;                    // my daddy is a buddy
-
-public:
-                CBotVarArray( const CBotToken* name, CBotTypResult& type );
-                ~CBotVarArray();
-
-    void        SetPointer(CBotVar* p) override;
-    CBotVarClass*
-                GetPointer() override;
-
-    void        Copy(CBotVar* pSrc, bool bName=true) override;
-    CBotVar*    GetItem(int n, bool bGrow=false) override;    // makes an element according to its numeric index
-                                                // enlarged the table if necessary if bExtend
-//    CBotVar*    GetItem(const char* name);        // makes a element by  literal index
-    CBotVar*    GetItemList() override;                    // gives the first item in the list
-
-    CBotString    GetValString() override;                    // gets the contents of the array into a string
-
-    bool        Save1State(FILE* pf) override;
-};
-
-
 extern CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars);
 
 extern bool TypeCompatible( CBotTypResult& type1, CBotTypResult& type2, int op = 0 );
