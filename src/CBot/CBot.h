@@ -344,34 +344,6 @@ public:
     bool        Save1State(FILE* pf) override;
 };
 
-// class for the management of boolean
-class CBotVarBoolean : public CBotVar
-{
-private:
-    bool        m_val;        // the value
-
-public:
-                CBotVarBoolean( const CBotToken* name );
-//                ~CBotVarBoolean();
-
-    void        SetValInt(int val, const char* s = nullptr) override;
-    void        SetValFloat(float val) override;
-    int            GetValInt() override;
-    float        GetValFloat() override;
-    CBotString    GetValString() override;
-
-    void        Copy(CBotVar* pSrc, bool bName=true) override;
-
-    void        And(CBotVar* left, CBotVar* right) override;
-    void        Or(CBotVar* left, CBotVar* right) override;
-    void        XOr(CBotVar* left, CBotVar* right) override;
-    void        Not() override;
-    bool        Eq(CBotVar* left, CBotVar* right) override;
-    bool        Ne(CBotVar* left, CBotVar* right) override;
-
-    bool        Save1State(FILE* pf) override;
-};
-
 
 extern CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars);
 

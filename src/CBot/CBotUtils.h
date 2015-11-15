@@ -51,3 +51,11 @@ CBotTypResult TypeParam(CBotToken* &p, CBotCStack* pile);
  * \return
  */
 CBotTypResult ArrayType(CBotToken* &p, CBotCStack* pile, CBotTypResult type);
+
+/*!
+ * \brief WriteWord
+ * \param pf
+ * \param w
+ * \return
+ */
+bool WriteWord(FILE* pf, unsigned short w);

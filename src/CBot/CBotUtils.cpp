@@ -105,3 +105,13 @@ CBotTypResult ArrayType(CBotToken* &p, CBotCStack* pile, CBotTypResult type)
     }
     return type;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+bool WriteWord(FILE* pf, unsigned short w)
+{
+    size_t  lg;
+
+    lg = fwrite(&w, sizeof( unsigned short ), 1, pf );
+
+    return (lg == 1);
+}

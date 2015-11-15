@@ -383,16 +383,6 @@ bool CBotProgram::AddFunction(const char* name,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool WriteWord(FILE* pf, unsigned short w)
-{
-    size_t  lg;
-
-    lg = fwrite(&w, sizeof( unsigned short ), 1, pf );
-
-    return (lg == 1);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool ReadWord(FILE* pf, unsigned short& w)
 {
     size_t  lg;
