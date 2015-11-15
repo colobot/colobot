@@ -8,6 +8,7 @@ set(SOURCES
     CBotVar.cpp
     CBotCall.cpp
     CBotUtils.cpp
+    CBotDefParam.cpp
     CBotInstr/CBotWhile.cpp
     CBotInstr/CBotDo.cpp
     CBotInstr/CBotFor.cpp

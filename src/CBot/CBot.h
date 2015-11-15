@@ -524,29 +524,3 @@ public:
 
 };
 
-// a list of parameters
-
-class CBotDefParam
-{
-private:
-    CBotToken        m_token;        // name of the parameter
-    CBotString        m_typename;        // type name
-    CBotTypResult    m_type;            // type of paramteter
-    CBotDefParam*    m_next;            // next parameter
-    long            m_nIdent;
-
-public:
-                    CBotDefParam();
-                    ~CBotDefParam();
-    static
-    CBotDefParam*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool            Execute(CBotVar** ppVars, CBotStack* &pj);
-    void            RestoreState(CBotStack* &pj, bool bMain);
-
-    void            AddNext(CBotDefParam* p);
-    int                GetType();
-    CBotTypResult    GetTypResult();
-    CBotDefParam*    GetNext();
-
-    CBotString        GetParamString();
-};
