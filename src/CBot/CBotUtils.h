@@ -34,3 +34,20 @@
  * \return
  */
 CBotVar* MakeListVars(CBotVar** ppVars, bool bSetVal=false);
+
+/*!
+ * \brief TypeParam
+ * \param p
+ * \param pile
+ * \return
+ */
+CBotTypResult TypeParam(CBotToken* &p, CBotCStack* pile);
+
+/*!
+ * \brief ArrayType
+ * \param p
+ * \param pile
+ * \param type
+ * \return
+ */
+CBotTypResult ArrayType(CBotToken* &p, CBotCStack* pile, CBotTypResult type);

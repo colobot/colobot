@@ -20,6 +20,10 @@
 // Modules inlcude
 #include "CBotUtils.h"
 
+#include "CBotToken.h"
+#include "CBotClass.h"
+#include "CBotStack.h"
+
 // Local include
 
 // Global include
@@ -47,4 +51,57 @@ CBotVar* MakeListVars(CBotVar** ppVars, bool bSetVal)
         i++;
     }
     return pVar;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CBotTypResult TypeParam(CBotToken* &p, CBotCStack* pile)
+{
+    CBotClass*  pClass = nullptr;
+
+    switch (p->GetType())
+    {
+    case ID_INT:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypInt ));
+    case ID_FLOAT:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypFloat ));
+    case ID_BOOLEAN:
+    case ID_BOOL:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypBoolean ));
+    case ID_STRING:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypString ));
+    case ID_VOID:
+        p = p->GetNext();
+        return CBotTypResult( 0 );
+
+    case TokenTypVar:
+        pClass = CBotClass::Find(p);
+        if ( pClass != nullptr)
+        {
+            p = p->GetNext();
+            return ArrayType(p, pile,
+                             pClass->IsIntrinsic() ?
+                             CBotTypResult( CBotTypIntrinsic, pClass ) :
+                             CBotTypResult( CBotTypPointer,   pClass ) );
+        }
+    }
+    return CBotTypResult( -1 );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CBotTypResult ArrayType(CBotToken* &p, CBotCStack* pile, CBotTypResult type)
+{
+    while ( IsOfType( p, ID_OPBRK ) )
+    {
+        if ( !IsOfType( p, ID_CLBRK ) )
+        {
+            pile->SetError(TX_CLBRK, p->GetStart());
+            return CBotTypResult( -1 );
+        }
+        type = CBotTypResult( CBotTypArrayPointer, type );
+    }
+    return type;
 }
