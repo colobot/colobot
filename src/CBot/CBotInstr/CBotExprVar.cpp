@@ -25,6 +25,7 @@
 #include "CBotFieldExpr.h"
 
 #include "CBotStack.h"
+#include "CBotCStack.h"
 
 #include "CBotVar/CBotVarArray.h"
 

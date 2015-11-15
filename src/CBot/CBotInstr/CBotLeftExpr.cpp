@@ -24,6 +24,7 @@
 #include "CBotExpression.h"
 
 #include "CBotStack.h"
+#include "CBotCStack.h"
 #include "CBotClass.h"
 
 #include "CBotVar/CBotVarArray.h"

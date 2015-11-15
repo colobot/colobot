@@ -23,6 +23,7 @@
 #include "CBotCondition.h"
 
 #include "CBotStack.h"
+#include "CBotCStack.h"
 
 // Local include
 

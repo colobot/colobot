@@ -34,6 +34,8 @@
 
 #include "CBotVar/CBotVar.h"
 
+#include "CBotCStack.h"
+
 // Local include
 
 // Global include

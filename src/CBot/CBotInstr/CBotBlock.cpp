@@ -19,6 +19,8 @@
 
 // Modules inlcude
 #include "CBotBlock.h"
+
+#include "CBotCStack.h"
 #include "CBotListInstr.h"
 
 // Local include

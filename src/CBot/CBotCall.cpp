@@ -22,10 +22,11 @@
 
 #include "CBotToken.h"
 #include "CBotStack.h"
-
+#include "CBotCStack.h"
 #include "CBotUtils.h"
 
 #include "CBotVar/CBotVar.h"
+
 
 // Local include
 

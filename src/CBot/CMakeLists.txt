@@ -3,6 +3,7 @@ set(SOURCES
     CBotClass.cpp
     CBotProgram.cpp
     CBotStack.cpp
+    CBotCStack.cpp
     CBotString.cpp
     CBotToken.cpp
     CBotCall.cpp

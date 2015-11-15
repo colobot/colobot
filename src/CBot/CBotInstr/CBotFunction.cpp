@@ -30,6 +30,7 @@
 #include "CBotInstr/CBotListArray.h"
 
 #include "CBotStack.h"
+#include "CBotCStack.h"
 #include "CBotClass.h"
 #include "CBotDefParam.h"
 #include "CBotUtils.h"

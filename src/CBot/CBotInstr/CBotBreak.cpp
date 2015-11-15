@@ -21,6 +21,7 @@
 #include "CBotBreak.h"
 
 #include "CBotStack.h"
+#include "CBotCStack.h"
 
 // Local include
 

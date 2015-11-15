@@ -73,6 +73,7 @@
 #include "CBotInstr/CBotInt.h"
 
 #include "CBotStack.h"
+#include "CBotCStack.h"
 #include "CBotClass.h"
 
 #include "CBotVar/CBotVar.h"

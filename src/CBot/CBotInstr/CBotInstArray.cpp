@@ -26,6 +26,7 @@
 #include "CBotEmpty.h"
 
 #include "CBotStack.h"
+#include "CBotCStack.h"
 
 #include "CBotDefines.h"
 

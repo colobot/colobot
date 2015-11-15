@@ -30,6 +30,7 @@
 
 #include "CBotCall.h"
 #include "CBotStack.h"
+#include "CBotCStack.h"
 #include "CBotUtils.h"
 #include "CBotCallMethode.h"
 

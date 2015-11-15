@@ -21,6 +21,7 @@
 #include "CBotExprBool.h"
 
 #include "CBotStack.h"
+#include "CBotCStack.h"
 
 #include "CBotVar/CBotVar.h"
 

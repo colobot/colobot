@@ -23,6 +23,7 @@
 #include "CBot.h"
 
 #include "CBotUtils.h"
+#include "CBotCStack.h"
 
 #include "CBotVar/CBotVarClass.h"
 

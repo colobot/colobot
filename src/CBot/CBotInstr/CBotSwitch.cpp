@@ -26,6 +26,7 @@
 #include "CBotExpression.h"
 
 #include "CBotStack.h"
+#include "CBotCStack.h"
 
 // Local include
 
