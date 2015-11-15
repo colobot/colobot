@@ -5,7 +5,6 @@ set(SOURCES
     CBotStack.cpp
     CBotString.cpp
     CBotToken.cpp
-    CBotVar.cpp
     CBotCall.cpp
     CBotUtils.cpp
     CBotDefParam.cpp
@@ -62,6 +61,7 @@ set(SOURCES
     CBotVar/CBotVarString.cpp
     CBotVar/CBotVarFloat.cpp
     CBotVar/CBotVarInt.cpp
+    CBotVar/CBotVar.cpp
 )
 
 # Includes

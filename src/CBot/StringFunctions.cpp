@@ -17,11 +17,14 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+#include "CBotVar/CBotVar.h"
+
 // definition of string functions
 
 
 // gives the length of a chain
 // execution
+
 
 bool rStrLen( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {

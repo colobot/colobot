@@ -33,6 +33,8 @@
 #include "CBotUtils.h"
 #include "CBotCallMethode.h"
 
+#include "CBotVar/CBotVar.h"
+
 // Local include
 
 // Global include

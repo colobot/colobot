@@ -26,3 +26,10 @@
 // Global include
 
 #define    MAXARRAYSIZE    9999
+
+
+// variable type SetPrivate / IsPrivate
+#define PR_PUBLIC    0        // public variable
+#define PR_READ      1        // read only
+#define PR_PROTECT   2        // protected (inheritance)
+#define PR_PRIVATE   3        // strictly private

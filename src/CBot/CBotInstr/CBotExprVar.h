@@ -22,6 +22,8 @@
 // Modules inlcude
 #include "CBot.h"
 
+#include "CBotDefines.h"
+
 // Local include
 
 // Global include

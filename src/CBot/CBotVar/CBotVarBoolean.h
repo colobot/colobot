@@ -22,6 +22,8 @@
 // Modules inlcude
 #include "CBotToken.h"
 
+#include "CBotVar/CBotVar.h"
+
 // Local include
 
 // Global include

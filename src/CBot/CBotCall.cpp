@@ -25,6 +25,8 @@
 
 #include "CBotUtils.h"
 
+#include "CBotVar/CBotVar.h"
+
 // Local include
 
 // Global include

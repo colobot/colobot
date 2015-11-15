@@ -21,6 +21,7 @@
 
 // TODO must be replaced by CBot.h
 #include "CBot/CBotClass.h"
+#include "CBot/CBotVar/CBotVar.h"
 
 #include "app/app.h"
 

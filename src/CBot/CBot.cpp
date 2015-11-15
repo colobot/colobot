@@ -75,6 +75,7 @@
 #include "CBotStack.h"
 #include "CBotClass.h"
 
+#include "CBotVar/CBotVar.h"
 
 // Local include
 

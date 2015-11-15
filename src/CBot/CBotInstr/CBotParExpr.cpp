@@ -32,6 +32,8 @@
 #include "CBotExprNan.h"
 #include "CBotExpression.h"
 
+#include "CBotVar/CBotVar.h"
+
 // Local include
 
 // Global include
