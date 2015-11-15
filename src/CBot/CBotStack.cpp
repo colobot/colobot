@@ -991,12 +991,6 @@ bool CBotVarInt::Save1State(FILE* pf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotVarFloat::Save1State(FILE* pf)
-{
-    return WriteFloat(pf, m_val);                            // the value of the variable
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CBotVarClass::Save1State(FILE* pf)
 {
     if ( !WriteType(pf, m_type) ) return false;

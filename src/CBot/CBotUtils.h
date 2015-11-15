@@ -67,3 +67,11 @@ bool WriteWord(FILE* pf, unsigned short w);
  * \return
  */
 bool WriteString(FILE* pf, CBotString s);
+
+/*!
+ * \brief WriteFloat
+ * \param pf
+ * \param w
+ * \return
+ */
+bool WriteFloat(FILE* pf, float w);

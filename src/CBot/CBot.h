@@ -276,46 +276,6 @@ public:
 
 };
 
-// Class for managing real numbers (float)
-class CBotVarFloat : public CBotVar
-{
-private:
-    float        m_val;        // the value
-
-public:
-                CBotVarFloat( const CBotToken* name );
-//                ~CBotVarFloat();
-
-    void        SetValInt(int val, const char* s = nullptr) override;
-    void        SetValFloat(float val) override;
-    int            GetValInt() override;
-    float        GetValFloat() override;
-    CBotString    GetValString() override;
-
-    void        Copy(CBotVar* pSrc, bool bName=true) override;
-
-
-    void        Add(CBotVar* left, CBotVar* right) override;    // addition
-    void        Sub(CBotVar* left, CBotVar* right) override;    // substraction
-    void        Mul(CBotVar* left, CBotVar* right) override;    // multiplication
-    int         Div(CBotVar* left, CBotVar* right) override;    // division
-    int            Modulo(CBotVar* left, CBotVar* right) override;    // remainder of division
-    void        Power(CBotVar* left, CBotVar* right) override;    // power
-
-    bool        Lo(CBotVar* left, CBotVar* right) override;
-    bool        Hi(CBotVar* left, CBotVar* right) override;
-    bool        Ls(CBotVar* left, CBotVar* right) override;
-    bool        Hs(CBotVar* left, CBotVar* right) override;
-    bool        Eq(CBotVar* left, CBotVar* right) override;
-    bool        Ne(CBotVar* left, CBotVar* right) override;
-
-    void        Neg() override;
-    void        Inc() override;
-    void        Dec() override;
-
-    bool        Save1State(FILE* pf) override;
-};
-
 extern CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars);
 
 extern bool TypeCompatible( CBotTypResult& type1, CBotTypResult& type2, int op = 0 );

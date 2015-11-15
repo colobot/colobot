@@ -393,16 +393,6 @@ bool ReadWord(FILE* pf, unsigned short& w)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool WriteFloat(FILE* pf, float w)
-{
-    size_t  lg;
-
-    lg = fwrite(&w, sizeof( float ), 1, pf );
-
-    return (lg == 1);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool ReadFloat(FILE* pf, float& w)
 {
     size_t  lg;

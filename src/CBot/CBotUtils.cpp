@@ -127,3 +127,13 @@ bool WriteString(FILE* pf, CBotString s)
     lg2 = fwrite(s, 1, lg1, pf );
     return (lg1 == lg2);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+bool WriteFloat(FILE* pf, float w)
+{
+    size_t  lg;
+
+    lg = fwrite(&w, sizeof( float ), 1, pf );
+
+    return (lg == 1);
+}
