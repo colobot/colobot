@@ -47,7 +47,7 @@ public:
     ~CBotVarClass();
 
     /*!
-     * \brief Copy
+     * \brief Copy Copy a variable into another.
      * \param pSrc
      * \param bName
      */
@@ -80,9 +80,10 @@ public:
     CBotVar* GetItemRef(int nIdent) override;
 
     /*!
-     * \brief GetItem
+     * \brief GetItem For the management of an array.
      * \param n
-     * \param bExtend
+     * \param bExtend can enlarge the table, but not beyond the threshold size
+     * of SetArray().
      * \return
      */
     CBotVar* GetItem(int n, bool bExtend) override;
@@ -142,7 +143,7 @@ public:
     void SetIdent(long n) override;
 
     /*!
-     * \brief Find
+     * \brief Find Makes an instance according to its unique number.
      * \param id
      * \return
      */

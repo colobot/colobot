@@ -972,15 +972,6 @@ bool CBotVar::Save0State(FILE* pf)
     return WriteString(pf, m_token->GetString());            // and variable name
 }
 
-////////////////////////////////////////////////////////////////////////////////
-bool CBotVarClass::Save1State(FILE* pf)
-{
-    if ( !WriteType(pf, m_type) ) return false;
-    if ( !WriteLong(pf, m_ItemIdent) ) return false;
-
-    return SaveVar(pf, m_pVar);                                // content of the object
-}
-
 namespace
 {
 bool ParseInitType(int rawInitType, CBotVar::InitType* initType)
