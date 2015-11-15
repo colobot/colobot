@@ -23,6 +23,8 @@
 
 #include "CBotInstr/CBotFunction.h"
 
+#include "CBotVar/CBotVarPointer.h"
+
 // Local include
 
 // Global include

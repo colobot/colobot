@@ -432,43 +432,6 @@ public:
     void        ConstructorSet() override;
 };
 
-
-// class for the management of pointers to a class instances
-class CBotVarPointer : public CBotVar
-{
-private:
-    CBotVarClass*
-                m_pVarClass;        // contents
-    CBotClass*    m_pClass;            // class provided for this pointer
-    friend class CBotVar;            // my daddy is a buddy
-
-public:
-                CBotVarPointer( const CBotToken* name, CBotTypResult& type );
-                ~CBotVarPointer();
-
-    void        Copy(CBotVar* pSrc, bool bName=true) override;
-    void        SetClass(CBotClass* pClass) override;
-    CBotClass*    GetClass() override;
-    CBotVar*    GetItem(const char* name) override;    // return an element of a class according to its name (*)
-    CBotVar*    GetItemRef(int nIdent) override;
-    CBotVar*    GetItemList() override;
-
-    CBotString    GetValString() override;
-    void        SetPointer(CBotVar* p) override;
-    CBotVarClass*
-                GetPointer() override;
-
-    void        SetIdent(long n) override;            // associates an identification number (unique)
-    long        GetIdent();                    // gives the identification number associated with
-    void        ConstructorSet() override;
-
-    bool        Save1State(FILE* pf) override;
-    void        Maj(void* pUser, bool bContinue) override;
-
-    bool        Eq(CBotVar* left, CBotVar* right) override;
-    bool        Ne(CBotVar* left, CBotVar* right) override;
-};
-
 extern CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars);
 
 extern bool TypeCompatible( CBotTypResult& type1, CBotTypResult& type2, int op = 0 );
