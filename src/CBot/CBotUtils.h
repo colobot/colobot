@@ -75,3 +75,45 @@ bool WriteString(FILE* pf, CBotString s);
  * \return
  */
 bool WriteFloat(FILE* pf, float w);
+
+/*!
+ * \brief ConstructElement
+ * \param pNewData
+ */
+static inline void ConstructElement(CBotString* pNewData)
+{
+    memset(pNewData, 0, sizeof(CBotString));
+}
+
+/*!
+ * \brief DestructElement
+ * \param pOldData
+ */
+static inline void DestructElement(CBotString* pOldData)
+{
+    pOldData->~CBotString();
+}
+
+/*!
+ * \brief CopyElement
+ * \param pSrc
+ * \param pDest
+ */
+static inline void CopyElement(CBotString* pSrc, CBotString* pDest)
+{
+    *pSrc = *pDest;
+}
+
+/*!
+ * \brief ConstructElements
+ * \param pNewData
+ * \param nCount
+ */
+void ConstructElements(CBotString* pNewData, int nCount);
+
+/*!
+ * \brief DestructElements
+ * \param pOldData
+ * \param nCount
+ */
+void DestructElements(CBotString* pOldData, int nCount);

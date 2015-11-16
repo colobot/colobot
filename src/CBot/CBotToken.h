@@ -22,6 +22,8 @@
 // Modules inlcude
 #include "CBotDll.h"
 
+#include "CBotStringArray.h"
+
 // Local include
 
 // Global include

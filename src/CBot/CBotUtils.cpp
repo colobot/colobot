@@ -140,3 +140,23 @@ bool WriteFloat(FILE* pf, float w)
 
     return (lg == 1);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+void ConstructElements(CBotString* pNewData, int nCount)
+{
+    while (nCount--)
+    {
+        ConstructElement(pNewData);
+        pNewData++;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void DestructElements(CBotString* pOldData, int nCount)
+{
+    while (nCount--)
+    {
+        DestructElement(pOldData);
+        pOldData++;
+    }
+}

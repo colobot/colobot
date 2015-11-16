@@ -419,27 +419,6 @@ private:
     static const char * MapIdToString(EID id);
 };
 
-
-// Class used to array management
-
-class CBotStringArray : public CBotString
-{
-private:
-    int                m_nSize;                    // number of elements
-    int                m_nMaxSize;                    // reserved size
-    CBotString*        m_pData;                    // ^data
-
-public:
-                    CBotStringArray();
-                    ~CBotStringArray();
-    void            SetSize(int nb);
-    int             GetSize();
-    void            Add(const CBotString& str);
-    CBotString&        operator[](int nIndex);
-
-    CBotString&        ElementAt(int nIndex);
-};
-
 ///////////////////////////////////////////////////////////////////////////////
 // routines for file management  (* FILE)
     FILE*        fOpen(const char* name, const char* mode);

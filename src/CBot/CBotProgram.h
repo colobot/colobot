@@ -20,6 +20,7 @@
 #pragma once
 
 // Modules inlcude
+#include "CBotStringArray.h"
 
 // Local include
 
