@@ -22,9 +22,13 @@
 // Modules inlcude
 #include "CBotDll.h"
 
+#include "CBotString.h"
+
 // Local include
 
 // Global include
+
+class CBotString;
 
 /*!
  * \brief MakeListVars Transforms the array of pointers to variables in a
@@ -80,29 +84,20 @@ bool WriteFloat(FILE* pf, float w);
  * \brief ConstructElement
  * \param pNewData
  */
-static inline void ConstructElement(CBotString* pNewData)
-{
-    memset(pNewData, 0, sizeof(CBotString));
-}
+void ConstructElement(CBotString* pNewData);
 
 /*!
  * \brief DestructElement
  * \param pOldData
  */
-static inline void DestructElement(CBotString* pOldData)
-{
-    pOldData->~CBotString();
-}
+void DestructElement(CBotString* pOldData);
 
 /*!
  * \brief CopyElement
  * \param pSrc
  * \param pDest
  */
-static inline void CopyElement(CBotString* pSrc, CBotString* pDest)
-{
-    *pSrc = *pDest;
-}
+void CopyElement(CBotString* pSrc, CBotString* pDest);
 
 /*!
  * \brief ConstructElements

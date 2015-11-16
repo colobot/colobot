@@ -24,6 +24,8 @@
 
 #include "../CBotDefines.h"
 
+#include "../CBotString.h"
+
 // Local include
 
 // Global include

@@ -67,7 +67,6 @@ extern bool ReadLong(FILE* pf, long& w);
 extern bool WriteFloat(FILE* pf, float w);
 extern bool WriteLong(FILE* pf, long w);
 extern bool ReadFloat(FILE* pf, float& w);
-extern bool WriteString(FILE* pf, CBotString s);
 extern bool ReadString(FILE* pf, CBotString& s);
 extern bool WriteType(FILE* pf, CBotTypResult type);
 extern bool ReadType(FILE* pf, CBotTypResult& type);
