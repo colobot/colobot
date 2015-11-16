@@ -22,7 +22,7 @@
 // Modules inlcude
 #include "CBot.h"
 
-#include "CBotStack.h"
+#include "CBotInstr.h"
 
 // Local include
 

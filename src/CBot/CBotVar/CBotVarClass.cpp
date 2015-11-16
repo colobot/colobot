@@ -21,10 +21,10 @@
 #include "CBotVarClass.h"
 
 #include "CBotClass.h"
-
 #include "CBotStack.h"
-
 #include "CBotDefines.h"
+
+#include "CBotInstr/CBotInstr.h"
 
 // Local include
 

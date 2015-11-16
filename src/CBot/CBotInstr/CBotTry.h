@@ -21,6 +21,8 @@
 #include "CBot.h"
 #include "CBotCatch.h"
 
+#include "CBotInstr.h"
+
 // Local include
 
 // Global include
