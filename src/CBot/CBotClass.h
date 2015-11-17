@@ -22,13 +22,17 @@
 // Modules inlcude
 #include "CBotDll.h"
 
-#include "CBotProgram.h"
-
 #include "CBotDefines.h"
+
+#include "CBotTypResult.h"
+
+#include "CBotString.h"
 
 // Local include
 
 // Global include
+
+class CBotProgram;
 
 /*!
  * \brief The CBotClass class Class to define new classes in the language CBOT

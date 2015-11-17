@@ -11,6 +11,7 @@ set(SOURCES
     CBotDefParam.cpp
     CBotCallMethode.cpp
     CBotStringArray.cpp
+    CBotTypResult.cpp
     CBotInstr/CBotInstr.cpp
     CBotInstr/CBotWhile.cpp
     CBotInstr/CBotDo.cpp

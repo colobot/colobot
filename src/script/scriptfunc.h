@@ -25,6 +25,7 @@
 #pragma once
 
 #include "CBot/CBotDll.h"
+#include "CBot/CBotTypResult.h"
 
 #include "common/error.h"
 

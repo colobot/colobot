@@ -20,12 +20,13 @@
 #pragma once
 
 // Modules inlcude
+#include "CBotTypResult.h"
+#include "CBotString.h"
 #include "CBotStringArray.h"
 
 // Local include
 
 // Global include
-
 
 /*!
  * \brief The CBotProgram class Main class managing CBot program.

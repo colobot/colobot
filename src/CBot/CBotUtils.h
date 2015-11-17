@@ -23,6 +23,7 @@
 #include "CBotDll.h"
 
 #include "CBotString.h"
+#include "CBotTypResult.h"
 
 // Local include
 
