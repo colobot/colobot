@@ -6,6 +6,9 @@ set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 # Unit tests
 add_subdirectory(unit)
 
+# CBot tests
+add_subdirectory(cbot)
+
 
 if(COLOBOT_LINT_BUILD)
     add_fake_header_sources("test")
