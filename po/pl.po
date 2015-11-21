@@ -316,9 +316,6 @@ msgstr "Budowa zakończona"
 msgid "Building destroyed"
 msgstr "Budynek zniszczony"
 
-msgid "Building too close"
-msgstr "Budynek za blisko"
-
 msgid "Button %1"
 msgstr "Przycisk %1"
 
@@ -352,9 +349,6 @@ msgstr "Camera to right"
 msgid "Camera up\\Increase camera angle while visiting message origin"
 msgstr "Kamera w górę\\Podnieś kamerę podczas sprawdzania źródła wiadomości"
 
-msgid "Can not create this; there are too many objects"
-msgstr "Nie można tego utworzyć, za dużo obiektów"
-
 msgid "Can not produce not researched object"
 msgstr "Nie można wyprodukować nie wynalezionego obiektu"
 
@@ -381,9 +375,6 @@ msgstr "Zmień gracza\\Zmień gracza"
 
 msgid "Checkpoint"
 msgstr "Punkt kontrolny"
-
-msgid "Checkpoint crossed"
-msgstr "Przekroczono punkt kontrolny"
 
 msgid "Climb\\Increases the power of the jet"
 msgstr "W górę\\Zwiększa moc silnika"
@@ -661,9 +652,6 @@ msgstr "Zielony"
 msgid "Green flag"
 msgstr "Zielona flaga"
 
-msgid "Ground inappropriate"
-msgstr "Nieodpowiedni teren"
-
 msgid "Ground not flat enough"
 msgstr "Powierzchnia nie jest wystarczająco płaska"
 
@@ -915,9 +903,6 @@ msgstr "Nie ma więcej energii"
 msgid "No ore in the subsoil"
 msgstr "W ziemi nie ma żadnej rudy"
 
-msgid "No other robot"
-msgstr "Brak innego robota"
-
 msgid "No power cell"
 msgstr "Brak ogniwa elektrycznego"
 
@@ -957,9 +942,6 @@ msgstr "Wciąż za mało energii"
 msgid "Not found anything to destroy"
 msgstr "Nie znaleziono nic do zniszczenia"
 
-msgid "Not yet enough energy"
-msgstr "Wciąż za mało energii"
-
 msgid "Nothing to analyze"
 msgstr "Nie ma niczego do zanalizowania"
 
@@ -998,9 +980,6 @@ msgstr "OK\\Wybiera zaznaczonego gracza"
 
 msgid "OK\\Close program editor and return to game"
 msgstr "OK\\Zamyka edytor programu i powraca do gry"
-
-msgid "Object not found"
-msgstr "Obiekt nieznany"
 
 msgid "Object too close"
 msgstr "Obiekt za blisko"
@@ -1811,11 +1790,20 @@ msgstr "www.epsitec.com"
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
 
+#~ msgid "Building too close"
+#~ msgstr "Budynek za blisko"
+
+#~ msgid "Can not create this; there are too many objects"
+#~ msgstr "Nie można tego utworzyć, za dużo obiektów"
+
 #~ msgid "Can't open file"
 #~ msgstr "Nie można otworzyć pliku"
 
 #~ msgid "Cancel\\Keep current player name"
 #~ msgstr "Anuluj\\Zachowuje bieżące imię gracza"
+
+#~ msgid "Checkpoint crossed"
+#~ msgstr "Przekroczono punkt kontrolny"
 
 #~ msgid "Compass"
 #~ msgstr "Kompas"
@@ -1841,6 +1829,9 @@ msgstr "www.epsitec.com"
 #~ msgid "Friendly fire\\Your shooting can damage your own objects "
 #~ msgstr "Przyjacielski ogień\\Własne strzały uszkadzają Twoje obiekty"
 
+#~ msgid "Ground inappropriate"
+#~ msgstr "Nieodpowiedni teren"
+
 #~ msgid "Instructions after the final closing brace"
 #~ msgstr "Polecenie po końcowej klamrze zamykającej"
 
@@ -1857,9 +1848,18 @@ msgstr "www.epsitec.com"
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Cień kursora myszy\\Dodaje cień kursorowi myszy"
 
+#~ msgid "No other robot"
+#~ msgstr "Brak innego robota"
+
+#~ msgid "Not yet enough energy"
+#~ msgstr "Wciąż za mało energii"
+
 #~ msgid "Num of decorative objects\\Number of purely ornamental objects"
 #~ msgstr ""
 #~ "Ilość elementów dekoracyjnych \\Ilość elementów czysto dekoracyjnych"
+
+#~ msgid "Object not found"
+#~ msgstr "Obiekt nieznany"
 
 #~ msgid "Planets and stars\\Astronomical objects in the sky"
 #~ msgstr "Planety i gwiazdy\\Obiekty astronomiczne na niebie"

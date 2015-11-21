@@ -306,9 +306,6 @@ msgstr "Bâtiment terminé"
 msgid "Building destroyed"
 msgstr "Bâtiment détruit"
 
-msgid "Building too close"
-msgstr "Bâtiment trop proche"
-
 msgid "Button %1"
 msgstr "Bouton %1"
 
@@ -346,9 +343,6 @@ msgstr ""
 "Caméra plus haute\\Augmente l'angle de caméra lors de la vue de l'origine "
 "des messages"
 
-msgid "Can not create this; there are too many objects"
-msgstr "Création impossible; il y a trop d'objets"
-
 msgid "Can not produce not researched object"
 msgstr "Impossible de créer un objet n'ayant pas été recherché"
 
@@ -375,9 +369,6 @@ msgstr "Autre joueur\\Choix du nom du joueur"
 
 msgid "Checkpoint"
 msgstr "Indicateur"
-
-msgid "Checkpoint crossed"
-msgstr "Indicateur atteint"
 
 msgid "Climb\\Increases the power of the jet"
 msgstr "Monter\\Augmenter la puissance du réacteur"
@@ -655,9 +646,6 @@ msgstr "Vert"
 msgid "Green flag"
 msgstr "Drapeau vert"
 
-msgid "Ground inappropriate"
-msgstr "Terrain inadapté"
-
 msgid "Ground not flat enough"
 msgstr "Sol pas assez plat"
 
@@ -909,9 +897,6 @@ msgstr "Plus d'énergie"
 msgid "No ore in the subsoil"
 msgstr "Pas de minerai en sous-sol"
 
-msgid "No other robot"
-msgstr "Pas d'autre robot"
-
 msgid "No power cell"
 msgstr "Pas de pile"
 
@@ -951,9 +936,6 @@ msgstr "Pas encore assez d'énergie"
 msgid "Not found anything to destroy"
 msgstr "Rien trouvé à détruire"
 
-msgid "Not yet enough energy"
-msgstr "Pas encore assez d'énergie"
-
 msgid "Nothing to analyze"
 msgstr "Rien à analyser"
 
@@ -992,9 +974,6 @@ msgstr "D'accord\\Choisir le joueur"
 
 msgid "OK\\Close program editor and return to game"
 msgstr "D'accord\\Compiler le programme"
-
-msgid "Object not found"
-msgstr "Objet n'existe pas"
 
 msgid "Object too close"
 msgstr "Objet trop proche"
@@ -1813,14 +1792,23 @@ msgstr "www.epsitec.com"
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Bruitages 3D\\Positionnement sonore dans l'espace"
 
+#~ msgid "Building too close"
+#~ msgstr "Bâtiment trop proche"
+
 #~ msgid "COLOBOT"
 #~ msgstr "COLOBOT"
+
+#~ msgid "Can not create this; there are too many objects"
+#~ msgstr "Création impossible; il y a trop d'objets"
 
 #~ msgid "Can't open file"
 #~ msgstr "Ouverture du fichier impossible"
 
 #~ msgid "Cancel\\Keep current player name"
 #~ msgstr "Annuler\\Conserver le joueur actuel"
+
+#~ msgid "Checkpoint crossed"
+#~ msgstr "Indicateur atteint"
 
 #~ msgid "Compass"
 #~ msgstr "Boussole"
@@ -1850,6 +1838,9 @@ msgstr "www.epsitec.com"
 #~ msgid "Friendly fire\\Your shooting can damage your own objects "
 #~ msgstr "Dégâts à soi-même\\Vos tirs infligent des dommages à vos unités"
 
+#~ msgid "Ground inappropriate"
+#~ msgstr "Terrain inadapté"
+
 #~ msgid "Instructions after the final closing brace"
 #~ msgstr "Instructions après la fin"
 
@@ -1862,8 +1853,17 @@ msgstr "www.epsitec.com"
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Souris ombrée\\Jolie souris avec une ombre"
 
+#~ msgid "No other robot"
+#~ msgstr "Pas d'autre robot"
+
+#~ msgid "Not yet enough energy"
+#~ msgstr "Pas encore assez d'énergie"
+
 #~ msgid "Num of decorative objects\\Number of purely ornamental objects"
 #~ msgstr "Nb d'objets décoratifs\\Qualité d'objets non indispensables"
+
+#~ msgid "Object not found"
+#~ msgstr "Objet n'existe pas"
 
 #~ msgid "Planets and stars\\Astronomical objects in the sky"
 #~ msgstr "Planètes et étoiles\\Motifs mobiles dans le ciel"

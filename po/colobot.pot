@@ -1356,9 +1356,6 @@ msgstr ""
 msgid "Place occupied"
 msgstr ""
 
-msgid "No other robot"
-msgstr ""
-
 msgid "You can not carry a radioactive object"
 msgstr ""
 
@@ -1369,9 +1366,6 @@ msgid "Nothing to drop"
 msgstr ""
 
 msgid "Impossible under water"
-msgstr ""
-
-msgid "Not enough energy"
 msgstr ""
 
 msgid "Titanium too far away"
@@ -1401,13 +1395,7 @@ msgstr ""
 msgid "Can not produce not researched object"
 msgstr ""
 
-msgid "Ground inappropriate"
-msgstr ""
-
-msgid "Building too close"
-msgstr ""
-
-msgid "Object too close"
+msgid "Not enough energy"
 msgstr ""
 
 msgid "Nothing to recycle"
@@ -1417,9 +1405,6 @@ msgid "No more energy"
 msgstr ""
 
 msgid "Error in instruction move"
-msgstr ""
-
-msgid "Object not found"
 msgstr ""
 
 msgid "Goto: inaccessible destination"
@@ -1470,9 +1455,6 @@ msgstr ""
 msgid "Analysis already performed"
 msgstr ""
 
-msgid "Not yet enough energy"
-msgstr ""
-
 msgid "No uranium to transform"
 msgstr ""
 
@@ -1480,6 +1462,9 @@ msgid "Transforms only uranium"
 msgstr ""
 
 msgid "No titanium"
+msgstr ""
+
+msgid "Object too close"
 msgstr ""
 
 msgid "No information exchange post within range"
@@ -1520,9 +1505,6 @@ msgid "Bot destroyed"
 msgstr ""
 
 msgid "Building destroyed"
-msgstr ""
-
-msgid "Can not create this; there are too many objects"
 msgstr ""
 
 msgid "Unable to control enemy objects"
@@ -1599,9 +1581,6 @@ msgid "<<< Sorry; mission failed >>>"
 msgstr ""
 
 msgid "Current mission saved"
-msgstr ""
-
-msgid "Checkpoint crossed"
 msgstr ""
 
 msgid "Alien Queen killed"

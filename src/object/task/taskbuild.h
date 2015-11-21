@@ -61,7 +61,7 @@ public:
 
 protected:
     Error       FlatFloor();
-    bool        CreateBuilding(Math::Vector pos, float angle);
+    void        CreateBuilding(Math::Vector pos, float angle);
     void        CreateLight();
     void        BlackLight();
     CObject*    SearchMetalObject(float &angle, float dMin, float dMax, float aLimit, Error &err);

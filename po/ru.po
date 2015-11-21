@@ -308,9 +308,6 @@ msgstr "Здание построено"
 msgid "Building destroyed"
 msgstr "Здание разрушено"
 
-msgid "Building too close"
-msgstr "Здание слишком близко"
-
 msgid "Button %1"
 msgstr "Кнопка %1"
 
@@ -344,9 +341,6 @@ msgstr "Камеру вправо"
 msgid "Camera up\\Increase camera angle while visiting message origin"
 msgstr ""
 
-msgid "Can not create this; there are too many objects"
-msgstr "Не удается это создать, слишком много объектов"
-
 msgid "Can not produce not researched object"
 msgstr ""
 
@@ -373,9 +367,6 @@ msgstr "Новый игрок\\Выберите имя для игрока"
 
 msgid "Checkpoint"
 msgstr "Контрольная точка"
-
-msgid "Checkpoint crossed"
-msgstr "Вы прошли контрольную точку"
 
 msgid "Climb\\Increases the power of the jet"
 msgstr "Взлет и подъем\\Увеличивает мощность реактивного двигателя"
@@ -654,9 +645,6 @@ msgstr "Зеленый"
 msgid "Green flag"
 msgstr "Зеленый флаг"
 
-msgid "Ground inappropriate"
-msgstr "Земля не подходит"
-
 msgid "Ground not flat enough"
 msgstr "Земля недостаточно плоская"
 
@@ -910,9 +898,6 @@ msgstr "Нет энергии"
 msgid "No ore in the subsoil"
 msgstr ""
 
-msgid "No other robot"
-msgstr "Нет робота"
-
 msgid "No power cell"
 msgstr "Нет батареи"
 
@@ -952,9 +937,6 @@ msgstr "Не хватает энергии"
 msgid "Not found anything to destroy"
 msgstr ""
 
-msgid "Not yet enough energy"
-msgstr "Не хватает энергии"
-
 msgid "Nothing to analyze"
 msgstr "Нечего анализировать"
 
@@ -993,9 +975,6 @@ msgstr "ОК\\Выбрать игрока"
 
 msgid "OK\\Close program editor and return to game"
 msgstr "ОК\\Закрыть редактор программ и вернуться к игре"
-
-msgid "Object not found"
-msgstr "Объект не найден"
 
 msgid "Object too close"
 msgstr "Объект слишком близок"
@@ -1817,14 +1796,23 @@ msgstr "www.epsitec.com"
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "3D-звук\\Стерео звук"
 
+#~ msgid "Building too close"
+#~ msgstr "Здание слишком близко"
+
 #~ msgid "COLOBOT"
 #~ msgstr "КОЛОБОТ"
+
+#~ msgid "Can not create this; there are too many objects"
+#~ msgstr "Не удается это создать, слишком много объектов"
 
 #~ msgid "Can't open file"
 #~ msgstr "Невозможно открыть файл"
 
 #~ msgid "Cancel\\Keep current player name"
 #~ msgstr "Отмена\\Отмена"
+
+#~ msgid "Checkpoint crossed"
+#~ msgstr "Вы прошли контрольную точку"
 
 #~ msgid "Compass"
 #~ msgstr "Компас"
@@ -1854,6 +1842,9 @@ msgstr "www.epsitec.com"
 #~ msgid "Friendly fire\\Your shooting can damage your own objects "
 #~ msgstr "Огонь по своим\\Вы можете повредить собственные объекты"
 
+#~ msgid "Ground inappropriate"
+#~ msgstr "Земля не подходит"
+
 #~ msgid "Instructions after the final closing brace"
 #~ msgstr "Инструкция после последней закрывающей фигурной скобки"
 
@@ -1866,8 +1857,17 @@ msgstr "www.epsitec.com"
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Тень мыши\\Мышь отбрасывает тень"
 
+#~ msgid "No other robot"
+#~ msgstr "Нет робота"
+
+#~ msgid "Not yet enough energy"
+#~ msgstr "Не хватает энергии"
+
 #~ msgid "Num of decorative objects\\Number of purely ornamental objects"
 #~ msgstr "Количество декораций\\Количество декоративных объектов"
+
+#~ msgid "Object not found"
+#~ msgstr "Объект не найден"
 
 #~ msgid "Planets and stars\\Astronomical objects in the sky"
 #~ msgstr "Планеты и звезды\\Астрономические объекты в небе"
