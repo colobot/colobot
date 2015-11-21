@@ -46,7 +46,6 @@ enum EID
     ID_NEW,
     ID_PUBLIC,
     ID_EXTERN,
-    ID_FINAL,
     ID_STATIC,
     ID_PROTECTED,
     ID_PRIVATE,

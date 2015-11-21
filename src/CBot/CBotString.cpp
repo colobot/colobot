@@ -54,7 +54,6 @@ const std::map<EID,const char *> CBotString::s_keywordString =
     {ID_NEW,        "new"},
     {ID_PUBLIC,     "public"},
     {ID_EXTERN,     "extern"},
-    {ID_FINAL,      "final"},
     {ID_STATIC,     "static"},
     {ID_PROTECTED,  "protected"},
     {ID_PRIVATE,    "private"},
