@@ -1042,6 +1042,7 @@ CBotTypResult cCBotDebug( CBotVar* &pVar, void* pUser )
 }
 
 
+// TODO: Refactor this - including .cpp files is bad
 #include "StringFunctions.cpp"
 
 void CBotProgram::Init()

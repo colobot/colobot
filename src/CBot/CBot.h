@@ -39,10 +39,6 @@
 /////////////////////////////////////////////////////////////////////
 // forward declaration
 
-class CBotCompExpr; // an expression like
-                    // () <= ()
-class CBotAddExpr;  // an expression like
-                    // () + ()
 class CBotParExpr;  // basic type or instruction in parenthesis
                     // Toto.truc
                     // 12.5
