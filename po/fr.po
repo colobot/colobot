@@ -24,9 +24,6 @@ msgstr " Liste des chapitres :"
 msgid " Custom levels:"
 msgstr " Niveaux spéciaux :"
 
-msgid " Drivers:"
-msgstr " Pilotes :"
-
 msgid " Exercises in the chapter:"
 msgstr " Liste des exercices du chapitre :"
 
@@ -50,9 +47,6 @@ msgstr " Résumé :"
 
 msgid " or "
 msgstr " ou "
-
-msgid "\" [ \" expected"
-msgstr "\" [ \" attendu"
 
 msgid "\" ] \" missing"
 msgstr "\" ] \" attendu"
@@ -349,8 +343,8 @@ msgstr "Caméra à droite"
 
 msgid "Camera up\\Increase camera angle while visiting message origin"
 msgstr ""
-"Caméra plus haute\\Augmente l'angle de caméra lors de la vue de l'origine des "
-"messages"
+"Caméra plus haute\\Augmente l'angle de caméra lors de la vue de l'origine "
+"des messages"
 
 msgid "Can not create this; there are too many objects"
 msgstr "Création impossible; il y a trop d'objets"
@@ -360,9 +354,6 @@ msgstr "Impossible de créer un objet n'ayant pas été recherché"
 
 msgid "Can not produce this object in this mission"
 msgstr "Impossible de créer cet objet dans cette mission"
-
-msgid "Can't open file"
-msgstr "Ouverture du fichier impossible"
 
 msgid "Cancel"
 msgstr "Annuler"
@@ -561,9 +552,6 @@ msgstr "Lunettes :"
 msgid "Face type:"
 msgstr "Type de visage :"
 
-msgid "File not open"
-msgstr "Le fichier n'est pas ouvert"
-
 msgid "Filename:"
 msgstr "Nom du fichier :"
 
@@ -744,9 +732,6 @@ msgstr "Instruction \"else\" sans \"if\" correspondant"
 
 msgid "Instructions (\\key help;)"
 msgstr "Instructions (\\key help;)"
-
-msgid "Instructions after the final closing brace"
-msgstr "Instructions après la fin"
 
 msgid "Instructions for the mission (\\key help;)"
 msgstr "Instructions sur la mission (\\key help;)"
@@ -1180,9 +1165,7 @@ msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Secousses lors d'explosions\\L'écran vibre lors d'une explosion"
 
 msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
-msgstr ""
-"Ombres projetées\\Active la transparence des ombres et "
-"l'auto-ombrage"
+msgstr "Ombres projetées\\Active la transparence des ombres et l'auto-ombrage"
 
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr "Quitter\\Quitter Colobot : Édition Gold"
@@ -1192,9 +1175,6 @@ msgstr "Quitter la mission en cours\\Terminer un exercice ou une mssion"
 
 msgid "Radar station"
 msgstr "Radar"
-
-msgid "Read error"
-msgstr "Erreur à la lecture"
 
 msgid "Recorder"
 msgstr "Enregistreur"
@@ -1295,9 +1275,6 @@ msgstr "Recherche les chenilles"
 msgid "Run research program for winged bots"
 msgstr "Recherche les robots volants"
 
-msgid "SatCom"
-msgstr "SatCom"
-
 msgid "Satellite report"
 msgstr "Rapport du satellite"
 
@@ -1329,8 +1306,8 @@ msgstr "Terminateur point-virgule non trouvé"
 
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr ""
-"Résolution des ombres\\Plus grand implique une meilleure qulité et amplitude, "
-"mais plus lent"
+"Résolution des ombres\\Plus grand implique une meilleure qulité et "
+"amplitude, mais plus lent"
 
 msgid "Shield level"
 msgstr "Niveau du bouclier"
@@ -1488,14 +1465,6 @@ msgstr "Textures"
 
 msgid "The expression must return a boolean value"
 msgstr "L'expression doit ętre un boolean"
-
-msgid "The function returned no value "
-msgstr "La fonction n'a pas retourné de résultat"
-
-msgid ""
-"The list is only available if a \\l;radar station\\u object\\radar; is "
-"working.\n"
-msgstr "Liste non disponible sans \\l;radar\\u object\\radar;.\n"
 
 msgid ""
 "The mission is not accomplished yet (press \\key help; for more details)"
@@ -1702,9 +1671,6 @@ msgstr "Ver mortellement touché"
 msgid "Wreckage"
 msgstr "Epave de robot"
 
-msgid "Write error"
-msgstr "Erreur à l'écriture"
-
 msgid "Wrong type for the assignment"
 msgstr "Mauvais type de résultat pour l'assignation"
 
@@ -1826,27 +1792,6 @@ msgstr "\\Drapeaux violets"
 msgid "\\Yellow flags"
 msgstr "\\Drapeaux jaunes"
 
-msgid "\\b;Aliens\n"
-msgstr "\\b;Listes des ennemis\n"
-
-msgid "\\b;Buildings\n"
-msgstr "\\b;Listes des bâtiments\n"
-
-msgid "\\b;Error\n"
-msgstr "\\b;Erreur\n"
-
-msgid "\\b;List of objects\n"
-msgstr "\\b;Listes des objets\n"
-
-msgid "\\b;Moveable objects\n"
-msgstr "\\b;Listes des objets transportables\n"
-
-msgid "\\b;Robots\n"
-msgstr "\\b;Listes des robots\n"
-
-msgid "\\c; (none)\\n;\n"
-msgstr "\\c; (aucun)\\n;\n"
-
 msgid "www.colobot.info"
 msgstr "www.colobot.info"
 
@@ -1856,14 +1801,23 @@ msgstr "www.epsitec.com"
 #~ msgid " "
 #~ msgstr " "
 
+#~ msgid " Drivers:"
+#~ msgstr " Pilotes :"
+
 #~ msgid " Missions on this level:"
 #~ msgstr " Missions du niveau :"
+
+#~ msgid "\" [ \" expected"
+#~ msgstr "\" [ \" attendu"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Bruitages 3D\\Positionnement sonore dans l'espace"
 
 #~ msgid "COLOBOT"
 #~ msgstr "COLOBOT"
+
+#~ msgid "Can't open file"
+#~ msgstr "Ouverture du fichier impossible"
 
 #~ msgid "Cancel\\Keep current player name"
 #~ msgstr "Annuler\\Conserver le joueur actuel"
@@ -1890,8 +1844,14 @@ msgstr "www.epsitec.com"
 #~ msgid "Exit film\\Film at the exit of exercises"
 #~ msgstr "Retour animé\\Retour animé dans les exercices"
 
+#~ msgid "File not open"
+#~ msgstr "Le fichier n'est pas ouvert"
+
 #~ msgid "Friendly fire\\Your shooting can damage your own objects "
 #~ msgstr "Dégâts à soi-même\\Vos tirs infligent des dommages à vos unités"
+
+#~ msgid "Instructions after the final closing brace"
+#~ msgstr "Instructions après la fin"
 
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Instructions mot-clé\\Explication sur le mot-clé"
@@ -1914,8 +1874,14 @@ msgstr "www.epsitec.com"
 #~ msgid "Quit\\Quit COLOBOT"
 #~ msgstr "Quitter\\Quitter COLOBOT"
 
+#~ msgid "Read error"
+#~ msgstr "Erreur à la lecture"
+
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Robbie\\Votre assistant"
+
+#~ msgid "SatCom"
+#~ msgstr "SatCom"
 
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Ciel\\Ciel et nuages"
@@ -1929,8 +1895,40 @@ msgstr "www.epsitec.com"
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Qualité des textures\\Qualité des images"
 
+#~ msgid "The function returned no value "
+#~ msgstr "La fonction n'a pas retourné de résultat"
+
+#~ msgid ""
+#~ "The list is only available if a \\l;radar station\\u object\\radar; is "
+#~ "working.\n"
+#~ msgstr "Liste non disponible sans \\l;radar\\u object\\radar;.\n"
+
 #~ msgid "User\\User levels"
 #~ msgstr "Suppl.\\Niveaux supplémentaires"
 
+#~ msgid "Write error"
+#~ msgstr "Erreur à l'écriture"
+
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Retourner dans COLOBOT"
+
+#~ msgid "\\b;Aliens\n"
+#~ msgstr "\\b;Listes des ennemis\n"
+
+#~ msgid "\\b;Buildings\n"
+#~ msgstr "\\b;Listes des bâtiments\n"
+
+#~ msgid "\\b;Error\n"
+#~ msgstr "\\b;Erreur\n"
+
+#~ msgid "\\b;List of objects\n"
+#~ msgstr "\\b;Listes des objets\n"
+
+#~ msgid "\\b;Moveable objects\n"
+#~ msgstr "\\b;Listes des objets transportables\n"
+
+#~ msgid "\\b;Robots\n"
+#~ msgstr "\\b;Listes des robots\n"
+
+#~ msgid "\\c; (none)\\n;\n"
+#~ msgstr "\\c; (aucun)\\n;\n"

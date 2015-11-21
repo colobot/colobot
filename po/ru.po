@@ -28,9 +28,6 @@ msgstr " Разделы:"
 msgid " Custom levels:"
 msgstr " Пользовательские уровни:"
 
-msgid " Drivers:"
-msgstr " Драйверы:"
-
 msgid " Exercises in the chapter:"
 msgstr " Упражнения в разделе:"
 
@@ -55,9 +52,6 @@ msgstr " Итог:"
 
 msgid " or "
 msgstr " или "
-
-msgid "\" [ \" expected"
-msgstr "Ожидалось \" [ \""
 
 msgid "\" ] \" missing"
 msgstr "Отсутствует \"]\" "
@@ -359,9 +353,6 @@ msgstr ""
 msgid "Can not produce this object in this mission"
 msgstr ""
 
-msgid "Can't open file"
-msgstr "Невозможно открыть файл"
-
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -560,9 +551,6 @@ msgstr "Очки:"
 msgid "Face type:"
 msgstr "Лицо:"
 
-msgid "File not open"
-msgstr "Файл не открыт"
-
 msgid "Filename:"
 msgstr "Имя файла:"
 
@@ -743,9 +731,6 @@ msgstr "Инструкция \"else\" без \"if\" "
 
 msgid "Instructions (\\key help;)"
 msgstr "Инструкции (\\key help;)"
-
-msgid "Instructions after the final closing brace"
-msgstr "Инструкция после последней закрывающей фигурной скобки"
 
 msgid "Instructions for the mission (\\key help;)"
 msgstr "Инструкции для миссии (\\key help;)"
@@ -1196,9 +1181,6 @@ msgstr "Выход\\Выход из текущей миссии"
 msgid "Radar station"
 msgstr "Радар"
 
-msgid "Read error"
-msgstr "Ошибка чтения"
-
 msgid "Recorder"
 msgstr "Запись"
 
@@ -1299,9 +1281,6 @@ msgstr "Начать исследование программы для гусе
 
 msgid "Run research program for winged bots"
 msgstr "Начать исследование программы для летающего бота"
-
-msgid "SatCom"
-msgstr "SatCom"
 
 msgid "Satellite report"
 msgstr "Спутниковый отчет"
@@ -1493,15 +1472,6 @@ msgstr ""
 
 msgid "The expression must return a boolean value"
 msgstr "Выражение должно возвращать логическое значение"
-
-msgid "The function returned no value "
-msgstr "Функция не возвратила значения"
-
-msgid ""
-"The list is only available if a \\l;radar station\\u object\\radar; is "
-"working.\n"
-msgstr ""
-"Список доступен только если \\l;radar station\\u object\\radar; работают\n"
 
 msgid ""
 "The mission is not accomplished yet (press \\key help; for more details)"
@@ -1706,9 +1676,6 @@ msgstr "Червь смертельно ранен"
 msgid "Wreckage"
 msgstr "Обломки"
 
-msgid "Write error"
-msgstr "Ошибка записи"
-
 msgid "Wrong type for the assignment"
 msgstr "Неверный тип для назначения"
 
@@ -1829,27 +1796,6 @@ msgstr "\\Фиолетовый флаг"
 msgid "\\Yellow flags"
 msgstr "\\Желтый флаг"
 
-msgid "\\b;Aliens\n"
-msgstr "\\b;Чужаки\n"
-
-msgid "\\b;Buildings\n"
-msgstr "\\b;Здания\n"
-
-msgid "\\b;Error\n"
-msgstr "\\b;Ошибка\n"
-
-msgid "\\b;List of objects\n"
-msgstr "\\b;Список объектов\n"
-
-msgid "\\b;Moveable objects\n"
-msgstr "\\b;Подвижные объекты\n"
-
-msgid "\\b;Robots\n"
-msgstr "\\b;Роботы\n"
-
-msgid "\\c; (none)\\n;\n"
-msgstr "\\c; (нет)\\n;\n"
-
 msgid "www.colobot.info"
 msgstr ""
 
@@ -1859,14 +1805,23 @@ msgstr "www.epsitec.com"
 #~ msgid " "
 #~ msgstr " "
 
+#~ msgid " Drivers:"
+#~ msgstr " Драйверы:"
+
 #~ msgid " Missions on this level:"
 #~ msgstr " Миссии на этом уровне:"
+
+#~ msgid "\" [ \" expected"
+#~ msgstr "Ожидалось \" [ \""
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "3D-звук\\Стерео звук"
 
 #~ msgid "COLOBOT"
 #~ msgstr "КОЛОБОТ"
+
+#~ msgid "Can't open file"
+#~ msgstr "Невозможно открыть файл"
 
 #~ msgid "Cancel\\Keep current player name"
 #~ msgstr "Отмена\\Отмена"
@@ -1893,8 +1848,14 @@ msgstr "www.epsitec.com"
 #~ msgid "Exit film\\Film at the exit of exercises"
 #~ msgstr "Ролик при выходе\\Ролик во время выхода из упражнения"
 
+#~ msgid "File not open"
+#~ msgstr "Файл не открыт"
+
 #~ msgid "Friendly fire\\Your shooting can damage your own objects "
 #~ msgstr "Огонь по своим\\Вы можете повредить собственные объекты"
+
+#~ msgid "Instructions after the final closing brace"
+#~ msgstr "Инструкция после последней закрывающей фигурной скобки"
 
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Помощь по командам\\Более подробная справку по командам"
@@ -1917,8 +1878,14 @@ msgstr "www.epsitec.com"
 #~ msgid "Quit\\Quit COLOBOT"
 #~ msgstr "Выход\\Выход из COLOBOT"
 
+#~ msgid "Read error"
+#~ msgstr "Ошибка чтения"
+
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Робби\\Ваш помощник"
+
+#~ msgid "SatCom"
+#~ msgstr "SatCom"
 
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Небо\\Облака и туманности"
@@ -1932,8 +1899,41 @@ msgstr "www.epsitec.com"
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Текстуры\\Качество текстур "
 
+#~ msgid "The function returned no value "
+#~ msgstr "Функция не возвратила значения"
+
+#~ msgid ""
+#~ "The list is only available if a \\l;radar station\\u object\\radar; is "
+#~ "working.\n"
+#~ msgstr ""
+#~ "Список доступен только если \\l;radar station\\u object\\radar; работают\n"
+
 #~ msgid "User\\User levels"
 #~ msgstr "Польз.\\Пользовательские уровни"
 
+#~ msgid "Write error"
+#~ msgstr "Ошибка записи"
+
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Вернуться в COLOBOT"
+
+#~ msgid "\\b;Aliens\n"
+#~ msgstr "\\b;Чужаки\n"
+
+#~ msgid "\\b;Buildings\n"
+#~ msgstr "\\b;Здания\n"
+
+#~ msgid "\\b;Error\n"
+#~ msgstr "\\b;Ошибка\n"
+
+#~ msgid "\\b;List of objects\n"
+#~ msgstr "\\b;Список объектов\n"
+
+#~ msgid "\\b;Moveable objects\n"
+#~ msgstr "\\b;Подвижные объекты\n"
+
+#~ msgid "\\b;Robots\n"
+#~ msgstr "\\b;Роботы\n"
+
+#~ msgid "\\c; (none)\\n;\n"
+#~ msgstr "\\c; (нет)\\n;\n"

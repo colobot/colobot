@@ -20,9 +20,6 @@ msgstr ""
 msgid "Colobot rules!"
 msgstr ""
 
-msgid "SatCom"
-msgstr ""
-
 msgid "Maximize"
 msgstr ""
 
@@ -113,9 +110,6 @@ msgstr ""
 msgid " Summary:"
 msgstr ""
 
-msgid " Drivers:"
-msgstr ""
-
 msgid " Resolution:"
 msgstr ""
 
@@ -187,32 +181,6 @@ msgid "This program is read-only, clone it to edit"
 msgstr ""
 
 msgid "This is example code that cannot be run directly"
-msgstr ""
-
-msgid "\\b;List of objects\n"
-msgstr ""
-
-msgid "\\b;Robots\n"
-msgstr ""
-
-msgid "\\b;Buildings\n"
-msgstr ""
-
-msgid "\\b;Moveable objects\n"
-msgstr ""
-
-msgid "\\b;Aliens\n"
-msgstr ""
-
-msgid "\\c; (none)\\n;\n"
-msgstr ""
-
-msgid "\\b;Error\n"
-msgstr ""
-
-msgid ""
-"The list is only available if a \\l;radar station\\u object\\radar; is "
-"working.\n"
 msgstr ""
 
 msgid "Open"
@@ -1675,9 +1643,6 @@ msgstr ""
 msgid "Instruction \"case\" outside a block \"switch\""
 msgstr ""
 
-msgid "Instructions after the final closing brace"
-msgstr ""
-
 msgid "End of block missing"
 msgstr ""
 
@@ -1768,9 +1733,6 @@ msgstr ""
 msgid "Bad argument for \"new\""
 msgstr ""
 
-msgid "\" [ \" expected"
-msgstr ""
-
 msgid "String missing"
 msgstr ""
 
@@ -1790,9 +1752,6 @@ msgid "Variable not initialized"
 msgstr ""
 
 msgid "Negative value rejected by \"throw\""
-msgstr ""
-
-msgid "The function returned no value "
 msgstr ""
 
 msgid "No function running"
@@ -1817,18 +1776,6 @@ msgid "Stack overflow"
 msgstr ""
 
 msgid "Illegal object"
-msgstr ""
-
-msgid "Can't open file"
-msgstr ""
-
-msgid "File not open"
-msgstr ""
-
-msgid "Read error"
-msgstr ""
-
-msgid "Write error"
 msgstr ""
 
 msgid "Button %1"

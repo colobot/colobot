@@ -116,6 +116,7 @@ enum EID
 
 // TODO: refactor & change to enum!
 
+// Compile errors
 #define TX_OPENPAR                      5000
 #define TX_CLOSEPAR                     5001
 #define TX_NOTBOOL                      5002
@@ -123,7 +124,6 @@ enum EID
 #define TX_BADLEFT                      5004
 #define TX_ENDOF                        5005
 #define TX_OUTCASE                      5006
-#define TX_NOTERM                       5007
 #define TX_CLOSEBLK                     5008
 #define TX_ELSEWITHOUTIF                5009
 #define TX_OPENBLK                      5010
@@ -154,15 +154,15 @@ enum EID
 #define TX_CLBRK                        5035
 #define TX_RESERVED                     5036
 #define TX_BADNEW                       5037
-#define TX_OPBRK                        5038
 #define TX_BADSTRING                    5039
 #define TX_BADINDEX                     5040
 #define TX_PRIVATE                      5041
 #define TX_NOPUBLIC                     5042
+
+// Runtime errors
 #define TX_DIVZERO                      6000
 #define TX_NOTINIT                      6001
 #define TX_BADTHROW                     6002
-#define TX_NORETVAL                     6003
 #define TX_NORUN                        6004
 #define TX_NOCALL                       6005
 #define TX_NOCLASS                      6006
@@ -171,9 +171,6 @@ enum EID
 #define TX_OUTARRAY                     6009
 #define TX_STACKOVER                    6010
 #define TX_DELETEDPT                    6011
-#define TX_FILEOPEN                     6012
-#define TX_NOTOPEN                      6013
-#define TX_ERRREAD                      6014
-#define TX_ERRWRITE                     6015
 
-#define TX_MAX                          6016
+// Max errors
+#define TX_MAX                          6012

@@ -53,7 +53,6 @@ const char* stringsCbot[TX_MAX]         = { nullptr };
 
 void InitializeRestext()
 {
-    stringsText[RT_DISINFO_TITLE]    = TR("SatCom");
     stringsText[RT_WINDOW_MAXIMIZED] = TR("Maximize");
     stringsText[RT_WINDOW_MINIMIZED] = TR("Minimize");
     stringsText[RT_WINDOW_STANDARD]  = TR("Normal size");
@@ -88,7 +87,6 @@ void InitializeRestext()
     stringsText[RT_PLAY_LIST_FREEGAME]   = TR(" Free game on this planet:");
     stringsText[RT_PLAY_RESUME]          = TR(" Summary:");
 
-    stringsText[RT_SETUP_DEVICE]     = TR(" Drivers:");
     stringsText[RT_SETUP_MODE]       = TR(" Resolution:");
     stringsText[RT_SETUP_KEY1]       = TR("1) First click on the key you want to redefine.");
     stringsText[RT_SETUP_KEY2]       = TR("2) Then press the key you want to use instead.");
@@ -117,15 +115,6 @@ void InitializeRestext()
 
     stringsText[RT_PROGRAM_READONLY] = TR("This program is read-only, clone it to edit");
     stringsText[RT_PROGRAM_EXAMPLE]  = TR("This is example code that cannot be run directly");
-
-    stringsText[RT_SATCOM_LIST]      = TR("\\b;List of objects\n");
-    stringsText[RT_SATCOM_BOT]       = TR("\\b;Robots\n");
-    stringsText[RT_SATCOM_BUILDING]  = TR("\\b;Buildings\n");
-    stringsText[RT_SATCOM_FRET]      = TR("\\b;Moveable objects\n");
-    stringsText[RT_SATCOM_ALIEN]     = TR("\\b;Aliens\n");
-    stringsText[RT_SATCOM_NULL]      = TR("\\c; (none)\\n;\n");
-    stringsText[RT_SATCOM_ERROR1]    = TR("\\b;Error\n");
-    stringsText[RT_SATCOM_ERROR2]    = TR("The list is only available if a \\l;radar station\\u object\\radar; is working.\n");
 
     stringsText[RT_IO_OPEN]          = TR("Open");
     stringsText[RT_IO_SAVE]          = TR("Save");
@@ -700,7 +689,6 @@ void InitializeRestext()
     stringsCbot[TX_BADLEFT]       = TR("Assignment impossible");
     stringsCbot[TX_ENDOF]         = TR("Semicolon terminator missing");
     stringsCbot[TX_OUTCASE]       = TR("Instruction \"case\" outside a block \"switch\"");
-    stringsCbot[TX_NOTERM]        = TR("Instructions after the final closing brace");
     stringsCbot[TX_CLOSEBLK]      = TR("End of block missing");
     stringsCbot[TX_ELSEWITHOUTIF] = TR("Instruction \"else\" without corresponding \"if\" ");
     stringsCbot[TX_OPENBLK]       = TR("Opening brace missing ");
@@ -731,7 +719,6 @@ void InitializeRestext()
     stringsCbot[TX_CLBRK]         = TR("\" ] \" missing");
     stringsCbot[TX_RESERVED]      = TR("Reserved keyword of CBOT language");
     stringsCbot[TX_BADNEW]        = TR("Bad argument for \"new\"");
-    stringsCbot[TX_OPBRK]         = TR("\" [ \" expected");
     stringsCbot[TX_BADSTRING]     = TR("String missing");
     stringsCbot[TX_BADINDEX]      = TR("Incorrect index type");
     stringsCbot[TX_PRIVATE]       = TR("Private element");
@@ -739,7 +726,6 @@ void InitializeRestext()
     stringsCbot[TX_DIVZERO]       = TR("Dividing by zero");
     stringsCbot[TX_NOTINIT]       = TR("Variable not initialized");
     stringsCbot[TX_BADTHROW]      = TR("Negative value rejected by \"throw\"");
-    stringsCbot[TX_NORETVAL]      = TR("The function returned no value ");
     stringsCbot[TX_NORUN]         = TR("No function running");
     stringsCbot[TX_NOCALL]        = TR("Calling an unknown function");
     stringsCbot[TX_NOCLASS]       = TR("This class does not exist");
@@ -748,10 +734,6 @@ void InitializeRestext()
     stringsCbot[TX_OUTARRAY]      = TR("Access beyond array limit");
     stringsCbot[TX_STACKOVER]     = TR("Stack overflow");
     stringsCbot[TX_DELETEDPT]     = TR("Illegal object");
-    stringsCbot[TX_FILEOPEN]      = TR("Can't open file");
-    stringsCbot[TX_NOTOPEN]       = TR("File not open");
-    stringsCbot[TX_ERRREAD]       = TR("Read error");
-    stringsCbot[TX_ERRWRITE]      = TR("Write error");
 }
 
 
