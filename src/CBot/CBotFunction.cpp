@@ -1639,7 +1639,23 @@ CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
 
         if ( IsOfType( p, ID_EXTENDS ) )
         {
-            IsOfType(p, TokenTypVar); // necessarily
+            // TODO: Not sure how correct is that - I have no idea how the precompilation (Compile1 method) works ~krzys_h
+            CBotString name = p->GetString();
+            CBotClass* pPapa = CBotClass::Find(name);
+
+            if (!IsOfType(p, TokenTypVar) || pPapa == nullptr)
+            {
+                pStack->SetError( TX_NOCLASS, p );
+                return nullptr;
+            }
+            pOld->m_pParent = pPapa;
+        }
+        else
+        {
+            if (pOld != nullptr)
+            {
+                pOld->m_pParent = nullptr;
+            }
         }
         IsOfType( p, ID_OPBLK); // necessarily
 
