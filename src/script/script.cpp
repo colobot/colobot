@@ -666,7 +666,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
         {
             color = Gfx::FONT_HIGHLIGHT_TOKEN;
         }
-        else if (type == TokenTypVar && strcmp(token, "this") == 0) // this
+        else if (type == TokenTypVar && (strcmp(token, "this") == 0 || strcmp(token, "super") == 0)) // this, super
         {
             color = Gfx::FONT_HIGHLIGHT_THIS;
         }

@@ -117,7 +117,6 @@ const std::map<EID,const char *> CBotString::s_keywordString =
     {ID_MODULO,     "%"},
     {ID_POWER,      "**"},
     {ID_ASSMODULO,  "%="},
-    {ID_SUPER,      "super"},
     {TX_UNDEF,      "undefined"},
     {TX_NAN,        "not a number"}
 };

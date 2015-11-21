@@ -112,8 +112,7 @@ enum EID
     ID_POWER,
     ID_ASSMODULO,
     TX_UNDEF = 4000,
-    TX_NAN,
-    ID_SUPER = 6000
+    TX_NAN
 };
 
 // TODO: refactor & change to enum!
