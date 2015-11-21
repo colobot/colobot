@@ -57,7 +57,6 @@ const std::map<EID,const char *> CBotString::s_keywordString =
     {ID_STATIC,     "static"},
     {ID_PROTECTED,  "protected"},
     {ID_PRIVATE,    "private"},
-    {ID_DEBUGDD,    "STARTDEBUGDD"},
     {ID_INT,        "int"},
     {ID_FLOAT,      "float"},
     {ID_BOOLEAN,    "boolean"},

@@ -487,8 +487,6 @@ private:
     long            m_Ident;        // associated identifier
 
 public:
-    static CBotString        m_DebugVarStr;    // end of a debug
-    bool m_bDebugDD;        // idem déclanchable par robot \TODO ???
     bool m_bCompileClass;
 
 public:

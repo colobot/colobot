@@ -33,7 +33,6 @@ CBotProgram::CBotProgram()
 
     m_ErrorCode = 0;
     m_Ident     = 0;
-    m_bDebugDD  = 0;
 }
 
 CBotProgram::CBotProgram(CBotVar* pInstance)
@@ -46,7 +45,6 @@ CBotProgram::CBotProgram(CBotVar* pInstance)
 
     m_ErrorCode = 0;
     m_Ident     = 0;
-    m_bDebugDD  = 0;
 }
 
 

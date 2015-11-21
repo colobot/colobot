@@ -225,9 +225,6 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     case ID_THROW:
         return CBotThrow::Compile(p, pStack);
 
-    case ID_DEBUGDD:
-        return CBotStartDebugDD::Compile(p, pStack);
-
     case ID_INT:
         return CBotInt::Compile(p, pStack);
 

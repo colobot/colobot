@@ -1259,35 +1259,3 @@ void CBotThrow :: RestoreState(CBotStack* &pj, bool bMain)
 }
 
 
-
-////////////////////////////////////////////////////////////
-
-
-CBotStartDebugDD::CBotStartDebugDD()
-{
-    name = "CBotStartDebugDD";      // debug
-}
-
-CBotStartDebugDD::~CBotStartDebugDD()
-{
-}
-
-CBotInstr* CBotStartDebugDD::Compile(CBotToken* &p, CBotCStack* pStack)
-{
-
-    if (!IsOfType(p, ID_DEBUGDD)) return nullptr;  // should never happen
-
-    return new CBotStartDebugDD();          // creates the object
-
-}
-
-// execution of instruction "throw"
-
-bool CBotStartDebugDD :: Execute(CBotStack* &pj)
-{
-    CBotProgram* p = pj->GetBotCall();
-    p->m_bDebugDD = true;
-
-    return true;
-}
-

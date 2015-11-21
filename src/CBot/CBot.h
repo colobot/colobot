@@ -627,19 +627,6 @@ public:
 };
 
 
-class CBotStartDebugDD : public CBotInstr
-{
-private:
-
-public:
-                CBotStartDebugDD();
-                ~CBotStartDebugDD();
-    static
-    CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-    bool        Execute(CBotStack* &pj) override;
-};
-
-
 class CBotIf : public CBotInstr
 {
 private:

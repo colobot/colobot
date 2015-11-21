@@ -49,7 +49,6 @@ enum EID
     ID_STATIC,
     ID_PROTECTED,
     ID_PRIVATE,
-    ID_DEBUGDD,
     ID_INT,
     ID_FLOAT,
     ID_BOOLEAN,
