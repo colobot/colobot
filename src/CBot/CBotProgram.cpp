@@ -1023,85 +1023,27 @@ CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
 }
 
 
-CBotString CBotProgram::m_DebugVarStr = "";
-
-bool rCBotDebug( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
-{
-    pResult->SetValString( CBotProgram::m_DebugVarStr );
-
-    return true;
-}
-
-CBotTypResult cCBotDebug( CBotVar* &pVar, void* pUser )
-{
-    // no parameter
-    if ( pVar != nullptr ) return CBotTypResult( TX_OVERPARAM );
-
-    // function returns a result "string"
-    return CBotTypResult( CBotTypString );
-}
-
-
 // TODO: Refactor this - including .cpp files is bad
 #include "StringFunctions.cpp"
 
 void CBotProgram::Init()
 {
-    CBotToken::DefineNum( "CBotErrOpenPar", 5000) ;     // missing the opening parenthesis
-    CBotToken::DefineNum( "CBotErrClosePar", 5001) ;    // missing the closing parenthesis
-    CBotToken::DefineNum( "CBotErrNotBoolean", 5002) ;  // expression must be a boolean
-    CBotToken::DefineNum( "CBotErrUndefVar", 5003) ;    // undeclared variable
-    CBotToken::DefineNum( "CBotErrBadLeft", 5004) ;     // impossible assignment (5 = ...)
-    CBotToken::DefineNum( "CBotErrNoTerminator", 5005) ;// semicolon expected
-    CBotToken::DefineNum( "CBotErrCaseOut", 5006) ;     // case outside a switch
-    CBotToken::DefineNum( "CBotErrCloseBlock", 5008) ;  // missing " } "
-    CBotToken::DefineNum( "CBotErrElseWhitoutIf", 5009) ;// else without matching if
-    CBotToken::DefineNum( "CBotErrOpenBlock", 5010) ;   // missing " { "
-    CBotToken::DefineNum( "CBotErrBadType1", 5011) ;    // wrong type for the assignment
-    CBotToken::DefineNum( "CBotErrRedefVar", 5012) ;    // redefinition of the variable
-    CBotToken::DefineNum( "CBotErrBadType2", 5013) ;    // two operands are incompatible
-    CBotToken::DefineNum( "CBotErrUndefCall", 5014) ;   // routine unknown
-    CBotToken::DefineNum( "CBotErrNoDoubleDots", 5015) ;// " : " expected
-    CBotToken::DefineNum( "CBotErrBreakOutside", 5017) ;// break outside of a loop
-    CBotToken::DefineNum( "CBotErrUndefLabel", 5019) ;  // unknown label
-    CBotToken::DefineNum( "CBotErrLabel", 5018) ;       // label can not get here
-    CBotToken::DefineNum( "CBotErrNoCase", 5020) ;      // missing " case "
-    CBotToken::DefineNum( "CBotErrBadNum", 5021) ;      // expected number
-    CBotToken::DefineNum( "CBotErrVoid", 5022) ;        // " void " not possble here
-    CBotToken::DefineNum( "CBotErrNoType", 5023) ;      // type declaration expected
-    CBotToken::DefineNum( "CBotErrNoVar", 5024) ;       // variable name expected
-    CBotToken::DefineNum( "CBotErrNoFunc", 5025) ;      // expected function name
-    CBotToken::DefineNum( "CBotErrOverParam", 5026) ;   // too many parameters
-    CBotToken::DefineNum( "CBotErrRedefFunc", 5027) ;   // this function already exists
-    CBotToken::DefineNum( "CBotErrLowParam", 5028) ;    // not enough parameters
-    CBotToken::DefineNum( "CBotErrBadParam", 5029) ;    // mauvais types de paramètres
-    CBotToken::DefineNum( "CBotErrNbParam", 5030) ;     // wrong number of parameters
-    CBotToken::DefineNum( "CBotErrUndefItem", 5031) ;   // element does not exist in the class
-    CBotToken::DefineNum( "CBotErrUndefClass", 5032) ;  // variable is not a class
-    CBotToken::DefineNum( "CBotErrNoConstruct", 5033) ; // no appropriate constructor
-    CBotToken::DefineNum( "CBotErrRedefClass", 5034) ;  // Class already exists
-    CBotToken::DefineNum( "CBotErrCloseIndex", 5035) ;  // " ] " expected
-    CBotToken::DefineNum( "CBotErrReserved", 5036) ;    // reserved word (for a DefineNum)
-
-// Here are the list of errors that can be returned by the module
-// for the execution
-
-    CBotToken::DefineNum( "CBotErrZeroDiv", 6000) ;     // division by zero
-    CBotToken::DefineNum( "CBotErrNotInit", 6001) ;     // uninitialized variable
-    CBotToken::DefineNum( "CBotErrBadThrow", 6002) ;    // throw a negative value
-    CBotToken::DefineNum( "CBotErrNoRetVal", 6003) ;    // function did not return results
-    CBotToken::DefineNum( "CBotErrNoRun", 6004) ;       // active Run () without a function
-    CBotToken::DefineNum( "CBotErrUndefFunc", 6005) ;   // Calling a function that no longer exists
+    CBotToken::DefineNum("CBotErrZeroDiv",       TX_DIVZERO);     // division by zero
+    CBotToken::DefineNum("CBotErrNotInit",       TX_NOTINIT);     // uninitialized variable
+    CBotToken::DefineNum("CBotErrBadThrow",      TX_BADTHROW);    // throw a negative value
+    //CBotToken::DefineNum("CBotErrNoRetVal",      6003);           // function did not return results // TODO: Not used. I'm pretty sure not returning a value crashes the game :P
+    CBotToken::DefineNum("CBotErrNoRun",         TX_NORUN);       // active Run () without a function // TODO: Is this actually a runtime error?
+    CBotToken::DefineNum("CBotErrUndefFunc",     TX_NOCALL);      // Calling a function that no longer exists
+    CBotToken::DefineNum("CBotErrUndefClass",    TX_NOCLASS);     // Class no longer exists
+    CBotToken::DefineNum("CBotErrNullPointer",   TX_NULLPT);      // Attempted to use a null pointer
+    CBotToken::DefineNum("CBotErrNan",           TX_OPNAN);       // Can't do operations on nan
+    CBotToken::DefineNum("CBotErrOutOfBounds",   TX_OUTARRAY);    // Attempted access out of bounds of an array
+    CBotToken::DefineNum("CBotErrStackOverflow", TX_STACKOVER);   // Stack overflow
+    CBotToken::DefineNum("CBotErrDeletedObject", TX_DELETEDPT);   // Attempted to use deleted object
 
     CBotProgram::AddFunction("sizeof", rSizeOf, cSizeOf );
 
     InitStringFunctions();
-
-    // just a function for various debug
-    CBotProgram::AddFunction("CBOTDEBUGDD", rCBotDebug, cCBotDebug);
-    //TODO implement this deletion
-    // DeleteFile("CbotDebug.txt");
-
 }
 
 void CBotProgram::Free()
