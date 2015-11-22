@@ -20,8 +20,6 @@
 #pragma once
 
 // Modules inlcude
-#include "../CBotDll.h"
-
 #include "../CBotDefines.h"
 
 #include "../CBotString.h"
@@ -30,6 +28,9 @@
 
 // Global include
 
+// Forward declaration
+class CBotVarClass;
+class CBotInstr;
 
 /*!
  * \brief The CBotVar class Class for managing variables. May be useful to the

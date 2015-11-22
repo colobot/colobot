@@ -24,9 +24,17 @@
 #include "CBotString.h"
 #include "CBotStringArray.h"
 
+#include "CBotEnums.h"
+
 // Local include
 
 // Global include
+
+// Forward declaration
+class CBotFunction;
+class CBotClass;
+class CBotStack;
+class CBotVar;
 
 /*!
  * \brief The CBotProgram class Main class managing CBot program.
@@ -225,9 +233,11 @@ public:
      * \param modestop
      * \return
      */
-    bool GetPosition(const char* name, int& start, int& stop,
-                                CBotGet modestart = GetPosExtern,
-                                CBotGet modestop  = GetPosBloc);
+    bool GetPosition(const char* name,
+                     int& start,
+                     int& stop,
+                     CBotGet modestart = GetPosExtern,
+                     CBotGet modestop  = GetPosBloc);
 
     /*!
      * \brief GetFunctions

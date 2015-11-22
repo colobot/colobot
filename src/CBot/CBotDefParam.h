@@ -20,7 +20,6 @@
 #pragma once
 
 // Modules inlcude
-#include "CBotDll.h"
 #include "CBotToken.h"
 #include "CBotStack.h"
 

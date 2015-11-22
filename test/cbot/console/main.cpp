@@ -2,7 +2,8 @@
 #include <memory>
 
 #include "common/restext.h"
-#include "CBot/CBotDll.h"
+
+#include "CBot/CBot.h"
 
 CBotTypResult cMessage(CBotVar* &var, void* user)
 {

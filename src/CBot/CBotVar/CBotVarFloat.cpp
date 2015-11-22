@@ -20,6 +20,8 @@
 // Modules inlcude
 #include "CBotVarFloat.h"
 
+#include "CBotEnums.h"
+
 #include "CBotToken.h"
 
 #include "CBotUtils.h"

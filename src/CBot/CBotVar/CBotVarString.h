@@ -20,8 +20,6 @@
 #pragma once
 
 // Modules inlcude
-#include "CBotDll.h"
-
 #include "CBotVar/CBotVar.h"
 
 // Local include

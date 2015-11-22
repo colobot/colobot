@@ -18,8 +18,6 @@
  */
 
 // Modules inlcude
-#include "CBot/CBotDll.h"
-
 #include "CBot/CBotString.h"
 
 // Local include

@@ -30,7 +30,7 @@
 // Local include
 
 // Global include
-
+#include <cstring>
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotVar* MakeListVars(CBotVar** ppVars, bool bSetVal)

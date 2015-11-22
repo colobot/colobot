@@ -26,7 +26,6 @@
 #pragma once
 
 #include "resource.h"
-#include "CBotDll.h"                    // public definitions
 #include "CBotToken.h"                  // token management
 #include "CBotProgram.h"
 

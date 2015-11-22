@@ -20,6 +20,8 @@
 // Modules inlcude
 #include "CBotVarBoolean.h"
 
+#include "CBotEnums.h"
+
 #include "CBotUtils.h"
 
 // Local include
@@ -30,18 +32,17 @@
 ////////////////////////////////////////////////////////////////////////////////
 CBotVarBoolean::CBotVarBoolean( const CBotToken* name )
 {
-    m_token        = new CBotToken(name);
-    m_next        = nullptr;
-    m_pMyThis    = nullptr;
-    m_pUserPtr    = nullptr;
+    m_token    = new CBotToken(name);
+    m_next     = nullptr;
+    m_pMyThis  = nullptr;
+    m_pUserPtr = nullptr;
     m_InitExpr = nullptr;
-    m_LimExpr = nullptr;
-    m_type        = CBotTypBoolean;
-    m_binit        = InitType::UNDEF;
-    m_bStatic = false;
+    m_LimExpr  = nullptr;
+    m_type     = CBotTypBoolean;
+    m_binit    = InitType::UNDEF;
+    m_bStatic  = false;
     m_mPrivate = 0;
-
-    m_val        = 0;
+    m_val      = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

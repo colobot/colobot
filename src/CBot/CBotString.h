@@ -21,6 +21,7 @@
 
 // Modules inlcude
 #include "CBotUtils.h"
+#include "resource.h"
 
 // Local include
 

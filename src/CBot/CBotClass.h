@@ -20,8 +20,6 @@
 #pragma once
 
 // Modules inlcude
-#include "CBotDll.h"
-
 #include "CBotDefines.h"
 
 #include "CBotTypResult.h"
@@ -32,7 +30,14 @@
 
 // Global include
 
+// Forward declaration
+class CBotVar;
+class CBotClass;
+class CBotCallMethode;
+class CBotFunction;
 class CBotProgram;
+class CBotStack;
+class CBotDefParam;
 
 /*!
  * \brief The CBotClass class Class to define new classes in the language CBOT

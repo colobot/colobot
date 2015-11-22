@@ -20,16 +20,19 @@
 #pragma once
 
 // Modules inlcude
-#include "CBotDll.h"
-
 #include "CBotString.h"
 #include "CBotTypResult.h"
 
 // Local include
 
 // Global include
+#include <cstdio>
 
+// Forward declaration
 class CBotString;
+class CBotVar;
+class CBotToken;
+class CBotCStack;
 
 /*!
  * \brief MakeListVars Transforms the array of pointers to variables in a

@@ -20,15 +20,16 @@
 #pragma once
 
 // Modules inlcude
-#include "CBotDll.h"
-
 #include "CBotString.h"
 
 // Local include
 
 // Global include
 
-#define    STACKRUN    1                /// \def return execution directly on a suspended routine
+// Forward declaration
+class CBotStack;
+
+#define    STACKRUN    1  //! \def return execution directly on a suspended routine
 
 /*!
  * \brief The CBotCall class. Class for routine calls (external).

@@ -20,14 +20,13 @@
 #pragma once
 
 // Modules inlcude
-#include "CBotDll.h"
-
 #include "CBotProgram.h"
 
 // Local include
 
 // Global include
-
+class CBotInstr;
+class CBotDefParam;
 
 /*!
  * \brief The CBotCStack class Management of the stack of compilation.

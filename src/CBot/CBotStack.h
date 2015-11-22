@@ -26,6 +26,9 @@
 
 // Global include
 
+// Forward declaration
+class CBotInstr;
+class CBotCall;
 
 /*!
  * \class CBotStack
