@@ -19,6 +19,9 @@
 
 // Modules inlcude
 #include "CBotClassInst.h"
+
+#include "CBotInstr/CBotInstrUtils.h"
+
 #include "CBotLeftExprVar.h"
 #include "CBotTwoOpExpr.h"
 #include "CBotInstArray.h"

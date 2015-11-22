@@ -20,6 +20,8 @@
 // Modules inlcude
 #include "CBotInstrMethode.h"
 
+#include "CBotInstr/CBotInstrUtils.h"
+
 #include "CBotStack.h"
 #include "CBotCStack.h"
 #include "CBotClass.h"

@@ -20,6 +20,8 @@
 // Modules inlcude
 #include "CBotListArray.h"
 
+#include "CBotInstr/CBotInstrUtils.h"
+
 #include "CBotExprNull.h"
 #include "CBotTwoOpExpr.h"
 

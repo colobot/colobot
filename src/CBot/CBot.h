@@ -54,11 +54,6 @@ class CBotDefParam; // paramerer list of a function
 
 extern bool SaveVar(FILE* pf, CBotVar* pVar);
 
-extern CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars);
-
-extern bool TypeCompatible( CBotTypResult& type1, CBotTypResult& type2, int op = 0 );
-extern bool TypesCompatibles( const CBotTypResult& type1, const CBotTypResult& type2 );
-
 extern bool WriteWord(FILE* pf, unsigned short w);
 extern bool ReadWord(FILE* pf, unsigned short& w);
 extern bool ReadLong(FILE* pf, long& w);

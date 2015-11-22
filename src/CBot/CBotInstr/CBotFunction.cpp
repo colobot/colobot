@@ -21,6 +21,8 @@
 // Modules inlcude
 #include "CBotFunction.h"
 
+#include "CBotInstr/CBotInstrUtils.h"
+
 #include "CBot.h"
 
 #include "CBotInstr/CBotBlock.h"
