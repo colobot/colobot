@@ -29,11 +29,6 @@
 #include "CBotToken.h"                  // token management
 #include "CBotProgram.h"
 
-#define    STACKMEM    1                /// \def preserve memory for the execution stack
-#define    MAXSTACK    990              /// \def stack size reserved
-
-#define    EOX         (reinterpret_cast<CBotStack*>(-1))   /// \def tag special condition
-
 
 /////////////////////////////////////////////////////////////////////
 // forward declaration
