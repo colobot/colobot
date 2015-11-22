@@ -1,5 +1,4 @@
 set(SOURCES
-    CBot.cpp
     CBotUtils.cpp
     CBotFileUtils.cpp
     CBotClass.cpp
