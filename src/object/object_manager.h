@@ -194,6 +194,49 @@ public:
 
     //! Finds an object, like radar() in CBot
     //@{
+    std::vector<CObject*> RadarAll(CObject* pThis,
+                    ObjectType type = OBJECT_NULL,
+                    float angle = 0.0f,
+                    float focus = Math::PI*2.0f,
+                    float minDist = 0.0f,
+                    float maxDist = 1000.0f,
+                    bool furthest = false,
+                    RadarFilter filter = FILTER_NONE,
+                    bool cbotTypes = false);
+    std::vector<CObject*> RadarAll(CObject* pThis,
+                    std::vector<ObjectType> type = std::vector<ObjectType>(),
+                    float angle = 0.0f,
+                    float focus = Math::PI*2.0f,
+                    float minDist = 0.0f,
+                    float maxDist = 1000.0f,
+                    bool furthest = false,
+                    RadarFilter filter = FILTER_NONE,
+                    bool cbotTypes = false);
+    std::vector<CObject*> RadarAll(CObject* pThis,
+                       Math::Vector thisPosition,
+                       float thisAngle,
+                       ObjectType type = OBJECT_NULL,
+                       float angle = 0.0f,
+                       float focus = Math::PI*2.0f,
+                       float minDist = 0.0f,
+                       float maxDist = 1000.0f,
+                       bool furthest = false,
+                       RadarFilter filter = FILTER_NONE,
+                       bool cbotTypes = false);
+    std::vector<CObject*> RadarAll(CObject* pThis,
+                    Math::Vector thisPosition,
+                    float thisAngle,
+                    std::vector<ObjectType> type = std::vector<ObjectType>(),
+                    float angle = 0.0f,
+                    float focus = Math::PI*2.0f,
+                    float minDist = 0.0f,
+                    float maxDist = 1000.0f,
+                    bool furthest = false,
+                    RadarFilter filter = FILTER_NONE,
+                    bool cbotTypes = false);
+    //@}
+    //! Finds an object, like radar() in CBot
+    //@{
     CObject*  Radar(CObject* pThis,
                     ObjectType type = OBJECT_NULL,
                     float angle = 0.0f,
