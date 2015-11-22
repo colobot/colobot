@@ -1,5 +1,7 @@
 set(SOURCES
     CBot.cpp
+    CBotUtils.cpp
+    CBotFileUtils.cpp
     CBotClass.cpp
     CBotProgram.cpp
     CBotStack.cpp
@@ -7,7 +9,6 @@ set(SOURCES
     CBotString.cpp
     CBotToken.cpp
     CBotCall.cpp
-    CBotUtils.cpp
     CBotDefParam.cpp
     CBotCallMethode.cpp
     CBotStringArray.cpp

@@ -44,6 +44,7 @@
 
 #include "CBot/CBotToken.h"
 #include "CBot/CBotVar/CBotVar.h"
+#include "CBot/CBotFileUtils.h"
 
 
 const int CBOT_IPF = 100;       // CBOT: default number of instructions / frame

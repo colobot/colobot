@@ -147,13 +147,6 @@ class CBotCStack;       // stack
 // for example exceptions returned by external routines
 // and " throw " with any number.
 
-///////////////////////////////////////////////////////////////////////////////
-// routines for file management  (* FILE)
-    FILE*        fOpen(const char* name, const char* mode);
-    int            fClose(FILE* filehandle);
-    size_t        fWrite(const void *buffer, size_t elemsize, size_t length, FILE* filehandle);
-    size_t        fRead(void *buffer, size_t elemsize, size_t length, FILE* filehandle);
-
 
 #if 0
 /*
