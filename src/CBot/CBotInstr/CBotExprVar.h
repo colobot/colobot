@@ -20,8 +20,6 @@
 #pragma once
 
 // Modules inlcude
-#include "CBot.h"
-
 #include "CBotDefines.h"
 
 #include "CBotInstr.h"

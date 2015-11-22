@@ -18,7 +18,6 @@
  */
 
 // Modules inlcude
-#include "CBot.h"
 #include "CBotCatch.h"
 
 #include "CBotInstr.h"

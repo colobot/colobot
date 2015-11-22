@@ -20,12 +20,16 @@
 #pragma once
 
 // Modules inlcude
-#include "CBot.h"
+#include "CBotTypResult.h"
+#include "CBotString.h"
 
 // Local include
 
 // Global include
-
+class CBotVar;
+class CBotCStack;
+class CBotStack;
+class CBotToken;
 
 /*!
  * \brief The CBotCallMethode class Class managing the methods declared by

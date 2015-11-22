@@ -20,17 +20,21 @@
 #pragma once
 
 // Modules inlcude
-#include "CBot.h"
-
 #include "CBotDefines.h"
+#include "CBotTypResult.h"
+#include "CBotString.h"
 
 // Local include
 
 // Global include
+#include <cstdio>
 
 // Forward declaration
 class CBotInstr;
 class CBotCall;
+class CBotVar;
+class CBotProgram;
+class CBotToken;
 
 /*!
  * \class CBotStack
@@ -122,8 +126,9 @@ public:
      * \param [in] bModif Not used. Probably need to be removed
      * \return Found variable
      */
-    CBotVar* FindVar(CBotToken* &pToken, bool bUpdate = false,
-                                           bool bModif  = false);
+    CBotVar* FindVar(CBotToken* &pToken,
+                     bool bUpdate = false,
+                     bool bModif  = false);
 
     /**
      * \brief Fetch a variable by its token.
@@ -133,8 +138,9 @@ public:
      * \param [in] bModif Not used. Probably need to be removed
      * \return Found variable
      */
-    CBotVar* FindVar(CBotToken& pToken, bool bUpdate = false,
-                                              bool bModif  = false);
+    CBotVar* FindVar(CBotToken& pToken,
+                     bool bUpdate = false,
+                     bool bModif  = false);
 
     /**
      * \brief Fetch variable by its name

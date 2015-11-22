@@ -17,34 +17,8 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-////////////////////////////////////////////////////////////////////
-/**
- * \file CBot.h
- * \brief Interpreter of the language CBot for COLOBOT game
- */
+// Modules inlcude
 
-#pragma once
+// Local include
 
-#include "resource.h"
-#include "CBotToken.h"                  // token management
-#include "CBotProgram.h"
-
-
-/////////////////////////////////////////////////////////////////////
-// forward declaration
-
-class CBotParExpr;  // basic type or instruction in parenthesis
-                    // Toto.truc
-                    // 12.5
-                    // "string"
-                    // ( expression )
-class CBotExprVar;  // a variable name as
-                    // Toto
-                    // chose.truc.machin
-class CBotWhile;    // while (...) {...};
-class CBotIf;       // if (...) {...} else {...}
-class CBotDefParam; // paramerer list of a function
-
-#if 0
-extern void DEBUG( const char* text, int val, CBotStack* pile );
-#endif
+// Global include

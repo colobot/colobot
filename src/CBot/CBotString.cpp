@@ -19,10 +19,9 @@
 
 /////////////////////////////////////////////////////
 
+#include "CBotString.h"
+
 //strings management
-
-#include "CBot.h"
-
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>

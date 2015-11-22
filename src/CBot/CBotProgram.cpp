@@ -18,8 +18,6 @@
  */
 
 // Modules inlcude
-#include "CBot.h"
-
 #include "CBotVar/CBotVar.h"
 
 #include "CBotCall.h"

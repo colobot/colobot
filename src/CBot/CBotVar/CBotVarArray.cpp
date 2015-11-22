@@ -20,8 +20,10 @@
 // Modules inlcude
 #include "CBotVarArray.h"
 #include "CBotVarClass.h"
-
+#include "CBotToken.h"
 #include "CBotFileUtils.h"
+
+#include "CBotEnums.h"
 
 // Local include
 

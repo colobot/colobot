@@ -20,8 +20,6 @@
 // Modules inlcude
 #include "CBotDefParam.h"
 
-#include "CBot.h"
-
 #include "CBotUtils.h"
 #include "CBotCStack.h"
 

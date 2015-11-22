@@ -23,8 +23,6 @@
 
 #include "CBotInstr/CBotInstrUtils.h"
 
-#include "CBot.h"
-
 #include "CBotInstr/CBotBlock.h"
 #include "CBotInstr/CBotTwoOpExpr.h"
 #include "CBotInstr/CBotExpression.h"

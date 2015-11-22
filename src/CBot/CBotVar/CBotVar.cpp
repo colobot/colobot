@@ -33,6 +33,8 @@
 
 #include "CBotClass.h"
 
+#include "CBotEnums.h"
+
 // Local include
 
 // Global include

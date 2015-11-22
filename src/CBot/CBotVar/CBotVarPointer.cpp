@@ -20,11 +20,12 @@
 // Modules inlcude
 #include "CBotVarPointer.h"
 #include "CBotToken.h"
-#include "CBot.h"
 #include "CBotClass.h"
 #include "CBotVarClass.h"
 
 #include "CBotFileUtils.h"
+
+#include "CBotEnums.h"
 
 // Local include
 
