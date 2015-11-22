@@ -124,7 +124,7 @@ bool ReadString(FILE* pf, CBotString& s)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool WriteType(FILE* pf, CBotTypResult type)
+bool WriteType(FILE* pf, const CBotTypResult &type)
 {
     int typ = type.GetType();
     if ( typ == CBotTypIntrinsic ) typ = CBotTypClass;
@@ -144,7 +144,7 @@ bool WriteType(FILE* pf, CBotTypResult type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ReadType(FILE* pf, CBotTypResult& type)
+bool ReadType(FILE* pf, CBotTypResult &type)
 {
     unsigned short  w, ww;
     if ( !ReadWord(pf, w) ) return false;

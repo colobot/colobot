@@ -20,7 +20,6 @@
 #pragma once
 
 // Modules inlcude
-#include "CBotTypResult.h"
 
 // Local include
 
@@ -30,6 +29,7 @@
 // Forward declaration
 class CBotVar;
 class CBotString;
+class CBotTypResult;
 
 ///////////////////////////////////////////////////////////////////////////////
 // routines for file management  (* FILE)
@@ -145,7 +145,7 @@ bool ReadString(FILE* pf, CBotString& s);
  * \param type
  * \return
  */
-bool WriteType(FILE* pf, CBotTypResult type);
+bool WriteType(FILE* pf, const CBotTypResult &type);
 
 /*!
  * \brief ReadType
@@ -153,4 +153,4 @@ bool WriteType(FILE* pf, CBotTypResult type);
  * \param type
  * \return
  */
-bool ReadType(FILE* pf, CBotTypResult& type);
+bool ReadType(FILE* pf, CBotTypResult &type);
