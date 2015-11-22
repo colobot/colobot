@@ -40,7 +40,7 @@
 
 #include "ui/controls/edit.h"
 
-#include "CBot/CBotFileUtils.h"
+#include "CBot/CBot.h"
 
 #include <algorithm>
 #include <iomanip>

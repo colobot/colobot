@@ -19,9 +19,7 @@
 
 #include "script/scriptfunc.h"
 
-// TODO must be replaced by CBot.h
-#include "CBot/CBotClass.h"
-#include "CBot/CBotVar/CBotVar.h"
+#include "CBot/CBot.h"
 
 #include "app/app.h"
 

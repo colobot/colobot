@@ -24,8 +24,7 @@
 
 #pragma once
 
-// TODO replace by CBot.h
-#include "CBot/CBotProgram.h"
+#include "CBot/CBot.h"
 
 #include <memory>
 #include <string>
