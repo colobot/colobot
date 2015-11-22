@@ -33,6 +33,8 @@
 // Global include
 #include <cassert>
 
+#define    MAX(a,b)    ((a>b) ? a : b)
+
 ////////////////////////////////////////////////////////////////////////////////
 CBotTwoOpExpr::CBotTwoOpExpr()
 {

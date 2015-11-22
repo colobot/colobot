@@ -54,8 +54,6 @@ class CBotDefParam; // paramerer list of a function
 
 extern bool SaveVar(FILE* pf, CBotVar* pVar);
 
-#define    MAX(a,b)    ((a>b) ? a : b)
-
 extern CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars);
 
 extern bool TypeCompatible( CBotTypResult& type1, CBotTypResult& type2, int op = 0 );
