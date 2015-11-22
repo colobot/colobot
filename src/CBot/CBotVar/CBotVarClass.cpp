@@ -24,6 +24,8 @@
 #include "CBotStack.h"
 #include "CBotDefines.h"
 
+#include "CBotFileUtils.h"
+
 #include "CBotInstr/CBotInstr.h"
 
 // Local include

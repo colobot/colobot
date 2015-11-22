@@ -32,6 +32,7 @@
 #include "CBotStack.h"
 #include "CBotCStack.h"
 #include "CBotUtils.h"
+#include "CBotFileUtils.h"
 #include "CBotCallMethode.h"
 
 #include "CBotVar/CBotVar.h"

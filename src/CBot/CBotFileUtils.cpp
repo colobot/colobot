@@ -20,6 +20,11 @@
 // Modules inlcude
 #include "CBotFileUtils.h"
 
+#include "CBotString.h"
+#include "CBotClass.h"
+
+#include "CBotEnums.h"
+
 // Local include
 
 // Global include
@@ -59,4 +64,112 @@ std::size_t fRead(void *buffer,
                   FILE* filehandle)
 {
     return fread(buffer, elemsize, length, filehandle);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+bool ReadWord(FILE* pf, unsigned short& w)
+{
+    size_t  lg;
+
+    lg = fread(&w, sizeof( unsigned short ), 1, pf );
+
+    return (lg == 1);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ReadFloat(FILE* pf, float& w)
+{
+    size_t  lg;
+
+    lg = fread(&w, sizeof( float ), 1, pf );
+
+    return (lg == 1);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool WriteLong(FILE* pf, long w)
+{
+    size_t  lg;
+
+    lg = fwrite(&w, sizeof( long ), 1, pf );
+
+    return (lg == 1);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ReadLong(FILE* pf, long& w)
+{
+    size_t  lg;
+
+    lg = fread(&w, sizeof( long ), 1, pf );
+
+    return (lg == 1);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ReadString(FILE* pf, CBotString& s)
+{
+    unsigned short  w;
+    char    buf[1000];
+    size_t  lg1, lg2;
+
+    if (!ReadWord(pf, w)) return false;
+    lg1 = w;
+    lg2 = fread(buf, 1, lg1, pf );
+    buf[lg2] = 0;
+
+    s = buf;
+    return (lg1 == lg2);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool WriteType(FILE* pf, CBotTypResult type)
+{
+    int typ = type.GetType();
+    if ( typ == CBotTypIntrinsic ) typ = CBotTypClass;
+    if ( !WriteWord(pf, typ) ) return false;
+    if ( typ == CBotTypClass )
+    {
+        CBotClass* p = type.GetClass();
+        if ( !WriteString(pf, p->GetName()) ) return false;
+    }
+    if ( type.Eq( CBotTypArrayBody ) ||
+         type.Eq( CBotTypArrayPointer ) )
+    {
+        if ( !WriteWord(pf, type.GetLimite()) ) return false;
+        if ( !WriteType(pf, type.GetTypElem()) ) return false;
+    }
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ReadType(FILE* pf, CBotTypResult& type)
+{
+    unsigned short  w, ww;
+    if ( !ReadWord(pf, w) ) return false;
+    type.SetType(w);
+
+    if ( type.Eq( CBotTypIntrinsic ) )
+    {
+        type = CBotTypResult( w, "point" );
+    }
+
+    if ( type.Eq( CBotTypClass ) )
+    {
+        CBotString  s;
+        if ( !ReadString(pf, s) ) return false;
+        type = CBotTypResult( w, s );
+    }
+
+    if ( type.Eq( CBotTypArrayPointer ) ||
+         type.Eq( CBotTypArrayBody ) )
+    {
+        CBotTypResult   r;
+        if ( !ReadWord(pf, ww) ) return false;
+        if ( !ReadType(pf, r) ) return false;
+        type = CBotTypResult( w, r );
+        type.SetLimite(static_cast<short>(ww));
+    }
+    return true;
 }

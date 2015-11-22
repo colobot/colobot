@@ -50,21 +50,6 @@ class CBotWhile;    // while (...) {...};
 class CBotIf;       // if (...) {...} else {...}
 class CBotDefParam; // paramerer list of a function
 
-
-extern bool SaveVar(FILE* pf, CBotVar* pVar);
-
-extern bool WriteWord(FILE* pf, unsigned short w);
-extern bool ReadWord(FILE* pf, unsigned short& w);
-extern bool ReadLong(FILE* pf, long& w);
-extern bool WriteFloat(FILE* pf, float w);
-extern bool WriteLong(FILE* pf, long w);
-extern bool ReadFloat(FILE* pf, float& w);
-extern bool ReadString(FILE* pf, CBotString& s);
-extern bool WriteType(FILE* pf, CBotTypResult type);
-extern bool ReadType(FILE* pf, CBotTypResult& type);
-
-extern float GetNumFloat( const char* p );
-
 #if 0
 extern void DEBUG( const char* text, int val, CBotStack* pile );
 #endif

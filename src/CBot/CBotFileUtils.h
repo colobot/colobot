@@ -20,11 +20,16 @@
 #pragma once
 
 // Modules inlcude
+#include "CBotTypResult.h"
 
 // Local include
 
 // Global include
  #include <cstdio>
+
+// Forward declaration
+class CBotVar;
+class CBotString;
 
 ///////////////////////////////////////////////////////////////////////////////
 // routines for file management  (* FILE)
@@ -69,3 +74,83 @@ std::size_t fRead(void *buffer,
                   std::size_t elemsize,
                   std::size_t length,
                   FILE* filehandle);
+
+/*!
+ * \brief SaveVar
+ * \param pf
+ * \param pVar
+ * \return
+ */
+bool SaveVar(FILE* pf, CBotVar* pVar);
+
+/*!
+ * \brief WriteWord
+ * \param pf
+ * \param w
+ * \return
+ */
+bool WriteWord(FILE* pf, unsigned short w);
+
+/*!
+ * \brief ReadWord
+ * \param pf
+ * \param w
+ * \return
+ */
+bool ReadWord(FILE* pf, unsigned short& w);
+
+/*!
+ * \brief ReadLong
+ * \param pf
+ * \param w
+ * \return
+ */
+bool ReadLong(FILE* pf, long& w);
+
+/*!
+ * \brief WriteFloat
+ * \param pf
+ * \param w
+ * \return
+ */
+bool WriteFloat(FILE* pf, float w);
+
+/*!
+ * \brief WriteLong
+ * \param pf
+ * \param w
+ * \return
+ */
+bool WriteLong(FILE* pf, long w);
+
+/*!
+ * \brief ReadFloat
+ * \param pf
+ * \param w
+ * \return
+ */
+bool ReadFloat(FILE* pf, float& w);
+
+/*!
+ * \brief ReadString
+ * \param pf
+ * \param s
+ * \return
+ */
+bool ReadString(FILE* pf, CBotString& s);
+
+/*!
+ * \brief WriteType
+ * \param pf
+ * \param type
+ * \return
+ */
+bool WriteType(FILE* pf, CBotTypResult type);
+
+/*!
+ * \brief ReadType
+ * \param pf
+ * \param type
+ * \return
+ */
+bool ReadType(FILE* pf, CBotTypResult& type);
