@@ -18,7 +18,6 @@
  */
 
 // Modules inlcude
-#include "CBot/resource.h"
 #include "CBot/CBotFileUtils.h"
 #include "CBot/CBotClass.h"
 #include "CBot/CBotToken.h"

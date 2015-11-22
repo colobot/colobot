@@ -28,8 +28,6 @@
 
 #include "CBotVar/CBotVar.h"
 
-#include "resource.h"
-
 // Local include
 
 // Global include
