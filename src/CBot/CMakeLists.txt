@@ -13,6 +13,7 @@ set(SOURCES
     CBotCallMethode.cpp
     CBotStringArray.cpp
     CBotTypResult.cpp
+    StringFunctions.cpp
     CBotInstr/CBotInstr.cpp
     CBotInstr/CBotInstrUtils.cpp
     CBotInstr/CBotWhile.cpp

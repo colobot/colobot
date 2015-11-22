@@ -116,3 +116,18 @@ void ConstructElements(CBotString* pNewData, int nCount);
  * \param nCount
  */
 void DestructElements(CBotString* pOldData, int nCount);
+
+/*!
+ * \brief GetNumInt Converts a string into integer may be of the form 0xabc123.
+ * \param p
+ * \return
+ */
+long GetNumInt(const char* p);
+
+/*!
+ * \brief GetNumFloat Converts a string into a float number.
+ * \param p
+ * \return
+ */
+float GetNumFloat(const char* p);
+

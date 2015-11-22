@@ -20,6 +20,8 @@
 // Modules inlcude
 #include "CBot.h"
 
+#include "CBotVar/CBotVar.h"
+
 #include "CBotCall.h"
 #include "CBotStack.h"
 #include "CBotCStack.h"
@@ -28,7 +30,7 @@
 
 #include "CBotInstr/CBotFunction.h"
 
-#include "StringFunctions.cpp"
+#include "StringFunctions.h"
 
 // Local include
 

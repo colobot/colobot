@@ -178,3 +178,97 @@ void DestructElements(CBotString* pOldData, int nCount)
         pOldData++;
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+long GetNumInt(const char* p)
+{
+    long    num = 0;
+    while (*p >= '0' && *p <= '9')
+    {
+        num = num * 10 + *p - '0';
+        p++;
+    }
+    if (*p == 'x' || *p == 'X')
+    {
+        while (*++p != 0)
+        {
+            if (*p >= '0' && *p <= '9')
+            {
+                num = num * 16 + *p - '0';
+                continue;
+            }
+            if (*p >= 'A' && *p <= 'F')
+            {
+                num = num * 16 + *p - 'A' + 10;
+                continue;
+            }
+            if (*p >= 'a' && *p <= 'f')
+            {
+                num = num * 16 + *p - 'a' + 10;
+                continue;
+            }
+            break;
+        }
+    }
+    return num;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float GetNumFloat(const char* p)
+{
+    double    num = 0;
+    double    div    = 10;
+    bool    bNeg = false;
+
+    if (*p == '-')
+    {
+        bNeg = true;
+        p++;
+    }
+    while (*p >= '0' && *p <= '9')
+    {
+        num = num * 10. + (*p - '0');
+        p++;
+    }
+
+    if (*p == '.')
+    {
+        p++;
+        while (*p >= '0' && *p <= '9')
+        {
+            num = num + (*p - '0') / div;
+            div = div * 10;
+            p++;
+        }
+    }
+
+    int    exp = 0;
+    if (*p == 'e' || *p == 'E')
+    {
+        char neg = 0;
+        p++;
+        if (*p == '-' || *p == '+') neg = *p++;
+
+        while (*p >= '0' && *p <= '9')
+        {
+            exp = exp * 10 + (*p - '0');
+            p++;
+        }
+        if (neg == '-') exp = -exp;
+    }
+
+    while (exp > 0)
+    {
+        num *= 10.0;
+        exp--;
+    }
+
+    while (exp < 0)
+    {
+        num /= 10.0;
+        exp++;
+    }
+
+    if (bNeg) num = -num;
+    return static_cast<float>(num);
+}
