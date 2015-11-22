@@ -1,4 +1,7 @@
 set(SOURCES
+    CBot.h
+    CBotEnums.h
+    CBotDefines.h
     CBotUtils.cpp
     CBotFileUtils.cpp
     CBotClass.cpp
