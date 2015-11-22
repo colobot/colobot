@@ -27,11 +27,90 @@
 
 // Global include
 
-#define    MAXARRAYSIZE    9999
 
+#define    MAXARRAYSIZE    9999
 
 // variable type SetPrivate / IsPrivate
 #define PR_PUBLIC    0        // public variable
 #define PR_READ      1        // read only
 #define PR_PROTECT   2        // protected (inheritance)
 #define PR_PRIVATE   3        // strictly private
+
+//! Define the current CBot version
+#define    CBOTVERSION    104
+
+// for SetUserPtr when deleting an object
+// \TODO define own types to distinct between different states of objects
+#define OBJECTDELETED (reinterpret_cast<void*>(-1))
+// value set before initialization
+#define OBJECTCREATED (reinterpret_cast<void*>(-2))
+
+
+////////////////////////////////////////////////////////////////////////
+// Error Handling of compilation and execution
+////////////////////////////////////////////////////////////////////////
+
+// Here are the list of errors that can be returned by the module
+// for compilation
+
+#define CBotErrOpenPar       5000    // missing the opening parenthesis
+#define CBotErrClosePar      5001    // missing the closing parenthesis
+#define CBotErrNotBoolean    5002    // expression must be a boolean
+#define CBotErrUndefVar      5003    // undeclared variable
+#define CBotErrBadLeft       5004    // assignment impossible ( 5 = ... )
+#define CBotErrNoTerminator  5005    // semicolon expected
+#define CBotErrCaseOut       5006    // case outside a switch
+#define CBotErrCloseBlock    5008    // missing " } "
+#define CBotErrElseWhitoutIf 5009    // else without matching if
+#define CBotErrOpenBlock     5010    // missing " { "
+#define CBotErrBadType1      5011    // wrong type for the assignment
+#define CBotErrRedefVar      5012    // redefinition of the variable
+#define CBotErrBadType2      5013    // Two operands are incompatible
+#define CBotErrUndefCall     5014    // routine undefined
+#define CBotErrNoDoubleDots  5015    // " : " expected
+#define CBotErrBreakOutside  5017    // break outside of a loop
+#define CBotErrUndefLabel    5019    // label udnefined
+#define CBotErrLabel         5018    // label ne peut se mettre ici (label can not get here)
+#define CBotErrNoCase        5020    // missing " case "
+#define CBotErrBadNum        5021    // expected number
+#define CBotErrVoid          5022    // " void " not possible here
+#define CBotErrNoType        5023    // type declaration expected
+#define CBotErrNoVar         5024    // variable name expected
+#define CBotErrNoFunc        5025    // expected function name
+#define CBotErrOverParam     5026    // too many parameters
+#define CBotErrRedefFunc     5027    // this function already exists
+#define CBotErrLowParam      5028    // not enough parameters
+#define CBotErrBadParam      5029    // wrong types of parameters
+#define CBotErrNbParam       5030    // wrong number of parameters
+#define CBotErrUndefItem     5031    // element does not exist in the class
+#define CBotErrUndefClass    5032    // variable is not a class
+#define CBotErrNoConstruct   5033    // no appropriate constructor
+#define CBotErrRedefClass    5034    // class already exists
+#define CBotErrCloseIndex    5035    // " ] " expected
+#define CBotErrReserved      5036    // reserved word (for a DefineNum)
+#define CBotErrBadNew        5037    // wrong setting for new
+#define CBotErrOpenIndex     5038    // " [ " expected
+#define CBotErrBadString     5039    // expected string
+#define CBotErrBadIndex      5040    // wrong index type "[ false ]"
+#define CBotErrPrivate       5041    // protected item
+#define CBotErrNoPublic      5042    // missing word "public"
+
+// here is the list of errors that can be returned by the module
+// for the execution
+
+#define CBotErrZeroDiv       6000    // division by zero
+#define CBotErrNotInit       6001    // uninitialized variable
+#define CBotErrBadThrow      6002    // throw a negative value
+#define CBotErrNoRetVal      6003    // function did not return results
+#define CBotErrNoRun         6004    // Run() without active function
+#define CBotErrUndefFunc     6005    // calling a function that no longer exists
+#define CBotErrNotClass      6006    // this class does not exist
+#define CBotErrNull          6007    // null pointer
+#define CBotErrNan           6008    // calculation with a NAN
+#define CBotErrOutArray      6009    // index out of array
+#define CBotErrStackOver     6010    // stack overflow
+#define CBotErrDeletedPtr    6011    // pointer to an object destroyed
+#define CBotErrFileOpen      6012    // cannot open the file
+#define CBotErrNotOpen       6013    // channel not open
+#define CBotErrRead          6014    // error while reading
+#define CBotErrWrite         6015    // writing error
