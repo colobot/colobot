@@ -19,14 +19,14 @@
 
 
 // Modules inlcude
-#include "CBotCStack.h"
+#include "CBot/CBotCStack.h"
 
-#include "CBotToken.h"
-#include "CBotCall.h"
+#include "CBot/CBotToken.h"
+#include "CBot/CBotCall.h"
 
-#include "CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVar.h"
 
-#include "CBotInstr/CBotFunction.h"
+#include "CBot/CBotInstr/CBotFunction.h"
 
 // Local include
 

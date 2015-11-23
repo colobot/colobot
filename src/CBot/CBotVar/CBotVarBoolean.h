@@ -20,9 +20,9 @@
 #pragma once
 
 // Modules inlcude
-#include "CBotToken.h"
+#include "CBot/CBotToken.h"
 
-#include "CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVar.h"
 
 // Local include
 

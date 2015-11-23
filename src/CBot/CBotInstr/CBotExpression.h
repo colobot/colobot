@@ -20,9 +20,9 @@
 #pragma once
 
 // Modules inlcude
-#include "CBotLeftExpr.h"
+#include "CBot/CBotInstr/CBotLeftExpr.h"
 
-#include "CBotInstr.h"
+#include "CBot/CBotInstr/CBotInstr.h"
 
 // Local include
 

@@ -18,11 +18,11 @@
  */
 
 // Modules inlcude
-#include "CBotThrow.h"
-#include "CBotExpression.h"
+#include "CBot/CBotInstr/CBotThrow.h"
+#include "CBot/CBotInstr/CBotExpression.h"
 
-#include "CBotStack.h"
-#include "CBotCStack.h"
+#include "CBot/CBotStack.h"
+#include "CBot/CBotCStack.h"
 
 // Local include
 

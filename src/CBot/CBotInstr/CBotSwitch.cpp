@@ -20,13 +20,13 @@
  */
 
 // Modules inlcude
-#include "CBotSwitch.h"
-#include "CBotCase.h"
-#include "CBotBlock.h"
-#include "CBotExpression.h"
+#include "CBot/CBotInstr/CBotSwitch.h"
+#include "CBot/CBotInstr/CBotCase.h"
+#include "CBot/CBotInstr/CBotBlock.h"
+#include "CBot/CBotInstr/CBotExpression.h"
 
-#include "CBotStack.h"
-#include "CBotCStack.h"
+#include "CBot/CBotStack.h"
+#include "CBot/CBotCStack.h"
 
 // Local include
 

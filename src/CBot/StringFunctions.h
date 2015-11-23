@@ -20,7 +20,7 @@
 #pragma once
 
 // Modules inlcude
-#include "CBotTypResult.h"
+#include "CBot/CBotTypResult.h"
 
 // Local include
 

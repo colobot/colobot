@@ -18,12 +18,12 @@
  */
 
 // Modules inlcude
-#include "CBotIndexExpr.h"
+#include "CBot/CBotInstr/CBotIndexExpr.h"
 
-#include "CBotStack.h"
-#include "CBotCStack.h"
+#include "CBot/CBotStack.h"
+#include "CBot/CBotCStack.h"
 
-#include "CBotVar/CBotVarArray.h"
+#include "CBot/CBotVar/CBotVarArray.h"
 
 // Local include
 

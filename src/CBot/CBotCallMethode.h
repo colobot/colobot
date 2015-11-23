@@ -20,8 +20,8 @@
 #pragma once
 
 // Modules inlcude
-#include "CBotTypResult.h"
-#include "CBotString.h"
+#include "CBot/CBotTypResult.h"
+#include "CBot/CBotString.h"
 
 // Local include
 

@@ -20,11 +20,11 @@
 #pragma once
 
 // Modules inlcude
-#include "CBotDefines.h"
+#include "CBot/CBotDefines.h"
 
-#include "CBotTypResult.h"
+#include "CBot/CBotTypResult.h"
 
-#include "CBotString.h"
+#include "CBot/CBotString.h"
 
 // Local include
 

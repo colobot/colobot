@@ -18,29 +18,29 @@
  */
 
 // Modules inlcude
-#include "CBotInstr.h"
+#include "CBot/CBotInstr/CBotInstr.h"
 
-#include "CBotInstr/CBotFor.h"
-#include "CBotInstr/CBotDo.h"
-#include "CBotInstr/CBotBreak.h"
-#include "CBotInstr/CBotSwitch.h"
-#include "CBotInstr/CBotTry.h"
-#include "CBotInstr/CBotThrow.h"
-#include "CBotInstr/CBotInt.h"
-#include "CBotInstr/CBotFloat.h"
-#include "CBotInstr/CBotWhile.h"
-#include "CBotInstr/CBotIString.h"
-#include "CBotInstr/CBotBoolean.h"
-#include "CBotInstr/CBotIf.h"
-#include "CBotInstr/CBotReturn.h"
-#include "CBotInstr/CBotClassInst.h"
-#include "CBotInstr/CBotExpression.h"
-#include "CBotInstr/CBotInstArray.h"
+#include "CBot/CBotInstr/CBotFor.h"
+#include "CBot/CBotInstr/CBotDo.h"
+#include "CBot/CBotInstr/CBotBreak.h"
+#include "CBot/CBotInstr/CBotSwitch.h"
+#include "CBot/CBotInstr/CBotTry.h"
+#include "CBot/CBotInstr/CBotThrow.h"
+#include "CBot/CBotInstr/CBotInt.h"
+#include "CBot/CBotInstr/CBotFloat.h"
+#include "CBot/CBotInstr/CBotWhile.h"
+#include "CBot/CBotInstr/CBotIString.h"
+#include "CBot/CBotInstr/CBotBoolean.h"
+#include "CBot/CBotInstr/CBotIf.h"
+#include "CBot/CBotInstr/CBotReturn.h"
+#include "CBot/CBotInstr/CBotClassInst.h"
+#include "CBot/CBotInstr/CBotExpression.h"
+#include "CBot/CBotInstr/CBotInstArray.h"
 
-#include "CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVar.h"
 
-#include "CBotClass.h"
-#include "CBotStack.h"
+#include "CBot/CBotClass.h"
+#include "CBot/CBotStack.h"
 
 
 // Local include

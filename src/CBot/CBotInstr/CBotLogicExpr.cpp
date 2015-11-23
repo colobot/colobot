@@ -18,9 +18,9 @@
  */
 
 // Modules inlcude
-#include "CBotLogicExpr.h"
+#include "CBot/CBotInstr/CBotLogicExpr.h"
 
-#include "CBotStack.h"
+#include "CBot/CBotStack.h"
 
 // Local include
 

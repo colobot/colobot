@@ -18,12 +18,12 @@
  */
 
 // Modules inlcude
-#include "StringFunctions.h"
+#include "CBot/StringFunctions.h"
 
-#include "CBotProgram.h"
-#include "CBotEnums.h"
+#include "CBot/CBotProgram.h"
+#include "CBot/CBotEnums.h"
 
-#include "CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVar.h"
 
 
 // Local include

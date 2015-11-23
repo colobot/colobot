@@ -18,23 +18,23 @@
  */
 
 // Modules inlcude
-#include "CBotParExpr.h"
-#include "CBotExprUnaire.h"
-#include "CBotExprVar.h"
-#include "CBotInstrCall.h"
-#include "CBotPostIncExpr.h"
-#include "CBotPreIncExpr.h"
-#include "CBotExprNum.h"
-#include "CBotExprAlpha.h"
-#include "CBotExprBool.h"
-#include "CBotNew.h"
-#include "CBotExprNull.h"
-#include "CBotExprNan.h"
-#include "CBotExpression.h"
+#include "CBot/CBotInstr/CBotParExpr.h"
+#include "CBot/CBotInstr/CBotExprUnaire.h"
+#include "CBot/CBotInstr/CBotExprVar.h"
+#include "CBot/CBotInstr/CBotInstrCall.h"
+#include "CBot/CBotInstr/CBotPostIncExpr.h"
+#include "CBot/CBotInstr/CBotPreIncExpr.h"
+#include "CBot/CBotInstr/CBotExprNum.h"
+#include "CBot/CBotInstr/CBotExprAlpha.h"
+#include "CBot/CBotInstr/CBotExprBool.h"
+#include "CBot/CBotInstr/CBotNew.h"
+#include "CBot/CBotInstr/CBotExprNull.h"
+#include "CBot/CBotInstr/CBotExprNan.h"
+#include "CBot/CBotInstr/CBotExpression.h"
 
-#include "CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVar.h"
 
-#include "CBotCStack.h"
+#include "CBot/CBotCStack.h"
 
 // Local include
 

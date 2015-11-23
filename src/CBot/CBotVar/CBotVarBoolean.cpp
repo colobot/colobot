@@ -18,11 +18,11 @@
  */
 
 // Modules inlcude
-#include "CBotVarBoolean.h"
+#include "CBot/CBotVar/CBotVarBoolean.h"
 
-#include "CBotEnums.h"
+#include "CBot/CBotEnums.h"
 
-#include "CBotUtils.h"
+#include "CBot/CBotUtils.h"
 
 // Local include
 

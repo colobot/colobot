@@ -18,9 +18,9 @@
  */
 
 // Modules inlcude
-#include "CBotStringArray.h"
+#include "CBot/CBotStringArray.h"
 
-#include "CBotUtils.h"
+#include "CBot/CBotUtils.h"
 
 // Local include
 

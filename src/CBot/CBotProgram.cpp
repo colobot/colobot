@@ -18,16 +18,16 @@
  */
 
 // Modules inlcude
-#include "CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVar.h"
 
-#include "CBotCall.h"
-#include "CBotStack.h"
-#include "CBotCStack.h"
-#include "CBotClass.h"
-#include "CBotUtils.h"
-#include "CBotFileUtils.h"
+#include "CBot/CBotCall.h"
+#include "CBot/CBotStack.h"
+#include "CBot/CBotCStack.h"
+#include "CBot/CBotClass.h"
+#include "CBot/CBotUtils.h"
+#include "CBot/CBotFileUtils.h"
 
-#include "CBotInstr/CBotFunction.h"
+#include "CBot/CBotInstr/CBotFunction.h"
 
 #include "StringFunctions.h"
 

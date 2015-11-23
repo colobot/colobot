@@ -20,7 +20,7 @@
 #pragma once
 
 // Modules inlcude
-#include "CBotInstr.h"
+#include "CBot/CBotInstr/CBotInstr.h"
 
 // Local include
 

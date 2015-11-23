@@ -18,11 +18,11 @@
  */
 
 // Modules inlcude
-#include "CBotTypResult.h"
+#include "CBot/CBotTypResult.h"
 
-#include "CBotEnums.h"
+#include "CBot/CBotEnums.h"
 
-#include "CBotClass.h"
+#include "CBot/CBotClass.h"
 
 // Local include
 

@@ -19,21 +19,21 @@
 
 
 // Modules inlcude
-#include "CBotVar.h"
+#include "CBot/CBotVar/CBotVar.h"
 
-#include "CBotStack.h"
+#include "CBot/CBotStack.h"
 
-#include "CBotVar/CBotVarArray.h"
-#include "CBotVar/CBotVarPointer.h"
-#include "CBotVar/CBotVarClass.h"
-#include "CBotVar/CBotVarBoolean.h"
-#include "CBotVar/CBotVarString.h"
-#include "CBotVar/CBotVarFloat.h"
-#include "CBotVar/CBotVarInt.h"
+#include "CBot/CBotVar/CBotVarArray.h"
+#include "CBot/CBotVar/CBotVarPointer.h"
+#include "CBot/CBotVar/CBotVarClass.h"
+#include "CBot/CBotVar/CBotVarBoolean.h"
+#include "CBot/CBotVar/CBotVarString.h"
+#include "CBot/CBotVar/CBotVarFloat.h"
+#include "CBot/CBotVar/CBotVarInt.h"
 
-#include "CBotClass.h"
+#include "CBot/CBotClass.h"
 
-#include "CBotEnums.h"
+#include "CBot/CBotEnums.h"
 
 // Local include
 

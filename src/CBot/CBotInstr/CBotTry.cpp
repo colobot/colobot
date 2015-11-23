@@ -19,10 +19,10 @@
 
 // Modules inlcude
 #include "CBotTry.h"
-#include "CBotBlock.h"
+#include "CBot/CBotInstr/CBotBlock.h"
 
-#include "CBotStack.h"
-#include "CBotCStack.h"
+#include "CBot/CBotStack.h"
+#include "CBot/CBotCStack.h"
 
 // Local include
 

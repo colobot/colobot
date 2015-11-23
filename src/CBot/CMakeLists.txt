@@ -75,7 +75,7 @@ set(SOURCES
 
 # Includes
 set(LOCAL_INCLUDES
-    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
 include_directories(${LOCAL_INCLUDES})

@@ -18,7 +18,7 @@
  */
 
 // Modules inlcude
-#include "CBotToken.h"
+#include "CBot/CBotToken.h"
 
 // Local include
 

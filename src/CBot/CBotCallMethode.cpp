@@ -18,13 +18,13 @@
  */
 
 // Modules inlcude
-#include "CBotCallMethode.h"
+#include "CBot/CBotCallMethode.h"
 
-#include "CBotUtils.h"
-#include "CBotStack.h"
-#include "CBotCStack.h"
+#include "CBot/CBotUtils.h"
+#include "CBot/CBotStack.h"
+#include "CBot/CBotCStack.h"
 
-#include "CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVar.h"
 
 // Local include
 

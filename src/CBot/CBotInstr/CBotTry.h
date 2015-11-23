@@ -18,9 +18,9 @@
  */
 
 // Modules inlcude
-#include "CBotCatch.h"
+#include "CBot/CBotInstr/CBotCatch.h"
 
-#include "CBotInstr.h"
+#include "CBot/CBotInstr/CBotInstr.h"
 
 // Local include
 

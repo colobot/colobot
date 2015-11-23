@@ -19,7 +19,7 @@
 
 /////////////////////////////////////////////////////
 
-#include "CBotString.h"
+#include "CBot/CBotString.h"
 
 //strings management
 #include <cstdlib>
