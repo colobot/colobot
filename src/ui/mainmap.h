@@ -19,17 +19,22 @@
 
 #pragma once
 
-#include "common/event.h"
-
 #include "graphics/core/color.h"
 
 #include "math/point.h"
 
-#include "ui/controls/interface.h"
+class CObject;
+class CEventQueue;
 
+namespace Gfx
+{
+class CEngine;
+} // namespace Gfx
 
 namespace Ui
 {
+
+class CInterface;
 
 class CMainMap
 {
@@ -54,9 +59,6 @@ public:
     void        SetFixParam(float zoom, float ox, float oy, float angle, int mode, bool bDebug);
 
 protected:
-    void        CenterMap();
-
-protected:
     CEventQueue*    m_event;
     Gfx::CEngine*   m_engine;
     CInterface*     m_interface;
@@ -64,4 +66,4 @@ protected:
     bool            m_bFixImage;
 };
 
-}
+} // namespace Ui

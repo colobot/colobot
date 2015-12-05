@@ -280,16 +280,11 @@ bool CList::EventProcess(const Event &event)
     if (event.type == EVENT_MOUSE_WHEEL && Detect(event.mousePos))
     {
         auto data = event.GetData<MouseWheelEventData>();
-        if (data->dir == WHEEL_UP)
-        {
-            if (m_firstLine > 0)
-                m_firstLine--;
-        }
-        else
-        {
-            if (m_firstLine < m_totalLine - m_displayLine)
-                m_firstLine++;
-        }
+        m_firstLine -= data->y;
+        if (m_firstLine > m_totalLine - m_displayLine)
+            m_firstLine = m_totalLine - m_displayLine;
+        if (m_firstLine < 0)
+            m_firstLine = 0;
 
         UpdateScroll();
         UpdateButton();
@@ -704,12 +699,12 @@ bool CList::GetCheck(int i)
 
 // Specifies the bit "enable" for a box.
 
-void CList::SetEnable(int i, bool bMode)
+void CList::SetEnable(int i, bool enable)
 {
     if ( i < 0 || i >= m_totalLine )
         return;
 
-    m_items[i].enable = bMode;
+    m_items[i].enable = enable;
 }
 
 // Returns the bit "enable" for a box.
@@ -855,4 +850,3 @@ void CList::MoveScroll()
 
 
 } // namespace Ui
-

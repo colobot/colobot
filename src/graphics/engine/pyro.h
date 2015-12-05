@@ -25,7 +25,6 @@
 #pragma once
 
 
-#include "common/event.h"
 #include "common/error.h"
 
 #include "graphics/core/color.h"
@@ -41,6 +40,7 @@
 class CObject;
 class CRobotMain;
 class CSoundInterface;
+struct Event;
 
 
 // Graphics module namespace
@@ -51,7 +51,6 @@ class CEngine;
 class CTerrain;
 class CCamera;
 class CParticle;
-class CLight;
 class CLightManager;
 
 /**
@@ -94,7 +93,7 @@ protected:
     void        DeleteObject(bool primary, bool secondary);
 
     //! Creates an explosion with triangular form of particles
-    void        CreateTriangle(CObject* obj, ObjectType type, int part);
+    void        CreateTriangle(CObject* obj, ObjectType oType, int part);
 
     //! Starts the explosion of a vehicle
     void        ExploStart();

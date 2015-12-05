@@ -24,7 +24,6 @@
 
 #pragma once
 
-#include "graphics/core/material.h"
 #include "graphics/core/vertex.h"
 
 #include "math/const.h"
@@ -41,6 +40,7 @@ namespace Gfx
 
 class CEngine;
 class CWater;
+struct Material;
 
 
 //! Limit of slope considered a flat piece of land
@@ -157,7 +157,7 @@ public:
     //! Clears all terrain materials
     void        FlushMaterials();
     //! Adds a terrain material the names of textures to use for the land
-    void        AddMaterial(int id, const std::string& baseName, const Math::Point& uv,
+    void        AddMaterial(int id, const std::string& texName, const Math::Point& uv,
                             int up, int right, int down, int left, float hardness);
     //! Initializes all the ground with one material
     bool        InitMaterials(int id);

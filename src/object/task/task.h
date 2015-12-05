@@ -19,8 +19,6 @@
 
 #pragma once
 
-
-#include "common/event.h"
 #include "common/error.h"
 
 #include "math/const.h"
@@ -32,7 +30,7 @@ class COldObject;
 class CProgrammableObject;
 class CRobotMain;
 class CSoundInterface;
-
+struct Event;
 
 namespace Gfx
 {

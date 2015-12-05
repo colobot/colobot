@@ -21,17 +21,24 @@
 
 #include "common/event.h"
 
-#include "graphics/engine/engine.h"
-
 #include "math/point.h"
 
 #include "object/object_type.h"
 
-#include "ui/controls/interface.h"
+#include <vector>
+
+class CRobotMain;
+class CObject;
+
+namespace Gfx
+{
+class CEngine;
+} // namespace Gfx
 
 namespace Ui
 {
 
+class CInterface;
 
 class CMainShort
 {
@@ -60,4 +67,4 @@ protected:
     bool            m_bBuilding;
 };
 
-}
+} // namespace Ui

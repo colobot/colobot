@@ -26,6 +26,8 @@
 #include "common/logger.h"
 #include "common/make_unique.h"
 
+#include "graphics/core/light.h"
+
 #include "graphics/engine/engine.h"
 
 #include "graphics/opengl/glframebuffer.h"
@@ -164,7 +166,7 @@ bool CGL33Device::Create()
 {
     GetLogger()->Info("Creating CDevice - OpenGL 3.3\n");
 
-    /*static*/ bool glewInited = false;
+    static bool glewInited = false;
 
     if (!glewInited)
     {
@@ -421,8 +423,17 @@ void CGL33Device::ConfigChanged(const DeviceConfig& newConfig)
 
     // Reset state
     m_lighting = false;
-    Destroy();
-    Create();
+
+    glViewport(0, 0, m_config.size.x, m_config.size.y);
+
+    // create default framebuffer object
+    FramebufferParams framebufferParams;
+
+    framebufferParams.width = m_config.size.x;
+    framebufferParams.height = m_config.size.y;
+    framebufferParams.depth = m_config.depthSize;
+
+    m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
 }
 
 void CGL33Device::BeginScene()
@@ -745,8 +756,6 @@ Texture CGL33Device::CreateTexture(ImageData *data, const TextureCreateParams &p
         SDL_PixelFormat format;
         format.BytesPerPixel = 4;
         format.BitsPerPixel = 32;
-        format.alpha = 0;
-        format.colorkey = 0;
         format.Aloss = format.Bloss = format.Gloss = format.Rloss = 0;
         format.Amask = 0xFF000000;
         format.Ashift = 24;

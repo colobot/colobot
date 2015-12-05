@@ -29,7 +29,6 @@ class CPhysics;
 class CMotion;
 class CRobotMain;
 class CSoundInterface;
-class CLevelParserLine;
 struct Program;
 
 namespace Gfx
@@ -54,7 +53,7 @@ public:
     CObjectInterface(COldObject* object);
     ~CObjectInterface();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool all=false);
 
     bool        EventProcess(const Event &event);
     bool        CreateInterface(bool bSelect);
@@ -65,7 +64,7 @@ public:
 protected:
     bool        EventFrame(const Event &event);
 
-    void        StartEditScript(Program* program, char* name);
+    void        StartEditScript(Program* program, std::string name);
     void        StopEditScript(bool bCancel);
 
     void        GroundFlat();

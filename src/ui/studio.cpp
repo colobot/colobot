@@ -20,8 +20,6 @@
 
 #include "ui/studio.h"
 
-#include "CBot/CBotDll.h"
-
 #include "app/app.h"
 #include "app/pausemanager.h"
 
@@ -32,14 +30,15 @@
 
 #include "common/resources/resourcemanager.h"
 
-#include "level/robotmain.h"
-#include "level/player_profile.h"
-
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
 
+#include "level/player_profile.h"
+#include "level/robotmain.h"
+
 #include "object/object.h"
 
+#include "object/interface/program_storage_object.h"
 #include "object/interface/programmable_object.h"
 
 #include "script/cbottoken.h"
@@ -59,6 +58,7 @@
 #include "ui/controls/list.h"
 #include "ui/controls/map.h"
 #include "ui/controls/shortcut.h"
+#include "ui/controls/slider.h"
 #include "ui/controls/target.h"
 #include "ui/controls/window.h"
 
@@ -80,7 +80,7 @@ CStudio::CStudio()
     m_main      = CRobotMain::GetInstancePointer();
     m_interface = m_main->GetInterface();
     m_camera    = m_main->GetCamera();
-    m_pause     = m_engine->GetPauseManager();
+    m_pause     = m_main->GetPauseManager();
     m_settings  = CSettings::GetInstancePointer();
 
     m_program = nullptr;
@@ -354,17 +354,17 @@ bool CStudio::EventFrame(const Event &event)
 
     if (m_script->IsRunning() && (!m_script->GetStepMode() || m_script->IsContinue()))
     {
-        if (m_editorPause != nullptr)
+        if (m_runningPause != nullptr)
         {
-            m_pause->DeactivatePause(m_editorPause);
-            m_editorPause = nullptr;
+            m_pause->DeactivatePause(m_runningPause);
+            m_runningPause = nullptr;
         }
     }
     else
     {
-        if (m_editorPause == nullptr)
+        if (m_runningPause == nullptr)
         {
-            m_editorPause = m_pause->ActivatePause(PAUSE_EDITOR);
+            m_runningPause = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_MUTE_SOUND);
         }
     }
 
@@ -576,13 +576,14 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     m_main->SetSpeed(1.0f);
     m_editCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_EDIT);
+    m_editorPause = m_pause->ActivatePause(PAUSE_HIDE_SHORTCUTS, PAUSE_MUSIC_EDITOR);
 
     m_bRunning = m_script->IsRunning();
     m_bRealTime = m_bRunning;
     m_script->SetStepMode(!m_bRealTime);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
-    if (pw != nullptr) pw->ClearState(STATE_VISIBLE);
+    if (pw != nullptr) pw->ClearState(STATE_VISIBLE | STATE_ENABLE);
 
     pos = m_editFinalPos = m_editActualPos = m_settings->GetWindowPos();
     dim = m_editFinalDim = m_editActualDim = m_settings->GetWindowDim();
@@ -908,11 +909,12 @@ bool CStudio::StopEditScript(bool bCancel)
     m_interface->DeleteControl(EVENT_WINDOW3);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
-    if (pw != nullptr) pw->SetState(STATE_VISIBLE);
+    if (pw != nullptr) pw->SetState(STATE_VISIBLE | STATE_ENABLE);
 
     m_pause->DeactivatePause(m_editorPause);
     m_editorPause = nullptr;
-    m_sound->MuteAll(false);
+    m_pause->DeactivatePause(m_runningPause);
+    m_runningPause = nullptr;
     m_main->SetEditLock(false, true);
     m_camera->SetType(m_editCamera);
     return true;
@@ -982,22 +984,22 @@ void CStudio::UpdateFlux()
     {
         if ( m_bRealTime )  // run?
         {
-            m_pause->DeactivatePause(m_editorPause);
-            m_editorPause = nullptr;
+            m_pause->DeactivatePause(m_runningPause);
+            m_runningPause = nullptr;
         }
         else    // step by step?
         {
-            if (m_editorPause == nullptr)
+            if (m_runningPause == nullptr)
             {
-                m_editorPause = m_pause->ActivatePause(PAUSE_EDITOR);
+                m_runningPause = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_MUTE_SOUND);
             }
         }
     }
     else    // stop?
     {
-        if (m_editorPause == nullptr)
+        if (m_runningPause == nullptr)
         {
-            m_editorPause = m_pause->ActivatePause(PAUSE_EDITOR);
+            m_runningPause = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_MUTE_SOUND);
         }
     }
 }

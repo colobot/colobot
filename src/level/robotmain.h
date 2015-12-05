@@ -27,15 +27,16 @@
 #include "app/pausemanager.h"
 
 #include "common/error.h"
+#include "common/event.h"
 #include "common/singleton.h"
+
+#include "graphics/engine/camera.h"
+#include "graphics/engine/particle.h"
 
 #include "level/build_type.h"
 #include "level/level_category.h"
 #include "level/mainmovie.h"
 #include "level/research_type.h"
-
-#include "graphics/engine/camera.h"
-#include "graphics/engine/particle.h"
 
 #include "object/drive_type.h"
 #include "object/mission_type.h"
@@ -158,11 +159,13 @@ public:
     Gfx::CTerrain* GetTerrain();
     Ui::CInterface* GetInterface();
     Ui::CDisplayText* GetDisplayText();
+    CPauseManager* GetPauseManager();
 
     void        CreateConfigFile();
     void        LoadConfigFile();
 
-    void        ResetAfterDeviceChanged();
+    void        ResetAfterVideoConfigChanged();
+    void        ReloadAllTextures();
 
     void        ChangePhase(Phase phase);
     bool        ProcessEvent(Event &event);
@@ -180,12 +183,8 @@ public:
     bool        GetEditLock();
     void        SetEditFull(bool full);
     bool        GetEditFull();
-    bool        GetFreePhoto();
     void        SetFriendAim(bool friendAim);
     bool        GetFriendAim();
-
-    void        SetTracePrecision(float factor);
-    float       GetTracePrecision();
 
     void        SetSpeed(float speed);
     float       GetSpeed();
@@ -194,8 +193,8 @@ public:
     void        SelectHuman();
     CObject*    SearchHuman();
     CObject*    SearchToto();
-    CObject*    SearchNearest(Math::Vector pos, CObject* pExclu);
-    bool        SelectObject(CObject* pObj, bool displayError=true);
+    CObject*    SearchNearest(Math::Vector pos, CObject* exclu);
+    bool        SelectObject(CObject* obj, bool displayError=true);
     CObject*    GetSelectObject();
     CObject*    DeselectAll();
 
@@ -218,23 +217,16 @@ public:
     void        StartDisplayInfo(const std::string& filename, int index);
     void        StopDisplayInfo();
     char*       GetDisplayInfoName(int index);
-    int         GetDisplayInfoPosition(int index);
-    void        SetDisplayInfoPosition(int index, int pos);
 
     void        StartSuspend();
     void        StopSuspend();
 
     float       GetGameTime();
 
-    char*       GetTitle();
-    char*       GetResume();
-    char*       GetScriptName();
-    char*       GetScriptFile();
+    const std::string& GetScriptName();
+    const std::string& GetScriptFile();
     bool        GetTrainerPilot();
     bool        GetFixScene();
-    bool        GetInterfaceGlint();
-    bool        GetSoluce4();
-    bool        GetMovies();
     bool        GetShowSoluce();
     bool        GetSceneSoluce();
     bool        GetShowAll();
@@ -256,6 +248,7 @@ public:
 
     void        StartMusic();
     void        UpdatePause(PauseType pause);
+    void        UpdatePauseMusic(PauseMusic music);
     void        ClearInterface();
     void        ChangeColor();
 
@@ -266,15 +259,15 @@ public:
     void        HideDropZone(CObject* metal);
     void        ShowDropZone(CObject* metal, CObject* transporter);
     void        FlushShowLimit(int i);
-    void        SetShowLimit(int i, Gfx::ParticleType parti, CObject *pObj, Math::Vector pos,
+    void        SetShowLimit(int i, Gfx::ParticleType parti, CObject *obj, Math::Vector pos,
                              float radius, float duration=SHOWLIMITTIME);
     void        StartShowLimit();
     void        FrameShowLimit(float rTime);
 
     void        SaveAllScript();
-    void        SaveOneScript(CObject *pObj);
-    bool        SaveFileStack(CObject *pObj, FILE *file, int objRank);
-    bool        ReadFileStack(CObject *pObj, FILE *file, int objRank);
+    void        SaveOneScript(CObject *obj);
+    bool        SaveFileStack(CObject *obj, FILE *file, int objRank);
+    bool        ReadFileStack(CObject *obj, FILE *file, int objRank);
 
     void        FlushNewScriptName();
     void        AddNewScriptName(ObjectType type, const std::string& name);
@@ -372,7 +365,7 @@ public:
 
     void        StartDetectEffect(COldObject* object, CObject* target);
 
-    bool        IsSelectable(CObject* pObj);
+    bool        IsSelectable(CObject* obj);
 
 protected:
     bool        EventFrame(const Event &event);
@@ -386,7 +379,6 @@ protected:
 
     void        LevelLoadingError(const std::string& error, const std::runtime_error& exception, Phase exitPhase = PHASE_LEVEL_LIST);
 
-    Math::Vector LookatPoint(Math::Vector eye, float angleH, float angleV, float length);
     int         CreateLight(Math::Vector direction, Gfx::Color color);
     void        HiliteClear();
     void        HiliteObject(Math::Point pos);
@@ -398,12 +390,11 @@ protected:
     void        RemoteCamera(float pan, float zoom, float rTime);
     void        KeyCamera(EventType event, InputSlot key);
     void        AbortMovie();
-    void        SelectOneObject(CObject* pObj, bool displayError=true);
+    void        SelectOneObject(CObject* obj, bool displayError=true);
     void        HelpObject();
     bool        DeselectObject();
     void        DeleteAllObjects();
     void        UpdateInfoText();
-    CObject*    SearchObject(ObjectType type);
     void        StartDisplayVisit(EventType event);
     void        FrameVisit(float rTime);
     void        StopDisplayVisit();
@@ -434,10 +425,10 @@ protected:
     Gfx::COldModelManager* m_oldModelManager = nullptr;
     Gfx::CLightManager* m_lightMan = nullptr;
     CSoundInterface*    m_sound = nullptr;
-    CPauseManager*      m_pause = nullptr;
     CInput*             m_input = nullptr;
     std::unique_ptr<CObjectManager> m_objMan;
     std::unique_ptr<CMainMovie> m_movie;
+    std::unique_ptr<CPauseManager> m_pause;
     std::unique_ptr<Gfx::CModelManager> m_modelManager;
     std::unique_ptr<Gfx::CTerrain> m_terrain;
     std::unique_ptr<Gfx::CCamera> m_camera;
@@ -475,7 +466,6 @@ protected:
     ActivePause*    m_userPause = nullptr;
     int             m_cameraRank = 0;
     Gfx::Color      m_color;
-    bool            m_freePhoto = false;
     ActivePause*    m_freePhotoPause = nullptr;
     bool            m_cmdEdit = false;
     ActivePause*    m_cmdEditPause = nullptr;
@@ -519,15 +509,11 @@ protected:
 
     char            m_infoFilename[SATCOM_MAX][100] = {}; // names of text files
     CObject*        m_infoObject = nullptr;
-    int             m_infoIndex = 0;
-    int             m_infoPos[SATCOM_MAX] = {};
     int             m_infoUsed = 0;
     ActivePause*    m_satcomMoviePause = nullptr;
 
-    char            m_title[100] = {};
-    char            m_resume[500] = {};
-    char            m_scriptName[100] = {};
-    char            m_scriptFile[100] = {};
+    std::string     m_scriptName = "";
+    std::string     m_scriptFile = "";
     int             m_endingWinRank = 0;
     int             m_endingLostRank = 0;
     bool            m_winTerminate = false;

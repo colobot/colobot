@@ -19,10 +19,9 @@
 
 /////////////////////////////////////////////////////
 
+#include "CBot/CBotString.h"
+
 //strings management
-
-#include "CBot.h"
-
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
@@ -54,11 +53,9 @@ const std::map<EID,const char *> CBotString::s_keywordString =
     {ID_NEW,        "new"},
     {ID_PUBLIC,     "public"},
     {ID_EXTERN,     "extern"},
-    {ID_FINAL,      "final"},
     {ID_STATIC,     "static"},
     {ID_PROTECTED,  "protected"},
     {ID_PRIVATE,    "private"},
-    {ID_DEBUGDD,    "STARTDEBUGDD"},
     {ID_INT,        "int"},
     {ID_FLOAT,      "float"},
     {ID_BOOLEAN,    "boolean"},
@@ -117,7 +114,6 @@ const std::map<EID,const char *> CBotString::s_keywordString =
     {ID_MODULO,     "%"},
     {ID_POWER,      "**"},
     {ID_ASSMODULO,  "%="},
-    {ID_SUPER,      "super"},
     {TX_UNDEF,      "undefined"},
     {TX_NAN,        "not a number"}
 };
@@ -209,47 +205,28 @@ CBotString CBotString::Right(int nCount) const
     return CBotString(chain);
 }
 
-CBotString CBotString::Mid(int nFirst, int nCount) const
+CBotString CBotString::Mid(int start, int lg)
 {
-    char chain[2000];
+    CBotString res;
 
-    // clamps nFirst to correct value
-    if(nFirst < 0) nFirst = 0;
-    if(nFirst > m_lg) nFirst = m_lg;
+    if (lg == -1) lg = 2000;
 
-    // clamp nCount to correct value
-    int remaining = m_lg - nFirst;
-    if(nCount > remaining) nCount = remaining;
-    if(nCount < 0) nCount = 0;
+    // clamp start to correct value
+    if (start < 0) start = 0;
+    if (start >= m_lg) return res;
 
-    int i;
-    for (i = nFirst; i < m_lg && i < 1999 && i <= nFirst + nCount; ++i)
-    {
-        chain[i] = m_ptr[i];
-    }
-    chain[i] = 0 ;
+    int remaining = m_lg - start;
+    if (lg > remaining) lg = remaining;
+    if (lg < 0) lg = 0;
 
-    return CBotString(chain);
+    char* p = new char[m_lg+1];
+    strcpy(p, m_ptr+start);
+    p[lg] = 0;
+
+    res = p;
+    delete[] p;
+    return res;
 }
-
-CBotString CBotString::Mid(int nFirst) const
-{
-    char chain[2000];
-
-    // clamp nFirst to correct value
-    if(nFirst < 0) nFirst = 0;
-    if(nFirst > m_lg) nFirst = m_lg;
-
-    int i;
-    for (i = nFirst; i < m_lg && i < 1999 ; ++i)
-    {
-        chain[i] = m_ptr[i];
-    }
-    chain[i] = 0 ;
-
-    return CBotString(chain);
-}
-
 
 int CBotString::Find(const char c)
 {
@@ -301,29 +278,6 @@ int CBotString::ReverseFind(const char * lpsz)
 bad:;
     }
     return -1;
-}
-
-CBotString CBotString::Mid(int start, int lg)
-{
-    CBotString res;
-
-    if (lg == -1) lg = 2000;
-
-    // clamp start to correct value
-    if (start < 0) start = 0;
-    if (start >= m_lg) return res;
-
-    int remaining = m_lg - start;
-    if (lg > remaining) lg = remaining;
-    if (lg < 0) lg = 0;
-
-    char* p = new char[m_lg+1];
-    strcpy(p, m_ptr+start);
-    p[lg] = 0;
-
-    res = p;
-    delete[] p;
-    return res;
 }
 
 void CBotString::MakeUpper()
@@ -379,26 +333,11 @@ const CBotString& CBotString::operator=(const CBotString& stringSrc)
     return *this;
 }
 
-CBotString operator+(const CBotString& string, const char * lpsz)
+CBotString CBotString::operator+(const CBotString& stringSrc)
 {
-    CBotString s(string);
-    s += lpsz;
+    CBotString s(*this);
+    s += stringSrc;
     return s;
-}
-
-const CBotString& CBotString::operator+(const CBotString& stringSrc)
-{
-    char* p = new char[m_lg+stringSrc.m_lg+1];
-
-    if (m_ptr!=nullptr) strcpy(p, m_ptr);
-    char* pp = p + m_lg;
-    if (stringSrc.m_ptr!=nullptr) strcpy(pp, stringSrc.m_ptr);
-
-    delete[] m_ptr;
-    m_ptr = p;
-    m_lg += stringSrc.m_lg;
-
-    return *this;
 }
 
 const CBotString& CBotString::operator=(const char ch)
@@ -453,9 +392,19 @@ const CBotString& CBotString::operator+=(const CBotString& str)
 {
     char* p = new char[m_lg+str.m_lg+1];
 
-    strcpy(p, m_ptr);
+    //-- Check if the pointer is not null befor trying to copy it
+    if(m_ptr != nullptr)
+    {
+        strcpy(p, m_ptr);
+    }
+
     char* pp = p + m_lg;
-    strcpy(pp, str.m_ptr);
+
+    //-- Check if the pointer is not null befor trying to copy it
+    if(str.m_ptr != nullptr)
+    {
+        strcpy(pp, str.m_ptr);
+    }
 
     m_lg = m_lg + str.m_lg;
 
@@ -546,6 +495,14 @@ CBotString::operator const char * () const
     return m_ptr;
 }
 
+const char* CBotString::CStr() const
+{
+    if (this == nullptr || m_ptr == nullptr)
+    {
+        return emptyString;
+    }
+    return m_ptr;
+}
 
 int CBotString::Compare(const char * lpsz) const
 {
@@ -565,148 +522,4 @@ const char * CBotString::MapIdToString(EID id)
     {
         return emptyString;
     }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// arrays of strings
-
-CBotStringArray::CBotStringArray()
-{
-    m_pData = nullptr;
-    m_nSize = m_nMaxSize = 0;
-}
-
-CBotStringArray::~CBotStringArray()
-{
-    SetSize(0);                    // destroys data !
-}
-
-
-int CBotStringArray::GetSize()
-{
-    return m_nSize;
-}
-
-void CBotStringArray::Add(const CBotString& str)
-{
-    SetSize(m_nSize+1);
-
-    m_pData[m_nSize-1] = str;
-}
-
-///////////////////////////////////////////////////////////////////////
-// utility routines
-
-static inline void ConstructElement(CBotString* pNewData)
-{
-    memset(pNewData, 0, sizeof(CBotString));
-}
-
-static inline void DestructElement(CBotString* pOldData)
-{
-    pOldData->~CBotString();
-}
-
-static inline void CopyElement(CBotString* pSrc, CBotString* pDest)
-{
-    *pSrc = *pDest;
-}
-
-static void ConstructElements(CBotString* pNewData, int nCount)
-{
-    while (nCount--)
-    {
-        ConstructElement(pNewData);
-        pNewData++;
-    }
-}
-
-static void DestructElements(CBotString* pOldData, int nCount)
-{
-    while (nCount--)
-    {
-        DestructElement(pOldData);
-        pOldData++;
-    }
-}
-
-// set the array size
-
-void CBotStringArray::SetSize(int nNewSize)
-{
-    if (nNewSize == 0)
-    {
-        // shrink to nothing
-
-        DestructElements(m_pData, m_nSize);
-        delete[] reinterpret_cast<unsigned char *>(m_pData);
-        m_pData = nullptr;
-        m_nSize = m_nMaxSize = 0;
-    }
-    else if (m_pData == nullptr)
-    {
-        // create one with exact size
-        m_pData = reinterpret_cast<CBotString*> (new unsigned char[nNewSize * sizeof(CBotString)]);
-
-        ConstructElements(m_pData, nNewSize);
-
-        m_nSize = m_nMaxSize = nNewSize;
-    }
-    else if (nNewSize <= m_nMaxSize)
-    {
-        // it fits
-        if (nNewSize > m_nSize)
-        {
-            // initialize the new elements
-
-            ConstructElements(&m_pData[m_nSize], nNewSize-m_nSize);
-
-        }
-
-        else if (m_nSize > nNewSize)  // destroy the old elements
-            DestructElements(&m_pData[nNewSize], m_nSize-nNewSize);
-
-        m_nSize = nNewSize;
-    }
-    else
-    {
-        // otherwise, grow array
-        int nGrowBy;
-        {
-            // heuristically determine growth when nGrowBy == 0
-            //  (this avoids heap fragmentation in many situations)
-            nGrowBy = std::min(1024, std::max(4, m_nSize / 8));
-        }
-        int nNewMax;
-        if (nNewSize < m_nMaxSize + nGrowBy)
-            nNewMax = m_nMaxSize + nGrowBy;  // granularity
-        else
-            nNewMax = nNewSize;  // no slush
-
-        CBotString* pNewData = reinterpret_cast<CBotString*> (new unsigned char[nNewMax * sizeof(CBotString)]);
-
-        // copy new data from old
-        memcpy(pNewData, m_pData, m_nSize * sizeof(CBotString));
-
-        // construct remaining elements
-        ConstructElements(&pNewData[m_nSize], nNewSize-m_nSize);
-
-
-        // Get rid of old stuff (note: no destructors called)
-        delete[] reinterpret_cast<unsigned char *>(m_pData);
-        m_pData = pNewData;
-        m_nSize = nNewSize;
-        m_nMaxSize = nNewMax;
-    }
-}
-
-
-CBotString& CBotStringArray::operator[](int nIndex)
-{
-    return ElementAt(nIndex);
-}
-
-CBotString& CBotStringArray::ElementAt(int nIndex)
-{
-    return m_pData[nIndex];
 }

@@ -32,11 +32,11 @@
 
 #include "object/old_object.h"
 
+#include "sound/sound.h"
+
 #include "ui/controls/gauge.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/window.h"
-
-#include "sound/sound.h"
 
 
 // Object's constructor.
@@ -372,9 +372,9 @@ bool CAuto::GetBusy()
     return m_bBusy;
 }
 
-void CAuto::SetBusy(bool bBusy)
+void CAuto::SetBusy(bool busy)
 {
-    m_bBusy = bBusy;
+    m_bBusy = busy;
 }
 
 void CAuto::InitProgressTotal(float total)

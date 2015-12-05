@@ -27,7 +27,7 @@
 
 #include <boost/filesystem.hpp>
 
-ALSound::ALSound()
+CALSound::CALSound()
     : m_enabled(false),
       m_audioVolume(1.0f),
       m_musicVolume(1.0f),
@@ -37,14 +37,12 @@ ALSound::ALSound()
 {
 }
 
-
-ALSound::~ALSound()
+CALSound::~CALSound()
 {
     CleanUp();
 }
 
-
-void ALSound::CleanUp()
+void CALSound::CleanUp()
 {
     if (m_enabled)
     {
@@ -71,8 +69,7 @@ void ALSound::CleanUp()
     }
 }
 
-
-bool ALSound::Create()
+bool CALSound::Create()
 {
     CleanUp();
 
@@ -102,20 +99,17 @@ bool ALSound::Create()
     return true;
 }
 
-
-bool ALSound::GetEnable()
+bool CALSound::GetEnable()
 {
     return m_enabled;
 }
 
-
-void ALSound::SetAudioVolume(int volume)
+void CALSound::SetAudioVolume(int volume)
 {
     m_audioVolume = static_cast<float>(volume) / MAXVOLUME;
 }
 
-
-int ALSound::GetAudioVolume()
+int CALSound::GetAudioVolume()
 {
     if ( !m_enabled )
         return 0;
@@ -123,8 +117,7 @@ int ALSound::GetAudioVolume()
     return m_audioVolume * MAXVOLUME;
 }
 
-
-void ALSound::SetMusicVolume(int volume)
+void CALSound::SetMusicVolume(int volume)
 {
     m_musicVolume = static_cast<float>(volume) / MAXVOLUME;
     if (m_currentMusic)
@@ -133,8 +126,7 @@ void ALSound::SetMusicVolume(int volume)
     }
 }
 
-
-int ALSound::GetMusicVolume()
+int CALSound::GetMusicVolume()
 {
     if ( !m_enabled )
         return 0.0f;
@@ -142,10 +134,9 @@ int ALSound::GetMusicVolume()
     return m_musicVolume * MAXVOLUME;
 }
 
-
-bool ALSound::Cache(SoundType sound, const std::string &filename)
+bool CALSound::Cache(SoundType sound, const std::string &filename)
 {
-    auto buffer = MakeUnique<Buffer>();
+    auto buffer = MakeUnique<CBuffer>();
     if (buffer->LoadFromFile(filename, sound))
     {
         m_sounds[sound] = std::move(buffer);
@@ -154,11 +145,11 @@ bool ALSound::Cache(SoundType sound, const std::string &filename)
     return false;
 }
 
-bool ALSound::CacheMusic(const std::string &filename)
+bool CALSound::CacheMusic(const std::string &filename)
 {
     if (m_music.find(filename) == m_music.end())
     {
-        auto buffer = MakeUnique<Buffer>();
+        auto buffer = MakeUnique<CBuffer>();
         if (buffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
         {
             m_music[filename] = std::move(buffer);
@@ -168,17 +159,17 @@ bool ALSound::CacheMusic(const std::string &filename)
     return false;
 }
 
-bool ALSound::IsCached(SoundType sound)
+bool CALSound::IsCached(SoundType sound)
 {
     return m_sounds.find(sound) != m_sounds.end();
 }
 
-bool ALSound::IsCachedMusic(const std::string &filename)
+bool CALSound::IsCachedMusic(const std::string &filename)
 {
     return m_music.find(filename) != m_music.end();
 }
 
-int ALSound::GetPriority(SoundType sound)
+int CALSound::GetPriority(SoundType sound)
 {
     if ( sound == SOUND_FLYh   ||
         sound == SOUND_FLY    ||
@@ -226,8 +217,7 @@ int ALSound::GetPriority(SoundType sound)
     return 10;
 }
 
-
-bool ALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoaded)
+bool CALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoaded)
 {
     int priority = GetPriority(sound);
 
@@ -253,7 +243,7 @@ bool ALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoade
     // just add a new channel if we dont have any
     if (m_channels.size() == 0)
     {
-        auto chn = MakeUnique<Channel>();
+        auto chn = MakeUnique<CChannel>();
         // check if we channel ready to play music, if not report error
         if (chn->IsReady())
         {
@@ -278,7 +268,7 @@ bool ALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoade
         {
             if (m_channels.find(i) == m_channels.end())
             {
-                auto chn = MakeUnique<Channel>();
+                auto chn = MakeUnique<CChannel>();
                 // check if channel is ready to play music, if not destroy it and seek free one
                 if (chn->IsReady())
                 {
@@ -321,14 +311,12 @@ bool ALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoade
     return false;
 }
 
-
-int ALSound::Play(SoundType sound, float amplitude, float frequency, bool loop)
+int CALSound::Play(SoundType sound, float amplitude, float frequency, bool loop)
 {
     return Play(sound, m_eye, amplitude, frequency, loop);
 }
 
-
-int ALSound::Play(SoundType sound, const Math::Vector &pos, float amplitude, float frequency, bool loop)
+int CALSound::Play(SoundType sound, const Math::Vector &pos, float amplitude, float frequency, bool loop)
 {
     if (!m_enabled)
     {
@@ -356,7 +344,7 @@ int ALSound::Play(SoundType sound, const Math::Vector &pos, float amplitude, flo
         }
     }
 
-    Channel* chn = m_channels[channel].get();
+    CChannel* chn = m_channels[channel].get();
 
     chn->SetPosition(pos);
     chn->SetVolumeAtrib(1.0f);
@@ -382,8 +370,7 @@ int ALSound::Play(SoundType sound, const Math::Vector &pos, float amplitude, flo
     return channel | ((chn->GetId() & 0xffff) << 16);
 }
 
-
-bool ALSound::FlushEnvelope(int channel)
+bool CALSound::FlushEnvelope(int channel)
 {
     if (!CheckChannel(channel))
     {
@@ -394,8 +381,7 @@ bool ALSound::FlushEnvelope(int channel)
     return true;
 }
 
-
-bool ALSound::AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper)
+bool CALSound::AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper)
 {
     if (!CheckChannel(channel))
     {
@@ -413,8 +399,7 @@ bool ALSound::AddEnvelope(int channel, float amplitude, float frequency, float t
     return true;
 }
 
-
-bool ALSound::Position(int channel, const Math::Vector &pos)
+bool CALSound::Position(int channel, const Math::Vector &pos)
 {
     if (!CheckChannel(channel))
     {
@@ -425,8 +410,7 @@ bool ALSound::Position(int channel, const Math::Vector &pos)
     return true;
 }
 
-
-bool ALSound::Frequency(int channel, float frequency)
+bool CALSound::Frequency(int channel, float frequency)
 {
     if (!CheckChannel(channel))
     {
@@ -438,7 +422,7 @@ bool ALSound::Frequency(int channel, float frequency)
     return true;
 }
 
-bool ALSound::Stop(int channel)
+bool CALSound::Stop(int channel)
 {
     if (!CheckChannel(channel))
     {
@@ -451,8 +435,7 @@ bool ALSound::Stop(int channel)
     return true;
 }
 
-
-bool ALSound::StopAll()
+bool CALSound::StopAll()
 {
     if (!m_enabled)
     {
@@ -468,8 +451,7 @@ bool ALSound::StopAll()
     return true;
 }
 
-
-bool ALSound::MuteAll(bool mute)
+bool CALSound::MuteAll(bool mute)
 {
     if (!m_enabled)
     {
@@ -487,8 +469,7 @@ bool ALSound::MuteAll(bool mute)
     return true;
 }
 
-
-void ALSound::FrameMove(float delta)
+void CALSound::FrameMove(float rTime)
 {
     if (!m_enabled)
     {
@@ -513,7 +494,7 @@ void ALSound::FrameMove(float delta)
             continue;
 
         SoundOper &oper = it.second->GetEnvelope();
-        oper.currentTime += delta;
+        oper.currentTime += rTime;
         progress = oper.currentTime / oper.totalTime;
         progress = std::min(progress, 1.0f);
 
@@ -560,7 +541,7 @@ void ALSound::FrameMove(float delta)
         }
         else
         {
-            it->currentTime += delta;
+            it->currentTime += rTime;
             it->music->SetVolume(((it->fadeTime-it->currentTime) / it->fadeTime) * m_musicVolume);
             ++it;
         }
@@ -574,14 +555,13 @@ void ALSound::FrameMove(float delta)
         }
         else
         {
-            m_previousMusic.currentTime += delta;
+            m_previousMusic.currentTime += rTime;
             m_previousMusic.music->SetVolume(((m_previousMusic.fadeTime-m_previousMusic.currentTime) / m_previousMusic.fadeTime) * m_musicVolume);
         }
     }
 }
 
-
-void ALSound::SetListener(const Math::Vector &eye, const Math::Vector &lookat)
+void CALSound::SetListener(const Math::Vector &eye, const Math::Vector &lookat)
 {
     m_eye = eye;
     m_lookat = lookat;
@@ -593,15 +573,14 @@ void ALSound::SetListener(const Math::Vector &eye, const Math::Vector &lookat)
     alListenerfv(AL_ORIENTATION, orientation);
 }
 
-
-bool ALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime)
+bool CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime)
 {
     if (!m_enabled)
     {
         return false;
     }
 
-    Buffer *buffer = nullptr;
+    CBuffer *buffer = nullptr;
 
     // check if we have music in cache
     if (m_music.find(filename) == m_music.end())
@@ -613,7 +592,7 @@ bool ALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime
             return false;
         } */
 
-        auto newBuffer = MakeUnique<Buffer>();
+        auto newBuffer = MakeUnique<CBuffer>();
         buffer = newBuffer.get();
         if (!newBuffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
         {
@@ -636,7 +615,7 @@ bool ALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime
         m_oldMusic.push_back(std::move(old));
     }
 
-    m_currentMusic = MakeUnique<Channel>();
+    m_currentMusic = MakeUnique<CChannel>();
     m_currentMusic->SetBuffer(buffer);
     m_currentMusic->SetVolume(m_musicVolume);
     m_currentMusic->SetLoop(repeat);
@@ -645,8 +624,7 @@ bool ALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime
     return true;
 }
 
-
-bool ALSound::PlayPauseMusic(const std::string &filename, bool repeat)
+bool CALSound::PlayPauseMusic(const std::string &filename, bool repeat)
 {
     if (m_previousMusic.fadeTime > 0.0f)
     {
@@ -671,8 +649,7 @@ bool ALSound::PlayPauseMusic(const std::string &filename, bool repeat)
     return PlayMusic(filename, repeat);
 }
 
-
-void ALSound::StopPauseMusic()
+void CALSound::StopPauseMusic()
 {
     if (m_previousMusic.fadeTime > 0.0f)
     {
@@ -691,8 +668,7 @@ void ALSound::StopPauseMusic()
     }
 }
 
-
-bool ALSound::RestartMusic()
+bool CALSound::RestartMusic()
 {
     if (!m_enabled || m_currentMusic == nullptr)
     {
@@ -704,8 +680,7 @@ bool ALSound::RestartMusic()
     return true;
 }
 
-
-void ALSound::StopMusic(float fadeTime)
+void CALSound::StopMusic(float fadeTime)
 {
     if (!m_enabled || m_currentMusic == nullptr)
     {
@@ -719,8 +694,7 @@ void ALSound::StopMusic(float fadeTime)
     m_oldMusic.push_back(std::move(old));
 }
 
-
-bool ALSound::IsPlayingMusic()
+bool CALSound::IsPlayingMusic()
 {
     if (!m_enabled || m_currentMusic == nullptr)
     {
@@ -730,8 +704,7 @@ bool ALSound::IsPlayingMusic()
     return m_currentMusic->IsPlaying();
 }
 
-
-void ALSound::SuspendMusic()
+void CALSound::SuspendMusic()
 {
     if (!m_enabled || m_currentMusic == nullptr)
     {
@@ -741,8 +714,7 @@ void ALSound::SuspendMusic()
     m_currentMusic->Stop();
 }
 
-
-bool ALSound::CheckChannel(int &channel)
+bool CALSound::CheckChannel(int &channel)
 {
     int id = (channel >> 16) & 0xffff;
     channel &= 0xffff;

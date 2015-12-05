@@ -26,6 +26,7 @@
 
 #include <sys/time.h>
 
+//@colobot-lint-exclude UndefinedFunctionRule
 
 struct SystemTimeStamp
 {
@@ -50,3 +51,4 @@ private:
     bool m_zenityAvailable = false;
 };
 
+//@end-colobot-lint-exclude

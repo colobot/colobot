@@ -17,12 +17,26 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-//////////////////////////////////////////////////////////////////////
-// database management of CBoT program
+// Modules inlcude
+#include "CBot/CBotVar/CBotVar.h"
 
-#include "CBot.h"
+#include "CBot/CBotCall.h"
+#include "CBot/CBotStack.h"
+#include "CBot/CBotCStack.h"
+#include "CBot/CBotClass.h"
+#include "CBot/CBotUtils.h"
+#include "CBot/CBotFileUtils.h"
+
+#include "CBot/CBotInstr/CBotFunction.h"
+
+#include "StringFunctions.h"
+
+// Local include
+
+// Global include
 #include <stdio.h>
 
+////////////////////////////////////////////////////////////////////////////////
 CBotProgram::CBotProgram()
 {
     m_Prog      = nullptr;
@@ -33,9 +47,9 @@ CBotProgram::CBotProgram()
 
     m_ErrorCode = 0;
     m_Ident     = 0;
-    m_bDebugDD  = 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotProgram::CBotProgram(CBotVar* pInstance)
 {
     m_Prog      = nullptr;
@@ -46,10 +60,9 @@ CBotProgram::CBotProgram(CBotVar* pInstance)
 
     m_ErrorCode = 0;
     m_Ident     = 0;
-    m_bDebugDD  = 0;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 CBotProgram::~CBotProgram()
 {
 //  delete  m_pClass;
@@ -66,7 +79,7 @@ CBotProgram::~CBotProgram()
 #endif
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, void* pUser )
 {
     int         error = 0;
@@ -161,7 +174,7 @@ bool CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, 
     return (m_Prog != nullptr);
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::Start(const char* name)
 {
 #if STACKMEM
@@ -195,6 +208,7 @@ bool CBotProgram::Start(const char* name)
     return true;                                    // we are ready for Run ()
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetPosition(const char* name, int& start, int& stop, CBotGet modestart, CBotGet modestop)
 {
     CBotFunction* p = m_Prog;
@@ -210,6 +224,7 @@ bool CBotProgram::GetPosition(const char* name, int& start, int& stop, CBotGet m
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::Run(void* pUser, int timer)
 {
     bool    ok;
@@ -264,6 +279,7 @@ error:
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::Stop()
 {
 #if STACKMEM
@@ -275,8 +291,7 @@ void CBotProgram::Stop()
     m_pRun = nullptr;
 }
 
-
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetRunPos(const char* &FunctionName, int &start, int &end)
 {
     FunctionName = nullptr;
@@ -287,6 +302,7 @@ bool CBotProgram::GetRunPos(const char* &FunctionName, int &start, int &end)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotVar* CBotProgram::GetStackVars(const char* &FunctionName, int level)
 {
     FunctionName = nullptr;
@@ -295,26 +311,31 @@ CBotVar* CBotProgram::GetStackVars(const char* &FunctionName, int level)
     return m_pStack->GetStackVars(FunctionName, level);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::SetTimer(int n)
 {
     CBotStack::SetTimer( n );
 }
 
+////////////////////////////////////////////////////////////////////////////////
 int CBotProgram::GetError()
 {
     return m_ErrorCode;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::SetIdent(long n)
 {
     m_Ident = n;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 long CBotProgram::GetIdent()
 {
     return m_Ident;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetError(int& code, int& start, int& end)
 {
     code  = m_ErrorCode;
@@ -323,6 +344,7 @@ bool CBotProgram::GetError(int& code, int& start, int& end)
     return code > 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetError(int& code, int& start, int& end, CBotProgram* &pProg)
 {
     code    = m_ErrorCode;
@@ -332,6 +354,7 @@ bool CBotProgram::GetError(int& code, int& start, int& end, CBotProgram* &pProg)
     return code > 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CBotString CBotProgram::GetErrorText(int code)
 {
     CBotString TextError;
@@ -346,12 +369,13 @@ CBotString CBotProgram::GetErrorText(int code)
     return TextError;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 CBotFunction* CBotProgram::GetFunctions()
 {
     return  m_Prog;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::AddFunction(const char* name,
                               bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
                               CBotTypResult rCompile (CBotVar* &pVar, void* pUser))
@@ -360,143 +384,40 @@ bool CBotProgram::AddFunction(const char* name,
     return CBotCall::AddFunction(name, rExec, rCompile);
 }
 
-
-bool WriteWord(FILE* pf, unsigned short w)
+////////////////////////////////////////////////////////////////////////////////
+bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
-    size_t  lg;
+    if ( pVar == nullptr ) return TX_LOWPARAM;
 
-    lg = fwrite(&w, sizeof( unsigned short ), 1, pf );
+    int i = 0;
+    pVar = pVar->GetItemList();
 
-    return (lg == 1);
-}
-
-bool ReadWord(FILE* pf, unsigned short& w)
-{
-    size_t  lg;
-
-    lg = fread(&w, sizeof( unsigned short ), 1, pf );
-
-    return (lg == 1);
-}
-
-bool WriteFloat(FILE* pf, float w)
-{
-    size_t  lg;
-
-    lg = fwrite(&w, sizeof( float ), 1, pf );
-
-    return (lg == 1);
-}
-
-bool ReadFloat(FILE* pf, float& w)
-{
-    size_t  lg;
-
-    lg = fread(&w, sizeof( float ), 1, pf );
-
-    return (lg == 1);
-}
-
-bool WriteLong(FILE* pf, long w)
-{
-    size_t  lg;
-
-    lg = fwrite(&w, sizeof( long ), 1, pf );
-
-    return (lg == 1);
-}
-
-bool ReadLong(FILE* pf, long& w)
-{
-    size_t  lg;
-
-    lg = fread(&w, sizeof( long ), 1, pf );
-
-    return (lg == 1);
-}
-
-bool WriteString(FILE* pf, CBotString s)
-{
-    size_t  lg1, lg2;
-
-    lg1 = s.GetLength();
-    if (!WriteWord(pf, lg1)) return false;
-
-    lg2 = fwrite(s, 1, lg1, pf );
-    return (lg1 == lg2);
-}
-
-bool ReadString(FILE* pf, CBotString& s)
-{
-    unsigned short  w;
-    char    buf[1000];
-    size_t  lg1, lg2;
-
-    if (!ReadWord(pf, w)) return false;
-    lg1 = w;
-    lg2 = fread(buf, 1, lg1, pf );
-    buf[lg2] = 0;
-
-    s = buf;
-    return (lg1 == lg2);
-}
-
-bool WriteType(FILE* pf, CBotTypResult type)
-{
-    int typ = type.GetType();
-    if ( typ == CBotTypIntrinsic ) typ = CBotTypClass;
-    if ( !WriteWord(pf, typ) ) return false;
-    if ( typ == CBotTypClass )
+    while ( pVar != nullptr )
     {
-        CBotClass* p = type.GetClass();
-        if ( !WriteString(pf, p->GetName()) ) return false;
+        i++;
+        pVar = pVar->GetNext();
     }
-    if ( type.Eq( CBotTypArrayBody ) ||
-         type.Eq( CBotTypArrayPointer ) )
-    {
-        if ( !WriteWord(pf, type.GetLimite()) ) return false;
-        if ( !WriteType(pf, type.GetTypElem()) ) return false;
-    }
+
+    pResult->SetValInt(i);
     return true;
 }
 
-bool ReadType(FILE* pf, CBotTypResult& type)
+////////////////////////////////////////////////////////////////////////////////
+CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
 {
-    unsigned short  w, ww;
-    if ( !ReadWord(pf, w) ) return false;
-    type.SetType(w);
-
-    if ( type.Eq( CBotTypIntrinsic ) )
-    {
-        type = CBotTypResult( w, "point" );
-    }
-
-    if ( type.Eq( CBotTypClass ) )
-    {
-        CBotString  s;
-        if ( !ReadString(pf, s) ) return false;
-        type = CBotTypResult( w, s );
-    }
-
-    if ( type.Eq( CBotTypArrayPointer ) ||
-         type.Eq( CBotTypArrayBody ) )
-    {
-        CBotTypResult   r;
-        if ( !ReadWord(pf, ww) ) return false;
-        if ( !ReadType(pf, r) ) return false;
-        type = CBotTypResult( w, r );
-        type.SetLimite(static_cast<short>(ww));
-    }
-    return true;
+    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
+    if ( pVar->GetType() != CBotTypArrayPointer )
+                        return CBotTypResult( TX_BADPARAM );
+    return CBotTypResult( CBotTypInt );
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::DefineNum(const char* name, long val)
 {
     return CBotToken::DefineNum(name, val);
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::SaveState(FILE* pf)
 {
     if (!WriteWord( pf, CBOTVERSION)) return false;
@@ -515,7 +436,7 @@ bool CBotProgram::SaveState(FILE* pf)
     return true;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::RestoreState(FILE* pf)
 {
     unsigned short  w;
@@ -549,560 +470,34 @@ bool CBotProgram::RestoreState(FILE* pf)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 int CBotProgram::GetVersion()
 {
     return  CBOTVERSION;
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-CBotCall* CBotCall::m_ListCalls = nullptr;
-
-CBotCall::CBotCall(const char* name,
-                   bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                   CBotTypResult rCompile (CBotVar* &pVar, void* pUser))
-{
-    m_name       = name;
-    m_rExec      = rExec;
-    m_rComp      = rCompile;
-    m_next       = nullptr;
-    m_nFuncIdent = CBotVar::NextUniqNum();
-}
-
-CBotCall::~CBotCall()
-{
-    if (m_next) delete m_next;
-    m_next = nullptr;
-}
-
-void CBotCall::Free()
-{
-    delete CBotCall::m_ListCalls;
-}
-
-bool CBotCall::AddFunction(const char* name,
-                           bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                           CBotTypResult rCompile (CBotVar* &pVar, void* pUser))
-{
-    CBotCall*   p = m_ListCalls;
-    CBotCall*   pp = nullptr;
-
-    if ( p != nullptr ) while ( p->m_next != nullptr )
-    {
-        if ( p->GetName() == name )
-        {
-            // frees redefined function
-            if ( pp ) pp->m_next = p->m_next;
-            else      m_ListCalls = p->m_next;
-            pp = p;
-            p = p->m_next;
-            pp->m_next = nullptr;  // not to destroy the following list
-            delete pp;
-            continue;
-        }
-        pp = p;             // previous pointer
-        p = p->m_next;
-    }
-
-    pp = new CBotCall(name, rExec, rCompile);
-
-    if (p) p->m_next = pp;
-    else m_ListCalls = pp;
-
-    return true;
-}
-
-
-// transforms the array of pointers to variables
-// in a chained list of variables
-CBotVar* MakeListVars(CBotVar** ppVars, bool bSetVal=false)
-{
-    int     i = 0;
-    CBotVar*    pVar = nullptr;
-
-    while( true )
-    {
-//        ppVars[i];
-        if ( ppVars[i] == nullptr ) break;
-
-        CBotVar*    pp = CBotVar::Create(ppVars[i]);
-        if (bSetVal) pp->Copy(ppVars[i]);
-        else
-            if ( ppVars[i]->GetType() == CBotTypPointer )
-                pp->SetClass( ppVars[i]->GetClass());
-// copy the pointer according to indirections
-        if (pVar == nullptr) pVar = pp;
-        else pVar->AddNext(pp);
-        i++;
-    }
-    return pVar;
-}
-
-// is acceptable by a call procedure name
-// and given parameters
-
-CBotTypResult CBotCall::CompileCall(CBotToken* &p, CBotVar** ppVar, CBotCStack* pStack, long& nIdent)
-{
-    nIdent = 0;
-    CBotCall*   pt = m_ListCalls;
-    CBotString  name = p->GetString();
-
-    while ( pt != nullptr )
-    {
-        if ( pt->m_name == name )
-        {
-            CBotVar*    pVar = MakeListVars(ppVar);
-            CBotVar*    pVar2 = pVar;
-            CBotTypResult r = pt->m_rComp(pVar2, m_pUser);
-            int ret = r.GetType();
-
-            // if a class is returned, it is actually a pointer
-            if ( ret == CBotTypClass ) r.SetType( ret = CBotTypPointer );
-
-            if ( ret > 20 )
-            {
-                if (pVar2) pStack->SetError(ret, p /*pVar2->GetToken()*/ );
-            }
-            delete pVar;
-            nIdent = pt->m_nFuncIdent;
-            return r;
-        }
-        pt = pt->m_next;
-    }
-    return -1;
-}
-
-void* CBotCall::m_pUser = nullptr;
-
-void CBotCall::SetPUser(void* pUser)
-{
-    m_pUser = pUser;
-}
-
-bool CBotCall::CheckCall(const char* name)
-{
-    CBotCall* p = m_ListCalls;
-
-    while ( p != nullptr )
-    {
-        if ( name == p->GetName() ) return true;
-        p = p->m_next;
-    }
-    return false;
-}
-
-
-
-CBotString CBotCall::GetName()
-{
-    return  m_name;
-}
-
-CBotCall* CBotCall::Next()
-{
-    return  m_next;
-}
-
-
-int CBotCall::DoCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack* pStack, CBotTypResult& rettype)
-{
-    CBotCall*   pt = m_ListCalls;
-
-    if ( nIdent ) while ( pt != nullptr )
-    {
-        if ( pt->m_nFuncIdent == nIdent )
-        {
-            goto fund;
-        }
-        pt = pt->m_next;
-    }
-
-    pt = m_ListCalls;
-
-    if ( token != nullptr )
-    {
-        CBotString name = token->GetString();
-        while ( pt != nullptr )
-        {
-            if ( pt->m_name == name )
-            {
-                nIdent = pt->m_nFuncIdent;
-                goto fund;
-            }
-            pt = pt->m_next;
-        }
-    }
-
-    return -1;
-
-fund:
-#if !STACKRUN
-    // lists the parameters depending on the contents of the stack (pStackVar)
-
-    CBotVar*    pVar = MakeListVars(ppVar, true);
-    CBotVar*    pVarToDelete = pVar;
-
-    // creates a variable to the result
-    CBotVar*    pResult = rettype.Eq(0) ? nullptr : CBotVar::Create("", rettype);
-
-    CBotVar*    pRes = pResult;
-    int         Exception = 0;
-    int res = pt->m_rExec(pVar, pResult, Exception, pStack->GetPUser());
-
-    if ( pResult != pRes ) delete pRes; // different result if made
-    delete pVarToDelete;
-
-    if (res == false)
-    {
-        if (Exception!=0)
-        {
-            pStack->SetError(Exception, token);
-        }
-        delete pResult;
-        return false;
-    }
-    pStack->SetVar(pResult);
-
-    if ( rettype.GetType() > 0 && pResult == nullptr )
-    {
-        pStack->SetError(TX_NORETVAL, token);
-    }
-    nIdent = pt->m_nFuncIdent;
-    return true;
-
-#else
-
-    CBotStack*  pile = pStack->AddStackEOX(pt);
-    if ( pile == EOX ) return true;
-
-    // lists the parameters depending on the contents of the stack (pStackVar)
-
-    CBotVar*    pVar = MakeListVars(ppVar, true);
-//    CBotVar*    pVarToDelete = pVar;
-
-    // creates a variable to the result
-    CBotVar*    pResult = rettype.Eq(0) ? nullptr : CBotVar::Create("", rettype);
-
-    pile->SetVar( pVar );
-
-    CBotStack*  pile2 = pile->AddStack();
-    pile2->SetVar( pResult );
-
-    pile->SetError(0, token);           // for the position on error + away
-    return pt->Run( pStack );
-
-#endif
-
-}
-
-#if STACKRUN
-
-bool CBotCall::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack* pStack)
-{
-    CBotCall*   pt = m_ListCalls;
-
-    {
-        CBotString name = token->GetString();
-        while ( pt != nullptr )
-        {
-            if ( pt->m_name == name )
-            {
-                nIdent = pt->m_nFuncIdent;
-
-                CBotStack*  pile = pStack->RestoreStackEOX(pt);
-                if ( pile == nullptr ) return true;
-
- //               CBotStack*  pile2 = pile->RestoreStack();
-                pile->RestoreStack();
-                return true;
-            }
-            pt = pt->m_next;
-        }
-    }
-
-    return false;
-}
-
-bool CBotCall::Run(CBotStack* pStack)
-{
-    CBotStack*  pile = pStack->AddStackEOX(this);
-    if ( pile == EOX ) return true;
-    CBotVar*    pVar = pile->GetVar();
-
-    CBotStack*  pile2 = pile->AddStack();
-    CBotVar*    pResult = pile2->GetVar();
-    CBotVar*    pRes = pResult;
-
-    int         Exception = 0;
-    int res = m_rExec(pVar, pResult, Exception, pStack->GetPUser());
-
-    if (res == false)
-    {
-        if (Exception!=0)
-        {
-            pStack->SetError(Exception);
-        }
-        if ( pResult != pRes ) delete pResult;  // different result if made
-        return false;
-    }
-
-    if ( pResult != nullptr ) pStack->SetCopyVar( pResult );
-    if ( pResult != pRes ) delete pResult;  // different result if made
-
-    return true;
-}
-
-#endif
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-CBotCallMethode::CBotCallMethode(const char* name,
-                   bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
-                   CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar))
-{
-    m_name       = name;
-    m_rExec      = rExec;
-    m_rComp      = rCompile;
-    m_next       = nullptr;
-    m_nFuncIdent = CBotVar::NextUniqNum();
-}
-
-CBotCallMethode::~CBotCallMethode()
-{
-    delete m_next;
-    m_next = nullptr;
-}
-
-// is acceptable by a call procedure name
-// and given parameters
-
-CBotTypResult CBotCallMethode::CompileCall(const char* name, CBotVar* pThis,
-                                           CBotVar** ppVar, CBotCStack* pStack,
-                                           long& nIdent)
-{
-    CBotCallMethode*    pt = this;
-    nIdent = 0;
-
-    while ( pt != nullptr )
-    {
-        if ( pt->m_name == name )
-        {
-            CBotVar*    pVar = MakeListVars(ppVar, true);
-            CBotVar*    pVar2 = pVar;
-            CBotTypResult r = pt->m_rComp(pThis, pVar2);
-            int ret = r.GetType();
-            if ( ret > 20 )
-            {
-                if (pVar2) pStack->SetError(ret, pVar2->GetToken());
-            }
-            delete pVar;
-            nIdent = pt->m_nFuncIdent;
-            return r;
-        }
-        pt = pt->m_next;
-    }
-    return CBotTypResult(-1);
-}
-
-
-CBotString CBotCallMethode::GetName()
-{
-    return  m_name;
-}
-
-CBotCallMethode* CBotCallMethode::Next()
-{
-    return  m_next;
-}
-
-void CBotCallMethode::AddNext(CBotCallMethode* pt)
-{
-    CBotCallMethode* p = this;
-    while ( p->m_next != nullptr ) p = p->m_next;
-
-    p->m_next = pt;
-}
-
-
-int CBotCallMethode::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBotVar** ppVars, CBotVar* &pResult, CBotStack* pStack, CBotToken* pToken)
-{
-    CBotCallMethode*    pt = this;
-
-    // search by the identifier
-
-    if ( nIdent ) while ( pt != nullptr )
-    {
-        if ( pt->m_nFuncIdent == nIdent )
-        {
-            // lists the parameters depending on the contents of the stack (pStackVar)
-
-            CBotVar*    pVar = MakeListVars(ppVars, true);
-            CBotVar*    pVarToDelete = pVar;
-
-            // then calls the routine external to the module
-
-            int         Exception = 0;
-            int res = pt->m_rExec(pThis, pVar, pResult, Exception, pStack->GetPUser());
-            pStack->SetVar(pResult);
-
-            if (res == false)
-            {
-                if (Exception!=0)
-                {
-//                  pStack->SetError(Exception, pVar->GetToken());
-                    pStack->SetError(Exception, pToken);
-                }
-                delete pVarToDelete;
-                return false;
-            }
-            delete pVarToDelete;
-            return true;
-        }
-        pt = pt->m_next;
-    }
-
-    // search by name
-
-    while ( pt != nullptr )
-    {
-        if ( pt->m_name == name )
-        {
-            // lists the parameters depending on the contents of the stack (pStackVar)
-
-            CBotVar*    pVar = MakeListVars(ppVars, true);
-            CBotVar*    pVarToDelete = pVar;
-
-            int         Exception = 0;
-            int res = pt->m_rExec(pThis, pVar, pResult, Exception, pStack->GetPUser());
-            pStack->SetVar(pResult);
-
-            if (res == false)
-            {
-                if (Exception!=0)
-                {
-//                  pStack->SetError(Exception, pVar->GetToken());
-                    pStack->SetError(Exception, pToken);
-                }
-                delete pVarToDelete;
-                return false;
-            }
-            delete pVarToDelete;
-            nIdent = pt->m_nFuncIdent;
-            return true;
-        }
-        pt = pt->m_next;
-    }
-
-    return -1;
-}
-
-bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
-{
-    if ( pVar == nullptr ) return TX_LOWPARAM;
-
-    int i = 0;
-    pVar = pVar->GetItemList();
-
-    while ( pVar != nullptr )
-    {
-        i++;
-        pVar = pVar->GetNext();
-    }
-
-    pResult->SetValInt(i);
-    return true;
-}
-
-CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
-{
-    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
-    if ( pVar->GetType() != CBotTypArrayPointer )
-                        return CBotTypResult( TX_BADPARAM );
-    return CBotTypResult( CBotTypInt );
-}
-
-
-CBotString CBotProgram::m_DebugVarStr = "";
-
-bool rCBotDebug( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
-{
-    pResult->SetValString( CBotProgram::m_DebugVarStr );
-
-    return true;
-}
-
-CBotTypResult cCBotDebug( CBotVar* &pVar, void* pUser )
-{
-    // no parameter
-    if ( pVar != nullptr ) return CBotTypResult( TX_OVERPARAM );
-
-    // function returns a result "string"
-    return CBotTypResult( CBotTypString );
-}
-
-
-#include "StringFunctions.cpp"
-
+////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::Init()
 {
-    CBotToken::DefineNum( "CBotErrOpenPar", 5000) ;     // missing the opening parenthesis
-    CBotToken::DefineNum( "CBotErrClosePar", 5001) ;    // missing the closing parenthesis
-    CBotToken::DefineNum( "CBotErrNotBoolean", 5002) ;  // expression must be a boolean
-    CBotToken::DefineNum( "CBotErrUndefVar", 5003) ;    // undeclared variable
-    CBotToken::DefineNum( "CBotErrBadLeft", 5004) ;     // impossible assignment (5 = ...)
-    CBotToken::DefineNum( "CBotErrNoTerminator", 5005) ;// semicolon expected
-    CBotToken::DefineNum( "CBotErrCaseOut", 5006) ;     // case outside a switch
-    CBotToken::DefineNum( "CBotErrCloseBlock", 5008) ;  // missing " } "
-    CBotToken::DefineNum( "CBotErrElseWhitoutIf", 5009) ;// else without matching if
-    CBotToken::DefineNum( "CBotErrOpenBlock", 5010) ;   // missing " { "
-    CBotToken::DefineNum( "CBotErrBadType1", 5011) ;    // wrong type for the assignment
-    CBotToken::DefineNum( "CBotErrRedefVar", 5012) ;    // redefinition of the variable
-    CBotToken::DefineNum( "CBotErrBadType2", 5013) ;    // two operands are incompatible
-    CBotToken::DefineNum( "CBotErrUndefCall", 5014) ;   // routine unknown
-    CBotToken::DefineNum( "CBotErrNoDoubleDots", 5015) ;// " : " expected
-    CBotToken::DefineNum( "CBotErrBreakOutside", 5017) ;// break outside of a loop
-    CBotToken::DefineNum( "CBotErrUndefLabel", 5019) ;  // unknown label
-    CBotToken::DefineNum( "CBotErrLabel", 5018) ;       // label can not get here
-    CBotToken::DefineNum( "CBotErrNoCase", 5020) ;      // missing " case "
-    CBotToken::DefineNum( "CBotErrBadNum", 5021) ;      // expected number
-    CBotToken::DefineNum( "CBotErrVoid", 5022) ;        // " void " not possble here
-    CBotToken::DefineNum( "CBotErrNoType", 5023) ;      // type declaration expected
-    CBotToken::DefineNum( "CBotErrNoVar", 5024) ;       // variable name expected
-    CBotToken::DefineNum( "CBotErrNoFunc", 5025) ;      // expected function name
-    CBotToken::DefineNum( "CBotErrOverParam", 5026) ;   // too many parameters
-    CBotToken::DefineNum( "CBotErrRedefFunc", 5027) ;   // this function already exists
-    CBotToken::DefineNum( "CBotErrLowParam", 5028) ;    // not enough parameters
-    CBotToken::DefineNum( "CBotErrBadParam", 5029) ;    // mauvais types de paramètres
-    CBotToken::DefineNum( "CBotErrNbParam", 5030) ;     // wrong number of parameters
-    CBotToken::DefineNum( "CBotErrUndefItem", 5031) ;   // element does not exist in the class
-    CBotToken::DefineNum( "CBotErrUndefClass", 5032) ;  // variable is not a class
-    CBotToken::DefineNum( "CBotErrNoConstruct", 5033) ; // no appropriate constructor
-    CBotToken::DefineNum( "CBotErrRedefClass", 5034) ;  // Class already exists
-    CBotToken::DefineNum( "CBotErrCloseIndex", 5035) ;  // " ] " expected
-    CBotToken::DefineNum( "CBotErrReserved", 5036) ;    // reserved word (for a DefineNum)
-
-// Here are the list of errors that can be returned by the module
-// for the execution
-
-    CBotToken::DefineNum( "CBotErrZeroDiv", 6000) ;     // division by zero
-    CBotToken::DefineNum( "CBotErrNotInit", 6001) ;     // uninitialized variable
-    CBotToken::DefineNum( "CBotErrBadThrow", 6002) ;    // throw a negative value
-    CBotToken::DefineNum( "CBotErrNoRetVal", 6003) ;    // function did not return results
-    CBotToken::DefineNum( "CBotErrNoRun", 6004) ;       // active Run () without a function
-    CBotToken::DefineNum( "CBotErrUndefFunc", 6005) ;   // Calling a function that no longer exists
+    CBotToken::DefineNum("CBotErrZeroDiv",       TX_DIVZERO);     // division by zero
+    CBotToken::DefineNum("CBotErrNotInit",       TX_NOTINIT);     // uninitialized variable
+    CBotToken::DefineNum("CBotErrBadThrow",      TX_BADTHROW);    // throw a negative value
+    //CBotToken::DefineNum("CBotErrNoRetVal",      6003);           // function did not return results // TODO: Not used. I'm pretty sure not returning a value crashes the game :P
+    CBotToken::DefineNum("CBotErrNoRun",         TX_NORUN);       // active Run () without a function // TODO: Is this actually a runtime error?
+    CBotToken::DefineNum("CBotErrUndefFunc",     TX_NOCALL);      // Calling a function that no longer exists
+    CBotToken::DefineNum("CBotErrUndefClass",    TX_NOCLASS);     // Class no longer exists
+    CBotToken::DefineNum("CBotErrNullPointer",   TX_NULLPT);      // Attempted to use a null pointer
+    CBotToken::DefineNum("CBotErrNan",           TX_OPNAN);       // Can't do operations on nan
+    CBotToken::DefineNum("CBotErrOutOfBounds",   TX_OUTARRAY);    // Attempted access out of bounds of an array
+    CBotToken::DefineNum("CBotErrStackOverflow", TX_STACKOVER);   // Stack overflow
+    CBotToken::DefineNum("CBotErrDeletedObject", TX_DELETEDPT);   // Attempted to use deleted object
 
     CBotProgram::AddFunction("sizeof", rSizeOf, cSizeOf );
 
     InitStringFunctions();
-
-    // just a function for various debug
-    CBotProgram::AddFunction("CBOTDEBUGDD", rCBotDebug, cCBotDebug);
-    //TODO implement this deletion
-    // DeleteFile("CbotDebug.txt");
-
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::Free()
 {
     CBotToken::Free() ;

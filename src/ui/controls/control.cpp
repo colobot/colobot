@@ -23,6 +23,7 @@
 #include "app/app.h"
 
 #include "common/restext.h"
+#include "common/settings.h"
 
 #include "level/robotmain.h"
 
@@ -38,6 +39,7 @@ CControl::CControl()
     m_engine      = Gfx::CEngine::GetInstancePointer();
     m_main        = CRobotMain::GetInstancePointer();
     m_particle    = m_engine->GetParticle();
+    m_settings    = CSettings::GetInstancePointer();
     m_eventType   = EVENT_NULL;
     m_state       = STATE_ENABLE|STATE_VISIBLE|STATE_GLINT;
     m_fontSize    = Gfx::FONT_SIZE_SMALL;
@@ -420,7 +422,7 @@ void CControl::GlintFrame(const Event &event)
          (m_state & STATE_ENABLE ) == 0 ||
          (m_state & STATE_VISIBLE) == 0 )  return;
 
-    if ( !m_main->GetInterfaceGlint() )  return;
+    if ( !m_settings->GetInterfaceGlint() )  return;
 
     m_glintProgress += event.rTime;
 

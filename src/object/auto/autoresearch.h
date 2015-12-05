@@ -42,7 +42,7 @@ public:
     void        DeleteObject(bool bAll=false) override;
 
     void        Init() override;
-    Error       StartAction(int result) override;
+    Error       StartAction(int param) override;
     bool        EventProcess(const Event &event) override;
     Error       GetError() override;
 

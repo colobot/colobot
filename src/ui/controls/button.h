@@ -38,7 +38,7 @@ public:
 
     void    Draw() override;
 
-    void    SetImmediat(bool bRepeat);
+    void    SetImmediat(bool immediat);
     bool    GetImmediat();
 
     void    SetRepeat(bool bRepeat);

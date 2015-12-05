@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "CBot/CBotDll.h"
+#include "CBot/CBot.h"
 
 #include "common/error.h"
 
@@ -35,6 +35,7 @@
 class CObject;
 class CScript;
 class CExchangePost;
+class CBotVar;
 
 
 class CScriptFunctions
@@ -58,6 +59,7 @@ private:
     static CBotTypResult cDelete(CBotVar* &var, void* user);
     static CBotTypResult cSearch(CBotVar* &var, void* user);
     static CBotTypResult cRadar(CBotVar* &var, void* user);
+    static CBotTypResult cRadarAll(CBotVar* &var, void* user);
     static CBotTypResult cDetect(CBotVar* &var, void* user);
     static CBotTypResult cDirection(CBotVar* &var, void* user);
     static CBotTypResult cProduce(CBotVar* &var, void* user);
@@ -108,6 +110,7 @@ private:
     static bool rDelete(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rSearch(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rRadarAll(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDirection(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* user);
@@ -125,7 +128,6 @@ private:
     static bool rMove(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rTurn(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rGoto(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rFind(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rGrab(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDrop(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rSniff(CBotVar* var, CBotVar* result, int& exception, void* user);

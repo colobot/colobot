@@ -145,7 +145,6 @@ void CDisplayText::DisplayError(Error err, Math::Vector goal, float height,
          err == ERR_VEH_VIRUS      ||
          err == ERR_DELETEMOBILE   ||
          err == ERR_DELETEBUILDING ||
-         err == ERR_TOOMANY        ||
          err == INFO_LOST          )
     {
         type = TT_ERROR;

@@ -21,6 +21,8 @@
 
 #include "app/app.h"
 
+#include "common/restext.h"
+
 #include "graphics/engine/camera.h"
 
 #include "level/player_profile.h"

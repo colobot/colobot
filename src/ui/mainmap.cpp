@@ -24,6 +24,12 @@
 
 #include "level/robotmain.h"
 
+#include "ui/controls/interface.h"
+#include "ui/controls/map.h"
+#include "ui/controls/scroll.h"
+#include "ui/controls/slider.h"
+#include "ui/controls/window.h"
+
 
 namespace Ui
 {

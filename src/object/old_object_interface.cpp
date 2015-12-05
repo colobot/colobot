@@ -21,7 +21,6 @@
 
 #include <stdexcept>
 
-
 void COldObjectInterface::Simplify()
 {
     throw std::logic_error("Simplify: not implemented!");

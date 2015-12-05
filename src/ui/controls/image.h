@@ -19,14 +19,7 @@
 
 #pragma once
 
-
 #include "ui/controls/control.h"
-
-namespace Gfx
-{
-class CEngine;
-}
-
 
 namespace Ui
 {
@@ -49,5 +42,4 @@ protected:
     std::string m_filename;
 };
 
-
-}
+} // namespace Ui

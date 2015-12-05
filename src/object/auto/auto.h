@@ -19,9 +19,8 @@
 
 #pragma once
 
-
-#include "common/event.h"
 #include "common/error.h"
+#include "common/event.h"
 
 #include "object/object_type.h"
 
@@ -35,22 +34,20 @@ namespace Ui
 {
 class CInterface;
 class CWindow;
-} /* Ui */
+} // namespace Ui
 
 namespace Gfx
 {
 
 class CEngine;
 class CParticle;
-class CLightManager;
-class CTarrain;
+class CTerrain;
 class CWater;
 class CCloud;
 class CCamera;
 class CPlanet;
 class CLightning;
-class CTerrain;
-} /* Gfx */
+} // namespace Gfx
 
 
 class CAuto
@@ -77,7 +74,7 @@ public:
     virtual Error   GetError();
 
     virtual bool    GetBusy();
-    virtual void    SetBusy(bool bBuse);
+    virtual void    SetBusy(bool busy);
     virtual void    InitProgressTotal(float total);
     virtual void    EventProgress(float rTime);
 

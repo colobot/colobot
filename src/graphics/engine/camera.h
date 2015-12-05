@@ -24,15 +24,13 @@
 
 #pragma once
 
-
-#include "common/event.h"
-
 #include "graphics/engine/engine.h"
 
 
 class CObject;
 class CRobotMain;
 class CInput;
+struct Event;
 
 
 // Graphics module namespace
@@ -226,7 +224,7 @@ protected:
     //! Changes the camera according to the mouse moved
     bool        EventMouseMove(const Event &event);
     //! Mouse wheel operation
-    void        EventMouseWheel(WheelDirection dir);
+    void        EventMouseWheel(const Event& event);
     //! Changes the camera according to the time elapsed
     bool        EventFrame(const Event &event);
     //! Moves the point of view
@@ -251,7 +249,7 @@ protected:
     bool        EventFrameScript(const Event &event);
 
     //! Specifies the location and direction of view to the 3D engine
-    void        SetViewTime(const Math::Vector &vEyePt, const Math::Vector &vLookatPt, float rTime);
+    void        SetViewTime(const Math::Vector &eyePt, const Math::Vector &lookatPt, float rTime);
     //! Avoid the obstacles
     bool        IsCollision(Math::Vector &eye, Math::Vector lookat);
     //! Avoid the obstacles

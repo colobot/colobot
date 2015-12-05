@@ -43,7 +43,7 @@ public:
     CAutoPowerPlant(COldObject* object);
     ~CAutoPowerPlant();
 
-    void        DeleteObject(bool bAll=false) override;
+    void        DeleteObject(bool all=false) override;
 
     void        Init() override;
     bool        EventProcess(const Event &event) override;

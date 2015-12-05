@@ -35,6 +35,11 @@
 
 #include "ui/maindialog.h"
 
+#include "ui/controls/group.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/label.h"
+#include "ui/controls/window.h"
+
 #include "ui/screen/screen.h"
 #include "ui/screen/screen_apperance.h"
 #include "ui/screen/screen_io_read.h"
@@ -43,17 +48,13 @@
 #include "ui/screen/screen_loading.h"
 #include "ui/screen/screen_main_menu.h"
 #include "ui/screen/screen_player_select.h"
+#include "ui/screen/screen_quit.h"
 #include "ui/screen/screen_setup_controls.h"
 #include "ui/screen/screen_setup_display.h"
 #include "ui/screen/screen_setup_game.h"
 #include "ui/screen/screen_setup_graphics.h"
 #include "ui/screen/screen_setup_sound.h"
-#include "ui/screen/screen_quit.h"
 #include "ui/screen/screen_welcome.h"
-
-#include "ui/controls/interface.h"
-#include "ui/controls/label.h"
-#include "ui/controls/window.h"
 
 namespace Ui
 {

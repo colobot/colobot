@@ -37,9 +37,10 @@ public:
     SDL_RWops* GetHandler();
 
 private:
-    static int SDLSeek(SDL_RWops *context, int offset, int whence);
-    static int SDLRead(SDL_RWops *context, void *ptr, int size, int maxnum);
-    static int SDLWrite(SDL_RWops *context, const void *ptr, int size, int num);
+    static Sint64 SDLSeek(SDL_RWops *context, Sint64 offset, int whence);
+    static Sint64 SDLSize(SDL_RWops *context);
+    static size_t SDLRead(SDL_RWops *context, void *ptr, size_t size, size_t maxnum);
+    static size_t SDLWrite(SDL_RWops *context, const void *ptr, size_t size, size_t num);
     static int SDLClose(SDL_RWops *context, bool freeRW);
     static int SDLCloseWithoutFreeRW(SDL_RWops *context);
     static int SDLCloseWithFreeRW(SDL_RWops *context);

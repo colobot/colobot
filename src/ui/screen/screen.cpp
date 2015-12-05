@@ -19,9 +19,9 @@
 
 #include "ui/screen/screen.h"
 
-#include "common/config.h"
-
 #include "app/app.h"
+
+#include "common/version.h"
 
 #include "graphics/engine/engine.h"
 

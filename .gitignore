@@ -16,10 +16,11 @@ Makefile
 
 # Ignore targets
 /colobot
+/src/CBot/libCBot.so
 
 # Ignore local data
 /colobot.ini
-/savegame
+/saves
 
 # Standard build directory
 /build

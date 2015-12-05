@@ -19,9 +19,9 @@
 
 #include "level/scene_conditions.h"
 
-#include "math/geometry.h"
-
 #include "level/parser/parserline.h"
+
+#include "math/geometry.h"
 
 #include "object/object.h"
 #include "object/object_manager.h"

@@ -24,8 +24,6 @@
 namespace Ui
 {
 
-class CScreenSetup;
-
 class CScreenMainMenu : public CScreen
 {
 public:

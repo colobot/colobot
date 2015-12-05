@@ -42,7 +42,7 @@ public:
     CAutoEgg(COldObject* object);
     ~CAutoEgg();
 
-    void        DeleteObject(bool bAll=false) override;
+    void        DeleteObject(bool all=false) override;
 
     void        Init() override;
     void        Start(int param) override;

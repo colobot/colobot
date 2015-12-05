@@ -19,8 +19,6 @@
 
 #pragma once
 
-#include "common/event.h"
-
 #include "graphics/engine/camera.h"
 
 #include <string>
@@ -32,6 +30,7 @@ class CSettings;
 struct Program;
 class CPauseManager;
 struct ActivePause;
+struct Event;
 
 namespace Ui
 {
@@ -115,6 +114,7 @@ protected:
     bool         m_bRunning;
     bool         m_bRealTime;
     ActivePause* m_editorPause = nullptr;
+    ActivePause* m_runningPause = nullptr;
     std::string  m_helpFilename;
 
     StudioDialog m_dialog;

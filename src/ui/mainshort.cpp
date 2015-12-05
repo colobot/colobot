@@ -33,6 +33,9 @@
 #include "object/interface/controllable_object.h"
 #include "object/interface/programmable_object.h"
 
+#include "ui/controls/interface.h"
+#include "ui/controls/shortcut.h"
+
 #include <algorithm>
 
 
@@ -103,19 +106,18 @@ bool CMainShort::CreateShortcuts()
         m_interface->CreateShortcut(pos, dim, 128+7, EVENT_OBJECT_MOVIELOCK);
         return true;
     }
-    if ( !m_main->GetFreePhoto() &&
+    if ( !m_main->GetPauseManager()->IsPauseType(PAUSE_PHOTO) &&
          (m_main->GetEditLock() ||
           m_engine->GetPause()) )  // hangs during edition?
     {
         m_interface->CreateShortcut(pos, dim, 128+6, EVENT_OBJECT_EDITLOCK);
     }
-    if (m_main->GetFreePhoto() && m_main->GetSelect() == nullptr)
+    if (m_main->GetPauseManager()->IsPauseType(PAUSE_PHOTO) && m_main->GetSelect() == nullptr)
     {
         return true;
     }
-    PauseType pauseType = m_engine->GetPauseManager()->GetPauseType();
 
-    if (pauseType == PAUSE_SATCOM || pauseType == PAUSE_EDITOR || pauseType == PAUSE_DIALOG)
+    if (m_main->GetPauseManager()->IsPauseType(PAUSE_HIDE_SHORTCUTS))
         return true;
 
     // Create new shortcuts

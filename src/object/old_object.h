@@ -24,7 +24,14 @@
 
 #pragma once
 
+#include "common/event.h"
+
 #include "object/object.h"
+
+#include "object/implementation/power_container_impl.h"
+#include "object/implementation/program_storage_impl.h"
+#include "object/implementation/programmable_impl.h"
+#include "object/implementation/task_executor_impl.h"
 
 #include "object/interface/carrier_object.h"
 #include "object/interface/controllable_object.h"
@@ -41,11 +48,6 @@
 #include "object/interface/task_executor_object.h"
 #include "object/interface/trace_drawing_object.h"
 #include "object/interface/transportable_object.h"
-
-#include "object/implementation/power_container_impl.h"
-#include "object/implementation/program_storage_impl.h"
-#include "object/implementation/programmable_impl.h"
-#include "object/implementation/task_executor_impl.h"
 
 // The father of all parts must always be the part number zero!
 const int OBJECTMAXPART         = 40;
@@ -99,7 +101,7 @@ protected:
     void        SetMovable(std::unique_ptr<CMotion> motion, std::unique_ptr<CPhysics> physics);
     void        SetAuto(std::unique_ptr<CAuto> automat);
     void        SetOption(int option);
-    void        SetJostlingSphere(const Math::Sphere& sphere);
+    void        SetJostlingSphere(const Math::Sphere& jostlingSphere);
 
 
 public:
@@ -358,7 +360,6 @@ protected:
     float       m_cameraDist;
     bool        m_bCameraLock;
     float       m_magnifyDamage;
-    float       m_param;
 
     Math::Sphere m_jostlingSphere;
     float       m_shieldRadius;

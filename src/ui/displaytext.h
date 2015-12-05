@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include "common/event.h"
 #include "common/error.h"
+#include "common/event.h"
 
 #include <array>
 

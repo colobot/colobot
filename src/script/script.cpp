@@ -42,6 +42,7 @@
 #include "ui/controls/interface.h"
 #include "ui/controls/list.h"
 
+#include "CBot/CBot.h"
 
 
 const int CBOT_IPF = 100;       // CBOT: default number of instructions / frame
@@ -666,7 +667,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
         {
             color = Gfx::FONT_HIGHLIGHT_TOKEN;
         }
-        else if (type == TokenTypVar && strcmp(token, "this") == 0) // this
+        else if (type == TokenTypVar && (strcmp(token, "this") == 0 || strcmp(token, "super") == 0)) // this, super
         {
             color = Gfx::FONT_HIGHLIGHT_THIS;
         }
@@ -848,7 +849,6 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     char    text[100];
     char    script[500];
     char    buffer[500];
-    char    *sf;
     int     cursor1, cursor2, len, i, j;
 
     std::string resStr;
@@ -883,12 +883,11 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     edit->ShowSelect();
     m_interface->SetFocus(edit);
 
-    sf = m_main->GetScriptFile();
-    if ( sf[0] != 0 )  // Load an empty program specific?
+    std::string sf = m_main->GetScriptFile();
+    if ( !sf.empty() )  // Load an empty program specific?
     {
-        std::string filename = sf;
         CInputStream stream;
-        stream.open(filename);
+        stream.open(sf);
 
         if (stream.is_open())
         {

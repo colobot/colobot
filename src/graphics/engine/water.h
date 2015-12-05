@@ -24,13 +24,11 @@
 
 #pragma once
 
-
-#include "common/event.h"
-
 #include "graphics/engine/particle.h"
 
 
 class CSoundInterface;
+struct Event;
 
 
 // Graphics module namespace
@@ -77,7 +75,6 @@ public:
     CWater(CEngine* engine);
     virtual ~CWater();
 
-    void        SetDevice(CDevice* device);
     bool        EventProcess(const Event &event);
     //! Removes all the water
     void        Flush();

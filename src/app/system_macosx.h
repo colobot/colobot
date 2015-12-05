@@ -25,6 +25,8 @@
 #include "app/system.h"
 #include "app/system_other.h"
 
+//@colobot-lint-exclude UndefinedFunctionRule
+
 class CSystemUtilsMacOSX : public CSystemUtilsOther
 {
 public:
@@ -41,3 +43,4 @@ private:
     std::string m_dataPath;
 };
 
+//@end-colobot-lint-exclude

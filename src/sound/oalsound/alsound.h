@@ -60,7 +60,7 @@ struct OldMusic
         return *this;
     }
 
-    std::unique_ptr<Channel> music;
+    std::unique_ptr<CChannel> music;
     float fadeTime = 0.0f;
     float currentTime = 0.0f;
 
@@ -75,11 +75,11 @@ struct OldMusic
     }
 };
 
-class ALSound : public CSoundInterface
+class CALSound : public CSoundInterface
 {
 public:
-    ALSound();
-    ~ALSound();
+    CALSound();
+    ~CALSound();
 
     bool Create() override;
     bool Cache(SoundType, const std::string &) override;
@@ -126,10 +126,10 @@ private:
     unsigned int m_channelsLimit;
     ALCdevice* m_device;
     ALCcontext* m_context;
-    std::map<SoundType, std::unique_ptr<Buffer>> m_sounds;
-    std::map<std::string, std::unique_ptr<Buffer>> m_music;
-    std::map<int, std::unique_ptr<Channel>> m_channels;
-    std::unique_ptr<Channel> m_currentMusic;
+    std::map<SoundType, std::unique_ptr<CBuffer>> m_sounds;
+    std::map<std::string, std::unique_ptr<CBuffer>> m_music;
+    std::map<int, std::unique_ptr<CChannel>> m_channels;
+    std::unique_ptr<CChannel> m_currentMusic;
     std::list<OldMusic> m_oldMusic;
     OldMusic m_previousMusic;
     Math::Vector m_eye;

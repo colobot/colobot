@@ -22,7 +22,6 @@
 
 #include "app/app.h"
 #include "app/input.h"
-#include "app/pausemanager.h"
 #include "app/system.h"
 
 #include "common/image.h"
@@ -34,6 +33,7 @@
 #include "common/thread/resource_owning_thread.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/framebuffer.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/cloud.h"
@@ -88,7 +88,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_planet     = nullptr;
     m_sound      = nullptr;
     m_terrain    = nullptr;
-    m_pause      = nullptr;
 
     m_showStats = false;
 
@@ -271,11 +270,6 @@ CCloud* CEngine::GetCloud()
     return m_cloud.get();
 }
 
-CPauseManager* CEngine::GetPauseManager()
-{
-    return m_pause.get();
-}
-
 void CEngine::SetTerrain(CTerrain* terrain)
 {
     m_terrain = terrain;
@@ -302,7 +296,6 @@ bool CEngine::Create()
     m_cloud      = MakeUnique<CCloud>(this);
     m_lightning  = MakeUnique<CLightning>(this);
     m_planet     = MakeUnique<CPlanet>(this);
-    m_pause      = MakeUnique<CPauseManager>();
 
     m_lightMan->SetDevice(m_device);
     m_particle->SetDevice(m_device);
@@ -352,7 +345,6 @@ void CEngine::Destroy()
         m_shadowMap = Texture();
     }
 
-    m_pause.reset();
     m_lightMan.reset();
     m_text.reset();
     m_particle.reset();
@@ -362,55 +354,27 @@ void CEngine::Destroy()
     m_planet.reset();
 }
 
-void CEngine::ResetAfterDeviceChanged()
+void CEngine::ResetAfterVideoConfigChanged()
 {
     m_size = m_app->GetVideoConfig().size;
     m_mouseSize = Math::Point(0.04f, 0.04f * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
 
-    if (m_shadowMap.id != 0)
-    {
-        if (m_offscreenShadowRendering)
-            m_device->DeleteFramebuffer("shadow");
-        else
-            m_device->DestroyTexture(m_shadowMap);
-
-        m_shadowMap = Texture();
-    }
-
-    m_text->FlushCache();
-
-    FlushTextureCache();
-
-    CRobotMain::GetInstancePointer()->ResetAfterDeviceChanged();
-
-    LoadAllTextures();
-
-    for (int baseObjRank = 0; baseObjRank < static_cast<int>( m_baseObjects.size() ); baseObjRank++)
-    {
-        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
-        if (! p1.used)
-            continue;
-
-        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
-        {
-            EngineBaseObjTexTier& p2 = p1.next[l2];
-
-            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
-            {
-                EngineBaseObjDataTier& p3 = p2.next[l3];
-
-                m_device->DestroyStaticBuffer(p3.staticBufferId);
-                p3.staticBufferId = 0;
-                p3.updateStaticBuffer = true;
-            }
-        }
-    }
+    CRobotMain::GetInstancePointer()->ResetAfterVideoConfigChanged(); //TODO: Remove cross-reference to CRobotMain
 
     // Update the camera projection matrix for new aspect ratio
     SetFocus(m_focus);
 
-    // Because reloading textures takes a long time
-    m_app->ResetTimeAfterLoading();
+    // This needs to be recreated on resolution change
+    m_device->DeleteFramebuffer("multisample");
+}
+
+void CEngine::ReloadAllTextures()
+{
+    FlushTextureCache();
+    m_text->FlushCache();
+
+    CRobotMain::GetInstancePointer()->ReloadAllTextures(); //TODO: Remove cross-reference to CRobotMain
+    LoadAllTextures();
 }
 
 bool CEngine::ProcessEvent(const Event &event)
@@ -500,7 +464,7 @@ void CEngine::WriteScreenShot(const std::string& fileName)
 
     data->fileName = fileName;
 
-    CResourceOwningThread<WriteScreenShotData> thread(CEngine::WriteScreenShotThread, std::move(data));
+    CResourceOwningThread<WriteScreenShotData> thread(CEngine::WriteScreenShotThread, std::move(data), "WriteScreenShot thread");
     thread.Start();
 }
 
@@ -518,9 +482,14 @@ void CEngine::WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data)
     CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_WRITE_SCENE_FINISHED));
 }
 
+void CEngine::SetPause(bool pause)
+{
+    m_pause = pause;
+}
+
 bool CEngine::GetPause()
 {
-    return m_pause->IsPause();
+    return m_pause;
 }
 
 void CEngine::SetShowStats(bool show)
@@ -2875,7 +2844,7 @@ void CEngine::SetTextureFilterMode(TexFilter value)
 
     m_defaultTexParams.filter = m_terrainTexParams.filter = value;
     m_defaultTexParams.mipmap = m_terrainTexParams.mipmap = (value == TEX_FILTER_TRILINEAR);
-    ResetAfterDeviceChanged();
+    ReloadAllTextures();
 }
 
 TexFilter CEngine::GetTextureFilterMode()
@@ -2890,7 +2859,7 @@ void CEngine::SetTextureMipmapLevel(int value)
     if(m_textureMipmapLevel == value) return;
 
     m_textureMipmapLevel = value;
-    ResetAfterDeviceChanged();
+    ReloadAllTextures();
 }
 
 int CEngine::GetTextureMipmapLevel()
@@ -2906,7 +2875,7 @@ void CEngine::SetTextureAnisotropyLevel(int value)
     if(m_textureAnisotropy == value) return;
 
     m_textureAnisotropy = value;
-    ResetAfterDeviceChanged();
+    ReloadAllTextures();
 }
 
 int CEngine::GetTextureAnisotropyLevel()
@@ -4607,6 +4576,7 @@ void CEngine::DrawOverColor()
     m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
     m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
+    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
     VertexCol vertex[4] =
     {
@@ -4962,11 +4932,11 @@ int CEngine::GetEngineState(const ModelTriangle& triangle)
     return state;
 }
 
-void CEngine::UpdateObjectShadowSpotNormal(int rank)
+void CEngine::UpdateObjectShadowSpotNormal(int objRank)
 {
-    assert(rank >= 0 && rank < static_cast<int>( m_objects.size() ));
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    int shadowRank = m_objects[rank].shadowRank;
+    int shadowRank = m_objects[objRank].shadowRank;
     if (shadowRank == -1)
         return;
 

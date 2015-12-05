@@ -29,8 +29,6 @@
 #include "object/task/taskmanip.h"
 #include "object/task/taskshield.h"
 
-class CTask;
-
 /**
  * \class CTaskExecutorObject
  * \brief Interface for objects that can execute tasks

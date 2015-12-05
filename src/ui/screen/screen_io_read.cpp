@@ -21,11 +21,13 @@
 
 #include "app/app.h"
 
+#include "common/restext.h"
+
 #include "level/robotmain.h"
 
 #include "ui/controls/button.h"
-#include "ui/controls/interface.h"
 #include "ui/controls/image.h"
+#include "ui/controls/interface.h"
 #include "ui/controls/list.h"
 #include "ui/controls/window.h"
 

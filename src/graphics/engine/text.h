@@ -27,6 +27,7 @@
 
 #include "graphics/core/color.h"
 
+#include "math/intpoint.h"
 #include "math/point.h"
 
 #include <map>
@@ -190,8 +191,8 @@ struct UTF8Char
 struct CharTexture
 {
     unsigned int id = 0;
-    Math::Point texSize;
-    Math::Point charSize;
+    Math::IntPoint texSize;
+    Math::IntPoint charSize;
 };
 
 // Definition is private - in text.cpp
@@ -308,7 +309,7 @@ public:
     CharTexture GetCharTexture(UTF8Char ch, FontType font, float size);
 
 protected:
-    CachedFont* GetOrOpenFont(FontType type, float size);
+    CachedFont* GetOrOpenFont(FontType font, float size);
     CharTexture CreateCharTexture(UTF8Char ch, CachedFont* font);
 
     void        DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,

@@ -30,9 +30,6 @@ msgstr " Rozdziały:"
 msgid " Custom levels:"
 msgstr " Własne poziomy:"
 
-msgid " Drivers:"
-msgstr " Sterowniki:"
-
 msgid " Exercises in the chapter:"
 msgstr " Ćwiczenia w tym rozdziale:"
 
@@ -56,9 +53,6 @@ msgstr " Streszczenie:"
 
 msgid " or "
 msgstr " lub "
-
-msgid "\" [ \" expected"
-msgstr "Oczekiwane \" [ \""
 
 msgid "\" ] \" missing"
 msgstr "Brak \" ] \""
@@ -322,9 +316,6 @@ msgstr "Budowa zakończona"
 msgid "Building destroyed"
 msgstr "Budynek zniszczony"
 
-msgid "Building too close"
-msgstr "Budynek za blisko"
-
 msgid "Button %1"
 msgstr "Przycisk %1"
 
@@ -358,17 +349,11 @@ msgstr "Camera to right"
 msgid "Camera up\\Increase camera angle while visiting message origin"
 msgstr "Kamera w górę\\Podnieś kamerę podczas sprawdzania źródła wiadomości"
 
-msgid "Can not create this; there are too many objects"
-msgstr "Nie można tego utworzyć, za dużo obiektów"
-
 msgid "Can not produce not researched object"
 msgstr "Nie można wyprodukować nie wynalezionego obiektu"
 
 msgid "Can not produce this object in this mission"
 msgstr "Nie można utworzyć tego obiektu w tej misji"
-
-msgid "Can't open file"
-msgstr "Nie można otworzyć pliku"
 
 msgid "Cancel"
 msgstr "Anuluj"
@@ -391,9 +376,6 @@ msgstr "Zmień gracza\\Zmień gracza"
 msgid "Checkpoint"
 msgstr "Punkt kontrolny"
 
-msgid "Checkpoint crossed"
-msgstr "Przekroczono punkt kontrolny"
-
 msgid "Climb\\Increases the power of the jet"
 msgstr "W górę\\Zwiększa moc silnika"
 
@@ -413,7 +395,8 @@ msgid "Code battles"
 msgstr "Programobitwy"
 
 msgid "Code battles\\Program your robot to be the best of them all!"
-msgstr "Programobitwy\\Zaprogramuj swego robota by był najlepszy ze wszystkich!"
+msgstr ""
+"Programobitwy\\Zaprogramuj swego robota by był najlepszy ze wszystkich!"
 
 msgid "Colobot rules!"
 msgstr "Colobot rządzi!"
@@ -566,9 +549,6 @@ msgstr "Okulary:"
 msgid "Face type:"
 msgstr "Rodzaj twarzy:"
 
-msgid "File not open"
-msgstr "Plik nie jest otwarty"
-
 msgid "Filename:"
 msgstr "Nazwa pliku:"
 
@@ -672,9 +652,6 @@ msgstr "Zielony"
 msgid "Green flag"
 msgstr "Zielona flaga"
 
-msgid "Ground inappropriate"
-msgstr "Nieodpowiedni teren"
-
 msgid "Ground not flat enough"
 msgstr "Powierzchnia nie jest wystarczająco płaska"
 
@@ -750,9 +727,6 @@ msgstr "Polecenie \"else\" bez wystąpienia \"if\" "
 
 msgid "Instructions (\\key help;)"
 msgstr "Rozkazy (\\key help;)"
-
-msgid "Instructions after the final closing brace"
-msgstr "Polecenie po końcowej klamrze zamykającej"
 
 msgid "Instructions for the mission (\\key help;)"
 msgstr "Rozkazy dotyczące misji (\\key help;)"
@@ -929,9 +903,6 @@ msgstr "Nie ma więcej energii"
 msgid "No ore in the subsoil"
 msgstr "W ziemi nie ma żadnej rudy"
 
-msgid "No other robot"
-msgstr "Brak innego robota"
-
 msgid "No power cell"
 msgstr "Brak ogniwa elektrycznego"
 
@@ -971,9 +942,6 @@ msgstr "Wciąż za mało energii"
 msgid "Not found anything to destroy"
 msgstr "Nie znaleziono nic do zniszczenia"
 
-msgid "Not yet enough energy"
-msgstr "Wciąż za mało energii"
-
 msgid "Nothing to analyze"
 msgstr "Nie ma niczego do zanalizowania"
 
@@ -1012,9 +980,6 @@ msgstr "OK\\Wybiera zaznaczonego gracza"
 
 msgid "OK\\Close program editor and return to game"
 msgstr "OK\\Zamyka edytor programu i powraca do gry"
-
-msgid "Object not found"
-msgstr "Obiekt nieznany"
 
 msgid "Object too close"
 msgstr "Obiekt za blisko"
@@ -1198,9 +1163,6 @@ msgstr "Zakończ\\Kończy bieżącą misję lub ćwiczenie"
 msgid "Radar station"
 msgstr "Stacja radarowa"
 
-msgid "Read error"
-msgstr "Błąd odczytu"
-
 msgid "Recorder"
 msgstr "Nagrywanie"
 
@@ -1299,9 +1261,6 @@ msgstr "Rozpocznij prace badawcze nad transporterem na gąsienicach"
 
 msgid "Run research program for winged bots"
 msgstr "Rozpocznij prace badawcze nad transporterem latającym"
-
-msgid "SatCom"
-msgstr "SatCom"
 
 msgid "Satellite report"
 msgstr "Raport z satelity"
@@ -1493,16 +1452,6 @@ msgstr "Tekstury"
 
 msgid "The expression must return a boolean value"
 msgstr "Wyrażenie musi zwrócić wartość logiczną"
-
-msgid "The function returned no value "
-msgstr "Funkcja nie zwróciła żadnej wartości "
-
-msgid ""
-"The list is only available if a \\l;radar station\\u object\\radar; is "
-"working.\n"
-msgstr ""
-"Lista jest dostępna jedynie gdy działa \\l;stacja radarowa\\u object"
-"\\radar;.\n"
 
 msgid ""
 "The mission is not accomplished yet (press \\key help; for more details)"
@@ -1706,9 +1655,6 @@ msgstr "Robal śmiertelnie raniony"
 msgid "Wreckage"
 msgstr "Wrak"
 
-msgid "Write error"
-msgstr "Błąd zapisu"
-
 msgid "Wrong type for the assignment"
 msgstr "Zły typ dla przypisania"
 
@@ -1829,38 +1775,35 @@ msgstr "\\Fioletowe flagi"
 msgid "\\Yellow flags"
 msgstr "\\Żółte flagi"
 
-msgid "\\b;Aliens\n"
-msgstr "\\b;Obcy\n"
-
-msgid "\\b;Buildings\n"
-msgstr "\\b;Budynki\n"
-
-msgid "\\b;Error\n"
-msgstr "\\b;Błąd\n"
-
-msgid "\\b;List of objects\n"
-msgstr "\\b;Lista obiektów\n"
-
-msgid "\\b;Moveable objects\n"
-msgstr "\\b;Obiekty ruchome\n"
-
-msgid "\\b;Robots\n"
-msgstr "\\b;Roboty\n"
-
-msgid "\\c; (none)\\n;\n"
-msgstr "\\c; (brak)\\n;\n"
-
 msgid "www.colobot.info"
 msgstr ""
 
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
 
+#~ msgid " Drivers:"
+#~ msgstr " Sterowniki:"
+
+#~ msgid "\" [ \" expected"
+#~ msgstr "Oczekiwane \" [ \""
+
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
 
+#~ msgid "Building too close"
+#~ msgstr "Budynek za blisko"
+
+#~ msgid "Can not create this; there are too many objects"
+#~ msgstr "Nie można tego utworzyć, za dużo obiektów"
+
+#~ msgid "Can't open file"
+#~ msgstr "Nie można otworzyć pliku"
+
 #~ msgid "Cancel\\Keep current player name"
 #~ msgstr "Anuluj\\Zachowuje bieżące imię gracza"
+
+#~ msgid "Checkpoint crossed"
+#~ msgstr "Przekroczono punkt kontrolny"
 
 #~ msgid "Compass"
 #~ msgstr "Kompas"
@@ -1880,8 +1823,17 @@ msgstr "www.epsitec.com"
 #~ msgid "Exit film\\Film at the exit of exercises"
 #~ msgstr "Końcowy film\\Film na zakończenie ćwiczeń"
 
+#~ msgid "File not open"
+#~ msgstr "Plik nie jest otwarty"
+
 #~ msgid "Friendly fire\\Your shooting can damage your own objects "
 #~ msgstr "Przyjacielski ogień\\Własne strzały uszkadzają Twoje obiekty"
+
+#~ msgid "Ground inappropriate"
+#~ msgstr "Nieodpowiedni teren"
+
+#~ msgid "Instructions after the final closing brace"
+#~ msgstr "Polecenie po końcowej klamrze zamykającej"
 
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr ""
@@ -1896,9 +1848,18 @@ msgstr "www.epsitec.com"
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Cień kursora myszy\\Dodaje cień kursorowi myszy"
 
+#~ msgid "No other robot"
+#~ msgstr "Brak innego robota"
+
+#~ msgid "Not yet enough energy"
+#~ msgstr "Wciąż za mało energii"
+
 #~ msgid "Num of decorative objects\\Number of purely ornamental objects"
 #~ msgstr ""
 #~ "Ilość elementów dekoracyjnych \\Ilość elementów czysto dekoracyjnych"
+
+#~ msgid "Object not found"
+#~ msgstr "Obiekt nieznany"
 
 #~ msgid "Planets and stars\\Astronomical objects in the sky"
 #~ msgstr "Planety i gwiazdy\\Obiekty astronomiczne na niebie"
@@ -1906,8 +1867,14 @@ msgstr "www.epsitec.com"
 #~ msgid "Quit the mission?"
 #~ msgstr "Opuścić misję?"
 
+#~ msgid "Read error"
+#~ msgstr "Błąd odczytu"
+
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Robbie\\Twój asystent"
+
+#~ msgid "SatCom"
+#~ msgstr "SatCom"
 
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Niebo\\Chmury i mgławice"
@@ -1917,3 +1884,37 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Tekstury\\Jakość tekstur "
+
+#~ msgid "The function returned no value "
+#~ msgstr "Funkcja nie zwróciła żadnej wartości "
+
+#~ msgid ""
+#~ "The list is only available if a \\l;radar station\\u object\\radar; is "
+#~ "working.\n"
+#~ msgstr ""
+#~ "Lista jest dostępna jedynie gdy działa \\l;stacja radarowa\\u object"
+#~ "\\radar;.\n"
+
+#~ msgid "Write error"
+#~ msgstr "Błąd zapisu"
+
+#~ msgid "\\b;Aliens\n"
+#~ msgstr "\\b;Obcy\n"
+
+#~ msgid "\\b;Buildings\n"
+#~ msgstr "\\b;Budynki\n"
+
+#~ msgid "\\b;Error\n"
+#~ msgstr "\\b;Błąd\n"
+
+#~ msgid "\\b;List of objects\n"
+#~ msgstr "\\b;Lista obiektów\n"
+
+#~ msgid "\\b;Moveable objects\n"
+#~ msgstr "\\b;Obiekty ruchome\n"
+
+#~ msgid "\\b;Robots\n"
+#~ msgstr "\\b;Roboty\n"
+
+#~ msgid "\\c; (none)\\n;\n"
+#~ msgstr "\\c; (brak)\\n;\n"

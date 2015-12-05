@@ -24,13 +24,16 @@
 
 #pragma once
 
-#include "common/event.h"
 #include "common/key.h"
 #include "common/singleton.h"
 
 #include "math/intpoint.h"
+#include "math/point.h"
+#include "math/vector.h"
 
 #include <map>
+
+struct Event;
 
 /**
  * \struct InputBinding
@@ -128,7 +131,7 @@ public:
     //@}
 
     //! Seeks a InputSlot by id. Returns INPUT_SLOT_MAX if not found
-    InputSlot   SearchKeyById(std::string name);
+    InputSlot   SearchKeyById(std::string id);
 
     //! Returns string describing keys to be pressed
     //@{

@@ -20,38 +20,40 @@
 #pragma once
 
 #include "common/event.h"
-#include "common/misc.h"
-
-#include "graphics/engine/camera.h"
-#include "graphics/engine/engine.h"
 
 #include "math/point.h"
 
-#include "ui/controls/button.h"
-#include "ui/controls/check.h"
-#include "ui/controls/color.h"
-#include "ui/controls/control.h"
-#include "ui/controls/edit.h"
-#include "ui/controls/editvalue.h"
-#include "ui/controls/enumslider.h"
-#include "ui/controls/group.h"
-#include "ui/controls/image.h"
-#include "ui/controls/key.h"
-#include "ui/controls/label.h"
-#include "ui/controls/list.h"
-#include "ui/controls/map.h"
-#include "ui/controls/scroll.h"
-#include "ui/controls/shortcut.h"
-#include "ui/controls/slider.h"
-#include "ui/controls/target.h"
-#include "ui/controls/window.h"
-
+#include <array>
 #include <memory>
 #include <string>
-#include <vector>
+
+namespace Gfx
+{
+class CCamera;
+class CEngine;
+} // namespace Gfx
 
 namespace Ui
 {
+
+class CButton;
+class CCheck;
+class CColor;
+class CControl;
+class CEdit;
+class CEditValue;
+class CEnumSlider;
+class CGroup;
+class CImage;
+class CKey;
+class CLabel;
+class CList;
+class CMap;
+class CScroll;
+class CShortcut;
+class CSlider;
+class CTarget;
+class CWindow;
 
 const int MAXCONTROL = 100;
 

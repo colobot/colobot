@@ -32,11 +32,11 @@
 
 #include <al.h>
 
-class Buffer
+class CBuffer
 {
 public:
-    Buffer();
-    ~Buffer();
+    CBuffer();
+    ~CBuffer();
 
     bool LoadFromFile(std::string, SoundType);
     bool IsLoaded();

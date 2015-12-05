@@ -29,13 +29,14 @@
 #include "common/make_unique.h"
 #include "common/settings.h"
 
-#include "level/robotmain.h"
 #include "level/player_profile.h"
+#include "level/robotmain.h"
 
 #include "sound/sound.h"
 
 #include "ui/controls/button.h"
 #include "ui/controls/interface.h"
+#include "ui/controls/label.h"
 #include "ui/controls/window.h"
 
 #include "ui/screen/screen_setup.h"
@@ -370,7 +371,7 @@ void CMainDialog::StartDialog(Math::Point dim, bool fireParticles)
     if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
-    if ( pw != nullptr )  pw->ClearState(STATE_VISIBLE);
+    if ( pw != nullptr )  pw->ClearState(STATE_VISIBLE | STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW7));
     if ( pw != nullptr )  pw->ClearState(STATE_ENABLE);
@@ -525,7 +526,7 @@ void CMainDialog::StopDialog()
     if ( pw != nullptr )  pw->SetState(STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
-    if ( pw != nullptr )  pw->SetState(STATE_VISIBLE);
+    if ( pw != nullptr )  pw->SetState(STATE_VISIBLE | STATE_ENABLE);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW7));
     if ( pw != nullptr )  pw->SetState(STATE_ENABLE);

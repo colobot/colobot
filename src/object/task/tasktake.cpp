@@ -136,7 +136,7 @@ Error CTaskTake::Start()
             CObject* power = dynamic_cast<CPoweredObject*>(other)->GetPower();
             type = power->GetType();
             if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
-            if ( !power->Implements(ObjectInterfaceType::Transportable) )  return ERR_MANIP_FRIEND; // TODO: This makes no sense, probably redundant
+            assert(power->Implements(ObjectInterfaceType::Transportable));
 //?         m_camera->StartCentering(m_object, Math::PI*0.3f, -Math::PI*0.1f, 0.0f, 0.8f);
             m_arm = TTA_FRIEND;
         }

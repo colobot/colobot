@@ -69,7 +69,7 @@ public:
     #endif
 
 private:
-    CSingleton& operator=(const CSingleton<T> &);
-    CSingleton(const CSingleton<T> &);
+    CSingleton& operator=(const CSingleton<T> &) = delete;
+    CSingleton(const CSingleton<T> &) = delete;
 };
 

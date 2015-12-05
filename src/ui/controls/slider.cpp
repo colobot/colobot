@@ -338,19 +338,25 @@ bool CSlider::EventProcess(const Event &event)
     }
 
     if (event.type == EVENT_MOUSE_WHEEL &&
-        event.GetData<MouseWheelEventData>()->dir == WHEEL_UP &&
-        Detect(event.mousePos) &&
-        m_buttonLeft != nullptr)
+        Detect(event.mousePos))
     {
-        m_event->AddEvent(Event(m_buttonLeft->GetEventType()));
-    }
-
-    if (event.type == EVENT_MOUSE_WHEEL &&
-        event.GetData<MouseWheelEventData>()->dir == WHEEL_DOWN &&
-        Detect(event.mousePos) &&
-        m_buttonRight != nullptr)
-    {
-        m_event->AddEvent(Event(m_buttonRight->GetEventType()));
+        auto data = event.GetData<MouseWheelEventData>();
+        if (data->y > 0)
+        {
+            if (m_buttonLeft != nullptr)
+            {
+                for (int i = 0; i < data->y; i++)
+                    m_event->AddEvent(Event(m_buttonLeft->GetEventType()));
+            }
+        }
+        else
+        {
+            if (m_buttonRight != nullptr)
+            {
+                for (int i = 0; i < -(data->y); i++)
+                    m_event->AddEvent(Event(m_buttonRight->GetEventType()));
+            }
+        }
     }
 
     return true;

@@ -66,7 +66,7 @@ std::unique_ptr<CShielder> CShielder::Create(
     obj->SetProgrammable();
     obj->SetMovable(std::move(motion), std::move(physics));
 
-    return std::move(obj);
+    return obj;
 }
 
 void CShielder::SetShieldRadius(float shieldRadius)

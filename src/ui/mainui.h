@@ -34,7 +34,7 @@ namespace Gfx
 {
 class CEngine;
 class CParticle;
-}
+} // namespace Gfx
 
 namespace Ui
 {
@@ -64,7 +64,6 @@ class CMainUserInterface
 public:
     CMainUserInterface();
     ~CMainUserInterface();
-    void    Create();
 
     CMainDialog* GetDialog();
 

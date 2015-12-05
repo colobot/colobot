@@ -25,6 +25,7 @@
 #include <SDL_thread.h>
 
 #include <memory>
+#include <string>
 
 /**
  * \class CResourceOwningThread
@@ -52,9 +53,10 @@ public:
     using ResourceUPtr = std::unique_ptr<Resource>;
     using ThreadFunctionPtr = void(*)(ResourceUPtr);
 
-    CResourceOwningThread(ThreadFunctionPtr threadFunction, ResourceUPtr resource)
+    CResourceOwningThread(ThreadFunctionPtr threadFunction, ResourceUPtr resource, std::string name = "")
         : m_threadFunction(threadFunction),
-          m_resource(std::move(resource))
+          m_resource(std::move(resource)),
+          m_name(name)
     {}
 
     void Start()
@@ -72,7 +74,7 @@ public:
 
         SDL_LockMutex(*mutex);
 
-        SDL_CreateThread(Run, reinterpret_cast<void*>(&data));
+        SDL_CreateThread(Run, !m_name.empty() ? m_name.c_str() : nullptr, reinterpret_cast<void*>(&data));
 
         while (!condition)
         {
@@ -114,4 +116,5 @@ private:
 
     ThreadFunctionPtr m_threadFunction;
     ResourceUPtr m_resource;
+    std::string m_name;
 };

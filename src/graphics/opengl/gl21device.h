@@ -26,7 +26,11 @@
 
 #include "graphics/core/device.h"
 
+#include "graphics/core/material.h"
+
 #include "graphics/opengl/glutil.h"
+
+#include "math/matrix.h"
 
 #include <string>
 #include <vector>
@@ -37,8 +41,6 @@
 // Graphics module namespace
 namespace Gfx
 {
-
-struct GLDevicePrivate;
 
 /**
   \class CGL21Device

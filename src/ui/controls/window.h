@@ -21,24 +21,7 @@
 
 #include "ui/controls/control.h"
 
-#include "ui/controls/button.h"
-#include "ui/controls/check.h"
-#include "ui/controls/color.h"
-#include "ui/controls/control.h"
-#include "ui/controls/edit.h"
-#include "ui/controls/editvalue.h"
-#include "ui/controls/enumslider.h"
-#include "ui/controls/gauge.h"
-#include "ui/controls/group.h"
-#include "ui/controls/image.h"
-#include "ui/controls/key.h"
-#include "ui/controls/label.h"
-#include "ui/controls/list.h"
-#include "ui/controls/map.h"
-#include "ui/controls/scroll.h"
-#include "ui/controls/shortcut.h"
-#include "ui/controls/slider.h"
-#include "ui/controls/target.h"
+#include "graphics/engine/engine.h" // TODO: only needed for EngineMouseType
 
 #include <memory>
 #include <string>
@@ -46,6 +29,24 @@
 
 namespace Ui
 {
+
+class CButton;
+class CColor;
+class CCheck;
+class CKey;
+class CGroup;
+class CImage;
+class CLabel;
+class CEdit;
+class CEditValue;
+class CScroll;
+class CSlider;
+class CEnumSlider;
+class CList;
+class CShortcut;
+class CMap;
+class CGauge;
+class CTarget;
 
 class CWindow : public CControl
 {
@@ -150,4 +151,4 @@ protected:
 };
 
 
-}
+} // namespace Ui

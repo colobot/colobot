@@ -889,5 +889,5 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     obj->UpdateMapping();
 
-    return std::move(obj);
+    return obj;
 }

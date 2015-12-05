@@ -21,12 +21,6 @@
 
 #include "ui/controls/control.h"
 
-
-namespace Gfx
-{
-class CEngine;
-}
-
 namespace Ui
 {
 
@@ -43,4 +37,4 @@ public:
     void    Draw() override;
 };
 
-}
+} // namespace Ui

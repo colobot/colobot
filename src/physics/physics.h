@@ -46,12 +46,11 @@ namespace Gfx
 {
 class CCamera;
 class CEngine;
-class CLight;
 class CParticle;
 class CTerrain;
 class CWater;
 class CLightManager;
-}
+} // namespace Gfx
 
 
 enum PhysicsMode

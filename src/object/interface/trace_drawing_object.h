@@ -53,9 +53,9 @@ enum class TraceColor
     Max,
 };
 //! Convert TraceColor to a std::string
-std::string TraceColorName(TraceColor c);
+std::string TraceColorName(TraceColor color);
 //! Return Gfx::Color for this TraceColor constants
-Gfx::Color TraceColorColor(TraceColor c);
+Gfx::Color TraceColorColor(TraceColor color);
 
 /**
  * \class CTraceDrawingObject

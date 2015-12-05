@@ -20,9 +20,6 @@ msgstr ""
 msgid "Colobot rules!"
 msgstr ""
 
-msgid "SatCom"
-msgstr ""
-
 msgid "Maximize"
 msgstr ""
 
@@ -113,9 +110,6 @@ msgstr ""
 msgid " Summary:"
 msgstr ""
 
-msgid " Drivers:"
-msgstr ""
-
 msgid " Resolution:"
 msgstr ""
 
@@ -187,32 +181,6 @@ msgid "This program is read-only, clone it to edit"
 msgstr ""
 
 msgid "This is example code that cannot be run directly"
-msgstr ""
-
-msgid "\\b;List of objects\n"
-msgstr ""
-
-msgid "\\b;Robots\n"
-msgstr ""
-
-msgid "\\b;Buildings\n"
-msgstr ""
-
-msgid "\\b;Moveable objects\n"
-msgstr ""
-
-msgid "\\b;Aliens\n"
-msgstr ""
-
-msgid "\\c; (none)\\n;\n"
-msgstr ""
-
-msgid "\\b;Error\n"
-msgstr ""
-
-msgid ""
-"The list is only available if a \\l;radar station\\u object\\radar; is "
-"working.\n"
 msgstr ""
 
 msgid "Open"
@@ -1388,9 +1356,6 @@ msgstr ""
 msgid "Place occupied"
 msgstr ""
 
-msgid "No other robot"
-msgstr ""
-
 msgid "You can not carry a radioactive object"
 msgstr ""
 
@@ -1401,9 +1366,6 @@ msgid "Nothing to drop"
 msgstr ""
 
 msgid "Impossible under water"
-msgstr ""
-
-msgid "Not enough energy"
 msgstr ""
 
 msgid "Titanium too far away"
@@ -1433,13 +1395,7 @@ msgstr ""
 msgid "Can not produce not researched object"
 msgstr ""
 
-msgid "Ground inappropriate"
-msgstr ""
-
-msgid "Building too close"
-msgstr ""
-
-msgid "Object too close"
+msgid "Not enough energy"
 msgstr ""
 
 msgid "Nothing to recycle"
@@ -1449,9 +1405,6 @@ msgid "No more energy"
 msgstr ""
 
 msgid "Error in instruction move"
-msgstr ""
-
-msgid "Object not found"
 msgstr ""
 
 msgid "Goto: inaccessible destination"
@@ -1502,9 +1455,6 @@ msgstr ""
 msgid "Analysis already performed"
 msgstr ""
 
-msgid "Not yet enough energy"
-msgstr ""
-
 msgid "No uranium to transform"
 msgstr ""
 
@@ -1512,6 +1462,9 @@ msgid "Transforms only uranium"
 msgstr ""
 
 msgid "No titanium"
+msgstr ""
+
+msgid "Object too close"
 msgstr ""
 
 msgid "No information exchange post within range"
@@ -1552,9 +1505,6 @@ msgid "Bot destroyed"
 msgstr ""
 
 msgid "Building destroyed"
-msgstr ""
-
-msgid "Can not create this; there are too many objects"
 msgstr ""
 
 msgid "Unable to control enemy objects"
@@ -1633,9 +1583,6 @@ msgstr ""
 msgid "Current mission saved"
 msgstr ""
 
-msgid "Checkpoint crossed"
-msgstr ""
-
 msgid "Alien Queen killed"
 msgstr ""
 
@@ -1673,9 +1620,6 @@ msgid "Semicolon terminator missing"
 msgstr ""
 
 msgid "Instruction \"case\" outside a block \"switch\""
-msgstr ""
-
-msgid "Instructions after the final closing brace"
 msgstr ""
 
 msgid "End of block missing"
@@ -1768,9 +1712,6 @@ msgstr ""
 msgid "Bad argument for \"new\""
 msgstr ""
 
-msgid "\" [ \" expected"
-msgstr ""
-
 msgid "String missing"
 msgstr ""
 
@@ -1790,9 +1731,6 @@ msgid "Variable not initialized"
 msgstr ""
 
 msgid "Negative value rejected by \"throw\""
-msgstr ""
-
-msgid "The function returned no value "
 msgstr ""
 
 msgid "No function running"
@@ -1817,18 +1755,6 @@ msgid "Stack overflow"
 msgstr ""
 
 msgid "Illegal object"
-msgstr ""
-
-msgid "Can't open file"
-msgstr ""
-
-msgid "File not open"
-msgstr ""
-
-msgid "Read error"
-msgstr ""
-
-msgid "Write error"
 msgstr ""
 
 msgid "Button %1"

@@ -19,6 +19,8 @@
 
 #include "script/scriptfunc.h"
 
+#include "CBot/CBot.h"
+
 #include "app/app.h"
 
 #include "common/global.h"
@@ -1027,51 +1029,56 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
 }
 
 
-// Compilation of instruction "radar(type, angle, focus, min, max, sens)".
-
-CBotTypResult CScriptFunctions::cRadar(CBotVar* &var, void* user)
+CBotTypResult compileRadar(CBotVar* &var, void* user, CBotTypResult returnValue)
 {
     CBotVar*    array;
 
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() == CBotTypArrayPointer )
     {
         array = var->GetItemList();
-        if ( array == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+        if ( array == nullptr )  return returnValue;
         if ( array->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // type
     }
     else if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // type
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // angle
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // focus
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // min
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // max
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // sense
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // filter
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     return CBotTypResult(CBotErrOverParam);
 }
 
-// Instruction "radar(type, angle, focus, min, max, sens, filter)".
-
-bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
+CBotTypResult CScriptFunctions::cRadarAll(CBotVar* &var, void* user)
 {
-    CObject*    pThis = static_cast<CScript*>(user)->m_object;
-    CObject     *pBest;
+    return compileRadar(var, user, CBotTypResult(CBotTypArrayPointer, CBotTypResult(CBotTypPointer, "object")));
+}
+
+// Compilation of instruction "radar(type, angle, focus, min, max, sens)".
+
+CBotTypResult CScriptFunctions::cRadar(CBotVar* &var, void* user)
+{
+    return compileRadar(var, user, CBotTypResult(CBotTypPointer, "object"));
+}
+
+bool runRadar(CBotVar* var, std::function<bool(std::vector<ObjectType>, float, float, float, float, bool, RadarFilter)> code)
+{
     CBotVar*    array;
-    Math::Vector    oPos;
     RadarFilter filter;
     float       minDist, maxDist, sens, angle, focus;
     int         type;
@@ -1153,17 +1160,47 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
         }
     }
 
-    pBest = CObjectManager::GetInstancePointer()->Radar(pThis, type_v, angle, focus, minDist, maxDist, sens < 0, filter, true); //TODO: why is "sens" done like that?
+    return code(type_v, angle, focus, minDist, maxDist, sens < 0, filter);
+}
 
-    if ( pBest == nullptr )
+// Instruction "radar(type, angle, focus, min, max, sens, filter)".
+
+bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    return runRadar(var, [&result, user](std::vector<ObjectType> types, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter)
     {
-        result->SetPointer(nullptr);
-    }
-    else
+        CObject* pThis = static_cast<CScript*>(user)->m_object;
+        CObject* best = CObjectManager::GetInstancePointer()->Radar(pThis, types, angle, focus, minDist, maxDist, furthest, filter, true);
+
+        if (best == nullptr)
+        {
+            result->SetPointer(nullptr);
+        }
+        else
+        {
+            result->SetPointer(best->GetBotVar());
+        }
+
+        return true;
+    });
+}
+
+bool CScriptFunctions::rRadarAll(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    return runRadar(var, [&result, user](std::vector<ObjectType> types, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter)
     {
-        result->SetPointer(pBest->GetBotVar());
-    }
-    return true;
+        CObject* pThis = static_cast<CScript*>(user)->m_object;
+        std::vector<CObject*> best = CObjectManager::GetInstancePointer()->RadarAll(pThis, types, angle, focus, minDist, maxDist, furthest, filter, true);
+
+        int i = 0;
+        result->SetInit(CBotVar::InitType::DEF);
+        for (CObject* obj : best)
+        {
+            result->GetItem(i++, true)->SetPointer(obj->GetBotVar());
+        }
+
+        return true;
+    });
 }
 
 
@@ -3680,14 +3717,14 @@ void CScriptFunctions::Init()
     CBotClass* bc;
 
     // Add the class Point.
-    bc = new CBotClass("point", nullptr, true);  // intrinsic class
+    bc = CBotClass::Create("point", nullptr, true);  // intrinsic class
     bc->AddItem("x", CBotTypFloat);
     bc->AddItem("y", CBotTypFloat);
     bc->AddItem("z", CBotTypFloat);
     bc->AddFunction("point", CScriptFunctions::rPointConstructor, CScriptFunctions::cPointConstructor);
 
     // Adds the class Object.
-    bc = new CBotClass("object", nullptr);
+    bc = CBotClass::Create("object", nullptr);
     bc->AddItem("category",    CBotTypResult(CBotTypInt), PR_READ);
     bc->AddItem("position",    CBotTypResult(CBotTypClass, "point"), PR_READ);
     bc->AddItem("orientation", CBotTypResult(CBotTypFloat), PR_READ);
@@ -3718,7 +3755,7 @@ void CScriptFunctions::Init()
     // canal.close();   // close the file
 
     // create the class FILE
-    bc    = new CBotClass("file", nullptr);
+    bc    = CBotClass::Create("file", nullptr);
     // adds the component ".filename"
     bc->AddItem("filename", CBotTypString);
     // adds the component ".handle"
@@ -3779,6 +3816,7 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("delete",    rDelete,    CScriptFunctions::cDelete);
     CBotProgram::AddFunction("search",    rSearch,    CScriptFunctions::cSearch);
     CBotProgram::AddFunction("radar",     rRadar,     CScriptFunctions::cRadar);
+    CBotProgram::AddFunction("radarall",  rRadarAll,  CScriptFunctions::cRadarAll);
     CBotProgram::AddFunction("detect",    rDetect,    CScriptFunctions::cDetect);
     CBotProgram::AddFunction("direction", rDirection, CScriptFunctions::cDirection);
     CBotProgram::AddFunction("produce",   rProduce,   CScriptFunctions::cProduce);
@@ -3991,6 +4029,6 @@ void CScriptFunctions::DestroyObjectVar(CBotVar* botVar, bool permanent)
     if ( botVar == nullptr ) return;
 
     botVar->SetUserPtr(OBJECTDELETED);
-    if(permanent)
-        delete botVar;
+    if (permanent)
+        CBotVar::Destroy(botVar);
 }

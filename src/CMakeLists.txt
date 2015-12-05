@@ -41,10 +41,10 @@ elseif(PLATFORM_WINDOWS)
         set(PLATFORM_LIBS "-lintl")
     endif()
 elseif(PLATFORM_GNU)
-    set(PLATFORM_LIBS "-lX11")
+    set(PLATFORM_LIBS "")
 elseif(PLATFORM_LINUX)
     # for clock_gettime
-    set(PLATFORM_LIBS "-lrt -lX11")
+    set(PLATFORM_LIBS "-lrt")
 elseif(PLATFORM_MACOSX)
     find_library(LIBINTL_LIBRARY NAMES intl libintl)
     find_path(LIBINTL_INCLUDE_PATH NAMES libintl.h)
@@ -54,6 +54,7 @@ endif()
 
 # Configure file
 configure_file(common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
+configure_file(common/version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/version.h)
 
 set(OPENAL_SRC "")
 
@@ -146,6 +147,7 @@ set(BASE_SOURCES
     object/auto/autoflag.cpp
     object/auto/autohouston.cpp
     object/auto/autojostle.cpp
+    object/auto/autokid.cpp
     object/auto/autolabo.cpp
     object/auto/automush.cpp
     object/auto/autonest.cpp
@@ -271,11 +273,10 @@ set(MAIN_SOURCES
 # Libraries
 set(LIBS
     CBot
-    clipboard
     localename
-    ${SDL_LIBRARY}
-    ${SDLIMAGE_LIBRARY}
-    ${SDLTTF_LIBRARY}
+    ${SDL2_LIBRARY}
+    ${SDL2_IMAGE_LIBRARY}
+    ${SDL2_TTF_LIBRARY}
     ${OPENGL_LIBRARY}
     ${PNG_LIBRARIES}
     ${GLEW_LIBRARY}
@@ -297,15 +298,14 @@ set(LOCAL_INCLUDES
 )
 
 set(SYSTEM_INCLUDES
-    ${SDL_INCLUDE_DIR}
-    ${SDLIMAGE_INCLUDE_DIR}
-    ${SDLTTF_INCLUDE_DIR}
+    ${SDL2_INCLUDE_DIR}
+    ${SDL2_IMAGE_INCLUDE_DIR}
+    ${SDL2_TTF_INCLUDE_DIR}
     ${PNG_INCLUDE_DIRS}
     ${GLEW_INCLUDE_PATH}
     ${Boost_INCLUDE_DIRS}
     ${LIBSNDFILE_INCLUDE_DIR}
     ${LOCALENAME_INCLUDE_DIR}
-    ${CLIPBOARD_INCLUDE_DIR}
     ${PHYSFS_INCLUDE_PATH}
     ${LIBINTL_INCLUDE_PATH}
     ${OPTIONAL_INCLUDES}

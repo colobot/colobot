@@ -24,8 +24,12 @@
 
 #pragma once
 
-
 #include "graphics/core/device.h"
+
+#include "graphics/core/light.h"
+#include "graphics/core/material.h"
+
+#include "math/matrix.h"
 
 // Graphics module namespace
 namespace Gfx

@@ -25,6 +25,8 @@
 #include "common/image.h"
 #include "common/logger.h"
 
+#include "graphics/core/light.h"
+
 #include "graphics/engine/engine.h"
 
 #include "graphics/opengl/glframebuffer.h"
@@ -160,7 +162,7 @@ bool CGLDevice::Create()
 {
     GetLogger()->Info("Creating CDevice - OpenGL 1.4\n");
 
-    /*static*/ bool glewInited = false;
+    static bool glewInited = false;
 
     if (!glewInited)
     {
@@ -337,8 +339,17 @@ void CGLDevice::ConfigChanged(const DeviceConfig& newConfig)
 
     // Reset state
     m_lighting = false;
-    Destroy();
-    Create();
+
+    glViewport(0, 0, m_config.size.x, m_config.size.y);
+
+    // create default framebuffer object
+    FramebufferParams framebufferParams;
+
+    framebufferParams.width = m_config.size.x;
+    framebufferParams.height = m_config.size.y;
+    framebufferParams.depth = m_config.depthSize;
+
+    m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
 }
 
 void CGLDevice::BeginScene()
@@ -687,8 +698,6 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
         SDL_PixelFormat format;
         format.BytesPerPixel = 4;
         format.BitsPerPixel = 32;
-        format.alpha = 0;
-        format.colorkey = 0;
         format.Aloss = format.Bloss = format.Gloss = format.Rloss = 0;
         format.Amask = 0xFF000000;
         format.Ashift = 24;

@@ -21,12 +21,7 @@
 
 #include "ui/controls/control.h"
 
-
-namespace Gfx
-{
-class CEngine;
-struct Color;
-}
+#include "graphics/core/color.h"
 
 namespace Ui
 {

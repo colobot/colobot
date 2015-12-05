@@ -24,10 +24,9 @@
 
 #pragma once
 
-#include "level/level_category.h"
-
 #include "common/make_unique.h"
 
+#include "level/level_category.h"
 #include "level/robotmain.h"
 
 #include "level/parser/parserexceptions.h"

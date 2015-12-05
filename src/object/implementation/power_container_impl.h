@@ -21,7 +21,6 @@
 
 #include "object/interface/power_container_object.h"
 
-class CObject;
 
 class CPowerContainerObjectImpl : public CPowerContainerObject
 {

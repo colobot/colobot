@@ -24,8 +24,6 @@
 
 #pragma once
 
-
-#include "graphics/core/color.h"
 #include "graphics/core/light.h"
 
 #include "graphics/engine/engine.h"
@@ -36,6 +34,8 @@
 // Graphics module namespace
 namespace Gfx
 {
+
+struct Color;
 
 /**
  * \struct LightProgression
@@ -168,7 +168,7 @@ public:
     //! Returns the light parameters for given dynamic light
     bool            GetLight(int lightRank, Light &light);
     //! Enables/disables the given dynamic light
-    bool            SetLightEnabled(int lightRank, bool enable);
+    bool            SetLightEnabled(int lightRank, bool enabled);
     //! Changes the light priority
     bool            SetLightPriority(int lightRank, LightPriority priority);
 
@@ -212,10 +212,10 @@ public:
     void            UpdateDeviceLights(EngineObjectType type);
 
 protected:
-    class LightsComparator
+    class CLightsComparator
     {
         public:
-            LightsComparator(Math::Vector eyePos, EngineObjectType objectType);
+            CLightsComparator(Math::Vector eyePos, EngineObjectType objectType);
 
             bool operator()(const DynamicLight& left, const DynamicLight& right);
 

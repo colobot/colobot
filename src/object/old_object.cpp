@@ -20,12 +20,11 @@
 
 #include "object/old_object.h"
 
-#include "CBot/CBotDll.h"
-
 #include "app/app.h"
 
 #include "common/global.h"
 #include "common/make_unique.h"
+#include "common/settings.h"
 #include "common/stringutils.h"
 
 #include "graphics/engine/lightman.h"
@@ -286,6 +285,22 @@ void COldObject::DeleteObject(bool bAll)
         }
     }
 
+    if (!bAll)
+    {
+        if (m_power != nullptr)
+        {
+            if (m_power->Implements(ObjectInterfaceType::Old))
+                dynamic_cast<COldObject*>(m_power)->DeleteObject(bAll);
+            m_power = nullptr;
+        }
+        if (m_cargo != nullptr)
+        {
+            if (m_cargo->Implements(ObjectInterfaceType::Old))
+                dynamic_cast<COldObject*>(m_cargo)->DeleteObject(bAll);
+            m_cargo = nullptr;
+        }
+    }
+
     if ( !bAll )  m_main->CreateShortcuts();
 }
 
@@ -536,19 +551,6 @@ void COldObject::DestroyObject(DestructionType type)
 
     m_team = 0; // Back to neutral on destruction
 
-    if (m_power != nullptr)
-    {
-        if (m_power->Implements(ObjectInterfaceType::Old))
-            dynamic_cast<COldObject*>(m_power)->m_transporter = nullptr;
-        m_power = nullptr;
-    }
-    if (m_cargo != nullptr)
-    {
-        if (m_cargo->Implements(ObjectInterfaceType::Old))
-            dynamic_cast<COldObject*>(m_cargo)->m_transporter = nullptr;
-        m_cargo = nullptr;
-    }
-
     if ( m_botVar != nullptr )
     {
         if ( Implements(ObjectInterfaceType::Transportable) )  // (*)
@@ -732,7 +734,8 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_ANT      ||
          m_type == OBJECT_WORM     ||
          m_type == OBJECT_SPIDER   ||
-         m_type == OBJECT_BEE       )
+         m_type == OBJECT_BEE      ||
+         m_type == OBJECT_TEEN28    )
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
@@ -1114,7 +1117,7 @@ void COldObject::Read(CLevelParserLine* line)
         int i = line->GetParam("run")->AsInt(-1);
         if (i != -1)
         {
-            if (i != PARAM_FIXSCENE && !m_main->GetMovies()) i = 0;
+            if (i != PARAM_FIXSCENE && !CSettings::GetInstancePointer()->GetMovies()) i = 0;
             m_auto->Start(i);  // starts the film
         }
     }

@@ -19,12 +19,16 @@
 
 #pragma once
 
-
 #include "object/task/task.h"
 
 #include "math/vector.h"
 
 #include <memory>
+
+namespace Math
+{
+struct Point;
+} // namespace Math;
 
 
 class CObject;
@@ -102,7 +106,6 @@ protected:
     Error       BeamExplore(const Math::Vector &prevPos, const Math::Vector &curPos, const Math::Vector &goalPos, float goalRadius, float angle, int nbDiv, float step, int i, int nbIter);
     Math::Vector    BeamPoint(const Math::Vector &startPoint, const Math::Vector &goalPoint, float angle, float step);
 
-    void        BitmapDebug(const Math::Vector &min, const Math::Vector &max, const Math::Vector &start, const Math::Vector &goal);
     bool        BitmapTestLine(const Math::Vector &start, const Math::Vector &goal, float stepAngle, bool bSecond);
     void        BitmapObject();
     void        BitmapTerrain(const Math::Vector &min, const Math::Vector &max);

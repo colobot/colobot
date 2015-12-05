@@ -45,7 +45,6 @@ namespace Gfx
 namespace
 {
 const int WATERLINE_PREALLOCATE_COUNT = 500;
-// TODO: remove the limit?
 const int VAPOR_SIZE = 10;
 } // anonymous namespace
 
@@ -135,7 +134,10 @@ void CWater::LavaFrame(float rTime)
 
 void CWater::VaporFlush()
 {
-    m_vapors.clear();
+    for (int i = 0; i < static_cast<int>( m_vapors.size() ); i++)
+    {
+        m_vapors[i].used = false;
+    }
 }
 
 bool CWater::VaporCreate(ParticleType type, Math::Vector pos, float delay)

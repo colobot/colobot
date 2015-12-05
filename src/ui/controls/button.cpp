@@ -208,9 +208,9 @@ void CButton::Draw()
 // Management of immediate mode, which sends the event "press"
 // before the mouse button is released.
 
-void CButton::SetImmediat(bool bImmediat)
+void CButton::SetImmediat(bool immediat)
 {
-    m_bImmediat = bImmediat;
+    m_bImmediat = immediat;
 }
 
 bool CButton::GetImmediat()

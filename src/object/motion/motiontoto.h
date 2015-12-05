@@ -19,9 +19,9 @@
 
 #pragma once
 
-
 #include "object/motion/motion.h"
 
+#include "math/point.h"
 
 
 enum MotionTotoAction

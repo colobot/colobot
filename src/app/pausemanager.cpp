@@ -27,33 +27,48 @@
 
 #include <algorithm>
 
+struct ActivePause
+{
+    explicit ActivePause(PauseType type, PauseMusic music = PAUSE_MUSIC_NONE)
+        : type(type),
+          music(music)
+    {}
+
+    ActivePause(const ActivePause&) = delete;
+    ActivePause& operator=(const ActivePause&) = delete;
+
+    PauseType type;
+    PauseMusic music;
+};
+
 
 CPauseManager::CPauseManager()
-{}
+{
+    m_main = CRobotMain::GetInstancePointer();
+}
 
 CPauseManager::~CPauseManager()
 {}
 
-ActivePause* CPauseManager::ActivatePause(PauseType type)
+ActivePause* CPauseManager::ActivatePause(PauseType type, PauseMusic music)
 {
-    assert(type != PAUSE_NONE);
-    GetLogger()->Debug("Activated pause mode - %s\n", GetPauseName(type).c_str());
-    auto pause = std::unique_ptr<ActivePause>(new ActivePause(type)); // TODO: Can't use MakeUnique here because the constructor is private
+    //GetLogger()->Debug("Activated pause mode - %s\n", GetPauseName(type).c_str());
+    auto pause = MakeUnique<ActivePause>(type, music);
     ActivePause* ptr = pause.get();
     m_activePause.push_back(std::move(pause));
-    UpdatePause();
+    Update();
     return ptr;
 }
 
 void CPauseManager::DeactivatePause(ActivePause* pause)
 {
     if (pause == nullptr) return;
-    GetLogger()->Debug("Deactivated pause mode - %s\n", GetPauseName(pause->type).c_str());
+    //GetLogger()->Debug("Deactivated pause mode - %s\n", GetPauseName(pause->type).c_str());
     m_activePause.erase(std::remove_if(
         m_activePause.begin(), m_activePause.end(),
         [&](const std::unique_ptr<ActivePause>& x) { return x.get() == pause; })
     );
-    UpdatePause();
+    Update();
 }
 
 void CPauseManager::FlushPause()
@@ -61,49 +76,38 @@ void CPauseManager::FlushPause()
     m_activePause.clear();
 }
 
-bool CPauseManager::IsPause()
+PauseType CPauseManager::GetPause()
 {
-    return m_activePause.size() > 0;
+    PauseType current = PAUSE_NONE;
+    for(auto& pause : m_activePause)
+    {
+        current |= pause->type;
+    }
+    return current;
 }
 
-PauseType CPauseManager::GetPauseType()
+bool CPauseManager::IsPauseType(PauseType type)
 {
-    if (m_activePause.size() > 0)
-        return m_activePause[m_activePause.size()-1]->type;
-    return PAUSE_NONE;
+    PauseType current = GetPause();
+    return (current & type) == type;
 }
 
-void CPauseManager::UpdatePause()
+void CPauseManager::Update()
 {
-    PauseType type = GetPauseType();
+    m_main->UpdatePause(GetPause()); //TODO
 
-    if (type != PAUSE_NONE)
+    PauseMusic music = PAUSE_MUSIC_NONE;
+    for(int i = m_activePause.size()-1; i >= 0; i--)
     {
-        GetLogger()->Info("Game paused - %s\n", GetPauseName(type).c_str());
+        if (m_activePause[i]->music != PAUSE_MUSIC_NONE)
+        {
+            music = m_activePause[i]->music;
+            break;
+        }
     }
-    else
+    if (music != m_lastPauseMusic)
     {
-        GetLogger()->Info("Game resumed\n");
+        m_main->UpdatePauseMusic(music);
+        m_lastPauseMusic = music;
     }
-
-    CRobotMain::GetInstancePointer()->UpdatePause(type);
-}
-
-std::string CPauseManager::GetPauseName(PauseType pause)
-{
-    switch(pause)
-    {
-        case PAUSE_NONE:        return "None";
-        case PAUSE_USER:        return "User";
-        case PAUSE_SATCOM:      return "SatCom";
-        case PAUSE_SATCOMMOVIE: return "SatCom opening animation";
-        case PAUSE_DIALOG:      return "Dialog";
-        case PAUSE_EDITOR:      return "CBot editor";
-        case PAUSE_VISIT:       return "Visit";
-        case PAUSE_CHEAT:       return "Cheat console";
-        case PAUSE_PHOTO:       return "Photo mode";
-        case PAUSE_CODE_BATTLE_LOCK: return "Code battle lock";
-        default: assert(false); // Should never happen
-    }
-    return "?";
 }

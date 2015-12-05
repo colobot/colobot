@@ -21,6 +21,8 @@
 
 #include "app/app.h"
 
+#include "common/restext.h"
+
 #include "level/robotmain.h"
 
 #include "ui/controls/button.h"

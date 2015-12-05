@@ -247,13 +247,13 @@ bool CTerrain::LoadResources(const std::string& fileName)
     return true;
 }
 
-TerrainRes CTerrain::GetResource(const Math::Vector &p)
+TerrainRes CTerrain::GetResource(const Math::Vector &pos)
 {
     if (m_resources.empty())
         return TR_NULL;
 
-    int x = static_cast<int>((p.x + (m_mosaicCount*m_brickCount*m_brickSize)/2.0f)/m_brickSize);
-    int y = static_cast<int>((p.z + (m_mosaicCount*m_brickCount*m_brickSize)/2.0f)/m_brickSize);
+    int x = static_cast<int>((pos.x + (m_mosaicCount*m_brickCount*m_brickSize)/2.0f)/m_brickSize);
+    int y = static_cast<int>((pos.z + (m_mosaicCount*m_brickCount*m_brickSize)/2.0f)/m_brickSize);
 
     if ( x < 0 || x > m_mosaicCount*m_brickCount ||
          y < 0 || y > m_mosaicCount*m_brickCount )
@@ -1677,16 +1677,16 @@ bool CTerrain::DeleteBuildingLevel(Math::Vector center)
     return false;
 }
 
-float CTerrain::GetBuildingFactor(const Math::Vector &p)
+float CTerrain::GetBuildingFactor(const Math::Vector &pos)
 {
     for (int i = 0; i < static_cast<int>( m_buildingLevels.size() ); i++)
     {
-        if ( p.x < m_buildingLevels[i].bboxMinX ||
-             p.x > m_buildingLevels[i].bboxMaxX ||
-             p.z < m_buildingLevels[i].bboxMinZ ||
-             p.z > m_buildingLevels[i].bboxMaxZ )  continue;
+        if ( pos.x < m_buildingLevels[i].bboxMinX ||
+             pos.x > m_buildingLevels[i].bboxMaxX ||
+             pos.z < m_buildingLevels[i].bboxMinZ ||
+             pos.z > m_buildingLevels[i].bboxMaxZ )  continue;
 
-        float dist = Math::DistanceProjected(p, m_buildingLevels[i].center);
+        float dist = Math::DistanceProjected(pos, m_buildingLevels[i].center);
 
         if (dist <= m_buildingLevels[i].max)
             return m_buildingLevels[i].factor;
@@ -1730,9 +1730,9 @@ void CTerrain::AdjustBuildingLevel(Math::Vector &p)
     }
 }
 
-float CTerrain::GetHardness(const Math::Vector &p)
+float CTerrain::GetHardness(const Math::Vector &pos)
 {
-    float factor = GetBuildingFactor(p);
+    float factor = GetBuildingFactor(pos);
     if (factor != 1.0f) return 1.0f;  // on building level
 
     if (m_materialPoints.empty()) return m_defaultHardness;
@@ -1741,8 +1741,8 @@ float CTerrain::GetHardness(const Math::Vector &p)
 
     int x, y;
 
-    x = static_cast<int>((p.x+dim)/m_brickSize);
-    y = static_cast<int>((p.z+dim)/m_brickSize);
+    x = static_cast<int>((pos.x+dim)/m_brickSize);
+    y = static_cast<int>((pos.z+dim)/m_brickSize);
 
     if ( x < 0 || x > m_mosaicCount*m_brickCount ||
          y < 0 || y > m_mosaicCount*m_brickCount )  return m_defaultHardness;

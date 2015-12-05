@@ -17,12 +17,20 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// definition of string functions
+// Modules inlcude
+#include "CBot/StringFunctions.h"
+
+#include "CBot/CBotProgram.h"
+#include "CBot/CBotEnums.h"
+
+#include "CBot/CBotVar/CBotVar.h"
 
 
-// gives the length of a chain
-// execution
+// Local include
 
+// Global include
+
+////////////////////////////////////////////////////////////////////////////////
 bool rStrLen( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
@@ -42,9 +50,7 @@ bool rStrLen( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     return true;
 }
 
-// int xxx ( string )
-// compilation
-
+////////////////////////////////////////////////////////////////////////////////
 CBotTypResult cIntStr( CBotVar* &pVar, void* pUser )
 {
     // it takes a parameter
@@ -61,10 +67,7 @@ CBotTypResult cIntStr( CBotVar* &pVar, void* pUser )
     return CBotTypResult( CBotTypInt );
 }
 
-
-// gives the left side of a chain
-// execution
-
+////////////////////////////////////////////////////////////////////////////////
 bool rStrLeft( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
@@ -97,9 +100,7 @@ bool rStrLeft( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     return true;
 }
 
-// string xxx ( string, int )
-// compilation
-
+////////////////////////////////////////////////////////////////////////////////
 CBotTypResult cStrStrInt( CBotVar* &pVar, void* pUser )
 {
     // it takes a parameter
@@ -124,9 +125,7 @@ CBotTypResult cStrStrInt( CBotVar* &pVar, void* pUser )
     return CBotTypResult( CBotTypString );
 }
 
-// gives the right of a string
-// execution
-
+////////////////////////////////////////////////////////////////////////////////
 bool rStrRight( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
@@ -159,9 +158,7 @@ bool rStrRight( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     return true;
 }
 
-// gives the central part of a chain
-// execution
-
+////////////////////////////////////////////////////////////////////////////////
 bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
@@ -211,9 +208,7 @@ bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     return true;
 }
 
-// gives the central part of a chain
-// compilation
-
+////////////////////////////////////////////////////////////////////////////////
 CBotTypResult cStrStrIntInt( CBotVar* &pVar, void* pUser )
 {
     // it takes a parameter
@@ -248,10 +243,7 @@ CBotTypResult cStrStrIntInt( CBotVar* &pVar, void* pUser )
     return CBotTypResult( CBotTypString );
 }
 
-
-// gives the number stored in a string
-// execution
-
+////////////////////////////////////////////////////////////////////////////////
 bool rStrVal( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
@@ -273,9 +265,7 @@ bool rStrVal( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     return true;
 }
 
-// float xxx ( string )
-// compilation
-
+////////////////////////////////////////////////////////////////////////////////
 CBotTypResult cFloatStr( CBotVar* &pVar, void* pUser )
 {
     // it takes a parameter
@@ -292,10 +282,7 @@ CBotTypResult cFloatStr( CBotVar* &pVar, void* pUser )
     return CBotTypResult( CBotTypFloat );
 }
 
-
-// find string in other
-// exécution
-
+////////////////////////////////////////////////////////////////////////////////
 bool rStrFind( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
@@ -327,9 +314,7 @@ bool rStrFind( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     return true;
 }
 
-// int xxx ( string, string )
-// compilation
-
+////////////////////////////////////////////////////////////////////////////////
 CBotTypResult cIntStrStr( CBotVar* &pVar, void* pUser )
 {
     // it takes a parameter
@@ -354,9 +339,7 @@ CBotTypResult cIntStrStr( CBotVar* &pVar, void* pUser )
     return CBotTypResult( CBotTypInt );
 }
 
-// gives a string to uppercase
-// exécution
-
+////////////////////////////////////////////////////////////////////////////////
 bool rStrUpper( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
@@ -379,9 +362,7 @@ bool rStrUpper( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     return true;
 }
 
-// gives a string to lowercase
-// exécution
-
+////////////////////////////////////////////////////////////////////////////////
 bool rStrLower( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
@@ -404,9 +385,7 @@ bool rStrLower( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     return true;
 }
 
-// string xxx ( string )
-// compilation
-
+////////////////////////////////////////////////////////////////////////////////
 CBotTypResult cStrStr( CBotVar* &pVar, void* pUser )
 {
     // it takes a parameter
@@ -423,7 +402,7 @@ CBotTypResult cStrStr( CBotVar* &pVar, void* pUser )
     return CBotTypResult( CBotTypString );
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 void InitStringFunctions()
 {
     CBotProgram::AddFunction("strlen",   rStrLen,   cIntStr );
