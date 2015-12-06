@@ -49,6 +49,7 @@ enum CBotType
     CBotTypClass        = 15,
     CBotTypIntrinsic    = 16                // instance of a class intrinsic
 };
+//n = not implemented yet
 
 //! \brief CBotGet Different modes for GetPosition.
 enum CBotGet
