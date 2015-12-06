@@ -25,6 +25,8 @@
 
 // Modules inlcude
 #include "CBot/CBotFileUtils.h"
+#include "CBot/CBotString.h"
+#include "CBot/CBotStringArray.h"
 #include "CBot/CBotClass.h"
 #include "CBot/CBotToken.h"
 #include "CBot/CBotProgram.h"
