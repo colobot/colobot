@@ -17,6 +17,12 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+/*!
+ * \file CBot.h
+ * \brief Public interface of CBot language interpreter. CBot.h is the only file
+ * that should be included by any Colobot files outside of the CBot module.
+ */
+
 // Modules inlcude
 #include "CBot/CBotFileUtils.h"
 #include "CBot/CBotClass.h"
