@@ -118,6 +118,9 @@
 #define CBotErrRead          6014    // error while reading
 #define CBotErrWrite         6015    // writing error
 
+// other values ​​may be returned
+// for example exceptions returned by external routines
+// and " throw " with any number.
 
 // TODO: refactor & change to enum!
 

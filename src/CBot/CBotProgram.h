@@ -186,16 +186,16 @@ public:
     //
 
     /*!
-     * \brief AddFunction Call this to add externally (**) a new function used
-     * by the program CBoT.
+     * \brief AddFunction Call this to add externally a new function used
+     * by the program CBoT. See (**)  at end of this file for more details.
      * \param name
      * \param rExec
      * \param rCompile
      * \return
      */
     static bool AddFunction(const char* name,
-                                bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                                CBotTypResult rCompile (CBotVar* &pVar, void* pUser));
+                            bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
+                            CBotTypResult rCompile (CBotVar* &pVar, void* pUser));
 
     /*!
      * \brief DefineNum
@@ -270,3 +270,46 @@ private:
     //! Associated identifier.
     long m_Ident;
 };
+
+/*
+(**) Note:
+
+    To define an external function, proceed as follows:
+
+    a) define a routine for compilation this routine receive list of parameters
+        (no values) and either returns a result type (CBotTyp... or 0 = void)
+        or an error number.
+
+    b) define a routine for the execution this routine receive list of
+        parameters (with valeurs), a variable to store the result
+        (according to the given type at compile time)
+
+    For example, a routine which calculates the mean of a parameter list
+
+int cMean(CBotVar* &pVar, CBotString& ClassName)
+{
+    if ( pVar == nullptr ) return 6001; // there is no parameter!
+    while ( pVar != nullptr )
+    {
+        if ( pVar->GetType() > CBotTypDouble ) return 6002; // this is not a number
+        pVar = pVar -> GetNext();
+    }
+    return CBotTypFloat; // the type of the result may depend on the parameters!
+}
+
+
+bool rMean(CBotVar* pVar, CBotVar* pResult, int& Exception)
+{
+    float total = 0;
+    int nb = 0;
+    while (pVar != nullptr)
+    {
+        total += pVar->GetValFloat();
+        pVar = pVar->GetNext();
+        nb++;
+    }
+    pResult->SetValFloat(total/nb); // returns the mean value
+    return true; // operation fully completed
+}
+
+*/
