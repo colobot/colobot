@@ -177,6 +177,7 @@ bool CGL21Device::Create()
         if (glewInit() != GLEW_OK)
         {
             GetLogger()->Error("GLEW initialization failed\n");
+            m_errorMessage = "An error occured while initializing GLEW.";
             return false;
         }
 
@@ -186,7 +187,11 @@ bool CGL21Device::Create()
 
         if (m_glMajor < 2)
         {
-            GetLogger()->Error("Your hardware does not support OpenGL 2.0 or 2.1.");
+            GetLogger()->Error("Unsupported OpenGL version: %d.%d\n", m_glMajor, m_glMinor);
+            GetLogger()->Error("OpenGL 2.0 or newer is required to use this engine.\n");
+            m_errorMessage = "It seems your graphics card does not support OpenGL 2.0.\n";
+            m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n";
+            m_errorMessage += "(OpenGL 2.0 is roughly equivalent to Direct3D 9)";
             return false;
         }
 

@@ -276,8 +276,17 @@ public:
  */
 class CDevice
 {
+protected:
+    std::string m_errorMessage;
+
 public:
     virtual ~CDevice() {}
+
+    //! Returns last error message or empty string
+    inline std::string GetError()
+    {
+        return m_errorMessage;
+    }
 
     //! Provides a hook to debug graphics code (implementation-specific)
     virtual void DebugHook() = 0;

@@ -177,6 +177,7 @@ bool CGL33Device::Create()
         if (glewInit() != GLEW_OK)
         {
             GetLogger()->Error("GLEW initialization failed\n");
+            m_errorMessage = "An error occured while initializing GLEW.";
             return false;
         }
 
@@ -187,12 +188,18 @@ bool CGL33Device::Create()
         int glVersion = 10 * m_glMajor + m_glMinor;
         if (glVersion < 30)
         {
-            GetLogger()->Error("Your hardware does not support OpenGL 3.0+. Exiting.\n");
+            GetLogger()->Error("Unsupported OpenGL version: %d.%d\n", m_glMajor, m_glMinor);
+            GetLogger()->Error("OpenGL 3.0 or newer is required to use this engine.\n");
+            m_errorMessage = "It seems your graphics card does not support OpenGL 3.0.\n";
+            m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n";
+            m_errorMessage += "(OpenGL 3.0 is roughly equivalent to Direct3D 10)";
             return false;
         }
         else if (glVersion < 33)
         {
-            GetLogger()->Warn("Full OpenGL 3.3 unavailable. Graphics might be bugged.\n");
+            GetLogger()->Warn("Partially supported OpenGL version: %d.%d\n", m_glMajor, m_glMinor);
+            GetLogger()->Warn("You may experience problems while running the game on this engine.\n");
+            GetLogger()->Warn("OpenGL 3.3 or newer is recommended.\n");
         }
         else
         {

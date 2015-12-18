@@ -173,12 +173,24 @@ bool CGLDevice::Create()
         if (glewInit() != GLEW_OK)
         {
             GetLogger()->Error("GLEW initialization failed\n");
+            m_errorMessage = "An error occured while initializing GLEW.";
             return false;
         }
 
         // Extract OpenGL version
         const char *version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
         sscanf(version, "%d.%d", &m_glMajor, &m_glMinor);
+
+        int glVersion = 10 * m_glMajor + m_glMinor;
+        if (glVersion < 13)
+        {
+            GetLogger()->Error("Unsupported OpenGL version: %d.%d\n", m_glMajor, m_glMinor);
+            GetLogger()->Error("OpenGL 1.3 or newer is required to use this engine.\n");
+            m_errorMessage = "It seems your graphics card does not support OpenGL 1.3.\n";
+            m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n";
+            return false;
+        }
+
         GetLogger()->Info("OpenGL %d.%d\n", m_glMajor, m_glMinor);
 
         // Detect multitexture support
@@ -306,7 +318,7 @@ bool CGLDevice::Create()
 
     m_framebufferSupport = DetectFramebufferSupport();
     if (m_framebufferSupport != FBS_NONE)
-        GetLogger()->Debug("Framebuffer supported\n");
+        GetLogger()->Info("Framebuffer supported\n");
 
     GetLogger()->Info("CDevice created successfully\n");
 

@@ -624,7 +624,10 @@ bool CApplication::Create()
 
     if (! m_device->Create() )
     {
-        m_errorMessage = std::string("Error in CDevice::Create()\n") + standardInfoMessage;
+        m_errorMessage = std::string("Error in CDevice::Create()\n")
+            + "\n\n"
+            + m_device->GetError()
+            + standardInfoMessage;
         m_exitCode = 5;
         return false;
     }
