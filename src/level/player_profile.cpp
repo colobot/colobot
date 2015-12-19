@@ -451,7 +451,8 @@ std::vector<SavedScene> CPlayerProfile::GetSavedSceneList()
         {
             CLevelParser levelParser(savegameFile);
             levelParser.Load();
-            int time = levelParser.Get("Created")->GetParam("date")->AsInt();
+            CLevelParserLine* line = levelParser.GetIfDefined("Created");
+            int time = line != nullptr ? line->GetParam("date")->AsInt() : 0;
             sortedSaveDirs[time] = SavedScene(GetSaveFile(dir), levelParser.Get("Title")->GetParam("text")->AsString());
         }
     }

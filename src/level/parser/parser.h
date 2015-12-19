@@ -88,6 +88,9 @@ public:
     //! Find first line with given command
     CLevelParserLine* Get(const std::string& command);
 
+    //! Find first line with given command, null if doesn't exist
+    CLevelParserLine* GetIfDefined(const std::string &command);
+
     //! Count lines with given command
     int CountLines(const std::string& command);
 
