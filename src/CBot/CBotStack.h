@@ -45,6 +45,9 @@ class CBotToken;
 class CBotStack
 {
 public:
+    enum class UnknownEnumBlock : unsigned short { UNKNOWN_FALSE = 0, UNKNOWN_TRUE = 1, UNKNOWN_2 = 2 }; // TODO: figure out what these mean ~krzys_h
+    enum class IsFunctionParam : unsigned short { FALSE = 0, TRUE = 1, UNKNOWN_EOX_SPECIAL = 2 }; // TODO: just guessing the meaning of values, should be verified ~krzys_h
+
 #if    STACKMEM
     /**
      * \brief FirstStack Allocate first stack
@@ -169,12 +172,12 @@ public:
     CBotVar*        CopyVar(CBotToken& Token, bool bUpdate = false);
 
 
-    CBotStack*        AddStack(CBotInstr* instr = nullptr, bool bBlock = false);    // extends the stack
-    CBotStack*        AddStackEOX(CBotCall* instr = nullptr, bool bBlock = false);    // extends the stack
+    CBotStack*        AddStack(CBotInstr* instr = nullptr, UnknownEnumBlock bBlock = UnknownEnumBlock::UNKNOWN_FALSE);    // extends the stack
+    CBotStack*        AddStackEOX(CBotCall* instr = nullptr, UnknownEnumBlock bBlock = UnknownEnumBlock::UNKNOWN_FALSE);    // extends the stack
     CBotStack*        RestoreStack(CBotInstr* instr = nullptr);
     CBotStack*        RestoreStackEOX(CBotCall* instr = nullptr);
 
-    CBotStack*        AddStack2(bool bBlock = false);                        // extends the stack
+    CBotStack*        AddStack2(UnknownEnumBlock bBlock = UnknownEnumBlock::UNKNOWN_FALSE);                        // extends the stack
     bool            Return(CBotStack* pFils);                            // transmits the result over
     bool            ReturnKeep(CBotStack* pFils);                        // transmits the result without reducing the stack
     bool            BreakReturn(CBotStack* pfils, const char* name = nullptr);
@@ -206,7 +209,7 @@ public:
     void            SetBotCall(CBotProgram* p);
     CBotProgram*    GetBotCall(bool bFirst = false);
     void*           GetPUser();
-    bool            GetBlock();
+    UnknownEnumBlock GetBlock();
 
 
     bool            ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotTypResult& rettype);
@@ -220,8 +223,6 @@ public:
 
     void            GetRunPos(const char* &FunctionName, int &start, int &end);
     CBotVar*        GetStackVars(const char* &FunctionName, int level);
-
-    int                m_temp;
 
 private:
     CBotStack*        m_next;
@@ -243,7 +244,7 @@ private:
     CBotVar*        m_var;                        // result of the operations
     CBotVar*        m_listVar;                    // variables declared at this level
 
-    bool            m_bBlock;                    // is part of a block (variables are local to this block)
+    UnknownEnumBlock m_bBlock;                    // is part of a block (variables are local to this block)
     bool            m_bOver;                    // stack limits?
 //    bool            m_bDontDelete;                // special, not to destroy the variable during delete
     CBotProgram*    m_prog;                        // user-defined functions
@@ -258,7 +259,7 @@ private:
     void*            m_pUser;
 
     CBotInstr*        m_instr;                    // the corresponding instruction
-    bool            m_bFunc;                    // an input of a function?
+    IsFunctionParam  m_bFunc;                    // an input of a function?
     CBotCall*        m_call;                        // recovery point in a extern call
     friend class    CBotTry;
 };

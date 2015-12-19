@@ -63,7 +63,7 @@ CBotStack* CBotStack::FirstStack()
     // completely empty
     memset(p, 0, size);
 
-    p-> m_bBlock = true;
+    p-> m_bBlock = UnknownEnumBlock::UNKNOWN_TRUE ;
     m_timer = m_initimer;                // sets the timer at the beginning
 
     CBotStack* pp = p;
@@ -140,7 +140,7 @@ void CBotStack::Delete()
 
 // routine improved
 ////////////////////////////////////////////////////////////////////////////////
-CBotStack* CBotStack::AddStack(CBotInstr* instr, bool bBlock)
+CBotStack* CBotStack::AddStack(CBotInstr* instr, UnknownEnumBlock bBlock)
 {
     if (m_next != nullptr)
     {
@@ -168,12 +168,12 @@ CBotStack* CBotStack::AddStack(CBotInstr* instr, bool bBlock)
     p->m_prev         = this;
     p->m_state         = 0;
     p->m_call         = nullptr;
-    p->m_bFunc         = false;
+    p->m_bFunc         = IsFunctionParam::FALSE;
     return    p;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotStack* CBotStack::AddStackEOX(CBotCall* instr, bool bBlock)
+CBotStack* CBotStack::AddStackEOX(CBotCall* instr, UnknownEnumBlock bBlock)
 {
     if (m_next != nullptr)
     {
@@ -186,12 +186,12 @@ CBotStack* CBotStack::AddStackEOX(CBotCall* instr, bool bBlock)
     }
     CBotStack*    p = AddStack(nullptr, bBlock);
     p->m_call = instr;
-    p->m_bFunc = 2;    // special
+    p->m_bFunc = IsFunctionParam::UNKNOWN_EOX_SPECIAL;    // special
     return    p;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotStack* CBotStack::AddStack2(bool bBlock)
+CBotStack* CBotStack::AddStack2(UnknownEnumBlock bBlock)
 {
     if (m_next2 != nullptr)
     {
@@ -215,7 +215,7 @@ CBotStack* CBotStack::AddStack2(bool bBlock)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotStack::GetBlock()
+CBotStack::UnknownEnumBlock CBotStack::GetBlock()
 {
     return    m_bBlock;
 }
@@ -723,7 +723,7 @@ void CBotStack::AddVar(CBotVar* pVar)
     CBotStack*    p = this;
 
     // returns to the father element
-    while (p != nullptr && p->m_bBlock == 0) p = p->m_prev;
+    while (p != nullptr && p->m_bBlock == UnknownEnumBlock::UNKNOWN_FALSE) p = p->m_prev;
 
     if ( p == nullptr ) return;
 
@@ -743,7 +743,7 @@ void CBotStack::AddVar(CBotVar* pVar)
 void CBotStack::SetBotCall(CBotProgram* p)
 {
     m_prog  = p;
-    m_bFunc = true;
+    m_bFunc = IsFunctionParam::TRUE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -826,7 +826,7 @@ void CBotStack::GetRunPos(const char* &FunctionName, int &start, int &end)
     while (p->m_next != nullptr)
     {
         if ( p->m_instr != nullptr ) instr = p->m_instr;
-        if ( p->m_bFunc == 1 && p->m_instr != nullptr ) funct = p->m_instr;
+        if ( p->m_bFunc == IsFunctionParam::TRUE && p->m_instr != nullptr ) funct = p->m_instr;
         if ( p->m_next->m_prog != prog ) break ;
 
         if (p->m_next2 && p->m_next2->m_state != 0) p = p->m_next2 ;
@@ -834,7 +834,7 @@ void CBotStack::GetRunPos(const char* &FunctionName, int &start, int &end)
     }
 
     if ( p->m_instr != nullptr ) instr = p->m_instr;
-    if ( p->m_bFunc == 1 && p->m_instr != nullptr ) funct = p->m_instr;
+    if ( p->m_bFunc == IsFunctionParam::TRUE && p->m_instr != nullptr ) funct = p->m_instr;
 
     if ( funct == nullptr ) return;
 
@@ -868,13 +868,13 @@ CBotVar* CBotStack::GetStackVars(const char* &FunctionName, int level)
 
 
     // descends upon the elements of block
-    while ( p != nullptr && !p->m_bBlock )    p = p->m_prev;
+    while ( p != nullptr && p->m_bBlock != UnknownEnumBlock::UNKNOWN_FALSE ) p = p->m_prev;
     // Now p is on the beggining of the top block (with local variables)
 
     while ( p != nullptr && level++ < 0 )
     {
         p = p->m_prev;
-        while ( p != nullptr && !p->m_bBlock )    p = p->m_prev;
+        while ( p != nullptr && p->m_bBlock != UnknownEnumBlock::UNKNOWN_FALSE ) p = p->m_prev;
     }
     // Now p is on the block "level"
 
@@ -884,7 +884,7 @@ CBotVar* CBotStack::GetStackVars(const char* &FunctionName, int level)
     CBotStack* pp = p;
     while ( pp != nullptr )
     {
-        if ( pp->m_bFunc == 1 ) break;
+        if ( pp->m_bFunc == IsFunctionParam::TRUE) break;
         pp = pp->m_prev;
     }
 
@@ -913,7 +913,7 @@ bool CBotStack::SaveState(FILE* pf)
     {
         if (!WriteWord(pf, 1)) return false;                // a mark of pursuit
     }
-    if (!WriteWord(pf, m_bBlock)) return false;            // is a local block
+    if (!WriteWord(pf, static_cast<unsigned short>(m_bBlock))) return false;            // is a local block
     if (!WriteWord(pf, m_state)) return false;            // in what state?
     if (!WriteWord(pf, 0)) return false;                // by compatibility m_bDontDelete
     if (!WriteWord(pf, m_step)) return false;            // in what state?
@@ -947,7 +947,7 @@ bool CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
     }
 
     if (!ReadWord(pf, w)) return false;            // is a local block
-    pStack->m_bBlock = w;
+    pStack->m_bBlock = static_cast<UnknownEnumBlock>(w);
 
     if (!ReadWord(pf, w)) return false;            // in what state ?
     pStack->SetState(static_cast<short>(w));                    // in a good state

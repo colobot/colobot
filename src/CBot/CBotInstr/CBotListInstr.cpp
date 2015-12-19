@@ -80,7 +80,7 @@ CBotInstr* CBotListInstr::Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal
 bool CBotListInstr::Execute(CBotStack* &pj)
 {
 
-    CBotStack*    pile = pj->AddStack(this, true);                //needed for SetState()
+    CBotStack*    pile = pj->AddStack(this, CBotStack::UnknownEnumBlock::UNKNOWN_TRUE);                //needed for SetState()
     if (pile->StackOver() ) return pj->Return( pile);
 
 
