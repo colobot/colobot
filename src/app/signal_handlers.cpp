@@ -150,7 +150,7 @@ void CSignalHandlers::ReportError(const std::string& errorMessage)
         robotMain = CRobotMain::GetInstancePointer();
         msg << "The game was in phase " << PhaseToString(robotMain->GetPhase()) << " (ID=" << robotMain->GetPhase() << ")" << std::endl;
         msg << "Last started level was: category=" << GetLevelCategoryDir(robotMain->GetLevelCategory()) << " chap=" << robotMain->GetLevelChap() << " rank=" << robotMain->GetLevelRank() << std::endl;
-        canSave = (robotMain->GetPhase() == PHASE_SIMUL) && !robotMain->IsLoading();
+        canSave = (robotMain->GetPhase() == PHASE_SIMUL || IsInSimulationConfigPhase(robotMain->GetPhase())) && !robotMain->IsLoading();
     }
     msg << "==============================" << std::endl;
     msg << std::endl;
