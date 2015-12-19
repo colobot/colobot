@@ -2750,9 +2750,7 @@ bool CPhysics::ExploOther(ObjectType iType,
             oType == OBJECT_MOBILEwt ||
             oType == OBJECT_MOBILEtt ||
             oType == OBJECT_MOBILEft ||
-            oType == OBJECT_MOBILEit ||
-            oType == OBJECT_MOBILEdr ||
-            oType == OBJECT_APOLLO2   )  // vehicle?
+            oType == OBJECT_MOBILEit  )  // vehicle?
         {
             assert(pObj->Implements(ObjectInterfaceType::Damageable));
             dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Collision, force/200.0f);
