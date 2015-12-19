@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "CBot/CBotDll.h"
+#include "CBot/CBot.h"
 
 #include "common/error.h"
 
@@ -35,6 +35,7 @@
 class CObject;
 class CScript;
 class CExchangePost;
+class CBotVar;
 
 
 class CScriptFunctions

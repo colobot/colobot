@@ -19,6 +19,8 @@
 
 #include "script/scriptfunc.h"
 
+#include "CBot/CBot.h"
+
 #include "app/app.h"
 
 #include "common/global.h"

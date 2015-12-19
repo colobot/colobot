@@ -20,8 +20,6 @@
 
 #include "object/old_object.h"
 
-#include "CBot/CBotDll.h"
-
 #include "app/app.h"
 
 #include "common/global.h"

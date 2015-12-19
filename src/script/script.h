@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "CBot/CBotDll.h"
+#include "CBot/CBot.h"
 
 #include <memory>
 #include <string>

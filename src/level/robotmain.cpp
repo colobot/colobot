@@ -19,7 +19,7 @@
 
 #include "level/robotmain.h"
 
-#include "CBot/CBotDll.h"
+#include "CBot/CBot.h"
 
 #include "app/app.h"
 #include "app/input.h"

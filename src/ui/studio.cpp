@@ -20,8 +20,6 @@
 
 #include "ui/studio.h"
 
-#include "CBot/CBotDll.h"
-
 #include "app/app.h"
 #include "app/pausemanager.h"
 

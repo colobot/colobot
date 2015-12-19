@@ -22,7 +22,7 @@
 
 #include "common/config.h"
 
-#include "CBot/resource.h"
+#include "CBot/CBot.h"
 
 #include "app/input.h"
 

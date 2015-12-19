@@ -40,6 +40,8 @@
 
 #include "ui/controls/edit.h"
 
+#include "CBot/CBot.h"
+
 #include <algorithm>
 #include <iomanip>
 
