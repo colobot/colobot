@@ -176,6 +176,10 @@ option(ASSERTS "Enable assert()s" ON)
 # Development build can be enabled/disabled regardless of build type
 option(DEV_BUILD "Enable development build (enables some debugging tools, local setting paths, etc.)" OFF)
 
+# Official build - changes text on the crash screen
+# PLEASE DO NOT USE ON UNOFFICIAL BUILDS. Thanks.
+option(OFFICIAL_BUILD "Official build (changes crash screen text)" OFF)
+
 # Portable build - load all data from current directory
 option(PORTABLE "Portable build" OFF)
 
