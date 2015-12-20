@@ -52,7 +52,7 @@ bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
     pVar = (static_cast<CBotVarArray*>(pVar))->GetItem(0, false);    // at compile time makes the element [0]
     if (pVar == nullptr)
     {
-        pile->SetError(TX_OUTARRAY, m_token.GetEnd());
+        pile->SetError(CBotErrOutArray, m_token.GetEnd());
         return false;
     }
     if (m_next3 != nullptr) return m_next3->ExecuteVar(pVar, pile);
@@ -80,7 +80,7 @@ bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
 
     if (p == nullptr || p->GetType() > CBotTypDouble)
     {
-        pile->SetError(TX_BADINDEX, prevToken);
+        pile->SetError(CBotErrBadIndex, prevToken);
         return pj->Return(pile);
     }
 
@@ -89,7 +89,7 @@ bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
     pVar = (static_cast<CBotVarArray*>(pVar))->GetItem(n, bExtend);
     if (pVar == nullptr)
     {
-        pile->SetError(TX_OUTARRAY, prevToken);
+        pile->SetError(CBotErrOutArray, prevToken);
         return pj->Return(pile);
     }
 

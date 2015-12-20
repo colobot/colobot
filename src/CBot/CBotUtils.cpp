@@ -101,7 +101,7 @@ CBotTypResult ArrayType(CBotToken* &p, CBotCStack* pile, CBotTypResult type)
     {
         if ( !IsOfType( p, ID_CLBRK ) )
         {
-            pile->SetError(TX_CLBRK, p->GetStart());
+            pile->SetError(CBotErrCloseIndex, p->GetStart());
             return CBotTypResult( -1 );
         }
         type = CBotTypResult( CBotTypArrayPointer, type );

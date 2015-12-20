@@ -190,7 +190,7 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
          // these instructions accept only lable
          if (!IsOfTypeList(pp, ID_WHILE, ID_FOR, ID_DO, 0))
          {
-             pStack->SetError(TX_LABEL, pp->GetStart());
+             pStack->SetError(CBotErrLabel, pp->GetStart());
              return nullptr;
          }
     }
@@ -241,12 +241,12 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
 
     case ID_ELSE:
         pStack->SetStartError(p->GetStart());
-        pStack->SetError(TX_ELSEWITHOUTIF, p->GetEnd());
+        pStack->SetError(CBotErrElseWhitoutIf, p->GetEnd());
         return nullptr;
 
     case ID_CASE:
         pStack->SetStartError(p->GetStart());
-        pStack->SetError(TX_OUTCASE, p->GetEnd());
+        pStack->SetError(CBotErrCaseOut, p->GetEnd());
         return nullptr;
     }
 
@@ -255,7 +255,7 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     // should not be a reserved word DefineNum
     if (p->GetType() == TokenTypDef)
     {
-        pStack->SetError(TX_RESERVED, p);
+        pStack->SetError(CBotErrReserved, p);
         return nullptr;
     }
 
@@ -276,7 +276,7 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     {
         return inst;
     }
-    pStack->SetError(TX_ENDOF, p->GetStart());
+    pStack->SetError(CBotErrNoTerminator, p->GetStart());
     delete inst;
     return nullptr;
 }
@@ -339,7 +339,7 @@ CBotInstr* CBotInstr::CompileArray(CBotToken* &p, CBotCStack* pStack, CBotTypRes
     {
         if (!IsOfType(p, ID_CLBRK))
         {
-            pStack->SetError(TX_CLBRK, p->GetStart());
+            pStack->SetError(CBotErrCloseIndex, p->GetStart());
             return nullptr;
         }
 
@@ -369,6 +369,6 @@ CBotInstr* CBotInstr::CompileArray(CBotToken* &p, CBotCStack* pStack, CBotTypRes
     }
 
     delete inst;
-    pStack->SetError(TX_ENDOF, p->GetStart());
+    pStack->SetError(CBotErrNoTerminator, p->GetStart());
     return nullptr;
 }

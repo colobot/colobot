@@ -86,7 +86,7 @@ CBotInstr* CBotInstrCall::Compile(CBotToken* &p, CBotCStack* pStack)
                 if ( pile->GetTypResult().Eq(99) )
                 {
                     delete pStack->TokenStack();
-                    pStack->SetError(TX_VOID, p->GetStart());
+                    pStack->SetError(CBotErrVoid, p->GetStart());
                     delete inst;
                     return nullptr;
                 }
@@ -98,7 +98,7 @@ CBotInstr* CBotInstrCall::Compile(CBotToken* &p, CBotCStack* pStack)
                 if (IsOfType(p, ID_CLOSEPAR)) break;
             }
 
-            pStack->SetError(TX_CLOSEPAR, p->GetStart());
+            pStack->SetError(CBotErrClosePar, p->GetStart());
             delete pStack->TokenStack();
             delete inst;
             return nullptr;

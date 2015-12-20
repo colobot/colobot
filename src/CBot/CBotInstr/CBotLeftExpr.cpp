@@ -70,7 +70,7 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
                 if ( var->IsPrivate(PR_READ) &&
                      !pStk->GetBotCall()->m_bCompileClass)
                 {
-                    pStk->SetError(TX_PRIVATE, p);
+                    pStk->SetError(CBotErrPrivate, p);
                     goto err;
                 }
                 // this is an element of the current class
@@ -103,13 +103,13 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
                         if (i->m_expr == nullptr)
                         {
-                            pStk->SetError(TX_BADINDEX, p->GetStart());
+                            pStk->SetError(CBotErrBadIndex, p->GetStart());
                             goto err;
                         }
 
                         if (!pStk->IsOk() || !IsOfType( p, ID_CLBRK ))
                         {
-                            pStk->SetError(TX_CLBRK, p->GetStart());
+                            pStk->SetError(CBotErrCloseIndex, p->GetStart());
                             goto err;
                         }
                         continue;
@@ -134,7 +134,7 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
                                 if ( var->IsPrivate(PR_READ) &&
                                      !pStk->GetBotCall()->m_bCompileClass)
                                 {
-                                    pStk->SetError(TX_PRIVATE, pp);
+                                    pStk->SetError(CBotErrPrivate, pp);
                                     goto err;
                                 }
 
@@ -142,9 +142,9 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
                                 p = p->GetNext();                        // skips the name
                                 continue;
                             }
-                            pStk->SetError(TX_NOITEM, p);
+                            pStk->SetError(CBotErrUndefItem, p);
                         }
-                        pStk->SetError(TX_DOT, p->GetStart());
+                        pStk->SetError(CBotErrUndefClass, p->GetStart());
                         goto err;
                     }
                 }
@@ -154,7 +154,7 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
             if (pStk->IsOk()) return static_cast<CBotLeftExpr*> (pStack->Return(inst, pStk));
         }
-        pStk->SetError(TX_UNDEFVAR, p);
+        pStk->SetError(CBotErrUndefVar, p);
 err:
         delete inst;
         return static_cast<CBotLeftExpr*> ( pStack->Return(nullptr, pStk));
@@ -189,7 +189,7 @@ bool CBotLeftExpr::Execute(CBotStack* &pj, CBotStack* array)
                 if ( !c2->IsChildOf(c1))
                 {
                     CBotToken* pt = &m_token;
-                    pile->SetError(TX_BADTYPE, pt);
+                    pile->SetError(CBotErrBadType1, pt);
                     return pj->Return(pile);    // operation performed
                 }
             }

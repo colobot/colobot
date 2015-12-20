@@ -58,7 +58,7 @@ bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
     pVar = pVar->GetItemRef(m_nIdent);
     if (pVar == nullptr)
     {
-        pile->SetError(TX_NOITEM, &m_token);
+        pile->SetError(CBotErrUndefItem, &m_token);
         return false;
     }
 
@@ -82,12 +82,12 @@ bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
     CBotVarClass* pItem = pVar->GetPointer();
     if (pItem == nullptr)
     {
-        pile->SetError(TX_NULLPT, prevToken);
+        pile->SetError(CBotErrNull, prevToken);
         return pj->Return(pile);
     }
     if (pItem->GetUserPtr() == OBJECTDELETED)
     {
-        pile->SetError(TX_DELETEDPT, prevToken);
+        pile->SetError(CBotErrDeletedPtr, prevToken);
         return pj->Return(pile);
     }
 
@@ -96,7 +96,7 @@ bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
     pVar = pVar->GetItemRef(m_nIdent);
     if (pVar == nullptr)
     {
-        pile->SetError(TX_NOITEM, &m_token);
+        pile->SetError(CBotErrUndefItem, &m_token);
         return pj->Return(pile);
     }
 

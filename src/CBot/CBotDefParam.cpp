@@ -76,7 +76,7 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
                     // variable already declared?
                     if (pStack->CheckVarLocal(pp))
                     {
-                        pStack->SetError(TX_REDEFVAR, pp);
+                        pStack->SetError(CBotErrRedefVar, pp);
                         break;
                     }
 
@@ -91,15 +91,15 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
                     if (IsOfType(p, ID_COMMA) || p->GetType() == ID_CLOSEPAR)
                         continue;
                 }
-                pStack->SetError(TX_CLOSEPAR, p->GetStart());
+                pStack->SetError(CBotErrClosePar, p->GetStart());
             }
-            pStack->SetError(TX_NOTYP, p);
+            pStack->SetError(CBotErrNoType, p);
             delete list;
             return nullptr;
         }
         return list;
     }
-    pStack->SetError(TX_OPENPAR, p->GetStart());
+    pStack->SetError(CBotErrOpenPar, p->GetStart());
     return nullptr;
 }
 

@@ -72,7 +72,7 @@ CBotInstr* CBotIString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
         if (pStk->CheckVarLocal(vartoken))
         {
             pStk->SetStartError(vartoken->GetStart());
-            pStk->SetError(TX_REDEFVAR, vartoken->GetEnd());
+            pStk->SetError(CBotErrRedefVar, vartoken->GetEnd());
             goto error;
         }
 
@@ -84,7 +84,7 @@ CBotInstr* CBotIString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
             }
 /*            if (!pStk->GetTypResult().Eq(CBotTypString))            // type compatible ?
             {
-                pStk->SetError(TX_BADTYPE, p->GetStart());
+                pStk->SetError(CBotErrBadType1, p->GetStart());
                 goto error;
             }*/
         }
@@ -108,7 +108,7 @@ CBotInstr* CBotIString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
             return pStack->Return(inst, pStk);
         }
 
-        pStk->SetError(TX_ENDOF, p->GetStart());
+        pStk->SetError(CBotErrNoTerminator, p->GetStart());
     }
 
 error:

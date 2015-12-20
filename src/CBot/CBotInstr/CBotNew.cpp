@@ -59,7 +59,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotClass* pClass = CBotClass::Find(p);
     if (pClass == nullptr)
     {
-        pStack->SetError(TX_BADNEW, p);
+        pStack->SetError(CBotErrBadNew, p);
         return nullptr;
     }
 
@@ -87,7 +87,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
         int typ = r.GetType();
 
         // if there is no constructor, and no parameters either, it's ok
-        if (typ == TX_UNDEFCALL && inst->m_Parameters == nullptr) typ = 0;
+        if (typ == CBotErrUndefCall && inst->m_Parameters == nullptr) typ = 0;
         pVar->SetInit(CBotVar::InitType::DEF);    // mark the instance as init
 
         if (typ>20)
@@ -99,7 +99,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
         // if the constructor does not exist, but there are parameters
         if (typ<0 && inst->m_Parameters != nullptr)
         {
-            pStk->SetError(TX_NOCONST, &inst->m_vartoken);
+            pStk->SetError(CBotErrNoConstruct, &inst->m_vartoken);
             goto error;
         }
 

@@ -67,7 +67,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
         if ( pClass == nullptr )
         {
             // not found? is bizare
-            pStack->SetError(TX_NOCLASS, p);
+            pStack->SetError(CBotErrNotClass, p);
             return nullptr;
         }
         p = p->GetNext();
@@ -92,7 +92,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
         if (pStk->CheckVarLocal(vartoken))                  // redefinition of the variable
         {
             pStk->SetStartError(vartoken->GetStart());
-            pStk->SetError(TX_REDEFVAR, vartoken->GetEnd());
+            pStk->SetError(CBotErrRedefVar, vartoken->GetEnd());
             goto error;
         }
 
@@ -107,7 +107,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
 
             if (!pStk->IsOk() )
             {
-                pStk->SetError(TX_CLBRK, p->GetStart());
+                pStk->SetError(CBotErrCloseIndex, p->GetStart());
                 goto error;
             }
             goto suite;         // no assignment, variable already created
@@ -142,12 +142,12 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
             delete pStk->TokenStack();                          // releases the supplement stack
             int typ = r.GetType();
 
-            if (typ == TX_UNDEFCALL)
+            if (typ == CBotErrUndefCall)
             {
                 // si le constructeur n'existe pas
                 if (inst->m_Parameters != nullptr)                 // with parameters
                 {
-                    pStk->SetError(TX_NOCONST, vartoken);
+                    pStk->SetError(CBotErrNoConstruct, vartoken);
                     goto error;
                 }
                 typ = 0;
@@ -165,7 +165,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
         {
             if (inst->m_hasParams)
             {
-                pStk->SetError(TX_ENDOF, p->GetStart());
+                pStk->SetError(CBotErrNoTerminator, p->GetStart());
                 goto error;
             }
 
@@ -178,7 +178,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
                ( !pStk->GetTypResult(1).Eq(CBotTypPointer) ||
                  ( result != nullptr && !pClass->IsChildOf(result) )))     // type compatible ?
             {
-                pStk->SetError(TX_BADTYPE, p->GetStart());
+                pStk->SetError(CBotErrBadType1, p->GetStart());
                 goto error;
             }
 //          if ( !bIntrinsic ) var->SetPointer(pStk->GetVar()->GetPointer());
@@ -217,7 +217,7 @@ suite:
             return pStack->Return(inst, pStk);
         }
 
-        pStk->SetError(TX_ENDOF, p->GetStart());
+        pStk->SetError(CBotErrNoTerminator, p->GetStart());
     }
 
 error:
@@ -275,7 +275,7 @@ bool CBotClassInst::Execute(CBotStack* &pj)
                 CBotVar*    pv = pile->GetVar();
                 if ( pv == nullptr || pv->GetPointer() == nullptr )
                 {
-                    pile->SetError(TX_NULLPT, &m_token);
+                    pile->SetError(CBotErrNull, &m_token);
                     return pj->Return(pile);
                 }
                 pThis->Copy(pile->GetVar(), false);

@@ -69,7 +69,7 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
     {
         if (inst->m_leftop == nullptr)
         {
-            pStack->SetError(TX_BADLEFT, p->GetEnd());
+            pStack->SetError(CBotErrBadLeft, p->GetEnd());
             delete inst;
             return nullptr;
         }
@@ -94,7 +94,7 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
 
         if (OpType != ID_ASS && !var->IsDefined())
         {
-            pStack->SetError(TX_NOTINIT, pp);
+            pStack->SetError(CBotErrNotInit, pp);
             delete inst;
             return nullptr;
         }
@@ -133,7 +133,7 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
 
         if (!TypeCompatible(type1, type2, OpType))
         {
-            pStack->SetError(TX_BADTYPE, &inst->m_token);
+            pStack->SetError(CBotErrBadType1, &inst->m_token);
             delete inst;
             return nullptr;
         }
@@ -148,7 +148,7 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
     pStack->SetError(0,0);                        // forget the error
 
     CBotInstr* i = CBotTwoOpExpr::Compile(p, pStack);    // tries without assignment
-    if (i != nullptr && error == TX_PRIVATE && p->GetType() == ID_ASS)
+    if (i != nullptr && error == CBotErrPrivate && p->GetType() == ID_ASS)
         pStack->ResetError(error, start, end);
     return i;
 }
@@ -192,7 +192,7 @@ bool CBotExpression::Execute(CBotStack* &pj)
             initKind = pVar->GetInit();
             if (initKind == CBotVar::InitType::IS_NAN)
             {
-                pile2->SetError(TX_OPNAN, m_leftop->GetToken());
+                pile2->SetError(CBotErrNan, m_leftop->GetToken());
                 return pj->Return(pile2);
             }
             result = CBotVar::Create("", pVar->GetTypResult(2));
@@ -217,13 +217,13 @@ bool CBotExpression::Execute(CBotStack* &pj)
         case ID_ASSDIV:
             if (initKind != CBotVar::InitType::UNDEF &&
                 result->Div(pile1->GetVar(), pile2->GetVar()))
-                pile2->SetError(TX_DIVZERO, &m_token);
+                pile2->SetError(CBotErrZeroDiv, &m_token);
             pile2->SetVar(result);
             break;
         case ID_ASSMODULO:
             if (initKind != CBotVar::InitType::UNDEF &&
                 result->Modulo(pile1->GetVar(), pile2->GetVar()))
-                pile2->SetError(TX_DIVZERO, &m_token);
+                pile2->SetError(CBotErrZeroDiv, &m_token);
             pile2->SetVar(result);
             break;
         case ID_ASSAND:
@@ -254,7 +254,7 @@ bool CBotExpression::Execute(CBotStack* &pj)
             assert(0);
         }
         if (initKind == CBotVar::InitType::UNDEF)
-            pile2->SetError(TX_NOTINIT, m_leftop->GetToken());
+            pile2->SetError(CBotErrNotInit, m_leftop->GetToken());
 
         pile1->IncState();
     }

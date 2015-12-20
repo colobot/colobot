@@ -80,10 +80,10 @@ CBotInstr* CBotDo::Compile(CBotToken* &p, CBotCStack* pStack)
                 {
                     return pStack->Return(inst, pStk);  // return an object to the application
                 }
-                pStk->SetError(TX_ENDOF, p->GetStart());
+                pStk->SetError(CBotErrNoTerminator, p->GetStart());
             }
         }
-        pStk->SetError(TX_WHILE, p->GetStart());
+        pStk->SetError(CBotErrNoWhile, p->GetStart());
     }
 
     delete inst;                                // error, frees up

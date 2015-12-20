@@ -91,7 +91,7 @@ CBotInstr* CBotSwitch::Compile(CBotToken* &p, CBotCStack* pStack)
 
                             if ( inst->m_Block == nullptr )
                             {
-                                pStk->SetError(TX_NOCASE, p->GetStart());
+                                pStk->SetError(CBotErrNoCase, p->GetStart());
                                 delete inst;
                                 return pStack->Return(nullptr, pStk);
                             }
@@ -106,7 +106,7 @@ CBotInstr* CBotSwitch::Compile(CBotToken* &p, CBotCStack* pStack)
 
                             if ( p == nullptr )
                             {
-                                pStk->SetError(TX_CLOSEBLK, -1);
+                                pStk->SetError(CBotErrCloseBlock, -1);
                                 delete inst;
                                 return pStack->Return(nullptr, pStk);
                             }
@@ -115,21 +115,21 @@ CBotInstr* CBotSwitch::Compile(CBotToken* &p, CBotCStack* pStack)
 
                         if ( inst->m_Block == nullptr )
                         {
-                            pStk->SetError(TX_NOCASE, p->GetStart());
+                            pStk->SetError(CBotErrNoCase, p->GetStart());
                             delete inst;
                             return pStack->Return(nullptr, pStk);
                         }
                         // the statement block is ok
                         return pStack->Return(inst, pStk);  // return an object to the application
                     }
-                    pStk->SetError( TX_OPENBLK, p->GetStart() );
+                    pStk->SetError( CBotErrOpenBlock, p->GetStart() );
                 }
-                pStk->SetError( TX_CLOSEPAR, p->GetStart() );
+                pStk->SetError( CBotErrClosePar, p->GetStart() );
             }
-            pStk->SetError( TX_BADTYPE, p->GetStart() );
+            pStk->SetError( CBotErrBadType1, p->GetStart() );
         }
     }
-    pStk->SetError( TX_OPENPAR, p->GetStart());
+    pStk->SetError( CBotErrOpenPar, p->GetStart());
 
     delete inst;                                // error, frees up
     return pStack->Return(nullptr, pStk);          // no object, the error is on the stack

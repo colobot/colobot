@@ -110,7 +110,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
 
     if (pVar->GetPointer() == nullptr)
     {
-        pj->SetError(TX_NULLPT, prevToken);
+        pj->SetError(CBotErrNull, prevToken);
     }
 
     if (pile1->IfStep()) return false;

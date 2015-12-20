@@ -72,7 +72,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
                 if ( var->IsPrivate(privat) &&
                      !pStk->GetBotCall()->m_bCompileClass)
                 {
-                    pStk->SetError(TX_PRIVATE, p);
+                    pStk->SetError(CBotErrPrivate, p);
                     goto err;
                 }
 
@@ -104,12 +104,12 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
 
                         if (i->m_expr == nullptr)
                         {
-                            pStk->SetError(TX_BADINDEX, p->GetStart());
+                            pStk->SetError(CBotErrBadIndex, p->GetStart());
                             goto err;
                         }
                         if (!pStk->IsOk() || !IsOfType( p, ID_CLBRK ))
                         {
-                            pStk->SetError(TX_CLBRK, p->GetStart());
+                            pStk->SetError(CBotErrCloseIndex, p->GetStart());
                             goto err;
                         }
                         continue;
@@ -142,7 +142,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
                                     if ( var->IsPrivate() &&
                                      !pStk->GetBotCall()->m_bCompileClass)
                                     {
-                                        pStk->SetError(TX_PRIVATE, pp);
+                                        pStk->SetError(CBotErrPrivate, pp);
                                         goto err;
                                     }
                                 }
@@ -154,10 +154,10 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
                                 p = p->GetNext();   // skips the name
                                 continue;
                             }
-                            pStk->SetError(TX_NOITEM, p);
+                            pStk->SetError(CBotErrUndefItem, p);
                             goto err;
                         }
-                        pStk->SetError(TX_DOT, p->GetStart());
+                        pStk->SetError(CBotErrUndefClass, p->GetStart());
                         goto err;
                     }
                 }
@@ -168,7 +168,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
             pStk->SetCopyVar(var);  // place the copy of the variable on the stack (for type)
             if (pStk->IsOk()) return pStack->Return(inst, pStk);
         }
-        pStk->SetError(TX_UNDEFVAR, p);
+        pStk->SetError(CBotErrUndefVar, p);
 err:
         delete inst;
         return pStack->Return(nullptr, pStk);
@@ -252,7 +252,7 @@ bool CBotExprVar::Execute(CBotStack* &pj)
     {
         CBotToken* pt = &m_token;
         while (pt->GetNext() != nullptr) pt = pt->GetNext();
-        pile1->SetError(TX_NOTINIT, pt);
+        pile1->SetError(CBotErrNotInit, pt);
         return pj->Return(pile1);
     }
     return pj->Return(pile1);   // operation completed

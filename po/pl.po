@@ -737,6 +737,9 @@ msgstr "Polecenie \"else\" bez wystąpienia \"if\" "
 msgid "Instructions (\\key help;)"
 msgstr "Rozkazy (\\key help;)"
 
+msgid "Instructions after the final closing brace"
+msgstr "Polecenie po końcowej klamrze zamykającej"
+
 msgid "Instructions for the mission (\\key help;)"
 msgstr "Rozkazy dotyczące misji (\\key help;)"
 
@@ -1840,9 +1843,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Ground inappropriate"
 #~ msgstr "Nieodpowiedni teren"
-
-#~ msgid "Instructions after the final closing brace"
-#~ msgstr "Polecenie po końcowej klamrze zamykającej"
 
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr ""

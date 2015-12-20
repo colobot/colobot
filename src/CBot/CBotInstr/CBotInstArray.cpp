@@ -67,7 +67,7 @@ CBotInstr* CBotInstArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
     {
         if (pStk->CheckVarLocal(vartoken))                              // redefinition of the variable?
         {
-            pStk->SetError(TX_REDEFVAR, vartoken);
+            pStk->SetError(CBotErrRedefVar, vartoken);
             goto error;
         }
 
@@ -84,7 +84,7 @@ CBotInstr* CBotInstArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
 
             if (!pStk->IsOk() || !IsOfType(p, ID_CLBRK ))
             {
-                pStk->SetError(TX_CLBRK, p->GetStart());
+                pStk->SetError(CBotErrCloseIndex, p->GetStart());
                 goto error;
             }
         }
@@ -146,7 +146,7 @@ bool CBotInstArray::Execute(CBotStack* &pj)
             max[n] = v->GetValInt();                                // value
             if (max[n]>MAXARRAYSIZE)
             {
-                pile->SetError(TX_OUTARRAY, &m_token);
+                pile->SetError(CBotErrOutArray, &m_token);
                 return pj->Return (pile);
             }
             n++;

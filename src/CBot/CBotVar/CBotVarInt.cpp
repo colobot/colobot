@@ -139,7 +139,7 @@ int CBotVarInt::Div(CBotVar* left, CBotVar* right)
         m_val = left->GetValInt() / r;
         m_binit = CBotVar::InitType::DEF;
     }
-    return ( r == 0 ? TX_DIVZERO : 0 );
+    return ( r == 0 ? CBotErrZeroDiv : 0 );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -151,7 +151,7 @@ int CBotVarInt::Modulo(CBotVar* left, CBotVar* right)
         m_val = left->GetValInt() % r;
         m_binit = CBotVar::InitType::DEF;
     }
-    return ( r == 0 ? TX_DIVZERO : 0 );
+    return ( r == 0 ? CBotErrZeroDiv : 0 );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

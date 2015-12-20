@@ -61,7 +61,7 @@ CBotInstr* CBotThrow::Compile(CBotToken* &p, CBotCStack* pStack)
     {
         return inst;                            // return an object to the application
     }
-    pStack->SetError(TX_BADTYPE, pp);
+    pStack->SetError(CBotErrBadType1, pp);
 
     delete inst;                                // error, frees up
     return nullptr;                                // no object, the error is on the stack
@@ -82,7 +82,7 @@ bool CBotThrow::Execute(CBotStack* &pj)
     if ( pile->IfStep() ) return false;
 
     int val = pile->GetVal();
-    if ( val < 0 ) val = TX_BADTHROW;
+    if ( val < 0 ) val = CBotErrBadThrow;
     pile->SetError( val, &m_token );
     return pj->Return( pile );
 }

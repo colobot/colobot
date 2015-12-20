@@ -736,6 +736,9 @@ msgstr "Anweisung \"else\" ohne vorhergehende Anweisung \"if\""
 msgid "Instructions (\\key help;)"
 msgstr "Anweisungen (\\key help;)"
 
+msgid "Instructions after the final closing brace"
+msgstr "Hier ist eine Anweisung nach dem Ende des Programms"
+
 msgid "Instructions for the mission (\\key help;)"
 msgstr "Anweisungen über die Mission(\\key help;)"
 
@@ -1862,9 +1865,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Ground inappropriate"
 #~ msgstr "Boden ungeeignet"
-
-#~ msgid "Instructions after the final closing brace"
-#~ msgstr "Hier ist eine Anweisung nach dem Ende des Programms"
 
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Hilfe über Begriff\\Hilfe über einen Begriff"

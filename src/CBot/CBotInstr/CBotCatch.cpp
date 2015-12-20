@@ -70,11 +70,11 @@ CBotCatch* CBotCatch::Compile(CBotToken* &p, CBotCStack* pStack)
                 if ( pStack->IsOk() )
                     return inst;                // return an object to the application
             }
-            pStack->SetError(TX_CLOSEPAR, p->GetStart());
+            pStack->SetError(CBotErrClosePar, p->GetStart());
         }
-        pStack->SetError(TX_BADTYPE, p->GetStart());
+        pStack->SetError(CBotErrBadType1, p->GetStart());
     }
-    pStack->SetError(TX_OPENPAR, p->GetStart());
+    pStack->SetError(CBotErrOpenPar, p->GetStart());
     delete inst;                                // error, frees up
     return nullptr;                                // no object, the error is on the stack
 }

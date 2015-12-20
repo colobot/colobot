@@ -49,7 +49,7 @@ CBotInstr* CBotLeftExprVar::Compile(CBotToken* &p, CBotCStack* pStack)
     // verifies that the token is a variable name
     if (p->GetType() != TokenTypVar)
     {
-        pStack->SetError( TX_NOVAR, p->GetStart());
+        pStack->SetError( CBotErrNoVar, p->GetStart());
         return nullptr;
     }
 

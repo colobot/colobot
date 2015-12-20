@@ -57,7 +57,7 @@ CBotInstr* CBotListInstr::Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal
 
         if (IsOfType(p, 0))
         {
-            pStack->SetError(TX_CLOSEBLK, p->GetStart());
+            pStack->SetError(CBotErrCloseBlock, p->GetStart());
             delete inst;
             return pStack->Return(nullptr, pStk);
         }

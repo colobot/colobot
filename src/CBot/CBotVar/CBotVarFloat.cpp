@@ -136,7 +136,7 @@ int CBotVarFloat::Div(CBotVar* left, CBotVar* right)
         m_val = left->GetValFloat() / r;
         m_binit = CBotVar::InitType::DEF;
     }
-    return ( r == 0 ? TX_DIVZERO : 0 );
+    return ( r == 0 ? CBotErrZeroDiv : 0 );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +148,7 @@ int CBotVarFloat::Modulo(CBotVar* left, CBotVar* right)
         m_val = static_cast<float>(fmod( left->GetValFloat() , r ));
         m_binit = CBotVar::InitType::DEF;
     }
-    return ( r == 0 ? TX_DIVZERO : 0 );
+    return ( r == 0 ? CBotErrZeroDiv : 0 );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -55,9 +55,7 @@
 
 // TODO: Why are all of those duplicated? This needs to be unified across the source code ~krzys_h
 
-// Here are the list of errors that can be returned by the module
-// for compilation
-
+// Compile errors
 #define CBotErrOpenPar       5000    // missing the opening parenthesis
 #define CBotErrClosePar      5001    // missing the closing parenthesis
 #define CBotErrNotBoolean    5002    // expression must be a boolean
@@ -65,6 +63,7 @@
 #define CBotErrBadLeft       5004    // assignment impossible ( 5 = ... )
 #define CBotErrNoTerminator  5005    // semicolon expected
 #define CBotErrCaseOut       5006    // case outside a switch
+#define CBotErrNoEnd         5007    // instructions after final closing brace
 #define CBotErrCloseBlock    5008    // missing " } "
 #define CBotErrElseWhitoutIf 5009    // else without matching if
 #define CBotErrOpenBlock     5010    // missing " { "
@@ -73,6 +72,7 @@
 #define CBotErrBadType2      5013    // Two operands are incompatible
 #define CBotErrUndefCall     5014    // routine undefined
 #define CBotErrNoDoubleDots  5015    // " : " expected
+#define CBotErrNoWhile       5016    // "while" expected (in do..while)
 #define CBotErrBreakOutside  5017    // break outside of a loop
 #define CBotErrUndefLabel    5019    // label udnefined
 #define CBotErrLabel         5018    // label ne peut se mettre ici (label can not get here)
@@ -100,9 +100,7 @@
 #define CBotErrPrivate       5041    // protected item
 #define CBotErrNoPublic      5042    // missing word "public"
 
-// here is the list of errors that can be returned by the module
-// for the execution
-
+// Runtime errors
 #define CBotErrZeroDiv       6000    // division by zero
 #define CBotErrNotInit       6001    // uninitialized variable
 #define CBotErrBadThrow      6002    // throw a negative value
@@ -120,74 +118,9 @@
 #define CBotErrRead          6014    // error while reading
 #define CBotErrWrite         6015    // writing error
 
+// Max errors
+#define TX_MAX               6016
+
 // other values ​​may be returned
 // for example exceptions returned by external routines
 // and " throw " with any number.
-
-// TODO: refactor & change to enum!
-
-// Compile errors
-#define TX_OPENPAR                      5000
-#define TX_CLOSEPAR                     5001
-#define TX_NOTBOOL                      5002
-#define TX_UNDEFVAR                     5003
-#define TX_BADLEFT                      5004
-#define TX_ENDOF                        5005
-#define TX_OUTCASE                      5006
-#define TX_NOTERM                       5007
-#define TX_CLOSEBLK                     5008
-#define TX_ELSEWITHOUTIF                5009
-#define TX_OPENBLK                      5010
-#define TX_BADTYPE                      5011
-#define TX_REDEFVAR                     5012
-#define TX_BAD2TYPE                     5013
-#define TX_UNDEFCALL                    5014
-#define TX_MISDOTS                      5015
-#define TX_WHILE                        5016
-#define TX_BREAK                        5017
-#define TX_LABEL                        5018
-#define TX_NOLABEL                      5019
-#define TX_NOCASE                       5020
-#define TX_BADNUM                       5021
-#define TX_VOID                         5022
-#define TX_NOTYP                        5023
-#define TX_NOVAR                        5024
-#define TX_NOFONC                       5025
-#define TX_OVERPARAM                    5026
-#define TX_REDEF                        5027
-#define TX_LOWPARAM                     5028
-#define TX_BADPARAM                     5029
-#define TX_NUMPARAM                     5030
-#define TX_NOITEM                       5031
-#define TX_DOT                          5032
-#define TX_NOCONST                      5033
-#define TX_REDEFCLASS                   5034
-#define TX_CLBRK                        5035
-#define TX_RESERVED                     5036
-#define TX_BADNEW                       5037
-#define TX_OPBRK                        5038
-#define TX_BADSTRING                    5039
-#define TX_BADINDEX                     5040
-#define TX_PRIVATE                      5041
-#define TX_NOPUBLIC                     5042
-
-// Runtime errors
-#define TX_DIVZERO                      6000
-#define TX_NOTINIT                      6001
-#define TX_BADTHROW                     6002
-#define TX_NORETVAL                     6003
-#define TX_NORUN                        6004
-#define TX_NOCALL                       6005
-#define TX_NOCLASS                      6006
-#define TX_NULLPT                       6007
-#define TX_OPNAN                        6008
-#define TX_OUTARRAY                     6009
-#define TX_STACKOVER                    6010
-#define TX_DELETEDPT                    6011
-#define TX_FILEOPEN                     6012
-#define TX_NOTOPEN                      6013
-#define TX_ERRREAD                      6014
-#define TX_ERRWRITE                     6015
-
-// Max errors (NOTE: See above TODO near file errors)
-#define TX_MAX                          6016

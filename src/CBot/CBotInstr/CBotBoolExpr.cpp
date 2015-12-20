@@ -44,7 +44,7 @@ CBotInstr* CBotBoolExpr::Compile(CBotToken* &p, CBotCStack* pStack)
         {
             return inst;
         }
-        pStack->SetError(TX_NOTBOOL, p->GetStart());    // is not a boolean
+        pStack->SetError(CBotErrNotBoolean, p->GetStart());    // is not a boolean
     }
 
     delete inst;

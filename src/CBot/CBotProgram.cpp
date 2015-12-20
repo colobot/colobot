@@ -195,7 +195,7 @@ bool CBotProgram::Start(const std::string& name)
 
     if ( m_pRun == nullptr )
     {
-        m_ErrorCode = TX_NORUN;
+        m_ErrorCode = CBotErrNoRun;
         return false;
     }
 
@@ -277,7 +277,7 @@ bool CBotProgram::Run(void* pUser, int timer)
     return ok;
 
 error:
-    m_ErrorCode = TX_NORUN;
+    m_ErrorCode = CBotErrNoRun;
     return true;
 }
 
@@ -388,7 +388,7 @@ bool CBotProgram::AddFunction(const std::string& name,
 ////////////////////////////////////////////////////////////////////////////////
 bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
-    if ( pVar == nullptr ) return TX_LOWPARAM;
+    if ( pVar == nullptr ) return CBotErrLowParam;
 
     int i = 0;
     pVar = pVar->GetItemList();
@@ -406,9 +406,9 @@ bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 ////////////////////////////////////////////////////////////////////////////////
 CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
 {
-    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
+    if ( pVar == nullptr ) return CBotTypResult( CBotErrLowParam );
     if ( pVar->GetType() != CBotTypArrayPointer )
-                        return CBotTypResult( TX_BADPARAM );
+                        return CBotTypResult( CBotErrBadParam );
     return CBotTypResult( CBotTypInt );
 }
 
@@ -480,18 +480,18 @@ int CBotProgram::GetVersion()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::Init()
 {
-    CBotToken::DefineNum("CBotErrZeroDiv",       TX_DIVZERO);     // division by zero
-    CBotToken::DefineNum("CBotErrNotInit",       TX_NOTINIT);     // uninitialized variable
-    CBotToken::DefineNum("CBotErrBadThrow",      TX_BADTHROW);    // throw a negative value
-    CBotToken::DefineNum("CBotErrNoRetVal",      TX_NORETVAL);    // function did not return results
-    CBotToken::DefineNum("CBotErrNoRun",         TX_NORUN);       // active Run () without a function // TODO: Is this actually a runtime error?
-    CBotToken::DefineNum("CBotErrUndefFunc",     TX_NOCALL);      // Calling a function that no longer exists
-    CBotToken::DefineNum("CBotErrNotClass",      TX_NOCLASS);     // Class no longer exists
-    CBotToken::DefineNum("CBotErrNull",          TX_NULLPT);      // Attempted to use a null pointer
-    CBotToken::DefineNum("CBotErrNan",           TX_OPNAN);       // Can't do operations on nan
-    CBotToken::DefineNum("CBotErrOutArray",      TX_OUTARRAY);    // Attempted access out of bounds of an array
-    CBotToken::DefineNum("CBotErrStackOver",     TX_STACKOVER);   // Stack overflow
-    CBotToken::DefineNum("CBotErrDeletedPtr",    TX_DELETEDPT);   // Attempted to use deleted object
+    CBotToken::DefineNum("CBotErrZeroDiv",       CBotErrZeroDiv);     // division by zero
+    CBotToken::DefineNum("CBotErrNotInit",       CBotErrNotInit);     // uninitialized variable
+    CBotToken::DefineNum("CBotErrBadThrow",      CBotErrBadThrow);    // throw a negative value
+    CBotToken::DefineNum("CBotErrNoRetVal",      CBotErrNoRetVal);    // function did not return results
+    CBotToken::DefineNum("CBotErrNoRun",         CBotErrNoRun);       // active Run () without a function // TODO: Is this actually a runtime error?
+    CBotToken::DefineNum("CBotErrUndefFunc",     CBotErrUndefFunc);      // Calling a function that no longer exists
+    CBotToken::DefineNum("CBotErrNotClass",      CBotErrNotClass);     // Class no longer exists
+    CBotToken::DefineNum("CBotErrNull",          CBotErrNull);      // Attempted to use a null pointer
+    CBotToken::DefineNum("CBotErrNan",           CBotErrNan);       // Can't do operations on nan
+    CBotToken::DefineNum("CBotErrOutArray",      CBotErrOutArray);    // Attempted access out of bounds of an array
+    CBotToken::DefineNum("CBotErrStackOver",     CBotErrStackOver);   // Stack overflow
+    CBotToken::DefineNum("CBotErrDeletedPtr",    CBotErrDeletedPtr);   // Attempted to use deleted object
 
     CBotProgram::AddFunction("sizeof", rSizeOf, cSizeOf );
 

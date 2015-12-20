@@ -34,13 +34,13 @@
 bool rStrLen( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
-    if ( pVar == nullptr ) { ex = TX_LOWPARAM ; return true; }
+    if ( pVar == nullptr ) { ex = CBotErrLowParam ; return true; }
 
     // to be a string
-    if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
+    if ( pVar->GetType() != CBotTypString ) { ex = CBotErrBadString ; return true; }
 
     // no second parameter
-    if ( pVar->GetNext() != nullptr ) { ex = TX_OVERPARAM ; return true; }
+    if ( pVar->GetNext() != nullptr ) { ex = CBotErrOverParam ; return true; }
 
     // get the contents of the string
     std::string  s = pVar->GetValString();
@@ -54,26 +54,26 @@ bool rStrLen( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 bool rStrLeft( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
-    if ( pVar == nullptr ) { ex = TX_LOWPARAM ; return true; }
+    if ( pVar == nullptr ) { ex = CBotErrLowParam ; return true; }
 
     // to be a string
-    if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
+    if ( pVar->GetType() != CBotTypString ) { ex = CBotErrBadString ; return true; }
 
     // get the contents of the string
     std::string  s = pVar->GetValString();
 
     // it takes a second parameter
     pVar = pVar->GetNext();
-    if ( pVar == nullptr ) { ex = TX_LOWPARAM ; return true; }
+    if ( pVar == nullptr ) { ex = CBotErrLowParam ; return true; }
 
     // which must be a number
-    if ( pVar->GetType() > CBotTypDouble ) { ex = TX_BADNUM ; return true; }
+    if ( pVar->GetType() > CBotTypDouble ) { ex = CBotErrBadNum ; return true; }
 
     // retrieves this number
     int n = pVar->GetValInt();
 
     // no third parameter
-    if ( pVar->GetNext() != nullptr ) { ex = TX_OVERPARAM ; return true; }
+    if ( pVar->GetNext() != nullptr ) { ex = CBotErrOverParam ; return true; }
 
     // takes the interesting part
     s = s.substr(0, n);
@@ -87,26 +87,26 @@ bool rStrLeft( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 bool rStrRight( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
-    if ( pVar == nullptr ) { ex = TX_LOWPARAM ; return true; }
+    if ( pVar == nullptr ) { ex = CBotErrLowParam ; return true; }
 
     // to be a string
-    if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
+    if ( pVar->GetType() != CBotTypString ) { ex = CBotErrBadString ; return true; }
 
     // get the contents of the string
     std::string  s = pVar->GetValString();
 
     // it takes a second parameter
     pVar = pVar->GetNext();
-    if ( pVar == nullptr ) { ex = TX_LOWPARAM ; return true; }
+    if ( pVar == nullptr ) { ex = CBotErrLowParam ; return true; }
 
     // which must be a number
-    if ( pVar->GetType() > CBotTypDouble ) { ex = TX_BADNUM ; return true; }
+    if ( pVar->GetType() > CBotTypDouble ) { ex = CBotErrBadNum ; return true; }
 
     // retrieves this number
     int n = pVar->GetValInt();
 
     // no third parameter
-    if ( pVar->GetNext() != nullptr ) { ex = TX_OVERPARAM ; return true; }
+    if ( pVar->GetNext() != nullptr ) { ex = CBotErrOverParam ; return true; }
 
     // takes the interesting part
     s = s.substr(s.length()-n, std::string::npos);
@@ -120,20 +120,20 @@ bool rStrRight( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
-    if ( pVar == nullptr ) { ex = TX_LOWPARAM ; return true; }
+    if ( pVar == nullptr ) { ex = CBotErrLowParam ; return true; }
 
     // to be a string
-    if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
+    if ( pVar->GetType() != CBotTypString ) { ex = CBotErrBadString ; return true; }
 
     // get the contents of the string
     std::string  s = pVar->GetValString();
 
     // it takes a second parameter
     pVar = pVar->GetNext();
-    if ( pVar == nullptr ) { ex = TX_LOWPARAM ; return true; }
+    if ( pVar == nullptr ) { ex = CBotErrLowParam ; return true; }
 
     // which must be a number
-    if ( pVar->GetType() > CBotTypDouble ) { ex = TX_BADNUM ; return true; }
+    if ( pVar->GetType() > CBotTypDouble ) { ex = CBotErrBadNum ; return true; }
 
     // retrieves this number
     int n = pVar->GetValInt();
@@ -144,13 +144,13 @@ bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
         pVar = pVar->GetNext();
 
         // which must be a number
-        if ( pVar->GetType() > CBotTypDouble ) { ex = TX_BADNUM ; return true; }
+        if ( pVar->GetType() > CBotTypDouble ) { ex = CBotErrBadNum ; return true; }
 
         // retrieves this number
         int l = pVar->GetValInt();
 
         // but no fourth parameter
-        if ( pVar->GetNext() != nullptr ){ ex = TX_OVERPARAM ; return true; }
+        if ( pVar->GetNext() != nullptr ){ ex = CBotErrOverParam ; return true; }
 
         // takes the interesting part
         s = s.substr(n, l);
@@ -170,16 +170,16 @@ bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 bool rStrVal( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
-    if ( pVar == nullptr ) { ex = TX_LOWPARAM ; return true; }
+    if ( pVar == nullptr ) { ex = CBotErrLowParam ; return true; }
 
     // to be a string
-    if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
+    if ( pVar->GetType() != CBotTypString ) { ex = CBotErrBadString ; return true; }
 
     // get the contents of the string
     std::string  s = pVar->GetValString();
 
     // but no second parameter
-    if ( pVar->GetNext() != nullptr ){ ex = TX_OVERPARAM ; return true; }
+    if ( pVar->GetNext() != nullptr ){ ex = CBotErrOverParam ; return true; }
 
     float val = GetNumFloat(s);
 
@@ -192,26 +192,26 @@ bool rStrVal( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 bool rStrFind( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
-    if ( pVar == nullptr ) { ex = TX_LOWPARAM ; return true; }
+    if ( pVar == nullptr ) { ex = CBotErrLowParam ; return true; }
 
     // to be a string
-    if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
+    if ( pVar->GetType() != CBotTypString ) { ex = CBotErrBadString ; return true; }
 
     // get the contents of the string
     std::string  s = pVar->GetValString();
 
     // it takes a second parameter
     pVar = pVar->GetNext();
-    if ( pVar == nullptr ) { ex = TX_LOWPARAM ; return true; }
+    if ( pVar == nullptr ) { ex = CBotErrLowParam ; return true; }
 
     // to be a string
-    if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
+    if ( pVar->GetType() != CBotTypString ) { ex = CBotErrBadString ; return true; }
 
     // retrieves this number
     std::string s2 = pVar->GetValString();
 
     // no third parameter
-    if ( pVar->GetNext() != nullptr ) { ex = TX_OVERPARAM ; return true; }
+    if ( pVar->GetNext() != nullptr ) { ex = CBotErrOverParam ; return true; }
 
     // puts the result on the stack
     std::size_t res = s.find(s2);
@@ -224,16 +224,16 @@ bool rStrFind( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 bool rStrUpper( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
-    if ( pVar == nullptr ) { ex = TX_LOWPARAM ; return true; }
+    if ( pVar == nullptr ) { ex = CBotErrLowParam ; return true; }
 
     // to be a string
-    if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
+    if ( pVar->GetType() != CBotTypString ) { ex = CBotErrBadString ; return true; }
 
     // get the contents of the string
     std::string  s = pVar->GetValString();
 
     // but no second parameter
-    if ( pVar->GetNext() != nullptr ){ ex = TX_OVERPARAM ; return true; }
+    if ( pVar->GetNext() != nullptr ){ ex = CBotErrOverParam ; return true; }
 
 
     boost::to_upper(s);
@@ -247,16 +247,16 @@ bool rStrUpper( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 bool rStrLower( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
-    if ( pVar == nullptr ) { ex = TX_LOWPARAM ; return true; }
+    if ( pVar == nullptr ) { ex = CBotErrLowParam ; return true; }
 
     // to be a string
-    if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
+    if ( pVar->GetType() != CBotTypString ) { ex = CBotErrBadString ; return true; }
 
     // get the contents of the string
     std::string  s = pVar->GetValString();
 
     // but no second parameter
-    if ( pVar->GetNext() != nullptr ){ ex = TX_OVERPARAM ; return true; }
+    if ( pVar->GetNext() != nullptr ){ ex = CBotErrOverParam ; return true; }
 
 
     boost::to_lower(s);

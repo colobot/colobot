@@ -100,7 +100,7 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
 
             if (pv == nullptr || !TypesCompatibles( type, pv->GetTypResult()))     // compatible type?
             {
-                pStk->SetError(TX_BADTYPE, p->GetStart());
+                pStk->SetError(CBotErrBadType1, p->GetStart());
                 goto error;
             }
 
@@ -118,7 +118,7 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
 
                 if (pv == nullptr || !TypesCompatibles( type, pv->GetTypResult())) // compatible type?
                 {
-                    pStk->SetError(TX_BADTYPE, p->GetStart());
+                    pStk->SetError(CBotErrBadType1, p->GetStart());
                     goto error;
                 }
                 inst->m_expr->AddNext3(i);
@@ -127,7 +127,7 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
 
         if (!IsOfType(p, ID_CLOSEPAR) )
         {
-            pStk->SetError(TX_CLOSEPAR, p->GetStart());
+            pStk->SetError(CBotErrClosePar, p->GetStart());
             goto error;
         }
 

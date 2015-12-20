@@ -729,6 +729,9 @@ msgstr "Инструкция \"else\" без \"if\" "
 msgid "Instructions (\\key help;)"
 msgstr "Инструкции (\\key help;)"
 
+msgid "Instructions after the final closing brace"
+msgstr "Инструкция после последней закрывающей фигурной скобки"
+
 msgid "Instructions for the mission (\\key help;)"
 msgstr "Инструкции для миссии (\\key help;)"
 
@@ -1853,9 +1856,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Ground inappropriate"
 #~ msgstr "Земля не подходит"
-
-#~ msgid "Instructions after the final closing brace"
-#~ msgstr "Инструкция после последней закрывающей фигурной скобки"
 
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Помощь по командам\\Более подробная справку по командам"

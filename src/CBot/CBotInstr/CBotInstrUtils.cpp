@@ -68,7 +68,7 @@ CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars)
                 if (pile->GetTypResult().Eq(99))
                 {
                     delete pStack->TokenStack();
-                    pStack->SetError(TX_VOID, p->GetStart());
+                    pStack->SetError(CBotErrVoid, p->GetStart());
                     return nullptr;
                 }
                 ppVars[i] = pile->GetVar();
@@ -79,7 +79,7 @@ CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars)
                 if (IsOfType(p, ID_CLOSEPAR)) break;
             }
 
-            pStack->SetError(TX_CLOSEPAR, p->GetStart());
+            pStack->SetError(CBotErrClosePar, p->GetStart());
             delete pStack->TokenStack();
             return nullptr;
         }

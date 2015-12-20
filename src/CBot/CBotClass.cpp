@@ -393,7 +393,7 @@ CBotTypResult CBotClass::CompileMethode(const std::string& name,
     // find the methods declared by user
 
     r = m_pMethod->CompileCall(name, ppParams, nIdent);
-    if ( r.Eq(TX_UNDEFCALL) && m_pParent != nullptr )
+    if ( r.Eq(CBotErrUndefCall) && m_pParent != nullptr )
         return m_pParent->m_pMethod->CompileCall(name, ppParams, nIdent);
     return r;
 }
@@ -535,7 +535,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 {
     if ( !IsOfType(p, ID_PUBLIC) )
     {
-        pStack->SetError(TX_NOPUBLIC, p);
+        pStack->SetError(CBotErrNoPublic, p);
         return nullptr;
     }
 
@@ -546,7 +546,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
     CBotClass* pOld = CBotClass::Find(name);
     if ( pOld != nullptr && pOld->m_IsDef )
     {
-        pStack->SetError( TX_REDEFCLASS, p );
+        pStack->SetError( CBotErrRedefClass, p );
         return nullptr;
     }
 
@@ -561,7 +561,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 
             if (!IsOfType(p, TokenTypVar) || pPapa == nullptr )
             {
-                pStack->SetError( TX_NOCLASS, p );
+                pStack->SetError( CBotErrNotClass, p );
                 return nullptr;
             }
         }
@@ -571,7 +571,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 
         if ( !IsOfType( p, ID_OPBLK) )
         {
-            pStack->SetError(TX_OPENBLK, p);
+            pStack->SetError(CBotErrOpenBlock, p);
             return nullptr;
         }
 
@@ -582,7 +582,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 
         if (pStack->IsOk()) return classe;
     }
-    pStack->SetError(TX_ENDOF, p);
+    pStack->SetError(CBotErrNoTerminator, p);
     return nullptr;
 }
 
@@ -611,7 +611,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 
     if ( type.Eq(-1) )
     {
-        pStack->SetError(TX_NOTYP, p);
+        pStack->SetError(CBotErrNoType, p);
         return false;
     }
 
@@ -636,14 +636,14 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 
                 if (!pStack->IsOk() || !IsOfType( p, ID_CLBRK ) )
                 {
-                    pStack->SetError(TX_CLBRK, p->GetStart());
+                    pStack->SetError(CBotErrCloseIndex, p->GetStart());
                     return false;
                 }
 
 /*              CBotVar* pv = pStack->GetVar();
                 if ( pv->GetType()>= CBotTypBoolean )
                 {
-                    pStack->SetError(TX_BADTYPE, p->GetStart());
+                    pStack->SetError(CBotErrBadType1, p->GetStart());
                     return false;
                 }*/
 
@@ -739,7 +739,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
             // definition of an element
             if (type.Eq(0))
             {
-                pStack->SetError(TX_ENDOF, p);
+                pStack->SetError(CBotErrNoTerminator, p);
                 return false;
             }
 
@@ -785,7 +785,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
             if ( IsOfType(p, ID_COMMA) ) continue;
             if ( IsOfType(p, ID_SEP) ) break;
         }
-        pStack->SetError(TX_ENDOF, p);
+        pStack->SetError(CBotErrNoTerminator, p);
     }
     return pStack->IsOk();
 }
@@ -812,7 +812,7 @@ CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
 
             if (!IsOfType(p, TokenTypVar) || pPapa == nullptr)
             {
-                pStack->SetError( TX_NOCLASS, p );
+                pStack->SetError( CBotErrNotClass, p );
                 return nullptr;
             }
             pOld->m_pParent = pPapa;
@@ -834,6 +834,6 @@ CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
         pOld->m_IsDef = true;           // complete definition
         if (pStack->IsOk()) return pOld;
     }
-    pStack->SetError(TX_ENDOF, p);
+    pStack->SetError(CBotErrNoTerminator, p);
     return nullptr;
 }

@@ -252,7 +252,7 @@ bool CBotStack::ReturnKeep(CBotStack* pfils)
 bool CBotStack::StackOver()
 {
     if (!m_bOver) return false;
-    m_error = TX_STACKOVER;
+    m_error = CBotErrStackOver;
     return true;
 }
 
@@ -784,7 +784,7 @@ bool CBotStack::ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBo
     res = m_prog->GetFunctions()->DoCall(nIdent, token->GetString(), ppVar, this, token );
     if (res.GetType() >= 0) return res.GetType();
 
-    SetError(TX_NOCALL, token);
+    SetError(CBotErrUndefFunc, token);
     return true;
 }
 

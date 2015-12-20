@@ -248,9 +248,9 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
             }
         }
 bad:
-        pStk->SetError(TX_NOFONC, p);
+        pStk->SetError(CBotErrNoFunc, p);
     }
-    pStk->SetError(TX_NOTYP, p);
+    pStk->SetError(CBotErrNoType, p);
     if ( finput == nullptr ) delete func;
     return pStack->ReturnFunc(nullptr, pStk);
 }
@@ -294,7 +294,7 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
                 CBotClass* pClass = CBotClass::Find(pp);
                 if ( pClass == nullptr )
                 {
-                    pStk->SetError(TX_NOCLASS, pp);
+                    pStk->SetError(CBotErrNotClass, pp);
                     goto bad;
                 }
 
@@ -325,15 +325,15 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
 
                         return pStack->ReturnFunc(func, pStk);
                     }
-                    pStk->SetError(TX_OPENBLK, p);
+                    pStk->SetError(CBotErrOpenBlock, p);
                 }
             }
-            pStk->SetError(TX_REDEF, pp);
+            pStk->SetError(CBotErrRedefFunc, pp);
         }
 bad:
-        pStk->SetError(TX_NOFONC, p);
+        pStk->SetError(CBotErrNoFunc, p);
     }
-    pStk->SetError(TX_NOTYP, p);
+    pStk->SetError(CBotErrNoType, p);
     delete func;
     return pStack->ReturnFunc(nullptr, pStk);
 }
@@ -445,7 +445,7 @@ CBotTypResult CBotFunction::CompileCall(const std::string& name, CBotVar** ppVar
 CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& name, CBotVar** ppVars,
                                               CBotTypResult& TypeOrError, bool bPublic)
 {
-    TypeOrError.SetType(TX_UNDEFCALL);      // no routine of the name
+    TypeOrError.SetType(CBotErrUndefCall);      // no routine of the name
     CBotFunction*   pt;
 
     if ( nIdent )
@@ -491,7 +491,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& n
                 {
                     if (!TypesCompatibles(pv->GetTypResult(), pw->GetTypResult()))
                     {
-                        if ( pFunc == nullptr ) TypeOrError = TX_BADPARAM;
+                        if ( pFunc == nullptr ) TypeOrError = CBotErrBadParam;
                         break;
                     }
                     int d = pv->GetType() - pw->GetType(2);
@@ -503,15 +503,15 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& n
                 if ( pw != nullptr )
                 {
                     if ( pFunc != nullptr ) continue;
-                    if ( TypeOrError.Eq(TX_LOWPARAM) ) TypeOrError.SetType(TX_NUMPARAM);
-                    if ( TypeOrError.Eq(TX_UNDEFCALL)) TypeOrError.SetType(TX_OVERPARAM);
+                    if ( TypeOrError.Eq(CBotErrLowParam) ) TypeOrError.SetType(CBotErrNbParam);
+                    if ( TypeOrError.Eq(CBotErrUndefCall)) TypeOrError.SetType(CBotErrOverParam);
                     continue;                   // too many parameters
                 }
                 if ( pv != nullptr )
                 {
                     if ( pFunc != nullptr ) continue;
-                    if ( TypeOrError.Eq(TX_OVERPARAM) ) TypeOrError.SetType(TX_NUMPARAM);
-                    if ( TypeOrError.Eq(TX_UNDEFCALL) ) TypeOrError.SetType(TX_LOWPARAM);
+                    if ( TypeOrError.Eq(CBotErrOverParam) ) TypeOrError.SetType(CBotErrNbParam);
+                    if ( TypeOrError.Eq(CBotErrUndefCall) ) TypeOrError.SetType(CBotErrLowParam);
                     continue;                   // not enough parameters
                 }
 
@@ -546,7 +546,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& n
                 {
                     if (!TypesCompatibles(pv->GetTypResult(), pw->GetTypResult()))
                     {
-                        if ( pFunc == nullptr ) TypeOrError = TX_BADPARAM;
+                        if ( pFunc == nullptr ) TypeOrError = CBotErrBadParam;
                         break;
                     }
                     int d = pv->GetType() - pw->GetType(2);
@@ -558,15 +558,15 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& n
                 if ( pw != nullptr )
                 {
                     if ( pFunc != nullptr ) continue;
-                    if ( TypeOrError.Eq(TX_LOWPARAM) ) TypeOrError.SetType(TX_NUMPARAM);
-                    if ( TypeOrError.Eq(TX_UNDEFCALL)) TypeOrError.SetType(TX_OVERPARAM);
+                    if ( TypeOrError.Eq(CBotErrLowParam) ) TypeOrError.SetType(CBotErrNbParam);
+                    if ( TypeOrError.Eq(CBotErrUndefCall)) TypeOrError.SetType(CBotErrOverParam);
                     continue;                   // to many parameters
                 }
                 if ( pv != nullptr )
                 {
                     if ( pFunc != nullptr ) continue;
-                    if ( TypeOrError.Eq(TX_OVERPARAM) ) TypeOrError.SetType(TX_NUMPARAM);
-                    if ( TypeOrError.Eq(TX_UNDEFCALL) ) TypeOrError.SetType(TX_LOWPARAM);
+                    if ( TypeOrError.Eq(CBotErrOverParam) ) TypeOrError.SetType(CBotErrNbParam);
+                    if ( TypeOrError.Eq(CBotErrUndefCall) ) TypeOrError.SetType(CBotErrLowParam);
                     continue;                   // not enough parameters
                 }
 

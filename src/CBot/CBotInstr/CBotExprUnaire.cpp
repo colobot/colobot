@@ -69,7 +69,7 @@ CBotInstr* CBotExprUnaire::Compile(CBotToken* &p, CBotCStack* pStack)
         if (op == ID_TXT_NOT && pStk->GetTypResult().Eq(CBotTypBoolean))// only with boolean
             return pStack->Return(inst, pStk);
 
-        pStk->SetError(TX_BADTYPE, &inst->m_token);
+        pStk->SetError(CBotErrBadType1, &inst->m_token);
     }
     delete inst;
     return pStack->Return(nullptr, pStk);

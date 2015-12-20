@@ -66,7 +66,7 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
 
     if ( !IsOfType(p, ID_OPENPAR))              // missing parenthesis ?
     {
-        pStack->SetError(TX_OPENPAR, p->GetStart());
+        pStack->SetError(CBotErrOpenPar, p->GetStart());
         return nullptr;
     }
 
@@ -78,7 +78,7 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
     {
         if ( !IsOfType(p, ID_SEP))                      // lack the semicolon?
         {
-            pStack->SetError(TX_OPENPAR, p->GetStart());
+            pStack->SetError(CBotErrOpenPar, p->GetStart());
             delete inst;
             return pStack->Return(nullptr, pStk);          // no object, the error is on the stack
         }
@@ -87,7 +87,7 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
         {
             if ( !IsOfType(p, ID_SEP))                      // lack the semicolon?
             {
-                pStack->SetError(TX_OPENPAR, p->GetStart());
+                pStack->SetError(CBotErrOpenPar, p->GetStart());
                 delete inst;
                 return pStack->Return(nullptr, pStk);          // no object, the error is on the stack
             }
@@ -102,7 +102,7 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
                     if ( pStk->IsOk() )
                         return pStack->Return(inst, pStk);;
                 }
-                pStack->SetError(TX_CLOSEPAR, p->GetStart());
+                pStack->SetError(CBotErrClosePar, p->GetStart());
             }
         }
     }

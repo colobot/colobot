@@ -89,14 +89,14 @@ CBotTypResult cOneIntReturnBool(CBotVar* &var, void* user)
 CBotTypResult cStrStr(CBotVar*& var, void* user)
 {
     // it takes a parameter
-    if ( var == nullptr ) return CBotTypResult( TX_LOWPARAM );
+    if ( var == nullptr ) return CBotTypResult( CBotErrLowParam );
 
     // to be a string
     if ( var->GetType() != CBotTypString )
-        return CBotTypResult( TX_BADSTRING );
+        return CBotTypResult( CBotErrBadString );
 
     // no second parameter
-    if ( var->GetNext() != nullptr ) return CBotTypResult( TX_OVERPARAM );
+    if ( var->GetNext() != nullptr ) return CBotTypResult( CBotErrOverParam );
 
     // the end result is a string
     return CBotTypResult( CBotTypString );
@@ -105,22 +105,22 @@ CBotTypResult cStrStr(CBotVar*& var, void* user)
 CBotTypResult cIntStrStr(CBotVar*& var, void* user)
 {
     // it takes a parameter
-    if ( var == nullptr ) return CBotTypResult( TX_LOWPARAM );
+    if ( var == nullptr ) return CBotTypResult( CBotErrLowParam );
 
     // to be a string
     if ( var->GetType() != CBotTypString )
-        return CBotTypResult( TX_BADSTRING );
+        return CBotTypResult( CBotErrBadString );
 
     // it takes a second parameter
     var = var->GetNext();
-    if ( var == nullptr ) return CBotTypResult( TX_LOWPARAM );
+    if ( var == nullptr ) return CBotTypResult( CBotErrLowParam );
 
     // to be a string
     if ( var->GetType() != CBotTypString )
-        return CBotTypResult( TX_BADSTRING );
+        return CBotTypResult( CBotErrBadString );
 
     // no third parameter
-    if ( var->GetNext() != nullptr ) return CBotTypResult( TX_OVERPARAM );
+    if ( var->GetNext() != nullptr ) return CBotTypResult( CBotErrOverParam );
 
     // the end result is a number
     return CBotTypResult( CBotTypInt );
@@ -129,14 +129,14 @@ CBotTypResult cIntStrStr(CBotVar*& var, void* user)
 CBotTypResult cFloatStr(CBotVar*& var, void* user)
 {
     // it takes a parameter
-    if ( var == nullptr ) return CBotTypResult(TX_LOWPARAM );
+    if ( var == nullptr ) return CBotTypResult(CBotErrLowParam );
 
     // to be a string
     if ( var->GetType() != CBotTypString )
-        return CBotTypResult( TX_BADSTRING );
+        return CBotTypResult( CBotErrBadString );
 
     // no second parameter
-    if ( var->GetNext() != nullptr ) return CBotTypResult( TX_OVERPARAM );
+    if ( var->GetNext() != nullptr ) return CBotTypResult( CBotErrOverParam );
 
     // the end result is a number
     return CBotTypResult( CBotTypFloat );
@@ -145,19 +145,19 @@ CBotTypResult cFloatStr(CBotVar*& var, void* user)
 CBotTypResult cStrStrIntInt(CBotVar*& var, void* user)
 {
     // it takes a parameter
-    if ( var == nullptr ) return CBotTypResult( TX_LOWPARAM );
+    if ( var == nullptr ) return CBotTypResult( CBotErrLowParam );
 
     // to be a string
     if ( var->GetType() != CBotTypString )
-        return CBotTypResult( TX_BADSTRING );
+        return CBotTypResult( CBotErrBadString );
 
     // it takes a second parameter
     var = var->GetNext();
-    if ( var == nullptr ) return CBotTypResult( TX_LOWPARAM );
+    if ( var == nullptr ) return CBotTypResult( CBotErrLowParam );
 
     // which must be a number
     if ( var->GetType() > CBotTypDouble )
-        return CBotTypResult( TX_BADNUM );
+        return CBotTypResult( CBotErrBadNum );
 
     // third parameter optional
     if ( var->GetNext() != nullptr )
@@ -166,10 +166,10 @@ CBotTypResult cStrStrIntInt(CBotVar*& var, void* user)
         var = var->GetNext();
         // which must be a number
         if ( var->GetType() > CBotTypDouble )
-            return CBotTypResult( TX_BADNUM );
+            return CBotTypResult( CBotErrBadNum );
 
         // no fourth parameter
-        if ( var->GetNext() != nullptr ) return CBotTypResult( TX_OVERPARAM );
+        if ( var->GetNext() != nullptr ) return CBotTypResult( CBotErrOverParam );
     }
 
     // the end result is a string
@@ -179,22 +179,22 @@ CBotTypResult cStrStrIntInt(CBotVar*& var, void* user)
 CBotTypResult cStrStrInt(CBotVar*& var, void* user)
 {
     // it takes a parameter
-    if ( var == nullptr ) return CBotTypResult( TX_LOWPARAM );
+    if ( var == nullptr ) return CBotTypResult( CBotErrLowParam );
 
     // to be a string
     if ( var->GetType() != CBotTypString )
-        return CBotTypResult( TX_BADSTRING );
+        return CBotTypResult( CBotErrBadString );
 
     // it takes a second parameter
     var = var->GetNext();
-    if ( var == nullptr ) return CBotTypResult( TX_LOWPARAM );
+    if ( var == nullptr ) return CBotTypResult( CBotErrLowParam );
 
     // which must be a number
     if ( var->GetType() > CBotTypDouble )
-        return CBotTypResult( TX_BADNUM );
+        return CBotTypResult( CBotErrBadNum );
 
     // no third parameter
-    if ( var->GetNext() != nullptr ) return CBotTypResult( TX_OVERPARAM );
+    if ( var->GetNext() != nullptr ) return CBotTypResult( CBotErrOverParam );
 
     // the end result is a string
     return CBotTypResult( CBotTypString );
@@ -203,14 +203,14 @@ CBotTypResult cStrStrInt(CBotVar*& var, void* user)
 CBotTypResult cIntStr(CBotVar*& var, void* user)
 {
     // it takes a parameter
-    if ( var == nullptr ) return CBotTypResult( TX_LOWPARAM );
+    if ( var == nullptr ) return CBotTypResult( CBotErrLowParam );
 
     // to be a string
     if ( var->GetType() != CBotTypString )
-        return CBotTypResult( TX_BADPARAM );
+        return CBotTypResult( CBotErrBadParam );
 
     // no second parameter
-    if ( var->GetNext() != nullptr ) return CBotTypResult( TX_OVERPARAM );
+    if ( var->GetNext() != nullptr ) return CBotTypResult( CBotErrOverParam );
 
     // the end result is an integer
     return CBotTypResult( CBotTypInt );

@@ -43,12 +43,12 @@ CBotInstr* CBotCondition::Compile(CBotToken* &p, CBotCStack* pStack)
             {
                 return inst;
             }
-            pStack->SetError(TX_CLOSEPAR, p->GetStart());    // missing parenthesis
+            pStack->SetError(CBotErrClosePar, p->GetStart());    // missing parenthesis
         }
         delete inst;
     }
 
-    pStack->SetError(TX_OPENPAR, p->GetStart());    // missing parenthesis
+    pStack->SetError(CBotErrOpenPar, p->GetStart());    // missing parenthesis
 
     return nullptr;
 }

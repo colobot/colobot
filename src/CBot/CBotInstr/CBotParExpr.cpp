@@ -59,7 +59,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
             {
                 return pStack->Return(inst, pStk);
             }
-            pStk->SetError(TX_CLOSEPAR, p->GetStart());
+            pStk->SetError(CBotErrClosePar, p->GetStart());
         }
         delete inst;
         return pStack->Return(nullptr, pStk);
@@ -94,7 +94,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
         {
             if (pStk->GetType() >= CBotTypBoolean)
             {
-                pStk->SetError(TX_BADTYPE, pp);
+                pStk->SetError(CBotErrBadType1, pp);
                 delete inst;
                 return pStack->Return(nullptr, pStk);
             }
@@ -126,7 +126,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
             {
                 if (pStk->GetType() >= CBotTypBoolean)
                 {
-                    pStk->SetError(TX_BADTYPE, pp);
+                    pStk->SetError(CBotErrBadType1, pp);
                     delete inst;
                     return pStack->Return(nullptr, pStk);
                 }

@@ -60,13 +60,13 @@ bool CBotPreIncExpr::Execute(CBotStack* &pj)
 
         if (var1->IsNAN())
         {
-            pile->SetError(TX_OPNAN, &m_token);
+            pile->SetError(CBotErrNan, &m_token);
             return pj->Return(pile);    // operation performed
         }
 
         if (!var1->IsDefined())
         {
-            pile->SetError(TX_NOTINIT, &m_token);
+            pile->SetError(CBotErrNotInit, &m_token);
             return pj->Return(pile);    // operation performed
         }
 

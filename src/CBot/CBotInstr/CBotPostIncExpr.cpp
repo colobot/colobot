@@ -62,12 +62,12 @@ bool CBotPostIncExpr::Execute(CBotStack* &pj)
 
     if (var1->IsNAN())
     {
-        pile1->SetError(TX_OPNAN, &m_token);
+        pile1->SetError(CBotErrNan, &m_token);
     }
 
     if (!var1->IsDefined())
     {
-        pile1->SetError(TX_NOTINIT, &m_token);
+        pile1->SetError(CBotErrNotInit, &m_token);
     }
 
     if (GetTokenType() == ID_INC) var1->Inc();

@@ -257,7 +257,7 @@ bool CBotCStack::NextToken(CBotToken* &p)
     p = p->GetNext();
     if (p!=nullptr) return true;
 
-    SetError(TX_ENDOF, pp->GetEnd());
+    SetError(CBotErrNoTerminator, pp->GetEnd());
     return false;
 }
 

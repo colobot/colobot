@@ -48,7 +48,7 @@ CBotInstr* CBotBreak::Compile(CBotToken* &p, CBotCStack* pStack)
 
     if ( !ChkLvl(std::string(), type ) )
     {
-        pStack->SetError(TX_BREAK, pp);
+        pStack->SetError(CBotErrBreakOutside, pp);
         return nullptr;                            // no object, the error is on the stack
     }
 
@@ -62,7 +62,7 @@ CBotInstr* CBotBreak::Compile(CBotToken* &p, CBotCStack* pStack)
         if ( !ChkLvl(inst->m_label, type ) )
         {
             delete inst;
-            pStack->SetError(TX_NOLABEL, pp);
+            pStack->SetError(CBotErrUndefLabel, pp);
             return nullptr;                            // no object, the error is on the stack
         }
     }
@@ -73,7 +73,7 @@ CBotInstr* CBotBreak::Compile(CBotToken* &p, CBotCStack* pStack)
     }
     delete inst;
 
-    pStack->SetError(TX_ENDOF, p->GetStart());
+    pStack->SetError(CBotErrNoTerminator, p->GetStart());
     return nullptr;                            // no object, the error is on the stack
 }
 

@@ -1622,6 +1622,9 @@ msgstr ""
 msgid "Instruction \"case\" outside a block \"switch\""
 msgstr ""
 
+msgid "Instructions after the final closing brace"
+msgstr ""
+
 msgid "End of block missing"
 msgstr ""
 

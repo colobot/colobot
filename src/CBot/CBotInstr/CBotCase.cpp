@@ -56,14 +56,14 @@ CBotInstr* CBotCase::Compile(CBotToken* &p, CBotCStack* pStack)
         inst->m_Value = CBotExprNum::Compile(p, pStack);
         if ( inst->m_Value == nullptr )
         {
-            pStack->SetError( TX_BADNUM, pp );
+            pStack->SetError( CBotErrBadNum, pp );
             delete inst;
             return nullptr;
         }
     }
     if ( !IsOfType( p, ID_DOTS ))
     {
-        pStack->SetError( TX_MISDOTS, p->GetStart() );
+        pStack->SetError( CBotErrNoDoubleDots, p->GetStart() );
         delete inst;
         return nullptr;
     }

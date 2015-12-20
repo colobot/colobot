@@ -74,7 +74,7 @@ CBotInstr* CBotFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool
         if (pStk->CheckVarLocal(vartoken))                    // redefinition of a variable
         {
             pStk->SetStartError(vartoken->GetStart());
-            pStk->SetError(TX_REDEFVAR, vartoken->GetEnd());
+            pStk->SetError(CBotErrRedefVar, vartoken->GetEnd());
             goto error;
         }
 
@@ -86,7 +86,7 @@ CBotInstr* CBotFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool
 
             if (!pStk->IsOk() )
             {
-                pStk->SetError(TX_CLBRK, p->GetStart());
+                pStk->SetError(CBotErrCloseIndex, p->GetStart());
                 goto error;
             }
             goto suite;            // no assignment, variable already created
@@ -100,7 +100,7 @@ CBotInstr* CBotFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool
             }
             if (pStk->GetType() >= CBotTypBoolean)
             {
-                pStk->SetError(TX_BADTYPE, p->GetStart());
+                pStk->SetError(CBotErrBadType1, p->GetStart());
                 goto error;
             }
         }
@@ -124,7 +124,7 @@ suite:
             return pStack->Return(inst, pStk);
         }
 
-        pStk->SetError(TX_ENDOF, p->GetStart());
+        pStk->SetError(CBotErrNoTerminator, p->GetStart());
     }
 
 error:

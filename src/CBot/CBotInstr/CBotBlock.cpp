@@ -44,12 +44,12 @@ CBotInstr* CBotBlock::Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal)
             return inst;
         }
 
-        pStack->SetError(TX_CLOSEBLK, p->GetStart());    // missing parenthesis
+        pStack->SetError(CBotErrCloseBlock, p->GetStart());    // missing parenthesis
         delete inst;
         return nullptr;
     }
 
-    pStack->SetError(TX_OPENBLK, p->GetStart());
+    pStack->SetError(CBotErrOpenBlock, p->GetStart());
     return nullptr;
 }
 

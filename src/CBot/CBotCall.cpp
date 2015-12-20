@@ -222,7 +222,7 @@ fund:
 
     if ( rettype.GetType() > 0 && pResult == nullptr )
     {
-        pStack->SetError(TX_NORETVAL, token);
+        pStack->SetError(CBotErrNoRetVal, token);
     }
     nIdent = pt->m_nFuncIdent;
     return true;

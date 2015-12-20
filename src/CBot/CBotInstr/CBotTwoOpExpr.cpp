@@ -147,7 +147,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
         {
             if ( !type1.Eq(CBotTypBoolean) )
             {
-                pStk->SetError( TX_BADTYPE, p);
+                pStk->SetError( CBotErrBadType1, p);
                 return pStack->Return(nullptr, pStk);
             }
             CBotLogicExpr* inst = new CBotLogicExpr();
@@ -158,7 +158,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
             CBotToken* pp = p;
             if ( inst->m_op1 == nullptr || !IsOfType( p, ID_DOTS ) )
             {
-                pStk->SetError( TX_MISDOTS, p->GetStart());
+                pStk->SetError( CBotErrNoDoubleDots, p->GetStart());
                 delete inst;
                 return pStack->Return(nullptr, pStk);
             }
@@ -167,14 +167,14 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
             inst->m_op2 = CBotExpression::Compile(p, pStk);
             if ( inst->m_op2 == nullptr )
             {
-                pStk->SetError( TX_ENDOF, p->GetStart() );
+                pStk->SetError( CBotErrNoTerminator, p->GetStart() );
                 delete inst;
                 return pStack->Return(nullptr, pStk);
             }
             type2 = pStk->GetTypResult();
             if (!TypeCompatible(type1, type2))
             {
-                pStk->SetError( TX_BAD2TYPE, pp );
+                pStk->SetError( CBotErrBadType2, pp );
                 delete inst;
                 return pStack->Return(nullptr, pStk);
             }
@@ -247,7 +247,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 
                     if ( !TypeCompatible (type1, type2, TypeOp) )       // the results are compatible
                     {
-                        pStk->SetError(TX_BAD2TYPE, &i->m_token);
+                        pStk->SetError(CBotErrBadType2, &i->m_token);
                         delete i;
                         return pStack->Return(nullptr, pStk);
                     }
@@ -265,7 +265,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
                 // and returns the requested object
                 return pStack->Return(inst, pStk);
             }
-            pStk->SetError(TX_BAD2TYPE, &inst->m_token);
+            pStk->SetError(CBotErrBadType2, &inst->m_token);
         }
 
         // in case of error, releases the elements
@@ -291,7 +291,7 @@ bool IsNan(CBotVar* left, CBotVar* right, int* err = nullptr)
 {
     if ( VarIsNAN(left) || VarIsNAN(right) )
     {
-        if ( err != nullptr ) *err = TX_OPNAN ;
+        if ( err != nullptr ) *err = CBotErrNan ;
         return true;
     }
     return false;

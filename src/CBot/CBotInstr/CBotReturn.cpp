@@ -60,7 +60,7 @@ CBotInstr* CBotReturn::Compile(CBotToken* &p, CBotCStack* pStack)
     if ( type.GetType() == 0 )                  // returned void ?
     {
         if ( IsOfType( p, ID_SEP ) ) return inst;
-        pStack->SetError( TX_BADTYPE, pp );
+        pStack->SetError( CBotErrBadType1, pp );
         return nullptr;
     }
 
@@ -73,9 +73,9 @@ CBotInstr* CBotReturn::Compile(CBotToken* &p, CBotCStack* pStack)
             if ( IsOfType( p, ID_SEP ) )
                 return inst;
 
-            pStack->SetError(TX_ENDOF, p->GetStart());
+            pStack->SetError(CBotErrNoTerminator, p->GetStart());
         }
-        pStack->SetError(TX_BADTYPE, p->GetStart());
+        pStack->SetError(CBotErrBadType1, p->GetStart());
     }
 
     delete inst;

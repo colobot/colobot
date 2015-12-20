@@ -730,6 +730,9 @@ msgstr "Instruction \"else\" sans \"if\" correspondant"
 msgid "Instructions (\\key help;)"
 msgstr "Instructions (\\key help;)"
 
+msgid "Instructions after the final closing brace"
+msgstr "Instructions après la fin"
+
 msgid "Instructions for the mission (\\key help;)"
 msgstr "Instructions sur la mission (\\key help;)"
 
@@ -1849,9 +1852,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Ground inappropriate"
 #~ msgstr "Terrain inadapté"
-
-#~ msgid "Instructions after the final closing brace"
-#~ msgstr "Instructions après la fin"
 
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Instructions mot-clé\\Explication sur le mot-clé"
