@@ -21,10 +21,9 @@
 #include "CBot/CBotVar/CBotVarString.h"
 
 #include "CBot/CBotEnums.h"
-
 #include "CBot/CBotToken.h"
-
 #include "CBot/CBotUtils.h"
+#include "CBot/CBotKeywordStrings.h"
 
 // Local include
 
@@ -77,15 +76,11 @@ CBotString CBotVarString::GetValString()
 {
     if ( m_binit == CBotVar::InitType::UNDEF )
     {
-        CBotString res;
-        res.LoadString(TX_UNDEF);
-        return res;
+        return LoadString(TX_UNDEF);
     }
     if ( m_binit == CBotVar::InitType::IS_NAN )
     {
-        CBotString res;
-        res.LoadString(TX_NAN);
-        return res;
+        return LoadString(TX_NAN);
     }
 
     return    m_val;

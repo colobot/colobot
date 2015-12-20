@@ -21,8 +21,8 @@
 #include "CBot/CBotVar/CBotVarBoolean.h"
 
 #include "CBot/CBotEnums.h"
-
 #include "CBot/CBotUtils.h"
+#include "CBot/CBotKeywordStrings.h"
 
 // Local include
 
@@ -98,16 +98,16 @@ CBotString CBotVarBoolean::GetValString()
 
     if ( m_binit == CBotVar::InitType::UNDEF )
     {
-        res.LoadString(TX_UNDEF);
+        res = LoadString(TX_UNDEF);
         return res;
     }
     if ( m_binit == CBotVar::InitType::IS_NAN )
     {
-        res.LoadString(TX_NAN);
+        res = LoadString(TX_NAN);
         return res;
     }
 
-    ret.LoadString( m_val > 0 ? ID_TRUE : ID_FALSE );
+    ret = LoadString( m_val > 0 ? ID_TRUE : ID_FALSE );
     return    ret;
 }
 

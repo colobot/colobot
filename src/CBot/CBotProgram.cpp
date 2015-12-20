@@ -30,6 +30,7 @@
 #include "CBot/CBotInstr/CBotFunction.h"
 
 #include "StringFunctions.h"
+#include "CBotKeywordStrings.h"
 
 // Local include
 
@@ -357,9 +358,8 @@ bool CBotProgram::GetError(int& code, int& start, int& end, CBotProgram* &pProg)
 ////////////////////////////////////////////////////////////////////////////////
 CBotString CBotProgram::GetErrorText(int code)
 {
-    CBotString TextError;
+    CBotString TextError = LoadString(static_cast<EID>(code));
 
-    TextError.LoadString( code );
     if (TextError.IsEmpty())
     {
         char    buf[100];

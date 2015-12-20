@@ -19,6 +19,7 @@
 
 // Modules inlcude
 #include "CBot/CBotToken.h"
+#include "CBotKeywordStrings.h"
 
 // Local include
 
@@ -480,14 +481,14 @@ void CBotToken::LoadKeyWords()
     int             i, n = 0;
 
     i = TokenKeyWord; //start with keywords of the language
-    while (s.LoadString(i))
+    while (!(s = LoadString(static_cast<EID>(i))).IsEmpty())
     {
         m_ListKeyWords.push_back(s);
         m_ListIdKeyWords[n++] = i++;
     }
 
     i = TokenKeyDeclare; //keywords of declarations
-    while (s.LoadString(i))
+    while (!(s = LoadString(static_cast<EID>(i))).IsEmpty())
     {
         m_ListKeyWords.push_back(s);
         m_ListIdKeyWords[n++] = i++;
@@ -495,14 +496,14 @@ void CBotToken::LoadKeyWords()
 
 
     i = TokenKeyVal;  //keywords of values
-    while (s.LoadString(i))
+    while (!(s = LoadString(static_cast<EID>(i))).IsEmpty())
     {
         m_ListKeyWords.push_back(s);
         m_ListIdKeyWords[n++] = i++;
     }
 
     i = TokenKeyOp; //operators
-    while (s.LoadString(i))
+    while (!(s = LoadString(static_cast<EID>(i))).IsEmpty())
     {
         m_ListKeyWords.push_back(s);
         m_ListIdKeyWords[n++] = i++;

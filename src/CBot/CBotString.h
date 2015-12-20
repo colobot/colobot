@@ -123,13 +123,6 @@ public:
     int ReverseFind(const char* lpsz);
 
     /**
-     * \brief LoadString Load the string associate with the id.
-     * \param id         The id to load.
-     * \return           True if the id exist false otherwise.
-     */
-    bool LoadString(unsigned int id);
-
-    /**
      * \brief Mid    Return a part of a string from a starting index and until
      *               the end of the string with a limited size.
      * \param nFirst The start index of the character in the string.
@@ -198,14 +191,4 @@ private:
 
     //! \brief String
     std::string m_str;
-
-    //! \brief Keeps the string corresponding to keyword ID
-    static const std::map<EID, const char *> s_keywordString;
-
-    /**
-     * \brief MapIdToString Maps given ID to its string equivalent.
-     * \param id            Provided identifier.
-     * \return              String if found, else NullString.
-     */
-    static const char * MapIdToString(EID id);
 };

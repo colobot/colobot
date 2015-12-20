@@ -21,8 +21,8 @@
 #include "CBot/CBotVar/CBotVarFloat.h"
 
 #include "CBot/CBotEnums.h"
-
 #include "CBot/CBotToken.h"
+#include "CBot/CBotKeywordStrings.h"
 
 #include "CBot/CBotUtils.h"
 
@@ -99,13 +99,11 @@ CBotString CBotVarFloat::GetValString()
 
     if ( m_binit == CBotVar::InitType::UNDEF )
     {
-        res.LoadString(TX_UNDEF);
-        return res;
+        return LoadString(TX_UNDEF);
     }
     if ( m_binit == CBotVar::InitType::IS_NAN )
     {
-        res.LoadString(TX_NAN);
-        return res;
+        return LoadString(TX_NAN);
     }
 
     char        buffer[300];
