@@ -142,10 +142,11 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 
     delete inst;
-    int start, end, error = pStack->GetError(start, end);
+    int start, end;
+    CBotError error = pStack->GetError(start, end);
 
     p = pp;                                        // returns to the top
-    pStack->SetError(0,0);                        // forget the error
+    pStack->SetError(CBotNoErr,0);                        // forget the error
 
     CBotInstr* i = CBotTwoOpExpr::Compile(p, pStack);    // tries without assignment
     if (i != nullptr && error == CBotErrPrivate && p->GetType() == ID_ASS)

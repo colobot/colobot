@@ -118,7 +118,7 @@ CBotTypResult CBotCall::CompileCall(CBotToken* &p, CBotVar** ppVar, CBotCStack* 
 
             if ( ret > 20 )
             {
-                if (pVar2) pStack->SetError(ret, p /*pVar2->GetToken()*/ );
+                if (pVar2) pStack->SetError(static_cast<CBotError>(ret), p /*pVar2->GetToken()*/ );
             }
             delete pVar;
             nIdent = pt->m_nFuncIdent;

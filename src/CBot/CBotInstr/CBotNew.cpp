@@ -92,7 +92,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
 
         if (typ>20)
         {
-            pStk->SetError(typ, inst->m_vartoken.GetEnd());
+            pStk->SetError(static_cast<CBotError>(typ), inst->m_vartoken.GetEnd());
             goto error;
         }
 

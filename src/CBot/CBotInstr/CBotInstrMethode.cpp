@@ -77,7 +77,7 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
 
                 if (inst->m_typRes.GetType() > 20)
                 {
-                    pStack->SetError(inst->m_typRes.GetType(), pp);
+                    pStack->SetError(static_cast<CBotError>(inst->m_typRes.GetType()), pp);
                     delete    inst;
                     return    nullptr;
                 }
@@ -97,7 +97,7 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
             return nullptr;
         }
     }
-    pStack->SetError(1234, p);
+    pStack->SetError(static_cast<CBotError>(1234), p); // TODO: seriously? ~krzys_h
     delete inst;
     return nullptr;
 }

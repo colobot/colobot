@@ -70,7 +70,7 @@ CBotTypResult CBotCallMethode::CompileCall(const std::string& name,
             int ret = r.GetType();
             if ( ret > 20 )
             {
-                if (pVar2) pStack->SetError(ret, pVar2->GetToken());
+                if (pVar2) pStack->SetError(static_cast<CBotError>(ret), pVar2->GetToken());
             }
             delete pVar;
             nIdent = pt->m_nFuncIdent;

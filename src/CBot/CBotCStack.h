@@ -57,7 +57,7 @@ public:
      * \brief GetError
      * \return
      */
-    int GetError();
+    CBotError GetError();
 
     /*!
      * \brief GetError Gives error number
@@ -65,7 +65,7 @@ public:
      * \param end
      * \return
      */
-    int GetError(int& start, int& end);
+    CBotError GetError(int& start, int& end);
 
     /*!
      * \brief SetType Set the type of instruction on the stack.
@@ -183,14 +183,14 @@ public:
      * \param n
      * \param pos
      */
-    void SetError(int n, int pos);
+    void SetError(CBotError n, int pos);
 
     /*!
      * \brief SetError
      * \param n
      * \param p
      */
-    void SetError(int n, CBotToken* p);
+    void SetError(CBotError n, CBotToken* p);
 
     /*!
      * \brief ResetError
@@ -198,7 +198,7 @@ public:
      * \param start
      * \param end
      */
-    void ResetError(int n, int start, int end);
+    void ResetError(CBotError n, int start, int end);
 
     /*!
      * \brief SetRetType
@@ -252,7 +252,7 @@ private:
     CBotCStack* m_next;
     CBotCStack* m_prev;
 
-    static int m_error;
+    static CBotError m_error;
     static int m_end;
     int m_start;
 

@@ -153,3 +153,84 @@ enum EID
     TX_UNDEF = 4000,
     TX_NAN
 };
+
+////////////////////////////////////////////////////////////////////////
+// Error Handling of compilation and execution
+////////////////////////////////////////////////////////////////////////
+
+// NOTE: These CANNOT overlap with CBotType
+
+enum CBotError
+{
+    CBotNoErr = 0,
+
+    // Compile errors
+    CBotErrOpenPar       = 5000, //!< missing the opening parenthesis
+    CBotErrClosePar      = 5001, //!< missing the closing parenthesis
+    CBotErrNotBoolean    = 5002, //!< expression must be a boolean
+    CBotErrUndefVar      = 5003, //!< undeclared variable
+    CBotErrBadLeft       = 5004, //!< assignment impossible ( 5 = ... )
+    CBotErrNoTerminator  = 5005, //!< semicolon expected
+    CBotErrCaseOut       = 5006, //!< case outside a switch
+    CBotErrNoEnd         = 5007, //!< instructions after final closing brace
+    CBotErrCloseBlock    = 5008, //!< missing " } "
+    CBotErrElseWhitoutIf = 5009, //!< else without matching if
+    CBotErrOpenBlock     = 5010, //!< missing " { "
+    CBotErrBadType1      = 5011, //!< wrong type for the assignment
+    CBotErrRedefVar      = 5012, //!< redefinition of the variable
+    CBotErrBadType2      = 5013, //!< Two operands are incompatible
+    CBotErrUndefCall     = 5014, //!< routine undefined
+    CBotErrNoDoubleDots  = 5015, //!< " : " expected
+    CBotErrNoWhile       = 5016, //!< "while" expected (in do..while)
+    CBotErrBreakOutside  = 5017, //!< break outside of a loop
+    CBotErrUndefLabel    = 5019, //!< label udnefined
+    CBotErrLabel         = 5018, //!< label ne peut se mettre ici (label can not get here)
+    CBotErrNoCase        = 5020, //!< missing " case "
+    CBotErrBadNum        = 5021, //!< expected number
+    CBotErrVoid          = 5022, //!< " void " not possible here
+    CBotErrNoType        = 5023, //!< type declaration expected
+    CBotErrNoVar         = 5024, //!< variable name expected
+    CBotErrNoFunc        = 5025, //!< expected function name
+    CBotErrOverParam     = 5026, //!< too many parameters
+    CBotErrRedefFunc     = 5027, //!< this function already exists
+    CBotErrLowParam      = 5028, //!< not enough parameters
+    CBotErrBadParam      = 5029, //!< wrong types of parameters
+    CBotErrNbParam       = 5030, //!< wrong number of parameters
+    CBotErrUndefItem     = 5031, //!< element does not exist in the class
+    CBotErrUndefClass    = 5032, //!< variable is not a class
+    CBotErrNoConstruct   = 5033, //!< no appropriate constructor
+    CBotErrRedefClass    = 5034, //!< class already exists
+    CBotErrCloseIndex    = 5035, //!< " ] " expected
+    CBotErrReserved      = 5036, //!< reserved word (for a DefineNum)
+    CBotErrBadNew        = 5037, //!< wrong setting for new
+    CBotErrOpenIndex     = 5038, //!< " [ " expected
+    CBotErrBadString     = 5039, //!< expected string
+    CBotErrBadIndex      = 5040, //!< wrong index type "[ false ]"
+    CBotErrPrivate       = 5041, //!< protected item
+    CBotErrNoPublic      = 5042, //!< missing word "public"
+
+    // Runtime errors
+    CBotErrZeroDiv       = 6000, //!< division by zero
+    CBotErrNotInit       = 6001, //!< uninitialized variable
+    CBotErrBadThrow      = 6002, //!< throw a negative value
+    CBotErrNoRetVal      = 6003, //!< function did not return results
+    CBotErrNoRun         = 6004, //!< Run() without active function
+    CBotErrUndefFunc     = 6005, //!< calling a function that no longer exists
+    CBotErrNotClass      = 6006, //!< this class does not exist
+    CBotErrNull          = 6007, //!< null pointer
+    CBotErrNan           = 6008, //!< calculation with a NAN
+    CBotErrOutArray      = 6009, //!< index out of array
+    CBotErrStackOver     = 6010, //!< stack overflow
+    CBotErrDeletedPtr    = 6011, //!< pointer to an object destroyed
+    CBotErrFileOpen      = 6012, //!< cannot open the file
+    CBotErrNotOpen       = 6013, //!< channel not open
+    CBotErrRead          = 6014, //!< error while reading
+    CBotErrWrite         = 6015, //!< writing error
+
+    // Max errors
+    TX_MAX,
+
+    // other values ​​may be returned
+    // for example exceptions returned by external routines
+    // and " throw " with any number.
+};

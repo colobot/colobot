@@ -111,7 +111,7 @@ CBotInstr* CBotInstrCall::Compile(CBotToken* &p, CBotCStack* pStack)
         if ( inst->m_typRes.GetType() >= 20 )
         {
 //          if (pVar2!=nullptr) pp = pVar2->RetToken();
-            pStack->SetError( inst->m_typRes.GetType(), pp );
+            pStack->SetError( static_cast<CBotError>(inst->m_typRes.GetType()), pp );
             delete pStack->TokenStack();
             delete inst;
             return nullptr;

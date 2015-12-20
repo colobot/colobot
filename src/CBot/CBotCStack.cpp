@@ -36,7 +36,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotProgram* CBotCStack::m_prog    = nullptr;            // init the static variable
-int CBotCStack::m_error   = 0;
+CBotError CBotCStack::m_error   = CBotNoErr;
 int CBotCStack::m_end      = 0;
 CBotTypResult CBotCStack::m_retTyp  = CBotTypResult(0);
 
@@ -48,7 +48,7 @@ CBotCStack::CBotCStack(CBotCStack* ppapa)
 
     if (ppapa == nullptr)
     {
-        m_error = 0;
+        m_error = CBotNoErr;
         m_start = 0;
         m_end    = 0;
         m_bBlock = true;
@@ -124,7 +124,7 @@ CBotFunction* CBotCStack::ReturnFunc(CBotFunction* inst, CBotCStack* pfils)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotCStack::GetError(int& start, int& end)
+CBotError CBotCStack::GetError(int& start, int& end)
 {
     start = m_start;
     end      = m_end;
@@ -132,7 +132,7 @@ int CBotCStack::GetError(int& start, int& end)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotCStack::GetError()
+CBotError CBotCStack::GetError()
 {
     return m_error;
 }
@@ -225,7 +225,7 @@ void CBotCStack::SetStartError( int pos )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotCStack::SetError(int n, int pos)
+void CBotCStack::SetError(CBotError n, int pos)
 {
     if ( n!= 0 && m_error != 0) return;    // does not change existing error
     m_error = n;
@@ -233,7 +233,7 @@ void CBotCStack::SetError(int n, int pos)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotCStack::SetError(int n, CBotToken* p)
+void CBotCStack::SetError(CBotError n, CBotToken* p)
 {
     if (m_error) return;    // does not change existing error
     m_error = n;
@@ -242,7 +242,7 @@ void CBotCStack::SetError(int n, CBotToken* p)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotCStack::ResetError(int n, int start, int end)
+void CBotCStack::ResetError(CBotError n, int start, int end)
 {
     m_error = n;
     m_start    = start;
@@ -362,7 +362,7 @@ CBotTypResult CBotCStack::CompileCall(CBotToken* &p, CBotVar** ppVars, long& nId
         if ( val.GetType() < 0 )
         {
     //        pVar = nullptr;                    // the error is not on a particular parameter
-            SetError( -val.GetType(), p );
+            SetError( static_cast<CBotError>(-val.GetType()), p );
             val.SetType(-val.GetType());
             return val;
         }
