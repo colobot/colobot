@@ -2200,8 +2200,8 @@ void CRobotMain::HelpObject()
     CObject* obj = GetSelect();
     if (obj == nullptr) return;
 
-    const char* filename = GetHelpFilename(obj->GetType()).c_str();
-    if (filename[0] == 0) return;
+    std::string filename = GetHelpFilename(obj->GetType());
+    if (filename.empty()) return;
 
     StartDisplayInfo(filename, -1);
 }
