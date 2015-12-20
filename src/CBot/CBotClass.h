@@ -24,11 +24,10 @@
 
 #include "CBot/CBotTypResult.h"
 
-#include "CBot/CBotString.h"
-
 // Local include
 
 // Global include
+#include <string>
 
 // Forward declaration
 class CBotVar;
@@ -38,6 +37,8 @@ class CBotFunction;
 class CBotProgram;
 class CBotStack;
 class CBotDefParam;
+class CBotToken;
+class CBotCStack;
 
 /*!
  * \brief The CBotClass class Class to define new classes in the language CBOT
@@ -57,9 +58,9 @@ public:
      * \param pParent
      * \param bIntrinsic
      */
-    CBotClass( const char* name,
-               CBotClass* pParent,
-               bool bIntrinsic = false );
+    CBotClass(const std::string& name,
+              CBotClass* pParent,
+              bool bIntrinsic = false);
 
     /*!
      * \brief CBotClass Destructor.
@@ -73,7 +74,7 @@ public:
      * \param intrinsic
      * \return
      */
-    static CBotClass* Create(const char* name,
+    static CBotClass* Create(const std::string& name,
                              CBotClass* parent,
                              bool intrinsic = false);
 
@@ -86,9 +87,9 @@ public:
      * \param rCompile
      * \return
      */
-    bool AddFunction(const char* name,
-                     bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
-                     CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar));
+    bool AddFunction(const std::string& name,
+                     bool rExec(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
+                     CBotTypResult rCompile(CBotVar* pThis, CBotVar*& pVar));
 
     /*!
      * \brief AddUpdateFunc Defines routine to be called to update the elements
@@ -106,7 +107,7 @@ public:
      * \param mPrivate
      * \return
      */
-    bool AddItem(CBotString name, CBotTypResult type, int mPrivate = PR_PUBLIC);
+    bool AddItem(std::string name, CBotTypResult type, int mPrivate = PR_PUBLIC);
 
     /*!
      * \brief AddItem Adds an item by passing the pointer to an instance of a
@@ -126,7 +127,7 @@ public:
      * \brief GetName Gives the name of the class.
      * \return
      */
-    CBotString GetName();
+    std::string GetName();
 
     /*!
      * \brief GetParent Gives the parent class (or nullptr).
@@ -153,7 +154,7 @@ public:
      * \param name
      * \return
      */
-    static CBotClass* Find(const char* name);
+    static CBotClass* Find(const std::string& name);
 
     /*!
      * \brief GetVar Return the list of variables.
@@ -165,7 +166,7 @@ public:
      * \param name
      * \return
      */
-    CBotVar* GetItem(const char* name);
+    CBotVar* GetItem(const std::string& name);
 
     /*!
      * \brief GetItemRef
@@ -184,7 +185,7 @@ public:
      * \param nIdent
      * \return
      */
-    CBotTypResult CompileMethode(const char* name,
+    CBotTypResult CompileMethode(const std::string& name,
                                  CBotVar* pThis,
                                  CBotVar** ppParams,
                                  CBotCStack* pStack,
@@ -202,11 +203,11 @@ public:
      * \return
      */
     bool ExecuteMethode(long& nIdent,
-                        const char* name,
+                        const std::string& name,
                         CBotVar* pThis,
                         CBotVar** ppParams,
-                        CBotVar* &pResult,
-                        CBotStack* &pStack,
+                        CBotVar*& pResult,
+                        CBotStack*& pStack,
                         CBotToken* pToken);
 
     /*!
@@ -218,10 +219,10 @@ public:
      * \param pStack
      */
     void RestoreMethode(long& nIdent,
-                        const char* name,
+                        const std::string& name,
                         CBotVar* pThis,
                         CBotVar** ppParams,
-                        CBotStack* &pStack);
+                        CBotStack*& pStack);
 
     /*!
      * \brief Compile Compiles a class declared by the user.
@@ -319,7 +320,7 @@ private:
     //! Parent class.
     CBotClass* m_pParent;
     //! Name of this class.
-    CBotString m_name;
+    std::string m_name;
     //! Number of variables in the chain.
     int m_nbVar;
     //! Content of the class.
@@ -357,7 +358,7 @@ private:
 
     For example, a routine which calculates the mean of a parameter list
 
-int cMean(CBotVar* &pVar, CBotString& ClassName)
+int cMean(CBotVar* &pVar, std::string& ClassName)
 {
     if ( pVar == nullptr ) return 6001; // there is no parameter!
     while ( pVar != nullptr )

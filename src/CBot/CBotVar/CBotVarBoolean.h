@@ -47,7 +47,7 @@ public:
      * \param val
      * \param s
      */
-    void SetValInt(int val, const char* s = nullptr) override;
+    void SetValInt(int val, const std::string& s = nullptr) override;
 
     /*!
      * \brief SetValFloat
@@ -71,7 +71,7 @@ public:
      * \brief GetValString
      * \return
      */
-    CBotString GetValString() override;
+    std::string GetValString() override;
 
     /*!
      * \brief Copy Copy a variable into another.

@@ -46,7 +46,7 @@ CBotInstr* CBotBreak::Compile(CBotToken* &p, CBotCStack* pStack)
 
     if (!IsOfType(p, ID_BREAK, ID_CONTINUE)) return nullptr;   // should never happen
 
-    if ( !ChkLvl(CBotString(), type ) )
+    if ( !ChkLvl(std::string(), type ) )
     {
         pStack->SetError(TX_BREAK, pp);
         return nullptr;                            // no object, the error is on the stack

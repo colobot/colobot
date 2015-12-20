@@ -67,7 +67,7 @@ void CBotVarFloat::Copy(CBotVar* pSrc, bool bName)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVarFloat::SetValInt(int val, const char* s)
+void CBotVarFloat::SetValInt(int val, const std::string& s)
 {
     m_val = static_cast<float>(val);
     m_binit    = CBotVar::InitType::DEF;
@@ -93,9 +93,9 @@ float CBotVarFloat::GetValFloat()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotVarFloat::GetValString()
+std::string CBotVarFloat::GetValString()
 {
-    CBotString res;
+    std::string res;
 
     if ( m_binit == CBotVar::InitType::UNDEF )
     {

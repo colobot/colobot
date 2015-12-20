@@ -5,12 +5,12 @@ set(SOURCES
         CBotProgram.cpp
         CBotStack.cpp
         CBotCStack.cpp
-        CBotString.cpp
         CBotToken.cpp
         CBotCall.cpp
         CBotDefParam.cpp
         CBotCallMethode.cpp
         CBotTypResult.cpp
+        CBotKeywordStrings.cpp
         StringFunctions.cpp
         CBotInstr/CBotInstr.cpp
         CBotInstr/CBotInstrUtils.cpp
@@ -67,7 +67,7 @@ set(SOURCES
         CBotVar/CBotVarFloat.cpp
         CBotVar/CBotVarInt.cpp
         CBotVar/CBotVar.cpp
-        CBotKeywordStrings.cpp CBotKeywordStrings.h)
+)
 
 # Includes
 set(LOCAL_INCLUDES

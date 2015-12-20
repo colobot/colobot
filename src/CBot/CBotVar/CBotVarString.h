@@ -44,13 +44,13 @@ public:
      * \brief SetValString
      * \param p
      */
-    void SetValString(const char* p) override;
+    void SetValString(const std::string& p) override;
 
     /*!
      * \brief GetValString
      * \return
      */
-    CBotString GetValString() override;
+    std::string GetValString() override;
 
     /*!
      * \brief Copy Copy a variable into another.
@@ -123,5 +123,5 @@ public:
 
 private:
     //! The value.
-    CBotString m_val;
+    std::string m_val;
 };

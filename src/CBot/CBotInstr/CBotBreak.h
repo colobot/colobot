@@ -70,6 +70,6 @@ public:
 
 private:
     //! A label if there is
-    CBotString m_label;
+    std::string m_label;
 
 };

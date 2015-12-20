@@ -21,7 +21,6 @@
 
 // Modules inlcude
 #include "CBot/CBotTypResult.h"
-#include "CBot/CBotString.h"
 
 // Local include
 
@@ -45,9 +44,9 @@ public:
      * \param rExec
      * \param rCompile
      */
-    CBotCallMethode(const char* name,
-                    bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
-                    CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar));
+    CBotCallMethode(const std::string& name,
+                    bool rExec(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
+                    CBotTypResult rCompile(CBotVar* pThis, CBotVar*& pVar));
 
     /*!
      * \brief ~CBotCallMethode
@@ -64,7 +63,7 @@ public:
      * \param nIdent
      * \return
      */
-    CBotTypResult CompileCall(const char* name,
+    CBotTypResult CompileCall(const std::string& name,
                               CBotVar* pThis,
                               CBotVar** ppVars,
                               CBotCStack* pStack,
@@ -82,10 +81,10 @@ public:
      * \return
      */
     int DoCall(long& nIdent,
-               const char* name,
+               const std::string& name,
                CBotVar* pThis,
                CBotVar** ppVars,
-               CBotVar* &pResult,
+               CBotVar*& pResult,
                CBotStack* pStack,
                CBotToken* pFunc);
 
@@ -93,7 +92,7 @@ public:
      * \brief GetName
      * \return
      */
-    CBotString GetName();
+    std::string GetName();
 
     /*!
      * \brief Next
@@ -108,7 +107,7 @@ public:
     void AddNext(CBotCallMethode* p);
 
 private:
-    CBotString m_name;
+    std::string m_name;
     bool (*m_rExec) (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
     CBotTypResult (*m_rComp) (CBotVar* pThis, CBotVar* &pVar);
     CBotCallMethode* m_next;

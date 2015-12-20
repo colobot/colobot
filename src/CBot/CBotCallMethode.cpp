@@ -32,9 +32,9 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotCallMethode::CBotCallMethode(const char* name,
-                   bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
-                   CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar))
+CBotCallMethode::CBotCallMethode(const std::string& name,
+                                 bool rExec(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
+                                 CBotTypResult rCompile(CBotVar* pThis, CBotVar*& pVar))
 {
     m_name       = name;
     m_rExec      = rExec;
@@ -51,7 +51,7 @@ CBotCallMethode::~CBotCallMethode()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult CBotCallMethode::CompileCall(const char* name,
+CBotTypResult CBotCallMethode::CompileCall(const std::string& name,
                                            CBotVar* pThis,
                                            CBotVar** ppVar,
                                            CBotCStack* pStack,
@@ -82,7 +82,7 @@ CBotTypResult CBotCallMethode::CompileCall(const char* name,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotCallMethode::GetName()
+std::string CBotCallMethode::GetName()
 {
     return  m_name;
 }
@@ -104,10 +104,10 @@ void CBotCallMethode::AddNext(CBotCallMethode* pt)
 
 ////////////////////////////////////////////////////////////////////////////////
 int CBotCallMethode::DoCall(long& nIdent,
-                            const char* name,
+                            const std::string& name,
                             CBotVar* pThis,
                             CBotVar** ppVars,
-                            CBotVar* &pResult,
+                            CBotVar*& pResult,
                             CBotStack* pStack,
                             CBotToken* pToken)
 {

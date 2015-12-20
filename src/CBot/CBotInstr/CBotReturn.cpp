@@ -97,7 +97,7 @@ bool CBotReturn::Execute(CBotStack* &pj)
 
     if ( pile->IfStep() ) return false;
 
-    pile->SetBreak(3, CBotString());
+    pile->SetBreak(3, std::string());
     return pj->Return(pile);
 }
 

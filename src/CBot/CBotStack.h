@@ -22,12 +22,12 @@
 // Modules inlcude
 #include "CBot/CBotDefines.h"
 #include "CBot/CBotTypResult.h"
-#include "CBot/CBotString.h"
 
 // Local include
 
 // Global include
 #include <cstdio>
+#include <string>
 
 // Forward declaration
 class CBotInstr;
@@ -150,7 +150,7 @@ public:
      * \param [in] name Name of variable to find
      * \return Found variable
      */
-    CBotVar* FindVar(const char* name);
+    CBotVar* FindVar(const std::string& name);
 
     /**
      * \brief Fetch a variable on the stack according to its identification number
@@ -180,9 +180,9 @@ public:
     CBotStack*        AddStack2(UnknownEnumBlock bBlock = UnknownEnumBlock::UNKNOWN_FALSE);                        // extends the stack
     bool            Return(CBotStack* pFils);                            // transmits the result over
     bool            ReturnKeep(CBotStack* pFils);                        // transmits the result without reducing the stack
-    bool            BreakReturn(CBotStack* pfils, const char* name = nullptr);
+    bool            BreakReturn(CBotStack* pfils, const std::string& name = nullptr);
                                                                         // in case of eventual break
-    bool            IfContinue(int state, const char* name);
+    bool            IfContinue(int state, const std::string& name);
                                                                         // or "continue"
 
     bool            IsOk();
@@ -204,7 +204,7 @@ public:
     void            SetError(int n, CBotToken* token = nullptr);
     void            SetPosError(CBotToken* token);
     void            ResetError(int n, int start, int end);
-    void            SetBreak(int val, const char* name);
+    void            SetBreak(int val, const std::string& name);
 
     void            SetBotCall(CBotProgram* p);
     CBotProgram*    GetBotCall(bool bFirst = false);
@@ -221,8 +221,8 @@ public:
     static
     void            SetTimer(int n);
 
-    void            GetRunPos(const char* &FunctionName, int &start, int &end);
-    CBotVar*        GetStackVars(const char* &FunctionName, int level);
+    void            GetRunPos(std::string& FunctionName, int& start, int& end);
+    CBotVar*        GetStackVars(std::string& FunctionName, int level);
 
 private:
     CBotStack*        m_next;
@@ -254,7 +254,7 @@ private:
     static
     int                m_timer;
     static
-    CBotString        m_labelBreak;
+    std::string        m_labelBreak;
     static
     void*            m_pUser;
 

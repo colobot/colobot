@@ -174,7 +174,7 @@ void CBotCStack::SetType(CBotTypResult& type)
 CBotVar* CBotCStack::FindVar(CBotToken* &pToken)
 {
     CBotCStack*    p = this;
-    CBotString    name = pToken->GetString();
+    std::string    name = pToken->GetString();
 
     while (p != nullptr)
     {
@@ -332,7 +332,7 @@ void CBotCStack::AddVar(CBotVar* pVar)
 bool CBotCStack::CheckVarLocal(CBotToken* &pToken)
 {
     CBotCStack*    p = this;
-    CBotString    name = pToken->GetString();
+    std::string    name = pToken->GetString();
 
     while (p != nullptr)
     {
@@ -373,7 +373,7 @@ CBotTypResult CBotCStack::CompileCall(CBotToken* &p, CBotVar** ppVars, long& nId
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
 {
-    CBotString    name = pToken->GetString();
+    std::string    name = pToken->GetString();
 
     if ( CBotCall::CheckCall(name) ) return true;
 

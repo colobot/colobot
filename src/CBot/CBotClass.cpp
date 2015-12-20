@@ -46,7 +46,7 @@
 CBotClass* CBotClass::m_ExClass = nullptr;
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotClass::CBotClass(const char* name,
+CBotClass::CBotClass(const std::string& name,
                      CBotClass* pPapa,
                      bool bIntrinsic)
 {
@@ -96,7 +96,7 @@ CBotClass::~CBotClass()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotClass* CBotClass::Create(const char* name,
+CBotClass* CBotClass::Create(const std::string& name,
                              CBotClass* parent,
                              bool intrinsic)
 {
@@ -209,11 +209,11 @@ void CBotClass::FreeLock(CBotProgram* p)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotClass::AddItem(CBotString name,
+bool CBotClass::AddItem(std::string name,
                         CBotTypResult type,
                         int mPrivate)
 {
-    CBotToken   token(name, CBotString());
+    CBotToken   token(name, std::string());
     CBotClass*  pClass = type.GetClass();
 
     CBotVar*    pVar = CBotVar::Create( name, type );
@@ -255,7 +255,7 @@ void CBotClass::AddNext(CBotClass* pClass)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString  CBotClass::GetName()
+std::string  CBotClass::GetName()
 {
     return m_name;
 }
@@ -286,7 +286,7 @@ CBotVar* CBotClass::GetVar()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotClass::GetItem(const char* name)
+CBotVar* CBotClass::GetItem(const std::string& name)
 {
     CBotVar*    p = m_pVar;
 
@@ -326,7 +326,7 @@ CBotClass* CBotClass::Find(CBotToken* &pToken)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotClass* CBotClass::Find(const char* name)
+CBotClass* CBotClass::Find(const std::string& name)
 {
     CBotClass*  p = m_ExClass;
 
@@ -340,9 +340,9 @@ CBotClass* CBotClass::Find(const char* name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotClass::AddFunction(const char* name,
-                            bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
-                            CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar))
+bool CBotClass::AddFunction(const std::string& name,
+                            bool rExec(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
+                            CBotTypResult rCompile(CBotVar* pThis, CBotVar*& pVar))
 {
     // stores pointers to the two functions
     CBotCallMethode*    p = m_pCalls;
@@ -377,7 +377,7 @@ bool CBotClass::AddUpdateFunc( void rMaj ( CBotVar* pThis, void* pUser ) )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult CBotClass::CompileMethode(const char* name,
+CBotTypResult CBotClass::CompileMethode(const std::string& name,
                                         CBotVar* pThis,
                                         CBotVar** ppParams,
                                         CBotCStack* pStack,
@@ -400,11 +400,11 @@ CBotTypResult CBotClass::CompileMethode(const char* name,
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::ExecuteMethode(long& nIdent,
-                               const char* name,
+                               const std::string& name,
                                CBotVar* pThis,
                                CBotVar** ppParams,
-                               CBotVar* &pResult,
-                               CBotStack* &pStack,
+                               CBotVar*& pResult,
+                               CBotStack*& pStack,
                                CBotToken* pToken)
 {
     int ret = m_pCalls->DoCall(nIdent, name, pThis, ppParams, pResult, pStack, pToken);
@@ -424,10 +424,10 @@ bool CBotClass::ExecuteMethode(long& nIdent,
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotClass::RestoreMethode(long& nIdent,
-                               const char* name,
+                               const std::string& name,
                                CBotVar* pThis,
                                CBotVar** ppParams,
-                               CBotStack* &pStack)
+                               CBotStack*& pStack)
 {
     m_pMethod->RestoreCall(nIdent, name, pThis, ppParams, pStack, this);
 }
@@ -472,7 +472,7 @@ bool CBotClass::SaveStaticState(FILE* pf)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::RestoreStaticState(FILE* pf)
 {
-    CBotString      ClassName, VarName;
+    std::string      ClassName, VarName;
     CBotClass*      pClass;
     unsigned short  w;
 
@@ -511,7 +511,7 @@ bool CBotClass::RestoreStaticState(FILE* pf)
 bool CBotClass::CheckCall(CBotToken* &pToken,
                           CBotDefParam* pParam)
 {
-    CBotString  name = pToken->GetString();
+    std::string  name = pToken->GetString();
 
     if ( CBotCall::CheckCall(name) ) return true;
 
@@ -541,7 +541,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 
     if ( !IsOfType(p, ID_CLASS) ) return nullptr;
 
-    CBotString name = p->GetString();
+    std::string name = p->GetString();
 
     CBotClass* pOld = CBotClass::Find(name);
     if ( pOld != nullptr && pOld->m_IsDef )
@@ -556,7 +556,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
         CBotClass* pPapa = nullptr;
         if ( IsOfType( p, ID_EXTENDS ) )
         {
-            CBotString name = p->GetString();
+            std::string name = p->GetString();
             pPapa = CBotClass::Find(name);
 
             if (!IsOfType(p, TokenTypVar) || pPapa == nullptr )
@@ -680,7 +680,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     CBotCStack* pile = pStack->TokenStack(nullptr, true);
 
                     // make "this" known
-                    CBotToken TokenThis(CBotString("this"), CBotString());
+                    CBotToken TokenThis(std::string("this"), std::string());
                     CBotVar* pThis = CBotVar::Create(&TokenThis, CBotTypResult( CBotTypClass, this ) );
                     pThis->SetUniqNum(-2);
                     pile->AddVar(pThis);
@@ -688,7 +688,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     if ( m_pParent )
                     {
                         // makes "super" known
-                        CBotToken TokenSuper(CBotString("super"), CBotString());
+                        CBotToken TokenSuper(std::string("super"), std::string());
                         CBotVar* pThis = CBotVar::Create(&TokenSuper, CBotTypResult( CBotTypClass, m_pParent ) );
                         pThis->SetUniqNum(-3);
                         pile->AddVar(pThis);
@@ -796,7 +796,7 @@ CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
     if ( !IsOfType(p, ID_PUBLIC) ) return nullptr;
     if ( !IsOfType(p, ID_CLASS) ) return nullptr;
 
-    CBotString name = p->GetString();
+    std::string name = p->GetString();
 
     // a name for the class is there?
     if (IsOfType(p, TokenTypVar))
@@ -807,7 +807,7 @@ CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
         if ( IsOfType( p, ID_EXTENDS ) )
         {
             // TODO: Not sure how correct is that - I have no idea how the precompilation (Compile1 method) works ~krzys_h
-            CBotString name = p->GetString();
+            std::string name = p->GetString();
             CBotClass* pPapa = CBotClass::Find(name);
 
             if (!IsOfType(p, TokenTypVar) || pPapa == nullptr)

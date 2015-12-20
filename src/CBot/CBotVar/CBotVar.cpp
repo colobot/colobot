@@ -41,6 +41,7 @@
 #include <cassert>
 #include <cmath>
 #include <cstdio>
+#include <string>
 
 ////////////////////////////////////////////////////////////////////////////////
 long CBotVar::m_identcpt = 0;
@@ -71,7 +72,7 @@ CBotVar::~CBotVar( )
 void CBotVar::debug()
 {
 //    const char*    p = static_cast<const char*>( m_token->GetString());
-    CBotString  s = static_cast<const char*>( GetValString());
+    std::string  s = GetValString();
 //    const char* v = static_cast<const char*> (s);
 
     if ( m_type.Eq(CBotTypClass) )
@@ -221,7 +222,7 @@ CBotVar* CBotVar::Create( CBotVar* pVar )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotVar::Create( const char* n, CBotTypResult type)
+CBotVar* CBotVar::Create(const std::string& n, CBotTypResult type)
 {
     CBotToken    name(n);
 
@@ -286,7 +287,7 @@ CBotVar* CBotVar::Create( const char* n, CBotTypResult type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotVar::Create( const char* name, int type, CBotClass* pClass)
+CBotVar* CBotVar::Create(const std::string& name, int type, CBotClass* pClass)
 {
     CBotToken    token( name, "" );
     CBotVar*    pVar = Create( &token, type );
@@ -308,7 +309,7 @@ CBotVar* CBotVar::Create( const char* name, int type, CBotClass* pClass)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotVar::Create( const char* name, CBotClass* pClass)
+CBotVar* CBotVar::Create(const std::string& name, CBotClass* pClass)
 {
     CBotToken    token( name, "" );
     CBotVar*    pVar = Create( &token, CBotTypResult( CBotTypClass, pClass ) );
@@ -390,13 +391,13 @@ void CBotVar::SetInit(CBotVar::InitType bInit)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotVar::GetName()
+std::string CBotVar::GetName()
 {
     return    m_token->GetString();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVar::SetName(const char* name)
+void CBotVar::SetName(const std::string& name)
 {
     m_token->SetString(name);
 }
@@ -408,7 +409,7 @@ CBotToken* CBotVar::GetToken()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotVar::GetItem(const char* name)
+CBotVar* CBotVar::GetItem(const std::string& name)
 {
     assert(0);
     return nullptr;
@@ -436,7 +437,7 @@ CBotVar* CBotVar::GetItem(int row, bool bGrow)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotVar::IsElemOfClass(const char* name)
+bool CBotVar::IsElemOfClass(const std::string& name)
 {
     CBotClass*    pc = nullptr;
 
@@ -579,7 +580,7 @@ float CBotVar::GetValFloat()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVar::SetValInt(int c, const char* s)
+void CBotVar::SetValInt(int c, const std::string& s)
 {
     assert(0);
 }
@@ -737,16 +738,16 @@ void CBotVar::Copy(CBotVar* pSrc, bool bName)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVar::SetValString(const char* p)
+void CBotVar::SetValString(const std::string& p)
 {
     assert(0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotVar::GetValString()
+std::string CBotVar::GetValString()
 {
     assert(0);
-    return CBotString();
+    return std::string();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

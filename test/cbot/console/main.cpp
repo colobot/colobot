@@ -18,8 +18,7 @@ CBotTypResult cMessage(CBotVar* &var, void* user)
 
 bool rMessage(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CBotString cbs = var->GetValString();
-    const char* message = cbs; // Don't ask me why, but it doesn't work if you write it on a single line
+    std::string message = var->GetValString();
 
     std::cout << message << std::endl;
 
@@ -44,7 +43,7 @@ int main(int argc, char* argv[])
     CBotProgram::AddFunction("message", rMessage, cMessage);
 
     // Compile the program
-    std::vector<CBotString> externFunctions;
+    std::vector<std::string> externFunctions;
     std::unique_ptr<CBotProgram> program{new CBotProgram(nullptr)};
     if (!program->Compile(code.c_str(), externFunctions, nullptr))
     {
@@ -63,7 +62,7 @@ int main(int argc, char* argv[])
         return 2;
     }
     bool runErrors = false;
-    for (const char* func : externFunctions)
+    for (const std::string& func : externFunctions)
     {
         if (!program->Start(func))
         {

@@ -158,8 +158,8 @@ bool CScript::CheckToken()
 {
     CBotToken*  bt;
     CBotToken*  allBt;
-    CBotString  bs;
-    const char* token;
+    std::string bs;
+    std::string token;
     int         error, cursor1, cursor2, i;
     char        used[100];
 
@@ -186,13 +186,13 @@ bool CScript::CheckToken()
         cursor1 = bt->GetStart();
         cursor2 = bt->GetEnd();
 
-        i = m_main->IsObligatoryToken(token);
+        i = m_main->IsObligatoryToken(token.c_str());
         if ( i != -1 )
         {
             used[i] = 1;  // token used
         }
 
-        if ( !m_main->IsProhibitedToken(token) )
+        if ( !m_main->IsProhibitedToken(token.c_str()) )
         {
             m_error = ERR_PROHIBITEDTOKEN;
             m_cursor1 = cursor1;
@@ -228,9 +228,9 @@ bool CScript::CheckToken()
 
 bool CScript::Compile()
 {
-    std::vector<CBotString> functionList;
+    std::vector<std::string> functionList;
     int             i;
-    const char*     p;
+    std::string     p;
 
     m_error = 0;
     m_cursor1 = 0;
@@ -486,8 +486,7 @@ bool CScript::IsContinue()
 
 bool CScript::GetCursor(int &cursor1, int &cursor2)
 {
-    const char* funcName;
-
+    std::string funcName;
     cursor1 = cursor2 = 0;
 
     if (m_botProg == nullptr)  return false;
@@ -508,11 +507,10 @@ bool CScript::GetCursor(int &cursor1, int &cursor2)
 
 void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, int &rankList)
 {
-    CBotString  bs;
     CBotVar     *svar, *pStatic;
     char        varName[100];
     char        buffer[100];
-    const char  *p;
+    std::string p;
     int         index, type;
 
     if ( var == nullptr && baseName[0] != 0 )
@@ -528,8 +526,7 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
         var->Maj(nullptr, false);
         pStatic = var->GetStaticVar();  // finds the static element
 
-        bs = pStatic->GetName();  // variable name
-        p = bs;
+        p = pStatic->GetName();  // variable name
 //?     if ( strcmp(p, "this") == 0 )
 //?     {
 //?         var = var->GetNext();
@@ -538,7 +535,7 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
 
         if ( baseName[0] == 0 )
         {
-            sprintf(varName, "%s", p);
+            sprintf(varName, "%s", p.c_str());
         }
         else
         {
@@ -548,7 +545,7 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
             }
             else
             {
-                sprintf(varName, "%s.%s", baseName, p);
+                sprintf(varName, "%s.%s", baseName, p.c_str());
             }
         }
 
@@ -556,18 +553,14 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
 
         if ( type < CBotTypBoolean )
         {
-            CBotString  value;
-            value = pStatic->GetValString();
-            p = value;
-            sprintf(buffer, "%s = %s;", varName, p);
+            p = pStatic->GetValString();
+            sprintf(buffer, "%s = %s;", varName, p.c_str());
             list->SetItemName(rankList++, buffer);
         }
         else if ( type == CBotTypString )
         {
-            CBotString  value;
-            value = pStatic->GetValString();
-            p = value;
-            sprintf(buffer, "%s = \"%s\";", varName, p);
+            p = pStatic->GetValString();
+            sprintf(buffer, "%s = \"%s\";", varName, p.c_str());
             list->SetItemName(rankList++, buffer);
         }
         else if ( type == CBotTypArrayPointer )
@@ -597,7 +590,7 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
 void CScript::UpdateList(Ui::CList* list)
 {
     CBotVar     *var;
-    const char  *progName, *funcName;
+    std::string progName, funcName;
     int         total, select, level, cursor1, cursor2, rank;
 
     if (m_botProg == nullptr) return;
@@ -607,7 +600,7 @@ void CScript::UpdateList(Ui::CList* list)
 
     list->Flush();  // empty list
     m_botProg->GetRunPos(progName, cursor1, cursor2);
-    if ( progName == nullptr )  return;
+    if ( progName.empty() )  return;
 
     level = 0;
     rank  = 0;
@@ -646,8 +639,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
     CBotToken* bt = CBotToken::CompileTokens(text.c_str(), error);
     while ( bt != nullptr )
     {
-        CBotString bs = bt->GetString();
-        const char* token = bs;
+        std::string token = bt->GetString();
         int type = bt->GetType();
 
         int cursor1 = bt->GetStart();
@@ -659,15 +651,15 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
         cursor2 += rangeStart;
 
         Gfx::FontHighlight color = Gfx::FONT_HIGHLIGHT_NONE;
-        if ((type == TokenTypVar || (type >= TokenKeyWord && type < TokenKeyWord+100)) && IsType(token)) // types (basic types are TokenKeyWord, classes are TokenTypVar)
+        if ((type == TokenTypVar || (type >= TokenKeyWord && type < TokenKeyWord+100)) && IsType(token.c_str())) // types (basic types are TokenKeyWord, classes are TokenTypVar)
         {
             color = Gfx::FONT_HIGHLIGHT_TYPE;
         }
-        else if (type == TokenTypVar && IsFunction(token)) // functions
+        else if (type == TokenTypVar && IsFunction(token.c_str())) // functions
         {
             color = Gfx::FONT_HIGHLIGHT_TOKEN;
         }
-        else if (type == TokenTypVar && (strcmp(token, "this") == 0 || strcmp(token, "super") == 0)) // this, super
+        else if (type == TokenTypVar && (token == "this" || token == "super")) // this, super
         {
             color = Gfx::FONT_HIGHLIGHT_THIS;
         }

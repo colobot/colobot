@@ -20,16 +20,15 @@
 #pragma once
 
 // Modules inlcude
-#include "CBot/CBotString.h"
 #include "CBot/CBotTypResult.h"
 
 // Local include
 
 // Global include
 #include <cstdio>
+#include <string>
 
 // Forward declaration
-class CBotString;
 class CBotVar;
 class CBotToken;
 class CBotCStack;
@@ -74,7 +73,7 @@ bool WriteWord(FILE* pf, unsigned short w);
  * \param s
  * \return
  */
-bool WriteString(FILE* pf, CBotString s);
+bool WriteString(FILE* pf, std::string s);
 
 /*!
  * \brief WriteFloat
@@ -85,49 +84,16 @@ bool WriteString(FILE* pf, CBotString s);
 bool WriteFloat(FILE* pf, float w);
 
 /*!
- * \brief ConstructElement
- * \param pNewData
- */
-void ConstructElement(CBotString* pNewData);
-
-/*!
- * \brief DestructElement
- * \param pOldData
- */
-void DestructElement(CBotString* pOldData);
-
-/*!
- * \brief CopyElement
- * \param pSrc
- * \param pDest
- */
-void CopyElement(CBotString* pSrc, CBotString* pDest);
-
-/*!
- * \brief ConstructElements
- * \param pNewData
- * \param nCount
- */
-void ConstructElements(CBotString* pNewData, int nCount);
-
-/*!
- * \brief DestructElements
- * \param pOldData
- * \param nCount
- */
-void DestructElements(CBotString* pOldData, int nCount);
-
-/*!
  * \brief GetNumInt Converts a string into integer may be of the form 0xabc123.
  * \param p
  * \return
  */
-long GetNumInt(const char* p);
+long GetNumInt(const std::string& p);
 
 /*!
  * \brief GetNumFloat Converts a string into a float number.
  * \param p
  * \return
  */
-float GetNumFloat(const char* p);
+float GetNumFloat(const std::string& str);
 

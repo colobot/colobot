@@ -71,7 +71,7 @@ public:
      * \param name
      * \return
      */
-    CBotVar* GetItem(const char* name) override;
+    CBotVar* GetItem(const std::string& name) override;
 
     /*!
      * \brief GetItemRef
@@ -90,7 +90,7 @@ public:
      * \brief GetValString
      * \return
      */
-    CBotString GetValString() override;
+    std::string GetValString() override;
 
     /*!
      * \brief SetPointer Initializes the pointer to the instance of a class.

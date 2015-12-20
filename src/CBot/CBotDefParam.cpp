@@ -196,9 +196,9 @@ CBotDefParam* CBotDefParam::GetNext()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotDefParam::GetParamString()
+std::string CBotDefParam::GetParamString()
 {
-    CBotString  param;
+    std::string  param;
 
     param = m_typename;
     param += ' ';

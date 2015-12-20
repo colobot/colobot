@@ -81,7 +81,7 @@ CBotProgram::~CBotProgram()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotProgram::Compile( const char* program, std::vector<CBotString>& ListFonctions, void* pUser )
+bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& ListFonctions, void* pUser)
 {
     int         error = 0;
     Stop();
@@ -176,7 +176,7 @@ bool CBotProgram::Compile( const char* program, std::vector<CBotString>& ListFon
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotProgram::Start(const char* name)
+bool CBotProgram::Start(const std::string& name)
 {
 #if STACKMEM
     m_pStack->Delete();
@@ -210,7 +210,7 @@ bool CBotProgram::Start(const char* name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotProgram::GetPosition(const char* name, int& start, int& stop, CBotGet modestart, CBotGet modestop)
+bool CBotProgram::GetPosition(const std::string& name, int& start, int& stop, CBotGet modestart, CBotGet modestop)
 {
     CBotFunction* p = m_Prog;
     while (p != nullptr)
@@ -293,7 +293,7 @@ void CBotProgram::Stop()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotProgram::GetRunPos(const char* &FunctionName, int &start, int &end)
+bool CBotProgram::GetRunPos(std::string& FunctionName, int& start, int& end)
 {
     FunctionName = nullptr;
     start = end = 0;
@@ -304,7 +304,7 @@ bool CBotProgram::GetRunPos(const char* &FunctionName, int &start, int &end)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotProgram::GetStackVars(const char* &FunctionName, int level)
+CBotVar* CBotProgram::GetStackVars(std::string& FunctionName, int level)
 {
     FunctionName = nullptr;
     if (m_pStack == nullptr) return nullptr;
@@ -356,11 +356,11 @@ bool CBotProgram::GetError(int& code, int& start, int& end, CBotProgram* &pProg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotProgram::GetErrorText(int code)
+std::string CBotProgram::GetErrorText(int code)
 {
-    CBotString TextError = LoadString(static_cast<EID>(code));
+    std::string TextError = LoadString(static_cast<EID>(code));
 
-    if (TextError.IsEmpty())
+    if (TextError.empty())
     {
         char    buf[100];
         sprintf(buf, "Exception numéro %d.", code);
@@ -376,9 +376,9 @@ CBotFunction* CBotProgram::GetFunctions()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotProgram::AddFunction(const char* name,
-                              bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                              CBotTypResult rCompile (CBotVar* &pVar, void* pUser))
+bool CBotProgram::AddFunction(const std::string& name,
+                              bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
+                              CBotTypResult rCompile(CBotVar*& pVar, void* pUser))
 {
     // stores pointers to the two functions
     return CBotCall::AddFunction(name, rExec, rCompile);
@@ -412,7 +412,7 @@ CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotProgram::DefineNum(const char* name, long val)
+bool CBotProgram::DefineNum(const std::string& name, long val)
 {
     return CBotToken::DefineNum(name, val);
 }
@@ -440,7 +440,7 @@ bool CBotProgram::SaveState(FILE* pf)
 bool CBotProgram::RestoreState(FILE* pf)
 {
     unsigned short  w;
-    CBotString      s;
+    std::string      s;
 
     Stop();
 

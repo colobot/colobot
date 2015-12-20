@@ -120,14 +120,14 @@ bool WriteWord(FILE* pf, unsigned short w)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool WriteString(FILE* pf, CBotString s)
+bool WriteString(FILE* pf, std::string s)
 {
     size_t  lg1, lg2;
 
-    lg1 = s.GetLength();
+    lg1 = s.size();
     if (!WriteWord(pf, lg1)) return false;
 
-    lg2 = fwrite(s, 1, lg1, pf );
+    lg2 = fwrite(s.c_str(), 1, lg1, pf );
     return (lg1 == lg2);
 }
 
@@ -142,46 +142,9 @@ bool WriteFloat(FILE* pf, float w)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ConstructElement(CBotString* pNewData)
+long GetNumInt(const std::string& str)
 {
-    memset(pNewData, 0, sizeof(CBotString));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void DestructElement(CBotString* pOldData)
-{
-    pOldData->~CBotString();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CopyElement(CBotString* pSrc, CBotString* pDest)
-{
-    *pSrc = *pDest;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void ConstructElements(CBotString* pNewData, int nCount)
-{
-    while (nCount--)
-    {
-        ConstructElement(pNewData);
-        pNewData++;
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void DestructElements(CBotString* pOldData, int nCount)
-{
-    while (nCount--)
-    {
-        DestructElement(pOldData);
-        pOldData++;
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-long GetNumInt(const char* p)
-{
+    const char* p = str.c_str();
     long    num = 0;
     while (*p >= '0' && *p <= '9')
     {
@@ -214,8 +177,9 @@ long GetNumInt(const char* p)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float GetNumFloat(const char* p)
+float GetNumFloat(const std::string& str)
 {
+    const char* p = str.c_str();
     double    num = 0;
     double    div    = 10;
     bool    bNeg = false;

@@ -27,6 +27,7 @@
 // Global include
 class CBotInstr;
 class CBotDefParam;
+class CBotToken;
 
 /*!
  * \brief The CBotCStack class Management of the stack of compilation.

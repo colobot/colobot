@@ -64,7 +64,7 @@ void CBotVarBoolean::Copy(CBotVar* pSrc, bool bName)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVarBoolean::SetValInt(int val, const char* s)
+void CBotVarBoolean::SetValInt(int val, const std::string& s)
 {
     m_val = static_cast<bool>(val);
     m_binit    = CBotVar::InitType::DEF;
@@ -90,11 +90,11 @@ float CBotVarBoolean::GetValFloat()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotVarBoolean::GetValString()
+std::string CBotVarBoolean::GetValString()
 {
-    CBotString    ret;
+    std::string    ret;
 
-    CBotString res;
+    std::string res;
 
     if ( m_binit == CBotVar::InitType::UNDEF )
     {

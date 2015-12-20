@@ -473,7 +473,7 @@ CBotTypResult CScriptFunctions::cPlayMusic(CBotVar* &var, void* user)
 bool CScriptFunctions::rPlayMusic(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     std::string filename;
-    CBotString cbs;
+    std::string cbs;
     bool repeat;
 
     cbs = var->GetValString();
@@ -703,13 +703,9 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 
     ObjectType type = static_cast<ObjectType>(var->GetValInt());
     var = var->GetNext();
-    CBotString cbs;
-    const char* program;
+    std::string program;
     if ( var != nullptr )
-    {
-        cbs = var->GetValString();
-        program = cbs;
-    }
+        program = var->GetValString();
     else
         program = "";
 
@@ -1584,8 +1580,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 
         if ( var != nullptr )
         {
-            CBotString cbs = var->GetValString();
-            name = static_cast<const char*>(cbs);
+            name = var->GetValString();
             var = var->GetNext();
             if ( var != nullptr )
             {
@@ -2225,17 +2220,15 @@ CBotTypResult CScriptFunctions::cReceive(CBotVar* &var, void* user)
 bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
-    CBotString  cbs;
     Error       err;
-    const char* p;
+    std::string p;
     float       power;
 
     exception = 0;
 
     if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        cbs = var->GetValString();
-        p = cbs;
+        p = var->GetValString();
         var = var->GetNext();
 
         power = 10.0f*g_unit;
@@ -2245,7 +2238,7 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
             var = var->GetNext();
         }
 
-        err = script->m_taskExecutor->StartTaskInfo(p, 0.0f, power, false);
+        err = script->m_taskExecutor->StartTaskInfo(p.c_str(), 0.0f, power, false);
         if ( err != ERR_OK )
         {
             script->m_taskExecutor->StopForegroundTask();
@@ -2294,17 +2287,15 @@ CBotTypResult CScriptFunctions::cSend(CBotVar* &var, void* user)
 bool CScriptFunctions::rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
-    CBotString  cbs;
     Error       err;
-    const char* p;
+    std::string p;
     float       value, power;
 
     exception = 0;
 
     if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        cbs = var->GetValString();
-        p = cbs;
+        p = var->GetValString();
         var = var->GetNext();
 
         value = var->GetValFloat();
@@ -2317,7 +2308,7 @@ bool CScriptFunctions::rSend(CBotVar* var, CBotVar* result, int& exception, void
             var = var->GetNext();
         }
 
-        err = script->m_taskExecutor->StartTaskInfo(static_cast<const char*>(p), value, power, true);
+        err = script->m_taskExecutor->StartTaskInfo(p.c_str(), value, power, true);
         if ( err != ERR_OK )
         {
             script->m_taskExecutor->StopForegroundTask();
@@ -2365,15 +2356,13 @@ bool CScriptFunctions::rDeleteInfo(CBotVar* var, CBotVar* result, int& exception
 
     exception = 0;
 
-    CBotString infoNameCbs = var->GetValString();
-    std::string infoName = std::string(static_cast<const char*>(infoNameCbs));
+    std::string infoName = var->GetValString();
     var = var->GetNext();
 
     float power = 10.0f*g_unit;
     if (var != nullptr)
     {
         power = var->GetValFloat()*g_unit;
-        var = var->GetNext();
     }
 
     CExchangePost* exchangePost = FindExchangePost(pThis, power);
@@ -2413,15 +2402,13 @@ bool CScriptFunctions::rTestInfo(CBotVar* var, CBotVar* result, int& exception, 
 
     exception = 0;
 
-    CBotString infoNameCbs = var->GetValString();
-    std::string infoName = std::string(static_cast<const char*>(infoNameCbs));
+    std::string infoName = var->GetValString();
     var = var->GetNext();
 
     float power = 10.0f*g_unit;
     if (var != nullptr)
     {
         power = var->GetValFloat()*g_unit;
-        var = var->GetNext();
     }
 
     CExchangePost* exchangePost = FindExchangePost(pThis, power);
@@ -2813,12 +2800,10 @@ CBotTypResult CScriptFunctions::cMessage(CBotVar* &var, void* user)
 bool CScriptFunctions::rMessage(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
-    CBotString  cbs;
-    const char* p;
+    std::string p;
     Ui::TextType    type;
 
-    cbs = var->GetValString();
-    p = cbs;
+    p = var->GetValString();
 
     type = Ui::TT_MESSAGE;
     var = var->GetNext();
@@ -2827,7 +2812,7 @@ bool CScriptFunctions::rMessage(CBotVar* var, CBotVar* result, int& exception, v
         type = static_cast<Ui::TextType>(var->GetValInt());
     }
 
-    script->m_main->GetDisplayText()->DisplayText(p, script->m_object, 10.0f, type);
+    script->m_main->GetDisplayText()->DisplayText(p.c_str(), script->m_object, 10.0f, type);
 
     return true;
 }
@@ -3157,22 +3142,22 @@ int                                 CScriptFunctions::m_nextFile = 1;
 
 // Prepares a file name.
 
-void PrepareFilename(CBotString &filename)
+void PrepareFilename(std::string &filename)
 {
     CResourceManager::CreateDirectory("files");
-    filename = CBotString("files/") + filename;
-    GetLogger()->Debug("CBot accessing file '%s'\n", static_cast<const char*>(filename));
+    filename = "files/" + filename;
+    GetLogger()->Debug("CBot accessing file '%s'\n", filename.c_str());
 }
 
 
 bool CScriptFunctions::FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
-    CBotString  mode;
+    std::string  mode;
 
     // must be a character string
     if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
 
-    CBotString  filename = pVar->GetValString();
+    std::string  filename = pVar->GetValString();
     PrepareFilename(filename);
 
     // there may be a second parameter
@@ -3196,20 +3181,20 @@ bool CScriptFunctions::FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar*
     // which must not be initialized
     if ( pVar->IsDefined()) { Exception = CBotErrFileOpen; return false; }
 
-    if ( ! mode.IsEmpty() )
+    if ( !mode.empty() )
     {
         // opens the requested file
         bool ok = false;
         std::unique_ptr<std::ios> file;
         if (mode == "r")
         {
-            auto is = MakeUnique<CInputStream>(static_cast<const char*>(filename));
+            auto is = MakeUnique<CInputStream>(filename);
             ok = is->is_open();
             file = std::move(is);
         }
         else if (mode == "w")
         {
-            auto os = MakeUnique<COutputStream>(static_cast<const char*>(filename));
+            auto os = MakeUnique<COutputStream>(filename);
             ok = os->is_open();
             file = std::move(os);
         }
@@ -3396,7 +3381,7 @@ bool CScriptFunctions::rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult,
     // which must be a character string
     if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
 
-    CBotString param = pVar->GetValString();
+    std::string param = pVar->GetValString();
 
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
@@ -3526,11 +3511,10 @@ CBotTypResult CScriptFunctions::cfeof (CBotVar* pThis, CBotVar* &pVar)
 
 bool CScriptFunctions::rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CBotString  cbs;
+    std::string filename;
 
-    cbs = var->GetValString();
-    PrepareFilename(cbs);
-    std::string filename = static_cast<const char*>(cbs);
+    filename = var->GetValString();
+    PrepareFilename(filename);
     return CResourceManager::Remove(filename);
 }
 
@@ -3773,7 +3757,7 @@ void CScriptFunctions::Init()
     bc->AddFunction("eof", CScriptFunctions::rfeof, CScriptFunctions::cfeof );
 
     //m_pFuncFile = new CBotProgram( );
-    //CBotStringArray ListFonctions;
+    //std::stringArray ListFonctions;
     //m_pFuncFile->Compile( "public file openfile(string name, string mode) {return new file(name, mode);}", ListFonctions);
     //m_pFuncFile->SetIdent(-2);  // restoreState in special identifier for this function
 

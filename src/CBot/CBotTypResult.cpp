@@ -43,7 +43,7 @@ CBotTypResult::CBotTypResult(int type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult::CBotTypResult(int type, const char* name)
+CBotTypResult::CBotTypResult(int type, const std::string& name)
 {
     m_type        = type;
     m_pNext        = nullptr;

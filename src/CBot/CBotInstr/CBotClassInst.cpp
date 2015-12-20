@@ -82,7 +82,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
 
     inst = new CBotClassInst();
     /// TODO Need to be revised and fixed after adding unit tests
-    CBotToken token(pClass->GetName(), CBotString(), p->GetStart(), p->GetEnd());
+    CBotToken token(pClass->GetName(), std::string(), p->GetStart(), p->GetEnd());
     inst->SetToken(&token);
     CBotToken*  vartoken = p;
 
@@ -137,7 +137,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
         if ( inst->m_hasParams )
         {
             // the constructor is there?
-//          CBotString  noname;
+//          std::string  noname;
             CBotTypResult r = pClass->CompileMethode(pClass->GetName(), var, ppVars, pStk, inst->m_nMethodeIdent);
             delete pStk->TokenStack();                          // releases the supplement stack
             int typ = r.GetType();
@@ -242,7 +242,7 @@ bool CBotClassInst::Execute(CBotStack* &pj)
 
     if ( pile->GetState()==0)
     {
-        CBotString  name = m_var->m_token.GetString();
+        std::string  name = m_var->m_token.GetString();
         if ( bIntrincic )
         {
             pThis = CBotVar::Create(name, CBotTypResult( CBotTypIntrinsic, pClass ));
@@ -371,7 +371,7 @@ void CBotClassInst::RestoreState(CBotStack* &pj, bool bMain)
 
     // creates the variable of type pointer to the object
     {
-        CBotString  name = m_var->m_token.GetString();
+        std::string  name = m_var->m_token.GetString();
         pThis = pile->FindVar(name);
         pThis->SetUniqNum((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent); // its attribute a unique number
     }

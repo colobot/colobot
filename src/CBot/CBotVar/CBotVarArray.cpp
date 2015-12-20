@@ -131,9 +131,9 @@ CBotVar* CBotVarArray::GetItemList()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotVarArray::GetValString()
+std::string CBotVarArray::GetValString()
 {
-    if ( m_pInstance == nullptr ) return ( CBotString( "Null pointer" ) ) ;
+    if ( m_pInstance == nullptr ) return ( std::string( "Null pointer" ) ) ;
     return m_pInstance->GetValString();
 }
 

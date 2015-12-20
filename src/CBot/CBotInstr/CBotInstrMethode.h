@@ -84,9 +84,9 @@ private:
     //! Complete type of the result.
     CBotTypResult m_typRes;
     //! Name of the method.
-    CBotString m_NomMethod;
+    std::string m_NomMethod;
     //! Identifier of the method.
     long m_MethodeIdent;
     //! Name of the class.
-    CBotString m_ClassName;
+    std::string m_ClassName;
 };

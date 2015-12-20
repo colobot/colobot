@@ -45,7 +45,7 @@ public:
      * \param val
      * \param s
      */
-    void SetValInt(int val, const char* s = nullptr) override;
+    void SetValInt(int val, const std::string& s = nullptr) override;
 
     /*!
      * \brief SetValFloat
@@ -69,7 +69,7 @@ public:
      * \brief GetValString
      * \return
      */
-    CBotString GetValString() override;
+    std::string GetValString() override;
 
     /*!
      * \brief Copy Copy a variable in to another.
@@ -250,6 +250,6 @@ private:
     //! The value.
     int m_val;
     //! The name if given by DefineNum.
-    CBotString m_defnum;
+    std::string m_defnum;
     friend class CBotVar;
 };

@@ -24,6 +24,7 @@
 // Local include
 
 // Global include
+#include <string>
 
 class CBotClass;
 
@@ -55,7 +56,7 @@ public:
     // for simple types (CBotTypInt à CBotTypString)
 
 
-    CBotTypResult(int type, const char* name);
+    CBotTypResult(int type, const std::string& name);
     // for pointer types and intrinsic classes
 
     CBotTypResult(int type, CBotClass* pClass);

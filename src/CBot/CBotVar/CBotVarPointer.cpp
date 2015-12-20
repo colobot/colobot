@@ -23,9 +23,9 @@
 #include "CBot/CBotClass.h"
 #include "CBot/CBotVar/CBotVarClass.h"
 
-#include "CBot/CBotFileUtils.h"
-
 #include "CBot/CBotEnums.h"
+#include "CBot/CBotUtils.h"
+#include "CBot/CBotFileUtils.h"
 
 // Local include
 
@@ -71,7 +71,7 @@ void CBotVarPointer::Maj(void* pUser, bool bContinu)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotVarPointer::GetItem(const char* name)
+CBotVar* CBotVarPointer::GetItem(const std::string& name)
 {
     if ( m_pVarClass == nullptr)                // no existing instance?
         return m_pClass->GetItem(name);        // makes the pointer in the class itself
@@ -96,9 +96,9 @@ CBotVar* CBotVarPointer::GetItemList()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotVarPointer::GetValString()
+std::string CBotVarPointer::GetValString()
 {
-    CBotString    s = "Pointer to ";
+    std::string    s = "Pointer to ";
     if ( m_pVarClass == nullptr ) s = "Null pointer" ;
     else  s += m_pVarClass->GetValString();
     return s;

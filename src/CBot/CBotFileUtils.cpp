@@ -20,10 +20,9 @@
 // Modules inlcude
 #include "CBot/CBotFileUtils.h"
 
-#include "CBot/CBotString.h"
 #include "CBot/CBotClass.h"
-
 #include "CBot/CBotEnums.h"
+#include "CBot/CBotUtils.h"
 
 // Local include
 
@@ -108,7 +107,7 @@ bool ReadLong(FILE* pf, long& w)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ReadString(FILE* pf, CBotString& s)
+bool ReadString(FILE* pf, std::string& s)
 {
     unsigned short  w;
     char    buf[1000];
@@ -157,7 +156,7 @@ bool ReadType(FILE* pf, CBotTypResult &type)
 
     if ( type.Eq( CBotTypClass ) )
     {
-        CBotString  s;
+        std::string  s;
         if ( !ReadString(pf, s) ) return false;
         type = CBotTypResult( w, s );
     }

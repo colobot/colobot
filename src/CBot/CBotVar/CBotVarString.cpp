@@ -43,7 +43,7 @@ CBotVarString::CBotVarString( const CBotToken* name )
     m_bStatic = false;
     m_mPrivate = 0;
 
-    m_val.Empty();
+    m_val.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,14 +65,14 @@ void CBotVarString::Copy(CBotVar* pSrc, bool bName)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVarString::SetValString(const char* p)
+void CBotVarString::SetValString(const std::string& p)
 {
     m_val = p;
     m_binit    = CBotVar::InitType::DEF;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotVarString::GetValString()
+std::string CBotVarString::GetValString()
 {
     if ( m_binit == CBotVar::InitType::UNDEF )
     {

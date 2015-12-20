@@ -27,6 +27,7 @@
 #include "CBot/CBotVar/CBotVarClass.h"
 
 #include "CBot/CBotFileUtils.h"
+#include "CBot/CBotUtils.h"
 
 // Local include
 
@@ -44,7 +45,7 @@ CBotVar*    CBotStack::m_retvar = nullptr;
 int         CBotStack::m_error = 0;
 int         CBotStack::m_start = 0;
 int         CBotStack::m_end   = 0;
-CBotString  CBotStack::m_labelBreak="";
+std::string  CBotStack::m_labelBreak="";
 void*       CBotStack::m_pUser = nullptr;
 
 #if    STACKMEM
@@ -381,7 +382,7 @@ void CBotStack::Reset(void* pUser)
     m_error    = 0;
 //    m_start = 0;
 //    m_end    = 0;
-    m_labelBreak.Empty();
+    m_labelBreak.clear();
     m_pUser = pUser;
 }
 
@@ -414,36 +415,36 @@ bool CBotStack::IfStep()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotStack::BreakReturn(CBotStack* pfils, const char* name)
+bool CBotStack::BreakReturn(CBotStack* pfils, const std::string& name)
 {
     if ( m_error>=0 ) return false;                // normal output
     if ( m_error==-3 ) return false;            // normal output (return current)
 
-    if (!m_labelBreak.IsEmpty() && (name[0] == 0 || m_labelBreak != name))
+    if (!m_labelBreak.empty() && (name.empty() || m_labelBreak != name))
         return false;                            // it's not for me
 
     m_error = 0;
-    m_labelBreak.Empty();
+    m_labelBreak.clear();
     return Return(pfils);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotStack::IfContinue(int state, const char* name)
+bool CBotStack::IfContinue(int state, const std::string& name)
 {
     if ( m_error != -2 ) return false;
 
-    if (!m_labelBreak.IsEmpty() && (name == nullptr || m_labelBreak != name))
+    if (!m_labelBreak.empty() && (name.empty() || m_labelBreak != name))
         return false;                            // it's not for me
 
     m_state = state;                            // where again?
     m_error = 0;
-    m_labelBreak.Empty();
+    m_labelBreak.clear();
     if ( m_next != EOX ) m_next->Delete();            // purge above stack
     return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotStack::SetBreak(int val, const char* name)
+void CBotStack::SetBreak(int val, const std::string& name)
 {
     m_error = -val;                                // reacts as an Exception
     m_labelBreak = name;
@@ -502,7 +503,7 @@ void CBotStack::SetType(CBotTypResult& type)
 CBotVar* CBotStack::FindVar(CBotToken* &pToken, bool bUpdate, bool bModif)
 {
     CBotStack*    p = this;
-    CBotString    name = pToken->GetString();
+    std::string    name = pToken->GetString();
 
     while (p != nullptr)
     {
@@ -524,7 +525,7 @@ CBotVar* CBotStack::FindVar(CBotToken* &pToken, bool bUpdate, bool bModif)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotStack::FindVar(const char* name)
+CBotVar* CBotStack::FindVar(const std::string& name)
 {
     CBotStack*    p = this;
     while (p != nullptr)
@@ -814,7 +815,7 @@ bool SaveVar(FILE* pf, CBotVar* pVar)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotStack::GetRunPos(const char* &FunctionName, int &start, int &end)
+void CBotStack::GetRunPos(std::string& FunctionName, int& start, int& end)
 {
     CBotProgram*    prog = m_prog;                        // Current program
 
@@ -849,7 +850,7 @@ void CBotStack::GetRunPos(const char* &FunctionName, int &start, int &end)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotStack::GetStackVars(const char* &FunctionName, int level)
+CBotVar* CBotStack::GetStackVars(std::string& FunctionName, int level)
 {
     CBotProgram*    prog = m_prog;                        // current program
     FunctionName    = nullptr;
@@ -1005,7 +1006,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 {
     unsigned short        w, wi, prv, st;
     float        ww;
-    CBotString    name, s;
+    std::string    name, s;
 
     delete pVar;
 
@@ -1018,7 +1019,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
         if (!ReadWord(pf, w)) return false;                        // private or type?
         if ( w == 0 ) return true;
 
-        CBotString defnum;
+        std::string defnum;
         if ( w == 200 )
         {
             if (!ReadString(pf, defnum)) return false;            // number with identifier
@@ -1039,7 +1040,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
         if (!ReadWord(pf, wi) || !ParseInitType(wi, &initType)) return false;                    // init ?
         if (!ReadString(pf, name)) return false;                // variable name
 
-        CBotToken token(name, CBotString());
+        CBotToken token(name, std::string());
 
         switch (w)
         {

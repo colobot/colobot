@@ -99,13 +99,13 @@ public:
      * \brief GetParamString
      * \return
      */
-    CBotString GetParamString();
+    std::string GetParamString();
 
 private:
     //! Name of the parameter.
     CBotToken m_token;
     //! Type name.
-    CBotString m_typename;
+    std::string m_typename;
     //! Type of paramteter.
     CBotTypResult m_type;
     //! Next parameter.

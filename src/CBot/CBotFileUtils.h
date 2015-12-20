@@ -24,11 +24,11 @@
 // Local include
 
 // Global include
- #include <cstdio>
+#include <cstdio>
+#include <string>
 
 // Forward declaration
 class CBotVar;
-class CBotString;
 class CBotTypResult;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -137,7 +137,7 @@ bool ReadFloat(FILE* pf, float& w);
  * \param s
  * \return
  */
-bool ReadString(FILE* pf, CBotString& s);
+bool ReadString(FILE* pf, std::string& s);
 
 /*!
  * \brief WriteType

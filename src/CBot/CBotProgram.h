@@ -21,7 +21,6 @@
 
 // Modules inlcude
 #include "CBot/CBotTypResult.h"
-#include "CBot/CBotString.h"
 
 #include "CBot/CBotEnums.h"
 
@@ -84,7 +83,7 @@ public:
      * \return false if an error at compile.
      * \see GetCompileError() to retrieve the error.
      */
-    bool Compile( const char* program, std::vector<CBotString>& ListFonctions, void* pUser = nullptr);
+    bool Compile(const std::string& program, std::vector<std::string>& ListFonctions, void* pUser = nullptr);
 
     /*!
      * \brief SetIdent Associates an identifier with the instance CBotProgram.
@@ -128,7 +127,7 @@ public:
      * \param code
      * \return
      */
-    static CBotString GetErrorText(int code);
+    static std::string GetErrorText(int code);
 
     /*!
      * \brief Start Defines what function should be executed. The program does
@@ -136,7 +135,7 @@ public:
      * \param name
      * \return false if the funtion name is not found
      */
-    bool Start(const char* name);
+    bool Start(const std::string& name);
 
     /*!
      * \brief Run Executes the program.
@@ -154,7 +153,7 @@ public:
      * \param end
      * \return false if it is not running (program completion)
      */
-    bool GetRunPos(const char* &FunctionName, int &start, int &end);
+    bool GetRunPos(std::string& FunctionName, int& start, int& end);
 
     /*!
      * \brief GetStackVars provides the pointer to the variables on the
@@ -168,7 +167,7 @@ public:
      * \param level
      * \return
      */
-    CBotVar* GetStackVars(const char* &FunctionName, int level);
+    CBotVar* GetStackVars(std::string& FunctionName, int level);
 
     /*!
      * \brief Stop stops execution of the program therefore quits "suspend" mode
@@ -193,9 +192,9 @@ public:
      * \param rCompile
      * \return
      */
-    static bool AddFunction(const char* name,
-                            bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                            CBotTypResult rCompile (CBotVar* &pVar, void* pUser));
+    static bool AddFunction(const std::string& name,
+                            bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
+                            CBotTypResult rCompile(CBotVar*& pVar, void* pUser));
 
     /*!
      * \brief DefineNum
@@ -203,7 +202,7 @@ public:
      * \param val
      * \return
      */
-    static bool DefineNum(const char* name, long val);
+    static bool DefineNum(const std::string& name, long val);
 
     /*!
      * \brief SaveState Backup the execution status in the file the file must
@@ -233,11 +232,11 @@ public:
      * \param modestop
      * \return
      */
-    bool GetPosition(const char* name,
+    bool GetPosition(const std::string& name,
                      int& start,
                      int& stop,
                      CBotGet modestart = GetPosExtern,
-                     CBotGet modestop  = GetPosBloc);
+                     CBotGet modestop = GetPosBloc);
 
     /*!
      * \brief GetFunctions
@@ -286,7 +285,7 @@ private:
 
     For example, a routine which calculates the mean of a parameter list
 
-int cMean(CBotVar* &pVar, CBotString& ClassName)
+int cMean(CBotVar* &pVar, std::string& ClassName)
 {
     if ( pVar == nullptr ) return 6001; // there is no parameter!
     while ( pVar != nullptr )

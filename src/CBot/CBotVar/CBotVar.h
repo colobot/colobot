@@ -21,16 +21,18 @@
 
 // Modules inlcude
 #include "CBot/CBotDefines.h"
-
-#include "CBot/CBotString.h"
+#include "CBot/CBotTypResult.h"
 
 // Local include
 
 // Global include
+#include <string>
 
 // Forward declaration
 class CBotVarClass;
 class CBotInstr;
+class CBotClass;
+class CBotToken;
 
 /*!
  * \brief The CBotVar class Class for managing variables. May be useful to the
@@ -68,7 +70,7 @@ public:
      * \param type
      * \return
      */
-    static CBotVar* Create( const char* name, CBotTypResult type);
+    static CBotVar* Create(const std::string& name, CBotTypResult type);
 
     /*!
      * \brief Create Creates from one instance of a known class.
@@ -76,7 +78,7 @@ public:
      * \param pClass
      * \return
      */
-    static CBotVar* Create( const char* name, CBotClass* pClass);
+    static CBotVar* Create(const std::string& name, CBotClass* pClass);
 
     /*!
      * \brief Create Creates a variable depending on its type.
@@ -101,7 +103,7 @@ public:
      * \param pClass
      * \return
      */
-    static CBotVar* Create( const char* name, int type, CBotClass* pClass);
+    static CBotVar* Create(const std::string& name, int type, CBotClass* pClass);
 
     /*!
      * \brief Create
@@ -139,13 +141,13 @@ public:
      * \brief GetName The name of the variable, if known.
      * \return
      */
-    CBotString GetName();
+    std::string GetName();
 
     /*!
      * \brief SetName Changes the name of the variable
      * \param name
      */
-    void SetName(const char* name);
+    void SetName(const std::string& name);
 
     /*!
      * \brief GetType Returns the base type (int) of the variable
@@ -251,7 +253,7 @@ public:
      * \param name
      * \return
      */
-    virtual CBotVar* GetItem(const char* name);
+    virtual CBotVar* GetItem(const std::string& name);
 
     /*!
      * \brief GetItemRef
@@ -287,7 +289,7 @@ public:
      * \param name
      * \return
      */
-    bool IsElemOfClass(const char* name);
+    bool IsElemOfClass(const std::string& name);
 
     /*!
      * \brief GetNext Next variable in the list (parameters).
@@ -313,7 +315,7 @@ public:
      * \param val
      * \param name
      */
-    virtual void SetValInt(int val, const char* name = nullptr);
+    virtual void SetValInt(int val, const std::string& name = "");
 
     /*!
      * \brief SetValFloat Initialized with a real value (#).
@@ -325,7 +327,7 @@ public:
      * \brief SetValString Initialized with a string value (#).
      * \param p
      */
-    virtual void SetValString(const char* p);
+    virtual void SetValString(const std::string& p);
 
     /*!
      * \brief GetValInt Request the full value (#).
@@ -343,7 +345,7 @@ public:
      * \brief GetValString Request the string value (#).
      * \return
      */
-    virtual CBotString GetValString();
+    virtual std::string GetValString();
 
     /*!
      * \brief SetClass

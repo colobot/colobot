@@ -40,9 +40,9 @@ CBotCall* CBotCall::m_ListCalls = nullptr;
 void* CBotCall::m_pUser = nullptr;
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotCall::CBotCall(const char* name,
-                   bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                   CBotTypResult rCompile (CBotVar* &pVar, void* pUser))
+CBotCall::CBotCall(const std::string& name,
+                   bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
+                   CBotTypResult rCompile(CBotVar*& pVar, void* pUser))
 {
     m_name       = name;
     m_rExec      = rExec;
@@ -65,9 +65,9 @@ void CBotCall::Free()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotCall::AddFunction(const char* name,
-                           bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                           CBotTypResult rCompile (CBotVar* &pVar, void* pUser))
+bool CBotCall::AddFunction(const std::string& name,
+                           bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
+                           CBotTypResult rCompile(CBotVar*& pVar, void* pUser))
 {
     CBotCall*   p = m_ListCalls;
     CBotCall*   pp = nullptr;
@@ -102,7 +102,7 @@ CBotTypResult CBotCall::CompileCall(CBotToken* &p, CBotVar** ppVar, CBotCStack* 
 {
     nIdent = 0;
     CBotCall*   pt = m_ListCalls;
-    CBotString  name = p->GetString();
+    std::string  name = p->GetString();
 
     while ( pt != nullptr )
     {
@@ -136,7 +136,7 @@ void CBotCall::SetPUser(void* pUser)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotCall::CheckCall(const char* name)
+bool CBotCall::CheckCall(const std::string& name)
 {
     CBotCall* p = m_ListCalls;
 
@@ -149,7 +149,7 @@ bool CBotCall::CheckCall(const char* name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotCall::GetName()
+std::string CBotCall::GetName()
 {
     return  m_name;
 }
@@ -178,7 +178,7 @@ int CBotCall::DoCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack*
 
     if ( token != nullptr )
     {
-        CBotString name = token->GetString();
+        std::string name = token->GetString();
         while ( pt != nullptr )
         {
             if ( pt->m_name == name )
@@ -260,7 +260,7 @@ bool CBotCall::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBot
     CBotCall*   pt = m_ListCalls;
 
     {
-        CBotString name = token->GetString();
+        std::string name = token->GetString();
         while ( pt != nullptr )
         {
             if ( pt->m_name == name )

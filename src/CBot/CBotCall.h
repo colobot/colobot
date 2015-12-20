@@ -20,14 +20,18 @@
 #pragma once
 
 // Modules inlcude
-#include "CBot/CBotString.h"
 
 // Local include
 
 // Global include
+#include <string>
 
 // Forward declaration
 class CBotStack;
+class CBotCStack;
+class CBotVar;
+class CBotTypResult;
+class CBotToken;
 
 #define    STACKRUN    1  //! \def return execution directly on a suspended routine
 
@@ -44,9 +48,9 @@ public:
      * \param rExec
      * \param rCompile
      */
-    CBotCall(const char* name,
-             bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-             CBotTypResult rCompile (CBotVar* &pVar, void* pUser));
+    CBotCall(const std::string& name,
+             bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
+             CBotTypResult rCompile(CBotVar*& pVar, void* pUser));
 
     /*!
      * \brief ~CBotCall
@@ -60,9 +64,9 @@ public:
      * \param rCompile
      * \return
      */
-    static bool AddFunction(const char* name,
-                            bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                            CBotTypResult rCompile (CBotVar* &pVar, void* pUser));
+    static bool AddFunction(const std::string& name,
+                            bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
+                            CBotTypResult rCompile(CBotVar*& pVar, void* pUser));
 
     /*!
      * \brief CompileCall Is acceptable by a call procedure name and given
@@ -80,7 +84,7 @@ public:
      * \param name
      * \return
      */
-    static bool CheckCall(const char* name);
+    static bool CheckCall(const std::string& name);
 
     /*!
      * \brief DoCall
@@ -117,7 +121,7 @@ public:
      * \brief GetName
      * \return
      */
-    CBotString GetName();
+    std::string GetName();
 
     /*!
      * \brief Next
@@ -142,7 +146,7 @@ private:
     static void* m_pUser;
     long        m_nFuncIdent;
 
-    CBotString m_name;
+    std::string m_name;
     bool (*m_rExec) (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser);
     CBotTypResult (*m_rComp) (CBotVar* &pVar, void* pUser);
     CBotCall* m_next;

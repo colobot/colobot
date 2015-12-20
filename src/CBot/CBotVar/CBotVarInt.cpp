@@ -66,7 +66,7 @@ void CBotVarInt::Copy(CBotVar* pSrc, bool bName)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVarInt::SetValInt(int val, const char* defnum)
+void CBotVarInt::SetValInt(int val, const std::string& defnum)
 {
     m_val = val;
     m_binit    = CBotVar::InitType::DEF;
@@ -93,11 +93,11 @@ float CBotVarInt::GetValFloat()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotVarInt::GetValString()
+std::string CBotVarInt::GetValString()
 {
-    if ( !m_defnum.IsEmpty() ) return m_defnum;
+    if ( !m_defnum.empty() ) return m_defnum;
 
-    CBotString res;
+    std::string res;
 
     if ( m_binit == CBotVar::InitType::UNDEF )
     {
@@ -216,27 +216,27 @@ void CBotVarInt::SR(CBotVar* left, CBotVar* right)
 ////////////////////////////////////////////////////////////////////////////////
 void CBotVarInt::Neg()
 {
-        m_val = -m_val;
+    m_val = -m_val;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotVarInt::Not()
 {
-        m_val = ~m_val;
+    m_val = ~m_val;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotVarInt::Inc()
 {
-        m_val++;
-        m_defnum.Empty();
+    m_val++;
+    m_defnum.empty();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotVarInt::Dec()
 {
-        m_val--;
-        m_defnum.Empty();
+    m_val--;
+    m_defnum.empty();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -278,7 +278,7 @@ bool CBotVarInt::Ne(CBotVar* left, CBotVar* right)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotVarInt::Save0State(FILE* pf)
 {
-    if ( !m_defnum.IsEmpty() )
+    if ( !m_defnum.empty() )
     {
         if(!WriteWord(pf, 200 )) return false;            // special marker
         if(!WriteString(pf, m_defnum)) return false;    // name of the value

@@ -4,7 +4,7 @@
 
 //! \brief Keeps the string corresponding to keyword ID
 // Map is filled with id-string pars that are needed for CBot language parsing
-static const std::map<EID, const char*> s_keywordString = {
+static const std::map<EID, const std::string> s_keywordString = {
     {ID_IF,         "if"},
     {ID_ELSE,       "else"},
     {ID_WHILE,      "while"},
@@ -94,9 +94,8 @@ static const std::map<EID, const char*> s_keywordString = {
     {TX_NAN,        "not a number"}
 };
 
-static const char emptyString[] = "";
-
-const char* LoadString(EID id)
+static const std::string emptyString = "";
+const std::string& LoadString(EID id)
 {
     if (s_keywordString.find(id) != s_keywordString.end())
     {

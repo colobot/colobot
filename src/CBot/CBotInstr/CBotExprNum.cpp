@@ -25,6 +25,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+#include "CBot/CBotUtils.h"
+
 // Local include
 
 // Global include
@@ -48,7 +50,7 @@ CBotInstr* CBotExprNum::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotExprNum* inst = new CBotExprNum();
 
     inst->SetToken(p);
-    CBotString    s = p->GetString();
+    std::string    s = p->GetString();
 
     inst->m_numtype = CBotTypInt;
     if (p->GetType() == TokenTypDef)
@@ -57,7 +59,7 @@ CBotInstr* CBotExprNum::Compile(CBotToken* &p, CBotCStack* pStack)
     }
     else
     {
-        if (s.Find('.') >= 0 || ( s.Find('x') < 0 && ( s.Find('e') >= 0 || s.Find('E') >= 0 ) ))
+        if (s.find('.') != std::string::npos || ( s.find('x') == std::string::npos && ( s.find_first_of("eE") != std::string::npos ) ))
         {
             inst->m_numtype = CBotTypFloat;
             inst->m_valfloat = GetNumFloat(s);
@@ -88,7 +90,7 @@ bool CBotExprNum::Execute(CBotStack* &pj)
 
     CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), m_numtype);
 
-    CBotString    nombre ;
+    std::string    nombre ;
     if (m_token.GetType() == TokenTypDef)
     {
         nombre = m_token.GetString();

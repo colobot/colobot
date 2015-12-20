@@ -104,7 +104,7 @@ public:
      * \param nIdent
      * \return
      */
-    CBotTypResult CompileCall(const char* name,
+    CBotTypResult CompileCall(const std::string& name,
                               CBotVar** ppVars,
                               long& nIdent);
 
@@ -118,7 +118,7 @@ public:
      * \param bPublic
      * \return
      */
-    CBotFunction* FindLocalOrPublic(long& nIdent, const char* name,
+    CBotFunction* FindLocalOrPublic(long& nIdent, const std::string& name,
                                     CBotVar** ppVars,
                                     CBotTypResult& TypeOrError,
                                     bool bPublic = true);
@@ -134,7 +134,7 @@ public:
      */
 
     int DoCall(long& nIdent,
-               const char* name,
+               const std::string& name,
                CBotVar** ppVars,
                CBotStack* pStack,
                CBotToken* pToken);
@@ -147,7 +147,7 @@ public:
      * \param pStack
      */
     void RestoreCall(long& nIdent,
-                     const char* name,
+                     const std::string& name,
                      CBotVar** ppVars,
                      CBotStack* pStack);
 
@@ -164,7 +164,7 @@ public:
      * \return
      */
     int DoCall(long& nIdent,
-               const char* name,
+               const std::string& name,
                CBotVar* pThis,
                CBotVar** ppVars,
                CBotStack* pStack,
@@ -181,7 +181,7 @@ public:
      * \param pClass
      */
     void RestoreCall(long& nIdent,
-                     const char* name,
+                     const std::string& name,
                      CBotVar* pThis,
                      CBotVar** ppVars,
                      CBotStack* pStack,
@@ -204,13 +204,13 @@ public:
      * \brief GetName
      * \return
      */
-    CBotString GetName();
+    std::string GetName();
 
     /*!
      * \brief GetParams
      * \return
      */
-    CBotString GetParams();
+    std::string GetParams();
 
     /*!
      * \brief IsPublic
@@ -263,7 +263,7 @@ private:
     //! Extern function.
     bool m_bExtern;
     //! Name of the class we derive.
-    CBotString m_MasterClass;
+    std::string m_MasterClass;
     CBotProgram* m_pProg;
     //! For the position of the word "extern".
     CBotToken m_extern;

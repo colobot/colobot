@@ -182,7 +182,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
 
         if ( IsOfType(p, ID_NOT) )
         {
-            CBotToken d(CBotString("~") + p->GetString());
+            CBotToken d(std::string("~") + p->GetString());
             func->m_token = d;
         }
 
@@ -207,7 +207,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
             {
                 pStk->SetRetType(func->m_retTyp);   // for knowledge what type returns
 
-                if (!func->m_MasterClass.IsEmpty())
+                if (!func->m_MasterClass.empty())
                 {
                     // return "this" known
                     CBotVar* pThis = CBotVar::Create("this", CBotTypResult( CBotTypClass, func->m_MasterClass ));
@@ -356,7 +356,7 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
         pile->IncState();
     }
 
-    if ( pile->GetState() == 1 && !m_MasterClass.IsEmpty() )
+    if ( pile->GetState() == 1 && !m_MasterClass.empty() )
     {
         // makes "this" known
         CBotVar* pThis = nullptr;
@@ -411,7 +411,7 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
 
     m_Param->RestoreState(pile2, true);                 // parameters
 
-    if ( !m_MasterClass.IsEmpty() )
+    if ( !m_MasterClass.empty() )
     {
         CBotVar* pThis = pile->FindVar("this");
         pThis->SetInit(CBotVar::InitType::IS_POINTER);
@@ -431,7 +431,7 @@ void CBotFunction::AddNext(CBotFunction* p)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult CBotFunction::CompileCall(const char* name, CBotVar** ppVars, long& nIdent)
+CBotTypResult CBotFunction::CompileCall(const std::string& name, CBotVar** ppVars, long& nIdent)
 {
     nIdent = 0;
     CBotTypResult   type;
@@ -442,7 +442,8 @@ CBotTypResult CBotFunction::CompileCall(const char* name, CBotVar** ppVars, long
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const char* name, CBotVar** ppVars, CBotTypResult& TypeOrError, bool bPublic)
+CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& name, CBotVar** ppVars,
+                                              CBotTypResult& TypeOrError, bool bPublic)
 {
     TypeOrError.SetType(TX_UNDEFCALL);      // no routine of the name
     CBotFunction*   pt;
@@ -470,7 +471,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const char* name, CB
         }
     }
 
-    if ( name == nullptr ) return nullptr;
+    if ( name.empty() ) return nullptr;
 
     int     delta   = 99999;                // seeks the lowest signature
     CBotFunction*   pFunc = nullptr;           // the best function found
@@ -595,7 +596,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const char* name, CB
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotFunction::DoCall(long& nIdent, const char* name, CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken)
+int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken)
 {
     CBotTypResult   type;
     CBotFunction*   pt = nullptr;
@@ -617,7 +618,7 @@ int CBotFunction::DoCall(long& nIdent, const char* name, CBotVar** ppVars, CBotS
 
         if ( pStk1->GetState() == 0 )
         {
-            if ( !pt->m_MasterClass.IsEmpty() )
+            if ( !pt->m_MasterClass.empty() )
             {
                 CBotVar* pInstance = m_pProg->m_pInstance;
                 // make "this" known
@@ -665,7 +666,7 @@ int CBotFunction::DoCall(long& nIdent, const char* name, CBotVar** ppVars, CBotS
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotFunction::RestoreCall(long& nIdent, const char* name, CBotVar** ppVars, CBotStack* pStack)
+void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar** ppVars, CBotStack* pStack)
 {
     CBotTypResult   type;
     CBotFunction*   pt = nullptr;
@@ -699,7 +700,7 @@ void CBotFunction::RestoreCall(long& nIdent, const char* name, CBotVar** ppVars,
         // preparing parameters on the stack
 
         {
-            if ( !pt->m_MasterClass.IsEmpty() )
+            if ( !pt->m_MasterClass.empty() )
             {
 //                CBotVar* pInstance = m_pProg->m_pInstance;
                 // make "this" known
@@ -722,7 +723,8 @@ void CBotFunction::RestoreCall(long& nIdent, const char* name, CBotVar** ppVars,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotFunction::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken, CBotClass* pClass)
+int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, CBotVar** ppVars, CBotStack* pStack,
+                         CBotToken* pToken, CBotClass* pClass)
 {
     CBotTypResult   type;
     CBotProgram*    pProgCurrent = pStack->GetBotCall();
@@ -803,7 +805,8 @@ int CBotFunction::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBotVar
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotFunction::RestoreCall(long& nIdent, const char* name, CBotVar* pThis, CBotVar** ppVars, CBotStack* pStack, CBotClass* pClass)
+void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar* pThis, CBotVar** ppVars,
+                               CBotStack* pStack, CBotClass* pClass)
 {
     CBotTypResult   type;
     CBotFunction*   pt = FindLocalOrPublic(nIdent, name, ppVars, type);
@@ -851,17 +854,17 @@ bool CBotFunction::CheckParam(CBotDefParam* pParam)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotFunction::GetName()
+std::string CBotFunction::GetName()
 {
     return  m_token.GetString();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotFunction::GetParams()
+std::string CBotFunction::GetParams()
 {
-    if ( m_Param == nullptr ) return CBotString("()");
+    if ( m_Param == nullptr ) return std::string("()");
 
-    CBotString      params = "( ";
+    std::string      params = "( ";
     CBotDefParam*   p = m_Param;        // list of parameters
 
     while (p != nullptr)

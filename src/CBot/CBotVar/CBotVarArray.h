@@ -86,7 +86,7 @@ public:
      * \brief GetValString Gets the contents of the array into a string.
      * \return
      */
-    CBotString GetValString() override;
+    std::string GetValString() override;
 
     /*!
      * \brief Save1State

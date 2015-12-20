@@ -208,7 +208,7 @@ public:
      * \brief IncLvl Adds a level with a label.
      * \param label
      */
-    static void IncLvl(CBotString& label);
+    static void IncLvl(std::string& label);
 
     /*!
      * \brief IncLvl Adds a level (switch statement).
@@ -226,21 +226,21 @@ public:
      * \param type
      * \return
      */
-    static bool ChkLvl(const CBotString& label, int type);
+    static bool ChkLvl(const std::string& label, int type);
 
     /*!
      * \brief IsOfClass
      * \param name
      * \return
      */
-    bool IsOfClass(CBotString name);
+    bool IsOfClass(const std::string& name);
 
 protected:
 
     //! Keeps the token.
     CBotToken m_token;
     //! Debug.
-    CBotString name;
+    std::string name;
     //! Linked command.
     CBotInstr* m_next;
     //! Second list definition chain.
@@ -258,5 +258,5 @@ protected:
 
 private:
     //! List of labels used.
-    static std::vector<CBotString> m_labelLvl;
+    static std::vector<std::string> m_labelLvl;
 };

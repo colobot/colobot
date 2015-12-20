@@ -19,9 +19,8 @@
 
 #pragma once
 
-#include "CBot/CBotString.h"
-
 #include <vector>
+#include <string>
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Token management (tokens)
@@ -69,11 +68,10 @@ public:
      */
     CBotToken();
     CBotToken(const CBotToken* pSrc);
-    CBotToken(const CBotString& mot,
-              const CBotString& sep,
+    CBotToken(const std::string& mot,
+              const std::string& sep = "",
               int start=0,
               int end=0);
-    CBotToken(const char* mot, const char* sep = nullptr);
 
     /*!
      * \brief ~CBotToken Destructor. Be careful when you delete a CBotToken that
@@ -92,20 +90,20 @@ public:
      * \return The token string if a string has been set. An empty string
      * otherwise.
      */
-    CBotString GetString();
+    std::string GetString();
 
     /*!
      * \brief SetString Set the token string.
      * \param [in] name The new string to set.
      */
-    void SetString(const char* name);
+    void SetString(const std::string& name);
 
     /*!
      * \brief GetSep Return the token separator.
      * \return The token separator a separator has been set. An empty separator
      *  otherwise.
      */
-    CBotString GetSep();
+    std::string GetSep();
 
     /*!
      * \brief GetStart Return the start position of the string token in the
@@ -165,7 +163,7 @@ public:
      * \return The first token of the linked liste.
      * \todo Replace the error code by an enum.
      */
-    static CBotToken* CompileTokens(const char* p, int& error);
+    static CBotToken* CompileTokens(const std::string& p, int& error);
 
     /*!
      * \brief NextToken Looking for the next token in the string. The string must
@@ -191,7 +189,7 @@ public:
      * \param [in] val The number associated with the keyword.
      * \return Ture if the number is available false oterhwise.
      */
-    static bool DefineNum(const char* name, long val);
+    static bool DefineNum(const std::string& name, long val);
 
     /*!
      * \brief Free Free the array created with DefineNum.
@@ -211,9 +209,9 @@ private:
     long m_IdKeyWord;
 
     //! The token string
-    CBotString m_Text;
+    std::string m_Text;
     //! The token separator
-    CBotString m_Sep;
+    std::string m_Sep;
 
     //! The strat position of the token in the CBotProgram
     int m_start;
@@ -225,7 +223,7 @@ private:
      * \param w The word to compare.
      * \return -1 if this is not a keyword the keyword number otherwise.
      */
-    static int GetKeyWords(const char* w);    // is it a keyword?
+    static int GetKeyWords(const std::string& w);    // is it a keyword?
 
     /*!
      * \brief GetKeyDefNum Check if this is a defined word and set the defined
@@ -234,18 +232,18 @@ private:
      * \param [out] token The token in which the type will be set.
      * \return True if the defined word is found false otherwise.
      */
-    static bool GetKeyDefNum(const char* w, CBotToken* &token);
+    static bool GetKeyDefNum(const std::string& w, CBotToken*& token);
 
     /*!
      * \brief LoadKeyWords Loads the list of keywords. The list of keyword is
-     * CBotString::s_keywordString. This keywords are keywords languages (if, +,
+     * std::string::s_keywordString. This keywords are keywords languages (if, +,
      * for, while, case, extern ...)
      * \todo Fixme Figure out how this should work.
      */
     static void LoadKeyWords();
 
     //! List of keywords of the CBot language (if, +, for, while, case, extern ...)
-    static std::vector<CBotString> m_ListKeyWords;
+    static std::vector<std::string> m_ListKeyWords;
     //! List of id correponding to the keywords of the CBot language
     static int m_ListIdKeyWords[200];
 
@@ -253,7 +251,7 @@ private:
     //! This keywords are defined in :
     //!      - void CScriptFunctions::Init()
     //!      - void CBotProgram::Init()
-    static std::vector<CBotString> m_ListKeyDefine;
+    static std::vector<std::string> m_ListKeyDefine;
     //! List of id correponding to the defined words
     static long m_ListKeyNums[MAXDEFNUM];
 

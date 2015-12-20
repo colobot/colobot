@@ -24,11 +24,13 @@
 #include "CBot/CBotEnums.h"
 
 #include "CBot/CBotVar/CBotVar.h"
+#include "CBot/CBotUtils.h"
 
 
 // Local include
 
 // Global include
+#include <boost/algorithm/string.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 bool rStrLen( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
@@ -43,10 +45,10 @@ bool rStrLen( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetNext() != nullptr ) { ex = TX_OVERPARAM ; return true; }
 
     // get the contents of the string
-    CBotString  s = pVar->GetValString();
+    std::string  s = pVar->GetValString();
 
     // puts the length of the stack
-    pResult->SetValInt( s.GetLength() );
+    pResult->SetValInt( s.length() );
     return true;
 }
 
@@ -77,7 +79,7 @@ bool rStrLeft( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
     // get the contents of the string
-    CBotString  s = pVar->GetValString();
+    std::string  s = pVar->GetValString();
 
     // it takes a second parameter
     pVar = pVar->GetNext();
@@ -93,7 +95,7 @@ bool rStrLeft( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetNext() != nullptr ) { ex = TX_OVERPARAM ; return true; }
 
     // takes the interesting part
-    s = s.Left( n );
+    s = s.substr(0, n);
 
     // puts on the stack
     pResult->SetValString( s );
@@ -135,7 +137,7 @@ bool rStrRight( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
     // get the contents of the string
-    CBotString  s = pVar->GetValString();
+    std::string  s = pVar->GetValString();
 
     // it takes a second parameter
     pVar = pVar->GetNext();
@@ -151,7 +153,7 @@ bool rStrRight( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetNext() != nullptr ) { ex = TX_OVERPARAM ; return true; }
 
     // takes the interesting part
-    s = s.Right( n );
+    s = s.substr(s.length()-n, std::string::npos);
 
     // puts on the stack
     pResult->SetValString( s );
@@ -168,7 +170,7 @@ bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
     // get the contents of the string
-    CBotString  s = pVar->GetValString();
+    std::string  s = pVar->GetValString();
 
     // it takes a second parameter
     pVar = pVar->GetNext();
@@ -195,12 +197,12 @@ bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
         if ( pVar->GetNext() != nullptr ){ ex = TX_OVERPARAM ; return true; }
 
         // takes the interesting part
-        s = s.Mid( n, l );
+        s = s.substr(n, l);
     }
     else
     {
         // takes the interesting part
-        s = s.Mid( n );
+        s = s.substr(n);
     }
 
     // puts on the stack
@@ -253,7 +255,7 @@ bool rStrVal( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
     // get the contents of the string
-    CBotString  s = pVar->GetValString();
+    std::string  s = pVar->GetValString();
 
     // but no second parameter
     if ( pVar->GetNext() != nullptr ){ ex = TX_OVERPARAM ; return true; }
@@ -292,7 +294,7 @@ bool rStrFind( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
     // get the contents of the string
-    CBotString  s = pVar->GetValString();
+    std::string  s = pVar->GetValString();
 
     // it takes a second parameter
     pVar = pVar->GetNext();
@@ -302,14 +304,14 @@ bool rStrFind( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
     // retrieves this number
-    CBotString s2 = pVar->GetValString();
+    std::string s2 = pVar->GetValString();
 
     // no third parameter
     if ( pVar->GetNext() != nullptr ) { ex = TX_OVERPARAM ; return true; }
 
     // puts the result on the stack
-    int res = s.Find(s2);
-    pResult->SetValInt( res );
+    std::size_t res = s.find(s2);
+    pResult->SetValInt( res != std::string::npos ? res : -1 );
     if ( res < 0 ) pResult->SetInit( CBotVar::InitType::IS_NAN );
     return true;
 }
@@ -349,13 +351,13 @@ bool rStrUpper( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
     // get the contents of the string
-    CBotString  s = pVar->GetValString();
+    std::string  s = pVar->GetValString();
 
     // but no second parameter
     if ( pVar->GetNext() != nullptr ){ ex = TX_OVERPARAM ; return true; }
 
 
-    s.MakeUpper();
+    boost::to_upper(s);
 
     // puts the value on the stack
     pResult->SetValString( s );
@@ -372,13 +374,13 @@ bool rStrLower( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
     // get the contents of the string
-    CBotString  s = pVar->GetValString();
+    std::string  s = pVar->GetValString();
 
     // but no second parameter
     if ( pVar->GetNext() != nullptr ){ ex = TX_OVERPARAM ; return true; }
 
 
-    s.MakeLower();
+    boost::to_lower(s);
 
     // puts the value on the stack
     pResult->SetValString( s );

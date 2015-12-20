@@ -268,7 +268,7 @@ void CBotVarClass::Maj(void* pUser, bool bContinu)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotVarClass::GetItem(const char* name)
+CBotVar* CBotVarClass::GetItem(const std::string& name)
 {
     CBotVar*    p = m_pVar;
 
@@ -335,15 +335,15 @@ CBotVar* CBotVarClass::GetItemList()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotString CBotVarClass::GetValString()
+std::string CBotVarClass::GetValString()
 {
 //    if ( m_Indirect != nullptr) return m_Indirect->GetValString();
 
-    CBotString    res;
+    std::string    res;
 
     if ( m_pClass != nullptr )                        // not used for an array
     {
-        res = m_pClass->GetName() + CBotString("( ");
+        res = m_pClass->GetName() + std::string("( ");
 
         CBotVarClass*    my = this;
         while ( my != nullptr )
@@ -351,7 +351,7 @@ CBotString CBotVarClass::GetValString()
             CBotVar*    pv = my->m_pVar;
             while ( pv != nullptr )
             {
-                res += pv->GetName() + CBotString("=");
+                res += pv->GetName() + std::string("=");
 
                 if ( pv->IsStatic() )
                 {
@@ -423,7 +423,7 @@ void CBotVarClass::DecrementUse()
             pThis->SetPointer(this);
             CBotVar*    pResult = nullptr;
 
-            CBotString    nom = CBotString("~") + m_pClass->GetName();
+            std::string    nom = std::string("~") + m_pClass->GetName();
             long        ident = 0;
 
             while ( pile->IsOk() && !m_pClass->ExecuteMethode(ident, nom, pThis, ppVars, pResult, pile, nullptr)) ;    // waits for the end

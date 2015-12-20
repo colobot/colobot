@@ -65,8 +65,8 @@ bool CBotExprAlpha::Execute(CBotStack* &pj)
 
     CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypString);
 
-    CBotString    chaine = m_token.GetString();
-    chaine = chaine.Mid(1, chaine.GetLength()-2);    // removes the quotes
+    std::string    chaine = m_token.GetString();
+    chaine = chaine.substr(1, chaine.length()-2);    // removes the quotes
 
     var->SetValString(chaine);                    // value of the number
 
