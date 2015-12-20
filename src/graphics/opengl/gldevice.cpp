@@ -187,7 +187,8 @@ bool CGLDevice::Create()
             GetLogger()->Error("Unsupported OpenGL version: %d.%d\n", m_glMajor, m_glMinor);
             GetLogger()->Error("OpenGL 1.3 or newer is required to use this engine.\n");
             m_errorMessage = "It seems your graphics card does not support OpenGL 1.3.\n";
-            m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n";
+            m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n\n";
+            m_errorMessage += GetHardwareInfo(false);
             return false;
         }
 

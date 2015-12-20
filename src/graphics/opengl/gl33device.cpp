@@ -192,7 +192,8 @@ bool CGL33Device::Create()
             GetLogger()->Error("OpenGL 3.0 or newer is required to use this engine.\n");
             m_errorMessage = "It seems your graphics card does not support OpenGL 3.0.\n";
             m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n";
-            m_errorMessage += "(OpenGL 3.0 is roughly equivalent to Direct3D 10)";
+            m_errorMessage += "(OpenGL 3.0 is roughly equivalent to Direct3D 10)\n\n";
+            m_errorMessage += GetHardwareInfo(false);
             return false;
         }
         else if (glVersion < 33)

@@ -73,6 +73,30 @@ int GetOpenGLVersion()
     return 10 * major + minor;
 }
 
+std::string GetHardwareInfo(bool full)
+{
+    int glversion = GetOpenGLVersion();
+
+    const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+    const char* vendor = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+    const char* renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+
+    std::string result;
+
+    result += std::string("Hardware information:\n\n");
+    result += "Version:\t" + std::string(version) + '\n';
+    result += "Vendor:\t" + std::string(vendor) + '\n';
+    result += "Renderer:\t" + std::string(renderer) + '\n';
+
+    if (glversion >= 20)
+    {
+        const char* glslVersion = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
+        result += "Shading Language:\t" + std::string(glslVersion) + '\n';
+    }
+
+    return result;
+}
+
 GLenum TranslateGfxPrimitive(PrimitiveType type)
 {
     GLenum flag = 0;

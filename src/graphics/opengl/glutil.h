@@ -30,6 +30,7 @@
 
 #include <GL/glew.h>
 
+#include <string>
 #include <memory>
 
 
@@ -52,6 +53,9 @@ std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::str
 //! Returns OpenGL version as one number.
 // First digit is major part, second digit is minor part.
 int GetOpenGLVersion();
+
+//! Returns information about graphics card
+std::string GetHardwareInfo(bool full);
 
 //! Translate Gfx primitive type to OpenGL primitive type
 GLenum TranslateGfxPrimitive(PrimitiveType type);

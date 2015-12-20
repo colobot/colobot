@@ -191,7 +191,8 @@ bool CGL21Device::Create()
             GetLogger()->Error("OpenGL 2.0 or newer is required to use this engine.\n");
             m_errorMessage = "It seems your graphics card does not support OpenGL 2.0.\n";
             m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n";
-            m_errorMessage += "(OpenGL 2.0 is roughly equivalent to Direct3D 9)";
+            m_errorMessage += "(OpenGL 2.0 is roughly equivalent to Direct3D 9)\n\n";
+            m_errorMessage += GetHardwareInfo(false);
             return false;
         }
 
