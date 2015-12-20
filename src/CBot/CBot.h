@@ -23,7 +23,6 @@
  * that should be included by any Colobot files outside of the CBot module.
  */
 
-// Modules inlcude
 #include "CBot/CBotFileUtils.h"
 #include "CBot/CBotClass.h"
 #include "CBot/CBotToken.h"
@@ -32,6 +31,4 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
+#include "CBot/stdlib/stdlib_public.h"

@@ -54,6 +54,9 @@ msgstr " Streszczenie:"
 msgid " or "
 msgstr " lub "
 
+msgid "\" [ \" expected"
+msgstr "Oczekiwane \" [ \""
+
 msgid "\" ] \" missing"
 msgstr "Brak \" ] \""
 
@@ -355,6 +358,9 @@ msgstr "Nie można wyprodukować nie wynalezionego obiektu"
 msgid "Can not produce this object in this mission"
 msgstr "Nie można utworzyć tego obiektu w tej misji"
 
+msgid "Can't open file"
+msgstr "Nie można otworzyć pliku"
+
 msgid "Cancel"
 msgstr "Anuluj"
 
@@ -548,6 +554,9 @@ msgstr "Okulary:"
 
 msgid "Face type:"
 msgstr "Rodzaj twarzy:"
+
+msgid "File not open"
+msgstr "Plik nie jest otwarty"
 
 msgid "Filename:"
 msgstr "Nazwa pliku:"
@@ -1163,6 +1172,9 @@ msgstr "Zakończ\\Kończy bieżącą misję lub ćwiczenie"
 msgid "Radar station"
 msgstr "Stacja radarowa"
 
+msgid "Read error"
+msgstr "Błąd odczytu"
+
 msgid "Recorder"
 msgstr "Nagrywanie"
 
@@ -1453,6 +1465,9 @@ msgstr "Tekstury"
 msgid "The expression must return a boolean value"
 msgstr "Wyrażenie musi zwrócić wartość logiczną"
 
+msgid "The function returned no value "
+msgstr "Funkcja nie zwróciła żadnej wartości "
+
 msgid ""
 "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr "Misja nie jest wypełniona (naciśnij \\key help; aby uzyskać szczegóły)"
@@ -1655,6 +1670,9 @@ msgstr "Robal śmiertelnie raniony"
 msgid "Wreckage"
 msgstr "Wrak"
 
+msgid "Write error"
+msgstr "Błąd zapisu"
+
 msgid "Wrong type for the assignment"
 msgstr "Zły typ dla przypisania"
 
@@ -1784,9 +1802,6 @@ msgstr "www.epsitec.com"
 #~ msgid " Drivers:"
 #~ msgstr " Sterowniki:"
 
-#~ msgid "\" [ \" expected"
-#~ msgstr "Oczekiwane \" [ \""
-
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
 
@@ -1795,9 +1810,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Can not create this; there are too many objects"
 #~ msgstr "Nie można tego utworzyć, za dużo obiektów"
-
-#~ msgid "Can't open file"
-#~ msgstr "Nie można otworzyć pliku"
 
 #~ msgid "Cancel\\Keep current player name"
 #~ msgstr "Anuluj\\Zachowuje bieżące imię gracza"
@@ -1822,9 +1834,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Exit film\\Film at the exit of exercises"
 #~ msgstr "Końcowy film\\Film na zakończenie ćwiczeń"
-
-#~ msgid "File not open"
-#~ msgstr "Plik nie jest otwarty"
 
 #~ msgid "Friendly fire\\Your shooting can damage your own objects "
 #~ msgstr "Przyjacielski ogień\\Własne strzały uszkadzają Twoje obiekty"
@@ -1867,9 +1876,6 @@ msgstr "www.epsitec.com"
 #~ msgid "Quit the mission?"
 #~ msgstr "Opuścić misję?"
 
-#~ msgid "Read error"
-#~ msgstr "Błąd odczytu"
-
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Robbie\\Twój asystent"
 
@@ -1885,18 +1891,12 @@ msgstr "www.epsitec.com"
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Tekstury\\Jakość tekstur "
 
-#~ msgid "The function returned no value "
-#~ msgstr "Funkcja nie zwróciła żadnej wartości "
-
 #~ msgid ""
 #~ "The list is only available if a \\l;radar station\\u object\\radar; is "
 #~ "working.\n"
 #~ msgstr ""
 #~ "Lista jest dostępna jedynie gdy działa \\l;stacja radarowa\\u object"
 #~ "\\radar;.\n"
-
-#~ msgid "Write error"
-#~ msgstr "Błąd zapisu"
 
 #~ msgid "\\b;Aliens\n"
 #~ msgstr "\\b;Obcy\n"

@@ -55,6 +55,9 @@ msgstr " Zusammenfassung:"
 msgid " or "
 msgstr " oder "
 
+msgid "\" [ \" expected"
+msgstr "Es fehlt eine offene eckige Klammer \" [ \""
+
 msgid "\" ] \" missing"
 msgstr "Es fehlt eine geschlossene eckige Klammer \" ] \""
 
@@ -352,6 +355,9 @@ msgstr "Das erforschte Objekt kann nicht produziert werden"
 msgid "Can not produce this object in this mission"
 msgstr "Das Objekt kann in dieser Mission nicht produziert werden"
 
+msgid "Can't open file"
+msgstr "Die Datei kann nicht geöffnet werden"
+
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -547,6 +553,9 @@ msgstr "Brille:"
 
 msgid "Face type:"
 msgstr "Kopf:"
+
+msgid "File not open"
+msgstr "Die Datei wurde nicht geöffnet"
 
 msgid "Filename:"
 msgstr "Dateiname:"
@@ -1164,6 +1173,9 @@ msgstr "Mission verlassen\\Eine Mission oder Übung verlassen"
 msgid "Radar station"
 msgstr "Radar"
 
+msgid "Read error"
+msgstr "Fehler beim Lesezugriff"
+
 msgid "Recorder"
 msgstr "Recorder"
 
@@ -1460,6 +1472,9 @@ msgstr ""
 msgid "The expression must return a boolean value"
 msgstr "Der Ausdruck muss einen boolschen Wert ergeben"
 
+msgid "The function returned no value "
+msgstr "Die Funktion hat kein Ergebnis zurückgegeben"
+
 msgid ""
 "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr ""
@@ -1664,6 +1679,9 @@ msgstr "Wurm tödlich verwundet"
 msgid "Wreckage"
 msgstr "Roboterwrack"
 
+msgid "Write error"
+msgstr "Fehler beim Schreibzugriff"
+
 msgid "Wrong type for the assignment"
 msgstr "Der Ausdruck ergibt einen falschen Typ für die Zuweisung"
 
@@ -1799,9 +1817,6 @@ msgstr "www.epsitec.com"
 #~ msgid " Missions on this level:"
 #~ msgstr " Missionen des Userlevels:"
 
-#~ msgid "\" [ \" expected"
-#~ msgstr "Es fehlt eine offene eckige Klammer \" [ \""
-
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "3D-Geräusche\\Orten der Geräusche im Raum"
 
@@ -1813,9 +1828,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Can not create this; there are too many objects"
 #~ msgstr "Kein neues Objekt kann erstellt werden (zu viele vorhanden)"
-
-#~ msgid "Can't open file"
-#~ msgstr "Die Datei kann nicht geöffnet werden"
 
 #~ msgid "Cancel\\Keep current player name"
 #~ msgstr "Abbrechen\\Behält den bisherigen Spieler bei"
@@ -1844,9 +1856,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Exit film\\Film at the exit of exercises"
 #~ msgstr "Zurücksetzen \\Kleine Show beim Zurücksetzen in den Übungen"
-
-#~ msgid "File not open"
-#~ msgstr "Die Datei wurde nicht geöffnet"
 
 #~ msgid "Friendly fire\\Your shooting can damage your own objects "
 #~ msgstr "Eigenbeschuss\\Ihre Einheiten werden von Ihren Waffen beschädigt"
@@ -1887,9 +1896,6 @@ msgstr "www.epsitec.com"
 #~ msgid "Quit\\Quit COLOBOT"
 #~ msgstr "Schließen\\COLOBOT schließen"
 
-#~ msgid "Read error"
-#~ msgstr "Fehler beim Lesezugriff"
-
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Robby\\Ihr Assistent"
 
@@ -1908,9 +1914,6 @@ msgstr "www.epsitec.com"
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Qualität der Texturen\\Qualität der Anzeige"
 
-#~ msgid "The function returned no value "
-#~ msgstr "Die Funktion hat kein Ergebnis zurückgegeben"
-
 #~ msgid ""
 #~ "The list is only available if a \\l;radar station\\u object\\radar; is "
 #~ "working.\n"
@@ -1918,9 +1921,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "User\\User levels"
 #~ msgstr "User\\Userlevels"
-
-#~ msgid "Write error"
-#~ msgstr "Fehler beim Schreibzugriff"
 
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Zurück zu COLOBOT"

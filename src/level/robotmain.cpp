@@ -4472,7 +4472,7 @@ std::string CRobotMain::GetNewScriptName(ObjectType type, int rank)
 //! Seeks if an object occupies in a spot, to prevent a backup of the game
 bool CRobotMain::IOIsBusy()
 {
-    if (CScriptFunctions::m_numberOfOpenFiles > 0) return true;
+    if (CScriptFunctions::CheckOpenFiles()) return true;
 
     for (CObject* obj : m_objMan->GetAllObjects())
     {

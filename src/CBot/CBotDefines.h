@@ -53,6 +53,8 @@
 // Error Handling of compilation and execution
 ////////////////////////////////////////////////////////////////////////
 
+// TODO: Why are all of those duplicated? This needs to be unified across the source code ~krzys_h
+
 // Here are the list of errors that can be returned by the module
 // for compilation
 
@@ -132,6 +134,7 @@
 #define TX_BADLEFT                      5004
 #define TX_ENDOF                        5005
 #define TX_OUTCASE                      5006
+#define TX_NOTERM                       5007
 #define TX_CLOSEBLK                     5008
 #define TX_ELSEWITHOUTIF                5009
 #define TX_OPENBLK                      5010
@@ -162,6 +165,7 @@
 #define TX_CLBRK                        5035
 #define TX_RESERVED                     5036
 #define TX_BADNEW                       5037
+#define TX_OPBRK                        5038
 #define TX_BADSTRING                    5039
 #define TX_BADINDEX                     5040
 #define TX_PRIVATE                      5041
@@ -171,6 +175,7 @@
 #define TX_DIVZERO                      6000
 #define TX_NOTINIT                      6001
 #define TX_BADTHROW                     6002
+#define TX_NORETVAL                     6003
 #define TX_NORUN                        6004
 #define TX_NOCALL                       6005
 #define TX_NOCLASS                      6006
@@ -179,6 +184,10 @@
 #define TX_OUTARRAY                     6009
 #define TX_STACKOVER                    6010
 #define TX_DELETEDPT                    6011
+#define TX_FILEOPEN                     6012
+#define TX_NOTOPEN                      6013
+#define TX_ERRREAD                      6014
+#define TX_ERRWRITE                     6015
 
-// Max errors
-#define TX_MAX                          6012
+// Max errors (NOTE: See above TODO near file errors)
+#define TX_MAX                          6016

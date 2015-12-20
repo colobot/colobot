@@ -11,7 +11,6 @@ set(SOURCES
         CBotCallMethode.cpp
         CBotTypResult.cpp
         CBotKeywordStrings.cpp
-        StringFunctions.cpp
         CBotInstr/CBotInstr.cpp
         CBotInstr/CBotInstrUtils.cpp
         CBotInstr/CBotWhile.cpp
@@ -67,6 +66,10 @@ set(SOURCES
         CBotVar/CBotVarFloat.cpp
         CBotVar/CBotVarInt.cpp
         CBotVar/CBotVar.cpp
+        stdlib/FileFunctions.cpp
+        stdlib/StringFunctions.cpp
+        stdlib/MathFunctions.cpp
+        stdlib/Compilation.cpp
 )
 
 # Includes

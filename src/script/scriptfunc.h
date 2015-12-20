@@ -42,17 +42,13 @@ class CScriptFunctions
 {
 public:
     static void Init();
+
     static CBotVar* CreateObjectVar(CObject* obj);
     static void DestroyObjectVar(CBotVar* botVar, bool permanent);
 
+    static bool CheckOpenFiles();
+
 private:
-    static CBotTypResult cNull(CBotVar* &var, void* user);
-    static CBotTypResult cOneFloat(CBotVar* &var, void* user);
-    static CBotTypResult cTwoFloat(CBotVar* &var, void* user);
-    static CBotTypResult cString(CBotVar* &var, void* user);
-    static CBotTypResult cStringString(CBotVar* &var, void* user);
-    static CBotTypResult cOneInt(CBotVar* &var, void* user);
-    static CBotTypResult cOneIntReturnBool(CBotVar* &var, void* user);
     static CBotTypResult cEndMission(CBotVar* &var, void* user);
     static CBotTypResult cPlayMusic(CBotVar* &var, void* user);
     static CBotTypResult cGetObject(CBotVar* &var, void* user);
@@ -80,22 +76,11 @@ private:
     static CBotTypResult cTopo(CBotVar* &var, void* user);
     static CBotTypResult cMessage(CBotVar* &var, void* user);
     static CBotTypResult cPenDown(CBotVar* &var, void* user);
+
     static CBotTypResult cOnePoint(CBotVar* &var, void* user);
     static CBotTypResult cPoint(CBotVar* &var, void* user);
     static CBotTypResult cOneObject(CBotVar* &var, void* user);
 
-
-    static bool rSin(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rCos(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rTan(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rSqrt(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rPow(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rRand(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rAbs(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rFloor(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rCeil(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rRound(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rTrunc(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rEndMission(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rPlayMusic(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rStopMusic(CBotVar* var, CBotVar* result, int& exception, void* user);
@@ -149,7 +134,6 @@ private:
     static bool rErrMode(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rIPF(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rAbsTime(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rPenDown(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user);
@@ -168,37 +152,14 @@ private:
     static bool rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user);
 
-
-    static CBotTypResult cfconstruct (CBotVar* pThis, CBotVar* &pVar);
-    static CBotTypResult cfopen (CBotVar* pThis, CBotVar* &pVar);
-    static CBotTypResult cfclose (CBotVar* pThis, CBotVar* &pVar);
-    static CBotTypResult cfwrite (CBotVar* pThis, CBotVar* &pVar);
-    static CBotTypResult cfread (CBotVar* pThis, CBotVar* &pVar);
-    static CBotTypResult cfeof (CBotVar* pThis, CBotVar* &pVar);
-    static bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
-    static bool rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
-    static bool rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
-    static bool rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
-    static bool rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
-    static bool rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
-    static bool rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
-
     static CBotTypResult cPointConstructor(CBotVar* pThis, CBotVar* &var);
     static bool rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception, void* user);
 
     static void uObject(CBotVar* botThis, void* user);
-
-public:
-    static int m_numberOfOpenFiles;
 
 private:
     static bool     WaitForForegroundTask(CScript* script, CBotVar* result, int &exception);
     static bool     WaitForBackgroundTask(CScript* script, CBotVar* result, int &exception);
     static bool     ShouldTaskStop(Error err, int errMode);
     static CExchangePost* FindExchangePost(CObject* object, float power);
-
-    static bool     FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
-
-    static std::unordered_map<int, std::unique_ptr<std::ios>> m_files;
-    static int m_nextFile;
 };

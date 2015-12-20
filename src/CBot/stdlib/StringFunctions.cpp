@@ -18,12 +18,10 @@
  */
 
 // Modules inlcude
-#include "CBot/StringFunctions.h"
+#include "CBot/stdlib/stdlib.h"
 
-#include "CBot/CBotProgram.h"
-#include "CBot/CBotEnums.h"
+#include "CBot/CBot.h"
 
-#include "CBot/CBotVar/CBotVar.h"
 #include "CBot/CBotUtils.h"
 
 
@@ -50,23 +48,6 @@ bool rStrLen( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     // puts the length of the stack
     pResult->SetValInt( s.length() );
     return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotTypResult cIntStr( CBotVar* &pVar, void* pUser )
-{
-    // it takes a parameter
-    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
-
-    // to be a string
-    if ( pVar->GetType() != CBotTypString )
-                        return CBotTypResult( TX_BADPARAM );
-
-    // no second parameter
-    if ( pVar->GetNext() != nullptr ) return CBotTypResult( TX_OVERPARAM );
-
-    // the end result is an integer
-    return CBotTypResult( CBotTypInt );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -100,31 +81,6 @@ bool rStrLeft( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     // puts on the stack
     pResult->SetValString( s );
     return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotTypResult cStrStrInt( CBotVar* &pVar, void* pUser )
-{
-    // it takes a parameter
-    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
-
-    // to be a string
-    if ( pVar->GetType() != CBotTypString )
-                        return CBotTypResult( TX_BADSTRING );
-
-    // it takes a second parameter
-    pVar = pVar->GetNext();
-    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
-
-    // which must be a number
-    if ( pVar->GetType() > CBotTypDouble )
-                        return CBotTypResult( TX_BADNUM );
-
-    // no third parameter
-    if ( pVar->GetNext() != nullptr ) return CBotTypResult( TX_OVERPARAM );
-
-    // the end result is a string
-    return CBotTypResult( CBotTypString );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -211,41 +167,6 @@ bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult cStrStrIntInt( CBotVar* &pVar, void* pUser )
-{
-    // it takes a parameter
-    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
-
-    // to be a string
-    if ( pVar->GetType() != CBotTypString )
-                        return CBotTypResult( TX_BADSTRING );
-
-    // it takes a second parameter
-    pVar = pVar->GetNext();
-    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
-
-    // which must be a number
-    if ( pVar->GetType() > CBotTypDouble )
-                        return CBotTypResult( TX_BADNUM );
-
-    // third parameter optional
-    if ( pVar->GetNext() != nullptr )
-    {
-
-        pVar = pVar->GetNext();
-        // which must be a number
-        if ( pVar->GetType() > CBotTypDouble )
-                            return CBotTypResult( TX_BADNUM );
-
-        // no fourth parameter
-        if ( pVar->GetNext() != nullptr ) return CBotTypResult( TX_OVERPARAM );
-    }
-
-    // the end result is a string
-    return CBotTypResult( CBotTypString );
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool rStrVal( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     // it takes a parameter
@@ -265,23 +186,6 @@ bool rStrVal( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     // puts the value on the stack
     pResult->SetValFloat( val );
     return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotTypResult cFloatStr( CBotVar* &pVar, void* pUser )
-{
-    // it takes a parameter
-    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
-
-    // to be a string
-    if ( pVar->GetType() != CBotTypString )
-                        return CBotTypResult( TX_BADSTRING );
-
-    // no second parameter
-    if ( pVar->GetNext() != nullptr ) return CBotTypResult( TX_OVERPARAM );
-
-    // the end result is a number
-    return CBotTypResult( CBotTypFloat );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -314,31 +218,6 @@ bool rStrFind( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     pResult->SetValInt( res != std::string::npos ? res : -1 );
     if ( res < 0 ) pResult->SetInit( CBotVar::InitType::IS_NAN );
     return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotTypResult cIntStrStr( CBotVar* &pVar, void* pUser )
-{
-    // it takes a parameter
-    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
-
-    // to be a string
-    if ( pVar->GetType() != CBotTypString )
-                        return CBotTypResult( TX_BADSTRING );
-
-    // it takes a second parameter
-    pVar = pVar->GetNext();
-    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
-
-    // to be a string
-    if ( pVar->GetType() != CBotTypString )
-                        return CBotTypResult( TX_BADSTRING );
-
-    // no third parameter
-    if ( pVar->GetNext() != nullptr ) return CBotTypResult( TX_OVERPARAM );
-
-    // the end result is a number
-    return CBotTypResult( CBotTypInt );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -387,22 +266,7 @@ bool rStrLower( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-CBotTypResult cStrStr( CBotVar* &pVar, void* pUser )
-{
-    // it takes a parameter
-    if ( pVar == nullptr ) return CBotTypResult( TX_LOWPARAM );
 
-    // to be a string
-    if ( pVar->GetType() != CBotTypString )
-                        return CBotTypResult( TX_BADSTRING );
-
-    // no second parameter
-    if ( pVar->GetNext() != nullptr ) return CBotTypResult( TX_OVERPARAM );
-
-    // the end result is a string
-    return CBotTypResult( CBotTypString );
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 void InitStringFunctions()

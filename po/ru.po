@@ -53,6 +53,9 @@ msgstr " Итог:"
 msgid " or "
 msgstr " или "
 
+msgid "\" [ \" expected"
+msgstr "Ожидалось \" [ \""
+
 msgid "\" ] \" missing"
 msgstr "Отсутствует \"]\" "
 
@@ -347,6 +350,9 @@ msgstr ""
 msgid "Can not produce this object in this mission"
 msgstr ""
 
+msgid "Can't open file"
+msgstr "Невозможно открыть файл"
+
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -541,6 +547,9 @@ msgstr "Очки:"
 
 msgid "Face type:"
 msgstr "Лицо:"
+
+msgid "File not open"
+msgstr "Файл не открыт"
 
 msgid "Filename:"
 msgstr "Имя файла:"
@@ -1160,6 +1169,9 @@ msgstr "Выход\\Выход из текущей миссии"
 msgid "Radar station"
 msgstr "Радар"
 
+msgid "Read error"
+msgstr "Ошибка чтения"
+
 msgid "Recorder"
 msgstr "Запись"
 
@@ -1452,6 +1464,9 @@ msgstr ""
 msgid "The expression must return a boolean value"
 msgstr "Выражение должно возвращать логическое значение"
 
+msgid "The function returned no value "
+msgstr "Функция не возвратила значения"
+
 msgid ""
 "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr ""
@@ -1655,6 +1670,9 @@ msgstr "Червь смертельно ранен"
 msgid "Wreckage"
 msgstr "Обломки"
 
+msgid "Write error"
+msgstr "Ошибка записи"
+
 msgid "Wrong type for the assignment"
 msgstr "Неверный тип для назначения"
 
@@ -1790,9 +1808,6 @@ msgstr "www.epsitec.com"
 #~ msgid " Missions on this level:"
 #~ msgstr " Миссии на этом уровне:"
 
-#~ msgid "\" [ \" expected"
-#~ msgstr "Ожидалось \" [ \""
-
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "3D-звук\\Стерео звук"
 
@@ -1804,9 +1819,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Can not create this; there are too many objects"
 #~ msgstr "Не удается это создать, слишком много объектов"
-
-#~ msgid "Can't open file"
-#~ msgstr "Невозможно открыть файл"
 
 #~ msgid "Cancel\\Keep current player name"
 #~ msgstr "Отмена\\Отмена"
@@ -1835,9 +1847,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Exit film\\Film at the exit of exercises"
 #~ msgstr "Ролик при выходе\\Ролик во время выхода из упражнения"
-
-#~ msgid "File not open"
-#~ msgstr "Файл не открыт"
 
 #~ msgid "Friendly fire\\Your shooting can damage your own objects "
 #~ msgstr "Огонь по своим\\Вы можете повредить собственные объекты"
@@ -1878,9 +1887,6 @@ msgstr "www.epsitec.com"
 #~ msgid "Quit\\Quit COLOBOT"
 #~ msgstr "Выход\\Выход из COLOBOT"
 
-#~ msgid "Read error"
-#~ msgstr "Ошибка чтения"
-
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Робби\\Ваш помощник"
 
@@ -1899,9 +1905,6 @@ msgstr "www.epsitec.com"
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Текстуры\\Качество текстур "
 
-#~ msgid "The function returned no value "
-#~ msgstr "Функция не возвратила значения"
-
 #~ msgid ""
 #~ "The list is only available if a \\l;radar station\\u object\\radar; is "
 #~ "working.\n"
@@ -1910,9 +1913,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "User\\User levels"
 #~ msgstr "Польз.\\Пользовательские уровни"
-
-#~ msgid "Write error"
-#~ msgstr "Ошибка записи"
 
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Вернуться в COLOBOT"

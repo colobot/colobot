@@ -707,6 +707,7 @@ void InitializeRestext()
     stringsCbot[TX_CLBRK]         = TR("\" ] \" missing");
     stringsCbot[TX_RESERVED]      = TR("Reserved keyword of CBOT language");
     stringsCbot[TX_BADNEW]        = TR("Bad argument for \"new\"");
+    stringsCbot[TX_OPBRK]         = TR("\" [ \" expected");
     stringsCbot[TX_BADSTRING]     = TR("String missing");
     stringsCbot[TX_BADINDEX]      = TR("Incorrect index type");
     stringsCbot[TX_PRIVATE]       = TR("Private element");
@@ -714,6 +715,7 @@ void InitializeRestext()
     stringsCbot[TX_DIVZERO]       = TR("Dividing by zero");
     stringsCbot[TX_NOTINIT]       = TR("Variable not initialized");
     stringsCbot[TX_BADTHROW]      = TR("Negative value rejected by \"throw\"");
+    stringsCbot[TX_NORETVAL]      = TR("The function returned no value ");
     stringsCbot[TX_NORUN]         = TR("No function running");
     stringsCbot[TX_NOCALL]        = TR("Calling an unknown function");
     stringsCbot[TX_NOCLASS]       = TR("This class does not exist");
@@ -722,6 +724,10 @@ void InitializeRestext()
     stringsCbot[TX_OUTARRAY]      = TR("Access beyond array limit");
     stringsCbot[TX_STACKOVER]     = TR("Stack overflow");
     stringsCbot[TX_DELETEDPT]     = TR("Illegal object");
+    stringsCbot[TX_FILEOPEN]      = TR("Can't open file");
+    stringsCbot[TX_NOTOPEN]       = TR("File not open");
+    stringsCbot[TX_ERRREAD]       = TR("Read error");
+    stringsCbot[TX_ERRWRITE]      = TR("Write error");
 }
 
 

@@ -29,8 +29,9 @@
 
 #include "CBot/CBotInstr/CBotFunction.h"
 
-#include "StringFunctions.h"
 #include "CBotKeywordStrings.h"
+
+#include "CBot/stdlib/stdlib.h"
 
 // Local include
 
@@ -482,19 +483,21 @@ void CBotProgram::Init()
     CBotToken::DefineNum("CBotErrZeroDiv",       TX_DIVZERO);     // division by zero
     CBotToken::DefineNum("CBotErrNotInit",       TX_NOTINIT);     // uninitialized variable
     CBotToken::DefineNum("CBotErrBadThrow",      TX_BADTHROW);    // throw a negative value
-    //CBotToken::DefineNum("CBotErrNoRetVal",      6003);           // function did not return results // TODO: Not used. I'm pretty sure not returning a value crashes the game :P
+    CBotToken::DefineNum("CBotErrNoRetVal",      TX_NORETVAL);    // function did not return results
     CBotToken::DefineNum("CBotErrNoRun",         TX_NORUN);       // active Run () without a function // TODO: Is this actually a runtime error?
     CBotToken::DefineNum("CBotErrUndefFunc",     TX_NOCALL);      // Calling a function that no longer exists
-    CBotToken::DefineNum("CBotErrUndefClass",    TX_NOCLASS);     // Class no longer exists
-    CBotToken::DefineNum("CBotErrNullPointer",   TX_NULLPT);      // Attempted to use a null pointer
+    CBotToken::DefineNum("CBotErrNotClass",      TX_NOCLASS);     // Class no longer exists
+    CBotToken::DefineNum("CBotErrNull",          TX_NULLPT);      // Attempted to use a null pointer
     CBotToken::DefineNum("CBotErrNan",           TX_OPNAN);       // Can't do operations on nan
-    CBotToken::DefineNum("CBotErrOutOfBounds",   TX_OUTARRAY);    // Attempted access out of bounds of an array
-    CBotToken::DefineNum("CBotErrStackOverflow", TX_STACKOVER);   // Stack overflow
-    CBotToken::DefineNum("CBotErrDeletedObject", TX_DELETEDPT);   // Attempted to use deleted object
+    CBotToken::DefineNum("CBotErrOutArray",      TX_OUTARRAY);    // Attempted access out of bounds of an array
+    CBotToken::DefineNum("CBotErrStackOver",     TX_STACKOVER);   // Stack overflow
+    CBotToken::DefineNum("CBotErrDeletedPtr",    TX_DELETEDPT);   // Attempted to use deleted object
 
     CBotProgram::AddFunction("sizeof", rSizeOf, cSizeOf );
 
     InitStringFunctions();
+    InitMathFunctions();
+    InitFileFunctions();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

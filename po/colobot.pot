@@ -1712,6 +1712,9 @@ msgstr ""
 msgid "Bad argument for \"new\""
 msgstr ""
 
+msgid "\" [ \" expected"
+msgstr ""
+
 msgid "String missing"
 msgstr ""
 
@@ -1731,6 +1734,9 @@ msgid "Variable not initialized"
 msgstr ""
 
 msgid "Negative value rejected by \"throw\""
+msgstr ""
+
+msgid "The function returned no value "
 msgstr ""
 
 msgid "No function running"
@@ -1755,6 +1761,18 @@ msgid "Stack overflow"
 msgstr ""
 
 msgid "Illegal object"
+msgstr ""
+
+msgid "Can't open file"
+msgstr ""
+
+msgid "File not open"
+msgstr ""
+
+msgid "Read error"
+msgstr ""
+
+msgid "Write error"
 msgstr ""
 
 msgid "Button %1"
