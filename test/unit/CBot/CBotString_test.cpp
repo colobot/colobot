@@ -160,22 +160,6 @@ TEST(CBotString_Test, Right)
 }
 
 /**
- * @brief CBotString_Test.Compare Check Compare function of class
- *                                CBotString_Test
- */
-TEST(CBotString_Test, Compare)
-{
-    CBotString str1("colobot");
-    EXPECT_EQ(0, str1.Compare("colobot"));
-
-    CBotString str2("a");
-    EXPECT_GT(0, str2.Compare("colobot"));
-
-    CBotString str3("z");
-    EXPECT_LT(0, str3.Compare("colobot"));
-}
-
-/**
  * @brief CBotString_Test.MakeUpper Check MakeUpper function of class
  *                                  CBotString_Test
  */

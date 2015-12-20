@@ -31,13 +31,14 @@
 
 /**
  * \brief CBotString Class used to work on strings
+ * TODO: do not use this class, code should be refactored to use std::string instead
  */
 class CBotString
 {
 public:
 
     /**
-     * \brief CBotString Default constructor.
+     * \brief CBotString Creates an empty string
      */
     CBotString();
 
@@ -46,6 +47,12 @@ public:
      * \param p
      */
     CBotString(const char* p);
+
+    /**
+     * \brief CBotString
+     * \param p
+     */
+    CBotString(const std::string& p);
 
     /**
      * \brief CBotString
@@ -146,15 +153,6 @@ public:
     CBotString Right(int nCount) const;
 
     /**
-     * \brief Compare Compare a given string to an other.
-     * \param lpsz    The string to compare.
-     * \return        0 if the two string matches. Less than 0 if the current
-     *                string is less than lpsz. Greater than 0 if the current
-     *                string is greater than lpsz.
-     */
-    int Compare(const char* lpsz) const;
-
-    /**
      * \brief MakeUpper Uppercase the string.
      */
     void MakeUpper();
@@ -198,11 +196,8 @@ public:
 
 private:
 
-    //! \brief Pointer to string
-    char* m_ptr;
-
-    //! \brief Length of the string
-    int m_lg;
+    //! \brief String
+    std::string m_str;
 
     //! \brief Keeps the string corresponding to keyword ID
     static const std::map<EID, const char *> s_keywordString;

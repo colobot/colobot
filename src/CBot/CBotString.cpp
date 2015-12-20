@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
 
 //Map is filled with id-string pars that are needed for CBot language parsing
 const std::map<EID,const char *> CBotString::s_keywordString =
@@ -120,216 +121,97 @@ const std::map<EID,const char *> CBotString::s_keywordString =
 
 CBotString::CBotString()
 {
-    m_ptr = nullptr;
-    m_lg  = 0;
+    m_str = "";
 }
 
 CBotString::~CBotString()
 {
-    delete[] m_ptr;
-    m_ptr = nullptr;
 }
 
 
 CBotString::CBotString(const char* p)
 {
-    m_lg = strlen(p);
+    m_str = p;
+}
 
-    m_ptr = nullptr;
-    if (m_lg>0)
-    {
-        m_ptr = new char[m_lg+1];
-        strcpy(m_ptr, p);
-    }
+CBotString::CBotString(const std::string &p)
+{
+    m_str = p;
 }
 
 CBotString::CBotString(const CBotString& srcString)
 {
-    m_lg = srcString.m_lg;
-
-    m_ptr = nullptr;
-    if (m_lg>0)
-    {
-        m_ptr = new char[m_lg+1];
-        strcpy(m_ptr, srcString.m_ptr);
-    }
+    m_str = srcString.m_str;
 }
-
 
 
 
 int CBotString::GetLength()
 {
-    if (m_ptr == nullptr) return 0;
-    return strlen( m_ptr );
+    return m_str.length();
 }
 
 
 
 CBotString CBotString::Left(int nCount) const
 {
-    char    chain[2000];
-
-    // clamp nCount to correct value
-    if(nCount < 0) nCount = 0;
-    if(nCount > m_lg) nCount = m_lg;
-
-    int i;
-    for (i = 0; i < m_lg && i < nCount && i < 1999; ++i)
-    {
-        chain[i] = m_ptr[i];
-    }
-    chain[i] = 0 ;
-
-    return CBotString(chain);
+    return CBotString(m_str.substr(0, nCount));
 }
 
 CBotString CBotString::Right(int nCount) const
 {
-    char chain[2000];
-
-    // clamp nCount to correct value
-    if(nCount < 0) nCount = 0;
-    if(nCount > m_lg) nCount = m_lg;
-
-    int i = m_lg - nCount;
-    if ( i < 0 ) i = 0;
-
-    int j;
-    for (j = 0 ; i < m_lg && i < 1999; ++i)
-    {
-        chain[j++] = m_ptr[i];
-    }
-    chain[j] = 0 ;
-
-    return CBotString(chain);
+    return CBotString(m_str.substr(m_str.length()-nCount, std::string::npos));
 }
 
 CBotString CBotString::Mid(int start, int lg)
 {
-    CBotString res;
-
-    if (lg == -1) lg = 2000;
-
-    // clamp start to correct value
-    if (start < 0) start = 0;
-    if (start >= m_lg) return res;
-
-    int remaining = m_lg - start;
-    if (lg > remaining) lg = remaining;
-    if (lg < 0) lg = 0;
-
-    char* p = new char[m_lg+1];
-    strcpy(p, m_ptr+start);
-    p[lg] = 0;
-
-    res = p;
-    delete[] p;
-    return res;
+    return CBotString(m_str.substr(start, lg));
 }
 
 int CBotString::Find(const char c)
 {
-    for (int i = 0; i < m_lg; ++i)
-    {
-        if (m_ptr[i] == c) return i;
-    }
-    return -1;
+    std::size_t pos = m_str.find(c);
+    return pos != std::string::npos ? pos : -1;
 }
 
 int CBotString::Find(const char * lpsz)
 {
-    int l = strlen(lpsz);
-
-    for (size_t i = 0; static_cast<int>(i) <= m_lg-l; ++i)
-    {
-        for (size_t j = 0; static_cast<int>(j) < l; ++j)
-        {
-            if (m_ptr[i+j] != lpsz[j]) goto bad;
-        }
-        return i;
-bad:;
-    }
-    return -1;
+    std::size_t pos = m_str.find(lpsz);
+    return pos != std::string::npos ? pos : -1;
 }
 
 int CBotString::ReverseFind(const char c)
 {
-    int i;
-    for (i = m_lg-1; i >= 0; --i)
-    {
-        if (m_ptr[i] == c) return i;
-    }
-    return -1;
+    std::size_t pos = m_str.rfind(c);
+    return pos != std::string::npos ? pos : -1;
 }
 
 int CBotString::ReverseFind(const char * lpsz)
 {
-    int i, j;
-    int l = strlen(lpsz);
-
-    for (i = m_lg-l; i >= 0; --i)
-    {
-        for (j = 0; j < l; ++j)
-        {
-            if (m_ptr[i+j] != lpsz[j]) goto bad;
-        }
-        return i;
-bad:;
-    }
-    return -1;
+    std::size_t pos = m_str.rfind(lpsz);
+    return pos != std::string::npos ? pos : -1;
 }
 
 void CBotString::MakeUpper()
 {
-    for (size_t i = 0; static_cast<int>(i) < m_lg && static_cast<int>(i) < 1999 ; ++i)
-    {
-        char c = m_ptr[i];
-        if ( c >= 'a' && c <= 'z' ) m_ptr[i] = c - 'a' + 'A';
-    }
+    boost::to_upper(m_str);
 }
 
 void CBotString::MakeLower()
 {
-    for (size_t i = 0; static_cast<int>(i) < m_lg && static_cast<int>(i) < 1999 ; ++i)
-    {
-        char    c = m_ptr[i];
-        if ( c >= 'A' && c <= 'Z' ) m_ptr[i] = c - 'A' + 'a';
-    }
+    boost::to_lower(m_str);
 }
 
 bool CBotString::LoadString(unsigned int id)
 {
-    const char * str = nullptr;
-    str = MapIdToString(static_cast<EID>(id));
-    if (m_ptr != nullptr)
-        delete[] m_ptr;
-
-    m_lg = strlen(str);
-    m_ptr = nullptr;
-    if (m_lg > 0)
-    {
-        m_ptr = new char[m_lg+1];
-        strcpy(m_ptr, str);
-        return true;
-    }
-    return false;
+    m_str = MapIdToString(static_cast<EID>(id));
+    return !m_str.empty();
 }
 
 
 const CBotString& CBotString::operator=(const CBotString& stringSrc)
 {
-    delete[] m_ptr;
-    m_ptr = nullptr;
-
-    m_lg = stringSrc.m_lg;
-
-    if (m_lg > 0)
-    {
-        m_ptr = new char[m_lg+1];
-        strcpy(m_ptr, stringSrc.m_ptr);
-    }
-
+    m_str = stringSrc.m_str;
     return *this;
 }
 
@@ -342,174 +224,114 @@ CBotString CBotString::operator+(const CBotString& stringSrc)
 
 const CBotString& CBotString::operator=(const char ch)
 {
-    delete[] m_ptr;
-
-    m_lg = 1;
-
-    m_ptr = new char[2];
-    m_ptr[0] = ch;
-    m_ptr[1] = 0;
-
+    m_str = ch;
     return *this;
 }
 
 const CBotString& CBotString::operator=(const char* pString)
 {
-    delete[] m_ptr;
-    m_ptr = nullptr;
-
     if (pString != nullptr)
-    {
-        m_lg = strlen(pString);
-
-        if (m_lg != 0)
-        {
-            m_ptr = new char[m_lg+1];
-            strcpy(m_ptr, pString);
-        }
-    }
-
+        m_str = pString;
+    else
+        m_str.clear();
     return *this;
 }
 
 
 const CBotString& CBotString::operator+=(const char ch)
 {
-    char* p = new char[m_lg+2];
-
-    if (m_ptr != nullptr) strcpy(p, m_ptr);
-    p[m_lg++] = ch;
-    p[m_lg]   = 0;
-
-    delete[] m_ptr;
-
-    m_ptr = p;
-
+    m_str += ch;
     return *this;
 }
 
 const CBotString& CBotString::operator+=(const CBotString& str)
 {
-    char* p = new char[m_lg+str.m_lg+1];
-
-    //-- Check if the pointer is not null befor trying to copy it
-    if(m_ptr != nullptr)
-    {
-        strcpy(p, m_ptr);
-    }
-
-    char* pp = p + m_lg;
-
-    //-- Check if the pointer is not null befor trying to copy it
-    if(str.m_ptr != nullptr)
-    {
-        strcpy(pp, str.m_ptr);
-    }
-
-    m_lg = m_lg + str.m_lg;
-
-    delete[] m_ptr;
-
-    m_ptr = p;
-
+    m_str += str.m_str;
     return *this;
 }
 
 bool CBotString::operator==(const CBotString& str)
 {
-    return Compare(str) == 0;
+    return m_str == str.m_str;
 }
 
 bool CBotString::operator==(const char* p)
 {
-    return Compare(p) == 0;
+    return m_str == p;
 }
 
 bool CBotString::operator!=(const CBotString& str)
 {
-    return Compare(str) != 0;
+    return m_str != str.m_str;
 }
 
 bool CBotString::operator!=(const char* p)
 {
-    return Compare(p) != 0;
+    return m_str != p;
 }
 
 bool CBotString::operator>(const CBotString& str)
 {
-    return Compare(str) > 0;
+    return m_str > str.m_str;
 }
 
 bool CBotString::operator>(const char* p)
 {
-    return Compare(p) > 0;
+    return m_str > p;
 }
 
 bool CBotString::operator>=(const CBotString& str)
 {
-    return Compare(str) >= 0;
+    return m_str >= str.m_str;
 }
 
 bool CBotString::operator>=(const char* p)
 {
-    return Compare(p) >= 0;
+    return m_str >= p;
 }
 
 bool CBotString::operator<(const CBotString& str)
 {
-    return Compare(str) < 0;
+    return m_str < str.m_str;
 }
 
 bool CBotString::operator<(const char* p)
 {
-    return Compare(p) < 0;
+    return m_str < p;
 }
 
 bool CBotString::operator<=(const CBotString& str)
 {
-    return Compare(str) <= 0;
+    return m_str <= str.m_str;
 }
 
 bool CBotString::operator<=(const char* p)
 {
-    return Compare(p) <= 0;
+    return m_str <= p;
 }
 
 bool CBotString::IsEmpty() const
 {
-    return (m_lg == 0);
+    return m_str.empty();
 }
 
 void CBotString::Empty()
 {
-    delete[] m_ptr;
-    m_ptr = nullptr;
-    m_lg = 0;
+    m_str.clear();
 }
 
-static char emptyString[] = {0};
+static char emptyString[] = "";
 
 CBotString::operator const char * () const
 {
-    if (this == nullptr || m_ptr == nullptr) return emptyString;
-    return m_ptr;
+    if (this == nullptr) return emptyString; // TODO: can this be removed?
+    return m_str.c_str();
 }
 
 const char* CBotString::CStr() const
 {
-    if (this == nullptr || m_ptr == nullptr)
-    {
-        return emptyString;
-    }
-    return m_ptr;
-}
-
-int CBotString::Compare(const char * lpsz) const
-{
-    char* p = m_ptr;
-    if (lpsz  == nullptr) lpsz = emptyString;
-    if (m_ptr == nullptr) p = emptyString;
-    return strcmp(p, lpsz);    // wcscmp
+    if (this == nullptr) return emptyString; // TODO: can this be removed?
+    return m_str.c_str();
 }
 
 const char * CBotString::MapIdToString(EID id)

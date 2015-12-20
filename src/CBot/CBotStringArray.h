@@ -19,15 +19,13 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotString.h"
 
-// Local include
-
-// Global include
+#include <vector>
 
 /*!
  * \brief The CBotStringArray class Class used to arrays of strings management.
+ * TODO: refactor code to use std::vector instead
  */
 class CBotStringArray : public CBotString
 {
@@ -77,9 +75,5 @@ public:
 
 private:
 
-    //! Number of elements.
-    int m_nSize;
-    //! Reserved size.
-    int m_nMaxSize;
-    CBotString* m_pData;
+    std::vector<CBotString> m_data;
 };

@@ -17,112 +17,35 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotStringArray.h"
-
-#include "CBot/CBotUtils.h"
-
-// Local include
-
-// Global include
-
-// Forward declaration
-#include <cstring>
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotStringArray::CBotStringArray()
 {
-    m_pData = nullptr;
-    m_nSize = m_nMaxSize = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotStringArray::~CBotStringArray()
 {
-    SetSize(0);                    // destroys data !
+    m_data.clear(); // destroys data !
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int CBotStringArray::GetSize()
 {
-    return m_nSize;
+    return m_data.size();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStringArray::Add(const CBotString& str)
 {
-    SetSize(m_nSize+1);
-
-    m_pData[m_nSize-1] = str;
+    m_data.push_back(str);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStringArray::SetSize(int nNewSize)
 {
-    if (nNewSize == 0)
-    {
-        // shrink to nothing
-
-        DestructElements(m_pData, m_nSize);
-        delete[] reinterpret_cast<unsigned char *>(m_pData);
-        m_pData = nullptr;
-        m_nSize = m_nMaxSize = 0;
-    }
-    else if (m_pData == nullptr)
-    {
-        // create one with exact size
-        m_pData = reinterpret_cast<CBotString*> (new unsigned char[nNewSize * sizeof(CBotString)]);
-
-        ConstructElements(m_pData, nNewSize);
-
-        m_nSize = m_nMaxSize = nNewSize;
-    }
-    else if (nNewSize <= m_nMaxSize)
-    {
-        // it fits
-        if (nNewSize > m_nSize)
-        {
-            // initialize the new elements
-
-            ConstructElements(&m_pData[m_nSize], nNewSize-m_nSize);
-
-        }
-
-        else if (m_nSize > nNewSize)  // destroy the old elements
-            DestructElements(&m_pData[nNewSize], m_nSize-nNewSize);
-
-        m_nSize = nNewSize;
-    }
-    else
-    {
-        // otherwise, grow array
-        int nGrowBy;
-        {
-            // heuristically determine growth when nGrowBy == 0
-            //  (this avoids heap fragmentation in many situations)
-            nGrowBy = std::min(1024, std::max(4, m_nSize / 8));
-        }
-        int nNewMax;
-        if (nNewSize < m_nMaxSize + nGrowBy)
-            nNewMax = m_nMaxSize + nGrowBy;  // granularity
-        else
-            nNewMax = nNewSize;  // no slush
-
-        CBotString* pNewData = reinterpret_cast<CBotString*> (new unsigned char[nNewMax * sizeof(CBotString)]);
-
-        // copy new data from old
-        memcpy(pNewData, m_pData, m_nSize * sizeof(CBotString));
-
-        // construct remaining elements
-        ConstructElements(&pNewData[m_nSize], nNewSize-m_nSize);
-
-
-        // Get rid of old stuff (note: no destructors called)
-        delete[] reinterpret_cast<unsigned char *>(m_pData);
-        m_pData = pNewData;
-        m_nSize = nNewSize;
-        m_nMaxSize = nNewMax;
-    }
+    m_data.resize(nNewSize);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -134,5 +57,5 @@ CBotString& CBotStringArray::operator[](int nIndex)
 ////////////////////////////////////////////////////////////////////////////////
 CBotString& CBotStringArray::ElementAt(int nIndex)
 {
-    return m_pData[nIndex];
+    return m_data[nIndex];
 }
