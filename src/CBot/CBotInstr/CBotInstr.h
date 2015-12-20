@@ -19,14 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotToken.h"
-
 #include "CBot/CBotCStack.h"
 
-// Local include
-
-// Global include
+#include <vector>
 
 /*
     for example, the following program
@@ -262,5 +258,5 @@ protected:
 
 private:
     //! List of labels used.
-    static CBotStringArray m_labelLvl;
+    static std::vector<CBotString> m_labelLvl;
 };

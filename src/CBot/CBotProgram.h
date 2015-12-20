@@ -22,13 +22,13 @@
 // Modules inlcude
 #include "CBot/CBotTypResult.h"
 #include "CBot/CBotString.h"
-#include "CBot/CBotStringArray.h"
 
 #include "CBot/CBotEnums.h"
 
 // Local include
 
 // Global include
+#include <vector>
 
 // Forward declaration
 class CBotFunction;
@@ -84,7 +84,7 @@ public:
      * \return false if an error at compile.
      * \see GetCompileError() to retrieve the error.
      */
-    bool Compile( const char* program, CBotStringArray& ListFonctions, void* pUser = nullptr);
+    bool Compile( const char* program, std::vector<CBotString>& ListFonctions, void* pUser = nullptr);
 
     /*!
      * \brief SetIdent Associates an identifier with the instance CBotProgram.

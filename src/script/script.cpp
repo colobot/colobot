@@ -228,7 +228,7 @@ bool CScript::CheckToken()
 
 bool CScript::Compile()
 {
-    CBotStringArray liste;
+    std::vector<CBotString> functionList;
     int             i;
     const char*     p;
 
@@ -250,16 +250,16 @@ bool CScript::Compile()
         m_botProg = MakeUnique<CBotProgram>(m_object->GetBotVar());
     }
 
-    if ( m_botProg->Compile(m_script.get(), liste, this) )
+    if ( m_botProg->Compile(m_script.get(), functionList, this) )
     {
-        if ( liste.GetSize() == 0 )
+        if (functionList.empty())
         {
             strcpy(m_title, "<extern missing>");
             m_mainFunction[0] = 0;
         }
         else
         {
-            p = liste[0];
+            p = functionList[0];
             i = 0;
             bool titleDone = false;
             while ( true )

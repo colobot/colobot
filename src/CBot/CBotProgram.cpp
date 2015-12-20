@@ -80,7 +80,7 @@ CBotProgram::~CBotProgram()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, void* pUser )
+bool CBotProgram::Compile( const char* program, std::vector<CBotString>& ListFonctions, void* pUser )
 {
     int         error = 0;
     Stop();
@@ -91,7 +91,7 @@ bool CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, 
     m_pClass    = nullptr;
     delete      m_Prog;     m_Prog= nullptr;
 
-    ListFonctions.SetSize(0);
+    ListFonctions.clear();
     m_ErrorCode = 0;
 
     // transforms the program in Tokens
@@ -152,7 +152,7 @@ bool CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, 
         {
             m_bCompileClass = false;
             CBotFunction::Compile(p, pStack, next);
-            if (next->IsExtern()) ListFonctions.Add(next->GetName()/* + next->GetParams()*/);
+            if (next->IsExtern()) ListFonctions.push_back(next->GetName()/* + next->GetParams()*/);
             next->m_pProg = this;                           // keeps pointers to the module
             next = next->Next();
         }

@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
     CBotProgram::AddFunction("message", rMessage, cMessage);
 
     // Compile the program
-    CBotStringArray externFunctions;
+    std::vector<CBotString> externFunctions;
     std::unique_ptr<CBotProgram> program{new CBotProgram(nullptr)};
     if (!program->Compile(code.c_str(), externFunctions, nullptr))
     {
@@ -57,15 +57,14 @@ int main(int argc, char* argv[])
     }
 
     // Execute all compiled functions marked as "extern"
-    if (externFunctions.GetSize() == 0)
+    if (externFunctions.empty())
     {
         std::cerr << "NO EXTERN FUNCTIONS FOUND";
         return 2;
     }
     bool runErrors = false;
-    for (int i = 0; i < externFunctions.GetSize(); i++)
+    for (const char* func : externFunctions)
     {
-        const char* func = externFunctions[i];
         if (!program->Start(func))
         {
             std::cerr << "FAILED TO START: " << func << std::endl;

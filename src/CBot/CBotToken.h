@@ -19,12 +19,9 @@
 
 #pragma once
 
-// Modules inlcude
-#include "CBot/CBotStringArray.h"
+#include "CBot/CBotString.h"
 
-// Local include
-
-// Global include
+#include <vector>
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Token management (tokens)
@@ -248,7 +245,7 @@ private:
     static void LoadKeyWords();
 
     //! List of keywords of the CBot language (if, +, for, while, case, extern ...)
-    static CBotStringArray m_ListKeyWords;
+    static std::vector<CBotString> m_ListKeyWords;
     //! List of id correponding to the keywords of the CBot language
     static int m_ListIdKeyWords[200];
 
@@ -256,7 +253,7 @@ private:
     //! This keywords are defined in :
     //!      - void CScriptFunctions::Init()
     //!      - void CBotProgram::Init()
-    static CBotStringArray m_ListKeyDefine;
+    static std::vector<CBotString> m_ListKeyDefine;
     //! List of id correponding to the defined words
     static long m_ListKeyNums[MAXDEFNUM];
 

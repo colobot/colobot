@@ -26,9 +26,9 @@
 #include <cstdarg>
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotStringArray CBotToken::m_ListKeyWords;
+std::vector<CBotString> CBotToken::m_ListKeyWords;
 int CBotToken::m_ListIdKeyWords[200];
-CBotStringArray CBotToken::m_ListKeyDefine;
+std::vector<CBotString> CBotToken::m_ListKeyDefine;
 long CBotToken::m_ListKeyNums[MAXDEFNUM];
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +104,7 @@ CBotToken::~CBotToken()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotToken::Free()
 {
-    m_ListKeyDefine.SetSize(0);
+    m_ListKeyDefine.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -438,12 +438,12 @@ void CBotToken::Delete(CBotToken* pToken)
 int CBotToken::GetKeyWords(const char* w)
 {
     int     i;
-    int     l = m_ListKeyWords.GetSize();
+    int     l = m_ListKeyWords.size();
 
     if (l == 0)
     {
         LoadKeyWords();                         // takes the list for the first time
-        l = m_ListKeyWords.GetSize();
+        l = m_ListKeyWords.size();
     }
 
     for (i = 0; i < l; i++)
@@ -458,7 +458,7 @@ int CBotToken::GetKeyWords(const char* w)
 bool CBotToken::GetKeyDefNum(const char* w, CBotToken* &token)
 {
     int     i;
-    int     l = m_ListKeyDefine.GetSize();
+    int     l = m_ListKeyDefine.size();
 
     for (i = 0; i < l; i++)
     {
@@ -482,14 +482,14 @@ void CBotToken::LoadKeyWords()
     i = TokenKeyWord; //start with keywords of the language
     while (s.LoadString(i))
     {
-        m_ListKeyWords.Add(s);
+        m_ListKeyWords.push_back(s);
         m_ListIdKeyWords[n++] = i++;
     }
 
     i = TokenKeyDeclare; //keywords of declarations
     while (s.LoadString(i))
     {
-        m_ListKeyWords.Add(s);
+        m_ListKeyWords.push_back(s);
         m_ListIdKeyWords[n++] = i++;
     }
 
@@ -497,14 +497,14 @@ void CBotToken::LoadKeyWords()
     i = TokenKeyVal;  //keywords of values
     while (s.LoadString(i))
     {
-        m_ListKeyWords.Add(s);
+        m_ListKeyWords.push_back(s);
         m_ListIdKeyWords[n++] = i++;
     }
 
     i = TokenKeyOp; //operators
     while (s.LoadString(i))
     {
-        m_ListKeyWords.Add(s);
+        m_ListKeyWords.push_back(s);
         m_ListIdKeyWords[n++] = i++;
     }
 }
@@ -513,7 +513,7 @@ void CBotToken::LoadKeyWords()
 bool CBotToken::DefineNum(const char* name, long val)
 {
     int     i;
-    int     l = m_ListKeyDefine.GetSize();
+    int     l = m_ListKeyDefine.size();
 
     for (i = 0; i < l; i++)
     {
@@ -521,7 +521,7 @@ bool CBotToken::DefineNum(const char* name, long val)
     }
     if ( i == MAXDEFNUM ) return false;
 
-    m_ListKeyDefine.Add( name );
+    m_ListKeyDefine.push_back( name );
     m_ListKeyNums[i] = val;
     return true;
 }

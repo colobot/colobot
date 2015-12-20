@@ -50,7 +50,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 int CBotInstr::m_LoopLvl = 0;
-CBotStringArray CBotInstr::m_labelLvl = CBotStringArray();
+std::vector<CBotString> CBotInstr::m_labelLvl = std::vector<CBotString>();
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstr::CBotInstr()
@@ -74,7 +74,7 @@ CBotInstr::~CBotInstr()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotInstr::IncLvl(CBotString& label)
 {
-    m_labelLvl.SetSize(m_LoopLvl+1);
+    m_labelLvl.resize(m_LoopLvl+1);
     m_labelLvl[m_LoopLvl] = label;
     m_LoopLvl++;
 }
@@ -82,7 +82,7 @@ void CBotInstr::IncLvl(CBotString& label)
 ////////////////////////////////////////////////////////////////////////////////
 void CBotInstr::IncLvl()
 {
-    m_labelLvl.SetSize(m_LoopLvl+1);
+    m_labelLvl.resize(m_LoopLvl+1);
     m_labelLvl[m_LoopLvl] = "#SWITCH";
     m_LoopLvl++;
 }
