@@ -173,13 +173,13 @@ public:
      * \parblock
      * * timer < 0 do nothing
      * * timer >= 0 call SetTimer(int timer) before executing
-     * \parblockend
+     * \endparblock
      * \return true if the program execution finished, false if the program is suspended (you then have to call Run() again)
      */
     bool Run(void* pUser = nullptr, int timer = -1);
 
     /**
-     * \brief GetRunPos Gives the current position in the executing program
+     * \brief Gives the current position in the executing program
      * \param[out] functionName Name of the currently executed function
      * \param[out] start Starting position in the code string of currently executed instruction
      * \param[out] end Ending position in the code string of currently executed instruction
@@ -263,6 +263,7 @@ public:
      * AddFunction("message", rMessage, cMessage);
      * \endcode
      *
+     * For more sophisticated examples, see the Colobot source code, mainly the src/script/scriptfunc.cpp file
      *
      * \param name Name of the function
      * \param rExec Execution function
@@ -283,11 +284,14 @@ public:
 
     /*!
      * \brief Save the current execution status into a file
-     * \param pf file handle
-     * \paramblock
+     * \param pf
+     * \parblock
+     * file handle
+     *
      * This file handle must have been opened by this library! Otherwise crashes on Windows
+     *
      * TODO: Verify this
-     * \endparamblock
+     * \endparblock
      * \return true on success, false on write error
      */
     bool SaveState(FILE* pf);
@@ -295,7 +299,7 @@ public:
     /*!
      * \brief Restore the execution state from a file
      *
-     * The previous program code must be already recompiled to call this function
+     * The previous program code must already have been recompiled with Compile() before calling this function
      *
      * \param pf file handle
      * \return true on success, false on read error
