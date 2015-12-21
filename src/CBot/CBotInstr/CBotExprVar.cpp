@@ -286,9 +286,6 @@ bool CBotExprVar::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToke
     pVar = pj->FindVar(m_nIdent, true);     // tries with the variable update if necessary
     if (pVar == nullptr)
     {
-#ifdef    _DEBUG
-        assert(0);
-#endif
         pj->SetError(1, &m_token);
         return false;
     }

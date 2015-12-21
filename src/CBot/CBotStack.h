@@ -230,9 +230,6 @@ private:
     CBotStack*        m_prev;
     friend class CBotInstArray;
 
-#ifdef    _DEBUG
-    int                m_index;
-#endif
     int                m_state;
     int                m_step;
     static int        m_error;

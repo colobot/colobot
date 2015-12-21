@@ -338,10 +338,6 @@ bad:
     return pStack->ReturnFunc(nullptr, pStk);
 }
 
-#ifdef  _DEBUG
-static int xx = 0;
-#endif
-
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
 {
@@ -652,9 +648,6 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar** ppVars
         {
             if ( !pStk3->IsOk() && pt->m_pProg != m_pProg )
             {
-#ifdef _DEBUG
-                if ( m_pProg->GetFunctions()->GetName() == "LaCommande" ) return false;
-#endif
                 pStk3->SetPosError(pToken);         // indicates the error on the procedure call
             }
             return false;   // interrupt !

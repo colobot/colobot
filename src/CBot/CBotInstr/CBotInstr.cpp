@@ -284,7 +284,6 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotInstr::Execute(CBotStack* &pj)
 {
-    std::string    ClassManquante = name;
     assert(0);            // should never go through this routine
                             // but use the routines of the subclasses
     return false;
@@ -301,7 +300,6 @@ bool CBotInstr::Execute(CBotStack* &pj, CBotVar* pVar)
 ////////////////////////////////////////////////////////////////////////////////
 void CBotInstr::RestoreState(CBotStack* &pj, bool bMain)
 {
-    std::string    ClassManquante = name;
     assert(0);            // should never go through this routine
                            // but use the routines of the subclasses
 }

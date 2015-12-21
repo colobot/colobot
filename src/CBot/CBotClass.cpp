@@ -213,7 +213,6 @@ bool CBotClass::AddItem(std::string name,
                         CBotTypResult type,
                         int mPrivate)
 {
-    CBotToken   token(name, std::string());
     CBotClass*  pClass = type.GetClass();
 
     CBotVar*    pVar = CBotVar::Create( name, type );

@@ -222,9 +222,6 @@ bool CBotLeftExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevT
     pVar = pile->FindVar(m_nIdent);
     if (pVar == nullptr)
     {
-#ifdef    _DEBUG
-        assert(0);
-#endif
         pile->SetError(2, &m_token);
         return false;
     }

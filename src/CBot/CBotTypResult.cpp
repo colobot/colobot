@@ -113,17 +113,6 @@ CBotTypResult::~CBotTypResult()
 ////////////////////////////////////////////////////////////////////////////////
 int CBotTypResult::GetType(int mode) const
 {
-#ifdef    _DEBUG
-    if ( m_type == CBotTypPointer ||
-         m_type == CBotTypClass   ||
-         m_type == CBotTypIntrinsic )
-
-         if ( m_pClass == nullptr ) assert(0);
-
-
-    if ( m_type == CBotTypArrayPointer )
-         if ( m_pNext == nullptr ) assert(0);
-#endif
     if ( mode == 3 && m_type == CBotTypNullPointer ) return CBotTypPointer;
     return    m_type;
 }

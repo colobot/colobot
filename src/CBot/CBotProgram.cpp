@@ -245,16 +245,8 @@ bool CBotProgram::Run(void* pUser, int timer)
     ok = m_pStack->Execute();
     if ( ok )
     {
-#ifdef  _DEBUG
-        CBotVar*    ppVar[3];
-        ppVar[0] = CBotVar::Create("aa", CBotTypInt);
-        ppVar[1] = CBotVar::Create("bb", CBotTypInt);
-        ppVar[2] = nullptr;
-        ok = m_pRun->Execute(ppVar, m_pStack, m_pInstance);
-#else
         // returns to normal execution
         ok = m_pRun->Execute(nullptr, m_pStack, m_pInstance);
-#endif
     }
 #else
     ok = m_pRun->Execute(nullptr, m_pStack, m_pInstance);

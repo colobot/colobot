@@ -69,24 +69,6 @@ CBotVar::~CBotVar( )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVar::debug()
-{
-//    const char*    p = static_cast<const char*>( m_token->GetString());
-    std::string  s = GetValString();
-//    const char* v = static_cast<const char*> (s);
-
-    if ( m_type.Eq(CBotTypClass) )
-    {
-        CBotVar*    pv = (static_cast<CBotVarClass*>(this))->m_pVar;
-        while (pv != nullptr)
-        {
-            pv->debug();
-            pv = pv->GetNext();
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void CBotVar::ConstructorSet()
 {
     // nop

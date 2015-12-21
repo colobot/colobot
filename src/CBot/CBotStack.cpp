@@ -75,15 +75,6 @@ CBotStack* CBotStack::FirstStack()
         pp->m_bOver = true;
         pp ++;
     }
-#ifdef    _DEBUG
-    int    n = 1;
-    pp = p;
-    for ( i = 0 ; i< MAXSTACK+10 ; i++ )
-    {
-        pp->m_index = n++;
-        pp ++;
-    }
-#endif
 
     m_error = 0;    // avoids deadlocks because m_error is static
     return p;
@@ -124,16 +115,10 @@ void CBotStack::Delete()
 
     CBotStack*    p = m_prev;
     bool        bOver = m_bOver;
-#ifdef    _DEBUG
-    int            n = m_index;
-#endif
 
     // clears the freed block
     memset(this, 0, sizeof(CBotStack));
     m_bOver    = bOver;
-#ifdef    _DEBUG
-    m_index = n;
-#endif
 
     if ( p == nullptr )
         free( this );
@@ -148,16 +133,10 @@ CBotStack* CBotStack::AddStack(CBotInstr* instr, UnknownEnumBlock bBlock)
         return m_next;                // included in an existing stack
     }
 
-#ifdef    _DEBUG
-    int        n = 0;
-#endif
     CBotStack*    p = this;
     do
     {
         p ++;
-#ifdef    _DEBUG
-        n ++;
-#endif
     }
     while ( p->m_prev != nullptr );
 
@@ -734,10 +713,6 @@ void CBotStack::AddVar(CBotVar* pVar)
     while ( *pp != nullptr ) pp = &(*pp)->m_next;
 
     *pp = pVar;                    // added after
-
-#ifdef    _DEBUG
-    if ( pVar->GetUniqNum() == 0 ) assert(0);
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -322,10 +322,6 @@ void CBotCStack::AddVar(CBotVar* pVar)
     while ( *pp != nullptr ) pp = &(*pp)->m_next;
 
     *pp = pVar;                    // added after
-
-#ifdef    _DEBUG
-    if ( pVar->GetUniqNum() == 0 ) assert(0);
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////

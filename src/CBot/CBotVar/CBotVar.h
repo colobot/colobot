@@ -548,11 +548,6 @@ public:
     static bool RestoreState(FILE* pf, CBotVar* &pVar);
 
     /*!
-     * \brief debug
-     */
-    void debug();
-
-    /*!
      * \brief Maj
      * \param pUser
      * \param bContinue
