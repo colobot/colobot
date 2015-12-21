@@ -19,95 +19,136 @@
 
 #pragma once
 
-// Modules inlcude
-
-// Local include
-
-// Global include
 #include <string>
 
 class CBotClass;
 
-/*
-// to define a result as output, using for example
-
-    // to return a simple Float
-    return CBotTypResult( CBotTypFloat );
-
-
-    // to return a string array
-    return CBotTypResult( CBotTypArray, CBotTypResult( CBotTypString ) );
-
-    // to return un array of array of "point" class
-    CBotTypResult    typPoint( CBotTypIntrinsic, "point" );
-    CBotTypResult    arrPoint( CBotTypArray, typPoint );
-    return    CBotTypResult( CBotTypArray, arrPoint );
-*/
-
-/** \brief CBotTypResult class to define the complete type of a result*/
+/**
+ * \class CBotTypResult
+ * \brief Class to define the complete type of a variable
+ *
+ * Examples:
+ * \code
+ * // Return a simple "float" variable
+ * return CBotTypResult( CBotTypFloat );
+ *
+ * // Return an array of "string" variables
+ * return CBotTypResult( CBotTypArrayPointer, CBotTypResult( CBotTypString ) );
+ *
+ * // Return an array of "point" class
+ * return CBotTypResult( CBotTypArrayPointer, CBotTypResult( CBotTypArrayPointer, CBotTypResult( CBotTypIntrinsic, "point" ) ) );
+ * \endcode
+ */
 class CBotTypResult
 {
 public:
     /**
-     * \brief CBotTypResult constructor  for simple types (CBotTypInt to CBotTypString)
-     * \param type type of created result, see CBotType
+     * \brief Constructor for simple types (::CBotTypInt to ::CBotTypString)
+     * \param type type of created result, see ::CBotType. This can also sometimes be a value from ::CBotError.
      */
     CBotTypResult(int type);
-    // for simple types (CBotTypInt à CBotTypString)
 
-
+    /**
+     * \brief Constructor for pointer types and intrinsic classes
+     * \param type type of created result, see ::CBotType
+     * \param name name of the class
+     */
     CBotTypResult(int type, const std::string& name);
-    // for pointer types and intrinsic classes
 
+    /**
+     * \brief Constructor for instance of a class
+     * \param type type of created result, see ::CBotType
+     * \param pClass class type
+     */
     CBotTypResult(int type, CBotClass* pClass);
-    // for the instance of a class
 
+    /**
+     * \brief Constructor for arrays
+     * \param type type of created result, see ::CBotType
+     * \param elem type of array elements
+     */
     CBotTypResult(int type, CBotTypResult elem);
-    // for arrays of variables
 
+    /**
+     * \brief Copy constructor
+     */
     CBotTypResult(const CBotTypResult& typ);
-    // for assignments
 
+    /**
+     * \brief Default constructor
+     */
     CBotTypResult();
-    // for default
 
+    /**
+     * \brief Destructor
+     */
     ~CBotTypResult();
 
+    /**
+     * \brief Returns ::CBotType or ::CBotError stored in this object
+     * \param mode TODO: document this
+     */
     int            GetType(int mode = 0) const;
-    // returns type CBotType* as a result
 
+    /**
+     * \brief Changes ::CBotType or ::CBotError stored in this object
+     * \param n new value
+     */
     void        SetType(int n);
-    // modifies a type
 
+    /**
+     * \brief Returns CBotClass pointer (for ::CBotTypClass, ::CBotTypPointer)
+     */
     CBotClass*    GetClass() const;
-    // makes the pointer to the class (for CBotTypClass, CBotTypPointer)
 
+    /**
+     * \brief Get size limit of an array (for ::CBotTypArrayBody or ::CBotTypArrayPointer)
+     */
     int            GetLimite() const;
-    // returns limit size of table (CBotTypArray)
 
+    /**
+     * \brief Set size limit of an array (for ::CBotTypArrayBody or ::CBotTypArrayPointer)
+     * \param n new value
+     */
     void        SetLimite(int n);
-    // set limit to the table
 
-    void        SetArray(int* max );
-    // set limits for a list of dimensions (arrays of arrays)
+    /**
+     * \brief Set size limit of an multidimensional array
+     * \param max TODO: document this
+     */
+    void        SetArray(int* max);
 
+    /**
+     * \brief Get type of array elements (for ::CBotTypArrayBody or ::CBotTypArrayPointer)
+     * \param n new value
+     */
     CBotTypResult& GetTypElem() const;
-    // returns type of array elements (CBotTypArray)
-    // rend le type des éléments du tableau (CBotTypArray)
 
+
+    /**
+     * \brief Compares whether the types are compatible
+     *
+     * This compares the whole object with another
+     */
     bool        Compare(const CBotTypResult& typ) const;
-    // compares whether the types are compatible
-    bool        Eq(int type) const;
-    // compare type
 
+    /**
+     * \brief Compare type only
+     *
+     * This compares the general "type" part of this object, without checking the additional parameters
+     */
+    bool        Eq(int type) const;
+
+    /**
+     * Copy
+     */
     CBotTypResult& operator=(const CBotTypResult& src);
-    // copy a complete type in another
 
 private:
-    int                m_type;
-    CBotTypResult*    m_pNext;    // for the types of type
-    CBotClass*        m_pClass;    // for the derivatives of class
-    int                m_limite;    // limits of tables
+    int               m_type;   //!< type, see ::CBotType and ::CBotError
+    CBotTypResult*    m_pNext;  //!< type of array element
+    CBotClass*        m_pClass; //!< class type
+    int               m_limite; //!< array limit
     friend class    CBotVarClass;
     friend class    CBotVarPointer;
 };

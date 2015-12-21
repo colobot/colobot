@@ -19,39 +19,43 @@
 
 #pragma once
 
-// Modules inlcude
+/**
+ * \file CBotEnums.h
+ * \brief Some enum values used across the CBot engine
+ */
 
-// Local include
-
-// Global include
-
-/*! \brief CBotType Defines known types. This types are modeled on Java types.
- * Do not change the order of elements
+/**
+ * \enum CBotType
+ * \brief Defines known types. This types are modeled on Java types.
+ *
+ * Do not change the order of elements.
  */
 enum CBotType
 {
-    CBotTypVoid         = 0,
-    CBotTypByte         = 1,                //n
-    CBotTypShort        = 2,                //n
-    CBotTypChar         = 3,                //n
-    CBotTypInt          = 4,
-    CBotTypLong         = 5,                //n
-    CBotTypFloat        = 6,
-    CBotTypDouble       = 7,                //n
-    CBotTypBoolean      = 8,
-    CBotTypString       = 9,
+    CBotTypVoid         = 0,  //!< void
+    CBotTypByte         = 1,  //!< byte (NOT IMPLEMENTED)
+    CBotTypShort        = 2,  //!< short (NOT IMPLEMENTED)
+    CBotTypChar         = 3,  //!< char (NOT IMPLEMENTED)
+    CBotTypInt          = 4,  //!< int
+    CBotTypLong         = 5,  //!< long (NOT IMPLEMENTED)
+    CBotTypFloat        = 6,  //!< float
+    CBotTypDouble       = 7,  //!< double (NOT IMPLEMENTED)
+    CBotTypBoolean      = 8,  //!< bool
+    CBotTypString       = 9,  //!< string
 
-    CBotTypArrayPointer = 10,                // array of variables
-    CBotTypArrayBody    = 11,                // same but creates an instance
+    CBotTypArrayPointer = 10, //!< Pointer to an array (::CBotTypArrayBody)
+    CBotTypArrayBody    = 11, //!< Array
 
-    CBotTypPointer      = 12,                // pointer to an instance
-    CBotTypNullPointer  = 13,                // null pointer is special
-    CBotTypClass        = 15,
-    CBotTypIntrinsic    = 16                // instance of a class intrinsic
+    CBotTypPointer      = 12, //!< Pointer to a class (::CBotTypClass or ::CBotTypIntrinsic)
+    CBotTypNullPointer  = 13, //!< Null pointer
+    CBotTypClass        = 15, //!< Class instance
+    CBotTypIntrinsic    = 16  //!< Intrinsic class instance
 };
-//n = not implemented yet
 
-//! \brief CBotGet Different modes for GetPosition.
+/**
+ * \enum CBotGet
+ * \brief Different modes for CBotProgram::GetPosition
+ */
 enum CBotGet
 {
     GetPosExtern = 1,
@@ -60,7 +64,10 @@ enum CBotGet
     GetPosBloc   = 4
 };
 
-
+/**
+ * \enum EID
+ * \brief This enum contains possible token types
+ */
 enum EID
 {
     ID_IF = 2000,
@@ -154,12 +161,14 @@ enum EID
     TX_NAN
 };
 
-////////////////////////////////////////////////////////////////////////
-// Error Handling of compilation and execution
-////////////////////////////////////////////////////////////////////////
-
-// NOTE: These CANNOT overlap with CBotType
-
+/**
+ * \enum CBotError
+ * \brief This enum contains possible CBot error values. Values in range 5000-5999 are compile errors, 6000-6999 are runtime errors
+ *
+ * Note that other values ​​may be returned, for example exceptions for user-defined builtin functions, or "throw" instruction
+ *
+ * Also note that these can't overlap with CBotType, see CBotTypResult for explanation
+ */
 enum CBotError
 {
     CBotNoErr = 0,
@@ -227,10 +236,5 @@ enum CBotError
     CBotErrRead          = 6014, //!< error while reading
     CBotErrWrite         = 6015, //!< writing error
 
-    // Max errors
-    TX_MAX,
-
-    // other values ​​may be returned
-    // for example exceptions returned by external routines
-    // and " throw " with any number.
+    TX_MAX, //!< Max errors
 };

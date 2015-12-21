@@ -19,7 +19,7 @@
 
 
 /**
- * \file ui/edit.h
+ * \file ui/controls/edit.h
  * \brief CEdit class
  */
 
