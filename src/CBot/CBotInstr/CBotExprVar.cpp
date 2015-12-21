@@ -286,7 +286,7 @@ bool CBotExprVar::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToke
     pVar = pj->FindVar(m_nIdent, true);     // tries with the variable update if necessary
     if (pVar == nullptr)
     {
-        pj->SetError(1, &m_token);
+        pj->SetError(static_cast<CBotError>(1), &m_token); // TODO: yeah, don't care that this exception doesn't exist ~krzys_h
         return false;
     }
     if ( m_next3 != nullptr &&

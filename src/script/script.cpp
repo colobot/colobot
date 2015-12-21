@@ -165,7 +165,7 @@ bool CScript::CheckToken()
 
     if ( !m_object->GetCheckToken() )  return true;
 
-    m_error = 0;
+    m_error = CBotNoErr;
     m_title[0] = 0;
     m_mainFunction[0] = 0;
     m_token[0] = 0;
@@ -194,7 +194,7 @@ bool CScript::CheckToken()
 
         if ( !m_main->IsProhibitedToken(token.c_str()) )
         {
-            m_error = ERR_PROHIBITEDTOKEN;
+            m_error = static_cast<CBotError>(ERR_PROHIBITEDTOKEN);
             m_cursor1 = cursor1;
             m_cursor2 = cursor2;
             strcpy(m_title, "<prohibited>");
@@ -212,7 +212,7 @@ bool CScript::CheckToken()
         if ( used[i] == 0 )  // token not used?
         {
             strcpy(m_token, m_main->GetObligatoryToken(i));
-            m_error = ERR_OBLIGATORYTOKEN;
+            m_error = static_cast<CBotError>(ERR_OBLIGATORYTOKEN);
             strcpy(m_title, "<obligatory>");
             m_mainFunction[0] = 0;
             CBotToken::Delete(allBt);
@@ -232,7 +232,7 @@ bool CScript::Compile()
     int             i;
     std::string     p;
 
-    m_error = 0;
+    m_error = CBotNoErr;
     m_cursor1 = 0;
     m_cursor2 = 0;
     m_title[0] = 0;
@@ -815,7 +815,7 @@ void CScript::GetError(std::string& error)
     }
     else
     {
-        if ( m_error == ERR_OBLIGATORYTOKEN )
+        if ( m_error == static_cast<CBotError>(ERR_OBLIGATORYTOKEN) )
         {
             std::string s;
             GetResource(RES_ERR, m_error, s);

@@ -411,7 +411,8 @@ void CBotVarClass::DecrementUse()
 
             // m_error is static in the stack
             // saves the value for return
-            int    err, start, end;
+            CBotError err;
+            int start, end;
             CBotStack*    pile = nullptr;
             err = pile->GetError(start,end);    // stack == nullptr it does not bother!
 

@@ -131,7 +131,7 @@ void CBotVarInt::Power(CBotVar* left, CBotVar* right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotVarInt::Div(CBotVar* left, CBotVar* right)
+CBotError CBotVarInt::Div(CBotVar* left, CBotVar* right)
 {
     int    r = right->GetValInt();
     if ( r != 0 )
@@ -139,11 +139,11 @@ int CBotVarInt::Div(CBotVar* left, CBotVar* right)
         m_val = left->GetValInt() / r;
         m_binit = CBotVar::InitType::DEF;
     }
-    return ( r == 0 ? CBotErrZeroDiv : 0 );
+    return ( r == 0 ? CBotErrZeroDiv : CBotNoErr );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotVarInt::Modulo(CBotVar* left, CBotVar* right)
+CBotError CBotVarInt::Modulo(CBotVar* left, CBotVar* right)
 {
     int    r = right->GetValInt();
     if ( r != 0 )
@@ -151,7 +151,7 @@ int CBotVarInt::Modulo(CBotVar* left, CBotVar* right)
         m_val = left->GetValInt() % r;
         m_binit = CBotVar::InitType::DEF;
     }
-    return ( r == 0 ? CBotErrZeroDiv : 0 );
+    return ( r == 0 ? CBotErrZeroDiv : CBotNoErr );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

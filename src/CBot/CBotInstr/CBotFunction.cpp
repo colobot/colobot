@@ -380,7 +380,7 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
     if ( !m_Block->Execute(pile) )
     {
         if ( pile->GetError() < 0 )
-            pile->SetError( 0 );
+            pile->SetError( CBotNoErr );
         else
             return false;
     }

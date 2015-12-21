@@ -128,7 +128,7 @@ void CBotVarFloat::Power(CBotVar* left, CBotVar* right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotVarFloat::Div(CBotVar* left, CBotVar* right)
+CBotError CBotVarFloat::Div(CBotVar* left, CBotVar* right)
 {
     float    r = right->GetValFloat();
     if ( r != 0 )
@@ -136,11 +136,11 @@ int CBotVarFloat::Div(CBotVar* left, CBotVar* right)
         m_val = left->GetValFloat() / r;
         m_binit = CBotVar::InitType::DEF;
     }
-    return ( r == 0 ? CBotErrZeroDiv : 0 );
+    return ( r == 0 ? CBotErrZeroDiv : CBotNoErr );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotVarFloat::Modulo(CBotVar* left, CBotVar* right)
+CBotError CBotVarFloat::Modulo(CBotVar* left, CBotVar* right)
 {
     float    r = right->GetValFloat();
     if ( r != 0 )
@@ -148,7 +148,7 @@ int CBotVarFloat::Modulo(CBotVar* left, CBotVar* right)
         m_val = static_cast<float>(fmod( left->GetValFloat() , r ));
         m_binit = CBotVar::InitType::DEF;
     }
-    return ( r == 0 ? CBotErrZeroDiv : 0 );
+    return ( r == 0 ? CBotErrZeroDiv : CBotNoErr );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

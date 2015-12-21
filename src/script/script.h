@@ -123,7 +123,7 @@ protected:
     char    m_mainFunction[50] = {};
     char    m_filename[50] = {};     // file name
     char    m_token[50] = {};        // missing instruction
-    int     m_error = 0;        // error (0=ok)
+    CBotError m_error = CBotNoErr;        // error (0=ok)
     int     m_cursor1 = 0;
     int     m_cursor2 = 0;
     boost::optional<float> m_returnValue = boost::none;

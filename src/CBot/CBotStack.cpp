@@ -42,7 +42,7 @@
 int         CBotStack::m_initimer = ITIMER;
 int         CBotStack::m_timer = 0;
 CBotVar*    CBotStack::m_retvar = nullptr;
-int         CBotStack::m_error = 0;
+CBotError   CBotStack::m_error = CBotNoErr;
 int         CBotStack::m_start = 0;
 int         CBotStack::m_end   = 0;
 std::string  CBotStack::m_labelBreak="";
@@ -76,7 +76,7 @@ CBotStack* CBotStack::FirstStack()
         pp ++;
     }
 
-    m_error = 0;    // avoids deadlocks because m_error is static
+    m_error = CBotNoErr;    // avoids deadlocks because m_error is static
     return p;
 }
 
@@ -358,7 +358,7 @@ bool CBotStack::StackOver()
 void CBotStack::Reset(void* pUser)
 {
     m_timer = m_initimer;        // resets the timer
-    m_error    = 0;
+    m_error    = CBotNoErr;
 //    m_start = 0;
 //    m_end    = 0;
     m_labelBreak.clear();
@@ -402,7 +402,7 @@ bool CBotStack::BreakReturn(CBotStack* pfils, const std::string& name)
     if (!m_labelBreak.empty() && (name.empty() || m_labelBreak != name))
         return false;                            // it's not for me
 
-    m_error = 0;
+    m_error = CBotNoErr;
     m_labelBreak.clear();
     return Return(pfils);
 }
@@ -416,7 +416,7 @@ bool CBotStack::IfContinue(int state, const std::string& name)
         return false;                            // it's not for me
 
     m_state = state;                            // where again?
-    m_error = 0;
+    m_error = CBotNoErr;
     m_labelBreak.clear();
     if ( m_next != EOX ) m_next->Delete();            // purge above stack
     return true;
@@ -425,7 +425,7 @@ bool CBotStack::IfContinue(int state, const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStack::SetBreak(int val, const std::string& name)
 {
-    m_error = -val;                                // reacts as an Exception
+    m_error = static_cast<CBotError>(-val);                                // reacts as an Exception
     m_labelBreak = name;
     if (val == 3)    // for a return
     {
@@ -443,14 +443,14 @@ bool CBotStack::GetRetVar(bool bRet)
         if ( m_var ) delete m_var;
         m_var        = m_retvar;
         m_retvar    = nullptr;
-        m_error        = 0;
+        m_error      = CBotNoErr;
         return        true;
     }
     return bRet;                        // interrupted by something other than return
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotStack::GetError(int& start, int& end)
+CBotError CBotStack::GetError(int& start, int& end)
 {
     start = m_start;
     end      = m_end;
@@ -584,7 +584,7 @@ bool CBotStack::IncState(int limite)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotStack::SetError(int n, CBotToken* token)
+void CBotStack::SetError(CBotError n, CBotToken* token)
 {
     if ( n!= 0 && m_error != 0) return;    // does not change existing error
     m_error = n;
@@ -596,7 +596,7 @@ void CBotStack::SetError(int n, CBotToken* token)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotStack::ResetError(int n, int start, int end)
+void CBotStack::ResetError(CBotError n, int start, int end)
 {
     m_error = n;
     m_start    = start;

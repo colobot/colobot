@@ -47,7 +47,8 @@ int main(int argc, char* argv[])
     std::unique_ptr<CBotProgram> program{new CBotProgram(nullptr)};
     if (!program->Compile(code.c_str(), externFunctions, nullptr))
     {
-        int error, cursor1, cursor2;
+        CBotError error;
+        int cursor1, cursor2;
         program->GetError(error, cursor1, cursor2);
         std::string errorStr;
         GetResource(RES_CBOT, error, errorStr);
@@ -74,7 +75,8 @@ int main(int argc, char* argv[])
 
         while (!program->Run(nullptr)); // Run the program
 
-        int error, cursor1, cursor2;
+        CBotError error;
+        int cursor1, cursor2;
         program->GetError(error, cursor1, cursor2);
         if (error != 0)
         {

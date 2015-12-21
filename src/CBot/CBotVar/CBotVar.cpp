@@ -586,17 +586,17 @@ void CBotVar::Power(CBotVar* left, CBotVar* right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotVar::Div(CBotVar* left, CBotVar* right)
+CBotError CBotVar::Div(CBotVar* left, CBotVar* right)
 {
     assert(0);
-    return 0;
+    return CBotNoErr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotVar::Modulo(CBotVar* left, CBotVar* right)
+CBotError CBotVar::Modulo(CBotVar* left, CBotVar* right)
 {
     assert(0);
-    return 0;
+    return CBotNoErr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

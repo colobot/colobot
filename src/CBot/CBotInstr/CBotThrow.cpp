@@ -83,7 +83,7 @@ bool CBotThrow::Execute(CBotStack* &pj)
 
     int val = pile->GetVal();
     if ( val < 0 ) val = CBotErrBadThrow;
-    pile->SetError( val, &m_token );
+    pile->SetError( static_cast<CBotError>(val), &m_token );
     return pj->Return( pile );
 }
 

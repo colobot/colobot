@@ -19,205 +19,286 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotTypResult.h"
-
 #include "CBot/CBotEnums.h"
 
-// Local include
-
-// Global include
 #include <vector>
 
-// Forward declaration
 class CBotFunction;
 class CBotClass;
 class CBotStack;
 class CBotVar;
 
-/*!
- * \brief The CBotProgram class Main class managing CBot program.
+/**
+ * \brief Class that manages a CBot program. This is the main entry point into the CBot engine.
+ *
+ * \section Init Engine initialization / destruction
+ * To initialize the CBot engine, call CBotProgram::Init(). This function should be only called once.
+ *
+ * Afterwards, you can start defining custom functions, constants and classes. See:
+ * * CBotProgram::AddFunction()
+ * * CBotProgram::DefineNum()
+ * * CBotClass::Create()
+ *
+ * Next, compile and run programs.
+ * * Compile()
+ * * Start()
+ * * Run()
+ * * Stop()
+ *
+ * After you are finished, free the memory used by the CBot engine by calling CBotProgram::Free().
+ *
+ * \section Example Example usage
+ * \code
+ * // Initialize the engine
+ * CBotProgram::Init();
+ *
+ * // Add some standard functions
+ * CBotProgram::AddFunction("message", rMessage, cMessage);
+ *
+ * // Compile the program
+ * std::vector<std::string> externFunctions;
+ * CBotProgram* program = new CBotProgram();
+ * bool ok = program->Compile(code.c_str(), externFunctions, nullptr);
+ * if (!ok)
+ * {
+ *     CBotError error;
+ *     int cursor1, cursor2;
+ *     program->GetError(error, cursor1, cursor2);
+ *     // Handle the error
+ * }
+ *
+ * // Run the program
+ * program->Start(externFunctions[0]);
+ * while (!program->Run());
+ *
+ * // Cleanup
+ * CBotProgram::Free();
+ * \endcode
  */
 class CBotProgram
 {
 public:
-
-    /*!
-     * \brief CBotProgram
+    /**
+     * \brief Constructor
      */
     CBotProgram();
 
-    /*!
-     * \brief CBotProgram
-     * \param pInstance
+    /**
+     * \brief Constructor
+     * \param pInstance Variable to pass to the program as "this"
      */
     CBotProgram(CBotVar* pInstance);
 
-    /*!
-     * \brief ~CBotProgram
+    /**
+     * \brief Destructor
      */
     ~CBotProgram();
 
-    /*!
-     * \brief Init Initializes the module (defined keywords for errors) should
-     * be done once (and only one) at the beginning.
+    /**
+     * \brief Initializes the module, should be done once (and only once) at the beginning
      */
     static void Init();
 
-    /*!
-     * \brief Free Frees the static memory areas.
+    /**
+     * \brief Frees the static memory areas
      */
     static void Free();
 
-    /*!
-     * \brief GetVersion Gives the version of the library CBOT.
-     * \return
+    /**
+     * \brief Returns version of the CBot library
+     * \return A number representing the current library version
      */
     static int GetVersion();
 
-    /*!
-     * \brief Compile compiles the program given in text.
-     * \param program
-     * \param ListFonctions Returns the names of functions declared as extern.
-     * \param pUser Can pass a pointer to routines defined by AddFunction.
-     * \return false if an error at compile.
-     * \see GetCompileError() to retrieve the error.
+    /**
+     * \brief Compile compiles the program given as string
+     * \param program Code to compile
+     * \param[out] functions Returns the names of functions declared as extern
+     * \param pUser Optional pointer to be passed to compile function (see AddFunction())
+     * \return true if compilation is successful, false if an compilation error occurs
+     * \see GetError() to retrieve the error
      */
-    bool Compile(const std::string& program, std::vector<std::string>& ListFonctions, void* pUser = nullptr);
+    bool Compile(const std::string& program, std::vector<std::string>& functions, void* pUser = nullptr);
 
-    /*!
-     * \brief SetIdent Associates an identifier with the instance CBotProgram.
-     * \param n
+    /**
+     * \brief Associates an identifier with this instance of CBotProgram
      */
     void SetIdent(long n);
 
-    /*!
-     * \brief GetIdent Gives the identifier.
-     * \return
+    /**
+     * \brief Returns the identifier
+     * \see SetIdent
      */
     long GetIdent();
 
-    /*!
-     * \brief GetError
-     * \return
+    /**
+     * \brief Returns the last error
+     * \return Error code
+     * \see GetError(CBotError&, int&, int&) for error location in the code
      */
-    int GetError();
+    CBotError GetError();
 
-    /*!
-     * \brief GetError
-     * \param code
-     * \param start
-     * \param end
-     * \return
+    /**
+     * \brief Returns the last error
+     * \param[out] code Error code
+     * \param[out] start Starting position in the code string of this error
+     * \param[out] end Ending position in the code string of this error
+     * \return false if no error has occured
      */
-    bool GetError(int& code, int& start, int& end);
+    bool GetError(CBotError& code, int& start, int& end);
 
-    /*!
-     * \brief GetError
-     * \param code
-     * \param start Delimits the start block where the error occured.
-     * \param end Delimits the end block where the error occured.
-     * \param pProg Lets you know what "module" has produced runtime error.
-     * \return If true gives the error found in the compilation or execution.
+    /**
+     * \brief Returns the last error
+     * \param[out] code Error code
+     * \param[out] start Starting position in the code string of this error
+     * \param[out] end Ending position in the code string of this error
+     * \param[out] pProg Program that caused the error (TODO: This always returns "this"... what?)
+     * \return false if no error has occured
      */
-    bool GetError(int& code, int& start, int& end, CBotProgram* &pProg);
+    bool GetError(CBotError& code, int& start, int& end, CBotProgram*& pProg);
 
-    /*!
-     * \brief GetErrorText
-     * \param code
-     * \return
-     */
-    static std::string GetErrorText(int code);
-
-    /*!
-     * \brief Start Defines what function should be executed. The program does
-     * nothing, we must call Run () for this.
-     * \param name
-     * \return false if the funtion name is not found
+    /**
+     * \brief Starts the program using given function as an entry point. The function must be declared as "extern"
+     * \param name Name of function to start
+     * \return true if the program was started, false if the function name is not found
+     * \see Compile() returns list of extern functions found in the code
      */
     bool Start(const std::string& name);
 
-    /*!
-     * \brief Run Executes the program.
-     * \param pUser
-     * \param timer timer = 0 allows to advance step by step.
-     * \return false if the program was suspended, true if the program ended
-     * with or without error.
+    /**
+     * \brief Executes the program
+     * \param pUser Custom pointer to be passed to execute function (see AddFunction())
+     * \param timer
+     * \parblock
+     * * timer < 0 do nothing
+     * * timer >= 0 call SetTimer(int timer) before executing
+     * \parblockend
+     * \return true if the program execution finished, false if the program is suspended (you then have to call Run() again)
      */
     bool Run(void* pUser = nullptr, int timer = -1);
 
-    /*!
-     * \brief GetRunPos Gives the position in the executing program
-     * \param FunctionName is a pointer made to the name of the function
-     * \param start start and end position in the text of the token processing
-     * \param end
+    /**
+     * \brief GetRunPos Gives the current position in the executing program
+     * \param[out] functionName Name of the currently executed function
+     * \param[out] start Starting position in the code string of currently executed instruction
+     * \param[out] end Ending position in the code string of currently executed instruction
      * \return false if it is not running (program completion)
      */
-    bool GetRunPos(std::string& FunctionName, int& start, int& end);
+    bool GetRunPos(std::string& functionName, int& start, int& end);
 
-    /*!
-     * \brief GetStackVars provides the pointer to the variables on the
-     * execution stack level is an input parameter,  0 for the last level, -1,
-     * -2, etc. for the other levels the return value (CBotVar *) is a variable.
-     * that can be processed as the list of parameters received by a routine
-     * list (or nullptr)
-     * \param FunctionName gives the name of the function where are these
-     * variables. FunctionName == nullptr means that is more in a program
-     * (depending on  level)
-     * \param level
-     * \return
+    /**
+     * \brief Provides the pointer to the variables on the execution stack
+     * \param[out] functionName Name of the function that this stack is part of
+     * \param level 0 for the last level, -1, -2 etc. for previous ones
+     * \return Variables on the given stack level. Process using CBotVar::GetNext(). If the stack level is invalid, returns nullptr.
      */
-    CBotVar* GetStackVars(std::string& FunctionName, int level);
+    CBotVar* GetStackVars(std::string& functionName, int level);
 
-    /*!
-     * \brief Stop stops execution of the program therefore quits "suspend" mode
+    /**
+     * \brief Stops execution of the program
      */
     void Stop();
 
-    /*!
-     * \brief SetTimer defines the number of steps (parts of instructions) to
-     * done in Run() before rendering hand "false"
-     * \TODO avant de rendre la main "false"
-     * \param n
+    /**
+     * \brief Sets the number of steps (parts of instructions) to execute in Run() before suspending the program execution
+     * \param n new timer value
+     *
+     * FIXME: Seems to be currently kind of broken (see issue #410)
      */
     static void SetTimer(int n);
-    //
-    //
 
-    /*!
-     * \brief AddFunction Call this to add externally a new function used
-     * by the program CBoT. See (**)  at end of this file for more details.
-     * \param name
-     * \param rExec
-     * \param rCompile
-     * \return
+    /**
+     * \brief Add a function that can be called from CBot
+     *
+     * To define an external function, proceed as follows:
+     *
+     * 1. Define a function for compilation
+     *
+     * This function should take a list of function arguments (types only, no values!) and a user-defined void* pointer (can be passed in Compile()) as parameters, and return CBotTypResult.
+     *
+     * Usually, name of this function is prefixed with "c".
+     *
+     * The function should iterate through the provided parameter list and verify that they match.<br>
+     * If they don't, then return CBotTypResult with an appropariate error code (see ::CBotError).<br>
+     * If they do, return CBotTypResult with the function's return type
+     *
+     * \code
+     * CBotTypResult cMessage(CBotVar* &var, void* user)
+     * {
+     *     if (var == nullptr) return CBotTypResult(CBotErrLowParam); // Not enough parameters
+     *     if (var->GetType() != CBotTypString) return CBotTypResult(CBotErrBadString); // String expected
+     *
+     *     var = var->GetNext(); // Get the next parameter
+     *     if (var != nullptr) return CBotTypResult(CBotErrOverParam); // Too many parameters
+     *
+     *     return CBotTypResult(CBotTypFloat); // This function returns float (it may depend on parameters given!)
+     * }
+     * \endcode
+     *
+     * 2. Define a function for execution
+     *
+     * This function should take:
+     * * a list of parameters
+     * * pointer to a result variable (a variable of type given at compilation time will be provided)
+     * * pointer to an exception variable
+     * * user-defined pointer (can be passed in Run())
+     *
+     * This function returns true if execution of this function is finished, or false to suspend the program and call this function again on next Run() cycle.
+     *
+     * Usually, execution functions are prefixed with "r".
+     *
+     * \code
+     * bool rMessage(CBotVar* var, CBotVar* result, int& exception, void* user)
+     * {
+     *     std::string message = var->GetValString();
+     *     std::cout << message << std::endl;
+     *     return true; // Execution finished
+     * }
+     * \endcode
+     *
+     * 3. Call AddFunction() to register the function in the CBot engine
+     *
+     * \code
+     * AddFunction("message", rMessage, cMessage);
+     * \endcode
+     *
+     *
+     * \param name Name of the function
+     * \param rExec Execution function
+     * \param rCompile Compilation function
+     * \return true
      */
     static bool AddFunction(const std::string& name,
                             bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
                             CBotTypResult rCompile(CBotVar*& pVar, void* pUser));
 
-    /*!
-     * \brief DefineNum
-     * \param name
-     * \param val
-     * \return
+    /**
+     * \brief Define a new constant
+     * \param name Name of the constant
+     * \param val Value of the constant
+     * \return true on success, false if unable to define (e.g. already defined)
      */
     static bool DefineNum(const std::string& name, long val);
 
     /*!
-     * \brief SaveState Backup the execution status in the file the file must
-     * have been opened with the fopen call this dll (\TODO this library??)
-     * if the system crashes
-     * \param pf
-     * \return
+     * \brief Save the current execution status into a file
+     * \param pf file handle
+     * \paramblock
+     * This file handle must have been opened by this library! Otherwise crashes on Windows
+     * TODO: Verify this
+     * \endparamblock
+     * \return true on success, false on write error
      */
     bool SaveState(FILE* pf);
 
     /*!
-     * \brief RestoreState Restores the state of execution from file the
-     * compiled program must obviously be the same.
-     * \param pf
-     * \return
+     * \brief Restore the execution state from a file
+     *
+     * The previous program code must be already recompiled to call this function
+     *
+     * \param pf file handle
+     * \return true on success, false on read error
      */
     bool RestoreState(FILE* pf);
 
@@ -225,6 +306,9 @@ public:
      * \brief GetPosition Gives the position of a routine in the original text
      * the user can select the item to find from the beginning to the end
      * see the above modes in CBotGet.
+     *
+     * TODO: Document this
+     *
      * \param name
      * \param start
      * \param stop
@@ -239,76 +323,37 @@ public:
                      CBotGet modestop = GetPosBloc);
 
     /*!
-     * \brief GetFunctions
-     * \return
+     * \brief Returns the list of all user-defined functions in this program as instances of CBotFunction
+     *
+     * This list includes all the functions (not only extern)
+     *
+     * \return Linked list of CBotFunction instances
      */
     CBotFunction* GetFunctions();
 
     /*!
      * \brief m_bCompileClass
+     *
+     * TODO: document this
      */
     bool m_bCompileClass;
 
 private:
-
-    //! The user-defined functions.
+    //! All user-defined functions
     CBotFunction* m_Prog;
-    //! The basic function for the execution.
+    //! The entry point function
     CBotFunction* m_pRun;
-    //! Classes defined in this part.
+    //! Classes defined in this program
     CBotClass* m_pClass;
-    //! Execution stack.
+    //! Execution stack
     CBotStack* m_pStack;
-    //! Instance of the parent class.
+    //! "this" variable
     CBotVar* m_pInstance;
     friend class CBotFunction;
 
-    int m_ErrorCode;
+    CBotError m_ErrorCode;
     int m_ErrorStart;
     int m_ErrorEnd;
-    //! Associated identifier.
+    //! Associated identifier
     long m_Ident;
 };
-
-/*
-(**) Note:
-
-    To define an external function, proceed as follows:
-
-    a) define a routine for compilation this routine receive list of parameters
-        (no values) and either returns a result type (CBotTyp... or 0 = void)
-        or an error number.
-
-    b) define a routine for the execution this routine receive list of
-        parameters (with valeurs), a variable to store the result
-        (according to the given type at compile time)
-
-    For example, a routine which calculates the mean of a parameter list
-
-int cMean(CBotVar* &pVar, std::string& ClassName)
-{
-    if ( pVar == nullptr ) return 6001; // there is no parameter!
-    while ( pVar != nullptr )
-    {
-        if ( pVar->GetType() > CBotTypDouble ) return 6002; // this is not a number
-        pVar = pVar -> GetNext();
-    }
-    return CBotTypFloat; // the type of the result may depend on the parameters!
-}
-
-
-bool rMean(CBotVar* pVar, CBotVar* pResult, int& Exception)
-{
-    float total = 0;
-    int nb = 0;
-    while (pVar != nullptr)
-    {
-        total += pVar->GetValFloat();
-        pVar = pVar->GetNext();
-        nb++;
-    }
-    pResult->SetValFloat(total/nb); // returns the mean value
-    return true; // operation fully completed
-}
-
-*/

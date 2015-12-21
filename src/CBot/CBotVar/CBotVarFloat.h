@@ -20,6 +20,7 @@
 #pragma once
 
 // Modules inlcude
+#include <CBot/CBotEnums.h>
 #include "CBot/CBotVar/CBotVar.h"
 
 // Local include
@@ -105,7 +106,7 @@ public:
      * \param right
      * \return
      */
-    int Div(CBotVar* left, CBotVar* right) override;
+    CBotError Div(CBotVar* left, CBotVar* right) override;
 
     /*!
      * \brief Modulo Remainder of division.
@@ -113,7 +114,7 @@ public:
      * \param right
      * \return
      */
-    int Modulo(CBotVar* left, CBotVar* right) override;
+    CBotError Modulo(CBotVar* left, CBotVar* right) override;
 
     /*!
      * \brief Power

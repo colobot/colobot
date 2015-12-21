@@ -245,7 +245,7 @@ fund:
     CBotStack*  pile2 = pile->AddStack();
     pile2->SetVar( pResult );
 
-    pile->SetError(0, token);           // for the position on error + away
+    pile->SetError(CBotNoErr, token);           // for the position on error + away
     return pt->Run( pStack );
 
 #endif
@@ -292,14 +292,14 @@ bool CBotCall::Run(CBotStack* pStack)
     CBotVar*    pResult = pile2->GetVar();
     CBotVar*    pRes = pResult;
 
-    int         Exception = 0;
+    int         Exception = 0; // TODO: change this to CBotError
     int res = m_rExec(pVar, pResult, Exception, pStack->GetPUser());
 
     if (res == false)
     {
         if (Exception!=0)
         {
-            pStack->SetError(Exception);
+            pStack->SetError(static_cast<CBotError>(Exception));
         }
         if ( pResult != pRes ) delete pResult;  // different result if made
         return false;

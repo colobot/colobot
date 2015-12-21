@@ -50,6 +50,12 @@ public:
 
     /**
      * \brief Constructor for pointer types and intrinsic classes
+     *
+     * This is equivalent to calling:
+     * \code
+     * CBotTypResult(type, CBotClass::Find(name))
+     * \endcode
+     *
      * \param type type of created result, see ::CBotType
      * \param name name of the class
      */

@@ -287,7 +287,7 @@ bool VarIsNAN(const CBotVar* var)
     return var->GetInit() > CBotVar::InitType::DEF;
 }
 
-bool IsNan(CBotVar* left, CBotVar* right, int* err = nullptr)
+bool IsNan(CBotVar* left, CBotVar* right, CBotError* err = nullptr)
 {
     if ( VarIsNAN(left) || VarIsNAN(right) )
     {
@@ -394,7 +394,7 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
     if ( TypeRes == CBotTypClass ) temp = CBotVar::Create( static_cast<CBotToken*>(nullptr), CBotTypResult(CBotTypIntrinsic, type1.GetClass() ) );
     else                           temp = CBotVar::Create( static_cast<CBotToken*>(nullptr), TypeRes );
 
-    int err = 0;
+    CBotError err = CBotNoErr;
     // is a operation according to request
     CBotVar*    left  = pStk1->GetVar();
     CBotVar*    right = pStk2->GetVar();

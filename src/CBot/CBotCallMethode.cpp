@@ -126,7 +126,7 @@ int CBotCallMethode::DoCall(long& nIdent,
 
             // then calls the routine external to the module
 
-            int         Exception = 0;
+            int         Exception = 0; // TODO: Change this to CBotError
             int res = pt->m_rExec(pThis, pVar, pResult, Exception, pStack->GetPUser());
             pStack->SetVar(pResult);
 
@@ -135,7 +135,7 @@ int CBotCallMethode::DoCall(long& nIdent,
                 if (Exception!=0)
                 {
 //                  pStack->SetError(Exception, pVar->GetToken());
-                    pStack->SetError(Exception, pToken);
+                    pStack->SetError(static_cast<CBotError>(Exception), pToken);
                 }
                 delete pVarToDelete;
                 return false;
@@ -157,7 +157,7 @@ int CBotCallMethode::DoCall(long& nIdent,
             CBotVar*    pVar = MakeListVars(ppVars, true);
             CBotVar*    pVarToDelete = pVar;
 
-            int         Exception = 0;
+            int         Exception = 0; // TODO: Change this to CBotError
             int res = pt->m_rExec(pThis, pVar, pResult, Exception, pStack->GetPUser());
             pStack->SetVar(pResult);
 
@@ -166,7 +166,7 @@ int CBotCallMethode::DoCall(long& nIdent,
                 if (Exception!=0)
                 {
 //                  pStack->SetError(Exception, pVar->GetToken());
-                    pStack->SetError(Exception, pToken);
+                    pStack->SetError(static_cast<CBotError>(Exception), pToken);
                 }
                 delete pVarToDelete;
                 return false;

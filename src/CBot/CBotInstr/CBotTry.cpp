@@ -109,7 +109,7 @@ bool CBotTry::Execute(CBotStack* &pj)
 
         pile1->IncState();
         pile2->SetState(val);                                   // stores the error number
-        pile1->SetError(0);                                     // for now there is are more errors!
+        pile1->SetError(CBotNoErr);                                     // for now there is are more errors!
 
         if ( val == 0 && CBotStack::m_initimer < 0 )            // mode step?
             return false;                                       // does not make the catch
@@ -158,7 +158,7 @@ bool CBotTry::Execute(CBotStack* &pj)
 
         if (!m_FinalInst->Execute(pile2) && pile2->IsOk()) return false;
         if (!pile2->IsOk()) return pj->Return(pile2);           // keep this exception
-        pile2->SetError(pile1->GetState()==-1 ? val : 0);       // gives the initial error
+        pile2->SetError(pile1->GetState()==-1 ? static_cast<CBotError>(val) : CBotNoErr);       // gives the initial error
         return pj->Return(pile2);
     }
 
@@ -167,7 +167,7 @@ bool CBotTry::Execute(CBotStack* &pj)
     if ( val != 0 && m_ListCatch == nullptr && m_FinalInst == nullptr )
                             return pj->Return(pile2);           // ends the try without exception
 
-    pile1->SetError(val);                                       // gives the error
+    pile1->SetError(static_cast<CBotError>(val));                                       // gives the error
     return false;                                               // it's not for us
 }
 

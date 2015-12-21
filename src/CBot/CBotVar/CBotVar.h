@@ -27,6 +27,7 @@
 
 // Global include
 #include <string>
+#include <CBot/CBotEnums.h>
 
 // Forward declaration
 class CBotVarClass;
@@ -398,7 +399,7 @@ public:
      * \param right
      * \return
      */
-    virtual int Div(CBotVar* left, CBotVar* right);
+    virtual CBotError Div(CBotVar* left, CBotVar* right);
 
     /*!
      * \brief Modulo Remainder of division
@@ -406,7 +407,7 @@ public:
      * \param right
      * \return
      */
-    virtual int Modulo(CBotVar* left, CBotVar* right);
+    virtual CBotError Modulo(CBotVar* left, CBotVar* right);
 
     /*!
      * \brief Power

@@ -22,6 +22,7 @@
 // Modules inlcude
 #include "CBot/CBotDefines.h"
 #include "CBot/CBotTypResult.h"
+#include "CBotEnums.h"
 
 // Local include
 
@@ -81,7 +82,7 @@ public:
      * \param [out] end end of stack
      * \return error number
      */
-    int GetError(int& start, int& end);
+    CBotError GetError(int& start, int& end);
 
     /**
      * \brief GetError Get error number
@@ -201,9 +202,9 @@ public:
     bool            GetRetVar(bool bRet);
     long            GetVal();
 
-    void            SetError(int n, CBotToken* token = nullptr);
+    void            SetError(CBotError n, CBotToken* token = nullptr);
     void            SetPosError(CBotToken* token);
-    void            ResetError(int n, int start, int end);
+    void            ResetError(CBotError n, int start, int end);
     void            SetBreak(int val, const std::string& name);
 
     void            SetBotCall(CBotProgram* p);
@@ -232,7 +233,7 @@ private:
 
     int                m_state;
     int                m_step;
-    static int        m_error;
+    static CBotError  m_error;
     static int        m_start;
     static int        m_end;
     static
