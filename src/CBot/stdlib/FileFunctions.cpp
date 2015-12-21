@@ -348,7 +348,7 @@ void InitFileFunctions()
     // adds the component ".filename"
     bc->AddItem("filename", CBotTypString);
     // adds the component ".handle"
-    bc->AddItem("handle", CBotTypInt, PR_PRIVATE);
+    bc->AddItem("handle", CBotTypInt, CBotVar::ProtectionLevel::Private);
 
     // define a constructor and a destructor
     bc->AddFunction("file", rfconstruct, cfconstruct);

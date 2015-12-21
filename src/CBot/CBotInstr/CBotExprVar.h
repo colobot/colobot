@@ -23,6 +23,7 @@
 #include "CBot/CBotDefines.h"
 
 #include "CBot/CBotInstr/CBotInstr.h"
+#include "CBot/CBotVar/CBotVar.h"
 
 // Local include
 
@@ -54,7 +55,8 @@ public:
      * \param privat
      * \return
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, int privat=PR_PROTECT);
+    static CBotInstr* Compile(CBotToken*& p, CBotCStack* pStack,
+                              CBotVar::ProtectionLevel privat = CBotVar::ProtectionLevel::Protected);
 
     /*!
      * \brief CompileMethode

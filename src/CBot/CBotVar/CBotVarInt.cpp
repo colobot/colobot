@@ -42,7 +42,7 @@ CBotVarInt::CBotVarInt( const CBotToken* name )
     m_type  = CBotTypInt;
     m_binit = InitType::UNDEF;
     m_bStatic = false;
-    m_mPrivate = 0;
+    m_mPrivate = ProtectionLevel::Public;
 
     m_val    = 0;
 }

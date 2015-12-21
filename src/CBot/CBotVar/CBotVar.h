@@ -219,24 +219,32 @@ public:
      */
     bool IsStatic();
 
+    enum class ProtectionLevel
+    {
+        Public = 0,    //!< public variable
+        ReadOnly = 1,  //!< read only (can't be set from CBot, only from the engine)
+        Protected = 2, //!< protected (inheritance)
+        Private = 3    //!< private
+    };
+
     /*!
      * \brief SetPrivate
      * \param mPrivate
      */
-    void SetPrivate(int mPrivate);
+    void SetPrivate(ProtectionLevel mPrivate);
 
     /*!
      * \brief IsPrivate
      * \param mode
      * \return
      */
-    bool IsPrivate(int mode = PR_PROTECT);
+    bool IsPrivate(ProtectionLevel mode = ProtectionLevel::Protected);
 
     /*!
      * \brief GetPrivate
      * \return
      */
-    int GetPrivate();
+    ProtectionLevel GetPrivate();
 
     /*!
      * \brief ConstructorSet
@@ -590,7 +598,7 @@ protected:
     //! Static element (in class).
     bool m_bStatic;
     //! Element public, protected or private.
-    int m_mPrivate;
+    ProtectionLevel m_mPrivate;
     //! Expression for the original content.
     CBotInstr* m_InitExpr;
     //! List of limits for a table.

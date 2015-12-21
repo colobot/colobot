@@ -3183,21 +3183,21 @@ void CScriptFunctions::Init()
 
     // Adds the class Object.
     bc = CBotClass::Create("object", nullptr);
-    bc->AddItem("category",    CBotTypResult(CBotTypInt), PR_READ);
-    bc->AddItem("position",    CBotTypResult(CBotTypClass, "point"), PR_READ);
-    bc->AddItem("orientation", CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("pitch",       CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("roll",        CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("energyLevel", CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("shieldLevel", CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("temperature", CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("altitude",    CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("lifeTime",    CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("energyCell",  CBotTypResult(CBotTypPointer, "object"), PR_READ);
-    bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), PR_READ);
-    bc->AddItem("id",          CBotTypResult(CBotTypInt), PR_READ);
-    bc->AddItem("team",        CBotTypResult(CBotTypInt), PR_READ);
-    bc->AddItem("velocity",    CBotTypResult(CBotTypClass, "point"), PR_READ);
+    bc->AddItem("category",    CBotTypResult(CBotTypInt), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("position",    CBotTypResult(CBotTypClass, "point"), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("orientation", CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("pitch",       CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("roll",        CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("energyLevel", CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("shieldLevel", CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("temperature", CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("altitude",    CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("lifeTime",    CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("energyCell",  CBotTypResult(CBotTypPointer, "object"), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("id",          CBotTypResult(CBotTypInt), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("team",        CBotTypResult(CBotTypInt), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("velocity",    CBotTypResult(CBotTypClass, "point"), CBotVar::ProtectionLevel::ReadOnly);
     bc->AddFunction("busy",     rBusy,     cBusy);
     bc->AddFunction("factory",  rFactory,  cFactory);
     bc->AddFunction("research", rResearch, cClassOneFloat);

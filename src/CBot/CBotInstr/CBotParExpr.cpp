@@ -102,7 +102,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
             // recompile the variable for read-only
             delete inst;
             p = pvar;
-            inst =  CBotExprVar::Compile(p, pStk, PR_READ);
+            inst =  CBotExprVar::Compile(p, pStk, CBotVar::ProtectionLevel::ReadOnly);
             p = p->GetNext();
 
             CBotPostIncExpr* i = new CBotPostIncExpr();
@@ -122,7 +122,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
         if (p->GetType() == TokenTypVar)
         {
-            if (nullptr != (i->m_Instr =  CBotExprVar::Compile(p, pStk, PR_READ)))
+            if (nullptr != (i->m_Instr =  CBotExprVar::Compile(p, pStk, CBotVar::ProtectionLevel::ReadOnly)))
             {
                 if (pStk->GetType() >= CBotTypBoolean)
                 {

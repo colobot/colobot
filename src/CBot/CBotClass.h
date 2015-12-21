@@ -21,8 +21,8 @@
 
 // Modules inlcude
 #include "CBot/CBotDefines.h"
-
 #include "CBot/CBotTypResult.h"
+#include "CBot/CBotVar/CBotVar.h"
 
 // Local include
 
@@ -30,7 +30,6 @@
 #include <string>
 
 // Forward declaration
-class CBotVar;
 class CBotClass;
 class CBotCallMethode;
 class CBotFunction;
@@ -107,7 +106,8 @@ public:
      * \param mPrivate
      * \return
      */
-    bool AddItem(std::string name, CBotTypResult type, int mPrivate = PR_PUBLIC);
+    bool AddItem(std::string name, CBotTypResult type,
+                 CBotVar::ProtectionLevel mPrivate = CBotVar::ProtectionLevel::Public);
 
     /*!
      * \brief AddItem Adds an item by passing the pointer to an instance of a

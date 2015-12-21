@@ -41,7 +41,7 @@ CBotVarString::CBotVarString( const CBotToken* name )
     m_type  = CBotTypString;
     m_binit = InitType::UNDEF;
     m_bStatic = false;
-    m_mPrivate = 0;
+    m_mPrivate = ProtectionLevel::Public;
 
     m_val.clear();
 }

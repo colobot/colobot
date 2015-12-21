@@ -211,7 +211,7 @@ void CBotClass::FreeLock(CBotProgram* p)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::AddItem(std::string name,
                         CBotTypResult type,
-                        int mPrivate)
+                        CBotVar::ProtectionLevel mPrivate)
 {
     CBotClass*  pClass = type.GetClass();
 
@@ -589,7 +589,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 {
     bool    bStatic = false;
-    int     mProtect = PR_PUBLIC;
+    CBotVar::ProtectionLevel mProtect = CBotVar::ProtectionLevel::Public;
     bool    bSynchro = false;
 
     while (IsOfType(p, ID_SEP)) ;
@@ -600,9 +600,9 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
     CBotToken*      pBase = p;
 
     if ( IsOfType(p, ID_STATIC) ) bStatic = true;
-    if ( IsOfType(p, ID_PUBLIC) ) mProtect = PR_PUBLIC;
-    if ( IsOfType(p, ID_PRIVATE) ) mProtect = PR_PRIVATE;
-    if ( IsOfType(p, ID_PROTECTED) ) mProtect = PR_PROTECT;
+    if ( IsOfType(p, ID_PUBLIC) ) mProtect = CBotVar::ProtectionLevel::Public;
+    if ( IsOfType(p, ID_PRIVATE) ) mProtect = CBotVar::ProtectionLevel::Private;
+    if ( IsOfType(p, ID_PROTECTED) ) mProtect = CBotVar::ProtectionLevel::Protected;
     if ( IsOfType(p, ID_STATIC) ) bStatic = true;
 
 //  CBotClass* pClass = nullptr;

@@ -46,7 +46,7 @@ CBotExprVar::~CBotExprVar()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
+CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, CBotVar::ProtectionLevel privat)
 {
 //    CBotToken*    pDebut = p;
     CBotCStack* pStk = pStack->TokenStack();

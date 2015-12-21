@@ -61,7 +61,7 @@ CBotVarClass::CBotVarClass( const CBotToken* name, const CBotTypResult& type)
     m_pParent    = nullptr;
     m_binit        = InitType::UNDEF;
     m_bStatic    = false;
-    m_mPrivate    = 0;
+    m_mPrivate    = ProtectionLevel::Public;
     m_bConstructor = false;
     m_CptUse    = 0;
     m_ItemIdent = type.Eq(CBotTypIntrinsic) ? 0 : CBotVar::NextUniqNum();

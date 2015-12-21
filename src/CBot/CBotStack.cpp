@@ -943,7 +943,7 @@ bool CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotVar::Save0State(FILE* pf)
 {
-    if (!WriteWord(pf, 100+m_mPrivate))return false;        // private variable?
+    if (!WriteWord(pf, 100+static_cast<int>(m_mPrivate)))return false;        // private variable?
     if (!WriteWord(pf, m_bStatic))return false;                // static variable?
     if (!WriteWord(pf, m_type.GetType()))return false;        // saves the type (always non-zero)
     if (!WriteWord(pf, static_cast<unsigned short>(m_binit))) return false;                // variable defined?
@@ -1106,7 +1106,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 
         pNew->m_binit = initType;        //        pNew->SetInit(wi);
         pNew->SetStatic(st);
-        pNew->SetPrivate(prv-100);
+        pNew->SetPrivate(static_cast<ProtectionLevel>(prv-100));
         pPrev = pNew;
     }
     return true;
