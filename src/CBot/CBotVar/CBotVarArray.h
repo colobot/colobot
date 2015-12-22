@@ -19,85 +19,38 @@
 
 #pragma once
 
-// Modules inlcude
-#include "CBot/CBotDefines.h"
-
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
-
-/*!
- * \brief The CBotVarArray class Classe pour les tableaux.
+/**
+ * \brief CBotVar subclass for managing arrays (::CBotTypArrayPointer)
+ *
+ * Uses CBotVarClass for storing data internally
  */
 class CBotVarArray : public CBotVar
 {
 public:
-
-    /*!
-     * \brief CBotVarArray
-     * \param name
-     * \param type
+    /**
+     * \brief Constructor. Do not call directly, use CBotVar::Create()
      */
-    CBotVarArray( const CBotToken* name, CBotTypResult& type );
-
-    /*!
-     * \brief ~CBotVarArray
+    CBotVarArray(const CBotToken* name, CBotTypResult& type);
+    /**
+     * \brief Destructor. Do not call directly, use CBotVar::Destroy()
      */
     ~CBotVarArray();
 
-    /*!
-     * \brief SetPointer
-     * \param p
-     */
     void SetPointer(CBotVar* p) override;
-
-    /*!
-     * \brief GetPointer
-     * \return
-     */
     CBotVarClass* GetPointer() override;
 
-    /*!
-     * \brief Copy Copy a variable into another.
-     * \param pSrc
-     * \param bName
-     */
-    void Copy(CBotVar* pSrc, bool bName=true) override;
+    void Copy(CBotVar* pSrc, bool bName = true) override;
 
-    /*!
-     * \brief GetItem Makes an element according to its numeric index enlarged
-     * the table if necessary if bExtend.
-     * \param n
-     * \param bGrow
-     * \return
-     */
-    CBotVar* GetItem(int n, bool bGrow=false) override;
-
-    /*!
-     * \brief GetItemList Gives the first item in the list.
-     * \return
-     */
+    CBotVar* GetItem(int n, bool grow = false) override;
     CBotVar* GetItemList() override;
 
-    /*!
-     * \brief GetValString Gets the contents of the array into a string.
-     * \return
-     */
     std::string GetValString() override;
 
-    /*!
-     * \brief Save1State
-     * \param pf
-     * \return
-     */
     bool Save1State(FILE* pf) override;
 
 private:
-    //! Instance manager of table.
+    //! Array data
     CBotVarClass* m_pInstance;
-    //! My daddy is a buddy.
-    friend class CBotVar;
 };

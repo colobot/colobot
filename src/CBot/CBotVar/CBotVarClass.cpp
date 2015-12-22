@@ -160,13 +160,6 @@ void CBotVarClass::Copy(CBotVar* pSrc, bool bName)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVarClass::SetItemList(CBotVar* pVar)
-{
-    delete    m_pVar;
-    m_pVar    = pVar;    // replaces the existing pointer
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void CBotVarClass::SetIdent(long n)
 {
     m_ItemIdent = n;

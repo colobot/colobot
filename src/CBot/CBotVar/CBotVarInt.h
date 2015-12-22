@@ -19,232 +19,55 @@
 
 #pragma once
 
-// Modules inlcude
-#include <CBot/CBotEnums.h>
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
-
-/*!
- * \brief The CBotVarInt class Class for the management of integer numbers (int).
+/**
+ * \brief CBotVar subclass for managing integer values (::CBotTypInt)
  */
 class CBotVarInt : public CBotVar
 {
 public:
-
-    /*!
-     * \brief CBotVarInt
-     * \param name
+    /**
+     * \brief Constructor. Do not call directly, use CBotVar::Create()
      */
-    CBotVarInt( const CBotToken* name );
+    CBotVarInt(const CBotToken* name);
 
-    /*!
-     * \brief SetValInt
-     * \param val
-     * \param s
-     */
-    void SetValInt(int val, const std::string& s = nullptr) override;
-
-    /*!
-     * \brief SetValFloat
-     * \param val
-     */
+    void SetValInt(int val, const std::string& s = "") override;
     void SetValFloat(float val) override;
-
-    /*!
-     * \brief GetValInt
-     * \return
-     */
     int GetValInt() override;
-
-    /*!
-     * \brief GetValFloat
-     * \return
-     */
     float GetValFloat() override;
-
-    /*!
-     * \brief GetValString
-     * \return
-     */
     std::string GetValString() override;
 
-    /*!
-     * \brief Copy Copy a variable in to another.
-     * \param pSrc
-     * \param bName
-     */
-    void Copy(CBotVar* pSrc, bool bName=true) override;
+    void Copy(CBotVar* pSrc, bool bName = true) override;
 
-    /*!
-     * \brief Add
-     * \param left
-     * \param right
-     */
     void Add(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Sub
-     * \param left
-     * \param right
-     */
     void Sub(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Mul
-     * \param left
-     * \param right
-     */
     void Mul(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Div
-     * \param left
-     * \param right
-     * \return
-     */
     CBotError Div(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Modulo
-     * \param left
-     * \param right
-     * \return
-     */
     CBotError Modulo(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Power
-     * \param left
-     * \param right
-     */
     void Power(CBotVar* left, CBotVar* right) override;
 
-    /*!
-     * \brief Lo
-     * \param left
-     * \param right
-     * \return
-     */
     bool Lo(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Hi
-     * \param left
-     * \param right
-     * \return
-     */
     bool Hi(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Ls
-     * \param left
-     * \param right
-     * \return
-     */
     bool Ls(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Hs
-     * \param left
-     * \param right
-     * \return
-     */
     bool Hs(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Eq
-     * \param left
-     * \param right
-     * \return
-     */
     bool Eq(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Ne
-     * \param left
-     * \param right
-     * \return
-     */
     bool Ne(CBotVar* left, CBotVar* right) override;
 
-    /*!
-     * \brief XOr
-     * \param left
-     * \param right
-     */
     void XOr(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Or
-     * \param left
-     * \param right
-     */
     void Or(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief And
-     * \param left
-     * \param right
-     */
     void And(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief SL
-     * \param left
-     * \param right
-     */
-    void SL(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief SR
-     * \param left
-     * \param right
-     */
-    void SR(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief ASR
-     * \param left
-     * \param right
-     */
-    void ASR(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Neg
-     */
-    void Neg() override;
-
-    /*!
-     * \brief Not
-     */
     void Not() override;
 
-    /*!
-     * \brief Inc
-     */
-    void Inc() override;
+    void SL(CBotVar* left, CBotVar* right) override;
+    void SR(CBotVar* left, CBotVar* right) override;
+    void ASR(CBotVar* left, CBotVar* right) override;
 
-    /*!
-     * \brief Dec
-     */
+    void Neg() override;
+    void Inc() override;
     void Dec() override;
 
-    /*!
-     * \brief Save0State
-     * \param pf
-     * \return
-     */
     bool Save0State(FILE* pf) override;
-
-    /*!
-     * \brief Save1State
-     * \param pf
-     * \return
-     */
     bool Save1State(FILE* pf) override;
 
 private:

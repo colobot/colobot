@@ -19,142 +19,56 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
-
-/*!
- * \brief The CBotVarPointer class Class for the management of pointers to a
- * class instances.
+/**
+ * \brief CBotVar subclass for managing pointers to classes (::CBotTypPointer)
  */
 class CBotVarPointer : public CBotVar
 {
 public:
-
-    /*!
-     * \brief CBotVarPointer
-     * \param name
-     * \param type
+    /**
+     * \brief Constructor. Do not call directly, use CBotVar::Create()
      */
-    CBotVarPointer( const CBotToken* name, CBotTypResult& type );
-
-    /*!
-     * \brief ~CBotVarPointer
+    CBotVarPointer(const CBotToken* name, CBotTypResult& type);
+    /**
+     * \brief Destructor. Do not call directly, use CBotVar::Destroy()
      */
     ~CBotVarPointer();
 
-    /*!
-     * \brief Copy Copy a variable into another.
-     * \param pSrc
-     * \param bName
-     */
-    void Copy(CBotVar* pSrc, bool bName=true) override;
+    void Copy(CBotVar* pSrc, bool bName = true) override;
 
-    /*!
-     * \brief SetClass
-     * \param pClass
-     */
     void SetClass(CBotClass* pClass) override;
-
-    /*!
-     * \brief GetClass
-     * \return
-     */
     CBotClass* GetClass() override;
 
-    /*!
-     * \brief GetItem Return an element of a class according to its name (*).
-     * \param name
-     * \return
-     */
     CBotVar* GetItem(const std::string& name) override;
-
-    /*!
-     * \brief GetItemRef
-     * \param nIdent
-     * \return
-     */
     CBotVar* GetItemRef(int nIdent) override;
-
-    /*!
-     * \brief GetItemList
-     * \return
-     */
     CBotVar* GetItemList() override;
-
-    /*!
-     * \brief GetValString
-     * \return
-     */
     std::string GetValString() override;
 
-    /*!
-     * \brief SetPointer Initializes the pointer to the instance of a class.
-     * \param p
-     */
     void SetPointer(CBotVar* p) override;
-
-    /*!
-     * \brief GetPointer
-     * \return
-     */
     CBotVarClass* GetPointer() override;
 
-    /*!
-     * \brief SetIdent Associates an identification number (unique).
-     * \param n
-     */
     void SetIdent(long n) override;
-
-    /*!
-     * \brief GetIdent Gives the identification number associated with.
-     * \return
+    /**
+     * \brief Returns the unique instance identifier
+     * \see SetIdent()
      */
     long GetIdent();
 
-    /*!
-     * \brief ConstructorSet
-     */
     void ConstructorSet() override;
 
-    /*!
-     * \brief Save1State
-     * \param pf
-     * \return
-     */
     bool Save1State(FILE* pf) override;
 
-    /*!
-     * \brief Maj
-     * \param pUser
-     * \param bContinue
-     */
     void Maj(void* pUser, bool bContinue) override;
 
-    /*!
-     * \brief Eq
-     * \param left
-     * \param right
-     * \return
-     */
     bool Eq(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Ne
-     * \param left
-     * \param right
-     * \return
-     */
     bool Ne(CBotVar* left, CBotVar* right) override;
 
 private:
-    //! Contents.
+    //! Class pointed to
     CBotVarClass* m_pVarClass;
-    //! Class provided for this pointer.
+    //! Class type
     CBotClass* m_pClass;
     friend class CBotVar;
 };

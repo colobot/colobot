@@ -19,175 +19,94 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
-
-/*!
- * \brief The CBotVarClass class Class management class instances.
+/**
+ * \brief CBotVar subclass for managing classes (::CBotTypClass, ::CBotTypIntrinsic)
+ *
+ * \nosubgrouping
  */
 class CBotVarClass : public CBotVar
 {
 public:
-
-    /*!
-     * \brief CBotVarClass
-     * \param name
-     * \param type
+    /**
+     * \brief Constructor. Do not call directly, use CBotVar::Create()
      */
-    CBotVarClass( const CBotToken* name, const CBotTypResult& type );
-
-    /*!
-     * \brief ~CBotVarClass
+    CBotVarClass(const CBotToken* name, const CBotTypResult& type);
+    /**
+     * \brief Destructor. Do not call directly, use CBotVar::Destroy()
      */
     ~CBotVarClass();
 
-    /*!
-     * \brief Copy Copy a variable into another.
-     * \param pSrc
-     * \param bName
-     */
-    void Copy(CBotVar* pSrc, bool bName=true) override;
+    void Copy(CBotVar* pSrc, bool bName = true) override;
 
-    /*!
-     * \brief SetClass
-     * \param pClass
-     */
     void SetClass(CBotClass* pClass) override;
-
-    /*!
-     * \brief GetClass
-     * \return
-     */
     CBotClass* GetClass() override;
 
-    /*!
-     * \brief GetItem Return an element of a class according to its name (*).
-     * \param name
-     * \return
-     */
     CBotVar* GetItem(const std::string& name) override;
-
-    /*!
-     * \brief GetItemRef
-     * \param nIdent
-     * \return
-     */
     CBotVar* GetItemRef(int nIdent) override;
-
-    /*!
-     * \brief GetItem For the management of an array.
-     * \param n
-     * \param bExtend can enlarge the table, but not beyond the threshold size
-     * of SetArray().
-     * \return
-     */
     CBotVar* GetItem(int n, bool bExtend) override;
-
-    /*!
-     * \brief GetItemList
-     * \return
-     */
     CBotVar* GetItemList() override;
-
-    /*!
-     * \brief GetValString
-     * \return
-     */
     std::string GetValString() override;
 
-    /*!
-     * \brief Save1State
-     * \param pf
-     * \return
-     */
     bool Save1State(FILE* pf) override;
 
-    /*!
-     * \brief Maj
-     * \param pUser
-     * \param bContinue
-     */
     void Maj(void* pUser, bool bContinue) override;
 
-    /*!
-     * \brief IncrementUse A reference to incrementation.
+    //! \name Reference counter
+    //@{
+
+    /**
+     * \brief Increment reference counter
      */
     void IncrementUse();
 
-    /*!
-     * \brief DecrementUse A reference to decrementation.
+    /**
+     * \brief Decrement reference counter
      */
     void DecrementUse();
 
-    /*!
-     * \brief GetPointer
-     * \return
-     */
+    //@}
+
     CBotVarClass* GetPointer() override;
 
-    /*!
-     * \brief SetItemList
-     * \param pVar
-     */
-    void SetItemList(CBotVar* pVar);
+    //! \name Unique instance identifier
+    //@{
 
-    /*!
-     * \brief SetIdent
-     * \param n
-     */
     void SetIdent(long n) override;
 
     /*!
-     * \brief Find Makes an instance according to its unique number.
-     * \param id
-     * \return
+     * \brief Finds a class instance by unique identifier
+     * \param id Identifier to find
+     * \return Found class instance
      */
     static CBotVarClass* Find(long id);
 
-    /*!
-     * \brief Eq
-     * \param left
-     * \param right
-     * \return
-     */
-    bool Eq(CBotVar* left, CBotVar* right) override;
+    //@}
 
-    /*!
-     * \brief Ne
-     * \param left
-     * \param right
-     * \return
-     */
+    bool Eq(CBotVar* left, CBotVar* right) override;
     bool Ne(CBotVar* left, CBotVar* right) override;
 
-    /*!
-     * \brief ConstructorSet
-     */
     void ConstructorSet() override;
 
 private:
-    //! List of existing instances at some point.
+    //! Doubly linked list of all class instances - first
     static CBotVarClass* m_ExClass;
-    //! For this general list.
+    //! Doubly linked list of all class instances - next
     CBotVarClass* m_ExNext;
-    //! For this general list.
+    //! Doubly linked list of all class instances - previous
     CBotVarClass* m_ExPrev;
-    //! The class definition.
+    //! Class definition
     CBotClass* m_pClass;
-    //! The instance of a parent class.
+    //! Parent class instance
     CBotVarClass* m_pParent;
-    //! Contents.
+    //! Class members
     CBotVar* m_pVar;
-    //! Counter usage.
+    //! Reference counter
     int m_CptUse;
-    //! Identifier (unique) of an instance.
+    //! Identifier (unique) of an instance
     long m_ItemIdent;
-    //! Set if a constructor has been called.
+    //! Set after constructor is called, allows destructor to be called
     bool m_bConstructor;
 
     friend class CBotVar;

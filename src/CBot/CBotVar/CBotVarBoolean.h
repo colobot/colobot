@@ -19,114 +19,35 @@
 
 #pragma once
 
-// Modules inlcude
-#include "CBot/CBotToken.h"
-
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
-
-/*!
- * \brief The CBotVarBoolean class Class for the management of boolean.
+/**
+ * \brief CBotVar subclass for managing boolean values (::CBotTypBoolean)
  */
 class CBotVarBoolean : public CBotVar
 {
 public:
-
-    /*!
-     * \brief CBotVarBoolean
-     * \param name
+    /**
+     * \brief Constructor. Do not call directly, use CBotVar::Create()
      */
-    CBotVarBoolean( const CBotToken* name );
+    CBotVarBoolean(const CBotToken* name);
 
-    /*!
-     * \brief SetValInt
-     * \param val
-     * \param s
-     */
     void SetValInt(int val, const std::string& s = nullptr) override;
-
-    /*!
-     * \brief SetValFloat
-     * \param val
-     */
     void SetValFloat(float val) override;
-
-    /*!
-     * \brief GetValInt
-     * \return
-     */
     int GetValInt() override;
-
-    /*!
-     * \brief GetValFloat
-     * \return
-     */
     float GetValFloat() override;
-
-    /*!
-     * \brief GetValString
-     * \return
-     */
     std::string GetValString() override;
 
-    /*!
-     * \brief Copy Copy a variable into another.
-     * \param pSrc
-     * \param bName
-     */
-    void Copy(CBotVar* pSrc, bool bName=true) override;
+    void Copy(CBotVar* pSrc, bool bName = true) override;
 
-    /*!
-     * \brief And
-     * \param left
-     * \param right
-     */
     void And(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Or
-     * \param left
-     * \param right
-     */
     void Or(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief XOr
-     * \param left
-     * \param right
-     */
     void XOr(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Not
-     */
     void Not() override;
 
-    /*!
-     * \brief Eq
-     * \param left
-     * \param right
-     * \return
-     */
     bool Eq(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Ne
-     * \param left
-     * \param right
-     * \return
-     */
     bool Ne(CBotVar* left, CBotVar* right) override;
 
-    /*!
-     * \brief Save1State
-     * \param pf
-     * \return
-     */
     bool Save1State(FILE* pf) override;
 
 private:

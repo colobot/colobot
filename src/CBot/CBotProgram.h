@@ -122,12 +122,12 @@ public:
     bool Compile(const std::string& program, std::vector<std::string>& functions, void* pUser = nullptr);
 
     /**
-     * \brief Associates an identifier with this instance of CBotProgram
+     * \brief Associates an unique identifier with this instance of CBotProgram
      */
     void SetIdent(long n);
 
     /**
-     * \brief Returns the identifier
+     * \brief Returns the unique identifier
      * \see SetIdent
      */
     long GetIdent();

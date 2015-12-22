@@ -19,178 +19,45 @@
 
 #pragma once
 
-// Modules inlcude
-#include <CBot/CBotEnums.h>
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
-
-/*!
- * \brief The CBotVarFloat class Class for managing real numbers (float).
+/**
+ * \brief CBotVar subclass for managing float values (::CBotTypFloat)
  */
 class CBotVarFloat : public CBotVar
 {
 public:
-
-    /*!
-     * \brief CBotVarFloat
-     * \param name
+    /**
+     * \brief Constructor. Do not call directly, use CBotVar::Create()
      */
-    CBotVarFloat( const CBotToken* name );
+    CBotVarFloat(const CBotToken* name);
 
-    /*!
-     * \brief SetValInt
-     * \param val
-     * \param s
-     */
     void SetValInt(int val, const std::string& s = nullptr) override;
-
-    /*!
-     * \brief SetValFloat
-     * \param val
-     */
     void SetValFloat(float val) override;
-
-    /*!
-     * \brief GetValInt
-     * \return
-     */
     int GetValInt() override;
-
-    /*!
-     * \brief GetValFloat
-     * \return
-     */
     float GetValFloat() override;
-
-    /*!
-     * \brief GetValString
-     * \return
-     */
     std::string GetValString() override;
 
-    /*!
-     * \brief Copy Copy a variable into another.
-     * \param pSrc
-     * \param bName
-     */
-    void Copy(CBotVar* pSrc, bool bName=true) override;
+    void Copy(CBotVar* pSrc, bool bName = true) override;
 
-    /*!
-     * \brief Add Addition.
-     * \param left
-     * \param right
-     */
     void Add(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Sub Substraction.
-     * \param left
-     * \param right
-     */
     void Sub(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Mul Multiplication.
-     * \param left
-     * \param right
-     */
     void Mul(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Div Division.
-     * \param left
-     * \param right
-     * \return
-     */
     CBotError Div(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Modulo Remainder of division.
-     * \param left
-     * \param right
-     * \return
-     */
     CBotError Modulo(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Power
-     * \param left
-     * \param right
-     */
     void Power(CBotVar* left, CBotVar* right) override;
 
-    /*!
-     * \brief Lo
-     * \param left
-     * \param right
-     * \return
-     */
     bool Lo(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Hi
-     * \param left
-     * \param right
-     * \return
-     */
     bool Hi(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Ls
-     * \param left
-     * \param right
-     * \return
-     */
     bool Ls(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Hs
-     * \param left
-     * \param right
-     * \return
-     */
     bool Hs(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Eq
-     * \param left
-     * \param right
-     * \return
-     */
     bool Eq(CBotVar* left, CBotVar* right) override;
-
-    /*!
-     * \brief Ne
-     * \param left
-     * \param right
-     * \return
-     */
     bool Ne(CBotVar* left, CBotVar* right) override;
 
-    /*!
-     * \brief Neg
-     */
     void Neg() override;
-
-    /*!
-     * \brief Inc
-     */
     void Inc() override;
-
-    /*!
-     * \brief Dec
-     */
     void Dec() override;
 
-    /*!
-     * \brief Save1State
-     * \param pf
-     * \return
-     */
     bool Save1State(FILE* pf) override;
 
 private:

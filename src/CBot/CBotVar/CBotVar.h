@@ -19,594 +19,657 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotDefines.h"
 #include "CBot/CBotTypResult.h"
+#include "CBot/CBotEnums.h"
 
-// Local include
-
-// Global include
 #include <string>
-#include <CBot/CBotEnums.h>
 
-// Forward declaration
 class CBotVarClass;
 class CBotInstr;
 class CBotClass;
 class CBotToken;
 
-/*!
- * \brief The CBotVar class Class for managing variables. May be useful to the
- * outside of the module ( it is currently not expected to be able to create
- * these objects in outer ). It never creates an instance of the class mother
- * CBotVar.
+/**
+ * \brief A CBot variable
+ *
+ * \nosubgrouping
  */
 class CBotVar
 {
 public:
-    /*!
-     * \brief The InitType enum Results of GetInit().
-     */
-    enum class InitType : int
-    {
-        UNDEF = 0,
-        DEF = 1,
-        IS_POINTER = 2,
-        IS_NAN = 999
-    };
+    //! \name Creation / destruction
+    //@{
 
-    /*!
-     * \brief CBotVar
+    /**
+     * \brief Constructor. Do not call directly, use CBotVar::Create()
      */
     CBotVar();
 
-    /*!
-     * \brief ~CBotVar Destructor.
+    /**
+     * \brief Destructor. Do not call directly, use CBotVar::Destroy()
      */
-    virtual ~CBotVar( );
+    virtual ~CBotVar();
 
-    /*!
-     * \brief Create Creates from a complete type.
-     * \param name
-     * \param type
-     * \return
+    /**
+     * \brief Creates a new variable from a type described by CBotTypResult
+     * \param name Variable name
+     * \param type Variable type
      */
     static CBotVar* Create(const std::string& name, CBotTypResult type);
 
-    /*!
-     * \brief Create Creates from one instance of a known class.
-     * \param name
-     * \param pClass
-     * \return
+    /**
+     * \brief Creates a new variable of a given class type
+     *
+     * This is equivalent to:
+     * \code
+     * CBotVar::Create(name, CBotTypResult(CBotTypClass, pClass))
+     * \endcode
+     *
+     * \param name Variable name
+     * \param pClass Class type
      */
     static CBotVar* Create(const std::string& name, CBotClass* pClass);
 
-    /*!
-     * \brief Create Creates a variable depending on its type.
-     * \param name
-     * \param type
+    /**
+     * \brief Creates a new variable of a given type
+     *
+     * This is equivalent to:
+     * \code
+     * CBotVar::Create(name, CBotTypResult(type))
+     * \endcode
+     *
+     * \param name Variable name token
+     * \param type Variable type
+     */
+    static CBotVar* Create(const CBotToken* name, CBotType type);
+
+    /**
+     * \brief Create a new variable of a given type described by CBotTypResult
+     * \param name Variable name token
+     * \param type Variable type
+     */
+    static CBotVar* Create(const CBotToken* name, CBotTypResult type);
+
+    /**
+     * \brief Create a new variable of a given type of given class instance
+     *
+     * This is equivalent to:
+     * \code
+     * Create(name, CBotTypResult(type, pClass))
+     * \endcode
+     *
+     * \param name Variable name
+     * \param type Variable type
+     * \param pClass Class
      * \return
      */
-    static CBotVar* Create( const CBotToken* name, int type );
+    static CBotVar* Create(const std::string& name, CBotType type, CBotClass* pClass);
 
-    /*!
-     * \brief Create
-     * \param name
-     * \param type
-     * \return
+    /**
+     * \brief Create a new variable of the same type and name as another one
+     *
+     * Contents of the variable are NOT copied.
+     *
+     * \param pVar other variable to take type and name from
      */
-    static CBotVar* Create( const CBotToken* name, CBotTypResult type );
+    static CBotVar* Create(CBotVar* pVar);
 
-    /*!
-     * \brief Create
-     * \param name
-     * \param type
-     * \param pClass
-     * \return
-     */
-    static CBotVar* Create(const std::string& name, int type, CBotClass* pClass);
-
-    /*!
-     * \brief Create
-     * \param pVar
-     * \return
-     */
-    static CBotVar* Create( CBotVar* pVar );
-
-    /*!
-     * \brief Destroy
-     * \param var
+    /**
+     * \brief Destroy a variable
+     * \param var variable to be destroyed
      */
     static void Destroy(CBotVar* var);
 
-    /*!
-     * \brief SetUserPtr Associate a user pointer to an instance.
-     * \param pUser
-     */
-    void SetUserPtr(void* pUser);
+    //@}
 
-    /*!
-     * \brief SetIdent Associates a unique identifier to an instance
-     * ( it is used to ensure that the id is unique)
-     * \param UniqId
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * \brief Associates an unique identifier to class instance
+     *
+     * Used only by classes
+     *
+     * \param UniqId New unique identifier
+     * \see SetUniqNum() for another identifier, used for all variable types
      */
     virtual void SetIdent(long UniqId);
 
-    /*!
-     * \brief GetUserPtr Makes the pointer associated with the variable.
-     * \return
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name User pointer
+    //@{
+
+    /**
+     * \brief Set a custom pointer associated with this variable
+     * \param pUser custom pointer to set
+     */
+    void SetUserPtr(void* pUser);
+
+    /**
+     * \brief Returns the custom pointer associated with this variable
+     * \return A pointer set with SetUserPtr()
      */
     void* GetUserPtr();
 
-    /*!
-     * \brief GetName The name of the variable, if known.
-     * \return
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name Variable name and type
+    //@{
+
+    /**
+     * \brief Returns the name of the variable
+     * \return The name of the variable, empty string if unknown
      */
     std::string GetName();
 
-    /*!
+    /**
      * \brief SetName Changes the name of the variable
-     * \param name
+     * \param name New name
      */
     void SetName(const std::string& name);
 
-    /*!
-     * \brief GetType Returns the base type (int) of the variable
-     * \param mode
-     * \return
-     * \todo Check it?
-     */
-    int GetType(int mode = 0);
-
-    /*!
-     * \brief GetTypResult Returns the complete type of the variable.
-     * \param mode
-     * \return
-     */
-    CBotTypResult GetTypResult(int mode = 0);
-
-    /*!
-     * \brief GetToken
-     * \return
+    /**
+     * \brief Returns the CBotToken this variable is associated with
+     *
+     * This token is either passed in CBotVar::Create() or created from name string
      */
     CBotToken* GetToken();
 
-    /*!
-     * \brief SetType
-     * \param type
+    /**
+     * \brief GetType Returns the base type of the variable (::CBotType)
+     * \param mode TODO: document this param
+     */
+    CBotType GetType(int mode = 0);
+
+    /**
+     * \brief Returns the complete type of the variable (CBotTypResult)
+     * \param mode TODO: document this param
+     */
+    CBotTypResult GetTypResult(int mode = 0);
+
+    /**
+     * \brief Change type of this variable
+     * \param type new type
      */
     void SetType(CBotTypResult& type);
 
-    /*!
-     * \brief SetInit Is the variable in the state UNDEF, DEF, NAN.
-     * \param initType
+    /**
+     * \brief Set class this variable is instance of
+     *
+     * Used by instance variables, NOT class members
+     */
+    virtual void SetClass(CBotClass* pClass);
+
+    /**
+     * \brief Return class this variable is instance of
+     *
+     * Used by instance variables, NOT class members
+     */
+    virtual CBotClass* GetClass();
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name Initialization status
+    //@{
+
+    /**
+     * \brief Variable initialization status
+     *
+     * \see GetInit()
+     */
+    enum class InitType : int
+    {
+        UNDEF = 0,      //!< the variable value is currently not defined
+        DEF = 1,        //!< the variable value is defined
+        IS_POINTER = 2, //!< the variable value is as a pointer
+        IS_NAN = 999    //!< the variable value is NAN
+    };
+
+    /**
+     * \brief Changes variable init status
+     * \param initType New init status
      */
     void SetInit(InitType initType);
 
-    /*!
-     * \brief GetInit Gives the state of the variable.
-     * \return
+    /**
+     * \brief Returns the current init state of the variable
      */
     InitType GetInit() const;
 
-    /*!
-     * \brief IsUndefined
-     * \return
+    /**
+     * \brief Checks if the variable is currently "undefined"
+     * \see InitType::UNDEF
      */
     bool IsUndefined() const { return GetInit() == InitType::UNDEF; }
 
-    /*!
-     * \brief IsDefined
-     * \return
+    /**
+     * \brief Checks if the variable is currently "defined"
+     * \see InitType::DEF
      */
     bool IsDefined() const { return GetInit() == InitType::DEF; }
 
-    /*!
-     * \brief IsNAN
-     * \return
+    /**
+     * \brief Checks if the variable is currently NAN
+     * \return InitType::NAN
      */
     bool IsNAN() const { return GetInit() == InitType::IS_NAN; }
 
-    /*!
-     * \brief SetStatic
-     * \param bStatic
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name Class member properties
+    //@{
+
+    /**
+     * \brief Marks the variable as "static"
+     *
+     * Useful only for class members
+     *
+     * \param bStatic static or not
      */
     void SetStatic(bool bStatic);
 
-    /*!
-     * \brief IsStatic
-     * \return
+    /**
+     * \brief Checks if the variable is static
+     *
+     * Useful only for class members
+     *
+     * \return true for static variables
      */
     bool IsStatic();
 
+    /**
+     * \enum ProtectionLevel
+     * \brief Class member protection level (public/protected/private)
+     */
     enum class ProtectionLevel
     {
         Public = 0,    //!< public variable
         ReadOnly = 1,  //!< read only (can't be set from CBot, only from the engine)
-        Protected = 2, //!< protected (inheritance)
+        Protected = 2, //!< protected
         Private = 3    //!< private
     };
 
-    /*!
-     * \brief SetPrivate
-     * \param mPrivate
+    /**
+     * \brief Sets variable protection level
+     *
+     * Useful only for class members
+     *
+     * \param mPrivate New protection level
      */
     void SetPrivate(ProtectionLevel mPrivate);
 
-    /*!
-     * \brief IsPrivate
-     * \param mode
-     * \return
+    /**
+     * \brief Checks if the variable is accessible at the given protection level
+     *
+     * This means that the variable protection level is greater or equal to given level
+     *
+     * \param level Protection level to check access at
      */
-    bool IsPrivate(ProtectionLevel mode = ProtectionLevel::Protected);
+    bool IsPrivate(ProtectionLevel level = ProtectionLevel::Protected);
 
-    /*!
-     * \brief GetPrivate
-     * \return
+    /**
+     * \brief Get variable protection level
+     * \return Variable protection level
      */
     ProtectionLevel GetPrivate();
 
-    /*!
-     * \brief ConstructorSet
+    /**
+     * \brief Check if a variable belongs to a class with a given name
+     *
+     * Works correctly with inheritance.
+     *
+     * \param name Class name to check
+     * \return true if this variable name matches any member of given class or any of the parent classes
+     */
+    bool IsElemOfClass(const std::string& name);
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * \brief Called after constructor has been called
+     *
+     * This is used internally by the engine to mark the constructor as called.
+     *
+     * This allows the destructor to be called later.
      */
     virtual void ConstructorSet();
 
-    /*!
-     * \brief SetVal Set the value.
-     * \param var
-     */
-    void SetVal(CBotVar* var);
-
-    /*!
-     * \brief GetItem Returns an element of a class according to its name (*).
-     * \param name
-     * \return
-     */
-    virtual CBotVar* GetItem(const std::string& name);
-
-    /*!
-     * \brief GetItemRef
-     * \param nIdent
-     * \return
-     */
-    virtual CBotVar* GetItemRef(int nIdent);
-
-    /*!
-     * \brief GetItem
-     * \param row
-     * \param bGrow
-     * \return
-     */
-    virtual CBotVar* GetItem(int row, bool bGrow = false);
-
-    /*!
-     * \brief GetItemList Lists the elements.
-     * \return
-     */
-    virtual CBotVar* GetItemList();
-
-    /*!
-     * \brief GetStaticVar Makes the pointer to the variable if it is static.
+    /**
+     * \brief TODO: document, original description: Makes the pointer to the variable if it is static.
      * \return
      */
     CBotVar* GetStaticVar();
 
-    /*!
-     * \brief IsElemOfClass Check if a variable belongs to a given class said if
-     * the element belongs to the class "name" makes true if the object is a
-     * subclass.
-     * \param name
-     * \return
-     */
-    bool IsElemOfClass(const std::string& name);
-
-    /*!
-     * \brief GetNext Next variable in the list (parameters).
-     * \return
-     */
-    CBotVar* GetNext();
-
-    /*!
-     * \brief AddNext Added to a list.
-     * \param pVar
-     */
-    void AddNext(CBotVar* pVar);
-
-    /*!
-     * \brief Copy Makes a copy of the variable.
-     * \param pSrc
-     * \param bName
-     */
-    virtual void Copy(CBotVar* pSrc, bool bName = true);
-
-    /*!
-     * \brief SetValInt Initialized with an integer value (#)
-     * \param val
-     * \param name
-     */
-    virtual void SetValInt(int val, const std::string& name = "");
-
-    /*!
-     * \brief SetValFloat Initialized with a real value (#).
-     * \param val
-     */
-    virtual void SetValFloat(float val);
-
-    /*!
-     * \brief SetValString Initialized with a string value (#).
-     * \param p
-     */
-    virtual void SetValString(const std::string& p);
-
-    /*!
-     * \brief GetValInt Request the full value (#).
-     * \return
-     */
-    virtual int GetValInt();
-
-    /*!
-     * \brief GetValFloat Gets real value (#).
-     * \return
-     */
-    virtual float GetValFloat();
-
-    /*!
-     * \brief GetValString Request the string value (#).
-     * \return
-     */
-    virtual std::string GetValString();
-
-    /*!
-     * \brief SetClass
-     * \param pClass
-     */
-    virtual void SetClass(CBotClass* pClass);
-
-    /*!
-     * \brief GetClass
-     * \return
-     */
-    virtual CBotClass* GetClass();
-
-    /*!
-     * \brief SetPointer
-     * \param p
-     */
-    virtual void SetPointer(CBotVar* p);
-
-    /*!
-     * \brief GetPointer
-     * \return
-     */
-    virtual CBotVarClass* GetPointer();
-
-    /*!
-     * \brief Add Addition
-     * \param left
-     * \param right
-     */
-    virtual void Add(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief Sub Subtraction
-     * \param left
-     * \param right
-     */
-    virtual void Sub(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief Mul Multiplication
-     * \param left
-     * \param right
-     */
-    virtual void Mul(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief Div Division
-     * \param left
-     * \param right
-     * \return
-     */
-    virtual CBotError Div(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief Modulo Remainder of division
-     * \param left
-     * \param right
-     * \return
-     */
-    virtual CBotError Modulo(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief Power
-     * \param left
-     * \param right
-     */
-    virtual void Power(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief Lo
-     * \param left
-     * \param right
-     * \return
-     */
-    virtual bool Lo(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief Hi
-     * \param left
-     * \param right
-     * \return
-     */
-    virtual bool Hi(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief Ls
-     * \param left
-     * \param right
-     * \return
-     */
-    virtual bool Ls(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief Hs
-     * \param left
-     * \param right
-     * \return
-     */
-    virtual bool Hs(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief Eq
-     * \param left
-     * \param right
-     * \return
-     */
-    virtual bool Eq(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief Ne
-     * \param left
-     * \param right
-     * \return
-     */
-    virtual bool Ne(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief And
-     * \param left
-     * \param right
-     */
-    virtual void And(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief Or
-     * \param left
-     * \param right
-     */
-    virtual void Or(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief XOr
-     * \param left
-     * \param right
-     */
-    virtual void XOr(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief ASR
-     * \param left
-     * \param right
-     */
-    virtual void ASR(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief SR
-     * \param left
-     * \param right
-     */
-    virtual void SR(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief SL
-     * \param left
-     * \param right
-     */
-    virtual void SL(CBotVar* left, CBotVar* right);
-
-    /*!
-     * \brief Neg
-     */
-    virtual void Neg();
-
-    /*!
-     * \brief Not
-     */
-    virtual void Not();
-
-    /*!
-     * \brief Inc
-     */
-    virtual void Inc();
-
-    /*!
-     * \brief Dec
-     */
-    virtual void Dec();
-
-    /*!
-     * \brief Save0State
-     * \param pf
-     * \return
-     */
-    virtual bool Save0State(FILE* pf);
-
-    /*!
-     * \brief Save1State
-     * \param pf
-     * \return
-     */
-    virtual bool Save1State(FILE* pf);
-
-    /*!
-     * \brief RestoreState
-     * \param pf
-     * \param pVar
-     * \return
-     */
-    static bool RestoreState(FILE* pf, CBotVar* &pVar);
-
-    /*!
-     * \brief Maj
-     * \param pUser
-     * \param bContinue
+    /**
+     * \brief Call the class update function
+     *
+     * \param pUser user pointer to pass to the update function
+     * \param bContinue UNUSED
+     * \see CBotClass::SetUpdateFunc()
      */
     virtual void Maj(void* pUser = nullptr, bool bContinue = true);
 
-    /*!
-     * \brief SetUniqNum
-     * \param n
+    /**
+     * \brief Set unique identifier of this variable
+     * \param n New identifier
      */
     void SetUniqNum(long n);
 
-    /*!
-     * \brief GetUniqNum
-     * \return
+    /**
+     * \brief Return unique identifier of this variable
+     * \return Identifier
+     * \see SetUniqNum()
      */
     long GetUniqNum();
 
-    /*!
-     * \brief NextUniqNum
-     * \return
+    /**
+     * \brief TODO: ?
      */
     static long NextUniqNum();
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name Class / array member access
+    //@{
+
+    /**
+     * \brief Returns class member by name
+     * \param name Name of member to get
+     * \return CBotVar representing the class member
+     */
+    virtual CBotVar* GetItem(const std::string& name);
+
+    /**
+     * \brief Returns class member by unique ID
+     * \param nIdent Unique ID of the class member to return
+     * \return CBotVar representing the class member
+     * \see GetUniqNum()
+     */
+    virtual CBotVar* GetItemRef(int nIdent);
+
+    /**
+     * \brief Returns element of the array by index
+     *
+     * TODO: Appears to be also implemented in CBotVarClass, but I'm not sure what is it used for there. Looks like CBotVarArray stores data internally in CBotVarClass or something like that. Needs futher investigation.
+     *
+     * \param index Index of the element to get
+     * \param grow true to grow the array automatically if the index is out of range
+     * \return CBotVar representing the array element
+     */
+    virtual CBotVar* GetItem(int index, bool grow = false);
+
+    /**
+     * \brief Return all elements of this variable as a linked list. Works for both classes and arrays.
+     * \return CBotVar representing the first object in the linked list. Use CBotVar::GetNext() to access next ones.
+     */
+    virtual CBotVar* GetItemList();
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name Linked list
+    //@{
+
+    /**
+     * \brief Returns the next variable if this CBotVar is used as a linked list
+     * \return Next element in the list, or nullptr if this was the last element
+     */
+    CBotVar* GetNext();
+
+    /**
+     * \brief Appends a new element at the end of the linked list
+     * \param pVar Element to add
+     */
+    void AddNext(CBotVar* pVar);
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * \name Value management
+     *
+     * Always make sure that the variable has correct type before calling these functions!
+     *
+     * Some variable types have multiple getters/setters and do automatic conversion.
+     *
+     * Using one that is not implemented will result in a failed assertion.
+     */
+    //@{
+
+    /**
+     * \brief Set the value
+     * \param var Another variable to copy value from
+     */
+    void SetVal(CBotVar* var);
+
+    /**
+     * \brief Copy from another variable
+     * \param pSrc Variable to copy from
+     * \param bName true if you want to also copy the name
+     */
+    virtual void Copy(CBotVar* pSrc, bool bName = true);
+
+    /**
+     * \brief Set value as an integer
+     *
+     * This one should be used for boolean values, too
+     *
+     * \param val New value
+     * \param name Used when you assign a constant value - makes the value appear as "name" instead of number in the debugger
+     */
+    virtual void SetValInt(int val, const std::string& name = "");
+
+    /**
+     * \brief Set value as float
+     * \param val New value
+     */
+    virtual void SetValFloat(float val);
+
+    /**
+     * \brief Set value as string
+     * \param val New value
+     */
+    virtual void SetValString(const std::string& val);
+
+    /**
+     * \brief Get value as integer
+     * \return Current value
+     */
+    virtual int GetValInt();
+
+    /**
+     * \brief Get value as float
+     * \return Current value
+     */
+    virtual float GetValFloat();
+
+    /**
+     * \brief Get value as string
+     *
+     * This one is supported by most types of variables.
+     *
+     * Automatically converts the value to string if needed.
+     *
+     * \return Current value
+     */
+    virtual std::string GetValString();
+
+    /**
+     * \brief Set value for pointer types
+     * \param p Variable to point to
+     */
+    virtual void SetPointer(CBotVar* p);
+
+    /**
+     * \brief Get value for pointer types
+     * \return Variable that this variable points to
+     */
+    virtual CBotVarClass* GetPointer();
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * \name Math operations
+     *
+     * All these functions operate on the "left" variable, taking "right" as the argument.
+     *
+     * The C++ equivalent would be the +=, -=, *=, /= etc. operations
+     */
+    //@{
+
+    //! \brief Addition
+    virtual void Add(CBotVar* left, CBotVar* right);
+    //! \brief Subtraction
+    virtual void Sub(CBotVar* left, CBotVar* right);
+    //! \brief Multiplication
+    virtual void Mul(CBotVar* left, CBotVar* right);
+    //! \brief Division
+    virtual CBotError Div(CBotVar* left, CBotVar* right);
+    //! \brief Modulo (remainder of division)
+    virtual CBotError Modulo(CBotVar* left, CBotVar* right);
+    //! \brief Power
+    virtual void Power(CBotVar* left, CBotVar* right);
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name Comparation functions
+    //@{
+
+    //! \brief left < right
+    virtual bool Lo(CBotVar* left, CBotVar* right);
+    //! \brief left > right
+    virtual bool Hi(CBotVar* left, CBotVar* right);
+    //! \brief left <= right
+    virtual bool Ls(CBotVar* left, CBotVar* right);
+    //! \brief left >= right
+    virtual bool Hs(CBotVar* left, CBotVar* right);
+    //! \brief left == right
+    virtual bool Eq(CBotVar* left, CBotVar* right);
+    //! \brief left != right
+    virtual bool Ne(CBotVar* left, CBotVar* right);
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * \name Logical or bitwise functions
+     *
+     * Can be either depending on variable type.
+     *
+     * For boolean, those are logical functions, for int they are bitwise.
+     */
+
+    //! \brief left && right or left & right
+    virtual void And(CBotVar* left, CBotVar* right);
+    //! \brief left || right or left | right
+    virtual void Or(CBotVar* left, CBotVar* right);
+    //! \brief left ^ right (also for boolean!)
+    virtual void XOr(CBotVar* left, CBotVar* right);
+    //!\brief !this or ~this
+    virtual void Not();
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name Bitwise shift
+    //@{
+
+    //! \brief left >> right
+    virtual void ASR(CBotVar* left, CBotVar* right);
+    //! \brief left >>> right
+    /**
+     * This is unsigned shift to right
+     */
+    virtual void SR(CBotVar* left, CBotVar* right);
+    //! \brief left << right
+    virtual void SL(CBotVar* left, CBotVar* right);
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name Negation / increment / decrement
+    //@{
+
+    //! \brief -this
+    virtual void Neg();
+    //! \brief ++this
+    virtual void Inc();
+    //! \brief --this
+    virtual void Dec();
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name Save / restore state
+    //@{
+
+    /**
+     * \brief Save common variable header (name, type, etc.)
+     * \param pf file pointer
+     * \return false on write error
+     */
+    virtual bool Save0State(FILE* pf);
+
+    /**
+     * \brief Save variable data
+     *
+     * Overriden in child classes
+     *
+     * \param pf file pointer
+     * \return false on write error
+     */
+    virtual bool Save1State(FILE* pf);
+
+    /**
+     * \brief Restore variable
+     * \param pf file pointer
+     * \param[out] pVar Pointer to recieve the variable
+     * \return false on read error
+     */
+    static bool RestoreState(FILE* pf, CBotVar* &pVar);
+
+    //@}
+
 protected:
 
-    //! The corresponding token.
+    //! The corresponding token, defines the variable name
     CBotToken* m_token;
-    //! List of variables.
-    CBotVar* m_next;
     //! Type of value.
     CBotTypResult m_type;
-    //! Not initialized.
+    //! Next variable in a linked list
+    CBotVar* m_next;
+    //! Initialization status
     InitType m_binit;
-    //! Corresponding this element.
+    //! Corresponding this element (TODO: ?)
     CBotVarClass* m_pMyThis;
-    //! User data if necessary.
+    //! User pointer if specified
+    /**
+     * \see SetUserPtr()
+     * \see GetUserPtr()
+     */
     void* m_pUserPtr;
-    //! Static element (in class).
+    //! true if the variable is static (for classes)
     bool m_bStatic;
-    //! Element public, protected or private.
+    //! Element protection level - public, protected or private (for classes)
     ProtectionLevel m_mPrivate;
-    //! Expression for the original content.
+    //! Expression describing initial value
     CBotInstr* m_InitExpr;
-    //! List of limits for a table.
+    //! Expression describing array limit
     CBotInstr* m_LimExpr;
-    //! Unique identifier.
+    //! Identifier
+    /**
+     * \see SetUniqNum()
+     * \see GetUniqNum()
+     */
     long m_ident;
 
-    //! Counter
+    //! TODO: ?
     static long m_identcpt;
 
     friend class CBotStack;
@@ -618,16 +681,3 @@ protected:
     friend class CBotVarPointer;
     friend class CBotVarArray;
 };
-
-/* NOTE (#)
-    methods    SetValInt() SetValFloat() et SetValString()
-    can be called  with objects which are respectively integer, real or string
-    Always be sure of the type of the variable before calling these methods
-
-    if ( pVar->GetType() == CBotInt() ) pVar->SetValFloat( 3.3 ); // plante !!
-
-    methods    GetValInt(), GetValFloat() et GetValString()
-    use value conversions,
-    GetValString() works on numbers (makes the corresponding string)
-    but do not make GetValInt () with a string variable!
-*/

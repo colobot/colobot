@@ -126,7 +126,6 @@ public:
 
     /**
      * \brief Get type of array elements (for ::CBotTypArrayBody or ::CBotTypArrayPointer)
-     * \param n new value
      */
     CBotTypResult& GetTypElem() const;
 

@@ -32,6 +32,7 @@
 #include "CBot/CBotVar/CBotVarInt.h"
 
 #include "CBot/CBotClass.h"
+#include "CBot/CBotToken.h"
 
 #include "CBot/CBotEnums.h"
 
@@ -136,7 +137,7 @@ void CBotVar::Maj(void* pUser, bool bContinu)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotVar::Create(const CBotToken* name, int type )
+CBotVar* CBotVar::Create(const CBotToken* name, CBotType type )
 {
     CBotTypResult    t(type);
     return Create(name, t);
@@ -269,7 +270,7 @@ CBotVar* CBotVar::Create(const std::string& n, CBotTypResult type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotVar::Create(const std::string& name, int type, CBotClass* pClass)
+CBotVar* CBotVar::Create(const std::string& name, CBotType type, CBotClass* pClass)
 {
     CBotToken    token( name, "" );
     CBotVar*    pVar = Create( &token, type );
@@ -319,13 +320,13 @@ CBotTypResult CBotVar::GetTypResult(int mode)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotVar::GetType(int mode)
+CBotType CBotVar::GetType(int mode)
 {
     if ( mode == 1 && m_type.Eq(CBotTypClass) )
         return CBotTypPointer;
     if ( mode == 2 && m_type.Eq(CBotTypClass) )
         return CBotTypIntrinsic;
-    return m_type.GetType();
+    return static_cast<CBotType>(m_type.GetType());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -343,12 +344,12 @@ CBotVar::InitType CBotVar::GetInit() const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVar::SetInit(CBotVar::InitType bInit)
+void CBotVar::SetInit(CBotVar::InitType initType)
 {
-    m_binit = bInit;
-    if ( bInit == CBotVar::InitType::IS_POINTER ) m_binit = CBotVar::InitType::DEF;                    // cas spécial
+    m_binit = initType;
+    if (initType == CBotVar::InitType::IS_POINTER ) m_binit = CBotVar::InitType::DEF;                    // cas spécial
 
-    if ( m_type.Eq(CBotTypPointer) && bInit == CBotVar::InitType::IS_POINTER )
+    if ( m_type.Eq(CBotTypPointer) && initType == CBotVar::InitType::IS_POINTER )
     {
         CBotVarClass* instance = GetPointer();
         if ( instance == nullptr )
@@ -365,7 +366,7 @@ void CBotVar::SetInit(CBotVar::InitType bInit)
         CBotVar*    p = (static_cast<CBotVarClass*>(this))->m_pVar;
         while( p != nullptr )
         {
-            p->SetInit( bInit );
+            p->SetInit(initType);
             p->m_pMyThis = static_cast<CBotVarClass*>(this);
             p = p->GetNext();
         }
@@ -412,7 +413,7 @@ CBotVar* CBotVar::GetItemList()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotVar::GetItem(int row, bool bGrow)
+CBotVar* CBotVar::GetItem(int index, bool grow)
 {
     assert(0);
     return nullptr;
@@ -521,9 +522,9 @@ bool CBotVar::IsStatic()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotVar::IsPrivate(ProtectionLevel mode)
+bool CBotVar::IsPrivate(ProtectionLevel level)
 {
-    return static_cast<int>(m_mPrivate) >= static_cast<int>(mode);
+    return static_cast<int>(m_mPrivate) >= static_cast<int>(level);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -720,7 +721,7 @@ void CBotVar::Copy(CBotVar* pSrc, bool bName)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVar::SetValString(const std::string& p)
+void CBotVar::SetValString(const std::string& val)
 {
     assert(0);
 }

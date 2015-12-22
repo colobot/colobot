@@ -17,16 +17,13 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotVar/CBotVarBoolean.h"
 
 #include "CBot/CBotEnums.h"
 #include "CBot/CBotUtils.h"
 #include "CBot/CBotKeywordStrings.h"
 
-// Local include
-
-// Global include
+#include "CBot/CBotToken.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////

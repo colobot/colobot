@@ -65,9 +65,9 @@ void CBotVarString::Copy(CBotVar* pSrc, bool bName)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVarString::SetValString(const std::string& p)
+void CBotVarString::SetValString(const std::string& val)
 {
-    m_val = p;
+    m_val = val;
     m_binit    = CBotVar::InitType::DEF;
 }
 
