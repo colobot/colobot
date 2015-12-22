@@ -126,7 +126,7 @@ void CBotVarInt::Mul(CBotVar* left, CBotVar* right)
 ////////////////////////////////////////////////////////////////////////////////
 void CBotVarInt::Power(CBotVar* left, CBotVar* right)
 {
-    m_val = static_cast<int>( pow( static_cast<double>( left->GetValInt()) , static_cast<double>( left->GetValInt()) ));
+    m_val = static_cast<int>( pow( static_cast<double>(left->GetValInt()) , static_cast<double>(right->GetValInt()) ));
     m_binit = CBotVar::InitType::DEF;
 }
 
