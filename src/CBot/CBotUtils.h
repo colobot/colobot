@@ -19,14 +19,11 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotTypResult.h"
 
-// Local include
-
-// Global include
 #include <cstdio>
 #include <string>
+#include <cassert>
 
 // Forward declaration
 class CBotVar;
@@ -97,3 +94,92 @@ long GetNumInt(const std::string& p);
  */
 float GetNumFloat(const std::string& str);
 
+template<typename T> class CBotLinkedList {
+public:
+    /**
+     * \brief Destructor. Be careful, destroys the whole linked list!
+     */
+    virtual ~CBotLinkedList()
+    {
+        if (m_next != nullptr)
+        {
+            delete m_next;
+            m_next = nullptr;
+        }
+    }
+
+    /**
+     * \brief Returns the next variable in the linked list
+     * \return Next element in the list, or nullptr if this was the last element
+     */
+    T* GetNext()
+    {
+        return m_next;
+    }
+
+    /**
+     * \brief Appends a new element at the end of the linked list
+     * \param elem Element to add
+     */
+    void AddNext(T* elem)
+    {
+        CBotLinkedList<T>* p = this;
+        while (p->m_next != nullptr) p = p->m_next;
+        p->m_next = elem;
+    }
+
+protected:
+    T* m_next = nullptr;
+};
+
+template<typename T> class CBotDoublyLinkedList {
+public:
+    /**
+     * \brief Destructor. Be careful, destroys the whole linked list!
+     */
+    virtual ~CBotDoublyLinkedList()
+    {
+        assert(m_prev == nullptr);
+
+        if (m_next != nullptr)
+        {
+            m_next->m_prev = nullptr;
+            delete m_next;
+            m_next = nullptr;
+        }
+    }
+
+    /**
+     * \brief Returns the next variable in the linked list
+     * \return Next element in the list, or nullptr if this was the last element
+     */
+    T* GetNext()
+    {
+        return m_next;
+    }
+
+    /**
+     * \brief Returns the previous variable in the linked list
+     * \return Previous element in the list, or nullptr if this was the last element
+     */
+    T* GetPrev()
+    {
+        return m_prev;
+    }
+
+    /**
+     * \brief Appends a new element at the end of the linked list
+     * \param elem Element to add
+     */
+    void AddNext(T* elem)
+    {
+        CBotDoublyLinkedList<T>* p = this;
+        while (p->m_next != nullptr) p = p->m_next;
+        p->m_next = elem;
+        elem->m_prev = p;
+    }
+
+protected:
+    T* m_next = nullptr;
+    T* m_prev = nullptr;
+};

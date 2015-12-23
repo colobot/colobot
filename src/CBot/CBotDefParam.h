@@ -19,13 +19,9 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotToken.h"
 #include "CBot/CBotStack.h"
-
-// Local include
-
-// Global include
+#include "CBot/CBotUtils.h"
 
 class CBotCStack;
 class CBotStack;
@@ -34,7 +30,7 @@ class CBotVar;
 /*!
  * \brief The CBotDefParam class A list of parameters.
  */
-class CBotDefParam
+class CBotDefParam : public CBotLinkedList<CBotDefParam>
 {
 public:
 
@@ -72,12 +68,6 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain);
 
     /*!
-     * \brief AddNext
-     * \param p
-     */
-    void AddNext(CBotDefParam* p);
-
-    /*!
      * \brief GetType
      * \return
      */
@@ -88,12 +78,6 @@ public:
      * \return
      */
     CBotTypResult GetTypResult();
-
-    /*!
-     * \brief GetNext
-     * \return
-     */
-    CBotDefParam* GetNext();
 
     /*!
      * \brief GetParamString
@@ -108,7 +92,5 @@ private:
     std::string m_typename;
     //! Type of paramteter.
     CBotTypResult m_type;
-    //! Next parameter.
-    CBotDefParam* m_next;
     long m_nIdent;
 };

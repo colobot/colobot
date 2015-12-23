@@ -97,7 +97,7 @@ class CBotCStack;
  *  float y = var->GetValFloat();
  *  \endcode
  */
-class CBotClass
+class CBotClass : public CBotLinkedList<CBotClass>
 {
 public:
     //! Mark if is set or not
@@ -169,12 +169,6 @@ public:
      * \return
      */
     bool AddItem(CBotVar* pVar);
-
-    /*!
-     * \brief AddNext
-     * \param pClass
-     */
-    void AddNext(CBotClass* pClass);
 
     /*!
      * \brief GetName Gives the name of the class.
@@ -380,8 +374,6 @@ private:
     CBotVar* m_pVar;
     //! Intrinsic class.
     bool m_bIntrinsic;
-    //! The string class.
-    CBotClass* m_next;
     //! List of methods defined in external.
     CBotCallMethode* m_pCalls;
     //! Compiled list of methods.

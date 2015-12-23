@@ -19,12 +19,9 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotTypResult.h"
+#include "CBot/CBotUtils.h"
 
-// Local include
-
-// Global include
 class CBotVar;
 class CBotCStack;
 class CBotStack;
@@ -34,7 +31,7 @@ class CBotToken;
  * \brief The CBotCallMethode class Class managing the methods declared by
  * AddFunction on a class.
  */
-class CBotCallMethode
+class CBotCallMethode : public CBotLinkedList<CBotCallMethode>
 {
 public:
 
@@ -94,23 +91,10 @@ public:
      */
     std::string GetName();
 
-    /*!
-     * \brief Next
-     * \return
-     */
-    CBotCallMethode* Next();
-
-    /*!
-     * \brief AddNext
-     * \param p
-     */
-    void AddNext(CBotCallMethode* p);
-
 private:
     std::string m_name;
     bool (*m_rExec) (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
     CBotTypResult (*m_rComp) (CBotVar* pThis, CBotVar* &pVar);
-    CBotCallMethode* m_next;
     friend class CBotClass;
     long m_nFuncIdent;
 

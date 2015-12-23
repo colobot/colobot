@@ -19,12 +19,13 @@
 
 #pragma once
 
+#include "CBot/CBotEnums.h"
+#include "CBot/CBotUtils.h"
+
 #include <vector>
 #include <string>
 #include <map>
 #include <memory>
-
-#include "CBot/CBotEnums.h"
 
 /**
  * \brief Class representing one token of a program.
@@ -73,7 +74,7 @@
  * \endcode
  */
 
-class CBotToken
+class CBotToken : public CBotDoublyLinkedList<CBotToken>
 {
 public:
     /**
@@ -135,18 +136,6 @@ public:
     int GetEnd();
 
     /**
-     * \brief Return the next token in the linked list
-     * \return The next CBotToken in the list, of nullptr if this is the last one
-     */
-    CBotToken* GetNext();
-
-    /**
-     * \brief Return the previous token in the linked list
-     * \return The previous CBotToken in the list, of nullptr if this is the first one
-     */
-    CBotToken* GetPrev();
-
-    /**
      * \brief SetPos Set the token position in the CBot program
      * \param start The start position of the token
      * \param end The end position of the token
@@ -198,11 +187,6 @@ private:
     static CBotToken* NextToken(const char*& program, bool first);
 
 private:
-
-    //! The next token in the linked list
-    CBotToken* m_next = nullptr;
-    //! The previous token in the linked list
-    CBotToken* m_prev = nullptr;
     //! The token type
     TokenType m_type = TokenTypVar;
     //! The id of the keyword

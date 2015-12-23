@@ -50,7 +50,6 @@ long CBotVar::m_identcpt = 0;
 ////////////////////////////////////////////////////////////////////////////////
 CBotVar::CBotVar( )
 {
-    m_next    = nullptr;
     m_pMyThis = nullptr;
     m_pUserPtr = nullptr;
     m_InitExpr = nullptr;
@@ -66,7 +65,6 @@ CBotVar::CBotVar( )
 CBotVar::~CBotVar( )
 {
     delete  m_token;
-    delete    m_next;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -450,21 +448,6 @@ CBotVar* CBotVar::GetStaticVar()
 
     CBotClass*    pClass = m_pMyThis->GetClass();
     return pClass->GetItem( m_token->GetString() );
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotVar::GetNext()
-{
-    return m_next;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CBotVar::AddNext(CBotVar* pVar)
-{
-    CBotVar*    p = this;
-    while (p->m_next != nullptr) p = p->m_next;
-
-    p->m_next = pVar;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

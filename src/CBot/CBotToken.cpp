@@ -137,6 +137,16 @@ CBotToken::CBotToken()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+CBotToken::CBotToken(const std::string& text, const std::string& sep, int start, int end)
+{
+    m_text  = text;
+    m_sep   = sep;
+
+    m_start = start;
+    m_end   = end;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 CBotToken::CBotToken(const CBotToken& pSrc)
 {
     m_type      = pSrc.m_type;
@@ -150,31 +160,8 @@ CBotToken::CBotToken(const CBotToken& pSrc)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotToken::CBotToken(const std::string& text, const std::string& sep, int start, int end)
-{
-    m_text = text;                  // word (mot) found as token
-    m_sep = sep;                  // separator
-    m_next  = nullptr;
-    m_prev  = nullptr;
-    m_start = start;
-    m_end   = end;
-
-    m_type = TokenTypVar;           // at the beginning a default variable type
-    m_keywordId = -1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 CBotToken::~CBotToken()
 {
-    assert(m_prev == nullptr);
-
-    if (m_next != nullptr)
-    {
-        m_next->m_prev = nullptr;
-
-        delete m_next; // recursive
-        m_next = nullptr;
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -217,20 +204,6 @@ int CBotToken::GetType()
 long CBotToken::GetKeywordId()
 {
     return m_keywordId;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotToken* CBotToken::GetNext()
-{
-    if (this == nullptr) return nullptr;
-    return      m_next;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotToken* CBotToken::GetPrev()
-{
-    if (this == nullptr) return nullptr;
-    return      m_prev;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

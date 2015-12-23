@@ -22,6 +22,7 @@
 #include "CBot/CBotDefines.h"
 #include "CBot/CBotTypResult.h"
 #include "CBot/CBotEnums.h"
+#include "CBot/CBotUtils.h"
 
 #include <string>
 
@@ -35,7 +36,7 @@ class CBotToken;
  *
  * \nosubgrouping
  */
-class CBotVar
+class CBotVar : public CBotLinkedList<CBotVar>
 {
 public:
     //! \name Creation / destruction
@@ -411,24 +412,6 @@ public:
     //@}
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //! \name Linked list
-    //@{
-
-    /**
-     * \brief Returns the next variable if this CBotVar is used as a linked list
-     * \return Next element in the list, or nullptr if this was the last element
-     */
-    CBotVar* GetNext();
-
-    /**
-     * \brief Appends a new element at the end of the linked list
-     * \param pVar Element to add
-     */
-    void AddNext(CBotVar* pVar);
-
-    //@}
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * \name Value management
      *
@@ -637,13 +620,10 @@ public:
     //@}
 
 protected:
-
     //! The corresponding token, defines the variable name
     CBotToken* m_token;
     //! Type of value.
     CBotTypResult m_type;
-    //! Next variable in a linked list
-    CBotVar* m_next;
     //! Initialization status
     InitType m_binit;
     //! Corresponding this element (TODO: ?)

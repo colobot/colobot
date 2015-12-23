@@ -236,7 +236,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
                 // and compiles the following instruction block
                 func->m_openblk = *p;
                 func->m_Block   = CBotBlock::Compile(p, pStk, false);
-                func->m_closeblk = p->GetPrev() != nullptr ? *(p->GetPrev()) : CBotToken();
+                func->m_closeblk = (p != nullptr && p->GetPrev() != nullptr) ? *(p->GetPrev()) : CBotToken();
                 if ( pStk->IsOk() )
                 {
                     if ( func->m_bPublic )  // public function, return known for all

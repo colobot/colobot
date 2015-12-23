@@ -19,14 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
+#include "CBot/CBotUtils.h"
 
-// Local include
-
-// Global include
 #include <string>
 
-// Forward declaration
 class CBotStack;
 class CBotCStack;
 class CBotVar;
@@ -38,7 +34,7 @@ class CBotToken;
 /*!
  * \brief The CBotCall class. Class for routine calls (external).
  */
-class CBotCall
+class CBotCall : public CBotLinkedList<CBotCall>
 {
 public:
 
@@ -124,12 +120,6 @@ public:
     std::string GetName();
 
     /*!
-     * \brief Next
-     * \return
-     */
-    CBotCall* Next();
-
-    /*!
      * \brief SetPUser
      * \param pUser
      */
@@ -149,5 +139,4 @@ private:
     std::string m_name;
     bool (*m_rExec) (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser);
     CBotTypResult (*m_rComp) (CBotVar* &pVar, void* pUser);
-    CBotCall* m_next;
 };

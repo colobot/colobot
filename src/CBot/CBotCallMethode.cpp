@@ -39,15 +39,12 @@ CBotCallMethode::CBotCallMethode(const std::string& name,
     m_name       = name;
     m_rExec      = rExec;
     m_rComp      = rCompile;
-    m_next       = nullptr;
     m_nFuncIdent = CBotVar::NextUniqNum();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotCallMethode::~CBotCallMethode()
 {
-    delete m_next;
-    m_next = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,21 +82,6 @@ CBotTypResult CBotCallMethode::CompileCall(const std::string& name,
 std::string CBotCallMethode::GetName()
 {
     return  m_name;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotCallMethode* CBotCallMethode::Next()
-{
-    return  m_next;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CBotCallMethode::AddNext(CBotCallMethode* pt)
-{
-    CBotCallMethode* p = this;
-    while ( p->m_next != nullptr ) p = p->m_next;
-
-    p->m_next = pt;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

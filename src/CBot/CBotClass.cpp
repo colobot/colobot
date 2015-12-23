@@ -53,7 +53,6 @@ CBotClass::CBotClass(const std::string& name,
     m_pParent   = pPapa;
     m_name      = name;
     m_pVar      = nullptr;
-    m_next      = nullptr;
     m_pCalls    = nullptr;
     m_pMethod   = nullptr;
     m_rMaj      = nullptr;
@@ -91,8 +90,6 @@ CBotClass::~CBotClass()
     delete  m_pVar;
     delete  m_pCalls;
     delete  m_pMethod;
-
-    delete  m_next;         // releases all of them on this level
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -242,15 +239,6 @@ bool CBotClass::AddItem(CBotVar* pVar)
     else m_pVar->AddNext(pVar);
 
     return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CBotClass::AddNext(CBotClass* pClass)
-{
-    CBotClass*      p = this;
-    while (p->m_next != nullptr) p = p->m_next;
-
-    p->m_next = pClass;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -47,15 +47,12 @@ CBotCall::CBotCall(const std::string& name,
     m_name       = name;
     m_rExec      = rExec;
     m_rComp      = rCompile;
-    m_next       = nullptr;
     m_nFuncIdent = CBotVar::NextUniqNum();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotCall::~CBotCall()
 {
-    if (m_next) delete m_next;
-    m_next = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -153,12 +150,6 @@ bool CBotCall::CheckCall(const std::string& name)
 std::string CBotCall::GetName()
 {
     return  m_name;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotCall* CBotCall::Next()
-{
-    return  m_next;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
