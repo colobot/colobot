@@ -683,7 +683,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 
                     // make "this" known
                     CBotToken TokenThis(std::string("this"), std::string());
-                    CBotVar* pThis = CBotVar::Create(&TokenThis, CBotTypResult( CBotTypClass, this ) );
+                    CBotVar* pThis = CBotVar::Create(TokenThis, CBotTypResult( CBotTypClass, this ) );
                     pThis->SetUniqNum(-2);
                     pile->AddVar(pThis);
 
@@ -691,7 +691,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     {
                         // makes "super" known
                         CBotToken TokenSuper(std::string("super"), std::string());
-                        CBotVar* pThis = CBotVar::Create(&TokenSuper, CBotTypResult( CBotTypClass, m_pParent ) );
+                        CBotVar* pThis = CBotVar::Create(TokenSuper, CBotTypResult( CBotTypClass, m_pParent ) );
                         pThis->SetUniqNum(-3);
                         pile->AddVar(pThis);
                     }

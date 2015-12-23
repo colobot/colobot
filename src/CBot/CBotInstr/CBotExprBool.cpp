@@ -54,7 +54,7 @@ CBotInstr* CBotExprBool::Compile(CBotToken* &p, CBotCStack* pStack)
         inst->SetToken(p);  // stores the operation false or true
         p = p->GetNext();
 
-        CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypBoolean);
+        CBotVar*    var = CBotVar::Create("", CBotTypBoolean);
         pStk->SetVar(var);
     }
 
@@ -68,7 +68,7 @@ bool CBotExprBool::Execute(CBotStack* &pj)
 
     if (pile->IfStep()) return false;
 
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypBoolean);
+    CBotVar*    var = CBotVar::Create("", CBotTypBoolean);
 
     if (GetTokenType() == ID_TRUE)      var->SetValInt(1);
     else                              var->SetValInt(0);

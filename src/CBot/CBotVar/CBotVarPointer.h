@@ -30,7 +30,7 @@ public:
     /**
      * \brief Constructor. Do not call directly, use CBotVar::Create()
      */
-    CBotVarPointer(const CBotToken* name, CBotTypResult& type);
+    CBotVarPointer(const CBotToken& name, CBotTypResult& type);
     /**
      * \brief Destructor. Do not call directly, use CBotVar::Destroy()
      */

@@ -119,7 +119,7 @@ CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool n
         }
 
         {
-            CBotVar*    var = CBotVar::Create(vartoken, CBotTypInt);// create the variable (evaluated after the assignment)
+            CBotVar*    var = CBotVar::Create(*vartoken, CBotTypInt);// create the variable (evaluated after the assignment)
             var->SetInit(inst->m_expr != nullptr ? CBotVar::InitType::DEF : CBotVar::InitType::UNDEF);     // if initialized with assignment
             var->SetUniqNum( //set it with a unique number
                 (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());

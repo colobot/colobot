@@ -46,7 +46,7 @@ bool CBotExprNull::Execute(CBotStack* &pj)
     CBotStack*    pile = pj->AddStack(this);
 
     if (pile->IfStep()) return false;
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypNullPointer);
+    CBotVar*    var = CBotVar::Create("", CBotTypNullPointer);
 
     var->SetInit(CBotVar::InitType::DEF);         // null pointer valid
     pile->SetVar(var);          // place on the stack

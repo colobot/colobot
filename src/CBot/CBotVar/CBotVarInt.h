@@ -30,7 +30,7 @@ public:
     /**
      * \brief Constructor. Do not call directly, use CBotVar::Create()
      */
-    CBotVarInt(const CBotToken* name);
+    CBotVarInt(const CBotToken& name);
 
     void SetValInt(int val, const std::string& s = "") override;
     void SetValFloat(float val) override;

@@ -89,7 +89,7 @@ CBotInstr* CBotInstArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
             }
         }
 
-        CBotVar*   var = CBotVar::Create(vartoken, type);               // create an instance
+        CBotVar*   var = CBotVar::Create(*vartoken, type);               // create an instance
         inst->m_typevar = type;
 
         var->SetUniqNum(
@@ -157,7 +157,7 @@ bool CBotInstArray::Execute(CBotStack* &pj)
         m_typevar.SetArray(max);                                    // store the limitations
 
         // create simply a nullptr pointer
-        CBotVar*    var = CBotVar::Create(m_var->GetToken(), m_typevar);
+        CBotVar*    var = CBotVar::Create(*(m_var->GetToken()), m_typevar);
         var->SetPointer(nullptr);
         var->SetUniqNum((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent);
         pj->AddVar(var);

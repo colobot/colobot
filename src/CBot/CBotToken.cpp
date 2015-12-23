@@ -186,12 +186,16 @@ void CBotToken::ClearDefineNum()
 ////////////////////////////////////////////////////////////////////////////////
 const CBotToken& CBotToken::operator=(const CBotToken& src)
 {
-    delete m_next;
-    m_next      = nullptr;
-    m_prev      = nullptr;
+    assert(m_prev == nullptr);
+    if (m_next != nullptr)
+    {
+        m_next->m_prev = nullptr;
+        delete m_next;
+        m_next = nullptr;
+    }
 
-    m_text = src.m_text;
-    m_sep = src.m_sep;
+    m_text      = src.m_text;
+    m_sep       = src.m_sep;
 
     m_type      = src.m_type;
     m_keywordId = src.m_keywordId;

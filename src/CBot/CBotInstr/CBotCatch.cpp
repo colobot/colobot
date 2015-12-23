@@ -105,7 +105,7 @@ bool CBotCatch :: TestCatch(CBotStack* &pile, int val)
 
     if ( val > 0 || pile->GetType() != CBotTypBoolean )
     {
-        CBotVar* var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypBoolean);
+        CBotVar* var = CBotVar::Create("", CBotTypBoolean);
         var->SetValInt( pile->GetVal() == val );
         pile->SetVar(var);                          // calls on the stack
     }

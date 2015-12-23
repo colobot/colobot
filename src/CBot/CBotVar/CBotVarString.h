@@ -30,7 +30,7 @@ public:
     /**
      * \brief Constructor. Do not call directly, use CBotVar::Create()
      */
-    CBotVarString(const CBotToken* name);
+    CBotVarString(const CBotToken& name);
 
     void SetValString(const std::string& val) override;
     std::string GetValString() override;

@@ -82,14 +82,14 @@ public:
      * \param name Variable name token
      * \param type Variable type
      */
-    static CBotVar* Create(const CBotToken* name, CBotType type);
+    static CBotVar* Create(const CBotToken& name, CBotType type);
 
     /**
      * \brief Create a new variable of a given type described by CBotTypResult
      * \param name Variable name token
      * \param type Variable type
      */
-    static CBotVar* Create(const CBotToken* name, CBotTypResult type);
+    static CBotVar* Create(const CBotToken& name, CBotTypResult type);
 
     /**
      * \brief Create a new variable of a given type of given class instance

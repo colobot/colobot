@@ -31,12 +31,12 @@
 #include <cassert>
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVarArray::CBotVarArray(const CBotToken* name, CBotTypResult& type )
+CBotVarArray::CBotVarArray(const CBotToken& name, CBotTypResult& type)
 {
     if ( !type.Eq(CBotTypArrayPointer) &&
          !type.Eq(CBotTypArrayBody)) assert(0);
 
-    m_token        = new CBotToken(*name);
+    m_token        = new CBotToken(name);
     m_next        = nullptr;
     m_pMyThis    = nullptr;
     m_pUserPtr    = nullptr;
@@ -117,7 +117,7 @@ CBotVar* CBotVarArray::GetItem(int n, bool bExtend)
         if ( !bExtend ) return nullptr;
         // creates an instance of the table
 
-        CBotVarClass* instance = new CBotVarClass(nullptr, m_type);
+        CBotVarClass* instance = new CBotVarClass(CBotToken(), m_type);
         SetPointer( instance );
     }
     return m_pInstance->GetItem(n, bExtend);

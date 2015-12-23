@@ -50,7 +50,7 @@ CBotInstr* CBotExprAlpha::Compile(CBotToken* &p, CBotCStack* pStack)
     inst->SetToken(p);
     p = p->GetNext();
 
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypString);
+    CBotVar*    var = CBotVar::Create("", CBotTypString);
     pStk->SetVar(var);
 
     return pStack->Return(inst, pStk);
@@ -63,7 +63,7 @@ bool CBotExprAlpha::Execute(CBotStack* &pj)
 
     if (pile->IfStep()) return false;
 
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), CBotTypString);
+    CBotVar*    var = CBotVar::Create("", CBotTypString);
 
     std::string    chaine = m_token.GetString();
     chaine = chaine.substr(1, chaine.length()-2);    // removes the quotes

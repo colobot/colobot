@@ -1021,17 +1021,17 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
         {
         case CBotTypInt:
         case CBotTypBoolean:
-            pNew = CBotVar::Create(&token, w);                        // creates a variable
+            pNew = CBotVar::Create(token, w);                        // creates a variable
             if (!ReadWord(pf, w)) return false;
             pNew->SetValInt(static_cast<short>(w), defnum);
             break;
         case CBotTypFloat:
-            pNew = CBotVar::Create(&token, w);                        // creates a variable
+            pNew = CBotVar::Create(token, w);                        // creates a variable
             if (!ReadFloat(pf, ww)) return false;
             pNew->SetValFloat(ww);
             break;
         case CBotTypString:
-            pNew = CBotVar::Create(&token, w);                        // creates a variable
+            pNew = CBotVar::Create(token, w);                        // creates a variable
             if (!ReadString(pf, s)) return false;
             pNew->SetValString(s);
             break;
@@ -1050,7 +1050,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
                     CBotVar* p = nullptr;
                     if ( id ) p = CBotVarClass::Find(id) ;
 
-                    pNew = new CBotVarClass(&token, r);                // directly creates an instance
+                    pNew = new CBotVarClass(token, r);                // directly creates an instance
                                                                     // attention cptuse = 0
                     if ( !RestoreState(pf, (static_cast<CBotVarClass*>(pNew))->m_pVar)) return false;
                     pNew->SetIdent(id);
@@ -1068,7 +1068,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
         case CBotTypNullPointer:
             if (!ReadString(pf, s)) return false;
             {
-                pNew = CBotVar::Create(&token, CBotTypResult(w, s));// creates a variable
+                pNew = CBotVar::Create(token, CBotTypResult(w, s));// creates a variable
 //                CBotVarClass* p = nullptr;
                 long id;
                 ReadLong(pf, id);
@@ -1089,7 +1089,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
                 CBotTypResult    r;
                 if (!ReadType(pf, r))  return false;
 
-                pNew = CBotVar::Create(&token, r);                        // creates a variable
+                pNew = CBotVar::Create(token, r);                        // creates a variable
 
                 // returns a copy of the original instance
                 CBotVar* pInstance = nullptr;

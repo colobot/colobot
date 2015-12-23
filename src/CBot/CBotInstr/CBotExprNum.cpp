@@ -72,7 +72,7 @@ CBotInstr* CBotExprNum::Compile(CBotToken* &p, CBotCStack* pStack)
 
     if (pStk->NextToken(p))
     {
-        CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), inst->m_numtype);
+        CBotVar*    var = CBotVar::Create("", inst->m_numtype);
         pStk->SetVar(var);
 
         return pStack->Return(inst, pStk);
@@ -88,7 +88,7 @@ bool CBotExprNum::Execute(CBotStack* &pj)
 
     if (pile->IfStep()) return false;
 
-    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(nullptr), m_numtype);
+    CBotVar*    var = CBotVar::Create("", m_numtype);
 
     std::string    nombre ;
     if (m_token.GetType() == TokenTypDef)

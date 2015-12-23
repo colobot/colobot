@@ -105,7 +105,7 @@ CBotInstr* CBotFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool
             }
         }
 
-        var = CBotVar::Create(vartoken, CBotTypFloat);
+        var = CBotVar::Create(*vartoken, CBotTypFloat);
         var->SetInit(inst->m_expr != nullptr ? CBotVar::InitType::DEF : CBotVar::InitType::UNDEF);
         var->SetUniqNum(
             (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
