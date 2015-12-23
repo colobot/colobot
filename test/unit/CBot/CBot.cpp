@@ -155,6 +155,44 @@ private:
         }
     }
 
+    unsigned int GetLine(const std::string& code, unsigned int pos, std::string& line)
+    {
+        line.clear();
+        unsigned int lineNum = 1;
+        for (unsigned int i = 0; i < pos && i < code.length(); i++)
+        {
+            if (code[i] == '\n')
+            {
+                lineNum++;
+                line.clear();
+                continue;
+            }
+
+            line += code[i];
+        }
+        for (unsigned int i = pos; i < code.length(); i++)
+        {
+            if (code[i] == '\n')
+            {
+                break;
+            }
+
+            line += code[i];
+        }
+
+        return lineNum;
+    }
+
+    std::string GetFormattedLineInfo(const std::string& code, int pos)
+    {
+        std::string line;
+        unsigned int lineNum = GetLine(code, static_cast<unsigned int>(pos), line);
+
+        std::stringstream ss;
+        ss << "Line " << lineNum << ": " << line << std::endl;
+        return ss.str();
+    }
+
 protected:
     void ExecuteTest(const std::string& code, CBotError expectedError = CBotNoErr)
     {
@@ -173,7 +211,7 @@ protected:
             std::stringstream ss;
             if (error != CBotNoErr)
             {
-                FAIL() << "Compile error - " << error << " (" << cursor1 << "-" << cursor2 << ")"; // TODO: Error messages are on Colobot side
+                FAIL() << "Compile error - " << error << " (" << cursor1 << "-" << (cursor2 >= 0 ? cursor2 : cursor1) << ")" << std::endl << GetFormattedLineInfo(code, cursor1); // TODO: Error messages are on Colobot side
             }
             else
             {
@@ -213,11 +251,11 @@ protected:
                 program->GetRunPos(funcName, cursor1, cursor2);
                 if (!funcName.empty())
                 {
-                    ss << "    while executing function " << funcName << " (" << cursor1 << "-" << cursor2 << ")" << std::endl;
+                    ss << "    while executing function " << funcName << " (" << cursor1 << "-" << (cursor2 >= 0 ? cursor2 : cursor1) << ")" << std::endl << GetFormattedLineInfo(code, cursor1);
                 }
-                else if(e.cursor1 >= 0 && e.cursor2 >= 0)
+                else if(e.cursor1 >= 0)
                 {
-                    ss << "    at unknown location " << e.cursor1 << "-" << e.cursor2 << std::endl;
+                    ss << "    at unknown location " << e.cursor1 << "-" << (e.cursor2 >= 0 ? e.cursor2 : e.cursor1) << std::endl << GetFormattedLineInfo(code, e.cursor1);
                 }
                 ss << std::endl;
 
@@ -241,19 +279,19 @@ protected:
 TEST_F(CBotUT, EmptyTest)
 {
     ExecuteTest(
-        "extern void EmptyTest()"
-        "{"
-        "}"
+        "extern void EmptyTest()\n"
+        "{\n"
+        "}\n"
     );
 }
 
 TEST_F(CBotUT, DivideByZero)
 {
     ExecuteTest(
-        "extern void DivideByZero()"
-        "{"
-        "    float a = 5/0;"
-        "}",
+        "extern void DivideByZero()\n"
+        "{\n"
+        "    float a = 5/0;\n"
+        "}\n",
         CBotErrZeroDiv
     );
 }
@@ -261,10 +299,10 @@ TEST_F(CBotUT, DivideByZero)
 TEST_F(CBotUT, MissingSemicolon)
 {
     ExecuteTest(
-        "extern void MissingSemicolon()"
-        "{"
-        "    string a = \"hello\""
-        "}",
+        "extern void MissingSemicolon()\n"
+        "{\n"
+        "    string a = \"hello\"\n"
+        "}\n",
         CBotErrNoTerminator
     );
 }
@@ -272,10 +310,10 @@ TEST_F(CBotUT, MissingSemicolon)
 TEST_F(CBotUT, UndefinedFunction)
 {
     ExecuteTest(
-        "extern void UndefinedFunction()"
-        "{"
-        "    foo();"
-        "}",
+        "extern void UndefinedFunction()\n"
+        "{\n"
+        "    foo();\n"
+        "}\n",
         CBotErrUndefCall
     );
 }
@@ -283,28 +321,166 @@ TEST_F(CBotUT, UndefinedFunction)
 TEST_F(CBotUT, BasicOperations)
 {
     ExecuteTest(
-        "extern void Comparations()"
-        "{"
-        "    ASSERT(true);"
-        "    ASSERT(!false);"
-        "    ASSERT(1 != 0);"
-        "    ASSERT(1 == 1);"
-        "    ASSERT(1 > 0);"
-        "    ASSERT(1 >= 0);"
-        "    ASSERT(1 >= 1);"
-        "    ASSERT(0 < 1);"
-        "    ASSERT(0 <= 1);"
-        "    ASSERT(1 <= 1);"
-        "}"
-        ""
-        "extern void BasicMath()"
-        "{"
-        "    ASSERT(2+2 == 4);"
-        "    ASSERT(4-2 == 2);"
-        "    ASSERT(2*2 == 4);"
-        "    ASSERT(2/2 == 1);"
-        "    ASSERT(5%2 == 1);"
-        "    ASSERT(5**3 == 125);"
-        "}"
+        "extern void Comparations()\n"
+        "{\n"
+        "    ASSERT(true);\n"
+        "    ASSERT(!false);\n"
+        "    ASSERT(1 != 0);\n"
+        "    ASSERT(1 == 1);\n"
+        "    ASSERT(1 > 0);\n"
+        "    ASSERT(1 >= 0);\n"
+        "    ASSERT(1 >= 1);\n"
+        "    ASSERT(0 < 1);\n"
+        "    ASSERT(0 <= 1);\n"
+        "    ASSERT(1 <= 1);\n"
+        "}\n"
+        "\n"
+        "extern void BasicMath()\n"
+        "{\n"
+        "    ASSERT(2+2 == 4);\n"
+        "    ASSERT(4-2 == 2);\n"
+        "    ASSERT(2*2 == 4);\n"
+        "    ASSERT(2/2 == 1);\n"
+        "    ASSERT(5%2 == 1);\n"
+        "    ASSERT(5**3 == 125);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, Functions)
+{
+    ExecuteTest(
+        "bool notThisOne()\n"
+        "{\n"
+        "    return false;\n"
+        "}\n"
+        "bool testFunction()\n"
+        "{\n"
+        "    return true;\n"
+        "}\n"
+        "\n"
+        "extern void Functions()\n"
+        "{\n"
+        "    ASSERT(testFunction());\n"
+        "}\n"
+    );
+}
+
+
+TEST_F(CBotUT, FunctionRecursion)
+{
+    ExecuteTest(
+        "int fact(int x)\n"
+        "{\n"
+        "    if(x == 0) return 1;\n"
+        "    return fact(x-1) * x;\n"
+        "}\n"
+        "\n"
+        "extern void FunctionRecursion()\n"
+        "{\n"
+        "    ASSERT(fact(10) == 3628800);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, FunctionRecursionStackOverflow)
+{
+    ExecuteTest(
+        "extern void StackOverflow()\n"
+        "{\n"
+        "    StackOverflow();\n"
+        "}\n",
+        CBotErrStackOver
+    );
+}
+
+TEST_F(CBotUT, FunctionOverloading)
+{
+    ExecuteTest(
+        "void func(int test)\n"
+        "{\n"
+        "    FAIL();\n"
+        "}\n"
+        "void func(string test)\n"
+        "{\n"
+        "}\n"
+        "\n"
+        "extern void FunctionOverloading()\n"
+        "{\n"
+        "    func(\"5\");\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassConstructor)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    public static int instanceCounter = 0;\n"
+        "    public void TestClass() {\n"
+        "        instanceCounter++;\n"
+        "    }\n"
+        "}\n"
+        "\n"
+        "extern void ClassConstructor()\n"
+        "{\n"
+        "    TestClass t1();\n"
+        "    ASSERT(t1.instanceCounter == 1);\n"
+        "    ASSERT(t1 != null);\n"
+        "    TestClass t2; // not calling the constructor!\n"
+        "    ASSERT(t1.instanceCounter == 1);\n"
+        //"    ASSERT(t2 == null);\n" // TODO: I was pretty sure that's how it worked, but apparently not...
+        "    TestClass t3 = new TestClass();\n"
+        "    ASSERT(t1.instanceCounter == 2);\n"
+        "    ASSERT(t3.instanceCounter == 2);\n"
+        "    ASSERT(t3 != null);\n"
+        "    ASSERT(t3 != t1);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassDestructor)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    public static int instanceCounter = 0;\n"
+        "    public void TestClass() {\n"
+        "        instanceCounter++;\n"
+        "    }\n"
+        "    public void ~TestClass() {\n"
+        "        instanceCounter--;\n"
+        "    }\n"
+        "}\n"
+        "\n"
+        "extern void ClassDestructor()\n"
+        "{\n"
+        "    TestClass t1();\n"
+        "    ASSERT(t1.instanceCounter == 1);\n"
+        "    {\n"
+        "        TestClass t2();\n"
+        "        ASSERT(t2.instanceCounter == 2);\n"
+        "        ASSERT(t1.instanceCounter == 2);\n"
+        "    }\n"
+        "    ASSERT(t1.instanceCounter == 1);\n"
+        "}\n"
+    );
+}
+
+// TODO: This doesn't work
+TEST_F(CBotUT, DISABLED_ClassDestructorNaming)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    public void ~SomethingElse() {}\n"
+        "}\n",
+        static_cast<CBotError>(-1)
+    );
+    ExecuteTest(
+        "public class SomethingElse {\n"
+        "}\n"
+        "public class TestClass2 {\n"
+        "    public void ~SomethingElse() {}\n"
+        "}\n",
+        static_cast<CBotError>(-1)
     );
 }
