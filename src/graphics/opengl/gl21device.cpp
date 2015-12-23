@@ -1253,34 +1253,81 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
 void CGL21Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     int first[], int count[], int drawCount, Color color)
 {
-    // TODO: use glMultiDrawArrays()
+    BindVBO(0);
 
-    for (int i = 0; i < drawCount; i++)
-    {
-        DrawPrimitive(type, vertices + first[i], count[i], color);
-    }
+    Vertex* vs = const_cast<Vertex*>(vertices);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].coord));
+
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].normal));
+
+    glClientActiveTexture(GL_TEXTURE0);
+
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
+
+    glColor4fv(color.Array());
+
+    glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE0
 }
 
 void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
     int first[], int count[], int drawCount, Color color)
 {
-    // TODO: use glMultiDrawArrays()
+    BindVBO(0);
 
-    for (int i = 0; i < drawCount; i++)
-    {
-        DrawPrimitive(type, vertices + first[i], count[i], color);
-    }
+    VertexTex2* vs = const_cast<VertexTex2*>(vertices);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].coord));
+
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].normal));
+
+    glClientActiveTexture(GL_TEXTURE0);
+
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
+
+    glClientActiveTexture(GL_TEXTURE1);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord2));
+
+    glColor4fv(color.Array());
+
+    glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE1
+
+    glClientActiveTexture(GL_TEXTURE0);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
     int first[], int count[], int drawCount)
 {
-    // TODO: use glMultiDrawArrays()
+    BindVBO(0);
 
-    for (int i = 0; i < drawCount; i++)
-    {
-        DrawPrimitive(type, vertices + first[i], count[i]);
-    }
+    VertexCol* vs = const_cast<VertexCol*>(vertices);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].coord));
+
+    glEnableClientState(GL_COLOR_ARRAY);
+    glColorPointer(4, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].color));
+
+    glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
 }
 
 unsigned int CGL21Device::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
