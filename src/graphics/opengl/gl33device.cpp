@@ -1328,6 +1328,39 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 }
 
+void CGL33Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
+    int first[], int count[], int drawCount, Color color)
+{
+    // TODO: use glMultiDrawArrays()
+
+    for (int i = 0; i < drawCount; i++)
+    {
+        DrawPrimitive(type, vertices + first[i], count[i], color);
+    }
+}
+
+void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
+    int first[], int count[], int drawCount, Color color)
+{
+    // TODO: use glMultiDrawArrays()
+
+    for (int i = 0; i < drawCount; i++)
+    {
+        DrawPrimitive(type, vertices + first[i], count[i], color);
+    }
+}
+
+void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
+    int first[], int count[], int drawCount)
+{
+    // TODO: use glMultiDrawArrays()
+
+    for (int i = 0; i < drawCount; i++)
+    {
+        DrawPrimitive(type, vertices + first[i], count[i]);
+    }
+}
+
 unsigned int CGL33Device::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     unsigned int id = 0;

@@ -1250,6 +1250,39 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
     glDisableClientState(GL_COLOR_ARRAY);
 }
 
+void CGL21Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
+    int first[], int count[], int drawCount, Color color)
+{
+    // TODO: use glMultiDrawArrays()
+
+    for (int i = 0; i < drawCount; i++)
+    {
+        DrawPrimitive(type, vertices + first[i], count[i], color);
+    }
+}
+
+void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
+    int first[], int count[], int drawCount, Color color)
+{
+    // TODO: use glMultiDrawArrays()
+
+    for (int i = 0; i < drawCount; i++)
+    {
+        DrawPrimitive(type, vertices + first[i], count[i], color);
+    }
+}
+
+void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
+    int first[], int count[], int drawCount)
+{
+    // TODO: use glMultiDrawArrays()
+
+    for (int i = 0; i < drawCount; i++)
+    {
+        DrawPrimitive(type, vertices + first[i], count[i]);
+    }
+}
+
 unsigned int CGL21Device::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     unsigned int id = ++m_lastVboId;

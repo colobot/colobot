@@ -361,6 +361,18 @@ public:
     //! Renders primitive composed of vertices with solid color
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
 
+    //! Renders primitives composed of lists of vertices with single texture
+    virtual void DrawPrimitives(PrimitiveType type, const Vertex *vertices,
+        int first[], int count[], int drawCount,
+        Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
+    //! Renders primitives composed of lists of vertices with multitexturing (2 textures)
+    virtual void DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
+        int first[], int count[], int drawCount,
+        Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
+    //! Renders primitives composed of lists of vertices with solid color
+    virtual void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
+        int first[], int count[], int drawCount) = 0;
+
     //! Creates a static buffer composed of given primitives with single texture vertices
     virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;
 

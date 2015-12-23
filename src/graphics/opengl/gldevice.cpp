@@ -1273,6 +1273,39 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int
     glDisableClientState(GL_COLOR_ARRAY);
 }
 
+void CGLDevice::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
+    int first[], int count[], int drawCount, Color color)
+{
+    // TODO: use glMultiDrawArrays() for OpenGL 1.4+
+
+    for (int i = 0; i < drawCount; i++)
+    {
+        DrawPrimitive(type, vertices + first[i], count[i], color);
+    }
+}
+
+void CGLDevice::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
+    int first[], int count[], int drawCount, Color color)
+{
+    // TODO: use glMultiDrawArrays() for OpenGL 1.4+
+
+    for (int i = 0; i < drawCount; i++)
+    {
+        DrawPrimitive(type, vertices + first[i], count[i], color);
+    }
+}
+
+void CGLDevice::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
+    int first[], int count[], int drawCount)
+{
+    // TODO: use glMultiDrawArrays() for OpenGL 1.4+
+
+    for (int i = 0; i < drawCount; i++)
+    {
+        DrawPrimitive(type, vertices + first[i], count[i]);
+    }
+}
+
 unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     unsigned int id = 0;

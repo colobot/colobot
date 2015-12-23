@@ -162,6 +162,21 @@ void CNullDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
 {
 }
 
+void CNullDevice::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
+    int first[], int count[], int drawCount, Color color)
+{
+}
+
+void CNullDevice::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
+    int first[], int count[], int drawCount, Color color)
+{
+}
+
+void CNullDevice::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
+    int first[], int count[], int drawCount)
+{
+}
+
 unsigned int CNullDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     return 0;
