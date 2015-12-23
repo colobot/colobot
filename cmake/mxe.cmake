@@ -7,8 +7,6 @@ if((${CMAKE_CROSSCOMPILING}) AND (DEFINED MSYS))
     set(PLATFORM_WINDOWS 1)
     set(PLATFORM_LINUX 0)
     set(PLATFORM_OTHER 0)
-    # Because some tests will not compile
-    set(TESTS OFF)
     # All must be static, CBOT and GLEW too
     set(CBOT_STATIC ON)
     set(GLEW_STATIC ON)
