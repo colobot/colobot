@@ -270,10 +270,8 @@ public:
                             CBotTypResult rCompile(CBotVar*& pVar, void* pUser));
 
     /**
-     * \brief Define a new constant
-     * \param name Name of the constant
-     * \param val Value of the constant
-     * \return true on success, false if unable to define (e.g. already defined)
+     * \copydoc CBotToken::DefineNum()
+     * \see CBotToken::DefineNum()
      */
     static bool DefineNum(const std::string& name, long val);
 

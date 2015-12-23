@@ -55,7 +55,7 @@ CBotInstr* CBotExprNum::Compile(CBotToken* &p, CBotCStack* pStack)
     inst->m_numtype = CBotTypInt;
     if (p->GetType() == TokenTypDef)
     {
-        inst->m_valint = p->GetIdKey();
+        inst->m_valint = p->GetKeywordId();
     }
     else
     {

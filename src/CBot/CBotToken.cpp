@@ -20,6 +20,7 @@
 #include "CBot/CBotToken.h"
 
 #include <cstdarg>
+#include <cassert>
 
 //! \brief Keeps the string corresponding to keyword ID
 //! Map is filled with id-string pars that are needed for CBot language parsing
@@ -136,20 +137,20 @@ CBotToken::CBotToken()
     m_next = nullptr;
     m_prev = nullptr;
     m_type = TokenTypVar;           // at the beginning a default variable type
-    m_IdKeyWord = -1;
+    m_keywordId = -1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotToken::CBotToken(const CBotToken* pSrc)
+CBotToken::CBotToken(const CBotToken& pSrc)
 {
     m_next = nullptr;
     m_prev = nullptr;
 
-    m_Text.clear();
-    m_Sep.clear();
+    m_text.clear();
+    m_sep.clear();
 
     m_type      = TokenTypNone;
-    m_IdKeyWord = 0;
+    m_keywordId = 0;
 
     m_start     = 0;
     m_end       = 0;
@@ -158,10 +159,10 @@ CBotToken::CBotToken(const CBotToken* pSrc)
     {
 
         m_type      = pSrc->m_type;
-        m_IdKeyWord = pSrc->m_IdKeyWord;
+        m_keywordId = pSrc->m_IdKeyWord;
 
-        m_Text      = pSrc->m_Text;
-        m_Sep       = pSrc->m_Sep;
+        m_text = pSrc->m_Text;
+        m_sep = pSrc->m_Sep;
 
         m_start     = pSrc->m_start;
         m_end       = pSrc->m_end;
@@ -169,28 +170,35 @@ CBotToken::CBotToken(const CBotToken* pSrc)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotToken::CBotToken(const std::string& mot, const std::string& sep, int start, int end)
+CBotToken::CBotToken(const std::string& text, const std::string& sep, int start, int end)
 {
-    m_Text  = mot;                  // word (mot) found as token
-    m_Sep   = sep;                  // separator
+    m_text = text;                  // word (mot) found as token
+    m_sep = sep;                  // separator
     m_next  = nullptr;
     m_prev  = nullptr;
     m_start = start;
     m_end   = end;
 
     m_type = TokenTypVar;           // at the beginning a default variable type
-    m_IdKeyWord = -1;
+    m_keywordId = -1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotToken::~CBotToken()
 {
-    delete  m_next;                 // recursive
-    m_next = nullptr;
+    assert(m_prev == nullptr);
+
+    if (m_next != nullptr)
+    {
+        m_next->m_prev = nullptr;
+
+        delete m_next; // recursive
+        m_next = nullptr;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotToken::Free()
+void CBotToken::ClearDefineNum()
 {
     m_defineNum.clear();
 }
@@ -202,11 +210,11 @@ const CBotToken& CBotToken::operator=(const CBotToken& src)
     m_next      = nullptr;
     m_prev      = nullptr;
 
-    m_Text      = src.m_Text;
-    m_Sep       = src.m_Sep;
+    m_text = src.m_text;
+    m_sep = src.m_sep;
 
     m_type      = src.m_type;
-    m_IdKeyWord = src.m_IdKeyWord;
+    m_keywordId = src.m_keywordId;
 
     m_start     = src.m_start;
     m_end       = src.m_end;
@@ -217,14 +225,14 @@ const CBotToken& CBotToken::operator=(const CBotToken& src)
 int CBotToken::GetType()
 {
     if (this == nullptr) return 0;
-    if (m_type == TokenTypKeyWord) return m_IdKeyWord;
+    if (m_type == TokenTypKeyWord) return m_keywordId;
     return m_type;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-long CBotToken::GetIdKey()
+long CBotToken::GetKeywordId()
 {
-    return m_IdKeyWord;
+    return m_keywordId;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -244,19 +252,13 @@ CBotToken* CBotToken::GetPrev()
 ////////////////////////////////////////////////////////////////////////////////
 std::string CBotToken::GetString()
 {
-    return  m_Text;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string CBotToken::GetSep()
-{
-    return  m_Sep;
+    return m_text;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotToken::SetString(const std::string& name)
 {
-    m_Text = name;
+    m_text = name;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -435,9 +437,9 @@ bis:
             if (token[0] == '\"') t->m_type = TokenTypString;
             if (first) t->m_type = TokenTypNone;
 
-            t->m_IdKeyWord = GetKeyWord(token);
-            if (t->m_IdKeyWord > 0) t->m_type = TokenTypKeyWord;
-            else GetKeyDefNum(token, t) ;         // treats DefineNum
+            t->m_keywordId = GetKeyWord(token);
+            if (t->m_keywordId > 0) t->m_type = TokenTypKeyWord;
+            else GetDefineNum(token, t) ;         // treats DefineNum
 
             return t;
         }
@@ -459,9 +461,9 @@ std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
     if (tokenbase == nullptr) return nullptr;
 
     tokenbase->m_start  = pos;
-    pos += tokenbase->m_Text.length();
+    pos += tokenbase->m_text.length();
     tokenbase->m_end    = pos;
-    pos += tokenbase->m_Sep.length();
+    pos += tokenbase->m_sep.length();
 
     const char* pp = p;
     while (nullptr != (nxt = NextToken(p, false)))
@@ -472,7 +474,7 @@ std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
 
         nxt->m_start    = pos;
         pos += (p - pp);                // total size
-        nxt->m_end  = pos - nxt->m_Sep.length();
+        nxt->m_end  = pos - nxt->m_sep.length();
         pp = p;
     }
 
@@ -491,13 +493,13 @@ int CBotToken::GetKeyWord(const std::string& w)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotToken::GetKeyDefNum(const std::string& name, CBotToken* token)
+bool CBotToken::GetDefineNum(const std::string& name, CBotToken* token)
 {
     if (m_defineNum.count(name) == 0)
         return false;
 
     token->m_type = TokenTypDef;
-    token->m_IdKeyWord = m_defineNum[name];
+    token->m_keywordId = m_defineNum[name];
     return true;
 }
 

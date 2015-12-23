@@ -439,7 +439,7 @@ void CBotProgram::Init()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::Free()
 {
-    CBotToken::Free() ;
+    CBotToken::ClearDefineNum() ;
     CBotCall ::Free() ;
     CBotClass::Free() ;
 }
