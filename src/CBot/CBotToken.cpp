@@ -20,7 +20,6 @@
 #include "CBot/CBotToken.h"
 
 #include <cstdarg>
-#include <map>
 
 //! \brief Keeps the string corresponding to keyword ID
 //! Map is filled with id-string pars that are needed for CBot language parsing
@@ -449,7 +448,7 @@ bis:
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotToken* CBotToken::CompileTokens(const std::string& program)
+std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
 {
     CBotToken       *nxt, *prv, *tokenbase;
     const char*     p = program.c_str();
@@ -477,13 +476,7 @@ CBotToken* CBotToken::CompileTokens(const std::string& program)
         pp = p;
     }
 
-    return tokenbase;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CBotToken::Delete(CBotToken* pToken)
-{
-    delete pToken;
+    return std::unique_ptr<CBotToken>(tokenbase);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

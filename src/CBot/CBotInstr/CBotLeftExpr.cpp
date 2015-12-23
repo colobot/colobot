@@ -68,7 +68,7 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
             if (inst->m_nIdent > 0 && inst->m_nIdent < 9000)
             {
                 if ( var->IsPrivate(CBotVar::ProtectionLevel::ReadOnly) &&
-                     !pStk->GetBotCall()->m_bCompileClass)
+                     !pStk->GetProgram()->m_bCompileClass)
                 {
                     pStk->SetError(CBotErrPrivate, p);
                     goto err;
@@ -132,7 +132,7 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
                             if (var != nullptr)
                             {
                                 if ( var->IsPrivate(CBotVar::ProtectionLevel::ReadOnly) &&
-                                     !pStk->GetBotCall()->m_bCompileClass)
+                                     !pStk->GetProgram()->m_bCompileClass)
                                 {
                                     pStk->SetError(CBotErrPrivate, pp);
                                     goto err;

@@ -723,7 +723,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 
                     if ( f != nullptr )
                     {
-                        f->m_pProg = pStack->GetBotCall();
+                        f->m_pProg = pStack->GetProgram();
                         f->m_bSynchro = bSynchro;
                         // replaces the element in the chain
                         f->m_next = pf->m_next;

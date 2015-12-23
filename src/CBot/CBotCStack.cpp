@@ -262,13 +262,13 @@ bool CBotCStack::NextToken(CBotToken* &p)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotCStack::SetBotCall(CBotProgram* p)
+void CBotCStack::SetProgram(CBotProgram* p)
 {
     m_prog = p;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotProgram* CBotCStack::GetBotCall()
+CBotProgram* CBotCStack::GetProgram()
 {
     return m_prog;
 }

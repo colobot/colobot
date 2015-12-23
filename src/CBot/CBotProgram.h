@@ -277,7 +277,7 @@ public:
      */
     static bool DefineNum(const std::string& name, long val);
 
-    /*!
+    /**
      * \brief Save the current execution status into a file
      * \param pf
      * \parblock
@@ -291,7 +291,7 @@ public:
      */
     bool SaveState(FILE* pf);
 
-    /*!
+    /**
      * \brief Restore the execution state from a file
      *
      * The previous program code must already have been recompiled with Compile() before calling this function
@@ -301,7 +301,7 @@ public:
      */
     bool RestoreState(FILE* pf);
 
-    /*!
+    /**
      * \brief GetPosition Gives the position of a routine in the original text
      * the user can select the item to find from the beginning to the end
      * see the above modes in CBotGet.
@@ -321,7 +321,7 @@ public:
                      CBotGet modestart = GetPosExtern,
                      CBotGet modestop = GetPosBloc);
 
-    /*!
+    /**
      * \brief Returns the list of all user-defined functions in this program as instances of CBotFunction
      *
      * This list includes all the functions (not only extern)
@@ -330,10 +330,10 @@ public:
      */
     CBotFunction* GetFunctions();
 
-    /*!
-     * \brief m_bCompileClass
+    /**
+     * \brief true while compiling class
      *
-     * TODO: document this
+     * TODO: refactor this
      */
     bool m_bCompileClass;
 

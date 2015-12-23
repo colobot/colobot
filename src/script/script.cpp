@@ -156,13 +156,6 @@ bool CScript::IsEmpty()
 
 bool CScript::CheckToken()
 {
-    CBotToken*  bt;
-    CBotToken*  allBt;
-    std::string bs;
-    std::string token;
-    int         cursor1, cursor2, i;
-    char        used[100];
-
     if ( !m_object->GetCheckToken() )  return true;
 
     m_error = CBotNoErr;
@@ -171,25 +164,20 @@ bool CScript::CheckToken()
     m_token[0] = 0;
     m_bCompile = false;
 
-    for ( i=0 ; i<m_main->GetObligatoryToken() ; i++ )
-    {
-        used[i] = 0;  // token not used
-    }
+    std::vector<bool> used(m_main->GetObligatoryToken(), false);
 
-    allBt = CBotToken::CompileTokens(m_script.get());
-    bt = allBt;
+    auto tokens = CBotToken::CompileTokens(m_script.get());
+    CBotToken* bt = tokens.get();
     while ( bt != nullptr )
     {
-        bs = bt->GetString();
-        token = bs;
+        std::string token = bt->GetString();
+        int cursor1 = bt->GetStart();
+        int cursor2 = bt->GetEnd();
 
-        cursor1 = bt->GetStart();
-        cursor2 = bt->GetEnd();
-
-        i = m_main->IsObligatoryToken(token.c_str());
+        int i = m_main->IsObligatoryToken(token.c_str());
         if ( i != -1 )
         {
-            used[i] = 1;  // token used
+            used[i] = true;  // token used
         }
 
         if ( !m_main->IsProhibitedToken(token.c_str()) )
@@ -199,7 +187,6 @@ bool CScript::CheckToken()
             m_cursor2 = cursor2;
             strcpy(m_title, "<prohibited>");
             m_mainFunction[0] = 0;
-            CBotToken::Delete(allBt);
             return false;
         }
 
@@ -207,20 +194,18 @@ bool CScript::CheckToken()
     }
 
     // At least once every obligatory instruction?
-    for ( i=0 ; i<m_main->GetObligatoryToken() ; i++ )
+    for (unsigned int i = 0; i < used.size(); i++)
     {
-        if ( used[i] == 0 )  // token not used?
+        if (!used[i])  // token not used?
         {
             strcpy(m_token, m_main->GetObligatoryToken(i));
             m_error = static_cast<CBotError>(ERR_OBLIGATORYTOKEN);
             strcpy(m_title, "<obligatory>");
             m_mainFunction[0] = 0;
-            CBotToken::Delete(allBt);
             return false;
         }
     }
 
-    CBotToken::Delete(allBt);
     return true;
 }
 
@@ -635,7 +620,8 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
     std::string text = std::string(edit->GetText(), edit->GetMaxChar());
     text = text.substr(rangeStart, rangeEnd-rangeStart);
 
-    CBotToken* bt = CBotToken::CompileTokens(text.c_str());
+    auto tokens = CBotToken::CompileTokens(text.c_str());
+    CBotToken* bt = tokens.get();
     while ( bt != nullptr )
     {
         std::string token = bt->GetString();
@@ -684,8 +670,6 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
 
         bt = bt->GetNext();
     }
-
-    CBotToken::Delete(bt);
 }
 
 

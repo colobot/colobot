@@ -213,16 +213,16 @@ public:
     CBotTypResult GetRetType();
 
     /*!
-     * \brief SetBotCall
+     * \brief SetProgram
      * \param p
      */
-    void SetBotCall(CBotProgram* p);
+    void SetProgram(CBotProgram* p);
 
     /*!
-     * \brief GetBotCall
+     * \brief GetProgram
      * \return
      */
-    CBotProgram* GetBotCall();
+    CBotProgram* GetProgram();
 
     /*!
      * \brief CompileCall

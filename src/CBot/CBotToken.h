@@ -22,6 +22,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <memory>
 
 #include "CBot/CBotEnums.h"
 
@@ -165,14 +166,7 @@ public:
      * \return The first token of the linked liste.
      * \todo Replace the error code by an enum.
      */
-    static CBotToken* CompileTokens(const std::string& p);
-
-    /**
-     * \brief Delete Releases the CBotToken linked list.
-     * \deprecated This function is deprecated because it only delete a pointer.
-     * \todo Remove this function.
-     */
-    static void Delete(CBotToken* pToken);
+    static std::unique_ptr<CBotToken> CompileTokens(const std::string& p);
 
     /*!
      * \brief DefineNum This function define a language keyword with an associated

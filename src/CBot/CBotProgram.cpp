@@ -70,13 +70,13 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     m_error = CBotNoErr;
 
     // Step 1. Process the code into tokens
-    CBotToken*  pBaseToken = CBotToken::CompileTokens(program);
-    if ( pBaseToken == nullptr ) return false;
+    auto tokens = CBotToken::CompileTokens(program);
+    if (tokens == nullptr) return false;
 
-    CBotCStack* pStack      = new CBotCStack(nullptr);
-    CBotToken*  p  = pBaseToken->GetNext();                 // skips the first token (separator)
+    auto pStack = std::unique_ptr<CBotCStack>(new CBotCStack(nullptr));
+    CBotToken* p = tokens.get()->GetNext();                 // skips the first token (separator)
 
-    pStack->SetBotCall(this);                               // defined used routines
+    pStack->SetProgram(this);                               // defined used routines
     CBotCall::SetPUser(pUser);
 
     // Step 2. Find all function and class definitions
@@ -87,13 +87,13 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
         if ( p->GetType() == ID_CLASS ||
             ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
         {
-            CBotClass*  nxt = CBotClass::Compile1(p, pStack);
+            CBotClass*  nxt = CBotClass::Compile1(p, pStack.get());
             if (m_classes == nullptr ) m_classes = nxt;
             else m_classes->AddNext(nxt);
         }
         else
         {
-            CBotFunction*   next = CBotFunction::Compile1(p, pStack, nullptr);
+            CBotFunction*   next = CBotFunction::Compile1(p, pStack.get(), nullptr);
             if (m_functions == nullptr ) m_functions = next;
             else m_functions->AddNext(next);
         }
@@ -103,7 +103,6 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
         m_error = pStack->GetError(m_errorStart, m_errorEnd);
         delete m_functions;
         m_functions = nullptr;
-        delete pBaseToken;
         return false;
     }
 
@@ -111,7 +110,7 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
 //  CBotFunction*   temp = nullptr;
     CBotFunction*   next = m_functions;      // rewind the list
 
-    p  = pBaseToken->GetNext();                             // returns to the beginning
+    p  = tokens.get()->GetNext();                             // returns to the beginning
 
     while ( pStack->IsOk() && p != nullptr && p->GetType() != 0 )
     {
@@ -121,12 +120,12 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
             ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
         {
             m_bCompileClass = true;
-            CBotClass::Compile(p, pStack);                  // completes the definition of the class
+            CBotClass::Compile(p, pStack.get());                  // completes the definition of the class
         }
         else
         {
             m_bCompileClass = false;
-            CBotFunction::Compile(p, pStack, next);
+            CBotFunction::Compile(p, pStack.get(), next);
             if (next->IsExtern()) functions.push_back(next->GetName()/* + next->GetParams()*/);
             next->m_pProg = this;                           // keeps pointers to the module
             next = next->Next();
@@ -142,9 +141,6 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
         delete m_functions;
         m_functions = nullptr;
     }
-
-    delete pBaseToken;
-    delete pStack;
 
     return (m_functions != nullptr);
 }

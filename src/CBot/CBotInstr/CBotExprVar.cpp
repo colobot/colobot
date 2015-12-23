@@ -70,7 +70,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, CBotVar::Prot
             if (ident > 0 && ident < 9000)
             {
                 if ( var->IsPrivate(privat) &&
-                     !pStk->GetBotCall()->m_bCompileClass)
+                     !pStk->GetProgram()->m_bCompileClass)
                 {
                     pStk->SetError(CBotErrPrivate, p);
                     goto err;
@@ -140,7 +140,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, CBotVar::Prot
                                 {
                                     i->SetUniqNum(var->GetUniqNum());
                                     if ( var->IsPrivate() &&
-                                     !pStk->GetBotCall()->m_bCompileClass)
+                                     !pStk->GetProgram()->m_bCompileClass)
                                     {
                                         pStk->SetError(CBotErrPrivate, pp);
                                         goto err;
