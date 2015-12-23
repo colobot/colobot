@@ -21,44 +21,6 @@
 
 #include <gtest/gtest.h>
 
-class CBotTestFail : public std::runtime_error {
-public:
-    CBotTestFail(const std::string& message) : runtime_error(message)
-    {
-    }
-
-    CBotTestFail(std::string message, int cursor1, int cursor2) : CBotTestFail(message)
-    {
-        this->cursor1 = cursor1;
-        this->cursor2 = cursor2;
-    }
-
-    int cursor1 = -1;
-    int cursor2 = -1;
-};
-
-CBotTypResult cFail(CBotVar* &var, void* user)
-{
-    if (var != nullptr)
-    {
-        if (var->GetType() != CBotTypString) return CBotTypResult(CBotErrBadString);
-        var = var->GetNext();
-    }
-    if (var != nullptr) return CBotTypResult(CBotErrOverParam);
-    return CBotTypResult(CBotTypVoid);
-}
-
-bool rFail(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    std::string message = "CBot test failed";
-    if (var != nullptr)
-    {
-        message = var->GetValString();
-    }
-
-    throw CBotTestFail(message);
-}
-
 class CBotUT : public testing::Test
 {
 public:
@@ -73,7 +35,45 @@ public:
         CBotProgram::Free();
     }
 
-protected:
+private:
+    class CBotTestFail : public std::runtime_error {
+    public:
+        CBotTestFail(const std::string& message) : runtime_error(message)
+        {
+        }
+
+        CBotTestFail(std::string message, int cursor1, int cursor2) : CBotTestFail(message)
+        {
+            this->cursor1 = cursor1;
+            this->cursor2 = cursor2;
+        }
+
+        int cursor1 = -1;
+        int cursor2 = -1;
+    };
+
+    static CBotTypResult cFail(CBotVar* &var, void* user)
+    {
+        if (var != nullptr)
+        {
+            if (var->GetType() != CBotTypString) return CBotTypResult(CBotErrBadString);
+            var = var->GetNext();
+        }
+        if (var != nullptr) return CBotTypResult(CBotErrOverParam);
+        return CBotTypResult(CBotTypVoid);
+    }
+
+    static bool rFail(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        std::string message = "CBot test failed";
+        if (var != nullptr)
+        {
+            message = var->GetValString();
+        }
+
+        throw CBotTestFail(message);
+    }
+
     // Modified version of PutList from src/script/script.cpp
     // Should be probably moved somewhere into the CBot library
     void PrintVars(std::stringstream& ss, CBotVar* var, const std::string& baseName = "", bool bArray = false)
@@ -136,18 +136,32 @@ protected:
         }
     }
 
+protected:
     void ExecuteTest(const std::string& code, CBotError expectedError = CBotNoErr)
     {
+        CBotError expectedCompileError = expectedError < 6000 ? expectedError : CBotNoErr;
+        CBotError expectedRuntimeError = expectedError >= 6000 ? expectedError : CBotNoErr;
+
         auto program = std::unique_ptr<CBotProgram>(new CBotProgram());
         std::vector<std::string> tests;
         program->Compile(code, tests);
 
         CBotError error;
         int cursor1, cursor2;
-        if (program->GetError(error, cursor1, cursor2))
+        program->GetError(error, cursor1, cursor2);
+        if (error != expectedCompileError)
         {
-            FAIL() << "Compile error - " << error << " (" << cursor1 << "-" << cursor2 << ")"; // TODO: Error messages are on Colobot side
+            std::stringstream ss;
+            if (error != CBotNoErr)
+            {
+                FAIL() << "Compile error - " << error << " (" << cursor1 << "-" << cursor2 << ")"; // TODO: Error messages are on Colobot side
+            }
+            else
+            {
+                FAIL() << "No compile error, expected " << expectedCompileError; // TODO: Error messages are on Colobot side
+            }
         }
+        if (expectedCompileError != CBotNoErr) return;
 
         for (const std::string& test : tests)
         {
@@ -156,7 +170,7 @@ protected:
                 program->Start(test);
                 while (!program->Run());
                 program->GetError(error, cursor1, cursor2);
-                if (error != expectedError)
+                if (error != expectedRuntimeError)
                 {
                     std::stringstream ss;
                     if (error != CBotNoErr)
@@ -165,7 +179,7 @@ protected:
                     }
                     else
                     {
-                        ss << "No runtime error, expected " << expectedError; // TODO: Error messages are on Colobot side
+                        ss << "No runtime error, expected " << expectedRuntimeError; // TODO: Error messages are on Colobot side
                         cursor1 = cursor2 = -1;
                     }
                     throw CBotTestFail(ss.str(), cursor1, cursor2);
@@ -207,15 +221,56 @@ protected:
 
 TEST_F(CBotUT, Test)
 {
-    ExecuteTest("extern void EmptyTest() { }");
+    ExecuteTest(
+        "extern void EmptyTest()"
+        "{"
+        "}"
+    );
 }
 
 TEST_F(CBotUT, DISABLED_TestFail)
 {
-    ExecuteTest("extern void FailingTest() { FAIL(); } extern void AnotherFailingTest() { FAIL(\"This is a message\"); }");
+    ExecuteTest(
+        "extern void FailingTest()"
+        "{"
+        "    FAIL();"
+        "}"
+        "extern void AnotherFailingTest()"
+        "{"
+        "    FAIL(\"This is a message\");"
+        "}"
+    );
 }
 
 TEST_F(CBotUT, DivideByZero)
 {
-    ExecuteTest("extern void DivideByZero() { float a = 5/0; }", CBotErrZeroDiv);
+    ExecuteTest(
+        "extern void DivideByZero()"
+        "{"
+        "    float a = 5/0;"
+        "}",
+        CBotErrZeroDiv
+    );
+}
+
+TEST_F(CBotUT, MissingSemicolon)
+{
+    ExecuteTest(
+        "extern void MissingSemicolon()"
+        "{"
+        "    string a = \"hello\""
+        "}",
+        CBotErrNoTerminator
+    );
+}
+
+TEST_F(CBotUT, UndefinedFunction)
+{
+    ExecuteTest(
+        "extern void UndefinedFunction()"
+        "{"
+        "    foo();"
+        "}",
+        CBotErrUndefCall
+    );
 }
