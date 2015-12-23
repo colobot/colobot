@@ -257,7 +257,7 @@ void CBotProgram::Stop()
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetRunPos(std::string& functionName, int& start, int& end)
 {
-    functionName = nullptr;
+    functionName = "";
     start = end = 0;
     if (m_pStack == nullptr) return false;
 

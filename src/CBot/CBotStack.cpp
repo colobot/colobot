@@ -747,7 +747,7 @@ bool CBotStack::ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBo
     res = CBotCall::DoCall(nIdent, nullptr, ppVar, this, rettype );
     if (res.GetType() >= 0) return res.GetType();
 
-    res = m_prog->GetFunctions()->DoCall(nIdent, nullptr, ppVar, this, token );
+    res = m_prog->GetFunctions()->DoCall(nIdent, "", ppVar, this, token );
     if (res.GetType() >= 0) return res.GetType();
 
     // if not found (recompile?) seeks by name
@@ -828,7 +828,7 @@ void CBotStack::GetRunPos(std::string& FunctionName, int& start, int& end)
 CBotVar* CBotStack::GetStackVars(std::string& FunctionName, int level)
 {
     CBotProgram*    prog = m_prog;                        // current program
-    FunctionName    = nullptr;
+    FunctionName    = "";
 
     // back the stack in the current module
     CBotStack*        p = this;
@@ -844,13 +844,13 @@ CBotVar* CBotStack::GetStackVars(std::string& FunctionName, int level)
 
 
     // descends upon the elements of block
-    while ( p != nullptr && p->m_bBlock != UnknownEnumBlock::UNKNOWN_FALSE ) p = p->m_prev;
+    while ( p != nullptr && p->m_bBlock == UnknownEnumBlock::UNKNOWN_FALSE ) p = p->m_prev;
     // Now p is on the beggining of the top block (with local variables)
 
     while ( p != nullptr && level++ < 0 )
     {
         p = p->m_prev;
-        while ( p != nullptr && p->m_bBlock != UnknownEnumBlock::UNKNOWN_FALSE ) p = p->m_prev;
+        while ( p != nullptr && p->m_bBlock == UnknownEnumBlock::UNKNOWN_FALSE ) p = p->m_prev;
     }
     // Now p is on the block "level"
 
