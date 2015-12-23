@@ -10,7 +10,6 @@ set(SOURCES
         CBotDefParam.cpp
         CBotCallMethode.cpp
         CBotTypResult.cpp
-        CBotKeywordStrings.cpp
         CBotInstr/CBotInstr.cpp
         CBotInstr/CBotInstrUtils.cpp
         CBotInstr/CBotWhile.cpp

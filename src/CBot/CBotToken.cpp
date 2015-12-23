@@ -17,21 +17,120 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotToken.h"
-#include "CBotKeywordStrings.h"
 
-// Local include
-
-// Global include
 #include <cstdarg>
+#include <map>
+
+//! \brief Keeps the string corresponding to keyword ID
+//! Map is filled with id-string pars that are needed for CBot language parsing
+static const std::map<TokenId, const std::string> KEYWORDS = {
+    {ID_IF,         "if"},
+    {ID_ELSE,       "else"},
+    {ID_WHILE,      "while"},
+    {ID_DO,         "do"},
+    {ID_FOR,        "for"},
+    {ID_BREAK,      "break"},
+    {ID_CONTINUE,   "continue"},
+    {ID_SWITCH,     "switch"},
+    {ID_CASE,       "case"},
+    {ID_DEFAULT,    "default"},
+    {ID_TRY,        "try"},
+    {ID_THROW,      "throw"},
+    {ID_CATCH,      "catch"},
+    {ID_FINALLY,    "finally"},
+    {ID_TXT_AND,    "and"},
+    {ID_TXT_OR,     "or"},
+    {ID_TXT_NOT,    "not"},
+    {ID_RETURN,     "return"},
+    {ID_CLASS,      "class"},
+    {ID_EXTENDS,    "extends"},
+    {ID_SYNCHO,     "synchronized"},
+    {ID_NEW,        "new"},
+    {ID_PUBLIC,     "public"},
+    {ID_EXTERN,     "extern"},
+    {ID_STATIC,     "static"},
+    {ID_PROTECTED,  "protected"},
+    {ID_PRIVATE,    "private"},
+    {ID_INT,        "int"},
+    {ID_FLOAT,      "float"},
+    {ID_BOOLEAN,    "boolean"},
+    {ID_STRING,     "string"},
+    {ID_VOID,       "void"},
+    {ID_BOOL,       "bool"},
+    {ID_TRUE,       "true"},
+    {ID_FALSE,      "false"},
+    {ID_NULL,       "null"},
+    {ID_NAN,        "nan"},
+    {ID_OPENPAR,    "("},
+    {ID_CLOSEPAR,   ")"},
+    {ID_OPBLK,      "{"},
+    {ID_CLBLK,      "}"},
+    {ID_SEP,        ";"},
+    {ID_COMMA,      ","},
+    {ID_DOTS,       ":"},
+    {ID_DOT,        "."},
+    {ID_OPBRK,      "["},
+    {ID_CLBRK,      "]"},
+    {ID_DBLDOTS,    "::"},
+    {ID_LOGIC,      "?"},
+    {ID_ADD,        "+"},
+    {ID_SUB,        "-"},
+    {ID_MUL,        "*"},
+    {ID_DIV,        "/"},
+    {ID_ASS,        "="},
+    {ID_ASSADD,     "+="},
+    {ID_ASSSUB,     "-="},
+    {ID_ASSMUL,     "*="},
+    {ID_ASSDIV,     "/="},
+    {ID_ASSOR,      "|="},
+    {ID_ASSAND,     "&="},
+    {ID_ASSXOR,     "^="},
+    {ID_ASSSL,      "<<="},
+    {ID_ASSSR,      ">>>="},
+    {ID_ASSASR,     ">>="},
+    {ID_SL,         "<<"},
+    {ID_SR,         ">>"},
+    {ID_ASR,        ">>"},
+    {ID_INC,        "++"},
+    {ID_DEC,        "--"},
+    {ID_LO,         "<"},
+    {ID_HI,         ">"},
+    {ID_LS,         "<="},
+    {ID_HS,         ">="},
+    {ID_EQ,         "=="},
+    {ID_NE,         "!="},
+    {ID_AND,        "&"},
+    {ID_XOR,        "^"},
+    {ID_OR,         "|"},
+    {ID_LOG_AND,    "&&"},
+    {ID_LOG_OR,     "||"},
+    {ID_LOG_NOT,    "!"},
+    {ID_NOT,        "~"},
+    {ID_MODULO,     "%"},
+    {ID_POWER,      "**"},
+    {ID_ASSMODULO,  "%="},
+    {TX_UNDEF,      "undefined"},
+    {TX_NAN,        "not a number"}
+};
+
+namespace {
+static const std::string emptyString = "";
+}
+const std::string& LoadString(TokenId id)
+{
+    if (KEYWORDS.find(id) != KEYWORDS.end())
+    {
+        return KEYWORDS.at(id);
+    }
+    else
+    {
+        return emptyString;
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector<std::string> CBotToken::m_ListKeyWords;
-int CBotToken::m_ListIdKeyWords[200];
-std::vector<std::string> CBotToken::m_ListKeyDefine;
-long CBotToken::m_ListKeyNums[MAXDEFNUM];
-
+std::map<std::string, long> CBotToken::m_defineNum;
 ////////////////////////////////////////////////////////////////////////////////
 CBotToken::CBotToken()
 {
@@ -94,7 +193,7 @@ CBotToken::~CBotToken()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotToken::Free()
 {
-    m_ListKeyDefine.clear();
+    m_defineNum.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -194,20 +293,6 @@ bool CharInList(const char c, const char* list)
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-bool Char2InList(const char c, const char cc, const char* list)
-{
-    int     i = 0;
-
-    while (true)
-    {
-        if (c == list[i++] &&
-            cc == list[i++]) return true;
-
-        if (list[i] == 0) return false;
-    }
-}
-
 static char    sep1[] = " \r\n\t,:()[]{}-+*/=;><!~^|&%.";
 static char    sep2[] = " \r\n\t";                           // only separators
 static char    sep3[] = ",:()[]{}-+*/=;<>!~^|&%.";           // operational separators
@@ -216,24 +301,23 @@ static char    hexnum[]   = "0123456789ABCDEFabcdef";
 static char    nch[]  = "\"\r\n\t";                          // forbidden in chains
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotToken*  CBotToken::NextToken(char* &program, int& error, bool first)
+CBotToken*  CBotToken::NextToken(const char*& program, bool first)
 {
-    std::string      mot;                // the word which is found
-    std::string      sep;                // separators that are after
-    char            c;
-    bool            stop = first;
+    std::string token; // found token
+    std::string sep;   // separators after the token
+    bool stop = first;
 
     if (*program == 0) return nullptr;
 
-    c   = *(program++);                 // next character
+    char c = *(program++);                 // next character
 
     if (!first)
     {
-        mot = c;                            // built the word
+        token = c;                            // built the word
         c   = *(program++);                 // next character
 
         // special case for strings
-        if ( mot[0] == '\"' )
+        if (token[0] == '\"' )
         {
             while (c != 0 && !CharInList(c, nch))
             {
@@ -244,34 +328,34 @@ CBotToken*  CBotToken::NextToken(char* &program, int& error, bool first)
                     if ( c == 'r' ) c = '\r';
                     if ( c == 't' ) c = '\t';
                 }
-                mot += c;
+                token += c;
                 c = *(program++);
             }
             if ( c == '\"' )
             {
-                mot += c;                           // string is complete
+                token += c;                           // string is complete
                 c   = *(program++);                 // next character
             }
             stop = true;
         }
 
         // special case for numbers
-        if ( CharInList(mot[0], num ))
+        if ( CharInList(token[0], num ))
         {
             bool    bdot = false;   // found a point?
             bool    bexp = false;   // found an exponent?
 
             char*   liste = num;
-            if (mot[0] == '0' && c == 'x')          // hexadecimal value?
+            if (token[0] == '0' && c == 'x')          // hexadecimal value?
             {
-                mot += c;
+                token += c;
                 c   = *(program++);                 // next character
                 liste = hexnum;
             }
 cw:
             while (c != 0 && CharInList(c, liste))
             {
-cc:             mot += c;
+cc:             token += c;
                 c   = *(program++);                 // next character
             }
             if ( liste == num )                     // not for hexadecimal
@@ -280,7 +364,7 @@ cc:             mot += c;
                 if ( !bexp && ( c == 'e' || c == 'E' ) )
                 {
                     bexp = true;
-                    mot += c;
+                    token += c;
                     c   = *(program++);                 // next character
                     if ( c == '-' ||
                          c == '+' ) goto cc;
@@ -291,12 +375,12 @@ cc:             mot += c;
             stop = true;
         }
 
-        if (CharInList(mot[0], sep3))               // an operational separator?
+        if (CharInList(token[0], sep3))               // an operational separator?
         {
-            std::string  motc = mot;
-            while (motc += c, c != 0 && GetKeyWords(motc)>0)    // operand seeks the longest possible
+            std::string  motc = token;
+            while (motc += c, c != 0 && GetKeyWord(motc) > 0)    // operand seeks the longest possible
             {
-                mot += c;                           // build the word
+                token += c;                           // build the word
                 c = *(program++);                   // next character
             }
 
@@ -310,7 +394,7 @@ cc:             mot += c;
     {
         if (stop || c == 0 || CharInList(c, sep1))
         {
-            if (!first && mot.empty()) return nullptr;   // end of the analysis
+            if (!first && token.empty()) return nullptr;   // end of the analysis
 bis:
             while (CharInList(c, sep2))
             {
@@ -346,33 +430,32 @@ bis:
 
             program--;
 
-            CBotToken*  token = new CBotToken(mot, sep);
+            CBotToken* t = new CBotToken(token, sep);
 
-            if (CharInList( mot[0], num )) token->m_type = TokenTypNum;
-            if (mot[0] == '\"')  token->m_type = TokenTypString;
-            if (first) token->m_type = TokenTypNone;
+            if (CharInList(token[0], num )) t->m_type = TokenTypNum;
+            if (token[0] == '\"') t->m_type = TokenTypString;
+            if (first) t->m_type = TokenTypNone;
 
-            token->m_IdKeyWord = GetKeyWords(mot);
-            if (token->m_IdKeyWord > 0) token->m_type = TokenTypKeyWord;
-            else GetKeyDefNum(mot, token) ;         // treats DefineNum
+            t->m_IdKeyWord = GetKeyWord(token);
+            if (t->m_IdKeyWord > 0) t->m_type = TokenTypKeyWord;
+            else GetKeyDefNum(token, t) ;         // treats DefineNum
 
-            return token;
+            return t;
         }
 
-        mot += c;                       // built the word
+        token += c;                       // built the word
         c = *(program++);               // next character
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotToken* CBotToken::CompileTokens(const std::string& program, int& error)
+CBotToken* CBotToken::CompileTokens(const std::string& program)
 {
     CBotToken       *nxt, *prv, *tokenbase;
-    char*           p = const_cast<char*> (program.c_str());
+    const char*     p = program.c_str();
     int             pos = 0;
 
-    error = 0;
-    prv = tokenbase = NextToken(p, error, true);
+    prv = tokenbase = NextToken(p, true);
 
     if (tokenbase == nullptr) return nullptr;
 
@@ -381,28 +464,18 @@ CBotToken* CBotToken::CompileTokens(const std::string& program, int& error)
     tokenbase->m_end    = pos;
     pos += tokenbase->m_Sep.length();
 
-    char* pp = p;
-    while (nullptr != (nxt = NextToken(p, error)))
+    const char* pp = p;
+    while (nullptr != (nxt = NextToken(p, false)))
     {
         prv->m_next = nxt;              // added after
         nxt->m_prev = prv;
         prv = nxt;                      // advance
 
         nxt->m_start    = pos;
-/*      pos += nxt->m_Text.GetLength(); // chain may be shorter (BOA deleted)
-        nxt->m_end  = pos;
-        pos += nxt->m_Sep.GetLength();*/
         pos += (p - pp);                // total size
         nxt->m_end  = pos - nxt->m_Sep.length();
         pp = p;
     }
-
-    // adds a token as a terminator
-    // ( useful for the previous )
-    nxt = new CBotToken();
-    nxt->m_type = TokenTypNone;
-    prv->m_next = nxt;              // added after
-    nxt->m_prev = prv;
 
     return tokenbase;
 }
@@ -414,87 +487,38 @@ void CBotToken::Delete(CBotToken* pToken)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotToken::GetKeyWords(const std::string& w)
+int CBotToken::GetKeyWord(const std::string& w)
 {
-    int     i;
-    int     l = m_ListKeyWords.size();
-
-    if (l == 0)
+    for (const auto& it : KEYWORDS)
     {
-        LoadKeyWords();                         // takes the list for the first time
-        l = m_ListKeyWords.size();
-    }
-
-    for (i = 0; i < l; i++)
-    {
-        if (m_ListKeyWords[i] == w) return m_ListIdKeyWords[ i ];
+        if (it.second == w) return it.first;
     }
 
     return -1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotToken::GetKeyDefNum(const std::string& w, CBotToken*& token)
+bool CBotToken::GetKeyDefNum(const std::string& name, CBotToken* token)
 {
-    int     i;
-    int     l = m_ListKeyDefine.size();
+    if (m_defineNum.count(name) == 0)
+        return false;
 
-    for (i = 0; i < l; i++)
-    {
-        if (m_ListKeyDefine[i] == w)
-        {
-            token->m_IdKeyWord = m_ListKeyNums[i];
-            token->m_type      = TokenTypDef;
-            return true;
-        }
-    }
-
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CBotToken::LoadKeyWords()
-{
-    std::string      s;
-    int             i, n = 0;
-
-    i = TokenKeyWord; //start with keywords of the language
-    while (!(s = LoadString(static_cast<TokenId>(i))).empty())
-    {
-        m_ListKeyWords.push_back(s);
-        m_ListIdKeyWords[n++] = i++;
-    }
-
-
-    i = TokenKeyVal;  //keywords of values
-    while (!(s = LoadString(static_cast<TokenId>(i))).empty())
-    {
-        m_ListKeyWords.push_back(s);
-        m_ListIdKeyWords[n++] = i++;
-    }
-
-    i = TokenKeyOp; //operators
-    while (!(s = LoadString(static_cast<TokenId>(i))).empty())
-    {
-        m_ListKeyWords.push_back(s);
-        m_ListIdKeyWords[n++] = i++;
-    }
+    token->m_type = TokenTypDef;
+    token->m_IdKeyWord = m_defineNum[name];
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotToken::DefineNum(const std::string& name, long val)
 {
-    int     i;
-    int     l = m_ListKeyDefine.size();
-
-    for (i = 0; i < l; i++)
+    if (m_defineNum.count(name) > 0)
     {
-        if (m_ListKeyDefine[i] == name) return false;
+        // TODO: No access to the logger from CBot library :(
+        printf("CBOT WARNING: %s redefined\n", name.c_str());
+        return false;
     }
-    if ( i == MAXDEFNUM ) return false;
 
-    m_ListKeyDefine.push_back( name );
-    m_ListKeyNums[i] = val;
+    m_defineNum[name] = val;
     return true;
 }
 

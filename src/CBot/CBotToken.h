@@ -21,10 +21,9 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 #include "CBot/CBotEnums.h"
-
-#define MAXDEFNUM 1000 // limited number of DefineNum
 
 /**
  * \brief Class representing one token of a program.
@@ -166,17 +165,7 @@ public:
      * \return The first token of the linked liste.
      * \todo Replace the error code by an enum.
      */
-    static CBotToken* CompileTokens(const std::string& p, int& error);
-
-    /*!
-     * \brief NextToken Looking for the next token in the string. The string must
-     * not start with separators. The separator is part of the previous token.
-     * \param [in] program The program string.
-     * \param [out] error The error code.
-     * \param [in] first True if this is the first call false othewise.
-     * \return A CBotTOken.
-     */
-    static CBotToken* NextToken(char* &program, int& error, bool first = false);
+    static CBotToken* CompileTokens(const std::string& p);
 
     /**
      * \brief Delete Releases the CBotToken linked list.
@@ -201,6 +190,17 @@ public:
     static void Free();
 
 private:
+    /*!
+     * \brief NextToken Looking for the next token in the string. The string must
+     * not start with separators. The separator is part of the previous token.
+     * \param [in] program The program string.
+     * \param [out] error The error code.
+     * \param [in] first True if this is the first call false othewise.
+     * \return A CBotTOken.
+     */
+    static CBotToken* NextToken(const char*& program, bool first);
+
+private:
 
     //! The next token in the linked list
     CBotToken* m_next; // following in the list
@@ -221,42 +221,23 @@ private:
     //! The end position of the token in the CBotProgram
     int m_end;
 
-    /*!
-     * \brief GetKeyWords Check if the word is a keyword.
-     * \param w The word to compare.
-     * \return -1 if this is not a keyword the keyword number otherwise.
-     */
-    static int GetKeyWords(const std::string& w);    // is it a keyword?
+    //! Map of all predefined constants (see DefineNum())
+    static std::map<std::string, long> m_defineNum;
 
     /*!
-     * \brief GetKeyDefNum Check if this is a defined word and set the defined
-     * word type in a CBotToken.
-     * \param [in] w The word to compaire.
-     * \param [out] token The token in which the type will be set.
-     * \return True if the defined word is found false otherwise.
+     * \brief Check if the word is a keyword
+     * \param w The word to check
+     * \return the keyword ID, or -1 if this is not a keyword
      */
-    static bool GetKeyDefNum(const std::string& w, CBotToken*& token);
+    static int GetKeyWord(const std::string& w);
 
-    /*!
-     * \brief LoadKeyWords Loads the list of keywords. The list of keyword is
-     * std::string::s_keywordString. This keywords are keywords languages (if, +,
-     * for, while, case, extern ...)
-     * \todo Fixme Figure out how this should work.
+    /**
+     * \brief Resolve a constant defined with DefineNum()
+     * \param name Constant name
+     * \param token Token that we are working on, will be filled with data about found constant
+     * \return true if the constant was found, false otherwise
      */
-    static void LoadKeyWords();
-
-    //! List of keywords of the CBot language (if, +, for, while, case, extern ...)
-    static std::vector<std::string> m_ListKeyWords;
-    //! List of id correponding to the keywords of the CBot language
-    static int m_ListIdKeyWords[200];
-
-    //! List of CBot language error and list of colobot specific keywords
-    //! This keywords are defined in :
-    //!      - void CScriptFunctions::Init()
-    //!      - void CBotProgram::Init()
-    static std::vector<std::string> m_ListKeyDefine;
-    //! List of id correponding to the defined words
-    static long m_ListKeyNums[MAXDEFNUM];
+    static bool GetKeyDefNum(const std::string& name, CBotToken* token);
 
 };
 
@@ -276,3 +257,13 @@ extern bool IsOfType(CBotToken* &p, int type1, int type2 = -1);
  * \return True if the type of the token match one of a parameter.
  */
 extern bool IsOfTypeList(CBotToken* &p, int type1, ...);
+
+
+
+
+/**
+ * \brief LoadString Maps given ID to its string equivalent.
+ * \param id            Provided identifier.
+ * \return              String if found, else NullString.
+ */
+const std::string& LoadString(TokenId id);

@@ -160,7 +160,7 @@ bool CScript::CheckToken()
     CBotToken*  allBt;
     std::string bs;
     std::string token;
-    int         error, cursor1, cursor2, i;
+    int         cursor1, cursor2, i;
     char        used[100];
 
     if ( !m_object->GetCheckToken() )  return true;
@@ -176,7 +176,7 @@ bool CScript::CheckToken()
         used[i] = 0;  // token not used
     }
 
-    allBt = CBotToken::CompileTokens(m_script.get(), error);
+    allBt = CBotToken::CompileTokens(m_script.get());
     bt = allBt;
     while ( bt != nullptr )
     {
@@ -635,8 +635,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
     std::string text = std::string(edit->GetText(), edit->GetMaxChar());
     text = text.substr(rangeStart, rangeEnd-rangeStart);
 
-    int error;
-    CBotToken* bt = CBotToken::CompileTokens(text.c_str(), error);
+    CBotToken* bt = CBotToken::CompileTokens(text.c_str());
     while ( bt != nullptr )
     {
         std::string token = bt->GetString();

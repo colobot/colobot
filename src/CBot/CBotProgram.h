@@ -86,9 +86,9 @@ public:
 
     /**
      * \brief Constructor
-     * \param pInstance Variable to pass to the program as "this"
+     * \param thisVar Variable to pass to the program as "this"
      */
-    CBotProgram(CBotVar* pInstance);
+    CBotProgram(CBotVar* thisVar);
 
     /**
      * \brief Destructor
@@ -113,6 +113,12 @@ public:
 
     /**
      * \brief Compile compiles the program given as string
+     *
+     * Compilation is done in a few steps:
+     * 1. Convert the code into "tokens" - see CBotToken::CompileTokens()
+     * 2. First pass - getting declarations of all functions an classes for use later
+     * 3. Second pass - compiling definitions of all functions and classes
+     *
      * \param program Code to compile
      * \param[out] functions Returns the names of functions declared as extern
      * \param pUser Optional pointer to be passed to compile function (see AddFunction())
@@ -120,17 +126,6 @@ public:
      * \see GetError() to retrieve the error
      */
     bool Compile(const std::string& program, std::vector<std::string>& functions, void* pUser = nullptr);
-
-    /**
-     * \brief Associates an unique identifier with this instance of CBotProgram
-     */
-    void SetIdent(long n);
-
-    /**
-     * \brief Returns the unique identifier
-     * \see SetIdent
-     */
-    long GetIdent();
 
     /**
      * \brief Returns the last error
@@ -344,20 +339,18 @@ public:
 
 private:
     //! All user-defined functions
-    CBotFunction* m_Prog;
+    CBotFunction* m_functions = nullptr;
     //! The entry point function
-    CBotFunction* m_pRun;
+    CBotFunction* m_entryPoint = nullptr;
     //! Classes defined in this program
-    CBotClass* m_pClass;
+    CBotClass* m_classes = nullptr;
     //! Execution stack
-    CBotStack* m_pStack;
+    CBotStack* m_pStack = nullptr;
     //! "this" variable
-    CBotVar* m_pInstance;
+    CBotVar* m_thisVar = nullptr;
     friend class CBotFunction;
 
-    CBotError m_ErrorCode;
-    int m_ErrorStart;
-    int m_ErrorEnd;
-    //! Associated identifier
-    long m_Ident;
+    CBotError m_error = CBotNoErr;
+    int m_errorStart = 0;
+    int m_errorEnd = 0;
 };

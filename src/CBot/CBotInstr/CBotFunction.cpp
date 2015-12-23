@@ -623,7 +623,7 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar** ppVars
         {
             if ( !pt->m_MasterClass.empty() )
             {
-                CBotVar* pInstance = m_pProg->m_pInstance;
+                CBotVar* pInstance = m_pProg->m_thisVar;
                 // make "this" known
                 CBotVar* pThis ;
                 if ( pInstance == nullptr )
@@ -702,7 +702,7 @@ void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar** 
         {
             if ( !pt->m_MasterClass.empty() )
             {
-//                CBotVar* pInstance = m_pProg->m_pInstance;
+//                CBotVar* pInstance = m_pProg->m_thisVar;
                 // make "this" known
                 CBotVar* pThis = pStk1->FindVar("this");
                 pThis->SetInit(CBotVar::InitType::IS_POINTER);

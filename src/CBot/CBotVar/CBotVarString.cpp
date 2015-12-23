@@ -23,7 +23,6 @@
 #include "CBot/CBotEnums.h"
 #include "CBot/CBotToken.h"
 #include "CBot/CBotUtils.h"
-#include "CBot/CBotKeywordStrings.h"
 
 // Local include
 

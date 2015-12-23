@@ -22,7 +22,6 @@
 
 #include "CBot/CBotEnums.h"
 #include "CBot/CBotToken.h"
-#include "CBot/CBotKeywordStrings.h"
 
 #include "CBot/CBotUtils.h"
 

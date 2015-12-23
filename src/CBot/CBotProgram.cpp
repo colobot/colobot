@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotVar/CBotVar.h"
 
 #include "CBot/CBotCall.h"
@@ -29,51 +28,26 @@
 
 #include "CBot/CBotInstr/CBotFunction.h"
 
-#include "CBotKeywordStrings.h"
-
 #include "CBot/stdlib/stdlib.h"
 
-// Local include
-
-// Global include
-#include <stdio.h>
-
-////////////////////////////////////////////////////////////////////////////////
 CBotProgram::CBotProgram()
 {
-    m_Prog      = nullptr;
-    m_pRun      = nullptr;
-    m_pClass    = nullptr;
-    m_pStack    = nullptr;
-    m_pInstance = nullptr;
-
-    m_ErrorCode = CBotNoErr;
-    m_Ident     = 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-CBotProgram::CBotProgram(CBotVar* pInstance)
+CBotProgram::CBotProgram(CBotVar* thisVar)
+: m_thisVar(thisVar)
 {
-    m_Prog      = nullptr;
-    m_pRun      = nullptr;
-    m_pClass    = nullptr;
-    m_pStack    = nullptr;
-    m_pInstance = pInstance;
-
-    m_ErrorCode = CBotNoErr;
-    m_Ident     = 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotProgram::~CBotProgram()
 {
-//  delete  m_pClass;
-    m_pClass->Purge();
-    m_pClass    = nullptr;
+//  delete  m_classes;
+    m_classes->Purge();
+    m_classes = nullptr;
 
     CBotClass::FreeLock(this);
 
-    delete  m_Prog;
+    delete m_functions;
 #if STACKMEM
     m_pStack->Delete();
 #else
@@ -81,25 +55,23 @@ CBotProgram::~CBotProgram()
 #endif
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& functions, void* pUser)
 {
-    int         error = 0;
+    // Cleanup the previously compiled program
     Stop();
 
-//  delete      m_pClass;
-    m_pClass->Purge();      // purge the old definitions of classes
+//  delete      m_classes;
+    m_classes->Purge();      // purge the old definitions of classes
                             // but without destroying the object
-    m_pClass    = nullptr;
-    delete      m_Prog;     m_Prog= nullptr;
+    m_classes = nullptr;
+    delete m_functions; m_functions = nullptr;
 
     functions.clear();
-    m_ErrorCode = CBotNoErr;
+    m_error = CBotNoErr;
 
-    // transforms the program in Tokens
-    CBotToken*  pBaseToken = CBotToken::CompileTokens(program, error);
+    // Step 1. Process the code into tokens
+    CBotToken*  pBaseToken = CBotToken::CompileTokens(program);
     if ( pBaseToken == nullptr ) return false;
-
 
     CBotCStack* pStack      = new CBotCStack(nullptr);
     CBotToken*  p  = pBaseToken->GetNext();                 // skips the first token (separator)
@@ -107,7 +79,7 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     pStack->SetBotCall(this);                               // defined used routines
     CBotCall::SetPUser(pUser);
 
-    // first made a quick pass just to take the headers of routines and classes
+    // Step 2. Find all function and class definitions
     while ( pStack->IsOk() && p != nullptr && p->GetType() != 0)
     {
         if ( IsOfType(p, ID_SEP) ) continue;                // semicolons lurking
@@ -116,27 +88,28 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
             ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
         {
             CBotClass*  nxt = CBotClass::Compile1(p, pStack);
-            if (m_pClass == nullptr ) m_pClass = nxt;
-            else m_pClass->AddNext(nxt);
+            if (m_classes == nullptr ) m_classes = nxt;
+            else m_classes->AddNext(nxt);
         }
         else
         {
             CBotFunction*   next = CBotFunction::Compile1(p, pStack, nullptr);
-            if (m_Prog == nullptr ) m_Prog = next;
-            else m_Prog->AddNext(next);
+            if (m_functions == nullptr ) m_functions = next;
+            else m_functions->AddNext(next);
         }
     }
     if ( !pStack->IsOk() )
     {
-        m_ErrorCode = pStack->GetError(m_ErrorStart, m_ErrorEnd);
-        delete m_Prog;
-        m_Prog = nullptr;
+        m_error = pStack->GetError(m_errorStart, m_errorEnd);
+        delete m_functions;
+        m_functions = nullptr;
         delete pBaseToken;
         return false;
     }
 
+    // Step 3. Real compilation
 //  CBotFunction*   temp = nullptr;
-    CBotFunction*   next = m_Prog;      // rewind the list
+    CBotFunction*   next = m_functions;      // rewind the list
 
     p  = pBaseToken->GetNext();                             // returns to the beginning
 
@@ -165,15 +138,15 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
 
     if ( !pStack->IsOk() )
     {
-        m_ErrorCode = pStack->GetError(m_ErrorStart, m_ErrorEnd);
-        delete m_Prog;
-        m_Prog = nullptr;
+        m_error = pStack->GetError(m_errorStart, m_errorEnd);
+        delete m_functions;
+        m_functions = nullptr;
     }
 
     delete pBaseToken;
     delete pStack;
 
-    return (m_Prog != nullptr);
+    return (m_functions != nullptr);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -186,16 +159,16 @@ bool CBotProgram::Start(const std::string& name)
 #endif
     m_pStack = nullptr;
 
-    m_pRun = m_Prog;
-    while (m_pRun != nullptr)
+    m_entryPoint = m_functions;
+    while (m_entryPoint != nullptr)
     {
-        if ( m_pRun->GetName() == name ) break;
-        m_pRun = m_pRun->m_next;
+        if (m_entryPoint->GetName() == name ) break;
+        m_entryPoint = m_entryPoint->m_next;
     }
 
-    if ( m_pRun == nullptr )
+    if (m_entryPoint == nullptr )
     {
-        m_ErrorCode = CBotErrNoRun;
+        m_error = CBotErrNoRun;
         return false;
     }
 
@@ -213,7 +186,7 @@ bool CBotProgram::Start(const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetPosition(const std::string& name, int& start, int& stop, CBotGet modestart, CBotGet modestop)
 {
-    CBotFunction* p = m_Prog;
+    CBotFunction* p = m_functions;
     while (p != nullptr)
     {
         if ( p->GetName() == name ) break;
@@ -231,9 +204,9 @@ bool CBotProgram::Run(void* pUser, int timer)
 {
     bool    ok;
 
-    if (m_pStack == nullptr || m_pRun == nullptr) goto error;
+    if (m_pStack == nullptr || m_entryPoint == nullptr) goto error;
 
-    m_ErrorCode = CBotNoErr;
+    m_error = CBotNoErr;
 
     m_pStack->Reset(pUser);                         // empty the possible previous error, and resets the timer
     if ( timer >= 0 ) m_pStack->SetTimer(timer);
@@ -246,16 +219,16 @@ bool CBotProgram::Run(void* pUser, int timer)
     if ( ok )
     {
         // returns to normal execution
-        ok = m_pRun->Execute(nullptr, m_pStack, m_pInstance);
+        ok = m_entryPoint->Execute(nullptr, m_pStack, m_thisVar);
     }
 #else
-    ok = m_pRun->Execute(nullptr, m_pStack, m_pInstance);
+    ok = m_pRun->Execute(nullptr, m_pStack, m_thisVar);
 #endif
 
     // completed on a mistake?
     if (!ok && !m_pStack->IsOk())
     {
-        m_ErrorCode = m_pStack->GetError(m_ErrorStart, m_ErrorEnd);
+        m_error = m_pStack->GetError(m_errorStart, m_errorEnd);
 #if STACKMEM
         m_pStack->Delete();
 #else
@@ -265,11 +238,11 @@ bool CBotProgram::Run(void* pUser, int timer)
         return true;                                // execution is finished!
     }
 
-    if ( ok ) m_pRun = nullptr;                        // more function in execution
+    if ( ok ) m_entryPoint = nullptr;                        // more function in execution
     return ok;
 
 error:
-    m_ErrorCode = CBotErrNoRun;
+    m_error = CBotErrNoRun;
     return true;
 }
 
@@ -282,7 +255,7 @@ void CBotProgram::Stop()
     delete m_pStack;
 #endif
     m_pStack = nullptr;
-    m_pRun = nullptr;
+    m_entryPoint = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -314,36 +287,24 @@ void CBotProgram::SetTimer(int n)
 ////////////////////////////////////////////////////////////////////////////////
 CBotError CBotProgram::GetError()
 {
-    return m_ErrorCode;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CBotProgram::SetIdent(long n)
-{
-    m_Ident = n;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-long CBotProgram::GetIdent()
-{
-    return m_Ident;
+    return m_error;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetError(CBotError& code, int& start, int& end)
 {
-    code  = m_ErrorCode;
-    start = m_ErrorStart;
-    end   = m_ErrorEnd;
+    code  = m_error;
+    start = m_errorStart;
+    end   = m_errorEnd;
     return code > 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetError(CBotError& code, int& start, int& end, CBotProgram*& pProg)
 {
-    code    = m_ErrorCode;
-    start   = m_ErrorStart;
-    end     = m_ErrorEnd;
+    code    = m_error;
+    start   = m_errorStart;
+    end     = m_errorEnd;
     pProg   = this;
     return code > 0;
 }
@@ -351,7 +312,7 @@ bool CBotProgram::GetError(CBotError& code, int& start, int& end, CBotProgram*& 
 ////////////////////////////////////////////////////////////////////////////////
 CBotFunction* CBotProgram::GetFunctions()
 {
-    return  m_Prog;
+    return m_functions;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -393,7 +354,8 @@ CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::DefineNum(const std::string& name, long val)
 {
-    return CBotToken::DefineNum(name, val);
+    CBotToken::DefineNum(name, val);
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -405,7 +367,7 @@ bool CBotProgram::SaveState(FILE* pf)
     if ( m_pStack != nullptr )
     {
         if (!WriteWord( pf, 1)) return false;
-        if (!WriteString( pf, m_pRun->GetName() )) return false;
+        if (!WriteString( pf, m_entryPoint->GetName() )) return false;
         if (!m_pStack->SaveState(pf)) return false;
     }
     else
@@ -445,7 +407,7 @@ bool CBotProgram::RestoreState(FILE* pf)
     m_pStack->SetBotCall(this);                     // bases for routines
 
     // restored some states in the stack according to the structure
-    m_pRun->RestoreState(nullptr, m_pStack, m_pInstance);
+    m_entryPoint->RestoreState(nullptr, m_pStack, m_thisVar);
     return true;
 }
 
@@ -458,18 +420,18 @@ int CBotProgram::GetVersion()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::Init()
 {
-    CBotToken::DefineNum("CBotErrZeroDiv",    CBotErrZeroDiv);     // division by zero
-    CBotToken::DefineNum("CBotErrNotInit",    CBotErrNotInit);     // uninitialized variable
-    CBotToken::DefineNum("CBotErrBadThrow",   CBotErrBadThrow);    // throw a negative value
-    CBotToken::DefineNum("CBotErrNoRetVal",   CBotErrNoRetVal);    // function did not return results
-    CBotToken::DefineNum("CBotErrNoRun",      CBotErrNoRun);       // active Run () without a function // TODO: Is this actually a runtime error?
-    CBotToken::DefineNum("CBotErrUndefFunc",  CBotErrUndefFunc);   // Calling a function that no longer exists
-    CBotToken::DefineNum("CBotErrNotClass",   CBotErrNotClass);    // Class no longer exists
-    CBotToken::DefineNum("CBotErrNull",       CBotErrNull);        // Attempted to use a null pointer
-    CBotToken::DefineNum("CBotErrNan",        CBotErrNan);         // Can't do operations on nan
-    CBotToken::DefineNum("CBotErrOutArray",   CBotErrOutArray);    // Attempted access out of bounds of an array
-    CBotToken::DefineNum("CBotErrStackOver",  CBotErrStackOver);   // Stack overflow
-    CBotToken::DefineNum("CBotErrDeletedPtr", CBotErrDeletedPtr);  // Attempted to use deleted object
+    CBotProgram::DefineNum("CBotErrZeroDiv",    CBotErrZeroDiv);     // division by zero
+    CBotProgram::DefineNum("CBotErrNotInit",    CBotErrNotInit);     // uninitialized variable
+    CBotProgram::DefineNum("CBotErrBadThrow",   CBotErrBadThrow);    // throw a negative value
+    CBotProgram::DefineNum("CBotErrNoRetVal",   CBotErrNoRetVal);    // function did not return results
+    CBotProgram::DefineNum("CBotErrNoRun",      CBotErrNoRun);       // active Run () without a function // TODO: Is this actually a runtime error?
+    CBotProgram::DefineNum("CBotErrUndefFunc",  CBotErrUndefFunc);   // Calling a function that no longer exists
+    CBotProgram::DefineNum("CBotErrNotClass",   CBotErrNotClass);    // Class no longer exists
+    CBotProgram::DefineNum("CBotErrNull",       CBotErrNull);        // Attempted to use a null pointer
+    CBotProgram::DefineNum("CBotErrNan",        CBotErrNan);         // Can't do operations on nan
+    CBotProgram::DefineNum("CBotErrOutArray",   CBotErrOutArray);    // Attempted access out of bounds of an array
+    CBotProgram::DefineNum("CBotErrStackOver",  CBotErrStackOver);   // Stack overflow
+    CBotProgram::DefineNum("CBotErrDeletedPtr", CBotErrDeletedPtr);  // Attempted to use deleted object
 
     CBotProgram::AddFunction("sizeof", rSizeOf, cSizeOf );
 

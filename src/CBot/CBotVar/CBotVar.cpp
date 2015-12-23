@@ -355,7 +355,7 @@ void CBotVar::SetInit(CBotVar::InitType initType)
         if ( instance == nullptr )
         {
             instance = new CBotVarClass(nullptr, m_type);
-//            instance->SetClass((static_cast<CBotVarPointer*>(this))->m_pClass);
+//            instance->SetClass((static_cast<CBotVarPointer*>(this))->m_classes);
             SetPointer(instance);
         }
         instance->SetInit(CBotVar::InitType::DEF);
