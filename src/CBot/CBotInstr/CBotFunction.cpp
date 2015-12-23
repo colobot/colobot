@@ -163,7 +163,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
         pp = p;
         if ( IsOfType(p, ID_EXTERN) )
         {
-            func->m_extern = pp;        // for the position of the word "extern"
+            func->m_extern = *pp;        // for the position of the word "extern"
             func->m_bExtern = true;
 //          func->m_bPublic = true;     // therefore also public!
             continue;
@@ -200,9 +200,9 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
                 if (!IsOfType(p, TokenTypVar)) goto bad;
 
             }
-            func->m_openpar = p;
+            func->m_openpar = *p;
             func->m_Param = CBotDefParam::Compile( p, pStk );
-            func->m_closepar = p->GetPrev();
+            func->m_closepar = *(p->GetPrev());
             if (pStk->IsOk())
             {
                 pStk->SetRetType(func->m_retTyp);   // for knowledge what type returns
@@ -234,9 +234,9 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
                 }
 
                 // and compiles the following instruction block
-                func->m_openblk = p;
+                func->m_openblk = *p;
                 func->m_Block   = CBotBlock::Compile(p, pStk, false);
-                func->m_closeblk = p->GetPrev();
+                func->m_closeblk = *(p->GetPrev());
                 if ( pStk->IsOk() )
                 {
                     if ( func->m_bPublic )  // public function, return known for all

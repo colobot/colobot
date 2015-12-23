@@ -45,7 +45,7 @@ CBotVarClass::CBotVarClass( const CBotToken* name, const CBotTypResult& type)
          !type.Eq(CBotTypArrayPointer) &&
          !type.Eq(CBotTypArrayBody)) assert(0);
 
-    m_token        = new CBotToken(name);
+    m_token        = new CBotToken(*name);
     m_next        = nullptr;
     m_pMyThis    = nullptr;
     m_pUserPtr    = OBJECTCREATED;//nullptr;

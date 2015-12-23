@@ -36,7 +36,7 @@ CBotVarArray::CBotVarArray(const CBotToken* name, CBotTypResult& type )
     if ( !type.Eq(CBotTypArrayPointer) &&
          !type.Eq(CBotTypArrayBody)) assert(0);
 
-    m_token        = new CBotToken(name);
+    m_token        = new CBotToken(*name);
     m_next        = nullptr;
     m_pMyThis    = nullptr;
     m_pUserPtr    = nullptr;

@@ -134,7 +134,7 @@ bool CBotTry::Execute(CBotStack* &pj)
         }
         if ( --state <= 0 )
         {
-            if ( pile2->GetVal() == true )
+            if (pile2->GetVal() != 0)
             {
 //              pile0->SetState(1);
 
@@ -210,7 +210,7 @@ void CBotTry::RestoreState(CBotStack* &pj, bool bMain)
         }
         if ( --state <= 0 )
         {
-            if ( pile2->GetVal() == true )
+            if (pile2->GetVal() != 0)
             {
                 pc->RestoreState(pile2, bMain);         // execute the operation
                 return;

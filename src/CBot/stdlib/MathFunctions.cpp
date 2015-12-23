@@ -1,8 +1,28 @@
+/*
+ * This file is part of the Colobot: Gold Edition source code
+ * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * http://epsitec.ch; http://colobot.info; http://github.com/colobot
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://gnu.org/licenses
+ */
+
 #include "CBot/stdlib/stdlib.h"
 
 #include "CBot/CBot.h"
 
 #include <cmath>
+const float PI = 3.14159265358979323846f;
 
 // Instruction "sin(degrees)".
 
@@ -11,7 +31,7 @@ bool rSin(CBotVar* var, CBotVar* result, int& exception, void* user)
     float   value;
 
     value = var->GetValFloat();
-    result->SetValFloat(sinf(value*M_PI/180.0f));
+    result->SetValFloat(sinf(value*PI/180.0f));
     return true;
 }
 
@@ -22,7 +42,7 @@ bool rCos(CBotVar* var, CBotVar* result, int& exception, void* user)
     float   value;
 
     value = var->GetValFloat();
-    result->SetValFloat(cosf(value*M_PI/180.0f));
+    result->SetValFloat(cosf(value*PI/180.0f));
     return true;
 }
 
@@ -33,7 +53,7 @@ bool rTan(CBotVar* var, CBotVar* result, int& exception, void* user)
     float   value;
 
     value = var->GetValFloat();
-    result->SetValFloat(tanf(value*M_PI/180.0f));
+    result->SetValFloat(tanf(value*PI/180.0f));
     return true;
 }
 
@@ -44,7 +64,7 @@ bool raSin(CBotVar* var, CBotVar* result, int& exception, void* user)
     float   value;
 
     value = var->GetValFloat();
-    result->SetValFloat(asinf(value)*180.0f/M_PI);
+    result->SetValFloat(asinf(value)*180.0f/PI);
     return true;
 }
 
@@ -55,7 +75,7 @@ bool raCos(CBotVar* var, CBotVar* result, int& exception, void* user)
     float   value;
 
     value = var->GetValFloat();
-    result->SetValFloat(acosf(value)*180.0f/M_PI);
+    result->SetValFloat(acosf(value)*180.0f/PI);
     return true;
 }
 
@@ -66,7 +86,7 @@ bool raTan(CBotVar* var, CBotVar* result, int& exception, void* user)
     float   value;
 
     value = var->GetValFloat();
-    result->SetValFloat(atanf(value)*180.0f/M_PI);
+    result->SetValFloat(atanf(value)*180.0f/PI);
     return true;
 }
 
@@ -78,7 +98,7 @@ bool raTan2(CBotVar* var, CBotVar* result, int& exception, void* user)
     var = var->GetNext();
     float x = var->GetValFloat();
 
-    result->SetValFloat(atan2(y, x) * 180.0f / M_PI);
+    result->SetValFloat(atan2(y, x) * 180.0f / PI);
     return true;
 }
 

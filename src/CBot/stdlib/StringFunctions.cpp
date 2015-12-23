@@ -17,17 +17,12 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/stdlib/stdlib.h"
 
 #include "CBot/CBot.h"
 
 #include "CBot/CBotUtils.h"
 
-
-// Local include
-
-// Global include
 #include <boost/algorithm/string.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////

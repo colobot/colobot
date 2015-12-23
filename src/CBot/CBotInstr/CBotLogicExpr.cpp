@@ -56,7 +56,7 @@ bool CBotLogicExpr::Execute(CBotStack* &pStack)
         if (!pStk1->SetState(1)) return false;
     }
 
-    if ( pStk1->GetVal() == true )
+    if (pStk1->GetVal() != 0)
     {
         if ( !m_op1->Execute(pStk1) ) return false;
     }
@@ -82,7 +82,7 @@ void CBotLogicExpr::RestoreState(CBotStack* &pStack, bool bMain)
         return;
     }
 
-    if ( pStk1->GetVal() == true )
+    if (pStk1->GetVal() != 0)
     {
         m_op1->RestoreState(pStk1, bMain);
     }

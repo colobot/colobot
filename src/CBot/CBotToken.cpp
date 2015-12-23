@@ -134,39 +134,19 @@ std::map<std::string, long> CBotToken::m_defineNum;
 ////////////////////////////////////////////////////////////////////////////////
 CBotToken::CBotToken()
 {
-    m_next = nullptr;
-    m_prev = nullptr;
-    m_type = TokenTypVar;           // at the beginning a default variable type
-    m_keywordId = -1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotToken::CBotToken(const CBotToken& pSrc)
 {
-    m_next = nullptr;
-    m_prev = nullptr;
+    m_type      = pSrc.m_type;
+    m_keywordId = pSrc.m_keywordId;
 
-    m_text.clear();
-    m_sep.clear();
+    m_text      = pSrc.m_text;
+    m_sep       = pSrc.m_sep;
 
-    m_type      = TokenTypNone;
-    m_keywordId = 0;
-
-    m_start     = 0;
-    m_end       = 0;
-
-    if ( pSrc != nullptr )
-    {
-
-        m_type      = pSrc->m_type;
-        m_keywordId = pSrc->m_IdKeyWord;
-
-        m_text = pSrc->m_Text;
-        m_sep = pSrc->m_Sep;
-
-        m_start     = pSrc->m_start;
-        m_end       = pSrc->m_end;
-    }
+    m_start     = pSrc.m_start;
+    m_end       = pSrc.m_end;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

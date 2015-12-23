@@ -200,23 +200,23 @@ private:
 private:
 
     //! The next token in the linked list
-    CBotToken* m_next;
+    CBotToken* m_next = nullptr;
     //! The previous token in the linked list
-    CBotToken* m_prev;
+    CBotToken* m_prev = nullptr;
     //! The token type
-    TokenType m_type;
+    TokenType m_type = TokenTypVar;
     //! The id of the keyword
-    long m_keywordId;
+    long m_keywordId = -1;
 
     //! The token string
-    std::string m_text;
+    std::string m_text = "";
     //! The separator that appeared after this token
-    std::string m_sep;
+    std::string m_sep = "";
 
     //! The strat position of the token in the CBotProgram
-    int m_start;
+    int m_start = 0;
     //! The end position of the token in the CBotProgram
-    int m_end;
+    int m_end = 0;
 
     //! Map of all defined constants (see DefineNum())
     static std::map<std::string, long> m_defineNum;

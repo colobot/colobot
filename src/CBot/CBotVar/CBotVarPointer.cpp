@@ -40,7 +40,7 @@ CBotVarPointer::CBotVarPointer(const CBotToken* name, CBotTypResult& type )
          !type.Eq(CBotTypClass)   &&                    // for convenience accepts Class and Intrinsic
          !type.Eq(CBotTypIntrinsic) ) assert(0);
 
-    m_token        = new CBotToken(name);
+    m_token        = new CBotToken(*name);
     m_next        = nullptr;
     m_pMyThis    = nullptr;
     m_pUserPtr    = nullptr;

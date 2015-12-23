@@ -66,7 +66,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotNew* inst = new CBotNew();
     inst->SetToken(pp);
 
-    inst->m_vartoken = p;
+    inst->m_vartoken = *p;
     p = p->GetNext();
 
     // creates the object on the "job"

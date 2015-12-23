@@ -31,7 +31,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 CBotVarString::CBotVarString( const CBotToken* name )
 {
-    m_token    = new CBotToken(name);
+    m_token    = new CBotToken(*name);
     m_next    = nullptr;
     m_pMyThis = nullptr;
     m_pUserPtr = nullptr;
