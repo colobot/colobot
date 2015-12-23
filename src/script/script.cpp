@@ -667,10 +667,6 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
         {
             color = Gfx::FONT_HIGHLIGHT_KEYWORD;
         }
-        else if (type >= TokenKeyDeclare && type < TokenKeyDeclare+100) // TODO: no idea :P seems to never happen
-        {
-            color = Gfx::FONT_HIGHLIGHT_TYPE;
-        }
         else if (type >= TokenKeyVal && type < TokenKeyVal+100) // true, false, null, nan
         {
             color = Gfx::FONT_HIGHLIGHT_CONST;

@@ -50,7 +50,7 @@ CBotToken::CBotToken(const CBotToken* pSrc)
     m_Text.clear();
     m_Sep.clear();
 
-    m_type      = 0;
+    m_type      = TokenTypNone;
     m_IdKeyWord = 0;
 
     m_start     = 0;
@@ -350,7 +350,7 @@ bis:
 
             if (CharInList( mot[0], num )) token->m_type = TokenTypNum;
             if (mot[0] == '\"')  token->m_type = TokenTypString;
-            if (first) token->m_type = 0;
+            if (first) token->m_type = TokenTypNone;
 
             token->m_IdKeyWord = GetKeyWords(mot);
             if (token->m_IdKeyWord > 0) token->m_type = TokenTypKeyWord;
@@ -400,7 +400,7 @@ CBotToken* CBotToken::CompileTokens(const std::string& program, int& error)
     // adds a token as a terminator
     // ( useful for the previous )
     nxt = new CBotToken();
-    nxt->m_type = 0;
+    nxt->m_type = TokenTypNone;
     prv->m_next = nxt;              // added after
     nxt->m_prev = prv;
 
@@ -459,14 +459,7 @@ void CBotToken::LoadKeyWords()
     int             i, n = 0;
 
     i = TokenKeyWord; //start with keywords of the language
-    while (!(s = LoadString(static_cast<EID>(i))).empty())
-    {
-        m_ListKeyWords.push_back(s);
-        m_ListIdKeyWords[n++] = i++;
-    }
-
-    i = TokenKeyDeclare; //keywords of declarations
-    while (!(s = LoadString(static_cast<EID>(i))).empty())
+    while (!(s = LoadString(static_cast<TokenId>(i))).empty())
     {
         m_ListKeyWords.push_back(s);
         m_ListIdKeyWords[n++] = i++;
@@ -474,14 +467,14 @@ void CBotToken::LoadKeyWords()
 
 
     i = TokenKeyVal;  //keywords of values
-    while (!(s = LoadString(static_cast<EID>(i))).empty())
+    while (!(s = LoadString(static_cast<TokenId>(i))).empty())
     {
         m_ListKeyWords.push_back(s);
         m_ListIdKeyWords[n++] = i++;
     }
 
     i = TokenKeyOp; //operators
-    while (!(s = LoadString(static_cast<EID>(i))).empty())
+    while (!(s = LoadString(static_cast<TokenId>(i))).empty())
     {
         m_ListKeyWords.push_back(s);
         m_ListIdKeyWords[n++] = i++;
@@ -542,4 +535,3 @@ bool IsOfTypeList(CBotToken* &p, int type1, ...)
         }
     }
 }
-

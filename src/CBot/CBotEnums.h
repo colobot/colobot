@@ -65,11 +65,12 @@ enum CBotGet
 };
 
 /**
- * \enum EID
+ * \enum TokenId
  * \brief This enum contains possible token types
  */
-enum EID
+enum TokenId
 {
+    TokenKeyWord = 2000, //!< keywords
     ID_IF = 2000,
     ID_ELSE,
     ID_WHILE,
@@ -104,11 +105,13 @@ enum EID
     ID_VOID,
     ID_BOOL,
 
+    TokenKeyVal = 2200, //!< keywords that represent values (true, false, null, nan)
     ID_TRUE = 2200,
     ID_FALSE,
     ID_NULL,
     ID_NAN,
 
+    TokenKeyOp = 2300, //!< operators
     ID_OPENPAR = 2300,
     ID_CLOSEPAR,
     ID_OPBLK,
@@ -157,8 +160,22 @@ enum EID
     ID_MODULO,
     ID_POWER,
     ID_ASSMODULO,
+
     TX_UNDEF = 4000,
     TX_NAN
+};
+
+/**
+ * \enum TokenType
+ * \brief Types of tokens
+ */
+enum TokenType {
+    TokenTypNone = 0,
+    TokenTypKeyWord = 1, //!< keyword of the language (see TokenKeyWord)
+    TokenTypNum = 2,     //!< number
+    TokenTypString = 3,  //!< string
+    TokenTypVar = 4,     //!< a variable name
+    TokenTypDef = 5      //!< value according DefineNum
 };
 
 /**

@@ -22,40 +22,43 @@
 #include <vector>
 #include <string>
 
-/////////////////////////////////////////////////////////////////////////////////////
-// Token management (tokens)
-
-#define TokenTypKeyWord 1    // a keyword of the language (see TokenKeyWord)
-#define TokenTypNum     2    // number
-#define TokenTypString  3    // string
-#define TokenTypVar     4    // a variable name
-#define TokenTypDef     5    // value according DefineNum
-
-#define TokenKeyWord    2000 // keywords of the language
-#define TokenKeyDeclare 2100 // keywords of declarations (int, float,..)
-#define TokenKeyVal     2200 // keywords representing the value (true, false, null, nan)
-#define TokenKeyOp      2300 // operators
+#include "CBot/CBotEnums.h"
 
 #define MAXDEFNUM 1000 // limited number of DefineNum
 
 /**
- * \class CBotToken
- * Responsible for token management. A CBot program is a text string. This string
- * is first transformed into a list of token. It will only treat the case as an
- * error where there is an illegal character in a string.
- * For example :
- *     int var = 3 * ( pos.y + x )
- *  is decomposed into (each line is a token)
- *      int
- *      var
- *      =
- *      3
- *      *
- *      (
- *      pos.y
- *      +
- *      x
- *      )
+ * \brief Class representing one token of a program.
+ *
+ * A CBot program starts as a text string. This string is first transformed into a list of tokens.
+ *
+ * \section Example Example
+ * This code:
+ * \code
+ *     int var = 3 * ( pos.y + x );
+ *     string test = "Hello world";
+ * \endcode
+ *
+ * Is decomposed into (each line is a token, separate CBotToken instance):
+ * \code
+ *     int
+ *     var
+ *     =
+ *     3
+ *     *
+ *     (
+ *     pos
+ *     .
+ *     y
+ *     +
+ *     x
+ *     )
+ *     ;
+ *     string
+ *     test
+ *     =
+ *     "Hello world"
+ *     ;
+ * \endcode
  */
 
 class CBotToken
@@ -204,7 +207,7 @@ private:
     //! The previous token in the linked list
     CBotToken* m_prev;
     //! The token type
-    int m_type; // type of Token
+    TokenType m_type; // type of Token
     //! The id of the keyword
     long m_IdKeyWord;
 

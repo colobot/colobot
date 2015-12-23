@@ -9,4 +9,4 @@
  * \param id            Provided identifier.
  * \return              String if found, else NullString.
  */
-const std::string& LoadString(EID id);
+const std::string& LoadString(TokenId id);
