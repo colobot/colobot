@@ -429,7 +429,7 @@ void CBotProgram::Init()
     CBotProgram::DefineNum("CBotErrStackOver",  CBotErrStackOver);   // Stack overflow
     CBotProgram::DefineNum("CBotErrDeletedPtr", CBotErrDeletedPtr);  // Attempted to use deleted object
 
-    CBotProgram::AddFunction("sizeof", rSizeOf, cSizeOf );
+    CBotProgram::AddFunction("sizeof", rSizeOf, cSizeOf);
 
     InitStringFunctions();
     InitMathFunctions();

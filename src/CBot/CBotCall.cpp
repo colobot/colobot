@@ -62,6 +62,7 @@ CBotCall::~CBotCall()
 void CBotCall::Free()
 {
     delete CBotCall::m_ListCalls;
+    m_ListCalls = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
