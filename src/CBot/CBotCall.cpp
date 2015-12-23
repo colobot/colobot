@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotCall.h"
 
 #include "CBot/CBotToken.h"
@@ -28,279 +27,153 @@
 #include "CBot/CBotVar/CBotVar.h"
 
 
-// Local include
+std::map<std::string, std::unique_ptr<CBotCall>> CBotCall::m_list = std::map<std::string, std::unique_ptr<CBotCall>>();
+void* CBotCall::m_user = nullptr;
 
-// Global include
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-
-CBotCall* CBotCall::m_ListCalls = nullptr;
-void* CBotCall::m_pUser = nullptr;
-
-////////////////////////////////////////////////////////////////////////////////
-CBotCall::CBotCall(const std::string& name,
-                   bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                   CBotTypResult rCompile(CBotVar*& pVar, void* pUser))
+CBotCall::CBotCall(const std::string& name, RuntimeFunc rExec, CompileFunc rCompile)
 {
-    m_name       = name;
-    m_rExec      = rExec;
-    m_rComp      = rCompile;
-    m_nFuncIdent = CBotVar::NextUniqNum();
+    m_name  = name;
+    m_rExec = rExec;
+    m_rComp = rCompile;
+    m_ident = CBotVar::NextUniqNum();
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotCall::~CBotCall()
 {
 }
 
-////////////////////////////////////////////////////////////////////////////////
-void CBotCall::Free()
+void CBotCall::Clear()
 {
-    delete CBotCall::m_ListCalls;
-    m_ListCalls = nullptr;
+    m_list.clear();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-bool CBotCall::AddFunction(const std::string& name,
-                           bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                           CBotTypResult rCompile(CBotVar*& pVar, void* pUser))
+bool CBotCall::AddFunction(const std::string& name, RuntimeFunc rExec, CompileFunc rCompile)
 {
-    CBotCall*   p = m_ListCalls;
-    CBotCall*   pp = nullptr;
-
-    if ( p != nullptr ) while ( p->m_next != nullptr )
-    {
-        if ( p->GetName() == name )
-        {
-            // frees redefined function
-            if ( pp ) pp->m_next = p->m_next;
-            else      m_ListCalls = p->m_next;
-            pp = p;
-            p = p->m_next;
-            pp->m_next = nullptr;  // not to destroy the following list
-            delete pp;
-            continue;
-        }
-        pp = p;             // previous pointer
-        p = p->m_next;
-    }
-
-    pp = new CBotCall(name, rExec, rCompile);
-
-    if (p) p->m_next = pp;
-    else m_ListCalls = pp;
-
+    m_list[name] = std::unique_ptr<CBotCall>(new CBotCall(name, rExec, rCompile));
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotTypResult CBotCall::CompileCall(CBotToken* &p, CBotVar** ppVar, CBotCStack* pStack, long& nIdent)
 {
     nIdent = 0;
-    CBotCall*   pt = m_ListCalls;
-    std::string  name = p->GetString();
+    if (m_list.count(p->GetString()) == 0)
+        return -1;
 
-    while ( pt != nullptr )
+    CBotCall* pt = m_list[p->GetString()].get();
+    nIdent = pt->m_ident;
+
+    std::unique_ptr<CBotVar> args = std::unique_ptr<CBotVar>(MakeListVars(ppVar));
+    CBotVar* var = args.get(); // TODO: This shouldn't be a reference
+    CBotTypResult r = pt->m_rComp(var, m_user);
+
+    // if a class is returned, it is actually a pointer
+    if (r.GetType() == CBotTypClass) r.SetType(CBotTypPointer);
+
+    if (r.GetType() > 20) // error?
     {
-        if ( pt->m_name == name )
-        {
-            CBotVar*    pVar = MakeListVars(ppVar);
-            CBotVar*    pVar2 = pVar;
-            CBotTypResult r = pt->m_rComp(pVar2, m_pUser);
-            int ret = r.GetType();
-
-            // if a class is returned, it is actually a pointer
-            if ( ret == CBotTypClass ) r.SetType( ret = CBotTypPointer );
-
-            if ( ret > 20 )
-            {
-                if (pVar2) pStack->SetError(static_cast<CBotError>(ret), p /*pVar2->GetToken()*/ );
-            }
-            delete pVar;
-            nIdent = pt->m_nFuncIdent;
-            return r;
-        }
-        pt = pt->m_next;
+        pStack->SetError(static_cast<CBotError>(r.GetType()), p);
     }
-    return -1;
+
+    return r;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-void CBotCall::SetPUser(void* pUser)
+void CBotCall::SetUserPtr(void* pUser)
 {
-    m_pUser = pUser;
+    m_user = pUser;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool CBotCall::CheckCall(const std::string& name)
 {
-    CBotCall* p = m_ListCalls;
-
-    while ( p != nullptr )
-    {
-        if ( name == p->GetName() ) return true;
-        p = p->m_next;
-    }
-    return false;
+    return m_list.count(name) > 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-std::string CBotCall::GetName()
-{
-    return  m_name;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int CBotCall::DoCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack* pStack, CBotTypResult& rettype)
 {
-    CBotCall*   pt = m_ListCalls;
+    CBotCall*   pt = nullptr;
 
-    if ( nIdent ) while ( pt != nullptr )
+    if (nIdent > 0)
     {
-        if ( pt->m_nFuncIdent == nIdent )
+        for (const auto& it : m_list)
         {
-            goto fund;
-        }
-        pt = pt->m_next;
-    }
-
-    pt = m_ListCalls;
-
-    if ( token != nullptr )
-    {
-        std::string name = token->GetString();
-        while ( pt != nullptr )
-        {
-            if ( pt->m_name == name )
+            if (it.second->m_ident == nIdent)
             {
-                nIdent = pt->m_nFuncIdent;
-                goto fund;
+                pt = it.second.get();
             }
-            pt = pt->m_next;
         }
     }
 
-    return -1;
-
-fund:
-#if !STACKRUN
-    // lists the parameters depending on the contents of the stack (pStackVar)
-
-    CBotVar*    pVar = MakeListVars(ppVar, true);
-    CBotVar*    pVarToDelete = pVar;
-
-    // creates a variable to the result
-    CBotVar*    pResult = rettype.Eq(0) ? nullptr : CBotVar::Create("", rettype);
-
-    CBotVar*    pRes = pResult;
-    int         Exception = 0;
-    int res = pt->m_rExec(pVar, pResult, Exception, pStack->GetPUser());
-
-    if ( pResult != pRes ) delete pRes; // different result if made
-    delete pVarToDelete;
-
-    if (res == false)
+    if (pt == nullptr)
     {
-        if (Exception!=0)
+        if (token != nullptr)
         {
-            pStack->SetError(Exception, token);
+            if (m_list.count(token->GetString()) > 0)
+            {
+                pt = m_list[token->GetString()].get();
+                nIdent = pt->m_ident;
+            }
         }
-        delete pResult;
-        return false;
     }
-    pStack->SetVar(pResult);
 
-    if ( rettype.GetType() > 0 && pResult == nullptr )
-    {
-        pStack->SetError(CBotErrNoRetVal, token);
-    }
-    nIdent = pt->m_nFuncIdent;
-    return true;
-
-#else
+    if (pt == nullptr)
+        return -1;
 
     CBotStack*  pile = pStack->AddStackEOX(pt);
-    if ( pile == EOX ) return true;
+    if (pile == EOX) return true;
 
     // lists the parameters depending on the contents of the stack (pStackVar)
-
     CBotVar*    pVar = MakeListVars(ppVar, true);
-//    CBotVar*    pVarToDelete = pVar;
 
     // creates a variable to the result
-    CBotVar*    pResult = rettype.Eq(0) ? nullptr : CBotVar::Create("", rettype);
+    CBotVar*    pResult = rettype.Eq(CBotTypVoid) ? nullptr : CBotVar::Create("", rettype);
 
-    pile->SetVar( pVar );
+    pile->SetVar(pVar);
 
     CBotStack*  pile2 = pile->AddStack();
-    pile2->SetVar( pResult );
+    pile2->SetVar(pResult);
 
-    pile->SetError(CBotNoErr, token);           // for the position on error + away
-    return pt->Run( pStack );
-
-#endif
+    pile->SetError(CBotNoErr, token); // save token for the position in case of error
+    return pt->Run(pStack);
 
 }
 
-#if STACKRUN
-
-////////////////////////////////////////////////////////////////////////////////
 bool CBotCall::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack* pStack)
 {
-    CBotCall*   pt = m_ListCalls;
+    if (m_list.count(token->GetString()) == 0)
+        return false;
 
-    {
-        std::string name = token->GetString();
-        while ( pt != nullptr )
-        {
-            if ( pt->m_name == name )
-            {
-                nIdent = pt->m_nFuncIdent;
+    CBotCall* pt = m_list[token->GetString()].get();
+    nIdent = pt->m_ident;
 
-                CBotStack*  pile = pStack->RestoreStackEOX(pt);
-                if ( pile == nullptr ) return true;
+    CBotStack*  pile = pStack->RestoreStackEOX(pt);
+    if ( pile == nullptr ) return true;
 
- //               CBotStack*  pile2 = pile->RestoreStack();
-                pile->RestoreStack();
-                return true;
-            }
-            pt = pt->m_next;
-        }
-    }
-
-    return false;
+    pile->RestoreStack();
+    return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool CBotCall::Run(CBotStack* pStack)
 {
     CBotStack*  pile = pStack->AddStackEOX(this);
     if ( pile == EOX ) return true;
-    CBotVar*    pVar = pile->GetVar();
+    CBotVar* args = pile->GetVar();
 
-    CBotStack*  pile2 = pile->AddStack();
-    CBotVar*    pResult = pile2->GetVar();
-    CBotVar*    pRes = pResult;
+    CBotStack* pile2 = pile->AddStack();
 
-    int         Exception = 0; // TODO: change this to CBotError
-    int res = m_rExec(pVar, pResult, Exception, pStack->GetPUser());
+    CBotVar* result = pile2->GetVar();
 
-    if (res == false)
+    int exception = CBotNoErr; // TODO: Change to CBotError
+    bool res = m_rExec(args, result, exception, pStack->GetPUser());
+
+    if (!res)
     {
-        if (Exception!=0)
+        if (exception != CBotNoErr)
         {
-            pStack->SetError(static_cast<CBotError>(Exception));
+            pStack->SetError(static_cast<CBotError>(exception));
         }
-        if ( pResult != pRes ) delete pResult;  // different result if made
         return false;
     }
 
-    if ( pResult != nullptr ) pStack->SetCopyVar( pResult );
-    if ( pResult != pRes ) delete pResult;  // different result if made
+    if (result != nullptr) pStack->SetCopyVar(result);
 
     return true;
 }
-
-#endif

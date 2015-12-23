@@ -186,7 +186,7 @@ enum TokenType {
  *
  * Also note that these can't overlap with CBotType, see CBotTypResult for explanation
  */
-enum CBotError
+enum CBotError : int
 {
     CBotNoErr = 0,
 

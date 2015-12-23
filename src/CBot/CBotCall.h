@@ -20,8 +20,12 @@
 #pragma once
 
 #include "CBot/CBotUtils.h"
+#include "CBot/CBotEnums.h"
+#include "CBot/CBotDefines.h"
 
 #include <string>
+#include <map>
+#include <memory>
 
 class CBotStack;
 class CBotCStack;
@@ -29,114 +33,92 @@ class CBotVar;
 class CBotTypResult;
 class CBotToken;
 
-#define    STACKRUN    1  //! \def return execution directly on a suspended routine
-
-/*!
- * \brief The CBotCall class. Class for routine calls (external).
+/**
+ * \brief Class used for external calls
+ *
+ * \see CBotProgram::AddFunction() for information on how to add your functions to this list
  */
 class CBotCall : public CBotLinkedList<CBotCall>
 {
 public:
+    typedef bool (*RuntimeFunc)(CBotVar* args, CBotVar* result, int& exception, void* user);
+    typedef CBotTypResult (*CompileFunc)(CBotVar*& args, void* user);
 
-    /*!
-     * \brief CBotCall
-     * \param name
-     * \param rExec
-     * \param rCompile
+    /**
+     * \brief Constructor
+     * \param name Function name
+     * \param rExec Runtime function
+     * \param rCompile Compilation function
+     * \see CBotProgram::AddFunction()
      */
-    CBotCall(const std::string& name,
-             bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-             CBotTypResult rCompile(CBotVar*& pVar, void* pUser));
+    CBotCall(const std::string& name, RuntimeFunc rExec, CompileFunc rCompile);
 
-    /*!
-     * \brief ~CBotCall
+    /**
+     * \brief Destructor
      */
     ~CBotCall();
 
-    /*!
-     * \brief AddFunction
-     * \param name
-     * \param rExec
-     * \param rCompile
-     * \return
+    /**
+     * \brief Add a new function to the list
+     * \param name Function name
+     * \param rExec Runtime function
+     * \param rCompile Compilation function
+     * \return true
      */
-    static bool AddFunction(const std::string& name,
-                            bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                            CBotTypResult rCompile(CBotVar*& pVar, void* pUser));
+    static bool AddFunction(const std::string& name, RuntimeFunc rExec, CompileFunc rCompile);
 
-    /*!
-     * \brief CompileCall Is acceptable by a call procedure name and given
-     * parameters.
-     * \param p
-     * \param ppVars
-     * \param pStack
-     * \param nIdent
-     * \return
+    /**
+     * \brief Find and call compile function
+     *
+     * \todo Document
      */
     static CBotTypResult CompileCall(CBotToken* &p, CBotVar** ppVars, CBotCStack* pStack, long& nIdent);
 
-    /*!
-     * \brief CheckCall
-     * \param name
-     * \return
+    /**
+     * \brief Check if function with given name has been defined
+     * \param name Name to check
+     * \return true if function was defined
      */
     static bool CheckCall(const std::string& name);
 
-    /*!
-     * \brief DoCall
-     * \param nIdent
-     * \param token
-     * \param ppVars
-     * \param pStack
-     * \param rettype
-     * \return
+    /**
+     * \brief Find and call runtime function
+     *
+     * \todo Document
      */
     static int DoCall(long& nIdent, CBotToken* token, CBotVar** ppVars, CBotStack* pStack, CBotTypResult& rettype);
 
-#if STACKRUN
-
-    /*!
-     * \brief Run
-     * \param pStack
-     * \return
+    /**
+     * \brief Execute the runtime function
+     * \param pStack Stack to execute the function on
+     * \return false if function requested interruption, true otherwise
      */
     bool Run(CBotStack* pStack);
 
-    /*!
-     * \brief RestoreCall
-     * \param nIdent
-     * \param token
-     * \param ppVar
-     * \param pStack
-     * \return
+    /**
+     * \brief Restore execution status after loading saved state
+     *
+     * \todo Document
      */
     static bool RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack* pStack);
-#endif
 
-    /*!
-     * \brief GetName
-     * \return
+    /**
+     * \brief Set user pointer to pass to compile/runtime functions
+     * \param pUser User pointer
      */
-    std::string GetName();
+    static void SetUserPtr(void* pUser);
 
-    /*!
-     * \brief SetPUser
-     * \param pUser
+    /**
+     * \brief Reset the list of registered functions
      */
-    static void SetPUser(void* pUser);
-
-    /*!
-     * \brief Free
-     */
-    static void Free();
-
+    static void Clear();
 
 private:
-    static CBotCall*  m_ListCalls;
-    static void* m_pUser;
-    long        m_nFuncIdent;
+    static std::map<std::string, std::unique_ptr<CBotCall>> m_list;
+    static void* m_user;
 
+    long m_ident;
     std::string m_name;
-    bool (*m_rExec) (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser);
-    CBotTypResult (*m_rComp) (CBotVar* &pVar, void* pUser);
+    RuntimeFunc m_rExec;
+    CompileFunc m_rComp;
 };

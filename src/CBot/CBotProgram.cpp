@@ -77,7 +77,7 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     CBotToken* p = tokens.get()->GetNext();                 // skips the first token (separator)
 
     pStack->SetProgram(this);                               // defined used routines
-    CBotCall::SetPUser(pUser);
+    CBotCall::SetUserPtr(pUser);
 
     // Step 2. Find all function and class definitions
     while ( pStack->IsOk() && p != nullptr && p->GetType() != 0)
@@ -209,7 +209,6 @@ bool CBotProgram::Run(void* pUser, int timer)
 
     m_pStack->SetBotCall(this);                     // bases for routines
 
-#if STACKRUN
     // resumes execution on the top of the stack
     ok = m_pStack->Execute();
     if ( ok )
@@ -217,9 +216,6 @@ bool CBotProgram::Run(void* pUser, int timer)
         // returns to normal execution
         ok = m_entryPoint->Execute(nullptr, m_pStack, m_thisVar);
     }
-#else
-    ok = m_pRun->Execute(nullptr, m_pStack, m_thisVar);
-#endif
 
     // completed on a mistake?
     if (!ok && !m_pStack->IsOk())
@@ -440,6 +436,6 @@ void CBotProgram::Init()
 void CBotProgram::Free()
 {
     CBotToken::ClearDefineNum() ;
-    CBotCall ::Free() ;
+    CBotCall::Clear() ;
     CBotClass::Free() ;
 }
