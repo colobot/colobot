@@ -28,6 +28,7 @@ public:
     {
         CBotProgram::Init();
         CBotProgram::AddFunction("FAIL", rFail, cFail);
+        CBotProgram::AddFunction("ASSERT", rAssert, cAssert);
     }
 
     void TearDown()
@@ -72,6 +73,24 @@ private:
         }
 
         throw CBotTestFail(message);
+    }
+
+    static CBotTypResult cAssert(CBotVar* &var, void* user)
+    {
+        if (var == nullptr) return CBotTypResult(CBotErrLowParam);
+        if (var->GetType() != CBotTypBoolean) return CBotTypResult(CBotErrBadString);
+        var = var->GetNext();
+        return CBotTypResult(CBotTypVoid);
+    }
+
+    static bool rAssert(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        bool status = var->GetValInt();
+        if (!status)
+        {
+            throw CBotTestFail("CBot assertion failed");
+        }
+        return true;
     }
 
     // Modified version of PutList from src/script/script.cpp
@@ -219,25 +238,11 @@ protected:
     }
 };
 
-TEST_F(CBotUT, Test)
+TEST_F(CBotUT, EmptyTest)
 {
     ExecuteTest(
         "extern void EmptyTest()"
         "{"
-        "}"
-    );
-}
-
-TEST_F(CBotUT, DISABLED_TestFail)
-{
-    ExecuteTest(
-        "extern void FailingTest()"
-        "{"
-        "    FAIL();"
-        "}"
-        "extern void AnotherFailingTest()"
-        "{"
-        "    FAIL(\"This is a message\");"
         "}"
     );
 }
@@ -272,5 +277,34 @@ TEST_F(CBotUT, UndefinedFunction)
         "    foo();"
         "}",
         CBotErrUndefCall
+    );
+}
+
+TEST_F(CBotUT, BasicOperations)
+{
+    ExecuteTest(
+        "extern void Comparations()"
+        "{"
+        "    ASSERT(true);"
+        "    ASSERT(!false);"
+        "    ASSERT(1 != 0);"
+        "    ASSERT(1 == 1);"
+        "    ASSERT(1 > 0);"
+        "    ASSERT(1 >= 0);"
+        "    ASSERT(1 >= 1);"
+        "    ASSERT(0 < 1);"
+        "    ASSERT(0 <= 1);"
+        "    ASSERT(1 <= 1);"
+        "}"
+        ""
+        "extern void BasicMath()"
+        "{"
+        "    ASSERT(2+2 == 4);"
+        "    ASSERT(4-2 == 2);"
+        "    ASSERT(2*2 == 4);"
+        "    ASSERT(2/2 == 1);"
+        "    ASSERT(5%2 == 1);"
+        "    ASSERT(5**3 == 125);"
+        "}"
     );
 }
