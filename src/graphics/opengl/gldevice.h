@@ -268,6 +268,8 @@ private:
     int m_maxAnisotropy = 1;
     //! Maximum samples
     int m_maxSamples = 1;
+    //! glMultiDrawArrays() available
+    bool m_multiDrawArrays = false;
     //! Framebuffer support
     FramebufferSupport m_framebufferSupport = FBS_NONE;
     //! Which vertex buffer type to use

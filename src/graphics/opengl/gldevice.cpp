@@ -248,6 +248,10 @@ bool CGLDevice::Create()
             GetLogger()->Info("Multisampling not supported\n");
         }
 
+        // check for glMultiDrawArrays()
+        if (glVersion >= 14)
+            m_multiDrawArrays = true;
+
         GetLogger()->Info("Auto-detecting VBO support\n");
 
         // detecting VBO ARB extension
@@ -1276,34 +1280,112 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int
 void CGLDevice::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     int first[], int count[], int drawCount, Color color)
 {
-    // TODO: use glMultiDrawArrays() for OpenGL 1.4+
+    Vertex* vs = const_cast<Vertex*>(vertices);
 
-    for (int i = 0; i < drawCount; i++)
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].coord));
+
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].normal));
+
+    if (m_multitextureAvailable)
+        glClientActiveTexture(GL_TEXTURE0);
+
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
+
+    glColor4fv(color.Array());
+
+    GLenum t = TranslateGfxPrimitive(type);
+
+    if (m_multiDrawArrays)
     {
-        DrawPrimitive(type, vertices + first[i], count[i], color);
+        glMultiDrawArrays(t, first, count, drawCount);
     }
+    else
+    {
+        for (int i = 0; i < drawCount; i++)
+            glDrawArrays(t, first[i], count[i]);
+    }
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE0
 }
 
 void CGLDevice::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
     int first[], int count[], int drawCount, Color color)
 {
-    // TODO: use glMultiDrawArrays() for OpenGL 1.4+
+    VertexTex2* vs = const_cast<VertexTex2*>(vertices);
 
-    for (int i = 0; i < drawCount; i++)
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].coord));
+
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].normal));
+
+    if (m_multitextureAvailable)
+        glClientActiveTexture(GL_TEXTURE0);
+
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
+
+    if (m_multitextureAvailable)
     {
-        DrawPrimitive(type, vertices + first[i], count[i], color);
+        glClientActiveTexture(GL_TEXTURE1);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord2));
+    }
+
+    glColor4fv(color.Array());
+
+    GLenum t = TranslateGfxPrimitive(type);
+
+    if (m_multiDrawArrays)
+    {
+        glMultiDrawArrays(t, first, count, drawCount);
+    }
+    else
+    {
+        for (int i = 0; i < drawCount; i++)
+            glDrawArrays(t, first[i], count[i]);
+    }
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE1
+    if (m_multitextureAvailable)
+    {
+        glClientActiveTexture(GL_TEXTURE0);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
 }
 
 void CGLDevice::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
     int first[], int count[], int drawCount)
 {
-    // TODO: use glMultiDrawArrays() for OpenGL 1.4+
+    VertexCol* vs = const_cast<VertexCol*>(vertices);
 
-    for (int i = 0; i < drawCount; i++)
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].coord));
+
+    glEnableClientState(GL_COLOR_ARRAY);
+    glColorPointer(4, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].color));
+
+    GLenum t = TranslateGfxPrimitive(type);
+
+    if (m_multiDrawArrays)
     {
-        DrawPrimitive(type, vertices + first[i], count[i]);
+        glMultiDrawArrays(t, first, count, drawCount);
     }
+    else
+    {
+        for (int i = 0; i < drawCount; i++)
+            glDrawArrays(t, first[i], count[i]);
+    }
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
 }
 
 unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
