@@ -285,6 +285,13 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
     {
         CBotToken*  pp = p;
         func->m_token = *p;
+
+        if ( IsOfType(p, ID_NOT) )
+        {
+            CBotToken d(std::string("~") + p->GetString());
+            func->m_token = d;
+        }
+
         // un nom de fonction est-il là ?
         if (IsOfType(p, TokenTypVar))
         {

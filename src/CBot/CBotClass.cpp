@@ -616,8 +616,11 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 
     while (pStack->IsOk())
     {
-        CBotToken*  pp = p;
-        IsOfType(p, ID_NOT);    // skips ~ eventual (destructor)
+        std::string pp = p->GetString();
+        if ( IsOfType(p, ID_NOT) )
+        {
+            pp = std::string("~") + p->GetString();
+        }
 
         if (IsOfType(p, TokenTypVar))
         {
@@ -670,12 +673,12 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     CBotFunction*   prev = nullptr;
                     while ( pf != nullptr )
                     {
-                        if (pf->GetName() == pp->GetString()) break;
+                        if (pf->GetName() == pp) break;
                         prev = pf;
                         pf = pf->Next();
                     }
 
-                    bool bConstructor = (pp->GetString() == GetName());
+                    bool bConstructor = (pp == GetName());
                     CBotCStack* pile = pStack->TokenStack(nullptr, true);
 
                     // make "this" known
@@ -760,7 +763,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 
             if ( !bSecond )
             {
-                CBotVar*    pv = CBotVar::Create(pp->GetString(), type);
+                CBotVar*    pv = CBotVar::Create(pp, type);
                 pv -> SetStatic( bStatic );
                 pv -> SetPrivate( mProtect );
 

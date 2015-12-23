@@ -57,7 +57,7 @@ class CBotCStack;
  *  classObject->AddItem("category", CBotTypResult(CBotTypInt), CBotVar::ProtectionType::ReadOnly);
  *  classObject->AddItem("position", CBotTypResult(CBotTypClass, classPoint), CBotVar::ProtectionType::ReadOnly);
  *  classObject->AddFunction("func", rFunc, cFunc); // TODO: Document function format for class methods (different from standard CBotProgram::AddFunction()!)
- *  
+ *
  *  // This class can be used in CBot like so:
  *  // object item = radar(Me);
  *  // goto(item.position);
