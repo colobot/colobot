@@ -26,10 +26,6 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-
-std::map<std::string, std::unique_ptr<CBotExternalCall>> CBotExternalCallList::m_list{};
-void* CBotExternalCallList::m_user = nullptr;
-
 void CBotExternalCallList::Clear()
 {
     m_list.clear();

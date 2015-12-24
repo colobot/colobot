@@ -115,7 +115,7 @@ public:
      * \param call Function to add
      * \return true
      */
-    static bool AddFunction(const std::string& name, std::unique_ptr<CBotExternalCall> call);
+    bool AddFunction(const std::string& name, std::unique_ptr<CBotExternalCall> call);
 
     /**
      * \brief Find and call compile function
@@ -127,14 +127,14 @@ public:
      * \param pStack Compilation stack
      * \return CBotTypResult representing the return type of the function (::CBotTypVar), or an error (::CBotError)
      */
-    static CBotTypResult CompileCall(CBotToken*& p, CBotVar** ppVars, CBotCStack* pStack);
+    CBotTypResult CompileCall(CBotToken*& p, CBotVar** ppVars, CBotCStack* pStack);
 
     /**
      * \brief Check if function with given name has been defined
      * \param name Name to check
      * \return true if function was defined
      */
-    static bool CheckCall(const std::string& name);
+    bool CheckCall(const std::string& name);
 
     /**
      * \brief Find and call runtime function
@@ -147,7 +147,7 @@ public:
      * \param rettype Return type of the function, as returned by CompileCall()
      * \return -1 if call failed (no such function), 0 if function requested interruption, 1 on success
      */
-    static int DoCall(CBotToken* token, CBotVar** ppVars, CBotStack* pStack, const CBotTypResult& rettype);
+    int DoCall(CBotToken* token, CBotVar** ppVars, CBotStack* pStack, const CBotTypResult& rettype);
 
     /**
      * \brief Restore execution status after loading saved state
@@ -157,7 +157,7 @@ public:
      * \param pStack Runtime stack
      * \return false on failure (e.g. function doesn't exist)
      */
-    static bool RestoreCall(CBotToken* token, CBotVar** ppVar, CBotStack* pStack);
+    bool RestoreCall(CBotToken* token, CBotVar** ppVar, CBotStack* pStack);
 
     /**
      * \brief Set user pointer to pass to compile functions
@@ -166,14 +166,14 @@ public:
      *
      * \param pUser User pointer
      */
-    static void SetUserPtr(void* pUser);
+    void SetUserPtr(void* pUser);
 
     /**
      * \brief Reset the list of registered functions
      */
-    static void Clear();
+    void Clear();
 
 private:
-    static std::map<std::string, std::unique_ptr<CBotExternalCall>> m_list;
-    static void* m_user;
+    std::map<std::string, std::unique_ptr<CBotExternalCall>> m_list{};
+    void* m_user = nullptr;
 };

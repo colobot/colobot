@@ -28,6 +28,7 @@ class CBotFunction;
 class CBotClass;
 class CBotStack;
 class CBotVar;
+class CBotExternalCallList;
 
 /**
  * \brief Class that manages a CBot program. This is the main entry point into the CBot engine.
@@ -335,7 +336,14 @@ public:
      */
     bool m_bCompileClass;
 
+    /**
+     * \brief Returns static list of all registered external calls
+     */
+    static CBotExternalCallList* GetExternalCalls();
+
 private:
+    //! All external calls
+    static CBotExternalCallList* m_externalCalls;
     //! All user-defined functions
     CBotFunction* m_functions = nullptr;
     //! The entry point function

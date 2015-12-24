@@ -354,8 +354,7 @@ public:
      * \param pParam
      * \return
      */
-    bool CheckCall(CBotToken* &pToken,
-                   CBotDefParam* pParam);
+    bool CheckCall(CBotProgram* program, CBotDefParam* pParam, CBotToken*& pToken);
 
 private:
     //! List of classes existing at a given time.

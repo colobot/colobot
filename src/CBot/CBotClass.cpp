@@ -495,12 +495,11 @@ bool CBotClass::RestoreStaticState(FILE* pf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotClass::CheckCall(CBotToken* &pToken,
-                          CBotDefParam* pParam)
+bool CBotClass::CheckCall(CBotProgram* program, CBotDefParam* pParam, CBotToken*& pToken)
 {
     std::string  name = pToken->GetString();
 
-    if ( CBotExternalCallList::CheckCall(name) ) return true;
+    if ( program->GetExternalCalls()->CheckCall(name) ) return true;
 
     CBotFunction*   pp = m_pMethod;
     while ( pp != nullptr )

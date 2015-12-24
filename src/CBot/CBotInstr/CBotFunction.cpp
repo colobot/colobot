@@ -315,7 +315,7 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
             {
                 // looks if the function exists elsewhere
                 if (( pClass != nullptr || !pStack->CheckCall(pp, func->m_Param)) &&
-                    ( pClass == nullptr || !pClass->CheckCall(pp, func->m_Param)) )
+                    ( pClass == nullptr || !pClass->CheckCall(pStack->GetProgram(), func->m_Param, pp)) )
                 {
                     if (IsOfType(p, ID_OPBLK))
                     {
