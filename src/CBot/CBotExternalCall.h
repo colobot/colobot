@@ -56,18 +56,20 @@ public:
     /**
      * \brief Compile the function
      *
+     * \param "this" variable for class calls, nullptr for normal calls
      * \param Arguments (only types!) passed to the function
      * \param User pointer provided to CBotProgram::Compile()
      */
-    virtual CBotTypResult Compile(CBotVar* args, void* user) = 0;
+    virtual CBotTypResult Compile(CBotVar* thisVar, CBotVar* args, void* user) = 0;
 
     /**
      * \brief Execute the function
      *
+     * \param thisVar "this" variable for class calls, nullptr for normal calls
      * \param pStack Stack to execute the function on
      * \return false to request program interruption, true otherwise
      */
-    virtual bool Run(CBotStack* pStack) = 0;
+    virtual bool Run(CBotVar* thisVar, CBotStack* pStack) = 0;
 };
 
 /**
@@ -92,8 +94,38 @@ public:
      */
     virtual ~CBotExternalCallDefault();
 
-    virtual CBotTypResult Compile(CBotVar* args, void* user);
-    virtual bool Run(CBotStack* pStack);
+    virtual CBotTypResult Compile(CBotVar* thisVar, CBotVar* args, void* user);
+    virtual bool Run(CBotVar* thisVar, CBotStack* pStack);
+
+private:
+    RuntimeFunc m_rExec;
+    CompileFunc m_rComp;
+};
+
+/**
+ * \brief Default implementation of CBot external class call, using compilation and runtime functions
+ */
+class CBotExternalCallDefaultClass : public CBotExternalCall
+{
+public:
+    typedef bool (*RuntimeFunc)(CBotVar* thisVar, CBotVar* args, CBotVar* result, int& exception, void* user);
+    typedef CBotTypResult (*CompileFunc)(CBotVar* thisVar, CBotVar*& args); // TODO: Add user pointer
+
+    /**
+     * \brief Constructor
+     * \param rExec Runtime function
+     * \param rCompile Compilation function
+     * \see CBotClass::AddFunction()
+     */
+    CBotExternalCallDefaultClass(RuntimeFunc rExec, CompileFunc rCompile);
+
+    /**
+     * \brief Destructor
+     */
+    virtual ~CBotExternalCallDefaultClass();
+
+    virtual CBotTypResult Compile(CBotVar* thisVar, CBotVar* args, void* user);
+    virtual bool Run(CBotVar* thisVar, CBotStack* pStack);
 
 private:
     RuntimeFunc m_rExec;
@@ -124,10 +156,11 @@ public:
      *
      * \param p Token representing the function name
      * \param ppVars List of arguments (only types!)
+     * \param thisVar "this" variable for class calls, nullptr for normal calls
      * \param pStack Compilation stack
      * \return CBotTypResult representing the return type of the function (::CBotTypVar), or an error (::CBotError)
      */
-    CBotTypResult CompileCall(CBotToken*& p, CBotVar** ppVars, CBotCStack* pStack);
+    CBotTypResult CompileCall(CBotToken*& p, CBotVar* thisVar, CBotVar** ppVars, CBotCStack* pStack);
 
     /**
      * \brief Check if function with given name has been defined
@@ -142,22 +175,24 @@ public:
      * This function sets an error in runtime stack in case of failure
      *
      * \param token Token representing the function name
+     * \param thisVar "this" variable for class calls, nullptr for normal calls
      * \param ppVars List of arguments
      * \param pStack Runtime stack
      * \param rettype Return type of the function, as returned by CompileCall()
      * \return -1 if call failed (no such function), 0 if function requested interruption, 1 on success
      */
-    int DoCall(CBotToken* token, CBotVar** ppVars, CBotStack* pStack, const CBotTypResult& rettype);
+    int DoCall(CBotToken* token, CBotVar* thisVar, CBotVar** ppVars, CBotStack* pStack, const CBotTypResult& rettype);
 
     /**
      * \brief Restore execution status after loading saved state
      *
      * \param token Token representing the function name
-     * \param ppVar List of arguments (TODO: unused)
+     * \param "this" variable for class calls, nullptr for normal calls
+     * \param ppVar List of arguments
      * \param pStack Runtime stack
      * \return false on failure (e.g. function doesn't exist)
      */
-    bool RestoreCall(CBotToken* token, CBotVar** ppVar, CBotStack* pStack);
+    bool RestoreCall(CBotToken* token, CBotVar* thisVar, CBotVar** ppVar, CBotStack* pStack);
 
     /**
      * \brief Set user pointer to pass to compile functions

@@ -351,7 +351,7 @@ CBotTypResult CBotCStack::CompileCall(CBotToken* &p, CBotVar** ppVars, long& nId
     nIdent = 0;
     CBotTypResult val(-1);
 
-    val = m_prog->GetExternalCalls()->CompileCall(p, ppVars, this);
+    val = m_prog->GetExternalCalls()->CompileCall(p, nullptr, ppVars, this);
     if (val.GetType() < 0)
     {
         val = m_prog->GetFunctions()->CompileCall(p->GetString(), ppVars, nIdent);

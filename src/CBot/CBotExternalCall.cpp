@@ -37,7 +37,7 @@ bool CBotExternalCallList::AddFunction(const std::string& name, std::unique_ptr<
     return true;
 }
 
-CBotTypResult CBotExternalCallList::CompileCall(CBotToken*& p, CBotVar** ppVar, CBotCStack* pStack)
+CBotTypResult CBotExternalCallList::CompileCall(CBotToken*& p, CBotVar* thisVar, CBotVar** ppVar, CBotCStack* pStack)
 {
     if (m_list.count(p->GetString()) == 0)
         return -1;
@@ -45,7 +45,7 @@ CBotTypResult CBotExternalCallList::CompileCall(CBotToken*& p, CBotVar** ppVar, 
     CBotExternalCall* pt = m_list[p->GetString()].get();
 
     std::unique_ptr<CBotVar> args = std::unique_ptr<CBotVar>(MakeListVars(ppVar));
-    CBotTypResult r = pt->Compile(args.get(), m_user);
+    CBotTypResult r = pt->Compile(thisVar, args.get(), m_user);
 
     // if a class is returned, it is actually a pointer
     if (r.GetType() == CBotTypClass) r.SetType(CBotTypPointer);
@@ -68,7 +68,7 @@ bool CBotExternalCallList::CheckCall(const std::string& name)
     return m_list.count(name) > 0;
 }
 
-int CBotExternalCallList::DoCall(CBotToken* token, CBotVar** ppVar, CBotStack* pStack, const CBotTypResult& rettype)
+int CBotExternalCallList::DoCall(CBotToken* token, CBotVar* thisVar, CBotVar** ppVar, CBotStack* pStack, const CBotTypResult& rettype)
 {
     if (token == nullptr)
         return -1;
@@ -93,10 +93,10 @@ int CBotExternalCallList::DoCall(CBotToken* token, CBotVar** ppVar, CBotStack* p
     pile2->SetVar(pResult);
 
     pile->SetError(CBotNoErr, token); // save token for the position in case of error
-    return pt->Run(pStack);
+    return pt->Run(thisVar, pStack);
 }
 
-bool CBotExternalCallList::RestoreCall(CBotToken* token, CBotVar** ppVar, CBotStack* pStack)
+bool CBotExternalCallList::RestoreCall(CBotToken* token, CBotVar* thisVar, CBotVar** ppVar, CBotStack* pStack)
 {
     if (m_list.count(token->GetString()) == 0)
         return false;
@@ -123,7 +123,6 @@ CBotExternalCall::~CBotExternalCall()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 CBotExternalCallDefault::CBotExternalCallDefault(RuntimeFunc rExec, CompileFunc rCompile)
-: CBotExternalCall()
 {
     m_rExec = rExec;
     m_rComp = rCompile;
@@ -133,12 +132,12 @@ CBotExternalCallDefault::~CBotExternalCallDefault()
 {
 }
 
-CBotTypResult CBotExternalCallDefault::Compile(CBotVar* args, void* user)
+CBotTypResult CBotExternalCallDefault::Compile(CBotVar* thisVar, CBotVar* args, void* user)
 {
     return m_rComp(args, user);
 }
 
-bool CBotExternalCallDefault::Run(CBotStack* pStack)
+bool CBotExternalCallDefault::Run(CBotVar* thisVar, CBotStack* pStack)
 {
     CBotStack*  pile = pStack->AddStackEOX(this);
     if ( pile == EOX ) return true;
@@ -161,6 +160,50 @@ bool CBotExternalCallDefault::Run(CBotStack* pStack)
     }
 
     if (result != nullptr) pStack->SetCopyVar(result);
+
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+CBotExternalCallDefaultClass::CBotExternalCallDefaultClass(RuntimeFunc rExec, CompileFunc rCompile)
+{
+    m_rExec = rExec;
+    m_rComp = rCompile;
+}
+
+CBotExternalCallDefaultClass::~CBotExternalCallDefaultClass()
+{
+}
+
+CBotTypResult CBotExternalCallDefaultClass::Compile(CBotVar* thisVar, CBotVar* args, void* user)
+{
+    return m_rComp(nullptr, args);
+}
+
+// TODO: Figure out why classes do pStack->SetVar while normal calls do pStack->SetCopyVar
+bool CBotExternalCallDefaultClass::Run(CBotVar* thisVar, CBotStack* pStack)
+{
+    CBotStack*  pile = pStack->AddStackEOX(this);
+    if ( pile == EOX ) return true;
+    CBotVar* args = pile->GetVar();
+
+    CBotStack* pile2 = pile->AddStack();
+
+    CBotVar* result = pile2->GetVar();
+
+    int exception = CBotNoErr; // TODO: Change to CBotError
+    bool res = m_rExec(thisVar, args, result, exception, pStack->GetPUser());
+    pStack->SetVar(result);
+
+    if (!res)
+    {
+        if (exception != CBotNoErr)
+        {
+            pStack->SetError(static_cast<CBotError>(exception));
+        }
+        return false;
+    }
 
     return true;
 }
