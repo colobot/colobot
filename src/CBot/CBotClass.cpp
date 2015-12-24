@@ -28,7 +28,7 @@
 #include "CBot/CBotInstr/CBotListArray.h"
 #include "CBot/CBotInstr/CBotEmpty.h"
 
-#include "CBot/CBotCall.h"
+#include "CBotExternalCall.h"
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
 #include "CBot/CBotUtils.h"
@@ -337,7 +337,7 @@ bool CBotClass::AddFunction(const std::string& name,
 
     while ( p != nullptr )
     {
-        if ( name == p->GetName() )
+        if ( name == p->m_name )
         {
             if ( pp == nullptr ) m_pCalls = p->m_next;
             else              pp->m_next = p->m_next;
@@ -374,7 +374,7 @@ CBotTypResult CBotClass::CompileMethode(const std::string& name,
 
     // find the methods declared by AddFunction
 
-    CBotTypResult r = m_pCalls->CompileCall(name, pThis, ppParams, pStack, nIdent);
+    CBotTypResult r = m_pCalls->CompileCall(name, pThis, ppParams, pStack);
     if ( r.GetType() >= 0) return r;
 
     // find the methods declared by user
@@ -394,7 +394,7 @@ bool CBotClass::ExecuteMethode(long& nIdent,
                                CBotStack*& pStack,
                                CBotToken* pToken)
 {
-    int ret = m_pCalls->DoCall(nIdent, name, pThis, ppParams, pResult, pStack, pToken);
+    int ret = m_pCalls->DoCall(name, pThis, ppParams, pResult, pStack, pToken);
     if (ret>=0) return ret;
 
     ret = m_pMethod->DoCall(nIdent, name, pThis, ppParams, pStack, pToken, this);
@@ -402,7 +402,7 @@ bool CBotClass::ExecuteMethode(long& nIdent,
 
     if (m_pParent != nullptr)
     {
-        ret = m_pParent->m_pCalls->DoCall(nIdent, name, pThis, ppParams, pResult, pStack, pToken);
+        ret = m_pParent->m_pCalls->DoCall(name, pThis, ppParams, pResult, pStack, pToken);
         if (ret >= 0) return ret;
         ret = m_pParent->m_pMethod->DoCall(nIdent, name, pThis, ppParams, pStack, pToken, m_pParent);
     }
@@ -500,7 +500,7 @@ bool CBotClass::CheckCall(CBotToken* &pToken,
 {
     std::string  name = pToken->GetString();
 
-    if ( CBotCall::CheckCall(name) ) return true;
+    if ( CBotExternalCallList::CheckCall(name) ) return true;
 
     CBotFunction*   pp = m_pMethod;
     while ( pp != nullptr )

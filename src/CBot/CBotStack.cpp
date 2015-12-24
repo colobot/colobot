@@ -19,7 +19,7 @@
 
 // Modules inlcude
 #include "CBot/CBotStack.h"
-#include "CBot/CBotCall.h"
+#include "CBotExternalCall.h"
 
 #include "CBot/CBotInstr/CBotFunction.h"
 
@@ -153,7 +153,7 @@ CBotStack* CBotStack::AddStack(CBotInstr* instr, UnknownEnumBlock bBlock)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotStack* CBotStack::AddStackEOX(CBotCall* instr, UnknownEnumBlock bBlock)
+CBotStack* CBotStack::AddStackEOX(CBotExternalCall* instr, UnknownEnumBlock bBlock)
 {
     if (m_next != nullptr)
     {
@@ -292,7 +292,7 @@ CBotStack* CBotStack::AddStack(CBotInstr* instr, bool bBlock)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotStack* CBotStack::AddStackEOX(CBotCall* instr, bool bBlock)
+CBotStack* CBotStack::AddStackEOX(CBotExternalCall* instr, bool bBlock)
 {
     if (m_next != nullptr)
     {
@@ -378,7 +378,7 @@ CBotStack* CBotStack::RestoreStack(CBotInstr* instr)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotStack* CBotStack::RestoreStackEOX(CBotCall* instr)
+CBotStack* CBotStack::RestoreStackEOX(CBotExternalCall* instr)
 {
     CBotStack*     p = RestoreStack();
     p->m_call = instr;
@@ -619,7 +619,7 @@ void CBotStack::SetTimer(int n)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotStack::Execute()
 {
-    CBotCall*        instr = nullptr;                        // the most highest instruction
+    CBotExternalCall*        instr = nullptr;                        // the most highest instruction
     CBotStack*        pile;
 
     CBotStack*        p = this;
@@ -744,7 +744,7 @@ bool CBotStack::ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBo
 
     // first looks by the identifier
 
-    res = CBotCall::DoCall(nIdent, nullptr, ppVar, this, rettype );
+    res = CBotExternalCallList::DoCall(nullptr, ppVar, this, rettype);
     if (res.GetType() >= 0) return res.GetType();
 
     res = m_prog->GetFunctions()->DoCall(nIdent, "", ppVar, this, token );
@@ -753,7 +753,7 @@ bool CBotStack::ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBo
     // if not found (recompile?) seeks by name
 
     nIdent = 0;
-    res = CBotCall::DoCall(nIdent, token, ppVar, this, rettype );
+    res = CBotExternalCallList::DoCall(token, ppVar, this, rettype);
     if (res.GetType() >= 0) return res.GetType();
 
     res = m_prog->GetFunctions()->DoCall(nIdent, token->GetString(), ppVar, this, token );
@@ -768,7 +768,7 @@ void CBotStack::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar)
 {
     if ( m_next == nullptr ) return;
 
-    if ( !CBotCall::RestoreCall(nIdent, token, ppVar, this) )
+    if ( !CBotExternalCallList::RestoreCall(token, ppVar, this))
         m_prog->GetFunctions()->RestoreCall(nIdent, token->GetString(), ppVar, this );
 }
 

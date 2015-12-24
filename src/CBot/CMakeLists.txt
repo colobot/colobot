@@ -6,7 +6,7 @@ set(SOURCES
         CBotStack.cpp
         CBotCStack.cpp
         CBotToken.cpp
-        CBotCall.cpp
+        CBotExternalCall.cpp
         CBotDefParam.cpp
         CBotCallMethode.cpp
         CBotTypResult.cpp

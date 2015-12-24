@@ -32,7 +32,7 @@
 
 // Forward declaration
 class CBotInstr;
-class CBotCall;
+class CBotExternalCall;
 class CBotVar;
 class CBotProgram;
 class CBotToken;
@@ -174,9 +174,9 @@ public:
 
 
     CBotStack*        AddStack(CBotInstr* instr = nullptr, UnknownEnumBlock bBlock = UnknownEnumBlock::UNKNOWN_FALSE);    // extends the stack
-    CBotStack*        AddStackEOX(CBotCall* instr = nullptr, UnknownEnumBlock bBlock = UnknownEnumBlock::UNKNOWN_FALSE);    // extends the stack
+    CBotStack*        AddStackEOX(CBotExternalCall* instr = nullptr, UnknownEnumBlock bBlock = UnknownEnumBlock::UNKNOWN_FALSE);    // extends the stack
     CBotStack*        RestoreStack(CBotInstr* instr = nullptr);
-    CBotStack*        RestoreStackEOX(CBotCall* instr = nullptr);
+    CBotStack*        RestoreStackEOX(CBotExternalCall* instr = nullptr);
 
     CBotStack*        AddStack2(UnknownEnumBlock bBlock = UnknownEnumBlock::UNKNOWN_FALSE);                        // extends the stack
     bool            Return(CBotStack* pFils);                            // transmits the result over
@@ -258,7 +258,7 @@ private:
 
     CBotInstr*        m_instr;                    // the corresponding instruction
     IsFunctionParam  m_bFunc;                    // an input of a function?
-    CBotCall*        m_call;                        // recovery point in a extern call
+    CBotExternalCall*        m_call;                        // recovery point in a extern call
     friend class    CBotTry;
 };
 

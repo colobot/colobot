@@ -19,7 +19,7 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-#include "CBot/CBotCall.h"
+#include "CBotExternalCall.h"
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
 #include "CBot/CBotClass.h"
@@ -77,7 +77,7 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     CBotToken* p = tokens.get()->GetNext();                 // skips the first token (separator)
 
     pStack->SetProgram(this);                               // defined used routines
-    CBotCall::SetUserPtr(pUser);
+    CBotExternalCallList::SetUserPtr(pUser);
 
     // Step 2. Find all function and class definitions
     while ( pStack->IsOk() && p != nullptr && p->GetType() != 0)
@@ -312,8 +312,7 @@ bool CBotProgram::AddFunction(const std::string& name,
                               bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
                               CBotTypResult rCompile(CBotVar*& pVar, void* pUser))
 {
-    // stores pointers to the two functions
-    return CBotCall::AddFunction(name, rExec, rCompile);
+    return CBotExternalCallList::AddFunction(name, std::unique_ptr<CBotExternalCall>(new CBotExternalCallDefault(rExec, rCompile)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -435,7 +434,7 @@ void CBotProgram::Init()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::Free()
 {
-    CBotToken::ClearDefineNum() ;
-    CBotCall::Clear() ;
-    CBotClass::Free() ;
+    CBotToken::ClearDefineNum();
+    CBotExternalCallList::Clear();
+    CBotClass::Free();
 }

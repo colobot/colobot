@@ -39,7 +39,6 @@ CBotCallMethode::CBotCallMethode(const std::string& name,
     m_name       = name;
     m_rExec      = rExec;
     m_rComp      = rCompile;
-    m_nFuncIdent = CBotVar::NextUniqNum();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -48,14 +47,10 @@ CBotCallMethode::~CBotCallMethode()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult CBotCallMethode::CompileCall(const std::string& name,
-                                           CBotVar* pThis,
-                                           CBotVar** ppVar,
-                                           CBotCStack* pStack,
-                                           long& nIdent)
+CBotTypResult CBotCallMethode::CompileCall(const std::string& name, CBotVar* pThis, CBotVar** ppVar,
+                                           CBotCStack* pStack)
 {
     CBotCallMethode*    pt = this;
-    nIdent = 0;
 
     while ( pt != nullptr )
     {
@@ -70,7 +65,6 @@ CBotTypResult CBotCallMethode::CompileCall(const std::string& name,
                 if (pVar2) pStack->SetError(static_cast<CBotError>(ret), pVar2->GetToken());
             }
             delete pVar;
-            nIdent = pt->m_nFuncIdent;
             return r;
         }
         pt = pt->m_next;
@@ -79,54 +73,10 @@ CBotTypResult CBotCallMethode::CompileCall(const std::string& name,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CBotCallMethode::GetName()
-{
-    return  m_name;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int CBotCallMethode::DoCall(long& nIdent,
-                            const std::string& name,
-                            CBotVar* pThis,
-                            CBotVar** ppVars,
-                            CBotVar*& pResult,
-                            CBotStack* pStack,
-                            CBotToken* pToken)
+int CBotCallMethode::DoCall(const std::string& name, CBotVar* pThis, CBotVar** ppVars, CBotVar*& pResult,
+                            CBotStack* pStack, CBotToken* pToken)
 {
     CBotCallMethode*    pt = this;
-
-    // search by the identifier
-
-    if ( nIdent ) while ( pt != nullptr )
-    {
-        if ( pt->m_nFuncIdent == nIdent )
-        {
-            // lists the parameters depending on the contents of the stack (pStackVar)
-
-            CBotVar*    pVar = MakeListVars(ppVars, true);
-            CBotVar*    pVarToDelete = pVar;
-
-            // then calls the routine external to the module
-
-            int         Exception = 0; // TODO: Change this to CBotError
-            int res = pt->m_rExec(pThis, pVar, pResult, Exception, pStack->GetPUser());
-            pStack->SetVar(pResult);
-
-            if (res == false)
-            {
-                if (Exception!=0)
-                {
-//                  pStack->SetError(Exception, pVar->GetToken());
-                    pStack->SetError(static_cast<CBotError>(Exception), pToken);
-                }
-                delete pVarToDelete;
-                return false;
-            }
-            delete pVarToDelete;
-            return true;
-        }
-        pt = pt->m_next;
-    }
 
     // search by name
 
@@ -154,7 +104,6 @@ int CBotCallMethode::DoCall(long& nIdent,
                 return false;
             }
             delete pVarToDelete;
-            nIdent = pt->m_nFuncIdent;
             return true;
         }
         pt = pt->m_next;

@@ -22,7 +22,7 @@
 #include "CBot/CBotCStack.h"
 
 #include "CBot/CBotToken.h"
-#include "CBot/CBotCall.h"
+#include "CBotExternalCall.h"
 
 #include "CBot/CBotVar/CBotVar.h"
 
@@ -351,7 +351,7 @@ CBotTypResult CBotCStack::CompileCall(CBotToken* &p, CBotVar** ppVars, long& nId
     nIdent = 0;
     CBotTypResult val(-1);
 
-    val = CBotCall::CompileCall(p, ppVars, this, nIdent);
+    val = CBotExternalCallList::CompileCall(p, ppVars, this);
     if (val.GetType() < 0)
     {
         val = m_prog->GetFunctions()->CompileCall(p->GetString(), ppVars, nIdent);
@@ -371,7 +371,7 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
 {
     std::string    name = pToken->GetString();
 
-    if ( CBotCall::CheckCall(name) ) return true;
+    if ( CBotExternalCallList::CheckCall(name) ) return true;
 
     CBotFunction*    pp = m_prog->GetFunctions();
     while ( pp != nullptr )

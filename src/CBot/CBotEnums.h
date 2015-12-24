@@ -49,7 +49,9 @@ enum CBotType
     CBotTypPointer      = 12, //!< Pointer to a class (::CBotTypClass or ::CBotTypIntrinsic)
     CBotTypNullPointer  = 13, //!< Null pointer
     CBotTypClass        = 15, //!< Class instance
-    CBotTypIntrinsic    = 16  //!< Intrinsic class instance
+    CBotTypIntrinsic    = 16, //!< Intrinsic class instance
+
+    CBotTypMAX = 20
 };
 
 /**

@@ -60,11 +60,8 @@ public:
      * \param nIdent
      * \return
      */
-    CBotTypResult CompileCall(const std::string& name,
-                              CBotVar* pThis,
-                              CBotVar** ppVars,
-                              CBotCStack* pStack,
-                              long& nIdent);
+    CBotTypResult CompileCall(const std::string& name, CBotVar* pThis, CBotVar** ppVars,
+                              CBotCStack* pStack);
 
     /*!
      * \brief DoCall
@@ -77,26 +74,13 @@ public:
      * \param pFunc
      * \return
      */
-    int DoCall(long& nIdent,
-               const std::string& name,
-               CBotVar* pThis,
-               CBotVar** ppVars,
-               CBotVar*& pResult,
-               CBotStack* pStack,
-               CBotToken* pFunc);
-
-    /*!
-     * \brief GetName
-     * \return
-     */
-    std::string GetName();
+    int DoCall(const std::string& name, CBotVar* pThis, CBotVar** ppVars, CBotVar*& pResult,
+               CBotStack* pStack, CBotToken* pFunc);
 
 private:
     std::string m_name;
     bool (*m_rExec) (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
     CBotTypResult (*m_rComp) (CBotVar* pThis, CBotVar* &pVar);
     friend class CBotClass;
-    long m_nFuncIdent;
-
 };
 

@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "CBot/CBotCall.h"
+#include "CBotExternalCall.h"
 
 #include "CBot/CBotToken.h"
 #include "CBot/CBotStack.h"
@@ -27,49 +27,34 @@
 #include "CBot/CBotVar/CBotVar.h"
 
 
-std::map<std::string, std::unique_ptr<CBotCall>> CBotCall::m_list = std::map<std::string, std::unique_ptr<CBotCall>>();
-void* CBotCall::m_user = nullptr;
+std::map<std::string, std::unique_ptr<CBotExternalCall>> CBotExternalCallList::m_list{};
+void* CBotExternalCallList::m_user = nullptr;
 
-CBotCall::CBotCall(const std::string& name, RuntimeFunc rExec, CompileFunc rCompile)
-{
-    m_name  = name;
-    m_rExec = rExec;
-    m_rComp = rCompile;
-    m_ident = CBotVar::NextUniqNum();
-}
-
-CBotCall::~CBotCall()
-{
-}
-
-void CBotCall::Clear()
+void CBotExternalCallList::Clear()
 {
     m_list.clear();
 }
 
-bool CBotCall::AddFunction(const std::string& name, RuntimeFunc rExec, CompileFunc rCompile)
+bool CBotExternalCallList::AddFunction(const std::string& name, std::unique_ptr<CBotExternalCall> call)
 {
-    m_list[name] = std::unique_ptr<CBotCall>(new CBotCall(name, rExec, rCompile));
+    m_list[name] = std::move(call);
     return true;
 }
 
-CBotTypResult CBotCall::CompileCall(CBotToken* &p, CBotVar** ppVar, CBotCStack* pStack, long& nIdent)
+CBotTypResult CBotExternalCallList::CompileCall(CBotToken*& p, CBotVar** ppVar, CBotCStack* pStack)
 {
-    nIdent = 0;
     if (m_list.count(p->GetString()) == 0)
         return -1;
 
-    CBotCall* pt = m_list[p->GetString()].get();
-    nIdent = pt->m_ident;
+    CBotExternalCall* pt = m_list[p->GetString()].get();
 
     std::unique_ptr<CBotVar> args = std::unique_ptr<CBotVar>(MakeListVars(ppVar));
-    CBotVar* var = args.get(); // TODO: This shouldn't be a reference
-    CBotTypResult r = pt->m_rComp(var, m_user);
+    CBotTypResult r = pt->Compile(args.get(), m_user);
 
     // if a class is returned, it is actually a pointer
     if (r.GetType() == CBotTypClass) r.SetType(CBotTypPointer);
 
-    if (r.GetType() > 20) // error?
+    if (r.GetType() > CBotTypMAX) // error?
     {
         pStack->SetError(static_cast<CBotError>(r.GetType()), p);
     }
@@ -77,45 +62,25 @@ CBotTypResult CBotCall::CompileCall(CBotToken* &p, CBotVar** ppVar, CBotCStack* 
     return r;
 }
 
-void CBotCall::SetUserPtr(void* pUser)
+void CBotExternalCallList::SetUserPtr(void* pUser)
 {
     m_user = pUser;
 }
 
-bool CBotCall::CheckCall(const std::string& name)
+bool CBotExternalCallList::CheckCall(const std::string& name)
 {
     return m_list.count(name) > 0;
 }
 
-int CBotCall::DoCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack* pStack, CBotTypResult& rettype)
+int CBotExternalCallList::DoCall(CBotToken* token, CBotVar** ppVar, CBotStack* pStack, const CBotTypResult& rettype)
 {
-    CBotCall*   pt = nullptr;
-
-    if (nIdent > 0)
-    {
-        for (const auto& it : m_list)
-        {
-            if (it.second->m_ident == nIdent)
-            {
-                pt = it.second.get();
-            }
-        }
-    }
-
-    if (pt == nullptr)
-    {
-        if (token != nullptr)
-        {
-            if (m_list.count(token->GetString()) > 0)
-            {
-                pt = m_list[token->GetString()].get();
-                nIdent = pt->m_ident;
-            }
-        }
-    }
-
-    if (pt == nullptr)
+    if (token == nullptr)
         return -1;
+
+    if (m_list.count(token->GetString()) == 0)
+        return -1;
+
+    CBotExternalCall* pt = m_list[token->GetString()].get();
 
     CBotStack*  pile = pStack->AddStackEOX(pt);
     if (pile == EOX) return true;
@@ -133,16 +98,14 @@ int CBotCall::DoCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack*
 
     pile->SetError(CBotNoErr, token); // save token for the position in case of error
     return pt->Run(pStack);
-
 }
 
-bool CBotCall::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack* pStack)
+bool CBotExternalCallList::RestoreCall(CBotToken* token, CBotVar** ppVar, CBotStack* pStack)
 {
     if (m_list.count(token->GetString()) == 0)
         return false;
 
-    CBotCall* pt = m_list[token->GetString()].get();
-    nIdent = pt->m_ident;
+    CBotExternalCall* pt = m_list[token->GetString()].get();
 
     CBotStack*  pile = pStack->RestoreStackEOX(pt);
     if ( pile == nullptr ) return true;
@@ -151,7 +114,35 @@ bool CBotCall::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBot
     return true;
 }
 
-bool CBotCall::Run(CBotStack* pStack)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+CBotExternalCall::CBotExternalCall()
+{
+}
+
+CBotExternalCall::~CBotExternalCall()
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+CBotExternalCallDefault::CBotExternalCallDefault(RuntimeFunc rExec, CompileFunc rCompile)
+: CBotExternalCall()
+{
+    m_rExec = rExec;
+    m_rComp = rCompile;
+}
+
+CBotExternalCallDefault::~CBotExternalCallDefault()
+{
+}
+
+CBotTypResult CBotExternalCallDefault::Compile(CBotVar* args, void* user)
+{
+    return m_rComp(args, user);
+}
+
+bool CBotExternalCallDefault::Run(CBotStack* pStack)
 {
     CBotStack*  pile = pStack->AddStackEOX(this);
     if ( pile == EOX ) return true;
