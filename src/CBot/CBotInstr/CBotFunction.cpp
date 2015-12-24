@@ -51,8 +51,6 @@ CBotFunction::CBotFunction()
     m_next       = nullptr;            // functions can be chained
     m_bPublic    = false;           // function not public
     m_bExtern    = false;           // function not extern
-    m_nextpublic = nullptr;
-    m_prevpublic = nullptr;
     m_pProg      = nullptr;
 //  m_nThisIdent = 0;
     m_nFuncIdent = 0;
@@ -60,7 +58,7 @@ CBotFunction::CBotFunction()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotFunction* CBotFunction::m_listPublic = nullptr;
+std::set<CBotFunction*> CBotFunction::m_publicFunctions{};
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotFunction::~CBotFunction()
@@ -70,21 +68,9 @@ CBotFunction::~CBotFunction()
     delete  m_next;
 
     // remove public list if there is
-    if ( m_bPublic )
+    if (m_bPublic)
     {
-        if ( m_nextpublic != nullptr )
-        {
-            m_nextpublic->m_prevpublic = m_prevpublic;
-        }
-        if ( m_prevpublic != nullptr)
-        {
-            m_prevpublic->m_nextpublic = m_nextpublic;
-        }
-        else
-        {
-            // if prev = next = null may not be in the list!
-            if ( m_listPublic == this ) m_listPublic = m_nextpublic;
-        }
+        m_publicFunctions.erase(this);
     }
 }
 
@@ -463,10 +449,9 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& n
         }
 
         // search the list of public functions
-
-        for ( pt = m_listPublic ; pt != nullptr ; pt = pt->m_nextpublic )
+        for (CBotFunction* pt : m_publicFunctions)
         {
-            if ( pt->m_nFuncIdent == nIdent )
+            if (pt->m_nFuncIdent == nIdent)
             {
                 TypeOrError = pt->m_retTyp;
                 return pt;
@@ -536,7 +521,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& n
 
     if ( bPublic )
     {
-        for ( pt = m_listPublic ; pt != nullptr ; pt = pt->m_nextpublic )
+        for (CBotFunction* pt : m_publicFunctions)
         {
             if ( pt->m_token.GetString() == name )
             {
@@ -887,10 +872,5 @@ CBotFunction* CBotFunction::Next()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotFunction::AddPublic(CBotFunction* func)
 {
-    if ( m_listPublic != nullptr )
-    {
-        func->m_nextpublic = m_listPublic;
-        m_listPublic->m_prevpublic = func;
-    }
-    m_listPublic = func;
+    m_publicFunctions.insert(func);
 }

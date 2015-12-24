@@ -25,6 +25,7 @@
 // Local include
 
 // Global include
+#include <set>
 
 
 /*!
@@ -243,8 +244,6 @@ public:
                      CBotGet modestop);
 
 private:
-    CBotFunction* m_nextpublic;
-    CBotFunction* m_prevpublic;
     long m_nFuncIdent;
     //! Synchronized method.
     bool m_bSynchro;
@@ -272,8 +271,8 @@ private:
     CBotToken m_openblk;
     CBotToken m_closeblk;
 
-    //! Management of list of (static) public functions.
-    static CBotFunction* m_listPublic;
+    //! List of public functions
+    static std::set<CBotFunction*> m_publicFunctions;
 
     friend class CBotProgram;
     friend class CBotClass;

@@ -179,13 +179,23 @@ public:
 
     /**
      * \brief GetType Returns the base type of the variable (::CBotType)
-     * \param mode TODO: document this param
+     * \param mode
+     * \parblock
+     * * mode = 0 Return type normally
+     * * mode = 1 Treat classes as pointers
+     * * mode = 2 Treat classes as intrinsic
+     * \endparblock
      */
     CBotType GetType(int mode = 0);
 
     /**
      * \brief Returns the complete type of the variable (CBotTypResult)
-     * \param mode TODO: document this param
+     * \param mode
+     * \parblock
+     * * mode = 0 Return type normally
+     * * mode = 1 Treat classes as pointers
+     * * mode = 2 Treat classes as intrinsic
+     * \endparblock
      */
     CBotTypResult GetTypResult(int mode = 0);
 

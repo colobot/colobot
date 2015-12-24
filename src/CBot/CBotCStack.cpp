@@ -385,8 +385,7 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
         pp = pp->Next();
     }
 
-    pp = CBotFunction::m_listPublic;
-    while ( pp != nullptr )
+    for (CBotFunction* pp : CBotFunction::m_publicFunctions)
     {
         if ( pToken->GetString() == pp->GetName() )
         {
@@ -394,7 +393,6 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
             if ( pp->CheckParam( pParam ) )
                 return true;
         }
-        pp = pp->m_nextpublic;
     }
 
     return false;
