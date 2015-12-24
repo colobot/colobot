@@ -90,7 +90,7 @@ int CBotCallMethode::DoCall(const std::string& name, CBotVar* pThis, CBotVar** p
             CBotVar*    pVarToDelete = pVar;
 
             int         Exception = 0; // TODO: Change this to CBotError
-            int res = pt->m_rExec(pThis, pVar, pResult, Exception, pStack->GetPUser());
+            int res = pt->m_rExec(pThis, pVar, pResult, Exception, pStack->GetUserPtr());
             pStack->SetVar(pResult);
 
             if (res == false)

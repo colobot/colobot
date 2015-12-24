@@ -174,7 +174,7 @@ bool CBotInstArray::Execute(CBotStack* &pj)
     {
         if (m_listass != nullptr)                                      // there is the assignment for this table
         {
-            CBotVar* pVar = pj->FindVar((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent);
+            CBotVar* pVar = pj->FindVar((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent, false);
 
             if (!m_listass->Execute(pile1, pVar)) return false;
         }

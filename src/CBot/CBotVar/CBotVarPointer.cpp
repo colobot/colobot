@@ -62,12 +62,12 @@ CBotVarPointer::~CBotVarPointer()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVarPointer::Maj(void* pUser, bool bContinu)
+void CBotVarPointer::Maj(void* pUser)
 {
 /*    if ( !bContinu && m_pMyThis != nullptr )
          m_pMyThis->Maj(pUser, false);*/
 
-    if ( m_pVarClass != nullptr) m_pVarClass->Maj(pUser, false);
+    if ( m_pVarClass != nullptr) m_pVarClass->Maj(pUser);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

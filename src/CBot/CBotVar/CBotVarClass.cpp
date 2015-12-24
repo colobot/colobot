@@ -187,7 +187,7 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
         CBotInstr*    p  = pv->m_LimExpr;                            // the different formulas
         if ( p != nullptr )
         {
-            CBotStack* pile = CBotStack::FirstStack();    // an independent stack
+            CBotStack* pile = CBotStack::AllocateStack();    // an independent stack
             int     n = 0;
             int     max[100];
 
@@ -212,7 +212,7 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
         if ( pv->m_InitExpr != nullptr )                // expression for initialization?
         {
 #if    STACKMEM
-            CBotStack* pile = CBotStack::FirstStack();    // an independent stack
+            CBotStack* pile = CBotStack::AllocateStack();    // an independent stack
 
             while(pile->IsOk() && !pv->m_InitExpr->Execute(pile, pn));    // evaluates the expression without timer
 
@@ -242,7 +242,7 @@ CBotClass* CBotVarClass::GetClass()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVarClass::Maj(void* pUser, bool bContinu)
+void CBotVarClass::Maj(void* pUser)
 {
 /*    if (!bContinu && m_pMyThis != nullptr)
         m_pMyThis->Maj(pUser, true);*/
@@ -409,7 +409,7 @@ void CBotVarClass::DecrementUse()
             CBotStack*    pile = nullptr;
             err = pile->GetError(start,end);    // stack == nullptr it does not bother!
 
-            pile = CBotStack::FirstStack();        // clears the error
+            pile = CBotStack::AllocateStack();        // clears the error
             CBotVar*    ppVars[1];
             ppVars[0] = nullptr;
 

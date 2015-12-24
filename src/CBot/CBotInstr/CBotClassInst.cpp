@@ -257,7 +257,7 @@ bool CBotClassInst::Execute(CBotStack* &pj)
         pile->IncState();
     }
 
-    if ( pThis == nullptr ) pThis = pile->FindVar((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent);
+    if ( pThis == nullptr ) pThis = pile->FindVar((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent, false);
 
     if ( pile->GetState()<3)
     {

@@ -197,7 +197,7 @@ public:
     /**
      * \brief Set user pointer to pass to compile functions
      *
-     * This is for compile functions only, runtime functions use CBotStack::GetPUser()
+     * This is for compile functions only, runtime functions use CBotStack::GetUserPtr()
      *
      * \param pUser User pointer
      */

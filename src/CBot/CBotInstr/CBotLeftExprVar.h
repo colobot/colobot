@@ -19,37 +19,19 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
 
-// Global include
-
-
-/*!
- * \brief The CBotLeftExprVar class Compilation of an element to the left of an assignment.
+/**
+ * \brief Expression on the left side of an assignment
  */
 class CBotLeftExprVar : public CBotInstr
 {
-public:
-
-    /*!
-     * \brief CBotLeftExprVar
-     */
+private:
     CBotLeftExprVar();
-
-    /*!
-     * \brief ~CBotLeftExprVar
-     */
+public:
     ~CBotLeftExprVar();
 
-    /*!
-     * \brief Compile
-     * \param p
-     * \param pStack
-     * \return
-     */
     static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
 
     /*!
@@ -69,7 +51,7 @@ public:
 public:
 
     //! Type of variable declared.
-    CBotTypResult m_typevar;
-    //! Unique identifier for that variable.
-    long m_nIdent;
+    CBotTypResult m_typevar = -1;
+    //! Unique identifier of that variable
+    long m_nIdent = 0;
 };

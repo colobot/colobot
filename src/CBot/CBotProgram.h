@@ -351,7 +351,7 @@ private:
     //! Classes defined in this program
     CBotClass* m_classes = nullptr;
     //! Execution stack
-    CBotStack* m_pStack = nullptr;
+    CBotStack* m_stack = nullptr;
     //! "this" variable
     CBotVar* m_thisVar = nullptr;
     friend class CBotFunction;

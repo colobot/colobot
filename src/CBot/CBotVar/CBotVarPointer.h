@@ -60,7 +60,7 @@ public:
 
     bool Save1State(FILE* pf) override;
 
-    void Maj(void* pUser, bool bContinue) override;
+    void Maj(void* pUser) override;
 
     bool Eq(CBotVar* left, CBotVar* right) override;
     bool Ne(CBotVar* left, CBotVar* right) override;

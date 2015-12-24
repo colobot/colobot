@@ -41,35 +41,51 @@
     m_next->...
 
 */
-/*!
- * \brief The CBotInstr class Class defining an instruction.
+/**
+ * \brief Class for one CBot instruction
+ *
+ * \todo More documentation
  */
 class CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotInstr
+    /**
+     * \brief Constructor
      */
     CBotInstr();
 
-    /*!
-     * \brief ~CBotInstr
+    /**
+     * \brief Destructor
      */
     virtual ~CBotInstr();
 
-    /*!
-     * \brief Compile  Compile an instruction which can be while, do, try,
-     * throw, if, for, switch, break, continue, return, int, float, boolean,
-     * string, declaration of an instance of a class, arbitrary expression.
-     * \param p
-     * \param pStack
-     * \return
+    /**
+     * \brief Compile an instruction.
+     *
+     * Supported instructions are:
+     * * while
+     * * do
+     * * try
+     * * throw
+     * * if
+     * * for
+     * * switch
+     * * break
+     * * continue
+     * * return
+     * * int
+     * * float
+     * * boolean
+     * * string
+     * * declaration of an instance of a class
+     * * arithmetic expression (with or without assigment)
+     * \param[in, out] p Token to start at, updated to point at the next token
+     * \param pStack Compilation stack
+     * \return Compiled instruction
      */
-    static CBotInstr* Compile(CBotToken* &p,
-                              CBotCStack* pStack);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
 
-    /*!
+    /**
      * \brief CompileArray
      * \param p
      * \param pStack
@@ -82,14 +98,14 @@ public:
                                    CBotTypResult type,
                                    bool first = true);
 
-    /*!
+    /**
      * \brief Execute
      * \param pj
      * \return
      */
     virtual bool Execute(CBotStack* &pj);
 
-    /*!
+    /**
      * \brief Execute
      * \param pj
      * \param pVar
@@ -98,7 +114,7 @@ public:
     virtual bool Execute(CBotStack* &pj,
                          CBotVar* pVar);
 
-    /*!
+    /**
      * \brief RestoreState
      * \param pj
      * \param bMain
@@ -106,7 +122,7 @@ public:
     virtual void RestoreState(CBotStack* &pj,
                               bool bMain);
 
-    /*!
+    /**
      * \brief ExecuteVar
      * \param pVar
      * \param pile
@@ -115,7 +131,7 @@ public:
     virtual bool ExecuteVar(CBotVar* &pVar,
                             CBotCStack* &pile);
 
-    /*!
+    /**
      * \brief ExecuteVar
      * \param pVar
      * \param pile
@@ -130,7 +146,7 @@ public:
                             bool bStep,
                             bool bExtend);
 
-    /*!
+    /**
      * \brief RestoreStateVar
      * \param pile
      * \param bMain
@@ -138,7 +154,7 @@ public:
     virtual void RestoreStateVar(CBotStack* &pile,
                                  bool bMain);
 
-    /*!
+    /**
      * \brief CompCase This routine is defined only for the subclass CBotCase
      * this allows to make the call on all instructions CompCase to see if it's
      * a case to the desired value..
@@ -149,91 +165,84 @@ public:
     virtual bool CompCase(CBotStack* &pj,
                           int val);
 
-    /*!
+    /**
      * \brief SetToken Set the token corresponding to the instruction.
      * \param p
      */
     void SetToken(CBotToken* p);
 
-    /*!
+    /**
      * \brief GetTokenType Return the type of the token assicated with the
      * instruction.
      * \return
      */
     int GetTokenType();
 
-    /*!
+    /**
      * \brief GetToken Return associated token.
      * \return
      */
     CBotToken* GetToken();
 
-    /*!
+    /**
      * \brief AddNext Adds the statement following the other.
      * \param n
      */
     void AddNext(CBotInstr* n);
 
-    /*!
+    /**
      * \brief GetNext Returns next statement.
      * \return
      */
     CBotInstr* GetNext();
 
-    /*!
+    /**
      * \brief AddNext3
      * \param n
      */
     void AddNext3(CBotInstr* n);
 
-    /*!
+    /**
      * \brief GetNext3
      * \return
      */
     CBotInstr* GetNext3();
 
-    /*!
+    /**
      * \brief AddNext3b
      * \param n
      */
     void AddNext3b(CBotInstr* n);
 
-    /*!
+    /**
      * \brief GetNext3b
      * \return
      */
     CBotInstr* GetNext3b();
 
-    /*!
+    /**
      * \brief IncLvl Adds a level with a label.
      * \param label
      */
     static void IncLvl(std::string& label);
 
-    /*!
+    /**
      * \brief IncLvl Adds a level (switch statement).
      */
     static void IncLvl();
 
-    /*!
+    /**
      * \brief DecLvl Free a level.
      */
     static void DecLvl();
 
-    /*!
+    /**
      * \brief ChkLvl Control validity of break and continue.
      * \param label
      * \param type
      * \return
      */
     static bool ChkLvl(const std::string& label, int type);
-
-    /*!
-     * \brief IsOfClass
-     * \param name
-     * \return
-     */
-    bool IsOfClass(const std::string& name);
 
 protected:
 

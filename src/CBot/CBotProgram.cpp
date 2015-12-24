@@ -50,11 +50,7 @@ CBotProgram::~CBotProgram()
     CBotClass::FreeLock(this);
 
     delete m_functions;
-#if STACKMEM
-    m_pStack->Delete();
-#else
-    delete  m_pStack;
-#endif
+    m_stack->Delete();
 }
 
 bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& functions, void* pUser)
@@ -150,12 +146,7 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::Start(const std::string& name)
 {
-#if STACKMEM
-    m_pStack->Delete();
-#else
-    delete m_pStack;
-#endif
-    m_pStack = nullptr;
+    Stop();
 
     m_entryPoint = m_functions;
     while (m_entryPoint != nullptr)
@@ -164,21 +155,16 @@ bool CBotProgram::Start(const std::string& name)
         m_entryPoint = m_entryPoint->m_next;
     }
 
-    if (m_entryPoint == nullptr )
+    if (m_entryPoint == nullptr)
     {
         m_error = CBotErrNoRun;
         return false;
     }
 
-#if STACKMEM
-    m_pStack = CBotStack::FirstStack();
-#else
-    m_pStack = new CBotStack(nullptr);                 // creates an execution stack
-#endif
+    m_stack = CBotStack::AllocateStack();
+    m_stack->SetProgram(this);
 
-    m_pStack->SetBotCall(this);                     // bases for routines
-
-    return true;                                    // we are ready for Run ()
+    return true; // we are ready for Run()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -200,55 +186,46 @@ bool CBotProgram::GetPosition(const std::string& name, int& start, int& stop, CB
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::Run(void* pUser, int timer)
 {
-    bool    ok;
-
-    if (m_pStack == nullptr || m_entryPoint == nullptr) goto error;
+    if (m_stack == nullptr || m_entryPoint == nullptr)
+    {
+        m_error = CBotErrNoRun;
+        return true;
+    }
 
     m_error = CBotNoErr;
 
-    m_pStack->Reset(pUser);                         // empty the possible previous error, and resets the timer
-    if ( timer >= 0 ) m_pStack->SetTimer(timer);
+    m_stack->SetUserPtr(pUser);
+    if ( timer >= 0 ) m_stack->SetTimer(timer); // TODO: Check if changing order here fixed ipf()
+    m_stack->Reset();                         // reset the possible previous error, and resets the timer
 
-    m_pStack->SetBotCall(this);                     // bases for routines
+    m_stack->SetProgram(this);                     // bases for routines
 
     // resumes execution on the top of the stack
-    ok = m_pStack->Execute();
-    if ( ok )
+    bool ok = m_stack->Execute();
+    if (ok)
     {
         // returns to normal execution
-        ok = m_entryPoint->Execute(nullptr, m_pStack, m_thisVar);
+        ok = m_entryPoint->Execute(nullptr, m_stack, m_thisVar);
     }
 
     // completed on a mistake?
-    if (!ok && !m_pStack->IsOk())
+    if (!ok && !m_stack->IsOk())
     {
-        m_error = m_pStack->GetError(m_errorStart, m_errorEnd);
-#if STACKMEM
-        m_pStack->Delete();
-#else
-        delete m_pStack;
-#endif
-        m_pStack = nullptr;
+        m_error = m_stack->GetError(m_errorStart, m_errorEnd);
+        m_stack->Delete();
+        m_stack = nullptr;
         return true;                                // execution is finished!
     }
 
     if ( ok ) m_entryPoint = nullptr;                        // more function in execution
     return ok;
-
-error:
-    m_error = CBotErrNoRun;
-    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::Stop()
 {
-#if STACKMEM
-    m_pStack->Delete();
-#else
-    delete m_pStack;
-#endif
-    m_pStack = nullptr;
+    m_stack->Delete();
+    m_stack = nullptr;
     m_entryPoint = nullptr;
 }
 
@@ -257,9 +234,9 @@ bool CBotProgram::GetRunPos(std::string& functionName, int& start, int& end)
 {
     functionName = "";
     start = end = 0;
-    if (m_pStack == nullptr) return false;
+    if (m_stack == nullptr) return false;
 
-    m_pStack->GetRunPos(functionName, start, end);
+    m_stack->GetRunPos(functionName, start, end);
     return true;
 }
 
@@ -267,9 +244,9 @@ bool CBotProgram::GetRunPos(std::string& functionName, int& start, int& end)
 CBotVar* CBotProgram::GetStackVars(std::string& functionName, int level)
 {
     functionName.clear();
-    if (m_pStack == nullptr) return nullptr;
+    if (m_stack == nullptr) return nullptr;
 
-    return m_pStack->GetStackVars(functionName, level);
+    return m_stack->GetStackVars(functionName, level);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -357,11 +334,11 @@ bool CBotProgram::SaveState(FILE* pf)
     if (!WriteWord( pf, CBOTVERSION)) return false;
 
 
-    if ( m_pStack != nullptr )
+    if (m_stack != nullptr )
     {
         if (!WriteWord( pf, 1)) return false;
         if (!WriteString( pf, m_entryPoint->GetName() )) return false;
-        if (!m_pStack->SaveState(pf)) return false;
+        if (!m_stack->SaveState(pf)) return false;
     }
     else
     {
@@ -387,20 +364,16 @@ bool CBotProgram::RestoreState(FILE* pf)
     if (!ReadString( pf, s )) return false;
     Start(s);       // point de reprise
 
-#if STACKMEM
-    m_pStack->Delete();
-#else
-    delete m_pStack;
-#endif
-    m_pStack = nullptr;
+    m_stack->Delete();
+    m_stack = nullptr;
 
     // retrieves the stack from the memory
-    // uses a nullptr pointer (m_pStack) but it's ok like that
-    if (!m_pStack->RestoreState(pf, m_pStack)) return false;
-    m_pStack->SetBotCall(this);                     // bases for routines
+    // uses a nullptr pointer (m_stack) but it's ok like that
+    if (!m_stack->RestoreState(pf, m_stack)) return false;
+    m_stack->SetProgram(this);                     // bases for routines
 
     // restored some states in the stack according to the structure
-    m_entryPoint->RestoreState(nullptr, m_pStack, m_thisVar);
+    m_entryPoint->RestoreState(nullptr, m_stack, m_thisVar);
     return true;
 }
 

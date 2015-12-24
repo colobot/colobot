@@ -351,7 +351,7 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
     CBotStack*  pile = pj->AddStack(this, CBotStack::UnknownEnumBlock::UNKNOWN_2);               // one end of stack local to this function
 //  if ( pile == EOX ) return true;
 
-    pile->SetBotCall(m_pProg);                              // bases for routines
+    pile->SetProgram(m_pProg);                              // bases for routines
 
     if ( pile->GetState() == 0 )
     {
@@ -402,7 +402,7 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
     if ( pile == nullptr ) return;
     CBotStack*  pile2 = pile;
 
-    pile->SetBotCall(m_pProg);                          // bases for routines
+    pile->SetProgram(m_pProg);                          // bases for routines
 
     if ( pile->GetBlock() != CBotStack::UnknownEnumBlock::UNKNOWN_2 )
     {
@@ -611,7 +611,7 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar** ppVars
         CBotStack*  pStk1 = pStack->AddStack(pt, CBotStack::UnknownEnumBlock::UNKNOWN_2);    // to put "this"
 //      if ( pStk1 == EOX ) return true;
 
-        pStk1->SetBotCall(pt->m_pProg);                 // it may have changed module
+        pStk1->SetProgram(pt->m_pProg);                 // it may have changed module
 
         if ( pStk1->IfStep() ) return false;
 
@@ -682,7 +682,7 @@ void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar** 
         pStk1 = pStack->RestoreStack(pt);
         if ( pStk1 == nullptr ) return;
 
-        pStk1->SetBotCall(pt->m_pProg);                 // it may have changed module
+        pStk1->SetProgram(pt->m_pProg);                 // it may have changed module
 
         if ( pStk1->GetBlock() != CBotStack::UnknownEnumBlock::UNKNOWN_2 )
         {
@@ -738,7 +738,7 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, 
         CBotStack*  pStk = pStack->AddStack(pt, CBotStack::UnknownEnumBlock::UNKNOWN_2);
 //      if ( pStk == EOX ) return true;
 
-        pStk->SetBotCall(pt->m_pProg);                  // it may have changed module
+        pStk->SetProgram(pt->m_pProg);                  // it may have changed module
         CBotStack*  pStk3 = pStk->AddStack(nullptr, CBotStack::UnknownEnumBlock::UNKNOWN_TRUE); // to set parameters passed
 
         // preparing parameters on the stack
@@ -815,7 +815,7 @@ void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar* p
     {
         CBotStack*  pStk = pStack->RestoreStack(pt);
         if ( pStk == nullptr ) return;
-        pStk->SetBotCall(pt->m_pProg);                  // it may have changed module
+        pStk->SetProgram(pt->m_pProg);                  // it may have changed module
 
         CBotVar*    pthis = pStk->FindVar("this");
         pthis->SetUniqNum(-2);

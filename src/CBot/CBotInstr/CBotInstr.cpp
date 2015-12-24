@@ -108,12 +108,6 @@ bool CBotInstr::ChkLvl(const std::string& label, int type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotInstr::IsOfClass(const std::string& n)
-{
-    return name == n;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void CBotInstr::SetToken(CBotToken* p)
 {
     m_token = *p;
@@ -180,14 +174,11 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
 
     if (p == nullptr) return nullptr;
 
-    int type = p->GetType();            // what is the next token
-
-    // is it a lable?
-    if (IsOfType(pp, TokenTypVar) &&
-         IsOfType(pp, ID_DOTS))
+    int type = p->GetType(); // what is the next token?
+    if (IsOfType(pp, TokenTypVar) && IsOfType(pp, ID_DOTS)) // is it a label?
     {
          type = pp->GetType();
-         // these instructions accept only lable
+         // Allow only instructions that accept a label
          if (!IsOfTypeList(pp, ID_WHILE, ID_FOR, ID_DO, 0))
          {
              pStack->SetError(CBotErrLabel, pp->GetStart());
@@ -195,7 +186,7 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
          }
     }
 
-    // call routine corresponding to the compilation token found
+    // Call Compile() function for the given token type
     switch (type)
     {
     case ID_WHILE:
@@ -252,26 +243,26 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
 
     pStack->SetStartError(p->GetStart());
 
-    // should not be a reserved word DefineNum
+    // Should not be a reserved constant defined with DefineNum
     if (p->GetType() == TokenTypDef)
     {
         pStack->SetError(CBotErrReserved, p);
         return nullptr;
     }
 
-    // this might be an instance of class definnition
+    // If not, this might be an instance of class definnition
     CBotToken*    ppp = p;
     if (IsOfType(ppp, TokenTypVar))
     {
-        if (CBotClass::Find(p) != nullptr)
+        if (CBotClass::Find(p) != nullptr) // Does class with this name exist?
         {
-            // yes, compiles the declaration of the instance
+            // Yes, compile the declaration of the instance
             return CBotClassInst::Compile(p, pStack);
         }
     }
 
-    // this can be an arythmetic instruction
-    CBotInstr*    inst = CBotExpression::Compile(p, pStack);
+    // This can be an arithmetic expression
+    CBotInstr* inst = CBotExpression::Compile(p, pStack);
     if (IsOfType(p, ID_SEP))
     {
         return inst;

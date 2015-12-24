@@ -128,7 +128,7 @@ bool CBotVar::Save1State(FILE* pf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVar::Maj(void* pUser, bool bContinu)
+void CBotVar::Maj(void* pUser)
 {
 /*    if (!bContinu && m_pMyThis != nullptr)
         m_pMyThis->Maj(pUser, true);*/

@@ -349,11 +349,10 @@ public:
     /**
      * \brief Call the class update function
      *
-     * \param pUser user pointer to pass to the update function
-     * \param bContinue UNUSED
+     * \param pUser User pointer to pass to the update function
      * \see CBotClass::SetUpdateFunc()
      */
-    virtual void Maj(void* pUser = nullptr, bool bContinue = true);
+    virtual void Maj(void* pUser);
 
     /**
      * \brief Set unique identifier of this variable

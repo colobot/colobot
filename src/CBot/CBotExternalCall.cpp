@@ -148,7 +148,7 @@ bool CBotExternalCallDefault::Run(CBotVar* thisVar, CBotStack* pStack)
     CBotVar* result = pile2->GetVar();
 
     int exception = CBotNoErr; // TODO: Change to CBotError
-    bool res = m_rExec(args, result, exception, pStack->GetPUser());
+    bool res = m_rExec(args, result, exception, pStack->GetUserPtr());
 
     if (!res)
     {
@@ -193,7 +193,7 @@ bool CBotExternalCallDefaultClass::Run(CBotVar* thisVar, CBotStack* pStack)
     CBotVar* result = pile2->GetVar();
 
     int exception = CBotNoErr; // TODO: Change to CBotError
-    bool res = m_rExec(thisVar, args, result, exception, pStack->GetPUser());
+    bool res = m_rExec(thisVar, args, result, exception, pStack->GetUserPtr());
     pStack->SetVar(result);
 
     if (!res)

@@ -19,29 +19,21 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotDefines.h"
 #include "CBot/CBotTypResult.h"
 #include "CBotEnums.h"
 
-// Local include
-
-// Global include
 #include <cstdio>
 #include <string>
 
-// Forward declaration
 class CBotInstr;
 class CBotExternalCall;
 class CBotVar;
 class CBotProgram;
 class CBotToken;
 
-/*!
- * \class CBotStack
- * \brief The CBotStack class Management of the execution stack. Actually the
- * only thing it can do is to create an instance of a stack. To use for routine
- * CBotProgram :: Execute(CBotStack)
+/**
+ * \brief The execution stack
  */
 class CBotStack
 {
@@ -49,52 +41,44 @@ public:
     enum class UnknownEnumBlock : unsigned short { UNKNOWN_FALSE = 0, UNKNOWN_TRUE = 1, UNKNOWN_2 = 2 }; // TODO: figure out what these mean ~krzys_h
     enum class IsFunctionParam : unsigned short { FALSE = 0, TRUE = 1, UNKNOWN_EOX_SPECIAL = 2 }; // TODO: just guessing the meaning of values, should be verified ~krzys_h
 
-#if    STACKMEM
     /**
-     * \brief FirstStack Allocate first stack
+     * \brief AllocateStack Allocate the stack
      * \return pointer to created stack
      */
-    static CBotStack * FirstStack();
+    static CBotStack* AllocateStack();
 
     /** \brief Delete Remove current stack */
     void Delete();
-#endif
+
+    CBotStack() = delete;
+    ~CBotStack() = delete;
 
     /**
-     * \brief CBotStack Constructor of the stack
-     * \param ppapa Not used.
-     */
-    CBotStack(CBotStack* ppapa);
-
-
-    /** \brief ~CBotStack Destructor */
-    ~CBotStack();
-
-    /**
-     * \brief StackOver Check if end of stack is reached
-     * \return true if end of stack
+     * \brief Check for stack overflow and set error status as needed
+     * \return true on stack overflow
      */
     bool StackOver();
 
     /**
-     * \brief GetError Get error number of the stack
-     * \param [out] start beginning of the stack
-     * \param [out] end end of stack
-     * \return error number
+     * \brief Get last error
+     * \param[out] start Starting position in code of the error
+     * \param[out] end Ending position in code of the error
+     * \return Error number
      */
     CBotError GetError(int& start, int& end);
 
     /**
-     * \brief GetError Get error number
-     * \return eror number
+     * \brief Get last error
+     * \return Error number
+     * \see GetError(int&, int&) for error position in code
      */
-    int GetError();// rend le numéro d'erreur retourné
+    CBotError GetError();
 
     /**
      * \brief Reset Reset error at and set user
      * \param [in] pUser User of stack
      */
-    void Reset(void* pUser);
+    void Reset();
 
     /**
      * \brief SetType Determines the type.
@@ -130,9 +114,7 @@ public:
      * \param [in] bModif Not used. Probably need to be removed
      * \return Found variable
      */
-    CBotVar* FindVar(CBotToken* &pToken,
-                     bool bUpdate = false,
-                     bool bModif  = false);
+    CBotVar* FindVar(CBotToken*& pToken, bool bUpdate);
 
     /**
      * \brief Fetch a variable by its token.
@@ -142,9 +124,7 @@ public:
      * \param [in] bModif Not used. Probably need to be removed
      * \return Found variable
      */
-    CBotVar* FindVar(CBotToken& pToken,
-                     bool bUpdate = false,
-                     bool bModif  = false);
+    CBotVar* FindVar(CBotToken& pToken, bool bUpdate);
 
     /**
      * \brief Fetch variable by its name
@@ -161,8 +141,7 @@ public:
      * \param [in] bModif Not used. Probably need to be removed
      * \return Found variable
      */
-    CBotVar* FindVar(long ident, bool bUpdate = false,
-                                        bool bModif  = false);
+    CBotVar* FindVar(long ident, bool bUpdate);
 
     /**
      * \brief Find variable by its token and returns a copy of it.
@@ -207,9 +186,10 @@ public:
     void            ResetError(CBotError n, int start, int end);
     void            SetBreak(int val, const std::string& name);
 
-    void            SetBotCall(CBotProgram* p);
+    void            SetProgram(CBotProgram* p);
     CBotProgram*    GetBotCall(bool bFirst = false);
-    void*           GetPUser();
+    void            SetUserPtr(void* user);
+    void*           GetUserPtr();
     UnknownEnumBlock GetBlock();
 
 
@@ -274,7 +254,7 @@ inline int CBotStack::GetState()
     return m_state;
 }
 
-inline int CBotStack::GetError()
+inline CBotError CBotStack::GetError()
 {
     return m_error;
 }

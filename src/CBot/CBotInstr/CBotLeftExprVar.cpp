@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
 
 #include "CBot/CBotStack.h"
@@ -25,31 +24,23 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
+#include <cassert>
 
-// Global include
-#include <assert.h>
-
-////////////////////////////////////////////////////////////////////////////////
 CBotLeftExprVar::CBotLeftExprVar()
 {
-    name    = "CBotLeftExprVar";
-    m_typevar    = -1;
-    m_nIdent    =  0;
+    name = "CBotLeftExprVar";
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotLeftExprVar::~CBotLeftExprVar()
 {
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotLeftExprVar::Compile(CBotToken* &p, CBotCStack* pStack)
 {
-    // verifies that the token is a variable name
+    // Verifies that the token is a variable name
     if (p->GetType() != TokenTypVar)
     {
-        pStack->SetError( CBotErrNoVar, p->GetStart());
+        pStack->SetError(CBotErrNoVar, p);
         return nullptr;
     }
 
@@ -60,29 +51,28 @@ CBotInstr* CBotLeftExprVar::Compile(CBotToken* &p, CBotCStack* pStack)
     return inst;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool CBotLeftExprVar::Execute(CBotStack* &pj)
 {
-    CBotVar*     var1;
-    CBotVar*     var2;
+    // Create the variable
+    CBotVar* var1 = CBotVar::Create(m_token.GetString(), m_typevar);
+    var1->SetUniqNum(m_nIdent);
+    pj->AddVar(var1);
 
-    var1 = CBotVar::Create(m_token.GetString(), m_typevar);
-    var1->SetUniqNum(m_nIdent);                             // with the unique identifier
-    pj->AddVar(var1);                                       // place it on the stack
-
-    var2 = pj->GetVar();                                    // result on the stack
-    if (var2) var1->SetVal(var2);                           // do the assignment
+    CBotVar* var2 = pj->GetVar(); // Initial value on the stack
+    if (var2 != nullptr)
+    {
+        var1->SetVal(var2); // Set the value
+    }
 
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 void CBotLeftExprVar::RestoreState(CBotStack* &pj, bool bMain)
 {
     CBotVar*     var1;
 
     var1 = pj->FindVar(m_token.GetString());
-    if (var1 == nullptr) assert(0);
+    if (var1 == nullptr) assert(false);
 
-    var1->SetUniqNum(m_nIdent);                    // with the unique identifier
+    var1->SetUniqNum(m_nIdent); // Restore the identifier
 }

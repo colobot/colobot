@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotStack.h"
 #include "CBotExternalCall.h"
 
@@ -29,9 +28,6 @@
 #include "CBot/CBotFileUtils.h"
 #include "CBot/CBotUtils.h"
 
-// Local include
-
-// Global include
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
@@ -48,10 +44,8 @@ int         CBotStack::m_end   = 0;
 std::string  CBotStack::m_labelBreak="";
 void*       CBotStack::m_pUser = nullptr;
 
-#if    STACKMEM
-
 ////////////////////////////////////////////////////////////////////////////////
-CBotStack* CBotStack::FirstStack()
+CBotStack* CBotStack::AllocateStack()
 {
     CBotStack*    p;
 
@@ -78,19 +72,6 @@ CBotStack* CBotStack::FirstStack()
 
     m_error = CBotNoErr;    // avoids deadlocks because m_error is static
     return p;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotStack::CBotStack(CBotStack* ppapa)
-{
-    // constructor must exist or the destructor is never called!
-    assert(0);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotStack::~CBotStack()
-{
-    assert(0);    // use Delete () instead
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -235,134 +216,14 @@ bool CBotStack::StackOver()
     return true;
 }
 
-#else
-
 ////////////////////////////////////////////////////////////////////////////////
-CBotStack::CBotStack(CBotStack* ppapa)
+void CBotStack::Reset()
 {
-    m_next  = nullptr;
-    m_next2 = nullptr;
-    m_prev  = ppapa;
-
-    m_bBlock = (ppapa == nullptr) ? true : false;
-
-    m_state = 0;
-    m_step = 1;
-
-    if (ppapa == nullptr) m_timer = m_initimer;                // sets the timer at the beginning
-
-    m_listVar = nullptr;
-    m_bDontDelete = false;
-
-    m_var      = nullptr;
-    m_prog      = nullptr;
-    m_instr      = nullptr;
-    m_call      = nullptr;
-    m_bFunc      = false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// destructor
-CBotStack::~CBotStack()
-{
-    if ( m_next != EOX) delete m_next;
-    delete m_next2;
-    if (m_prev != nullptr && m_prev->m_next == this )
-            m_prev->m_next = nullptr;        // removes chain
-
-    delete m_var;
-    if ( !m_bDontDelete ) delete m_listVar;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// \TODO routine has/to optimize
-CBotStack* CBotStack::AddStack(CBotInstr* instr, bool bBlock)
-{
-    if (m_next != nullptr)
-    {
-        return m_next;                // included in an existing stack
-    }
-    CBotStack*    p = new CBotStack(this);
-    m_next = p;                                    // chain an element
-    p->m_bBlock = bBlock;
-    p->m_instr = instr;
-    p->m_prog = m_prog;
-    p->m_step = 0;
-    return    p;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotStack* CBotStack::AddStackEOX(CBotExternalCall* instr, bool bBlock)
-{
-    if (m_next != nullptr)
-    {
-        if ( m_next == EOX )
-        {
-            m_next = nullptr;
-            return EOX;
-        }
-        return m_next;                // included in an existing stack
-    }
-    CBotStack*    p = new CBotStack(this);
-    m_next = p;                                    // chain an element
-    p->m_bBlock = bBlock;
-    p->m_call = instr;
-    p->m_prog = m_prog;
-    p->m_step = 0;
-    p->m_bFunc = 2;    // special
-    return    p;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotStack* CBotStack::AddStack2(bool bBlock)
-{
-    if (m_next2 != nullptr)
-    {
-        m_next2->m_prog = m_prog;        // special avoids RestoreStack2
-        return m_next2;                    // included in an existing stack
-    }
-
-    CBotStack*    p = new CBotStack(this);
-    m_next2 = p;                                // chain an element
-    p->m_bBlock = bBlock;
-    p->m_prog = m_prog;
-    p->m_step = 0;
-
-    return    p;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool CBotStack::Return(CBotStack* pfils)
-{
-    if ( pfils == this ) return true;    // special
-
-    if (m_var != nullptr) delete m_var;            // value replaced?
-    m_var = pfils->m_var;                        // result transmitted
-    pfils->m_var = nullptr;                        // do not destroy the variable
-
-    if ( m_next != EOX ) delete m_next;            // releases the stack above
-    delete m_next2;m_next2 = nullptr;                // also the second stack (catch)
-
-    return (m_error == 0);                        // interrupted if error
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool CBotStack::StackOver()
-{
-    return false;            // no overflow check in this version
-}
-
-#endif
-
-////////////////////////////////////////////////////////////////////////////////
-void CBotStack::Reset(void* pUser)
-{
-    m_timer = m_initimer;        // resets the timer
+    m_timer = m_initimer; // resets the timer
     m_error    = CBotNoErr;
 //    m_start = 0;
 //    m_end    = 0;
     m_labelBreak.clear();
-    m_pUser = pUser;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -479,7 +340,7 @@ void CBotStack::SetType(CBotTypResult& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotStack::FindVar(CBotToken* &pToken, bool bUpdate, bool bModif)
+CBotVar* CBotStack::FindVar(CBotToken*& pToken, bool bUpdate)
 {
     CBotStack*    p = this;
     std::string    name = pToken->GetString();
@@ -492,7 +353,7 @@ CBotVar* CBotStack::FindVar(CBotToken* &pToken, bool bUpdate, bool bModif)
             if (pp->GetName() == name)
             {
                 if ( bUpdate )
-                    pp->Maj(m_pUser, false);
+                    pp->Maj(m_pUser);
 
                 return pp;
             }
@@ -524,7 +385,7 @@ CBotVar* CBotStack::FindVar(const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotStack::FindVar(long ident, bool bUpdate, bool bModif)
+CBotVar* CBotStack::FindVar(long ident, bool bUpdate)
 {
     CBotStack*    p = this;
     while (p != nullptr)
@@ -535,7 +396,7 @@ CBotVar* CBotStack::FindVar(long ident, bool bUpdate, bool bModif)
             if (pp->GetUniqNum() == ident)
             {
                 if ( bUpdate )
-                    pp->Maj(m_pUser, false);
+                    pp->Maj(m_pUser);
 
                 return pp;
             }
@@ -547,16 +408,16 @@ CBotVar* CBotStack::FindVar(long ident, bool bUpdate, bool bModif)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotStack::FindVar(CBotToken& pToken, bool bUpdate, bool bModif)
+CBotVar* CBotStack::FindVar(CBotToken& pToken, bool bUpdate)
 {
     CBotToken*    pt = &pToken;
-    return FindVar(pt, bUpdate, bModif);
+    return FindVar(pt, bUpdate);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotVar* CBotStack::CopyVar(CBotToken& Token, bool bUpdate)
 {
-    CBotVar*    pVar = FindVar( Token, bUpdate );
+    CBotVar*    pVar = FindVar(Token, bUpdate);
 
     if ( pVar == nullptr) return nullptr;
 
@@ -639,11 +500,7 @@ bool CBotStack::Execute()
 
     if (!instr->Run(nullptr, pile)) return false;            // \TODO exécution à partir de là
 
-#if    STACKMEM
     pile->m_next->Delete();
-#else
-    delete pile->m_next;
-#endif
 
     pile->m_next = EOX;            // special for recovery
     return true;
@@ -716,7 +573,7 @@ void CBotStack::AddVar(CBotVar* pVar)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotStack::SetBotCall(CBotProgram* p)
+void CBotStack::SetProgram(CBotProgram* p)
 {
     m_prog  = p;
     m_bFunc = IsFunctionParam::TRUE;
@@ -732,9 +589,14 @@ CBotProgram*  CBotStack::GetBotCall(bool bFirst)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void* CBotStack::GetPUser()
+void* CBotStack::GetUserPtr()
 {
     return m_pUser;
+}
+
+void CBotStack::SetUserPtr(void* user)
+{
+    m_pUser = user;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -912,12 +774,8 @@ bool CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
     if (!ReadWord(pf, w)) return false;
     if ( w == 0 ) return true;
 
-#if    STACKMEM
-    if ( this == nullptr ) pStack = FirstStack();
+    if ( this == nullptr ) pStack = AllocateStack();
     else pStack = AddStack();
-#else
-    pStack = new CBotStack(this);
-#endif
 
     if ( w == 2 )
     {

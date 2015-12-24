@@ -152,7 +152,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     ppVars[i] = nullptr;
 
     CBotClass*    pClass = CBotClass::Find(m_ClassName);
-    CBotVar*    pThis  = pile1->FindVar(-2);
+    CBotVar*    pThis  = pile1->FindVar(-2, false);
     CBotVar*    pResult = nullptr;
     if (m_typRes.GetType() > 0) pResult = CBotVar::Create("", m_typRes);
     if (m_typRes.Eq(CBotTypClass))
@@ -272,7 +272,7 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
                                  pResult, pile2, GetToken())) return false;    // interupted
 
     // set the new value of this in place of the old variable
-    CBotVar*    old = pile1->FindVar(m_token);
+    CBotVar*    old = pile1->FindVar(m_token, false);
     old->Copy(pThis, false);
 
     if (pRes != pResult) delete pRes;

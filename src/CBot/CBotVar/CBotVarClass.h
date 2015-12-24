@@ -51,7 +51,7 @@ public:
 
     bool Save1State(FILE* pf) override;
 
-    void Maj(void* pUser, bool bContinue) override;
+    void Maj(void* pUser) override;
 
     //! \name Reference counter
     //@{
