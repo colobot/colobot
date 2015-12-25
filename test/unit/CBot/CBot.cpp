@@ -249,25 +249,31 @@ protected:
 
                 std::string funcName;
                 program->GetRunPos(funcName, cursor1, cursor2);
+                bool unknown = true;
                 if (!funcName.empty())
                 {
                     ss << "    while executing function " << funcName << " (" << cursor1 << "-" << (cursor2 >= 0 ? cursor2 : cursor1) << ")" << std::endl << GetFormattedLineInfo(code, cursor1);
+                    unknown = false;
                 }
                 else if(e.cursor1 >= 0)
                 {
                     ss << "    at unknown location " << e.cursor1 << "-" << (e.cursor2 >= 0 ? e.cursor2 : e.cursor1) << std::endl << GetFormattedLineInfo(code, e.cursor1);
+                    unknown = false;
                 }
                 ss << std::endl;
 
-                ss << "Variables:" << std::endl;
-                int level = 0;
-                while (true)
+                if (!unknown)
                 {
-                    CBotVar* var = program->GetStackVars(funcName, level--);
-                    if (var == nullptr) break;
+                    ss << "Variables:" << std::endl;
+                    int level = 0;
+                    while (true)
+                    {
+                        CBotVar* var = program->GetStackVars(funcName, level--);
+                        if (var == nullptr) break;
 
-                    ss << "  Block " << -level << ":" << std::endl;
-                    PrintVars(ss, var);
+                        ss << "  Block " << -level << ":" << std::endl;
+                        PrintVars(ss, var);
+                    }
                 }
 
                 ADD_FAILURE() << ss.str();
@@ -509,6 +515,37 @@ TEST_F(CBotUT, FunctionRedefined)
     );
 }
 
+// TODO: Doesn't work
+TEST_F(CBotUT, DISABLED_FunctionBadReturn)
+{
+    ExecuteTest(
+        "int func()\n"
+        "{\n"
+        "    return \"test\";\n"
+        "}\n"
+        "extern void FunctionBadReturn()\n"
+        "{\n"
+        "    int a = func();\n"
+        "}\n",
+        static_cast<CBotError>(-1) // TODO: no error for that
+    );
+}
+
+// TODO: Doesn't work
+TEST_F(CBotUT, DISABLED_FunctionNoReturn)
+{
+    ExecuteTest(
+        "int func()\n"
+        "{\n"
+        "}\n"
+        "extern void FunctionNoReturn()\n"
+        "{\n"
+        "    func();\n"
+        "}\n",
+        static_cast<CBotError>(-1) // TODO: no error for that
+    );
+}
+
 TEST_F(CBotUT, ClassConstructor)
 {
     ExecuteTest(
@@ -570,7 +607,7 @@ TEST_F(CBotUT, DISABLED_ClassDestructorNaming)
         "public class TestClass {\n"
         "    public void ~SomethingElse() {}\n"
         "}\n",
-        static_cast<CBotError>(-1)
+        static_cast<CBotError>(-1) // TODO: no error for that
     );
     ExecuteTest(
         "public class SomethingElse {\n"
@@ -578,7 +615,7 @@ TEST_F(CBotUT, DISABLED_ClassDestructorNaming)
         "public class TestClass2 {\n"
         "    public void ~SomethingElse() {}\n"
         "}\n",
-        static_cast<CBotError>(-1)
+        static_cast<CBotError>(-1) // TODO: no error for that
     );
 }
 
