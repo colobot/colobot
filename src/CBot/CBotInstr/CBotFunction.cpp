@@ -178,6 +178,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
             if ( IsOfType( p, ID_DBLDOTS ) )        // method for a class
             {
                 func->m_MasterClass = pp->GetString();
+                func->m_classToken = *pp;
                 CBotClass* pClass = CBotClass::Find(pp);
                 if ( pClass == nullptr ) goto bad;
 
@@ -355,10 +356,16 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
         }
         else
         {
+            if (m_MasterClass != pInstance->GetClass()->GetName())
+            {
+                pile->SetError(CBotErrBadType2, &m_classToken);
+                return false;
+            }
+
             pThis = CBotVar::Create("this", CBotTypResult( CBotTypPointer, m_MasterClass ));
             pThis->SetPointer(pInstance);
         }
-        assert(pThis);
+        assert(pThis != nullptr);
         pThis->SetInit(CBotVar::InitType::IS_POINTER);
 
 //      pThis->SetUniqNum(m_nThisIdent);
@@ -617,10 +624,16 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar** ppVars
                 }
                 else
                 {
+                    if (pt->m_MasterClass != pInstance->GetClass()->GetName())
+                    {
+                        pStack->SetError(CBotErrBadType2, &pt->m_classToken);
+                        return false;
+                    }
+
                     pThis = CBotVar::Create("this", CBotTypResult( CBotTypPointer, pt->m_MasterClass ));
                     pThis->SetPointer(pInstance);
                 }
-                assert(pThis);
+                assert(pThis != nullptr);
                 pThis->SetInit(CBotVar::InitType::IS_POINTER);
 
                 pThis->SetUniqNum(-2);

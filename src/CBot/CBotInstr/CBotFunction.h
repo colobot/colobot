@@ -261,8 +261,10 @@ private:
     bool m_bPublic;
     //! Extern function.
     bool m_bExtern;
-    //! Name of the class we derive.
+    //! Name of the class we are part of
     std::string m_MasterClass;
+    //! Token of the class we are part of
+    CBotToken m_classToken;
     CBotProgram* m_pProg;
     //! For the position of the word "extern".
     CBotToken m_extern;
