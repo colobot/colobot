@@ -115,7 +115,7 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotFor :: Execute(CBotStack* &pj)
 {
-    CBotStack* pile = pj->AddStack(this, CBotStack::UnknownEnumBlock::UNKNOWN_TRUE);     // adds an item to the stack (variables locales)
+    CBotStack* pile = pj->AddStack(this, CBotStack::IsBlock::BLOCK);     // adds an item to the stack (variables locales)
                                                     // or find in case of recovery
 //  if ( pile == EOX ) return true;
 

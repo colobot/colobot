@@ -57,7 +57,6 @@ public:
      * \param pThis
      * \param ppVars
      * \param pStack
-     * \param nIdent
      * \return
      */
     CBotTypResult CompileCall(const std::string& name, CBotVar* pThis, CBotVar** ppVars,
@@ -65,7 +64,6 @@ public:
 
     /*!
      * \brief DoCall
-     * \param nIdent
      * \param name
      * \param pThis
      * \param ppVars

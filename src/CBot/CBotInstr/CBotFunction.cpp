@@ -335,7 +335,7 @@ bad:
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
 {
-    CBotStack*  pile = pj->AddStack(this, CBotStack::UnknownEnumBlock::UNKNOWN_2);               // one end of stack local to this function
+    CBotStack*  pile = pj->AddStack(this, CBotStack::IsBlock::FUNCTION);               // one end of stack local to this function
 //  if ( pile == EOX ) return true;
 
     pile->SetProgram(m_pProg);                              // bases for routines
@@ -397,7 +397,7 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
 
     pile->SetProgram(m_pProg);                          // bases for routines
 
-    if ( pile->GetBlock() != CBotStack::UnknownEnumBlock::UNKNOWN_2 )
+    if ( pile->GetBlock() != CBotStack::IsBlock::FUNCTION)
     {
         CBotStack*  pile2 = pile->RestoreStack(nullptr);       // one end of stack local to this function
         if ( pile2 == nullptr ) return;
@@ -600,14 +600,14 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar** ppVars
 
     if ( pt != nullptr )
     {
-        CBotStack*  pStk1 = pStack->AddStack(pt, CBotStack::UnknownEnumBlock::UNKNOWN_2);    // to put "this"
+        CBotStack*  pStk1 = pStack->AddStack(pt, CBotStack::IsBlock::FUNCTION);    // to put "this"
 //      if ( pStk1 == EOX ) return true;
 
         pStk1->SetProgram(pt->m_pProg);                 // it may have changed module
 
         if ( pStk1->IfStep() ) return false;
 
-        CBotStack*  pStk3 = pStk1->AddStack(nullptr, CBotStack::UnknownEnumBlock::UNKNOWN_TRUE);    // parameters
+        CBotStack*  pStk3 = pStk1->AddStack(nullptr, CBotStack::IsBlock::BLOCK);    // parameters
 
         // preparing parameters on the stack
 
@@ -682,7 +682,7 @@ void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar** 
 
         pStk1->SetProgram(pt->m_pProg);                 // it may have changed module
 
-        if ( pStk1->GetBlock() != CBotStack::UnknownEnumBlock::UNKNOWN_2 )
+        if ( pStk1->GetBlock() != CBotStack::IsBlock::FUNCTION)
         {
             CBotStack* pStk2 = pStk1->RestoreStack(nullptr); // used more
             if ( pStk2 == nullptr ) return;
@@ -725,7 +725,7 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, 
                          CBotToken* pToken, CBotClass* pClass)
 {
     CBotTypResult   type;
-    CBotProgram*    pProgCurrent = pStack->GetBotCall();
+    CBotProgram*    pProgCurrent = pStack->GetProgram();
 
     CBotFunction*   pt = FindLocalOrPublic(nIdent, name, ppVars, type, false);
 
@@ -733,11 +733,11 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, 
     {
 //      DEBUG( "CBotFunction::DoCall" + pt->GetName(), 0, pStack);
 
-        CBotStack*  pStk = pStack->AddStack(pt, CBotStack::UnknownEnumBlock::UNKNOWN_2);
+        CBotStack*  pStk = pStack->AddStack(pt, CBotStack::IsBlock::FUNCTION);
 //      if ( pStk == EOX ) return true;
 
         pStk->SetProgram(pt->m_pProg);                  // it may have changed module
-        CBotStack*  pStk3 = pStk->AddStack(nullptr, CBotStack::UnknownEnumBlock::UNKNOWN_TRUE); // to set parameters passed
+        CBotStack*  pStk3 = pStk->AddStack(nullptr, CBotStack::IsBlock::BLOCK); // to set parameters passed
 
         // preparing parameters on the stack
 
@@ -767,7 +767,7 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, 
         {
             if ( pt->m_bSynchro )
             {
-                CBotProgram* pProgBase = pStk->GetBotCall(true);
+                CBotProgram* pProgBase = pStk->GetProgram(true);
                 if ( !pClass->Lock(pProgBase) ) return false;       // expected to power \TODO attend de pouvoir
             }
             pStk->IncState();
@@ -826,7 +826,7 @@ void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar* p
         if ( pStk->GetState() > 1 &&                        // latching is effective?
              pt->m_bSynchro )
             {
-                CBotProgram* pProgBase = pStk->GetBotCall(true);
+                CBotProgram* pProgBase = pStk->GetProgram(true);
                 pClass->Lock(pProgBase);                    // locks the class
             }
 

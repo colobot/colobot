@@ -350,6 +350,7 @@ public:
 
     /*!
      * \brief CheckCall Test if a procedure name is already defined somewhere.
+     * \param program
      * \param pToken
      * \param pParam
      * \return

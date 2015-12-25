@@ -35,12 +35,18 @@ class CBotToken;
 
 /**
  * \brief The execution stack
+ *
+ * \nosubgrouping
  */
 class CBotStack
 {
 public:
-    enum class UnknownEnumBlock : unsigned short { UNKNOWN_FALSE = 0, UNKNOWN_TRUE = 1, UNKNOWN_2 = 2 }; // TODO: figure out what these mean ~krzys_h
-    enum class IsFunctionParam : unsigned short { FALSE = 0, TRUE = 1, UNKNOWN_EOX_SPECIAL = 2 }; // TODO: just guessing the meaning of values, should be verified ~krzys_h
+    enum class IsBlock : unsigned short { INSTRUCTION = 0, BLOCK = 1, FUNCTION = 2 }; // TODO: figure out what these mean ~krzys_h
+    enum class IsFunction : unsigned short { NO = 0, TRUE = 1, EXTERNAL_CALL = 2 }; // TODO: just guessing the meaning of values, should be verified ~krzys_h
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name Stack memory management
+    //@{
 
     /**
      * \brief Allocate the stack
@@ -60,25 +66,53 @@ public:
      */
     bool StackOver();
 
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /** \name Error management
+     *
+     * Be careful - errors are stored in static variables!
+     * \todo Refactor that
+     */
+    //@{
+
     /**
      * \brief Get last error
      * \param[out] start Starting position in code of the error
      * \param[out] end Ending position in code of the error
      * \return Error number
      */
-    CBotError GetError(int& start, int& end);
+    CBotError GetError(int& start, int& end) { start = m_start; end = m_end; return m_error; }
 
     /**
      * \brief Get last error
      * \return Error number
      * \see GetError(int&, int&) for error position in code
      */
-    CBotError GetError();
+    CBotError GetError() { return m_error; }
+
+    /**
+     * \brief Check if there was an error
+     * \return false if an error occured
+     * \see GetError()
+     */
+    bool IsOk()
+    {
+        return m_error == CBotNoErr;
+    }
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * \brief Reset the stack - resets the error and timer
      */
     void Reset();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name Local variables
+    //@{
 
     /**
      * \brief Adds a local variable
@@ -126,35 +160,147 @@ public:
      */
     CBotVar*        CopyVar(CBotToken& pToken, bool bUpdate = false);
 
+    //@}
 
-    CBotStack*        AddStack(CBotInstr* instr = nullptr, UnknownEnumBlock bBlock = UnknownEnumBlock::UNKNOWN_FALSE);    // extends the stack
-    CBotStack*        AddStackEOX(CBotExternalCall* instr = nullptr, UnknownEnumBlock bBlock = UnknownEnumBlock::UNKNOWN_FALSE);    // extends the stack
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /** \name Child stacks
+     *
+     * When you enter a new code block or instruction, child stack is created
+     * for managing everything that happens inside that block / instruction.
+     */
+    //@{
+
+    /**
+     * \brief Creates or gets the primary child stack
+     *
+     * If the stack already exists, it is returned.
+     * Otherwise, a new stack is created.
+     *
+     * \todo Document params
+     * \returns New stack element
+     */
+    CBotStack*        AddStack(CBotInstr* instr = nullptr, IsBlock bBlock = IsBlock::INSTRUCTION);
+
+    /**
+     * \brief Creates or gets the secondary child stack
+     * \todo What is it used for?
+     *
+     * If the stack already exists, it is returned.
+     * Otherwise, a new stack is created.
+     *
+     * \see AddStack()
+     * \return New stack element
+     */
+    CBotStack*        AddStack2(IsBlock bBlock = IsBlock::INSTRUCTION);
+
+    /**
+     * \brief Adds special EOX stack marker
+     *
+     * \todo What is this thing?
+     * Used by external calls
+     *
+     * \todo Document params & return
+     */
+    CBotStack*        AddStackEOX(CBotExternalCall* instr = nullptr, IsBlock bBlock = IsBlock::INSTRUCTION);
+
+    /**
+     * \brief Restore CBotInstr pointer after loading stack from file
+     * \todo Check what this does exactly
+     */
     CBotStack*        RestoreStack(CBotInstr* instr = nullptr);
+    /**
+     * \brief Restores CBotExternalCall in the EOX marker after loading stack from file
+     * \todo Check what this does exactly
+     */
     CBotStack*        RestoreStackEOX(CBotExternalCall* instr = nullptr);
 
-    CBotStack*        AddStack2(UnknownEnumBlock bBlock = UnknownEnumBlock::UNKNOWN_FALSE);                        // extends the stack
-    bool            Return(CBotStack* pFils);                            // transmits the result over
-    bool            ReturnKeep(CBotStack* pFils);                        // transmits the result without reducing the stack
-    bool            BreakReturn(CBotStack* pfils, const std::string& name = nullptr);
-                                                                        // in case of eventual break
-    bool            IfContinue(int state, const std::string& name);
-                                                                        // or "continue"
+    /**
+     * \brief Return to this point - copy the result from given stack, and destroy all child stacks from here
+     *
+     * \todo Better description
+     *
+     * \param pFils Stack to copy result from
+     * \return IsOk()
+     */
+    bool            Return(CBotStack* pFils);
+    /**
+     * \brief Like Return() but doesn't destroy the stacks
+     *
+     * \param pFils Stack to copy result from
+     * \return IsOk()
+     */
+    bool            ReturnKeep(CBotStack* pFils);
 
-    bool            IsOk();
+    /**
+     * \todo Document
+     * in case of eventual break
+     */
+    bool            BreakReturn(CBotStack* pfils, const std::string& name = nullptr);
+    /**
+     * \todo Document
+     * or "continue"
+     */
+    bool            IfContinue(int state, const std::string& name);
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /** \name Preserving execution status
+     *
+     * A "state" is a number that determines how much of CBotInstr::Execute() has been already executed.
+     * When CBotInstr::Execute() is called, it continues execution from the point it finished at.
+     * See various CBotInstr::Execute() implementations for details.
+     *
+     * Call CBotStack::Execute() to resume execution of the interrupted instruction
+     *
+     * \todo More detailed docs on functions
+     */
+    //@{
 
     bool            SetState(int n, int lim = -10);                        // select a state
-    int             GetState();                                            // in what state am I?
+    int             GetState() { return m_state; }                         // in what state am I?
     bool            IncState(int lim = -10);                            // passes to the next state
     bool            IfStep();                                            // do step by step
     bool            Execute();
 
-    void            SetVar( CBotVar* var );
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // \name Result variable
+
+    //@{
+
+    /**
+     * \brief Set the result variable
+     * \todo CBotStack takes over the ownership - use std::unique_ptr here
+     * \param var Result variable to set
+     */
+    void            SetVar(CBotVar* var);
+    /**
+     * \brief Set the result variable to copy of given variable
+     * \param var Variable to copy as result
+     */
     void            SetCopyVar( CBotVar* var );
+    /**
+     * \brief Return result variable
+     * \return Variable set with SetVar() or SetCopyVar()
+     */
     CBotVar*        GetVar();
-    CBotVar*        GetCopyVar();
-    CBotVar*        GetPtVar();
+    /**
+     * \todo Document
+     */
     bool            GetRetVar(bool bRet);
+    /**
+     * \brief Return the result variable as int
+     * \deprecated Please use GetVar()->GetValInt() instead
+     * \todo Remove
+     * \return GetVar()->GetValInt(), or 0 if GetVar() == nullptr
+     */
     long            GetVal();
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void            SetError(CBotError n, CBotToken* token = nullptr);
     void            SetPosError(CBotToken* token);
@@ -162,10 +308,10 @@ public:
     void            SetBreak(int val, const std::string& name);
 
     void            SetProgram(CBotProgram* p);
-    CBotProgram*    GetBotCall(bool bFirst = false);
+    CBotProgram* GetProgram(bool bFirst = false);
     void            SetUserPtr(void* user);
     void*           GetUserPtr();
-    UnknownEnumBlock GetBlock();
+    IsBlock GetBlock();
 
 
     bool            ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotTypResult& rettype);
@@ -174,8 +320,7 @@ public:
     bool            SaveState(FILE* pf);
     bool            RestoreState(FILE* pf, CBotStack* &pStack);
 
-    static
-    void            SetTimer(int n);
+    static void     SetTimer(int n);
 
     void            GetRunPos(std::string& FunctionName, int& start, int& end);
     CBotVar*        GetStackVars(std::string& FunctionName, int level);
@@ -197,7 +342,7 @@ private:
     CBotVar*        m_var;                        // result of the operations
     CBotVar*        m_listVar;                    // variables declared at this level
 
-    UnknownEnumBlock m_bBlock;                    // is part of a block (variables are local to this block)
+    IsBlock m_bBlock;                    // is part of a block (variables are local to this block)
     bool            m_bOver;                    // stack limits?
 //    bool            m_bDontDelete;                // special, not to destroy the variable during delete
     CBotProgram*    m_prog;                        // user-defined functions
@@ -212,24 +357,7 @@ private:
     void*            m_pUser;
 
     CBotInstr*        m_instr;                    // the corresponding instruction
-    IsFunctionParam  m_bFunc;                    // an input of a function?
+    IsFunction m_bFunc;                    // an input of a function?
     CBotExternalCall*        m_call;                        // recovery point in a extern call
     friend class    CBotTry;
 };
-
-// inline routinees must be declared in file.h
-
-inline bool CBotStack::IsOk()
-{
-    return (m_error == 0);
-}
-
-inline int CBotStack::GetState()
-{
-    return m_state;
-}
-
-inline CBotError CBotStack::GetError()
-{
-    return m_error;
-}
