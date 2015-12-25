@@ -194,7 +194,7 @@ private:
     }
 
 protected:
-    void ExecuteTest(const std::string& code, CBotError expectedError = CBotNoErr)
+    std::unique_ptr<CBotProgram> ExecuteTest(const std::string& code, CBotError expectedError = CBotNoErr)
     {
         CBotError expectedCompileError = expectedError < 6000 ? expectedError : CBotNoErr;
         CBotError expectedRuntimeError = expectedError >= 6000 ? expectedError : CBotNoErr;
@@ -211,14 +211,16 @@ protected:
             std::stringstream ss;
             if (error != CBotNoErr)
             {
-                FAIL() << "Compile error - " << error << " (" << cursor1 << "-" << (cursor2 >= 0 ? cursor2 : cursor1) << ")" << std::endl << GetFormattedLineInfo(code, cursor1); // TODO: Error messages are on Colobot side
+                ADD_FAILURE() << "Compile error - " << error << " (" << cursor1 << "-" << (cursor2 >= 0 ? cursor2 : cursor1) << ")" << std::endl << GetFormattedLineInfo(code, cursor1); // TODO: Error messages are on Colobot side
+                return std::move(program);
             }
             else
             {
-                FAIL() << "No compile error, expected " << expectedCompileError; // TODO: Error messages are on Colobot side
+                ADD_FAILURE() << "No compile error, expected " << expectedCompileError; // TODO: Error messages are on Colobot side
+                return std::move(program);
             }
         }
-        if (expectedCompileError != CBotNoErr) return;
+        if (expectedCompileError != CBotNoErr) return std::move(program);
 
         for (const std::string& test : tests)
         {
@@ -279,6 +281,7 @@ protected:
                 ADD_FAILURE() << ss.str();
             }
         }
+        return std::move(program); // Take it if you want, destroy on exit otherwise
     }
 };
 
@@ -674,6 +677,34 @@ TEST_F(CBotUT, DISABLED_FunctionNoReturn)
     );
 }
 
+TEST_F(CBotUT, PublicFunctions)
+{
+    // Keep the program, so that the function continues to exist after ExecuteTest finishes
+    auto publicProgram = ExecuteTest(
+        "public int test()\n"
+        "{\n"
+        "    return 1337;\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void TestPublic()\n"
+        "{\n"
+        "    ASSERT(test() == 1337);\n"
+        "}\n"
+    );
+
+    publicProgram.reset(); // Now remove
+
+    ExecuteTest(
+        "extern void TestPublicRemoved()\n"
+        "{\n"
+        "    ASSERT(test() == 1337);\n"
+        "}\n",
+        CBotErrUndefCall
+    );
+}
+
 TEST_F(CBotUT, ClassConstructor)
 {
     ExecuteTest(
@@ -725,6 +756,38 @@ TEST_F(CBotUT, ClassDestructor)
         "    }\n"
         "    ASSERT(t1.instanceCounter == 1);\n"
         "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassNullPointer)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    public void TestClass() {\n"
+        "        FAIL();\n"
+        "    }\n"
+        "}\n"
+        "extern void TestClassNullPointer()\n"
+        "{\n"
+        "    TestClass t;\n"
+        //"    ASSERT(t == null);\n" // TODO: OH REALLY?
+        "    TestClass t2 = null;\n"
+        "    ASSERT(t2 == null);\n"
+        "}\n"
+    );
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    public int x = 0;"
+        "    public void TestClass() {\n"
+        "        FAIL();\n"
+        "    }\n"
+        "}\n"
+        "extern void TestClassNullPointerAccess()\n"
+        "{\n"
+        "    TestClass t;\n"
+        "    int y = t.x;\n"
+        "}\n",
+        CBotErrNull
     );
 }
 
@@ -789,6 +852,34 @@ TEST_F(CBotUT, DISABLED_ClassRedefined)
         "public class TestClass {}\n"
         "public class TestClass {}\n",
         CBotErrRedefClass
+    );
+}
+
+// TODO: NOOOOOO!!! Nononononono :/
+TEST_F(CBotUT, DISABLED_PublicClasses)
+{
+    // Keep the program, so that the class continues to exist after ExecuteTest finishes
+    auto publicProgram = ExecuteTest(
+        "public class TestClass\n"
+        "{\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void TestPublic()\n"
+        "{\n"
+        "    TestClass t();\n"
+        "}\n"
+    );
+
+    publicProgram.reset(); // Now remove
+
+    ExecuteTest(
+        "extern void TestPublicRemoved()\n"
+        "{\n"
+        "    TestClass t();\n"
+        "}\n",
+        CBotErrUndefClass
     );
 }
 
