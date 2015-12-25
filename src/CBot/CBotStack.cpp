@@ -319,20 +319,6 @@ CBotError CBotStack::GetError(int& start, int& end)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotStack::GetType(CBotVar::GetTypeMode mode)
-{
-    if (m_var == nullptr) return -1;
-    return m_var->GetType(mode);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotTypResult CBotStack::GetTypResult(CBotVar::GetTypeMode mode)
-{
-    if (m_var == nullptr) return -1;
-    return m_var->GetTypResult(mode);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 CBotVar* CBotStack::FindVar(CBotToken*& pToken, bool bUpdate)
 {
     CBotStack*    p = this;
@@ -408,9 +394,9 @@ CBotVar* CBotStack::FindVar(CBotToken& pToken, bool bUpdate)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotStack::CopyVar(CBotToken& Token, bool bUpdate)
+CBotVar* CBotStack::CopyVar(CBotToken& pToken, bool bUpdate)
 {
-    CBotVar*    pVar = FindVar(Token, bUpdate);
+    CBotVar*    pVar = FindVar(pToken, bUpdate);
 
     if ( pVar == nullptr) return nullptr;
 
@@ -557,7 +543,7 @@ void CBotStack::AddVar(CBotVar* pVar)
 
     if ( p == nullptr ) return;
 
-///    p->m_bDontDelete = bDontDelete;
+//    p->m_bDontDelete = bDontDelete;
 
     CBotVar**    pp = &p->m_listVar;
     while ( *pp != nullptr ) pp = &(*pp)->m_next;

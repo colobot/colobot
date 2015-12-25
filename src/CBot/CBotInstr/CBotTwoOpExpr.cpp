@@ -36,8 +36,6 @@
 // Global include
 #include <cassert>
 
-#define    MAX(a,b)    ((a>b) ? a : b)
-
 ////////////////////////////////////////////////////////////////////////////////
 CBotTwoOpExpr::CBotTwoOpExpr()
 {
@@ -200,7 +198,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
             type2 = pStk->GetTypResult();                       // what kind of results?
 
             // what kind of result?
-            int TypeRes = MAX( type1.GetType(3), type2.GetType(3) );
+            int TypeRes = std::max( type1.GetType(3), type2.GetType(3) );
             if ( TypeOp == ID_ADD && type1.Eq(CBotTypString) )
             {
                 TypeRes = CBotTypString;
@@ -253,7 +251,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
                     }
 
                     if ( TypeRes != CBotTypString )
-                        TypeRes = MAX(type1.GetType(), type2.GetType());
+                        TypeRes = std::max(type1.GetType(), type2.GetType());
                     inst = i;
                 }
 
@@ -344,15 +342,16 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
         pStk2->IncState();
     }
 
-    CBotTypResult       type1 = pStk1->GetTypResult();      // what kind of results?
-    CBotTypResult       type2 = pStk2->GetTypResult();
+    assert(pStk1->GetVar() != nullptr && pStk2->GetVar() != nullptr);
+    CBotTypResult       type1 = pStk1->GetVar()->GetTypResult();      // what kind of results?
+    CBotTypResult       type2 = pStk2->GetVar()->GetTypResult();
 
     CBotStack* pStk3 = pStk2->AddStack(this);               // adds an item to the stack
     if ( pStk3->IfStep() ) return false;                    // shows the operation if step by step
 
     // creates a temporary variable to put the result
     // what kind of result?
-    int TypeRes = MAX(type1.GetType(), type2.GetType());
+    int TypeRes = std::max(type1.GetType(), type2.GetType());
 
     if ( GetTokenType() == ID_ADD && type1.Eq(CBotTypString) )
     {
@@ -374,14 +373,14 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
         TypeRes = CBotTypBoolean;
         break;
     case ID_DIV:
-        TypeRes = MAX(TypeRes, CBotTypFloat);
+        TypeRes = std::max(TypeRes, static_cast<int>(CBotTypFloat));
     }
 
     // creates a variable for the result
     CBotVar*    result = CBotVar::Create("", TypeRes);
 
     // creates a variable to perform the calculation in the appropriate type
-    TypeRes = MAX(type1.GetType(), type2.GetType());
+    TypeRes = std::max(type1.GetType(), type2.GetType());
 
     if ( GetTokenType() == ID_ADD && type1.Eq(CBotTypString) )
     {

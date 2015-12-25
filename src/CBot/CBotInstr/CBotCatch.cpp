@@ -103,7 +103,7 @@ bool CBotCatch :: TestCatch(CBotStack* &pile, int val)
 {
     if ( !m_Cond->Execute(pile) ) return false;
 
-    if ( val > 0 || pile->GetType() != CBotTypBoolean )
+    if ( val > 0 || pile->GetVar() == nullptr || pile->GetVar()->GetType() != CBotTypBoolean )
     {
         CBotVar* var = CBotVar::Create("", CBotTypBoolean);
         var->SetValInt( pile->GetVal() == val );

@@ -88,7 +88,7 @@ public:
     /**
      * \brief Constructor
      *
-     * \param token The string this token represents
+     * \param text The string this token represents
      * \param sep All separators that appeared after this token
      * \param start Beginning location in the source code of this token
      * \param end Ending location in the source code of this token
@@ -121,7 +121,7 @@ public:
 
     /**
      * \brief Set the token string
-     * \param The new string to set
+     * \param name The new string to set
      */
     void SetString(const std::string& name);
 
@@ -144,7 +144,7 @@ public:
 
     /**
      * \brief Get the keyword id
-     * \return The keyword id, see ::CBotTokenId
+     * \return The keyword id, see ::TokenId
      */
     long GetKeywordId();
 

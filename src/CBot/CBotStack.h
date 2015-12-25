@@ -43,12 +43,12 @@ public:
     enum class IsFunctionParam : unsigned short { FALSE = 0, TRUE = 1, UNKNOWN_EOX_SPECIAL = 2 }; // TODO: just guessing the meaning of values, should be verified ~krzys_h
 
     /**
-     * \brief AllocateStack Allocate the stack
+     * \brief Allocate the stack
      * \return pointer to created stack
      */
     static CBotStack* AllocateStack();
 
-    /** \brief Delete Remove current stack */
+    /** \brief Remove the current stack */
     void Delete();
 
     CBotStack() = delete;
@@ -81,69 +81,50 @@ public:
     void Reset();
 
     /**
-     * \brief GetType Get the type of value on the stack.
-     * \param [in] mode Used when getting class type (1 gives pointer, 2 gives intrinsic).
-     * \return Type number.
+     * \brief Adds a local variable
+     * \param var Variable to be added
      */
-    int GetType(CBotVar::GetTypeMode mode = CBotVar::GetTypeMode::NORMAL);
+    void AddVar(CBotVar* var);
 
     /**
-     * \brief Getes the type of complete value on the stack.
-     * \param [in] mode Used when getting class type (1 gives pointer, 2 gives intrinsic).
-     * \return  Type of an element.
-     */
-    CBotTypResult GetTypResult(CBotVar::GetTypeMode mode = CBotVar::GetTypeMode::NORMAL);
-
-    /**
-     * \brief Adds a local variable.
-     * \param [in] p Variable to be added.
-     */
-    void AddVar(CBotVar* p);
-
-    /**
-     * \brief Fetch a variable by its token.
-     * \brief This may be a composite variable
-     * \param [in] pToken Token upon which search is performed
-     * \param [in] bUpdate Not used. Probably need to be removed
-     * \param [in] bModif Not used. Probably need to be removed
-     * \return Found variable
+     * \brief Fetch a variable by its token
+     * \param pToken Token upon which search is performed
+     * \param bUpdate true to automatically call update function for classes, see CBotClass::AddUpdateFunc()
+     * \return Found variable, nullptr if not found
      */
     CBotVar* FindVar(CBotToken*& pToken, bool bUpdate);
 
     /**
-     * \brief Fetch a variable by its token.
-     * \brief This may be a composite variable
-     * \param [in] pToken Token upon which search is performed
-     * \param [in] bUpdate Not used. Probably need to be removed
-     * \param [in] bModif Not used. Probably need to be removed
-     * \return Found variable
+     * \copydoc FindVar(CBotToken*&, bool)
      */
     CBotVar* FindVar(CBotToken& pToken, bool bUpdate);
 
     /**
      * \brief Fetch variable by its name
-     * \param [in] name Name of variable to find
-     * \return Found variable
+     * \param name Name of variable to find
+     * \return Found variable, nullptr if not found
      */
     CBotVar* FindVar(const std::string& name);
 
     /**
-     * \brief Fetch a variable on the stack according to its identification number
-     * \brief This is faster than comparing names
-     * \param [in] ident Identifier of a variable
-     * \param [in] bUpdate Not used. Probably need to be removed
-     * \param [in] bModif Not used. Probably need to be removed
-     * \return Found variable
+     * \brief Fetch a variable on the stack according to its unique identifier
+     *
+     * This is faster than comparing names
+     *
+     * \param ident Unique identifier of a variable
+     * \param bUpdate true to automatically call update function for classes, see CBotClass::AddUpdateFunc()
+     * \return Found variable, nullptr if not found
      */
     CBotVar* FindVar(long ident, bool bUpdate);
 
     /**
-     * \brief Find variable by its token and returns a copy of it.
-     * \param Token Token upon which search is performed
-     * \param bUpdate Not used.
+     * \brief Find variable by its token and returns a copy of it
+     *
+     * \param pToken Token upon which search is performed
+     * \param bUpdate true to automatically call update function for classes, see CBotClass::AddUpdateFunc()
      * \return Found variable, nullptr if not found
      */
-    CBotVar*        CopyVar(CBotToken& Token, bool bUpdate = false);
+    CBotVar*        CopyVar(CBotToken& pToken, bool bUpdate = false);
 
 
     CBotStack*        AddStack(CBotInstr* instr = nullptr, UnknownEnumBlock bBlock = UnknownEnumBlock::UNKNOWN_FALSE);    // extends the stack

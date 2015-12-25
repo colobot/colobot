@@ -56,9 +56,9 @@ public:
     /**
      * \brief Compile the function
      *
-     * \param "this" variable for class calls, nullptr for normal calls
-     * \param Arguments (only types!) passed to the function
-     * \param User pointer provided to CBotProgram::Compile()
+     * \param thisVar "this" variable for class calls, nullptr for normal calls
+     * \param args Arguments (only types!) passed to the function
+     * \param user User pointer provided to CBotProgram::Compile()
      */
     virtual CBotTypResult Compile(CBotVar* thisVar, CBotVar* args, void* user) = 0;
 
@@ -155,10 +155,10 @@ public:
      * This function sets an error in compilation stack in case of failure
      *
      * \param p Token representing the function name
-     * \param ppVars List of arguments (only types!)
      * \param thisVar "this" variable for class calls, nullptr for normal calls
+     * \param ppVars List of arguments (only types!)
      * \param pStack Compilation stack
-     * \return CBotTypResult representing the return type of the function (::CBotTypVar), or an error (::CBotError)
+     * \return CBotTypResult representing the return type of the function (::CBotType), or an error (::CBotError)
      */
     CBotTypResult CompileCall(CBotToken*& p, CBotVar* thisVar, CBotVar** ppVars, CBotCStack* pStack);
 
@@ -187,7 +187,7 @@ public:
      * \brief Restore execution status after loading saved state
      *
      * \param token Token representing the function name
-     * \param "this" variable for class calls, nullptr for normal calls
+     * \param thisVar "this" variable for class calls, nullptr for normal calls
      * \param ppVar List of arguments
      * \param pStack Runtime stack
      * \return false on failure (e.g. function doesn't exist)
