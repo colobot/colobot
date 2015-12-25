@@ -389,6 +389,44 @@ TEST_F(CBotUT, BasicOperations)
     );
 }
 
+TEST_F(CBotUT, VarBasic)
+{
+    ExecuteTest(
+        "extern void VarBasic()\n"
+        "{\n"
+        "    int a = 5;\n"
+        "    ASSERT(a == 5);\n"
+        "    int b = 3;\n"
+        "    ASSERT(b == 3);\n"
+        "    b = a;\n"
+        "    ASSERT(b == 5);\n"
+        "    ASSERT(b == a);\n"
+        "    b = a + b;\n"
+        "    ASSERT(b == 10);\n"
+        "    ASSERT(b == 2*a);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, VarDefinitions)
+{
+    ExecuteTest(
+        "extern void TestUndefined()\n"
+        "{\n"
+        "    ASSERT(a == 0);\n"
+        "}\n",
+        CBotErrUndefVar
+    );
+    ExecuteTest(
+        "extern void TestRedefined()\n"
+        "{\n"
+        "    int a = 5;\n"
+        "    int a = 3;\n"
+        "}\n",
+        CBotErrRedefVar
+    );
+}
+
 TEST_F(CBotUT, Functions)
 {
     ExecuteTest(
@@ -439,18 +477,35 @@ TEST_F(CBotUT, FunctionRecursionStackOverflow)
 TEST_F(CBotUT, FunctionOverloading)
 {
     ExecuteTest(
-        "void func(int test)\n"
+        "int func(string test)\n"
         "{\n"
-        "    FAIL();\n"
+        "    return 1;\n"
         "}\n"
-        "void func(string test)\n"
+        "int func(int test)\n"
         "{\n"
+        "    return 2;\n"
         "}\n"
         "\n"
         "extern void FunctionOverloading()\n"
         "{\n"
-        "    func(\"5\");\n"
+        "    ASSERT(func(\"5\") == 1);\n"
+        "    ASSERT(func(5) == 2);\n"
         "}\n"
+    );
+}
+
+TEST_F(CBotUT, FunctionRedefined)
+{
+    ExecuteTest(
+        "int func(int test)\n"
+        "{\n"
+        "    return 1;\n"
+        "}\n"
+        "int func(int test)\n"
+        "{\n"
+        "    return 2;\n"
+        "}\n",
+        CBotErrRedefFunc
     );
 }
 
@@ -524,5 +579,50 @@ TEST_F(CBotUT, DISABLED_ClassDestructorNaming)
         "    public void ~SomethingElse() {}\n"
         "}\n",
         static_cast<CBotError>(-1)
+    );
+}
+
+// TODO: This doesn't work
+TEST_F(CBotUT, DISABLED_ClassMethodOverloading)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    public int test(string test) {\n"
+        "        return 1;\n"
+        "    }\n"
+        "    public int test(int test) {\n"
+        "        return 2;"
+        "    }\n"
+        "}\n"
+        "extern void ClassMethodOverloading() {\n"
+        "    TestClass t();\n"
+        "    ASSERT(t.test(\"5\") == 1);\n"
+        "    ASSERT(t.test(5) == 2);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassMethodRedefined)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    public int test(string test) {\n"
+        "        return 1;\n"
+        "    }\n"
+        "    public int test(string test) {\n"
+        "        return 2;"
+        "    }\n"
+        "}\n",
+        CBotErrRedefFunc
+    );
+}
+
+// TODO: Not only doesn't work but segfaults
+TEST_F(CBotUT, DISABLED_ClassRedefined)
+{
+    ExecuteTest(
+        "public class TestClass {}\n"
+        "public class TestClass {}\n",
+        CBotErrRedefClass
     );
 }
