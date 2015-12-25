@@ -106,7 +106,7 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
 bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToken, bool bStep, bool bExtend)
 {
     CBotVar*    ppVars[1000];
-    CBotStack*    pile1 = pj->AddStack(this, CBotStack::IsBlock::BLOCK);     // a place for the copy of This
+    CBotStack*    pile1 = pj->AddStack(this, CBotStack::BlockVisibilityType::BLOCK);     // a place for the copy of This
 
     if (pVar->GetPointer() == nullptr)
     {
@@ -221,7 +221,7 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
 bool CBotInstrMethode::Execute(CBotStack* &pj)
 {
     CBotVar*    ppVars[1000];
-    CBotStack*    pile1 = pj->AddStack(this, CBotStack::IsBlock::BLOCK);        // place for the copy of This
+    CBotStack*    pile1 = pj->AddStack(this, CBotStack::BlockVisibilityType::BLOCK);        // place for the copy of This
 
     if (pile1->IfStep()) return false;
 

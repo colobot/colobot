@@ -335,7 +335,7 @@ bad:
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
 {
-    CBotStack*  pile = pj->AddStack(this, CBotStack::IsBlock::FUNCTION);               // one end of stack local to this function
+    CBotStack*  pile = pj->AddStack(this, CBotStack::BlockVisibilityType::FUNCTION);               // one end of stack local to this function
 //  if ( pile == EOX ) return true;
 
     pile->SetProgram(m_pProg);                              // bases for routines
@@ -397,7 +397,7 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
 
     pile->SetProgram(m_pProg);                          // bases for routines
 
-    if ( pile->GetBlock() != CBotStack::IsBlock::FUNCTION)
+    if ( pile->GetBlock() != CBotStack::BlockVisibilityType::FUNCTION)
     {
         CBotStack*  pile2 = pile->RestoreStack(nullptr);       // one end of stack local to this function
         if ( pile2 == nullptr ) return;
@@ -600,14 +600,14 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar** ppVars
 
     if ( pt != nullptr )
     {
-        CBotStack*  pStk1 = pStack->AddStack(pt, CBotStack::IsBlock::FUNCTION);    // to put "this"
+        CBotStack*  pStk1 = pStack->AddStack(pt, CBotStack::BlockVisibilityType::FUNCTION);    // to put "this"
 //      if ( pStk1 == EOX ) return true;
 
         pStk1->SetProgram(pt->m_pProg);                 // it may have changed module
 
         if ( pStk1->IfStep() ) return false;
 
-        CBotStack*  pStk3 = pStk1->AddStack(nullptr, CBotStack::IsBlock::BLOCK);    // parameters
+        CBotStack*  pStk3 = pStk1->AddStack(nullptr, CBotStack::BlockVisibilityType::BLOCK);    // parameters
 
         // preparing parameters on the stack
 
@@ -682,7 +682,7 @@ void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar** 
 
         pStk1->SetProgram(pt->m_pProg);                 // it may have changed module
 
-        if ( pStk1->GetBlock() != CBotStack::IsBlock::FUNCTION)
+        if ( pStk1->GetBlock() != CBotStack::BlockVisibilityType::FUNCTION)
         {
             CBotStack* pStk2 = pStk1->RestoreStack(nullptr); // used more
             if ( pStk2 == nullptr ) return;
@@ -733,11 +733,11 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, 
     {
 //      DEBUG( "CBotFunction::DoCall" + pt->GetName(), 0, pStack);
 
-        CBotStack*  pStk = pStack->AddStack(pt, CBotStack::IsBlock::FUNCTION);
+        CBotStack*  pStk = pStack->AddStack(pt, CBotStack::BlockVisibilityType::FUNCTION);
 //      if ( pStk == EOX ) return true;
 
         pStk->SetProgram(pt->m_pProg);                  // it may have changed module
-        CBotStack*  pStk3 = pStk->AddStack(nullptr, CBotStack::IsBlock::BLOCK); // to set parameters passed
+        CBotStack*  pStk3 = pStk->AddStack(nullptr, CBotStack::BlockVisibilityType::BLOCK); // to set parameters passed
 
         // preparing parameters on the stack
 

@@ -41,7 +41,16 @@ class CBotToken;
 class CBotStack
 {
 public:
-    enum class IsBlock : unsigned short { INSTRUCTION = 0, BLOCK = 1, FUNCTION = 2 }; // TODO: figure out what these mean ~krzys_h
+    /**
+     * \brief Block type this stack represents. This determines local variable visibility (you can only see up to top FUNCTION stack)
+     */
+    enum class BlockVisibilityType : unsigned short
+    {
+        INSTRUCTION = 0, //!< Instruction (default)
+        BLOCK = 1,       //!< Code block between { ... }
+        FUNCTION = 2     //!< Function - variable visibility limit
+    };
+
     enum class IsFunction : unsigned short { NO = 0, TRUE = 1, EXTERNAL_CALL = 2 }; // TODO: just guessing the meaning of values, should be verified ~krzys_h
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +80,7 @@ public:
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /** \name Error management
      *
-     * Be careful - errors are stored in static variables!
+     * BE CAREFUL - errors are stored in static variables!
      * \todo Refactor that
      */
     //@{
@@ -101,12 +110,39 @@ public:
         return m_error == CBotNoErr;
     }
 
+    /**
+     * \brief Set execution error unless it's already set unless you are trying to reset it
+     *
+     * \param n Error to set
+     * \param token Token to take error position from
+     * \see ResetError() to force set error
+     */
+    void            SetError(CBotError n, CBotToken* token = nullptr);
+    /**
+     * \brief Set error position to position of given token
+     *
+     * \param token Token to take error position from
+     */
+    void            SetPosError(CBotToken* token);
+    /**
+     * \brief Set execution error even if it is already set
+     *
+     * \see SetError() to set error only if it is not set already
+     */
+    void            ResetError(CBotError n, int start, int end);
+    /**
+     * \todo Document
+     *
+     * WARNING! Changes error to -val ...
+     */
+    void            SetBreak(int val, const std::string& name);
+
     //@}
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * \brief Reset the stack - resets the error and timer
+     * \brief Reset the stack for execution resume - resets the error and timer
      */
     void Reset();
 
@@ -179,7 +215,7 @@ public:
      * \todo Document params
      * \returns New stack element
      */
-    CBotStack*        AddStack(CBotInstr* instr = nullptr, IsBlock bBlock = IsBlock::INSTRUCTION);
+    CBotStack*        AddStack(CBotInstr* instr = nullptr, BlockVisibilityType bBlock = BlockVisibilityType::INSTRUCTION);
 
     /**
      * \brief Creates or gets the secondary child stack
@@ -191,7 +227,7 @@ public:
      * \see AddStack()
      * \return New stack element
      */
-    CBotStack*        AddStack2(IsBlock bBlock = IsBlock::INSTRUCTION);
+    CBotStack*        AddStack2(BlockVisibilityType bBlock = BlockVisibilityType::INSTRUCTION);
 
     /**
      * \brief Adds special EOX stack marker
@@ -201,7 +237,7 @@ public:
      *
      * \todo Document params & return
      */
-    CBotStack*        AddStackEOX(CBotExternalCall* instr = nullptr, IsBlock bBlock = IsBlock::INSTRUCTION);
+    CBotStack*        AddStackEOX(CBotExternalCall* instr = nullptr, BlockVisibilityType bBlock = BlockVisibilityType::INSTRUCTION);
 
     /**
      * \brief Restore CBotInstr pointer after loading stack from file
@@ -233,11 +269,13 @@ public:
 
     /**
      * \todo Document
+     *
      * in case of eventual break
      */
     bool            BreakReturn(CBotStack* pfils, const std::string& name = nullptr);
     /**
      * \todo Document
+     *
      * or "continue"
      */
     bool            IfContinue(int state, const std::string& name);
@@ -251,23 +289,48 @@ public:
      * When CBotInstr::Execute() is called, it continues execution from the point it finished at.
      * See various CBotInstr::Execute() implementations for details.
      *
-     * Call CBotStack::Execute() to resume execution of the interrupted instruction
-     *
-     * \todo More detailed docs on functions
+     * Each state change causes one tick on the execution timer
      */
     //@{
 
-    bool            SetState(int n, int lim = -10);                        // select a state
-    int             GetState() { return m_state; }                         // in what state am I?
-    bool            IncState(int lim = -10);                            // passes to the next state
-    bool            IfStep();                                            // do step by step
+    /**
+     * \brief Set execution state
+     * \param n New state
+     * \param lim Required amount of "ticks" on the timer required to allow to continue execution. By default allows a little overflow (up to 10 ticks)
+     * \return false if timer requests interruption (timer <= limit)
+     */
+    bool            SetState(int n, int lim = -10);
+    /**
+     * \brief Return current execution state
+     *
+     * Used when resuming execution
+     *
+     * \return Execution state set before interruption by SetState() and IncState()
+     */
+    int             GetState() { return m_state; }
+    /**
+     * \brief Increase the execution state by one
+     * \param lim Required amount of "ticks" on the timer required to allow to continue execution. By default allows a little overflow (up to 10 ticks)
+     * \return false if timer requests interruption (timer <= limit)
+     */
+    bool            IncState(int lim = -10);
+
+    /**
+     * \brief Check if we are in step by step execution mode
+     * \return true if step by step, false otherwise
+     */
+    bool            IfStep();
+
+    /**
+     * \brief Resumes execution of interrupted external call
+     * \return true if external call finished, false if interrupted again
+     */
     bool            Execute();
 
     //@}
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // \name Result variable
-
+    //! \name Result variable
     //@{
 
     /**
@@ -280,16 +343,20 @@ public:
      * \brief Set the result variable to copy of given variable
      * \param var Variable to copy as result
      */
-    void            SetCopyVar( CBotVar* var );
+    void            SetCopyVar(CBotVar* var);
     /**
      * \brief Return result variable
      * \return Variable set with SetVar() or SetCopyVar()
      */
     CBotVar*        GetVar();
+
     /**
      * \todo Document
+     *
+     * Copies the result value from static m_retvar (m_var at a moment of SetBreak(3)) to this stack result
      */
     bool            GetRetVar(bool bRet);
+
     /**
      * \brief Return the result variable as int
      * \deprecated Please use GetVar()->GetValInt() instead
@@ -302,28 +369,95 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void            SetError(CBotError n, CBotToken* token = nullptr);
-    void            SetPosError(CBotToken* token);
-    void            ResetError(CBotError n, int start, int end);
-    void            SetBreak(int val, const std::string& name);
-
+    /**
+     * \brief Set program this stack level is in. Additionally marks this block as function block.
+     * Note: for public functions different stack levels might be in different programs
+     * \todo Refactor this two-in-one thing
+     * \param p CBotProgram we are currently in
+     */
     void            SetProgram(CBotProgram* p);
-    CBotProgram* GetProgram(bool bFirst = false);
+    /**
+     * \brief Get program we are currently in
+     * \param bFirst if true, get the main CBotProgram instance (the one that has the main function)
+     */
+    CBotProgram*    GetProgram(bool bFirst = false);
+
+    /**
+     * \brief Set user pointer for external calls
+     *
+     * Execution calls only - see CBotExternalCallList::SetUserPtr() for compilation calls
+     *
+     * \param user User pointer to set
+     */
     void            SetUserPtr(void* user);
+    /**
+     * \brief Get user pointer for external calls
+     * \returns User pointer for external execution calls
+     * \see SetUserPtr()
+     */
     void*           GetUserPtr();
-    IsBlock GetBlock();
+
+    /**
+     * \brief Get the block type this stack represents - instruction, code block or function
+     * \see BlockVisibilityType enum
+     */
+    BlockVisibilityType GetBlock();
 
 
-    bool            ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotTypResult& rettype);
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name Function calls
+    //@{
+
+    /**
+     * \brief Execute a function call, either external or user-defined
+     * \param[in, out] nIdent Unique function identifier, if not found will be updated
+     * \param token Function name token
+     * \param ppVar Array of function arguments
+     * \param rettype Expected return type
+     */
+    bool            ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, const CBotTypResult& rettype);
+    /**
+     * \brief Restore a function call after the program state has been restored from a file
+     * \param[in, out] nIdent Unique function identifier, if not found will be updated
+     * \param token Function name token
+     * \param ppVar Array of function arguments
+     */
     void            RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar);
+
+    //@}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //! \name Write to file
+    //@{
 
     bool            SaveState(FILE* pf);
     bool            RestoreState(FILE* pf, CBotStack* &pStack);
 
+    //@}
+
+    /**
+     * \brief Set the maximum number of "timer ticks" (parts of instructions) to execute
+     *
+     * This setting gets applied on next call to Reset()
+     *
+     * \todo Full documentation of the timer
+     */
     static void     SetTimer(int n);
 
-    void            GetRunPos(std::string& FunctionName, int& start, int& end);
-    CBotVar*        GetStackVars(std::string& FunctionName, int level);
+    /**
+     * \brief Get current position in the program
+     * \param[out] functionName Current function name, nullptr if not found
+     * \param[out] start Start position of currently executed token
+     * \param[out] end End position of currently executed token
+     */
+    void            GetRunPos(std::string& functionName, int& start, int& end);
+
+    /**
+     * \brief Get local variables at the given stack level
+     * \param[out] functionName Name of instruction being executed at this level
+     * \param level 0 for current level, -1, -2, -3 etc. for next levels
+     */
+    CBotVar*        GetStackVars(std::string& functionName, int level);
 
 private:
     CBotStack*        m_next;
@@ -342,7 +476,7 @@ private:
     CBotVar*        m_var;                        // result of the operations
     CBotVar*        m_listVar;                    // variables declared at this level
 
-    IsBlock m_bBlock;                    // is part of a block (variables are local to this block)
+    BlockVisibilityType m_bBlock;                    // is part of a block (variables are local to this block)
     bool            m_bOver;                    // stack limits?
 //    bool            m_bDontDelete;                // special, not to destroy the variable during delete
     CBotProgram*    m_prog;                        // user-defined functions
