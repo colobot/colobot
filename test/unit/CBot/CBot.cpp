@@ -255,7 +255,7 @@ protected:
                     ss << "    while executing function " << funcName << " (" << cursor1 << "-" << (cursor2 >= 0 ? cursor2 : cursor1) << ")" << std::endl << GetFormattedLineInfo(code, cursor1);
                     unknown = false;
                 }
-                else if(e.cursor1 >= 0)
+                else if(e.cursor1 > 0 || e.cursor2 > 0)
                 {
                     ss << "    at unknown location " << e.cursor1 << "-" << (e.cursor2 >= 0 ? e.cursor2 : e.cursor1) << std::endl << GetFormattedLineInfo(code, e.cursor1);
                     unknown = false;
@@ -430,6 +430,134 @@ TEST_F(CBotUT, VarDefinitions)
         "    int a = 3;\n"
         "}\n",
         CBotErrRedefVar
+    );
+}
+
+// TODO: I don't actually know what the exact rules should be, but it looks a bit wrong
+// TODO: Current version of this code causes a failed assertion
+TEST_F(CBotUT, DISABLED_VarImplicitCast)
+{
+    ExecuteTest(
+        "extern void ImplicitCast()\n"
+        "{\n"
+        "    int a = 5;\n"
+        //"    ASSERT(a == \"5\");\n"
+        "    string b = a;\n"
+        "    ASSERT(b == \"5\");\n"
+        //"    ASSERT(b == a);\n"
+        "    \n"
+        "    string c = \"2.5\";\n"
+        //"    ASSERT(c == 2.5);\n"
+        //"    float d = c;\n"
+        //"    ASSERT(d == c);\n"
+        //"    ASSERT(d == 2.5);\n"
+        "}\n"
+        "\n"
+        "extern void AssignImplicitCast()\n"
+        "{\n"
+        "    string a = 2;\n"
+        "    ASSERT(a == \"2\");\n"
+        //"    a = 3;\n"
+        //"    ASSERT(a == \"3\");\n"
+        "    string b = 2.5;\n"
+        "    ASSERT(b == \"2.5\");\n"
+        //"    b = 3.5;\n"
+        //"    ASSERT(b == \"3.5\");\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, Arrays)
+{
+    ExecuteTest(
+        "extern void ArrayTest()\n"
+        "{\n"
+        "    int a[];\n"
+        "    ASSERT(sizeof(a) == 0);\n"
+        "    ASSERT(a == null);\n" // TODO: I'm not sure if this is correct behaviour or not
+        "    a[0] = 5;\n"
+        "    ASSERT(a[0] == 5);\n"
+        "    ASSERT(sizeof(a) == 1);\n"
+        "    ASSERT(a != null);\n"
+        "    a[5] = 5;\n"
+        "    ASSERT(sizeof(a) == 6);\n"
+        "    a[3] = 5;"
+        "    ASSERT(sizeof(a) == 6);\n"
+        "    \n"
+        "    int[] b;\n"
+        "    ASSERT(sizeof(b) == 0);\n"
+        "    ASSERT(b == null);\n" // TODO: I'm not sure if this is correct behaviour or not
+        "    b[0] = 5;\n"
+        "    ASSERT(b[0] == 5);\n"
+        "    ASSERT(sizeof(b) == 1);\n"
+        "    ASSERT(b != null);\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void LimitedArrayTest()\n"
+        "{\n"
+        "    int a[5];\n"
+        "    ASSERT(sizeof(a) == 0);\n"
+        "    a[0] = 1;\n"
+        "    ASSERT(sizeof(a) == 1);\n"
+        "    a[4] = 1;\n"
+        "    ASSERT(sizeof(a) == 5);\n"
+        "    a[5] = 1;\n"
+        "}\n",
+        CBotErrOutArray
+    );
+
+    ExecuteTest(
+        "extern void BadArrayDeclarationTest()\n"
+        "{\n"
+        "    int[5] a;\n"
+        "}\n",
+        CBotErrCloseIndex
+    );
+}
+
+// TODO: BAD! WRONG! NOOOOO!!! :<
+TEST_F(CBotUT, DISABLED_ArraysInClasses)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    private int test[];\n"
+        "    private int test2[5];\n"
+        "    \n"
+        "    public void TestClass() {\n"
+        "        ASSERT(sizeof(test) == 0);\n" // TODO: NOT INITIALIZED
+        "        ASSERT(sizeof(this.test) == 0);\n" // TODO: NOT INITIALIZED
+        "        ASSERT(test == null);\n" // TODO: Again, not sure // TODO: NOT INITIALIZED
+        "        test[0] = 5;\n"
+        "        this.test[1] = 5;\n"
+        "        ASSERT(sizeof(test) == 2);\n"
+        "        ASSERT(sizeof(this.test) == 2);\n"
+        "        ASSERT(test != null);\n"
+        "    }\n"
+        "}\n"
+        "extern void ArraysInClasses()\n"
+        "{\n"
+        "    TestClass t();\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ArraysOfClasses)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    public int i = 0;\n"
+        "}\n"
+        "extern void ArraysInClasses()\n"
+        "{\n"
+        "    TestClass test[];\n"
+        "    test[0] = new TestClass();\n"
+        "    test[0].i = 5;\n"
+        "    ASSERT(test[0].i == 5);\n"
+        "    \n"
+        "    TestClass[] test2;\n"
+        "}\n"
     );
 }
 
@@ -647,7 +775,7 @@ TEST_F(CBotUT, ClassMethodRedefined)
         "        return 1;\n"
         "    }\n"
         "    public int test(string test) {\n"
-        "        return 2;"
+        "        return 2;\n"
         "    }\n"
         "}\n",
         CBotErrRedefFunc
@@ -661,5 +789,104 @@ TEST_F(CBotUT, DISABLED_ClassRedefined)
         "public class TestClass {}\n"
         "public class TestClass {}\n",
         CBotErrRedefClass
+    );
+}
+
+// TODO: This needs to be fixed
+TEST_F(CBotUT, DISABLED_WeirdThisEarlyContextSwitch_Issue436)
+{
+    ExecuteTest(
+        "public class Something {\n"
+        "    public int a = 7;"
+        "    void test2(int i, int expected) {\n"
+        "        ASSERT(i == expected);\n"
+        "    }\n"
+        "}"
+        "public class TestClass {\n"
+        "    public int i = 5;\n"
+        "    public void test(Something s) {\n"
+        "        s.test2(this.i, 5);\n"
+        "    }\n"
+        "}\n"
+        "extern void WeirdClassThisAsParamThing()\n"
+        "{\n"
+        "    Something s();\n"
+        "    TestClass t();"
+        "    t.test(s);\n"
+        "}\n"
+    );
+}
+
+// TODO: Gets a failed assertion
+TEST_F(CBotUT, DISABLED_BadStringAdd_Issue535)
+{
+    ExecuteTest(
+        "public class TestClass {}\n"
+        "extern void BadStringAdd()\n"
+        "{\n"
+        "    TestClass t();\n"
+        "    string s = t + \"!\";\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, String)
+{
+    ExecuteTest(
+        "extern void StringTest()\n"
+        "{\n"
+        "    string a = \"Colo\";\n"
+        "    string b = \"bot\";\n"
+        "    string c = a + b + \"!\";\n"
+        "    ASSERT(a == \"Colo\");\n"
+        "    ASSERT(b == \"bot\");\n"
+        "    ASSERT(c == \"Colobot!\");\n"
+        "}\n"
+    );
+}
+
+// TODO: not implemented, see issue #694
+TEST_F(CBotUT, DISABLED_StringAsArray)
+{
+    ExecuteTest(
+        "extern void StringAsArray()\n"
+        "{\n"
+        "    string s = \"Colobot\";\n"
+        "    ASSERT(s[0] == \"C\");\n"
+        "    ASSERT(s[3] == \"o\");\n"
+        "    s[2] = \"L\"; s[4] = \"B\"; s[6] = \"T\";\n"
+        "    ASSERT(s == \"CoLoBoT\");\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, StringFunctions)
+{
+    ExecuteTest(
+        "extern void StringFunctions()\n"
+        "{\n"
+        "    string s = \"Colobot\";\n"
+        "    ASSERT(strlen(s) == 7);\n"
+        "    ASSERT(strlower(s) == \"colobot\");\n"
+        "    ASSERT(strupper(s) == \"COLOBOT\");\n"
+        "    ASSERT(strleft(s, 3) == \"Col\");\n"
+        "    ASSERT(strright(s, 3) == \"bot\");\n"
+        "    ASSERT(strmid(s, 1, 3) == \"olo\");\n"
+        "    ASSERT(strfind(s, \"o\") == 1);\n"
+        "    ASSERT(strval(\"2.5\") == 2.5);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, DISABLED_TestNANParam_Issue642)
+{
+    ExecuteTest(
+        "float test(float x) {\n"
+        "     return x;\n"
+        "}\n"
+        "extern void TestNANParam() {\n"
+        "    ASSERT(nan == nan);\n" // TODO: Shouldn't it be nan != nan ??
+        "    ASSERT(test(nan) == nan);\n"
+        "}\n"
     );
 }
