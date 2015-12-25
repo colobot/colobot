@@ -196,7 +196,7 @@ bool CBotExpression::Execute(CBotStack* &pj)
                 pile2->SetError(CBotErrNan, m_leftop->GetToken());
                 return pj->Return(pile2);
             }
-            result = CBotVar::Create("", pVar->GetTypResult(2));
+            result = CBotVar::Create("", pVar->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC));
         }
 
         switch (m_token.GetType())

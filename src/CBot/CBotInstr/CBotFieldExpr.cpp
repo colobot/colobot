@@ -52,7 +52,7 @@ void CBotFieldExpr::SetUniqNum(int num)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
 {
-    if (pVar->GetType(1) != CBotTypPointer)
+    if (pVar->GetType(CBotVar::GetTypeMode::CLASS_AS_POINTER) != CBotTypPointer)
         assert(0);
 
     pVar = pVar->GetItemRef(m_nIdent);
@@ -76,7 +76,7 @@ bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
     if (pile == EOX) return true;
 
 
-    if (pVar->GetType(1) != CBotTypPointer)
+    if (pVar->GetType(CBotVar::GetTypeMode::CLASS_AS_POINTER) != CBotTypPointer)
         assert(0);
 
     CBotVarClass* pItem = pVar->GetPointer();

@@ -46,7 +46,7 @@ CBotIndexExpr::~CBotIndexExpr()
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
 {
-    if (pVar->GetType(1) != CBotTypArrayPointer)
+    if (pVar->GetType(CBotVar::GetTypeMode::CLASS_AS_POINTER) != CBotTypArrayPointer)
         assert(0);
 
     pVar = (static_cast<CBotVarArray*>(pVar))->GetItem(0, false);    // at compile time makes the element [0]
@@ -64,7 +64,7 @@ bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
 {
     CBotStack*    pj = pile;
 
-    if (pVar->GetType(1) != CBotTypArrayPointer)
+    if (pVar->GetType(CBotVar::GetTypeMode::CLASS_AS_POINTER) != CBotTypArrayPointer)
         assert(0);
 
     pile = pile->AddStack();

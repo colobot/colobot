@@ -25,6 +25,7 @@
 
 #include <cstdio>
 #include <string>
+#include <CBot/CBotVar/CBotVar.h>
 
 class CBotInstr;
 class CBotExternalCall;
@@ -75,30 +76,23 @@ public:
     CBotError GetError();
 
     /**
-     * \brief Reset Reset error at and set user
-     * \param [in] pUser User of stack
+     * \brief Reset the stack - resets the error and timer
      */
     void Reset();
-
-    /**
-     * \brief SetType Determines the type.
-     * \param type Type of instruction on the stack.
-     */
-    void SetType(CBotTypResult& type);
 
     /**
      * \brief GetType Get the type of value on the stack.
      * \param [in] mode Used when getting class type (1 gives pointer, 2 gives intrinsic).
      * \return Type number.
      */
-    int GetType(int mode = 0);
+    int GetType(CBotVar::GetTypeMode mode = CBotVar::GetTypeMode::NORMAL);
 
     /**
      * \brief Getes the type of complete value on the stack.
      * \param [in] mode Used when getting class type (1 gives pointer, 2 gives intrinsic).
      * \return  Type of an element.
      */
-    CBotTypResult GetTypResult(int mode = 0);
+    CBotTypResult GetTypResult(CBotVar::GetTypeMode mode = CBotVar::GetTypeMode::NORMAL);
 
     /**
      * \brief Adds a local variable.

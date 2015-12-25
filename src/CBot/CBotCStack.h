@@ -20,6 +20,7 @@
 #pragma once
 
 // Modules inlcude
+#include <CBot/CBotVar/CBotVar.h>
 #include "CBot/CBotProgram.h"
 
 // Local include
@@ -79,14 +80,14 @@ public:
      * \param mode
      * \return
      */
-    CBotTypResult GetTypResult(int mode = 0);
+    CBotTypResult GetTypResult(CBotVar::GetTypeMode mode = CBotVar::GetTypeMode::NORMAL);
 
     /*!
      * \brief GetType Gives the type of value on the stack.
      * \param mode
      * \return
      */
-    int GetType(int mode = 0);
+    int GetType(CBotVar::GetTypeMode mode = CBotVar::GetTypeMode::NORMAL);
 
     /*!
      * \brief GetClass Gives the class of the value on the stack.

@@ -116,7 +116,7 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
                     }
                 }
 
-                if (var->GetType(1) == CBotTypPointer)                // for classes
+                if (var->GetType(CBotVar::GetTypeMode::CLASS_AS_POINTER) == CBotTypPointer)                // for classes
                 {
                     if (IsOfType(p, ID_DOT))
                     {

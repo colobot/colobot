@@ -198,7 +198,7 @@ CBotVar* CBotVar::Create(const CBotToken& name, CBotTypResult type)
 ////////////////////////////////////////////////////////////////////////////////
 CBotVar* CBotVar::Create( CBotVar* pVar )
 {
-    CBotVar*    p = Create(pVar->m_token->GetString(), pVar->GetTypResult(2));
+    CBotVar*    p = Create(pVar->m_token->GetString(), pVar->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC));
     return p;
 }
 
@@ -305,24 +305,24 @@ void CBotVar::Destroy(CBotVar* var)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult CBotVar::GetTypResult(int mode)
+CBotTypResult CBotVar::GetTypResult(GetTypeMode mode)
 {
     CBotTypResult    r = m_type;
 
-    if ( mode == 1 && m_type.Eq(CBotTypClass) )
+    if ( mode == GetTypeMode::CLASS_AS_POINTER && m_type.Eq(CBotTypClass) )
         r.SetType(CBotTypPointer);
-    if ( mode == 2 && m_type.Eq(CBotTypClass) )
+    if ( mode == GetTypeMode::CLASS_AS_INTRINSIC && m_type.Eq(CBotTypClass) )
         r.SetType(CBotTypIntrinsic);
 
     return r;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotType CBotVar::GetType(int mode)
+CBotType CBotVar::GetType(GetTypeMode mode)
 {
-    if ( mode == 1 && m_type.Eq(CBotTypClass) )
+    if ( mode == GetTypeMode::CLASS_AS_POINTER && m_type.Eq(CBotTypClass) )
         return CBotTypPointer;
-    if ( mode == 2 && m_type.Eq(CBotTypClass) )
+    if ( mode == GetTypeMode::CLASS_AS_INTRINSIC && m_type.Eq(CBotTypClass) )
         return CBotTypIntrinsic;
     return static_cast<CBotType>(m_type.GetType());
 }

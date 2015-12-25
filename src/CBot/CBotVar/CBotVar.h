@@ -178,26 +178,27 @@ public:
     CBotToken* GetToken();
 
     /**
-     * \brief GetType Returns the base type of the variable (::CBotType)
-     * \param mode
-     * \parblock
-     * * mode = 0 Return type normally
-     * * mode = 1 Treat classes as pointers
-     * * mode = 2 Treat classes as intrinsic
-     * \endparblock
+     * \brief Mode for GetType() and GetTypResult()
      */
-    CBotType GetType(int mode = 0);
+    enum class GetTypeMode
+    {
+        NORMAL = 0,
+        CLASS_AS_POINTER = 1,
+        CLASS_AS_INTRINSIC = 2,
+    };
+
+    /**
+     * \brief GetType Returns the base type of the variable (::CBotType)
+     * \param mode Mode, see GetTypeMode enum
+     */
+    CBotType GetType(GetTypeMode mode = GetTypeMode::NORMAL);
 
     /**
      * \brief Returns the complete type of the variable (CBotTypResult)
      * \param mode
-     * \parblock
-     * * mode = 0 Return type normally
-     * * mode = 1 Treat classes as pointers
-     * * mode = 2 Treat classes as intrinsic
-     * \endparblock
+     * \param mode Mode, see GetTypeMode enum
      */
-    CBotTypResult GetTypResult(int mode = 0);
+    CBotTypResult GetTypResult(GetTypeMode mode = GetTypeMode::NORMAL);
 
     /**
      * \brief Change type of this variable

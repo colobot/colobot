@@ -174,8 +174,8 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
                 goto error;
             }
             CBotClass* result = pStk->GetClass();
-            if ( !pStk->GetTypResult(1).Eq(CBotTypNullPointer) &&
-               ( !pStk->GetTypResult(1).Eq(CBotTypPointer) ||
+            if ( !pStk->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_POINTER).Eq(CBotTypNullPointer) &&
+               ( !pStk->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_POINTER).Eq(CBotTypPointer) ||
                  ( result != nullptr && !pClass->IsChildOf(result) )))     // type compatible ?
             {
                 pStk->SetError(CBotErrBadType1, p->GetStart());

@@ -319,24 +319,17 @@ CBotError CBotStack::GetError(int& start, int& end)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotStack::GetType(int mode)
+int CBotStack::GetType(CBotVar::GetTypeMode mode)
 {
     if (m_var == nullptr) return -1;
     return m_var->GetType(mode);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult CBotStack::GetTypResult(int mode)
+CBotTypResult CBotStack::GetTypResult(CBotVar::GetTypeMode mode)
 {
     if (m_var == nullptr) return -1;
     return m_var->GetTypResult(mode);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CBotStack::SetType(CBotTypResult& type)
-{
-    if (m_var == nullptr) return;
-    m_var->SetType( type );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -520,7 +513,7 @@ void CBotStack::SetCopyVar( CBotVar* var )
 {
     if (m_var) delete m_var;    // replacement of a variable
 
-    m_var = CBotVar::Create("", var->GetTypResult(2));
+    m_var = CBotVar::Create("", var->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC));
     m_var->Copy( var );
 }
 

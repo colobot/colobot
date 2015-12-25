@@ -489,7 +489,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& n
                         if ( pFunc == nullptr ) TypeOrError = CBotErrBadParam;
                         break;
                     }
-                    int d = pv->GetType() - pw->GetType(2);
+                    int d = pv->GetType() - pw->GetType(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
                     alpha += d>0 ? d : -10*d;       // quality loss, 10 times more expensive!
 
                     pv = pv->GetNext();
@@ -544,7 +544,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& n
                         if ( pFunc == nullptr ) TypeOrError = CBotErrBadParam;
                         break;
                     }
-                    int d = pv->GetType() - pw->GetType(2);
+                    int d = pv->GetType() - pw->GetType(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
                     alpha += d>0 ? d : -10*d;       // quality loss, 10 times more expensive!
 
                     pv = pv->GetNext();
