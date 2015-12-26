@@ -5,6 +5,8 @@
 
 #include "CBot/CBot.h"
 
+using namespace CBot;
+
 CBotTypResult cMessage(CBotVar* &var, void* user)
 {
     if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);

@@ -559,24 +559,24 @@ void CBotStack::SetUserPtr(void* user)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotStack::ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, const CBotTypResult& rettype)
 {
-    CBotTypResult        res;
+    int res;
 
     // first looks by the identifier
 
     res = m_prog->GetExternalCalls()->DoCall(nullptr, nullptr, ppVar, this, rettype);
-    if (res.GetType() >= 0) return res.GetType();
+    if (res >= 0) return res;
 
     res = m_prog->GetFunctions()->DoCall(nIdent, "", ppVar, this, token );
-    if (res.GetType() >= 0) return res.GetType();
+    if (res >= 0) return res;
 
     // if not found (recompile?) seeks by name
 
     nIdent = 0;
     res = m_prog->GetExternalCalls()->DoCall(token, nullptr, ppVar, this, rettype);
-    if (res.GetType() >= 0) return res.GetType();
+    if (res >= 0) return res;
 
     res = m_prog->GetFunctions()->DoCall(nIdent, token->GetString(), ppVar, this, token );
-    if (res.GetType() >= 0) return res.GetType();
+    if (res >= 0) return res;
 
     SetError(CBotErrUndefFunc, token);
     return true;
