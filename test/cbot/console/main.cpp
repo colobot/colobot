@@ -38,11 +38,13 @@ int main(int argc, char* argv[])
         code += "\n";
     }
 
+    // Initialize the CBot engine, add standard library functions
+    CBotProgram::Init();
+    CBotProgram::AddFunction("message", rMessage, cMessage);
+
     // Error message strings are stored on Colobot side (meh!) so let's initialize that
     InitializeRestext();
 
-    // Initialize the CBot engine, add standard library functions
-    CBotProgram::AddFunction("message", rMessage, cMessage);
 
     // Compile the program
     std::vector<std::string> externFunctions;
