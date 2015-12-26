@@ -61,7 +61,7 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
 
     CBotListArray*    inst = new CBotListArray();
 
-    if (IsOfType( p, ID_OPENPAR ))
+    if (IsOfType( p, ID_OPBLK ))
     {
         // each element takes the one after the other
         if (type.Eq( CBotTypArrayPointer ))
@@ -123,7 +123,7 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
             }
         }
 
-        if (!IsOfType(p, ID_CLOSEPAR) )
+        if (!IsOfType(p, ID_CLBLK) )
         {
             pStk->SetError(CBotErrClosePar, p->GetStart());
             goto error;
