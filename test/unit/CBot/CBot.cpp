@@ -21,6 +21,8 @@
 
 #include <gtest/gtest.h>
 
+using namespace CBot;
+
 class CBotUT : public testing::Test
 {
 public:

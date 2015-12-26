@@ -26,6 +26,9 @@
 
 #include <cassert>
 
+namespace CBot
+{
+
 CBotLeftExprVar::CBotLeftExprVar()
 {
     name = "CBotLeftExprVar";
@@ -76,3 +79,5 @@ void CBotLeftExprVar::RestoreState(CBotStack* &pj, bool bMain)
 
     var1->SetUniqNum(m_nIdent); // Restore the identifier
 }
+
+} // namespace CBot

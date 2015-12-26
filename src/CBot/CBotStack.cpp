@@ -33,6 +33,9 @@
 #include <cstring>
 
 
+namespace CBot
+{
+
 #define    ITIMER    100
 
 int         CBotStack::m_initimer = ITIMER;
@@ -925,3 +928,5 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
     }
     return true;
 }
+
+} // namespace CBot

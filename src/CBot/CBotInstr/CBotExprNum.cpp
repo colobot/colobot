@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotExprNum.h"
 
 #include "CBot/CBotStack.h"
@@ -27,9 +26,8 @@
 
 #include "CBot/CBotUtils.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotExprNum::CBotExprNum()
@@ -117,3 +115,4 @@ void CBotExprNum::RestoreState(CBotStack* &pj, bool bMain)
     if (bMain) pj->RestoreStack(this);
 }
 
+} // namespace CBot

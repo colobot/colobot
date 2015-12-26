@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotDefParam.h"
 
 #include "CBot/CBotUtils.h"
@@ -25,10 +24,10 @@
 
 #include "CBot/CBotVar/CBotVarClass.h"
 
-// Local include
-
-// Global include
 #include <cassert>
+
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotDefParam::CBotDefParam()
@@ -189,3 +188,5 @@ std::string CBotDefParam::GetParamString()
     param += m_token.GetString();
     return param;
 }
+
+} // namespace CBot

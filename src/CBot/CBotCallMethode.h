@@ -22,6 +22,9 @@
 #include "CBot/CBotTypResult.h"
 #include "CBot/CBotUtils.h"
 
+namespace CBot
+{
+
 class CBotVar;
 class CBotCStack;
 class CBotStack;
@@ -82,3 +85,4 @@ private:
     friend class CBotClass;
 };
 
+} // namespace CBot

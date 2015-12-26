@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotPostIncExpr.h"
 #include "CBot/CBotInstr/CBotExprVar.h"
 
@@ -25,10 +24,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotPostIncExpr::CBotPostIncExpr()
@@ -88,3 +85,5 @@ void CBotPostIncExpr::RestoreState(CBotStack* &pj, bool bMain)
 
     if (pile1 != nullptr) pile1->RestoreStack(this);
 }
+
+} // namespace CBot

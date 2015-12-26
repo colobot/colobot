@@ -4671,13 +4671,13 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     }
 
     // Writes the file of stacks of execution.
-    FILE* file = fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "wb");
+    FILE* file = CBot::fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "wb");
     if (file == nullptr) return false;
 
     long version = 1;
-    fWrite(&version, sizeof(long), 1, file);  // version of COLOBOT
-    version = CBotProgram::GetVersion();
-    fWrite(&version, sizeof(long), 1, file);  // version of CBOT
+    CBot::fWrite(&version, sizeof(long), 1, file);  // version of COLOBOT
+    version = CBot::CBotProgram::GetVersion();
+    CBot::fWrite(&version, sizeof(long), 1, file);  // version of CBOT
 
     objRank = 0;
     for (CObject* obj : m_objMan->GetAllObjects())
@@ -4688,8 +4688,8 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
 
         if (!SaveFileStack(obj, file, objRank++))  break;
     }
-    CBotClass::SaveStaticState(file);
-    fClose(file);
+    CBot::CBotClass::SaveStaticState(file);
+    CBot::fClose(file);
 
     if (!emergencySave)
     {
@@ -4868,15 +4868,15 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
     m_ui->GetLoadingScreen()->SetProgress(0.95f, RT_LOADING_CBOT_SAVE);
 
     // Reads the file of stacks of execution.
-    FILE* file = fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "rb");
+    FILE* file = CBot::fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "rb");
     if (file != nullptr)
     {
         long version;
-        fRead(&version, sizeof(long), 1, file);  // version of COLOBOT
+        CBot::fRead(&version, sizeof(long), 1, file);  // version of COLOBOT
         if (version == 1)
         {
-            fRead(&version, sizeof(long), 1, file);  // version of CBOT
-            if (version == CBotProgram::GetVersion())
+            CBot::fRead(&version, sizeof(long), 1, file);  // version of CBOT
+            if (version == CBot::CBotProgram::GetVersion())
             {
                 objRank = 0;
                 for (CObject* obj : m_objMan->GetAllObjects())
@@ -4889,8 +4889,8 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
                 }
             }
         }
-        CBotClass::RestoreStaticState(file);
-        fClose(file);
+        CBot::CBotClass::RestoreStaticState(file);
+        CBot::fClose(file);
     }
 
     m_ui->GetLoadingScreen()->SetProgress(1.0f, RT_LOADING_FINISHED);

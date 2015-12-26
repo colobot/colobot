@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotIndexExpr.h"
 
 #include "CBot/CBotStack.h"
@@ -25,10 +24,10 @@
 
 #include "CBot/CBotVar/CBotVarArray.h"
 
-// Local include
-
-// Global include
 #include <cassert>
+
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotIndexExpr::CBotIndexExpr()
@@ -118,3 +117,5 @@ void CBotIndexExpr::RestoreStateVar(CBotStack* &pile, bool bMain)
     if (m_next3)
          m_next3->RestoreStateVar(pile, bMain);
 }
+
+} // namespace CBot

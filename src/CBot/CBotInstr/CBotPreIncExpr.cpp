@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotPreIncExpr.h"
 #include "CBot/CBotInstr/CBotExprVar.h"
 
@@ -25,9 +24,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotPreIncExpr::CBotPreIncExpr()
@@ -95,3 +93,5 @@ void CBotPreIncExpr::RestoreState(CBotStack* &pj, bool bMain)
 
     m_Instr->RestoreState(pile, bMain);
 }
+
+} // namespace CBot

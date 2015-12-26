@@ -27,6 +27,9 @@
 #include <map>
 #include <memory>
 
+namespace CBot
+{
+
 class CBotStack;
 class CBotCStack;
 class CBotVar;
@@ -212,3 +215,5 @@ private:
     std::map<std::string, std::unique_ptr<CBotExternalCall>> m_list{};
     void* m_user = nullptr;
 };
+
+} // namespace CBot

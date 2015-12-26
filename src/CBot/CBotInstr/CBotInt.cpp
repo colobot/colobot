@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInt.h"
 
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
@@ -29,10 +28,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotInt::CBotInt()
@@ -188,3 +185,5 @@ void CBotInt::RestoreState(CBotStack* &pj, bool bMain)
 
     if (m_next2b) m_next2b->RestoreState(pile, bMain);            // other(s) definition(s)
 }
+
+} // namespace CBot

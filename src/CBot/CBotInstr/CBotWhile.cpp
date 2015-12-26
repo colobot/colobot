@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotWhile.h"
 #include "CBot/CBotInstr/CBotBlock.h"
 #include "CBot/CBotInstr/CBotCondition.h"
@@ -25,9 +24,8 @@
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotWhile::CBotWhile()
@@ -151,3 +149,5 @@ void CBotWhile::RestoreState(CBotStack* &pj, bool bMain)
         return;
     }
 }
+
+} // namespace CBot

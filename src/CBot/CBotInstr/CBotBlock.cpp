@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotBlock.h"
 
 #include "CBot/CBotCStack.h"
@@ -25,10 +24,8 @@
 
 #include "CBot/CBotDefines.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotBlock::Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal)
@@ -71,3 +68,5 @@ CBotInstr* CBotBlock::CompileBlkOrInst(CBotToken* &p, CBotCStack* pStack, bool b
 // (*) is the case in the following statement
 // if (1 == 1) int x = 0;
 // where the variable x is known only in the block following the if
+
+} // namespace CBot

@@ -27,6 +27,9 @@
 #include <map>
 #include <memory>
 
+namespace CBot
+{
+
 /**
  * \brief Class representing one token of a program.
  *
@@ -244,3 +247,5 @@ extern bool IsOfTypeList(CBotToken* &p, int type1, ...);
  * \return String if found, empty string otherwise
  */
 const std::string& LoadString(TokenId id);
+
+} // namespace CBot

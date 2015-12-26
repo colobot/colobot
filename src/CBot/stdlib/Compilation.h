@@ -21,6 +21,9 @@
 
 #include "CBot/CBotTypResult.h"
 
+namespace CBot
+{
+
 class CBotVar;
 
 // Commonly used functions for parameter compilation
@@ -54,3 +57,5 @@ CBotTypResult cStrStrIntInt(CBotVar*& var, void* user);
 CBotTypResult cStrStrInt(CBotVar*& var, void* user);
 // int foo(string)
 CBotTypResult cIntStr(CBotVar*& var, void* user);
+
+} // namespace CBot

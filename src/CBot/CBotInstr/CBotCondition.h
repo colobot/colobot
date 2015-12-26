@@ -19,12 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 /*!
  * \brief The CBotCondition class This class has no constructor, because there
@@ -44,3 +42,5 @@ public:
      */
     static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
 };
+
+} // namespace CBot

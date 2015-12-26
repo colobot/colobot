@@ -21,6 +21,9 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+namespace CBot
+{
+
 /**
  * \brief CBotVar subclass for managing string values (::CBotTypString)
  */
@@ -52,3 +55,5 @@ private:
     //! The value.
     std::string m_val;
 };
+
+} // namespace CBot

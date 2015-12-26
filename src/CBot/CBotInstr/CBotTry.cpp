@@ -17,17 +17,15 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
-#include "CBotTry.h"
+#include "CBot/CBotInstr/CBotTry.h"
+
 #include "CBot/CBotInstr/CBotBlock.h"
 
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotTry::CBotTry()
@@ -225,3 +223,5 @@ void CBotTry::RestoreState(CBotStack* &pj, bool bMain)
         return;
     }
 }
+
+} // namespace CBot

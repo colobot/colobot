@@ -21,6 +21,9 @@
 
 #include <string>
 
+namespace CBot
+{
+
 class CBotClass;
 
 /**
@@ -157,3 +160,5 @@ private:
     friend class    CBotVarClass;
     friend class    CBotVarPointer;
 };
+
+} // namespace CBot

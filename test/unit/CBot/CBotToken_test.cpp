@@ -22,6 +22,8 @@
 
 #include <gtest/gtest.h>
 
+using namespace CBot;
+
 class CBotTokenUT : public testing::Test
 {
 public:
@@ -66,56 +68,56 @@ TEST_F(CBotTokenUT, CodeExample)
 {
     // this is the code example shown in the class documentation
     ExecuteTest("\tint var = 3 * ( pos.y + x );\n\tstring test = \"Hello world\";", {
-            {"int",             ID_INT},
-            {"var",             TokenTypVar},
-            {"=",               ID_ASS},
-            {"3",               TokenTypNum},
-            {"*",               ID_MUL},
-            {"(",               ID_OPENPAR},
-            {"pos",             TokenTypVar},
-            {".",               ID_DOT},
-            {"y",               TokenTypVar},
-            {"+",               ID_ADD},
-            {"x",               TokenTypVar},
-            {")",               ID_CLOSEPAR},
-            {";",               ID_SEP},
-            {"string",          ID_STRING},
-            {"test",            TokenTypVar},
-            {"=",               ID_ASS},
-            {"\"Hello world\"", TokenTypString},
-            {";",               ID_SEP},
+        {"int",             ID_INT},
+        {"var",             TokenTypVar},
+        {"=",               ID_ASS},
+        {"3",               TokenTypNum},
+        {"*",               ID_MUL},
+        {"(",               ID_OPENPAR},
+        {"pos",             TokenTypVar},
+        {".",               ID_DOT},
+        {"y",               TokenTypVar},
+        {"+",               ID_ADD},
+        {"x",               TokenTypVar},
+        {")",               ID_CLOSEPAR},
+        {";",               ID_SEP},
+        {"string",          ID_STRING},
+        {"test",            TokenTypVar},
+        {"=",               ID_ASS},
+        {"\"Hello world\"", TokenTypString},
+        {";",               ID_SEP},
     });
 }
 
 TEST_F(CBotTokenUT, IgnoreComments)
 {
     ExecuteTest("int /* comment*/x = 5; //comment", {
-            {"int", ID_INT},
-            {"x",   TokenTypVar},
-            {"=",   ID_ASS},
-            {"5",   TokenTypNum},
-            {";",   ID_SEP},
+        {"int", ID_INT},
+        {"x",   TokenTypVar},
+        {"=",   ID_ASS},
+        {"5",   TokenTypNum},
+        {";",   ID_SEP},
     });
 }
 
 TEST_F(CBotTokenUT, BasicProgram)
 {
     ExecuteTest("extern void object::TestProgram()\n{\n\t\n\tmessage(\"test\"+2.0);\n\t\n}\n", {
-            {"extern",      ID_EXTERN},
-            {"void",        ID_VOID},
-            {"object",      TokenTypVar},
-            {"::",          ID_DBLDOTS},
-            {"TestProgram", TokenTypVar},
-            {"(",           ID_OPENPAR},
-            {")",           ID_CLOSEPAR},
-            {"{",           ID_OPBLK},
-            {"message",     TokenTypVar},
-            {"(",           ID_OPENPAR},
-            {"\"test\"",    TokenTypString},
-            {"+",           ID_ADD},
-            {"2.0",         TokenTypNum},
-            {")",           ID_CLOSEPAR},
-            {";",           ID_SEP},
-            {"}",           ID_CLBLK},
+        {"extern",      ID_EXTERN},
+        {"void",        ID_VOID},
+        {"object",      TokenTypVar},
+        {"::",          ID_DBLDOTS},
+        {"TestProgram", TokenTypVar},
+        {"(",           ID_OPENPAR},
+        {")",           ID_CLOSEPAR},
+        {"{",           ID_OPBLK},
+        {"message",     TokenTypVar},
+        {"(",           ID_OPENPAR},
+        {"\"test\"",    TokenTypString},
+        {"+",           ID_ADD},
+        {"2.0",         TokenTypNum},
+        {")",           ID_CLOSEPAR},
+        {";",           ID_SEP},
+        {"}",           ID_CLBLK},
     });
 }

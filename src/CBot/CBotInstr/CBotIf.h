@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotIf class Instruction if (condition) operation1 else operation2;
@@ -75,3 +72,5 @@ private:
     //! Instruction
     CBotInstr*    m_BlockElse;
 };
+
+} // namespace CBot

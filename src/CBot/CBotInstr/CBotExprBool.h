@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotExprBool class Compile a token representing true or false.
@@ -66,3 +63,5 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 };
+
+} // namespace CBot

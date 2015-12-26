@@ -21,6 +21,9 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+namespace CBot
+{
+
 /**
  * \brief CBotVar subclass for managing integer values (::CBotTypInt)
  */
@@ -77,3 +80,5 @@ private:
     std::string m_defnum;
     friend class CBotVar;
 };
+
+} // namespace CBot

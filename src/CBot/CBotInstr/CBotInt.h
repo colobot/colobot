@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotInt class Definition of an integer variable
@@ -76,3 +73,5 @@ private:
     //! A value to put, if there is.
     CBotInstr* m_expr;
 };
+
+} // namespace CBot

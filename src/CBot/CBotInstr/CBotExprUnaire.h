@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotExprUnaire class Unary expression. Compile an unary expression
@@ -71,3 +68,5 @@ private:
     //! Expression to be evaluated.
     CBotInstr* m_Expr;
 };
+
+} // namespace CBot

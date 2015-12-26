@@ -18,7 +18,6 @@
  */
 
 
-// Modules inlcude
 #include "CBot/CBotVar/CBotVar.h"
 
 #include "CBot/CBotStack.h"
@@ -36,13 +35,14 @@
 
 #include "CBot/CBotEnums.h"
 
-// Local include
-
-// Global include
 #include <cassert>
 #include <cmath>
 #include <cstdio>
 #include <string>
+
+
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 long CBotVar::m_identcpt = 0;
@@ -728,3 +728,5 @@ CBotClass* CBotVar::GetClass()
     assert(0);
     return nullptr;
 }
+
+} // namespace CBot

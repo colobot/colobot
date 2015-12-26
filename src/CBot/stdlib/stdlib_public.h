@@ -23,6 +23,9 @@
 
 #include <memory>
 
+namespace CBot
+{
+
 class CBotFile
 {
 public:
@@ -51,3 +54,5 @@ public:
 void SetFileAccessHandler(std::unique_ptr<CBotFileAccessHandler> fileHandler);
 
 // TODO: provide default implementation of CBotFileAccessHandler
+
+} // namespace CBot

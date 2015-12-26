@@ -25,6 +25,9 @@
 
 #include <boost/algorithm/string.hpp>
 
+namespace CBot
+{
+
 ////////////////////////////////////////////////////////////////////////////////
 bool rStrLen( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
@@ -278,3 +281,4 @@ void InitStringFunctions()
     CBotProgram::AddFunction("strlower", rStrLower, cStrStr );
 }
 
+} // namespace CBot

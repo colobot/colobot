@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotInstArray class Definition of an array.
@@ -80,3 +77,5 @@ private:
     CBotTypResult m_typevar;
 
 };
+
+} // namespace CBot

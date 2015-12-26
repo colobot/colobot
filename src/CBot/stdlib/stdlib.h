@@ -21,6 +21,11 @@
 
 #include "CBot/stdlib/stdlib_public.h"
 
+namespace CBot
+{
+
 void InitStringFunctions();
 void InitFileFunctions();
 void InitMathFunctions();
+
+} // namespace CBot

@@ -26,6 +26,9 @@
 
 #include <string>
 
+namespace CBot
+{
+
 class CBotVarClass;
 class CBotInstr;
 class CBotClass;
@@ -671,3 +674,5 @@ protected:
     friend class CBotVarPointer;
     friend class CBotVarArray;
 };
+
+} // namespace CBot

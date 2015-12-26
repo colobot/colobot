@@ -21,6 +21,9 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+namespace CBot
+{
+
 /**
  * \brief CBotVar subclass for managing float values (::CBotTypFloat)
  */
@@ -64,3 +67,5 @@ private:
     //! The value.
     float m_val;
 };
+
+} // namespace CBot

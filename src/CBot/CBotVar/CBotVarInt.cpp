@@ -17,17 +17,16 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotVar/CBotVarInt.h"
 
 #include "CBot/CBotEnums.h"
 #include "CBot/CBotToken.h"
 #include "CBot/CBotUtils.h"
 
-// Local include
-
-// Global include
 #include <cmath>
+
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotVarInt::CBotVarInt(const CBotToken& name)
@@ -291,3 +290,5 @@ bool CBotVarInt::Save1State(FILE* pf)
 {
     return WriteWord(pf, m_val);                            // the value of the variable
 }
+
+} // namespace CBot

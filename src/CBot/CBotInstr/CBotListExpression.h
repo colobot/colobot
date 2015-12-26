@@ -19,12 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 /*!
  * \brief The CBotListExpression class. Compiles a list of expressions is used
@@ -70,3 +68,5 @@ private:
     //! The first expression to be evaluated
     CBotInstr* m_Expr;
 };
+
+} // namespace CBot

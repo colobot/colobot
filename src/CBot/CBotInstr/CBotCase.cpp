@@ -17,16 +17,14 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotCase.h"
 #include "CBot/CBotInstr/CBotExprNum.h"
 
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotCase::CBotCase()
@@ -90,3 +88,5 @@ bool CBotCase::CompCase(CBotStack* &pile, int val)
     while (!m_Value->Execute(pile));            // puts the value on the correspondent stack (without interruption)
     return (pile->GetVal() == val);             // compared with the given value
 }
+
+} // namespace CBot

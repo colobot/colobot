@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotInstrMethode class A call of method. Compile a method call.
@@ -90,3 +87,5 @@ private:
     //! Name of the class.
     std::string m_ClassName;
 };
+
+} // namespace CBot

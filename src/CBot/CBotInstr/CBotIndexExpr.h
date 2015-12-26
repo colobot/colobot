@@ -19,12 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 /*!
  * \brief The CBotIndexExpr class Index management for arrays
@@ -79,3 +77,5 @@ private:
     friend class CBotLeftExpr;
     friend class CBotExprVar;
 };
+
+} // namespace CBot

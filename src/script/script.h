@@ -106,7 +106,7 @@ protected:
 
     Gfx::CEngine*       m_engine = nullptr;
     Ui::CInterface*     m_interface = nullptr;
-    std::unique_ptr<CBotProgram> m_botProg;
+    std::unique_ptr<CBot::CBotProgram> m_botProg;
     CRobotMain*         m_main = nullptr;
     Gfx::CTerrain*      m_terrain = nullptr;
     Gfx::CWater*        m_water = nullptr;
@@ -123,7 +123,7 @@ protected:
     char    m_mainFunction[50] = {};
     char    m_filename[50] = {};     // file name
     char    m_token[50] = {};        // missing instruction
-    CBotError m_error = CBotNoErr;        // error (0=ok)
+    CBot::CBotError m_error = CBot::CBotNoErr;        // error (0=ok)
     int     m_cursor1 = 0;
     int     m_cursor2 = 0;
     boost::optional<float> m_returnValue = boost::none;

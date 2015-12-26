@@ -158,7 +158,7 @@ bool CScript::CheckToken()
 {
     if ( !m_object->GetCheckToken() )  return true;
 
-    m_error = CBotNoErr;
+    m_error = CBot::CBotNoErr;
     m_title[0] = 0;
     m_mainFunction[0] = 0;
     m_token[0] = 0;
@@ -166,8 +166,8 @@ bool CScript::CheckToken()
 
     std::vector<bool> used(m_main->GetObligatoryToken(), false);
 
-    auto tokens = CBotToken::CompileTokens(m_script.get());
-    CBotToken* bt = tokens.get();
+    auto tokens = CBot::CBotToken::CompileTokens(m_script.get());
+    CBot::CBotToken* bt = tokens.get();
     while ( bt != nullptr )
     {
         std::string token = bt->GetString();
@@ -182,7 +182,7 @@ bool CScript::CheckToken()
 
         if ( !m_main->IsProhibitedToken(token.c_str()) )
         {
-            m_error = static_cast<CBotError>(ERR_PROHIBITEDTOKEN);
+            m_error = static_cast<CBot::CBotError>(ERR_PROHIBITEDTOKEN);
             m_cursor1 = cursor1;
             m_cursor2 = cursor2;
             strcpy(m_title, "<prohibited>");
@@ -199,7 +199,7 @@ bool CScript::CheckToken()
         if (!used[i])  // token not used?
         {
             strcpy(m_token, m_main->GetObligatoryToken(i));
-            m_error = static_cast<CBotError>(ERR_OBLIGATORYTOKEN);
+            m_error = static_cast<CBot::CBotError>(ERR_OBLIGATORYTOKEN);
             strcpy(m_title, "<obligatory>");
             m_mainFunction[0] = 0;
             return false;
@@ -217,7 +217,7 @@ bool CScript::Compile()
     int             i;
     std::string     p;
 
-    m_error = CBotNoErr;
+    m_error = CBot::CBotNoErr;
     m_cursor1 = 0;
     m_cursor2 = 0;
     m_title[0] = 0;
@@ -232,7 +232,7 @@ bool CScript::Compile()
 
     if (m_botProg == nullptr)
     {
-        m_botProg = MakeUnique<CBotProgram>(m_object->GetBotVar());
+        m_botProg = MakeUnique<CBot::CBotProgram>(m_object->GetBotVar());
     }
 
     if ( m_botProg->Compile(m_script.get(), functionList, this) )
@@ -490,9 +490,9 @@ bool CScript::GetCursor(int &cursor1, int &cursor2)
 
 // Put of the variables in a list.
 
-void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, int &rankList)
+void PutList(const char *baseName, bool bArray, CBot::CBotVar *var, Ui::CList *list, int &rankList)
 {
-    CBotVar     *svar, *pStatic;
+    CBot::CBotVar     *svar, *pStatic;
     char        varName[100];
     char        buffer[100];
     std::string p;
@@ -536,25 +536,25 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
 
         type = pStatic->GetType();
 
-        if ( type < CBotTypBoolean )
+        if ( type < CBot::CBotTypBoolean )
         {
             p = pStatic->GetValString();
             sprintf(buffer, "%s = %s;", varName, p.c_str());
             list->SetItemName(rankList++, buffer);
         }
-        else if ( type == CBotTypString )
+        else if ( type == CBot::CBotTypString )
         {
             p = pStatic->GetValString();
             sprintf(buffer, "%s = \"%s\";", varName, p.c_str());
             list->SetItemName(rankList++, buffer);
         }
-        else if ( type == CBotTypArrayPointer )
+        else if ( type == CBot::CBotTypArrayPointer )
         {
             svar = pStatic->GetItemList();
             PutList(varName, true, svar, list, rankList);
         }
-        else if ( type == CBotTypClass   ||
-                  type == CBotTypPointer )
+        else if ( type == CBot::CBotTypClass   ||
+                  type == CBot::CBotTypPointer )
         {
             svar = pStatic->GetItemList();
             PutList(varName, false, svar, list, rankList);
@@ -574,7 +574,7 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
 
 void CScript::UpdateList(Ui::CList* list)
 {
-    CBotVar     *var;
+    CBot::CBotVar     *var;
     std::string progName, funcName;
     int         total, select, level, cursor1, cursor2, rank;
 
@@ -620,8 +620,8 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
     std::string text = std::string(edit->GetText(), edit->GetMaxChar());
     text = text.substr(rangeStart, rangeEnd-rangeStart);
 
-    auto tokens = CBotToken::CompileTokens(text.c_str());
-    CBotToken* bt = tokens.get();
+    auto tokens = CBot::CBotToken::CompileTokens(text.c_str());
+    CBot::CBotToken* bt = tokens.get();
     while ( bt != nullptr )
     {
         std::string token = bt->GetString();
@@ -636,31 +636,31 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
         cursor2 += rangeStart;
 
         Gfx::FontHighlight color = Gfx::FONT_HIGHLIGHT_NONE;
-        if ((type == TokenTypVar || (type >= TokenKeyWord && type < TokenKeyWord+100)) && IsType(token.c_str())) // types (basic types are TokenKeyWord, classes are TokenTypVar)
+        if ((type == CBot::TokenTypVar || (type >= CBot::TokenKeyWord && type < CBot::TokenKeyWord+100)) && IsType(token.c_str())) // types (basic types are TokenKeyWord, classes are TokenTypVar)
         {
             color = Gfx::FONT_HIGHLIGHT_TYPE;
         }
-        else if (type == TokenTypVar && IsFunction(token.c_str())) // functions
+        else if (type == CBot::TokenTypVar && IsFunction(token.c_str())) // functions
         {
             color = Gfx::FONT_HIGHLIGHT_TOKEN;
         }
-        else if (type == TokenTypVar && (token == "this" || token == "super")) // this, super
+        else if (type == CBot::TokenTypVar && (token == "this" || token == "super")) // this, super
         {
             color = Gfx::FONT_HIGHLIGHT_THIS;
         }
-        else if (type >= TokenKeyWord && type < TokenKeyWord+100) // builtin keywords
+        else if (type >= CBot::TokenKeyWord && type < CBot::TokenKeyWord+100) // builtin keywords
         {
             color = Gfx::FONT_HIGHLIGHT_KEYWORD;
         }
-        else if (type >= TokenKeyVal && type < TokenKeyVal+100) // true, false, null, nan
+        else if (type >= CBot::TokenKeyVal && type < CBot::TokenKeyVal+100) // true, false, null, nan
         {
             color = Gfx::FONT_HIGHLIGHT_CONST;
         }
-        else if (type == TokenTypDef) // constants (object types etc.)
+        else if (type == CBot::TokenTypDef) // constants (object types etc.)
         {
             color = Gfx::FONT_HIGHLIGHT_CONST;
         }
-        else if (type == TokenTypString || type == TokenTypNum) // string literals and numbers
+        else if (type == CBot::TokenTypString || type == CBot::TokenTypNum) // string literals and numbers
         {
             color = Gfx::FONT_HIGHLIGHT_STRING;
         }
@@ -794,7 +794,7 @@ void CScript::GetError(std::string& error)
     }
     else
     {
-        if ( m_error == static_cast<CBotError>(ERR_OBLIGATORYTOKEN) )
+        if ( m_error == static_cast<CBot::CBotError>(ERR_OBLIGATORYTOKEN) )
         {
             std::string s;
             GetResource(RES_ERR, m_error, s);
@@ -985,9 +985,9 @@ bool CScript::ReadStack(FILE *file)
 {
     int     nb;
 
-    fRead(&nb, sizeof(int), 1, file);
-    fRead(&m_ipf, sizeof(int), 1, file);
-    fRead(&m_errMode, sizeof(int), 1, file);
+    CBot::fRead(&nb, sizeof(int), 1, file);
+    CBot::fRead(&m_ipf, sizeof(int), 1, file);
+    CBot::fRead(&m_errMode, sizeof(int), 1, file);
 
     if (m_botProg == nullptr) return false;
     if ( !m_botProg->RestoreState(file) )  return false;
@@ -1004,9 +1004,9 @@ bool CScript::WriteStack(FILE *file)
     int     nb;
 
     nb = 2;
-    fWrite(&nb, sizeof(int), 1, file);
-    fWrite(&m_ipf, sizeof(int), 1, file);
-    fWrite(&m_errMode, sizeof(int), 1, file);
+    CBot::fWrite(&nb, sizeof(int), 1, file);
+    CBot::fWrite(&m_ipf, sizeof(int), 1, file);
+    CBot::fWrite(&m_errMode, sizeof(int), 1, file);
 
     return m_botProg->SaveState(file);
 }

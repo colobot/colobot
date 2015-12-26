@@ -17,14 +17,12 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotLogicExpr.h"
 
 #include "CBot/CBotStack.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotLogicExpr::CBotLogicExpr()
@@ -92,3 +90,4 @@ void CBotLogicExpr::RestoreState(CBotStack* &pStack, bool bMain)
     }
 }
 
+} // namespace CBot

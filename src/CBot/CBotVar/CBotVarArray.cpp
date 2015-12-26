@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotVar/CBotVarArray.h"
 #include "CBot/CBotVar/CBotVarClass.h"
 #include "CBot/CBotToken.h"
@@ -25,10 +24,11 @@
 
 #include "CBot/CBotEnums.h"
 
-// Local include
-
-// Global include
 #include <cassert>
+
+
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotVarArray::CBotVarArray(const CBotToken& name, CBotTypResult& type)
@@ -143,3 +143,5 @@ bool CBotVarArray::Save1State(FILE* pf)
     if ( !WriteType(pf, m_type) ) return false;
     return SaveVar(pf, m_pInstance);                        // saves the instance that manages the table
 }
+
+} // namespace CBot

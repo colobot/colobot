@@ -24,6 +24,9 @@
 
 #include <vector>
 
+namespace CBot
+{
+
 class CBotFunction;
 class CBotClass;
 class CBotStack;
@@ -360,3 +363,5 @@ private:
     int m_errorStart = 0;
     int m_errorEnd = 0;
 };
+
+} // namespace CBot

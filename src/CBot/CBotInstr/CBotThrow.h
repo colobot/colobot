@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotThrow class Compiles instruction "throw".
@@ -71,3 +68,5 @@ private:
     CBotInstr* m_Value;
 
 };
+
+} // namespace CBot

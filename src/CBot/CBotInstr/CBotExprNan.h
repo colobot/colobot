@@ -19,12 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 /*!
  * \brief The CBotExprNan class Management of the operand "nan".
@@ -57,3 +55,5 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 };
+
+} // namespace CBot

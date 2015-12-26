@@ -19,12 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 /*!
  * \brief The CBotCatch class. Compiles instruction "catch".
@@ -91,3 +89,5 @@ private:
 
     friend class CBotTry;
 };
+
+} // namespace CBot

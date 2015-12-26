@@ -17,15 +17,13 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotBreak.h"
 
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotBreak::CBotBreak()
@@ -94,3 +92,5 @@ void CBotBreak :: RestoreState(CBotStack* &pj, bool bMain)
 {
     if ( bMain ) pj->RestoreStack(this);
 }
+
+} // namespace CBot

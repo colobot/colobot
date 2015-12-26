@@ -25,7 +25,9 @@
 #include <string>
 #include <cassert>
 
-// Forward declaration
+namespace CBot
+{
+
 class CBotVar;
 class CBotToken;
 class CBotCStack;
@@ -82,14 +84,14 @@ bool WriteFloat(FILE* pf, float w);
 
 /*!
  * \brief GetNumInt Converts a string into integer may be of the form 0xabc123.
- * \param p
+ * \param str
  * \return
  */
-long GetNumInt(const std::string& p);
+long GetNumInt(const std::string& str);
 
 /*!
  * \brief GetNumFloat Converts a string into a float number.
- * \param p
+ * \param str
  * \return
  */
 float GetNumFloat(const std::string& str);
@@ -183,3 +185,5 @@ protected:
     T* m_next = nullptr;
     T* m_prev = nullptr;
 };
+
+} // namespace CBot

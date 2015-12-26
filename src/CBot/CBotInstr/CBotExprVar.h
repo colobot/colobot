@@ -19,16 +19,13 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotDefines.h"
 
 #include "CBot/CBotInstr/CBotInstr.h"
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotExprVar class Expression for the variable name. Compile a
@@ -103,3 +100,5 @@ private:
     friend class CBotPreIncExpr;
 
 };
+
+} // namespace CBot

@@ -67,6 +67,7 @@
 
 #include "ui/displaytext.h"
 
+using namespace CBot;
 
 CBotTypResult CScriptFunctions::cClassNull(CBotVar* thisclass, CBotVar* &var)
 {
@@ -2976,7 +2977,6 @@ bool CScriptFunctions::rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* 
     return  true;  // no interruption
 }
 
-class CBotFileAccessHandlerColobot;
 class CBotFileColobot : public CBotFile
 {
 public:
@@ -3266,7 +3266,7 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("pencolor",  rPenColor,  cOneFloat);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  cOneFloat);
 
-    CBotProgram::AddFunction("camerafocus", rCameraFocus, CScriptFunctions::cOneObject);
+    CBotProgram::AddFunction("camerafocus", rCameraFocus, cOneObject);
 
     SetFileAccessHandler(MakeUnique<CBotFileAccessHandlerColobot>());
 }

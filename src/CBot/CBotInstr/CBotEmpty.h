@@ -19,12 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 /*!
  * \brief The CBotEmpty class
@@ -45,3 +43,5 @@ class CBotEmpty : public CBotInstr
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 };
+
+} // namespace CBot

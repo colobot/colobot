@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotVar/CBotVarPointer.h"
 #include "CBot/CBotToken.h"
 #include "CBot/CBotClass.h"
@@ -27,10 +26,10 @@
 #include "CBot/CBotUtils.h"
 #include "CBot/CBotFileUtils.h"
 
-// Local include
-
-// Global include
 #include <cassert>
+
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotVarPointer::CBotVarPointer(const CBotToken& name, CBotTypResult& type)
@@ -244,3 +243,5 @@ bool CBotVarPointer::Ne(CBotVar* left, CBotVar* right)
     if ( r == nullptr && l->GetUserPtr() == OBJECTDELETED ) return false;
     return true;
 }
+
+} // namespace CBot

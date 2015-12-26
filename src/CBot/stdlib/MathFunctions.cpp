@@ -22,6 +22,9 @@
 #include "CBot/CBot.h"
 
 #include <cmath>
+
+namespace CBot
+{
 const float PI = 3.14159265358979323846f;
 
 // Instruction "sin(degrees)".
@@ -207,3 +210,5 @@ void InitMathFunctions()
     CBotProgram::AddFunction("round", rRound, cOneFloat);
     CBotProgram::AddFunction("trunc", rTrunc, cOneFloat);
 }
+
+} // namespace CBot

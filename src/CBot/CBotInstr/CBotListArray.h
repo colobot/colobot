@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotListArray class Definition of a assignment list for a table
@@ -74,3 +71,5 @@ private:
     //! An expression for an element others are linked with CBotInstr :: m_next3;
     CBotInstr* m_expr;
 };
+
+} // namespace CBot

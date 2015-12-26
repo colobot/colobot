@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotCallMethode.h"
 
 #include "CBot/CBotUtils.h"
@@ -26,9 +25,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -111,3 +109,5 @@ int CBotCallMethode::DoCall(const std::string& name, CBotVar* pThis, CBotVar** p
 
     return -1;
 }
+
+} // namespace CBot

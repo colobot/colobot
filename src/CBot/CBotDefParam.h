@@ -23,6 +23,9 @@
 #include "CBot/CBotStack.h"
 #include "CBot/CBotUtils.h"
 
+namespace CBot
+{
+
 class CBotCStack;
 class CBotStack;
 class CBotVar;
@@ -94,3 +97,5 @@ private:
     CBotTypResult m_type;
     long m_nIdent;
 };
+
+} // namespace CBot

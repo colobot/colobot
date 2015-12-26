@@ -19,13 +19,12 @@
 
 #pragma once
 
-// Modules inlcude
-#include <CBot/CBotVar/CBotVar.h>
+#include "CBot/CBotVar/CBotVar.h"
 #include "CBot/CBotProgram.h"
 
-// Local include
+namespace CBot
+{
 
-// Global include
 class CBotInstr;
 class CBotDefParam;
 class CBotToken;
@@ -266,3 +265,5 @@ private:
     static CBotProgram* m_prog;
     static CBotTypResult m_retTyp;
 };
+
+} // namespace CBot

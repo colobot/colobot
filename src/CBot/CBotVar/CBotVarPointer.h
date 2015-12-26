@@ -21,6 +21,9 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+namespace CBot
+{
+
 /**
  * \brief CBotVar subclass for managing pointers to classes (::CBotTypPointer)
  */
@@ -72,3 +75,5 @@ private:
     CBotClass* m_pClass;
     friend class CBotVar;
 };
+
+} // namespace CBot

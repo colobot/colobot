@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotExpression.h"
 
 #include "CBot/CBotInstr/CBotInstrUtils.h"
@@ -29,11 +28,10 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
 #include <cassert>
 
+namespace CBot
+{
 
 //////////////////////////////////////////////////////////////////////////////////////
 CBotExpression::CBotExpression()
@@ -297,3 +295,5 @@ void CBotExpression::RestoreState(CBotStack* &pj, bool bMain)
         }
     }
 }
+
+} // namespace CBot

@@ -41,7 +41,7 @@ const char* stringsText[RT_MAX]         = { nullptr };
 const char* stringsEvent[EVENT_STD_MAX] = { nullptr };
 const char* stringsObject[OBJECT_MAX]   = { nullptr };
 const char* stringsErr[ERR_MAX]         = { nullptr };
-const char* stringsCbot[TX_MAX]         = { nullptr };
+const char* stringsCbot[CBot::CBotErrMAX]         = { nullptr };
 
 /* Macro to mark which texts are translatable by gettext
  * It doesn't do anything at compile-time, as all texts represented here are used later
@@ -670,66 +670,66 @@ void InitializeRestext()
 
 
 
-    stringsCbot[CBotErrOpenPar]       = TR("Opening bracket missing");
-    stringsCbot[CBotErrClosePar]      = TR("Closing bracket missing ");
-    stringsCbot[CBotErrNotBoolean]    = TR("The expression must return a boolean value");
-    stringsCbot[CBotErrUndefVar]      = TR("Variable not declared");
-    stringsCbot[CBotErrBadLeft]       = TR("Assignment impossible");
-    stringsCbot[CBotErrNoTerminator]  = TR("Semicolon terminator missing");
-    stringsCbot[CBotErrCaseOut]       = TR("Instruction \"case\" outside a block \"switch\"");
-    stringsCbot[CBotErrNoEnd]         = TR("Instructions after the final closing brace");
-    stringsCbot[CBotErrCloseBlock]    = TR("End of block missing");
-    stringsCbot[CBotErrElseWhitoutIf] = TR("Instruction \"else\" without corresponding \"if\" ");
-    stringsCbot[CBotErrOpenBlock]     = TR("Opening brace missing ");
-    stringsCbot[CBotErrBadType1]      = TR("Wrong type for the assignment");
-    stringsCbot[CBotErrRedefVar]      = TR("A variable can not be declared twice");
-    stringsCbot[CBotErrBadType2]      = TR("The types of the two operands are incompatible ");
-    stringsCbot[CBotErrUndefCall]     = TR("Unknown function");
-    stringsCbot[CBotErrNoDoubleDots]  = TR("Sign \" : \" missing");
-    stringsCbot[CBotErrNoWhile]       = TR("Keyword \"while\" missing");
-    stringsCbot[CBotErrBreakOutside]  = TR("Instruction \"break\" outside a loop");
-    stringsCbot[CBotErrLabel]         = TR("A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\"");
-    stringsCbot[CBotErrUndefLabel]    = TR("This label does not exist");
-    stringsCbot[CBotErrNoCase]        = TR("Instruction \"case\" missing");
-    stringsCbot[CBotErrBadNum]        = TR("Number missing");
-    stringsCbot[CBotErrVoid]          = TR("Void parameter");
-    stringsCbot[CBotErrNoType]        = TR("Type declaration missing");
-    stringsCbot[CBotErrNoVar]         = TR("Variable name missing");
-    stringsCbot[CBotErrNoFunc]        = TR("Function name missing");
-    stringsCbot[CBotErrOverParam]     = TR("Too many parameters");
-    stringsCbot[CBotErrRedefFunc]     = TR("Function already exists");
-    stringsCbot[CBotErrLowParam]      = TR("Parameters missing ");
-    stringsCbot[CBotErrBadParam]      = TR("No function with this name accepts this kind of parameter");
-    stringsCbot[CBotErrNbParam]       = TR("No function with this name accepts this number of parameters");
-    stringsCbot[CBotErrUndefItem]     = TR("This is not a member of this class");
-    stringsCbot[CBotErrUndefClass]    = TR("This object is not a member of a class");
-    stringsCbot[CBotErrNoConstruct]   = TR("Appropriate constructor missing");
-    stringsCbot[CBotErrRedefClass]    = TR("This class already exists");
-    stringsCbot[CBotErrCloseIndex]    = TR("\" ] \" missing");
-    stringsCbot[CBotErrReserved]      = TR("Reserved keyword of CBOT language");
-    stringsCbot[CBotErrBadNew]        = TR("Bad argument for \"new\"");
-    stringsCbot[CBotErrOpenIndex]     = TR("\" [ \" expected");
-    stringsCbot[CBotErrBadString]     = TR("String missing");
-    stringsCbot[CBotErrBadIndex]      = TR("Incorrect index type");
-    stringsCbot[CBotErrPrivate]       = TR("Private element");
-    stringsCbot[CBotErrNoPublic]      = TR("Public required");
+    stringsCbot[CBot::CBotErrOpenPar]       = TR("Opening bracket missing");
+    stringsCbot[CBot::CBotErrClosePar]      = TR("Closing bracket missing ");
+    stringsCbot[CBot::CBotErrNotBoolean]    = TR("The expression must return a boolean value");
+    stringsCbot[CBot::CBotErrUndefVar]      = TR("Variable not declared");
+    stringsCbot[CBot::CBotErrBadLeft]       = TR("Assignment impossible");
+    stringsCbot[CBot::CBotErrNoTerminator]  = TR("Semicolon terminator missing");
+    stringsCbot[CBot::CBotErrCaseOut]       = TR("Instruction \"case\" outside a block \"switch\"");
+    stringsCbot[CBot::CBotErrNoEnd]         = TR("Instructions after the final closing brace");
+    stringsCbot[CBot::CBotErrCloseBlock]    = TR("End of block missing");
+    stringsCbot[CBot::CBotErrElseWhitoutIf] = TR("Instruction \"else\" without corresponding \"if\" ");
+    stringsCbot[CBot::CBotErrOpenBlock]     = TR("Opening brace missing ");
+    stringsCbot[CBot::CBotErrBadType1]      = TR("Wrong type for the assignment");
+    stringsCbot[CBot::CBotErrRedefVar]      = TR("A variable can not be declared twice");
+    stringsCbot[CBot::CBotErrBadType2]      = TR("The types of the two operands are incompatible ");
+    stringsCbot[CBot::CBotErrUndefCall]     = TR("Unknown function");
+    stringsCbot[CBot::CBotErrNoDoubleDots]  = TR("Sign \" : \" missing");
+    stringsCbot[CBot::CBotErrNoWhile]       = TR("Keyword \"while\" missing");
+    stringsCbot[CBot::CBotErrBreakOutside]  = TR("Instruction \"break\" outside a loop");
+    stringsCbot[CBot::CBotErrLabel]         = TR("A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\"");
+    stringsCbot[CBot::CBotErrUndefLabel]    = TR("This label does not exist");
+    stringsCbot[CBot::CBotErrNoCase]        = TR("Instruction \"case\" missing");
+    stringsCbot[CBot::CBotErrBadNum]        = TR("Number missing");
+    stringsCbot[CBot::CBotErrVoid]          = TR("Void parameter");
+    stringsCbot[CBot::CBotErrNoType]        = TR("Type declaration missing");
+    stringsCbot[CBot::CBotErrNoVar]         = TR("Variable name missing");
+    stringsCbot[CBot::CBotErrNoFunc]        = TR("Function name missing");
+    stringsCbot[CBot::CBotErrOverParam]     = TR("Too many parameters");
+    stringsCbot[CBot::CBotErrRedefFunc]     = TR("Function already exists");
+    stringsCbot[CBot::CBotErrLowParam]      = TR("Parameters missing ");
+    stringsCbot[CBot::CBotErrBadParam]      = TR("No function with this name accepts this kind of parameter");
+    stringsCbot[CBot::CBotErrNbParam]       = TR("No function with this name accepts this number of parameters");
+    stringsCbot[CBot::CBotErrUndefItem]     = TR("This is not a member of this class");
+    stringsCbot[CBot::CBotErrUndefClass]    = TR("This object is not a member of a class");
+    stringsCbot[CBot::CBotErrNoConstruct]   = TR("Appropriate constructor missing");
+    stringsCbot[CBot::CBotErrRedefClass]    = TR("This class already exists");
+    stringsCbot[CBot::CBotErrCloseIndex]    = TR("\" ] \" missing");
+    stringsCbot[CBot::CBotErrReserved]      = TR("Reserved keyword of CBOT language");
+    stringsCbot[CBot::CBotErrBadNew]        = TR("Bad argument for \"new\"");
+    stringsCbot[CBot::CBotErrOpenIndex]     = TR("\" [ \" expected");
+    stringsCbot[CBot::CBotErrBadString]     = TR("String missing");
+    stringsCbot[CBot::CBotErrBadIndex]      = TR("Incorrect index type");
+    stringsCbot[CBot::CBotErrPrivate]       = TR("Private element");
+    stringsCbot[CBot::CBotErrNoPublic]      = TR("Public required");
 
-    stringsCbot[CBotErrZeroDiv]       = TR("Dividing by zero");
-    stringsCbot[CBotErrNotInit]       = TR("Variable not initialized");
-    stringsCbot[CBotErrBadThrow]      = TR("Negative value rejected by \"throw\"");
-    stringsCbot[CBotErrNoRetVal]      = TR("The function returned no value ");
-    stringsCbot[CBotErrNoRun]         = TR("No function running");
-    stringsCbot[CBotErrUndefFunc]     = TR("Calling an unknown function");
-    stringsCbot[CBotErrNotClass]      = TR("This class does not exist");
-    stringsCbot[CBotErrNull]          = TR("Unknown Object");
-    stringsCbot[CBotErrNan]           = TR("Operation impossible with value \"nan\"");
-    stringsCbot[CBotErrOutArray]      = TR("Access beyond array limit");
-    stringsCbot[CBotErrStackOver]     = TR("Stack overflow");
-    stringsCbot[CBotErrDeletedPtr]    = TR("Illegal object");
-    stringsCbot[CBotErrFileOpen]      = TR("Can't open file");
-    stringsCbot[CBotErrNotOpen]       = TR("File not open");
-    stringsCbot[CBotErrRead]          = TR("Read error");
-    stringsCbot[CBotErrWrite]         = TR("Write error");
+    stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
+    stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");
+    stringsCbot[CBot::CBotErrBadThrow]      = TR("Negative value rejected by \"throw\"");
+    stringsCbot[CBot::CBotErrNoRetVal]      = TR("The function returned no value ");
+    stringsCbot[CBot::CBotErrNoRun]         = TR("No function running");
+    stringsCbot[CBot::CBotErrUndefFunc]     = TR("Calling an unknown function");
+    stringsCbot[CBot::CBotErrNotClass]      = TR("This class does not exist");
+    stringsCbot[CBot::CBotErrNull]          = TR("Unknown Object");
+    stringsCbot[CBot::CBotErrNan]           = TR("Operation impossible with value \"nan\"");
+    stringsCbot[CBot::CBotErrOutArray]      = TR("Access beyond array limit");
+    stringsCbot[CBot::CBotErrStackOver]     = TR("Stack overflow");
+    stringsCbot[CBot::CBotErrDeletedPtr]    = TR("Illegal object");
+    stringsCbot[CBot::CBotErrFileOpen]      = TR("Can't open file");
+    stringsCbot[CBot::CBotErrNotOpen]       = TR("File not open");
+    stringsCbot[CBot::CBotErrRead]          = TR("Read error");
+    stringsCbot[CBot::CBotErrWrite]         = TR("Write error");
 }
 
 
@@ -812,7 +812,7 @@ const char* GetResourceBase(ResType type, unsigned int num)
             break;
 
         case RES_CBOT:
-            assert(num < TX_MAX);
+            assert(num < CBot::CBotErrMAX);
             str = stringsCbot[num];
             break;
 

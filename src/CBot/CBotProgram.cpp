@@ -30,6 +30,9 @@
 
 #include "CBot/stdlib/stdlib.h"
 
+namespace CBot
+{
+
 CBotExternalCallList* CBotProgram::m_externalCalls = new CBotExternalCallList();
 
 CBotProgram::CBotProgram()
@@ -143,7 +146,6 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     return (m_functions != nullptr);
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::Start(const std::string& name)
 {
     Stop();
@@ -167,7 +169,6 @@ bool CBotProgram::Start(const std::string& name)
     return true; // we are ready for Run()
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetPosition(const std::string& name, int& start, int& stop, CBotGet modestart, CBotGet modestop)
 {
     CBotFunction* p = m_functions;
@@ -183,7 +184,6 @@ bool CBotProgram::GetPosition(const std::string& name, int& start, int& stop, CB
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::Run(void* pUser, int timer)
 {
     if (m_stack == nullptr || m_entryPoint == nullptr)
@@ -221,7 +221,6 @@ bool CBotProgram::Run(void* pUser, int timer)
     return ok;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::Stop()
 {
     m_stack->Delete();
@@ -240,7 +239,7 @@ bool CBotProgram::GetRunPos(std::string& functionName, int& start, int& end)
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+
 CBotVar* CBotProgram::GetStackVars(std::string& functionName, int level)
 {
     functionName.clear();
@@ -261,7 +260,7 @@ CBotError CBotProgram::GetError()
     return m_error;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+
 bool CBotProgram::GetError(CBotError& code, int& start, int& end)
 {
     code  = m_error;
@@ -270,7 +269,7 @@ bool CBotProgram::GetError(CBotError& code, int& start, int& end)
     return code > 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+
 bool CBotProgram::GetError(CBotError& code, int& start, int& end, CBotProgram*& pProg)
 {
     code    = m_error;
@@ -287,14 +286,14 @@ CBotFunction* CBotProgram::GetFunctions()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotProgram::AddFunction(const std::string& name,
-                              bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                              CBotTypResult rCompile(CBotVar*& pVar, void* pUser))
+CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
 {
-    return m_externalCalls->AddFunction(name, std::unique_ptr<CBotExternalCall>(new CBotExternalCallDefault(rExec, rCompile)));
+    if ( pVar == nullptr ) return CBotTypResult( CBotErrLowParam );
+    if ( pVar->GetType() != CBotTypArrayPointer )
+                        return CBotTypResult( CBotErrBadParam );
+    return CBotTypResult( CBotTypInt );
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     if ( pVar == nullptr ) return CBotErrLowParam;
@@ -313,15 +312,13 @@ bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
+bool CBotProgram::AddFunction(const std::string& name,
+                              bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
+                              CBotTypResult rCompile(CBotVar*& pVar, void* pUser))
 {
-    if ( pVar == nullptr ) return CBotTypResult( CBotErrLowParam );
-    if ( pVar->GetType() != CBotTypArrayPointer )
-                        return CBotTypResult( CBotErrBadParam );
-    return CBotTypResult( CBotTypInt );
+    return m_externalCalls->AddFunction(name, std::unique_ptr<CBotExternalCall>(new CBotExternalCallDefault(rExec, rCompile)));
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::DefineNum(const std::string& name, long val)
 {
     CBotToken::DefineNum(name, val);
@@ -347,7 +344,6 @@ bool CBotProgram::SaveState(FILE* pf)
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::RestoreState(FILE* pf)
 {
     unsigned short  w;
@@ -378,12 +374,12 @@ bool CBotProgram::RestoreState(FILE* pf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
 int CBotProgram::GetVersion()
 {
     return  CBOTVERSION;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::Init()
 {
     CBotProgram::DefineNum("CBotErrZeroDiv",    CBotErrZeroDiv);     // division by zero
@@ -406,7 +402,6 @@ void CBotProgram::Init()
     InitFileFunctions();
 }
 
-////////////////////////////////////////////////////////////////////////////////
 void CBotProgram::Free()
 {
     CBotToken::ClearDefineNum();
@@ -418,3 +413,5 @@ CBotExternalCallList* CBotProgram::GetExternalCalls()
 {
     return m_externalCalls;
 }
+
+} // namespace CBot

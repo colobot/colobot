@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotListExpression.h"
 #include "CBot/CBotInstr/CBotExpression.h"
 #include "CBot/CBotInstr/CBotIString.h"
@@ -28,9 +27,8 @@
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Seeks a declaration of variable or expression
@@ -129,3 +127,5 @@ void CBotListExpression::RestoreState(CBotStack* &pj, bool bMain)
         p->RestoreState(pile, bMain);
     }
 }
+
+} // namespace CBot

@@ -19,12 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 //////////////////////////////////////////////////////////////////////////////////////
 // Management of pre-and post increment / decrement
@@ -67,3 +65,5 @@ private:
     CBotInstr*    m_Instr;
     friend class CBotParExpr;
 };
+
+} // namespace CBot

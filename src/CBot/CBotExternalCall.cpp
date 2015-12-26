@@ -26,6 +26,9 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+namespace CBot
+{
+
 void CBotExternalCallList::Clear()
 {
     m_list.clear();
@@ -207,3 +210,5 @@ bool CBotExternalCallDefaultClass::Run(CBotVar* thisVar, CBotStack* pStack)
 
     return true;
 }
+
+} // namespace CBot

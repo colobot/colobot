@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotExprUnaire.h"
 #include "CBot/CBotInstr/CBotParExpr.h"
 
@@ -26,10 +25,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotExprUnaire::CBotExprUnaire()
@@ -122,3 +119,5 @@ void CBotExprUnaire::RestoreState(CBotStack* &pj, bool bMain)
         return;
     }
 }
+
+} // namespace CBot

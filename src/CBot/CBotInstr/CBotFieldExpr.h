@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotFieldExpr class Management of the fields of an instance
@@ -81,3 +78,5 @@ private:
     friend class CBotExpression;
     int m_nIdent;
 };
+
+} // namespace CBot

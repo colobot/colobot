@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotNew.h"
 
 #include "CBot/CBotStack.h"
@@ -28,11 +27,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotNew::CBotNew()
@@ -247,3 +243,5 @@ void CBotNew::RestoreState(CBotStack* &pj, bool bMain)
                                ppVars, pile2)    ;        // interrupt here!
     }
 }
+
+} // namespace CBot

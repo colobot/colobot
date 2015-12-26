@@ -322,7 +322,7 @@ float CObject::GetProxyDistance()
     return m_proxyDistance;
 }
 
-CBotVar* CObject::GetBotVar()
+CBot::CBotVar* CObject::GetBotVar()
 {
     return m_botVar;
 }

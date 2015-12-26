@@ -19,15 +19,12 @@
 
 #pragma once
 
-// Modules inlcude
-
-// Local include
-
-// Global include
 #include <cstdio>
 #include <string>
 
-// Forward declaration
+namespace CBot
+{
+
 class CBotVar;
 class CBotTypResult;
 
@@ -154,3 +151,5 @@ bool WriteType(FILE* pf, const CBotTypResult &type);
  * \return
  */
 bool ReadType(FILE* pf, CBotTypResult &type);
+
+} // namespace CBot

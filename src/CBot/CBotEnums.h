@@ -23,9 +23,11 @@
  * \file CBotEnums.h
  * \brief Some enum values used across the CBot engine
  */
+ 
+namespace CBot
+{
 
 /**
- * \enum CBotType
  * \brief Defines known types. This types are modeled on Java types.
  *
  * Do not change the order of elements.
@@ -55,7 +57,6 @@ enum CBotType
 };
 
 /**
- * \enum CBotGet
  * \brief Different modes for CBotProgram::GetPosition
  */
 enum CBotGet
@@ -67,7 +68,6 @@ enum CBotGet
 };
 
 /**
- * \enum TokenId
  * \brief This enum contains possible token types
  */
 enum TokenId
@@ -168,7 +168,6 @@ enum TokenId
 };
 
 /**
- * \enum TokenType
  * \brief Types of tokens
  */
 enum TokenType {
@@ -181,7 +180,6 @@ enum TokenType {
 };
 
 /**
- * \enum CBotError
  * \brief This enum contains possible CBot error values. Values in range 5000-5999 are compile errors, 6000-6999 are runtime errors
  *
  * Note that other values ​​may be returned, for example exceptions for user-defined builtin functions, or "throw" instruction
@@ -255,5 +253,7 @@ enum CBotError : int
     CBotErrRead          = 6014, //!< error while reading
     CBotErrWrite         = 6015, //!< writing error
 
-    TX_MAX, //!< Max errors
+    CBotErrMAX, //!< Max errors
 };
+
+} // namespace CBot

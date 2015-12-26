@@ -22,6 +22,9 @@
 #include <cstdarg>
 #include <cassert>
 
+namespace CBot
+{
+
 //! \brief Keeps the string corresponding to keyword ID
 //! Map is filled with id-string pars that are needed for CBot language parsing
 static const std::map<TokenId, const std::string> KEYWORDS = {
@@ -511,3 +514,5 @@ bool IsOfTypeList(CBotToken* &p, int type1, ...)
         }
     }
 }
+
+} // namespace CBot

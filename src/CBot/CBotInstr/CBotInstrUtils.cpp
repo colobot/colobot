@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstrUtils.h"
 
 #include "CBot/CBotToken.h"
@@ -28,9 +27,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars)
@@ -163,3 +161,5 @@ bool TypesCompatibles(const CBotTypResult& type1, const CBotTypResult& type2)
     }
     return true;
 }
+
+} // namespace CBot

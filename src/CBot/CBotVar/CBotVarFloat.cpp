@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotVar/CBotVarFloat.h"
 
 #include "CBot/CBotEnums.h"
@@ -25,10 +24,10 @@
 
 #include "CBot/CBotUtils.h"
 
-// Local include
-
-// Global include
 #include <cmath>
+
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotVarFloat::CBotVarFloat(const CBotToken& name)
@@ -223,3 +222,5 @@ bool CBotVarFloat::Save1State(FILE* pf)
 {
     return WriteFloat(pf, m_val); // the value of the variable
 }
+
+} // namespace CBot

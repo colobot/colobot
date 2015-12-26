@@ -17,23 +17,16 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotTypResult.h"
 
 #include "CBot/CBotEnums.h"
 
 #include "CBot/CBotClass.h"
 
-// Local include
 
-// Global include
+namespace CBot
+{
 
-
-
-///////////////////////////////////////////////////////
-// management of results types
-
-////////////////////////////////////////////////////////////////////////////////
 CBotTypResult::CBotTypResult(int type)
 {
     m_type        = type;
@@ -42,7 +35,6 @@ CBotTypResult::CBotTypResult(int type)
     m_limite    = -1;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotTypResult::CBotTypResult(int type, const std::string& name)
 {
     m_type        = type;
@@ -59,7 +51,6 @@ CBotTypResult::CBotTypResult(int type, const std::string& name)
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotTypResult::CBotTypResult(int type, CBotClass* pClass)
 {
     m_type        = type;
@@ -70,7 +61,6 @@ CBotTypResult::CBotTypResult(int type, CBotClass* pClass)
     if ( m_pClass && m_pClass->IsIntrinsic() ) m_type = CBotTypIntrinsic;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotTypResult::CBotTypResult(int type, CBotTypResult elem)
 {
     m_type        = type;
@@ -83,7 +73,6 @@ CBotTypResult::CBotTypResult(int type, CBotTypResult elem)
         m_pNext = new CBotTypResult( elem );
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotTypResult::CBotTypResult(const CBotTypResult& typ)
 {
     m_type        = typ.m_type;
@@ -95,7 +84,6 @@ CBotTypResult::CBotTypResult(const CBotTypResult& typ)
         m_pNext = new CBotTypResult( *typ.m_pNext );
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotTypResult::CBotTypResult()
 {
     m_type        = 0;
@@ -104,50 +92,42 @@ CBotTypResult::CBotTypResult()
     m_pClass    = nullptr;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotTypResult::~CBotTypResult()
 {
     delete    m_pNext;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 int CBotTypResult::GetType(int mode) const
 {
     if ( mode == 3 && m_type == CBotTypNullPointer ) return CBotTypPointer;
     return    m_type;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 void CBotTypResult::SetType(int n)
 {
     m_type = n;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotTypResult::GetClass() const
 {
     return m_pClass;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotTypResult& CBotTypResult::GetTypElem() const
 {
     return *m_pNext;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 int CBotTypResult::GetLimite() const
 {
     return m_limite;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 void CBotTypResult::SetLimite(int n)
 {
     m_limite = n;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 void CBotTypResult::SetArray( int* max )
 {
     m_limite = *max;
@@ -159,7 +139,6 @@ void CBotTypResult::SetArray( int* max )
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool CBotTypResult::Compare(const CBotTypResult& typ) const
 {
     if ( m_type != typ.m_type ) return false;
@@ -176,13 +155,11 @@ bool CBotTypResult::Compare(const CBotTypResult& typ) const
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool CBotTypResult::Eq(int type) const
 {
     return m_type == type;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 CBotTypResult& CBotTypResult::operator=(const CBotTypResult& src)
 {
     m_type = src.m_type;
@@ -195,3 +172,5 @@ CBotTypResult& CBotTypResult::operator=(const CBotTypResult& src)
     }
     return *this;
 }
+
+} // namespace CBot

@@ -25,6 +25,9 @@
 
 #include <string>
 
+namespace CBot
+{
+
 class CBotCallMethode;
 class CBotFunction;
 class CBotProgram;
@@ -387,3 +390,5 @@ private:
     //! Processes waiting for sync.
     CBotProgram* m_ProgInLock[5];
 };
+
+} // namespace CBot

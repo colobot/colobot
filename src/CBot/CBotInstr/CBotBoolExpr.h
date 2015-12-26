@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotBoolExpr class Compile a statement such as "(condition)"
@@ -45,3 +42,5 @@ public:
      */
     static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
 };
+
+} // namespace CBot

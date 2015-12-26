@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotTwoOpExpr class All operations with two operands.
@@ -76,3 +73,5 @@ private:
     //! Right element
     CBotInstr* m_rightop;
 };
+
+} // namespace CBot

@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotLeftExpr.h"
 #include "CBot/CBotInstr/CBotFieldExpr.h"
 #include "CBot/CBotInstr/CBotIndexExpr.h"
@@ -29,10 +28,8 @@
 
 #include "CBot/CBotVar/CBotVarArray.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 //////////////////////////////////////////////////////////////////////////////////////
 CBotLeftExpr::CBotLeftExpr()
@@ -243,3 +240,5 @@ void CBotLeftExpr::RestoreStateVar(CBotStack* &pile, bool bMain)
     if (m_next3 != nullptr)
          m_next3->RestoreStateVar(pile, bMain);
 }
+
+} // namespace CBot

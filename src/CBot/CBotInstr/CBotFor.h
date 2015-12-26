@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotFor class
@@ -79,3 +76,5 @@ private:
     //! A label if there is
     std::string    m_label;
 };
+
+} // namespace CBot

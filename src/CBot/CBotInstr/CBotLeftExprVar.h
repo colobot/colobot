@@ -21,6 +21,8 @@
 
 #include "CBot/CBotInstr/CBotInstr.h"
 
+namespace CBot
+{
 
 /**
  * \brief Expression on the left side of an assignment
@@ -55,3 +57,5 @@ public:
     //! Unique identifier of that variable
     long m_nIdent = 0;
 };
+
+} // namespace CBot

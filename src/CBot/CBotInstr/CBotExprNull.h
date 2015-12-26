@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotExprNull class Management of the operand "null".
@@ -58,3 +55,5 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 };
+
+} // namespace CBot

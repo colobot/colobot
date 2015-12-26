@@ -1,5 +1,3 @@
-
-
 /*
  * This file is part of the Colobot: Gold Edition source code
  * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
@@ -19,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotSwitch.h"
 #include "CBot/CBotInstr/CBotCase.h"
 #include "CBot/CBotInstr/CBotBlock.h"
@@ -28,10 +25,8 @@
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotSwitch::CBotSwitch()
@@ -218,3 +213,5 @@ void CBotSwitch :: RestoreState(CBotStack* &pj, bool bMain)
         return;
     }
 }
+
+} // namespace CBot

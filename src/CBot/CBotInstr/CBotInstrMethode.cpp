@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstrMethode.h"
 
 #include "CBot/CBotInstr/CBotInstrUtils.h"
@@ -28,10 +27,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstrMethode::CBotInstrMethode()
@@ -279,3 +276,5 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
 
     return pj->Return(pile2);    // release the entire stack
 }
+
+} // namespace CBot

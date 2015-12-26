@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotLogicExpr class
@@ -68,3 +65,5 @@ private:
     CBotInstr*    m_op2;
     friend class CBotTwoOpExpr;
 };
+
+} // namespace CBot

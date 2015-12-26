@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotBlock class An instruction block { .... }.
@@ -62,3 +59,5 @@ private:
     CBotBlock() = delete;
     CBotBlock(const CBotBlock &) = delete;
 };
+
+} // namespace CBot

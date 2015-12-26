@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotUtils.h"
 
 #include "CBot/CBotToken.h"
@@ -27,10 +26,10 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
 #include <cstring>
+
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotVar* MakeListVars(CBotVar** ppVars, bool bSetVal)
@@ -236,3 +235,5 @@ float GetNumFloat(const std::string& str)
     if (bNeg) num = -num;
     return static_cast<float>(num);
 }
+
+} // namespace CBot

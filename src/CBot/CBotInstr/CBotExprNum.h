@@ -19,12 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 /*!
  * \brief The CBotExprNum class Expression representing a number.
@@ -76,3 +74,5 @@ private:
     float m_valfloat;
 
 };
+
+} // namespace CBot

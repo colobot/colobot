@@ -21,6 +21,9 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+namespace CBot
+{
+
 /**
  * \brief CBotVar subclass for managing arrays (::CBotTypArrayPointer)
  *
@@ -54,3 +57,5 @@ private:
     //! Array data
     CBotVarClass* m_pInstance;
 };
+
+} // namespace CBot

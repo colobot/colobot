@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotFieldExpr.h"
 
 #include "CBot/CBotStack.h"
@@ -26,10 +25,10 @@
 
 #include "CBot/CBotVar/CBotVarClass.h"
 
-// Local include
-
-// Global include
 #include <cassert>
+
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotFieldExpr::CBotFieldExpr()
@@ -128,3 +127,5 @@ void CBotFieldExpr::RestoreStateVar(CBotStack* &pj, bool bMain)
     if (m_next3 != nullptr)
          m_next3->RestoreStateVar(pj, bMain);
 }
+
+} // namespace CBot

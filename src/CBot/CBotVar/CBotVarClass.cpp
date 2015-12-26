@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotVar/CBotVarClass.h"
 
 #include "CBot/CBotClass.h"
@@ -28,10 +27,10 @@
 
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
 #include <cassert>
+
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotVarClass* CBotVarClass::m_ExClass = nullptr;
@@ -495,3 +494,5 @@ bool CBotVarClass::Save1State(FILE* pf)
 
     return SaveVar(pf, m_pVar);                                // content of the object
 }
+
+} // namespace CBot

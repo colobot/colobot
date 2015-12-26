@@ -19,14 +19,12 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
 #include <set>
 
+namespace CBot
+{
 
 /*!
  * \brief The CBotFunction class A function declaration. Compilation of various
@@ -281,3 +279,5 @@ private:
     friend class CBotCStack;
 
 };
+
+} // namespace CBot

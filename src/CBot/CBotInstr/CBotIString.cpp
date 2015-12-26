@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotIString.h"
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
 #include "CBot/CBotInstr/CBotTwoOpExpr.h"
@@ -27,10 +26,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotIString::CBotIString()
@@ -159,3 +156,5 @@ void CBotIString::RestoreState(CBotStack* &pj, bool bMain)
     if (m_next2b)
          m_next2b->RestoreState(pile, bMain);
 }
+
+} // namespace CBot

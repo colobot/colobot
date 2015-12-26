@@ -17,15 +17,12 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotCatch.h"
 
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotTry class Compiles instruction "try"
@@ -76,3 +73,5 @@ private:
     CBotInstr* m_FinalInst;
 
 };
+
+} // namespace CBot

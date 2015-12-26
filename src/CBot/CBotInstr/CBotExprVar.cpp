@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotExprVar.h"
 #include "CBot/CBotInstr/CBotInstrMethode.h"
 #include "CBot/CBotInstr/CBotExpression.h"
@@ -29,9 +28,8 @@
 
 #include "CBot/CBotVar/CBotVarArray.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotExprVar::CBotExprVar()
@@ -305,3 +303,5 @@ void CBotExprVar::RestoreStateVar(CBotStack* &pj, bool bMain)
     if (m_next3 != nullptr)
          m_next3->RestoreStateVar(pj, bMain);
 }
+
+} // namespace CBot

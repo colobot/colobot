@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
 #include "CBot/CBotInstr/CBotFor.h"
@@ -42,11 +41,10 @@
 #include "CBot/CBotClass.h"
 #include "CBot/CBotStack.h"
 
-
-// Local include
-
-// Global include
 #include <cassert>
+
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 int CBotInstr::m_LoopLvl = 0;
@@ -361,3 +359,5 @@ CBotInstr* CBotInstr::CompileArray(CBotToken* &p, CBotCStack* pStack, CBotTypRes
     pStack->SetError(CBotErrNoTerminator, p->GetStart());
     return nullptr;
 }
+
+} // namespace CBot

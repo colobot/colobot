@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotInstrCall class Calls of these functions.
@@ -74,3 +71,5 @@ private:
     //! Id of a function.
     long m_nFuncIdent;
 };
+
+} // namespace CBot

@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotSwitch class. Compiles instruction "switch"
@@ -74,3 +71,5 @@ private:
     CBotInstr* m_Block;
 
 };
+
+} // namespace CBot

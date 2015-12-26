@@ -19,12 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 /*!
  * \brief The CBotExprAlpha class Expression representing a string.
@@ -65,3 +63,5 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 };
+
+} // namespace CBot

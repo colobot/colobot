@@ -19,13 +19,9 @@
 
 #pragma once
 
-// Modules inlcude
+namespace CBot
+{
 
-// Local include
-
-// Global include
-
-// Forward declaration
 class CBotInstr;
 class CBotToken;
 class CBotCStack;
@@ -59,3 +55,5 @@ bool TypeCompatible(CBotTypResult& type1, CBotTypResult& type2, int op = 0);
  * \return
  */
 bool TypesCompatibles(const CBotTypResult& type1, const CBotTypResult& type2);
+
+} // namespace CBot

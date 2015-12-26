@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotListArray.h"
 
 #include "CBot/CBotInstr/CBotInstrUtils.h"
@@ -30,9 +29,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotListArray::CBotListArray()
@@ -180,3 +178,5 @@ void CBotListArray::RestoreState(CBotStack* &pj, bool bMain)
         p->RestoreState(pile, bMain);                    // size calculation //interrupted!
     }
 }
+
+} // namespace CBot

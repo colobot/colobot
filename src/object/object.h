@@ -37,7 +37,11 @@ struct ModelCrashSphere;
 } // namespace Gfx
 
 class CLevelParserLine;
+
+namespace CBot
+{
 class CBotVar;
+}
 
 /**
  * \class CObject
@@ -187,7 +191,7 @@ public:
     float GetProxyDistance();
 
     //! Returns CBot "object" variable associated with this object
-    CBotVar* GetBotVar();
+    CBot::CBotVar* GetBotVar();
 
     //! Returns tooltip text for an object
     std::string GetTooltipText();
@@ -222,6 +226,6 @@ protected:
     int m_team;
     bool m_proxyActivate;
     float m_proxyDistance;
-    CBotVar* m_botVar;
+    CBot::CBotVar* m_botVar;
     bool m_lock;
 };

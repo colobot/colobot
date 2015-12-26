@@ -21,6 +21,9 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+namespace CBot
+{
+
 /**
  * \brief CBotVar subclass for managing classes (::CBotTypClass, ::CBotTypIntrinsic)
  *
@@ -112,3 +115,5 @@ private:
     friend class CBotVar;
     friend class CBotVarPointer;
 };
+
+} // namespace CBot

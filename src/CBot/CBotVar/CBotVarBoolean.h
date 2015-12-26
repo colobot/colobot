@@ -21,6 +21,9 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+namespace CBot
+{
+
 /**
  * \brief CBotVar subclass for managing boolean values (::CBotTypBoolean)
  */
@@ -54,3 +57,5 @@ private:
     //! The value.
     bool m_val;
 };
+
+} // namespace CBot

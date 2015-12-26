@@ -19,12 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 /*!
  * \brief The CBotWhile class Compile an instruction "while".
@@ -77,3 +75,5 @@ private:
     std::string m_label;
 
 };
+
+} // namespace CBot

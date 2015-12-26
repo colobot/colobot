@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotBoolExpr.h"
 #include "CBot/CBotInstr/CBotTwoOpExpr.h"
 
@@ -25,11 +24,8 @@
 
 #include "CBot/CBotDefines.h"
 
-// Local include
-
-// Global include
-
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotBoolExpr::Compile(CBotToken* &p, CBotCStack* pStack)
@@ -50,3 +46,5 @@ CBotInstr* CBotBoolExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     delete inst;
     return nullptr;
 }
+
+} // namespace CBot

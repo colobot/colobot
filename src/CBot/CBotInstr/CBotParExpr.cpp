@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotParExpr.h"
 #include "CBot/CBotInstr/CBotExprUnaire.h"
 #include "CBot/CBotInstr/CBotExprVar.h"
@@ -36,10 +35,8 @@
 
 #include "CBot/CBotCStack.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
@@ -191,3 +188,5 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
     return pStack->Return(nullptr, pStk);
 }
+
+} // namespace CBot

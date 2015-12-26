@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotCondition.h"
 #include "CBot/CBotInstr/CBotBoolExpr.h"
 
@@ -25,10 +24,8 @@
 
 #include "CBot/CBotDefines.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotCondition::Compile(CBotToken* &p, CBotCStack* pStack)
@@ -52,3 +49,5 @@ CBotInstr* CBotCondition::Compile(CBotToken* &p, CBotCStack* pStack)
 
     return nullptr;
 }
+
+} // namespace CBot

@@ -17,17 +17,14 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotFileUtils.h"
 
 #include "CBot/CBotClass.h"
 #include "CBot/CBotEnums.h"
 #include "CBot/CBotUtils.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 
 // file management
@@ -172,3 +169,5 @@ bool ReadType(FILE* pf, CBotTypResult &type)
     }
     return true;
 }
+
+} // namespace CBot

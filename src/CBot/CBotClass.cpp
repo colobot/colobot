@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotClass.h"
 
 #include "CBot/CBotInstr/CBotNew.h"
@@ -37,10 +36,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotClass::m_ExClass = nullptr;
@@ -826,3 +823,5 @@ CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
     pStack->SetError(CBotErrNoTerminator, p);
     return nullptr;
 }
+
+} // namespace CBot

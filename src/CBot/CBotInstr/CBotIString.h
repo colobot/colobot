@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotIString class Define a string variable eg : int a, b = "salut";
@@ -74,3 +71,5 @@ private:
     //! A value to put, if there is.
     CBotInstr* m_expr;
 };
+
+} // namespace CBot

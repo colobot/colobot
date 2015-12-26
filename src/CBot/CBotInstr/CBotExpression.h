@@ -19,15 +19,12 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotLeftExpr.h"
 
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotExpression class Compiles a statement with or without
@@ -85,3 +82,5 @@ private:
     //! Right operand
     CBotInstr* m_rightop;
 };
+
+} // namespace CBot

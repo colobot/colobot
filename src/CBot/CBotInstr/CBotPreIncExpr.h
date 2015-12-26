@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotPreIncExpr class Management of pre increment. There is no
@@ -63,3 +60,5 @@ private:
     CBotInstr* m_Instr;
     friend class CBotParExpr;
 };
+
+} // namespace CBot

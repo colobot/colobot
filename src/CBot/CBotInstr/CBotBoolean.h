@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotBoolean class Defining a boolean variable int a, b = false;
@@ -74,3 +71,5 @@ private:
     //! A value to put, if there is.
     CBotInstr* m_expr;
 };
+
+} // namespace CBot

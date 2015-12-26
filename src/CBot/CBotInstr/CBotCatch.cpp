@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotCatch.h"
 #include "CBot/CBotInstr/CBotBlock.h"
 #include "CBot/CBotInstr/CBotExpression.h"
@@ -27,9 +26,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotCatch::CBotCatch()
@@ -112,3 +110,5 @@ bool CBotCatch :: TestCatch(CBotStack* &pile, int val)
 
     return true;
 }
+
+} // namespace CBot

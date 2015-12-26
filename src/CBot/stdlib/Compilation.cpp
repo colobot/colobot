@@ -21,6 +21,9 @@
 
 #include "CBot/CBot.h"
 
+namespace CBot
+{
+
 // Compiling a procedure without any parameters.
 
 CBotTypResult cNull(CBotVar* &var, void* user)
@@ -234,3 +237,5 @@ CBotTypResult cIntStr(CBotVar*& var, void* user)
     // the end result is an integer
     return CBotTypResult( CBotTypInt );
 }
+
+} // namespace CBot

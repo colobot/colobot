@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstArray.h"
 
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
@@ -32,10 +31,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstArray::CBotInstArray()
@@ -229,3 +226,5 @@ void CBotInstArray::RestoreState(CBotStack* &pj, bool bMain)
 
     if (m_next2b ) m_next2b->RestoreState( pile1, bMain);
 }
+
+} // namespace CBot

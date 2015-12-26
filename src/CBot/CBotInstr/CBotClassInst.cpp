@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBotClassInst.h"
 
 #include "CBot/CBotInstr/CBotInstrUtils.h"
@@ -33,10 +32,8 @@
 #include "CBot/CBotVar/CBotVarPointer.h"
 #include "CBot/CBotVar/CBotVarClass.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotClassInst::CBotClassInst()
@@ -439,3 +436,5 @@ void CBotClassInst::RestoreState(CBotStack* &pj, bool bMain)
     if ( m_next2b != nullptr )
          m_next2b->RestoreState(pile, bMain);                   // other(s) definition(s)
 }
+
+} // namespace CBot

@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotCase class Compiles instruction "case" we are bound to the
@@ -81,3 +78,5 @@ private:
     //! Value to compare.
     CBotInstr*    m_Value;
 };
+
+} // namespace CBot

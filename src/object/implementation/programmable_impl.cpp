@@ -144,10 +144,10 @@ bool CProgrammableObjectImpl::ReadStack(FILE *file)
 {
     short       op;
 
-    fRead(&op, sizeof(short), 1, file);
+    CBot::fRead(&op, sizeof(short), 1, file);
     if ( op == 1 )  // run ?
     {
-        fRead(&op, sizeof(short), 1, file);  // program rank
+        CBot::fRead(&op, sizeof(short), 1, file);  // program rank
         if ( op >= 0 )
         {
             if (m_object->Implements(ObjectInterfaceType::ProgramStorage))
@@ -176,20 +176,20 @@ bool CProgrammableObjectImpl::WriteStack(FILE *file)
          m_currentProgram->script->IsRunning() )
     {
         op = 1;  // run
-        fWrite(&op, sizeof(short), 1, file);
+        CBot::fWrite(&op, sizeof(short), 1, file);
 
         op = -1;
         if (m_object->Implements(ObjectInterfaceType::ProgramStorage))
         {
             op = dynamic_cast<CProgramStorageObject*>(m_object)->GetProgramIndex(m_currentProgram);
         }
-        fWrite(&op, sizeof(short), 1, file);
+        CBot::fWrite(&op, sizeof(short), 1, file);
 
         return m_currentProgram->script->WriteStack(file);
     }
 
     op = 0;  // stop
-    fWrite(&op, sizeof(short), 1, file);
+    CBot::fWrite(&op, sizeof(short), 1, file);
     return true;
 }
 

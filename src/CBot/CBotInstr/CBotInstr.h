@@ -24,6 +24,9 @@
 
 #include <vector>
 
+namespace CBot
+{
+
 /*
     for example, the following program
     int        x[]; x[1] = 4;
@@ -269,3 +272,5 @@ private:
     //! List of labels used.
     static std::vector<std::string> m_labelLvl;
 };
+
+} // namespace CBot

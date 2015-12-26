@@ -25,6 +25,9 @@
 #include <unordered_map>
 #include <cassert>
 
+namespace CBot
+{
+
 namespace {
 std::unique_ptr<CBotFileAccessHandler> g_fileHandler;
 std::unordered_map<int, std::unique_ptr<CBotFile>> g_files;
@@ -392,3 +395,5 @@ void SetFileAccessHandler(std::unique_ptr<CBotFileAccessHandler> fileHandler)
 {
     g_fileHandler = std::move(fileHandler);
 }
+
+} // namespace CBot

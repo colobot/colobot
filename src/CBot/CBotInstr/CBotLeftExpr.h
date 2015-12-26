@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotLeftExpr class Accept the expressions that be to the left of
@@ -99,3 +96,5 @@ public:
 private:
     long m_nIdent;
 };
+
+} // namespace CBot

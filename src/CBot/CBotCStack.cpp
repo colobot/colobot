@@ -18,21 +18,17 @@
  */
 
 
-// Modules inlcude
 #include "CBot/CBotCStack.h"
 
 #include "CBot/CBotToken.h"
-#include "CBotExternalCall.h"
+#include "CBot/CBotExternalCall.h"
 
 #include "CBot/CBotVar/CBotVar.h"
 
 #include "CBot/CBotInstr/CBotFunction.h"
 
-// Local include
-
-// Global include
-
-
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotProgram* CBotCStack::m_prog    = nullptr;            // init the static variable
@@ -396,4 +392,6 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
     }
 
     return false;
+}
+
 }

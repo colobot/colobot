@@ -19,12 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 /*!
  * \brief The CBotReturn class. Return parameters
@@ -70,3 +68,5 @@ private:
     CBotInstr *m_Instr;
 
 };
+
+} // namespace CBot

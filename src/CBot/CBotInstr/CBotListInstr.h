@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotListInstr class Compiles a list of instructions separated by
@@ -72,3 +69,5 @@ private:
     //! Instructions to do.
     CBotInstr*    m_Instr;
 };
+
+} // namespace CBot

@@ -21,11 +21,14 @@
 
 #include "CBot/CBotDefines.h"
 #include "CBot/CBotTypResult.h"
-#include "CBotEnums.h"
+#include "CBot/CBotEnums.h"
+#include "CBot/CBotVar/CBotVar.h"
 
 #include <cstdio>
 #include <string>
-#include <CBot/CBotVar/CBotVar.h>
+
+namespace CBot
+{
 
 class CBotInstr;
 class CBotExternalCall;
@@ -495,3 +498,5 @@ private:
     CBotExternalCall*        m_call;                        // recovery point in a extern call
     friend class    CBotTry;
 };
+
+} // namespace CBot

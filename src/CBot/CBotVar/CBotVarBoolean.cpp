@@ -25,6 +25,9 @@
 #include "CBot/CBotToken.h"
 
 
+namespace CBot
+{
+
 ////////////////////////////////////////////////////////////////////////////////
 CBotVarBoolean::CBotVarBoolean(const CBotToken& name)
 {
@@ -151,3 +154,5 @@ bool CBotVarBoolean::Save1State(FILE* pf)
 {
     return WriteWord(pf, m_val);                            // the value of the variable
 }
+
+} // namespace CBot

@@ -19,13 +19,10 @@
 
 #pragma once
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotInstr.h"
 
-// Local include
-
-// Global include
-
+namespace CBot
+{
 
 /*!
  * \brief The CBotNew class Compile an instruction "new".
@@ -73,3 +70,5 @@ private:
     CBotToken m_vartoken;
 
 };
+
+} // namespace CBot

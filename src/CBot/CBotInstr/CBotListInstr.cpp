@@ -17,16 +17,14 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// Modules inlcude
 #include "CBot/CBotInstr/CBotListInstr.h"
 #include "CBot/CBotInstr/CBotBlock.h"
 
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
 
-// Local include
-
-// Global include
+namespace CBot
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotListInstr::CBotListInstr()
@@ -119,3 +117,5 @@ void CBotListInstr::RestoreState(CBotStack* &pj, bool bMain)
 
     if (p != nullptr) p->RestoreState(pile, true);
 }
+
+} // namespace CBot
