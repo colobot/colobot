@@ -2654,20 +2654,30 @@ void CEdit::Insert(char character)
     }
     else if ( m_bAutoIndent )
     {
-        if ( character == '{' )
+        if (character == '{')
         {
             InsertOne(character);
-            InsertOne('\n');
-            InsertOne('\n');
             InsertOne('}');
             MoveChar(-1, false, false);
-            MoveChar(-1, false, false);
         }
-        else if ( character == '\t' )
+        else if (character == '\t')
         {
             for ( i=0 ; i<m_engine->GetEditIndentValue() ; i++ )
             {
                 InsertOne(' ');
+            }
+        }
+        else if (character == '\n')
+        {
+            if (m_cursor1 > 1 && m_text[m_cursor1-1] == '{')
+            {
+                InsertOne(character);
+                InsertOne('\n');
+                MoveChar(-1, false, false);
+            }
+            else
+            {
+                InsertOne(character);
             }
         }
         else
