@@ -17,6 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+#include <sstream>
 #include "CBot/CBotInstr/CBotExprVar.h"
 #include "CBot/CBotInstr/CBotInstrMethode.h"
 #include "CBot/CBotInstr/CBotExpression.h"
@@ -34,7 +35,6 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotExprVar::CBotExprVar()
 {
-    name    = "CBotExprVar";
     m_nIdent = 0;
 }
 
@@ -302,6 +302,14 @@ void CBotExprVar::RestoreStateVar(CBotStack* &pj, bool bMain)
 
     if (m_next3 != nullptr)
          m_next3->RestoreStateVar(pj, bMain);
+}
+
+std::string CBotExprVar::GetDebugData()
+{
+    std::stringstream ss;
+    ss << m_token.GetString() << std::endl;
+    //ss << "VarID = " << m_nIdent;
+    return ss.str();
 }
 
 } // namespace CBot

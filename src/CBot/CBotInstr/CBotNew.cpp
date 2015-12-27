@@ -17,6 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+#include <sstream>
 #include "CBot/CBotInstr/CBotNew.h"
 
 #include "CBot/CBotStack.h"
@@ -33,8 +34,7 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotNew::CBotNew()
 {
-    name            = "CBotNew";
-    m_Parameters    = nullptr;
+    m_parameters = nullptr;
     m_nMethodeIdent = 0;
 }
 
@@ -74,7 +74,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
     {
         // check if there are parameters
         CBotVar*    ppVars[1000];
-        inst->m_Parameters = CompileParams(p, pStk, ppVars);
+        inst->m_parameters = CompileParams(p, pStk, ppVars);
         if (!pStk->IsOk()) goto error;
 
         // constructor exist?
@@ -83,7 +83,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
         int typ = r.GetType();
 
         // if there is no constructor, and no parameters either, it's ok
-        if (typ == CBotErrUndefCall && inst->m_Parameters == nullptr) typ = 0;
+        if (typ == CBotErrUndefCall && inst->m_parameters == nullptr) typ = 0;
         pVar->SetInit(CBotVar::InitType::DEF);    // mark the instance as init
 
         if (typ>20)
@@ -93,7 +93,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
         }
 
         // if the constructor does not exist, but there are parameters
-        if (typ<0 && inst->m_Parameters != nullptr)
+        if (typ<0 && inst->m_parameters != nullptr)
         {
             pStk->SetError(CBotErrNoConstruct, &inst->m_vartoken);
             goto error;
@@ -153,7 +153,7 @@ bool CBotNew::Execute(CBotStack* &pj)
 
         int        i = 0;
 
-        CBotInstr*    p = m_Parameters;
+        CBotInstr*    p = m_parameters;
         // evaluate the parameters
         // and places the values on the stack
         // to be interrupted at any time
@@ -218,7 +218,7 @@ void CBotNew::RestoreState(CBotStack* &pj, bool bMain)
 
         int        i = 0;
 
-        CBotInstr*    p = m_Parameters;
+        CBotInstr*    p = m_parameters;
         // evaluate the parameters
         // and places the values on the stack
         // to be interrupted at any time
@@ -242,6 +242,20 @@ void CBotNew::RestoreState(CBotStack* &pj, bool bMain)
         pClass->RestoreMethode(m_nMethodeIdent, m_vartoken.GetString(), pThis,
                                ppVars, pile2)    ;        // interrupt here!
     }
+}
+
+std::string CBotNew::GetDebugData()
+{
+    std::stringstream ss;
+    ss << "ConstructorID = " << m_nMethodeIdent;
+    return ss.str();
+}
+
+std::map<std::string, CBotInstr*> CBotNew::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_parameters"] = m_parameters;
+    return links;
 }
 
 } // namespace CBot

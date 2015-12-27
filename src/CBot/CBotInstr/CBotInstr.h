@@ -26,6 +26,7 @@
 
 namespace CBot
 {
+class CBotDebug;
 
 /*
     for example, the following program
@@ -248,11 +249,15 @@ public:
     static bool ChkLvl(const std::string& label, int type);
 
 protected:
+    friend class CBotDebug;
+    virtual const std::string GetDebugName() = 0;
+    virtual std::string GetDebugData() { return ""; }
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+
+protected:
 
     //! Keeps the token.
     CBotToken m_token;
-    //! Debug.
-    std::string name;
     //! Linked command.
     CBotInstr* m_next;
     //! Second list definition chain.

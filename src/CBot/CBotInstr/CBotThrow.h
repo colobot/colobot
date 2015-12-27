@@ -63,9 +63,13 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
+protected:
+    virtual const std::string GetDebugName() { return "CBotThrow"; }
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+
 private:
     //! The value to send.
-    CBotInstr* m_Value;
+    CBotInstr* m_value;
 
 };
 

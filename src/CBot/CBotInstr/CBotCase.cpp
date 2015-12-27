@@ -29,14 +29,13 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotCase::CBotCase()
 {
-    m_Value     = nullptr;     // nullptr so that delete is not possible further
-    name = "CBotCase";      // debug
+    m_value = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotCase::~CBotCase()
 {
-    delete  m_Value;        // frees the value
+    delete m_value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,8 +50,8 @@ CBotInstr* CBotCase::Compile(CBotToken* &p, CBotCStack* pStack)
     if ( pp->GetType() == ID_CASE )
     {
         pp = p;
-        inst->m_Value = CBotExprNum::Compile(p, pStack);
-        if ( inst->m_Value == nullptr )
+        inst->m_value = CBotExprNum::Compile(p, pStack);
+        if (inst->m_value == nullptr )
         {
             pStack->SetError( CBotErrBadNum, pp );
             delete inst;
@@ -83,10 +82,17 @@ void CBotCase::RestoreState(CBotStack* &pj, bool bMain)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotCase::CompCase(CBotStack* &pile, int val)
 {
-    if ( m_Value == nullptr ) return true;         // "default" case
+    if (m_value == nullptr ) return true;         // "default" case
 
-    while (!m_Value->Execute(pile));            // puts the value on the correspondent stack (without interruption)
+    while (!m_value->Execute(pile));            // puts the value on the correspondent stack (without interruption)
     return (pile->GetVal() == val);             // compared with the given value
+}
+
+std::map<std::string, CBotInstr*> CBotCase::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_value"] = m_value;
+    return links;
 }
 
 } // namespace CBot

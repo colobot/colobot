@@ -32,14 +32,13 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotReturn::CBotReturn()
 {
-    m_Instr = nullptr;
-    name = "CBotReturn";        // debug
+    m_instr = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotReturn::~CBotReturn()
 {
-    delete  m_Instr;
+    delete m_instr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +60,7 @@ CBotInstr* CBotReturn::Compile(CBotToken* &p, CBotCStack* pStack)
         return nullptr;
     }
 
-    inst->m_Instr = CBotExpression::Compile(p, pStack);
+    inst->m_instr = CBotExpression::Compile(p, pStack);
     if ( pStack->IsOk() )
     {
         CBotTypResult   retType = pStack->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
@@ -87,7 +86,7 @@ bool CBotReturn::Execute(CBotStack* &pj)
 
     if ( pile->GetState() == 0 )
     {
-        if ( m_Instr != nullptr && !m_Instr->Execute(pile) ) return false; // evaluate the result
+        if (m_instr != nullptr && !m_instr->Execute(pile) ) return false; // evaluate the result
         // the result is on the stack
         pile->IncState();
     }
@@ -107,9 +106,16 @@ void CBotReturn::RestoreState(CBotStack* &pj, bool bMain)
 
     if ( pile->GetState() == 0 )
     {
-        if ( m_Instr != nullptr ) m_Instr->RestoreState(pile, bMain);  // evaluate the result
+        if (m_instr != nullptr ) m_instr->RestoreState(pile, bMain);  // evaluate the result
         return;
     }
+}
+
+std::map<std::string, CBotInstr*> CBotReturn::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_instr"] = m_instr;
+    return links;
 }
 
 } // namespace CBot

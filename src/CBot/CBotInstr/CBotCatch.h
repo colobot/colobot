@@ -78,12 +78,15 @@ public:
      */
     void RestoreCondState(CBotStack* &pj, bool bMain);
 
+protected:
+    virtual const std::string GetDebugName() { return "CBotCatch"; }
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
 
 private:
     //! Instructions
-    CBotInstr* m_Block;
+    CBotInstr* m_block;
     //! Condition
-    CBotInstr* m_Cond;
+    CBotInstr* m_cond;
     //! Following catch
     CBotCatch* m_next;
 

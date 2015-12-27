@@ -29,14 +29,13 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotListInstr::CBotListInstr()
 {
-    m_Instr        = nullptr;
-    name = "CBotListInstr";
+    m_instr = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotListInstr::~CBotListInstr()
 {
-    delete    m_Instr;
+    delete m_instr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,8 +67,8 @@ CBotInstr* CBotListInstr::Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal
             return pStack->Return(nullptr, pStk);
         }
 
-        if (inst->m_Instr == nullptr) inst->m_Instr = i;
-        else inst->m_Instr->AddNext(i);                            // added a result
+        if (inst->m_instr == nullptr) inst->m_instr = i;
+        else inst->m_instr->AddNext(i);                            // added a result
     }
     return pStack->Return(inst, pStk);
 }
@@ -82,7 +81,7 @@ bool CBotListInstr::Execute(CBotStack* &pj)
     if (pile->StackOver() ) return pj->Return( pile);
 
 
-    CBotInstr*    p = m_Instr;                                    // the first expression
+    CBotInstr*    p = m_instr;                                    // the first expression
 
     int        state = pile->GetState();
     while (state-->0) p = p->GetNext();                            // returns to the interrupted operation
@@ -106,7 +105,7 @@ void CBotListInstr::RestoreState(CBotStack* &pj, bool bMain)
     CBotStack*    pile = pj->RestoreStack(this);
     if (pile == nullptr) return;
 
-    CBotInstr*    p = m_Instr;                                    // the first expression
+    CBotInstr*    p = m_instr;                                    // the first expression
 
     int        state = pile->GetState();
     while ( p != nullptr && state-- > 0)
@@ -116,6 +115,13 @@ void CBotListInstr::RestoreState(CBotStack* &pj, bool bMain)
     }
 
     if (p != nullptr) p->RestoreState(pile, true);
+}
+
+std::map<std::string, CBotInstr*> CBotListInstr::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_instr"] = m_instr;
+    return links;
 }
 
 } // namespace CBot

@@ -66,8 +66,11 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
-private:
+protected:
+    virtual const std::string GetDebugName() { return "CBotInt"; }
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
 
+private:
     //! The variable to initialize.
     CBotInstr* m_var;
     //! A value to put, if there is.

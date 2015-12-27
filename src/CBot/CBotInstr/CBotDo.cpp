@@ -30,16 +30,15 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotDo::CBotDo()
 {
-    m_Condition =
-    m_Block     = nullptr;     // nullptr so that delete is not possible further
-    name = "CBotDo";        // debug
+    m_condition = nullptr;
+    m_block = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotDo::~CBotDo()
 {
-    delete  m_Condition;    // frees the condition
-    delete  m_Block;        // frees the instruction block
+    delete m_condition;    // frees the condition
+    delete m_block;        // frees the instruction block
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63,14 +62,14 @@ CBotInstr* CBotDo::Compile(CBotToken* &p, CBotCStack* pStack)
 
     // looking for a statement block after the do
     IncLvl(inst->m_label);
-    inst->m_Block = CBotBlock::CompileBlkOrInst( p, pStk, true );
+    inst->m_block = CBotBlock::CompileBlkOrInst(p, pStk, true );
     DecLvl();
 
     if ( pStk->IsOk() )
     {
         if (IsOfType(p, ID_WHILE))
         {
-            if ( nullptr != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
+            if ( nullptr != (inst->m_condition = CBotCondition::Compile(p, pStk )) )
             {
                 // the condition exists
                 if (IsOfType(p, ID_SEP))
@@ -100,8 +99,8 @@ bool CBotDo :: Execute(CBotStack* &pj)
     {                                                   // there are two possible states (depending on recovery)
     case 0:
         // evaluates the associated statement block
-        if ( m_Block != nullptr &&
-            !m_Block->Execute(pile) )
+        if (m_block != nullptr &&
+            !m_block->Execute(pile) )
         {
             if (pile->IfContinue(1, m_label)) continue; // if continued, will return to test
             return pj->BreakReturn(pile, m_label);      // sends the results and releases the stack
@@ -117,7 +116,7 @@ bool CBotDo :: Execute(CBotStack* &pj)
 
     case 1:
         // evaluates the condition
-        if ( !m_Condition->Execute(pile) ) return false; // interrupted here ?
+        if ( !m_condition->Execute(pile) ) return false; // interrupted here ?
 
         // the result of the condition is on the stack
 
@@ -145,14 +144,27 @@ void CBotDo :: RestoreState(CBotStack* &pj, bool bMain)
     {                                                   // there are two possible states (depending on recovery)
     case 0:
         // restores the assosiated statement's block
-        if ( m_Block != nullptr ) m_Block->RestoreState(pile, bMain);
+        if (m_block != nullptr ) m_block->RestoreState(pile, bMain);
         return;
 
     case 1:
         // restores the condition
-        m_Condition->RestoreState(pile, bMain);
+        m_condition->RestoreState(pile, bMain);
         return;
     }
+}
+
+std::string CBotDo::GetDebugData()
+{
+    return !m_label.empty() ? "m_label = "+m_label : "";
+}
+
+std::map<std::string, CBotInstr*> CBotDo::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_block"] = m_block;
+    links["m_condition"] = m_condition;
+    return links;
 }
 
 } // namespace CBot

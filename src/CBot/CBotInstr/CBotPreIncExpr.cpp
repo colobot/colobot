@@ -30,14 +30,13 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotPreIncExpr::CBotPreIncExpr()
 {
-    m_Instr = nullptr;
-    name    = "CBotPreIncExpr";
+    m_instr = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotPreIncExpr::~CBotPreIncExpr()
 {
-    delete    m_Instr;
+    delete m_instr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +53,7 @@ bool CBotPreIncExpr::Execute(CBotStack* &pj)
         CBotStack*    pile2 = pile;
         // retrieves the variable fields and indexes according
         // pile2 is modified on return
-        if (!(static_cast<CBotExprVar*>(m_Instr))->ExecuteVar(var1, pile2, nullptr, true)) return false;
+        if (!(static_cast<CBotExprVar*>(m_instr))->ExecuteVar(var1, pile2, nullptr, true)) return false;
 
         if (var1->IsNAN())
         {
@@ -74,7 +73,7 @@ bool CBotPreIncExpr::Execute(CBotStack* &pj)
         pile->IncState();
     }
 
-    if (!m_Instr->Execute(pile)) return false;
+    if (!m_instr->Execute(pile)) return false;
     return pj->Return(pile);    // operation performed
 }
 
@@ -91,7 +90,14 @@ void CBotPreIncExpr::RestoreState(CBotStack* &pj, bool bMain)
         return;
     }
 
-    m_Instr->RestoreState(pile, bMain);
+    m_instr->RestoreState(pile, bMain);
+}
+
+std::map<std::string, CBotInstr*> CBotPreIncExpr::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_instr"] = m_instr;
+    return links;
 }
 
 } // namespace CBot

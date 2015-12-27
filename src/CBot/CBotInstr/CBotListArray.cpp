@@ -35,8 +35,7 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotListArray::CBotListArray()
 {
-    m_expr    = nullptr;
-    name = "CBotListArray";
+    m_expr = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -177,6 +176,13 @@ void CBotListArray::RestoreState(CBotStack* &pj, bool bMain)
 
         p->RestoreState(pile, bMain);                    // size calculation //interrupted!
     }
+}
+
+std::map<std::string, CBotInstr*> CBotListArray::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_expr"] = m_expr;
+    return links;
 }
 
 } // namespace CBot

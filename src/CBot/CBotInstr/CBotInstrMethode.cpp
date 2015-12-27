@@ -17,6 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+#include <sstream>
 #include "CBot/CBotInstr/CBotInstrMethode.h"
 
 #include "CBot/CBotInstr/CBotInstrUtils.h"
@@ -33,15 +34,14 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstrMethode::CBotInstrMethode()
 {
-    m_Parameters    = nullptr;
-    m_MethodeIdent  = 0;
-    name = "CBotInstrMethode";
+    m_parameters = nullptr;
+    m_MethodeIdent = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstrMethode::~CBotInstrMethode()
 {
-    delete    m_Parameters;
+    delete m_parameters;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,17 +57,17 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
 
         if (p->GetType() == ID_OPENPAR)
         {
-            inst->m_NomMethod = pp->GetString();
+            inst->m_methodName = pp->GetString();
 
             // compiles the list of parameters
             CBotVar*    ppVars[1000];
-            inst->m_Parameters = CompileParams(p, pStack, ppVars);
+            inst->m_parameters = CompileParams(p, pStack, ppVars);
 
             if (pStack->IsOk())
             {
                 CBotClass* pClass = var->GetClass();    // pointer to the class
-                inst->m_ClassName = pClass->GetName();  // name of the class
-                CBotTypResult r = pClass->CompileMethode(inst->m_NomMethod, var, ppVars,
+                inst->m_className = pClass->GetName();  // name of the class
+                CBotTypResult r = pClass->CompileMethode(inst->m_methodName, var, ppVars,
                                                          pStack, inst->m_MethodeIdent);
                 delete pStack->TokenStack();    // release parameters on the stack
                 inst->m_typRes = r;
@@ -129,7 +129,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     }
     int        i = 0;
 
-    CBotInstr*    p = m_Parameters;
+    CBotInstr*    p = m_parameters;
     // evaluate the parameters
     // and places the values on the stack
     // to be interrupted at any time
@@ -148,7 +148,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     }
     ppVars[i] = nullptr;
 
-    CBotClass*    pClass = CBotClass::Find(m_ClassName);
+    CBotClass*    pClass = CBotClass::Find(m_className);
     CBotVar*    pThis  = pile1->FindVar(-2, false);
     CBotVar*    pResult = nullptr;
     if (m_typRes.GetType() > 0) pResult = CBotVar::Create("", m_typRes);
@@ -158,7 +158,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     }
     CBotVar*    pRes = pResult;
 
-    if ( !pClass->ExecuteMethode(m_MethodeIdent, m_NomMethod,
+    if ( !pClass->ExecuteMethode(m_MethodeIdent, m_methodName,
                                  pThis, ppVars,
                                  pResult, pile2, GetToken())) return false;
     if (pRes != pResult) delete pRes;
@@ -184,7 +184,7 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
 
     int        i = 0;
 
-    CBotInstr*    p = m_Parameters;
+    CBotInstr*    p = m_parameters;
     // evaluate the parameters
     // and places the values on the stack
     // to be interrupted at any time
@@ -205,13 +205,13 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
     }
     ppVars[i] = nullptr;
 
-    CBotClass*    pClass = CBotClass::Find(m_ClassName);
+    CBotClass*    pClass = CBotClass::Find(m_className);
 //    CBotVar*    pResult = nullptr;
 
 //    CBotVar*    pRes = pResult;
 
-    pClass->RestoreMethode(m_MethodeIdent, m_NomMethod,
-                                 pThis, ppVars, pile2);
+    pClass->RestoreMethode(m_MethodeIdent, m_methodName,
+                           pThis, ppVars, pile2);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -236,7 +236,7 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     }
     int        i = 0;
 
-    CBotInstr*    p = m_Parameters;
+    CBotInstr*    p = m_parameters;
     // evaluate the parameters
     // and places the values on the stack
     // to be interrupted at any time
@@ -254,7 +254,7 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     }
     ppVars[i] = nullptr;
 
-    CBotClass*    pClass = CBotClass::Find(m_ClassName);
+    CBotClass*    pClass = CBotClass::Find(m_className);
     CBotVar*    pThis  = pile1->FindVar("this");
     CBotVar*    pResult = nullptr;
     if (m_typRes.GetType()>0) pResult = CBotVar::Create("", m_typRes);
@@ -264,7 +264,7 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     }
     CBotVar*    pRes = pResult;
 
-    if ( !pClass->ExecuteMethode(m_MethodeIdent, m_NomMethod,
+    if ( !pClass->ExecuteMethode(m_MethodeIdent, m_methodName,
                                  pThis, ppVars,
                                  pResult, pile2, GetToken())) return false;    // interupted
 
@@ -275,6 +275,22 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     if (pRes != pResult) delete pRes;
 
     return pj->Return(pile2);    // release the entire stack
+}
+
+std::string CBotInstrMethode::GetDebugData()
+{
+    std::stringstream ss;
+    ss << m_methodName << std::endl;
+    ss << "MethodID = " << m_MethodeIdent << std::endl;
+    ss << "result = " << m_typRes.GetType(); // TODO: Type to string?
+    return ss.str();
+}
+
+std::map<std::string, CBotInstr*> CBotInstrMethode::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_parameters"] = m_parameters;
+    return links;
 }
 
 } // namespace CBot

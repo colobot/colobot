@@ -33,7 +33,6 @@ namespace CBot
 CBotIndexExpr::CBotIndexExpr()
 {
     m_expr    = nullptr;
-    name    = "CBotIndexExpr";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -116,6 +115,13 @@ void CBotIndexExpr::RestoreStateVar(CBotStack* &pile, bool bMain)
 
     if (m_next3)
          m_next3->RestoreStateVar(pile, bMain);
+}
+
+std::map<std::string, CBotInstr*> CBotIndexExpr::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_expr"] = m_expr;
+    return links;
 }
 
 } // namespace CBot

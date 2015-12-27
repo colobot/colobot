@@ -74,6 +74,10 @@ public:
      */
     void RestoreStateVar(CBotStack* &pj, bool bMain) override;
 
+protected:
+    virtual const std::string GetDebugName() { return "CBotFieldExpr"; }
+    virtual std::string GetDebugData();
+
 private:
     friend class CBotExpression;
     int m_nIdent;

@@ -29,15 +29,13 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotThrow::CBotThrow()
 {
-    m_Value     = nullptr;     // nullptr so that delete is not possible further
-
-    name = "CBotThrow";     // debug
+    m_value = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotThrow::~CBotThrow()
 {
-    delete  m_Value;
+    delete m_value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +50,7 @@ CBotInstr* CBotThrow::Compile(CBotToken* &p, CBotCStack* pStack)
 
     if (!IsOfType(p, ID_THROW)) return nullptr;    // should never happen
 
-    inst->m_Value = CBotExpression::Compile( p, pStack );
+    inst->m_value = CBotExpression::Compile(p, pStack );
 
     if (pStack->GetType() < CBotTypLong && pStack->IsOk())
     {
@@ -72,7 +70,7 @@ bool CBotThrow::Execute(CBotStack* &pj)
 
     if ( pile->GetState() == 0 )
     {
-        if ( !m_Value->Execute(pile) ) return false;
+        if ( !m_value->Execute(pile) ) return false;
         pile->IncState();
     }
 
@@ -94,9 +92,16 @@ void CBotThrow::RestoreState(CBotStack* &pj, bool bMain)
 
     if ( pile->GetState() == 0 )
     {
-        m_Value->RestoreState(pile, bMain);
+        m_value->RestoreState(pile, bMain);
         return;
     }
+}
+
+std::map<std::string, CBotInstr*> CBotThrow::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_value"] = m_value;
+    return links;
 }
 
 } // namespace CBot

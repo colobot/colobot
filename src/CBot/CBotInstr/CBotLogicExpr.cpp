@@ -27,10 +27,9 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotLogicExpr::CBotLogicExpr()
 {
-    m_condition =
-    m_op1       =
-    m_op2       = nullptr;         // nullptr to be able to delete without other
-    name = "CBotLogicExpr";     // debug
+    m_condition = nullptr;
+    m_op1       = nullptr;
+    m_op2       = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -88,6 +87,15 @@ void CBotLogicExpr::RestoreState(CBotStack* &pStack, bool bMain)
     {
         m_op2->RestoreState(pStk1, bMain);
     }
+}
+
+std::map<std::string, CBotInstr*> CBotLogicExpr::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_op1"] = m_op1;
+    links["m_condition"] = m_condition;
+    links["m_op2"] = m_op2;
+    return links;
 }
 
 } // namespace CBot

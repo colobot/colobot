@@ -17,6 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+#include <sstream>
 #include "CBot/CBotInstr/CBotInstArray.h"
 
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
@@ -37,9 +38,8 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstArray::CBotInstArray()
 {
-    m_var      = nullptr;
+    m_var     = nullptr;
     m_listass = nullptr;
-    name = "CBotInstArray";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -225,6 +225,21 @@ void CBotInstArray::RestoreState(CBotStack* &pj, bool bMain)
     }
 
     if (m_next2b ) m_next2b->RestoreState( pile1, bMain);
+}
+
+std::string CBotInstArray::GetDebugData()
+{
+    std::stringstream ss;
+    ss << m_typevar.ToString();
+    return ss.str();
+}
+
+std::map<std::string, CBotInstr*> CBotInstArray::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_var"] = m_var;
+    links["m_listass"] = m_listass;
+    return links;
 }
 
 } // namespace CBot

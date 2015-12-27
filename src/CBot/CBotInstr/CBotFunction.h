@@ -241,15 +241,21 @@ public:
                      CBotGet modestart,
                      CBotGet modestop);
 
+protected:
+    virtual const std::string GetDebugName() { return "CBotFunction"; }
+    virtual std::string GetDebugData();
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+
 private:
+    friend class CBotDebug;
     long m_nFuncIdent;
     //! Synchronized method.
     bool m_bSynchro;
 
     //! Parameter list.
-    CBotDefParam* m_Param;
+    CBotDefParam* m_param;
     //! The instruction block.
-    CBotInstr* m_Block;
+    CBotInstr* m_block;
     CBotFunction* m_next;
     //! If returns CBotTypClass.
     CBotToken m_retToken;

@@ -26,6 +26,7 @@
 #include "CBot/CBotVar/CBotVarClass.h"
 
 #include <cassert>
+#include <sstream>
 
 namespace CBot
 {
@@ -33,7 +34,6 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotFieldExpr::CBotFieldExpr()
 {
-    name        = "CBotFieldExpr";
     m_nIdent    = 0;
 }
 
@@ -126,6 +126,13 @@ void CBotFieldExpr::RestoreStateVar(CBotStack* &pj, bool bMain)
 
     if (m_next3 != nullptr)
          m_next3->RestoreStateVar(pj, bMain);
+}
+
+std::string CBotFieldExpr::GetDebugData()
+{
+    std::stringstream ss;
+    ss << "VarID = " << m_nIdent;
+    return ss.str();
 }
 
 } // namespace CBot

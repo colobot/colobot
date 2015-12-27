@@ -93,6 +93,10 @@ public:
      */
     void RestoreStateVar(CBotStack* &pile, bool bMain) override;
 
+protected:
+    virtual const std::string GetDebugName() { return "CBotLeftExpr"; }
+    virtual std::string GetDebugData();
+
 private:
     long m_nIdent;
 };

@@ -35,9 +35,8 @@ namespace CBot
 CBotInt::CBotInt()
 {
     m_next    = nullptr;            // for multiple definitions
-    m_var    =
+    m_var     = nullptr;
     m_expr    = nullptr;
-    name = "CBotInt";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -184,6 +183,14 @@ void CBotInt::RestoreState(CBotStack* &pj, bool bMain)
     m_var->RestoreState(pile, bMain);
 
     if (m_next2b) m_next2b->RestoreState(pile, bMain);            // other(s) definition(s)
+}
+
+std::map<std::string, CBotInstr*> CBotInt::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_var"] = m_var;
+    links["m_expr"] = m_expr;
+    return links;
 }
 
 } // namespace CBot

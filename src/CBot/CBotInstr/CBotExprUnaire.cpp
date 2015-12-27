@@ -31,14 +31,13 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotExprUnaire::CBotExprUnaire()
 {
-    m_Expr = nullptr;
-    name = "CBotExprUnaire";
+    m_expr = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotExprUnaire::~CBotExprUnaire()
 {
-    delete m_Expr;
+    delete m_expr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +52,7 @@ CBotInstr* CBotExprUnaire::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotExprUnaire* inst = new CBotExprUnaire();
     inst->SetToken(pp);
 
-    if (nullptr != (inst->m_Expr = CBotParExpr::Compile( p, pStk )))
+    if (nullptr != (inst->m_expr = CBotParExpr::Compile(p, pStk )))
     {
         if (op == ID_ADD && pStk->GetType() < CBotTypBoolean)        // only with the number
             return pStack->Return(inst, pStk);
@@ -80,7 +79,7 @@ bool CBotExprUnaire::Execute(CBotStack* &pj)
 
     if (pile->GetState() == 0)
     {
-        if (!m_Expr->Execute(pile)) return false;                    // interrupted ?
+        if (!m_expr->Execute(pile)) return false;                    // interrupted ?
         pile->IncState();
     }
 
@@ -115,9 +114,16 @@ void CBotExprUnaire::RestoreState(CBotStack* &pj, bool bMain)
 
     if (pile->GetState() == 0)
     {
-        m_Expr->RestoreState(pile, bMain);                        // interrupted here!
+        m_expr->RestoreState(pile, bMain);                        // interrupted here!
         return;
     }
+}
+
+std::map<std::string, CBotInstr*> CBotExprUnaire::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_expr"] = m_expr;
+    return links;
 }
 
 } // namespace CBot

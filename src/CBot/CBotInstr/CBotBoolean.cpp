@@ -33,9 +33,7 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotBoolean::CBotBoolean()
 {
-    m_var    =
-    m_expr    = nullptr;
-    name = "CBotBoolean";
+    m_var = m_expr = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,6 +170,14 @@ void CBotBoolean::RestoreState(CBotStack* &pj, bool bMain)
 
     if (m_next2b)
          m_next2b->RestoreState(pile, bMain);                // other(s) definition(s)
+}
+
+std::map<std::string, CBotInstr*> CBotBoolean::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_var"] = m_var;
+    links["m_expr"] = m_expr;
+    return links;
 }
 
 } // namespace CBot

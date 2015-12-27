@@ -60,11 +60,16 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
+protected:
+    virtual const std::string GetDebugName() { return "CBotDo"; }
+    virtual std::string GetDebugData();
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+
 private:
     //! Instruction
-    CBotInstr* m_Block;
+    CBotInstr* m_block;
     //! Conditions
-    CBotInstr* m_Condition;
+    CBotInstr* m_condition;
     //! A label if there is
     std::string m_label;
 };

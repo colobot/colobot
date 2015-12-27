@@ -17,6 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+#include <sstream>
 #include "CBot/CBotInstr/CBotExprNum.h"
 
 #include "CBot/CBotStack.h"
@@ -32,7 +33,6 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotExprNum::CBotExprNum()
 {
-    name    = "CBotExprNum";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -113,6 +113,13 @@ bool CBotExprNum::Execute(CBotStack* &pj)
 void CBotExprNum::RestoreState(CBotStack* &pj, bool bMain)
 {
     if (bMain) pj->RestoreStack(this);
+}
+
+std::string CBotExprNum::GetDebugData()
+{
+    std::stringstream ss;
+    ss << "(" << (m_numtype == CBotTypFloat ? "float" : "int") << ") " << (m_numtype == CBotTypFloat ? m_valfloat : m_valint);
+    return ss.str();
 }
 
 } // namespace CBot

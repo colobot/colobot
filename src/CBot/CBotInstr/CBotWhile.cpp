@@ -30,16 +30,15 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotWhile::CBotWhile()
 {
-    m_Condition =
-    m_Block     = nullptr;     // nullptr so that delete is not possible further
-    name = "CBotWhile";     // debug
+    m_condition = nullptr;
+    m_block = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotWhile::~CBotWhile()
 {
-    delete  m_Condition;    // frees the condition
-    delete  m_Block;        // releases the block instruction
+    delete m_condition;    // frees the condition
+    delete m_block;        // releases the block instruction
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -60,12 +59,12 @@ CBotInstr* CBotWhile::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
                                                 // a bit of battery please (??)
 
-    if ( nullptr != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
+    if ( nullptr != (inst->m_condition = CBotCondition::Compile(p, pStk )) )
     {
         // the condition exists
 
         IncLvl(inst->m_label);
-        inst->m_Block = CBotBlock::CompileBlkOrInst( p, pStk, true );
+        inst->m_block = CBotBlock::CompileBlkOrInst(p, pStk, true );
         DecLvl();
 
         if ( pStk->IsOk() )
@@ -94,7 +93,7 @@ bool CBotWhile::Execute(CBotStack* &pj)
     {                                           // there are two possible states (depending on recovery)
     case 0:
         // evaluates the condition
-        if ( !m_Condition->Execute(pile) ) return false; // interrupted here?
+        if ( !m_condition->Execute(pile) ) return false; // interrupted here?
 
         // the result of the condition is on the stack
 
@@ -110,8 +109,8 @@ bool CBotWhile::Execute(CBotStack* &pj)
 
     case 1:
         // evaluates the associated statement block
-        if ( m_Block != nullptr &&
-            !m_Block->Execute(pile) )
+        if (m_block != nullptr &&
+            !m_block->Execute(pile) )
         {
             if (pile->IfContinue(0, m_label)) continue; // if continued, will return to test
             return pj->BreakReturn(pile, m_label);      // sends the results and releases the stack
@@ -140,14 +139,27 @@ void CBotWhile::RestoreState(CBotStack* &pj, bool bMain)
     {                                           // there are two possible states (depending on recovery)
     case 0:
         // evaluates the condition
-        m_Condition->RestoreState(pile, bMain);
+        m_condition->RestoreState(pile, bMain);
         return;
 
     case 1:
         // evaluates the associated statement block
-        if ( m_Block != nullptr ) m_Block->RestoreState(pile, bMain);
+        if (m_block != nullptr ) m_block->RestoreState(pile, bMain);
         return;
     }
+}
+
+std::string CBotWhile::GetDebugData()
+{
+    return !m_label.empty() ? "m_label = "+m_label : "";
+}
+
+std::map<std::string, CBotInstr*> CBotWhile::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_condition"] = m_condition;
+    links["m_block"] = m_block;
+    return links;
 }
 
 } // namespace CBot

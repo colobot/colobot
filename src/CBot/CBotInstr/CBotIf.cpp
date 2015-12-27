@@ -30,18 +30,17 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotIf::CBotIf()
 {
-    m_Condition =
-    m_Block     =
-    m_BlockElse = nullptr;         // nullptr so that delete is not possible further
-    name = "CBotIf";            // debug
+    m_condition = nullptr;
+    m_block = nullptr;
+    m_blockElse = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotIf::~CBotIf()
 {
-    delete  m_Condition;        // frees the condition
-    delete  m_Block;            // frees the block of instruction1
-    delete  m_BlockElse;        // frees the block of instruction2
+    delete m_condition;        // frees the condition
+    delete m_block;            // frees the block of instruction1
+    delete m_blockElse;        // frees the block of instruction2
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -56,11 +55,11 @@ CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotIf* inst = new CBotIf();                // create the object
     inst->SetToken( pp );
 
-    if ( nullptr != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
+    if ( nullptr != (inst->m_condition = CBotCondition::Compile(p, pStk )) )
     {
         // the condition does exist
 
-        inst->m_Block = CBotBlock::CompileBlkOrInst( p, pStk, true );
+        inst->m_block = CBotBlock::CompileBlkOrInst(p, pStk, true );
         if ( pStk->IsOk() )
         {
             // the statement block is ok (can be empty)
@@ -69,7 +68,7 @@ CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
             if (IsOfType(p, ID_ELSE))
             {
                 // if so, compiles the following statement block
-                inst->m_BlockElse = CBotBlock::CompileBlkOrInst( p, pStk, true );
+                inst->m_blockElse = CBotBlock::CompileBlkOrInst(p, pStk, true );
                 if (!pStk->IsOk())
                 {
                     // there is no correct block after the else
@@ -103,7 +102,7 @@ bool CBotIf :: Execute(CBotStack* &pj)
     if( pile->GetState() == 0 )
     {
         // evaluates the condition
-        if ( !m_Condition->Execute(pile) ) return false;    // interrupted here?
+        if ( !m_condition->Execute(pile) ) return false;    // interrupted here?
 
         // terminates if there is an error
         if ( !pile->IsOk() )
@@ -120,13 +119,13 @@ bool CBotIf :: Execute(CBotStack* &pj)
 
     if ( pile->GetVal() == true )                           // condition was true?
     {
-        if ( m_Block != nullptr &&                             // block may be absent
-            !m_Block->Execute(pile) ) return false;         // interrupted here?
+        if (m_block != nullptr &&                             // block may be absent
+            !m_block->Execute(pile) ) return false;         // interrupted here?
     }
     else
     {
-        if ( m_BlockElse != nullptr &&                         // if there is an alternate block
-            !m_BlockElse->Execute(pile) ) return false; // interrupted here
+        if (m_blockElse != nullptr &&                         // if there is an alternate block
+            !m_blockElse->Execute(pile) ) return false; // interrupted here
     }
 
     // sends the results and releases the stack
@@ -145,7 +144,7 @@ void CBotIf :: RestoreState(CBotStack* &pj, bool bMain)
     if( pile->GetState() == 0 )
     {
         // evaluates the condition
-        m_Condition->RestoreState(pile, bMain); // interrupted here!
+        m_condition->RestoreState(pile, bMain); // interrupted here!
         return;
     }
 
@@ -154,14 +153,23 @@ void CBotIf :: RestoreState(CBotStack* &pj, bool bMain)
 
     if ( pile->GetVal() == true )                           // condition was true?
     {
-        if ( m_Block != nullptr )                              // block may be absent
-             m_Block->RestoreState(pile, bMain);            // interrupted here!
+        if (m_block != nullptr )                              // block may be absent
+             m_block->RestoreState(pile, bMain);            // interrupted here!
     }
     else
     {
-        if ( m_BlockElse != nullptr )                          // if there is an alternate block
-             m_BlockElse->RestoreState(pile, bMain);        // interrupted here!
+        if (m_blockElse != nullptr )                          // if there is an alternate block
+             m_blockElse->RestoreState(pile, bMain);        // interrupted here!
     }
+}
+
+std::map<std::string, CBotInstr*> CBotIf::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_condition"] = m_condition;
+    links["m_block"] = m_block;
+    links["m_blockElse"] = m_blockElse;
+    return links;
 }
 
 } // namespace CBot

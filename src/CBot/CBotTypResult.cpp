@@ -173,4 +173,23 @@ CBotTypResult& CBotTypResult::operator=(const CBotTypResult& src)
     return *this;
 }
 
+std::string CBotTypResult::ToString()
+{
+    switch (m_type)
+    {
+        case CBotTypVoid: return "void";
+        case CBotTypInt: return "int";
+        case CBotTypFloat: return "float";
+        case CBotTypBoolean: return "bool";
+        case CBotTypString: return "string";
+        case CBotTypArrayPointer: return m_pNext->ToString()+"[]";
+        case CBotTypArrayBody: return m_pNext->ToString()+"[] (by value)";
+        case CBotTypPointer: return m_pClass->GetName();
+        case CBotTypNullPointer: return m_pClass->GetName()+" (null)";
+        case CBotTypClass: return m_pClass->GetName()+" (by value)";
+        case CBotTypIntrinsic: return m_pClass->GetName()+" (intr)";
+    }
+    return "?";
+}
+
 } // namespace CBot

@@ -64,10 +64,13 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
-private:
+protected:
+    virtual const std::string GetDebugName() { return "CBotExprNum"; }
+    virtual std::string GetDebugData();
 
+private:
     //! The type of number.
-    int m_numtype;
+    CBotType m_numtype;
     //! Value for an int.
     long m_valint;
     //! Value for a float.

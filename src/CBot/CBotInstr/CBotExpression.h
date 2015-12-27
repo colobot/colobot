@@ -76,6 +76,10 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
+protected:
+    virtual const std::string GetDebugName() { return "CBotExpression"; }
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+
 private:
     //! Left operand
     CBotLeftExpr* m_leftop;

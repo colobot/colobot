@@ -42,6 +42,9 @@ class CBotEmpty : public CBotInstr
      * \param bMain
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
+
+protected:
+    virtual const std::string GetDebugName() { return "CBotEmpty"; }
 };
 
 } // namespace CBot

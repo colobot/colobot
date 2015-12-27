@@ -40,11 +40,10 @@ CBotClassInst::CBotClassInst()
 {
     m_next          = nullptr;
     m_var           = nullptr;
-    m_Parameters    = nullptr;
+    m_parameters    = nullptr;
     m_expr          = nullptr;
     m_hasParams     = false;
     m_nMethodeIdent = 0;
-    name = "CBotClassInst";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -123,14 +122,14 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
         inst->m_hasParams = (p->GetType() == ID_OPENPAR);
 
         CBotVar*    ppVars[1000];
-        inst->m_Parameters = CompileParams(p, pStk, ppVars);
+        inst->m_parameters = CompileParams(p, pStk, ppVars);
         if ( !pStk->IsOk() ) goto error;
 
         // if there are parameters, is the equivalent to the stament "new"
         // CPoint A ( 0, 0 ) is equivalent to
         // CPoint A = new CPoint( 0, 0 )
 
-//      if ( nullptr != inst->m_Parameters )
+//      if ( nullptr != inst->m_parameters )
         if ( inst->m_hasParams )
         {
             // the constructor is there?
@@ -142,7 +141,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
             if (typ == CBotErrUndefCall)
             {
                 // si le constructeur n'existe pas
-                if (inst->m_Parameters != nullptr)                 // with parameters
+                if (inst->m_parameters != nullptr)                 // with parameters
                 {
                     pStk->SetError(CBotErrNoConstruct, vartoken);
                     goto error;
@@ -310,7 +309,7 @@ bool CBotClassInst::Execute(CBotStack* &pj)
 
             int     i = 0;
 
-            CBotInstr*  p = m_Parameters;
+            CBotInstr*  p = m_parameters;
             // evaluates the parameters
             // and places the values ​​on the stack
             // to (can) be interrupted (broken) at any time
@@ -404,7 +403,7 @@ void CBotClassInst::RestoreState(CBotStack* &pj, bool bMain)
 
             int     i = 0;
 
-            CBotInstr*  p = m_Parameters;
+            CBotInstr*  p = m_parameters;
             // evaluates the parameters
             // and the values an the stack
             // for the ability to be interrupted at any time (\TODO pour pouvoir être interrompu n'importe quand)
@@ -435,6 +434,15 @@ void CBotClassInst::RestoreState(CBotStack* &pj, bool bMain)
 
     if ( m_next2b != nullptr )
          m_next2b->RestoreState(pile, bMain);                   // other(s) definition(s)
+}
+
+std::map<std::string, CBotInstr*> CBotClassInst::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_var"] = m_var;
+    links["m_parameters"] = m_parameters;
+    links["m_expr"] = m_expr;
+    return links;
 }
 
 } // namespace CBot

@@ -32,19 +32,17 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotCatch::CBotCatch()
 {
-    m_Cond      =
-    m_Block     = nullptr;     // nullptr so that delete is not possible further
-    m_next      = nullptr;
-
-    name = "CBotCatch";     // debug
+    m_cond = nullptr;
+    m_block = nullptr;
+    m_next = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotCatch::~CBotCatch()
 {
-    delete  m_Cond;         // frees the list
-    delete  m_Block;        // frees the instruction block
-    delete  m_next;         // and subsequent
+    delete m_cond;         // frees the list
+    delete m_block;        // frees the instruction block
+    delete m_next;         // and subsequent
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -58,13 +56,13 @@ CBotCatch* CBotCatch::Compile(CBotToken* &p, CBotCStack* pStack)
 
     if (IsOfType(p, ID_OPENPAR))
     {
-        inst->m_Cond = CBotExpression::Compile(p, pStack);
+        inst->m_cond = CBotExpression::Compile(p, pStack);
         if (( pStack->GetType() < CBotTypLong ||
               pStack->GetTypResult().Eq(CBotTypBoolean) )&& pStack->IsOk() )
         {
             if (IsOfType(p, ID_CLOSEPAR))
             {
-                inst->m_Block = CBotBlock::CompileBlkOrInst( p, pStack );
+                inst->m_block = CBotBlock::CompileBlkOrInst(p, pStack );
                 if ( pStack->IsOk() )
                     return inst;                // return an object to the application
             }
@@ -80,26 +78,26 @@ CBotCatch* CBotCatch::Compile(CBotToken* &p, CBotCStack* pStack)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotCatch :: Execute(CBotStack* &pj)
 {
-    if ( m_Block == nullptr ) return true;
-    return m_Block->Execute(pj);                // executes the associated block
+    if (m_block == nullptr ) return true;
+    return m_block->Execute(pj);                // executes the associated block
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotCatch :: RestoreState(CBotStack* &pj, bool bMain)
 {
-    if ( bMain && m_Block != nullptr ) m_Block->RestoreState(pj, bMain);
+    if ( bMain && m_block != nullptr ) m_block->RestoreState(pj, bMain);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotCatch :: RestoreCondState(CBotStack* &pj, bool bMain)
 {
-    m_Cond->RestoreState(pj, bMain);
+    m_cond->RestoreState(pj, bMain);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotCatch :: TestCatch(CBotStack* &pile, int val)
 {
-    if ( !m_Cond->Execute(pile) ) return false;
+    if ( !m_cond->Execute(pile) ) return false;
 
     if ( val > 0 || pile->GetVar() == nullptr || pile->GetVar()->GetType() != CBotTypBoolean )
     {
@@ -109,6 +107,15 @@ bool CBotCatch :: TestCatch(CBotStack* &pile, int val)
     }
 
     return true;
+}
+
+std::map<std::string, CBotInstr*> CBotCatch::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_block"] = m_block;
+    links["m_cond"] = m_cond;
+    links["m_next"] = m_next;
+    return links;
 }
 
 } // namespace CBot

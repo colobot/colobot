@@ -17,6 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+#include <sstream>
 #include "CBot/CBotInstr/CBotLeftExpr.h"
 #include "CBot/CBotInstr/CBotFieldExpr.h"
 #include "CBot/CBotInstr/CBotIndexExpr.h"
@@ -34,7 +35,6 @@ namespace CBot
 //////////////////////////////////////////////////////////////////////////////////////
 CBotLeftExpr::CBotLeftExpr()
 {
-    name    = "CBotLeftExpr";
     m_nIdent = 0;
 }
 
@@ -239,6 +239,14 @@ void CBotLeftExpr::RestoreStateVar(CBotStack* &pile, bool bMain)
 
     if (m_next3 != nullptr)
          m_next3->RestoreStateVar(pile, bMain);
+}
+
+std::string CBotLeftExpr::GetDebugData()
+{
+    std::stringstream ss;
+    ss << m_token.GetString();
+    //ss << "VarID = " << m_nIdent;
+    return ss.str();
 }
 
 } // namespace CBot

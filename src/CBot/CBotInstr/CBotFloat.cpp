@@ -33,9 +33,8 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotFloat::CBotFloat()
 {
-    m_var    =
-    m_expr    = nullptr;
-    name = "CBotFloat";
+    m_var    = nullptr;
+    m_expr   = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -170,6 +169,14 @@ void CBotFloat::RestoreState(CBotStack* &pj, bool bMain)
 
     if (m_next2b)
          m_next2b->RestoreState(pile, bMain);
+}
+
+std::map<std::string, CBotInstr*> CBotFloat::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_var"] = m_var;
+    links["m_expr"] = m_expr;
+    return links;
 }
 
 } // namespace CBot

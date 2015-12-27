@@ -62,6 +62,10 @@ public:
      * \param bMain
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
+
+protected:
+    virtual const std::string GetDebugName() { return "CBotExprAlpha"; }
+    virtual std::string GetDebugData();
 };
 
 } // namespace CBot

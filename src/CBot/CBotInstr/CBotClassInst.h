@@ -66,18 +66,21 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
+protected:
+    virtual const std::string GetDebugName() { return "CBotClassInstr"; }
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+
 private:
 
     //! Variable to initialise.
     CBotInstr* m_var;
-    //! Reference to the class.
-    CBotClass* m_pClass;
     //! Parameters to be evaluated for the contructor.
-    CBotInstr* m_Parameters;
+    CBotInstr* m_parameters;
     //! A value to put, if there is.
     CBotInstr* m_expr;
     //! Has it parameters.
     bool m_hasParams;
+    //! Constructor method unique identifier
     long m_nMethodeIdent;
 
 };

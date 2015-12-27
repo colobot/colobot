@@ -30,7 +30,6 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotExprAlpha::CBotExprAlpha()
 {
-    name    = "CBotExprAlpha";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,6 +76,11 @@ bool CBotExprAlpha::Execute(CBotStack* &pj)
 void CBotExprAlpha::RestoreState(CBotStack* &pj, bool bMain)
 {
     if (bMain) pj->RestoreStack(this);
+}
+
+std::string CBotExprAlpha::GetDebugData()
+{
+    return m_token.GetString();
 }
 
 } // namespace CBot

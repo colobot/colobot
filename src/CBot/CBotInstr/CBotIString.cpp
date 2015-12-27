@@ -32,9 +32,8 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotIString::CBotIString()
 {
-    m_var    =
-    m_expr    = nullptr;
-    name = "CBotIString";
+    m_var    = nullptr;
+    m_expr   = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -155,6 +154,14 @@ void CBotIString::RestoreState(CBotStack* &pj, bool bMain)
 
     if (m_next2b)
          m_next2b->RestoreState(pile, bMain);
+}
+
+std::map<std::string, CBotInstr*> CBotIString::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_var"] = m_var;
+    links["m_expr"] = m_expr;
+    return links;
 }
 
 } // namespace CBot

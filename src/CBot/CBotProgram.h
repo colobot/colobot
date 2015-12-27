@@ -358,6 +358,7 @@ private:
     //! "this" variable
     CBotVar* m_thisVar = nullptr;
     friend class CBotFunction;
+    friend class CBotDebug;
 
     CBotError m_error = CBotNoErr;
     int m_errorStart = 0;

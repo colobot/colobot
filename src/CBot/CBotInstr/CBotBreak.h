@@ -64,6 +64,9 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
+protected:
+    virtual const std::string GetDebugName() { return "CBotBreak"; }
+    virtual std::string GetDebugData();
 
 private:
     //! A label if there is

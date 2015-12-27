@@ -48,14 +48,13 @@ static CBotInstr* CompileInstrOrDefVar(CBotToken* &p, CBotCStack* pStack)
 ////////////////////////////////////////////////////////////////////////////////
 CBotListExpression::CBotListExpression()
 {
-    m_Expr  = nullptr;
-    name = "CBotListExpression";
+    m_expr = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotListExpression::~CBotListExpression()
 {
-    delete  m_Expr;
+    delete m_expr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63,13 +62,13 @@ CBotInstr* CBotListExpression::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     CBotListExpression* inst = new CBotListExpression();
 
-    inst->m_Expr = CompileInstrOrDefVar( p, pStack );           // compile the first expression in a list
+    inst->m_expr = CompileInstrOrDefVar(p, pStack );           // compile the first expression in a list
     if (pStack->IsOk())
     {
         while ( IsOfType(p, ID_COMMA) )                         // more instructions?
         {
             CBotInstr*  i = CompileInstrOrDefVar( p, pStack );      // Is this a declaration of an integer?
-            inst->m_Expr->AddNext(i);                           // added after
+            inst->m_expr->AddNext(i);                           // added after
             if ( !pStack->IsOk() )
             {
                 delete inst;
@@ -86,7 +85,7 @@ CBotInstr* CBotListExpression::Compile(CBotToken* &p, CBotCStack* pStack)
 bool CBotListExpression::Execute(CBotStack* &pj)
 {
     CBotStack*  pile = pj->AddStack();                          // essential
-    CBotInstr*  p = m_Expr;                                     // the first expression
+    CBotInstr*  p = m_expr;                                     // the first expression
 
     int     state = pile->GetState();
     while (state-->0) p = p->GetNext();                         // returns to the interrupted operation
@@ -114,7 +113,7 @@ void CBotListExpression::RestoreState(CBotStack* &pj, bool bMain)
         state = pile->GetState();
     }
 
-    CBotInstr*  p = m_Expr;                                     // the first expression
+    CBotInstr*  p = m_expr;                                     // the first expression
 
     while (p != nullptr && state-->0)
     {
@@ -126,6 +125,13 @@ void CBotListExpression::RestoreState(CBotStack* &pj, bool bMain)
     {
         p->RestoreState(pile, bMain);
     }
+}
+
+std::map<std::string, CBotInstr*> CBotListExpression::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_expr"] = m_expr;
+    return links;
 }
 
 } // namespace CBot

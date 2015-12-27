@@ -38,9 +38,8 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotTwoOpExpr::CBotTwoOpExpr()
 {
-    m_leftop    =
-    m_rightop   = nullptr;         // nullptr to be able to delete without other
-    name = "CBotTwoOpExpr";     // debug
+    m_leftop    = nullptr;
+    m_rightop   = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -503,6 +502,19 @@ void CBotTwoOpExpr::RestoreState(CBotStack* &pStack, bool bMain)
         m_rightop->RestoreState(pStk2, bMain);          // interrupted here!
         return;
     }
+}
+
+std::string CBotTwoOpExpr::GetDebugData()
+{
+    return m_token.GetString();
+}
+
+std::map<std::string, CBotInstr*> CBotTwoOpExpr::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_leftop"] = m_leftop;
+    links["m_rightop"] = m_rightop;
+    return links;
 }
 
 } // namespace CBot

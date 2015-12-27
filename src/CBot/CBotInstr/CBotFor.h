@@ -63,18 +63,22 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
-private:
+protected:
+    virtual const std::string GetDebugName() { return "CBotFor"; }
+    virtual std::string GetDebugData();
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
 
+private:
     //! Initial intruction
-    CBotInstr*    m_Init;
+    CBotInstr* m_init;
     //! Test Condition
-    CBotInstr*    m_Test;
+    CBotInstr* m_test;
     //! instruction for increment
-    CBotInstr*    m_Incr;
+    CBotInstr* m_incr;
     //! Instructions
-    CBotInstr*    m_Block;
+    CBotInstr* m_block;
     //! A label if there is
-    std::string    m_label;
+    std::string m_label;
 };
 
 } // namespace CBot

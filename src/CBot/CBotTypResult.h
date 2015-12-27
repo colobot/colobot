@@ -152,6 +152,8 @@ public:
      */
     CBotTypResult& operator=(const CBotTypResult& src);
 
+    std::string ToString();
+
 private:
     int               m_type;   //!< type, see ::CBotType and ::CBotError
     CBotTypResult*    m_pNext;  //!< type of array element

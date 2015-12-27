@@ -104,7 +104,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
             CBotPostIncExpr* i = new CBotPostIncExpr();
             i->SetToken(pp);
-            i->m_Instr = inst;    // associated statement
+            i->m_instr = inst;    // associated statement
             return pStack->Return(i, pStk);
         }
         return pStack->Return(inst, pStk);
@@ -119,7 +119,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
         if (p->GetType() == TokenTypVar)
         {
-            if (nullptr != (i->m_Instr =  CBotExprVar::Compile(p, pStk, CBotVar::ProtectionLevel::ReadOnly)))
+            if (nullptr != (i->m_instr =  CBotExprVar::Compile(p, pStk, CBotVar::ProtectionLevel::ReadOnly)))
             {
                 if (pStk->GetType() >= CBotTypBoolean)
                 {

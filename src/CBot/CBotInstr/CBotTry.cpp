@@ -30,18 +30,17 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotTry::CBotTry()
 {
-    m_ListCatch = nullptr;
-    m_FinalInst =
-    m_Block     = nullptr;     // nullptr so that delete is not possible further
-    name = "CBotTry";       // debug
+    m_catchList = nullptr;
+    m_finallyBlock = nullptr;
+    m_block = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotTry::~CBotTry()
 {
-    delete  m_ListCatch;    // frees the list
-    delete  m_Block;        // frees the instruction block
-    delete  m_FinalInst;
+    delete m_catchList;    // frees the list
+    delete m_block;        // frees the instruction block
+    delete m_finallyBlock;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,8 +54,8 @@ CBotInstr* CBotTry::Compile(CBotToken* &p, CBotCStack* pStack)
 
     CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
 
-    inst->m_Block = CBotBlock::CompileBlkOrInst( p, pStk );
-    CBotCatch** pn = &inst->m_ListCatch;
+    inst->m_block = CBotBlock::CompileBlkOrInst(p, pStk );
+    CBotCatch** pn = &inst->m_catchList;
 
     while (pStk->IsOk() && p->GetType() == ID_CATCH)
     {
@@ -67,7 +66,7 @@ CBotInstr* CBotTry::Compile(CBotToken* &p, CBotCStack* pStack)
 
     if (pStk->IsOk() && IsOfType( p, ID_FINALLY) )
     {
-        inst->m_FinalInst = CBotBlock::CompileBlkOrInst( p, pStk );
+        inst->m_finallyBlock = CBotBlock::CompileBlkOrInst(p, pStk );
     }
 
     if (pStk->IsOk())
@@ -95,9 +94,9 @@ bool CBotTry::Execute(CBotStack* &pj)
 
     if ( pile1->GetState() == 0 )
     {
-        if ( m_Block->Execute(pile1) )
+        if ( m_block->Execute(pile1) )
         {
-            if ( m_FinalInst == nullptr ) return pj->Return(pile1);
+            if (m_finallyBlock == nullptr ) return pj->Return(pile1);
             pile1->SetState(-2);                                // passes final
         }
 
@@ -116,7 +115,7 @@ bool CBotTry::Execute(CBotStack* &pj)
     // there was an interruption
     // see what it returns
 
-    CBotCatch*  pc = m_ListCatch;
+    CBotCatch*  pc = m_catchList;
     int state = static_cast<short>(pile1->GetState());                       // where were we?
     val = pile2->GetState();                                    // what error?
     pile0->SetState(1);                                         // marking the GetRunPos
@@ -137,7 +136,7 @@ bool CBotTry::Execute(CBotStack* &pj)
 //              pile0->SetState(1);
 
                 if ( !pc->Execute(pile2) ) return false;        // performs the operation
-                if ( m_FinalInst == nullptr )
+                if (m_finallyBlock == nullptr )
                     return pj->Return(pile2);                   // ends the try
 
                 pile1->SetState(-2);                            // passes final
@@ -147,14 +146,14 @@ bool CBotTry::Execute(CBotStack* &pj)
         }
         pc = pc->m_next;
     }
-    if ( m_FinalInst != nullptr &&
+    if (m_finallyBlock != nullptr &&
          pile1->GetState() > 0 && val != 0 ) pile1->SetState(-1);// if stop then made the final
 
     if (pile1->GetState() <= -1)
     {
 //      pile0->SetState(1);
 
-        if (!m_FinalInst->Execute(pile2) && pile2->IsOk()) return false;
+        if (!m_finallyBlock->Execute(pile2) && pile2->IsOk()) return false;
         if (!pile2->IsOk()) return pj->Return(pile2);           // keep this exception
         pile2->SetError(pile1->GetState()==-1 ? static_cast<CBotError>(val) : CBotNoErr);       // gives the initial error
         return pj->Return(pile2);
@@ -162,7 +161,7 @@ bool CBotTry::Execute(CBotStack* &pj)
 
     pile1->SetState(0);                                         // returns to the evaluation
     pile0->SetState(0);                                         // returns to the evaluation
-    if ( val != 0 && m_ListCatch == nullptr && m_FinalInst == nullptr )
+    if ( val != 0 && m_catchList == nullptr && m_finallyBlock == nullptr )
                             return pj->Return(pile2);           // ends the try without exception
 
     pile1->SetError(static_cast<CBotError>(val));                                       // gives the error
@@ -184,7 +183,7 @@ void CBotTry::RestoreState(CBotStack* &pj, bool bMain)
     CBotStack* pile2 = pile0->RestoreStack();
     if ( pile2 == nullptr ) return;
 
-    m_Block->RestoreState(pile1, bMain);
+    m_block->RestoreState(pile1, bMain);
     if ( pile0->GetState() == 0 )
     {
         return;
@@ -193,7 +192,7 @@ void CBotTry::RestoreState(CBotStack* &pj, bool bMain)
     // there was an interruption
     // see what it returns
 
-    CBotCatch*  pc = m_ListCatch;
+    CBotCatch*  pc = m_catchList;
     int state = pile1->GetState();                              // where were we ?
     val = pile2->GetState();                                    // what error ?
 
@@ -219,9 +218,18 @@ void CBotTry::RestoreState(CBotStack* &pj, bool bMain)
 
     if (pile1->GetState() <= -1)
     {
-        m_FinalInst->RestoreState(pile2, bMain);
+        m_finallyBlock->RestoreState(pile2, bMain);
         return;
     }
+}
+
+std::map<std::string, CBotInstr*> CBotTry::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_block"] = m_block;
+    links["m_catchList"] = m_catchList;
+    links["m_finallyBlock"] = m_finallyBlock;
+    return links;
 }
 
 } // namespace CBot

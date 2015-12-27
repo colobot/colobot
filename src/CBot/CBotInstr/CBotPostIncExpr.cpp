@@ -30,14 +30,13 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotPostIncExpr::CBotPostIncExpr()
 {
-    m_Instr = nullptr;
-    name    = "CBotPostIncExpr";
+    m_instr = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotPostIncExpr::~CBotPostIncExpr()
 {
-    delete    m_Instr;
+    delete m_instr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +48,7 @@ bool CBotPostIncExpr::Execute(CBotStack* &pj)
     CBotVar*    var1 = nullptr;
 
     // retrieves the variable fields and indexes according
-    if (!(static_cast<CBotExprVar*>(m_Instr))->ExecuteVar(var1, pile2, nullptr, true)) return false;
+    if (!(static_cast<CBotExprVar*>(m_instr))->ExecuteVar(var1, pile2, nullptr, true)) return false;
 
     pile1->SetState(1);
     pile1->SetCopyVar(var1);                                // places the result (before incrementation);
@@ -81,9 +80,16 @@ void CBotPostIncExpr::RestoreState(CBotStack* &pj, bool bMain)
     CBotStack*    pile1 = pj->RestoreStack(this);
     if (pile1 == nullptr) return;
 
-    (static_cast<CBotExprVar*>(m_Instr))->RestoreStateVar(pile1, bMain);
+    (static_cast<CBotExprVar*>(m_instr))->RestoreStateVar(pile1, bMain);
 
     if (pile1 != nullptr) pile1->RestoreStack(this);
+}
+
+std::map<std::string, CBotInstr*> CBotPostIncExpr::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_instr"] = m_instr;
+    return links;
 }
 
 } // namespace CBot

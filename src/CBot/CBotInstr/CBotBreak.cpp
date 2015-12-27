@@ -28,7 +28,6 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotBreak::CBotBreak()
 {
-    name = "CBotBreak";     // debug
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -91,6 +90,11 @@ bool CBotBreak :: Execute(CBotStack* &pj)
 void CBotBreak :: RestoreState(CBotStack* &pj, bool bMain)
 {
     if ( bMain ) pj->RestoreStack(this);
+}
+
+std::string CBotBreak::GetDebugData()
+{
+    return !m_label.empty() ? "m_label = "+m_label : "";
 }
 
 } // namespace CBot

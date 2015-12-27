@@ -74,9 +74,13 @@ public:
      */
     bool CompCase(CBotStack* &pj, int val) override;
 
+protected:
+    virtual const std::string GetDebugName() { return "CBotCase"; }
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+
 private:
     //! Value to compare.
-    CBotInstr*    m_Value;
+    CBotInstr* m_value;
 };
 
 } // namespace CBot

@@ -19,50 +19,16 @@
 
 #pragma once
 
-#include "CBot/CBotInstr/CBotInstr.h"
-
 namespace CBot
 {
+class CBotProgram;
 
-/*!
- * \brief The CBotPreIncExpr class Management of pre increment. There is no
- * routine Compiles, the object is created directly. Compiles in CBotParExpr
- */
-class CBotPreIncExpr : public CBotInstr
+class CBotDebug
 {
 public:
-
-    /*!
-     * \brief CBotPreIncExpr
-     */
-    CBotPreIncExpr();
-
-    /*!
-     * \brief ~CBotPreIncExpr
-     */
-    ~CBotPreIncExpr();
-
-    /*!
-     * \brief Execute
-     * \param pj
-     * \return
-     */
-    bool Execute(CBotStack* &pj) override;
-
-    /*!
-     * \brief RestoreState
-     * \param pj
-     * \param bMain
-     */
-    void RestoreState(CBotStack* &pj, bool bMain) override;
-
-protected:
-    virtual const std::string GetDebugName() { return "CBotPreIncExpr"; }
-    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
-
-private:
-    CBotInstr* m_instr;
-    friend class CBotParExpr;
+    static void DumpCompiledProgram(CBotProgram* program);
 };
 
 } // namespace CBot
+
+

@@ -37,8 +37,7 @@ namespace CBot
 CBotExpression::CBotExpression()
 {
     m_leftop    = nullptr;
-    m_rightop    = nullptr;
-    name = "CBotExpression";
+    m_rightop   = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -294,6 +293,14 @@ void CBotExpression::RestoreState(CBotStack* &pj, bool bMain)
             return;
         }
     }
+}
+
+std::map<std::string, CBotInstr*> CBotExpression::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_leftop"] = m_leftop;
+    links["m_rightop"] = m_rightop;
+    return links;
 }
 
 } // namespace CBot

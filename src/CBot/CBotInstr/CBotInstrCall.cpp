@@ -17,6 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+#include <sstream>
 #include "CBotInstrCall.h"
 #include "CBot/CBotInstr/CBotExpression.h"
 
@@ -31,15 +32,14 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstrCall::CBotInstrCall()
 {
-    m_Parameters = nullptr;
+    m_parameters = nullptr;
     m_nFuncIdent = 0;
-    name = "CBotInstrCall";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstrCall::~CBotInstrCall()
 {
-    delete  m_Parameters;
+    delete m_parameters;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,8 +69,8 @@ CBotInstr* CBotInstrCall::Compile(CBotToken* &p, CBotCStack* pStack)
 
             CBotInstr*  param = CBotExpression::Compile(p, pile);
             end   = p->GetStart();
-            if ( inst->m_Parameters == nullptr ) inst->m_Parameters = param;
-            else inst->m_Parameters->AddNext(param);            // constructs the list
+            if (inst->m_parameters == nullptr ) inst->m_parameters = param;
+            else inst->m_parameters->AddNext(param);            // constructs the list
 
             if ( !pile->IsOk() )
             {
@@ -140,7 +140,7 @@ bool CBotInstrCall::Execute(CBotStack* &pj)
 
     int     i = 0;
 
-    CBotInstr*  p = m_Parameters;
+    CBotInstr*  p = m_parameters;
     // evaluates parameters
     // and places the values ​​on the stack
     // for allow of interruption at any time
@@ -178,7 +178,7 @@ void CBotInstrCall::RestoreState(CBotStack* &pj, bool bMain)
 
     int         i = 0;
     CBotVar*    ppVars[1000];
-    CBotInstr*  p = m_Parameters;
+    CBotInstr*  p = m_parameters;
     // evaluate parameters
     // and place the values on the stack
     // for allow of interruption at any time
@@ -201,6 +201,22 @@ void CBotInstrCall::RestoreState(CBotStack* &pj, bool bMain)
     if ( pile2 == nullptr ) return;
 
     pile2->RestoreCall(m_nFuncIdent, GetToken(), ppVars);
+}
+
+std::string CBotInstrCall::GetDebugData()
+{
+    std::stringstream ss;
+    ss << m_token.GetString() << std::endl;
+    //ss << "FuncID = " << m_nFuncIdent << std::endl;
+    ss << "resultType = " << m_typRes.ToString();
+    return ss.str();
+}
+
+std::map<std::string, CBotInstr*> CBotInstrCall::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_parameters"] = m_parameters;
+    return links;
 }
 
 } // namespace CBot

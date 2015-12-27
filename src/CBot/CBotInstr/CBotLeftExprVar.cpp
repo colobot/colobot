@@ -25,13 +25,13 @@
 #include "CBot/CBotVar/CBotVar.h"
 
 #include <cassert>
+#include <sstream>
 
 namespace CBot
 {
 
 CBotLeftExprVar::CBotLeftExprVar()
 {
-    name = "CBotLeftExprVar";
 }
 
 CBotLeftExprVar::~CBotLeftExprVar()
@@ -78,6 +78,15 @@ void CBotLeftExprVar::RestoreState(CBotStack* &pj, bool bMain)
     if (var1 == nullptr) assert(false);
 
     var1->SetUniqNum(m_nIdent); // Restore the identifier
+}
+
+std::string CBotLeftExprVar::GetDebugData()
+{
+    std::stringstream ss;
+    ss << m_token.GetString() << std::endl;
+    //ss << "VarID = " << m_nIdent << std::endl;
+    ss << "type = " << m_typevar.ToString();
+    return ss.str();
 }
 
 } // namespace CBot

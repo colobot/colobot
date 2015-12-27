@@ -64,9 +64,13 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
+protected:
+    virtual const std::string GetDebugName() { return "CBotExprUnaire"; }
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+
 private:
     //! Expression to be evaluated.
-    CBotInstr* m_Expr;
+    CBotInstr* m_expr;
 };
 
 } // namespace CBot

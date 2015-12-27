@@ -50,8 +50,11 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
-public:
+protected:
+    virtual const std::string GetDebugName() { return "CBotLeftExprVar"; }
+    virtual std::string GetDebugData();
 
+public:
     //! Type of variable declared.
     CBotTypResult m_typevar = -1;
     //! Unique identifier of that variable

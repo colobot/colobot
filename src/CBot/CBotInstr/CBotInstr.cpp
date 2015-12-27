@@ -53,7 +53,6 @@ std::vector<std::string> CBotInstr::m_labelLvl = std::vector<std::string>();
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstr::CBotInstr()
 {
-    name     = "CBotInstr";
     m_next   = nullptr;
     m_next2b = nullptr;
     m_next3  = nullptr;
@@ -358,6 +357,16 @@ CBotInstr* CBotInstr::CompileArray(CBotToken* &p, CBotCStack* pStack, CBotTypRes
     delete inst;
     pStack->SetError(CBotErrNoTerminator, p->GetStart());
     return nullptr;
+}
+
+std::map<std::string, CBotInstr*> CBotInstr::GetDebugLinks()
+{
+    return {
+        {"m_next", m_next},
+        {"m_next2b", m_next2b},
+        {"m_next3", m_next3},
+        {"m_next3b", m_next3b}
+    };
 }
 
 } // namespace CBot

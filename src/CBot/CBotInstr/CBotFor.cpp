@@ -31,20 +31,19 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotFor::CBotFor()
 {
-    m_Init      =
-    m_Test      =
-    m_Incr      =
-    m_Block     = nullptr;     // nullptr so that delete is not possible further
-    name = "CBotFor";       // debug
+    m_init = nullptr;
+    m_test = nullptr;
+    m_incr = nullptr;
+    m_block = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotFor::~CBotFor()
 {
-    delete  m_Init;
-    delete  m_Test;
-    delete  m_Incr;
-    delete  m_Block;        // frees the instruction block
+    delete m_init;
+    delete m_test;
+    delete m_incr;
+    delete m_block;        // frees the instruction block
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +70,7 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotCStack* pStk = pStack->TokenStack(pp, true);    // un petit bout de pile svp
 
     // compiles instructions for initialization
-    inst->m_Init = CBotListExpression::Compile( p, pStk );
+    inst->m_init = CBotListExpression::Compile(p, pStk );
     if ( pStk->IsOk() )
     {
         if ( !IsOfType(p, ID_SEP))                      // lack the semicolon?
@@ -80,7 +79,7 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
             delete inst;
             return pStack->Return(nullptr, pStk);          // no object, the error is on the stack
         }
-        inst->m_Test = CBotBoolExpr::Compile( p, pStk );
+        inst->m_test = CBotBoolExpr::Compile(p, pStk );
         if ( pStk->IsOk() )
         {
             if ( !IsOfType(p, ID_SEP))                      // lack the semicolon?
@@ -89,13 +88,13 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
                 delete inst;
                 return pStack->Return(nullptr, pStk);          // no object, the error is on the stack
             }
-            inst->m_Incr = CBotListExpression::Compile( p, pStk );
+            inst->m_incr = CBotListExpression::Compile(p, pStk );
             if ( pStk->IsOk() )
             {
                 if ( IsOfType(p, ID_CLOSEPAR))              // missing parenthesis ?
                 {
                     IncLvl(inst->m_label);
-                    inst->m_Block = CBotBlock::CompileBlkOrInst( p, pStk, true );
+                    inst->m_block = CBotBlock::CompileBlkOrInst(p, pStk, true );
                     DecLvl();
                     if ( pStk->IsOk() )
                         return pStack->Return(inst, pStk);;
@@ -123,15 +122,15 @@ bool CBotFor :: Execute(CBotStack* &pj)
     {                                           // there are four possible states (depending on recovery)
     case 0:
         // initialize
-        if ( m_Init != nullptr &&
-             !m_Init->Execute(pile) ) return false;     // interrupted here ?
+        if (m_init != nullptr &&
+            !m_init->Execute(pile) ) return false;     // interrupted here ?
         if (!pile->SetState(1)) return false;           // ready for further
 
     case 1:
         // evaluates the condition
-        if ( m_Test != nullptr )                           // no strings attached? -> True!
+        if (m_test != nullptr )                           // no strings attached? -> True!
         {
-            if (!m_Test->Execute(pile) ) return false;  // interrupted here ?
+            if (!m_test->Execute(pile) ) return false;  // interrupted here ?
 
             // the result of the condition is on the stack
 
@@ -147,8 +146,8 @@ bool CBotFor :: Execute(CBotStack* &pj)
 
     case 2:
         // evaluates the associated statement block
-        if ( m_Block != nullptr &&
-            !m_Block->Execute(pile) )
+        if (m_block != nullptr &&
+            !m_block->Execute(pile) )
         {
             if (pile->IfContinue(3, m_label)) continue; // if continued, going on to incrementation
             return pj->BreakReturn(pile, m_label);      // sends the results and releases the stack
@@ -164,8 +163,8 @@ bool CBotFor :: Execute(CBotStack* &pj)
 
     case 3:
         // evalutate the incrementation
-        if ( m_Incr != nullptr &&
-            !m_Incr->Execute(pile) ) return false;      // interrupted here ?
+        if (m_incr != nullptr &&
+            !m_incr->Execute(pile) ) return false;      // interrupted here ?
 
         // returns to the test again
         if (!pile->SetState(1, 0)) return false;            // returns to the test
@@ -185,30 +184,45 @@ void CBotFor :: RestoreState(CBotStack* &pj, bool bMain)
     {                                           // there are four possible states (depending on recovery)
     case 0:
         // initialize
-        if ( m_Init != nullptr ) m_Init->RestoreState(pile, true);     // interrupted here !
+        if (m_init != nullptr ) m_init->RestoreState(pile, true);     // interrupted here !
         return;
 
     case 1:
-        if ( m_Init != nullptr ) m_Init->RestoreState(pile, false);    // variables definitions
+        if (m_init != nullptr ) m_init->RestoreState(pile, false);    // variables definitions
 
         // evaluates the condition
-        if ( m_Test != nullptr ) m_Test->RestoreState(pile, true);     // interrupted here !
+        if (m_test != nullptr ) m_test->RestoreState(pile, true);     // interrupted here !
         return;
 
     case 2:
-        if ( m_Init != nullptr ) m_Init->RestoreState(pile, false);    // variable definitions
+        if (m_init != nullptr ) m_init->RestoreState(pile, false);    // variable definitions
 
         // evaluates the associated statement block
-        if ( m_Block != nullptr ) m_Block->RestoreState(pile, true);
+        if (m_block != nullptr ) m_block->RestoreState(pile, true);
         return;
 
     case 3:
-        if ( m_Init != nullptr ) m_Init->RestoreState(pile, false);    // variable definitions
+        if (m_init != nullptr ) m_init->RestoreState(pile, false);    // variable definitions
 
         // evaluate the incrementation
-        if ( m_Incr != nullptr ) m_Incr->RestoreState(pile, true);     // interrupted here !
+        if (m_incr != nullptr ) m_incr->RestoreState(pile, true);     // interrupted here !
         return;
     }
+}
+
+std::string CBotFor::GetDebugData()
+{
+    return !m_label.empty() ? "m_label = "+m_label : "";
+}
+
+std::map<std::string, CBotInstr*> CBotFor::GetDebugLinks()
+{
+    auto links = CBotInstr::GetDebugLinks();
+    links["m_init"] = m_init;
+    links["m_test"] = m_test;
+    links["m_incr"] = m_incr;
+    links["m_block"] = m_block;
+    return links;
 }
 
 } // namespace CBot

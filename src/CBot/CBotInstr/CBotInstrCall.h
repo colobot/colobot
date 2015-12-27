@@ -63,13 +63,19 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
+protected:
+    virtual const std::string GetDebugName() { return "CBotInstrCall"; }
+    virtual std::string GetDebugData();
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+
 private:
     //! The parameters to be evaluated.
-    CBotInstr*  m_Parameters;
+    CBotInstr* m_parameters;
     //! Complete type of the result.
     CBotTypResult m_typRes;
     //! Id of a function.
     long m_nFuncIdent;
+    friend class CBotDebug;
 };
 
 } // namespace CBot

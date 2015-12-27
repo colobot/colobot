@@ -75,17 +75,22 @@ public:
      */
     void RestoreStateVar(CBotStack* &pj, bool bMain) override;
 
+protected:
+    virtual const std::string GetDebugName() { return "CBotInstrMethode"; }
+    virtual std::string GetDebugData();
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+
 private:
     //! The parameters to be evaluated.
-    CBotInstr *m_Parameters;
+    CBotInstr* m_parameters;
     //! Complete type of the result.
     CBotTypResult m_typRes;
     //! Name of the method.
-    std::string m_NomMethod;
+    std::string m_methodName;
     //! Identifier of the method.
     long m_MethodeIdent;
     //! Name of the class.
-    std::string m_ClassName;
+    std::string m_className;
 };
 
 } // namespace CBot
