@@ -24,22 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotFieldExpr class Management of the fields of an instance
- * (dot operator) eg : toto.x
+/**
+ * \brief Accessing a class field using dot operator - toto.x
  */
 class CBotFieldExpr : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotFieldExpr
-     */
     CBotFieldExpr();
-
-    /*!
-     * \brief ~CBotFieldExpr
-     */
     ~CBotFieldExpr();
 
     /*!

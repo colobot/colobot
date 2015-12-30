@@ -24,23 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotListArray class Definition of a assignment list for a table
- * int [ ] a [ ] = ( ( 1, 2, 3 ) , ( 3, 2, 1 ) ) ;
+/**
+ * \brief Compilation of assignment of an array - {{1, 2, 3}, {3, 2, 1}}
  */
 class CBotListArray : public CBotInstr
 {
-
 public:
-
-    /*!
-     * \brief CBotListArray
-     */
     CBotListArray();
-
-    /*!
-     * \brief ~CBotListArray
-     */
     ~CBotListArray();
 
     /*!

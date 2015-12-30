@@ -28,25 +28,58 @@ namespace CBot
 {
 class CBotDebug;
 
-/*
-    for example, the following program
-    int        x[]; x[1] = 4;
-    int        y[x[1]][10], z;
-    is generated
-    CBotInstrArray
-    m_next3b-> CBotEmpty
-    m_next->
-    CBotExpression ....
-    m_next->
-    CBotInstrArray
-    m_next3b-> CBotExpression ('x') ( m_next3-> CBotIndexExpr ('1') )
-    m_next3b-> CBotExpression ('10')
-    m_next2-> 'z'
-    m_next->...
-
-*/
 /**
  * \brief Class for one CBot instruction
+ *
+ * For example, for program:
+ * \code
+ * int x[]; x[1] = 4;
+ * int y[x[1]][10], z;
+ * \endcode
+ * the following structure is generated:
+ * \dot
+ * # Generated using the CBot_compile_graph tool
+ * # and slightly modified
+ * digraph {
+ * start [label=<START> shape=box3d color=cyan]
+ * instr00000000015304D0 [label=<<b>CBotInstrArray</b><br/>int[]>]
+ * instr0000000001530870 [label=<<b>CBotExpression</b>>]
+ * instr0000000001530920 [label=<<b>CBotLeftExpr</b><br/>x>]
+ * instr00000000015309D0 [label=<<b>CBotIndexExpr</b>>]
+ * instr0000000001530DC0 [label=<<b>CBotExprNum</b><br/>(int) 1>]
+ * instr00000000015309D0 -> instr0000000001530DC0 [label="m_expr" weight=5]
+ * instr0000000001530920 -> instr00000000015309D0 [label="m_next3" weight=5]
+ * instr0000000001530870 -> instr0000000001530920 [label="m_leftop" weight=5]
+ * instr0000000001530E80 [label=<<b>CBotInstrArray</b><br/>int[][]>]
+ * instr00000000015315F0 [label=<<b>CBotInt</b>>]
+ * instr0000000001531C20 [label=<<b>CBotLeftExprVar</b><br/>z>]
+ * instr00000000015315F0 -> instr0000000001531C20 [label="m_var" weight=5]
+ * instr0000000001530E80 -> instr00000000015315F0 [label="m_next2b" weight=5]
+ * { rank=same; instr0000000001530E80; instr00000000015315F0; }
+ * instr0000000001530B50 [label=<<b>CBotExprVar</b><br/>x>]
+ * instr0000000001531700 [label=<<b>CBotIndexExpr</b>>]
+ * instr0000000001531B60 [label=<<b>CBotExprNum</b><br/>(int) 1>]
+ * instr0000000001531700 -> instr0000000001531B60 [label="m_expr" weight=5]
+ * instr0000000001530B50 -> instr0000000001531700 [label="m_next3" weight=5]
+ * instr0000000001531A00 [label=<<b>CBotExprNum</b><br/>(int) 10>]
+ * instr0000000001530B50 -> instr0000000001531A00 [label="m_next3b" weight=5]
+ * instr0000000001530E80 -> instr0000000001530B50 [label="m_next3b" weight=5]
+ * instr0000000001530A80 [label=<<b>CBotLeftExprVar</b><br/>y>]
+ * instr0000000001530E80 -> instr0000000001530A80 [label="m_var" weight=5]
+ * instr0000000001530870 -> instr0000000001530E80 [label="m_next" weight=1]
+ * { rank=same; instr0000000001530870; instr0000000001530E80; }
+ * instr0000000001530C80 [label=<<b>CBotExprNum</b><br/>(int) 4>]
+ * instr0000000001530870 -> instr0000000001530C80 [label="m_rightop" weight=5]
+ * instr00000000015304D0 -> instr0000000001530870 [label="m_next" weight=1]
+ * { rank=same; instr00000000015304D0; instr0000000001530870; }
+ * instr0000000001530670 [label=<<b>CBotEmpty</b>>]
+ * instr00000000015304D0 -> instr0000000001530670 [label="m_next3b" weight=5]
+ * instr00000000015305A0 [label=<<b>CBotLeftExprVar</b><br/>x>]
+ * instr00000000015304D0 -> instr00000000015305A0 [label="m_var" weight=5]
+ * { rank=same; start; instr00000000015304D0; }
+ * start -> instr00000000015304D0
+ * }
+ * \enddot
  *
  * \todo More documentation
  */
@@ -250,12 +283,23 @@ public:
 
 protected:
     friend class CBotDebug;
+    /**
+     * \brief Returns the name of this class
+     * \see CBotDebug
+     */
     virtual const std::string GetDebugName() = 0;
+    /**
+     * \brief Returns additional data associated with this instruction for debugging purposes
+     * \see CBotDebug
+     */
     virtual std::string GetDebugData() { return ""; }
+    /**
+     * Returns a map of all instructions connected with this one
+     * \see CBotDebug
+     */
     virtual std::map<std::string, CBotInstr*> GetDebugLinks();
 
 protected:
-
     //! Keeps the token.
     CBotToken m_token;
     //! Linked command.

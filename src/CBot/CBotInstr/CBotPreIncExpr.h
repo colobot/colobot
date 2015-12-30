@@ -24,22 +24,15 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotPreIncExpr class Management of pre increment. There is no
- * routine Compiles, the object is created directly. Compiles in CBotParExpr
+/**
+ * \brief Pre increment/decrement
+ *
+ * Compiled in CBotParExpr
  */
 class CBotPreIncExpr : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotPreIncExpr
-     */
     CBotPreIncExpr();
-
-    /*!
-     * \brief ~CBotPreIncExpr
-     */
     ~CBotPreIncExpr();
 
     /*!

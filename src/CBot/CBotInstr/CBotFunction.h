@@ -26,22 +26,23 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotFunction class A function declaration. Compilation of various
- * functions declared by the user
+/**
+ * \brief A function declaration in the code
+ *
+ * Examples:
+ * \code
+ * void test() { ... }
+ * void test(int a, float b) { ... }
+ * int test(int a, float b, string c) { ... }
+ * public bool test(int a, float b, string c, SomeClass d) { ... }
+ * extern void test() { ... }
+ * void classname::test() { ... }
+ * \endcode
  */
 class CBotFunction : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotFunction
-     */
     CBotFunction();
-
-    /*!
-     * \brief ~CBotFunction
-     */
     ~CBotFunction();
 
     /*!

@@ -23,9 +23,16 @@ namespace CBot
 {
 class CBotProgram;
 
+/**
+ * \brief Various utilities used for debugging
+ */
 class CBotDebug
 {
 public:
+    /**
+     * \brief Dump the compiled class structure of the given program to stdout as DOT graph
+     * \param program Program to dump
+     */
     static void DumpCompiledProgram(CBotProgram* program);
 };
 

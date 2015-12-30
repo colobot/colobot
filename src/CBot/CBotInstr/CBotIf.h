@@ -24,21 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotIf class Instruction if (condition) operation1 else operation2;
+/**
+ * \brief Instruction if (condition) { ... } else { ... }
  */
 class CBotIf : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotIf
-     */
     CBotIf();
-
-    /*!
-     * \brief ~CBotIf
-     */
     ~CBotIf();
 
     /*!

@@ -24,23 +24,16 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotCase class Compiles instruction "case" we are bound to the
- * statement block "switch".
+/**
+ * \brief Instruction "case", part of "switch" structure
+ *
+ * \see CBotSwitch
  */
 class CBotCase : public CBotInstr
 {
 
 public:
-
-    /*!
-     * \brief CBotCase
-     */
     CBotCase();
-
-    /*!
-     * \brief ~CBotCase
-     */
     ~CBotCase();
 
     /*!

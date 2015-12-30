@@ -24,21 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotNew class Compile an instruction "new".
+/**
+ * \brief Creation of a class instance - "new" operator - new SomeClass()
  */
 class CBotNew : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotNew
-     */
     CBotNew();
-
-    /*!
-     * \brief ~CBotNew
-     */
     ~CBotNew();
 
     /*!

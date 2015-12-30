@@ -25,7 +25,7 @@ namespace CBot
 {
 
 /**
- * \brief Expression on the left side of an assignment
+ * \brief A variable on the left side of an assignment
  */
 class CBotLeftExprVar : public CBotInstr
 {

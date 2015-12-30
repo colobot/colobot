@@ -24,21 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotFor class
+/**
+ * \brief Instruction for (init; test; incr) { ... }
  */
 class CBotFor : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotFor
-     */
     CBotFor();
-
-    /*!
-     * \brief CBotFor
-     */
     ~CBotFor();
 
     /*!

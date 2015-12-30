@@ -24,18 +24,13 @@
 namespace CBot
 {
 
+/**
+ * \brief do {...} while (...) structure
+ */
 class CBotDo : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotDo Default constructor.
-     */
     CBotDo();
-
-    /*!
-     * \brief ~CBotDo Destructor.
-     */
     ~CBotDo();
 
     /*!

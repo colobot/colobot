@@ -24,21 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotInstrMethode class A call of method. Compile a method call.
+/**
+ * \brief A call to class method - var.func()
  */
 class CBotInstrMethode : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotInstrMethode
-     */
     CBotInstrMethode();
-
-    /*!
-     * \brief ~CBotInstrMethode
-     */
     ~CBotInstrMethode();
 
     /*!

@@ -24,15 +24,19 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotBlock class An instruction block { .... }.
+/**
+ * \brief An instruction block - { ... }
+ *
+ * There is never an instance of this class - it gets compiled into CBotListInstr
+ *
+ * \see CBotListInstr
  */
 class CBotBlock : public CBotInstr
 {
 public:
 
-    /*!
-     * \brief Compile Compiles a statement block " { i ; i ; } "
+    /**
+     * \brief Compiles a statement block - { instr; instr; }
      * \param p
      * \param pStack
      * \param bLocal
@@ -40,8 +44,8 @@ public:
      */
     static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal = true);
 
-    /*!
-     * \brief CompileBlkOrInst
+    /**
+     * \brief Compiles a block of instructions or a single instruction
      * \param p
      * \param pStack
      * \param bLocal
@@ -50,14 +54,8 @@ public:
     static CBotInstr* CompileBlkOrInst(CBotToken* &p, CBotCStack* pStack, bool bLocal = false);
 
 private:
-
-    /*!
-     * \brief CBotBlock This class have no constructor because there is never an
-     * instance of this class the object returned by Compile is usually of type
-     * CBotListInstr
-     */
     CBotBlock() = delete;
-    CBotBlock(const CBotBlock &) = delete;
+    CBotBlock(const CBotBlock&) = delete;
 };
 
 } // namespace CBot

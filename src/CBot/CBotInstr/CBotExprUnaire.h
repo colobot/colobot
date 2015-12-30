@@ -24,22 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotExprUnaire class Unary expression. Compile an unary expression
- * eg : (+, * -, not, !, ~)
+/**
+ * \brief Unary expression - +a, -a, !a, ~a, not a
  */
 class CBotExprUnaire : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotExprUnaire
-     */
     CBotExprUnaire();
-
-    /*!
-     * \brief ~CBotExprUnaire
-     */
     ~CBotExprUnaire();
 
     /*!

@@ -24,24 +24,20 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotInstArray class Definition of an array.
- * Defining an array of any type
+/**
+ * \brief Definition of an array (of any type)
+ *
+ * Examples:
+ * \code
  * int a[12];
- * point x[];
+ * float x[];
+ * bool[] z;
+ * \endcode
  */
 class CBotInstArray : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotInstArray
-     */
     CBotInstArray();
-
-    /*!
-     * \brief ~CBotInstArray
-     */
     ~CBotInstArray();
 
     /*!
@@ -68,7 +64,7 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotInstrArray"; }
+    virtual const std::string GetDebugName() { return "CBotInstArray"; }
     virtual std::string GetDebugData();
     virtual std::map<std::string, CBotInstr*> GetDebugLinks();
 

@@ -24,21 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotExprBool class Compile a token representing true or false.
+/**
+ * \brief true/false constants
  */
 class CBotExprBool : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotExprBool
-     */
     CBotExprBool();
-
-    /*!
-     * \brief ~CBotExprBool
-     */
     ~CBotExprBool();
 
     /*!

@@ -25,20 +25,14 @@ namespace CBot
 {
 
 /*!
- * \brief The CBotCatch class. Compiles instruction "catch".
+ * \brief Instruction "catch", part of "try" structure
+ *
+ * \see CBotTry
  */
 class CBotCatch : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotCatch
-     */
     CBotCatch();
-
-    /*!
-     * \brief CBotCatch
-     */
     ~CBotCatch();
 
     /*!

@@ -24,8 +24,9 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotEmpty class
+/**
+ * \brief Constant -1 of type int
+ * \todo Whaaaat? What is this even doing here? ~krzys_h
  */
 class CBotEmpty : public CBotInstr
 {

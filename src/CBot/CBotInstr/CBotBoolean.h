@@ -24,21 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotBoolean class Defining a boolean variable int a, b = false;
+/**
+ * \brief Definition of boolean variable - bool a, b = false
  */
 class CBotBoolean : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotBoolean
-     */
     CBotBoolean();
-
-    /*!
-     * \brief ~CBotBoolean
-     */
     ~CBotBoolean();
 
     /*!

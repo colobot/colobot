@@ -24,21 +24,16 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotLogicExpr class
+/**
+ * \brief An "inline if" operator - condition ? if_true : if_false
+ * \todo I don't remember the proper name of this thing :/ ~krzys_h
+ *
+ * Compiled in CBotTwoOpExpr
  */
 class CBotLogicExpr : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotLogicExpr
-     */
     CBotLogicExpr();
-
-    /*!
-     * \brief ~CBotLogicExpr
-     */
     ~CBotLogicExpr();
 
     /*!

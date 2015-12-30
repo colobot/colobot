@@ -24,8 +24,8 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotIString class Define a string variable eg : int a, b = "salut";
+/**
+ * \brief Definition of a string variable - string a, b = "text";
  */
 class CBotIString : public CBotInstr
 {

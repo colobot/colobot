@@ -24,8 +24,8 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotWhile class Compile an instruction "while".
+/**
+ * \brief The "while" loop - while (condition) { ... }
  */
 class CBotWhile : public CBotInstr
 {

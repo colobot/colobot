@@ -24,21 +24,15 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotInstrCall class Calls of these functions.
+/**
+ * \brief A call to a function - func()
+ *
+ * \see CBotInstrMethode for class methods
  */
 class CBotInstrCall : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotInstrCall
-     */
     CBotInstrCall();
-
-    /*!
-     * \brief ~CBotInstrCall
-     */
     ~CBotInstrCall();
 
     /*!

@@ -24,21 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotReturn class. Return parameters
+/**
+ * \brief The "return" instruction
  */
 class CBotReturn : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotReturn
-     */
     CBotReturn();
-
-    /*!
-     * \brief ~CBotReturn
-     */
     ~CBotReturn();
 
     /*!

@@ -24,23 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotIndexExpr class Index management for arrays
- * eg :
- *     - array [ expression ]
+/**
+ * \brief Instruction accessing an array element - array[x]
  */
 class CBotIndexExpr : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotIndexExpr
-     */
     CBotIndexExpr();
-
-    /*!
-     * \brief ~CBotIndexExpr
-     */
     ~CBotIndexExpr();
 
     /*!

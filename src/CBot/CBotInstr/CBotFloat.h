@@ -24,8 +24,8 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotFloat class Definition of a real/float variable int a, b = 12.4;
+/**
+ * \brief Definition of a float variable - float a, b = 12.4
  */
 class CBotFloat : public CBotInstr
 {

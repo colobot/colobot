@@ -24,21 +24,15 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotSwitch class. Compiles instruction "switch"
+/**
+ * \brief The switch structure
+ *
+ * \see CBotCase
  */
 class CBotSwitch : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotSwitch
-     */
     CBotSwitch();
-
-    /*!
-     * \brief CBotSwitch
-     */
     ~CBotSwitch();
 
     /*!

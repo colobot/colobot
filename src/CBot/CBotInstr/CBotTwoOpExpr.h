@@ -24,28 +24,23 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotTwoOpExpr class All operations with two operands.
- * eg :
- *      - Opérande1 + Opérande2
- *      - Opérande1 > Opérande2
+/**
+ * \brief Any expression with two operands
+ *
+ * Examples:
+ * \code
+ * op1 + op2
+ * op1 > op2
+ * \endcode
  */
 class CBotTwoOpExpr : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotTwoOpExpr
-     */
     CBotTwoOpExpr();
-
-    /*!
-     * \brief ~CBotTwoOpExpr
-     */
     ~CBotTwoOpExpr();
 
     /*!
-     * \brief Compile Compiles a instruction of type A op B.
+     * \brief Compiles CBotTwoOpExpr or CBotLogicExpr
      * \param p
      * \param pStack
      * \param pOperations

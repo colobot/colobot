@@ -24,22 +24,14 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotBreak class Compiles instruction "break" or "continu".
+/**
+ * \brief Instructions "break" and "continue" (with an optional label)
  */
 class CBotBreak : public CBotInstr
 {
 
 public:
-
-    /*!
-     * \brief CBotBreak
-     */
     CBotBreak();
-
-    /*!
-     * \brief CBotBreak
-     */
     ~CBotBreak();
 
     /*!

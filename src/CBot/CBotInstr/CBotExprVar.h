@@ -27,22 +27,16 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotExprVar class Expression for the variable name. Compile a
- * variable name check that it is known on the stack and it has been initialized.
+/**
+ * \brief Expression representing a variable name
+ *
+ * Verifies that variable is known during compilation
+ * Verifies taht variable is initialized during execution
  */
 class CBotExprVar : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotExprVar
-     */
     CBotExprVar();
-
-    /*!
-     * \brief ~CBotExprVar
-     */
     ~CBotExprVar();
 
     /*!

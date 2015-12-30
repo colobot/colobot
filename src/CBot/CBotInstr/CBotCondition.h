@@ -24,10 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotCondition class This class has no constructor, because there
- * is never an instance of this class the object returned by Compile is usually
- * type CBotExpression
+/**
+ * \brief A condition - boolean expression enclosed in brackets - (condition)
+ *
+ * There is never an instance of this class - it gets compiled into CBotExpression
+ *
+ * \see CBotBoolExpr
+ * \see CBotExpression
  */
 class CBotCondition : public CBotInstr
 {
@@ -41,6 +44,10 @@ public:
      * \return
      */
     static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
+
+private:
+    CBotCondition() = delete;
+    CBotCondition(const CBotCondition&) = delete;
 };
 
 } // namespace CBot

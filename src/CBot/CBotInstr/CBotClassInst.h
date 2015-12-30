@@ -24,22 +24,24 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotClassInst class Definition of an element of any class.
+/**
+ * \brief Definition of class instance variable
+ *
+ * Examples:
+ * \code
+ * ClassName varname;
+ * ClassName varname();
+ * ClassName varname = new ClassName();
+ * ClassName varname = new ClassName(args);
+ * ClassName varname1(), varname2();
+ * ClassName varname1 = new ClassName(), varname2;
+ * \endcode
  */
 class CBotClassInst : public CBotInstr
 {
 
 public:
-
-    /*!
-     * \brief CBotClassInst
-     */
     CBotClassInst();
-
-    /*!
-     * \brief ~CBotClassInst
-     */
     ~CBotClassInst();
 
     /*!

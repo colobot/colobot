@@ -24,22 +24,29 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotListExpression class. Compiles a list of expressions is used
- * only in "for" statement in incrementing and intitialisation.
+/**
+ * \brief Compile a comma-separated list of expressions or variable definitions
+ *
+ * Used by for() in initialization and increment statements
+ *
+ * Examples:
+ * \code
+ * int a
+ * a = 0
+ * a = 0, int b = 3
+ * a = 5, b = 7
+ * int a = 3, b = 8 // TODO: does that compile into declaration of two variables or declaration and assignment?
+ * i++
+ * i++, j++
+ * int a = 5, j++
+ * \endcode
+ *
+ * \see CBotFor
  */
 class CBotListExpression : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotListExpression
-     */
     CBotListExpression();
-
-    /*!
-     * \brief CBotListExpression
-     */
     ~CBotListExpression();
 
     /*!

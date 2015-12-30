@@ -24,22 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotInt class Definition of an integer variable
- * int a, b = 12;
+/**
+ * \brief Definition of an integer variable - int a, b = 12
  */
 class CBotInt : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotInt
-     */
     CBotInt();
-
-    /*!
-     * \brief ~CBotInt
-     */
     ~CBotInt();
 
     /*!

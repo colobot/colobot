@@ -24,21 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotExprAlpha class Expression representing a string.
+/**
+ * \brief Expression representing a string literal - "Some text"
  */
 class CBotExprAlpha : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotExprAlpha
-     */
     CBotExprAlpha();
-
-    /*!
-     * \brief CBotExprAlpha
-     */
     ~CBotExprAlpha();
 
     /*!

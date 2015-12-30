@@ -24,21 +24,15 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotTry class Compiles instruction "try"
+/**
+ * \brief The "try" structure
+ *
+ * \see CBotCatch
  */
 class CBotTry : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotTry
-     */
     CBotTry();
-
-    /*!
-     * \brief ~CBotTry
-     */
     ~CBotTry();
 
     /*!

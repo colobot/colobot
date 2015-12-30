@@ -24,27 +24,24 @@
 namespace CBot
 {
 
-////////////////////////////////////////////////////////////////////////////////
-// possibly an expression in parentheses ( ... )
-// there is never an instance of this class
-// being the object returned inside the parenthesis
-////////////////////////////////////////////////////////////////////////////////
-// compile either:
-// instruction in parentheses (...)
-// a unary expression (negative, not)
-// variable name
-// variables pre and post-incremented or decremented
-// a given number DefineNum
-// a constant
-// procedure call
-// new statement
-//
-// this class has no constructor, because there is never an instance of this class
-// the object returned by Compile is the class corresponding to the instruction
-////////////////////////////////////////////////////////////////////////////////
-
-/*!
- * \brief The CBotParExpr class
+/**
+ * \brief An expression
+ *
+ * There is never an instance of this class
+ *
+ * Compiles either:
+ * * an arithmetic expression in parentheses -- CBotExpression -- (...)
+ * * unary operation -- CBotExprUnaire -- -a, +a, ~a, !a, not a
+ * * a variable name -- CBotExprVar
+ * * pre- or post- incremented or decremented variable -- CBotPreIncExpr, CBotPostIncExpr -- a++, ++a, a--, --a
+ * * a function call -- CBotInstrCall
+ * * a class method call -- CBotInstrMethode
+ * * number literal (or numerical constant from CBotToken::DefineNum()) -- CBotExprNum
+ * * string literal -- CBotExprAlpha
+ * * boolean literal -- CBotExprBool -- true/false
+ * * null -- CBotExprNull
+ * * nan -- CBotExprNan
+ * * class instance creation with "new" -- CBotNew
  */
 class CBotParExpr : public CBotInstr
 {
@@ -56,6 +53,10 @@ public:
      * \return
      */
     static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
+
+private:
+    CBotParExpr() = delete;
+    CBotParExpr(const CBotParExpr&) = delete;
 };
 
 } // namespace CBot

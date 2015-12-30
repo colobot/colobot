@@ -24,11 +24,12 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotBoolExpr class Compile a statement such as "(condition)"
- * the condition must be Boolean. This class has no constructor, because there
- * is never an instance of this class the object returned by Compile is usually
- * type CBotExpression
+/**
+ * \brief An expression that results in a boolean value
+ *
+ * There is never an instance of this class - it gets compiled into CBotExpression
+ *
+ * \see CBotExpression
  */
 class CBotBoolExpr : public CBotInstr
 {
@@ -41,6 +42,10 @@ public:
      * \return
      */
     static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
+
+private:
+    CBotBoolExpr() = delete;
+    CBotBoolExpr(const CBotBoolExpr&) = delete;
 };
 
 } // namespace CBot

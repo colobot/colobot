@@ -24,22 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotListInstr class Compiles a list of instructions separated by
- * semicolons eg : ... ; ... ; ... ; ... ;
+/**
+ * \brief A list of instructions separated by semicolons - ...; ...; ...; ...;
  */
 class CBotListInstr : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotListInstr
-     */
     CBotListInstr();
-
-    /*!
-     * \brief ~CBotListInstr
-     */
     ~CBotListInstr();
 
     /*!

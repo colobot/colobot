@@ -26,32 +26,22 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotExpression class Compiles a statement with or without
- * assignment.
- * eg :
- *     - x = a;
- *     - x * y + 3;
- *     - x = 123
- *     - z * 5 + 4
+/**
+ * \brief An arithmetic expression, with or without assignment
+ *
+ * Examples:
+ * \code
+ * x = a
+ * x * y + 3
+ * x = 123
+ * z * 5 + 4
+ * \endcode
  */
-
-
-// compiles a statement such as "  " ou " z * 5 + 4 "
-//
 
 class CBotExpression : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotExpression
-     */
     CBotExpression();
-
-    /*!
-     * \brief ~CBotExpression
-     */
     ~CBotExpression();
 
     /*!

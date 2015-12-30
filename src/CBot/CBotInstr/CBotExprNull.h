@@ -24,21 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotExprNull class Management of the operand "null".
+/**
+ * \brief The "null" constant
  */
 class CBotExprNull : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotExprNull
-     */
     CBotExprNull();
-
-    /*!
-     * \brief ~CBotExprNull
-     */
     ~CBotExprNull();
 
     /*!

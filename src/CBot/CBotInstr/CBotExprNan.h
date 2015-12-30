@@ -24,21 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotExprNan class Management of the operand "nan".
+/**
+ * \brief The "nan" constant
  */
 class CBotExprNan : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotExprNan
-     */
     CBotExprNan();
-
-    /*!
-     * \brief ~CBotExprNan
-     */
     ~CBotExprNan();
 
     /*!

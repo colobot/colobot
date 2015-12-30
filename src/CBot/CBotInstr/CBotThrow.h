@@ -24,21 +24,13 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotThrow class Compiles instruction "throw".
+/**
+ * \brief The "throw" instruction
  */
 class CBotThrow : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotThrow
-     */
     CBotThrow();
-
-    /*!
-     * \brief ~CBotThrow
-     */
     ~CBotThrow();
 
     /*!

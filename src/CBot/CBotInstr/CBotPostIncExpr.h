@@ -24,27 +24,15 @@
 namespace CBot
 {
 
-//////////////////////////////////////////////////////////////////////////////////////
-// Management of pre-and post increment / decrement
-// There is no routine Compiles, the object is created directly
-// Compiles in CBotParExpr ::
-
-/*!
- * \brief The CBotPostIncExpr class
+/**
+ * \brief Post increment/decrement
+ *
+ * Compiled in CBotParExpr
  */
 class CBotPostIncExpr : public CBotInstr
 {
-
 public:
-
-    /*!
-     * \brief CBotPostIncExpr
-     */
     CBotPostIncExpr();
-
-    /*!
-     * \brief ~CBotPostIncExpr
-     */
     ~CBotPostIncExpr();
 
     /*!

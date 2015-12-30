@@ -24,22 +24,16 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotExprNum class Expression representing a number.
+/**
+ * \brief A number literal - 5, 1, 2.5, 3.75, etc. or a predefined numerical constant (see CBotToken::DefineNum())
+ *
+ * Can be of type ::CBotTypInt or ::CBotTypFloat
  */
 class CBotExprNum : public CBotInstr
 {
 
 public:
-
-    /*!
-     * \brief CBotExprNum
-     */
     CBotExprNum();
-
-    /*!
-     * \brief ~CBotExprNum
-     */
     ~CBotExprNum();
 
     /*!

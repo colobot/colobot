@@ -24,36 +24,29 @@
 namespace CBot
 {
 
-/*!
- * \brief The CBotLeftExpr class Accept the expressions that be to the left of
- * assignment.
+/**
+ * \brief Compilation of left side of an assignment
+ *
+ * Some examples:
+ * \code
+ * varname
+ * varname[3]
+ * varname.x
+ * varname.pos.x
+ * varname[2].pos.x
+ * varname[1].pos[2].x
+ * varname[1][2][3]
+ * \endcode
  */
 class CBotLeftExpr : public CBotInstr
 {
 public:
-
-    /*!
-     * \brief CBotLeftExpr
-     */
     CBotLeftExpr();
-
-    /*!
-     * \brief ~CBotLeftExpr
-     */
     ~CBotLeftExpr();
 
     /*!
      * \brief Compile Compiles an expression for a left-operand
      * (left of an assignment).
-     * eg :
-     *     - toto
-     *     - toto[ 3 ]
-     *     - toto.x
-     *     - toto.pos.x
-     *     - toto[2].pos.x
-     *     - toto[1].pos[2].x
-     *     - toto[1][2][3]
-     *
      * \param p
      * \param pStack
      * \return
