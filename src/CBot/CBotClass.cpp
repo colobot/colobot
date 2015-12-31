@@ -49,15 +49,15 @@ CBotClass::CBotClass(const std::string& name,
                      CBotClass* parent,
                      bool bIntrinsic)
 {
-    m_pParent   = parent;
+    m_parent    = parent;
     m_name      = name;
     m_pVar      = nullptr;
     m_pCalls    = nullptr;
     m_pMethod   = nullptr;
-    m_rMaj      = nullptr;
+    m_rUpdate   = nullptr;
     m_IsDef     = true;
     m_bIntrinsic= bIntrinsic;
-    m_nbVar     = m_pParent == nullptr ? 0 : m_pParent->m_nbVar;
+    m_nbVar     = m_parent == nullptr ? 0 : m_parent->m_nbVar;
 
     m_publicClasses.insert(this);
 }
@@ -99,7 +99,7 @@ void CBotClass::Purge()
     m_pMethod   = nullptr;
     m_IsDef     = false;
 
-    m_nbVar     = m_pParent == nullptr ? 0 : m_pParent->m_nbVar;
+    m_nbVar     = m_parent == nullptr ? 0 : m_parent->m_nbVar;
 
     m_next->Purge();
     m_next = nullptr;          // no longer belongs to this chain
@@ -198,7 +198,7 @@ std::string  CBotClass::GetName()
 CBotClass*  CBotClass::GetParent()
 {
     if ( this == nullptr ) return nullptr;
-    return m_pParent;
+    return m_parent;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -208,7 +208,7 @@ bool  CBotClass::IsChildOf(CBotClass* pClass)
     while ( p != nullptr )
     {
         if ( p == pClass ) return true;
-        p = p->m_pParent;
+        p = p->m_parent;
     }
     return false;
 }
@@ -229,7 +229,7 @@ CBotVar* CBotClass::GetItem(const std::string& name)
         if ( p->GetName() == name ) return p;
         p = p->GetNext();
     }
-    if ( m_pParent != nullptr ) return m_pParent->GetItem(name);
+    if (m_parent != nullptr ) return m_parent->GetItem(name);
     return nullptr;
 }
 
@@ -243,7 +243,7 @@ CBotVar* CBotClass::GetItemRef(int nIdent)
         if ( p->GetUniqNum() == nIdent ) return p;
         p = p->GetNext();
     }
-    if ( m_pParent != nullptr ) return m_pParent->GetItemRef(nIdent);
+    if (m_parent != nullptr ) return m_parent->GetItemRef(nIdent);
     return nullptr;
 }
 
@@ -301,9 +301,9 @@ bool CBotClass::AddFunction(const std::string& name,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotClass::AddUpdateFunc( void rMaj ( CBotVar* pThis, void* pUser ) )
+bool CBotClass::SetUpdateFunc(void rUpdate(CBotVar* thisVar, void* user))
 {
-    m_rMaj = rMaj;
+    m_rUpdate = rUpdate;
     return true;
 }
 
@@ -324,8 +324,8 @@ CBotTypResult CBotClass::CompileMethode(const std::string& name,
     // find the methods declared by user
 
     r = m_pMethod->CompileCall(name, ppParams, nIdent);
-    if ( r.Eq(CBotErrUndefCall) && m_pParent != nullptr )
-        return m_pParent->m_pMethod->CompileCall(name, ppParams, nIdent);
+    if ( r.Eq(CBotErrUndefCall) && m_parent != nullptr )
+        return m_parent->m_pMethod->CompileCall(name, ppParams, nIdent);
     return r;
 }
 
@@ -344,11 +344,11 @@ bool CBotClass::ExecuteMethode(long& nIdent,
     ret = m_pMethod->DoCall(nIdent, name, pThis, ppParams, pStack, pToken, this);
     if (ret >= 0) return ret;
 
-    if (m_pParent != nullptr)
+    if (m_parent != nullptr)
     {
-        ret = m_pParent->m_pCalls->DoCall(name, pThis, ppParams, pResult, pStack, pToken);
+        ret = m_parent->m_pCalls->DoCall(name, pThis, ppParams, pResult, pStack, pToken);
         if (ret >= 0) return ret;
-        ret = m_pParent->m_pMethod->DoCall(nIdent, name, pThis, ppParams, pStack, pToken, m_pParent);
+        ret = m_parent->m_pMethod->DoCall(nIdent, name, pThis, ppParams, pStack, pToken, m_parent);
     }
     return ret;
 }
@@ -493,7 +493,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
             }
         }
         CBotClass* classe = (pOld == nullptr) ? new CBotClass(name, pPapa) : pOld;
-        classe->Purge();                            // emptythe old definitions
+        classe->Purge();                            // empty the old definitions // TODO: Doesn't this remove all classes of the current program?
         classe->m_IsDef = false;                    // current definition
 
         if ( !IsOfType( p, ID_OPBLK) )
@@ -615,11 +615,11 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     pThis->SetUniqNum(-2);
                     pile->AddVar(pThis);
 
-                    if ( m_pParent )
+                    if (m_parent)
                     {
                         // makes "super" known
                         CBotToken TokenSuper(std::string("super"), std::string());
-                        CBotVar* pThis = CBotVar::Create(TokenSuper, CBotTypResult( CBotTypClass, m_pParent ) );
+                        CBotVar* pThis = CBotVar::Create(TokenSuper, CBotTypResult(CBotTypClass, m_parent) );
                         pThis->SetUniqNum(-3);
                         pile->AddVar(pThis);
                     }
@@ -641,7 +641,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                             pile->AddVar(pcopy);
                             pv = pv->GetNext();
                         }
-                        my = my->m_pParent;
+                        my = my->m_parent;
                     }
 
                     // compiles a method
@@ -745,13 +745,13 @@ CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
                 pStack->SetError( CBotErrNotClass, p );
                 return nullptr;
             }
-            pOld->m_pParent = pPapa;
+            pOld->m_parent = pPapa;
         }
         else
         {
             if (pOld != nullptr)
             {
-                pOld->m_pParent = nullptr;
+                pOld->m_parent = nullptr;
             }
         }
         IsOfType( p, ID_OPBLK); // necessarily
@@ -766,6 +766,11 @@ CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
     }
     pStack->SetError(CBotErrNoTerminator, p);
     return nullptr;
+}
+
+void CBotClass::Update(CBotVar* var, void* user)
+{
+    m_rUpdate(var, user);
 }
 
 } // namespace CBot

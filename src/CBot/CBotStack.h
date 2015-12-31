@@ -162,7 +162,7 @@ public:
     /**
      * \brief Fetch a variable by its token
      * \param pToken Token upon which search is performed
-     * \param bUpdate true to automatically call update function for classes, see CBotClass::AddUpdateFunc()
+     * \param bUpdate true to automatically call update function for classes, see CBotClass::SetUpdateFunc()
      * \return Found variable, nullptr if not found
      */
     CBotVar* FindVar(CBotToken*& pToken, bool bUpdate);
@@ -185,7 +185,7 @@ public:
      * This is faster than comparing names
      *
      * \param ident Unique identifier of a variable
-     * \param bUpdate true to automatically call update function for classes, see CBotClass::AddUpdateFunc()
+     * \param bUpdate true to automatically call update function for classes, see CBotClass::SetUpdateFunc()
      * \return Found variable, nullptr if not found
      */
     CBotVar* FindVar(long ident, bool bUpdate);
@@ -194,7 +194,7 @@ public:
      * \brief Find variable by its token and returns a copy of it
      *
      * \param pToken Token upon which search is performed
-     * \param bUpdate true to automatically call update function for classes, see CBotClass::AddUpdateFunc()
+     * \param bUpdate true to automatically call update function for classes, see CBotClass::SetUpdateFunc()
      * \return Found variable, nullptr if not found
      */
     CBotVar*        CopyVar(CBotToken& pToken, bool bUpdate = false);

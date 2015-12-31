@@ -33,7 +33,7 @@ namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVarClass* CBotVarClass::m_ExClass = nullptr;
+std::set<CBotVarClass*> CBotVarClass::m_instances{};
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
@@ -66,10 +66,7 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
     m_ItemIdent = type.Eq(CBotTypIntrinsic) ? 0 : CBotVar::NextUniqNum();
 
     // add to the list
-    if (m_ExClass != nullptr) m_ExClass->m_ExPrev = this;
-    m_ExNext  = m_ExClass;
-    m_ExPrev  = nullptr;
-    m_ExClass = this;
+    m_instances.insert(this);
 
     CBotClass* pClass = type.GetClass();
     CBotClass* pClass2 = pClass->GetParent();
@@ -79,7 +76,7 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
         m_pParent = new CBotVarClass(name, CBotTypResult(type.GetType(),pClass2) ); //, nIdent);
     }
 
-    SetClass( pClass ); //, nIdent );
+    SetClass( pClass );
 
 }
 
@@ -92,17 +89,8 @@ CBotVarClass::~CBotVarClass( )
     if ( m_pParent ) delete m_pParent;
     m_pParent = nullptr;
 
-    // frees the indirect object if necessary
-//    if ( m_Indirect != nullptr )
-//        m_Indirect->DecrementUse();
-
     // removes the class list
-    if ( m_ExPrev ) m_ExPrev->m_ExNext = m_ExNext;
-    else m_ExClass = m_ExNext;
-
-    if ( m_ExNext ) m_ExNext->m_ExPrev = m_ExPrev;
-    m_ExPrev = nullptr;
-    m_ExNext = nullptr;
+    m_instances.erase(this);
 
     delete    m_pVar;
 }
@@ -242,20 +230,13 @@ CBotClass* CBotVarClass::GetClass()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotVarClass::Maj(void* pUser)
 {
-/*    if (!bContinu && m_pMyThis != nullptr)
-        m_pMyThis->Maj(pUser, true);*/
-
-    // an update routine exist?
-
-    if ( m_pClass->m_rMaj == nullptr ) return;
-
     // retrieves the user pointer according to the class
     // or according to the parameter passed to CBotProgram::Run()
 
     if ( m_pUserPtr != nullptr) pUser = m_pUserPtr;
     if ( pUser == OBJECTDELETED ||
          pUser == OBJECTCREATED ) return;
-    m_pClass->m_rMaj( this, pUser );
+    m_pClass->Update(this, pUser);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -328,8 +309,6 @@ CBotVar* CBotVarClass::GetItemList()
 ////////////////////////////////////////////////////////////////////////////////
 std::string CBotVarClass::GetValString()
 {
-//    if ( m_Indirect != nullptr) return m_Indirect->GetValString();
-
     std::string    res;
 
     if ( m_pClass != nullptr )                        // not used for an array
@@ -440,12 +419,9 @@ CBotVarClass* CBotVarClass::GetPointer()
 ////////////////////////////////////////////////////////////////////////////////
 CBotVarClass* CBotVarClass::Find(long id)
 {
-    CBotVarClass*    p = m_ExClass;
-
-    while ( p != nullptr )
+    for (CBotVarClass* p : m_instances)
     {
-        if ( p->m_ItemIdent == id ) return p;
-        p = p->m_ExNext;
+        if (p->m_ItemIdent == id) return p;
     }
 
     return nullptr;

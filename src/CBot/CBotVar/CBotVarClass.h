@@ -21,6 +21,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+#include <set>
+
 namespace CBot
 {
 
@@ -93,12 +95,8 @@ public:
     void ConstructorSet() override;
 
 private:
-    //! Doubly linked list of all class instances - first
-    static CBotVarClass* m_ExClass;
-    //! Doubly linked list of all class instances - next
-    CBotVarClass* m_ExNext;
-    //! Doubly linked list of all class instances - previous
-    CBotVarClass* m_ExPrev;
+    //! List of all class instances - first
+    static std::set<CBotVarClass*> m_instances;
     //! Class definition
     CBotClass* m_pClass;
     //! Parent class instance

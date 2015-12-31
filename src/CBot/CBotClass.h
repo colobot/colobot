@@ -105,9 +105,6 @@ class CBotCStack;
 class CBotClass : public CBotLinkedList<CBotClass>
 {
 public:
-    //! Mark if is set or not
-    bool m_IsDef;
-
     /*!
      * \brief CBotClass Constructor. Once a class is created, it is known around
      * CBot intrinsic mode gives a class that is not managed by pointers.
@@ -149,12 +146,12 @@ public:
                      CBotTypResult rCompile(CBotVar* pThis, CBotVar*& pVar));
 
     /*!
-     * \brief AddUpdateFunc Defines routine to be called to update the elements
+     * \brief SetUpdateFunc Defines routine to be called to update the elements
      * of the class.
      * \param rMaj
      * \return
      */
-    bool AddUpdateFunc( void rMaj ( CBotVar* pThis, void* pUser ) );
+    bool SetUpdateFunc(void rUpdate(CBotVar* thisVar, void* user));
     //
 
     /*!
@@ -363,17 +360,22 @@ public:
      */
     bool CheckCall(CBotProgram* program, CBotDefParam* pParam, CBotToken*& pToken);
 
+    void Update(CBotVar* var, void* user);
+
 private:
     //! List of all public classes
     static std::set<CBotClass*> m_publicClasses;
 
-    //! Parent class.
-    CBotClass* m_pParent;
-    //! Name of this class.
+
+    //! true if this class is fully compiled, false if only precompiled
+    bool m_IsDef;
+    //! Name of this class
     std::string m_name;
-    //! Number of variables in the chain.
+    //! Parent class
+    CBotClass* m_parent;
+    //! Number of variables in the chain
     int m_nbVar;
-    //! Intrinsic class.
+    //! Intrinsic class
     bool m_bIntrinsic;
     //! Linked list of all class fields
     CBotVar* m_pVar;
@@ -381,8 +383,7 @@ private:
     CBotCallMethode* m_pCalls;
     //! Linked list of all class methods
     CBotFunction* m_pMethod;
-    void (*m_rMaj) ( CBotVar* pThis, void* pUser );
-    friend class CBotVarClass;
+    void (*m_rUpdate)(CBotVar* thisVar, void* user);
 
     //! How many times the program currently holding the lock called Lock()
     int m_lockCurrentCount = 0;
