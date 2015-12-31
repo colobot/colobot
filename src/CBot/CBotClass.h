@@ -24,6 +24,7 @@
 #include "CBot/CBotVar/CBotVar.h"
 
 #include <string>
+#include <deque>
 
 namespace CBot
 {
@@ -333,23 +334,24 @@ public:
      */
     static bool RestoreStaticState(FILE* pf);
 
-    /*!
-     * \brief Lock
-     * \param p
-     * \return
+    /**
+     * \brief Request a lock on this class (for "synchronized" keyword)
+     * \param prog Program that requests the lock
+     * \return true if lock was acquired, false if the lock is already taken
      */
-    bool Lock(CBotProgram* p);
+    bool Lock(CBotProgram* prog);
 
-    /*!
-     * \brief Unlock
+    /**
+     * \brief Release the lock acquired in Lock()
+     * If you call Lock() multiple times for the same program, you have to call Unlock() multiple times too
      */
     void Unlock();
 
-    /*!
-     * \brief FreeLock
-     * \param p
+    /**
+     * \brief Release all locks in all classes held by this program
+     * \param prog Program to release the locks from
      */
-    static void FreeLock(CBotProgram* p);
+    static void FreeLock(CBotProgram* prog);
 
     /*!
      * \brief CheckCall Test if a procedure name is already defined somewhere.
@@ -383,12 +385,11 @@ private:
     CBotFunction* m_pMethod;
     void (*m_rMaj) ( CBotVar* pThis, void* pUser );
     friend class CBotVarClass;
-    //! For Lock / UnLock.
-    int m_cptLock;
-    //! Lock for reentrancy.
-    int m_cptOne;
-    //! Processes waiting for sync.
-    CBotProgram* m_ProgInLock[5];
+
+    //! How many times the program currently holding the lock called Lock()
+    int m_lockCurrentCount;
+    //! Programs waiting for lock
+    std::deque<CBotProgram*> m_lockProg;
 };
 
 } // namespace CBot

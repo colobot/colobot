@@ -27,6 +27,8 @@
 #include "CBot/CBotInstr/CBotListArray.h"
 #include "CBot/CBotInstr/CBotEmpty.h"
 
+#include "CBot/CBotVar/CBotVar.h"
+
 #include "CBot/CBotExternalCall.h"
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
@@ -34,7 +36,7 @@
 #include "CBot/CBotFileUtils.h"
 #include "CBot/CBotCallMethode.h"
 
-#include "CBot/CBotVar/CBotVar.h"
+#include <algorithm>
 
 namespace CBot
 {
@@ -55,14 +57,10 @@ CBotClass::CBotClass(const std::string& name,
     m_rMaj      = nullptr;
     m_IsDef     = true;
     m_bIntrinsic= bIntrinsic;
-    m_cptLock   = 0;
-    m_cptOne    = 0;
     m_nbVar     = m_pParent == nullptr ? 0 : m_pParent->m_nbVar;
 
-    for ( int j= 0; j< 5 ; j++ )
-    {
-        m_ProgInLock[j] = nullptr;
-    }
+    m_lockCurrentCount = 0;
+    m_lockProg.clear();
 
 
     // is located alone in the list
@@ -126,38 +124,26 @@ void CBotClass::Purge()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotClass::Lock(CBotProgram* p)
+bool CBotClass::Lock(CBotProgram* prog)
 {
-    int i = m_cptLock++;
-
-    if ( i == 0 )
+    if (m_lockProg.size() == 0)
     {
-        m_cptOne = 1;
-        m_ProgInLock[0] = p;
+        m_lockCurrentCount = 1;
+        m_lockProg.push_back(prog);
         return true;
     }
-    if ( p == m_ProgInLock[0] )
+    if (prog == m_lockProg[0])
     {
-        m_cptOne++;
-        m_cptLock--;                                // has already been counted
+        m_lockCurrentCount++;
         return true;
     }
 
-    for ( int j = 1 ; j <= i ; j++)
+    if (std::find(m_lockProg.begin(), m_lockProg.end(), prog) != m_lockProg.end())
     {
-        if ( p == m_ProgInLock[j] )
-        {
-            m_cptLock--;
-            return false;   // already pending
-        }
+        return false; // already pending
     }
 
-    if ( i < 5 )    // max 5 in query
-    {
-        m_ProgInLock[i] = p;                        // located in a queue
-    }
-    else
-        m_cptLock--;
+    m_lockProg.push_back(prog);
 
     return false;
 }
@@ -165,38 +151,24 @@ bool CBotClass::Lock(CBotProgram* p)
 ////////////////////////////////////////////////////////////////////////////////
 void CBotClass::Unlock()
 {
-    if ( --m_cptOne > 0 ) return ;
+    if (--m_lockCurrentCount > 0) return; // if called Lock() multiple times, wait for all to unlock
 
-    int i = --m_cptLock;
-    if ( i<0 )
-    {
-        m_cptLock = 0;
-        return;
-    }
-
-    for ( int j= 0; j< i ; j++ )
-    {
-        m_ProgInLock[j] = m_ProgInLock[j+1];
-    }
-    m_ProgInLock[i] = nullptr;
+    m_lockProg.pop_front();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotClass::FreeLock(CBotProgram* p)
+void CBotClass::FreeLock(CBotProgram* prog)
 {
     CBotClass* pClass = m_ExClass;
 
-    while ( pClass != nullptr )
+    while (pClass != nullptr)
     {
-        if ( p == pClass->m_ProgInLock[0] )
+        if (pClass->m_lockProg.size() > 0 && prog == pClass->m_lockProg[0])
         {
-            pClass->m_cptLock -= pClass->m_cptOne;
-            pClass->m_cptOne = 0;
+            pClass->m_lockCurrentCount = 0;
         }
 
-        for ( int j = 1; j < 5 ; j++ )
-            if ( p == pClass->m_ProgInLock[j] )
-                pClass->m_cptLock--;
+        pClass->m_lockProg.erase(std::remove(pClass->m_lockProg.begin(), pClass->m_lockProg.end(), prog));
 
         pClass = pClass->m_ExNext;
     }
