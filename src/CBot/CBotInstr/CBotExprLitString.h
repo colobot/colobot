@@ -25,13 +25,13 @@ namespace CBot
 {
 
 /**
- * \brief true/false constants
+ * \brief A string literal - "Some text"
  */
-class CBotExprBool : public CBotInstr
+class CBotExprLitString : public CBotInstr
 {
 public:
-    CBotExprBool();
-    ~CBotExprBool();
+    CBotExprLitString();
+    ~CBotExprLitString();
 
     /*!
      * \brief Compile
@@ -42,7 +42,7 @@ public:
     static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
 
     /*!
-     * \brief Execute Executes, returns true or false.
+     * \brief Execute Execute, returns the corresponding string.
      * \param pj
      * \return
      */
@@ -56,7 +56,8 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotExprBool"; }
+    virtual const std::string GetDebugName() { return "CBotExprLitString"; }
+    virtual std::string GetDebugData();
 };
 
 } // namespace CBot

@@ -36,11 +36,11 @@ namespace CBot
  * * pre- or post- incremented or decremented variable -- CBotPreIncExpr, CBotPostIncExpr -- a++, ++a, a--, --a
  * * a function call -- CBotInstrCall
  * * a class method call -- CBotInstrMethode
- * * number literal (or numerical constant from CBotToken::DefineNum()) -- CBotExprNum
- * * string literal -- CBotExprAlpha
- * * boolean literal -- CBotExprBool -- true/false
- * * null -- CBotExprNull
- * * nan -- CBotExprNan
+ * * number literal (or numerical constant from CBotToken::DefineNum()) -- CBotExprLitNum
+ * * string literal -- CBotExprLitString
+ * * boolean literal -- CBotExprLitBool -- true/false
+ * * null -- CBotExprLitNull
+ * * nan -- CBotExprLitNan
  * * class instance creation with "new" -- CBotNew
  */
 class CBotParExpr : public CBotInstr

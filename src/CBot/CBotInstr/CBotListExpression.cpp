@@ -17,12 +17,12 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "CBot/CBotInstr/CBotListExpression.h"
+#include "CBot/CBotInstr/CBotDefBoolean.h"
+#include "CBot/CBotInstr/CBotDefFloat.h"
+#include "CBot/CBotInstr/CBotDefInt.h"
+#include "CBot/CBotInstr/CBotDefString.h"
 #include "CBot/CBotInstr/CBotExpression.h"
-#include "CBot/CBotInstr/CBotIString.h"
-#include "CBot/CBotInstr/CBotFloat.h"
-#include "CBotBoolean.h"
-#include "CBot/CBotInstr/CBotInt.h"
+#include "CBot/CBotInstr/CBotListExpression.h"
 
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
@@ -34,10 +34,10 @@ namespace CBot
 /// Seeks a declaration of variable or expression
 static CBotInstr* CompileInstrOrDefVar(CBotToken* &p, CBotCStack* pStack)
 {
-    CBotInstr*  i = CBotInt::Compile( p, pStack, false, true );         // Is this a declaration of an integer?
-    if ( i== nullptr ) i = CBotFloat::Compile( p, pStack, false, true );   // or a real number?
-    if ( i== nullptr ) i = CBotBoolean::Compile( p, pStack, false, true ); // or a boolean?
-    if ( i== nullptr ) i = CBotIString::Compile( p, pStack, false, true ); // ar a string?
+    CBotInstr*  i = CBotDefInt::Compile(p, pStack, false, true );         // Is this a declaration of an integer?
+    if ( i== nullptr ) i = CBotDefFloat::Compile(p, pStack, false, true );   // or a real number?
+    if ( i== nullptr ) i = CBotDefBoolean::Compile(p, pStack, false, true ); // or a boolean?
+    if ( i== nullptr ) i = CBotDefString::Compile(p, pStack, false, true ); // ar a string?
     if ( i== nullptr ) i = CBotExpression::Compile( p, pStack );           // compiles an expression
     return i;
 }

@@ -17,10 +17,10 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "CBot/CBotInstr/CBotBoolean.h"
+#include "CBot/CBotInstr/CBotDefString.h"
+
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
 #include "CBot/CBotInstr/CBotTwoOpExpr.h"
-#include "CBot/CBotInstr/CBotInstArray.h"
 
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
@@ -31,62 +31,46 @@ namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotBoolean::CBotBoolean()
+CBotDefString::CBotDefString()
 {
-    m_var = m_expr = nullptr;
+    m_var    = nullptr;
+    m_expr   = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotBoolean::~CBotBoolean()
+CBotDefString::~CBotDefString()
 {
     delete m_var;
     delete m_expr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotBoolean::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool noskip)
+CBotInstr* CBotDefString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool noskip)
 {
     CBotToken*    pp = cont ? nullptr : p;
 
-    if (!cont && !IsOfType(p, ID_BOOLEAN, ID_BOOL)) return nullptr;
+    if (!cont && !IsOfType(p, ID_STRING)) return nullptr;
 
-    CBotBoolean*    inst = static_cast<CBotBoolean*>(CompileArray(p, pStack, CBotTypBoolean));
+    CBotDefString*    inst = static_cast<CBotDefString*>(CompileArray(p, pStack, CBotTypString));
     if (inst != nullptr || !pStack->IsOk()) return inst;
 
     CBotCStack* pStk = pStack->TokenStack(pp);
 
-    inst = new CBotBoolean();
+    inst = new CBotDefString();
 
     inst->m_expr = nullptr;
 
     CBotToken*    vartoken = p;
     inst->SetToken(vartoken);
-    CBotVar*    var = nullptr;
 
     if (nullptr != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
     {
-        (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = CBotTypBoolean;
-        if (pStk->CheckVarLocal(vartoken))                    // redefinition of the variable
+        (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = CBotTypString;
+        if (pStk->CheckVarLocal(vartoken))
         {
-            pStk->SetError(CBotErrRedefVar, vartoken);
+            pStk->SetStartError(vartoken->GetStart());
+            pStk->SetError(CBotErrRedefVar, vartoken->GetEnd());
             goto error;
-        }
-
-        if (IsOfType(p,  ID_OPBRK))
-        {
-            delete inst;                                    // type is not CBotInt
-            p = vartoken;                                    // resutns to the variable name
-
-            // compiles an array declaration
-
-            inst = static_cast<CBotBoolean*>(CBotInstArray::Compile(p, pStk, CBotTypBoolean));
-
-            if (!pStk->IsOk() )
-            {
-                pStk->SetError(CBotErrCloseIndex, p->GetStart());
-                goto error;
-            }
-            goto suite;            // no assignment, variable already created
         }
 
         if (IsOfType(p,  ID_ASS))
@@ -95,22 +79,22 @@ CBotInstr* CBotBoolean::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
             {
                 goto error;
             }
-            if (!pStk->GetTypResult().Eq(CBotTypBoolean))
+/*            if (!pStk->GetTypResult().Eq(CBotTypString))            // type compatible ?
             {
                 pStk->SetError(CBotErrBadType1, p->GetStart());
                 goto error;
-            }
+            }*/
         }
 
-        var = CBotVar::Create(*vartoken, CBotTypBoolean);// create the variable (evaluated after the assignment)
+        CBotVar*    var = CBotVar::Create(*vartoken, CBotTypString);
         var->SetInit(inst->m_expr != nullptr ? CBotVar::InitType::DEF : CBotVar::InitType::UNDEF);
         var->SetUniqNum(
             (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
         pStack->AddVar(var);
-suite:
+
         if (IsOfType(p,  ID_COMMA))
         {
-            if (nullptr != ( inst->m_next2b = CBotBoolean::Compile(p, pStk, true, noskip)))
+            if (nullptr != ( inst->m_next2b = CBotDefString::Compile(p, pStk, true, noskip)))
             {
                 return pStack->Return(inst, pStk);
             }
@@ -130,9 +114,9 @@ error:
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotBoolean::Execute(CBotStack* &pj)
+bool CBotDefString::Execute(CBotStack* &pj)
 {
-    CBotStack*    pile = pj->AddStack(this);//essential for SetState()
+    CBotStack*    pile = pj->AddStack(this);
 
     if ( pile->GetState()==0)
     {
@@ -151,9 +135,10 @@ bool CBotBoolean::Execute(CBotStack* &pj)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotBoolean::RestoreState(CBotStack* &pj, bool bMain)
+void CBotDefString::RestoreState(CBotStack* &pj, bool bMain)
 {
     CBotStack*    pile = pj;
+
     if (bMain)
     {
         pile = pj->RestoreStack(this);
@@ -161,7 +146,7 @@ void CBotBoolean::RestoreState(CBotStack* &pj, bool bMain)
 
         if ( pile->GetState()==0)
         {
-            if (m_expr) m_expr->RestoreState(pile, bMain);        // initial value interrupted?
+            if (m_expr) m_expr->RestoreState(pile, bMain);
             return;
         }
     }
@@ -169,10 +154,10 @@ void CBotBoolean::RestoreState(CBotStack* &pj, bool bMain)
     m_var->RestoreState(pile, bMain);
 
     if (m_next2b)
-         m_next2b->RestoreState(pile, bMain);                // other(s) definition(s)
+         m_next2b->RestoreState(pile, bMain);
 }
 
-std::map<std::string, CBotInstr*> CBotBoolean::GetDebugLinks()
+std::map<std::string, CBotInstr*> CBotDefString::GetDebugLinks()
 {
     auto links = CBotInstr::GetDebugLinks();
     links["m_var"] = m_var;

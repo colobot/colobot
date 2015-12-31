@@ -27,11 +27,11 @@ namespace CBot
 /**
  * \brief Definition of boolean variable - bool a, b = false
  */
-class CBotBoolean : public CBotInstr
+class CBotDefBoolean : public CBotInstr
 {
 public:
-    CBotBoolean();
-    ~CBotBoolean();
+    CBotDefBoolean();
+    ~CBotDefBoolean();
 
     /*!
      * \brief Compile
@@ -58,7 +58,7 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotBoolean"; }
+    virtual const std::string GetDebugName() { return "CBotDefBoolean"; }
     virtual std::map<std::string, CBotInstr*> GetDebugLinks();
 
 private:

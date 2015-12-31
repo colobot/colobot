@@ -25,32 +25,26 @@ namespace CBot
 {
 
 /**
- * \brief Definition of an array (of any type)
- *
- * Examples:
- * \code
- * int a[12];
- * float x[];
- * bool[] z;
- * \endcode
+ * \brief Definition of a float variable - float a, b = 12.4
  */
-class CBotInstArray : public CBotInstr
+class CBotDefFloat : public CBotInstr
 {
 public:
-    CBotInstArray();
-    ~CBotInstArray();
+    CBotDefFloat();
+    ~CBotDefFloat();
 
     /*!
      * \brief Compile
      * \param p
      * \param pStack
-     * \param type
+     * \param cont
+     * \param noskip
      * \return
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResult type);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, bool cont = false, bool noskip=false);
 
     /*!
-     * \brief Execute Executes the definition of an array.
+     * \brief Execute Executes the definition of a real variable.
      * \param pj
      * \return
      */
@@ -64,18 +58,14 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotInstArray"; }
-    virtual std::string GetDebugData();
+    virtual const std::string GetDebugName() { return "CBotDefFloat"; }
     virtual std::map<std::string, CBotInstr*> GetDebugLinks();
 
 private:
-    //! The variables to initialize.
+    //! Variable to initialise.
     CBotInstr* m_var;
-    //! List of assignments for array.
-    CBotInstr* m_listass;
-    //! Type of elements.
-    CBotTypResult m_typevar;
-
+    //! A value to put, if there is.
+    CBotInstr* m_expr;
 };
 
 } // namespace CBot

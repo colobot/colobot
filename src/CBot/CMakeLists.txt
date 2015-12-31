@@ -1,75 +1,75 @@
 set(SOURCES
-    CBotUtils.cpp
-    CBotFileUtils.cpp
+    CBotCallMethode.cpp
     CBotClass.cpp
+    CBotCStack.cpp
     CBotDebug.cpp
+    CBotDefParam.cpp
+    CBotExternalCall.cpp
+    CBotFileUtils.cpp
     CBotProgram.cpp
     CBotStack.cpp
-    CBotCStack.cpp
     CBotToken.cpp
-    CBotExternalCall.cpp
-    CBotDefParam.cpp
-    CBotCallMethode.cpp
     CBotTypResult.cpp
-    CBotInstr/CBotInstr.cpp
-    CBotInstr/CBotInstrUtils.cpp
-    CBotInstr/CBotWhile.cpp
-    CBotInstr/CBotDo.cpp
-    CBotInstr/CBotFor.cpp
-    CBotInstr/CBotListExpression.cpp
-    CBotInstr/CBotSwitch.cpp
-    CBotInstr/CBotCase.cpp
-    CBotInstr/CBotBreak.cpp
-    CBotInstr/CBotTry.cpp
-    CBotInstr/CBotCatch.cpp
-    CBotInstr/CBotThrow.cpp
-    CBotInstr/CBotExprAlpha.cpp
-    CBotInstr/CBotExprNum.cpp
-    CBotInstr/CBotNew.cpp
-    CBotInstr/CBotExprNan.cpp
-    CBotInstr/CBotExprNull.cpp
-    CBotInstr/CBotExprBool.cpp
-    CBotInstr/CBotLeftExprVar.cpp
-    CBotInstr/CBotPreIncExpr.cpp
-    CBotInstr/CBotPostIncExpr.cpp
-    CBotInstr/CBotExprVar.cpp
-    CBotInstr/CBotInstrMethode.cpp
-    CBotInstr/CBotInstrCall.cpp
-    CBotInstr/CBotListInstr.cpp
+    CBotUtils.cpp
     CBotInstr/CBotBlock.cpp
-    CBotInstr/CBotExprUnaire.cpp
-    CBotInstr/CBotParExpr.cpp
     CBotInstr/CBotBoolExpr.cpp
-    CBotInstr/CBotLogicExpr.cpp
-    CBotInstr/CBotTwoOpExpr.cpp
-    CBotInstr/CBotExpression.cpp
-    CBotInstr/CBotIndexExpr.cpp
-    CBotInstr/CBotFieldExpr.cpp
-    CBotInstr/CBotLeftExpr.cpp
+    CBotInstr/CBotBreak.cpp
+    CBotInstr/CBotCase.cpp
+    CBotInstr/CBotCatch.cpp
     CBotInstr/CBotCondition.cpp
-    CBotInstr/CBotClassInst.cpp
-    CBotInstr/CBotIString.cpp
-    CBotInstr/CBotFloat.cpp
-    CBotInstr/CBotBoolean.cpp
+    CBotInstr/CBotDefArray.cpp
+    CBotInstr/CBotDefBoolean.cpp
+    CBotInstr/CBotDefClass.cpp
+    CBotInstr/CBotDefFloat.cpp
+    CBotInstr/CBotDefInt.cpp
+    CBotInstr/CBotDefString.cpp
+    CBotInstr/CBotDo.cpp
     CBotInstr/CBotEmpty.cpp
-    CBotInstr/CBotReturn.cpp
-    CBotInstr/CBotIf.cpp
-    CBotInstr/CBotListArray.cpp
-    CBotInstr/CBotInstArray.cpp
-    CBotInstr/CBotInt.cpp
+    CBotInstr/CBotExpression.cpp
+    CBotInstr/CBotExprLitBool.cpp
+    CBotInstr/CBotExprLitNan.cpp
+    CBotInstr/CBotExprLitNull.cpp
+    CBotInstr/CBotExprLitNum.cpp
+    CBotInstr/CBotExprLitString.cpp
+    CBotInstr/CBotExprUnaire.cpp
+    CBotInstr/CBotExprVar.cpp
+    CBotInstr/CBotFieldExpr.cpp
+    CBotInstr/CBotFor.cpp
     CBotInstr/CBotFunction.cpp
+    CBotInstr/CBotIf.cpp
+    CBotInstr/CBotIndexExpr.cpp
+    CBotInstr/CBotInstrCall.cpp
+    CBotInstr/CBotInstr.cpp
+    CBotInstr/CBotInstrMethode.cpp
+    CBotInstr/CBotInstrUtils.cpp
+    CBotInstr/CBotLeftExpr.cpp
+    CBotInstr/CBotLeftExprVar.cpp
+    CBotInstr/CBotListArray.cpp
+    CBotInstr/CBotListExpression.cpp
+    CBotInstr/CBotListInstr.cpp
+    CBotInstr/CBotLogicExpr.cpp
+    CBotInstr/CBotNew.cpp
+    CBotInstr/CBotParExpr.cpp
+    CBotInstr/CBotPostIncExpr.cpp
+    CBotInstr/CBotPreIncExpr.cpp
+    CBotInstr/CBotReturn.cpp
+    CBotInstr/CBotSwitch.cpp
+    CBotInstr/CBotThrow.cpp
+    CBotInstr/CBotTry.cpp
+    CBotInstr/CBotTwoOpExpr.cpp
+    CBotInstr/CBotWhile.cpp
     CBotVar/CBotVarArray.cpp
-    CBotVar/CBotVarPointer.cpp
-    CBotVar/CBotVarClass.cpp
     CBotVar/CBotVarBoolean.cpp
-    CBotVar/CBotVarString.cpp
+    CBotVar/CBotVarClass.cpp
+    CBotVar/CBotVar.cpp
     CBotVar/CBotVarFloat.cpp
     CBotVar/CBotVarInt.cpp
-    CBotVar/CBotVar.cpp
-    stdlib/FileFunctions.cpp
-    stdlib/StringFunctions.cpp
-    stdlib/MathFunctions.cpp
+    CBotVar/CBotVarPointer.cpp
+    CBotVar/CBotVarString.cpp
     stdlib/Compilation.cpp
+    stdlib/FileFunctions.cpp
+    stdlib/MathFunctions.cpp
+    stdlib/StringFunctions.cpp
 )
 
 # Includes

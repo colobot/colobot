@@ -18,18 +18,19 @@
  */
 
 #include "CBot/CBotInstr/CBotParExpr.h"
+
+#include "CBot/CBotInstr/CBotExpression.h"
+#include "CBot/CBotInstr/CBotExprLitBool.h"
+#include "CBot/CBotInstr/CBotExprLitNan.h"
+#include "CBot/CBotInstr/CBotExprLitNull.h"
+#include "CBot/CBotInstr/CBotExprLitNum.h"
+#include "CBot/CBotInstr/CBotExprLitString.h"
 #include "CBot/CBotInstr/CBotExprUnaire.h"
 #include "CBot/CBotInstr/CBotExprVar.h"
 #include "CBot/CBotInstr/CBotInstrCall.h"
+#include "CBot/CBotInstr/CBotNew.h"
 #include "CBot/CBotInstr/CBotPostIncExpr.h"
 #include "CBot/CBotInstr/CBotPreIncExpr.h"
-#include "CBot/CBotInstr/CBotExprNum.h"
-#include "CBot/CBotInstr/CBotExprAlpha.h"
-#include "CBot/CBotInstr/CBotExprBool.h"
-#include "CBot/CBotInstr/CBotNew.h"
-#include "CBot/CBotInstr/CBotExprNull.h"
-#include "CBot/CBotInstr/CBotExprNan.h"
-#include "CBot/CBotInstr/CBotExpression.h"
 
 #include "CBot/CBotVar/CBotVar.h"
 
@@ -138,14 +139,14 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     if (p->GetType() == TokenTypNum ||
         p->GetType() == TokenTypDef )
     {
-        CBotInstr* inst = CBotExprNum::Compile(p, pStk);
+        CBotInstr* inst = CBotExprLitNum::Compile(p, pStk);
         return pStack->Return(inst, pStk);
     }
 
     // is this a chaine?
     if (p->GetType() == TokenTypString)
     {
-        CBotInstr* inst = CBotExprAlpha::Compile(p, pStk);
+        CBotInstr* inst = CBotExprLitString::Compile(p, pStk);
         return pStack->Return(inst, pStk);
     }
 
@@ -153,7 +154,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     if (p->GetType() == ID_TRUE ||
         p->GetType() == ID_FALSE )
     {
-        CBotInstr* inst = CBotExprBool::Compile(p, pStk);
+        CBotInstr* inst = CBotExprLitBool::Compile(p, pStk);
         return pStack->Return(inst, pStk);
     }
 
@@ -167,7 +168,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     // is a null pointer
     if (IsOfType(p, ID_NULL))
     {
-        CBotInstr* inst = new CBotExprNull ();
+        CBotInstr* inst = new CBotExprLitNull();
         inst->SetToken(pp);
         CBotVar* var = CBotVar::Create("", CBotTypNullPointer);
         pStk->SetVar(var);
@@ -177,7 +178,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     // is a number nan
     if (IsOfType(p, ID_NAN))
     {
-        CBotInstr* inst = new CBotExprNan ();
+        CBotInstr* inst = new CBotExprLitNan();
         inst->SetToken(pp);
         CBotVar* var = CBotVar::Create("", CBotTypInt);
         var->SetInit(CBotVar::InitType::IS_NAN);

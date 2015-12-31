@@ -466,7 +466,7 @@ private:
     CBotStack*        m_next;
     CBotStack*        m_next2;
     CBotStack*        m_prev;
-    friend class CBotInstArray;
+    friend class CBotDefArray;
 
     int                m_state;
     int                m_step;

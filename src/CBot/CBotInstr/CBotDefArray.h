@@ -25,37 +25,32 @@ namespace CBot
 {
 
 /**
- * \brief Definition of class instance variable
+ * \brief Definition of an array (of any type)
  *
  * Examples:
  * \code
- * ClassName varname;
- * ClassName varname();
- * ClassName varname = new ClassName();
- * ClassName varname = new ClassName(args);
- * ClassName varname1(), varname2();
- * ClassName varname1 = new ClassName(), varname2;
+ * int a[12];
+ * float x[];
+ * bool[] z;
  * \endcode
  */
-class CBotClassInst : public CBotInstr
+class CBotDefArray : public CBotInstr
 {
-
 public:
-    CBotClassInst();
-    ~CBotClassInst();
+    CBotDefArray();
+    ~CBotDefArray();
 
     /*!
-     * \brief Compile Definition of pointer (s) to an object style CPoint A, B ;
+     * \brief Compile
      * \param p
      * \param pStack
-     * \param pClass
+     * \param type
      * \return
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* pClass = nullptr);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResult type);
 
     /*!
-     * \brief Execute Declaration of the instance of a class, for example:
-     * CPoint A, B;
+     * \brief Execute Executes the definition of an array.
      * \param pj
      * \return
      */
@@ -69,21 +64,17 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotClassInstr"; }
+    virtual const std::string GetDebugName() { return "CBotDefArray"; }
+    virtual std::string GetDebugData();
     virtual std::map<std::string, CBotInstr*> GetDebugLinks();
 
 private:
-
-    //! Variable to initialise.
+    //! The variables to initialize.
     CBotInstr* m_var;
-    //! Parameters to be evaluated for the contructor.
-    CBotInstr* m_parameters;
-    //! A value to put, if there is.
-    CBotInstr* m_expr;
-    //! Has it parameters.
-    bool m_hasParams;
-    //! Constructor method unique identifier
-    long m_nMethodeIdent;
+    //! List of assignments for array.
+    CBotInstr* m_listass;
+    //! Type of elements.
+    CBotTypResult m_typevar;
 
 };
 

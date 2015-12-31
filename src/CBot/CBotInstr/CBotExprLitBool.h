@@ -25,16 +25,24 @@ namespace CBot
 {
 
 /**
- * \brief The "null" constant
+ * \brief A boolean literal - true/false
  */
-class CBotExprNull : public CBotInstr
+class CBotExprLitBool : public CBotInstr
 {
 public:
-    CBotExprNull();
-    ~CBotExprNull();
+    CBotExprLitBool();
+    ~CBotExprLitBool();
 
     /*!
-     * \brief Execute Executes, returns an empty pointer.
+     * \brief Compile
+     * \param p
+     * \param pStack
+     * \return
+     */
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
+
+    /*!
+     * \brief Execute Executes, returns true or false.
      * \param pj
      * \return
      */
@@ -48,8 +56,7 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotExprNull"; }
-    virtual std::string GetDebugData() { return "null"; }
+    virtual const std::string GetDebugName() { return "CBotExprLitBool"; }
 };
 
 } // namespace CBot

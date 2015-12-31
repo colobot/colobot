@@ -18,7 +18,6 @@
  */
 
 #include "CBot/CBotStack.h"
-#include "CBotExternalCall.h"
 
 #include "CBot/CBotInstr/CBotFunction.h"
 
@@ -27,6 +26,7 @@
 
 #include "CBot/CBotFileUtils.h"
 #include "CBot/CBotUtils.h"
+#include "CBot/CBotExternalCall.h"
 
 #include <cassert>
 #include <cstdlib>

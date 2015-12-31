@@ -27,7 +27,7 @@
 #include "CBot/CBotInstr/CBotListArray.h"
 #include "CBot/CBotInstr/CBotEmpty.h"
 
-#include "CBotExternalCall.h"
+#include "CBot/CBotExternalCall.h"
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
 #include "CBot/CBotUtils.h"

@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "CBot/CBotInstr/CBotExprAlpha.h"
+#include "CBot/CBotInstr/CBotExprLitString.h"
 
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
@@ -28,21 +28,21 @@ namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotExprAlpha::CBotExprAlpha()
+CBotExprLitString::CBotExprLitString()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotExprAlpha::~CBotExprAlpha()
+CBotExprLitString::~CBotExprLitString()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotExprAlpha::Compile(CBotToken* &p, CBotCStack* pStack)
+CBotInstr* CBotExprLitString::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     CBotCStack* pStk = pStack->TokenStack();
 
-    CBotExprAlpha* inst = new CBotExprAlpha();
+    CBotExprLitString* inst = new CBotExprLitString();
 
     inst->SetToken(p);
     p = p->GetNext();
@@ -54,7 +54,7 @@ CBotInstr* CBotExprAlpha::Compile(CBotToken* &p, CBotCStack* pStack)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotExprAlpha::Execute(CBotStack* &pj)
+bool CBotExprLitString::Execute(CBotStack* &pj)
 {
     CBotStack*    pile = pj->AddStack(this);
 
@@ -73,12 +73,12 @@ bool CBotExprAlpha::Execute(CBotStack* &pj)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotExprAlpha::RestoreState(CBotStack* &pj, bool bMain)
+void CBotExprLitString::RestoreState(CBotStack* &pj, bool bMain)
 {
     if (bMain) pj->RestoreStack(this);
 }
 
-std::string CBotExprAlpha::GetDebugData()
+std::string CBotExprLitString::GetDebugData()
 {
     return m_token.GetString();
 }

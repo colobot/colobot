@@ -19,22 +19,22 @@
 
 #include "CBot/CBotInstr/CBotInstr.h"
 
-#include "CBot/CBotInstr/CBotFor.h"
-#include "CBot/CBotInstr/CBotDo.h"
 #include "CBot/CBotInstr/CBotBreak.h"
-#include "CBot/CBotInstr/CBotSwitch.h"
-#include "CBot/CBotInstr/CBotTry.h"
-#include "CBot/CBotInstr/CBotThrow.h"
-#include "CBot/CBotInstr/CBotInt.h"
-#include "CBot/CBotInstr/CBotFloat.h"
-#include "CBot/CBotInstr/CBotWhile.h"
-#include "CBot/CBotInstr/CBotIString.h"
-#include "CBot/CBotInstr/CBotBoolean.h"
+#include "CBot/CBotInstr/CBotDefArray.h"
+#include "CBot/CBotInstr/CBotDefBoolean.h"
+#include "CBot/CBotInstr/CBotDefClass.h"
+#include "CBot/CBotInstr/CBotDefFloat.h"
+#include "CBot/CBotInstr/CBotDefInt.h"
+#include "CBot/CBotInstr/CBotDefString.h"
+#include "CBot/CBotInstr/CBotDo.h"
+#include "CBot/CBotInstr/CBotExpression.h"
+#include "CBot/CBotInstr/CBotFor.h"
 #include "CBot/CBotInstr/CBotIf.h"
 #include "CBot/CBotInstr/CBotReturn.h"
-#include "CBot/CBotInstr/CBotClassInst.h"
-#include "CBot/CBotInstr/CBotExpression.h"
-#include "CBot/CBotInstr/CBotInstArray.h"
+#include "CBot/CBotInstr/CBotSwitch.h"
+#include "CBot/CBotInstr/CBotThrow.h"
+#include "CBot/CBotInstr/CBotTry.h"
+#include "CBot/CBotInstr/CBotWhile.h"
 
 #include "CBot/CBotVar/CBotVar.h"
 
@@ -209,17 +209,17 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
         return CBotThrow::Compile(p, pStack);
 
     case ID_INT:
-        return CBotInt::Compile(p, pStack);
+        return CBotDefInt::Compile(p, pStack);
 
     case ID_FLOAT:
-        return CBotFloat::Compile(p, pStack);
+        return CBotDefFloat::Compile(p, pStack);
 
     case ID_STRING:
-        return CBotIString::Compile(p, pStack);
+        return CBotDefString::Compile(p, pStack);
 
     case ID_BOOLEAN:
     case ID_BOOL:
-        return CBotBoolean::Compile(p, pStack);
+        return CBotDefBoolean::Compile(p, pStack);
 
     case ID_IF:
         return CBotIf::Compile(p, pStack);
@@ -254,7 +254,7 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
         if (CBotClass::Find(p) != nullptr) // Does class with this name exist?
         {
             // Yes, compile the declaration of the instance
-            return CBotClassInst::Compile(p, pStack);
+            return CBotDefClass::Compile(p, pStack);
         }
     }
 
@@ -336,12 +336,12 @@ CBotInstr* CBotInstr::CompileArray(CBotToken* &p, CBotCStack* pStack, CBotTypRes
     // compiles an array declaration
     if (first) return nullptr ;
 
-    CBotInstr* inst = CBotInstArray::Compile(p, pStack, type);
+    CBotInstr* inst = CBotDefArray::Compile(p, pStack, type);
     if (inst == nullptr) return nullptr;
 
     if (IsOfType(p,  ID_COMMA)) // several definitions
     {
-        if (nullptr != ( inst->m_next2b = CBotInstArray::CompileArray(p, pStack, type, false)))    // compiles next one
+        if (nullptr != ( inst->m_next2b = CBotDefArray::CompileArray(p, pStack, type, false)))    // compiles next one
         {
             return inst;
         }

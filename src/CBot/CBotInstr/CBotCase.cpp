@@ -18,7 +18,8 @@
  */
 
 #include "CBot/CBotInstr/CBotCase.h"
-#include "CBot/CBotInstr/CBotExprNum.h"
+
+#include "CBot/CBotInstr/CBotExprLitNum.h"
 
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
@@ -50,7 +51,7 @@ CBotInstr* CBotCase::Compile(CBotToken* &p, CBotCStack* pStack)
     if ( pp->GetType() == ID_CASE )
     {
         pp = p;
-        inst->m_value = CBotExprNum::Compile(p, pStack);
+        inst->m_value = CBotExprLitNum::Compile(p, pStack);
         if (inst->m_value == nullptr )
         {
             pStack->SetError( CBotErrBadNum, pp );

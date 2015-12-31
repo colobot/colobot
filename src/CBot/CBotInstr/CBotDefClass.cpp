@@ -17,13 +17,13 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "CBotClassInst.h"
+#include "CBot/CBotInstr/CBotDefClass.h"
 
 #include "CBot/CBotInstr/CBotInstrUtils.h"
 
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
 #include "CBot/CBotInstr/CBotTwoOpExpr.h"
-#include "CBot/CBotInstr/CBotInstArray.h"
+#include "CBot/CBotInstr/CBotDefArray.h"
 
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
@@ -36,7 +36,7 @@ namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotClassInst::CBotClassInst()
+CBotDefClass::CBotDefClass()
 {
     m_next          = nullptr;
     m_var           = nullptr;
@@ -47,13 +47,13 @@ CBotClassInst::CBotClassInst()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotClassInst::~CBotClassInst()
+CBotDefClass::~CBotDefClass()
 {
     delete m_var;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* pClass)
+CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* pClass)
 {
     // seeks the corresponding classes
     if ( pClass == nullptr )
@@ -71,12 +71,12 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
 
     bool        bIntrinsic = pClass->IsIntrinsic();
     CBotTypResult type = CBotTypResult( bIntrinsic ? CBotTypIntrinsic : CBotTypPointer, pClass );
-    CBotClassInst*  inst = static_cast<CBotClassInst*>(CompileArray(p, pStack, type));
+    CBotDefClass*  inst = static_cast<CBotDefClass*>(CompileArray(p, pStack, type));
     if ( inst != nullptr || !pStack->IsOk() ) return inst;
 
     CBotCStack* pStk = pStack->TokenStack();
 
-    inst = new CBotClassInst();
+    inst = new CBotDefClass();
     /// TODO Need to be revised and fixed after adding unit tests
     CBotToken token(pClass->GetName(), std::string(), p->GetStart(), p->GetEnd());
     inst->SetToken(&token);
@@ -94,12 +94,12 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
 
         if (IsOfType(p,  ID_OPBRK))                         // with any clues?
         {
-            delete inst;                                    // is not type CBotInt
+            delete inst;                                    // is not type CBotDefInt
             p = vartoken;                                   // returns to the variable name
 
             // compiles declaration an array
 
-            inst = static_cast<CBotClassInst*>(CBotInstArray::Compile( p, pStk, type ));
+            inst = static_cast<CBotDefClass*>(CBotDefArray::Compile(p, pStk, type ));
 
             if (!pStk->IsOk() )
             {
@@ -202,7 +202,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
 suite:
         if (IsOfType(p,  ID_COMMA))                         // several chained definitions
         {
-            if ( nullptr != ( inst->m_next = CBotClassInst::Compile(p, pStk, pClass) ))    // compiles the following
+            if ( nullptr != ( inst->m_next = CBotDefClass::Compile(p, pStk, pClass) ))    // compiles the following
             {
                 return pStack->Return(inst, pStk);
             }
@@ -222,7 +222,7 @@ error:
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotClassInst::Execute(CBotStack* &pj)
+bool CBotDefClass::Execute(CBotStack* &pj)
 {
     CBotVar*    pThis = nullptr;
 
@@ -357,7 +357,7 @@ bool CBotClassInst::Execute(CBotStack* &pj)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotClassInst::RestoreState(CBotStack* &pj, bool bMain)
+void CBotDefClass::RestoreState(CBotStack* &pj, bool bMain)
 {
     CBotVar*    pThis = nullptr;
 
@@ -436,7 +436,7 @@ void CBotClassInst::RestoreState(CBotStack* &pj, bool bMain)
          m_next2b->RestoreState(pile, bMain);                   // other(s) definition(s)
 }
 
-std::map<std::string, CBotInstr*> CBotClassInst::GetDebugLinks()
+std::map<std::string, CBotInstr*> CBotDefClass::GetDebugLinks()
 {
     auto links = CBotInstr::GetDebugLinks();
     links["m_var"] = m_var;

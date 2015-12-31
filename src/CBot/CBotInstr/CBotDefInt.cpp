@@ -17,10 +17,10 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "CBot/CBotInstr/CBotInt.h"
+#include "CBot/CBotInstr/CBotDefInt.h"
 
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
-#include "CBot/CBotInstr/CBotInstArray.h"
+#include "CBot/CBotInstr/CBotDefArray.h"
 #include "CBot/CBotInstr/CBotTwoOpExpr.h"
 
 #include "CBot/CBotStack.h"
@@ -32,7 +32,7 @@ namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInt::CBotInt()
+CBotDefInt::CBotDefInt()
 {
     m_next    = nullptr;            // for multiple definitions
     m_var     = nullptr;
@@ -40,25 +40,25 @@ CBotInt::CBotInt()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInt::~CBotInt()
+CBotDefInt::~CBotDefInt()
 {
     delete m_var;
     delete m_expr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool noskip)
+CBotInstr* CBotDefInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool noskip)
 {
     CBotToken*    pp = cont ? nullptr : p;        // no repetition of the token "int"
 
     if (!cont && !IsOfType(p, ID_INT)) return nullptr;
 
-    CBotInt*    inst = static_cast<CBotInt*>(CompileArray(p, pStack, CBotTypInt));
+    CBotDefInt*    inst = static_cast<CBotDefInt*>(CompileArray(p, pStack, CBotTypInt));
     if (inst != nullptr || !pStack->IsOk()) return inst;
 
     CBotCStack* pStk = pStack->TokenStack(pp);
 
-    inst = new CBotInt();
+    inst = new CBotDefInt();
 
     inst->m_expr = nullptr;
 
@@ -77,12 +77,12 @@ CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool n
 
         if (IsOfType(p,  ID_OPBRK))
         {
-            delete inst;    // type is not CBotInt
+            delete inst;    // type is not CBotDefInt
             p = vartoken;   // returns the variable name
 
             // compiles an array declaration
 
-            CBotInstr* inst2 = CBotInstArray::Compile(p, pStk, CBotTypInt);
+            CBotInstr* inst2 = CBotDefArray::Compile(p, pStk, CBotTypInt);
 
             if (!pStk->IsOk() )
             {
@@ -92,12 +92,12 @@ CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool n
 
             if (IsOfType(p,  ID_COMMA))     // several definition chained
             {
-                if (nullptr != ( inst2->m_next2b = CBotInt::Compile(p, pStk, true, noskip)))    // compile the next one
+                if (nullptr != ( inst2->m_next2b = CBotDefInt::Compile(p, pStk, true, noskip)))    // compile the next one
                 {
                     return pStack->Return(inst2, pStk);
                 }
             }
-            inst = static_cast<CBotInt*>(inst2);
+            inst = static_cast<CBotDefInt*>(inst2);
             goto suite;     // no assignment, variable already created
         }
 
@@ -124,7 +124,7 @@ CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool n
 
         if (IsOfType(p,  ID_COMMA))     // chained several definitions
         {
-            if (nullptr != ( inst->m_next2b = CBotInt::Compile(p, pStk, true, noskip)))    // compile next one
+            if (nullptr != ( inst->m_next2b = CBotDefInt::Compile(p, pStk, true, noskip)))    // compile next one
             {
                 return pStack->Return(inst, pStk);
             }
@@ -144,7 +144,7 @@ error:
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotInt::Execute(CBotStack* &pj)
+bool CBotDefInt::Execute(CBotStack* &pj)
 {
     CBotStack*    pile = pj->AddStack(this);    // essential for SetState()
 
@@ -165,7 +165,7 @@ bool CBotInt::Execute(CBotStack* &pj)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotInt::RestoreState(CBotStack* &pj, bool bMain)
+void CBotDefInt::RestoreState(CBotStack* &pj, bool bMain)
 {
     CBotStack*    pile = pj;
     if (bMain)
@@ -185,7 +185,7 @@ void CBotInt::RestoreState(CBotStack* &pj, bool bMain)
     if (m_next2b) m_next2b->RestoreState(pile, bMain);            // other(s) definition(s)
 }
 
-std::map<std::string, CBotInstr*> CBotInt::GetDebugLinks()
+std::map<std::string, CBotInstr*> CBotDefInt::GetDebugLinks()
 {
     auto links = CBotInstr::GetDebugLinks();
     links["m_var"] = m_var;

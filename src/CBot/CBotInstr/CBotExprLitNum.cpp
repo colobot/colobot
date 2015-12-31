@@ -17,35 +17,35 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include <sstream>
-#include "CBot/CBotInstr/CBotExprNum.h"
-
+#include "CBot/CBotInstr/CBotExprLitNum.h"
 #include "CBot/CBotStack.h"
-#include "CBot/CBotCStack.h"
 
+#include "CBot/CBotCStack.h"
 #include "CBot/CBotVar/CBotVar.h"
 
 #include "CBot/CBotUtils.h"
+
+#include <sstream>
 
 namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotExprNum::CBotExprNum()
+CBotExprLitNum::CBotExprLitNum()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotExprNum::~CBotExprNum()
+CBotExprLitNum::~CBotExprLitNum()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotExprNum::Compile(CBotToken* &p, CBotCStack* pStack)
+CBotInstr* CBotExprLitNum::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     CBotCStack* pStk = pStack->TokenStack();
 
-    CBotExprNum* inst = new CBotExprNum();
+    CBotExprLitNum* inst = new CBotExprLitNum();
 
     inst->SetToken(p);
     std::string    s = p->GetString();
@@ -80,7 +80,7 @@ CBotInstr* CBotExprNum::Compile(CBotToken* &p, CBotCStack* pStack)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotExprNum::Execute(CBotStack* &pj)
+bool CBotExprLitNum::Execute(CBotStack* &pj)
 {
     CBotStack*    pile = pj->AddStack(this);
 
@@ -103,6 +103,8 @@ bool CBotExprNum::Execute(CBotStack* &pj)
     case CBotTypFloat:
         var->SetValFloat(m_valfloat);
         break;
+    default:
+        assert(false);
     }
     pile->SetVar(var);                            // place on the stack
 
@@ -110,12 +112,12 @@ bool CBotExprNum::Execute(CBotStack* &pj)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotExprNum::RestoreState(CBotStack* &pj, bool bMain)
+void CBotExprLitNum::RestoreState(CBotStack* &pj, bool bMain)
 {
     if (bMain) pj->RestoreStack(this);
 }
 
-std::string CBotExprNum::GetDebugData()
+std::string CBotExprLitNum::GetDebugData()
 {
     std::stringstream ss;
     ss << "(" << (m_numtype == CBotTypFloat ? "float" : "int") << ") " << (m_numtype == CBotTypFloat ? m_valfloat : m_valint);

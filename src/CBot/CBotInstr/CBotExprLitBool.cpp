@@ -17,9 +17,10 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "CBot/CBotInstr/CBotExprNull.h"
+#include "CBot/CBotInstr/CBotExprLitBool.h"
 
 #include "CBot/CBotStack.h"
+#include "CBot/CBotCStack.h"
 
 #include "CBot/CBotVar/CBotVar.h"
 
@@ -27,30 +28,53 @@ namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotExprNull::CBotExprNull()
+CBotExprLitBool::CBotExprLitBool()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotExprNull::~CBotExprNull()
+CBotExprLitBool::~CBotExprLitBool()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotExprNull::Execute(CBotStack* &pj)
+CBotInstr* CBotExprLitBool::Compile(CBotToken* &p, CBotCStack* pStack)
+{
+    CBotCStack* pStk = pStack->TokenStack();
+    CBotExprLitBool* inst = nullptr;
+
+    if ( p->GetType() == ID_TRUE ||
+         p->GetType() == ID_FALSE )
+    {
+        inst = new CBotExprLitBool();
+        inst->SetToken(p);  // stores the operation false or true
+        p = p->GetNext();
+
+        CBotVar*    var = CBotVar::Create("", CBotTypBoolean);
+        pStk->SetVar(var);
+    }
+
+    return pStack->Return(inst, pStk);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CBotExprLitBool::Execute(CBotStack* &pj)
 {
     CBotStack*    pile = pj->AddStack(this);
 
     if (pile->IfStep()) return false;
-    CBotVar*    var = CBotVar::Create("", CBotTypNullPointer);
 
-    var->SetInit(CBotVar::InitType::DEF);         // null pointer valid
-    pile->SetVar(var);          // place on the stack
+    CBotVar*    var = CBotVar::Create("", CBotTypBoolean);
+
+    if (GetTokenType() == ID_TRUE)      var->SetValInt(1);
+    else                              var->SetValInt(0);
+
+    pile->SetVar(var);  // put on the stack
     return pj->Return(pile);    // forwards below
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotExprNull::RestoreState(CBotStack* &pj, bool bMain)
+void CBotExprLitBool::RestoreState(CBotStack* &pj, bool bMain)
 {
     if (bMain) pj->RestoreStack(this);
 }

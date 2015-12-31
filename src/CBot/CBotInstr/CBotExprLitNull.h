@@ -25,24 +25,16 @@ namespace CBot
 {
 
 /**
- * \brief Expression representing a string literal - "Some text"
+ * \brief The "null" constant
  */
-class CBotExprAlpha : public CBotInstr
+class CBotExprLitNull : public CBotInstr
 {
 public:
-    CBotExprAlpha();
-    ~CBotExprAlpha();
+    CBotExprLitNull();
+    ~CBotExprLitNull();
 
     /*!
-     * \brief Compile
-     * \param p
-     * \param pStack
-     * \return
-     */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
-
-    /*!
-     * \brief Execute Execute, returns the corresponding string.
+     * \brief Execute Executes, returns an empty pointer.
      * \param pj
      * \return
      */
@@ -56,8 +48,8 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotExprAlpha"; }
-    virtual std::string GetDebugData();
+    virtual const std::string GetDebugName() { return "CBotExprLitNull"; }
+    virtual std::string GetDebugData() { return "null"; }
 };
 
 } // namespace CBot

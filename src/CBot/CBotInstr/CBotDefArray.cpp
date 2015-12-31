@@ -17,8 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include <sstream>
-#include "CBot/CBotInstr/CBotInstArray.h"
+#include "CBot/CBotInstr/CBotDefArray.h"
 
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
 #include "CBot/CBotInstr/CBotExpression.h"
@@ -27,34 +26,35 @@
 
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
-
 #include "CBot/CBotDefines.h"
 
 #include "CBot/CBotVar/CBotVar.h"
+
+#include <sstream>
 
 namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstArray::CBotInstArray()
+CBotDefArray::CBotDefArray()
 {
     m_var     = nullptr;
     m_listass = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstArray::~CBotInstArray()
+CBotDefArray::~CBotDefArray()
 {
     delete m_var;
     delete m_listass;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotInstArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResult type)
+CBotInstr* CBotDefArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResult type)
 {
     CBotCStack* pStk = pStack->TokenStack(p);
 
-    CBotInstArray*    inst = new CBotInstArray();
+    CBotDefArray*    inst = new CBotDefArray();
 
     CBotToken*    vartoken = p;
     inst->SetToken(vartoken);
@@ -107,7 +107,7 @@ error:
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotInstArray::Execute(CBotStack* &pj)
+bool CBotDefArray::Execute(CBotStack* &pj)
 {
     CBotStack*    pile1 = pj->AddStack(this);
 
@@ -187,7 +187,7 @@ bool CBotInstArray::Execute(CBotStack* &pj)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotInstArray::RestoreState(CBotStack* &pj, bool bMain)
+void CBotDefArray::RestoreState(CBotStack* &pj, bool bMain)
 {
     CBotStack*    pile1 = pj;
 
@@ -227,14 +227,14 @@ void CBotInstArray::RestoreState(CBotStack* &pj, bool bMain)
     if (m_next2b ) m_next2b->RestoreState( pile1, bMain);
 }
 
-std::string CBotInstArray::GetDebugData()
+std::string CBotDefArray::GetDebugData()
 {
     std::stringstream ss;
     ss << m_typevar.ToString();
     return ss.str();
 }
 
-std::map<std::string, CBotInstr*> CBotInstArray::GetDebugLinks()
+std::map<std::string, CBotInstr*> CBotDefArray::GetDebugLinks()
 {
     auto links = CBotInstr::GetDebugLinks();
     links["m_var"] = m_var;

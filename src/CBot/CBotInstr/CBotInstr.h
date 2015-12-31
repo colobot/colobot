@@ -46,29 +46,29 @@ class CBotDebug;
  * instr0000000001530870 [label=<<b>CBotExpression</b>>]
  * instr0000000001530920 [label=<<b>CBotLeftExpr</b><br/>x>]
  * instr00000000015309D0 [label=<<b>CBotIndexExpr</b>>]
- * instr0000000001530DC0 [label=<<b>CBotExprNum</b><br/>(int) 1>]
+ * instr0000000001530DC0 [label=<<b>CBotExprLitNum</b><br/>(int) 1>]
  * instr00000000015309D0 -> instr0000000001530DC0 [label="m_expr" weight=5]
  * instr0000000001530920 -> instr00000000015309D0 [label="m_next3" weight=5]
  * instr0000000001530870 -> instr0000000001530920 [label="m_leftop" weight=5]
  * instr0000000001530E80 [label=<<b>CBotInstrArray</b><br/>int[][]>]
- * instr00000000015315F0 [label=<<b>CBotInt</b>>]
+ * instr00000000015315F0 [label=<<b>CBotDefInt</b>>]
  * instr0000000001531C20 [label=<<b>CBotLeftExprVar</b><br/>z>]
  * instr00000000015315F0 -> instr0000000001531C20 [label="m_var" weight=5]
  * instr0000000001530E80 -> instr00000000015315F0 [label="m_next2b" weight=5]
  * { rank=same; instr0000000001530E80; instr00000000015315F0; }
  * instr0000000001530B50 [label=<<b>CBotExprVar</b><br/>x>]
  * instr0000000001531700 [label=<<b>CBotIndexExpr</b>>]
- * instr0000000001531B60 [label=<<b>CBotExprNum</b><br/>(int) 1>]
+ * instr0000000001531B60 [label=<<b>CBotExprLitNum</b><br/>(int) 1>]
  * instr0000000001531700 -> instr0000000001531B60 [label="m_expr" weight=5]
  * instr0000000001530B50 -> instr0000000001531700 [label="m_next3" weight=5]
- * instr0000000001531A00 [label=<<b>CBotExprNum</b><br/>(int) 10>]
+ * instr0000000001531A00 [label=<<b>CBotExprLitNum</b><br/>(int) 10>]
  * instr0000000001530B50 -> instr0000000001531A00 [label="m_next3b" weight=5]
  * instr0000000001530E80 -> instr0000000001530B50 [label="m_next3b" weight=5]
  * instr0000000001530A80 [label=<<b>CBotLeftExprVar</b><br/>y>]
  * instr0000000001530E80 -> instr0000000001530A80 [label="m_var" weight=5]
  * instr0000000001530870 -> instr0000000001530E80 [label="m_next" weight=1]
  * { rank=same; instr0000000001530870; instr0000000001530E80; }
- * instr0000000001530C80 [label=<<b>CBotExprNum</b><br/>(int) 4>]
+ * instr0000000001530C80 [label=<<b>CBotExprLitNum</b><br/>(int) 4>]
  * instr0000000001530870 -> instr0000000001530C80 [label="m_rightop" weight=5]
  * instr00000000015304D0 -> instr0000000001530870 [label="m_next" weight=1]
  * { rank=same; instr00000000015304D0; instr0000000001530870; }
@@ -313,8 +313,8 @@ protected:
 
     //! Counter of nested loops, to determine the break and continue valid.
     static int m_LoopLvl;
-    friend class CBotClassInst;
-    friend class CBotInt;
+    friend class CBotDefClass;
+    friend class CBotDefInt;
     friend class CBotListArray;
 
 private:

@@ -25,16 +25,26 @@ namespace CBot
 {
 
 /**
- * \brief The "nan" constant
+ * \brief Definition of a string variable - string a, b = "text";
  */
-class CBotExprNan : public CBotInstr
+class CBotDefString : public CBotInstr
 {
 public:
-    CBotExprNan();
-    ~CBotExprNan();
+    CBotDefString();
+    ~CBotDefString();
 
     /*!
-     * \brief Execute Executes, returns null pointer.
+     * \brief Compile
+     * \param p
+     * \param pStack
+     * \param cont
+     * \param noskip
+     * \return
+     */
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, bool cont = false, bool noskip=false);
+
+    /*!
+     * \brief Execute Executes the definition of the string variable.
      * \param pj
      * \return
      */
@@ -48,8 +58,14 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotExprNan"; }
-    virtual std::string GetDebugData() { return "nan"; }
+    virtual const std::string GetDebugName() { return "CBotDefString"; }
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+
+private:
+    //! Variable to initialise.
+    CBotInstr* m_var;
+    //! A value to put, if there is.
+    CBotInstr* m_expr;
 };
 
 } // namespace CBot

@@ -25,26 +25,27 @@ namespace CBot
 {
 
 /**
- * \brief Definition of an integer variable - int a, b = 12
+ * \brief A number literal - 5, 1, 2.5, 3.75, etc. or a predefined numerical constant (see CBotToken::DefineNum())
+ *
+ * Can be of type ::CBotTypInt or ::CBotTypFloat
  */
-class CBotInt : public CBotInstr
+class CBotExprLitNum : public CBotInstr
 {
+
 public:
-    CBotInt();
-    ~CBotInt();
+    CBotExprLitNum();
+    ~CBotExprLitNum();
 
     /*!
      * \brief Compile
      * \param p
      * \param pStack
-     * \param cont
-     * \param noskip
      * \return
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, bool cont = false, bool noskip = false);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
 
     /*!
-     * \brief Execute Execute the definition of the integer variable.
+     * \brief Execute Execute, returns the corresponding number.
      * \param pj
      * \return
      */
@@ -58,14 +59,17 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotInt"; }
-    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+    virtual const std::string GetDebugName() { return "CBotExprLitNum"; }
+    virtual std::string GetDebugData();
 
 private:
-    //! The variable to initialize.
-    CBotInstr* m_var;
-    //! A value to put, if there is.
-    CBotInstr* m_expr;
+    //! The type of number.
+    CBotType m_numtype;
+    //! Value for an int.
+    long m_valint;
+    //! Value for a float.
+    float m_valfloat;
+
 };
 
 } // namespace CBot

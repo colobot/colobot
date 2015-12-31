@@ -21,7 +21,7 @@
 
 #include "CBot/CBotInstr/CBotInstrUtils.h"
 
-#include "CBot/CBotInstr/CBotExprNull.h"
+#include "CBot/CBotInstr/CBotExprLitNull.h"
 #include "CBot/CBotInstr/CBotTwoOpExpr.h"
 
 #include "CBot/CBotStack.h"
@@ -53,7 +53,7 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
 
     if (IsOfType( p, ID_NULL ))
     {
-        CBotInstr* inst = new CBotExprNull ();
+        CBotInstr* inst = new CBotExprLitNull();
         inst->SetToken(pp);
         return pStack->Return(inst, pStk);            // ok with empty element
     }

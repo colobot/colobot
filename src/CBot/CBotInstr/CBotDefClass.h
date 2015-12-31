@@ -25,34 +25,37 @@ namespace CBot
 {
 
 /**
- * \brief Definition of a float variable - float a, b = 12.4
+ * \brief Definition of class instance variable
+ *
+ * Examples:
+ * \code
+ * ClassName varname;
+ * ClassName varname();
+ * ClassName varname = new ClassName();
+ * ClassName varname = new ClassName(args);
+ * ClassName varname1(), varname2();
+ * ClassName varname1 = new ClassName(), varname2;
+ * \endcode
  */
-class CBotFloat : public CBotInstr
+class CBotDefClass : public CBotInstr
 {
+
 public:
+    CBotDefClass();
+    ~CBotDefClass();
 
     /*!
-     * \brief CBotFloat
-     */
-    CBotFloat();
-
-    /*!
-     * \brief ~CBotFloat
-     */
-    ~CBotFloat();
-
-    /*!
-     * \brief Compile
+     * \brief Compile Definition of pointer (s) to an object style CPoint A, B ;
      * \param p
      * \param pStack
-     * \param cont
-     * \param noskip
+     * \param pClass
      * \return
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, bool cont = false, bool noskip=false);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* pClass = nullptr);
 
     /*!
-     * \brief Execute Executes the definition of a real variable.
+     * \brief Execute Declaration of the instance of a class, for example:
+     * CPoint A, B;
      * \param pj
      * \return
      */
@@ -66,14 +69,22 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotFloat"; }
+    virtual const std::string GetDebugName() { return "CBotClassInstr"; }
     virtual std::map<std::string, CBotInstr*> GetDebugLinks();
 
 private:
+
     //! Variable to initialise.
     CBotInstr* m_var;
+    //! Parameters to be evaluated for the contructor.
+    CBotInstr* m_parameters;
     //! A value to put, if there is.
     CBotInstr* m_expr;
+    //! Has it parameters.
+    bool m_hasParams;
+    //! Constructor method unique identifier
+    long m_nMethodeIdent;
+
 };
 
 } // namespace CBot

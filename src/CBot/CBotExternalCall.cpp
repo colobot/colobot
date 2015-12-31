@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "CBotExternalCall.h"
+#include "CBot/CBotExternalCall.h"
 
 #include "CBot/CBotToken.h"
 #include "CBot/CBotStack.h"

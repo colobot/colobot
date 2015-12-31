@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "CBot/CBotInstr/CBotExprNan.h"
+#include "CBot/CBotInstr/CBotExprLitNan.h"
 
 #include "CBot/CBotStack.h"
 
@@ -27,16 +27,16 @@ namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotExprNan::CBotExprNan()
+CBotExprLitNan::CBotExprLitNan()
 {
 }
 ////////////////////////////////////////////////////////////////////////////////
-CBotExprNan::~CBotExprNan()
+CBotExprLitNan::~CBotExprLitNan()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotExprNan::Execute(CBotStack* &pj)
+bool CBotExprLitNan::Execute(CBotStack* &pj)
 {
     CBotStack*    pile = pj->AddStack(this);
 
@@ -49,7 +49,7 @@ bool CBotExprNan::Execute(CBotStack* &pj)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotExprNan::RestoreState(CBotStack* &pj, bool bMain)
+void CBotExprLitNan::RestoreState(CBotStack* &pj, bool bMain)
 {
     if (bMain) pj->RestoreStack(this);
 }

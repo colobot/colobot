@@ -19,7 +19,7 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
-#include "CBotExternalCall.h"
+#include "CBot/CBotExternalCall.h"
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
 #include "CBot/CBotClass.h"
