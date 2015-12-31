@@ -25,6 +25,7 @@
 
 #include <string>
 #include <deque>
+#include <set>
 
 namespace CBot
 {
@@ -111,11 +112,11 @@ public:
      * \brief CBotClass Constructor. Once a class is created, it is known around
      * CBot intrinsic mode gives a class that is not managed by pointers.
      * \param name
-     * \param pParent
+     * \param parent
      * \param bIntrinsic
      */
     CBotClass(const std::string& name,
-              CBotClass* pParent,
+              CBotClass* parent,
               bool bIntrinsic = false);
 
     /*!
@@ -318,7 +319,7 @@ public:
     /*!
      * \brief Free
      */
-    static void Free();
+    static void ClearPublic();
 
     /*!
      * \brief SaveStaticState
@@ -363,33 +364,30 @@ public:
     bool CheckCall(CBotProgram* program, CBotDefParam* pParam, CBotToken*& pToken);
 
 private:
-    //! List of classes existing at a given time.
-    static CBotClass* m_ExClass;
-    //! For this general list.
-    CBotClass* m_ExNext;
-    //! For this general list.
-    CBotClass* m_ExPrev;
+    //! List of all public classes
+    static std::set<CBotClass*> m_publicClasses;
+
     //! Parent class.
     CBotClass* m_pParent;
     //! Name of this class.
     std::string m_name;
     //! Number of variables in the chain.
     int m_nbVar;
-    //! Content of the class.
-    CBotVar* m_pVar;
     //! Intrinsic class.
     bool m_bIntrinsic;
-    //! List of methods defined in external.
+    //! Linked list of all class fields
+    CBotVar* m_pVar;
+    //! Linked list of all class external calls
     CBotCallMethode* m_pCalls;
-    //! Compiled list of methods.
+    //! Linked list of all class methods
     CBotFunction* m_pMethod;
     void (*m_rMaj) ( CBotVar* pThis, void* pUser );
     friend class CBotVarClass;
 
     //! How many times the program currently holding the lock called Lock()
-    int m_lockCurrentCount;
+    int m_lockCurrentCount = 0;
     //! Programs waiting for lock
-    std::deque<CBotProgram*> m_lockProg;
+    std::deque<CBotProgram*> m_lockProg{};
 };
 
 } // namespace CBot

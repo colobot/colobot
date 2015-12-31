@@ -42,14 +42,14 @@ namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotClass* CBotClass::m_ExClass = nullptr;
+std::set<CBotClass*> CBotClass::m_publicClasses{};
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass::CBotClass(const std::string& name,
-                     CBotClass* pPapa,
+                     CBotClass* parent,
                      bool bIntrinsic)
 {
-    m_pParent   = pPapa;
+    m_pParent   = parent;
     m_name      = name;
     m_pVar      = nullptr;
     m_pCalls    = nullptr;
@@ -59,28 +59,13 @@ CBotClass::CBotClass(const std::string& name,
     m_bIntrinsic= bIntrinsic;
     m_nbVar     = m_pParent == nullptr ? 0 : m_pParent->m_nbVar;
 
-    m_lockCurrentCount = 0;
-    m_lockProg.clear();
-
-
-    // is located alone in the list
-    if (m_ExClass) m_ExClass->m_ExPrev = this;
-    m_ExNext  = m_ExClass;
-    m_ExPrev  = nullptr;
-    m_ExClass = this;
-
+    m_publicClasses.insert(this);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass::~CBotClass()
 {
-    // removes the list of class
-    if ( m_ExPrev ) m_ExPrev->m_ExNext = m_ExNext;
-    else m_ExClass = m_ExNext;
-
-    if ( m_ExNext ) m_ExNext->m_ExPrev = m_ExPrev;
-    m_ExPrev = nullptr;
-    m_ExNext = nullptr;
+    m_publicClasses.erase(this);
 
     delete  m_pVar;
     delete  m_pCalls;
@@ -96,12 +81,9 @@ CBotClass* CBotClass::Create(const std::string& name,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotClass::Free()
+void CBotClass::ClearPublic()
 {
-    while ( m_ExClass != nullptr )
-    {
-        delete m_ExClass;
-    }
+    m_publicClasses.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -159,9 +141,7 @@ void CBotClass::Unlock()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotClass::FreeLock(CBotProgram* prog)
 {
-    CBotClass* pClass = m_ExClass;
-
-    while (pClass != nullptr)
+    for (CBotClass* pClass : m_publicClasses)
     {
         if (pClass->m_lockProg.size() > 0 && prog == pClass->m_lockProg[0])
         {
@@ -169,8 +149,6 @@ void CBotClass::FreeLock(CBotProgram* prog)
         }
 
         pClass->m_lockProg.erase(std::remove(pClass->m_lockProg.begin(), pClass->m_lockProg.end(), prog));
-
-        pClass = pClass->m_ExNext;
     }
 }
 
@@ -284,12 +262,9 @@ CBotClass* CBotClass::Find(CBotToken* &pToken)
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotClass::Find(const std::string& name)
 {
-    CBotClass*  p = m_ExClass;
-
-    while ( p != nullptr )
+    for (CBotClass* p : m_publicClasses)
     {
         if ( p->GetName() == name ) return p;
-        p = p->m_ExNext;
     }
 
     return nullptr;
@@ -394,11 +369,9 @@ bool CBotClass::SaveStaticState(FILE* pf)
     if (!WriteWord( pf, CBOTVERSION*2)) return false;
 
     // saves the state of static variables in classes
-    CBotClass*  p = m_ExClass;
-
-    while ( p != nullptr )
+    for (CBotClass* p : m_publicClasses)
     {
-        if (!WriteWord( pf, 1)) return false;
+        if (!WriteWord( pf, 1 )) return false;
         // save the name of the class
         if (!WriteString( pf, p->GetName() )) return false;
 
@@ -407,21 +380,20 @@ bool CBotClass::SaveStaticState(FILE* pf)
         {
             if ( pv->IsStatic() )
             {
-                if (!WriteWord( pf, 1)) return false;
+                if (!WriteWord( pf, 1 )) return false;
                 if (!WriteString( pf, pv->GetName() )) return false;
 
-                if ( !pv->Save0State(pf)) return false;             // common header
+                if ( !pv->Save0State(pf) ) return false;             // common header
                 if ( !pv->Save1State(pf) ) return false;                // saves as the child class
-                if ( !WriteWord( pf, 0)) return false;
+                if ( !WriteWord( pf, 0 ) ) return false;
             }
             pv = pv->GetNext();
         }
 
-        if (!WriteWord( pf, 0)) return false;
-        p = p->m_ExNext;
+        if (!WriteWord( pf, 0 )) return false;
     }
 
-    if (!WriteWord( pf, 0)) return false;
+    if (!WriteWord( pf, 0 )) return false;
     return true;
 }
 

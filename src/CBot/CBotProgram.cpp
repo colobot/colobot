@@ -406,7 +406,7 @@ void CBotProgram::Free()
 {
     CBotToken::ClearDefineNum();
     m_externalCalls->Clear();
-    CBotClass::Free();
+    CBotClass::ClearPublic();
 }
 
 CBotExternalCallList* CBotProgram::GetExternalCalls()
