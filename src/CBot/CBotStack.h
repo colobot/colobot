@@ -54,7 +54,7 @@ public:
         FUNCTION = 2     //!< Function - variable visibility limit
     };
 
-    enum class IsFunction : unsigned short { NO = 0, TRUE = 1, EXTERNAL_CALL = 2 }; // TODO: just guessing the meaning of values, should be verified ~krzys_h
+    enum class IsFunction : unsigned short { NO = 0, YES = 1, EXTERNAL_CALL = 2 };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //! \name Stack memory management

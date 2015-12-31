@@ -35,7 +35,7 @@ namespace CBot
  * a = 0
  * a = 0, int b = 3
  * a = 5, b = 7
- * int a = 3, b = 8 // TODO: does that compile into declaration of two variables or declaration and assignment?
+ * int a = 3, b = 8 // This declares b as new variable, not assigns to it!
  * i++
  * i++, j++
  * int a = 5, j++

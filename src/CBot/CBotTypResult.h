@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include "CBot/CBotEnums.h"
+
 #include <string>
 
 namespace CBot
@@ -94,10 +96,19 @@ public:
     ~CBotTypResult();
 
     /**
-     * \brief Returns ::CBotType or ::CBotError stored in this object
-     * \param mode TODO: document this
+     * \brief Mode for GetType() and GetTypResult()
      */
-    int            GetType(int mode = 0) const;
+    enum class GetTypeMode
+    {
+        NORMAL = 0,
+        NULL_AS_POINTER = 3,
+    };
+
+    /**
+     * \brief Returns ::CBotType or ::CBotError stored in this object
+     * \param mode Mode, see ::GetTypeMode enum
+     */
+    int         GetType(GetTypeMode mode = GetTypeMode::NORMAL) const;
 
     /**
      * \brief Changes ::CBotType or ::CBotError stored in this object
@@ -108,12 +119,12 @@ public:
     /**
      * \brief Returns CBotClass pointer (for ::CBotTypClass, ::CBotTypPointer)
      */
-    CBotClass*    GetClass() const;
+    CBotClass*  GetClass() const;
 
     /**
      * \brief Get size limit of an array (for ::CBotTypArrayBody or ::CBotTypArrayPointer)
      */
-    int            GetLimite() const;
+    int         GetLimite() const;
 
     /**
      * \brief Set size limit of an array (for ::CBotTypArrayBody or ::CBotTypArrayPointer)
@@ -123,9 +134,9 @@ public:
 
     /**
      * \brief Set size limit of an multidimensional array
-     * \param max TODO: document this
+     * \param max Array of limit values, the array size has to match the number of dimensions of this array
      */
-    void        SetArray(int* max);
+    void        SetArray(int max[]);
 
     /**
      * \brief Get type of array elements (for ::CBotTypArrayBody or ::CBotTypArrayPointer)
@@ -148,16 +159,20 @@ public:
     bool        Eq(int type) const;
 
     /**
-     * Copy
+     * \brief Copy
      */
     CBotTypResult& operator=(const CBotTypResult& src);
 
+    /**
+     * \brief Get this type name as string
+     * \returns This type name as string
+     */
     std::string ToString();
 
 private:
     int               m_type;   //!< type, see ::CBotType and ::CBotError
-    CBotTypResult*    m_pNext;  //!< type of array element
-    CBotClass*        m_pClass; //!< class type
+    CBotTypResult*    m_next;   //!< type of array element
+    CBotClass*        m_class;  //!< class type
     int               m_limite; //!< array limit
     friend class    CBotVarClass;
     friend class    CBotVarPointer;

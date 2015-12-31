@@ -198,7 +198,6 @@ public:
 
     /**
      * \brief Returns the complete type of the variable (CBotTypResult)
-     * \param mode
      * \param mode Mode, see GetTypeMode enum
      */
     CBotTypResult GetTypResult(GetTypeMode mode = GetTypeMode::NORMAL);
@@ -355,8 +354,8 @@ public:
     virtual void ConstructorSet();
 
     /**
-     * \brief TODO: document, original description: Makes the pointer to the variable if it is static.
-     * \return
+     * \brief If this is a static class variable, return the static var from the class
+     * \return Static variable from CBotClass instance if this variable is static, or this otherwise
      */
     CBotVar* GetStaticVar();
 
@@ -370,19 +369,23 @@ public:
 
     /**
      * \brief Set unique identifier of this variable
+     * Note: For classes, this is unique within the class only - see CBotClass:AddItem
      * \param n New identifier
      */
     void SetUniqNum(long n);
 
     /**
      * \brief Return unique identifier of this variable
-     * \return Identifier
+     * Note: For classes, this is unique within the class only - see CBotClass:AddItem
+     * \return unique identifier
      * \see SetUniqNum()
      */
     long GetUniqNum();
 
     /**
-     * \brief TODO: ?
+     * \brief Generate next unique identifier
+     *
+     * Used by both variables (CBotVar) and functions (CBotFunction)
      */
     static long NextUniqNum();
 

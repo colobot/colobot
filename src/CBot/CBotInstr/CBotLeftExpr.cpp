@@ -219,7 +219,8 @@ bool CBotLeftExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevT
     pVar = pile->FindVar(m_nIdent, false);
     if (pVar == nullptr)
     {
-        pile->SetError(static_cast<CBotError>(2), &m_token); // TODO: yup, another unknown error ~krzys_h
+        assert(false);
+        //pile->SetError(static_cast<CBotError>(2), &m_token); // TODO: yup, another unknown error ~krzys_h
         return false;
     }
 

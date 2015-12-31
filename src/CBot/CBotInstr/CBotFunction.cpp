@@ -766,7 +766,7 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, 
             if ( pt->m_bSynchro )
             {
                 CBotProgram* pProgBase = pStk->GetProgram(true);
-                if ( !pClass->Lock(pProgBase) ) return false;       // expected to power \TODO attend de pouvoir
+                if ( !pClass->Lock(pProgBase) ) return false; // try to lock, interrupt if failed
             }
             pStk->IncState();
         }

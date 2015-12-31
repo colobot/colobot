@@ -162,7 +162,7 @@ long CBotVarPointer::GetIdent()
 void CBotVarPointer::SetClass(CBotClass* pClass)
 {
 //    int        nIdent = 0;
-    m_type.m_pClass = m_pClass = pClass;
+    m_type.m_class = m_pClass = pClass;
     if ( m_pVarClass != nullptr ) m_pVarClass->SetClass(pClass); //, nIdent);
 }
 

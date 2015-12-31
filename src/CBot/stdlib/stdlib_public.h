@@ -37,8 +37,6 @@ public:
 
     virtual std::string ReadLine() = 0;
     virtual void Write(const std::string& s) = 0;
-
-    //TODO
 };
 
 class CBotFileAccessHandler

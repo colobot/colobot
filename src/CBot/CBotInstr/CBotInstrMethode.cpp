@@ -50,52 +50,47 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
     CBotInstrMethode* inst = new CBotInstrMethode();
     inst->SetToken(p);  // corresponding token
 
-    if (nullptr != var)
+    CBotToken*    pp = p;
+    p = p->GetNext();
+
+    if (p->GetType() == ID_OPENPAR)
     {
-        CBotToken*    pp = p;
-        p = p->GetNext();
+        inst->m_methodName = pp->GetString();
 
-        if (p->GetType() == ID_OPENPAR)
+        // compiles the list of parameters
+        CBotVar*    ppVars[1000];
+        inst->m_parameters = CompileParams(p, pStack, ppVars);
+
+        if (pStack->IsOk())
         {
-            inst->m_methodName = pp->GetString();
+            CBotClass* pClass = var->GetClass();    // pointer to the class
+            inst->m_className = pClass->GetName();  // name of the class
+            CBotTypResult r = pClass->CompileMethode(inst->m_methodName, var, ppVars,
+                                                     pStack, inst->m_MethodeIdent);
+            delete pStack->TokenStack();    // release parameters on the stack
+            inst->m_typRes = r;
 
-            // compiles the list of parameters
-            CBotVar*    ppVars[1000];
-            inst->m_parameters = CompileParams(p, pStack, ppVars);
-
-            if (pStack->IsOk())
+            if (inst->m_typRes.GetType() > 20)
             {
-                CBotClass* pClass = var->GetClass();    // pointer to the class
-                inst->m_className = pClass->GetName();  // name of the class
-                CBotTypResult r = pClass->CompileMethode(inst->m_methodName, var, ppVars,
-                                                         pStack, inst->m_MethodeIdent);
-                delete pStack->TokenStack();    // release parameters on the stack
-                inst->m_typRes = r;
-
-                if (inst->m_typRes.GetType() > 20)
-                {
-                    pStack->SetError(static_cast<CBotError>(inst->m_typRes.GetType()), pp);
-                    delete    inst;
-                    return    nullptr;
-                }
-                // put the result on the stack to have something
-                if (inst->m_typRes.GetType() > 0)
-                {
-                    CBotVar*    pResult = CBotVar::Create("", inst->m_typRes);
-                    if (inst->m_typRes.Eq(CBotTypClass))
-                    {
-                        pResult->SetClass(inst->m_typRes.GetClass());
-                    }
-                    pStack->SetVar(pResult);
-                }
-                return inst;
+                pStack->SetError(static_cast<CBotError>(inst->m_typRes.GetType()), pp);
+                delete    inst;
+                return    nullptr;
             }
-            delete inst;
-            return nullptr;
+            // put the result on the stack to have something
+            if (inst->m_typRes.GetType() > 0)
+            {
+                CBotVar*    pResult = CBotVar::Create("", inst->m_typRes);
+                if (inst->m_typRes.Eq(CBotTypClass))
+                {
+                    pResult->SetClass(inst->m_typRes.GetClass());
+                }
+                pStack->SetVar(pResult);
+            }
+            return inst;
         }
+        delete inst;
+        return nullptr;
     }
-    pStack->SetError(static_cast<CBotError>(1234), p); // TODO: seriously? ~krzys_h
-    delete inst;
     return nullptr;
 }
 
@@ -282,7 +277,7 @@ std::string CBotInstrMethode::GetDebugData()
     std::stringstream ss;
     ss << m_methodName << std::endl;
     ss << "MethodID = " << m_MethodeIdent << std::endl;
-    ss << "result = " << m_typRes.GetType(); // TODO: Type to string?
+    ss << "result = " << m_typRes.ToString();
     return ss.str();
 }
 

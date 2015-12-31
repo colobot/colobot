@@ -405,7 +405,7 @@ bool CBotStack::SetState(int n, int limite)
 {
     m_state = n;
 
-    m_timer--;                                    // decrement the operations \TODO decrement the operations
+    m_timer--;                                    // decrement the timer
     return ( m_timer > limite );                    // interrupted if timer pass
 }
 
@@ -414,7 +414,7 @@ bool CBotStack::IncState(int limite)
 {
     m_state++;
 
-    m_timer--;                                    // decrement the operations \TODO decompte les operations
+    m_timer--;                                    // decrement the timer
     return ( m_timer > limite );                    // interrupted if timer pass
 }
 
@@ -472,7 +472,7 @@ bool CBotStack::Execute()
 
     if ( instr == nullptr ) return true;                // normal execution request
 
-    if (!instr->Run(nullptr, pile)) return false;            // \TODO exécution à partir de là
+    if (!instr->Run(nullptr, pile)) return false;            // resume interrupted execution
 
     pile->m_next->Delete();
 
@@ -533,7 +533,7 @@ void CBotStack::AddVar(CBotVar* pVar)
 void CBotStack::SetProgram(CBotProgram* p)
 {
     m_prog  = p;
-    m_bFunc = IsFunction::TRUE;
+    m_bFunc = IsFunction::YES;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -623,7 +623,7 @@ void CBotStack::GetRunPos(std::string& functionName, int& start, int& end)
     while (p->m_next != nullptr)
     {
         if ( p->m_instr != nullptr ) instr = p->m_instr;
-        if ( p->m_bFunc == IsFunction::TRUE && p->m_instr != nullptr ) funct = p->m_instr;
+        if ( p->m_bFunc == IsFunction::YES && p->m_instr != nullptr ) funct = p->m_instr;
         if ( p->m_next->m_prog != prog ) break ;
 
         if (p->m_next2 && p->m_next2->m_state != 0) p = p->m_next2 ;
@@ -631,7 +631,7 @@ void CBotStack::GetRunPos(std::string& functionName, int& start, int& end)
     }
 
     if ( p->m_instr != nullptr ) instr = p->m_instr;
-    if ( p->m_bFunc == IsFunction::TRUE && p->m_instr != nullptr ) funct = p->m_instr;
+    if ( p->m_bFunc == IsFunction::YES && p->m_instr != nullptr ) funct = p->m_instr;
 
     if ( funct == nullptr ) return;
 
@@ -681,7 +681,7 @@ CBotVar* CBotStack::GetStackVars(std::string& functionName, int level)
     CBotStack* pp = p;
     while ( pp != nullptr )
     {
-        if ( pp->m_bFunc == IsFunction::TRUE) break;
+        if ( pp->m_bFunc == IsFunction::YES) break;
         pp = pp->m_prev;
     }
 

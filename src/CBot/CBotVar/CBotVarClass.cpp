@@ -65,9 +65,8 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
     m_CptUse    = 0;
     m_ItemIdent = type.Eq(CBotTypIntrinsic) ? 0 : CBotVar::NextUniqNum();
 
-    // se place tout seul dans la liste
-    // TODO stands alone in the list (stands only in a list)
-    if (m_ExClass) m_ExClass->m_ExPrev = this;
+    // add to the list
+    if (m_ExClass != nullptr) m_ExClass->m_ExPrev = this;
     m_ExNext  = m_ExClass;
     m_ExPrev  = nullptr;
     m_ExClass = this;
@@ -167,7 +166,7 @@ void CBotVarClass::SetIdent(long n)
 ////////////////////////////////////////////////////////////////////////////////
 void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
 {
-    m_type.m_pClass = pClass;
+    m_type.m_class = pClass;
 
     if ( m_pClass == pClass ) return;
 
@@ -200,7 +199,7 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
             }
             while (n<100) max[n++] = 0;
 
-            pv->m_type.SetArray( max );                    // stores the limitations
+            pv->m_type.SetArray(max);                    // stores the limitations
             pile->Delete();
         }
 

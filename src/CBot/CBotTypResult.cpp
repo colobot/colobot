@@ -23,6 +23,8 @@
 
 #include "CBot/CBotClass.h"
 
+#include <sstream>
+
 
 namespace CBot
 {
@@ -30,76 +32,76 @@ namespace CBot
 CBotTypResult::CBotTypResult(int type)
 {
     m_type        = type;
-    m_pNext        = nullptr;
-    m_pClass    = nullptr;
+    m_next = nullptr;
+    m_class = nullptr;
     m_limite    = -1;
 }
 
 CBotTypResult::CBotTypResult(int type, const std::string& name)
 {
     m_type        = type;
-    m_pNext        = nullptr;
-    m_pClass    = nullptr;
+    m_next = nullptr;
+    m_class = nullptr;
     m_limite    = -1;
 
     if ( type == CBotTypPointer ||
          type == CBotTypClass   ||
          type == CBotTypIntrinsic )
     {
-        m_pClass = CBotClass::Find(name);
-        if ( m_pClass && m_pClass->IsIntrinsic() ) m_type = CBotTypIntrinsic;
+        m_class = CBotClass::Find(name);
+        if (m_class && m_class->IsIntrinsic() ) m_type = CBotTypIntrinsic;
     }
 }
 
 CBotTypResult::CBotTypResult(int type, CBotClass* pClass)
 {
     m_type        = type;
-    m_pNext        = nullptr;
-    m_pClass    = pClass;
+    m_next = nullptr;
+    m_class = pClass;
     m_limite    = -1;
 
-    if ( m_pClass && m_pClass->IsIntrinsic() ) m_type = CBotTypIntrinsic;
+    if (m_class && m_class->IsIntrinsic() ) m_type = CBotTypIntrinsic;
 }
 
 CBotTypResult::CBotTypResult(int type, CBotTypResult elem)
 {
     m_type        = type;
-    m_pNext        = nullptr;
-    m_pClass    = nullptr;
+    m_next = nullptr;
+    m_class = nullptr;
     m_limite    = -1;
 
     if ( type == CBotTypArrayPointer ||
          type == CBotTypArrayBody )
-        m_pNext = new CBotTypResult( elem );
+        m_next = new CBotTypResult(elem );
 }
 
 CBotTypResult::CBotTypResult(const CBotTypResult& typ)
 {
     m_type        = typ.m_type;
-    m_pClass    = typ.m_pClass;
-    m_pNext        = nullptr;
+    m_class = typ.m_class;
+    m_next = nullptr;
     m_limite    = typ.m_limite;
 
-    if ( typ.m_pNext )
-        m_pNext = new CBotTypResult( *typ.m_pNext );
+    if ( typ.m_next)
+        m_next = new CBotTypResult(*typ.m_next);
 }
 
 CBotTypResult::CBotTypResult()
 {
     m_type        = 0;
     m_limite    = -1;
-    m_pNext        = nullptr;
-    m_pClass    = nullptr;
+    m_next = nullptr;
+    m_class = nullptr;
 }
 
 CBotTypResult::~CBotTypResult()
 {
-    delete    m_pNext;
+    delete m_next;
 }
 
-int CBotTypResult::GetType(int mode) const
+int CBotTypResult::GetType(GetTypeMode mode) const
 {
-    if ( mode == 3 && m_type == CBotTypNullPointer ) return CBotTypPointer;
+    if ( mode == GetTypeMode::NULL_AS_POINTER && m_type == CBotTypNullPointer ) return CBotTypPointer;
     return    m_type;
 }
 
@@ -110,12 +112,12 @@ void CBotTypResult::SetType(int n)
 
 CBotClass* CBotTypResult::GetClass() const
 {
-    return m_pClass;
+    return m_class;
 }
 
 CBotTypResult& CBotTypResult::GetTypElem() const
 {
-    return *m_pNext;
+    return *m_next;
 }
 
 int CBotTypResult::GetLimite() const
@@ -128,14 +130,14 @@ void CBotTypResult::SetLimite(int n)
     m_limite = n;
 }
 
-void CBotTypResult::SetArray( int* max )
+void CBotTypResult::SetArray(int max[])
 {
     m_limite = *max;
     if (m_limite < 1) m_limite = -1;
 
-    if ( m_pNext != nullptr )                    // last dimension?
+    if (m_next != nullptr)
     {
-        m_pNext->SetArray( max+1 );
+        m_next->SetArray(max+1); // next element
     }
 }
 
@@ -143,13 +145,13 @@ bool CBotTypResult::Compare(const CBotTypResult& typ) const
 {
     if ( m_type != typ.m_type ) return false;
 
-    if ( m_type == CBotTypArrayPointer ) return m_pNext->Compare(*typ.m_pNext);
+    if ( m_type == CBotTypArrayPointer ) return m_next->Compare(*typ.m_next);
 
     if ( m_type == CBotTypPointer ||
          m_type == CBotTypClass   ||
          m_type == CBotTypIntrinsic )
     {
-        return m_pClass == typ.m_pClass;
+        return m_class == typ.m_class;
     }
 
     return true;
@@ -164,11 +166,11 @@ CBotTypResult& CBotTypResult::operator=(const CBotTypResult& src)
 {
     m_type = src.m_type;
     m_limite = src.m_limite;
-    m_pClass = src.m_pClass;
-    m_pNext = nullptr;
-    if ( src.m_pNext != nullptr )
+    m_class = src.m_class;
+    m_next = nullptr;
+    if (src.m_next != nullptr )
     {
-        m_pNext = new CBotTypResult(*src.m_pNext);
+        m_next = new CBotTypResult(*src.m_next);
     }
     return *this;
 }
@@ -182,14 +184,16 @@ std::string CBotTypResult::ToString()
         case CBotTypFloat: return "float";
         case CBotTypBoolean: return "bool";
         case CBotTypString: return "string";
-        case CBotTypArrayPointer: return m_pNext->ToString()+"[]";
-        case CBotTypArrayBody: return m_pNext->ToString()+"[] (by value)";
-        case CBotTypPointer: return m_pClass->GetName();
-        case CBotTypNullPointer: return m_pClass->GetName()+" (null)";
-        case CBotTypClass: return m_pClass->GetName()+" (by value)";
-        case CBotTypIntrinsic: return m_pClass->GetName()+" (intr)";
+        case CBotTypArrayPointer: return m_next->ToString() + "[]";
+        case CBotTypArrayBody: return m_next->ToString() + "[] (by value)";
+        case CBotTypPointer: return m_class->GetName();
+        case CBotTypNullPointer: return m_class->GetName() + " (null)";
+        case CBotTypClass: return m_class->GetName() + " (by value)";
+        case CBotTypIntrinsic: return m_class->GetName() + " (intr)";
     }
-    return "?";
+    std::stringstream ss;
+    ss << "UNKNOWN" << m_type;
+    return ss.str();
 }
 
 } // namespace CBot

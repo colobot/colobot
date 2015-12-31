@@ -152,7 +152,7 @@ bool CBotInstrCall::Execute(CBotStack* &pj)
         if ( pile->GetState() == 0 )
         {
             if (!p->Execute(pile)) return false;        // interrupted here?
-            pile->SetState(1);                          // mark as special for reknowed parameters \TODO marque spéciale pour reconnaîre parameters
+            pile->SetState(1);                          // set state to remember that parameters were executed
         }
         ppVars[i++] = pile->GetVar();
         p = p->GetNext();

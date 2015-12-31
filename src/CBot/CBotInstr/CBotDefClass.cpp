@@ -189,7 +189,7 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
         }
         else if (inst->m_hasParams)
         {
-            // creates the object on the "job" (\TODO "tas")
+            // creates the object on the stack
             // with a pointer to the object
             if ( !bIntrinsic )
             {
@@ -406,7 +406,7 @@ void CBotDefClass::RestoreState(CBotStack* &pj, bool bMain)
             CBotInstr*  p = m_parameters;
             // evaluates the parameters
             // and the values an the stack
-            // for the ability to be interrupted at any time (\TODO pour pouvoir être interrompu n'importe quand)
+            // so that it can be interrupted at any time
 
             if ( p != nullptr) while ( true )
             {

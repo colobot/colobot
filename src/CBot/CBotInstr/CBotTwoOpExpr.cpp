@@ -196,7 +196,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
             type2 = pStk->GetTypResult();                       // what kind of results?
 
             // what kind of result?
-            int TypeRes = std::max( type1.GetType(3), type2.GetType(3) );
+            int TypeRes = std::max( type1.GetType(CBotTypResult::GetTypeMode::NULL_AS_POINTER), type2.GetType(CBotTypResult::GetTypeMode::NULL_AS_POINTER) );
             if ( TypeOp == ID_ADD && type1.Eq(CBotTypString) )
             {
                 TypeRes = CBotTypString;
