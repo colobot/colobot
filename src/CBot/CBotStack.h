@@ -240,7 +240,8 @@ public:
      *
      * \todo Document params & return
      */
-    CBotStack*        AddStackEOX(CBotExternalCall* instr = nullptr, BlockVisibilityType bBlock = BlockVisibilityType::INSTRUCTION);
+    CBotStack* AddStackExternalCall(CBotExternalCall* instr = nullptr,
+                                    BlockVisibilityType bBlock = BlockVisibilityType::INSTRUCTION);
 
     /**
      * \brief Restore CBotInstr pointer after loading stack from file
@@ -446,6 +447,10 @@ public:
      * \todo Full documentation of the timer
      */
     static void     SetTimer(int n);
+    /**
+     * \brief Get the current configured maximum number of "timer ticks" (parts of instructions) to execute
+     */
+    static int GetTimer();
 
     /**
      * \brief Get current position in the program
@@ -462,41 +467,41 @@ public:
      */
     CBotVar*        GetStackVars(std::string& functionName, int level);
 
+    bool            IsCallFinished();
+
 private:
     CBotStack*        m_next;
     CBotStack*        m_next2;
     CBotStack*        m_prev;
-    friend class CBotDefArray;
 
-    int                m_state;
-    int                m_step;
+    int               m_state;
+    int               m_step;
     static CBotError  m_error;
     static int        m_start;
     static int        m_end;
-    static
-    CBotVar*        m_retvar;                    // result of a return
+    static CBotVar*   m_retvar;                    // result of a return
 
     CBotVar*        m_var;                        // result of the operations
     CBotVar*        m_listVar;                    // variables declared at this level
 
-    BlockVisibilityType m_bBlock;                    // is part of a block (variables are local to this block)
+    BlockVisibilityType m_block;                    // is part of a block (variables are local to this block)
     bool            m_bOver;                    // stack limits?
-//    bool            m_bDontDelete;                // special, not to destroy the variable during delete
-    CBotProgram*    m_prog;                        // user-defined functions
+    //! CBotProgram instance the execution is in in this stack level
+    CBotProgram*    m_prog;
 
-    static
-    int                m_initimer;
-    static
-    int                m_timer;
-    static
-    std::string        m_labelBreak;
-    static
-    void*            m_pUser;
+    static int      m_initimer;
+    static int      m_timer;
+    static std::string m_labelBreak;
+    static void*    m_pUser;
 
-    CBotInstr*        m_instr;                    // the corresponding instruction
-    IsFunction m_bFunc;                    // an input of a function?
-    CBotExternalCall*        m_call;                        // recovery point in a extern call
-    friend class    CBotTry;
+    //! The corresponding instruction
+    CBotInstr* m_instr;
+    //! If this stack level holds a function call
+    IsFunction m_func;
+    //! Extern call on this level (only if m_func == IsFunction::EXTERNAL_CALL)
+    CBotExternalCall* m_call;
+
+    bool m_callFinished;
 };
 
 } // namespace CBot

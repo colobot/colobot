@@ -228,7 +228,7 @@ CBotClass* CBotVarClass::GetClass()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVarClass::Maj(void* pUser)
+void CBotVarClass::Update(void* pUser)
 {
     // retrieves the user pointer according to the class
     // or according to the parameter passed to CBotProgram::Run()
@@ -467,7 +467,7 @@ bool CBotVarClass::Save1State(FILE* pf)
     if ( !WriteType(pf, m_type) ) return false;
     if ( !WriteLong(pf, m_ItemIdent) ) return false;
 
-    return SaveVar(pf, m_pVar);                                // content of the object
+    return SaveVars(pf, m_pVar);                                // content of the object
 }
 
 } // namespace CBot

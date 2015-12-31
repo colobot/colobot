@@ -73,12 +73,12 @@ std::size_t fRead(void *buffer,
                   FILE* filehandle);
 
 /*!
- * \brief SaveVar
+ * \brief SaveVars
  * \param pf
  * \param pVar
  * \return
  */
-bool SaveVar(FILE* pf, CBotVar* pVar);
+bool SaveVars(FILE* pf, CBotVar* pVar);
 
 /*!
  * \brief WriteWord

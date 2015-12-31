@@ -36,9 +36,9 @@
 namespace CBot
 {
 
-#define    ITIMER    100
+const int DEFAULT_TIMER = 100;
 
-int         CBotStack::m_initimer = ITIMER;
+int         CBotStack::m_initimer = DEFAULT_TIMER;
 int         CBotStack::m_timer = 0;
 CBotVar*    CBotStack::m_retvar = nullptr;
 CBotError   CBotStack::m_error = CBotNoErr;
@@ -61,7 +61,7 @@ CBotStack* CBotStack::AllocateStack()
     // completely empty
     memset(p, 0, size);
 
-    p-> m_bBlock = BlockVisibilityType::BLOCK;
+    p->m_block = BlockVisibilityType::BLOCK;
     m_timer = m_initimer;                // sets the timer at the beginning
 
     CBotStack* pp = p;
@@ -80,7 +80,7 @@ CBotStack* CBotStack::AllocateStack()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStack::Delete()
 {
-    if ( this == nullptr || this == EOX ) return;
+    if ( this == nullptr ) return;
 
     m_next->Delete();
     m_next2->Delete();
@@ -125,32 +125,29 @@ CBotStack* CBotStack::AddStack(CBotInstr* instr, BlockVisibilityType bBlock)
     while ( p->m_prev != nullptr );
 
     m_next = p;                                    // chain an element
-    p->m_bBlock         = bBlock;
-    p->m_instr         = instr;
-    p->m_prog         = m_prog;
-    p->m_step         = 0;
-    p->m_prev         = this;
-    p->m_state         = 0;
-    p->m_call         = nullptr;
-    p->m_bFunc         = IsFunction::NO;
-    return    p;
+    p->m_block  = bBlock;
+    p->m_instr  = instr;
+    p->m_prog   = m_prog;
+    p->m_step   = 0;
+    p->m_prev   = this;
+    p->m_state  = 0;
+    p->m_call   = nullptr;
+    p->m_func   = IsFunction::NO;
+    p->m_callFinished = false;
+    return p;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotStack* CBotStack::AddStackEOX(CBotExternalCall* instr, BlockVisibilityType bBlock)
+CBotStack* CBotStack::AddStackExternalCall(CBotExternalCall* instr, BlockVisibilityType bBlock)
 {
+    assert(!m_callFinished);
     if (m_next != nullptr)
     {
-        if ( m_next == EOX )
-        {
-            m_next = nullptr;
-            return EOX;
-        }
         return m_next;                // included in an existing stack
     }
     CBotStack*    p = AddStack(nullptr, bBlock);
     p->m_call = instr;
-    p->m_bFunc = IsFunction::EXTERNAL_CALL;    // special
+    p->m_func = IsFunction::EXTERNAL_CALL;
     return    p;
 }
 
@@ -172,7 +169,7 @@ CBotStack* CBotStack::AddStack2(BlockVisibilityType bBlock)
 
     m_next2 = p;                                // chain an element
     p->m_prev = this;
-    p->m_bBlock = bBlock;
+    p->m_block = bBlock;
     p->m_prog = m_prog;
     p->m_step = 0;
     return    p;
@@ -181,7 +178,7 @@ CBotStack* CBotStack::AddStack2(BlockVisibilityType bBlock)
 ////////////////////////////////////////////////////////////////////////////////
 CBotStack::BlockVisibilityType CBotStack::GetBlock()
 {
-    return    m_bBlock;
+    return m_block;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -282,7 +279,7 @@ bool CBotStack::IfContinue(int state, const std::string& name)
     m_state = state;                            // where again?
     m_error = CBotNoErr;
     m_labelBreak.clear();
-    if ( m_next != EOX ) m_next->Delete();            // purge above stack
+    m_next->Delete();            // purge above stack
     return true;
 }
 
@@ -327,7 +324,7 @@ CBotVar* CBotStack::FindVar(CBotToken*& pToken, bool bUpdate)
             if (pp->GetName() == name)
             {
                 if ( bUpdate )
-                    pp->Maj(m_pUser);
+                    pp->Update(m_pUser);
 
                 return pp;
             }
@@ -370,7 +367,7 @@ CBotVar* CBotStack::FindVar(long ident, bool bUpdate)
             if (pp->GetUniqNum() == ident)
             {
                 if ( bUpdate )
-                    pp->Maj(m_pUser);
+                    pp->Update(m_pUser);
 
                 return pp;
             }
@@ -451,6 +448,11 @@ void CBotStack::SetTimer(int n)
     m_initimer = n;
 }
 
+int CBotStack::GetTimer()
+{
+    return m_initimer;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotStack::Execute()
 {
@@ -476,7 +478,7 @@ bool CBotStack::Execute()
 
     pile->m_next->Delete();
 
-    pile->m_next = EOX;            // special for recovery
+    pile->m_callFinished = true;
     return true;
 }
 
@@ -517,11 +519,9 @@ void CBotStack::AddVar(CBotVar* pVar)
     CBotStack*    p = this;
 
     // returns to the father element
-    while (p != nullptr && p->m_bBlock == BlockVisibilityType::INSTRUCTION) p = p->m_prev;
+    while (p != nullptr && p->m_block == BlockVisibilityType::INSTRUCTION) p = p->m_prev;
 
     if ( p == nullptr ) return;
-
-//    p->m_bDontDelete = bDontDelete;
 
     CBotVar**    pp = &p->m_listVar;
     while ( *pp != nullptr ) pp = &(*pp)->m_next;
@@ -532,8 +532,8 @@ void CBotStack::AddVar(CBotVar* pVar)
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStack::SetProgram(CBotProgram* p)
 {
-    m_prog  = p;
-    m_bFunc = IsFunction::YES;
+    m_prog = p;
+    m_func = IsFunction::YES;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -594,23 +594,6 @@ void CBotStack::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool SaveVar(FILE* pf, CBotVar* pVar)
-{
-    while ( true )
-    {
-        if ( pVar == nullptr )
-        {
-            return WriteWord(pf, 0);                            // is a terminator
-        }
-
-        if ( !pVar->Save0State(pf)) return false;                // common header
-        if ( !pVar->Save1State(pf) ) return false;                // saves as the child class
-
-        pVar = pVar->GetNext();
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void CBotStack::GetRunPos(std::string& functionName, int& start, int& end)
 {
     CBotProgram*    prog = m_prog;                        // Current program
@@ -623,7 +606,7 @@ void CBotStack::GetRunPos(std::string& functionName, int& start, int& end)
     while (p->m_next != nullptr)
     {
         if ( p->m_instr != nullptr ) instr = p->m_instr;
-        if ( p->m_bFunc == IsFunction::YES && p->m_instr != nullptr ) funct = p->m_instr;
+        if (p->m_func == IsFunction::YES && p->m_instr != nullptr ) funct = p->m_instr;
         if ( p->m_next->m_prog != prog ) break ;
 
         if (p->m_next2 && p->m_next2->m_state != 0) p = p->m_next2 ;
@@ -631,7 +614,7 @@ void CBotStack::GetRunPos(std::string& functionName, int& start, int& end)
     }
 
     if ( p->m_instr != nullptr ) instr = p->m_instr;
-    if ( p->m_bFunc == IsFunction::YES && p->m_instr != nullptr ) funct = p->m_instr;
+    if (p->m_func == IsFunction::YES && p->m_instr != nullptr ) funct = p->m_instr;
 
     if ( funct == nullptr ) return;
 
@@ -665,13 +648,13 @@ CBotVar* CBotStack::GetStackVars(std::string& functionName, int level)
 
 
     // descends upon the elements of block
-    while ( p != nullptr && p->m_bBlock == BlockVisibilityType::INSTRUCTION) p = p->m_prev;
+    while ( p != nullptr && p->m_block == BlockVisibilityType::INSTRUCTION) p = p->m_prev;
     // Now p is on the beggining of the top block (with local variables)
 
     while ( p != nullptr && level++ < 0 )
     {
         p = p->m_prev;
-        while ( p != nullptr && p->m_bBlock == BlockVisibilityType::INSTRUCTION) p = p->m_prev;
+        while ( p != nullptr && p->m_block == BlockVisibilityType::INSTRUCTION) p = p->m_prev;
     }
     // Now p is on the block "level"
 
@@ -681,7 +664,7 @@ CBotVar* CBotStack::GetStackVars(std::string& functionName, int level)
     CBotStack* pp = p;
     while ( pp != nullptr )
     {
-        if ( pp->m_bFunc == IsFunction::YES) break;
+        if (pp->m_func == IsFunction::YES) break;
         pp = pp->m_prev;
     }
 
@@ -696,59 +679,73 @@ CBotVar* CBotStack::GetStackVars(std::string& functionName, int level)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotStack::SaveState(FILE* pf)
 {
-    if ( this == nullptr )                                    // end of the tree?
+    if (m_next2 != nullptr)
     {
-        return WriteWord(pf, 0);                        // is a terminator
-    }
-
-    if ( m_next2 != nullptr )
-    {
-        if (!WriteWord(pf, 2)) return false;                // a mark of pursuit
-        if (!m_next2->SaveState(pf)) return false;
+        if (!WriteWord(pf, 2)) return false; // a marker of type (m_next2)
+        if (!m_next2->SaveState(pf)) return false; // saves the next element
     }
     else
     {
-        if (!WriteWord(pf, 1)) return false;                // a mark of pursuit
+        if (!WriteWord(pf, 1)) return false; // a marker of type (m_next)
     }
-    if (!WriteWord(pf, static_cast<unsigned short>(m_bBlock))) return false;            // is a local block
-    if (!WriteWord(pf, m_state)) return false;            // in what state?
-    if (!WriteWord(pf, 0)) return false;                // by compatibility m_bDontDelete
-    if (!WriteWord(pf, m_step)) return false;            // in what state?
+    if (!WriteWord(pf, static_cast<unsigned short>(m_block))) return false;
+    if (!WriteWord(pf, m_state)) return false;
+    if (!WriteWord(pf, 0)) return false; // for backwards combatibility (m_bDontDelete)
+    if (!WriteWord(pf, m_step)) return false;
 
 
-    if (!SaveVar(pf, m_var)) return false;            // current result
-    if (!SaveVar(pf, m_listVar)) return false;        // local variables
+    if (!SaveVars(pf, m_var)) return false;            // current result
+    if (!SaveVars(pf, m_listVar)) return false;        // local variables
 
-    return m_next->SaveState(pf);                        // saves the following
+    if (m_next != nullptr)
+    {
+        if (!m_next->SaveState(pf)) return false; // saves the next element
+    }
+    else
+    {
+        if (!WriteWord(pf, 0)) return false; // terminator
+    }
+    return true;
+}
+
+bool SaveVars(FILE* pf, CBotVar* pVar)
+{
+    while (pVar != nullptr)
+    {
+        if (!pVar->Save0State(pf)) return false; // common header
+        if (!pVar->Save1State(pf)) return false; // saves the data
+
+        pVar = pVar->GetNext();
+    }
+    return WriteWord(pf, 0); // terminator
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
 {
-    unsigned short    w;
+    unsigned short w;
 
     pStack = nullptr;
     if (!ReadWord(pf, w)) return false;
-    if ( w == 0 ) return true;
+    if ( w == 0 ) return true; // 0 - terminator
 
     if ( this == nullptr ) pStack = AllocateStack();
     else pStack = AddStack();
 
-    if ( w == 2 )
+    if ( w == 2 ) // 2 - m_next2
     {
         if (!pStack->RestoreState(pf, pStack->m_next2)) return false;
     }
 
-    if (!ReadWord(pf, w)) return false;            // is a local block
-    pStack->m_bBlock = static_cast<BlockVisibilityType>(w);
+    if (!ReadWord(pf, w)) return false;
+    pStack->m_block = static_cast<BlockVisibilityType>(w);
 
-    if (!ReadWord(pf, w)) return false;            // in what state ?
-    pStack->SetState(static_cast<short>(w));                    // in a good state
+    if (!ReadWord(pf, w)) return false;
+    pStack->SetState(static_cast<short>(w));
 
-    if (!ReadWord(pf, w)) return false;            // dont delete?
-                                                // uses more
+    if (!ReadWord(pf, w)) return false; // backwards compatibility (m_bDontDelete)
 
-    if (!ReadWord(pf, w)) return false;            // step by step
+    if (!ReadWord(pf, w)) return false;
     pStack->m_step = w;
 
     if (!CBotVar::RestoreState(pf, pStack->m_var)) return false;    // temp variable
@@ -765,32 +762,6 @@ bool CBotVar::Save0State(FILE* pf)
     if (!WriteWord(pf, m_type.GetType()))return false;        // saves the type (always non-zero)
     if (!WriteWord(pf, static_cast<unsigned short>(m_binit))) return false;                // variable defined?
     return WriteString(pf, m_token->GetString());            // and variable name
-}
-
-namespace
-{
-bool ParseInitType(int rawInitType, CBotVar::InitType* initType)
-{
-    switch (rawInitType)
-    {
-    case static_cast<int>(CBotVar::InitType::UNDEF):
-        *initType = CBotVar::InitType::UNDEF;
-        break;
-    case static_cast<int>(CBotVar::InitType::DEF):
-        *initType = CBotVar::InitType::DEF;
-        break;
-    case static_cast<int>(CBotVar::InitType::IS_POINTER):
-        *initType = CBotVar::InitType::IS_POINTER;
-        break;
-    case static_cast<int>(CBotVar::InitType::IS_NAN):
-        *initType = CBotVar::InitType::IS_NAN;
-        break;
-    default:
-        *initType = CBotVar::InitType::UNDEF;
-        return false;
-    }
-    return true;
-}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -828,8 +799,8 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 
         if ( w == CBotTypClass ) w = CBotTypIntrinsic;            // necessarily intrinsic
 
-        CBotVar::InitType initType = CBotVar::InitType::UNDEF;
-        if (!ReadWord(pf, wi) || !ParseInitType(wi, &initType)) return false;                    // init ?
+        if (!ReadWord(pf, wi)) return false;                    // init ?
+        CBotVar::InitType initType = static_cast<CBotVar::InitType>(wi);
         if (!ReadString(pf, name)) return false;                // variable name
 
         CBotToken token(name, std::string());
@@ -927,6 +898,11 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
         pPrev = pNew;
     }
     return true;
+}
+
+bool CBotStack::IsCallFinished()
+{
+    return m_callFinished;
 }
 
 } // namespace CBot

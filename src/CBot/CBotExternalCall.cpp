@@ -71,7 +71,8 @@ bool CBotExternalCallList::CheckCall(const std::string& name)
     return m_list.count(name) > 0;
 }
 
-int CBotExternalCallList::DoCall(CBotToken* token, CBotVar* thisVar, CBotVar** ppVar, CBotStack* pStack, const CBotTypResult& rettype)
+int CBotExternalCallList::DoCall(CBotToken* token, CBotVar* thisVar, CBotVar** ppVar, CBotStack* pStack,
+                                 const CBotTypResult& rettype)
 {
     if (token == nullptr)
         return -1;
@@ -81,18 +82,18 @@ int CBotExternalCallList::DoCall(CBotToken* token, CBotVar* thisVar, CBotVar** p
 
     CBotExternalCall* pt = m_list[token->GetString()].get();
 
-    CBotStack*  pile = pStack->AddStackEOX(pt);
-    if (pile == EOX) return true;
+    if (pStack->IsCallFinished()) return true;
+    CBotStack* pile = pStack->AddStackExternalCall(pt);
 
     // lists the parameters depending on the contents of the stack (pStackVar)
-    CBotVar*    pVar = MakeListVars(ppVar, true);
+    CBotVar* pVar = MakeListVars(ppVar, true);
 
     // creates a variable to the result
-    CBotVar*    pResult = rettype.Eq(CBotTypVoid) ? nullptr : CBotVar::Create("", rettype);
+    CBotVar* pResult = rettype.Eq(CBotTypVoid) ? nullptr : CBotVar::Create("", rettype);
 
     pile->SetVar(pVar);
 
-    CBotStack*  pile2 = pile->AddStack();
+    CBotStack* pile2 = pile->AddStack();
     pile2->SetVar(pResult);
 
     pile->SetError(CBotNoErr, token); // save token for the position in case of error
@@ -106,8 +107,8 @@ bool CBotExternalCallList::RestoreCall(CBotToken* token, CBotVar* thisVar, CBotV
 
     CBotExternalCall* pt = m_list[token->GetString()].get();
 
-    CBotStack*  pile = pStack->RestoreStackEOX(pt);
-    if ( pile == nullptr ) return true;
+    CBotStack* pile = pStack->RestoreStackEOX(pt);
+    if (pile == nullptr) return true;
 
     pile->RestoreStack();
     return true;
@@ -142,8 +143,8 @@ CBotTypResult CBotExternalCallDefault::Compile(CBotVar* thisVar, CBotVar* args, 
 
 bool CBotExternalCallDefault::Run(CBotVar* thisVar, CBotStack* pStack)
 {
-    CBotStack*  pile = pStack->AddStackEOX(this);
-    if ( pile == EOX ) return true;
+    if (pStack->IsCallFinished()) return true;
+    CBotStack* pile = pStack->AddStackExternalCall(this);
     CBotVar* args = pile->GetVar();
 
     CBotStack* pile2 = pile->AddStack();
@@ -167,48 +168,4 @@ bool CBotExternalCallDefault::Run(CBotVar* thisVar, CBotStack* pStack)
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-CBotExternalCallDefaultClass::CBotExternalCallDefaultClass(RuntimeFunc rExec, CompileFunc rCompile)
-{
-    m_rExec = rExec;
-    m_rComp = rCompile;
 }
-
-CBotExternalCallDefaultClass::~CBotExternalCallDefaultClass()
-{
-}
-
-CBotTypResult CBotExternalCallDefaultClass::Compile(CBotVar* thisVar, CBotVar* args, void* user)
-{
-    return m_rComp(nullptr, args);
-}
-
-// TODO: Figure out why classes do pStack->SetVar while normal calls do pStack->SetCopyVar
-bool CBotExternalCallDefaultClass::Run(CBotVar* thisVar, CBotStack* pStack)
-{
-    CBotStack*  pile = pStack->AddStackEOX(this);
-    if ( pile == EOX ) return true;
-    CBotVar* args = pile->GetVar();
-
-    CBotStack* pile2 = pile->AddStack();
-
-    CBotVar* result = pile2->GetVar();
-
-    int exception = CBotNoErr; // TODO: Change to CBotError
-    bool res = m_rExec(thisVar, args, result, exception, pStack->GetUserPtr());
-    pStack->SetVar(result);
-
-    if (!res)
-    {
-        if (exception != CBotNoErr)
-        {
-            pStack->SetError(static_cast<CBotError>(exception));
-        }
-        return false;
-    }
-
-    return true;
-}
-
-} // namespace CBot

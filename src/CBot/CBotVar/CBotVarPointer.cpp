@@ -51,22 +51,19 @@ CBotVarPointer::CBotVarPointer(const CBotToken& name, CBotTypResult& type)
     m_pClass    = nullptr;
     m_pVarClass = nullptr;                                    // will be defined by a SetPointer()
 
-    SetClass(type.GetClass() );
+    SetClass(type.GetClass());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotVarPointer::~CBotVarPointer()
 {
-    if ( m_pVarClass != nullptr ) m_pVarClass->DecrementUse();    // decrement reference
+    if (m_pVarClass != nullptr) m_pVarClass->DecrementUse();    // decrement reference
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotVarPointer::Maj(void* pUser)
+void CBotVarPointer::Update(void* pUser)
 {
-/*    if ( !bContinu && m_pMyThis != nullptr )
-         m_pMyThis->Maj(pUser, false);*/
-
-    if ( m_pVarClass != nullptr) m_pVarClass->Maj(pUser);
+    if (m_pVarClass != nullptr) m_pVarClass->Update(pUser);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +186,7 @@ bool CBotVarPointer::Save1State(FILE* pf)
     if (!WriteLong(pf, GetIdent())) return false;        // the unique reference
 
     // also saves the proceedings copies
-    return SaveVar(pf, GetPointer());
+    return SaveVars(pf, GetPointer());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

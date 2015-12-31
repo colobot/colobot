@@ -365,7 +365,7 @@ public:
      * \param pUser User pointer to pass to the update function
      * \see CBotClass::SetUpdateFunc()
      */
-    virtual void Maj(void* pUser);
+    virtual void Update(void* pUser);
 
     /**
      * \brief Set unique identifier of this variable

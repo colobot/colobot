@@ -105,36 +105,6 @@ private:
     CompileFunc m_rComp;
 };
 
-/**
- * \brief Default implementation of CBot external class call, using compilation and runtime functions
- */
-class CBotExternalCallDefaultClass : public CBotExternalCall
-{
-public:
-    typedef bool (*RuntimeFunc)(CBotVar* thisVar, CBotVar* args, CBotVar* result, int& exception, void* user);
-    typedef CBotTypResult (*CompileFunc)(CBotVar* thisVar, CBotVar*& args); // TODO: Add user pointer
-
-    /**
-     * \brief Constructor
-     * \param rExec Runtime function
-     * \param rCompile Compilation function
-     * \see CBotClass::AddFunction()
-     */
-    CBotExternalCallDefaultClass(RuntimeFunc rExec, CompileFunc rCompile);
-
-    /**
-     * \brief Destructor
-     */
-    virtual ~CBotExternalCallDefaultClass();
-
-    virtual CBotTypResult Compile(CBotVar* thisVar, CBotVar* args, void* user);
-    virtual bool Run(CBotVar* thisVar, CBotStack* pStack);
-
-private:
-    RuntimeFunc m_rExec;
-    CompileFunc m_rComp;
-};
-
 
 /**
  * \brief Class for mangaging CBot external calls

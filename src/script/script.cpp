@@ -508,7 +508,7 @@ void PutList(const char *baseName, bool bArray, CBot::CBotVar *var, Ui::CList *l
     index = 0;
     while ( var != nullptr )
     {
-        var->Maj(nullptr);
+        var->Update(nullptr);
         pStatic = var->GetStaticVar();  // finds the static element
 
         p = pStatic->GetName();  // variable name

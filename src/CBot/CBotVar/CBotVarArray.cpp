@@ -141,7 +141,7 @@ std::string CBotVarArray::GetValString()
 bool CBotVarArray::Save1State(FILE* pf)
 {
     if ( !WriteType(pf, m_type) ) return false;
-    return SaveVar(pf, m_pInstance);                        // saves the instance that manages the table
+    return SaveVars(pf, m_pInstance);                        // saves the instance that manages the table
 }
 
 } // namespace CBot

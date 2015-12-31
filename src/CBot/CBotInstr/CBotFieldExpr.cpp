@@ -72,7 +72,6 @@ bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
 {
     CBotStack*    pj = pile;
     pile = pile->AddStack(this);    // changes in output stack
-    if (pile == EOX) return true;
 
 
     if (pVar->GetType(CBotVar::GetTypeMode::CLASS_AS_POINTER) != CBotTypPointer)
@@ -107,7 +106,7 @@ bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
     }
 
     // request the update of the element, if applicable
-    pVar->Maj(pile->GetUserPtr());
+    pVar->Update(pile->GetUserPtr());
 
     if ( m_next3 != nullptr &&
          !m_next3->ExecuteVar(pVar, pile, &m_token, bStep, bExtend) ) return false;
