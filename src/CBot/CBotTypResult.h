@@ -96,7 +96,7 @@ public:
     ~CBotTypResult();
 
     /**
-     * \brief Mode for GetType() and GetTypResult()
+     * \brief Mode for GetType()
      */
     enum class GetTypeMode
     {

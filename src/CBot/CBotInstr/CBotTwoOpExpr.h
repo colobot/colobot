@@ -32,6 +32,25 @@ namespace CBot
  * op1 + op2
  * op1 > op2
  * \endcode
+ *
+ * \section Operations Supported operations
+ *
+ * This table is sorted by operator precedence
+ *
+ * | Operator                               |
+ * | -------------------------------------- |
+ * | **                                     |
+ * | *, /, %                                |
+ * | +, -                                   |
+ * | <<, >>, >>>                            |
+ * | >, <, >=, <=                           |
+ * | ==, !=                                 |
+ * | &                                      |
+ * | ^                                      |
+ * | \|                                     |
+ * | &&, and                                |
+ * | \|\|, or                               |
+ * | a ? b : c (special, see CBotLogicExpr) |
  */
 class CBotTwoOpExpr : public CBotInstr
 {

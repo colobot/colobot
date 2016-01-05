@@ -49,75 +49,93 @@ CBotTwoOpExpr::~CBotTwoOpExpr()
     delete  m_rightop;
 }
 
-// type of operands accepted by operations
-#define     ENTIER      ((1<<CBotTypByte)|(1<<CBotTypShort)|(1<<CBotTypChar)|(1<<CBotTypInt)|(1<<CBotTypLong))
-#define     FLOTANT     ((1<<CBotTypFloat)|(1<<CBotTypDouble))
-#define     BOOLEEN     (1<<CBotTypBoolean)
-#define     CHAINE      (1<<CBotTypString)
+// This list contains all possible operations
+// They are sorted in reversed order of precedence (the ones that get executed first are at the end),
+// the operations have equal precedence until 0 marker
+// The entries are made of pairs: bitmask of acceptable parameters type and operand token
+
+#define     INTEGER     ((1<<CBotTypByte)|(1<<CBotTypShort)|(1<<CBotTypChar)|(1<<CBotTypInt)|(1<<CBotTypLong))
+#define     FLOAT       ((1<<CBotTypFloat)|(1<<CBotTypDouble))
+#define     BOOLEAN     (1<<CBotTypBoolean)
+#define     STRING      (1<<CBotTypString)
 #define     POINTER     (1<<CBotTypPointer)
 #define     INSTANCE    (1<<CBotTypClass)
 
-// list of operations (précéance)
-//  acceptable type, operand
-//  zero ends level \TODO précéance
-
 static int  ListOp[] =
 {
-    BOOLEEN,                ID_LOGIC, 0,
-    BOOLEEN,                ID_TXT_OR,
-    BOOLEEN,                ID_LOG_OR, 0,
-    BOOLEEN,                ID_TXT_AND,
-    BOOLEEN,                ID_LOG_AND, 0,
-    BOOLEEN|ENTIER,         ID_OR, 0,
-    BOOLEEN|ENTIER,         ID_XOR, 0,
-    BOOLEEN|ENTIER,         ID_AND, 0,
-    BOOLEEN|ENTIER|FLOTANT
-                  |CHAINE
-                  |POINTER
-                  |INSTANCE,ID_EQ,
-    BOOLEEN|ENTIER|FLOTANT
-                  |CHAINE
-                  |POINTER
-                  |INSTANCE,ID_NE, 0,
-    ENTIER|FLOTANT|CHAINE,  ID_HI,
-    ENTIER|FLOTANT|CHAINE,  ID_LO,
-    ENTIER|FLOTANT|CHAINE,  ID_HS,
-    ENTIER|FLOTANT|CHAINE,  ID_LS, 0,
-    ENTIER,                 ID_SR,
-    ENTIER,                 ID_SL,
-    ENTIER,                 ID_ASR, 0,
-    ENTIER|FLOTANT|CHAINE,  ID_ADD,
-    ENTIER|FLOTANT,         ID_SUB, 0,
-    ENTIER|FLOTANT,         ID_MUL,
-    ENTIER|FLOTANT,         ID_DIV,
-    ENTIER|FLOTANT,         ID_MODULO, 0,
-    ENTIER|FLOTANT,         ID_POWER, 0,
+    BOOLEAN, ID_LOGIC,
     0,
+
+    BOOLEAN, ID_TXT_OR,
+    BOOLEAN, ID_LOG_OR,
+    0,
+
+    BOOLEAN, ID_TXT_AND,
+    BOOLEAN, ID_LOG_AND,
+    0,
+
+    BOOLEAN | INTEGER, ID_OR,
+    0,
+
+    BOOLEAN | INTEGER, ID_XOR,
+    0,
+
+    BOOLEAN | INTEGER, ID_AND,
+    0,
+
+    BOOLEAN | INTEGER | FLOAT | STRING | POINTER | INSTANCE, ID_EQ,
+    BOOLEAN | INTEGER | FLOAT | STRING | POINTER | INSTANCE, ID_NE,
+    0,
+
+    INTEGER | FLOAT | STRING, ID_HI,
+    INTEGER | FLOAT | STRING, ID_LO,
+    INTEGER | FLOAT | STRING, ID_HS,
+    INTEGER | FLOAT | STRING, ID_LS,
+    0,
+
+    INTEGER, ID_SR,
+    INTEGER, ID_SL,
+    INTEGER, ID_ASR,
+    0,
+
+    INTEGER | FLOAT | STRING, ID_ADD,
+    INTEGER | FLOAT, ID_SUB,
+    0,
+
+    INTEGER | FLOAT, ID_MUL,
+    INTEGER | FLOAT, ID_DIV,
+    INTEGER | FLOAT, ID_MODULO,
+    0,
+
+    INTEGER | FLOAT, ID_POWER,
+    0,
+
+    0, // end of list
 };
 
-bool IsInList( int val, int* list, int& typemasque )
+bool IsInList(int val, int* list, int& typeMask)
 {
     while (true)
     {
         if ( *list == 0 ) return false;
-        typemasque = *list++;
+        typeMask = *list++;
         if ( *list++ == val ) return true;
     }
 }
 
-bool TypeOk( int type, int test )
+bool TypeOk(int type, int test)
 {
     while (true)
     {
-        if ( type == 0 ) return (test & 1);
-        type--; test /= 2;
+        if ( type == 0 ) return (test & 1) != 0;
+        type--; test >>= 1;
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOperations)
 {
-    int typemasque;
+    int typeMask;
 
     if ( pOperations == nullptr ) pOperations = ListOp;
     int* pOp = pOperations;
@@ -133,13 +151,13 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
     if (left == nullptr) return pStack->Return(nullptr, pStk);        // if error,  transmit
 
     // did we expected the operand?
-    int TypeOp = p->GetType();
-    if ( IsInList( TypeOp, pOperations, typemasque ) )
+    int typeOp = p->GetType();
+    if ( IsInList(typeOp, pOperations, typeMask) )
     {
         CBotTypResult    type1, type2;
         type1 = pStk->GetTypResult();                           // what kind of the first operand?
 
-        if ( TypeOp == ID_LOGIC )       // special case provided for: ? op1: op2;
+        if (typeOp == ID_LOGIC)       // special case provided for: ? op1: op2;
         {
             if ( !type1.Eq(CBotTypBoolean) )
             {
@@ -197,19 +215,19 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 
             // what kind of result?
             int TypeRes = std::max( type1.GetType(CBotTypResult::GetTypeMode::NULL_AS_POINTER), type2.GetType(CBotTypResult::GetTypeMode::NULL_AS_POINTER) );
-            if ( TypeOp == ID_ADD && type1.Eq(CBotTypString) )
+            if (typeOp == ID_ADD && type1.Eq(CBotTypString))
             {
                 TypeRes = CBotTypString;
                 type2 = type1;  // any type convertible chain
             }
-            else if ( TypeOp == ID_ADD && type2.Eq(CBotTypString) )
+            else if (typeOp == ID_ADD && type2.Eq(CBotTypString))
             {
                 TypeRes = CBotTypString;
                 type1 = type2;  // any type convertible chain
             }
-            else if (!TypeOk( TypeRes, typemasque )) type1.SetType(99);// error of type
+            else if (!TypeOk(TypeRes, typeMask)) type1.SetType(99);// error of type
 
-            switch ( TypeOp )
+            switch (typeOp)
             {
             case ID_LOG_OR:
             case ID_LOG_AND:
@@ -223,15 +241,15 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
             case ID_LS:
                 TypeRes = CBotTypBoolean;
             }
-            if ( TypeCompatible (type1, type2, TypeOp ) )               // the results are compatible
+            if ( TypeCompatible (type1, type2, typeOp) )               // the results are compatible
             {
                 // ok so, saves the operand in the object
                 inst->m_leftop = left;
 
                 // special for evaluation of the operations of the same level from left to right
-                while ( IsInList( p->GetType(), pOperations, typemasque ) ) // same operation(s) follows?
+                while ( IsInList(p->GetType(), pOperations, typeMask) ) // same operation(s) follows?
                 {
-                    TypeOp = p->GetType();
+                    typeOp = p->GetType();
                     CBotTwoOpExpr* i = new CBotTwoOpExpr();             // element for operation
                     i->SetToken(p);                                     // stores the operation
                     i->m_leftop = inst;                                 // left operand
@@ -241,7 +259,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
                     i->m_rightop = CBotTwoOpExpr::Compile( p, pStk, pOp );
                     type2 = pStk->GetTypResult();
 
-                    if ( !TypeCompatible (type1, type2, TypeOp) )       // the results are compatible
+                    if ( !TypeCompatible (type1, type2, typeOp) )       // the results are compatible
                     {
                         pStk->SetError(CBotErrBadType2, &i->m_token);
                         delete i;

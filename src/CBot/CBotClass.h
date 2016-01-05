@@ -148,7 +148,7 @@ public:
     /*!
      * \brief SetUpdateFunc Defines routine to be called to update the elements
      * of the class.
-     * \param rMaj
+     * \param rUpdate
      * \return
      */
     bool SetUpdateFunc(void rUpdate(CBotVar* thisVar, void* user));
