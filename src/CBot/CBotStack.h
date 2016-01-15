@@ -276,7 +276,7 @@ public:
      *
      * in case of eventual break
      */
-    bool            BreakReturn(CBotStack* pfils, const std::string& name = nullptr);
+    bool            BreakReturn(CBotStack* pfils, const std::string& name = "");
     /**
      * \todo Document
      *
