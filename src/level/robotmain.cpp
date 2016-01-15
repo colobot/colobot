@@ -170,7 +170,6 @@ CRobotMain::CRobotMain()
     m_missionTimer = 0.0f;
 
     m_phase       = PHASE_PLAYER_SELECT;
-    m_cameraRank  = -1;
     m_visitLast   = EVENT_NULL;
     m_visitObject = nullptr;
     m_visitArrow  = nullptr;

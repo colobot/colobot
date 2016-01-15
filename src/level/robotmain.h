@@ -413,7 +413,6 @@ protected:
 
 
 protected:
-    CController*        m_ctrl = nullptr;
     CApplication*       m_app = nullptr;
     CEventQueue*        m_eventQueue = nullptr;
     Gfx::CEngine*       m_engine = nullptr;
@@ -464,8 +463,6 @@ protected:
 
     Phase           m_phase = PHASE_WELCOME1;
     ActivePause*    m_userPause = nullptr;
-    int             m_cameraRank = 0;
-    Gfx::Color      m_color;
     ActivePause*    m_freePhotoPause = nullptr;
     bool            m_cmdEdit = false;
     ActivePause*    m_cmdEditPause = nullptr;
