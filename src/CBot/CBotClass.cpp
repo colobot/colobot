@@ -148,7 +148,12 @@ void CBotClass::FreeLock(CBotProgram* prog)
             pClass->m_lockCurrentCount = 0;
         }
 
-        pClass->m_lockProg.erase(std::remove(pClass->m_lockProg.begin(), pClass->m_lockProg.end(), prog));
+        // Note: erasing an end iterator is undefined behaviour
+        auto it = std::remove(pClass->m_lockProg.begin(), pClass->m_lockProg.end(), prog);
+        if (it != pClass->m_lockProg.end())
+        {
+            pClass->m_lockProg.erase(it);
+        }
     }
 }
 

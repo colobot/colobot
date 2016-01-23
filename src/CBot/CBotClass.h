@@ -387,7 +387,7 @@ private:
 
     //! How many times the program currently holding the lock called Lock()
     int m_lockCurrentCount = 0;
-    //! Programs waiting for lock
+    //! Programs waiting for lock. m_lockProg[0] is the program currently holding the lock, if any
     std::deque<CBotProgram*> m_lockProg{};
 };
 
