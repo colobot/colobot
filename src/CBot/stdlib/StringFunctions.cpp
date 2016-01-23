@@ -70,6 +70,9 @@ bool rStrLeft( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     // retrieves this number
     int n = pVar->GetValInt();
 
+    if (n > static_cast<int>(s.length())) n = s.length();
+    if (n < 0) n = 0;
+
     // no third parameter
     if ( pVar->GetNext() != nullptr ) { ex = CBotErrOverParam ; return true; }
 
@@ -102,6 +105,9 @@ bool rStrRight( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 
     // retrieves this number
     int n = pVar->GetValInt();
+
+    if (n > static_cast<int>(s.length())) n = s.length();
+    if (n < 0) n = 0;
 
     // no third parameter
     if ( pVar->GetNext() != nullptr ) { ex = CBotErrOverParam ; return true; }
@@ -136,6 +142,9 @@ bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     // retrieves this number
     int n = pVar->GetValInt();
 
+    if (n > static_cast<int>(s.length())) n = s.length();
+    if (n < 0) n = 0;
+
     // third parameter optional
     if ( pVar->GetNext() != nullptr )
     {
@@ -146,6 +155,9 @@ bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 
         // retrieves this number
         int l = pVar->GetValInt();
+
+        if (l > static_cast<int>(s.length())) l = s.length();
+        if (l < 0) l = 0;
 
         // but no fourth parameter
         if ( pVar->GetNext() != nullptr ){ ex = CBotErrOverParam ; return true; }

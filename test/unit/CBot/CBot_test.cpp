@@ -969,6 +969,16 @@ TEST_F(CBotUT, StringFunctions)
         "    ASSERT(strfind(s, \"o\") == 1);\n"
         "    ASSERT(strval(\"2.5\") == 2.5);\n"
         "}\n"
+        "extern void StringFunctionsOutOfRange()\n"
+        "{\n"
+        "    ASSERT(strmid(\"asdf\", 5, 1) == \"\");\n"
+        "    ASSERT(strmid(\"asdf\", 0, 100) == \"asdf\");\n"
+        "    ASSERT(strmid(\"asdf\", -500, 100) == \"asdf\");\n"
+        "    ASSERT(strleft(\"asdf\", 15) == \"asdf\");\n"
+        "    ASSERT(strleft(\"asdf\", -15) == \"\");\n"
+        "    ASSERT(strright(\"asdf\", 15) == \"asdf\");\n"
+        "    ASSERT(strright(\"asdf\", -15) == \"\");\n"
+        "}\n"
     );
 }
 
