@@ -51,7 +51,8 @@ protected:
         CBotToken* token = tokens.get()->GetNext(); // TODO: why do we always have to skip the first one :/
         ASSERT_TRUE(token != nullptr);
         unsigned int i = 0;
-        do {
+        do
+        {
             ASSERT_LT(i, data.size()) << "too many tokens processed";
 
             TokenTest correct = data[i];

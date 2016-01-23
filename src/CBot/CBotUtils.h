@@ -96,7 +96,8 @@ long GetNumInt(const std::string& str);
  */
 float GetNumFloat(const std::string& str);
 
-template<typename T> class CBotLinkedList {
+template<typename T> class CBotLinkedList
+{
 public:
     /**
      * \brief Destructor. Be careful, destroys the whole linked list!
@@ -134,7 +135,8 @@ protected:
     T* m_next = nullptr;
 };
 
-template<typename T> class CBotDoublyLinkedList {
+template<typename T> class CBotDoublyLinkedList
+{
 public:
     /**
      * \brief Destructor. Be careful, destroys the whole linked list!

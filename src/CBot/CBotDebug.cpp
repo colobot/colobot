@@ -55,7 +55,8 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
     }
 
     std::set<CBotInstr*> finished;
-    std::function<void(CBotInstr*)> DumpInstr = [&](CBotInstr* instr) {
+    std::function<void(CBotInstr*)> DumpInstr = [&](CBotInstr* instr)
+    {
         if (finished.find(instr) != finished.end()) return;
         finished.insert(instr);
 

@@ -170,7 +170,8 @@ enum TokenId
 /**
  * \brief Types of tokens
  */
-enum TokenType {
+enum TokenType
+{
     TokenTypNone = 0,
     TokenTypKeyWord = 1, //!< keyword of the language (see TokenKeyWord)
     TokenTypNum = 2,     //!< number

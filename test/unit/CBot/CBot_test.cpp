@@ -39,7 +39,8 @@ public:
     }
 
 private:
-    class CBotTestFail : public std::runtime_error {
+    class CBotTestFail : public std::runtime_error
+    {
     public:
         CBotTestFail(const std::string& message) : runtime_error(message)
         {

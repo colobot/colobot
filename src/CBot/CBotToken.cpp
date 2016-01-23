@@ -117,7 +117,8 @@ static const std::map<TokenId, const std::string> KEYWORDS = {
     {TX_NAN,        "not a number"}
 };
 
-namespace {
+namespace
+{
 static const std::string emptyString = "";
 }
 const std::string& LoadString(TokenId id)

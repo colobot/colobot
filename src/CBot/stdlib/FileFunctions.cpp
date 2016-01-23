@@ -28,7 +28,8 @@
 namespace CBot
 {
 
-namespace {
+namespace
+{
 std::unique_ptr<CBotFileAccessHandler> g_fileHandler;
 std::unordered_map<int, std::unique_ptr<CBotFile>> g_files;
 int g_nextFileId = 1;
