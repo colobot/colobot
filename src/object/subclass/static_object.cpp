@@ -33,7 +33,7 @@
 #include "object/object_create_exception.h"
 
 
-const std::unordered_map<ObjectType, std::string, ObjectTypeHash> CStaticObject::m_staticModelNames;
+const std::unordered_map<ObjectType, std::string, ObjectTypeHash> CStaticObject::m_staticModelNames{};
 // TODO: commenting out temporarily
 //=
 //{
