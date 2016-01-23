@@ -20,6 +20,7 @@
 #include "CBot/CBot.h"
 
 #include <gtest/gtest.h>
+#include <stdexcept>
 
 using namespace CBot;
 

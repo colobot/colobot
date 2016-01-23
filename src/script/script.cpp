@@ -20,6 +20,8 @@
 
 #include "script/script.h"
 
+#include "CBot/CBot.h"
+
 #include "common/restext.h"
 #include "common/stringutils.h"
 
@@ -41,8 +43,6 @@
 #include "ui/controls/edit.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/list.h"
-
-#include "CBot/CBot.h"
 
 
 const int CBOT_IPF = 100;       // CBOT: default number of instructions / frame

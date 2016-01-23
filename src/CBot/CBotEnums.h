@@ -23,7 +23,7 @@
  * \file CBotEnums.h
  * \brief Some enum values used across the CBot engine
  */
- 
+
 namespace CBot
 {
 

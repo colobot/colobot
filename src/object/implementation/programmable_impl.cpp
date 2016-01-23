@@ -19,6 +19,8 @@
 
 #include "object/implementation/programmable_impl.h"
 
+#include "CBot/CBot.h"
+
 #include "common/global.h"
 
 #include "level/robotmain.h"
@@ -39,8 +41,6 @@
 #include "script/script.h"
 
 #include "ui/controls/edit.h"
-
-#include "CBot/CBot.h"
 
 #include <algorithm>
 #include <iomanip>

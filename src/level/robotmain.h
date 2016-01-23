@@ -79,7 +79,6 @@ bool IsPhaseWithWorld(Phase phase);
 bool IsMainMenuPhase(Phase phase);
 
 
-class CController;
 class CEventQueue;
 class CSoundInterface;
 class CLevelParserLine;
