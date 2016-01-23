@@ -89,8 +89,8 @@ public:
     void RestoreStateVar(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotExprVar"; }
-    virtual std::string GetDebugData();
+    virtual const std::string GetDebugName() override { return "CBotExprVar"; }
+    virtual std::string GetDebugData() override;
 
 private:
     long m_nIdent;

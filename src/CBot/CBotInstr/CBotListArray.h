@@ -58,8 +58,8 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotListArray"; }
-    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+    virtual const std::string GetDebugName() override { return "CBotListArray"; }
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;
 
 private:
     //! An expression for an element others are linked with CBotInstr :: m_next3;

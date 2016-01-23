@@ -61,8 +61,8 @@ public:
     void RestoreStateVar(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotIndexExpr"; }
-    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+    virtual const std::string GetDebugName() override { return "CBotIndexExpr"; }
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;
 
 private:
     //! Expression for calculating the index.

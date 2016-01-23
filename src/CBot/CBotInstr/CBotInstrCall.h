@@ -58,9 +58,9 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotInstrCall"; }
-    virtual std::string GetDebugData();
-    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+    virtual const std::string GetDebugName() override { return "CBotInstrCall"; }
+    virtual std::string GetDebugData() override;
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;
 
 private:
     //! The parameters to be evaluated.

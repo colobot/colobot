@@ -57,8 +57,8 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotIf"; }
-    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+    virtual const std::string GetDebugName() override { return "CBotIf"; }
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;
 
 private:
     //! Condition

@@ -82,9 +82,9 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotTwoOpExpr"; }
-    virtual std::string GetDebugData();
-    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+    virtual const std::string GetDebugName() override { return "CBotTwoOpExpr"; }
+    virtual std::string GetDebugData() override;
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;
 
 private:
     //! Left element

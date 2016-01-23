@@ -59,8 +59,8 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotExprLitNum"; }
-    virtual std::string GetDebugData();
+    virtual const std::string GetDebugName() override { return "CBotExprLitNum"; }
+    virtual std::string GetDebugData() override;
 
 private:
     //! The type of number.

@@ -56,7 +56,7 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotExprLitBool"; }
+    virtual const std::string GetDebugName() override { return "CBotExprLitBool"; }
 };
 
 } // namespace CBot

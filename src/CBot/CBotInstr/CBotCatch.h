@@ -73,8 +73,8 @@ public:
     void RestoreCondState(CBotStack* &pj, bool bMain);
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotCatch"; }
-    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+    virtual const std::string GetDebugName() override { return "CBotCatch"; }
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;
 
 private:
     //! Instructions

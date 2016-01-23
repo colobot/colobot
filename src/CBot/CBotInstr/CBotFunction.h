@@ -243,9 +243,9 @@ public:
                      CBotGet modestop);
 
 protected:
-    virtual const std::string GetDebugName() { return "CBotFunction"; }
-    virtual std::string GetDebugData();
-    virtual std::map<std::string, CBotInstr*> GetDebugLinks();
+    virtual const std::string GetDebugName() override { return "CBotFunction"; }
+    virtual std::string GetDebugData() override;
+    virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;
 
 private:
     friend class CBotDebug;

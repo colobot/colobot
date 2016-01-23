@@ -97,8 +97,8 @@ public:
      */
     virtual ~CBotExternalCallDefault();
 
-    virtual CBotTypResult Compile(CBotVar* thisVar, CBotVar* args, void* user);
-    virtual bool Run(CBotVar* thisVar, CBotStack* pStack);
+    virtual CBotTypResult Compile(CBotVar* thisVar, CBotVar* args, void* user) override;
+    virtual bool Run(CBotVar* thisVar, CBotStack* pStack) override;
 
 private:
     RuntimeFunc m_rExec;
