@@ -22,6 +22,7 @@
 #include "CBot/CBot.h"
 
 #include <cmath>
+#include <cstdlib>
 
 namespace CBot
 {
