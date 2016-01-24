@@ -73,7 +73,7 @@ public:
     void CacheAll();
 
     /** Function called to add all music files to list */
-    void AddMusicFiles();
+    void CacheCommonMusic();
 
     /** Function called to cache sound effect file.
      *  This function is called by plugin interface for each file.

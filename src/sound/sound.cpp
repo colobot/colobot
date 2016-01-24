@@ -54,7 +54,7 @@ void CSoundInterface::CacheAll()
     }
 }
 
-void CSoundInterface::AddMusicFiles()
+void CSoundInterface::CacheCommonMusic()
 {
     CacheMusic("music/Intro1.ogg");
     CacheMusic("music/Intro2.ogg");

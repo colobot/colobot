@@ -93,6 +93,11 @@ int main(int argc, char *argv[])
 {
     CLogger logger; // single instance of logger
 
+    auto systemUtils = CSystemUtils::Create(); // platform-specific utils
+    systemUtils->Init();
+
+    logger.SetOutputFile(systemUtils->GetSaveDir() + "/log.txt");
+
     // Workaround for character encoding in argv on Windows
     #if PLATFORM_WINDOWS
     int wargc = 0;
@@ -123,9 +128,6 @@ int main(int argc, char *argv[])
     #endif
 
     logger.Info("%s starting\n", COLOBOT_FULLNAME);
-
-    auto systemUtils = CSystemUtils::Create(); // platform-specific utils
-    systemUtils->Init();
 
     CSignalHandlers::Init(systemUtils.get());
 

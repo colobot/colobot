@@ -457,7 +457,7 @@ bool CApplication::Create()
 
     m_sound->Create();
     m_sound->CacheAll();
-    m_sound->AddMusicFiles();
+    m_sound->CacheCommonMusic();
 
     GetLogger()->Info("CApplication created successfully\n");
 

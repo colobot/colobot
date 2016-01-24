@@ -193,5 +193,5 @@ std::string CSystemUtils::GetLangPath()
 
 std::string CSystemUtils::GetSaveDir()
 {
-    return std::string("save");
+    return std::string("saves");
 }
