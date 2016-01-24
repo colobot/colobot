@@ -160,9 +160,6 @@ public:
     Ui::CDisplayText* GetDisplayText();
     CPauseManager* GetPauseManager();
 
-    void        CreateConfigFile();
-    void        LoadConfigFile();
-
     void        ResetAfterVideoConfigChanged();
     void        ReloadAllTextures();
 

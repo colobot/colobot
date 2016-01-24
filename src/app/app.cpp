@@ -245,7 +245,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_RUNSCENE,
         OPT_SCENETEST,
         OPT_LOGLEVEL,
-        OPT_LANGUAGE,
         OPT_LANGDIR,
         OPT_DATADIR,
         OPT_SAVEDIR,
@@ -262,7 +261,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "runscene", required_argument, nullptr, OPT_RUNSCENE },
         { "scenetest", no_argument, nullptr, OPT_SCENETEST },
         { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
-        { "language", required_argument, nullptr, OPT_LANGUAGE },
         { "langdir", required_argument, nullptr, OPT_LANGDIR },
         { "datadir", required_argument, nullptr, OPT_DATADIR },
         { "savedir", required_argument, nullptr, OPT_SAVEDIR },
@@ -306,7 +304,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -runscene sceneNNN  run given scene on start\n");
                 GetLogger()->Message("  -scenetest          win every mission right after it's loaded\n");
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
-                GetLogger()->Message("  -language lang      set language (one of: en, de, fr, pl, ru)\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
                 GetLogger()->Message("  -datadir path       set custom data directory path\n");
                 GetLogger()->Message("  -savedir path       set custom save directory path (must be writable)\n");
@@ -371,19 +368,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->SetLogLevel(logLevel);
                 break;
             }
-            case OPT_LANGUAGE:
-            {
-                Language language;
-                if (! ParseLanguage(optarg, language))
-                {
-                    GetLogger()->Error("Invalid language: '%s'\n", optarg);
-                    return PARSE_ARGS_FAIL;
-                }
-
-                GetLogger()->Info("Using language %s\n", optarg);
-                m_language = language;
-                break;
-            }
             case OPT_DATADIR:
             {
                 m_pathManager->SetDataPath(optarg);
@@ -440,7 +424,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 bool CApplication::Create()
 {
     std::string path;
-    bool defaultValues = false;
 
     GetLogger()->Info("Creating CApplication\n");
 
@@ -454,27 +437,10 @@ bool CApplication::Create()
 
     if (!GetConfigFile().Init())
     {
-        GetLogger()->Warn("Config not found. Default values will be used!\n");
-        defaultValues = true;
+        GetLogger()->Warn("Config could not be loaded. Default values will be used!\n");
     }
 
-    if (GetConfigFile().GetStringProperty("Language", "Lang", path))
-    {
-        Language language;
-        if (ParseLanguage(path, language))
-        {
-            m_language = language;
-            GetLogger()->Info("Setting language '%s' from ini file\n", path.c_str());
-        }
-        else
-        {
-            GetLogger()->Error("Invalid language '%s' in ini file\n", path.c_str());
-        }
-    }
-
-    SetLanguage(m_language);
-
-    //Create the sound instance.
+    // Create the sound instance.
     #ifdef OPENAL_SOUND
     if (!m_headless)
     {
@@ -647,7 +613,7 @@ bool CApplication::Create()
     m_eventQueue = MakeUnique<CEventQueue>();
 
     // Create the robot application.
-    m_controller = MakeUnique<CController>(this, !defaultValues);
+    m_controller = MakeUnique<CController>();
 
     if (m_runSceneCategory == LevelCategory::Max)
         m_controller->StartApp();
@@ -1599,76 +1565,26 @@ char CApplication::GetLanguageChar() const
     return langChar;
 }
 
-bool CApplication::ParseLanguage(const std::string& str, Language& language)
-{
-    if (str == "en")
-    {
-        language = LANGUAGE_ENGLISH;
-        return true;
-    }
-    else if (str == "de")
-    {
-        language = LANGUAGE_GERMAN;
-        return true;
-    }
-    else if (str == "fr")
-    {
-        language = LANGUAGE_FRENCH;
-        return true;
-    }
-    else if (str == "pl")
-    {
-        language = LANGUAGE_POLISH;
-        return true;
-    }
-    else if (str == "ru")
-    {
-        language = LANGUAGE_RUSSIAN;
-        return true;
-    }
-
-    return false;
-}
-
 void CApplication::SetLanguage(Language language)
 {
     m_language = language;
 
     /* Gettext initialization */
 
-    std::string locale = "";
-    switch (m_language)
+    static char envLang[50] = { 0 };
+    if (envLang[0] == 0)
     {
-        default:
-        case LANGUAGE_ENV:
-            locale = "";
-            break;
-
-        case LANGUAGE_ENGLISH:
-            locale = "en_US.utf8";
-            break;
-
-        case LANGUAGE_GERMAN:
-            locale = "de_DE.utf8";
-            break;
-
-        case LANGUAGE_FRENCH:
-            locale = "fr_FR.utf8";
-            break;
-
-        case LANGUAGE_POLISH:
-            locale = "pl_PL.utf8";
-            break;
-
-        case LANGUAGE_RUSSIAN:
-            locale = "ru_RU.utf8";
-            break;
+        // Get this only at the first call, since this code modifies it
+        const char* currentEnvLang = gl_locale_name(LC_MESSAGES, "LC_MESSAGES");
+        if (currentEnvLang != nullptr)
+        {
+            strcpy(envLang, currentEnvLang);
+        }
     }
 
-    if (locale.empty())
+    if (language == LANGUAGE_ENV)
     {
-        const char* envLang = gl_locale_name(LC_MESSAGES, "LC_MESSAGES");
-        if (envLang == nullptr)
+        if (envLang[0] == 0)
         {
             GetLogger()->Error("Failed to get language from environment, setting default language\n");
             m_language = LANGUAGE_ENGLISH;
@@ -1704,14 +1620,40 @@ void CApplication::SetLanguage(Language language)
             }
         }
     }
-    else
+
+    std::string locale = "";
+    switch (m_language)
     {
-        std::string langStr = "LANGUAGE=";
-        langStr += locale;
-        strcpy(m_languageLocale, langStr.c_str());
-        putenv(m_languageLocale);
-        GetLogger()->Trace("SetLanguage: Set LANGUAGE=%s in environment\n", locale.c_str());
+        default:
+            locale = "";
+            break;
+
+        case LANGUAGE_ENGLISH:
+            locale = "en_US.utf8";
+            break;
+
+        case LANGUAGE_GERMAN:
+            locale = "de_DE.utf8";
+            break;
+
+        case LANGUAGE_FRENCH:
+            locale = "fr_FR.utf8";
+            break;
+
+        case LANGUAGE_POLISH:
+            locale = "pl_PL.utf8";
+            break;
+
+        case LANGUAGE_RUSSIAN:
+            locale = "ru_RU.utf8";
+            break;
     }
+
+    std::string langStr = "LANGUAGE=";
+    langStr += locale;
+    strcpy(m_languageLocale, langStr.c_str());
+    putenv(m_languageLocale);
+    GetLogger()->Trace("SetLanguage: Set LANGUAGE=%s in environment\n", locale.c_str());
 
     char* defaultLocale = setlocale(LC_ALL, ""); // Load system locale
     GetLogger()->Debug("Default system locale: %s\n", defaultLocale);

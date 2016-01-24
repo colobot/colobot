@@ -17,23 +17,38 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#pragma once
+#include "common/language.h"
 
-#include <string>
+#include <map>
 
-/**
- * \enum Language
- * \brief Application language
- */
-enum Language
-{
-    LANGUAGE_ENV = -1,
-    LANGUAGE_ENGLISH = 0,
-    LANGUAGE_FRENCH = 1,
-    LANGUAGE_GERMAN = 2,
-    LANGUAGE_POLISH = 3,
-    LANGUAGE_RUSSIAN = 4
+const std::map<Language, std::string> LANGUAGE_MAP = {
+    { LANGUAGE_ENGLISH, "en" },
+    { LANGUAGE_GERMAN,  "de" },
+    { LANGUAGE_FRENCH,  "fr" },
+    { LANGUAGE_POLISH,  "pl" },
+    { LANGUAGE_RUSSIAN, "ru" }
 };
 
-bool ParseLanguage(const std::string& str, Language& language);
-bool LanguageToString(const Language& language, std::string& str);
+bool ParseLanguage(const std::string& str, Language& language)
+{
+    for (auto it = LANGUAGE_MAP.begin(); it != LANGUAGE_MAP.end(); ++it)
+    {
+        if (it->second == str)
+        {
+            language = it->first;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool LanguageToString(const Language& language, std::string& str)
+{
+    if (LANGUAGE_MAP.count(language) > 0)
+    {
+        str = LANGUAGE_MAP.at(language);
+        return true;
+    }
+    return false;
+}

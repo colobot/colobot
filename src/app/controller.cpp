@@ -26,23 +26,13 @@
 
 
 
-CController::CController(CApplication* app, bool configLoaded)
- : m_app(app)
+CController::CController()
 {
     m_main = MakeUnique<CRobotMain>();
-    if (configLoaded)
-        m_main->LoadConfigFile();
-    else
-        m_main->CreateConfigFile();
 }
 
 CController::~CController()
 {
-}
-
-CApplication* CController::GetApplication()
-{
-    return m_app;
 }
 
 CRobotMain* CController::GetRobotMain()

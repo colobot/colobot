@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include "common/language.h"
 #include "common/singleton.h"
 
 #include "math/point.h"
@@ -80,6 +81,9 @@ public:
     Math::Point GetIODim();
     //@}
 
+    void SetLanguage(Language language);
+    Language GetLanguage();
+
 protected:
     bool m_tooltips;
     bool m_interfaceGlint;
@@ -94,4 +98,6 @@ protected:
     bool            m_IOPublic;
     Math::Point     m_IOPos;
     Math::Point     m_IODim;
+
+    Language m_language;
 };

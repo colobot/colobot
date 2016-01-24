@@ -262,6 +262,10 @@ CRobotMain::CRobotMain()
 
     m_engine->SetTracePrecision(1.0f);
 
+    m_settings->LoadSettings();
+    m_settings->SaveSettings();
+    m_settings->SaveResolutionSettings(m_app->GetVideoConfig());
+
     SelectPlayer(CPlayerProfile::GetLastName());
 
     CScriptFunctions::Init();
@@ -319,21 +323,6 @@ void CRobotMain::ReloadAllTextures()
         ChangeColor();
         UpdateMap();
     }
-}
-
-
-//! Creates the file colobot.ini at the first time
-void CRobotMain::CreateConfigFile()
-{
-    m_settings->SaveSettings();
-    m_settings->SaveResolutionSettings(m_app->GetVideoConfig());
-
-    GetConfigFile().Save();
-}
-
-void CRobotMain::LoadConfigFile()
-{
-    m_settings->LoadSettings();
 }
 
 std::string PhaseToString(Phase phase)

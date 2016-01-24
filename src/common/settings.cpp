@@ -23,6 +23,7 @@
 #include "app/input.h"
 
 #include "common/config_file.h"
+#include "common/logger.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
@@ -49,6 +50,8 @@ CSettings::CSettings()
     m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
     m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
     m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
+
+    m_language = LANGUAGE_ENV;
 }
 
 void CSettings::SaveResolutionSettings(const Gfx::DeviceConfig& config)
@@ -120,6 +123,9 @@ void CSettings::SaveSettings()
     GetConfigFile().SetFloatProperty("Edit", "IODimX", m_IODim.x);
     GetConfigFile().SetFloatProperty("Edit", "IODimY", m_IODim.y);
 
+    std::string lang = "";
+    LanguageToString(m_language, lang);
+    GetConfigFile().SetStringProperty("Language", "Lang", lang);
 
     GetConfigFile().Save();
 }
@@ -135,6 +141,7 @@ void CSettings::LoadSettings()
     int iValue = 0;
     float fValue = 0.0f;
     bool bValue = false;
+    std::string sValue = "";
 
     GetConfigFile().GetBoolProperty("Setup", "Tooltips", m_tooltips);
     GetConfigFile().GetBoolProperty("Setup", "InterfaceGlint", m_interfaceGlint);
@@ -269,6 +276,17 @@ void CSettings::LoadSettings()
     GetConfigFile().GetFloatProperty("Edit", "IOPosY",   m_IOPos.y);
     GetConfigFile().GetFloatProperty("Edit", "IODimX",   m_IODim.x);
     GetConfigFile().GetFloatProperty("Edit", "IODimY",   m_IODim.y);
+
+    m_language = LANGUAGE_ENV;
+    if (GetConfigFile().GetStringProperty("Language", "Lang", sValue))
+    {
+        if (!sValue.empty() && !ParseLanguage(sValue, m_language))
+        {
+            GetLogger()->Error("Failed to parse language '%s' from config file. Default language will be used.\n",
+                               sValue.c_str());
+        }
+    }
+    app->SetLanguage(m_language);
 }
 
 void CSettings::SetTooltips(bool tooltips)
@@ -391,4 +409,15 @@ void CSettings::SetIODim(Math::Point dim)
 Math::Point CSettings::GetIODim()
 {
     return m_IODim;
+}
+
+void CSettings::SetLanguage(Language language)
+{
+    m_language = language;
+    CApplication::GetInstancePointer()->SetLanguage(m_language);
+}
+
+Language CSettings::GetLanguage()
+{
+    return m_language;
 }

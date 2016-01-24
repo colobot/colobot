@@ -40,11 +40,9 @@ struct Event;
 class CController
 {
 public:
-    CController(CApplication* app, bool configLoaded = true);
+    CController();
     ~CController();
 
-    //! Return CApplication instance
-    CApplication*    GetApplication();
     //! Return CRobotMain instance
     CRobotMain*      GetRobotMain();
 

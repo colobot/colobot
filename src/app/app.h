@@ -290,7 +290,6 @@ public:
     Language    GetLanguage() const;
     char        GetLanguageChar() const;
     void        SetLanguage(Language language);
-    static bool ParseLanguage(const std::string& str, Language& language);
     //@}
 
     //! Management of sleep in main loop (lowers CPU usage)
