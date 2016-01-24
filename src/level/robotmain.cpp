@@ -5795,8 +5795,8 @@ Error CRobotMain::CanBuildError(ObjectType type, int team)
 {
     if(!IsBuildingEnabled(type)) return ERR_BUILD_DISABLED;
 
-    if(type == OBJECT_TOWER  && !IsResearchDone(RESEARCH_TOWER,  team)) return ERR_BUILD_RESEARCH;
-    if(type == OBJECT_ATOMIC && !IsResearchDone(RESEARCH_ATOMIC, team)) return ERR_BUILD_RESEARCH;
+    if(type == OBJECT_TOWER   && !IsResearchDone(RESEARCH_TOWER,  team)) return ERR_BUILD_RESEARCH;
+    if(type == OBJECT_NUCLEAR && !IsResearchDone(RESEARCH_ATOMIC, team)) return ERR_BUILD_RESEARCH;
 
     return ERR_OK;
 }
