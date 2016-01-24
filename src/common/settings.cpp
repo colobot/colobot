@@ -89,7 +89,7 @@ void CSettings::SaveSettings()
     GetConfigFile().SetBoolProperty("Setup", "ObjectDirty", engine->GetDirty());
     GetConfigFile().SetBoolProperty("Setup", "FogMode", engine->GetFog());
     GetConfigFile().SetBoolProperty("Setup", "LightMode", engine->GetLightMode());
-    GetConfigFile().SetIntProperty("Setup", "UseJoystick", app->GetJoystickEnabled() ? app->GetJoystick().index : -1);
+    GetConfigFile().SetIntProperty("Setup", "JoystickIndex", app->GetJoystickEnabled() ? app->GetJoystick().index : -1);
     GetConfigFile().SetFloatProperty("Setup", "ParticleDensity", engine->GetParticleDensity());
     GetConfigFile().SetFloatProperty("Setup", "ClippingDistance", engine->GetClippingDistance());
     GetConfigFile().SetIntProperty("Setup", "AudioVolume", sound->GetAudioVolume());
@@ -185,7 +185,7 @@ void CSettings::LoadSettings()
     if (GetConfigFile().GetBoolProperty("Setup", "LightMode", bValue))
         engine->SetLightMode(bValue);
 
-    if (GetConfigFile().GetIntProperty("Setup", "UseJoystick", iValue))
+    if (GetConfigFile().GetIntProperty("Setup", "JoystickIndex", iValue))
     {
         if (iValue >= 0)
         {

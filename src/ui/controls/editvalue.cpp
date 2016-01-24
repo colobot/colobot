@@ -232,6 +232,7 @@ void CEditValue::Draw()
 
     if (m_edit != nullptr)
     {
+        m_edit->SetState(STATE_ENABLE, TestState(STATE_ENABLE));
         m_edit->Draw();
     }
     if (m_buttonUp != nullptr)

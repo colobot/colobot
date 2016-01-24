@@ -21,6 +21,8 @@
 
 #include "ui/screen/screen_setup.h"
 
+class CInput;
+
 namespace Ui
 {
 
@@ -34,9 +36,16 @@ public:
     bool EventProcess(const Event &event) override;
 
 protected:
+    void ChangeSetupButtons();
     void UpdateSetupButtons();
-    void UpdateKey();
+
     void ChangeKey(EventType event);
+    void UpdateKey();
+
+    void ToggleJoystickInvert(EventType type);
+
+protected:
+    CInput* m_input;
 };
 
 } // namespace Ui

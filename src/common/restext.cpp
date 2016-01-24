@@ -249,8 +249,10 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_SILENT]    = TR("Mute\\No sound");
     stringsEvent[EVENT_INTERFACE_NOISY]     = TR("Normal\\Normal sound volume");
 
-    stringsEvent[EVENT_INTERFACE_JOYSTICK]  = TR("Use a joystick\\Joystick or keyboard");
     stringsEvent[EVENT_INTERFACE_SOLUCE]    = TR("Access to solution\\Shows the solution (detailed instructions for missions)");
+    stringsEvent[EVENT_INTERFACE_JOYSTICK_X_INVERT] = TR("Invert\\Invert values on this axis");
+    stringsEvent[EVENT_INTERFACE_JOYSTICK_Y_INVERT] = TR("Invert\\Invert values on this axis");
+    stringsEvent[EVENT_INTERFACE_JOYSTICK_Z_INVERT] = TR("Invert\\Invert values on this axis");
 
     stringsEvent[EVENT_INTERFACE_NEDIT]     = TR("\\New player name");
     stringsEvent[EVENT_INTERFACE_NOK]       = TR("OK\\Choose the selected player");

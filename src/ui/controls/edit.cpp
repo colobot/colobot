@@ -896,6 +896,8 @@ void CEdit::Draw()
     dim.y = m_dim.y;
     DrawBack(pos, dim);  // background
 
+    if ( (m_state & STATE_ENABLE) == 0 ) return;
+
     // Displays all lines.
     c1 = m_cursor1;
     c2 = m_cursor2;

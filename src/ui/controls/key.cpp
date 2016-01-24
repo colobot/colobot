@@ -129,7 +129,7 @@ void CKey::Draw()
         return;
 
     Math::Point iDim = m_dim;
-    m_dim.x = 200.0f/640.0f;
+    m_dim.x = 100.0f/640.0f;
 
     if (m_state & STATE_SHADOW)
         DrawShadow(m_pos, m_dim);
@@ -192,7 +192,7 @@ void CKey::Draw()
         return;
 
     // Draws the name.
-    pos.x = m_pos.x + (214.0f / 640.0f);
+    pos.x = m_pos.x + (114.0f / 640.0f);
     pos.y = m_pos.y + m_dim.y * 0.5f;
     pos.y -= h;
     m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, 0);
