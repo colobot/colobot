@@ -1436,9 +1436,6 @@ msgstr "Sac de survie"
 msgid "Switch bots <-> buildings"
 msgstr "Permute robots <-> bâtiments"
 
-msgid "System mouse\\Use system mouse cursor"
-msgstr "Souris système\\Utiliser le curseur de la souris système"
-
 msgid "Take off to finish the mission"
 msgstr "Décolle pour terminer la mission"
 
@@ -1897,6 +1894,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Sunbeams\\Sunbeams in the sky"
 #~ msgstr "Rayons du soleil\\Rayons selon l'orientation"
+
+#~ msgid "System mouse\\Use system mouse cursor"
+#~ msgstr "Souris système\\Utiliser le curseur de la souris système"
 
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Qualité des textures\\Qualité des images"

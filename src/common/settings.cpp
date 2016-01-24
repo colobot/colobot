@@ -40,7 +40,6 @@ CSettings::CSettings()
     m_interfaceRain  = true;
     m_soluce4        = true;
     m_movies         = true;
-    m_systemMouse    = false;
 
     m_fontSize  = 19.0f;
     m_windowPos = Math::Point(0.15f, 0.17f);
@@ -94,7 +93,6 @@ void CSettings::SaveSettings()
     GetConfigFile().SetIntProperty("Setup", "MusicVolume", sound->GetMusicVolume());
     GetConfigFile().SetBoolProperty("Setup", "EditIndentMode", engine->GetEditIndentMode());
     GetConfigFile().SetIntProperty("Setup", "EditIndentValue", engine->GetEditIndentValue());
-    GetConfigFile().SetBoolProperty("Setup", "SystemMouse", m_systemMouse);
 
     GetConfigFile().SetIntProperty("Setup", "MipmapLevel", engine->GetTextureMipmapLevel());
     GetConfigFile().SetIntProperty("Setup", "Anisotropy", engine->GetTextureAnisotropyLevel());
@@ -218,11 +216,6 @@ void CSettings::LoadSettings()
     if (GetConfigFile().GetIntProperty("Setup", "EditIndentValue", iValue))
         engine->SetEditIndentValue(iValue);
 
-    if (GetConfigFile().GetBoolProperty("Setup", "SystemMouse", m_systemMouse))
-    {
-        app->SetMouseMode(m_systemMouse ? MOUSE_SYSTEM : MOUSE_ENGINE);
-    }
-
 
     if (GetConfigFile().GetIntProperty("Setup", "MipmapLevel", iValue))
         engine->SetTextureMipmapLevel(iValue);
@@ -321,15 +314,6 @@ void CSettings::SetMovies(bool movies)
 bool CSettings::GetMovies()
 {
     return m_movies;
-}
-
-void CSettings::SetSystemMouse(bool systemMouse)
-{
-    m_systemMouse = systemMouse;
-}
-bool CSettings::GetSystemMouse()
-{
-    return m_systemMouse;
 }
 
 

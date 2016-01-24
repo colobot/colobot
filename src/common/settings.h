@@ -52,9 +52,6 @@ public:
     void SetMovies(bool movies);
     bool GetMovies();
 
-    void SetSystemMouse(bool systemMouse);
-    bool GetSystemMouse();
-
 
     //! Managing the size of the default fonts
     //@{
@@ -89,7 +86,6 @@ protected:
     bool m_interfaceRain;
     bool m_soluce4;
     bool m_movies;
-    bool m_systemMouse;
 
     float           m_fontSize;
     Math::Point     m_windowPos;

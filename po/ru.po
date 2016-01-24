@@ -1443,9 +1443,6 @@ msgstr "Аптечка"
 msgid "Switch bots <-> buildings"
 msgstr "Переключение между ботами и зданиями"
 
-msgid "System mouse\\Use system mouse cursor"
-msgstr ""
-
 msgid "Take off to finish the mission"
 msgstr "Взлететь, чтобы закончить миссию"
 

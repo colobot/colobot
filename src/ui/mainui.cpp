@@ -123,7 +123,7 @@ void CMainUserInterface::ShowLoadingScreen(bool show)
             m_screenLoading->DestroyInterface();
             m_currentScreen = nullptr;
         }
-        m_app->SetMouseMode(m_settings->GetSystemMouse() ? MOUSE_SYSTEM : MOUSE_ENGINE);
+        m_app->SetMouseMode(MOUSE_ENGINE);
     }
 }
 

@@ -121,9 +121,6 @@ void CScreenSetupGame::CreateInterface()
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_RAIN);
     pc->SetState(STATE_SHADOW);
     pos.y -= 0.048f;
-    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_MOUSE);
-    pc->SetState(STATE_SHADOW);
-    pos.y -= 0.048f;
     pos.y -= 0.048f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_EDITMODE);
     pc->SetState(STATE_SHADOW);
@@ -158,14 +155,6 @@ bool CScreenSetupGame::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_RAIN:
             m_settings->SetInterfaceRain(!m_settings->GetInterfaceRain());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
-
-        case EVENT_INTERFACE_MOUSE:
-            m_settings->SetSystemMouse(!m_settings->GetSystemMouse());
-            m_app->SetMouseMode(m_settings->GetSystemMouse() ? MOUSE_SYSTEM : MOUSE_ENGINE);
-
             ChangeSetupButtons();
             UpdateSetupButtons();
             break;
@@ -280,12 +269,6 @@ void CScreenSetupGame::UpdateSetupButtons()
     if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_settings->GetInterfaceRain());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOUSE));
-    if ( pc != nullptr )
-    {
-        pc->SetState(STATE_CHECK, m_settings->GetSystemMouse());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITMODE));

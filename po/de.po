@@ -1451,9 +1451,6 @@ msgstr "Überlebenskit"
 msgid "Switch bots <-> buildings"
 msgstr "Anzeige Roboter <-> Bauten"
 
-msgid "System mouse\\Use system mouse cursor"
-msgstr ""
-
 msgid "Take off to finish the mission"
 msgstr "Abheben nach vollbrachter Mission"
 

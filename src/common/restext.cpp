@@ -193,7 +193,6 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_INVERTX]   = TR("Mouse inversion X\\Inversion of the scrolling direction on the X axis");
     stringsEvent[EVENT_INTERFACE_INVERTY]   = TR("Mouse inversion Y\\Inversion of the scrolling direction on the Y axis");
     stringsEvent[EVENT_INTERFACE_EFFECT]    = TR("Quake at explosions\\The screen shakes at explosions");
-    stringsEvent[EVENT_INTERFACE_MOUSE]     = TR("System mouse\\Use system mouse cursor");
     stringsEvent[EVENT_INTERFACE_EDITMODE]  = TR("Automatic indent\\When program editing");
     stringsEvent[EVENT_INTERFACE_EDITVALUE] = TR("Big indent\\Indent 2 or 4 spaces per level defined by braces");
     stringsEvent[EVENT_INTERFACE_SOLUCE4]   = TR("Access to solutions\\Show program \"4: Solution\" in the exercises");
