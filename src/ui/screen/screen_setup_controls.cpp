@@ -244,7 +244,8 @@ void CScreenSetupControls::ChangeSetupButtons()
     {
         if (pli->GetSelect() > 0)
         {
-            m_app->ChangeJoystick(m_app->GetJoystickList()[pli->GetSelect()-1]);
+            m_app->SetJoystickEnabled(false);
+            m_app->ChangeJoystick(m_app->GetJoystickList().at(pli->GetSelect()-1));
             m_app->SetJoystickEnabled(true);
         }
         else
@@ -328,45 +329,45 @@ void CScreenSetupControls::UpdateSetupButtons()
         {
             pli->SetItemName(1 + i, joysticks[i].name.c_str());
         }
-        pli->SetSelect(m_app->GetJoystick().index + 1);
+        pli->SetSelect(m_app->GetJoystickEnabled() ? m_app->GetJoystick().index + 1 : 0);
     }
 
     if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_X))))
     {
-        pev->SetState(STATE_ENABLE, m_app->GetJoystick().index >= 0);
+        pev->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
         pev->SetMaxValue(m_app->GetJoystick().axisCount-1);
         pev->SetValue(m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_X).axis);
     }
     if (nullptr != (pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_X_INVERT))))
     {
-        pc->SetState(STATE_ENABLE, m_app->GetJoystick().index >= 0);
+        pc->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
         pc->SetState(STATE_CHECK, m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_X).invert);
     }
     if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_Y))))
     {
-        pev->SetState(STATE_ENABLE, m_app->GetJoystick().index >= 0);
+        pev->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
         pev->SetMaxValue(m_app->GetJoystick().axisCount-1);
         pev->SetValue(m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_Y).axis);
     }
     if (nullptr != (pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_Y_INVERT))))
     {
-        pc->SetState(STATE_ENABLE, m_app->GetJoystick().index >= 0);
+        pc->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
         pc->SetState(STATE_CHECK, m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_Y).invert);
     }
     if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_Z))))
     {
-        pev->SetState(STATE_ENABLE, m_app->GetJoystick().index >= 0);
+        pev->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
         pev->SetMaxValue(m_app->GetJoystick().axisCount-1);
         pev->SetValue(m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_Z).axis);
     }
     if (nullptr != (pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_Z_INVERT))))
     {
-        pc->SetState(STATE_ENABLE, m_app->GetJoystick().index >= 0);
+        pc->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
         pc->SetState(STATE_CHECK, m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_Z).invert);
     }
     if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_DEADZONE))))
     {
-        pev->SetState(STATE_ENABLE, m_app->GetJoystick().index >= 0);
+        pev->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
         pev->SetValue(m_input->GetJoystickDeadzone());
     }
 }

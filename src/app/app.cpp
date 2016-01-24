@@ -684,6 +684,7 @@ bool CApplication::OpenJoystick()
     if ( (m_joystick.index < 0) || (m_joystick.index >= SDL_NumJoysticks()) )
         return false;
 
+    assert(m_private->joystick == nullptr);
     GetLogger()->Info("Opening joystick %d\n", m_joystick.index);
 
     m_private->joystick = SDL_JoystickOpen(m_joystick.index);
