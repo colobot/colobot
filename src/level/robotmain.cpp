@@ -5597,6 +5597,9 @@ int CRobotMain::GetAutosaveSlots()
 
 int CRobotMain::AutosaveRotate(bool freeOne)
 {
+    if (m_playerProfile == nullptr)
+        return 0;
+
     GetLogger()->Debug("Rotate autosaves...\n");
     // Find autosave dirs
     auto saveDirs = CResourceManager::ListDirectories(m_playerProfile->GetSaveDir());
@@ -5606,7 +5609,7 @@ int CRobotMain::AutosaveRotate(bool freeOne)
         try
         {
             const std::string autosavePrefix = "autosave";
-            if (dir.substr(0, autosavePrefix.length()) == "autosave")
+            if (dir.substr(0, autosavePrefix.length()) == autosavePrefix)
             {
                 int id = boost::lexical_cast<int>(dir.substr(autosavePrefix.length()));
                 autosaveDirs[id] = m_playerProfile->GetSaveFile(dir);
