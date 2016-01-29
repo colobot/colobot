@@ -238,7 +238,7 @@ bool CGLDevice::Create()
         }
 
         // Read maximum sample count for MSAA
-        if(glewIsSupported("GL_ARB_multisample"))
+        if(glewIsSupported("GL_ARB_multisample GL_EXT_framebuffer_multisample"))
         {
             glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_maxSamples);
             GetLogger()->Info("Multisampling supported, max samples: %d\n", m_maxSamples);
