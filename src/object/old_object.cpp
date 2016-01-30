@@ -186,6 +186,7 @@ COldObject::COldObject(int id)
 
 COldObject::~COldObject()
 {
+    m_main->HideDropZone(this);
 }
 
 
