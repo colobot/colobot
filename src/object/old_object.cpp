@@ -666,7 +666,8 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILEfi || // WingedOrgaShooter
          m_type == OBJECT_MOBILEft || // winged PracticeBot (unused)
          m_type == OBJECT_HUMAN    || // Me
-         m_type == OBJECT_TECH      ) // Tech
+         m_type == OBJECT_TECH     || // Tech
+         m_type == OBJECT_CONTROLLER)
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Flying)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::JetFlying)] = true;
@@ -880,7 +881,8 @@ void COldObject::SetType(ObjectType type)
         m_type == OBJECT_WORM     ||
         m_type == OBJECT_SPIDER   ||
         m_type == OBJECT_BEE      ||
-        m_type == OBJECT_MOTHER    )
+        m_type == OBJECT_MOTHER   ||
+        m_type == OBJECT_CONTROLLER)
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Controllable)] = true;
     }

@@ -305,6 +305,7 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_MOBILEit:
         case OBJECT_MOBILEdr:
         case OBJECT_APOLLO2:
+        case OBJECT_CONTROLLER:
             return CBaseRobot::Create(params, m_oldModelManager, m_engine);
 
         case OBJECT_MOBILErs:
