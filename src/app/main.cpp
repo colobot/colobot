@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
     auto systemUtils = CSystemUtils::Create(); // platform-specific utils
     systemUtils->Init();
 
-    logger.SetOutputFile(systemUtils->GetSaveDir() + "/log.txt");
+    //logger.SetOutputFile(systemUtils->GetSaveDir() + "/log.txt");
 
     // Workaround for character encoding in argv on Windows
     #if PLATFORM_WINDOWS
