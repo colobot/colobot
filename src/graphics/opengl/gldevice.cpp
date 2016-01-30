@@ -447,8 +447,7 @@ void CGLDevice::UpdateModelviewMatrix()
 
     if (m_lighting)
     {
-        for (int index = 0; index < static_cast<int>( m_lights.size() ); ++index)
-            UpdateLightPosition(index);
+        UpdateLightPositions();
     }
 }
 
@@ -501,9 +500,62 @@ void CGLDevice::UpdateLightPosition(int index)
     assert(index < static_cast<int>( m_lights.size() ));
 
     glMatrixMode(GL_MODELVIEW);
-
     glPushMatrix();
 
+    if (m_lights[index].type == LIGHT_POINT)
+    {
+        glLoadIdentity();
+        glScalef(1.0f, 1.0f, -1.0f);
+        glMultMatrixf(m_viewMat.Array());
+
+        GLfloat position[4] = { m_lights[index].position.x,
+            m_lights[index].position.y,
+            m_lights[index].position.z,
+            1.0f };
+
+        glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
+    }
+    else
+    {
+        glLoadIdentity();
+        glScalef(1.0f, 1.0f, -1.0f);
+        Math::Matrix mat = m_viewMat;
+        mat.Set(1, 4, 0.0f);
+        mat.Set(2, 4, 0.0f);
+        mat.Set(3, 4, 0.0f);
+        glMultMatrixf(mat.Array());
+
+        if (m_lights[index].type == LIGHT_SPOT)
+        {
+            GLfloat direction[4] = { -m_lights[index].direction.x,
+                -m_lights[index].direction.y,
+                -m_lights[index].direction.z,
+                1.0f };
+
+            glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
+        }
+        else if (m_lights[index].type == LIGHT_DIRECTIONAL)
+        {
+            GLfloat position[4] = { -m_lights[index].direction.x,
+                -m_lights[index].direction.y,
+                -m_lights[index].direction.z,
+                0.0f };
+
+            glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
+        }
+    }
+
+    glPopMatrix();
+}
+
+void CGLDevice::UpdateLightPositions()
+{
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    int lightCount = m_lights.size();
+
+    // update spotlights and directional lights
     glLoadIdentity();
     glScalef(1.0f, 1.0f, -1.0f);
     Math::Matrix mat = m_viewMat;
@@ -512,25 +564,43 @@ void CGLDevice::UpdateLightPosition(int index)
     mat.Set(3, 4, 0.0f);
     glMultMatrixf(mat.Array());
 
-    if (m_lights[index].type == LIGHT_SPOT)
+    for (int index = 0; index < lightCount; index++)
     {
-        GLfloat direction[4] = { -m_lights[index].direction.x, -m_lights[index].direction.y, -m_lights[index].direction.z, 1.0f };
-        glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
+        if (m_lights[index].type == LIGHT_SPOT)
+        {
+            GLfloat direction[4] = { -m_lights[index].direction.x,
+                -m_lights[index].direction.y,
+                -m_lights[index].direction.z,
+                1.0f };
+
+            glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
+        }
+        else if (m_lights[index].type == LIGHT_DIRECTIONAL)
+        {
+            GLfloat position[4] = { -m_lights[index].direction.x,
+                -m_lights[index].direction.y,
+                -m_lights[index].direction.z,
+                0.0f };
+            glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
+        }
     }
 
-    if (m_lights[index].type == LIGHT_DIRECTIONAL)
-    {
-        GLfloat position[4] = { -m_lights[index].direction.x, -m_lights[index].direction.y, -m_lights[index].direction.z, 0.0f };
-        glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
-    }
-    else
-    {
-        glLoadIdentity();
-        glScalef(1.0f, 1.0f, -1.0f);
-        glMultMatrixf(m_viewMat.Array());
+    // update point lights
+    glLoadIdentity();
+    glScalef(1.0f, 1.0f, -1.0f);
+    glMultMatrixf(m_viewMat.Array());
 
-        GLfloat position[4] = { m_lights[index].position.x, m_lights[index].position.y, m_lights[index].position.z, 1.0f };
-        glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
+    for (int index = 0; index < lightCount; index++)
+    {
+        if (m_lights[index].type == LIGHT_POINT)
+        {
+            GLfloat position[4] = { m_lights[index].position.x,
+                m_lights[index].position.y,
+                m_lights[index].position.z,
+                1.0f };
+
+            glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
+        }
     }
 
     glPopMatrix();
@@ -1858,8 +1928,7 @@ void CGLDevice::SetRenderState(RenderState state, bool enabled)
 
         if (enabled)
         {
-            for (int index = 0; index < static_cast<int>( m_lights.size() ); ++index)
-                UpdateLightPosition(index);
+            UpdateLightPositions();
         }
 
         return;

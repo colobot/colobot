@@ -195,6 +195,8 @@ private:
     void UpdateModelviewMatrix();
     //! Updates position for given light based on transformation matrices
     void UpdateLightPosition(int index);
+    //!  Updates position for all lights based on transformation matrices
+    void UpdateLightPositions();
     //! Updates the texture params for given texture stage
     void UpdateTextureParams(int index);
 
