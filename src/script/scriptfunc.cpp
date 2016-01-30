@@ -663,7 +663,7 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
     DestructionType exploType = DestructionType::Explosion;
 
     rank = var->GetValInt();
-    var->GetNext();
+    var = var->GetNext();
     if ( var != nullptr )
     {
         exploType = static_cast<DestructionType>(var->GetValInt());
