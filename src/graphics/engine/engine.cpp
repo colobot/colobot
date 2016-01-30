@@ -3045,7 +3045,7 @@ float CEngine::GetEyeDirV()
 
 bool CEngine::IsVisiblePoint(const Math::Vector &pos)
 {
-    return Math::Distance(m_eyePt, pos) <= m_deepView[0];
+    return Math::Distance(m_eyePt, pos) <= (m_deepView[0] * m_clippingDistance);
 }
 
 void CEngine::UpdateMatProj()
@@ -3142,8 +3142,8 @@ void CEngine::Draw3DScene()
     m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
     m_device->SetRenderState(RENDER_STATE_FOG, true);
 
-    float fogStart = m_deepView[m_rankView]*m_fogStart[m_rankView];
-    float fogEnd = m_deepView[m_rankView];
+    float fogStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
+    float fogEnd = m_deepView[m_rankView] * m_clippingDistance;
     m_device->SetFogParams(FOG_LINEAR, m_fogColor[m_rankView], fogStart, fogEnd, 1.0f);
 
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProj);
@@ -3818,8 +3818,8 @@ void CEngine::DrawInterface()
 
         m_device->SetRenderState(RENDER_STATE_FOG, true);
 
-        float fogStart = m_deepView[m_rankView]*m_fogStart[m_rankView];
-        float fogEnd = m_deepView[m_rankView];
+        float fogStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
+        float fogEnd = m_deepView[m_rankView] * m_clippingDistance;
         m_device->SetFogParams(FOG_LINEAR, m_fogColor[m_rankView], fogStart, fogEnd, 1.0f);
 
         m_device->SetTransform(TRANSFORM_VIEW, m_matView);
@@ -4191,8 +4191,8 @@ void CEngine::DrawShadowSpots()
 
     Math::Vector n(0.0f, 1.0f, 0.0f);
 
-    float startDeepView = m_deepView[m_rankView]*m_fogStart[m_rankView];
-    float endDeepView = m_deepView[m_rankView];
+    float startDeepView = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
+    float endDeepView = m_deepView[m_rankView] * m_clippingDistance;
 
     float lastIntensity = -1.0f;
     for (int i = 0; i < static_cast<int>( m_shadowSpots.size() ); i++)
