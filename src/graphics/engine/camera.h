@@ -77,8 +77,6 @@ enum CameraSmooth
     CAM_SMOOTH_NORM         = 1,
     //! Hard
     CAM_SMOOTH_HARD         = 2,
-    //! Special
-    CAM_SMOOTH_SPEC         = 3,
 };
 
 enum CenteringPhase
@@ -151,7 +149,7 @@ public:
 
     //! Management of the smoothing mode
     void              SetSmooth(CameraSmooth type);
-    CameraSmooth GetSmoth();
+    CameraSmooth GetSmooth();
 
     //! Management of the setback distance
     void        SetDist(float dist);
@@ -347,15 +345,12 @@ protected:
     //! CAM_TYPE_VISIT: initial type
     CameraType   m_visitType;
     //! CAM_TYPE_VISIT: direction
-    float        m_visitDirectionH;
-    //! CAM_TYPE_VISIT: direction
     float        m_visitDirectionV;
 
     //! CAM_TYPE_EDIT: height
     float        m_editHeight;
 
     float        m_remotePan;
-    float        m_remoteZoom;
 
     Math::Point  m_mousePos;
     float        m_mouseDirH;
