@@ -1386,7 +1386,6 @@ protected:
     bool            m_fog;
     float           m_particleDensity;
     float           m_clippingDistance;
-    float           m_lastClippingDistance;
     bool            m_lightMode;
     bool            m_editIndentMode;
     int             m_editIndentValue;

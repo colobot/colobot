@@ -131,7 +131,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_drawWorld = true;
     m_drawFront = false;
     m_particleDensity = 1.0f;
-    m_lastClippingDistance = 1.0f;
     m_clippingDistance = 1.0f;
     m_terrainVision = 1000.0f;
     m_textureMipmapLevel = 1;
@@ -2590,8 +2589,10 @@ void CEngine::SetFocus(float focus)
     m_focus = focus;
     m_size = m_app->GetVideoConfig().size;
 
-    float aspect = (static_cast<float>(m_size.x)) / m_size.y;
-    Math::LoadProjectionMatrix(m_matProj, m_focus, aspect, 0.5f, m_deepView[0]);
+    float farPlane = m_deepView[0] * m_clippingDistance;
+
+    float aspect = static_cast<float>(m_size.x) / static_cast<float>(m_size.y);
+    Math::LoadProjectionMatrix(m_matProj, m_focus, aspect, 0.5f, farPlane);
 }
 
 float CEngine::GetFocus()
@@ -2829,7 +2830,6 @@ void CEngine::SetClippingDistance(float value)
 {
     if (value < 0.5f) value = 0.5f;
     if (value > 2.0f) value = 2.0f;
-    m_lastClippingDistance = m_clippingDistance;
     m_clippingDistance = value;
 }
 
@@ -3055,13 +3055,7 @@ void CEngine::UpdateMatProj()
 
 void CEngine::ApplyChange()
 {
-    m_deepView[0] /= m_lastClippingDistance;
-    m_deepView[1] /= m_lastClippingDistance;
-
     SetFocus(m_focus);
-
-    m_deepView[0] *= m_clippingDistance;
-    m_deepView[1] *= m_clippingDistance;
 }
 
 
