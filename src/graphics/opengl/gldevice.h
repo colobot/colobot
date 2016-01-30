@@ -210,6 +210,8 @@ private:
     Math::Matrix m_modelviewMat;
     //! Current projection matrix
     Math::Matrix m_projectionMat;
+    //! Combined world-view-projection matrix
+    Math::Matrix m_combinedMatrix;
 
     //! The current material
     Material m_material;
@@ -268,6 +270,8 @@ private:
     int m_maxAnisotropy = 1;
     //! Maximum samples
     int m_maxSamples = 1;
+    //! Maximum renderbuffer size
+    int m_maxRenderbufferSize = 0;
     //! glMultiDrawArrays() available
     bool m_multiDrawArrays = false;
     //! Framebuffer support

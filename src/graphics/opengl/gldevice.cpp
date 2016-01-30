@@ -323,8 +323,15 @@ bool CGLDevice::Create()
 
     m_framebufferSupport = DetectFramebufferSupport();
     if (m_framebufferSupport != FBS_NONE)
+    {
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &m_maxRenderbufferSize);
         GetLogger()->Info("Framebuffer supported\n");
-
+        GetLogger()->Info("Maximum renderbuffer size: %d\n", m_maxRenderbufferSize);
+    }
+    else
+    {
+        GetLogger()->Info("Framebuffer not supported\n");
+    }
     GetLogger()->Info("CDevice created successfully\n");
 
     return true;
@@ -395,17 +402,23 @@ void CGLDevice::SetTransform(TransformType type, const Math::Matrix &matrix)
     {
         m_worldMat = matrix;
         UpdateModelviewMatrix();
+
+        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
     }
     else if (type == TRANSFORM_VIEW)
     {
         m_viewMat = matrix;
         UpdateModelviewMatrix();
+
+        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
     }
     else if (type == TRANSFORM_PROJECTION)
     {
         m_projectionMat = matrix;
         glMatrixMode(GL_PROJECTION);
         glLoadMatrixf(m_projectionMat.Array());
+
+        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
     }
     else if (type == TRANSFORM_SHADOW)
     {
@@ -425,12 +438,12 @@ void CGLDevice::SetTransform(TransformType type, const Math::Matrix &matrix)
 
 void CGLDevice::UpdateModelviewMatrix()
 {
-    m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
-
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glScalef(1.0f, 1.0f, -1.0f);
-    glMultMatrixf(m_modelviewMat.Array());
+    glMultMatrixf(m_viewMat.Array());
+    glMultMatrixf(m_worldMat.Array());
+    glGetFloatv(GL_MODELVIEW_MATRIX, m_modelviewMat.Array());
 
     if (m_lighting)
     {
@@ -1751,13 +1764,7 @@ void CGLDevice::DestroyStaticBuffer(unsigned int bufferId)
 
 int CGLDevice::ComputeSphereVisibility(const Math::Vector &center, float radius)
 {
-    Math::Matrix m;
-    m = Math::MultiplyMatrices(m_worldMat, m);
-    m = Math::MultiplyMatrices(m_viewMat, m);
-    Math::Matrix sc;
-    Math::LoadScaleMatrix(sc, Math::Vector(1.0f, 1.0f, -1.0f));
-    m = Math::MultiplyMatrices(sc, m);
-    m = Math::MultiplyMatrices(m_projectionMat, m);
+    Math::Matrix &m = m_combinedMatrix;
 
     Math::Vector vec[6];
     float originPlane[6];
