@@ -3068,8 +3068,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "DeepView" && !resetObject)
             {
-                m_engine->SetDeepView(line->GetParam("air")->AsFloat(500.0f)*g_unit, 0, true);
-                m_engine->SetDeepView(line->GetParam("water")->AsFloat(100.0f)*g_unit, 1, true);
+                m_engine->SetDeepView(line->GetParam("air")->AsFloat(500.0f)*g_unit, 0, false);
+                m_engine->SetDeepView(line->GetParam("water")->AsFloat(100.0f)*g_unit, 1, false);
                 continue;
             }
 
