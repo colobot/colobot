@@ -551,12 +551,12 @@ void CRobotMain::ChangePhase(Phase phase)
 
             m_app->ResetTimeAfterLoading();
 
+            m_sound->StopMusic(0.0f);
+            if (m_base == nullptr || loading) StartMusic();
+
             if (m_immediatSatCom && !loading  &&
                 m_infoFilename[SATCOM_HUSTON][0] != 0)
                 StartDisplayInfo(SATCOM_HUSTON, false);  // shows the instructions
-
-            m_sound->StopMusic(0.0f);
-            if (m_base == nullptr || loading) StartMusic();
         }
         catch (const std::runtime_error& e)
         {
