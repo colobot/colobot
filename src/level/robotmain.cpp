@@ -459,6 +459,7 @@ void CRobotMain::ChangePhase(Phase phase)
         m_interface->Flush();
         FlushNewScriptName();
         m_sound->SetListener(Math::Vector(0.0f, 0.0f, 0.0f), Math::Vector(0.0f, 0.0f, 1.0f));
+        m_sound->StopAll();
         m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
         m_movie->Flush();
         m_movieInfoIndex = -1;
@@ -707,8 +708,8 @@ bool CRobotMain::ProcessEvent(Event &event)
     }
 
     // Management of the console.
-    if (event.type == EVENT_KEY_DOWN &&
-        event.GetData<KeyEventData>()->key == KEY(BACKQUOTE))  // Pause ?
+    if (event.type == EVENT_TEXT_INPUT &&
+        event.GetData<TextInputData>()->text[0] == KEY(BACKQUOTE)) // Pause ?
     {
         if (m_phase != PHASE_PLAYER_SELECT &&
             !m_movie->IsExist()   &&
