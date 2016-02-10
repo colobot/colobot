@@ -228,6 +228,7 @@ protected:
     void        UpdateScroll();
 
     void        SetFocus(CControl* control) override;
+    void        UpdateFocus();      // Start/stop text input mode, this toggles the on-screen keyboard
 
 protected:
     std::unique_ptr<CScroll> m_scroll;           // vertical scrollbar on the right

@@ -484,10 +484,12 @@ bool CEdit::EventProcess(const Event &event)
         if ( event.customParam == m_eventType )
         {
             m_bFocus = true;
+            UpdateFocus();
         }
         else
         {
             m_bFocus = false;
+            UpdateFocus();
         }
     }
 
@@ -504,10 +506,12 @@ bool CEdit::EventProcess(const Event &event)
                 if ( m_bEdit || m_bHilite )  m_bCapture = true;
             }
             m_bFocus = true;
+            UpdateFocus();
         }
         else
         {
             m_bFocus = false;
+            UpdateFocus();
         }
     }
 
@@ -3229,9 +3233,13 @@ void CEdit::SetFocus(CControl* control)
 
     if (oldFocus != m_bFocus)
     {
-        // Start/stop text input mode, this toggles the on-screen keyboard
-        CApplication::GetInstancePointer()->SetTextInput(m_bFocus);
+        UpdateFocus();
     }
+}
+
+void CEdit::UpdateFocus()
+{
+    CApplication::GetInstancePointer()->SetTextInput(m_bFocus);
 }
 
 }
