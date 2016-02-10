@@ -715,21 +715,25 @@ bool CRobotMain::ProcessEvent(Event &event)
     }
 
     // Management of the console.
-    if (event.type == EVENT_TEXT_INPUT &&
-        event.GetData<TextInputData>()->text[0] == KEY(BACKQUOTE)) // Pause ?
+    if (event.type == EVENT_KEY_DOWN)
     {
-        if (m_phase != PHASE_PLAYER_SELECT &&
-            !m_movie->IsExist()   &&
-            !m_movieLock && !m_editLock && !m_cmdEdit)
+        auto data = event.GetData<KeyEventData>();
+
+        if (data->slot == INPUT_SLOT_CMDLINE)
         {
-            Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
-            if (pe == nullptr) return false;
-            pe->SetState(Ui::STATE_VISIBLE);
-            m_interface->SetFocus(pe);
-            if (m_phase == PHASE_SIMUL) m_cmdEditPause = m_pause->ActivatePause(PAUSE_ENGINE);
-            m_cmdEdit = true;
+            if (m_phase != PHASE_PLAYER_SELECT &&
+                !m_movie->IsExist()   &&
+                !m_movieLock && !m_editLock && !m_cmdEdit)
+            {
+                Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+                if (pe == nullptr) return false;
+                pe->SetState(Ui::STATE_VISIBLE);
+                m_interface->SetFocus(pe);
+                if (m_phase == PHASE_SIMUL) m_cmdEditPause = m_pause->ActivatePause(PAUSE_ENGINE);
+                m_cmdEdit = true;
+            }
+            return false;
         }
-        return false;
     }
 
     if (event.type == EVENT_KEY_DOWN &&
@@ -741,6 +745,7 @@ bool CRobotMain::ProcessEvent(Event &event)
         pe->GetText(cmd, 50);
         pe->SetText("");
         pe->ClearState(Ui::STATE_VISIBLE);
+        m_interface->SetFocus(nullptr);
         if (m_phase == PHASE_SIMUL)
         {
             m_pause->DeactivatePause(m_cmdEditPause);

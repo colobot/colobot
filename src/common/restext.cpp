@@ -239,6 +239,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAMERA_UP]   = TR("Camera up\\Increase camera angle while visiting message origin");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAMERA_DOWN] = TR("Camera down\\Decrease camera angle while visiting message origin");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_PAUSE]       = TR("Pause\\Pause the game without opening menu");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CMDLINE]     = TR("Cheat console\\Show cheat console");
 
     stringsEvent[EVENT_INTERFACE_VOLSOUND]  = TR("Sound effects:\\Volume of engines, voice, shooting, etc.");
     stringsEvent[EVENT_INTERFACE_VOLMUSIC]  = TR("Background sound :\\Volume of audio tracks");
