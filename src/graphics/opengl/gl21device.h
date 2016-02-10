@@ -172,8 +172,6 @@ public:
     bool IsFramebufferSupported() override;
 
 private:
-    //! Updates position for given light based on transformation matrices
-    void UpdateLightPosition(int index);
     //! Updates the texture params for given texture stage
     void UpdateTextureParams(int index);
     //! Updates texture status
@@ -193,6 +191,8 @@ private:
     Math::Matrix m_modelviewMat;
     //! Current projection matrix
     Math::Matrix m_projectionMat;
+    //! Combined world-view-projection matrix
+    Math::Matrix m_combinedMatrix;
 
     //! The current material
     Material m_material;

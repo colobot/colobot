@@ -440,6 +440,9 @@ void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
 
         glUniformMatrix4fv(uni_ModelMatrix, 1, GL_FALSE, m_worldMat.Array());
 
+        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
+        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
+
         // normal transform
         Math::Matrix normalMat = matrix;
 
@@ -450,16 +453,20 @@ void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
     }
     else if (type == TRANSFORM_VIEW)
     {
-        m_viewMat = matrix;
         Math::Matrix scale;
-        Math::LoadScaleMatrix(scale, Math::Vector(1.0f, 1.0f, -1.0f));
-        Math::Matrix temp = Math::MultiplyMatrices(scale, matrix);
+        scale.Set(3, 3, -1.0f);
+        m_viewMat = Math::MultiplyMatrices(scale, matrix);
 
-        glUniformMatrix4fv(uni_ViewMatrix, 1, GL_FALSE, temp.Array());
+        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
+        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
+
+        glUniformMatrix4fv(uni_ViewMatrix, 1, GL_FALSE, m_viewMat.Array());
     }
     else if (type == TRANSFORM_PROJECTION)
     {
         m_projectionMat = matrix;
+
+        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
 
         glUniformMatrix4fv(uni_ProjectionMatrix, 1, GL_FALSE, m_projectionMat.Array());
     }
@@ -514,39 +521,21 @@ void CGL21Device::SetLight(int index, const Light &light)
         glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, 180.0f);
     }
 
-    UpdateLightPosition(index);
-}
-
-void CGL21Device::UpdateLightPosition(int index)
-{
-    assert(index >= 0);
-    assert(index < static_cast<int>( m_lights.size() ));
-
-    glMatrixMode(GL_MODELVIEW);
-
-    glPushMatrix();
-
-    glLoadIdentity();
-    //glScalef(1.0f, 1.0f, -1.0f);
-
-    if (m_lights[index].type == LIGHT_SPOT)
+    if (light.type == LIGHT_SPOT)
     {
-        GLfloat direction[4] = { -m_lights[index].direction.x, -m_lights[index].direction.y, -m_lights[index].direction.z, 1.0f };
+        GLfloat direction[4] = { -light.direction.x, -light.direction.y, -light.direction.z, 1.0f };
         glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
     }
-
-    if (m_lights[index].type == LIGHT_DIRECTIONAL)
+    else if (light.type == LIGHT_DIRECTIONAL)
     {
-        GLfloat position[4] = { -m_lights[index].direction.x, -m_lights[index].direction.y, -m_lights[index].direction.z, 0.0f };
+        GLfloat position[4] = { -light.direction.x, -light.direction.y, -light.direction.z, 0.0f };
         glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
     }
     else
     {
-        GLfloat position[4] = { m_lights[index].position.x, m_lights[index].position.y, m_lights[index].position.z, 1.0f };
+        GLfloat position[4] = { light.position.x, light.position.y, light.position.z, 1.0f };
         glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
     }
-
-    glPopMatrix();
 }
 
 void CGL21Device::SetLightEnabled(int index, bool enabled)
@@ -1560,13 +1549,7 @@ void CGL21Device::DestroyStaticBuffer(unsigned int bufferId)
 
 int CGL21Device::ComputeSphereVisibility(const Math::Vector &center, float radius)
 {
-    Math::Matrix m;
-    m = Math::MultiplyMatrices(m_worldMat, m);
-    m = Math::MultiplyMatrices(m_viewMat, m);
-    Math::Matrix sc;
-    Math::LoadScaleMatrix(sc, Math::Vector(1.0f, 1.0f, -1.0f));
-    m = Math::MultiplyMatrices(sc, m);
-    m = Math::MultiplyMatrices(m_projectionMat, m);
+    Math::Matrix &m = m_combinedMatrix;
 
     Math::Vector vec[6];
     float originPlane[6];
@@ -1654,12 +1637,6 @@ void CGL21Device::SetRenderState(RenderState state, bool enabled)
         m_lighting = enabled;
 
         glUniform1i(uni_LightingEnabled, enabled ? 1 : 0);
-
-        if (enabled)
-        {
-            for (int index = 0; index < static_cast<int>( m_lights.size() ); ++index)
-                UpdateLightPosition(index);
-        }
 
         return;
     }

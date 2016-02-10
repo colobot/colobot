@@ -45,6 +45,16 @@ namespace Gfx
 {
 
 /**
+  \struct DynamicBuffer
+  \brief Structure for storing dynamic buffer
+*/
+struct DynamicBuffer
+{
+    GLuint vbo;
+    unsigned int size;
+};
+
+/**
   \class CGL33Device
   \brief Implementation of CDevice interface in OpenGL 3.3
 
@@ -186,6 +196,9 @@ private:
     //! Binds VAO
     inline void BindVAO(GLuint vao);
 
+    //! Updates dynamic buffer
+    inline void UpdateDynamicBuffer(DynamicBuffer &buffer, unsigned int size, void* data);
+
 private:
     //! Current config
     DeviceConfig m_config;
@@ -198,6 +211,8 @@ private:
     Math::Matrix m_modelviewMat;
     //! Current projection matrix
     Math::Matrix m_projectionMat;
+    //! Combined world-view-projection matrix
+    Math::Matrix m_combinedMatrix;
 
     //! The current material
     Material m_material;
@@ -264,10 +279,12 @@ private:
     //! true enables per-pixel lighting
     bool m_perPixelLighting = false;
 
-    //! Auxilliary vertex buffers for general rendering
-    unsigned int m_vertex = 0;
-    unsigned int m_vertexTex2 = 0;
-    unsigned int m_vertexCol = 0;
+    //! Auxilliary buffers for rendering primitives with DrawPrimitive*
+    std::vector<DynamicBuffer> m_buffers = {};
+    //! Index to next auxilliary buffer
+    int m_nextBuffer = 0;
+    //! Auxiliary VAO for rendering primitives with DrawPrimitive*
+    GLuint m_auxiliaryVAO = 0;
 
     // Uniforms
     //! Projection matrix
