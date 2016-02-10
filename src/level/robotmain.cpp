@@ -351,6 +351,7 @@ std::string PhaseToString(Phase phase)
     if (phase == PHASE_WIN) return "PHASE_WIN";
     if (phase == PHASE_LOST) return "PHASE_LOST";
     if (phase == PHASE_QUIT_SCREEN) return "PHASE_QUIT_SCREEN";
+    if (phase == PHASE_SATCOM) return "PHASE_SATCOM";
     return "(unknown)";
 }
 
@@ -516,6 +517,12 @@ void CRobotMain::ChangePhase(Phase phase)
     }
 
     m_ui->ChangePhase(m_phase);
+    if (m_phase == PHASE_SATCOM)
+    {
+        m_interface->DeleteControl(EVENT_WINDOW5);
+        StartDisplayInfo(InjectLevelPathsForCurrentLevel("cbot.txt", "help/%lng%"), 0);
+    }
+
     if (!resetWorld) return;
 
     dim.x = 32.0f/640.0f;
@@ -708,21 +715,25 @@ bool CRobotMain::ProcessEvent(Event &event)
     }
 
     // Management of the console.
-    if (event.type == EVENT_TEXT_INPUT &&
-        event.GetData<TextInputData>()->text[0] == KEY(BACKQUOTE)) // Pause ?
+    if (event.type == EVENT_KEY_DOWN)
     {
-        if (m_phase != PHASE_PLAYER_SELECT &&
-            !m_movie->IsExist()   &&
-            !m_movieLock && !m_editLock && !m_cmdEdit)
+        auto data = event.GetData<KeyEventData>();
+
+        if (data->slot == INPUT_SLOT_CMDLINE)
         {
-            Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
-            if (pe == nullptr) return false;
-            pe->SetState(Ui::STATE_VISIBLE);
-            m_interface->SetFocus(pe);
-            if (m_phase == PHASE_SIMUL) m_cmdEditPause = m_pause->ActivatePause(PAUSE_ENGINE);
-            m_cmdEdit = true;
+            if (m_phase != PHASE_PLAYER_SELECT &&
+                !m_movie->IsExist()   &&
+                !m_movieLock && !m_editLock && !m_cmdEdit)
+            {
+                Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+                if (pe == nullptr) return false;
+                pe->SetState(Ui::STATE_VISIBLE);
+                m_interface->SetFocus(pe);
+                if (m_phase == PHASE_SIMUL) m_cmdEditPause = m_pause->ActivatePause(PAUSE_ENGINE);
+                m_cmdEdit = true;
+            }
+            return false;
         }
-        return false;
     }
 
     if (event.type == EVENT_KEY_DOWN &&
@@ -734,6 +745,7 @@ bool CRobotMain::ProcessEvent(Event &event)
         pe->GetText(cmd, 50);
         pe->SetText("");
         pe->ClearState(Ui::STATE_VISIBLE);
+        m_interface->SetFocus(nullptr);
         if (m_phase == PHASE_SIMUL)
         {
             m_pause->DeactivatePause(m_cmdEditPause);
@@ -777,6 +789,9 @@ bool CRobotMain::ProcessEvent(Event &event)
 
         if (event.type == EVENT_OBJECT_INFOOK)
             StopDisplayInfo();
+
+        if (m_displayInfo == nullptr && m_phase == PHASE_SATCOM)
+            ChangePhase(PHASE_MAIN_MENU);
 
         return false;
     }

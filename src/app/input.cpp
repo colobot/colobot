@@ -66,6 +66,7 @@ CInput::CInput()
         { INPUT_SLOT_CAMERA_UP,   "camup"   },
         { INPUT_SLOT_CAMERA_DOWN, "camdown" },
         { INPUT_SLOT_PAUSE,    "pause" },
+        { INPUT_SLOT_CMDLINE,    "cmdline" },
     };
 
     m_kmodState = 0;
@@ -275,6 +276,7 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_CAMERA_DOWN].primary = KEY(PAGEDOWN);
     m_inputBindings[INPUT_SLOT_PAUSE].primary       = KEY(PAUSE);
     m_inputBindings[INPUT_SLOT_PAUSE].secondary     = KEY(p);
+    m_inputBindings[INPUT_SLOT_CMDLINE].primary     = KEY(BACKQUOTE);
 
     m_joyAxisBindings[JOY_AXIS_SLOT_X].axis = 0;
     m_joyAxisBindings[JOY_AXIS_SLOT_Y].axis = 1;

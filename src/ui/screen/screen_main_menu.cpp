@@ -162,6 +162,12 @@ void CScreenMainMenu::CreateInterface()
     pl->SetFontType(Gfx::FONT_COURIER);
     pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
+    // SatCom button
+    pos.x = ox+sx*4.4f;
+    pos.y = oy+sy*4.4f;
+    pb = pw->CreateButton(pos, dim, 128+60, EVENT_INTERFACE_SATCOM);
+    pb->SetState(STATE_SHADOW);
+
     SetBackground("textures/interface/interface.png");
     CreateVersionDisplay();
 }
@@ -221,6 +227,10 @@ bool CScreenMainMenu::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_NAME:
             m_main->ChangePhase(PHASE_PLAYER_SELECT);
+            break;
+
+        case EVENT_INTERFACE_SATCOM:
+            m_main->ChangePhase(PHASE_SATCOM);
             break;
 
         default:
