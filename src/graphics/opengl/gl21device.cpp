@@ -273,7 +273,11 @@ bool CGL21Device::Create()
         sprintf(filename, "shaders/vertex_shader_21_pervertex.glsl");
 
     shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
-    if (shaders[0] == 0) return false;
+    if (shaders[0] == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        return false;
+    }
 
     if (m_perPixelLighting)
         sprintf(filename, "shaders/fragment_shader_21_perpixel.glsl");
@@ -281,10 +285,18 @@ bool CGL21Device::Create()
         sprintf(filename, "shaders/fragment_shader_21_pervertex.glsl");
 
     shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
-    if (shaders[1] == 0) return false;
+    if (shaders[1] == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        return false;
+    }
 
     m_program = LinkProgram(2, shaders);
-    if (m_program == 0) return false;
+    if (m_program == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        return false;
+    }
 
     glDeleteShader(shaders[0]);
     glDeleteShader(shaders[1]);
@@ -318,11 +330,30 @@ bool CGL21Device::Create()
     uni_ShadowColor = glGetUniformLocation(m_program, "uni_ShadowColor");
     uni_LightingEnabled = glGetUniformLocation(m_program, "uni_LightingEnabled");
 
+    uni_AmbientColor = glGetUniformLocation(m_program, "uni_AmbientColor");
+    uni_DiffuseColor = glGetUniformLocation(m_program, "uni_DiffuseColor");
+    uni_SpecularColor = glGetUniformLocation(m_program, "uni_SpecularColor");
+
+    GLchar name[64];
     for (int i = 0; i < 8; i++)
     {
-        char name[64];
-        sprintf(name, "uni_LightEnabled[%d]", i);
-        uni_LightEnabled[i] = glGetUniformLocation(m_program, name);
+        sprintf(name, "uni_Light[%d].Enabled", i);
+        uni_Light[i].Enabled = glGetUniformLocation(m_program, name);
+
+        sprintf(name, "uni_Light[%d].Position", i);
+        uni_Light[i].Position = glGetUniformLocation(m_program, name);
+
+        sprintf(name, "uni_Light[%d].Ambient", i);
+        uni_Light[i].Ambient = glGetUniformLocation(m_program, name);
+
+        sprintf(name, "uni_Light[%d].Diffuse", i);
+        uni_Light[i].Diffuse = glGetUniformLocation(m_program, name);
+
+        sprintf(name, "uni_Light[%d].Specular", i);
+        uni_Light[i].Specular = glGetUniformLocation(m_program, name);
+
+        sprintf(name, "uni_Light[%d].Attenuation", i);
+        uni_Light[i].Attenuation = glGetUniformLocation(m_program, name);
     }
 
     // Set default uniform values
@@ -355,7 +386,7 @@ bool CGL21Device::Create()
 
     glUniform1i(uni_LightingEnabled, 0);
     for (int i = 0; i < 8; i++)
-        glUniform1i(uni_LightEnabled[i], 0);
+        glUniform1i(uni_Light[i].Enabled, 0);
 
     // create default framebuffer object
     FramebufferParams framebufferParams;
@@ -485,9 +516,9 @@ void CGL21Device::SetMaterial(const Material &material)
 {
     m_material = material;
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  m_material.ambient.Array());
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_material.diffuse.Array());
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_material.specular.Array());
+    glUniform4fv(uni_AmbientColor, 1, m_material.ambient.Array());
+    glUniform4fv(uni_DiffuseColor, 1, m_material.diffuse.Array());
+    glUniform4fv(uni_SpecularColor, 1, m_material.specular.Array());
 }
 
 int CGL21Device::GetMaxLightCount()
@@ -502,40 +533,21 @@ void CGL21Device::SetLight(int index, const Light &light)
 
     m_lights[index] = light;
 
-    // Indexing from GL_LIGHT0 should always work
-    glLightfv(GL_LIGHT0 + index, GL_AMBIENT,  const_cast<GLfloat*>(light.ambient.Array()));
-    glLightfv(GL_LIGHT0 + index, GL_DIFFUSE,  const_cast<GLfloat*>(light.diffuse.Array()));
-    glLightfv(GL_LIGHT0 + index, GL_SPECULAR, const_cast<GLfloat*>(light.specular.Array()));
+    glUniform4fv(uni_Light[index].Ambient, 1, light.ambient.Array());
+    glUniform4fv(uni_Light[index].Diffuse, 1, light.diffuse.Array());
+    glUniform4fv(uni_Light[index].Specular, 1, light.specular.Array());
+    glUniform3f(uni_Light[index].Attenuation, light.attenuation0, light.attenuation1, light.attenuation2);
 
-    glLightf(GL_LIGHT0 + index, GL_CONSTANT_ATTENUATION,  light.attenuation0);
-    glLightf(GL_LIGHT0 + index, GL_LINEAR_ATTENUATION,    light.attenuation1);
-    glLightf(GL_LIGHT0 + index, GL_QUADRATIC_ATTENUATION, light.attenuation2);
-
-    if (light.type == LIGHT_SPOT)
+    if (light.type == LIGHT_DIRECTIONAL)
     {
-        glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, light.spotAngle * Math::RAD_TO_DEG);
-        glLightf(GL_LIGHT0 + index, GL_SPOT_EXPONENT, light.spotIntensity);
+        glUniform4f(uni_Light[index].Position, -light.direction.x, -light.direction.y, -light.direction.z, 0.0f);
     }
     else
     {
-        glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, 180.0f);
+        glUniform4f(uni_Light[index].Position, light.position.x, light.position.y, light.position.z, 1.0f);
     }
 
-    if (light.type == LIGHT_SPOT)
-    {
-        GLfloat direction[4] = { -light.direction.x, -light.direction.y, -light.direction.z, 1.0f };
-        glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
-    }
-    else if (light.type == LIGHT_DIRECTIONAL)
-    {
-        GLfloat position[4] = { -light.direction.x, -light.direction.y, -light.direction.z, 0.0f };
-        glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
-    }
-    else
-    {
-        GLfloat position[4] = { light.position.x, light.position.y, light.position.z, 1.0f };
-        glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
-    }
+    // TODO: add spotlight params
 }
 
 void CGL21Device::SetLightEnabled(int index, bool enabled)
@@ -545,7 +557,7 @@ void CGL21Device::SetLightEnabled(int index, bool enabled)
 
     m_lightsEnabled[index] = enabled;
 
-    glUniform1i(uni_LightEnabled[index], enabled ? 1 : 0);
+    glUniform1i(uni_Light[index].Enabled, enabled ? 1 : 0);
 }
 
 /** If image is invalid, returns invalid texture.

@@ -52,7 +52,10 @@ void main()
 
     if (uni_TextureEnabled[2])
     {
-        color = color * mix(uni_ShadowColor, 1.0f, shadow2D(uni_ShadowTexture, gl_TexCoord[2].xyz).x);
+        if (gl_FrontFacing)
+            color.rgb *= mix(uni_ShadowColor, 1.0f, shadow2D(uni_ShadowTexture, gl_TexCoord[2].xyz).x);
+        else
+            color.rgb *= uni_ShadowColor;
     }
 
     if (uni_FogEnabled)

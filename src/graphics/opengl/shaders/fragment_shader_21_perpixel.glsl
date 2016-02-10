@@ -34,8 +34,23 @@ uniform vec4 uni_FogColor;
 
 uniform float uni_ShadowColor;
 
+struct LightParams
+{
+    bool Enabled;
+    vec4 Position;
+    vec4 Ambient;
+    vec4 Diffuse;
+    vec4 Specular;
+    float Shininess;
+    vec3 Attenuation;
+};
+
+uniform vec4 uni_AmbientColor;
+uniform vec4 uni_DiffuseColor;
+uniform vec4 uni_SpecularColor;
+
 uniform bool uni_LightingEnabled;
-uniform bool uni_LightEnabled[8];
+uniform LightParams uni_Light[8];
 
 varying vec3 pass_Normal;
 varying vec3 pass_Position;
@@ -51,46 +66,41 @@ void main()
         vec4 diffuse = vec4(0.0f);
         vec4 specular = vec4(0.0f);
 
-        vec3 normal = pass_Normal;
+        vec3 normal = (gl_FrontFacing ? pass_Normal : -pass_Normal);
 
-        for(int i=0; i<8; i++)
+        for (int i = 0; i < 8; i++)
         {
-            if(uni_LightEnabled[i])
+            if (uni_Light[i].Enabled)
             {
-                vec3 lightDirection = vec3(0.0f);
-                float atten;
+                vec3 lightDirection = uni_Light[i].Position.xyz;
+                float atten = 1.0f;
 
-                // Directional light
-                if(gl_LightSource[i].position.w == 0.0f)
-                {
-                    lightDirection = gl_LightSource[i].position.xyz;
-                    atten = 1.0f;
-                }
                 // Point light
-                else
+                if (abs(uni_Light[i].Position.w) > 1e-3f)
                 {
-                    vec3 lightDirection = normalize(gl_LightSource[i].position.xyz - pass_Position);
-                    float dist = distance(gl_LightSource[i].position.xyz, pass_Position);
+                    vec3 lightDirection = normalize(uni_Light[i].Position.xyz - pass_Position.xyz);
+                    float dist = distance(uni_Light[i].Position.xyz, pass_Position.xyz);
 
-                    atten = 1.0f / (gl_LightSource[i].constantAttenuation
-                            + gl_LightSource[i].linearAttenuation * dist
-                            + gl_LightSource[i].quadraticAttenuation * dist * dist);
+                    vec3 lightAtten = uni_Light[i].Attenuation;
+
+                    atten = 1.0f / (lightAtten.x
+                            + lightAtten.y * dist
+                            + lightAtten.z * dist * dist);
                 }
 
                 vec3 reflectDirection = -reflect(lightDirection, normal);
 
-                ambient += gl_LightSource[i].ambient;
-                diffuse += atten * clamp(dot(normal, lightDirection), 0.0f, 1.0f) * gl_LightSource[i].diffuse;
-                specular += atten * clamp(pow(dot(normal, lightDirection + reflectDirection), 10.0f), 0.0f, 1.0f) * gl_LightSource[i].specular;
+                ambient += uni_Light[i].Ambient;
+                diffuse += atten * clamp(dot(normal, lightDirection), 0.0f, 1.0f) * uni_Light[i].Diffuse;
+                specular += atten * clamp(pow(dot(normal, lightDirection + reflectDirection), 10.0f), 0.0f, 1.0f) * uni_Light[i].Specular;
             }
         }
 
-        vec4 result = gl_FrontMaterial.ambient * ambient
-                + gl_FrontMaterial.diffuse * diffuse
-                + gl_FrontMaterial.specular * specular;
+        vec4 result = uni_AmbientColor * ambient
+                + uni_DiffuseColor * diffuse
+                + uni_SpecularColor * specular;
 
-        color.rgb = min(vec3(1.0f), result.rgb);
-        color.a = 1.0f; //min(1.0f, 1.0f);
+        color = vec4(min(vec3(1.0f), result.rgb), 1.0f);
     }
 
     if (uni_TextureEnabled[0])
@@ -105,7 +115,8 @@ void main()
 
     if (uni_TextureEnabled[2])
     {
-        color = color * mix(uni_ShadowColor, 1.0f, shadow2D(uni_ShadowTexture, gl_TexCoord[2].xyz).x);
+        if (gl_FrontFacing)
+            color.rgb *= mix(uni_ShadowColor, 1.0f, shadow2D(uni_ShadowTexture, gl_TexCoord[2].xyz).x);
     }
 
     if (uni_FogEnabled)

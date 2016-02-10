@@ -299,8 +299,32 @@ private:
 
     //! true enables lighting
     GLint uni_LightingEnabled = 0;
-    //! true enables light source
-    GLint uni_LightEnabled[8] = {};
+    //! Ambient color
+    GLint uni_AmbientColor = 0;
+    //! Diffuse color
+    GLint uni_DiffuseColor = 0;
+    //! Specular color
+    GLint uni_SpecularColor = 0;
+
+    struct LightUniforms
+    {
+        //! true enables light
+        GLint Enabled = 0;
+        //! Light type
+        GLint Type = 0;
+        //! Position or direction vector
+        GLint Position = 0;
+        //! Ambient color
+        GLint Ambient = 0;
+        //! Diffuse color
+        GLint Diffuse = 0;
+        //! Specular color
+        GLint Specular = 0;
+        //! Attenuation
+        GLint Attenuation = 0;
+    };
+
+    LightUniforms uni_Light[8];
 };
 
 
