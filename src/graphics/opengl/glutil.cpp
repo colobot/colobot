@@ -211,6 +211,13 @@ GLenum TranslateTextureCoordinateGen(int index)
     return textureCoordGen[index];
 }
 
+std::string lastShaderError;
+
+std::string GetLastShaderError()
+{
+    return lastShaderError;
+}
+
 GLint LoadShader(GLint type, const char* filename)
 {
     PHYSFS_file *file = PHYSFS_openRead(filename);
@@ -244,6 +251,7 @@ GLint LoadShader(GLint type, const char* filename)
         glGetShaderInfoLog(shader, len + 1, nullptr, message.get());
 
         GetLogger()->Error("Shader compilation error occured!\n%s\n", message.get());
+        lastShaderError = std::string("Shader compilation error occured!\n\n") + std::string(message.get());
 
         glDeleteShader(shader);
         return 0;
@@ -276,6 +284,7 @@ GLint LinkProgram(int count, GLint shaders[])
         glGetProgramInfoLog(program, len + 1, nullptr, message.get());
 
         GetLogger()->Error("Shader program linking error occured!\n%s\n", message.get());
+        lastShaderError = std::string("Shader program linking error occured!\n\n") + std::string(message.get());
 
         glDeleteProgram(program);
 

@@ -186,13 +186,13 @@ bool CGL33Device::Create()
         sscanf(version, "%d.%d", &m_glMajor, &m_glMinor);
 
         int glVersion = 10 * m_glMajor + m_glMinor;
-        if (glVersion < 30)
+        if (glVersion < 32)
         {
             GetLogger()->Error("Unsupported OpenGL version: %d.%d\n", m_glMajor, m_glMinor);
-            GetLogger()->Error("OpenGL 3.0 or newer is required to use this engine.\n");
-            m_errorMessage = "It seems your graphics card does not support OpenGL 3.0.\n";
+            GetLogger()->Error("OpenGL 3.2 or newer is required to use this engine.\n");
+            m_errorMessage = "It seems your graphics card does not support OpenGL 3.2.\n";
             m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n";
-            m_errorMessage += "(OpenGL 3.0 is roughly equivalent to Direct3D 10)\n\n";
+            m_errorMessage += "(OpenGL 3.2 is roughly equivalent to Direct3D 10)\n\n";
             m_errorMessage += GetHardwareInfo(false);
             return false;
         }
@@ -275,7 +275,11 @@ bool CGL33Device::Create()
         sprintf(filename, "shaders/vertex_shader_33_pervertex.glsl");
 
     shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
-    if (shaders[0] == 0) return false;
+    if (shaders[0] == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        return false;
+    }
 
     if (m_perPixelLighting)
         sprintf(filename, "shaders/fragment_shader_33_perpixel.glsl");
@@ -283,10 +287,18 @@ bool CGL33Device::Create()
         sprintf(filename, "shaders/fragment_shader_33_pervertex.glsl");
 
     shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
-    if (shaders[1] == 0) return false;
+    if (shaders[1] == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        return false;
+    }
 
     m_shaderProgram = LinkProgram(2, shaders);
-    if (m_shaderProgram == 0) return false;
+    if (m_shaderProgram == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        return false;
+    }
 
     glDeleteShader(shaders[0]);
     glDeleteShader(shaders[1]);

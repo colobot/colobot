@@ -74,6 +74,8 @@ GLenum TranslateTextureCoordinate(int index);
 
 GLenum TranslateTextureCoordinateGen(int index);
 
+std::string GetLastShaderError();
+
 GLint LoadShader(GLint type, const char* filename);
 
 GLint LinkProgram(int count, GLint shaders[]);
