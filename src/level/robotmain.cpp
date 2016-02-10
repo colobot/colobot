@@ -351,6 +351,7 @@ std::string PhaseToString(Phase phase)
     if (phase == PHASE_WIN) return "PHASE_WIN";
     if (phase == PHASE_LOST) return "PHASE_LOST";
     if (phase == PHASE_QUIT_SCREEN) return "PHASE_QUIT_SCREEN";
+    if (phase == PHASE_SATCOM) return "PHASE_SATCOM";
     return "(unknown)";
 }
 
@@ -516,6 +517,12 @@ void CRobotMain::ChangePhase(Phase phase)
     }
 
     m_ui->ChangePhase(m_phase);
+    if (m_phase == PHASE_SATCOM)
+    {
+        m_interface->DeleteControl(EVENT_WINDOW5);
+        StartDisplayInfo(InjectLevelPathsForCurrentLevel("cbot.txt", "help/%lng%"), 0);
+    }
+
     if (!resetWorld) return;
 
     dim.x = 32.0f/640.0f;
@@ -777,6 +784,9 @@ bool CRobotMain::ProcessEvent(Event &event)
 
         if (event.type == EVENT_OBJECT_INFOOK)
             StopDisplayInfo();
+
+        if (m_displayInfo == nullptr && m_phase == PHASE_SATCOM)
+            ChangePhase(PHASE_MAIN_MENU);
 
         return false;
     }

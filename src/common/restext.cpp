@@ -161,6 +161,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_FREE]      = TR("Free game\\Free game without a specific goal");
     stringsEvent[EVENT_INTERFACE_CODE_BATTLES] = TR("Code battles\\Program your robot to be the best of them all!");
     stringsEvent[EVENT_INTERFACE_USER]      = TR("Custom levels\\Levels from mods created by the users");
+    stringsEvent[EVENT_INTERFACE_SATCOM]    = TR("SatCom");
     stringsEvent[EVENT_INTERFACE_NAME]      = TR("Change player\\Change player");
     stringsEvent[EVENT_INTERFACE_SETUP]     = TR("Options\\Preferences");
     stringsEvent[EVENT_INTERFACE_AGAIN]     = TR("Restart\\Restart the mission from the beginning");
