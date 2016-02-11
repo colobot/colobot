@@ -24,10 +24,6 @@
 
 #include <physfs.h>
 
-namespace
-{
-    const Uint32 PHYSFS_RWOPS_TYPE = 0xc010b04f;
-}
 
 CSDLFileWrapper::CSDLFileWrapper(const std::string& filename)
     : m_rwops(nullptr)
@@ -52,7 +48,7 @@ CSDLFileWrapper::CSDLFileWrapper(const std::string& filename)
         return;
     }
 
-    m_rwops->type = PHYSFS_RWOPS_TYPE; //TODO: Documentation recommends to leave SDL_RWOPS_UNKNOWN here for application-defined RWops. Did that change in SDL2?
+    m_rwops->type = SDL_RWOPS_UNKNOWN;
     m_rwops->hidden.unknown.data1 = file;
     m_rwops->seek = SDLSeek;
     m_rwops->read = SDLRead;
@@ -109,7 +105,7 @@ int CSDLFileWrapper::SDLCloseWithFreeRW(SDL_RWops *context)
 
 bool CSDLFileWrapper::CheckSDLContext(SDL_RWops *context)
 {
-    if (context->type != PHYSFS_RWOPS_TYPE)
+    if (context->type != SDL_RWOPS_UNKNOWN)
     {
         SDL_SetError("Wrong kind of RWops");
         return false;
