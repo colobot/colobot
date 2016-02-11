@@ -44,26 +44,27 @@ uniform bool uni_LightingEnabled;
 uniform LightParams uni_Light[8];
 
 varying float pass_Distance;
+varying vec4 pass_Color;
+varying vec3 pass_Normal;
+varying vec2 pass_TexCoord0;
+varying vec2 pass_TexCoord1;
+varying vec3 pass_TexCoord2;
 
 void main()
 {
     vec4 position = uni_ModelMatrix * gl_Vertex;
     vec4 eyeSpace = uni_ViewMatrix * position;
     vec4 shadowCoord = uni_ShadowMatrix * position;
-    gl_Position = uni_ProjectionMatrix * eyeSpace;
-    gl_FrontColor = gl_Color;
-    gl_TexCoord[0] = gl_MultiTexCoord0;
-    gl_TexCoord[1] = gl_MultiTexCoord1;
-    gl_TexCoord[2] = vec4(shadowCoord.xyz / shadowCoord.w, 1.0f);
-    pass_Distance = abs(eyeSpace.z / eyeSpace.w);
+
+    vec4 color = gl_Color;
+
+    vec3 normal = normalize((uni_NormalMatrix * vec4(gl_Normal, 0.0f)).xyz);
 
     if (uni_LightingEnabled)
     {
         vec4 ambient = vec4(0.0f);
         vec4 diffuse = vec4(0.0f);
         vec4 specular = vec4(0.0f);
-
-        vec3 normal = normalize((uni_NormalMatrix * vec4(gl_Normal, 0.0f)).xyz);
 
         for (int i = 0; i < 8; i++)
         {
@@ -97,6 +98,17 @@ void main()
                 + uni_DiffuseColor * diffuse
                 + uni_SpecularColor * specular;
 
-        gl_FrontColor = vec4(min(vec3(1.0f), result.rgb), 1.0f);
+        color = vec4(min(vec3(1.0f), result.rgb), 1.0f);
     }
+
+    gl_Position = uni_ProjectionMatrix * eyeSpace;
+    gl_FrontColor = vec4(1.0f);
+    gl_BackColor = vec4(0.0f);
+
+    pass_Distance = abs(eyeSpace.z / eyeSpace.w);
+    pass_Color = color;
+    pass_Normal = normal;
+    pass_TexCoord0 = gl_MultiTexCoord0.st;
+    pass_TexCoord1 = gl_MultiTexCoord1.st;
+    pass_TexCoord2 = shadowCoord.xyz / shadowCoord.w;
 }

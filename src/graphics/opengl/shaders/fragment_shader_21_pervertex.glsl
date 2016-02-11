@@ -35,27 +35,36 @@ uniform vec4 uni_FogColor;
 uniform float uni_ShadowColor;
 
 varying float pass_Distance;
+varying vec4 pass_Color;
+varying vec3 pass_Normal;
+varying vec2 pass_TexCoord0;
+varying vec2 pass_TexCoord1;
+varying vec3 pass_TexCoord2;
+
+const vec3 const_LightDirection = vec3(1.0f, 2.0f, -1.0f);
 
 void main()
 {
-    vec4 color = gl_Color;
+    vec4 color = pass_Color;
 
     if (uni_TextureEnabled[0])
     {
-        color = color * texture2D(uni_PrimaryTexture, gl_TexCoord[0].st);
+        color = color * texture2D(uni_PrimaryTexture, pass_TexCoord0);
     }
 
     if (uni_TextureEnabled[1])
     {
-        color = color * texture2D(uni_SecondaryTexture, gl_TexCoord[1].st);
+        color = color * texture2D(uni_SecondaryTexture, pass_TexCoord1);
     }
 
     if (uni_TextureEnabled[2])
     {
-        if (gl_FrontFacing)
-            color.rgb *= mix(uni_ShadowColor, 1.0f, shadow2D(uni_ShadowTexture, gl_TexCoord[2].xyz).x);
-        else
+        vec3 normal = pass_Normal * (2.0f * gl_Color.x - 1.0f);
+
+        if (dot(normal, const_LightDirection) < 0.0f)
             color.rgb *= uni_ShadowColor;
+        else
+            color.rgb *= mix(uni_ShadowColor, 1.0f, shadow2D(uni_ShadowTexture, pass_TexCoord2).x);
     }
 
     if (uni_FogEnabled)

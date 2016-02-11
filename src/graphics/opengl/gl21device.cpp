@@ -388,6 +388,8 @@ bool CGL21Device::Create()
     for (int i = 0; i < 8; i++)
         glUniform1i(uni_Light[i].Enabled, 0);
 
+    glEnable(GL_VERTEX_PROGRAM_TWO_SIDE);
+
     // create default framebuffer object
     FramebufferParams framebufferParams;
 
