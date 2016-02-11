@@ -114,6 +114,11 @@ std::unique_ptr<CSDLFileWrapper> CResourceManager::GetSDLFileHandler(const std::
     return MakeUnique<CSDLFileWrapper>(CleanPath(filename));
 }
 
+std::unique_ptr<CSDLMemoryWrapper> CResourceManager::GetSDLMemoryHandler(const std::string &filename)
+{
+    return MakeUnique<CSDLMemoryWrapper>(CleanPath(filename));
+}
+
 std::unique_ptr<CSNDFileWrapper> CResourceManager::GetSNDFileHandler(const std::string &filename)
 {
     return MakeUnique<CSNDFileWrapper>(CleanPath(filename));

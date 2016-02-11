@@ -20,6 +20,7 @@
 #pragma once
 
 #include "common/resources/sdl_file_wrapper.h"
+#include "common/resources/sdl_memory_wrapper.h"
 #include "common/resources/sndfile_wrapper.h"
 
 #include <memory>
@@ -41,6 +42,7 @@ public:
     static std::string GetSaveLocation();
 
     static std::unique_ptr<CSDLFileWrapper> GetSDLFileHandler(const std::string &filename);
+    static std::unique_ptr<CSDLMemoryWrapper> GetSDLMemoryHandler(const std::string &filename);
     static std::unique_ptr<CSNDFileWrapper> GetSNDFileHandler(const std::string &filename);
 
     //! Check if file exists

@@ -60,11 +60,11 @@ struct MultisizeFont
  */
 struct CachedFont
 {
-    std::unique_ptr<CSDLFileWrapper> fontFile;
+    std::unique_ptr<CSDLMemoryWrapper> fontFile;
     TTF_Font* font = nullptr;
     std::map<UTF8Char, CharTexture> cache;
 
-    CachedFont(std::unique_ptr<CSDLFileWrapper> fontFile, int pointSize)
+    CachedFont(std::unique_ptr<CSDLMemoryWrapper> fontFile, int pointSize)
         : fontFile(std::move(fontFile))
     {
         font = TTF_OpenFontRW(this->fontFile->GetHandler(), 0, pointSize);
@@ -980,7 +980,7 @@ CachedFont* CText::GetOrOpenFont(FontType font, float size)
         return m_lastCachedFont;
     }
 
-    auto file = CResourceManager::GetSDLFileHandler(mf->fileName);
+    auto file = CResourceManager::GetSDLMemoryHandler(mf->fileName);
     if (!file->IsOpen())
     {
         m_error = std::string("Unable to open file");
