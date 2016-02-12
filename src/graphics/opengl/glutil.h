@@ -45,17 +45,23 @@ enum FramebufferSupport
     FBS_ARB,
 };
 
+bool InitializeGLEW();
+
 FramebufferSupport DetectFramebufferSupport();
 
 //! Creates OpenGL device
 std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::string& name);
 
-//! Returns OpenGL version as one number.
-// First digit is major part, second digit is minor part.
+//! Returns OpenGL version
+// \return First digit is major part, second digit is minor part.
 int GetOpenGLVersion();
 
+//! Returns OpenGL version
+// \return First digit is major part, second digit is minor part.
+int GetOpenGLVersion(int &major, int &minor);
+
 //! Returns information about graphics card
-std::string GetHardwareInfo(bool full);
+std::string GetHardwareInfo(bool full = false);
 
 //! Translate Gfx primitive type to OpenGL primitive type
 GLenum TranslateGfxPrimitive(PrimitiveType type);

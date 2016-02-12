@@ -236,8 +236,6 @@ private:
     };
 
     //! Detected capabilities
-    //! OpenGL version
-    int m_glMajor = 1, m_glMinor = 1;
     //! Whether anisotropic filtering is available
     bool m_anisotropyAvailable = false;
     //! Maximum anisotropy level

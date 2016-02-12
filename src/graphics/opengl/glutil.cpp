@@ -28,6 +28,7 @@
 
 #include <physfs.h>
 #include <cstring>
+#include <sstream>
 
 // Graphics module namespace
 namespace Gfx
@@ -35,6 +36,26 @@ namespace Gfx
 
 GLuint textureCoordinates[] = { GL_S, GL_T, GL_R, GL_Q };
 GLuint textureCoordGen[] = { GL_TEXTURE_GEN_S, GL_TEXTURE_GEN_T, GL_TEXTURE_GEN_R, GL_TEXTURE_GEN_Q };
+
+bool InitializeGLEW()
+{
+    static bool glewInited = false;
+
+    if (!glewInited)
+    {
+        glewExperimental = GL_TRUE;
+
+        if (glewInit() != GLEW_OK)
+        {
+            GetLogger()->Error("GLEW initialization failed\n");
+            return false;
+        }
+
+        glewInited = true;
+    }
+
+    return true;
+}
 
 FramebufferSupport DetectFramebufferSupport()
 {
@@ -65,8 +86,14 @@ std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::str
 
 int GetOpenGLVersion()
 {
+    int major, minor;
+
+    return GetOpenGLVersion(major, minor);
+}
+
+int GetOpenGLVersion(int &major, int &minor)
+{
     const char *version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-    int major = 0, minor = 0;
 
     sscanf(version, "%d.%d", &major, &minor);
 
@@ -77,24 +104,126 @@ std::string GetHardwareInfo(bool full)
 {
     int glversion = GetOpenGLVersion();
 
+    std::stringstream result;
+
+    // basic hardware information
     const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
     const char* vendor = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
     const char* renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
 
-    std::string result;
+    result << "Hardware information:\n\n";
+    result << "OpenGL Version:\t\t" << version << '\n';
+    result << "Hardware Vendor:\t\t" << vendor << '\n';
+    result << "Renderer:\t\t\t" << renderer << '\n';
 
-    result += std::string("Hardware information:\n\n");
-    result += "Version:\t" + std::string(version) + '\n';
-    result += "Vendor:\t" + std::string(vendor) + '\n';
-    result += "Renderer:\t" + std::string(renderer) + '\n';
-
+    // GLSL version if available
     if (glversion >= 20)
     {
         const char* glslVersion = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
-        result += "Shading Language:\t" + std::string(glslVersion) + '\n';
+        result << "Shading Language Version:\t" << glslVersion << '\n';
     }
 
-    return result;
+    if (!full) return result.str();
+
+    // extended hardware information
+    int value = 0;
+
+    result << "\nCapabilities:\n\n";
+
+    // texture size
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
+    result << "Max Texture Size:\t\t" << value << '\n';
+
+    if (glewIsSupported("GL_EXT_texture_filter_anisotropic"))
+    {
+        result << "Anisotropic filtering:\t\tsupported\n";
+
+        float level;
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
+
+        result << "    Max Level:\t\t" << static_cast<int>(level) << '\n';
+    }
+    else
+    {
+        result << "Anisotropic filtering:\t\tunsupported\n";
+    }
+
+    // multitexturing
+    if (glversion >= 13)
+    {
+        result << "Multitexturing:\t\tsupported\n";
+        glGetIntegerv(GL_MAX_TEXTURE_UNITS, &value);
+        result << "    Max Texture Units:\t\t" << value << '\n';
+
+        if (glversion >= 20)
+        {
+            glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &value);
+            result << "    Max Texture Image Units:\t" << value << '\n';
+        }
+    }
+    else
+    {
+        result << "Multitexturing:\t\tunsupported\n";
+    }
+
+    // FBO support
+    FramebufferSupport framebuffer = DetectFramebufferSupport();
+
+    if (framebuffer == FBS_ARB)
+    {
+        result << "Framebuffer Object:\t\tsupported\n";
+        result << "    Type:\t\t\tCore/ARB\n";
+
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &value);
+        result << "    Max Renderbuffer Size:\t" << value << '\n';
+
+        glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &value);
+        result << "    Max Color Attachments:\t" << value << '\n';
+
+        result << "Multisampling:\t\tsupported\n";
+
+        glGetIntegerv(GL_MAX_FRAMEBUFFER_SAMPLES, &value);
+        result << "    Max Framebuffer Samples:\t" << value << '\n';
+    }
+    else if (framebuffer == FBS_EXT)
+    {
+        result << "Framebuffer Object:\tsupported\n";
+        result << "    Type:\tEXT\n";
+
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &value);
+        result << "    Max Renderbuffer Size:\t" << value << '\n';
+
+        glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT, &value);
+        result << "    Max Color Attachments:\t" << value << '\n';
+
+        if (glewIsSupported("GL_EXT_framebuffer_multisample"))
+        {
+            result << "Multisampling:\tsupported\n";
+
+            glGetIntegerv(GL_MAX_SAMPLES_EXT, &value);
+            result << "    Max Framebuffer Samples:\t" << value << '\n';
+        }
+    }
+    else
+    {
+        result << "Framebuffer Object:\tunsupported\n";
+    }
+
+    // VBO support
+    if (glversion >= 15)
+    {
+        result << "VBO:\t\t\tsupported (core)\n";
+    }
+    else if (glewIsSupported("GL_ARB_vertex_buffer_object"))
+    {
+        result << "VBO:\t\t\tsupported (ARB)\n";
+    }
+    else
+    {
+        result << "VBO:\t\t\tunsupported\n";
+    }
+
+    return result.str();
 }
 
 GLenum TranslateGfxPrimitive(PrimitiveType type)

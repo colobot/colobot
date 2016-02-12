@@ -168,79 +168,63 @@ bool CGL33Device::Create()
 
     static bool glewInited = false;
 
-    if (!glewInited)
+    if (!InitializeGLEW())
     {
-        glewInited = true;
-
-        glewExperimental = GL_TRUE;
-
-        if (glewInit() != GLEW_OK)
-        {
-            GetLogger()->Error("GLEW initialization failed\n");
-            m_errorMessage = "An error occured while initializing GLEW.";
-            return false;
-        }
-
-        // Extract OpenGL version
-        const char *version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-        sscanf(version, "%d.%d", &m_glMajor, &m_glMinor);
-
-        int glVersion = 10 * m_glMajor + m_glMinor;
-        if (glVersion < 32)
-        {
-            GetLogger()->Error("Unsupported OpenGL version: %d.%d\n", m_glMajor, m_glMinor);
-            GetLogger()->Error("OpenGL 3.2 or newer is required to use this engine.\n");
-            m_errorMessage = "It seems your graphics card does not support OpenGL 3.2.\n";
-            m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n";
-            m_errorMessage += "(OpenGL 3.2 is roughly equivalent to Direct3D 10)\n\n";
-            m_errorMessage += GetHardwareInfo(false);
-            return false;
-        }
-        else if (glVersion < 33)
-        {
-            GetLogger()->Warn("Partially supported OpenGL version: %d.%d\n", m_glMajor, m_glMinor);
-            GetLogger()->Warn("You may experience problems while running the game on this engine.\n");
-            GetLogger()->Warn("OpenGL 3.3 or newer is recommended.\n");
-        }
-        else
-        {
-            GetLogger()->Info("OpenGL %d.%d\n", m_glMajor, m_glMinor);
-        }
-
-        // Detect support of anisotropic filtering
-        m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
-        if(m_anisotropyAvailable)
-        {
-            // Obtain maximum anisotropy level available
-            float level;
-            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
-            m_maxAnisotropy = static_cast<int>(level);
-
-            GetLogger()->Info("Anisotropic filtering available\n");
-            GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
-        }
-        else
-        {
-            GetLogger()->Info("Anisotropic filtering not available\n");
-        }
-
-        // Read maximum sample count for MSAA
-        if(glewIsSupported("GL_ARB_multisample"))
-        {
-            glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_maxSamples);
-            GetLogger()->Info("Multisampling supported, max samples: %d\n", m_maxSamples);
-        }
-        else
-        {
-            GetLogger()->Info("Multisampling not supported\n");
-        }
+        m_errorMessage = "An error occured while initializing GLEW.";
+        return false;
     }
+
+    // Extract OpenGL version
+    int glMajor, glMinor;
+    int glVersion = GetOpenGLVersion(glMajor, glMinor);
+
+    if (glVersion < 32)
+    {
+        GetLogger()->Error("Unsupported OpenGL version: %d.%d\n", glMajor, glMinor);
+        GetLogger()->Error("OpenGL 3.2 or newer is required to use this engine.\n");
+        m_errorMessage = "It seems your graphics card does not support OpenGL 3.2.\n";
+        m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n";
+        m_errorMessage += "(OpenGL 3.2 is roughly equivalent to Direct3D 10)\n\n";
+        m_errorMessage += GetHardwareInfo();
+        return false;
+    }
+    else if (glVersion < 33)
+    {
+        GetLogger()->Warn("Partially supported OpenGL version: %d.%d\n", glMajor, glMinor);
+        GetLogger()->Warn("You may experience problems while running the game on this engine.\n");
+        GetLogger()->Warn("OpenGL 3.3 or newer is recommended.\n");
+    }
+    else
+    {
+        GetLogger()->Info("OpenGL %d.%d\n", glMajor, glMinor);
+    }
+
+    // Detect support of anisotropic filtering
+    m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
+    if(m_anisotropyAvailable)
+    {
+        // Obtain maximum anisotropy level available
+        float level;
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
+        m_maxAnisotropy = static_cast<int>(level);
+
+        GetLogger()->Info("Anisotropic filtering available\n");
+        GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
+    }
+    else
+    {
+        GetLogger()->Info("Anisotropic filtering not available\n");
+    }
+
+    glGetIntegerv(GL_MAX_FRAMEBUFFER_SAMPLES, &m_maxSamples);
+    GetLogger()->Info("Multisampling supported, max samples: %d\n", m_maxSamples);
 
     // Set just to be sure
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     glViewport(0, 0, m_config.size.x, m_config.size.y);
 
+    // this is set in shader
     int numLights = 8;
 
     m_lights        = std::vector<Light>(numLights, Light());

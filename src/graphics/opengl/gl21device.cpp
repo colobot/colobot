@@ -166,65 +166,55 @@ bool CGL21Device::Create()
 {
     GetLogger()->Info("Creating CDevice - OpenGL 2.1\n");
 
-    static bool glewInited = false;
-
-    if (!glewInited)
+    if (!InitializeGLEW())
     {
-        glewInited = true;
+        m_errorMessage = "An error occured while initializing GLEW.";
+        return false;
+    }
 
-        glewExperimental = GL_TRUE;
+    // Extract OpenGL version
+    int glMajor, glMinor;
+    int glVersion = GetOpenGLVersion(glMajor, glMinor);
 
-        if (glewInit() != GLEW_OK)
-        {
-            GetLogger()->Error("GLEW initialization failed\n");
-            m_errorMessage = "An error occured while initializing GLEW.";
-            return false;
-        }
+    if (glVersion < 20)
+    {
+        GetLogger()->Error("Unsupported OpenGL version: %d.%d\n", glMajor, glMinor);
+        GetLogger()->Error("OpenGL 2.0 or newer is required to use this engine.\n");
+        m_errorMessage = "It seems your graphics card does not support OpenGL 2.0.\n";
+        m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n";
+        m_errorMessage += "(OpenGL 2.0 is roughly equivalent to Direct3D 9)\n\n";
+        m_errorMessage += GetHardwareInfo();
+        return false;
+    }
 
-        // Extract OpenGL version
-        const char *version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-        sscanf(version, "%d.%d", &m_glMajor, &m_glMinor);
+    GetLogger()->Info("OpenGL %d.%d\n", glMajor, glMinor);
 
-        if (m_glMajor < 2)
-        {
-            GetLogger()->Error("Unsupported OpenGL version: %d.%d\n", m_glMajor, m_glMinor);
-            GetLogger()->Error("OpenGL 2.0 or newer is required to use this engine.\n");
-            m_errorMessage = "It seems your graphics card does not support OpenGL 2.0.\n";
-            m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n";
-            m_errorMessage += "(OpenGL 2.0 is roughly equivalent to Direct3D 9)\n\n";
-            m_errorMessage += GetHardwareInfo(false);
-            return false;
-        }
+    // Detect support of anisotropic filtering
+    m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
+    if(m_anisotropyAvailable)
+    {
+        // Obtain maximum anisotropy level available
+        float level;
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
+        m_maxAnisotropy = static_cast<int>(level);
 
-        GetLogger()->Info("OpenGL %d.%d\n", m_glMajor, m_glMinor);
+        GetLogger()->Info("Anisotropic filtering available\n");
+        GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
+    }
+    else
+    {
+        GetLogger()->Info("Anisotropic filtering not available\n");
+    }
 
-        // Detect support of anisotropic filtering
-        m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
-        if(m_anisotropyAvailable)
-        {
-            // Obtain maximum anisotropy level available
-            float level;
-            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
-            m_maxAnisotropy = static_cast<int>(level);
-
-            GetLogger()->Info("Anisotropic filtering available\n");
-            GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
-        }
-        else
-        {
-            GetLogger()->Info("Anisotropic filtering not available\n");
-        }
-
-        // Read maximum sample count for MSAA
-        if(glewIsSupported("GL_ARB_multisample"))
-        {
-            glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_maxSamples);
-            GetLogger()->Info("Multisampling supported, max samples: %d\n", m_maxSamples);
-        }
-        else
-        {
-            GetLogger()->Info("Multisampling not supported\n");
-        }
+    // Read maximum sample count for MSAA
+    if(glewIsSupported("GL_EXT_framebuffer_multisample"))
+    {
+        glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_maxSamples);
+        GetLogger()->Info("Multisampling supported, max samples: %d\n", m_maxSamples);
+    }
+    else
+    {
+        GetLogger()->Info("Multisampling not supported\n");
     }
 
     // This is mostly done in all modern hardware by default
@@ -237,8 +227,8 @@ bool CGL21Device::Create()
 
     glViewport(0, 0, m_config.size.x, m_config.size.y);
 
-    int numLights = 0;
-    glGetIntegerv(GL_MAX_LIGHTS, &numLights);
+    // this is set in shader
+    int numLights = 8;
 
     m_lights        = std::vector<Light>(numLights, Light());
     m_lightsEnabled = std::vector<bool> (numLights, false);
@@ -247,20 +237,24 @@ bool CGL21Device::Create()
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextures);
     GetLogger()->Info("Maximum texture image units: %d\n", maxTextures);
 
+    m_framebufferSupport = DetectFramebufferSupport();
+    if (m_framebufferSupport != FBS_NONE)
+        GetLogger()->Info("Framebuffer supported\n");
+
     m_currentTextures    = std::vector<Texture>           (maxTextures, Texture());
     m_texturesEnabled    = std::vector<bool>              (maxTextures, false);
     m_textureStageParams = std::vector<TextureStageParams>(maxTextures, TextureStageParams());
 
     int value;
-    if (CConfigFile::GetInstance().GetIntProperty("Setup", "PerPixelLighting", value))
+    if (GetConfigFile().GetIntProperty("Setup", "PerPixelLighting", value))
     {
         m_perPixelLighting = value > 0;
     }
 
     if (m_perPixelLighting)
-        CLogger::GetInstance().Info("Using per-pixel lighting\n");
+        GetLogger()->Info("Using per-pixel lighting\n");
     else
-        CLogger::GetInstance().Info("Using per-vertex lighting\n");
+        GetLogger()->Info("Using per-vertex lighting\n");
 
 
     // Create normal shader program
@@ -300,7 +294,6 @@ bool CGL21Device::Create()
 
     glDeleteShader(shaders[0]);
     glDeleteShader(shaders[1]);
-
 
     // Obtain uniform locations
     uni_ProjectionMatrix = glGetUniformLocation(m_program, "uni_ProjectionMatrix");
@@ -398,10 +391,6 @@ bool CGL21Device::Create()
     framebufferParams.depth = m_config.depthSize;
 
     m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
-
-    m_framebufferSupport = DetectFramebufferSupport();
-    if (m_framebufferSupport != FBS_NONE)
-        GetLogger()->Debug("Framebuffer supported\n");
 
     GetLogger()->Info("CDevice created successfully\n");
 

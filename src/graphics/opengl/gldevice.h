@@ -256,8 +256,6 @@ private:
     };
 
     //! Detected capabilities
-    //! OpenGL version
-    int m_glMajor = 1, m_glMinor = 1;
     //! Depth texture support
     ShadowMappingSupport m_shadowMappingSupport = SMS_NONE;
     //! Shadow ambient support

@@ -162,118 +162,107 @@ bool CGLDevice::Create()
 {
     GetLogger()->Info("Creating CDevice - OpenGL 1.4\n");
 
-    static bool glewInited = false;
-
-    if (!glewInited)
+    if (!InitializeGLEW())
     {
-        glewInited = true;
+        m_errorMessage = "An error occured while initializing GLEW.";
+        return false;
+    }
 
-        glewExperimental = GL_TRUE;
+    // Extract OpenGL version
+    int glMajor, glMinor;
+    int glVersion = GetOpenGLVersion(glMajor, glMinor);
 
-        if (glewInit() != GLEW_OK)
-        {
-            GetLogger()->Error("GLEW initialization failed\n");
-            m_errorMessage = "An error occured while initializing GLEW.";
-            return false;
-        }
+    if (glVersion < 13)
+    {
+        GetLogger()->Error("Unsupported OpenGL version: %d.%d\n", glMajor, glMinor);
+        GetLogger()->Error("OpenGL 1.3 or newer is required to use this engine.\n");
+        m_errorMessage = "It seems your graphics card does not support OpenGL 1.3.\n";
+        m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n\n";
+        m_errorMessage += GetHardwareInfo();
+        return false;
+    }
 
-        // Extract OpenGL version
-        const char *version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-        sscanf(version, "%d.%d", &m_glMajor, &m_glMinor);
+    GetLogger()->Info("OpenGL %d.%d\n", glMajor, glMinor);
 
-        int glVersion = 10 * m_glMajor + m_glMinor;
-        if (glVersion < 13)
-        {
-            GetLogger()->Error("Unsupported OpenGL version: %d.%d\n", m_glMajor, m_glMinor);
-            GetLogger()->Error("OpenGL 1.3 or newer is required to use this engine.\n");
-            m_errorMessage = "It seems your graphics card does not support OpenGL 1.3.\n";
-            m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n\n";
-            m_errorMessage += GetHardwareInfo(false);
-            return false;
-        }
+    // Detect multitexture support
+    m_multitextureAvailable = glewIsSupported("GL_ARB_multitexture GL_ARB_texture_env_combine");
+    if (!m_multitextureAvailable)
+        GetLogger()->Warn("GLEW reports multitexturing not supported - graphics quality will be degraded!\n");
 
-        GetLogger()->Info("OpenGL %d.%d\n", m_glMajor, m_glMinor);
+    // Detect Shadow mapping support
+    if (glVersion >= 14)     // Core depth texture+shadow, OpenGL 1.4+
+    {
+        m_shadowMappingSupport = SMS_CORE;
+        GetLogger()->Info("Shadow mapping available (core)\n");
+    }
+    else if (glewIsSupported("GL_ARB_depth_texture GL_ARB_shadow"))  // ARB depth texture + shadow
+    {
+        m_shadowMappingSupport = SMS_ARB;
+        GetLogger()->Info("Shadow mapping available (ARB)\n");
+    }
+    else       // No Shadow mapping
+    {
+        m_shadowMappingSupport = SMS_NONE;
+        GetLogger()->Info("Shadow mapping not available\n");
+    }
 
-        // Detect multitexture support
-        m_multitextureAvailable = glewIsSupported("GL_ARB_multitexture GL_ARB_texture_env_combine");
-        if (!m_multitextureAvailable)
-            GetLogger()->Warn("GLEW reports multitexturing not supported - graphics quality will be degraded!\n");
+    m_shadowAmbientSupported = glewIsSupported("GL_ARB_shadow_ambient");
+    if (m_shadowAmbientSupported)
+        GetLogger()->Info("Shadow ambient supported\n");
 
-        // Detect Shadow mapping support
-        if (m_glMajor > 1 || m_glMinor >= 4)     // Core depth texture+shadow, OpenGL 1.4+
-        {
-            m_shadowMappingSupport = SMS_CORE;
-            GetLogger()->Info("Shadow mapping available (core)\n");
-        }
-        else if (glewIsSupported("GL_ARB_depth_texture GL_ARB_shadow"))  // ARB depth texture + shadow
-        {
-            m_shadowMappingSupport = SMS_ARB;
-            GetLogger()->Info("Shadow mapping available (ARB)\n");
-        }
-        else       // No Shadow mapping
-        {
-            m_shadowMappingSupport = SMS_NONE;
-            GetLogger()->Info("Shadow mapping not available\n");
-        }
+    // Detect support of anisotropic filtering
+    m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
+    if(m_anisotropyAvailable)
+    {
+        // Obtain maximum anisotropy level available
+        float level;
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
+        m_maxAnisotropy = static_cast<int>(level);
 
-        m_shadowAmbientSupported = glewIsSupported("GL_ARB_shadow_ambient");
-        if (m_shadowAmbientSupported)
-            GetLogger()->Info("Shadow ambient supported\n");
+        GetLogger()->Info("Anisotropic filtering available\n");
+        GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
+    }
+    else
+    {
+        GetLogger()->Info("Anisotropic filtering not available\n");
+    }
 
-        // Detect support of anisotropic filtering
-        m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
-        if(m_anisotropyAvailable)
-        {
-            // Obtain maximum anisotropy level available
-            float level;
-            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
-            m_maxAnisotropy = static_cast<int>(level);
+    // Read maximum sample count for MSAA
+    if(glewIsSupported("GL_EXT_framebuffer_multisample"))
+    {
+        glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_maxSamples);
+        GetLogger()->Info("Multisampling supported, max samples: %d\n", m_maxSamples);
+    }
+    else
+    {
+        GetLogger()->Info("Multisampling not supported\n");
+    }
 
-            GetLogger()->Info("Anisotropic filtering available\n");
-            GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
-        }
-        else
-        {
-            GetLogger()->Info("Anisotropic filtering not available\n");
-        }
+    // check for glMultiDrawArrays()
+    if (glVersion >= 14)
+        m_multiDrawArrays = true;
 
-        // Read maximum sample count for MSAA
-        if(glewIsSupported("GL_ARB_multisample GL_EXT_framebuffer_multisample"))
-        {
-            glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_maxSamples);
-            GetLogger()->Info("Multisampling supported, max samples: %d\n", m_maxSamples);
-        }
-        else
-        {
-            GetLogger()->Info("Multisampling not supported\n");
-        }
+    GetLogger()->Info("Auto-detecting VBO support\n");
 
-        // check for glMultiDrawArrays()
-        if (glVersion >= 14)
-            m_multiDrawArrays = true;
+    // detecting VBO ARB extension
+    bool vboARB = glewIsSupported("GL_ARB_vertex_buffer_object");
 
-        GetLogger()->Info("Auto-detecting VBO support\n");
-
-        // detecting VBO ARB extension
-        bool vboARB = glewIsSupported("GL_ARB_vertex_buffer_object");
-
-        // VBO is core OpenGL feature since 1.5
-        // everything below 1.5 means no VBO support
-        if (m_glMajor > 1 || m_glMinor > 4)
-        {
-            GetLogger()->Info("Core VBO supported\n", m_glMajor, m_glMinor);
-            m_vertexBufferType = VBT_VBO_CORE;
-        }
-        else if(vboARB)     // VBO ARB extension available
-        {
-            GetLogger()->Info("ARB VBO supported\n");
-            m_vertexBufferType = VBT_VBO_ARB;
-        }
-        else                // no VBO support
-        {
-            GetLogger()->Info("VBO not supported\n");
-            m_vertexBufferType = VBT_DISPLAY_LIST;
-        }
+    // VBO is core OpenGL feature since 1.5
+    // everything below 1.5 means no VBO support
+    if (glVersion >= 15)
+    {
+        GetLogger()->Info("Core VBO supported\n", glMajor, glMinor);
+        m_vertexBufferType = VBT_VBO_CORE;
+    }
+    else if (vboARB)     // VBO ARB extension available
+    {
+        GetLogger()->Info("ARB VBO supported\n");
+        m_vertexBufferType = VBT_VBO_ARB;
+    }
+    else                // no VBO support
+    {
+        GetLogger()->Info("VBO not supported\n");
+        m_vertexBufferType = VBT_DISPLAY_LIST;
     }
 
     // This is mostly done in all modern hardware by default
@@ -332,6 +321,7 @@ bool CGLDevice::Create()
     {
         GetLogger()->Info("Framebuffer not supported\n");
     }
+
     GetLogger()->Info("CDevice created successfully\n");
 
     return true;
@@ -502,17 +492,15 @@ void CGLDevice::UpdateLightPosition(int index)
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
 
-    if (m_lights[index].type == LIGHT_POINT)
+    Light &light = m_lights[index];
+
+    if (light.type == LIGHT_POINT)
     {
         glLoadIdentity();
         glScalef(1.0f, 1.0f, -1.0f);
         glMultMatrixf(m_viewMat.Array());
 
-        GLfloat position[4] = { m_lights[index].position.x,
-            m_lights[index].position.y,
-            m_lights[index].position.z,
-            1.0f };
-
+        GLfloat position[4] = { light.position.x, light.position.y, light.position.z, 1.0f };
         glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
     }
     else
@@ -525,22 +513,14 @@ void CGLDevice::UpdateLightPosition(int index)
         mat.Set(3, 4, 0.0f);
         glMultMatrixf(mat.Array());
 
-        if (m_lights[index].type == LIGHT_SPOT)
+        if (light.type == LIGHT_SPOT)
         {
-            GLfloat direction[4] = { -m_lights[index].direction.x,
-                -m_lights[index].direction.y,
-                -m_lights[index].direction.z,
-                1.0f };
-
+            GLfloat direction[4] = { -light.direction.x, -light.direction.y, -light.direction.z, 1.0f };
             glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
         }
-        else if (m_lights[index].type == LIGHT_DIRECTIONAL)
+        else if (light.type == LIGHT_DIRECTIONAL)
         {
-            GLfloat position[4] = { -m_lights[index].direction.x,
-                -m_lights[index].direction.y,
-                -m_lights[index].direction.z,
-                0.0f };
-
+            GLfloat position[4] = { -light.direction.x, -light.direction.y, -light.direction.z, 0.0f };
             glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
         }
     }
@@ -553,8 +533,6 @@ void CGLDevice::UpdateLightPositions()
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
 
-    int lightCount = m_lights.size();
-
     // update spotlights and directional lights
     glLoadIdentity();
     glScalef(1.0f, 1.0f, -1.0f);
@@ -564,25 +542,25 @@ void CGLDevice::UpdateLightPositions()
     mat.Set(3, 4, 0.0f);
     glMultMatrixf(mat.Array());
 
-    for (int index = 0; index < lightCount; index++)
-    {
-        if (m_lights[index].type == LIGHT_SPOT)
-        {
-            GLfloat direction[4] = { -m_lights[index].direction.x,
-                -m_lights[index].direction.y,
-                -m_lights[index].direction.z,
-                1.0f };
+    int lightIndex = 0;
 
-            glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
-        }
-        else if (m_lights[index].type == LIGHT_DIRECTIONAL)
+    for (const Light &light : m_lights)
+    {
+        if (m_lightsEnabled[lightIndex])
         {
-            GLfloat position[4] = { -m_lights[index].direction.x,
-                -m_lights[index].direction.y,
-                -m_lights[index].direction.z,
-                0.0f };
-            glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
+            if (light.type == LIGHT_SPOT)
+            {
+                GLfloat direction[4] = { -light.direction.x, -light.direction.y, -light.direction.z, 1.0f };
+                glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_DIRECTION, direction);
+            }
+            else if (light.type == LIGHT_DIRECTIONAL)
+            {
+                GLfloat position[4] = { -light.direction.x, -light.direction.y, -light.direction.z, 0.0f };
+                glLightfv(GL_LIGHT0 + lightIndex, GL_POSITION, position);
+            }
         }
+
+        lightIndex++;
     }
 
     // update point lights
@@ -590,17 +568,20 @@ void CGLDevice::UpdateLightPositions()
     glScalef(1.0f, 1.0f, -1.0f);
     glMultMatrixf(m_viewMat.Array());
 
-    for (int index = 0; index < lightCount; index++)
-    {
-        if (m_lights[index].type == LIGHT_POINT)
-        {
-            GLfloat position[4] = { m_lights[index].position.x,
-                m_lights[index].position.y,
-                m_lights[index].position.z,
-                1.0f };
+    lightIndex = 0;
 
-            glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
+    for (const Light &light : m_lights)
+    {
+        if (m_lightsEnabled[lightIndex])
+        {
+            if (light.type == LIGHT_POINT)
+            {
+                GLfloat position[4] = { light.position.x, light.position.y, light.position.z, 1.0f };
+                glLightfv(GL_LIGHT0 + lightIndex, GL_POSITION, position);
+            }
         }
+
+        lightIndex++;
     }
 
     glPopMatrix();
