@@ -92,11 +92,19 @@ extern "C"
 int main(int argc, char *argv[])
 {
     CLogger logger; // single instance of logger
+    logger.AddOutput(stderr);
 
     auto systemUtils = CSystemUtils::Create(); // platform-specific utils
     systemUtils->Init();
 
-    //logger.SetOutputFile(systemUtils->GetSaveDir() + "/log.txt");
+    // Add file output to the logger
+    std::string logfile;
+    #if DEV_BUILD
+        logfile = "log.txt";
+    #else
+        logfile = systemUtils->GetSaveDir() + "/log.txt";
+    #endif
+    logger.AddOutput(fopen(logfile.c_str(), "w"));
 
     // Workaround for character encoding in argv on Windows
     #if PLATFORM_WINDOWS
