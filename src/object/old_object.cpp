@@ -726,7 +726,9 @@ void COldObject::SetType(ObjectType type)
 
     // TODO: Hacking some more
     if ( m_type == OBJECT_MOBILEtg ||
+         m_type == OBJECT_STONE    ||
          m_type == OBJECT_METAL    ||
+         m_type == OBJECT_URANIUM  ||
          m_type == OBJECT_POWER    ||
          m_type == OBJECT_ATOMIC   ||
          m_type == OBJECT_TNT      ||
