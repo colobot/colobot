@@ -2769,6 +2769,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_researchDone[0] = 0;
         m_researchEnable = 0;
 
+        g_unit = UNIT;
+
         FlushDisplayInfo();
         m_terrain->FlushMaterials();
         m_audioTrack = "";
