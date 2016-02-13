@@ -29,7 +29,6 @@
 #include <memory>
 #include <string>
 
-class CApplication;
 class CRobotMain;
 struct Event;
 
