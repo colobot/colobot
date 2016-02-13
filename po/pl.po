@@ -379,6 +379,9 @@ msgstr "Zmień kamerę\\Przełącza pomiędzy kamerą pokładową i śledzącą"
 msgid "Change player\\Change player"
 msgstr "Zmień gracza\\Zmień gracza"
 
+msgid "Cheat console\\Show cheat console"
+msgstr ""
+
 msgid "Checkpoint"
 msgstr "Punkt kontrolny"
 
@@ -752,6 +755,9 @@ msgstr "Rozkazy\\Pokazuje rozkazy dotyczące bieżącej misji"
 msgid "Internal error - tell the developers"
 msgstr "Błąd wewnętrzny - powiadom twórców gry"
 
+msgid "Invert\\Invert values on this axis"
+msgstr ""
+
 msgid "Jet temperature"
 msgstr "Temperatura silnika"
 
@@ -1039,6 +1045,9 @@ msgstr "Cząstki w interfejsie\\Para i iskry z silników w interfejsie"
 msgid "Paste (Ctrl+v)"
 msgstr "Wklej (Ctrl+V)"
 
+msgid "Pause in background\\Pause the game when the window is unfocused"
+msgstr ""
+
 msgid "Pause/continue"
 msgstr "Pauza/Kontynuuj"
 
@@ -1276,6 +1285,9 @@ msgstr "Rozpocznij prace badawcze nad transporterem na gąsienicach"
 
 msgid "Run research program for winged bots"
 msgstr "Rozpocznij prace badawcze nad transporterem latającym"
+
+msgid "SatCom"
+msgstr "SatCom"
 
 msgid "Satellite report"
 msgstr "Raport z satelity"
@@ -1601,9 +1613,6 @@ msgstr "Złoże uranu (miejsce na kopalnię)"
 msgid "Uranium ore"
 msgstr "Ruda uranu"
 
-msgid "Use a joystick\\Joystick or keyboard"
-msgstr "Używaj joysticka\\Joystick lub klawiatura"
-
 msgid "User levels"
 msgstr "Poziomy użytkownika"
 
@@ -1876,9 +1885,6 @@ msgstr "www.epsitec.com"
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Robbie\\Twój asystent"
 
-#~ msgid "SatCom"
-#~ msgstr "SatCom"
-
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Niebo\\Chmury i mgławice"
 
@@ -1897,6 +1903,9 @@ msgstr "www.epsitec.com"
 #~ msgstr ""
 #~ "Lista jest dostępna jedynie gdy działa \\l;stacja radarowa\\u object"
 #~ "\\radar;.\n"
+
+#~ msgid "Use a joystick\\Joystick or keyboard"
+#~ msgstr "Używaj joysticka\\Joystick lub klawiatura"
 
 #~ msgid "\\b;Aliens\n"
 #~ msgstr "\\b;Obcy\n"

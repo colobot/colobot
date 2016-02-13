@@ -41,6 +41,7 @@ CSettings::CSettings()
     m_interfaceRain  = true;
     m_soluce4        = true;
     m_movies         = true;
+    m_focusLostPause = true;
 
     m_fontSize  = 19.0f;
     m_windowPos = Math::Point(0.15f, 0.17f);
@@ -78,6 +79,7 @@ void CSettings::SaveSettings()
     GetConfigFile().SetBoolProperty("Setup", "InterfaceRain", m_interfaceRain);
     GetConfigFile().SetBoolProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().SetBoolProperty("Setup", "Movies", m_movies);
+    GetConfigFile().SetBoolProperty("Setup", "FocusLostPause", m_focusLostPause);
     GetConfigFile().SetBoolProperty("Setup", "CameraScroll", camera->GetCameraScroll());
     GetConfigFile().SetBoolProperty("Setup", "CameraInvertX", camera->GetCameraInvertX());
     GetConfigFile().SetBoolProperty("Setup", "CameraInvertY", camera->GetCameraInvertY());
@@ -148,6 +150,7 @@ void CSettings::LoadSettings()
     GetConfigFile().GetBoolProperty("Setup", "InterfaceRain", m_interfaceRain);
     GetConfigFile().GetBoolProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().GetBoolProperty("Setup", "Movies", m_movies);
+    GetConfigFile().GetBoolProperty("Setup", "FocusLostPause", m_focusLostPause);
 
     if (GetConfigFile().GetBoolProperty("Setup", "CameraScroll", bValue))
         camera->SetCameraScroll(bValue);
@@ -332,6 +335,15 @@ void CSettings::SetMovies(bool movies)
 bool CSettings::GetMovies()
 {
     return m_movies;
+}
+
+void CSettings::SetFocusLostPause(bool focusLostPause)
+{
+    m_focusLostPause = focusLostPause;
+}
+bool CSettings::GetFocusLostPause()
+{
+    return m_focusLostPause;
 }
 
 

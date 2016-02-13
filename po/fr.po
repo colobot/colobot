@@ -373,6 +373,9 @@ msgstr "Changement de caméra\\Autre de point de vue"
 msgid "Change player\\Change player"
 msgstr "Autre joueur\\Choix du nom du joueur"
 
+msgid "Cheat console\\Show cheat console"
+msgstr ""
+
 msgid "Checkpoint"
 msgstr "Indicateur"
 
@@ -745,6 +748,9 @@ msgstr "Instructions mission\\Marche à suivre"
 msgid "Internal error - tell the developers"
 msgstr "Erreur interne - contacter les développeurs"
 
+msgid "Invert\\Invert values on this axis"
+msgstr ""
+
 msgid "Jet temperature"
 msgstr "Température du réacteur"
 
@@ -1032,6 +1038,9 @@ msgstr "Particules dans l'interface\\Pluie de particules"
 msgid "Paste (Ctrl+v)"
 msgstr "Coller (Ctrl+v)"
 
+msgid "Pause in background\\Pause the game when the window is unfocused"
+msgstr ""
+
 msgid "Pause/continue"
 msgstr "Pause/continuer"
 
@@ -1268,6 +1277,9 @@ msgstr "Recherche les chenilles"
 
 msgid "Run research program for winged bots"
 msgstr "Recherche les robots volants"
+
+msgid "SatCom"
+msgstr "SatCom"
 
 msgid "Satellite report"
 msgstr "Rapport du satellite"
@@ -1596,9 +1608,6 @@ msgstr "Emplacement pour derrick (uranium)"
 msgid "Uranium ore"
 msgstr "Minerai d'uranium"
 
-msgid "Use a joystick\\Joystick or keyboard"
-msgstr "Utilise un joystick\\Joystick ou clavier"
-
 msgid "User levels"
 msgstr "Niveaux supplémentaires"
 
@@ -1883,9 +1892,6 @@ msgstr "www.epsitec.com"
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Robbie\\Votre assistant"
 
-#~ msgid "SatCom"
-#~ msgstr "SatCom"
-
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Ciel\\Ciel et nuages"
 
@@ -1905,6 +1911,9 @@ msgstr "www.epsitec.com"
 #~ "The list is only available if a \\l;radar station\\u object\\radar; is "
 #~ "working.\n"
 #~ msgstr "Liste non disponible sans \\l;radar\\u object\\radar;.\n"
+
+#~ msgid "Use a joystick\\Joystick or keyboard"
+#~ msgstr "Utilise un joystick\\Joystick ou clavier"
 
 #~ msgid "User\\User levels"
 #~ msgstr "Suppl.\\Niveaux supplémentaires"

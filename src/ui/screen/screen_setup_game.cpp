@@ -123,6 +123,9 @@ void CScreenSetupGame::CreateInterface()
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_RAIN);
     pc->SetState(STATE_SHADOW);
     pos.y -= 0.048f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_BGPAUSE);
+    pc->SetState(STATE_SHADOW);
+    pos.y -= 0.048f;
     pos.y -= 0.048f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_EDITMODE);
     pc->SetState(STATE_SHADOW);
@@ -133,7 +136,6 @@ void CScreenSetupGame::CreateInterface()
     pos.y -= 0.048f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_EDITVALUE);
     pc->SetState(STATE_SHADOW);
-    pos.y -= 0.048f;
 
     ddim.y = dim.y*3.0f;
     pos.y -= ddim.y;
@@ -170,6 +172,12 @@ bool CScreenSetupGame::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_RAIN:
             m_settings->SetInterfaceRain(!m_settings->GetInterfaceRain());
+            ChangeSetupButtons();
+            UpdateSetupButtons();
+            break;
+
+        case EVENT_INTERFACE_BGPAUSE:
+            m_settings->SetFocusLostPause(!m_settings->GetFocusLostPause());
             ChangeSetupButtons();
             UpdateSetupButtons();
             break;
@@ -282,6 +290,12 @@ void CScreenSetupGame::UpdateSetupButtons()
     if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_settings->GetInterfaceRain());
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_BGPAUSE));
+    if ( pc != nullptr )
+    {
+        pc->SetState(STATE_CHECK, m_settings->GetFocusLostPause());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITMODE));

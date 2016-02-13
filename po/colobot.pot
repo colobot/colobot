@@ -286,6 +286,9 @@ msgstr ""
 msgid "Custom levels\\Levels from mods created by the users"
 msgstr ""
 
+msgid "SatCom"
+msgstr ""
+
 msgid "Change player\\Change player"
 msgstr ""
 
@@ -377,6 +380,9 @@ msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
 msgstr ""
 
 msgid "Quake at explosions\\The screen shakes at explosions"
+msgstr ""
+
+msgid "Pause in background\\Pause the game when the window is unfocused"
 msgstr ""
 
 msgid "Automatic indent\\When program editing"
@@ -509,6 +515,9 @@ msgstr ""
 msgid "Pause\\Pause the game without opening menu"
 msgstr ""
 
+msgid "Cheat console\\Show cheat console"
+msgstr ""
+
 msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
 msgstr ""
 
@@ -530,11 +539,11 @@ msgstr ""
 msgid "Normal\\Normal sound volume"
 msgstr ""
 
-msgid "Use a joystick\\Joystick or keyboard"
-msgstr ""
-
 msgid ""
 "Access to solution\\Shows the solution (detailed instructions for missions)"
+msgstr ""
+
+msgid "Invert\\Invert values on this axis"
 msgstr ""
 
 msgid "\\New player name"

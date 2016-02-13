@@ -371,6 +371,9 @@ msgstr "Изменить вид\\Переключение между борто�
 msgid "Change player\\Change player"
 msgstr "Новый игрок\\Выберите имя для игрока"
 
+msgid "Cheat console\\Show cheat console"
+msgstr ""
+
 msgid "Checkpoint"
 msgstr "Контрольная точка"
 
@@ -744,6 +747,9 @@ msgstr "Инструкции\\Показывает инструкции по т�
 msgid "Internal error - tell the developers"
 msgstr ""
 
+msgid "Invert\\Invert values on this axis"
+msgstr ""
+
 msgid "Jet temperature"
 msgstr "Температура реактивного двигателя"
 
@@ -1035,6 +1041,9 @@ msgstr "Частицы в интерфейсе меню\\Пар из труб и
 msgid "Paste (Ctrl+v)"
 msgstr "Вставить (Ctrl+V)"
 
+msgid "Pause in background\\Pause the game when the window is unfocused"
+msgstr ""
+
 msgid "Pause/continue"
 msgstr "Пауза/продолжить"
 
@@ -1275,6 +1284,9 @@ msgstr "Начать исследование программы для гусе
 
 msgid "Run research program for winged bots"
 msgstr "Начать исследование программы для летающего бота"
+
+msgid "SatCom"
+msgstr "SatCom"
 
 msgid "Satellite report"
 msgstr "Спутниковый отчет"
@@ -1601,9 +1613,6 @@ msgstr "Запасы урана (место для буровой вышки)"
 msgid "Uranium ore"
 msgstr "Урановая руда"
 
-msgid "Use a joystick\\Joystick or keyboard"
-msgstr "Использовать джойстик\\Джойстик или клавиатура"
-
 msgid "User levels"
 msgstr "Пользовательские уровни"
 
@@ -1887,9 +1896,6 @@ msgstr "www.epsitec.com"
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Робби\\Ваш помощник"
 
-#~ msgid "SatCom"
-#~ msgstr "SatCom"
-
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Небо\\Облака и туманности"
 
@@ -1907,6 +1913,9 @@ msgstr "www.epsitec.com"
 #~ "working.\n"
 #~ msgstr ""
 #~ "Список доступен только если \\l;radar station\\u object\\radar; работают\n"
+
+#~ msgid "Use a joystick\\Joystick or keyboard"
+#~ msgstr "Использовать джойстик\\Джойстик или клавиатура"
 
 #~ msgid "User\\User levels"
 #~ msgstr "Польз.\\Пользовательские уровни"

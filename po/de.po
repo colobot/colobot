@@ -376,6 +376,9 @@ msgstr "Andere Kamera\\Sichtpunkt einstellen"
 msgid "Change player\\Change player"
 msgstr "Anderer Spieler\\Spielername ändern"
 
+msgid "Cheat console\\Show cheat console"
+msgstr ""
+
 msgid "Checkpoint"
 msgstr "Checkpoint"
 
@@ -751,6 +754,9 @@ msgstr "Anweisungen\\Anweisungen für die Mission oder Übung"
 msgid "Internal error - tell the developers"
 msgstr "Interner Fehler - Benachrichtige die Entwickler"
 
+msgid "Invert\\Invert values on this axis"
+msgstr ""
+
 msgid "Jet temperature"
 msgstr "Triebwerktemperatur"
 
@@ -1040,6 +1046,9 @@ msgstr "Partikel in den Menüs\\Funken und Sterne in den Menüs"
 msgid "Paste (Ctrl+v)"
 msgstr "Einfügen (Ctrl+v)"
 
+msgid "Pause in background\\Pause the game when the window is unfocused"
+msgstr ""
+
 msgid "Pause/continue"
 msgstr "Pause/Weitermachen"
 
@@ -1280,6 +1289,9 @@ msgstr "Forschungsprogramm Kettenantrieb"
 
 msgid "Run research program for winged bots"
 msgstr "Forschungsprogramm Jetantrieb"
+
+msgid "SatCom"
+msgstr "SatCom"
 
 msgid "Satellite report"
 msgstr "Satellitenbericht"
@@ -1610,9 +1622,6 @@ msgstr "Markierung für unterirdisches Platinvorkommen"
 msgid "Uranium ore"
 msgstr "Platinerz"
 
-msgid "Use a joystick\\Joystick or keyboard"
-msgstr "Joystick\\Joystick oder Tastatur"
-
 msgid "User levels"
 msgstr "Userlevels"
 
@@ -1896,9 +1905,6 @@ msgstr "www.epsitec.com"
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Robby\\Ihr Assistent"
 
-#~ msgid "SatCom"
-#~ msgstr "SatCom"
-
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Himmel\\Himmel und Wolken"
 
@@ -1915,6 +1921,9 @@ msgstr "www.epsitec.com"
 #~ "The list is only available if a \\l;radar station\\u object\\radar; is "
 #~ "working.\n"
 #~ msgstr "Die Liste ist ohne \\l;Radar\\u object\\radar; nicht verfügbar.\n"
+
+#~ msgid "Use a joystick\\Joystick or keyboard"
+#~ msgstr "Joystick\\Joystick oder Tastatur"
 
 #~ msgid "User\\User levels"
 #~ msgstr "User\\Userlevels"

@@ -695,6 +695,26 @@ bool CRobotMain::ProcessEvent(Event &event)
         return EventFrame(event);
     }
 
+    if (event.type == EVENT_FOCUS_LOST)
+    {
+        GetLogger()->Trace("Window unfocused\n");
+        if (m_settings->GetFocusLostPause())
+        {
+            m_focusPause = m_pause->ActivatePause(PAUSE_ENGINE);
+        }
+        return false;
+    }
+
+    if (event.type == EVENT_FOCUS_GAINED)
+    {
+        GetLogger()->Trace("Window focused\n");
+        if (m_focusPause != nullptr)
+        {
+            m_pause->DeactivatePause(m_focusPause);
+        }
+        return false;
+    }
+
     if (event.type == EVENT_WRITE_SCENE_FINISHED)
     {
         IOWriteSceneFinished();

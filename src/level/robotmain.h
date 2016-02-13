@@ -460,6 +460,7 @@ protected:
 
     Phase           m_phase = PHASE_WELCOME1;
     ActivePause*    m_userPause = nullptr;
+    ActivePause*    m_focusPause = nullptr;
     ActivePause*    m_freePhotoPause = nullptr;
     bool            m_cmdEdit = false;
     ActivePause*    m_cmdEditPause = nullptr;
