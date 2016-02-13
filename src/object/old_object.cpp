@@ -1076,13 +1076,6 @@ void COldObject::Read(CLevelParserLine* line)
         }
     }
 
-    if (m_type == OBJECT_INFO)
-    {
-        CExchangePost* exchangePost = dynamic_cast<CExchangePost*>(this);
-        assert(exchangePost != nullptr);
-        exchangePost->ReadInfo(line);
-    }
-
     // SetManual will affect bot speed
     if (m_type == OBJECT_MOBILEdr)
     {
