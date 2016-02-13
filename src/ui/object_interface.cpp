@@ -441,7 +441,7 @@ bool CObjectInterface::EventProcess(const Event &event)
 
     err = ERR_OK;
 
-    if ( !m_programmable->IsProgram() )
+    if ( !m_programmable->IsProgram() && m_main->CanPlayerInteract() )
     {
         if ( action == EVENT_OBJECT_HTAKE )
         {
@@ -598,7 +598,7 @@ bool CObjectInterface::EventProcess(const Event &event)
             }
         }
 
-        if ( action == EVENT_OBJECT_FIRE && !m_taskExecutor->IsForegroundTask() && !m_object->GetTrainer())
+        if ( action == EVENT_OBJECT_FIRE && !m_taskExecutor->IsForegroundTask() && !m_object->GetTrainer() )
         {
             if ( m_camera->GetType() != Gfx::CAM_TYPE_ONBOARD )
             {
