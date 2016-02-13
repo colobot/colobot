@@ -55,6 +55,5 @@ public:
     void StartGame(LevelCategory cat, int chap, int lvl);
 
 private:
-    CApplication* m_app;
     std::unique_ptr<CRobotMain> m_main;
 };

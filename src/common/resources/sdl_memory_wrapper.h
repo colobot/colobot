@@ -21,6 +21,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 #include <SDL.h>
 
@@ -38,5 +39,5 @@ public:
 
 private:
     SDL_RWops* m_rwops;
-    char *m_buffer;
+    std::unique_ptr<char[]> m_buffer;
 };

@@ -166,8 +166,6 @@ bool CGL33Device::Create()
 {
     GetLogger()->Info("Creating CDevice - OpenGL 3.3\n");
 
-    static bool glewInited = false;
-
     if (!InitializeGLEW())
     {
         m_errorMessage = "An error occured while initializing GLEW.";

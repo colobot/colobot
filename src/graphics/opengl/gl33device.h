@@ -50,8 +50,8 @@ namespace Gfx
 */
 struct DynamicBuffer
 {
-    GLuint vbo;
-    unsigned int size;
+    GLuint vbo = 0;
+    unsigned int size = 0;
 };
 
 /**

@@ -21,6 +21,7 @@
 #include "common/resources/sdl_memory_wrapper.h"
 
 #include "common/logger.h"
+#include "common/make_unique.h"
 
 #include <physfs.h>
 
@@ -42,15 +43,15 @@ CSDLMemoryWrapper::CSDLMemoryWrapper(const std::string& filename)
     }
 
     PHYSFS_sint64 length = PHYSFS_fileLength(file);
-    m_buffer = new char[length];
-    if (PHYSFS_read(file, m_buffer, 1, length) != length)
+    m_buffer = MakeUniqueArray<char>(length);
+    if (PHYSFS_read(file, m_buffer.get(), 1, length) != length)
     {
         GetLogger()->Error("Unable to read data for \"%s\"\n", filename.c_str());
         PHYSFS_close(file);
         return;
     }
     PHYSFS_close(file);
-    m_rwops = SDL_RWFromMem(m_buffer, length);
+    m_rwops = SDL_RWFromMem(m_buffer.get(), length);
 
     if (m_rwops == nullptr)
     {
@@ -62,7 +63,7 @@ CSDLMemoryWrapper::CSDLMemoryWrapper(const std::string& filename)
 CSDLMemoryWrapper::~CSDLMemoryWrapper()
 {
     SDL_FreeRW(m_rwops);
-    delete []m_buffer;
+    m_buffer.reset();
 }
 
 SDL_RWops* CSDLMemoryWrapper::GetHandler()
