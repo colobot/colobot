@@ -1858,19 +1858,27 @@ bool CEdit::ReadText(std::string filename, int addSize)
 
 bool CEdit::WriteText(std::string filename)
 {
-    char        buffer[1000+20];
-    int         i, j, k, n;
-    float       iDim = 0.0f;
-
-    if ( filename[0] == 0 )  return false;
+    if (filename.empty())  return false;
 
     COutputStream stream;
     stream.open(filename);
 
     if (!stream.is_open())
     {
+        GetLogger()->Error("Failed to open output file: '%s'", filename.c_str());
         return false;
     }
+
+    GetIndentedText(stream, 0, m_len);
+
+    stream.close();
+
+    return true;
+}
+
+void CEdit::GetIndentedText(std::ostream& stream, unsigned int start, unsigned int end)
+{
+    float iDim = 0.0f;
 
     if ( m_bAutoIndent )
     {
@@ -1879,42 +1887,31 @@ bool CEdit::WriteText(std::string filename)
         Justif();
     }
 
-    i = j = k = 0;
-    while ( m_text[i] != 0 && i < m_len )
+    unsigned int i = 0, line = 0;
+    while ( m_text[i] != 0 && i < end && i < static_cast<unsigned int>(m_len) ) // TODO: fix this (un)signed comparation
     {
-        if ( m_bAutoIndent && i == m_lineOffset[k] )
+        if ( m_bAutoIndent && i == static_cast<unsigned int>(m_lineOffset[line]) ) // TODO: fix this (un)signed comparation
         {
-            for ( n=0 ; n<m_lineIndent[k] ; n++ )
+            for (int n = 0; n < m_lineIndent[line]; n++)
             {
-                buffer[j++] = '\t';
+                if (i > start)
+                {
+                    stream << '\t';
+                }
             }
-            k ++;
+            line++;
         }
 
-        buffer[j++] = m_text[i];
-
-        if ( j >= 1000-1 )
-        {
-            stream.write(buffer, j);
-            j = 0;
-        }
+        stream << m_text[i];
 
         i ++;
     }
-    if ( j > 0 )
-    {
-        stream.write(buffer, j);
-    }
-
-    stream.close();
 
     if ( m_bAutoIndent )
     {
         m_dim.x = iDim;  // presents the initial width
         Justif();
     }
-
-    return true;
 }
 
 
@@ -2497,7 +2494,7 @@ bool CEdit::Cut()
 
 bool CEdit::Copy(bool memorize_cursor)
 {
-    int c1, c2, start, len;
+    int c1, c2;
 
     c1 = m_cursor1;
     c2 = m_cursor2;
@@ -2531,13 +2528,9 @@ bool CEdit::Copy(bool memorize_cursor)
         return false;
     }
 
-    start = c1;
-    len   = c2 - c1;
-
-    std::vector<char> text(len + 1, '\0');
-    strncpy(text.data(), m_text.data() + start, len);
-    text[len] = 0;
-    SDL_SetClipboardText(text.data()); //TODO: Move to CApplication
+    std::stringstream ss;
+    GetIndentedText(ss, c1, c2);
+    SDL_SetClipboardText(ss.str().c_str()); //TODO: Move to CApplication
 
     if (memorize_cursor)
     {
