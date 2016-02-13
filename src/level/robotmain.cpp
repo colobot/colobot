@@ -401,6 +401,12 @@ void CRobotMain::ChangePhase(Phase phase)
             {
                 m_playerProfile->IncrementLevelTryCount(m_levelCategory, m_levelChap, m_levelRank);
             }
+
+            if (m_userPause != nullptr)
+            {
+                m_pause->DeactivatePause(m_userPause);
+                m_userPause = nullptr;
+            }
         }
 
         if (phase == PHASE_WIN)  // wins a simulation?
