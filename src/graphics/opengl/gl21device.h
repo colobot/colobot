@@ -42,6 +42,74 @@
 namespace Gfx
 {
 
+struct UniformLocations
+{
+    // Uniforms
+    //! Projection matrix
+    GLint projectionMatrix = -1;
+    //! View matrix
+    GLint viewMatrix = -1;
+    //! Model matrix
+    GLint modelMatrix = -1;
+    //! Shadow matrix
+    GLint shadowMatrix = -1;
+    //! Normal matrix
+    GLint normalMatrix = -1;
+
+    //! Primary texture sampler
+    GLint primaryTexture = -1;
+    //! Secondary texture sampler
+    GLint secondaryTexture = -1;
+    //! Shadow texture sampler
+    GLint shadowTexture = -1;
+
+    //! true enables texture
+    GLint textureEnabled[3] = {};
+
+    // Alpha test parameters
+    //! true enables alpha test
+    GLint alphaTestEnabled = -1;
+    //! Alpha test reference value
+    GLint alphaReference = -1;
+
+    //! true enables fog
+    GLint fogEnabled = -1;
+    //! Fog range
+    GLint fogRange = -1;
+    //! Fog color
+    GLint fogColor = -1;
+
+    //! Shadow color
+    GLint shadowColor = -1;
+
+    //! true enables lighting
+    GLint lightingEnabled = -1;
+    //! Ambient color
+    GLint ambientColor = -1;
+    //! Diffuse color
+    GLint diffuseColor = -1;
+    //! Specular color
+    GLint specularColor = -1;
+
+    struct LightLocations
+    {
+        //! true enables light
+        GLint enabled = -1;
+        //! Light type
+        GLint type = -1;
+        //! Position or direction vector
+        GLint position = -1;
+        //! Ambient color
+        GLint ambient = -1;
+        //! Diffuse color
+        GLint diffuse = -1;
+        //! Specular color
+        GLint specular = -1;
+        //! Attenuation
+        GLint attenuation = -1;
+    } lights[8];
+};
+
 /**
   \class CGL21Device
   \brief Implementation of CDevice interface in OpenGL
@@ -71,6 +139,8 @@ public:
     void EndScene() override;
 
     void Clear() override;
+
+    void SetRenderMode(RenderMode mode) override;
 
     void SetTransform(TransformType type, const Math::Matrix &matrix) override;
 
@@ -254,75 +324,17 @@ private:
     //! true enables per-pixel lighting
     bool m_perPixelLighting = false;
 
-    //! Shader program
-    GLuint m_program = 0;
+    //! Shader program for normal rendering
+    GLuint m_normalProgram = 0;
+    //! Shader program for interface rendering
+    GLuint m_interfaceProgram = 0;
+    //! Shader program for shadow rendering
+    GLuint m_shadowProgram = 0;
 
-    // Uniforms
-    //! Projection matrix
-    GLint uni_ProjectionMatrix = 0;
-    //! View matrix
-    GLint uni_ViewMatrix = 0;
-    //! Model matrix
-    GLint uni_ModelMatrix = 0;
-    //! Shadow matrix
-    GLint uni_ShadowMatrix = 0;
-    //! Normal matrix
-    GLint uni_NormalMatrix = 0;
-
-    //! Primary texture sampler
-    GLint uni_PrimaryTexture = 0;
-    //! Secondary texture sampler
-    GLint uni_SecondaryTexture = 0;
-    //! Shadow texture sampler
-    GLint uni_ShadowTexture = 0;
-
-    //! true enables texture
-    GLint uni_TextureEnabled[3] = {};
-
-    // Alpha test parameters
-    //! true enables alpha test
-    GLint uni_AlphaTestEnabled = 0;
-    //! Alpha test reference value
-    GLint uni_AlphaReference = 0;
-
-    //! true enables fog
-    GLint uni_FogEnabled = 0;
-    //! Fog range
-    GLint uni_FogRange = 0;
-    //! Fog color
-    GLint uni_FogColor = 0;
-
-    //! Shadow color
-    GLint uni_ShadowColor = 0;
-
-    //! true enables lighting
-    GLint uni_LightingEnabled = 0;
-    //! Ambient color
-    GLint uni_AmbientColor = 0;
-    //! Diffuse color
-    GLint uni_DiffuseColor = 0;
-    //! Specular color
-    GLint uni_SpecularColor = 0;
-
-    struct LightUniforms
-    {
-        //! true enables light
-        GLint Enabled = 0;
-        //! Light type
-        GLint Type = 0;
-        //! Position or direction vector
-        GLint Position = 0;
-        //! Ambient color
-        GLint Ambient = 0;
-        //! Diffuse color
-        GLint Diffuse = 0;
-        //! Specular color
-        GLint Specular = 0;
-        //! Attenuation
-        GLint Attenuation = 0;
-    };
-
-    LightUniforms uni_Light[8];
+    //! Uniform locations
+    UniformLocations m_uniforms[3];
+    //! Current mode
+    int m_mode = 0;
 };
 
 

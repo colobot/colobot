@@ -251,21 +251,24 @@ bool CGL21Device::Create()
         m_perPixelLighting = value > 0;
     }
 
+    char shading[16];
+
     if (m_perPixelLighting)
+    {
         GetLogger()->Info("Using per-pixel lighting\n");
+        strcpy(shading, "perpixel");
+    }
     else
+    {
         GetLogger()->Info("Using per-vertex lighting\n");
+        strcpy(shading, "pervertex");
+    }
 
-
-    // Create normal shader program
+    // Create shader program for normal rendering
     GLint shaders[2];
     char filename[128];
 
-    if (m_perPixelLighting)
-        sprintf(filename, "shaders/vertex_shader_21_perpixel.glsl");
-    else
-        sprintf(filename, "shaders/vertex_shader_21_pervertex.glsl");
-
+    sprintf(filename, "shaders/vertex_shader_21_%s.glsl", shading);
     shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
     if (shaders[0] == 0)
     {
@@ -273,114 +276,242 @@ bool CGL21Device::Create()
         return false;
     }
 
-    if (m_perPixelLighting)
-        sprintf(filename, "shaders/fragment_shader_21_perpixel.glsl");
-    else
-        sprintf(filename, "shaders/fragment_shader_21_pervertex.glsl");
-
+    sprintf(filename, "shaders/fragment_shader_21_%s.glsl", shading);
     shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
     if (shaders[1] == 0)
     {
         m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Count not create vertex shader from file '%s'\n", filename);
         return false;
     }
 
-    m_program = LinkProgram(2, shaders);
-    if (m_program == 0)
+    m_normalProgram = LinkProgram(2, shaders);
+    if (m_normalProgram == 0)
     {
         m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Count not link shader program for normal rendering\n");
         return false;
     }
 
     glDeleteShader(shaders[0]);
     glDeleteShader(shaders[1]);
 
-    // Obtain uniform locations
-    uni_ProjectionMatrix = glGetUniformLocation(m_program, "uni_ProjectionMatrix");
-    uni_ViewMatrix = glGetUniformLocation(m_program, "uni_ViewMatrix");
-    uni_ModelMatrix = glGetUniformLocation(m_program, "uni_ModelMatrix");
-    uni_NormalMatrix = glGetUniformLocation(m_program, "uni_NormalMatrix");
-    uni_ShadowMatrix = glGetUniformLocation(m_program, "uni_ShadowMatrix");
-
-    uni_PrimaryTexture = glGetUniformLocation(m_program, "uni_PrimaryTexture");
-    uni_SecondaryTexture = glGetUniformLocation(m_program, "uni_SecondaryTexture");
-    uni_ShadowTexture = glGetUniformLocation(m_program, "uni_ShadowTexture");
-
-    for (int i = 0; i < 3; i++)
+    // Create shader program for interface rendering
+    strcpy(filename, "shaders/vertex_shader_21_interface.glsl");
+    shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
+    if (shaders[0] == 0)
     {
-        char name[64];
-        sprintf(name, "uni_TextureEnabled[%d]", i);
-        uni_TextureEnabled[i] = glGetUniformLocation(m_program, name);
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Count not create vertex shader from file '%s'\n", filename);
+        return false;
     }
 
-    uni_AlphaTestEnabled = glGetUniformLocation(m_program, "uni_AlphaTestEnabled");
-    uni_AlphaReference = glGetUniformLocation(m_program, "uni_AlphaReference");
-
-    uni_FogEnabled = glGetUniformLocation(m_program, "uni_FogEnabled");
-    uni_FogRange = glGetUniformLocation(m_program, "uni_FogRange");
-    uni_FogColor = glGetUniformLocation(m_program, "uni_FogColor");
-
-    uni_ShadowColor = glGetUniformLocation(m_program, "uni_ShadowColor");
-    uni_LightingEnabled = glGetUniformLocation(m_program, "uni_LightingEnabled");
-
-    uni_AmbientColor = glGetUniformLocation(m_program, "uni_AmbientColor");
-    uni_DiffuseColor = glGetUniformLocation(m_program, "uni_DiffuseColor");
-    uni_SpecularColor = glGetUniformLocation(m_program, "uni_SpecularColor");
-
-    GLchar name[64];
-    for (int i = 0; i < 8; i++)
+    strcpy(filename, "shaders/fragment_shader_21_interface.glsl");
+    shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
+    if (shaders[1] == 0)
     {
-        sprintf(name, "uni_Light[%d].Enabled", i);
-        uni_Light[i].Enabled = glGetUniformLocation(m_program, name);
-
-        sprintf(name, "uni_Light[%d].Position", i);
-        uni_Light[i].Position = glGetUniformLocation(m_program, name);
-
-        sprintf(name, "uni_Light[%d].Ambient", i);
-        uni_Light[i].Ambient = glGetUniformLocation(m_program, name);
-
-        sprintf(name, "uni_Light[%d].Diffuse", i);
-        uni_Light[i].Diffuse = glGetUniformLocation(m_program, name);
-
-        sprintf(name, "uni_Light[%d].Specular", i);
-        uni_Light[i].Specular = glGetUniformLocation(m_program, name);
-
-        sprintf(name, "uni_Light[%d].Attenuation", i);
-        uni_Light[i].Attenuation = glGetUniformLocation(m_program, name);
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Count not compile fragment shader from file '%s'\n", filename);
+        return false;
     }
 
-    // Set default uniform values
-    Math::Matrix matrix;
-    matrix.LoadIdentity();
+    m_interfaceProgram = LinkProgram(2, shaders);
+    if (m_interfaceProgram == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Count not link shader program for interface rendering\n");
+        return false;
+    }
 
-    glUseProgram(m_program);
+    glDeleteShader(shaders[0]);
+    glDeleteShader(shaders[1]);
 
-    glUniformMatrix4fv(uni_ProjectionMatrix, 1, GL_FALSE, matrix.Array());
-    glUniformMatrix4fv(uni_ViewMatrix, 1, GL_FALSE, matrix.Array());
-    glUniformMatrix4fv(uni_ModelMatrix, 1, GL_FALSE, matrix.Array());
-    glUniformMatrix4fv(uni_NormalMatrix, 1, GL_FALSE, matrix.Array());
-    glUniformMatrix4fv(uni_ShadowMatrix, 1, GL_FALSE, matrix.Array());
+    // Create shader program for shadow rendering
+    strcpy(filename, "shaders/vertex_shader_21_shadow.glsl");
+    shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
+    if (shaders[0] == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Count not create vertex shader from file '%s'\n", filename);
+        return false;
+    }
 
-    glUniform1i(uni_PrimaryTexture, 0);
-    glUniform1i(uni_SecondaryTexture, 1);
-    glUniform1i(uni_ShadowTexture, 2);
+    strcpy(filename, "shaders/fragment_shader_21_shadow.glsl");
+    shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
+    if (shaders[1] == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Count not compile fragment shader from file '%s'\n", filename);
+        return false;
+    }
 
-    for (int i = 0; i < 3; i++)
-        glUniform1i(uni_TextureEnabled[i], 0);
+    m_shadowProgram = LinkProgram(2, shaders);
+    if (m_shadowProgram == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Count not link shader program for shadow rendering\n");
+        return false;
+    }
 
-    glUniform1i(uni_AlphaTestEnabled, 0);
-    glUniform1f(uni_AlphaReference, 0.5f);
+    glDeleteShader(shaders[0]);
+    glDeleteShader(shaders[1]);
 
-    glUniform1i(uni_FogEnabled, 0);
-    glUniform2f(uni_FogRange, 100.0f, 200.0f);
-    glUniform4f(uni_FogColor, 0.8f, 0.8f, 0.8f, 1.0f);
+    // Obtain uniform locations from normal rendering program and initialize them
+    {
+        UniformLocations &uni = m_uniforms[0];
 
-    glUniform1f(uni_ShadowColor, 0.5f);
+        uni.projectionMatrix = glGetUniformLocation(m_normalProgram, "uni_ProjectionMatrix");
+        uni.viewMatrix = glGetUniformLocation(m_normalProgram, "uni_ViewMatrix");
+        uni.modelMatrix = glGetUniformLocation(m_normalProgram, "uni_ModelMatrix");
+        uni.normalMatrix = glGetUniformLocation(m_normalProgram, "uni_NormalMatrix");
+        uni.shadowMatrix = glGetUniformLocation(m_normalProgram, "uni_ShadowMatrix");
 
-    glUniform1i(uni_LightingEnabled, 0);
-    for (int i = 0; i < 8; i++)
-        glUniform1i(uni_Light[i].Enabled, 0);
+        uni.primaryTexture = glGetUniformLocation(m_normalProgram, "uni_PrimaryTexture");
+        uni.secondaryTexture = glGetUniformLocation(m_normalProgram, "uni_SecondaryTexture");
+        uni.shadowTexture = glGetUniformLocation(m_normalProgram, "uni_ShadowTexture");
 
+        for (int i = 0; i < 3; i++)
+        {
+            char name[64];
+            sprintf(name, "uni_TextureEnabled[%d]", i);
+            uni.textureEnabled[i] = glGetUniformLocation(m_normalProgram, name);
+        }
+
+        uni.alphaTestEnabled = glGetUniformLocation(m_normalProgram, "uni_AlphaTestEnabled");
+        uni.alphaReference = glGetUniformLocation(m_normalProgram, "uni_AlphaReference");
+
+        uni.fogEnabled = glGetUniformLocation(m_normalProgram, "uni_FogEnabled");
+        uni.fogRange = glGetUniformLocation(m_normalProgram, "uni_FogRange");
+        uni.fogColor = glGetUniformLocation(m_normalProgram, "uni_FogColor");
+
+        uni.shadowColor = glGetUniformLocation(m_normalProgram, "uni_ShadowColor");
+        uni.lightingEnabled = glGetUniformLocation(m_normalProgram, "uni_LightingEnabled");
+
+        uni.ambientColor = glGetUniformLocation(m_normalProgram, "uni_AmbientColor");
+        uni.diffuseColor = glGetUniformLocation(m_normalProgram, "uni_DiffuseColor");
+        uni.specularColor = glGetUniformLocation(m_normalProgram, "uni_SpecularColor");
+
+        GLchar name[64];
+        for (int i = 0; i < 8; i++)
+        {
+            sprintf(name, "uni_Light[%d].Enabled", i);
+            uni.lights[i].enabled = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Position", i);
+            uni.lights[i].position = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Ambient", i);
+            uni.lights[i].ambient = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Diffuse", i);
+            uni.lights[i].diffuse = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Specular", i);
+            uni.lights[i].specular = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Attenuation", i);
+            uni.lights[i].attenuation = glGetUniformLocation(m_normalProgram, name);
+        }
+
+        // Set default uniform values
+        Math::Matrix matrix;
+        matrix.LoadIdentity();
+
+        glUseProgram(m_normalProgram);
+
+        glUniformMatrix4fv(uni.projectionMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.viewMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.modelMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.normalMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.shadowMatrix, 1, GL_FALSE, matrix.Array());
+
+        glUniform1i(uni.primaryTexture, 0);
+        glUniform1i(uni.secondaryTexture, 1);
+        glUniform1i(uni.shadowTexture, 2);
+
+        for (int i = 0; i < 3; i++)
+            glUniform1i(uni.textureEnabled[i], 0);
+
+        glUniform1i(uni.alphaTestEnabled, 0);
+        glUniform1f(uni.alphaReference, 0.5f);
+
+        glUniform1i(uni.fogEnabled, 0);
+        glUniform2f(uni.fogRange, 100.0f, 200.0f);
+        glUniform4f(uni.fogColor, 0.8f, 0.8f, 0.8f, 1.0f);
+
+        glUniform1f(uni.shadowColor, 0.5f);
+
+        glUniform1i(uni.lightingEnabled, 0);
+
+        for (int i = 0; i < 8; i++)
+            glUniform1i(uni.lights[i].enabled, 0);
+    }
+
+    // Obtain uniform locations from interface rendering program and initialize them
+    {
+        UniformLocations &uni = m_uniforms[1];
+
+        uni.projectionMatrix = glGetUniformLocation(m_interfaceProgram, "uni_ProjectionMatrix");
+        uni.viewMatrix = glGetUniformLocation(m_interfaceProgram, "uni_ViewMatrix");
+        uni.modelMatrix = glGetUniformLocation(m_interfaceProgram, "uni_ModelMatrix");
+
+        uni.primaryTexture = glGetUniformLocation(m_interfaceProgram, "uni_PrimaryTexture");
+
+        uni.textureEnabled[0] = glGetUniformLocation(m_interfaceProgram, "uni_TextureEnabled");
+        uni.textureEnabled[1] = -1;
+        uni.textureEnabled[2] = -1;
+
+        // Set default uniform values
+        Math::Matrix matrix;
+        matrix.LoadIdentity();
+
+        glUseProgram(m_interfaceProgram);
+
+        glUniformMatrix4fv(uni.projectionMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.viewMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.modelMatrix, 1, GL_FALSE, matrix.Array());
+
+        glUniform1i(uni.primaryTexture, 0);
+
+        glUniform1i(uni.textureEnabled[0], 0);
+    }
+
+    // Obtain uniform locations from shadow rendering program and initialize them
+    {
+        UniformLocations &uni = m_uniforms[2];
+
+        uni.projectionMatrix = glGetUniformLocation(m_shadowProgram, "uni_ProjectionMatrix");
+        uni.viewMatrix = glGetUniformLocation(m_shadowProgram, "uni_ViewMatrix");
+        uni.modelMatrix = glGetUniformLocation(m_shadowProgram, "uni_ModelMatrix");
+
+        uni.primaryTexture = glGetUniformLocation(m_shadowProgram, "uni_PrimaryTexture");
+
+        uni.textureEnabled[0] = glGetUniformLocation(m_shadowProgram, "uni_TextureEnabled");
+        uni.textureEnabled[1] = -1;
+        uni.textureEnabled[2] = -1;
+
+        uni.alphaTestEnabled = glGetUniformLocation(m_shadowProgram, "uni_AlphaTestEnabled");
+        uni.alphaReference = glGetUniformLocation(m_shadowProgram, "uni_AlphaReference");
+
+        // Set default uniform values
+        Math::Matrix matrix;
+        matrix.LoadIdentity();
+
+        glUseProgram(m_shadowProgram);
+
+        glUniformMatrix4fv(uni.projectionMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.viewMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.modelMatrix, 1, GL_FALSE, matrix.Array());
+
+        glUniform1i(uni.primaryTexture, 0);
+
+        glUniform1i(uni.textureEnabled[0], 0);
+
+        glUniform1i(uni.alphaTestEnabled, 0);
+        glUniform1f(uni.alphaReference, 0.5f);
+    }
+
+    glUseProgram(m_normalProgram);
     glEnable(GL_VERTEX_PROGRAM_TWO_SIDE);
 
     // create default framebuffer object
@@ -402,7 +533,9 @@ void CGL21Device::Destroy()
     // Delete the remaining textures
     // Should not be strictly necessary, but just in case
     glUseProgram(0);
-    glDeleteProgram(m_program);
+    glDeleteProgram(m_normalProgram);
+    glDeleteProgram(m_interfaceProgram);
+    glDeleteProgram(m_shadowProgram);
 
     // delete framebuffers
     for (auto& framebuffer : m_framebuffers)
@@ -454,13 +587,39 @@ void CGL21Device::Clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void CGL21Device::SetRenderMode(RenderMode mode)
+{
+    switch (mode)
+    {
+    case RENDER_MODE_NORMAL:
+        glUseProgram(m_normalProgram);
+        m_mode = 0;
+        break;
+    case RENDER_MODE_INTERFACE:
+        glUseProgram(m_interfaceProgram);
+        m_mode = 1;
+        break;
+    case RENDER_MODE_SHADOW:
+        glUseProgram(m_shadowProgram);
+        m_mode = 2;
+        break;
+    default:
+        assert(false);
+    }
+
+    for (int i = 0; i < 3; i++)
+    {
+        glUniform1i(m_uniforms[m_mode].textureEnabled[i], m_texturesEnabled[i]);
+    }
+}
+
 void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
 {
     if (type == TRANSFORM_WORLD)
     {
         m_worldMat = matrix;
 
-        glUniformMatrix4fv(uni_ModelMatrix, 1, GL_FALSE, m_worldMat.Array());
+        glUniformMatrix4fv(m_uniforms[m_mode].modelMatrix, 1, GL_FALSE, m_worldMat.Array());
 
         m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
         m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
@@ -471,7 +630,7 @@ void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
         if (fabs(normalMat.Det()) > 1e-6)
             normalMat = normalMat.Inverse();
 
-        glUniformMatrix4fv(uni_NormalMatrix, 1, GL_TRUE, normalMat.Array());
+        glUniformMatrix4fv(m_uniforms[m_mode].normalMatrix, 1, GL_TRUE, normalMat.Array());
     }
     else if (type == TRANSFORM_VIEW)
     {
@@ -482,7 +641,7 @@ void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
         m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
         m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
 
-        glUniformMatrix4fv(uni_ViewMatrix, 1, GL_FALSE, m_viewMat.Array());
+        glUniformMatrix4fv(m_uniforms[m_mode].viewMatrix, 1, GL_FALSE, m_viewMat.Array());
     }
     else if (type == TRANSFORM_PROJECTION)
     {
@@ -490,12 +649,12 @@ void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
 
         m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
 
-        glUniformMatrix4fv(uni_ProjectionMatrix, 1, GL_FALSE, m_projectionMat.Array());
+        glUniformMatrix4fv(m_uniforms[m_mode].projectionMatrix, 1, GL_FALSE, m_projectionMat.Array());
     }
     else if (type == TRANSFORM_SHADOW)
     {
         Math::Matrix temp = matrix;
-        glUniformMatrix4fv(uni_ShadowMatrix, 1, GL_FALSE, temp.Array());
+        glUniformMatrix4fv(m_uniforms[m_mode].shadowMatrix, 1, GL_FALSE, temp.Array());
     }
     else
     {
@@ -507,9 +666,9 @@ void CGL21Device::SetMaterial(const Material &material)
 {
     m_material = material;
 
-    glUniform4fv(uni_AmbientColor, 1, m_material.ambient.Array());
-    glUniform4fv(uni_DiffuseColor, 1, m_material.diffuse.Array());
-    glUniform4fv(uni_SpecularColor, 1, m_material.specular.Array());
+    glUniform4fv(m_uniforms[m_mode].ambientColor, 1, m_material.ambient.Array());
+    glUniform4fv(m_uniforms[m_mode].diffuseColor, 1, m_material.diffuse.Array());
+    glUniform4fv(m_uniforms[m_mode].specularColor, 1, m_material.specular.Array());
 }
 
 int CGL21Device::GetMaxLightCount()
@@ -524,18 +683,20 @@ void CGL21Device::SetLight(int index, const Light &light)
 
     m_lights[index] = light;
 
-    glUniform4fv(uni_Light[index].Ambient, 1, light.ambient.Array());
-    glUniform4fv(uni_Light[index].Diffuse, 1, light.diffuse.Array());
-    glUniform4fv(uni_Light[index].Specular, 1, light.specular.Array());
-    glUniform3f(uni_Light[index].Attenuation, light.attenuation0, light.attenuation1, light.attenuation2);
+    UniformLocations::LightLocations &loc = m_uniforms[m_mode].lights[index];
+
+    glUniform4fv(loc.ambient, 1, light.ambient.Array());
+    glUniform4fv(loc.diffuse, 1, light.diffuse.Array());
+    glUniform4fv(loc.specular, 1, light.specular.Array());
+    glUniform3f(loc.attenuation, light.attenuation0, light.attenuation1, light.attenuation2);
 
     if (light.type == LIGHT_DIRECTIONAL)
     {
-        glUniform4f(uni_Light[index].Position, -light.direction.x, -light.direction.y, -light.direction.z, 0.0f);
+        glUniform4f(loc.position, -light.direction.x, -light.direction.y, -light.direction.z, 0.0f);
     }
     else
     {
-        glUniform4f(uni_Light[index].Position, light.position.x, light.position.y, light.position.z, 1.0f);
+        glUniform4f(loc.position, light.position.x, light.position.y, light.position.z, 1.0f);
     }
 
     // TODO: add spotlight params
@@ -548,7 +709,7 @@ void CGL21Device::SetLightEnabled(int index, bool enabled)
 
     m_lightsEnabled[index] = enabled;
 
-    glUniform1i(uni_Light[index].Enabled, enabled ? 1 : 0);
+    glUniform1i(m_uniforms[m_mode].lights[index].enabled, enabled ? 1 : 0);
 }
 
 /** If image is invalid, returns invalid texture.
@@ -899,7 +1060,7 @@ void CGL21Device::UpdateTextureStatus()
     for (int i = 0; i < 3; i++)
     {
         bool enabled = m_texturesEnabled[i] && (m_currentTextures[i].id != 0);
-        glUniform1i(uni_TextureEnabled[i], enabled ? 1 : 0);
+        glUniform1i(m_uniforms[m_mode].textureEnabled[i], enabled ? 1 : 0);
     }
 }
 
@@ -1639,19 +1800,19 @@ void CGL21Device::SetRenderState(RenderState state, bool enabled)
     {
         m_lighting = enabled;
 
-        glUniform1i(uni_LightingEnabled, enabled ? 1 : 0);
+        glUniform1i(m_uniforms[m_mode].lightingEnabled, enabled ? 1 : 0);
 
         return;
     }
     else if (state == RENDER_STATE_ALPHA_TEST)
     {
-        glUniform1i(uni_AlphaTestEnabled, enabled ? 1 : 0);
+        glUniform1i(m_uniforms[m_mode].alphaTestEnabled, enabled ? 1 : 0);
 
         return;
     }
     else if (state == RENDER_STATE_FOG)
     {
-        glUniform1i(uni_FogEnabled, enabled ? 1 : 0);
+        glUniform1i(m_uniforms[m_mode].fogEnabled, enabled ? 1 : 0);
 
         return;
     }
@@ -1691,7 +1852,7 @@ void CGL21Device::SetDepthBias(float factor, float units)
 
 void CGL21Device::SetAlphaTestFunc(CompFunc func, float refValue)
 {
-    glUniform1i(uni_AlphaReference, refValue);
+    glUniform1i(m_uniforms[m_mode].alphaReference, refValue);
 }
 
 void CGL21Device::SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend)
@@ -1711,8 +1872,8 @@ void CGL21Device::SetGlobalAmbient(const Color &color)
 
 void CGL21Device::SetFogParams(FogMode mode, const Color &color, float start, float end, float density)
 {
-    glUniform2f(uni_FogRange, start, end);
-    glUniform4f(uni_FogColor, color.r, color.g, color.b, color.a);
+    glUniform2f(m_uniforms[m_mode].fogRange, start, end);
+    glUniform4f(m_uniforms[m_mode].fogColor, color.r, color.g, color.b, color.a);
 
     /*
     if      (mode == FOG_LINEAR) glFogi(GL_FOG_MODE, GL_LINEAR);
@@ -1745,7 +1906,7 @@ void CGL21Device::SetShadeModel(ShadeModel model)
 
 void CGL21Device::SetShadowColor(float value)
 {
-    glUniform1f(uni_ShadowColor, value);
+    glUniform1f(m_uniforms[m_mode].shadowColor, value);
 }
 
 void CGL21Device::SetFillMode(FillMode mode)

@@ -386,6 +386,11 @@ void CGLDevice::Clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void CGLDevice::SetRenderMode(RenderMode mode)
+{
+    // nothing is done
+}
+
 void CGLDevice::SetTransform(TransformType type, const Math::Matrix &matrix)
 {
     if      (type == TRANSFORM_WORLD)

@@ -2038,7 +2038,8 @@ void CEngine::SetState(int state, const Color& color)
     }
     else if (state & ENG_RSTATE_ALPHA)  // image with alpha channel?
     {
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(BLEND_SRC_ALPHA, BLEND_INV_SRC_ALPHA);
 
         m_device->SetRenderState(RENDER_STATE_FOG,         true);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
@@ -3113,6 +3114,8 @@ void CEngine::Render()
     UseMSAA(true);
 
     DrawBackground();                // draws the background
+
+
     if (m_drawWorld)
         Draw3DScene();
 
@@ -3367,6 +3370,7 @@ void CEngine::Draw3DScene()
 
 void CEngine::RenderShadowMap()
 {
+
     m_shadowMapping = m_shadowMapping && m_device->IsShadowMappingSupported();
     m_offscreenShadowRendering = m_offscreenShadowRendering && m_device->IsFramebufferSupported();
     m_offscreenShadowRenderingResolution = Math::Min(m_offscreenShadowRenderingResolution, m_device->GetMaxTextureSize());
@@ -3387,7 +3391,7 @@ void CEngine::RenderShadowMap()
 
             FramebufferParams params;
             params.width = params.height = width;
-            params.depth = depth = 32;
+            params.depth = depth = 16;
             params.depthTexture = true;
 
             CFramebuffer *framebuffer = m_device->CreateFramebuffer("shadow", params);
@@ -3427,6 +3431,7 @@ void CEngine::RenderShadowMap()
         m_device->GetFramebuffer("shadow")->Bind();
     }
 
+    m_device->SetRenderMode(RENDER_MODE_SHADOW);
     m_device->Clear();
 
     // change state to rendering shadow maps
@@ -3441,7 +3446,7 @@ void CEngine::RenderShadowMap()
     m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
     m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
     m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, true);
-    m_device->SetDepthBias(1.5f, 8.0f);
+    m_device->SetDepthBias(2.0f, 8.0f);
 
     m_device->SetViewport(0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
 
@@ -3543,6 +3548,7 @@ void CEngine::RenderShadowMap()
 
     m_app->StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
 
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
 }
 
@@ -3776,6 +3782,8 @@ void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
 
 void CEngine::DrawInterface()
 {
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
     m_device->SetRenderState(RENDER_STATE_FOG, false);
@@ -3808,6 +3816,8 @@ void CEngine::DrawInterface()
     // 3D objects drawn in front of interface
     if (m_drawFront)
     {
+        m_device->SetRenderMode(RENDER_MODE_NORMAL);
+
         // Display the objects
         m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
 
@@ -3877,6 +3887,8 @@ void CEngine::DrawInterface()
         m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
         m_device->SetRenderState(RENDER_STATE_FOG, false);
 
+        m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+
         m_device->SetTransform(TRANSFORM_VIEW,       m_matViewInterface);
         m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
         m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
@@ -3893,6 +3905,8 @@ void CEngine::DrawInterface()
     DrawStats();
     if (m_renderInterface)
         DrawMouse();
+
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 }
 
 void CEngine::UpdateGroundSpotTextures()
@@ -4366,6 +4380,8 @@ void CEngine::DrawShadowSpots()
 
 void CEngine::DrawBackground()
 {
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+
     if (m_cloud->GetLevel() != 0.0f)  // clouds ?
     {
         if (m_backgroundCloudUp != m_backgroundCloudDown)  // degraded?
@@ -4381,6 +4397,8 @@ void CEngine::DrawBackground()
     {
         DrawBackgroundImage();  // image
     }
+
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 }
 
 void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
@@ -4502,6 +4520,8 @@ void CEngine::DrawPlanet()
     if (! m_planet->PlanetExist())
         return;
 
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+
     m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
     m_device->SetRenderState(RENDER_STATE_FOG, false);
@@ -4511,6 +4531,8 @@ void CEngine::DrawPlanet()
     m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
 
     m_planet->Draw();  // draws the planets
+
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 }
 
 void CEngine::DrawForegroundImage()
@@ -4541,12 +4563,16 @@ void CEngine::DrawForegroundImage()
     SetTexture(m_foregroundTex);
     SetState(ENG_RSTATE_CLAMP | ENG_RSTATE_TTEXTURE_BLACK);
 
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+
     m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
     m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
+
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 }
 
 void CEngine::DrawOverColor()
@@ -4565,6 +4591,8 @@ void CEngine::DrawOverColor()
         Color(0.0f, 0.0f, 0.0f, 0.0f)
     };
 
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+
     SetState(m_overMode);
 
     m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
@@ -4582,6 +4610,8 @@ void CEngine::DrawOverColor()
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
+
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 }
 
 void CEngine::DrawHighlight()

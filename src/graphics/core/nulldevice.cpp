@@ -69,6 +69,10 @@ void CNullDevice::Clear()
 {
 }
 
+void CNullDevice::SetRenderMode(RenderMode mode)
+{
+}
+
 void CNullDevice::SetTransform(TransformType type, const Math::Matrix &matrix)
 {
 }

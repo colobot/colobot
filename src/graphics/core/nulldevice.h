@@ -59,6 +59,8 @@ public:
 
     void Clear() override;
 
+    void SetRenderMode(RenderMode mode) override;
+
     void SetTransform(TransformType type, const Math::Matrix &matrix) override;
 
     void SetMaterial(const Material &material) override;

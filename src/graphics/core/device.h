@@ -131,6 +131,17 @@ enum RenderState
 };
 
 /**
+* \enum RenderMode
+* \brief Render modes the graphics device can be in
+*/
+enum RenderMode
+{
+    RENDER_MODE_NORMAL,
+    RENDER_MODE_INTERFACE,
+    RENDER_MODE_SHADOW,
+};
+
+/**
  * \enum CompFunc
  * \brief Type of function used to compare values
  */
@@ -309,6 +320,9 @@ public:
 
     //! Clears the screen to blank
     virtual void Clear() = 0;
+
+    //! Sets current rendering mode
+    virtual void SetRenderMode(RenderMode mode) = 0;
 
     //! Sets the transform matrix of given type
     virtual void SetTransform(TransformType type, const Math::Matrix &matrix) = 0;
