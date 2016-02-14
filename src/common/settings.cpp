@@ -80,7 +80,6 @@ void CSettings::SaveSettings()
     GetConfigFile().SetBoolProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().SetBoolProperty("Setup", "Movies", m_movies);
     GetConfigFile().SetBoolProperty("Setup", "FocusLostPause", m_focusLostPause);
-    GetConfigFile().SetBoolProperty("Setup", "CameraScroll", camera->GetCameraScroll());
     GetConfigFile().SetBoolProperty("Setup", "CameraInvertX", camera->GetCameraInvertX());
     GetConfigFile().SetBoolProperty("Setup", "CameraInvertY", camera->GetCameraInvertY());
     GetConfigFile().SetBoolProperty("Setup", "InterfaceEffect", camera->GetEffect());
@@ -151,9 +150,6 @@ void CSettings::LoadSettings()
     GetConfigFile().GetBoolProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().GetBoolProperty("Setup", "Movies", m_movies);
     GetConfigFile().GetBoolProperty("Setup", "FocusLostPause", m_focusLostPause);
-
-    if (GetConfigFile().GetBoolProperty("Setup", "CameraScroll", bValue))
-        camera->SetCameraScroll(bValue);
 
     if (GetConfigFile().GetBoolProperty("Setup", "CameraInvertX", bValue))
         camera->SetCameraInvertX(bValue);

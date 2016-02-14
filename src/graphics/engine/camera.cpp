@@ -152,7 +152,6 @@ CCamera::CCamera()
 
     m_effect        = true;
     m_blood         = true;
-    m_cameraScroll  = true;
     m_cameraInvertX = false;
     m_cameraInvertY = false;
 }
@@ -179,16 +178,6 @@ void CCamera::SetBlood(bool enable)
 bool CCamera::GetBlood()
 {
     return m_blood;
-}
-
-void CCamera::SetCameraScroll(bool scroll)
-{
-    m_cameraScroll = scroll;
-}
-
-bool CCamera::GetCameraScroll()
-{
-    return m_cameraScroll;
 }
 
 void CCamera::SetCameraInvertX(bool invert)
@@ -1080,7 +1069,13 @@ bool CCamera::EventProcess(const Event &event)
 bool CCamera::EventMouseMove(const Event &event)
 {
     m_mouseDelta += (event.mousePos - m_mousePos);
+    if (m_cameraInvertX)
+        m_mouseDelta.x = -m_mouseDelta.x;
+    if (m_cameraInvertY)
+        m_mouseDelta.y = -m_mouseDelta.y;
+
     m_mousePos = event.mousePos;
+    
     if (m_mouseRightDown)
         m_engine->SetMouseType(ENG_MOUSE_MOVE);
     return true;

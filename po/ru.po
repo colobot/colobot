@@ -1306,9 +1306,6 @@ msgstr "Сохранить\\Сохранить текущую миссию"
 msgid "Save\\Saves the current mission"
 msgstr "Сохранить\\Сохранить текущую миссию"
 
-msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-msgstr "Прокрутка\\Прокрутка, когда указатель мыши касается граней экрана"
-
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Выбор астронавта\\Выбор астронавта"
 
@@ -1895,6 +1892,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Робби\\Ваш помощник"
+
+#~ msgid "Scrolling\\Scrolling when the mouse touches right or left border"
+#~ msgstr "Прокрутка\\Прокрутка, когда указатель мыши касается граней экрана"
 
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Небо\\Облака и туманности"

@@ -370,9 +370,6 @@ msgstr ""
 msgid "Film sequences\\Films before and after the missions"
 msgstr ""
 
-msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-msgstr ""
-
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr ""
 
