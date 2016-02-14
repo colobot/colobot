@@ -266,7 +266,7 @@ bool CEdit::EventProcess(const Event &event)
         m_timeBlink += event.rTime;
     }
 
-    if ( event.type == EVENT_MOUSE_MOVE )
+    if ( event.type == EVENT_MOUSE_MOVE || event.type == EVENT_MOUSE_BUTTON_DOWN || event.type == EVENT_MOUSE_BUTTON_UP )
     {
         if ( Detect(event.mousePos) &&
              event.mousePos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )

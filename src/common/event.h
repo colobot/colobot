@@ -637,16 +637,6 @@ struct MouseButtonEventData : public EventData
 };
 
 /**
- * \enum WheelDirection
- * \brief Direction of mouse wheel movement
- */
-enum WheelDirection
-{
-    WHEEL_UP,
-    WHEEL_DOWN
-};
-
-/**
  * \struct MouseWheelEventData
  * \brief Additional data for mouse wheel event.
  */

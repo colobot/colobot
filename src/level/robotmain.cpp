@@ -687,7 +687,6 @@ bool CRobotMain::ProcessEvent(Event &event)
         m_displayText->EventProcess(event);
         RemoteCamera(m_cameraPan, m_cameraZoom, event.rTime);
 
-        m_interface->EventProcess(event);
         if (m_displayInfo != nullptr)  // current edition?
             m_displayInfo->EventProcess(event);
 

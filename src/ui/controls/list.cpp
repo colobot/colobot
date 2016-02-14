@@ -293,15 +293,18 @@ bool CList::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if (event.type == EVENT_MOUSE_MOVE && Detect(event.mousePos))
+    if (event.type == EVENT_MOUSE_MOVE || event.type == EVENT_MOUSE_BUTTON_DOWN || event.type == EVENT_MOUSE_BUTTON_UP)
     {
-        m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
-        for (int i = 0; i < m_displayLine; i++)
+        if (Detect(event.mousePos))
         {
-            if (i + m_firstLine >= m_totalLine)
-                break;
-            if (m_buttons[i] != nullptr)
-                m_buttons[i]->EventProcess(event);
+            m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
+            for (int i = 0; i < m_displayLine; i++)
+            {
+                if (i + m_firstLine >= m_totalLine)
+                    break;
+                if (m_buttons[i] != nullptr)
+                    m_buttons[i]->EventProcess(event);
+            }
         }
     }
 

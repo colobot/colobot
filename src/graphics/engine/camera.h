@@ -211,18 +211,15 @@ public:
     void        SetCameraInvertY(bool invert);
     bool        GetCameraInvertY();
 
-    //! Returns an additional force to turn
-    float       GetMotorTurn();
-    //! Returns the default sprite to use for the mouse
-    EngineMouseType GetMouseDef(Math::Point pos);
-
     void        SetCameraSpeed(float speed);
 
 protected:
     //! Changes the camera according to the mouse moved
     bool        EventMouseMove(const Event &event);
     //! Mouse wheel operation
-    void        EventMouseWheel(const Event& event);
+    void        EventMouseWheel(const Event &event);
+    //! Mouse button handling
+    void        EventMouseButton(const Event &event);
     //! Changes the camera according to the time elapsed
     bool        EventFrame(const Event &event);
     //! Moves the point of view
@@ -301,11 +298,6 @@ protected:
 
     float       m_focus;
 
-    bool            m_rightDown;
-    Math::Point     m_rightPosInit;
-    Math::Point     m_rightPosCenter;
-    Math::Point     m_rightPosMove;
-
     //! CAM_TYPE_FREE: eye
     Math::Vector    m_eyePt;
     //! CAM_TYPE_FREE: horizontal direction
@@ -352,12 +344,9 @@ protected:
 
     float        m_remotePan;
 
-    Math::Point  m_mousePos;
-    float        m_mouseDirH;
-    float        m_mouseDirV;
-    float        m_mouseMarging;
-
-    float        m_motorTurn;
+    bool         m_mouseRightDown = false;
+    Math::Point  m_mousePos = Math::Point(0.5f, 0.5f);
+    Math::Point  m_mouseDelta = Math::Point(0.0f, 0.0f);
 
     CenteringPhase m_centeringPhase;
     float       m_centeringAngleH;
@@ -396,7 +385,6 @@ protected:
     bool        m_cameraInvertX;
     //! Y inversion in the edges?
     bool        m_cameraInvertY;
-
 };
 
 

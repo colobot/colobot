@@ -98,11 +98,6 @@ CCamera::CCamera()
     m_normLookat   = Math::Vector(0.0f, 0.0f, 0.0f);
     m_focus        = 1.0f;
 
-    m_rightDown      = false;
-    m_rightPosInit   = Math::Point(0.5f, 0.5f);
-    m_rightPosCenter = Math::Point(0.5f, 0.5f);
-    m_rightPosMove   = Math::Point(0.5f, 0.5f);
-
     m_eyePt        = Math::Vector(0.0f, 0.0f, 0.0f);
     m_directionH   =  0.0f;
     m_directionV   =  0.0f;
@@ -129,12 +124,6 @@ CCamera::CCamera()
     m_editHeight = 40.0f;
 
     m_remotePan  = 0.0f;
-
-    m_mouseDirH    = 0.0f;
-    m_mouseDirV    = 0.0f;
-    m_mouseMarging = 0.01f;
-
-    m_motorTurn = 0.0f;
 
     m_centeringPhase    = CAM_PHASE_NULL;
     m_centeringAngleH   = 0.0f;
@@ -220,13 +209,6 @@ void CCamera::SetCameraInvertY(bool invert)
 bool CCamera::GetCameraInvertY()
 {
     return m_cameraInvertY;
-}
-
-float CCamera::GetMotorTurn()
-{
-    if (m_type == CAM_TYPE_BACK)
-        return m_motorTurn;
-    return 0.0f;
 }
 
 void CCamera::Init(Math::Vector eye, Math::Vector lookat, float delay)
@@ -1076,6 +1058,11 @@ bool CCamera::EventProcess(const Event &event)
             EventFrame(event);
             break;
 
+        case EVENT_MOUSE_BUTTON_DOWN:
+        case EVENT_MOUSE_BUTTON_UP:
+            EventMouseButton(event);
+            break;
+
         case EVENT_MOUSE_MOVE:
             EventMouseMove(event);
             break;
@@ -1092,7 +1079,10 @@ bool CCamera::EventProcess(const Event &event)
 
 bool CCamera::EventMouseMove(const Event &event)
 {
+    m_mouseDelta += (event.mousePos - m_mousePos);
     m_mousePos = event.mousePos;
+    if (m_mouseRightDown)
+        m_engine->SetMouseType(ENG_MOUSE_MOVE);
     return true;
 }
 
@@ -1126,6 +1116,24 @@ void CCamera::EventMouseWheel(const Event &event)
             m_visitDist = 20.0f;
         if (m_visitDist > 200.0f)
             m_visitDist = 200.0f;
+    }
+}
+
+void CCamera::EventMouseButton(const Event &event)
+{
+    if (event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_RIGHT)
+    {
+        if (event.type == EVENT_MOUSE_BUTTON_DOWN)
+        {
+            m_mouseRightDown = true;
+            m_mouseDelta.LoadZero();
+            m_engine->SetMouseType(ENG_MOUSE_MOVE);
+        }
+        else
+        {
+            m_mouseRightDown = false;
+            m_engine->SetMouseType(ENG_MOUSE_NORM);
+        }
     }
 }
 
@@ -1168,69 +1176,6 @@ bool CCamera::EventFrame(const Event &event)
     return true;
 }
 
-EngineMouseType CCamera::GetMouseDef(Math::Point pos)
-{
-    EngineMouseType type = ENG_MOUSE_NORM;
-    m_mousePos = pos;
-
-    if (m_type == CAM_TYPE_INFO)
-        return type;
-
-    if (m_rightDown)  // the right button pressed?
-    {
-        m_rightPosMove.x = pos.x - m_rightPosCenter.x;
-        m_rightPosMove.y = pos.y - m_rightPosCenter.y;
-        type = ENG_MOUSE_MOVE;
-    }
-    else
-    {
-        if (!m_cameraScroll)
-            return type;
-
-        m_mouseDirH = 0.0f;
-        m_mouseDirV = 0.0f;
-
-        if (pos.x < m_mouseMarging)
-            m_mouseDirH = pos.x / m_mouseMarging - 1.0f;
-
-        if (pos.x > 1.0f - m_mouseMarging)
-            m_mouseDirH = 1.0f - (1.0f - pos.x) / m_mouseMarging;
-
-        if (pos.y < m_mouseMarging)
-            m_mouseDirV = pos.y / m_mouseMarging - 1.0f;
-
-        if (pos.y > 1.0f-m_mouseMarging)
-            m_mouseDirV = 1.0f - (1.0f - pos.y) / m_mouseMarging;
-
-        if ( m_type == CAM_TYPE_FREE  ||
-             m_type == CAM_TYPE_EDIT  ||
-             m_type == CAM_TYPE_BACK  ||
-             m_type == CAM_TYPE_FIX   ||
-             m_type == CAM_TYPE_PLANE ||
-             m_type == CAM_TYPE_EXPLO )
-        {
-            if (m_mouseDirH > 0.0f)
-                type = ENG_MOUSE_SCROLLR;
-            if (m_mouseDirH < 0.0f)
-                type = ENG_MOUSE_SCROLLL;
-        }
-
-        if ( m_type == CAM_TYPE_FREE ||
-             m_type == CAM_TYPE_EDIT )
-        {
-            if (m_mouseDirV > 0.0f)
-                type = ENG_MOUSE_SCROLLU;
-            if (m_mouseDirV < 0.0f)
-                type = ENG_MOUSE_SCROLLD;
-        }
-
-        if (m_cameraInvertX)
-            m_mouseDirH = -m_mouseDirH;
-    }
-
-    return type;
-}
-
 bool CCamera::EventFrameFree(const Event &event)
 {
     Math::Vector cameraInput = event.cameraInput;
@@ -1241,10 +1186,12 @@ bool CCamera::EventFrameFree(const Event &event)
 
     float factor = m_heightEye * 0.5f + 30.0f;
 
-    if ( m_mouseDirH != 0.0f )
-        m_directionH -= m_mouseDirH * event.rTime * 0.7f * m_speed;
-    if ( m_mouseDirV != 0.0f )
-        m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, m_mouseDirV * event.rTime * factor * m_speed);
+    if ( m_mouseRightDown )
+    {
+        m_directionH -= m_mouseDelta.x * 2*Math::PI;
+        m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, m_mouseDelta.y * factor * m_speed);
+        m_mouseDelta.LoadZero();
+    }
 
     // Up/Down
     m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, cameraInput.y * event.rTime * factor * m_speed);
@@ -1314,17 +1261,13 @@ bool CCamera::EventFrameEdit(const Event &event)
 {
     float factor = m_editHeight * 0.5f + 30.0f;
 
-    if (m_mouseDirH != 0.0f)
-        m_directionH -= m_mouseDirH * event.rTime * 0.7f * m_speed;
-    if (m_mouseDirV != 0.0f)
-        m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, m_mouseDirV * event.rTime * factor * m_speed);
-
-    if (m_cameraScroll)
+    if (m_mouseRightDown)
     {
-        // Left/Right.
-        m_fixDirectionH += m_mouseDirH * event.rTime * 1.0f * m_speed;
-        m_fixDirectionH = Math::NormAngle(m_fixDirectionH);
+        m_directionH -= m_mouseDelta.x * 2*Math::PI;
+        m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, m_mouseDelta.y * factor * m_speed);
+        m_mouseDelta.LoadZero();
     }
+    m_fixDirectionH = Math::NormAngle(m_fixDirectionH);
 
     m_terrain->AdjustToBounds(m_eyePt, 10.0f);
 
@@ -1377,25 +1320,13 @@ bool CCamera::EventFrameBack(const Event &event)
         if (m_backDist > 200.0f) m_backDist = 200.0f;
     }
 
-    m_motorTurn = 0.0f;
-
-    if (m_rightDown)
+    if (m_mouseRightDown)
     {
-        m_addDirectionH =  m_rightPosMove.x * 6.0f;
-        m_addDirectionV = -m_rightPosMove.y * 2.0f;
-    }
-    else
-    {
-        if (m_cameraScroll)
-        {
-            // Left/Right
-            m_addDirectionH += m_mouseDirH * event.rTime * 1.0f * m_speed;
-            m_addDirectionH = Math::NormAngle(m_addDirectionH);
-        }
-    }
-
-    if ((m_mouseDirH != 0) || (m_mouseDirV != 0))
+        m_addDirectionH -= m_mouseDelta.x * 2*Math::PI;
+        m_addDirectionH = Math::NormAngle(m_addDirectionH);
+        m_mouseDelta.LoadZero();
         AbortCentering();  // special stops framing
+    }
 
     // Increase the special framework
     float centeringH = 0.0f;
@@ -1528,20 +1459,20 @@ bool CCamera::EventFrameFix(const Event &event)
         if (m_fixDist > 200.0f) m_fixDist = 200.0f;
     }
 
-    // Left/Right
-    if (m_cameraScroll)
+    if (m_mouseRightDown)
     {
-        m_fixDirectionH += m_mouseDirH * event.rTime * 1.0f * m_speed;
-        m_fixDirectionH = Math::NormAngle(m_fixDirectionH);
+        m_fixDirectionH -= m_mouseDelta.x * 2*Math::PI;
+        m_mouseDelta.LoadZero();
+        AbortCentering();  // special stops framing
     }
+
+    // Left/Right
     m_fixDirectionH += event.cameraInput.x * event.rTime * 0.7f * m_speed;
+    m_fixDirectionH = Math::NormAngle(m_fixDirectionH);
 
     // Up/Down
     m_fixDirectionV -= event.cameraInput.y * event.rTime * 0.7f * m_speed;
     m_fixDirectionV = Math::Min(Math::Max(m_fixDirectionV, -0.5*Math::PI), 0.25*Math::PI);
-
-    if ((m_mouseDirH != 0) || (m_mouseDirV != 0))
-        AbortCentering();  // special stops framing
 
     if (m_cameraObj != nullptr)
     {
@@ -1567,8 +1498,11 @@ bool CCamera::EventFrameFix(const Event &event)
 
 bool CCamera::EventFrameExplo(const Event &event)
 {
-    if (m_mouseDirH != 0.0f)
-        m_directionH -= m_mouseDirH * event.rTime * 0.7f * m_speed;
+    if (m_mouseRightDown)
+    {
+        m_directionH -= m_mouseDelta.x * 2*Math::PI;
+        m_mouseDelta.LoadZero();
+    }
 
     m_terrain->AdjustToBounds(m_eyePt, 10.0f);
 
@@ -1649,9 +1583,10 @@ bool CCamera::EventFrameVisit(const Event &event)
         if (m_visitDirectionV > 0.0f ) m_visitDirectionV = 0.0f;
     }
 
-    if (m_cameraScroll)
+    if (m_mouseRightDown)
     {
-        m_visitDist -= m_mouseDirV * event.rTime * 30.0f * m_speed;
+        m_visitDist -= m_mouseDelta.y * 100.0f * m_speed;
+        m_mouseDelta.LoadZero();
         if (m_visitDist <  20.0f)  m_visitDist =  20.0f;
         if (m_visitDist > 200.0f)  m_visitDist = 200.0f;
     }
@@ -1743,6 +1678,5 @@ void CCamera::SetCameraSpeed(float speed)
 {
     m_speed = speed;
 }
-
 
 }

@@ -314,7 +314,7 @@ bool CControl::EventProcess(const Event &event)
         GlintFrame(event);
     }
 
-    if ( event.type == EVENT_MOUSE_MOVE )
+    if ( event.type == EVENT_MOUSE_MOVE || event.type == EVENT_MOUSE_BUTTON_DOWN || event.type == EVENT_MOUSE_BUTTON_UP )
     {
         m_glintMouse = event.mousePos;
 

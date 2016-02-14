@@ -54,7 +54,6 @@ CInterface::CInterface()
 {
     m_event  = CApplication::GetInstancePointer()->GetEventQueue();
     m_engine = Gfx::CEngine::GetInstancePointer();
-    m_camera = nullptr;
 }
 
 // Object's destructor.
@@ -300,12 +299,9 @@ CControl* CInterface::SearchControl(EventType eventMsg)
 
 bool CInterface::EventProcess(const Event &event)
 {
-    if (event.type == EVENT_MOUSE_MOVE)
+    if (event.type == EVENT_MOUSE_MOVE || event.type == EVENT_MOUSE_BUTTON_DOWN || event.type == EVENT_MOUSE_BUTTON_UP)
     {
-        if (m_camera == nullptr)
-            m_camera = CRobotMain::GetInstancePointer()->GetCamera();
-
-        m_engine->SetMouseType(m_camera->GetMouseDef(event.mousePos));
+        m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
     }
 
     for (auto& control : boost::adaptors::reverse(m_controls))
