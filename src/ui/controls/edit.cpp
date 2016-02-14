@@ -1902,7 +1902,10 @@ void CEdit::GetIndentedText(std::ostream& stream, unsigned int start, unsigned i
             line++;
         }
 
-        stream << m_text[i];
+        if (i >= start)
+        {
+            stream << m_text[i];
+        }
 
         i ++;
     }
