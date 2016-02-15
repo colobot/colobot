@@ -683,7 +683,7 @@ void CGL21Device::SetLight(int index, const Light &light)
 
     m_lights[index] = light;
 
-    UniformLocations::LightLocations &loc = m_uniforms[m_mode].lights[index];
+    LightLocations &loc = m_uniforms[m_mode].lights[index];
 
     glUniform4fv(loc.ambient, 1, light.ambient.Array());
     glUniform4fv(loc.diffuse, 1, light.diffuse.Array());

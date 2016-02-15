@@ -42,6 +42,24 @@
 namespace Gfx
 {
 
+struct LightLocations
+{
+    //! true enables light
+    GLint enabled = -1;
+    //! Light type
+    GLint type = -1;
+    //! Position or direction vector
+    GLint position = -1;
+    //! Ambient color
+    GLint ambient = -1;
+    //! Diffuse color
+    GLint diffuse = -1;
+    //! Specular color
+    GLint specular = -1;
+    //! Attenuation
+    GLint attenuation = -1;
+};
+
 struct UniformLocations
 {
     // Uniforms
@@ -91,23 +109,7 @@ struct UniformLocations
     //! Specular color
     GLint specularColor = -1;
 
-    struct LightLocations
-    {
-        //! true enables light
-        GLint enabled = -1;
-        //! Light type
-        GLint type = -1;
-        //! Position or direction vector
-        GLint position = -1;
-        //! Ambient color
-        GLint ambient = -1;
-        //! Diffuse color
-        GLint diffuse = -1;
-        //! Specular color
-        GLint specular = -1;
-        //! Attenuation
-        GLint attenuation = -1;
-    } lights[8];
+    LightLocations lights[8] = {};
 };
 
 /**
