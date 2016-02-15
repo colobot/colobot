@@ -711,6 +711,7 @@ bool CRobotMain::ProcessEvent(Event &event)
         if (m_focusPause != nullptr)
         {
             m_pause->DeactivatePause(m_focusPause);
+            m_focusPause = nullptr;
         }
         return false;
     }
