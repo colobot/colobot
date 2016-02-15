@@ -182,7 +182,7 @@ std::string GetHardwareInfo(bool full)
 
         result << "Multisampling:\t\tsupported\n";
 
-        glGetIntegerv(GL_MAX_FRAMEBUFFER_SAMPLES, &value);
+        glGetIntegerv(GL_MAX_SAMPLES, &value);
         result << "    Max Framebuffer Samples:\t" << value << '\n';
     }
     else if (framebuffer == FBS_EXT)
