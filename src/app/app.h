@@ -410,7 +410,15 @@ protected:
     SystemTimeStamp* m_manualFrameTime;
 
     //! Graphics device to use
-    std::string     m_graphics;
+    bool            m_graphicsOverride = false;
+    std::string     m_graphics = "default";
+    //! OpenGL version to use
+    bool            m_glVersionOverride = false;
+    int             m_glMajor = -1;
+    int             m_glMinor = -1;
+    //! OpenGL profile
+    bool            m_glProfileOverride = false;
+    int             m_glProfile = 0;
 
     //! Current mode of mouse
     MouseMode       m_mouseMode;

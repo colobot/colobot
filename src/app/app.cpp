@@ -164,8 +164,6 @@ CApplication::CApplication(CSystemUtils* systemUtils)
     m_language = LANGUAGE_ENV;
 
     m_lowCPU = true;
-
-    m_graphics = "opengl";
 }
 
 CApplication::~CApplication()
@@ -251,7 +249,9 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_MOD,
         OPT_RESOLUTION,
         OPT_HEADLESS,
-        OPT_DEVICE
+        OPT_DEVICE,
+        OPT_OPENGL_VERSION,
+        OPT_OPENGL_PROFILE
     };
 
     option options[] =
@@ -268,6 +268,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "resolution", required_argument, nullptr, OPT_RESOLUTION },
         { "headless", no_argument, nullptr, OPT_HEADLESS },
         { "graphics", required_argument, nullptr, OPT_DEVICE },
+        { "glversion", required_argument, nullptr, OPT_OPENGL_VERSION },
+        { "glprofile", required_argument, nullptr, OPT_OPENGL_PROFILE },
         { nullptr, 0, nullptr, 0}
     };
 
@@ -311,6 +313,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -resolution WxH     set resolution\n");
                 GetLogger()->Message("  -headless           headless mode - disables graphics, sound and user interaction\n");
                 GetLogger()->Message("  -graphics           changes graphics device (defaults to opengl)\n");
+                GetLogger()->Message("  -glversion          sets OpenGL context version to use (either default or version in format #.#)\n");
+                GetLogger()->Message("  -glprofile          sets OpenGL context profile to use (one of: default, core, compatibility, opengles)\n");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
@@ -411,6 +415,59 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             case OPT_DEVICE:
             {
                 m_graphics = optarg;
+                m_graphicsOverride = true;
+                break;
+            }
+            case OPT_OPENGL_VERSION:
+            {
+                if (strcmp(optarg, "default") == 0)
+                {
+                    m_glMajor = -1;
+                    m_glMinor = -1;
+                    m_glVersionOverride = true;
+                }
+                else
+                {
+                    int major = 1, minor = 1;
+
+                    int parsed = sscanf(optarg, "%d.%d", &major, &minor);
+
+                    if (parsed < 2)
+                    {
+                        GetLogger()->Error("Invalid OpenGL version: %s\n", optarg);
+                        return PARSE_ARGS_FAIL;
+                    }
+
+                    m_glMajor = major;
+                    m_glMinor = minor;
+                    m_glVersionOverride = true;
+                }
+                break;
+            }
+            case OPT_OPENGL_PROFILE:
+            {
+                if (strcmp(optarg, "default") == 0)
+                {
+                    m_glProfile = 0;
+                    m_glProfileOverride = true;
+                }
+                else if (strcmp(optarg, "core") == 0)
+                {
+                    m_glProfile = SDL_GL_CONTEXT_PROFILE_CORE;
+                    m_glProfileOverride = true;
+                }
+                else if (strcmp(optarg, "compatibility") == 0)
+                {
+                    m_glProfile = SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
+                    m_glProfileOverride = true;
+                }
+                else if (strcmp(optarg, "opengles") == 0)
+                {
+                    m_glProfile = SDL_GL_CONTEXT_PROFILE_ES;
+                    m_glProfileOverride = true;
+                }
+
+                GetLogger()->Error("Invalid OpenGL profile: %s\n", optarg);
                 break;
             }
             default:
@@ -573,11 +630,23 @@ bool CApplication::Create()
 
     if (!m_headless)
     {
-        m_device = Gfx::CreateDevice(m_deviceConfig, m_graphics.c_str());
+        std::string graphics = "default";
+        std::string value;
+
+        if (m_graphicsOverride)
+        {
+            graphics = m_graphics;
+        }
+        else if (GetConfigFile().GetStringProperty("Experimental", "GraphicsDevice", value))
+        {
+            graphics = value;
+        }
+
+        m_device = Gfx::CreateDevice(m_deviceConfig, graphics.c_str());
 
         if (m_device == nullptr)
         {
-            GetLogger()->Error("Unknown graphics device: %s\n", m_graphics.c_str());
+            GetLogger()->Error("Unknown graphics device: %s\n", graphics.c_str());
             GetLogger()->Info("Changing to default device\n");
             m_systemUtils->SystemDialog(SDT_ERROR, "Graphics initialization error", "You have selected invalid graphics device with -graphics switch. Game will use default OpenGL device instead.");
             m_device = Gfx::CreateDevice(m_deviceConfig, "opengl");
@@ -645,9 +714,75 @@ bool CApplication::CreateVideoSurface()
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, m_deviceConfig.alphaSize);
 
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, m_deviceConfig.depthSize);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, m_deviceConfig.stencilSize);
 
     if (m_deviceConfig.doubleBuf)
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    std::string value;
+
+    // set OpenGL context version
+    // -glversion switch overrides config settings
+    if (m_glVersionOverride)
+    {
+        if ((m_glMajor >= 0) && (m_glMinor >= 0))
+        {
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, m_glMajor);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, m_glMinor);
+
+            GetLogger()->Info("Requesting OpenGL context version %d.%d\n", m_glMajor, m_glMinor);
+        }
+    }
+    else if (GetConfigFile().GetStringProperty("Experimental", "OpenGLVersion", value))
+    {
+        int major = 1, minor = 1;
+
+        sscanf(value.c_str(), "%d.%d", &major, &minor);
+
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor);
+
+        GetLogger()->Info("Requesting OpenGL context version %d.%d\n", major, minor);
+    }
+
+    // set OpenGL context profile
+    // -glprofile switch overrides config settings
+    int profile = 0;
+
+    if (m_glProfileOverride)
+    {
+        profile = m_glProfile;
+    }
+    else if (GetConfigFile().GetStringProperty("Experimental", "OpenGLProfile", value))
+    {
+        if (value == "core")
+        {
+            profile = SDL_GL_CONTEXT_PROFILE_CORE;
+        }
+        else if (value == "compatibility")
+        {
+            profile = SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
+        }
+        else if (value == "opengles")
+        {
+            profile = SDL_GL_CONTEXT_PROFILE_ES;
+        }
+    }
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, profile);
+
+    switch (profile)
+    {
+    case SDL_GL_CONTEXT_PROFILE_CORE:
+        GetLogger()->Info("Requesting OpenGL core profile\n");
+        break;
+    case SDL_GL_CONTEXT_PROFILE_COMPATIBILITY:
+        GetLogger()->Info("Requesting OpenGL compatibility profile\n");
+        break;
+    case SDL_GL_CONTEXT_PROFILE_ES:
+        GetLogger()->Info("Requesting OpenGL ES profile\n");
+        break;
+    }
 
     /* If hardware acceleration specifically requested, this will force the hw accel
        and fail with error if not available */
