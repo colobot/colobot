@@ -442,6 +442,7 @@ void CRobotMain::ChangePhase(Phase phase)
         m_pause->FlushPause();
         m_freePhotoPause = nullptr;
         m_userPause = nullptr;
+        m_focusPause = nullptr;
         FlushDisplayInfo();
         m_engine->SetRankView(0);
         m_terrain->FlushRelief();
