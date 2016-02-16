@@ -48,6 +48,8 @@
 
 #include <algorithm>
 #include <iomanip>
+#include <boost/regex.hpp>
+#include <boost/lexical_cast.hpp>
 
 CProgramStorageObjectImpl::CProgramStorageObjectImpl(ObjectInterfaceTypes& types, CObject* object)
     : CProgramStorageObject(types),
@@ -219,18 +221,31 @@ void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::string& userSourc
     if (m_programStorageIndex < 0) return;
     GetLogger()->Debug("Saving user programs to '%s%.3d___.txt'\n", userSource.c_str(), m_programStorageIndex);
 
-    for (unsigned int i = 0; i <= 999; i++)
+    for (unsigned int i = 0; i < m_program.size(); i++)
     {
         std::string filename = userSource + StrUtils::Format("%.3d%.3d.txt", m_programStorageIndex, i);
 
-        if (i < m_program.size() && m_program[i]->filename.empty())
+        if (m_program[i]->filename.empty())
         {
             GetLogger()->Trace("Saving program '%s' into user directory\n", filename.c_str());
             WriteProgram(m_program[i].get(), filename);
         }
-        else
+    }
+
+    std::string dir = userSource.substr(0, userSource.find_last_of("/"));
+    std::string file = userSource.substr(userSource.find_last_of("/")+1) + StrUtils::Format("%.3d([0-9]{3})\\.txt", m_programStorageIndex);
+    boost::regex regex(file);
+    for (const std::string& filename : CResourceManager::ListFiles(dir))
+    {
+        boost::smatch matches;
+        if (boost::regex_match(filename, matches, regex))
         {
-            CResourceManager::Remove(filename);
+            unsigned int id = boost::lexical_cast<unsigned int>(matches[1]);
+            if (id >= m_program.size() || !m_program[id]->filename.empty())
+            {
+                GetLogger()->Trace("Removing old program '%s/%s'\n", dir.c_str(), filename.c_str());
+                CResourceManager::Remove(dir+"/"+filename);
+            }
         }
     }
 }
@@ -279,15 +294,20 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
     if (m_programStorageIndex >= 0)
     {
         GetLogger()->Debug("Loading user programs from '%s%.3d___.txt'\n", userSource.c_str(), m_programStorageIndex);
-        for (unsigned int i = 0; i <= 999; i++)
+
+        std::string dir = userSource.substr(0, userSource.find_last_of("/"));
+        std::string file = userSource.substr(userSource.find_last_of("/")+1) + StrUtils::Format("%.3d([0-9]{3})\\.txt", m_programStorageIndex);
+        boost::regex regex(file);
+        for (const std::string& filename : CResourceManager::ListFiles(dir))
         {
-            std::string filename = userSource + StrUtils::Format("%.3d%.3d.txt", m_programStorageIndex, i);
-            if (CResourceManager::Exists(filename))
+            boost::smatch matches;
+            if (boost::regex_match(filename, matches, regex))
             {
+                unsigned int i = boost::lexical_cast<unsigned int>(matches[1]);
                 Program* program = GetOrAddProgram(i);
                 if(GetCompile(program)) program = AddProgram(); // If original slot is already used, get a new one
-                GetLogger()->Trace("Loading program '%s' from user directory\n", filename.c_str());
-                ReadProgram(program, filename);
+                GetLogger()->Trace("Loading program '%s/%s' from user directory\n", dir.c_str(), filename.c_str());
+                ReadProgram(program, dir+"/"+filename);
             }
         }
     }
@@ -311,20 +331,30 @@ void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* l
     if (!m_object->Implements(ObjectInterfaceType::Controllable) || !dynamic_cast<CControllableObject*>(m_object)->GetSelectable() || m_object->GetType() == OBJECT_HUMAN) return;
 
     GetLogger()->Debug("Saving saved scene programs to '%s/prog%.3d___.txt'\n", levelSource.c_str(), m_programStorageIndex);
-    for (int i = 0; i < 999; i++)
+    for (unsigned int i = 0; i < m_program.size(); i++)
     {
         std::string filename = levelSource + StrUtils::Format("/prog%.3d%.3d.txt", m_programStorageIndex, i);
-        if (i >= static_cast<int>(m_program.size()))
-        {
-            CResourceManager::Remove(filename);
-            continue;
-        }
         if (!m_program[i]->filename.empty() && m_program[i]->readOnly) continue;
 
         GetLogger()->Trace("Saving program '%s' to saved scene\n", filename.c_str());
         WriteProgram(m_program[i].get(), filename);
         levelSourceLine->AddParam("scriptReadOnly" + StrUtils::ToString<int>(i+1), MakeUnique<CLevelParserParam>(m_program[i]->readOnly));
         levelSourceLine->AddParam("scriptRunnable" + StrUtils::ToString<int>(i+1), MakeUnique<CLevelParserParam>(m_program[i]->runnable));
+    }
+
+    boost::regex regex(StrUtils::Format("prog%.3d([0-9]{3})\\.txt", m_programStorageIndex));
+    for (const std::string& filename : CResourceManager::ListFiles(levelSource))
+    {
+        boost::smatch matches;
+        if (boost::regex_match(filename, matches, regex))
+        {
+            unsigned int id = boost::lexical_cast<unsigned int>(matches[1]);
+            if (id >= m_program.size() || !m_program[id]->filename.empty())
+            {
+                GetLogger()->Trace("Removing old program '%s/%s' from saved scene\n", levelSource.c_str(), filename.c_str());
+                CResourceManager::Remove(levelSource+"/"+filename);
+            }
+        }
     }
 }
 
