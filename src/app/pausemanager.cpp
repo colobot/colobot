@@ -64,15 +64,26 @@ void CPauseManager::DeactivatePause(ActivePause* pause)
 {
     if (pause == nullptr) return;
     //GetLogger()->Debug("Deactivated pause mode - %s\n", GetPauseName(pause->type).c_str());
-    m_activePause.erase(std::remove_if(
+    auto it = std::remove_if(
         m_activePause.begin(), m_activePause.end(),
-        [&](const std::unique_ptr<ActivePause>& x) { return x.get() == pause; })
+        [&](const std::unique_ptr<ActivePause>& x) { return x.get() == pause; }
     );
+    if (it == m_activePause.end())
+    {
+        GetLogger()->Warn("Releasing previously not deactivated pause now!\n");
+        std::free(pause);
+    }
+    m_activePause.erase(it);
     Update();
 }
 
 void CPauseManager::FlushPause()
 {
+    for (auto& pause : m_activePause)
+    {
+        GetLogger()->Warn("Pause not deactivated before phase change!\n");
+        pause.release();
+    }
     m_activePause.clear();
 }
 
