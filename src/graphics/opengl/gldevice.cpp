@@ -182,7 +182,11 @@ bool CGLDevice::Create()
         return false;
     }
 
-    GetLogger()->Info("OpenGL %d.%d\n", glMajor, glMinor);
+    const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+    const char* renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+
+    GetLogger()->Info("OpenGL %s\n", version);
+    GetLogger()->Info("%s\n", renderer);
 
     // Detect multitexture support
     m_multitextureAvailable = glewIsSupported("GL_ARB_multitexture GL_ARB_texture_env_combine");

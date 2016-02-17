@@ -261,11 +261,20 @@ private:
     //! Currently bound VAO
     GLuint m_currentVAO = 0;
 
+    //! Total memory allocated in textures
+    unsigned long m_textureMemory = 0;
+    //! Total memory allocated in VBOs
+    unsigned long m_vboMemory = 0;
+
     //! Map of framebuffers
     std::map<std::string, std::unique_ptr<CFramebuffer>> m_framebuffers;
 
-    //! Shader program
-    GLuint m_shaderProgram = 0;
+    //! Shader program for normal rendering
+    GLuint m_normalProgram = 0;
+    //! Shader program for interface rendering
+    GLuint m_interfaceProgram = 0;
+    //! Shader program for shadow rendering
+    GLuint m_shadowProgram = 0;
     //! true enables per-pixel lighting
     bool m_perPixelLighting = false;
 
@@ -278,76 +287,12 @@ private:
     //! Dynamic buffer offset
     unsigned int m_bufferOffset = 0;
 
-    // Uniforms
-    //! Projection matrix
-    GLint uni_ProjectionMatrix = 0;
-    //! View matrix
-    GLint uni_ViewMatrix = 0;
-    //! Model matrix
-    GLint uni_ModelMatrix = 0;
-    //! Shadow matrix
-    GLint uni_ShadowMatrix = 0;
-    //! Normal matrix
-    GLint uni_NormalMatrix = 0;
-
-    //! Primary texture sampler
-    GLint uni_PrimaryTexture = 0;
-    //! Secondary texture sampler
-    GLint uni_SecondaryTexture = 0;
-    //! Shadow texture sampler
-    GLint uni_ShadowTexture = 0;
-
-    GLint uni_PrimaryTextureEnabled = 0;
-    GLint uni_SecondaryTextureEnabled = 0;
-    GLint uni_ShadowTextureEnabled = 0;
-
-    // Fog parameters
-    //! true enables fog
-    GLint uni_FogEnabled = 0;
-    //! Fog range
-    GLint uni_FogRange = 0;
-    //! Fog color
-    GLint uni_FogColor = 0;
-
-    // Alpha test parameters
-    //! true enables alpha test
-    GLint uni_AlphaTestEnabled = 0;
-    //! Alpha test reference value
-    GLint uni_AlphaReference = 0;
-
-    //! Shadow color
-    GLint uni_ShadowColor = 0;
-
-    // Lighting parameters
-    GLint uni_SmoothShading = 0;
-    //! true enables lighting
-    GLint uni_LightingEnabled = 0;
-    //! Ambient color
-    GLint uni_AmbientColor = 0;
-    //! Diffuse color
-    GLint uni_DiffuseColor = 0;
-    //! Specular color
-    GLint uni_SpecularColor = 0;
-
-    struct LightUniforms
-    {
-        //! true enables light
-        GLint Enabled = 0;
-        //! Light type
-        GLint Type = 0;
-        //! Position or direction vector
-        GLint Position = 0;
-        //! Ambient color
-        GLint Ambient = 0;
-        //! Diffuse color
-        GLint Diffuse = 0;
-        //! Specular color
-        GLint Specular = 0;
-        //! Attenuation
-        GLint Attenuation = 0;
-    };
-
-    LightUniforms uni_Light[8];
+    //! Current mode
+    unsigned int m_mode = 0;
+    //! Uniform locations for all modes
+    UniformLocations m_uniforms[3];
+    //! Uniform locations for current mode
+    UniformLocations* m_uni = nullptr;
 };
 
 } // namespace Gfx

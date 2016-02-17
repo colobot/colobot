@@ -28,7 +28,9 @@
 
 #include <physfs.h>
 #include <cstring>
+#include <vector>
 #include <sstream>
+#include <algorithm>
 
 // Graphics module namespace
 namespace Gfx
@@ -93,11 +95,75 @@ int GetOpenGLVersion()
 
 int GetOpenGLVersion(int &major, int &minor)
 {
-    const char *version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-
-    sscanf(version, "%d.%d", &major, &minor);
+    glGetIntegerv(GL_MAJOR_VERSION, &major);
+    glGetIntegerv(GL_MINOR_VERSION, &minor);
 
     return 10 * major + minor;
+}
+
+bool AreExtensionsSupported(std::string list)
+{
+    // Extract extensions to find
+    std::vector<std::string> extensions;
+    std::stringstream stream(list);
+
+    std::string value;
+
+    while (true)
+    {
+        stream >> value;
+
+        if (stream.eof())
+            break;
+
+        extensions.push_back(value);
+    }
+
+    int version = GetOpenGLVersion();
+
+    // Use glGetString
+    if (version < 30)
+    {
+        const char* text = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
+
+        stream = std::stringstream(text);
+
+        while (!extensions.empty())
+        {
+            stream >> value;
+
+            if (stream.eof())
+                break;
+
+            auto result = std::remove(extensions.begin(), extensions.end(), value);
+
+            if (result != extensions.end())
+                extensions.erase(result);
+        }
+    }
+    // Use glGetStringi
+    else
+    {
+        int n;
+        glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+
+        for (int i = 0; i < n; i++)
+        {
+            const char* name = reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, i));
+            value = std::string(name);
+
+            auto result = std::remove(extensions.begin(), extensions.end(), value);
+
+            if (result != extensions.end())
+                extensions.erase(result);
+
+            if (extensions.empty())
+                break;
+        }
+    }
+
+    // Return true if found all required extensions
+    return extensions.empty();
 }
 
 std::string GetHardwareInfo(bool full)

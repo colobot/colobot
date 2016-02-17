@@ -18,7 +18,7 @@
  */
 
 // VERTEX SHADER - PER-VERTEX LIGHTING
-#version 330
+#version 330 core
 
 struct LightParams
 {

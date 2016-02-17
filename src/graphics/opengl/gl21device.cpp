@@ -187,7 +187,11 @@ bool CGL21Device::Create()
         return false;
     }
 
-    GetLogger()->Info("OpenGL %d.%d\n", glMajor, glMinor);
+    const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+    const char* renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+
+    GetLogger()->Info("OpenGL %s\n", version);
+    GetLogger()->Info("%s\n", renderer);
 
     // Detect support of anisotropic filtering
     m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
@@ -273,6 +277,7 @@ bool CGL21Device::Create()
     if (shaders[0] == 0)
     {
         m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Count not create vertex shader from file '%s'\n", filename);
         return false;
     }
 
@@ -281,7 +286,7 @@ bool CGL21Device::Create()
     if (shaders[1] == 0)
     {
         m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Count not create vertex shader from file '%s'\n", filename);
+        GetLogger()->Error("Count not create fragment shader from file '%s'\n", filename);
         return false;
     }
 

@@ -18,7 +18,7 @@
  */
 
 // FRAGMENT SHADER - PER-VERTEX LIGHTING
-#version 330
+#version 330 core
 
 uniform sampler2D uni_PrimaryTexture;
 uniform sampler2D uni_SecondaryTexture;
