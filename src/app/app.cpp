@@ -466,8 +466,11 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                     m_glProfile = SDL_GL_CONTEXT_PROFILE_ES;
                     m_glProfileOverride = true;
                 }
-
-                GetLogger()->Error("Invalid OpenGL profile: %s\n", optarg);
+                else
+                {
+                    GetLogger()->Error("Invalid OpenGL profile: %s\n", optarg);
+                    return PARSE_ARGS_FAIL;
+                }
                 break;
             }
             default:
