@@ -95,8 +95,9 @@ int GetOpenGLVersion()
 
 int GetOpenGLVersion(int &major, int &minor)
 {
-    glGetIntegerv(GL_MAJOR_VERSION, &major);
-    glGetIntegerv(GL_MINOR_VERSION, &minor);
+    const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+
+    sscanf(version, "%d.%d", &major, &minor);
 
     return 10 * major + minor;
 }
