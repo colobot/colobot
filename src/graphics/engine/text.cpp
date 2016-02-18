@@ -983,9 +983,10 @@ CachedFont* CText::GetOrOpenFont(FontType font, float size)
     auto file = CResourceManager::GetSDLMemoryHandler(mf->fileName);
     if (!file->IsOpen())
     {
-        m_error = std::string("Unable to open file");
+        m_error = std::string("Unable to open file '") + mf->fileName + "' (font size = " + StrUtils::ToString<float>(size) + ")";
         return nullptr;
     }
+    GetLogger()->Debug("Loaded font file %s (font size = %.1f)\n", mf->fileName.c_str(), size);
 
     auto newFont = MakeUnique<CachedFont>(std::move(file), pointSize);
     if (newFont->font == nullptr)

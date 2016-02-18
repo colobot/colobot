@@ -29,6 +29,8 @@
 CSDLMemoryWrapper::CSDLMemoryWrapper(const std::string& filename)
     : m_rwops(nullptr)
 {
+    GetLogger()->Trace("Opening SDL memory wrapper for file '%s'\n", filename.c_str());
+
     if (!PHYSFS_isInit())
     {
         GetLogger()->Error("PHYSFS not initialized!\n");
