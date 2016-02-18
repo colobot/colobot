@@ -125,8 +125,7 @@ bool AreExtensionsSupported(std::string list)
     if (version < 30)
     {
         const char* text = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
-
-        stream = std::stringstream(text);
+        std::stringstream stream(text);
 
         while (!extensions.empty())
         {
