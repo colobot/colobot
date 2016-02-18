@@ -27,6 +27,7 @@
 #include "graphics/core/device.h"
 
 #include "math/intpoint.h"
+#include "math/vector.h"
 
 #include <GL/glew.h>
 
@@ -60,7 +61,9 @@ int GetOpenGLVersion();
 // \return First digit is major part, second digit is minor part.
 int GetOpenGLVersion(int &major, int &minor);
 
-bool AreExtensionsSupported(std::string extensions);
+//! Checks if extensions in space-delimited list are supported
+// \return true if all extensions are supported
+bool AreExtensionsSupported(std::string list);
 
 //! Returns information about graphics card
 std::string GetHardwareInfo(bool full = false);

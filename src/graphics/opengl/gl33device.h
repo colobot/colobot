@@ -261,8 +261,6 @@ private:
     //! Currently bound VAO
     GLuint m_currentVAO = 0;
 
-    //! Total memory allocated in textures
-    unsigned long m_textureMemory = 0;
     //! Total memory allocated in VBOs
     unsigned long m_vboMemory = 0;
 
