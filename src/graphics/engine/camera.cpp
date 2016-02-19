@@ -1089,7 +1089,7 @@ bool CCamera::EventMouseMove(const Event &event)
         m_engine->SetMouseType(ENG_MOUSE_NORM);
     }
 
-    if ((event.mouseButtonsState & MOUSE_BUTTON_RIGHT) != 0)
+    if ((event.mouseButtonsState & MOUSE_BUTTON_RIGHT) != 0 || (event.mouseButtonsState & MOUSE_BUTTON_MIDDLE) != 0)
     {
         Math::Point newDelta = event.mousePos - m_mousePos;
         if (m_cameraInvertX)
@@ -1177,9 +1177,9 @@ void CCamera::EventMouseWheel(const Event &event)
 
 void CCamera::EventMouseButton(const Event &event)
 {
-    if (event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_RIGHT)
+    if (event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_RIGHT || event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_MIDDLE)
     {
-        if (event.type == EVENT_MOUSE_BUTTON_DOWN)
+        if ((event.mouseButtonsState & MOUSE_BUTTON_RIGHT) != 0 || (event.mouseButtonsState & MOUSE_BUTTON_MIDDLE) != 0)
         {
             m_engine->SetMouseType(ENG_MOUSE_MOVE);
         }
