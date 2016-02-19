@@ -22,6 +22,11 @@
 #include <string>
 
 /**
+ * \file sound/sound_type.h
+ * \brief Defines the SoundType enum
+ */
+
+/**
  * \public
  * \enum    SoundType
  * \brief   Enum representing sound file
@@ -29,7 +34,7 @@
 enum SoundType
 {
   SOUND_NONE = -1,      /*!< Mute. */
-  SOUND_CLICK = 0,      /*!< Blank sound sample. Unused? */
+  SOUND_CLICK = 0,      /*!< Keybinding change. */
   SOUND_BOUM  = 1,      /*!< Landing on ground bump. */
   SOUND_EXPLO  = 2,     /*!< Building explosion. */
   SOUND_FLYh  = 3,      /*!< Jet engine (SpaceShip) landing. */
@@ -44,7 +49,7 @@ enum SoundType
   SOUND_PLOUF  = 12,    /*!< Water splash. */
   SOUND_BLUP  = 13,     /*!< Swimming #1. */
   SOUND_WARNING  = 14,  /*!< DisplayWarning message. */
-  SOUND_DERRICK  = 15,  /*!< Derrick digging. (?) */
+  SOUND_DERRICK  = 15,  /*!< Derrick digging. */
   SOUND_LABO  = 16,     /*!< AutoLab processing sample. */
   SOUND_STATION  = 17,  /*!< PowerStation recharging #2/Sparkle in menu #2. */
   SOUND_REPAIR  = 18,   /*!< RepairCenter/Sniffer working. */
@@ -52,15 +57,15 @@ enum SoundType
   SOUND_INSECTs  = 20,  /*!< AlienSpider roar. */
   SOUND_BURN  = 21,     /*!< Burning. */
   SOUND_TZOING  = 22,   /*!< EPSITEC's Brand "TZOING!". */
-  SOUND_GGG  = 23,      /*!< Electricity. */
+  SOUND_GGG  = 23,      /*!< Electricity/Menu particle sound #2. */
   SOUND_MANIP  = 24,    /*!< Bot's mechanic arm manipulating. */
   SOUND_FIRE  = 25,     /*!< ShooterBots shooting. */
   SOUND_HUMAN1  = 26,   /*!< Astronaut breathing. */
   SOUND_STEPw  = 27,    /*!< Step under the water. */
   SOUND_SWIM  = 28,     /*!< Swimming #2. */
-  SOUND_RADAR  = 29,    /*!< RadarStation "DING!". */
-  SOUND_BUILD  = 30,    /*!< Building processing/Sparkle in menu #3. */
-  SOUND_ALARM  = 31,    /*!< Bot energy alarm. */
+  SOUND_RADAR  = 29,    /*!< RadarStation "DING!"/Sparkle in menu #5. */
+  SOUND_BUILD  = 30,    /*!< Building processing */
+  SOUND_ALARM  = 31,    /*!< Bot energy alarm/Sparkle in menu #3. */
   SOUND_SLIDE  = 32,    /*!< WingedBot engine. */
   SOUND_EXPLOi  = 33,   /*!< AlienInsect exploding scream. */
   SOUND_INSECTa  = 34,  /*!< AlienAnt roar. */
@@ -68,9 +73,9 @@ enum SoundType
   SOUND_INSECTw  = 36,  /*!< AlienWorm roar. */
   SOUND_INSECTm  = 37,  /*!< AlienQueen roar. */
   SOUND_TREMBLE  = 38,  /*!< Building ambient. */
-  SOUND_PSHHH  = 39,    /*!< SpecialBot engine "PSHHH!". */
+  SOUND_PSHHH  = 39,    /*!< SpecialBot engine "PSHHH!"/Menu particle sound #1. */
   SOUND_NUCLEAR  = 40,  /*!< NuclearPlant processing. */
-  SOUND_INFO  = 41,     /*!< DisplayInfo message. */
+  SOUND_INFO  = 41,     /*!< DisplayInfo message/Sparkle in menu #4. */
   SOUND_OPEN  = 42,     /*!< Converter open/close. */
   SOUND_CLOSE  = 43,    /*!< Converter slam. */
   SOUND_FACTORY  = 44,  /*!< BotFactory processing. */
@@ -93,16 +98,16 @@ enum SoundType
   SOUND_POWERON  = 61,  /*!< Power on. */
   SOUND_POWEROFF  = 62, /*!< Power off. */
   SOUND_AIE  = 63,      /*!< Astronaut pain "AIE!". */
-  SOUND_WAYPOINT  = 64, /*!< WayPoint/Target2 activate. */
-  SOUND_RECOVER  = 65,  /*!< Neutralized AlienInsect's fire under the shield. */ /*!< POSSIBLY DUPLICATE OF SOUND_GUNDEL=50 */
+  SOUND_WAYPOINT  = 64, /*!< WayPoint/Target2 activate, placing a flag. */
+  SOUND_RECOVER  = 65,  /*!< Recycler sound. */ /* DUPLICATE OF SOUND_GUNDEL=50 */
   SOUND_DEADi  = 66,    /*!< AlienInsect dying scream. */
   SOUND_JOSTLE  = 67,   /*!< Leaf shaking. */
-  SOUND_GFLAT  = 68,    /*!< FlatGround probing. */
+  SOUND_GFLAT  = 68,    /*!< FlatGround probing/Sparkle in menu #6. */
   SOUND_DEADg  = 69,    /*!< Astronaut death "AU!". */
   SOUND_DEADw  = 70,    /*!< Astronaut drown "AHU!AHU!". */
   SOUND_FLYf  = 71,     /*!< Jet engine Overheating. */
-  SOUND_ALARMt  = 72,   /*!< Bot temperature alarm/Sparkle in menu #4. */
-  SOUND_FINDING  = 73,  /*!< ProxyActivating an object. */ /*!< POSSIBLY DUPLICATE OF SOUND_WAYPOINT=64 */
+  SOUND_ALARMt  = 72,   /*!< Bot temperature alarm/Sparkle in menu #7. */
+  SOUND_FINDING  = 73,  /*!< ProxyActivating an object, opening Vault. */ /* DUPLICATE OF SOUND_WAYPOINT=64 */
   SOUND_THUMP  = 74,    /*!< Thumper thumping. */
   SOUND_TOUCH  = 75,    /*!< Bot getting damage. */
   SOUND_BLITZ  = 76,    /*!< Thunder. */

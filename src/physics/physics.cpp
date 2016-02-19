@@ -2555,7 +2555,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     m_bCollision = true;
                     m_bObstacle = true;
 
-                    if (crashSphere.sound != SOUND_CLICK)
+                    if (crashSphere.sound != SOUND_NONE)
                     {
                         force = fabs(m_linMotion.realSpeed.x);
                         force *= crashSphere.hardness*2.0f;
@@ -2569,7 +2569,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     force *= crashSphere.hardness;
                     volume = fabs(force*0.05f);
                     if ( volume > 1.0f )  volume = 1.0f;
-                    if ( crashSphere.sound != SOUND_CLICK )
+                    if ( crashSphere.sound != SOUND_NONE )
                     {
                         m_sound->Play(crashSphere.sound, m_object->GetPosition(), volume);
                     }

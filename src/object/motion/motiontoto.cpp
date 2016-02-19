@@ -819,13 +819,13 @@ Error CMotionToto::SetAction(int action, float time)
 
     m_bStartAction = true;
 
-    sound = SOUND_CLICK;
+    sound = SOUND_NONE;
     if ( action == MT_ERROR   )  sound = SOUND_ERROR;
     if ( action == MT_WARNING )  sound = SOUND_WARNING;
     if ( action == MT_INFO    )  sound = SOUND_INFO;
     if ( action == MT_MESSAGE )  sound = SOUND_MESSAGE;
 
-    if ( sound != SOUND_CLICK )
+    if ( sound != SOUND_NONE )
     {
         m_soundChannel = m_sound->Play(sound, m_object->GetPosition());
     }

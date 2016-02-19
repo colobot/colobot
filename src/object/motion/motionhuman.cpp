@@ -1540,8 +1540,8 @@ bool CMotionHuman::EventFrame(const Event &event)
             }
             volume[1] = volume[0];
             freq[1] = freq[0];
-            sound[0] = SOUND_CLICK;
-            sound[1] = SOUND_CLICK;
+            sound[0] = SOUND_NONE;
+            sound[1] = SOUND_NONE;
 
             pos = m_object->GetPosition();
 
@@ -1581,11 +1581,11 @@ bool CMotionHuman::EventFrame(const Event &event)
                 }
             }
 
-            if ( sound[0] != SOUND_CLICK )
+            if ( sound[0] != SOUND_NONE )
             {
                 m_sound->Play(sound[0], pos, volume[0], freq[0]);
             }
-            if ( sound[1] != SOUND_CLICK )
+            if ( sound[1] != SOUND_NONE )
             {
                 m_sound->Play(sound[1], pos, volume[1], freq[1]);
             }

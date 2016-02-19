@@ -284,13 +284,13 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     }
     else
     {
-        sound = SOUND_CLICK;
+        sound = SOUND_NONE;
         if ( type == TT_ERROR   )  sound = SOUND_ERROR;
         if ( type == TT_WARNING )  sound = SOUND_WARNING;
         if ( type == TT_INFO    )  sound = SOUND_INFO;
         if ( type == TT_MESSAGE )  sound = SOUND_MESSAGE;
 
-        if ( sound != SOUND_CLICK )
+        if ( sound != SOUND_NONE )
         {
             m_sound->Play(sound);
         }
