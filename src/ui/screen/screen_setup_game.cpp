@@ -69,6 +69,9 @@ void CScreenSetupGame::CreateInterface()
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_MOVIES);
     pc->SetState(STATE_SHADOW);
     pos.y -= 0.048f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SCROLL);
+    pc->SetState(STATE_SHADOW);
+    pos.y -= 0.048f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_INVERTX);
     pc->SetState(STATE_SHADOW);
     pos.y -= 0.048f;
@@ -210,6 +213,12 @@ bool CScreenSetupGame::EventProcess(const Event &event)
             UpdateSetupButtons();
             break;
 
+        case EVENT_INTERFACE_SCROLL:
+            m_camera->SetOldCameraScroll(!m_camera->GetOldCameraScroll());
+            ChangeSetupButtons();
+            UpdateSetupButtons();
+            break;
+
         case EVENT_INTERFACE_INVERTX:
             m_camera->SetCameraInvertX(!m_camera->GetCameraInvertX());
             ChangeSetupButtons();
@@ -311,6 +320,12 @@ void CScreenSetupGame::UpdateSetupButtons()
     if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_settings->GetMovies());
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SCROLL));
+    if ( pc != nullptr )
+    {
+        pc->SetState(STATE_CHECK, m_camera->GetOldCameraScroll());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTX));

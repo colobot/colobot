@@ -1311,6 +1311,10 @@ msgstr "Speichern\\Aktuelle Mission speichern"
 msgid "Save\\Saves the current mission"
 msgstr "Speichern\\Speichert die Mission"
 
+msgid "Scrolling\\Scrolling when the mouse touches right or left border"
+msgstr ""
+"Kameradrehung mit der Maus\\Die Kamera dreht wenn die Maus den Rand erreicht"
+
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Astronauten auswählen\\Astronauten auswählen"
 
@@ -1900,11 +1904,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Robby\\Ihr Assistent"
-
-#~ msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-#~ msgstr ""
-#~ "Kameradrehung mit der Maus\\Die Kamera dreht wenn die Maus den Rand "
-#~ "erreicht"
 
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Himmel\\Himmel und Wolken"

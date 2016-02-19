@@ -1299,6 +1299,11 @@ msgstr "Enregistrer\\Enregistrer la mission en cours"
 msgid "Save\\Saves the current mission"
 msgstr "Enregistrer\\Enregistrer la mission en cours"
 
+msgid "Scrolling\\Scrolling when the mouse touches right or left border"
+msgstr ""
+"Défilement dans les bords\\Défilement lorsque la souris touches les bords "
+"gauche ou droite"
+
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Sélectionner le cosmonaute\\Sélectionner le cosmonaute"
 
@@ -1886,11 +1891,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Robbie\\Votre assistant"
-
-#~ msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-#~ msgstr ""
-#~ "Défilement dans les bords\\Défilement lorsque la souris touches les bords "
-#~ "gauche ou droite"
 
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Ciel\\Ciel et nuages"

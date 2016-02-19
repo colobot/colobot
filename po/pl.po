@@ -1307,6 +1307,11 @@ msgstr "Zapisz\\Zapisuje bieżącą misję"
 msgid "Save\\Saves the current mission"
 msgstr "Zapisz\\Zapisuje bieżącą misję"
 
+msgid "Scrolling\\Scrolling when the mouse touches right or left border"
+msgstr ""
+"Przewijanie\\Ekran jest przewijany gdy mysz dotknie prawej lub lewej jego "
+"krawędzi"
+
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Zaznacz astronautę\\Zaznacza astronautę"
 
@@ -1879,11 +1884,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Robbie\\Your assistant"
 #~ msgstr "Robbie\\Twój asystent"
-
-#~ msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-#~ msgstr ""
-#~ "Przewijanie\\Ekran jest przewijany gdy mysz dotknie prawej lub lewej jego "
-#~ "krawędzi"
 
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Niebo\\Chmury i mgławice"

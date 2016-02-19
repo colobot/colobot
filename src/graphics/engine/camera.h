@@ -204,6 +204,8 @@ public:
     bool        GetEffect();
     void        SetBlood(bool enable);
     bool        GetBlood();
+    void        SetOldCameraScroll(bool scroll);
+    bool        GetOldCameraScroll();
     void        SetCameraInvertX(bool invert);
     bool        GetCameraInvertX();
     void        SetCameraInvertY(bool invert);
@@ -342,9 +344,10 @@ protected:
 
     float        m_remotePan;
 
-    bool         m_mouseRightDown = false;
+    //! Last known mouse position, used to calculate change since last frame
     Math::Point  m_mousePos = Math::Point(0.5f, 0.5f);
     Math::Point  m_mouseDelta = Math::Point(0.0f, 0.0f);
+    Math::Point  m_mouseDeltaEdge = Math::Point(0.0f, 0.0f);
 
     CenteringPhase m_centeringPhase;
     float       m_centeringAngleH;
@@ -378,7 +381,7 @@ protected:
     //! Blood?
     bool        m_blood;
     //! Scroll in the edges?
-    bool        m_cameraScroll;
+    bool m_oldCameraScroll;
     //! X inversion in the edges?
     bool        m_cameraInvertX;
     //! Y inversion in the edges?
