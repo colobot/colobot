@@ -1133,6 +1133,9 @@ bool CCamera::EventMouseMove(const Event &event)
             if (m_mouseDeltaEdge.y < 0.0f)
                 m_engine->SetMouseType(ENG_MOUSE_SCROLLD);
         }
+
+        m_mouseDeltaEdge.x /= 2*Math::PI;
+        m_mouseDeltaEdge.y /= Math::PI;
     }
 
     m_mousePos = event.mousePos;
@@ -1315,11 +1318,13 @@ bool CCamera::EventFrameEdit(const Event &event)
 {
     float factor = m_editHeight * 0.5f + 30.0f;
 
-    m_directionH -= m_mouseDelta.x * 2*Math::PI;
+    m_directionH -= m_mouseDelta.x * 0.7f * 2*Math::PI;
     m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, m_mouseDelta.y * factor * m_speed);
-    m_mouseDelta.LoadZero();
 
+    m_fixDirectionH += m_mouseDelta.x * 2*Math::PI;
     m_fixDirectionH = Math::NormAngle(m_fixDirectionH);
+
+    m_mouseDelta.LoadZero();
 
     m_terrain->AdjustToBounds(m_eyePt, 10.0f);
 
