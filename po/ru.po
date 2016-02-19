@@ -326,6 +326,12 @@ msgstr "Отдалить камеру"
 msgid "Camera back\\Moves the camera backward"
 msgstr "Отдалить камеру\\Перемещение камеры назад"
 
+#, fuzzy
+msgid ""
+"Camera border scrolling\\Scrolling when the mouse touches right or left "
+"border"
+msgstr "Прокрутка\\Прокрутка, когда указатель мыши касается граней экрана"
+
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Приблизать камеру\\Перемещение камеры вперед"
 
@@ -1305,9 +1311,6 @@ msgstr "Сохранить\\Сохранить текущую миссию"
 
 msgid "Save\\Saves the current mission"
 msgstr "Сохранить\\Сохранить текущую миссию"
-
-msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-msgstr "Прокрутка\\Прокрутка, когда указатель мыши касается граней экрана"
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Выбор астронавта\\Выбор астронавта"

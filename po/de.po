@@ -331,6 +331,13 @@ msgstr "Kamera weiter weg"
 msgid "Camera back\\Moves the camera backward"
 msgstr "Kamera weiter\\Bewegung der Kamera rückwärts"
 
+#, fuzzy
+msgid ""
+"Camera border scrolling\\Scrolling when the mouse touches right or left "
+"border"
+msgstr ""
+"Kameradrehung mit der Maus\\Die Kamera dreht wenn die Maus den Rand erreicht"
+
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera näher\\Bewegung der Kamera vorwärts"
 
@@ -1310,10 +1317,6 @@ msgstr "Speichern\\Aktuelle Mission speichern"
 
 msgid "Save\\Saves the current mission"
 msgstr "Speichern\\Speichert die Mission"
-
-msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-msgstr ""
-"Kameradrehung mit der Maus\\Die Kamera dreht wenn die Maus den Rand erreicht"
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Astronauten auswählen\\Astronauten auswählen"

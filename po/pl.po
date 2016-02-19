@@ -334,6 +334,12 @@ msgstr "Camera awayest"
 msgid "Camera back\\Moves the camera backward"
 msgstr "Kamera dalej\\Oddala kamerę"
 
+msgid ""
+"Camera border scrolling\\Scrolling when the mouse touches right or left "
+"border"
+msgstr ""
+"Przewijanie kamery przy krawędzi\\Ekran jest przewijany gdy mysz dotknie prawej lub lewej jego krawędzi"
+
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera bliżej\\Przybliża kamerę"
 
@@ -1306,11 +1312,6 @@ msgstr "Zapisz\\Zapisuje bieżącą misję"
 
 msgid "Save\\Saves the current mission"
 msgstr "Zapisz\\Zapisuje bieżącą misję"
-
-msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-msgstr ""
-"Przewijanie\\Ekran jest przewijany gdy mysz dotknie prawej lub lewej jego "
-"krawędzi"
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Zaznacz astronautę\\Zaznacza astronautę"
