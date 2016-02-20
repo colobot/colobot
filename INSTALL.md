@@ -67,7 +67,6 @@ You will need:
  * libogg >= 1.3.0
  * OpenAL (OpenAL-Soft) >= 1.13
  * PhysFS
- * po4a >= 0.45 (to generate translated data files)
  * oggenc (to generate music files)
 
 On Ubuntu (and probably any other Debian-based system), you can use the following command to install all required packages:
