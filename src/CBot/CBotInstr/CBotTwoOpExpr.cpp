@@ -31,6 +31,7 @@
 #include "CBot/CBotVar/CBotVar.h"
 
 #include <cassert>
+#include <algorithm>
 
 namespace CBot
 {
