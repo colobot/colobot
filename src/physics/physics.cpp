@@ -2870,16 +2870,9 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 
 void CPhysics::FrameParticle(float aTime, float rTime)
 {
-    Math::Vector    pos;
-    /*float       intensity;*/
-    int         effectLight;
-    //bool        bFlash;
-
     m_restBreakParticle -= rTime;
     if ( aTime-m_lastPowerParticle < m_engine->ParticleAdapt(0.05f) )  return;
     m_lastPowerParticle = aTime;
-
-    //bFlash = false;
 
     float energy = GetObjectEnergyLevel(m_object);
 
@@ -2888,7 +2881,6 @@ void CPhysics::FrameParticle(float aTime, float rTime)
         if ( energy > m_lastEnergy )  // recharge?
         {
             PowerParticle(1.0f, false);
-            //bFlash = true;
         }
 
         if ( energy == 0.0f || m_lastEnergy == 0.0f )
@@ -2902,28 +2894,6 @@ void CPhysics::FrameParticle(float aTime, float rTime)
     if ( m_restBreakParticle > 0.0f )
     {
         PowerParticle(m_restBreakParticle/2.5f, (energy == 0));
-        //bFlash = true;
-    }
-
-    effectLight = m_object->GetEffectLight();
-    if ( effectLight != -1 )
-    {
-        /*
-         * TODO: this is supposed to flash lights of robot without power,
-         * but doesn't work correctly (e.g. beginning of scene201).
-         * Commenting out for the time being.
-         */
-        /*if ( bFlash )
-        {
-            intensity = 0.0f;
-            if ( Math::Rand() < 0.5f )  intensity = 1.0f;
-            m_lightMan->SetLightIntensity(effectLight, intensity);
-            m_lightMan->SetLightIntensitySpeed(effectLight, 10000.0f);
-        }
-        else
-        {*/
-            m_lightMan->SetLightIntensity(effectLight, 0.0f);
-        /*}*/
     }
 }
 

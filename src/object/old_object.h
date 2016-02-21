@@ -130,7 +130,6 @@ public:
     void        SetDrawFront(bool bDraw) override;
 
     int         GetShadowLight();
-    int         GetEffectLight();
 
     void        SetFloorHeight(float height);
     void        FloorAdjust() override;
