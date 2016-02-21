@@ -113,7 +113,6 @@ COldObject::COldObject(int id)
     m_name = "";
     m_shadowLight   = -1;
     m_shadowHeight  = 0.0f;
-    m_effectHeight  = 0.0f;
     m_linVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_cirVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_tilt   = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -124,7 +123,6 @@ COldObject::COldObject(int id)
     m_transporterLink = 0;
     m_shield   = 1.0f;
     m_range    = 30.0f;
-    m_transparency = 0.0f;
     m_lastEnergy = 999.9f;
     m_bSelect = false;
     m_bSelectable = true;
@@ -138,7 +136,6 @@ COldObject::COldObject(int id)
     m_bVirusMode = false;
     m_virusTime = 0.0f;
     m_lastVirusParticle = 0.0f;
-    m_bCargo = false;
     m_dying = DeathType::Alive;
     m_bFlat  = false;
     m_gunGoalV = 0.0f;
@@ -1661,17 +1658,6 @@ int COldObject::GetShadowLight()
     return m_shadowLight;
 }
 
-// Creates light for the effects of a vehicle.
-
-bool COldObject::CreateEffectLight(float height, Gfx::Color color)
-{
-    if ( !m_engine->GetLightMode() )  return true;
-
-    m_effectHeight = height;
-
-    return true;
-}
-
 // Creates the circular shadow underneath a vehicle.
 
 bool COldObject::CreateShadowCircle(float radius, float intensity,
@@ -2434,8 +2420,6 @@ float COldObject::GetReactorRange()
 void COldObject::SetTransparency(float value)
 {
     int     i;
-
-    m_transparency = value;
 
     for ( i=0 ; i<m_totalPart ; i++ )
     {
