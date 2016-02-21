@@ -484,7 +484,6 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
         if (rank != -1)
         {
             Light light = m_dynLights[rank].light;
-            light.ambient = Gfx::Color(0.2f, 0.2f, 0.2f);
             m_device->SetLight(i, light);
             m_device->SetLightEnabled(i, true);
         }
