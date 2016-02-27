@@ -312,7 +312,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -mod path           load datadir mod from given path\n");
                 GetLogger()->Message("  -resolution WxH     set resolution\n");
                 GetLogger()->Message("  -headless           headless mode - disables graphics, sound and user interaction\n");
-                GetLogger()->Message("  -graphics           changes graphics device (defaults to opengl)\n");
+                GetLogger()->Message("  -graphics           changes graphics device (one of: default, auto, opengl, gl14, gl21, gl33\n");
                 GetLogger()->Message("  -glversion          sets OpenGL context version to use (either default or version in format #.#)\n");
                 GetLogger()->Message("  -glprofile          sets OpenGL context profile to use (one of: default, core, compatibility, opengles)\n");
                 return PARSE_ARGS_HELP;
@@ -772,19 +772,22 @@ bool CApplication::CreateVideoSurface()
         }
     }
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, profile);
-
-    switch (profile)
+    if (profile != 0)
     {
-    case SDL_GL_CONTEXT_PROFILE_CORE:
-        GetLogger()->Info("Requesting OpenGL core profile\n");
-        break;
-    case SDL_GL_CONTEXT_PROFILE_COMPATIBILITY:
-        GetLogger()->Info("Requesting OpenGL compatibility profile\n");
-        break;
-    case SDL_GL_CONTEXT_PROFILE_ES:
-        GetLogger()->Info("Requesting OpenGL ES profile\n");
-        break;
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, profile);
+
+        switch (profile)
+        {
+        case SDL_GL_CONTEXT_PROFILE_CORE:
+            GetLogger()->Info("Requesting OpenGL core profile\n");
+            break;
+        case SDL_GL_CONTEXT_PROFILE_COMPATIBILITY:
+            GetLogger()->Info("Requesting OpenGL compatibility profile\n");
+            break;
+        case SDL_GL_CONTEXT_PROFILE_ES:
+            GetLogger()->Info("Requesting OpenGL ES profile\n");
+            break;
+        }
     }
 
     /* If hardware acceleration specifically requested, this will force the hw accel
