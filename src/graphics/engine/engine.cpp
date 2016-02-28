@@ -4170,6 +4170,9 @@ void CEngine::UpdateGroundSpotTextures()
     m_groundMark.drawIntensity = m_groundMark.intensity;
 
     m_firstGroundSpot = false;
+    
+    // Reload the model textures from cache now
+    LoadAllTextures();
 }
 
 void CEngine::DrawShadowSpots()
