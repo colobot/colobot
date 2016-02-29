@@ -169,7 +169,7 @@ bool CGLDevice::Create()
     }
 
     // Extract OpenGL version
-    int glMajor, glMinor;
+    int glMajor = 1, glMinor = 1;
     int glVersion = GetOpenGLVersion(glMajor, glMinor);
 
     if (glVersion < 13)
@@ -402,14 +402,14 @@ void CGLDevice::SetTransform(TransformType type, const Math::Matrix &matrix)
         m_worldMat = matrix;
         UpdateModelviewMatrix();
 
-        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
+        m_combinedMatrixOutdated = true;
     }
     else if (type == TRANSFORM_VIEW)
     {
         m_viewMat = matrix;
         UpdateModelviewMatrix();
 
-        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
+        m_combinedMatrixOutdated = true;
     }
     else if (type == TRANSFORM_PROJECTION)
     {
@@ -417,7 +417,7 @@ void CGLDevice::SetTransform(TransformType type, const Math::Matrix &matrix)
         glMatrixMode(GL_PROJECTION);
         glLoadMatrixf(m_projectionMat.Array());
 
-        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
+        m_combinedMatrixOutdated = true;
     }
     else if (type == TRANSFORM_SHADOW)
     {
@@ -1824,6 +1824,12 @@ void CGLDevice::DestroyStaticBuffer(unsigned int bufferId)
 
 int CGLDevice::ComputeSphereVisibility(const Math::Vector &center, float radius)
 {
+    if (m_combinedMatrixOutdated)
+    {
+        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
+        m_combinedMatrixOutdated = false;
+    }
+
     Math::Matrix &m = m_combinedMatrix;
 
     Math::Vector vec[6];
@@ -2066,7 +2072,7 @@ CFramebuffer* CGLDevice::CreateFramebuffer(std::string name, const FramebufferPa
     else
         return nullptr;
 
-    framebuffer->Create();
+    if (!framebuffer->Create()) return nullptr;
 
     CFramebuffer* framebufferPtr = framebuffer.get();
     m_framebuffers[name] = std::move(framebuffer);

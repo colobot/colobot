@@ -80,12 +80,12 @@ void main()
         vec4 diffuse = vec4(0.0f);
         vec4 specular = vec4(0.0f);
 
+        vec3 normal = (gl_FrontFacing ? data.Normal : -data.Normal);
+
         for(int i=0; i<8; i++)
         {
             if(uni_Light[i].Enabled)
             {
-                vec3 normal = (gl_FrontFacing ? data.Normal : -data.Normal);
-
                 vec3 lightDirection = vec3(0.0f);
                 float atten;
 

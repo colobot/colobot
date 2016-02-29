@@ -392,15 +392,18 @@ bool CGL21Device::Create()
         uni.shadowColor = glGetUniformLocation(m_normalProgram, "uni_ShadowColor");
         uni.lightingEnabled = glGetUniformLocation(m_normalProgram, "uni_LightingEnabled");
 
-        uni.ambientColor = glGetUniformLocation(m_normalProgram, "uni_AmbientColor");
-        uni.diffuseColor = glGetUniformLocation(m_normalProgram, "uni_DiffuseColor");
-        uni.specularColor = glGetUniformLocation(m_normalProgram, "uni_SpecularColor");
+        uni.ambientColor = glGetUniformLocation(m_normalProgram, "uni_Material.ambient");
+        uni.diffuseColor = glGetUniformLocation(m_normalProgram, "uni_Material.diffuse");
+        uni.specularColor = glGetUniformLocation(m_normalProgram, "uni_Material.specular");
 
         GLchar name[64];
         for (int i = 0; i < 8; i++)
         {
             sprintf(name, "uni_Light[%d].Enabled", i);
             uni.lights[i].enabled = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Type", i);
+            uni.lights[i].type = glGetUniformLocation(m_normalProgram, name);
 
             sprintf(name, "uni_Light[%d].Position", i);
             uni.lights[i].position = glGetUniformLocation(m_normalProgram, name);
@@ -416,6 +419,15 @@ bool CGL21Device::Create()
 
             sprintf(name, "uni_Light[%d].Attenuation", i);
             uni.lights[i].attenuation = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].SpotDirection", i);
+            uni.lights[i].spotDirection = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Exponent", i);
+            uni.lights[i].spotExponent = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].SpotCutoff", i);
+            uni.lights[i].spotCutoff = glGetUniformLocation(m_normalProgram, name);
         }
 
         // Set default uniform values
@@ -697,14 +709,27 @@ void CGL21Device::SetLight(int index, const Light &light)
 
     if (light.type == LIGHT_DIRECTIONAL)
     {
+        glUniform1i(loc.type, 1);
         glUniform4f(loc.position, -light.direction.x, -light.direction.y, -light.direction.z, 0.0f);
     }
-    else
+    else if (light.type == LIGHT_POINT)
     {
+        glUniform1i(loc.type, 2);
         glUniform4f(loc.position, light.position.x, light.position.y, light.position.z, 1.0f);
-    }
 
-    // TODO: add spotlight params
+        glUniform3f(loc.spotDirection, 0.0f, 1.0f, 0.0f);
+        glUniform1f(loc.spotCutoff, -1.0f);
+        glUniform1f(loc.spotExponent, 1.0f);
+    }
+    else if (light.type == LIGHT_SPOT)
+    {
+        glUniform1i(loc.type, 3);
+        glUniform4f(loc.position, light.position.x, light.position.y, light.position.z, 1.0f);
+
+        glUniform3f(loc.spotDirection, -light.direction.x, -light.direction.y, -light.direction.z);
+        glUniform1f(loc.spotCutoff, std::cosf(light.spotAngle));
+        glUniform1f(loc.spotExponent, light.spotIntensity);
+    }
 }
 
 void CGL21Device::SetLightEnabled(int index, bool enabled)
@@ -1967,7 +1992,7 @@ CFramebuffer* CGL21Device::CreateFramebuffer(std::string name, const Framebuffer
     else
         return nullptr;
 
-    framebuffer->Create();
+    if (!framebuffer->Create()) return nullptr;
 
     CFramebuffer* framebufferPtr = framebuffer.get();
     m_framebuffers[name] = std::move(framebuffer);

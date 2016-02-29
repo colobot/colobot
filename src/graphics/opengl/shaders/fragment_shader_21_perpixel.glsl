@@ -37,12 +37,16 @@ uniform float uni_ShadowColor;
 struct LightParams
 {
     bool Enabled;
+    int Type;
     vec4 Position;
     vec4 Ambient;
     vec4 Diffuse;
     vec4 Specular;
     float Shininess;
     vec3 Attenuation;
+    vec3 SpotDirection;
+    float SpotCutoff;
+    float SpotExponent;
 };
 
 uniform vec4 uni_AmbientColor;

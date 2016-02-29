@@ -292,6 +292,23 @@ std::string GetHardwareInfo(bool full)
     return result.str();
 }
 
+bool CheckGLErrors()
+{
+    GLint error = glGetError();
+    bool result = false;
+
+    while (error != GL_NO_ERROR)
+    {
+        GetLogger()->Error("OpenGL error: %d\n", error);
+
+        result = true;
+
+        error = glGetError();
+    }
+
+    return result;
+}
+
 GLenum TranslateGfxPrimitive(PrimitiveType type)
 {
     GLenum flag = 0;

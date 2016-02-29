@@ -3392,7 +3392,7 @@ void CEngine::RenderShadowMap()
             CFramebuffer *framebuffer = m_device->CreateFramebuffer("shadow", params);
             if (framebuffer == nullptr)
             {
-                GetLogger()->Error("Could not create framebuffer, disabling shadows\n");
+                GetLogger()->Error("Could not create shadow mapping framebuffer, disabling dynamic shadows\n");
                 m_shadowMapping = false;
                 m_offscreenShadowRendering = false;
                 m_qualityShadows = false;
@@ -3722,6 +3722,12 @@ void CEngine::UseMSAA(bool enable)
                 params.samples = m_multisample;
 
                 framebuffer = m_device->CreateFramebuffer("multisample", params);
+
+                if (framebuffer == nullptr)
+                {
+                    GetLogger()->Error("Could not create MSAA framebuffer, disabling MSAA\n");
+                    m_multisample = 1;
+                }
             }
 
             framebuffer->Bind();
@@ -4518,8 +4524,6 @@ void CEngine::DrawPlanet()
     if (! m_planet->PlanetExist())
         return;
 
-    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
-
     m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
     m_device->SetRenderState(RENDER_STATE_FOG, false);
@@ -4529,8 +4533,6 @@ void CEngine::DrawPlanet()
     m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
 
     m_planet->Draw();  // draws the planets
-
-    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 }
 
 void CEngine::DrawForegroundImage()

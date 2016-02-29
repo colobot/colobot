@@ -42,9 +42,9 @@ CGLFramebuffer::CGLFramebuffer(const FramebufferParams& params)
     m_samples = 0;
 }
 
-void CGLFramebuffer::Create()
+bool CGLFramebuffer::Create()
 {
-    if (m_fbo != 0) return;
+    if (m_fbo != 0) return false;
 
     m_width = m_params.width;
     m_height = m_params.height;
@@ -145,11 +145,37 @@ void CGLFramebuffer::Create()
     GLuint result = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (result != GL_FRAMEBUFFER_COMPLETE)
     {
-        GetLogger()->Error("Framebuffer incomplete\n");
-        assert(false);
+        GetLogger()->Error("Framebuffer incomplete: ");
+
+        switch (result)
+        {
+        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+            GetLogger()->Error("attachment point incomplete");
+            break;
+        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+            GetLogger()->Error("missing attachment");
+            break;
+        case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+            GetLogger()->Error("draw buffer has missing color attachments");
+            break;
+        case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+            GetLogger()->Error("read buffer has missing color attachments");
+            break;
+        case GL_FRAMEBUFFER_UNSUPPORTED:
+            GetLogger()->Error("unsupported attachment format");
+            break;
+        }
+
+        GetLogger()->Error("\n");
+
+        Destroy();
+
+        glBindFramebuffer(GL_FRAMEBUFFER, m_currentFBO);
+        return false;
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_currentFBO);
+    return true;
 }
 
 void CGLFramebuffer::Destroy()
@@ -274,9 +300,9 @@ CGLFramebufferEXT::CGLFramebufferEXT(const FramebufferParams& params)
     m_samples = 0;
 }
 
-void CGLFramebufferEXT::Create()
+bool CGLFramebufferEXT::Create()
 {
-    if (m_fbo != 0) return;
+    if (m_fbo != 0) return false;
 
     m_width = m_params.width;
     m_height = m_params.height;
@@ -362,7 +388,7 @@ void CGLFramebufferEXT::Create()
     else
     {
         glGenRenderbuffersEXT(1, &m_depthRenderbuffer);
-        glBindRenderbufferEXT(GL_RENDERBUFFER, m_depthRenderbuffer);
+        glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthRenderbuffer);
 
         if (m_params.samples > 1)
             glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, m_params.samples, depthFormat, m_params.width, m_params.height);
@@ -377,11 +403,38 @@ void CGLFramebufferEXT::Create()
     GLuint result = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     if (result != GL_FRAMEBUFFER_COMPLETE_EXT)
     {
-        GetLogger()->Error("Framebuffer incomplete: %d\n", result);
-        assert(false);
+        GetLogger()->Error("Framebuffer incomplete: ");
+
+        switch (result)
+        {
+        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
+            GetLogger()->Error("attachment point incomplete");
+            break;
+        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
+            GetLogger()->Error("missing attachment");
+            break;
+        case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+            GetLogger()->Error("incompatible attachment dimensions");
+            break;
+        case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+            GetLogger()->Error("draw buffer has missing color attachments");
+            break;
+        case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+            GetLogger()->Error("read buffer has missing color attachments");
+            break;
+        case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+            GetLogger()->Error("unsupported attachment format");
+            break;
+        }
+
+        Destroy();
+
+        glBindFramebuffer(GL_FRAMEBUFFER, m_currentFBO);
+        return false;
     }
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_currentFBO);
+    return true;
 }
 
 void CGLFramebufferEXT::Destroy()
