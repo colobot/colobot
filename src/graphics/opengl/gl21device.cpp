@@ -38,6 +38,7 @@
 #include <SDL.h>
 #include <physfs.h>
 
+#include <cmath>
 #include <cassert>
 
 
@@ -727,7 +728,7 @@ void CGL21Device::SetLight(int index, const Light &light)
         glUniform4f(loc.position, light.position.x, light.position.y, light.position.z, 1.0f);
 
         glUniform3f(loc.spotDirection, -light.direction.x, -light.direction.y, -light.direction.z);
-        glUniform1f(loc.spotCutoff, std::cosf(light.spotAngle));
+        glUniform1f(loc.spotCutoff, std::cos(light.spotAngle));
         glUniform1f(loc.spotExponent, light.spotIntensity);
     }
 }
