@@ -113,8 +113,6 @@ COldObject::COldObject(int id)
     m_name = "";
     m_shadowLight   = -1;
     m_shadowHeight  = 0.0f;
-    m_effectLight   = -1;
-    m_effectHeight  = 0.0f;
     m_linVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_cirVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_tilt   = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -125,7 +123,6 @@ COldObject::COldObject(int id)
     m_transporterLink = 0;
     m_shield   = 1.0f;
     m_range    = 30.0f;
-    m_transparency = 0.0f;
     m_lastEnergy = 999.9f;
     m_bSelect = false;
     m_bSelectable = true;
@@ -139,7 +136,6 @@ COldObject::COldObject(int id)
     m_bVirusMode = false;
     m_virusTime = 0.0f;
     m_lastVirusParticle = 0.0f;
-    m_bCargo = false;
     m_dying = DeathType::Alive;
     m_bFlat  = false;
     m_gunGoalV = 0.0f;
@@ -243,12 +239,6 @@ void COldObject::DeleteObject(bool bAll)
     {
         m_lightMan->DeleteLight(m_shadowLight);
         m_shadowLight = -1;
-    }
-
-    if ( m_effectLight != -1 )
-    {
-        m_lightMan->DeleteLight(m_effectLight);
-        m_effectLight = -1;
     }
 
     if ( m_physics != nullptr )
@@ -1349,13 +1339,6 @@ void COldObject::SetPartPosition(int part, const Math::Vector &pos)
             lightPos.y += m_shadowHeight;
             m_lightMan->SetLightPos(m_shadowLight, lightPos);
         }
-
-        if ( m_effectLight != -1 )
-        {
-            Math::Vector lightPos = pos;
-            lightPos.y += m_effectHeight;
-            m_lightMan->SetLightPos(m_effectLight, lightPos);
-        }
     }
 }
 
@@ -1673,41 +1656,6 @@ bool COldObject::CreateShadowLight(float height, Gfx::Color color)
 int COldObject::GetShadowLight()
 {
     return m_shadowLight;
-}
-
-// Creates light for the effects of a vehicle.
-
-bool COldObject::CreateEffectLight(float height, Gfx::Color color)
-{
-    if ( !m_engine->GetLightMode() )  return true;
-
-    m_effectHeight = height;
-
-    Gfx::Light light;
-    light.type       = Gfx::LIGHT_SPOT;
-    light.diffuse    = color;
-    light.position   = Math::Vector(0.0f, height, 0.0f);
-    light.direction  = Math::Vector(0.0f, -1.0f, 0.0f); // against the bottom
-    light.spotIntensity = 0.0f;
-    light.attenuation0 = 1.0f;
-    light.attenuation1 = 0.0f;
-    light.attenuation2 = 0.0f;
-    light.spotAngle = 90.0f*Math::PI/180.0f;
-
-    m_effectLight = m_lightMan->CreateLight();
-    if ( m_effectLight == -1 )  return false;
-
-    m_lightMan->SetLight(m_effectLight, light);
-    m_lightMan->SetLightIntensity(m_effectLight, 0.0f);
-
-    return true;
-}
-
-// Returns the number of light effects.
-
-int COldObject::GetEffectLight()
-{
-    return m_effectLight;
 }
 
 // Creates the circular shadow underneath a vehicle.
@@ -2471,8 +2419,6 @@ float COldObject::GetReactorRange()
 void COldObject::SetTransparency(float value)
 {
     int     i;
-
-    m_transparency = value;
 
     for ( i=0 ; i<m_totalPart ; i++ )
     {

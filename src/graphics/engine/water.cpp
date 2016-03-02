@@ -320,7 +320,7 @@ void CWater::DrawSurf()
     if (m_type[0] == WATER_NULL) return;
     if (m_lines.empty()) return;
 
-    std::vector<VertexTex2> vertices((m_brickCount+2)*2, VertexTex2());
+    std::vector<Vertex> vertices((m_brickCount+2)*2, Vertex());
 
     Math::Vector eye = m_engine->GetEyePt();
 
@@ -363,6 +363,8 @@ void CWater::DrawSurf()
     // Draws all the lines
     float deep = m_engine->GetDeepView(0)*1.5f;
 
+    device->SetTextureEnabled(1, false);
+
     for (int i = 0; i < static_cast<int>( m_lines.size() ); i++)
     {
         Math::Vector pos;
@@ -390,14 +392,14 @@ void CWater::DrawSurf()
         p.y = pos.y;
         AdjustLevel(p, n, uv1, uv2);
         if (under) n.y = -n.y;
-        vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
+        vertices[vertexIndex++] = Vertex(p, n, uv1);
 
         p.x = pos.x-size;
         p.z = pos.z+sizez;
         p.y = pos.y;
         AdjustLevel(p, n, uv1, uv2);
         if (under)  n.y = -n.y;
-        vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
+        vertices[vertexIndex++] = Vertex(p, n, uv1);
 
         for (int j = 0; j < m_lines[i].len; j++)
         {
@@ -406,14 +408,14 @@ void CWater::DrawSurf()
             p.y = pos.y;
             AdjustLevel(p, n, uv1, uv2);
             if (under)  n.y = -n.y;
-            vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
+            vertices[vertexIndex++] = Vertex(p, n, uv1);
 
             p.x = pos.x+size;
             p.z = pos.z+sizez;
             p.y = pos.y;
             AdjustLevel(p, n, uv1, uv2);
             if (under)  n.y = -n.y;
-            vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
+            vertices[vertexIndex++] = Vertex(p, n, uv1);
 
             pos.x += size*2.0f;
         }
@@ -421,6 +423,9 @@ void CWater::DrawSurf()
         device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, &vertices[0], vertexIndex);
         m_engine->AddStatisticTriangle(vertexIndex - 2);
     }
+
+    if (m_engine->GetDirty())
+        device->SetTextureEnabled(1, true);
 }
 
 bool CWater::GetWater(int x, int y)

@@ -59,7 +59,7 @@
 #include "ui/controls/interface.h"
 
 #include <iomanip>
-#include <boost/algorithm/string/predicate.hpp>
+#include <SDL_thread.h>
 
 template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
 
@@ -2326,12 +2326,7 @@ bool CEngine::LoadAllTextures()
             if (! p2.tex2Name.empty())
             {
                 if (terrain)
-                {
-                    if (! boost::starts_with(p2.tex2Name, "shadow")) // shadow ground textures are created dynamically
-                    {
-                        p2.tex2 = LoadTexture("textures/"+p2.tex2Name, m_terrainTexParams);
-                    }
-                }
+                    p2.tex2 = LoadTexture("textures/"+p2.tex2Name, m_terrainTexParams);
                 else
                     p2.tex2 = LoadTexture("textures/"+p2.tex2Name);
 
@@ -4175,6 +4170,9 @@ void CEngine::UpdateGroundSpotTextures()
     m_groundMark.drawIntensity = m_groundMark.intensity;
 
     m_firstGroundSpot = false;
+
+    // Reload the model textures from cache now
+    LoadAllTextures();
 }
 
 void CEngine::DrawShadowSpots()

@@ -130,7 +130,6 @@ public:
     void        SetDrawFront(bool bDraw) override;
 
     int         GetShadowLight();
-    int         GetEffectLight();
 
     void        SetFloorHeight(float height);
     void        FloorAdjust() override;
@@ -262,7 +261,6 @@ public:
 
     bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = Gfx::ENG_SHADOW_NORM);
     bool        CreateShadowLight(float height, Gfx::Color color);
-    bool        CreateEffectLight(float height, Gfx::Color color);
 
     void        FlatParent() override;
 
@@ -325,8 +323,6 @@ protected:
     int     m_option;           // option
     int     m_shadowLight;          // number of light from the shadows
     float       m_shadowHeight;         // height of light from the shadows
-    int     m_effectLight;          // number of light effects
-    float       m_effectHeight;         // height of light effects
     Math::Vector    m_linVibration;         // linear vibration
     Math::Vector    m_cirVibration;         // circular vibration
     Math::Vector    m_tilt;          // tilt
@@ -338,7 +334,6 @@ protected:
     float       m_lastEnergy;
     float       m_shield;           // shield
     float       m_range;            // flight range
-    float       m_transparency;         // transparency (0..1)
     float       m_aTime;
     float       m_shotTime;         // time since last shot
     bool        m_bVirusMode;           // virus activated/triggered
@@ -348,7 +343,6 @@ protected:
     bool        m_bSelectable;          // selectable object
     bool        m_bCheckToken;          // object with audited tokens
     bool        m_underground;         // object active but undetectable
-    bool        m_bCargo;
     DeathType   m_dying;
     bool        m_bFlat;
     bool        m_bTrainer;         // drive vehicle (without remote)
