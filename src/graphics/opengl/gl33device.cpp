@@ -645,7 +645,7 @@ void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
         glUniformMatrix4fv(m_uni->modelMatrix, 1, GL_FALSE, m_worldMat.Array());
 
         m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
-        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
+        m_combinedMatrixOutdated = true;
 
         // normal transform
         Math::Matrix normalMat = matrix;
@@ -662,15 +662,14 @@ void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
         m_viewMat = Math::MultiplyMatrices(scale, matrix);
 
         m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
-        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
+        m_combinedMatrixOutdated = true;
 
         glUniformMatrix4fv(m_uni->viewMatrix, 1, GL_FALSE, m_viewMat.Array());
     }
     else if (type == TRANSFORM_PROJECTION)
     {
         m_projectionMat = matrix;
-
-        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
+        m_combinedMatrixOutdated = true;
 
         glUniformMatrix4fv(m_uni->projectionMatrix, 1, GL_FALSE, m_projectionMat.Array());
     }
@@ -1992,6 +1991,12 @@ void CGL33Device::DestroyStaticBuffer(unsigned int bufferId)
 
 int CGL33Device::ComputeSphereVisibility(const Math::Vector &center, float radius)
 {
+    if (m_combinedMatrixOutdated)
+    {
+        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
+        m_combinedMatrixOutdated = false;
+    }
+
     Math::Matrix &m = m_combinedMatrix;
 
     Math::Vector vec[6];
@@ -2231,7 +2236,7 @@ CFramebuffer* CGL33Device::CreateFramebuffer(std::string name, const Framebuffer
     }
 
     auto framebuffer = MakeUnique<CGLFramebuffer>(params);
-    framebuffer->Create();
+    if (!framebuffer->Create()) return nullptr;
 
     CFramebuffer* framebufferPtr = framebuffer.get();
     m_framebuffers[name] = std::move(framebuffer);

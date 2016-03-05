@@ -205,6 +205,8 @@ private:
     Math::Matrix m_projectionMat;
     //! Combined world-view-projection matrix
     Math::Matrix m_combinedMatrix;
+    //! true means combined matrix is outdated
+    bool m_combinedMatrixOutdated = true;
 
     //! The current material
     Material m_material;

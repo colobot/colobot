@@ -28,17 +28,26 @@ uniform mat4 uni_NormalMatrix;
 struct LightParams
 {
     bool Enabled;
+    int Type;
     vec4 Position;
     vec4 Ambient;
     vec4 Diffuse;
     vec4 Specular;
     float Shininess;
     vec3 Attenuation;
+    vec3 SpotDirection;
+    float SpotCutoff;
+    float SpotExponent;
 };
 
-uniform vec4 uni_AmbientColor;
-uniform vec4 uni_DiffuseColor;
-uniform vec4 uni_SpecularColor;
+struct Material
+{
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+};
+
+uniform Material uni_Material;
 
 uniform bool uni_LightingEnabled;
 uniform LightParams uni_Light[8];
@@ -70,35 +79,53 @@ void main()
         {
             if (uni_Light[i].Enabled)
             {
-                vec3 lightDirection = uni_Light[i].Position.xyz;
+                LightParams light = uni_Light[i];
+
+                vec3 lightDirection = light.Position.xyz;
                 float atten = 1.0f;
 
-                // Point light
-                if (abs(uni_Light[i].Position.w) > 1e-3f)
+                if (light.Position.w != 0.0f)
                 {
-                    vec3 lightDirection = normalize(uni_Light[i].Position.xyz - position.xyz);
-                    float dist = distance(uni_Light[i].Position.xyz, position.xyz);
+                    float dist = distance(light.Position.xyz, position.xyz);
 
-                    vec3 lightAtten = uni_Light[i].Attenuation;
+                    float atten = 1.0f / (light.Attenuation.x
+                            + light.Attenuation.y * dist
+                            + light.Attenuation.z * dist * dist);
 
-                    atten = 1.0f / (lightAtten.x
-                            + lightAtten.y * dist
-                            + lightAtten.z * dist * dist);
+                    lightDirection = normalize(light.Position.xyz - position.xyz);
+                }
+
+                float spot = 1.0f;
+
+                if (light.SpotCutoff > 0.0f)
+                {
+                    float cone = dot(light.SpotDirection, lightDirection);
+
+                    if (cone > light.SpotCutoff)
+                    {
+                        spot = pow(cone, light.SpotExponent);
+                    }
+                    else
+                    {
+                        spot = 0.0f;
+                    }
                 }
 
                 vec3 reflectDirection = -reflect(lightDirection, normal);
 
-                ambient += uni_Light[i].Ambient;
-                diffuse += atten * clamp(dot(normal, lightDirection), 0.0f, 1.0f) * uni_Light[i].Diffuse;
-                specular += atten * clamp(pow(dot(normal, lightDirection + reflectDirection), 10.0f), 0.0f, 1.0f) * uni_Light[i].Specular;
+                float component = atten * spot;
+                float diffuseComponent = clamp(dot(normal, lightDirection), 0.0f, 1.0f);
+                float specularComponent = clamp(pow(dot(normal, lightDirection + reflectDirection), light.Shininess), 0.0f, 1.0f);
+
+                ambient += component * light.Ambient * uni_Material.ambient;
+                diffuse += component * diffuseComponent * light.Diffuse * uni_Material.diffuse;
+                specular += component * specularComponent * light.Specular * uni_Material.specular;
             }
         }
 
-        vec4 result = uni_AmbientColor * ambient
-                + uni_DiffuseColor * diffuse
-                + uni_SpecularColor * specular;
+        vec4 result = ambient + diffuse + specular;
 
-        color = vec4(min(vec3(1.0f), result.rgb), 1.0f);
+        color = clamp(vec4(result.rgb, uni_Material.diffuse), 0.0f, 1.0f);
     }
 
     gl_Position = uni_ProjectionMatrix * eyeSpace;

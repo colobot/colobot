@@ -70,7 +70,7 @@ public:
     virtual ~CFramebuffer() {}
 
     //! Creates this framebuffer
-    virtual void Create() = 0;
+    virtual bool Create() = 0;
 
     //! Destroys this framebuffer
     virtual void Destroy() = 0;
@@ -122,7 +122,7 @@ public:
     explicit CDefaultFramebuffer(const FramebufferParams &params);
 
     //! Creates default framebuffer
-    void Create() override;
+    bool Create() override;
 
     //! Destroys default framebuffer
     void Destroy() override;

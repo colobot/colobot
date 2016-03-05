@@ -32,8 +32,9 @@ CDefaultFramebuffer::CDefaultFramebuffer(const FramebufferParams& params)
 {
 }
 
-void CDefaultFramebuffer::Create()
+bool CDefaultFramebuffer::Create()
 {
+    return true;
 }
 
 void CDefaultFramebuffer::Destroy()

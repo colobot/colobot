@@ -51,7 +51,7 @@ protected:
 public:
     CGLFramebuffer(const FramebufferParams& params);
 
-    void Create() override;
+    bool Create() override;
 
     void Destroy() override;
 
@@ -101,7 +101,7 @@ protected:
 public:
     CGLFramebufferEXT(const FramebufferParams& params);
 
-    void Create() override;
+    bool Create() override;
 
     void Destroy() override;
 

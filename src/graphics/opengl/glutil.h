@@ -68,6 +68,9 @@ bool AreExtensionsSupported(std::string list);
 //! Returns information about graphics card
 std::string GetHardwareInfo(bool full = false);
 
+//! Checks for OpenGL errors
+bool CheckGLErrors();
+
 //! Translate Gfx primitive type to OpenGL primitive type
 GLenum TranslateGfxPrimitive(PrimitiveType type);
 
@@ -125,6 +128,12 @@ struct LightLocations
     GLint specular = -1;
     //! Attenuation
     GLint attenuation = -1;
+    //! Spot light direction
+    GLint spotDirection = -1;
+    //! Spot light exponent
+    GLint spotExponent = -1;
+    //! Spot light cutoff
+    GLint spotCutoff = -1;
 };
 
 struct UniformLocations
