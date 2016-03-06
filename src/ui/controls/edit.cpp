@@ -2578,7 +2578,7 @@ bool CEdit::Paste()
         InsertOne(c);
     }
 
-    free(text);
+    SDL_free(text);
     Justif();
     ColumnFix();
     SendModifEvent();
