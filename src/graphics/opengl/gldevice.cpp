@@ -158,9 +158,9 @@ void CGLDevice::DebugLights()
     UpdateModelviewMatrix();
 }
 
-std::string&& CGLDevice::GetName()
+std::string CGLDevice::GetName()
 {
-    return "OpenGL 1.4";
+    return std::string("OpenGL 1.4");
 }
 
 bool CGLDevice::Create()

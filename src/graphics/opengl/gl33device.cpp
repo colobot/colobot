@@ -162,9 +162,9 @@ void CGL33Device::DebugLights()
     SetTransform(TRANSFORM_WORLD, saveWorldMat);
 }
 
-std::string&& CGL33Device::GetName()
+std::string CGL33Device::GetName()
 {
-    return "OpenGL 3.3";
+    return std::string("OpenGL 3.3");
 }
 
 bool CGL33Device::Create()

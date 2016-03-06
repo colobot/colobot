@@ -3552,150 +3552,172 @@ void CEngine::UseShadowMapping(bool enable)
     if (!m_shadowMapping) return;
     if (m_shadowMap.id == 0) return;
 
-    if (enable) // Enable shadow mapping
+    // all devices that are not OpenGL 1.4
+    if (m_device->GetName() != "OpenGL 1.4")
     {
-        m_device->SetShadowColor(m_shadowColor);
-
-        if (m_qualityShadows)
+        if (enable)
         {
-            // Texture Unit 2
+            m_device->SetShadowColor(m_shadowColor);
+
             m_device->SetTextureEnabled(2, true);
             m_device->SetTexture(2, m_shadowMap);
             m_device->SetTransform(TRANSFORM_SHADOW, m_shadowTextureMat);
-
-            Math::Matrix identity;
-            identity.LoadIdentity();
-            m_device->SetTransform(TRANSFORM_WORLD, identity);
-
-            float shadowBias = 0.6f;
-            float shadowUnbias = 1.0f - shadowBias;
-
-            TextureStageParams params;
-            params.colorOperation = TEX_MIX_OPER_MODULATE;
-            params.colorArg1 = TEX_MIX_ARG_TEXTURE;
-            params.colorArg2 = TEX_MIX_ARG_FACTOR;
-            params.colorOperation = TEX_MIX_OPER_DEFAULT;
-            params.factor = Color(shadowBias, shadowBias, shadowBias, 1.0f);
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-
-            m_device->SetTextureStageParams(2, params);
-
-            TextureGenerationParams genParams;
-
-            for (int i = 0; i < 4; i++)
-            {
-                genParams.coords[i].mode = TEX_GEN_EYE_LINEAR;
-
-                for (int j = 0; j < 4; j++)
-                {
-                    genParams.coords[i].plane[j] = (i == j ? 1.0f : 0.0f);
-                }
-            }
-
-            m_device->SetTextureCoordGeneration(2, genParams);
-
-            // Texture Unit 3
-            m_device->SetTextureEnabled(3, true);
-            m_device->SetTexture(3, m_shadowMap);
-
-            params.LoadDefault();
-            params.colorOperation = TEX_MIX_OPER_ADD;
-            params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-            params.colorArg2 = TEX_MIX_ARG_FACTOR;
-            params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-            params.factor = Color(shadowUnbias, shadowUnbias, shadowUnbias, 0.0f);
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-
-            m_device->SetTextureStageParams(3, params);
-
-            // Texture Unit 4
-            m_device->SetTextureEnabled(4, true);
-            m_device->SetTexture(4, m_shadowMap);
-
-            params.LoadDefault();
-            params.colorOperation = TEX_MIX_OPER_MODULATE;
-            params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-            params.colorArg2 = TEX_MIX_ARG_SRC_COLOR;
-            params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-
-            m_device->SetTextureStageParams(4, params);
-
-            // Texture Unit 5
-            m_device->SetTextureEnabled(5, true);
-            m_device->SetTexture(5, m_shadowMap);
-
-            params.LoadDefault();
-            params.colorOperation = TEX_MIX_OPER_MODULATE;
-            params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-            params.colorArg2 = TEX_MIX_ARG_TEXTURE_0;
-            params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-
-            m_device->SetTextureStageParams(5, params);
         }
-        else        // Simpler shadows
+        else
         {
-            // Texture Unit 2
-            m_device->SetTextureEnabled(2, true);
-            m_device->SetTexture(2, m_shadowMap);
-            m_device->SetTransform(TRANSFORM_SHADOW, m_shadowTextureMat);
-
-            Math::Matrix identity;
-            identity.LoadIdentity();
-            m_device->SetTransform(TRANSFORM_WORLD, identity);
-
-            TextureStageParams params;
-            params.colorOperation = TEX_MIX_OPER_MODULATE;
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-            m_device->SetTextureStageParams(2, params);
-
-            TextureGenerationParams genParams;
-
-            for (int i = 0; i < 4; i++)
-            {
-                genParams.coords[i].mode = TEX_GEN_EYE_LINEAR;
-
-                for (int j = 0; j < 4; j++)
-                {
-                    genParams.coords[i].plane[j] = (i == j ? 1.0f : 0.0f);
-                }
-            }
-
-            m_device->SetTextureCoordGeneration(2, genParams);
+            m_device->SetTexture(2, 0);
+            m_device->SetTextureEnabled(2, false);
         }
     }
-    else  // Disable shadow mapping
+    // special case for OpenGL 1.4 device
+    else
     {
-        Math::Matrix identity;
-        identity.LoadIdentity();
-
-        m_device->SetTexture(2, 0);
-        m_device->SetTextureEnabled(2, false);
-        m_device->SetTransform(TRANSFORM_SHADOW, identity);
-
-        TextureGenerationParams params;
-
-        for (int i = 0; i < 4; i++)
-            params.coords[i].mode = TEX_GEN_NONE;
-
-        m_device->SetTextureCoordGeneration(2, params);
-
-        if (m_qualityShadows)
+        if (enable)
         {
-            m_device->SetTexture(3, 0);
-            m_device->SetTextureEnabled(3, false);
+            m_device->SetShadowColor(m_shadowColor);
 
-            m_device->SetTexture(4, 0);
-            m_device->SetTextureEnabled(4, false);
+            if (m_qualityShadows)
+            {
+                // Texture Unit 2
+                m_device->SetTextureEnabled(2, true);
+                m_device->SetTexture(2, m_shadowMap);
+                m_device->SetTransform(TRANSFORM_SHADOW, m_shadowTextureMat);
 
-            m_device->SetTexture(5, 0);
-            m_device->SetTextureEnabled(5, false);
+                Math::Matrix identity;
+                identity.LoadIdentity();
+                m_device->SetTransform(TRANSFORM_WORLD, identity);
+
+                float shadowBias = m_shadowColor;
+                float shadowUnbias = 1.0f - shadowBias;
+
+                TextureStageParams params;
+                params.colorOperation = TEX_MIX_OPER_MODULATE;
+                params.colorArg1 = TEX_MIX_ARG_TEXTURE;
+                params.colorArg2 = TEX_MIX_ARG_FACTOR;
+                params.colorOperation = TEX_MIX_OPER_DEFAULT;
+                params.factor = Color(shadowBias, shadowBias, shadowBias, 1.0f);
+                params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+                params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+
+                m_device->SetTextureStageParams(2, params);
+
+                TextureGenerationParams genParams;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    genParams.coords[i].mode = TEX_GEN_EYE_LINEAR;
+
+                    for (int j = 0; j < 4; j++)
+                    {
+                        genParams.coords[i].plane[j] = (i == j ? 1.0f : 0.0f);
+                    }
+                }
+
+                m_device->SetTextureCoordGeneration(2, genParams);
+
+                // Texture Unit 3
+                m_device->SetTextureEnabled(3, true);
+                m_device->SetTexture(3, m_shadowMap);
+
+                params.LoadDefault();
+                params.colorOperation = TEX_MIX_OPER_ADD;
+                params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
+                params.colorArg2 = TEX_MIX_ARG_FACTOR;
+                params.alphaOperation = TEX_MIX_OPER_DEFAULT;
+                params.factor = Color(shadowUnbias, shadowUnbias, shadowUnbias, 0.0f);
+                params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+                params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+
+                m_device->SetTextureStageParams(3, params);
+
+                // Texture Unit 4
+                m_device->SetTextureEnabled(4, true);
+                m_device->SetTexture(4, m_shadowMap);
+
+                params.LoadDefault();
+                params.colorOperation = TEX_MIX_OPER_MODULATE;
+                params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
+                params.colorArg2 = TEX_MIX_ARG_SRC_COLOR;
+                params.alphaOperation = TEX_MIX_OPER_DEFAULT;
+                params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+                params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+
+                m_device->SetTextureStageParams(4, params);
+
+                // Texture Unit 5
+                m_device->SetTextureEnabled(5, true);
+                m_device->SetTexture(5, m_shadowMap);
+
+                params.LoadDefault();
+                params.colorOperation = TEX_MIX_OPER_MODULATE;
+                params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
+                params.colorArg2 = TEX_MIX_ARG_TEXTURE_0;
+                params.alphaOperation = TEX_MIX_OPER_DEFAULT;
+                params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+                params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+
+                m_device->SetTextureStageParams(5, params);
+            }
+            else        // Simpler shadows
+            {
+                // Texture Unit 2
+                m_device->SetTextureEnabled(2, true);
+                m_device->SetTexture(2, m_shadowMap);
+                m_device->SetTransform(TRANSFORM_SHADOW, m_shadowTextureMat);
+
+                Math::Matrix identity;
+                identity.LoadIdentity();
+                m_device->SetTransform(TRANSFORM_WORLD, identity);
+
+                TextureStageParams params;
+                params.colorOperation = TEX_MIX_OPER_MODULATE;
+                params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+                params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+                m_device->SetTextureStageParams(2, params);
+
+                TextureGenerationParams genParams;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    genParams.coords[i].mode = TEX_GEN_EYE_LINEAR;
+
+                    for (int j = 0; j < 4; j++)
+                    {
+                        genParams.coords[i].plane[j] = (i == j ? 1.0f : 0.0f);
+                    }
+                }
+
+                m_device->SetTextureCoordGeneration(2, genParams);
+            }
+        }
+        // disable shadows
+        else
+        {
+            Math::Matrix identity;
+            identity.LoadIdentity();
+
+            m_device->SetTexture(2, 0);
+            m_device->SetTextureEnabled(2, false);
+            m_device->SetTransform(TRANSFORM_SHADOW, identity);
+
+            TextureGenerationParams params;
+
+            for (int i = 0; i < 4; i++)
+                params.coords[i].mode = TEX_GEN_NONE;
+
+            m_device->SetTextureCoordGeneration(2, params);
+
+            if (m_qualityShadows)
+            {
+                m_device->SetTexture(3, 0);
+                m_device->SetTextureEnabled(3, false);
+
+                m_device->SetTexture(4, 0);
+                m_device->SetTextureEnabled(4, false);
+
+                m_device->SetTexture(5, 0);
+                m_device->SetTextureEnabled(5, false);
+            }
         }
     }
 }

@@ -49,7 +49,7 @@ public:
     void DebugHook() override;
     void DebugLights() override;
 
-    std::string&& GetName() override;
+    std::string GetName() override;
 
     bool Create() override;
     void Destroy() override;
