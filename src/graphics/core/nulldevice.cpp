@@ -44,6 +44,11 @@ void CNullDevice::DebugLights()
 {
 }
 
+std::string&& CNullDevice::GetName()
+{
+    return "Null Device";
+}
+
 bool CNullDevice::Create()
 {
     return true;

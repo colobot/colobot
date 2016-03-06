@@ -163,6 +163,11 @@ void CGL21Device::DebugLights()
     m_worldMat = saveWorldMat;
 }
 
+std::string&& CGL21Device::GetName()
+{
+    return "OpenGL 2.1";
+}
+
 bool CGL21Device::Create()
 {
     GetLogger()->Info("Creating CDevice - OpenGL 2.1\n");

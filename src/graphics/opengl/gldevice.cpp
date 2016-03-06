@@ -158,6 +158,11 @@ void CGLDevice::DebugLights()
     UpdateModelviewMatrix();
 }
 
+std::string&& CGLDevice::GetName()
+{
+    return "OpenGL 1.4";
+}
+
 bool CGLDevice::Create()
 {
     GetLogger()->Info("Creating CDevice - OpenGL 1.4\n");

@@ -305,6 +305,9 @@ public:
     //! Displays light positions to aid in debuggings
     virtual void DebugLights() = 0;
 
+    //! Returns a name of this device
+    virtual std::string&& GetName() = 0;
+
     //! Initializes the device, setting the initial state
     virtual bool Create() = 0;
     //! Destroys the device, releasing every acquired resource
