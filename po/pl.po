@@ -510,6 +510,9 @@ msgstr "Kurz\\Kurz i bród na robotach i budynkach"
 msgid "Dynamic lighting\\Mobile light sources"
 msgstr "Dynamiczne oświetlenie\\Ruchome źródła światła"
 
+msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
+msgstr ""
+
 msgid "Dynamic shadows\\Beautiful shadows!"
 msgstr ""
 
@@ -1171,9 +1174,6 @@ msgstr "Publiczny\\Folder ogólnodostępny"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Wstrząsy przy wybuchach\\Ekran trzęsie się podczas wybuchów"
-
-msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
-msgstr ""
 
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr "Wyjdź\\Kończy grę Colobot: Gold Edition"

@@ -509,6 +509,9 @@ msgstr "Schmutz\\Schmutz auf Robotern und Bauten"
 msgid "Dynamic lighting\\Mobile light sources"
 msgstr "Dynamische Beleuchtung\\Dynamische Beleuchtung"
 
+msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
+msgstr ""
+
 msgid "Dynamic shadows\\Beautiful shadows!"
 msgstr ""
 
@@ -1172,9 +1175,6 @@ msgstr "Öffentlich\\Gemeinsamer Ordner für alle Spieler"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Beben bei Explosionen\\Die Kamera bebt bei Explosionen"
-
-msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
-msgstr ""
 
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr ""

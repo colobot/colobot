@@ -504,6 +504,10 @@ msgstr "Salissures\\Salissures des robots et bâtiments"
 msgid "Dynamic lighting\\Mobile light sources"
 msgstr "Lumières dynamiques\\Éclairages mobiles"
 
+#, fuzzy
+msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
+msgstr "Ombres projetées\\Active la transparence des ombres et l'auto-ombrage"
+
 msgid "Dynamic shadows\\Beautiful shadows!"
 msgstr "Ombres dynamiques\\Magnifiques ombres !"
 
@@ -1163,9 +1167,6 @@ msgstr "Public\\Dossier commun à tous les joueurs"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Secousses lors d'explosions\\L'écran vibre lors d'une explosion"
-
-msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
-msgstr "Ombres projetées\\Active la transparence des ombres et l'auto-ombrage"
 
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr "Quitter\\Quitter Colobot : Édition Gold"

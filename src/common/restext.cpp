@@ -208,7 +208,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_MSAA]              = TR("MSAA\\Multisample anti-aliasing");
     stringsEvent[EVENT_INTERFACE_SHADOW_SPOTS]      = TR("Simple shadows\\Shadows spots on the ground");
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING]    = TR("Dynamic shadows\\Beautiful shadows!");
-    stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_QUALITY]= TR("Quality dynamic shadows\\Enable shadow transparency and self shadowing");
+    stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_QUALITY]= TR("Dynamic shadows ++\\Dynamic shadows + self shadowing");
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_BUFFER] = TR("Shadow resolution\\Higher means better range and quality, but slower");
 
     stringsEvent[EVENT_INTERFACE_KDEF]      = TR("Standard controls\\Standard key functions");

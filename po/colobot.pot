@@ -424,7 +424,7 @@ msgstr ""
 msgid "Dynamic shadows\\Beautiful shadows!"
 msgstr ""
 
-msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
+msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
 msgstr ""
 
 msgid "Shadow resolution\\Higher means better range and quality, but slower"

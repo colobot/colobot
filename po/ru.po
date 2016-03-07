@@ -503,6 +503,9 @@ msgstr "Пыль\\Пыль и грязь на ботах и зданиях"
 msgid "Dynamic lighting\\Mobile light sources"
 msgstr "Динамическое освещение\\Подвижные источники света"
 
+msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
+msgstr ""
+
 msgid "Dynamic shadows\\Beautiful shadows!"
 msgstr ""
 
@@ -1168,9 +1171,6 @@ msgstr "Общее\\Общая папка"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Землетряс. при взрывах\\Тряска экрана при взрывах"
-
-msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
-msgstr ""
 
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr ""
