@@ -602,6 +602,9 @@ void CGL21Device::BeginScene()
 
 void CGL21Device::EndScene()
 {
+#ifdef DEV_BUILD
+    CheckGLErrors();
+#endif
 }
 
 void CGL21Device::Clear()
@@ -1849,6 +1852,12 @@ void CGL21Device::SetRenderState(RenderState state, bool enabled)
     else if (state == RENDER_STATE_FOG)
     {
         glUniform1i(m_uniforms[m_mode].fogEnabled, enabled ? 1 : 0);
+
+        return;
+    }
+    else if (state == RENDER_STATE_SHADOW_MAPPING)
+    {
+        SetTextureEnabled(TEXTURE_SHADOW, enabled);
 
         return;
     }

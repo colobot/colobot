@@ -99,12 +99,22 @@ struct DeviceConfig
     }
 };
 
+/**
+ * \enum TextureUnit
+ * \brief Texture unit values for binding textures
+ *
+ * These enums should be used for indexing textures instead of raw integers.
+ */
+enum TextureUnit
+{
+    TEXTURE_PRIMARY = 0,
+    TEXTURE_SECONDARY = 1,
+    TEXTURE_SHADOW = 2,
+};
 
 /**
  * \enum TransformType
  * \brief Type of transformation in rendering pipeline
- *
- * These correspond to DirectX's three transformation matrices.
  */
 enum TransformType
 {
@@ -128,6 +138,7 @@ enum RenderState
     RENDER_STATE_ALPHA_TEST,
     RENDER_STATE_CULLING,
     RENDER_STATE_DEPTH_BIAS,
+    RENDER_STATE_SHADOW_MAPPING,
 };
 
 /**

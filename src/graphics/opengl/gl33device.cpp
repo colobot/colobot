@@ -608,6 +608,9 @@ void CGL33Device::BeginScene()
 
 void CGL33Device::EndScene()
 {
+#ifdef DEV_BUILD
+    CheckGLErrors();
+#endif
 }
 
 void CGL33Device::Clear()
@@ -2102,6 +2105,12 @@ void CGL33Device::SetRenderState(RenderState state, bool enabled)
     else if (state == RENDER_STATE_ALPHA_TEST)
     {
         glUniform1i(m_uni->alphaTestEnabled, enabled ? 1 : 0);
+
+        return;
+    }
+    else if (state == RENDER_STATE_SHADOW_MAPPING)
+    {
+        SetTextureEnabled(TEXTURE_SHADOW, enabled);
 
         return;
     }

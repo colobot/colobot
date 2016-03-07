@@ -204,6 +204,11 @@ private:
     //! Updates the texture params for given texture stage
     void UpdateTextureParams(int index);
 
+    //! Enables shadows
+    void EnableShadows();
+    //! Disables shadows
+    void DisableShadows();
+
 private:
     //! Current config
     DeviceConfig m_config;
@@ -218,6 +223,8 @@ private:
     Math::Matrix m_projectionMat;
     //! Combined world-view-projection matrix
     Math::Matrix m_combinedMatrix;
+    //! Current shadow matrix
+    Math::Matrix m_shadowMatrix;
     //! true means that combined matrix is outdated
     bool m_combinedMatrixOutdated = true;
 
@@ -237,6 +244,8 @@ private:
     std::vector<bool> m_texturesEnabled;
     //! Current texture params
     std::vector<TextureStageParams> m_textureStageParams;
+    //! Texture unit remap
+    std::vector<int> m_remap;
 
     //! Set of all created textures
     std::set<Texture> m_allTextures;
@@ -264,10 +273,6 @@ private:
     //! Detected capabilities
     //! Depth texture support
     ShadowMappingSupport m_shadowMappingSupport = SMS_NONE;
-    //! Shadow ambient support
-    bool m_shadowAmbientSupported = false;
-    //! Whether to use multitexturing
-    bool m_multitextureAvailable = false;
     //! Whether to use VBOs or display lists
     bool m_vboAvailable = false;
     //! Whether anisotropic filtering is available
@@ -288,6 +293,11 @@ private:
     std::map<unsigned int, VboObjectInfo> m_vboObjects;
     //! Last ID of VBO object
     unsigned int m_lastVboId = 0;
+
+    //! true means shadow mapping is enabled
+    bool m_shadowMapping = false;
+    //! true means that quality shadows are enabled
+    bool m_shadowQuality = true;
 };
 
 
