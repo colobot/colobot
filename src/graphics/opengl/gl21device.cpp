@@ -1194,142 +1194,6 @@ void CGL21Device::UpdateTextureParams(int index)
     else if (params.wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     else  assert(false);
-
-    glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, params.factor.Array());
-
-    // To save some trouble
-    if ( (params.colorOperation == TEX_MIX_OPER_DEFAULT) &&
-         (params.alphaOperation == TEX_MIX_OPER_DEFAULT) )
-    {
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        goto after_tex_operations;
-    }
-
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-
-    // Only these modes of getting color & alpha are used
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
-
-    // Color operation
-
-    if (params.colorOperation == TEX_MIX_OPER_DEFAULT)
-    {
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PREVIOUS);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE);
-        goto after_tex_color;
-    }
-    else if (params.colorOperation == TEX_MIX_OPER_REPLACE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
-    else if (params.colorOperation == TEX_MIX_OPER_MODULATE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-    else if (params.colorOperation == TEX_MIX_OPER_ADD)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_ADD);
-    else if (params.colorOperation == TEX_MIX_OPER_SUBTRACT)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_SUBTRACT);
-    else  assert(false);
-
-    // Color arg1
-    if (params.colorArg1 == TEX_MIX_ARG_TEXTURE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
-    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_0)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
-    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_1)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
-    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_2)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE2);
-    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_3)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE3);
-    else if (params.colorArg1 == TEX_MIX_ARG_COMPUTED_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PREVIOUS);
-    else if (params.colorArg1 == TEX_MIX_ARG_SRC_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
-    else if (params.colorArg1 == TEX_MIX_ARG_FACTOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_CONSTANT);
-    else  assert(false);
-
-    // Color arg2
-    if (params.colorArg2 == TEX_MIX_ARG_TEXTURE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE);
-    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_0)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE0);
-    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_1)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE1);
-    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_2)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE2);
-    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_3)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE3);
-    else if (params.colorArg2 == TEX_MIX_ARG_COMPUTED_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
-    else if (params.colorArg2 == TEX_MIX_ARG_SRC_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
-    else if (params.colorArg2 == TEX_MIX_ARG_FACTOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_CONSTANT);
-    else  assert(false);
-
-
-after_tex_color:
-
-    // Alpha operation
-    if (params.alphaOperation == TEX_MIX_OPER_DEFAULT)
-    {
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
-        goto after_tex_operations;
-    }
-    else if (params.alphaOperation == TEX_MIX_OPER_REPLACE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
-    else if (params.alphaOperation == TEX_MIX_OPER_MODULATE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-    else if (params.alphaOperation == TEX_MIX_OPER_ADD)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_ADD);
-    else if (params.alphaOperation == TEX_MIX_OPER_SUBTRACT)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_SUBTRACT);
-    else  assert(false);
-
-    // Alpha arg1
-    if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE);
-    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_0)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
-    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_1)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE1);
-    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_2)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE2);
-    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_3)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE3);
-    else if (params.alphaArg1 == TEX_MIX_ARG_COMPUTED_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
-    else if (params.alphaArg1 == TEX_MIX_ARG_SRC_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PRIMARY_COLOR);
-    else if (params.alphaArg1 == TEX_MIX_ARG_FACTOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_CONSTANT);
-    else  assert(false);
-
-    // Alpha arg2
-    if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
-    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_0)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE0);
-    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_1)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE1);
-    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_2)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE2);
-    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_3)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE3);
-    else if (params.alphaArg2 == TEX_MIX_ARG_COMPUTED_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PREVIOUS);
-    else if (params.alphaArg2 == TEX_MIX_ARG_SRC_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
-    else if (params.alphaArg2 == TEX_MIX_ARG_FACTOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_CONSTANT);
-    else  assert(false);
-
-after_tex_operations: ;
 }
 
 void CGL21Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT)
@@ -1404,7 +1268,6 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, 
     glNormalPointer(GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].normal));
 
     glClientActiveTexture(GL_TEXTURE0);
-
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
 
@@ -1456,7 +1319,6 @@ void CGL21Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     glNormalPointer(GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].normal));
 
     glClientActiveTexture(GL_TEXTURE0);
-
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
 
@@ -1483,7 +1345,6 @@ void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
     glNormalPointer(GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].normal));
 
     glClientActiveTexture(GL_TEXTURE0);
-
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
 
@@ -1666,7 +1527,6 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
     if (it == m_vboObjects.end())
         return;
 
-    glEnable(GL_VERTEX_ARRAY);
     BindVBO((*it).second.bufferId);
 
     if ((*it).second.vertexType == VERTEX_TYPE_NORMAL)
@@ -1678,7 +1538,6 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
         glNormalPointer(GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, normal));
 
         glClientActiveTexture(GL_TEXTURE0);
-
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, texCoord));
     }
@@ -1691,7 +1550,6 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
         glNormalPointer(GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, normal));
 
         glClientActiveTexture(GL_TEXTURE0);
-
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, texCoord));
 
@@ -1722,6 +1580,7 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
         glDisableClientState(GL_VERTEX_ARRAY);
         glDisableClientState(GL_NORMAL_ARRAY);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE1
+
         glClientActiveTexture(GL_TEXTURE0);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
@@ -1730,8 +1589,6 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
         glDisableClientState(GL_VERTEX_ARRAY);
         glDisableClientState(GL_COLOR_ARRAY);
     }
-
-    glDisable(GL_VERTEX_ARRAY);
 }
 
 void CGL21Device::DestroyStaticBuffer(unsigned int bufferId)
@@ -1868,7 +1725,6 @@ void CGL21Device::SetRenderState(RenderState state, bool enabled)
     {
         case RENDER_STATE_BLENDING:    flag = GL_BLEND; break;
         case RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
-        case RENDER_STATE_ALPHA_TEST:  flag = GL_ALPHA_TEST; break;
         case RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
         case RENDER_STATE_DEPTH_BIAS:  flag = GL_POLYGON_OFFSET_FILL; break;
         default: assert(false); break;
@@ -1897,7 +1753,7 @@ void CGL21Device::SetDepthBias(float factor, float units)
 
 void CGL21Device::SetAlphaTestFunc(CompFunc func, float refValue)
 {
-    glUniform1i(m_uniforms[m_mode].alphaReference, refValue);
+    glUniform1f(m_uniforms[m_mode].alphaReference, refValue);
 }
 
 void CGL21Device::SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend)

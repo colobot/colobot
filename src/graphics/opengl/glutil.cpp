@@ -292,6 +292,22 @@ std::string GetHardwareInfo(bool full)
     return result.str();
 }
 
+int ClearGLErrors()
+{
+    int result = 0;
+
+    while (true)
+    {
+        GLint error = glGetError();
+        if (error == GL_NO_ERROR)
+            break;
+
+        result++;
+    }
+
+    return result;
+}
+
 bool CheckGLErrors()
 {
     GLint error = glGetError();

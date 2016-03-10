@@ -1095,6 +1095,8 @@ public:
     bool            IsShadowMappingQualitySupported();
     void            SetShadowMappingQuality(bool value);
     bool            GetShadowMappingQuality();
+    void            SetTerrainShadows(bool value);
+    bool            GetTerrainShadows();
     //@}
 
     //@{
@@ -1420,6 +1422,8 @@ protected:
     int m_offscreenShadowRenderingResolution;
     //! true enables higher quality shadows
     bool m_qualityShadows;
+    //! true enables casting shadows by terrain
+    bool m_terrainShadows;
     //! Shadow color
     float m_shadowColor;
     //! Shadow range

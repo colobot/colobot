@@ -68,6 +68,9 @@ bool AreExtensionsSupported(std::string list);
 //! Returns information about graphics card
 std::string GetHardwareInfo(bool full = false);
 
+//! Clears OpenGL errors
+int ClearGLErrors();
+
 //! Checks for OpenGL errors
 bool CheckGLErrors();
 

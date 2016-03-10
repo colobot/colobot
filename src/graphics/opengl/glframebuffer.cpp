@@ -63,7 +63,8 @@ bool CGLFramebuffer::Create()
         glGenTextures(1, &m_colorTexture);
         glBindTexture(GL_TEXTURE_2D, m_colorTexture);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_params.width, m_params.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_params.width, m_params.height,
+                0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -81,13 +82,15 @@ bool CGLFramebuffer::Create()
         glBindRenderbuffer(GL_RENDERBUFFER, m_colorRenderbuffer);
 
         if (m_params.samples > 1)
-            glRenderbufferStorageMultisample(GL_RENDERBUFFER, m_params.samples, GL_RGBA8, m_params.width, m_params.height);
+            glRenderbufferStorageMultisample(GL_RENDERBUFFER, m_params.samples,
+                    GL_RGBA8, m_params.width, m_params.height);
         else
             glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, m_params.width, m_params.height);
 
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_colorRenderbuffer);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_colorRenderbuffer);
     }
 
     GLuint depthFormat = 0;
@@ -109,7 +112,8 @@ bool CGLFramebuffer::Create()
         glGenTextures(1, &m_depthTexture);
         glBindTexture(GL_TEXTURE_2D, m_depthTexture);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, depthFormat, m_params.width, m_params.height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, nullptr);
+        glTexImage2D(GL_TEXTURE_2D, 0, depthFormat, m_params.width, m_params.height, 0,
+                GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, nullptr);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
@@ -124,7 +128,8 @@ bool CGLFramebuffer::Create()
 
         glBindTexture(GL_TEXTURE_2D, previous);
 
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthTexture, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthTexture, 0);
     }
     // create depth renderbuffer
     else
@@ -133,13 +138,16 @@ bool CGLFramebuffer::Create()
         glBindRenderbuffer(GL_RENDERBUFFER, m_depthRenderbuffer);
 
         if (m_params.samples > 1)
-            glRenderbufferStorageMultisample(GL_RENDERBUFFER, m_params.samples, depthFormat, m_params.width, m_params.height);
+            glRenderbufferStorageMultisample(GL_RENDERBUFFER, m_params.samples,
+                    depthFormat, m_params.width, m_params.height);
         else
-            glRenderbufferStorage(GL_RENDERBUFFER, depthFormat, m_params.width, m_params.height);
+            glRenderbufferStorage(GL_RENDERBUFFER,
+                    depthFormat, m_params.width, m_params.height);
 
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthRenderbuffer);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthRenderbuffer);
     }
 
     GLuint result = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -273,12 +281,14 @@ void CGLFramebuffer::Unbind()
     m_currentFBO = 0;
 }
 
-void CGLFramebuffer::CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight)
+void CGLFramebuffer::CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight,
+        int toX, int toY, int toWidth, int toHeight)
 {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
-    glBlitFramebuffer(fromX, fromY, fromX + fromWidth, fromY + fromHeight, toX, toY, toX + toWidth, toY + toHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+    glBlitFramebuffer(fromX, fromY, fromX + fromWidth, fromY + fromHeight,
+        toX, toY, toX + toWidth, toY + toHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_currentFBO);
 }
@@ -321,7 +331,9 @@ bool CGLFramebufferEXT::Create()
         glGenTextures(1, &m_colorTexture);
         glBindTexture(GL_TEXTURE_2D, m_colorTexture);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_params.width, m_params.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8,
+                m_params.width, m_params.height, 0,
+                GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -330,7 +342,8 @@ bool CGLFramebufferEXT::Create()
 
         glBindTexture(GL_TEXTURE_2D, previous);
 
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, m_colorTexture, 0);
+        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
+                GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, m_colorTexture, 0);
     }
     // create color renderbuffer
     else
@@ -339,13 +352,16 @@ bool CGLFramebufferEXT::Create()
         glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_colorRenderbuffer);
 
         if (m_params.samples > 1)
-            glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, m_params.samples, GL_RGBA8, m_params.width, m_params.height);
+            glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT,
+                    m_params.samples, GL_RGBA8, m_params.width, m_params.height);
         else
-            glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA8, m_params.width, m_params.height);
+            glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA8,
+                    m_params.width, m_params.height);
 
         glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
 
-        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, m_colorRenderbuffer);
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
+                GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, m_colorRenderbuffer);
     }
 
     GLuint depthFormat = 0;
@@ -367,7 +383,8 @@ bool CGLFramebufferEXT::Create()
         glGenTextures(1, &m_depthTexture);
         glBindTexture(GL_TEXTURE_2D, m_depthTexture);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, depthFormat, m_params.width, m_params.height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, nullptr);
+        glTexImage2D(GL_TEXTURE_2D, 0, depthFormat, m_params.width, m_params.height, 0,
+                GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, nullptr);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
@@ -382,7 +399,8 @@ bool CGLFramebufferEXT::Create()
 
         glBindTexture(GL_TEXTURE_2D, previous);
 
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, m_depthTexture, 0);
+        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
+                GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, m_depthTexture, 0);
     }
     // create depth renderbuffer
     else
@@ -391,13 +409,15 @@ bool CGLFramebufferEXT::Create()
         glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthRenderbuffer);
 
         if (m_params.samples > 1)
-            glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, m_params.samples, depthFormat, m_params.width, m_params.height);
+            glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT,
+                    m_params.samples, depthFormat, m_params.width, m_params.height);
         else
             glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, depthFormat, m_params.width, m_params.height);
 
         glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
 
-        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthRenderbuffer);
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
+                GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthRenderbuffer);
     }
 
     GLuint result = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
@@ -429,7 +449,7 @@ bool CGLFramebufferEXT::Create()
 
         Destroy();
 
-        glBindFramebuffer(GL_FRAMEBUFFER, m_currentFBO);
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_currentFBO);
         return false;
     }
 
@@ -532,12 +552,14 @@ void CGLFramebufferEXT::Unbind()
     m_currentFBO = 0;
 }
 
-void CGLFramebufferEXT::CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight)
+void CGLFramebufferEXT::CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight,
+        int toX, int toY, int toWidth, int toHeight)
 {
     glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, m_fbo);
     glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, 0);
 
-    glBlitFramebufferEXT(fromX, fromY, fromX + fromWidth, fromY + fromHeight, toX, toY, toX + toWidth, toY + toHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+    glBlitFramebufferEXT(fromX, fromY, fromX + fromWidth, fromY + fromHeight,
+            toX, toY, toX + toWidth, toY + toHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_currentFBO);
 }

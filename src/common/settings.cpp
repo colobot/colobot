@@ -110,6 +110,9 @@ void CSettings::SaveSettings()
     GetConfigFile().SetIntProperty("Setup", "ShadowMappingResolution",
                                    engine->GetShadowMappingOffscreen() ? engine->GetShadowMappingOffscreenResolution() : 0);
 
+    // Experimental settings
+    GetConfigFile().SetBoolProperty("Experimental", "TerrainShadows", engine->GetTerrainShadows());
+
     CInput::GetInstancePointer()->SaveKeyBindings();
 
 
@@ -263,6 +266,9 @@ void CSettings::LoadSettings()
             engine->SetShadowMappingOffscreenResolution(iValue);
         }
     }
+
+    if (GetConfigFile().GetBoolProperty("Experimental", "TerrainShadows", bValue))
+        engine->SetTerrainShadows(bValue);
 
     CInput::GetInstancePointer()->LoadKeyBindings();
 

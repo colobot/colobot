@@ -139,6 +139,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_offscreenShadowRendering = true;
     m_offscreenShadowRenderingResolution = 1024;
     m_qualityShadows = true;
+    m_terrainShadows = false;
     m_shadowRange = 0.0f;
     m_multisample = 2;
 
@@ -2940,7 +2941,7 @@ int CEngine::GetShadowMappingOffscreenResolution()
 
 bool CEngine::IsShadowMappingQualitySupported()
 {
-    return IsShadowMappingSupported() && m_device->GetMaxTextureStageCount() >= 6;
+    return IsShadowMappingSupported() && m_device->GetMaxTextureStageCount() >= 3;
 }
 
 void CEngine::SetShadowMappingQuality(bool value)
@@ -2952,6 +2953,16 @@ void CEngine::SetShadowMappingQuality(bool value)
 bool CEngine::GetShadowMappingQuality()
 {
     return m_qualityShadows;
+}
+
+void CEngine::SetTerrainShadows(bool value)
+{
+    m_terrainShadows = value;
+}
+
+bool CEngine::GetTerrainShadows()
+{
+    return m_terrainShadows;
 }
 
 void CEngine::SetBackForce(bool present)
@@ -3096,7 +3107,6 @@ void CEngine::Render()
         color = m_backgroundColorDown;
 
     m_device->SetClearColor(color);
-
     // Render shadow map
     if (m_drawWorld && m_shadowMapping)
         RenderShadowMap();
@@ -3132,7 +3142,6 @@ void CEngine::Draw3DScene()
 
     DrawPlanet();  // draws the planets
     m_cloud->Draw();  // draws the clouds
-
 
     // Display the objects
 
@@ -3365,7 +3374,6 @@ void CEngine::Draw3DScene()
 
 void CEngine::RenderShadowMap()
 {
-
     m_shadowMapping = m_shadowMapping && m_device->IsShadowMappingSupported();
     m_offscreenShadowRendering = m_offscreenShadowRendering && m_device->IsFramebufferSupported();
     m_offscreenShadowRenderingResolution = Math::Min(m_offscreenShadowRenderingResolution, m_device->GetMaxTextureSize());
@@ -3438,11 +3446,9 @@ void CEngine::RenderShadowMap()
     m_device->SetRenderState(RENDER_STATE_FOG, false);
     m_device->SetRenderState(RENDER_STATE_CULLING, false);
     m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, true);
-    m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
     m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
     m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, true);
     m_device->SetDepthBias(2.0f, 8.0f);
-
     m_device->SetViewport(0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
 
     // recompute matrices
@@ -3494,10 +3500,29 @@ void CEngine::RenderShadowMap()
         if (!m_objects[objRank].used)
             continue;
 
-        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
-           continue;
+        bool terrain = (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN);
+
+        if (terrain)
+        {
+            if (m_terrainShadows)
+            {
+                m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, false);
+                m_device->SetRenderState(RENDER_STATE_CULLING, true);
+                m_device->SetCullMode(CULL_CCW);
+            }
+            else
+                continue;
+        }
+        else
+        {
+            m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, true);
+            m_device->SetRenderState(RENDER_STATE_CULLING, false);
+        }
 
         m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+
+        if (!IsVisible(objRank))
+            continue;
 
         int baseObjRank = m_objects[objRank].baseObjRank;
         if (baseObjRank == -1)
@@ -3518,6 +3543,7 @@ void CEngine::RenderShadowMap()
             for (int l3 = 0; l3 < static_cast<int>(p2.next.size()); l3++)
             {
                 EngineBaseObjDataTier& p3 = p2.next[l3];
+
                 DrawObject(p3);
             }
         }
@@ -3526,6 +3552,8 @@ void CEngine::RenderShadowMap()
     m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
     m_device->SetDepthBias(0.0f, 0.0f);
     m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, false);
+    m_device->SetRenderState(RENDER_STATE_CULLING, false);
+    m_device->SetCullMode(CULL_CW);
 
     if (m_offscreenShadowRendering)     // shadow map texture already have depth information, just unbind it
     {
@@ -3557,7 +3585,8 @@ void CEngine::UseShadowMapping(bool enable)
     {
         m_device->SetShadowColor(m_shadowColor);
         m_device->SetTransform(TRANSFORM_SHADOW, m_shadowTextureMat);
-        m_device->SetTexture(TEXTURE_SHADOW, m_shadowMap.id);
+        m_device->SetTexture(TEXTURE_SHADOW, m_shadowMap);
+        m_device->SetTextureStageWrap(TEXTURE_SHADOW, TEX_WRAP_CLAMP_TO_BORDER, TEX_WRAP_CLAMP_TO_BORDER);
         m_device->SetRenderState(RENDER_STATE_SHADOW_MAPPING, true);
     }
     else
