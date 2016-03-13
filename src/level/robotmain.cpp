@@ -415,8 +415,6 @@ void CRobotMain::ChangePhase(Phase phase)
             m_ui->NextMission();  // passes to the next mission
         }
 
-        m_app->SetLowCPU(true); // doesn't use much CPU in interface phases
-
         DeleteAllObjects();  // removes all the current 3D Scene
     }
 
@@ -548,8 +546,6 @@ void CRobotMain::ChangePhase(Phase phase)
 
     if (m_phase == PHASE_SIMUL)
     {
-        m_app->SetLowCPU(false); // high CPU for simulation
-
         bool loading = !m_sceneReadPath.empty();
 
         m_ui->ShowLoadingScreen(true);

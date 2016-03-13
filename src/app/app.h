@@ -292,12 +292,6 @@ public:
     void        SetLanguage(Language language);
     //@}
 
-    //! Management of sleep in main loop (lowers CPU usage)
-    //@{
-    void        SetLowCPU(bool low);
-    bool        GetLowCPU() const;
-    //@}
-
     //! Management of performance counters
     //@{
     void        StartPerformanceCounter(PerformanceCounter counter);
@@ -443,9 +437,6 @@ protected:
 
     //! Application language
     Language        m_language;
-
-    //! Low cpu mode
-    bool            m_lowCPU;
 
     //! Screen resoultion overriden by commandline
     bool            m_resolutionOverride;

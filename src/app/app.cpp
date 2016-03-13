@@ -162,8 +162,6 @@ CApplication::CApplication(CSystemUtils* systemUtils)
     m_resolutionOverride = false;
 
     m_language = LANGUAGE_ENV;
-
-    m_lowCPU = true;
 }
 
 CApplication::~CApplication()
@@ -1102,11 +1100,6 @@ int CApplication::Run()
             StopPerformanceCounter(PCNT_ALL);
 
             UpdatePerformanceCountersData();
-
-            if (m_lowCPU)
-            {
-                m_systemUtils->Usleep(20000); // should still give plenty of fps
-            }
         }
     }
 
@@ -1829,16 +1822,6 @@ void CApplication::SetLanguage(Language language)
     textdomain("colobot");
 
     GetLogger()->Debug("SetLanguage: Test gettext translation: '%s'\n", gettext("Colobot rules!"));
-}
-
-void CApplication::SetLowCPU(bool low)
-{
-    m_lowCPU = low;
-}
-
-bool CApplication::GetLowCPU() const
-{
-    return m_lowCPU;
 }
 
 void CApplication::StartPerformanceCounter(PerformanceCounter counter)
