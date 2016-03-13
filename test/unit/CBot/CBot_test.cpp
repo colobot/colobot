@@ -995,3 +995,61 @@ TEST_F(CBotUT, DISABLED_TestNANParam_Issue642)
         "}\n"
     );
 }
+
+TEST_F(CBotUT, TestArrayInitialization)
+{
+    ExecuteTest(
+        "extern void TestArrayInitialization() {\n"
+        "    int[] a = {1, 2, 3};\n"
+        "    ASSERT(sizeof(a) == 3);\n"
+        "    ASSERT(a[0] == 1);\n"
+        "    ASSERT(a[1] == 2);\n"
+        "    ASSERT(a[2] == 3);\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void TestArrayInitializationOutOfRange() {\n"
+        "    int a[2] = {1, 2, 3};\n"
+        "}\n",
+        CBotErrOutArray
+    );
+
+    ExecuteTest(
+        "extern void TestArrayInitializationSmallerThanRange() {\n"
+        "    int a[4] = {1, 2, 3};\n"
+        "    ASSERT(sizeof(a) == 3);\n"
+        "    ASSERT(a[0] == 1);\n"
+        "    ASSERT(a[1] == 2);\n"
+        "    ASSERT(a[2] == 3);\n"
+        "    a[3] = 4;\n"
+        "    ASSERT(sizeof(a) == 4);\n"
+        "    ASSERT(a[3] == 4);\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void TestArrayInitializationLimitUnchanged() {\n"
+        "    int a[4] = {1, 2, 3};\n"
+        "    a[4] = 5;\n"
+        "}\n",
+        CBotErrOutArray
+    );
+}
+
+TEST_F(CBotUT, TestArrayFunctionReturn)
+{
+    ExecuteTest(
+        "int[] test() {\n"
+        "    int[] a = {1, 2, 3};\n"
+        "    return a;"
+        "}\n"
+        "extern void TestArrayFunctionReturn() {\n"
+        "    int[] b = test();\n"
+        "    ASSERT(sizeof(b) == 3);\n"
+        "    ASSERT(b[0] == 1);\n"
+        "    ASSERT(b[1] == 2);\n"
+        "    ASSERT(b[2] == 3);\n"
+        "}\n"
+    );
+}

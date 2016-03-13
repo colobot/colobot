@@ -23,6 +23,7 @@
 #include "CBot/CBotInstr/CBotExpression.h"
 #include "CBot/CBotInstr/CBotListArray.h"
 #include "CBot/CBotInstr/CBotEmpty.h"
+#include "CBot/CBotInstr/CBotTwoOpExpr.h"
 
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
@@ -95,7 +96,18 @@ CBotInstr* CBotDefArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResul
 
         if (IsOfType(p, ID_ASS))                                        // with an assignment
         {
-            inst->m_listass = CBotListArray::Compile(p, pStk, type.GetTypElem());
+            if ((inst->m_listass = CBotTwoOpExpr::Compile(p, pStk)) != nullptr)
+            {
+                if (!pStk->GetTypResult().Compare(type))  // compatible type ?
+                {
+                    pStk->SetError(CBotErrBadType1, p->GetStart());
+                    goto error;
+                }
+            }
+            else
+            {
+                inst->m_listass = CBotListArray::Compile(p, pStk, type.GetTypElem());
+            }
         }
 
         if (pStk->IsOk()) return pStack->Return(inst, pStk);
