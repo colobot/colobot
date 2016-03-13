@@ -77,8 +77,6 @@ enum CameraSmooth
     CAM_SMOOTH_NORM         = 1,
     //! Hard
     CAM_SMOOTH_HARD         = 2,
-    //! Special
-    CAM_SMOOTH_SPEC         = 3,
 };
 
 enum CenteringPhase
@@ -151,7 +149,7 @@ public:
 
     //! Management of the smoothing mode
     void              SetSmooth(CameraSmooth type);
-    CameraSmooth GetSmoth();
+    CameraSmooth GetSmooth();
 
     //! Management of the setback distance
     void        SetDist(float dist);
@@ -206,17 +204,12 @@ public:
     bool        GetEffect();
     void        SetBlood(bool enable);
     bool        GetBlood();
-    void        SetCameraScroll(bool scroll);
-    bool        GetCameraScroll();
+    void        SetOldCameraScroll(bool scroll);
+    bool        GetOldCameraScroll();
     void        SetCameraInvertX(bool invert);
     bool        GetCameraInvertX();
     void        SetCameraInvertY(bool invert);
     bool        GetCameraInvertY();
-
-    //! Returns an additional force to turn
-    float       GetMotorTurn();
-    //! Returns the default sprite to use for the mouse
-    EngineMouseType GetMouseDef(Math::Point pos);
 
     void        SetCameraSpeed(float speed);
 
@@ -224,7 +217,9 @@ protected:
     //! Changes the camera according to the mouse moved
     bool        EventMouseMove(const Event &event);
     //! Mouse wheel operation
-    void        EventMouseWheel(const Event& event);
+    void        EventMouseWheel(const Event &event);
+    //! Mouse button handling
+    void        EventMouseButton(const Event &event);
     //! Changes the camera according to the time elapsed
     bool        EventFrame(const Event &event);
     //! Moves the point of view
@@ -303,11 +298,6 @@ protected:
 
     float       m_focus;
 
-    bool            m_rightDown;
-    Math::Point     m_rightPosInit;
-    Math::Point     m_rightPosCenter;
-    Math::Point     m_rightPosMove;
-
     //! CAM_TYPE_FREE: eye
     Math::Vector    m_eyePt;
     //! CAM_TYPE_FREE: horizontal direction
@@ -347,22 +337,17 @@ protected:
     //! CAM_TYPE_VISIT: initial type
     CameraType   m_visitType;
     //! CAM_TYPE_VISIT: direction
-    float        m_visitDirectionH;
-    //! CAM_TYPE_VISIT: direction
     float        m_visitDirectionV;
 
     //! CAM_TYPE_EDIT: height
     float        m_editHeight;
 
     float        m_remotePan;
-    float        m_remoteZoom;
 
-    Math::Point  m_mousePos;
-    float        m_mouseDirH;
-    float        m_mouseDirV;
-    float        m_mouseMarging;
-
-    float        m_motorTurn;
+    //! Last known mouse position, used to calculate change since last frame
+    Math::Point  m_mousePos = Math::Point(0.5f, 0.5f);
+    Math::Point  m_mouseDelta = Math::Point(0.0f, 0.0f);
+    Math::Point  m_mouseDeltaEdge = Math::Point(0.0f, 0.0f);
 
     CenteringPhase m_centeringPhase;
     float       m_centeringAngleH;
@@ -396,12 +381,11 @@ protected:
     //! Blood?
     bool        m_blood;
     //! Scroll in the edges?
-    bool        m_cameraScroll;
+    bool m_oldCameraScroll;
     //! X inversion in the edges?
     bool        m_cameraInvertX;
     //! Y inversion in the edges?
     bool        m_cameraInvertY;
-
 };
 
 

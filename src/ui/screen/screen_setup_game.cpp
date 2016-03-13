@@ -214,7 +214,7 @@ bool CScreenSetupGame::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_SCROLL:
-            m_camera->SetCameraScroll(!m_camera->GetCameraScroll());
+            m_camera->SetOldCameraScroll(!m_camera->GetOldCameraScroll());
             ChangeSetupButtons();
             UpdateSetupButtons();
             break;
@@ -325,7 +325,7 @@ void CScreenSetupGame::UpdateSetupButtons()
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SCROLL));
     if ( pc != nullptr )
     {
-        pc->SetState(STATE_CHECK, m_camera->GetCameraScroll());
+        pc->SetState(STATE_CHECK, m_camera->GetOldCameraScroll());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTX));

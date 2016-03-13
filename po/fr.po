@@ -324,6 +324,14 @@ msgstr "Caméra plus loin"
 msgid "Camera back\\Moves the camera backward"
 msgstr "Caméra plus loin\\Recule la caméra"
 
+#, fuzzy
+msgid ""
+"Camera border scrolling\\Scrolling when the mouse touches right or left "
+"border"
+msgstr ""
+"Défilement dans les bords\\Défilement lorsque la souris touches les bords "
+"gauche ou droite"
+
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Caméra plus proche\\Avance la caméra"
 
@@ -1299,11 +1307,6 @@ msgstr "Enregistrer\\Enregistrer la mission en cours"
 
 msgid "Save\\Saves the current mission"
 msgstr "Enregistrer\\Enregistrer la mission en cours"
-
-msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-msgstr ""
-"Défilement dans les bords\\Défilement lorsque la souris touches les bords "
-"gauche ou droite"
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Sélectionner le cosmonaute\\Sélectionner le cosmonaute"

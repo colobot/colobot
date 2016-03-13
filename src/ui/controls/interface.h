@@ -29,7 +29,6 @@
 
 namespace Gfx
 {
-class CCamera;
 class CEngine;
 } // namespace Gfx
 
@@ -101,7 +100,6 @@ protected:
 
     CEventQueue* m_event;
     Gfx::CEngine* m_engine;
-    Gfx::CCamera* m_camera;
     std::array<std::unique_ptr<CControl>, MAXCONTROL> m_controls;
 };
 

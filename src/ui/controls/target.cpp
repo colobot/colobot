@@ -64,7 +64,7 @@ bool CTarget::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if ( event.type == EVENT_MOUSE_MOVE )
+    if ( event.type == EVENT_MOUSE_MOVE || event.type == EVENT_MOUSE_BUTTON_DOWN || event.type == EVENT_MOUSE_BUTTON_UP )
     {
         m_main->SetFriendAim(false);
 

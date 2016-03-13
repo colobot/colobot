@@ -2051,7 +2051,6 @@ bool COldObject::EventProcess(const Event &event)
                     axeZ = -1.0f;  // tomb
                 }
 
-                axeX += m_camera->GetMotorTurn();  // additional power according to camera
                 if ( axeX >  1.0f )  axeX =  1.0f;
                 if ( axeX < -1.0f )  axeX = -1.0f;
 

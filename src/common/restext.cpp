@@ -20,8 +20,6 @@
 
 #include "common/restext.h"
 
-#include "common/config.h"
-
 #include "CBot/CBot.h"
 
 #include "app/input.h"
@@ -190,7 +188,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_GLINT]     = TR("Reflections on the buttons \\Shiny buttons");
     stringsEvent[EVENT_INTERFACE_TOOLTIP]   = TR("Help balloons\\Explain the function of the buttons");
     stringsEvent[EVENT_INTERFACE_MOVIES]    = TR("Film sequences\\Films before and after the missions");
-    stringsEvent[EVENT_INTERFACE_SCROLL]    = TR("Scrolling\\Scrolling when the mouse touches right or left border");
+    stringsEvent[EVENT_INTERFACE_SCROLL]    = TR("Camera border scrolling\\Scrolling when the mouse touches right or left border");
     stringsEvent[EVENT_INTERFACE_INVERTX]   = TR("Mouse inversion X\\Inversion of the scrolling direction on the X axis");
     stringsEvent[EVENT_INTERFACE_INVERTY]   = TR("Mouse inversion Y\\Inversion of the scrolling direction on the Y axis");
     stringsEvent[EVENT_INTERFACE_EFFECT]    = TR("Quake at explosions\\The screen shakes at explosions");
@@ -765,7 +763,7 @@ void PutKeyName(std::string& dst, const char* src)
              src[s+3] == 'y'  &&
              src[s+4] == ' '  )
         {
-            int count;
+            unsigned int count;
             for(count = 0; src[s+5+count] != ';'; count++);
             CInput* input = CInput::GetInstancePointer();
             InputSlot key = input->SearchKeyById(std::string(&src[s+5], count));
