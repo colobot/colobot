@@ -152,6 +152,12 @@ bool CBotListArray::Execute(CBotStack* &pj, CBotVar* pVar)
 
         pVar2 = pVar->GetItem(n, true);
 
+        if (pVar2 == nullptr)
+        {
+            pj->SetError(CBotErrOutArray, p->GetToken());
+            return false;
+        }
+
         if (!p->Execute(pile1, pVar2)) return false;        // evaluate expression
 
         pile1->IncState();

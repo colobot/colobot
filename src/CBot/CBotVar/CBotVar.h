@@ -415,7 +415,7 @@ public:
      *
      * \param index Index of the element to get
      * \param grow true to grow the array automatically if the index is out of range
-     * \return CBotVar representing the array element
+     * \return CBotVar representing the array element, or nullptr on error (for example going out of range)
      */
     virtual CBotVar* GetItem(int index, bool grow = false);
 
