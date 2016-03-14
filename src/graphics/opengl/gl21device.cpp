@@ -255,44 +255,25 @@ bool CGL21Device::Create()
     m_texturesEnabled    = std::vector<bool>              (maxTextures, false);
     m_textureStageParams = std::vector<TextureStageParams>(maxTextures, TextureStageParams());
 
-    int value;
-    if (GetConfigFile().GetIntProperty("Setup", "PerPixelLighting", value))
-    {
-        m_perPixelLighting = value > 0;
-    }
-
-    char shading[16];
-
-    if (m_perPixelLighting)
-    {
-        GetLogger()->Info("Using per-pixel lighting\n");
-        strcpy(shading, "perpixel");
-    }
-    else
-    {
-        GetLogger()->Info("Using per-vertex lighting\n");
-        strcpy(shading, "pervertex");
-    }
-
     // Create shader program for normal rendering
     GLint shaders[2];
     char filename[128];
 
-    sprintf(filename, "shaders/vertex_shader_21_%s.glsl", shading);
+    strcpy(filename, "shaders/gl21/vs_normal.glsl");
     shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
     if (shaders[0] == 0)
     {
         m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Count not create vertex shader from file '%s'\n", filename);
+        GetLogger()->Error("Cound not create vertex shader from file '%s'\n", filename);
         return false;
     }
 
-    sprintf(filename, "shaders/fragment_shader_21_%s.glsl", shading);
+    strcpy(filename, "shaders/gl21/fs_normal.glsl");
     shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
     if (shaders[1] == 0)
     {
         m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Count not create fragment shader from file '%s'\n", filename);
+        GetLogger()->Error("Cound not create fragment shader from file '%s'\n", filename);
         return false;
     }
 
@@ -300,7 +281,7 @@ bool CGL21Device::Create()
     if (m_normalProgram == 0)
     {
         m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Count not link shader program for normal rendering\n");
+        GetLogger()->Error("Cound not link shader program for normal rendering\n");
         return false;
     }
 
@@ -308,21 +289,21 @@ bool CGL21Device::Create()
     glDeleteShader(shaders[1]);
 
     // Create shader program for interface rendering
-    strcpy(filename, "shaders/vertex_shader_21_interface.glsl");
+    strcpy(filename, "shaders/gl21/vs_interface.glsl");
     shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
     if (shaders[0] == 0)
     {
         m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Count not create vertex shader from file '%s'\n", filename);
+        GetLogger()->Error("Cound not create vertex shader from file '%s'\n", filename);
         return false;
     }
 
-    strcpy(filename, "shaders/fragment_shader_21_interface.glsl");
+    strcpy(filename, "shaders/gl21/fs_interface.glsl");
     shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
     if (shaders[1] == 0)
     {
         m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Count not compile fragment shader from file '%s'\n", filename);
+        GetLogger()->Error("Cound not compile fragment shader from file '%s'\n", filename);
         return false;
     }
 
@@ -330,7 +311,7 @@ bool CGL21Device::Create()
     if (m_interfaceProgram == 0)
     {
         m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Count not link shader program for interface rendering\n");
+        GetLogger()->Error("Cound not link shader program for interface rendering\n");
         return false;
     }
 
@@ -338,21 +319,21 @@ bool CGL21Device::Create()
     glDeleteShader(shaders[1]);
 
     // Create shader program for shadow rendering
-    strcpy(filename, "shaders/vertex_shader_21_shadow.glsl");
+    strcpy(filename, "shaders/gl21/vs_shadow.glsl");
     shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
     if (shaders[0] == 0)
     {
         m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Count not create vertex shader from file '%s'\n", filename);
+        GetLogger()->Error("Cound not create vertex shader from file '%s'\n", filename);
         return false;
     }
 
-    strcpy(filename, "shaders/fragment_shader_21_shadow.glsl");
+    strcpy(filename, "shaders/gl21/fs_shadow.glsl");
     shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
     if (shaders[1] == 0)
     {
         m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Count not compile fragment shader from file '%s'\n", filename);
+        GetLogger()->Error("Cound not compile fragment shader from file '%s'\n", filename);
         return false;
     }
 
@@ -360,7 +341,7 @@ bool CGL21Device::Create()
     if (m_shadowProgram == 0)
     {
         m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Count not link shader program for shadow rendering\n");
+        GetLogger()->Error("Cound not link shader program for shadow rendering\n");
         return false;
     }
 

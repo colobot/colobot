@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
-
+// VERTEX SHADER - NORMAL MODE
 #version 120
 
 uniform mat4 uni_ProjectionMatrix;
