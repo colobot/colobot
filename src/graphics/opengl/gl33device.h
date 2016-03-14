@@ -277,8 +277,6 @@ private:
     GLuint m_interfaceProgram = 0;
     //! Shader program for shadow rendering
     GLuint m_shadowProgram = 0;
-    //! true enables per-pixel lighting
-    bool m_perPixelLighting = false;
 
     //! Auxiliary VAO for rendering primitives with DrawPrimitive*
     GLuint m_auxiliaryVAO = 0;

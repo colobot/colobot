@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// VERTEX SHADER - INTERFACE RENDERING
+// VERTEX SHADER - INTERFACE MODE
 #version 330 core
 
 uniform mat4 uni_ProjectionMatrix;

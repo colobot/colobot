@@ -17,27 +17,29 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// VERTEX SHADER - SHADOW RENDERING
+// FRAGMENT SHADER - INTERFACE MODE
 #version 330 core
 
-uniform mat4 uni_ProjectionMatrix;
-uniform mat4 uni_ViewMatrix;
-uniform mat4 uni_ModelMatrix;
+uniform sampler2D uni_Texture;
 
-layout(location = 0) in vec4 in_VertexCoord;
-layout(location = 1) in vec3 in_Normal;
-layout(location = 2) in vec4 in_Color;
-layout(location = 3) in vec2 in_TexCoord0;
-layout(location = 4) in vec2 in_TexCoord1;
+uniform bool uni_TextureEnabled;
 
-out VertexData
+in VertexData
 {
+    vec4 Color;
     vec2 TexCoord;
 } data;
 
+out vec4 out_FragColor;
+
 void main()
 {
-    gl_Position = uni_ProjectionMatrix * uni_ViewMatrix * uni_ModelMatrix * in_VertexCoord;
-
-    data.TexCoord = in_TexCoord0;
+    if (uni_TextureEnabled)
+    {
+        out_FragColor = data.Color * texture(uni_Texture, data.TexCoord);
+    }
+    else
+    {
+        out_FragColor = data.Color;
+    }
 }

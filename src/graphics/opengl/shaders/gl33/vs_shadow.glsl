@@ -17,14 +17,12 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// VERTEX SHADER
-#version 330
+// VERTEX SHADER - SHADOW MODE
+#version 330 core
 
 uniform mat4 uni_ProjectionMatrix;
 uniform mat4 uni_ViewMatrix;
 uniform mat4 uni_ModelMatrix;
-uniform mat4 uni_ShadowMatrix;
-uniform mat4 uni_NormalMatrix;
 
 layout(location = 0) in vec4 in_VertexCoord;
 layout(location = 1) in vec3 in_Normal;
@@ -34,28 +32,12 @@ layout(location = 4) in vec2 in_TexCoord1;
 
 out VertexData
 {
-    vec3 Normal;
-    vec4 Color;
-    vec2 TexCoord0;
-    vec2 TexCoord1;
-    vec4 ShadowCoord;
-    vec4 Position;
-    float Distance;
+    vec2 TexCoord;
 } data;
 
 void main()
 {
-    vec4 position = uni_ModelMatrix * in_VertexCoord;
-    vec4 eyeSpace = uni_ViewMatrix * position;
-    gl_Position = uni_ProjectionMatrix * eyeSpace;
+    gl_Position = uni_ProjectionMatrix * uni_ViewMatrix * uni_ModelMatrix * in_VertexCoord;
 
-    vec3 normal = normalize((uni_NormalMatrix * vec4(in_Normal, 0.0f)).xyz);
-
-    data.Color = in_Color;
-    data.Normal = normal;
-    data.TexCoord0 = in_TexCoord0;
-    data.TexCoord1 = in_TexCoord1;
-    data.ShadowCoord = uni_ShadowMatrix * position;
-    data.Position = position;
-    data.Distance = abs(eyeSpace.z);
+    data.TexCoord = in_TexCoord0;
 }

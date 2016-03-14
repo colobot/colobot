@@ -255,9 +255,6 @@ private:
     //! Currently bound VBO
     GLuint m_currentVBO = 0;
 
-    //! true enables per-pixel lighting
-    bool m_perPixelLighting = false;
-
     //! Shader program for normal rendering
     GLuint m_normalProgram = 0;
     //! Shader program for interface rendering

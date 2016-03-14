@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// VERTEX SHADER - PER-VERTEX LIGHTING
+// VERTEX SHADER - NORMAL MODE
 #version 330 core
 
 struct LightParams

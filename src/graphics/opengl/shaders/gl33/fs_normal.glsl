@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// FRAGMENT SHADER - PER-VERTEX LIGHTING
+// FRAGMENT SHADER - NORMAL MODE
 #version 330 core
 
 uniform sampler2D uni_PrimaryTexture;
