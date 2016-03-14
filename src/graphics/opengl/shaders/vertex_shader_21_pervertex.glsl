@@ -84,13 +84,12 @@ void main()
                 vec3 lightDirection = light.Position.xyz;
                 float atten = 1.0f;
 
-                if (light.Position.w != 0.0f)
+                if (light.Position.w > 0.5f)
                 {
                     float dist = distance(light.Position.xyz, position.xyz);
 
-                    float atten = 1.0f / (light.Attenuation.x
-                            + light.Attenuation.y * dist
-                            + light.Attenuation.z * dist * dist);
+                    float atten = 1.0f / dot(light.Attenuation,
+                            vec3(1.0f, dist, dist * dist));
 
                     lightDirection = normalize(light.Position.xyz - position.xyz);
                 }
@@ -107,7 +106,7 @@ void main()
                     }
                     else
                     {
-                        spot = 0.0f;
+                        continue;
                     }
                 }
 
