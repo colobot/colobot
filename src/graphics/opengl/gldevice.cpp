@@ -318,6 +318,15 @@ bool CGLDevice::Create()
         GetLogger()->Debug("Using quality shadows\n");
     }
 
+    // create white texture
+    glGenTextures(1, &m_whiteTexture);
+    glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    int color = 0xFFFFFFFF;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     // create default framebuffer object
     FramebufferParams framebufferParams;
 
@@ -933,6 +942,19 @@ void CGLDevice::DestroyAllTextures()
         glDeleteTextures(1, &(*it).id);
 
     m_allTextures.clear();
+
+    // recreate white texture
+    glActiveTexture(GL_TEXTURE0 + m_remap[0]);
+
+    glDeleteTextures(1, &m_whiteTexture);
+    glGenTextures(1, &m_whiteTexture);
+    glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    int color = 0xFFFFFFFF;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
 }
 
 int CGLDevice::GetMaxTextureStageCount()
@@ -1289,11 +1311,7 @@ void CGLDevice::EnableShadows()
         // combine unit
         glActiveTexture(GL_TEXTURE0 + m_remap[3]);
         glEnable(GL_TEXTURE_2D);
-
-        int color = 0xFFFFFFFF;
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
 
         // texture enviromnent settings
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);

@@ -249,6 +249,8 @@ private:
 
     //! Set of all created textures
     std::set<Texture> m_allTextures;
+    //! White texture
+    GLuint m_whiteTexture;
 
     //! Map of framebuffers
     std::map<std::string, std::unique_ptr<CFramebuffer>> m_framebuffers;
