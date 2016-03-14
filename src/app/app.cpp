@@ -788,6 +788,15 @@ bool CApplication::CreateVideoSurface()
         }
     }
 
+    int msaa = 0;
+    if (GetConfigFile().GetIntProperty("Experimental", "MSAA", msaa))
+    {
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa);
+
+        GetLogger()->Info("Using MSAA on default framebuffer (%d samples)\n", msaa);
+    }
+
     /* If hardware acceleration specifically requested, this will force the hw accel
        and fail with error if not available */
     if (m_deviceConfig.hardwareAccel)
