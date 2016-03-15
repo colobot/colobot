@@ -370,12 +370,12 @@ void CScreenLevelList::UpdateSceneChap(int &chap)
             {
                 CLevelParser levelParser("custom", j+1, 0);
                 levelParser.Load();
-                pl->SetItemName(j, levelParser.Get("Title")->GetParam("text")->AsString().c_str());
+                pl->SetItemName(j, levelParser.Get("Title")->GetParam("text")->AsString());
                 pl->SetEnable(j, true);
             }
             catch (CLevelParserException& e)
             {
-                pl->SetItemName(j, (std::string("[ERROR]: ")+e.what()).c_str());
+                pl->SetItemName(j, std::string("[ERROR]: ")+e.what());
                 pl->SetEnable(j, false);
             }
         }

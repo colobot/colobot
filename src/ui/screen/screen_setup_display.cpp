@@ -192,7 +192,7 @@ void CScreenSetupDisplay::UpdateDisplayMode()
         mode_text.str("");
         Math::IntPoint aspect = AspectRatio(mode);
         mode_text << mode.x << "x" << mode.y << " [" << aspect.x << ":" << aspect.y << "]";
-        pl->SetItemName(i++, mode_text.str().c_str());
+        pl->SetItemName(i++, mode_text.str());
     }
 
     pl->SetSelect(m_setupSelMode);

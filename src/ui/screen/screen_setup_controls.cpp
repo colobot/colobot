@@ -327,7 +327,7 @@ void CScreenSetupControls::UpdateSetupButtons()
         auto joysticks = m_app->GetJoystickList();
         for (unsigned int i = 0; i < joysticks.size(); i++)
         {
-            pli->SetItemName(1 + i, joysticks[i].name.c_str());
+            pli->SetItemName(1 + i, joysticks[i].name);
         }
         pli->SetSelect(m_app->GetJoystickEnabled() ? m_app->GetJoystick().index + 1 : 0);
     }

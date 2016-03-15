@@ -221,7 +221,7 @@ void CScreenPlayerSelect::ReadNameList()
     auto players = CPlayerProfile::GetPlayerList();
     for (int i = 0; i < static_cast<int>(players.size()); ++i)
     {
-        pl->SetItemName(i, players.at(i).c_str());
+        pl->SetItemName(i, players.at(i));
     }
 }
 

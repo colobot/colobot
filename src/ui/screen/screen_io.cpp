@@ -103,7 +103,7 @@ void CScreenIO::IOReadList(bool isWrite)
     m_saveList.clear();
     for(const SavedScene& save : m_main->GetPlayerProfile()->GetSavedSceneList())
     {
-        pl->SetItemName(m_saveList.size(), save.name.c_str());
+        pl->SetItemName(m_saveList.size(), save.name);
         m_saveList.push_back(save.path);
     }
 
@@ -112,7 +112,7 @@ void CScreenIO::IOReadList(bool isWrite)
     {
         std::string nameStr;
         GetResource(RES_TEXT, RT_IO_NEW, nameStr);
-        pl->SetItemName(m_saveList.size(), nameStr.c_str());
+        pl->SetItemName(m_saveList.size(), nameStr);
     }
 
     pl->SetSelect(m_saveList.size());

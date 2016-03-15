@@ -523,7 +523,7 @@ void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var, Ui::C
 
         if (previous.find(pStatic) != previous.end())
         {
-            list->SetItemName(rankList++, StrUtils::Format("%s = [circular reference]", varName.c_str()).c_str());
+            list->SetItemName(rankList++, StrUtils::Format("%s = [circular reference]", varName.c_str()));
         }
         else
         {
@@ -531,11 +531,11 @@ void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var, Ui::C
 
             if (type <= CBot::CBotTypBoolean)
             {
-                list->SetItemName(rankList++, StrUtils::Format("%s = %s;", varName.c_str(), pStatic->GetValString().c_str()).c_str());
+                list->SetItemName(rankList++, StrUtils::Format("%s = %s;", varName.c_str(), pStatic->GetValString().c_str()));
             }
             else if (type == CBot::CBotTypString)
             {
-                list->SetItemName(rankList++, StrUtils::Format("%s = \"%s\";", varName.c_str(), pStatic->GetValString().c_str()).c_str());
+                list->SetItemName(rankList++, StrUtils::Format("%s = \"%s\";", varName.c_str(), pStatic->GetValString().c_str()));
             }
             else if (type == CBot::CBotTypArrayPointer)
             {
@@ -552,7 +552,7 @@ void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var, Ui::C
             }
             else
             {
-                //list->SetItemName(rankList++, StrUtils::Format("%s = ?;", varName.c_str()).c_str());
+                //list->SetItemName(rankList++, StrUtils::Format("%s = ?;", varName.c_str()));
                 assert(false);
             }
         }
