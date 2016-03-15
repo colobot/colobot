@@ -869,7 +869,7 @@ void CCamera::SetViewTime(const Math::Vector &eyePt,
         float dist = Math::Distance(m_finalEye, m_actualEye);
 
         if (m_smooth == CAM_SMOOTH_NONE) prog = dist;
-        if (m_smooth == CAM_SMOOTH_NORM) prog = dist * rTime * 3.0f;
+        if (m_smooth == CAM_SMOOTH_NORM) prog = powf(dist, 1.5f) * rTime * 0.75f;
         if (m_smooth == CAM_SMOOTH_HARD) prog = dist * rTime * 4.0f;
         if (dist == 0.0f)
         {
@@ -884,7 +884,7 @@ void CCamera::SetViewTime(const Math::Vector &eyePt,
 
         dist = Math::Distance(m_finalLookat, m_actualLookat);
         if ( m_smooth == CAM_SMOOTH_NONE ) prog = dist;
-        if ( m_smooth == CAM_SMOOTH_NORM ) prog = dist * rTime * 6.0f;
+        if ( m_smooth == CAM_SMOOTH_NORM ) prog = powf(dist, 1.5f) * rTime * 3.0f;
         if ( m_smooth == CAM_SMOOTH_HARD ) prog = dist * rTime * 4.0f;
         if ( dist == 0.0f )
         {
