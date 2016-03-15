@@ -35,7 +35,6 @@ namespace Ui
 {
 
 const int LISTMAXDISPLAY = 20;  // maximum number of visible lines
-const int LISTMAXTOTAL   = 100; // maximum total number of lines
 
 
 
@@ -71,8 +70,8 @@ public:
     void        SetBlink(bool bEnable);
     bool        GetBlink();
 
-    void        SetItemName(int i, const char* name);
-    char*       GetItemName(int i);
+    void        SetItemName(int i, const std::string& name);
+    const std::string& GetItemName(int i);
 
     void        SetCheck(int i, bool bMode);
     bool        GetCheck(int i);
@@ -93,7 +92,7 @@ protected:
     void        UpdateButton();
     void        UpdateScroll();
     void        MoveScroll();
-    void        DrawCase(char *text, Math::Point pos, float width, Gfx::TextAlign justif);
+    void        DrawCase(const char* text, Math::Point pos, float width, Gfx::TextAlign justif);
 
 private:
     // Overridden to avoid warning about hiding the virtual function
@@ -116,11 +115,11 @@ protected:
 
     struct Item
     {
-        char text[100] = {};
+        std::string text = "";
         bool check = false;
         bool enable = true;
     };
-    std::array<Item, LISTMAXTOTAL> m_items;
+    std::vector<Item> m_items;
 };
 
 

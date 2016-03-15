@@ -354,7 +354,7 @@ void CList::Draw()
     float   dp;
     int     i;
     char    text[100];
-    char    *pb, *pe;
+    const char    *pb, *pe;
 
     if ((m_state & STATE_VISIBLE) == 0)
         return;
@@ -451,14 +451,14 @@ void CList::Draw()
                 ppos.y = pos.y + dim.y * 0.5f;
                 ppos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
                 ddim.x = dim.x-dim.y;
-                DrawCase(m_items[i + m_firstLine].text, ppos, ddim.x, Gfx::TEXT_ALIGN_LEFT);
+                DrawCase(m_items[i + m_firstLine].text.c_str(), ppos, ddim.x, Gfx::TEXT_ALIGN_LEFT);
             }
             else
             {
                 ppos.x = pos.x + dim.y * 0.5f;
                 ppos.y = pos.y + dim.y * 0.5f;
                 ppos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
-                pb = m_items[i + m_firstLine].text;
+                pb = m_items[i + m_firstLine].text.c_str();
                 for (int j = 0; j < 10; j++)
                 {
                     pe = strchr(pb, '\t');
@@ -548,7 +548,7 @@ void CList::Draw()
 
 // Displays text in a box.
 
-void CList::DrawCase(char *text, Math::Point pos, float width, Gfx::TextAlign justif)
+void CList::DrawCase(const char* text, Math::Point pos, float width, Gfx::TextAlign justif)
 {
     if (justif == Gfx::TEXT_ALIGN_CENTER)
         pos.x += width / 2.0f;
@@ -651,18 +651,19 @@ bool CList::GetBlink()
 
 // Specifies the text of a line.
 
-void CList::SetItemName(int i, const char* name)
+void CList::SetItemName(int i, const std::string& name)
 {
-    if ( i < 0 || i >= LISTMAXTOTAL )
+    if ( i < 0 )
         return;
 
     if ( i >= m_totalLine )
         m_totalLine = i+1;  // expands the list
 
-    if ( name[0] == 0 )
-        strcpy(m_items[i].text, " ");
+    m_items.resize(m_totalLine);
+    if ( name.empty() )
+        m_items[i].text =  " ";
     else
-        strcpy(m_items[i].text, name);
+        m_items[i].text = name;
 
     UpdateButton();
     UpdateScroll();
@@ -670,10 +671,10 @@ void CList::SetItemName(int i, const char* name)
 
 // Returns the text of a line.
 
-char* CList::GetItemName(int i)
+const std::string& CList::GetItemName(int i)
 {
     if ( i < 0 || i >= m_totalLine )
-        return nullptr;
+        assert(false);
 
     return m_items[i].text;
 }

@@ -490,79 +490,71 @@ bool CScript::GetCursor(int &cursor1, int &cursor2)
 
 // Put of the variables in a list.
 
-void PutList(const char *baseName, bool bArray, CBot::CBotVar *var, Ui::CList *list, int &rankList)
+void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var, Ui::CList *list, int &rankList, std::set<CBot::CBotVar*>& previous)
 {
-    CBot::CBotVar     *svar, *pStatic;
-    char        varName[100];
-    char        buffer[100];
-    std::string p;
-    int         index, type;
-
-    if ( var == nullptr && baseName[0] != 0 )
+    if ( var == nullptr && !baseName.empty() )
     {
-        sprintf(buffer, "%s = null;", baseName);
-        list->SetItemName(rankList++, buffer);
+        list->SetItemName(rankList++, StrUtils::Format("%s = null;", baseName.c_str()).c_str());
         return;
     }
 
-    index = 0;
-    while ( var != nullptr )
+    int index = 0;
+    while (var != nullptr)
     {
         var->Update(nullptr);
-        pStatic = var->GetStaticVar();  // finds the static element
+        CBot::CBotVar* pStatic = var->GetStaticVar();  // finds the static element
 
-        p = pStatic->GetName();  // variable name
-//?     if ( strcmp(p, "this") == 0 )
-//?     {
-//?         var = var->GetNext();
-//?         continue;
-//?     }
-
-        if ( baseName[0] == 0 )
+        std::string varName;
+        if (baseName.empty())
         {
-            sprintf(varName, "%s", p.c_str());
+            varName = StrUtils::Format("%s", pStatic->GetName().c_str());
         }
         else
         {
-            if ( bArray )
+            if (bArray)
             {
-                sprintf(varName, "%s[%d]", baseName, index);
+                varName = StrUtils::Format("%s[%d]", baseName.c_str(), index);
             }
             else
             {
-                sprintf(varName, "%s.%s", baseName, p.c_str());
+                varName = StrUtils::Format("%s.%s", baseName.c_str(), pStatic->GetName().c_str());
             }
         }
 
-        type = pStatic->GetType();
-
-        if ( type < CBot::CBotTypBoolean )
+        if (previous.find(pStatic) != previous.end())
         {
-            p = pStatic->GetValString();
-            sprintf(buffer, "%s = %s;", varName, p.c_str());
-            list->SetItemName(rankList++, buffer);
-        }
-        else if ( type == CBot::CBotTypString )
-        {
-            p = pStatic->GetValString();
-            sprintf(buffer, "%s = \"%s\";", varName, p.c_str());
-            list->SetItemName(rankList++, buffer);
-        }
-        else if ( type == CBot::CBotTypArrayPointer )
-        {
-            svar = pStatic->GetItemList();
-            PutList(varName, true, svar, list, rankList);
-        }
-        else if ( type == CBot::CBotTypClass   ||
-                  type == CBot::CBotTypPointer )
-        {
-            svar = pStatic->GetItemList();
-            PutList(varName, false, svar, list, rankList);
+            list->SetItemName(rankList++, StrUtils::Format("%s = [circular reference]", varName.c_str()).c_str());
         }
         else
         {
-            sprintf(buffer, "%s = ?;", varName);
-            list->SetItemName(rankList++, buffer);
+            int type = pStatic->GetType();
+
+            if (type <= CBot::CBotTypBoolean)
+            {
+                list->SetItemName(rankList++, StrUtils::Format("%s = %s;", varName.c_str(), pStatic->GetValString().c_str()).c_str());
+            }
+            else if (type == CBot::CBotTypString)
+            {
+                list->SetItemName(rankList++, StrUtils::Format("%s = \"%s\";", varName.c_str(), pStatic->GetValString().c_str()).c_str());
+            }
+            else if (type == CBot::CBotTypArrayPointer)
+            {
+                previous.insert(pStatic);
+                PutList(varName, true, pStatic->GetItemList(), list, rankList, previous);
+                previous.erase(pStatic);
+            }
+            else if (type == CBot::CBotTypClass ||
+                     type == CBot::CBotTypPointer)
+            {
+                previous.insert(pStatic);
+                PutList(varName, false, pStatic->GetItemList(), list, rankList, previous);
+                previous.erase(pStatic);
+            }
+            else
+            {
+                //list->SetItemName(rankList++, StrUtils::Format("%s = ?;", varName.c_str()).c_str());
+                assert(false);
+            }
         }
 
         index ++;
@@ -589,13 +581,15 @@ void CScript::UpdateList(Ui::CList* list)
 
     level = 0;
     rank  = 0;
+    std::set<CBot::CBotVar*> previous;
     while ( true )
     {
         var = m_botProg->GetStackVars(funcName, level--);
         if ( funcName != progName )  break;
 
-        PutList("", false, var, list, rank);
+        PutList("", false, var, list, rank, previous);
     }
+    assert(previous.empty());
 
     if ( total == list->GetTotal() )  // same total?
     {

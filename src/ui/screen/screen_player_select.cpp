@@ -153,7 +153,7 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
     CWindow* pw;
     CList*   pl;
     std::string name;
-    char* gamer;
+    std::string gamer;
 
     switch( event.type )
     {
@@ -289,7 +289,7 @@ void CScreenPlayerSelect::UpdateNameList()
     for ( i=0 ; i<total ; i++ )
     {
         // TODO: stricmp?
-        if ( strcmp(name, pl->GetItemName(i)) == 0 )
+        if ( name == pl->GetItemName(i) )
         {
             pl->SetSelect(i);
             pl->ShowSelect(false);
@@ -307,7 +307,7 @@ void CScreenPlayerSelect::UpdateNameEdit()
     CWindow*    pw;
     CList*      pl;
     CEdit*      pe;
-    char*       name;
+    std::string name;
     int         sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -326,8 +326,8 @@ void CScreenPlayerSelect::UpdateNameEdit()
     else
     {
         name = pl->GetItemName(sel);
-        pe->SetText(name);
-        pe->SetCursor(strlen(name), 0);
+        pe->SetText(name.c_str());
+        pe->SetCursor(name.length(), 0);
     }
 
     UpdateNameControl();
@@ -434,7 +434,7 @@ void CScreenPlayerSelect::NameDelete()
         return;
     }
 
-    char* gamer = pl->GetItemName(sel);
+    std::string gamer = pl->GetItemName(sel);
 
     m_main->SelectPlayer(gamer);
     if (!m_main->GetPlayerProfile()->Delete())
