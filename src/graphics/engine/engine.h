@@ -34,6 +34,7 @@
 #include "math/intpoint.h"
 #include "math/matrix.h"
 #include "math/point.h"
+#include "math/sphere.h"
 #include "math/vector.h"
 
 
@@ -1180,6 +1181,9 @@ public:
     //! Updates the scene after a change of parameters
     void            ApplyChange();
 
+    void            ClearDisplayCrashSpheres();
+    void            AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres);
+
 protected:
     //! Prepares the interface for 3D scene
     void        Draw3DScene();
@@ -1221,6 +1225,7 @@ protected:
     void        DrawStats();
     //! Draw mission timer
     void        DrawTimer();
+    void        DrawCrashSpheres();
 
     //! Creates a new tier 2 object (texture)
     EngineBaseObjTexTier&  AddLevel2(EngineBaseObject& p1, const std::string& tex1Name, const std::string& tex2Name);
@@ -1467,6 +1472,8 @@ protected:
     std::string     m_timerText;
 
     std::unordered_map<std::string, int> m_staticMeshBaseObjects;
+
+    std::vector<Math::Sphere> m_displayCrashSpheres;
 
     //! Pause the animation updates
     bool            m_pause = false;

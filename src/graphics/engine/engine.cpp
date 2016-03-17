@@ -3065,6 +3065,18 @@ void CEngine::ApplyChange()
     SetFocus(m_focus);
 }
 
+void CEngine::ClearDisplayCrashSpheres()
+{
+    m_displayCrashSpheres.clear();
+}
+
+void CEngine::AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres)
+{
+    for (const auto& crashSphere : crashSpheres)
+    {
+        m_displayCrashSpheres.push_back(crashSphere);
+    }
+}
 
 
 /*******************************************************
@@ -3359,6 +3371,8 @@ void CEngine::Draw3DScene()
 
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
+    DrawCrashSpheres();
+
     m_app->StartPerformanceCounter(PCNT_RENDER_PARTICLE);
     m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
     m_app->StopPerformanceCounter(PCNT_RENDER_PARTICLE);
@@ -3370,6 +3384,60 @@ void CEngine::Draw3DScene()
     DrawForegroundImage();   // draws the foreground
 
     if (! m_overFront) DrawOverColor();      // draws the foreground color
+}
+
+void CEngine::DrawCrashSpheres()
+{
+    Math::Matrix worldMatrix;
+    worldMatrix.LoadIdentity();
+    m_device->SetTransform(TRANSFORM_WORLD, worldMatrix);
+
+    SetState(ENG_RSTATE_OPAQUE_COLOR);
+
+    const int LINE_SEGMENTS = 32;
+    const int LONGITUDE_DIVISIONS = 16;
+    const int LATITUDE_DIVISIONS = 8;
+
+    VertexCol line[LINE_SEGMENTS];
+    Color color(0.0f, 0.0f, 1.0f);
+
+    auto SpherePoint = [&](float sphereRadius, float latitude, float longitude)
+    {
+        float latitudeAngle = (latitude - 0.5f) * 2.0f * Math::PI;
+        float longitudeAngle = longitude * 2.0f * Math::PI;
+        return Math::Vector(sphereRadius * sinf(latitudeAngle) * cosf(longitudeAngle),
+                            sphereRadius * cosf(latitudeAngle),
+                            sphereRadius * sinf(latitudeAngle) * sinf(longitudeAngle));
+    };
+
+    for (const auto& crashSphere : m_displayCrashSpheres)
+    {
+        for (int longitudeDivision = 0; longitudeDivision <= LONGITUDE_DIVISIONS; ++longitudeDivision)
+        {
+            for (int segment = 0; segment < LINE_SEGMENTS; ++segment)
+            {
+                Math::Vector pos = crashSphere.pos;
+                float latitude = static_cast<float>(segment) / LINE_SEGMENTS;
+                float longitude = static_cast<float>(longitudeDivision) / (LONGITUDE_DIVISIONS);
+                pos += SpherePoint(crashSphere.radius, latitude, longitude);
+                line[segment] = VertexCol(pos, color);
+            }
+            m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line, LINE_SEGMENTS);
+        }
+
+        for (int latitudeDivision = 0; latitudeDivision <= LATITUDE_DIVISIONS; ++latitudeDivision)
+        {
+            for (int segment = 0; segment < LINE_SEGMENTS; ++segment)
+            {
+                Math::Vector pos = crashSphere.pos;
+                float latitude = static_cast<float>(latitudeDivision + 1) / (LATITUDE_DIVISIONS + 2);
+                float longitude = static_cast<float>(segment) / LINE_SEGMENTS;
+                pos += SpherePoint(crashSphere.radius, latitude, longitude);
+                line[segment] = VertexCol(pos, color);
+            }
+            m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line, LINE_SEGMENTS);
+        }
+    }
 }
 
 void CEngine::RenderShadowMap()
@@ -3798,8 +3866,10 @@ void CEngine::DrawInterface()
     // At the end to not overlap
     if (m_renderInterface)
         DrawHighlight();
+
     DrawTimer();
     DrawStats();
+
     if (m_renderInterface)
         DrawMouse();
 

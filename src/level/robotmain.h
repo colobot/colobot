@@ -407,6 +407,7 @@ protected:
     void        CreateCodeBattleInterface();
     void        DestroyCodeBattleInterface();
     void        SetCodeBattleSpectatorMode(bool mode);
+    void        UpdateDebugCrashSpheres();
 
 
 protected:
@@ -583,4 +584,5 @@ protected:
     int             m_shotSaving = 0;
 
     std::deque<CObject*> m_selectionHistory;
+    bool            m_debugCrashSpheres;
 };

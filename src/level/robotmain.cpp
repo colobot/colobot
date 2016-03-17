@@ -250,6 +250,8 @@ CRobotMain::CRobotMain()
         m_showLimit[i].link = nullptr;
     }
 
+    m_debugCrashSpheres = false;
+
     m_engine->SetTerrain(m_terrain.get());
 
     m_app->SetMouseMode(MOUSE_ENGINE);
@@ -1394,6 +1396,16 @@ void CRobotMain::ExecuteCmd(char *cmd)
             }
             return;
         }
+        if (strcmp(cmd, "debugcrashon") == 0)
+        {
+            m_debugCrashSpheres = true;
+            return;
+        }
+        if (strcmp(cmd, "debugcrashoff") == 0)
+        {
+            m_debugCrashSpheres = false;
+            return;
+        }
     }
 
     if (strcmp(cmd, "debugmode") == 0)
@@ -2456,6 +2468,8 @@ bool CRobotMain::EventFrame(const Event &event)
     m_cloud->EventProcess(event);
     m_lightning->EventProcess(event);
     m_planet->EventProcess(event);
+
+    UpdateDebugCrashSpheres();
 
     Ui::CMap* pm = nullptr;
     Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
@@ -6002,4 +6016,22 @@ void CRobotMain::SetCodeBattleSpectatorMode(bool mode)
 
     if (mode)
         m_camera->SetFixDirectionV(-0.25f*Math::PI);
+}
+
+void CRobotMain::UpdateDebugCrashSpheres()
+{
+    m_engine->ClearDisplayCrashSpheres();
+    if (m_debugCrashSpheres)
+    {
+        for (CObject* obj : m_objMan->GetAllObjects())
+        {
+            auto crashSpheres = obj->GetAllCrashSpheres();
+            std::vector<Math::Sphere> displaySpheres;
+            for (const auto& crashSphere : crashSpheres)
+            {
+                displaySpheres.push_back(crashSphere.sphere);
+            }
+            m_engine->AddDisplayCrashSpheres(displaySpheres);
+        }
+    }
 }
