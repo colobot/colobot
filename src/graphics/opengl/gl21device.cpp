@@ -820,113 +820,13 @@ Texture CGL21Device::CreateTexture(ImageData *data, const TextureCreateParams &p
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, level);
     }
 
-    bool convert = false;
-    GLenum sourceFormat = 0;
+    PreparedTextureData texData = PrepareTextureData(data, params.format);
+    result.alpha = texData.alpha;
 
-    if (params.format == TEX_IMG_RGB)
-    {
-        sourceFormat = GL_RGB;
-        result.alpha = false;
-    }
-    else if (params.format == TEX_IMG_BGR)
-    {
-        sourceFormat = GL_BGR;
-        result.alpha = false;
-    }
-    else if (params.format == TEX_IMG_RGBA)
-    {
-        sourceFormat = GL_RGBA;
-        result.alpha = true;
-    }
-    else if (params.format == TEX_IMG_BGRA)
-    {
-        sourceFormat = GL_BGRA;
-        result.alpha = true;
-    }
-    else if (params.format == TEX_IMG_AUTO)
-    {
-        if (data->surface->format->BytesPerPixel == 4)
-        {
-            if ((data->surface->format->Amask == 0xFF000000) &&
-                (data->surface->format->Rmask == 0x00FF0000) &&
-                (data->surface->format->Gmask == 0x0000FF00) &&
-                (data->surface->format->Bmask == 0x000000FF))
-            {
-                sourceFormat = GL_BGRA;
-                result.alpha = true;
-            }
-            else if ((data->surface->format->Amask == 0xFF000000) &&
-                     (data->surface->format->Bmask == 0x00FF0000) &&
-                     (data->surface->format->Gmask == 0x0000FF00) &&
-                     (data->surface->format->Rmask == 0x000000FF))
-            {
-                sourceFormat = GL_RGBA;
-                result.alpha = true;
-            }
-            else
-            {
-                sourceFormat = GL_RGBA;
-                convert = true;
-            }
-        }
-        else if (data->surface->format->BytesPerPixel == 3)
-        {
-            if ((data->surface->format->Rmask == 0xFF0000) &&
-                (data->surface->format->Gmask == 0x00FF00) &&
-                (data->surface->format->Bmask == 0x0000FF))
-            {
-                sourceFormat = GL_BGR;
-                result.alpha = false;
-            }
-            else if ((data->surface->format->Bmask == 0xFF0000) &&
-                     (data->surface->format->Gmask == 0x00FF00) &&
-                     (data->surface->format->Rmask == 0x0000FF))
-            {
-                sourceFormat = GL_RGB;
-                result.alpha = false;
-            }
-            else
-            {
-                sourceFormat = GL_RGBA;
-                convert = true;
-            }
-        }
-        else
-        {
-            GetLogger()->Error("Unknown data surface format");
-            assert(false);
-        }
-    }
-    else
-        assert(false);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texData.actualSurface->w, texData.actualSurface->h,
+                 0, texData.sourceFormat, GL_UNSIGNED_BYTE, texData.actualSurface->pixels);
 
-    SDL_Surface* actualSurface = data->surface;
-    SDL_Surface* convertedSurface = nullptr;
-
-    if (convert)
-    {
-        SDL_PixelFormat format;
-        format.BytesPerPixel = 4;
-        format.BitsPerPixel = 32;
-        format.Aloss = format.Bloss = format.Gloss = format.Rloss = 0;
-        format.Amask = 0xFF000000;
-        format.Ashift = 24;
-        format.Bmask = 0x00FF0000;
-        format.Bshift = 16;
-        format.Gmask = 0x0000FF00;
-        format.Gshift = 8;
-        format.Rmask = 0x000000FF;
-        format.Rshift = 0;
-        format.palette = nullptr;
-        convertedSurface = SDL_ConvertSurface(data->surface, &format, SDL_SWSURFACE);
-        if (convertedSurface != nullptr)
-            actualSurface = convertedSurface;
-    }
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, actualSurface->w, actualSurface->h,
-                 0, sourceFormat, GL_UNSIGNED_BYTE, actualSurface->pixels);
-
-    SDL_FreeSurface(convertedSurface);
+    SDL_FreeSurface(texData.convertedSurface);
 
     m_allTextures.insert(result);
 
@@ -983,6 +883,21 @@ Texture CGL21Device::CreateDepthTexture(int width, int height, int depth)
     glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
 
     return result;
+}
+
+void CGL21Device::UpdateTexture(const Texture& texture, Math::IntPoint offset, ImageData* data, TexImgFormat format)
+{
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, texture.id);
+
+    PreparedTextureData texData = PrepareTextureData(data, format);
+
+    glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, texData.actualSurface->w, texData.actualSurface->h,
+                    texData.sourceFormat, GL_UNSIGNED_BYTE, texData.actualSurface->pixels);
+
+    SDL_FreeSurface(texData.convertedSurface);
 }
 
 void CGL21Device::DestroyTexture(const Texture &texture)

@@ -34,6 +34,8 @@
 #include <string>
 #include <memory>
 
+struct SDL_Surface;
+
 
 // Graphics module namespace
 namespace Gfx
@@ -96,6 +98,17 @@ std::string GetLastShaderError();
 GLint LoadShader(GLint type, const char* filename);
 
 GLint LinkProgram(int count, GLint shaders[]);
+
+// TODO: Moved this here temporarily only to remove code duplication in CGLDeviceXX
+struct PreparedTextureData
+{
+    SDL_Surface* actualSurface = nullptr;
+    SDL_Surface* convertedSurface = nullptr;
+    GLenum sourceFormat = 0;
+    bool alpha = false;
+};
+
+PreparedTextureData PrepareTextureData(ImageData* data, TexImgFormat format);
 
 class CGLFrameBufferPixels : public CFrameBufferPixels
 {

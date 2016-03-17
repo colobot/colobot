@@ -120,6 +120,10 @@ Texture CNullDevice::CreateDepthTexture(int width, int height, int depth)
     return tex;
 }
 
+void CNullDevice::UpdateTexture(const Texture& texture, Math::IntPoint offset, ImageData* data, TexImgFormat format)
+{
+}
+
 void CNullDevice::DestroyTexture(const Texture &texture)
 {
 }

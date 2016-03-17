@@ -19,6 +19,7 @@
 
 #include "graphics/opengl/glutil.h"
 
+#include "common/image.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
 
@@ -26,6 +27,7 @@
 #include "graphics/opengl/gl33device.h"
 #include "graphics/opengl/gldevice.h"
 
+#include <SDL.h>
 #include <physfs.h>
 #include <cstring>
 #include <vector>
@@ -536,5 +538,115 @@ std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(Math::IntPoint size
     return pixels;
 }
 
+PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format)
+{
+    PreparedTextureData texData;
+
+    bool convert = false;
+
+    texData.sourceFormat = 0;
+
+    if (format == TEX_IMG_RGB)
+    {
+        texData.sourceFormat = GL_RGB;
+        texData.alpha = false;
+    }
+    else if (format == TEX_IMG_BGR)
+    {
+        texData.sourceFormat = GL_BGR;
+        texData.alpha = false;
+    }
+    else if (format == TEX_IMG_RGBA)
+    {
+        texData.sourceFormat = GL_RGBA;
+        texData.alpha = true;
+    }
+    else if (format == TEX_IMG_BGRA)
+    {
+        texData.sourceFormat = GL_BGRA;
+        texData.alpha = true;
+    }
+    else if (format == TEX_IMG_AUTO)
+    {
+        if (imageData->surface->format->BytesPerPixel == 4)
+        {
+            if ((imageData->surface->format->Amask == 0xFF000000) &&
+                (imageData->surface->format->Rmask == 0x00FF0000) &&
+                (imageData->surface->format->Gmask == 0x0000FF00) &&
+                (imageData->surface->format->Bmask == 0x000000FF))
+            {
+                texData.sourceFormat = GL_BGRA;
+                texData.alpha = true;
+            }
+            else if ((imageData->surface->format->Amask == 0xFF000000) &&
+                     (imageData->surface->format->Bmask == 0x00FF0000) &&
+                     (imageData->surface->format->Gmask == 0x0000FF00) &&
+                     (imageData->surface->format->Rmask == 0x000000FF))
+            {
+                texData.sourceFormat = GL_RGBA;
+                texData.alpha = true;
+            }
+            else
+            {
+                texData.sourceFormat = GL_RGBA;
+                convert = true;
+            }
+        }
+        else if (imageData->surface->format->BytesPerPixel == 3)
+        {
+            if ((imageData->surface->format->Rmask == 0xFF0000) &&
+                (imageData->surface->format->Gmask == 0x00FF00) &&
+                (imageData->surface->format->Bmask == 0x0000FF))
+            {
+                texData.sourceFormat = GL_BGR;
+                texData.alpha = false;
+            }
+            else if ((imageData->surface->format->Bmask == 0xFF0000) &&
+                     (imageData->surface->format->Gmask == 0x00FF00) &&
+                     (imageData->surface->format->Rmask == 0x0000FF))
+            {
+                texData.sourceFormat = GL_RGB;
+                texData.alpha = false;
+            }
+            else
+            {
+                texData.sourceFormat = GL_RGBA;
+                convert = true;
+            }
+        }
+        else
+        {
+            GetLogger()->Error("Unknown data surface format");
+            assert(false);
+        }
+    }
+    else
+        assert(false);
+
+    texData.actualSurface = imageData->surface;
+    texData.convertedSurface = nullptr;
+
+    if (convert)
+    {
+        SDL_PixelFormat format;
+        format.BytesPerPixel = 4;
+        format.BitsPerPixel = 32;
+        format.Aloss = format.Bloss = format.Gloss = format.Rloss = 0;
+        format.Amask = 0xFF000000;
+        format.Ashift = 24;
+        format.Bmask = 0x00FF0000;
+        format.Bshift = 16;
+        format.Gmask = 0x0000FF00;
+        format.Gshift = 8;
+        format.Rmask = 0x000000FF;
+        format.Rshift = 0;
+        format.palette = nullptr;
+        texData.convertedSurface = SDL_ConvertSurface(imageData->surface, &format, SDL_SWSURFACE);
+        if (texData.convertedSurface != nullptr)
+            texData.actualSurface = texData.convertedSurface;
+    }
+
+    return texData;
+}
 
 } // namespace Gfx
