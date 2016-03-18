@@ -3296,13 +3296,15 @@ void CParticle::DrawParticleText(int i)
 {
     CharTexture tex = m_engine->GetText()->GetCharTexture(static_cast<UTF8Char>(m_particle[i].text), FONT_COURIER, FONT_SIZE_BIG*2.0f);
     if (tex.id == 0) return;
+
     m_device->SetTexture(0, tex.id);
     m_engine->SetState(ENG_RSTATE_TTEXTURE_ALPHA, IntensityToColor(m_particle[i].intensity));
 
-    m_particle[i].texSup.x = 0.0f;
-    m_particle[i].texSup.y = 0.0f;
-    m_particle[i].texInf.x = static_cast<float>(tex.charSize.x) / static_cast<float>(tex.texSize.x);
-    m_particle[i].texInf.y = static_cast<float>(tex.charSize.y) / static_cast<float>(tex.texSize.y);
+    Math::IntPoint fontTextureSize = m_engine->GetText()->GetFontTextureSize();
+    m_particle[i].texSup.x = static_cast<float>(tex.charPos.x) / fontTextureSize.x;
+    m_particle[i].texSup.y = static_cast<float>(tex.charPos.y) / fontTextureSize.y;
+    m_particle[i].texInf.x = static_cast<float>(tex.charPos.x + tex.charSize.x) / fontTextureSize.x;
+    m_particle[i].texInf.y = static_cast<float>(tex.charPos.y + tex.charSize.y) / fontTextureSize.y;
     m_particle[i].color = Color(0.0f, 0.0f, 0.0f);
 
     DrawParticleNorm(i);

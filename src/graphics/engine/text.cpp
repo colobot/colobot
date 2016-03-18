@@ -53,6 +53,16 @@ struct MultisizeFont
         : fileName(fn) {}
 };
 
+/**
+ * \struct FontTexture
+ * \brief Single texture filled with character textures
+ */
+struct FontTexture
+{
+    unsigned int id = 0;
+    Math::IntPoint tileSize;
+    int freeSlots = 0;
+};
 
 /**
  * \struct CachedFont
@@ -81,6 +91,7 @@ struct CachedFont
 namespace
 {
 const Math::IntPoint REFERENCE_SIZE(800, 600);
+const Math::IntPoint FONT_TEXTURE_SIZE(256, 256);
 } // anonymous namespace
 
 
@@ -152,16 +163,18 @@ std::string CText::GetError()
 
 void CText::FlushCache()
 {
+    for (auto& fontTexture : m_fontTextures)
+    {
+        Texture tex;
+        tex.id = fontTexture.id;
+        m_device->DestroyTexture(tex);
+    }
+    m_fontTextures.clear();
+
     for (auto& multisizeFont : m_fonts)
     {
         for (auto& cachedFont : multisizeFont.second->fonts)
         {
-            for (auto& charTexture : cachedFont.second->cache)
-            {
-                Texture tex;
-                tex.id = charTexture.second.id;
-                m_device->DestroyTexture(tex);
-            }
             cachedFont.second->cache.clear();
         }
     }
@@ -926,27 +939,32 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
 
         CharTexture tex = GetCharTexture(ch, font, size);
 
-        Math::Point charSize = m_engine->WindowToInterfaceSize(tex.charSize);
-        Math::Point texSize  = m_engine->WindowToInterfaceSize(tex.texSize);
+        Math::Point charInterfaceSize = m_engine->WindowToInterfaceSize(tex.charSize);
+        Math::Point texInterfaceSize = m_engine->WindowToInterfaceSize(tex.tileSize);
 
-        Math::Point p1(pos.x, pos.y + charSize.y - texSize.y);
-        Math::Point p2(pos.x + texSize.x, pos.y + charSize.y);
+        Math::Point p1(pos.x, pos.y + charInterfaceSize.y - texInterfaceSize.y);
+        Math::Point p2(pos.x + texInterfaceSize.x, pos.y + charInterfaceSize.y);
+
+        Math::Point texCoord1(static_cast<float>(tex.charPos.x) / FONT_TEXTURE_SIZE.x,
+                              static_cast<float>(tex.charPos.y) / FONT_TEXTURE_SIZE.y);
+        Math::Point texCoord2(static_cast<float>(tex.charPos.x + tex.tileSize.x) / FONT_TEXTURE_SIZE.x,
+                              static_cast<float>(tex.charPos.y + tex.tileSize.y) / FONT_TEXTURE_SIZE.y);
 
         Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
 
         Vertex quad[4] =
         {
-            Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(0.0f, 1.0f)),
-            Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(0.0f, 0.0f)),
-            Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(1.0f, 1.0f)),
-            Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(1.0f, 0.0f))
+            Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(texCoord1.x, texCoord2.y)),
+            Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(texCoord1.x, texCoord1.y)),
+            Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(texCoord2.x, texCoord2.y)),
+            Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(texCoord2.x, texCoord1.y))
         };
 
         m_device->SetTexture(0, tex.id);
         m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
         m_engine->AddStatisticTriangle(2);
 
-        pos.x += charSize.x * width;
+        pos.x += charInterfaceSize.x * width;
     }
 }
 
@@ -1000,57 +1018,6 @@ CachedFont* CText::GetOrOpenFont(FontType font, float size)
     return m_lastCachedFont;
 }
 
-CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
-{
-    CharTexture texture;
-
-    SDL_Surface* textSurface = nullptr;
-    SDL_Color white = {255, 255, 255, 0};
-    char str[] = { ch.c1, ch.c2, ch.c3, '\0' };
-    textSurface = TTF_RenderUTF8_Blended(font->font, str, white);
-
-    if (textSurface == nullptr)
-    {
-        m_error = "TTF_Render error";
-        return texture;
-    }
-
-    int w = Math::NextPowerOfTwo(textSurface->w);
-    int h = Math::NextPowerOfTwo(textSurface->h);
-
-    SDL_Surface* textureSurface = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00,
-                                                       0x000000ff, 0xff000000);
-    SDL_BlitSurface(textSurface, nullptr, textureSurface, nullptr);
-
-    ImageData data;
-    data.surface = textureSurface;
-
-    TextureCreateParams createParams;
-    createParams.format = TEX_IMG_RGBA;
-    createParams.filter = TEX_FILTER_NEAREST;
-    createParams.mipmap = false;
-
-    Texture tex = m_device->CreateTexture(&data, createParams);
-
-    data.surface = nullptr;
-
-    if (! tex.Valid())
-    {
-        m_error = "Texture create error";
-    }
-    else
-    {
-        texture.id = tex.id;
-        texture.texSize =  Math::IntPoint(textureSurface->w, textureSurface->h);
-        texture.charSize = Math::IntPoint(textSurface->w, textSurface->h);
-    }
-
-    SDL_FreeSurface(textSurface);
-    SDL_FreeSurface(textureSurface);
-
-    return texture;
-}
-
 CharTexture CText::GetCharTexture(UTF8Char ch, FontType font, float size)
 {
     CachedFont* cf = GetOrOpenFont(font, size);
@@ -1076,5 +1043,116 @@ CharTexture CText::GetCharTexture(UTF8Char ch, FontType font, float size)
     return tex;
 }
 
+Math::IntPoint CText::GetFontTextureSize()
+{
+    return FONT_TEXTURE_SIZE;
+}
+
+CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
+{
+    CharTexture texture;
+
+    SDL_Surface* textSurface = nullptr;
+    SDL_Color white = {255, 255, 255, 0};
+    char str[] = { ch.c1, ch.c2, ch.c3, '\0' };
+    textSurface = TTF_RenderUTF8_Blended(font->font, str, white);
+
+    if (textSurface == nullptr)
+    {
+        m_error = "TTF_Render error";
+        return texture;
+    }
+
+    Math::IntPoint tileSize(Math::NextPowerOfTwo(textSurface->w),
+                            Math::NextPowerOfTwo(textSurface->h));
+
+    FontTexture* fontTexture = GetOrCreateFontTexture(tileSize);
+
+    if (fontTexture == nullptr)
+    {
+        m_error = "Texture create error";
+    }
+    else
+    {
+        texture.id = fontTexture->id;
+        texture.charPos = GetNextTilePos(*fontTexture);
+        texture.charSize = Math::IntPoint(textSurface->w, textSurface->h);
+        texture.tileSize = tileSize;
+
+        ImageData imageData;
+        imageData.surface = textSurface;
+
+        Texture tex;
+        tex.id = texture.id;
+        m_device->UpdateTexture(tex, texture.charPos, &imageData, TEX_IMG_RGBA);
+
+        imageData.surface = nullptr;
+
+        --fontTexture->freeSlots;
+    }
+
+    SDL_FreeSurface(textSurface);
+
+    return texture;
+}
+
+FontTexture* CText::GetOrCreateFontTexture(Math::IntPoint tileSize)
+{
+    for (auto& fontTexture : m_fontTextures)
+    {
+       if (fontTexture.tileSize == tileSize && fontTexture.freeSlots > 0)
+           return &fontTexture;
+    }
+
+    FontTexture newFontTexture = CreateFontTexture(tileSize);
+    if (newFontTexture.id == 0)
+    {
+        return nullptr;
+    }
+
+    m_fontTextures.push_back(newFontTexture);
+    return &m_fontTextures.back();
+}
+
+FontTexture CText::CreateFontTexture(Math::IntPoint tileSize)
+{
+    SDL_Surface* textureSurface = SDL_CreateRGBSurface(0, FONT_TEXTURE_SIZE.x, FONT_TEXTURE_SIZE.y, 32,
+                                                       0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+    ImageData data;
+    data.surface = textureSurface;
+
+    TextureCreateParams createParams;
+    createParams.format = TEX_IMG_RGBA;
+    createParams.filter = TEX_FILTER_NEAREST;
+    createParams.mipmap = false;
+
+    Texture tex = m_device->CreateTexture(&data, createParams);
+
+    data.surface = nullptr;
+    SDL_FreeSurface(textureSurface);
+
+    FontTexture fontTexture;
+    fontTexture.id = tex.id;
+    fontTexture.tileSize = tileSize;
+    int horizontalTiles = FONT_TEXTURE_SIZE.x / tileSize.x;
+    int verticalTiles = FONT_TEXTURE_SIZE.y / tileSize.y;
+    fontTexture.freeSlots = horizontalTiles * verticalTiles;
+    return fontTexture;
+}
+
+Math::IntPoint CText::GetNextTilePos(const FontTexture& fontTexture)
+{
+    int horizontalTiles = FONT_TEXTURE_SIZE.x / fontTexture.tileSize.x;
+    int verticalTiles = FONT_TEXTURE_SIZE.y / fontTexture.tileSize.y;
+
+    int totalTiles = horizontalTiles * verticalTiles;
+    int tileNumber = totalTiles - fontTexture.freeSlots;
+
+    int verticalTileIndex = tileNumber / horizontalTiles;
+    int horizontalTileIndex = tileNumber % horizontalTiles;
+
+    return Math::IntPoint(horizontalTileIndex * fontTexture.tileSize.x,
+                          verticalTileIndex * fontTexture.tileSize.y);
+}
 
 } // namespace Gfx

@@ -191,13 +191,15 @@ struct UTF8Char
 struct CharTexture
 {
     unsigned int id = 0;
-    Math::IntPoint texSize;
+    Math::IntPoint charPos;
     Math::IntPoint charSize;
+    Math::IntPoint tileSize;
 };
 
 // Definition is private - in text.cpp
 struct CachedFont;
 struct MultisizeFont;
+struct FontTexture;
 
 /**
  * \enum SpecialChar
@@ -307,10 +309,14 @@ public:
     UTF8Char    TranslateSpecialChar(int specialChar);
 
     CharTexture GetCharTexture(UTF8Char ch, FontType font, float size);
+    Math::IntPoint GetFontTextureSize();
 
 protected:
     CachedFont* GetOrOpenFont(FontType font, float size);
     CharTexture CreateCharTexture(UTF8Char ch, CachedFont* font);
+    FontTexture* GetOrCreateFontTexture(Math::IntPoint tileSize);
+    FontTexture CreateFontTexture(Math::IntPoint tileSize);
+    Math::IntPoint GetNextTilePos(const FontTexture& fontTexture);
 
     void        DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
                            std::vector<FontMetaChar>::iterator end,
@@ -331,6 +337,7 @@ protected:
     int          m_tabSize;
 
     std::map<FontType, std::unique_ptr<MultisizeFont>> m_fonts;
+    std::vector<FontTexture> m_fontTextures;
 
     FontType     m_lastFontType;
     int          m_lastFontSize;
