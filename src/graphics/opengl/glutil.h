@@ -108,7 +108,7 @@ struct PreparedTextureData
     bool alpha = false;
 };
 
-PreparedTextureData PrepareTextureData(ImageData* data, TexImgFormat format);
+PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format);
 
 class CGLFrameBufferPixels : public CFrameBufferPixels
 {

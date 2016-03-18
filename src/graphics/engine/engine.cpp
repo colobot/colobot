@@ -3394,9 +3394,9 @@ void CEngine::DrawCrashSpheres()
 
     SetState(ENG_RSTATE_OPAQUE_COLOR);
 
-    const int LINE_SEGMENTS = 32;
-    const int LONGITUDE_DIVISIONS = 16;
-    const int LATITUDE_DIVISIONS = 8;
+    static const int LINE_SEGMENTS = 32;
+    static const int LONGITUDE_DIVISIONS = 16;
+    static const int LATITUDE_DIVISIONS = 8;
 
     VertexCol line[LINE_SEGMENTS];
     Color color(0.0f, 0.0f, 1.0f);

@@ -628,7 +628,7 @@ PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format
 
     if (convert)
     {
-        SDL_PixelFormat format;
+        SDL_PixelFormat format = {};
         format.BytesPerPixel = 4;
         format.BitsPerPixel = 32;
         format.Aloss = format.Bloss = format.Gloss = format.Rloss = 0;
