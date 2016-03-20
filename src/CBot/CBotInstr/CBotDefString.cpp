@@ -75,15 +75,21 @@ CBotInstr* CBotDefString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, 
 
         if (IsOfType(p,  ID_ASS))
         {
+            pStk->SetStartError(p->GetStart());
+            if ( IsOfType(p, ID_SEP) )
+            {
+                pStk->SetError(CBotErrBadLeft, p->GetPrev());
+                goto error;
+            }
             if (nullptr == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
             {
                 goto error;
             }
-/*            if (!pStk->GetTypResult().Eq(CBotTypString))            // type compatible ?
+            if (!pStk->GetTypResult().Eq(CBotTypString))            // type compatible ?
             {
                 pStk->SetError(CBotErrBadType1, p->GetStart());
                 goto error;
-            }*/
+            }
         }
 
         CBotVar*    var = CBotVar::Create(*vartoken, CBotTypString);

@@ -101,11 +101,6 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
 
             inst = static_cast<CBotDefClass*>(CBotDefArray::Compile(p, pStk, type ));
 
-            if (!pStk->IsOk() )
-            {
-                pStk->SetError(CBotErrCloseIndex, p->GetStart());
-                goto error;
-            }
             goto suite;         // no assignment, variable already created
         }
 
@@ -159,6 +154,12 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
 
         if (IsOfType(p,  ID_ASS))                           // with a assignment?
         {
+            pStk->SetStartError(p->GetStart());
+            if ( IsOfType(p, ID_SEP) )
+            {
+                pStk->SetError(CBotErrBadLeft, p->GetPrev());
+                goto error;
+            }
             if (inst->m_hasParams)
             {
                 pStk->SetError(CBotErrNoTerminator, p->GetStart());
@@ -200,7 +201,7 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
             var->SetInit(CBotVar::InitType::IS_POINTER);                            // marks the pointer as init
         }
 suite:
-        if (IsOfType(p,  ID_COMMA))                         // several chained definitions
+        if (pStk->IsOk() && IsOfType(p,  ID_COMMA))                         // several chained definitions
         {
             if ( nullptr != ( inst->m_next = CBotDefClass::Compile(p, pStk, pClass) ))    // compiles the following
             {
@@ -208,7 +209,7 @@ suite:
             }
         }
 
-        if (IsOfType(p,  ID_SEP))                           // complete instruction
+        if (!pStk->IsOk() || IsOfType(p,  ID_SEP))           // complete instruction
         {
             return pStack->Return(inst, pStk);
         }
