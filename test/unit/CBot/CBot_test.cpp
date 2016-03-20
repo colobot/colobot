@@ -955,6 +955,23 @@ TEST_F(CBotUT, DISABLED_StringAsArray)
     );
 }
 
+// TODO: doesn't work, see discussion in #737
+TEST_F(CBotUT, DISABLED_ArraysOfStrings)
+{
+    ExecuteTest(
+        "extern void ArraysOfStrings()\n"
+        "{\n"
+        "    string[] a;\n"
+        "    string b[];\n"
+        "    string c[5];\n"
+        "    string d[] = {\"test\"};\n"
+        "    d[1] = \"test2\";\n"
+        "    ASSERT(d[0] == \"test\");\n"
+        "    ASSERT(d[1] == \"test2\");\n"
+        "}\n"
+    );
+}
+
 TEST_F(CBotUT, StringFunctions)
 {
     ExecuteTest(
