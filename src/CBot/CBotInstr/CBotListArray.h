@@ -38,9 +38,10 @@ public:
      * \param p
      * \param pStack
      * \param type
+     * \param classItem
      * \return
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResult type);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResult type, bool classItem = false);
 
     /*!
      * \brief Execute Executes the definition of an array.

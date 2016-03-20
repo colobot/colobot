@@ -45,57 +45,111 @@ CBotListArray::~CBotListArray()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResult type)
+CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResult type, bool classItem)
 {
     CBotCStack* pStk = pStack->TokenStack(p);
 
     CBotToken* pp = p;
 
-    if (IsOfType( p, ID_NULL ))
+    if (IsOfType( p, ID_NULL ) || (IsOfType(p, ID_OPBLK) && IsOfType(p, ID_CLBLK)))
     {
         CBotInstr* inst = new CBotExprLitNull();
         inst->SetToken(pp);
         return pStack->Return(inst, pStk);            // ok with empty element
     }
+    p = pp;
 
     CBotListArray*    inst = new CBotListArray();
+
+    pStk->SetStartError(p->GetStart());
 
     if (IsOfType( p, ID_OPBLK ))
     {
         // each element takes the one after the other
         if (type.Eq( CBotTypArrayPointer ))
         {
-            type = type.GetTypElem();
-
             pStk->SetStartError(p->GetStart());
-            if (nullptr == ( inst->m_expr = CBotListArray::Compile( p, pStk, type ) ))
+            if (p->GetType() == TokenTypVar)
             {
-                goto error;
+                if (!classItem)
+                {
+                    inst->m_expr = CBotTwoOpExpr::Compile(p, pStk);
+                    if (!pStk->GetTypResult().Compare(type))  // compatible type ?
+                    {
+                        pStk->SetError(CBotErrBadType1, p->GetStart());
+                        goto error;
+                    }
+                }
+                else
+                {
+                    pStk->SetError(CBotErrBadLeft, p->GetPrev());
+                    goto error;
+                }
             }
-
-            while (IsOfType( p, ID_COMMA ))                                     // other elements?
+            else
             {
-                pStk->SetStartError(p->GetStart());
-
-                CBotInstr* i = CBotListArray::Compile(p, pStk, type);
-                if (nullptr == i)
+                if (nullptr == ( inst->m_expr = CBotListArray::Compile( p, pStk, type.GetTypElem() ) ))
                 {
                     goto error;
                 }
-
+            }
+            while (IsOfType( p, ID_COMMA ))                                     // other elements?
+            {
+                pStk->SetStartError(p->GetStart());
+                CBotInstr* i = nullptr;
+                if (p->GetType() == TokenTypVar)
+                {
+                    if (!classItem)
+                    {
+                        i = CBotTwoOpExpr::Compile(p, pStk);
+                        if (nullptr == i || !pStk->GetTypResult().Compare(type))  // compatible type ?
+                        {
+                            pStk->SetError(CBotErrBadType1, p->GetStart());
+                            goto error;
+                        }
+                    }
+                    else
+                    {
+                        pStk->SetError(CBotErrBadLeft, p->GetPrev());
+                        goto error;
+                    }
+                }
+                else
+                {
+                    i = CBotListArray::Compile(p, pStk, type.GetTypElem());
+                    if (nullptr == i)
+                    {
+                        goto error;
+                    }
+                }
                 inst->m_expr->AddNext3(i);
+                if ( p->GetType() == ID_COMMA ) continue;
+                if ( p->GetType() == ID_CLBLK ) break;
+
+                pStk->SetError(CBotErrClosePar, p);
+                goto error;
             }
         }
         else
         {
             pStk->SetStartError(p->GetStart());
+            if (classItem && IsOfType(p, TokenTypVar, ID_NEW)) // don't allow func() or var between "{ }"
+            {
+                pStk->SetError(CBotErrBadLeft, p->GetPrev());
+                goto error;
+            }
             if (nullptr == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
             {
                 goto error;
             }
             CBotVar* pv = pStk->GetVar();                                       // result of the expression
+            CBotTypResult retType;
+            if (pv != nullptr) retType = pv->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
 
-            if (pv == nullptr || !TypesCompatibles( type, pv->GetTypResult()))     // compatible type?
+            if (pv == nullptr || (type.Eq(CBotTypString) && !retType.Eq(CBotTypString)) ||
+                (!(type.Eq(CBotTypPointer) && retType.Eq(CBotTypNullPointer)) &&
+                 !TypesCompatibles( type, pv->GetTypResult()) &&
+                 !TypeCompatible(type, retType, ID_ASS) ) )                      // compatible type?
             {
                 pStk->SetError(CBotErrBadType1, p->GetStart());
                 goto error;
@@ -105,6 +159,12 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
             {
                 pStk->SetStartError(p->GetStart());
 
+                if (classItem && IsOfType(p, TokenTypVar, ID_NEW)) // don't allow func() or var between "{ }"
+                {
+                    pStk->SetError(CBotErrBadLeft, p);
+                    goto error;
+                }
+
                 CBotInstr* i = CBotTwoOpExpr::Compile(p, pStk) ;
                 if (nullptr == i)
                 {
@@ -112,13 +172,24 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
                 }
 
                 CBotVar* pv = pStk->GetVar();                                   // result of the expression
+                CBotTypResult retType;
+                if (pv != nullptr) retType = pv->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
 
-                if (pv == nullptr || !TypesCompatibles( type, pv->GetTypResult())) // compatible type?
+                if (pv == nullptr || (type.Eq(CBotTypString) && !retType.Eq(CBotTypString)) ||
+                    (!(type.Eq(CBotTypPointer) && retType.Eq(CBotTypNullPointer)) &&
+                     !TypesCompatibles( type, pv->GetTypResult()) &&
+                     !TypeCompatible(type, retType, ID_ASS) ) )                  // compatible type?
                 {
                     pStk->SetError(CBotErrBadType1, p->GetStart());
                     goto error;
                 }
                 inst->m_expr->AddNext3(i);
+
+                if (p->GetType() == ID_COMMA) continue;
+                if (p->GetType() == ID_CLBLK) break;
+
+                pStk->SetError(CBotErrClosePar, p);
+                goto error;
             }
         }
 
