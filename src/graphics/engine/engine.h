@@ -1468,6 +1468,7 @@ protected:
 
     bool            m_debugLights;
     bool            m_debugDumpLights;
+    bool            m_debugCrashSpheres = false;
 
     std::string     m_timerText;
 

@@ -3068,6 +3068,8 @@ void CEngine::ApplyChange()
 void CEngine::ClearDisplayCrashSpheres()
 {
     m_displayCrashSpheres.clear();
+
+    m_debugCrashSpheres = false;
 }
 
 void CEngine::AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres)
@@ -3076,6 +3078,8 @@ void CEngine::AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpher
     {
         m_displayCrashSpheres.push_back(crashSphere);
     }
+
+    m_debugCrashSpheres = true;
 }
 
 
@@ -3371,7 +3375,8 @@ void CEngine::Draw3DScene()
 
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
-    DrawCrashSpheres();
+    if (m_debugCrashSpheres)
+        DrawCrashSpheres();
 
     m_app->StartPerformanceCounter(PCNT_RENDER_PARTICLE);
     m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
@@ -3398,7 +3403,10 @@ void CEngine::DrawCrashSpheres()
     static const int LONGITUDE_DIVISIONS = 16;
     static const int LATITUDE_DIVISIONS = 8;
 
-    VertexCol line[LINE_SEGMENTS];
+    std::vector<VertexCol> lines((2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS) * LINE_SEGMENTS);
+    std::vector<int> firsts(2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS);
+    std::vector<int> counts(2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS);
+
     Color color(0.0f, 0.0f, 1.0f);
 
     auto SpherePoint = [&](float sphereRadius, float latitude, float longitude)
@@ -3412,31 +3420,44 @@ void CEngine::DrawCrashSpheres()
 
     for (const auto& crashSphere : m_displayCrashSpheres)
     {
+        int i = 0;
+        int primitive = 0;
+
         for (int longitudeDivision = 0; longitudeDivision <= LONGITUDE_DIVISIONS; ++longitudeDivision)
         {
+            firsts[primitive] = i;
+            counts[primitive] = LINE_SEGMENTS;
+
             for (int segment = 0; segment < LINE_SEGMENTS; ++segment)
             {
                 Math::Vector pos = crashSphere.pos;
                 float latitude = static_cast<float>(segment) / LINE_SEGMENTS;
                 float longitude = static_cast<float>(longitudeDivision) / (LONGITUDE_DIVISIONS);
                 pos += SpherePoint(crashSphere.radius, latitude, longitude);
-                line[segment] = VertexCol(pos, color);
+                lines[i++] = VertexCol(pos, color);
             }
-            m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line, LINE_SEGMENTS);
+
+            primitive++;
         }
 
         for (int latitudeDivision = 0; latitudeDivision <= LATITUDE_DIVISIONS; ++latitudeDivision)
         {
+            firsts[primitive] = i;
+            counts[primitive] = LINE_SEGMENTS;
+
             for (int segment = 0; segment < LINE_SEGMENTS; ++segment)
             {
                 Math::Vector pos = crashSphere.pos;
                 float latitude = static_cast<float>(latitudeDivision + 1) / (LATITUDE_DIVISIONS + 2);
                 float longitude = static_cast<float>(segment) / LINE_SEGMENTS;
                 pos += SpherePoint(crashSphere.radius, latitude, longitude);
-                line[segment] = VertexCol(pos, color);
+                lines[i++] = VertexCol(pos, color);
             }
-            m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line, LINE_SEGMENTS);
+
+            primitive++;
         }
+
+        m_device->DrawPrimitives(PRIMITIVE_LINE_STRIP, lines.data(), firsts.data(), counts.data(), primitive);
     }
 }
 
