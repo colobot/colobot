@@ -19,6 +19,7 @@
 
 #include "CBot/CBotClass.h"
 
+#include "CBot/CBotInstr/CBotInstrUtils.h"
 #include "CBot/CBotInstr/CBotNew.h"
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
 #include "CBot/CBotInstr/CBotTwoOpExpr.h"
@@ -561,29 +562,27 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
             while ( IsOfType( p, ID_OPBRK ) )   // a table?
             {
                 CBotInstr* i = nullptr;
-
+                pStack->SetStartError( p->GetStart() );
                 if ( p->GetType() != ID_CLBRK )
+                {
                     i = CBotExpression::Compile( p, pStack );           // expression for the value
+                    if (i == nullptr || pStack->GetType() >= CBotTypBoolean) // must be a number
+                    {
+                        pStack->SetError(CBotErrBadIndex, p->GetStart());
+                        return false;
+                    }
+                }
                 else
                     i = new CBotEmpty();                            // special if not a formula
 
                 type = CBotTypResult(CBotTypArrayPointer, type);
 
-                if (!pStack->IsOk() || !IsOfType( p, ID_CLBRK ) )
-                {
-                    pStack->SetError(CBotErrCloseIndex, p->GetStart());
-                    return false;
-                }
-
-/*              CBotVar* pv = pStack->GetVar();
-                if ( pv->GetType()>= CBotTypBoolean )
-                {
-                    pStack->SetError(CBotErrBadType1, p->GetStart());
-                    return false;
-                }*/
-
                 if (limites == nullptr) limites = i;
                 else limites->AddNext3(i);
+
+                if (IsOfType(p, ID_CLBRK)) continue;
+                pStack->SetError(CBotErrCloseIndex, p->GetStart());
+                return false;
             }
 
             if ( p->GetType() == ID_OPENPAR )
@@ -681,6 +680,12 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
             CBotInstr* i = nullptr;
             if ( IsOfType(p, ID_ASS ) )
             {
+                pStack->SetStartError(p->GetStart());
+                if ( IsOfTypeList(p, TokenTypVar, ID_NEW, ID_SEP, 0) ) // no var, new, or ';'
+                {
+                    pStack->SetError(CBotErrBadLeft, p->GetPrev());
+                    return false;
+                }
                 if ( type.Eq(CBotTypArrayPointer) )
                 {
                     i = CBotListArray::Compile(p, pStack, type.GetTypElem());
@@ -689,6 +694,17 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 {
                     // it has an assignmet to calculate
                     i = CBotTwoOpExpr::Compile(p, pStack);
+
+                    CBotTypResult retType = pStack->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
+
+                    if ( (type.Eq(CBotTypString) && !retType.Eq(CBotTypString)) ||
+                         (!(type.Eq(CBotTypPointer) && retType.Eq(CBotTypNullPointer)) &&
+                          !TypeCompatible( type, retType, ID_ASS)) )
+                          
+                    {
+                        pStack->SetError(CBotErrBadType1, p->GetPrev());
+                        return false;
+                    }
                 }
                 if ( !pStack->IsOk() ) return false;
             }
