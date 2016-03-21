@@ -157,7 +157,7 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
             pStk->SetStartError(p->GetStart());
             if ( IsOfType(p, ID_SEP) )
             {
-                pStk->SetError(CBotErrBadLeft, p->GetPrev());
+                pStk->SetError(CBotErrNoExpression, p->GetPrev());
                 goto error;
             }
             if (inst->m_hasParams)

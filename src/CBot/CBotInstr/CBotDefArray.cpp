@@ -76,7 +76,7 @@ CBotInstr* CBotDefArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResul
             if (p->GetType() != ID_CLBRK)
             {
                 i = CBotExpression::Compile(p, pStk);                  // expression for the value
-                if (i == nullptr || pStk->GetType() >= CBotTypBoolean) // must be a number
+                if (i == nullptr || pStk->GetType() != CBotTypInt)     // must be a number
                 {
                     pStk->SetError(CBotErrBadIndex, p->GetStart());
                     goto error;
@@ -106,7 +106,7 @@ CBotInstr* CBotDefArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResul
             pStk->SetStartError(p->GetStart());
             if ( IsOfType(p, ID_SEP) )
             {
-                pStk->SetError(CBotErrBadLeft, p->GetPrev());
+                pStk->SetError(CBotErrNoExpression, p->GetPrev());
                 goto error;
             }
             if ( nullptr == (inst->m_listass = CBotListArray::Compile(p, pStk, type.GetTypElem())) )

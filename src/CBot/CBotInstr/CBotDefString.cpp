@@ -93,7 +93,7 @@ CBotInstr* CBotDefString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, 
             pStk->SetStartError(p->GetStart());
             if ( IsOfType(p, ID_SEP) )
             {
-                pStk->SetError(CBotErrBadLeft, p->GetPrev());
+                pStk->SetError(CBotErrNoExpression, p->GetPrev());
                 goto error;
             }
             if (nullptr == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))

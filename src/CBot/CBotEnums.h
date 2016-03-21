@@ -235,6 +235,7 @@ enum CBotError : int
     CBotErrBadIndex      = 5040, //!< wrong index type "[ false ]"
     CBotErrPrivate       = 5041, //!< protected item
     CBotErrNoPublic      = 5042, //!< missing word "public"
+    CBotErrNoExpression  = 5043, //!< expression expected after =
 
     // Runtime errors
     CBotErrZeroDiv       = 6000, //!< division by zero

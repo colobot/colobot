@@ -715,6 +715,7 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrBadIndex]      = TR("Incorrect index type");
     stringsCbot[CBot::CBotErrPrivate]       = TR("Private element");
     stringsCbot[CBot::CBotErrNoPublic]      = TR("Public required");
+    stringsCbot[CBot::CBotErrNoExpression]  = TR("expression expected after =");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");

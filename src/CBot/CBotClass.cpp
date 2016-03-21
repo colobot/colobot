@@ -566,7 +566,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 if ( p->GetType() != ID_CLBRK )
                 {
                     i = CBotExpression::Compile( p, pStack );           // expression for the value
-                    if (i == nullptr || pStack->GetType() >= CBotTypBoolean) // must be a number
+                    if (i == nullptr || pStack->GetType() != CBotTypInt) // must be a number
                     {
                         pStack->SetError(CBotErrBadIndex, p->GetStart());
                         return false;
@@ -681,9 +681,9 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
             if ( IsOfType(p, ID_ASS ) )
             {
                 pStack->SetStartError(p->GetStart());
-                if ( IsOfTypeList(p, TokenTypVar, ID_NEW, ID_SEP, 0) ) // no var, new, or ';'
+                if ( IsOfType(p, ID_SEP) )
                 {
-                    pStack->SetError(CBotErrBadLeft, p->GetPrev());
+                    pStack->SetError(CBotErrNoExpression, p->GetPrev());
                     return false;
                 }
                 if ( type.Eq(CBotTypArrayPointer) )
