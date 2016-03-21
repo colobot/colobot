@@ -169,10 +169,10 @@ inline bool TestAngle(float angle, float min, float max)
 }
 
 //! Calculates a value (radians) proportional between a and b (degrees)
-inline float PropAngle(int a, int b, float p)
+inline float PropAngle(float a, float b, float p)
 {
-    float aa = static_cast<float>(a) * DEG_TO_RAD;
-    float bb = static_cast<float>(b) * DEG_TO_RAD;
+    float aa = a * DEG_TO_RAD;
+    float bb = b * DEG_TO_RAD;
 
     return aa + p * (bb - aa);
 }
