@@ -38,7 +38,6 @@ public:
      * \param p
      * \param pStack
      * \param type
-     * \param classItem
      * \return
      */
     static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResult type);
