@@ -33,6 +33,7 @@
 #include "CBot/CBotExternalCall.h"
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
+#include "CBot/CBotDefParam.h"
 #include "CBot/CBotUtils.h"
 #include "CBot/CBotFileUtils.h"
 #include "CBot/CBotCallMethode.h"
@@ -604,9 +605,14 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     // return a method precompiled in pass 1
                     CBotFunction*   pf = m_pMethod;
                     CBotFunction*   prev = nullptr;
-                    while ( pf != nullptr )
+                    CBotToken* ppp = p;
+                    CBotCStack* pStk = pStack->TokenStack(nullptr, true);
+                    CBotDefParam* params = CBotDefParam::Compile(p, pStk );
+                    delete pStk;
+                    p = ppp;
+                    while ( pf != nullptr )                             // search by name and parameters
                     {
-                        if (pf->GetName() == pp) break;
+                        if (pf->GetName() == pp && pf->CheckParam( params )) break;
                         prev = pf;
                         pf = pf->Next();
                     }
@@ -708,7 +714,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     i = CBotTwoOpExpr::Compile(p, pStack);
 
                     if ( !(type.Eq(CBotTypPointer) && pStack->GetTypResult().Eq(CBotTypNullPointer)) &&
-                         !TypesCompatibles( type, pStack->GetTypResult()) )
+                         !TypesCompatibles( type2, pStack->GetTypResult()) )
                     {
                         pStack->SetError(CBotErrBadType1, p->GetStart());
                         return false;
