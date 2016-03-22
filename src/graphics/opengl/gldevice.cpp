@@ -725,6 +725,9 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
     PreparedTextureData texData = PrepareTextureData(data, params.format);
     result.alpha = texData.alpha;
 
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, texData.actualSurface->pitch / texData.actualSurface->format->BytesPerPixel);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texData.actualSurface->w, texData.actualSurface->h,
                  0, texData.sourceFormat, GL_UNSIGNED_BYTE, texData.actualSurface->pixels);
 
@@ -825,6 +828,9 @@ void CGLDevice::UpdateTexture(const Texture& texture, Math::IntPoint offset, Ima
     glBindTexture(GL_TEXTURE_2D, texture.id);
 
     PreparedTextureData texData = PrepareTextureData(data, format);
+
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, texData.actualSurface->pitch / texData.actualSurface->format->BytesPerPixel);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, texData.actualSurface->w, texData.actualSurface->h,
                     texData.sourceFormat, GL_UNSIGNED_BYTE, texData.actualSurface->pixels);
