@@ -44,6 +44,19 @@
 namespace Gfx
 {
 
+//! Struct for dynamic buffers
+struct DynamicBuffer
+{
+    //! Auxiliary VAO for rendering primitives with DrawPrimitive*
+    GLuint vao = 0;
+    //! Dynamic buffer
+    GLuint vbo = 0;
+    //! Dynamic buffer size
+    unsigned int size = 0;
+    //! Dynamic buffer offset
+    unsigned int offset = 0;
+};
+
 /**
   \class CGL33Device
   \brief Implementation of CDevice interface in OpenGL 3.3
@@ -190,7 +203,7 @@ private:
     inline void BindVAO(GLuint vao);
 
     //! Uploads data to dynamic buffer and returns offset to it
-    unsigned int UploadVertexData(void* data, unsigned int size);
+    unsigned int UploadVertexData(DynamicBuffer& buffer, void* data, unsigned int size);
 
 private:
     //! Current config
@@ -271,14 +284,7 @@ private:
     //! Shader program for shadow rendering
     GLuint m_shadowProgram = 0;
 
-    //! Auxiliary VAO for rendering primitives with DrawPrimitive*
-    GLuint m_auxiliaryVAO = 0;
-    //! Dynamic buffer for rendering primitives
-    GLuint m_buffer = 0;
-    //! Dynamic buffer size
-    unsigned int m_bufferSize = 0;
-    //! Dynamic buffer offset
-    unsigned int m_bufferOffset = 0;
+    DynamicBuffer m_dynamicBuffers[3];
 
     //! Current mode
     unsigned int m_mode = 0;
