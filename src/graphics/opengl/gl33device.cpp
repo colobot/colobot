@@ -207,24 +207,25 @@ bool CGL33Device::Create()
     }
 
     // Detect support of anisotropic filtering
-    m_anisotropyAvailable = AreExtensionsSupported("GL_EXT_texture_filter_anisotropic");
-    if (m_anisotropyAvailable)
+    m_capabilities.anisotropySupported = AreExtensionsSupported("GL_EXT_texture_filter_anisotropic");
+    if (m_capabilities.anisotropySupported)
     {
         // Obtain maximum anisotropy level available
         float level;
         glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
-        m_maxAnisotropy = static_cast<int>(level);
+        m_capabilities.maxAnisotropy = static_cast<int>(level);
 
         GetLogger()->Info("Anisotropic filtering available\n");
-        GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
+        GetLogger()->Info("Maximum anisotropy: %d\n", m_capabilities.maxAnisotropy);
     }
     else
     {
         GetLogger()->Info("Anisotropic filtering not available\n");
     }
 
-    glGetIntegerv(GL_MAX_SAMPLES, &m_maxSamples);
-    GetLogger()->Info("Multisampling supported, max samples: %d\n", m_maxSamples);
+    m_capabilities.multisamplingSupported = true;
+    glGetIntegerv(GL_MAX_SAMPLES, &m_capabilities.maxSamples);
+    GetLogger()->Info("Multisampling supported, max samples: %d\n", m_capabilities.maxSamples);
 
     // Set just to be sure
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -232,18 +233,30 @@ bool CGL33Device::Create()
     glViewport(0, 0, m_config.size.x, m_config.size.y);
 
     // this is set in shader
-    int numLights = 8;
+    m_capabilities.maxLights = 8;
 
-    m_lights        = std::vector<Light>(numLights, Light());
-    m_lightsEnabled = std::vector<bool> (numLights, false);
+    m_lights           = std::vector<Light>(m_capabilities.maxLights, Light());
+    m_lightsEnabled    = std::vector<bool>(m_capabilities.maxLights, false);
 
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextures);
     GetLogger()->Info("Maximum texture image units: %d\n", maxTextures);
 
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &m_capabilities.maxTextureSize);
+    GetLogger()->Info("Maximum texture size: %d\n", m_capabilities.maxTextureSize);
+
+    m_capabilities.multitexturingSupported = true;
+    m_capabilities.maxTextures = maxTextures;
+
     m_currentTextures    = std::vector<Texture>           (maxTextures, Texture());
     m_texturesEnabled    = std::vector<bool>              (maxTextures, false);
     m_textureStageParams = std::vector<TextureStageParams>(maxTextures, TextureStageParams());
+
+    m_capabilities.shadowMappingSupported = true;
+
+    m_capabilities.framebufferSupported = true;
+    glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &m_capabilities.maxRenderbufferSize);
+    GetLogger()->Info("Maximum renderbuffer size: %d\n", m_capabilities.maxRenderbufferSize);
 
     // Create shader program for normal rendering
     GLint shaders[2];
@@ -684,7 +697,7 @@ void CGL33Device::SetMaterial(const Material &material)
 
 int CGL33Device::GetMaxLightCount()
 {
-    return m_lights.size();
+    return m_capabilities.maxLights;
 }
 
 void CGL33Device::SetLight(int index, const Light &light)
@@ -711,50 +724,6 @@ void CGL33Device::SetLight(int index, const Light &light)
     }
 
     // TODO: add spotlight params
-}
-
-// probably makes no sense anymore
-void CGL33Device::UpdateLightPosition(int index)
-{
-    assert(index >= 0);
-    assert(index < static_cast<int>( m_lights.size() ));
-
-    /*
-    glMatrixMode(GL_MODELVIEW);
-
-    glPushMatrix();
-
-    glLoadIdentity();
-    glScalef(1.0f, 1.0f, -1.0f);
-    Math::Matrix mat = m_viewMat;
-    mat.Set(1, 4, 0.0f);
-    mat.Set(2, 4, 0.0f);
-    mat.Set(3, 4, 0.0f);
-    glMultMatrixf(mat.Array());
-
-    if (m_lights[index].type == LIGHT_SPOT)
-    {
-        GLfloat direction[4] = { -m_lights[index].direction.x, -m_lights[index].direction.y, -m_lights[index].direction.z, 1.0f };
-        glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
-    }
-
-    if (m_lights[index].type == LIGHT_DIRECTIONAL)
-    {
-        GLfloat position[4] = { -m_lights[index].direction.x, -m_lights[index].direction.y, -m_lights[index].direction.z, 0.0f };
-        glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
-    }
-    else
-    {
-        glLoadIdentity();
-        glScalef(1.0f, 1.0f, -1.0f);
-        glMultMatrixf(m_viewMat.Array());
-
-        GLfloat position[4] = { m_lights[index].position.x, m_lights[index].position.y, m_lights[index].position.z, 1.0f };
-        glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
-    }
-
-    glPopMatrix();
-    */
 }
 
 void CGL33Device::SetLightEnabled(int index, bool enabled)
@@ -842,9 +811,9 @@ Texture CGL33Device::CreateTexture(ImageData *data, const TextureCreateParams &p
     }
 
     // Set anisotropy level if available
-    if (m_anisotropyAvailable)
+    if (m_capabilities.anisotropySupported)
     {
-        float level = Math::Min(m_maxAnisotropy, CEngine::GetInstance().GetTextureAnisotropyLevel());
+        float level = Math::Min(m_capabilities.maxAnisotropy, CEngine::GetInstance().GetTextureAnisotropyLevel());
 
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, level);
     }
@@ -1035,46 +1004,7 @@ void CGL33Device::SetTextureStageParams(int index, const TextureStageParams &par
 
 void CGL33Device::SetTextureCoordGeneration(int index, TextureGenerationParams &params)
 {
-    // TODO: think about generalized way
-    /*
-    glActiveTexture(GL_TEXTURE0 + index);
 
-    for (int i = 0; i < 4; i++)
-    {
-        GLuint texCoordGen = textureCoordGen[i];
-        GLuint texCoord = textureCoordinates[i];
-
-        if (params.coords[i].mode == TEX_GEN_NONE)
-        {
-            glDisable(texCoordGen);
-        }
-        else
-        {
-            glEnable(texCoordGen);
-
-            switch (params.coords[i].mode)
-            {
-            case TEX_GEN_OBJECT_LINEAR:
-                glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-                glTexGenfv(texCoord, GL_OBJECT_PLANE, params.coords[i].plane);
-                break;
-            case TEX_GEN_EYE_LINEAR:
-                glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-                glTexGenfv(texCoord, GL_EYE_PLANE, params.coords[i].plane);
-                break;
-            case TEX_GEN_SPHERE_MAP:
-                glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-                break;
-            case TEX_GEN_NORMAL_MAP:
-                glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_NORMAL_MAP);
-                break;
-            case TEX_GEN_REFLECTION_MAP:
-                glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
-                break;
-            }
-        }
-    }
-    // */
 }
 
 void CGL33Device::UpdateTextureParams(int index)
@@ -1104,145 +1034,6 @@ void CGL33Device::UpdateTextureParams(int index)
     else if (params.wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     else  assert(false);
-
-    // TODO: this needs to be redone
-    /*
-    glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, params.factor.Array());
-
-    // To save some trouble
-    if ( (params.colorOperation == TEX_MIX_OPER_DEFAULT) &&
-         (params.alphaOperation == TEX_MIX_OPER_DEFAULT) )
-    {
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        goto after_tex_operations;
-    }
-
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-
-    // Only these modes of getting color & alpha are used
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
-
-    // Color operation
-
-    if (params.colorOperation == TEX_MIX_OPER_DEFAULT)
-    {
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PREVIOUS);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE);
-        goto after_tex_color;
-    }
-    else if (params.colorOperation == TEX_MIX_OPER_REPLACE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
-    else if (params.colorOperation == TEX_MIX_OPER_MODULATE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-    else if (params.colorOperation == TEX_MIX_OPER_ADD)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_ADD);
-    else if (params.colorOperation == TEX_MIX_OPER_SUBTRACT)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_SUBTRACT);
-    else  assert(false);
-
-    // Color arg1
-    if (params.colorArg1 == TEX_MIX_ARG_TEXTURE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
-    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_0)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
-    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_1)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
-    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_2)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE2);
-    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_3)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE3);
-    else if (params.colorArg1 == TEX_MIX_ARG_COMPUTED_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PREVIOUS);
-    else if (params.colorArg1 == TEX_MIX_ARG_SRC_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
-    else if (params.colorArg1 == TEX_MIX_ARG_FACTOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_CONSTANT);
-    else  assert(false);
-
-    // Color arg2
-    if (params.colorArg2 == TEX_MIX_ARG_TEXTURE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE);
-    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_0)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE0);
-    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_1)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE1);
-    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_2)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE2);
-    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_3)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE3);
-    else if (params.colorArg2 == TEX_MIX_ARG_COMPUTED_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
-    else if (params.colorArg2 == TEX_MIX_ARG_SRC_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
-    else if (params.colorArg2 == TEX_MIX_ARG_FACTOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_CONSTANT);
-    else  assert(false);
-
-
-after_tex_color:
-
-    // Alpha operation
-    if (params.alphaOperation == TEX_MIX_OPER_DEFAULT)
-    {
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
-        goto after_tex_operations;
-    }
-    else if (params.alphaOperation == TEX_MIX_OPER_REPLACE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
-    else if (params.alphaOperation == TEX_MIX_OPER_MODULATE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-    else if (params.alphaOperation == TEX_MIX_OPER_ADD)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_ADD);
-    else if (params.alphaOperation == TEX_MIX_OPER_SUBTRACT)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_SUBTRACT);
-    else  assert(false);
-
-    // Alpha arg1
-    if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE);
-    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_0)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
-    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_1)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE1);
-    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_2)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE2);
-    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_3)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE3);
-    else if (params.alphaArg1 == TEX_MIX_ARG_COMPUTED_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
-    else if (params.alphaArg1 == TEX_MIX_ARG_SRC_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PRIMARY_COLOR);
-    else if (params.alphaArg1 == TEX_MIX_ARG_FACTOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_CONSTANT);
-    else  assert(false);
-
-    // Alpha arg2
-    if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
-    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_0)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE0);
-    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_1)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE1);
-    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_2)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE2);
-    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_3)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE3);
-    else if (params.alphaArg2 == TEX_MIX_ARG_COMPUTED_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PREVIOUS);
-    else if (params.alphaArg2 == TEX_MIX_ARG_SRC_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
-    else if (params.alphaArg2 == TEX_MIX_ARG_FACTOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_CONSTANT);
-    else  assert(false);
-
-after_tex_operations: ;
-    */
 }
 
 void CGL33Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT)
@@ -2239,17 +2030,17 @@ unsigned int CGL33Device::UploadVertexData(void* data, unsigned int size)
 
 bool CGL33Device::IsAnisotropySupported()
 {
-    return m_anisotropyAvailable;
+    return m_capabilities.anisotropySupported;
 }
 
 int CGL33Device::GetMaxAnisotropyLevel()
 {
-    return m_maxAnisotropy;
+    return m_capabilities.maxAnisotropy;
 }
 
 int CGL33Device::GetMaxSamples()
 {
-    return m_maxSamples;
+    return m_capabilities.maxSamples;
 }
 
 bool CGL33Device::IsShadowMappingSupported()
@@ -2259,9 +2050,7 @@ bool CGL33Device::IsShadowMappingSupported()
 
 int CGL33Device::GetMaxTextureSize()
 {
-    int value;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
-    return value;
+    return m_capabilities.maxTextureSize;
 }
 
 bool CGL33Device::IsFramebufferSupported()

@@ -241,12 +241,6 @@ private:
     };
 
     //! Detected capabilities
-    //! Whether anisotropic filtering is available
-    bool m_anisotropyAvailable = false;
-    //! Maximum anisotropy level
-    int m_maxAnisotropy = 1;
-    //! Maximum samples
-    int m_maxSamples = 1;
     //! Framebuffer support
     FramebufferSupport m_framebufferSupport = FBS_NONE;
     //! Map of saved VBO objects

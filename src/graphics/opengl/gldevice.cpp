@@ -197,30 +197,33 @@ bool CGLDevice::Create()
     if (glVersion >= 14)     // Core depth texture+shadow, OpenGL 1.4+
     {
         m_shadowMappingSupport = SMS_CORE;
+        m_capabilities.shadowMappingSupported = true;
         GetLogger()->Info("Shadow mapping available (core)\n");
     }
     else if (glewIsSupported("GL_ARB_depth_texture GL_ARB_shadow"))  // ARB depth texture + shadow
     {
         m_shadowMappingSupport = SMS_ARB;
+        m_capabilities.shadowMappingSupported = true;
         GetLogger()->Info("Shadow mapping available (ARB)\n");
     }
     else       // No Shadow mapping
     {
         m_shadowMappingSupport = SMS_NONE;
+        m_capabilities.shadowMappingSupported = false;
         GetLogger()->Info("Shadow mapping not available\n");
     }
 
     // Detect support of anisotropic filtering
-    m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
-    if(m_anisotropyAvailable)
+    m_capabilities.anisotropySupported = glewIsSupported("GL_EXT_texture_filter_anisotropic");
+    if (m_capabilities.anisotropySupported)
     {
         // Obtain maximum anisotropy level available
         float level;
         glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
-        m_maxAnisotropy = static_cast<int>(level);
+        m_capabilities.maxAnisotropy = static_cast<int>(level);
 
         GetLogger()->Info("Anisotropic filtering available\n");
-        GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
+        GetLogger()->Info("Maximum anisotropy: %d\n", m_capabilities.maxAnisotropy);
     }
     else
     {
@@ -230,11 +233,13 @@ bool CGLDevice::Create()
     // Read maximum sample count for MSAA
     if(glewIsSupported("GL_EXT_framebuffer_multisample"))
     {
-        glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_maxSamples);
-        GetLogger()->Info("Multisampling supported, max samples: %d\n", m_maxSamples);
+        m_capabilities.multisamplingSupported = true;
+        glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_capabilities.maxSamples);
+        GetLogger()->Info("Multisampling supported, max samples: %d\n", m_capabilities.maxSamples);
     }
     else
     {
+        m_capabilities.multisamplingSupported = false;
         GetLogger()->Info("Multisampling not supported\n");
     }
 
@@ -290,12 +295,20 @@ bool CGLDevice::Create()
     int numLights = 0;
     glGetIntegerv(GL_MAX_LIGHTS, &numLights);
 
+    m_capabilities.maxLights = numLights;
+
     m_lights        = std::vector<Light>(numLights, Light());
     m_lightsEnabled = std::vector<bool> (numLights, false);
 
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextures);
     GetLogger()->Info("Maximum texture units: %d\n", maxTextures);
+
+    m_capabilities.multitexturingSupported = true;
+    m_capabilities.maxTextures = maxTextures;
+
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &m_capabilities.maxTextureSize);
+    GetLogger()->Info("Maximum texture size: %d\n", m_capabilities.maxTextureSize);
 
     m_currentTextures    = std::vector<Texture>           (maxTextures, Texture());
     m_texturesEnabled    = std::vector<bool>              (maxTextures, false);
@@ -317,6 +330,11 @@ bool CGLDevice::Create()
         m_shadowQuality = true;
         GetLogger()->Debug("Using quality shadows\n");
     }
+    else
+    {
+        m_shadowQuality = false;
+        GetLogger()->Debug("Using simple shadows\n");
+    }
 
     // create white texture
     glGenTextures(1, &m_whiteTexture);
@@ -337,14 +355,25 @@ bool CGLDevice::Create()
     m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
 
     m_framebufferSupport = DetectFramebufferSupport();
-    if (m_framebufferSupport != FBS_NONE)
+    if (m_framebufferSupport == FBS_ARB)
     {
-        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &m_maxRenderbufferSize);
-        GetLogger()->Info("Framebuffer supported\n");
-        GetLogger()->Info("Maximum renderbuffer size: %d\n", m_maxRenderbufferSize);
+        m_capabilities.framebufferSupported = true;
+        GetLogger()->Info("Framebuffer supported (ARB)\n");
+
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &m_capabilities.maxRenderbufferSize);
+        GetLogger()->Info("Maximum renderbuffer size: %d\n", m_capabilities.maxRenderbufferSize);
+    }
+    else if (m_framebufferSupport == FBS_EXT)
+    {
+        m_capabilities.framebufferSupported = true;
+        GetLogger()->Info("Framebuffer supported (EXT)\n");
+
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &m_capabilities.maxRenderbufferSize);
+        GetLogger()->Info("Maximum renderbuffer size: %d\n", m_capabilities.maxRenderbufferSize);
     }
     else
     {
+        m_capabilities.framebufferSupported = false;
         GetLogger()->Info("Framebuffer not supported\n");
     }
 
@@ -715,9 +744,9 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
     }
 
     // Set anisotropy level if available
-    if (m_anisotropyAvailable)
+    if (m_capabilities.anisotropySupported)
     {
-        float level = Math::Min(m_maxAnisotropy, CEngine::GetInstance().GetTextureAnisotropyLevel());
+        float level = Math::Min(m_capabilities.maxAnisotropy, CEngine::GetInstance().GetTextureAnisotropyLevel());
 
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, level);
     }
@@ -2119,34 +2148,32 @@ void CGLDevice::DeleteFramebuffer(std::string name)
 
 bool CGLDevice::IsAnisotropySupported()
 {
-    return m_anisotropyAvailable;
+    return m_capabilities.anisotropySupported;
 }
 
 int CGLDevice::GetMaxAnisotropyLevel()
 {
-    return m_maxAnisotropy;
+    return m_capabilities.maxAnisotropy;
 }
 
 int CGLDevice::GetMaxSamples()
 {
-    return m_maxSamples;
+    return m_capabilities.maxSamples;
 }
 
 bool CGLDevice::IsShadowMappingSupported()
 {
-    return m_shadowMappingSupport != SMS_NONE;
+    return m_capabilities.shadowMappingSupported;
 }
 
 int CGLDevice::GetMaxTextureSize()
 {
-    int value;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
-    return value;
+    return m_capabilities.maxTextureSize;
 }
 
 bool CGLDevice::IsFramebufferSupported()
 {
-    return m_framebufferSupport != FBS_NONE;
+    return m_capabilities.framebufferSupported;
 }
 
 } // namespace Gfx

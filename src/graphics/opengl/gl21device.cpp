@@ -200,16 +200,16 @@ bool CGL21Device::Create()
     GetLogger()->Info("%s\n", renderer);
 
     // Detect support of anisotropic filtering
-    m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
-    if(m_anisotropyAvailable)
+    m_capabilities.anisotropySupported = glewIsSupported("GL_EXT_texture_filter_anisotropic");
+    if (m_capabilities.anisotropySupported)
     {
         // Obtain maximum anisotropy level available
         float level;
         glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
-        m_maxAnisotropy = static_cast<int>(level);
+        m_capabilities.maxAnisotropy = static_cast<int>(level);
 
         GetLogger()->Info("Anisotropic filtering available\n");
-        GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
+        GetLogger()->Info("Maximum anisotropy: %d\n", m_capabilities.maxAnisotropy);
     }
     else
     {
@@ -219,13 +219,17 @@ bool CGL21Device::Create()
     // Read maximum sample count for MSAA
     if(glewIsSupported("GL_EXT_framebuffer_multisample"))
     {
-        glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_maxSamples);
-        GetLogger()->Info("Multisampling supported, max samples: %d\n", m_maxSamples);
+        m_capabilities.multisamplingSupported = true;
+
+        glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_capabilities.maxSamples);
+        GetLogger()->Info("Multisampling supported, max samples: %d\n", m_capabilities.maxSamples);
     }
     else
     {
         GetLogger()->Info("Multisampling not supported\n");
     }
+
+    m_capabilities.shadowMappingSupported = true;
 
     // This is mostly done in all modern hardware by default
     // DirectX doesn't even allow the option to turn off perspective correction anymore
@@ -243,13 +247,40 @@ bool CGL21Device::Create()
     m_lights        = std::vector<Light>(numLights, Light());
     m_lightsEnabled = std::vector<bool> (numLights, false);
 
+    m_capabilities.maxLights = numLights;
+
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextures);
     GetLogger()->Info("Maximum texture image units: %d\n", maxTextures);
 
+    m_capabilities.multitexturingSupported = true;
+    m_capabilities.maxTextures = maxTextures;
+
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &m_capabilities.maxTextureSize);
+    GetLogger()->Info("Maximum texture size: %d\n", m_capabilities.maxTextureSize);
+
     m_framebufferSupport = DetectFramebufferSupport();
-    if (m_framebufferSupport != FBS_NONE)
-        GetLogger()->Info("Framebuffer supported\n");
+    if (m_framebufferSupport == FBS_ARB)
+    {
+        m_capabilities.framebufferSupported = true;
+        GetLogger()->Info("Framebuffer supported (ARB)\n");
+
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &m_capabilities.maxRenderbufferSize);
+        GetLogger()->Info("Maximum renderbuffer size: %d\n", m_capabilities.maxRenderbufferSize);
+    }
+    else if (m_framebufferSupport == FBS_EXT)
+    {
+        m_capabilities.framebufferSupported = true;
+        GetLogger()->Info("Framebuffer supported (EXT)\n");
+
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &m_capabilities.maxRenderbufferSize);
+        GetLogger()->Info("Maximum renderbuffer size: %d\n", m_capabilities.maxRenderbufferSize);
+    }
+    else
+    {
+        m_capabilities.framebufferSupported = false;
+        GetLogger()->Info("Framebuffer not supported\n");
+    }
 
     m_currentTextures    = std::vector<Texture>           (maxTextures, Texture());
     m_texturesEnabled    = std::vector<bool>              (maxTextures, false);
@@ -813,9 +844,9 @@ Texture CGL21Device::CreateTexture(ImageData *data, const TextureCreateParams &p
     }
 
     // Set anisotropy level if available
-    if (m_anisotropyAvailable)
+    if (m_capabilities.anisotropySupported)
     {
-        float level = Math::Min(m_maxAnisotropy, CEngine::GetInstance().GetTextureAnisotropyLevel());
+        float level = Math::Min(m_capabilities.maxAnisotropy, CEngine::GetInstance().GetTextureAnisotropyLevel());
 
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, level);
     }
@@ -1787,34 +1818,32 @@ void CGL21Device::DeleteFramebuffer(std::string name)
 
 bool CGL21Device::IsAnisotropySupported()
 {
-    return m_anisotropyAvailable;
+    return m_capabilities.anisotropySupported;
 }
 
 int CGL21Device::GetMaxAnisotropyLevel()
 {
-    return m_maxAnisotropy;
+    return m_capabilities.maxAnisotropy;
 }
 
 int CGL21Device::GetMaxSamples()
 {
-    return m_maxSamples;
+    return m_capabilities.maxSamples;
 }
 
 bool CGL21Device::IsShadowMappingSupported()
 {
-    return true;
+    return m_capabilities.shadowMappingSupported;
 }
 
 int CGL21Device::GetMaxTextureSize()
 {
-    int value;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
-    return value;
+    return m_capabilities.maxTextureSize;
 }
 
 bool CGL21Device::IsFramebufferSupported()
 {
-    return m_framebufferSupport != FBS_NONE;
+    return m_capabilities.framebufferSupported;
 }
 
 } // namespace Gfx

@@ -179,8 +179,6 @@ public:
     bool IsFramebufferSupported() override;
 
 private:
-    //! Updates position for given light based on transformation matrices
-    void UpdateLightPosition(int index);
     //! Updates the texture params for given texture stage
     void UpdateTextureParams(int index);
     //! Updates rendering mode
@@ -251,12 +249,6 @@ private:
     };
 
     //! Detected capabilities
-    //! Whether anisotropic filtering is available
-    bool m_anisotropyAvailable = false;
-    //! Maximum anisotropy level
-    int m_maxAnisotropy = 1;
-    //! Maximum samples
-    int m_maxSamples = 1;
     //! Map of saved VBO objects
     std::map<unsigned int, VertexBufferInfo> m_vboObjects;
     //! Last ID of VBO object

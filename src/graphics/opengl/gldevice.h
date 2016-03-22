@@ -278,14 +278,6 @@ private:
     ShadowMappingSupport m_shadowMappingSupport = SMS_NONE;
     //! Whether to use VBOs or display lists
     bool m_vboAvailable = false;
-    //! Whether anisotropic filtering is available
-    bool m_anisotropyAvailable = false;
-    //! Maximum anisotropy level
-    int m_maxAnisotropy = 1;
-    //! Maximum samples
-    int m_maxSamples = 1;
-    //! Maximum renderbuffer size
-    int m_maxRenderbufferSize = 0;
     //! glMultiDrawArrays() available
     bool m_multiDrawArrays = false;
     //! Framebuffer support

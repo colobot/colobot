@@ -100,6 +100,30 @@ struct DeviceConfig
 };
 
 /**
+* \struct DeviceCapabilities
+* \brief This structs contains various capabilities of graphics device
+*/
+struct DeviceCapabilities
+{
+    bool multitexturingSupported = false;
+    int maxTextures = 1;
+    int maxTextureSize = 1024;
+
+    int maxLights = 8;
+
+    bool shadowMappingSupported = false;
+
+    bool framebufferSupported = false;
+    int maxRenderbufferSize = 0;
+
+    bool anisotropySupported = false;
+    int maxAnisotropy = 1;
+
+    bool multisamplingSupported = false;
+    int maxSamples = 1;
+};
+
+/**
  * \enum TextureUnit
  * \brief Texture unit values for binding textures
  *
@@ -301,6 +325,10 @@ class CDevice
 protected:
     std::string m_errorMessage;
 
+    //! Capabilities of this device
+    //! Should only be changed by code in concrete device implementation
+    DeviceCapabilities m_capabilities;
+
 public:
     virtual ~CDevice() {}
 
@@ -308,6 +336,12 @@ public:
     inline std::string GetError()
     {
         return m_errorMessage;
+    }
+
+    //! Returns device capabilities
+    const DeviceCapabilities& GetCapabilities()
+    {
+        return m_capabilities;
     }
 
     //! Provides a hook to debug graphics code (implementation-specific)
