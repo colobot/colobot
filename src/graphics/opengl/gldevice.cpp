@@ -1519,7 +1519,7 @@ void CGLDevice::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
 unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     unsigned int id = 0;
-    if (m_vboAvailable)
+    if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
         id = ++m_lastVboId;
 
@@ -1563,7 +1563,7 @@ unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Ve
 unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
 {
     unsigned int id = 0;
-    if (m_vboAvailable)
+    if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
         id = ++m_lastVboId;
 
@@ -1607,7 +1607,7 @@ unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Ve
 unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
 {
     unsigned int id = 0;
-    if (m_vboAvailable)
+    if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
         id = ++m_lastVboId;
 
@@ -1650,7 +1650,7 @@ unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Ve
 
 void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
-    if (m_vboAvailable)
+    if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
         auto it = m_vboObjects.find(bufferId);
         if (it == m_vboObjects.end())
@@ -1686,7 +1686,7 @@ void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiv
 
 void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
 {
-    if (m_vboAvailable)
+    if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
         auto it = m_vboObjects.find(bufferId);
         if (it == m_vboObjects.end())
@@ -1722,7 +1722,7 @@ void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiv
 
 void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
 {
-    if (m_vboAvailable)
+    if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
         auto it = m_vboObjects.find(bufferId);
         if (it == m_vboObjects.end())
@@ -1758,7 +1758,7 @@ void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiv
 
 void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
 {
-    if (m_vboAvailable)
+    if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
         auto it = m_vboObjects.find(bufferId);
         if (it == m_vboObjects.end())
@@ -1847,7 +1847,7 @@ void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
 
 void CGLDevice::DestroyStaticBuffer(unsigned int bufferId)
 {
-    if (m_vboAvailable)
+    if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
         auto it = m_vboObjects.find(bufferId);
         if (it == m_vboObjects.end())

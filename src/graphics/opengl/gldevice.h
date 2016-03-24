@@ -276,8 +276,6 @@ private:
     //! Detected capabilities
     //! Depth texture support
     ShadowMappingSupport m_shadowMappingSupport = SMS_NONE;
-    //! Whether to use VBOs or display lists
-    bool m_vboAvailable = false;
     //! glMultiDrawArrays() available
     bool m_multiDrawArrays = false;
     //! Framebuffer support
