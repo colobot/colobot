@@ -6,7 +6,7 @@ colobot - educational programming strategy game
 
 =head1 SYNOPSIS
 
-B<colobot> [B<-datadir> I<path>] [B<-debug>] [B<-loglevel> I<level>] [B<-language> I<lang>]
+B<colobot> 
 
 =head1 DESCRIPTION
 
@@ -24,21 +24,107 @@ which can be used to program the robots available in the game.
 
 Display a short help text
 
+=item B<-resolution> I<WxH>
+
+Set runtime screen resolution
+
+=item B<-graphics> I<default>|I<auto>|I<opengl>|I<gl14>|I<gl21>|I<gl33>
+
+Changes graphics device
+
+=item B<-glversion> I<default>|I<#.#>
+
+Sets OpenGL context version to use.
+
+=item B<-glprofile> I<default>|I<core>|I<compatibility>|I<opengles>
+
+Sets OpenGL context profile to use.
+
+=back
+
+=head1 RUNTIME PATH OVERRIDES
+
+=over 8
+
+=item B<-langdir> F</path/to/lang/>
+
+Set custom language directory path
+
 =item B<-datadir> F</path/to/data/>
 
 Set custom data directory path
 
-=item B<-debug>
+=item B<-savedir> F</path/to/save/>
 
-Enable debug mode (more info printed in logs)
+Set custom save directory path (must be writable)
 
-=item B<-loglevel> I<level>
+=item B<-mod> F</path/to/mods/>
 
-Set log level. Possible choices are: trace, debug, info, warn, error, none.
+Set datadir mod path
 
-=item B<-language> I<lang>
+=back
 
-Set language. Note that you can also fill the B<LANG> environment variable.
+=head1 DEBUG OPTIONS
+
+=over 8
+
+=item B<-loglevel> I<trace>|I<debug>|I<info>|I<warn>|I<error>|I<none>.
+
+Set log level. 
+
+=item B<-debug> I<all>|I<event>|I<models>|...
+
+Enable debug mode (more info printed in logs). Possible values are as follows, as well as any comma-separated combination
+
+=over 10
+
+=item sys_events
+
+System events
+
+=item update_events
+
+Update events
+
+=item app_events
+
+Application events
+
+=item events
+
+All above events
+
+=item models
+
+Models-related debugging
+
+=item all
+
+All above debugging statements
+
+=back
+
+=item B<-headless>
+
+Run in headless mode - disables graphics, sound and user interaction
+
+=item B<-runscene> I<scenecodename>
+
+Run given scene on start (skip menus)
+
+=item B<-scenetest>
+
+Win every mission right after it's loaded
+
+=back
+
+=head1 ENVIRONMENT
+
+=over 6
+
+=item LC_MESSAGES
+
+Used to determine the runtime language.
 
 =back
 
