@@ -1805,10 +1805,11 @@ msgstr "\\Фиолетовый флаг"
 msgid "\\Yellow flags"
 msgstr "\\Желтый флаг"
 
-msgid "www.colobot.info"
+msgid "colobot.info"
 msgstr ""
 
-msgid "www.epsitec.com"
+#, fuzzy
+msgid "epsitec.com"
 msgstr "www.epsitec.com"
 
 #~ msgid " "

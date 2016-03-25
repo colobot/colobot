@@ -131,7 +131,7 @@ msgid "Analyzes only organic matter"
 msgstr "Analizuje jedynie materię organiczną"
 
 msgid "Anisotropy level\\Anisotropy level"
-msgstr ""
+msgstr "Filtrowanie anizotropowe\\Poziom filtrowania anizotropowego"
 
 msgid "Ant"
 msgstr "Mrówka"
@@ -338,7 +338,8 @@ msgid ""
 "Camera border scrolling\\Scrolling when the mouse touches right or left "
 "border"
 msgstr ""
-"Przewijanie kamery przy krawędzi\\Ekran jest przewijany gdy mysz dotknie prawej lub lewej jego krawędzi"
+"Przewijanie kamery przy krawędzi\\Ekran jest przewijany gdy mysz dotknie "
+"prawej lub lewej jego krawędzi"
 
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera bliżej\\Przybliża kamerę"
@@ -386,7 +387,7 @@ msgid "Change player\\Change player"
 msgstr "Zmień gracza\\Zmień gracza"
 
 msgid "Cheat console\\Show cheat console"
-msgstr ""
+msgstr "Konsola komend\\Pokaż konsolę komend"
 
 msgid "Checkpoint"
 msgstr "Punkt kontrolny"
@@ -517,10 +518,10 @@ msgid "Dynamic lighting\\Mobile light sources"
 msgstr "Dynamiczne oświetlenie\\Ruchome źródła światła"
 
 msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
-msgstr ""
+msgstr "Dynamiczne cienie ++\\Dynamiczne cienie + cienie na obiektach"
 
 msgid "Dynamic shadows\\Beautiful shadows!"
-msgstr ""
+msgstr "Dynamiczne cienie\\Ładne cienie!"
 
 msgid "Edit the selected program"
 msgstr "Edytuj zaznaczony program"
@@ -765,7 +766,7 @@ msgid "Internal error - tell the developers"
 msgstr "Błąd wewnętrzny - powiadom twórców gry"
 
 msgid "Invert\\Invert values on this axis"
-msgstr ""
+msgstr "Odwróć\\Odwróć wartości na tej osi"
 
 msgid "Jet temperature"
 msgstr "Temperatura silnika"
@@ -844,7 +845,7 @@ msgid "Lunar Roving Vehicle"
 msgstr "Pojazd Księżycowy"
 
 msgid "MSAA\\Multisample anti-aliasing"
-msgstr ""
+msgstr "MSAA\\Multisample anti-aliasing"
 
 msgid "Maximize"
 msgstr "Powiększ"
@@ -853,7 +854,7 @@ msgid "Minimize"
 msgstr "Pomniejsz"
 
 msgid "Mipmap level\\Mipmap level"
-msgstr ""
+msgstr "Poziom mipmap\\Poziom mipmap"
 
 msgid "Mission name"
 msgstr "Nazwa misji"
@@ -949,7 +950,7 @@ msgid "No uranium to transform"
 msgstr "Brak uranu do przetworzenia"
 
 msgid "No userlevels installed!"
-msgstr ""
+msgstr "Brak zainstalowanych poziomów użytkownika!"
 
 msgid "Normal size"
 msgstr "Normalna wielkość"
@@ -1055,7 +1056,7 @@ msgid "Paste (Ctrl+v)"
 msgstr "Wklej (Ctrl+V)"
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
-msgstr ""
+msgstr "Wstrzymaj w tle\\Wstrzymaj grę gdy okno stanie się nieaktywne"
 
 msgid "Pause/continue"
 msgstr "Pauza/Kontynuuj"
@@ -1321,6 +1322,8 @@ msgstr "Brak średnika na końcu wiersza"
 
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr ""
+"Rozdzielczość cieni\\Wyższa wartość oznacza wyższy zasięg i jakość, ale jest "
+"wolniejsza"
 
 msgid "Shield level"
 msgstr "Poziom osłony"
@@ -1470,7 +1473,7 @@ msgid "Terrain relief"
 msgstr "Rzeźba terenu"
 
 msgid "Texture filtering\\Texture filtering"
-msgstr ""
+msgstr "Filtrowanie tekstur\\Filtrowanie tekstur"
 
 msgid "Textures"
 msgstr "Tekstury"
@@ -1505,6 +1508,8 @@ msgstr "Taka etykieta nie istnieje"
 
 msgid "This menu is for userlevels from mods, but you didn't install any"
 msgstr ""
+"To menu jest przeznaczone na poziomy użytkownika z modyfikacji, ale żadne "
+"nie są zainstalowane"
 
 msgid "This object is not a member of a class"
 msgstr "Ten obiekt nie jest członkiem klasy"
@@ -1803,11 +1808,11 @@ msgstr "\\Fioletowe flagi"
 msgid "\\Yellow flags"
 msgstr "\\Żółte flagi"
 
-msgid "www.colobot.info"
-msgstr ""
+msgid "colobot.info"
+msgstr "colobot.info"
 
-msgid "www.epsitec.com"
-msgstr "www.epsitec.com"
+msgid "epsitec.com"
+msgstr "epsitec.com"
 
 #~ msgid " Drivers:"
 #~ msgstr " Sterowniki:"

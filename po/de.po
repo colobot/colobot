@@ -1814,10 +1814,11 @@ msgstr "\\Violette Fahne"
 msgid "\\Yellow flags"
 msgstr "\\Gelbe Fahne"
 
-msgid "www.colobot.info"
+msgid "colobot.info"
 msgstr ""
 
-msgid "www.epsitec.com"
+#, fuzzy
+msgid "epsitec.com"
 msgstr "www.epsitec.com"
 
 #~ msgid " "

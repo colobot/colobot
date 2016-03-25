@@ -99,7 +99,7 @@ void CScreenSetupGame::CreateInterface()
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
     pos.y -= ddim.y/2;
-    pos.x = ox+sx*3+dim.x*3.5f;
+    pos.x = ox+sx*3+dim.x*4.0f;
     psl = pw->CreateSlider(pos, ddim, -1, EVENT_INTERFACE_AUTOSAVE_SLOTS);
     psl->SetState(STATE_SHADOW);
     psl->SetLimit(1.0f, 10.0f);

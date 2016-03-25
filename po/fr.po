@@ -1802,10 +1802,12 @@ msgstr "\\Drapeaux violets"
 msgid "\\Yellow flags"
 msgstr "\\Drapeaux jaunes"
 
-msgid "www.colobot.info"
+#, fuzzy
+msgid "colobot.info"
 msgstr "www.colobot.info"
 
-msgid "www.epsitec.com"
+#, fuzzy
+msgid "epsitec.com"
 msgstr "www.epsitec.com"
 
 #~ msgid " "

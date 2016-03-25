@@ -208,13 +208,13 @@ msgstr ""
 msgid "Original game developed by:"
 msgstr ""
 
-msgid "www.epsitec.com"
+msgid "epsitec.com"
 msgstr ""
 
 msgid "Gold Edition development by:"
 msgstr ""
 
-msgid "www.colobot.info"
+msgid "colobot.info"
 msgstr ""
 
 msgid "Recorder"
