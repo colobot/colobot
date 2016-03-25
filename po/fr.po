@@ -1,10 +1,10 @@
-# Didier Raboud <odyx@debian.org>, 2012, 2015.
+# Didier Raboud <odyx@debian.org>, 2012, 2015, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: Colobot 0.1.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: DATE\n"
-"PO-Revision-Date: 2015-09-13 12:12+0100\n"
+"PO-Revision-Date: 2016-03-25 15:01+0100\n"
 "Last-Translator: Didier Raboud <odyx@debian.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -324,12 +324,11 @@ msgstr "Caméra plus loin"
 msgid "Camera back\\Moves the camera backward"
 msgstr "Caméra plus loin\\Recule la caméra"
 
-#, fuzzy
 msgid ""
 "Camera border scrolling\\Scrolling when the mouse touches right or left "
 "border"
 msgstr ""
-"Défilement dans les bords\\Défilement lorsque la souris touches les bords "
+"Défilement dans les bords\\Défilement lorsque la souris touche les bords "
 "gauche ou droite"
 
 msgid "Camera closer\\Moves the camera forward"
@@ -382,7 +381,7 @@ msgid "Change player\\Change player"
 msgstr "Autre joueur\\Choix du nom du joueur"
 
 msgid "Cheat console\\Show cheat console"
-msgstr ""
+msgstr "Console de triche\\Montre la console de triche"
 
 msgid "Checkpoint"
 msgstr "Indicateur"
@@ -512,9 +511,8 @@ msgstr "Salissures\\Salissures des robots et bâtiments"
 msgid "Dynamic lighting\\Mobile light sources"
 msgstr "Lumières dynamiques\\Éclairages mobiles"
 
-#, fuzzy
 msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
-msgstr "Ombres projetées\\Active la transparence des ombres et l'auto-ombrage"
+msgstr "Ombres dynamiques ++\\Active les ombres dynamiques et l'auto-ombrage"
 
 msgid "Dynamic shadows\\Beautiful shadows!"
 msgstr "Ombres dynamiques\\Magnifiques ombres !"
@@ -1802,13 +1800,11 @@ msgstr "\\Drapeaux violets"
 msgid "\\Yellow flags"
 msgstr "\\Drapeaux jaunes"
 
-#, fuzzy
 msgid "colobot.info"
-msgstr "www.colobot.info"
+msgstr "colobot.info"
 
-#, fuzzy
 msgid "epsitec.com"
-msgstr "www.epsitec.com"
+msgstr "epsitec.com"
 
 #~ msgid " "
 #~ msgstr " "
