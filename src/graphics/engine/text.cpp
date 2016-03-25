@@ -940,16 +940,14 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
         CharTexture tex = GetCharTexture(ch, font, size);
 
         Math::Point charInterfaceSize = m_engine->WindowToInterfaceSize(tex.charSize);
-        Math::Point texInterfaceSize = m_engine->WindowToInterfaceSize(tex.tileSize);
 
-        Math::Point p1(pos.x, pos.y + charInterfaceSize.y - texInterfaceSize.y);
-        Math::Point p2(pos.x + texInterfaceSize.x, pos.y + charInterfaceSize.y);
+        Math::Point p1(pos.x, pos.y);
+        Math::Point p2(pos.x + charInterfaceSize.x, pos.y + charInterfaceSize.y);
 
         Math::Point texCoord1(static_cast<float>(tex.charPos.x) / FONT_TEXTURE_SIZE.x,
                               static_cast<float>(tex.charPos.y) / FONT_TEXTURE_SIZE.y);
-        Math::Point texCoord2(static_cast<float>(tex.charPos.x + tex.tileSize.x) / FONT_TEXTURE_SIZE.x,
-                              static_cast<float>(tex.charPos.y + tex.tileSize.y) / FONT_TEXTURE_SIZE.y);
-
+        Math::Point texCoord2(static_cast<float>(tex.charPos.x + tex.charSize.x) / FONT_TEXTURE_SIZE.x,
+                              static_cast<float>(tex.charPos.y + tex.charSize.y) / FONT_TEXTURE_SIZE.y);
         Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
 
         Vertex quad[4] =
