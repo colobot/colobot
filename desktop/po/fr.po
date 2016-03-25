@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2013-01-20 14:26+0100\n"
+"POT-Creation-Date: 2016-03-25 19:24+0100\n"
 "PO-Revision-Date: 2012-12-27 11:00+0100\n"
 "Last-Translator: Didier Raboud <odyx@debian.org>\n"
 "Language-Team: none\n"
@@ -16,16 +16,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+#. type: Name=
 #: colobot.ini:1
 #, no-wrap
 msgid "Colobot"
 msgstr "Colobot"
 
+#. type: GenericName=
 #: colobot.ini:2
 #, no-wrap
 msgid "Game to learn programming"
 msgstr "Apprentissage de la programmation par le jeu"
 
+#. type: Comment=
 #: colobot.ini:3
 #, no-wrap
 msgid "Colonize with bots"
@@ -48,12 +51,10 @@ msgstr "RÉSUMÉ"
 
 #. type: textblock
 #: colobot.pod:9
-msgid ""
-"B<colobot> [B<-datadir> I<path>] [B<-debug>] [B<-loglevel> I<level>] [B<-"
-"language> I<lang>]"
-msgstr ""
-"B<colobot> [B<-datadir> I<chemin>] [B<-debug>] [B<-loglevel> I<niveau>] [B<-"
-"language> I<code-de-langue>]"
+#, fuzzy
+#| msgid "Colobot"
+msgid "B<colobot>"
+msgstr "Colobot"
 
 #. type: =head1
 #: colobot.pod:11
@@ -93,61 +94,280 @@ msgstr "Affiche un court texte d'aide"
 
 #. type: =item
 #: colobot.pod:27
+msgid "B<-resolution> I<WxH>"
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:29
+msgid "Set runtime screen resolution"
+msgstr ""
+
+#. type: =item
+#: colobot.pod:31
+msgid "B<-graphics> I<default>|I<auto>|I<opengl>|I<gl14>|I<gl21>|I<gl33>"
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:33
+msgid "Changes graphics device"
+msgstr ""
+
+#. type: =item
+#: colobot.pod:35
+msgid "B<-glversion> I<default>|I<#.#>"
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:37
+msgid "Sets OpenGL context version to use."
+msgstr ""
+
+#. type: =item
+#: colobot.pod:39
+msgid "B<-glprofile> I<default>|I<core>|I<compatibility>|I<opengles>"
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:41
+msgid "Sets OpenGL context profile to use."
+msgstr ""
+
+#. type: =head1
+#: colobot.pod:45
+msgid "RUNTIME PATH OVERRIDES"
+msgstr ""
+
+#. type: =item
+#: colobot.pod:49
+#, fuzzy
+#| msgid "B<-datadir> F</path/to/data/>"
+msgid "B<-langdir> F</path/to/lang/>"
+msgstr "B<-datadir> F</chemin/vers/les/donnes/>"
+
+#. type: textblock
+#: colobot.pod:51
+#, fuzzy
+#| msgid "Set custom data directory path"
+msgid "Set custom language directory path"
+msgstr "Définit le chemin vers un répertoire de données spécifique"
+
+#. type: =item
+#: colobot.pod:53
 msgid "B<-datadir> F</path/to/data/>"
 msgstr "B<-datadir> F</chemin/vers/les/donnes/>"
 
 #. type: textblock
-#: colobot.pod:29
+#: colobot.pod:55
 msgid "Set custom data directory path"
 msgstr "Définit le chemin vers un répertoire de données spécifique"
 
 #. type: =item
-#: colobot.pod:31
-msgid "B<-debug>"
-msgstr "B<-debug>"
+#: colobot.pod:57
+#, fuzzy
+#| msgid "B<-datadir> F</path/to/data/>"
+msgid "B<-savedir> F</path/to/save/>"
+msgstr "B<-datadir> F</chemin/vers/les/donnes/>"
 
 #. type: textblock
-#: colobot.pod:33
-msgid "Enable debug mode (more info printed in logs)"
-msgstr ""
-"Active le mode de déboguage (plus d'informations sont affichées dans le "
-"journal)"
+#: colobot.pod:59
+#, fuzzy
+#| msgid "Set custom data directory path"
+msgid "Set custom save directory path (must be writable)"
+msgstr "Définit le chemin vers un répertoire de données spécifique"
 
 #. type: =item
-#: colobot.pod:35
-msgid "B<-loglevel> I<level>"
-msgstr "B<-loglevel> I<niveau>"
+#: colobot.pod:61
+#, fuzzy
+#| msgid "B<-datadir> F</path/to/data/>"
+msgid "B<-mod> F</path/to/mods/>"
+msgstr "B<-datadir> F</chemin/vers/les/donnes/>"
 
 #. type: textblock
-#: colobot.pod:37
-msgid ""
-"Set log level. Possible choices are: trace, debug, info, warn, error, none."
-msgstr ""
-"Définit le niveau de journalisation parmi: trace, debug, info, warn, error, "
-"none."
-
-#. type: =item
-#: colobot.pod:39
-msgid "B<-language> I<lang>"
-msgstr "B<-language> I<langue>"
-
-#. type: textblock
-#: colobot.pod:41
-msgid ""
-"Set language. Note that you can also fill the B<LANG> environment variable."
-msgstr ""
-"Définit la langue. Il est aussi possible d'utiliser la variable "
-"d'environnement B<LANG>."
+#: colobot.pod:63
+#, fuzzy
+#| msgid "Set custom data directory path"
+msgid "Set datadir mod path"
+msgstr "Définit le chemin vers un répertoire de données spécifique"
 
 #. type: =head1
-#: colobot.pod:45
+#: colobot.pod:67
+#, fuzzy
+#| msgid "OPTIONS"
+msgid "DEBUG OPTIONS"
+msgstr "OPTIONS"
+
+#. type: =item
+#: colobot.pod:71
+msgid "B<-loglevel> I<trace>|I<debug>|I<info>|I<warn>|I<error>|I<none>."
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:73
+msgid "Set log level."
+msgstr ""
+
+#. type: =item
+#: colobot.pod:75
+msgid "B<-debug> I<all>|I<event>|I<models>|..."
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:77
+msgid ""
+"Enable debug mode (more info printed in logs). Possible values are as "
+"follows, as well as any comma-separated combination"
+msgstr ""
+
+#. type: =item
+#: colobot.pod:81
+msgid "sys_events"
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:83
+msgid "System events"
+msgstr ""
+
+#. type: =item
+#: colobot.pod:85
+msgid "update_events"
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:87
+msgid "Update events"
+msgstr ""
+
+#. type: =item
+#: colobot.pod:89
+msgid "app_events"
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:91
+msgid "Application events"
+msgstr ""
+
+#. type: =item
+#: colobot.pod:93
+msgid "events"
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:95
+msgid "All above events"
+msgstr ""
+
+#. type: =item
+#: colobot.pod:97
+msgid "models"
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:99
+msgid "Models-related debugging"
+msgstr ""
+
+#. type: =item
+#: colobot.pod:101
+msgid "all"
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:103
+msgid "All above debugging statements"
+msgstr ""
+
+#. type: =item
+#: colobot.pod:107
+#, fuzzy
+#| msgid "B<-help>"
+msgid "B<-headless>"
+msgstr "B<-help>"
+
+#. type: textblock
+#: colobot.pod:109
+msgid "Run in headless mode - disables graphics, sound and user interaction"
+msgstr ""
+
+#. type: =item
+#: colobot.pod:111
+msgid "B<-runscene> I<scenecodename>"
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:113
+msgid "Run given scene on start (skip menus)"
+msgstr ""
+
+#. type: =item
+#: colobot.pod:115
+msgid "B<-scenetest>"
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:117
+msgid "Win every mission right after it's loaded"
+msgstr ""
+
+#. type: =head1
+#: colobot.pod:121
+msgid "ENVIRONMENT"
+msgstr ""
+
+#. type: =item
+#: colobot.pod:125
+msgid "LC_MESSAGES"
+msgstr ""
+
+#. type: textblock
+#: colobot.pod:127
+msgid "Used to determine the runtime language."
+msgstr ""
+
+#. type: =head1
+#: colobot.pod:131
 msgid "AUTHOR"
 msgstr "Auteur"
 
 #. type: textblock
-#: colobot.pod:47
+#: colobot.pod:133
 msgid "This manpage was written by Didier Raboud <S<odyx@debian.org>>."
 msgstr ""
 "Cette page de manuel a été écrite et traduite par Didier Raboud "
 "<S<odyx@debian.org>>."
 
+#~ msgid ""
+#~ "B<colobot> [B<-datadir> I<path>] [B<-debug>] [B<-loglevel> I<level>] [B<-"
+#~ "language> I<lang>]"
+#~ msgstr ""
+#~ "B<colobot> [B<-datadir> I<chemin>] [B<-debug>] [B<-loglevel> I<niveau>] "
+#~ "[B<-language> I<code-de-langue>]"
+
+#~ msgid "B<-debug>"
+#~ msgstr "B<-debug>"
+
+#~ msgid "Enable debug mode (more info printed in logs)"
+#~ msgstr ""
+#~ "Active le mode de déboguage (plus d'informations sont affichées dans le "
+#~ "journal)"
+
+#~ msgid "B<-loglevel> I<level>"
+#~ msgstr "B<-loglevel> I<niveau>"
+
+#~ msgid ""
+#~ "Set log level. Possible choices are: trace, debug, info, warn, error, "
+#~ "none."
+#~ msgstr ""
+#~ "Définit le niveau de journalisation parmi: trace, debug, info, warn, "
+#~ "error, none."
+
+#~ msgid "B<-language> I<lang>"
+#~ msgstr "B<-language> I<langue>"
+
+#~ msgid ""
+#~ "Set language. Note that you can also fill the B<LANG> environment "
+#~ "variable."
+#~ msgstr ""
+#~ "Définit la langue. Il est aussi possible d'utiliser la variable "
+#~ "d'environnement B<LANG>."
