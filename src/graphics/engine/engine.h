@@ -946,6 +946,9 @@ public:
     //! Deletes the given texture, unloading it and removing from cache
     void            DeleteTexture(const Texture& tex);
 
+    //! Creates or updates the given texture with given image data
+    void            CreateOrUpdateTexture(const std::string& texName, CImage* img);
+
     //! Empties the texture cache
     void            FlushTextureCache();
 

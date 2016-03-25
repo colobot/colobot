@@ -374,6 +374,7 @@ void CEngine::ReloadAllTextures()
     m_text->FlushCache();
 
     CRobotMain::GetInstancePointer()->ReloadAllTextures(); //TODO: Remove cross-reference to CRobotMain
+    UpdateGroundSpotTextures();
     LoadAllTextures();
 }
 
@@ -1503,12 +1504,7 @@ void CEngine::DeleteAllGroundSpots()
         str << "shadow" << std::setfill('0') << std::setw(2) << s << ".png";
         std::string texName = str.str();
 
-        DeleteTexture(texName);
-
-        Gfx::Texture tex = m_device->CreateTexture(&shadowImg, m_defaultTexParams);
-
-        m_texNameMap[texName] = tex;
-        m_revTexNameMap[tex] = texName;
+        CreateOrUpdateTexture(texName, &shadowImg);
     }
 }
 
@@ -2367,8 +2363,6 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                                  Math::Point ts, Math::Point ti,
                                  Math::Point *exclude, float shift, bool hsv)
 {
-    DeleteTexture(texName);
-
     CImage img;
     if (!img.Load(srcName))
     {
@@ -2474,18 +2468,7 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
         }
     }
 
-
-    Texture tex = m_device->CreateTexture(&img, m_defaultTexParams);
-
-    if (! tex.Valid())
-    {
-        GetLogger()->Error("Couldn't load texture '%s', blacklisting\n", texName.c_str());
-        m_texBlacklist.insert(texName);
-        return false;
-    }
-
-    m_texNameMap[texName] = tex;
-    m_revTexNameMap[tex] = texName;
+    CreateOrUpdateTexture(texName, &img);
 
     return true;
 }
@@ -2529,6 +2512,19 @@ void CEngine::DeleteTexture(const Texture& tex)
 
     m_revTexNameMap.erase(revIt);
     m_texNameMap.erase(it);
+}
+
+void CEngine::CreateOrUpdateTexture(const std::string& texName, CImage* img)
+{
+    auto it = m_texNameMap.find(texName);
+    if (it == m_texNameMap.end())
+    {
+        LoadTexture(texName, img);
+    }
+    else
+    {
+        m_device->UpdateTexture((*it).second, Math::IntPoint(0, 0), img->GetData(), m_defaultTexParams.format);
+    }
 }
 
 void CEngine::FlushTextureCache()
@@ -4135,12 +4131,7 @@ void CEngine::UpdateGroundSpotTextures()
             str << "textures/shadow" << std::setfill('0') << std::setw(2) << s << ".png";
             std::string texName = str.str();
 
-            DeleteTexture(texName);
-
-            Gfx::Texture tex = m_device->CreateTexture(&shadowImg, m_defaultTexParams);
-
-            m_texNameMap[texName] = tex;
-            m_revTexNameMap[tex] = texName;
+            CreateOrUpdateTexture(texName, &shadowImg);
         }
     }
 

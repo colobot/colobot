@@ -3398,7 +3398,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 InitEye();
                 SetMovieLock(false);
 
-                if(!resetObject)
+                if (!resetObject)
                     ChangeColor();  // changes the colors of texture
 
                 if (!m_sceneReadPath.empty())  // loading file ?
@@ -4011,9 +4011,6 @@ void CRobotMain::ChangeColor()
     ts = Math::Point(0.00f, 0.75f);
     ti = Math::Point(0.25f, 1.00f);
     m_engine->ChangeTextureColor("textures/effect02.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
-
-    // This loads the newly recolored textures to objects
-    m_engine->LoadAllTextures();
 }
 
 //! Calculates the distance to the nearest object
