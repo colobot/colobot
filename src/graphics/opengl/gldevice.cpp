@@ -393,6 +393,8 @@ void CGLDevice::Destroy()
     // Delete the remaining textures
     // Should not be strictly necessary, but just in case
     DestroyAllTextures();
+    glDeleteTextures(1, &m_whiteTexture);
+    m_whiteTexture = 0;
 
     m_lights.clear();
     m_lightsEnabled.clear();
