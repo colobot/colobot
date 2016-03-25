@@ -31,16 +31,6 @@
 namespace CBot
 {
 
-namespace
-{
-std::string GetPointerAsString(void* ptr)
-{
-    char buffer[20];
-    sprintf(buffer, "instr%016lX", reinterpret_cast<unsigned long>(ptr));
-    return std::string(buffer);
-}
-}
-
 void CBotDebug::DumpCompiledProgram(CBotProgram* program)
 {
     std::stringstream ss;
@@ -55,6 +45,19 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
     }
 
     std::set<CBotInstr*> finished;
+    std::map<void*, int> instructions;
+    int instructionsNextId = 0;
+    auto GetPointerAsString = [&instructions, &instructionsNextId](void* ptr) -> std::string
+    {
+        if(instructions.count(ptr) == 0)
+        {
+            instructions[ptr] = instructionsNextId++;
+        }
+
+        char buffer[20];
+        sprintf(buffer, "instr%d", instructions[ptr]);
+        return std::string(buffer);
+    };
     std::function<void(CBotInstr*)> DumpInstr = [&](CBotInstr* instr)
     {
         if (finished.find(instr) != finished.end()) return;
