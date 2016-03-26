@@ -392,7 +392,7 @@ protected:
     void        StartDisplayVisit(EventType event);
     void        FrameVisit(float rTime);
     void        StopDisplayVisit();
-    void        ExecuteCmd(char *cmd);
+    void        ExecuteCmd(const std::string& cmd);
     void        UpdateSpeedLabel();
 
     int         AutosaveRotate(bool freeOne);

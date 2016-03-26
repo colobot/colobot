@@ -1156,25 +1156,25 @@ bool CRobotMain::ProcessEvent(Event &event)
 
 
 //! Executes a command
-void CRobotMain::ExecuteCmd(char *cmd)
+void CRobotMain::ExecuteCmd(const std::string& cmd)
 {
-    if (cmd[0] == 0) return;
+    if (cmd.empty()) return;
 
     if (m_phase == PHASE_SIMUL)
     {
-        if (strcmp(cmd, "winmission") == 0)
+        if (cmd == "winmission")
             m_eventQueue->AddEvent(Event(EVENT_WIN));
 
-        if (strcmp(cmd, "lostmission") == 0)
+        if (cmd == "lostmission")
             m_eventQueue->AddEvent(Event(EVENT_LOST));
 
-        if (strcmp(cmd, "trainerpilot") == 0)
+        if (cmd == "trainerpilot")
         {
             m_trainerPilot = !m_trainerPilot;
             return;
         }
 
-        if (strcmp(cmd, "fly") == 0)
+        if (cmd == "fly")
         {
             m_researchDone[0] |= RESEARCH_FLY;
 
@@ -1182,7 +1182,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "allresearch") == 0)
+        if (cmd == "allresearch")
         {
             m_researchDone[0] = -1;  // all research are done
 
@@ -1190,7 +1190,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "allbuildings") == 0)
+        if (cmd == "allbuildings")
         {
             m_build = -1;  // all buildings are available
 
@@ -1198,7 +1198,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "all") == 0)
+        if (cmd == "all")
         {
             m_researchDone[0] = -1;  // all research are done
             m_build = -1;  // all buildings are available
@@ -1207,13 +1207,13 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "nolimit") == 0)
+        if (cmd == "nolimit")
         {
             m_terrain->SetFlyingMaxHeight(280.0f);
             return;
         }
 
-        if (strcmp(cmd, "controller") == 0)
+        if (cmd == "controller")
         {
             if (m_controller != nullptr)
             {
@@ -1231,7 +1231,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "photo1") == 0)
+        if (cmd == "photo1")
         {
             if (m_freePhotoPause == nullptr)
             {
@@ -1247,7 +1247,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "photo2") == 0)
+        if (cmd == "photo2")
         {
             if (m_freePhotoPause == nullptr)
             {
@@ -1269,26 +1269,26 @@ void CRobotMain::ExecuteCmd(char *cmd)
         }
 
         int camtype;
-        if (sscanf(cmd, "camtype %d", &camtype) > 0)
+        if (sscanf(cmd.c_str(), "camtype %d", &camtype) > 0)
         {
             m_camera->SetType(static_cast<Gfx::CameraType>(camtype));
             return;
         }
 
         float camspeed;
-        if (sscanf(cmd, "camspeed %f", &camspeed) > 0)
+        if (sscanf(cmd.c_str(), "camspeed %f", &camspeed) > 0)
         {
             m_camera->SetCameraSpeed(camspeed);
             return;
         }
 
-        if (strcmp(cmd, "freecam") == 0)
+        if (cmd == "freecam")
         {
             m_camera->SetType(Gfx::CAM_TYPE_FREE);
             return;
         }
 
-        if (strcmp(cmd, "noclip") == 0)
+        if (cmd == "noclip")
         {
             CObject* object = GetSelect();
             if (object != nullptr)
@@ -1296,7 +1296,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "clip") == 0)
+        if (cmd == "clip")
         {
             CObject* object = GetSelect();
             if (object != nullptr)
@@ -1304,7 +1304,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "addhusky") == 0)
+        if (cmd == "addhusky")
         {
             CObject* object = GetSelect();
             if (object != nullptr && object->Implements(ObjectInterfaceType::Shielded))
@@ -1312,7 +1312,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "addfreezer") == 0)
+        if (cmd == "addfreezer")
         {
             CObject* object = GetSelect();
             if (object != nullptr && object->Implements(ObjectInterfaceType::JetFlying))
@@ -1320,7 +1320,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "\155\157\157") == 0)
+        if (cmd == "\155\157\157")
         {
             // VGhpcyBpcyBlYXN0ZXItZWdnIGFuZCBzbyBpdCBzaG91bGQgYmUgb2JmdXNjYXRlZCEgRG8gbm90
             // IGNsZWFuLXVwIHRoaXMgY29kZSEK
@@ -1334,7 +1334,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             GetLogger()->Info("          \x20\x20    \x7C\x7C\x20\x20\x20\x20 ||\n");
         }
 
-        if (strcmp(cmd, "fullpower") == 0)
+        if (cmd == "fullpower")
         {
             CObject* object = GetSelect();
             if (object != nullptr)
@@ -1355,7 +1355,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "fullenergy") == 0)
+        if (cmd == "fullenergy")
         {
             CObject* object = GetSelect();
 
@@ -1371,7 +1371,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "fullshield") == 0)
+        if (cmd == "fullshield")
         {
             CObject* object = GetSelect();
             if (object != nullptr && object->Implements(ObjectInterfaceType::Shielded))
@@ -1379,7 +1379,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "fullrange") == 0)
+        if (cmd == "fullrange")
         {
             CObject* object = GetSelect();
             if (object != nullptr)
@@ -1389,19 +1389,19 @@ void CRobotMain::ExecuteCmd(char *cmd)
             }
             return;
         }
-        if (strcmp(cmd, "debugcrashon") == 0)
+        if (cmd == "debugcrashon")
         {
             m_debugCrashSpheres = true;
             return;
         }
-        if (strcmp(cmd, "debugcrashoff") == 0)
+        if (cmd == "debugcrashoff")
         {
             m_debugCrashSpheres = false;
             return;
         }
     }
 
-    if (strcmp(cmd, "debugmode") == 0)
+    if (cmd == "debugmode")
     {
         if (m_app->IsDebugModeActive(DEBUG_ALL))
         {
@@ -1414,46 +1414,46 @@ void CRobotMain::ExecuteCmd(char *cmd)
         return;
     }
 
-    if (strcmp(cmd, "showstat") == 0)
+    if (cmd == "showstat")
     {
         m_engine->SetShowStats(!m_engine->GetShowStats());
         return;
     }
 
-    if (strcmp(cmd, "invui") == 0)
+    if (cmd == "invui")
     {
         m_engine->SetRenderInterface(!m_engine->GetRenderInterface());
         return;
     }
 
-    if (strcmp(cmd, "selectinsect") == 0)
+    if (cmd == "selectinsect")
     {
         m_selectInsect = !m_selectInsect;
         return;
     }
 
-    if (strcmp(cmd, "showsoluce") == 0)
+    if (cmd == "showsoluce")
     {
         m_showSoluce = !m_showSoluce;
         m_ui->ShowSoluceUpdate();
         return;
     }
 
-    if (strcmp(cmd, "allmission") == 0)
+    if (cmd == "allmission")
     {
         m_showAll = !m_showAll;
         m_ui->AllMissionUpdate();
         return;
     }
 
-    if (strcmp(cmd, "invradar") == 0)
+    if (cmd == "invradar")
     {
         m_cheatRadar = !m_cheatRadar;
         return;
     }
 
     float speed;
-    if (sscanf(cmd, "speed %f", &speed) > 0)
+    if (sscanf(cmd.c_str(), "speed %f", &speed) > 0)
     {
         SetSpeed(speed);
         UpdateSpeedLabel();
