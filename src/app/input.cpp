@@ -332,7 +332,7 @@ InputSlot CInput::FindBinding(unsigned int key)
 void CInput::SaveKeyBindings()
 {
     std::stringstream key;
-    CConfigFile::GetInstancePointer()->SetStringProperty("Keybindings", "_Version", "SDL2");
+    GetConfigFile().SetStringProperty("Keybindings", "_Version", "SDL2");
     for (int i = 0; i < INPUT_SLOT_MAX; i++)
     {
         InputBinding b = GetInputBinding(static_cast<InputSlot>(i));
@@ -341,30 +341,30 @@ void CInput::SaveKeyBindings()
         key.str("");
         key << b.primary << " " << b.secondary;
 
-        CConfigFile::GetInstancePointer()->SetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], key.str());
+        GetConfigFile().SetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], key.str());
     }
 
     for (int i = 0; i < JOY_AXIS_SLOT_MAX; i++)
     {
         JoyAxisBinding b = GetJoyAxisBinding(static_cast<JoyAxisSlot>(i));
 
-        CConfigFile::GetInstancePointer()->SetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis);
-        CConfigFile::GetInstancePointer()->SetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), b.invert);
+        GetConfigFile().SetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis);
+        GetConfigFile().SetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), b.invert);
     }
-    CConfigFile::GetInstancePointer()->SetFloatProperty("Setup", "JoystickDeadzone", GetJoystickDeadzone());
+    GetConfigFile().SetFloatProperty("Setup", "JoystickDeadzone", GetJoystickDeadzone());
 }
 
 void CInput::LoadKeyBindings()
 {
     std::stringstream skey;
     std::string keys;
-    if (CConfigFile::GetInstancePointer()->GetStringProperty("Keybindings", "_Version", keys) && keys == "SDL2") // Keybindings from SDL1.2 are incompatible with SDL2 !!
+    if (GetConfigFile().GetStringProperty("Keybindings", "_Version", keys) && keys == "SDL2") // Keybindings from SDL1.2 are incompatible with SDL2 !!
     {
         for (int i = 0; i < INPUT_SLOT_MAX; i++)
         {
             InputBinding b;
 
-            if (!CConfigFile::GetInstancePointer()->GetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], keys))
+            if (!GetConfigFile().GetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], keys))
                 continue;
             skey.clear();
             skey.str(keys);
@@ -380,17 +380,17 @@ void CInput::LoadKeyBindings()
     {
         JoyAxisBinding b;
 
-        if (!CConfigFile::GetInstancePointer()->GetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis))
+        if (!GetConfigFile().GetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis))
             continue;
 
         int x = 0;
-        CConfigFile::GetInstancePointer()->GetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), x); // If doesn't exist, use default (0)
+        GetConfigFile().GetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), x); // If doesn't exist, use default (0)
         b.invert = (x != 0);
 
         SetJoyAxisBinding(static_cast<JoyAxisSlot>(i), b);
     }
     float deadzone;
-    if (CConfigFile::GetInstancePointer()->GetFloatProperty("Setup", "JoystickDeadzone", deadzone))
+    if (GetConfigFile().GetFloatProperty("Setup", "JoystickDeadzone", deadzone))
         SetJoystickDeadzone(deadzone);
 }
 
