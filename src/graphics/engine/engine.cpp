@@ -359,8 +359,6 @@ void CEngine::ResetAfterVideoConfigChanged()
     m_size = m_app->GetVideoConfig().size;
     m_mouseSize = Math::Point(0.04f, 0.04f * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
 
-    CRobotMain::GetInstancePointer()->ResetAfterVideoConfigChanged(); //TODO: Remove cross-reference to CRobotMain
-
     // Update the camera projection matrix for new aspect ratio
     SetFocus(m_focus);
 
@@ -373,13 +371,18 @@ void CEngine::ReloadAllTextures()
     FlushTextureCache();
     m_text->FlushCache();
 
-    CRobotMain::GetInstancePointer()->ReloadAllTextures(); //TODO: Remove cross-reference to CRobotMain
+    m_app->GetEventQueue()->AddEvent(Event(EVENT_RELOAD_TEXTURES));
     UpdateGroundSpotTextures();
     LoadAllTextures();
 }
 
 bool CEngine::ProcessEvent(const Event &event)
 {
+    if (event.type == EVENT_RESOLUTION_CHANGED)
+    {
+        ResetAfterVideoConfigChanged();
+    }
+
     if (event.type == EVENT_KEY_DOWN)
     {
         auto data = event.GetData<KeyEventData>();

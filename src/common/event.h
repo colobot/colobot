@@ -95,6 +95,10 @@ enum EventType
     //! Event sent on user quit request
     EVENT_QUIT              = 20,
     EVENT_UPDINTERFACE      = 21,
+    //! Event sent on resolution change
+    EVENT_RESOLUTION_CHANGED = 22,
+    //! Event sent when textures have to be reloaded
+    EVENT_RELOAD_TEXTURES   = 23,
     EVENT_WIN               = 30,
     EVENT_LOST              = 31,
 

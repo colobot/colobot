@@ -303,30 +303,6 @@ CPauseManager* CRobotMain::GetPauseManager()
     return m_pause.get();
 }
 
-void CRobotMain::ResetAfterVideoConfigChanged()
-{
-    // Recreate the interface (needed if the aspect ratio changes)
-    // TODO: This can sometimes cause unwanted side effects, like hidden windows reappearing. To be fixed during CEGUI refactoring.
-    m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
-    CreateShortcuts();
-}
-
-void CRobotMain::ReloadAllTextures()
-{
-    if (m_phase == PHASE_SETUPds ||
-       m_phase == PHASE_SETUPgs ||
-       m_phase == PHASE_SETUPps ||
-       m_phase == PHASE_SETUPcs ||
-       m_phase == PHASE_SETUPss ||
-       m_phase == PHASE_SIMUL ||
-       m_phase == PHASE_WIN ||
-       m_phase == PHASE_LOST)
-    {
-        ChangeColor();
-        UpdateMap();
-    }
-}
-
 std::string PhaseToString(Phase phase)
 {
     if (phase == PHASE_WELCOME1) return "PHASE_WELCOME1";
@@ -691,6 +667,23 @@ bool CRobotMain::ProcessEvent(Event &event)
         UpdateInfoText();
 
         return EventFrame(event);
+    }
+
+    if (event.type == EVENT_RELOAD_TEXTURES)
+    {
+        if (IsPhaseWithWorld(m_phase))
+        {
+            ChangeColor();
+            UpdateMap();
+        }
+    }
+
+    if (event.type == EVENT_RESOLUTION_CHANGED)
+    {
+        // Recreate the interface (needed if the aspect ratio changes)
+        // TODO: This can sometimes cause unwanted side effects, like hidden windows reappearing. To be fixed during CEGUI refactoring.
+        m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+        CreateShortcuts();
     }
 
     if (event.type == EVENT_FOCUS_LOST)

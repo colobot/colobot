@@ -655,9 +655,6 @@ public:
     //! Frees all resources before exit
     void            Destroy();
 
-    //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
-    void            ResetAfterVideoConfigChanged();
-
 
     //! Called once per frame, the call is the entry point for rendering
     void            Render();
@@ -1188,6 +1185,10 @@ public:
     void            AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres);
 
 protected:
+    //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
+    /** Instead of calling this directly, send EVENT_RESOLUTION_CHANGED event **/
+    void            ResetAfterVideoConfigChanged();
+
     //! Prepares the interface for 3D scene
     void        Draw3DScene();
     //! Renders shadow map
@@ -1281,6 +1282,7 @@ protected:
     static void WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data);
 
     //! Reloads all textures
+    /** This additionally sends EVENT_RELOAD_TEXTURES to reload all textures not maintained by CEngine **/
     void ReloadAllTextures();
 
 protected:

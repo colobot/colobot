@@ -161,9 +161,6 @@ public:
     Ui::CDisplayText* GetDisplayText();
     CPauseManager* GetPauseManager();
 
-    void        ResetAfterVideoConfigChanged();
-    void        ReloadAllTextures();
-
     void        ChangePhase(Phase phase);
     bool        ProcessEvent(Event &event);
     Phase       GetPhase();
