@@ -231,8 +231,6 @@ CRobotMain::CRobotMain()
 
     m_globalMagnifyDamage = 1.0f;
 
-    m_exitAfterMission = false;
-
     m_autosave = true;
     m_autosaveInterval = 5;
     m_autosaveSlots = 3;
@@ -366,6 +364,13 @@ void CRobotMain::ChangePhase(Phase phase)
     bool resetWorld = false;
     if ((IsPhaseWithWorld(m_phase) || IsPhaseWithWorld(phase)) && !IsInSimulationConfigPhase(m_phase) && !IsInSimulationConfigPhase(phase))
     {
+        if (IsPhaseWithWorld(m_phase) && !IsPhaseWithWorld(phase) && m_exitAfterMission)
+        {
+            GetLogger()->Info("Mission finished in single mission mode, exiting\n");
+            m_eventQueue->AddEvent(Event(EVENT_QUIT));
+            return;
+        }
+
         GetLogger()->Info("Reseting world on phase change...\n");
         resetWorld = true;
     }
@@ -5105,8 +5110,6 @@ Error CRobotMain::CheckEndMission(bool frame)
                             m_missionTimerEnabled = m_missionTimerStarted = false;
                             m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
                             m_lostDelay = 0.0f;
-                            if (m_exitAfterMission)
-                                m_eventQueue->AddEvent(Event(EVENT_QUIT));
                             m_displayText->SetEnable(false);
                         }
                         m_missionResult = ERR_OK;
@@ -5139,8 +5142,6 @@ Error CRobotMain::CheckEndMission(bool frame)
         }
         m_missionTimerEnabled = m_missionTimerStarted = false;
         m_displayText->SetEnable(false);
-        if (m_exitAfterMission)
-            m_eventQueue->AddEvent(Event(EVENT_QUIT));
         return INFO_LOSTq;
     }
 
@@ -5154,8 +5155,6 @@ Error CRobotMain::CheckEndMission(bool frame)
         }
         m_missionTimerEnabled = m_missionTimerStarted = false;
         m_displayText->SetEnable(false);
-        if (m_exitAfterMission)
-            m_eventQueue->AddEvent(Event(EVENT_QUIT));
         return INFO_LOST;
     }
 
@@ -5167,8 +5166,6 @@ Error CRobotMain::CheckEndMission(bool frame)
             m_lostDelay = 0.0f;
             m_missionTimerEnabled = m_missionTimerStarted = false;
             m_displayText->SetEnable(false);
-            if (m_exitAfterMission)
-                m_eventQueue->AddEvent(Event(EVENT_QUIT));
             return ERR_OK;  // mission ended
         }
 
@@ -5194,8 +5191,6 @@ Error CRobotMain::CheckEndMission(bool frame)
             m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
             m_lostDelay = 0.0f;
         }
-        if (m_exitAfterMission)
-            m_eventQueue->AddEvent(Event(EVENT_QUIT));
         m_displayText->SetEnable(false);
         return ERR_OK;  // mission ended
     }
