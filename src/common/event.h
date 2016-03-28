@@ -149,7 +149,7 @@ enum EventType
     EVENT_WINDOW4           = 84,   //!< CDisplayInfo
     EVENT_WINDOW5           = 85,   //!< all menu windows
     EVENT_WINDOW6           = 86,   //!< code battle interface
-    EVENT_WINDOW7           = 87,   //!< (unused)
+    EVENT_WINDOW7           = 87,   //!< debug interface
     EVENT_WINDOW8           = 88,   //!< (unused)
     EVENT_WINDOW9           = 89,   //!< CMainDialog and CStudio file selector
 
@@ -379,6 +379,29 @@ enum EventType
 
     EVENT_CMD               = 800,
     EVENT_SPEED             = 801,
+
+    EVENT_DBG_STATS         = 850,
+    EVENT_DBG_SPAWN_OBJ     = 851,
+    EVENT_DBG_TELEPORT      = 852,
+    EVENT_DBG_LIGHTNING     = 853,
+    EVENT_DBG_CRASHSPHERES  = 854,
+    EVENT_DBG_LIGHTS        = 855,
+    EVENT_DBG_LIGHTS_DUMP   = 856,
+
+    EVENT_SPAWN_CANCEL      = 860,
+    EVENT_SPAWN_ME          = 861,
+    EVENT_SPAWN_WHEELEDGRABBER = 862,
+    EVENT_SPAWN_WHEELEDSHOOTER = 863,
+    EVENT_SPAWN_PHAZERSHOOTER  = 864,
+    EVENT_SPAWN_BOTFACTORY  = 865,
+    EVENT_SPAWN_CONVERTER   = 866,
+    EVENT_SPAWN_DERRICK     = 867,
+    EVENT_SPAWN_POWERSTATION= 868,
+    EVENT_SPAWN_TITANIUM    = 869,
+    EVENT_SPAWN_TITANIUMORE = 870,
+    EVENT_SPAWN_URANIUMORE  = 871,
+    EVENT_SPAWN_POWERCELL   = 872,
+    EVENT_SPAWN_NUCLEARCELL = 873,
 
     EVENT_HYPER_PREV        = 900,
     EVENT_HYPER_NEXT        = 901,

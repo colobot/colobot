@@ -3724,12 +3724,4 @@ Color CParticle::GetFogColor(Math::Vector pos)
     return result;
 }
 
-bool CParticle::WriteWheelTrace(const char *filename, int width, int height,
-                                Math::Vector dl, Math::Vector ur)
-{
-    // TODO: stub!
-    GetLogger()->Trace("CParticle::WriteWheelTrace(): stub!\n");
-    return true;
-}
-
 } // namespace Gfx

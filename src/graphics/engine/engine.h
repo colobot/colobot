@@ -841,7 +841,7 @@ public:
 
     //! Detects the target object that is selected with the mouse
     /** Returns the rank of the object or -1. */
-    int             DetectObject(Math::Point mouse);
+    int             DetectObject(Math::Point mouse, Math::Vector& targetPos, bool terrain = false);
 
     //! Creates a shadow for the given object
     void            CreateShadowSpot(int objRank);
@@ -1184,6 +1184,10 @@ public:
     void            ClearDisplayCrashSpheres();
     void            AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres);
 
+    void            SetDebugLights(bool debugLights);
+    bool            GetDebugLights();
+    void            DebugDumpLights();
+
 protected:
     //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
     /** Instead of calling this directly, send EVENT_RESOLUTION_CHANGED event **/
@@ -1250,7 +1254,7 @@ protected:
     bool        GetBBox2D(int objRank, Math::Point& min, Math::Point& max);
 
     //! Detects whether the mouse is in a triangle.
-    bool        DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist);
+    bool        DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist, Math::Vector& pos);
 
     //! Transforms a 3D point (x, y, z) in 2D space (x, y, -) of the window
     /** The coordinated p2D.z gives the distance. */

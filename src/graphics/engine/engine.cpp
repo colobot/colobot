@@ -392,18 +392,6 @@ bool CEngine::ProcessEvent(const Event &event)
             m_showStats = !m_showStats;
             return false;
         }
-
-        if (data->key == KEY(F11))
-        {
-            m_debugLights = !m_debugLights;
-            return false;
-        }
-
-        if (data->key == KEY(F10))
-        {
-            m_debugDumpLights = true;
-            return false;
-        }
     }
 
     // By default, pass on all events
@@ -1753,17 +1741,18 @@ bool CEngine::DetectBBox(int objRank, Math::Point mouse)
              mouse.y <= max.y );
 }
 
-int CEngine::DetectObject(Math::Point mouse)
+int CEngine::DetectObject(Math::Point mouse, Math::Vector& targetPos, bool terrain)
 {
     float min = 1000000.0f;
     int nearest = -1;
+    Math::Vector pos;
 
     for (int objRank = 0; objRank < static_cast<int>( m_objects.size() ); objRank++)
     {
         if (! m_objects[objRank].used)
             continue;
 
-        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN && !terrain)
             continue;
 
         if (! DetectBBox(objRank, mouse))
@@ -1792,10 +1781,11 @@ int CEngine::DetectObject(Math::Point mouse)
                     for (int i = 0; i < static_cast<int>( p3.vertices.size() ); i += 3)
                     {
                         float dist = 0.0f;
-                        if (DetectTriangle(mouse, &p3.vertices[i], objRank, dist) && dist < min)
+                        if (DetectTriangle(mouse, &p3.vertices[i], objRank, dist, pos) && dist < min)
                         {
                             min = dist;
                             nearest = objRank;
+                            targetPos = pos;
                         }
                     }
                 }
@@ -1804,10 +1794,11 @@ int CEngine::DetectObject(Math::Point mouse)
                     for (int i = 0; i < static_cast<int>( p3.vertices.size() ) - 2; i += 1)
                     {
                         float dist = 0.0f;
-                        if (DetectTriangle(mouse, &p3.vertices[i], objRank, dist) && dist < min)
+                        if (DetectTriangle(mouse, &p3.vertices[i], objRank, dist, pos) && dist < min)
                         {
                             min = dist;
                             nearest = objRank;
+                            targetPos = pos;
                         }
                     }
                 }
@@ -1818,7 +1809,7 @@ int CEngine::DetectObject(Math::Point mouse)
     return nearest;
 }
 
-bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist)
+bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist, Math::Vector& pos)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -1864,6 +1855,16 @@ bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRan
 
     if (! Math::IsInsideTriangle(a, b, c, mouse))
         return false;
+
+    Math::Vector a2 = Math::Transform(m_objects[objRank].transform, triangle[0].coord);
+    Math::Vector b2 = Math::Transform(m_objects[objRank].transform, triangle[1].coord);
+    Math::Vector c2 = Math::Transform(m_objects[objRank].transform, triangle[2].coord);
+    Math::Vector e  = Math::Transform(m_matView.Inverse(), Math::Vector(0.0f, 0.0f, -1.0f));
+    Math::Vector f  = Math::Transform(m_matView.Inverse(), Math::Vector(
+        (mouse.x*2.0f-1.0f)*m_matProj.Inverse().Get(1,1),
+        (mouse.y*2.0f-1.0f)*m_matProj.Inverse().Get(2,2),
+        0.0f));
+    Math::Intersect(a2, b2, c2, e, f, pos);
 
     dist = (p2D[0].z + p2D[1].z + p2D[2].z) / 3.0f;
     return true;
@@ -5076,6 +5077,21 @@ void CEngine::SetStaticMeshTransparency(int meshHandle, float value)
 {
     int objRank = meshHandle;
     SetObjectTransparency(objRank, value);
+}
+
+void CEngine::SetDebugLights(bool debugLights)
+{
+    m_debugLights = debugLights;
+}
+
+bool CEngine::GetDebugLights()
+{
+    return m_debugLights;
+}
+
+void CEngine::DebugDumpLights()
+{
+    m_debugDumpLights = true;
 }
 
 } // namespace Gfx

@@ -113,6 +113,7 @@ class CMainMap;
 class CInterface;
 class CDisplayText;
 class CDisplayInfo;
+class CDebugMenu;
 }
 
 struct NewScriptName
@@ -361,6 +362,10 @@ public:
 
     bool        IsSelectable(CObject* obj);
 
+    void SetDebugCrashSpheres(bool draw);
+
+    bool GetDebugCrashSpheres();
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -432,6 +437,7 @@ protected:
     std::unique_ptr<Ui::CInterface> m_interface;
     std::unique_ptr<Ui::CDisplayInfo> m_displayInfo;
     std::unique_ptr<Ui::CDisplayText> m_displayText;
+    std::unique_ptr<Ui::CDebugMenu> m_debugMenu;
     std::unique_ptr<CSettings> m_settings;
 
     //! Progress of loaded player

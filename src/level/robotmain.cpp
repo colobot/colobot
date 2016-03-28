@@ -86,6 +86,7 @@
 
 #include "sound/sound.h"
 
+#include "ui/debug_menu.h"
 #include "ui/displayinfo.h"
 #include "ui/displaytext.h"
 #include "ui/maindialog.h"
@@ -161,6 +162,8 @@ CRobotMain::CRobotMain()
         m_oldModelManager,
         m_modelManager.get(),
         m_particle);
+
+    m_debugMenu   = MakeUnique<Ui::CDebugMenu>(this, m_engine, m_objMan.get(), m_sound);
 
     m_time = 0.0f;
     m_gameTime = 0.0f;
@@ -650,6 +653,12 @@ Phase CRobotMain::GetPhase()
 bool CRobotMain::ProcessEvent(Event &event)
 {
     if (!m_ui->EventProcess(event)) return false;
+    if (m_phase == PHASE_SIMUL)
+    {
+        if (!m_editFull)
+            m_camera->EventProcess(event);
+    }
+    if (!m_debugMenu->EventProcess(event)) return false;
 
     if (event.type == EVENT_FRAME)
     {
@@ -763,6 +772,15 @@ bool CRobotMain::ProcessEvent(Event &event)
             }
             return false;
         }
+
+        if (IsPhaseWithWorld(m_phase))
+        {
+            if (data->key == KEY(F11))
+            {
+                m_debugMenu->ToggleInterface();
+                return false;
+            }
+        }
     }
 
     if (event.type == EVENT_KEY_DOWN &&
@@ -830,9 +848,6 @@ bool CRobotMain::ProcessEvent(Event &event)
     // Simulation phase of the game
     if (m_phase == PHASE_SIMUL)
     {
-        if (!m_editFull)
-            m_camera->EventProcess(event);
-
         switch (event.type)
         {
             case EVENT_KEY_DOWN:
@@ -841,11 +856,6 @@ bool CRobotMain::ProcessEvent(Event &event)
 
                 KeyCamera(event.type, data->slot);
                 HiliteClear();
-                if (data->key == KEY(F11))
-                {
-                    m_particle->WriteWheelTrace("Savegame/t.png", 256, 256, Math::Vector(16.0f, 0.0f, -368.0f), Math::Vector(140.0f, 0.0f, -248.0f));
-                    return false;
-                }
                 if (m_editLock)  // current edition?
                 {
                     if (data->slot == INPUT_SLOT_HELP)
@@ -1398,16 +1408,6 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
                 if (object->Implements(ObjectInterfaceType::JetFlying))
                     dynamic_cast<CJetFlyingObject*>(object)->SetReactorRange(1.0f);
             }
-            return;
-        }
-        if (cmd == "debugcrashon")
-        {
-            m_debugCrashSpheres = true;
-            return;
-        }
-        if (cmd == "debugcrashoff")
-        {
-            m_debugCrashSpheres = false;
             return;
         }
     }
@@ -1993,7 +1993,8 @@ CObject* CRobotMain::GetSelect()
 //! Detects the object aimed by the mouse
 CObject* CRobotMain::DetectObject(Math::Point pos)
 {
-    int objRank = m_engine->DetectObject(pos);
+    Math::Vector p;
+    int objRank = m_engine->DetectObject(pos, p);
 
     for (CObject* obj : m_objMan->GetAllObjects())
     {
@@ -6006,4 +6007,14 @@ void CRobotMain::UpdateDebugCrashSpheres()
             m_engine->AddDisplayCrashSpheres(displaySpheres);
         }
     }
+}
+
+void CRobotMain::SetDebugCrashSpheres(bool draw)
+{
+    m_debugCrashSpheres = draw;
+}
+
+bool CRobotMain::GetDebugCrashSpheres()
+{
+    return m_debugCrashSpheres;
 }
