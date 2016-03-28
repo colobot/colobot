@@ -1191,6 +1191,10 @@ public:
     void            SetDebugResources(bool debugResources);
     bool            GetDebugResources();
 
+    void            SetDebugGoto(bool debugGoto);
+    bool            GetDebugGoto();
+    void            AddDebugGotoLine(std::vector<Gfx::VertexCol> line);
+
 protected:
     //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
     /** Instead of calling this directly, send EVENT_RESOLUTION_CHANGED event **/
@@ -1482,12 +1486,14 @@ protected:
     bool            m_debugDumpLights;
     bool            m_debugCrashSpheres = false;
     bool            m_debugResources = false;
+    bool            m_debugGoto = false;
 
     std::string     m_timerText;
 
     std::unordered_map<std::string, int> m_staticMeshBaseObjects;
 
     std::vector<Math::Sphere> m_displayCrashSpheres;
+    std::vector<std::vector<VertexCol>> m_displayGoto;
 
     //! Pause the animation updates
     bool            m_pause = false;

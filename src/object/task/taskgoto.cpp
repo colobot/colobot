@@ -77,8 +77,37 @@ bool CTaskGoto::EventProcess(const Event &event)
     float           a, g, dist, linSpeed, cirSpeed, h, hh, factor, dir;
     Error           ret;
 
-    if ( m_engine->GetPause() )  return true;
     if ( event.type != EVENT_FRAME )  return true;
+
+    if (m_engine->GetDebugGoto())
+    {
+        auto AdjustPoint = [&](Math::Vector p) -> Math::Vector
+        {
+            m_terrain->AdjustToFloor(p);
+            p.y += 2.0f;
+            return p;
+        };
+
+        std::vector<Gfx::VertexCol> debugLine;
+        if (m_bmTotal > 0)
+        {
+            Gfx::Color color = Gfx::Color(0.0f, 1.0f, 0.0f);
+            for (int i = 0; i < m_bmTotal; i++)
+            {
+                if (i > m_bmIndex-1)
+                    color = Gfx::Color(1.0f, 0.0f, 0.0f);
+                debugLine.push_back(Gfx::VertexCol(AdjustPoint(m_bmPoints[i]), color));
+            }
+            m_engine->AddDebugGotoLine(debugLine);
+            debugLine.clear();
+        }
+        Gfx::Color color = Gfx::Color(0.0f, 0.0f, 1.0f);
+        debugLine.push_back(Gfx::VertexCol(m_object->GetPosition(), color));
+        debugLine.push_back(Gfx::VertexCol(AdjustPoint(m_bmTotal > 0 && m_bmIndex <= m_bmTotal && m_phase != TGP_BEAMSEARCH ? m_bmPoints[m_bmIndex] : m_goal), color));
+        m_engine->AddDebugGotoLine(debugLine);
+    }
+
+    if ( m_engine->GetPause() )  return true;
 
     // Momentarily stationary object (ant on the back)?
     CBaseAlien* alien = dynamic_cast<CBaseAlien*>(m_object);
@@ -1615,6 +1644,8 @@ Error CTaskGoto::BeamExplore(const Math::Vector &prevPos, const Math::Vector &cu
 
     iLar = 0;
     if ( i >= MAXPOINTS )  return ERR_GOTO_ITER;  // too many recursions
+
+    m_bmTotal = i;
 
     if ( m_bmIter[i] == -1 )
     {

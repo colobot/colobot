@@ -97,6 +97,9 @@ void CDebugMenu::CreateInterface()
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_DBG_RESOURCES);
     pc->SetName("Underground resources");
     pos.y -= 0.048f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_DBG_GOTO);
+    pc->SetName("Render goto() path");
+    pos.y -= 0.048f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_DBG_CRASHSPHERES);
     pc->SetName("Render crash spheres");
     pos.y -= 0.048f;
@@ -213,6 +216,12 @@ void CDebugMenu::UpdateInterface()
         pc->SetState(STATE_CHECK, m_engine->GetDebugResources());
     }
 
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_DBG_GOTO));
+    if (pc != nullptr)
+    {
+        pc->SetState(STATE_CHECK, m_engine->GetDebugGoto());
+    }
+
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_DBG_CRASHSPHERES));
     if (pc != nullptr)
     {
@@ -277,6 +286,11 @@ bool CDebugMenu::EventProcess(const Event &event)
 
         case EVENT_DBG_RESOURCES:
             m_engine->SetDebugResources(!m_engine->GetDebugResources());
+            UpdateInterface();
+            break;
+
+        case EVENT_DBG_GOTO:
+            m_engine->SetDebugGoto(!m_engine->GetDebugGoto());
             UpdateInterface();
             break;
 

@@ -3378,6 +3378,21 @@ void CEngine::Draw3DScene()
     if (m_debugCrashSpheres)
         DrawCrashSpheres();
 
+    if (m_debugGoto)
+    {
+        Math::Matrix worldMatrix;
+        worldMatrix.LoadIdentity();
+        m_device->SetTransform(TRANSFORM_WORLD, worldMatrix);
+
+        SetState(ENG_RSTATE_OPAQUE_COLOR);
+
+        for (const auto& line : m_displayGoto)
+        {
+            m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line.data(), line.size());
+        }
+    }
+    m_displayGoto.clear();
+
     m_app->StartPerformanceCounter(PCNT_RENDER_PARTICLE);
     m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
     m_app->StopPerformanceCounter(PCNT_RENDER_PARTICLE);
@@ -5127,6 +5142,21 @@ void CEngine::SetDebugResources(bool debugResources)
 bool CEngine::GetDebugResources()
 {
     return m_debugResources;
+}
+
+void CEngine::SetDebugGoto(bool debugGoto)
+{
+    m_debugGoto = debugGoto;
+}
+
+bool CEngine::GetDebugGoto()
+{
+    return m_debugGoto;
+}
+
+void CEngine::AddDebugGotoLine(std::vector<Gfx::VertexCol> line)
+{
+    m_displayGoto.push_back(line);
 }
 
 } // namespace Gfx
