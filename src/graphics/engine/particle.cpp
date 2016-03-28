@@ -647,13 +647,13 @@ bool CParticle::CheckChannel(int &channel)
 
     if (!m_particle[channel].used)
     {
-        GetLogger()->Error("CheckChannel used=false !\n");
+        GetLogger()->Error("CParticle::CheckChannel used=false !\n");
         return false;
     }
 
     if (m_particle[channel].uniqueStamp != uniqueStamp)
     {
-        GetLogger()->Error("CheckChannel uniqueStamp !\n");
+        GetLogger()->Error("CParticle::CheckChannel uniqueStamp !\n");
         return false;
     }
 
