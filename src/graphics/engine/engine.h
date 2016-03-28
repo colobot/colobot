@@ -1188,6 +1188,9 @@ public:
     bool            GetDebugLights();
     void            DebugDumpLights();
 
+    void            SetDebugResources(bool debugResources);
+    bool            GetDebugResources();
+
 protected:
     //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
     /** Instead of calling this directly, send EVENT_RESOLUTION_CHANGED event **/
@@ -1478,6 +1481,7 @@ protected:
     bool            m_debugLights;
     bool            m_debugDumpLights;
     bool            m_debugCrashSpheres = false;
+    bool            m_debugResources = false;
 
     std::string     m_timerText;
 

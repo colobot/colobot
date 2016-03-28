@@ -192,6 +192,22 @@ void CTerrain::AddMaterial(int id, const std::string& texName, const Math::Point
 }
 
 
+// values from original bitmap palette
+const std::map<TerrainRes, Gfx::IntColor> RESOURCE_PALETTE = {
+    {TR_STONE,   Gfx::IntColor(255,   0, 0)},
+    {TR_URANIUM, Gfx::IntColor(255, 255, 0)},
+    {TR_POWER,   Gfx::IntColor(  0, 255, 0)},
+    {TR_KEY_A,   Gfx::IntColor(  0, 204, 0)},
+    {TR_KEY_B,   Gfx::IntColor( 51, 204, 0)},
+    {TR_KEY_C,   Gfx::IntColor(102, 204, 0)},
+    {TR_KEY_D,   Gfx::IntColor(153, 204, 0)}
+};
+
+Gfx::IntColor ResourceToColor(TerrainRes res)
+{
+    return RESOURCE_PALETTE.at(res);
+}
+
 /**
  * The image must be 24 bits/pixel and grayscale and dx x dy in size
  * with dx = dy = (mosaic*brick)+1 */
@@ -224,21 +240,11 @@ bool CTerrain::LoadResources(const std::string& fileName)
             Gfx::IntColor pixel = img.GetPixelInt(Math::IntPoint(x, size - y - 1));
             TerrainRes res = TR_NULL;
 
-            // values from original bitmap palette
-            if      (pixel.r == 255 && pixel.g ==   0 && pixel.b == 0)
-                res = TR_STONE;
-            else if (pixel.r == 255 && pixel.g == 255 && pixel.b == 0)
-                res = TR_URANIUM;
-            else if (pixel.r ==   0 && pixel.g == 255 && pixel.b == 0)
-                res = TR_POWER;
-            else if (pixel.r ==   0 && pixel.g == 204 && pixel.b == 0)
-                res = TR_KEY_A;
-            else if (pixel.r ==  51 && pixel.g == 204 && pixel.b == 0)
-                res = TR_KEY_B;
-            else if (pixel.r == 102 && pixel.g == 204 && pixel.b == 0)
-                res = TR_KEY_C;
-            else if (pixel.r == 153 && pixel.g == 204 && pixel.b == 0)
-                res = TR_KEY_D;
+            for (const auto& it : RESOURCE_PALETTE)
+            {
+                if (pixel.r == it.second.r && pixel.g == it.second.g && pixel.b == it.second.b)
+                    res = it.first;
+            }
 
             m_resources[x+size*y] = static_cast<unsigned char>(res);
         }

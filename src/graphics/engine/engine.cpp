@@ -3971,7 +3971,7 @@ void CEngine::UpdateGroundSpotTextures()
             set = true;
         }
 
-        if (clear || set)
+        if (clear || set || m_debugResources)
         {
             CImage shadowImg(Math::IntPoint(256, 256));
             shadowImg.Fill(Gfx::IntColor(255, 255, 255, 255));
@@ -4127,6 +4127,29 @@ void CEngine::UpdateGroundSpotTextures()
                             color.b = Math::Norm(1.0f-intensity);
                             shadowImg.SetPixel(Math::IntPoint(ppx, ppy), color);
                         }
+                    }
+                }
+            }
+
+            if (m_debugResources)
+            {
+                for (float x = min.x; x < max.x; x += 1.0f)
+                {
+                    for (float y = min.y; y < max.y; y += 1.0f)
+                    {
+                        Math::Vector pos(
+                            x / 4.0f / 254.0f * 3200.0f - 1600.0f,
+                            0.0f,
+                            y / 4.0f / 254.0f * 3200.0f - 1600.0f
+                        );
+                        TerrainRes res = m_terrain->GetResource(pos);
+                        Math::IntPoint p(x-min.x, y-min.y);
+                        if (res == TR_NULL)
+                        {
+                            shadowImg.SetPixel(p, Gfx::Color(0.5f, 0.5f, 0.5f));
+                            continue;
+                        }
+                        shadowImg.SetPixelInt(p, ResourceToColor(res));
                     }
                 }
             }
@@ -5092,6 +5115,18 @@ bool CEngine::GetDebugLights()
 void CEngine::DebugDumpLights()
 {
     m_debugDumpLights = true;
+}
+
+void CEngine::SetDebugResources(bool debugResources)
+{
+    m_debugResources = debugResources;
+    m_firstGroundSpot = true; // Force a refresh of ground spot textures
+    UpdateGroundSpotTextures();
+}
+
+bool CEngine::GetDebugResources()
+{
+    return m_debugResources;
 }
 
 } // namespace Gfx

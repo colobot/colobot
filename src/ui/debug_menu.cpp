@@ -94,6 +94,9 @@ void CDebugMenu::CreateInterface()
     pc->SetName("Display stats");
     pos.y -= 0.048f;
     pos.y -= 0.048f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_DBG_RESOURCES);
+    pc->SetName("Underground resources");
+    pos.y -= 0.048f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_DBG_CRASHSPHERES);
     pc->SetName("Render crash spheres");
     pos.y -= 0.048f;
@@ -124,6 +127,7 @@ void CDebugMenu::CreateSpawnInterface()
     pos.y = oy+sy*9.0f;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_SPAWN_CANCEL);
     pb->SetName("Cancel");
+    pos.y -= ddim.y;
 
     pos.y -= dim.y;
     pw->CreateButton(pos, dim, 128+8, EVENT_SPAWN_ME);
@@ -203,6 +207,12 @@ void CDebugMenu::UpdateInterface()
         pc->SetState(STATE_CHECK, m_engine->GetShowStats());
     }
 
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_DBG_RESOURCES));
+    if (pc != nullptr)
+    {
+        pc->SetState(STATE_CHECK, m_engine->GetDebugResources());
+    }
+
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_DBG_CRASHSPHERES));
     if (pc != nullptr)
     {
@@ -262,6 +272,11 @@ bool CDebugMenu::EventProcess(const Event &event)
 
         case EVENT_DBG_LIGHTNING:
             m_lightningActive = !m_lightningActive;
+            UpdateInterface();
+            break;
+
+        case EVENT_DBG_RESOURCES:
+            m_engine->SetDebugResources(!m_engine->GetDebugResources());
             UpdateInterface();
             break;
 

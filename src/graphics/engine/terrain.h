@@ -69,6 +69,8 @@ enum TerrainRes
     TR_KEY_D     = 7
     //@}
 };
+//! Converts TerrainRes to color
+Gfx::IntColor ResourceToColor(TerrainRes res);
 
 /**
  * \class CTerrain
