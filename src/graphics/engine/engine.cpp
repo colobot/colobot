@@ -3986,7 +3986,7 @@ void CEngine::UpdateGroundSpotTextures()
             set = true;
         }
 
-        if (clear || set || m_debugResources)
+        if (clear || set || m_debugResources || m_displayGotoImage != nullptr)
         {
             CImage shadowImg(Math::IntPoint(256, 256));
             shadowImg.Fill(Gfx::IntColor(255, 255, 255, 255));
@@ -4165,6 +4165,20 @@ void CEngine::UpdateGroundSpotTextures()
                             continue;
                         }
                         shadowImg.SetPixelInt(p, ResourceToColor(res));
+                    }
+                }
+            }
+
+            if (m_displayGotoImage != nullptr)
+            {
+                Math::IntPoint size = m_displayGotoImage->GetSize();
+                for (float x = min.x; x < max.x; x += 1.0f)
+                {
+                    for (float y = min.y; y < max.y; y += 1.0f)
+                    {
+                        int px = x / 4.0f / 254.0f * size.x;
+                        int py = y / 4.0f / 254.0f * size.y;
+                        shadowImg.SetPixelInt(Math::IntPoint(x-min.x, y-min.y), m_displayGotoImage->GetPixelInt(Math::IntPoint(px, py)));
                     }
                 }
             }
@@ -5147,6 +5161,10 @@ bool CEngine::GetDebugResources()
 void CEngine::SetDebugGoto(bool debugGoto)
 {
     m_debugGoto = debugGoto;
+    if (!m_debugGoto)
+    {
+        m_displayGotoImage.reset();
+    }
 }
 
 bool CEngine::GetDebugGoto()
@@ -5157,6 +5175,13 @@ bool CEngine::GetDebugGoto()
 void CEngine::AddDebugGotoLine(std::vector<Gfx::VertexCol> line)
 {
     m_displayGoto.push_back(line);
+}
+
+void CEngine::SetDebugGotoBitmap(std::unique_ptr<CImage> debugImage)
+{
+    m_displayGotoImage = std::move(debugImage);
+    m_firstGroundSpot = true; // Force ground spot texture reload
+    UpdateGroundSpotTextures();
 }
 
 } // namespace Gfx

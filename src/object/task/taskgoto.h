@@ -137,6 +137,7 @@ protected:
     float           m_wormLastTime = 0.0f;
     float           m_lastDistance = 0.0f;
 
+    bool            m_bmChanged = true;
     int             m_bmSize = 0;       // width or height of the table
     int             m_bmOffset = 0;     // m_bmSize/2
     int             m_bmLine = 0;       // increment line m_bmSize/8

@@ -1194,6 +1194,7 @@ public:
     void            SetDebugGoto(bool debugGoto);
     bool            GetDebugGoto();
     void            AddDebugGotoLine(std::vector<Gfx::VertexCol> line);
+    void            SetDebugGotoBitmap(std::unique_ptr<CImage> debugImage);
 
 protected:
     //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
@@ -1494,6 +1495,7 @@ protected:
 
     std::vector<Math::Sphere> m_displayCrashSpheres;
     std::vector<std::vector<VertexCol>> m_displayGoto;
+    std::unique_ptr<CImage> m_displayGotoImage;
 
     //! Pause the animation updates
     bool            m_pause = false;
