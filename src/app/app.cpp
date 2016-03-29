@@ -791,10 +791,13 @@ bool CApplication::CreateVideoSurface()
     int msaa = 0;
     if (GetConfigFile().GetIntProperty("Experimental", "MSAA", msaa))
     {
-        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa);
+        if (msaa > 1)
+        {
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa);
 
-        GetLogger()->Info("Using MSAA on default framebuffer (%d samples)\n", msaa);
+            GetLogger()->Info("Using MSAA on default framebuffer (%d samples)\n", msaa);
+        }
     }
 
     /* If hardware acceleration specifically requested, this will force the hw accel
@@ -808,6 +811,14 @@ bool CApplication::CreateVideoSurface()
                                          videoFlags);
 
     m_private->glcontext = SDL_GL_CreateContext(m_private->window);
+
+    int vsync = 0;
+    if (GetConfigFile().GetIntProperty("Experimental", "VSync", vsync))
+    {
+        SDL_GL_SetSwapInterval(vsync);
+
+        GetLogger()->Info("Using Vsync: %s\n", (vsync ? "true" : "false"));
+    }
 
     return true;
 }
