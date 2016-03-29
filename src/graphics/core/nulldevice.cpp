@@ -27,9 +27,6 @@ namespace Gfx
 
 CNullDevice::CNullDevice()
 {
-    m_matrix = Math::Matrix();
-    m_material = Material();
-    m_light = Light();
 }
 
 CNullDevice::~CNullDevice()

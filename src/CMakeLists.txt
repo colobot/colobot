@@ -218,6 +218,7 @@ set(BASE_SOURCES
     script/scriptfunc.cpp
     sound/sound.cpp
     sound/sound_type.cpp
+    ui/debug_menu.cpp
     ui/displayinfo.cpp
     ui/displaytext.cpp
     ui/object_interface.cpp

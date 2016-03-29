@@ -655,9 +655,6 @@ public:
     //! Frees all resources before exit
     void            Destroy();
 
-    //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
-    void            ResetAfterVideoConfigChanged();
-
 
     //! Called once per frame, the call is the entry point for rendering
     void            Render();
@@ -844,7 +841,7 @@ public:
 
     //! Detects the target object that is selected with the mouse
     /** Returns the rank of the object or -1. */
-    int             DetectObject(Math::Point mouse);
+    int             DetectObject(Math::Point mouse, Math::Vector& targetPos, bool terrain = false);
 
     //! Creates a shadow for the given object
     void            CreateShadowSpot(int objRank);
@@ -1187,7 +1184,23 @@ public:
     void            ClearDisplayCrashSpheres();
     void            AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres);
 
+    void            SetDebugLights(bool debugLights);
+    bool            GetDebugLights();
+    void            DebugDumpLights();
+
+    void            SetDebugResources(bool debugResources);
+    bool            GetDebugResources();
+
+    void            SetDebugGoto(bool debugGoto);
+    bool            GetDebugGoto();
+    void            AddDebugGotoLine(std::vector<Gfx::VertexCol> line);
+    void            SetDebugGotoBitmap(std::unique_ptr<CImage> debugImage);
+
 protected:
+    //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
+    /** Instead of calling this directly, send EVENT_RESOLUTION_CHANGED event **/
+    void            ResetAfterVideoConfigChanged();
+
     //! Prepares the interface for 3D scene
     void        Draw3DScene();
     //! Renders shadow map
@@ -1249,7 +1262,7 @@ protected:
     bool        GetBBox2D(int objRank, Math::Point& min, Math::Point& max);
 
     //! Detects whether the mouse is in a triangle.
-    bool        DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist);
+    bool        DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist, Math::Vector& pos);
 
     //! Transforms a 3D point (x, y, z) in 2D space (x, y, -) of the window
     /** The coordinated p2D.z gives the distance. */
@@ -1281,6 +1294,7 @@ protected:
     static void WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data);
 
     //! Reloads all textures
+    /** This additionally sends EVENT_RELOAD_TEXTURES to reload all textures not maintained by CEngine **/
     void ReloadAllTextures();
 
 protected:
@@ -1472,12 +1486,16 @@ protected:
     bool            m_debugLights;
     bool            m_debugDumpLights;
     bool            m_debugCrashSpheres = false;
+    bool            m_debugResources = false;
+    bool            m_debugGoto = false;
 
     std::string     m_timerText;
 
     std::unordered_map<std::string, int> m_staticMeshBaseObjects;
 
     std::vector<Math::Sphere> m_displayCrashSpheres;
+    std::vector<std::vector<VertexCol>> m_displayGoto;
+    std::unique_ptr<CImage> m_displayGotoImage;
 
     //! Pause the animation updates
     bool            m_pause = false;

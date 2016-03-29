@@ -75,6 +75,9 @@ public:
     //! Draws lightning
     void        Draw();
 
+    //! Shoots lightning strike at given position
+    void        StrikeAtPos(Math::Vector pos);
+
 protected:
     //! Updates lightning
     bool        EventFrame(const Event &event);

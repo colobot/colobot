@@ -135,7 +135,8 @@ bool CTarget::GetTooltip(Math::Point pos, std::string &name)
 
 CObject* CTarget::DetectFriendObject(Math::Point pos)
 {
-    int objRank = m_engine->DetectObject(pos);
+    Math::Vector p;
+    int objRank = m_engine->DetectObject(pos, p);
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {

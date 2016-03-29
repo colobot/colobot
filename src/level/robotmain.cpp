@@ -86,6 +86,7 @@
 
 #include "sound/sound.h"
 
+#include "ui/debug_menu.h"
 #include "ui/displayinfo.h"
 #include "ui/displaytext.h"
 #include "ui/maindialog.h"
@@ -115,6 +116,12 @@
 
 const float UNIT = 4.0f;    // default for g_unit
 float   g_unit;             // conversion factor
+
+// Reference colors used when recoloring textures, see ChangeColor()
+const Gfx::Color COLOR_REF_BOT   = Gfx::Color( 10.0f/256.0f, 166.0f/256.0f, 254.0f/256.0f);  // blue
+const Gfx::Color COLOR_REF_ALIEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
+const Gfx::Color COLOR_REF_GREEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
+const Gfx::Color COLOR_REF_WATER = Gfx::Color( 25.0f/256.0f, 255.0f/256.0f, 240.0f/256.0f);  // cyan
 
 
 template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
@@ -155,6 +162,8 @@ CRobotMain::CRobotMain()
         m_oldModelManager,
         m_modelManager.get(),
         m_particle);
+
+    m_debugMenu   = MakeUnique<Ui::CDebugMenu>(this, m_engine, m_objMan.get(), m_sound);
 
     m_time = 0.0f;
     m_gameTime = 0.0f;
@@ -224,8 +233,6 @@ CRobotMain::CRobotMain()
     m_winTerminate   = false;
 
     m_globalMagnifyDamage = 1.0f;
-
-    m_exitAfterMission = false;
 
     m_autosave = true;
     m_autosaveInterval = 5;
@@ -303,30 +310,6 @@ CPauseManager* CRobotMain::GetPauseManager()
     return m_pause.get();
 }
 
-void CRobotMain::ResetAfterVideoConfigChanged()
-{
-    // Recreate the interface (needed if the aspect ratio changes)
-    // TODO: This can sometimes cause unwanted side effects, like hidden windows reappearing. To be fixed during CEGUI refactoring.
-    m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
-    CreateShortcuts();
-}
-
-void CRobotMain::ReloadAllTextures()
-{
-    if (m_phase == PHASE_SETUPds ||
-       m_phase == PHASE_SETUPgs ||
-       m_phase == PHASE_SETUPps ||
-       m_phase == PHASE_SETUPcs ||
-       m_phase == PHASE_SETUPss ||
-       m_phase == PHASE_SIMUL ||
-       m_phase == PHASE_WIN ||
-       m_phase == PHASE_LOST)
-    {
-        ChangeColor();
-        UpdateMap();
-    }
-}
-
 std::string PhaseToString(Phase phase)
 {
     if (phase == PHASE_WELCOME1) return "PHASE_WELCOME1";
@@ -384,6 +367,13 @@ void CRobotMain::ChangePhase(Phase phase)
     bool resetWorld = false;
     if ((IsPhaseWithWorld(m_phase) || IsPhaseWithWorld(phase)) && !IsInSimulationConfigPhase(m_phase) && !IsInSimulationConfigPhase(phase))
     {
+        if (IsPhaseWithWorld(m_phase) && !IsPhaseWithWorld(phase) && m_exitAfterMission)
+        {
+            GetLogger()->Info("Mission finished in single mission mode, exiting\n");
+            m_eventQueue->AddEvent(Event(EVENT_QUIT));
+            return;
+        }
+
         GetLogger()->Info("Reseting world on phase change...\n");
         resetWorld = true;
     }
@@ -663,6 +653,12 @@ Phase CRobotMain::GetPhase()
 bool CRobotMain::ProcessEvent(Event &event)
 {
     if (!m_ui->EventProcess(event)) return false;
+    if (m_phase == PHASE_SIMUL)
+    {
+        if (!m_editFull)
+            m_camera->EventProcess(event);
+    }
+    if (!m_debugMenu->EventProcess(event)) return false;
 
     if (event.type == EVENT_FRAME)
     {
@@ -691,6 +687,23 @@ bool CRobotMain::ProcessEvent(Event &event)
         UpdateInfoText();
 
         return EventFrame(event);
+    }
+
+    if (event.type == EVENT_RELOAD_TEXTURES)
+    {
+        if (IsPhaseWithWorld(m_phase))
+        {
+            ChangeColor();
+            UpdateMap();
+        }
+    }
+
+    if (event.type == EVENT_RESOLUTION_CHANGED)
+    {
+        // Recreate the interface (needed if the aspect ratio changes)
+        // TODO: This can sometimes cause unwanted side effects, like hidden windows reappearing. To be fixed during CEGUI refactoring.
+        m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+        CreateShortcuts();
     }
 
     if (event.type == EVENT_FOCUS_LOST)
@@ -759,6 +772,15 @@ bool CRobotMain::ProcessEvent(Event &event)
             }
             return false;
         }
+
+        if (IsPhaseWithWorld(m_phase))
+        {
+            if (data->key == KEY(F11))
+            {
+                m_debugMenu->ToggleInterface();
+                return false;
+            }
+        }
     }
 
     if (event.type == EVENT_KEY_DOWN &&
@@ -826,9 +848,6 @@ bool CRobotMain::ProcessEvent(Event &event)
     // Simulation phase of the game
     if (m_phase == PHASE_SIMUL)
     {
-        if (!m_editFull)
-            m_camera->EventProcess(event);
-
         switch (event.type)
         {
             case EVENT_KEY_DOWN:
@@ -837,11 +856,6 @@ bool CRobotMain::ProcessEvent(Event &event)
 
                 KeyCamera(event.type, data->slot);
                 HiliteClear();
-                if (data->key == KEY(F11))
-                {
-                    m_particle->WriteWheelTrace("Savegame/t.png", 256, 256, Math::Vector(16.0f, 0.0f, -368.0f), Math::Vector(140.0f, 0.0f, -248.0f));
-                    return false;
-                }
                 if (m_editLock)  // current edition?
                 {
                     if (data->slot == INPUT_SLOT_HELP)
@@ -1163,25 +1177,25 @@ bool CRobotMain::ProcessEvent(Event &event)
 
 
 //! Executes a command
-void CRobotMain::ExecuteCmd(char *cmd)
+void CRobotMain::ExecuteCmd(const std::string& cmd)
 {
-    if (cmd[0] == 0) return;
+    if (cmd.empty()) return;
 
     if (m_phase == PHASE_SIMUL)
     {
-        if (strcmp(cmd, "winmission") == 0)
+        if (cmd == "winmission")
             m_eventQueue->AddEvent(Event(EVENT_WIN));
 
-        if (strcmp(cmd, "lostmission") == 0)
+        if (cmd == "lostmission")
             m_eventQueue->AddEvent(Event(EVENT_LOST));
 
-        if (strcmp(cmd, "trainerpilot") == 0)
+        if (cmd == "trainerpilot")
         {
             m_trainerPilot = !m_trainerPilot;
             return;
         }
 
-        if (strcmp(cmd, "fly") == 0)
+        if (cmd == "fly")
         {
             m_researchDone[0] |= RESEARCH_FLY;
 
@@ -1189,7 +1203,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "allresearch") == 0)
+        if (cmd == "allresearch")
         {
             m_researchDone[0] = -1;  // all research are done
 
@@ -1197,7 +1211,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "allbuildings") == 0)
+        if (cmd == "allbuildings")
         {
             m_build = -1;  // all buildings are available
 
@@ -1205,7 +1219,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "all") == 0)
+        if (cmd == "all")
         {
             m_researchDone[0] = -1;  // all research are done
             m_build = -1;  // all buildings are available
@@ -1214,13 +1228,13 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "nolimit") == 0)
+        if (cmd == "nolimit")
         {
             m_terrain->SetFlyingMaxHeight(280.0f);
             return;
         }
 
-        if (strcmp(cmd, "controller") == 0)
+        if (cmd == "controller")
         {
             if (m_controller != nullptr)
             {
@@ -1238,7 +1252,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "photo1") == 0)
+        if (cmd == "photo1")
         {
             if (m_freePhotoPause == nullptr)
             {
@@ -1254,7 +1268,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "photo2") == 0)
+        if (cmd == "photo2")
         {
             if (m_freePhotoPause == nullptr)
             {
@@ -1276,26 +1290,26 @@ void CRobotMain::ExecuteCmd(char *cmd)
         }
 
         int camtype;
-        if (sscanf(cmd, "camtype %d", &camtype) > 0)
+        if (sscanf(cmd.c_str(), "camtype %d", &camtype) > 0)
         {
             m_camera->SetType(static_cast<Gfx::CameraType>(camtype));
             return;
         }
 
         float camspeed;
-        if (sscanf(cmd, "camspeed %f", &camspeed) > 0)
+        if (sscanf(cmd.c_str(), "camspeed %f", &camspeed) > 0)
         {
             m_camera->SetCameraSpeed(camspeed);
             return;
         }
 
-        if (strcmp(cmd, "freecam") == 0)
+        if (cmd == "freecam")
         {
             m_camera->SetType(Gfx::CAM_TYPE_FREE);
             return;
         }
 
-        if (strcmp(cmd, "noclip") == 0)
+        if (cmd == "noclip")
         {
             CObject* object = GetSelect();
             if (object != nullptr)
@@ -1303,7 +1317,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "clip") == 0)
+        if (cmd == "clip")
         {
             CObject* object = GetSelect();
             if (object != nullptr)
@@ -1311,7 +1325,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "addhusky") == 0)
+        if (cmd == "addhusky")
         {
             CObject* object = GetSelect();
             if (object != nullptr && object->Implements(ObjectInterfaceType::Shielded))
@@ -1319,7 +1333,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "addfreezer") == 0)
+        if (cmd == "addfreezer")
         {
             CObject* object = GetSelect();
             if (object != nullptr && object->Implements(ObjectInterfaceType::JetFlying))
@@ -1327,7 +1341,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "\155\157\157") == 0)
+        if (cmd == "\155\157\157")
         {
             // VGhpcyBpcyBlYXN0ZXItZWdnIGFuZCBzbyBpdCBzaG91bGQgYmUgb2JmdXNjYXRlZCEgRG8gbm90
             // IGNsZWFuLXVwIHRoaXMgY29kZSEK
@@ -1341,7 +1355,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             GetLogger()->Info("          \x20\x20    \x7C\x7C\x20\x20\x20\x20 ||\n");
         }
 
-        if (strcmp(cmd, "fullpower") == 0)
+        if (cmd == "fullpower")
         {
             CObject* object = GetSelect();
             if (object != nullptr)
@@ -1362,7 +1376,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "fullenergy") == 0)
+        if (cmd == "fullenergy")
         {
             CObject* object = GetSelect();
 
@@ -1378,7 +1392,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "fullshield") == 0)
+        if (cmd == "fullshield")
         {
             CObject* object = GetSelect();
             if (object != nullptr && object->Implements(ObjectInterfaceType::Shielded))
@@ -1386,7 +1400,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
-        if (strcmp(cmd, "fullrange") == 0)
+        if (cmd == "fullrange")
         {
             CObject* object = GetSelect();
             if (object != nullptr)
@@ -1396,19 +1410,9 @@ void CRobotMain::ExecuteCmd(char *cmd)
             }
             return;
         }
-        if (strcmp(cmd, "debugcrashon") == 0)
-        {
-            m_debugCrashSpheres = true;
-            return;
-        }
-        if (strcmp(cmd, "debugcrashoff") == 0)
-        {
-            m_debugCrashSpheres = false;
-            return;
-        }
     }
 
-    if (strcmp(cmd, "debugmode") == 0)
+    if (cmd == "debugmode")
     {
         if (m_app->IsDebugModeActive(DEBUG_ALL))
         {
@@ -1421,46 +1425,46 @@ void CRobotMain::ExecuteCmd(char *cmd)
         return;
     }
 
-    if (strcmp(cmd, "showstat") == 0)
+    if (cmd == "showstat")
     {
         m_engine->SetShowStats(!m_engine->GetShowStats());
         return;
     }
 
-    if (strcmp(cmd, "invui") == 0)
+    if (cmd == "invui")
     {
         m_engine->SetRenderInterface(!m_engine->GetRenderInterface());
         return;
     }
 
-    if (strcmp(cmd, "selectinsect") == 0)
+    if (cmd == "selectinsect")
     {
         m_selectInsect = !m_selectInsect;
         return;
     }
 
-    if (strcmp(cmd, "showsoluce") == 0)
+    if (cmd == "showsoluce")
     {
         m_showSoluce = !m_showSoluce;
         m_ui->ShowSoluceUpdate();
         return;
     }
 
-    if (strcmp(cmd, "allmission") == 0)
+    if (cmd == "allmission")
     {
         m_showAll = !m_showAll;
         m_ui->AllMissionUpdate();
         return;
     }
 
-    if (strcmp(cmd, "invradar") == 0)
+    if (cmd == "invradar")
     {
         m_cheatRadar = !m_cheatRadar;
         return;
     }
 
     float speed;
-    if (sscanf(cmd, "speed %f", &speed) > 0)
+    if (sscanf(cmd.c_str(), "speed %f", &speed) > 0)
     {
         SetSpeed(speed);
         UpdateSpeedLabel();
@@ -1989,7 +1993,8 @@ CObject* CRobotMain::GetSelect()
 //! Detects the object aimed by the mouse
 CObject* CRobotMain::DetectObject(Math::Point pos)
 {
-    int objRank = m_engine->DetectObject(pos);
+    Math::Vector p;
+    int objRank = m_engine->DetectObject(pos, p);
 
     for (CObject* obj : m_objMan->GetAllObjects())
     {
@@ -2830,30 +2835,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         m_controller = nullptr;
 
-        m_colorRefBot.r =  10.0f/256.0f;
-        m_colorRefBot.g = 166.0f/256.0f;
-        m_colorRefBot.b = 254.0f/256.0f;  // blue
-        m_colorRefBot.a = 0.0f;
         m_colorNewBot.clear();
-        m_colorNewBot[0] = m_colorRefBot;
-
-        m_colorRefAlien.r = 135.0f/256.0f;
-        m_colorRefAlien.g = 170.0f/256.0f;
-        m_colorRefAlien.b =  13.0f/256.0f;  // green
-        m_colorRefAlien.a = 0.0f;
-        m_colorNewAlien = m_colorRefAlien;
-
-        m_colorRefGreen.r = 135.0f/256.0f;
-        m_colorRefGreen.g = 170.0f/256.0f;
-        m_colorRefGreen.b =  13.0f/256.0f;  // green
-        m_colorRefGreen.a = 0.0f;
-        m_colorNewGreen = m_colorRefGreen;
-
-        m_colorRefWater.r =  25.0f/256.0f;
-        m_colorRefWater.g = 255.0f/256.0f;
-        m_colorRefWater.b = 240.0f/256.0f;  // cyan
-        m_colorRefWater.a = 0.0f;
-        m_colorNewWater = m_colorRefWater;
+        m_colorNewBot[0] = COLOR_REF_BOT;
+        m_colorNewAlien = COLOR_REF_ALIEN;
+        m_colorNewGreen = COLOR_REF_GREEN;
+        m_colorNewWater = COLOR_REF_WATER;
 
         m_engine->SetAmbientColor(Gfx::Color(0.5f, 0.5f, 0.5f, 0.5f), 0);
         m_engine->SetAmbientColor(Gfx::Color(0.5f, 0.5f, 0.5f, 0.5f), 1);
@@ -3256,7 +3242,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                 line->GetParam("level")->AsFloat(100.0f)*g_unit,
                                 line->GetParam("glint")->AsFloat(1.0f),
                                 pos);
-                m_colorNewWater = line->GetParam("color")->AsColor(m_colorRefWater);
+                m_colorNewWater = line->GetParam("color")->AsColor(COLOR_REF_WATER);
                 m_colorShiftWater = line->GetParam("brightness")->AsFloat(0.0f);
                 continue;
             }
@@ -3958,26 +3944,26 @@ void CRobotMain::ChangeColor()
 
     // VehicleColor
 
-    for(auto it : m_colorNewBot)
+    for (auto it : m_colorNewBot)
     {
         int team = it.first;
         Gfx::Color newColor = it.second;
         std::string teamStr = StrUtils::ToString<int>(team);
         if(team == 0) teamStr = "";
 
-        m_engine->ChangeTextureColor("textures/objects/base1.png"+teamStr,   "textures/objects/base1.png",   m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        m_engine->ChangeTextureColor("textures/objects/convert.png"+teamStr, "textures/objects/convert.png", m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        m_engine->ChangeTextureColor("textures/objects/derrick.png"+teamStr, "textures/objects/derrick.png", m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        m_engine->ChangeTextureColor("textures/objects/factory.png"+teamStr, "textures/objects/factory.png", m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        m_engine->ChangeTextureColor("textures/objects/lemt.png"+teamStr,    "textures/objects/lemt.png",    m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        m_engine->ChangeTextureColor("textures/objects/roller.png"+teamStr,  "textures/objects/roller.png",  m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        m_engine->ChangeTextureColor("textures/objects/search.png"+teamStr,  "textures/objects/search.png",  m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/base1.png"+teamStr,   "textures/objects/base1.png",   COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/convert.png"+teamStr, "textures/objects/convert.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/derrick.png"+teamStr, "textures/objects/derrick.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/factory.png"+teamStr, "textures/objects/factory.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/lemt.png"+teamStr,    "textures/objects/lemt.png",    COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/roller.png"+teamStr,  "textures/objects/roller.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/search.png"+teamStr,  "textures/objects/search.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
 
         exclu[0] = Math::Point(  0.0f/256.0f, 160.0f/256.0f);
         exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // pencils
         exclu[2] = Math::Point(0.0f, 0.0f);
         exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
-        m_engine->ChangeTextureColor("textures/objects/drawer.png"+teamStr, "textures/objects/drawer.png",  m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/drawer.png"+teamStr, "textures/objects/drawer.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
 
         exclu[0] = Math::Point(237.0f/256.0f, 176.0f/256.0f);
         exclu[1] = Math::Point(256.0f/256.0f, 220.0f/256.0f);  // blue canister
@@ -3985,7 +3971,7 @@ void CRobotMain::ChangeColor()
         exclu[3] = Math::Point(130.0f/256.0f, 214.0f/256.0f);  // safe location
         exclu[4] = Math::Point(0.0f, 0.0f);
         exclu[5] = Math::Point(0.0f, 0.0f);  // terminator
-        m_engine->ChangeTextureColor("textures/objects/subm.png"+teamStr,   "textures/objects/subm.png",    m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/subm.png"+teamStr,   "textures/objects/subm.png",    COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
     }
 
     // AlienColor
@@ -3994,23 +3980,23 @@ void CRobotMain::ChangeColor()
     exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // SatCom
     exclu[2] = Math::Point(0.0f, 0.0f);
     exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
-    m_engine->ChangeTextureColor("textures/objects/ant.png",     m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
-    m_engine->ChangeTextureColor("textures/objects/mother.png",  m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
+    m_engine->ChangeTextureColor("textures/objects/ant.png",     COLOR_REF_ALIEN, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
+    m_engine->ChangeTextureColor("textures/objects/mother.png",  COLOR_REF_ALIEN, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
     // GreeneryColor
-    m_engine->ChangeTextureColor("textures/objects/plant.png",   m_colorRefGreen, m_colorNewGreen, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
+    m_engine->ChangeTextureColor("textures/objects/plant.png",   COLOR_REF_GREEN, m_colorNewGreen, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
     // water color
 
     // PARTIPLOUF0 and PARTIDROP :
     ts = Math::Point(0.500f, 0.500f);
     ti = Math::Point(0.875f, 0.750f);
-    m_engine->ChangeTextureColor("textures/effect00.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
+    m_engine->ChangeTextureColor("textures/effect00.png", COLOR_REF_WATER, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
 
     // PARTIFLIC :
     ts = Math::Point(0.00f, 0.75f);
     ti = Math::Point(0.25f, 1.00f);
-    m_engine->ChangeTextureColor("textures/effect02.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
+    m_engine->ChangeTextureColor("textures/effect02.png", COLOR_REF_WATER, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
 }
 
 //! Calculates the distance to the nearest object
@@ -5125,8 +5111,6 @@ Error CRobotMain::CheckEndMission(bool frame)
                             m_missionTimerEnabled = m_missionTimerStarted = false;
                             m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
                             m_lostDelay = 0.0f;
-                            if (m_exitAfterMission)
-                                m_eventQueue->AddEvent(Event(EVENT_QUIT));
                             m_displayText->SetEnable(false);
                         }
                         m_missionResult = ERR_OK;
@@ -5159,8 +5143,6 @@ Error CRobotMain::CheckEndMission(bool frame)
         }
         m_missionTimerEnabled = m_missionTimerStarted = false;
         m_displayText->SetEnable(false);
-        if (m_exitAfterMission)
-            m_eventQueue->AddEvent(Event(EVENT_QUIT));
         return INFO_LOSTq;
     }
 
@@ -5174,8 +5156,6 @@ Error CRobotMain::CheckEndMission(bool frame)
         }
         m_missionTimerEnabled = m_missionTimerStarted = false;
         m_displayText->SetEnable(false);
-        if (m_exitAfterMission)
-            m_eventQueue->AddEvent(Event(EVENT_QUIT));
         return INFO_LOST;
     }
 
@@ -5187,8 +5167,6 @@ Error CRobotMain::CheckEndMission(bool frame)
             m_lostDelay = 0.0f;
             m_missionTimerEnabled = m_missionTimerStarted = false;
             m_displayText->SetEnable(false);
-            if (m_exitAfterMission)
-                m_eventQueue->AddEvent(Event(EVENT_QUIT));
             return ERR_OK;  // mission ended
         }
 
@@ -5214,8 +5192,6 @@ Error CRobotMain::CheckEndMission(bool frame)
             m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
             m_lostDelay = 0.0f;
         }
-        if (m_exitAfterMission)
-            m_eventQueue->AddEvent(Event(EVENT_QUIT));
         m_displayText->SetEnable(false);
         return ERR_OK;  // mission ended
     }
@@ -6031,4 +6007,14 @@ void CRobotMain::UpdateDebugCrashSpheres()
             m_engine->AddDisplayCrashSpheres(displaySpheres);
         }
     }
+}
+
+void CRobotMain::SetDebugCrashSpheres(bool draw)
+{
+    m_debugCrashSpheres = draw;
+}
+
+bool CRobotMain::GetDebugCrashSpheres()
+{
+    return m_debugCrashSpheres;
 }

@@ -647,13 +647,13 @@ bool CParticle::CheckChannel(int &channel)
 
     if (!m_particle[channel].used)
     {
-        GetLogger()->Error("CheckChannel used=false !\n");
+        GetLogger()->Error("CParticle::CheckChannel used=false !\n");
         return false;
     }
 
     if (m_particle[channel].uniqueStamp != uniqueStamp)
     {
-        GetLogger()->Error("CheckChannel uniqueStamp !\n");
+        GetLogger()->Error("CParticle::CheckChannel uniqueStamp !\n");
         return false;
     }
 
@@ -3722,14 +3722,6 @@ Color CParticle::GetFogColor(Math::Vector pos)
     if (result.b > 0.6f)  result.b = 0.6f;
 
     return result;
-}
-
-bool CParticle::WriteWheelTrace(const char *filename, int width, int height,
-                                Math::Vector dl, Math::Vector ur)
-{
-    // TODO: stub!
-    GetLogger()->Trace("CParticle::WriteWheelTrace(): stub!\n");
-    return true;
 }
 
 } // namespace Gfx

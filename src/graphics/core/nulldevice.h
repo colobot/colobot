@@ -17,11 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file graphics/core/device.h
- * \brief Abstract graphics device - CDevice class and related structs/enums
- */
-
 #pragma once
 
 #include "graphics/core/device.h"
@@ -38,7 +33,6 @@ namespace Gfx
 /**
  * \class CNullDevice
  * \brief Device implementation that doesn't render anything
- *
  */
 class CNullDevice : public CDevice
 {
@@ -160,11 +154,6 @@ public:
     int GetMaxTextureSize() override;
 
     bool IsFramebufferSupported() override;
-
-private:
-    Math::Matrix m_matrix;
-    Material     m_material;
-    Light        m_light;
 };
 
 

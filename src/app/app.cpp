@@ -833,7 +833,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
 
     m_device->ConfigChanged(m_deviceConfig);
 
-    m_engine->ResetAfterVideoConfigChanged();
+    m_eventQueue->AddEvent(Event(EVENT_RESOLUTION_CHANGED));
 
     return true;
 }
