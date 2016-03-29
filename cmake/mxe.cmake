@@ -7,14 +7,9 @@ if((${CMAKE_CROSSCOMPILING}) AND (DEFINED MSYS))
     set(PLATFORM_WINDOWS 1)
     set(PLATFORM_LINUX 0)
     set(PLATFORM_OTHER 0)
-    # Because some tests will not compile
-    set(TESTS OFF)
     # All must be static, CBOT and GLEW too
     set(CBOT_STATIC ON)
     set(GLEW_STATIC ON)
-    # Because find package scripts are lame
-    set(SDLTTF_INCLUDE_DIR ${CMAKE_FIND_ROOT_PATH}/include/SDL)
-    set(SDLIMAGE_INCLUDE_DIR ${CMAKE_FIND_ROOT_PATH}/include/SDL)
 
     if (${OPENAL_SOUND})
         set(OPENAL_MXE_LIBS
@@ -23,7 +18,6 @@ if((${CMAKE_CROSSCOMPILING}) AND (DEFINED MSYS))
             ${CMAKE_FIND_ROOT_PATH}/lib/libvorbisenc.a
             ${CMAKE_FIND_ROOT_PATH}/lib/libvorbisfile.a
             ${CMAKE_FIND_ROOT_PATH}/lib/libogg.a
-            ${CMAKE_FIND_ROOT_PATH}/lib/libwsock32.a
         )
     endif()
 
@@ -39,10 +33,18 @@ if((${CMAKE_CROSSCOMPILING}) AND (DEFINED MSYS))
       ${CMAKE_FIND_ROOT_PATH}/lib/libwinmm.a
       ${CMAKE_FIND_ROOT_PATH}/lib/libdxguid.a
       ${CMAKE_FIND_ROOT_PATH}/lib/libbz2.a
+      ${CMAKE_FIND_ROOT_PATH}/lib/libimm32.a
+      ${CMAKE_FIND_ROOT_PATH}/lib/libole32.a
+      ${CMAKE_FIND_ROOT_PATH}/lib/liboleaut32.a
+      ${CMAKE_FIND_ROOT_PATH}/lib/libharfbuzz.a
+      ${CMAKE_FIND_ROOT_PATH}/lib/libwebp.a
+      ${CMAKE_FIND_ROOT_PATH}/lib/libversion.a
+      ${CMAKE_FIND_ROOT_PATH}/lib/libglib-2.0.a
+      ${CMAKE_FIND_ROOT_PATH}/lib/libwsock32.a
+      ${CMAKE_FIND_ROOT_PATH}/lib/libws2_32.a
+      ${CMAKE_FIND_ROOT_PATH}/lib/libintl.a
       ${OPENAL_MXE_LIBS}
     )
-    # This fixes problem with multiple definition of `IID_IDirectSoundNotify'
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--allow-multiple-definition")
 else()
     set(MXE 0)
 endif()

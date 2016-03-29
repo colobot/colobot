@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -54,6 +54,7 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_TARGET2     )  return "Target2";
     if ( type == OBJECT_START       )  return "StartArea";
     if ( type == OBJECT_END         )  return "GoalArea";
+    if ( type == OBJECT_TEEN34      )  return "Stone";
     if ( type == OBJECT_STONE       )  return "TitaniumOre";
     if ( type == OBJECT_URANIUM     )  return "UraniumOre";
     if ( type == OBJECT_METAL       )  return "Titanium";
@@ -271,6 +272,7 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "destroy"       ) == 0 )  helpfile = "cbot/destroy";
     if ( strcmp(token, "search"        ) == 0 )  helpfile = "cbot/search";
     if ( strcmp(token, "radar"         ) == 0 )  helpfile = "cbot/radar";
+    if ( strcmp(token, "radarall"      ) == 0 )  helpfile = "cbot/radarall";
     if ( strcmp(token, "direction"     ) == 0 )  helpfile = "cbot/direct";
     if ( strcmp(token, "distance"      ) == 0 )  helpfile = "cbot/dist";
     if ( strcmp(token, "distance2d"    ) == 0 )  helpfile = "cbot/dist2d";
@@ -420,6 +422,7 @@ bool IsFunction(const char *token)
     if ( strcmp(token, "destroy"      ) == 0 )  return true;
     if ( strcmp(token, "search"       ) == 0 )  return true;
     if ( strcmp(token, "radar"        ) == 0 )  return true;
+    if ( strcmp(token, "radarall"     ) == 0 )  return true;
     if ( strcmp(token, "detect"       ) == 0 )  return true;
     if ( strcmp(token, "direction"    ) == 0 )  return true;
     if ( strcmp(token, "distance"     ) == 0 )  return true;
@@ -521,6 +524,7 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "destroy"   ) == 0 )  return "object.destroy ( );";
     if ( strcmp(token, "search"    ) == 0 )  return "search ( cat, pos );";
     if ( strcmp(token, "radar"     ) == 0 )  return "radar ( cat, angle, focus, min, max, sens, filter );";
+    if ( strcmp(token, "radarall"  ) == 0 )  return "radarall ( cat, angle, focus, min, max, sens, filter );";
     if ( strcmp(token, "detect"    ) == 0 )  return "detect ( cat );";
     if ( strcmp(token, "direction" ) == 0 )  return "direction ( position );";
     if ( strcmp(token, "distance2d") == 0 )  return "distance2d ( p1, p2 );";
@@ -565,10 +569,10 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "strfind"   ) == 0 )  return "strfind ( string, substring );";
     if ( strcmp(token, "strlower"  ) == 0 )  return "strlower ( string );";
     if ( strcmp(token, "strupper"  ) == 0 )  return "strupper ( string );";
-    if ( strcmp(token, "open"      ) == 0 )  return "open ( filename, mode );";
-    if ( strcmp(token, "close"     ) == 0 )  return "close ( );";
-    if ( strcmp(token, "writeln"   ) == 0 )  return "writeln ( string );";
-    if ( strcmp(token, "readln"    ) == 0 )  return "readln ( );";
+    if ( strcmp(token, "open"      ) == 0 )  return "file.open ( filename, mode );";
+    if ( strcmp(token, "close"     ) == 0 )  return "file.close ( );";
+    if ( strcmp(token, "writeln"   ) == 0 )  return "file.writeln ( string );";
+    if ( strcmp(token, "readln"    ) == 0 )  return "file.readln ( );";
     if ( strcmp(token, "eof"       ) == 0 )  return "eof ( );";
     if ( strcmp(token, "deletefile") == 0 )  return "deletefile ( filename );";
     if ( strcmp(token, "openfile"  ) == 0 )  return "openfile ( filename, mode );";

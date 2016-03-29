@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -184,20 +184,11 @@ bool CEditValue::EventProcess(const Event &event)
     }
 
     if (event.type == EVENT_MOUSE_WHEEL &&
-        event.GetData<MouseWheelEventData>()->dir == WHEEL_UP &&
         Detect(event.mousePos))
     {
-        float value = GetValue()+m_stepValue;
-        if ( value > m_maxValue )  value = m_maxValue;
-        SetValue(value, true);
-        HiliteValue(event);
-    }
-    if ( event.type == EVENT_MOUSE_WHEEL &&
-         event.GetData<MouseWheelEventData>()->dir == WHEEL_DOWN &&
-         Detect(event.mousePos))
-    {
-        float value = GetValue()-m_stepValue;
+        float value = GetValue() + (m_stepValue * event.GetData<MouseWheelEventData>()->y);
         if ( value < m_minValue )  value = m_minValue;
+        if ( value > m_maxValue )  value = m_maxValue;
         SetValue(value, true);
         HiliteValue(event);
     }
@@ -241,6 +232,7 @@ void CEditValue::Draw()
 
     if (m_edit != nullptr)
     {
+        m_edit->SetState(STATE_ENABLE, TestState(STATE_ENABLE));
         m_edit->Draw();
     }
     if (m_buttonUp != nullptr)

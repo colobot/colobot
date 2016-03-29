@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,6 +44,11 @@ void CNullDevice::DebugLights()
 {
 }
 
+std::string CNullDevice::GetName()
+{
+    return std::string("Null Device");
+}
+
 bool CNullDevice::Create()
 {
     return true;
@@ -66,6 +71,10 @@ void CNullDevice::EndScene()
 }
 
 void CNullDevice::Clear()
+{
+}
+
+void CNullDevice::SetRenderMode(RenderMode mode)
 {
 }
 
@@ -109,6 +118,10 @@ Texture CNullDevice::CreateDepthTexture(int width, int height, int depth)
     Texture tex;
     tex.id = 1; // tex.id = 0 => invalid texture
     return tex;
+}
+
+void CNullDevice::UpdateTexture(const Texture& texture, Math::IntPoint offset, ImageData* data, TexImgFormat format)
+{
 }
 
 void CNullDevice::DestroyTexture(const Texture &texture)
@@ -159,6 +172,21 @@ void CNullDevice::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, 
 }
 
 void CNullDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
+{
+}
+
+void CNullDevice::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
+    int first[], int count[], int drawCount, Color color)
+{
+}
+
+void CNullDevice::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
+    int first[], int count[], int drawCount, Color color)
+{
+}
+
+void CNullDevice::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
+    int first[], int count[], int drawCount)
 {
 }
 

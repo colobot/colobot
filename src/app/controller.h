@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@
 #include <memory>
 #include <string>
 
-class CApplication;
 class CRobotMain;
 struct Event;
 
@@ -40,11 +39,9 @@ struct Event;
 class CController
 {
 public:
-    CController(CApplication* app, bool configLoaded = true);
+    CController();
     ~CController();
 
-    //! Return CApplication instance
-    CApplication*    GetApplication();
     //! Return CRobotMain instance
     CRobotMain*      GetRobotMain();
 
@@ -57,6 +54,5 @@ public:
     void StartGame(LevelCategory cat, int chap, int lvl);
 
 private:
-    CApplication* m_app;
     std::unique_ptr<CRobotMain> m_main;
 };

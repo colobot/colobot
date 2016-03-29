@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@
 #include "math/intpoint.h"
 #include "math/matrix.h"
 #include "math/point.h"
+#include "math/sphere.h"
 #include "math/vector.h"
 
 
@@ -46,10 +47,8 @@
 
 
 class CApplication;
-class CObject;
 class CSoundInterface;
 class CImage;
-class CPauseManager;
 class CSystemUtils;
 struct SystemTimeStamp;
 struct Event;
@@ -646,8 +645,6 @@ public:
     CPlanet*        GetPlanet();
     //! Returns the fog manager
     CCloud*         GetCloud();
-    //! Returns the pause manager
-    CPauseManager*  GetPauseManager();
 
     //! Sets the terrain object
     void            SetTerrain(CTerrain* terrain);
@@ -659,7 +656,7 @@ public:
     void            Destroy();
 
     //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
-    void            ResetAfterDeviceChanged();
+    void            ResetAfterVideoConfigChanged();
 
 
     //! Called once per frame, the call is the entry point for rendering
@@ -677,8 +674,11 @@ public:
     void            WriteScreenShot(const std::string& fileName);
 
 
-    //! Get pause mode
-    TEST_VIRTUAL bool GetPause();
+    //@{
+    //! Management of animation pause mode
+    void            SetPause(bool pause);
+    bool            GetPause();
+    //@}
 
     //@{
     //! Management of displaying statistic information
@@ -717,7 +717,7 @@ public:
     //@}
 
     //! Increments the triangle counter for the current frame
-    void            AddStatisticTriangle(int nb);
+    void            AddStatisticTriangle(int count);
     //! Returns the number of triangles in current frame
     int             GetStatisticTriangle();
 
@@ -778,7 +778,7 @@ public:
     // Objects
 
     //! Print debug info about an object
-    void            DebugObject(int rank);
+    void            DebugObject(int objRank);
 
     //! Creates a new object and returns its rank
     int             CreateObject();
@@ -942,9 +942,12 @@ public:
     void            SetTexture(const Texture& tex, int stage = 0);
 
     //! Deletes the given texture, unloading it and removing from cache
-    void            DeleteTexture(const std::string& name);
+    void            DeleteTexture(const std::string& texName);
     //! Deletes the given texture, unloading it and removing from cache
     void            DeleteTexture(const Texture& tex);
+
+    //! Creates or updates the given texture with given image data
+    void            CreateOrUpdateTexture(const std::string& texName, CImage* img);
 
     //! Empties the texture cache
     void            FlushTextureCache();
@@ -1096,6 +1099,8 @@ public:
     bool            IsShadowMappingQualitySupported();
     void            SetShadowMappingQuality(bool value);
     bool            GetShadowMappingQuality();
+    void            SetTerrainShadows(bool value);
+    bool            GetTerrainShadows();
     //@}
 
     //@{
@@ -1179,6 +1184,9 @@ public:
     //! Updates the scene after a change of parameters
     void            ApplyChange();
 
+    void            ClearDisplayCrashSpheres();
+    void            AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres);
+
 protected:
     //! Prepares the interface for 3D scene
     void        Draw3DScene();
@@ -1215,17 +1223,18 @@ protected:
     //! Draws the mouse cursor
     void        DrawMouse();
     //! Draw part of mouse cursor sprite
-    void        DrawMouseSprite(Math::Point pos, Math::Point dim, int icon);
+    void        DrawMouseSprite(Math::Point pos, Math::Point size, int icon);
     //! Draw statistic texts
     void        DrawStats();
     //! Draw mission timer
     void        DrawTimer();
+    void        DrawCrashSpheres();
 
     //! Creates a new tier 2 object (texture)
     EngineBaseObjTexTier&  AddLevel2(EngineBaseObject& p1, const std::string& tex1Name, const std::string& tex2Name);
     //! Creates a new tier 3 object (data)
     EngineBaseObjDataTier& AddLevel3(EngineBaseObjTexTier &p3, EngineTriangleType type,
-                                     const Material& mat, int state);
+                                     const Material& material, int state);
 
     //! Create texture and add it to cache
     Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr);
@@ -1271,6 +1280,9 @@ protected:
     };
     static void WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data);
 
+    //! Reloads all textures
+    void ReloadAllTextures();
+
 protected:
     CApplication*     m_app;
     CSystemUtils*     m_systemUtils;
@@ -1285,7 +1297,6 @@ protected:
     std::unique_ptr<CCloud>           m_cloud;
     std::unique_ptr<CLightning>       m_lightning;
     std::unique_ptr<CPlanet>          m_planet;
-    std::unique_ptr<CPauseManager>    m_pause;
     std::unique_ptr<CPyroManager> m_pyroManager;
 
     //! Last encountered error
@@ -1385,7 +1396,6 @@ protected:
     bool            m_fog;
     float           m_particleDensity;
     float           m_clippingDistance;
-    float           m_lastClippingDistance;
     bool            m_lightMode;
     bool            m_editIndentMode;
     int             m_editIndentValue;
@@ -1420,6 +1430,8 @@ protected:
     int m_offscreenShadowRenderingResolution;
     //! true enables higher quality shadows
     bool m_qualityShadows;
+    //! true enables casting shadows by terrain
+    bool m_terrainShadows;
     //! Shadow color
     float m_shadowColor;
     //! Shadow range
@@ -1459,10 +1471,16 @@ protected:
 
     bool            m_debugLights;
     bool            m_debugDumpLights;
+    bool            m_debugCrashSpheres = false;
 
     std::string     m_timerText;
 
     std::unordered_map<std::string, int> m_staticMeshBaseObjects;
+
+    std::vector<Math::Sphere> m_displayCrashSpheres;
+
+    //! Pause the animation updates
+    bool            m_pause = false;
 };
 
 

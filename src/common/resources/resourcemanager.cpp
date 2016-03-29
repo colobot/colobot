@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -112,6 +112,11 @@ std::string CResourceManager::GetSaveLocation()
 std::unique_ptr<CSDLFileWrapper> CResourceManager::GetSDLFileHandler(const std::string &filename)
 {
     return MakeUnique<CSDLFileWrapper>(CleanPath(filename));
+}
+
+std::unique_ptr<CSDLMemoryWrapper> CResourceManager::GetSDLMemoryHandler(const std::string &filename)
+{
+    return MakeUnique<CSDLMemoryWrapper>(CleanPath(filename));
 }
 
 std::unique_ptr<CSNDFileWrapper> CResourceManager::GetSNDFileHandler(const std::string &filename)

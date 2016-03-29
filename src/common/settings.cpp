@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 #include "app/input.h"
 
 #include "common/config_file.h"
+#include "common/logger.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
@@ -40,7 +41,7 @@ CSettings::CSettings()
     m_interfaceRain  = true;
     m_soluce4        = true;
     m_movies         = true;
-    m_systemMouse    = false;
+    m_focusLostPause = true;
 
     m_fontSize  = 19.0f;
     m_windowPos = Math::Point(0.15f, 0.17f);
@@ -50,6 +51,8 @@ CSettings::CSettings()
     m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
     m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
     m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
+
+    m_language = LANGUAGE_ENV;
 }
 
 void CSettings::SaveResolutionSettings(const Gfx::DeviceConfig& config)
@@ -76,7 +79,8 @@ void CSettings::SaveSettings()
     GetConfigFile().SetBoolProperty("Setup", "InterfaceRain", m_interfaceRain);
     GetConfigFile().SetBoolProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().SetBoolProperty("Setup", "Movies", m_movies);
-    GetConfigFile().SetBoolProperty("Setup", "CameraScroll", camera->GetCameraScroll());
+    GetConfigFile().SetBoolProperty("Setup", "FocusLostPause", m_focusLostPause);
+    GetConfigFile().SetBoolProperty("Setup", "OldCameraScroll", camera->GetOldCameraScroll());
     GetConfigFile().SetBoolProperty("Setup", "CameraInvertX", camera->GetCameraInvertX());
     GetConfigFile().SetBoolProperty("Setup", "CameraInvertY", camera->GetCameraInvertY());
     GetConfigFile().SetBoolProperty("Setup", "InterfaceEffect", camera->GetEffect());
@@ -87,14 +91,13 @@ void CSettings::SaveSettings()
     GetConfigFile().SetBoolProperty("Setup", "ObjectDirty", engine->GetDirty());
     GetConfigFile().SetBoolProperty("Setup", "FogMode", engine->GetFog());
     GetConfigFile().SetBoolProperty("Setup", "LightMode", engine->GetLightMode());
-    GetConfigFile().SetIntProperty("Setup", "UseJoystick", app->GetJoystickEnabled() ? app->GetJoystick().index : -1);
+    GetConfigFile().SetIntProperty("Setup", "JoystickIndex", app->GetJoystickEnabled() ? app->GetJoystick().index : -1);
     GetConfigFile().SetFloatProperty("Setup", "ParticleDensity", engine->GetParticleDensity());
     GetConfigFile().SetFloatProperty("Setup", "ClippingDistance", engine->GetClippingDistance());
     GetConfigFile().SetIntProperty("Setup", "AudioVolume", sound->GetAudioVolume());
     GetConfigFile().SetIntProperty("Setup", "MusicVolume", sound->GetMusicVolume());
     GetConfigFile().SetBoolProperty("Setup", "EditIndentMode", engine->GetEditIndentMode());
     GetConfigFile().SetIntProperty("Setup", "EditIndentValue", engine->GetEditIndentValue());
-    GetConfigFile().SetBoolProperty("Setup", "SystemMouse", m_systemMouse);
 
     GetConfigFile().SetIntProperty("Setup", "MipmapLevel", engine->GetTextureMipmapLevel());
     GetConfigFile().SetIntProperty("Setup", "Anisotropy", engine->GetTextureAnisotropyLevel());
@@ -106,6 +109,9 @@ void CSettings::SaveSettings()
     GetConfigFile().SetBoolProperty("Setup", "ShadowMappingQuality", engine->GetShadowMappingQuality());
     GetConfigFile().SetIntProperty("Setup", "ShadowMappingResolution",
                                    engine->GetShadowMappingOffscreen() ? engine->GetShadowMappingOffscreenResolution() : 0);
+
+    // Experimental settings
+    GetConfigFile().SetBoolProperty("Experimental", "TerrainShadows", engine->GetTerrainShadows());
 
     CInput::GetInstancePointer()->SaveKeyBindings();
 
@@ -122,6 +128,9 @@ void CSettings::SaveSettings()
     GetConfigFile().SetFloatProperty("Edit", "IODimX", m_IODim.x);
     GetConfigFile().SetFloatProperty("Edit", "IODimY", m_IODim.y);
 
+    std::string lang = "";
+    LanguageToString(m_language, lang);
+    GetConfigFile().SetStringProperty("Language", "Lang", lang);
 
     GetConfigFile().Save();
 }
@@ -137,15 +146,17 @@ void CSettings::LoadSettings()
     int iValue = 0;
     float fValue = 0.0f;
     bool bValue = false;
+    std::string sValue = "";
 
     GetConfigFile().GetBoolProperty("Setup", "Tooltips", m_tooltips);
     GetConfigFile().GetBoolProperty("Setup", "InterfaceGlint", m_interfaceGlint);
     GetConfigFile().GetBoolProperty("Setup", "InterfaceRain", m_interfaceRain);
     GetConfigFile().GetBoolProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().GetBoolProperty("Setup", "Movies", m_movies);
+    GetConfigFile().GetBoolProperty("Setup", "FocusLostPause", m_focusLostPause);
 
-    if (GetConfigFile().GetBoolProperty("Setup", "CameraScroll", bValue))
-        camera->SetCameraScroll(bValue);
+    if (GetConfigFile().GetBoolProperty("Setup", "OldCameraScroll", bValue))
+        camera->SetOldCameraScroll(bValue);
 
     if (GetConfigFile().GetBoolProperty("Setup", "CameraInvertX", bValue))
         camera->SetCameraInvertX(bValue);
@@ -180,7 +191,7 @@ void CSettings::LoadSettings()
     if (GetConfigFile().GetBoolProperty("Setup", "LightMode", bValue))
         engine->SetLightMode(bValue);
 
-    if (GetConfigFile().GetIntProperty("Setup", "UseJoystick", iValue))
+    if (GetConfigFile().GetIntProperty("Setup", "JoystickIndex", iValue))
     {
         if (iValue >= 0)
         {
@@ -217,11 +228,6 @@ void CSettings::LoadSettings()
 
     if (GetConfigFile().GetIntProperty("Setup", "EditIndentValue", iValue))
         engine->SetEditIndentValue(iValue);
-
-    if (GetConfigFile().GetBoolProperty("Setup", "SystemMouse", m_systemMouse))
-    {
-        app->SetMouseMode(m_systemMouse ? MOUSE_SYSTEM : MOUSE_ENGINE);
-    }
 
 
     if (GetConfigFile().GetIntProperty("Setup", "MipmapLevel", iValue))
@@ -261,6 +267,9 @@ void CSettings::LoadSettings()
         }
     }
 
+    if (GetConfigFile().GetBoolProperty("Experimental", "TerrainShadows", bValue))
+        engine->SetTerrainShadows(bValue);
+
     CInput::GetInstancePointer()->LoadKeyBindings();
 
 
@@ -276,6 +285,17 @@ void CSettings::LoadSettings()
     GetConfigFile().GetFloatProperty("Edit", "IOPosY",   m_IOPos.y);
     GetConfigFile().GetFloatProperty("Edit", "IODimX",   m_IODim.x);
     GetConfigFile().GetFloatProperty("Edit", "IODimY",   m_IODim.y);
+
+    m_language = LANGUAGE_ENV;
+    if (GetConfigFile().GetStringProperty("Language", "Lang", sValue))
+    {
+        if (!sValue.empty() && !ParseLanguage(sValue, m_language))
+        {
+            GetLogger()->Error("Failed to parse language '%s' from config file. Default language will be used.\n",
+                               sValue.c_str());
+        }
+    }
+    app->SetLanguage(m_language);
 }
 
 void CSettings::SetTooltips(bool tooltips)
@@ -323,13 +343,13 @@ bool CSettings::GetMovies()
     return m_movies;
 }
 
-void CSettings::SetSystemMouse(bool systemMouse)
+void CSettings::SetFocusLostPause(bool focusLostPause)
 {
-    m_systemMouse = systemMouse;
+    m_focusLostPause = focusLostPause;
 }
-bool CSettings::GetSystemMouse()
+bool CSettings::GetFocusLostPause()
 {
-    return m_systemMouse;
+    return m_focusLostPause;
 }
 
 
@@ -407,4 +427,15 @@ void CSettings::SetIODim(Math::Point dim)
 Math::Point CSettings::GetIODim()
 {
     return m_IODim;
+}
+
+void CSettings::SetLanguage(Language language)
+{
+    m_language = language;
+    CApplication::GetInstancePointer()->SetLanguage(m_language);
+}
+
+Language CSettings::GetLanguage()
+{
+    return m_language;
 }

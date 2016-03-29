@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,8 +24,12 @@
 
 #pragma once
 
-
 #include "graphics/core/device.h"
+
+#include "graphics/core/light.h"
+#include "graphics/core/material.h"
+
+#include "math/matrix.h"
 
 // Graphics module namespace
 namespace Gfx
@@ -45,6 +49,8 @@ public:
     void DebugHook() override;
     void DebugLights() override;
 
+    std::string GetName() override;
+
     bool Create() override;
     void Destroy() override;
 
@@ -54,6 +60,8 @@ public:
     void EndScene() override;
 
     void Clear() override;
+
+    void SetRenderMode(RenderMode mode) override;
 
     void SetTransform(TransformType type, const Math::Matrix &matrix) override;
 
@@ -66,6 +74,7 @@ public:
     Texture CreateTexture(CImage *image, const TextureCreateParams &params) override;
     Texture CreateTexture(ImageData *data, const TextureCreateParams &params) override;
     Texture CreateDepthTexture(int width, int height, int depth) override;
+    void UpdateTexture(const Texture& texture, Math::IntPoint offset, ImageData* data, TexImgFormat format) override;
     void DestroyTexture(const Texture &texture) override;
     void DestroyAllTextures() override;
 
@@ -81,7 +90,16 @@ public:
 
     void DrawPrimitive(PrimitiveType type, const Vertex* vertices, int vertexCount, Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     void DrawPrimitive(PrimitiveType type, const VertexTex2* vertices, int vertexCount, Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
-    void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) override;
+    void DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount) override;
+
+    void DrawPrimitives(PrimitiveType type, const Vertex *vertices,
+        int first[], int count[], int drawCount,
+        Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
+    void DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
+        int first[], int count[], int drawCount,
+        Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
+    void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
+        int first[], int count[], int drawCount) override;
 
     unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override;
     unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override;

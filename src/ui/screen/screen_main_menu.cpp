@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 #include "app/app.h"
 
 #include "common/logger.h"
+#include "common/restext.h"
 
 #include "level/parser/parser.h"
 
@@ -161,6 +162,12 @@ void CScreenMainMenu::CreateInterface()
     pl->SetFontType(Gfx::FONT_COURIER);
     pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
+    // SatCom button
+    pos.x = ox+sx*4.4f;
+    pos.y = oy+sy*4.4f;
+    pb = pw->CreateButton(pos, dim, 128+60, EVENT_INTERFACE_SATCOM);
+    pb->SetState(STATE_SHADOW);
+
     SetBackground("textures/interface/interface.png");
     CreateVersionDisplay();
 }
@@ -220,6 +227,10 @@ bool CScreenMainMenu::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_NAME:
             m_main->ChangePhase(PHASE_PLAYER_SELECT);
+            break;
+
+        case EVENT_INTERFACE_SATCOM:
+            m_main->ChangePhase(PHASE_SATCOM);
             break;
 
         default:

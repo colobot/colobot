@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -192,6 +192,49 @@ public:
         return CObjectContainerProxy(m_objects, m_activeObjectIterators);
     }
 
+    //! Finds an object, like radar() in CBot
+    //@{
+    std::vector<CObject*> RadarAll(CObject* pThis,
+                    ObjectType type = OBJECT_NULL,
+                    float angle = 0.0f,
+                    float focus = Math::PI*2.0f,
+                    float minDist = 0.0f,
+                    float maxDist = 1000.0f,
+                    bool furthest = false,
+                    RadarFilter filter = FILTER_NONE,
+                    bool cbotTypes = false);
+    std::vector<CObject*> RadarAll(CObject* pThis,
+                    std::vector<ObjectType> type = std::vector<ObjectType>(),
+                    float angle = 0.0f,
+                    float focus = Math::PI*2.0f,
+                    float minDist = 0.0f,
+                    float maxDist = 1000.0f,
+                    bool furthest = false,
+                    RadarFilter filter = FILTER_NONE,
+                    bool cbotTypes = false);
+    std::vector<CObject*> RadarAll(CObject* pThis,
+                       Math::Vector thisPosition,
+                       float thisAngle,
+                       ObjectType type = OBJECT_NULL,
+                       float angle = 0.0f,
+                       float focus = Math::PI*2.0f,
+                       float minDist = 0.0f,
+                       float maxDist = 1000.0f,
+                       bool furthest = false,
+                       RadarFilter filter = FILTER_NONE,
+                       bool cbotTypes = false);
+    std::vector<CObject*> RadarAll(CObject* pThis,
+                    Math::Vector thisPosition,
+                    float thisAngle,
+                    std::vector<ObjectType> type = std::vector<ObjectType>(),
+                    float angle = 0.0f,
+                    float focus = Math::PI*2.0f,
+                    float minDist = 0.0f,
+                    float maxDist = 1000.0f,
+                    bool furthest = false,
+                    RadarFilter filter = FILTER_NONE,
+                    bool cbotTypes = false);
+    //@}
     //! Finds an object, like radar() in CBot
     //@{
     CObject*  Radar(CObject* pThis,

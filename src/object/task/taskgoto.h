@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,12 +19,16 @@
 
 #pragma once
 
-
 #include "object/task/task.h"
 
 #include "math/vector.h"
 
 #include <memory>
+
+namespace Math
+{
+struct Point;
+} // namespace Math;
 
 
 class CObject;
@@ -102,7 +106,6 @@ protected:
     Error       BeamExplore(const Math::Vector &prevPos, const Math::Vector &curPos, const Math::Vector &goalPos, float goalRadius, float angle, int nbDiv, float step, int i, int nbIter);
     Math::Vector    BeamPoint(const Math::Vector &startPoint, const Math::Vector &goalPoint, float angle, float step);
 
-    void        BitmapDebug(const Math::Vector &min, const Math::Vector &max, const Math::Vector &start, const Math::Vector &goal);
     bool        BitmapTestLine(const Math::Vector &start, const Math::Vector &goal, float stepAngle, bool bSecond);
     void        BitmapObject();
     void        BitmapTerrain(const Math::Vector &min, const Math::Vector &max);

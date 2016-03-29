@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,13 +36,11 @@ enum Error
     ERR_MANIP_NIL         = 103,      //! <  taking: nothing has to take
     ERR_MANIP_MOTOR       = 105,      //! <  busy: impossible to move
     ERR_MANIP_OCC         = 106,      //! <  busy: location already occupied
-    ERR_MANIP_FRIEND      = 107,      //! <  no other vehicle
     ERR_MANIP_RADIO       = 108,      //! <  impossible because radioactive
     ERR_MANIP_WATER       = 109,      //! <  not possible under water
     ERR_MANIP_EMPTY       = 110,      //! <  nothing to deposit
     ERR_BUILD_FLY         = 120,      //! <  not possible in flight
     ERR_BUILD_WATER       = 121,      //! <  not possible under water
-    ERR_BUILD_ENERGY      = 122,      //! <  not enough energy
     ERR_BUILD_METALAWAY   = 123,      //! <  lack of metal (too far)
     ERR_BUILD_METALNEAR   = 124,      //! <  lack of metal (too close)
     ERR_BUILD_METALINEX   = 125,      //! <  lack of metal
@@ -57,17 +55,12 @@ enum Error
     ERR_SEARCH_FLY        = 140,      //! <  not possible in flight
     ERR_SEARCH_MOTOR      = 142,      //! <  impossible in movement
     ERR_TERRA_ENERGY      = 151,      //! <  not enough energy
-    ERR_TERRA_FLOOR       = 152,      //! <  inappropriate ground
-    ERR_TERRA_BUILDING    = 153,      //! <  building too close
-    ERR_TERRA_OBJECT      = 154,      //! <  object too close
     ERR_FIRE_ENERGY       = 161,      //! <  not enough energy
-    ERR_FIRE_FLY          = 162,      //! <  not possible in flight
     ERR_RECOVER_ENERGY    = 171,      //! <  not enough energy
     ERR_RECOVER_NULL      = 172,      //! <  lack of ruin
     ERR_CONVERT_EMPTY     = 180,      //! <  no stone was transformed
     ERR_SHIELD_ENERGY     = 191,      //! <  not enough energy
     ERR_MOVE_IMPOSSIBLE   = 200,      //! <  move impossible
-    ERR_FIND_IMPOSSIBLE   = 201,      //! <  find impossible
     ERR_GOTO_IMPOSSIBLE   = 210,      //! <  goto impossible
     ERR_GOTO_ITER         = 211,      //! <  goto too complicated
     ERR_GOTO_BUSY         = 212,      //! <  goto destination occupied
@@ -88,13 +81,10 @@ enum Error
     ERR_LABO_NULL         = 350,      //! <  nothing to analyze
     ERR_LABO_BAD          = 351,      //! <  analyzes only organic ball
     ERR_LABO_ALREADY      = 352,      //! <  analysis already made
-    ERR_NUCLEAR_NULL      = 360,      //! <  no energy underground
-    ERR_NUCLEAR_LOW       = 361,      //! <  not enough energy
     ERR_NUCLEAR_EMPTY     = 362,      //! <  lack of uranium
     ERR_NUCLEAR_BAD       = 363,      //! <  transforms only uranium
     ERR_FACTORY_NULL      = 370,      //! <  no metal
     ERR_FACTORY_NEAR      = 371,      //! <  vehicle too close
-    ERR_RESET_NEAR        = 380,      //! <  vehicle too close
     ERR_INFO_NULL         = 390,      //! <  no information terminal
     ERR_VEH_VIRUS         = 400,      //! <  vehicle infected by a virus
     ERR_BAT_VIRUS         = 401,      //! <  building infected by a virus
@@ -112,7 +102,6 @@ enum Error
     ERR_MISSION_NOTERM    = 600,      //! <  Mission not completed
     ERR_DELETEMOBILE      = 700,      //! <  vehicle destroyed
     ERR_DELETEBUILDING    = 701,      //! <  building destroyed
-    ERR_TOOMANY           = 702,      //! <  too many objects
     ERR_ENEMY_OBJECT      = 703,      //! <  can't control enemy object
     ERR_OBLIGATORYTOKEN   = 800,      //! <  compulsory instruction missing
     ERR_PROHIBITEDTOKEN   = 801,      //! <  instruction prohibited
@@ -147,7 +136,6 @@ enum Error
     INFO_LOST             = 10041,    //! <  lost
     INFO_LOSTq            = 10042,    //! <  lost immediately
     INFO_WRITEOK          = 10043,    //! <  record done
-    INFO_DELETEPATH       = 10050,    //! <  way mark deleted
     INFO_DELETEMOTHER     = 10100,    //! <  insect killed
     INFO_DELETEANT        = 10101,    //! <  insect killed
     INFO_DELETEBEE        = 10102,    //! <  insect killed

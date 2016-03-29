@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ template<> CLogger* CSingleton<CLogger>::m_instance = nullptr;
 
 CLogger::CLogger()
 {
-    m_file = nullptr;
     #if DEV_BUILD
     m_logLevel = LOG_DEBUG;
     #else
@@ -38,7 +37,10 @@ CLogger::CLogger()
 
 CLogger::~CLogger()
 {
-    Close();
+    for (FILE* out : m_outputs)
+    {
+        fclose(out);
+    }
 }
 
 void CLogger::Log(LogLevel type, const char* str, va_list args)
@@ -46,28 +48,34 @@ void CLogger::Log(LogLevel type, const char* str, va_list args)
     if (type < m_logLevel)
         return;
 
-    switch (type)
+    for (FILE* out : m_outputs)
     {
-        case LOG_TRACE:
-            fprintf(IsOpened() ? m_file : stderr, "[TRACE]: ");
-            break;
-        case LOG_DEBUG:
-            fprintf(IsOpened() ? m_file : stderr, "[DEBUG]: ");
-            break;
-        case LOG_WARN:
-            fprintf(IsOpened() ? m_file : stderr, "[WARN]: ");
-            break;
-        case LOG_INFO:
-            fprintf(IsOpened() ? m_file : stderr, "[INFO]: ");
-            break;
-        case LOG_ERROR:
-            fprintf(IsOpened() ? m_file : stderr, "[ERROR]: ");
-            break;
-        default:
-            break;
-    }
+        switch (type)
+        {
+            case LOG_TRACE:
+                fprintf(out, "[TRACE]: ");
+                break;
+            case LOG_DEBUG:
+                fprintf(out, "[DEBUG]: ");
+                break;
+            case LOG_WARN:
+                fprintf(out, "[WARN]: ");
+                break;
+            case LOG_INFO:
+                fprintf(out, "[INFO]: ");
+                break;
+            case LOG_ERROR:
+                fprintf(out, "[ERROR]: ");
+                break;
+            default:
+                break;
+        }
 
-    vfprintf(IsOpened() ? m_file : stderr, str, args);
+        va_list args2;
+        va_copy(args2, args);
+        vfprintf(out, str, args2);
+        va_end(args2);
+    }
 }
 
 void CLogger::Trace(const char* str, ...)
@@ -126,34 +134,15 @@ void CLogger::Log(LogLevel logLevel, const char* str, ...)
     va_end(args);
 }
 
-void CLogger::SetOutputFile(std::string filename)
+void CLogger::AddOutput(FILE* file)
 {
-    m_filename = filename;
-    Open();
+    assert(file != nullptr);
+    m_outputs.push_back(file);
 }
 
-void CLogger::Open()
+void CLogger::SetLogLevel(LogLevel level)
 {
-    m_file = fopen(m_filename.c_str(), "w");
-
-    if (m_file == nullptr)
-        fprintf(stderr, "Could not create file %s\n", m_filename.c_str());
-}
-
-void CLogger::Close()
-{
-    if (IsOpened())
-        fclose(m_file);
-}
-
-bool CLogger::IsOpened()
-{
-    return m_file != nullptr;
-}
-
-void CLogger::SetLogLevel(LogLevel type)
-{
-    m_logLevel = type;
+    m_logLevel = level;
 }
 
 bool CLogger::ParseLogLevel(const std::string& str, LogLevel& logLevel)

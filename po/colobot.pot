@@ -20,9 +20,6 @@ msgstr ""
 msgid "Colobot rules!"
 msgstr ""
 
-msgid "SatCom"
-msgstr ""
-
 msgid "Maximize"
 msgstr ""
 
@@ -113,9 +110,6 @@ msgstr ""
 msgid " Summary:"
 msgstr ""
 
-msgid " Drivers:"
-msgstr ""
-
 msgid " Resolution:"
 msgstr ""
 
@@ -189,32 +183,6 @@ msgstr ""
 msgid "This is example code that cannot be run directly"
 msgstr ""
 
-msgid "\\b;List of objects\n"
-msgstr ""
-
-msgid "\\b;Robots\n"
-msgstr ""
-
-msgid "\\b;Buildings\n"
-msgstr ""
-
-msgid "\\b;Moveable objects\n"
-msgstr ""
-
-msgid "\\b;Aliens\n"
-msgstr ""
-
-msgid "\\c; (none)\\n;\n"
-msgstr ""
-
-msgid "\\b;Error\n"
-msgstr ""
-
-msgid ""
-"The list is only available if a \\l;radar station\\u object\\radar; is "
-"working.\n"
-msgstr ""
-
 msgid "Open"
 msgstr ""
 
@@ -240,13 +208,13 @@ msgstr ""
 msgid "Original game developed by:"
 msgstr ""
 
-msgid "www.epsitec.com"
+msgid "epsitec.com"
 msgstr ""
 
 msgid "Gold Edition development by:"
 msgstr ""
 
-msgid "www.colobot.info"
+msgid "colobot.info"
 msgstr ""
 
 msgid "Recorder"
@@ -316,6 +284,9 @@ msgid "Code battles\\Program your robot to be the best of them all!"
 msgstr ""
 
 msgid "Custom levels\\Levels from mods created by the users"
+msgstr ""
+
+msgid "SatCom"
 msgstr ""
 
 msgid "Change player\\Change player"
@@ -399,7 +370,9 @@ msgstr ""
 msgid "Film sequences\\Films before and after the missions"
 msgstr ""
 
-msgid "Scrolling\\Scrolling when the mouse touches right or left border"
+msgid ""
+"Camera border scrolling\\Scrolling when the mouse touches right or left "
+"border"
 msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
@@ -411,7 +384,7 @@ msgstr ""
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr ""
 
-msgid "System mouse\\Use system mouse cursor"
+msgid "Pause in background\\Pause the game when the window is unfocused"
 msgstr ""
 
 msgid "Automatic indent\\When program editing"
@@ -453,7 +426,7 @@ msgstr ""
 msgid "Dynamic shadows\\Beautiful shadows!"
 msgstr ""
 
-msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
+msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
 msgstr ""
 
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
@@ -544,6 +517,9 @@ msgstr ""
 msgid "Pause\\Pause the game without opening menu"
 msgstr ""
 
+msgid "Cheat console\\Show cheat console"
+msgstr ""
+
 msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
 msgstr ""
 
@@ -565,11 +541,11 @@ msgstr ""
 msgid "Normal\\Normal sound volume"
 msgstr ""
 
-msgid "Use a joystick\\Joystick or keyboard"
-msgstr ""
-
 msgid ""
 "Access to solution\\Shows the solution (detailed instructions for missions)"
+msgstr ""
+
+msgid "Invert\\Invert values on this axis"
 msgstr ""
 
 msgid "\\New player name"
@@ -1388,9 +1364,6 @@ msgstr ""
 msgid "Place occupied"
 msgstr ""
 
-msgid "No other robot"
-msgstr ""
-
 msgid "You can not carry a radioactive object"
 msgstr ""
 
@@ -1401,9 +1374,6 @@ msgid "Nothing to drop"
 msgstr ""
 
 msgid "Impossible under water"
-msgstr ""
-
-msgid "Not enough energy"
 msgstr ""
 
 msgid "Titanium too far away"
@@ -1433,13 +1403,7 @@ msgstr ""
 msgid "Can not produce not researched object"
 msgstr ""
 
-msgid "Ground inappropriate"
-msgstr ""
-
-msgid "Building too close"
-msgstr ""
-
-msgid "Object too close"
+msgid "Not enough energy"
 msgstr ""
 
 msgid "Nothing to recycle"
@@ -1449,9 +1413,6 @@ msgid "No more energy"
 msgstr ""
 
 msgid "Error in instruction move"
-msgstr ""
-
-msgid "Object not found"
 msgstr ""
 
 msgid "Goto: inaccessible destination"
@@ -1502,9 +1463,6 @@ msgstr ""
 msgid "Analysis already performed"
 msgstr ""
 
-msgid "Not yet enough energy"
-msgstr ""
-
 msgid "No uranium to transform"
 msgstr ""
 
@@ -1512,6 +1470,9 @@ msgid "Transforms only uranium"
 msgstr ""
 
 msgid "No titanium"
+msgstr ""
+
+msgid "Object too close"
 msgstr ""
 
 msgid "No information exchange post within range"
@@ -1552,9 +1513,6 @@ msgid "Bot destroyed"
 msgstr ""
 
 msgid "Building destroyed"
-msgstr ""
-
-msgid "Can not create this; there are too many objects"
 msgstr ""
 
 msgid "Unable to control enemy objects"
@@ -1631,9 +1589,6 @@ msgid "<<< Sorry; mission failed >>>"
 msgstr ""
 
 msgid "Current mission saved"
-msgstr ""
-
-msgid "Checkpoint crossed"
 msgstr ""
 
 msgid "Alien Queen killed"

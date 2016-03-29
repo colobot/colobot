@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 
 #include "graphics/opengl/glutil.h"
 
+#include "common/image.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
 
@@ -26,8 +27,12 @@
 #include "graphics/opengl/gl33device.h"
 #include "graphics/opengl/gldevice.h"
 
+#include <SDL.h>
 #include <physfs.h>
 #include <cstring>
+#include <vector>
+#include <sstream>
+#include <algorithm>
 
 // Graphics module namespace
 namespace Gfx
@@ -35,6 +40,26 @@ namespace Gfx
 
 GLuint textureCoordinates[] = { GL_S, GL_T, GL_R, GL_Q };
 GLuint textureCoordGen[] = { GL_TEXTURE_GEN_S, GL_TEXTURE_GEN_T, GL_TEXTURE_GEN_R, GL_TEXTURE_GEN_Q };
+
+bool InitializeGLEW()
+{
+    static bool glewInited = false;
+
+    if (!glewInited)
+    {
+        glewExperimental = GL_TRUE;
+
+        if (glewInit() != GLEW_OK)
+        {
+            GetLogger()->Error("GLEW initialization failed\n");
+            return false;
+        }
+
+        glewInited = true;
+    }
+
+    return true;
+}
 
 FramebufferSupport DetectFramebufferSupport()
 {
@@ -65,12 +90,241 @@ std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::str
 
 int GetOpenGLVersion()
 {
-    const char *version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-    int major = 0, minor = 0;
+    int major, minor;
+
+    return GetOpenGLVersion(major, minor);
+}
+
+int GetOpenGLVersion(int &major, int &minor)
+{
+    const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
 
     sscanf(version, "%d.%d", &major, &minor);
 
     return 10 * major + minor;
+}
+
+bool AreExtensionsSupported(std::string list)
+{
+    // Extract extensions to find
+    std::vector<std::string> extensions;
+    std::stringstream stream(list);
+
+    std::string value;
+
+    while (true)
+    {
+        stream >> value;
+
+        if (stream.eof())
+            break;
+
+        extensions.push_back(value);
+    }
+
+    int version = GetOpenGLVersion();
+
+    // Use glGetString
+    if (version < 30)
+    {
+        const char* text = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
+        std::stringstream stream(text);
+
+        while (!extensions.empty())
+        {
+            stream >> value;
+
+            if (stream.eof())
+                break;
+
+            auto result = std::remove(extensions.begin(), extensions.end(), value);
+
+            if (result != extensions.end())
+                extensions.erase(result);
+        }
+    }
+    // Use glGetStringi
+    else
+    {
+        int n;
+        glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+
+        for (int i = 0; i < n; i++)
+        {
+            const char* name = reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, i));
+            value = std::string(name);
+
+            auto result = std::remove(extensions.begin(), extensions.end(), value);
+
+            if (result != extensions.end())
+                extensions.erase(result);
+
+            if (extensions.empty())
+                break;
+        }
+    }
+
+    // Return true if found all required extensions
+    return extensions.empty();
+}
+
+std::string GetHardwareInfo(bool full)
+{
+    int glversion = GetOpenGLVersion();
+
+    std::stringstream result;
+
+    // basic hardware information
+    const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+    const char* vendor = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+    const char* renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+
+    result << "Hardware information:\n\n";
+    result << "OpenGL Version:\t\t" << version << '\n';
+    result << "Hardware Vendor:\t\t" << vendor << '\n';
+    result << "Renderer:\t\t\t" << renderer << '\n';
+
+    // GLSL version if available
+    if (glversion >= 20)
+    {
+        const char* glslVersion = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
+        result << "Shading Language Version:\t" << glslVersion << '\n';
+    }
+
+    if (!full) return result.str();
+
+    // extended hardware information
+    int value = 0;
+
+    result << "\nCapabilities:\n\n";
+
+    // texture size
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
+    result << "Max Texture Size:\t\t" << value << '\n';
+
+    if (glewIsSupported("GL_EXT_texture_filter_anisotropic"))
+    {
+        result << "Anisotropic filtering:\t\tsupported\n";
+
+        float level;
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
+
+        result << "    Max Level:\t\t" << static_cast<int>(level) << '\n';
+    }
+    else
+    {
+        result << "Anisotropic filtering:\t\tunsupported\n";
+    }
+
+    // multitexturing
+    if (glversion >= 13)
+    {
+        result << "Multitexturing:\t\tsupported\n";
+        glGetIntegerv(GL_MAX_TEXTURE_UNITS, &value);
+        result << "    Max Texture Units:\t\t" << value << '\n';
+
+        if (glversion >= 20)
+        {
+            glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &value);
+            result << "    Max Texture Image Units:\t" << value << '\n';
+        }
+    }
+    else
+    {
+        result << "Multitexturing:\t\tunsupported\n";
+    }
+
+    // FBO support
+    FramebufferSupport framebuffer = DetectFramebufferSupport();
+
+    if (framebuffer == FBS_ARB)
+    {
+        result << "Framebuffer Object:\t\tsupported\n";
+        result << "    Type:\t\t\tCore/ARB\n";
+
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &value);
+        result << "    Max Renderbuffer Size:\t" << value << '\n';
+
+        glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &value);
+        result << "    Max Color Attachments:\t" << value << '\n';
+
+        result << "Multisampling:\t\tsupported\n";
+
+        glGetIntegerv(GL_MAX_SAMPLES, &value);
+        result << "    Max Framebuffer Samples:\t" << value << '\n';
+    }
+    else if (framebuffer == FBS_EXT)
+    {
+        result << "Framebuffer Object:\tsupported\n";
+        result << "    Type:\tEXT\n";
+
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &value);
+        result << "    Max Renderbuffer Size:\t" << value << '\n';
+
+        glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT, &value);
+        result << "    Max Color Attachments:\t" << value << '\n';
+
+        if (glewIsSupported("GL_EXT_framebuffer_multisample"))
+        {
+            result << "Multisampling:\tsupported\n";
+
+            glGetIntegerv(GL_MAX_SAMPLES_EXT, &value);
+            result << "    Max Framebuffer Samples:\t" << value << '\n';
+        }
+    }
+    else
+    {
+        result << "Framebuffer Object:\tunsupported\n";
+    }
+
+    // VBO support
+    if (glversion >= 15)
+    {
+        result << "VBO:\t\t\tsupported (core)\n";
+    }
+    else if (glewIsSupported("GL_ARB_vertex_buffer_object"))
+    {
+        result << "VBO:\t\t\tsupported (ARB)\n";
+    }
+    else
+    {
+        result << "VBO:\t\t\tunsupported\n";
+    }
+
+    return result.str();
+}
+
+int ClearGLErrors()
+{
+    int result = 0;
+
+    while (true)
+    {
+        GLint error = glGetError();
+        if (error == GL_NO_ERROR)
+            break;
+
+        result++;
+    }
+
+    return result;
+}
+
+bool CheckGLErrors()
+{
+    GLint error = glGetError();
+    bool result = false;
+
+    while (error != GL_NO_ERROR)
+    {
+        GetLogger()->Error("OpenGL error: %d\n", error);
+
+        result = true;
+
+        error = glGetError();
+    }
+
+    return result;
 }
 
 GLenum TranslateGfxPrimitive(PrimitiveType type)
@@ -187,6 +441,13 @@ GLenum TranslateTextureCoordinateGen(int index)
     return textureCoordGen[index];
 }
 
+std::string lastShaderError;
+
+std::string GetLastShaderError()
+{
+    return lastShaderError;
+}
+
 GLint LoadShader(GLint type, const char* filename)
 {
     PHYSFS_file *file = PHYSFS_openRead(filename);
@@ -220,6 +481,7 @@ GLint LoadShader(GLint type, const char* filename)
         glGetShaderInfoLog(shader, len + 1, nullptr, message.get());
 
         GetLogger()->Error("Shader compilation error occured!\n%s\n", message.get());
+        lastShaderError = std::string("Shader compilation error occured!\n\n") + std::string(message.get());
 
         glDeleteShader(shader);
         return 0;
@@ -252,6 +514,7 @@ GLint LinkProgram(int count, GLint shaders[])
         glGetProgramInfoLog(program, len + 1, nullptr, message.get());
 
         GetLogger()->Error("Shader program linking error occured!\n%s\n", message.get());
+        lastShaderError = std::string("Shader program linking error occured!\n\n") + std::string(message.get());
 
         glDeleteProgram(program);
 
@@ -275,5 +538,115 @@ std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(Math::IntPoint size
     return pixels;
 }
 
+PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format)
+{
+    PreparedTextureData texData;
+
+    bool convert = false;
+
+    texData.sourceFormat = 0;
+
+    if (format == TEX_IMG_RGB)
+    {
+        texData.sourceFormat = GL_RGB;
+        texData.alpha = false;
+    }
+    else if (format == TEX_IMG_BGR)
+    {
+        texData.sourceFormat = GL_BGR;
+        texData.alpha = false;
+    }
+    else if (format == TEX_IMG_RGBA)
+    {
+        texData.sourceFormat = GL_RGBA;
+        texData.alpha = true;
+    }
+    else if (format == TEX_IMG_BGRA)
+    {
+        texData.sourceFormat = GL_BGRA;
+        texData.alpha = true;
+    }
+    else if (format == TEX_IMG_AUTO)
+    {
+        if (imageData->surface->format->BytesPerPixel == 4)
+        {
+            if ((imageData->surface->format->Amask == 0xFF000000) &&
+                (imageData->surface->format->Rmask == 0x00FF0000) &&
+                (imageData->surface->format->Gmask == 0x0000FF00) &&
+                (imageData->surface->format->Bmask == 0x000000FF))
+            {
+                texData.sourceFormat = GL_BGRA;
+                texData.alpha = true;
+            }
+            else if ((imageData->surface->format->Amask == 0xFF000000) &&
+                     (imageData->surface->format->Bmask == 0x00FF0000) &&
+                     (imageData->surface->format->Gmask == 0x0000FF00) &&
+                     (imageData->surface->format->Rmask == 0x000000FF))
+            {
+                texData.sourceFormat = GL_RGBA;
+                texData.alpha = true;
+            }
+            else
+            {
+                texData.sourceFormat = GL_RGBA;
+                convert = true;
+            }
+        }
+        else if (imageData->surface->format->BytesPerPixel == 3)
+        {
+            if ((imageData->surface->format->Rmask == 0xFF0000) &&
+                (imageData->surface->format->Gmask == 0x00FF00) &&
+                (imageData->surface->format->Bmask == 0x0000FF))
+            {
+                texData.sourceFormat = GL_BGR;
+                texData.alpha = false;
+            }
+            else if ((imageData->surface->format->Bmask == 0xFF0000) &&
+                     (imageData->surface->format->Gmask == 0x00FF00) &&
+                     (imageData->surface->format->Rmask == 0x0000FF))
+            {
+                texData.sourceFormat = GL_RGB;
+                texData.alpha = false;
+            }
+            else
+            {
+                texData.sourceFormat = GL_RGBA;
+                convert = true;
+            }
+        }
+        else
+        {
+            GetLogger()->Error("Unknown data surface format");
+            assert(false);
+        }
+    }
+    else
+        assert(false);
+
+    texData.actualSurface = imageData->surface;
+    texData.convertedSurface = nullptr;
+
+    if (convert)
+    {
+        SDL_PixelFormat format = {};
+        format.BytesPerPixel = 4;
+        format.BitsPerPixel = 32;
+        format.Aloss = format.Bloss = format.Gloss = format.Rloss = 0;
+        format.Amask = 0xFF000000;
+        format.Ashift = 24;
+        format.Bmask = 0x00FF0000;
+        format.Bshift = 16;
+        format.Gmask = 0x0000FF00;
+        format.Gshift = 8;
+        format.Rmask = 0x000000FF;
+        format.Rshift = 0;
+        format.palette = nullptr;
+        texData.convertedSurface = SDL_ConvertSurface(imageData->surface, &format, SDL_SWSURFACE);
+        if (texData.convertedSurface != nullptr)
+            texData.actualSurface = texData.convertedSurface;
+    }
+
+    return texData;
+}
 
 } // namespace Gfx

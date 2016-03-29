@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,6 +26,8 @@
 #include "common/image.h"
 #include "common/logger.h"
 
+#include "graphics/core/light.h"
+
 #include "graphics/engine/engine.h"
 
 #include "graphics/opengl/glframebuffer.h"
@@ -36,6 +38,7 @@
 #include <SDL.h>
 #include <physfs.h>
 
+#include <cmath>
 #include <cassert>
 
 
@@ -160,64 +163,73 @@ void CGL21Device::DebugLights()
     m_worldMat = saveWorldMat;
 }
 
+std::string CGL21Device::GetName()
+{
+    return std::string("OpenGL 2.1");
+}
+
 bool CGL21Device::Create()
 {
     GetLogger()->Info("Creating CDevice - OpenGL 2.1\n");
 
-    /*static*/ bool glewInited = false;
-
-    if (!glewInited)
+    if (!InitializeGLEW())
     {
-        glewInited = true;
-
-        glewExperimental = GL_TRUE;
-
-        if (glewInit() != GLEW_OK)
-        {
-            GetLogger()->Error("GLEW initialization failed\n");
-            return false;
-        }
-
-        // Extract OpenGL version
-        const char *version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-        sscanf(version, "%d.%d", &m_glMajor, &m_glMinor);
-
-        if (m_glMajor < 2)
-        {
-            GetLogger()->Error("Your hardware does not support OpenGL 2.0 or 2.1.");
-            return false;
-        }
-
-        GetLogger()->Info("OpenGL %d.%d\n", m_glMajor, m_glMinor);
-
-        // Detect support of anisotropic filtering
-        m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
-        if(m_anisotropyAvailable)
-        {
-            // Obtain maximum anisotropy level available
-            float level;
-            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
-            m_maxAnisotropy = static_cast<int>(level);
-
-            GetLogger()->Info("Anisotropic filtering available\n");
-            GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
-        }
-        else
-        {
-            GetLogger()->Info("Anisotropic filtering not available\n");
-        }
-
-        // Read maximum sample count for MSAA
-        if(glewIsSupported("GL_ARB_multisample"))
-        {
-            glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_maxSamples);
-            GetLogger()->Info("Multisampling supported, max samples: %d\n", m_maxSamples);
-        }
-        else
-        {
-            GetLogger()->Info("Multisampling not supported\n");
-        }
+        m_errorMessage = "An error occured while initializing GLEW.";
+        return false;
     }
+
+    // Extract OpenGL version
+    int glMajor, glMinor;
+    int glVersion = GetOpenGLVersion(glMajor, glMinor);
+
+    if (glVersion < 20)
+    {
+        GetLogger()->Error("Unsupported OpenGL version: %d.%d\n", glMajor, glMinor);
+        GetLogger()->Error("OpenGL 2.0 or newer is required to use this engine.\n");
+        m_errorMessage = "It seems your graphics card does not support OpenGL 2.0.\n";
+        m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n";
+        m_errorMessage += "(OpenGL 2.0 is roughly equivalent to Direct3D 9)\n\n";
+        m_errorMessage += GetHardwareInfo();
+        return false;
+    }
+
+    const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+    const char* renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+
+    GetLogger()->Info("OpenGL %s\n", version);
+    GetLogger()->Info("%s\n", renderer);
+
+    // Detect support of anisotropic filtering
+    m_capabilities.anisotropySupported = glewIsSupported("GL_EXT_texture_filter_anisotropic");
+    if (m_capabilities.anisotropySupported)
+    {
+        // Obtain maximum anisotropy level available
+        float level;
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
+        m_capabilities.maxAnisotropy = static_cast<int>(level);
+
+        GetLogger()->Info("Anisotropic filtering available\n");
+        GetLogger()->Info("Maximum anisotropy: %d\n", m_capabilities.maxAnisotropy);
+    }
+    else
+    {
+        GetLogger()->Info("Anisotropic filtering not available\n");
+    }
+
+    // Read maximum sample count for MSAA
+    if(glewIsSupported("GL_EXT_framebuffer_multisample"))
+    {
+        m_capabilities.multisamplingSupported = true;
+
+        glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_capabilities.maxSamples);
+        GetLogger()->Info("Multisampling supported, max samples: %d\n", m_capabilities.maxSamples);
+    }
+    else
+    {
+        GetLogger()->Info("Multisampling not supported\n");
+    }
+
+    m_capabilities.shadowMappingSupported = true;
 
     // This is mostly done in all modern hardware by default
     // DirectX doesn't even allow the option to turn off perspective correction anymore
@@ -229,125 +241,313 @@ bool CGL21Device::Create()
 
     glViewport(0, 0, m_config.size.x, m_config.size.y);
 
-    int numLights = 0;
-    glGetIntegerv(GL_MAX_LIGHTS, &numLights);
+    // this is set in shader
+    int numLights = 8;
 
     m_lights        = std::vector<Light>(numLights, Light());
     m_lightsEnabled = std::vector<bool> (numLights, false);
+
+    m_capabilities.maxLights = numLights;
 
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextures);
     GetLogger()->Info("Maximum texture image units: %d\n", maxTextures);
 
+    m_capabilities.multitexturingSupported = true;
+    m_capabilities.maxTextures = maxTextures;
+
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &m_capabilities.maxTextureSize);
+    GetLogger()->Info("Maximum texture size: %d\n", m_capabilities.maxTextureSize);
+
+    m_framebufferSupport = DetectFramebufferSupport();
+    if (m_framebufferSupport == FBS_ARB)
+    {
+        m_capabilities.framebufferSupported = true;
+        GetLogger()->Info("Framebuffer supported (ARB)\n");
+
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &m_capabilities.maxRenderbufferSize);
+        GetLogger()->Info("Maximum renderbuffer size: %d\n", m_capabilities.maxRenderbufferSize);
+    }
+    else if (m_framebufferSupport == FBS_EXT)
+    {
+        m_capabilities.framebufferSupported = true;
+        GetLogger()->Info("Framebuffer supported (EXT)\n");
+
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &m_capabilities.maxRenderbufferSize);
+        GetLogger()->Info("Maximum renderbuffer size: %d\n", m_capabilities.maxRenderbufferSize);
+    }
+    else
+    {
+        m_capabilities.framebufferSupported = false;
+        GetLogger()->Info("Framebuffer not supported\n");
+    }
+
     m_currentTextures    = std::vector<Texture>           (maxTextures, Texture());
     m_texturesEnabled    = std::vector<bool>              (maxTextures, false);
     m_textureStageParams = std::vector<TextureStageParams>(maxTextures, TextureStageParams());
 
-    int value;
-    if (CConfigFile::GetInstance().GetIntProperty("Setup", "PerPixelLighting", value))
-    {
-        m_perPixelLighting = value > 0;
-    }
-
-    if (m_perPixelLighting)
-        CLogger::GetInstance().Info("Using per-pixel lighting\n");
-    else
-        CLogger::GetInstance().Info("Using per-vertex lighting\n");
-
-
-    // Create normal shader program
+    // Create shader program for normal rendering
     GLint shaders[2];
     char filename[128];
 
-    if (m_perPixelLighting)
-        sprintf(filename, "shaders/vertex_shader_21_perpixel.glsl");
-    else
-        sprintf(filename, "shaders/vertex_shader_21_pervertex.glsl");
-
+    strcpy(filename, "shaders/gl21/vs_normal.glsl");
     shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
-    if (shaders[0] == 0) return false;
+    if (shaders[0] == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Cound not create vertex shader from file '%s'\n", filename);
+        return false;
+    }
 
-    if (m_perPixelLighting)
-        sprintf(filename, "shaders/fragment_shader_21_perpixel.glsl");
-    else
-        sprintf(filename, "shaders/fragment_shader_21_pervertex.glsl");
-
+    strcpy(filename, "shaders/gl21/fs_normal.glsl");
     shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
-    if (shaders[1] == 0) return false;
+    if (shaders[1] == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Cound not create fragment shader from file '%s'\n", filename);
+        return false;
+    }
 
-    m_program = LinkProgram(2, shaders);
-    if (m_program == 0) return false;
+    m_normalProgram = LinkProgram(2, shaders);
+    if (m_normalProgram == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Cound not link shader program for normal rendering\n");
+        return false;
+    }
 
     glDeleteShader(shaders[0]);
     glDeleteShader(shaders[1]);
 
-
-    // Obtain uniform locations
-    uni_ProjectionMatrix = glGetUniformLocation(m_program, "uni_ProjectionMatrix");
-    uni_ViewMatrix = glGetUniformLocation(m_program, "uni_ViewMatrix");
-    uni_ModelMatrix = glGetUniformLocation(m_program, "uni_ModelMatrix");
-    uni_NormalMatrix = glGetUniformLocation(m_program, "uni_NormalMatrix");
-    uni_ShadowMatrix = glGetUniformLocation(m_program, "uni_ShadowMatrix");
-
-    uni_PrimaryTexture = glGetUniformLocation(m_program, "uni_PrimaryTexture");
-    uni_SecondaryTexture = glGetUniformLocation(m_program, "uni_SecondaryTexture");
-    uni_ShadowTexture = glGetUniformLocation(m_program, "uni_ShadowTexture");
-
-    for (int i = 0; i < 3; i++)
+    // Create shader program for interface rendering
+    strcpy(filename, "shaders/gl21/vs_interface.glsl");
+    shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
+    if (shaders[0] == 0)
     {
-        char name[64];
-        sprintf(name, "uni_TextureEnabled[%d]", i);
-        uni_TextureEnabled[i] = glGetUniformLocation(m_program, name);
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Cound not create vertex shader from file '%s'\n", filename);
+        return false;
     }
 
-    uni_AlphaTestEnabled = glGetUniformLocation(m_program, "uni_AlphaTestEnabled");
-    uni_AlphaReference = glGetUniformLocation(m_program, "uni_AlphaReference");
-
-    uni_FogEnabled = glGetUniformLocation(m_program, "uni_FogEnabled");
-    uni_FogRange = glGetUniformLocation(m_program, "uni_FogRange");
-    uni_FogColor = glGetUniformLocation(m_program, "uni_FogColor");
-
-    uni_ShadowColor = glGetUniformLocation(m_program, "uni_ShadowColor");
-    uni_LightingEnabled = glGetUniformLocation(m_program, "uni_LightingEnabled");
-
-    for (int i = 0; i < 8; i++)
+    strcpy(filename, "shaders/gl21/fs_interface.glsl");
+    shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
+    if (shaders[1] == 0)
     {
-        char name[64];
-        sprintf(name, "uni_LightEnabled[%d]", i);
-        uni_LightEnabled[i] = glGetUniformLocation(m_program, name);
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Cound not compile fragment shader from file '%s'\n", filename);
+        return false;
     }
 
-    // Set default uniform values
-    Math::Matrix matrix;
-    matrix.LoadIdentity();
+    m_interfaceProgram = LinkProgram(2, shaders);
+    if (m_interfaceProgram == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Cound not link shader program for interface rendering\n");
+        return false;
+    }
 
-    glUseProgram(m_program);
+    glDeleteShader(shaders[0]);
+    glDeleteShader(shaders[1]);
 
-    glUniformMatrix4fv(uni_ProjectionMatrix, 1, GL_FALSE, matrix.Array());
-    glUniformMatrix4fv(uni_ViewMatrix, 1, GL_FALSE, matrix.Array());
-    glUniformMatrix4fv(uni_ModelMatrix, 1, GL_FALSE, matrix.Array());
-    glUniformMatrix4fv(uni_NormalMatrix, 1, GL_FALSE, matrix.Array());
-    glUniformMatrix4fv(uni_ShadowMatrix, 1, GL_FALSE, matrix.Array());
+    // Create shader program for shadow rendering
+    strcpy(filename, "shaders/gl21/vs_shadow.glsl");
+    shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
+    if (shaders[0] == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Cound not create vertex shader from file '%s'\n", filename);
+        return false;
+    }
 
-    glUniform1i(uni_PrimaryTexture, 0);
-    glUniform1i(uni_SecondaryTexture, 1);
-    glUniform1i(uni_ShadowTexture, 2);
+    strcpy(filename, "shaders/gl21/fs_shadow.glsl");
+    shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
+    if (shaders[1] == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Cound not compile fragment shader from file '%s'\n", filename);
+        return false;
+    }
 
-    for (int i = 0; i < 3; i++)
-        glUniform1i(uni_TextureEnabled[i], 0);
+    m_shadowProgram = LinkProgram(2, shaders);
+    if (m_shadowProgram == 0)
+    {
+        m_errorMessage = GetLastShaderError();
+        GetLogger()->Error("Cound not link shader program for shadow rendering\n");
+        return false;
+    }
 
-    glUniform1i(uni_AlphaTestEnabled, 0);
-    glUniform1f(uni_AlphaReference, 0.5f);
+    glDeleteShader(shaders[0]);
+    glDeleteShader(shaders[1]);
 
-    glUniform1i(uni_FogEnabled, 0);
-    glUniform2f(uni_FogRange, 100.0f, 200.0f);
-    glUniform4f(uni_FogColor, 0.8f, 0.8f, 0.8f, 1.0f);
+    // Obtain uniform locations from normal rendering program and initialize them
+    {
+        UniformLocations &uni = m_uniforms[0];
 
-    glUniform1f(uni_ShadowColor, 0.5f);
+        uni.projectionMatrix = glGetUniformLocation(m_normalProgram, "uni_ProjectionMatrix");
+        uni.viewMatrix = glGetUniformLocation(m_normalProgram, "uni_ViewMatrix");
+        uni.modelMatrix = glGetUniformLocation(m_normalProgram, "uni_ModelMatrix");
+        uni.normalMatrix = glGetUniformLocation(m_normalProgram, "uni_NormalMatrix");
+        uni.shadowMatrix = glGetUniformLocation(m_normalProgram, "uni_ShadowMatrix");
 
-    glUniform1i(uni_LightingEnabled, 0);
-    for (int i = 0; i < 8; i++)
-        glUniform1i(uni_LightEnabled[i], 0);
+        uni.primaryTexture = glGetUniformLocation(m_normalProgram, "uni_PrimaryTexture");
+        uni.secondaryTexture = glGetUniformLocation(m_normalProgram, "uni_SecondaryTexture");
+        uni.shadowTexture = glGetUniformLocation(m_normalProgram, "uni_ShadowTexture");
+
+        for (int i = 0; i < 3; i++)
+        {
+            char name[64];
+            sprintf(name, "uni_TextureEnabled[%d]", i);
+            uni.textureEnabled[i] = glGetUniformLocation(m_normalProgram, name);
+        }
+
+        uni.alphaTestEnabled = glGetUniformLocation(m_normalProgram, "uni_AlphaTestEnabled");
+        uni.alphaReference = glGetUniformLocation(m_normalProgram, "uni_AlphaReference");
+
+        uni.fogEnabled = glGetUniformLocation(m_normalProgram, "uni_FogEnabled");
+        uni.fogRange = glGetUniformLocation(m_normalProgram, "uni_FogRange");
+        uni.fogColor = glGetUniformLocation(m_normalProgram, "uni_FogColor");
+
+        uni.shadowColor = glGetUniformLocation(m_normalProgram, "uni_ShadowColor");
+        uni.lightingEnabled = glGetUniformLocation(m_normalProgram, "uni_LightingEnabled");
+
+        uni.ambientColor = glGetUniformLocation(m_normalProgram, "uni_Material.ambient");
+        uni.diffuseColor = glGetUniformLocation(m_normalProgram, "uni_Material.diffuse");
+        uni.specularColor = glGetUniformLocation(m_normalProgram, "uni_Material.specular");
+
+        GLchar name[64];
+        for (int i = 0; i < 8; i++)
+        {
+            sprintf(name, "uni_Light[%d].Enabled", i);
+            uni.lights[i].enabled = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Type", i);
+            uni.lights[i].type = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Position", i);
+            uni.lights[i].position = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Ambient", i);
+            uni.lights[i].ambient = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Diffuse", i);
+            uni.lights[i].diffuse = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Specular", i);
+            uni.lights[i].specular = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Attenuation", i);
+            uni.lights[i].attenuation = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].SpotDirection", i);
+            uni.lights[i].spotDirection = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].Exponent", i);
+            uni.lights[i].spotExponent = glGetUniformLocation(m_normalProgram, name);
+
+            sprintf(name, "uni_Light[%d].SpotCutoff", i);
+            uni.lights[i].spotCutoff = glGetUniformLocation(m_normalProgram, name);
+        }
+
+        // Set default uniform values
+        Math::Matrix matrix;
+        matrix.LoadIdentity();
+
+        glUseProgram(m_normalProgram);
+
+        glUniformMatrix4fv(uni.projectionMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.viewMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.modelMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.normalMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.shadowMatrix, 1, GL_FALSE, matrix.Array());
+
+        glUniform1i(uni.primaryTexture, 0);
+        glUniform1i(uni.secondaryTexture, 1);
+        glUniform1i(uni.shadowTexture, 2);
+
+        for (int i = 0; i < 3; i++)
+            glUniform1i(uni.textureEnabled[i], 0);
+
+        glUniform1i(uni.alphaTestEnabled, 0);
+        glUniform1f(uni.alphaReference, 0.5f);
+
+        glUniform1i(uni.fogEnabled, 0);
+        glUniform2f(uni.fogRange, 100.0f, 200.0f);
+        glUniform4f(uni.fogColor, 0.8f, 0.8f, 0.8f, 1.0f);
+
+        glUniform1f(uni.shadowColor, 0.5f);
+
+        glUniform1i(uni.lightingEnabled, 0);
+
+        for (int i = 0; i < 8; i++)
+            glUniform1i(uni.lights[i].enabled, 0);
+    }
+
+    // Obtain uniform locations from interface rendering program and initialize them
+    {
+        UniformLocations &uni = m_uniforms[1];
+
+        uni.projectionMatrix = glGetUniformLocation(m_interfaceProgram, "uni_ProjectionMatrix");
+        uni.viewMatrix = glGetUniformLocation(m_interfaceProgram, "uni_ViewMatrix");
+        uni.modelMatrix = glGetUniformLocation(m_interfaceProgram, "uni_ModelMatrix");
+
+        uni.primaryTexture = glGetUniformLocation(m_interfaceProgram, "uni_PrimaryTexture");
+
+        uni.textureEnabled[0] = glGetUniformLocation(m_interfaceProgram, "uni_TextureEnabled");
+        uni.textureEnabled[1] = -1;
+        uni.textureEnabled[2] = -1;
+
+        // Set default uniform values
+        Math::Matrix matrix;
+        matrix.LoadIdentity();
+
+        glUseProgram(m_interfaceProgram);
+
+        glUniformMatrix4fv(uni.projectionMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.viewMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.modelMatrix, 1, GL_FALSE, matrix.Array());
+
+        glUniform1i(uni.primaryTexture, 0);
+
+        glUniform1i(uni.textureEnabled[0], 0);
+    }
+
+    // Obtain uniform locations from shadow rendering program and initialize them
+    {
+        UniformLocations &uni = m_uniforms[2];
+
+        uni.projectionMatrix = glGetUniformLocation(m_shadowProgram, "uni_ProjectionMatrix");
+        uni.viewMatrix = glGetUniformLocation(m_shadowProgram, "uni_ViewMatrix");
+        uni.modelMatrix = glGetUniformLocation(m_shadowProgram, "uni_ModelMatrix");
+
+        uni.primaryTexture = glGetUniformLocation(m_shadowProgram, "uni_PrimaryTexture");
+
+        uni.textureEnabled[0] = glGetUniformLocation(m_shadowProgram, "uni_TextureEnabled");
+        uni.textureEnabled[1] = -1;
+        uni.textureEnabled[2] = -1;
+
+        uni.alphaTestEnabled = glGetUniformLocation(m_shadowProgram, "uni_AlphaTestEnabled");
+        uni.alphaReference = glGetUniformLocation(m_shadowProgram, "uni_AlphaReference");
+
+        // Set default uniform values
+        Math::Matrix matrix;
+        matrix.LoadIdentity();
+
+        glUseProgram(m_shadowProgram);
+
+        glUniformMatrix4fv(uni.projectionMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.viewMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.modelMatrix, 1, GL_FALSE, matrix.Array());
+
+        glUniform1i(uni.primaryTexture, 0);
+
+        glUniform1i(uni.textureEnabled[0], 0);
+
+        glUniform1i(uni.alphaTestEnabled, 0);
+        glUniform1f(uni.alphaReference, 0.5f);
+    }
+
+    glUseProgram(m_normalProgram);
+    glEnable(GL_VERTEX_PROGRAM_TWO_SIDE);
 
     // create default framebuffer object
     FramebufferParams framebufferParams;
@@ -357,10 +557,6 @@ bool CGL21Device::Create()
     framebufferParams.depth = m_config.depthSize;
 
     m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
-
-    m_framebufferSupport = DetectFramebufferSupport();
-    if (m_framebufferSupport != FBS_NONE)
-        GetLogger()->Debug("Framebuffer supported\n");
 
     GetLogger()->Info("CDevice created successfully\n");
 
@@ -372,7 +568,9 @@ void CGL21Device::Destroy()
     // Delete the remaining textures
     // Should not be strictly necessary, but just in case
     glUseProgram(0);
-    glDeleteProgram(m_program);
+    glDeleteProgram(m_normalProgram);
+    glDeleteProgram(m_interfaceProgram);
+    glDeleteProgram(m_shadowProgram);
 
     // delete framebuffers
     for (auto& framebuffer : m_framebuffers)
@@ -396,8 +594,17 @@ void CGL21Device::ConfigChanged(const DeviceConfig& newConfig)
 
     // Reset state
     m_lighting = false;
-    Destroy();
-    Create();
+
+    glViewport(0, 0, m_config.size.x, m_config.size.y);
+
+    // create default framebuffer object
+    FramebufferParams framebufferParams;
+
+    framebufferParams.width = m_config.size.x;
+    framebufferParams.height = m_config.size.y;
+    framebufferParams.depth = m_config.depthSize;
+
+    m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
 }
 
 void CGL21Device::BeginScene()
@@ -407,6 +614,9 @@ void CGL21Device::BeginScene()
 
 void CGL21Device::EndScene()
 {
+#ifdef DEV_BUILD
+    CheckGLErrors();
+#endif
 }
 
 void CGL21Device::Clear()
@@ -415,13 +625,42 @@ void CGL21Device::Clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void CGL21Device::SetRenderMode(RenderMode mode)
+{
+    switch (mode)
+    {
+    case RENDER_MODE_NORMAL:
+        glUseProgram(m_normalProgram);
+        m_mode = 0;
+        break;
+    case RENDER_MODE_INTERFACE:
+        glUseProgram(m_interfaceProgram);
+        m_mode = 1;
+        break;
+    case RENDER_MODE_SHADOW:
+        glUseProgram(m_shadowProgram);
+        m_mode = 2;
+        break;
+    default:
+        assert(false);
+    }
+
+    for (int i = 0; i < 3; i++)
+    {
+        glUniform1i(m_uniforms[m_mode].textureEnabled[i], m_texturesEnabled[i]);
+    }
+}
+
 void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
 {
     if (type == TRANSFORM_WORLD)
     {
         m_worldMat = matrix;
 
-        glUniformMatrix4fv(uni_ModelMatrix, 1, GL_FALSE, m_worldMat.Array());
+        glUniformMatrix4fv(m_uniforms[m_mode].modelMatrix, 1, GL_FALSE, m_worldMat.Array());
+
+        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
+        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
 
         // normal transform
         Math::Matrix normalMat = matrix;
@@ -429,27 +668,31 @@ void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
         if (fabs(normalMat.Det()) > 1e-6)
             normalMat = normalMat.Inverse();
 
-        glUniformMatrix4fv(uni_NormalMatrix, 1, GL_TRUE, normalMat.Array());
+        glUniformMatrix4fv(m_uniforms[m_mode].normalMatrix, 1, GL_TRUE, normalMat.Array());
     }
     else if (type == TRANSFORM_VIEW)
     {
-        m_viewMat = matrix;
         Math::Matrix scale;
-        Math::LoadScaleMatrix(scale, Math::Vector(1.0f, 1.0f, -1.0f));
-        Math::Matrix temp = Math::MultiplyMatrices(scale, matrix);
+        scale.Set(3, 3, -1.0f);
+        m_viewMat = Math::MultiplyMatrices(scale, matrix);
 
-        glUniformMatrix4fv(uni_ViewMatrix, 1, GL_FALSE, temp.Array());
+        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
+        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
+
+        glUniformMatrix4fv(m_uniforms[m_mode].viewMatrix, 1, GL_FALSE, m_viewMat.Array());
     }
     else if (type == TRANSFORM_PROJECTION)
     {
         m_projectionMat = matrix;
 
-        glUniformMatrix4fv(uni_ProjectionMatrix, 1, GL_FALSE, m_projectionMat.Array());
+        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
+
+        glUniformMatrix4fv(m_uniforms[m_mode].projectionMatrix, 1, GL_FALSE, m_projectionMat.Array());
     }
     else if (type == TRANSFORM_SHADOW)
     {
         Math::Matrix temp = matrix;
-        glUniformMatrix4fv(uni_ShadowMatrix, 1, GL_FALSE, temp.Array());
+        glUniformMatrix4fv(m_uniforms[m_mode].shadowMatrix, 1, GL_FALSE, temp.Array());
     }
     else
     {
@@ -461,9 +704,9 @@ void CGL21Device::SetMaterial(const Material &material)
 {
     m_material = material;
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  m_material.ambient.Array());
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_material.diffuse.Array());
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_material.specular.Array());
+    glUniform4fv(m_uniforms[m_mode].ambientColor, 1, m_material.ambient.Array());
+    glUniform4fv(m_uniforms[m_mode].diffuseColor, 1, m_material.diffuse.Array());
+    glUniform4fv(m_uniforms[m_mode].specularColor, 1, m_material.specular.Array());
 }
 
 int CGL21Device::GetMaxLightCount()
@@ -478,58 +721,36 @@ void CGL21Device::SetLight(int index, const Light &light)
 
     m_lights[index] = light;
 
-    // Indexing from GL_LIGHT0 should always work
-    glLightfv(GL_LIGHT0 + index, GL_AMBIENT,  const_cast<GLfloat*>(light.ambient.Array()));
-    glLightfv(GL_LIGHT0 + index, GL_DIFFUSE,  const_cast<GLfloat*>(light.diffuse.Array()));
-    glLightfv(GL_LIGHT0 + index, GL_SPECULAR, const_cast<GLfloat*>(light.specular.Array()));
+    LightLocations &loc = m_uniforms[m_mode].lights[index];
 
-    glLightf(GL_LIGHT0 + index, GL_CONSTANT_ATTENUATION,  light.attenuation0);
-    glLightf(GL_LIGHT0 + index, GL_LINEAR_ATTENUATION,    light.attenuation1);
-    glLightf(GL_LIGHT0 + index, GL_QUADRATIC_ATTENUATION, light.attenuation2);
+    glUniform4fv(loc.ambient, 1, light.ambient.Array());
+    glUniform4fv(loc.diffuse, 1, light.diffuse.Array());
+    glUniform4fv(loc.specular, 1, light.specular.Array());
+    glUniform3f(loc.attenuation, light.attenuation0, light.attenuation1, light.attenuation2);
 
-    if (light.type == LIGHT_SPOT)
+    if (light.type == LIGHT_DIRECTIONAL)
     {
-        glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, light.spotAngle * Math::RAD_TO_DEG);
-        glLightf(GL_LIGHT0 + index, GL_SPOT_EXPONENT, light.spotIntensity);
+        glUniform1i(loc.type, 1);
+        glUniform4f(loc.position, -light.direction.x, -light.direction.y, -light.direction.z, 0.0f);
     }
-    else
+    else if (light.type == LIGHT_POINT)
     {
-        glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, 180.0f);
+        glUniform1i(loc.type, 2);
+        glUniform4f(loc.position, light.position.x, light.position.y, light.position.z, 1.0f);
+
+        glUniform3f(loc.spotDirection, 0.0f, 1.0f, 0.0f);
+        glUniform1f(loc.spotCutoff, -1.0f);
+        glUniform1f(loc.spotExponent, 1.0f);
     }
-
-    UpdateLightPosition(index);
-}
-
-void CGL21Device::UpdateLightPosition(int index)
-{
-    assert(index >= 0);
-    assert(index < static_cast<int>( m_lights.size() ));
-
-    glMatrixMode(GL_MODELVIEW);
-
-    glPushMatrix();
-
-    glLoadIdentity();
-    //glScalef(1.0f, 1.0f, -1.0f);
-
-    if (m_lights[index].type == LIGHT_SPOT)
+    else if (light.type == LIGHT_SPOT)
     {
-        GLfloat direction[4] = { -m_lights[index].direction.x, -m_lights[index].direction.y, -m_lights[index].direction.z, 1.0f };
-        glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
-    }
+        glUniform1i(loc.type, 3);
+        glUniform4f(loc.position, light.position.x, light.position.y, light.position.z, 1.0f);
 
-    if (m_lights[index].type == LIGHT_DIRECTIONAL)
-    {
-        GLfloat position[4] = { -m_lights[index].direction.x, -m_lights[index].direction.y, -m_lights[index].direction.z, 0.0f };
-        glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
+        glUniform3f(loc.spotDirection, -light.direction.x, -light.direction.y, -light.direction.z);
+        glUniform1f(loc.spotCutoff, std::cos(light.spotAngle));
+        glUniform1f(loc.spotExponent, light.spotIntensity);
     }
-    else
-    {
-        GLfloat position[4] = { m_lights[index].position.x, m_lights[index].position.y, m_lights[index].position.z, 1.0f };
-        glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
-    }
-
-    glPopMatrix();
 }
 
 void CGL21Device::SetLightEnabled(int index, bool enabled)
@@ -539,7 +760,7 @@ void CGL21Device::SetLightEnabled(int index, bool enabled)
 
     m_lightsEnabled[index] = enabled;
 
-    glUniform1i(uni_LightEnabled[index], enabled ? 1 : 0);
+    glUniform1i(m_uniforms[m_mode].lights[index].enabled, enabled ? 1 : 0);
 }
 
 /** If image is invalid, returns invalid texture.
@@ -623,122 +844,23 @@ Texture CGL21Device::CreateTexture(ImageData *data, const TextureCreateParams &p
     }
 
     // Set anisotropy level if available
-    if (m_anisotropyAvailable)
+    if (m_capabilities.anisotropySupported)
     {
-        float level = Math::Min(m_maxAnisotropy, CEngine::GetInstance().GetTextureAnisotropyLevel());
+        float level = Math::Min(m_capabilities.maxAnisotropy, CEngine::GetInstance().GetTextureAnisotropyLevel());
 
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, level);
     }
 
-    bool convert = false;
-    GLenum sourceFormat = 0;
+    PreparedTextureData texData = PrepareTextureData(data, params.format);
+    result.alpha = texData.alpha;
 
-    if (params.format == TEX_IMG_RGB)
-    {
-        sourceFormat = GL_RGB;
-        result.alpha = false;
-    }
-    else if (params.format == TEX_IMG_BGR)
-    {
-        sourceFormat = GL_BGR;
-        result.alpha = false;
-    }
-    else if (params.format == TEX_IMG_RGBA)
-    {
-        sourceFormat = GL_RGBA;
-        result.alpha = true;
-    }
-    else if (params.format == TEX_IMG_BGRA)
-    {
-        sourceFormat = GL_BGRA;
-        result.alpha = true;
-    }
-    else if (params.format == TEX_IMG_AUTO)
-    {
-        if (data->surface->format->BytesPerPixel == 4)
-        {
-            if ((data->surface->format->Amask == 0xFF000000) &&
-                (data->surface->format->Rmask == 0x00FF0000) &&
-                (data->surface->format->Gmask == 0x0000FF00) &&
-                (data->surface->format->Bmask == 0x000000FF))
-            {
-                sourceFormat = GL_BGRA;
-                result.alpha = true;
-            }
-            else if ((data->surface->format->Amask == 0xFF000000) &&
-                     (data->surface->format->Bmask == 0x00FF0000) &&
-                     (data->surface->format->Gmask == 0x0000FF00) &&
-                     (data->surface->format->Rmask == 0x000000FF))
-            {
-                sourceFormat = GL_RGBA;
-                result.alpha = true;
-            }
-            else
-            {
-                sourceFormat = GL_RGBA;
-                convert = true;
-            }
-        }
-        else if (data->surface->format->BytesPerPixel == 3)
-        {
-            if ((data->surface->format->Rmask == 0xFF0000) &&
-                (data->surface->format->Gmask == 0x00FF00) &&
-                (data->surface->format->Bmask == 0x0000FF))
-            {
-                sourceFormat = GL_BGR;
-                result.alpha = false;
-            }
-            else if ((data->surface->format->Bmask == 0xFF0000) &&
-                     (data->surface->format->Gmask == 0x00FF00) &&
-                     (data->surface->format->Rmask == 0x0000FF))
-            {
-                sourceFormat = GL_RGB;
-                result.alpha = false;
-            }
-            else
-            {
-                sourceFormat = GL_RGBA;
-                convert = true;
-            }
-        }
-        else
-        {
-            GetLogger()->Error("Unknown data surface format");
-            assert(false);
-        }
-    }
-    else
-        assert(false);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, texData.actualSurface->pitch / texData.actualSurface->format->BytesPerPixel);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    SDL_Surface* actualSurface = data->surface;
-    SDL_Surface* convertedSurface = nullptr;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texData.actualSurface->w, texData.actualSurface->h,
+                 0, texData.sourceFormat, GL_UNSIGNED_BYTE, texData.actualSurface->pixels);
 
-    if (convert)
-    {
-        SDL_PixelFormat format;
-        format.BytesPerPixel = 4;
-        format.BitsPerPixel = 32;
-        format.alpha = 0;
-        format.colorkey = 0;
-        format.Aloss = format.Bloss = format.Gloss = format.Rloss = 0;
-        format.Amask = 0xFF000000;
-        format.Ashift = 24;
-        format.Bmask = 0x00FF0000;
-        format.Bshift = 16;
-        format.Gmask = 0x0000FF00;
-        format.Gshift = 8;
-        format.Rmask = 0x000000FF;
-        format.Rshift = 0;
-        format.palette = nullptr;
-        convertedSurface = SDL_ConvertSurface(data->surface, &format, SDL_SWSURFACE);
-        if (convertedSurface != nullptr)
-            actualSurface = convertedSurface;
-    }
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, actualSurface->w, actualSurface->h,
-                 0, sourceFormat, GL_UNSIGNED_BYTE, actualSurface->pixels);
-
-    SDL_FreeSurface(convertedSurface);
+    SDL_FreeSurface(texData.convertedSurface);
 
     m_allTextures.insert(result);
 
@@ -795,6 +917,24 @@ Texture CGL21Device::CreateDepthTexture(int width, int height, int depth)
     glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
 
     return result;
+}
+
+void CGL21Device::UpdateTexture(const Texture& texture, Math::IntPoint offset, ImageData* data, TexImgFormat format)
+{
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, texture.id);
+
+    PreparedTextureData texData = PrepareTextureData(data, format);
+
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, texData.actualSurface->pitch / texData.actualSurface->format->BytesPerPixel);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, texData.actualSurface->w, texData.actualSurface->h,
+                    texData.sourceFormat, GL_UNSIGNED_BYTE, texData.actualSurface->pixels);
+
+    SDL_FreeSurface(texData.convertedSurface);
 }
 
 void CGL21Device::DestroyTexture(const Texture &texture)
@@ -892,7 +1032,7 @@ void CGL21Device::UpdateTextureStatus()
     for (int i = 0; i < 3; i++)
     {
         bool enabled = m_texturesEnabled[i] && (m_currentTextures[i].id != 0);
-        glUniform1i(uni_TextureEnabled[i], enabled ? 1 : 0);
+        glUniform1i(m_uniforms[m_mode].textureEnabled[i], enabled ? 1 : 0);
     }
 }
 
@@ -987,142 +1127,6 @@ void CGL21Device::UpdateTextureParams(int index)
     else if (params.wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     else  assert(false);
-
-    glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, params.factor.Array());
-
-    // To save some trouble
-    if ( (params.colorOperation == TEX_MIX_OPER_DEFAULT) &&
-         (params.alphaOperation == TEX_MIX_OPER_DEFAULT) )
-    {
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        goto after_tex_operations;
-    }
-
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-
-    // Only these modes of getting color & alpha are used
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
-
-    // Color operation
-
-    if (params.colorOperation == TEX_MIX_OPER_DEFAULT)
-    {
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PREVIOUS);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE);
-        goto after_tex_color;
-    }
-    else if (params.colorOperation == TEX_MIX_OPER_REPLACE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
-    else if (params.colorOperation == TEX_MIX_OPER_MODULATE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-    else if (params.colorOperation == TEX_MIX_OPER_ADD)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_ADD);
-    else if (params.colorOperation == TEX_MIX_OPER_SUBTRACT)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_SUBTRACT);
-    else  assert(false);
-
-    // Color arg1
-    if (params.colorArg1 == TEX_MIX_ARG_TEXTURE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
-    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_0)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
-    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_1)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
-    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_2)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE2);
-    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_3)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE3);
-    else if (params.colorArg1 == TEX_MIX_ARG_COMPUTED_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PREVIOUS);
-    else if (params.colorArg1 == TEX_MIX_ARG_SRC_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
-    else if (params.colorArg1 == TEX_MIX_ARG_FACTOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_CONSTANT);
-    else  assert(false);
-
-    // Color arg2
-    if (params.colorArg2 == TEX_MIX_ARG_TEXTURE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE);
-    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_0)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE0);
-    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_1)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE1);
-    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_2)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE2);
-    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_3)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE3);
-    else if (params.colorArg2 == TEX_MIX_ARG_COMPUTED_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
-    else if (params.colorArg2 == TEX_MIX_ARG_SRC_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
-    else if (params.colorArg2 == TEX_MIX_ARG_FACTOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_CONSTANT);
-    else  assert(false);
-
-
-after_tex_color:
-
-    // Alpha operation
-    if (params.alphaOperation == TEX_MIX_OPER_DEFAULT)
-    {
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
-        goto after_tex_operations;
-    }
-    else if (params.alphaOperation == TEX_MIX_OPER_REPLACE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
-    else if (params.alphaOperation == TEX_MIX_OPER_MODULATE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-    else if (params.alphaOperation == TEX_MIX_OPER_ADD)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_ADD);
-    else if (params.alphaOperation == TEX_MIX_OPER_SUBTRACT)
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_SUBTRACT);
-    else  assert(false);
-
-    // Alpha arg1
-    if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE);
-    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_0)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
-    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_1)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE1);
-    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_2)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE2);
-    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_3)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE3);
-    else if (params.alphaArg1 == TEX_MIX_ARG_COMPUTED_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
-    else if (params.alphaArg1 == TEX_MIX_ARG_SRC_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PRIMARY_COLOR);
-    else if (params.alphaArg1 == TEX_MIX_ARG_FACTOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_CONSTANT);
-    else  assert(false);
-
-    // Alpha arg2
-    if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
-    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_0)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE0);
-    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_1)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE1);
-    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_2)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE2);
-    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_3)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE3);
-    else if (params.alphaArg2 == TEX_MIX_ARG_COMPUTED_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PREVIOUS);
-    else if (params.alphaArg2 == TEX_MIX_ARG_SRC_COLOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
-    else if (params.alphaArg2 == TEX_MIX_ARG_FACTOR)
-        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_CONSTANT);
-    else  assert(false);
-
-after_tex_operations: ;
 }
 
 void CGL21Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT)
@@ -1197,7 +1201,6 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, 
     glNormalPointer(GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].normal));
 
     glClientActiveTexture(GL_TEXTURE0);
-
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
 
@@ -1230,6 +1233,84 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
     glColorPointer(4, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].color));
 
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+}
+
+void CGL21Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
+    int first[], int count[], int drawCount, Color color)
+{
+    BindVBO(0);
+
+    Vertex* vs = const_cast<Vertex*>(vertices);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].coord));
+
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].normal));
+
+    glClientActiveTexture(GL_TEXTURE0);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
+
+    glColor4fv(color.Array());
+
+    glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE0
+}
+
+void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
+    int first[], int count[], int drawCount, Color color)
+{
+    BindVBO(0);
+
+    VertexTex2* vs = const_cast<VertexTex2*>(vertices);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].coord));
+
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].normal));
+
+    glClientActiveTexture(GL_TEXTURE0);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
+
+    glClientActiveTexture(GL_TEXTURE1);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord2));
+
+    glColor4fv(color.Array());
+
+    glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE1
+
+    glClientActiveTexture(GL_TEXTURE0);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+}
+
+void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
+    int first[], int count[], int drawCount)
+{
+    BindVBO(0);
+
+    VertexCol* vs = const_cast<VertexCol*>(vertices);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].coord));
+
+    glEnableClientState(GL_COLOR_ARRAY);
+    glColorPointer(4, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].color));
+
+    glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
@@ -1379,7 +1460,6 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
     if (it == m_vboObjects.end())
         return;
 
-    glEnable(GL_VERTEX_ARRAY);
     BindVBO((*it).second.bufferId);
 
     if ((*it).second.vertexType == VERTEX_TYPE_NORMAL)
@@ -1391,7 +1471,6 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
         glNormalPointer(GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, normal));
 
         glClientActiveTexture(GL_TEXTURE0);
-
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, texCoord));
     }
@@ -1404,7 +1483,6 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
         glNormalPointer(GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, normal));
 
         glClientActiveTexture(GL_TEXTURE0);
-
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, texCoord));
 
@@ -1435,6 +1513,7 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
         glDisableClientState(GL_VERTEX_ARRAY);
         glDisableClientState(GL_NORMAL_ARRAY);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE1
+
         glClientActiveTexture(GL_TEXTURE0);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
@@ -1443,8 +1522,6 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
         glDisableClientState(GL_VERTEX_ARRAY);
         glDisableClientState(GL_COLOR_ARRAY);
     }
-
-    glDisable(GL_VERTEX_ARRAY);
 }
 
 void CGL21Device::DestroyStaticBuffer(unsigned int bufferId)
@@ -1465,13 +1542,7 @@ void CGL21Device::DestroyStaticBuffer(unsigned int bufferId)
 
 int CGL21Device::ComputeSphereVisibility(const Math::Vector &center, float radius)
 {
-    Math::Matrix m;
-    m = Math::MultiplyMatrices(m_worldMat, m);
-    m = Math::MultiplyMatrices(m_viewMat, m);
-    Math::Matrix sc;
-    Math::LoadScaleMatrix(sc, Math::Vector(1.0f, 1.0f, -1.0f));
-    m = Math::MultiplyMatrices(sc, m);
-    m = Math::MultiplyMatrices(m_projectionMat, m);
+    Math::Matrix &m = m_combinedMatrix;
 
     Math::Vector vec[6];
     float originPlane[6];
@@ -1558,25 +1629,25 @@ void CGL21Device::SetRenderState(RenderState state, bool enabled)
     {
         m_lighting = enabled;
 
-        glUniform1i(uni_LightingEnabled, enabled ? 1 : 0);
-
-        if (enabled)
-        {
-            for (int index = 0; index < static_cast<int>( m_lights.size() ); ++index)
-                UpdateLightPosition(index);
-        }
+        glUniform1i(m_uniforms[m_mode].lightingEnabled, enabled ? 1 : 0);
 
         return;
     }
     else if (state == RENDER_STATE_ALPHA_TEST)
     {
-        glUniform1i(uni_AlphaTestEnabled, enabled ? 1 : 0);
+        glUniform1i(m_uniforms[m_mode].alphaTestEnabled, enabled ? 1 : 0);
 
         return;
     }
     else if (state == RENDER_STATE_FOG)
     {
-        glUniform1i(uni_FogEnabled, enabled ? 1 : 0);
+        glUniform1i(m_uniforms[m_mode].fogEnabled, enabled ? 1 : 0);
+
+        return;
+    }
+    else if (state == RENDER_STATE_SHADOW_MAPPING)
+    {
+        SetTextureEnabled(TEXTURE_SHADOW, enabled);
 
         return;
     }
@@ -1587,7 +1658,6 @@ void CGL21Device::SetRenderState(RenderState state, bool enabled)
     {
         case RENDER_STATE_BLENDING:    flag = GL_BLEND; break;
         case RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
-        case RENDER_STATE_ALPHA_TEST:  flag = GL_ALPHA_TEST; break;
         case RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
         case RENDER_STATE_DEPTH_BIAS:  flag = GL_POLYGON_OFFSET_FILL; break;
         default: assert(false); break;
@@ -1616,7 +1686,7 @@ void CGL21Device::SetDepthBias(float factor, float units)
 
 void CGL21Device::SetAlphaTestFunc(CompFunc func, float refValue)
 {
-    glUniform1i(uni_AlphaReference, refValue);
+    glUniform1f(m_uniforms[m_mode].alphaReference, refValue);
 }
 
 void CGL21Device::SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend)
@@ -1636,8 +1706,8 @@ void CGL21Device::SetGlobalAmbient(const Color &color)
 
 void CGL21Device::SetFogParams(FogMode mode, const Color &color, float start, float end, float density)
 {
-    glUniform2f(uni_FogRange, start, end);
-    glUniform4f(uni_FogColor, color.r, color.g, color.b, color.a);
+    glUniform2f(m_uniforms[m_mode].fogRange, start, end);
+    glUniform4f(m_uniforms[m_mode].fogColor, color.r, color.g, color.b, color.a);
 
     /*
     if      (mode == FOG_LINEAR) glFogi(GL_FOG_MODE, GL_LINEAR);
@@ -1670,7 +1740,7 @@ void CGL21Device::SetShadeModel(ShadeModel model)
 
 void CGL21Device::SetShadowColor(float value)
 {
-    glUniform1f(uni_ShadowColor, value);
+    glUniform1f(m_uniforms[m_mode].shadowColor, value);
 }
 
 void CGL21Device::SetFillMode(FillMode mode)
@@ -1726,7 +1796,7 @@ CFramebuffer* CGL21Device::CreateFramebuffer(std::string name, const Framebuffer
     else
         return nullptr;
 
-    framebuffer->Create();
+    if (!framebuffer->Create()) return nullptr;
 
     CFramebuffer* framebufferPtr = framebuffer.get();
     m_framebuffers[name] = std::move(framebuffer);
@@ -1748,34 +1818,32 @@ void CGL21Device::DeleteFramebuffer(std::string name)
 
 bool CGL21Device::IsAnisotropySupported()
 {
-    return m_anisotropyAvailable;
+    return m_capabilities.anisotropySupported;
 }
 
 int CGL21Device::GetMaxAnisotropyLevel()
 {
-    return m_maxAnisotropy;
+    return m_capabilities.maxAnisotropy;
 }
 
 int CGL21Device::GetMaxSamples()
 {
-    return m_maxSamples;
+    return m_capabilities.maxSamples;
 }
 
 bool CGL21Device::IsShadowMappingSupported()
 {
-    return true;
+    return m_capabilities.shadowMappingSupported;
 }
 
 int CGL21Device::GetMaxTextureSize()
 {
-    int value;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
-    return value;
+    return m_capabilities.maxTextureSize;
 }
 
 bool CGL21Device::IsFramebufferSupported()
 {
-    return m_framebufferSupport != FBS_NONE;
+    return m_capabilities.framebufferSupported;
 }
 
 } // namespace Gfx

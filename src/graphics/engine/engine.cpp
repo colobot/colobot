@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@
 
 #include "app/app.h"
 #include "app/input.h"
-#include "app/pausemanager.h"
 #include "app/system.h"
 
 #include "common/image.h"
@@ -34,6 +33,7 @@
 #include "common/thread/resource_owning_thread.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/framebuffer.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/cloud.h"
@@ -59,7 +59,7 @@
 #include "ui/controls/interface.h"
 
 #include <iomanip>
-#include <boost/algorithm/string/predicate.hpp>
+#include <SDL_thread.h>
 
 template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
 
@@ -88,7 +88,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_planet     = nullptr;
     m_sound      = nullptr;
     m_terrain    = nullptr;
-    m_pause      = nullptr;
 
     m_showStats = false;
 
@@ -132,7 +131,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_drawWorld = true;
     m_drawFront = false;
     m_particleDensity = 1.0f;
-    m_lastClippingDistance = 1.0f;
     m_clippingDistance = 1.0f;
     m_terrainVision = 1000.0f;
     m_textureMipmapLevel = 1;
@@ -141,6 +139,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_offscreenShadowRendering = true;
     m_offscreenShadowRenderingResolution = 1024;
     m_qualityShadows = true;
+    m_terrainShadows = false;
     m_shadowRange = 0.0f;
     m_multisample = 2;
 
@@ -271,11 +270,6 @@ CCloud* CEngine::GetCloud()
     return m_cloud.get();
 }
 
-CPauseManager* CEngine::GetPauseManager()
-{
-    return m_pause.get();
-}
-
 void CEngine::SetTerrain(CTerrain* terrain)
 {
     m_terrain = terrain;
@@ -302,7 +296,6 @@ bool CEngine::Create()
     m_cloud      = MakeUnique<CCloud>(this);
     m_lightning  = MakeUnique<CLightning>(this);
     m_planet     = MakeUnique<CPlanet>(this);
-    m_pause      = MakeUnique<CPauseManager>();
 
     m_lightMan->SetDevice(m_device);
     m_particle->SetDevice(m_device);
@@ -352,7 +345,6 @@ void CEngine::Destroy()
         m_shadowMap = Texture();
     }
 
-    m_pause.reset();
     m_lightMan.reset();
     m_text.reset();
     m_particle.reset();
@@ -362,55 +354,28 @@ void CEngine::Destroy()
     m_planet.reset();
 }
 
-void CEngine::ResetAfterDeviceChanged()
+void CEngine::ResetAfterVideoConfigChanged()
 {
     m_size = m_app->GetVideoConfig().size;
     m_mouseSize = Math::Point(0.04f, 0.04f * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
 
-    if (m_shadowMap.id != 0)
-    {
-        if (m_offscreenShadowRendering)
-            m_device->DeleteFramebuffer("shadow");
-        else
-            m_device->DestroyTexture(m_shadowMap);
-
-        m_shadowMap = Texture();
-    }
-
-    m_text->FlushCache();
-
-    FlushTextureCache();
-
-    CRobotMain::GetInstancePointer()->ResetAfterDeviceChanged();
-
-    LoadAllTextures();
-
-    for (int baseObjRank = 0; baseObjRank < static_cast<int>( m_baseObjects.size() ); baseObjRank++)
-    {
-        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
-        if (! p1.used)
-            continue;
-
-        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
-        {
-            EngineBaseObjTexTier& p2 = p1.next[l2];
-
-            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
-            {
-                EngineBaseObjDataTier& p3 = p2.next[l3];
-
-                m_device->DestroyStaticBuffer(p3.staticBufferId);
-                p3.staticBufferId = 0;
-                p3.updateStaticBuffer = true;
-            }
-        }
-    }
+    CRobotMain::GetInstancePointer()->ResetAfterVideoConfigChanged(); //TODO: Remove cross-reference to CRobotMain
 
     // Update the camera projection matrix for new aspect ratio
     SetFocus(m_focus);
 
-    // Because reloading textures takes a long time
-    m_app->ResetTimeAfterLoading();
+    // This needs to be recreated on resolution change
+    m_device->DeleteFramebuffer("multisample");
+}
+
+void CEngine::ReloadAllTextures()
+{
+    FlushTextureCache();
+    m_text->FlushCache();
+
+    CRobotMain::GetInstancePointer()->ReloadAllTextures(); //TODO: Remove cross-reference to CRobotMain
+    UpdateGroundSpotTextures();
+    LoadAllTextures();
 }
 
 bool CEngine::ProcessEvent(const Event &event)
@@ -500,7 +465,7 @@ void CEngine::WriteScreenShot(const std::string& fileName)
 
     data->fileName = fileName;
 
-    CResourceOwningThread<WriteScreenShotData> thread(CEngine::WriteScreenShotThread, std::move(data));
+    CResourceOwningThread<WriteScreenShotData> thread(CEngine::WriteScreenShotThread, std::move(data), "WriteScreenShot thread");
     thread.Start();
 }
 
@@ -518,9 +483,14 @@ void CEngine::WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data)
     CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_WRITE_SCENE_FINISHED));
 }
 
+void CEngine::SetPause(bool pause)
+{
+    m_pause = pause;
+}
+
 bool CEngine::GetPause()
 {
-    return m_pause->IsPause();
+    return m_pause;
 }
 
 void CEngine::SetShowStats(bool show)
@@ -1534,12 +1504,7 @@ void CEngine::DeleteAllGroundSpots()
         str << "shadow" << std::setfill('0') << std::setw(2) << s << ".png";
         std::string texName = str.str();
 
-        DeleteTexture(texName);
-
-        Gfx::Texture tex = m_device->CreateTexture(&shadowImg, m_defaultTexParams);
-
-        m_texNameMap[texName] = tex;
-        m_revTexNameMap[tex] = texName;
+        CreateOrUpdateTexture(texName, &shadowImg);
     }
 }
 
@@ -2070,7 +2035,8 @@ void CEngine::SetState(int state, const Color& color)
     }
     else if (state & ENG_RSTATE_ALPHA)  // image with alpha channel?
     {
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(BLEND_SRC_ALPHA, BLEND_INV_SRC_ALPHA);
 
         m_device->SetRenderState(RENDER_STATE_FOG,         true);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
@@ -2357,12 +2323,7 @@ bool CEngine::LoadAllTextures()
             if (! p2.tex2Name.empty())
             {
                 if (terrain)
-                {
-                    if (! boost::starts_with(p2.tex2Name, "shadow")) // shadow ground textures are created dynamically
-                    {
-                        p2.tex2 = LoadTexture("textures/"+p2.tex2Name, m_terrainTexParams);
-                    }
-                }
+                    p2.tex2 = LoadTexture("textures/"+p2.tex2Name, m_terrainTexParams);
                 else
                     p2.tex2 = LoadTexture("textures/"+p2.tex2Name);
 
@@ -2402,8 +2363,6 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                                  Math::Point ts, Math::Point ti,
                                  Math::Point *exclude, float shift, bool hsv)
 {
-    DeleteTexture(texName);
-
     CImage img;
     if (!img.Load(srcName))
     {
@@ -2509,18 +2468,7 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
         }
     }
 
-
-    Texture tex = m_device->CreateTexture(&img, m_defaultTexParams);
-
-    if (! tex.Valid())
-    {
-        GetLogger()->Error("Couldn't load texture '%s', blacklisting\n", texName.c_str());
-        m_texBlacklist.insert(texName);
-        return false;
-    }
-
-    m_texNameMap[texName] = tex;
-    m_revTexNameMap[tex] = texName;
+    CreateOrUpdateTexture(texName, &img);
 
     return true;
 }
@@ -2564,6 +2512,19 @@ void CEngine::DeleteTexture(const Texture& tex)
 
     m_revTexNameMap.erase(revIt);
     m_texNameMap.erase(it);
+}
+
+void CEngine::CreateOrUpdateTexture(const std::string& texName, CImage* img)
+{
+    auto it = m_texNameMap.find(texName);
+    if (it == m_texNameMap.end())
+    {
+        LoadTexture(texName, img);
+    }
+    else
+    {
+        m_device->UpdateTexture((*it).second, Math::IntPoint(0, 0), img->GetData(), m_defaultTexParams.format);
+    }
 }
 
 void CEngine::FlushTextureCache()
@@ -2621,8 +2582,10 @@ void CEngine::SetFocus(float focus)
     m_focus = focus;
     m_size = m_app->GetVideoConfig().size;
 
-    float aspect = (static_cast<float>(m_size.x)) / m_size.y;
-    Math::LoadProjectionMatrix(m_matProj, m_focus, aspect, 0.5f, m_deepView[0]);
+    float farPlane = m_deepView[0] * m_clippingDistance;
+
+    float aspect = static_cast<float>(m_size.x) / static_cast<float>(m_size.y);
+    Math::LoadProjectionMatrix(m_matProj, m_focus, aspect, 0.5f, farPlane);
 }
 
 float CEngine::GetFocus()
@@ -2860,7 +2823,6 @@ void CEngine::SetClippingDistance(float value)
 {
     if (value < 0.5f) value = 0.5f;
     if (value > 2.0f) value = 2.0f;
-    m_lastClippingDistance = m_clippingDistance;
     m_clippingDistance = value;
 }
 
@@ -2875,7 +2837,7 @@ void CEngine::SetTextureFilterMode(TexFilter value)
 
     m_defaultTexParams.filter = m_terrainTexParams.filter = value;
     m_defaultTexParams.mipmap = m_terrainTexParams.mipmap = (value == TEX_FILTER_TRILINEAR);
-    ResetAfterDeviceChanged();
+    ReloadAllTextures();
 }
 
 TexFilter CEngine::GetTextureFilterMode()
@@ -2890,7 +2852,7 @@ void CEngine::SetTextureMipmapLevel(int value)
     if(m_textureMipmapLevel == value) return;
 
     m_textureMipmapLevel = value;
-    ResetAfterDeviceChanged();
+    ReloadAllTextures();
 }
 
 int CEngine::GetTextureMipmapLevel()
@@ -2906,7 +2868,7 @@ void CEngine::SetTextureAnisotropyLevel(int value)
     if(m_textureAnisotropy == value) return;
 
     m_textureAnisotropy = value;
-    ResetAfterDeviceChanged();
+    ReloadAllTextures();
 }
 
 int CEngine::GetTextureAnisotropyLevel()
@@ -2975,7 +2937,7 @@ int CEngine::GetShadowMappingOffscreenResolution()
 
 bool CEngine::IsShadowMappingQualitySupported()
 {
-    return IsShadowMappingSupported() && m_device->GetMaxTextureStageCount() >= 6;
+    return IsShadowMappingSupported() && m_device->GetMaxTextureStageCount() >= 3;
 }
 
 void CEngine::SetShadowMappingQuality(bool value)
@@ -2987,6 +2949,16 @@ void CEngine::SetShadowMappingQuality(bool value)
 bool CEngine::GetShadowMappingQuality()
 {
     return m_qualityShadows;
+}
+
+void CEngine::SetTerrainShadows(bool value)
+{
+    m_terrainShadows = value;
+}
+
+bool CEngine::GetTerrainShadows()
+{
+    return m_terrainShadows;
 }
 
 void CEngine::SetBackForce(bool present)
@@ -3076,7 +3048,7 @@ float CEngine::GetEyeDirV()
 
 bool CEngine::IsVisiblePoint(const Math::Vector &pos)
 {
-    return Math::Distance(m_eyePt, pos) <= m_deepView[0];
+    return Math::Distance(m_eyePt, pos) <= (m_deepView[0] * m_clippingDistance);
 }
 
 void CEngine::UpdateMatProj()
@@ -3086,15 +3058,25 @@ void CEngine::UpdateMatProj()
 
 void CEngine::ApplyChange()
 {
-    m_deepView[0] /= m_lastClippingDistance;
-    m_deepView[1] /= m_lastClippingDistance;
-
     SetFocus(m_focus);
-
-    m_deepView[0] *= m_clippingDistance;
-    m_deepView[1] *= m_clippingDistance;
 }
 
+void CEngine::ClearDisplayCrashSpheres()
+{
+    m_displayCrashSpheres.clear();
+
+    m_debugCrashSpheres = false;
+}
+
+void CEngine::AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres)
+{
+    for (const auto& crashSphere : crashSpheres)
+    {
+        m_displayCrashSpheres.push_back(crashSphere);
+    }
+
+    m_debugCrashSpheres = true;
+}
 
 
 /*******************************************************
@@ -3137,7 +3119,6 @@ void CEngine::Render()
         color = m_backgroundColorDown;
 
     m_device->SetClearColor(color);
-
     // Render shadow map
     if (m_drawWorld && m_shadowMapping)
         RenderShadowMap();
@@ -3150,6 +3131,8 @@ void CEngine::Render()
     UseMSAA(true);
 
     DrawBackground();                // draws the background
+
+
     if (m_drawWorld)
         Draw3DScene();
 
@@ -3172,15 +3155,14 @@ void CEngine::Draw3DScene()
     DrawPlanet();  // draws the planets
     m_cloud->Draw();  // draws the clouds
 
-
     // Display the objects
 
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
     m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
     m_device->SetRenderState(RENDER_STATE_FOG, true);
 
-    float fogStart = m_deepView[m_rankView]*m_fogStart[m_rankView];
-    float fogEnd = m_deepView[m_rankView];
+    float fogStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
+    float fogEnd = m_deepView[m_rankView] * m_clippingDistance;
     m_device->SetFogParams(FOG_LINEAR, m_fogColor[m_rankView], fogStart, fogEnd, 1.0f);
 
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProj);
@@ -3389,6 +3371,9 @@ void CEngine::Draw3DScene()
 
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
+    if (m_debugCrashSpheres)
+        DrawCrashSpheres();
+
     m_app->StartPerformanceCounter(PCNT_RENDER_PARTICLE);
     m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
     m_app->StopPerformanceCounter(PCNT_RENDER_PARTICLE);
@@ -3400,6 +3385,76 @@ void CEngine::Draw3DScene()
     DrawForegroundImage();   // draws the foreground
 
     if (! m_overFront) DrawOverColor();      // draws the foreground color
+}
+
+void CEngine::DrawCrashSpheres()
+{
+    Math::Matrix worldMatrix;
+    worldMatrix.LoadIdentity();
+    m_device->SetTransform(TRANSFORM_WORLD, worldMatrix);
+
+    SetState(ENG_RSTATE_OPAQUE_COLOR);
+
+    static const int LINE_SEGMENTS = 32;
+    static const int LONGITUDE_DIVISIONS = 16;
+    static const int LATITUDE_DIVISIONS = 8;
+
+    std::vector<VertexCol> lines((2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS) * LINE_SEGMENTS);
+    std::vector<int> firsts(2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS);
+    std::vector<int> counts(2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS);
+
+    Color color(0.0f, 0.0f, 1.0f);
+
+    auto SpherePoint = [&](float sphereRadius, float latitude, float longitude)
+    {
+        float latitudeAngle = (latitude - 0.5f) * 2.0f * Math::PI;
+        float longitudeAngle = longitude * 2.0f * Math::PI;
+        return Math::Vector(sphereRadius * sinf(latitudeAngle) * cosf(longitudeAngle),
+                            sphereRadius * cosf(latitudeAngle),
+                            sphereRadius * sinf(latitudeAngle) * sinf(longitudeAngle));
+    };
+
+    for (const auto& crashSphere : m_displayCrashSpheres)
+    {
+        int i = 0;
+        int primitive = 0;
+
+        for (int longitudeDivision = 0; longitudeDivision <= LONGITUDE_DIVISIONS; ++longitudeDivision)
+        {
+            firsts[primitive] = i;
+            counts[primitive] = LINE_SEGMENTS;
+
+            for (int segment = 0; segment < LINE_SEGMENTS; ++segment)
+            {
+                Math::Vector pos = crashSphere.pos;
+                float latitude = static_cast<float>(segment) / LINE_SEGMENTS;
+                float longitude = static_cast<float>(longitudeDivision) / (LONGITUDE_DIVISIONS);
+                pos += SpherePoint(crashSphere.radius, latitude, longitude);
+                lines[i++] = VertexCol(pos, color);
+            }
+
+            primitive++;
+        }
+
+        for (int latitudeDivision = 0; latitudeDivision <= LATITUDE_DIVISIONS; ++latitudeDivision)
+        {
+            firsts[primitive] = i;
+            counts[primitive] = LINE_SEGMENTS;
+
+            for (int segment = 0; segment < LINE_SEGMENTS; ++segment)
+            {
+                Math::Vector pos = crashSphere.pos;
+                float latitude = static_cast<float>(latitudeDivision + 1) / (LATITUDE_DIVISIONS + 2);
+                float longitude = static_cast<float>(segment) / LINE_SEGMENTS;
+                pos += SpherePoint(crashSphere.radius, latitude, longitude);
+                lines[i++] = VertexCol(pos, color);
+            }
+
+            primitive++;
+        }
+
+        m_device->DrawPrimitives(PRIMITIVE_LINE_STRIP, lines.data(), firsts.data(), counts.data(), primitive);
+    }
 }
 
 void CEngine::RenderShadowMap()
@@ -3430,7 +3485,7 @@ void CEngine::RenderShadowMap()
             CFramebuffer *framebuffer = m_device->CreateFramebuffer("shadow", params);
             if (framebuffer == nullptr)
             {
-                GetLogger()->Error("Could not create framebuffer, disabling shadows\n");
+                GetLogger()->Error("Could not create shadow mapping framebuffer, disabling dynamic shadows\n");
                 m_shadowMapping = false;
                 m_offscreenShadowRendering = false;
                 m_qualityShadows = false;
@@ -3464,6 +3519,7 @@ void CEngine::RenderShadowMap()
         m_device->GetFramebuffer("shadow")->Bind();
     }
 
+    m_device->SetRenderMode(RENDER_MODE_SHADOW);
     m_device->Clear();
 
     // change state to rendering shadow maps
@@ -3475,11 +3531,9 @@ void CEngine::RenderShadowMap()
     m_device->SetRenderState(RENDER_STATE_FOG, false);
     m_device->SetRenderState(RENDER_STATE_CULLING, false);
     m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, true);
-    m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
     m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
     m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, true);
-    m_device->SetDepthBias(1.5f, 8.0f);
-
+    m_device->SetDepthBias(2.0f, 8.0f);
     m_device->SetViewport(0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
 
     // recompute matrices
@@ -3523,6 +3577,7 @@ void CEngine::RenderShadowMap()
 
     m_device->SetTexture(0, 0);
     m_device->SetTexture(1, 0);
+    m_device->SetTexture(2, 0);
 
     // render objects into shadow map
     for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
@@ -3530,10 +3585,29 @@ void CEngine::RenderShadowMap()
         if (!m_objects[objRank].used)
             continue;
 
-        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
-           continue;
+        bool terrain = (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN);
+
+        if (terrain)
+        {
+            if (m_terrainShadows)
+            {
+                m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, false);
+                m_device->SetRenderState(RENDER_STATE_CULLING, true);
+                m_device->SetCullMode(CULL_CCW);
+            }
+            else
+                continue;
+        }
+        else
+        {
+            m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, true);
+            m_device->SetRenderState(RENDER_STATE_CULLING, false);
+        }
 
         m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+
+        if (!IsVisible(objRank))
+            continue;
 
         int baseObjRank = m_objects[objRank].baseObjRank;
         if (baseObjRank == -1)
@@ -3554,6 +3628,7 @@ void CEngine::RenderShadowMap()
             for (int l3 = 0; l3 < static_cast<int>(p2.next.size()); l3++)
             {
                 EngineBaseObjDataTier& p3 = p2.next[l3];
+
                 DrawObject(p3);
             }
         }
@@ -3562,6 +3637,8 @@ void CEngine::RenderShadowMap()
     m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
     m_device->SetDepthBias(0.0f, 0.0f);
     m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, false);
+    m_device->SetRenderState(RENDER_STATE_CULLING, false);
+    m_device->SetCullMode(CULL_CW);
 
     if (m_offscreenShadowRendering)     // shadow map texture already have depth information, just unbind it
     {
@@ -3580,6 +3657,7 @@ void CEngine::RenderShadowMap()
 
     m_app->StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
 
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
 }
 
@@ -3588,151 +3666,18 @@ void CEngine::UseShadowMapping(bool enable)
     if (!m_shadowMapping) return;
     if (m_shadowMap.id == 0) return;
 
-    if (enable) // Enable shadow mapping
+    if (enable)
     {
         m_device->SetShadowColor(m_shadowColor);
-
-        if (m_qualityShadows)
-        {
-            // Texture Unit 2
-            m_device->SetTextureEnabled(2, true);
-            m_device->SetTexture(2, m_shadowMap);
-            m_device->SetTransform(TRANSFORM_SHADOW, m_shadowTextureMat);
-
-            Math::Matrix identity;
-            identity.LoadIdentity();
-            m_device->SetTransform(TRANSFORM_WORLD, identity);
-
-            float shadowBias = 0.6f;
-            float shadowUnbias = 1.0f - shadowBias;
-
-            TextureStageParams params;
-            params.colorOperation = TEX_MIX_OPER_MODULATE;
-            params.colorArg1 = TEX_MIX_ARG_TEXTURE;
-            params.colorArg2 = TEX_MIX_ARG_FACTOR;
-            params.colorOperation = TEX_MIX_OPER_DEFAULT;
-            params.factor = Color(shadowBias, shadowBias, shadowBias, 1.0f);
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-
-            m_device->SetTextureStageParams(2, params);
-
-            TextureGenerationParams genParams;
-
-            for (int i = 0; i < 4; i++)
-            {
-                genParams.coords[i].mode = TEX_GEN_EYE_LINEAR;
-
-                for (int j = 0; j < 4; j++)
-                {
-                    genParams.coords[i].plane[j] = (i == j ? 1.0f : 0.0f);
-                }
-            }
-
-            m_device->SetTextureCoordGeneration(2, genParams);
-
-            // Texture Unit 3
-            m_device->SetTextureEnabled(3, true);
-            m_device->SetTexture(3, m_shadowMap);
-
-            params.LoadDefault();
-            params.colorOperation = TEX_MIX_OPER_ADD;
-            params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-            params.colorArg2 = TEX_MIX_ARG_FACTOR;
-            params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-            params.factor = Color(shadowUnbias, shadowUnbias, shadowUnbias, 0.0f);
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-
-            m_device->SetTextureStageParams(3, params);
-
-            // Texture Unit 4
-            m_device->SetTextureEnabled(4, true);
-            m_device->SetTexture(4, m_shadowMap);
-
-            params.LoadDefault();
-            params.colorOperation = TEX_MIX_OPER_MODULATE;
-            params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-            params.colorArg2 = TEX_MIX_ARG_SRC_COLOR;
-            params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-
-            m_device->SetTextureStageParams(4, params);
-
-            // Texture Unit 5
-            m_device->SetTextureEnabled(5, true);
-            m_device->SetTexture(5, m_shadowMap);
-
-            params.LoadDefault();
-            params.colorOperation = TEX_MIX_OPER_MODULATE;
-            params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-            params.colorArg2 = TEX_MIX_ARG_TEXTURE_0;
-            params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-
-            m_device->SetTextureStageParams(5, params);
-        }
-        else        // Simpler shadows
-        {
-            // Texture Unit 2
-            m_device->SetTextureEnabled(2, true);
-            m_device->SetTexture(2, m_shadowMap);
-            m_device->SetTransform(TRANSFORM_SHADOW, m_shadowTextureMat);
-
-            Math::Matrix identity;
-            identity.LoadIdentity();
-            m_device->SetTransform(TRANSFORM_WORLD, identity);
-
-            TextureStageParams params;
-            params.colorOperation = TEX_MIX_OPER_MODULATE;
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-            m_device->SetTextureStageParams(2, params);
-
-            TextureGenerationParams genParams;
-
-            for (int i = 0; i < 4; i++)
-            {
-                genParams.coords[i].mode = TEX_GEN_EYE_LINEAR;
-
-                for (int j = 0; j < 4; j++)
-                {
-                    genParams.coords[i].plane[j] = (i == j ? 1.0f : 0.0f);
-                }
-            }
-
-            m_device->SetTextureCoordGeneration(2, genParams);
-        }
+        m_device->SetTransform(TRANSFORM_SHADOW, m_shadowTextureMat);
+        m_device->SetTexture(TEXTURE_SHADOW, m_shadowMap);
+        m_device->SetTextureStageWrap(TEXTURE_SHADOW, TEX_WRAP_CLAMP_TO_BORDER, TEX_WRAP_CLAMP_TO_BORDER);
+        m_device->SetRenderState(RENDER_STATE_SHADOW_MAPPING, true);
     }
-    else  // Disable shadow mapping
+    else
     {
-        Math::Matrix identity;
-        identity.LoadIdentity();
-
-        m_device->SetTexture(2, 0);
-        m_device->SetTextureEnabled(2, false);
-        m_device->SetTransform(TRANSFORM_SHADOW, identity);
-
-        TextureGenerationParams params;
-
-        for (int i = 0; i < 4; i++)
-            params.coords[i].mode = TEX_GEN_NONE;
-
-        m_device->SetTextureCoordGeneration(2, params);
-
-        if (m_qualityShadows)
-        {
-            m_device->SetTexture(3, 0);
-            m_device->SetTextureEnabled(3, false);
-
-            m_device->SetTexture(4, 0);
-            m_device->SetTextureEnabled(4, false);
-
-            m_device->SetTexture(5, 0);
-            m_device->SetTextureEnabled(5, false);
-        }
+        m_device->SetRenderState(RENDER_STATE_SHADOW_MAPPING, false);
+        m_device->SetTexture(TEXTURE_SHADOW, 0);
     }
 }
 
@@ -3758,6 +3703,12 @@ void CEngine::UseMSAA(bool enable)
                 params.samples = m_multisample;
 
                 framebuffer = m_device->CreateFramebuffer("multisample", params);
+
+                if (framebuffer == nullptr)
+                {
+                    GetLogger()->Error("Could not create MSAA framebuffer, disabling MSAA\n");
+                    m_multisample = 1;
+                }
             }
 
             framebuffer->Bind();
@@ -3813,6 +3764,8 @@ void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
 
 void CEngine::DrawInterface()
 {
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
     m_device->SetRenderState(RENDER_STATE_FOG, false);
@@ -3845,6 +3798,8 @@ void CEngine::DrawInterface()
     // 3D objects drawn in front of interface
     if (m_drawFront)
     {
+        m_device->SetRenderMode(RENDER_MODE_NORMAL);
+
         // Display the objects
         m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
 
@@ -3855,8 +3810,8 @@ void CEngine::DrawInterface()
 
         m_device->SetRenderState(RENDER_STATE_FOG, true);
 
-        float fogStart = m_deepView[m_rankView]*m_fogStart[m_rankView];
-        float fogEnd = m_deepView[m_rankView];
+        float fogStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
+        float fogEnd = m_deepView[m_rankView] * m_clippingDistance;
         m_device->SetFogParams(FOG_LINEAR, m_fogColor[m_rankView], fogStart, fogEnd, 1.0f);
 
         m_device->SetTransform(TRANSFORM_VIEW, m_matView);
@@ -3914,6 +3869,8 @@ void CEngine::DrawInterface()
         m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
         m_device->SetRenderState(RENDER_STATE_FOG, false);
 
+        m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+
         m_device->SetTransform(TRANSFORM_VIEW,       m_matViewInterface);
         m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
         m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
@@ -3926,10 +3883,14 @@ void CEngine::DrawInterface()
     // At the end to not overlap
     if (m_renderInterface)
         DrawHighlight();
+
     DrawTimer();
     DrawStats();
+
     if (m_renderInterface)
         DrawMouse();
+
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 }
 
 void CEngine::UpdateGroundSpotTextures()
@@ -4170,12 +4131,7 @@ void CEngine::UpdateGroundSpotTextures()
             str << "textures/shadow" << std::setfill('0') << std::setw(2) << s << ".png";
             std::string texName = str.str();
 
-            DeleteTexture(texName);
-
-            Gfx::Texture tex = m_device->CreateTexture(&shadowImg, m_defaultTexParams);
-
-            m_texNameMap[texName] = tex;
-            m_revTexNameMap[tex] = texName;
+            CreateOrUpdateTexture(texName, &shadowImg);
         }
     }
 
@@ -4228,8 +4184,8 @@ void CEngine::DrawShadowSpots()
 
     Math::Vector n(0.0f, 1.0f, 0.0f);
 
-    float startDeepView = m_deepView[m_rankView]*m_fogStart[m_rankView];
-    float endDeepView = m_deepView[m_rankView];
+    float startDeepView = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
+    float endDeepView = m_deepView[m_rankView] * m_clippingDistance;
 
     float lastIntensity = -1.0f;
     for (int i = 0; i < static_cast<int>( m_shadowSpots.size() ); i++)
@@ -4403,6 +4359,8 @@ void CEngine::DrawShadowSpots()
 
 void CEngine::DrawBackground()
 {
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+
     if (m_cloud->GetLevel() != 0.0f)  // clouds ?
     {
         if (m_backgroundCloudUp != m_backgroundCloudDown)  // degraded?
@@ -4418,6 +4376,8 @@ void CEngine::DrawBackground()
     {
         DrawBackgroundImage();  // image
     }
+
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 }
 
 void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
@@ -4578,12 +4538,16 @@ void CEngine::DrawForegroundImage()
     SetTexture(m_foregroundTex);
     SetState(ENG_RSTATE_CLAMP | ENG_RSTATE_TTEXTURE_BLACK);
 
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+
     m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
     m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
+
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 }
 
 void CEngine::DrawOverColor()
@@ -4602,11 +4566,14 @@ void CEngine::DrawOverColor()
         Color(0.0f, 0.0f, 0.0f, 0.0f)
     };
 
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+
     SetState(m_overMode);
 
     m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
     m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
+    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
     VertexCol vertex[4] =
     {
@@ -4618,6 +4585,8 @@ void CEngine::DrawOverColor()
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
+
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 }
 
 void CEngine::DrawHighlight()
@@ -4962,11 +4931,11 @@ int CEngine::GetEngineState(const ModelTriangle& triangle)
     return state;
 }
 
-void CEngine::UpdateObjectShadowSpotNormal(int rank)
+void CEngine::UpdateObjectShadowSpotNormal(int objRank)
 {
-    assert(rank >= 0 && rank < static_cast<int>( m_objects.size() ));
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    int shadowRank = m_objects[rank].shadowRank;
+    int shadowRank = m_objects[objRank].shadowRank;
     if (shadowRank == -1)
         return;
 

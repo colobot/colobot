@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,8 @@
 #include "ui/screen/screen_io.h"
 
 #include "common/logger.h"
+#include "common/misc.h"
+#include "common/restext.h"
 #include "common/stringutils.h"
 
 #include "level/player_profile.h"
@@ -29,13 +31,14 @@
 
 #include "sound/sound.h"
 
-#include "ui/screen/screen_level_list.h"
-
 #include "ui/controls/button.h"
 #include "ui/controls/edit.h"
-#include "ui/controls/interface.h"
 #include "ui/controls/image.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/list.h"
 #include "ui/controls/window.h"
+
+#include "ui/screen/screen_level_list.h"
 
 #include <ctime>
 #include <cstring>
@@ -100,7 +103,7 @@ void CScreenIO::IOReadList(bool isWrite)
     m_saveList.clear();
     for(const SavedScene& save : m_main->GetPlayerProfile()->GetSavedSceneList())
     {
-        pl->SetItemName(m_saveList.size(), save.name.c_str());
+        pl->SetItemName(m_saveList.size(), save.name);
         m_saveList.push_back(save.path);
     }
 
@@ -109,7 +112,7 @@ void CScreenIO::IOReadList(bool isWrite)
     {
         std::string nameStr;
         GetResource(RES_TEXT, RT_IO_NEW, nameStr);
-        pl->SetItemName(m_saveList.size(), nameStr.c_str());
+        pl->SetItemName(m_saveList.size(), nameStr);
     }
 
     pl->SetSelect(m_saveList.size());

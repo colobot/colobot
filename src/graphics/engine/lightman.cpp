@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -448,7 +448,7 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
         m_lightMap[i] = -1;
 
     std::vector<DynamicLight> sortedLights = m_dynLights;
-    LightsComparator lightsComparator(m_engine->GetEyePt(), type);
+    CLightsComparator lightsComparator(m_engine->GetEyePt(), type);
     std::sort(sortedLights.begin(), sortedLights.end(), lightsComparator);
 
     int lightMapIndex = 0;
@@ -484,7 +484,6 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
         if (rank != -1)
         {
             Light light = m_dynLights[rank].light;
-            light.ambient = Gfx::Color(0.2f, 0.2f, 0.2f);
             m_device->SetLight(i, light);
             m_device->SetLightEnabled(i, true);
         }
@@ -497,13 +496,13 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
 
 // -----------
 
-CLightManager::LightsComparator::LightsComparator(Math::Vector eyePos, EngineObjectType objectType)
+CLightManager::CLightsComparator::CLightsComparator(Math::Vector eyePos, EngineObjectType objectType)
 {
     m_eyePos = eyePos;
     m_objectType = objectType;
 }
 
-float CLightManager::LightsComparator::GetLightWeight(const DynamicLight& dynLight)
+float CLightManager::CLightsComparator::GetLightWeight(const DynamicLight& dynLight)
 {
     if (dynLight.priority == LIGHT_PRI_HIGHEST)
         return -1.0f;
@@ -519,7 +518,7 @@ float CLightManager::LightsComparator::GetLightWeight(const DynamicLight& dynLig
     return enabled ? ( (dynLight.light.position - m_eyePos).Length() * dynLight.priority ) : 10000.0f;
 }
 
-bool CLightManager::LightsComparator::operator()(const DynamicLight& left, const DynamicLight& right)
+bool CLightManager::CLightsComparator::operator()(const DynamicLight& left, const DynamicLight& right)
 {
     float leftWeight = GetLightWeight(left);
     float rightWeight = GetLightWeight(right);

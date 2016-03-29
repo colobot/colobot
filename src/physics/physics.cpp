@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -1903,7 +1903,7 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 
     if ( m_object->GetToy() )
     {
-        sound = SOUND_NONE; //SOUND_MOTORd;
+        sound = SOUND_MOTORd;
         amplitude = 1.0f;
         time = 0.1f;
     }
@@ -2002,7 +2002,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 
     if ( m_object->GetToy() )
     {
-        sound = SOUND_NONE; // SOUND_MOTORd;
+        sound = SOUND_MOTORd;
         amplitude = 0.0f;
     }
 
@@ -2555,7 +2555,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     m_bCollision = true;
                     m_bObstacle = true;
 
-                    if (crashSphere.sound != SOUND_CLICK)
+                    if (crashSphere.sound != SOUND_NONE)
                     {
                         force = fabs(m_linMotion.realSpeed.x);
                         force *= crashSphere.hardness*2.0f;
@@ -2569,7 +2569,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     force *= crashSphere.hardness;
                     volume = fabs(force*0.05f);
                     if ( volume > 1.0f )  volume = 1.0f;
-                    if ( crashSphere.sound != SOUND_CLICK )
+                    if ( crashSphere.sound != SOUND_NONE )
                     {
                         m_sound->Play(crashSphere.sound, m_object->GetPosition(), volume);
                     }
@@ -2750,9 +2750,7 @@ bool CPhysics::ExploOther(ObjectType iType,
             oType == OBJECT_MOBILEwt ||
             oType == OBJECT_MOBILEtt ||
             oType == OBJECT_MOBILEft ||
-            oType == OBJECT_MOBILEit ||
-            oType == OBJECT_MOBILEdr ||
-            oType == OBJECT_APOLLO2   )  // vehicle?
+            oType == OBJECT_MOBILEit  )  // vehicle?
         {
             assert(pObj->Implements(ObjectInterfaceType::Damageable));
             dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Collision, force/200.0f);
@@ -2872,16 +2870,9 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 
 void CPhysics::FrameParticle(float aTime, float rTime)
 {
-    Math::Vector    pos;
-    /*float       intensity;*/
-    int         effectLight;
-    //bool        bFlash;
-
     m_restBreakParticle -= rTime;
     if ( aTime-m_lastPowerParticle < m_engine->ParticleAdapt(0.05f) )  return;
     m_lastPowerParticle = aTime;
-
-    //bFlash = false;
 
     float energy = GetObjectEnergyLevel(m_object);
 
@@ -2890,7 +2881,6 @@ void CPhysics::FrameParticle(float aTime, float rTime)
         if ( energy > m_lastEnergy )  // recharge?
         {
             PowerParticle(1.0f, false);
-            //bFlash = true;
         }
 
         if ( energy == 0.0f || m_lastEnergy == 0.0f )
@@ -2904,28 +2894,6 @@ void CPhysics::FrameParticle(float aTime, float rTime)
     if ( m_restBreakParticle > 0.0f )
     {
         PowerParticle(m_restBreakParticle/2.5f, (energy == 0));
-        //bFlash = true;
-    }
-
-    effectLight = m_object->GetEffectLight();
-    if ( effectLight != -1 )
-    {
-        /*
-         * TODO: this is supposed to flash lights of robot without power,
-         * but doesn't work correctly (e.g. beginning of scene201).
-         * Commenting out for the time being.
-         */
-        /*if ( bFlash )
-        {
-            intensity = 0.0f;
-            if ( Math::Rand() < 0.5f )  intensity = 1.0f;
-            m_lightMan->SetLightIntensity(effectLight, intensity);
-            m_lightMan->SetLightIntensitySpeed(effectLight, 10000.0f);
-        }
-        else
-        {*/
-            m_lightMan->SetLightIntensity(effectLight, 0.0f);
-        /*}*/
     }
 }
 

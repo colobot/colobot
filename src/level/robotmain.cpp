@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 #include "level/robotmain.h"
 
-#include "CBot/CBotDll.h"
+#include "CBot/CBot.h"
 
 #include "app/app.h"
 #include "app/input.h"
@@ -95,6 +95,7 @@
 
 #include "ui/controls/button.h"
 #include "ui/controls/edit.h"
+#include "ui/controls/group.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"
 #include "ui/controls/map.h"
@@ -107,7 +108,6 @@
 #include <iomanip>
 #include <stdexcept>
 
-#include <clipboard/clipboard.h>
 #include <boost/lexical_cast.hpp>
 
 
@@ -135,11 +135,11 @@ CRobotMain::CRobotMain()
     m_cloud      = m_engine->GetCloud();
     m_lightning  = m_engine->GetLightning();
     m_planet     = m_engine->GetPlanet();
-    m_pause      = m_engine->GetPauseManager();
     m_input      = CInput::GetInstancePointer();
 
     m_modelManager = MakeUnique<Gfx::CModelManager>();
     m_settings    = MakeUnique<CSettings>();
+    m_pause       = MakeUnique<CPauseManager>();
     m_interface   = MakeUnique<Ui::CInterface>();
     m_terrain     = MakeUnique<Gfx::CTerrain>();
     m_camera      = MakeUnique<Gfx::CCamera>();
@@ -170,7 +170,6 @@ CRobotMain::CRobotMain()
     m_missionTimer = 0.0f;
 
     m_phase       = PHASE_PLAYER_SELECT;
-    m_cameraRank  = -1;
     m_visitLast   = EVENT_NULL;
     m_visitObject = nullptr;
     m_visitArrow  = nullptr;
@@ -193,7 +192,6 @@ CRobotMain::CRobotMain()
     m_editLock     = false;
     m_editFull     = false;
     m_hilite       = false;
-    m_freePhoto    = false;
     m_selectInsect = false;
     m_showSoluce   = false;
 
@@ -252,6 +250,8 @@ CRobotMain::CRobotMain()
         m_showLimit[i].link = nullptr;
     }
 
+    m_debugCrashSpheres = false;
+
     m_engine->SetTerrain(m_terrain.get());
 
     m_app->SetMouseMode(MOUSE_ENGINE);
@@ -263,6 +263,10 @@ CRobotMain::CRobotMain()
     InitEye();
 
     m_engine->SetTracePrecision(1.0f);
+
+    m_settings->LoadSettings();
+    m_settings->SaveSettings();
+    m_settings->SaveResolutionSettings(m_app->GetVideoConfig());
 
     SelectPlayer(CPlayerProfile::GetLastName());
 
@@ -294,7 +298,20 @@ Ui::CDisplayText* CRobotMain::GetDisplayText()
     return m_displayText.get();
 }
 
-void CRobotMain::ResetAfterDeviceChanged()
+CPauseManager* CRobotMain::GetPauseManager()
+{
+    return m_pause.get();
+}
+
+void CRobotMain::ResetAfterVideoConfigChanged()
+{
+    // Recreate the interface (needed if the aspect ratio changes)
+    // TODO: This can sometimes cause unwanted side effects, like hidden windows reappearing. To be fixed during CEGUI refactoring.
+    m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+    CreateShortcuts();
+}
+
+void CRobotMain::ReloadAllTextures()
 {
     if (m_phase == PHASE_SETUPds ||
        m_phase == PHASE_SETUPgs ||
@@ -308,25 +325,6 @@ void CRobotMain::ResetAfterDeviceChanged()
         ChangeColor();
         UpdateMap();
     }
-
-    // Recreate the interface (needed if the aspect ratio changes)
-    m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
-    CreateShortcuts();
-}
-
-
-//! Creates the file colobot.ini at the first time
-void CRobotMain::CreateConfigFile()
-{
-    m_settings->SaveSettings();
-    m_settings->SaveResolutionSettings(m_app->GetVideoConfig());
-
-    GetConfigFile().Save();
-}
-
-void CRobotMain::LoadConfigFile()
-{
-    m_settings->LoadSettings();
 }
 
 std::string PhaseToString(Phase phase)
@@ -355,6 +353,7 @@ std::string PhaseToString(Phase phase)
     if (phase == PHASE_WIN) return "PHASE_WIN";
     if (phase == PHASE_LOST) return "PHASE_LOST";
     if (phase == PHASE_QUIT_SCREEN) return "PHASE_QUIT_SCREEN";
+    if (phase == PHASE_SATCOM) return "PHASE_SATCOM";
     return "(unknown)";
 }
 
@@ -404,6 +403,12 @@ void CRobotMain::ChangePhase(Phase phase)
             {
                 m_playerProfile->IncrementLevelTryCount(m_levelCategory, m_levelChap, m_levelRank);
             }
+
+            if (m_userPause != nullptr)
+            {
+                m_pause->DeactivatePause(m_userPause);
+                m_userPause = nullptr;
+            }
         }
 
         if (phase == PHASE_WIN)  // wins a simulation?
@@ -412,12 +417,16 @@ void CRobotMain::ChangePhase(Phase phase)
             m_ui->NextMission();  // passes to the next mission
         }
 
-        m_app->SetLowCPU(true); // doesn't use much CPU in interface phases
-
         DeleteAllObjects();  // removes all the current 3D Scene
     }
 
     m_phase = phase;
+
+    if (m_phase != PHASE_SIMUL)
+    {
+        Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
+        if ( pw != nullptr )  pw->ClearState(Ui::STATE_VISIBLE | Ui::STATE_ENABLE);
+    }
 
     if (resetWorld)
     {
@@ -427,11 +436,13 @@ void CRobotMain::ChangePhase(Phase phase)
         m_movieLock   = false;
         m_satComLock  = false;
         m_editLock    = false;
-        m_freePhoto   = false;
         m_resetCreate = false;
         m_infoObject  = nullptr;
 
         m_pause->FlushPause();
+        m_freePhotoPause = nullptr;
+        m_userPause = nullptr;
+        m_focusPause = nullptr;
         FlushDisplayInfo();
         m_engine->SetRankView(0);
         m_terrain->FlushRelief();
@@ -456,6 +467,7 @@ void CRobotMain::ChangePhase(Phase phase)
         m_interface->Flush();
         FlushNewScriptName();
         m_sound->SetListener(Math::Vector(0.0f, 0.0f, 0.0f), Math::Vector(0.0f, 0.0f, 1.0f));
+        m_sound->StopAll();
         m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
         m_movie->Flush();
         m_movieInfoIndex = -1;
@@ -493,19 +505,31 @@ void CRobotMain::ChangePhase(Phase phase)
         if (CResourceManager::DirectoryExists("crashsave"))
         {
             GetLogger()->Info("Pre-crash save found!\n");
-            m_ui->GetDialog()->StartQuestion("Your game seems to have crashed. Do you want to restore pre-crash state?", false, false, false, [&]() {
-                GetLogger()->Info("Trying to restore pre-crash state...\n");
-                assert(m_playerProfile != nullptr);
-                m_playerProfile->LoadScene("../../crashsave");
-                CResourceManager::RemoveDirectory("crashsave");
-            }, [&]() {
-                GetLogger()->Info("Not restoring pre-crash state\n");
-                CResourceManager::RemoveDirectory("crashsave");
-            });
+            m_ui->GetDialog()->StartQuestion(
+                "Your game seems to have crashed. Do you want to restore pre-crash state?", false, false, false,
+                [&]()
+                {
+                    GetLogger()->Info("Trying to restore pre-crash state...\n");
+                    assert(m_playerProfile != nullptr);
+                    m_playerProfile->LoadScene("../../crashsave");
+                    CResourceManager::RemoveDirectory("crashsave");
+                },
+                [&]()
+                {
+                    GetLogger()->Info("Not restoring pre-crash state\n");
+                    CResourceManager::RemoveDirectory("crashsave");
+                }
+            );
         }
     }
 
     m_ui->ChangePhase(m_phase);
+    if (m_phase == PHASE_SATCOM)
+    {
+        m_interface->DeleteControl(EVENT_WINDOW5);
+        StartDisplayInfo(InjectLevelPathsForCurrentLevel("cbot.txt", "help/%lng%"), 0);
+    }
+
     if (!resetWorld) return;
 
     dim.x = 32.0f/640.0f;
@@ -524,8 +548,6 @@ void CRobotMain::ChangePhase(Phase phase)
 
     if (m_phase == PHASE_SIMUL)
     {
-        m_app->SetLowCPU(false); // high CPU for simulation
-
         bool loading = !m_sceneReadPath.empty();
 
         m_ui->ShowLoadingScreen(true);
@@ -542,12 +564,12 @@ void CRobotMain::ChangePhase(Phase phase)
 
             m_app->ResetTimeAfterLoading();
 
+            m_sound->StopMusic(0.0f);
+            if (m_base == nullptr || loading) StartMusic();
+
             if (m_immediatSatCom && !loading  &&
                 m_infoFilename[SATCOM_HUSTON][0] != 0)
                 StartDisplayInfo(SATCOM_HUSTON, false);  // shows the instructions
-
-            m_sound->StopMusic(0.0f);
-            if (m_base == nullptr || loading) StartMusic();
         }
         catch (const std::runtime_error& e)
         {
@@ -663,13 +685,33 @@ bool CRobotMain::ProcessEvent(Event &event)
         m_displayText->EventProcess(event);
         RemoteCamera(m_cameraPan, m_cameraZoom, event.rTime);
 
-        m_interface->EventProcess(event);
         if (m_displayInfo != nullptr)  // current edition?
             m_displayInfo->EventProcess(event);
 
         UpdateInfoText();
 
         return EventFrame(event);
+    }
+
+    if (event.type == EVENT_FOCUS_LOST)
+    {
+        GetLogger()->Trace("Window unfocused\n");
+        if (m_settings->GetFocusLostPause())
+        {
+            m_focusPause = m_pause->ActivatePause(PAUSE_ENGINE);
+        }
+        return false;
+    }
+
+    if (event.type == EVENT_FOCUS_GAINED)
+    {
+        GetLogger()->Trace("Window focused\n");
+        if (m_focusPause != nullptr)
+        {
+            m_pause->DeactivatePause(m_focusPause);
+            m_focusPause = nullptr;
+        }
+        return false;
     }
 
     if (event.type == EVENT_WRITE_SCENE_FINISHED)
@@ -698,21 +740,25 @@ bool CRobotMain::ProcessEvent(Event &event)
     }
 
     // Management of the console.
-    if (event.type == EVENT_KEY_DOWN &&
-        event.GetData<KeyEventData>()->key == KEY(BACKQUOTE))  // Pause ?
+    if (event.type == EVENT_KEY_DOWN)
     {
-        if (m_phase != PHASE_PLAYER_SELECT &&
-            !m_movie->IsExist()   &&
-            !m_movieLock && !m_editLock && !m_cmdEdit)
+        auto data = event.GetData<KeyEventData>();
+
+        if (data->slot == INPUT_SLOT_CMDLINE)
         {
-            Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
-            if (pe == nullptr) return false;
-            pe->SetState(Ui::STATE_VISIBLE);
-            m_interface->SetFocus(pe);
-            if (m_phase == PHASE_SIMUL) m_cmdEditPause = m_pause->ActivatePause(PAUSE_CHEAT);
-            m_cmdEdit = true;
+            if (m_phase != PHASE_PLAYER_SELECT &&
+                !m_movie->IsExist()   &&
+                !m_movieLock && !m_editLock && !m_cmdEdit)
+            {
+                Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+                if (pe == nullptr) return false;
+                pe->SetState(Ui::STATE_VISIBLE);
+                m_interface->SetFocus(pe);
+                if (m_phase == PHASE_SIMUL) m_cmdEditPause = m_pause->ActivatePause(PAUSE_ENGINE);
+                m_cmdEdit = true;
+            }
+            return false;
         }
-        return false;
     }
 
     if (event.type == EVENT_KEY_DOWN &&
@@ -724,6 +770,7 @@ bool CRobotMain::ProcessEvent(Event &event)
         pe->GetText(cmd, 50);
         pe->SetText("");
         pe->ClearState(Ui::STATE_VISIBLE);
+        m_interface->SetFocus(nullptr);
         if (m_phase == PHASE_SIMUL)
         {
             m_pause->DeactivatePause(m_cmdEditPause);
@@ -767,6 +814,9 @@ bool CRobotMain::ProcessEvent(Event &event)
 
         if (event.type == EVENT_OBJECT_INFOOK)
             StopDisplayInfo();
+
+        if (m_displayInfo == nullptr && m_phase == PHASE_SATCOM)
+            ChangePhase(PHASE_MAIN_MENU);
 
         return false;
     }
@@ -843,9 +893,9 @@ bool CRobotMain::ProcessEvent(Event &event)
                 {
                     if (m_userPause == nullptr)
                     {
-                        if (!m_pause->IsPause())
+                        if (!m_pause->IsPauseType(PAUSE_ENGINE))
                         {
-                            m_userPause = m_pause->ActivatePause(PAUSE_USER);
+                            m_userPause = m_pause->ActivatePause(PAUSE_ENGINE);
                         }
                     }
                     else
@@ -931,7 +981,7 @@ bool CRobotMain::ProcessEvent(Event &event)
 
                         std::stringstream ss;
                         ss << line;
-                        widgetSetClipboardText(ss.str().c_str());
+                        SDL_SetClipboardText(ss.str().c_str());
                     }
                 }
                 break;
@@ -1009,9 +1059,13 @@ bool CRobotMain::ProcessEvent(Event &event)
                 break;
 
             case EVENT_OBJECT_DELETE:
-                m_ui->GetDialog()->StartQuestion(RT_DIALOG_DELOBJ, true, false, false, [&]() {
-                    DestroySelectedObject();
-                });
+                m_ui->GetDialog()->StartQuestion(
+                    RT_DIALOG_DELOBJ, true, false, false,
+                    [&]()
+                    {
+                        DestroySelectedObject();
+                    }
+                );
                 break;
 
             case EVENT_OBJECT_BHELP:
@@ -1186,11 +1240,10 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
         if (strcmp(cmd, "photo1") == 0)
         {
-            m_freePhoto = !m_freePhoto;
-            if (m_freePhoto)
+            if (m_freePhotoPause == nullptr)
             {
                 m_camera->SetType(Gfx::CAM_TYPE_FREE);
-                m_freePhotoPause = m_pause->ActivatePause(PAUSE_PHOTO);
+                m_freePhotoPause = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_PHOTO|PAUSE_OBJECT_UPDATES);
             }
             else
             {
@@ -1203,12 +1256,11 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
         if (strcmp(cmd, "photo2") == 0)
         {
-            m_freePhoto = !m_freePhoto;
-            if (m_freePhoto)
+            if (m_freePhotoPause == nullptr)
             {
                 m_camera->SetType(Gfx::CAM_TYPE_FREE);
                 DeselectAll();  // removes the control buttons
-                m_freePhotoPause = m_pause->ActivatePause(PAUSE_PHOTO);
+                m_freePhotoPause = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_PHOTO|PAUSE_OBJECT_UPDATES);
                 m_map->ShowMap(false);
                 m_displayText->HideText(true);
             }
@@ -1344,6 +1396,16 @@ void CRobotMain::ExecuteCmd(char *cmd)
             }
             return;
         }
+        if (strcmp(cmd, "debugcrashon") == 0)
+        {
+            m_debugCrashSpheres = true;
+            return;
+        }
+        if (strcmp(cmd, "debugcrashoff") == 0)
+        {
+            m_debugCrashSpheres = false;
+            return;
+        }
     }
 
     if (strcmp(cmd, "debugmode") == 0)
@@ -1424,10 +1486,8 @@ void CRobotMain::FlushDisplayInfo()
     for (int i = 0; i < SATCOM_MAX; i++)
     {
         m_infoFilename[i][0] = 0;
-        m_infoPos[i] = 0;
     }
     strcpy(m_infoFilename[SATCOM_OBJECT], "objects.txt");
-    m_infoIndex = 0;
 }
 
 //! Beginning of the displaying of instructions.
@@ -1446,7 +1506,7 @@ void CRobotMain::StartDisplayInfo(int index, bool movie)
         {
             m_movieInfoIndex = index;
             m_movie->Start(MM_SATCOMopen, 2.5f);
-            m_satcomMoviePause = m_pause->ActivatePause(PAUSE_SATCOMMOVIE);
+            m_satcomMoviePause = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_HIDE_SHORTCUTS);
             m_infoObject = DeselectAll();  // removes the control buttons
             m_displayText->HideText(true);
             return;
@@ -1484,10 +1544,7 @@ void CRobotMain::StartDisplayInfo(const std::string& filename, int index)
 
     m_displayInfo = MakeUnique<Ui::CDisplayInfo>();
     m_displayInfo->StartDisplayInfo(filename, index, soluce);
-
-    m_infoIndex = index;
-    if (index != -1)
-        m_displayInfo->SetPosition(m_infoPos[index]);
+    m_displayInfo->SetPosition(0);
 }
 
 //! End of displaying of instructions
@@ -1497,9 +1554,6 @@ void CRobotMain::StopDisplayInfo()
 
     if (m_movieInfoIndex != -1)  // film to read the SatCom?
         m_movie->Start(MM_SATCOMclose, 2.0f);
-
-    if (m_infoIndex != -1)
-        m_infoPos[m_infoIndex] = m_displayInfo->GetPosition();
 
     m_displayInfo->StopDisplayInfo();
 
@@ -1524,25 +1578,13 @@ char* CRobotMain::GetDisplayInfoName(int index)
     return m_infoFilename[index];
 }
 
-//! Returns the name of the text display
-int CRobotMain::GetDisplayInfoPosition(int index)
-{
-    return m_infoPos[index];
-}
-
-//! Returns the name of the text display
-void CRobotMain::SetDisplayInfoPosition(int index, int pos)
-{
-    m_infoPos[index] = pos;
-}
-
 
 //! Beginning of a dialogue during the game
 void CRobotMain::StartSuspend()
 {
     m_sound->MuteAll(true);
     ClearInterface();
-    m_suspend = m_pause->ActivatePause(PAUSE_DIALOG);
+    m_suspend = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_HIDE_SHORTCUTS|PAUSE_MUTE_SOUND);
     m_engine->SetOverFront(false);  // over flat behind
     CreateShortcuts();
 
@@ -1670,7 +1712,7 @@ void CRobotMain::StartDisplayVisit(EventType event)
     m_camera->StartVisit(m_displayText->GetVisitGoal(event),
                          m_displayText->GetVisitDist(event));
     m_displayText->SetVisit(event);
-    m_visitPause = m_pause->ActivatePause(PAUSE_VISIT);
+    m_visitPause = m_pause->ActivatePause(PAUSE_ENGINE);
 }
 
 //! Move the arrow to visit
@@ -1944,11 +1986,6 @@ CObject* CRobotMain::GetSelect()
     return nullptr;
 }
 
-CObject* CRobotMain::SearchObject(ObjectType type)
-{
-    return m_objMan->FindNearest(nullptr, type);
-}
-
 //! Detects the object aimed by the mouse
 CObject* CRobotMain::DetectObject(Math::Point pos)
 {
@@ -2202,8 +2239,8 @@ void CRobotMain::HelpObject()
     CObject* obj = GetSelect();
     if (obj == nullptr) return;
 
-    const char* filename = GetHelpFilename(obj->GetType()).c_str();
-    if (filename[0] == 0) return;
+    std::string filename = GetHelpFilename(obj->GetType());
+    if (filename.empty()) return;
 
     StartDisplayInfo(filename, -1);
 }
@@ -2274,9 +2311,9 @@ void CRobotMain::ChangeCamera()
 }
 
 //! Remote control the camera using the arrow keys
-void CRobotMain::KeyCamera(EventType type, InputSlot key)
+void CRobotMain::KeyCamera(EventType event, InputSlot key)
 {
-    if (type == EVENT_KEY_UP)
+    if (event == EVENT_KEY_UP)
     {
         if (key == INPUT_SLOT_LEFT)
         {
@@ -2308,7 +2345,7 @@ void CRobotMain::KeyCamera(EventType type, InputSlot key)
     assert(obj->Implements(ObjectInterfaceType::Controllable));
     if (!dynamic_cast<CControllableObject*>(obj)->GetTrainer()) return;
 
-    if (type == EVENT_KEY_DOWN)
+    if (event == EVENT_KEY_DOWN)
     {
         if (key == INPUT_SLOT_LEFT)
         {
@@ -2404,16 +2441,16 @@ bool CRobotMain::EventFrame(const Event &event)
     }
 
     m_time += event.rTime;
-    if (!m_movieLock && !m_pause->IsPause())
+    if (!m_movieLock && !m_pause->IsPauseType(PAUSE_ENGINE))
     {
         m_gameTime += event.rTime;
         m_gameTimeAbsolute += m_app->GetRealRelTime() / 1e9f;
     }
 
-    if (!m_movieLock && !m_pause->IsPause() && m_missionTimerStarted)
+    if (!m_movieLock && !m_pause->IsPauseType(PAUSE_ENGINE) && m_missionTimerStarted)
         m_missionTimer += event.rTime;
 
-    if (!m_pause->IsPause() && m_autosave && m_gameTimeAbsolute >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL)
+    if (!m_pause->IsPauseType(PAUSE_ENGINE) && m_autosave && m_gameTimeAbsolute >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL)
     {
         if (m_levelCategory == LevelCategory::Missions    ||
             m_levelCategory == LevelCategory::FreeGame    ||
@@ -2432,6 +2469,8 @@ bool CRobotMain::EventFrame(const Event &event)
     m_lightning->EventProcess(event);
     m_planet->EventProcess(event);
 
+    UpdateDebugCrashSpheres();
+
     Ui::CMap* pm = nullptr;
     Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
@@ -2445,7 +2484,7 @@ bool CRobotMain::EventFrame(const Event &event)
     }
 
     CObject* toto = nullptr;
-    if (!m_freePhoto)
+    if (!m_pause->IsPauseType(PAUSE_OBJECT_UPDATES))
     {
         // Advances all the robots, but not toto.
         for (CObject* obj : m_objMan->GetAllObjects())
@@ -2535,7 +2574,7 @@ bool CRobotMain::EventFrame(const Event &event)
     }
 
     // Moves edition indicator.
-    if (m_editLock || m_pause->IsPause())  // edition in progress?
+    if (m_editLock || m_pause->IsPauseType(PAUSE_ENGINE))  // edition in progress?
     {
         Ui::CControl* pc = m_interface->SearchControl(EVENT_OBJECT_EDITLOCK);
         if (pc != nullptr)
@@ -2642,7 +2681,7 @@ bool CRobotMain::EventFrame(const Event &event)
         {
             // NOTE: It's important to do this AFTER the first update event finished processing
             //       because otherwise all robot parts are misplaced
-            m_userPause = m_pause->ActivatePause(PAUSE_CODE_BATTLE_LOCK);
+            m_userPause = m_pause->ActivatePause(PAUSE_ENGINE);
             m_codeBattleInit = true; // Will start on resume
         }
 
@@ -2692,7 +2731,7 @@ void CRobotMain::ShowSaveIndicator(bool show)
 //! Makes the event for all robots
 bool CRobotMain::EventObject(const Event &event)
 {
-    if (m_freePhoto) return true;
+    if (m_pause->IsPauseType(PAUSE_OBJECT_UPDATES)) return true;
 
     m_resetCreate = false;
 
@@ -2711,16 +2750,6 @@ bool CRobotMain::EventObject(const Event &event)
 }
 
 
-//! Calculates the point of arrival of the camera
-Math::Vector CRobotMain::LookatPoint(Math::Vector eye, float angleH, float angleV,
-                                  float length)
-{
-    Math::Vector lookat = eye;
-    lookat.z += length;
-
-    RotatePoint(eye, angleH, angleV, lookat);
-    return lookat;
-}
 
 //! Load the scene for the character
 void CRobotMain::ScenePerso()
@@ -2770,6 +2799,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_researchDone.clear();  // no research done
         m_researchDone[0] = 0;
         m_researchEnable = 0;
+
+        g_unit = UNIT;
 
         FlushDisplayInfo();
         m_terrain->FlushMaterials();
@@ -2835,12 +2866,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_engine->SetSecondTexture("");
         m_engine->SetForegroundName("");
 
-        sprintf(m_title,  "%s %d.%d", GetLevelCategoryDir(m_levelCategory).c_str(), m_levelChap, m_levelRank);
-        sprintf(m_resume, "%s %d.%d", GetLevelCategoryDir(m_levelCategory).c_str(), m_levelChap, m_levelRank);
-        std::string scriptNameStr;
-        GetResource(RES_TEXT, RT_SCRIPT_NEW, scriptNameStr);
-        strcpy(m_scriptName, scriptNameStr.c_str());
-        m_scriptFile[0] = 0;
+        GetResource(RES_TEXT, RT_SCRIPT_NEW, m_scriptName);
+        m_scriptFile = "";
 
         m_missionType   = MISSION_NORMAL;
         m_codeBattleInit = false;
@@ -2883,25 +2910,25 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         {
             if (line->GetCommand() == "Title" && !resetObject)
             {
-                strcpy(m_title, line->GetParam("text")->AsString().c_str());
+                //strcpy(m_title, line->GetParam("text")->AsString().c_str());
                 continue;
             }
 
             if (line->GetCommand() == "Resume" && !resetObject)
             {
-                strcpy(m_resume, line->GetParam("text")->AsString().c_str());
+                //strcpy(m_resume, line->GetParam("text")->AsString().c_str());
                 continue;
             }
 
             if (line->GetCommand() == "ScriptName" && !resetObject)
             {
-                strcpy(m_scriptName, line->GetParam("text")->AsString().c_str());
+                m_scriptName = line->GetParam("text")->AsString();
                 continue;
             }
 
             if (line->GetCommand() == "ScriptFile" && !resetObject)
             {
-                strcpy(m_scriptFile, line->GetParam("name")->AsString().c_str());
+                m_scriptFile = line->GetParam("name")->AsString();
                 continue;
             }
 
@@ -3096,8 +3123,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "DeepView" && !resetObject)
             {
-                m_engine->SetDeepView(line->GetParam("air")->AsFloat(500.0f)*g_unit, 0, true);
-                m_engine->SetDeepView(line->GetParam("water")->AsFloat(100.0f)*g_unit, 1, true);
+                m_engine->SetDeepView(line->GetParam("air")->AsFloat(500.0f)*g_unit, 0, false);
+                m_engine->SetDeepView(line->GetParam("water")->AsFloat(100.0f)*g_unit, 1, false);
                 continue;
             }
 
@@ -3218,8 +3245,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "TerrainWater" && !resetObject)
             {
                 Math::Vector pos;
-                pos.x = line->GetParam("moxeX")->AsFloat(0.0f);
-                pos.y = line->GetParam("moxeY")->AsFloat(0.0f);
+                pos.x = line->GetParam("moveX")->AsFloat(0.0f);
+                pos.y = line->GetParam("moveY")->AsFloat(0.0f);
                 pos.z = pos.x;
                 m_water->Create(line->GetParam("air")->AsWaterType(Gfx::WATER_TT),
                                 line->GetParam("water")->AsWaterType(Gfx::WATER_TT),
@@ -3371,7 +3398,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 InitEye();
                 SetMovieLock(false);
 
-                if(!resetObject)
+                if (!resetObject)
                     ChangeColor();  // changes the colors of texture
 
                 if (!m_sceneReadPath.empty())  // loading file ?
@@ -3397,7 +3424,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(m_controller);
                     Program* program = programStorage->AddProgram();
-                    programStorage->ReadProgram(program, "../" + line->GetParam("script")->AsPath("ai"));
+                    programStorage->ReadProgram(program, line->GetParam("script")->AsPath("ai"));
                     program->readOnly = true;
                     dynamic_cast<CProgrammableObject*>(m_controller)->RunProgram(program);
                 }
@@ -3984,9 +4011,6 @@ void CRobotMain::ChangeColor()
     ts = Math::Point(0.00f, 0.75f);
     ti = Math::Point(0.25f, 1.00f);
     m_engine->ChangeTextureColor("textures/effect02.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
-
-    // This loads the newly recolored textures to objects
-    m_engine->LoadAllTextures();
 }
 
 //! Calculates the distance to the nearest object
@@ -4488,7 +4512,7 @@ std::string CRobotMain::GetNewScriptName(ObjectType type, int rank)
 //! Seeks if an object occupies in a spot, to prevent a backup of the game
 bool CRobotMain::IOIsBusy()
 {
-    if (CScriptFunctions::m_numberOfOpenFiles > 0) return true;
+    if (CScriptFunctions::CheckOpenFiles()) return true;
 
     for (CObject* obj : m_objMan->GetAllObjects())
     {
@@ -4687,13 +4711,13 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     }
 
     // Writes the file of stacks of execution.
-    FILE* file = fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "wb");
+    FILE* file = CBot::fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "wb");
     if (file == nullptr) return false;
 
     long version = 1;
-    fWrite(&version, sizeof(long), 1, file);  // version of COLOBOT
-    version = CBotProgram::GetVersion();
-    fWrite(&version, sizeof(long), 1, file);  // version of CBOT
+    CBot::fWrite(&version, sizeof(long), 1, file);  // version of COLOBOT
+    version = CBot::CBotProgram::GetVersion();
+    CBot::fWrite(&version, sizeof(long), 1, file);  // version of CBOT
 
     objRank = 0;
     for (CObject* obj : m_objMan->GetAllObjects())
@@ -4704,8 +4728,8 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
 
         if (!SaveFileStack(obj, file, objRank++))  break;
     }
-    CBotClass::SaveStaticState(file);
-    fClose(file);
+    CBot::CBotClass::SaveStaticState(file);
+    CBot::fClose(file);
 
     if (!emergencySave)
     {
@@ -4884,15 +4908,15 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
     m_ui->GetLoadingScreen()->SetProgress(0.95f, RT_LOADING_CBOT_SAVE);
 
     // Reads the file of stacks of execution.
-    FILE* file = fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "rb");
+    FILE* file = CBot::fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "rb");
     if (file != nullptr)
     {
         long version;
-        fRead(&version, sizeof(long), 1, file);  // version of COLOBOT
+        CBot::fRead(&version, sizeof(long), 1, file);  // version of COLOBOT
         if (version == 1)
         {
-            fRead(&version, sizeof(long), 1, file);  // version of CBOT
-            if (version == CBotProgram::GetVersion())
+            CBot::fRead(&version, sizeof(long), 1, file);  // version of CBOT
+            if (version == CBot::CBotProgram::GetVersion())
             {
                 objRank = 0;
                 for (CObject* obj : m_objMan->GetAllObjects())
@@ -4905,8 +4929,8 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
                 }
             }
         }
-        CBotClass::RestoreStaticState(file);
-        fClose(file);
+        CBot::CBotClass::RestoreStaticState(file);
+        CBot::fClose(file);
     }
 
     m_ui->GetLoadingScreen()->SetProgress(1.0f, RT_LOADING_FINISHED);
@@ -5251,41 +5275,16 @@ bool CRobotMain::GetFixScene()
 }
 
 
-char* CRobotMain::GetTitle()
-{
-    return m_title;
-}
-
-char* CRobotMain::GetResume()
-{
-    return m_resume;
-}
-
-char* CRobotMain::GetScriptName()
+const std::string& CRobotMain::GetScriptName()
 {
     return m_scriptName;
 }
 
-char* CRobotMain::GetScriptFile()
+const std::string& CRobotMain::GetScriptFile()
 {
     return m_scriptFile;
 }
 
-
-bool CRobotMain::GetInterfaceGlint()
-{
-    return m_settings->GetInterfaceGlint();
-}
-
-bool CRobotMain::GetSoluce4()
-{
-    return m_settings->GetSoluce4();
-}
-
-bool CRobotMain::GetMovies()
-{
-    return m_settings->GetMovies();
-}
 
 bool CRobotMain::GetShowSoluce()
 {
@@ -5512,12 +5511,6 @@ bool CRobotMain::GetEditFull()
 }
 
 
-bool CRobotMain::GetFreePhoto()
-{
-    return m_freePhoto;
-}
-
-
 //! Indicates whether mouse is on an friend object, on which we should not shoot
 void CRobotMain::SetFriendAim(bool friendAim)
 {
@@ -5527,18 +5520,6 @@ void CRobotMain::SetFriendAim(bool friendAim)
 bool CRobotMain::GetFriendAim()
 {
     return m_friendAim;
-}
-
-
-//! Management of the precision of drawing the ground
-void CRobotMain::SetTracePrecision(float factor)
-{
-    m_engine->SetTracePrecision(factor);
-}
-
-float CRobotMain::GetTracePrecision()
-{
-    return m_engine->GetTracePrecision();
 }
 
 
@@ -5554,28 +5535,28 @@ void CRobotMain::StartMusic()
 
 void CRobotMain::UpdatePause(PauseType pause)
 {
-    m_sound->MuteAll(pause != PAUSE_NONE);
+    m_engine->SetPause(pause & PAUSE_ENGINE);
+    m_sound->MuteAll(pause & PAUSE_MUTE_SOUND);
     CreateShortcuts();
     if (pause != PAUSE_NONE) HiliteClear();
+}
 
-    switch (pause)
+void CRobotMain::UpdatePauseMusic(PauseMusic music)
+{
+    switch (music)
     {
-        case PAUSE_NONE:
+        case PAUSE_MUSIC_NONE:
             m_sound->StopPauseMusic();
             break;
 
-        case PAUSE_EDITOR:
+        case PAUSE_MUSIC_EDITOR:
             if (m_editorTrack != "")
                 m_sound->PlayPauseMusic(m_editorTrack, m_editorRepeat);
             break;
 
-        case PAUSE_SATCOM:
+        case PAUSE_MUSIC_SATCOM:
             if (m_satcomTrack != "")
                 m_sound->PlayPauseMusic(m_satcomTrack, m_satcomRepeat);
-            break;
-
-        default:
-            // Don't change music
             break;
     }
 }
@@ -5668,6 +5649,9 @@ int CRobotMain::GetAutosaveSlots()
 
 int CRobotMain::AutosaveRotate(bool freeOne)
 {
+    if (m_playerProfile == nullptr)
+        return 0;
+
     GetLogger()->Debug("Rotate autosaves...\n");
     // Find autosave dirs
     auto saveDirs = CResourceManager::ListDirectories(m_playerProfile->GetSaveDir());
@@ -5677,7 +5661,7 @@ int CRobotMain::AutosaveRotate(bool freeOne)
         try
         {
             const std::string autosavePrefix = "autosave";
-            if (dir.substr(0, autosavePrefix.length()) == "autosave")
+            if (dir.substr(0, autosavePrefix.length()) == autosavePrefix)
             {
                 int id = boost::lexical_cast<int>(dir.substr(autosavePrefix.length()));
                 autosaveDirs[id] = m_playerProfile->GetSaveFile(dir);
@@ -5866,8 +5850,8 @@ Error CRobotMain::CanBuildError(ObjectType type, int team)
 {
     if(!IsBuildingEnabled(type)) return ERR_BUILD_DISABLED;
 
-    if(type == OBJECT_TOWER  && !IsResearchDone(RESEARCH_TOWER,  team)) return ERR_BUILD_RESEARCH;
-    if(type == OBJECT_ATOMIC && !IsResearchDone(RESEARCH_ATOMIC, team)) return ERR_BUILD_RESEARCH;
+    if(type == OBJECT_TOWER   && !IsResearchDone(RESEARCH_TOWER,  team)) return ERR_BUILD_RESEARCH;
+    if(type == OBJECT_NUCLEAR && !IsResearchDone(RESEARCH_ATOMIC, team)) return ERR_BUILD_RESEARCH;
 
     return ERR_OK;
 }
@@ -5980,32 +5964,35 @@ void CRobotMain::StartDetectEffect(COldObject* object, CObject* target)
 
 void CRobotMain::CreateCodeBattleInterface()
 {
-    Math::Point pos, ddim;
-
-    ddim.x = 100.0f/640.0f;
-    ddim.y = 100.0f/480.0f;
-    pos.x = 540.0f/640.0f;
-    pos.y = 100.0f/480.0f;
-    Ui::CWindow* pw = m_interface->CreateWindows(pos, ddim, 3, EVENT_WINDOW6);
-
-    ddim.x = 100.0f/640.0f;
-    ddim.y = 16.0f/480.0f;
-    pos.x = 540.0f/640.0f;
-    pos.y = 178.0f/480.0f;
-    pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, "Code battle");
-
-    float titleBarSize = (11.0f/64.0f); // this is from the texture
-    ddim.x = 80.0f/640.0f;
-    ddim.y = ((1-titleBarSize)*100.0f-20.0f)/480.0f;
-    pos.x = 550.0f/640.0f;
-    pos.y = 110.0f/480.0f;
-    if (!m_codeBattleStarted)
+    if(m_phase == PHASE_SIMUL)
     {
-        pw->CreateButton(pos, ddim, 21, EVENT_CODE_BATTLE_START);
-    }
-    else
-    {
-        pw->CreateButton(pos, ddim, 13, EVENT_CODE_BATTLE_SPECTATOR);
+        Math::Point pos, ddim;
+
+        ddim.x = 100.0f/640.0f;
+        ddim.y = 100.0f/480.0f;
+        pos.x = 540.0f/640.0f;
+        pos.y = 100.0f/480.0f;
+        Ui::CWindow* pw = m_interface->CreateWindows(pos, ddim, 3, EVENT_WINDOW6);
+
+        ddim.x = 100.0f/640.0f;
+        ddim.y = 16.0f/480.0f;
+        pos.x = 540.0f/640.0f;
+        pos.y = 178.0f/480.0f;
+        pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, "Code battle");
+
+        float titleBarSize = (11.0f/64.0f); // this is from the texture
+        ddim.x = 80.0f/640.0f;
+        ddim.y = ((1-titleBarSize)*100.0f-20.0f)/480.0f;
+        pos.x = 550.0f/640.0f;
+        pos.y = 110.0f/480.0f;
+        if (!m_codeBattleStarted)
+        {
+            pw->CreateButton(pos, ddim, 21, EVENT_CODE_BATTLE_START);
+        }
+        else
+        {
+            pw->CreateButton(pos, ddim, 13, EVENT_CODE_BATTLE_SPECTATOR);
+        }
     }
 }
 
@@ -6016,7 +6003,6 @@ void CRobotMain::DestroyCodeBattleInterface()
 
 void CRobotMain::SetCodeBattleSpectatorMode(bool mode)
 {
-
     // Deselect object, but keep camera attached to it
     CObject* obj = DeselectAll();
     if (m_codeBattleSpectator)
@@ -6027,4 +6013,22 @@ void CRobotMain::SetCodeBattleSpectatorMode(bool mode)
 
     if (mode)
         m_camera->SetFixDirectionV(-0.25f*Math::PI);
+}
+
+void CRobotMain::UpdateDebugCrashSpheres()
+{
+    m_engine->ClearDisplayCrashSpheres();
+    if (m_debugCrashSpheres)
+    {
+        for (CObject* obj : m_objMan->GetAllObjects())
+        {
+            auto crashSpheres = obj->GetAllCrashSpheres();
+            std::vector<Math::Sphere> displaySpheres;
+            for (const auto& crashSphere : crashSpheres)
+            {
+                displaySpheres.push_back(crashSphere.sphere);
+            }
+            m_engine->AddDisplayCrashSpheres(displaySpheres);
+        }
+    }
 }

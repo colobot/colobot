@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 
 #include "app/app.h"
 
-#include "level/robotmain.h"
-
 #include "common/logger.h"
+#include "common/misc.h"
 #include "common/stringutils.h"
 
 #include "level/player_profile.h"
+#include "level/robotmain.h"
 
 #include "sound/sound.h"
 
@@ -34,6 +34,8 @@
 
 #include "ui/controls/button.h"
 #include "ui/controls/edit.h"
+#include "ui/controls/gauge.h"
+#include "ui/controls/group.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"
 #include "ui/controls/list.h"
@@ -151,7 +153,7 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
     CWindow* pw;
     CList*   pl;
     std::string name;
-    char* gamer;
+    std::string gamer;
 
     switch( event.type )
     {
@@ -191,9 +193,13 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
 
             GetResource(RES_TEXT, RT_DIALOG_DELGAME, name);
             gamer = pl->GetItemName(pl->GetSelect());
-            m_dialog->StartQuestion(StrUtils::Format(name.c_str(), gamer), true, false, false, [&]() {
-                NameDelete();
-            });
+            m_dialog->StartQuestion(
+                StrUtils::Format(name.c_str(), gamer.c_str()), true, false, false,
+                [&]()
+                {
+                    NameDelete();
+                }
+            );
             break;
 
         default:
@@ -215,7 +221,7 @@ void CScreenPlayerSelect::ReadNameList()
     auto players = CPlayerProfile::GetPlayerList();
     for (int i = 0; i < static_cast<int>(players.size()); ++i)
     {
-        pl->SetItemName(i, players.at(i).c_str());
+        pl->SetItemName(i, players.at(i));
     }
 }
 
@@ -283,7 +289,7 @@ void CScreenPlayerSelect::UpdateNameList()
     for ( i=0 ; i<total ; i++ )
     {
         // TODO: stricmp?
-        if ( strcmp(name, pl->GetItemName(i)) == 0 )
+        if ( name == pl->GetItemName(i) )
         {
             pl->SetSelect(i);
             pl->ShowSelect(false);
@@ -301,7 +307,7 @@ void CScreenPlayerSelect::UpdateNameEdit()
     CWindow*    pw;
     CList*      pl;
     CEdit*      pe;
-    char*       name;
+    std::string name;
     int         sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -320,8 +326,8 @@ void CScreenPlayerSelect::UpdateNameEdit()
     else
     {
         name = pl->GetItemName(sel);
-        pe->SetText(name);
-        pe->SetCursor(strlen(name), 0);
+        pe->SetText(name.c_str());
+        pe->SetCursor(name.length(), 0);
     }
 
     UpdateNameControl();
@@ -428,7 +434,7 @@ void CScreenPlayerSelect::NameDelete()
         return;
     }
 
-    char* gamer = pl->GetItemName(sel);
+    std::string gamer = pl->GetItemName(sel);
 
     m_main->SelectPlayer(gamer);
     if (!m_main->GetPlayerProfile()->Delete())

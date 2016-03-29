@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,10 +27,14 @@
 #include "graphics/core/device.h"
 
 #include "math/intpoint.h"
+#include "math/vector.h"
 
 #include <GL/glew.h>
 
+#include <string>
 #include <memory>
+
+struct SDL_Surface;
 
 
 // Graphics module namespace
@@ -44,14 +48,33 @@ enum FramebufferSupport
     FBS_ARB,
 };
 
+bool InitializeGLEW();
+
 FramebufferSupport DetectFramebufferSupport();
 
 //! Creates OpenGL device
 std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::string& name);
 
-//! Returns OpenGL version as one number.
-// First digit is major part, second digit is minor part.
+//! Returns OpenGL version
+// \return First digit is major part, second digit is minor part.
 int GetOpenGLVersion();
+
+//! Returns OpenGL version
+// \return First digit is major part, second digit is minor part.
+int GetOpenGLVersion(int &major, int &minor);
+
+//! Checks if extensions in space-delimited list are supported
+// \return true if all extensions are supported
+bool AreExtensionsSupported(std::string list);
+
+//! Returns information about graphics card
+std::string GetHardwareInfo(bool full = false);
+
+//! Clears OpenGL errors
+int ClearGLErrors();
+
+//! Checks for OpenGL errors
+bool CheckGLErrors();
 
 //! Translate Gfx primitive type to OpenGL primitive type
 GLenum TranslateGfxPrimitive(PrimitiveType type);
@@ -70,9 +93,22 @@ GLenum TranslateTextureCoordinate(int index);
 
 GLenum TranslateTextureCoordinateGen(int index);
 
+std::string GetLastShaderError();
+
 GLint LoadShader(GLint type, const char* filename);
 
 GLint LinkProgram(int count, GLint shaders[]);
+
+// TODO: Moved this here temporarily only to remove code duplication in CGLDeviceXX
+struct PreparedTextureData
+{
+    SDL_Surface* actualSurface = nullptr;
+    SDL_Surface* convertedSurface = nullptr;
+    GLenum sourceFormat = 0;
+    bool alpha = false;
+};
+
+PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format);
 
 class CGLFrameBufferPixels : public CFrameBufferPixels
 {
@@ -91,5 +127,81 @@ private:
 };
 
 std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(Math::IntPoint size);
+
+struct LightLocations
+{
+    //! true enables light
+    GLint enabled = -1;
+    //! Light type
+    GLint type = -1;
+    //! Position or direction vector
+    GLint position = -1;
+    //! Ambient color
+    GLint ambient = -1;
+    //! Diffuse color
+    GLint diffuse = -1;
+    //! Specular color
+    GLint specular = -1;
+    //! Attenuation
+    GLint attenuation = -1;
+    //! Spot light direction
+    GLint spotDirection = -1;
+    //! Spot light exponent
+    GLint spotExponent = -1;
+    //! Spot light cutoff
+    GLint spotCutoff = -1;
+};
+
+struct UniformLocations
+{
+    // Uniforms
+    //! Projection matrix
+    GLint projectionMatrix = -1;
+    //! View matrix
+    GLint viewMatrix = -1;
+    //! Model matrix
+    GLint modelMatrix = -1;
+    //! Shadow matrix
+    GLint shadowMatrix = -1;
+    //! Normal matrix
+    GLint normalMatrix = -1;
+
+    //! Primary texture sampler
+    GLint primaryTexture = -1;
+    //! Secondary texture sampler
+    GLint secondaryTexture = -1;
+    //! Shadow texture sampler
+    GLint shadowTexture = -1;
+
+    //! true enables texture
+    GLint textureEnabled[3] = {};
+
+    // Alpha test parameters
+    //! true enables alpha test
+    GLint alphaTestEnabled = -1;
+    //! Alpha test reference value
+    GLint alphaReference = -1;
+
+    //! true enables fog
+    GLint fogEnabled = -1;
+    //! Fog range
+    GLint fogRange = -1;
+    //! Fog color
+    GLint fogColor = -1;
+
+    //! Shadow color
+    GLint shadowColor = -1;
+
+    //! true enables lighting
+    GLint lightingEnabled = -1;
+    //! Ambient color
+    GLint ambientColor = -1;
+    //! Diffuse color
+    GLint diffuseColor = -1;
+    //! Specular color
+    GLint specularColor = -1;
+
+    LightLocations lights[8] = {};
+};
 
 } // namespace Gfx

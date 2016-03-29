@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,10 +24,9 @@
 
 #pragma once
 
-#include "level/level_category.h"
-
 #include "common/make_unique.h"
 
+#include "level/level_category.h"
 #include "level/robotmain.h"
 
 #include "level/parser/parserexceptions.h"
@@ -88,6 +87,9 @@ public:
 
     //! Find first line with given command
     CLevelParserLine* Get(const std::string& command);
+
+    //! Find first line with given command, null if doesn't exist
+    CLevelParserLine* GetIfDefined(const std::string &command);
 
     //! Count lines with given command
     int CountLines(const std::string& command);

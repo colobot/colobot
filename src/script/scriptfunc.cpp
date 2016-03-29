@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,6 +18,8 @@
  */
 
 #include "script/scriptfunc.h"
+
+#include "CBot/CBot.h"
 
 #include "app/app.h"
 
@@ -65,50 +67,16 @@
 
 #include "ui/displaytext.h"
 
-
-// Compiling a procedure without any parameters.
-
-CBotTypResult CScriptFunctions::cNull(CBotVar* &var, void* user)
-{
-    if ( var != nullptr )  return CBotErrOverParam;
-    return CBotTypResult(CBotTypFloat);
-}
+using namespace CBot;
 
 CBotTypResult CScriptFunctions::cClassNull(CBotVar* thisclass, CBotVar* &var)
 {
-    return CScriptFunctions::cNull(var, nullptr);
-}
-
-// Compiling a procedure with a single real number.
-
-CBotTypResult CScriptFunctions::cOneFloat(CBotVar* &var, void* user)
-{
-    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-    var = var->GetNext();
-    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
-    return CBotTypResult(CBotTypFloat);
+    return cNull(var, nullptr);
 }
 
 CBotTypResult CScriptFunctions::cClassOneFloat(CBotVar* thisclass, CBotVar* &var)
 {
-    return CScriptFunctions::cOneFloat(var, nullptr);
-}
-
-// Compiling a procedure with two real numbers.
-
-CBotTypResult CScriptFunctions::cTwoFloat(CBotVar* &var, void* user)
-{
-    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-    var = var->GetNext();
-
-    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-    var = var->GetNext();
-
-    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
-    return CBotTypResult(CBotTypFloat);
+    return cOneFloat(var, nullptr);
 }
 
 // Compiling a procedure with a "dot".
@@ -151,53 +119,6 @@ CBotTypResult CScriptFunctions::cOnePoint(CBotVar* &var, void* user)
     if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
-
-// Compiling a procedure with a single string.
-
-CBotTypResult CScriptFunctions::cString(CBotVar* &var, void* user)
-{
-    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() != CBotTypString &&
-        var->GetType() >  CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-    var = var->GetNext();
-    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
-    return CBotTypResult(CBotTypFloat);
-}
-
-// Compiling a procedure with a single string, returning string.
-
-CBotTypResult CScriptFunctions::cStringString(CBotVar* &var, void* user)
-{
-    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() != CBotTypString &&
-        var->GetType() >  CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-    var = var->GetNext();
-    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
-    return CBotTypResult(CBotTypString);
-}
-
-// compilation of instruction with one int returning int
-
-CBotTypResult CScriptFunctions::cOneInt(CBotVar* &var, void* user)
-{
-    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() != CBotTypInt )  return CBotTypResult(CBotErrBadNum);
-    var = var->GetNext();
-    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
-    return CBotTypResult(CBotTypInt);
-}
-
-// compilation of instruction with one int returning boolean
-
-CBotTypResult CScriptFunctions::cOneIntReturnBool(CBotVar* &var, void* user)
-{
-    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() != CBotTypInt )  return CBotTypResult(CBotErrBadNum);
-    var = var->GetNext();
-    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
-    return CBotTypResult(CBotTypBoolean);
-}
-
 
 // Seeking value in an array of integers.
 
@@ -257,171 +178,6 @@ bool GetPoint(CBotVar* &var, int& exception, Math::Vector& pos)
 }
 
 
-// Instruction "sin(degrees)".
-
-bool CScriptFunctions::rSin(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(sinf(value*Math::PI/180.0f));
-    return true;
-}
-
-// Instruction "cos(degrees)".
-
-bool CScriptFunctions::rCos(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(cosf(value*Math::PI/180.0f));
-    return true;
-}
-
-// Instruction "tan(degrees)".
-
-bool CScriptFunctions::rTan(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(tanf(value*Math::PI/180.0f));
-    return true;
-}
-
-// Instruction "asin(degrees)".
-
-bool raSin(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(asinf(value)*180.0f/Math::PI);
-    return true;
-}
-
-// Instruction "acos(degrees)".
-
-bool raCos(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(acosf(value)*180.0f/Math::PI);
-    return true;
-}
-
-// Instruction "atan(degrees)".
-
-bool raTan(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(atanf(value)*180.0f/Math::PI);
-    return true;
-}
-
-// Instruction "atan2(y,x)".
-
-bool raTan2(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float y = var->GetValFloat();
-    var = var->GetNext();
-    float x = var->GetValFloat();
-
-    result->SetValFloat(atan2(y, x) * 180.0f / Math::PI);
-    return true;
-}
-
-// Instruction "sqrt(value)".
-
-bool CScriptFunctions::rSqrt(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(sqrtf(value));
-    return true;
-}
-
-// Instruction "pow(x, y)".
-
-bool CScriptFunctions::rPow(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float   x, y;
-
-    x = var->GetValFloat();
-    var = var->GetNext();
-    y = var->GetValFloat();
-    result->SetValFloat(powf(x, y));
-    return true;
-}
-
-// Instruction "rand()".
-
-bool CScriptFunctions::rRand(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    result->SetValFloat(Math::Rand());
-    return true;
-}
-
-// Instruction "abs()".
-
-bool CScriptFunctions::rAbs(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(fabs(value));
-    return true;
-}
-
-// Instruction "floor()"
-
-bool CScriptFunctions::rFloor(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(floor(value));
-    return true;
-}
-
-// Instruction "ceil()"
-
-bool CScriptFunctions::rCeil(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(ceil(value));
-    return true;
-}
-
-// Instruction "round()"
-
-bool CScriptFunctions::rRound(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(round(value));
-    return true;
-}
-
-// Instruction "trunc()"
-
-bool CScriptFunctions::rTrunc(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(trunc(value));
-    return true;
-}
-
 // Compilation of the instruction "endmission(result, delay)"
 
 CBotTypResult CScriptFunctions::cEndMission(CBotVar* &var, void* user)
@@ -471,7 +227,7 @@ CBotTypResult CScriptFunctions::cPlayMusic(CBotVar* &var, void* user)
 bool CScriptFunctions::rPlayMusic(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     std::string filename;
-    CBotString cbs;
+    std::string cbs;
     bool repeat;
 
     cbs = var->GetValString();
@@ -701,13 +457,9 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 
     ObjectType type = static_cast<ObjectType>(var->GetValInt());
     var = var->GetNext();
-    CBotString cbs;
-    const char* program;
+    std::string program;
     if ( var != nullptr )
-    {
-        cbs = var->GetValString();
-        program = cbs;
-    }
+        program = var->GetValString();
     else
         program = "";
 
@@ -911,7 +663,7 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
     DestructionType exploType = DestructionType::Explosion;
 
     rank = var->GetValInt();
-    var->GetNext();
+    var = var->GetNext();
     if ( var != nullptr )
     {
         exploType = static_cast<DestructionType>(var->GetValInt());
@@ -1027,51 +779,56 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
 }
 
 
-// Compilation of instruction "radar(type, angle, focus, min, max, sens)".
-
-CBotTypResult CScriptFunctions::cRadar(CBotVar* &var, void* user)
+CBotTypResult compileRadar(CBotVar* &var, void* user, CBotTypResult returnValue)
 {
     CBotVar*    array;
 
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() == CBotTypArrayPointer )
     {
         array = var->GetItemList();
-        if ( array == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+        if ( array == nullptr )  return returnValue;
         if ( array->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // type
     }
     else if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // type
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // angle
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // focus
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // min
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // max
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // sense
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // filter
     var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypPointer, "object");
+    if ( var == nullptr )  return returnValue;
     return CBotTypResult(CBotErrOverParam);
 }
 
-// Instruction "radar(type, angle, focus, min, max, sens, filter)".
-
-bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
+CBotTypResult CScriptFunctions::cRadarAll(CBotVar* &var, void* user)
 {
-    CObject*    pThis = static_cast<CScript*>(user)->m_object;
-    CObject     *pBest;
+    return compileRadar(var, user, CBotTypResult(CBotTypArrayPointer, CBotTypResult(CBotTypPointer, "object")));
+}
+
+// Compilation of instruction "radar(type, angle, focus, min, max, sens)".
+
+CBotTypResult CScriptFunctions::cRadar(CBotVar* &var, void* user)
+{
+    return compileRadar(var, user, CBotTypResult(CBotTypPointer, "object"));
+}
+
+bool runRadar(CBotVar* var, std::function<bool(std::vector<ObjectType>, float, float, float, float, bool, RadarFilter)> code)
+{
     CBotVar*    array;
-    Math::Vector    oPos;
     RadarFilter filter;
     float       minDist, maxDist, sens, angle, focus;
     int         type;
@@ -1153,17 +910,47 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
         }
     }
 
-    pBest = CObjectManager::GetInstancePointer()->Radar(pThis, type_v, angle, focus, minDist, maxDist, sens < 0, filter, true); //TODO: why is "sens" done like that?
+    return code(type_v, angle, focus, minDist, maxDist, sens < 0, filter);
+}
 
-    if ( pBest == nullptr )
+// Instruction "radar(type, angle, focus, min, max, sens, filter)".
+
+bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    return runRadar(var, [&result, user](std::vector<ObjectType> types, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter)
     {
-        result->SetPointer(nullptr);
-    }
-    else
+        CObject* pThis = static_cast<CScript*>(user)->m_object;
+        CObject* best = CObjectManager::GetInstancePointer()->Radar(pThis, types, angle, focus, minDist, maxDist, furthest, filter, true);
+
+        if (best == nullptr)
+        {
+            result->SetPointer(nullptr);
+        }
+        else
+        {
+            result->SetPointer(best->GetBotVar());
+        }
+
+        return true;
+    });
+}
+
+bool CScriptFunctions::rRadarAll(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    return runRadar(var, [&result, user](std::vector<ObjectType> types, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter)
     {
-        result->SetPointer(pBest->GetBotVar());
-    }
-    return true;
+        CObject* pThis = static_cast<CScript*>(user)->m_object;
+        std::vector<CObject*> best = CObjectManager::GetInstancePointer()->RadarAll(pThis, types, angle, focus, minDist, maxDist, furthest, filter, true);
+
+        int i = 0;
+        result->SetInit(CBotVar::InitType::DEF);
+        for (CObject* obj : best)
+        {
+            result->GetItem(i++, true)->SetPointer(obj->GetBotVar());
+        }
+
+        return true;
+    });
 }
 
 
@@ -1547,8 +1334,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 
         if ( var != nullptr )
         {
-            CBotString cbs = var->GetValString();
-            name = static_cast<const char*>(cbs);
+            name = var->GetValString();
             var = var->GetNext();
             if ( var != nullptr )
             {
@@ -2188,17 +1974,15 @@ CBotTypResult CScriptFunctions::cReceive(CBotVar* &var, void* user)
 bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
-    CBotString  cbs;
     Error       err;
-    const char* p;
+    std::string p;
     float       power;
 
     exception = 0;
 
     if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        cbs = var->GetValString();
-        p = cbs;
+        p = var->GetValString();
         var = var->GetNext();
 
         power = 10.0f*g_unit;
@@ -2208,7 +1992,7 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
             var = var->GetNext();
         }
 
-        err = script->m_taskExecutor->StartTaskInfo(p, 0.0f, power, false);
+        err = script->m_taskExecutor->StartTaskInfo(p.c_str(), 0.0f, power, false);
         if ( err != ERR_OK )
         {
             script->m_taskExecutor->StopForegroundTask();
@@ -2257,17 +2041,15 @@ CBotTypResult CScriptFunctions::cSend(CBotVar* &var, void* user)
 bool CScriptFunctions::rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
-    CBotString  cbs;
     Error       err;
-    const char* p;
+    std::string p;
     float       value, power;
 
     exception = 0;
 
     if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        cbs = var->GetValString();
-        p = cbs;
+        p = var->GetValString();
         var = var->GetNext();
 
         value = var->GetValFloat();
@@ -2280,7 +2062,7 @@ bool CScriptFunctions::rSend(CBotVar* var, CBotVar* result, int& exception, void
             var = var->GetNext();
         }
 
-        err = script->m_taskExecutor->StartTaskInfo(static_cast<const char*>(p), value, power, true);
+        err = script->m_taskExecutor->StartTaskInfo(p.c_str(), value, power, true);
         if ( err != ERR_OK )
         {
             script->m_taskExecutor->StopForegroundTask();
@@ -2328,15 +2110,13 @@ bool CScriptFunctions::rDeleteInfo(CBotVar* var, CBotVar* result, int& exception
 
     exception = 0;
 
-    CBotString infoNameCbs = var->GetValString();
-    std::string infoName = std::string(static_cast<const char*>(infoNameCbs));
+    std::string infoName = var->GetValString();
     var = var->GetNext();
 
     float power = 10.0f*g_unit;
     if (var != nullptr)
     {
         power = var->GetValFloat()*g_unit;
-        var = var->GetNext();
     }
 
     CExchangePost* exchangePost = FindExchangePost(pThis, power);
@@ -2376,15 +2156,13 @@ bool CScriptFunctions::rTestInfo(CBotVar* var, CBotVar* result, int& exception, 
 
     exception = 0;
 
-    CBotString infoNameCbs = var->GetValString();
-    std::string infoName = std::string(static_cast<const char*>(infoNameCbs));
+    std::string infoName = var->GetValString();
     var = var->GetNext();
 
     float power = 10.0f*g_unit;
     if (var != nullptr)
     {
         power = var->GetValFloat()*g_unit;
-        var = var->GetNext();
     }
 
     CExchangePost* exchangePost = FindExchangePost(pThis, power);
@@ -2776,12 +2554,10 @@ CBotTypResult CScriptFunctions::cMessage(CBotVar* &var, void* user)
 bool CScriptFunctions::rMessage(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
-    CBotString  cbs;
-    const char* p;
+    std::string p;
     Ui::TextType    type;
 
-    cbs = var->GetValString();
-    p = cbs;
+    p = var->GetValString();
 
     type = Ui::TT_MESSAGE;
     var = var->GetNext();
@@ -2790,7 +2566,7 @@ bool CScriptFunctions::rMessage(CBotVar* var, CBotVar* result, int& exception, v
         type = static_cast<Ui::TextType>(var->GetValInt());
     }
 
-    script->m_main->GetDisplayText()->DisplayText(p, script->m_object, 10.0f, type);
+    script->m_main->GetDisplayText()->DisplayText(p.c_str(), script->m_object, 10.0f, type);
 
     return true;
 }
@@ -3110,392 +2886,6 @@ bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exceptio
     return true;
 }
 
-// Static variables
-
-int                                 CScriptFunctions::m_numberOfOpenFiles = 0;
-std::unordered_map<int, std::unique_ptr<std::ios>> CScriptFunctions::m_files;
-int                                 CScriptFunctions::m_nextFile = 1;
-
-
-
-// Prepares a file name.
-
-void PrepareFilename(CBotString &filename)
-{
-    CResourceManager::CreateDirectory("files");
-    filename = CBotString("files/") + filename;
-    GetLogger()->Debug("CBot accessing file '%s'\n", static_cast<const char*>(filename));
-}
-
-
-bool CScriptFunctions::FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
-{
-    CBotString  mode;
-
-    // must be a character string
-    if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
-
-    CBotString  filename = pVar->GetValString();
-    PrepareFilename(filename);
-
-    // there may be a second parameter
-    pVar = pVar->GetNext();
-    if ( pVar != nullptr )
-    {
-        // recover mode
-        mode = pVar->GetValString();
-        if ( mode != "r" && mode != "w" ) { Exception = CBotErrBadParam; return false; }
-
-        // no third parameter
-        if ( pVar->GetNext() != nullptr ) { Exception = CBotErrOverParam; return false; }
-    }
-
-    // saves the file name
-    pVar = pThis->GetItem("filename");
-    pVar->SetValString(filename);
-
-    // retrieve the item "handle"
-    pVar = pThis->GetItem("handle");
-    // which must not be initialized
-    if ( pVar->IsDefined()) { Exception = CBotErrFileOpen; return false; }
-
-    if ( ! mode.IsEmpty() )
-    {
-        // opens the requested file
-        bool ok = false;
-        std::unique_ptr<std::ios> file;
-        if (mode == "r")
-        {
-            auto is = MakeUnique<CInputStream>(static_cast<const char*>(filename));
-            ok = is->is_open();
-            file = std::move(is);
-        }
-        else if (mode == "w")
-        {
-            auto os = MakeUnique<COutputStream>(static_cast<const char*>(filename));
-            ok = os->is_open();
-            file = std::move(os);
-        }
-        if (!ok) { Exception = CBotErrFileOpen; return false; }
-
-        m_numberOfOpenFiles ++;
-
-        int fileHandle = m_nextFile++;
-
-        m_files[fileHandle] = std::move(file);
-
-        // save the file handle
-        pVar = pThis->GetItem("handle");
-        pVar->SetValInt(fileHandle);
-    }
-    return true;
-}
-
-// constructor of the class
-// get the filename as a parameter
-
-// execution
-bool CScriptFunctions::rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
-{
-    // accepts no parameters
-    if ( pVar == nullptr ) return true;
-
-    return FileClassOpenFile(pThis, pVar, pResult, Exception);
-}
-
-// compilation
-CBotTypResult CScriptFunctions::cfconstruct (CBotVar* pThis, CBotVar* &pVar)
-{
-    // accepts no parameters
-    if ( pVar == nullptr ) return CBotTypResult( 0 );
-
-    // must be a character string
-    if ( pVar->GetType() != CBotTypString )
-        return CBotTypResult( CBotErrBadString );
-
-    // there may be a second parameter
-    pVar = pVar->GetNext();
-    if ( pVar != nullptr )
-    {
-        // which must be a string
-        if ( pVar->GetType() != CBotTypString )
-            return CBotTypResult( CBotErrBadString );
-        // no third parameter
-        if ( pVar->GetNext() != nullptr ) return CBotTypResult( CBotErrOverParam );
-    }
-
-    // the result is void (constructor)
-    return CBotTypResult( 0 );
-}
-
-
-// destructor of the class
-
-// execution
-bool CScriptFunctions::rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
-{
-    // retrieve the item "handle"
-    pVar = pThis->GetItem("handle");
-
-    // don't open? no problem :)
-    if ( pVar->IsDefined()) return true;
-
-    int fileHandle = pVar->GetValInt();
-
-    std::ios* file = m_files[fileHandle].get();
-    CInputStream* is = dynamic_cast<CInputStream*>(file);
-    if(is != nullptr) is->close();
-    COutputStream* os = dynamic_cast<COutputStream*>(file);
-    if(os != nullptr) os->close();
-
-    m_numberOfOpenFiles--;
-
-    pVar->SetInit(CBotVar::InitType::IS_NAN);
-
-    m_files.erase(fileHandle);
-
-    return true;
-}
-
-
-// process FILE :: open
-// get the r/w mode as a parameter
-
-// execution
-bool CScriptFunctions::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
-{
-    // there must be a parameter
-    if ( pVar == nullptr ) { Exception = CBotErrLowParam; return false; }
-
-    bool result = FileClassOpenFile(pThis, pVar, pResult, Exception);
-    pResult->SetValInt(result);
-    return result;
-}
-
-// compilation
-CBotTypResult CScriptFunctions::cfopen (CBotVar* pThis, CBotVar* &pVar)
-{
-    // there must be a parameter
-    if ( pVar == nullptr ) return CBotTypResult( CBotErrLowParam );
-
-    // which must be a string
-    if ( pVar->GetType() != CBotTypString )
-        return CBotTypResult( CBotErrBadString );
-
-    // there may be a second parameter
-    pVar = pVar->GetNext();
-    if ( pVar != nullptr )
-    {
-        // which must be a string
-        if ( pVar->GetType() != CBotTypString )
-            return CBotTypResult( CBotErrBadString );
-
-        // no third parameter
-        if ( pVar->GetNext() != nullptr ) return CBotTypResult( CBotErrOverParam );
-    }
-
-    // the result is bool
-    return CBotTypResult(CBotTypBoolean);
-}
-
-
-// process FILE :: close
-
-// execeution
-bool CScriptFunctions::rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
-{
-    // it shouldn't be any parameters
-    if (pVar != nullptr) { Exception = CBotErrOverParam; return false; }
-
-    // retrieve the item "handle"
-    pVar = pThis->GetItem("handle");
-
-    if ( !pVar->IsDefined()) { Exception = CBotErrNotOpen; return false; }
-
-    int fileHandle = pVar->GetValInt();
-
-    const auto handleIter = m_files.find(fileHandle);
-    if (handleIter == m_files.end())
-    {
-        Exception = CBotErrNotOpen;
-        return false;
-    }
-
-    assert(handleIter->second);
-
-    std::ios* file = handleIter->second.get();
-    CInputStream* is = dynamic_cast<CInputStream*>(file);
-    if(is != nullptr) is->close();
-    COutputStream* os = dynamic_cast<COutputStream*>(file);
-    if(os != nullptr) os->close();
-
-    m_numberOfOpenFiles--;
-
-    pVar->SetInit(CBotVar::InitType::IS_NAN);
-
-    m_files.erase(handleIter);
-
-    return true;
-}
-
-// compilation
-CBotTypResult CScriptFunctions::cfclose (CBotVar* pThis, CBotVar* &pVar)
-{
-    // it shouldn't be any parameters
-    if ( pVar != nullptr ) return CBotTypResult( CBotErrOverParam );
-
-    // function returns a result "void"
-    return CBotTypResult( 0 );
-}
-
-// process FILE :: writeln
-
-// execution
-bool CScriptFunctions::rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
-{
-    // there must be a parameter
-    if ( pVar == nullptr ) { Exception = CBotErrLowParam; return false; }
-
-    // which must be a character string
-    if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
-
-    CBotString param = pVar->GetValString();
-
-    // retrieve the item "handle"
-    pVar = pThis->GetItem("handle");
-
-    if ( !pVar->IsDefined()) { Exception = CBotErrNotOpen; return false; }
-
-    int fileHandle = pVar->GetValInt();
-
-    const auto handleIter = m_files.find(fileHandle);
-    if (handleIter == m_files.end())
-    {
-        Exception = CBotErrNotOpen;
-        return false;
-    }
-
-    COutputStream* os = dynamic_cast<COutputStream*>(handleIter->second.get());
-    if (os == nullptr) { Exception = CBotErrWrite; return false; }
-
-    *os << param << "\n";
-
-    // if an error occurs generate an exception
-    if ( os->bad() ) { Exception = CBotErrWrite; return false; }
-
-    return true;
-}
-
-// compilation
-CBotTypResult CScriptFunctions::cfwrite (CBotVar* pThis, CBotVar* &pVar)
-{
-    // there must be a parameter
-    if ( pVar == nullptr ) return CBotTypResult( CBotErrLowParam );
-
-    // which must be a character string
-    if ( pVar->GetType() != CBotTypString ) return CBotTypResult( CBotErrBadString );
-
-    // no other parameter
-    if ( pVar->GetNext() != nullptr ) return CBotTypResult( CBotErrOverParam );
-
-    // the function returns a void result
-    return CBotTypResult( 0 );
-}
-
-// process FILE :: readln
-
-// execution
-bool CScriptFunctions::rfread(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
-{
-    // it shouldn't be any parameters
-    if (pVar != nullptr) { Exception = CBotErrOverParam; return false; }
-
-    // retrieve the item "handle"
-    pVar = pThis->GetItem("handle");
-
-    if (!pVar->IsDefined()) { Exception = CBotErrNotOpen; return false; }
-
-    int fileHandle = pVar->GetValInt();
-
-    const auto handleIter = m_files.find(fileHandle);
-    if (handleIter == m_files.end())
-    {
-        Exception = CBotErrNotOpen;
-        return false;
-    }
-
-    CInputStream* is = dynamic_cast<CInputStream*>(handleIter->second.get());
-    if (is == nullptr) { Exception = CBotErrRead; return false; }
-
-    std::string line;
-    std::getline(*is, line);
-
-    // if an error occurs generate an exception
-    if ( is->bad() ) { Exception = CBotErrRead; return false; }
-
-    pResult->SetValString( line.c_str() );
-
-    return true;
-}
-
-// compilation
-CBotTypResult CScriptFunctions::cfread (CBotVar* pThis, CBotVar* &pVar)
-{
-    // it should not be any parameter
-    if ( pVar != nullptr ) return CBotTypResult( CBotErrOverParam );
-
-    // function returns a result "string"
-    return CBotTypResult( CBotTypString );
-}
-// process FILE :: readln
-
-
-// execution
-bool CScriptFunctions::rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
-{
-    // it should not be any parameter
-    if ( pVar != nullptr ) { Exception = CBotErrOverParam; return false; }
-
-    // retrieve the item "handle"
-    pVar = pThis->GetItem("handle");
-
-    if ( !pVar->IsDefined()) { Exception = CBotErrNotOpen; return false; }
-
-    int fileHandle = pVar->GetValInt();
-
-    const auto handleIter = m_files.find(fileHandle);
-    if (handleIter == m_files.end())
-    {
-        Exception = CBotErrNotOpen;
-        return false;
-    }
-
-    pResult->SetValInt( handleIter->second->eof() );
-
-    return true;
-}
-
-// compilation
-CBotTypResult CScriptFunctions::cfeof (CBotVar* pThis, CBotVar* &pVar)
-{
-    // it shouldn't be any parameter
-    if ( pVar != nullptr ) return CBotTypResult( CBotErrOverParam );
-
-    // the function returns a boolean result
-    return CBotTypResult( CBotTypBoolean );
-}
-
-// Instruction "deletefile(filename)".
-
-bool CScriptFunctions::rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    CBotString  cbs;
-
-    cbs = var->GetValString();
-    PrepareFilename(cbs);
-    std::string filename = static_cast<const char*>(cbs);
-    return CResourceManager::Remove(filename);
-}
 
 // Compilation of class "point".
 
@@ -3587,6 +2977,111 @@ bool CScriptFunctions::rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* 
     return  true;  // no interruption
 }
 
+class CBotFileColobot : public CBotFile
+{
+public:
+    static int m_numFilesOpen;
+
+    CBotFileColobot(const std::string& filename, CBotFileAccessHandler::OpenMode mode)
+    {
+        if (mode == CBotFileAccessHandler::OpenMode::Read)
+        {
+            auto is = MakeUnique<CInputStream>(filename);
+            if (is->is_open())
+            {
+                m_file = std::move(is);
+            }
+        }
+        else if (mode == CBotFileAccessHandler::OpenMode::Write)
+        {
+            auto os = MakeUnique<COutputStream>(filename);
+            if (os->is_open())
+            {
+                m_file = std::move(os);
+            }
+        }
+
+        if (Opened())
+        {
+            GetLogger()->Info("CBot open file '%s'\n", filename.c_str());
+            m_numFilesOpen++;
+        }
+    }
+
+    ~CBotFileColobot()
+    {
+        if (Opened())
+        {
+            GetLogger()->Debug("CBot close file\n");
+            m_numFilesOpen--;
+        }
+
+        std::ios* file = m_file.get();
+        CInputStream* is = dynamic_cast<CInputStream*>(file);
+        if(is != nullptr) is->close();
+        COutputStream* os = dynamic_cast<COutputStream*>(file);
+        if(os != nullptr) os->close();
+    }
+
+    virtual bool Opened() override
+    {
+        return m_file != nullptr;
+    }
+
+    virtual bool Errored() override
+    {
+        return m_file->bad();
+    }
+
+    virtual bool IsEOF() override
+    {
+        return m_file->eof();
+    }
+
+    virtual std::string ReadLine() override
+    {
+        CInputStream* is = dynamic_cast<CInputStream*>(m_file.get());
+        assert(is != nullptr);
+
+        std::string line;
+        std::getline(*is, line);
+        return line;
+    }
+
+    virtual void Write(const std::string& s) override
+    {
+        COutputStream* os = dynamic_cast<COutputStream*>(m_file.get());
+        assert(os != nullptr);
+
+        *os << s;
+    }
+
+private:
+    std::unique_ptr<std::ios> m_file;
+};
+int CBotFileColobot::m_numFilesOpen = 0;
+
+class CBotFileAccessHandlerColobot : public CBotFileAccessHandler
+{
+public:
+    virtual std::unique_ptr<CBotFile> OpenFile(const std::string& filename, OpenMode mode) override
+    {
+        return MakeUnique<CBotFileColobot>(PrepareFilename(filename), mode);
+    }
+
+    virtual bool DeleteFile(const std::string& filename) override
+    {
+        GetLogger()->Info("CBot delete file '%s'\n", filename.c_str());
+        return CResourceManager::Remove(PrepareFilename(filename));
+    }
+
+private:
+    static std::string PrepareFilename(const std::string& filename)
+    {
+        CResourceManager::CreateDirectory("files");
+        return "files/" + filename;
+    }
+};
 
 
 
@@ -3680,145 +3175,100 @@ void CScriptFunctions::Init()
     CBotClass* bc;
 
     // Add the class Point.
-    bc = new CBotClass("point", nullptr, true);  // intrinsic class
+    bc = CBotClass::Create("point", nullptr, true);  // intrinsic class
     bc->AddItem("x", CBotTypFloat);
     bc->AddItem("y", CBotTypFloat);
     bc->AddItem("z", CBotTypFloat);
-    bc->AddFunction("point", CScriptFunctions::rPointConstructor, CScriptFunctions::cPointConstructor);
+    bc->AddFunction("point", rPointConstructor, cPointConstructor);
 
     // Adds the class Object.
-    bc = new CBotClass("object", nullptr);
-    bc->AddItem("category",    CBotTypResult(CBotTypInt), PR_READ);
-    bc->AddItem("position",    CBotTypResult(CBotTypClass, "point"), PR_READ);
-    bc->AddItem("orientation", CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("pitch",       CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("roll",        CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("energyLevel", CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("shieldLevel", CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("temperature", CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("altitude",    CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("lifeTime",    CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("energyCell",  CBotTypResult(CBotTypPointer, "object"), PR_READ);
-    bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), PR_READ);
-    bc->AddItem("id",          CBotTypResult(CBotTypInt), PR_READ);
-    bc->AddItem("team",        CBotTypResult(CBotTypInt), PR_READ);
-    bc->AddItem("velocity",    CBotTypResult(CBotTypClass, "point"), PR_READ);
-    bc->AddFunction("busy",     CScriptFunctions::rBusy,     CScriptFunctions::cBusy);
-    bc->AddFunction("factory",  CScriptFunctions::rFactory,  CScriptFunctions::cFactory);
-    bc->AddFunction("research", CScriptFunctions::rResearch, CScriptFunctions::cClassOneFloat);
-    bc->AddFunction("takeoff",  CScriptFunctions::rTakeOff,  CScriptFunctions::cClassNull);
-    bc->AddFunction("destroy",  CScriptFunctions::rDestroy,  CScriptFunctions::cClassNull);
+    bc = CBotClass::Create("object", nullptr);
+    bc->AddItem("category",    CBotTypResult(CBotTypInt), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("position",    CBotTypResult(CBotTypClass, "point"), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("orientation", CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("pitch",       CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("roll",        CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("energyLevel", CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("shieldLevel", CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("temperature", CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("altitude",    CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("lifeTime",    CBotTypResult(CBotTypFloat), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("energyCell",  CBotTypResult(CBotTypPointer, "object"), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("id",          CBotTypResult(CBotTypInt), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("team",        CBotTypResult(CBotTypInt), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("velocity",    CBotTypResult(CBotTypClass, "point"), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddFunction("busy",     rBusy,     cBusy);
+    bc->AddFunction("factory",  rFactory,  cFactory);
+    bc->AddFunction("research", rResearch, cClassOneFloat);
+    bc->AddFunction("takeoff",  rTakeOff,  cClassNull);
+    bc->AddFunction("destroy",  rDestroy,  cClassNull);
 
-    // InitClassFILE:
-    // create a class for file management
-    // the use is as follows:
-    // file canal( "NomFichier.txt" )
-    // canal.open( "r" );   // open for read
-    // s = canal.readln( ); // reads a line
-    // canal.close();   // close the file
+    CBotProgram::AddFunction("endmission",rEndMission,cEndMission);
+    CBotProgram::AddFunction("playmusic", rPlayMusic ,cPlayMusic);
+    CBotProgram::AddFunction("stopmusic", rStopMusic ,cNull);
 
-    // create the class FILE
-    bc    = new CBotClass("file", nullptr);
-    // adds the component ".filename"
-    bc->AddItem("filename", CBotTypString);
-    // adds the component ".handle"
-    bc->AddItem("handle", CBotTypInt, PR_PRIVATE);
+    CBotProgram::AddFunction("getbuild",          rGetBuild,          cNull);
+    CBotProgram::AddFunction("getresearchenable", rGetResearchEnable, cNull);
+    CBotProgram::AddFunction("getresearchdone",   rGetResearchDone,   cNull);
+    CBotProgram::AddFunction("setbuild",          rSetBuild,          cOneInt);
+    CBotProgram::AddFunction("setresearchenable", rSetResearchEnable, cOneInt);
+    CBotProgram::AddFunction("setresearchdone",   rSetResearchDone,   cOneInt);
 
-    // define a constructor and a destructor
-    bc->AddFunction("file", CScriptFunctions::rfconstruct, CScriptFunctions::cfconstruct );
-    bc->AddFunction("~file", CScriptFunctions::rfdestruct, nullptr );
+    CBotProgram::AddFunction("canbuild",        rCanBuild,        cOneIntReturnBool);
+    CBotProgram::AddFunction("canresearch",     rCanResearch,     cOneIntReturnBool);
+    CBotProgram::AddFunction("researched",      rResearched,      cOneIntReturnBool);
+    CBotProgram::AddFunction("buildingenabled", rBuildingEnabled, cOneIntReturnBool);
 
-    // end of the methods associated
-    bc->AddFunction("open", CScriptFunctions::rfopen, CScriptFunctions::cfopen );
-    bc->AddFunction("close", CScriptFunctions::rfclose, CScriptFunctions::cfclose );
-    bc->AddFunction("writeln", CScriptFunctions::rfwrite, CScriptFunctions::cfwrite );
-    bc->AddFunction("readln", CScriptFunctions::rfread, CScriptFunctions::cfread );
-    bc->AddFunction("eof", CScriptFunctions::rfeof, CScriptFunctions::cfeof );
+    CBotProgram::AddFunction("build",           rBuild,           cOneInt);
 
-    //m_pFuncFile = new CBotProgram( );
-    //CBotStringArray ListFonctions;
-    //m_pFuncFile->Compile( "public file openfile(string name, string mode) {return new file(name, mode);}", ListFonctions);
-    //m_pFuncFile->SetIdent(-2);  // restoreState in special identifier for this function
+    CBotProgram::AddFunction("retobject", rGetObject, cGetObject);
+    CBotProgram::AddFunction("retobjectbyid", rGetObjectById, cGetObject);
+    CBotProgram::AddFunction("delete",    rDelete,    cDelete);
+    CBotProgram::AddFunction("search",    rSearch,    cSearch);
+    CBotProgram::AddFunction("radar",     rRadar,     cRadar);
+    CBotProgram::AddFunction("radarall",  rRadarAll,  cRadarAll);
+    CBotProgram::AddFunction("detect",    rDetect,    cDetect);
+    CBotProgram::AddFunction("direction", rDirection, cDirection);
+    CBotProgram::AddFunction("produce",   rProduce,   cProduce);
+    CBotProgram::AddFunction("distance",  rDistance,  cDistance);
+    CBotProgram::AddFunction("distance2d",rDistance2d,cDistance);
+    CBotProgram::AddFunction("space",     rSpace,     cSpace);
+    CBotProgram::AddFunction("flatspace", rFlatSpace, cFlatSpace);
+    CBotProgram::AddFunction("flatground",rFlatGround,cFlatGround);
+    CBotProgram::AddFunction("wait",      rWait,      cOneFloat);
+    CBotProgram::AddFunction("move",      rMove,      cOneFloat);
+    CBotProgram::AddFunction("turn",      rTurn,      cOneFloat);
+    CBotProgram::AddFunction("goto",      rGoto,      cGoto);
+    CBotProgram::AddFunction("grab",      rGrab,      cGrabDrop);
+    CBotProgram::AddFunction("drop",      rDrop,      cGrabDrop);
+    CBotProgram::AddFunction("sniff",     rSniff,     cNull);
+    CBotProgram::AddFunction("receive",   rReceive,   cReceive);
+    CBotProgram::AddFunction("send",      rSend,      cSend);
+    CBotProgram::AddFunction("deleteinfo",rDeleteInfo,cDeleteInfo);
+    CBotProgram::AddFunction("testinfo",  rTestInfo,  cTestInfo);
+    CBotProgram::AddFunction("thump",     rThump,     cNull);
+    CBotProgram::AddFunction("recycle",   rRecycle,   cNull);
+    CBotProgram::AddFunction("shield",    rShield,    cShield);
+    CBotProgram::AddFunction("fire",      rFire,      cFire);
+    CBotProgram::AddFunction("aim",       rAim,       cAim);
+    CBotProgram::AddFunction("motor",     rMotor,     cMotor);
+    CBotProgram::AddFunction("jet",       rJet,       cOneFloat);
+    CBotProgram::AddFunction("topo",      rTopo,      cTopo);
+    CBotProgram::AddFunction("message",   rMessage,   cMessage);
+    CBotProgram::AddFunction("cmdline",   rCmdline,   cOneFloat);
+    CBotProgram::AddFunction("ismovie",   rIsMovie,   cNull);
+    CBotProgram::AddFunction("errmode",   rErrMode,   cOneFloat);
+    CBotProgram::AddFunction("ipf",       rIPF,       cOneFloat);
+    CBotProgram::AddFunction("abstime",   rAbsTime,   cNull);
+    CBotProgram::AddFunction("pendown",   rPenDown,   cPenDown);
+    CBotProgram::AddFunction("penup",     rPenUp,     cNull);
+    CBotProgram::AddFunction("pencolor",  rPenColor,  cOneFloat);
+    CBotProgram::AddFunction("penwidth",  rPenWidth,  cOneFloat);
 
-    CBotProgram::AddFunction("sin",       rSin,       CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("cos",       rCos,       CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("tan",       rTan,       CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("asin",      raSin,      CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("acos",      raCos,      CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("atan",      raTan,      CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("atan2",     raTan2,     CScriptFunctions::cTwoFloat);
-    CBotProgram::AddFunction("sqrt",      rSqrt,      CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("pow",       rPow,       CScriptFunctions::cTwoFloat);
-    CBotProgram::AddFunction("rand",      rRand,      CScriptFunctions::cNull);
-    CBotProgram::AddFunction("abs",       rAbs,       CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("floor",     rFloor,     CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("ceil",      rCeil,      CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("round",     rRound,     CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("trunc",     rTrunc,     CScriptFunctions::cOneFloat);
+    CBotProgram::AddFunction("camerafocus", rCameraFocus, cOneObject);
 
-    CBotProgram::AddFunction("endmission",rEndMission,CScriptFunctions::cEndMission);
-    CBotProgram::AddFunction("playmusic", rPlayMusic ,CScriptFunctions::cPlayMusic);
-    CBotProgram::AddFunction("stopmusic", rStopMusic ,CScriptFunctions::cNull);
-
-    CBotProgram::AddFunction("getbuild",          rGetBuild,          CScriptFunctions::cNull);
-    CBotProgram::AddFunction("getresearchenable", rGetResearchEnable, CScriptFunctions::cNull);
-    CBotProgram::AddFunction("getresearchdone",   rGetResearchDone,   CScriptFunctions::cNull);
-    CBotProgram::AddFunction("setbuild",          rSetBuild,          CScriptFunctions::cOneInt);
-    CBotProgram::AddFunction("setresearchenable", rSetResearchEnable, CScriptFunctions::cOneInt);
-    CBotProgram::AddFunction("setresearchdone",   rSetResearchDone,   CScriptFunctions::cOneInt);
-
-    CBotProgram::AddFunction("canbuild",        rCanBuild,        CScriptFunctions::cOneIntReturnBool);
-    CBotProgram::AddFunction("canresearch",     rCanResearch,     CScriptFunctions::cOneIntReturnBool);
-    CBotProgram::AddFunction("researched",      rResearched,      CScriptFunctions::cOneIntReturnBool);
-    CBotProgram::AddFunction("buildingenabled", rBuildingEnabled, CScriptFunctions::cOneIntReturnBool);
-
-    CBotProgram::AddFunction("build",           rBuild,           CScriptFunctions::cOneInt);
-
-    CBotProgram::AddFunction("retobject", rGetObject, CScriptFunctions::cGetObject);
-    CBotProgram::AddFunction("retobjectbyid", rGetObjectById, CScriptFunctions::cGetObject);
-    CBotProgram::AddFunction("delete",    rDelete,    CScriptFunctions::cDelete);
-    CBotProgram::AddFunction("search",    rSearch,    CScriptFunctions::cSearch);
-    CBotProgram::AddFunction("radar",     rRadar,     CScriptFunctions::cRadar);
-    CBotProgram::AddFunction("detect",    rDetect,    CScriptFunctions::cDetect);
-    CBotProgram::AddFunction("direction", rDirection, CScriptFunctions::cDirection);
-    CBotProgram::AddFunction("produce",   rProduce,   CScriptFunctions::cProduce);
-    CBotProgram::AddFunction("distance",  rDistance,  CScriptFunctions::cDistance);
-    CBotProgram::AddFunction("distance2d",rDistance2d,CScriptFunctions::cDistance);
-    CBotProgram::AddFunction("space",     rSpace,     CScriptFunctions::cSpace);
-    CBotProgram::AddFunction("flatspace", rFlatSpace, CScriptFunctions::cFlatSpace);
-    CBotProgram::AddFunction("flatground",rFlatGround,CScriptFunctions::cFlatGround);
-    CBotProgram::AddFunction("wait",      rWait,      CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("move",      rMove,      CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("turn",      rTurn,      CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("goto",      rGoto,      CScriptFunctions::cGoto);
-    CBotProgram::AddFunction("grab",      rGrab,      CScriptFunctions::cGrabDrop);
-    CBotProgram::AddFunction("drop",      rDrop,      CScriptFunctions::cGrabDrop);
-    CBotProgram::AddFunction("sniff",     rSniff,     CScriptFunctions::cNull);
-    CBotProgram::AddFunction("receive",   rReceive,   CScriptFunctions::cReceive);
-    CBotProgram::AddFunction("send",      rSend,      CScriptFunctions::cSend);
-    CBotProgram::AddFunction("deleteinfo",rDeleteInfo,CScriptFunctions::cDeleteInfo);
-    CBotProgram::AddFunction("testinfo",  rTestInfo,  CScriptFunctions::cTestInfo);
-    CBotProgram::AddFunction("thump",     rThump,     CScriptFunctions::cNull);
-    CBotProgram::AddFunction("recycle",   rRecycle,   CScriptFunctions::cNull);
-    CBotProgram::AddFunction("shield",    rShield,    CScriptFunctions::cShield);
-    CBotProgram::AddFunction("fire",      rFire,      CScriptFunctions::cFire);
-    CBotProgram::AddFunction("aim",       rAim,       CScriptFunctions::cAim);
-    CBotProgram::AddFunction("motor",     rMotor,     CScriptFunctions::cMotor);
-    CBotProgram::AddFunction("jet",       rJet,       CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("topo",      rTopo,      CScriptFunctions::cTopo);
-    CBotProgram::AddFunction("message",   rMessage,   CScriptFunctions::cMessage);
-    CBotProgram::AddFunction("cmdline",   rCmdline,   CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("ismovie",   rIsMovie,   CScriptFunctions::cNull);
-    CBotProgram::AddFunction("errmode",   rErrMode,   CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("ipf",       rIPF,       CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("abstime",   rAbsTime,   CScriptFunctions::cNull);
-    CBotProgram::AddFunction("deletefile",rDeleteFile,CScriptFunctions::cString);
-    CBotProgram::AddFunction("pendown",   rPenDown,   CScriptFunctions::cPenDown);
-    CBotProgram::AddFunction("penup",     rPenUp,     CScriptFunctions::cNull);
-    CBotProgram::AddFunction("pencolor",  rPenColor,  CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("penwidth",  rPenWidth,  CScriptFunctions::cOneFloat);
-
-    CBotProgram::AddFunction("camerafocus", rCameraFocus, CScriptFunctions::cOneObject);
+    SetFileAccessHandler(MakeUnique<CBotFileAccessHandlerColobot>());
 }
 
 
@@ -3977,7 +3427,7 @@ CBotVar* CScriptFunctions::CreateObjectVar(CObject* obj)
     CBotClass* bc = CBotClass::Find("object");
     if ( bc != nullptr )
     {
-        bc->AddUpdateFunc(CScriptFunctions::uObject);
+        bc->SetUpdateFunc(CScriptFunctions::uObject);
     }
 
     CBotVar* botVar = CBotVar::Create("", CBotTypResult(CBotTypClass, "object"));
@@ -3991,6 +3441,11 @@ void CScriptFunctions::DestroyObjectVar(CBotVar* botVar, bool permanent)
     if ( botVar == nullptr ) return;
 
     botVar->SetUserPtr(OBJECTDELETED);
-    if(permanent)
-        delete botVar;
+    if (permanent)
+        CBotVar::Destroy(botVar);
+}
+
+bool CScriptFunctions::CheckOpenFiles()
+{
+    return CBotFileColobot::m_numFilesOpen > 0;
 }

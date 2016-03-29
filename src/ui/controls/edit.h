@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 
 /**
- * \file ui/edit.h
+ * \file ui/controls/edit.h
  * \brief CEdit class
  */
 
@@ -226,6 +226,11 @@ protected:
     bool        UndoRecall();
 
     void        UpdateScroll();
+
+    void        SetFocus(CControl* control) override;
+    void        UpdateFocus();      // Start/stop text input mode, this toggles the on-screen keyboard
+
+    void        GetIndentedText(std::ostream& stream, unsigned int start, unsigned int end);
 
 protected:
     std::unique_ptr<CScroll> m_scroll;           // vertical scrollbar on the right

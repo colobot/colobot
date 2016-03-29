@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ class CPhysics;
 class CMotion;
 class CRobotMain;
 class CSoundInterface;
-class CLevelParserLine;
 struct Program;
 
 namespace Gfx
@@ -54,7 +53,7 @@ public:
     CObjectInterface(COldObject* object);
     ~CObjectInterface();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool all=false);
 
     bool        EventProcess(const Event &event);
     bool        CreateInterface(bool bSelect);
@@ -65,7 +64,7 @@ public:
 protected:
     bool        EventFrame(const Event &event);
 
-    void        StartEditScript(Program* program, char* name);
+    void        StartEditScript(Program* program, std::string name);
     void        StopEditScript(bool bCancel);
 
     void        GroundFlat();

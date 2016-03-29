@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,10 @@
 #pragma once
 
 
-#include <SDL_keysym.h>
+#include <SDL_keycode.h>
+
+// TODO: This is a bit ugly hack
+#define SDLK_LAST (SDLK_SCANCODE_MASK << 1)
 
 /* Key definitions are specially defined here so that it is clear in other parts of the code
   that these are used. It is to avoid having SDL-related enum values or #defines lying around
@@ -51,7 +54,7 @@ enum VirtualKmod
     VIRTUAL_KMOD_CTRL  = SDLK_LAST + 100, //! < control (left or right)
     VIRTUAL_KMOD_SHIFT = SDLK_LAST + 101, //! < shift (left or right)
     VIRTUAL_KMOD_ALT   = SDLK_LAST + 102, //! < alt (left or right)
-    VIRTUAL_KMOD_META  = SDLK_LAST + 103  //! < win key (left or right)
+    VIRTUAL_KMOD_GUI   = SDLK_LAST + 103  //! < windows logo (on windows/linux) or command (on mac os) key (left or right)
 };
 
 // Just syntax sugar
@@ -102,6 +105,7 @@ enum InputSlot
     INPUT_SLOT_CAMERA_UP,
     INPUT_SLOT_CAMERA_DOWN,
     INPUT_SLOT_PAUSE,
+    INPUT_SLOT_CMDLINE,
 
     INPUT_SLOT_MAX
 };

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -819,13 +819,13 @@ Error CMotionToto::SetAction(int action, float time)
 
     m_bStartAction = true;
 
-    sound = SOUND_CLICK;
+    sound = SOUND_NONE;
     if ( action == MT_ERROR   )  sound = SOUND_ERROR;
     if ( action == MT_WARNING )  sound = SOUND_WARNING;
     if ( action == MT_INFO    )  sound = SOUND_INFO;
     if ( action == MT_MESSAGE )  sound = SOUND_MESSAGE;
 
-    if ( sound != SOUND_CLICK )
+    if ( sound != SOUND_NONE )
     {
         m_soundChannel = m_sound->Play(sound, m_object->GetPosition());
     }

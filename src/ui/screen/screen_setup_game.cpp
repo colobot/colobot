@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 
 #include "app/app.h"
 
+#include "common/restext.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
 
@@ -30,6 +31,7 @@
 #include "ui/controls/check.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"
+#include "ui/controls/list.h"
 #include "ui/controls/slider.h"
 #include "ui/controls/window.h"
 
@@ -51,6 +53,7 @@ void CScreenSetupGame::CreateInterface()
     CLabel*         pl;
     CCheck*         pc;
     CSlider*        psl;
+    CList*          pli;
     Math::Point     pos, ddim;
     std::string     name;
 
@@ -96,7 +99,7 @@ void CScreenSetupGame::CreateInterface()
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
     pos.y -= ddim.y/2;
-    pos.x = ox+sx*3+dim.x*3.5f;
+    pos.x = ox+sx*3+dim.x*4.0f;
     psl = pw->CreateSlider(pos, ddim, -1, EVENT_INTERFACE_AUTOSAVE_SLOTS);
     psl->SetState(STATE_SHADOW);
     psl->SetLimit(1.0f, 10.0f);
@@ -120,7 +123,7 @@ void CScreenSetupGame::CreateInterface()
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_RAIN);
     pc->SetState(STATE_SHADOW);
     pos.y -= 0.048f;
-    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_MOUSE);
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_BGPAUSE);
     pc->SetState(STATE_SHADOW);
     pos.y -= 0.048f;
     pos.y -= 0.048f;
@@ -133,6 +136,18 @@ void CScreenSetupGame::CreateInterface()
     pos.y -= 0.048f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_EDITVALUE);
     pc->SetState(STATE_SHADOW);
+
+    ddim.y = dim.y*3.0f;
+    pos.y -= ddim.y;
+    pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_LANGUAGE);
+    pli->SetState(STATE_SHADOW);
+    // TODO: Add something like GetSupportedLanguages() and GetLanguageFriendlyName() for this
+    pli->SetItemName(1+LANGUAGE_ENV, "[System default]");
+    pli->SetItemName(1+LANGUAGE_ENGLISH, "English");
+    pli->SetItemName(1+LANGUAGE_FRENCH, "French");
+    pli->SetItemName(1+LANGUAGE_GERMAN, "German");
+    pli->SetItemName(1+LANGUAGE_POLISH, "Polish");
+    pli->SetItemName(1+LANGUAGE_RUSSIAN, "Russian");
 
     UpdateSetupButtons();
 }
@@ -161,10 +176,8 @@ bool CScreenSetupGame::EventProcess(const Event &event)
             UpdateSetupButtons();
             break;
 
-        case EVENT_INTERFACE_MOUSE:
-            m_settings->SetSystemMouse(!m_settings->GetSystemMouse());
-            m_app->SetMouseMode(m_settings->GetSystemMouse() ? MOUSE_SYSTEM : MOUSE_ENGINE);
-
+        case EVENT_INTERFACE_BGPAUSE:
+            m_settings->SetFocusLostPause(!m_settings->GetFocusLostPause());
             ChangeSetupButtons();
             UpdateSetupButtons();
             break;
@@ -201,7 +214,7 @@ bool CScreenSetupGame::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_SCROLL:
-            m_camera->SetCameraScroll(!m_camera->GetCameraScroll());
+            m_camera->SetOldCameraScroll(!m_camera->GetOldCameraScroll());
             ChangeSetupButtons();
             UpdateSetupButtons();
             break;
@@ -237,11 +250,8 @@ bool CScreenSetupGame::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_AUTOSAVE_INTERVAL:
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
-
         case EVENT_INTERFACE_AUTOSAVE_SLOTS:
+        case EVENT_INTERFACE_LANGUAGE:
             ChangeSetupButtons();
             UpdateSetupButtons();
             break;
@@ -259,6 +269,7 @@ void CScreenSetupGame::UpdateSetupButtons()
     CWindow*    pw;
     CCheck*     pc;
     CSlider*    ps;
+    CList*      pli;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
@@ -281,10 +292,10 @@ void CScreenSetupGame::UpdateSetupButtons()
         pc->SetState(STATE_CHECK, m_settings->GetInterfaceRain());
     }
 
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOUSE));
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_BGPAUSE));
     if ( pc != nullptr )
     {
-        pc->SetState(STATE_CHECK, m_settings->GetSystemMouse());
+        pc->SetState(STATE_CHECK, m_settings->GetFocusLostPause());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITMODE));
@@ -314,7 +325,7 @@ void CScreenSetupGame::UpdateSetupButtons()
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SCROLL));
     if ( pc != nullptr )
     {
-        pc->SetState(STATE_CHECK, m_camera->GetCameraScroll());
+        pc->SetState(STATE_CHECK, m_camera->GetOldCameraScroll());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTX));
@@ -361,6 +372,12 @@ void CScreenSetupGame::UpdateSetupButtons()
         ps->SetState(STATE_ENABLE, m_main->GetAutosave());
         ps->SetVisibleValue(m_main->GetAutosaveSlots());
     }
+
+    pli = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LANGUAGE));
+    if ( pli != nullptr )
+    {
+        pli->SetSelect(1+m_settings->GetLanguage());
+    }
 }
 
 // Updates the engine function of the buttons after the setup phase.
@@ -369,6 +386,7 @@ void CScreenSetupGame::ChangeSetupButtons()
 {
     CWindow*    pw;
     CSlider*    ps;
+    CList*      pli;
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -386,6 +404,14 @@ void CScreenSetupGame::ChangeSetupButtons()
     {
         value = ps->GetVisibleValue();
         m_main->SetAutosaveSlots(static_cast<int>(round(value)));
+    }
+
+    pli = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LANGUAGE));
+    if ( pli != nullptr )
+    {
+        m_settings->SetLanguage(static_cast<Language>(pli->GetSelect()-1));
+        // TODO: A really ugly way to apply the change immediately
+        m_main->ChangePhase(m_main->GetPhase());
     }
 }
 

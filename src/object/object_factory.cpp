@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@
 #include "object/auto/autoegg.h"
 #include "object/auto/autoflag.h"
 #include "object/auto/autojostle.h"
+#include "object/auto/autokid.h"
 #include "object/auto/automush.h"
 #include "object/auto/autoroot.h"
 
@@ -182,6 +183,53 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_MUSHROOM2:
             return CreateMushroom(params);
 
+        case OBJECT_TEEN0:
+        case OBJECT_TEEN1:
+        case OBJECT_TEEN2:
+        case OBJECT_TEEN3:
+        case OBJECT_TEEN4:
+        case OBJECT_TEEN5:
+        case OBJECT_TEEN6:
+        case OBJECT_TEEN7:
+        case OBJECT_TEEN8:
+        case OBJECT_TEEN9:
+        case OBJECT_TEEN10:
+        case OBJECT_TEEN11:
+        case OBJECT_TEEN12:
+        case OBJECT_TEEN13:
+        case OBJECT_TEEN14:
+        case OBJECT_TEEN15:
+        case OBJECT_TEEN16:
+        case OBJECT_TEEN17:
+        case OBJECT_TEEN18:
+        case OBJECT_TEEN19:
+        case OBJECT_TEEN20:
+        case OBJECT_TEEN21:
+        case OBJECT_TEEN22:
+        case OBJECT_TEEN23:
+        case OBJECT_TEEN24:
+        case OBJECT_TEEN25:
+        case OBJECT_TEEN26:
+        case OBJECT_TEEN27:
+        case OBJECT_TEEN28:
+        case OBJECT_TEEN29:
+        case OBJECT_TEEN30:
+        case OBJECT_TEEN31:
+        case OBJECT_TEEN32:
+        case OBJECT_TEEN33:
+        case OBJECT_TEEN34:
+        case OBJECT_TEEN35:
+        case OBJECT_TEEN36:
+        case OBJECT_TEEN37:
+        case OBJECT_TEEN38:
+        case OBJECT_TEEN39:
+        case OBJECT_TEEN40:
+        case OBJECT_TEEN41:
+        case OBJECT_TEEN42:
+        case OBJECT_TEEN43:
+        case OBJECT_TEEN44:
+            return CreateTeen(params);
+
         case OBJECT_QUARTZ0:
         case OBJECT_QUARTZ1:
         case OBJECT_QUARTZ2:
@@ -257,6 +305,7 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_MOBILEit:
         case OBJECT_MOBILEdr:
         case OBJECT_APOLLO2:
+        case OBJECT_CONTROLLER:
             return CBaseRobot::Create(params, m_oldModelManager, m_engine);
 
         case OBJECT_MOBILErs:
@@ -836,6 +885,794 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
     obj->SetPosition(pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
+    AddObjectAuto(obj.get());
+
+    pos = obj->GetPosition();
+    pos.y += height;
+    obj->SetPosition(pos);
+
+    return std::move(obj);
+}
+
+// Creates a toy placed on the ground.
+
+CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
+{
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    float height = params.height;
+    ObjectType type = params.type;
+    int option = params.option;
+
+    COldObjectUPtr obj = MakeUnique<COldObject>(params.id);
+
+    obj->SetType(type);
+    obj->SetOption(option);
+
+    float fShadow = Math::Norm(1.0f-height/10.0f);
+    bool floorAdjust = true;
+
+    if ( type == OBJECT_TEEN0 )  // orange pencil lg=10
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen0.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 5.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 2.5f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.5f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+
+        obj->CreateShadowCircle(5.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
+    }
+
+    if ( type == OBJECT_TEEN1 )  // blue pencil lg=14
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen1.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 6.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 2.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-4.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-6.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+
+        obj->CreateShadowCircle(6.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
+    }
+
+    if ( type == OBJECT_TEEN2 )  // red pencil lg=16
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen2.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 7.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.7f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 2.3f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.3f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-4.7f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-7.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+
+        obj->CreateShadowCircle(6.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
+    }
+
+    if ( type == OBJECT_TEEN3 )  // jar with pencils
+    {
+        int rank = m_engine->CreateObject();
+//?     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_METAL);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen3.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 4.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 4.0f, 0.0f), 4.0f));
+        obj->CreateShadowCircle(6.0f, 0.5f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN4 )  // scissors
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen4.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-9.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-6.0f, 1.0f, 0.0f), 1.1f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.0f, 1.0f, 0.0f), 1.2f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.3f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 5.1f, 1.0f,-1.3f), 2.6f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 8.0f, 1.0f, 2.2f), 2.3f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 9.4f, 1.0f,-2.0f), 2.0f, SOUND_BOUMm, 0.45f));
+
+        obj->CreateShadowCircle(10.0f, 0.5f*fShadow, Gfx::ENG_SHADOW_WORM);
+    }
+
+    if ( type == OBJECT_TEEN5 )  // CD
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen5.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+        obj->SetFloorHeight(0.0f);
+        floorAdjust = false;
+
+        m_terrain->AddBuildingLevel(pos, 5.9f, 6.1f, 0.2f, 0.5f);
+        obj->CreateShadowCircle(8.0f, 0.2f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN6 )  // book 1
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen6.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+
+        obj->CreateShadowCircle(20.0f, 0.2f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN7 )  // book 2
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen7.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+
+        obj->CreateShadowCircle(20.0f, 0.2f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN8 )  // a stack of books 1
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen8.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 12.0f));
+        obj->CreateShadowCircle(20.0f, 0.2f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN9 )  // a stack of books 2
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen9.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 12.0f));
+        obj->CreateShadowCircle(20.0f, 0.2f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN10 )  // bookcase
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen10.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-26.0f, 3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -4.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -4.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  6.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  6.0f, 3.0f, 4.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 14.0f, 3.0f,-3.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 14.0f, 3.0f, 2.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 24.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f));
+
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 6.0f, 0.0f), 20.0f));
+        obj->CreateShadowCircle(40.0f, 0.2f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN11 )  // lamp
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen11.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+        obj->SetFloorHeight(0.0f);
+
+        Math::Matrix* mat = obj->GetWorldMatrix(0);
+        pos = Math::Transform(*mat, Math::Vector(-56.0f, 22.0f, 0.0f));
+        m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(20.0f, 20.0f), Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
+
+        pos = Math::Transform(*mat, Math::Vector(-65.0f, 40.0f, 0.0f));
+        Gfx::Color color;
+        color.r = 4.0f;
+        color.g = 2.0f;
+        color.b = 0.0f;  // yellow-orange
+        color.a = 0.0f;
+        CRobotMain::GetInstancePointer()->CreateSpot(pos, color); // TODO: Don't use singleton
+    }
+
+    if ( type == OBJECT_TEEN12 )  // coke
+    {
+        int rank = m_engine->CreateObject();
+//?     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_METAL);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen12.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 4.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 9.0f, 0.0f), 5.0f));
+        obj->CreateShadowCircle(4.5f, 1.0f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN13 )  // cardboard farm
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen13.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 5.0f, 0.0f), 15.0f));
+        obj->CreateShadowCircle(20.0f, 1.0f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN14 )  // open box
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen14.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 5.0f, 0.0f), 15.0f));
+        obj->CreateShadowCircle(20.0f, 1.0f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN15 )  // stack of cartons
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen15.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 5.0f, 0.0f), 15.0f));
+        obj->CreateShadowCircle(20.0f, 1.0f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN16 )  // watering can
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen16.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-8.0f, 4.0f, 0.0f), 12.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 8.0f, 4.0f, 0.0f), 12.0f, SOUND_BOUMm, 0.45f));
+
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 13.0f, 0.0f), 20.0f));
+        obj->CreateShadowCircle(18.0f, 1.0f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN17 )  // wheel |
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen17.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 31.0f, 0.0f), 31.0f, SOUND_BOUMm, 0.45f));
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 31.0f, 0.0f), 31.0f));
+        obj->CreateShadowCircle(24.0f, 0.5f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN18 )  // wheel /
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen18.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 31.0f, 0.0f), 31.0f, SOUND_BOUMm, 0.45f));
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 31.0f, 0.0f), 31.0f));
+        obj->CreateShadowCircle(24.0f, 0.5f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN19 )  // wheel =
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen19.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 10.0f, 0.0f), 32.0f, SOUND_BOUMm, 0.45f));
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 32.0f));
+        obj->CreateShadowCircle(33.0f, 1.0f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN20 )  // wall with shelf
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen20.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-175.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-175.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -55.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -55.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -37.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -37.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  83.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  83.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f));
+    }
+
+    if ( type == OBJECT_TEEN21 )  // wall with window
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen21.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+    }
+
+    if ( type == OBJECT_TEEN22 )  // wall with door and shelf
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen22.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-135.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-135.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -15.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -15.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f));
+    }
+
+    if ( type == OBJECT_TEEN23 )  // skateboard on wheels
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen23.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        if ( option == 1 )  // passage under the prohibited skateboard?
+        {
+            obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 2.0f, 0.0f), 11.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 2.0f, 0.0f), 11.0f, SOUND_BOUMm, 0.45f));
+        }
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-23.0f, 2.0f, 7.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-23.0f, 2.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-23.0f, 2.0f,-7.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 23.0f, 2.0f, 7.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 23.0f, 2.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 23.0f, 2.0f,-7.0f), 3.0f, SOUND_BOUMm, 0.45f));
+
+        obj->CreateShadowCircle(35.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
+    }
+
+    if ( type == OBJECT_TEEN24 )  // skate /
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen24.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f, 0.0f, -3.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f, 0.0f,  3.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->CreateShadowCircle(20.0f, 0.2f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN25 )  // skate /
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen25.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f, 0.0f, -3.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f, 0.0f,  3.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->CreateShadowCircle(20.0f, 0.2f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN26 )  // ceiling lamp
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen26.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+        obj->SetFloorHeight(0.0f);
+
+        Math::Matrix* mat = obj->GetWorldMatrix(0);
+        pos = Math::Transform(*mat, Math::Vector(0.0f, 50.0f, 0.0f));
+        m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(100.0f, 100.0f), Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
+
+        pos = Math::Transform(*mat, Math::Vector(0.0f, 50.0f, 0.0f));
+        Gfx::Color color;
+        color.r = 4.0f;
+        color.g = 2.0f;
+        color.b = 0.0f;  // yellow-orange
+        color.a = 0.0f;
+        CRobotMain::GetInstancePointer()->CreateSpot(pos, color); // TODO: Don't use singleton
+    }
+
+    if ( type == OBJECT_TEEN27 )  // large plant?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen27.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
+        obj->CreateShadowCircle(40.0f, 0.5f);
+    }
+
+    if ( type == OBJECT_TEEN28 )  // bottle?
+    {
+        int rank = m_engine->CreateObject();
+//?     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_METAL);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen28.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f));
+        obj->CreateShadowCircle(7.0f, 0.6f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN29 )  // bridge?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen29.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+        floorAdjust = false;
+    }
+
+    if ( type == OBJECT_TEEN30 )  // jump?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen30.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 15.0f, SOUND_BOUM, 0.10f));
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 15.0f, 0.0f), 17.0f));
+        obj->CreateShadowCircle(20.0f, 1.0f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN31 )  // basket?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen31.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 2.0f, 0.0f), 6.0f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  9.0f, 4.0f, 1.0f), 6.0f, SOUND_BOUM, 0.10f));
+
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 10.0f));
+        obj->CreateShadowCircle(16.0f, 0.6f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN32 )  // chair?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen32.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 17.5f, 1.0f,  17.5f), 3.5f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 17.5f, 1.0f, -17.5f), 3.5f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-17.5f, 1.0f,  17.5f), 3.5f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-17.5f, 1.0f, -17.5f), 3.5f, SOUND_BOUM, 0.10f));
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 26.0f));
+        obj->CreateShadowCircle(35.0f, 0.3f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN33 )  // panel?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen33.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
+        obj->CreateShadowCircle(10.0f, 0.3f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN34 )  // stone?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen34.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
+        obj->CreateShadowCircle(3.0f, 1.0f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN35 )  // pipe?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen35.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-40.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-20.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 20.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 40.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
+        obj->CreateShadowCircle(40.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
+    }
+
+    if ( type == OBJECT_TEEN36 )  // trunk?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen36.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+        floorAdjust = false;
+    }
+
+    if ( type == OBJECT_TEEN37 )  // boat?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen37.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+        floorAdjust = false;
+    }
+
+    if ( type == OBJECT_TEEN38 )  // fan?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen38a.mod", false, rank);
+        obj->SetPartPosition(0, pos);
+        obj->SetPartRotationY(0, angle);
+
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        obj->SetObjectRank(1, rank);
+        obj->SetObjectParent(1, 0);
+        m_oldModelManager->AddModelReference("teen38b.mod", false, rank);  // engine
+        obj->SetPartPosition(1, Math::Vector(0.0f, 30.0f, 0.0f));
+
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        obj->SetObjectRank(2, rank);
+        obj->SetObjectParent(2, 1);
+        m_oldModelManager->AddModelReference("teen38c.mod", false, rank);  // propeller
+        obj->SetPartPosition(2, Math::Vector(0.0f, 0.0f, 0.0f));
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 2.0f, 0.0f), 10.0f));
+        obj->CreateShadowCircle(15.0f, 0.5f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN39 )  // potted plant?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen39.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 8.5f, SOUND_BOUM, 0.10f));
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 2.0f, 0.0f), 8.5f));
+        obj->CreateShadowCircle(10.0f, 1.0f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN40 )  // balloon?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen40.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 5.0f, 0.0f), 11.0f, SOUND_BOUM, 0.10f));
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 14.0f, 0.0f), 15.0f));
+        obj->CreateShadowCircle(15.0f, 0.7f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN41 )  // fence?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen41.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+    }
+
+    if ( type == OBJECT_TEEN42 )  // clover?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen42.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUM, 0.10f));
+        obj->CreateShadowCircle(15.0f, 0.4f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN43 )  // clover?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen43.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUM, 0.10f));
+        obj->CreateShadowCircle(15.0f, 0.4f*fShadow);
+    }
+
+    if ( type == OBJECT_TEEN44 )  // car?
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("teen44.mod", false, rank);
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 55.0f, SOUND_BOUM, 0.10f));
+        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 55.0f));
+        obj->CreateShadowCircle(55.0f, 1.0f*fShadow);
+    }
+
+    pos = obj->GetPosition();
+    obj->SetPosition(pos);  // to display the shadows immediately
+
+    if ( floorAdjust )
+    {
+        obj->SetFloorHeight(0.0f);
+        obj->FloorAdjust();
+    }
+
     AddObjectAuto(obj.get());
 
     pos = obj->GetPosition();
@@ -1718,6 +2555,12 @@ void CObjectFactory::AddObjectAuto(COldObject* obj)
          type == OBJECT_FLAGv )
     {
         objAuto = MakeUnique<CAutoFlag>(obj);
+    }
+    if ( type == OBJECT_TEEN36 ||  // trunk?
+         type == OBJECT_TEEN37 ||  // boat?
+         type == OBJECT_TEEN38 )   // fan?
+    {
+        objAuto = MakeUnique<CAutoKid>(obj);
     }
 
     if (objAuto != nullptr)

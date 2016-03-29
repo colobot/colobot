@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,6 +35,11 @@
 
 #include "ui/maindialog.h"
 
+#include "ui/controls/group.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/label.h"
+#include "ui/controls/window.h"
+
 #include "ui/screen/screen.h"
 #include "ui/screen/screen_apperance.h"
 #include "ui/screen/screen_io_read.h"
@@ -43,17 +48,13 @@
 #include "ui/screen/screen_loading.h"
 #include "ui/screen/screen_main_menu.h"
 #include "ui/screen/screen_player_select.h"
+#include "ui/screen/screen_quit.h"
 #include "ui/screen/screen_setup_controls.h"
 #include "ui/screen/screen_setup_display.h"
 #include "ui/screen/screen_setup_game.h"
 #include "ui/screen/screen_setup_graphics.h"
 #include "ui/screen/screen_setup_sound.h"
-#include "ui/screen/screen_quit.h"
 #include "ui/screen/screen_welcome.h"
-
-#include "ui/controls/interface.h"
-#include "ui/controls/label.h"
-#include "ui/controls/window.h"
 
 namespace Ui
 {
@@ -122,7 +123,7 @@ void CMainUserInterface::ShowLoadingScreen(bool show)
             m_screenLoading->DestroyInterface();
             m_currentScreen = nullptr;
         }
-        m_app->SetMouseMode(m_settings->GetSystemMouse() ? MOUSE_SYSTEM : MOUSE_ENGINE);
+        m_app->SetMouseMode(MOUSE_ENGINE);
     }
 }
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 #pragma once
 
 #include "common/resources/sdl_file_wrapper.h"
+#include "common/resources/sdl_memory_wrapper.h"
 #include "common/resources/sndfile_wrapper.h"
 
 #include <memory>
@@ -41,6 +42,7 @@ public:
     static std::string GetSaveLocation();
 
     static std::unique_ptr<CSDLFileWrapper> GetSDLFileHandler(const std::string &filename);
+    static std::unique_ptr<CSDLMemoryWrapper> GetSDLMemoryHandler(const std::string &filename);
     static std::unique_ptr<CSNDFileWrapper> GetSNDFileHandler(const std::string &filename);
 
     //! Check if file exists

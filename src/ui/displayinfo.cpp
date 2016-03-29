@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ CDisplayInfo::CDisplayInfo()
     m_main      = CRobotMain::GetInstancePointer();
     m_interface = m_main->GetInterface();
     m_camera    = m_main->GetCamera();
-    m_pause     = m_engine->GetPauseManager();
+    m_pause     = m_main->GetPauseManager();
 
     m_bInfoMaximized = true;
     m_bInfoMinimized = false;
@@ -363,12 +363,12 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
 
     m_main->SetEditLock(true, false);
     m_main->SetEditFull(false);
-    m_satcomPause = m_pause->ActivatePause(PAUSE_SATCOM);
+    m_satcomPause = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_HIDE_SHORTCUTS|PAUSE_MUTE_SOUND, PAUSE_MUSIC_SATCOM);
     m_infoCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_INFO);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
-    if (pw != nullptr) pw->ClearState(STATE_VISIBLE);
+    if (pw != nullptr) pw->ClearState(STATE_VISIBLE | STATE_ENABLE);
 
     pos = m_infoActualPos = m_infoFinalPos;
     dim = m_infoActualDim = m_infoFinalDim;
@@ -664,10 +664,6 @@ void CDisplayInfo::ChangeIndexButton(int index)
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
     if ( pw == nullptr )  return;
 
-    if ( m_index != -1 )
-    {
-        m_main->SetDisplayInfoPosition(m_index, GetPosition());
-    }
     m_index = index;
 
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
@@ -676,7 +672,7 @@ void CDisplayInfo::ChangeIndexButton(int index)
         filename = m_main->GetDisplayInfoName(m_index);
         edit->ReadText(filename);
         edit->HyperHome(std::string(filename));
-        SetPosition(m_main->GetDisplayInfoPosition(m_index));
+        SetPosition(0);
     }
 
     UpdateIndexButton();
@@ -834,7 +830,7 @@ void CDisplayInfo::StopDisplayInfo()
         m_main->SetEditLock(false, false);
 
         pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
-        if (pw != nullptr) pw->SetState(STATE_VISIBLE);
+        if (pw != nullptr) pw->SetState(STATE_VISIBLE | STATE_ENABLE);
     }
     m_pause->DeactivatePause(m_satcomPause);
     m_satcomPause = nullptr;

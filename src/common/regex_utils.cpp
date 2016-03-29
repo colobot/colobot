@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ std::string FormatAssertRegexMatchError(const std::string& text,
     return "Text \"" + text + "\" did not match regex \"" + pattern + "\"";
 }
 
-RegexUtils::AssertRegexMatchError::AssertRegexMatchError(
+RegexUtils::CAssertRegexMatchError::CAssertRegexMatchError(
     const std::string& text, const std::string& pattern) NOEXCEPT
     : std::runtime_error(FormatAssertRegexMatchError(text, pattern))
 {
@@ -37,7 +37,7 @@ boost::smatch RegexUtils::AssertRegexMatch(const std::string& text, const std::s
     boost::smatch matches;
     bool ok = boost::regex_match(text, matches, regex);
     if (!ok)
-        throw AssertRegexMatchError(text, pattern);
+        throw CAssertRegexMatchError(text, pattern);
 
     return matches;
 }

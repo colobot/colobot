@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -913,12 +913,6 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         type != OBJECT_MOBILEdr &&
         type != OBJECT_APOLLO2)
     {
-        color.r = 1.0f;
-        color.g = 1.0f;
-        color.b = 0.0f;  // yellow
-        color.a = 0.0f;
-        m_object->CreateEffectLight(20.0f, color);
-
         CObject* powerCell = nullptr;
         Math::Vector powerCellPos = m_object->GetPowerPosition();
         float powerCellAngle = 0.0f;

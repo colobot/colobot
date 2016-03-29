@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@
 #include <string>
 #include <cstdarg>
 #include <cstdio>
+#include <vector>
 
 
 /**
@@ -104,9 +105,10 @@ public:
     void Log(LogLevel logLevel, const char *str, ...);
 
     /** Set output file to write logs to
-    * \param filename - output file to write to
+    * The given file will be automatically closed when the logger exits
+    * \param file - file pointer to write to
     */
-    void SetOutputFile(std::string filename);
+    void AddOutput(FILE* file);
 
     /** Set log level. Logs with level below will not be shown
     * \param level - minimum log level to write
@@ -123,13 +125,8 @@ public:
     static bool ParseLogLevel(const std::string& str, LogLevel& logLevel);
 
 private:
-    std::string m_filename;
-    FILE *m_file;
+    std::vector<FILE*> m_outputs;
     LogLevel m_logLevel;
-
-    void Open();
-    void Close();
-    bool IsOpened();
     void Log(LogLevel type, const char* str, va_list args);
 };
 

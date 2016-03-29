@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 
 #include "app/app.h"
 
+#include "common/restext.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
 
@@ -64,7 +65,7 @@ void CScreenSetupDisplay::CreateInterface()
     if ( pw == nullptr )  return;
 
     std::vector<Math::IntPoint> modes;
-    m_app->GetVideoResolutionList(modes, true, true);
+    m_app->GetVideoResolutionList(modes);
     for (auto it = modes.begin(); it != modes.end(); ++it)
     {
         if (it->x == m_app->GetVideoConfig().size.x && it->y == m_app->GetVideoConfig().size.y)
@@ -183,7 +184,7 @@ void CScreenSetupDisplay::UpdateDisplayMode()
     pl->Flush();
 
     std::vector<Math::IntPoint> modes;
-    m_app->GetVideoResolutionList(modes, true, true);
+    m_app->GetVideoResolutionList(modes);
     int i = 0;
     std::stringstream mode_text;
     for (Math::IntPoint mode : modes)
@@ -191,7 +192,7 @@ void CScreenSetupDisplay::UpdateDisplayMode()
         mode_text.str("");
         Math::IntPoint aspect = AspectRatio(mode);
         mode_text << mode.x << "x" << mode.y << " [" << aspect.x << ":" << aspect.y << "]";
-        pl->SetItemName(i++, mode_text.str().c_str());
+        pl->SetItemName(i++, mode_text.str());
     }
 
     pl->SetSelect(m_setupSelMode);
@@ -220,7 +221,7 @@ void CScreenSetupDisplay::ChangeDisplay()
     m_setupFull = bFull;
 
     std::vector<Math::IntPoint> modes;
-    m_app->GetVideoResolutionList(modes, true, true);
+    m_app->GetVideoResolutionList(modes);
 
     Gfx::DeviceConfig config = m_app->GetVideoConfig();
     config.size = modes[m_setupSelMode];

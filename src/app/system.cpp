@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,9 +22,6 @@
 
 #include "common/config.h"
 
-#include "common/make_unique.h"
-
-
 #if defined(PLATFORM_WINDOWS)
     #include "app/system_windows.h"
 #elif defined(PLATFORM_LINUX)
@@ -34,6 +31,8 @@
 #else
     #include "app/system_other.h"
 #endif
+
+#include "common/make_unique.h"
 
 #include <cassert>
 #include <iostream>
@@ -194,5 +193,5 @@ std::string CSystemUtils::GetLangPath()
 
 std::string CSystemUtils::GetSaveDir()
 {
-    return std::string("save");
+    return std::string("saves");
 }

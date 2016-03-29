@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -40,8 +40,7 @@
 
 #include "ui/controls/scroll.h"
 
-#include <clipboard/clipboard.h>
-
+#include <SDL.h>
 #include <boost/algorithm/string.hpp>
 
 #include <cstring>
@@ -54,7 +53,7 @@ const float MARGY           = (5.0f/480.0f);
 const float MARGYS          = (4.0f/480.0f);
 const float MARGY1          = (1.0f/480.0f);
 //! time limit for double-click
-const float DELAY_DBCLICK   = 0.3f;
+const float DELAY_DBCLICK   = 0.75f;
 //! time limit for scroll
 const float DELAY_SCROLL    = 0.1f;
 //! expansion for \b;
@@ -144,6 +143,11 @@ CEdit::CEdit()
 CEdit::~CEdit()
 {
     FreeImage();
+
+    if (m_bFocus)
+    {
+        CApplication::GetInstancePointer()->SetTextInput(false);
+    }
 }
 
 
@@ -242,7 +246,7 @@ void CEdit::MoveAdjust()
 
 bool CEdit::EventProcess(const Event &event)
 {
-    bool    bShift, bControl;
+    bool    bShift = false, bControl = false;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return true;
 
@@ -250,14 +254,7 @@ bool CEdit::EventProcess(const Event &event)
         Detect(event.mousePos))
     {
         auto data = event.GetData<MouseWheelEventData>();
-        if (data->dir == WHEEL_UP)
-        {
-            Scroll(m_lineFirst - 3, true);
-        }
-        else
-        {
-            Scroll(m_lineFirst + 3, true);
-        }
+        Scroll(m_lineFirst - data->y, true);
         return true;
     }
 
@@ -269,7 +266,7 @@ bool CEdit::EventProcess(const Event &event)
         m_timeBlink += event.rTime;
     }
 
-    if ( event.type == EVENT_MOUSE_MOVE )
+    if ( event.type == EVENT_MOUSE_MOVE || event.type == EVENT_MOUSE_BUTTON_DOWN || event.type == EVENT_MOUSE_BUTTON_UP )
     {
         if ( Detect(event.mousePos) &&
              event.mousePos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
@@ -307,7 +304,7 @@ bool CEdit::EventProcess(const Event &event)
     {
         bShift   = ( (event.kmodState & KEY_MOD(SHIFT) ) != 0 );
         #if PLATFORM_MACOSX
-        bControl = ( (event.kmodState & KEY_MOD(META) ) != 0);
+        bControl = ( (event.kmodState & KEY_MOD(GUI) ) != 0);
         #else
         bControl = ( (event.kmodState & KEY_MOD(CTRL) ) != 0);
         #endif
@@ -474,15 +471,12 @@ bool CEdit::EventProcess(const Event &event)
         }
     }
 
-    if ( event.type == EVENT_KEY_DOWN && !bControl && m_bFocus )
+    if ( event.type == EVENT_TEXT_INPUT && !bControl && m_bFocus )
     {
-        auto data = event.GetData<KeyEventData>();
-        if (data->unicode >= ' ')
-        {
-            Insert(static_cast<char>(data->unicode)); // TODO: insert utf-8 char
-            SendModifEvent();
-            return true;
-        }
+        auto data = event.GetData<TextInputData>();
+        Insert(data->text[0]); // TODO: insert utf-8 char
+        SendModifEvent();
+        return true;
     }
 
     if ( event.type == EVENT_FOCUS )
@@ -490,10 +484,12 @@ bool CEdit::EventProcess(const Event &event)
         if ( event.customParam == m_eventType )
         {
             m_bFocus = true;
+            UpdateFocus();
         }
         else
         {
             m_bFocus = false;
+            UpdateFocus();
         }
     }
 
@@ -510,10 +506,12 @@ bool CEdit::EventProcess(const Event &event)
                 if ( m_bEdit || m_bHilite )  m_bCapture = true;
             }
             m_bFocus = true;
+            UpdateFocus();
         }
         else
         {
             m_bFocus = false;
+            UpdateFocus();
         }
     }
 
@@ -901,6 +899,8 @@ void CEdit::Draw()
     if ( !m_bInsideScroll )  dim.x -= m_bMulti?SCROLL_WIDTH:0.0f;
     dim.y = m_dim.y;
     DrawBack(pos, dim);  // background
+
+    if ( (m_state & STATE_ENABLE) == 0 ) return;
 
     // Displays all lines.
     c1 = m_cursor1;
@@ -1858,19 +1858,27 @@ bool CEdit::ReadText(std::string filename, int addSize)
 
 bool CEdit::WriteText(std::string filename)
 {
-    char        buffer[1000+20];
-    int         i, j, k, n;
-    float       iDim = 0.0f;
-
-    if ( filename[0] == 0 )  return false;
+    if (filename.empty())  return false;
 
     COutputStream stream;
     stream.open(filename);
 
     if (!stream.is_open())
     {
+        GetLogger()->Error("Failed to open output file: '%s'", filename.c_str());
         return false;
     }
+
+    GetIndentedText(stream, 0, m_len);
+
+    stream.close();
+
+    return true;
+}
+
+void CEdit::GetIndentedText(std::ostream& stream, unsigned int start, unsigned int end)
+{
+    float iDim = 0.0f;
 
     if ( m_bAutoIndent )
     {
@@ -1879,42 +1887,34 @@ bool CEdit::WriteText(std::string filename)
         Justif();
     }
 
-    i = j = k = 0;
-    while ( m_text[i] != 0 && i < m_len )
+    unsigned int i = 0, line = 0;
+    while ( m_text[i] != 0 && i < end && i < static_cast<unsigned int>(m_len) ) // TODO: fix this (un)signed comparation
     {
-        if ( m_bAutoIndent && i == m_lineOffset[k] )
+        if ( m_bAutoIndent && i == static_cast<unsigned int>(m_lineOffset[line]) ) // TODO: fix this (un)signed comparation
         {
-            for ( n=0 ; n<m_lineIndent[k] ; n++ )
+            for (int n = 0; n < m_lineIndent[line]; n++)
             {
-                buffer[j++] = '\t';
+                if (i > start)
+                {
+                    stream << '\t';
+                }
             }
-            k ++;
+            line++;
         }
 
-        buffer[j++] = m_text[i];
-
-        if ( j >= 1000-1 )
+        if (i >= start)
         {
-            stream.write(buffer, j);
-            j = 0;
+            stream << m_text[i];
         }
 
         i ++;
     }
-    if ( j > 0 )
-    {
-        stream.write(buffer, j);
-    }
-
-    stream.close();
 
     if ( m_bAutoIndent )
     {
         m_dim.x = iDim;  // presents the initial width
         Justif();
     }
-
-    return true;
 }
 
 
@@ -2497,7 +2497,7 @@ bool CEdit::Cut()
 
 bool CEdit::Copy(bool memorize_cursor)
 {
-    int c1, c2, start, len;
+    int c1, c2;
 
     c1 = m_cursor1;
     c2 = m_cursor2;
@@ -2531,13 +2531,9 @@ bool CEdit::Copy(bool memorize_cursor)
         return false;
     }
 
-    start = c1;
-    len   = c2 - c1;
-
-    std::vector<char> text(len + 1, '\0');
-    strncpy(text.data(), m_text.data() + start, len);
-    text[len] = 0;
-    widgetSetClipboardText(text.data());
+    std::stringstream ss;
+    GetIndentedText(ss, c1, c2);
+    SDL_SetClipboardText(ss.str().c_str()); //TODO: Move to CApplication
 
     if (memorize_cursor)
     {
@@ -2560,7 +2556,7 @@ bool CEdit::Paste()
         return false;
     }
 
-    text = widgetGetClipboardText();
+    text = SDL_GetClipboardText(); // TODO: Move to CApplication
 
     if ( text == nullptr )
     {
@@ -2582,7 +2578,7 @@ bool CEdit::Paste()
         InsertOne(c);
     }
 
-    free(text);
+    SDL_free(text);
     Justif();
     ColumnFix();
     SendModifEvent();
@@ -2660,20 +2656,30 @@ void CEdit::Insert(char character)
     }
     else if ( m_bAutoIndent )
     {
-        if ( character == '{' )
+        if (character == '{')
         {
             InsertOne(character);
-            InsertOne('\n');
-            InsertOne('\n');
             InsertOne('}');
             MoveChar(-1, false, false);
-            MoveChar(-1, false, false);
         }
-        else if ( character == '\t' )
+        else if (character == '\t')
         {
             for ( i=0 ; i<m_engine->GetEditIndentValue() ; i++ )
             {
                 InsertOne(' ');
+            }
+        }
+        else if (character == '\n')
+        {
+            if (m_cursor1 > 1 && m_text[m_cursor1-1] == '{')
+            {
+                InsertOne(character);
+                InsertOne('\n');
+                MoveChar(-1, false, false);
+            }
+            else
+            {
+                InsertOne(character);
             }
         }
         else
@@ -3214,6 +3220,22 @@ void CEdit::UpdateScroll()
             m_scroll->SetArrowStep(value);
         }
     }
+}
+
+void CEdit::SetFocus(CControl* control)
+{
+    bool oldFocus = m_bFocus;
+    CControl::SetFocus(control);
+
+    if (oldFocus != m_bFocus)
+    {
+        UpdateFocus();
+    }
+}
+
+void CEdit::UpdateFocus()
+{
+    CApplication::GetInstancePointer()->SetTextInput(m_bFocus);
 }
 
 }

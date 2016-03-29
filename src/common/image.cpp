@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -238,7 +238,6 @@ void CImage::ConvertToRGBA()
 
 void CImage::BlitToNewRGBASurface(int width, int height)
 {
-    m_data->surface->flags &= (~SDL_SRCALPHA);
     SDL_Surface* convertedSurface = SDL_CreateRGBSurface(0, width, height, 32, 0x00FF0000, 0x0000FF00,
                                                          0x000000FF, 0xFF000000);
     assert(convertedSurface != nullptr);

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,11 +19,9 @@
 
 #pragma once
 
-
 #include "ui/controls/control.h"
 
 #include "common/event.h"
-#include "common/misc.h"
 
 #include "graphics/engine/text.h"
 
@@ -37,7 +35,6 @@ namespace Ui
 {
 
 const int LISTMAXDISPLAY = 20;  // maximum number of visible lines
-const int LISTMAXTOTAL   = 100; // maximum total number of lines
 
 
 
@@ -73,13 +70,13 @@ public:
     void        SetBlink(bool bEnable);
     bool        GetBlink();
 
-    void        SetItemName(int i, const char* name);
-    char*       GetItemName(int i);
+    void        SetItemName(int i, const std::string& name);
+    const std::string& GetItemName(int i);
 
     void        SetCheck(int i, bool bMode);
     bool        GetCheck(int i);
 
-    void        SetEnable(int i, bool bEnable);
+    void        SetEnable(int i, bool enable);
     bool        GetEnable(int i);
 
     void        SetTabs(int i, float pos, Gfx::TextAlign justif=Gfx::TEXT_ALIGN_LEFT);
@@ -95,7 +92,7 @@ protected:
     void        UpdateButton();
     void        UpdateScroll();
     void        MoveScroll();
-    void        DrawCase(char *text, Math::Point pos, float width, Gfx::TextAlign justif);
+    void        DrawCase(const char* text, Math::Point pos, float width, Gfx::TextAlign justif);
 
 private:
     // Overridden to avoid warning about hiding the virtual function
@@ -118,11 +115,11 @@ protected:
 
     struct Item
     {
-        char text[100] = {};
+        std::string text = "";
         bool check = false;
         bool enable = true;
     };
-    std::array<Item, LISTMAXTOTAL> m_items;
+    std::vector<Item> m_items;
 };
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -62,20 +62,29 @@ enum EventType
     EVENT_MOUSE_WHEEL       = 5,
     //! Event sent after moving the mouse
     EVENT_MOUSE_MOVE        = 7,
-    //! Event sent after pressing a key
-    EVENT_KEY_DOWN          = 8,
-    //! Event sent after releasing a key
-    EVENT_KEY_UP            = 9,
+    //! Event sent when mouse enters the window
+    EVENT_MOUSE_ENTER       = 8,
+    //! Event sent when mouse leaves the window
+    EVENT_MOUSE_LEAVE       = 9,
 
-    //! Event sent when application window loses/gains focus
-    EVENT_ACTIVE            = 10,
+    //! Event sent after pressing a key
+    EVENT_KEY_DOWN          = 10,
+    //! Event sent after releasing a key
+    EVENT_KEY_UP            = 11,
+    //! Event sent when user inputs some character
+    EVENT_TEXT_INPUT        = 12,
 
     //! Event sent after moving joystick axes
-    EVENT_JOY_AXIS          = 12,
+    EVENT_JOY_AXIS          = 13,
     //! Event sent after pressing a joystick button
-    EVENT_JOY_BUTTON_DOWN   = 13,
+    EVENT_JOY_BUTTON_DOWN   = 14,
     //! Event sent after releasing a joystick button
-    EVENT_JOY_BUTTON_UP     = 14,
+    EVENT_JOY_BUTTON_UP     = 15,
+
+    //! Event sent when the app winddow gains focus
+    EVENT_FOCUS_GAINED      = 16,
+    //! Event sent when the app winddow loses focus
+    EVENT_FOCUS_LOST        = 17,
 
     //!< Maximum value of system events
     EVENT_SYS_MAX,
@@ -201,6 +210,7 @@ enum EventType
     EVENT_INTERFACE_READ    = 411,
     EVENT_INTERFACE_ABORT   = 412,
     EVENT_INTERFACE_USER    = 413,
+    EVENT_INTERFACE_SATCOM  = 414,
 
     EVENT_INTERFACE_CHAP    = 420,
     EVENT_INTERFACE_LIST    = 421,
@@ -231,7 +241,7 @@ enum EventType
     EVENT_INTERFACE_INVERTX = 468,
     EVENT_INTERFACE_INVERTY = 469,
     EVENT_INTERFACE_EFFECT  = 470,
-    EVENT_INTERFACE_MOUSE   = 471,
+    EVENT_INTERFACE_BGPAUSE = 471,
     EVENT_INTERFACE_FOG     = 474,
     EVENT_INTERFACE_EDITMODE= 476,
     EVENT_INTERFACE_EDITVALUE= 477,
@@ -247,6 +257,7 @@ enum EventType
     EVENT_INTERFACE_SHADOW_MAPPING = 787,
     EVENT_INTERFACE_SHADOW_MAPPING_QUALITY = 788,
     EVENT_INTERFACE_SHADOW_MAPPING_BUFFER = 789,
+    EVENT_INTERFACE_LANGUAGE = 790,
 
     EVENT_INTERFACE_KINFO1  = 500,
     EVENT_INTERFACE_KINFO2  = 501,
@@ -269,6 +280,13 @@ enum EventType
 
     EVENT_INTERFACE_JOYSTICK= 560,
     EVENT_INTERFACE_SOLUCE  = 561,
+    EVENT_INTERFACE_JOYSTICK_X = 562,
+    EVENT_INTERFACE_JOYSTICK_Y = 563,
+    EVENT_INTERFACE_JOYSTICK_Z = 564,
+    EVENT_INTERFACE_JOYSTICK_X_INVERT = 565,
+    EVENT_INTERFACE_JOYSTICK_Y_INVERT = 566,
+    EVENT_INTERFACE_JOYSTICK_Z_INVERT = 567,
+    EVENT_INTERFACE_JOYSTICK_DEADZONE = 568,
 
     EVENT_INTERFACE_GLINTl  = 570,
     EVENT_INTERFACE_GLINTr  = 571,
@@ -569,12 +587,24 @@ struct KeyEventData : public EventData
     bool virt = false;
     //! Key symbol: KEY(...) macro value or virtual key VIRTUAL_... (from common/key.h)
     unsigned int key = 0;
-    //! Unicode character
-    //! NOTE: applicable only to EVENT_KEY_DOWN events!
-    unsigned int unicode = 0;
     //! Input binding slot for this key
-    InputSlot slot = INPUT_SLOT_LEFT;
+    InputSlot slot = INPUT_SLOT_MAX;
 };
+
+/**
+ * \struct TextInputData
+ * \brief Additional data for text input event
+ */
+ struct TextInputData : public EventData
+ {
+    std::unique_ptr<EventData> Clone() const override
+    {
+        return MakeUnique<TextInputData>(*this);
+    }
+
+    //! Text entered by the user (usually one character, UTF-8 encoded)
+    std::string text = "";
+ };
 
 /**
  * \enum MouseButton
@@ -607,16 +637,6 @@ struct MouseButtonEventData : public EventData
 };
 
 /**
- * \enum WheelDirection
- * \brief Direction of mouse wheel movement
- */
-enum WheelDirection
-{
-    WHEEL_UP,
-    WHEEL_DOWN
-};
-
-/**
  * \struct MouseWheelEventData
  * \brief Additional data for mouse wheel event.
  */
@@ -627,8 +647,10 @@ struct MouseWheelEventData : public EventData
         return MakeUnique<MouseWheelEventData>(*this);
     }
 
-    //! Wheel direction
-    WheelDirection dir = WHEEL_UP;
+    //! Amount scrolled vertically, positive value is away from the user
+    signed int y = 0;
+    //! Amount scrolled horizontally (if the mouse supports it), positive value is to the right
+    signed int x = 0;
 };
 
 /**
@@ -661,38 +683,6 @@ struct JoyButtonEventData : public EventData
 
     //! The joystick button index
     unsigned char button = 0;
-};
-
-/**
- * \enum ActiveEventFlags
- * \brief Type of focus gained/lost
- */
-enum ActiveEventFlags
-{
-    //! Application window focus
-    ACTIVE_APP   = 0x01,
-    //! Input focus
-    ACTIVE_INPUT = 0x02,
-    //! Mouse focus
-    ACTIVE_MOUSE = 0x04
-
-};
-
-/**
- * \struct ActiveEventData
- * \brief Additional data for active event
- */
-struct ActiveEventData : public EventData
-{
-    std::unique_ptr<EventData> Clone() const override
-    {
-        return MakeUnique<ActiveEventData>(*this);
-    }
-
-    //! Flags (bitmask of enum values ActiveEventFlags)
-    unsigned char flags = 0;
-    //! True if the focus was gained; false otherwise
-    bool gain = false;
 };
 
 /**

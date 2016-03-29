@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 #include "app/app.h"
 
 #include "common/global.h"
+#include "common/restext.h"
 
 #include "graphics/core/color.h"
 
@@ -52,8 +53,15 @@
 
 #include "ui/studio.h"
 
+#include "ui/controls/button.h"
+#include "ui/controls/color.h"
+#include "ui/controls/gauge.h"
+#include "ui/controls/group.h"
 #include "ui/controls/interface.h"
+#include "ui/controls/label.h"
+#include "ui/controls/list.h"
 #include "ui/controls/slider.h"
+#include "ui/controls/target.h"
 #include "ui/controls/window.h"
 
 
@@ -280,8 +288,7 @@ bool CObjectInterface::EventProcess(const Event &event)
             }
             SetSelScript(m_selScript);
 
-            char text[] = "";
-            StartEditScript(newProgram, text);
+            StartEditScript(newProgram, "");
 
             std::string res;
             GetResource(RES_TEXT, RT_STUDIO_CLONED, res);
@@ -434,7 +441,7 @@ bool CObjectInterface::EventProcess(const Event &event)
 
     err = ERR_OK;
 
-    if ( !m_programmable->IsProgram() )
+    if ( !m_programmable->IsProgram() && m_main->CanPlayerInteract() )
     {
         if ( action == EVENT_OBJECT_HTAKE )
         {
@@ -591,7 +598,7 @@ bool CObjectInterface::EventProcess(const Event &event)
             }
         }
 
-        if ( action == EVENT_OBJECT_FIRE && !m_taskExecutor->IsForegroundTask() && !m_object->GetTrainer())
+        if ( action == EVENT_OBJECT_FIRE && !m_taskExecutor->IsForegroundTask() && !m_object->GetTrainer() )
         {
             if ( m_camera->GetType() != Gfx::CAM_TYPE_ONBOARD )
             {
@@ -721,7 +728,7 @@ bool CObjectInterface::EventFrame(const Event &event)
 
 // Start editing a program.
 
-void CObjectInterface::StartEditScript(Program* program, char* name)
+void CObjectInterface::StartEditScript(Program* program, std::string name)
 {
     CreateInterface(false);  // removes the control buttons
 

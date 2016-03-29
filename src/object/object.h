@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@
 #pragma once
 
 #include "object/crash_sphere.h"
+#include "object/object_create_params.h"
 #include "object/object_interface_type.h"
 #include "object/old_object_interface.h"
-#include "object/object_create_params.h"
 
 #include <vector>
 
@@ -37,7 +37,11 @@ struct ModelCrashSphere;
 } // namespace Gfx
 
 class CLevelParserLine;
+
+namespace CBot
+{
 class CBotVar;
+}
 
 /**
  * \class CObject
@@ -187,7 +191,7 @@ public:
     float GetProxyDistance();
 
     //! Returns CBot "object" variable associated with this object
-    CBotVar* GetBotVar();
+    CBot::CBotVar* GetBotVar();
 
     //! Returns tooltip text for an object
     std::string GetTooltipText();
@@ -222,6 +226,6 @@ protected:
     int m_team;
     bool m_proxyActivate;
     float m_proxyDistance;
-    CBotVar* m_botVar;
+    CBot::CBotVar* m_botVar;
     bool m_lock;
 };

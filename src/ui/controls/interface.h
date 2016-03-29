@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,38 +20,39 @@
 #pragma once
 
 #include "common/event.h"
-#include "common/misc.h"
-
-#include "graphics/engine/camera.h"
-#include "graphics/engine/engine.h"
 
 #include "math/point.h"
 
-#include "ui/controls/button.h"
-#include "ui/controls/check.h"
-#include "ui/controls/color.h"
-#include "ui/controls/control.h"
-#include "ui/controls/edit.h"
-#include "ui/controls/editvalue.h"
-#include "ui/controls/enumslider.h"
-#include "ui/controls/group.h"
-#include "ui/controls/image.h"
-#include "ui/controls/key.h"
-#include "ui/controls/label.h"
-#include "ui/controls/list.h"
-#include "ui/controls/map.h"
-#include "ui/controls/scroll.h"
-#include "ui/controls/shortcut.h"
-#include "ui/controls/slider.h"
-#include "ui/controls/target.h"
-#include "ui/controls/window.h"
-
+#include <array>
 #include <memory>
 #include <string>
-#include <vector>
+
+namespace Gfx
+{
+class CEngine;
+} // namespace Gfx
 
 namespace Ui
 {
+
+class CButton;
+class CCheck;
+class CColor;
+class CControl;
+class CEdit;
+class CEditValue;
+class CEnumSlider;
+class CGroup;
+class CImage;
+class CKey;
+class CLabel;
+class CList;
+class CMap;
+class CScroll;
+class CShortcut;
+class CSlider;
+class CTarget;
+class CWindow;
 
 const int MAXCONTROL = 100;
 
@@ -99,7 +100,6 @@ protected:
 
     CEventQueue* m_event;
     Gfx::CEngine* m_engine;
-    Gfx::CCamera* m_camera;
     std::array<std::unique_ptr<CControl>, MAXCONTROL> m_controls;
 };
 

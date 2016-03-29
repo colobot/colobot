@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,11 @@
 
 #include "graphics/core/device.h"
 
+#include "graphics/core/material.h"
+
 #include "graphics/opengl/glutil.h"
+
+#include "math/matrix.h"
 
 #include <string>
 #include <vector>
@@ -37,8 +41,6 @@
 // Graphics module namespace
 namespace Gfx
 {
-
-struct GLDevicePrivate;
 
 /**
   \class CGL21Device
@@ -60,6 +62,8 @@ public:
     void DebugHook() override;
     void DebugLights() override;
 
+    std::string GetName() override;
+
     bool Create() override;
     void Destroy() override;
 
@@ -69,6 +73,8 @@ public:
     void EndScene() override;
 
     void Clear() override;
+
+    void SetRenderMode(RenderMode mode) override;
 
     void SetTransform(TransformType type, const Math::Matrix &matrix) override;
 
@@ -81,6 +87,7 @@ public:
     Texture CreateTexture(CImage *image, const TextureCreateParams &params) override;
     Texture CreateTexture(ImageData *data, const TextureCreateParams &params) override;
     Texture CreateDepthTexture(int width, int height, int depth) override;
+    void UpdateTexture(const Texture& texture, Math::IntPoint offset, ImageData* data, TexImgFormat format) override;
     void DestroyTexture(const Texture &texture) override;
     void DestroyAllTextures() override;
 
@@ -98,7 +105,16 @@ public:
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
-    void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) override;
+    virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount) override;
+
+    virtual void DrawPrimitives(PrimitiveType type, const Vertex *vertices,
+        int first[], int count[], int drawCount,
+        Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
+    virtual void DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
+        int first[], int count[], int drawCount,
+        Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
+    virtual void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
+        int first[], int count[], int drawCount) override;
 
     unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override;
     unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override;
@@ -161,8 +177,6 @@ public:
     bool IsFramebufferSupported() override;
 
 private:
-    //! Updates position for given light based on transformation matrices
-    void UpdateLightPosition(int index);
     //! Updates the texture params for given texture stage
     void UpdateTextureParams(int index);
     //! Updates texture status
@@ -182,6 +196,8 @@ private:
     Math::Matrix m_modelviewMat;
     //! Current projection matrix
     Math::Matrix m_projectionMat;
+    //! Combined world-view-projection matrix
+    Math::Matrix m_combinedMatrix;
 
     //! The current material
     Material m_material;
@@ -225,14 +241,6 @@ private:
     };
 
     //! Detected capabilities
-    //! OpenGL version
-    int m_glMajor = 1, m_glMinor = 1;
-    //! Whether anisotropic filtering is available
-    bool m_anisotropyAvailable = false;
-    //! Maximum anisotropy level
-    int m_maxAnisotropy = 1;
-    //! Maximum samples
-    int m_maxSamples = 1;
     //! Framebuffer support
     FramebufferSupport m_framebufferSupport = FBS_NONE;
     //! Map of saved VBO objects
@@ -242,54 +250,17 @@ private:
     //! Currently bound VBO
     GLuint m_currentVBO = 0;
 
-    //! true enables per-pixel lighting
-    bool m_perPixelLighting = false;
+    //! Shader program for normal rendering
+    GLuint m_normalProgram = 0;
+    //! Shader program for interface rendering
+    GLuint m_interfaceProgram = 0;
+    //! Shader program for shadow rendering
+    GLuint m_shadowProgram = 0;
 
-    //! Shader program
-    GLuint m_program = 0;
-
-    // Uniforms
-    //! Projection matrix
-    GLint uni_ProjectionMatrix = 0;
-    //! View matrix
-    GLint uni_ViewMatrix = 0;
-    //! Model matrix
-    GLint uni_ModelMatrix = 0;
-    //! Shadow matrix
-    GLint uni_ShadowMatrix = 0;
-    //! Normal matrix
-    GLint uni_NormalMatrix = 0;
-
-    //! Primary texture sampler
-    GLint uni_PrimaryTexture = 0;
-    //! Secondary texture sampler
-    GLint uni_SecondaryTexture = 0;
-    //! Shadow texture sampler
-    GLint uni_ShadowTexture = 0;
-
-    //! true enables texture
-    GLint uni_TextureEnabled[3] = {};
-
-    // Alpha test parameters
-    //! true enables alpha test
-    GLint uni_AlphaTestEnabled = 0;
-    //! Alpha test reference value
-    GLint uni_AlphaReference = 0;
-
-    //! true enables fog
-    GLint uni_FogEnabled = 0;
-    //! Fog range
-    GLint uni_FogRange = 0;
-    //! Fog color
-    GLint uni_FogColor = 0;
-
-    //! Shadow color
-    GLint uni_ShadowColor = 0;
-
-    //! true enables lighting
-    GLint uni_LightingEnabled = 0;
-    //! true enables light source
-    GLint uni_LightEnabled[8] = {};
+    //! Uniform locations
+    UniformLocations m_uniforms[3];
+    //! Current mode
+    int m_mode = 0;
 };
 
 

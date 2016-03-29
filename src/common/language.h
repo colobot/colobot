@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <string>
+
 /**
  * \enum Language
  * \brief Application language
@@ -32,3 +34,6 @@ enum Language
     LANGUAGE_POLISH = 3,
     LANGUAGE_RUSSIAN = 4
 };
+
+bool ParseLanguage(const std::string& str, Language& language);
+bool LanguageToString(const Language& language, std::string& str);

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,6 +18,8 @@
  */
 
 #include "object/implementation/programmable_impl.h"
+
+#include "CBot/CBot.h"
 
 #include "common/global.h"
 
@@ -142,10 +144,10 @@ bool CProgrammableObjectImpl::ReadStack(FILE *file)
 {
     short       op;
 
-    fRead(&op, sizeof(short), 1, file);
+    CBot::fRead(&op, sizeof(short), 1, file);
     if ( op == 1 )  // run ?
     {
-        fRead(&op, sizeof(short), 1, file);  // program rank
+        CBot::fRead(&op, sizeof(short), 1, file);  // program rank
         if ( op >= 0 )
         {
             if (m_object->Implements(ObjectInterfaceType::ProgramStorage))
@@ -174,20 +176,20 @@ bool CProgrammableObjectImpl::WriteStack(FILE *file)
          m_currentProgram->script->IsRunning() )
     {
         op = 1;  // run
-        fWrite(&op, sizeof(short), 1, file);
+        CBot::fWrite(&op, sizeof(short), 1, file);
 
         op = -1;
         if (m_object->Implements(ObjectInterfaceType::ProgramStorage))
         {
             op = dynamic_cast<CProgramStorageObject*>(m_object)->GetProgramIndex(m_currentProgram);
         }
-        fWrite(&op, sizeof(short), 1, file);
+        CBot::fWrite(&op, sizeof(short), 1, file);
 
         return m_currentProgram->script->WriteStack(file);
     }
 
     op = 0;  // stop
-    fWrite(&op, sizeof(short), 1, file);
+    CBot::fWrite(&op, sizeof(short), 1, file);
     return true;
 }
 

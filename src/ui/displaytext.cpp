@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -145,7 +145,6 @@ void CDisplayText::DisplayError(Error err, Math::Vector goal, float height,
          err == ERR_VEH_VIRUS      ||
          err == ERR_DELETEMOBILE   ||
          err == ERR_DELETEBUILDING ||
-         err == ERR_TOOMANY        ||
          err == INFO_LOST          )
     {
         type = TT_ERROR;
@@ -285,13 +284,13 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     }
     else
     {
-        sound = SOUND_CLICK;
+        sound = SOUND_NONE;
         if ( type == TT_ERROR   )  sound = SOUND_ERROR;
         if ( type == TT_WARNING )  sound = SOUND_WARNING;
         if ( type == TT_INFO    )  sound = SOUND_INFO;
         if ( type == TT_MESSAGE )  sound = SOUND_MESSAGE;
 
-        if ( sound != SOUND_CLICK )
+        if ( sound != SOUND_NONE )
         {
             m_sound->Play(sound);
         }

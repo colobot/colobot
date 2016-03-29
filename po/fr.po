@@ -1,10 +1,10 @@
-# Didier Raboud <odyx@debian.org>, 2012, 2015.
+# Didier Raboud <odyx@debian.org>, 2012, 2015, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: Colobot 0.1.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: DATE\n"
-"PO-Revision-Date: 2015-09-13 12:12+0100\n"
+"PO-Revision-Date: 2016-03-25 15:01+0100\n"
 "Last-Translator: Didier Raboud <odyx@debian.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -23,9 +23,6 @@ msgstr " Liste des chapitres :"
 
 msgid " Custom levels:"
 msgstr " Niveaux spéciaux :"
-
-msgid " Drivers:"
-msgstr " Pilotes :"
 
 msgid " Exercises in the chapter:"
 msgstr " Liste des exercices du chapitre :"
@@ -312,9 +309,6 @@ msgstr "Bâtiment terminé"
 msgid "Building destroyed"
 msgstr "Bâtiment détruit"
 
-msgid "Building too close"
-msgstr "Bâtiment trop proche"
-
 msgid "Button %1"
 msgstr "Bouton %1"
 
@@ -329,6 +323,13 @@ msgstr "Caméra plus loin"
 
 msgid "Camera back\\Moves the camera backward"
 msgstr "Caméra plus loin\\Recule la caméra"
+
+msgid ""
+"Camera border scrolling\\Scrolling when the mouse touches right or left "
+"border"
+msgstr ""
+"Défilement dans les bords\\Défilement lorsque la souris touche les bords "
+"gauche ou droite"
 
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Caméra plus proche\\Avance la caméra"
@@ -349,11 +350,8 @@ msgstr "Caméra à droite"
 
 msgid "Camera up\\Increase camera angle while visiting message origin"
 msgstr ""
-"Caméra plus haute\\Augmente l'angle de caméra lors de la vue de l'origine des "
-"messages"
-
-msgid "Can not create this; there are too many objects"
-msgstr "Création impossible; il y a trop d'objets"
+"Caméra plus haute\\Augmente l'angle de caméra lors de la vue de l'origine "
+"des messages"
 
 msgid "Can not produce not researched object"
 msgstr "Impossible de créer un objet n'ayant pas été recherché"
@@ -382,11 +380,11 @@ msgstr "Changement de caméra\\Autre de point de vue"
 msgid "Change player\\Change player"
 msgstr "Autre joueur\\Choix du nom du joueur"
 
+msgid "Cheat console\\Show cheat console"
+msgstr "Console de triche\\Montre la console de triche"
+
 msgid "Checkpoint"
 msgstr "Indicateur"
-
-msgid "Checkpoint crossed"
-msgstr "Indicateur atteint"
 
 msgid "Climb\\Increases the power of the jet"
 msgstr "Monter\\Augmenter la puissance du réacteur"
@@ -512,6 +510,9 @@ msgstr "Salissures\\Salissures des robots et bâtiments"
 
 msgid "Dynamic lighting\\Mobile light sources"
 msgstr "Lumières dynamiques\\Éclairages mobiles"
+
+msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
+msgstr "Ombres dynamiques ++\\Active les ombres dynamiques et l'auto-ombrage"
 
 msgid "Dynamic shadows\\Beautiful shadows!"
 msgstr "Ombres dynamiques\\Magnifiques ombres !"
@@ -667,9 +668,6 @@ msgstr "Vert"
 msgid "Green flag"
 msgstr "Drapeau vert"
 
-msgid "Ground inappropriate"
-msgstr "Terrain inadapté"
-
 msgid "Ground not flat enough"
 msgstr "Sol pas assez plat"
 
@@ -759,6 +757,9 @@ msgstr "Instructions mission\\Marche à suivre"
 
 msgid "Internal error - tell the developers"
 msgstr "Erreur interne - contacter les développeurs"
+
+msgid "Invert\\Invert values on this axis"
+msgstr ""
 
 msgid "Jet temperature"
 msgstr "Température du réacteur"
@@ -924,9 +925,6 @@ msgstr "Plus d'énergie"
 msgid "No ore in the subsoil"
 msgstr "Pas de minerai en sous-sol"
 
-msgid "No other robot"
-msgstr "Pas d'autre robot"
-
 msgid "No power cell"
 msgstr "Pas de pile"
 
@@ -966,9 +964,6 @@ msgstr "Pas encore assez d'énergie"
 msgid "Not found anything to destroy"
 msgstr "Rien trouvé à détruire"
 
-msgid "Not yet enough energy"
-msgstr "Pas encore assez d'énergie"
-
 msgid "Nothing to analyze"
 msgstr "Rien à analyser"
 
@@ -1007,9 +1002,6 @@ msgstr "D'accord\\Choisir le joueur"
 
 msgid "OK\\Close program editor and return to game"
 msgstr "D'accord\\Compiler le programme"
-
-msgid "Object not found"
-msgstr "Objet n'existe pas"
 
 msgid "Object too close"
 msgstr "Objet trop proche"
@@ -1055,6 +1047,9 @@ msgstr "Particules dans l'interface\\Pluie de particules"
 
 msgid "Paste (Ctrl+v)"
 msgstr "Coller (Ctrl+v)"
+
+msgid "Pause in background\\Pause the game when the window is unfocused"
+msgstr ""
 
 msgid "Pause/continue"
 msgstr "Pause/continuer"
@@ -1178,11 +1173,6 @@ msgstr "Public\\Dossier commun à tous les joueurs"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Secousses lors d'explosions\\L'écran vibre lors d'une explosion"
-
-msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
-msgstr ""
-"Ombres projetées\\Active la transparence des ombres et "
-"l'auto-ombrage"
 
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr "Quitter\\Quitter Colobot : Édition Gold"
@@ -1316,11 +1306,6 @@ msgstr "Enregistrer\\Enregistrer la mission en cours"
 msgid "Save\\Saves the current mission"
 msgstr "Enregistrer\\Enregistrer la mission en cours"
 
-msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-msgstr ""
-"Défilement dans les bords\\Défilement lorsque la souris touches les bords "
-"gauche ou droite"
-
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Sélectionner le cosmonaute\\Sélectionner le cosmonaute"
 
@@ -1329,8 +1314,8 @@ msgstr "Terminateur point-virgule non trouvé"
 
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr ""
-"Résolution des ombres\\Plus grand implique une meilleure qulité et amplitude, "
-"mais plus lent"
+"Résolution des ombres\\Plus grand implique une meilleure qulité et "
+"amplitude, mais plus lent"
 
 msgid "Shield level"
 msgstr "Niveau du bouclier"
@@ -1465,9 +1450,6 @@ msgstr "Sac de survie"
 msgid "Switch bots <-> buildings"
 msgstr "Permute robots <-> bâtiments"
 
-msgid "System mouse\\Use system mouse cursor"
-msgstr "Souris système\\Utiliser le curseur de la souris système"
-
 msgid "Take off to finish the mission"
 msgstr "Décolle pour terminer la mission"
 
@@ -1491,11 +1473,6 @@ msgstr "L'expression doit ętre un boolean"
 
 msgid "The function returned no value "
 msgstr "La fonction n'a pas retourné de résultat"
-
-msgid ""
-"The list is only available if a \\l;radar station\\u object\\radar; is "
-"working.\n"
-msgstr "Liste non disponible sans \\l;radar\\u object\\radar;.\n"
 
 msgid ""
 "The mission is not accomplished yet (press \\key help; for more details)"
@@ -1632,9 +1609,6 @@ msgstr "Emplacement pour derrick (uranium)"
 
 msgid "Uranium ore"
 msgstr "Minerai d'uranium"
-
-msgid "Use a joystick\\Joystick or keyboard"
-msgstr "Utilise un joystick\\Joystick ou clavier"
 
 msgid "User levels"
 msgstr "Niveaux supplémentaires"
@@ -1826,35 +1800,17 @@ msgstr "\\Drapeaux violets"
 msgid "\\Yellow flags"
 msgstr "\\Drapeaux jaunes"
 
-msgid "\\b;Aliens\n"
-msgstr "\\b;Listes des ennemis\n"
+msgid "colobot.info"
+msgstr "colobot.info"
 
-msgid "\\b;Buildings\n"
-msgstr "\\b;Listes des bâtiments\n"
-
-msgid "\\b;Error\n"
-msgstr "\\b;Erreur\n"
-
-msgid "\\b;List of objects\n"
-msgstr "\\b;Listes des objets\n"
-
-msgid "\\b;Moveable objects\n"
-msgstr "\\b;Listes des objets transportables\n"
-
-msgid "\\b;Robots\n"
-msgstr "\\b;Listes des robots\n"
-
-msgid "\\c; (none)\\n;\n"
-msgstr "\\c; (aucun)\\n;\n"
-
-msgid "www.colobot.info"
-msgstr "www.colobot.info"
-
-msgid "www.epsitec.com"
-msgstr "www.epsitec.com"
+msgid "epsitec.com"
+msgstr "epsitec.com"
 
 #~ msgid " "
 #~ msgstr " "
+
+#~ msgid " Drivers:"
+#~ msgstr " Pilotes :"
 
 #~ msgid " Missions on this level:"
 #~ msgstr " Missions du niveau :"
@@ -1862,11 +1818,20 @@ msgstr "www.epsitec.com"
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Bruitages 3D\\Positionnement sonore dans l'espace"
 
+#~ msgid "Building too close"
+#~ msgstr "Bâtiment trop proche"
+
 #~ msgid "COLOBOT"
 #~ msgstr "COLOBOT"
 
+#~ msgid "Can not create this; there are too many objects"
+#~ msgstr "Création impossible; il y a trop d'objets"
+
 #~ msgid "Cancel\\Keep current player name"
 #~ msgstr "Annuler\\Conserver le joueur actuel"
+
+#~ msgid "Checkpoint crossed"
+#~ msgstr "Indicateur atteint"
 
 #~ msgid "Compass"
 #~ msgstr "Boussole"
@@ -1893,6 +1858,9 @@ msgstr "www.epsitec.com"
 #~ msgid "Friendly fire\\Your shooting can damage your own objects "
 #~ msgstr "Dégâts à soi-même\\Vos tirs infligent des dommages à vos unités"
 
+#~ msgid "Ground inappropriate"
+#~ msgstr "Terrain inadapté"
+
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Instructions mot-clé\\Explication sur le mot-clé"
 
@@ -1902,8 +1870,17 @@ msgstr "www.epsitec.com"
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Souris ombrée\\Jolie souris avec une ombre"
 
+#~ msgid "No other robot"
+#~ msgstr "Pas d'autre robot"
+
+#~ msgid "Not yet enough energy"
+#~ msgstr "Pas encore assez d'énergie"
+
 #~ msgid "Num of decorative objects\\Number of purely ornamental objects"
 #~ msgstr "Nb d'objets décoratifs\\Qualité d'objets non indispensables"
+
+#~ msgid "Object not found"
+#~ msgstr "Objet n'existe pas"
 
 #~ msgid "Planets and stars\\Astronomical objects in the sky"
 #~ msgstr "Planètes et étoiles\\Motifs mobiles dans le ciel"
@@ -1926,11 +1903,43 @@ msgstr "www.epsitec.com"
 #~ msgid "Sunbeams\\Sunbeams in the sky"
 #~ msgstr "Rayons du soleil\\Rayons selon l'orientation"
 
+#~ msgid "System mouse\\Use system mouse cursor"
+#~ msgstr "Souris système\\Utiliser le curseur de la souris système"
+
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Qualité des textures\\Qualité des images"
+
+#~ msgid ""
+#~ "The list is only available if a \\l;radar station\\u object\\radar; is "
+#~ "working.\n"
+#~ msgstr "Liste non disponible sans \\l;radar\\u object\\radar;.\n"
+
+#~ msgid "Use a joystick\\Joystick or keyboard"
+#~ msgstr "Utilise un joystick\\Joystick ou clavier"
 
 #~ msgid "User\\User levels"
 #~ msgstr "Suppl.\\Niveaux supplémentaires"
 
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Retourner dans COLOBOT"
+
+#~ msgid "\\b;Aliens\n"
+#~ msgstr "\\b;Listes des ennemis\n"
+
+#~ msgid "\\b;Buildings\n"
+#~ msgstr "\\b;Listes des bâtiments\n"
+
+#~ msgid "\\b;Error\n"
+#~ msgstr "\\b;Erreur\n"
+
+#~ msgid "\\b;List of objects\n"
+#~ msgstr "\\b;Listes des objets\n"
+
+#~ msgid "\\b;Moveable objects\n"
+#~ msgstr "\\b;Listes des objets transportables\n"
+
+#~ msgid "\\b;Robots\n"
+#~ msgstr "\\b;Listes des robots\n"
+
+#~ msgid "\\c; (none)\\n;\n"
+#~ msgstr "\\c; (aucun)\\n;\n"

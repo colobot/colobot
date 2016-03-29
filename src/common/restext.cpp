@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,9 +20,7 @@
 
 #include "common/restext.h"
 
-#include "common/config.h"
-
-#include "CBot/resource.h"
+#include "CBot/CBot.h"
 
 #include "app/input.h"
 
@@ -41,7 +39,7 @@ const char* stringsText[RT_MAX]         = { nullptr };
 const char* stringsEvent[EVENT_STD_MAX] = { nullptr };
 const char* stringsObject[OBJECT_MAX]   = { nullptr };
 const char* stringsErr[ERR_MAX]         = { nullptr };
-const char* stringsCbot[TX_MAX]         = { nullptr };
+const char* stringsCbot[CBot::CBotErrMAX]         = { nullptr };
 
 /* Macro to mark which texts are translatable by gettext
  * It doesn't do anything at compile-time, as all texts represented here are used later
@@ -53,7 +51,6 @@ const char* stringsCbot[TX_MAX]         = { nullptr };
 
 void InitializeRestext()
 {
-    stringsText[RT_DISINFO_TITLE]    = TR("SatCom");
     stringsText[RT_WINDOW_MAXIMIZED] = TR("Maximize");
     stringsText[RT_WINDOW_MINIMIZED] = TR("Minimize");
     stringsText[RT_WINDOW_STANDARD]  = TR("Normal size");
@@ -88,7 +85,6 @@ void InitializeRestext()
     stringsText[RT_PLAY_LIST_FREEGAME]   = TR(" Free game on this planet:");
     stringsText[RT_PLAY_RESUME]          = TR(" Summary:");
 
-    stringsText[RT_SETUP_DEVICE]     = TR(" Drivers:");
     stringsText[RT_SETUP_MODE]       = TR(" Resolution:");
     stringsText[RT_SETUP_KEY1]       = TR("1) First click on the key you want to redefine.");
     stringsText[RT_SETUP_KEY2]       = TR("2) Then press the key you want to use instead.");
@@ -118,15 +114,6 @@ void InitializeRestext()
     stringsText[RT_PROGRAM_READONLY] = TR("This program is read-only, clone it to edit");
     stringsText[RT_PROGRAM_EXAMPLE]  = TR("This is example code that cannot be run directly");
 
-    stringsText[RT_SATCOM_LIST]      = TR("\\b;List of objects\n");
-    stringsText[RT_SATCOM_BOT]       = TR("\\b;Robots\n");
-    stringsText[RT_SATCOM_BUILDING]  = TR("\\b;Buildings\n");
-    stringsText[RT_SATCOM_FRET]      = TR("\\b;Moveable objects\n");
-    stringsText[RT_SATCOM_ALIEN]     = TR("\\b;Aliens\n");
-    stringsText[RT_SATCOM_NULL]      = TR("\\c; (none)\\n;\n");
-    stringsText[RT_SATCOM_ERROR1]    = TR("\\b;Error\n");
-    stringsText[RT_SATCOM_ERROR2]    = TR("The list is only available if a \\l;radar station\\u object\\radar; is working.\n");
-
     stringsText[RT_IO_OPEN]          = TR("Open");
     stringsText[RT_IO_SAVE]          = TR("Save");
     stringsText[RT_IO_LIST]          = TR("Folder: %s");
@@ -136,9 +123,9 @@ void InitializeRestext()
     stringsText[RT_IO_PUBLIC]        = TR("Public\\Common folder");
 
     stringsText[RT_GENERIC_DEV1]     = TR("Original game developed by:");
-    stringsText[RT_GENERIC_DEV2]     = TR("www.epsitec.com");
+    stringsText[RT_GENERIC_DEV2]     = TR("epsitec.com");
     stringsText[RT_GENERIC_EDIT1]    = TR("Gold Edition development by:");
-    stringsText[RT_GENERIC_EDIT2]    = TR("www.colobot.info");
+    stringsText[RT_GENERIC_EDIT2]    = TR("colobot.info");
 
     stringsText[RT_INTERFACE_REC]    = TR("Recorder");
 
@@ -172,6 +159,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_FREE]      = TR("Free game\\Free game without a specific goal");
     stringsEvent[EVENT_INTERFACE_CODE_BATTLES] = TR("Code battles\\Program your robot to be the best of them all!");
     stringsEvent[EVENT_INTERFACE_USER]      = TR("Custom levels\\Levels from mods created by the users");
+    stringsEvent[EVENT_INTERFACE_SATCOM]    = TR("SatCom");
     stringsEvent[EVENT_INTERFACE_NAME]      = TR("Change player\\Change player");
     stringsEvent[EVENT_INTERFACE_SETUP]     = TR("Options\\Preferences");
     stringsEvent[EVENT_INTERFACE_AGAIN]     = TR("Restart\\Restart the mission from the beginning");
@@ -200,11 +188,11 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_GLINT]     = TR("Reflections on the buttons \\Shiny buttons");
     stringsEvent[EVENT_INTERFACE_TOOLTIP]   = TR("Help balloons\\Explain the function of the buttons");
     stringsEvent[EVENT_INTERFACE_MOVIES]    = TR("Film sequences\\Films before and after the missions");
-    stringsEvent[EVENT_INTERFACE_SCROLL]    = TR("Scrolling\\Scrolling when the mouse touches right or left border");
+    stringsEvent[EVENT_INTERFACE_SCROLL]    = TR("Camera border scrolling\\Scrolling when the mouse touches right or left border");
     stringsEvent[EVENT_INTERFACE_INVERTX]   = TR("Mouse inversion X\\Inversion of the scrolling direction on the X axis");
     stringsEvent[EVENT_INTERFACE_INVERTY]   = TR("Mouse inversion Y\\Inversion of the scrolling direction on the Y axis");
     stringsEvent[EVENT_INTERFACE_EFFECT]    = TR("Quake at explosions\\The screen shakes at explosions");
-    stringsEvent[EVENT_INTERFACE_MOUSE]     = TR("System mouse\\Use system mouse cursor");
+    stringsEvent[EVENT_INTERFACE_BGPAUSE]   = TR("Pause in background\\Pause the game when the window is unfocused");
     stringsEvent[EVENT_INTERFACE_EDITMODE]  = TR("Automatic indent\\When program editing");
     stringsEvent[EVENT_INTERFACE_EDITVALUE] = TR("Big indent\\Indent 2 or 4 spaces per level defined by braces");
     stringsEvent[EVENT_INTERFACE_SOLUCE4]   = TR("Access to solutions\\Show program \"4: Solution\" in the exercises");
@@ -218,7 +206,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_MSAA]              = TR("MSAA\\Multisample anti-aliasing");
     stringsEvent[EVENT_INTERFACE_SHADOW_SPOTS]      = TR("Simple shadows\\Shadows spots on the ground");
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING]    = TR("Dynamic shadows\\Beautiful shadows!");
-    stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_QUALITY]= TR("Quality dynamic shadows\\Enable shadow transparency and self shadowing");
+    stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_QUALITY]= TR("Dynamic shadows ++\\Dynamic shadows + self shadowing");
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_BUFFER] = TR("Shadow resolution\\Higher means better range and quality, but slower");
 
     stringsEvent[EVENT_INTERFACE_KDEF]      = TR("Standard controls\\Standard key functions");
@@ -250,6 +238,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAMERA_UP]   = TR("Camera up\\Increase camera angle while visiting message origin");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAMERA_DOWN] = TR("Camera down\\Decrease camera angle while visiting message origin");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_PAUSE]       = TR("Pause\\Pause the game without opening menu");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CMDLINE]     = TR("Cheat console\\Show cheat console");
 
     stringsEvent[EVENT_INTERFACE_VOLSOUND]  = TR("Sound effects:\\Volume of engines, voice, shooting, etc.");
     stringsEvent[EVENT_INTERFACE_VOLMUSIC]  = TR("Background sound :\\Volume of audio tracks");
@@ -261,8 +250,10 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_SILENT]    = TR("Mute\\No sound");
     stringsEvent[EVENT_INTERFACE_NOISY]     = TR("Normal\\Normal sound volume");
 
-    stringsEvent[EVENT_INTERFACE_JOYSTICK]  = TR("Use a joystick\\Joystick or keyboard");
     stringsEvent[EVENT_INTERFACE_SOLUCE]    = TR("Access to solution\\Shows the solution (detailed instructions for missions)");
+    stringsEvent[EVENT_INTERFACE_JOYSTICK_X_INVERT] = TR("Invert\\Invert values on this axis");
+    stringsEvent[EVENT_INTERFACE_JOYSTICK_Y_INVERT] = TR("Invert\\Invert values on this axis");
+    stringsEvent[EVENT_INTERFACE_JOYSTICK_Z_INVERT] = TR("Invert\\Invert values on this axis");
 
     stringsEvent[EVENT_INTERFACE_NEDIT]     = TR("\\New player name");
     stringsEvent[EVENT_INTERFACE_NOK]       = TR("OK\\Choose the selected player");
@@ -574,13 +565,11 @@ void InitializeRestext()
     stringsErr[ERR_MANIP_NIL]       = TR("Nothing to grab");
     stringsErr[ERR_MANIP_MOTOR]     = TR("Impossible when moving");
     stringsErr[ERR_MANIP_OCC]       = TR("Place occupied");
-    stringsErr[ERR_MANIP_FRIEND]    = TR("No other robot");
     stringsErr[ERR_MANIP_RADIO]     = TR("You can not carry a radioactive object");
     stringsErr[ERR_MANIP_WATER]     = TR("You can not carry an object under water");
     stringsErr[ERR_MANIP_EMPTY]     = TR("Nothing to drop");
     stringsErr[ERR_BUILD_FLY]       = TR("Impossible when flying");
     stringsErr[ERR_BUILD_WATER]     = TR("Impossible under water");
-    stringsErr[ERR_BUILD_ENERGY]    = TR("Not enough energy");
     stringsErr[ERR_BUILD_METALAWAY] = TR("Titanium too far away");
     stringsErr[ERR_BUILD_METALNEAR] = TR("Titanium too close");
     stringsErr[ERR_BUILD_METALINEX] = TR("No titanium around");
@@ -595,19 +584,14 @@ void InitializeRestext()
     stringsErr[ERR_BUILD_RESEARCH]  = TR("Can not produce not researched object");
     stringsErr[ERR_SEARCH_MOTOR]    = TR("Impossible when moving");
     stringsErr[ERR_TERRA_ENERGY]    = TR("Not enough energy");
-    stringsErr[ERR_TERRA_FLOOR]     = TR("Ground inappropriate");
-    stringsErr[ERR_TERRA_BUILDING]  = TR("Building too close");
-    stringsErr[ERR_TERRA_OBJECT]    = TR("Object too close");
     stringsErr[ERR_RECOVER_ENERGY]  = TR("Not enough energy");
     stringsErr[ERR_RECOVER_NULL]    = TR("Nothing to recycle");
     stringsErr[ERR_SHIELD_ENERGY]   = TR("No more energy");
     stringsErr[ERR_MOVE_IMPOSSIBLE] = TR("Error in instruction move");
-    stringsErr[ERR_FIND_IMPOSSIBLE] = TR("Object not found");
     stringsErr[ERR_GOTO_IMPOSSIBLE] = TR("Goto: inaccessible destination");
     stringsErr[ERR_GOTO_ITER]       = TR("Goto: inaccessible destination");
     stringsErr[ERR_GOTO_BUSY]       = TR("Goto: destination occupied");
     stringsErr[ERR_FIRE_ENERGY]     = TR("Not enough energy");
-    stringsErr[ERR_FIRE_FLY]        = TR("Impossible when flying");
     stringsErr[ERR_CONVERT_EMPTY]   = TR("No titanium ore to convert");
     stringsErr[ERR_DERRICK_NULL]    = TR("No ore in the subsoil");
     stringsErr[ERR_STATION_NULL]    = TR("No energy in the subsoil");
@@ -626,13 +610,10 @@ void InitializeRestext()
     stringsErr[ERR_LABO_NULL]       = TR("Nothing to analyze");
     stringsErr[ERR_LABO_BAD]        = TR("Analyzes only organic matter");
     stringsErr[ERR_LABO_ALREADY]    = TR("Analysis already performed");
-    stringsErr[ERR_NUCLEAR_NULL]    = TR("No energy in the subsoil");
-    stringsErr[ERR_NUCLEAR_LOW]     = TR("Not yet enough energy");
     stringsErr[ERR_NUCLEAR_EMPTY]   = TR("No uranium to transform");
     stringsErr[ERR_NUCLEAR_BAD]     = TR("Transforms only uranium");
     stringsErr[ERR_FACTORY_NULL]    = TR("No titanium");
     stringsErr[ERR_FACTORY_NEAR]    = TR("Object too close");
-    stringsErr[ERR_RESET_NEAR]      = TR("Place occupied");
     stringsErr[ERR_INFO_NULL]       = TR("No information exchange post within range");
     stringsErr[ERR_VEH_VIRUS]       = TR("Program infected by a virus");
     stringsErr[ERR_BAT_VIRUS]       = TR("Infected by a virus; temporarily out of order");
@@ -650,7 +631,6 @@ void InitializeRestext()
     stringsErr[ERR_MISSION_NOTERM]  = TR("The mission is not accomplished yet (press \\key help; for more details)");
     stringsErr[ERR_DELETEMOBILE]    = TR("Bot destroyed");
     stringsErr[ERR_DELETEBUILDING]  = TR("Building destroyed");
-    stringsErr[ERR_TOOMANY]         = TR("Can not create this; there are too many objects");
     stringsErr[ERR_ENEMY_OBJECT]    = TR("Unable to control enemy objects");
     stringsErr[ERR_OBLIGATORYTOKEN] = TR("\"%s\" missing in this exercise");
     stringsErr[ERR_PROHIBITEDTOKEN] = TR("Do not use in this exercise");
@@ -683,7 +663,6 @@ void InitializeRestext()
     stringsErr[INFO_LOST]           = TR("<<< Sorry; mission failed >>>");
     stringsErr[INFO_LOSTq]          = TR("<<< Sorry; mission failed >>>");
     stringsErr[INFO_WRITEOK]        = TR("Current mission saved");
-    stringsErr[INFO_DELETEPATH]     = TR("Checkpoint crossed");
     stringsErr[INFO_DELETEMOTHER]   = TR("Alien Queen killed");
     stringsErr[INFO_DELETEANT]      = TR("Ant fatally wounded");
     stringsErr[INFO_DELETEBEE]      = TR("Wasp fatally wounded");
@@ -693,65 +672,66 @@ void InitializeRestext()
 
 
 
-    stringsCbot[TX_OPENPAR]       = TR("Opening bracket missing");
-    stringsCbot[TX_CLOSEPAR]      = TR("Closing bracket missing ");
-    stringsCbot[TX_NOTBOOL]       = TR("The expression must return a boolean value");
-    stringsCbot[TX_UNDEFVAR]      = TR("Variable not declared");
-    stringsCbot[TX_BADLEFT]       = TR("Assignment impossible");
-    stringsCbot[TX_ENDOF]         = TR("Semicolon terminator missing");
-    stringsCbot[TX_OUTCASE]       = TR("Instruction \"case\" outside a block \"switch\"");
-    stringsCbot[TX_NOTERM]        = TR("Instructions after the final closing brace");
-    stringsCbot[TX_CLOSEBLK]      = TR("End of block missing");
-    stringsCbot[TX_ELSEWITHOUTIF] = TR("Instruction \"else\" without corresponding \"if\" ");
-    stringsCbot[TX_OPENBLK]       = TR("Opening brace missing ");
-    stringsCbot[TX_BADTYPE]       = TR("Wrong type for the assignment");
-    stringsCbot[TX_REDEFVAR]      = TR("A variable can not be declared twice");
-    stringsCbot[TX_BAD2TYPE]      = TR("The types of the two operands are incompatible ");
-    stringsCbot[TX_UNDEFCALL]     = TR("Unknown function");
-    stringsCbot[TX_MISDOTS]       = TR("Sign \" : \" missing");
-    stringsCbot[TX_WHILE]         = TR("Keyword \"while\" missing");
-    stringsCbot[TX_BREAK]         = TR("Instruction \"break\" outside a loop");
-    stringsCbot[TX_LABEL]         = TR("A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\"");
-    stringsCbot[TX_NOLABEL]       = TR("This label does not exist");
-    stringsCbot[TX_NOCASE]        = TR("Instruction \"case\" missing");
-    stringsCbot[TX_BADNUM]        = TR("Number missing");
-    stringsCbot[TX_VOID]          = TR("Void parameter");
-    stringsCbot[TX_NOTYP]         = TR("Type declaration missing");
-    stringsCbot[TX_NOVAR]         = TR("Variable name missing");
-    stringsCbot[TX_NOFONC]        = TR("Function name missing");
-    stringsCbot[TX_OVERPARAM]     = TR("Too many parameters");
-    stringsCbot[TX_REDEF]         = TR("Function already exists");
-    stringsCbot[TX_LOWPARAM]      = TR("Parameters missing ");
-    stringsCbot[TX_BADPARAM]      = TR("No function with this name accepts this kind of parameter");
-    stringsCbot[TX_NUMPARAM]      = TR("No function with this name accepts this number of parameters");
-    stringsCbot[TX_NOITEM]        = TR("This is not a member of this class");
-    stringsCbot[TX_DOT]           = TR("This object is not a member of a class");
-    stringsCbot[TX_NOCONST]       = TR("Appropriate constructor missing");
-    stringsCbot[TX_REDEFCLASS]    = TR("This class already exists");
-    stringsCbot[TX_CLBRK]         = TR("\" ] \" missing");
-    stringsCbot[TX_RESERVED]      = TR("Reserved keyword of CBOT language");
-    stringsCbot[TX_BADNEW]        = TR("Bad argument for \"new\"");
-    stringsCbot[TX_OPBRK]         = TR("\" [ \" expected");
-    stringsCbot[TX_BADSTRING]     = TR("String missing");
-    stringsCbot[TX_BADINDEX]      = TR("Incorrect index type");
-    stringsCbot[TX_PRIVATE]       = TR("Private element");
-    stringsCbot[TX_NOPUBLIC]      = TR("Public required");
-    stringsCbot[TX_DIVZERO]       = TR("Dividing by zero");
-    stringsCbot[TX_NOTINIT]       = TR("Variable not initialized");
-    stringsCbot[TX_BADTHROW]      = TR("Negative value rejected by \"throw\"");
-    stringsCbot[TX_NORETVAL]      = TR("The function returned no value ");
-    stringsCbot[TX_NORUN]         = TR("No function running");
-    stringsCbot[TX_NOCALL]        = TR("Calling an unknown function");
-    stringsCbot[TX_NOCLASS]       = TR("This class does not exist");
-    stringsCbot[TX_NULLPT]        = TR("Unknown Object");
-    stringsCbot[TX_OPNAN]         = TR("Operation impossible with value \"nan\"");
-    stringsCbot[TX_OUTARRAY]      = TR("Access beyond array limit");
-    stringsCbot[TX_STACKOVER]     = TR("Stack overflow");
-    stringsCbot[TX_DELETEDPT]     = TR("Illegal object");
-    stringsCbot[TX_FILEOPEN]      = TR("Can't open file");
-    stringsCbot[TX_NOTOPEN]       = TR("File not open");
-    stringsCbot[TX_ERRREAD]       = TR("Read error");
-    stringsCbot[TX_ERRWRITE]      = TR("Write error");
+    stringsCbot[CBot::CBotErrOpenPar]       = TR("Opening bracket missing");
+    stringsCbot[CBot::CBotErrClosePar]      = TR("Closing bracket missing ");
+    stringsCbot[CBot::CBotErrNotBoolean]    = TR("The expression must return a boolean value");
+    stringsCbot[CBot::CBotErrUndefVar]      = TR("Variable not declared");
+    stringsCbot[CBot::CBotErrBadLeft]       = TR("Assignment impossible");
+    stringsCbot[CBot::CBotErrNoTerminator]  = TR("Semicolon terminator missing");
+    stringsCbot[CBot::CBotErrCaseOut]       = TR("Instruction \"case\" outside a block \"switch\"");
+    stringsCbot[CBot::CBotErrNoEnd]         = TR("Instructions after the final closing brace");
+    stringsCbot[CBot::CBotErrCloseBlock]    = TR("End of block missing");
+    stringsCbot[CBot::CBotErrElseWhitoutIf] = TR("Instruction \"else\" without corresponding \"if\" ");
+    stringsCbot[CBot::CBotErrOpenBlock]     = TR("Opening brace missing ");
+    stringsCbot[CBot::CBotErrBadType1]      = TR("Wrong type for the assignment");
+    stringsCbot[CBot::CBotErrRedefVar]      = TR("A variable can not be declared twice");
+    stringsCbot[CBot::CBotErrBadType2]      = TR("The types of the two operands are incompatible ");
+    stringsCbot[CBot::CBotErrUndefCall]     = TR("Unknown function");
+    stringsCbot[CBot::CBotErrNoDoubleDots]  = TR("Sign \" : \" missing");
+    stringsCbot[CBot::CBotErrNoWhile]       = TR("Keyword \"while\" missing");
+    stringsCbot[CBot::CBotErrBreakOutside]  = TR("Instruction \"break\" outside a loop");
+    stringsCbot[CBot::CBotErrLabel]         = TR("A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\"");
+    stringsCbot[CBot::CBotErrUndefLabel]    = TR("This label does not exist");
+    stringsCbot[CBot::CBotErrNoCase]        = TR("Instruction \"case\" missing");
+    stringsCbot[CBot::CBotErrBadNum]        = TR("Number missing");
+    stringsCbot[CBot::CBotErrVoid]          = TR("Void parameter");
+    stringsCbot[CBot::CBotErrNoType]        = TR("Type declaration missing");
+    stringsCbot[CBot::CBotErrNoVar]         = TR("Variable name missing");
+    stringsCbot[CBot::CBotErrNoFunc]        = TR("Function name missing");
+    stringsCbot[CBot::CBotErrOverParam]     = TR("Too many parameters");
+    stringsCbot[CBot::CBotErrRedefFunc]     = TR("Function already exists");
+    stringsCbot[CBot::CBotErrLowParam]      = TR("Parameters missing ");
+    stringsCbot[CBot::CBotErrBadParam]      = TR("No function with this name accepts this kind of parameter");
+    stringsCbot[CBot::CBotErrNbParam]       = TR("No function with this name accepts this number of parameters");
+    stringsCbot[CBot::CBotErrUndefItem]     = TR("This is not a member of this class");
+    stringsCbot[CBot::CBotErrUndefClass]    = TR("This object is not a member of a class");
+    stringsCbot[CBot::CBotErrNoConstruct]   = TR("Appropriate constructor missing");
+    stringsCbot[CBot::CBotErrRedefClass]    = TR("This class already exists");
+    stringsCbot[CBot::CBotErrCloseIndex]    = TR("\" ] \" missing");
+    stringsCbot[CBot::CBotErrReserved]      = TR("Reserved keyword of CBOT language");
+    stringsCbot[CBot::CBotErrBadNew]        = TR("Bad argument for \"new\"");
+    stringsCbot[CBot::CBotErrOpenIndex]     = TR("\" [ \" expected");
+    stringsCbot[CBot::CBotErrBadString]     = TR("String missing");
+    stringsCbot[CBot::CBotErrBadIndex]      = TR("Incorrect index type");
+    stringsCbot[CBot::CBotErrPrivate]       = TR("Private element");
+    stringsCbot[CBot::CBotErrNoPublic]      = TR("Public required");
+
+    stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
+    stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");
+    stringsCbot[CBot::CBotErrBadThrow]      = TR("Negative value rejected by \"throw\"");
+    stringsCbot[CBot::CBotErrNoRetVal]      = TR("The function returned no value ");
+    stringsCbot[CBot::CBotErrNoRun]         = TR("No function running");
+    stringsCbot[CBot::CBotErrUndefFunc]     = TR("Calling an unknown function");
+    stringsCbot[CBot::CBotErrNotClass]      = TR("This class does not exist");
+    stringsCbot[CBot::CBotErrNull]          = TR("Unknown Object");
+    stringsCbot[CBot::CBotErrNan]           = TR("Operation impossible with value \"nan\"");
+    stringsCbot[CBot::CBotErrOutArray]      = TR("Access beyond array limit");
+    stringsCbot[CBot::CBotErrStackOver]     = TR("Stack overflow");
+    stringsCbot[CBot::CBotErrDeletedPtr]    = TR("Illegal object");
+    stringsCbot[CBot::CBotErrFileOpen]      = TR("Can't open file");
+    stringsCbot[CBot::CBotErrNotOpen]       = TR("File not open");
+    stringsCbot[CBot::CBotErrRead]          = TR("Read error");
+    stringsCbot[CBot::CBotErrWrite]         = TR("Write error");
 }
 
 
@@ -783,7 +763,7 @@ void PutKeyName(std::string& dst, const char* src)
              src[s+3] == 'y'  &&
              src[s+4] == ' '  )
         {
-            int count;
+            unsigned int count;
             for(count = 0; src[s+5+count] != ';'; count++);
             CInput* input = CInput::GetInstancePointer();
             InputSlot key = input->SearchKeyById(std::string(&src[s+5], count));
@@ -834,7 +814,7 @@ const char* GetResourceBase(ResType type, unsigned int num)
             break;
 
         case RES_CBOT:
-            assert(num < TX_MAX);
+            assert(num < CBot::CBotErrMAX);
             str = stringsCbot[num];
             break;
 
@@ -866,26 +846,24 @@ bool GetResource(ResType type, unsigned int num, std::string& text)
     }
     else
     {
-        if (num == KEY_INVALID)
+        if (num == static_cast<unsigned int>(KEY_INVALID))
             text.clear();
-        else if (num == VIRTUAL_KMOD_CTRL)
+        else if (num == static_cast<unsigned int>(VIRTUAL_KMOD(CTRL)))
             text = "Ctrl";
-        else if (num == VIRTUAL_KMOD_SHIFT)
+        else if (num == static_cast<unsigned int>(VIRTUAL_KMOD(SHIFT)))
             text = "Shift";
-        else if (num == VIRTUAL_KMOD_ALT)
+        else if (num == static_cast<unsigned int>(VIRTUAL_KMOD(ALT)))
             text = "Alt";
-        else if (num == VIRTUAL_KMOD_META)
-            text = "Win";
-        else if (num > VIRTUAL_JOY(0))
+        else if (num == static_cast<unsigned int>(VIRTUAL_KMOD(GUI)))
+            text = "Win"; // TODO: Better description of this key?
+        else if (num >= static_cast<unsigned int>(VIRTUAL_JOY(0)))
         {
             text = gettext("Button %1");
             text = StrUtils::Replace(text, "%1", StrUtils::ToString<int>(1 + num - VIRTUAL_JOY(0)));
         }
         else
         {
-            text = SDL_GetKeyName(static_cast<SDLKey>(num));
-            text = boost::regex_replace(text, boost::regex("\\[(.*)\\]"), "\\1");
-            text[0] = toupper(text[0]);
+            text = SDL_GetKeyName(static_cast<SDL_Keycode>(num));
         }
         return true;
     }

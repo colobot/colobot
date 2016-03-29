@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,14 +25,9 @@
 #pragma once
 
 #include "graphics/core/color.h"
-#include "graphics/core/framebuffer.h"
-#include "graphics/core/light.h"
-#include "graphics/core/material.h"
 #include "graphics/core/texture.h"
-#include "graphics/core/vertex.h"
 
 #include "math/intpoint.h"
-#include "math/matrix.h"
 
 #include <memory>
 #include <string>
@@ -41,10 +36,24 @@
 class CImage;
 struct ImageData;
 
+namespace Math
+{
+struct Matrix;
+struct Vector;
+} // namespace Math
+
 
 // Graphics module namespace
 namespace Gfx
 {
+
+class CFramebuffer;
+struct FramebufferParams;
+struct Light;
+struct Material;
+struct Vertex;
+struct VertexCol;
+struct VertexTex2;
 
 /**
  * \struct DeviceConfig
@@ -90,12 +99,46 @@ struct DeviceConfig
     }
 };
 
+/**
+* \struct DeviceCapabilities
+* \brief This structs contains various capabilities of graphics device
+*/
+struct DeviceCapabilities
+{
+    bool multitexturingSupported = false;
+    int maxTextures = 1;
+    int maxTextureSize = 1024;
+
+    int maxLights = 8;
+
+    bool shadowMappingSupported = false;
+
+    bool framebufferSupported = false;
+    int maxRenderbufferSize = 0;
+
+    bool anisotropySupported = false;
+    int maxAnisotropy = 1;
+
+    bool multisamplingSupported = false;
+    int maxSamples = 1;
+};
+
+/**
+ * \enum TextureUnit
+ * \brief Texture unit values for binding textures
+ *
+ * These enums should be used for indexing textures instead of raw integers.
+ */
+enum TextureUnit
+{
+    TEXTURE_PRIMARY = 0,
+    TEXTURE_SECONDARY = 1,
+    TEXTURE_SHADOW = 2,
+};
 
 /**
  * \enum TransformType
  * \brief Type of transformation in rendering pipeline
- *
- * These correspond to DirectX's three transformation matrices.
  */
 enum TransformType
 {
@@ -119,6 +162,18 @@ enum RenderState
     RENDER_STATE_ALPHA_TEST,
     RENDER_STATE_CULLING,
     RENDER_STATE_DEPTH_BIAS,
+    RENDER_STATE_SHADOW_MAPPING,
+};
+
+/**
+* \enum RenderMode
+* \brief Render modes the graphics device can be in
+*/
+enum RenderMode
+{
+    RENDER_MODE_NORMAL,
+    RENDER_MODE_INTERFACE,
+    RENDER_MODE_SHADOW,
 };
 
 /**
@@ -267,14 +322,36 @@ public:
  */
 class CDevice
 {
+protected:
+    std::string m_errorMessage;
+
+    //! Capabilities of this device
+    //! Should only be changed by code in concrete device implementation
+    DeviceCapabilities m_capabilities;
+
 public:
     virtual ~CDevice() {}
+
+    //! Returns last error message or empty string
+    inline std::string GetError()
+    {
+        return m_errorMessage;
+    }
+
+    //! Returns device capabilities
+    const DeviceCapabilities& GetCapabilities()
+    {
+        return m_capabilities;
+    }
 
     //! Provides a hook to debug graphics code (implementation-specific)
     virtual void DebugHook() = 0;
 
     //! Displays light positions to aid in debuggings
     virtual void DebugLights() = 0;
+
+    //! Returns a name of this device
+    virtual std::string GetName() = 0;
 
     //! Initializes the device, setting the initial state
     virtual bool Create() = 0;
@@ -291,6 +368,9 @@ public:
 
     //! Clears the screen to blank
     virtual void Clear() = 0;
+
+    //! Sets current rendering mode
+    virtual void SetRenderMode(RenderMode mode) = 0;
 
     //! Sets the transform matrix of given type
     virtual void SetTransform(TransformType type, const Math::Matrix &matrix) = 0;
@@ -311,6 +391,8 @@ public:
     virtual Texture CreateTexture(ImageData *data, const TextureCreateParams &params) = 0;
     //! Creates a depth texture with specific dimensions and depth
     virtual Texture CreateDepthTexture(int width, int height, int depth) = 0;
+    //! Updates a part of texture from raw image data
+    virtual void UpdateTexture(const Texture& texture, Math::IntPoint offset, ImageData* data, TexImgFormat format) = 0;
     //! Deletes a given texture, freeing it from video memory
     virtual void DestroyTexture(const Texture &texture) = 0;
     //! Deletes all textures created so far
@@ -342,6 +424,18 @@ public:
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
     //! Renders primitive composed of vertices with solid color
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
+
+    //! Renders primitives composed of lists of vertices with single texture
+    virtual void DrawPrimitives(PrimitiveType type, const Vertex *vertices,
+        int first[], int count[], int drawCount,
+        Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
+    //! Renders primitives composed of lists of vertices with multitexturing (2 textures)
+    virtual void DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
+        int first[], int count[], int drawCount,
+        Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
+    //! Renders primitives composed of lists of vertices with solid color
+    virtual void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
+        int first[], int count[], int drawCount) = 0;
 
     //! Creates a static buffer composed of given primitives with single texture vertices
     virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;

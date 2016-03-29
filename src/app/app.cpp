@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,8 +19,6 @@
 
 #include "app/app.h"
 
-#include "common/config.h"
-
 #include "app/controller.h"
 #include "app/input.h"
 #include "app/system.h"
@@ -32,6 +30,7 @@
 #include "common/make_unique.h"
 #include "common/pathman.h"
 #include "common/stringutils.h"
+#include "common/version.h"
 
 #include "common/resources/resourcemanager.h"
 
@@ -39,9 +38,9 @@
 
 #include "graphics/opengl/glutil.h"
 
-#include "object/object_manager.h"
-
 #include "level/robotmain.h"
+
+#include "object/object_manager.h"
 
 #ifdef OPENAL_SOUND
     #include "sound/oalsound/alsound.h"
@@ -79,8 +78,10 @@ Uint32 JoystickTimerCallback(Uint32 interval, void *);
  */
 struct ApplicationPrivate
 {
-    //! Display surface
-    SDL_Surface *surface;
+    //! Main game window
+    SDL_Window *window;
+    //! Main game OpenGL context
+    SDL_GLContext glcontext;
     //! Currently handled event
     SDL_Event currentEvent;
     //! Mouse motion event to be handled
@@ -89,14 +90,18 @@ struct ApplicationPrivate
     SDL_Joystick *joystick;
     //! Id of joystick timer
     SDL_TimerID joystickTimer;
+    //! Haptic subsystem for the joystick
+    SDL_Haptic *haptic;
 
     ApplicationPrivate()
     {
         SDL_memset(&currentEvent, 0, sizeof(SDL_Event));
         SDL_memset(&lastMouseMotionEvent, 0, sizeof(SDL_Event));
-        surface = nullptr;
+        window = nullptr;
+        glcontext = nullptr;
         joystick = nullptr;
-        joystickTimer = nullptr;
+        joystickTimer = 0;
+        haptic = nullptr;
     }
 };
 
@@ -157,10 +162,6 @@ CApplication::CApplication(CSystemUtils* systemUtils)
     m_resolutionOverride = false;
 
     m_language = LANGUAGE_ENV;
-
-    m_lowCPU = true;
-
-    m_graphics = "opengl";
 }
 
 CApplication::~CApplication()
@@ -203,10 +204,16 @@ CApplication::~CApplication()
         m_private->joystick = nullptr;
     }
 
-    if (m_private->surface != nullptr)
+    if (m_private->glcontext != nullptr)
     {
-        SDL_FreeSurface(m_private->surface);
-        m_private->surface = nullptr;
+        SDL_GL_DeleteContext(m_private->glcontext);
+        m_private->glcontext = nullptr;
+    }
+
+    if (m_private->window != nullptr)
+    {
+        SDL_DestroyWindow(m_private->window);
+        m_private->window = nullptr;
     }
 
     IMG_Quit();
@@ -234,14 +241,15 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_RUNSCENE,
         OPT_SCENETEST,
         OPT_LOGLEVEL,
-        OPT_LANGUAGE,
         OPT_LANGDIR,
         OPT_DATADIR,
         OPT_SAVEDIR,
         OPT_MOD,
         OPT_RESOLUTION,
         OPT_HEADLESS,
-        OPT_DEVICE
+        OPT_DEVICE,
+        OPT_OPENGL_VERSION,
+        OPT_OPENGL_PROFILE
     };
 
     option options[] =
@@ -251,7 +259,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "runscene", required_argument, nullptr, OPT_RUNSCENE },
         { "scenetest", no_argument, nullptr, OPT_SCENETEST },
         { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
-        { "language", required_argument, nullptr, OPT_LANGUAGE },
         { "langdir", required_argument, nullptr, OPT_LANGDIR },
         { "datadir", required_argument, nullptr, OPT_DATADIR },
         { "savedir", required_argument, nullptr, OPT_SAVEDIR },
@@ -259,6 +266,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "resolution", required_argument, nullptr, OPT_RESOLUTION },
         { "headless", no_argument, nullptr, OPT_HEADLESS },
         { "graphics", required_argument, nullptr, OPT_DEVICE },
+        { "glversion", required_argument, nullptr, OPT_OPENGL_VERSION },
+        { "glprofile", required_argument, nullptr, OPT_OPENGL_PROFILE },
         { nullptr, 0, nullptr, 0}
     };
 
@@ -295,14 +304,15 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -runscene sceneNNN  run given scene on start\n");
                 GetLogger()->Message("  -scenetest          win every mission right after it's loaded\n");
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
-                GetLogger()->Message("  -language lang      set language (one of: en, de, fr, pl, ru)\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
                 GetLogger()->Message("  -datadir path       set custom data directory path\n");
                 GetLogger()->Message("  -savedir path       set custom save directory path (must be writable)\n");
                 GetLogger()->Message("  -mod path           load datadir mod from given path\n");
                 GetLogger()->Message("  -resolution WxH     set resolution\n");
                 GetLogger()->Message("  -headless           headless mode - disables graphics, sound and user interaction\n");
-                GetLogger()->Message("  -graphics           changes graphics device (defaults to opengl)\n");
+                GetLogger()->Message("  -graphics           changes graphics device (one of: default, auto, opengl, gl14, gl21, gl33\n");
+                GetLogger()->Message("  -glversion          sets OpenGL context version to use (either default or version in format #.#)\n");
+                GetLogger()->Message("  -glprofile          sets OpenGL context profile to use (one of: default, core, compatibility, opengles)\n");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
@@ -360,19 +370,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->SetLogLevel(logLevel);
                 break;
             }
-            case OPT_LANGUAGE:
-            {
-                Language language;
-                if (! ParseLanguage(optarg, language))
-                {
-                    GetLogger()->Error("Invalid language: '%s'\n", optarg);
-                    return PARSE_ARGS_FAIL;
-                }
-
-                GetLogger()->Info("Using language %s\n", optarg);
-                m_language = language;
-                break;
-            }
             case OPT_DATADIR:
             {
                 m_pathManager->SetDataPath(optarg);
@@ -416,6 +413,62 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             case OPT_DEVICE:
             {
                 m_graphics = optarg;
+                m_graphicsOverride = true;
+                break;
+            }
+            case OPT_OPENGL_VERSION:
+            {
+                if (strcmp(optarg, "default") == 0)
+                {
+                    m_glMajor = -1;
+                    m_glMinor = -1;
+                    m_glVersionOverride = true;
+                }
+                else
+                {
+                    int major = 1, minor = 1;
+
+                    int parsed = sscanf(optarg, "%d.%d", &major, &minor);
+
+                    if (parsed < 2)
+                    {
+                        GetLogger()->Error("Invalid OpenGL version: %s\n", optarg);
+                        return PARSE_ARGS_FAIL;
+                    }
+
+                    m_glMajor = major;
+                    m_glMinor = minor;
+                    m_glVersionOverride = true;
+                }
+                break;
+            }
+            case OPT_OPENGL_PROFILE:
+            {
+                if (strcmp(optarg, "default") == 0)
+                {
+                    m_glProfile = 0;
+                    m_glProfileOverride = true;
+                }
+                else if (strcmp(optarg, "core") == 0)
+                {
+                    m_glProfile = SDL_GL_CONTEXT_PROFILE_CORE;
+                    m_glProfileOverride = true;
+                }
+                else if (strcmp(optarg, "compatibility") == 0)
+                {
+                    m_glProfile = SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
+                    m_glProfileOverride = true;
+                }
+                else if (strcmp(optarg, "opengles") == 0)
+                {
+                    m_glProfile = SDL_GL_CONTEXT_PROFILE_ES;
+                    m_glProfileOverride = true;
+                }
+                else
+                {
+                    GetLogger()->Error("Invalid OpenGL profile: %s\n", optarg);
+                    return PARSE_ARGS_FAIL;
+                }
                 break;
             }
             default:
@@ -429,7 +482,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 bool CApplication::Create()
 {
     std::string path;
-    bool defaultValues = false;
 
     GetLogger()->Info("Creating CApplication\n");
 
@@ -443,31 +495,14 @@ bool CApplication::Create()
 
     if (!GetConfigFile().Init())
     {
-        GetLogger()->Warn("Config not found. Default values will be used!\n");
-        defaultValues = true;
+        GetLogger()->Warn("Config could not be loaded. Default values will be used!\n");
     }
 
-    if (GetConfigFile().GetStringProperty("Language", "Lang", path))
-    {
-        Language language;
-        if (ParseLanguage(path, language))
-        {
-            m_language = language;
-            GetLogger()->Info("Setting language '%s' from ini file\n", path.c_str());
-        }
-        else
-        {
-            GetLogger()->Error("Invalid language '%s' in ini file\n", path.c_str());
-        }
-    }
-
-    SetLanguage(m_language);
-
-    //Create the sound instance.
+    // Create the sound instance.
     #ifdef OPENAL_SOUND
     if (!m_headless)
     {
-        m_sound = MakeUnique<ALSound>();
+        m_sound = MakeUnique<CALSound>();
     }
     else
     {
@@ -480,7 +515,7 @@ bool CApplication::Create()
 
     m_sound->Create();
     m_sound->CacheAll();
-    m_sound->AddMusicFiles();
+    m_sound->CacheCommonMusic();
 
     GetLogger()->Info("CApplication created successfully\n");
 
@@ -507,6 +542,10 @@ bool CApplication::Create()
     {
         GetLogger()->Warn("Joystick subsystem init failed\nJoystick(s) will not be available\n");
     }
+    if (SDL_InitSubSystem(SDL_INIT_HAPTIC) < 0)
+    {
+        GetLogger()->Warn("Joystick haptic subsystem init failed\nForce feedback will not be available\n");
+    }
 
     if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) == 0)
     {
@@ -526,7 +565,7 @@ bool CApplication::Create()
         // GetVideoResolutionList() has to be called here because it is responsible
         // for list of resolutions in options menu, not calling it results in empty list
         std::vector<Math::IntPoint> modes;
-        GetVideoResolutionList(modes, true, true);
+        GetVideoResolutionList(modes);
 
         if ( GetConfigFile().GetStringProperty("Setup", "Resolution", sValue) && !m_resolutionOverride )
         {
@@ -560,7 +599,7 @@ bool CApplication::Create()
         if (! CreateVideoSurface())
             return false; // dialog is in function
 
-        if (m_private->surface == nullptr)
+        if (m_private->window == nullptr)
         {
             m_errorMessage = std::string("SDL error while setting video mode:\n") +
                             std::string(SDL_GetError());
@@ -568,13 +607,7 @@ bool CApplication::Create()
             m_exitCode = 4;
             return false;
         }
-
-        SDL_WM_SetCaption(m_windowTitle.c_str(), m_windowTitle.c_str());
     }
-
-    // Enable translating key codes of key press events to unicode chars
-    SDL_EnableUNICODE(1);
-    SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
@@ -598,11 +631,23 @@ bool CApplication::Create()
 
     if (!m_headless)
     {
-        m_device = Gfx::CreateDevice(m_deviceConfig, m_graphics.c_str());
+        std::string graphics = "default";
+        std::string value;
+
+        if (m_graphicsOverride)
+        {
+            graphics = m_graphics;
+        }
+        else if (GetConfigFile().GetStringProperty("Experimental", "GraphicsDevice", value))
+        {
+            graphics = value;
+        }
+
+        m_device = Gfx::CreateDevice(m_deviceConfig, graphics.c_str());
 
         if (m_device == nullptr)
         {
-            GetLogger()->Error("Unknown graphics device: %s\n", m_graphics.c_str());
+            GetLogger()->Error("Unknown graphics device: %s\n", graphics.c_str());
             GetLogger()->Info("Changing to default device\n");
             m_systemUtils->SystemDialog(SDT_ERROR, "Graphics initialization error", "You have selected invalid graphics device with -graphics switch. Game will use default OpenGL device instead.");
             m_device = Gfx::CreateDevice(m_deviceConfig, "opengl");
@@ -615,7 +660,10 @@ bool CApplication::Create()
 
     if (! m_device->Create() )
     {
-        m_errorMessage = std::string("Error in CDevice::Create()\n") + standardInfoMessage;
+        m_errorMessage = std::string("Error in CDevice::Create()\n")
+            + "\n\n"
+            + m_device->GetError()
+            + standardInfoMessage;
         m_exitCode = 5;
         return false;
     }
@@ -635,7 +683,7 @@ bool CApplication::Create()
     m_eventQueue = MakeUnique<CEventQueue>();
 
     // Create the robot application.
-    m_controller = MakeUnique<CController>(this, !defaultValues);
+    m_controller = MakeUnique<CController>();
 
     if (m_runSceneCategory == LevelCategory::Max)
         m_controller->StartApp();
@@ -651,31 +699,13 @@ bool CApplication::Create()
 
 bool CApplication::CreateVideoSurface()
 {
-    const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
-    if (videoInfo == nullptr)
-    {
-        m_errorMessage = std::string("SDL error while getting video info:\n ") +
-                         std::string(SDL_GetError());
-        GetLogger()->Error(m_errorMessage.c_str());
-        m_exitCode = 7;
-        return false;
-    }
-
-    Uint32 videoFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE;
-
-    // Use hardware surface if available
-    if (videoInfo->hw_available)
-        videoFlags |= SDL_HWSURFACE;
-
-    // Enable hardware blit if available
-    if (videoInfo->blit_hw)
-        videoFlags |= SDL_HWACCEL;
+    Uint32 videoFlags = SDL_WINDOW_OPENGL;
 
     if (m_deviceConfig.fullScreen)
-        videoFlags |= SDL_FULLSCREEN;
+        videoFlags |= SDL_WINDOW_FULLSCREEN;
 
     if (m_deviceConfig.resizeable)
-        videoFlags |= SDL_RESIZABLE;
+        videoFlags |= SDL_WINDOW_RESIZABLE;
 
     // Set OpenGL attributes
 
@@ -685,71 +715,125 @@ bool CApplication::CreateVideoSurface()
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, m_deviceConfig.alphaSize);
 
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, m_deviceConfig.depthSize);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, m_deviceConfig.stencilSize);
 
     if (m_deviceConfig.doubleBuf)
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    std::string value;
+
+    // set OpenGL context version
+    // -glversion switch overrides config settings
+    if (m_glVersionOverride)
+    {
+        if ((m_glMajor >= 0) && (m_glMinor >= 0))
+        {
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, m_glMajor);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, m_glMinor);
+
+            GetLogger()->Info("Requesting OpenGL context version %d.%d\n", m_glMajor, m_glMinor);
+        }
+    }
+    else if (GetConfigFile().GetStringProperty("Experimental", "OpenGLVersion", value))
+    {
+        int major = 1, minor = 1;
+
+        sscanf(value.c_str(), "%d.%d", &major, &minor);
+
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor);
+
+        GetLogger()->Info("Requesting OpenGL context version %d.%d\n", major, minor);
+    }
+
+    // set OpenGL context profile
+    // -glprofile switch overrides config settings
+    int profile = 0;
+
+    if (m_glProfileOverride)
+    {
+        profile = m_glProfile;
+    }
+    else if (GetConfigFile().GetStringProperty("Experimental", "OpenGLProfile", value))
+    {
+        if (value == "core")
+        {
+            profile = SDL_GL_CONTEXT_PROFILE_CORE;
+        }
+        else if (value == "compatibility")
+        {
+            profile = SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
+        }
+        else if (value == "opengles")
+        {
+            profile = SDL_GL_CONTEXT_PROFILE_ES;
+        }
+    }
+
+    if (profile != 0)
+    {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, profile);
+
+        switch (profile)
+        {
+        case SDL_GL_CONTEXT_PROFILE_CORE:
+            GetLogger()->Info("Requesting OpenGL core profile\n");
+            break;
+        case SDL_GL_CONTEXT_PROFILE_COMPATIBILITY:
+            GetLogger()->Info("Requesting OpenGL compatibility profile\n");
+            break;
+        case SDL_GL_CONTEXT_PROFILE_ES:
+            GetLogger()->Info("Requesting OpenGL ES profile\n");
+            break;
+        }
+    }
+
+    int msaa = 0;
+    if (GetConfigFile().GetIntProperty("Experimental", "MSAA", msaa))
+    {
+        if (msaa > 1)
+        {
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa);
+
+            GetLogger()->Info("Using MSAA on default framebuffer (%d samples)\n", msaa);
+        }
+    }
 
     /* If hardware acceleration specifically requested, this will force the hw accel
        and fail with error if not available */
     if (m_deviceConfig.hardwareAccel)
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-    m_private->surface = SDL_SetVideoMode(m_deviceConfig.size.x, m_deviceConfig.size.y,
-                                          m_deviceConfig.bpp, videoFlags);
+    m_private->window = SDL_CreateWindow(m_windowTitle.c_str(),
+                                         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                                         m_deviceConfig.size.x, m_deviceConfig.size.y,
+                                         videoFlags);
+
+    m_private->glcontext = SDL_GL_CreateContext(m_private->window);
+
+    int vsync = 0;
+    if (GetConfigFile().GetIntProperty("Experimental", "VSync", vsync))
+    {
+        SDL_GL_SetSwapInterval(vsync);
+
+        GetLogger()->Info("Using Vsync: %s\n", (vsync ? "true" : "false"));
+    }
 
     return true;
 }
 
 bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
 {
-    static bool restore = false;
-
-    m_lastDeviceConfig = m_deviceConfig;
     m_deviceConfig = newConfig;
 
-
-    SDL_FreeSurface(m_private->surface);
-
-    if (! CreateVideoSurface())
-    {
-        // Fatal error, so post the quit event
-        m_eventQueue->AddEvent(Event(EVENT_SYS_QUIT));
-        return false;
-    }
-
-    if (m_private->surface == nullptr)
-    {
-        if (! restore)
-        {
-            std::string error = std::string("SDL error while setting video mode:\n") +
-                          std::string(SDL_GetError()) + std::string("\n") +
-                          std::string("Previous mode will be restored");
-            GetLogger()->Error(error.c_str());
-            m_systemUtils->SystemDialog( SDT_ERROR, "COLOBOT - Error", error);
-
-            restore = true;
-            ChangeVideoConfig(m_lastDeviceConfig);
-            return false;
-        }
-        else
-        {
-            restore = false;
-
-            std::string error = std::string("SDL error while restoring previous video mode:\n") +
-                          std::string(SDL_GetError());
-            GetLogger()->Error(error.c_str());
-            m_systemUtils->SystemDialog( SDT_ERROR, "COLOBOT - Fatal Error", error);
-
-
-            // Fatal error, so post the quit event
-            m_eventQueue->AddEvent(Event(EVENT_SYS_QUIT));
-            return false;
-        }
-    }
+    // TODO: Somehow this doesn't work for maximized windows (at least on Ubuntu)
+    SDL_SetWindowSize(m_private->window, m_deviceConfig.size.x, m_deviceConfig.size.y);
+    SDL_SetWindowFullscreen(m_private->window, m_deviceConfig.fullScreen ? SDL_WINDOW_FULLSCREEN : 0);
 
     m_device->ConfigChanged(m_deviceConfig);
 
-    m_engine->ResetAfterDeviceChanged();
+    m_engine->ResetAfterVideoConfigChanged();
 
     return true;
 }
@@ -759,6 +843,7 @@ bool CApplication::OpenJoystick()
     if ( (m_joystick.index < 0) || (m_joystick.index >= SDL_NumJoysticks()) )
         return false;
 
+    assert(m_private->joystick == nullptr);
     GetLogger()->Info("Opening joystick %d\n", m_joystick.index);
 
     m_private->joystick = SDL_JoystickOpen(m_joystick.index);
@@ -775,6 +860,20 @@ bool CApplication::OpenJoystick()
     // Create a timer for polling joystick state
     m_private->joystickTimer = SDL_AddTimer(JOYSTICK_TIMER_INTERVAL, JoystickTimerCallback, nullptr);
 
+    // Initialize haptic subsystem
+    m_private->haptic = SDL_HapticOpenFromJoystick(m_private->joystick);
+    if (m_private->haptic == nullptr)
+    {
+        GetLogger()->Warn("Haptic subsystem open failed: %s\n", SDL_GetError());
+        return true;
+    }
+
+    if (SDL_HapticRumbleInit(m_private->haptic) != 0)
+    {
+        GetLogger()->Warn("Haptic rumble effect init failed: %s\n", SDL_GetError());
+        return true;
+    }
+
     return true;
 }
 
@@ -783,6 +882,11 @@ void CApplication::CloseJoystick()
     // Timer will remove itself automatically
 
     GetLogger()->Info("Closing joystick\n");
+
+    StopForceFeedbackEffect();
+
+    SDL_HapticClose(m_private->haptic);
+    m_private->haptic = nullptr;
 
     SDL_JoystickClose(m_private->joystick);
     m_private->joystick = nullptr;
@@ -899,14 +1003,14 @@ int CApplication::Run()
         }
 
         // To be sure no old event remains
-        m_private->currentEvent.type = SDL_NOEVENT;
+        m_private->currentEvent.type = SDL_LASTEVENT;
 
         // Call SDL_PumpEvents() only once here
         // (SDL_PeepEvents() doesn't call it)
         if (m_active)
             SDL_PumpEvents();
 
-        m_private->lastMouseMotionEvent.type = SDL_NOEVENT;
+        m_private->lastMouseMotionEvent.type = SDL_LASTEVENT;
 
         bool haveEvent = true;
         while (haveEvent)
@@ -917,7 +1021,7 @@ int CApplication::Run()
             // Use SDL_PeepEvents() if the app is active, so we can use idle time to
             // render the scene. Else, use SDL_WaitEvent() to avoid eating CPU time.
             if (m_active)
-                count = SDL_PeepEvents(&m_private->currentEvent, 1, SDL_GETEVENT, SDL_ALLEVENTS);
+                count = SDL_PeepEvents(&m_private->currentEvent, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT);
             else
                 count = SDL_WaitEvent(&m_private->currentEvent);
 
@@ -949,7 +1053,7 @@ int CApplication::Run()
         }
 
         // Now, process the last received mouse motion
-        if (m_private->lastMouseMotionEvent.type != SDL_NOEVENT)
+        if (m_private->lastMouseMotionEvent.type != SDL_LASTEVENT)
         {
             m_private->currentEvent = m_private->lastMouseMotionEvent;
 
@@ -1016,11 +1120,6 @@ int CApplication::Run()
             StopPerformanceCounter(PCNT_ALL);
 
             UpdatePerformanceCountersData();
-
-            if (m_lowCPU)
-            {
-                m_systemUtils->Usleep(20000); // should still give plenty of fps
-            }
         }
     }
 
@@ -1048,13 +1147,36 @@ Event CApplication::ProcessSystemEvent()
     {
         event.type = EVENT_SYS_QUIT;
     }
-    else if (m_private->currentEvent.type == SDL_VIDEORESIZE)
+    else if (m_private->currentEvent.type == SDL_WINDOWEVENT)
     {
-        Gfx::DeviceConfig newConfig = m_deviceConfig;
-        newConfig.size.x = m_private->currentEvent.resize.w;
-        newConfig.size.y = m_private->currentEvent.resize.h;
-        if (newConfig.size != m_deviceConfig.size)
-            ChangeVideoConfig(newConfig);
+        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+        {
+            Gfx::DeviceConfig newConfig = m_deviceConfig;
+            newConfig.size.x = m_private->currentEvent.window.data1;
+            newConfig.size.y = m_private->currentEvent.window.data2;
+            if (newConfig.size != m_deviceConfig.size)
+                ChangeVideoConfig(newConfig);
+        }
+
+        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_ENTER)
+        {
+            event.type = EVENT_MOUSE_ENTER;
+        }
+
+        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_LEAVE)
+        {
+            event.type = EVENT_MOUSE_LEAVE;
+        }
+
+        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+        {
+            event.type = EVENT_FOCUS_GAINED;
+        }
+
+        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+        {
+            event.type = EVENT_FOCUS_LOST;
+        }
     }
     else if ( (m_private->currentEvent.type == SDL_KEYDOWN) ||
               (m_private->currentEvent.type == SDL_KEYUP) )
@@ -1068,7 +1190,6 @@ Event CApplication::ProcessSystemEvent()
 
         data->virt = false;
         data->key = m_private->currentEvent.key.keysym.sym;
-        data->unicode = m_private->currentEvent.key.keysym.unicode;
         event.kmodState = m_private->currentEvent.key.keysym.mod;
 
         // Some keyboards return numerical enter keycode instead of normal enter
@@ -1079,47 +1200,42 @@ Event CApplication::ProcessSystemEvent()
         if (data->key == KEY(TAB) && ((event.kmodState & KEY_MOD(ALT)) != 0))
         {
             GetLogger()->Debug("Minimize to taskbar\n");
-            SDL_WM_IconifyWindow();
+            SDL_MinimizeWindow(m_private->window);
             event.type = EVENT_NULL;
         }
+
+        event.data = std::move(data);
+    }
+    else if (m_private->currentEvent.type == SDL_TEXTINPUT)
+    {
+        event.type = EVENT_TEXT_INPUT;
+        auto data = MakeUnique<TextInputData>();
+        data->text = m_private->currentEvent.text.text;
+        event.data = std::move(data);
+    }
+    else if (m_private->currentEvent.type == SDL_MOUSEWHEEL)
+    {
+        event.type = EVENT_MOUSE_WHEEL;
+
+        auto data = MakeUnique<MouseWheelEventData>();
+        data->y = m_private->currentEvent.wheel.y;
+        data->x = m_private->currentEvent.wheel.x;
 
         event.data = std::move(data);
     }
     else if ( (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) ||
          (m_private->currentEvent.type == SDL_MOUSEBUTTONUP) )
     {
-        if ((m_private->currentEvent.button.button == SDL_BUTTON_WHEELUP) ||
-            (m_private->currentEvent.button.button == SDL_BUTTON_WHEELDOWN))
-        {
+        auto data = MakeUnique<MouseButtonEventData>();
 
-            if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) // ignore the following up event
-            {
-                event.type = EVENT_MOUSE_WHEEL;
-
-                auto data = MakeUnique<MouseWheelEventData>();
-
-                if (m_private->currentEvent.button.button == SDL_BUTTON_WHEELDOWN)
-                    data->dir = WHEEL_DOWN;
-                else
-                    data->dir = WHEEL_UP;
-
-                event.data = std::move(data);
-            }
-
-        }
+        if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN)
+            event.type = EVENT_MOUSE_BUTTON_DOWN;
         else
-        {
-            auto data = MakeUnique<MouseButtonEventData>();
+            event.type = EVENT_MOUSE_BUTTON_UP;
 
-            if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN)
-                event.type = EVENT_MOUSE_BUTTON_DOWN;
-            else
-                event.type = EVENT_MOUSE_BUTTON_UP;
+        data->button = static_cast<MouseButton>(1 << m_private->currentEvent.button.button);
 
-            data->button = static_cast<MouseButton>(1 << m_private->currentEvent.button.button);
-
-            event.data = std::move(data);
-        }
+        event.data = std::move(data);
     }
     else if (m_private->currentEvent.type == SDL_MOUSEMOTION)
     {
@@ -1148,23 +1264,6 @@ Event CApplication::ProcessSystemEvent()
         data->button = m_private->currentEvent.jbutton.button;
         event.data = std::move(data);
     }
-    else if (m_private->currentEvent.type == SDL_ACTIVEEVENT)
-    {
-        event.type = EVENT_ACTIVE;
-
-        auto data = MakeUnique<ActiveEventData>();
-
-        if (m_private->currentEvent.active.type & SDL_APPINPUTFOCUS)
-            data->flags |= ACTIVE_INPUT;
-        if (m_private->currentEvent.active.type & SDL_APPMOUSEFOCUS)
-            data->flags |= ACTIVE_MOUSE;
-        if (m_private->currentEvent.active.type & SDL_APPACTIVE)
-            data->flags |= ACTIVE_APP;
-
-        data->gain = m_private->currentEvent.active.gain == 1;
-
-        event.data = std::move(data);
-    }
 
     return event;
 }
@@ -1183,11 +1282,17 @@ void CApplication::LogEvent(const Event &event)
     };
 
     // Print the events in debug mode to test the code
-    if (IsDebugModeActive(DEBUG_SYS_EVENTS) || IsDebugModeActive(DEBUG_APP_EVENTS))
+    if (IsDebugModeActive(DEBUG_SYS_EVENTS) || IsDebugModeActive(DEBUG_UPDATE_EVENTS) || IsDebugModeActive(DEBUG_APP_EVENTS))
     {
         std::string eventType = ParseEventType(event.type);
 
-        if (IsDebugModeActive(DEBUG_SYS_EVENTS) && event.type <= EVENT_SYS_MAX)
+        if (IsDebugModeActive(DEBUG_UPDATE_EVENTS) && event.type == EVENT_FRAME)
+        {
+            l->Trace("Update event: %s\n", eventType.c_str());
+            PrintEventDetails();
+        }
+
+        if (IsDebugModeActive(DEBUG_SYS_EVENTS) && (event.type <= EVENT_SYS_MAX && event.type != EVENT_FRAME))
         {
             l->Trace("System event %s:\n", eventType.c_str());
             switch (event.type)
@@ -1198,7 +1303,12 @@ void CApplication::LogEvent(const Event &event)
                     auto data = event.GetData<KeyEventData>();
                     l->Trace(" virt    = %s\n", data->virt ? "true" : "false");
                     l->Trace(" key     = %d\n", data->key);
-                    l->Trace(" unicode = 0x%04x\n", data->unicode);
+                    break;
+                }
+                case EVENT_TEXT_INPUT:
+                {
+                    auto data = event.GetData<TextInputData>();
+                    l->Trace(" text = %s\n", data->text.c_str());
                     break;
                 }
                 case EVENT_MOUSE_BUTTON_DOWN:
@@ -1211,7 +1321,8 @@ void CApplication::LogEvent(const Event &event)
                 case EVENT_MOUSE_WHEEL:
                 {
                     auto data = event.GetData<MouseWheelEventData>();
-                    l->Trace(" dir = %s\n", (data->dir == WHEEL_DOWN) ? "WHEEL_DOWN" : "WHEEL_UP");
+                    l->Trace(" y = %d\n", data->y);
+                    l->Trace(" x = %d\n", data->x);
                     break;
                 }
                 case EVENT_JOY_AXIS:
@@ -1226,13 +1337,6 @@ void CApplication::LogEvent(const Event &event)
                 {
                     auto data = event.GetData<JoyButtonEventData>();
                     l->Trace(" button = %d\n", data->button);
-                    break;
-                }
-                case EVENT_ACTIVE:
-                {
-                    auto data = event.GetData<ActiveEventData>();
-                    l->Trace(" flags = 0x%x\n", data->flags);
-                    l->Trace(" gain  = %s\n", data->gain ? "true" : "false");
                     break;
                 }
                 default:
@@ -1287,7 +1391,6 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
         auto data = MakeUnique<KeyEventData>();
         data->virt = true;
         data->key = VIRTUAL_JOY(sourceData->button);
-        data->unicode = 0;
         virtualEvent.data = std::move(data);
     }
     else
@@ -1307,7 +1410,7 @@ void CApplication::Render()
 
     StartPerformanceCounter(PCNT_SWAP_BUFFERS);
     if (m_deviceConfig.doubleBuf)
-        SDL_GL_SwapBuffers();
+        SDL_GL_SwapWindow(m_private->window);
     StopPerformanceCounter(PCNT_SWAP_BUFFERS);
 }
 
@@ -1447,47 +1550,19 @@ Gfx::DeviceConfig CApplication::GetVideoConfig() const
     return m_deviceConfig;
 }
 
-VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions,
-                                                      bool fullScreen, bool resizeable) const
+void CApplication::GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions, int display) const
 {
     resolutions.clear();
 
-    const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
-    if (videoInfo == nullptr)
-        return VIDEO_QUERY_ERROR;
+    for(int i = 0; i < SDL_GetNumDisplayModes(display); i++)
+    {
+        SDL_DisplayMode mode;
+        SDL_GetDisplayMode(display, i, &mode);
+        Math::IntPoint resolution = Math::IntPoint(mode.w, mode.h);
 
-    Uint32 videoFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE;
-
-    // Use hardware surface if available
-    if (videoInfo->hw_available)
-        videoFlags |= SDL_HWSURFACE;
-    else
-        videoFlags |= SDL_SWSURFACE;
-
-    // Enable hardware blit if available
-    if (videoInfo->blit_hw)
-        videoFlags |= SDL_HWACCEL;
-
-    if (resizeable)
-        videoFlags |= SDL_RESIZABLE;
-
-    if (fullScreen)
-        videoFlags |= SDL_FULLSCREEN;
-
-
-    SDL_Rect **modes = SDL_ListModes(nullptr, videoFlags);
-
-    if (modes == reinterpret_cast<SDL_Rect **>(0) )
-        return VIDEO_QUERY_NONE; // no modes available
-
-    if (modes == reinterpret_cast<SDL_Rect **>(-1) )
-        return VIDEO_QUERY_ALL; // all resolutions are possible
-
-
-    for (int i = 0; modes[i] != nullptr; ++i)
-        resolutions.push_back(Math::IntPoint(modes[i]->w, modes[i]->h));
-
-    return VIDEO_QUERY_OK;
+        if (std::find(resolutions.begin(), resolutions.end(), resolution) == resolutions.end())
+            resolutions.push_back(resolution);
+    }
 }
 
 void CApplication::SetDebugModeActive(DebugMode mode, bool active)
@@ -1515,6 +1590,10 @@ bool CApplication::ParseDebugModes(const std::string& str, int& debugModes)
         {
             debugModes |= DEBUG_SYS_EVENTS;
         }
+        else if (modeToken == "update_events")
+        {
+            debugModes |= DEBUG_UPDATE_EVENTS;
+        }
         else if (modeToken == "app_events")
         {
             debugModes |= DEBUG_APP_EVENTS;
@@ -1541,17 +1620,6 @@ bool CApplication::ParseDebugModes(const std::string& str, int& debugModes)
     return true;
 }
 
-void CApplication::SetGrabInput(bool grab)
-{
-    SDL_WM_GrabInput(grab ? SDL_GRAB_ON : SDL_GRAB_OFF);
-}
-
-bool CApplication::GetGrabInput() const
-{
-    int result = SDL_WM_GrabInput(SDL_GRAB_QUERY);
-    return result == SDL_GRAB_ON;
-}
-
 void CApplication::SetMouseMode(MouseMode mode)
 {
     m_mouseMode = mode;
@@ -1570,7 +1638,7 @@ void CApplication::MoveMouse(Math::Point pos)
 {
     Math::IntPoint windowPos = m_engine->InterfaceToWindowCoords(pos);
     m_input->MouseMove(windowPos);
-    SDL_WarpMouse(windowPos.x, windowPos.y);
+    SDL_WarpMouseInWindow(m_private->window, windowPos.x, windowPos.y);
 }
 
 std::vector<JoystickDevice> CApplication::GetJoystickList() const
@@ -1583,7 +1651,7 @@ std::vector<JoystickDevice> CApplication::GetJoystickList() const
     {
         JoystickDevice device;
         device.index = index;
-        device.name = SDL_JoystickName(index);
+        device.name = SDL_JoystickNameForIndex(index);
         result.push_back(device);
     }
 
@@ -1652,76 +1720,26 @@ char CApplication::GetLanguageChar() const
     return langChar;
 }
 
-bool CApplication::ParseLanguage(const std::string& str, Language& language)
-{
-    if (str == "en")
-    {
-        language = LANGUAGE_ENGLISH;
-        return true;
-    }
-    else if (str == "de")
-    {
-        language = LANGUAGE_GERMAN;
-        return true;
-    }
-    else if (str == "fr")
-    {
-        language = LANGUAGE_FRENCH;
-        return true;
-    }
-    else if (str == "pl")
-    {
-        language = LANGUAGE_POLISH;
-        return true;
-    }
-    else if (str == "ru")
-    {
-        language = LANGUAGE_RUSSIAN;
-        return true;
-    }
-
-    return false;
-}
-
 void CApplication::SetLanguage(Language language)
 {
     m_language = language;
 
     /* Gettext initialization */
 
-    std::string locale = "";
-    switch (m_language)
+    static char envLang[50] = { 0 };
+    if (envLang[0] == 0)
     {
-        default:
-        case LANGUAGE_ENV:
-            locale = "";
-            break;
-
-        case LANGUAGE_ENGLISH:
-            locale = "en_US.utf8";
-            break;
-
-        case LANGUAGE_GERMAN:
-            locale = "de_DE.utf8";
-            break;
-
-        case LANGUAGE_FRENCH:
-            locale = "fr_FR.utf8";
-            break;
-
-        case LANGUAGE_POLISH:
-            locale = "pl_PL.utf8";
-            break;
-
-        case LANGUAGE_RUSSIAN:
-            locale = "ru_RU.utf8";
-            break;
+        // Get this only at the first call, since this code modifies it
+        const char* currentEnvLang = gl_locale_name(LC_MESSAGES, "LC_MESSAGES");
+        if (currentEnvLang != nullptr)
+        {
+            strcpy(envLang, currentEnvLang);
+        }
     }
 
-    if (locale.empty())
+    if (language == LANGUAGE_ENV)
     {
-        const char* envLang = gl_locale_name(LC_MESSAGES, "LC_MESSAGES");
-        if (envLang == nullptr)
+        if (envLang[0] == 0)
         {
             GetLogger()->Error("Failed to get language from environment, setting default language\n");
             m_language = LANGUAGE_ENGLISH;
@@ -1757,14 +1775,40 @@ void CApplication::SetLanguage(Language language)
             }
         }
     }
-    else
+
+    std::string locale = "";
+    switch (m_language)
     {
-        std::string langStr = "LANGUAGE=";
-        langStr += locale;
-        strcpy(m_languageLocale, langStr.c_str());
-        putenv(m_languageLocale);
-        GetLogger()->Trace("SetLanguage: Set LANGUAGE=%s in environment\n", locale.c_str());
+        default:
+            locale = "";
+            break;
+
+        case LANGUAGE_ENGLISH:
+            locale = "en_US.utf8";
+            break;
+
+        case LANGUAGE_GERMAN:
+            locale = "de_DE.utf8";
+            break;
+
+        case LANGUAGE_FRENCH:
+            locale = "fr_FR.utf8";
+            break;
+
+        case LANGUAGE_POLISH:
+            locale = "pl_PL.utf8";
+            break;
+
+        case LANGUAGE_RUSSIAN:
+            locale = "ru_RU.utf8";
+            break;
     }
+
+    std::string langStr = "LANGUAGE=";
+    langStr += locale;
+    strcpy(m_languageLocale, langStr.c_str());
+    putenv(m_languageLocale);
+    GetLogger()->Trace("SetLanguage: Set LANGUAGE=%s in environment\n", locale.c_str());
 
     char* defaultLocale = setlocale(LC_ALL, ""); // Load system locale
     GetLogger()->Debug("Default system locale: %s\n", defaultLocale);
@@ -1798,16 +1842,6 @@ void CApplication::SetLanguage(Language language)
     textdomain("colobot");
 
     GetLogger()->Debug("SetLanguage: Test gettext translation: '%s'\n", gettext("Colobot rules!"));
-}
-
-void CApplication::SetLowCPU(bool low)
-{
-    m_lowCPU = low;
-}
-
-bool CApplication::GetLowCPU() const
-{
-    return m_lowCPU;
 }
 
 void CApplication::StartPerformanceCounter(PerformanceCounter counter)
@@ -1852,4 +1886,33 @@ void CApplication::UpdatePerformanceCountersData()
 bool CApplication::GetSceneTestMode()
 {
     return m_sceneTest;
+}
+
+void CApplication::SetTextInput(bool textInputEnabled)
+{
+    if (textInputEnabled)
+    {
+        SDL_StartTextInput();
+    }
+    else
+    {
+        SDL_StopTextInput();
+    }
+}
+
+void CApplication::PlayForceFeedbackEffect(float strength, int length)
+{
+    if (m_private->haptic == nullptr) return;
+
+    GetLogger()->Trace("Force feedback! length = %d ms, strength = %.2f\n", length, strength);
+    if (SDL_HapticRumblePlay(m_private->haptic, strength, length) != 0)
+    {
+        GetLogger()->Debug("Failed to play haptic effect: %s\n", SDL_GetError());
+    }
+}
+
+void CApplication::StopForceFeedbackEffect()
+{
+    if (m_private->haptic == nullptr) return;
+    SDL_HapticRumbleStop(m_private->haptic);
 }

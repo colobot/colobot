@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,6 +19,8 @@
 
 
 #include "script/script.h"
+
+#include "CBot/CBot.h"
 
 #include "common/restext.h"
 #include "common/stringutils.h"
@@ -41,7 +43,6 @@
 #include "ui/controls/edit.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/list.h"
-
 
 
 const int CBOT_IPF = 100;       // CBOT: default number of instructions / frame
@@ -155,50 +156,37 @@ bool CScript::IsEmpty()
 
 bool CScript::CheckToken()
 {
-    CBotToken*  bt;
-    CBotToken*  allBt;
-    CBotString  bs;
-    const char* token;
-    int         error, cursor1, cursor2, i;
-    char        used[100];
-
     if ( !m_object->GetCheckToken() )  return true;
 
-    m_error = 0;
+    m_error = CBot::CBotNoErr;
     m_title[0] = 0;
     m_mainFunction[0] = 0;
     m_token[0] = 0;
     m_bCompile = false;
 
-    for ( i=0 ; i<m_main->GetObligatoryToken() ; i++ )
-    {
-        used[i] = 0;  // token not used
-    }
+    std::vector<bool> used(m_main->GetObligatoryToken(), false);
 
-    allBt = CBotToken::CompileTokens(m_script.get(), error);
-    bt = allBt;
+    auto tokens = CBot::CBotToken::CompileTokens(m_script.get());
+    CBot::CBotToken* bt = tokens.get();
     while ( bt != nullptr )
     {
-        bs = bt->GetString();
-        token = bs;
+        std::string token = bt->GetString();
+        int cursor1 = bt->GetStart();
+        int cursor2 = bt->GetEnd();
 
-        cursor1 = bt->GetStart();
-        cursor2 = bt->GetEnd();
-
-        i = m_main->IsObligatoryToken(token);
+        int i = m_main->IsObligatoryToken(token.c_str());
         if ( i != -1 )
         {
-            used[i] = 1;  // token used
+            used[i] = true;  // token used
         }
 
-        if ( !m_main->IsProhibitedToken(token) )
+        if ( !m_main->IsProhibitedToken(token.c_str()) )
         {
-            m_error = ERR_PROHIBITEDTOKEN;
+            m_error = static_cast<CBot::CBotError>(ERR_PROHIBITEDTOKEN);
             m_cursor1 = cursor1;
             m_cursor2 = cursor2;
             strcpy(m_title, "<prohibited>");
             m_mainFunction[0] = 0;
-            CBotToken::Delete(allBt);
             return false;
         }
 
@@ -206,20 +194,18 @@ bool CScript::CheckToken()
     }
 
     // At least once every obligatory instruction?
-    for ( i=0 ; i<m_main->GetObligatoryToken() ; i++ )
+    for (unsigned int i = 0; i < used.size(); i++)
     {
-        if ( used[i] == 0 )  // token not used?
+        if (!used[i])  // token not used?
         {
             strcpy(m_token, m_main->GetObligatoryToken(i));
-            m_error = ERR_OBLIGATORYTOKEN;
+            m_error = static_cast<CBot::CBotError>(ERR_OBLIGATORYTOKEN);
             strcpy(m_title, "<obligatory>");
             m_mainFunction[0] = 0;
-            CBotToken::Delete(allBt);
             return false;
         }
     }
 
-    CBotToken::Delete(allBt);
     return true;
 }
 
@@ -227,11 +213,11 @@ bool CScript::CheckToken()
 
 bool CScript::Compile()
 {
-    CBotStringArray liste;
+    std::vector<std::string> functionList;
     int             i;
-    const char*     p;
+    std::string     p;
 
-    m_error = 0;
+    m_error = CBot::CBotNoErr;
     m_cursor1 = 0;
     m_cursor2 = 0;
     m_title[0] = 0;
@@ -246,19 +232,19 @@ bool CScript::Compile()
 
     if (m_botProg == nullptr)
     {
-        m_botProg = MakeUnique<CBotProgram>(m_object->GetBotVar());
+        m_botProg = MakeUnique<CBot::CBotProgram>(m_object->GetBotVar());
     }
 
-    if ( m_botProg->Compile(m_script.get(), liste, this) )
+    if ( m_botProg->Compile(m_script.get(), functionList, this) )
     {
-        if ( liste.GetSize() == 0 )
+        if (functionList.empty())
         {
             strcpy(m_title, "<extern missing>");
             m_mainFunction[0] = 0;
         }
         else
         {
-            p = liste[0];
+            p = functionList[0];
             i = 0;
             bool titleDone = false;
             while ( true )
@@ -485,8 +471,7 @@ bool CScript::IsContinue()
 
 bool CScript::GetCursor(int &cursor1, int &cursor2)
 {
-    const char* funcName;
-
+    std::string funcName;
     cursor1 = cursor2 = 0;
 
     if (m_botProg == nullptr)  return false;
@@ -505,85 +490,71 @@ bool CScript::GetCursor(int &cursor1, int &cursor2)
 
 // Put of the variables in a list.
 
-void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, int &rankList)
+void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var, Ui::CList *list, int &rankList, std::set<CBot::CBotVar*>& previous)
 {
-    CBotString  bs;
-    CBotVar     *svar, *pStatic;
-    char        varName[100];
-    char        buffer[100];
-    const char  *p;
-    int         index, type;
-
-    if ( var == nullptr && baseName[0] != 0 )
+    if ( var == nullptr && !baseName.empty() )
     {
-        sprintf(buffer, "%s = null;", baseName);
-        list->SetItemName(rankList++, buffer);
+        list->SetItemName(rankList++, StrUtils::Format("%s = null;", baseName.c_str()).c_str());
         return;
     }
 
-    index = 0;
-    while ( var != nullptr )
+    int index = 0;
+    while (var != nullptr)
     {
-        var->Maj(nullptr, false);
-        pStatic = var->GetStaticVar();  // finds the static element
+        var->Update(nullptr);
+        CBot::CBotVar* pStatic = var->GetStaticVar();  // finds the static element
 
-        bs = pStatic->GetName();  // variable name
-        p = bs;
-//?     if ( strcmp(p, "this") == 0 )
-//?     {
-//?         var = var->GetNext();
-//?         continue;
-//?     }
-
-        if ( baseName[0] == 0 )
+        std::string varName;
+        if (baseName.empty())
         {
-            sprintf(varName, "%s", p);
+            varName = StrUtils::Format("%s", pStatic->GetName().c_str());
         }
         else
         {
-            if ( bArray )
+            if (bArray)
             {
-                sprintf(varName, "%s[%d]", baseName, index);
+                varName = StrUtils::Format("%s[%d]", baseName.c_str(), index);
             }
             else
             {
-                sprintf(varName, "%s.%s", baseName, p);
+                varName = StrUtils::Format("%s.%s", baseName.c_str(), pStatic->GetName().c_str());
             }
         }
 
-        type = pStatic->GetType();
-
-        if ( type < CBotTypBoolean )
+        if (previous.find(pStatic) != previous.end())
         {
-            CBotString  value;
-            value = pStatic->GetValString();
-            p = value;
-            sprintf(buffer, "%s = %s;", varName, p);
-            list->SetItemName(rankList++, buffer);
-        }
-        else if ( type == CBotTypString )
-        {
-            CBotString  value;
-            value = pStatic->GetValString();
-            p = value;
-            sprintf(buffer, "%s = \"%s\";", varName, p);
-            list->SetItemName(rankList++, buffer);
-        }
-        else if ( type == CBotTypArrayPointer )
-        {
-            svar = pStatic->GetItemList();
-            PutList(varName, true, svar, list, rankList);
-        }
-        else if ( type == CBotTypClass   ||
-                  type == CBotTypPointer )
-        {
-            svar = pStatic->GetItemList();
-            PutList(varName, false, svar, list, rankList);
+            list->SetItemName(rankList++, StrUtils::Format("%s = [circular reference]", varName.c_str()));
         }
         else
         {
-            sprintf(buffer, "%s = ?;", varName);
-            list->SetItemName(rankList++, buffer);
+            int type = pStatic->GetType();
+
+            if (type <= CBot::CBotTypBoolean)
+            {
+                list->SetItemName(rankList++, StrUtils::Format("%s = %s;", varName.c_str(), pStatic->GetValString().c_str()));
+            }
+            else if (type == CBot::CBotTypString)
+            {
+                list->SetItemName(rankList++, StrUtils::Format("%s = \"%s\";", varName.c_str(), pStatic->GetValString().c_str()));
+            }
+            else if (type == CBot::CBotTypArrayPointer)
+            {
+                previous.insert(pStatic);
+                PutList(varName, true, pStatic->GetItemList(), list, rankList, previous);
+                previous.erase(pStatic);
+            }
+            else if (type == CBot::CBotTypClass ||
+                     type == CBot::CBotTypPointer)
+            {
+                previous.insert(pStatic);
+                PutList(varName, false, pStatic->GetItemList(), list, rankList, previous);
+                previous.erase(pStatic);
+            }
+            else
+            {
+                //list->SetItemName(rankList++, StrUtils::Format("%s = ?;", varName.c_str()));
+                assert(false);
+            }
         }
 
         index ++;
@@ -595,8 +566,8 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
 
 void CScript::UpdateList(Ui::CList* list)
 {
-    CBotVar     *var;
-    const char  *progName, *funcName;
+    CBot::CBotVar     *var;
+    std::string progName, funcName;
     int         total, select, level, cursor1, cursor2, rank;
 
     if (m_botProg == nullptr) return;
@@ -606,17 +577,19 @@ void CScript::UpdateList(Ui::CList* list)
 
     list->Flush();  // empty list
     m_botProg->GetRunPos(progName, cursor1, cursor2);
-    if ( progName == nullptr )  return;
+    if ( progName.empty() )  return;
 
     level = 0;
     rank  = 0;
+    std::set<CBot::CBotVar*> previous;
     while ( true )
     {
         var = m_botProg->GetStackVars(funcName, level--);
         if ( funcName != progName )  break;
 
-        PutList("", false, var, list, rank);
+        PutList("", false, var, list, rank, previous);
     }
+    assert(previous.empty());
 
     if ( total == list->GetTotal() )  // same total?
     {
@@ -641,12 +614,11 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
     std::string text = std::string(edit->GetText(), edit->GetMaxChar());
     text = text.substr(rangeStart, rangeEnd-rangeStart);
 
-    int error;
-    CBotToken* bt = CBotToken::CompileTokens(text.c_str(), error);
+    auto tokens = CBot::CBotToken::CompileTokens(text.c_str());
+    CBot::CBotToken* bt = tokens.get();
     while ( bt != nullptr )
     {
-        CBotString bs = bt->GetString();
-        const char* token = bs;
+        std::string token = bt->GetString();
         int type = bt->GetType();
 
         int cursor1 = bt->GetStart();
@@ -658,35 +630,31 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
         cursor2 += rangeStart;
 
         Gfx::FontHighlight color = Gfx::FONT_HIGHLIGHT_NONE;
-        if ((type == TokenTypVar || (type >= TokenKeyWord && type < TokenKeyWord+100)) && IsType(token)) // types (basic types are TokenKeyWord, classes are TokenTypVar)
+        if ((type == CBot::TokenTypVar || (type >= CBot::TokenKeyWord && type < CBot::TokenKeyWord+100)) && IsType(token.c_str())) // types (basic types are TokenKeyWord, classes are TokenTypVar)
         {
             color = Gfx::FONT_HIGHLIGHT_TYPE;
         }
-        else if (type == TokenTypVar && IsFunction(token)) // functions
+        else if (type == CBot::TokenTypVar && IsFunction(token.c_str())) // functions
         {
             color = Gfx::FONT_HIGHLIGHT_TOKEN;
         }
-        else if (type == TokenTypVar && strcmp(token, "this") == 0) // this
+        else if (type == CBot::TokenTypVar && (token == "this" || token == "super")) // this, super
         {
             color = Gfx::FONT_HIGHLIGHT_THIS;
         }
-        else if (type >= TokenKeyWord && type < TokenKeyWord+100) // builtin keywords
+        else if (type >= CBot::TokenKeyWord && type < CBot::TokenKeyWord+100) // builtin keywords
         {
             color = Gfx::FONT_HIGHLIGHT_KEYWORD;
         }
-        else if (type >= TokenKeyDeclare && type < TokenKeyDeclare+100) // TODO: no idea :P seems to never happen
-        {
-            color = Gfx::FONT_HIGHLIGHT_TYPE;
-        }
-        else if (type >= TokenKeyVal && type < TokenKeyVal+100) // true, false, null, nan
+        else if (type >= CBot::TokenKeyVal && type < CBot::TokenKeyVal+100) // true, false, null, nan
         {
             color = Gfx::FONT_HIGHLIGHT_CONST;
         }
-        else if (type == TokenTypDef) // constants (object types etc.)
+        else if (type == CBot::TokenTypDef) // constants (object types etc.)
         {
             color = Gfx::FONT_HIGHLIGHT_CONST;
         }
-        else if (type == TokenTypString || type == TokenTypNum) // string literals and numbers
+        else if (type == CBot::TokenTypString || type == CBot::TokenTypNum) // string literals and numbers
         {
             color = Gfx::FONT_HIGHLIGHT_STRING;
         }
@@ -696,8 +664,6 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
 
         bt = bt->GetNext();
     }
-
-    CBotToken::Delete(bt);
 }
 
 
@@ -822,7 +788,7 @@ void CScript::GetError(std::string& error)
     }
     else
     {
-        if ( m_error == ERR_OBLIGATORYTOKEN )
+        if ( m_error == static_cast<CBot::CBotError>(ERR_OBLIGATORYTOKEN) )
         {
             std::string s;
             GetResource(RES_ERR, m_error, s);
@@ -848,7 +814,6 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     char    text[100];
     char    script[500];
     char    buffer[500];
-    char    *sf;
     int     cursor1, cursor2, len, i, j;
 
     std::string resStr;
@@ -883,12 +848,11 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     edit->ShowSelect();
     m_interface->SetFocus(edit);
 
-    sf = m_main->GetScriptFile();
-    if ( sf[0] != 0 )  // Load an empty program specific?
+    std::string sf = m_main->GetScriptFile();
+    if ( !sf.empty() )  // Load an empty program specific?
     {
-        std::string filename = sf;
         CInputStream stream;
-        stream.open(filename);
+        stream.open(sf);
 
         if (stream.is_open())
         {
@@ -1015,9 +979,9 @@ bool CScript::ReadStack(FILE *file)
 {
     int     nb;
 
-    fRead(&nb, sizeof(int), 1, file);
-    fRead(&m_ipf, sizeof(int), 1, file);
-    fRead(&m_errMode, sizeof(int), 1, file);
+    CBot::fRead(&nb, sizeof(int), 1, file);
+    CBot::fRead(&m_ipf, sizeof(int), 1, file);
+    CBot::fRead(&m_errMode, sizeof(int), 1, file);
 
     if (m_botProg == nullptr) return false;
     if ( !m_botProg->RestoreState(file) )  return false;
@@ -1034,9 +998,9 @@ bool CScript::WriteStack(FILE *file)
     int     nb;
 
     nb = 2;
-    fWrite(&nb, sizeof(int), 1, file);
-    fWrite(&m_ipf, sizeof(int), 1, file);
-    fWrite(&m_errMode, sizeof(int), 1, file);
+    CBot::fWrite(&nb, sizeof(int), 1, file);
+    CBot::fWrite(&m_ipf, sizeof(int), 1, file);
+    CBot::fWrite(&m_errMode, sizeof(int), 1, file);
 
     return m_botProg->SaveState(file);
 }

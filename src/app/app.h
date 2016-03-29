@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -72,18 +72,6 @@ struct JoystickDevice
 };
 
 /**
- * \enum VideoQueryResult
- * \brief Result of querying for available video resolutions
- */
-enum VideoQueryResult
-{
-    VIDEO_QUERY_ERROR,
-    VIDEO_QUERY_NONE,
-    VIDEO_QUERY_ALL,
-    VIDEO_QUERY_OK
-};
-
-/**
  * \enum ParseArgsStatus
  * \brief State of parsing commandline arguments
  */
@@ -137,9 +125,10 @@ enum PerformanceCounter
 enum DebugMode
 {
     DEBUG_SYS_EVENTS = 1 << 0,
-    DEBUG_APP_EVENTS = 1 << 1,
-    DEBUG_EVENTS     = DEBUG_SYS_EVENTS | DEBUG_APP_EVENTS,
-    DEBUG_MODELS     = 1 << 2,
+    DEBUG_UPDATE_EVENTS = 1 << 1,
+    DEBUG_APP_EVENTS = 1 << 2,
+    DEBUG_EVENTS     = DEBUG_SYS_EVENTS | DEBUG_UPDATE_EVENTS | DEBUG_APP_EVENTS,
+    DEBUG_MODELS     = 1 << 3,
     DEBUG_ALL        = DEBUG_SYS_EVENTS | DEBUG_APP_EVENTS | DEBUG_MODELS
 };
 
@@ -215,8 +204,7 @@ public:
     const std::string& GetErrorMessage() const;
 
     //! Returns a list of possible video modes
-    VideoQueryResult GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions,
-                                            bool fullScreen, bool resizeable) const;
+    void        GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions, int display = 0) const;
 
     //! Returns the current video mode
     Gfx::DeviceConfig GetVideoConfig() const;
@@ -277,17 +265,15 @@ public:
     //! Updates the mouse position explicitly
     void        UpdateMouse();
 
-    //! Management of the grab mode for input (keyboard & mouse)
-    //@{
-    void        SetGrabInput(bool grab);
-    bool        GetGrabInput() const;
-    //@}
-
     //! Management of mouse mode
     //@{
     void        SetMouseMode(MouseMode mode);
     MouseMode   GetMouseMode() const;
     //@}
+
+    //! Enable/disable text input, this toggles the on-screen keyboard on some platforms
+    /** This also allows for writing in CJK languages (not tested!), see https://wiki.libsdl.org/Tutorials/TextInput for detailed explanation */
+    void        SetTextInput(bool textInputEnabled);
 
     //! Moves (warps) the mouse cursor to the specified position (in interface coords)
     void        MoveMouse(Math::Point pos);
@@ -304,13 +290,6 @@ public:
     Language    GetLanguage() const;
     char        GetLanguageChar() const;
     void        SetLanguage(Language language);
-    static bool ParseLanguage(const std::string& str, Language& language);
-    //@}
-
-    //! Management of sleep in main loop (lowers CPU usage)
-    //@{
-    void        SetLowCPU(bool low);
-    bool        GetLowCPU() const;
     //@}
 
     //! Management of performance counters
@@ -327,6 +306,11 @@ public:
 
     //! Renders the image in window if needed
     void        RenderIfNeeded(int updateRate);
+
+    //! Starts a force feedback effect on the joystick
+    void        PlayForceFeedbackEffect(float strength = 1.0f, int length = 999999);
+    //! Stops a force feedback effect on the joystick
+    void        StopForceFeedbackEffect();
 
 protected:
     //! Creates the window's SDL_Surface
@@ -388,8 +372,6 @@ protected:
 
     //! Current configuration of OpenGL display device
     Gfx::DeviceConfig m_deviceConfig;
-    //! Previous configuration of OpenGL display device
-    Gfx::DeviceConfig m_lastDeviceConfig;
 
     //! Text set as window title
     std::string     m_windowTitle;
@@ -422,7 +404,15 @@ protected:
     SystemTimeStamp* m_manualFrameTime;
 
     //! Graphics device to use
-    std::string     m_graphics;
+    bool            m_graphicsOverride = false;
+    std::string     m_graphics = "default";
+    //! OpenGL version to use
+    bool            m_glVersionOverride = false;
+    int             m_glMajor = -1;
+    int             m_glMinor = -1;
+    //! OpenGL profile
+    bool            m_glProfileOverride = false;
+    int             m_glProfile = 0;
 
     //! Current mode of mouse
     MouseMode       m_mouseMode;
@@ -447,9 +437,6 @@ protected:
 
     //! Application language
     Language        m_language;
-
-    //! Low cpu mode
-    bool            m_lowCPU;
 
     //! Screen resoultion overriden by commandline
     bool            m_resolutionOverride;

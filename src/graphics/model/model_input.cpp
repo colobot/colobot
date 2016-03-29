@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -59,8 +59,8 @@ namespace ModelInput
     VertexTex2 ReadBinaryVertexTex2(std::istream& stream);
     Material ReadBinaryMaterial(std::istream& stream);
 
-    std::string ReadLineString(std::istream& stream, const std::string& prefix);
-    void ReadValuePrefix(std::istream& stream, const std::string& prefix);
+    std::string ReadLineString(std::istream& stream, const std::string& expectedPrefix);
+    void ReadValuePrefix(std::istream& stream, const std::string& expectedPrefix);
     VertexTex2 ParseVertexTex2(const std::string& text);
     Material ParseMaterial(const std::string& text);
     Math::Vector ParseVector(const std::string& text);

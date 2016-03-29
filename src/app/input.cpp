@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -66,6 +66,7 @@ CInput::CInput()
         { INPUT_SLOT_CAMERA_UP,   "camup"   },
         { INPUT_SLOT_CAMERA_DOWN, "camdown" },
         { INPUT_SLOT_PAUSE,    "pause" },
+        { INPUT_SLOT_CMDLINE,    "cmdline" },
     };
 
     m_kmodState = 0;
@@ -135,10 +136,10 @@ void CInput::EventProcess(Event& event)
 
         if (data->slot == INPUT_SLOT_CAMERA_UP  ) m_cameraKeyMotion.z =  1.0f;
         if (data->slot == INPUT_SLOT_CAMERA_DOWN) m_cameraKeyMotion.z = -1.0f;
-        if (data->key  == KEY(KP4)              ) m_cameraKeyMotion.x = -1.0f;
-        if (data->key  == KEY(KP6)              ) m_cameraKeyMotion.x =  1.0f;
-        if (data->key  == KEY(KP8)              ) m_cameraKeyMotion.y =  1.0f;
-        if (data->key  == KEY(KP2)              ) m_cameraKeyMotion.y = -1.0f;
+        if (data->key  == KEY(KP_4)             ) m_cameraKeyMotion.x = -1.0f;
+        if (data->key  == KEY(KP_6)             ) m_cameraKeyMotion.x =  1.0f;
+        if (data->key  == KEY(KP_8)             ) m_cameraKeyMotion.y =  1.0f;
+        if (data->key  == KEY(KP_2)             ) m_cameraKeyMotion.y = -1.0f;
     }
     else if (event.type == EVENT_KEY_UP)
     {
@@ -153,10 +154,10 @@ void CInput::EventProcess(Event& event)
 
         if (data->slot == INPUT_SLOT_CAMERA_UP  ) m_cameraKeyMotion.z = 0.0f;
         if (data->slot == INPUT_SLOT_CAMERA_DOWN) m_cameraKeyMotion.z = 0.0f;
-        if (data->key  == KEY(KP4)              ) m_cameraKeyMotion.x = 0.0f;
-        if (data->key  == KEY(KP6)              ) m_cameraKeyMotion.x = 0.0f;
-        if (data->key  == KEY(KP8)              ) m_cameraKeyMotion.y = 0.0f;
-        if (data->key  == KEY(KP2)              ) m_cameraKeyMotion.y = 0.0f;
+        if (data->key  == KEY(KP_4)             ) m_cameraKeyMotion.x = 0.0f;
+        if (data->key  == KEY(KP_6)             ) m_cameraKeyMotion.x = 0.0f;
+        if (data->key  == KEY(KP_8)             ) m_cameraKeyMotion.y = 0.0f;
+        if (data->key  == KEY(KP_2)             ) m_cameraKeyMotion.y = 0.0f;
     }
     else if (event.type == EVENT_JOY_AXIS)
     {
@@ -171,14 +172,14 @@ void CInput::EventProcess(Event& event)
 
         if (data->axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Y).axis)
         {
-            m_joyMotion.y = Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
+            m_joyMotion.y = -Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
             if (GetJoyAxisBinding(JOY_AXIS_SLOT_Y).invert)
                 m_joyMotion.y *= -1.0f;
         }
 
         if (data->axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Z).axis)
         {
-            m_joyMotion.z = Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
+            m_joyMotion.z = -Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
             if (GetJoyAxisBinding(JOY_AXIS_SLOT_Z).invert)
                 m_joyMotion.z *= -1.0f;
         }
@@ -253,7 +254,7 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_GUP    ].primary   = VIRTUAL_KMOD(SHIFT);
     m_inputBindings[INPUT_SLOT_GDOWN  ].primary   = VIRTUAL_KMOD(CTRL);
     m_inputBindings[INPUT_SLOT_CAMERA ].primary   = KEY(SPACE);
-    m_inputBindings[INPUT_SLOT_DESEL  ].primary   = KEY(KP0);
+    m_inputBindings[INPUT_SLOT_DESEL  ].primary   = KEY(KP_0);
     m_inputBindings[INPUT_SLOT_ACTION ].primary   = KEY(RETURN);
     m_inputBindings[INPUT_SLOT_ACTION ].secondary = KEY(e);
     m_inputBindings[INPUT_SLOT_NEAR   ].primary   = KEY(KP_PLUS);
@@ -275,6 +276,7 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_CAMERA_DOWN].primary = KEY(PAGEDOWN);
     m_inputBindings[INPUT_SLOT_PAUSE].primary       = KEY(PAUSE);
     m_inputBindings[INPUT_SLOT_PAUSE].secondary     = KEY(p);
+    m_inputBindings[INPUT_SLOT_CMDLINE].primary     = KEY(BACKQUOTE);
 
     m_joyAxisBindings[JOY_AXIS_SLOT_X].axis = 0;
     m_joyAxisBindings[JOY_AXIS_SLOT_Y].axis = 1;
@@ -330,6 +332,7 @@ InputSlot CInput::FindBinding(unsigned int key)
 void CInput::SaveKeyBindings()
 {
     std::stringstream key;
+    CConfigFile::GetInstancePointer()->SetStringProperty("Keybindings", "_Version", "SDL2");
     for (int i = 0; i < INPUT_SLOT_MAX; i++)
     {
         InputBinding b = GetInputBinding(static_cast<InputSlot>(i));
@@ -355,19 +358,22 @@ void CInput::LoadKeyBindings()
 {
     std::stringstream skey;
     std::string keys;
-    for (int i = 0; i < INPUT_SLOT_MAX; i++)
+    if (CConfigFile::GetInstancePointer()->GetStringProperty("Keybindings", "_Version", keys) && keys == "SDL2") // Keybindings from SDL1.2 are incompatible with SDL2 !!
     {
-        InputBinding b;
+        for (int i = 0; i < INPUT_SLOT_MAX; i++)
+        {
+            InputBinding b;
 
-        if (!CConfigFile::GetInstancePointer()->GetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], keys))
-            continue;
-        skey.clear();
-        skey.str(keys);
+            if (!CConfigFile::GetInstancePointer()->GetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], keys))
+                continue;
+            skey.clear();
+            skey.str(keys);
 
-        skey >> b.primary;
-        skey >> b.secondary;
+            skey >> b.primary;
+            skey >> b.secondary;
 
-        SetInputBinding(static_cast<InputSlot>(i), b);
+            SetInputBinding(static_cast<InputSlot>(i), b);
+        }
     }
 
     for (int i = 0; i < JOY_AXIS_SLOT_MAX; i++)
@@ -400,19 +406,19 @@ InputSlot CInput::SearchKeyById(std::string id)
     return INPUT_SLOT_MAX;
 }
 
-std::string CInput::GetKeysString(InputBinding b)
+std::string CInput::GetKeysString(InputBinding binding)
 {
     std::ostringstream ss;
-    if ( b.primary != KEY_INVALID )
+    if ( binding.primary != KEY_INVALID )
     {
         std::string iNameStr;
-        if ( GetResource(RES_KEY, b.primary, iNameStr) )
+        if ( GetResource(RES_KEY, binding.primary, iNameStr) )
         {
             ss << iNameStr;
 
-            if ( b.secondary != KEY_INVALID )
+            if ( binding.secondary != KEY_INVALID )
             {
-                if ( GetResource(RES_KEY, b.secondary, iNameStr) )
+                if ( GetResource(RES_KEY, binding.secondary, iNameStr) )
                 {
                     std::string textStr;
                     GetResource(RES_TEXT, RT_KEY_OR, textStr);

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 #include "app/app.h"
 
 #include "common/restext.h"
+#include "common/settings.h"
 
 #include "level/robotmain.h"
 
@@ -38,6 +39,7 @@ CControl::CControl()
     m_engine      = Gfx::CEngine::GetInstancePointer();
     m_main        = CRobotMain::GetInstancePointer();
     m_particle    = m_engine->GetParticle();
+    m_settings    = CSettings::GetInstancePointer();
     m_eventType   = EVENT_NULL;
     m_state       = STATE_ENABLE|STATE_VISIBLE|STATE_GLINT;
     m_fontSize    = Gfx::FONT_SIZE_SMALL;
@@ -312,7 +314,7 @@ bool CControl::EventProcess(const Event &event)
         GlintFrame(event);
     }
 
-    if ( event.type == EVENT_MOUSE_MOVE )
+    if ( event.type == EVENT_MOUSE_MOVE || event.type == EVENT_MOUSE_BUTTON_DOWN || event.type == EVENT_MOUSE_BUTTON_UP )
     {
         m_glintMouse = event.mousePos;
 
@@ -420,7 +422,7 @@ void CControl::GlintFrame(const Event &event)
          (m_state & STATE_ENABLE ) == 0 ||
          (m_state & STATE_VISIBLE) == 0 )  return;
 
-    if ( !m_main->GetInterfaceGlint() )  return;
+    if ( !m_settings->GetInterfaceGlint() )  return;
 
     m_glintProgress += event.rTime;
 

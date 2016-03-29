@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include "common/language.h"
 #include "common/singleton.h"
 
 #include "math/point.h"
@@ -52,8 +53,8 @@ public:
     void SetMovies(bool movies);
     bool GetMovies();
 
-    void SetSystemMouse(bool systemMouse);
-    bool GetSystemMouse();
+    void SetFocusLostPause(bool focusLostPause);
+    bool GetFocusLostPause();
 
 
     //! Managing the size of the default fonts
@@ -83,13 +84,16 @@ public:
     Math::Point GetIODim();
     //@}
 
+    void SetLanguage(Language language);
+    Language GetLanguage();
+
 protected:
     bool m_tooltips;
     bool m_interfaceGlint;
     bool m_interfaceRain;
     bool m_soluce4;
     bool m_movies;
-    bool m_systemMouse;
+    bool m_focusLostPause;
 
     float           m_fontSize;
     Math::Point     m_windowPos;
@@ -98,4 +102,6 @@ protected:
     bool            m_IOPublic;
     Math::Point     m_IOPos;
     Math::Point     m_IODim;
+
+    Language m_language;
 };

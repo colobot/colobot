@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@
 
 class CRobotMain;
 class CSoundInterface;
+class CSettings;
 
 namespace Gfx
 {
@@ -120,6 +121,7 @@ protected:
     CEventQueue*      m_event;
     CRobotMain*       m_main;
     CSoundInterface*  m_sound;
+    CSettings*        m_settings;
 
     Math::Point       m_pos;          // corner upper / left
     Math::Point       m_dim;          // dimensions

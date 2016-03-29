@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@
 
 #include "graphics/core/color.h"
 
+#include "math/intpoint.h"
 #include "math/point.h"
 
 #include <map>
@@ -190,13 +191,15 @@ struct UTF8Char
 struct CharTexture
 {
     unsigned int id = 0;
-    Math::Point texSize;
-    Math::Point charSize;
+    Math::IntPoint charPos;
+    Math::IntPoint charSize;
+    Math::IntPoint tileSize;
 };
 
 // Definition is private - in text.cpp
 struct CachedFont;
 struct MultisizeFont;
+struct FontTexture;
 
 /**
  * \enum SpecialChar
@@ -306,10 +309,14 @@ public:
     UTF8Char    TranslateSpecialChar(int specialChar);
 
     CharTexture GetCharTexture(UTF8Char ch, FontType font, float size);
+    Math::IntPoint GetFontTextureSize();
 
 protected:
-    CachedFont* GetOrOpenFont(FontType type, float size);
+    CachedFont* GetOrOpenFont(FontType font, float size);
     CharTexture CreateCharTexture(UTF8Char ch, CachedFont* font);
+    FontTexture* GetOrCreateFontTexture(Math::IntPoint tileSize);
+    FontTexture CreateFontTexture(Math::IntPoint tileSize);
+    Math::IntPoint GetNextTilePos(const FontTexture& fontTexture);
 
     void        DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
                            std::vector<FontMetaChar>::iterator end,
@@ -330,6 +337,7 @@ protected:
     int          m_tabSize;
 
     std::map<FontType, std::unique_ptr<MultisizeFont>> m_fonts;
+    std::vector<FontTexture> m_fontTextures;
 
     FontType     m_lastFontType;
     int          m_lastFontSize;

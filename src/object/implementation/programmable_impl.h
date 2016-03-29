@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,11 +19,12 @@
 
 #pragma once
 
-#include "object/interface/interactive_object.h"
 #include "object/interface/programmable_object.h"
-#include "object/interface/trace_drawing_object.h"
 
 #include "math/vector.h"
+
+#include "object/interface/interactive_object.h"
+#include "object/interface/trace_drawing_object.h"
 
 #include <sstream>
 
@@ -64,7 +65,7 @@ public:
     void TraceRecordStop() override;
     bool IsTraceRecord() override;
 
-    void SetActivity(bool bMode) override;
+    void SetActivity(bool activity) override;
     bool GetActivity() override;
 
     void SetCmdLine(unsigned int rank, float value);

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ namespace Gfx
 namespace
 {
 const int WATERLINE_PREALLOCATE_COUNT = 500;
-// TODO: remove the limit?
 const int VAPOR_SIZE = 10;
 } // anonymous namespace
 
@@ -135,7 +134,10 @@ void CWater::LavaFrame(float rTime)
 
 void CWater::VaporFlush()
 {
-    m_vapors.clear();
+    for (int i = 0; i < static_cast<int>( m_vapors.size() ); i++)
+    {
+        m_vapors[i].used = false;
+    }
 }
 
 bool CWater::VaporCreate(ParticleType type, Math::Vector pos, float delay)
@@ -318,7 +320,7 @@ void CWater::DrawSurf()
     if (m_type[0] == WATER_NULL) return;
     if (m_lines.empty()) return;
 
-    std::vector<VertexTex2> vertices((m_brickCount+2)*2, VertexTex2());
+    std::vector<Vertex> vertices((m_brickCount+2)*2, Vertex());
 
     Math::Vector eye = m_engine->GetEyePt();
 
@@ -361,6 +363,8 @@ void CWater::DrawSurf()
     // Draws all the lines
     float deep = m_engine->GetDeepView(0)*1.5f;
 
+    device->SetTextureEnabled(1, false);
+
     for (int i = 0; i < static_cast<int>( m_lines.size() ); i++)
     {
         Math::Vector pos;
@@ -388,14 +392,14 @@ void CWater::DrawSurf()
         p.y = pos.y;
         AdjustLevel(p, n, uv1, uv2);
         if (under) n.y = -n.y;
-        vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
+        vertices[vertexIndex++] = Vertex(p, n, uv1);
 
         p.x = pos.x-size;
         p.z = pos.z+sizez;
         p.y = pos.y;
         AdjustLevel(p, n, uv1, uv2);
         if (under)  n.y = -n.y;
-        vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
+        vertices[vertexIndex++] = Vertex(p, n, uv1);
 
         for (int j = 0; j < m_lines[i].len; j++)
         {
@@ -404,14 +408,14 @@ void CWater::DrawSurf()
             p.y = pos.y;
             AdjustLevel(p, n, uv1, uv2);
             if (under)  n.y = -n.y;
-            vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
+            vertices[vertexIndex++] = Vertex(p, n, uv1);
 
             p.x = pos.x+size;
             p.z = pos.z+sizez;
             p.y = pos.y;
             AdjustLevel(p, n, uv1, uv2);
             if (under)  n.y = -n.y;
-            vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
+            vertices[vertexIndex++] = Vertex(p, n, uv1);
 
             pos.x += size*2.0f;
         }
@@ -419,6 +423,9 @@ void CWater::DrawSurf()
         device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, &vertices[0], vertexIndex);
         m_engine->AddStatisticTriangle(vertexIndex - 2);
     }
+
+    if (m_engine->GetDirty())
+        device->SetTextureEnabled(1, true);
 }
 
 bool CWater::GetWater(int x, int y)

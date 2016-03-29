@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -105,7 +105,7 @@ bool CKey::EventProcess(const Event &event)
 
 bool CKey::TestKey(unsigned int key)
 {
-    if (key == KEY(PAUSE) || key == KEY(PRINT)) return true;  // blocked key
+    if (key == KEY(PAUSE)) return true;  // blocked key
 
     for (int i = 0; i < INPUT_SLOT_MAX; i++)
     {
@@ -129,7 +129,7 @@ void CKey::Draw()
         return;
 
     Math::Point iDim = m_dim;
-    m_dim.x = 200.0f/640.0f;
+    m_dim.x = 100.0f/640.0f;
 
     if (m_state & STATE_SHADOW)
         DrawShadow(m_pos, m_dim);
@@ -192,7 +192,7 @@ void CKey::Draw()
         return;
 
     // Draws the name.
-    pos.x = m_pos.x + (214.0f / 640.0f);
+    pos.x = m_pos.x + (114.0f / 640.0f);
     pos.y = m_pos.y + m_dim.y * 0.5f;
     pos.y -= h;
     m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, 0);
@@ -210,4 +210,3 @@ InputBinding CKey::GetBinding()
 
 
 } // namespace Ui
-

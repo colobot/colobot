@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -48,7 +48,6 @@ enum ResType
  */
 enum ResTextType
 {
-    RT_DISINFO_TITLE        = 2,
     RT_WINDOW_MAXIMIZED     = 3,
     RT_WINDOW_MINIMIZED     = 4,
     RT_WINDOW_STANDARD      = 5,
@@ -83,7 +82,6 @@ enum ResTextType
     RT_PLAY_LIST_FREEGAME   = 67,
     RT_PLAY_RESUME          = 68,
 
-    RT_SETUP_DEVICE         = 80,
     RT_SETUP_MODE           = 81,
     RT_SETUP_KEY1           = 82,
     RT_SETUP_KEY2           = 83,
@@ -113,15 +111,6 @@ enum ResTextType
     RT_PROGRAM_READONLY     = 130,
     RT_PROGRAM_EXAMPLE      = 131,
 
-    RT_SATCOM_LIST          = 140,
-    RT_SATCOM_BOT           = 141,
-    RT_SATCOM_BUILDING      = 142,
-    RT_SATCOM_FRET          = 143,
-    RT_SATCOM_ALIEN         = 144,
-    RT_SATCOM_NULL          = 145,
-    RT_SATCOM_ERROR1        = 146,
-    RT_SATCOM_ERROR2        = 147,
-
     RT_IO_OPEN              = 150,
     RT_IO_SAVE              = 151,
     RT_IO_LIST              = 152,
@@ -136,9 +125,6 @@ enum ResTextType
     RT_GENERIC_EDIT2        = 173,
 
     RT_INTERFACE_REC        = 180,
-
-    RT_MESSAGE_WIN          = 200,
-    RT_MESSAGE_LOST         = 201,
 
     RT_LOADING_INIT           = 210,
     RT_LOADING_PROCESSING     = 211,

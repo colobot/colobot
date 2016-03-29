@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -280,16 +280,11 @@ bool CList::EventProcess(const Event &event)
     if (event.type == EVENT_MOUSE_WHEEL && Detect(event.mousePos))
     {
         auto data = event.GetData<MouseWheelEventData>();
-        if (data->dir == WHEEL_UP)
-        {
-            if (m_firstLine > 0)
-                m_firstLine--;
-        }
-        else
-        {
-            if (m_firstLine < m_totalLine - m_displayLine)
-                m_firstLine++;
-        }
+        m_firstLine -= data->y;
+        if (m_firstLine > m_totalLine - m_displayLine)
+            m_firstLine = m_totalLine - m_displayLine;
+        if (m_firstLine < 0)
+            m_firstLine = 0;
 
         UpdateScroll();
         UpdateButton();
@@ -298,15 +293,18 @@ bool CList::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if (event.type == EVENT_MOUSE_MOVE && Detect(event.mousePos))
+    if (event.type == EVENT_MOUSE_MOVE || event.type == EVENT_MOUSE_BUTTON_DOWN || event.type == EVENT_MOUSE_BUTTON_UP)
     {
-        m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
-        for (int i = 0; i < m_displayLine; i++)
+        if (Detect(event.mousePos))
         {
-            if (i + m_firstLine >= m_totalLine)
-                break;
-            if (m_buttons[i] != nullptr)
-                m_buttons[i]->EventProcess(event);
+            m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
+            for (int i = 0; i < m_displayLine; i++)
+            {
+                if (i + m_firstLine >= m_totalLine)
+                    break;
+                if (m_buttons[i] != nullptr)
+                    m_buttons[i]->EventProcess(event);
+            }
         }
     }
 
@@ -356,7 +354,7 @@ void CList::Draw()
     float   dp;
     int     i;
     char    text[100];
-    char    *pb, *pe;
+    const char    *pb, *pe;
 
     if ((m_state & STATE_VISIBLE) == 0)
         return;
@@ -453,14 +451,14 @@ void CList::Draw()
                 ppos.y = pos.y + dim.y * 0.5f;
                 ppos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
                 ddim.x = dim.x-dim.y;
-                DrawCase(m_items[i + m_firstLine].text, ppos, ddim.x, Gfx::TEXT_ALIGN_LEFT);
+                DrawCase(m_items[i + m_firstLine].text.c_str(), ppos, ddim.x, Gfx::TEXT_ALIGN_LEFT);
             }
             else
             {
                 ppos.x = pos.x + dim.y * 0.5f;
                 ppos.y = pos.y + dim.y * 0.5f;
                 ppos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
-                pb = m_items[i + m_firstLine].text;
+                pb = m_items[i + m_firstLine].text.c_str();
                 for (int j = 0; j < 10; j++)
                 {
                     pe = strchr(pb, '\t');
@@ -550,7 +548,7 @@ void CList::Draw()
 
 // Displays text in a box.
 
-void CList::DrawCase(char *text, Math::Point pos, float width, Gfx::TextAlign justif)
+void CList::DrawCase(const char* text, Math::Point pos, float width, Gfx::TextAlign justif)
 {
     if (justif == Gfx::TEXT_ALIGN_CENTER)
         pos.x += width / 2.0f;
@@ -653,18 +651,19 @@ bool CList::GetBlink()
 
 // Specifies the text of a line.
 
-void CList::SetItemName(int i, const char* name)
+void CList::SetItemName(int i, const std::string& name)
 {
-    if ( i < 0 || i >= LISTMAXTOTAL )
+    if ( i < 0 )
         return;
 
     if ( i >= m_totalLine )
         m_totalLine = i+1;  // expands the list
 
-    if ( name[0] == 0 )
-        strcpy(m_items[i].text, " ");
+    m_items.resize(m_totalLine);
+    if ( name.empty() )
+        m_items[i].text =  " ";
     else
-        strcpy(m_items[i].text, name);
+        m_items[i].text = name;
 
     UpdateButton();
     UpdateScroll();
@@ -672,10 +671,10 @@ void CList::SetItemName(int i, const char* name)
 
 // Returns the text of a line.
 
-char* CList::GetItemName(int i)
+const std::string& CList::GetItemName(int i)
 {
     if ( i < 0 || i >= m_totalLine )
-        return nullptr;
+        assert(false);
 
     return m_items[i].text;
 }
@@ -704,12 +703,12 @@ bool CList::GetCheck(int i)
 
 // Specifies the bit "enable" for a box.
 
-void CList::SetEnable(int i, bool bMode)
+void CList::SetEnable(int i, bool enable)
 {
     if ( i < 0 || i >= m_totalLine )
         return;
 
-    m_items[i].enable = bMode;
+    m_items[i].enable = enable;
 }
 
 // Returns the bit "enable" for a box.
@@ -855,4 +854,3 @@ void CList::MoveScroll()
 
 
 } // namespace Ui
-

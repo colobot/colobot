@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -118,6 +118,12 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     m_lastParticle = 0.0f;
     m_lastParticleSmoke = 0.0f;
     m_lightRank = -1;
+
+    if ( oType == OBJECT_TEEN28 ||
+         oType == OBJECT_TEEN31 )
+    {
+        m_pos.y = pos.y+1.0f;
+    }
 
     // Seeking the position of the battery.
 
@@ -456,7 +462,9 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
          m_type == PT_FRAGW  ||
          m_type == PT_SPIDER ||
          m_type == PT_EGG    ||
-        (m_type == PT_EXPLOT && oType == OBJECT_MOBILEtg) )
+        (m_type == PT_EXPLOT && oType == OBJECT_MOBILEtg) ||
+        (m_type == PT_EXPLOT && oType == OBJECT_TEEN28  ) ||
+        (m_type == PT_EXPLOT && oType == OBJECT_TEEN31  ) )
     {
         for (int part = 0; part < OBJECTMAXPART; part++)
         {
@@ -1414,7 +1422,8 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
         oType == OBJECT_ATOMIC   ||
         oType == OBJECT_URANIUM  ||
         oType == OBJECT_TNT      ||
-        oType == OBJECT_BOMB     )
+        oType == OBJECT_BOMB     ||
+        oType == OBJECT_TEEN28)
     {
         percent = 0.75f;
     }
@@ -1719,6 +1728,15 @@ void CPyro::BurnStart()
         angle.x = (Math::Rand()-0.5f)*0.8f;
         angle.y = 0.0f;
         angle.z = (Math::Rand()-0.5f)*0.4f;
+    }
+    else if ( m_burnType == OBJECT_TEEN31 )  // basket?
+    {
+        pos.x =   0.0f;
+        pos.y =   0.0f;
+        pos.z =   0.0f;
+        angle.x = (Math::Rand()-0.5f)*0.8f;
+        angle.y = 0.0f;
+        angle.z = (Math::Rand()-0.5f)*0.2f;
     }
     else
     {
@@ -2094,6 +2112,11 @@ void CPyro::BurnAddPart(int part, Math::Vector pos, Math::Vector angle)
 
 void CPyro::BurnProgress()
 {
+    if ( m_burnType == OBJECT_TEEN31 )  // basket?
+    {
+        m_object->SetScaleY(1.0f-m_progress*0.5f);  // slight flattening
+    }
+
     for (int i = 0; i < m_burnPartTotal; i++)
     {
         Math::Vector pos = m_burnPart[i].initialPos + m_progress*(m_burnPart[i].finalPos-m_burnPart[i].initialPos);

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@
 
 #include "app/system.h"
 
+//@colobot-lint-exclude UndefinedFunctionRule
 
 struct SystemTimeStamp
 {
@@ -52,3 +53,4 @@ protected:
     long long m_counterFrequency = 0;
 };
 
+//@end-colobot-lint-exclude

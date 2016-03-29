@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -136,7 +136,7 @@ Error CTaskTake::Start()
             CObject* power = dynamic_cast<CPoweredObject*>(other)->GetPower();
             type = power->GetType();
             if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
-            if ( !power->Implements(ObjectInterfaceType::Transportable) )  return ERR_MANIP_FRIEND; // TODO: This makes no sense, probably redundant
+            assert(power->Implements(ObjectInterfaceType::Transportable));
 //?         m_camera->StartCentering(m_object, Math::PI*0.3f, -Math::PI*0.1f, 0.0f, 0.8f);
             m_arm = TTA_FRIEND;
         }

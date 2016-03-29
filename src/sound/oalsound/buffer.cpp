@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,15 +28,14 @@
 #include <memory>
 
 
-Buffer::Buffer()
+CBuffer::CBuffer()
     : m_buffer(),
       m_sound(),
       m_loaded(false),
       m_duration(0.0f)
 {}
 
-
-Buffer::~Buffer()
+CBuffer::~CBuffer()
 {
     if (m_loaded)
     {
@@ -46,8 +45,7 @@ Buffer::~Buffer()
     }
 }
 
-
-bool Buffer::LoadFromFile(std::string filename, SoundType sound)
+bool CBuffer::LoadFromFile(std::string filename, SoundType sound)
 {
     m_sound = sound;
     GetLogger()->Debug("Loading audio file: %s\n", filename.c_str());
@@ -92,27 +90,22 @@ bool Buffer::LoadFromFile(std::string filename, SoundType sound)
     return true;
 }
 
-
-SoundType Buffer::GetSoundType()
+SoundType CBuffer::GetSoundType()
 {
     return m_sound;
 }
 
-
-ALuint Buffer::GetBuffer()
+ALuint CBuffer::GetBuffer()
 {
     return m_buffer;
 }
 
-
-bool Buffer::IsLoaded()
+bool CBuffer::IsLoaded()
 {
     return m_loaded;
 }
 
-
-float Buffer::GetDuration()
+float CBuffer::GetDuration()
 {
     return m_duration;
 }
-

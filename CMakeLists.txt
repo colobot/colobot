@@ -13,7 +13,7 @@ project(colobot C CXX)
 set(COLOBOT_VERSION_CODENAME "Gold")
 set(COLOBOT_VERSION_MAJOR    0)
 set(COLOBOT_VERSION_MINOR    1)
-set(COLOBOT_VERSION_REVISION 6)
+set(COLOBOT_VERSION_REVISION 7)
 
 # Used on official releases
 set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
@@ -94,8 +94,6 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
 
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_macosx.cpp")
-
-    set(USE_SDL_MAIN 1) # fixes SDL_main
 else()
     message(STATUS "Build for other system")
     set(PLATFORM_WINDOWS 0)
@@ -178,6 +176,10 @@ option(ASSERTS "Enable assert()s" ON)
 # Development build can be enabled/disabled regardless of build type
 option(DEV_BUILD "Enable development build (enables some debugging tools, local setting paths, etc.)" OFF)
 
+# Official build - changes text on the crash screen
+# PLEASE DO NOT USE ON UNOFFICIAL BUILDS. Thanks.
+option(OFFICIAL_BUILD "Official build (changes crash screen text)" OFF)
+
 # Portable build - load all data from current directory
 option(PORTABLE "Portable build" OFF)
 
@@ -229,9 +231,9 @@ endif()
 ##
 
 find_package(OpenGL 1.4 REQUIRED)
-find_package(SDL 1.2.10 REQUIRED)
-find_package(SDL_image 1.2 REQUIRED)
-find_package(SDL_ttf 2.0 REQUIRED)
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 find_package(Gettext REQUIRED)
 find_package(PhysFS REQUIRED)
@@ -291,24 +293,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     message(STATUS "Adding MSVC-specific options")
 
     set(CBOT_STATIC 1) # only this works for some reason
-    set(USE_SDL_MAIN 1) # fixes SDL_main
     set(WINGETOPT 1) # use wingetopt library
 endif()
-
-##
-# Clipboard support needs X11 libraries
-##
-if(PLATFORM_GNU)
-    find_package(X11 REQUIRED)
-endif()
-
-
-##
-# Clipboard support
-##
-set(CLIPBOARD_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/clipboard/include)
-add_subdirectory(lib/clipboard)
-
 
 ##
 # Localename

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -61,16 +61,16 @@ public:
     }
 };
 
-class ApplicationUT : public testing::Test
+class CApplicationUT : public testing::Test
 {
 protected:
-    ApplicationUT() :
+    CApplicationUT() :
         m_systemUtils(nullptr),
         m_stampUid(0),
         m_currentTime(0)
     {}
 
-    ~ApplicationUT() NOEXCEPT
+    ~CApplicationUT() NOEXCEPT
     {}
 
     void SetUp() override;
@@ -99,7 +99,7 @@ private:
     long long m_currentTime;
 };
 
-void ApplicationUT::SetUp()
+void CApplicationUT::SetUp()
 {
     m_systemUtils = m_mocks.Mock<CSystemUtils>();
 
@@ -107,21 +107,21 @@ void ApplicationUT::SetUp()
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetLangPath).Return("");
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetSaveDir).Return("");
 
-    m_mocks.OnCall(m_systemUtils, CSystemUtils::CreateTimeStamp).Do(std::bind(&ApplicationUT::CreateTimeStamp, this));
-    m_mocks.OnCall(m_systemUtils, CSystemUtils::DestroyTimeStamp).Do(std::bind(&ApplicationUT::DestroyTimeStamp, this, ph::_1));
-    m_mocks.OnCall(m_systemUtils, CSystemUtils::CopyTimeStamp).Do(std::bind(&ApplicationUT::CopyTimeStamp, this, ph::_1, ph::_2));
-    m_mocks.OnCall(m_systemUtils, CSystemUtils::GetCurrentTimeStamp).Do(std::bind(&ApplicationUT::GetCurrentTimeStamp, this, ph::_1));
-    m_mocks.OnCall(m_systemUtils, CSystemUtils::TimeStampExactDiff).Do(std::bind(&ApplicationUT::TimeStampExactDiff, this, ph::_1, ph::_2));
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::CreateTimeStamp).Do(std::bind(&CApplicationUT::CreateTimeStamp, this));
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::DestroyTimeStamp).Do(std::bind(&CApplicationUT::DestroyTimeStamp, this, ph::_1));
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::CopyTimeStamp).Do(std::bind(&CApplicationUT::CopyTimeStamp, this, ph::_1, ph::_2));
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::GetCurrentTimeStamp).Do(std::bind(&CApplicationUT::GetCurrentTimeStamp, this, ph::_1));
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::TimeStampExactDiff).Do(std::bind(&CApplicationUT::TimeStampExactDiff, this, ph::_1, ph::_2));
 
     m_app = MakeUnique<CApplicationWrapper>(m_systemUtils);
 }
 
-void ApplicationUT::TearDown()
+void CApplicationUT::TearDown()
 {
     m_app.reset();
 }
 
-SystemTimeStamp* ApplicationUT::CreateTimeStamp()
+SystemTimeStamp* CApplicationUT::CreateTimeStamp()
 {
     auto stamp = MakeUnique<FakeSystemTimeStamp>(++m_stampUid);
     auto stampPtr = stamp.get();
@@ -129,33 +129,33 @@ SystemTimeStamp* ApplicationUT::CreateTimeStamp()
     return stampPtr;
 }
 
-void ApplicationUT::DestroyTimeStamp(SystemTimeStamp *stamp)
+void CApplicationUT::DestroyTimeStamp(SystemTimeStamp *stamp)
 {
 }
 
-void ApplicationUT::CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src)
+void CApplicationUT::CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src)
 {
     *static_cast<FakeSystemTimeStamp*>(dst) = *static_cast<FakeSystemTimeStamp*>(src);
 }
 
-void ApplicationUT::GetCurrentTimeStamp(SystemTimeStamp *stamp)
+void CApplicationUT::GetCurrentTimeStamp(SystemTimeStamp *stamp)
 {
     static_cast<FakeSystemTimeStamp*>(stamp)->time = m_currentTime;
 }
 
-long long ApplicationUT::TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after)
+long long CApplicationUT::TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after)
 {
     return static_cast<FakeSystemTimeStamp*>(after)->time - static_cast<FakeSystemTimeStamp*>(before)->time;
 }
 
-void ApplicationUT::NextInstant(long long diff)
+void CApplicationUT::NextInstant(long long diff)
 {
     m_currentTime += diff;
 }
 
-void ApplicationUT::TestCreateUpdateEvent(long long relTimeExact, long long absTimeExact,
-                                          float relTime, float absTime,
-                                          long long relTimeReal, long long absTimeReal)
+void CApplicationUT::TestCreateUpdateEvent(long long relTimeExact, long long absTimeExact,
+                                           float relTime, float absTime,
+                                           long long relTimeReal, long long absTimeReal)
 {
     Event event = m_app->CreateUpdateEvent();
     EXPECT_EQ(EVENT_FRAME, event.type);
@@ -169,14 +169,14 @@ void ApplicationUT::TestCreateUpdateEvent(long long relTimeExact, long long absT
 }
 
 
-TEST_F(ApplicationUT, UpdateEventTimeCalculation_SimulationSuspended)
+TEST_F(CApplicationUT, UpdateEventTimeCalculation_SimulationSuspended)
 {
     m_app->SuspendSimulation();
     Event event = m_app->CreateUpdateEvent();
     EXPECT_EQ(EVENT_NULL, event.type);
 }
 
-TEST_F(ApplicationUT, UpdateEventTimeCalculation_NormalOperation)
+TEST_F(CApplicationUT, UpdateEventTimeCalculation_NormalOperation)
 {
     // 1st update
 
@@ -205,7 +205,7 @@ TEST_F(ApplicationUT, UpdateEventTimeCalculation_NormalOperation)
     TestCreateUpdateEvent(relTimeExact, absTimeExact, relTime, absTime, relTimeReal, absTimeReal);
 }
 
-TEST_F(ApplicationUT, UpdateEventTimeCalculation_NegativeTimeOperation)
+TEST_F(CApplicationUT, UpdateEventTimeCalculation_NegativeTimeOperation)
 {
     // 1st update
 
@@ -228,7 +228,7 @@ TEST_F(ApplicationUT, UpdateEventTimeCalculation_NegativeTimeOperation)
     EXPECT_EQ(EVENT_NULL, event.type);
 }
 
-TEST_F(ApplicationUT, UpdateEventTimeCalculation_ChangingSimulationSpeed)
+TEST_F(CApplicationUT, UpdateEventTimeCalculation_ChangingSimulationSpeed)
 {
     m_app->SetSimulationSpeed(2.0f);
 
@@ -287,7 +287,7 @@ TEST_F(ApplicationUT, UpdateEventTimeCalculation_ChangingSimulationSpeed)
     TestCreateUpdateEvent(relTimeExact, absTimeExact, relTime, absTime, relTimeReal, absTimeReal);
 }
 
-TEST_F(ApplicationUT, UpdateEventTimeCalculation_SuspendingAndResumingSimulation)
+TEST_F(CApplicationUT, UpdateEventTimeCalculation_SuspendingAndResumingSimulation)
 {
     // 1st update -- simulation enabled
 

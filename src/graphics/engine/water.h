@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,13 +24,11 @@
 
 #pragma once
 
-
-#include "common/event.h"
-
 #include "graphics/engine/particle.h"
 
 
 class CSoundInterface;
+struct Event;
 
 
 // Graphics module namespace
@@ -77,7 +75,6 @@ public:
     CWater(CEngine* engine);
     virtual ~CWater();
 
-    void        SetDevice(CDevice* device);
     bool        EventProcess(const Event &event);
     //! Removes all the water
     void        Flush();

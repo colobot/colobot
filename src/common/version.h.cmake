@@ -1,0 +1,7 @@
+#pragma once
+
+#define COLOBOT_FULLNAME "Colobot: Gold Edition @COLOBOT_VERSION_FULL@"
+#define COLOBOT_VERSION_DISPLAY "@COLOBOT_VERSION_DISPLAY@"
+
+#define BUILD_NUMBER @BUILD_NUMBER@
+#cmakedefine OFFICIAL_BUILD

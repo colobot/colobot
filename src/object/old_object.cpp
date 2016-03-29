@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,12 +20,11 @@
 
 #include "object/old_object.h"
 
-#include "CBot/CBotDll.h"
-
 #include "app/app.h"
 
 #include "common/global.h"
 #include "common/make_unique.h"
+#include "common/settings.h"
 #include "common/stringutils.h"
 
 #include "graphics/engine/lightman.h"
@@ -114,8 +113,6 @@ COldObject::COldObject(int id)
     m_name = "";
     m_shadowLight   = -1;
     m_shadowHeight  = 0.0f;
-    m_effectLight   = -1;
-    m_effectHeight  = 0.0f;
     m_linVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_cirVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_tilt   = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -126,7 +123,6 @@ COldObject::COldObject(int id)
     m_transporterLink = 0;
     m_shield   = 1.0f;
     m_range    = 30.0f;
-    m_transparency = 0.0f;
     m_lastEnergy = 999.9f;
     m_bSelect = false;
     m_bSelectable = true;
@@ -140,7 +136,6 @@ COldObject::COldObject(int id)
     m_bVirusMode = false;
     m_virusTime = 0.0f;
     m_lastVirusParticle = 0.0f;
-    m_bCargo = false;
     m_dying = DeathType::Alive;
     m_bFlat  = false;
     m_gunGoalV = 0.0f;
@@ -187,6 +182,7 @@ COldObject::COldObject(int id)
 
 COldObject::~COldObject()
 {
+    m_main->HideDropZone(this);
 }
 
 
@@ -245,12 +241,6 @@ void COldObject::DeleteObject(bool bAll)
         m_shadowLight = -1;
     }
 
-    if ( m_effectLight != -1 )
-    {
-        m_lightMan->DeleteLight(m_effectLight);
-        m_effectLight = -1;
-    }
-
     if ( m_physics != nullptr )
     {
         m_physics->DeleteObject(bAll);
@@ -283,6 +273,22 @@ void COldObject::DeleteObject(bool bAll)
                 m_particle->DeleteParticle(m_objectPart[i].masterParti);
                 m_objectPart[i].masterParti = -1;
             }
+        }
+    }
+
+    if (!bAll)
+    {
+        if (m_power != nullptr)
+        {
+            if (m_power->Implements(ObjectInterfaceType::Old))
+                dynamic_cast<COldObject*>(m_power)->DeleteObject(bAll);
+            m_power = nullptr;
+        }
+        if (m_cargo != nullptr)
+        {
+            if (m_cargo->Implements(ObjectInterfaceType::Old))
+                dynamic_cast<COldObject*>(m_cargo)->DeleteObject(bAll);
+            m_cargo = nullptr;
         }
     }
 
@@ -536,19 +542,6 @@ void COldObject::DestroyObject(DestructionType type)
 
     m_team = 0; // Back to neutral on destruction
 
-    if (m_power != nullptr)
-    {
-        if (m_power->Implements(ObjectInterfaceType::Old))
-            dynamic_cast<COldObject*>(m_power)->m_transporter = nullptr;
-        m_power = nullptr;
-    }
-    if (m_cargo != nullptr)
-    {
-        if (m_cargo->Implements(ObjectInterfaceType::Old))
-            dynamic_cast<COldObject*>(m_cargo)->m_transporter = nullptr;
-        m_cargo = nullptr;
-    }
-
     if ( m_botVar != nullptr )
     {
         if ( Implements(ObjectInterfaceType::Transportable) )  // (*)
@@ -664,7 +657,8 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILEfi || // WingedOrgaShooter
          m_type == OBJECT_MOBILEft || // winged PracticeBot (unused)
          m_type == OBJECT_HUMAN    || // Me
-         m_type == OBJECT_TECH      ) // Tech
+         m_type == OBJECT_TECH     || // Tech
+         m_type == OBJECT_CONTROLLER)
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Flying)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::JetFlying)] = true;
@@ -722,7 +716,9 @@ void COldObject::SetType(ObjectType type)
 
     // TODO: Hacking some more
     if ( m_type == OBJECT_MOBILEtg ||
+         m_type == OBJECT_STONE    ||
          m_type == OBJECT_METAL    ||
+         m_type == OBJECT_URANIUM  ||
          m_type == OBJECT_POWER    ||
          m_type == OBJECT_ATOMIC   ||
          m_type == OBJECT_TNT      ||
@@ -732,7 +728,8 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_ANT      ||
          m_type == OBJECT_WORM     ||
          m_type == OBJECT_SPIDER   ||
-         m_type == OBJECT_BEE       )
+         m_type == OBJECT_BEE      ||
+         m_type == OBJECT_TEEN28    )
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
@@ -877,7 +874,8 @@ void COldObject::SetType(ObjectType type)
         m_type == OBJECT_WORM     ||
         m_type == OBJECT_SPIDER   ||
         m_type == OBJECT_BEE      ||
-        m_type == OBJECT_MOTHER    )
+        m_type == OBJECT_MOTHER   ||
+        m_type == OBJECT_CONTROLLER)
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Controllable)] = true;
     }
@@ -1070,13 +1068,6 @@ void COldObject::Read(CLevelParserLine* line)
         }
     }
 
-    if (m_type == OBJECT_INFO)
-    {
-        CExchangePost* exchangePost = dynamic_cast<CExchangePost*>(this);
-        assert(exchangePost != nullptr);
-        exchangePost->ReadInfo(line);
-    }
-
     // SetManual will affect bot speed
     if (m_type == OBJECT_MOBILEdr)
     {
@@ -1114,7 +1105,7 @@ void COldObject::Read(CLevelParserLine* line)
         int i = line->GetParam("run")->AsInt(-1);
         if (i != -1)
         {
-            if (i != PARAM_FIXSCENE && !m_main->GetMovies()) i = 0;
+            if (i != PARAM_FIXSCENE && !CSettings::GetInstancePointer()->GetMovies()) i = 0;
             m_auto->Start(i);  // starts the film
         }
     }
@@ -1347,13 +1338,6 @@ void COldObject::SetPartPosition(int part, const Math::Vector &pos)
             Math::Vector lightPos = pos;
             lightPos.y += m_shadowHeight;
             m_lightMan->SetLightPos(m_shadowLight, lightPos);
-        }
-
-        if ( m_effectLight != -1 )
-        {
-            Math::Vector lightPos = pos;
-            lightPos.y += m_effectHeight;
-            m_lightMan->SetLightPos(m_effectLight, lightPos);
         }
     }
 }
@@ -1672,41 +1656,6 @@ bool COldObject::CreateShadowLight(float height, Gfx::Color color)
 int COldObject::GetShadowLight()
 {
     return m_shadowLight;
-}
-
-// Creates light for the effects of a vehicle.
-
-bool COldObject::CreateEffectLight(float height, Gfx::Color color)
-{
-    if ( !m_engine->GetLightMode() )  return true;
-
-    m_effectHeight = height;
-
-    Gfx::Light light;
-    light.type       = Gfx::LIGHT_SPOT;
-    light.diffuse    = color;
-    light.position   = Math::Vector(0.0f, height, 0.0f);
-    light.direction  = Math::Vector(0.0f, -1.0f, 0.0f); // against the bottom
-    light.spotIntensity = 0.0f;
-    light.attenuation0 = 1.0f;
-    light.attenuation1 = 0.0f;
-    light.attenuation2 = 0.0f;
-    light.spotAngle = 90.0f*Math::PI/180.0f;
-
-    m_effectLight = m_lightMan->CreateLight();
-    if ( m_effectLight == -1 )  return false;
-
-    m_lightMan->SetLight(m_effectLight, light);
-    m_lightMan->SetLightIntensity(m_effectLight, 0.0f);
-
-    return true;
-}
-
-// Returns the number of light effects.
-
-int COldObject::GetEffectLight()
-{
-    return m_effectLight;
 }
 
 // Creates the circular shadow underneath a vehicle.
@@ -2102,7 +2051,6 @@ bool COldObject::EventProcess(const Event &event)
                     axeZ = -1.0f;  // tomb
                 }
 
-                axeX += m_camera->GetMotorTurn();  // additional power according to camera
                 if ( axeX >  1.0f )  axeX =  1.0f;
                 if ( axeX < -1.0f )  axeX = -1.0f;
 
@@ -2471,8 +2419,6 @@ float COldObject::GetReactorRange()
 void COldObject::SetTransparency(float value)
 {
     int     i;
-
-    m_transparency = value;
 
     for ( i=0 ; i<m_totalPart ; i++ )
     {

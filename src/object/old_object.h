@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,14 @@
 
 #pragma once
 
+#include "common/event.h"
+
 #include "object/object.h"
+
+#include "object/implementation/power_container_impl.h"
+#include "object/implementation/program_storage_impl.h"
+#include "object/implementation/programmable_impl.h"
+#include "object/implementation/task_executor_impl.h"
 
 #include "object/interface/carrier_object.h"
 #include "object/interface/controllable_object.h"
@@ -41,11 +48,6 @@
 #include "object/interface/task_executor_object.h"
 #include "object/interface/trace_drawing_object.h"
 #include "object/interface/transportable_object.h"
-
-#include "object/implementation/power_container_impl.h"
-#include "object/implementation/program_storage_impl.h"
-#include "object/implementation/programmable_impl.h"
-#include "object/implementation/task_executor_impl.h"
 
 // The father of all parts must always be the part number zero!
 const int OBJECTMAXPART         = 40;
@@ -99,7 +101,7 @@ protected:
     void        SetMovable(std::unique_ptr<CMotion> motion, std::unique_ptr<CPhysics> physics);
     void        SetAuto(std::unique_ptr<CAuto> automat);
     void        SetOption(int option);
-    void        SetJostlingSphere(const Math::Sphere& sphere);
+    void        SetJostlingSphere(const Math::Sphere& jostlingSphere);
 
 
 public:
@@ -128,7 +130,6 @@ public:
     void        SetDrawFront(bool bDraw) override;
 
     int         GetShadowLight();
-    int         GetEffectLight();
 
     void        SetFloorHeight(float height);
     void        FloorAdjust() override;
@@ -260,7 +261,6 @@ public:
 
     bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = Gfx::ENG_SHADOW_NORM);
     bool        CreateShadowLight(float height, Gfx::Color color);
-    bool        CreateEffectLight(float height, Gfx::Color color);
 
     void        FlatParent() override;
 
@@ -323,8 +323,6 @@ protected:
     int     m_option;           // option
     int     m_shadowLight;          // number of light from the shadows
     float       m_shadowHeight;         // height of light from the shadows
-    int     m_effectLight;          // number of light effects
-    float       m_effectHeight;         // height of light effects
     Math::Vector    m_linVibration;         // linear vibration
     Math::Vector    m_cirVibration;         // circular vibration
     Math::Vector    m_tilt;          // tilt
@@ -336,7 +334,6 @@ protected:
     float       m_lastEnergy;
     float       m_shield;           // shield
     float       m_range;            // flight range
-    float       m_transparency;         // transparency (0..1)
     float       m_aTime;
     float       m_shotTime;         // time since last shot
     bool        m_bVirusMode;           // virus activated/triggered
@@ -346,7 +343,6 @@ protected:
     bool        m_bSelectable;          // selectable object
     bool        m_bCheckToken;          // object with audited tokens
     bool        m_underground;         // object active but undetectable
-    bool        m_bCargo;
     DeathType   m_dying;
     bool        m_bFlat;
     bool        m_bTrainer;         // drive vehicle (without remote)
@@ -358,7 +354,6 @@ protected:
     float       m_cameraDist;
     bool        m_bCameraLock;
     float       m_magnifyDamage;
-    float       m_param;
 
     Math::Sphere m_jostlingSphere;
     float       m_shieldRadius;

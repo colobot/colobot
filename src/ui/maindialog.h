@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,8 +19,9 @@
 
 #pragma once
 
-#include "common/event.h"
 #include "common/restext.h"
+
+#include "math/point.h"
 
 #include <vector>
 #include <functional>
@@ -29,12 +30,13 @@
 class CSettings;
 class CSoundInterface;
 class CRobotMain;
+struct Event;
 
 namespace Gfx
 {
 class CEngine;
 class CParticle;
-}
+} // namespace Gfx
 
 namespace Ui
 {
@@ -50,7 +52,7 @@ public:
     bool    EventProcess(const Event &event);
 
 
-    typedef std::function<void()> DialogCallback;
+    using DialogCallback = std::function<void()>;
     void    StartQuestion(const std::string& text,
                           bool warningYes = false, bool warningNo = false,
                           bool fireParticles = false,

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -67,7 +67,9 @@ bool IsAlien(ObjectType type)
              type == OBJECT_NEST     ||
              type == OBJECT_BULLET   ||
              type == OBJECT_EGG      ||
-             type == OBJECT_MOBILEtg );
+             type == OBJECT_MOBILEtg ||
+             type == OBJECT_TEEN28   ||
+             type == OBJECT_TEEN31   );
 }
 
 CParticle::CParticle(CEngine* engine)
@@ -3294,13 +3296,15 @@ void CParticle::DrawParticleText(int i)
 {
     CharTexture tex = m_engine->GetText()->GetCharTexture(static_cast<UTF8Char>(m_particle[i].text), FONT_COURIER, FONT_SIZE_BIG*2.0f);
     if (tex.id == 0) return;
+
     m_device->SetTexture(0, tex.id);
     m_engine->SetState(ENG_RSTATE_TTEXTURE_ALPHA, IntensityToColor(m_particle[i].intensity));
 
-    m_particle[i].texSup.x = 0.0f;
-    m_particle[i].texSup.y = 0.0f;
-    m_particle[i].texInf.x = static_cast<float>(tex.charSize.x) / static_cast<float>(tex.texSize.x);
-    m_particle[i].texInf.y = static_cast<float>(tex.charSize.y) / static_cast<float>(tex.texSize.y);
+    Math::IntPoint fontTextureSize = m_engine->GetText()->GetFontTextureSize();
+    m_particle[i].texSup.x = static_cast<float>(tex.charPos.x) / fontTextureSize.x;
+    m_particle[i].texSup.y = static_cast<float>(tex.charPos.y) / fontTextureSize.y;
+    m_particle[i].texInf.x = static_cast<float>(tex.charPos.x + tex.charSize.x) / fontTextureSize.x;
+    m_particle[i].texInf.y = static_cast<float>(tex.charPos.y + tex.charSize.y) / fontTextureSize.y;
     m_particle[i].color = Color(0.0f, 0.0f, 0.0f);
 
     DrawParticleNorm(i);
@@ -3611,6 +3615,8 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
 
         if ( type  == PARTIRAY1       &&
              oType != OBJECT_MOBILEtg &&
+             oType != OBJECT_TEEN28   &&
+             oType != OBJECT_TEEN31   &&
              oType != OBJECT_ANT      &&
              oType != OBJECT_SPIDER   &&
              oType != OBJECT_BEE      &&

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,13 +19,12 @@
 
 #include "app/signal_handlers.h"
 
-#include "common/config.h"
-
-#include "common/resources/resourcemanager.h"
-
 #include "app/system.h"
 
 #include "common/stringutils.h"
+#include "common/version.h"
+
+#include "common/resources/resourcemanager.h"
 
 #include "level/robotmain.h"
 
@@ -134,8 +133,12 @@ void CSignalHandlers::ReportError(const std::string& errorMessage)
     msg << "including information on what you were doing before this happened and all the information below." << std::endl;
     msg << "==============================" << std::endl;
     #if BUILD_NUMBER == 0
-        // COLOBOT_VERSION_DISPLAY doesn't update if you don't run CMake after "git pull"
-        msg << "You seem to be running a custom compilation of version " << COLOBOT_VERSION_DISPLAY << ", but please verify that." << std::endl;
+        #ifdef OFFICIAL_BUILD
+            msg << "You are running official " << COLOBOT_VERSION_DISPLAY << " build." << std::endl;
+        #else
+            // COLOBOT_VERSION_DISPLAY doesn't update if you don't run CMake after "git pull"
+            msg << "You seem to be running a custom compilation of version " << COLOBOT_VERSION_DISPLAY << ", but please verify that." << std::endl;
+        #endif
     #else
         msg << "You are running version " << COLOBOT_VERSION_DISPLAY << " from CI build #" << BUILD_NUMBER << std::endl;
     #endif
@@ -151,7 +154,7 @@ void CSignalHandlers::ReportError(const std::string& errorMessage)
         robotMain = CRobotMain::GetInstancePointer();
         msg << "The game was in phase " << PhaseToString(robotMain->GetPhase()) << " (ID=" << robotMain->GetPhase() << ")" << std::endl;
         msg << "Last started level was: category=" << GetLevelCategoryDir(robotMain->GetLevelCategory()) << " chap=" << robotMain->GetLevelChap() << " rank=" << robotMain->GetLevelRank() << std::endl;
-        canSave = (robotMain->GetPhase() == PHASE_SIMUL) && !robotMain->IsLoading();
+        canSave = (robotMain->GetPhase() == PHASE_SIMUL || IsInSimulationConfigPhase(robotMain->GetPhase())) && !robotMain->IsLoading();
     }
     msg << "==============================" << std::endl;
     msg << std::endl;

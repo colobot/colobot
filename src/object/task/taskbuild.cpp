@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -86,7 +86,7 @@ CTaskBuild::~CTaskBuild()
 
 // Creates a building.
 
-bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
+void CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
 {
     ObjectCreateParams params;
     params.pos = pos;
@@ -117,7 +117,6 @@ bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
     m_buildingPos = m_building->GetPosition();
     m_buildingPos.y -= m_buildingHeight;
     m_building->SetPosition(m_buildingPos);
-    return true;
 }
 
 // Creates lights for the effects.
@@ -280,22 +279,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 
         pos = m_metal->GetPosition();
         a   = m_object->GetRotationY();
-        if ( !CreateBuilding(pos, a+Math::PI) )
-        {
-            m_metal->SetLock(false);  // usable again
-            m_motion->SetAction(-1);
-            if (m_object->GetType() == OBJECT_HUMAN)
-            {
-                m_object->SetObjectParent(14, 0);
-                m_object->SetPartPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
-                m_object->SetPartRotationZ(14, Math::PI);
-            }
-            m_camera->FlushEffect();
-            Abort();
-            m_bError = true;
-            m_main->DisplayError(ERR_TOOMANY, m_object->GetPosition());
-            return false;
-        }
+        CreateBuilding(pos, a+Math::PI);
         CreateLight();
     }
 

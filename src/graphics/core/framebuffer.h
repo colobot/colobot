@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ public:
     virtual ~CFramebuffer() {}
 
     //! Creates this framebuffer
-    virtual void Create() = 0;
+    virtual bool Create() = 0;
 
     //! Destroys this framebuffer
     virtual void Destroy() = 0;
@@ -122,7 +122,7 @@ public:
     explicit CDefaultFramebuffer(const FramebufferParams &params);
 
     //! Creates default framebuffer
-    void Create() override;
+    bool Create() override;
 
     //! Destroys default framebuffer
     void Destroy() override;

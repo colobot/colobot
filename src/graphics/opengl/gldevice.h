@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,8 +26,12 @@
 
 #include "graphics/core/device.h"
 
+#include "graphics/core/material.h"
+
 #include "graphics/opengl/glframebuffer.h"
 #include "graphics/opengl/glutil.h"
+
+#include "math/matrix.h"
 
 #include <string>
 #include <vector>
@@ -57,8 +61,6 @@ enum ShadowMappingSupport
     SMS_CORE            //! Core support
 };
 
-struct GLDevicePrivate;
-
 /**
   \class CGLDevice
   \brief Implementation of CDevice interface in OpenGL
@@ -79,6 +81,8 @@ public:
     void DebugHook() override;
     void DebugLights() override;
 
+    std::string GetName() override;
+
     bool Create() override;
     void Destroy() override;
 
@@ -88,6 +92,8 @@ public:
     void EndScene() override;
 
     void Clear() override;
+
+    void SetRenderMode(RenderMode mode) override;
 
     void SetTransform(TransformType type, const Math::Matrix &matrix) override;
 
@@ -100,6 +106,7 @@ public:
     Texture CreateTexture(CImage *image, const TextureCreateParams &params) override;
     Texture CreateTexture(ImageData *data, const TextureCreateParams &params) override;
     Texture CreateDepthTexture(int width, int height, int depth) override;
+    void UpdateTexture(const Texture& texture, Math::IntPoint offset, ImageData* data, TexImgFormat format) override;
     void DestroyTexture(const Texture &texture) override;
     void DestroyAllTextures() override;
 
@@ -117,7 +124,16 @@ public:
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
-    void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) override;
+    virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount) override;
+
+    virtual void DrawPrimitives(PrimitiveType type, const Vertex *vertices,
+        int first[], int count[], int drawCount,
+        Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
+    virtual void DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
+        int first[], int count[], int drawCount,
+        Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
+    virtual void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
+        int first[], int count[], int drawCount) override;
 
     unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override;
     unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override;
@@ -184,8 +200,15 @@ private:
     void UpdateModelviewMatrix();
     //! Updates position for given light based on transformation matrices
     void UpdateLightPosition(int index);
+    //!  Updates position for all lights based on transformation matrices
+    void UpdateLightPositions();
     //! Updates the texture params for given texture stage
     void UpdateTextureParams(int index);
+
+    //! Enables shadows
+    void EnableShadows();
+    //! Disables shadows
+    void DisableShadows();
 
 private:
     //! Current config
@@ -199,6 +222,12 @@ private:
     Math::Matrix m_modelviewMat;
     //! Current projection matrix
     Math::Matrix m_projectionMat;
+    //! Combined world-view-projection matrix
+    Math::Matrix m_combinedMatrix;
+    //! Current shadow matrix
+    Math::Matrix m_shadowMatrix;
+    //! true means that combined matrix is outdated
+    bool m_combinedMatrixOutdated = true;
 
     //! The current material
     Material m_material;
@@ -216,9 +245,13 @@ private:
     std::vector<bool> m_texturesEnabled;
     //! Current texture params
     std::vector<TextureStageParams> m_textureStageParams;
+    //! Texture unit remap
+    std::vector<int> m_remap;
 
     //! Set of all created textures
     std::set<Texture> m_allTextures;
+    //! White texture
+    GLuint m_whiteTexture = 0;
 
     //! Map of framebuffers
     std::map<std::string, std::unique_ptr<CFramebuffer>> m_framebuffers;
@@ -241,22 +274,10 @@ private:
     };
 
     //! Detected capabilities
-    //! OpenGL version
-    int m_glMajor = 1, m_glMinor = 1;
     //! Depth texture support
     ShadowMappingSupport m_shadowMappingSupport = SMS_NONE;
-    //! Shadow ambient support
-    bool m_shadowAmbientSupported = false;
-    //! Whether to use multitexturing
-    bool m_multitextureAvailable = false;
-    //! Whether to use VBOs or display lists
-    bool m_vboAvailable = false;
-    //! Whether anisotropic filtering is available
-    bool m_anisotropyAvailable = false;
-    //! Maximum anisotropy level
-    int m_maxAnisotropy = 1;
-    //! Maximum samples
-    int m_maxSamples = 1;
+    //! glMultiDrawArrays() available
+    bool m_multiDrawArrays = false;
     //! Framebuffer support
     FramebufferSupport m_framebufferSupport = FBS_NONE;
     //! Which vertex buffer type to use
@@ -265,6 +286,11 @@ private:
     std::map<unsigned int, VboObjectInfo> m_vboObjects;
     //! Last ID of VBO object
     unsigned int m_lastVboId = 0;
+
+    //! true means shadow mapping is enabled
+    bool m_shadowMapping = false;
+    //! true means that quality shadows are enabled
+    bool m_shadowQuality = true;
 };
 
 

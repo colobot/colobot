@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,8 +23,6 @@
 
 #include "level/parser/parserline.h"
 #include "level/parser/parserparam.h"
-
-#include "graphics/engine/oldmodelmanager.h"
 
 #include "object/object_create_params.h"
 
@@ -87,7 +85,7 @@ std::unique_ptr<CBaseAlien> CBaseAlien::Create(
     obj->SetProgrammable();
     obj->SetMovable(std::move(motion), std::move(physics));
 
-    return std::move(obj);
+    return obj;
 }
 
 void CBaseAlien::SetFixed(bool fixed)

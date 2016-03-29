@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -1540,8 +1540,8 @@ bool CMotionHuman::EventFrame(const Event &event)
             }
             volume[1] = volume[0];
             freq[1] = freq[0];
-            sound[0] = SOUND_CLICK;
-            sound[1] = SOUND_CLICK;
+            sound[0] = SOUND_NONE;
+            sound[1] = SOUND_NONE;
 
             pos = m_object->GetPosition();
 
@@ -1581,11 +1581,11 @@ bool CMotionHuman::EventFrame(const Event &event)
                 }
             }
 
-            if ( sound[0] != SOUND_CLICK )
+            if ( sound[0] != SOUND_NONE )
             {
                 m_sound->Play(sound[0], pos, volume[0], freq[0]);
             }
-            if ( sound[1] != SOUND_CLICK )
+            if ( sound[1] != SOUND_NONE )
             {
                 m_sound->Play(sound[1], pos, volume[1], freq[1]);
             }

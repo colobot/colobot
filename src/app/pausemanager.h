@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,39 +23,49 @@
  */
 #pragma once
 
+#include "common/make_unique.h"
+
 #include <string>
 #include <vector>
 #include <memory>
+
+class CRobotMain;
 
 
 enum PauseType
 {
     PAUSE_NONE = 0,
-    PAUSE_USER,
-    PAUSE_SATCOM,
-    PAUSE_SATCOMMOVIE,
-    PAUSE_DIALOG,
-    PAUSE_EDITOR,
-    PAUSE_VISIT,
-    PAUSE_CHEAT,
-    PAUSE_PHOTO,
-    PAUSE_CODE_BATTLE_LOCK
+    PAUSE_ENGINE = (1<<0), //!< pause all the CEngine classes
+    PAUSE_HIDE_SHORTCUTS = (1<<1), //!< hide the shortcuts
+    PAUSE_PHOTO = (1<<2), //!< photo mode, TODO: remove
+    PAUSE_OBJECT_UPDATES = (1<<3), //!< do not send events to objects
+    PAUSE_MUTE_SOUND = (1<<4), //!< mute sound
 };
-
-struct ActivePause
+inline PauseType& operator|=(PauseType& a, const PauseType& b)
 {
-private:
-    friend class CPauseManager;
+    return a = static_cast<PauseType>(static_cast<unsigned int>(a) | static_cast<unsigned int>(b));
+}
+inline PauseType operator|(PauseType a, const PauseType& b)
+{
+    return a |= b;
+}
+inline PauseType& operator&=(PauseType& a, const PauseType& b)
+{
+    return a = static_cast<PauseType>(static_cast<unsigned int>(a) & static_cast<unsigned int>(b));
+}
+inline PauseType operator&(PauseType a, const PauseType& b)
+{
+    return a &= b;
+}
 
-    explicit ActivePause(PauseType type)
-    : type(type)
-    {}
-
-    ActivePause(const ActivePause&) = delete;
-    ActivePause& operator=(const ActivePause&) = delete;
-
-    PauseType type;
+enum PauseMusic
+{
+    PAUSE_MUSIC_NONE = 0,
+    PAUSE_MUSIC_EDITOR = 1,
+    PAUSE_MUSIC_SATCOM = 2,
 };
+
+struct ActivePause;
 
 class CPauseManager
 {
@@ -63,19 +73,21 @@ public:
     CPauseManager();
     ~CPauseManager();
 
-    ActivePause* ActivatePause(PauseType type);
+    ActivePause* ActivatePause(PauseType type, PauseMusic music = PAUSE_MUSIC_NONE);
     void DeactivatePause(ActivePause* pause);
 
     void FlushPause();
 
-    bool IsPause();
-    PauseType GetPauseType();
+    PauseType GetPause();
+    bool IsPauseType(PauseType type);
 
 private:
-    void UpdatePause();
-
-    static std::string GetPauseName(PauseType pause);
+    //static std::string GetPauseName(PauseType pause);
+    void Update();
 
 private:
+    CRobotMain* m_main;
+
     std::vector<std::unique_ptr<ActivePause>> m_activePause;
+    PauseMusic m_lastPauseMusic = PAUSE_MUSIC_NONE;
 };

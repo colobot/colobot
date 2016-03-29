@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@
 #include "common/restext.h"
 #include "common/stringutils.h"
 
+#include "graphics/model/model_crash_sphere.h"
+
 #include "level/robotmain.h"
 
 #include "level/parser/parserline.h"
 #include "level/parser/parserparam.h"
-
-#include "graphics/model/model_crash_sphere.h"
 
 #include "script/scriptfunc.h"
 
@@ -322,7 +322,7 @@ float CObject::GetProxyDistance()
     return m_proxyDistance;
 }
 
-CBotVar* CObject::GetBotVar()
+CBot::CBotVar* CObject::GetBotVar()
 {
     return m_botVar;
 }

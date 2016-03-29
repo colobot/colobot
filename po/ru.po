@@ -28,9 +28,6 @@ msgstr " Разделы:"
 msgid " Custom levels:"
 msgstr " Пользовательские уровни:"
 
-msgid " Drivers:"
-msgstr " Драйверы:"
-
 msgid " Exercises in the chapter:"
 msgstr " Упражнения в разделе:"
 
@@ -314,9 +311,6 @@ msgstr "Здание построено"
 msgid "Building destroyed"
 msgstr "Здание разрушено"
 
-msgid "Building too close"
-msgstr "Здание слишком близко"
-
 msgid "Button %1"
 msgstr "Кнопка %1"
 
@@ -331,6 +325,12 @@ msgstr "Отдалить камеру"
 
 msgid "Camera back\\Moves the camera backward"
 msgstr "Отдалить камеру\\Перемещение камеры назад"
+
+#, fuzzy
+msgid ""
+"Camera border scrolling\\Scrolling when the mouse touches right or left "
+"border"
+msgstr "Прокрутка\\Прокрутка, когда указатель мыши касается граней экрана"
 
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Приблизать камеру\\Перемещение камеры вперед"
@@ -349,9 +349,6 @@ msgstr "Камеру вправо"
 
 msgid "Camera up\\Increase camera angle while visiting message origin"
 msgstr ""
-
-msgid "Can not create this; there are too many objects"
-msgstr "Не удается это создать, слишком много объектов"
 
 msgid "Can not produce not researched object"
 msgstr ""
@@ -380,11 +377,11 @@ msgstr "Изменить вид\\Переключение между борто�
 msgid "Change player\\Change player"
 msgstr "Новый игрок\\Выберите имя для игрока"
 
+msgid "Cheat console\\Show cheat console"
+msgstr ""
+
 msgid "Checkpoint"
 msgstr "Контрольная точка"
-
-msgid "Checkpoint crossed"
-msgstr "Вы прошли контрольную точку"
 
 msgid "Climb\\Increases the power of the jet"
 msgstr "Взлет и подъем\\Увеличивает мощность реактивного двигателя"
@@ -511,6 +508,9 @@ msgstr "Пыль\\Пыль и грязь на ботах и зданиях"
 
 msgid "Dynamic lighting\\Mobile light sources"
 msgstr "Динамическое освещение\\Подвижные источники света"
+
+msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
+msgstr ""
 
 msgid "Dynamic shadows\\Beautiful shadows!"
 msgstr ""
@@ -666,9 +666,6 @@ msgstr "Зеленый"
 msgid "Green flag"
 msgstr "Зеленый флаг"
 
-msgid "Ground inappropriate"
-msgstr "Земля не подходит"
-
 msgid "Ground not flat enough"
 msgstr "Земля недостаточно плоская"
 
@@ -757,6 +754,9 @@ msgid "Instructions\\Shows the instructions for the current mission"
 msgstr "Инструкции\\Показывает инструкции по текущей миссии"
 
 msgid "Internal error - tell the developers"
+msgstr ""
+
+msgid "Invert\\Invert values on this axis"
 msgstr ""
 
 msgid "Jet temperature"
@@ -925,9 +925,6 @@ msgstr "Нет энергии"
 msgid "No ore in the subsoil"
 msgstr ""
 
-msgid "No other robot"
-msgstr "Нет робота"
-
 msgid "No power cell"
 msgstr "Нет батареи"
 
@@ -967,9 +964,6 @@ msgstr "Не хватает энергии"
 msgid "Not found anything to destroy"
 msgstr ""
 
-msgid "Not yet enough energy"
-msgstr "Не хватает энергии"
-
 msgid "Nothing to analyze"
 msgstr "Нечего анализировать"
 
@@ -1008,9 +1002,6 @@ msgstr "ОК\\Выбрать игрока"
 
 msgid "OK\\Close program editor and return to game"
 msgstr "ОК\\Закрыть редактор программ и вернуться к игре"
-
-msgid "Object not found"
-msgstr "Объект не найден"
 
 msgid "Object too close"
 msgstr "Объект слишком близок"
@@ -1058,6 +1049,9 @@ msgstr "Частицы в интерфейсе меню\\Пар из труб и
 
 msgid "Paste (Ctrl+v)"
 msgstr "Вставить (Ctrl+V)"
+
+msgid "Pause in background\\Pause the game when the window is unfocused"
+msgstr ""
 
 msgid "Pause/continue"
 msgstr "Пауза/продолжить"
@@ -1183,9 +1177,6 @@ msgstr "Общее\\Общая папка"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Землетряс. при взрывах\\Тряска экрана при взрывах"
-
-msgid "Quality dynamic shadows\\Enable shadow transparency and self shadowing"
-msgstr ""
 
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr ""
@@ -1320,9 +1311,6 @@ msgstr "Сохранить\\Сохранить текущую миссию"
 
 msgid "Save\\Saves the current mission"
 msgstr "Сохранить\\Сохранить текущую миссию"
-
-msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-msgstr "Прокрутка\\Прокрутка, когда указатель мыши касается граней экрана"
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Выбор астронавта\\Выбор астронавта"
@@ -1470,9 +1458,6 @@ msgstr "Аптечка"
 msgid "Switch bots <-> buildings"
 msgstr "Переключение между ботами и зданиями"
 
-msgid "System mouse\\Use system mouse cursor"
-msgstr ""
-
 msgid "Take off to finish the mission"
 msgstr "Взлететь, чтобы закончить миссию"
 
@@ -1496,12 +1481,6 @@ msgstr "Выражение должно возвращать логическо�
 
 msgid "The function returned no value "
 msgstr "Функция не возвратила значения"
-
-msgid ""
-"The list is only available if a \\l;radar station\\u object\\radar; is "
-"working.\n"
-msgstr ""
-"Список доступен только если \\l;radar station\\u object\\radar; работают\n"
 
 msgid ""
 "The mission is not accomplished yet (press \\key help; for more details)"
@@ -1636,9 +1615,6 @@ msgstr "Запасы урана (место для буровой вышки)"
 
 msgid "Uranium ore"
 msgstr "Урановая руда"
-
-msgid "Use a joystick\\Joystick or keyboard"
-msgstr "Использовать джойстик\\Джойстик или клавиатура"
 
 msgid "User levels"
 msgstr "Пользовательские уровни"
@@ -1829,35 +1805,18 @@ msgstr "\\Фиолетовый флаг"
 msgid "\\Yellow flags"
 msgstr "\\Желтый флаг"
 
-msgid "\\b;Aliens\n"
-msgstr "\\b;Чужаки\n"
-
-msgid "\\b;Buildings\n"
-msgstr "\\b;Здания\n"
-
-msgid "\\b;Error\n"
-msgstr "\\b;Ошибка\n"
-
-msgid "\\b;List of objects\n"
-msgstr "\\b;Список объектов\n"
-
-msgid "\\b;Moveable objects\n"
-msgstr "\\b;Подвижные объекты\n"
-
-msgid "\\b;Robots\n"
-msgstr "\\b;Роботы\n"
-
-msgid "\\c; (none)\\n;\n"
-msgstr "\\c; (нет)\\n;\n"
-
-msgid "www.colobot.info"
+msgid "colobot.info"
 msgstr ""
 
-msgid "www.epsitec.com"
+#, fuzzy
+msgid "epsitec.com"
 msgstr "www.epsitec.com"
 
 #~ msgid " "
 #~ msgstr " "
+
+#~ msgid " Drivers:"
+#~ msgstr " Драйверы:"
 
 #~ msgid " Missions on this level:"
 #~ msgstr " Миссии на этом уровне:"
@@ -1865,11 +1824,20 @@ msgstr "www.epsitec.com"
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "3D-звук\\Стерео звук"
 
+#~ msgid "Building too close"
+#~ msgstr "Здание слишком близко"
+
 #~ msgid "COLOBOT"
 #~ msgstr "КОЛОБОТ"
 
+#~ msgid "Can not create this; there are too many objects"
+#~ msgstr "Не удается это создать, слишком много объектов"
+
 #~ msgid "Cancel\\Keep current player name"
 #~ msgstr "Отмена\\Отмена"
+
+#~ msgid "Checkpoint crossed"
+#~ msgstr "Вы прошли контрольную точку"
 
 #~ msgid "Compass"
 #~ msgstr "Компас"
@@ -1896,6 +1864,9 @@ msgstr "www.epsitec.com"
 #~ msgid "Friendly fire\\Your shooting can damage your own objects "
 #~ msgstr "Огонь по своим\\Вы можете повредить собственные объекты"
 
+#~ msgid "Ground inappropriate"
+#~ msgstr "Земля не подходит"
+
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Помощь по командам\\Более подробная справку по командам"
 
@@ -1905,8 +1876,17 @@ msgstr "www.epsitec.com"
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Тень мыши\\Мышь отбрасывает тень"
 
+#~ msgid "No other robot"
+#~ msgstr "Нет робота"
+
+#~ msgid "Not yet enough energy"
+#~ msgstr "Не хватает энергии"
+
 #~ msgid "Num of decorative objects\\Number of purely ornamental objects"
 #~ msgstr "Количество декораций\\Количество декоративных объектов"
+
+#~ msgid "Object not found"
+#~ msgstr "Объект не найден"
 
 #~ msgid "Planets and stars\\Astronomical objects in the sky"
 #~ msgstr "Планеты и звезды\\Астрономические объекты в небе"
@@ -1932,8 +1912,38 @@ msgstr "www.epsitec.com"
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Текстуры\\Качество текстур "
 
+#~ msgid ""
+#~ "The list is only available if a \\l;radar station\\u object\\radar; is "
+#~ "working.\n"
+#~ msgstr ""
+#~ "Список доступен только если \\l;radar station\\u object\\radar; работают\n"
+
+#~ msgid "Use a joystick\\Joystick or keyboard"
+#~ msgstr "Использовать джойстик\\Джойстик или клавиатура"
+
 #~ msgid "User\\User levels"
 #~ msgstr "Польз.\\Пользовательские уровни"
 
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Вернуться в COLOBOT"
+
+#~ msgid "\\b;Aliens\n"
+#~ msgstr "\\b;Чужаки\n"
+
+#~ msgid "\\b;Buildings\n"
+#~ msgstr "\\b;Здания\n"
+
+#~ msgid "\\b;Error\n"
+#~ msgstr "\\b;Ошибка\n"
+
+#~ msgid "\\b;List of objects\n"
+#~ msgstr "\\b;Список объектов\n"
+
+#~ msgid "\\b;Moveable objects\n"
+#~ msgstr "\\b;Подвижные объекты\n"
+
+#~ msgid "\\b;Robots\n"
+#~ msgstr "\\b;Роботы\n"
+
+#~ msgid "\\c; (none)\\n;\n"
+#~ msgstr "\\c; (нет)\\n;\n"

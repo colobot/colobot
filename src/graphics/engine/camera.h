@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,15 +24,13 @@
 
 #pragma once
 
-
-#include "common/event.h"
-
 #include "graphics/engine/engine.h"
 
 
 class CObject;
 class CRobotMain;
 class CInput;
+struct Event;
 
 
 // Graphics module namespace
@@ -79,8 +77,6 @@ enum CameraSmooth
     CAM_SMOOTH_NORM         = 1,
     //! Hard
     CAM_SMOOTH_HARD         = 2,
-    //! Special
-    CAM_SMOOTH_SPEC         = 3,
 };
 
 enum CenteringPhase
@@ -153,7 +149,7 @@ public:
 
     //! Management of the smoothing mode
     void              SetSmooth(CameraSmooth type);
-    CameraSmooth GetSmoth();
+    CameraSmooth GetSmooth();
 
     //! Management of the setback distance
     void        SetDist(float dist);
@@ -208,17 +204,12 @@ public:
     bool        GetEffect();
     void        SetBlood(bool enable);
     bool        GetBlood();
-    void        SetCameraScroll(bool scroll);
-    bool        GetCameraScroll();
+    void        SetOldCameraScroll(bool scroll);
+    bool        GetOldCameraScroll();
     void        SetCameraInvertX(bool invert);
     bool        GetCameraInvertX();
     void        SetCameraInvertY(bool invert);
     bool        GetCameraInvertY();
-
-    //! Returns an additional force to turn
-    float       GetMotorTurn();
-    //! Returns the default sprite to use for the mouse
-    EngineMouseType GetMouseDef(Math::Point pos);
 
     void        SetCameraSpeed(float speed);
 
@@ -226,7 +217,9 @@ protected:
     //! Changes the camera according to the mouse moved
     bool        EventMouseMove(const Event &event);
     //! Mouse wheel operation
-    void        EventMouseWheel(WheelDirection dir);
+    void        EventMouseWheel(const Event &event);
+    //! Mouse button handling
+    void        EventMouseButton(const Event &event);
     //! Changes the camera according to the time elapsed
     bool        EventFrame(const Event &event);
     //! Moves the point of view
@@ -251,7 +244,7 @@ protected:
     bool        EventFrameScript(const Event &event);
 
     //! Specifies the location and direction of view to the 3D engine
-    void        SetViewTime(const Math::Vector &vEyePt, const Math::Vector &vLookatPt, float rTime);
+    void        SetViewTime(const Math::Vector &eyePt, const Math::Vector &lookatPt, float rTime);
     //! Avoid the obstacles
     bool        IsCollision(Math::Vector &eye, Math::Vector lookat);
     //! Avoid the obstacles
@@ -305,11 +298,6 @@ protected:
 
     float       m_focus;
 
-    bool            m_rightDown;
-    Math::Point     m_rightPosInit;
-    Math::Point     m_rightPosCenter;
-    Math::Point     m_rightPosMove;
-
     //! CAM_TYPE_FREE: eye
     Math::Vector    m_eyePt;
     //! CAM_TYPE_FREE: horizontal direction
@@ -349,22 +337,17 @@ protected:
     //! CAM_TYPE_VISIT: initial type
     CameraType   m_visitType;
     //! CAM_TYPE_VISIT: direction
-    float        m_visitDirectionH;
-    //! CAM_TYPE_VISIT: direction
     float        m_visitDirectionV;
 
     //! CAM_TYPE_EDIT: height
     float        m_editHeight;
 
     float        m_remotePan;
-    float        m_remoteZoom;
 
-    Math::Point  m_mousePos;
-    float        m_mouseDirH;
-    float        m_mouseDirV;
-    float        m_mouseMarging;
-
-    float        m_motorTurn;
+    //! Last known mouse position, used to calculate change since last frame
+    Math::Point  m_mousePos = Math::Point(0.5f, 0.5f);
+    Math::Point  m_mouseDelta = Math::Point(0.0f, 0.0f);
+    Math::Point  m_mouseDeltaEdge = Math::Point(0.0f, 0.0f);
 
     CenteringPhase m_centeringPhase;
     float       m_centeringAngleH;
@@ -398,12 +381,11 @@ protected:
     //! Blood?
     bool        m_blood;
     //! Scroll in the edges?
-    bool        m_cameraScroll;
+    bool m_oldCameraScroll;
     //! X inversion in the edges?
     bool        m_cameraInvertX;
     //! Y inversion in the edges?
     bool        m_cameraInvertY;
-
 };
 
 
