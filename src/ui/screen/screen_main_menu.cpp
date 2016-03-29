@@ -163,9 +163,11 @@ void CScreenMainMenu::CreateInterface()
     pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
     // SatCom button
-    pos.x = ox+sx*4.4f;
-    pos.y = oy+sy*4.4f;
-    pb = pw->CreateButton(pos, dim, 128+60, EVENT_INTERFACE_SATCOM);
+    pos.x = ox+sx*4.3f;
+    pos.y = oy+sy*4.3f;
+    ddim.x = dim.x*1.2f;
+    ddim.y = dim.y*1.2f;
+    pb = pw->CreateButton(pos, ddim, 128+60, EVENT_INTERFACE_SATCOM);
     pb->SetState(STATE_SHADOW);
 
     SetBackground("textures/interface/interface.png");
