@@ -1631,6 +1631,12 @@ void CRobotMain::StartDisplayVisit(EventType event)
 {
     if (m_editLock) return;
 
+    if (m_visitPause)
+    {
+        m_pause->DeactivatePause(m_visitPause);
+        m_visitPause = nullptr;
+    }
+
     Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
     if (pw == nullptr) return;
 
