@@ -436,7 +436,10 @@ void CGLDevice::BeginScene()
 void CGLDevice::EndScene()
 {
 #ifdef DEV_BUILD
-    CheckGLErrors();
+    int count = ClearGLErrors();
+
+    if (count > 0)
+        GetLogger()->Debug("OpenGL errors detected: %d\n", count);
 #endif
 }
 
@@ -1766,8 +1769,6 @@ void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
         if (it == m_vboObjects.end())
             return;
 
-        glEnable(GL_VERTEX_ARRAY);
-
         if(m_vertexBufferType == VBT_VBO_CORE)
             glBindBuffer(GL_ARRAY_BUFFER, (*it).second.bufferId);
         else
@@ -1838,8 +1839,6 @@ void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         else
             glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-
-        glDisable(GL_VERTEX_ARRAY);
     }
     else
     {
