@@ -349,7 +349,7 @@ bool CScreenApperance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PFACE3:
         case EVENT_INTERFACE_PFACE4:
             apperance.face = event.type-EVENT_INTERFACE_PFACE1;
-			apperance.DefHairColor();
+            apperance.DefHairColor();
             UpdatePerso();
             m_main->ScenePerso();
             break;
