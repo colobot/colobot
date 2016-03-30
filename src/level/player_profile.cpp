@@ -68,7 +68,7 @@ void PlayerApperance::DefPerso()
         this->glasses = 4;
         this->colorHair.r = 74.0f/256.0f;
         this->colorHair.g = 16.0f/256.0f;
-        this->colorHair.b = 0.0f/256.0f;  // yellow
+        this->colorHair.b = 0.0f/256.0f;  // yellow, no more
     }
 
     this->colorHair.a  = 0.0f;
@@ -100,7 +100,7 @@ void PlayerApperance::DefHairColor()
     {
         this->colorHair.r = 74.0f / 256.0f;
         this->colorHair.g = 16.0f / 256.0f;
-        this->colorHair.b = 0.0f / 256.0f;  // yellow
+        this->colorHair.b = 0.0f / 256.0f;  // yellow, no more
     }
 
     this->colorHair.a = 0.0f;
