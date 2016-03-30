@@ -52,23 +52,23 @@ void PlayerApperance::DefPerso()
     if ( this->face == 1 )  // bald ?
     {
         this->glasses = 0;
-        this->colorHair.r =  83.0f/256.0f;
-        this->colorHair.g =  64.0f/256.0f;
-        this->colorHair.b =  51.0f/256.0f;  // brown
+        this->colorHair.r = 74.0f / 256.0f;
+        this->colorHair.g = 58.0f / 256.0f;
+        this->colorHair.b = 46.0f / 256.0f;  // brown
     }
     if ( this->face == 2 )  // carlos ?
     {
         this->glasses = 1;
-        this->colorHair.r =  85.0f/256.0f;
-        this->colorHair.g =  48.0f/256.0f;
+        this->colorHair.r =  70.0f/256.0f;
+        this->colorHair.g =  40.0f/256.0f;
         this->colorHair.b =   9.0f/256.0f;  // brown
     }
     if ( this->face == 3 )  // blond ?
     {
         this->glasses = 4;
-        this->colorHair.r = 255.0f/256.0f;
-        this->colorHair.g = 255.0f/256.0f;
-        this->colorHair.b = 181.0f/256.0f;  // yellow
+        this->colorHair.r = 74.0f/256.0f;
+        this->colorHair.g = 16.0f/256.0f;
+        this->colorHair.b = 0.0f/256.0f;  // yellow
     }
 
     this->colorHair.a  = 0.0f;
@@ -78,32 +78,32 @@ void PlayerApperance::DefPerso()
 
 void PlayerApperance::DefHairColor()
 {
-	if (this->face == 0)  // normal ?
-	{
-		this->colorHair.r = 90.0f / 256.0f;
-		this->colorHair.g = 95.0f / 256.0f;
-		this->colorHair.b = 85.0f / 256.0f;  // black
-	}
-	if (this->face == 1)  // bald ?
-	{
-		this->colorHair.r = 83.0f / 256.0f;
-		this->colorHair.g = 64.0f / 256.0f;
-		this->colorHair.b = 51.0f / 256.0f;  // brown
-	}
-	if (this->face == 2)  // carlos ?
-	{
-		this->colorHair.r = 85.0f / 256.0f;
-		this->colorHair.g = 48.0f / 256.0f;
-		this->colorHair.b = 9.0f / 256.0f;  // brown
-	}
-	if (this->face == 3)  // blond ?
-	{
-		this->colorHair.r = 255.0f / 256.0f;
-		this->colorHair.g = 255.0f / 256.0f;
-		this->colorHair.b = 181.0f / 256.0f;  // yellow
-	}
+    if (this->face == 0)  // normal ?
+    {
+        this->colorHair.r = 90.0f / 256.0f;
+        this->colorHair.g = 95.0f / 256.0f;
+        this->colorHair.b = 85.0f / 256.0f;  // black
+    }
+    if (this->face == 1)  // bald ?
+    {
+        this->colorHair.r = 74.0f / 256.0f;
+        this->colorHair.g = 58.0f / 256.0f;
+        this->colorHair.b = 46.0f / 256.0f;  // brown
+    }
+    if (this->face == 2)  // carlos ?
+    {
+        this->colorHair.r = 70.0f / 256.0f;
+        this->colorHair.g = 40.0f / 256.0f;
+        this->colorHair.b = 9.0f / 256.0f;  // brown
+    }
+    if (this->face == 3)  // blond ?
+    {
+        this->colorHair.r = 74.0f / 256.0f;
+        this->colorHair.g = 16.0f / 256.0f;
+        this->colorHair.b = 0.0f / 256.0f;  // yellow
+    }
 
-	this->colorHair.a = 0.0f;
+    this->colorHair.a = 0.0f;
 }
 
 CPlayerProfile::CPlayerProfile(std::string playerName)
