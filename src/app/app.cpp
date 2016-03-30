@@ -42,6 +42,7 @@
 
 #include "object/object_manager.h"
 
+#include "sound/sound.h"
 #ifdef OPENAL_SOUND
     #include "sound/oalsound/alsound.h"
 #endif
