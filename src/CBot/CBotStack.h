@@ -105,7 +105,7 @@ public:
 
     /**
      * \brief Check if there was an error
-     * \return false if an error occured
+     * \return false if an error occurred
      * \see GetError()
      */
     bool IsOk()

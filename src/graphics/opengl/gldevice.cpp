@@ -169,7 +169,7 @@ bool CGLDevice::Create()
 
     if (!InitializeGLEW())
     {
-        m_errorMessage = "An error occured while initializing GLEW.";
+        m_errorMessage = "An error occurred while initializing GLEW.";
         return false;
     }
 
