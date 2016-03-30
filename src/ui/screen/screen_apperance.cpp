@@ -164,13 +164,13 @@ void CScreenApperance::CreateInterface()
     pb = pw->CreateButton(pos, ddim, 43, EVENT_INTERFACE_PFACE1);
     pb->SetState(STATE_SHADOW);
     pos.x += 50.0f/640.0f;
-    pb = pw->CreateButton(pos, ddim, 46, EVENT_INTERFACE_PFACE4);
+    pb = pw->CreateButton(pos, ddim, 44, EVENT_INTERFACE_PFACE2);
     pb->SetState(STATE_SHADOW);
     pos.x += 50.0f/640.0f;
     pb = pw->CreateButton(pos, ddim, 45, EVENT_INTERFACE_PFACE3);
     pb->SetState(STATE_SHADOW);
     pos.x += 50.0f/640.0f;
-    pb = pw->CreateButton(pos, ddim, 44, EVENT_INTERFACE_PFACE2);
+    pb = pw->CreateButton(pos, ddim, 46, EVENT_INTERFACE_PFACE4);
     pb->SetState(STATE_SHADOW);
 
     // Glasses
@@ -349,6 +349,7 @@ bool CScreenApperance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PFACE3:
         case EVENT_INTERFACE_PFACE4:
             apperance.face = event.type-EVENT_INTERFACE_PFACE1;
+			apperance.DefHairColor();
             UpdatePerso();
             m_main->ScenePerso();
             break;
