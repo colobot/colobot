@@ -1302,8 +1302,8 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pw->CreateButton(pos, ddim, 19, EVENT_OBJECT_HELP);
     }
 
-    if ( //type != OBJECT_HUMAN       && //now camera icon is enabled for humans
-         //type != OBJECT_TECH        &&
+    if ( type != OBJECT_HUMAN       &&
+         type != OBJECT_TECH        &&
          !m_object->GetCameraLock() )
     {
 //?     if ( m_main->GetShowMap() )
@@ -1395,36 +1395,31 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pt = pw->CreateTarget(pos, ddim, 0, EVENT_OBJECT_TARGET);
         pt->ClearState(STATE_GLINT);
     }
-    
-    //no robot iterface when in human body
-    if( type != OBJECT_HUMAN &&
-        type != OBJECT_TECH  )
-	{ 
-        ddim.x = 64.0f/640.0f;
-        ddim.y = 64.0f/480.0f;
-        pos.x =  30.0f/640.0f;
-        pos.y = 430.0f/480.0f-ddim.y;
-        pw->CreateGroup(pos, ddim, 13, EVENT_OBJECT_CORNERul);
 
-        ddim.x = 64.0f/640.0f;
-        ddim.y = 64.0f/480.0f;
-        pos.x = 610.0f/640.0f-ddim.x;
-        pos.y = 430.0f/480.0f-ddim.y;
-        pw->CreateGroup(pos, ddim, 14, EVENT_OBJECT_CORNERur);
+    ddim.x = 64.0f/640.0f;
+    ddim.y = 64.0f/480.0f;
+    pos.x =  30.0f/640.0f;
+    pos.y = 430.0f/480.0f-ddim.y;
+    pw->CreateGroup(pos, ddim, 13, EVENT_OBJECT_CORNERul);
 
-        ddim.x = 64.0f/640.0f;
-        ddim.y = 64.0f/480.0f;
-        pos.x =  30.0f/640.0f;
-        pos.y = 110.0f/480.0f;
-        pw->CreateGroup(pos, ddim, 15, EVENT_OBJECT_CORNERdl);
+    ddim.x = 64.0f/640.0f;
+    ddim.y = 64.0f/480.0f;
+    pos.x = 610.0f/640.0f-ddim.x;
+    pos.y = 430.0f/480.0f-ddim.y;
+    pw->CreateGroup(pos, ddim, 14, EVENT_OBJECT_CORNERur);
 
-        ddim.x = 64.0f/640.0f;
-        ddim.y = 64.0f/480.0f;
-        pos.x = 610.0f/640.0f-ddim.x;
-        pos.y = 110.0f/480.0f;
-        pw->CreateGroup(pos, ddim, 16, EVENT_OBJECT_CORNERdr);
-    }
-    
+    ddim.x = 64.0f/640.0f;
+    ddim.y = 64.0f/480.0f;
+    pos.x =  30.0f/640.0f;
+    pos.y = 110.0f/480.0f;
+    pw->CreateGroup(pos, ddim, 15, EVENT_OBJECT_CORNERdl);
+
+    ddim.x = 64.0f/640.0f;
+    ddim.y = 64.0f/480.0f;
+    pos.x = 610.0f/640.0f-ddim.x;
+    pos.y = 110.0f/480.0f;
+    pw->CreateGroup(pos, ddim, 16, EVENT_OBJECT_CORNERdr);
+
     UpdateInterface();
     m_lastUpdateTime = 0.0f;
     UpdateInterface(0.0f);
