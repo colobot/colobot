@@ -143,7 +143,7 @@ public:
      * \param[out] code Error code
      * \param[out] start Starting position in the code string of this error
      * \param[out] end Ending position in the code string of this error
-     * \return false if no error has occured
+     * \return false if no error has occurred
      */
     bool GetError(CBotError& code, int& start, int& end);
 
@@ -153,7 +153,7 @@ public:
      * \param[out] start Starting position in the code string of this error
      * \param[out] end Ending position in the code string of this error
      * \param[out] pProg Program that caused the error (TODO: This always returns "this"... what?)
-     * \return false if no error has occured
+     * \return false if no error has occurred
      */
     bool GetError(CBotError& code, int& start, int& end, CBotProgram*& pProg);
 

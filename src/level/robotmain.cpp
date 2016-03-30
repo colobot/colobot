@@ -563,7 +563,7 @@ void CRobotMain::ChangePhase(Phase phase)
         }
         catch (const std::runtime_error& e)
         {
-            LevelLoadingError("An error occured while trying to load a level", e);
+            LevelLoadingError("An error occurred while trying to load a level", e);
         }
     }
 
@@ -606,7 +606,7 @@ void CRobotMain::ChangePhase(Phase phase)
             }
             catch (const std::runtime_error& e)
             {
-                LevelLoadingError("An error occured while trying to load win scene", e);
+                LevelLoadingError("An error occurred while trying to load win scene", e);
             }
         }
     }
@@ -636,7 +636,7 @@ void CRobotMain::ChangePhase(Phase phase)
             }
             catch (const std::runtime_error& e)
             {
-                LevelLoadingError("An error occured while trying to load lost scene", e);
+                LevelLoadingError("An error occurred while trying to load lost scene", e);
             }
         }
     }
@@ -2781,7 +2781,7 @@ void CRobotMain::ScenePerso()
     }
     catch (const std::runtime_error& e)
     {
-        LevelLoadingError("An error occured while trying to load apperance scene", e, PHASE_PLAYER_SELECT);
+        LevelLoadingError("An error occurred while trying to load apperance scene", e, PHASE_PLAYER_SELECT);
     }
 
     m_engine->SetDrawWorld(false);  // does not draw anything on the interface
@@ -4986,7 +4986,7 @@ void CRobotMain::ResetCreate()
     }
     catch (const std::runtime_error& e)
     {
-        LevelLoadingError("An error occured while trying to reset scene", e);
+        LevelLoadingError("An error occurred while trying to reset scene", e);
     }
 }
 
