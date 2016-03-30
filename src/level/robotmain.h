@@ -113,6 +113,7 @@ class CMainMap;
 class CInterface;
 class CDisplayText;
 class CDisplayInfo;
+class CDebugMenu;
 }
 
 struct NewScriptName
@@ -160,9 +161,6 @@ public:
     Ui::CInterface* GetInterface();
     Ui::CDisplayText* GetDisplayText();
     CPauseManager* GetPauseManager();
-
-    void        ResetAfterVideoConfigChanged();
-    void        ReloadAllTextures();
 
     void        ChangePhase(Phase phase);
     bool        ProcessEvent(Event &event);
@@ -364,6 +362,10 @@ public:
 
     bool        IsSelectable(CObject* obj);
 
+    void SetDebugCrashSpheres(bool draw);
+
+    bool GetDebugCrashSpheres();
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -395,7 +397,7 @@ protected:
     void        StartDisplayVisit(EventType event);
     void        FrameVisit(float rTime);
     void        StopDisplayVisit();
-    void        ExecuteCmd(char *cmd);
+    void        ExecuteCmd(const std::string& cmd);
     void        UpdateSpeedLabel();
 
     int         AutosaveRotate(bool freeOne);
@@ -435,6 +437,7 @@ protected:
     std::unique_ptr<Ui::CInterface> m_interface;
     std::unique_ptr<Ui::CDisplayInfo> m_displayInfo;
     std::unique_ptr<Ui::CDisplayText> m_displayText;
+    std::unique_ptr<Ui::CDebugMenu> m_debugMenu;
     std::unique_ptr<CSettings> m_settings;
 
     //! Progress of loaded player
@@ -562,13 +565,9 @@ protected:
 
     ShowLimit       m_showLimit[MAXSHOWLIMIT];
 
-    Gfx::Color      m_colorRefBot;
     std::map<int, Gfx::Color> m_colorNewBot;
-    Gfx::Color      m_colorRefAlien;
     Gfx::Color      m_colorNewAlien;
-    Gfx::Color      m_colorRefGreen;
     Gfx::Color      m_colorNewGreen;
-    Gfx::Color      m_colorRefWater;
     Gfx::Color      m_colorNewWater;
     float           m_colorShiftWater = 0.0f;
 

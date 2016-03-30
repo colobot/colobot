@@ -291,9 +291,6 @@ public:
     //! Draws all the particles
     void        DrawParticle(int sheet);
 
-    //! Writes a file containing all the tire tracks
-    bool        WriteWheelTrace(const char *filename, int width, int height, Math::Vector dl, Math::Vector ur);
-
 protected:
     //! Removes a particle of given rank
     void        DeleteRank(int rank);

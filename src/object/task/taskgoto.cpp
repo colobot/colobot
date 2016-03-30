@@ -22,6 +22,7 @@
 
 #include "common/event.h"
 #include "common/global.h"
+#include "common/image.h"
 #include "common/make_unique.h"
 
 #include "graphics/engine/terrain.h"
@@ -65,6 +66,9 @@ CTaskGoto::CTaskGoto(COldObject* object) : CForegroundTask(object)
 CTaskGoto::~CTaskGoto()
 {
     BitmapClose();
+
+    if (m_engine->GetDebugGoto() && m_object->GetSelect())
+        m_engine->SetDebugGotoBitmap(std::move(nullptr));
 }
 
 
@@ -77,8 +81,62 @@ bool CTaskGoto::EventProcess(const Event &event)
     float           a, g, dist, linSpeed, cirSpeed, h, hh, factor, dir;
     Error           ret;
 
-    if ( m_engine->GetPause() )  return true;
     if ( event.type != EVENT_FRAME )  return true;
+
+    if (m_engine->GetDebugGoto())
+    {
+        auto AdjustPoint = [&](Math::Vector p) -> Math::Vector
+        {
+            m_terrain->AdjustToFloor(p);
+            p.y += 2.0f;
+            return p;
+        };
+
+        std::vector<Gfx::VertexCol> debugLine;
+        if (m_bmTotal > 0)
+        {
+            Gfx::Color color = Gfx::Color(0.0f, 1.0f, 0.0f);
+            for (int i = 0; i < m_bmTotal; i++)
+            {
+                if (i > m_bmIndex-1)
+                    color = Gfx::Color(1.0f, 0.0f, 0.0f);
+                debugLine.push_back(Gfx::VertexCol(AdjustPoint(m_bmPoints[i]), color));
+            }
+            m_engine->AddDebugGotoLine(debugLine);
+            debugLine.clear();
+        }
+        Gfx::Color color = Gfx::Color(0.0f, 0.0f, 1.0f);
+        debugLine.push_back(Gfx::VertexCol(m_object->GetPosition(), color));
+        debugLine.push_back(Gfx::VertexCol(AdjustPoint(m_bmTotal > 0 && m_bmIndex <= m_bmTotal && m_phase != TGP_BEAMSEARCH ? m_bmPoints[m_bmIndex] : m_goal), color));
+        m_engine->AddDebugGotoLine(debugLine);
+
+        if (m_object->GetSelect() && m_bmChanged)
+        {
+            if (m_bmArray != nullptr)
+            {
+                std::unique_ptr<CImage> debugImage = MakeUnique<CImage>(Math::IntPoint(m_bmSize, m_bmSize));
+                debugImage->Fill(Gfx::IntColor(255, 255, 255, 255));
+                for (int x = 0; x < m_bmSize; x++)
+                {
+                    for (int y = 0; y < m_bmSize; y++)
+                    {
+                        bool a = BitmapTestDot(0, x, y);
+                        bool b = BitmapTestDot(1, x, y);
+                        if (a || b)
+                        {
+                            Gfx::Color c = Gfx::Color(0.0f, 0.0f, 0.0f, 1.0f);
+                            if (b) c = Gfx::Color(0.0f, 0.0f, 1.0f, 1.0f);
+                            debugImage->SetPixel(Math::IntPoint(x, y), c);
+                        }
+                    }
+                }
+                m_engine->SetDebugGotoBitmap(std::move(debugImage));
+            }
+            m_bmChanged = false;
+        }
+    }
+
+    if ( m_engine->GetPause() )  return true;
 
     // Momentarily stationary object (ant on the back)?
     CBaseAlien* alien = dynamic_cast<CBaseAlien*>(m_object);
@@ -1616,6 +1674,8 @@ Error CTaskGoto::BeamExplore(const Math::Vector &prevPos, const Math::Vector &cu
     iLar = 0;
     if ( i >= MAXPOINTS )  return ERR_GOTO_ITER;  // too many recursions
 
+    m_bmTotal = i;
+
     if ( m_bmIter[i] == -1 )
     {
         m_bmIter[i] = 0;
@@ -1970,6 +2030,7 @@ bool CTaskGoto::BitmapOpen()
 
     m_bmSize = static_cast<int>(3200.0f/BM_DIM_STEP);
     m_bmArray = MakeUniqueArray<unsigned char>(m_bmSize*m_bmSize/8*2);
+    m_bmChanged = true;
 
     m_bmOffset = m_bmSize/2;
     m_bmLine = m_bmSize/8;
@@ -1987,6 +2048,7 @@ bool CTaskGoto::BitmapOpen()
 bool CTaskGoto::BitmapClose()
 {
     m_bmArray.reset();
+    m_bmChanged = true;
     return true;
 }
 
@@ -2043,6 +2105,7 @@ void CTaskGoto::BitmapSetDot(int rank, int x, int y)
          y < 0 || y >= m_bmSize )  return;
 
     m_bmArray[rank*m_bmLine*m_bmSize + m_bmLine*y + x/8] |= (1<<x%8);
+    m_bmChanged = true;
 }
 
 // Removes a point in the bitmap.
@@ -2054,6 +2117,7 @@ void CTaskGoto::BitmapClearDot(int rank, int x, int y)
          y < 0 || y >= m_bmSize )  return;
 
     m_bmArray[rank*m_bmLine*m_bmSize + m_bmLine*y + x/8] &= ~(1<<x%8);
+    m_bmChanged = true;
 }
 
 // Tests a point in the bitmap.

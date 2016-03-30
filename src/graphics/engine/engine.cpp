@@ -359,8 +359,6 @@ void CEngine::ResetAfterVideoConfigChanged()
     m_size = m_app->GetVideoConfig().size;
     m_mouseSize = Math::Point(0.04f, 0.04f * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
 
-    CRobotMain::GetInstancePointer()->ResetAfterVideoConfigChanged(); //TODO: Remove cross-reference to CRobotMain
-
     // Update the camera projection matrix for new aspect ratio
     SetFocus(m_focus);
 
@@ -373,13 +371,18 @@ void CEngine::ReloadAllTextures()
     FlushTextureCache();
     m_text->FlushCache();
 
-    CRobotMain::GetInstancePointer()->ReloadAllTextures(); //TODO: Remove cross-reference to CRobotMain
+    m_app->GetEventQueue()->AddEvent(Event(EVENT_RELOAD_TEXTURES));
     UpdateGroundSpotTextures();
     LoadAllTextures();
 }
 
 bool CEngine::ProcessEvent(const Event &event)
 {
+    if (event.type == EVENT_RESOLUTION_CHANGED)
+    {
+        ResetAfterVideoConfigChanged();
+    }
+
     if (event.type == EVENT_KEY_DOWN)
     {
         auto data = event.GetData<KeyEventData>();
@@ -387,18 +390,6 @@ bool CEngine::ProcessEvent(const Event &event)
         if (data->key == KEY(F12))
         {
             m_showStats = !m_showStats;
-            return false;
-        }
-
-        if (data->key == KEY(F11))
-        {
-            m_debugLights = !m_debugLights;
-            return false;
-        }
-
-        if (data->key == KEY(F10))
-        {
-            m_debugDumpLights = true;
             return false;
         }
     }
@@ -1750,17 +1741,18 @@ bool CEngine::DetectBBox(int objRank, Math::Point mouse)
              mouse.y <= max.y );
 }
 
-int CEngine::DetectObject(Math::Point mouse)
+int CEngine::DetectObject(Math::Point mouse, Math::Vector& targetPos, bool terrain)
 {
     float min = 1000000.0f;
     int nearest = -1;
+    Math::Vector pos;
 
     for (int objRank = 0; objRank < static_cast<int>( m_objects.size() ); objRank++)
     {
         if (! m_objects[objRank].used)
             continue;
 
-        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN && !terrain)
             continue;
 
         if (! DetectBBox(objRank, mouse))
@@ -1789,10 +1781,11 @@ int CEngine::DetectObject(Math::Point mouse)
                     for (int i = 0; i < static_cast<int>( p3.vertices.size() ); i += 3)
                     {
                         float dist = 0.0f;
-                        if (DetectTriangle(mouse, &p3.vertices[i], objRank, dist) && dist < min)
+                        if (DetectTriangle(mouse, &p3.vertices[i], objRank, dist, pos) && dist < min)
                         {
                             min = dist;
                             nearest = objRank;
+                            targetPos = pos;
                         }
                     }
                 }
@@ -1801,10 +1794,11 @@ int CEngine::DetectObject(Math::Point mouse)
                     for (int i = 0; i < static_cast<int>( p3.vertices.size() ) - 2; i += 1)
                     {
                         float dist = 0.0f;
-                        if (DetectTriangle(mouse, &p3.vertices[i], objRank, dist) && dist < min)
+                        if (DetectTriangle(mouse, &p3.vertices[i], objRank, dist, pos) && dist < min)
                         {
                             min = dist;
                             nearest = objRank;
+                            targetPos = pos;
                         }
                     }
                 }
@@ -1815,7 +1809,7 @@ int CEngine::DetectObject(Math::Point mouse)
     return nearest;
 }
 
-bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist)
+bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist, Math::Vector& pos)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -1861,6 +1855,16 @@ bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRan
 
     if (! Math::IsInsideTriangle(a, b, c, mouse))
         return false;
+
+    Math::Vector a2 = Math::Transform(m_objects[objRank].transform, triangle[0].coord);
+    Math::Vector b2 = Math::Transform(m_objects[objRank].transform, triangle[1].coord);
+    Math::Vector c2 = Math::Transform(m_objects[objRank].transform, triangle[2].coord);
+    Math::Vector e  = Math::Transform(m_matView.Inverse(), Math::Vector(0.0f, 0.0f, -1.0f));
+    Math::Vector f  = Math::Transform(m_matView.Inverse(), Math::Vector(
+        (mouse.x*2.0f-1.0f)*m_matProj.Inverse().Get(1,1),
+        (mouse.y*2.0f-1.0f)*m_matProj.Inverse().Get(2,2),
+        0.0f));
+    Math::Intersect(a2, b2, c2, e, f, pos);
 
     dist = (p2D[0].z + p2D[1].z + p2D[2].z) / 3.0f;
     return true;
@@ -3374,6 +3378,21 @@ void CEngine::Draw3DScene()
     if (m_debugCrashSpheres)
         DrawCrashSpheres();
 
+    if (m_debugGoto)
+    {
+        Math::Matrix worldMatrix;
+        worldMatrix.LoadIdentity();
+        m_device->SetTransform(TRANSFORM_WORLD, worldMatrix);
+
+        SetState(ENG_RSTATE_OPAQUE_COLOR);
+
+        for (const auto& line : m_displayGoto)
+        {
+            m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line.data(), line.size());
+        }
+    }
+    m_displayGoto.clear();
+
     m_app->StartPerformanceCounter(PCNT_RENDER_PARTICLE);
     m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
     m_app->StopPerformanceCounter(PCNT_RENDER_PARTICLE);
@@ -3967,7 +3986,7 @@ void CEngine::UpdateGroundSpotTextures()
             set = true;
         }
 
-        if (clear || set)
+        if (clear || set || m_debugResources || m_displayGotoImage != nullptr)
         {
             CImage shadowImg(Math::IntPoint(256, 256));
             shadowImg.Fill(Gfx::IntColor(255, 255, 255, 255));
@@ -4123,6 +4142,43 @@ void CEngine::UpdateGroundSpotTextures()
                             color.b = Math::Norm(1.0f-intensity);
                             shadowImg.SetPixel(Math::IntPoint(ppx, ppy), color);
                         }
+                    }
+                }
+            }
+
+            if (m_debugResources)
+            {
+                for (float x = min.x; x < max.x; x += 1.0f)
+                {
+                    for (float y = min.y; y < max.y; y += 1.0f)
+                    {
+                        Math::Vector pos(
+                            x / 4.0f / 254.0f * 3200.0f - 1600.0f,
+                            0.0f,
+                            y / 4.0f / 254.0f * 3200.0f - 1600.0f
+                        );
+                        TerrainRes res = m_terrain->GetResource(pos);
+                        Math::IntPoint p(x-min.x, y-min.y);
+                        if (res == TR_NULL)
+                        {
+                            shadowImg.SetPixel(p, Gfx::Color(0.5f, 0.5f, 0.5f));
+                            continue;
+                        }
+                        shadowImg.SetPixelInt(p, ResourceToColor(res));
+                    }
+                }
+            }
+
+            if (m_displayGotoImage != nullptr)
+            {
+                Math::IntPoint size = m_displayGotoImage->GetSize();
+                for (float x = min.x; x < max.x; x += 1.0f)
+                {
+                    for (float y = min.y; y < max.y; y += 1.0f)
+                    {
+                        int px = x / 4.0f / 254.0f * size.x;
+                        int py = y / 4.0f / 254.0f * size.y;
+                        shadowImg.SetPixelInt(Math::IntPoint(x-min.x, y-min.y), m_displayGotoImage->GetPixelInt(Math::IntPoint(px, py)));
                     }
                 }
             }
@@ -5073,6 +5129,59 @@ void CEngine::SetStaticMeshTransparency(int meshHandle, float value)
 {
     int objRank = meshHandle;
     SetObjectTransparency(objRank, value);
+}
+
+void CEngine::SetDebugLights(bool debugLights)
+{
+    m_debugLights = debugLights;
+}
+
+bool CEngine::GetDebugLights()
+{
+    return m_debugLights;
+}
+
+void CEngine::DebugDumpLights()
+{
+    m_debugDumpLights = true;
+}
+
+void CEngine::SetDebugResources(bool debugResources)
+{
+    m_debugResources = debugResources;
+    m_firstGroundSpot = true; // Force a refresh of ground spot textures
+    UpdateGroundSpotTextures();
+}
+
+bool CEngine::GetDebugResources()
+{
+    return m_debugResources;
+}
+
+void CEngine::SetDebugGoto(bool debugGoto)
+{
+    m_debugGoto = debugGoto;
+    if (!m_debugGoto)
+    {
+        m_displayGotoImage.reset();
+    }
+}
+
+bool CEngine::GetDebugGoto()
+{
+    return m_debugGoto;
+}
+
+void CEngine::AddDebugGotoLine(std::vector<Gfx::VertexCol> line)
+{
+    m_displayGoto.push_back(line);
+}
+
+void CEngine::SetDebugGotoBitmap(std::unique_ptr<CImage> debugImage)
+{
+    m_displayGotoImage = std::move(debugImage);
+    m_firstGroundSpot = true; // Force ground spot texture reload
+    UpdateGroundSpotTextures();
 }
 
 } // namespace Gfx
