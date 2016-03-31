@@ -769,7 +769,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                 m_interface->SetFocus(pe);
                 if (m_phase == PHASE_SIMUL) m_cmdEditPause = m_pause->ActivatePause(PAUSE_ENGINE);
                 m_cmdEdit = true;
-                m_cmdHistoryCurIdx = -1; //cmd history index initialization
+                m_cmdHistoryCurIdx = -1; //cmd history index to -1, because we not browsing history initially
             }
             return false;
         }
@@ -799,17 +799,17 @@ bool CRobotMain::ProcessEvent(Event &event)
             m_pause->DeactivatePause(m_cmdEditPause);
             m_cmdEditPause = nullptr;
         }
-        m_cmdCommand = true; //bet it's proper command
+        m_cmdCommand = true; //if not proper command then will become false
         ExecuteCmd(cmd);
 
-        //cmd history saveing to memory
-        if (m_cmdCommand && *m_cmdHistory[0] != *cmd) //is command and not duplicate of previous?
+        //cmd history saving to memory
+        if (m_cmdCommand && *m_cmdHistory[0] != *cmd) //is this command and not duplicate of previous command?
         {
             for (int i = CMD_HISTORY_SLOTS - 1; i > 0; i--) //every saved text goes one slot up
             {
                 memcpy(m_cmdHistory[i], m_cmdHistory[i - 1], CMD_MAX_LENGHT * sizeof(char));
             }
-            memcpy(m_cmdHistory[0], cmd, CMD_MAX_LENGHT * sizeof(char)); //last command is saved to first slot
+            memcpy(m_cmdHistory[0], cmd, CMD_MAX_LENGHT * sizeof(char)); //executed command is saved to first slot
         }
 
         m_cmdEdit = false;
@@ -822,7 +822,7 @@ bool CRobotMain::ProcessEvent(Event &event)
     {
         Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
-        if (m_cmdHistoryCurIdx > CMD_HISTORY_SLOTS - 2 || *m_cmdHistory[m_cmdHistoryCurIdx + 1] == '\0') return false; //is last index or next slot is empty?
+        if (m_cmdHistoryCurIdx > CMD_HISTORY_SLOTS - 2 || *m_cmdHistory[m_cmdHistoryCurIdx + 1] == '\0') return false; //is this last index or next slot is empty?
         pe->SetText(m_cmdHistory[++m_cmdHistoryCurIdx]); //set text form next slot
         return false;
     }
@@ -833,7 +833,7 @@ bool CRobotMain::ProcessEvent(Event &event)
     {
         Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
-        if (m_cmdHistoryCurIdx < 1) return false; //it is place to come back?
+        if (m_cmdHistoryCurIdx < 1) return false; //is where to come back?
         pe->SetText(m_cmdHistory[--m_cmdHistoryCurIdx]); //set text form previous slot
         return false;
     }
