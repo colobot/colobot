@@ -769,6 +769,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                 m_interface->SetFocus(pe);
                 if (m_phase == PHASE_SIMUL) m_cmdEditPause = m_pause->ActivatePause(PAUSE_ENGINE);
                 m_cmdEdit = true;
+                m_cmdHistoryCurIdx = -1; //cmd history index to -1, because we not browsing history initially
             }
             return false;
         }
@@ -786,10 +787,10 @@ bool CRobotMain::ProcessEvent(Event &event)
     if (event.type == EVENT_KEY_DOWN &&
         event.GetData<KeyEventData>()->key == KEY(RETURN) && m_cmdEdit)
     {
-        char cmd[50];
+        char cmd[CMD_MAX_LENGHT];
         Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
-        pe->GetText(cmd, 50);
+        pe->GetText(cmd, CMD_MAX_LENGHT);
         pe->SetText("");
         pe->ClearState(Ui::STATE_VISIBLE);
         m_interface->SetFocus(nullptr);
@@ -798,8 +799,42 @@ bool CRobotMain::ProcessEvent(Event &event)
             m_pause->DeactivatePause(m_cmdEditPause);
             m_cmdEditPause = nullptr;
         }
+        m_cmdCommand = true; //if not proper command then will become false
         ExecuteCmd(cmd);
+
+        //cmd history saving to memory
+        if (m_cmdCommand && *m_cmdHistory[0] != *cmd) //is this command and not duplicate of previous command?
+        {
+            for (int i = CMD_HISTORY_SLOTS - 1; i > 0; i--) //every saved text goes one slot up
+            {
+                memcpy(m_cmdHistory[i], m_cmdHistory[i - 1], CMD_MAX_LENGHT * sizeof(char));
+            }
+            memcpy(m_cmdHistory[0], cmd, CMD_MAX_LENGHT * sizeof(char)); //executed command is saved to first slot
+        }
+
         m_cmdEdit = false;
+        return false;
+    }
+
+    //cmd hisotry key up
+    if (event.type == EVENT_KEY_DOWN &&
+        event.GetData<KeyEventData>()->key == KEY(UP) && m_cmdEdit)
+    {
+        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+        if (pe == nullptr) return false;
+        if (m_cmdHistoryCurIdx > CMD_HISTORY_SLOTS - 2 || *m_cmdHistory[m_cmdHistoryCurIdx + 1] == '\0') return false; //is this last index or next slot is empty?
+        pe->SetText(m_cmdHistory[++m_cmdHistoryCurIdx]); //set text form next slot
+        return false;
+    }
+
+    //cmd hisotry key down
+    if (event.type == EVENT_KEY_DOWN &&
+        event.GetData<KeyEventData>()->key == KEY(DOWN) && m_cmdEdit)
+    {
+        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+        if (pe == nullptr) return false;
+        if (m_cmdHistoryCurIdx < 1) return false; //is where to come back?
+        pe->SetText(m_cmdHistory[--m_cmdHistoryCurIdx]); //set text form previous slot
         return false;
     }
 
@@ -1179,7 +1214,11 @@ bool CRobotMain::ProcessEvent(Event &event)
 //! Executes a command
 void CRobotMain::ExecuteCmd(const std::string& cmd)
 {
-    if (cmd.empty()) return;
+    if (cmd.empty())
+    {
+        m_cmdCommand = false; //it was not command!
+        return;
+    }
 
     if (m_phase == PHASE_SIMUL)
     {
@@ -1473,6 +1512,8 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
 
     if (m_phase == PHASE_SIMUL)
         m_displayText->DisplayError(ERR_CMD, Math::Vector(0.0f,0.0f,0.0f));
+
+    m_cmdCommand = false; //it was not command!
 }
 
 
@@ -2270,7 +2311,9 @@ void CRobotMain::ChangeCamera()
     ObjectType oType = obj->GetType();
     Gfx::CameraType type = controllableObj->GetCameraType();
 
-    if ( oType != OBJECT_MOBILEfa &&
+    if ( oType != OBJECT_HUMAN &&
+         oType != OBJECT_TECH &&
+         oType != OBJECT_MOBILEfa &&
          oType != OBJECT_MOBILEta &&
          oType != OBJECT_MOBILEwa &&
          oType != OBJECT_MOBILEia &&
