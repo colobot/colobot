@@ -283,9 +283,9 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_PCGb]      = TR("Green");
     stringsEvent[EVENT_INTERFACE_PCBb]      = TR("Blue");
     stringsEvent[EVENT_INTERFACE_PFACE1]    = TR("\\Face 1");
-    stringsEvent[EVENT_INTERFACE_PFACE2]    = TR("\\Face 4");
+    stringsEvent[EVENT_INTERFACE_PFACE2]    = TR("\\Face 2");
     stringsEvent[EVENT_INTERFACE_PFACE3]    = TR("\\Face 3");
-    stringsEvent[EVENT_INTERFACE_PFACE4]    = TR("\\Face 2");
+    stringsEvent[EVENT_INTERFACE_PFACE4]    = TR("\\Face 4");
     stringsEvent[EVENT_INTERFACE_PGLASS0]   = TR("\\No eyeglasses");
     stringsEvent[EVENT_INTERFACE_PGLASS1]   = TR("\\Eyeglasses 1");
     stringsEvent[EVENT_INTERFACE_PGLASS2]   = TR("\\Eyeglasses 2");
