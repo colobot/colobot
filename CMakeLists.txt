@@ -94,6 +94,8 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
 
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_macosx.cpp")
+    # To avoid CMake warning
+    set(CMAKE_MACOSX_RPATH 1)
 else()
     message(STATUS "Build for other system")
     set(PLATFORM_WINDOWS 0)
