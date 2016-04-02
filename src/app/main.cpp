@@ -44,6 +44,7 @@
 
 #include <memory>
 #include <vector>
+#include <boost/filesystem.hpp>
 
 /* Doxygen main page */
 
@@ -98,13 +99,19 @@ int main(int argc, char *argv[])
     systemUtils->Init();
 
     // Add file output to the logger
-    std::string logfile;
+    std::string logFileName;
     #if DEV_BUILD
-        logfile = "log.txt";
+        logFileName = "log.txt";
     #else
-        logfile = systemUtils->GetSaveDir() + "/log.txt";
+        boost::filesystem::create_directories(systemUtils->GetSaveDir());
+        logFileName = systemUtils->GetSaveDir() + "/log.txt";
     #endif
-    logger.AddOutput(fopen(logfile.c_str(), "w"));
+    FILE* logFile = fopen(logFileName.c_str(), "w");
+    if (logFile)
+        logger.AddOutput(logFile);
+    else
+        logger.Error("Failed to create log file, writing log to file disabled\n");
+
 
     // Workaround for character encoding in argv on Windows
     #if PLATFORM_WINDOWS
