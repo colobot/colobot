@@ -150,6 +150,9 @@ const int SATCOM_PROG       = 4;
 const int SATCOM_SOLUCE     = 5;
 const int SATCOM_MAX        = 6;
 
+const int CMD_HISTORY_SLOTS = 10;
+const int CMD_MAX_LENGHT = 50;
+
 class CRobotMain : public CSingleton<CRobotMain>
 {
 public:
@@ -498,6 +501,11 @@ protected:
     bool            m_mapShow = false;
     bool            m_mapImage = false;
     char            m_mapFilename[100] = {};
+
+    //console command history declarations
+    char			m_cmdHistory[CMD_HISTORY_SLOTS][CMD_MAX_LENGHT] = {};
+    int				m_cmdHistoryCurIdx; //current index in history
+    bool			m_cmdCommand; //it was a command?
 
     ActivePause*    m_suspend = nullptr;
     Gfx::CameraType m_suspendInitCamera = Gfx::CAM_TYPE_NULL;
