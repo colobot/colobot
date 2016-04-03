@@ -77,34 +77,34 @@ void PlayerApperance::DefPerso()
 }
 
 void PlayerApperance::DefHairColor()
-    {
+{
     if (this->face == 0)  // normal ?
-        {
+    {
         this->colorHair.r = 90.0f / 256.0f;
         this->colorHair.g = 95.0f / 256.0f;
         this->colorHair.b = 85.0f / 256.0f;  // black
-        }
+    }
     if (this->face == 1)  // bald ?
-         {
+    {
         this->colorHair.r = 74.0f / 256.0f;
         this->colorHair.g = 58.0f / 256.0f;
         this->colorHair.b = 46.0f / 256.0f;  // brown
-        }
+    }
     if (this->face == 2)  // carlos ?
-         {
+    {
         this->colorHair.r = 70.0f / 256.0f;
         this->colorHair.g = 40.0f / 256.0f;
         this->colorHair.b = 9.0f / 256.0f;  // brown
-        }
+    }
     if (this->face == 3)  // blond ? -> ginger ?
-         {
+    {
         this->colorHair.r = 74.0f / 256.0f;
         this->colorHair.g = 16.0f / 256.0f;
         this->colorHair.b = 0.0f / 256.0f;  // yellow, changed to ginger
-        }
-    
-        this->colorHair.a = 0.0f;
     }
+
+    this->colorHair.a = 0.0f;
+}
 
 
 CPlayerProfile::CPlayerProfile(std::string playerName)
