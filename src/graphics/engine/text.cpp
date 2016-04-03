@@ -944,10 +944,11 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
         Math::Point p1(pos.x, pos.y);
         Math::Point p2(pos.x + charInterfaceSize.x, pos.y + charInterfaceSize.y);
 
-        Math::Point texCoord1(static_cast<float>(tex.charPos.x) / FONT_TEXTURE_SIZE.x,
-                              static_cast<float>(tex.charPos.y) / FONT_TEXTURE_SIZE.y);
-        Math::Point texCoord2(static_cast<float>(tex.charPos.x + tex.charSize.x) / FONT_TEXTURE_SIZE.x,
-                              static_cast<float>(tex.charPos.y + tex.charSize.y) / FONT_TEXTURE_SIZE.y);
+        const float halfPixelMargin = 0.5f;
+        Math::Point texCoord1(static_cast<float>(tex.charPos.x + halfPixelMargin) / FONT_TEXTURE_SIZE.x,
+                              static_cast<float>(tex.charPos.y + halfPixelMargin) / FONT_TEXTURE_SIZE.y);
+        Math::Point texCoord2(static_cast<float>(tex.charPos.x + tex.charSize.x + halfPixelMargin) / FONT_TEXTURE_SIZE.x,
+                              static_cast<float>(tex.charPos.y + tex.charSize.y + halfPixelMargin) / FONT_TEXTURE_SIZE.y);
         Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
 
         Vertex quad[4] =
@@ -1061,8 +1062,9 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
         return texture;
     }
 
-    Math::IntPoint tileSize(Math::NextPowerOfTwo(textSurface->w),
-                            Math::NextPowerOfTwo(textSurface->h));
+    const int pixelMargin = 1;
+    Math::IntPoint tileSize(Math::NextPowerOfTwo(textSurface->w) + pixelMargin,
+                            Math::NextPowerOfTwo(textSurface->h) + pixelMargin);
 
     FontTexture* fontTexture = GetOrCreateFontTexture(tileSize);
 
@@ -1075,7 +1077,6 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
         texture.id = fontTexture->id;
         texture.charPos = GetNextTilePos(*fontTexture);
         texture.charSize = Math::IntPoint(textSurface->w, textSurface->h);
-        texture.tileSize = tileSize;
 
         ImageData imageData;
         imageData.surface = textSurface;

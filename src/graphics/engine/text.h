@@ -193,7 +193,6 @@ struct CharTexture
     unsigned int id = 0;
     Math::IntPoint charPos;
     Math::IntPoint charSize;
-    Math::IntPoint tileSize;
 };
 
 // Definition is private - in text.cpp
