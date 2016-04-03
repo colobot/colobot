@@ -17,9 +17,9 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-
-#include <math/geometry.h>
 #include "object/auto/autohouston.h"
+
+#include "math/geometry.h"
 
 #include "object/old_object.h"
 

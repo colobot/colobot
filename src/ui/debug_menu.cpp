@@ -26,9 +26,10 @@
 
 #include "level/robotmain.h"
 
-#include "object/object_create_params.h"
-#include "object/object_manager.h"
 #include "object/object.h"
+#include "object/object_manager.h"
+
+#include "sound/sound.h"
 
 #include "ui/controls/interface.h"
 #include "ui/controls/window.h"
@@ -62,7 +63,7 @@ void CDebugMenu::ToggleInterface()
 
 const Math::Point dim = Math::Point(33.0f/640.0f, 33.0f/480.0f);
 const float ox = 3.0f/640.0f, oy = 3.0f/480.0f;
-const float sx = 33.0f/640.0f, sy = 33.0f/480.0f;
+const float /*sx = 33.0f/640.0f,*/ sy = 33.0f/480.0f;
 
 void CDebugMenu::CreateInterface()
 {

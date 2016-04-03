@@ -19,12 +19,13 @@
 
 #pragma once
 
-#include <math/point.h>
-#include <sound/sound.h>
+#include "math/point.h"
+
 #include "object/object_type.h"
 
 class CRobotMain;
 class CObjectManager;
+class CSoundInterface;
 struct Event;
 
 namespace Gfx
