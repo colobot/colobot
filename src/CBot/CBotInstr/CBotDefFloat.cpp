@@ -81,16 +81,17 @@ CBotInstr* CBotDefFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, b
             p = vartoken;
             inst = static_cast<CBotDefFloat*>(CBotDefArray::Compile(p, pStk, CBotTypFloat));
 
-            if (!pStk->IsOk() )
-            {
-                pStk->SetError(CBotErrCloseIndex, p->GetStart());
-                goto error;
-            }
             goto suite;            // no assignment, variable already created
         }
 
         if (IsOfType(p,  ID_ASS))
         {
+            pStk->SetStartError(p->GetStart());
+            if ( IsOfType(p, ID_SEP) )
+            {
+                pStk->SetError(CBotErrNoExpression, p->GetStart());
+                goto error;
+            }
             if (nullptr == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
             {
                 goto error;
@@ -108,7 +109,7 @@ CBotInstr* CBotDefFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, b
             (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
         pStack->AddVar(var);
 suite:
-        if (IsOfType(p,  ID_COMMA))
+        if (pStk->IsOk() && IsOfType(p,  ID_COMMA))
         {
             if (nullptr != ( inst->m_next2b = CBotDefFloat::Compile(p, pStk, true, noskip)))
             {

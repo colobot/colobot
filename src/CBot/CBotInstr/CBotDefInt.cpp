@@ -84,25 +84,18 @@ CBotInstr* CBotDefInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, boo
 
             CBotInstr* inst2 = CBotDefArray::Compile(p, pStk, CBotTypInt);
 
-            if (!pStk->IsOk() )
-            {
-                pStk->SetError(CBotErrCloseIndex, p->GetStart());
-                goto error;
-            }
-
-            if (IsOfType(p,  ID_COMMA))     // several definition chained
-            {
-                if (nullptr != ( inst2->m_next2b = CBotDefInt::Compile(p, pStk, true, noskip)))    // compile the next one
-                {
-                    return pStack->Return(inst2, pStk);
-                }
-            }
             inst = static_cast<CBotDefInt*>(inst2);
             goto suite;     // no assignment, variable already created
         }
 
         if (IsOfType(p,  ID_ASS))   // with an assignment?
         {
+            pStk->SetStartError(p->GetStart());
+            if ( IsOfType(p, ID_SEP) )
+            {
+                pStk->SetError(CBotErrNoExpression, p->GetStart());
+                goto error;
+            }
             if (nullptr == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
             {
                 goto error;
@@ -121,15 +114,15 @@ CBotInstr* CBotDefInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, boo
                 (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
             pStack->AddVar(var);    // place it on the stack
         }
-
-        if (IsOfType(p,  ID_COMMA))     // chained several definitions
+suite:
+        if (pStk->IsOk() && IsOfType(p,  ID_COMMA))     // chained several definitions
         {
             if (nullptr != ( inst->m_next2b = CBotDefInt::Compile(p, pStk, true, noskip)))    // compile next one
             {
                 return pStack->Return(inst, pStk);
             }
         }
-suite:
+
         if (noskip || IsOfType(p,  ID_SEP))                    // instruction is completed
         {
             return pStack->Return(inst, pStk);
