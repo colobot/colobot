@@ -272,7 +272,7 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         int oTeam=obj->GetTeam();
-		int myTeam=m_object->GetTeam();
+        int myTeam=m_object->GetTeam();
         ObjectType oType = obj->GetType();
         if ( oType != OBJECT_MOTHER &&
              oType != OBJECT_ANT    &&
@@ -280,8 +280,7 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
              oType != OBJECT_BEE    &&
              oType != OBJECT_WORM   &&
              (oTeam == myTeam        ||
-		     oTeam == 0)             
-		     )  continue;
+             oTeam == 0)             )  continue;
 
         if ( !obj->GetDetectable() )  continue;  // inactive?
 
