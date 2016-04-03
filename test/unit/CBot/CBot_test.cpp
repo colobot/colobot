@@ -814,8 +814,7 @@ TEST_F(CBotUT, DISABLED_ClassDestructorNaming)
     );
 }
 
-// TODO: This doesn't work
-TEST_F(CBotUT, DISABLED_ClassMethodOverloading)
+TEST_F(CBotUT, ClassMethodOverloading)
 {
     ExecuteTest(
         "public class TestClass {\n"
@@ -955,8 +954,7 @@ TEST_F(CBotUT, DISABLED_StringAsArray)
     );
 }
 
-// TODO: doesn't work, see discussion in #737
-TEST_F(CBotUT, DISABLED_ArraysOfStrings)
+TEST_F(CBotUT, ArraysOfStrings)
 {
     ExecuteTest(
         "extern void ArraysOfStrings()\n"
