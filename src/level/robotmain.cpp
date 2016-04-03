@@ -2270,7 +2270,9 @@ void CRobotMain::ChangeCamera()
     ObjectType oType = obj->GetType();
     Gfx::CameraType type = controllableObj->GetCameraType();
 
-    if ( oType != OBJECT_MOBILEfa &&
+    if ( oType != OBJECT_HUMAN &&
+         oType != OBJECT_TECH &&
+         oType != OBJECT_MOBILEfa &&
          oType != OBJECT_MOBILEta &&
          oType != OBJECT_MOBILEwa &&
          oType != OBJECT_MOBILEia &&

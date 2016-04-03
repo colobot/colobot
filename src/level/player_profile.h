@@ -42,6 +42,7 @@ struct PlayerApperance
     Gfx::Color   colorBand;      // strips color
 
     void DefPerso();
+    void DefHairColor();
 };
 
 struct SavedScene
