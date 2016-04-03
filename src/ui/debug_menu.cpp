@@ -31,10 +31,10 @@
 
 #include "sound/sound.h"
 
+#include "ui/controls/button.h"
+#include "ui/controls/check.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/window.h"
-#include "ui/controls/check.h"
-#include "ui/controls/button.h"
 
 namespace Ui
 {
