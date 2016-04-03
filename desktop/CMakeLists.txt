@@ -4,7 +4,15 @@ set(COLOBOT_ICON_FILE ${CMAKE_CURRENT_SOURCE_DIR}/colobot.svg)
 
 # Render SVG icon in various sizes
 find_program(RSVG_CONVERT rsvg-convert)
+if(NOT RSVG_CONVERT)
+    message(WARNING "rsvg-cnvert not found; desktop icons will not be generated")
+endif()
+
 find_program(XMLSTARLET xmlstarlet)
+if(NOT XMLSTARLET)
+    message(WARNING "xmlstarlet not found; desktop icons will not be generated")
+endif()
+
 if(RSVG_CONVERT AND XMLSTARLET AND (PLATFORM_GNU OR PLATFORM_MACOSX))
     add_custom_target(png-icons ALL DEPENDS ${COLOBOT_ICON_FILE})
 
@@ -30,13 +38,19 @@ if(RSVG_CONVERT AND XMLSTARLET AND (PLATFORM_GNU OR PLATFORM_MACOSX))
     endforeach()
 
     # Pack icon for Mac OS
-    find_program(PNG2ICNS png2icns)
-    if(PNG2ICNS AND PLATFORM_MACOSX)
-        add_custom_command(OUTPUT Colobot.icns
-            COMMAND ${PNG2ICNS} Colobot.icns ${ICNS_SRCS}
-            DEPENDS png-icons
-            )
-        add_custom_target(icns-icon ALL DEPENDS Colobot.icns)
+    if(PLATFORM_MACOSX)
+        find_program(PNG2ICNS png2icns)
+        if(NOT PNG2ICNS)
+            message(WARNING "png2icns not found; icns file will not be generated")
+        endif()
+
+        if(PNG2ICNS)
+            add_custom_command(OUTPUT Colobot.icns
+                COMMAND ${PNG2ICNS} Colobot.icns ${ICNS_SRCS}
+                DEPENDS png-icons
+                )
+            add_custom_target(icns-icon ALL DEPENDS Colobot.icns)
+        endif()
     endif()
 
 endif()
@@ -64,6 +78,10 @@ if(PLATFORM_GNU)
 
     # Translate translatable material
     find_program(PO4A po4a)
+    if(NOT PO4A)
+        message(WARNING "po4a not found; desktop and manpage files will not be translated")
+    endif()
+
     if(PO4A)
         add_custom_target(desktop_po4a
             COMMAND ${PO4A} po4a.cfg
@@ -74,6 +92,10 @@ if(PLATFORM_GNU)
 
     # Create manpage from pod-formatted file
     find_program(POD2MAN pod2man)
+    if(NOT POD2MAN)
+        message(WARNING "pod2man not found; manpage will not be generated")
+    endif()
+
     if(POD2MAN)
         set(COLOBOT_MANPAGE_SECTION 6)
 
