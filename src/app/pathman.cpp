@@ -18,7 +18,7 @@
  */
 
 
-#include "common/pathman.h"
+#include "app/pathman.h"
 
 #include "common/config.h"
 

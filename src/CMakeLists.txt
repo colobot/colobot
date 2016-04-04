@@ -78,6 +78,7 @@ set(BASE_SOURCES
     app/app.cpp
     app/controller.cpp
     app/input.cpp
+    app/pathman.cpp
     app/pausemanager.cpp
     app/signal_handlers.cpp
     app/system.cpp
@@ -90,7 +91,6 @@ set(BASE_SOURCES
     common/language.cpp
     common/logger.cpp
     common/misc.cpp
-    common/pathman.cpp
     common/regex_utils.cpp
     common/resources/inputstream.cpp
     common/resources/inputstreambuffer.cpp

@@ -21,6 +21,7 @@
 
 #include "app/controller.h"
 #include "app/input.h"
+#include "app/pathman.h"
 #include "app/system.h"
 
 #include "common/config_file.h"
@@ -28,7 +29,6 @@
 #include "common/key.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
-#include "common/pathman.h"
 #include "common/stringutils.h"
 #include "common/version.h"
 
