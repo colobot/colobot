@@ -739,8 +739,15 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 if ( pv->IsStatic() && pv->m_InitExpr != nullptr )
                 {
                     CBotStack* pile = CBotStack::AllocateStack();              // independent stack
-                    while(pile->IsOk() && !pv->m_InitExpr->Execute(pile));  // evaluates the expression without timer
-                    pv->SetVal( pile->GetVar() ) ;
+                    if ( type2.Eq(CBotTypArrayPointer) )
+                    {
+                        while(pile->IsOk() && !pv->m_InitExpr->Execute(pile, pv));
+                    }
+                    else
+                    {
+                        while(pile->IsOk() && !pv->m_InitExpr->Execute(pile)); // evaluates the expression without timer
+                        pv->SetVal( pile->GetVar() ) ;
+                    }
                     pile->Delete();
                 }
             }
