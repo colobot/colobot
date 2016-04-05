@@ -22,6 +22,7 @@
 #include "CBot/CBotInstr/CBotInstrUtils.h"
 #include "CBot/CBotInstr/CBotNew.h"
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
+#include "CBot/CBotInstr/CBotExprLitNull.h"
 #include "CBot/CBotInstr/CBotTwoOpExpr.h"
 #include "CBot/CBotInstr/CBotFunction.h"
 #include "CBot/CBotInstr/CBotExpression.h"
@@ -722,6 +723,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 }
                 if ( !pStack->IsOk() ) return false;
             }
+            else if ( type2.Eq(CBotTypArrayPointer) ) i = new CBotExprLitNull();
 
 
             if ( !bSecond )
