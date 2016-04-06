@@ -281,6 +281,7 @@ public:
     float       GetDescent(FontType font, float size);
     //! Returns the height font metric
     float       GetHeight(FontType font, float size);
+    int GetHeightInt(FontType font, float size);
 
     //! Returns width of string (multi-format)
     TEST_VIRTUAL float GetStringWidth(const std::string& text,
@@ -290,6 +291,7 @@ public:
     TEST_VIRTUAL float GetStringWidth(std::string text, FontType font, float size);
     //! Returns width of single character
     TEST_VIRTUAL float GetCharWidth(UTF8Char ch, FontType font, float size, float offset);
+    int GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset);
 
     //! Justifies a line of text (multi-format)
     int         Justify(const std::string &text, std::vector<FontMetaChar>::iterator format,
@@ -319,11 +321,11 @@ protected:
 
     void        DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
                            std::vector<FontMetaChar>::iterator end,
-                           float size, Math::Point pos, float width, int eol, Color color);
+                           float size, Math::IntPoint pos, int width, int eol, Color color);
     void        DrawString(const std::string &text, FontType font,
-                           float size, Math::Point pos, float width, int eol, Color color);
-    void        DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size);
-    void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::Point &pos, Color color);
+                           float size, Math::IntPoint pos, int width, int eol, Color color);
+    void        DrawHighlight(FontHighlight hl, Math::IntPoint pos, Math::IntPoint size);
+    void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::IntPoint &pos, Color color);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end);
 

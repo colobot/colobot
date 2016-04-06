@@ -1196,6 +1196,9 @@ public:
     void            AddDebugGotoLine(std::vector<Gfx::VertexCol> line);
     void            SetDebugGotoBitmap(std::unique_ptr<CImage> debugImage);
 
+    void            SetWindowCoordinates();
+    void            SetInterfaceCoordinates();
+
 protected:
     //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
     /** Instead of calling this directly, send EVENT_RESOLUTION_CHANGED event **/

@@ -3789,9 +3789,7 @@ void CEngine::DrawInterface()
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
     m_device->SetRenderState(RENDER_STATE_FOG, false);
 
-    m_device->SetTransform(TRANSFORM_VIEW,       m_matViewInterface);
-    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
+    SetInterfaceCoordinates();
 
     // Force new state to disable lighting
     m_interfaceMode = true;
@@ -3890,9 +3888,7 @@ void CEngine::DrawInterface()
 
         m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 
-        m_device->SetTransform(TRANSFORM_VIEW,       m_matViewInterface);
-        m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
-        m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
+        SetInterfaceCoordinates();
     }
 
     // Draw foreground color
@@ -5182,6 +5178,29 @@ void CEngine::SetDebugGotoBitmap(std::unique_ptr<CImage> debugImage)
     m_displayGotoImage = std::move(debugImage);
     m_firstGroundSpot = true; // Force ground spot texture reload
     UpdateGroundSpotTextures();
+}
+
+void CEngine::SetInterfaceCoordinates()
+{
+    m_device->SetTransform(TRANSFORM_VIEW,       m_matViewInterface);
+    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
+    m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
+}
+
+void CEngine::SetWindowCoordinates()
+{
+    Math::Matrix matWorldWindow;
+    matWorldWindow.LoadIdentity();
+
+    Math::Matrix matViewWindow;
+    matViewWindow.LoadIdentity();
+
+    Math::Matrix matProjWindow;
+    Math::LoadOrthoProjectionMatrix(matProjWindow, 0.0f, m_size.x, m_size.y, 0.0f, -1.0f, 1.0f);
+
+    m_device->SetTransform(TRANSFORM_VIEW,       matViewWindow);
+    m_device->SetTransform(TRANSFORM_PROJECTION, matProjWindow);
+    m_device->SetTransform(TRANSFORM_WORLD,      matWorldWindow);
 }
 
 } // namespace Gfx

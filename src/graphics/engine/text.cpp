@@ -214,7 +214,9 @@ void CText::DrawText(const std::string &text, std::vector<FontMetaChar>::iterato
         pos.x -= sw;
     }
 
-    DrawString(text, format, end, size, pos, width, eol, color);
+    Math::IntPoint intPos = m_engine->InterfaceToWindowCoords(pos);
+    int intWidth = width * m_engine->GetWindowSize().x;
+    DrawString(text, format, end, size, intPos, intWidth, eol, color);
 }
 
 void CText::DrawText(const std::string &text, FontType font,
@@ -236,7 +238,9 @@ void CText::DrawText(const std::string &text, FontType font,
         pos.x -= sw;
     }
 
-    DrawString(text, font, size, pos, width, eol, color);
+    Math::IntPoint intPos = m_engine->InterfaceToWindowCoords(pos);
+    int intWidth = width * m_engine->GetWindowSize().x;
+    DrawString(text, font, size, intPos, intWidth, eol, color);
 }
 
 void CText::SizeText(const std::string &text, std::vector<FontMetaChar>::iterator format,
@@ -322,6 +326,14 @@ float CText::GetHeight(FontType font, float size)
     return ifSize.y;
 }
 
+int CText::GetHeightInt(FontType font, float size)
+{
+    assert(font != FONT_BUTTON);
+
+    CachedFont* cf = GetOrOpenFont(font, size);
+    assert(cf != nullptr);
+    return TTF_FontHeight(cf->font);
+}
 
 float CText::GetStringWidth(const std::string &text,
                             std::vector<FontMetaChar>::iterator format,
@@ -411,6 +423,46 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
         text.append({ch.c1, ch.c2, ch.c3});
         TTF_SizeUTF8(cf->font, text.c_str(), &wndSize.x, &wndSize.y);
         charSize = m_engine->WindowToInterfaceSize(wndSize);
+    }
+
+    return charSize.x * width;
+}
+
+int CText::GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset)
+{
+    if (font == FONT_BUTTON)
+    {
+        Math::IntPoint windowSize = m_engine->GetWindowSize();
+        int height = GetHeightInt(FONT_COLOBOT, size);
+        int width = height*(static_cast<float>(windowSize.y)/windowSize.x);
+        return width;
+    }
+
+    int width = 1;
+    if (ch.c1 < 32 && ch.c1 >= 0)
+    {
+        if (ch.c1 == '\t')
+            width = m_tabSize;
+
+        // TODO: tab sizing at intervals?
+
+        ch.c1 = ':';
+    }
+
+    CachedFont* cf = GetOrOpenFont(font, size);
+    assert(cf != nullptr);
+
+    Math::IntPoint charSize;
+    auto it = cf->cache.find(ch);
+    if (it != cf->cache.end())
+    {
+        charSize = (*it).second.charSize;
+    }
+    else
+    {
+        std::string text;
+        text.append({ch.c1, ch.c2, ch.c3});
+        TTF_SizeUTF8(cf->font, text.c_str(), &charSize.x, &charSize.y);
     }
 
     return charSize.x * width;
@@ -636,11 +688,11 @@ UTF8Char CText::TranslateSpecialChar(int specialChar)
 
 void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
                        std::vector<FontMetaChar>::iterator end,
-                       float size, Math::Point pos, float width, int eol, Color color)
+                       float size, Math::IntPoint pos, int width, int eol, Color color)
 {
     m_engine->SetState(ENG_RSTATE_TEXT);
 
-    float start = pos.x;
+    int start = pos.x;
 
     unsigned int fmtIndex = 0;
 
@@ -654,12 +706,12 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
 
         UTF8Char ch = *it;
 
-        float offset = pos.x - start;
-        float cw = GetCharWidth(ch, font, size, offset);
+        int offset = pos.x - start;
+        int cw = GetCharWidthInt(ch, font, size, offset);
         if (offset + cw > width)  // exceeds the maximum width?
         {
             ch = TranslateSpecialChar(CHAR_SKIP_RIGHT);
-            cw = GetCharWidth(ch, font, size, offset);
+            cw = GetCharWidthInt(ch, font, size, offset);
             pos.x = start + width - cw;
             color = Color(1.0f, 0.0f, 0.0f);
             DrawCharAndAdjustPos(ch, font, size, pos, color);
@@ -700,9 +752,9 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
             }
             else
             {
-                Math::Point charSize;
-                charSize.x = GetCharWidth(ch, font, size, offset);
-                charSize.y = GetHeight(font, size);
+                Math::IntPoint charSize;
+                charSize.x = GetCharWidthInt(ch, font, size, offset);
+                charSize.y = GetHeightInt(font, size);
                 DrawHighlight(hl, pos, charSize);
             }
         }
@@ -788,7 +840,7 @@ void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &
 }
 
 void CText::DrawString(const std::string &text, FontType font,
-                       float size, Math::Point pos, float width, int eol, Color color)
+                       float size, Math::IntPoint pos, int width, int eol, Color color)
 {
     assert(font != FONT_BUTTON);
 
@@ -802,7 +854,7 @@ void CText::DrawString(const std::string &text, FontType font,
     }
 }
 
-void CText::DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size)
+void CText::DrawHighlight(FontHighlight hl, Math::IntPoint pos, Math::IntPoint size)
 {
     // Gradient colors
     Color grad[4];
@@ -827,9 +879,9 @@ void CText::DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size)
     Math::IntPoint vsize = m_engine->GetWindowSize();
     float h = 0.0f;
     if (vsize.y <= 768.0f)    // 1024x768 or less?
-        h = 1.01f / vsize.y;  // 1 pixel
+        h = 1.01f;  // 1 pixel
     else                      // more than 1024x768?
-        h = 2.0f / vsize.y;   // 2 pixels
+        h = 2.0f;   // 2 pixels
 
     Math::Point p1, p2;
     p1.x = pos.x;
@@ -856,22 +908,24 @@ void CText::DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size)
         VertexCol(Math::Vector(p2.x, p2.y, 0.0f), grad[1])
     };
 
+    m_engine->SetWindowCoordinates();
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4);
+    m_engine->SetInterfaceCoordinates();
     m_engine->AddStatisticTriangle(2);
 
     m_device->SetTextureEnabled(0, true);
 }
 
-void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::Point &pos, Color color)
+void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::IntPoint &pos, Color color)
 {
-    if(font == FONT_BUTTON)
+    if (font == FONT_BUTTON)
     {
         Math::IntPoint windowSize = m_engine->GetWindowSize();
-        float height = GetHeight(FONT_COLOBOT, size);
-        float width = height*(static_cast<float>(windowSize.y)/windowSize.x);
+        int height = GetHeightInt(FONT_COLOBOT, size);
+        int width = height * (static_cast<float>(windowSize.y)/windowSize.x);
 
-        Math::Point p1(pos.x, pos.y);
-        Math::Point p2(pos.x + width, pos.y + height);
+        Math::IntPoint p1(pos.x, pos.y - height);
+        Math::IntPoint p2(pos.x + width, pos.y);
 
         Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
 
@@ -909,13 +963,15 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
 
         Vertex quad[4] =
         {
-            Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x, uv2.y)),
-            Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x, uv1.y)),
-            Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x, uv2.y)),
-            Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x, uv1.y))
+            Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x, uv2.y)),
+            Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x, uv1.y)),
+            Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x, uv2.y)),
+            Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x, uv1.y))
         };
 
+        m_engine->SetWindowCoordinates();
         m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
+        m_engine->SetInterfaceCoordinates();
         m_engine->AddStatisticTriangle(2);
 
         pos.x += width;
@@ -939,31 +995,31 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
 
         CharTexture tex = GetCharTexture(ch, font, size);
 
-        Math::Point charInterfaceSize = m_engine->WindowToInterfaceSize(tex.charSize);
-
-        Math::Point p1(pos.x, pos.y);
-        Math::Point p2(pos.x + charInterfaceSize.x, pos.y + charInterfaceSize.y);
+        Math::Point p1(pos.x, pos.y - tex.charSize.y);
+        Math::Point p2(pos.x + tex.charSize.x, pos.y);
 
         const float halfPixelMargin = 0.5f;
         Math::Point texCoord1(static_cast<float>(tex.charPos.x + halfPixelMargin) / FONT_TEXTURE_SIZE.x,
                               static_cast<float>(tex.charPos.y + halfPixelMargin) / FONT_TEXTURE_SIZE.y);
-        Math::Point texCoord2(static_cast<float>(tex.charPos.x + tex.charSize.x + halfPixelMargin) / FONT_TEXTURE_SIZE.x,
-                              static_cast<float>(tex.charPos.y + tex.charSize.y + halfPixelMargin) / FONT_TEXTURE_SIZE.y);
+        Math::Point texCoord2(static_cast<float>(tex.charPos.x + tex.charSize.x - halfPixelMargin) / FONT_TEXTURE_SIZE.x,
+                              static_cast<float>(tex.charPos.y + tex.charSize.y - halfPixelMargin) / FONT_TEXTURE_SIZE.y);
         Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
 
         Vertex quad[4] =
         {
-            Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(texCoord1.x, texCoord2.y)),
-            Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(texCoord1.x, texCoord1.y)),
-            Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(texCoord2.x, texCoord2.y)),
-            Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(texCoord2.x, texCoord1.y))
+            Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(texCoord1.x, texCoord2.y)),
+            Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(texCoord1.x, texCoord1.y)),
+            Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(texCoord2.x, texCoord2.y)),
+            Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(texCoord2.x, texCoord1.y))
         };
 
         m_device->SetTexture(0, tex.id);
+        m_engine->SetWindowCoordinates();
         m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
+        m_engine->SetInterfaceCoordinates();
         m_engine->AddStatisticTriangle(2);
 
-        pos.x += charInterfaceSize.x * width;
+        pos.x += tex.charSize.x * width;
     }
 }
 
@@ -1063,8 +1119,8 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
     }
 
     const int pixelMargin = 1;
-    Math::IntPoint tileSize(Math::NextPowerOfTwo(textSurface->w) + pixelMargin,
-                            Math::NextPowerOfTwo(textSurface->h) + pixelMargin);
+    Math::IntPoint tileSize(Math::Max(16, Math::NextPowerOfTwo(textSurface->w)) + pixelMargin,
+                            Math::Max(16, Math::NextPowerOfTwo(textSurface->h)) + pixelMargin);
 
     FontTexture* fontTexture = GetOrCreateFontTexture(tileSize);
 
