@@ -22,6 +22,7 @@
 #include "CBot/CBotInstr/CBotInstrUtils.h"
 #include "CBot/CBotInstr/CBotNew.h"
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
+#include "CBot/CBotInstr/CBotExprLitNull.h"
 #include "CBot/CBotInstr/CBotTwoOpExpr.h"
 #include "CBot/CBotInstr/CBotFunction.h"
 #include "CBot/CBotInstr/CBotExpression.h"
@@ -722,6 +723,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 }
                 if ( !pStack->IsOk() ) return false;
             }
+            else if ( type2.Eq(CBotTypArrayPointer) ) i = new CBotExprLitNull();
 
 
             if ( !bSecond )
@@ -739,8 +741,15 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 if ( pv->IsStatic() && pv->m_InitExpr != nullptr )
                 {
                     CBotStack* pile = CBotStack::AllocateStack();              // independent stack
-                    while(pile->IsOk() && !pv->m_InitExpr->Execute(pile));  // evaluates the expression without timer
-                    pv->SetVal( pile->GetVar() ) ;
+                    if ( type2.Eq(CBotTypArrayPointer) )
+                    {
+                        while(pile->IsOk() && !pv->m_InitExpr->Execute(pile, pv));
+                    }
+                    else
+                    {
+                        while(pile->IsOk() && !pv->m_InitExpr->Execute(pile)); // evaluates the expression without timer
+                        pv->SetVal( pile->GetVar() ) ;
+                    }
                     pile->Delete();
                 }
             }
