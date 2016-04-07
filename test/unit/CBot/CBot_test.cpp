@@ -524,8 +524,7 @@ TEST_F(CBotUT, Arrays)
     );
 }
 
-// TODO: BAD! WRONG! NOOOOO!!! :<
-TEST_F(CBotUT, DISABLED_ArraysInClasses)
+TEST_F(CBotUT, ArraysInClasses)
 {
     ExecuteTest(
         "public class TestClass {\n"
@@ -533,9 +532,9 @@ TEST_F(CBotUT, DISABLED_ArraysInClasses)
         "    private int test2[5];\n"
         "    \n"
         "    public void TestClass() {\n"
-        "        ASSERT(sizeof(test) == 0);\n" // TODO: NOT INITIALIZED
-        "        ASSERT(sizeof(this.test) == 0);\n" // TODO: NOT INITIALIZED
-        "        ASSERT(test == null);\n" // TODO: Again, not sure // TODO: NOT INITIALIZED
+        "        ASSERT(sizeof(test) == 0);\n"
+        "        ASSERT(sizeof(this.test) == 0);\n"
+        "        ASSERT(test == null);\n" // TODO: Again, not sure
         "        test[0] = 5;\n"
         "        this.test[1] = 5;\n"
         "        ASSERT(sizeof(test) == 2);\n"
