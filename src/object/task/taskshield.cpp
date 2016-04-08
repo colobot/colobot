@@ -258,10 +258,21 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 
     if ( mode == TSM_START )
     {
+        Math::Vector pos;
         Math::Point dim;
 
+        pos.x = 7.0f;
+        pos.y = 4.5f+3.0f;
+        pos.z = 0.0f;
+        m_object->SetPartPosition(2, pos);
+
+        pos.x = 0.0f;
+        pos.y = 1.0f+3.0f;
+        pos.z = 0.0f;
+        m_object->SetPartPosition(3, pos);
+
         Math::Matrix* mat = m_object->GetWorldMatrix(0);
-        Math::Vector pos = Math::Vector(7.0f, 15.0f, 0.0f);
+        pos = Math::Vector(7.0f, 15.0f, 0.0f);
         pos = Transform(*mat, pos);  // sphere position
         m_shieldPos = pos;
 

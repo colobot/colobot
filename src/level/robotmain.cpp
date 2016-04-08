@@ -4529,33 +4529,6 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj, const std::
 
     if (obj->Implements(ObjectInterfaceType::Old))
     {
-        COldObject* oldObj = dynamic_cast<COldObject*>(obj);
-
-        for (int i = 1; i < OBJECTMAXPART; i++)
-        {
-            if (oldObj->GetObjectRank(i) == -1) continue;
-
-            Math::Vector pos = oldObj->GetPartPosition(i);
-            if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
-            {
-                pos /= g_unit;
-                line->AddParam("p" + boost::lexical_cast<std::string>(i), MakeUnique<CLevelParserParam>(pos));
-            }
-
-            Math::Vector rot = oldObj->GetPartRotation(i);
-            if (rot.x != 0.0f || rot.y != 0.0f || rot.z != 0.0f)
-            {
-                rot /= (Math::PI/180.0f);
-                line->AddParam("a" + boost::lexical_cast<std::string>(i), MakeUnique<CLevelParserParam>(rot));
-            }
-
-            Math::Vector scale = oldObj->GetPartScale(i);
-            if (scale.x != 1.0f || scale.y != 1.0f || scale.z != 1.0f)
-            {
-                line->AddParam("z" + boost::lexical_cast<std::string>(i), MakeUnique<CLevelParserParam>(scale));
-            }
-        }
-
         line->AddParam("option", MakeUnique<CLevelParserParam>(obj->GetOption()));
     }
 
@@ -4576,7 +4549,7 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj, const std::
     if (obj->Implements(ObjectInterfaceType::ProgramStorage))
     {
         CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
-        if(programStorage->GetProgramStorageIndex() >= 0)
+        if (programStorage->GetProgramStorageIndex() >= 0)
         {
             programStorage->SaveAllProgramsForSavedScene(line, programDir);
         }
@@ -4772,32 +4745,8 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const std::string& pro
     if (obj->Implements(ObjectInterfaceType::Old))
     {
         COldObject* oldObj = dynamic_cast<COldObject*>(obj);
-
         oldObj->SetPosition(line->GetParam("pos")->AsPoint() * g_unit);
         oldObj->SetRotation(line->GetParam("angle")->AsPoint() * Math::DEG_TO_RAD);
-
-        for (int i = 1; i < OBJECTMAXPART; i++)
-        {
-            if (oldObj->GetObjectRank(i) == -1) continue;
-
-            Math::Vector pos = line->GetParam(std::string("p")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
-            if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
-            {
-                oldObj->SetPartPosition(i, pos*g_unit);
-            }
-
-            Math::Vector dir = line->GetParam(std::string("a")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
-            if (dir.x != 0.0f || dir.y != 0.0f || dir.z != 0.0f)
-            {
-                oldObj->SetPartRotation(i, dir*(Math::PI/180.0f));
-            }
-
-            Math::Vector zoom = line->GetParam(std::string("z")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
-            if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
-            {
-                oldObj->SetPartScale(i, zoom);
-            }
-        }
     }
 
     if (obj->GetType() == OBJECT_BASE) m_base = obj;
@@ -4815,7 +4764,7 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const std::string& pro
     if (obj->Implements(ObjectInterfaceType::ProgramStorage))
     {
         CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
-        if (!line->GetParam("programStorageIndex")->IsDefined()) // Backwards combatibility
+        if (!line->GetParam("programStorageIndex")->IsDefined()) // Backwards compatibility
             programStorage->SetProgramStorageIndex(objRank);
         programStorage->LoadAllProgramsForSavedScene(line, programDir);
     }
