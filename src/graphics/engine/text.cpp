@@ -885,27 +885,23 @@ void CText::DrawHighlight(FontHighlight hl, Math::IntPoint pos, Math::IntPoint s
 
     Math::Point p1, p2;
     p1.x = pos.x;
+    p1.y = pos.y - size.y;
     p2.x = pos.x + size.x;
+    p2.y = pos.y;
 
     if (hl == FONT_HIGHLIGHT_LINK)
     {
-        p1.y = pos.y;
-        p2.y = pos.y + h;  // just emphasized
-    }
-    else
-    {
-        p1.y = pos.y;
-        p2.y = pos.y + size.y;
+        p1.y = pos.y - h;  // just emphasized
     }
 
     m_device->SetTextureEnabled(0, false);
 
     VertexCol quad[] =
     {
-        VertexCol(Math::Vector(p1.x, p1.y, 0.0f), grad[3]),
-        VertexCol(Math::Vector(p1.x, p2.y, 0.0f), grad[0]),
-        VertexCol(Math::Vector(p2.x, p1.y, 0.0f), grad[2]),
-        VertexCol(Math::Vector(p2.x, p2.y, 0.0f), grad[1])
+        VertexCol(Math::Vector(p1.x, p2.y, 0.0f), grad[3]),
+        VertexCol(Math::Vector(p1.x, p1.y, 0.0f), grad[0]),
+        VertexCol(Math::Vector(p2.x, p2.y, 0.0f), grad[2]),
+        VertexCol(Math::Vector(p2.x, p1.y, 0.0f), grad[1])
     };
 
     m_engine->SetWindowCoordinates();
