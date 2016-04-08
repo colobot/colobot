@@ -5057,7 +5057,8 @@ Error CRobotMain::ProcessEndMissionTakeForGroup(std::vector<CSceneEndCondition*>
 }
 
 //! Process EndMissionTake commands, result is stored in m_missionResult
-void CRobotMain::ProcessEndMissionTake()
+//! If return value is different than ERR_MISSION_NOTERM, assume the mission is finished and pass on the result
+Error CRobotMain::ProcessEndMissionTake()
 {
     // Sort end conditions by teams
     std::map<int, std::vector<CSceneEndCondition*>> teams;
@@ -5141,13 +5142,19 @@ void CRobotMain::ProcessEndMissionTake()
             }
         }
     }
+
+    return ERR_MISSION_NOTERM;
 }
 
 //! Checks if the mission is over
 Error CRobotMain::CheckEndMission(bool frame)
 {
     // Process EndMissionTake, unless we are using LevelController script for processing ending conditions
-    if (!m_missionResultFromScript) ProcessEndMissionTake();
+    if (!m_missionResultFromScript)
+    {
+        Error result = ProcessEndMissionTake();
+        if (result != ERR_MISSION_NOTERM) return result;
+    }
 
     // Take action depending on m_missionResult
 

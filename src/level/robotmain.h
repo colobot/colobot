@@ -197,7 +197,7 @@ public:
     void        UpdateAudio(bool frame);
     void        SetMissionResultFromScript(Error result, float delay);
     Error       CheckEndMission(bool frame);
-    void        ProcessEndMissionTake();
+    Error       ProcessEndMissionTake();
     Error       ProcessEndMissionTakeForGroup(std::vector<CSceneEndCondition*>& endTakes);
     int         GetObligatoryToken();
     char*       GetObligatoryToken(int i);
