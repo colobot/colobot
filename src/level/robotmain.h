@@ -141,6 +141,12 @@ struct ShowLimit
     float           time = 0.0f;
 };
 
+struct MinMax
+{
+    int min = -1;
+    int max = -1;
+};
+
 
 const int SATCOM_HUSTON     = 0;
 const int SATCOM_SAT        = 1;
@@ -199,10 +205,7 @@ public:
     Error       CheckEndMission(bool frame);
     Error       ProcessEndMissionTake();
     Error       ProcessEndMissionTakeForGroup(std::vector<CSceneEndCondition*>& endTakes);
-    int         GetObligatoryToken();
-    char*       GetObligatoryToken(int i);
-    int         IsObligatoryToken(const char* token);
-    bool        IsProhibitedToken(const char* token);
+    const std::map<std::string, MinMax>& GetObligatoryTokenList();
     void        UpdateMap();
     bool        GetShowMap();
 
@@ -552,10 +555,7 @@ protected:
 
     std::vector<std::unique_ptr<CAudioChangeCondition>> m_audioChange;
 
-    int             m_obligatoryTotal = 0;
-    char            m_obligatoryToken[100][20] = {};
-    int             m_prohibitedTotal = 0;
-    char            m_prohibitedToken[100][20] = {};
+    std::map<std::string, MinMax> m_obligatoryTokens;
 
     //! Enabled buildings
     int             m_build = 0;

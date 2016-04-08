@@ -161,46 +161,52 @@ bool CScript::CheckToken()
     m_error = CBot::CBotNoErr;
     m_title[0] = 0;
     m_mainFunction[0] = 0;
-    m_token[0] = 0;
+    m_token.clear();
     m_bCompile = false;
 
-    std::vector<bool> used(m_main->GetObligatoryToken(), false);
+    std::map<std::string, int> used;
+    std::map<std::string, int> cursor1;
+    std::map<std::string, int> cursor2;
 
     auto tokens = CBot::CBotToken::CompileTokens(m_script.get());
     CBot::CBotToken* bt = tokens.get();
     while ( bt != nullptr )
     {
         std::string token = bt->GetString();
-        int cursor1 = bt->GetStart();
-        int cursor2 = bt->GetEnd();
 
-        int i = m_main->IsObligatoryToken(token.c_str());
-        if ( i != -1 )
-        {
-            used[i] = true;  // token used
-        }
+        // Store only the last occurrence of the token
+        cursor1[token] = bt->GetStart();
+        cursor2[token] = bt->GetEnd();
 
-        if ( !m_main->IsProhibitedToken(token.c_str()) )
-        {
-            m_error = static_cast<CBot::CBotError>(ERR_PROHIBITEDTOKEN);
-            m_cursor1 = cursor1;
-            m_cursor2 = cursor2;
-            strcpy(m_title, "<prohibited>");
-            m_mainFunction[0] = 0;
-            return false;
-        }
+        used[token]++;
 
         bt = bt->GetNext();
     }
 
-    // At least once every obligatory instruction?
-    for (unsigned int i = 0; i < used.size(); i++)
+    for (const auto& it : m_main->GetObligatoryTokenList())
     {
-        if (!used[i])  // token not used?
+        Error error = ERR_OK;
+        int allowed = 0;
+        if (it.second.max >= 0 && used[it.first] > it.second.max)
         {
-            strcpy(m_token, m_main->GetObligatoryToken(i));
-            m_error = static_cast<CBot::CBotError>(ERR_OBLIGATORYTOKEN);
-            strcpy(m_title, "<obligatory>");
+            error = ERR_PROHIBITEDTOKEN;
+            allowed = it.second.max;
+            m_cursor1 = cursor1[it.first];
+            m_cursor2 = cursor2[it.first];
+        }
+        if (it.second.min >= 0 && used[it.first] < it.second.min)
+        {
+            error = ERR_OBLIGATORYTOKEN;
+            allowed = it.second.min;
+        }
+
+        if (error != ERR_OK)
+        {
+            m_token = it.first;
+            m_tokenUsed = used[it.first];
+            m_tokenAllowed = allowed;
+            m_error = static_cast<CBot::CBotError>(error);
+            strcpy(m_title, "<incorrect instructions>");
             m_mainFunction[0] = 0;
             return false;
         }
@@ -788,11 +794,11 @@ void CScript::GetError(std::string& error)
     }
     else
     {
-        if ( m_error == static_cast<CBot::CBotError>(ERR_OBLIGATORYTOKEN) )
+        if ( m_error == static_cast<CBot::CBotError>(ERR_OBLIGATORYTOKEN) || m_error == static_cast<CBot::CBotError>(ERR_PROHIBITEDTOKEN) )
         {
             std::string s;
             GetResource(RES_ERR, m_error, s);
-            error = StrUtils::Format(s.c_str(), m_token);
+            error = StrUtils::Format(s.c_str(), m_token.c_str(), m_tokenAllowed, m_tokenUsed);
         }
         else if ( m_error < 1000 )
         {

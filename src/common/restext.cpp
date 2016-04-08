@@ -632,8 +632,8 @@ void InitializeRestext()
     stringsErr[ERR_DELETEMOBILE]    = TR("Bot destroyed");
     stringsErr[ERR_DELETEBUILDING]  = TR("Building destroyed");
     stringsErr[ERR_ENEMY_OBJECT]    = TR("Unable to control enemy objects");
-    stringsErr[ERR_OBLIGATORYTOKEN] = TR("\"%s\" missing in this exercise");
-    stringsErr[ERR_PROHIBITEDTOKEN] = TR("Do not use in this exercise");
+    stringsErr[ERR_OBLIGATORYTOKEN] = TR("You have to use \"%s\" at least %d times in this exercise (used: %d)");
+    stringsErr[ERR_PROHIBITEDTOKEN] = TR("You have to use \"%s\" at most %d times in this exercise (used: %d)");
     stringsErr[ERR_WRONG_BOT]       = TR("Inappropriate bot");
 
     stringsErr[INFO_BUILD]          = TR("Building completed");

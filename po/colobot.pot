@@ -611,13 +611,13 @@ msgstr ""
 msgid "\\Face 1"
 msgstr ""
 
-msgid "\\Face 4"
+msgid "\\Face 2"
 msgstr ""
 
 msgid "\\Face 3"
 msgstr ""
 
-msgid "\\Face 2"
+msgid "\\Face 4"
 msgstr ""
 
 msgid "\\No eyeglasses"
@@ -1519,10 +1519,11 @@ msgid "Unable to control enemy objects"
 msgstr ""
 
 #, c-format
-msgid "\"%s\" missing in this exercise"
+msgid "You have to use \"%s\" at least %d times in this exercise (used: %d)"
 msgstr ""
 
-msgid "Do not use in this exercise"
+#, c-format
+msgid "You have to use \"%s\" at most %d times in this exercise (used: %d)"
 msgstr ""
 
 msgid "Inappropriate bot"
@@ -1736,6 +1737,9 @@ msgid "Private element"
 msgstr ""
 
 msgid "Public required"
+msgstr ""
+
+msgid "expression expected after ="
 msgstr ""
 
 msgid "Dividing by zero"

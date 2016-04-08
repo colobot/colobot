@@ -60,10 +60,6 @@ msgstr "Oczekiwane \" [ \""
 msgid "\" ] \" missing"
 msgstr "Brak \" ] \""
 
-#, c-format
-msgid "\"%s\" missing in this exercise"
-msgstr "Brakuje \"%s\" w tym ćwiczeniu"
-
 msgid "..behind"
 msgstr "..za"
 
@@ -491,9 +487,6 @@ msgstr "Urządzenie\\Ustawienia sterownika i rozdzielczości"
 
 msgid "Dividing by zero"
 msgstr "Dzielenie przez zero"
-
-msgid "Do not use in this exercise"
-msgstr "Do not use in this exercise"
 
 msgid "Do you really want to destroy the selected building?"
 msgstr "Czy na pewno chcesz zniszczyć zaznaczony budynek?"
@@ -1709,6 +1702,14 @@ msgstr "Nie możesz przenosić przedmiotów pod wodą"
 msgid "You found a usable object"
 msgstr "Znaleziono użyteczny przedmiot"
 
+#, c-format
+msgid "You have to use \"%s\" at least %d times in this exercise (used: %d)"
+msgstr "Musisz użyć \"%s\" przynajmniej %d razy w tym ćwiczeniu (użyto: %d)"
+
+#, c-format
+msgid "You have to use \"%s\" at most %d times in this exercise (used: %d)"
+msgstr "Musisz użyć \"%s\" najwyżej %d razy w tym ćwiczeniu (użyto: %d)"
+
 msgid "You must get on the spaceship to take off "
 msgstr "Musisz być na statku kosmicznym aby nim odlecieć"
 
@@ -1814,8 +1815,14 @@ msgstr "colobot.info"
 msgid "epsitec.com"
 msgstr "epsitec.com"
 
+msgid "expression expected after ="
+msgstr ""
+
 #~ msgid " Drivers:"
 #~ msgstr " Sterowniki:"
+
+#~ msgid "\"%s\" missing in this exercise"
+#~ msgstr "Brakuje \"%s\" w tym ćwiczeniu"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
@@ -1843,6 +1850,9 @@ msgstr "epsitec.com"
 
 #~ msgid "Details\\Visual quality of 3D objects"
 #~ msgstr "Szczegóły\\Jakość wizualna obiektów 3D"
+
+#~ msgid "Do not use in this exercise"
+#~ msgstr "Do not use in this exercise"
 
 #~ msgid "Do you want to quit Colobot: Gold Edition?"
 #~ msgstr "Czy na pewno chcesz opuścić grę Colobot: Gold Edition?"

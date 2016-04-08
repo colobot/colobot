@@ -2839,8 +2839,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_endTakeWinDelay = 2.0f;
         m_endTakeLostDelay = 2.0f;
         m_globalMagnifyDamage = 1.0f;
-        m_obligatoryTotal = 0;
-        m_prohibitedTotal = 0;
+        m_obligatoryTokens.clear();
         m_mapShow = true;
         m_mapImage = false;
         m_mapFilename[0] = 0;
@@ -3656,25 +3655,32 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
-            if (line->GetCommand() == "ObligatoryToken" && !resetObject) // NOTE: This was used only in CeeBot, maybe we should add this to some Colobot exercises?
+            if (line->GetCommand() == "ObligatoryToken" && !resetObject)
             {
-                int i = m_obligatoryTotal;
-                if (i < 100) //TODO: remove the limit
+                std::string token = line->GetParam("text")->AsString();
+                if (!line->GetParam("min")->IsDefined() && !line->GetParam("max")->IsDefined())
+                    GetLogger()->Warn("ObligatoryToken without specifying min/max is provided only for backwards compatibility - instead, do this: ObligatoryToken text=\"%s\" min=1\n", token.c_str());
+                if (m_obligatoryTokens.count(token))
+                    throw CLevelParserException("Incorrect ObligatoryToken specification - you cannot define a token twice");
+
+                m_obligatoryTokens[token].min = line->GetParam("min")->AsInt(line->GetParam("max")->IsDefined() ? -1 : 1); // BACKWARDS COMPATIBILITY: if neither min or max are defined, default to min=1
+                m_obligatoryTokens[token].max = line->GetParam("max")->AsInt(-1);
+                if (m_obligatoryTokens[token].min >= 0 && m_obligatoryTokens[token].max >= 0 && m_obligatoryTokens[token].min > m_obligatoryTokens[token].max)
                 {
-                    strcpy(m_obligatoryToken[i], line->GetParam("text")->AsString().c_str());
-                    m_obligatoryTotal ++;
+                    throw CLevelParserException("Incorrect ObligatoryToken specification - min cannot be greater than max");
                 }
                 continue;
             }
 
-            if (line->GetCommand() == "ProhibitedToken" && !resetObject) // NOTE: This was used only in CeeBot, maybe we should add this to some Colobot exercises?
+            if (line->GetCommand() == "ProhibitedToken" && !resetObject) // NOTE: Kept only for backwards compatibility
             {
-                int i = m_prohibitedTotal;
-                if (i < 100) //TODO: remove the limit
-                {
-                    strcpy(m_prohibitedToken[i], line->GetParam("text")->AsString().c_str());
-                    m_prohibitedTotal ++;
-                }
+                std::string token = line->GetParam("text")->AsString();
+                GetLogger()->Warn("ProhibitedToken is only provided for backwards compatibility - instead, do this: ObligatoryToken text=\"%s\" max=0\n", token.c_str());
+                if (m_obligatoryTokens.count(token))
+                    throw CLevelParserException("Incorrect ObligatoryToken specification - you cannot define a token twice");
+
+                m_obligatoryTokens[token].min = -1;
+                m_obligatoryTokens[token].max = 0;
                 continue;
             }
 
@@ -5227,40 +5233,11 @@ Error CRobotMain::CheckEndMission(bool frame)
 }
 
 
-//! Returns the number of instructions required
-int CRobotMain::GetObligatoryToken()
+//! Returns the list instructions required in CBot program in level
+const std::map<std::string, MinMax>& CRobotMain::GetObligatoryTokenList()
 {
-    return m_obligatoryTotal;
+    return m_obligatoryTokens;
 }
-
-//! Returns the name of a required instruction
-char* CRobotMain::GetObligatoryToken(int i)
-{
-    return m_obligatoryToken[i];
-}
-
-//! Checks if an instruction is part of the obligatory list
-int CRobotMain::IsObligatoryToken(const char* token)
-{
-    for (int i = 0; i < m_obligatoryTotal; i++)
-    {
-        if (strcmp(token, m_obligatoryToken[i]) == 0)
-            return i;
-    }
-    return -1;
-}
-
-//! Checks if an instruction is not part of the banned list
-bool CRobotMain::IsProhibitedToken(const char* token)
-{
-    for (int i = 0; i < m_prohibitedTotal; i++)
-    {
-        if (strcmp(token, m_prohibitedToken[i]) == 0)
-            return false;
-    }
-    return true;
-}
-
 
 //! Indicates whether it is possible to control a driving robot
 bool CRobotMain::GetTrainerPilot()

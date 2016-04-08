@@ -54,10 +54,6 @@ msgstr "\" [ \" attendu"
 msgid "\" ] \" missing"
 msgstr "\" ] \" attendu"
 
-#, c-format
-msgid "\"%s\" missing in this exercise"
-msgstr "Il manque \"%s\" dans le programme"
-
 msgid "..behind"
 msgstr "..derrière"
 
@@ -485,9 +481,6 @@ msgstr "Affichage\\Pilote et résolution d'affichage"
 
 msgid "Dividing by zero"
 msgstr "Division par zéro"
-
-msgid "Do not use in this exercise"
-msgstr "Interdit dans cet exercice"
 
 msgid "Do you really want to destroy the selected building?"
 msgstr "Voulez-vous vraiment détruire le bâtiment sélectionné ?"
@@ -1701,6 +1694,14 @@ msgstr "Vous ne pouvez pas transporter un objet sous l'eau"
 msgid "You found a usable object"
 msgstr "Vous avez trouvé un objet utilisable"
 
+#, c-format
+msgid "You have to use \"%s\" at least %d times in this exercise (used: %d)"
+msgstr ""
+
+#, c-format
+msgid "You have to use \"%s\" at most %d times in this exercise (used: %d)"
+msgstr ""
+
 msgid "You must get on the spaceship to take off "
 msgstr "Vous devez embarquer pour pouvoir décoller"
 
@@ -1806,6 +1807,9 @@ msgstr "colobot.info"
 msgid "epsitec.com"
 msgstr "epsitec.com"
 
+msgid "expression expected after ="
+msgstr ""
+
 #~ msgid " "
 #~ msgstr " "
 
@@ -1814,6 +1818,9 @@ msgstr "epsitec.com"
 
 #~ msgid " Missions on this level:"
 #~ msgstr " Missions du niveau :"
+
+#~ msgid "\"%s\" missing in this exercise"
+#~ msgstr "Il manque \"%s\" dans le programme"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Bruitages 3D\\Positionnement sonore dans l'espace"
@@ -1847,6 +1854,9 @@ msgstr "epsitec.com"
 
 #~ msgid "Developed by :"
 #~ msgstr "Développé par :"
+
+#~ msgid "Do not use in this exercise"
+#~ msgstr "Interdit dans cet exercice"
 
 #, fuzzy
 #~ msgid "Do you want to quit Colobot: Gold Edition?"

@@ -122,7 +122,8 @@ protected:
     char    m_title[50] = {};        // script title
     char    m_mainFunction[50] = {};
     char    m_filename[50] = {};     // file name
-    char    m_token[50] = {};        // missing instruction
+    std::string m_token = "";        // missing instruction
+    int m_tokenUsed = 0, m_tokenAllowed = 0;
     CBot::CBotError m_error = CBot::CBotNoErr;        // error (0=ok)
     int     m_cursor1 = 0;
     int     m_cursor2 = 0;

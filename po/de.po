@@ -61,10 +61,6 @@ msgstr "Es fehlt eine offene eckige Klammer \" [ \""
 msgid "\" ] \" missing"
 msgstr "Es fehlt eine geschlossene eckige Klammer \" ] \""
 
-#, c-format
-msgid "\"%s\" missing in this exercise"
-msgstr "Es fehlt \"%s\" in Ihrem Programm"
-
 msgid "..behind"
 msgstr "..hinten"
 
@@ -490,9 +486,6 @@ msgstr "Bildschirm\\Driver und Bildschirmauflösung"
 
 msgid "Dividing by zero"
 msgstr "Teilung durch Null"
-
-msgid "Do not use in this exercise"
-msgstr "In dieser Übung verboten"
 
 msgid "Do you really want to destroy the selected building?"
 msgstr "Wollen Sie das angewählte Gebäude wirklich zerstören ?"
@@ -1715,6 +1708,14 @@ msgstr "Sie können unter Wasser nichts tragen"
 msgid "You found a usable object"
 msgstr "Sie haben ein brauchbares Objekt gefunden"
 
+#, c-format
+msgid "You have to use \"%s\" at least %d times in this exercise (used: %d)"
+msgstr ""
+
+#, c-format
+msgid "You have to use \"%s\" at most %d times in this exercise (used: %d)"
+msgstr ""
+
 msgid "You must get on the spaceship to take off "
 msgstr "Gehen Sie an Bord, bevor Sie abheben"
 
@@ -1821,6 +1822,9 @@ msgstr ""
 msgid "epsitec.com"
 msgstr "www.epsitec.com"
 
+msgid "expression expected after ="
+msgstr ""
+
 #~ msgid " "
 #~ msgstr " "
 
@@ -1829,6 +1833,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid " Missions on this level:"
 #~ msgstr " Missionen des Userlevels:"
+
+#~ msgid "\"%s\" missing in this exercise"
+#~ msgstr "Es fehlt \"%s\" in Ihrem Programm"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "3D-Geräusche\\Orten der Geräusche im Raum"
@@ -1862,6 +1869,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Developed by :"
 #~ msgstr "Entwickelt von:"
+
+#~ msgid "Do not use in this exercise"
+#~ msgstr "In dieser Übung verboten"
 
 #, fuzzy
 #~ msgid "Do you want to quit Colobot: Gold Edition?"
