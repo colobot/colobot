@@ -195,9 +195,10 @@ public:
 
     void        ResetObject();
     void        UpdateAudio(bool frame);
-    void        SetEndMission(Error result, float delay);
+    void        SetMissionResultFromScript(Error result, float delay);
     Error       CheckEndMission(bool frame);
-    Error       CheckEndMissionForGroup(std::vector<CSceneEndCondition*>& endTakes);
+    Error       ProcessEndMissionTake();
+    Error       ProcessEndMissionTakeForGroup(std::vector<CSceneEndCondition*>& endTakes);
     int         GetObligatoryToken();
     char*       GetObligatoryToken(int i);
     int         IsObligatoryToken(const char* token);
@@ -543,6 +544,8 @@ protected:
     ActivePause*    m_visitPause = nullptr;
 
     std::vector<std::unique_ptr<CSceneEndCondition>> m_endTake;
+    //! If true, the mission ends immediately after completing the requirements without requiring SpaceShip takeoff
+    bool            m_endTakeImmediat = false;
     long            m_endTakeResearch = 0;
     float           m_endTakeWinDelay = 0.0f;
     float           m_endTakeLostDelay = 0.0f;
@@ -562,6 +565,8 @@ protected:
     std::map<int, int>  m_researchDone;
 
     Error           m_missionResult = ERR_OK;
+    //! true if m_missionResult has been set by LevelController script, this disables normal EndMissionTake processing
+    bool            m_missionResultFromScript = false;
 
     ShowLimit       m_showLimit[MAXSHOWLIMIT];
 

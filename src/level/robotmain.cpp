@@ -1236,19 +1236,22 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
 
         if (cmd == "controller")
         {
-            if (m_controller != nullptr)
+            if (m_controller == nullptr)
             {
-                // Don't use SelectObject because it checks if the object is selectable
-                if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
-                    StopDisplayVisit();
-
-                CObject* prev = DeselectAll();
-                if (prev != nullptr && prev != m_controller)
-                    PushToSelectionHistory(prev);
-
-                SelectOneObject(m_controller, true);
-                m_short->UpdateShortcuts();
+                GetLogger()->Error("No LevelController on the map to select\n");
+                return;
             }
+
+            // Don't use SelectObject because it checks if the object is selectable
+            if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
+                StopDisplayVisit();
+
+            CObject* prev = DeselectAll();
+            if (prev != nullptr && prev != m_controller)
+                PushToSelectionHistory(prev);
+
+            SelectOneObject(m_controller, true);
+            m_short->UpdateShortcuts();
             return;
         }
 
@@ -2831,6 +2834,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_endingLostRank  = 0;
         m_audioChange.clear();
         m_endTake.clear();
+        m_endTakeImmediat = false;
         m_endTakeResearch = 0;
         m_endTakeWinDelay = 2.0f;
         m_endTakeLostDelay = 2.0f;
@@ -2870,6 +2874,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_teamNames.clear();
 
         m_missionResult = ERR_MISSION_NOTERM;
+        m_missionResultFromScript = false;
     }
 
     //NOTE: Reset timer always, even when only resetting object positions
@@ -2999,7 +3004,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
-            if (line->GetCommand() == "AudioChange" && !resetObject && m_controller == nullptr)
+            if (line->GetCommand() == "AudioChange" && !resetObject)
             {
                 auto audioChange = MakeUnique<CAudioChangeCondition>();
                 audioChange->Read(line.get());
@@ -3009,7 +3014,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
-            if (line->GetCommand() == "Audio" && !resetObject && m_controller == nullptr)
+            if (line->GetCommand() == "Audio" && !resetObject)
             {
                 if (line->GetParam("track")->IsDefined())
                 {
@@ -3410,6 +3415,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "LevelController" && m_sceneReadPath.empty())
             {
+                if (m_controller != nullptr)
+                {
+                    throw CLevelParserException("There can be only one LevelController in the level");
+                }
+
                 m_controller = m_objMan->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER);
                 assert(m_controller->Implements(ObjectInterfaceType::Programmable));
                 assert(m_controller->Implements(ObjectInterfaceType::ProgramStorage));
@@ -3625,26 +3635,28 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
-            if (line->GetCommand() == "EndMissionTake" && !resetObject && m_controller == nullptr)
+            if (line->GetCommand() == "EndMissionTake" && !resetObject)
             {
                 auto endTake = MakeUnique<CSceneEndCondition>();
                 endTake->Read(line.get());
+                if (endTake->immediat)
+                    m_endTakeImmediat = true;
                 m_endTake.push_back(std::move(endTake));
                 continue;
             }
-            if (line->GetCommand() == "EndMissionDelay" && !resetObject && m_controller == nullptr)
+            if (line->GetCommand() == "EndMissionDelay" && !resetObject)
             {
                 m_endTakeWinDelay  = line->GetParam("win")->AsFloat(2.0f);
                 m_endTakeLostDelay = line->GetParam("lost")->AsFloat(2.0f);
                 continue;
             }
-            if (line->GetCommand() == "EndMissionResearch" && !resetObject && m_controller == nullptr) //TODO: Is this used anywhere?
+            if (line->GetCommand() == "EndMissionResearch" && !resetObject) // This is not used in any original Colobot levels, but we'll keep it for userlevel creators
             {
                 m_endTakeResearch |= line->GetParam("type")->AsResearchFlag();
                 continue;
             }
 
-            if (line->GetCommand() == "ObligatoryToken" && !resetObject) //NOTE: This was used only in CeeBot, maybe we should add this to some Colobot exercises?
+            if (line->GetCommand() == "ObligatoryToken" && !resetObject) // NOTE: This was used only in CeeBot, maybe we should add this to some Colobot exercises?
             {
                 int i = m_obligatoryTotal;
                 if (i < 100) //TODO: remove the limit
@@ -3655,7 +3667,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
-            if (line->GetCommand() == "ProhibitedToken" && !resetObject) //NOTE: This was used only in CeeBot, maybe we should add this to some Colobot exercises?
+            if (line->GetCommand() == "ProhibitedToken" && !resetObject) // NOTE: This was used only in CeeBot, maybe we should add this to some Colobot exercises?
             {
                 int i = m_prohibitedTotal;
                 if (i < 100) //TODO: remove the limit
@@ -5008,17 +5020,16 @@ void CRobotMain::UpdateAudio(bool frame)
     }
 }
 
-void CRobotMain::SetEndMission(Error result, float delay)
+//! Set mission result from LevelController script
+void CRobotMain::SetMissionResultFromScript(Error result, float delay)
 {
-    if (m_controller != nullptr)
-    {
-        m_endTakeWinDelay = delay;
-        m_endTakeLostDelay = delay;
-        m_missionResult = result;
-    }
+    m_endTakeWinDelay = delay;
+    m_endTakeLostDelay = delay;
+    m_missionResult = result;
+    m_missionResultFromScript = true;
 }
 
-Error CRobotMain::CheckEndMissionForGroup(std::vector<CSceneEndCondition*>& endTakes)
+Error CRobotMain::ProcessEndMissionTakeForGroup(std::vector<CSceneEndCondition*>& endTakes)
 {
     Error finalResult = ERR_OK;
     bool hasWinningConditions = false;
@@ -5045,104 +5056,101 @@ Error CRobotMain::CheckEndMissionForGroup(std::vector<CSceneEndCondition*>& endT
     return finalResult;
 }
 
-//! Checks if the mission is over
-Error CRobotMain::CheckEndMission(bool frame)
+Error CRobotMain::ProcessEndMissionTake()
 {
-    bool isImmediat = false;
-    // Process EndMissionTake, unless we are using MissionController
-    if (m_controller == nullptr)
+    // Sort end conditions by teams
+    std::map<int, std::vector<CSceneEndCondition*>> teams;
+    for (std::unique_ptr<CSceneEndCondition>& endTake : m_endTake)
+        teams[endTake->winTeam].push_back(endTake.get());
+
+    int teamCount = 0;
+    bool usesTeamConditions = false;
+    for (auto it : teams)
     {
-        // Sort end conditions by teams
-        std::map<int, std::vector<CSceneEndCondition*>> teams;
-        for (std::unique_ptr<CSceneEndCondition>& endTake : m_endTake)
-        {
-            teams[endTake->winTeam].push_back(endTake.get());
-            if(endTake->immediat)
-                isImmediat = true;
-        }
+        int team = it.first;
+        if (team == 0) continue;
+        usesTeamConditions = true;
+        if (!m_objMan->TeamExists(team)) continue;
+        teamCount++;
+    }
 
-        int teamCount = 0;
-        bool usesTeamConditions = false;
-        for (auto it : teams)
-        {
-            int team = it.first;
-            if(team == 0) continue;
-            usesTeamConditions = true;
-            if(!m_objMan->TeamExists(team)) continue;
-            teamCount++;
-        }
+    if (!usesTeamConditions)
+    {
+        m_missionResult = ProcessEndMissionTakeForGroup(teams[0]);
+    }
+    else
+    {
+        // Special handling for teams
+        m_missionResult = ERR_MISSION_NOTERM;
 
-        if (!usesTeamConditions)
+        if (teamCount == 0)
         {
-            m_missionResult = CheckEndMissionForGroup(teams[0]);
+            GetLogger()->Info("All teams died, mission ended with failure\n");
+            m_missionResult = INFO_LOST;
         }
         else
         {
-            // Special handling for teams
-            m_missionResult = ERR_MISSION_NOTERM;
+            for (auto it : teams)
+            {
+                int team = it.first;
+                if (team == 0) continue;
+                if (!m_objMan->TeamExists(team)) continue;
 
-            if (teamCount == 0)
-            {
-                GetLogger()->Info("All teams died, mission ended with failure\n");
-                m_missionResult = INFO_LOST;
-            }
-            else
-            {
-                for (auto it : teams)
+                Error result = ProcessEndMissionTakeForGroup(it.second);
+                if (result == INFO_LOST || result == INFO_LOSTq)
                 {
-                    int team = it.first;
-                    if (team == 0) continue;
-                    if (!m_objMan->TeamExists(team)) continue;
+                    GetLogger()->Info("Team %d lost\n", team);
+                    m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" lost! >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_ERROR);
 
-                    Error result = CheckEndMissionForGroup(it.second);
-                    if (result == INFO_LOST || result == INFO_LOSTq)
-                    {
-                        GetLogger()->Info("Team %d lost\n", team);
-                        m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" lost! >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_ERROR);
-
-                        m_displayText->SetEnable(false); // To prevent "bot destroyed" messages
-                        m_objMan->DestroyTeam(team);
-                        m_displayText->SetEnable(true);
-                    }
-                    else if(result == ERR_OK)
-                    {
-                        if (m_winDelay == 0.0f)
-                        {
-                            GetLogger()->Info("Team %d won\n", team);
-
-                            m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" won the game >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f));
-                            if (m_missionTimerEnabled && m_missionTimerStarted)
-                            {
-                                GetLogger()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
-                                m_displayText->DisplayText(("Time: " + TimeFormat(m_missionTimer)).c_str(), Math::Vector(0.0f,0.0f,0.0f));
-                            }
-                            m_missionTimerEnabled = m_missionTimerStarted = false;
-                            m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
-                            m_lostDelay = 0.0f;
-                            m_displayText->SetEnable(false);
-                        }
-                        m_missionResult = ERR_OK;
-                        return ERR_OK;
-                    }
+                    m_displayText->SetEnable(false); // To prevent "bot destroyed" messages
+                    m_objMan->DestroyTeam(team);
+                    m_displayText->SetEnable(true);
                 }
-            }
-        }
-
-        if (m_missionResult != INFO_LOST && m_missionResult != INFO_LOSTq)
-        {
-            if (m_endTakeResearch != 0)
-            {
-                if (m_endTakeResearch != (m_endTakeResearch&m_researchDone[0]))
+                else if (result == ERR_OK)
                 {
-                    m_missionResult = ERR_MISSION_NOTERM;
+                    if (m_winDelay == 0.0f)
+                    {
+                        GetLogger()->Info("Team %d won\n", team);
+
+                        m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" won the game >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f));
+                        if (m_missionTimerEnabled && m_missionTimerStarted)
+                        {
+                            GetLogger()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
+                            m_displayText->DisplayText(("Time: " + TimeFormat(m_missionTimer)).c_str(), Math::Vector(0.0f,0.0f,0.0f));
+                        }
+                        m_missionTimerEnabled = m_missionTimerStarted = false;
+                        m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
+                        m_lostDelay = 0.0f;
+                        m_displayText->SetEnable(false);
+                    }
+                    m_missionResult = ERR_OK;
+                    return ERR_OK;
                 }
             }
         }
     }
 
+    if (m_missionResult != INFO_LOST && m_missionResult != INFO_LOSTq)
+    {
+        if (m_endTakeResearch != 0)
+        {
+            if (m_endTakeResearch != (m_endTakeResearch&m_researchDone[0]))
+            {
+                m_missionResult = ERR_MISSION_NOTERM;
+            }
+        }
+    }
+}
+
+//! Checks if the mission is over
+Error CRobotMain::CheckEndMission(bool frame)
+{
+    // Process EndMissionTake, unless we are using LevelController script for processing ending conditions
+    if (!m_missionResultFromScript) ProcessEndMissionTake();
+
     // Take action depending on m_missionResult
 
-    if(m_missionResult == INFO_LOSTq)
+    if (m_missionResult == INFO_LOSTq)
     {
         if (m_lostDelay == 0.0f)
         {
@@ -5154,7 +5162,7 @@ Error CRobotMain::CheckEndMission(bool frame)
         return INFO_LOSTq;
     }
 
-    if(m_missionResult == INFO_LOST)
+    if (m_missionResult == INFO_LOST)
     {
         if (m_lostDelay == 0.0f)
         {
@@ -5180,7 +5188,7 @@ Error CRobotMain::CheckEndMission(bool frame)
 
         if (frame)
         {
-            if(m_base != nullptr && !isImmediat)
+            if (m_base != nullptr && !m_endTakeImmediat)
             {
                 assert(m_base->Implements(ObjectInterfaceType::Controllable));
                 if(dynamic_cast<CControllableObject*>(m_base)->GetSelectable())

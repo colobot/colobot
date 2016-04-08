@@ -77,6 +77,7 @@ public:
 
     int lost = -1; // lost if <=
 
+    //! If this is true, the mission ends as soon as this requirement is met, without having to complete the others
     bool immediat = false;
 
     //! Read from line in scene file
