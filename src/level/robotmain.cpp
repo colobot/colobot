@@ -5056,7 +5056,8 @@ Error CRobotMain::ProcessEndMissionTakeForGroup(std::vector<CSceneEndCondition*>
     return finalResult;
 }
 
-Error CRobotMain::ProcessEndMissionTake()
+//! Process EndMissionTake commands, result is stored in m_missionResult
+void CRobotMain::ProcessEndMissionTake()
 {
     // Sort end conditions by teams
     std::map<int, std::vector<CSceneEndCondition*>> teams;
