@@ -1623,7 +1623,6 @@ void CObjectInterface::UpdateInterface()
     CSlider*    ps;
     CColor*     pc;
     bool        bFly, bRun;
-    char        title[100];
 
     if ( !m_object->GetSelect() )  return;
 
@@ -1793,8 +1792,8 @@ void CObjectInterface::UpdateInterface()
         {
             if (m_programStorage->GetProgram(m_selScript)->runnable)
             {
-                m_programStorage->GetProgram(m_selScript)->script->GetTitle(title);
-                if ( title[0] != 0 )
+                std::string title = m_programStorage->GetProgram(m_selScript)->script->GetTitle();
+                if ( !title.empty() )
                 {
                     bRun = true;
                 }
@@ -1943,7 +1942,6 @@ void CObjectInterface::UpdateScript(CWindow *pw)
 {
     CList*      pl;
     char        name[100];
-    char        title[100];
 
     pl = static_cast< CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
     if ( pl == nullptr )  return;
@@ -1953,16 +1951,16 @@ void CObjectInterface::UpdateScript(CWindow *pw)
     {
         sprintf(name, "%d", i+1);
 
-        m_programStorage->GetProgram(i)->script->GetTitle(title);
-        if ( title[0] != 0 )
+        std::string title = m_programStorage->GetProgram(i)->script->GetTitle();
+        if ( !title.empty() )
         {
             if(!m_programStorage->GetProgram(i)->readOnly)
             {
-                sprintf(name, "%d: %s", i+1, title);
+                sprintf(name, "%d: %s", i+1, title.c_str());
             }
             else
             {
-                sprintf(name, "*%d: %s", i+1, title);
+                sprintf(name, "*%d: %s", i+1, title.c_str());
             }
         }
 

@@ -70,11 +70,8 @@ CScript::CScript(COldObject* object)
     m_bRun = false;
     m_bStepMode = false;
     m_bCompile = false;
-    m_title[0] = 0;
-    m_mainFunction[0] = 0;
     m_cursor1 = 0;
     m_cursor2 = 0;
-    m_filename[0] = 0;
 }
 
 // Object's destructor.
@@ -159,8 +156,8 @@ bool CScript::CheckToken()
     if ( !m_object->GetCheckToken() )  return true;
 
     m_error = CBot::CBotNoErr;
-    m_title[0] = 0;
-    m_mainFunction[0] = 0;
+    m_title.clear();
+    m_mainFunction.clear();
     m_token.clear();
     m_bCompile = false;
 
@@ -206,8 +203,8 @@ bool CScript::CheckToken()
             m_tokenUsed = used[it.first];
             m_tokenAllowed = allowed;
             m_error = static_cast<CBot::CBotError>(error);
-            strcpy(m_title, "<incorrect instructions>");
-            m_mainFunction[0] = 0;
+            m_title = "<incorrect instructions>";
+            m_mainFunction.clear();
             return false;
         }
     }
@@ -220,14 +217,13 @@ bool CScript::CheckToken()
 bool CScript::Compile()
 {
     std::vector<std::string> functionList;
-    int             i;
     std::string     p;
 
     m_error = CBot::CBotNoErr;
     m_cursor1 = 0;
     m_cursor2 = 0;
-    m_title[0] = 0;
-    m_mainFunction[0] = 0;
+    m_title.clear();
+    m_mainFunction.clear();
     m_bCompile = false;
 
     if ( IsEmpty() )  // program exist?
@@ -245,33 +241,17 @@ bool CScript::Compile()
     {
         if (functionList.empty())
         {
-            strcpy(m_title, "<extern missing>");
-            m_mainFunction[0] = 0;
+            m_title = "<extern missing>";
+            m_mainFunction.clear();
         }
         else
         {
-            p = functionList[0];
-            i = 0;
-            bool titleDone = false;
-            while ( true )
+            m_mainFunction = functionList[0];
+            m_title = m_mainFunction;
+            if (m_title.length() >= 20)
             {
-                if ( p[i] == 0 || p[i] == '(' )  break;
-                if ( i >= 20 && !titleDone )
-                {
-                    m_title[i+0] = '.';
-                    m_title[i+1] = '.';
-                    m_title[i+2] = '.';
-                    m_title[i+3] = 0;
-                    titleDone = true;
-                }
-                if(!titleDone)
-                    m_title[i] = p[i];
-                m_mainFunction[i] = p[i];
-                i ++;
+                m_title = m_title.substr(0, 20)+"...";
             }
-            if(!titleDone)
-                m_title[i] = 0;
-            m_mainFunction[i] = p[i];
         }
         m_bCompile = true;
         return true;
@@ -289,8 +269,8 @@ bool CScript::Compile()
         {
             m_cursor1 = m_cursor2 = 0;
         }
-        strcpy(m_title, "<error>");
-        m_mainFunction[0] = 0;
+        m_title = "<error>";
+        m_mainFunction.clear();
         return false;
     }
 }
@@ -298,9 +278,9 @@ bool CScript::Compile()
 
 // Returns the title of the script.
 
-void CScript::GetTitle(char* buffer)
+const std::string& CScript::GetTitle()
 {
-    strcpy(buffer, m_title);
+    return m_title;
 }
 
 
@@ -323,9 +303,9 @@ bool CScript::Run()
 {
     if (m_botProg == nullptr)  return false;
     if ( m_script == nullptr || m_len == 0 )  return false;
-    if ( m_mainFunction[0] == 0 ) return false;
+    if ( m_mainFunction.empty() ) return false;
 
-    if ( !m_botProg->Start(m_mainFunction) )  return false;
+    if ( !m_botProg->Start(m_mainFunction.c_str()) )  return false;
 
     m_bRun = true;
     m_bContinue = false;
@@ -1024,12 +1004,12 @@ bool CScript::Compare(CScript* other)
 
 // Management of the file name when the script is saved.
 
-void CScript::SetFilename(char *filename)
+void CScript::SetFilename(const std::string& filename)
 {
-    strcpy(m_filename, filename);
+    m_filename = filename;
 }
 
-char* CScript::GetFilename()
+const std::string& CScript::GetFilename()
 {
     return m_filename;
 }
