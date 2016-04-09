@@ -1823,7 +1823,7 @@ void CApplication::SetLanguage(Language language)
     // Update C++ locale
     try
     {
-        std::locale::global(std::locale(systemLocale));
+        std::locale::global(std::locale(systemLocale.c_str()));
     }
     catch (...)
     {

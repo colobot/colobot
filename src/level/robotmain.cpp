@@ -4656,7 +4656,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
 
 
     line = MakeUnique<CLevelParserLine>("Created");
-    line->AddParam("date", MakeUnique<CLevelParserParam>(time(nullptr)));
+    line->AddParam("date", MakeUnique<CLevelParserParam>(static_cast<int>(time(nullptr))));
     levelParser.AddLine(std::move(line));
 
     line = MakeUnique<CLevelParserLine>("Mission");

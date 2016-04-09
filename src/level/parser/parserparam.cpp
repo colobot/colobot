@@ -50,10 +50,6 @@ CLevelParserParam::CLevelParserParam(int value)
   : m_value(boost::lexical_cast<std::string>(value))
 {}
 
-CLevelParserParam::CLevelParserParam(long value)
-    : m_value(boost::lexical_cast<std::string>(value))
-{}
-
 CLevelParserParam::CLevelParserParam(float value)
   : m_value(boost::lexical_cast<std::string>(value))
 {}
