@@ -186,55 +186,6 @@ char GetToLower(char letter)
     return tolower(letter);
 }
 
-
-// Converting time to string.
-
-void TimeToAscii(time_t time, char *buffer)
-{
-    struct tm   when;
-    int         year;
-
-    when = *localtime(&time);
-    year = when.tm_year+1900;
-    if ( year < 2000 )  year -= 1900;
-    else                year -= 2000;
-    char        format[10];
-    int         hour;
-
-    hour = when.tm_hour;  // 0..23
-    if ( hour < 12 )  // morning?
-    {
-        strcpy(format, "am");
-    }
-    else    // afternoon?
-    {
-        strcpy(format, "pm");
-        hour -= 12;  // 0..11
-    }
-    if ( hour == 0 )  hour = 12;
-
-    sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d %s",
-                    when.tm_mon+1, when.tm_mday, year,
-                    hour, when.tm_min, format);
-}
-
-// Converting time to string.
-
-void TimeToAsciiClean(time_t time, char *buffer)
-{
-    struct tm   when;
-    int         year;
-
-    when = *localtime(&time);
-    year = when.tm_year+1900;
-    if ( year < 2000 )  year -= 1900;
-    else                year -= 2000;
-
-    sprintf(buffer, "%.2d%.2d%.2d%.2d%.2d",
-                    year, when.tm_mon+1, when.tm_mday,
-                    when.tm_hour, when.tm_min);
-}
-
 std::string TimeFormat(float time)
 {
     int minutes = floor(time/60);
@@ -253,9 +204,4 @@ void AddExt(char* filename, const char* ext)
 {
     if ( strchr(filename, '.') != nullptr )  return;  // already an extension?
     strcat(filename, ext);
-}
-
-int GetCurrentTimestamp()
-{
-    return std::chrono::seconds(std::time(nullptr)).count();
 }

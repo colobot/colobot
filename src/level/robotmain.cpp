@@ -4646,7 +4646,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
 
 
     line = MakeUnique<CLevelParserLine>("Created");
-    line->AddParam("date", MakeUnique<CLevelParserParam>(GetCurrentTimestamp()));
+    line->AddParam("date", MakeUnique<CLevelParserParam>(time(nullptr)));
     levelParser.AddLine(std::move(line));
 
     line = MakeUnique<CLevelParserLine>("Mission");
@@ -5700,7 +5700,8 @@ void CRobotMain::Autosave()
     std::string dir = m_playerProfile->GetSaveFile("autosave" + boost::lexical_cast<std::string>(id));
 
     char timestr[100];
-    TimeToAscii(time(nullptr), timestr);
+    time_t now = time(nullptr);
+    strftime(timestr, 99, "%x %X", localtime(&now));
     std::string info = std::string("[AUTOSAVE] ")+timestr;
 
     m_playerProfile->SaveScene(dir, info);

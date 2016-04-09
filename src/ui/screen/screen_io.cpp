@@ -81,7 +81,7 @@ void CScreenIO::IOReadName()
     }
 
     time(&now);
-    TimeToAsciiClean(now, line);
+    strftime(line, 99, "%y%m%d%H%M", localtime(&now));
     sprintf(name, "%s - %s %d", line, resume.c_str(), m_main->GetLevelRank());
 
     pe->SetText(name);

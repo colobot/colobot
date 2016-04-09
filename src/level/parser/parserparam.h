@@ -54,6 +54,7 @@ public:
     //! Create param with given value
     //@{
     CLevelParserParam(int value);
+    CLevelParserParam(long value);
     CLevelParserParam(float value);
     CLevelParserParam(std::string value);
     CLevelParserParam(bool value);

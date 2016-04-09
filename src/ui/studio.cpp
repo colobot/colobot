@@ -1282,9 +1282,9 @@ void CStudio::AdjustDialog()
         {
             pli->SetPos(ppos);
             pli->SetDim(ddim);
-            pli->SetTabs(0, ddim.x-(50.0f+130.0f+16.0f)/640.0f);
+            pli->SetTabs(0, ddim.x-(50.0f+140.0f+16.0f)/640.0f);
             pli->SetTabs(1,  50.0f/640.0f, Gfx::TEXT_ALIGN_RIGHT);
-            pli->SetTabs(2, 130.0f/640.0f);
+            pli->SetTabs(2, 140.0f/640.0f);
 //?         pli->ShowSelect();
         }
 
@@ -1575,7 +1575,7 @@ void CStudio::UpdateDialogList()
     CWindow*        pw;
     CList*          pl;
     int             i = 0;
-    char            time[100];
+    char            timestr[100];
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
@@ -1590,8 +1590,9 @@ void CStudio::UpdateDialogList()
     for (auto& prog : programs)
     {
         std::ostringstream temp;
-        TimeToAscii(CResourceManager::GetLastModificationTime(SearchDirectory(false) + prog), time);
-        temp << prog << '\t' << CResourceManager::GetFileSize(SearchDirectory(false) + prog) << "  \t" << time;
+        time_t now = CResourceManager::GetLastModificationTime(SearchDirectory(false) + prog);
+        strftime(timestr, 99, "%x %X", localtime(&now));
+        temp << prog << '\t' << CResourceManager::GetFileSize(SearchDirectory(false) + prog) << "  \t" << timestr;
         pl->SetItemName(i++, temp.str().c_str());
     }
 }

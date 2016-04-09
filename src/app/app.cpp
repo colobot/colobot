@@ -1813,9 +1813,13 @@ void CApplication::SetLanguage(Language language)
 
     char* defaultLocale = setlocale(LC_ALL, ""); // Load system locale
     GetLogger()->Debug("Default system locale: %s\n", defaultLocale);
+    if (!locale.empty()) // Override system locale?
+    {
+        setlocale(LC_ALL, locale.c_str());
+    }
     setlocale(LC_NUMERIC, "C"); // Force numeric locale to "C" (fixes decimal point problems)
-    char* systemLocale = setlocale(LC_ALL, nullptr); // Get current locale configuration
-    GetLogger()->Debug("Setting locale: %s\n", systemLocale);
+    std::string systemLocale = setlocale(LC_ALL, nullptr); // Get current locale configuration
+    GetLogger()->Debug("Setting locale: %s\n", systemLocale.c_str());
     // Update C++ locale
     try
     {
