@@ -62,6 +62,7 @@
 #include "ui/controls/window.h"
 
 #include <stdio.h>
+#include <ctime>
 
 
 namespace Ui

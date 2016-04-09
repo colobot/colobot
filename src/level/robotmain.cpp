@@ -107,6 +107,7 @@
 
 #include <iomanip>
 #include <stdexcept>
+#include <ctime>
 
 #include <boost/lexical_cast.hpp>
 
