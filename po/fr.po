@@ -79,9 +79,7 @@ msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Bravo; mission terminée >>>"
 
 msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
-msgstr ""
-"Un label ne peut se placer que devant un \"for\"; un \"while\"; un \"do\" ou "
-"un \"switch\""
+msgstr "Un label ne peut se placer que devant un \"for\"; un \"while\"; un \"do\" ou un \"switch\""
 
 msgid "A variable can not be declared twice"
 msgstr "Redéfinition d'une variable"
@@ -92,8 +90,7 @@ msgstr "Abandonner\\Abandonner la mission en cours"
 msgid "Access beyond array limit"
 msgstr "Accès hors du tableau"
 
-msgid ""
-"Access to solution\\Shows the solution (detailed instructions for missions)"
+msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
 msgstr "Accès à la solution\\Donne la solution"
 
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
@@ -148,9 +145,7 @@ msgid "Automatic indent\\When program editing"
 msgstr "Indentation automatique\\Pendant l'édition d'un programme"
 
 msgid "Autosave interval\\How often your game will autosave"
-msgstr ""
-"Intervalle d'auto-sauvegarde\\À quels intervalles les parties vont-t-elles "
-"êtres sauvegardées automatiquement"
+msgstr "Intervalle d'auto-sauvegarde\\À quels intervalles les parties vont-t-elles êtres sauvegardées automatiquement"
 
 msgid "Autosave slots\\How many autosave slots you'll have"
 msgstr "Nombre d'auto-sauvegardes\\Combien d'auto-sauvegarde seront conservées"
@@ -320,20 +315,14 @@ msgstr "Caméra plus loin"
 msgid "Camera back\\Moves the camera backward"
 msgstr "Caméra plus loin\\Recule la caméra"
 
-msgid ""
-"Camera border scrolling\\Scrolling when the mouse touches right or left "
-"border"
-msgstr ""
-"Défilement dans les bords\\Défilement lorsque la souris touche les bords "
-"gauche ou droite"
+msgid "Camera border scrolling\\Scrolling when the mouse touches right or left border"
+msgstr "Défilement dans les bords\\Défilement lorsque la souris touche les bords gauche ou droite"
 
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Caméra plus proche\\Avance la caméra"
 
 msgid "Camera down\\Decrease camera angle while visiting message origin"
-msgstr ""
-"Caméra plus basse\\Réduit l'angle de caméra lors de la vue de l'origine des "
-"messages"
+msgstr "Caméra plus basse\\Réduit l'angle de caméra lors de la vue de l'origine des messages"
 
 msgid "Camera nearest"
 msgstr "Caméra plus proche"
@@ -345,9 +334,7 @@ msgid "Camera to right"
 msgstr "Caméra à droite"
 
 msgid "Camera up\\Increase camera angle while visiting message origin"
-msgstr ""
-"Caméra plus haute\\Augmente l'angle de caméra lors de la vue de l'origine "
-"des messages"
+msgstr "Caméra plus haute\\Augmente l'angle de caméra lors de la vue de l'origine des messages"
 
 msgid "Can not produce not researched object"
 msgstr "Impossible de créer un objet n'ayant pas été recherché"
@@ -401,8 +388,7 @@ msgid "Code battles"
 msgstr "Batailles de code"
 
 msgid "Code battles\\Program your robot to be the best of them all!"
-msgstr ""
-"Batailles de code\\Programmez votre robot pour être le meilleur entre tous!"
+msgstr "Batailles de code\\Programmez votre robot pour être le meilleur entre tous!"
 
 msgid "Colobot rules!"
 msgstr "Colobot est super!"
@@ -851,12 +837,10 @@ msgid "Missions\\Select mission"
 msgstr "Missions\\La grande aventure"
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
-msgstr ""
-"Inversion souris X\\Inversion de la rotation lorsque la souris touche un bord"
+msgstr "Inversion souris X\\Inversion de la rotation lorsque la souris touche un bord"
 
 msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
-msgstr ""
-"Inversion souris Y\\Inversion de la rotation lorsque la souris touche un bord"
+msgstr "Inversion souris Y\\Inversion de la rotation lorsque la souris touche un bord"
 
 msgid "Move selected program down"
 msgstr "Déplace le programme sélectionné vers le bas"
@@ -1306,9 +1290,7 @@ msgid "Semicolon terminator missing"
 msgstr "Terminateur point-virgule non trouvé"
 
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
-msgstr ""
-"Résolution des ombres\\Plus grand implique une meilleure qulité et "
-"amplitude, mais plus lent"
+msgstr "Résolution des ombres\\Plus grand implique une meilleure qulité et amplitude, mais plus lent"
 
 msgid "Shield level"
 msgstr "Niveau du bouclier"
@@ -1403,8 +1385,7 @@ msgstr "Araignée mortellement touchée"
 msgid "Stack overflow"
 msgstr "Débordement de la pile"
 
-msgid ""
-"Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
 msgstr "Action standard\\Action du bouton avec le cadre rouge"
 
 msgid "Standard controls\\Standard key functions"
@@ -1467,10 +1448,8 @@ msgstr "L'expression doit ętre un boolean"
 msgid "The function returned no value "
 msgstr "La fonction n'a pas retourné de résultat"
 
-msgid ""
-"The mission is not accomplished yet (press \\key help; for more details)"
-msgstr ""
-"La misssion n'est pas terminée (appuyez sur \\key help; pour plus de détails)"
+msgid "The mission is not accomplished yet (press \\key help; for more details)"
+msgstr "La misssion n'est pas terminée (appuyez sur \\key help; pour plus de détails)"
 
 msgid "The types of the two operands are incompatible "
 msgstr "Les deux opérandes ne sont pas de types compatibles"
@@ -1491,9 +1470,7 @@ msgid "This label does not exist"
 msgstr "Cette étiquette n'existe pas"
 
 msgid "This menu is for userlevels from mods, but you didn't install any"
-msgstr ""
-"Ce menu donne accès aux niveaux spéciaux (importés ou personnalisés), mais "
-"aucun n'est installé."
+msgstr "Ce menu donne accès aux niveaux spéciaux (importés ou personnalisés), mais aucun n'est installé."
 
 msgid "This object is not a member of a class"
 msgstr "L'objet n'est pas une instance d'une classe"
@@ -1682,8 +1659,7 @@ msgid "Yes"
 msgstr "Oui"
 
 msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
-msgstr ""
-"Il est possible de voler avec les touches (\\key gup;) et (\\key gdown;)"
+msgstr "Il est possible de voler avec les touches (\\key gup;) et (\\key gdown;)"
 
 msgid "You can not carry a radioactive object"
 msgstr "Vous ne pouvez pas transporter un objet radioactif"
@@ -1691,16 +1667,24 @@ msgstr "Vous ne pouvez pas transporter un objet radioactif"
 msgid "You can not carry an object under water"
 msgstr "Vous ne pouvez pas transporter un objet sous l'eau"
 
+#, fuzzy, c-format
+msgid "You cannot use \"%s\" in this exercise (used: %d)"
+msgstr "Interdit dans cet exercice"
+
 msgid "You found a usable object"
 msgstr "Vous avez trouvé un objet utilisable"
 
-#, c-format
-msgid "You have to use \"%s\" at least %d times in this exercise (used: %d)"
-msgstr ""
+#, fuzzy, c-format
+msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
+msgstr[0] "Interdit dans cet exercice"
+msgstr[1] "Interdit dans cet exercice"
 
-#, c-format
-msgid "You have to use \"%s\" at most %d times in this exercise (used: %d)"
-msgstr ""
+#, fuzzy, c-format
+msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
+msgstr[0] "Interdit dans cet exercice"
+msgstr[1] "Interdit dans cet exercice"
 
 msgid "You must get on the spaceship to take off "
 msgstr "Vous devez embarquer pour pouvoir décoller"
@@ -1855,9 +1839,6 @@ msgstr ""
 #~ msgid "Developed by :"
 #~ msgstr "Développé par :"
 
-#~ msgid "Do not use in this exercise"
-#~ msgstr "Interdit dans cet exercice"
-
 #, fuzzy
 #~ msgid "Do you want to quit Colobot: Gold Edition?"
 #~ msgstr "Voulez-vous quitter COLOBOT ?"
@@ -1919,9 +1900,7 @@ msgstr ""
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Qualité des textures\\Qualité des images"
 
-#~ msgid ""
-#~ "The list is only available if a \\l;radar station\\u object\\radar; is "
-#~ "working.\n"
+#~ msgid "The list is only available if a \\l;radar station\\u object\\radar; is working.\n"
 #~ msgstr "Liste non disponible sans \\l;radar\\u object\\radar;.\n"
 
 #~ msgid "Use a joystick\\Joystick or keyboard"

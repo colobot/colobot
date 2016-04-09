@@ -16,6 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 msgid "Colobot rules!"
 msgstr ""
@@ -370,9 +371,7 @@ msgstr ""
 msgid "Film sequences\\Films before and after the missions"
 msgstr ""
 
-msgid ""
-"Camera border scrolling\\Scrolling when the mouse touches right or left "
-"border"
+msgid "Camera border scrolling\\Scrolling when the mouse touches right or left border"
 msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
@@ -459,8 +458,7 @@ msgstr ""
 msgid "Previous object\\Selects the previous object"
 msgstr ""
 
-msgid ""
-"Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
 msgstr ""
 
 msgid "Camera closer\\Moves the camera forward"
@@ -541,8 +539,7 @@ msgstr ""
 msgid "Normal\\Normal sound volume"
 msgstr ""
 
-msgid ""
-"Access to solution\\Shows the solution (detailed instructions for missions)"
+msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
 msgstr ""
 
 msgid "Invert\\Invert values on this axis"
@@ -1505,8 +1502,7 @@ msgstr ""
 msgid "Inappropriate object"
 msgstr ""
 
-msgid ""
-"The mission is not accomplished yet (press \\key help; for more details)"
+msgid "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr ""
 
 msgid "Bot destroyed"
@@ -1516,14 +1512,6 @@ msgid "Building destroyed"
 msgstr ""
 
 msgid "Unable to control enemy objects"
-msgstr ""
-
-#, c-format
-msgid "You have to use \"%s\" at least %d times in this exercise (used: %d)"
-msgstr ""
-
-#, c-format
-msgid "You have to use \"%s\" at most %d times in this exercise (used: %d)"
 msgstr ""
 
 msgid "Inappropriate bot"
@@ -1792,3 +1780,19 @@ msgstr ""
 
 msgid "Button %1"
 msgstr ""
+
+#, c-format
+msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
+msgstr[0] ""
+msgstr[1] ""
+
+#, c-format
+msgid "You cannot use \"%s\" in this exercise (used: %d)"
+msgstr ""
+
+#, c-format
+msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
+msgstr[0] ""
+msgstr[1] ""

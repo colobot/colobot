@@ -95,8 +95,7 @@ msgstr "Выход\\Прервать текущую миссию"
 msgid "Access beyond array limit"
 msgstr "Доступ к массиву за предел"
 
-msgid ""
-"Access to solution\\Shows the solution (detailed instructions for missions)"
+msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
 msgstr "Доступ к решению\\Показывает решение (подробные инструкции для миссий)"
 
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
@@ -323,9 +322,7 @@ msgid "Camera back\\Moves the camera backward"
 msgstr "Отдалить камеру\\Перемещение камеры назад"
 
 #, fuzzy
-msgid ""
-"Camera border scrolling\\Scrolling when the mouse touches right or left "
-"border"
+msgid "Camera border scrolling\\Scrolling when the mouse touches right or left border"
 msgstr "Прокрутка\\Прокрутка, когда указатель мыши касается граней экрана"
 
 msgid "Camera closer\\Moves the camera forward"
@@ -1027,9 +1024,7 @@ msgid "Organic matter"
 msgstr "Органическое вещество"
 
 msgid "Origin of last message\\Shows where the last message was sent from"
-msgstr ""
-"Источник сообщения\\Показывает место, откуда было отправлено последнеее "
-"сообщение"
+msgstr "Источник сообщения\\Показывает место, откуда было отправлено последнеее сообщение"
 
 msgid "Original game developed by:"
 msgstr "Оригинальная игра была разработана:"
@@ -1156,8 +1151,7 @@ msgid "Programming help  (\\key prog;)"
 msgstr "Помощь в программировании (\\key prog;)"
 
 msgid "Programming help\\Gives more detailed help with programming"
-msgstr ""
-"Помощь в программировании\\Дает более детальную помощь в программировании"
+msgstr "Помощь в программировании\\Дает более детальную помощь в программировании"
 
 msgid "Programs dispatched by Houston"
 msgstr "Программы переданные с Хьюстона"
@@ -1408,11 +1402,8 @@ msgstr "Паук смертельно ранен"
 msgid "Stack overflow"
 msgstr "Переполнение стека"
 
-msgid ""
-"Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
-msgstr ""
-"Стандартное действие\\Стандартное действие бота (брать/взять, стрелять, "
-"искать и т.д.)"
+msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgstr "Стандартное действие\\Стандартное действие бота (брать/взять, стрелять, искать и т.д.)"
 
 msgid "Standard controls\\Standard key functions"
 msgstr "Стандартное управление\\Сделать управление по умолчанию"
@@ -1475,10 +1466,8 @@ msgstr "Выражение должно возвращать логическо�
 msgid "The function returned no value "
 msgstr "Функция не возвратила значения"
 
-msgid ""
-"The mission is not accomplished yet (press \\key help; for more details)"
-msgstr ""
-"Миссия еще не выполнена (нажмите \\key help; для более подробной информации)"
+msgid "The mission is not accomplished yet (press \\key help; for more details)"
+msgstr "Миссия еще не выполнена (нажмите \\key help; для более подробной информации)"
 
 msgid "The types of the two operands are incompatible "
 msgstr "Типы операндов несовместимы"
@@ -1696,16 +1685,24 @@ msgstr "Вы не можете нести радиоактивные объек�
 msgid "You can not carry an object under water"
 msgstr "Вы не можете нести объекты под водой"
 
+#, fuzzy, c-format
+msgid "You cannot use \"%s\" in this exercise (used: %d)"
+msgstr "Не используй в этом упражнении"
+
 msgid "You found a usable object"
 msgstr "Вы нашли рабочий объект"
 
-#, c-format
-msgid "You have to use \"%s\" at least %d times in this exercise (used: %d)"
-msgstr ""
+#, fuzzy, c-format
+msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
+msgstr[0] "Не используй в этом упражнении"
+msgstr[1] "Не используй в этом упражнении"
 
-#, c-format
-msgid "You have to use \"%s\" at most %d times in this exercise (used: %d)"
-msgstr ""
+#, fuzzy, c-format
+msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
+msgstr[0] "Не используй в этом упражнении"
+msgstr[1] "Не используй в этом упражнении"
 
 msgid "You must get on the spaceship to take off "
 msgstr "Вы должны быть на борту корабля, чтобы взлететь"
@@ -1861,9 +1858,6 @@ msgstr ""
 #~ msgid "Developed by :"
 #~ msgstr "Разработка :"
 
-#~ msgid "Do not use in this exercise"
-#~ msgstr "Не используй в этом упражнении"
-
 #, fuzzy
 #~ msgid "Do you want to quit Colobot: Gold Edition?"
 #~ msgstr "Вы хотите закрыть COLOBOT?"
@@ -1922,11 +1916,8 @@ msgstr ""
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Текстуры\\Качество текстур "
 
-#~ msgid ""
-#~ "The list is only available if a \\l;radar station\\u object\\radar; is "
-#~ "working.\n"
-#~ msgstr ""
-#~ "Список доступен только если \\l;radar station\\u object\\radar; работают\n"
+#~ msgid "The list is only available if a \\l;radar station\\u object\\radar; is working.\n"
+#~ msgstr "Список доступен только если \\l;radar station\\u object\\radar; работают\n"
 
 #~ msgid "Use a joystick\\Joystick or keyboard"
 #~ msgstr "Использовать джойстик\\Джойстик или клавиатура"

@@ -44,6 +44,7 @@
 #include "ui/controls/interface.h"
 #include "ui/controls/list.h"
 
+#include <libintl.h>
 
 const int CBOT_IPF = 100;       // CBOT: default number of instructions / frame
 
@@ -774,13 +775,28 @@ void CScript::GetError(std::string& error)
     }
     else
     {
-        if ( m_error == static_cast<CBot::CBotError>(ERR_OBLIGATORYTOKEN) || m_error == static_cast<CBot::CBotError>(ERR_PROHIBITEDTOKEN) )
+        if (m_error == static_cast<CBot::CBotError>(ERR_OBLIGATORYTOKEN))
         {
-            std::string s;
-            GetResource(RES_ERR, m_error, s);
-            error = StrUtils::Format(s.c_str(), m_token.c_str(), m_tokenAllowed, m_tokenUsed);
+            error = StrUtils::Format(ngettext(
+                "You have to use \"%1$s\" at least once in this exercise (used: %2$d)",
+                "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)",
+                m_tokenAllowed), m_token.c_str(), m_tokenUsed, m_tokenAllowed);
         }
-        else if ( m_error < 1000 )
+        else if (m_error == static_cast<CBot::CBotError>(ERR_PROHIBITEDTOKEN))
+        {
+            if (m_tokenAllowed == 0)
+            {
+                error = StrUtils::Format(gettext("You cannot use \"%s\" in this exercise (used: %d)"), m_token.c_str(), m_tokenUsed);
+            }
+            else
+            {
+                error = StrUtils::Format(ngettext(
+                    "You have to use \"%1$s\" at most once in this exercise (used: %2$d)",
+                    "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)",
+                    m_tokenAllowed), m_token.c_str(), m_tokenUsed, m_tokenAllowed);
+            }
+        }
+        else if (m_error < 1000)
         {
             GetResource(RES_ERR, m_error, error);
         }

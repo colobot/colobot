@@ -86,9 +86,7 @@ msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Bravo, Mission vollendet >>>"
 
 msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
-msgstr ""
-"Ein Label kann nur vor den Anweisungen \"for\", \"while\", \"do\" oder "
-"\"switch\" vorkommen"
+msgstr "Ein Label kann nur vor den Anweisungen \"for\", \"while\", \"do\" oder \"switch\" vorkommen"
 
 msgid "A variable can not be declared twice"
 msgstr "Eine Variable wird zum zweiten Mal deklariert"
@@ -99,13 +97,11 @@ msgstr "Abbrechen\\Mission abbrechen"
 msgid "Access beyond array limit"
 msgstr "Zugriff im Array außerhalb der Grenzen"
 
-msgid ""
-"Access to solution\\Shows the solution (detailed instructions for missions)"
+msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
 msgstr "Zeigt die Lösung\\Zeigt nach 3mal Scheitern die Lösung"
 
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
-msgstr ""
-"Lösung zugänglich\\Die Lösung ist im Programmslot \"4: Lösung\" zugänglich"
+msgstr "Lösung zugänglich\\Die Lösung ist im Programmslot \"4: Lösung\" zugänglich"
 
 msgid "Add new program"
 msgstr ""
@@ -328,11 +324,8 @@ msgid "Camera back\\Moves the camera backward"
 msgstr "Kamera weiter\\Bewegung der Kamera rückwärts"
 
 #, fuzzy
-msgid ""
-"Camera border scrolling\\Scrolling when the mouse touches right or left "
-"border"
-msgstr ""
-"Kameradrehung mit der Maus\\Die Kamera dreht wenn die Maus den Rand erreicht"
+msgid "Camera border scrolling\\Scrolling when the mouse touches right or left border"
+msgstr "Kameradrehung mit der Maus\\Die Kamera dreht wenn die Maus den Rand erreicht"
 
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera näher\\Bewegung der Kamera vorwärts"
@@ -1418,8 +1411,7 @@ msgstr "Spinne tödlich verwundet"
 msgid "Stack overflow"
 msgstr "Stack overflow"
 
-msgid ""
-"Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
 msgstr "Standardhandlung\\Führt die Standardhandlung des Roboters aus"
 
 msgid "Standard controls\\Standard key functions"
@@ -1483,11 +1475,8 @@ msgstr "Der Ausdruck muss einen boolschen Wert ergeben"
 msgid "The function returned no value "
 msgstr "Die Funktion hat kein Ergebnis zurückgegeben"
 
-msgid ""
-"The mission is not accomplished yet (press \\key help; for more details)"
-msgstr ""
-"Mission noch nicht beendet (Drücken Sie auf \\key help; für weitere "
-"Informationen)"
+msgid "The mission is not accomplished yet (press \\key help; for more details)"
+msgstr "Mission noch nicht beendet (Drücken Sie auf \\key help; für weitere Informationen)"
 
 msgid "The types of the two operands are incompatible "
 msgstr "Die zwei Operanden sind nicht kompatibel"
@@ -1705,16 +1694,24 @@ msgstr "Sie können keinen radioaktiven Gegenstand tragen"
 msgid "You can not carry an object under water"
 msgstr "Sie können unter Wasser nichts tragen"
 
+#, fuzzy, c-format
+msgid "You cannot use \"%s\" in this exercise (used: %d)"
+msgstr "In dieser Übung verboten"
+
 msgid "You found a usable object"
 msgstr "Sie haben ein brauchbares Objekt gefunden"
 
-#, c-format
-msgid "You have to use \"%s\" at least %d times in this exercise (used: %d)"
-msgstr ""
+#, fuzzy, c-format
+msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
+msgstr[0] "In dieser Übung verboten"
+msgstr[1] "In dieser Übung verboten"
 
-#, c-format
-msgid "You have to use \"%s\" at most %d times in this exercise (used: %d)"
-msgstr ""
+#, fuzzy, c-format
+msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
+msgstr[0] "In dieser Übung verboten"
+msgstr[1] "In dieser Übung verboten"
 
 msgid "You must get on the spaceship to take off "
 msgstr "Gehen Sie an Bord, bevor Sie abheben"
@@ -1870,9 +1867,6 @@ msgstr ""
 #~ msgid "Developed by :"
 #~ msgstr "Entwickelt von:"
 
-#~ msgid "Do not use in this exercise"
-#~ msgstr "In dieser Übung verboten"
-
 #, fuzzy
 #~ msgid "Do you want to quit Colobot: Gold Edition?"
 #~ msgstr "Wollen Sie COLOBOT schließen ?"
@@ -1931,9 +1925,7 @@ msgstr ""
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Qualität der Texturen\\Qualität der Anzeige"
 
-#~ msgid ""
-#~ "The list is only available if a \\l;radar station\\u object\\radar; is "
-#~ "working.\n"
+#~ msgid "The list is only available if a \\l;radar station\\u object\\radar; is working.\n"
 #~ msgstr "Die Liste ist ohne \\l;Radar\\u object\\radar; nicht verfügbar.\n"
 
 #~ msgid "Use a joystick\\Joystick or keyboard"
