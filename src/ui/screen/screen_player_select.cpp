@@ -22,7 +22,6 @@
 #include "app/app.h"
 
 #include "common/logger.h"
-#include "common/misc.h"
 #include "common/stringutils.h"
 
 #include "level/player_profile.h"
@@ -383,30 +382,6 @@ bool CScreenPlayerSelect::NameCreate()
 
     pe->GetText(name, 100);
     if ( name[0] == 0 )
-    {
-        m_sound->Play(SOUND_TZOING);
-        return false;
-    }
-
-    len = strlen(name);
-    j = 0;
-    for ( i=0 ; i<len ; i++ )
-    {
-        c = GetNoAccent(GetToLower(name[i]));
-        if ( (c >= '0' && c <= '9') ||
-             (c >= 'a' && c <= 'z') ||
-             c == ' ' ||
-             c == '-' ||
-             c == '_' ||
-             c == '.' ||
-             c == ',' ||
-             c == '\'' )
-        {
-            name[j++] = name[i];
-        }
-    }
-    name[j] = 0;
-    if ( j == 0 )
     {
         m_sound->Play(SOUND_TZOING);
         return false;

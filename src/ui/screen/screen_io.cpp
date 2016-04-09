@@ -20,7 +20,6 @@
 #include "ui/screen/screen_io.h"
 
 #include "common/logger.h"
-#include "common/misc.h"
 #include "common/restext.h"
 #include "common/stringutils.h"
 

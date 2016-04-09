@@ -25,7 +25,6 @@
 
 #include "common/event.h"
 #include "common/logger.h"
-#include "common/misc.h"
 #include "common/settings.h"
 
 #include "common/resources/resourcemanager.h"
@@ -425,15 +424,9 @@ bool CStudio::EventFrame(const Event &event)
 
 // Indicates whether a character is part of a word.
 
-bool IsToken(int character)
+bool IsToken(char c)
 {
-    char    c;
-
-    c = tolower(GetNoAccent(character));
-
-    return ( (c >= 'a' && c <= 'z') ||
-             (c >= '0' && c <= '9') ||
-             c == '_' );
+    return ( isalnum(c) || c == '_' );
 }
 
 // Seeks if the cursor is on a keyword.

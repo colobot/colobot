@@ -29,7 +29,6 @@
 #include "common/event.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
-#include "common/misc.h"
 #include "common/restext.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
@@ -2420,6 +2419,16 @@ void CRobotMain::AbortMovie()
 }
 
 
+std::string TimeFormat(float time)
+{
+    int minutes = static_cast<int>(floor(time/60));
+    double time2 = fmod(time, 60);
+    double seconds;
+    double fraction = modf(time2, &seconds)*100;
+    std::ostringstream sstream;
+    sstream << std::setfill('0') << std::setw(2) << minutes << ":" << std::setfill('0') << std::setw(2) << floor(seconds) << "." << std::setfill('0') << std::setw(2) << floor(fraction);
+    return sstream.str();
+}
 
 //! Updates the text information
 void CRobotMain::UpdateInfoText()

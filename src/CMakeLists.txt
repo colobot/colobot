@@ -90,7 +90,6 @@ set(BASE_SOURCES
     common/key.cpp
     common/language.cpp
     common/logger.cpp
-    common/misc.cpp
     common/regex_utils.cpp
     common/resources/inputstream.cpp
     common/resources/inputstreambuffer.cpp

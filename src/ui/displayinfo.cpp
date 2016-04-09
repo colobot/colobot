@@ -23,7 +23,6 @@
 #include "app/app.h"
 #include "app/pausemanager.h"
 
-#include "common/misc.h"
 #include "common/restext.h"
 #include "common/settings.h"
 #include "common/stringutils.h"

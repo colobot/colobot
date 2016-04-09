@@ -27,7 +27,6 @@
 
 #include "common/logger.h"
 #include "common/make_unique.h"
-#include "common/misc.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -73,15 +72,9 @@ bool IsSpace(int character)
 
 //! Indicates whether a character is part of a word.
 
-bool IsWord(int character)
+bool IsWord(char c)
 {
-    char    c;
-
-    c = tolower(GetNoAccent(character));
-
-    return ( (c >= 'a' && c <= 'z') ||
-             (c >= '0' && c <= '9') ||
-             c == '_' );
+    return ( isalnum(c) || c == '_');
 }
 
 //! Indicates whether a character is a word separator.
@@ -2920,13 +2913,13 @@ bool CEdit::MinMaj(bool bMaj)
 
     c1 = m_cursor1;
     c2 = m_cursor2;
-    if ( c1 > c2 )  Math::Swap(c1, c2);  // alwyas c1 <= c2
+    if ( c1 > c2 )  Math::Swap(c1, c2);  // always c1 <= c2
 
     for ( i=c1 ; i<c2 ; i++ )
     {
         character = static_cast<unsigned char>(m_text[i]);
-        if ( bMaj )  character = GetToUpper(character);
-        else         character = GetToLower(character);
+        if ( bMaj )  character = toupper(character);
+        else         character = tolower(character);
         m_text[i] = character;
     }
 
