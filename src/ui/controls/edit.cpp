@@ -1127,24 +1127,40 @@ void CEdit::Draw()
 
 // Draw an image part.
 
+std::string PrepareImageFilename(std::string name)
+{
+    std::string filename;
+    filename = name + ".png";
+    filename = InjectLevelPathsForCurrentLevel(filename, "icons");
+    boost::replace_all(filename, "\\", "/"); // TODO: Fix this in files
+    return filename;
+}
+
 void CEdit::DrawImage(Math::Point pos, std::string name, float width,
                       float offset, float height, int nbLine)
 {
     Math::Point uv1, uv2, dim;
     float dp;
-    std::string filename;
 
-    filename = name + ".png";
-    filename = InjectLevelPathsForCurrentLevel(filename, "icons");
-    boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
-
-    m_engine->SetTexture(filename);
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+
+    Gfx::TextureCreateParams params;
+    params.format = Gfx::TEX_IMG_AUTO;
+    params.filter = Gfx::TEX_FILTER_BILINEAR;
+    params.padToNearestPowerOfTwo = true;
+    Gfx::Texture tex = m_engine->LoadTexture(PrepareImageFilename(name), params);
+
+    m_engine->SetTexture(tex);
 
     uv1.x = 0.0f;
     uv2.x = 1.0f;
     uv1.y = offset;
     uv2.y = offset+height;
+
+    uv1.x *= static_cast<float>(tex.originalSize.x) / static_cast<float>(tex.size.x);
+    uv2.x *= static_cast<float>(tex.originalSize.x) / static_cast<float>(tex.size.x);
+    uv1.y *= static_cast<float>(tex.originalSize.y) / static_cast<float>(tex.size.y);
+    uv2.y *= static_cast<float>(tex.originalSize.y) / static_cast<float>(tex.size.y);
 
     dp = 0.5f/256.0f;
     uv1.x += dp;
@@ -1415,19 +1431,8 @@ void CEdit::FreeImage()
 {
     for (auto& image : m_image)
     {
-        m_engine->DeleteTexture(image.name + ".png");
+        m_engine->DeleteTexture(PrepareImageFilename(image.name));
     }
-}
-
-// Reads the texture of an image.
-
-void CEdit::LoadImage(std::string name)
-{
-    std::string filename;
-    filename = name + ".png";
-    filename = InjectLevelPathsForCurrentLevel(filename, "icons");
-    boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
-    m_engine->LoadTexture(filename);
 }
 
 // Read from a text file.
@@ -1632,7 +1637,6 @@ bool CEdit::ReadText(std::string filename, int addSize)
                 iWidth = static_cast<float>(GetValueParam(buffer.data()+i+7, 1));
                 iWidth *= m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL);
                 iLines = GetValueParam(buffer.data()+i+7, 2);
-                LoadImage(std::string(iName));
 
                 // A part of image per line of text.
                 for ( iCount=0 ; iCount<iLines ; iCount++ )
