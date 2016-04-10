@@ -152,27 +152,17 @@ bool CResourceManager::CreateDirectory(const std::string& directory)
     return false;
 }
 
-//TODO: Don't use boost::filesystem here
 bool CResourceManager::RemoveDirectory(const std::string& directory)
 {
     if (PHYSFS_isInit())
     {
-        bool success = true;
-        std::string writeDir = PHYSFS_getWriteDir();
-        try
+        std::string path = CleanPath(directory);
+        for (auto file : ListFiles(path))
         {
-            std::string path = writeDir + "/" + CleanPath(directory);
-            #if PLATFORM_WINDOWS
-            fs::remove_all(CSystemUtilsWindows::UTF8_Decode(path));
-            #else
-            fs::remove_all(path);
-            #endif
+            if (PHYSFS_delete((path + "/" + file).c_str()) == 0)
+                return false;
         }
-        catch (std::exception&)
-        {
-            success = false;
-        }
-        return success;
+        return PHYSFS_delete(path.c_str()) != 0;
     }
     return false;
 }

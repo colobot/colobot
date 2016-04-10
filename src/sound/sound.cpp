@@ -27,8 +27,6 @@
 #include <iomanip>
 #include <sstream>
 
-#include <boost/filesystem.hpp>
-
 
 CSoundInterface::CSoundInterface()
 {
