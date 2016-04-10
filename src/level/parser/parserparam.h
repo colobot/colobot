@@ -123,7 +123,6 @@ public:
     bool IsDefined();
 
     static const std::string FromObjectType(ObjectType value);
-    static ObjectType ToObjectType(std::string value);
 
 private:
     void ParseArray();
@@ -133,6 +132,7 @@ private:
     template<typename T> T Cast(std::string requestedType);
 
     std::string ToPath(std::string path, const std::string defaultDir);
+    ObjectType ToObjectType(std::string value);
     DriveType ToDriveType(std::string value);
     ToolType ToToolType(std::string value);
     Gfx::WaterType ToWaterType(std::string value);
