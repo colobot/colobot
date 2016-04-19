@@ -840,8 +840,8 @@ bool CBotFunction::CheckParam(CBotDefParam* pParam)
     CBotDefParam*   pp = m_param;
     while ( pp != nullptr && pParam != nullptr )
     {
-        CBotTypResult type1 = pp->GetType();
-        CBotTypResult type2 = pParam->GetType();
+        CBotTypResult type1 = pp->GetTypResult();
+        CBotTypResult type2 = pParam->GetTypResult();
         if ( !type1.Compare(type2) ) return false;
         pp = pp->GetNext();
         pParam = pParam->GetNext();
