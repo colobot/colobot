@@ -647,6 +647,18 @@ TEST_F(CBotUT, FunctionRedefined)
         "}\n",
         CBotErrRedefFunc
     );
+
+    ExecuteTest(
+        "int func(int[] test)\n"
+        "{\n"
+        "    return 1;\n"
+        "}\n"
+        "int func(int[] test)\n"
+        "{\n"
+        "    return 2;\n"
+        "}\n",
+        CBotErrRedefFunc
+    );
 }
 
 // TODO: Doesn't work
@@ -840,6 +852,18 @@ TEST_F(CBotUT, ClassMethodRedefined)
         "        return 1;\n"
         "    }\n"
         "    public int test(string test) {\n"
+        "        return 2;\n"
+        "    }\n"
+        "}\n",
+        CBotErrRedefFunc
+    );
+
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    public int test(int[] test) {\n"
+        "        return 1;\n"
+        "    }\n"
+        "    public int test(int[] test) {\n"
         "        return 2;\n"
         "    }\n"
         "}\n",
