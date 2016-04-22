@@ -291,6 +291,7 @@ bool CScroll::EventProcess(const Event &event)
                     m_event->AddEvent(Event(m_buttonDown->GetEventType()));
             }
         }
+        return false;
     }
 
     return true;

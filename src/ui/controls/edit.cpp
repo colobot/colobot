@@ -248,7 +248,7 @@ bool CEdit::EventProcess(const Event &event)
     {
         auto data = event.GetData<MouseWheelEventData>();
         Scroll(m_lineFirst - data->y, true);
-        return true;
+        return false;
     }
 
     CControl::EventProcess(event);

@@ -190,6 +190,7 @@ bool CEditValue::EventProcess(const Event &event)
         if ( value > m_maxValue )  value = m_maxValue;
         SetValue(value, true);
         HiliteValue(event);
+        return false;
     }
 
     return true;
