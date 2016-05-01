@@ -584,7 +584,7 @@ link_directories(
 
 # Targets
 
-add_library(colobotbase STATIC ${BASE_SOURCES} ${BASE_HEADERS})
+add_library(colobotbase STATIC ${BASE_SOURCES})
 
 add_executable(colobot ${MAIN_SOURCES})
 target_link_libraries(colobot colobotbase ${LIBS})

@@ -154,9 +154,9 @@ include_directories(${LOCAL_INCLUDES})
 
 
 if(CBOT_STATIC)
-    add_library(CBot STATIC ${SOURCES} ${HEADERS})
+    add_library(CBot STATIC ${SOURCES})
 else()
-    add_library(CBot SHARED ${SOURCES} ${HEADERS})
+    add_library(CBot SHARED ${SOURCES})
     install(TARGETS CBot LIBRARY
             DESTINATION ${COLOBOT_INSTALL_LIB_DIR}
             ARCHIVE DESTINATION ${COLOBOT_INSTALL_LIB_DIR}
