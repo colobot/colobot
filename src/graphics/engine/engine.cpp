@@ -2733,7 +2733,10 @@ float CEngine::GetDeepView(int rank)
 
 void CEngine::SetFogStart(float start, int rank)
 {
-    m_fogStart[rank] = start;
+    if (start < 0.0f)
+        m_fogStart[rank] = 0.0f;
+    else
+        m_fogStart[rank] = start;
 }
 
 float CEngine::GetFogStart(int rank)
