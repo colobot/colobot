@@ -1,149 +1,146 @@
 set(SOURCES
-    CBotCallMethode.cpp
-    CBotClass.cpp
+    CBot.h
     CBotCStack.cpp
+    CBotCStack.h
+    CBotCallMethode.cpp
+    CBotCallMethode.h
+    CBotClass.cpp
+    CBotClass.h
     CBotDebug.cpp
+    CBotDebug.h
     CBotDefParam.cpp
+    CBotDefParam.h
+    CBotDefines.h
+    CBotEnums.h
     CBotExternalCall.cpp
+    CBotExternalCall.h
     CBotFileUtils.cpp
-    CBotProgram.cpp
-    CBotStack.cpp
-    CBotToken.cpp
-    CBotTypResult.cpp
-    CBotUtils.cpp
+    CBotFileUtils.h
     CBotInstr/CBotBlock.cpp
+    CBotInstr/CBotBlock.h
     CBotInstr/CBotBoolExpr.cpp
+    CBotInstr/CBotBoolExpr.h
     CBotInstr/CBotBreak.cpp
+    CBotInstr/CBotBreak.h
     CBotInstr/CBotCase.cpp
+    CBotInstr/CBotCase.h
     CBotInstr/CBotCatch.cpp
+    CBotInstr/CBotCatch.h
     CBotInstr/CBotCondition.cpp
+    CBotInstr/CBotCondition.h
     CBotInstr/CBotDefArray.cpp
+    CBotInstr/CBotDefArray.h
     CBotInstr/CBotDefBoolean.cpp
+    CBotInstr/CBotDefBoolean.h
     CBotInstr/CBotDefClass.cpp
+    CBotInstr/CBotDefClass.h
     CBotInstr/CBotDefFloat.cpp
+    CBotInstr/CBotDefFloat.h
     CBotInstr/CBotDefInt.cpp
+    CBotInstr/CBotDefInt.h
     CBotInstr/CBotDefString.cpp
+    CBotInstr/CBotDefString.h
     CBotInstr/CBotDo.cpp
+    CBotInstr/CBotDo.h
     CBotInstr/CBotEmpty.cpp
-    CBotInstr/CBotExpression.cpp
+    CBotInstr/CBotEmpty.h
     CBotInstr/CBotExprLitBool.cpp
+    CBotInstr/CBotExprLitBool.h
     CBotInstr/CBotExprLitNan.cpp
+    CBotInstr/CBotExprLitNan.h
     CBotInstr/CBotExprLitNull.cpp
+    CBotInstr/CBotExprLitNull.h
     CBotInstr/CBotExprLitNum.cpp
+    CBotInstr/CBotExprLitNum.h
     CBotInstr/CBotExprLitString.cpp
+    CBotInstr/CBotExprLitString.h
     CBotInstr/CBotExprUnaire.cpp
+    CBotInstr/CBotExprUnaire.h
     CBotInstr/CBotExprVar.cpp
+    CBotInstr/CBotExprVar.h
+    CBotInstr/CBotExpression.cpp
+    CBotInstr/CBotExpression.h
     CBotInstr/CBotFieldExpr.cpp
+    CBotInstr/CBotFieldExpr.h
     CBotInstr/CBotFor.cpp
+    CBotInstr/CBotFor.h
     CBotInstr/CBotFunction.cpp
+    CBotInstr/CBotFunction.h
     CBotInstr/CBotIf.cpp
+    CBotInstr/CBotIf.h
     CBotInstr/CBotIndexExpr.cpp
-    CBotInstr/CBotInstrCall.cpp
+    CBotInstr/CBotIndexExpr.h
     CBotInstr/CBotInstr.cpp
+    CBotInstr/CBotInstr.h
+    CBotInstr/CBotInstrCall.cpp
+    CBotInstr/CBotInstrCall.h
     CBotInstr/CBotInstrMethode.cpp
+    CBotInstr/CBotInstrMethode.h
     CBotInstr/CBotInstrUtils.cpp
+    CBotInstr/CBotInstrUtils.h
     CBotInstr/CBotLeftExpr.cpp
+    CBotInstr/CBotLeftExpr.h
     CBotInstr/CBotLeftExprVar.cpp
+    CBotInstr/CBotLeftExprVar.h
     CBotInstr/CBotListArray.cpp
+    CBotInstr/CBotListArray.h
     CBotInstr/CBotListExpression.cpp
+    CBotInstr/CBotListExpression.h
     CBotInstr/CBotListInstr.cpp
+    CBotInstr/CBotListInstr.h
     CBotInstr/CBotLogicExpr.cpp
+    CBotInstr/CBotLogicExpr.h
     CBotInstr/CBotNew.cpp
+    CBotInstr/CBotNew.h
     CBotInstr/CBotParExpr.cpp
+    CBotInstr/CBotParExpr.h
     CBotInstr/CBotPostIncExpr.cpp
+    CBotInstr/CBotPostIncExpr.h
     CBotInstr/CBotPreIncExpr.cpp
+    CBotInstr/CBotPreIncExpr.h
     CBotInstr/CBotReturn.cpp
+    CBotInstr/CBotReturn.h
     CBotInstr/CBotSwitch.cpp
+    CBotInstr/CBotSwitch.h
     CBotInstr/CBotThrow.cpp
+    CBotInstr/CBotThrow.h
     CBotInstr/CBotTry.cpp
+    CBotInstr/CBotTry.h
     CBotInstr/CBotTwoOpExpr.cpp
+    CBotInstr/CBotTwoOpExpr.h
     CBotInstr/CBotWhile.cpp
-    CBotVar/CBotVarArray.cpp
-    CBotVar/CBotVarBoolean.cpp
-    CBotVar/CBotVarClass.cpp
+    CBotInstr/CBotWhile.h
+    CBotProgram.cpp
+    CBotProgram.h
+    CBotStack.cpp
+    CBotStack.h
+    CBotToken.cpp
+    CBotToken.h
+    CBotTypResult.cpp
+    CBotTypResult.h
+    CBotUtils.cpp
+    CBotUtils.h
     CBotVar/CBotVar.cpp
+    CBotVar/CBotVar.h
+    CBotVar/CBotVarArray.cpp
+    CBotVar/CBotVarArray.h
+    CBotVar/CBotVarBoolean.cpp
+    CBotVar/CBotVarBoolean.h
+    CBotVar/CBotVarClass.cpp
+    CBotVar/CBotVarClass.h
     CBotVar/CBotVarFloat.cpp
+    CBotVar/CBotVarFloat.h
     CBotVar/CBotVarInt.cpp
+    CBotVar/CBotVarInt.h
     CBotVar/CBotVarPointer.cpp
+    CBotVar/CBotVarPointer.h
     CBotVar/CBotVarString.cpp
+    CBotVar/CBotVarString.h
     stdlib/Compilation.cpp
+    stdlib/Compilation.h
     stdlib/FileFunctions.cpp
     stdlib/MathFunctions.cpp
     stdlib/StringFunctions.cpp
-)
-
-set (HEADERS
-    CBot.h
-    CBotCallMethode.h
-    CBotClass.h
-    CBotCStack.h
-    CBotDebug.h
-    CBotDefines.h
-    CBotDefParam.h
-    CBotEnums.h
-    CBotExternalCall.h
-    CBotFileUtils.h
-    CBotProgram.h
-    CBotStack.h
-    CBotToken.h
-    CBotTypResult.h
-    CBotUtils.h
-    CBotInstr/CBotBlock.h
-    CBotInstr/CBotBoolExpr.h
-    CBotInstr/CBotBreak.h
-    CBotInstr/CBotCase.h
-    CBotInstr/CBotCatch.h
-    CBotInstr/CBotCondition.h
-    CBotInstr/CBotDefArray.h
-    CBotInstr/CBotDefBoolean.h
-    CBotInstr/CBotDefClass.h
-    CBotInstr/CBotDefFloat.h
-    CBotInstr/CBotDefInt.h
-    CBotInstr/CBotDefString.h
-    CBotInstr/CBotDo.h
-    CBotInstr/CBotEmpty.h
-    CBotInstr/CBotExpression.h
-    CBotInstr/CBotExprLitBool.h
-    CBotInstr/CBotExprLitNan.h
-    CBotInstr/CBotExprLitNull.h
-    CBotInstr/CBotExprLitNum.h
-    CBotInstr/CBotExprLitString.h
-    CBotInstr/CBotExprUnaire.h
-    CBotInstr/CBotExprVar.h
-    CBotInstr/CBotFieldExpr.h
-    CBotInstr/CBotFor.h
-    CBotInstr/CBotFunction.h
-    CBotInstr/CBotIf.h
-    CBotInstr/CBotIndexExpr.h
-    CBotInstr/CBotInstrCall.h
-    CBotInstr/CBotInstr.h
-    CBotInstr/CBotInstrMethode.h
-    CBotInstr/CBotInstrUtils.h
-    CBotInstr/CBotLeftExpr.h
-    CBotInstr/CBotLeftExprVar.h
-    CBotInstr/CBotListArray.h
-    CBotInstr/CBotListExpression.h
-    CBotInstr/CBotListInstr.h
-    CBotInstr/CBotLogicExpr.h
-    CBotInstr/CBotNew.h
-    CBotInstr/CBotParExpr.h
-    CBotInstr/CBotPostIncExpr.h
-    CBotInstr/CBotPreIncExpr.h
-    CBotInstr/CBotReturn.h
-    CBotInstr/CBotSwitch.h
-    CBotInstr/CBotThrow.h
-    CBotInstr/CBotTry.h
-    CBotInstr/CBotTwoOpExpr.h
-    CBotInstr/CBotWhile.h
-    CBotVar/CBotVarArray.h
-    CBotVar/CBotVarBoolean.h
-    CBotVar/CBotVarClass.h
-    CBotVar/CBotVar.h
-    CBotVar/CBotVarFloat.h
-    CBotVar/CBotVarInt.h
-    CBotVar/CBotVarPointer.h
-    CBotVar/CBotVarString.h
-    stdlib/Compilation.h
     stdlib/stdlib.h
     stdlib/stdlib_public.h
 )
@@ -167,4 +164,3 @@ else()
 endif()
 
 group_sources("${SOURCES}" "Source Files")
-group_sources("${HEADERS}" "Header Files")
