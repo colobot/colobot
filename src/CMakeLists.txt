@@ -3,6 +3,26 @@ set(CMAKE_CXX_FLAGS "${COLOBOT_CXX_FLAGS} ${MXE_CFLAGS}")
 set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
 set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 
+# Groups source files for IDE project
+macro(group_sources SOURCES GROUP_ROOT)
+    foreach(SOURCE_FILE ${SOURCES})
+        get_filename_component(GROUP "${SOURCE_FILE}" DIRECTORY)
+        string(REPLACE "/" "\\" GROUP "${GROUP}")
+        set(GROUP "${GROUP_ROOT}\\${GROUP}")
+        source_group("${GROUP}" FILES "${SOURCE_FILE}")
+    endforeach()
+endmacro()
+
+# Generates a list of headers from list of source files
+macro(generate_headers HEADERS_LIST SOURCES)
+    set(${HEADERS_LIST} "")
+    foreach(SOURCE_FILE ${SOURCES})
+        string(REGEX REPLACE "\\.cpp$" ".h" HEADER_FILE "${SOURCE_FILE}")
+            if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${HEADER_FILE}")
+                list(APPEND ${HEADERS_LIST} ${HEADER_FILE})
+            endif()
+    endforeach()
+endmacro()
 
 # Subdirectories
 
@@ -271,6 +291,8 @@ set(MAIN_SOURCES
     ${RES_FILES}
 )
 
+# Header files
+generate_headers(BASE_HEADERS "${BASE_SOURCES}")
 
 # Libraries
 set(LIBS
@@ -328,7 +350,7 @@ link_directories(
 
 # Targets
 
-add_library(colobotbase STATIC ${BASE_SOURCES})
+add_library(colobotbase STATIC ${BASE_SOURCES} ${BASE_HEADERS})
 
 add_executable(colobot ${MAIN_SOURCES})
 target_link_libraries(colobot colobotbase ${LIBS})
@@ -341,3 +363,6 @@ endif()
 if(COLOBOT_LINT_BUILD)
     add_fake_header_sources("src")
 endif()
+
+group_sources("${BASE_SOURCES}" "Source Files")
+group_sources("${BASE_HEADERS}" "Header Files")

@@ -72,6 +72,8 @@ set(SOURCES
     stdlib/StringFunctions.cpp
 )
 
+generate_headers(HEADERS "${SOURCES}")
+
 # Includes
 set(LOCAL_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/..
@@ -81,12 +83,14 @@ include_directories(${LOCAL_INCLUDES})
 
 
 if(CBOT_STATIC)
-    add_library(CBot STATIC ${SOURCES})
+    add_library(CBot STATIC ${SOURCES} ${HEADERS})
 else()
-    add_library(CBot SHARED ${SOURCES})
+    add_library(CBot SHARED ${SOURCES} ${HEADERS})
     install(TARGETS CBot LIBRARY
             DESTINATION ${COLOBOT_INSTALL_LIB_DIR}
             ARCHIVE DESTINATION ${COLOBOT_INSTALL_LIB_DIR}
             RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
 endif()
 
+group_sources("${SOURCES}" "Source Files")
+group_sources("${HEADERS}" "Header Files")
