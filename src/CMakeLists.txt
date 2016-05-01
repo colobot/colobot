@@ -7,20 +7,13 @@ set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 macro(group_sources SOURCES GROUP_ROOT)
     foreach(SOURCE_FILE ${SOURCES})
         get_filename_component(GROUP "${SOURCE_FILE}" DIRECTORY)
-        string(REPLACE "/" "\\" GROUP "${GROUP}")
-        set(GROUP "${GROUP_ROOT}\\${GROUP}")
+        if(PLATFORM_WINDOWS)
+            string(REPLACE "/" "\\" GROUP "${GROUP}")
+            set(GROUP "${GROUP_ROOT}\\${GROUP}")
+        else()
+            set(GROUP "${GROUP_ROOT}/${GROUP}")
+        endif()
         source_group("${GROUP}" FILES "${SOURCE_FILE}")
-    endforeach()
-endmacro()
-
-# Generates a list of headers from list of source files
-macro(generate_headers HEADERS_LIST SOURCES)
-    set(${HEADERS_LIST} "")
-    foreach(SOURCE_FILE ${SOURCES})
-        string(REGEX REPLACE "\\.cpp$" ".h" HEADER_FILE "${SOURCE_FILE}")
-            if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${HEADER_FILE}")
-                list(APPEND ${HEADERS_LIST} ${HEADER_FILE})
-            endif()
     endforeach()
 endmacro()
 
@@ -77,6 +70,7 @@ configure_file(common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h
 configure_file(common/version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/version.h)
 
 set(OPENAL_SRC "")
+set(OPENAL_H "")
 
 if(OPENAL_SOUND)
     set(OPENAL_SRC
@@ -84,6 +78,12 @@ if(OPENAL_SOUND)
         sound/oalsound/buffer.cpp
         sound/oalsound/channel.cpp
         sound/oalsound/check.cpp
+    )
+    set(OPENAL_H
+        sound/oalsound/alsound.h
+        sound/oalsound/buffer.h
+        sound/oalsound/channel.h
+        sound/oalsound/check.h
     )
 endif()
 
@@ -292,7 +292,253 @@ set(MAIN_SOURCES
 )
 
 # Header files
-generate_headers(BASE_HEADERS "${BASE_SOURCES}")
+set(BASE_HEADERS
+    app/app.h
+    app/controller.h
+    app/input.h
+    app/pathman.h
+    app/pausemanager.h
+    app/signal_handlers.h
+    app/system.h
+    app/${SYSTEM_H_MODULE}
+    app/system_other.h
+    common/config_file.h
+    common/error.h
+    common/global.h
+    common/event.h
+    common/image.h
+    common/ioutils.h
+    common/key.h
+    common/language.h
+    common/logger.h
+    common/make_unique.h
+    common/regex_utils.h
+    common/resources/inputstream.h
+    common/resources/inputstreambuffer.h
+    common/resources/outputstream.h
+    common/resources/outputstreambuffer.h
+    common/resources/resourcemanager.h
+    common/resources/sdl_file_wrapper.h
+    common/resources/sdl_memory_wrapper.h
+    common/resources/sndfile_wrapper.h
+    common/restext.h
+    common/settings.h
+    common/singleton.h
+    common/stringutils.h
+    common/thread/resource_owning_thread.h
+    common/thread/sdl_cond_wrapper.h
+    common/thread/sdl_mutex_wrapper.h
+    graphics/core/color.h
+    graphics/core/device.h
+    graphics/core/framebuffer.h
+    graphics/core/light.h
+    graphics/core/material.h
+    graphics/core/nulldevice.h
+    graphics/core/texture.h
+    graphics/core/vertex.h
+    graphics/engine/camera.h
+    graphics/engine/cloud.h
+    graphics/engine/engine.h
+    graphics/engine/lightman.h
+    graphics/engine/lightning.h
+    graphics/engine/oldmodelmanager.h
+    graphics/engine/particle.h
+    graphics/engine/planet.h
+    graphics/engine/pyro.h
+    graphics/engine/pyro_manager.h
+    graphics/engine/pyro_type.h
+    graphics/engine/terrain.h
+    graphics/engine/text.h
+    graphics/engine/water.h
+    graphics/model/model.h
+    graphics/model/model_crash_sphere.h
+    graphics/model/model_format.h
+    graphics/model/model_input.h
+    graphics/model/model_io_exception.h
+    graphics/model/model_io_structs.h
+    graphics/model/model_manager.h
+    graphics/model/model_mesh.h
+    graphics/model/model_output.h
+    graphics/model/model_shadow_spot.h
+    graphics/model/model_triangle.h
+    graphics/opengl/gl21device.h
+    graphics/opengl/gl33device.h
+    graphics/opengl/gldevice.h
+    graphics/opengl/glframebuffer.h
+    graphics/opengl/glutil.h
+    level/build_type.h
+    level/level_category.h
+    level/mainmovie.h
+    level/player_profile.h
+    level/research_type.h
+    level/robotmain.h
+    level/scene_conditions.h
+    level/parser/parser.h
+    level/parser/parserexceptions.h
+    level/parser/parserline.h
+    level/parser/parserparam.h
+    math/all.h
+    math/const.h
+    math/func.h
+    math/geometry.h
+    math/intpoint.h
+    math/matrix.h
+    math/point.h
+    math/sphere.h
+    math/vector.h
+    object/auto/auto.h
+    object/auto/autobase.h
+    object/auto/autoconvert.h
+    object/auto/autoderrick.h
+    object/auto/autodestroyer.h
+    object/auto/autoegg.h
+    object/auto/autopowerplant.h
+    object/auto/autofactory.h
+    object/auto/autoflag.h
+    object/auto/autohouston.h
+    object/auto/autojostle.h
+    object/auto/autokid.h
+    object/auto/autolabo.h
+    object/auto/automush.h
+    object/auto/autonest.h
+    object/auto/autonuclearplant.h
+    object/auto/autopowercaptor.h
+    object/auto/autoportico.h
+    object/auto/autoradar.h
+    object/auto/autorepair.h
+    object/auto/autoresearch.h
+    object/auto/autoroot.h
+    object/auto/autovault.h
+    object/auto/autopowerstation.h
+    object/auto/autotower.h
+    object/crash_sphere.h
+    object/drive_type.h
+    object/implementation/power_container_impl.h
+    object/implementation/programmable_impl.h
+    object/implementation/program_storage_impl.h
+    object/implementation/task_executor_impl.h
+    object/interface/carrier_object.h
+    object/interface/controllable_object.h
+    object/interface/damageable_object.h
+    object/interface/destroyable_object.h
+    object/interface/flying_object.h
+    object/interface/fragile_object.h
+    object/interface/interactive_object.h
+    object/interface/jet_flying_object.h
+    object/interface/jostleable_object.h
+    object/interface/movable_object.h
+    object/interface/power_container_object.h
+    object/interface/powered_object.h
+    object/interface/program_storage_object.h
+    object/interface/programmable_object.h
+    object/interface/ranged_object.h
+    object/interface/shielded_auto_regen_object.h
+    object/interface/shielded_object.h
+    object/interface/task_executor_object.h
+    object/interface/trace_drawing_object.h
+    object/interface/transportable_object.h
+    object/mission_type.h
+    object/motion/motion.h
+    object/motion/motionant.h
+    object/motion/motionbee.h
+    object/motion/motionlevelcontroller.h
+    object/motion/motionhuman.h
+    object/motion/motionqueen.h
+    object/motion/motionspider.h
+    object/motion/motiontoto.h
+    object/motion/motionvehicle.h
+    object/motion/motionworm.h
+    object/object.h
+    object/object_create_exception.h
+    object/object_create_params.h
+    object/object_factory.h
+    object/object_interface_type.h
+    object/object_manager.h
+    object/object_type.h
+    object/old_object.h
+    object/old_object_interface.h
+    object/task/task.h
+    object/task/taskadvance.h
+    object/task/taskbuild.h
+    object/task/taskdeletemark.h
+    object/task/taskfire.h
+    object/task/taskfireant.h
+    object/task/taskflag.h
+    object/task/taskgoto.h
+    object/task/taskgungoal.h
+    object/task/taskinfo.h
+    object/task/taskmanip.h
+    object/task/taskpen.h
+    object/task/taskrecover.h
+    object/task/tasksearch.h
+    object/task/taskshield.h
+    object/task/taskspiderexplo.h
+    object/task/tasktake.h
+    object/task/taskterraform.h
+    object/task/taskturn.h
+    object/task/taskwait.h
+    object/tool_type.h
+    object/subclass/base_alien.h
+    object/subclass/base_building.h
+    object/subclass/base_robot.h
+    object/subclass/base_vehicle.h
+    object/subclass/exchange_post.h
+    object/subclass/shielder.h
+    object/subclass/static_object.h
+    physics/physics.h
+    script/cbottoken.h
+    script/script.h
+    script/scriptfunc.h
+    sound/sound.h
+    sound/sound_type.h
+    ui/debug_menu.h
+    ui/displayinfo.h
+    ui/displaytext.h
+    ui/object_interface.h
+    ui/maindialog.h
+    ui/mainmap.h
+    ui/mainshort.h
+    ui/mainui.h
+    ui/studio.h
+    ui/controls/button.h
+    ui/controls/check.h
+    ui/controls/color.h
+    ui/controls/control.h
+    ui/controls/edit.h
+    ui/controls/editvalue.h
+    ui/controls/enumslider.h
+    ui/controls/gauge.h
+    ui/controls/group.h
+    ui/controls/image.h
+    ui/controls/interface.h
+    ui/controls/key.h
+    ui/controls/label.h
+    ui/controls/list.h
+    ui/controls/map.h
+    ui/controls/scroll.h
+    ui/controls/shortcut.h
+    ui/controls/slider.h
+    ui/controls/target.h
+    ui/controls/window.h
+    ui/screen/screen.h
+    ui/screen/screen_apperance.h
+    ui/screen/screen_io.h
+    ui/screen/screen_io_read.h
+    ui/screen/screen_io_write.h
+    ui/screen/screen_level_list.h
+    ui/screen/screen_loading.h
+    ui/screen/screen_main_menu.h
+    ui/screen/screen_player_select.h
+    ui/screen/screen_quit.h
+    ui/screen/screen_setup.h
+    ui/screen/screen_setup_controls.h
+    ui/screen/screen_setup_display.h
+    ui/screen/screen_setup_game.h
+    ui/screen/screen_setup_graphics.h
+    ui/screen/screen_setup_sound.h
+    ui/screen/screen_welcome.h
+    ${OPENAL_H}
+)
 
 # Libraries
 set(LIBS
