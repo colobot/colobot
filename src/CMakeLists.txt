@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 # Groups source files for IDE project
 macro(group_sources SOURCES GROUP_ROOT)
     foreach(SOURCE_FILE ${SOURCES})
-        get_filename_component(GROUP "${SOURCE_FILE}" DIRECTORY)
+        get_filename_component(GROUP "${SOURCE_FILE}" PATH)
         if(PLATFORM_WINDOWS)
             string(REPLACE "/" "\\" GROUP "${GROUP}")
             set(GROUP "${GROUP_ROOT}\\${GROUP}")
