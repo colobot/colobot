@@ -64,6 +64,7 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
 
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_windows.cpp")
+    set(SYSTEM_H_MODULE "system_windows.h")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     message(STATUS "Build for Linux system")
     set(PLATFORM_WINDOWS 0)
@@ -74,6 +75,7 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_linux.cpp")
+    set(SYSTEM_H_MODULE "system_linux.h")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "kFreeBSD" OR "${CMAKE_SYSTEM_NAME}" STREQUAL "GNU")
     message(STATUS "Build for kFreeBSD system")
     set(PLATFORM_WINDOWS 0)
@@ -84,6 +86,7 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "kFreeBSD" OR "${CMAKE_SYSTEM_NAME}" STREQ
 
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_other.cpp")
+    set(SYSTEM_H_MODULE "system_other.h")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     message(STATUS "Build for Mac OSX system")
     set(PLATFORM_WINDOWS 0)
@@ -94,6 +97,7 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
 
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_macosx.cpp")
+    set(SYSTEM_H_MODULE "system_macosx.h")
     # To avoid CMake warning
     set(CMAKE_MACOSX_RPATH 1)
 else()
@@ -106,6 +110,7 @@ else()
 
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_other.cpp")
+    set(SYSTEM_H_MODULE "system_other.h")
 endif()
 
 
