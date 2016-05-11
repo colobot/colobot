@@ -154,10 +154,6 @@ void CNullDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode 
 {
 }
 
-void CNullDevice::SetTextureCoordGeneration(int index, TextureGenerationParams &params)
-{
-}
-
 void CNullDevice::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount,
                               Color color)
 {

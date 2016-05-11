@@ -413,9 +413,6 @@ public:
     //! Sets only the texture wrap modes (for faster than thru stage params)
     virtual void SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT) = 0;
 
-    //! Sets the texture coordinate generation mode for given texture unit
-    virtual void SetTextureCoordGeneration(int index, TextureGenerationParams &params) = 0;
-
     //! Renders primitive composed of vertices with single texture
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;

@@ -1009,11 +1009,6 @@ void CGL33Device::SetTextureStageParams(int index, const TextureStageParams &par
     UpdateTextureParams(index);
 }
 
-void CGL33Device::SetTextureCoordGeneration(int index, TextureGenerationParams &params)
-{
-
-}
-
 void CGL33Device::UpdateTextureParams(int index)
 {
     assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
