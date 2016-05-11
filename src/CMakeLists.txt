@@ -205,12 +205,12 @@ set(BASE_SOURCES
     graphics/model/model_output.h
     graphics/model/model_shadow_spot.h
     graphics/model/model_triangle.h
+    graphics/opengl/gl14device.cpp
+    graphics/opengl/gl14device.h
     graphics/opengl/gl21device.cpp
     graphics/opengl/gl21device.h
     graphics/opengl/gl33device.cpp
     graphics/opengl/gl33device.h
-    graphics/opengl/gldevice.cpp
-    graphics/opengl/gldevice.h
     graphics/opengl/glframebuffer.cpp
     graphics/opengl/glframebuffer.h
     graphics/opengl/glutil.cpp

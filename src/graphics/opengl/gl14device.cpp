@@ -18,7 +18,7 @@
  */
 
 
-#include "graphics/opengl/gldevice.h"
+#include "graphics/opengl/gl14device.h"
 
 #include "common/config.h"
 
@@ -43,22 +43,22 @@
 namespace Gfx
 {
 
-CGLDevice::CGLDevice(const DeviceConfig &config)
+CGL14Device::CGL14Device(const DeviceConfig &config)
     : m_config(config)
 {}
 
-CGLDevice::~CGLDevice()
+CGL14Device::~CGL14Device()
 {
 }
 
-void CGLDevice::DebugHook()
+void CGL14Device::DebugHook()
 {
     /* This function is only called here, so it can be used
      * as a breakpoint when debugging using gDEBugger */
     glColor3i(0, 0, 0);
 }
 
-void CGLDevice::DebugLights()
+void CGL14Device::DebugLights()
 {
     Gfx::ColorHSV color(0.0, 1.0, 1.0);
 
@@ -158,12 +158,12 @@ void CGLDevice::DebugLights()
     UpdateModelviewMatrix();
 }
 
-std::string CGLDevice::GetName()
+std::string CGL14Device::GetName()
 {
     return std::string("OpenGL 1.4");
 }
 
-bool CGLDevice::Create()
+bool CGL14Device::Create()
 {
     GetLogger()->Info("Creating CDevice - OpenGL 1.4\n");
 
@@ -382,7 +382,7 @@ bool CGLDevice::Create()
     return true;
 }
 
-void CGLDevice::Destroy()
+void CGL14Device::Destroy()
 {
     // delete framebuffers
     for (auto& framebuffer : m_framebuffers)
@@ -404,7 +404,7 @@ void CGLDevice::Destroy()
     m_textureStageParams.clear();
 }
 
-void CGLDevice::ConfigChanged(const DeviceConfig& newConfig)
+void CGL14Device::ConfigChanged(const DeviceConfig& newConfig)
 {
     m_config = newConfig;
 
@@ -423,7 +423,7 @@ void CGLDevice::ConfigChanged(const DeviceConfig& newConfig)
     m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
 }
 
-void CGLDevice::BeginScene()
+void CGL14Device::BeginScene()
 {
     Clear();
 
@@ -433,7 +433,7 @@ void CGLDevice::BeginScene()
     UpdateModelviewMatrix();
 }
 
-void CGLDevice::EndScene()
+void CGL14Device::EndScene()
 {
 #ifdef DEV_BUILD
     int count = ClearGLErrors();
@@ -443,18 +443,18 @@ void CGLDevice::EndScene()
 #endif
 }
 
-void CGLDevice::Clear()
+void CGL14Device::Clear()
 {
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void CGLDevice::SetRenderMode(RenderMode mode)
+void CGL14Device::SetRenderMode(RenderMode mode)
 {
     // nothing is done
 }
 
-void CGLDevice::SetTransform(TransformType type, const Math::Matrix &matrix)
+void CGL14Device::SetTransform(TransformType type, const Math::Matrix &matrix)
 {
     if      (type == TRANSFORM_WORLD)
     {
@@ -492,7 +492,7 @@ void CGLDevice::SetTransform(TransformType type, const Math::Matrix &matrix)
     }
 }
 
-void CGLDevice::UpdateModelviewMatrix()
+void CGL14Device::UpdateModelviewMatrix()
 {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -507,7 +507,7 @@ void CGLDevice::UpdateModelviewMatrix()
     }
 }
 
-void CGLDevice::SetMaterial(const Material &material)
+void CGL14Device::SetMaterial(const Material &material)
 {
     m_material = material;
 
@@ -516,12 +516,12 @@ void CGLDevice::SetMaterial(const Material &material)
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_material.specular.Array());
 }
 
-int CGLDevice::GetMaxLightCount()
+int CGL14Device::GetMaxLightCount()
 {
     return m_lights.size();
 }
 
-void CGLDevice::SetLight(int index, const Light &light)
+void CGL14Device::SetLight(int index, const Light &light)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_lights.size() ));
@@ -550,7 +550,7 @@ void CGLDevice::SetLight(int index, const Light &light)
     UpdateLightPosition(index);
 }
 
-void CGLDevice::UpdateLightPosition(int index)
+void CGL14Device::UpdateLightPosition(int index)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_lights.size() ));
@@ -594,7 +594,7 @@ void CGLDevice::UpdateLightPosition(int index)
     glPopMatrix();
 }
 
-void CGLDevice::UpdateLightPositions()
+void CGL14Device::UpdateLightPositions()
 {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -653,7 +653,7 @@ void CGLDevice::UpdateLightPositions()
     glPopMatrix();
 }
 
-void CGLDevice::SetLightEnabled(int index, bool enabled)
+void CGL14Device::SetLightEnabled(int index, bool enabled)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_lights.size() ));
@@ -669,7 +669,7 @@ void CGLDevice::SetLightEnabled(int index, bool enabled)
 /** If image is invalid, returns invalid texture.
     Otherwise, returns pointer to new Texture struct.
     This struct must not be deleted in other way than through DeleteTexture() */
-Texture CGLDevice::CreateTexture(CImage *image, const TextureCreateParams &params)
+Texture CGL14Device::CreateTexture(CImage *image, const TextureCreateParams &params)
 {
     ImageData *data = image->GetData();
     if (data == nullptr)
@@ -689,7 +689,7 @@ Texture CGLDevice::CreateTexture(CImage *image, const TextureCreateParams &param
     return tex;
 }
 
-Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &params)
+Texture CGL14Device::CreateTexture(ImageData *data, const TextureCreateParams &params)
 {
     Texture result;
 
@@ -778,7 +778,7 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
     return result;
 }
 
-Texture CGLDevice::CreateDepthTexture(int width, int height, int depth)
+Texture CGL14Device::CreateDepthTexture(int width, int height, int depth)
 {
     Texture result;
 
@@ -852,7 +852,7 @@ Texture CGLDevice::CreateDepthTexture(int width, int height, int depth)
     return result;
 }
 
-void CGLDevice::UpdateTexture(const Texture& texture, Math::IntPoint offset, ImageData* data, TexImgFormat format)
+void CGL14Device::UpdateTexture(const Texture& texture, Math::IntPoint offset, ImageData* data, TexImgFormat format)
 {
     // Use & enable 1st texture stage
     glActiveTexture(GL_TEXTURE0 + m_remap[0]);
@@ -872,7 +872,7 @@ void CGLDevice::UpdateTexture(const Texture& texture, Math::IntPoint offset, Ima
     SDL_FreeSurface(texData.convertedSurface);
 }
 
-void CGLDevice::DestroyTexture(const Texture &texture)
+void CGL14Device::DestroyTexture(const Texture &texture)
 {
     // Unbind the texture if in use anywhere
     for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
@@ -889,7 +889,7 @@ void CGLDevice::DestroyTexture(const Texture &texture)
     }
 }
 
-void CGLDevice::DestroyAllTextures()
+void CGL14Device::DestroyAllTextures()
 {
     // Unbind all texture stages
     for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
@@ -914,7 +914,7 @@ void CGLDevice::DestroyAllTextures()
     glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
 }
 
-int CGLDevice::GetMaxTextureStageCount()
+int CGL14Device::GetMaxTextureStageCount()
 {
     return m_currentTextures.size();
 }
@@ -923,7 +923,7 @@ int CGLDevice::GetMaxTextureStageCount()
   If \a texture is invalid, unbinds the given texture.
   If valid, binds the texture and enables the given texture stage.
   The setting is remembered, even if texturing is disabled at the moment. */
-void CGLDevice::SetTexture(int index, const Texture &texture)
+void CGL14Device::SetTexture(int index, const Texture &texture)
 {
     assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
 
@@ -942,7 +942,7 @@ void CGLDevice::SetTexture(int index, const Texture &texture)
     UpdateTextureParams(index);
 }
 
-void CGLDevice::SetTexture(int index, unsigned int textureId)
+void CGL14Device::SetTexture(int index, unsigned int textureId)
 {
     assert(index >= 0 && index < static_cast<int>(m_currentTextures.size()));
 
@@ -959,7 +959,7 @@ void CGLDevice::SetTexture(int index, unsigned int textureId)
     UpdateTextureParams(index);
 }
 
-void CGLDevice::SetTextureEnabled(int index, bool enabled)
+void CGL14Device::SetTextureEnabled(int index, bool enabled)
 {
     assert(index >= 0 && index < static_cast<int>(m_currentTextures.size()));
 
@@ -982,7 +982,7 @@ void CGLDevice::SetTextureEnabled(int index, bool enabled)
   Sets the texture parameters for the given texture stage.
   If the given texture was not set (bound) yet, nothing happens.
   The settings are remembered, even if texturing is disabled at the moment. */
-void CGLDevice::SetTextureStageParams(int index, const TextureStageParams &params)
+void CGL14Device::SetTextureStageParams(int index, const TextureStageParams &params)
 {
     assert(index >= 0 && index < static_cast<int>(m_currentTextures.size()));
 
@@ -992,7 +992,7 @@ void CGLDevice::SetTextureStageParams(int index, const TextureStageParams &param
     UpdateTextureParams(index);
 }
 
-void CGLDevice::UpdateTextureParams(int index)
+void CGL14Device::UpdateTextureParams(int index)
 {
     assert(index >= 0 && index < static_cast<int>(m_currentTextures.size()));
 
@@ -1157,7 +1157,7 @@ after_tex_color:
 after_tex_operations: ;
 }
 
-void CGLDevice::EnableShadows()
+void CGL14Device::EnableShadows()
 {
     // already enabled
     if (m_shadowMapping) return;
@@ -1252,7 +1252,7 @@ void CGLDevice::EnableShadows()
     m_shadowMapping = true;
 }
 
-void CGLDevice::DisableShadows()
+void CGL14Device::DisableShadows()
 {
     // already disabled
     if (!m_shadowMapping) return;
@@ -1276,7 +1276,7 @@ void CGLDevice::DisableShadows()
     m_shadowMapping = false;
 }
 
-void CGLDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT)
+void CGL14Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT)
 {
     assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
 
@@ -1307,7 +1307,7 @@ void CGLDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wr
     else  assert(false);
 }
 
-void CGLDevice::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount,
+void CGL14Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount,
                               Color color)
 {
     Vertex* vs = const_cast<Vertex*>(vertices);
@@ -1331,7 +1331,7 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int ve
     glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE0
 }
 
-void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
+void CGL14Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
                               Color color)
 {
     VertexTex2* vs = const_cast<VertexTex2*>(vertices);
@@ -1363,7 +1363,7 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, in
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
-void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
+void CGL14Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
 {
     VertexCol* vs = const_cast<VertexCol*>(vertices);
 
@@ -1379,7 +1379,7 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int
     glDisableClientState(GL_COLOR_ARRAY);
 }
 
-void CGLDevice::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
+void CGL14Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     int first[], int count[], int drawCount, Color color)
 {
     Vertex* vs = const_cast<Vertex*>(vertices);
@@ -1413,7 +1413,7 @@ void CGLDevice::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE0
 }
 
-void CGLDevice::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
+void CGL14Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
     int first[], int count[], int drawCount, Color color)
 {
     VertexTex2* vs = const_cast<VertexTex2*>(vertices);
@@ -1454,7 +1454,7 @@ void CGLDevice::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
-void CGLDevice::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
+void CGL14Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
     int first[], int count[], int drawCount)
 {
     VertexCol* vs = const_cast<VertexCol*>(vertices);
@@ -1481,7 +1481,7 @@ void CGLDevice::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
     glDisableClientState(GL_COLOR_ARRAY);
 }
 
-unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+unsigned int CGL14Device::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     unsigned int id = 0;
     if (m_vertexBufferType != VBT_DISPLAY_LIST)
@@ -1525,7 +1525,7 @@ unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Ve
     return id;
 }
 
-unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
+unsigned int CGL14Device::CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
 {
     unsigned int id = 0;
     if (m_vertexBufferType != VBT_DISPLAY_LIST)
@@ -1569,7 +1569,7 @@ unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Ve
     return id;
 }
 
-unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
+unsigned int CGL14Device::CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
 {
     unsigned int id = 0;
     if (m_vertexBufferType != VBT_DISPLAY_LIST)
@@ -1613,7 +1613,7 @@ unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Ve
     return id;
 }
 
-void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+void CGL14Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
@@ -1649,7 +1649,7 @@ void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiv
     }
 }
 
-void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
+void CGL14Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
 {
     if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
@@ -1685,7 +1685,7 @@ void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiv
     }
 }
 
-void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
+void CGL14Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
 {
     if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
@@ -1721,7 +1721,7 @@ void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiv
     }
 }
 
-void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
+void CGL14Device::DrawStaticBuffer(unsigned int bufferId)
 {
     if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
@@ -1806,7 +1806,7 @@ void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
     }
 }
 
-void CGLDevice::DestroyStaticBuffer(unsigned int bufferId)
+void CGL14Device::DestroyStaticBuffer(unsigned int bufferId)
 {
     if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
@@ -1829,7 +1829,7 @@ void CGLDevice::DestroyStaticBuffer(unsigned int bufferId)
 
 /* Based on libwine's implementation */
 
-int CGLDevice::ComputeSphereVisibility(const Math::Vector &center, float radius)
+int CGL14Device::ComputeSphereVisibility(const Math::Vector &center, float radius)
 {
     if (m_combinedMatrixOutdated)
     {
@@ -1908,12 +1908,12 @@ int CGLDevice::ComputeSphereVisibility(const Math::Vector &center, float radius)
     return result;
 }
 
-void CGLDevice::SetViewport(int x, int y, int width, int height)
+void CGL14Device::SetViewport(int x, int y, int width, int height)
 {
     glViewport(x, y, width, height);
 }
 
-void CGLDevice::SetRenderState(RenderState state, bool enabled)
+void CGL14Device::SetRenderState(RenderState state, bool enabled)
 {
     if (state == RENDER_STATE_DEPTH_WRITE)
     {
@@ -1965,42 +1965,42 @@ void CGLDevice::SetRenderState(RenderState state, bool enabled)
         glDisable(flag);
 }
 
-void CGLDevice::SetColorMask(bool red, bool green, bool blue, bool alpha)
+void CGL14Device::SetColorMask(bool red, bool green, bool blue, bool alpha)
 {
     glColorMask(red, green, blue, alpha);
 }
 
-void CGLDevice::SetDepthTestFunc(CompFunc func)
+void CGL14Device::SetDepthTestFunc(CompFunc func)
 {
     glDepthFunc(TranslateGfxCompFunc(func));
 }
 
-void CGLDevice::SetDepthBias(float factor, float units)
+void CGL14Device::SetDepthBias(float factor, float units)
 {
     glPolygonOffset(factor, units);
 }
 
-void CGLDevice::SetAlphaTestFunc(CompFunc func, float refValue)
+void CGL14Device::SetAlphaTestFunc(CompFunc func, float refValue)
 {
     glAlphaFunc(TranslateGfxCompFunc(func), refValue);
 }
 
-void CGLDevice::SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend)
+void CGL14Device::SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend)
 {
     glBlendFunc(TranslateGfxBlendFunc(srcBlend), TranslateGfxBlendFunc(dstBlend));
 }
 
-void CGLDevice::SetClearColor(const Color &color)
+void CGL14Device::SetClearColor(const Color &color)
 {
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
-void CGLDevice::SetGlobalAmbient(const Color &color)
+void CGL14Device::SetGlobalAmbient(const Color &color)
 {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, color.Array());
 }
 
-void CGLDevice::SetFogParams(FogMode mode, const Color &color, float start, float end, float density)
+void CGL14Device::SetFogParams(FogMode mode, const Color &color, float start, float end, float density)
 {
     if      (mode == FOG_LINEAR) glFogi(GL_FOG_MODE, GL_LINEAR);
     else if (mode == FOG_EXP)    glFogi(GL_FOG_MODE, GL_EXP);
@@ -2013,7 +2013,7 @@ void CGLDevice::SetFogParams(FogMode mode, const Color &color, float start, floa
     glFogfv(GL_FOG_COLOR,  color.Array());
 }
 
-void CGLDevice::SetCullMode(CullMode mode)
+void CGL14Device::SetCullMode(CullMode mode)
 {
     // Cull clockwise back faces, so front face is the opposite
     // (assuming GL_CULL_FACE is GL_BACK)
@@ -2022,19 +2022,19 @@ void CGLDevice::SetCullMode(CullMode mode)
     else assert(false);
 }
 
-void CGLDevice::SetShadeModel(ShadeModel model)
+void CGL14Device::SetShadeModel(ShadeModel model)
 {
     if      (model == SHADE_FLAT)   glShadeModel(GL_FLAT);
     else if (model == SHADE_SMOOTH) glShadeModel(GL_SMOOTH);
     else  assert(false);
 }
 
-void CGLDevice::SetShadowColor(float value)
+void CGL14Device::SetShadowColor(float value)
 {
     // doesn't do anything because it can't
 }
 
-void CGLDevice::SetFillMode(FillMode mode)
+void CGL14Device::SetFillMode(FillMode mode)
 {
     if      (mode == FILL_POINT) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
     else if (mode == FILL_LINES) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -2042,7 +2042,7 @@ void CGLDevice::SetFillMode(FillMode mode)
     else assert(false);
 }
 
-void CGLDevice::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)
+void CGL14Device::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)
 {
     if (texture.id == 0) return;
 
@@ -2056,12 +2056,12 @@ void CGLDevice::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOff
     glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
 }
 
-std::unique_ptr<CFrameBufferPixels> CGLDevice::GetFrameBufferPixels() const
+std::unique_ptr<CFrameBufferPixels> CGL14Device::GetFrameBufferPixels() const
 {
     return GetGLFrameBufferPixels(m_config.size);
 }
 
-CFramebuffer* CGLDevice::GetFramebuffer(std::string name)
+CFramebuffer* CGL14Device::GetFramebuffer(std::string name)
 {
     auto it = m_framebuffers.find(name);
     if (it == m_framebuffers.end())
@@ -2070,7 +2070,7 @@ CFramebuffer* CGLDevice::GetFramebuffer(std::string name)
     return it->second.get();
 }
 
-CFramebuffer* CGLDevice::CreateFramebuffer(std::string name, const FramebufferParams& params)
+CFramebuffer* CGL14Device::CreateFramebuffer(std::string name, const FramebufferParams& params)
 {
     // existing framebuffer was found
     if (m_framebuffers.find(name) != m_framebuffers.end())
@@ -2094,7 +2094,7 @@ CFramebuffer* CGLDevice::CreateFramebuffer(std::string name, const FramebufferPa
     return framebufferPtr;
 }
 
-void CGLDevice::DeleteFramebuffer(std::string name)
+void CGL14Device::DeleteFramebuffer(std::string name)
 {
     // can't delete default framebuffer
     if (name == "default") return;
@@ -2107,32 +2107,32 @@ void CGLDevice::DeleteFramebuffer(std::string name)
     }
 }
 
-bool CGLDevice::IsAnisotropySupported()
+bool CGL14Device::IsAnisotropySupported()
 {
     return m_capabilities.anisotropySupported;
 }
 
-int CGLDevice::GetMaxAnisotropyLevel()
+int CGL14Device::GetMaxAnisotropyLevel()
 {
     return m_capabilities.maxAnisotropy;
 }
 
-int CGLDevice::GetMaxSamples()
+int CGL14Device::GetMaxSamples()
 {
     return m_capabilities.maxSamples;
 }
 
-bool CGLDevice::IsShadowMappingSupported()
+bool CGL14Device::IsShadowMappingSupported()
 {
     return m_capabilities.shadowMappingSupported;
 }
 
-int CGLDevice::GetMaxTextureSize()
+int CGL14Device::GetMaxTextureSize()
 {
     return m_capabilities.maxTextureSize;
 }
 
-bool CGLDevice::IsFramebufferSupported()
+bool CGL14Device::IsFramebufferSupported()
 {
     return m_capabilities.framebufferSupported;
 }
