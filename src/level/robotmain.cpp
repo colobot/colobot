@@ -105,6 +105,7 @@
 
 #include "ui/screen/screen_loading.h"
 
+#include <algorithm>
 #include <iomanip>
 #include <stdexcept>
 #include <ctime>
@@ -5456,7 +5457,7 @@ void CRobotMain::SetAutosave(bool enable)
 
     m_autosave = enable;
     m_autosaveLast = m_gameTimeAbsolute;
-    AutosaveRotate(false);
+    AutosaveRotate();
 }
 
 bool CRobotMain::GetAutosave()
@@ -5482,7 +5483,7 @@ void CRobotMain::SetAutosaveSlots(int slots)
     if (m_autosaveSlots == slots) return;
 
     m_autosaveSlots = slots;
-    AutosaveRotate(false);
+    AutosaveRotate();
 }
 
 int CRobotMain::GetAutosaveSlots()
@@ -5490,85 +5491,39 @@ int CRobotMain::GetAutosaveSlots()
     return m_autosaveSlots;
 }
 
-int CRobotMain::AutosaveRotate(bool freeOne)
+// Remove oldest saves with autosave prefix
+void CRobotMain::AutosaveRotate()
 {
     if (m_playerProfile == nullptr)
-        return 0;
+        return;
 
     GetLogger()->Debug("Rotate autosaves...\n");
-    // Find autosave dirs
     auto saveDirs = CResourceManager::ListDirectories(m_playerProfile->GetSaveDir());
-    std::map<int, std::string> autosaveDirs;
-    for (auto& dir : saveDirs)
-    {
-        try
-        {
-            const std::string autosavePrefix = "autosave";
-            if (dir.substr(0, autosavePrefix.length()) == autosavePrefix)
-            {
-                int id = boost::lexical_cast<int>(dir.substr(autosavePrefix.length()));
-                autosaveDirs[id] = m_playerProfile->GetSaveFile(dir);
-            }
-        }
-        catch (...)
-        {
-            GetLogger()->Info("Bad autosave found: %s\n", dir.c_str());
-            // skip
-        }
-    }
-    if (autosaveDirs.size() == 0) return 1;
+    const std::string autosavePrefix = "autosave";
+    std::vector<std::string> autosaves;
+    std::copy_if(saveDirs.begin(), saveDirs.end(), std::back_inserter(autosaves), [&](const std::string &save) {
+        return save.substr(0, autosavePrefix.length()) == autosavePrefix;
+    });
 
-    // Remove all but last m_autosaveSlots
-    std::map<int, std::string> autosavesToKeep;
-    int last_id = autosaveDirs.rbegin()->first;
-    int count = 0;
-    int to_keep = m_autosaveSlots-(freeOne ? 1 : 0);
-    int new_last_id = Math::Min(autosaveDirs.size(), to_keep);
-    bool rotate = false;
-    for (int i = last_id; i > 0; i--)
+    std::sort(autosaves.begin(), autosaves.end(), std::less<std::string>());
+    for (int i = 0; i < static_cast<int>(autosaves.size()) - m_autosaveSlots + 1; i++)
     {
-        if (autosaveDirs.count(i) > 0)
-        {
-            count++;
-            if (count > m_autosaveSlots-(freeOne ? 1 : 0) || !m_autosave)
-            {
-                GetLogger()->Trace("Remove %s\n", autosaveDirs[i].c_str());
-                CResourceManager::RemoveDirectory(autosaveDirs[i]);
-                rotate = true;
-            }
-            else
-            {
-                GetLogger()->Trace("Keep %s\n", autosaveDirs[i].c_str());
-                autosavesToKeep[new_last_id-count+1] = autosaveDirs[i];
-            }
-        }
+        CResourceManager::RemoveDirectory(m_playerProfile->GetSaveDir() + "/" + autosaves[i]);
     }
-
-    // Rename autosaves that we kept
-    if (rotate)
-    {
-        for (auto& save : autosavesToKeep)
-        {
-            std::string newDir = m_playerProfile->GetSaveFile("autosave" + boost::lexical_cast<std::string>(save.first));
-            GetLogger()->Trace("Rename %s -> %s\n", save.second.c_str(), newDir.c_str());
-            CResourceManager::Move(save.second, newDir);
-        }
-    }
-
-    return rotate ? count : count+1;
 }
 
 void CRobotMain::Autosave()
 {
-    int id = AutosaveRotate(true);
+    AutosaveRotate();
     GetLogger()->Info("Autosave!\n");
 
-    std::string dir = m_playerProfile->GetSaveFile("autosave" + boost::lexical_cast<std::string>(id));
-
     char timestr[100];
+    char infostr[100];
     time_t now = time(nullptr);
-    strftime(timestr, 99, "%x %X", localtime(&now));
-    std::string info = std::string("[AUTOSAVE] ")+timestr;
+    strftime(timestr, 99, "%y%m%d%H%M%S", localtime(&now));
+    strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
+    std::string info = std::string("[AUTOSAVE] ") + infostr;
+    std::string dir = m_playerProfile->GetSaveFile(std::string("autosave") + timestr);
 
     m_playerProfile->SaveScene(dir, info);
 }

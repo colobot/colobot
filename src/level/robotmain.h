@@ -402,7 +402,7 @@ protected:
     void        ExecuteCmd(const std::string& cmd);
     void        UpdateSpeedLabel();
 
-    int         AutosaveRotate(bool freeOne);
+    void        AutosaveRotate();
     void        Autosave();
     bool        DestroySelectedObject();
     void        PushToSelectionHistory(CObject* obj);

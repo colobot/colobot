@@ -31,10 +31,7 @@
 
 #include <physfs.h>
 
-#include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
-
-namespace fs = boost::filesystem;
 
 
 CResourceManager::CResourceManager(const char *argv0)
@@ -229,32 +226,6 @@ long long CResourceManager::GetLastModificationTime(const std::string& filename)
         return PHYSFS_getLastModTime(CleanPath(filename).c_str());
     }
     return -1;
-}
-
-//TODO: Don't use boost::filesystem. Why doesn't PHYSFS have this?
-bool CResourceManager::Move(const std::string& from, const std::string& to)
-{
-    if (PHYSFS_isInit())
-    {
-        bool success = true;
-        std::string writeDir = PHYSFS_getWriteDir();
-        try
-        {
-            std::string path_from = writeDir + "/" + CleanPath(from);
-            std::string path_to = writeDir + "/" + CleanPath(to);
-            #if PLATFORM_WINDOWS
-            fs::rename(CSystemUtilsWindows::UTF8_Decode(path_from), CSystemUtilsWindows::UTF8_Decode(path_to));
-            #else
-            fs::rename(path_from, path_to);
-            #endif
-        }
-        catch (std::exception&)
-        {
-            success = false;
-        }
-        return success;
-    }
-    return false;
 }
 
 bool CResourceManager::Remove(const std::string& filename)
