@@ -362,7 +362,7 @@ void CEngine::ResetAfterVideoConfigChanged()
     m_mouseSize = Math::Point(0.04f, 0.04f * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
 
     // Update the camera projection matrix for new aspect ratio
-    SetFocus(m_focus);
+    ApplyChange();
 
     // This needs to be recreated on resolution change
     m_device->DeleteFramebuffer("multisample");
@@ -3081,7 +3081,10 @@ void CEngine::ApplyChange()
 
     // recapture 3D scene
     if (m_worldCaptured)
+    {
         m_captureWorld = true;
+        m_worldCaptured = false;
+    }
 }
 
 void CEngine::ClearDisplayCrashSpheres()
