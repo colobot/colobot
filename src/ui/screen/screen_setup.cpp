@@ -153,7 +153,6 @@ bool CScreenSetup::EventProcess(const Event &event)
                 (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
         {
             m_settings->SaveSettings();
-            m_engine->ApplyChange();
             m_main->ChangePhase(PHASE_MAIN_MENU);
             return false;
         }
@@ -194,7 +193,6 @@ bool CScreenSetup::EventProcess(const Event &event)
                 (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
         {
             m_settings->SaveSettings();
-            m_engine->ApplyChange();
             m_interface->DeleteControl(EVENT_WINDOW5);
             m_main->ChangePhase(PHASE_SIMUL);
             m_main->StopSuspend();

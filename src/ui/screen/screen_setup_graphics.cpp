@@ -248,8 +248,12 @@ bool CScreenSetupGraphics::EventProcess(const Event &event)
     switch( event.type )
     {
         case EVENT_INTERFACE_PARTI:
+            ChangeSetupButtons();
+            break;
+
         case EVENT_INTERFACE_CLIP:
             ChangeSetupButtons();
+            m_engine->ApplyChange();
             break;
 
         case EVENT_INTERFACE_DIRTY:
