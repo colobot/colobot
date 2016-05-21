@@ -1601,6 +1601,8 @@ void CRobotMain::StartSuspend()
 
     m_suspendInitCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
+
+    m_engine->EnablePauseBlur();
 }
 
 //! End of dialogue during the game
@@ -1619,6 +1621,8 @@ void CRobotMain::StopSuspend()
     m_displayText->HideText(false);
 
     m_camera->SetType(m_suspendInitCamera);
+
+    m_engine->DisablePauseBlur();
 }
 
 

@@ -112,6 +112,7 @@ void CSettings::SaveSettings()
 
     // Experimental settings
     GetConfigFile().SetBoolProperty("Experimental", "TerrainShadows", engine->GetTerrainShadows());
+    GetConfigFile().SetBoolProperty("Experimental", "PauseBlur", engine->GetPauseBlur());
 
     CInput::GetInstancePointer()->SaveKeyBindings();
 
@@ -269,6 +270,9 @@ void CSettings::LoadSettings()
 
     if (GetConfigFile().GetBoolProperty("Experimental", "TerrainShadows", bValue))
         engine->SetTerrainShadows(bValue);
+
+    if (GetConfigFile().GetBoolProperty("Experimental", "PauseBlur", bValue))
+        engine->SetPauseBlur(bValue);
 
     CInput::GetInstancePointer()->LoadKeyBindings();
 

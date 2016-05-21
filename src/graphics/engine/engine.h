@@ -1162,6 +1162,12 @@ public:
     EngineMouseType GetMouseType();
     //@}
 
+    //@{
+    //! Management of pause blur
+    void            SetPauseBlur(bool enable);
+    bool            GetPauseBlur();
+    //@}
+
     //! Returns the view matrix
     const Math::Matrix& GetMatView();
     //! Returns the camera center point
@@ -1198,6 +1204,9 @@ public:
 
     void            SetWindowCoordinates();
     void            SetInterfaceCoordinates();
+
+    void            EnablePauseBlur();
+    void            DisablePauseBlur();
 
 protected:
     //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
@@ -1408,6 +1417,7 @@ protected:
     float           m_terrainVision;
     bool            m_backForce;
     float           m_tracePrecision;
+    bool            m_pauseBlur;
 
     bool            m_dirty;
     bool            m_fog;
@@ -1502,6 +1512,13 @@ protected:
 
     //! Pause the animation updates
     bool            m_pause = false;
+
+    //! true means that current 3D scene was captured and is not to be rendered again
+    bool            m_worldCaptured = false;
+    //! true means that currently rendered world is to be captured
+    bool            m_captureWorld = false;
+    //! Texture with captured 3D world
+    Texture         m_capturedWorldTexture;
 };
 
 
