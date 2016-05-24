@@ -805,6 +805,8 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 
         CBotToken token(name, std::string());
 
+        bool isClass = false;
+
         switch (w)
         {
         case CBotTypInt:
@@ -826,6 +828,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 
         // returns an intrinsic object or element of an array
         case CBotTypIntrinsic:
+            isClass = true;
         case CBotTypArrayBody:
             {
                 CBotTypResult    r;
@@ -842,6 +845,17 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
                                                                     // attention cptuse = 0
                     if ( !RestoreState(pf, (static_cast<CBotVarClass*>(pNew))->m_pVar)) return false;
                     pNew->SetIdent(id);
+
+                    if (isClass && p == nullptr) // set id for each item in this instance
+                    {
+                        CBotVar* pVars = pNew->GetItemList();
+                        long itemId = 1;
+                        while (pVars != nullptr)
+                        {
+                            pVars->m_ident = itemId++;
+                            pVars = pVars->GetNext();
+                        }
+                    }
 
                     if ( p != nullptr )
                     {
