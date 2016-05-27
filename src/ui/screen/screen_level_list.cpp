@@ -47,7 +47,6 @@ namespace Ui
 CScreenLevelList::CScreenLevelList(CMainDialog* mainDialog)
     : m_dialog(mainDialog),
       m_category{},
-      m_listCategory{},
       m_sceneSoluce{false},
       m_maxList{0},
       m_accessChap{0}
@@ -57,15 +56,6 @@ CScreenLevelList::CScreenLevelList(CMainDialog* mainDialog)
 void CScreenLevelList::SetLevelCategory(LevelCategory category)
 {
     m_category = category;
-
-    if ( static_cast<int>(m_category) >= static_cast<int>(LevelCategory::Max) )
-    {
-        m_category = m_listCategory;
-    }
-    else
-    {
-        m_listCategory = m_category;
-    }
 }
 
 void CScreenLevelList::CreateInterface()

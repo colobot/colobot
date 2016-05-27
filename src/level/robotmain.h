@@ -458,6 +458,8 @@ protected:
     LevelCategory   m_levelCategory;
     int             m_levelChap = 0;
     int             m_levelRank = 0;
+    //! if set, loads this file instead of building from category/chap/rank
+    std::string     m_levelFile = "";
     std::string     m_sceneReadPath;
 
     float           m_winDelay = 0.0f;
@@ -517,8 +519,8 @@ protected:
 
     std::string     m_scriptName = "";
     std::string     m_scriptFile = "";
-    int             m_endingWinRank = 0;
-    int             m_endingLostRank = 0;
+    std::string     m_endingWin = "";
+    std::string     m_endingLost = "";
     bool            m_winTerminate = false;
 
     float           m_globalMagnifyDamage = 0.0f;

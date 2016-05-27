@@ -228,8 +228,6 @@ CRobotMain::CRobotMain()
     m_tooltipName.clear();
     m_tooltipTime = 0.0f;
 
-    m_endingWinRank   = 0;
-    m_endingLostRank  = 0;
     m_winTerminate   = false;
 
     m_globalMagnifyDamage = 1.0f;
@@ -570,14 +568,14 @@ void CRobotMain::ChangePhase(Phase phase)
     if (m_phase == PHASE_WIN)
     {
         m_sound->StopAll();
-        if (m_endingWinRank == -1)
+        if (m_endingWin.empty())
         {
             ChangePhase(PHASE_LEVEL_LIST);
         }
         else
         {
-            m_winTerminate = (m_endingWinRank == 904);
-            SetLevel(LevelCategory::Win, 0, m_endingWinRank);
+            m_winTerminate = (m_endingWin.substr(m_endingWin.find_last_of("/")+1) == "win904.txt");
+            m_levelFile = m_endingWin;
             try
             {
                 CreateScene(false, true, false);  // sets scene
@@ -614,14 +612,14 @@ void CRobotMain::ChangePhase(Phase phase)
     if (m_phase == PHASE_LOST)
     {
         m_sound->StopAll();
-        if (m_endingLostRank == -1)
+        if (m_endingLost.empty())
         {
             ChangePhase(PHASE_LEVEL_LIST);
         }
         else
         {
             m_winTerminate = false;
-            SetLevel(LevelCategory::Lost, 0, m_endingLostRank);
+            m_levelFile = m_endingLost;
             try
             {
                 CreateScene(false, true, false);  // sets scene
@@ -2793,7 +2791,7 @@ void CRobotMain::ScenePerso()
     m_lightMan->FlushLights();
     m_particle->FlushParticle();
 
-    SetLevel(LevelCategory::Perso, 0, 0);
+    m_levelFile = "levels/other/perso000.txt";
     try
     {
         CreateScene(false, true, false);  // sets scene
@@ -2844,8 +2842,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_displayText->SetEnable(true);
         m_immediatSatCom = false;
         m_lockedSatCom = false;
-        m_endingWinRank   = 0;
-        m_endingLostRank  = 0;
+        m_endingWin = "";
+        m_endingLost = "";
         m_audioChange.clear();
         m_endTake.clear();
         m_endTakeImmediat = false;
@@ -2890,7 +2888,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_missionResultFromScript = false;
     }
 
-    //NOTE: Reset timer always, even when only resetting object positions
+    // NOTE: Reset timer always, even when only resetting object positions
     m_missionTimerEnabled = false;
     m_missionTimerStarted = false;
     m_missionTimer = 0.0f;
@@ -2905,18 +2903,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     try
     {
         m_ui->GetLoadingScreen()->SetProgress(0.05f, RT_LOADING_PROCESSING);
-        CLevelParser levelParser(m_levelCategory, m_levelChap, m_levelRank);
+        GetLogger()->Info("Loading level: %s\n", m_levelFile.c_str());
+        CLevelParser levelParser(m_levelFile);
+        levelParser.SetLevelPaths(m_levelCategory, m_levelChap, m_levelRank);
         levelParser.Load();
         int numObjects = levelParser.CountLines("CreateObject");
         m_ui->GetLoadingScreen()->SetProgress(0.1f, RT_LOADING_LEVEL_SETTINGS);
 
         int rankObj = 0;
         CObject* sel = nullptr;
-
-        /*
-        * NOTE: Moving frequently used lines to the top
-        *       may speed up loading
-        */
 
         for (auto& line : levelParser.GetLines())
         {
@@ -2979,9 +2974,36 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "EndingFile" && !resetObject)
             {
-                // NOTE: The old default was 0, but I think -1 is more correct - 0 means "ending file 000", while -1 means "no ending file"
-                m_endingWinRank  = line->GetParam("win")->AsInt(-1);
-                m_endingLostRank = line->GetParam("lost")->AsInt(-1);
+                auto Process = [&](const std::string& type) -> std::string
+                {
+                    if (line->GetParam(type)->IsDefined())
+                    {
+                        try
+                        {
+                            int rank = boost::lexical_cast<int>(line->GetParam(type)->GetValue());
+                            if (rank >= 0)
+                            {
+                                GetLogger()->Warn("This level is using deprecated way of defining %1$s scene. Please change the %1$s= parameter in EndingFile from %2$d to \"levels/other/%1$s%2$03d.txt\".\n", type.c_str(), rank);
+                                std::stringstream ss;
+                                ss << "levels/other/" << type << std::setfill('0') << std::setw(3) << rank << ".txt";
+                                return ss.str();
+                            }
+                            else
+                            {
+                                GetLogger()->Warn("This level is using deprecated way of defining %1$s scene. Please remove the %1$s= parameter in EndingFile.\n", type.c_str());
+                                return "";
+                            }
+
+                        }
+                        catch (boost::bad_lexical_cast &e)
+                        {
+                            return line->GetParam(type)->AsPath("levels");
+                        }
+                    }
+                    return "";
+                };
+                m_endingWin = Process("win");
+                m_endingLost = Process("lost");
                 continue;
             }
 
@@ -5288,9 +5310,11 @@ float CRobotMain::GetPersoAngle()
 
 void CRobotMain::SetLevel(LevelCategory cat, int chap, int rank)
 {
+    GetLogger()->Debug("Change level to %s %d %d\n", GetLevelCategoryDir(cat).c_str(), chap, rank);
     m_levelCategory = cat;
     m_levelChap = chap;
     m_levelRank = rank;
+    m_levelFile = CLevelParser::BuildScenePath(m_levelCategory, m_levelChap, m_levelRank);
 }
 
 LevelCategory CRobotMain::GetLevelCategory()
