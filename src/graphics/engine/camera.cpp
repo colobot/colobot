@@ -1406,7 +1406,6 @@ bool CCamera::EventFrameFix(const Event &event)
     m_fixDist += cameraMove.z;
 
     m_fixDirectionH = Math::NormAngle(m_fixDirectionH);
-    m_fixDirectionV = Math::NormAngle(m_fixDirectionV);
 
     m_fixDirectionV = Math::Clamp(m_fixDirectionV, -0.5f*Math::PI, 0.25f*Math::PI);
     m_fixDist = Math::Clamp(m_fixDist, 10.0f, 200.0f);
