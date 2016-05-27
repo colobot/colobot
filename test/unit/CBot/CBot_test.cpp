@@ -909,8 +909,7 @@ TEST_F(CBotUT, DISABLED_PublicClasses)
     );
 }
 
-// TODO: This needs to be fixed
-TEST_F(CBotUT, DISABLED_WeirdThisEarlyContextSwitch_Issue436)
+TEST_F(CBotUT, ThisEarlyContextSwitch_Issue436)
 {
     ExecuteTest(
         "public class Something {\n"
@@ -1088,6 +1087,31 @@ TEST_F(CBotUT, TestArrayFunctionReturn)
         "    ASSERT(b[0] == 1);\n"
         "    ASSERT(b[1] == 2);\n"
         "    ASSERT(b[2] == 3);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, AccessMembersInParameters_Issue256)
+{
+    ExecuteTest(
+        "public class Test1 {\n"
+        "    int x = 1337;\n"
+        "}\n"
+        "public class Test2 {\n"
+        "    public bool test(int a) {\n"
+        "        return a == 1337;\n"
+        "    }\n"
+        "}\n"
+        "public class Test3 {\n"
+        "    public Test1 test1 = new Test1();\n"
+        "    public Test2 test2 = new Test2();\n"
+        "    public void test() {\n"
+        "        ASSERT(test2.test(test1.x));\n"
+        "    }\n"
+        "}\n"
+        "extern void AccessMembersInParameters() {\n"
+        "    Test3 t();\n"
+        "    t.test();\n"
         "}\n"
     );
 }
