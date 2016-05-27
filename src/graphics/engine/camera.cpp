@@ -102,7 +102,7 @@ CCamera::CCamera()
     m_eyePt        = Math::Vector(0.0f, 0.0f, 0.0f);
     m_directionH   =  0.0f;
     m_directionV   =  0.0f;
-    m_heightEye    = 20.0f;
+    m_heightEye    = 40.0f;
     m_heightLookat =  0.0f;
     m_speed        =  2.0f;
 
@@ -121,8 +121,6 @@ CCamera::CCamera()
     m_visitTime       = 0.0f;
     m_visitType       = CAM_TYPE_NULL;
     m_visitDirectionV = 0.0f;
-
-    m_editHeight = 40.0f;
 
     m_remotePan  = 0.0f;
 
@@ -1145,34 +1143,7 @@ bool CCamera::EventMouseMove(const Event &event)
 void CCamera::EventMouseWheel(const Event &event)
 {
     auto dir = event.GetData<MouseWheelEventData>()->y;
-
-    if (m_type == CAM_TYPE_BACK)
-    {
-        m_backDist -= 8.0f*dir;
-        if (m_backDist < m_backMin)
-            m_backDist = m_backMin;
-        if (m_backDist > 200.0f)
-            m_backDist = 200.0f;
-    }
-
-    if ( m_type == CAM_TYPE_FIX   ||
-         m_type == CAM_TYPE_PLANE )
-    {
-        m_fixDist -= 8.0f*dir;
-        if (m_fixDist < 10.0f)
-            m_fixDist = 10.0f;
-        if (m_fixDist > 200.0f)
-            m_fixDist = 200.0f;
-    }
-
-    if ( m_type == CAM_TYPE_VISIT )
-    {
-        m_visitDist -= 8.0f*dir;
-        if (m_visitDist < 20.0f)
-            m_visitDist = 20.0f;
-        if (m_visitDist > 200.0f)
-            m_visitDist = 200.0f;
-    }
+    m_mouseWheelDelta -= dir;
 }
 
 void CCamera::EventMouseButton(const Event &event)
@@ -1202,11 +1173,9 @@ bool CCamera::EventFrame(const Event &event)
     EffectFrame(event);
     OverFrame(event);
 
-    if (m_type == CAM_TYPE_FREE)
-        return EventFrameFree(event);
-
-    if (m_type == CAM_TYPE_EDIT)
-        return EventFrameEdit(event);
+    if (m_type == CAM_TYPE_FREE ||
+        m_type == CAM_TYPE_EDIT)
+        return EventFrameFree(event, m_type != CAM_TYPE_EDIT);
 
     if (m_type == CAM_TYPE_DIALOG)
         return EventFrameDialog(event);
@@ -1236,57 +1205,36 @@ bool CCamera::EventFrame(const Event &event)
     return true;
 }
 
-bool CCamera::EventFrameFree(const Event &event)
+bool CCamera::EventFrameFree(const Event &event, bool keysAllowed)
 {
-    Math::Vector cameraInput = event.cameraInput;
-    if (m_cameraObj == nullptr)
-    {
-        cameraInput = Math::Clamp(cameraInput + event.motionInput, Math::Vector(-1.0f, -1.0f, -1.0f), Math::Vector(1.0f, 1.0f, 1.0f));
-    }
+    Math::Vector cameraMove = CalculateCameraMovement(event, keysAllowed);
 
     float factor = m_heightEye * 0.5f + 30.0f;
+    bool secondary = event.kmodState & KEY_MOD(CTRL) || event.mouseButtonsState & MOUSE_BUTTON_MIDDLE;
 
-    m_directionH -= m_mouseDelta.x * 2*Math::PI;
-    m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, m_mouseDelta.y * factor * m_speed);
-    m_mouseDelta.LoadZero();
+    // Forward/Backward
+    m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, -cameraMove.y * factor * 2);
 
-    // Up/Down
-    m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, cameraInput.y * event.rTime * factor * m_speed);
-
-    // Left/Right
-    if ( event.kmodState & KEY_MOD(CTRL) )
+    // Left/Right (pan or rotate)
+    if (secondary)
     {
-        if ( cameraInput.x < 0.0f )
-            m_eyePt = Math::LookatPoint(m_eyePt, m_directionH + Math::PI / 2.0f, m_directionV, -cameraInput.x * event.rTime * factor * m_speed);
-        if ( cameraInput.x > 0.0f )
-            m_eyePt = Math::LookatPoint(m_eyePt, m_directionH - Math::PI / 2.0f, m_directionV,  cameraInput.x * event.rTime * factor * m_speed);
+        if (cameraMove.x < 0.0f)
+            m_eyePt = Math::LookatPoint(m_eyePt, m_directionH + Math::PI / 2.0f, m_directionV, -cameraMove.x * factor);
+        if (cameraMove.x > 0.0f)
+            m_eyePt = Math::LookatPoint(m_eyePt, m_directionH - Math::PI / 2.0f, m_directionV,  cameraMove.x * factor);
     }
     else
     {
-        m_directionH -= cameraInput.x * event.rTime * 0.7f * m_speed;
+        m_directionH -= cameraMove.x;
     }
 
-    // PageUp/PageDown
-    if ( m_input->GetKeyState(INPUT_SLOT_AWAY) )
-    {
-        if (m_heightEye < 500.0f)
-            m_heightEye += event.rTime * factor * m_speed;
-    }
-    if ( m_input->GetKeyState(INPUT_SLOT_NEAR) )
-    {
-        if (m_heightEye > -2.0f)
-            m_heightEye -= event.rTime * factor * m_speed;
-    }
+    // Up/Down (eye or lookat point)
+    if (secondary)
+        m_heightLookat -= cameraMove.z;
+    else
+        m_heightEye -= cameraMove.z;
 
-
-    if ( m_input->GetKeyState(INPUT_SLOT_CAMERA_UP) )
-    {
-        m_heightLookat += event.rTime * factor * m_speed;
-    }
-    if ( m_input->GetKeyState(INPUT_SLOT_CAMERA_DOWN) )
-    {
-        m_heightLookat -= event.rTime * factor * m_speed;
-    }
+    m_heightEye = Math::Clamp(m_heightEye, -2.0f, 500.0f);
 
     m_terrain->AdjustToBounds(m_eyePt, 10.0f);
 
@@ -1314,44 +1262,6 @@ bool CCamera::EventFrameFree(const Event &event)
     return true;
 }
 
-bool CCamera::EventFrameEdit(const Event &event)
-{
-    float factor = m_editHeight * 0.5f + 30.0f;
-
-    m_directionH -= m_mouseDelta.x * 0.7f * 2*Math::PI;
-    m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, m_mouseDelta.y * factor * m_speed);
-
-    m_fixDirectionH += m_mouseDelta.x * 2*Math::PI;
-    m_fixDirectionH = Math::NormAngle(m_fixDirectionH);
-
-    m_mouseDelta.LoadZero();
-
-    m_terrain->AdjustToBounds(m_eyePt, 10.0f);
-
-    if (m_terrain->AdjustToFloor(m_eyePt, false))
-    {
-        m_eyePt.y += m_editHeight;
-
-        Math::Vector pos = m_eyePt;
-        if (m_terrain->AdjustToFloor(pos, false))
-        {
-            pos.y += 2.0f;
-            if (m_eyePt.y < pos.y)
-                m_eyePt.y = pos.y;
-        }
-
-    }
-
-    Math::Vector lookatPt = Math::LookatPoint( m_eyePt, m_directionH, m_directionV, 50.0f );
-
-    if ( m_terrain->AdjustToFloor(lookatPt, true))
-        lookatPt.y += m_heightLookat;
-
-    SetViewTime(m_eyePt, lookatPt, event.rTime);
-
-    return true;
-}
-
 bool CCamera::EventFrameDialog(const Event &event)
 {
     return true;
@@ -1359,29 +1269,15 @@ bool CCamera::EventFrameDialog(const Event &event)
 
 bool CCamera::EventFrameBack(const Event &event)
 {
-    ObjectType type;
-    if (m_cameraObj == nullptr)
-        type = OBJECT_NULL;
-    else
-        type = m_cameraObj->GetType();
+    Math::Vector cameraMove = CalculateCameraMovement(event);
+    m_addDirectionH += cameraMove.x;
+    m_addDirectionV += cameraMove.y;
+    m_backDist += cameraMove.z;
 
-    // +/-.
-    if (m_input->GetKeyState(INPUT_SLOT_NEAR))
-    {
-        m_backDist -= event.rTime * 30.0f * m_speed;
-        if (m_backDist < m_backMin) m_backDist = m_backMin;
-    }
-    if (m_input->GetKeyState(INPUT_SLOT_AWAY))
-    {
-        m_backDist += event.rTime * 30.0f * m_speed;
-        if (m_backDist > 200.0f) m_backDist = 200.0f;
-    }
-
-    m_addDirectionH -= m_mouseDelta.x * 2*Math::PI;
     m_addDirectionH = Math::NormAngle(m_addDirectionH);
-    if (m_mouseDelta.Length() > 0)
-        AbortCentering();  // special stops framing
-    m_mouseDelta.LoadZero();
+    m_addDirectionV = Math::NormAngle(m_addDirectionV);
+
+    m_backDist = Math::Clamp(m_backDist, m_backMin, 200.0f);
 
     // Increase the special framework
     float centeringH = 0.0f;
@@ -1423,6 +1319,8 @@ bool CCamera::EventFrameBack(const Event &event)
 
     if (m_cameraObj != nullptr)
     {
+        ObjectType type = m_cameraObj->GetType();
+
         Math::Vector lookatPt = m_cameraObj->GetPosition();
              if (type == OBJECT_BASE ) lookatPt.y += 40.0f;
         else if (type == OBJECT_HUMAN) lookatPt.y +=  1.0f;
@@ -1502,30 +1400,16 @@ bool CCamera::EventFrameBack(const Event &event)
 
 bool CCamera::EventFrameFix(const Event &event)
 {
-    // +/-.
-    if (m_input->GetKeyState(INPUT_SLOT_NEAR))
-    {
-        m_fixDist -= event.rTime * 30.0f * m_speed;
-        if (m_fixDist < 10.0f) m_fixDist = 10.0f;
-    }
-    if (m_input->GetKeyState(INPUT_SLOT_AWAY))
-    {
-        m_fixDist += event.rTime * 30.0f * m_speed;
-        if (m_fixDist > 200.0f) m_fixDist = 200.0f;
-    }
+    Math::Vector cameraMove = CalculateCameraMovement(event);
+    m_fixDirectionH += cameraMove.x;
+    m_fixDirectionV += cameraMove.y;
+    m_fixDist += cameraMove.z;
 
-    m_fixDirectionH -= m_mouseDelta.x * 2*Math::PI;
-    if (m_mouseDelta.Length() > 0)
-        AbortCentering();  // special stops framing
-    m_mouseDelta.LoadZero();
-
-    // Left/Right
-    m_fixDirectionH += event.cameraInput.x * event.rTime * 0.7f * m_speed;
     m_fixDirectionH = Math::NormAngle(m_fixDirectionH);
+    m_fixDirectionV = Math::NormAngle(m_fixDirectionV);
 
-    // Up/Down
-    m_fixDirectionV -= event.cameraInput.y * event.rTime * 0.7f * m_speed;
-    m_fixDirectionV = Math::Min(Math::Max(m_fixDirectionV, -0.5*Math::PI), 0.25*Math::PI);
+    m_fixDirectionV = Math::Clamp(m_fixDirectionV, -0.5f*Math::PI, 0.25f*Math::PI);
+    m_fixDist = Math::Clamp(m_fixDist, 10.0f, 200.0f);
 
     if (m_cameraObj != nullptr)
     {
@@ -1551,8 +1435,9 @@ bool CCamera::EventFrameFix(const Event &event)
 
 bool CCamera::EventFrameExplo(const Event &event)
 {
-    m_directionH -= m_mouseDelta.x * 2*Math::PI;
-    m_mouseDelta.LoadZero();
+    Math::Vector cameraMove = CalculateCameraMovement(event);
+    m_directionH += cameraMove.x;
+    m_directionH = Math::NormAngle(m_directionH);
 
     m_terrain->AdjustToBounds(m_eyePt, 10.0f);
 
@@ -1609,34 +1494,15 @@ bool CCamera::EventFrameVisit(const Event &event)
 {
     m_visitTime += event.rTime;
 
-    // +/-.
-    if (m_input->GetKeyState(INPUT_SLOT_NEAR))
-    {
-        m_visitDist -= event.rTime * 50.0f * m_speed;
-        if (m_visitDist < 20.0f) m_visitDist = 20.0f;
-    }
-    if (m_input->GetKeyState(INPUT_SLOT_AWAY))
-    {
-        m_visitDist += event.rTime * 50.0f * m_speed;
-        if (m_visitDist > 200.0f) m_visitDist = 200.0f;
-    }
+    Math::Vector cameraMove = CalculateCameraMovement(event);
 
-    // PageUp/Down.
-    if (m_input->GetKeyState(INPUT_SLOT_CAMERA_UP))
-    {
-        m_visitDirectionV -= event.rTime * 1.0f * m_speed;
-        if (m_visitDirectionV < -Math::PI * 0.40f) m_visitDirectionV = -Math::PI * 0.40f;
-    }
-    if (m_input->GetKeyState(INPUT_SLOT_CAMERA_DOWN))
-    {
-        m_visitDirectionV += event.rTime * 1.0f * m_speed;
-        if (m_visitDirectionV > 0.0f ) m_visitDirectionV = 0.0f;
-    }
+    // ZoomIn/ZoomOut
+    m_visitDist += cameraMove.z;
+    m_visitDist = Math::Clamp(m_visitDist, 20.0f, 200.0f);
 
-    m_visitDist -= m_mouseDelta.y * 100.0f * m_speed;
-    m_mouseDelta.LoadZero();
-    if (m_visitDist <  20.0f)  m_visitDist =  20.0f;
-    if (m_visitDist > 200.0f)  m_visitDist = 200.0f;
+    // Up/Down
+    m_visitDirectionV += cameraMove.y;
+    m_visitDirectionV = Math::Clamp(m_visitDirectionV, -Math::PI * 0.40f, 0.0f);
 
     float angleH = (m_visitTime / 10.0f) * (Math::PI * 2.0f);
     float angleV = m_visitDirectionV;
@@ -1724,6 +1590,40 @@ Math::Vector CCamera::ExcludeObject(Math::Vector eye, Math::Vector lookat,
 void CCamera::SetCameraSpeed(float speed)
 {
     m_speed = speed;
+}
+
+Math::Vector CCamera::CalculateCameraMovement(const Event &event, bool keysAllowed)
+{
+    Math::Vector delta;
+
+    delta.x += m_mouseDelta.x * 2*Math::PI;
+    delta.y -= m_mouseDelta.y * Math::PI;
+    m_mouseDelta.LoadZero();
+
+    delta.z += m_mouseWheelDelta * 8.0f;
+    m_mouseWheelDelta = 0.0f;
+
+    if (keysAllowed)
+    {
+        delta.x += event.cameraInput.x * event.rTime * 0.5f * m_speed;
+        delta.y -= event.cameraInput.y * event.rTime * 0.5f * m_speed;
+
+        if (m_cameraObj == nullptr)
+        {
+            delta.x += event.motionInput.x * event.rTime * 0.5f * m_speed;
+            delta.y -= event.motionInput.y * event.rTime * 0.5f * m_speed;
+        }
+
+        if (m_input->GetKeyState(INPUT_SLOT_NEAR))
+            delta.z -= event.rTime * 20.0f * m_speed;
+        if (m_input->GetKeyState(INPUT_SLOT_AWAY))
+            delta.z += event.rTime * 20.0f * m_speed;
+    }
+
+    if (delta.Length() > 0)
+        AbortCentering();  // special stops framing
+
+    return delta;
 }
 
 }

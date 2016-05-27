@@ -30,6 +30,7 @@
 
 #include <sstream>
 #include <boost/lexical_cast.hpp>
+#include <SDL_system.h>
 
 
 template<> CInput* CSingleton<CInput>::m_instance = nullptr;
@@ -63,13 +64,10 @@ CInput::CInput()
         { INPUT_SLOT_SPEED30,  "speed30" },
         { INPUT_SLOT_SPEED40,  "speed40" },
         { INPUT_SLOT_SPEED60,  "speed60" },
-        { INPUT_SLOT_CAMERA_UP,   "camup"   },
-        { INPUT_SLOT_CAMERA_DOWN, "camdown" },
         { INPUT_SLOT_PAUSE,    "pause" },
         { INPUT_SLOT_CMDLINE,    "cmdline" },
     };
 
-    m_kmodState = 0;
     m_mousePos = Math::Point();
     m_mouseButtonsState = 0;
     std::fill_n(m_keyPresses, static_cast<std::size_t>(INPUT_SLOT_MAX), false);
@@ -80,13 +78,6 @@ CInput::CInput()
 
 void CInput::EventProcess(Event& event)
 {
-    if (event.type == EVENT_KEY_DOWN ||
-        event.type == EVENT_KEY_UP)
-    {
-        // Use the occasion to update kmods
-        m_kmodState = event.kmodState;
-    }
-
     // Use the occasion to update mouse button state
     if (event.type == EVENT_MOUSE_BUTTON_DOWN)
     {
@@ -107,7 +98,7 @@ void CInput::EventProcess(Event& event)
         data->slot = FindBinding(data->key);
     }
 
-    event.kmodState = m_kmodState;
+    event.kmodState = SDL_GetModState();
     event.mousePos = m_mousePos;
     event.mouseButtonsState = m_mouseButtonsState;
 
@@ -134,8 +125,6 @@ void CInput::EventProcess(Event& event)
         if (data->slot == INPUT_SLOT_GUP  ) m_keyMotion.z =  1.0f;
         if (data->slot == INPUT_SLOT_GDOWN) m_keyMotion.z = -1.0f;
 
-        if (data->slot == INPUT_SLOT_CAMERA_UP  ) m_cameraKeyMotion.z =  1.0f;
-        if (data->slot == INPUT_SLOT_CAMERA_DOWN) m_cameraKeyMotion.z = -1.0f;
         if (data->key  == KEY(KP_4)             ) m_cameraKeyMotion.x = -1.0f;
         if (data->key  == KEY(KP_6)             ) m_cameraKeyMotion.x =  1.0f;
         if (data->key  == KEY(KP_8)             ) m_cameraKeyMotion.y =  1.0f;
@@ -152,8 +141,6 @@ void CInput::EventProcess(Event& event)
         if (data->slot == INPUT_SLOT_GUP  ) m_keyMotion.z = 0.0f;
         if (data->slot == INPUT_SLOT_GDOWN) m_keyMotion.z = 0.0f;
 
-        if (data->slot == INPUT_SLOT_CAMERA_UP  ) m_cameraKeyMotion.z = 0.0f;
-        if (data->slot == INPUT_SLOT_CAMERA_DOWN) m_cameraKeyMotion.z = 0.0f;
         if (data->key  == KEY(KP_4)             ) m_cameraKeyMotion.x = 0.0f;
         if (data->key  == KEY(KP_6)             ) m_cameraKeyMotion.x = 0.0f;
         if (data->key  == KEY(KP_8)             ) m_cameraKeyMotion.y = 0.0f;
@@ -194,16 +181,6 @@ void CInput::MouseMove(Math::IntPoint pos)
     m_mousePos = Gfx::CEngine::GetInstancePointer()->WindowToInterfaceCoords(pos);
 }
 
-int CInput::GetKmods() const
-{
-    return m_kmodState;
-}
-
-bool CInput::GetKmodState(int kmod) const
-{
-    return (m_kmodState & kmod) != 0;
-}
-
 bool CInput::GetKeyState(InputSlot key) const
 {
     return m_keyPresses[key];
@@ -217,7 +194,6 @@ bool CInput::GetMouseButtonState(int index) const
 void CInput::ResetKeyStates()
 {
     GetLogger()->Trace("Reset key states\n");
-    m_kmodState = 0;
     m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
     m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
     m_cameraKeyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -272,8 +248,6 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_SPEED30].primary   = KEY(F7);
     m_inputBindings[INPUT_SLOT_SPEED40].primary   = KEY(F8);
     m_inputBindings[INPUT_SLOT_SPEED60].primary   = KEY(F9);
-    m_inputBindings[INPUT_SLOT_CAMERA_UP].primary   = KEY(PAGEUP);
-    m_inputBindings[INPUT_SLOT_CAMERA_DOWN].primary = KEY(PAGEDOWN);
     m_inputBindings[INPUT_SLOT_PAUSE].primary       = KEY(PAUSE);
     m_inputBindings[INPUT_SLOT_PAUSE].secondary     = KEY(p);
     m_inputBindings[INPUT_SLOT_CMDLINE].primary     = KEY(BACKQUOTE);

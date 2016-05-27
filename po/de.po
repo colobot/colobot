@@ -330,9 +330,6 @@ msgstr "Kameradrehung mit der Maus\\Die Kamera dreht wenn die Maus den Rand erre
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera näher\\Bewegung der Kamera vorwärts"
 
-msgid "Camera down\\Decrease camera angle while visiting message origin"
-msgstr ""
-
 msgid "Camera nearest"
 msgstr "Kamera näher"
 
@@ -341,9 +338,6 @@ msgstr "Kamera links"
 
 msgid "Camera to right"
 msgstr "Kamera rechts"
-
-msgid "Camera up\\Increase camera angle while visiting message origin"
-msgstr ""
 
 msgid "Can not produce not researched object"
 msgstr "Das erforschte Objekt kann nicht produziert werden"

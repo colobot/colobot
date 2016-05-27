@@ -235,8 +235,6 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED30]     = TR("Speed 3.0x\\Triple speed");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED40]     = TR("Speed 4.0x\\Quadruple speed");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED60]     = TR("Speed 6.0x\\Sextuple speed");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAMERA_UP]   = TR("Camera up\\Increase camera angle while visiting message origin");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAMERA_DOWN] = TR("Camera down\\Decrease camera angle while visiting message origin");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_PAUSE]       = TR("Pause\\Pause the game without opening menu");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CMDLINE]     = TR("Cheat console\\Show cheat console");
 

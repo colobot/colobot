@@ -324,9 +324,6 @@ msgstr "Przewijanie kamery przy krawędzi\\Ekran jest przewijany gdy mysz dotkni
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera bliżej\\Przybliża kamerę"
 
-msgid "Camera down\\Decrease camera angle while visiting message origin"
-msgstr "Kamera w dół\\Opuść kamerę podczas sprawdzania źródła wiadomości"
-
 msgid "Camera nearest"
 msgstr "Camera nearest"
 
@@ -335,9 +332,6 @@ msgstr "Camera to left"
 
 msgid "Camera to right"
 msgstr "Camera to right"
-
-msgid "Camera up\\Increase camera angle while visiting message origin"
-msgstr "Kamera w górę\\Podnieś kamerę podczas sprawdzania źródła wiadomości"
 
 msgid "Can not produce not researched object"
 msgstr "Nie można wyprodukować nie wynalezionego obiektu"
@@ -1810,6 +1804,12 @@ msgstr ""
 
 #~ msgid "Building too close"
 #~ msgstr "Budynek za blisko"
+
+#~ msgid "Camera down\\Decrease camera angle while visiting message origin"
+#~ msgstr "Kamera w dół\\Opuść kamerę podczas sprawdzania źródła wiadomości"
+
+#~ msgid "Camera up\\Increase camera angle while visiting message origin"
+#~ msgstr "Kamera w górę\\Podnieś kamerę podczas sprawdzania źródła wiadomości"
 
 #~ msgid "Can not create this; there are too many objects"
 #~ msgstr "Nie można tego utworzyć, za dużo obiektów"

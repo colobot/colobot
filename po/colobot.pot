@@ -506,12 +506,6 @@ msgstr ""
 msgid "Speed 6.0x\\Sextuple speed"
 msgstr ""
 
-msgid "Camera up\\Increase camera angle while visiting message origin"
-msgstr ""
-
-msgid "Camera down\\Decrease camera angle while visiting message origin"
-msgstr ""
-
 msgid "Pause\\Pause the game without opening menu"
 msgstr ""
 

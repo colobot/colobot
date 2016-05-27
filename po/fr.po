@@ -321,9 +321,6 @@ msgstr "Défilement dans les bords\\Défilement lorsque la souris touche les bor
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Caméra plus proche\\Avance la caméra"
 
-msgid "Camera down\\Decrease camera angle while visiting message origin"
-msgstr "Caméra plus basse\\Réduit l'angle de caméra lors de la vue de l'origine des messages"
-
 msgid "Camera nearest"
 msgstr "Caméra plus proche"
 
@@ -332,9 +329,6 @@ msgstr "Caméra à gauche"
 
 msgid "Camera to right"
 msgstr "Caméra à droite"
-
-msgid "Camera up\\Increase camera angle while visiting message origin"
-msgstr "Caméra plus haute\\Augmente l'angle de caméra lors de la vue de l'origine des messages"
 
 msgid "Can not produce not researched object"
 msgstr "Impossible de créer un objet n'ayant pas été recherché"
@@ -1814,6 +1808,12 @@ msgstr ""
 
 #~ msgid "COLOBOT"
 #~ msgstr "COLOBOT"
+
+#~ msgid "Camera down\\Decrease camera angle while visiting message origin"
+#~ msgstr "Caméra plus basse\\Réduit l'angle de caméra lors de la vue de l'origine des messages"
+
+#~ msgid "Camera up\\Increase camera angle while visiting message origin"
+#~ msgstr "Caméra plus haute\\Augmente l'angle de caméra lors de la vue de l'origine des messages"
 
 #~ msgid "Can not create this; there are too many objects"
 #~ msgstr "Création impossible; il y a trop d'objets"

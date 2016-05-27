@@ -328,9 +328,6 @@ msgstr "Прокрутка\\Прокрутка, когда указатель м
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Приблизать камеру\\Перемещение камеры вперед"
 
-msgid "Camera down\\Decrease camera angle while visiting message origin"
-msgstr ""
-
 msgid "Camera nearest"
 msgstr "Приблизить камеру"
 
@@ -339,9 +336,6 @@ msgstr "Камеру влево"
 
 msgid "Camera to right"
 msgstr "Камеру вправо"
-
-msgid "Camera up\\Increase camera angle while visiting message origin"
-msgstr ""
 
 msgid "Can not produce not researched object"
 msgstr ""

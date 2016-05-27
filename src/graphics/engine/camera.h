@@ -144,11 +144,11 @@ public:
     CObject*    GetControllingObject();
 
     //! Change the type of camera
-    void            SetType(CameraType type);
-    CameraType GetType();
+    void        SetType(CameraType type);
+    CameraType  GetType();
 
     //! Management of the smoothing mode
-    void              SetSmooth(CameraSmooth type);
+    void         SetSmooth(CameraSmooth type);
     CameraSmooth GetSmooth();
 
     //! Management of the setback distance
@@ -223,9 +223,7 @@ protected:
     //! Changes the camera according to the time elapsed
     bool        EventFrame(const Event &event);
     //! Moves the point of view
-    bool        EventFrameFree(const Event &event);
-    //! Moves the point of view
-    bool        EventFrameEdit(const Event &event);
+    bool        EventFrameFree(const Event &event, bool keysAllowed);
     //! Moves the point of view
     bool        EventFrameDialog(const Event &event);
     //! Moves the point of view
@@ -263,6 +261,13 @@ protected:
     void        EffectFrame(const Event &event);
     //! Advanced overlay effect in the foreground
     void        OverFrame(const Event &event);
+
+    /**
+     * \brief Calculate camera movement (from user inputs) to apply
+     * \return Math::Vector where x, y represent respectively horizontal and vertical angle change in radians and z represents zoom (distance change)
+     * \remarks Should not be called more often than once every EVENT_FRAME
+     **/
+    Math::Vector CalculateCameraMovement(const Event &event, bool keysAllowed = true);
 
 protected:
     CEngine*     m_engine;
@@ -339,15 +344,13 @@ protected:
     //! CAM_TYPE_VISIT: direction
     float        m_visitDirectionV;
 
-    //! CAM_TYPE_EDIT: height
-    float        m_editHeight;
-
     float        m_remotePan;
 
     //! Last known mouse position, used to calculate change since last frame
     Math::Point  m_mousePos = Math::Point(0.5f, 0.5f);
     Math::Point  m_mouseDelta = Math::Point(0.0f, 0.0f);
     Math::Point  m_mouseDeltaEdge = Math::Point(0.0f, 0.0f);
+    float        m_mouseWheelDelta = 0.0f;
 
     CenteringPhase m_centeringPhase;
     float       m_centeringAngleH;
