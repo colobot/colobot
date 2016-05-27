@@ -177,7 +177,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_mice[ENG_MOUSE_SCROLLU] = EngineMouse(28, 29, 45, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  2.0f));
     m_mice[ENG_MOUSE_SCROLLD] = EngineMouse(30, 31, 46, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f, 17.0f));
 
-    m_mouseSize    = Math::Point(0.04f, 0.04f * (800.0f / 600.0f));
+    m_mouseSize    = Math::Point(48.f/m_size.x, 48.f/m_size.x * (800.f/600.f));
     m_mouseType    = ENG_MOUSE_NORM;
 
     m_fpsCounter = 0;
@@ -280,7 +280,7 @@ void CEngine::SetTerrain(CTerrain* terrain)
 bool CEngine::Create()
 {
     m_size = m_app->GetVideoConfig().size;
-    m_mouseSize = Math::Point(0.04f, 0.04f * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
+    m_mouseSize = Math::Point(48.f/m_size.x, 48.f/m_size.x * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
 
     // Use the setters to set defaults, because they automatically disable what is not supported
     SetShadowMapping(m_shadowMapping);
@@ -359,7 +359,7 @@ void CEngine::Destroy()
 void CEngine::ResetAfterVideoConfigChanged()
 {
     m_size = m_app->GetVideoConfig().size;
-    m_mouseSize = Math::Point(0.04f, 0.04f * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
+    m_mouseSize = Math::Point(48.f/m_size.x, 48.f/m_size.x * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
 
     // Update the camera projection matrix for new aspect ratio
     ApplyChange();
