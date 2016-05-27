@@ -2187,15 +2187,17 @@ void COldObject::PartiFrame(float rTime)
         channel = m_objectPart[i].masterParti;
         if ( channel == -1 )  continue;
 
-        if ( !m_particle->GetPosition(channel, pos) )
+        if ( !m_particle->ParticleExists(channel) )
         {
             m_objectPart[i].masterParti = -1;  // particle no longer exists!
             continue;
         }
 
+        pos = m_particle->GetPosition(channel);
+
         SetPartPosition(i, pos);
 
-        // Each song spins differently.
+        // Each part rotates differently
         switch( i%5 )
         {
             case 0:  factor = Math::Vector( 0.5f, 0.3f, 0.6f); break;
