@@ -95,9 +95,7 @@ bool CMainMovie::Start(MainMovieType type, float time)
         m_camera->GetCamera(m_initialEye, m_initialLookat);
         m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
         m_camera->SetSmooth(Gfx::CAM_SMOOTH_HARD);
-        m_camera->SetScriptEye(m_initialEye);
-        m_camera->SetScriptLookat(m_initialLookat);
-        m_camera->FixCamera();
+        m_camera->SetScriptCamera(m_initialEye, m_initialLookat);
 
         mat = pObj->GetWorldMatrix(0);
         m_finalLookat[0] = Math::Transform(*mat, Math::Vector( 1.6f, 1.0f, 1.2f));
@@ -187,9 +185,7 @@ bool CMainMovie::EventProcess(const Event &event)
 
             eye = (finalEye-initialEye)*progress+initialEye;
             lookat = (finalLookat-initialLookat)*progress+initialLookat;
-            m_camera->SetScriptEye(eye);
-            m_camera->SetScriptLookat(lookat);
-//          m_camera->FixCamera();
+            m_camera->SetScriptCameraAnimate(eye, lookat);
         }
         else
         {

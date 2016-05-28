@@ -94,8 +94,8 @@ CCamera::CCamera()
     m_actualLookat = Math::Vector(0.0f, 0.0f, 0.0f);
     m_finalEye     = Math::Vector(0.0f, 0.0f, 0.0f);
     m_finalLookat  = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_normEye      = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_normLookat   = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_prevEye      = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_prevLookat   = Math::Vector(0.0f, 0.0f, 0.0f);
     m_focus        = 1.0f;
 
     m_eyePt        = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -109,7 +109,6 @@ CCamera::CCamera()
     m_backMin       = 0.0f;
     m_addDirectionH = 0.0f;
     m_addDirectionV = 0.0f;
-    m_transparency  = false;
 
     m_fixDist       = 0.0f;
     m_fixDirectionH = 0.0f;
@@ -120,8 +119,6 @@ CCamera::CCamera()
     m_visitTime       = 0.0f;
     m_visitType       = CAM_TYPE_NULL;
     m_visitDirectionV = 0.0f;
-
-    m_remotePan  = 0.0f;
 
     m_centeringPhase    = CAM_PHASE_NULL;
     m_centeringAngleH   = 0.0f;
@@ -238,7 +235,6 @@ void CCamera::Init(Math::Vector eye, Math::Vector lookat, float delay)
     m_scriptEye = m_actualEye;
     m_scriptLookat = m_actualLookat;
     m_focus = 1.00f;
-    m_remotePan  = 0.0f;
 
     FlushEffect();
     FlushOver();
@@ -258,9 +254,7 @@ CObject* CCamera::GetControllingObject()
 
 void CCamera::SetType(CameraType type)
 {
-    m_remotePan  = 0.0f;
-
-    if ( (m_type == CAM_TYPE_BACK) && m_transparency )
+    if ( (m_type == CAM_TYPE_BACK) )
     {
         for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
@@ -270,13 +264,12 @@ void CCamera::SetType(CameraType type)
             SetTransparency(obj, 0.0f);  // opaque object
         }
     }
-    m_transparency = false;
 
     if (type == CAM_TYPE_INFO  ||
         type == CAM_TYPE_VISIT)  // xx -> info ?
     {
-        m_normEye    = m_engine->GetEyePt();
-        m_normLookat = m_engine->GetLookatPt();
+        m_prevEye    = m_engine->GetEyePt();
+        m_prevLookat = m_engine->GetLookatPt();
 
         m_engine->SetFocus(1.00f);  // normal
         m_type = type;
@@ -290,7 +283,7 @@ void CCamera::SetType(CameraType type)
         m_type = type;
 
         Math::Vector upVec = Math::Vector(0.0f, 1.0f, 0.0f);
-        SetViewParams(m_normEye, m_normLookat, upVec);
+        SetViewParams(m_prevEye, m_prevLookat, upVec);
         return;
     }
 
@@ -384,70 +377,6 @@ void CCamera::SetSmooth(CameraSmooth type)
 CameraSmooth CCamera::GetSmooth()
 {
     return m_smooth;
-}
-
-void CCamera::SetDist(float dist)
-{
-    m_fixDist = dist;
-}
-
-float CCamera::GetDist()
-{
-    return m_fixDist;
-}
-
-void CCamera::SetFixDirectionH(float angle)
-{
-    m_fixDirectionH = angle;
-}
-
-float CCamera::GetFixDirectionH()
-{
-    return m_fixDirectionH;
-}
-
-void CCamera::SetFixDirectionV(float angle)
-{
-    m_fixDirectionV = angle;
-}
-
-float CCamera::GetFixDirectionV()
-{
-    return m_fixDirectionV;
-}
-
-void CCamera::SetRemotePan(float value)
-{
-    m_remotePan = value;
-}
-
-float CCamera::GetRemotePan()
-{
-    return m_remotePan;
-}
-
-void CCamera::SetRemoteZoom(float value)
-{
-    value = Math::Norm(value);
-
-    if ( m_type == CAM_TYPE_BACK )
-        m_backDist = m_backMin + (200.0f - m_backMin) * value;
-
-    if ( m_type == CAM_TYPE_FIX   ||
-         m_type == CAM_TYPE_PLANE )
-        m_fixDist = 10.0f + (200.0f - 10.0f) * value;
-}
-
-float CCamera::GetRemoteZoom()
-{
-    if ( m_type == CAM_TYPE_BACK )
-        return (m_backDist - m_backMin) / (200.0f - m_backMin);
-
-    if ( m_type == CAM_TYPE_FIX   ||
-         m_type == CAM_TYPE_PLANE )
-        return (m_fixDist - 10.0f) / (200.0f - 10.0f);
-
-    return 0.0f;
 }
 
 void CCamera::StartVisit(Math::Vector goal, float dist)
@@ -824,98 +753,74 @@ void CCamera::OverFrame(const Event &event)
     }
 }
 
-void CCamera::FixCamera()
+void CCamera::UpdateCameraAnimation(const Math::Vector &eyePt,
+                                    const Math::Vector &lookatPt,
+                                    float rTime)
 {
-    m_initDelay = 0.0f;
-    m_actualEye    = m_finalEye    = m_scriptEye;
-    m_actualLookat = m_finalLookat = m_scriptLookat;
-    SetViewTime(m_scriptEye, m_scriptLookat, 0.0f);
-}
-
-void CCamera::SetViewTime(const Math::Vector &eyePt,
-                          const Math::Vector &lookatPt,
-                          float rTime)
-{
-    Math::Vector eye, lookat;
-
-    if (m_type == CAM_TYPE_INFO)
+    if (m_initDelay > 0.0f)
     {
-        eye    = eyePt;
-        lookat = lookatPt;
+        m_initDelay -= rTime;
+        if (m_initDelay < 0.0f)
+            m_initDelay = 0.0f;
+        rTime /= 1.0f+m_initDelay;
+    }
+
+    m_finalEye    = eyePt;
+    m_finalLookat = lookatPt;
+    IsCollision(m_finalEye, m_finalLookat);
+
+    float prog = 0.0f;
+    float dist = Math::Distance(m_finalEye, m_actualEye);
+
+    if (m_smooth == CAM_SMOOTH_NONE) prog = dist;
+    if (m_smooth == CAM_SMOOTH_NORM) prog = powf(dist, 1.5f) * rTime * 0.75f;
+    if (m_smooth == CAM_SMOOTH_HARD) prog = dist * rTime * 4.0f;
+    if (dist == 0.0f)
+    {
+        m_actualEye = m_finalEye;
     }
     else
     {
-        if (m_initDelay > 0.0f)
-        {
-            m_initDelay -= rTime;
-            if (m_initDelay < 0.0f)
-                m_initDelay = 0.0f;
-            rTime /= 1.0f+m_initDelay;
-        }
-
-        eye    = eyePt;
-        lookat = lookatPt;
-        if ( !IsCollision(eye, lookat) )
-        {
-            m_finalEye    = eye;
-            m_finalLookat = lookat;
-        }
-
-        float prog = 0.0f;
-        float dist = Math::Distance(m_finalEye, m_actualEye);
-
-        if (m_smooth == CAM_SMOOTH_NONE) prog = dist;
-        if (m_smooth == CAM_SMOOTH_NORM) prog = powf(dist, 1.5f) * rTime * 0.75f;
-        if (m_smooth == CAM_SMOOTH_HARD) prog = dist * rTime * 4.0f;
-        if (dist == 0.0f)
-        {
-            m_actualEye = m_finalEye;
-        }
-        else
-        {
-            if (prog > dist)
-                prog = dist;
-            m_actualEye = (m_finalEye - m_actualEye) / dist * prog + m_actualEye;
-        }
-
-        dist = Math::Distance(m_finalLookat, m_actualLookat);
-        if ( m_smooth == CAM_SMOOTH_NONE ) prog = dist;
-        if ( m_smooth == CAM_SMOOTH_NORM ) prog = powf(dist, 1.5f) * rTime * 3.0f;
-        if ( m_smooth == CAM_SMOOTH_HARD ) prog = dist * rTime * 4.0f;
-        if ( dist == 0.0f )
-        {
-            m_actualLookat = m_finalLookat;
-        }
-        else
-        {
-            if (prog > dist)
-                prog = dist;
-            m_actualLookat = (m_finalLookat - m_actualLookat) / dist * prog + m_actualLookat;
-        }
-
-        eye = m_effectOffset+m_actualEye;
-        m_water->AdjustEye(eye);
-
-        float h = m_terrain->GetFloorLevel(eye);
-        if (eye.y < h + 4.0f)
-            eye.y = h + 4.0f;
-
-        lookat = m_effectOffset+m_actualLookat;
+        if (prog > dist)
+            prog = dist;
+        m_actualEye = (m_finalEye - m_actualEye) / dist * prog + m_actualEye;
     }
 
-    Math::Vector upVec = Math::Vector(0.0f, 1.0f, 0.0f);
-    SetViewParams(eye, lookat, upVec);
+    dist = Math::Distance(m_finalLookat, m_actualLookat);
+    if ( m_smooth == CAM_SMOOTH_NONE ) prog = dist;
+    if ( m_smooth == CAM_SMOOTH_NORM ) prog = powf(dist, 1.5f) * rTime * 3.0f;
+    if ( m_smooth == CAM_SMOOTH_HARD ) prog = dist * rTime * 4.0f;
+    if ( dist == 0.0f )
+    {
+        m_actualLookat = m_finalLookat;
+    }
+    else
+    {
+        if (prog > dist)
+            prog = dist;
+        m_actualLookat = (m_finalLookat - m_actualLookat) / dist * prog + m_actualLookat;
+    }
+
+    Math::Vector eye = m_effectOffset+m_actualEye;
+    m_water->AdjustEye(eye);
+
+    float h = m_terrain->GetFloorLevel(eye);
+    if (eye.y < h + 4.0f)
+        eye.y = h + 4.0f;
+
+    Math::Vector lookat = m_effectOffset+m_actualLookat;
+
+    SetViewParams(eye, lookat);
 }
 
-bool CCamera::IsCollision(Math::Vector &eye, Math::Vector lookat)
+void CCamera::IsCollision(Math::Vector &eye, Math::Vector lookat)
 {
-    if (m_type == CAM_TYPE_BACK )  return IsCollisionBack(eye, lookat);
-    if (m_type == CAM_TYPE_FIX  )  return IsCollisionFix (eye, lookat);
-    if (m_type == CAM_TYPE_PLANE)  return IsCollisionFix (eye, lookat);
-    return false;
+    if (m_type == CAM_TYPE_BACK ) IsCollisionBack();
+    if (m_type == CAM_TYPE_FIX  ) IsCollisionFix (eye, lookat);
+    if (m_type == CAM_TYPE_PLANE) IsCollisionFix (eye, lookat);
 }
 
-bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
+void CCamera::IsCollisionBack()
 {
     ObjectType iType;
     if (m_cameraObj == nullptr)
@@ -932,8 +837,6 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
     max.x = Math::Max(m_actualEye.x, m_actualLookat.x);
     max.y = Math::Max(m_actualEye.y, m_actualLookat.y);
     max.z = Math::Max(m_actualEye.z, m_actualLookat.z);
-
-    m_transparency = false;
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -1001,12 +904,10 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
         if (len > del) continue;
 
         SetTransparency(obj, 1.0f);  // transparent object
-        m_transparency = true;
     }
-    return false;
 }
 
-bool CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
+void CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -1041,165 +942,135 @@ bool CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
             dist = Math::Distance(eye, lookat);
             Math::Vector proj = Projection(eye, lookat, objPos);
             eye = (lookat - eye) * objRadius / dist + proj;
-            return false;
+            return;
         }
     }
-    return false;
 }
 
 bool CCamera::EventProcess(const Event &event)
 {
-    switch (event.type)
+    if (event.type == EVENT_MOUSE_MOVE)
     {
-        case EVENT_FRAME:
-            EventFrame(event);
-            break;
+        if (m_engine->GetMouseType() == ENG_MOUSE_SCROLLR ||
+            m_engine->GetMouseType() == ENG_MOUSE_SCROLLL ||
+            m_engine->GetMouseType() == ENG_MOUSE_SCROLLU ||
+            m_engine->GetMouseType() == ENG_MOUSE_SCROLLD ||
+            m_engine->GetMouseType() == ENG_MOUSE_MOVE    )
+        {
+            m_engine->SetMouseType(ENG_MOUSE_NORM);
+        }
 
-        case EVENT_MOUSE_BUTTON_DOWN:
-        case EVENT_MOUSE_BUTTON_UP:
-            EventMouseButton(event);
-            break;
+        if ((event.mouseButtonsState & MOUSE_BUTTON_RIGHT) != 0 || (event.mouseButtonsState & MOUSE_BUTTON_MIDDLE) != 0)
+        {
+            Math::Point newDelta = event.mousePos - m_mousePos;
+            if (m_cameraInvertX)
+                newDelta.x = -newDelta.x;
+            if (m_cameraInvertY)
+                newDelta.y = -newDelta.y;
+            m_mouseDelta += newDelta;
 
-        case EVENT_MOUSE_MOVE:
-            EventMouseMove(event);
-            break;
+            m_engine->SetMouseType(ENG_MOUSE_MOVE);
+        }
 
-        case EVENT_MOUSE_WHEEL:
-            EventMouseWheel(event);
-            break;
+        m_mouseDeltaEdge.LoadZero();
+        if (m_oldCameraScroll)
+        {
+            if (event.mousePos.x < MOUSE_EDGE_MARGIN)
+                m_mouseDeltaEdge.x = event.mousePos.x / MOUSE_EDGE_MARGIN - 1.0f;
+            if (event.mousePos.x > 1.0f - MOUSE_EDGE_MARGIN)
+                m_mouseDeltaEdge.x = 1.0f - (1.0f - event.mousePos.x) / MOUSE_EDGE_MARGIN;
+            if (event.mousePos.y < MOUSE_EDGE_MARGIN)
+                m_mouseDeltaEdge.y = event.mousePos.y / MOUSE_EDGE_MARGIN - 1.0f;
+            if (event.mousePos.y > 1.0f - MOUSE_EDGE_MARGIN)
+                m_mouseDeltaEdge.y = 1.0f - (1.0f - event.mousePos.y) / MOUSE_EDGE_MARGIN;
 
-        default:
-            break;
+            if (m_type == CAM_TYPE_FREE  ||
+                m_type == CAM_TYPE_EDIT  ||
+                m_type == CAM_TYPE_BACK  ||
+                m_type == CAM_TYPE_FIX   ||
+                m_type == CAM_TYPE_PLANE ||
+                m_type == CAM_TYPE_EXPLO )
+            {
+                if (m_mouseDeltaEdge.x > 0.0f)
+                    m_engine->SetMouseType(ENG_MOUSE_SCROLLR);
+                if (m_mouseDeltaEdge.x < 0.0f)
+                    m_engine->SetMouseType(ENG_MOUSE_SCROLLL);
+            }
+            if (m_type == CAM_TYPE_FREE ||
+                m_type == CAM_TYPE_EDIT )
+            {
+                if (m_mouseDeltaEdge.y > 0.0f)
+                    m_engine->SetMouseType(ENG_MOUSE_SCROLLU);
+                if (m_mouseDeltaEdge.y < 0.0f)
+                    m_engine->SetMouseType(ENG_MOUSE_SCROLLD);
+            }
+
+            m_mouseDeltaEdge.x /= 2*Math::PI;
+            m_mouseDeltaEdge.y /= Math::PI;
+        }
+
+        m_mousePos = event.mousePos;
     }
-    return true;
-}
 
-bool CCamera::EventMouseMove(const Event &event)
-{
-    if (m_engine->GetMouseType() == ENG_MOUSE_SCROLLR ||
-        m_engine->GetMouseType() == ENG_MOUSE_SCROLLL ||
-        m_engine->GetMouseType() == ENG_MOUSE_SCROLLU ||
-        m_engine->GetMouseType() == ENG_MOUSE_SCROLLD ||
-        m_engine->GetMouseType() == ENG_MOUSE_MOVE    )
+    if (event.type == EVENT_MOUSE_WHEEL)
     {
-        m_engine->SetMouseType(ENG_MOUSE_NORM);
+        auto dir = event.GetData<MouseWheelEventData>()->y;
+        m_mouseWheelDelta -= dir;
     }
 
-    if ((event.mouseButtonsState & MOUSE_BUTTON_RIGHT) != 0 || (event.mouseButtonsState & MOUSE_BUTTON_MIDDLE) != 0)
+    if (event.type == EVENT_MOUSE_BUTTON_DOWN || event.type == EVENT_MOUSE_BUTTON_UP)
     {
-        Math::Point newDelta = event.mousePos - m_mousePos;
+        if (event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_RIGHT || event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_MIDDLE)
+        {
+            if ((event.mouseButtonsState & MOUSE_BUTTON_RIGHT) != 0 || (event.mouseButtonsState & MOUSE_BUTTON_MIDDLE) != 0)
+            {
+                m_engine->SetMouseType(ENG_MOUSE_MOVE);
+            }
+            else
+            {
+                m_engine->SetMouseType(ENG_MOUSE_NORM);
+            }
+        }
+    }
+
+    if (event.type == EVENT_FRAME && !m_freeze)
+    {
+        Math::Point newDelta = m_mouseDeltaEdge * m_speed * event.rTime;
         if (m_cameraInvertX)
             newDelta.x = -newDelta.x;
         if (m_cameraInvertY)
             newDelta.y = -newDelta.y;
         m_mouseDelta += newDelta;
 
-        m_engine->SetMouseType(ENG_MOUSE_MOVE);
-    }
+        EffectFrame(event);
+        OverFrame(event);
 
-    m_mouseDeltaEdge.LoadZero();
-    if (m_oldCameraScroll)
-    {
-        if (event.mousePos.x < MOUSE_EDGE_MARGIN)
-            m_mouseDeltaEdge.x = event.mousePos.x / MOUSE_EDGE_MARGIN - 1.0f;
-        if (event.mousePos.x > 1.0f - MOUSE_EDGE_MARGIN)
-            m_mouseDeltaEdge.x = 1.0f - (1.0f - event.mousePos.x) / MOUSE_EDGE_MARGIN;
-        if (event.mousePos.y < MOUSE_EDGE_MARGIN)
-            m_mouseDeltaEdge.y = event.mousePos.y / MOUSE_EDGE_MARGIN - 1.0f;
-        if (event.mousePos.y > 1.0f - MOUSE_EDGE_MARGIN)
-            m_mouseDeltaEdge.y = 1.0f - (1.0f - event.mousePos.y) / MOUSE_EDGE_MARGIN;
-
-        if (m_type == CAM_TYPE_FREE  ||
-            m_type == CAM_TYPE_EDIT  ||
-            m_type == CAM_TYPE_BACK  ||
-            m_type == CAM_TYPE_FIX   ||
-            m_type == CAM_TYPE_PLANE ||
-            m_type == CAM_TYPE_EXPLO )
-        {
-            if (m_mouseDeltaEdge.x > 0.0f)
-                m_engine->SetMouseType(ENG_MOUSE_SCROLLR);
-            if (m_mouseDeltaEdge.x < 0.0f)
-                m_engine->SetMouseType(ENG_MOUSE_SCROLLL);
-        }
         if (m_type == CAM_TYPE_FREE ||
-            m_type == CAM_TYPE_EDIT )
-        {
-            if (m_mouseDeltaEdge.y > 0.0f)
-                m_engine->SetMouseType(ENG_MOUSE_SCROLLU);
-            if (m_mouseDeltaEdge.y < 0.0f)
-                m_engine->SetMouseType(ENG_MOUSE_SCROLLD);
-        }
+            m_type == CAM_TYPE_EDIT)
+            return EventFrameFree(event, m_type != CAM_TYPE_EDIT);
 
-        m_mouseDeltaEdge.x /= 2*Math::PI;
-        m_mouseDeltaEdge.y /= Math::PI;
+        if (m_type == CAM_TYPE_BACK)
+            return EventFrameBack(event);
+
+        if (m_type == CAM_TYPE_FIX   ||
+            m_type == CAM_TYPE_PLANE)
+            return EventFrameFix(event);
+
+        if (m_type == CAM_TYPE_EXPLO)
+            return EventFrameExplo(event);
+
+        if (m_type == CAM_TYPE_ONBOARD)
+            return EventFrameOnBoard(event);
+
+        if (m_type == CAM_TYPE_SCRIPT)
+            return EventFrameScript(event);
+
+        if (m_type == CAM_TYPE_INFO)
+            return EventFrameInfo(event);
+
+        if (m_type == CAM_TYPE_VISIT)
+            return EventFrameVisit(event);
     }
-
-    m_mousePos = event.mousePos;
-    return true;
-}
-
-void CCamera::EventMouseWheel(const Event &event)
-{
-    auto dir = event.GetData<MouseWheelEventData>()->y;
-    m_mouseWheelDelta -= dir;
-}
-
-void CCamera::EventMouseButton(const Event &event)
-{
-    if (event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_RIGHT || event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_MIDDLE)
-    {
-        if ((event.mouseButtonsState & MOUSE_BUTTON_RIGHT) != 0 || (event.mouseButtonsState & MOUSE_BUTTON_MIDDLE) != 0)
-        {
-            m_engine->SetMouseType(ENG_MOUSE_MOVE);
-        }
-        else
-        {
-            m_engine->SetMouseType(ENG_MOUSE_NORM);
-        }
-    }
-}
-
-bool CCamera::EventFrame(const Event &event)
-{
-    if (m_freeze)
-        return true;
-
-    Math::Point newDelta = m_mouseDeltaEdge * m_speed * event.rTime;
-    if (m_cameraInvertX)
-        newDelta.x = -newDelta.x;
-    if (m_cameraInvertY)
-        newDelta.y = -newDelta.y;
-    m_mouseDelta += newDelta;
-
-    EffectFrame(event);
-    OverFrame(event);
-
-    if (m_type == CAM_TYPE_FREE ||
-        m_type == CAM_TYPE_EDIT)
-        return EventFrameFree(event, m_type != CAM_TYPE_EDIT);
-
-    if (m_type == CAM_TYPE_BACK)
-        return EventFrameBack(event);
-
-    if (m_type == CAM_TYPE_FIX   ||
-        m_type == CAM_TYPE_PLANE)
-        return EventFrameFix(event);
-
-    if (m_type == CAM_TYPE_EXPLO)
-        return EventFrameExplo(event);
-
-    if (m_type == CAM_TYPE_ONBOARD)
-        return EventFrameOnBoard(event);
-
-    if (m_type == CAM_TYPE_SCRIPT)
-        return EventFrameScript(event);
-
-    if (m_type == CAM_TYPE_INFO)
-        return EventFrameInfo(event);
-
-    if (m_type == CAM_TYPE_VISIT)
-        return EventFrameVisit(event);
-
     return true;
 }
 
@@ -1255,7 +1126,7 @@ bool CCamera::EventFrameFree(const Event &event, bool keysAllowed)
     if (m_terrain->AdjustToFloor(lookatPt, true))
         lookatPt.y += m_heightLookat;
 
-    SetViewTime(m_eyePt, lookatPt, event.rTime);
+    UpdateCameraAnimation(m_eyePt, lookatPt, event.rTime);
 
     return true;
 }
@@ -1347,7 +1218,7 @@ bool CCamera::EventFrameBack(const Event &event)
         {
             h += Math::PI;  // back
         }
-        h = Math::NormAngle(h)+m_remotePan;
+        h = Math::NormAngle(h);
         float v = 0.0f;  //?
 
         h += m_centeringCurrentH;
@@ -1382,7 +1253,7 @@ bool CCamera::EventFrameBack(const Event &event)
         m_eyePt = ExcludeTerrain(m_eyePt, lookatPt, h, v);
         m_eyePt = ExcludeObject(m_eyePt, lookatPt, h, v);
 
-        SetViewTime(m_eyePt, lookatPt, event.rTime);
+        UpdateCameraAnimation(m_eyePt, lookatPt, event.rTime);
 
         m_directionH = h + Math::PI / 2.0f;
         m_directionV = v;
@@ -1407,7 +1278,7 @@ bool CCamera::EventFrameFix(const Event &event)
     {
         Math::Vector lookatPt = m_cameraObj->GetPosition();
 
-        float h = m_fixDirectionH + m_remotePan;
+        float h = m_fixDirectionH;
         float v = m_fixDirectionV;
 
         float d = m_fixDist;
@@ -1416,7 +1287,7 @@ bool CCamera::EventFrameFix(const Event &event)
         m_eyePt = ExcludeTerrain(m_eyePt, lookatPt, h, v);
         m_eyePt = ExcludeObject(m_eyePt, lookatPt, h, v);
 
-        SetViewTime(m_eyePt, lookatPt, event.rTime);
+        UpdateCameraAnimation(m_eyePt, lookatPt, event.rTime);
 
         m_directionH = h + Math::PI / 2.0f;
         m_directionV = v;
@@ -1452,7 +1323,7 @@ bool CCamera::EventFrameExplo(const Event &event)
     if (m_terrain->AdjustToFloor(lookatPt, true))
         lookatPt.y += m_heightLookat;
 
-    SetViewTime(m_eyePt, lookatPt, event.rTime);
+    UpdateCameraAnimation(m_eyePt, lookatPt, event.rTime);
 
     return true;
 }
@@ -1476,9 +1347,8 @@ bool CCamera::EventFrameOnBoard(const Event &event)
 
 bool CCamera::EventFrameInfo(const Event &event)
 {
-    SetViewTime(Math::Vector(0.0f, 0.0f, 0.0f),
-                Math::Vector(0.0f, 0.0f, 1.0f),
-                event.rTime);
+    SetViewParams(Math::Vector(0.0f, 0.0f, 0.0f),
+                  Math::Vector(0.0f, 0.0f, 1.0f));
     return true;
 }
 
@@ -1501,25 +1371,40 @@ bool CCamera::EventFrameVisit(const Event &event)
     Math::Vector eye = RotateView(m_visitGoal, angleH, angleV, m_visitDist);
     eye = ExcludeTerrain(eye, m_visitGoal, angleH, angleV);
     eye = ExcludeObject(eye, m_visitGoal, angleH, angleV);
-    SetViewTime(eye, m_visitGoal, event.rTime);
+    UpdateCameraAnimation(eye, m_visitGoal, event.rTime);
 
     return true;
 }
 
 bool CCamera::EventFrameScript(const Event &event)
 {
-    SetViewTime(m_scriptEye + m_effectOffset,
-                m_scriptLookat + m_effectOffset, event.rTime);
+    UpdateCameraAnimation(m_scriptEye + m_effectOffset,
+                          m_scriptLookat + m_effectOffset, event.rTime);
     return true;
 }
 
-void CCamera::SetScriptEye(Math::Vector eye)
+void CCamera::SetScriptCameraAnimateEye(Math::Vector eye)
 {
     m_scriptEye = eye;
 }
 
-void CCamera::SetScriptLookat(Math::Vector lookat)
+void CCamera::SetScriptCameraAnimateLookat(Math::Vector lookat)
 {
+    m_scriptLookat = lookat;
+}
+
+void CCamera::SetScriptCamera(Math::Vector eye, Math::Vector lookat)
+{
+    SetScriptCameraAnimate(eye, lookat);
+
+    m_initDelay    = 0.0f;
+    m_actualEye    = m_finalEye    = m_scriptEye;
+    m_actualLookat = m_finalLookat = m_scriptLookat;
+}
+
+void CCamera::SetScriptCameraAnimate(Math::Vector eye, Math::Vector lookat)
+{
+    m_scriptEye = eye;
     m_scriptLookat = lookat;
 }
 

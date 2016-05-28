@@ -58,10 +58,6 @@ public:
     virtual void SetCameraType(Gfx::CameraType type) = 0;
     //! Return camera type for this object
     virtual Gfx::CameraType GetCameraType() = 0;
-    //! Set camera distance for this object
-    virtual void SetCameraDist(float dist) = 0;
-    //! Return camera distance for this object
-    virtual float GetCameraDist() = 0;
     //! Disallow camera changes
     virtual void SetCameraLock(bool lock) = 0;
     //! Check if camera changes are disallowed

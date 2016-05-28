@@ -218,8 +218,6 @@ public:
 
     void        SetCameraType(Gfx::CameraType type) override;
     Gfx::CameraType  GetCameraType() override;
-    void        SetCameraDist(float dist) override;
-    float       GetCameraDist() override;
     void        SetCameraLock(bool lock) override;
     bool        GetCameraLock() override;
 
@@ -351,7 +349,6 @@ protected:
     float       m_gunGoalV;
     float       m_gunGoalH;
     Gfx::CameraType  m_cameraType;
-    float       m_cameraDist;
     bool        m_bCameraLock;
     float       m_magnifyDamage;
 

@@ -1324,26 +1324,6 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         }
     }
 
-    if ( m_object->GetToy() && !m_object->GetManual() )
-    {
-        pos.x = ox+sx*9.0f;
-        pos.y = oy+sy*0;
-        pb = pw->CreateButton(pos, dim, 55, EVENT_OBJECT_CAMERAleft);
-        pb->SetImmediat(true);
-        pos.x = ox+sx*11.0f;
-        pos.y = oy+sy*0;
-        pb = pw->CreateButton(pos, dim, 48, EVENT_OBJECT_CAMERAright);
-        pb->SetImmediat(true);
-        pos.x = ox+sx*10.0f;
-        pos.y = oy+sy*1;
-        pb = pw->CreateButton(pos, dim, 49, EVENT_OBJECT_CAMERAnear);
-        pb->SetImmediat(true);
-        pos.x = ox+sx*10.0f;
-        pos.y = oy+sy*0;
-        pb = pw->CreateButton(pos, dim, 50, EVENT_OBJECT_CAMERAaway);
-        pb->SetImmediat(true);
-    }
-
     pos.x = ox+sx*13.4f;
     pos.y = oy+sy*0;
     if ( m_object->GetTrainer() )  // Training?

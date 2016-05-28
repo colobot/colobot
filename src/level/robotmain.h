@@ -390,8 +390,6 @@ protected:
     void        ClearTooltip();
     CObject*    DetectObject(Math::Point pos);
     void        ChangeCamera();
-    void        RemoteCamera(float pan, float zoom, float rTime);
-    void        KeyCamera(EventType event, InputSlot key);
     void        AbortMovie();
     void        SelectOneObject(CObject* obj, bool displayError=true);
     void        HelpObject();
@@ -534,9 +532,6 @@ protected:
     std::map<int, std::string> m_teamNames;
 
     std::vector<NewScriptName> m_newScriptName;
-
-    float           m_cameraPan = 0.0f;
-    float           m_cameraZoom = 0.0f;
 
     EventType       m_visitLast = EVENT_NULL;
     CObject*        m_visitObject = nullptr;

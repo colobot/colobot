@@ -239,9 +239,6 @@ CRobotMain::CRobotMain()
 
     m_shotSaving = 0;
 
-    m_cameraPan  = 0.0f;
-    m_cameraZoom = 0.0f;
-
     m_build = 0;
     m_researchDone.clear();  // no research done
     m_researchDone[0] = 0;
@@ -459,8 +456,6 @@ void CRobotMain::ChangePhase(Phase phase)
         m_camera->SetType(Gfx::CAM_TYPE_NULL);
         m_movie->Flush();
         m_movieInfoIndex = -1;
-        m_cameraPan  = 0.0f;
-        m_cameraZoom = 0.0f;
         m_shortCut = true;
     }
     ClearInterface();
@@ -677,7 +672,6 @@ bool CRobotMain::ProcessEvent(Event &event)
         }
 
         m_displayText->EventProcess(event);
-        RemoteCamera(m_cameraPan, m_cameraZoom, event.rTime);
 
         if (m_displayInfo != nullptr)  // current edition?
             m_displayInfo->EventProcess(event);
@@ -852,7 +846,6 @@ bool CRobotMain::ProcessEvent(Event &event)
             {
                 auto data = event.GetData<KeyEventData>();
 
-                KeyCamera(event.type, data->slot);
                 HiliteClear();
                 if (m_editLock)  // current edition?
                 {
@@ -999,13 +992,6 @@ bool CRobotMain::ProcessEvent(Event &event)
                 break;
             }
 
-            case EVENT_KEY_UP:
-            {
-                auto data = event.GetData<KeyEventData>();
-                KeyCamera(event.type, data->slot);
-                break;
-            }
-
             case EVENT_MOUSE_BUTTON_DOWN:
             {
                 if (event.GetData<MouseButtonEventData>()->button != MOUSE_BUTTON_LEFT) // only left mouse button
@@ -1032,14 +1018,6 @@ bool CRobotMain::ProcessEvent(Event &event)
                 break;
             }
 
-            case EVENT_MOUSE_BUTTON_UP:
-                if (event.GetData<MouseButtonEventData>()->button != MOUSE_BUTTON_LEFT) // only left mouse button
-                    break;
-
-                m_cameraPan  = 0.0f;
-                m_cameraZoom = 0.0f;
-                break;
-
             case EVENT_OBJECT_LIMIT:
                 StartShowLimit();
                 break;
@@ -1055,19 +1033,6 @@ bool CRobotMain::ProcessEvent(Event &event)
 
             case EVENT_OBJECT_CAMERA:
                 ChangeCamera();
-                break;
-
-            case EVENT_OBJECT_CAMERAleft:
-                m_cameraPan = -1.0f;
-                break;
-            case EVENT_OBJECT_CAMERAright:
-                m_cameraPan = 1.0f;
-                break;
-            case EVENT_OBJECT_CAMERAnear:
-                m_cameraZoom = -1.0f;
-                break;
-            case EVENT_OBJECT_CAMERAaway:
-                m_cameraZoom = 1.0f;
                 break;
 
             case EVENT_OBJECT_DELETE:
@@ -1851,7 +1816,6 @@ void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
          type == OBJECT_APOLLO2  )
     {
         m_camera->SetType(dynamic_cast<CControllableObject*>(obj)->GetCameraType());
-        m_camera->SetDist(dynamic_cast<CControllableObject*>(obj)->GetCameraDist());
     }
     else
     {
@@ -2322,84 +2286,6 @@ void CRobotMain::ChangeCamera()
     controllableObj->SetCameraType(type);
     m_camera->SetType(type);
 }
-
-//! Remote control the camera using the arrow keys
-void CRobotMain::KeyCamera(EventType event, InputSlot key)
-{
-    if (event == EVENT_KEY_UP)
-    {
-        if (key == INPUT_SLOT_LEFT)
-        {
-            m_cameraPan = 0.0f;
-        }
-
-        if (key == INPUT_SLOT_RIGHT)
-        {
-            m_cameraPan = 0.0f;
-        }
-
-        if (key == INPUT_SLOT_UP)
-        {
-            m_cameraZoom = 0.0f;
-        }
-
-        if (key == INPUT_SLOT_DOWN)
-        {
-            m_cameraZoom = 0.0f;
-        }
-    }
-
-    if (m_phase != PHASE_SIMUL) return;
-    if (m_editLock) return;  // current edition?
-    if (m_trainerPilot) return;
-
-    CObject* obj = GetSelect();
-    if (obj == nullptr) return;
-    assert(obj->Implements(ObjectInterfaceType::Controllable));
-    if (!dynamic_cast<CControllableObject*>(obj)->GetTrainer()) return;
-
-    if (event == EVENT_KEY_DOWN)
-    {
-        if (key == INPUT_SLOT_LEFT)
-        {
-            m_cameraPan = -1.0f;
-        }
-
-        if (key == INPUT_SLOT_RIGHT)
-        {
-            m_cameraPan = 1.0f;
-        }
-
-        if (key == INPUT_SLOT_UP)
-        {
-            m_cameraZoom = -1.0f;
-        }
-
-        if (key == INPUT_SLOT_DOWN)
-        {
-            m_cameraZoom = 1.0f;
-        }
-    }
-}
-
-//! Panned with the camera if a button is pressed
-void CRobotMain::RemoteCamera(float pan, float zoom, float rTime)
-{
-    if (pan != 0.0f)
-    {
-        float value = m_camera->GetRemotePan();
-        value += pan*rTime*1.5f;
-        m_camera->SetRemotePan(value);
-    }
-
-    if (zoom != 0.0f)
-    {
-        float value = m_camera->GetRemoteZoom();
-        value += zoom*rTime*0.3f;
-        m_camera->SetRemoteZoom(value);
-    }
-}
-
 
 
 //! Cancels the current movie
@@ -3660,8 +3546,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (line->GetParam("fadeIn")->AsBool(false))
                     m_camera->StartOver(Gfx::CAM_OVER_EFFECT_FADEIN_WHITE, Math::Vector(0.0f, 0.0f, 0.0f), 1.0f);
-
-                m_camera->SetFixDirectionH(line->GetParam("fixDirection")->AsFloat(0.25f)*Math::PI);
                 continue;
             }
 
@@ -3822,7 +3706,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         {
             Math::Vector pos = sel->GetPosition();
             m_camera->Init(pos, pos, 0.0f);
-            m_camera->FixCamera();
 
             SelectObject(sel);
             m_camera->SetControllingObject(sel);
@@ -5971,9 +5854,6 @@ void CRobotMain::SetCodeBattleSpectatorMode(bool mode)
 
     m_codeBattleSpectator = mode;
     SelectObject(obj, false); // this uses code battle selection mode already
-
-    if (mode)
-        m_camera->SetFixDirectionV(-0.25f*Math::PI);
 }
 
 void CRobotMain::UpdateDebugCrashSpheres()

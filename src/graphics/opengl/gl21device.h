@@ -18,7 +18,7 @@
  */
 
 /**
- * \file graphics/opengl/gldevice.h
+ * \file graphics/opengl/gl21device.h
  * \brief OpenGL implementation - CGL21Device class
  */
 

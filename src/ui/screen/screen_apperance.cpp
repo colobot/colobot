@@ -619,21 +619,17 @@ void CScreenApperance::CameraPerso()
 {
     Gfx::CCamera* camera = m_main->GetCamera();
 
+    camera->SetType(Gfx::CAM_TYPE_SCRIPT);
     if ( m_apperanceTab == 0 )
     {
-//?     camera->Init(Math::Vector(4.0f, 0.0f, 0.0f),
-//?                  Math::Vector(0.0f, 0.0f, 1.0f), 0.0f);
-        camera->Init(Math::Vector(6.0f, 0.0f, 0.0f),
-                     Math::Vector(0.0f, 0.2f, 1.5f), 0.0f);
+        camera->SetScriptCamera(Math::Vector(6.0f, 0.0f, 0.0f),
+                                Math::Vector(0.0f, 0.2f, 1.5f));
     }
     else
     {
-        camera->Init(Math::Vector(18.0f, 0.0f, 4.5f),
-                     Math::Vector(0.0f, 1.6f, 4.5f), 0.0f);
+        camera->SetScriptCamera(Math::Vector(18.0f, 0.0f, 4.5f),
+                                Math::Vector(0.0f, 1.6f, 4.5f));
     }
-
-    camera->SetType(Gfx::CAM_TYPE_SCRIPT);
-    camera->FixCamera();
 }
 
 // Sets a fixed color.

@@ -394,10 +394,6 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_GINFO]        = TR("Transmitted information");
     stringsEvent[EVENT_OBJECT_MAPZOOM]      = TR("Zoom mini-map");
     stringsEvent[EVENT_OBJECT_CAMERA]       = TR("Camera (\\key camera;)");
-    stringsEvent[EVENT_OBJECT_CAMERAleft]   = TR("Camera to left");
-    stringsEvent[EVENT_OBJECT_CAMERAright]  = TR("Camera to right");
-    stringsEvent[EVENT_OBJECT_CAMERAnear]   = TR("Camera nearest");
-    stringsEvent[EVENT_OBJECT_CAMERAaway]   = TR("Camera awayest");
     stringsEvent[EVENT_OBJECT_HELP]         = TR("Help about selected object");
     stringsEvent[EVENT_OBJECT_SOLUCE]       = TR("Show the solution");
     stringsEvent[EVENT_OBJECT_SHORTCUT_MODE]= TR("Switch bots <-> buildings");

@@ -150,7 +150,6 @@ COldObject::COldObject(int id)
     m_character.wheelRight = 1.0f;
 
     m_cameraType = Gfx::CAM_TYPE_BACK;
-    m_cameraDist = 50.0f;
     m_bCameraLock = false;
 
     for (int i=0 ; i<OBJECTMAXPART ; i++ )
@@ -1031,7 +1030,6 @@ void COldObject::Read(CLevelParserLine* line)
 
     if (line->GetParam("camera")->IsDefined())
         SetCameraType(line->GetParam("camera")->AsCameraType());
-    SetCameraDist(line->GetParam("cameraDist")->AsFloat(50.0f));
     SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
 
     if (line->GetParam("pyro")->IsDefined())
@@ -2497,16 +2495,6 @@ void COldObject::SetCameraType(Gfx::CameraType type)
 Gfx::CameraType COldObject::GetCameraType()
 {
     return m_cameraType;
-}
-
-void COldObject::SetCameraDist(float dist)
-{
-    m_cameraDist = dist;
-}
-
-float COldObject::GetCameraDist()
-{
-    return m_cameraDist;
 }
 
 void COldObject::SetCameraLock(bool lock)
