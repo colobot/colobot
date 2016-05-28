@@ -441,8 +441,7 @@ TEST_F(CBotUT, VarDefinitions)
 }
 
 // TODO: I don't actually know what the exact rules should be, but it looks a bit wrong
-// TODO: Current version of this code causes a failed assertion
-TEST_F(CBotUT, DISABLED_VarImplicitCast)
+TEST_F(CBotUT, VarImplicitCast)
 {
     ExecuteTest(
         "extern void ImplicitCast()\n"
@@ -464,7 +463,7 @@ TEST_F(CBotUT, DISABLED_VarImplicitCast)
         "{\n"
         "    string a = 2;\n"
         "    ASSERT(a == \"2\");\n"
-        //"    a = 3;\n"
+        //"    a = 3;\n" // TODO: this certainly looks wrong, you an assign a number in initialization but not in assignment
         //"    ASSERT(a == \"3\");\n"
         "    string b = 2.5;\n"
         "    ASSERT(b == \"2.5\");\n"
