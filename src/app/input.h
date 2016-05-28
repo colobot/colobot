@@ -148,6 +148,8 @@ private:
     Math::Vector    m_keyMotion;
     //! Motion vector set by joystick axes
     Math::Vector    m_joyMotion;
+    //! Camera motion vector set by joystick axes
+    Math::Vector    m_joyMotionCam;
 
     //! Camera controls on the numpad
     Math::Vector    m_cameraKeyMotion;

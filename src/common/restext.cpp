@@ -252,6 +252,9 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_JOYSTICK_X_INVERT] = TR("Invert\\Invert values on this axis");
     stringsEvent[EVENT_INTERFACE_JOYSTICK_Y_INVERT] = TR("Invert\\Invert values on this axis");
     stringsEvent[EVENT_INTERFACE_JOYSTICK_Z_INVERT] = TR("Invert\\Invert values on this axis");
+    stringsEvent[EVENT_INTERFACE_JOYSTICK_CAM_X_INVERT] = TR("Invert\\Invert values on this axis");
+    stringsEvent[EVENT_INTERFACE_JOYSTICK_CAM_Y_INVERT] = TR("Invert\\Invert values on this axis");
+    stringsEvent[EVENT_INTERFACE_JOYSTICK_CAM_Z_INVERT] = TR("Invert\\Invert values on this axis");
 
     stringsEvent[EVENT_INTERFACE_NEDIT]     = TR("\\New player name");
     stringsEvent[EVENT_INTERFACE_NOK]       = TR("OK\\Choose the selected player");

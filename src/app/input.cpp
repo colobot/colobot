@@ -170,10 +170,31 @@ void CInput::EventProcess(Event& event)
             if (GetJoyAxisBinding(JOY_AXIS_SLOT_Z).invert)
                 m_joyMotion.z *= -1.0f;
         }
+
+        if (data->axis == GetJoyAxisBinding(JOY_AXIS_SLOT_CAM_X).axis)
+        {
+            m_joyMotionCam.x = -Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
+            if (GetJoyAxisBinding(JOY_AXIS_SLOT_CAM_X).invert)
+                m_joyMotionCam.x *= -1.0f;
+        }
+
+        if (data->axis == GetJoyAxisBinding(JOY_AXIS_SLOT_CAM_Y).axis)
+        {
+            m_joyMotionCam.y = -Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
+            if (GetJoyAxisBinding(JOY_AXIS_SLOT_CAM_Y).invert)
+                m_joyMotionCam.y *= -1.0f;
+        }
+
+        if (data->axis == GetJoyAxisBinding(JOY_AXIS_SLOT_CAM_Z).axis)
+        {
+            m_joyMotionCam.z = -Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
+            if (GetJoyAxisBinding(JOY_AXIS_SLOT_CAM_Z).invert)
+                m_joyMotionCam.z *= -1.0f;
+        }
     }
 
     event.motionInput = Math::Clamp(m_joyMotion + m_keyMotion, Math::Vector(-1.0f, -1.0f, -1.0f), Math::Vector(1.0f, 1.0f, 1.0f));
-    event.cameraInput = m_cameraKeyMotion;
+    event.cameraInput = Math::Clamp(m_joyMotionCam + m_cameraKeyMotion, Math::Vector(-1.0f, -1.0f, -1.0f), Math::Vector(1.0f, 1.0f, 1.0f));
 }
 
 void CInput::MouseMove(Math::IntPoint pos)
@@ -197,6 +218,7 @@ void CInput::ResetKeyStates()
     m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
     m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
     m_cameraKeyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_joyMotionCam = Math::Vector(0.0f, 0.0f, 0.0f);
     for(int i=0; i<INPUT_SLOT_MAX; i++)
         m_keyPresses[i] = false;
 }
@@ -255,6 +277,9 @@ void CInput::SetDefaultInputBindings()
     m_joyAxisBindings[JOY_AXIS_SLOT_X].axis = 0;
     m_joyAxisBindings[JOY_AXIS_SLOT_Y].axis = 1;
     m_joyAxisBindings[JOY_AXIS_SLOT_Z].axis = 2;
+    m_joyAxisBindings[JOY_AXIS_SLOT_CAM_X].axis = -1;
+    m_joyAxisBindings[JOY_AXIS_SLOT_CAM_Y].axis = -1;
+    m_joyAxisBindings[JOY_AXIS_SLOT_CAM_Z].axis = -1;
 }
 
 void CInput::SetInputBinding(InputSlot slot, InputBinding binding)

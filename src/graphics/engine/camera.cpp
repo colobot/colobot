@@ -1601,11 +1601,13 @@ Math::Vector CCamera::CalculateCameraMovement(const Event &event, bool keysAllow
     {
         delta.x += event.cameraInput.x * event.rTime * 0.5f * m_speed;
         delta.y -= event.cameraInput.y * event.rTime * 0.5f * m_speed;
+        delta.z -= event.cameraInput.z * event.rTime * 20.0f * m_speed;
 
         if (m_cameraObj == nullptr)
         {
             delta.x += event.motionInput.x * event.rTime * 0.5f * m_speed;
             delta.y -= event.motionInput.y * event.rTime * 0.5f * m_speed;
+            delta.z -= event.motionInput.z * event.rTime * 20.0f * m_speed;
         }
 
         if (m_input->GetKeyState(INPUT_SLOT_NEAR))

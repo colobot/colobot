@@ -103,63 +103,40 @@ void CScreenSetupControls::CreateInterface()
     ddim.x = 160.0f/640.0f;
     ddim.y = 80.0f/480.0f;
     pos.x = 400.0f/640.0f;
-    pos.y = 213.0f/480.0f;
+    pos.y = 273.0f/480.0f;
     pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_JOYSTICK);
     pli->SetState(STATE_SHADOW);
 
     ddim.x = dim.x*1.5f;
     ddim.y = 18.0f/480.0f;
-    pos.y = 180.0f/480.0f;
+    pos.y = 240.0f/480.0f;
 
-    pos.y -= 5.0f/480.0f;
-    pos.x = 390.0f/640.0f;
-    pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, "X:");
-    pos.y += 5.0f/480.0f;
-    pos.x = 422.0f/640.0f;
-    pev = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_JOYSTICK_X);
-    pev->SetState(STATE_SHADOW);
-    pev->SetType(EVT_INT);
-    pev->SetMinValue(0);
-    pev->SetMaxValue(2);
-    pev->SetStepValue(1);
-    pev->SetValue(0);
-    pos.x = 480.0f/640.0f;
-    pc = pw->CreateCheck(pos, ddim, 0, EVENT_INTERFACE_JOYSTICK_X_INVERT);
-    pc->SetState(STATE_SHADOW);
-
-    pos.y -= 20.0f/480.0f;
-    pos.x = 390.0f/640.0f;
-    pos.y -= 5.0f/480.0f;
-    pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, "Y:");
-    pos.y += 5.0f/480.0f;
-    pos.x = 422.0f/640.0f;
-    pev = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_JOYSTICK_Y);
-    pev->SetState(STATE_SHADOW);
-    pev->SetType(EVT_INT);
-    pev->SetMinValue(0);
-    pev->SetMaxValue(2);
-    pev->SetStepValue(1);
-    pev->SetValue(1);
-    pos.x = 480.0f/640.0f;
-    pc = pw->CreateCheck(pos, ddim, 0, EVENT_INTERFACE_JOYSTICK_Y_INVERT);
-    pc->SetState(STATE_SHADOW);
-
-    pos.y -= 20.0f/480.0f;
-    pos.x = 390.0f/640.0f;
-    pos.y -= 5.0f/480.0f;
-    pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, "Z:");
-    pos.y += 5.0f/480.0f;
-    pos.x = 422.0f/640.0f;
-    pev = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_JOYSTICK_Z);
-    pev->SetState(STATE_SHADOW);
-    pev->SetType(EVT_INT);
-    pev->SetMinValue(0);
-    pev->SetMaxValue(2);
-    pev->SetStepValue(1);
-    pev->SetValue(2);
-    pos.x = 480.0f/640.0f;
-    pc = pw->CreateCheck(pos, ddim, 0, EVENT_INTERFACE_JOYSTICK_Z_INVERT);
-    pc->SetState(STATE_SHADOW);
+    auto CreateJoystickControls = [&](const std::string& label, EventType bindingControl, EventType invertControl)
+    {
+        pos.y -= 20.0f/480.0f;
+        pos.x = 390.0f/640.0f;
+        pos.y -= 5.0f/480.0f;
+        pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, label);
+        pos.y += 5.0f/480.0f;
+        pos.x = 442.0f/640.0f;
+        pev = pw->CreateEditValue(pos, ddim, 0, bindingControl);
+        pev->SetState(STATE_SHADOW);
+        pev->SetType(EVT_INT);
+        pev->SetMinValue(-1);
+        pev->SetMaxValue(2);
+        pev->SetStepValue(1);
+        pev->SetValue(1);
+        pos.x = 500.0f/640.0f;
+        pc = pw->CreateCheck(pos, ddim, 0, invertControl);
+        pc->SetState(STATE_SHADOW);
+    };
+    pos.y += 15.0f/480.0f;
+    CreateJoystickControls("X:", EVENT_INTERFACE_JOYSTICK_X, EVENT_INTERFACE_JOYSTICK_X_INVERT);
+    CreateJoystickControls("Y:", EVENT_INTERFACE_JOYSTICK_Y, EVENT_INTERFACE_JOYSTICK_Y_INVERT);
+    CreateJoystickControls("Z:", EVENT_INTERFACE_JOYSTICK_Z, EVENT_INTERFACE_JOYSTICK_Z_INVERT);
+    CreateJoystickControls("CamX:", EVENT_INTERFACE_JOYSTICK_CAM_X, EVENT_INTERFACE_JOYSTICK_CAM_X_INVERT);
+    CreateJoystickControls("CamY:", EVENT_INTERFACE_JOYSTICK_CAM_Y, EVENT_INTERFACE_JOYSTICK_CAM_Y_INVERT);
+    CreateJoystickControls("CamZ:", EVENT_INTERFACE_JOYSTICK_CAM_Z, EVENT_INTERFACE_JOYSTICK_CAM_Z_INVERT);
 
     pos.y -= 25.0f/480.0f;
     pos.x = 420.0f/640.0f;
@@ -203,6 +180,9 @@ bool CScreenSetupControls::EventProcess(const Event &event)
         case EVENT_INTERFACE_JOYSTICK_X_INVERT:
         case EVENT_INTERFACE_JOYSTICK_Y_INVERT:
         case EVENT_INTERFACE_JOYSTICK_Z_INVERT:
+        case EVENT_INTERFACE_JOYSTICK_CAM_X_INVERT:
+        case EVENT_INTERFACE_JOYSTICK_CAM_Y_INVERT:
+        case EVENT_INTERFACE_JOYSTICK_CAM_Z_INVERT:
             ToggleJoystickInvert(event.type);
             ChangeSetupButtons();
             UpdateSetupButtons();
@@ -212,6 +192,9 @@ bool CScreenSetupControls::EventProcess(const Event &event)
         case EVENT_INTERFACE_JOYSTICK_X:
         case EVENT_INTERFACE_JOYSTICK_Y:
         case EVENT_INTERFACE_JOYSTICK_Z:
+        case EVENT_INTERFACE_JOYSTICK_CAM_X:
+        case EVENT_INTERFACE_JOYSTICK_CAM_Y:
+        case EVENT_INTERFACE_JOYSTICK_CAM_Z:
         case EVENT_INTERFACE_JOYSTICK_DEADZONE:
             ChangeSetupButtons();
             UpdateSetupButtons();
@@ -254,42 +237,28 @@ void CScreenSetupControls::ChangeSetupButtons()
         }
     }
 
-    if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_X))))
+    auto HandleJoystickControls = [&](JoyAxisSlot joyAxis, EventType bindingControl, EventType invertControl)
     {
-        JoyAxisBinding binding = m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_X);
-        binding.axis = static_cast<int>(round(pev->GetValue()));
-        m_input->SetJoyAxisBinding(JOY_AXIS_SLOT_X, binding);
-    }
-    if (nullptr != (pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_X_INVERT))))
-    {
-        JoyAxisBinding binding = m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_X);
-        binding.invert = pc->TestState(STATE_CHECK);
-        m_input->SetJoyAxisBinding(JOY_AXIS_SLOT_X, binding);
-    }
-    if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_Y))))
-    {
-        JoyAxisBinding binding = m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_Y);
-        binding.axis = static_cast<int>(round(pev->GetValue()));
-        m_input->SetJoyAxisBinding(JOY_AXIS_SLOT_Y, binding);
-    }
-    if (nullptr != (pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_Y_INVERT))))
-    {
-        JoyAxisBinding binding = m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_Y);
-        binding.invert = pc->TestState(STATE_CHECK);
-        m_input->SetJoyAxisBinding(JOY_AXIS_SLOT_Y, binding);
-    }
-    if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_Z))))
-    {
-        JoyAxisBinding binding = m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_Z);
-        binding.axis = static_cast<int>(round(pev->GetValue()));
-        m_input->SetJoyAxisBinding(JOY_AXIS_SLOT_Z, binding);
-    }
-    if (nullptr != (pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_Z_INVERT))))
-    {
-        JoyAxisBinding binding = m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_Z);
-        binding.invert = pc->TestState(STATE_CHECK);
-        m_input->SetJoyAxisBinding(JOY_AXIS_SLOT_Z, binding);
-    }
+        if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(bindingControl))))
+        {
+            JoyAxisBinding binding = m_input->GetJoyAxisBinding(joyAxis);
+            binding.axis = static_cast<int>(round(pev->GetValue()));
+            m_input->SetJoyAxisBinding(joyAxis, binding);
+        }
+        if (nullptr != (pc = static_cast<CCheck*>(pw->SearchControl(invertControl))))
+        {
+            JoyAxisBinding binding = m_input->GetJoyAxisBinding(joyAxis);
+            binding.invert = pc->TestState(STATE_CHECK);
+            m_input->SetJoyAxisBinding(joyAxis, binding);
+        }
+    };
+    HandleJoystickControls(JOY_AXIS_SLOT_X, EVENT_INTERFACE_JOYSTICK_X, EVENT_INTERFACE_JOYSTICK_X_INVERT);
+    HandleJoystickControls(JOY_AXIS_SLOT_Y, EVENT_INTERFACE_JOYSTICK_Y, EVENT_INTERFACE_JOYSTICK_Y_INVERT);
+    HandleJoystickControls(JOY_AXIS_SLOT_Z, EVENT_INTERFACE_JOYSTICK_Z, EVENT_INTERFACE_JOYSTICK_Z_INVERT);
+    HandleJoystickControls(JOY_AXIS_SLOT_CAM_X, EVENT_INTERFACE_JOYSTICK_CAM_X, EVENT_INTERFACE_JOYSTICK_CAM_X_INVERT);
+    HandleJoystickControls(JOY_AXIS_SLOT_CAM_Y, EVENT_INTERFACE_JOYSTICK_CAM_Y, EVENT_INTERFACE_JOYSTICK_CAM_Y_INVERT);
+    HandleJoystickControls(JOY_AXIS_SLOT_CAM_Z, EVENT_INTERFACE_JOYSTICK_CAM_Z, EVENT_INTERFACE_JOYSTICK_CAM_Z_INVERT);
+
     if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_DEADZONE))))
     {
         m_input->SetJoystickDeadzone(pev->GetValue());
@@ -332,39 +301,27 @@ void CScreenSetupControls::UpdateSetupButtons()
         pli->SetSelect(m_app->GetJoystickEnabled() ? m_app->GetJoystick().index + 1 : 0);
     }
 
-    if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_X))))
+    auto HandleJoystickControls = [&](JoyAxisSlot joyAxis, EventType bindingControl, EventType invertControl)
     {
-        pev->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
-        pev->SetMaxValue(m_app->GetJoystick().axisCount-1);
-        pev->SetValue(m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_X).axis);
-    }
-    if (nullptr != (pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_X_INVERT))))
-    {
-        pc->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
-        pc->SetState(STATE_CHECK, m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_X).invert);
-    }
-    if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_Y))))
-    {
-        pev->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
-        pev->SetMaxValue(m_app->GetJoystick().axisCount-1);
-        pev->SetValue(m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_Y).axis);
-    }
-    if (nullptr != (pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_Y_INVERT))))
-    {
-        pc->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
-        pc->SetState(STATE_CHECK, m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_Y).invert);
-    }
-    if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_Z))))
-    {
-        pev->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
-        pev->SetMaxValue(m_app->GetJoystick().axisCount-1);
-        pev->SetValue(m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_Z).axis);
-    }
-    if (nullptr != (pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_Z_INVERT))))
-    {
-        pc->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
-        pc->SetState(STATE_CHECK, m_input->GetJoyAxisBinding(JOY_AXIS_SLOT_Z).invert);
-    }
+        if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(bindingControl))))
+        {
+            pev->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
+            pev->SetMaxValue(m_app->GetJoystick().axisCount-1);
+            pev->SetValue(m_input->GetJoyAxisBinding(joyAxis).axis);
+        }
+        if (nullptr != (pc = static_cast<CCheck*>(pw->SearchControl(invertControl))))
+        {
+            pc->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
+            pc->SetState(STATE_CHECK, m_input->GetJoyAxisBinding(joyAxis).invert);
+        }
+    };
+    HandleJoystickControls(JOY_AXIS_SLOT_X, EVENT_INTERFACE_JOYSTICK_X, EVENT_INTERFACE_JOYSTICK_X_INVERT);
+    HandleJoystickControls(JOY_AXIS_SLOT_Y, EVENT_INTERFACE_JOYSTICK_Y, EVENT_INTERFACE_JOYSTICK_Y_INVERT);
+    HandleJoystickControls(JOY_AXIS_SLOT_Z, EVENT_INTERFACE_JOYSTICK_Z, EVENT_INTERFACE_JOYSTICK_Z_INVERT);
+    HandleJoystickControls(JOY_AXIS_SLOT_CAM_X, EVENT_INTERFACE_JOYSTICK_CAM_X, EVENT_INTERFACE_JOYSTICK_CAM_X_INVERT);
+    HandleJoystickControls(JOY_AXIS_SLOT_CAM_Y, EVENT_INTERFACE_JOYSTICK_CAM_Y, EVENT_INTERFACE_JOYSTICK_CAM_Y_INVERT);
+    HandleJoystickControls(JOY_AXIS_SLOT_CAM_Z, EVENT_INTERFACE_JOYSTICK_CAM_Z, EVENT_INTERFACE_JOYSTICK_CAM_Z_INVERT);
+
     if (nullptr != (pev = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK_DEADZONE))))
     {
         pev->SetState(STATE_ENABLE, m_app->GetJoystickEnabled());
