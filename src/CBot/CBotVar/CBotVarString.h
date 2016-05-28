@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "CBot/CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVarValue.h"
 
 namespace CBot
 {
@@ -27,33 +27,55 @@ namespace CBot
 /**
  * \brief CBotVar subclass for managing string values (::CBotTypString)
  */
-class CBotVarString : public CBotVar
+class CBotVarString : public CBotVarValue<std::string, CBotTypString>
 {
 public:
-    /**
-     * \brief Constructor. Do not call directly, use CBotVar::Create()
-     */
-    CBotVarString(const CBotToken& name);
+    CBotVarString(const CBotToken &name) : CBotVarValue(name) {}
 
-    void SetValString(const std::string& val) override;
-    std::string GetValString() override;
+    void SetValInt(int val, const std::string& s = "") override
+    {
+        SetValString(ToString(val));
+    }
 
-    void Copy(CBotVar* pSrc, bool bName = true) override;
+    void SetValFloat(float val) override
+    {
+        SetValString(ToString(val));
+    }
+
+    int GetValInt()
+    {
+        return FromString<int>(GetValString());
+    }
+
+    float GetValFloat()
+    {
+        return FromString<float>(GetValString());
+    }
 
     void Add(CBotVar* left, CBotVar* right) override;
 
-    bool Lo(CBotVar* left, CBotVar* right) override;
-    bool Hi(CBotVar* left, CBotVar* right) override;
-    bool Ls(CBotVar* left, CBotVar* right) override;
-    bool Hs(CBotVar* left, CBotVar* right) override;
     bool Eq(CBotVar* left, CBotVar* right) override;
     bool Ne(CBotVar* left, CBotVar* right) override;
 
     bool Save1State(FILE* pf) override;
 
 private:
-    //! The value.
-    std::string m_val;
+    template<typename T>
+    static std::string ToString(T val)
+    {
+        std::ostringstream ss;
+        ss << val;
+        return ss.str();
+    }
+
+    template<typename T>
+    static T FromString(std::string val)
+    {
+        std::istringstream ss(val);
+        T v;
+        ss >> v;
+        return v;
+    }
 };
 
 } // namespace CBot

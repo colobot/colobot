@@ -51,6 +51,11 @@ public:
     CBotVar();
 
     /**
+     * \brief Constructor. Do not call directly, use CBotVar::Create()
+     */
+    CBotVar(const CBotToken& name);
+
+    /**
      * \brief Destructor. Do not call directly, use CBotVar::Destroy()
      */
     virtual ~CBotVar();

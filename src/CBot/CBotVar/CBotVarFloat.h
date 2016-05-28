@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "CBot/CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVarValue.h"
 
 namespace CBot
 {
@@ -27,45 +27,12 @@ namespace CBot
 /**
  * \brief CBotVar subclass for managing float values (::CBotTypFloat)
  */
-class CBotVarFloat : public CBotVar
+class CBotVarFloat : public CBotVarNumber<float, CBotTypFloat>
 {
 public:
-    /**
-     * \brief Constructor. Do not call directly, use CBotVar::Create()
-     */
-    CBotVarFloat(const CBotToken& name);
-
-    void SetValInt(int val, const std::string& s = nullptr) override;
-    void SetValFloat(float val) override;
-    int GetValInt() override;
-    float GetValFloat() override;
-    std::string GetValString() override;
-
-    void Copy(CBotVar* pSrc, bool bName = true) override;
-
-    void Add(CBotVar* left, CBotVar* right) override;
-    void Sub(CBotVar* left, CBotVar* right) override;
-    void Mul(CBotVar* left, CBotVar* right) override;
-    CBotError Div(CBotVar* left, CBotVar* right) override;
-    CBotError Modulo(CBotVar* left, CBotVar* right) override;
-    void Power(CBotVar* left, CBotVar* right) override;
-
-    bool Lo(CBotVar* left, CBotVar* right) override;
-    bool Hi(CBotVar* left, CBotVar* right) override;
-    bool Ls(CBotVar* left, CBotVar* right) override;
-    bool Hs(CBotVar* left, CBotVar* right) override;
-    bool Eq(CBotVar* left, CBotVar* right) override;
-    bool Ne(CBotVar* left, CBotVar* right) override;
-
-    void Neg() override;
-    void Inc() override;
-    void Dec() override;
+    CBotVarFloat(const CBotToken &name) : CBotVarNumber(name) {}
 
     bool Save1State(FILE* pf) override;
-
-private:
-    //! The value.
-    float m_val;
 };
 
 } // namespace CBot

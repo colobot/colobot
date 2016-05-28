@@ -122,6 +122,7 @@ set(SOURCES
     CBotUtils.h
     CBotVar/CBotVar.cpp
     CBotVar/CBotVar.h
+    CBotVar/CBotVarValue.h
     CBotVar/CBotVarArray.cpp
     CBotVar/CBotVarArray.h
     CBotVar/CBotVarBoolean.cpp

@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "CBot/CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVarValue.h"
 
 namespace CBot
 {
@@ -27,35 +27,17 @@ namespace CBot
 /**
  * \brief CBotVar subclass for managing boolean values (::CBotTypBoolean)
  */
-class CBotVarBoolean : public CBotVar
+class CBotVarBoolean : public CBotVarNumberBase<bool, CBotTypBoolean>
 {
 public:
-    /**
-     * \brief Constructor. Do not call directly, use CBotVar::Create()
-     */
-    CBotVarBoolean(const CBotToken& name);
-
-    void SetValInt(int val, const std::string& s = nullptr) override;
-    void SetValFloat(float val) override;
-    int GetValInt() override;
-    float GetValFloat() override;
-    std::string GetValString() override;
-
-    void Copy(CBotVar* pSrc, bool bName = true) override;
+    CBotVarBoolean(const CBotToken &name) : CBotVarNumberBase(name) {}
 
     void And(CBotVar* left, CBotVar* right) override;
     void Or(CBotVar* left, CBotVar* right) override;
     void XOr(CBotVar* left, CBotVar* right) override;
     void Not() override;
 
-    bool Eq(CBotVar* left, CBotVar* right) override;
-    bool Ne(CBotVar* left, CBotVar* right) override;
-
     bool Save1State(FILE* pf) override;
-
-private:
-    //! The value.
-    bool m_val;
 };
 
 } // namespace CBot

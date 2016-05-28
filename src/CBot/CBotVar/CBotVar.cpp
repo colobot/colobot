@@ -61,6 +61,11 @@ CBotVar::CBotVar( )
     m_mPrivate = ProtectionLevel::Public;
 }
 
+CBotVar::CBotVar(const CBotToken &name) : CBotVar()
+{
+    m_token = new CBotToken(name);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 CBotVar::~CBotVar( )
 {
@@ -698,7 +703,16 @@ void CBotVar::Dec()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotVar::Copy(CBotVar* pSrc, bool bName)
 {
-    assert(0);
+    if (bName) *m_token = *pSrc->m_token;
+    m_type = pSrc->m_type;
+    m_binit = pSrc->m_binit;
+//-    m_bStatic    = pSrc->m_bStatic;
+    m_next = nullptr;
+    m_pMyThis = nullptr;//p->m_pMyThis;
+    m_pUserPtr = pSrc->m_pUserPtr;
+
+    // keeps indentificator the same (by default)
+    if (m_ident == 0) m_ident = pSrc->m_ident;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -726,5 +740,6 @@ CBotClass* CBotVar::GetClass()
     assert(0);
     return nullptr;
 }
+
 
 } // namespace CBot
