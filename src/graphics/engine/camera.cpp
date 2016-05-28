@@ -265,8 +265,7 @@ void CCamera::SetType(CameraType type)
         }
     }
 
-    if (type == CAM_TYPE_INFO  ||
-        type == CAM_TYPE_VISIT)  // xx -> info ?
+    if (type == CAM_TYPE_VISIT)  // *** -> visit ?
     {
         m_prevEye    = m_engine->GetEyePt();
         m_prevLookat = m_engine->GetLookatPt();
@@ -276,8 +275,7 @@ void CCamera::SetType(CameraType type)
         return;
     }
 
-    if (m_type == CAM_TYPE_INFO  ||
-        m_type == CAM_TYPE_VISIT)  // info -> xx ?
+    if (m_type == CAM_TYPE_VISIT)  // visit -> *** ?
     {
         m_engine->SetFocus(m_focus);  // gives initial focus
         m_type = type;
@@ -453,8 +451,7 @@ bool CCamera::StopCentering(CObject *object, float time)
 
 void CCamera::AbortCentering()
 {
-    if (m_type == CAM_TYPE_INFO  ||
-        m_type == CAM_TYPE_VISIT )
+    if (m_type == CAM_TYPE_VISIT )
         return;
 
     if (m_centeringPhase == CAM_PHASE_NULL)
@@ -491,8 +488,7 @@ void CCamera::StartEffect(CameraEffect effect, Math::Vector pos, float force)
 
 void CCamera::EffectFrame(const Event &event)
 {
-    if (m_type == CAM_TYPE_INFO  ||
-        m_type == CAM_TYPE_VISIT)
+    if (m_type == CAM_TYPE_VISIT)
         return;
 
     if (m_effectType == CAM_EFFECT_NULL)
@@ -667,8 +663,7 @@ void CCamera::StartOver(CameraOverEffect effect, Math::Vector pos, float force)
 
 void CCamera::OverFrame(const Event &event)
 {
-    if (m_type == CAM_TYPE_INFO ||
-        m_type == CAM_TYPE_VISIT)
+    if (m_type == CAM_TYPE_VISIT)
         return;
 
     if (m_overType == CAM_OVER_EFFECT_NULL)
@@ -1065,9 +1060,6 @@ bool CCamera::EventProcess(const Event &event)
         if (m_type == CAM_TYPE_SCRIPT)
             return EventFrameScript(event);
 
-        if (m_type == CAM_TYPE_INFO)
-            return EventFrameInfo(event);
-
         if (m_type == CAM_TYPE_VISIT)
             return EventFrameVisit(event);
     }
@@ -1345,13 +1337,6 @@ bool CCamera::EventFrameOnBoard(const Event &event)
     return true;
 }
 
-bool CCamera::EventFrameInfo(const Event &event)
-{
-    SetViewParams(Math::Vector(0.0f, 0.0f, 0.0f),
-                  Math::Vector(0.0f, 0.0f, 1.0f));
-    return true;
-}
-
 bool CCamera::EventFrameVisit(const Event &event)
 {
     m_visitTime += event.rTime;
@@ -1414,9 +1399,6 @@ void CCamera::SetViewParams(const Math::Vector &eye, const Math::Vector &lookat,
     m_engine->SetViewParams(eye, lookat, up);
 
     bool under = (eye.y < m_water->GetLevel());  // Is it underwater?
-    if (m_type == CAM_TYPE_INFO)
-        under = false;
-
     m_engine->SetRankView(under ? 1 : 0);
 }
 

@@ -44,27 +44,25 @@ namespace Gfx
 enum CameraType
 {
     //! Undefined
-    CAM_TYPE_NULL     = 0,
+    CAM_TYPE_NULL = 0,
     //! Free camera
-    CAM_TYPE_FREE     = 1,
+    CAM_TYPE_FREE,
     //! Camera while editing a program
-    CAM_TYPE_EDIT     = 2,
+    CAM_TYPE_EDIT,
     //! Camera on board a robot
-    CAM_TYPE_ONBOARD  = 3,
+    CAM_TYPE_ONBOARD,
     //! Camera behind a robot
-    CAM_TYPE_BACK     = 4,
+    CAM_TYPE_BACK,
     //! Static camera following robot
-    CAM_TYPE_FIX      = 5,
+    CAM_TYPE_FIX,
     //! Camera steady after explosion
-    CAM_TYPE_EXPLO    = 6,
+    CAM_TYPE_EXPLO,
     //! Camera during a cutscene
-    CAM_TYPE_SCRIPT   = 7,
-    //! Camera for displaying SatCom (???)
-    CAM_TYPE_INFO     = 8,
+    CAM_TYPE_SCRIPT,
     //! Visit camera, rotates around given position
-    CAM_TYPE_VISIT    = 9,
+    CAM_TYPE_VISIT,
     //! Static camera height
-    CAM_TYPE_PLANE    = 11,
+    CAM_TYPE_PLANE,
 };
 
 enum CameraSmooth
@@ -242,7 +240,6 @@ protected:
     bool        EventFrameFix(const Event &event);
     bool        EventFrameExplo(const Event &event);
     bool        EventFrameOnBoard(const Event &event);
-    bool        EventFrameInfo(const Event &event);
     bool        EventFrameVisit(const Event &event);
     bool        EventFrameScript(const Event &event);
 
