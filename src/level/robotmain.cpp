@@ -456,7 +456,7 @@ void CRobotMain::ChangePhase(Phase phase)
         FlushNewScriptName();
         m_sound->SetListener(Math::Vector(0.0f, 0.0f, 0.0f), Math::Vector(0.0f, 0.0f, 1.0f));
         m_sound->StopAll();
-        m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
+        m_camera->SetType(Gfx::CAM_TYPE_NULL);
         m_movie->Flush();
         m_movieInfoIndex = -1;
         m_cameraPan  = 0.0f;
@@ -1589,16 +1589,13 @@ void CRobotMain::StartSuspend()
 {
     m_sound->MuteAll(true);
     ClearInterface();
-    m_suspend = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_HIDE_SHORTCUTS|PAUSE_MUTE_SOUND);
+    m_suspend = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_HIDE_SHORTCUTS|PAUSE_MUTE_SOUND|PAUSE_CAMERA);
     m_engine->SetOverFront(false);  // over flat behind
     CreateShortcuts();
 
     m_map->ShowMap(false);
     m_infoObject = DeselectAll();  // removes the control buttons
     m_displayText->HideText(true);
-
-    m_suspendInitCamera = m_camera->GetType();
-    m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
 
     m_engine->EnablePauseBlur();
 }
@@ -1617,8 +1614,6 @@ void CRobotMain::StopSuspend()
         SelectObject(m_infoObject, false);  // gives the command buttons
     m_map->ShowMap(m_mapShow);
     m_displayText->HideText(false);
-
-    m_camera->SetType(m_suspendInitCamera);
 
     m_engine->DisablePauseBlur();
 }
@@ -4975,7 +4970,7 @@ void CRobotMain::ResetCreate()
     m_particle->FlushParticle();
     m_terrain->FlushBuildingLevel();
 
-    m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
+    m_camera->SetType(Gfx::CAM_TYPE_NULL);
 
     try
     {
@@ -5500,6 +5495,7 @@ void CRobotMain::StartMusic()
 void CRobotMain::UpdatePause(PauseType pause)
 {
     m_engine->SetPause(pause & PAUSE_ENGINE);
+    m_camera->SetFreeze(pause & PAUSE_CAMERA);
     m_sound->MuteAll(pause & PAUSE_MUTE_SOUND);
     CreateShortcuts();
     if (pause != PAUSE_NONE) HiliteClear();

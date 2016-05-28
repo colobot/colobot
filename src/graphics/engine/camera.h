@@ -63,8 +63,6 @@ enum CameraType
     CAM_TYPE_INFO     = 8,
     //! Visit instead of an error
     CAM_TYPE_VISIT    = 9,
-    //! Camera for dialog
-    CAM_TYPE_DIALOG   = 10,
     //! Static camera height
     CAM_TYPE_PLANE    = 11,
 };
@@ -211,6 +209,9 @@ public:
     void        SetCameraInvertY(bool invert);
     bool        GetCameraInvertY();
 
+    //! Temporarily freeze camera movement
+    void        SetFreeze(bool freeze);
+
     void        SetCameraSpeed(float speed);
 
 protected:
@@ -224,8 +225,6 @@ protected:
     bool        EventFrame(const Event &event);
     //! Moves the point of view
     bool        EventFrameFree(const Event &event, bool keysAllowed);
-    //! Moves the point of view
-    bool        EventFrameDialog(const Event &event);
     //! Moves the point of view
     bool        EventFrameBack(const Event &event);
     //! Moves the point of view
@@ -389,6 +388,9 @@ protected:
     bool        m_cameraInvertX;
     //! Y inversion in the edges?
     bool        m_cameraInvertY;
+
+    //! Is camera frozen?
+    bool m_freeze = false;
 };
 
 

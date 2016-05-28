@@ -506,7 +506,6 @@ protected:
     char            m_mapFilename[100] = {};
 
     ActivePause*    m_suspend = nullptr;
-    Gfx::CameraType m_suspendInitCamera = Gfx::CAM_TYPE_NULL;
 
     Math::Point     m_tooltipPos;
     std::string     m_tooltipName;

@@ -1163,6 +1163,9 @@ void CCamera::EventMouseButton(const Event &event)
 
 bool CCamera::EventFrame(const Event &event)
 {
+    if (m_freeze)
+        return true;
+
     Math::Point newDelta = m_mouseDeltaEdge * m_speed * event.rTime;
     if (m_cameraInvertX)
         newDelta.x = -newDelta.x;
@@ -1176,9 +1179,6 @@ bool CCamera::EventFrame(const Event &event)
     if (m_type == CAM_TYPE_FREE ||
         m_type == CAM_TYPE_EDIT)
         return EventFrameFree(event, m_type != CAM_TYPE_EDIT);
-
-    if (m_type == CAM_TYPE_DIALOG)
-        return EventFrameDialog(event);
 
     if (m_type == CAM_TYPE_BACK)
         return EventFrameBack(event);
@@ -1259,11 +1259,6 @@ bool CCamera::EventFrameFree(const Event &event, bool keysAllowed)
 
     SetViewTime(m_eyePt, lookatPt, event.rTime);
 
-    return true;
-}
-
-bool CCamera::EventFrameDialog(const Event &event)
-{
     return true;
 }
 
@@ -1623,6 +1618,11 @@ Math::Vector CCamera::CalculateCameraMovement(const Event &event, bool keysAllow
         AbortCentering();  // special stops framing
 
     return delta;
+}
+
+void CCamera::SetFreeze(bool freeze)
+{
+    m_freeze = freeze;
 }
 
 }
