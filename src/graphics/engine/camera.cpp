@@ -1210,7 +1210,7 @@ bool CCamera::EventFrameFree(const Event &event, bool keysAllowed)
     Math::Vector cameraMove = CalculateCameraMovement(event, keysAllowed);
 
     float factor = m_heightEye * 0.5f + 30.0f;
-    bool secondary = event.kmodState & KEY_MOD(CTRL) || event.mouseButtonsState & MOUSE_BUTTON_MIDDLE;
+    bool secondary = m_input->GetKeyState(INPUT_SLOT_CAM_ALT) || event.mouseButtonsState & MOUSE_BUTTON_MIDDLE; // TODO: make mouse button a keybinding
 
     // Forward/Backward
     m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, -cameraMove.y * factor * 2);
@@ -1609,11 +1609,6 @@ Math::Vector CCamera::CalculateCameraMovement(const Event &event, bool keysAllow
             delta.y -= event.motionInput.y * event.rTime * 0.5f * m_speed;
             delta.z -= event.motionInput.z * event.rTime * 20.0f * m_speed;
         }
-
-        if (m_input->GetKeyState(INPUT_SLOT_NEAR))
-            delta.z -= event.rTime * 20.0f * m_speed;
-        if (m_input->GetKeyState(INPUT_SLOT_AWAY))
-            delta.z += event.rTime * 20.0f * m_speed;
     }
 
     if (delta.Length() > 0)

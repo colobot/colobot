@@ -113,6 +113,9 @@ msgstr "Королева чужих убита"
 msgid "Already carrying something"
 msgstr "Уже что-то несу"
 
+msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
+msgstr ""
+
 msgid "Analysis already performed"
 msgstr "Анализ уже выполнен"
 
@@ -328,14 +331,30 @@ msgstr "Прокрутка\\Прокрутка, когда указатель м
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Приблизать камеру\\Перемещение камеры вперед"
 
+#, fuzzy
+msgid "Camera down\\Turns the camera down"
+msgstr "Приблизать камеру\\Перемещение камеры вперед"
+
+#, fuzzy
+msgid "Camera left\\Turns the camera left"
+msgstr "Приблизать камеру\\Перемещение камеры вперед"
+
 msgid "Camera nearest"
 msgstr "Приблизить камеру"
+
+#, fuzzy
+msgid "Camera right\\Turns the camera right"
+msgstr "Повернуть налево\\Поворот налево"
 
 msgid "Camera to left"
 msgstr "Камеру влево"
 
 msgid "Camera to right"
 msgstr "Камеру вправо"
+
+#, fuzzy
+msgid "Camera up\\Turns the camera up"
+msgstr "Камера (\\key camera;)"
 
 msgid "Can not produce not researched object"
 msgstr ""

@@ -49,8 +49,13 @@ CInput::CInput()
         { INPUT_SLOT_CAMERA,   "camera"  },
         { INPUT_SLOT_DESEL,    "desel"   },
         { INPUT_SLOT_ACTION,   "action"  },
-        { INPUT_SLOT_NEAR,     "near"    },
-        { INPUT_SLOT_AWAY,     "away"    },
+        { INPUT_SLOT_CAM_LEFT, "cleft"   },
+        { INPUT_SLOT_CAM_RIGHT,"cright"  },
+        { INPUT_SLOT_CAM_UP,   "cup"     },
+        { INPUT_SLOT_CAM_DOWN, "cdown"   },
+        { INPUT_SLOT_CAM_NEAR, "near"    },
+        { INPUT_SLOT_CAM_AWAY, "away"    },
+        { INPUT_SLOT_CAM_ALT,  "camalt"  },
         { INPUT_SLOT_NEXT,     "next"    },
         { INPUT_SLOT_HUMAN,    "human"   },
         { INPUT_SLOT_QUIT,     "quit"    },
@@ -64,8 +69,8 @@ CInput::CInput()
         { INPUT_SLOT_SPEED30,  "speed30" },
         { INPUT_SLOT_SPEED40,  "speed40" },
         { INPUT_SLOT_SPEED60,  "speed60" },
-        { INPUT_SLOT_PAUSE,    "pause" },
-        { INPUT_SLOT_CMDLINE,    "cmdline" },
+        { INPUT_SLOT_PAUSE,    "pause"   },
+        { INPUT_SLOT_CMDLINE,  "cmdline" },
     };
 
     m_mousePos = Math::Point();
@@ -125,10 +130,12 @@ void CInput::EventProcess(Event& event)
         if (data->slot == INPUT_SLOT_GUP  ) m_keyMotion.z =  1.0f;
         if (data->slot == INPUT_SLOT_GDOWN) m_keyMotion.z = -1.0f;
 
-        if (data->key  == KEY(KP_4)             ) m_cameraKeyMotion.x = -1.0f;
-        if (data->key  == KEY(KP_6)             ) m_cameraKeyMotion.x =  1.0f;
-        if (data->key  == KEY(KP_8)             ) m_cameraKeyMotion.y =  1.0f;
-        if (data->key  == KEY(KP_2)             ) m_cameraKeyMotion.y = -1.0f;
+        if (data->slot == INPUT_SLOT_CAM_LEFT ) m_cameraKeyMotion.x = -1.0f;
+        if (data->slot == INPUT_SLOT_CAM_RIGHT) m_cameraKeyMotion.x =  1.0f;
+        if (data->slot == INPUT_SLOT_CAM_UP   ) m_cameraKeyMotion.y =  1.0f;
+        if (data->slot == INPUT_SLOT_CAM_DOWN ) m_cameraKeyMotion.y = -1.0f;
+        if (data->slot == INPUT_SLOT_CAM_NEAR ) m_cameraKeyMotion.z = -1.0f;
+        if (data->slot == INPUT_SLOT_CAM_AWAY ) m_cameraKeyMotion.z =  1.0f;
     }
     else if (event.type == EVENT_KEY_UP)
     {
@@ -141,10 +148,12 @@ void CInput::EventProcess(Event& event)
         if (data->slot == INPUT_SLOT_GUP  ) m_keyMotion.z = 0.0f;
         if (data->slot == INPUT_SLOT_GDOWN) m_keyMotion.z = 0.0f;
 
-        if (data->key  == KEY(KP_4)             ) m_cameraKeyMotion.x = 0.0f;
-        if (data->key  == KEY(KP_6)             ) m_cameraKeyMotion.x = 0.0f;
-        if (data->key  == KEY(KP_8)             ) m_cameraKeyMotion.y = 0.0f;
-        if (data->key  == KEY(KP_2)             ) m_cameraKeyMotion.y = 0.0f;
+        if (data->slot == INPUT_SLOT_CAM_LEFT ) m_cameraKeyMotion.x = 0.0f;
+        if (data->slot == INPUT_SLOT_CAM_RIGHT) m_cameraKeyMotion.x = 0.0f;
+        if (data->slot == INPUT_SLOT_CAM_UP   ) m_cameraKeyMotion.y = 0.0f;
+        if (data->slot == INPUT_SLOT_CAM_DOWN ) m_cameraKeyMotion.y = 0.0f;
+        if (data->slot == INPUT_SLOT_CAM_NEAR ) m_cameraKeyMotion.z = 0.0f;
+        if (data->slot == INPUT_SLOT_CAM_AWAY ) m_cameraKeyMotion.z = 0.0f;
     }
     else if (event.type == EVENT_JOY_AXIS)
     {
@@ -255,8 +264,13 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_DESEL  ].primary   = KEY(KP_0);
     m_inputBindings[INPUT_SLOT_ACTION ].primary   = KEY(RETURN);
     m_inputBindings[INPUT_SLOT_ACTION ].secondary = KEY(e);
-    m_inputBindings[INPUT_SLOT_NEAR   ].primary   = KEY(KP_PLUS);
-    m_inputBindings[INPUT_SLOT_AWAY   ].primary   = KEY(KP_MINUS);
+    m_inputBindings[INPUT_SLOT_CAM_LEFT ].primary = KEY(KP_4);
+    m_inputBindings[INPUT_SLOT_CAM_RIGHT].primary = KEY(KP_6);
+    m_inputBindings[INPUT_SLOT_CAM_UP   ].primary = KEY(KP_8);
+    m_inputBindings[INPUT_SLOT_CAM_DOWN ].primary = KEY(KP_2);
+    m_inputBindings[INPUT_SLOT_CAM_NEAR ].primary = KEY(KP_PLUS);
+    m_inputBindings[INPUT_SLOT_CAM_AWAY ].primary = KEY(KP_MINUS);
+    m_inputBindings[INPUT_SLOT_CAM_ALT  ].primary = VIRTUAL_KMOD(ALT);
     m_inputBindings[INPUT_SLOT_NEXT   ].primary   = KEY(TAB);
     m_inputBindings[INPUT_SLOT_HUMAN  ].primary   = KEY(HOME);
     m_inputBindings[INPUT_SLOT_QUIT   ].primary   = KEY(ESCAPE);

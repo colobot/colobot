@@ -111,6 +111,9 @@ msgstr "Królowa Obcych została zabita"
 msgid "Already carrying something"
 msgstr "Nie można nieść więcej przedmiotów"
 
+msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
+msgstr "Alternatywny tryb kamery\\Poruszaj na boki zamiast obracać (w kamerze swobodnej)"
+
 msgid "Analysis already performed"
 msgstr "Analiza została już wykonana"
 
@@ -324,14 +327,26 @@ msgstr "Przewijanie kamery przy krawędzi\\Ekran jest przewijany gdy mysz dotkni
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera bliżej\\Przybliża kamerę"
 
+msgid "Camera down\\Turns the camera down"
+msgstr "Kamera w dół\\Obraca kamerę w dół"
+
+msgid "Camera left\\Turns the camera left"
+msgstr "Kamera w lewo\\Obraca kamerę w lewo"
+
 msgid "Camera nearest"
 msgstr "Camera nearest"
+
+msgid "Camera right\\Turns the camera right"
+msgstr "Kamera w prawo\\Obróć kamerę w prawo"
 
 msgid "Camera to left"
 msgstr "Camera to left"
 
 msgid "Camera to right"
 msgstr "Camera to right"
+
+msgid "Camera up\\Turns the camera up"
+msgstr "Kamera w górę\\Obróć kamerę w górę"
 
 msgid "Can not produce not researched object"
 msgstr "Nie można wyprodukować nie wynalezionego obiektu"

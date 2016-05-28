@@ -115,6 +115,9 @@ msgstr "Insektenkönigin tödlich verwundet"
 msgid "Already carrying something"
 msgstr "Trägt schon etwas"
 
+msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
+msgstr ""
+
 msgid "Analysis already performed"
 msgstr "Analyse schon durchgeführt"
 
@@ -330,14 +333,30 @@ msgstr "Kameradrehung mit der Maus\\Die Kamera dreht wenn die Maus den Rand erre
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera näher\\Bewegung der Kamera vorwärts"
 
+#, fuzzy
+msgid "Camera down\\Turns the camera down"
+msgstr "Kamera näher\\Bewegung der Kamera vorwärts"
+
+#, fuzzy
+msgid "Camera left\\Turns the camera left"
+msgstr "Kamera näher\\Bewegung der Kamera vorwärts"
+
 msgid "Camera nearest"
 msgstr "Kamera näher"
+
+#, fuzzy
+msgid "Camera right\\Turns the camera right"
+msgstr "Drehung nach rechts\\Steuer rechts"
 
 msgid "Camera to left"
 msgstr "Kamera links"
 
 msgid "Camera to right"
 msgstr "Kamera rechts"
+
+#, fuzzy
+msgid "Camera up\\Turns the camera up"
+msgstr "Kamera (\\key camera;)"
 
 msgid "Can not produce not researched object"
 msgstr "Das erforschte Objekt kann nicht produziert werden"

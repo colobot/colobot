@@ -108,6 +108,9 @@ msgstr "Pondeuse mortellement touchée"
 msgid "Already carrying something"
 msgstr "Porte déjà quelque chose"
 
+msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
+msgstr ""
+
 msgid "Analysis already performed"
 msgstr "Analyse déjà effectuée"
 
@@ -321,14 +324,30 @@ msgstr "Défilement dans les bords\\Défilement lorsque la souris touche les bor
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Caméra plus proche\\Avance la caméra"
 
+#, fuzzy
+msgid "Camera down\\Turns the camera down"
+msgstr "Caméra plus proche\\Avance la caméra"
+
+#, fuzzy
+msgid "Camera left\\Turns the camera left"
+msgstr "Caméra plus proche\\Avance la caméra"
+
 msgid "Camera nearest"
 msgstr "Caméra plus proche"
+
+#, fuzzy
+msgid "Camera right\\Turns the camera right"
+msgstr "Tourner à droite\\Moteur à droite"
 
 msgid "Camera to left"
 msgstr "Caméra à gauche"
 
 msgid "Camera to right"
 msgstr "Caméra à droite"
+
+#, fuzzy
+msgid "Camera up\\Turns the camera up"
+msgstr "Caméra (\\key camera;)"
 
 msgid "Can not produce not researched object"
 msgstr "Impossible de créer un objet n'ayant pas été recherché"

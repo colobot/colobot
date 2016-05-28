@@ -220,8 +220,13 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAMERA]      = TR("Change camera\\Switches between onboard camera and following camera");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_DESEL]       = TR("Previous object\\Selects the previous object");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_ACTION]      = TR("Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_NEAR]        = TR("Camera closer\\Moves the camera forward");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_AWAY]        = TR("Camera back\\Moves the camera backward");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_LEFT]    = TR("Camera left\\Turns the camera left");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_RIGHT]   = TR("Camera right\\Turns the camera right");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_UP]      = TR("Camera up\\Turns the camera up");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_DOWN]    = TR("Camera down\\Turns the camera down");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_NEAR]    = TR("Camera closer\\Moves the camera forward");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_AWAY]    = TR("Camera back\\Moves the camera backward");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_ALT]     = TR("Alternative camera mode\\Move sideways instead of rotating (in free camera)");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_NEXT]        = TR("Next object\\Selects the next object");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_HUMAN]       = TR("Select the astronaut\\Selects the astronaut");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_QUIT]        = TR("Quit\\Quit the current mission or exercise");

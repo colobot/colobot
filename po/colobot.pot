@@ -461,10 +461,25 @@ msgstr ""
 msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
 msgstr ""
 
+msgid "Camera left\\Turns the camera left"
+msgstr ""
+
+msgid "Camera right\\Turns the camera right"
+msgstr ""
+
+msgid "Camera up\\Turns the camera up"
+msgstr ""
+
+msgid "Camera down\\Turns the camera down"
+msgstr ""
+
 msgid "Camera closer\\Moves the camera forward"
 msgstr ""
 
 msgid "Camera back\\Moves the camera backward"
+msgstr ""
+
+msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
 msgstr ""
 
 msgid "Next object\\Selects the next object"
