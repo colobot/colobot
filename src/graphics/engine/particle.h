@@ -297,7 +297,11 @@ public:
 protected:
     //! Removes a particle of given rank
     void        DeleteRank(int rank);
-    //! Adapts the channel so it can be used as an offset in m_particle
+    /**
+     * \brief Adapts the channel so it can be used as an offset in m_particle
+     * \param channel Channel number to process, will be modified to be index of particle in m_particle
+     * \throw std::runtime_error if this particle does not exist any more
+     **/
     void        GetRankFromChannel(int &channel);
     //! Draws a triangular particle
     void        DrawParticleTriangle(int i);

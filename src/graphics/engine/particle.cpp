@@ -641,22 +641,22 @@ void CParticle::GetRankFromChannel(int &channel)
     int uniqueStamp = (channel>>16)&0xffff;
     channel &= 0xffff;
 
-    assert(channel >= 0 && channel < MAXPARTICULE*MAXPARTITYPE);
-
-    if (!m_particle[channel].used) assert(!!"Tried to access invalid particle channel (used=false) !\n");
-    if (m_particle[channel].uniqueStamp != uniqueStamp) assert(!!"Tried to access invalid particle channel (uniqueStamp changed) !\n");
+    if (channel < 0 || channel >= MAXPARTICULE*MAXPARTITYPE) throw std::runtime_error("Tried to access invalid particle channel (invalid ID)");
+    if (!m_particle[channel].used) throw std::runtime_error("Tried to access invalid particle channel (used=false)");
+    if (m_particle[channel].uniqueStamp != uniqueStamp) throw std::runtime_error("Tried to access invalid particle channel (uniqueStamp changed)");
 }
 
 bool CParticle::ParticleExists(int channel)
 {
-    int uniqueStamp = (channel>>16)&0xffff;
-    channel &= 0xffff;
-
-    assert(channel >= 0 && channel < MAXPARTICULE*MAXPARTITYPE);
-
-    if (!m_particle[channel].used) return false;
-    if (m_particle[channel].uniqueStamp != uniqueStamp) return false;
-    return true;
+    try
+    {
+        GetRankFromChannel(channel);
+        return true;
+    }
+    catch (const std::runtime_error& e)
+    {
+        return false;
+    }
 }
 
 void CParticle::DeleteRank(int rank)

@@ -2975,6 +2975,7 @@ void COldObject::UpdateSelectParticle()
     // Updates lens.
     for ( i=0 ; i<4 ; i++ )
     {
+        if (m_partiSel[i] == -1) continue;
         pos[i] = Math::Transform(m_objectPart[0].matWorld, pos[i]);
         dim[i].y = dim[i].x;
         m_particle->SetParam(m_partiSel[i], pos[i], dim[i], zoom[i], angle, 1.0f);
