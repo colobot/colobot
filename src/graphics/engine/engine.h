@@ -901,8 +901,7 @@ public:
     void            SetMaterial(const Material& mat);
 
     //! Specifies the location and direction of view
-    void            SetViewParams(const Math::Vector& eyePt, const Math::Vector& lookatPt,
-                                  const Math::Vector& upVec, float eyeDistance);
+    void SetViewParams(const Math::Vector &eyePt, const Math::Vector &lookatPt, const Math::Vector &upVec);
 
     //! Loads texture, creating it if not already present
     Texture         LoadTexture(const std::string& name);

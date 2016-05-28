@@ -88,7 +88,6 @@ CCamera::CCamera()
     m_smooth    = CAM_SMOOTH_NORM;
     m_cameraObj = nullptr;
 
-    m_eyeDistance = 10.0f;
     m_initDelay   =  0.0f;
 
     m_actualEye    = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -223,7 +222,6 @@ void CCamera::Init(Math::Vector eye, Math::Vector lookat, float delay)
     m_directionH = Math::RotateAngle(eye.x - lookat.x, eye.z - lookat.z) + Math::PI / 2.0f;
     m_directionV = -Math::RotateAngle(Math::DistanceProjected(eye, lookat), eye.y - lookat.y);
 
-    m_eyeDistance = 10.0f;
     m_heightLookat = 10.0f;
     m_backDist = 30.0f;
     m_backMin  = 10.0f;
@@ -1528,7 +1526,7 @@ void CCamera::SetScriptLookat(Math::Vector lookat)
 void CCamera::SetViewParams(const Math::Vector &eye, const Math::Vector &lookat,
                             const Math::Vector &up)
 {
-    m_engine->SetViewParams(eye, lookat, up, m_eyeDistance);
+    m_engine->SetViewParams(eye, lookat, up);
 
     bool under = (eye.y < m_water->GetLevel());  // Is it underwater?
     if (m_type == CAM_TYPE_INFO)

@@ -282,8 +282,6 @@ protected:
     //! Object linked to the camera
     CObject*          m_cameraObj;
 
-    //! Distance between the eyes
-    float       m_eyeDistance;
     //! Time of initial centering
     float       m_initDelay;
 
@@ -293,11 +291,11 @@ protected:
     Math::Vector    m_actualLookat;
     //! Final eye
     Math::Vector    m_finalEye;
-    //! Final aim
+    //! Final lookat
     Math::Vector    m_finalLookat;
-    //! Normal eye
+    //! Eye position at the moment of entering CAM_TYPE_INFO/CAM_TYPE_VISIT
     Math::Vector    m_normEye;
-    //! Normal aim
+    //! Lookat position at the moment of entering CAM_TYPE_INFO/CAM_TYPE_VISIT
     Math::Vector    m_normLookat;
 
     float       m_focus;

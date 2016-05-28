@@ -2184,8 +2184,7 @@ void CEngine::SetMaterial(const Material& mat)
     m_device->SetMaterial(mat);
 }
 
-void CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& lookatPt,
-                                 const Math::Vector& upVec, float eyeDistance)
+void CEngine::SetViewParams(const Math::Vector &eyePt, const Math::Vector &lookatPt, const Math::Vector &upVec)
 {
     m_eyePt = eyePt;
     m_lookatPt = lookatPt;
