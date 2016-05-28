@@ -444,6 +444,14 @@ public:
      */
     //@{
 
+    operator int();
+    operator float();
+    operator std::string();
+    void operator=(const CBotVar& var);
+    void operator=(int x);
+    void operator=(float x);
+    void operator=(const std::string &x);
+
     /**
      * \brief Set the value
      * \param var Another variable to copy value from

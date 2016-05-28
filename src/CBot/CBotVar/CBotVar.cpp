@@ -741,5 +741,39 @@ CBotClass* CBotVar::GetClass()
     return nullptr;
 }
 
+CBotVar::operator int()
+{
+    return GetValInt();
+}
+
+CBotVar::operator float()
+{
+    return GetValFloat();
+}
+
+CBotVar::operator std::string()
+{
+    return GetValString();
+}
+
+void CBotVar::operator=(const CBotVar &var)
+{
+    SetVal(const_cast<CBotVar*>(&var));
+}
+
+void CBotVar::operator=(int x)
+{
+    SetValInt(x);
+}
+
+void CBotVar::operator=(float x)
+{
+    SetValFloat(x);
+}
+
+void CBotVar::operator=(const std::string &x)
+{
+    SetValString(x);
+}
 
 } // namespace CBot
