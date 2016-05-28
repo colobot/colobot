@@ -75,17 +75,17 @@ void InitializeRestext()
     stringsText[RT_TITLE_WRITE]      = TR("Save the current mission");
     stringsText[RT_TITLE_READ]       = TR("Load a saved mission");
 
-    stringsText[RT_PLAY_CHAP_CHAPTERS]   = TR(" Chapters:");
-    stringsText[RT_PLAY_CHAP_PLANETS]    = TR(" Planets:");
-    stringsText[RT_PLAY_CHAP_USERLVL]    = TR(" Custom levels:");
-    stringsText[RT_PLAY_LIST_LEVELS]     = TR(" Levels in this chapter:");
-    stringsText[RT_PLAY_LIST_EXERCISES]  = TR(" Exercises in the chapter:");
-    stringsText[RT_PLAY_LIST_CHALLENGES] = TR(" Challenges in the chapter:");
-    stringsText[RT_PLAY_LIST_MISSIONS]   = TR(" Missions on this planet:");
-    stringsText[RT_PLAY_LIST_FREEGAME]   = TR(" Free game on this planet:");
-    stringsText[RT_PLAY_RESUME]          = TR(" Summary:");
+    stringsText[RT_PLAY_CHAP_CHAPTERS]   = TR("Chapters:");
+    stringsText[RT_PLAY_CHAP_PLANETS]    = TR("Planets:");
+    stringsText[RT_PLAY_CHAP_USERLVL]    = TR("Custom levels:");
+    stringsText[RT_PLAY_LIST_LEVELS]     = TR("Levels in this chapter:");
+    stringsText[RT_PLAY_LIST_EXERCISES]  = TR("Exercises in the chapter:");
+    stringsText[RT_PLAY_LIST_CHALLENGES] = TR("Challenges in the chapter:");
+    stringsText[RT_PLAY_LIST_MISSIONS]   = TR("Missions on this planet:");
+    stringsText[RT_PLAY_LIST_FREEGAME]   = TR("Free game on this planet:");
+    stringsText[RT_PLAY_RESUME]          = TR("Summary:");
 
-    stringsText[RT_SETUP_MODE]       = TR(" Resolution:");
+    stringsText[RT_SETUP_MODE]       = TR("Resolution:");
     stringsText[RT_SETUP_KEY1]       = TR("1) First click on the key you want to redefine.");
     stringsText[RT_SETUP_KEY2]       = TR("2) Then press the key you want to use instead.");
 
@@ -98,7 +98,7 @@ void InitializeRestext()
     stringsText[RT_DIALOG_ABORT]     = TR("Abort\\Abort the current mission");
     stringsText[RT_DIALOG_CONTINUE]  = TR("Continue\\Continue the current mission");
     stringsText[RT_DIALOG_DELOBJ]    = TR("Do you really want to destroy the selected building?");
-    stringsText[RT_DIALOG_DELGAME]   = TR("Do you want to delete %s's saved games? ");
+    stringsText[RT_DIALOG_DELGAME]   = TR("Do you want to delete %s's saved games?");
     stringsText[RT_DIALOG_YES]       = TR("Yes");
     stringsText[RT_DIALOG_NO]        = TR("No");
     stringsText[RT_DIALOG_LOADING]   = TR("LOADING");
@@ -163,7 +163,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_NAME]      = TR("Change player\\Change player");
     stringsEvent[EVENT_INTERFACE_SETUP]     = TR("Options\\Preferences");
     stringsEvent[EVENT_INTERFACE_AGAIN]     = TR("Restart\\Restart the mission from the beginning");
-    stringsEvent[EVENT_INTERFACE_WRITE]     = TR("Save\\Save the current mission ");
+    stringsEvent[EVENT_INTERFACE_WRITE]     = TR("Save\\Save the current mission");
     stringsEvent[EVENT_INTERFACE_READ]      = TR("Load\\Load a saved mission");
     stringsEvent[EVENT_INTERFACE_ABORT]     = TR("\\Return to Colobot: Gold Edition");
     stringsEvent[EVENT_INTERFACE_QUIT]      = TR("Quit\\Quit Colobot: Gold Edition");
@@ -244,7 +244,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CMDLINE]     = TR("Cheat console\\Show cheat console");
 
     stringsEvent[EVENT_INTERFACE_VOLSOUND]  = TR("Sound effects:\\Volume of engines, voice, shooting, etc.");
-    stringsEvent[EVENT_INTERFACE_VOLMUSIC]  = TR("Background sound :\\Volume of audio tracks");
+    stringsEvent[EVENT_INTERFACE_VOLMUSIC]  = TR("Background sound:\\Volume of audio tracks");
 
     stringsEvent[EVENT_INTERFACE_MIN]       = TR("Lowest\\Minimum graphic quality (highest frame rate)");
     stringsEvent[EVENT_INTERFACE_NORM]      = TR("Normal\\Normal graphic quality");
@@ -442,15 +442,15 @@ void InitializeRestext()
     stringsEvent[EVENT_STUDIO_CANCEL]       = TR("Cancel\\Cancel all changes");
     stringsEvent[EVENT_STUDIO_CLONE]        = TR("Clone program");
     stringsEvent[EVENT_STUDIO_NEW]          = TR("New");
-    stringsEvent[EVENT_STUDIO_OPEN]         = TR("Open (Ctrl+o)");
-    stringsEvent[EVENT_STUDIO_SAVE]         = TR("Save (Ctrl+s)");
-    stringsEvent[EVENT_STUDIO_UNDO]         = TR("Undo (Ctrl+z)");
-    stringsEvent[EVENT_STUDIO_CUT]          = TR("Cut (Ctrl+x)");
-    stringsEvent[EVENT_STUDIO_COPY]         = TR("Copy (Ctrl+c)");
-    stringsEvent[EVENT_STUDIO_PASTE]        = TR("Paste (Ctrl+v)");
+    stringsEvent[EVENT_STUDIO_OPEN]         = TR("Open (Ctrl+O)");
+    stringsEvent[EVENT_STUDIO_SAVE]         = TR("Save (Ctrl+S)");
+    stringsEvent[EVENT_STUDIO_UNDO]         = TR("Undo (Ctrl+Z)");
+    stringsEvent[EVENT_STUDIO_CUT]          = TR("Cut (Ctrl+X)");
+    stringsEvent[EVENT_STUDIO_COPY]         = TR("Copy (Ctrl+C)");
+    stringsEvent[EVENT_STUDIO_PASTE]        = TR("Paste (Ctrl+V)");
     stringsEvent[EVENT_STUDIO_SIZE]         = TR("Font size");
     stringsEvent[EVENT_STUDIO_TOOL]         = TR("Instructions (\\key help;)");
-    stringsEvent[EVENT_STUDIO_HELP]         = TR("Programming help  (\\key prog;)");
+    stringsEvent[EVENT_STUDIO_HELP]         = TR("Programming help (\\key prog;)");
     stringsEvent[EVENT_STUDIO_COMPILE]      = TR("Compile");
     stringsEvent[EVENT_STUDIO_RUN]          = TR("Execute/stop");
     stringsEvent[EVENT_STUDIO_REALTIME]     = TR("Pause/continue");
@@ -611,8 +611,8 @@ void InitializeRestext()
     stringsErr[ERR_ENERGY_LOW]      = TR("Not enough energy yet");
     stringsErr[ERR_ENERGY_EMPTY]    = TR("No titanium to transform");
     stringsErr[ERR_ENERGY_BAD]      = TR("Transforms only titanium");
-    stringsErr[ERR_BASE_DLOCK]      = TR("Doors blocked by a robot or another object ");
-    stringsErr[ERR_BASE_DHUMAN]     = TR("You must get on the spaceship to take off ");
+    stringsErr[ERR_BASE_DLOCK]      = TR("Doors blocked by a robot or another object");
+    stringsErr[ERR_BASE_DHUMAN]     = TR("You must get on the spaceship to take off");
     stringsErr[ERR_LABO_NULL]       = TR("Nothing to analyze");
     stringsErr[ERR_LABO_BAD]        = TR("Analyzes only organic matter");
     stringsErr[ERR_LABO_ALREADY]    = TR("Analysis already performed");
@@ -643,7 +643,7 @@ void InitializeRestext()
     stringsErr[INFO_BUILD]          = TR("Building completed");
     stringsErr[INFO_CONVERT]        = TR("Titanium available");
     stringsErr[INFO_RESEARCH]       = TR("Research program completed");
-    stringsErr[INFO_RESEARCHTANK]   = TR("Plans for tracked robots available ");
+    stringsErr[INFO_RESEARCHTANK]   = TR("Plans for tracked robots available");
     stringsErr[INFO_RESEARCHFLY]    = TR("You can fly with the keys (\\key gup;) and (\\key gdown;)");
     stringsErr[INFO_RESEARCHTHUMP]  = TR("Plans for thumper available");
     stringsErr[INFO_RESEARCHCANON]  = TR("Plans for shooter available");
@@ -677,7 +677,7 @@ void InitializeRestext()
 
 
     stringsCbot[CBot::CBotErrOpenPar]       = TR("Opening bracket missing");
-    stringsCbot[CBot::CBotErrClosePar]      = TR("Closing bracket missing ");
+    stringsCbot[CBot::CBotErrClosePar]      = TR("Closing bracket missing");
     stringsCbot[CBot::CBotErrNotBoolean]    = TR("The expression must return a boolean value");
     stringsCbot[CBot::CBotErrUndefVar]      = TR("Variable not declared");
     stringsCbot[CBot::CBotErrBadLeft]       = TR("Assignment impossible");
@@ -685,11 +685,11 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrCaseOut]       = TR("Instruction \"case\" outside a block \"switch\"");
     stringsCbot[CBot::CBotErrNoEnd]         = TR("Instructions after the final closing brace");
     stringsCbot[CBot::CBotErrCloseBlock]    = TR("End of block missing");
-    stringsCbot[CBot::CBotErrElseWhitoutIf] = TR("Instruction \"else\" without corresponding \"if\" ");
-    stringsCbot[CBot::CBotErrOpenBlock]     = TR("Opening brace missing ");
+    stringsCbot[CBot::CBotErrElseWhitoutIf] = TR("Instruction \"else\" without corresponding \"if\"");
+    stringsCbot[CBot::CBotErrOpenBlock]     = TR("Opening brace missing");
     stringsCbot[CBot::CBotErrBadType1]      = TR("Wrong type for the assignment");
     stringsCbot[CBot::CBotErrRedefVar]      = TR("A variable can not be declared twice");
-    stringsCbot[CBot::CBotErrBadType2]      = TR("The types of the two operands are incompatible ");
+    stringsCbot[CBot::CBotErrBadType2]      = TR("The types of the two operands are incompatible");
     stringsCbot[CBot::CBotErrUndefCall]     = TR("Unknown function");
     stringsCbot[CBot::CBotErrNoDoubleDots]  = TR("Sign \" : \" missing");
     stringsCbot[CBot::CBotErrNoWhile]       = TR("Keyword \"while\" missing");
@@ -704,7 +704,7 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrNoFunc]        = TR("Function name missing");
     stringsCbot[CBot::CBotErrOverParam]     = TR("Too many parameters");
     stringsCbot[CBot::CBotErrRedefFunc]     = TR("Function already exists");
-    stringsCbot[CBot::CBotErrLowParam]      = TR("Parameters missing ");
+    stringsCbot[CBot::CBotErrLowParam]      = TR("Parameters missing");
     stringsCbot[CBot::CBotErrBadParam]      = TR("No function with this name accepts this kind of parameter");
     stringsCbot[CBot::CBotErrNbParam]       = TR("No function with this name accepts this number of parameters");
     stringsCbot[CBot::CBotErrUndefItem]     = TR("This is not a member of this class");
@@ -719,12 +719,12 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrBadIndex]      = TR("Incorrect index type");
     stringsCbot[CBot::CBotErrPrivate]       = TR("Private element");
     stringsCbot[CBot::CBotErrNoPublic]      = TR("Public required");
-    stringsCbot[CBot::CBotErrNoExpression]  = TR("expression expected after =");
+    stringsCbot[CBot::CBotErrNoExpression]  = TR("Expression expected after =");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");
     stringsCbot[CBot::CBotErrBadThrow]      = TR("Negative value rejected by \"throw\"");
-    stringsCbot[CBot::CBotErrNoRetVal]      = TR("The function returned no value ");
+    stringsCbot[CBot::CBotErrNoRetVal]      = TR("The function returned no value");
     stringsCbot[CBot::CBotErrNoRun]         = TR("No function running");
     stringsCbot[CBot::CBotErrUndefFunc]     = TR("Calling an unknown function");
     stringsCbot[CBot::CBotErrNotClass]      = TR("This class does not exist");

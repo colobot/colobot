@@ -18,38 +18,6 @@ msgstr ""
 "X-Language: ru_RU\n"
 "X-Source-Language: en_US\n"
 
-msgid " Challenges in the chapter:"
-msgstr " Задачи к главе:"
-
-msgid " Chapters:"
-msgstr " Разделы:"
-
-#, fuzzy
-msgid " Custom levels:"
-msgstr " Пользовательские уровни:"
-
-msgid " Exercises in the chapter:"
-msgstr " Упражнения в разделе:"
-
-msgid " Free game on this planet:"
-msgstr " Свободная игра на этой планете:"
-
-#, fuzzy
-msgid " Levels in this chapter:"
-msgstr " Упражнения в разделе:"
-
-msgid " Missions on this planet:"
-msgstr "Миссии на этой планете:"
-
-msgid " Planets:"
-msgstr " Планеты:"
-
-msgid " Resolution:"
-msgstr " Разрешение:"
-
-msgid " Summary:"
-msgstr " Итог:"
-
 msgid " or "
 msgstr " или "
 
@@ -165,7 +133,7 @@ msgid "Back"
 msgstr "Назад"
 
 #, fuzzy
-msgid "Background sound :\\Volume of audio tracks"
+msgid "Background sound:\\Volume of audio tracks"
 msgstr "Фоновый звук:\\Громкость звуковых дорожек на CD"
 
 msgid "Backward (\\key down;)"
@@ -374,6 +342,9 @@ msgstr "Отмена\\Отменить все изменения"
 msgid "Challenges"
 msgstr "Задания"
 
+msgid "Challenges in the chapter:"
+msgstr "Задачи к главе:"
+
 msgid "Challenges\\Programming challenges"
 msgstr "Задания\\Практика программирования"
 
@@ -382,6 +353,9 @@ msgstr "Изменить вид\\Переключение между борто�
 
 msgid "Change player\\Change player"
 msgstr "Новый игрок\\Выберите имя для игрока"
+
+msgid "Chapters:"
+msgstr "Разделы:"
 
 msgid "Cheat console\\Show cheat console"
 msgstr ""
@@ -402,7 +376,7 @@ msgstr "Изменить выбранную программу"
 msgid "Close"
 msgstr "Закрыть"
 
-msgid "Closing bracket missing "
+msgid "Closing bracket missing"
 msgstr "Закрывающая скобка отсутствует"
 
 msgid "Code battles"
@@ -441,11 +415,14 @@ msgstr "Преобразует руду в титан"
 msgid "Copy"
 msgstr "Копировать"
 
-msgid "Copy (Ctrl+c)"
+msgid "Copy (Ctrl+C)"
 msgstr "Копировать (Ctrl+C)"
 
 msgid "Current mission saved"
 msgstr "Текущая миссия сохранена"
+
+msgid "Custom levels:"
+msgstr "Пользовательские уровни:"
 
 msgid "Custom levels\\Levels from mods created by the users"
 msgstr ""
@@ -453,7 +430,7 @@ msgstr ""
 msgid "Customize your appearance"
 msgstr "Настроить свой внешний вид"
 
-msgid "Cut (Ctrl+x)"
+msgid "Cut (Ctrl+X)"
 msgstr "Вырезать (Ctrl+X)"
 
 msgid "Defense tower"
@@ -494,10 +471,10 @@ msgid "Do you really want to destroy the selected building?"
 msgstr "Вы действительно хотите уничтожить выбранное здание?"
 
 #, c-format
-msgid "Do you want to delete %s's saved games? "
+msgid "Do you want to delete %s's saved games?"
 msgstr "Вы действительно хотите удалить сохраненные игры игрока %s?"
 
-msgid "Doors blocked by a robot or another object "
+msgid "Doors blocked by a robot or another object"
 msgstr "Двери заблокированы роботом или другим объектом"
 
 msgid "Down (\\key gdown;)"
@@ -545,6 +522,9 @@ msgstr "Выполнить выбранную программу"
 msgid "Execute/stop"
 msgstr "Выполнить/стоп"
 
+msgid "Exercises in the chapter:"
+msgstr "Упражнения в разделе:"
+
 msgid "Exercises\\Programming exercises"
 msgstr "Упражнения\\Упражнения по программированию"
 
@@ -553,6 +533,9 @@ msgstr ""
 
 msgid "Explosive"
 msgstr "Взрывчатка"
+
+msgid "Expression expected after ="
+msgstr ""
 
 msgid "Extend shield (\\key action;)"
 msgstr "Поднять щит (\\key action;)"
@@ -623,6 +606,9 @@ msgstr "Найден ключ D (место для буровой вышки)"
 
 msgid "Free game"
 msgstr "Свободная игра"
+
+msgid "Free game on this planet:"
+msgstr "Свободная игра на этой планете:"
 
 msgid "Free game\\Free game without a specific goal"
 msgstr "Свобод. игра\\Игра без четкой цели"
@@ -738,7 +724,7 @@ msgstr "Отсутствует инструкция \"case\""
 msgid "Instruction \"case\" outside a block \"switch\""
 msgstr "Инструкция \"case\" вне блока \"switch\" "
 
-msgid "Instruction \"else\" without corresponding \"if\" "
+msgid "Instruction \"else\" without corresponding \"if\""
 msgstr "Инструкция \"else\" без \"if\" "
 
 msgid "Instructions (\\key help;)"
@@ -798,6 +784,9 @@ msgstr "Шагающий стрелок"
 msgid "Legged sniffer"
 msgstr "Шагающий искатель"
 
+msgid "Levels in this chapter:"
+msgstr "Упражнения в разделе:"
+
 msgid "Lightning conductor"
 msgstr "Громоотвод"
 
@@ -856,6 +845,9 @@ msgstr "Название миссии"
 
 msgid "Missions"
 msgstr "Миссии"
+
+msgid "Missions on this planet:"
+msgstr "Миссии на этой планете:"
 
 msgid "Missions\\Select mission"
 msgstr "Миссии\\Выбор миссии"
@@ -1015,11 +1007,11 @@ msgstr "Один шаг"
 msgid "Open"
 msgstr "Открыть"
 
-msgid "Open (Ctrl+o)"
-msgstr "Открыть (Ctrl+o)"
+msgid "Open (Ctrl+O)"
+msgstr "Открыть (Ctrl+O)"
 
-msgid "Opening brace missing "
-msgstr "Открывающая скобка отсутствует "
+msgid "Opening brace missing"
+msgstr "Открывающая скобка отсутствует"
 
 msgid "Opening bracket missing"
 msgstr "Открывающая скобка отсутствует"
@@ -1042,13 +1034,13 @@ msgstr "Источник сообщения\\Показывает место, о
 msgid "Original game developed by:"
 msgstr "Оригинальная игра была разработана:"
 
-msgid "Parameters missing "
-msgstr "Отсутствуют параметры "
+msgid "Parameters missing"
+msgstr "Отсутствуют параметры"
 
 msgid "Particles in the interface\\Steam clouds and sparks in the interface"
 msgstr "Частицы в интерфейсе меню\\Пар из труб и искры в интерфейсе меню"
 
-msgid "Paste (Ctrl+v)"
+msgid "Paste (Ctrl+V)"
 msgstr "Вставить (Ctrl+V)"
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
@@ -1069,6 +1061,9 @@ msgstr "Фотография"
 msgid "Place occupied"
 msgstr "Место занято"
 
+msgid "Planets:"
+msgstr "Планеты:"
+
 msgid "Plans for defense tower available"
 msgstr "Доступны схемы защитной башни"
 
@@ -1087,8 +1082,8 @@ msgstr "Доступны схемы стрелка"
 msgid "Plans for thumper available"
 msgstr "Доступны схемы ударника"
 
-msgid "Plans for tracked robots available "
-msgstr "Доступны схемы гусеничных роботов "
+msgid "Plans for tracked robots available"
+msgstr "Доступны схемы гусеничных роботов"
 
 msgid "Plant a flag"
 msgstr "Установить флаг"
@@ -1160,7 +1155,7 @@ msgstr "Упражнения"
 msgid "Programming help"
 msgstr "Помощь в программировании"
 
-msgid "Programming help  (\\key prog;)"
+msgid "Programming help (\\key prog;)"
 msgstr "Помощь в программировании (\\key prog;)"
 
 msgid "Programming help\\Gives more detailed help with programming"
@@ -1240,6 +1235,9 @@ msgstr "Резервное ключевое слово языка CBOT"
 msgid "Resolution"
 msgstr "Разрешение"
 
+msgid "Resolution:"
+msgstr "Разрешение:"
+
 msgid "Resources"
 msgstr ""
 
@@ -1300,13 +1298,13 @@ msgstr "Спутниковый отчет"
 msgid "Save"
 msgstr "Сохранить"
 
-msgid "Save (Ctrl+s)"
-msgstr "Сохранить (Ctrl+s)"
+msgid "Save (Ctrl+S)"
+msgstr "Сохранить (Ctrl+S)"
 
 msgid "Save the current mission"
 msgstr "Сохранить"
 
-msgid "Save\\Save the current mission "
+msgid "Save\\Save the current mission"
 msgstr "Сохранить\\Сохранить текущую миссию"
 
 msgid "Save\\Saves the current mission"
@@ -1449,6 +1447,9 @@ msgstr "Костюм:"
 msgid "Suit\\Astronaut suit"
 msgstr "Костюм\\Костюм астронавта"
 
+msgid "Summary:"
+msgstr "Итог:"
+
 msgid "Survival kit"
 msgstr "Аптечка"
 
@@ -1476,13 +1477,13 @@ msgstr ""
 msgid "The expression must return a boolean value"
 msgstr "Выражение должно возвращать логическое значение"
 
-msgid "The function returned no value "
+msgid "The function returned no value"
 msgstr "Функция не возвратила значения"
 
 msgid "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr "Миссия еще не выполнена (нажмите \\key help; для более подробной информации)"
 
-msgid "The types of the two operands are incompatible "
+msgid "The types of the two operands are incompatible"
 msgstr "Типы операндов несовместимы"
 
 msgid "This class already exists"
@@ -1587,7 +1588,7 @@ msgstr "Не задан тип"
 msgid "Unable to control enemy objects"
 msgstr ""
 
-msgid "Undo (Ctrl+z)"
+msgid "Undo (Ctrl+Z)"
 msgstr "Отмена (Ctrl+Z)"
 
 msgid "Unit"
@@ -1717,7 +1718,7 @@ msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used
 msgstr[0] "Не используй в этом упражнении"
 msgstr[1] "Не используй в этом упражнении"
 
-msgid "You must get on the spaceship to take off "
+msgid "You must get on the spaceship to take off"
 msgstr "Вы должны быть на борту корабля, чтобы взлететь"
 
 msgid "Zoom mini-map"
@@ -1817,14 +1818,10 @@ msgid "\\Yellow flags"
 msgstr "\\Желтый флаг"
 
 msgid "colobot.info"
-msgstr ""
+msgstr "colobot.info"
 
-#, fuzzy
 msgid "epsitec.com"
-msgstr "www.epsitec.com"
-
-msgid "expression expected after ="
-msgstr ""
+msgstr "epsitec.com"
 
 #~ msgid " "
 #~ msgstr " "

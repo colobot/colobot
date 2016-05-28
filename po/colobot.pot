@@ -84,34 +84,34 @@ msgstr ""
 msgid "Load a saved mission"
 msgstr ""
 
-msgid " Chapters:"
+msgid "Chapters:"
 msgstr ""
 
-msgid " Planets:"
+msgid "Planets:"
 msgstr ""
 
-msgid " Custom levels:"
+msgid "Custom levels:"
 msgstr ""
 
-msgid " Levels in this chapter:"
+msgid "Levels in this chapter:"
 msgstr ""
 
-msgid " Exercises in the chapter:"
+msgid "Exercises in the chapter:"
 msgstr ""
 
-msgid " Challenges in the chapter:"
+msgid "Challenges in the chapter:"
 msgstr ""
 
-msgid " Missions on this planet:"
+msgid "Missions on this planet:"
 msgstr ""
 
-msgid " Free game on this planet:"
+msgid "Free game on this planet:"
 msgstr ""
 
-msgid " Summary:"
+msgid "Summary:"
 msgstr ""
 
-msgid " Resolution:"
+msgid "Resolution:"
 msgstr ""
 
 msgid "1) First click on the key you want to redefine."
@@ -145,7 +145,7 @@ msgid "Do you really want to destroy the selected building?"
 msgstr ""
 
 #, c-format
-msgid "Do you want to delete %s's saved games? "
+msgid "Do you want to delete %s's saved games?"
 msgstr ""
 
 msgid "Yes"
@@ -299,7 +299,7 @@ msgstr ""
 msgid "Restart\\Restart the mission from the beginning"
 msgstr ""
 
-msgid "Save\\Save the current mission "
+msgid "Save\\Save the current mission"
 msgstr ""
 
 msgid "Load\\Load a saved mission"
@@ -530,7 +530,7 @@ msgstr ""
 msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
 msgstr ""
 
-msgid "Background sound :\\Volume of audio tracks"
+msgid "Background sound:\\Volume of audio tracks"
 msgstr ""
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
@@ -1049,22 +1049,22 @@ msgstr ""
 msgid "Clone program"
 msgstr ""
 
-msgid "Open (Ctrl+o)"
+msgid "Open (Ctrl+O)"
 msgstr ""
 
-msgid "Save (Ctrl+s)"
+msgid "Save (Ctrl+S)"
 msgstr ""
 
-msgid "Undo (Ctrl+z)"
+msgid "Undo (Ctrl+Z)"
 msgstr ""
 
-msgid "Cut (Ctrl+x)"
+msgid "Cut (Ctrl+X)"
 msgstr ""
 
-msgid "Copy (Ctrl+c)"
+msgid "Copy (Ctrl+C)"
 msgstr ""
 
-msgid "Paste (Ctrl+v)"
+msgid "Paste (Ctrl+V)"
 msgstr ""
 
 msgid "Font size"
@@ -1073,7 +1073,7 @@ msgstr ""
 msgid "Instructions (\\key help;)"
 msgstr ""
 
-msgid "Programming help  (\\key prog;)"
+msgid "Programming help (\\key prog;)"
 msgstr ""
 
 msgid "Compile"
@@ -1454,10 +1454,10 @@ msgstr ""
 msgid "Transforms only titanium"
 msgstr ""
 
-msgid "Doors blocked by a robot or another object "
+msgid "Doors blocked by a robot or another object"
 msgstr ""
 
-msgid "You must get on the spaceship to take off "
+msgid "You must get on the spaceship to take off"
 msgstr ""
 
 msgid "Nothing to analyze"
@@ -1535,7 +1535,7 @@ msgstr ""
 msgid "Research program completed"
 msgstr ""
 
-msgid "Plans for tracked robots available "
+msgid "Plans for tracked robots available"
 msgstr ""
 
 msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
@@ -1610,7 +1610,7 @@ msgstr ""
 msgid "Opening bracket missing"
 msgstr ""
 
-msgid "Closing bracket missing "
+msgid "Closing bracket missing"
 msgstr ""
 
 msgid "The expression must return a boolean value"
@@ -1634,10 +1634,10 @@ msgstr ""
 msgid "End of block missing"
 msgstr ""
 
-msgid "Instruction \"else\" without corresponding \"if\" "
+msgid "Instruction \"else\" without corresponding \"if\""
 msgstr ""
 
-msgid "Opening brace missing "
+msgid "Opening brace missing"
 msgstr ""
 
 msgid "Wrong type for the assignment"
@@ -1646,7 +1646,7 @@ msgstr ""
 msgid "A variable can not be declared twice"
 msgstr ""
 
-msgid "The types of the two operands are incompatible "
+msgid "The types of the two operands are incompatible"
 msgstr ""
 
 msgid "Unknown function"
@@ -1691,7 +1691,7 @@ msgstr ""
 msgid "Function already exists"
 msgstr ""
 
-msgid "Parameters missing "
+msgid "Parameters missing"
 msgstr ""
 
 msgid "No function with this name accepts this kind of parameter"
@@ -1736,7 +1736,7 @@ msgstr ""
 msgid "Public required"
 msgstr ""
 
-msgid "expression expected after ="
+msgid "Expression expected after ="
 msgstr ""
 
 msgid "Dividing by zero"
@@ -1748,7 +1748,7 @@ msgstr ""
 msgid "Negative value rejected by \"throw\""
 msgstr ""
 
-msgid "The function returned no value "
+msgid "The function returned no value"
 msgstr ""
 
 msgid "No function running"

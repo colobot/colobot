@@ -20,38 +20,6 @@ msgstr ""
 "X-Source-Language: en_US\n"
 "X-POOTLE-MTIME: 1406536037.000000\n"
 
-msgid " Challenges in the chapter:"
-msgstr " Liste der Challenges des Kapitels:"
-
-msgid " Chapters:"
-msgstr " Liste der Kapitel:"
-
-#, fuzzy
-msgid " Custom levels:"
-msgstr " Userlevels:"
-
-msgid " Exercises in the chapter:"
-msgstr " Liste der Übungen des Kapitels:"
-
-msgid " Free game on this planet:"
-msgstr " Liste der freien Levels des Planeten:"
-
-#, fuzzy
-msgid " Levels in this chapter:"
-msgstr " Liste der Übungen des Kapitels:"
-
-msgid " Missions on this planet:"
-msgstr " Liste der Missionen des Planeten:"
-
-msgid " Planets:"
-msgstr " Liste der Planeten:"
-
-msgid " Resolution:"
-msgstr " Auflösung:"
-
-msgid " Summary:"
-msgstr " Zusammenfassung:"
-
 msgid " or "
 msgstr " oder "
 
@@ -167,7 +135,7 @@ msgid "Back"
 msgstr "Vorherg. Seite"
 
 #, fuzzy
-msgid "Background sound :\\Volume of audio tracks"
+msgid "Background sound:\\Volume of audio tracks"
 msgstr "Geräuschkulisse:\\Lautstärke der Soundtracks der CD"
 
 msgid "Backward (\\key down;)"
@@ -376,6 +344,9 @@ msgstr "Abbrechen\\Editor schließen"
 msgid "Challenges"
 msgstr "Challenges"
 
+msgid "Challenges in the chapter:"
+msgstr "Liste der Challenges des Kapitels:"
+
 msgid "Challenges\\Programming challenges"
 msgstr "Challenges\\Herausforderungen"
 
@@ -384,6 +355,9 @@ msgstr "Andere Kamera\\Sichtpunkt einstellen"
 
 msgid "Change player\\Change player"
 msgstr "Anderer Spieler\\Spielername ändern"
+
+msgid "Chapters:"
+msgstr "Liste der Kapitel:"
 
 msgid "Cheat console\\Show cheat console"
 msgstr ""
@@ -404,7 +378,7 @@ msgstr "Gewähltes Programm bearbeiten"
 msgid "Close"
 msgstr "Schließen"
 
-msgid "Closing bracket missing "
+msgid "Closing bracket missing"
 msgstr "Es fehlt eine geschlossene Klammer \")\""
 
 msgid "Code battles"
@@ -416,9 +390,8 @@ msgstr ""
 msgid "Colobot rules!"
 msgstr "Colobot ist wunderbar!"
 
-#, fuzzy
 msgid "Colobot: Gold Edition"
-msgstr "COLOBOT: Gold Edition"
+msgstr "Colobot: Gold Edition"
 
 msgid "Command line"
 msgstr "Befehleingabe"
@@ -444,11 +417,15 @@ msgstr "Konverter Erz-Titan"
 msgid "Copy"
 msgstr "Kopieren"
 
-msgid "Copy (Ctrl+c)"
-msgstr "Kopieren (Ctrl+c)"
+msgid "Copy (Ctrl+C)"
+msgstr "Kopieren (Ctrl+C)"
 
 msgid "Current mission saved"
 msgstr "Mission gespeichert"
+
+#, fuzzy
+msgid "Custom levels:"
+msgstr "Userlevels:"
 
 msgid "Custom levels\\Levels from mods created by the users"
 msgstr ""
@@ -456,8 +433,8 @@ msgstr ""
 msgid "Customize your appearance"
 msgstr "Aussehen einstellen"
 
-msgid "Cut (Ctrl+x)"
-msgstr "Ausschneiden (Ctrl+x)"
+msgid "Cut (Ctrl+X)"
+msgstr "Ausschneiden (Ctrl+X)"
 
 msgid "Defense tower"
 msgstr "Geschützturm"
@@ -497,10 +474,10 @@ msgid "Do you really want to destroy the selected building?"
 msgstr "Wollen Sie das angewählte Gebäude wirklich zerstören ?"
 
 #, c-format
-msgid "Do you want to delete %s's saved games? "
+msgid "Do you want to delete %s's saved games?"
 msgstr "Wollen Sie die gespeicherten Missionen von %s löschen ?"
 
-msgid "Doors blocked by a robot or another object "
+msgid "Doors blocked by a robot or another object"
 msgstr "Die Türen werden von einem Gegenstand blockiert"
 
 msgid "Down (\\key gdown;)"
@@ -548,6 +525,9 @@ msgstr "Gewähltes Programm ausführen"
 msgid "Execute/stop"
 msgstr "Start/Stop"
 
+msgid "Exercises in the chapter:"
+msgstr "Liste der Übungen des Kapitels:"
+
 msgid "Exercises\\Programming exercises"
 msgstr "Programmieren\\Programmierübungen"
 
@@ -556,6 +536,9 @@ msgstr "Explodieren (\\key action;)"
 
 msgid "Explosive"
 msgstr "Sprengstoff"
+
+msgid "Expression expected after ="
+msgstr ""
 
 msgid "Extend shield (\\key action;)"
 msgstr "Schutzschild ausfahren (\\key action;)"
@@ -626,6 +609,9 @@ msgstr "Markierung für vergrabenen Schlüssel D"
 
 msgid "Free game"
 msgstr "Freestyle"
+
+msgid "Free game on this planet:"
+msgstr "Liste der freien Levels des Planeten:"
 
 msgid "Free game\\Free game without a specific goal"
 msgstr "Freestyle\\Freies Spielen ohne vorgegebenes Ziel"
@@ -742,7 +728,7 @@ msgstr "Es fehlt eine Anweisung \"case\""
 msgid "Instruction \"case\" outside a block \"switch\""
 msgstr "Anweisung \"case\" ohne vorhergehende Anweisung \"switch\""
 
-msgid "Instruction \"else\" without corresponding \"if\" "
+msgid "Instruction \"else\" without corresponding \"if\""
 msgstr "Anweisung \"else\" ohne vorhergehende Anweisung \"if\""
 
 msgid "Instructions (\\key help;)"
@@ -802,6 +788,9 @@ msgstr "Shooter"
 msgid "Legged sniffer"
 msgstr "Schnüffler"
 
+msgid "Levels in this chapter:"
+msgstr "Liste der Übungen des Kapitels:"
+
 msgid "Lightning conductor"
 msgstr "Blitzableiter"
 
@@ -860,6 +849,9 @@ msgstr "Name der Mission"
 
 msgid "Missions"
 msgstr "Missionen"
+
+msgid "Missions on this planet:"
+msgstr "Liste der Missionen des Planeten:"
 
 msgid "Missions\\Select mission"
 msgstr "Missionen\\Aufbruch ins Weltall"
@@ -1019,10 +1011,10 @@ msgstr "Ein Schritt"
 msgid "Open"
 msgstr "Öffnen"
 
-msgid "Open (Ctrl+o)"
-msgstr "Öffnen (Ctrl+o)"
+msgid "Open (Ctrl+O)"
+msgstr "Öffnen (Ctrl+O)"
 
-msgid "Opening brace missing "
+msgid "Opening brace missing"
 msgstr "Es fehlt eine offene geschweifte Klammer\"{\""
 
 msgid "Opening bracket missing"
@@ -1046,14 +1038,14 @@ msgstr "Ort der Meldung\\Zeigt den Ort, von dem die letzte Meldung stammt"
 msgid "Original game developed by:"
 msgstr "Ursprünglichen Spiel entwickelt von:"
 
-msgid "Parameters missing "
+msgid "Parameters missing"
 msgstr "Nicht genug Parameter"
 
 msgid "Particles in the interface\\Steam clouds and sparks in the interface"
 msgstr "Partikel in den Menüs\\Funken und Sterne in den Menüs"
 
-msgid "Paste (Ctrl+v)"
-msgstr "Einfügen (Ctrl+v)"
+msgid "Paste (Ctrl+V)"
+msgstr "Einfügen (Ctrl+V)"
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
 msgstr ""
@@ -1073,6 +1065,9 @@ msgstr "Ansicht der Mission"
 msgid "Place occupied"
 msgstr "Stelle schon besetzt"
 
+msgid "Planets:"
+msgstr "Liste der Planeten:"
+
 msgid "Plans for defense tower available"
 msgstr "Errichtung eines Geschützturms möglich"
 
@@ -1091,7 +1086,7 @@ msgstr "Herstellung eines Shooters möglich"
 msgid "Plans for thumper available"
 msgstr "Herstellung eines Stampfers möglich"
 
-msgid "Plans for tracked robots available "
+msgid "Plans for tracked robots available"
 msgstr "Herstellung eines Roboters mit Kettenantrieb möglich"
 
 msgid "Plant a flag"
@@ -1164,7 +1159,7 @@ msgstr "Programmieren"
 msgid "Programming help"
 msgstr "Hilfe über Programmieren"
 
-msgid "Programming help  (\\key prog;)"
+msgid "Programming help (\\key prog;)"
 msgstr "Hilfe über Programmieren (\\key prog;)"
 
 msgid "Programming help\\Gives more detailed help with programming"
@@ -1245,6 +1240,9 @@ msgstr "Dieses Wort ist reserviert"
 msgid "Resolution"
 msgstr "Auflösung"
 
+msgid "Resolution:"
+msgstr "Auflösung:"
+
 msgid "Resources"
 msgstr ""
 
@@ -1305,13 +1303,13 @@ msgstr "Satellitenbericht"
 msgid "Save"
 msgstr "Speichern"
 
-msgid "Save (Ctrl+s)"
-msgstr "Speichern (Ctrl+s)"
+msgid "Save (Ctrl+S)"
+msgstr "Speichern (Ctrl+S)"
 
 msgid "Save the current mission"
 msgstr "Aktuelle Mission speichern"
 
-msgid "Save\\Save the current mission "
+msgid "Save\\Save the current mission"
 msgstr "Speichern\\Aktuelle Mission speichern"
 
 msgid "Save\\Saves the current mission"
@@ -1458,6 +1456,9 @@ msgstr "Farbe des Anzugs:"
 msgid "Suit\\Astronaut suit"
 msgstr "Anzug\\Raumfahrtanzug"
 
+msgid "Summary:"
+msgstr "Zusammenfassung:"
+
 msgid "Survival kit"
 msgstr "Überlebenskit"
 
@@ -1485,13 +1486,13 @@ msgstr ""
 msgid "The expression must return a boolean value"
 msgstr "Der Ausdruck muss einen boolschen Wert ergeben"
 
-msgid "The function returned no value "
+msgid "The function returned no value"
 msgstr "Die Funktion hat kein Ergebnis zurückgegeben"
 
 msgid "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr "Mission noch nicht beendet (Drücken Sie auf \\key help; für weitere Informationen)"
 
-msgid "The types of the two operands are incompatible "
+msgid "The types of the two operands are incompatible"
 msgstr "Die zwei Operanden sind nicht kompatibel"
 
 msgid "This class already exists"
@@ -1596,8 +1597,8 @@ msgstr "Hier muss ein Variablentyp stehen"
 msgid "Unable to control enemy objects"
 msgstr ""
 
-msgid "Undo (Ctrl+z)"
-msgstr "Widerrufen (Ctrl+z)"
+msgid "Undo (Ctrl+Z)"
+msgstr "Widerrufen (Ctrl+Z)"
 
 msgid "Unit"
 msgstr "Einheit"
@@ -1726,7 +1727,7 @@ msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used
 msgstr[0] "In dieser Übung verboten"
 msgstr[1] "In dieser Übung verboten"
 
-msgid "You must get on the spaceship to take off "
+msgid "You must get on the spaceship to take off"
 msgstr "Gehen Sie an Bord, bevor Sie abheben"
 
 msgid "Zoom mini-map"
@@ -1826,14 +1827,10 @@ msgid "\\Yellow flags"
 msgstr "\\Gelbe Fahne"
 
 msgid "colobot.info"
-msgstr ""
+msgstr "colobot.info"
 
-#, fuzzy
 msgid "epsitec.com"
-msgstr "www.epsitec.com"
-
-msgid "expression expected after ="
-msgstr ""
+msgstr "epsitec.com"
 
 #~ msgid " "
 #~ msgstr " "
