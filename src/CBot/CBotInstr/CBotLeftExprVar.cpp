@@ -64,6 +64,12 @@ bool CBotLeftExprVar::Execute(CBotStack* &pj)
     CBotVar* var2 = pj->GetVar(); // Initial value on the stack
     if (var2 != nullptr)
     {
+        if (m_typevar.Eq(CBotTypString) && var2->GetType() != CBotTypString)
+        {
+            var2->Update(pj->GetUserPtr());
+            var1->SetValString(var2->GetValString());
+            return true;
+        }
         var1->SetVal(var2); // Set the value
     }
 
