@@ -97,9 +97,9 @@ bool TypeCompatible(CBotTypResult& type1, CBotTypResult& type2, int op)
     if (max == 99) return false;    // result is void?
 
     // special case for strin concatenation
-    if (op == ID_ADD && max >= CBotTypString) return true;
-    if (op == ID_ASSADD && max >= CBotTypString) return true;
-    if (op == ID_ASS && t1 == CBotTypString) return true;
+    if (op == ID_ADD && t1 == CBotTypString) return true;
+    if (op == ID_ASSADD && t2 == CBotTypString) return true;
+    if (op == ID_ASS && t2 == CBotTypString) return true;
 
     if (max >= CBotTypBoolean)
     {
