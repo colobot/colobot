@@ -39,7 +39,13 @@ CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars);
 
 /*!
  * \brief TypeCompatible Check if two results are consistent to make an
- * operation.
+ * operation. TypeCompatible is used in two ways:
+ * For non-assignment operations:  see CBotTwoOpExpr::Compile
+ * TypeCompatible( leftType, rightType, opType )
+
+ * For assignment or compound assignment operations (it's reversed):
+ * see CBotReturn::Compile & CBotExpression::Compile
+ * TypeCompatible( valueType, varType, opType ) 
  * \param type1
  * \param type2
  * \param op
