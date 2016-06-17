@@ -564,7 +564,7 @@ bool CEdit::IsLinkPos(Math::Point pos)
     if ( i == -1 )  return false;
     if ( i >= m_len )  return false;
 
-    if ( m_format.size() > static_cast<unsigned int>(i) && ((m_format[i] & Gfx::FONT_MASK_HIGHLIGHT) == Gfx::FONT_HIGHLIGHT_LINK))  return true; // TODO
+    if ( m_format.size() > static_cast<unsigned int>(i) && ((m_format[i] & Gfx::FONT_MASK_LINK) != 0))  return true; // TODO
     return false;
 }
 
@@ -637,13 +637,13 @@ void CEdit::MouseRelease(Math::Point mouse)
     if ( !m_bEdit )
     {
         if ( m_format.size() > 0 && i < m_len && m_cursor1 == m_cursor2 &&
-            (m_format[i]&Gfx::FONT_MASK_HIGHLIGHT) == Gfx::FONT_HIGHLIGHT_LINK) //TODO
+            (m_format[i]&Gfx::FONT_MASK_LINK) != 0) //TODO
         {
             int rank = -1;
             for ( int j=0 ; j<=i ; j++ )
             {
-                if ( (j == 0 || (m_format[j-1]&Gfx::FONT_MASK_HIGHLIGHT) != Gfx::FONT_HIGHLIGHT_LINK) && // TODO check if good
-                     (m_format[j+0]&Gfx::FONT_MASK_HIGHLIGHT) == Gfx::FONT_HIGHLIGHT_LINK) // TODO
+                if ( (j == 0 || (m_format[j-1]&Gfx::FONT_MASK_LINK) == 0) && // TODO check if good
+                     (m_format[j+0]&Gfx::FONT_MASK_LINK) != 0) // TODO
                 {
                     rank ++;
                 }
@@ -1581,8 +1581,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
             {
                 if ( m_bSoluce || !bInSoluce )
                 {
-                    font &= ~Gfx::FONT_MASK_HIGHLIGHT;
-                    font |= Gfx::FONT_HIGHLIGHT_LINK;
+                    font |= Gfx::FONT_MASK_LINK;
                 }
                 i += 3;
             }
@@ -1602,7 +1601,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
                 link.name = GetNameParam(buffer.data()+i+3, 0);
                 link.marker = GetNameParam(buffer.data()+i+3, 1);
                 m_link.push_back(link);
-                font &= ~Gfx::FONT_MASK_HIGHLIGHT;
+                font &= ~Gfx::FONT_MASK_LINK;
             }
             i += strchr(buffer.data()+i, ';')-(buffer.data()+i)+1;
         }

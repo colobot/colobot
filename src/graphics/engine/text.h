@@ -118,7 +118,6 @@ enum FontTitle
 enum FontHighlight
 {
     FONT_HIGHLIGHT_NONE      = 0x00 << 6,
-    FONT_HIGHLIGHT_LINK      = 0x01 << 6, //!< link underline
     FONT_HIGHLIGHT_TABLE     = 0x02 << 6, //!< code background in SatCom
     FONT_HIGHLIGHT_KEY       = 0x03 << 6, //!< background for keys in documentation in SatCom
     FONT_HIGHLIGHT_TOKEN     = 0x04 << 6, //!< keywords in CBot scripts
@@ -142,8 +141,10 @@ enum FontMask
     FONT_MASK_TITLE = 0x030,
     //! Mask for FontHighlight
     FONT_MASK_HIGHLIGHT = 0x3c0,
+    //! Mask for links
+    FONT_MASK_LINK = 0x400,
     //! Mask for image bit (TODO: not used?)
-    FONT_MASK_IMAGE = 0x400
+    FONT_MASK_IMAGE = 0x800
 };
 
 
@@ -324,7 +325,7 @@ protected:
                            float size, Math::IntPoint pos, int width, int eol, Color color);
     void        DrawString(const std::string &text, FontType font,
                            float size, Math::IntPoint pos, int width, int eol, Color color);
-    void        DrawHighlight(FontHighlight hl, Math::IntPoint pos, Math::IntPoint size);
+    void        DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint size);
     void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::IntPoint &pos, Color color);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end);

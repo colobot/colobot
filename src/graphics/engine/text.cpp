@@ -720,43 +720,42 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
 
         Color c = color;
         FontHighlight hl = static_cast<FontHighlight>(format[fmtIndex] & FONT_MASK_HIGHLIGHT);
-        if (hl != FONT_HIGHLIGHT_NONE)
+        if (hl == FONT_HIGHLIGHT_TOKEN)
         {
-            if (hl == FONT_HIGHLIGHT_TOKEN)
-            {
-                c = Color(0.490f, 0.380f, 0.165f, 1.0f); // #7D612A
-            }
-            else if (hl == FONT_HIGHLIGHT_TYPE)
-            {
-                c = Color(0.31f, 0.443f, 0.196f, 1.0f); // #4F7132
-            }
-            else if (hl == FONT_HIGHLIGHT_CONST)
-            {
-                c = Color(0.882f, 0.176f, 0.176f, 1.0f); // #E12D2D
-            }
-            else if (hl == FONT_HIGHLIGHT_THIS)
-            {
-                c = Color(0.545f, 0.329f, 0.608f, 1.0f); // #8B549B
-            }
-            else if (hl == FONT_HIGHLIGHT_COMMENT)
-            {
-                c = Color(0.251f, 0.271f, 0.306f, 1.0f); // #40454E
-            }
-            else if (hl == FONT_HIGHLIGHT_KEYWORD)
-            {
-                c = Color(0.239f, 0.431f, 0.588f, 1.0f); // #3D6E96
-            }
-            else if (hl == FONT_HIGHLIGHT_STRING)
-            {
-                c = Color(0.239f, 0.384f, 0.341f, 1.0f); // #3D6257
-            }
-            else
-            {
-                Math::IntPoint charSize;
-                charSize.x = GetCharWidthInt(ch, font, size, offset);
-                charSize.y = GetHeightInt(font, size);
-                DrawHighlight(hl, pos, charSize);
-            }
+            c = Color(0.490f, 0.380f, 0.165f, 1.0f); // #7D612A
+        }
+        else if (hl == FONT_HIGHLIGHT_TYPE)
+        {
+            c = Color(0.31f, 0.443f, 0.196f, 1.0f); // #4F7132
+        }
+        else if (hl == FONT_HIGHLIGHT_CONST)
+        {
+            c = Color(0.882f, 0.176f, 0.176f, 1.0f); // #E12D2D
+        }
+        else if (hl == FONT_HIGHLIGHT_THIS)
+        {
+            c = Color(0.545f, 0.329f, 0.608f, 1.0f); // #8B549B
+        }
+        else if (hl == FONT_HIGHLIGHT_COMMENT)
+        {
+            c = Color(0.251f, 0.271f, 0.306f, 1.0f); // #40454E
+        }
+        else if (hl == FONT_HIGHLIGHT_KEYWORD)
+        {
+            c = Color(0.239f, 0.431f, 0.588f, 1.0f); // #3D6E96
+        }
+        else if (hl == FONT_HIGHLIGHT_STRING)
+        {
+            c = Color(0.239f, 0.384f, 0.341f, 1.0f); // #3D6257
+        }
+
+        // draw highlight background or link underline
+        if (font != FONT_BUTTON)
+        {
+            Math::IntPoint charSize;
+            charSize.x = GetCharWidthInt(ch, font, size, offset);
+            charSize.y = GetHeightInt(font, size);
+            DrawHighlight(format[fmtIndex], pos, charSize);
         }
 
         DrawCharAndAdjustPos(ch, font, size, pos, c);
@@ -854,26 +853,25 @@ void CText::DrawString(const std::string &text, FontType font,
     }
 }
 
-void CText::DrawHighlight(FontHighlight hl, Math::IntPoint pos, Math::IntPoint size)
+void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint size)
 {
     // Gradient colors
     Color grad[4];
 
     // TODO: switch to alpha factors
 
-    switch (hl)
+    if ((hl & FONT_MASK_LINK) != 0)
     {
-        case FONT_HIGHLIGHT_LINK:
-            grad[0] = grad[1] = grad[2] = grad[3] = Color(0.0f, 0.0f, 1.0f, 0.5f);
-            break;
-
-        case FONT_HIGHLIGHT_KEY:
-            grad[0] = grad[1] = grad[2] = grad[3] =
-                Color(192.0f / 256.0f, 192.0f / 256.0f, 192.0f / 256.0f, 0.5f);
-            break;
-
-        default:
-            return;
+        grad[0] = grad[1] = grad[2] = grad[3] = Color(0.0f, 0.0f, 1.0f, 0.5f);
+    }
+    else if ((hl & FONT_MASK_HIGHLIGHT) == FONT_HIGHLIGHT_KEY)
+    {
+        grad[0] = grad[1] = grad[2] = grad[3] =
+            Color(192.0f / 256.0f, 192.0f / 256.0f, 192.0f / 256.0f, 0.5f);
+    }
+    else
+    {
+        return;
     }
 
     Math::IntPoint vsize = m_engine->GetWindowSize();
@@ -889,7 +887,7 @@ void CText::DrawHighlight(FontHighlight hl, Math::IntPoint pos, Math::IntPoint s
     p2.x = pos.x + size.x;
     p2.y = pos.y;
 
-    if (hl == FONT_HIGHLIGHT_LINK)
+    if ((hl & FONT_MASK_LINK) != 0)
     {
         p1.y = pos.y - h;  // just emphasized
     }
