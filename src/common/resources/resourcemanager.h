@@ -66,8 +66,6 @@ public:
     //! Returns last modification date as timestamp
     static long long GetLastModificationTime(const std::string &filename);
 
-    //! Move file/directory
-    static bool Move(const std::string &from, const std::string &to);
     //! Remove file
     static bool Remove(const std::string& filename);
 };

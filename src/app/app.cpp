@@ -47,7 +47,6 @@
     #include "sound/oalsound/alsound.h"
 #endif
 
-#include <boost/filesystem.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <SDL.h>

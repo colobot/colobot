@@ -31,10 +31,7 @@
 
 #include <physfs.h>
 
-#include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
-
-namespace fs = boost::filesystem;
 
 
 CResourceManager::CResourceManager(const char *argv0)
@@ -152,27 +149,17 @@ bool CResourceManager::CreateDirectory(const std::string& directory)
     return false;
 }
 
-//TODO: Don't use boost::filesystem here
 bool CResourceManager::RemoveDirectory(const std::string& directory)
 {
     if (PHYSFS_isInit())
     {
-        bool success = true;
-        std::string writeDir = PHYSFS_getWriteDir();
-        try
+        std::string path = CleanPath(directory);
+        for (auto file : ListFiles(path))
         {
-            std::string path = writeDir + "/" + CleanPath(directory);
-            #if PLATFORM_WINDOWS
-            fs::remove_all(CSystemUtilsWindows::UTF8_Decode(path));
-            #else
-            fs::remove_all(path);
-            #endif
+            if (PHYSFS_delete((path + "/" + file).c_str()) == 0)
+                return false;
         }
-        catch (std::exception&)
-        {
-            success = false;
-        }
-        return success;
+        return PHYSFS_delete(path.c_str()) != 0;
     }
     return false;
 }
@@ -239,32 +226,6 @@ long long CResourceManager::GetLastModificationTime(const std::string& filename)
         return PHYSFS_getLastModTime(CleanPath(filename).c_str());
     }
     return -1;
-}
-
-//TODO: Don't use boost::filesystem. Why doesn't PHYSFS have this?
-bool CResourceManager::Move(const std::string& from, const std::string& to)
-{
-    if (PHYSFS_isInit())
-    {
-        bool success = true;
-        std::string writeDir = PHYSFS_getWriteDir();
-        try
-        {
-            std::string path_from = writeDir + "/" + CleanPath(from);
-            std::string path_to = writeDir + "/" + CleanPath(to);
-            #if PLATFORM_WINDOWS
-            fs::rename(CSystemUtilsWindows::UTF8_Decode(path_from), CSystemUtilsWindows::UTF8_Decode(path_to));
-            #else
-            fs::rename(path_from, path_to);
-            #endif
-        }
-        catch (std::exception&)
-        {
-            success = false;
-        }
-        return success;
-    }
-    return false;
 }
 
 bool CResourceManager::Remove(const std::string& filename)

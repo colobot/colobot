@@ -25,7 +25,6 @@
 #include <algorithm>
 #include <iomanip>
 
-#include <boost/filesystem.hpp>
 
 CALSound::CALSound()
     : m_enabled(false),
@@ -586,11 +585,6 @@ bool CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTim
     if (m_music.find(filename) == m_music.end())
     {
         GetLogger()->Debug("Music %s was not cached!\n", filename.c_str());
-        /* TODO: if (!boost::filesystem::exists(filename))
-        {
-            GetLogger()->Debug("Requested music %s was not found.\n", filename.c_str());
-            return false;
-        } */
 
         auto newBuffer = MakeUnique<CBuffer>();
         buffer = newBuffer.get();
