@@ -471,6 +471,18 @@ TEST_F(CBotUT, VarImplicitCast)
         //"    ASSERT(b == \"3.5\");\n"
         "}\n"
     );
+
+    ExecuteTest(
+        "string func()\n"
+        "{\n"
+        "    return 5;\n"
+        "}\n"
+        "extern void ImplicitCastOnReturn()\n"
+        "{\n"
+        "    string a = func();\n"
+        "    ASSERT(a == \"5\");"
+        "}\n"
+    );
 }
 
 TEST_F(CBotUT, Arrays)
@@ -660,8 +672,7 @@ TEST_F(CBotUT, FunctionRedefined)
     );
 }
 
-// TODO: Doesn't work
-TEST_F(CBotUT, DISABLED_FunctionBadReturn)
+TEST_F(CBotUT, FunctionBadReturn)
 {
     ExecuteTest(
         "int func()\n"
@@ -672,7 +683,7 @@ TEST_F(CBotUT, DISABLED_FunctionBadReturn)
         "{\n"
         "    int a = func();\n"
         "}\n",
-        static_cast<CBotError>(-1) // TODO: no error for that
+        CBotErrBadType1
     );
 }
 
@@ -932,12 +943,11 @@ TEST_F(CBotUT, ThisEarlyContextSwitch_Issue436)
     );
 }
 
-// TODO: Gets a failed assertion
-TEST_F(CBotUT, DISABLED_BadStringAdd_Issue535)
+TEST_F(CBotUT, ClassStringAdd_Issue535)
 {
     ExecuteTest(
         "public class TestClass {}\n"
-        "extern void BadStringAdd()\n"
+        "extern void ClassStringAdd()\n"
         "{\n"
         "    TestClass t();\n"
         "    string s = t + \"!\";\n"
