@@ -5457,7 +5457,6 @@ void CRobotMain::SetAutosave(bool enable)
 
     m_autosave = enable;
     m_autosaveLast = m_gameTimeAbsolute;
-    AutosaveRotate();
 }
 
 bool CRobotMain::GetAutosave()
@@ -5483,7 +5482,6 @@ void CRobotMain::SetAutosaveSlots(int slots)
     if (m_autosaveSlots == slots) return;
 
     m_autosaveSlots = slots;
-    AutosaveRotate();
 }
 
 int CRobotMain::GetAutosaveSlots()
