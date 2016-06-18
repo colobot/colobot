@@ -463,12 +463,12 @@ TEST_F(CBotUT, VarImplicitCast)
         "{\n"
         "    string a = 2;\n"
         "    ASSERT(a == \"2\");\n"
-        //"    a = 3;\n" // TODO: this certainly looks wrong, you an assign a number in initialization but not in assignment
-        //"    ASSERT(a == \"3\");\n"
+        "    a = 3;\n"
+        "    ASSERT(a == \"3\");\n"
         "    string b = 2.5;\n"
         "    ASSERT(b == \"2.5\");\n"
-        //"    b = 3.5;\n"
-        //"    ASSERT(b == \"3.5\");\n"
+        "    b = 3.5;\n"
+        "    ASSERT(b == \"3.5\");\n"
         "}\n"
     );
 
