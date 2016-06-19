@@ -3153,19 +3153,30 @@ void CEngine::Render()
 
     m_device->BeginScene();
 
-    UseMSAA(true);
+    // use currently captured scene for world
+    if (m_worldCaptured && !m_captureWorld)
+    {
+        DrawCaptured3DScene();
+    }
+    else
+    {
+        UseMSAA(true);
 
-    if (!m_worldCaptured)
         DrawBackground();                // draws the background
 
-    if (m_drawWorld)
-        Draw3DScene();
+        if (m_drawWorld)
+            Draw3DScene();
 
-    UseMSAA(false);
+        UseMSAA(false);
 
-    // marked to capture currently rendered world
-    if (m_captureWorld)
-        Capture3DScene();
+        // marked to capture currently rendered world
+        if (m_captureWorld)
+        {
+            Capture3DScene();
+            m_device->Clear();
+            DrawCaptured3DScene();
+        }
+    }
 
     m_app->StartPerformanceCounter(PCNT_RENDER_INTERFACE);
     DrawInterface();
@@ -3175,143 +3186,15 @@ void CEngine::Render()
     m_device->EndScene();
 }
 
-void CEngine::Capture3DScene()
-{
-    // destroy existing texture
-    if (m_capturedWorldTexture.Valid())
-    {
-        m_device->DestroyTexture(m_capturedWorldTexture);
-        m_capturedWorldTexture = Texture();
-    }
-
-    // obtain pixels from screen
-    int width = m_size.x;
-    int height = m_size.y;
-
-    auto pixels = m_device->GetFrameBufferPixels();
-    unsigned char* data = reinterpret_cast<unsigned char*>(pixels->GetPixelsData());
-
-    // calculate 2nd mipmap
-    int newWidth = width / 4;
-    int newHeight = height / 4;
-    std::unique_ptr<unsigned char[]> mipmap(new unsigned char[4 * newWidth * newHeight]);
-
-    for (int x = 0; x < newWidth; x++)
-    {
-        for (int y = 0; y < newHeight; y++)
-        {
-            float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    int index = 4 * ((4 * x + i) + width * (4 * y + j));
-
-                    for (int k = 0; k < 4; k++)
-                        color[k] += data[index + k];
-                }
-            }
-
-            int index = 4 * (x + newWidth * y);
-
-            for (int k = 0; k < 4; k++)
-            {
-                mipmap[index + k] = static_cast<unsigned char>(color[k] * (1.0f / 16.0f));
-            }
-        }
-    }
-
-    // calculate Gaussian blur
-    std::unique_ptr<unsigned char[]> blured(new unsigned char[4 * newWidth * newHeight]);
-
-    float matrix[7][7] =
-    {
-        { 0.00000067f, 0.00002292f, 0.00019117f, 0.00038771f, 0.00019117f, 0.00002292f, 0.00000067f },
-        { 0.00002292f, 0.00078634f, 0.00655965f, 0.01330373f, 0.00655965f, 0.00078633f, 0.00002292f },
-        { 0.00019117f, 0.00655965f, 0.05472157f, 0.11098164f, 0.05472157f, 0.00655965f, 0.00019117f },
-        { 0.00038771f, 0.01330373f, 0.11098164f, 0.22508352f, 0.11098164f, 0.01330373f, 0.00038771f },
-        { 0.00019117f, 0.00655965f, 0.05472157f, 0.11098164f, 0.05472157f, 0.00655965f, 0.00019117f },
-        { 0.00002292f, 0.00078633f, 0.00655965f, 0.01330373f, 0.00655965f, 0.00078633f, 0.00002292f },
-        { 0.00000067f, 0.00002292f, 0.00019117f, 0.00038771f, 0.00019117f, 0.00002292f, 0.00000067f }
-    };
-
-    for (int x = 0; x < newWidth; x++)
-    {
-        for (int y = 0; y < newHeight; y++)
-        {
-            float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-
-            for (int i = -3; i <= 3; i++)
-            {
-                for (int j = -3; j <= 3; j++)
-                {
-                    int xp = Math::Clamp(x + i, 0, newWidth - 1);
-                    int yp = Math::Clamp(y + j, 0, newHeight - 1);
-
-                    float weight = matrix[i + 3][j + 3];
-
-                    int index = 4 * (newWidth * yp + xp);
-
-                    for (int k = 0; k < 4; k++)
-                        color[k] += weight * mipmap[index + k];
-                }
-            }
-
-            int index = 4 * (newWidth * y + x);
-
-            for (int k = 0; k < 4; k++)
-            {
-                float value = Math::Clamp(color[k], 0.0f, 255.0f);
-                blured[index + k] = static_cast<unsigned char>(value);
-            }
-        }
-    }
-
-    // create SDL surface and final texture
-    ImageData image;
-    image.surface = SDL_CreateRGBSurfaceFrom(blured.get(), newWidth, newHeight, 32, 0, 0, 0, 0, 0xFF000000);
-
-    TextureCreateParams params;
-    params.filter = TEX_FILTER_BILINEAR;
-    params.format = TEX_IMG_RGBA;
-    params.mipmap = false;
-
-    m_capturedWorldTexture = m_device->CreateTexture(&image, params);
-
-    SDL_FreeSurface(image.surface);
-
-    m_captureWorld = false;
-    m_worldCaptured = true;
-}
-
 void CEngine::Draw3DScene()
 {
-    // use currently captured scene for world
-    if (m_worldCaptured)
+    if (!m_worldCaptured)
     {
-        Math::Matrix identity;
-
-        m_device->SetTransform(TRANSFORM_PROJECTION, identity);
-        m_device->SetTransform(TRANSFORM_VIEW, identity);
-        m_device->SetTransform(TRANSFORM_WORLD, identity);
-
-        Vertex vertices[4];
-
-        vertices[0] = Vertex(Math::Vector(-1.0f, -1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(0.0f, 0.0f));
-        vertices[1] = Vertex(Math::Vector( 1.0f, -1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(1.0f, 0.0f));
-        vertices[2] = Vertex(Math::Vector(-1.0f,  1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(0.0f, 1.0f));
-        vertices[3] = Vertex(Math::Vector( 1.0f,  1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(1.0f, 1.0f));
-
-        m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
-
-        m_device->SetTexture(TEXTURE_PRIMARY, m_capturedWorldTexture);
-        m_device->SetTextureEnabled(TEXTURE_PRIMARY, true);
-        m_device->SetTextureEnabled(TEXTURE_SECONDARY, false);
-
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
-
-        return;
+        if (m_capturedWorldTexture.Valid())
+        {
+            m_device->DestroyTexture(m_capturedWorldTexture);
+            m_capturedWorldTexture = Texture();
+        }
     }
 
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
@@ -3565,6 +3448,143 @@ void CEngine::Draw3DScene()
     DrawForegroundImage();   // draws the foreground
 
     if (! m_overFront) DrawOverColor();      // draws the foreground color
+}
+
+void CEngine::Capture3DScene()
+{
+    // destroy existing texture
+    if (m_capturedWorldTexture.Valid())
+    {
+        m_device->DestroyTexture(m_capturedWorldTexture);
+        m_capturedWorldTexture = Texture();
+    }
+
+    // obtain pixels from screen
+    int width = m_size.x;
+    int height = m_size.y;
+
+    auto pixels = m_device->GetFrameBufferPixels();
+    unsigned char* data = reinterpret_cast<unsigned char*>(pixels->GetPixelsData());
+
+    // calculate 2nd mipmap
+    int newWidth = width / 4;
+    int newHeight = height / 4;
+    std::unique_ptr<unsigned char[]> mipmap(new unsigned char[4 * newWidth * newHeight]);
+
+    for (int x = 0; x < newWidth; x++)
+    {
+        for (int y = 0; y < newHeight; y++)
+        {
+            float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    int index = 4 * ((4 * x + i) + width * (4 * y + j));
+
+                    for (int k = 0; k < 4; k++)
+                        color[k] += data[index + k];
+                }
+            }
+
+            int index = 4 * (x + newWidth * y);
+
+            for (int k = 0; k < 4; k++)
+            {
+                mipmap[index + k] = static_cast<unsigned char>(color[k] * (1.0f / 16.0f));
+            }
+        }
+    }
+
+    // calculate Gaussian blur
+    std::unique_ptr<unsigned char[]> blured(new unsigned char[4 * newWidth * newHeight]);
+
+    float matrix[7][7] =
+        {
+            { 0.00000067f, 0.00002292f, 0.00019117f, 0.00038771f, 0.00019117f, 0.00002292f, 0.00000067f },
+            { 0.00002292f, 0.00078634f, 0.00655965f, 0.01330373f, 0.00655965f, 0.00078633f, 0.00002292f },
+            { 0.00019117f, 0.00655965f, 0.05472157f, 0.11098164f, 0.05472157f, 0.00655965f, 0.00019117f },
+            { 0.00038771f, 0.01330373f, 0.11098164f, 0.22508352f, 0.11098164f, 0.01330373f, 0.00038771f },
+            { 0.00019117f, 0.00655965f, 0.05472157f, 0.11098164f, 0.05472157f, 0.00655965f, 0.00019117f },
+            { 0.00002292f, 0.00078633f, 0.00655965f, 0.01330373f, 0.00655965f, 0.00078633f, 0.00002292f },
+            { 0.00000067f, 0.00002292f, 0.00019117f, 0.00038771f, 0.00019117f, 0.00002292f, 0.00000067f }
+        };
+
+    for (int x = 0; x < newWidth; x++)
+    {
+        for (int y = 0; y < newHeight; y++)
+        {
+            float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+            for (int i = -3; i <= 3; i++)
+            {
+                for (int j = -3; j <= 3; j++)
+                {
+                    int xp = Math::Clamp(x + i, 0, newWidth - 1);
+                    int yp = Math::Clamp(y + j, 0, newHeight - 1);
+
+                    float weight = matrix[i + 3][j + 3];
+
+                    int index = 4 * (newWidth * yp + xp);
+
+                    for (int k = 0; k < 4; k++)
+                        color[k] += weight * mipmap[index + k];
+                }
+            }
+
+            int index = 4 * (newWidth * y + x);
+
+            for (int k = 0; k < 4; k++)
+            {
+                float value = Math::Clamp(color[k], 0.0f, 255.0f);
+                blured[index + k] = static_cast<unsigned char>(value);
+            }
+        }
+    }
+
+    // create SDL surface and final texture
+    ImageData image;
+    image.surface = SDL_CreateRGBSurfaceFrom(blured.get(), newWidth, newHeight, 32, 0, 0, 0, 0, 0xFF000000);
+
+    TextureCreateParams params;
+    params.filter = TEX_FILTER_BILINEAR;
+    params.format = TEX_IMG_RGBA;
+    params.mipmap = false;
+
+    m_capturedWorldTexture = m_device->CreateTexture(&image, params);
+
+    SDL_FreeSurface(image.surface);
+
+    m_captureWorld = false;
+    m_worldCaptured = true;
+}
+
+void CEngine::DrawCaptured3DScene()
+{
+    Math::Matrix identity;
+
+    m_device->SetTransform(TRANSFORM_PROJECTION, identity);
+    m_device->SetTransform(TRANSFORM_VIEW, identity);
+    m_device->SetTransform(TRANSFORM_WORLD, identity);
+
+    m_device->SetRenderState(RENDER_STATE_BLENDING, false);
+    m_device->SetRenderState(RENDER_STATE_CULLING, false);
+
+    Vertex vertices[4];
+
+    vertices[0] = Vertex(Math::Vector(-1.0f, -1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(0.0f, 0.0f));
+    vertices[1] = Vertex(Math::Vector(1.0f, -1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(1.0f, 0.0f));
+    vertices[2] = Vertex(Math::Vector(-1.0f, 1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(0.0f, 1.0f));
+    vertices[3] = Vertex(Math::Vector(1.0f, 1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(1.0f, 1.0f));
+
+    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
+
+    m_device->SetTexture(TEXTURE_PRIMARY, m_capturedWorldTexture);
+    m_device->SetTextureEnabled(TEXTURE_PRIMARY, true);
+    m_device->SetTextureEnabled(TEXTURE_SECONDARY, false);
+
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
 }
 
 void CEngine::DrawCrashSpheres()

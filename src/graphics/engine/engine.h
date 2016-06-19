@@ -1216,6 +1216,8 @@ protected:
     void        Draw3DScene();
     //! Capture the 3D scene for pause blur
     void        Capture3DScene();
+    //! Draw the 3D scene capured for pause blur
+    void        DrawCaptured3DScene();
     //! Renders shadow map
     void        RenderShadowMap();
     //! Enables or disables shadow mapping
