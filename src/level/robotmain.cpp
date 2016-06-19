@@ -1554,6 +1554,8 @@ char* CRobotMain::GetDisplayInfoName(int index)
 //! Beginning of a dialogue during the game
 void CRobotMain::StartSuspend()
 {
+    if (!IsPhaseWithWorld(m_phase)) return;
+
     m_sound->MuteAll(true);
     ClearInterface();
     m_suspend = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_HIDE_SHORTCUTS|PAUSE_MUTE_SOUND|PAUSE_CAMERA);
