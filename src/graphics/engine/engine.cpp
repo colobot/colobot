@@ -376,6 +376,13 @@ void CEngine::ReloadAllTextures()
     m_app->GetEventQueue()->AddEvent(Event(EVENT_RELOAD_TEXTURES));
     UpdateGroundSpotTextures();
     LoadAllTextures();
+
+    // recapture 3D scene
+    if (m_worldCaptured)
+    {
+        m_captureWorld = true;
+        m_worldCaptured = false;
+    }
 }
 
 bool CEngine::ProcessEvent(const Event &event)
