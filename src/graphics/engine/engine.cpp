@@ -375,7 +375,8 @@ void CEngine::ReloadAllTextures()
 
     m_app->GetEventQueue()->AddEvent(Event(EVENT_RELOAD_TEXTURES));
     UpdateGroundSpotTextures();
-    LoadAllTextures();
+    // LoadAllTextures() is called from CRobotMain on EVENT_RELOAD_TEXTURES
+    // This is required because all dynamic textures need to be loaded first
 
     // recapture 3D scene
     if (m_worldCaptured)

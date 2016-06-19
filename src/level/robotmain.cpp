@@ -689,6 +689,7 @@ bool CRobotMain::ProcessEvent(Event &event)
             ChangeColor();
             UpdateMap();
         }
+        m_engine->LoadAllTextures();
     }
 
     if (event.type == EVENT_RESOLUTION_CHANGED)
