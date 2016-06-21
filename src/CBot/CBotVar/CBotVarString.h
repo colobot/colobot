@@ -32,6 +32,12 @@ class CBotVarString : public CBotVarValue<std::string, CBotTypString>
 public:
     CBotVarString(const CBotToken &name) : CBotVarValue(name) {}
 
+    void SetValString(const std::string& val) override
+    {
+        m_val = val;
+        m_binit = CBotVar::InitType::DEF;
+    }
+
     void SetValInt(int val, const std::string& s = "") override
     {
         SetValString(ToString(val));
