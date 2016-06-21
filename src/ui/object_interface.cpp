@@ -1622,7 +1622,7 @@ void CObjectInterface::UpdateInterface()
     bool bProgEnable = !m_programmable->IsProgram() && m_main->CanPlayerInteract();
     bool scriptSelected = m_selScript >= 0 && m_selScript < m_programStorage->GetProgramCount();
 
-    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    m_main->CanPlayerInteract() && scriptSelected && !m_programmable->IsTraceRecord());
+    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    scriptSelected && !m_programmable->IsTraceRecord());
     EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bProgEnable && !m_programmable->IsTraceRecord());
     EnableInterface(pw, EVENT_OBJECT_PROGADD,     bProgEnable);
     EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  bProgEnable && scriptSelected && !m_programStorage->GetProgram(m_selScript)->readOnly);

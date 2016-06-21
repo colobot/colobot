@@ -1028,17 +1028,17 @@ void CStudio::UpdateButtons()
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_CLONE));
     if ( button == nullptr )  return;
-    button->SetState(STATE_ENABLE, m_program->runnable && !m_bRunning);
+    button->SetState(STATE_ENABLE, m_main->CanPlayerInteract() && (m_program->runnable && !m_bRunning));
 
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_COMPILE));
     if ( button == nullptr )  return;
-    button->SetState(STATE_ENABLE, m_program->runnable && !m_bRunning);
+    button->SetState(STATE_ENABLE, m_main->CanPlayerInteract() && (m_program->runnable && !m_bRunning));
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_RUN));
     if ( button == nullptr )  return;
     button->SetIcon(m_bRunning?8:21);  // stop/run
-    button->SetState(STATE_ENABLE, m_program->runnable || m_bRunning);
+    button->SetState(STATE_ENABLE, m_main->CanPlayerInteract() && (m_program->runnable || m_bRunning));
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_REALTIME));
     if ( button == nullptr )  return;
