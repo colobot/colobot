@@ -482,40 +482,6 @@ enum EngineMouseType
     ENG_MOUSE_COUNT
 };
 
-/**
- * \struct EngineMouse
- * \brief Information about mouse cursor
- */
-struct EngineMouse
-{
-    //! Index of texture element for 1st image
-    int icon1;
-    //! Index of texture element for 2nd image
-    int icon2;
-    //! Shadow texture part
-    int iconShadow;
-    //! Mode to render 1st image in
-    EngineRenderState mode1;
-    //! Mode to render 2nd image in
-    EngineRenderState mode2;
-    //! Hot point
-    Math::Point hotPoint;
-
-    EngineMouse(int icon1 = -1,
-                int icon2 = -1,
-                int iconShadow = -1,
-                EngineRenderState mode1 = ENG_RSTATE_NORMAL,
-                EngineRenderState mode2 = ENG_RSTATE_NORMAL,
-                Math::Point hotPoint = Math::Point())
-     : icon1(icon1)
-     , icon2(icon2)
-     , iconShadow(iconShadow)
-     , mode1(mode1)
-     , mode2(mode2)
-     , hotPoint(hotPoint)
-    {}
-};
-
 
 /**
  * \class CEngine
@@ -1251,7 +1217,7 @@ protected:
     //! Draws the mouse cursor
     void        DrawMouse();
     //! Draw part of mouse cursor sprite
-    void        DrawMouseSprite(Math::Point pos, Math::Point size, int icon);
+    void        DrawMouseSprite(Math::IntPoint pos, Math::IntPoint size, int icon);
     //! Draw statistic texts
     void        DrawStats();
     //! Draw mission timer
@@ -1478,12 +1444,8 @@ protected:
      *  so are disabled for subsequent load calls. */
     std::set<std::string> m_texBlacklist;
 
-    //! Mouse cursor definitions
-    EngineMouse     m_mice[ENG_MOUSE_COUNT];
     //! Texture with mouse cursors
     Texture         m_miceTexture;
-    //! Size of mouse cursor
-    Math::Point     m_mouseSize;
     //! Type of mouse cursor
     EngineMouseType m_mouseType;
 

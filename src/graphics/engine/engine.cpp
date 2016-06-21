@@ -68,6 +68,60 @@ template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
 namespace Gfx
 {
 
+/**
+ * \struct EngineMouse
+ * \brief Information about mouse cursor
+ */
+struct EngineMouse
+{
+    //! Index of texture element for 1st image
+    int icon1;
+    //! Index of texture element for 2nd image
+    int icon2;
+    //! Shadow texture part
+    int iconShadow;
+    //! Mode to render 1st image in
+    EngineRenderState mode1;
+    //! Mode to render 2nd image in
+    EngineRenderState mode2;
+    //! Hot point
+    Math::IntPoint hotPoint;
+
+    EngineMouse(int icon1 = -1,
+                int icon2 = -1,
+                int iconShadow = -1,
+                EngineRenderState mode1 = ENG_RSTATE_NORMAL,
+                EngineRenderState mode2 = ENG_RSTATE_NORMAL,
+                Math::IntPoint hotPoint = Math::IntPoint())
+        : icon1(icon1)
+        , icon2(icon2)
+        , iconShadow(iconShadow)
+        , mode1(mode1)
+        , mode2(mode2)
+        , hotPoint(hotPoint)
+    {}
+};
+
+const Math::IntPoint MOUSE_SIZE(32, 32);
+const std::map<EngineMouseType, EngineMouse> MOUSE_TYPES = {
+    {{ENG_MOUSE_NORM},    {EngineMouse( 0,  1, 32, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::IntPoint( 1,  1))}},
+    {{ENG_MOUSE_WAIT},    {EngineMouse( 2,  3, 33, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::IntPoint( 8, 12))}},
+    {{ENG_MOUSE_HAND},    {EngineMouse( 4,  5, 34, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::IntPoint( 7,  2))}},
+    {{ENG_MOUSE_NO},      {EngineMouse( 6,  7, 35, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::IntPoint(10, 10))}},
+    {{ENG_MOUSE_EDIT},    {EngineMouse( 8,  9, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 6, 10))}},
+    {{ENG_MOUSE_CROSS},   {EngineMouse(10, 11, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(10, 10))}},
+    {{ENG_MOUSE_MOVEV},   {EngineMouse(12, 13, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 5, 11))}},
+    {{ENG_MOUSE_MOVEH},   {EngineMouse(14, 15, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(11,  5))}},
+    {{ENG_MOUSE_MOVED},   {EngineMouse(16, 17, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 9,  9))}},
+    {{ENG_MOUSE_MOVEI},   {EngineMouse(18, 19, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 9,  9))}},
+    {{ENG_MOUSE_MOVE},    {EngineMouse(20, 21, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(11, 11))}},
+    {{ENG_MOUSE_TARGET},  {EngineMouse(22, 23, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(15, 15))}},
+    {{ENG_MOUSE_SCROLLL}, {EngineMouse(24, 25, 43, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 2,  9))}},
+    {{ENG_MOUSE_SCROLLR}, {EngineMouse(26, 27, 44, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(17,  9))}},
+    {{ENG_MOUSE_SCROLLU}, {EngineMouse(28, 29, 45, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 9,  2))}},
+    {{ENG_MOUSE_SCROLLD}, {EngineMouse(30, 31, 46, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 9, 17))}},
+};
+
 CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     : m_app(app),
       m_systemUtils(systemUtils),
@@ -75,8 +129,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
       m_fogColor(),
       m_deepView(),
       m_fogStart(),
-      m_highlightRank(),
-      m_mice()
+      m_highlightRank()
 {
     m_device = nullptr;
 
@@ -160,24 +213,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_debugLights = false;
     m_debugDumpLights = false;
 
-    m_mice[ENG_MOUSE_NORM]    = EngineMouse( 0,  1, 32, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 1.0f,  1.0f));
-    m_mice[ENG_MOUSE_WAIT]    = EngineMouse( 2,  3, 33, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 8.0f, 12.0f));
-    m_mice[ENG_MOUSE_HAND]    = EngineMouse( 4,  5, 34, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 7.0f,  2.0f));
-    m_mice[ENG_MOUSE_NO]      = EngineMouse( 6,  7, 35, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point(10.0f, 10.0f));
-    m_mice[ENG_MOUSE_EDIT]    = EngineMouse( 8,  9, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 6.0f, 10.0f));
-    m_mice[ENG_MOUSE_CROSS]   = EngineMouse(10, 11, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(10.0f, 10.0f));
-    m_mice[ENG_MOUSE_MOVEV]   = EngineMouse(12, 13, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 5.0f, 11.0f));
-    m_mice[ENG_MOUSE_MOVEH]   = EngineMouse(14, 15, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(11.0f,  5.0f));
-    m_mice[ENG_MOUSE_MOVED]   = EngineMouse(16, 17, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  9.0f));
-    m_mice[ENG_MOUSE_MOVEI]   = EngineMouse(18, 19, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  9.0f));
-    m_mice[ENG_MOUSE_MOVE]    = EngineMouse(20, 21, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(11.0f, 11.0f));
-    m_mice[ENG_MOUSE_TARGET]  = EngineMouse(22, 23, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(15.0f, 15.0f));
-    m_mice[ENG_MOUSE_SCROLLL] = EngineMouse(24, 25, 43, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 2.0f,  9.0f));
-    m_mice[ENG_MOUSE_SCROLLR] = EngineMouse(26, 27, 44, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(17.0f,  9.0f));
-    m_mice[ENG_MOUSE_SCROLLU] = EngineMouse(28, 29, 45, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  2.0f));
-    m_mice[ENG_MOUSE_SCROLLD] = EngineMouse(30, 31, 46, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f, 17.0f));
-
-    m_mouseSize    = Math::Point(48.f/m_size.x, 48.f/m_size.x * (800.f/600.f));
     m_mouseType    = ENG_MOUSE_NORM;
 
     m_fpsCounter = 0;
@@ -280,7 +315,6 @@ void CEngine::SetTerrain(CTerrain* terrain)
 bool CEngine::Create()
 {
     m_size = m_app->GetVideoConfig().size;
-    m_mouseSize = Math::Point(48.f/m_size.x, 48.f/m_size.x * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
 
     // Use the setters to set defaults, because they automatically disable what is not supported
     SetShadowMapping(m_shadowMapping);
@@ -359,7 +393,6 @@ void CEngine::Destroy()
 void CEngine::ResetAfterVideoConfigChanged()
 {
     m_size = m_app->GetVideoConfig().size;
-    m_mouseSize = Math::Point(48.f/m_size.x, 48.f/m_size.x * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
 
     // Update the camera projection matrix for new aspect ratio
     ApplyChange();
@@ -4833,8 +4866,8 @@ void CEngine::DrawOverColor()
 void CEngine::DrawHighlight()
 {
     Math::Point min, max;
-    min.x =  1000000.0f;
-    min.y =  1000000.0f;
+    min.x = 1000000.0f;
+    min.y = 1000000.0f;
     max.x = -1000000.0f;
     max.y = -1000000.0f;
 
@@ -4851,10 +4884,10 @@ void CEngine::DrawHighlight()
         }
     }
 
-    if ( min.x ==  1000000.0f ||
-         min.y ==  1000000.0f ||
-         max.x == -1000000.0f ||
-         max.y == -1000000.0f )
+    if (min.x == 1000000.0f ||
+        min.y == 1000000.0f ||
+        max.x == -1000000.0f ||
+        max.y == -1000000.0f)
     {
         m_highlight = false;  // not highlighted
     }
@@ -4865,7 +4898,7 @@ void CEngine::DrawHighlight()
         m_highlight = true;
     }
 
-    if (! m_highlight)
+    if (!m_highlight)
         return;
 
     Math::Point p1 = m_highlightP1;
@@ -4881,8 +4914,8 @@ void CEngine::DrawHighlight()
 
     SetState(ENG_RSTATE_OPAQUE_COLOR);
 
-    float d = 0.5f+sinf(m_highlightTime*6.0f)*0.5f;
-    d *= (p2.x-p1.x)*0.1f;
+    float d = 0.5f + sinf(m_highlightTime * 6.0f) * 0.5f;
+    d *= (p2.x - p1.x) * 0.1f;
     p1.x += d;
     p1.y += d;
     p2.x -= d;
@@ -4891,11 +4924,11 @@ void CEngine::DrawHighlight()
     Color color(1.0f, 1.0f, 0.0f);  // yellow
 
     VertexCol line[3] =
-    {
-        VertexCol(Math::Vector(), color),
-        VertexCol(Math::Vector(), color),
-        VertexCol(Math::Vector(), color)
-    };
+        {
+            VertexCol(Math::Vector(), color),
+            VertexCol(Math::Vector(), color),
+            VertexCol(Math::Vector(), color)
+        };
 
     float dx = (p2.x - p1.x) / 5.0f;
     float dy = (p2.y - p1.y) / 5.0f;
@@ -4927,6 +4960,8 @@ void CEngine::DrawMouse()
     if (mode != MOUSE_ENGINE && mode != MOUSE_BOTH)
         return;
 
+    SetWindowCoordinates();
+
     Material material;
     material.diffuse = Color(1.0f, 1.0f, 1.0f);
     material.ambient = Color(0.5f, 0.5f, 0.5f);
@@ -4934,33 +4969,34 @@ void CEngine::DrawMouse()
     m_device->SetMaterial(material);
     m_device->SetTexture(0, m_miceTexture);
 
-    int index = static_cast<int>(m_mouseType);
+    Math::Point mousePos = CInput::GetInstancePointer()->GetMousePos();
+    Math::IntPoint pos(mousePos.x * m_size.x, m_size.y - mousePos.y * m_size.y);
+    pos.x -= MOUSE_TYPES.at(m_mouseType).hotPoint.x;
+    pos.y -= MOUSE_TYPES.at(m_mouseType).hotPoint.y;
 
-    Math::Point pos = CInput::GetInstancePointer()->GetMousePos();
-    pos.x = pos.x - (m_mice[index].hotPoint.x * m_mouseSize.x) / 32.0f;
-    pos.y = pos.y - ((32.0f - m_mice[index].hotPoint.y) * m_mouseSize.y) / 32.0f;
-
-    Math::Point shadowPos;
-    shadowPos.x = pos.x + (4.0f/800.0f);
-    shadowPos.y = pos.y - (3.0f/600.0f);
+    Math::IntPoint shadowPos;
+    shadowPos.x = pos.x + 4;
+    shadowPos.y = pos.y - 3;
 
     SetState(ENG_RSTATE_TCOLOR_WHITE);
-    DrawMouseSprite(shadowPos, m_mouseSize, m_mice[index].iconShadow);
+    DrawMouseSprite(shadowPos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).iconShadow);
 
-    SetState(m_mice[index].mode1);
-    DrawMouseSprite(pos, m_mouseSize, m_mice[index].icon1);
+    SetState(MOUSE_TYPES.at(m_mouseType).mode1);
+    DrawMouseSprite(pos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).icon1);
 
-    SetState(m_mice[index].mode2);
-    DrawMouseSprite(pos, m_mouseSize, m_mice[index].icon2);
+    SetState(MOUSE_TYPES.at(m_mouseType).mode2);
+    DrawMouseSprite(pos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).icon2);
+
+    SetInterfaceCoordinates();
 }
 
-void CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
+void CEngine::DrawMouseSprite(Math::IntPoint pos, Math::IntPoint size, int icon)
 {
     if (icon == -1)
         return;
 
-    Math::Point p1 = pos;
-    Math::Point p2 = p1 + size;
+    Math::IntPoint p1 = pos;
+    Math::IntPoint p2 = p1 + size;
 
     float u1 = (32.0f / 256.0f) * (icon % 8);
     float v1 = (32.0f / 256.0f) * (icon / 8);
@@ -4977,10 +5013,10 @@ void CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
 
     Vertex vertex[4] =
     {
-        Vertex(Math::Vector(p1.x, p1.y, 0.0f), normal, Math::Point(u1, v2)),
-        Vertex(Math::Vector(p1.x, p2.y, 0.0f), normal, Math::Point(u1, v1)),
-        Vertex(Math::Vector(p2.x, p1.y, 0.0f), normal, Math::Point(u2, v2)),
-        Vertex(Math::Vector(p2.x, p2.y, 0.0f), normal, Math::Point(u2, v1))
+        Vertex(Math::Vector(p1.x, p2.y, 0.0f), normal, Math::Point(u1, v2)),
+        Vertex(Math::Vector(p1.x, p1.y, 0.0f), normal, Math::Point(u1, v1)),
+        Vertex(Math::Vector(p2.x, p2.y, 0.0f), normal, Math::Point(u2, v2)),
+        Vertex(Math::Vector(p2.x, p1.y, 0.0f), normal, Math::Point(u2, v1))
     };
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
