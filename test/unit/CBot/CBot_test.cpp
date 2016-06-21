@@ -485,6 +485,30 @@ TEST_F(CBotUT, VarImplicitCast)
     );
 }
 
+TEST_F(CBotUT, ToString)
+{
+    ExecuteTest(
+        "extern void ArrayToString()\n"
+        "{\n"
+        "    int[] array = {2, 4, 6};\n"
+        "    string arrayStr = \"\"+array;\n"
+        "    ASSERT(arrayStr == \"{ 2, 4, 6 }\");\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "public class Test { int a = 1337; }\n"
+        "extern void ClassToString()\n"
+        "{\n"
+        "    Test test();\n"
+        "    string testStr = \"\"+test;\n"
+        "    ASSERT(testStr == \"Pointer to Test( a=1337 )\");\n"
+        "}\n"
+    );
+
+    // TODO: IntrinsicClassToString ? (e.g. point)
+}
+
 TEST_F(CBotUT, Arrays)
 {
     ExecuteTest(
