@@ -98,7 +98,7 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
                     }
                 }
 
-                inst->m_expr->AddNext3(i);
+                inst->m_expr->AddNext3b(i);
 
                 if ( p->GetType() == ID_COMMA ) continue;
                 if ( p->GetType() == ID_CLBLK ) break;
@@ -114,10 +114,10 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
             {
                 goto error;
             }
-            CBotVar* pv = pStk->GetVar();                                       // result of the expression
 
-            if (pv == nullptr || (!TypesCompatibles( type, pv->GetTypResult()) &&
-                !(type.Eq(CBotTypPointer) && pv->GetTypResult().Eq(CBotTypNullPointer)) ))
+            CBotTypResult valType = pStk->GetTypResult();
+
+            if (!TypeCompatible(valType, type, ID_ASS) )
             {
                 pStk->SetError(CBotErrBadType1, p->GetStart());
                 goto error;
@@ -133,15 +133,14 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
                     goto error;
                 }
 
-                CBotVar* pv = pStk->GetVar();                                   // result of the expression
+                CBotTypResult valType = pStk->GetTypResult();
 
-                if (pv == nullptr || (!TypesCompatibles( type, pv->GetTypResult()) &&
-                    !(type.Eq(CBotTypPointer) && pv->GetTypResult().Eq(CBotTypNullPointer)) ))
+                if (!TypeCompatible(valType, type, ID_ASS) )
                 {
                     pStk->SetError(CBotErrBadType1, p->GetStart());
                     goto error;
                 }
-                inst->m_expr->AddNext3(i);
+                inst->m_expr->AddNext3b(i);
 
                 if (p->GetType() == ID_COMMA) continue;
                 if (p->GetType() == ID_CLBLK) break;
@@ -175,7 +174,7 @@ bool CBotListArray::Execute(CBotStack* &pj, CBotVar* pVar)
 
     int n = 0;
 
-    for (; p != nullptr ; n++, p = p->GetNext3())
+    for (; p != nullptr ; n++, p = p->GetNext3b())
     {
         if (pile1->GetState() > n) continue;
 
@@ -207,7 +206,7 @@ void CBotListArray::RestoreState(CBotStack* &pj, bool bMain)
 
         int    state = pile->GetState();
 
-        while(state-- > 0) p = p->GetNext3() ;
+        while(state-- > 0) p = p->GetNext3b() ;
 
         p->RestoreState(pile, bMain);                    // size calculation //interrupted!
     }

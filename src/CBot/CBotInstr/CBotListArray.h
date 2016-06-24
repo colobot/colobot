@@ -62,7 +62,7 @@ protected:
     virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;
 
 private:
-    //! An expression for an element others are linked with CBotInstr :: m_next3;
+    //! An expression for an element others are linked with CBotInstr :: m_next3b;
     CBotInstr* m_expr;
 };
 
