@@ -50,7 +50,11 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
     if (!IsOfType(p, ID_NEW)) return nullptr;
 
     // verifies that the token is a class name
-    if (p->GetType() != TokenTypVar) return nullptr;
+    if (p->GetType() != TokenTypVar)
+    {
+        pStack->SetError(CBotErrBadNew, p);
+        return nullptr;
+    }
 
     CBotClass* pClass = CBotClass::Find(p);
     if (pClass == nullptr)
