@@ -1554,11 +1554,13 @@ char* CRobotMain::GetDisplayInfoName(int index)
 //! Beginning of a dialogue during the game
 void CRobotMain::StartSuspend()
 {
+    if (m_suspend != nullptr) return; // already suspended
     if (!IsPhaseWithWorld(m_phase)) return;
+    GetLogger()->Info("Start suspend\n");
 
     m_sound->MuteAll(true);
     ClearInterface();
-    m_suspend = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_HIDE_SHORTCUTS|PAUSE_MUTE_SOUND|PAUSE_CAMERA);
+    m_suspend = m_pause->ActivatePause(PAUSE_ENGINE | PAUSE_HIDE_SHORTCUTS | PAUSE_MUTE_SOUND | PAUSE_CAMERA);
     m_engine->SetOverFront(false);  // over flat behind
     CreateShortcuts();
 
@@ -1572,6 +1574,9 @@ void CRobotMain::StartSuspend()
 //! End of dialogue during the game
 void CRobotMain::StopSuspend()
 {
+    if (m_suspend == nullptr) return; // not suspended
+    GetLogger()->Info("Stop suspend\n");
+
     m_sound->MuteAll(false);
     ClearInterface();
     m_pause->DeactivatePause(m_suspend);
@@ -1579,7 +1584,7 @@ void CRobotMain::StopSuspend()
     m_engine->SetOverFront(true);  // over flat front
     CreateShortcuts();
 
-    if(m_infoObject != nullptr)
+    if (m_infoObject != nullptr)
         SelectObject(m_infoObject, false);  // gives the command buttons
     m_map->ShowMap(m_mapShow);
     m_displayText->HideText(false);
