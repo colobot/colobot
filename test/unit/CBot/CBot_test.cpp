@@ -808,6 +808,33 @@ TEST_F(CBotUT, ClassDestructor)
     );
 }
 
+TEST_F(CBotUT, ClassBadNew)
+{
+    ExecuteTest(
+        "public class AClass {};\n"
+        "extern void ClassBadNew()\n"
+        "{\n"
+        "    AClass a = new \"abc\";\n"
+        "}\n",
+        CBotErrBadNew
+    );
+}
+
+TEST_F(CBotUT, ClassCallOnNull)
+{
+    ExecuteTest(
+        "public class AClass {\n"
+        "    public void test() {}\n"
+        "};\n"
+        "extern void ClassCallOnNull()\n"
+        "{\n"
+        "    AClass a = null;\n"
+        "    a.test();\n"
+        "}\n",
+        CBotErrNull
+    );
+}
+
 TEST_F(CBotUT, ClassNullPointer)
 {
     ExecuteTest(
@@ -1104,6 +1131,19 @@ TEST_F(CBotUT, TestArrayInitialization)
         "    a[4] = 5;\n"
         "}\n",
         CBotErrOutArray
+    );
+
+    ExecuteTest(
+        "extern void TestArrayInitializationWithVars() {\n"
+        "    int x=1, y=2, z=3;\n"
+        "    int i[] = { x, y, z };\n"
+        "    ASSERT(i[0] == 1);\n"
+        "    ASSERT(i[1] == 2);\n"
+        "    ASSERT(i[2] == 3);\n"
+        "    i[0] += 1;\n"
+        "    ASSERT(i[0] == 2);\n"
+        "    ASSERT(x == 1);\n"
+        "}\n"
     );
 }
 
