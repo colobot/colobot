@@ -2785,6 +2785,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     Gfx::Color backgroundCloudDown = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
     bool backgroundFull = false;
 
+    auto LoadingWarning = [&](const std::string& message)
+    {
+        GetLogger()->Warn("%s\n", message.c_str());
+        m_ui->GetDialog()->StartInformation("Level loading warning", "This level contains problems. It may stop working in future versions of the game.", message);
+    };
+
     try
     {
         m_ui->GetLoadingScreen()->SetProgress(0.05f, RT_LOADING_PROCESSING);
@@ -2868,6 +2874,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             int rank = boost::lexical_cast<int>(line->GetParam(type)->GetValue());
                             if (rank >= 0)
                             {
+                                // TODO: Fix default levels and add a future removal warning
                                 GetLogger()->Warn("This level is using deprecated way of defining %1$s scene. Please change the %1$s= parameter in EndingFile from %2$d to \"levels/other/%1$s%2$03d.txt\".\n", type.c_str(), rank);
                                 std::stringstream ss;
                                 ss << "levels/other/" << type << std::setfill('0') << std::setw(3) << rank << ".txt";
@@ -2875,6 +2882,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             }
                             else
                             {
+                                // TODO: Fix default levels and add a future removal warning
                                 GetLogger()->Warn("This level is using deprecated way of defining %1$s scene. Please remove the %1$s= parameter in EndingFile.\n", type.c_str());
                                 return "";
                             }
@@ -2931,6 +2939,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, audioChange->music);
                 m_sound->CacheMusic(audioChange->music);
                 m_audioChange.push_back(std::move(audioChange));
+
+                if (!line->GetParam("pos")->IsDefined() || !line->GetParam("dist")->IsDefined())
+                {
+                    LoadingWarning("The defaults for pos= and dist= are going to change, specify them explicitly. See issue #759 (https://git.io/vVBzH)");
+                }
                 continue;
             }
 
@@ -3560,6 +3573,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (endTake->immediat)
                     m_endTakeImmediat = true;
                 m_endTake.push_back(std::move(endTake));
+
+                if (!line->GetParam("pos")->IsDefined() || !line->GetParam("dist")->IsDefined())
+                {
+                    LoadingWarning("The defaults for pos= and dist= are going to change, specify them explicitly. See issue #759 (https://git.io/vVBzH)");
+                }
                 continue;
             }
             if (line->GetCommand() == "EndMissionDelay" && !resetObject)
