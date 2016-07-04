@@ -121,6 +121,15 @@ CBotInstr* CBotDefArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResul
                     }
                 }
             }
+
+            if (pStk->IsOk()) while (true)       // mark initialized
+            {
+                var = var->GetItem(0, true);
+                if (var == nullptr) break;
+                if (var->GetType() == CBotTypArrayPointer) continue;
+                if (var->GetType() <= CBotTypString) var->SetInit(CBotVar::InitType::DEF);
+                break;
+            }
         }
 
         if (pStk->IsOk()) return pStack->Return(inst, pStk);
