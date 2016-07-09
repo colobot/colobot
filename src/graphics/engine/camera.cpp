@@ -254,7 +254,7 @@ CObject* CCamera::GetControllingObject()
 
 void CCamera::SetType(CameraType type)
 {
-    if ( (m_type == CAM_TYPE_BACK) )
+    if (m_type == CAM_TYPE_BACK)
     {
         for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
         {

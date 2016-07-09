@@ -5525,7 +5525,8 @@ void CRobotMain::AutosaveRotate()
     auto saveDirs = CResourceManager::ListDirectories(m_playerProfile->GetSaveDir());
     const std::string autosavePrefix = "autosave";
     std::vector<std::string> autosaves;
-    std::copy_if(saveDirs.begin(), saveDirs.end(), std::back_inserter(autosaves), [&](const std::string &save) {
+    std::copy_if(saveDirs.begin(), saveDirs.end(), std::back_inserter(autosaves), [&](const std::string &save)
+    {
         return save.substr(0, autosavePrefix.length()) == autosavePrefix;
     });
 

@@ -3510,7 +3510,7 @@ void CEngine::Capture3DScene()
     // calculate 2nd mipmap
     int newWidth = width / 4;
     int newHeight = height / 4;
-    std::unique_ptr<unsigned char[]> mipmap(new unsigned char[4 * newWidth * newHeight]);
+    std::unique_ptr<unsigned char[]> mipmap = MakeUniqueArray<unsigned char>(4 * newWidth * newHeight);
 
     for (int x = 0; x < newWidth; x++)
     {
@@ -3539,7 +3539,7 @@ void CEngine::Capture3DScene()
     }
 
     // calculate Gaussian blur
-    std::unique_ptr<unsigned char[]> blured(new unsigned char[4 * newWidth * newHeight]);
+    std::unique_ptr<unsigned char[]> blured = MakeUniqueArray<unsigned char>(4 * newWidth * newHeight);
 
     float matrix[7][7] =
         {
