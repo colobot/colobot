@@ -359,6 +359,9 @@ msgstr ""
 msgid "Render distance\\Maximum visibility"
 msgstr ""
 
+msgid "Pause blur\\Blur the background on the pause screen"
+msgstr ""
+
 msgid "Particles in the interface\\Steam clouds and sparks in the interface"
 msgstr ""
 
@@ -924,18 +927,6 @@ msgid "Zoom mini-map"
 msgstr ""
 
 msgid "Camera (\\key camera;)"
-msgstr ""
-
-msgid "Camera to left"
-msgstr ""
-
-msgid "Camera to right"
-msgstr ""
-
-msgid "Camera nearest"
-msgstr ""
-
-msgid "Camera awayest"
 msgstr ""
 
 msgid "Help about selected object"

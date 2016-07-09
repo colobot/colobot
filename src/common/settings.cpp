@@ -98,6 +98,7 @@ void CSettings::SaveSettings()
     GetConfigFile().SetIntProperty("Setup", "MusicVolume", sound->GetMusicVolume());
     GetConfigFile().SetBoolProperty("Setup", "EditIndentMode", engine->GetEditIndentMode());
     GetConfigFile().SetIntProperty("Setup", "EditIndentValue", engine->GetEditIndentValue());
+    GetConfigFile().SetBoolProperty("Setup", "PauseBlur", engine->GetPauseBlurEnabled());
 
     GetConfigFile().SetIntProperty("Setup", "MipmapLevel", engine->GetTextureMipmapLevel());
     GetConfigFile().SetIntProperty("Setup", "Anisotropy", engine->GetTextureAnisotropyLevel());
@@ -112,7 +113,6 @@ void CSettings::SaveSettings()
 
     // Experimental settings
     GetConfigFile().SetBoolProperty("Experimental", "TerrainShadows", engine->GetTerrainShadows());
-    GetConfigFile().SetBoolProperty("Experimental", "PauseBlur", engine->GetPauseBlur());
 
     CInput::GetInstancePointer()->SaveKeyBindings();
 
@@ -230,6 +230,9 @@ void CSettings::LoadSettings()
     if (GetConfigFile().GetIntProperty("Setup", "EditIndentValue", iValue))
         engine->SetEditIndentValue(iValue);
 
+    if (GetConfigFile().GetBoolProperty("Setup", "PauseBlur", bValue))
+        engine->SetPauseBlurEnabled(bValue);
+
 
     if (GetConfigFile().GetIntProperty("Setup", "MipmapLevel", iValue))
         engine->SetTextureMipmapLevel(iValue);
@@ -270,9 +273,6 @@ void CSettings::LoadSettings()
 
     if (GetConfigFile().GetBoolProperty("Experimental", "TerrainShadows", bValue))
         engine->SetTerrainShadows(bValue);
-
-    if (GetConfigFile().GetBoolProperty("Experimental", "PauseBlur", bValue))
-        engine->SetPauseBlur(bValue);
 
     CInput::GetInstancePointer()->LoadKeyBindings();
 

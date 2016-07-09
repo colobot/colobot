@@ -286,9 +286,6 @@ msgstr "Вызов неизвестной функции"
 msgid "Camera (\\key camera;)"
 msgstr "Камера (\\key camera;)"
 
-msgid "Camera awayest"
-msgstr "Отдалить камеру"
-
 msgid "Camera back\\Moves the camera backward"
 msgstr "Отдалить камеру\\Перемещение камеры назад"
 
@@ -307,18 +304,9 @@ msgstr "Приблизать камеру\\Перемещение камеры �
 msgid "Camera left\\Turns the camera left"
 msgstr "Приблизать камеру\\Перемещение камеры вперед"
 
-msgid "Camera nearest"
-msgstr "Приблизить камеру"
-
 #, fuzzy
 msgid "Camera right\\Turns the camera right"
 msgstr "Повернуть налево\\Поворот налево"
-
-msgid "Camera to left"
-msgstr "Камеру влево"
-
-msgid "Camera to right"
-msgstr "Камеру вправо"
 
 #, fuzzy
 msgid "Camera up\\Turns the camera up"
@@ -1042,6 +1030,9 @@ msgstr "Частицы в интерфейсе меню\\Пар из труб и
 
 msgid "Paste (Ctrl+V)"
 msgstr "Вставить (Ctrl+V)"
+
+msgid "Pause blur\\Blur the background on the pause screen"
+msgstr ""
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
 msgstr ""
@@ -1843,6 +1834,18 @@ msgstr "epsitec.com"
 
 #~ msgid "COLOBOT"
 #~ msgstr "КОЛОБОТ"
+
+#~ msgid "Camera awayest"
+#~ msgstr "Отдалить камеру"
+
+#~ msgid "Camera nearest"
+#~ msgstr "Приблизить камеру"
+
+#~ msgid "Camera to left"
+#~ msgstr "Камеру влево"
+
+#~ msgid "Camera to right"
+#~ msgstr "Камеру вправо"
 
 #~ msgid "Can not create this; there are too many objects"
 #~ msgstr "Не удается это создать, слишком много объектов"

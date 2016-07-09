@@ -184,6 +184,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_LIGHT]     = TR("Dynamic lighting\\Mobile light sources");
     stringsEvent[EVENT_INTERFACE_PARTI]     = TR("Number of particles\\Explosions, dust, reflections, etc.");
     stringsEvent[EVENT_INTERFACE_CLIP]      = TR("Render distance\\Maximum visibility");
+    stringsEvent[EVENT_INTERFACE_PAUSE_BLUR]= TR("Pause blur\\Blur the background on the pause screen");
     stringsEvent[EVENT_INTERFACE_RAIN]      = TR("Particles in the interface\\Steam clouds and sparks in the interface");
     stringsEvent[EVENT_INTERFACE_GLINT]     = TR("Reflections on the buttons \\Shiny buttons");
     stringsEvent[EVENT_INTERFACE_TOOLTIP]   = TR("Help balloons\\Explain the function of the buttons");

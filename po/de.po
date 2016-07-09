@@ -288,9 +288,6 @@ msgstr "Die aufgerufene Funktion existiert nicht"
 msgid "Camera (\\key camera;)"
 msgstr "Kamera (\\key camera;)"
 
-msgid "Camera awayest"
-msgstr "Kamera weiter weg"
-
 msgid "Camera back\\Moves the camera backward"
 msgstr "Kamera weiter\\Bewegung der Kamera rückwärts"
 
@@ -309,18 +306,9 @@ msgstr "Kamera näher\\Bewegung der Kamera vorwärts"
 msgid "Camera left\\Turns the camera left"
 msgstr "Kamera näher\\Bewegung der Kamera vorwärts"
 
-msgid "Camera nearest"
-msgstr "Kamera näher"
-
 #, fuzzy
 msgid "Camera right\\Turns the camera right"
 msgstr "Drehung nach rechts\\Steuer rechts"
-
-msgid "Camera to left"
-msgstr "Kamera links"
-
-msgid "Camera to right"
-msgstr "Kamera rechts"
 
 #, fuzzy
 msgid "Camera up\\Turns the camera up"
@@ -1046,6 +1034,9 @@ msgstr "Partikel in den Menüs\\Funken und Sterne in den Menüs"
 
 msgid "Paste (Ctrl+V)"
 msgstr "Einfügen (Ctrl+V)"
+
+msgid "Pause blur\\Blur the background on the pause screen"
+msgstr ""
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
 msgstr ""
@@ -1852,6 +1843,18 @@ msgstr "epsitec.com"
 
 #~ msgid "COLOBOT"
 #~ msgstr "COLOBOT"
+
+#~ msgid "Camera awayest"
+#~ msgstr "Kamera weiter weg"
+
+#~ msgid "Camera nearest"
+#~ msgstr "Kamera näher"
+
+#~ msgid "Camera to left"
+#~ msgstr "Kamera links"
+
+#~ msgid "Camera to right"
+#~ msgstr "Kamera rechts"
 
 #~ msgid "Can not create this; there are too many objects"
 #~ msgstr "Kein neues Objekt kann erstellt werden (zu viele vorhanden)"

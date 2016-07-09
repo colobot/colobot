@@ -285,9 +285,6 @@ msgstr "Odwołanie do nieznanej funkcji"
 msgid "Camera (\\key camera;)"
 msgstr "Kamera (\\key camera;)"
 
-msgid "Camera awayest"
-msgstr "Camera awayest"
-
 msgid "Camera back\\Moves the camera backward"
 msgstr "Kamera dalej\\Oddala kamerę"
 
@@ -303,17 +300,8 @@ msgstr "Kamera w dół\\Obraca kamerę w dół"
 msgid "Camera left\\Turns the camera left"
 msgstr "Kamera w lewo\\Obraca kamerę w lewo"
 
-msgid "Camera nearest"
-msgstr "Camera nearest"
-
 msgid "Camera right\\Turns the camera right"
 msgstr "Kamera w prawo\\Obróć kamerę w prawo"
-
-msgid "Camera to left"
-msgstr "Camera to left"
-
-msgid "Camera to right"
-msgstr "Camera to right"
 
 msgid "Camera up\\Turns the camera up"
 msgstr "Kamera w górę\\Obróć kamerę w górę"
@@ -1030,6 +1018,9 @@ msgstr "Cząstki w interfejsie\\Para i iskry z silników w interfejsie"
 
 msgid "Paste (Ctrl+V)"
 msgstr "Wklej (Ctrl+V)"
+
+msgid "Pause blur\\Blur the background on the pause screen"
+msgstr ""
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
 msgstr "Wstrzymaj w tle\\Wstrzymaj grę gdy okno stanie się nieaktywne"
@@ -1820,8 +1811,20 @@ msgstr "epsitec.com"
 #~ msgid "Building too close"
 #~ msgstr "Budynek za blisko"
 
+#~ msgid "Camera awayest"
+#~ msgstr "Camera awayest"
+
 #~ msgid "Camera down\\Decrease camera angle while visiting message origin"
 #~ msgstr "Kamera w dół\\Opuść kamerę podczas sprawdzania źródła wiadomości"
+
+#~ msgid "Camera nearest"
+#~ msgstr "Camera nearest"
+
+#~ msgid "Camera to left"
+#~ msgstr "Camera to left"
+
+#~ msgid "Camera to right"
+#~ msgstr "Camera to right"
 
 #~ msgid "Camera up\\Increase camera angle while visiting message origin"
 #~ msgstr "Kamera w górę\\Podnieś kamerę podczas sprawdzania źródła wiadomości"

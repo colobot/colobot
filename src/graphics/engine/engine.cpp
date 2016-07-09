@@ -202,7 +202,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_editIndentMode = true;
     m_editIndentValue = 4;
     m_tracePrecision = 1.0f;
-    m_pauseBlur = false;
+    m_pauseBlurEnabled = true;
 
 
     m_updateGeometry = false;
@@ -3070,14 +3070,14 @@ EngineMouseType CEngine::GetMouseType()
     return m_mouseType;
 }
 
-void CEngine::SetPauseBlur(bool enable)
+void CEngine::SetPauseBlurEnabled(bool enable)
 {
-    m_pauseBlur = enable;
+    m_pauseBlurEnabled = enable;
 }
 
-bool CEngine::GetPauseBlur()
+bool CEngine::GetPauseBlurEnabled()
 {
-    return m_pauseBlur;
+    return m_pauseBlurEnabled;
 }
 
 const Math::Matrix& CEngine::GetMatView()
@@ -5414,7 +5414,7 @@ void CEngine::SetInterfaceCoordinates()
 
 void CEngine::EnablePauseBlur()
 {
-    if (!m_pauseBlur) return;
+    if (!m_pauseBlurEnabled) return;
 
     m_captureWorld = true;
     m_worldCaptured = false;
@@ -5422,8 +5422,6 @@ void CEngine::EnablePauseBlur()
 
 void CEngine::DisablePauseBlur()
 {
-    if (!m_pauseBlur) return;
-
     m_captureWorld = false;
     m_worldCaptured = false;
 }

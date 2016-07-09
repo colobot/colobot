@@ -1129,8 +1129,8 @@ public:
 
     //@{
     //! Management of pause blur
-    void            SetPauseBlur(bool enable);
-    bool            GetPauseBlur();
+    void            SetPauseBlurEnabled(bool enable);
+    bool            GetPauseBlurEnabled();
     //@}
 
     //! Returns the view matrix
@@ -1386,7 +1386,7 @@ protected:
     float           m_terrainVision;
     bool            m_backForce;
     float           m_tracePrecision;
-    bool            m_pauseBlur;
+    bool            m_pauseBlurEnabled;
 
     bool            m_dirty;
     bool            m_fog;

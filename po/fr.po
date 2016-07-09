@@ -282,9 +282,6 @@ msgstr "Appel d'une fonction inexistante"
 msgid "Camera (\\key camera;)"
 msgstr "Caméra (\\key camera;)"
 
-msgid "Camera awayest"
-msgstr "Caméra plus loin"
-
 msgid "Camera back\\Moves the camera backward"
 msgstr "Caméra plus loin\\Recule la caméra"
 
@@ -302,18 +299,9 @@ msgstr "Caméra plus proche\\Avance la caméra"
 msgid "Camera left\\Turns the camera left"
 msgstr "Caméra plus proche\\Avance la caméra"
 
-msgid "Camera nearest"
-msgstr "Caméra plus proche"
-
 #, fuzzy
 msgid "Camera right\\Turns the camera right"
 msgstr "Tourner à droite\\Moteur à droite"
-
-msgid "Camera to left"
-msgstr "Caméra à gauche"
-
-msgid "Camera to right"
-msgstr "Caméra à droite"
 
 #, fuzzy
 msgid "Camera up\\Turns the camera up"
@@ -1031,6 +1019,9 @@ msgstr "Particules dans l'interface\\Pluie de particules"
 
 msgid "Paste (Ctrl+V)"
 msgstr "Coller (Ctrl+V)"
+
+msgid "Pause blur\\Blur the background on the pause screen"
+msgstr ""
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
 msgstr ""
@@ -1828,8 +1819,20 @@ msgstr "epsitec.com"
 #~ msgid "COLOBOT"
 #~ msgstr "COLOBOT"
 
+#~ msgid "Camera awayest"
+#~ msgstr "Caméra plus loin"
+
 #~ msgid "Camera down\\Decrease camera angle while visiting message origin"
 #~ msgstr "Caméra plus basse\\Réduit l'angle de caméra lors de la vue de l'origine des messages"
+
+#~ msgid "Camera nearest"
+#~ msgstr "Caméra plus proche"
+
+#~ msgid "Camera to left"
+#~ msgstr "Caméra à gauche"
+
+#~ msgid "Camera to right"
+#~ msgstr "Caméra à droite"
 
 #~ msgid "Camera up\\Increase camera angle while visiting message origin"
 #~ msgstr "Caméra plus haute\\Augmente l'angle de caméra lors de la vue de l'origine des messages"
