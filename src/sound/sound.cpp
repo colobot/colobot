@@ -52,22 +52,13 @@ void CSoundInterface::CacheAll()
     }
 }
 
-void CSoundInterface::CacheCommonMusic()
-{
-    CacheMusic("music/Intro1.ogg");
-    CacheMusic("music/Intro2.ogg");
-    CacheMusic("music/music010.ogg");
-    CacheMusic("music/music011.ogg");
-}
-
 bool CSoundInterface::Cache(SoundType sound, const std::string &file)
 {
     return true;
 }
 
-bool CSoundInterface::CacheMusic(const std::string &file)
+void CSoundInterface::CacheMusic(const std::string &file)
 {
-    return true;
 }
 
 bool CSoundInterface::IsCached(SoundType sound)
@@ -156,17 +147,7 @@ bool CSoundInterface::MuteAll(bool mute)
     return true;
 }
 
-bool CSoundInterface::PlayMusic(const std::string &filename, bool repeat, float fadeTime)
-{
-    return true;
-}
-
-bool CSoundInterface::RestartMusic()
-{
-    return true;
-}
-
-void CSoundInterface::SuspendMusic()
+void CSoundInterface::PlayMusic(const std::string &filename, bool repeat, float fadeTime)
 {
 }
 
@@ -176,12 +157,11 @@ void CSoundInterface::StopMusic(float fadeTime)
 
 bool CSoundInterface::IsPlayingMusic()
 {
-    return true;
+    return false;
 }
 
-bool CSoundInterface::PlayPauseMusic(const std::string &filename, bool repeat)
+void CSoundInterface::PlayPauseMusic(const std::string &filename, bool repeat)
 {
-    return true;
 }
 
 void CSoundInterface::StopPauseMusic()

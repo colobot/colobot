@@ -32,7 +32,8 @@ CALSound::CALSound()
       m_musicVolume(1.0f),
       m_channelsLimit(2048),
       m_device{},
-      m_context{}
+      m_context{},
+      m_thread("Music loading thread")
 {
 }
 
@@ -144,18 +145,19 @@ bool CALSound::Cache(SoundType sound, const std::string &filename)
     return false;
 }
 
-bool CALSound::CacheMusic(const std::string &filename)
+void CALSound::CacheMusic(const std::string &filename)
 {
-    if (m_music.find(filename) == m_music.end())
+    m_thread.Start([this, filename]()
     {
-        auto buffer = MakeUnique<CBuffer>();
-        if (buffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
+        if (m_music.find(filename) == m_music.end())
         {
-            m_music[filename] = std::move(buffer);
-            return true;
+            auto buffer = MakeUnique<CBuffer>();
+            if (buffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
+            {
+                m_music[filename] = std::move(buffer);
+            }
         }
-    }
-    return false;
+    });
 }
 
 bool CALSound::IsCached(SoundType sound)
@@ -572,53 +574,54 @@ void CALSound::SetListener(const Math::Vector &eye, const Math::Vector &lookat)
     alListenerfv(AL_ORIENTATION, orientation);
 }
 
-bool CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime)
+void CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime)
 {
     if (!m_enabled)
     {
-        return false;
+        return;
     }
 
-    CBuffer *buffer = nullptr;
-
-    // check if we have music in cache
-    if (m_music.find(filename) == m_music.end())
+    m_thread.Start([this, filename, repeat, fadeTime]()
     {
-        GetLogger()->Debug("Music %s was not cached!\n", filename.c_str());
+        CBuffer* buffer = nullptr;
 
-        auto newBuffer = MakeUnique<CBuffer>();
-        buffer = newBuffer.get();
-        if (!newBuffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
+        // check if we have music in cache
+        if (m_music.find(filename) == m_music.end())
         {
-            return false;
+            GetLogger()->Debug("Music %s was not cached!\n", filename.c_str());
+
+            auto newBuffer = MakeUnique<CBuffer>();
+            buffer = newBuffer.get();
+            if (!newBuffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
+            {
+                return;
+            }
+            m_music[filename] = std::move(newBuffer);
         }
-        m_music[filename] = std::move(newBuffer);
-    }
-    else
-    {
-        GetLogger()->Debug("Music loaded from cache\n");
-        buffer = m_music[filename].get();
-    }
+        else
+        {
+            GetLogger()->Debug("Music loaded from cache\n");
+            buffer = m_music[filename].get();
+        }
 
-    if (m_currentMusic)
-    {
-        OldMusic old;
-        old.music = std::move(m_currentMusic);
-        old.fadeTime = fadeTime;
-        old.currentTime = 0.0f;
-        m_oldMusic.push_back(std::move(old));
-    }
+        if (m_currentMusic)
+        {
+            OldMusic old;
+            old.music = std::move(m_currentMusic);
+            old.fadeTime = fadeTime;
+            old.currentTime = 0.0f;
+            m_oldMusic.push_back(std::move(old));
+        }
 
-    m_currentMusic = MakeUnique<CChannel>();
-    m_currentMusic->SetBuffer(buffer);
-    m_currentMusic->SetVolume(m_musicVolume);
-    m_currentMusic->SetLoop(repeat);
-    m_currentMusic->Play();
-
-    return true;
+        m_currentMusic = MakeUnique<CChannel>();
+        m_currentMusic->SetBuffer(buffer);
+        m_currentMusic->SetVolume(m_musicVolume);
+        m_currentMusic->SetLoop(repeat);
+        m_currentMusic->Play();
+    });
 }
 
-bool CALSound::PlayPauseMusic(const std::string &filename, bool repeat)
+void CALSound::PlayPauseMusic(const std::string &filename, bool repeat)
 {
     if (m_previousMusic.fadeTime > 0.0f)
     {
@@ -640,7 +643,7 @@ bool CALSound::PlayPauseMusic(const std::string &filename, bool repeat)
             m_previousMusic.currentTime = 0.0f;
         }
     }
-    return PlayMusic(filename, repeat);
+    PlayMusic(filename, repeat);
 }
 
 void CALSound::StopPauseMusic()
@@ -660,18 +663,6 @@ void CALSound::StopPauseMusic()
         }
         m_previousMusic.fadeTime = 0.0f;
     }
-}
-
-bool CALSound::RestartMusic()
-{
-    if (!m_enabled || m_currentMusic == nullptr)
-    {
-        return false;
-    }
-
-    m_currentMusic->Stop();
-    m_currentMusic->Play();
-    return true;
 }
 
 void CALSound::StopMusic(float fadeTime)
@@ -696,16 +687,6 @@ bool CALSound::IsPlayingMusic()
     }
 
     return m_currentMusic->IsPlaying();
-}
-
-void CALSound::SuspendMusic()
-{
-    if (!m_enabled || m_currentMusic == nullptr)
-    {
-        return;
-    }
-
-    m_currentMusic->Stop();
 }
 
 bool CALSound::CheckChannel(int &channel)

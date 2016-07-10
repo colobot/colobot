@@ -34,6 +34,8 @@
 
 #include "common/resources/resourcemanager.h"
 
+#include "common/thread/thread.h"
+
 #include "graphics/core/nulldevice.h"
 
 #include "graphics/opengl/glutil.h"
@@ -514,8 +516,6 @@ bool CApplication::Create()
     #endif
 
     m_sound->Create();
-    m_sound->CacheAll();
-    m_sound->CacheCommonMusic();
 
     GetLogger()->Info("CApplication created successfully\n");
 
@@ -684,6 +684,20 @@ bool CApplication::Create()
 
     // Create the robot application.
     m_controller = MakeUnique<CController>();
+
+    CThread musicLoadThread([this]() {
+        GetLogger()->Debug("Cache sounds...\n");
+        SystemTimeStamp* musicLoadStart = m_systemUtils->CreateTimeStamp();
+        m_systemUtils->GetCurrentTimeStamp(musicLoadStart);
+
+        m_sound->CacheAll();
+
+        SystemTimeStamp* musicLoadEnd = m_systemUtils->CreateTimeStamp();
+        m_systemUtils->GetCurrentTimeStamp(musicLoadEnd);
+        float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, STU_MSEC);
+        GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
+    }, "Sound loading thread");
+    musicLoadThread.Start();
 
     if (m_runSceneCategory == LevelCategory::Max)
         m_controller->StartApp();
