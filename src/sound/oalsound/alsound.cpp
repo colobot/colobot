@@ -356,6 +356,7 @@ int CALSound::Play(SoundType sound, const Math::Vector &pos, float amplitude, fl
     chn->SetFrequency(frequency);
     chn->SetVolume(powf(amplitude * chn->GetVolumeAtrib(), 0.2f) * m_audioVolume);
     chn->SetLoop(loop);
+    chn->Mute(false);
 
     if (!chn->Play())
     {
