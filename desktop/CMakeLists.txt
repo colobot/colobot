@@ -1,38 +1,56 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(COLOBOT_ICON_FILE colobot.svg)
+set(COLOBOT_ICON_FILE ${CMAKE_CURRENT_SOURCE_DIR}/colobot.svg)
 
 # Render SVG icon in various sizes
 find_program(RSVG_CONVERT rsvg-convert)
-if(RSVG_CONVERT AND (PLATFORM_GNU OR PLATFORM_MACOSX))
-    add_custom_target(png-icons ALL)
-    foreach(PNGSIZE 512 256 128 48 32 16)
+if(NOT RSVG_CONVERT)
+    message(WARNING "rsvg-convert not found; desktop icons will not be generated")
+endif()
+
+find_program(XMLSTARLET xmlstarlet)
+if(NOT XMLSTARLET)
+    message(WARNING "xmlstarlet not found; desktop icons will not be generated")
+endif()
+
+if(RSVG_CONVERT AND XMLSTARLET AND (PLATFORM_GNU OR PLATFORM_MACOSX))
+    add_custom_target(png-icons ALL DEPENDS ${COLOBOT_ICON_FILE})
+
+    foreach(PNG_SIZE 512 256 128 48 32 16)
+        # Using xmlstarlet to edit SVG file is a workaround for rsvg-convert bug (see: https://bugzilla.gnome.org/show_bug.cgi?id=762115)
         add_custom_command(
-            OUTPUT ${PNGSIZE}/colobot.png
-            COMMAND mkdir -p ${PNGSIZE}
-            COMMAND ${RSVG_CONVERT} -w ${PNGSIZE} -h ${PNGSIZE} ${CMAKE_CURRENT_SOURCE_DIR}/${COLOBOT_ICON_FILE} > ${PNGSIZE}/colobot.png
+            OUTPUT ${PNG_SIZE}/colobot.png
+            COMMAND mkdir -p ${PNG_SIZE}
+            COMMAND ${XMLSTARLET} ed -u /*/@width -v ${PNG_SIZE} -u /*/@height -v ${PNG_SIZE} ${COLOBOT_ICON_FILE} > ${PNG_SIZE}/colobot.svg
+            COMMAND ${RSVG_CONVERT} ${PNG_SIZE}/colobot.svg -o ${PNG_SIZE}/colobot.png
             )
-        add_custom_target(png-icon-${PNGSIZE} ALL DEPENDS ${PNGSIZE}/colobot.png)
-        add_dependencies(png-icons png-icon-${PNGSIZE})
+        add_custom_target(png-icon-${PNG_SIZE} ALL DEPENDS ${PNG_SIZE}/colobot.png)
+        add_dependencies(png-icons png-icon-${PNG_SIZE})
 
         if(PLATFORM_GNU)
             install(
-                FILES ${CMAKE_CURRENT_BINARY_DIR}/${PNGSIZE}/colobot.png
-                DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${PNGSIZE}x${PNGSIZE}/apps/
+                FILES ${CMAKE_CURRENT_BINARY_DIR}/${PNG_SIZE}/colobot.png
+                DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${PNG_SIZE}x${PNG_SIZE}/apps/
                 )
         endif()
         # Prepare the ICNS icon generation
-        list(APPEND ICNS_SRCS "${PNGSIZE}/colobot.png")
+        list(APPEND ICNS_SRCS "${PNG_SIZE}/colobot.png")
     endforeach()
-    
+
     # Pack icon for Mac OS
-    find_program(PNG2ICNS png2icns)
-    if(PNG2ICNS AND PLATFORM_MACOSX)
-        add_custom_command(OUTPUT Colobot.icns
-            COMMAND ${PNG2ICNS} Colobot.icns ${ICNS_SRCS}
-            DEPENDS png-icons
-            )
-        add_custom_target(icns-icon ALL DEPENDS Colobot.icns)
+    if(PLATFORM_MACOSX)
+        find_program(PNG2ICNS png2icns)
+        if(NOT PNG2ICNS)
+            message(WARNING "png2icns not found; icns file will not be generated")
+        endif()
+
+        if(PNG2ICNS)
+            add_custom_command(OUTPUT Colobot.icns
+                COMMAND ${PNG2ICNS} Colobot.icns ${ICNS_SRCS}
+                DEPENDS png-icons
+                )
+            add_custom_target(icns-icon ALL DEPENDS Colobot.icns)
+        endif()
     endif()
 
 endif()
@@ -54,12 +72,16 @@ if(PLATFORM_GNU)
 
     # Install Icon
     install(
-        FILES ${CMAKE_CURRENT_SOURCE_DIR}/${COLOBOT_ICON_FILE}
+        FILES ${COLOBOT_ICON_FILE}
         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/scalable/apps/
         )
 
     # Translate translatable material
     find_program(PO4A po4a)
+    if(NOT PO4A)
+        message(WARNING "po4a not found; desktop and manpage files will not be translated")
+    endif()
+
     if(PO4A)
         add_custom_target(desktop_po4a
             COMMAND ${PO4A} po4a.cfg
@@ -70,6 +92,10 @@ if(PLATFORM_GNU)
 
     # Create manpage from pod-formatted file
     find_program(POD2MAN pod2man)
+    if(NOT POD2MAN)
+        message(WARNING "pod2man not found; manpage will not be generated")
+    endif()
+
     if(POD2MAN)
         set(COLOBOT_MANPAGE_SECTION 6)
 

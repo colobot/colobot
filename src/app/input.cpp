@@ -30,6 +30,7 @@
 
 #include <sstream>
 #include <boost/lexical_cast.hpp>
+#include <SDL_system.h>
 
 
 template<> CInput* CSingleton<CInput>::m_instance = nullptr;
@@ -48,8 +49,13 @@ CInput::CInput()
         { INPUT_SLOT_CAMERA,   "camera"  },
         { INPUT_SLOT_DESEL,    "desel"   },
         { INPUT_SLOT_ACTION,   "action"  },
-        { INPUT_SLOT_NEAR,     "near"    },
-        { INPUT_SLOT_AWAY,     "away"    },
+        { INPUT_SLOT_CAM_LEFT, "cleft"   },
+        { INPUT_SLOT_CAM_RIGHT,"cright"  },
+        { INPUT_SLOT_CAM_UP,   "cup"     },
+        { INPUT_SLOT_CAM_DOWN, "cdown"   },
+        { INPUT_SLOT_CAM_NEAR, "near"    },
+        { INPUT_SLOT_CAM_AWAY, "away"    },
+        { INPUT_SLOT_CAM_ALT,  "camalt"  },
         { INPUT_SLOT_NEXT,     "next"    },
         { INPUT_SLOT_HUMAN,    "human"   },
         { INPUT_SLOT_QUIT,     "quit"    },
@@ -63,13 +69,10 @@ CInput::CInput()
         { INPUT_SLOT_SPEED30,  "speed30" },
         { INPUT_SLOT_SPEED40,  "speed40" },
         { INPUT_SLOT_SPEED60,  "speed60" },
-        { INPUT_SLOT_CAMERA_UP,   "camup"   },
-        { INPUT_SLOT_CAMERA_DOWN, "camdown" },
-        { INPUT_SLOT_PAUSE,    "pause" },
-        { INPUT_SLOT_CMDLINE,    "cmdline" },
+        { INPUT_SLOT_PAUSE,    "pause"   },
+        { INPUT_SLOT_CMDLINE,  "cmdline" },
     };
 
-    m_kmodState = 0;
     m_mousePos = Math::Point();
     m_mouseButtonsState = 0;
     std::fill_n(m_keyPresses, static_cast<std::size_t>(INPUT_SLOT_MAX), false);
@@ -80,13 +83,6 @@ CInput::CInput()
 
 void CInput::EventProcess(Event& event)
 {
-    if (event.type == EVENT_KEY_DOWN ||
-        event.type == EVENT_KEY_UP)
-    {
-        // Use the occasion to update kmods
-        m_kmodState = event.kmodState;
-    }
-
     // Use the occasion to update mouse button state
     if (event.type == EVENT_MOUSE_BUTTON_DOWN)
     {
@@ -107,7 +103,7 @@ void CInput::EventProcess(Event& event)
         data->slot = FindBinding(data->key);
     }
 
-    event.kmodState = m_kmodState;
+    event.kmodState = SDL_GetModState();
     event.mousePos = m_mousePos;
     event.mouseButtonsState = m_mouseButtonsState;
 
@@ -134,12 +130,12 @@ void CInput::EventProcess(Event& event)
         if (data->slot == INPUT_SLOT_GUP  ) m_keyMotion.z =  1.0f;
         if (data->slot == INPUT_SLOT_GDOWN) m_keyMotion.z = -1.0f;
 
-        if (data->slot == INPUT_SLOT_CAMERA_UP  ) m_cameraKeyMotion.z =  1.0f;
-        if (data->slot == INPUT_SLOT_CAMERA_DOWN) m_cameraKeyMotion.z = -1.0f;
-        if (data->key  == KEY(KP_4)             ) m_cameraKeyMotion.x = -1.0f;
-        if (data->key  == KEY(KP_6)             ) m_cameraKeyMotion.x =  1.0f;
-        if (data->key  == KEY(KP_8)             ) m_cameraKeyMotion.y =  1.0f;
-        if (data->key  == KEY(KP_2)             ) m_cameraKeyMotion.y = -1.0f;
+        if (data->slot == INPUT_SLOT_CAM_LEFT ) m_cameraKeyMotion.x = -1.0f;
+        if (data->slot == INPUT_SLOT_CAM_RIGHT) m_cameraKeyMotion.x =  1.0f;
+        if (data->slot == INPUT_SLOT_CAM_UP   ) m_cameraKeyMotion.y =  1.0f;
+        if (data->slot == INPUT_SLOT_CAM_DOWN ) m_cameraKeyMotion.y = -1.0f;
+        if (data->slot == INPUT_SLOT_CAM_NEAR ) m_cameraKeyMotion.z = -1.0f;
+        if (data->slot == INPUT_SLOT_CAM_AWAY ) m_cameraKeyMotion.z =  1.0f;
     }
     else if (event.type == EVENT_KEY_UP)
     {
@@ -152,12 +148,12 @@ void CInput::EventProcess(Event& event)
         if (data->slot == INPUT_SLOT_GUP  ) m_keyMotion.z = 0.0f;
         if (data->slot == INPUT_SLOT_GDOWN) m_keyMotion.z = 0.0f;
 
-        if (data->slot == INPUT_SLOT_CAMERA_UP  ) m_cameraKeyMotion.z = 0.0f;
-        if (data->slot == INPUT_SLOT_CAMERA_DOWN) m_cameraKeyMotion.z = 0.0f;
-        if (data->key  == KEY(KP_4)             ) m_cameraKeyMotion.x = 0.0f;
-        if (data->key  == KEY(KP_6)             ) m_cameraKeyMotion.x = 0.0f;
-        if (data->key  == KEY(KP_8)             ) m_cameraKeyMotion.y = 0.0f;
-        if (data->key  == KEY(KP_2)             ) m_cameraKeyMotion.y = 0.0f;
+        if (data->slot == INPUT_SLOT_CAM_LEFT ) m_cameraKeyMotion.x = 0.0f;
+        if (data->slot == INPUT_SLOT_CAM_RIGHT) m_cameraKeyMotion.x = 0.0f;
+        if (data->slot == INPUT_SLOT_CAM_UP   ) m_cameraKeyMotion.y = 0.0f;
+        if (data->slot == INPUT_SLOT_CAM_DOWN ) m_cameraKeyMotion.y = 0.0f;
+        if (data->slot == INPUT_SLOT_CAM_NEAR ) m_cameraKeyMotion.z = 0.0f;
+        if (data->slot == INPUT_SLOT_CAM_AWAY ) m_cameraKeyMotion.z = 0.0f;
     }
     else if (event.type == EVENT_JOY_AXIS)
     {
@@ -183,25 +179,36 @@ void CInput::EventProcess(Event& event)
             if (GetJoyAxisBinding(JOY_AXIS_SLOT_Z).invert)
                 m_joyMotion.z *= -1.0f;
         }
+
+        if (data->axis == GetJoyAxisBinding(JOY_AXIS_SLOT_CAM_X).axis)
+        {
+            m_joyMotionCam.x = -Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
+            if (GetJoyAxisBinding(JOY_AXIS_SLOT_CAM_X).invert)
+                m_joyMotionCam.x *= -1.0f;
+        }
+
+        if (data->axis == GetJoyAxisBinding(JOY_AXIS_SLOT_CAM_Y).axis)
+        {
+            m_joyMotionCam.y = -Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
+            if (GetJoyAxisBinding(JOY_AXIS_SLOT_CAM_Y).invert)
+                m_joyMotionCam.y *= -1.0f;
+        }
+
+        if (data->axis == GetJoyAxisBinding(JOY_AXIS_SLOT_CAM_Z).axis)
+        {
+            m_joyMotionCam.z = -Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
+            if (GetJoyAxisBinding(JOY_AXIS_SLOT_CAM_Z).invert)
+                m_joyMotionCam.z *= -1.0f;
+        }
     }
 
     event.motionInput = Math::Clamp(m_joyMotion + m_keyMotion, Math::Vector(-1.0f, -1.0f, -1.0f), Math::Vector(1.0f, 1.0f, 1.0f));
-    event.cameraInput = m_cameraKeyMotion;
+    event.cameraInput = Math::Clamp(m_joyMotionCam + m_cameraKeyMotion, Math::Vector(-1.0f, -1.0f, -1.0f), Math::Vector(1.0f, 1.0f, 1.0f));
 }
 
 void CInput::MouseMove(Math::IntPoint pos)
 {
     m_mousePos = Gfx::CEngine::GetInstancePointer()->WindowToInterfaceCoords(pos);
-}
-
-int CInput::GetKmods() const
-{
-    return m_kmodState;
-}
-
-bool CInput::GetKmodState(int kmod) const
-{
-    return (m_kmodState & kmod) != 0;
 }
 
 bool CInput::GetKeyState(InputSlot key) const
@@ -217,10 +224,10 @@ bool CInput::GetMouseButtonState(int index) const
 void CInput::ResetKeyStates()
 {
     GetLogger()->Trace("Reset key states\n");
-    m_kmodState = 0;
     m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
     m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
     m_cameraKeyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_joyMotionCam = Math::Vector(0.0f, 0.0f, 0.0f);
     for(int i=0; i<INPUT_SLOT_MAX; i++)
         m_keyPresses[i] = false;
 }
@@ -257,8 +264,13 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_DESEL  ].primary   = KEY(KP_0);
     m_inputBindings[INPUT_SLOT_ACTION ].primary   = KEY(RETURN);
     m_inputBindings[INPUT_SLOT_ACTION ].secondary = KEY(e);
-    m_inputBindings[INPUT_SLOT_NEAR   ].primary   = KEY(KP_PLUS);
-    m_inputBindings[INPUT_SLOT_AWAY   ].primary   = KEY(KP_MINUS);
+    m_inputBindings[INPUT_SLOT_CAM_LEFT ].primary = KEY(KP_4);
+    m_inputBindings[INPUT_SLOT_CAM_RIGHT].primary = KEY(KP_6);
+    m_inputBindings[INPUT_SLOT_CAM_UP   ].primary = KEY(KP_8);
+    m_inputBindings[INPUT_SLOT_CAM_DOWN ].primary = KEY(KP_2);
+    m_inputBindings[INPUT_SLOT_CAM_NEAR ].primary = KEY(KP_PLUS);
+    m_inputBindings[INPUT_SLOT_CAM_AWAY ].primary = KEY(KP_MINUS);
+    m_inputBindings[INPUT_SLOT_CAM_ALT  ].primary = VIRTUAL_KMOD(ALT);
     m_inputBindings[INPUT_SLOT_NEXT   ].primary   = KEY(TAB);
     m_inputBindings[INPUT_SLOT_HUMAN  ].primary   = KEY(HOME);
     m_inputBindings[INPUT_SLOT_QUIT   ].primary   = KEY(ESCAPE);
@@ -272,8 +284,6 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_SPEED30].primary   = KEY(F7);
     m_inputBindings[INPUT_SLOT_SPEED40].primary   = KEY(F8);
     m_inputBindings[INPUT_SLOT_SPEED60].primary   = KEY(F9);
-    m_inputBindings[INPUT_SLOT_CAMERA_UP].primary   = KEY(PAGEUP);
-    m_inputBindings[INPUT_SLOT_CAMERA_DOWN].primary = KEY(PAGEDOWN);
     m_inputBindings[INPUT_SLOT_PAUSE].primary       = KEY(PAUSE);
     m_inputBindings[INPUT_SLOT_PAUSE].secondary     = KEY(p);
     m_inputBindings[INPUT_SLOT_CMDLINE].primary     = KEY(BACKQUOTE);
@@ -281,6 +291,9 @@ void CInput::SetDefaultInputBindings()
     m_joyAxisBindings[JOY_AXIS_SLOT_X].axis = 0;
     m_joyAxisBindings[JOY_AXIS_SLOT_Y].axis = 1;
     m_joyAxisBindings[JOY_AXIS_SLOT_Z].axis = 2;
+    m_joyAxisBindings[JOY_AXIS_SLOT_CAM_X].axis = -1;
+    m_joyAxisBindings[JOY_AXIS_SLOT_CAM_Y].axis = -1;
+    m_joyAxisBindings[JOY_AXIS_SLOT_CAM_Z].axis = -1;
 }
 
 void CInput::SetInputBinding(InputSlot slot, InputBinding binding)
@@ -332,7 +345,7 @@ InputSlot CInput::FindBinding(unsigned int key)
 void CInput::SaveKeyBindings()
 {
     std::stringstream key;
-    CConfigFile::GetInstancePointer()->SetStringProperty("Keybindings", "_Version", "SDL2");
+    GetConfigFile().SetStringProperty("Keybindings", "_Version", "SDL2");
     for (int i = 0; i < INPUT_SLOT_MAX; i++)
     {
         InputBinding b = GetInputBinding(static_cast<InputSlot>(i));
@@ -341,30 +354,30 @@ void CInput::SaveKeyBindings()
         key.str("");
         key << b.primary << " " << b.secondary;
 
-        CConfigFile::GetInstancePointer()->SetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], key.str());
+        GetConfigFile().SetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], key.str());
     }
 
     for (int i = 0; i < JOY_AXIS_SLOT_MAX; i++)
     {
         JoyAxisBinding b = GetJoyAxisBinding(static_cast<JoyAxisSlot>(i));
 
-        CConfigFile::GetInstancePointer()->SetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis);
-        CConfigFile::GetInstancePointer()->SetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), b.invert);
+        GetConfigFile().SetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis);
+        GetConfigFile().SetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), b.invert);
     }
-    CConfigFile::GetInstancePointer()->SetFloatProperty("Setup", "JoystickDeadzone", GetJoystickDeadzone());
+    GetConfigFile().SetFloatProperty("Setup", "JoystickDeadzone", GetJoystickDeadzone());
 }
 
 void CInput::LoadKeyBindings()
 {
     std::stringstream skey;
     std::string keys;
-    if (CConfigFile::GetInstancePointer()->GetStringProperty("Keybindings", "_Version", keys) && keys == "SDL2") // Keybindings from SDL1.2 are incompatible with SDL2 !!
+    if (GetConfigFile().GetStringProperty("Keybindings", "_Version", keys) && keys == "SDL2") // Keybindings from SDL1.2 are incompatible with SDL2 !!
     {
         for (int i = 0; i < INPUT_SLOT_MAX; i++)
         {
             InputBinding b;
 
-            if (!CConfigFile::GetInstancePointer()->GetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], keys))
+            if (!GetConfigFile().GetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], keys))
                 continue;
             skey.clear();
             skey.str(keys);
@@ -380,17 +393,17 @@ void CInput::LoadKeyBindings()
     {
         JoyAxisBinding b;
 
-        if (!CConfigFile::GetInstancePointer()->GetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis))
+        if (!GetConfigFile().GetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis))
             continue;
 
         int x = 0;
-        CConfigFile::GetInstancePointer()->GetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), x); // If doesn't exist, use default (0)
+        GetConfigFile().GetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), x); // If doesn't exist, use default (0)
         b.invert = (x != 0);
 
         SetJoyAxisBinding(static_cast<JoyAxisSlot>(i), b);
     }
     float deadzone;
-    if (CConfigFile::GetInstancePointer()->GetFloatProperty("Setup", "JoystickDeadzone", deadzone))
+    if (GetConfigFile().GetFloatProperty("Setup", "JoystickDeadzone", deadzone))
         SetJoystickDeadzone(deadzone);
 }
 

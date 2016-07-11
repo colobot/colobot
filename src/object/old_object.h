@@ -55,9 +55,9 @@ const int OBJECTMAXPART         = 40;
 struct ObjectPart
 {
     bool         bUsed = false;
-    int          object = -1;         // number of the object in CEngine
-    int          parentPart = -1;     // number of father part
-    int          masterParti = -1;        // master canal of the particle
+    int          object = -1;         //!< identifier of the object in Gfx::CEngine
+    int          parentPart = -1;     //!< identifier of parent part
+    int          masterParti = -1;    //!< particle channel this part is connected to after explosion
     Math::Vector position;
     Math::Vector angle;
     Math::Vector zoom;
@@ -218,8 +218,6 @@ public:
 
     void        SetCameraType(Gfx::CameraType type) override;
     Gfx::CameraType  GetCameraType() override;
-    void        SetCameraDist(float dist) override;
-    float       GetCameraDist() override;
     void        SetCameraLock(bool lock) override;
     bool        GetCameraLock() override;
 
@@ -351,7 +349,6 @@ protected:
     float       m_gunGoalV;
     float       m_gunGoalH;
     Gfx::CameraType  m_cameraType;
-    float       m_cameraDist;
     bool        m_bCameraLock;
     float       m_magnifyDamage;
 

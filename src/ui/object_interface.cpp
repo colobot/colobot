@@ -1302,8 +1302,9 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pw->CreateButton(pos, ddim, 19, EVENT_OBJECT_HELP);
     }
 
-    if ( type != OBJECT_HUMAN       &&
-         type != OBJECT_TECH        &&
+//camera button no more disabled for humans
+    if ( //type != OBJECT_HUMAN       &&
+         //type != OBJECT_TECH        &&
          !m_object->GetCameraLock() )
     {
 //?     if ( m_main->GetShowMap() )
@@ -1321,26 +1322,6 @@ bool CObjectInterface::CreateInterface(bool bSelect)
             pos.y = oy+sy*0.66f;
             pw->CreateButton(pos, ddim, 13, EVENT_OBJECT_CAMERA);
         }
-    }
-
-    if ( m_object->GetToy() && !m_object->GetManual() )
-    {
-        pos.x = ox+sx*9.0f;
-        pos.y = oy+sy*0;
-        pb = pw->CreateButton(pos, dim, 55, EVENT_OBJECT_CAMERAleft);
-        pb->SetImmediat(true);
-        pos.x = ox+sx*11.0f;
-        pos.y = oy+sy*0;
-        pb = pw->CreateButton(pos, dim, 48, EVENT_OBJECT_CAMERAright);
-        pb->SetImmediat(true);
-        pos.x = ox+sx*10.0f;
-        pos.y = oy+sy*1;
-        pb = pw->CreateButton(pos, dim, 49, EVENT_OBJECT_CAMERAnear);
-        pb->SetImmediat(true);
-        pos.x = ox+sx*10.0f;
-        pos.y = oy+sy*0;
-        pb = pw->CreateButton(pos, dim, 50, EVENT_OBJECT_CAMERAaway);
-        pb->SetImmediat(true);
     }
 
     pos.x = ox+sx*13.4f;
@@ -1396,29 +1377,33 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pt->ClearState(STATE_GLINT);
     }
 
-    ddim.x = 64.0f/640.0f;
-    ddim.y = 64.0f/480.0f;
-    pos.x =  30.0f/640.0f;
-    pos.y = 430.0f/480.0f-ddim.y;
-    pw->CreateGroup(pos, ddim, 13, EVENT_OBJECT_CORNERul);
+    if (type != OBJECT_HUMAN &&
+        type != OBJECT_TECH)
+    {
+        ddim.x = 64.0f / 640.0f;
+        ddim.y = 64.0f / 480.0f;
+        pos.x = 30.0f / 640.0f;
+        pos.y = 430.0f / 480.0f - ddim.y;
+        pw->CreateGroup(pos, ddim, 13, EVENT_OBJECT_CORNERul);
 
-    ddim.x = 64.0f/640.0f;
-    ddim.y = 64.0f/480.0f;
-    pos.x = 610.0f/640.0f-ddim.x;
-    pos.y = 430.0f/480.0f-ddim.y;
-    pw->CreateGroup(pos, ddim, 14, EVENT_OBJECT_CORNERur);
+        ddim.x = 64.0f / 640.0f;
+        ddim.y = 64.0f / 480.0f;
+        pos.x = 610.0f / 640.0f - ddim.x;
+        pos.y = 430.0f / 480.0f - ddim.y;
+        pw->CreateGroup(pos, ddim, 14, EVENT_OBJECT_CORNERur);
 
-    ddim.x = 64.0f/640.0f;
-    ddim.y = 64.0f/480.0f;
-    pos.x =  30.0f/640.0f;
-    pos.y = 110.0f/480.0f;
-    pw->CreateGroup(pos, ddim, 15, EVENT_OBJECT_CORNERdl);
+        ddim.x = 64.0f / 640.0f;
+        ddim.y = 64.0f / 480.0f;
+        pos.x = 30.0f / 640.0f;
+        pos.y = 110.0f / 480.0f;
+        pw->CreateGroup(pos, ddim, 15, EVENT_OBJECT_CORNERdl);
 
-    ddim.x = 64.0f/640.0f;
-    ddim.y = 64.0f/480.0f;
-    pos.x = 610.0f/640.0f-ddim.x;
-    pos.y = 110.0f/480.0f;
-    pw->CreateGroup(pos, ddim, 16, EVENT_OBJECT_CORNERdr);
+        ddim.x = 64.0f / 640.0f;
+        ddim.y = 64.0f / 480.0f;
+        pos.x = 610.0f / 640.0f - ddim.x;
+        pos.y = 110.0f / 480.0f;
+        pw->CreateGroup(pos, ddim, 16, EVENT_OBJECT_CORNERdr);
+    }
 
     UpdateInterface();
     m_lastUpdateTime = 0.0f;
@@ -1618,7 +1603,6 @@ void CObjectInterface::UpdateInterface()
     CSlider*    ps;
     CColor*     pc;
     bool        bFly, bRun;
-    char        title[100];
 
     if ( !m_object->GetSelect() )  return;
 
@@ -1638,7 +1622,7 @@ void CObjectInterface::UpdateInterface()
     bool bProgEnable = !m_programmable->IsProgram() && m_main->CanPlayerInteract();
     bool scriptSelected = m_selScript >= 0 && m_selScript < m_programStorage->GetProgramCount();
 
-    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    m_main->CanPlayerInteract() && scriptSelected && !m_programmable->IsTraceRecord());
+    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    scriptSelected && !m_programmable->IsTraceRecord());
     EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bProgEnable && !m_programmable->IsTraceRecord());
     EnableInterface(pw, EVENT_OBJECT_PROGADD,     bProgEnable);
     EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  bProgEnable && scriptSelected && !m_programStorage->GetProgram(m_selScript)->readOnly);
@@ -1788,8 +1772,8 @@ void CObjectInterface::UpdateInterface()
         {
             if (m_programStorage->GetProgram(m_selScript)->runnable)
             {
-                m_programStorage->GetProgram(m_selScript)->script->GetTitle(title);
-                if ( title[0] != 0 )
+                std::string title = m_programStorage->GetProgram(m_selScript)->script->GetTitle();
+                if ( !title.empty() )
                 {
                     bRun = true;
                 }
@@ -1938,7 +1922,6 @@ void CObjectInterface::UpdateScript(CWindow *pw)
 {
     CList*      pl;
     char        name[100];
-    char        title[100];
 
     pl = static_cast< CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
     if ( pl == nullptr )  return;
@@ -1948,16 +1931,16 @@ void CObjectInterface::UpdateScript(CWindow *pw)
     {
         sprintf(name, "%d", i+1);
 
-        m_programStorage->GetProgram(i)->script->GetTitle(title);
-        if ( title[0] != 0 )
+        std::string title = m_programStorage->GetProgram(i)->script->GetTitle();
+        if ( !title.empty() )
         {
             if(!m_programStorage->GetProgram(i)->readOnly)
             {
-                sprintf(name, "%d: %s", i+1, title);
+                sprintf(name, "%d: %s", i+1, title.c_str());
             }
             else
             {
-                sprintf(name, "*%d: %s", i+1, title);
+                sprintf(name, "*%d: %s", i+1, title.c_str());
             }
         }
 

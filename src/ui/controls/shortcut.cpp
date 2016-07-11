@@ -21,7 +21,6 @@
 #include "ui/controls/shortcut.h"
 
 #include "common/event.h"
-#include "common/misc.h"
 
 #include "graphics/core/device.h"
 

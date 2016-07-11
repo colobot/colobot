@@ -19,8 +19,10 @@
 
 #include "CBot/CBotClass.h"
 
+#include "CBot/CBotInstr/CBotInstrUtils.h"
 #include "CBot/CBotInstr/CBotNew.h"
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
+#include "CBot/CBotInstr/CBotExprLitNull.h"
 #include "CBot/CBotInstr/CBotTwoOpExpr.h"
 #include "CBot/CBotInstr/CBotFunction.h"
 #include "CBot/CBotInstr/CBotExpression.h"
@@ -32,6 +34,7 @@
 #include "CBot/CBotExternalCall.h"
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
+#include "CBot/CBotDefParam.h"
 #include "CBot/CBotUtils.h"
 #include "CBot/CBotFileUtils.h"
 #include "CBot/CBotCallMethode.h"
@@ -549,6 +552,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 
     while (pStack->IsOk())
     {
+        CBotTypResult  type2 = CBotTypResult(type);                     // reset type after comma
         std::string pp = p->GetString();
         if ( IsOfType(p, ID_NOT) )
         {
@@ -561,29 +565,27 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
             while ( IsOfType( p, ID_OPBRK ) )   // a table?
             {
                 CBotInstr* i = nullptr;
-
+                pStack->SetStartError( p->GetStart() );
                 if ( p->GetType() != ID_CLBRK )
+                {
                     i = CBotExpression::Compile( p, pStack );           // expression for the value
+                    if (i == nullptr || pStack->GetType() != CBotTypInt) // must be a number
+                    {
+                        pStack->SetError(CBotErrBadIndex, p->GetStart());
+                        return false;
+                    }
+                }
                 else
                     i = new CBotEmpty();                            // special if not a formula
 
-                type = CBotTypResult(CBotTypArrayPointer, type);
-
-                if (!pStack->IsOk() || !IsOfType( p, ID_CLBRK ) )
-                {
-                    pStack->SetError(CBotErrCloseIndex, p->GetStart());
-                    return false;
-                }
-
-/*              CBotVar* pv = pStack->GetVar();
-                if ( pv->GetType()>= CBotTypBoolean )
-                {
-                    pStack->SetError(CBotErrBadType1, p->GetStart());
-                    return false;
-                }*/
+                type2 = CBotTypResult(CBotTypArrayPointer, type2);
 
                 if (limites == nullptr) limites = i;
                 else limites->AddNext3(i);
+
+                if (IsOfType(p, ID_CLBRK)) continue;
+                pStack->SetError(CBotErrCloseIndex, p->GetStart());
+                return false;
             }
 
             if ( p->GetType() == ID_OPENPAR )
@@ -604,9 +606,14 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     // return a method precompiled in pass 1
                     CBotFunction*   pf = m_pMethod;
                     CBotFunction*   prev = nullptr;
-                    while ( pf != nullptr )
+                    CBotToken* ppp = p;
+                    CBotCStack* pStk = pStack->TokenStack(nullptr, true);
+                    CBotDefParam* params = CBotDefParam::Compile(p, pStk );
+                    delete pStk;
+                    p = ppp;
+                    while ( pf != nullptr )                             // search by name and parameters
                     {
-                        if (pf->GetName() == pp) break;
+                        if (pf->GetName() == pp && pf->CheckParam( params )) break;
                         prev = pf;
                         pf = pf->Next();
                     }
@@ -672,7 +679,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
             }
 
             // definition of an element
-            if (type.Eq(0))
+            if (type2.Eq(0))
             {
                 pStack->SetError(CBotErrNoTerminator, p);
                 return false;
@@ -681,22 +688,47 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
             CBotInstr* i = nullptr;
             if ( IsOfType(p, ID_ASS ) )
             {
-                if ( type.Eq(CBotTypArrayPointer) )
+                pStack->SetStartError(p->GetStart());
+                if ( IsOfType(p, ID_SEP) )
                 {
-                    i = CBotListArray::Compile(p, pStack, type.GetTypElem());
+                    pStack->SetError(CBotErrNoExpression, p->GetStart());
+                    return false;
+                }
+                if ( type2.Eq(CBotTypArrayPointer) )
+                {
+                    if ( nullptr == (i = CBotListArray::Compile(p, pStack, type2.GetTypElem())) )
+                    {
+                        if (pStack->IsOk())
+                        {
+                            i = CBotTwoOpExpr::Compile(p, pStack);
+                            if (i == nullptr || !pStack->GetTypResult().Compare(type2))
+                            {
+                                pStack->SetError(CBotErrBadType1, p->GetStart());
+                                return false;
+                            }
+                        }
+                    }
                 }
                 else
                 {
                     // it has an assignmet to calculate
                     i = CBotTwoOpExpr::Compile(p, pStack);
+
+                    if ( !(type.Eq(CBotTypPointer) && pStack->GetTypResult().Eq(CBotTypNullPointer)) &&
+                         !TypesCompatibles( type2, pStack->GetTypResult()) )
+                    {
+                        pStack->SetError(CBotErrBadType1, p->GetStart());
+                        return false;
+                    }
                 }
                 if ( !pStack->IsOk() ) return false;
             }
+            else if ( type2.Eq(CBotTypArrayPointer) ) i = new CBotExprLitNull();
 
 
             if ( !bSecond )
             {
-                CBotVar*    pv = CBotVar::Create(pp, type);
+                CBotVar*    pv = CBotVar::Create(pp, type2);
                 pv -> SetStatic( bStatic );
                 pv -> SetPrivate( mProtect );
 
@@ -709,8 +741,15 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 if ( pv->IsStatic() && pv->m_InitExpr != nullptr )
                 {
                     CBotStack* pile = CBotStack::AllocateStack();              // independent stack
-                    while(pile->IsOk() && !pv->m_InitExpr->Execute(pile));  // evaluates the expression without timer
-                    pv->SetVal( pile->GetVar() ) ;
+                    if ( type2.Eq(CBotTypArrayPointer) )
+                    {
+                        while(pile->IsOk() && !pv->m_InitExpr->Execute(pile, pv));
+                    }
+                    else
+                    {
+                        while(pile->IsOk() && !pv->m_InitExpr->Execute(pile)); // evaluates the expression without timer
+                        pv->SetVal( pile->GetVar() ) ;
+                    }
                     pile->Delete();
                 }
             }

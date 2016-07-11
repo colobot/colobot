@@ -18,8 +18,8 @@
  */
 
 /**
- * \file graphics/opengl/gldevice.h
- * \brief OpenGL implementation - CGLDevice class
+ * \file graphics/opengl/gl14device.h
+ * \brief OpenGL implementation - CGL14Device class
  */
 
 #pragma once
@@ -62,21 +62,21 @@ enum ShadowMappingSupport
 };
 
 /**
-  \class CGLDevice
+  \class CGL14Device
   \brief Implementation of CDevice interface in OpenGL
 
   Provides the concrete implementation of 3D device in OpenGL.
 
   This class should be initialized (by calling Initialize() ) only after
   setting the video mode by CApplication, once the OpenGL context is defined.
-  Because of that, CGLDeviceConfig is outside the CDevice class and must be set
+  Because of that, CGL14DeviceConfig is outside the CDevice class and must be set
   in CApplication.
 */
-class CGLDevice : public CDevice
+class CGL14Device : public CDevice
 {
 public:
-    CGLDevice(const DeviceConfig &config);
-    virtual ~CGLDevice();
+    CGL14Device(const DeviceConfig &config);
+    virtual ~CGL14Device();
 
     void DebugHook() override;
     void DebugLights() override;
@@ -118,7 +118,6 @@ public:
     void SetTextureStageParams(int index, const TextureStageParams &params) override;
 
     void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT) override;
-    void SetTextureCoordGeneration(int index, TextureGenerationParams &params) override;
 
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;

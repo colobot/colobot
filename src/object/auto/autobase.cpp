@@ -170,7 +170,6 @@ begin:
             {
                 assert(pObj->Implements(ObjectInterfaceType::Controllable));
                 m_camera->SetType(dynamic_cast<CControllableObject*>(pObj)->GetCameraType());
-                m_camera->SetDist(dynamic_cast<CControllableObject*>(pObj)->GetCameraDist());
             }
 
             m_main->StartMusic();
@@ -203,18 +202,17 @@ begin:
 
             m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
-            pos = m_pos;
-            pos.x -= 150.0f;
-            m_terrain->AdjustToFloor(pos);
-            pos.y += 10.0f;
-            m_camera->SetScriptEye(pos);
-            m_posSound = pos;
+            Math::Vector eye = m_pos;
+            eye.x -= 150.0f;
+            m_terrain->AdjustToFloor(eye);
+            eye.y += 10.0f;
 
-            pos = m_object->GetPosition();
-            pos.y += 300.0f+50.0f;
-            m_camera->SetScriptLookat(pos);
+            Math::Vector lookat = m_object->GetPosition();
+            lookat.y += 300.0f+50.0f;
 
-            m_camera->FixCamera();
+            m_camera->SetScriptCamera(eye, lookat);
+            m_posSound = eye;
+
             m_engine->SetFocus(2.0f);
 
             m_engine->SetFogStart(0.9f);
@@ -266,9 +264,8 @@ begin:
             pos.x += 1000.0f;
             pos.z -= 60.0f;
             pos.y += 80.0f;
-            m_camera->SetScriptEye(pos);
             m_posSound = pos;
-            m_camera->FixCamera();
+            m_camera->SetScriptCamera(pos, Math::Vector(0.0f, 0.0f, 0.0f));
             m_engine->SetFocus(1.0f);
 
             BeginTransit();
@@ -345,15 +342,15 @@ begin:
             vibCir *= Math::Min(1.0f, (1.0f-m_progress)*3.0f);
             m_object->SetCirVibration(vibCir);
 
-            pos = m_pos;
-            pos.x -= 150.0f;
-            m_terrain->AdjustToFloor(pos);
-            pos.y += 10.0f;
-            m_camera->SetScriptEye(pos);
+            Math::Vector eye = m_pos;
+            eye.x -= 150.0f;
+            m_terrain->AdjustToFloor(eye);
+            eye.y += 10.0f;
 
-            pos = m_object->GetPosition();
-            pos.y += 50.0f;
-            m_camera->SetScriptLookat(pos);
+            Math::Vector lookat = m_object->GetPosition();
+            lookat.y += 50.0f;
+
+            m_camera->SetScriptCameraAnimate(eye, lookat);
 
             m_engine->SetFocus(1.0f+(1.0f-m_progress));
 
@@ -494,7 +491,7 @@ begin:
                 m_terrain->AdjustToFloor(pos);
                 pos.y += 10.0f;
                 pos.y += m_progress*40.0f;
-                m_camera->SetScriptEye(pos);
+                m_camera->SetScriptCameraAnimateEye(pos);
 
                 m_engine->SetFogStart(0.9f-(0.9f-m_fogStart)*m_progress);
             }
@@ -556,7 +553,7 @@ begin:
                 m_terrain->AdjustToFloor(pos);
                 pos.y += 10.0f;
                 pos.y += m_progress*40.0f;
-                m_camera->SetScriptEye(pos);
+                m_camera->SetScriptCameraAnimateEye(pos);
 
                 m_engine->SetFogStart(0.9f-(0.9f-m_fogStart)*m_progress);
             }
@@ -598,7 +595,6 @@ begin:
                 {
                     assert(pObj->Implements(ObjectInterfaceType::Controllable));
                     m_camera->SetType(dynamic_cast<CControllableObject*>(pObj)->GetCameraType());
-                    m_camera->SetDist(dynamic_cast<CControllableObject*>(pObj)->GetCameraDist());
                 }
                 m_sound->Play(SOUND_BOUM, m_object->GetPosition());
                 m_soundChannel = -1;
@@ -749,15 +745,15 @@ begin:
             vibCir.y = 0.0f;
             m_object->SetCirVibration(vibCir);
 
-            pos = m_pos;
-            pos.x -= 110.0f+m_progress*250.0f;
-            m_terrain->AdjustToFloor(pos);
-            pos.y += 10.0f;
-            m_camera->SetScriptEye(pos);
+            Math::Vector eye = m_pos;
+            eye.x -= 110.0f+m_progress*250.0f;
+            m_terrain->AdjustToFloor(eye);
+            eye.y += 10.0f;
 
-            pos = m_object->GetPosition();
-            pos.y += 50.0f;
-            m_camera->SetScriptLookat(pos);
+            Math::Vector lookat = m_object->GetPosition();
+            lookat.y += 50.0f;
+
+            m_camera->SetScriptCameraAnimate(eye, lookat);
 
             m_engine->SetFocus(1.0f+m_progress);
 
@@ -907,7 +903,7 @@ begin:
             pos.x += event.rTime*(2000.0f/BASE_TRANSIT_TIME);
             m_object->SetPosition(pos);
             pos.x += 60.0f;
-            m_camera->SetScriptLookat(pos);
+            m_camera->SetScriptCameraAnimateLookat(pos);
         }
         else
         {
@@ -1129,7 +1125,6 @@ bool CAutoBase::Abort()
             {
                 assert(pObj->Implements(ObjectInterfaceType::Controllable));
                 m_camera->SetType(dynamic_cast<CControllableObject*>(pObj)->GetCameraType());
-                m_camera->SetDist(dynamic_cast<CControllableObject*>(pObj)->GetCameraDist());
             }
 
             m_engine->SetFogStart(m_fogStart);
@@ -1387,16 +1382,16 @@ Error CAutoBase::TakeOff(bool printMsg)
 
     m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
-    Math::Vector pos = m_pos;
-    pos.x -= 110.0f;
-    m_terrain->AdjustToFloor(pos);
-    pos.y += 10.0f;
-    m_camera->SetScriptEye(pos);
-    m_posSound = pos;
+    Math::Vector eye = m_pos;
+    eye.x -= 110.0f;
+    m_terrain->AdjustToFloor(eye);
+    eye.y += 10.0f;
 
-    pos = m_object->GetPosition();
-    pos.y += 50.0f;
-    m_camera->SetScriptLookat(pos);
+    Math::Vector lookat = m_object->GetPosition();
+    lookat.y += 50.0f;
+
+    m_camera->SetScriptCameraAnimate(eye, lookat);
+    m_posSound = eye;
 
     m_engine->SetFocus(1.0f);
 

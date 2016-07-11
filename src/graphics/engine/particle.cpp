@@ -581,7 +581,7 @@ int CParticle::CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim
         if (!m_track[i].used)  // free?
         {
             int rank = channel;
-            if (!CheckChannel(rank)) return -1;
+            GetRankFromChannel(rank);
             m_particle[rank].trackRank = i;
 
             m_track[i].used = true;
@@ -636,28 +636,27 @@ void CParticle::CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2,
 
 
 
-/** Adapts the channel so it can be used as an offset in m_particle */
-bool CParticle::CheckChannel(int &channel)
+void CParticle::GetRankFromChannel(int &channel)
 {
     int uniqueStamp = (channel>>16)&0xffff;
     channel &= 0xffff;
 
-    if (channel < 0)  return false;
-    if (channel >= MAXPARTICULE*MAXPARTITYPE) return false;
+    if (channel < 0 || channel >= MAXPARTICULE*MAXPARTITYPE) throw std::runtime_error("Tried to access invalid particle channel (invalid ID)");
+    if (!m_particle[channel].used) throw std::runtime_error("Tried to access invalid particle channel (used=false)");
+    if (m_particle[channel].uniqueStamp != uniqueStamp) throw std::runtime_error("Tried to access invalid particle channel (uniqueStamp changed)");
+}
 
-    if (!m_particle[channel].used)
+bool CParticle::ParticleExists(int channel)
+{
+    try
     {
-        GetLogger()->Error("CheckChannel used=false !\n");
+        GetRankFromChannel(channel);
+        return true;
+    }
+    catch (const std::runtime_error& e)
+    {
         return false;
     }
-
-    if (m_particle[channel].uniqueStamp != uniqueStamp)
-    {
-        GetLogger()->Error("CheckChannel uniqueStamp !\n");
-        return false;
-    }
-
-    return true;
 }
 
 void CParticle::DeleteRank(int rank)
@@ -685,7 +684,7 @@ void CParticle::DeleteParticle(ParticleType type)
 
 void CParticle::DeleteParticle(int channel)
 {
-    if (!CheckChannel(channel)) return;
+    GetRankFromChannel(channel);
 
     if (m_totalInterface[channel/MAXPARTICULE][m_particle[channel].sheet] > 0 )
         m_totalInterface[channel/MAXPARTICULE][m_particle[channel].sheet]--;
@@ -699,50 +698,50 @@ void CParticle::DeleteParticle(int channel)
 
 void CParticle::SetObjectLink(int channel, CObject *object)
 {
-    if (!CheckChannel(channel))  return;
+    GetRankFromChannel(channel);
     m_particle[channel].objLink = object;
 }
 
 void CParticle::SetObjectFather(int channel, CObject *object)
 {
-    if (!CheckChannel(channel))  return;
+    GetRankFromChannel(channel);
     m_particle[channel].objFather = object;
 }
 
 void CParticle::SetPosition(int channel, Math::Vector pos)
 {
-    if (!CheckChannel(channel))  return;
+    GetRankFromChannel(channel);
     m_particle[channel].pos = pos;
 }
 
 void CParticle::SetDimension(int channel, Math::Point dim)
 {
-    if (!CheckChannel(channel))  return;
+    GetRankFromChannel(channel);
     m_particle[channel].dim = dim;
 }
 
 void CParticle::SetZoom(int channel, float zoom)
 {
-    if (!CheckChannel(channel))  return;
+    GetRankFromChannel(channel);
     m_particle[channel].zoom = zoom;
 }
 
 void CParticle::SetAngle(int channel, float angle)
 {
-    if (!CheckChannel(channel))  return;
+    GetRankFromChannel(channel);
     m_particle[channel].angle = angle;
 }
 
 void CParticle::SetIntensity(int channel, float intensity)
 {
-    if (!CheckChannel(channel))  return;
+    GetRankFromChannel(channel);
     m_particle[channel].intensity = intensity;
 }
 
 void CParticle::SetParam(int channel, Math::Vector pos, Math::Point dim, float zoom,
                           float angle, float intensity)
 {
-    if (!CheckChannel(channel))  return;
+    GetRankFromChannel(channel);
     m_particle[channel].pos       = pos;
     m_particle[channel].dim       = dim;
     m_particle[channel].zoom      = zoom;
@@ -752,17 +751,16 @@ void CParticle::SetParam(int channel, Math::Vector pos, Math::Point dim, float z
 
 void CParticle::SetPhase(int channel, ParticlePhase phase, float duration)
 {
-    if (!CheckChannel(channel))  return;
+    GetRankFromChannel(channel);
     m_particle[channel].phase = phase;
     m_particle[channel].duration = duration;
     m_particle[channel].phaseTime = m_particle[channel].time;
 }
 
-bool CParticle::GetPosition(int channel, Math::Vector &pos)
+Math::Vector CParticle::GetPosition(int channel)
 {
-    if (!CheckChannel(channel))  return false;
-    pos = m_particle[channel].pos;
-    return true;
+    GetRankFromChannel(channel);
+    return m_particle[channel].pos;
 }
 
 void CParticle::SetFrameUpdate(int sheet, bool update)
@@ -3722,14 +3720,6 @@ Color CParticle::GetFogColor(Math::Vector pos)
     if (result.b > 0.6f)  result.b = 0.6f;
 
     return result;
-}
-
-bool CParticle::WriteWheelTrace(const char *filename, int width, int height,
-                                Math::Vector dl, Math::Vector ur)
-{
-    // TODO: stub!
-    GetLogger()->Trace("CParticle::WriteWheelTrace(): stub!\n");
-    return true;
 }
 
 } // namespace Gfx

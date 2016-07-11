@@ -19,137 +19,27 @@
 
 #include "CBot/CBotVar/CBotVarBoolean.h"
 
-#include "CBot/CBotEnums.h"
-#include "CBot/CBotUtils.h"
-
-#include "CBot/CBotToken.h"
-
 
 namespace CBot
 {
 
-////////////////////////////////////////////////////////////////////////////////
-CBotVarBoolean::CBotVarBoolean(const CBotToken& name)
-{
-    m_token    = new CBotToken(name);
-    m_next     = nullptr;
-    m_pMyThis  = nullptr;
-    m_pUserPtr = nullptr;
-    m_InitExpr = nullptr;
-    m_LimExpr  = nullptr;
-    m_type     = CBotTypBoolean;
-    m_binit    = InitType::UNDEF;
-    m_bStatic  = false;
-    m_mPrivate = ProtectionLevel::Public;
-    m_val      = 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CBotVarBoolean::Copy(CBotVar* pSrc, bool bName)
-{
-    CBotVarBoolean*    p = static_cast<CBotVarBoolean*>(pSrc);
-
-    if (bName)    *m_token    = *p->m_token;
-    m_type        = p->m_type;
-    m_val        = p->m_val;
-    m_binit        = p->m_binit;
-//-    m_bStatic    = p->m_bStatic;
-    m_next        = nullptr;
-    m_pMyThis    = nullptr;//p->m_pMyThis;
-    m_pUserPtr    = p->m_pUserPtr;
-
-    // keeps indentificator the same (by default)
-    if (m_ident == 0 ) m_ident     = p->m_ident;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CBotVarBoolean::SetValInt(int val, const std::string& s)
-{
-    m_val = static_cast<bool>(val);
-    m_binit    = CBotVar::InitType::DEF;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CBotVarBoolean::SetValFloat(float val)
-{
-    m_val = static_cast<bool>(val);
-    m_binit    = CBotVar::InitType::DEF;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int CBotVarBoolean::GetValInt()
-{
-    return    m_val;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-float CBotVarBoolean::GetValFloat()
-{
-    return static_cast<float>(m_val);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string CBotVarBoolean::GetValString()
-{
-    std::string    ret;
-
-    std::string res;
-
-    if ( m_binit == CBotVar::InitType::UNDEF )
-    {
-        res = LoadString(TX_UNDEF);
-        return res;
-    }
-    if ( m_binit == CBotVar::InitType::IS_NAN )
-    {
-        res = LoadString(TX_NAN);
-        return res;
-    }
-
-    ret = LoadString( m_val > 0 ? ID_TRUE : ID_FALSE );
-    return    ret;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void CBotVarBoolean::And(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GetValInt() && right->GetValInt();
-    m_binit = CBotVar::InitType::DEF;
+    SetValInt(left->GetValInt() && right->GetValInt());
 }
-
-////////////////////////////////////////////////////////////////////////////////
 void CBotVarBoolean::Or(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GetValInt() || right->GetValInt();
-    m_binit = CBotVar::InitType::DEF;
+    SetValInt(left->GetValInt() || right->GetValInt());
 }
-
-////////////////////////////////////////////////////////////////////////////////
 void CBotVarBoolean::XOr(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GetValInt() ^ right->GetValInt();
-    m_binit = CBotVar::InitType::DEF;
+    SetValInt(left->GetValInt() ^ right->GetValInt());
 }
-
-////////////////////////////////////////////////////////////////////////////////
 void CBotVarBoolean::Not()
 {
-    m_val = m_val ? false : true ;
+    SetValInt(!GetValInt());
 }
 
-////////////////////////////////////////////////////////////////////////////////
-bool CBotVarBoolean::Eq(CBotVar* left, CBotVar* right)
-{
-    return left->GetValInt() == right->GetValInt();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool CBotVarBoolean::Ne(CBotVar* left, CBotVar* right)
-{
-    return left->GetValInt() != right->GetValInt();
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CBotVarBoolean::Save1State(FILE* pf)
 {
     return WriteWord(pf, m_val);                            // the value of the variable

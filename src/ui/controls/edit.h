@@ -201,7 +201,6 @@ protected:
     void        DrawColor(Math::Point pos, Math::Point dim, Gfx::Color color);
 
     void        FreeImage();
-    void        LoadImage(std::string name);
     void        Scroll(int pos, bool bAdjustCursor);
     void        Scroll();
     void        MoveChar(int move, bool bWord, bool bSelect);

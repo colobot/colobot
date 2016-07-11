@@ -21,7 +21,6 @@
 #include "ui/controls/button.h"
 
 #include "common/event.h"
-#include "common/misc.h"
 #include "common/restext.h"
 
 #include "graphics/engine/engine.h"

@@ -44,6 +44,7 @@
 #include "ui/controls/interface.h"
 #include "ui/controls/list.h"
 
+#include <libintl.h>
 
 const int CBOT_IPF = 100;       // CBOT: default number of instructions / frame
 
@@ -70,11 +71,8 @@ CScript::CScript(COldObject* object)
     m_bRun = false;
     m_bStepMode = false;
     m_bCompile = false;
-    m_title[0] = 0;
-    m_mainFunction[0] = 0;
     m_cursor1 = 0;
     m_cursor2 = 0;
-    m_filename[0] = 0;
 }
 
 // Object's destructor.
@@ -159,49 +157,55 @@ bool CScript::CheckToken()
     if ( !m_object->GetCheckToken() )  return true;
 
     m_error = CBot::CBotNoErr;
-    m_title[0] = 0;
-    m_mainFunction[0] = 0;
-    m_token[0] = 0;
+    m_title.clear();
+    m_mainFunction.clear();
+    m_token.clear();
     m_bCompile = false;
 
-    std::vector<bool> used(m_main->GetObligatoryToken(), false);
+    std::map<std::string, int> used;
+    std::map<std::string, int> cursor1;
+    std::map<std::string, int> cursor2;
 
     auto tokens = CBot::CBotToken::CompileTokens(m_script.get());
     CBot::CBotToken* bt = tokens.get();
     while ( bt != nullptr )
     {
         std::string token = bt->GetString();
-        int cursor1 = bt->GetStart();
-        int cursor2 = bt->GetEnd();
 
-        int i = m_main->IsObligatoryToken(token.c_str());
-        if ( i != -1 )
-        {
-            used[i] = true;  // token used
-        }
+        // Store only the last occurrence of the token
+        cursor1[token] = bt->GetStart();
+        cursor2[token] = bt->GetEnd();
 
-        if ( !m_main->IsProhibitedToken(token.c_str()) )
-        {
-            m_error = static_cast<CBot::CBotError>(ERR_PROHIBITEDTOKEN);
-            m_cursor1 = cursor1;
-            m_cursor2 = cursor2;
-            strcpy(m_title, "<prohibited>");
-            m_mainFunction[0] = 0;
-            return false;
-        }
+        used[token]++;
 
         bt = bt->GetNext();
     }
 
-    // At least once every obligatory instruction?
-    for (unsigned int i = 0; i < used.size(); i++)
+    for (const auto& it : m_main->GetObligatoryTokenList())
     {
-        if (!used[i])  // token not used?
+        Error error = ERR_OK;
+        int allowed = 0;
+        if (it.second.max >= 0 && used[it.first] > it.second.max)
         {
-            strcpy(m_token, m_main->GetObligatoryToken(i));
-            m_error = static_cast<CBot::CBotError>(ERR_OBLIGATORYTOKEN);
-            strcpy(m_title, "<obligatory>");
-            m_mainFunction[0] = 0;
+            error = ERR_PROHIBITEDTOKEN;
+            allowed = it.second.max;
+            m_cursor1 = cursor1[it.first];
+            m_cursor2 = cursor2[it.first];
+        }
+        if (it.second.min >= 0 && used[it.first] < it.second.min)
+        {
+            error = ERR_OBLIGATORYTOKEN;
+            allowed = it.second.min;
+        }
+
+        if (error != ERR_OK)
+        {
+            m_token = it.first;
+            m_tokenUsed = used[it.first];
+            m_tokenAllowed = allowed;
+            m_error = static_cast<CBot::CBotError>(error);
+            m_title = "<incorrect instructions>";
+            m_mainFunction.clear();
             return false;
         }
     }
@@ -214,14 +218,13 @@ bool CScript::CheckToken()
 bool CScript::Compile()
 {
     std::vector<std::string> functionList;
-    int             i;
     std::string     p;
 
     m_error = CBot::CBotNoErr;
     m_cursor1 = 0;
     m_cursor2 = 0;
-    m_title[0] = 0;
-    m_mainFunction[0] = 0;
+    m_title.clear();
+    m_mainFunction.clear();
     m_bCompile = false;
 
     if ( IsEmpty() )  // program exist?
@@ -239,33 +242,17 @@ bool CScript::Compile()
     {
         if (functionList.empty())
         {
-            strcpy(m_title, "<extern missing>");
-            m_mainFunction[0] = 0;
+            m_title = "<extern missing>";
+            m_mainFunction.clear();
         }
         else
         {
-            p = functionList[0];
-            i = 0;
-            bool titleDone = false;
-            while ( true )
+            m_mainFunction = functionList[0];
+            m_title = m_mainFunction;
+            if (m_title.length() >= 20)
             {
-                if ( p[i] == 0 || p[i] == '(' )  break;
-                if ( i >= 20 && !titleDone )
-                {
-                    m_title[i+0] = '.';
-                    m_title[i+1] = '.';
-                    m_title[i+2] = '.';
-                    m_title[i+3] = 0;
-                    titleDone = true;
-                }
-                if(!titleDone)
-                    m_title[i] = p[i];
-                m_mainFunction[i] = p[i];
-                i ++;
+                m_title = m_title.substr(0, 20)+"...";
             }
-            if(!titleDone)
-                m_title[i] = 0;
-            m_mainFunction[i] = p[i];
         }
         m_bCompile = true;
         return true;
@@ -283,8 +270,8 @@ bool CScript::Compile()
         {
             m_cursor1 = m_cursor2 = 0;
         }
-        strcpy(m_title, "<error>");
-        m_mainFunction[0] = 0;
+        m_title = "<error>";
+        m_mainFunction.clear();
         return false;
     }
 }
@@ -292,9 +279,9 @@ bool CScript::Compile()
 
 // Returns the title of the script.
 
-void CScript::GetTitle(char* buffer)
+const std::string& CScript::GetTitle()
 {
-    strcpy(buffer, m_title);
+    return m_title;
 }
 
 
@@ -317,9 +304,9 @@ bool CScript::Run()
 {
     if (m_botProg == nullptr)  return false;
     if ( m_script == nullptr || m_len == 0 )  return false;
-    if ( m_mainFunction[0] == 0 ) return false;
+    if ( m_mainFunction.empty() ) return false;
 
-    if ( !m_botProg->Start(m_mainFunction) )  return false;
+    if ( !m_botProg->Start(m_mainFunction.c_str()) )  return false;
 
     m_bRun = true;
     m_bContinue = false;
@@ -788,13 +775,28 @@ void CScript::GetError(std::string& error)
     }
     else
     {
-        if ( m_error == static_cast<CBot::CBotError>(ERR_OBLIGATORYTOKEN) )
+        if (m_error == static_cast<CBot::CBotError>(ERR_OBLIGATORYTOKEN))
         {
-            std::string s;
-            GetResource(RES_ERR, m_error, s);
-            error = StrUtils::Format(s.c_str(), m_token);
+            error = StrUtils::Format(ngettext(
+                "You have to use \"%1$s\" at least once in this exercise (used: %2$d)",
+                "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)",
+                m_tokenAllowed), m_token.c_str(), m_tokenUsed, m_tokenAllowed);
         }
-        else if ( m_error < 1000 )
+        else if (m_error == static_cast<CBot::CBotError>(ERR_PROHIBITEDTOKEN))
+        {
+            if (m_tokenAllowed == 0)
+            {
+                error = StrUtils::Format(gettext("You cannot use \"%s\" in this exercise (used: %d)"), m_token.c_str(), m_tokenUsed);
+            }
+            else
+            {
+                error = StrUtils::Format(ngettext(
+                    "You have to use \"%1$s\" at most once in this exercise (used: %2$d)",
+                    "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)",
+                    m_tokenAllowed), m_token.c_str(), m_tokenUsed, m_tokenAllowed);
+            }
+        }
+        else if (m_error < 1000)
         {
             GetResource(RES_ERR, m_error, error);
         }
@@ -1018,12 +1020,12 @@ bool CScript::Compare(CScript* other)
 
 // Management of the file name when the script is saved.
 
-void CScript::SetFilename(char *filename)
+void CScript::SetFilename(const std::string& filename)
 {
-    strcpy(m_filename, filename);
+    m_filename = filename;
 }
 
-char* CScript::GetFilename()
+const std::string& CScript::GetFilename()
 {
     return m_filename;
 }

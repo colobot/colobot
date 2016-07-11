@@ -107,8 +107,8 @@ private:
     bool m_loaded;
 };
 
-//! Global function to get profile instance
+//! Global function to get config file instance
 inline CConfigFile & GetConfigFile()
 {
-    return *CConfigFile::GetInstancePointer();
+    return CConfigFile::GetInstance();
 }

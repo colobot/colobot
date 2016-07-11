@@ -204,7 +204,7 @@ bool CScriptFunctions::rEndMission(CBotVar* var, CBotVar* result, int& exception
 
     delay = var->GetValFloat();
 
-    CRobotMain::GetInstancePointer()->SetEndMission(ended, delay);
+    CRobotMain::GetInstancePointer()->SetMissionResultFromScript(ended, delay);
     return true;
 }
 

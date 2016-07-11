@@ -174,7 +174,7 @@ bool CGL21Device::Create()
 
     if (!InitializeGLEW())
     {
-        m_errorMessage = "An error occured while initializing GLEW.";
+        m_errorMessage = "An error occurred while initializing GLEW.";
         return false;
     }
 
@@ -1056,48 +1056,6 @@ void CGL21Device::SetTextureStageParams(int index, const TextureStageParams &par
     m_textureStageParams[index] = params;
 
     UpdateTextureParams(index);
-}
-
-void CGL21Device::SetTextureCoordGeneration(int index, TextureGenerationParams &params)
-{
-    /*
-    glActiveTexture(GL_TEXTURE0 + index);
-
-    for (int i = 0; i < 4; i++)
-    {
-        GLuint texCoordGen = TranslateTextureCoordinateGen(i);
-        GLuint texCoord = TranslateTextureCoordinate(i);
-
-        switch (params.coords[i].mode)
-        {
-        case TEX_GEN_NONE:
-            glDisable(texCoordGen);
-            break;
-        case TEX_GEN_OBJECT_LINEAR:
-            glEnable(texCoordGen);
-            glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-            glTexGenfv(texCoord, GL_OBJECT_PLANE, params.coords[i].plane);
-            break;
-        case TEX_GEN_EYE_LINEAR:
-            glEnable(texCoordGen);
-            glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-            glTexGenfv(texCoord, GL_EYE_PLANE, params.coords[i].plane);
-            break;
-        case TEX_GEN_SPHERE_MAP:
-            glEnable(texCoordGen);
-            glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-            break;
-        case TEX_GEN_NORMAL_MAP:
-            glEnable(texCoordGen);
-            glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_NORMAL_MAP);
-            break;
-        case TEX_GEN_REFLECTION_MAP:
-            glEnable(texCoordGen);
-            glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
-            break;
-        }
-    }
-    // */
 }
 
 void CGL21Device::UpdateTextureParams(int index)

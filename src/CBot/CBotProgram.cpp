@@ -214,6 +214,7 @@ bool CBotProgram::Run(void* pUser, int timer)
         m_error = m_stack->GetError(m_errorStart, m_errorEnd);
         m_stack->Delete();
         m_stack = nullptr;
+        CBotClass::FreeLock(this);
         return true;                                // execution is finished!
     }
 
@@ -226,6 +227,7 @@ void CBotProgram::Stop()
     m_stack->Delete();
     m_stack = nullptr;
     m_entryPoint = nullptr;
+    CBotClass::FreeLock(this);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

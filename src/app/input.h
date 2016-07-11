@@ -81,12 +81,6 @@ public:
     void MouseMove(Math::IntPoint pos);
 
 
-    //! Returns the current key modifiers
-    int         GetKmods() const;
-
-    //! Returns whether the given kmod is active
-    bool        GetKmodState(int kmod) const;
-
     //! Returns whether the key is pressed
     bool        GetKeyState(InputSlot key) const;
 
@@ -140,8 +134,6 @@ public:
     //@}
 
 private:
-    //! Current state of key modifiers (bitmask of SDLMod)
-    unsigned int    m_kmodState;
     //! Current state of keys
     bool            m_keyPresses[INPUT_SLOT_MAX];
 
@@ -156,6 +148,8 @@ private:
     Math::Vector    m_keyMotion;
     //! Motion vector set by joystick axes
     Math::Vector    m_joyMotion;
+    //! Camera motion vector set by joystick axes
+    Math::Vector    m_joyMotionCam;
 
     //! Camera controls on the numpad
     Math::Vector    m_cameraKeyMotion;

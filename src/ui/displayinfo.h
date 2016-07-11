@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "graphics/engine/camera.h"
+#include "math/point.h"
 
 #include <string>
 
@@ -32,6 +32,7 @@ struct Event;
 
 namespace Gfx
 {
+class CCamera;
 class CEngine;
 class CParticle;
 class CLightManager;
@@ -80,7 +81,6 @@ protected:
     bool        m_bInfoMinimized;
 
     int         m_index;
-    Gfx::CameraType  m_infoCamera;
     Math::Point     m_infoNormalPos;
     Math::Point     m_infoNormalDim;
     Math::Point     m_infoActualPos;

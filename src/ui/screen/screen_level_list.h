@@ -63,7 +63,6 @@ protected:
     Ui::CMainDialog* m_dialog;
 
     LevelCategory m_category;
-    LevelCategory m_listCategory;
 
     bool m_sceneSoluce;
 

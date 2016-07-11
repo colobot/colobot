@@ -21,7 +21,6 @@
 #include "ui/controls/color.h"
 
 #include "common/event.h"
-#include "common/misc.h"
 #include "common/restext.h"
 
 #include "graphics/core/device.h"

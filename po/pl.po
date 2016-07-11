@@ -14,42 +14,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Pootle 2.5.1.1\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Language: pl_PL\n"
 "X-Source-Language: en_US\n"
-"X-POOTLE-MTIME: 1405002617.000000\n"
-
-msgid " Challenges in the chapter:"
-msgstr " Wyzwania w tym rozdziale:"
-
-msgid " Chapters:"
-msgstr " Rozdziały:"
-
-msgid " Custom levels:"
-msgstr " Własne poziomy:"
-
-msgid " Exercises in the chapter:"
-msgstr " Ćwiczenia w tym rozdziale:"
-
-msgid " Free game on this planet:"
-msgstr " Swobodna gra na tej planecie:"
-
-msgid " Levels in this chapter:"
-msgstr " Poziomy w tym rozdziale:"
-
-msgid " Missions on this planet:"
-msgstr " Misje na tej planecie:"
-
-msgid " Planets:"
-msgstr " Planety:"
-
-msgid " Resolution:"
-msgstr " Rozdzielczość:"
-
-msgid " Summary:"
-msgstr " Streszczenie:"
 
 msgid " or "
 msgstr " lub "
@@ -59,10 +26,6 @@ msgstr "Oczekiwane \" [ \""
 
 msgid "\" ] \" missing"
 msgstr "Brak \" ] \""
-
-#, c-format
-msgid "\"%s\" missing in this exercise"
-msgstr "Brakuje \"%s\" w tym ćwiczeniu"
 
 msgid "..behind"
 msgstr "..za"
@@ -100,11 +63,8 @@ msgstr "Przerwij\\Przerywa bieżącą misję"
 msgid "Access beyond array limit"
 msgstr "Dostęp poza tablicę"
 
-msgid ""
-"Access to solution\\Shows the solution (detailed instructions for missions)"
-msgstr ""
-"Dostęp do rozwiązania\\Pokazuje rozwiązanie (szczegółowe instrukcje "
-"dotyczące misji)"
+msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
+msgstr "Dostęp do rozwiązania\\Pokazuje rozwiązanie (szczegółowe instrukcje dotyczące misji)"
 
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Accčs aux solutions\\Programme \"4: Solution\" dans les exercices"
@@ -120,6 +80,9 @@ msgstr "Królowa Obcych została zabita"
 
 msgid "Already carrying something"
 msgstr "Nie można nieść więcej przedmiotów"
+
+msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
+msgstr "Alternatywny tryb kamery\\Poruszaj na boki zamiast obracać (w kamerze swobodnej)"
 
 msgid "Analysis already performed"
 msgstr "Analiza została już wykonana"
@@ -158,14 +121,10 @@ msgid "Automatic indent\\When program editing"
 msgstr "Automatyczne wcięcia\\Automatyczne wcięcia podczas edycji programu"
 
 msgid "Autosave interval\\How often your game will autosave"
-msgstr ""
-"Częstotliwość autozapisu\\Jak często gra będzie automatycznie zapisywać twój "
-"postęp"
+msgstr "Częstotliwość autozapisu\\Jak często gra będzie automatycznie zapisywać twój postęp"
 
 msgid "Autosave slots\\How many autosave slots you'll have"
-msgstr ""
-"Sloty autozapisów\\Określa ile slotów na automatyczne zapisy będzie "
-"dostępnych"
+msgstr "Sloty autozapisów\\Określa ile slotów na automatyczne zapisy będzie dostępnych"
 
 msgid "Autosave\\Enables autosave"
 msgstr "Autozapis\\Włącza automatyczny zapis"
@@ -173,8 +132,8 @@ msgstr "Autozapis\\Włącza automatyczny zapis"
 msgid "Back"
 msgstr "Wstecz"
 
-msgid "Background sound :\\Volume of audio tracks"
-msgstr "Muzyka w tle :\\Głośność ścieżek dźwiękowych"
+msgid "Background sound:\\Volume of audio tracks"
+msgstr "Muzyka w tle:\\Głośność ścieżek dźwiękowych"
 
 msgid "Backward (\\key down;)"
 msgstr "Cofnij (\\key down;)"
@@ -186,9 +145,7 @@ msgid "Bad argument for \"new\""
 msgstr "Zły argument dla funkcji \"new\""
 
 msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
-msgstr ""
-"Duże wcięcie\\2 lub 4 spacje wcięcia na każdy poziom zdefiniowany przez "
-"klamry"
+msgstr "Duże wcięcie\\2 lub 4 spacje wcięcia na każdy poziom zdefiniowany przez klamry"
 
 msgid "Black box"
 msgstr "Czarna skrzynka"
@@ -328,36 +285,26 @@ msgstr "Odwołanie do nieznanej funkcji"
 msgid "Camera (\\key camera;)"
 msgstr "Kamera (\\key camera;)"
 
-msgid "Camera awayest"
-msgstr "Camera awayest"
-
 msgid "Camera back\\Moves the camera backward"
 msgstr "Kamera dalej\\Oddala kamerę"
 
-msgid ""
-"Camera border scrolling\\Scrolling when the mouse touches right or left "
-"border"
-msgstr ""
-"Przewijanie kamery przy krawędzi\\Ekran jest przewijany gdy mysz dotknie "
-"prawej lub lewej jego krawędzi"
+msgid "Camera border scrolling\\Scrolling when the mouse touches right or left border"
+msgstr "Przewijanie kamery przy krawędzi\\Ekran jest przewijany gdy mysz dotknie prawej lub lewej jego krawędzi"
 
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera bliżej\\Przybliża kamerę"
 
-msgid "Camera down\\Decrease camera angle while visiting message origin"
-msgstr "Kamera w dół\\Opuść kamerę podczas sprawdzania źródła wiadomości"
+msgid "Camera down\\Turns the camera down"
+msgstr "Kamera w dół\\Obraca kamerę w dół"
 
-msgid "Camera nearest"
-msgstr "Camera nearest"
+msgid "Camera left\\Turns the camera left"
+msgstr "Kamera w lewo\\Obraca kamerę w lewo"
 
-msgid "Camera to left"
-msgstr "Camera to left"
+msgid "Camera right\\Turns the camera right"
+msgstr "Kamera w prawo\\Obróć kamerę w prawo"
 
-msgid "Camera to right"
-msgstr "Camera to right"
-
-msgid "Camera up\\Increase camera angle while visiting message origin"
-msgstr "Kamera w górę\\Podnieś kamerę podczas sprawdzania źródła wiadomości"
+msgid "Camera up\\Turns the camera up"
+msgstr "Kamera w górę\\Obróć kamerę w górę"
 
 msgid "Can not produce not researched object"
 msgstr "Nie można wyprodukować nie wynalezionego obiektu"
@@ -377,6 +324,9 @@ msgstr "Anuluj\\Pomija wszystkie zmiany"
 msgid "Challenges"
 msgstr "Wyzwania"
 
+msgid "Challenges in the chapter:"
+msgstr "Wyzwania w tym rozdziale:"
+
 msgid "Challenges\\Programming challenges"
 msgstr "Wyzwania\\Wyzwania programistyczne"
 
@@ -385,6 +335,9 @@ msgstr "Zmień kamerę\\Przełącza pomiędzy kamerą pokładową i śledzącą"
 
 msgid "Change player\\Change player"
 msgstr "Zmień gracza\\Zmień gracza"
+
+msgid "Chapters:"
+msgstr "Rozdziały:"
 
 msgid "Cheat console\\Show cheat console"
 msgstr "Konsola komend\\Pokaż konsolę komend"
@@ -404,15 +357,14 @@ msgstr "Skopiuj zaznaczony program"
 msgid "Close"
 msgstr "Zamknij"
 
-msgid "Closing bracket missing "
+msgid "Closing bracket missing"
 msgstr "Brak nawiasu zamykającego"
 
 msgid "Code battles"
 msgstr "Programobitwy"
 
 msgid "Code battles\\Program your robot to be the best of them all!"
-msgstr ""
-"Programobitwy\\Zaprogramuj swego robota by był najlepszy ze wszystkich!"
+msgstr "Programobitwy\\Zaprogramuj swego robota by był najlepszy ze wszystkich!"
 
 msgid "Colobot rules!"
 msgstr "Colobot rządzi!"
@@ -444,11 +396,14 @@ msgstr "Przetop rudę na tytan"
 msgid "Copy"
 msgstr "Kopiuj"
 
-msgid "Copy (Ctrl+c)"
+msgid "Copy (Ctrl+C)"
 msgstr "Kopiuj (Ctrl+C)"
 
 msgid "Current mission saved"
 msgstr "Bieżąca misja zapisana"
+
+msgid "Custom levels:"
+msgstr "Własne poziomy:"
 
 msgid "Custom levels\\Levels from mods created by the users"
 msgstr "Własne poziomy\\Poziomy z modyfikacji stworzonych przez użytkowników"
@@ -456,7 +411,7 @@ msgstr "Własne poziomy\\Poziomy z modyfikacji stworzonych przez użytkowników"
 msgid "Customize your appearance"
 msgstr "Dostosuj wygląd"
 
-msgid "Cut (Ctrl+x)"
+msgid "Cut (Ctrl+X)"
 msgstr "Wytnij (Ctrl+X)"
 
 msgid "Defense tower"
@@ -492,18 +447,15 @@ msgstr "Urządzenie\\Ustawienia sterownika i rozdzielczości"
 msgid "Dividing by zero"
 msgstr "Dzielenie przez zero"
 
-msgid "Do not use in this exercise"
-msgstr "Do not use in this exercise"
-
 msgid "Do you really want to destroy the selected building?"
 msgstr "Czy na pewno chcesz zniszczyć zaznaczony budynek?"
 
 #, c-format
-msgid "Do you want to delete %s's saved games? "
-msgstr "Czy na pewno chcesz skasować zapisane gry gracza %s? "
+msgid "Do you want to delete %s's saved games?"
+msgstr "Czy na pewno chcesz skasować zapisane gry gracza %s?"
 
-msgid "Doors blocked by a robot or another object "
-msgstr "Drzwi zablokowane przez robota lub inny obiekt "
+msgid "Doors blocked by a robot or another object"
+msgstr "Drzwi zablokowane przez robota lub inny obiekt"
 
 msgid "Down (\\key gdown;)"
 msgstr "Dół (\\key gdown;)"
@@ -550,6 +502,9 @@ msgstr "Wykonaj zaznaczony program"
 msgid "Execute/stop"
 msgstr "Wykonaj/Zatrzymaj"
 
+msgid "Exercises in the chapter:"
+msgstr "Ćwiczenia w tym rozdziale:"
+
 msgid "Exercises\\Programming exercises"
 msgstr "Ćwiczenia\\Ćwiczenia programistyczne"
 
@@ -558,6 +513,9 @@ msgstr "Wysadź (\\key action;)"
 
 msgid "Explosive"
 msgstr "Materiały wybuchowe"
+
+msgid "Expression expected after ="
+msgstr "Oczekiwano wyrażenia po ="
 
 msgid "Extend shield (\\key action;)"
 msgstr "Rozszerz osłonę (\\key action;)"
@@ -629,6 +587,9 @@ msgstr "Znaleziono klucz D (miejsce na kopalnię)"
 msgid "Free game"
 msgstr "Swobodna gra"
 
+msgid "Free game on this planet:"
+msgstr "Swobodna gra na tej planecie:"
+
 msgid "Free game\\Free game without a specific goal"
 msgstr "Swobodna gra\\Swobodna gra bez konkretnych celów"
 
@@ -690,8 +651,7 @@ msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Dymki pomocy\\Wyjaśnia funkcje przycisków"
 
 msgid "Highest\\Highest graphic quality (lowest frame rate)"
-msgstr ""
-"Najwyższa\\Maksymalna jakość grafiki (najniższa częstotliwość odświeżania)"
+msgstr "Najwyższa\\Maksymalna jakość grafiki (najniższa częstotliwość odświeżania)"
 
 msgid "Home"
 msgstr "Początek"
@@ -744,8 +704,8 @@ msgstr "Brak polecenia \"case"
 msgid "Instruction \"case\" outside a block \"switch\""
 msgstr "Polecenie \"case\" na zewnątrz bloku \"switch\""
 
-msgid "Instruction \"else\" without corresponding \"if\" "
-msgstr "Polecenie \"else\" bez wystąpienia \"if\" "
+msgid "Instruction \"else\" without corresponding \"if\""
+msgstr "Polecenie \"else\" bez wystąpienia \"if\""
 
 msgid "Instructions (\\key help;)"
 msgstr "Rozkazy (\\key help;)"
@@ -804,6 +764,9 @@ msgstr "Działo na nogach"
 msgid "Legged sniffer"
 msgstr "Szperacz na nogach"
 
+msgid "Levels in this chapter:"
+msgstr "Poziomy w tym rozdziale:"
+
 msgid "Lightning conductor"
 msgstr "Odgromnik"
 
@@ -838,8 +801,7 @@ msgid "Loading terrain"
 msgstr "Wczytywanie terenu"
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
-msgstr ""
-"Najniższa\\Minimalna jakość grafiki (najwyższa częstotliwość odświeżania)"
+msgstr "Najniższa\\Minimalna jakość grafiki (najwyższa częstotliwość odświeżania)"
 
 msgid "Lunar Roving Vehicle"
 msgstr "Pojazd Księżycowy"
@@ -861,6 +823,9 @@ msgstr "Nazwa misji"
 
 msgid "Missions"
 msgstr "Misje"
+
+msgid "Missions on this planet:"
+msgstr "Misje na tej planecie:"
 
 msgid "Missions\\Select mission"
 msgstr "Misje\\Wybierz misję"
@@ -1018,10 +983,10 @@ msgstr "Jeden krok"
 msgid "Open"
 msgstr "Otwórz"
 
-msgid "Open (Ctrl+o)"
+msgid "Open (Ctrl+O)"
 msgstr "Otwórz (Ctrl+O)"
 
-msgid "Opening brace missing "
+msgid "Opening brace missing"
 msgstr "Brak klamry otwierającej"
 
 msgid "Opening bracket missing"
@@ -1040,20 +1005,22 @@ msgid "Organic matter"
 msgstr "Materia organiczna"
 
 msgid "Origin of last message\\Shows where the last message was sent from"
-msgstr ""
-"Miejsce nadania wiadomości\\Pokazuje skąd została wysłana ostatnia wiadomość"
+msgstr "Miejsce nadania wiadomości\\Pokazuje skąd została wysłana ostatnia wiadomość"
 
 msgid "Original game developed by:"
 msgstr "Twórcy oryginalnej gry:"
 
-msgid "Parameters missing "
+msgid "Parameters missing"
 msgstr "Brak wymaganego parametru"
 
 msgid "Particles in the interface\\Steam clouds and sparks in the interface"
 msgstr "Cząstki w interfejsie\\Para i iskry z silników w interfejsie"
 
-msgid "Paste (Ctrl+v)"
+msgid "Paste (Ctrl+V)"
 msgstr "Wklej (Ctrl+V)"
+
+msgid "Pause blur\\Blur the background on the pause screen"
+msgstr ""
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
 msgstr "Wstrzymaj w tle\\Wstrzymaj grę gdy okno stanie się nieaktywne"
@@ -1073,6 +1040,9 @@ msgstr "Fotografia"
 msgid "Place occupied"
 msgstr "Miejsce zajęte"
 
+msgid "Planets:"
+msgstr "Planety:"
+
 msgid "Plans for defense tower available"
 msgstr "Dostępne plany wieży obronnej"
 
@@ -1091,7 +1061,7 @@ msgstr "Dostępne plany działa"
 msgid "Plans for thumper available"
 msgstr "Dostępne plany robota uderzacza"
 
-msgid "Plans for tracked robots available "
+msgid "Plans for tracked robots available"
 msgstr "Dostępne plany tranporterów na gąsienicach"
 
 msgid "Plant a flag"
@@ -1125,8 +1095,7 @@ msgid "Practice bot"
 msgstr "Robot treningowy"
 
 msgid "Press \\key help; to read instructions on your SatCom"
-msgstr ""
-"Naciśnij klawisz \\key help; aby wyświetlić rozkazy na przekaźniku SatCom"
+msgstr "Naciśnij klawisz \\key help; aby wyświetlić rozkazy na przekaźniku SatCom"
 
 msgid "Previous"
 msgstr "Poprzedni"
@@ -1164,8 +1133,8 @@ msgstr "Ćwiczenia programistyczne"
 msgid "Programming help"
 msgstr "Podręcznik programowania"
 
-msgid "Programming help  (\\key prog;)"
-msgstr "Podręcznik programowania  (\\key prog;)"
+msgid "Programming help (\\key prog;)"
+msgstr "Podręcznik programowania (\\key prog;)"
 
 msgid "Programming help\\Gives more detailed help with programming"
 msgstr "Podręcznik programowania\\Dostarcza szczegółową pomoc w programowaniu"
@@ -1242,6 +1211,9 @@ msgstr "Słowo zarezerwowane języka CBOT"
 msgid "Resolution"
 msgstr "Rozdzielczość"
 
+msgid "Resolution:"
+msgstr "Rozdzielczość:"
+
 msgid "Resources"
 msgstr "Zasoby"
 
@@ -1302,13 +1274,13 @@ msgstr "Raport z satelity"
 msgid "Save"
 msgstr "Zapisz"
 
-msgid "Save (Ctrl+s)"
+msgid "Save (Ctrl+S)"
 msgstr "Zapisz (Ctrl+S)"
 
 msgid "Save the current mission"
 msgstr "Zapisz bieżącą misję"
 
-msgid "Save\\Save the current mission "
+msgid "Save\\Save the current mission"
 msgstr "Zapisz\\Zapisuje bieżącą misję"
 
 msgid "Save\\Saves the current mission"
@@ -1321,9 +1293,7 @@ msgid "Semicolon terminator missing"
 msgstr "Brak średnika na końcu wiersza"
 
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
-msgstr ""
-"Rozdzielczość cieni\\Wyższa wartość oznacza wyższy zasięg i jakość, ale jest "
-"wolniejsza"
+msgstr "Rozdzielczość cieni\\Wyższa wartość oznacza wyższy zasięg i jakość, ale jest wolniejsza"
 
 msgid "Shield level"
 msgstr "Poziom osłony"
@@ -1418,11 +1388,8 @@ msgstr "Pająk śmiertelnie raniony"
 msgid "Stack overflow"
 msgstr "Przepełnienie stosu"
 
-msgid ""
-"Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
-msgstr ""
-"Standardowa akcja\\Standardowa akcja robota (podnieś/upuść, strzelaj, "
-"szukaj, itp.)"
+msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgstr "Standardowa akcja\\Standardowa akcja robota (podnieś/upuść, strzelaj, szukaj, itp.)"
 
 msgid "Standard controls\\Standard key functions"
 msgstr "Standardowa kontrola\\Standardowe klawisze funkcyjne"
@@ -1454,6 +1421,9 @@ msgstr "Kolor skafandra:"
 msgid "Suit\\Astronaut suit"
 msgstr "Skafander\\Skafander astronauty"
 
+msgid "Summary:"
+msgstr "Streszczenie:"
+
 msgid "Survival kit"
 msgstr "Zestaw przetrwania"
 
@@ -1481,14 +1451,13 @@ msgstr "Tekstury"
 msgid "The expression must return a boolean value"
 msgstr "Wyrażenie musi zwrócić wartość logiczną"
 
-msgid "The function returned no value "
-msgstr "Funkcja nie zwróciła żadnej wartości "
+msgid "The function returned no value"
+msgstr "Funkcja nie zwróciła żadnej wartości"
 
-msgid ""
-"The mission is not accomplished yet (press \\key help; for more details)"
+msgid "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr "Misja nie jest wypełniona (naciśnij \\key help; aby uzyskać szczegóły)"
 
-msgid "The types of the two operands are incompatible "
+msgid "The types of the two operands are incompatible"
 msgstr "Niezgodne typy operatorów"
 
 msgid "This class already exists"
@@ -1507,9 +1476,7 @@ msgid "This label does not exist"
 msgstr "Taka etykieta nie istnieje"
 
 msgid "This menu is for userlevels from mods, but you didn't install any"
-msgstr ""
-"To menu jest przeznaczone na poziomy użytkownika z modyfikacji, ale żadne "
-"nie są zainstalowane"
+msgstr "To menu jest przeznaczone na poziomy użytkownika z modyfikacji, ale żadne nie są zainstalowane"
 
 msgid "This object is not a member of a class"
 msgstr "Ten obiekt nie jest członkiem klasy"
@@ -1595,7 +1562,7 @@ msgstr "Brak deklaracji typu"
 msgid "Unable to control enemy objects"
 msgstr "Nie można kontrolować wrogich obiektów"
 
-msgid "Undo (Ctrl+z)"
+msgid "Undo (Ctrl+Z)"
 msgstr "Cofnij (Ctrl+Z)"
 
 msgid "Unit"
@@ -1706,10 +1673,28 @@ msgstr "Nie możesz przenosić przedmiotów radioaktywnych"
 msgid "You can not carry an object under water"
 msgstr "Nie możesz przenosić przedmiotów pod wodą"
 
+#, c-format
+msgid "You cannot use \"%s\" in this exercise (used: %d)"
+msgstr "Nie możesz użyć \"%s\" w tym ćwiczeniu (użyto: %d)"
+
 msgid "You found a usable object"
 msgstr "Znaleziono użyteczny przedmiot"
 
-msgid "You must get on the spaceship to take off "
+#, c-format
+msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
+msgstr[0] "Musisz użyć \"%1$s\" przynajmniej raz w tym ćwiczeniu (użyto: %2$d)"
+msgstr[1] "Musisz użyć \"%1$s\" przynajmniej %3$d razy w tym ćwiczeniu (użyto: %2$d)"
+msgstr[2] "Musisz użyć \"%1$s\" przynajmniej %3$d razy w tym ćwiczeniu (użyto: %2$d)"
+
+#, c-format
+msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
+msgstr[0] "Możesz użyć \"%1$s\" najwyżej raz w tym ćwiczeniu (użyto: %2$d)"
+msgstr[1] "Możesz użyć \"%1$s\" najwyżej %3$d razy w tym ćwiczeniu (użyto: %2$d)"
+msgstr[2] "Możesz użyć \"%1$s\" najwyżej %3$d razy w tym ćwiczeniu (użyto: %2$d)"
+
+msgid "You must get on the spaceship to take off"
 msgstr "Musisz być na statku kosmicznym aby nim odlecieć"
 
 msgid "Zoom mini-map"
@@ -1817,11 +1802,32 @@ msgstr "epsitec.com"
 #~ msgid " Drivers:"
 #~ msgstr " Sterowniki:"
 
+#~ msgid "\"%s\" missing in this exercise"
+#~ msgstr "Brakuje \"%s\" w tym ćwiczeniu"
+
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
 
 #~ msgid "Building too close"
 #~ msgstr "Budynek za blisko"
+
+#~ msgid "Camera awayest"
+#~ msgstr "Camera awayest"
+
+#~ msgid "Camera down\\Decrease camera angle while visiting message origin"
+#~ msgstr "Kamera w dół\\Opuść kamerę podczas sprawdzania źródła wiadomości"
+
+#~ msgid "Camera nearest"
+#~ msgstr "Camera nearest"
+
+#~ msgid "Camera to left"
+#~ msgstr "Camera to left"
+
+#~ msgid "Camera to right"
+#~ msgstr "Camera to right"
+
+#~ msgid "Camera up\\Increase camera angle while visiting message origin"
+#~ msgstr "Kamera w górę\\Podnieś kamerę podczas sprawdzania źródła wiadomości"
 
 #~ msgid "Can not create this; there are too many objects"
 #~ msgstr "Nie można tego utworzyć, za dużo obiektów"
@@ -1844,6 +1850,9 @@ msgstr "epsitec.com"
 #~ msgid "Details\\Visual quality of 3D objects"
 #~ msgstr "Szczegóły\\Jakość wizualna obiektów 3D"
 
+#~ msgid "Do not use in this exercise"
+#~ msgstr "Do not use in this exercise"
+
 #~ msgid "Do you want to quit Colobot: Gold Edition?"
 #~ msgstr "Czy na pewno chcesz opuścić grę Colobot: Gold Edition?"
 
@@ -1857,8 +1866,7 @@ msgstr "epsitec.com"
 #~ msgstr "Nieodpowiedni teren"
 
 #~ msgid "Key word help\\More detailed help about key words"
-#~ msgstr ""
-#~ "Pomoc dot. słów kluczowych\\Dokładniejsza pomoc na temat słów kluczowych"
+#~ msgstr "Pomoc dot. słów kluczowych\\Dokładniejsza pomoc na temat słów kluczowych"
 
 #~ msgid "Loading programs"
 #~ msgstr "Wczytywanie programów"
@@ -1876,8 +1884,7 @@ msgstr "epsitec.com"
 #~ msgstr "Wciąż za mało energii"
 
 #~ msgid "Num of decorative objects\\Number of purely ornamental objects"
-#~ msgstr ""
-#~ "Ilość elementów dekoracyjnych \\Ilość elementów czysto dekoracyjnych"
+#~ msgstr "Ilość elementów dekoracyjnych \\Ilość elementów czysto dekoracyjnych"
 
 #~ msgid "Object not found"
 #~ msgstr "Obiekt nieznany"
@@ -1903,12 +1910,8 @@ msgstr "epsitec.com"
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Tekstury\\Jakość tekstur "
 
-#~ msgid ""
-#~ "The list is only available if a \\l;radar station\\u object\\radar; is "
-#~ "working.\n"
-#~ msgstr ""
-#~ "Lista jest dostępna jedynie gdy działa \\l;stacja radarowa\\u object"
-#~ "\\radar;.\n"
+#~ msgid "The list is only available if a \\l;radar station\\u object\\radar; is working.\n"
+#~ msgstr "Lista jest dostępna jedynie gdy działa \\l;stacja radarowa\\u object\\radar;.\n"
 
 #~ msgid "Use a joystick\\Joystick or keyboard"
 #~ msgstr "Używaj joysticka\\Joystick lub klawiatura"

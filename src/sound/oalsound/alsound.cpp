@@ -25,7 +25,6 @@
 #include <algorithm>
 #include <iomanip>
 
-#include <boost/filesystem.hpp>
 
 CALSound::CALSound()
     : m_enabled(false),
@@ -357,6 +356,7 @@ int CALSound::Play(SoundType sound, const Math::Vector &pos, float amplitude, fl
     chn->SetFrequency(frequency);
     chn->SetVolume(powf(amplitude * chn->GetVolumeAtrib(), 0.2f) * m_audioVolume);
     chn->SetLoop(loop);
+    chn->Mute(false);
 
     if (!chn->Play())
     {
@@ -586,11 +586,6 @@ bool CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTim
     if (m_music.find(filename) == m_music.end())
     {
         GetLogger()->Debug("Music %s was not cached!\n", filename.c_str());
-        /* TODO: if (!boost::filesystem::exists(filename))
-        {
-            GetLogger()->Debug("Requested music %s was not found.\n", filename.c_str());
-            return false;
-        } */
 
         auto newBuffer = MakeUnique<CBuffer>();
         buffer = newBuffer.get();

@@ -72,19 +72,26 @@ CBotInstr* CBotDefArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResul
         CBotInstr*    i;
         while (IsOfType(p,  ID_OPBRK))
         {
+            pStk->SetStartError(p->GetStart());
             if (p->GetType() != ID_CLBRK)
-                i = CBotExpression::Compile(p, pStk);                   // expression for the value
+            {
+                i = CBotExpression::Compile(p, pStk);                  // expression for the value
+                if (i == nullptr || pStk->GetType() != CBotTypInt)     // must be a number
+                {
+                    pStk->SetError(CBotErrBadIndex, p->GetStart());
+                    goto error;
+                }
+            }
             else
                 i = new CBotEmpty();                                    // if no special formula
 
             inst->AddNext3b(i);                                         // construct a list
             type = CBotTypResult(CBotTypArrayPointer, type);
 
-            if (!pStk->IsOk() || !IsOfType(p, ID_CLBRK ))
-            {
-                pStk->SetError(CBotErrCloseIndex, p->GetStart());
-                goto error;
-            }
+            if (IsOfType(p, ID_CLBRK)) continue;
+
+            pStk->SetError(CBotErrCloseIndex, p->GetStart());
+            goto error;
         }
 
         CBotVar*   var = CBotVar::Create(*vartoken, type);               // create an instance
@@ -96,17 +103,32 @@ CBotInstr* CBotDefArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResul
 
         if (IsOfType(p, ID_ASS))                                        // with an assignment
         {
-            if ((inst->m_listass = CBotTwoOpExpr::Compile(p, pStk)) != nullptr)
+            pStk->SetStartError(p->GetStart());
+            if ( IsOfType(p, ID_SEP) )
             {
-                if (!pStk->GetTypResult().Compare(type))  // compatible type ?
+                pStk->SetError(CBotErrNoExpression, p->GetPrev());
+                goto error;
+            }
+            if ( nullptr == (inst->m_listass = CBotListArray::Compile(p, pStk, type.GetTypElem())) )
+            {
+                if (pStk->IsOk())
                 {
-                    pStk->SetError(CBotErrBadType1, p->GetStart());
-                    goto error;
+                    inst->m_listass = CBotTwoOpExpr::Compile(p, pStk);
+                    if (inst->m_listass == nullptr || !pStk->GetTypResult().Compare(type))  // compatible type ?
+                    {
+                        pStk->SetError(CBotErrBadType1, p->GetStart());
+                        goto error;
+                    }
                 }
             }
-            else
+
+            if (pStk->IsOk()) while (true)       // mark initialized
             {
-                inst->m_listass = CBotListArray::Compile(p, pStk, type.GetTypElem());
+                var = var->GetItem(0, true);
+                if (var == nullptr) break;
+                if (var->GetType() == CBotTypArrayPointer) continue;
+                if (var->GetType() <= CBotTypString) var->SetInit(CBotVar::InitType::DEF);
+                break;
             }
         }
 

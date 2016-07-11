@@ -441,8 +441,7 @@ TEST_F(CBotUT, VarDefinitions)
 }
 
 // TODO: I don't actually know what the exact rules should be, but it looks a bit wrong
-// TODO: Current version of this code causes a failed assertion
-TEST_F(CBotUT, DISABLED_VarImplicitCast)
+TEST_F(CBotUT, VarImplicitCast)
 {
     ExecuteTest(
         "extern void ImplicitCast()\n"
@@ -464,14 +463,50 @@ TEST_F(CBotUT, DISABLED_VarImplicitCast)
         "{\n"
         "    string a = 2;\n"
         "    ASSERT(a == \"2\");\n"
-        //"    a = 3;\n"
-        //"    ASSERT(a == \"3\");\n"
+        "    a = 3;\n"
+        "    ASSERT(a == \"3\");\n"
         "    string b = 2.5;\n"
         "    ASSERT(b == \"2.5\");\n"
-        //"    b = 3.5;\n"
-        //"    ASSERT(b == \"3.5\");\n"
+        "    b = 3.5;\n"
+        "    ASSERT(b == \"3.5\");\n"
         "}\n"
     );
+
+    ExecuteTest(
+        "string func()\n"
+        "{\n"
+        "    return 5;\n"
+        "}\n"
+        "extern void ImplicitCastOnReturn()\n"
+        "{\n"
+        "    string a = func();\n"
+        "    ASSERT(a == \"5\");"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ToString)
+{
+    ExecuteTest(
+        "extern void ArrayToString()\n"
+        "{\n"
+        "    int[] array = {2, 4, 6};\n"
+        "    string arrayStr = \"\"+array;\n"
+        "    ASSERT(arrayStr == \"{ 2, 4, 6 }\");\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "public class Test { int a = 1337; }\n"
+        "extern void ClassToString()\n"
+        "{\n"
+        "    Test test();\n"
+        "    string testStr = \"\"+test;\n"
+        "    ASSERT(testStr == \"Pointer to Test( a=1337 )\");\n"
+        "}\n"
+    );
+
+    // TODO: IntrinsicClassToString ? (e.g. point)
 }
 
 TEST_F(CBotUT, Arrays)
@@ -524,8 +559,7 @@ TEST_F(CBotUT, Arrays)
     );
 }
 
-// TODO: BAD! WRONG! NOOOOO!!! :<
-TEST_F(CBotUT, DISABLED_ArraysInClasses)
+TEST_F(CBotUT, ArraysInClasses)
 {
     ExecuteTest(
         "public class TestClass {\n"
@@ -533,9 +567,9 @@ TEST_F(CBotUT, DISABLED_ArraysInClasses)
         "    private int test2[5];\n"
         "    \n"
         "    public void TestClass() {\n"
-        "        ASSERT(sizeof(test) == 0);\n" // TODO: NOT INITIALIZED
-        "        ASSERT(sizeof(this.test) == 0);\n" // TODO: NOT INITIALIZED
-        "        ASSERT(test == null);\n" // TODO: Again, not sure // TODO: NOT INITIALIZED
+        "        ASSERT(sizeof(test) == 0);\n"
+        "        ASSERT(sizeof(this.test) == 0);\n"
+        "        ASSERT(test == null);\n" // TODO: Again, not sure
         "        test[0] = 5;\n"
         "        this.test[1] = 5;\n"
         "        ASSERT(sizeof(test) == 2);\n"
@@ -648,10 +682,21 @@ TEST_F(CBotUT, FunctionRedefined)
         "}\n",
         CBotErrRedefFunc
     );
+
+    ExecuteTest(
+        "int func(int[] test)\n"
+        "{\n"
+        "    return 1;\n"
+        "}\n"
+        "int func(int[] test)\n"
+        "{\n"
+        "    return 2;\n"
+        "}\n",
+        CBotErrRedefFunc
+    );
 }
 
-// TODO: Doesn't work
-TEST_F(CBotUT, DISABLED_FunctionBadReturn)
+TEST_F(CBotUT, FunctionBadReturn)
 {
     ExecuteTest(
         "int func()\n"
@@ -662,7 +707,7 @@ TEST_F(CBotUT, DISABLED_FunctionBadReturn)
         "{\n"
         "    int a = func();\n"
         "}\n",
-        static_cast<CBotError>(-1) // TODO: no error for that
+        CBotErrBadType1
     );
 }
 
@@ -763,6 +808,33 @@ TEST_F(CBotUT, ClassDestructor)
     );
 }
 
+TEST_F(CBotUT, ClassBadNew)
+{
+    ExecuteTest(
+        "public class AClass {};\n"
+        "extern void ClassBadNew()\n"
+        "{\n"
+        "    AClass a = new \"abc\";\n"
+        "}\n",
+        CBotErrBadNew
+    );
+}
+
+TEST_F(CBotUT, ClassCallOnNull)
+{
+    ExecuteTest(
+        "public class AClass {\n"
+        "    public void test() {}\n"
+        "};\n"
+        "extern void ClassCallOnNull()\n"
+        "{\n"
+        "    AClass a = null;\n"
+        "    a.test();\n"
+        "}\n",
+        CBotErrNull
+    );
+}
+
 TEST_F(CBotUT, ClassNullPointer)
 {
     ExecuteTest(
@@ -814,8 +886,7 @@ TEST_F(CBotUT, DISABLED_ClassDestructorNaming)
     );
 }
 
-// TODO: This doesn't work
-TEST_F(CBotUT, DISABLED_ClassMethodOverloading)
+TEST_F(CBotUT, ClassMethodOverloading)
 {
     ExecuteTest(
         "public class TestClass {\n"
@@ -842,6 +913,18 @@ TEST_F(CBotUT, ClassMethodRedefined)
         "        return 1;\n"
         "    }\n"
         "    public int test(string test) {\n"
+        "        return 2;\n"
+        "    }\n"
+        "}\n",
+        CBotErrRedefFunc
+    );
+
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    public int test(int[] test) {\n"
+        "        return 1;\n"
+        "    }\n"
+        "    public int test(int[] test) {\n"
         "        return 2;\n"
         "    }\n"
         "}\n",
@@ -887,8 +970,7 @@ TEST_F(CBotUT, DISABLED_PublicClasses)
     );
 }
 
-// TODO: This needs to be fixed
-TEST_F(CBotUT, DISABLED_WeirdThisEarlyContextSwitch_Issue436)
+TEST_F(CBotUT, ThisEarlyContextSwitch_Issue436)
 {
     ExecuteTest(
         "public class Something {\n"
@@ -912,12 +994,11 @@ TEST_F(CBotUT, DISABLED_WeirdThisEarlyContextSwitch_Issue436)
     );
 }
 
-// TODO: Gets a failed assertion
-TEST_F(CBotUT, DISABLED_BadStringAdd_Issue535)
+TEST_F(CBotUT, ClassStringAdd_Issue535)
 {
     ExecuteTest(
         "public class TestClass {}\n"
-        "extern void BadStringAdd()\n"
+        "extern void ClassStringAdd()\n"
         "{\n"
         "    TestClass t();\n"
         "    string s = t + \"!\";\n"
@@ -955,8 +1036,7 @@ TEST_F(CBotUT, DISABLED_StringAsArray)
     );
 }
 
-// TODO: doesn't work, see discussion in #737
-TEST_F(CBotUT, DISABLED_ArraysOfStrings)
+TEST_F(CBotUT, ArraysOfStrings)
 {
     ExecuteTest(
         "extern void ArraysOfStrings()\n"
@@ -1052,6 +1132,19 @@ TEST_F(CBotUT, TestArrayInitialization)
         "}\n",
         CBotErrOutArray
     );
+
+    ExecuteTest(
+        "extern void TestArrayInitializationWithVars() {\n"
+        "    int x=1, y=2, z=3;\n"
+        "    int i[] = { x, y, z };\n"
+        "    ASSERT(i[0] == 1);\n"
+        "    ASSERT(i[1] == 2);\n"
+        "    ASSERT(i[2] == 3);\n"
+        "    i[0] += 1;\n"
+        "    ASSERT(i[0] == 2);\n"
+        "    ASSERT(x == 1);\n"
+        "}\n"
+    );
 }
 
 TEST_F(CBotUT, TestArrayFunctionReturn)
@@ -1067,6 +1160,31 @@ TEST_F(CBotUT, TestArrayFunctionReturn)
         "    ASSERT(b[0] == 1);\n"
         "    ASSERT(b[1] == 2);\n"
         "    ASSERT(b[2] == 3);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, AccessMembersInParameters_Issue256)
+{
+    ExecuteTest(
+        "public class Test1 {\n"
+        "    int x = 1337;\n"
+        "}\n"
+        "public class Test2 {\n"
+        "    public bool test(int a) {\n"
+        "        return a == 1337;\n"
+        "    }\n"
+        "}\n"
+        "public class Test3 {\n"
+        "    public Test1 test1 = new Test1();\n"
+        "    public Test2 test2 = new Test2();\n"
+        "    public void test() {\n"
+        "        ASSERT(test2.test(test1.x));\n"
+        "    }\n"
+        "}\n"
+        "extern void AccessMembersInParameters() {\n"
+        "    Test3 t();\n"
+        "    t.test();\n"
         "}\n"
     );
 }

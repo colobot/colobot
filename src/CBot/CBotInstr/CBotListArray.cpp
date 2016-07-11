@@ -51,12 +51,13 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
 
     CBotToken* pp = p;
 
-    if (IsOfType( p, ID_NULL ))
+    if (IsOfType( p, ID_NULL ) || (IsOfType(p, ID_OPBLK) && IsOfType(p, ID_CLBLK)))
     {
         CBotInstr* inst = new CBotExprLitNull();
         inst->SetToken(pp);
         return pStack->Return(inst, pStk);            // ok with empty element
     }
+    p = pp;
 
     CBotListArray*    inst = new CBotListArray();
 
@@ -65,25 +66,45 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
         // each element takes the one after the other
         if (type.Eq( CBotTypArrayPointer ))
         {
-            type = type.GetTypElem();
-
             pStk->SetStartError(p->GetStart());
-            if (nullptr == ( inst->m_expr = CBotListArray::Compile( p, pStk, type ) ))
+            if (nullptr == ( inst->m_expr = CBotListArray::Compile( p, pStk, type.GetTypElem() ) ))
             {
-                goto error;
+                if (pStk->IsOk())
+                {
+                    inst->m_expr = CBotTwoOpExpr::Compile(p, pStk);
+                    if (inst->m_expr == nullptr || !pStk->GetTypResult().Compare(type))  // compatible type ?
+                    {
+                        pStk->SetError(CBotErrBadType1, p->GetStart());
+                        goto error;
+                    }
+                }
             }
 
             while (IsOfType( p, ID_COMMA ))                                     // other elements?
             {
                 pStk->SetStartError(p->GetStart());
 
-                CBotInstr* i = CBotListArray::Compile(p, pStk, type);
-                if (nullptr == i)
+                CBotInstr* i = nullptr;
+                if (nullptr == ( i = CBotListArray::Compile(p, pStk, type.GetTypElem() ) ))
                 {
-                    goto error;
+                    if (pStk->IsOk())
+                    {
+                        i = CBotTwoOpExpr::Compile(p, pStk);
+                        if (i == nullptr || !pStk->GetTypResult().Compare(type))  // compatible type ?
+                        {
+                            pStk->SetError(CBotErrBadType1, p->GetStart());
+                            goto error;
+                        }
+                    }
                 }
 
-                inst->m_expr->AddNext3(i);
+                inst->m_expr->AddNext3b(i);
+
+                if ( p->GetType() == ID_COMMA ) continue;
+                if ( p->GetType() == ID_CLBLK ) break;
+
+                pStk->SetError(CBotErrClosePar, p);
+                goto error;
             }
         }
         else
@@ -93,9 +114,10 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
             {
                 goto error;
             }
-            CBotVar* pv = pStk->GetVar();                                       // result of the expression
 
-            if (pv == nullptr || !TypesCompatibles( type, pv->GetTypResult()))     // compatible type?
+            CBotTypResult valType = pStk->GetTypResult();
+
+            if (!TypeCompatible(valType, type, ID_ASS) )
             {
                 pStk->SetError(CBotErrBadType1, p->GetStart());
                 goto error;
@@ -111,14 +133,20 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
                     goto error;
                 }
 
-                CBotVar* pv = pStk->GetVar();                                   // result of the expression
+                CBotTypResult valType = pStk->GetTypResult();
 
-                if (pv == nullptr || !TypesCompatibles( type, pv->GetTypResult())) // compatible type?
+                if (!TypeCompatible(valType, type, ID_ASS) )
                 {
                     pStk->SetError(CBotErrBadType1, p->GetStart());
                     goto error;
                 }
-                inst->m_expr->AddNext3(i);
+                inst->m_expr->AddNext3b(i);
+
+                if (p->GetType() == ID_COMMA) continue;
+                if (p->GetType() == ID_CLBLK) break;
+
+                pStk->SetError(CBotErrClosePar, p);
+                goto error;
             }
         }
 
@@ -146,7 +174,7 @@ bool CBotListArray::Execute(CBotStack* &pj, CBotVar* pVar)
 
     int n = 0;
 
-    for (; p != nullptr ; n++, p = p->GetNext3())
+    for (; p != nullptr ; n++, p = p->GetNext3b())
     {
         if (pile1->GetState() > n) continue;
 
@@ -178,7 +206,7 @@ void CBotListArray::RestoreState(CBotStack* &pj, bool bMain)
 
         int    state = pile->GetState();
 
-        while(state-- > 0) p = p->GetNext3() ;
+        while(state-- > 0) p = p->GetNext3b() ;
 
         p->RestoreState(pile, bMain);                    // size calculation //interrupted!
     }

@@ -164,13 +164,13 @@ void CScreenApperance::CreateInterface()
     pb = pw->CreateButton(pos, ddim, 43, EVENT_INTERFACE_PFACE1);
     pb->SetState(STATE_SHADOW);
     pos.x += 50.0f/640.0f;
-    pb = pw->CreateButton(pos, ddim, 46, EVENT_INTERFACE_PFACE4);
+    pb = pw->CreateButton(pos, ddim, 44, EVENT_INTERFACE_PFACE2);
     pb->SetState(STATE_SHADOW);
     pos.x += 50.0f/640.0f;
     pb = pw->CreateButton(pos, ddim, 45, EVENT_INTERFACE_PFACE3);
     pb->SetState(STATE_SHADOW);
     pos.x += 50.0f/640.0f;
-    pb = pw->CreateButton(pos, ddim, 44, EVENT_INTERFACE_PFACE2);
+    pb = pw->CreateButton(pos, ddim, 46, EVENT_INTERFACE_PFACE4);
     pb->SetState(STATE_SHADOW);
 
     // Glasses
@@ -349,6 +349,7 @@ bool CScreenApperance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PFACE3:
         case EVENT_INTERFACE_PFACE4:
             apperance.face = event.type-EVENT_INTERFACE_PFACE1;
+            apperance.DefHairColor();
             UpdatePerso();
             m_main->ScenePerso();
             break;
@@ -618,21 +619,17 @@ void CScreenApperance::CameraPerso()
 {
     Gfx::CCamera* camera = m_main->GetCamera();
 
+    camera->SetType(Gfx::CAM_TYPE_SCRIPT);
     if ( m_apperanceTab == 0 )
     {
-//?     camera->Init(Math::Vector(4.0f, 0.0f, 0.0f),
-//?                  Math::Vector(0.0f, 0.0f, 1.0f), 0.0f);
-        camera->Init(Math::Vector(6.0f, 0.0f, 0.0f),
-                     Math::Vector(0.0f, 0.2f, 1.5f), 0.0f);
+        camera->SetScriptCamera(Math::Vector(6.0f, 0.0f, 0.0f),
+                                Math::Vector(0.0f, 0.2f, 1.5f));
     }
     else
     {
-        camera->Init(Math::Vector(18.0f, 0.0f, 4.5f),
-                     Math::Vector(0.0f, 1.6f, 4.5f), 0.0f);
+        camera->SetScriptCamera(Math::Vector(18.0f, 0.0f, 4.5f),
+                                Math::Vector(0.0f, 1.6f, 4.5f));
     }
-
-    camera->SetType(Gfx::CAM_TYPE_SCRIPT);
-    camera->FixCamera();
 }
 
 // Sets a fixed color.

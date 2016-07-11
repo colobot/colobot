@@ -71,6 +71,13 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
             return nullptr;
         }
 
+        if ( p->GetType() == ID_SEP )
+        {
+            pStack->SetError(CBotErrNoExpression, p);
+            delete inst;
+            return nullptr;
+        }
+
         inst->m_rightop = CBotExpression::Compile(p, pStack);
         if (inst->m_rightop == nullptr)
         {
@@ -118,13 +125,13 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
             break;
         case ID_ASSADD:
             if (type2.Eq(CBotTypBoolean) ||
-                type2.Eq(CBotTypPointer) ) type2 = -1;        // numbers and strings
+                type2.GetType() > CBotTypString ) type2.SetType(-1);    // numbers and strings
             break;
         case ID_ASSSUB:
         case ID_ASSMUL:
         case ID_ASSDIV:
         case ID_ASSMODULO:
-            if (type2.GetType() >= CBotTypBoolean) type2 = -1;    // numbers only
+            if (type2.GetType() >= CBotTypBoolean) type2.SetType(-1);    // numbers only
             break;
         }
 
@@ -179,6 +186,18 @@ bool CBotExpression::Execute(CBotStack* &pj)
     if ( pile2->GetState()==0)
     {
         if (m_rightop && !m_rightop->Execute(pile2)) return false;    // initial value // interrupted?
+        if (m_rightop)
+        {
+            CBotVar* var = pile1->GetVar();
+            CBotVar* value = pile2->GetVar();
+            if (var->GetType() == CBotTypString && value->GetType() != CBotTypString)
+            {
+                CBotVar* newVal = CBotVar::Create("", var->GetTypResult());
+                value->Update(pj->GetUserPtr());
+                newVal->SetValString(value->GetValString());
+                pile2->SetVar(newVal);
+            }
+        }
         pile2->IncState();
     }
 

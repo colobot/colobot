@@ -17,11 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file graphics/core/device.h
- * \brief Abstract graphics device - CDevice class and related structs/enums
- */
-
 #pragma once
 
 #include "graphics/core/device.h"
@@ -38,7 +33,6 @@ namespace Gfx
 /**
  * \class CNullDevice
  * \brief Device implementation that doesn't render anything
- *
  */
 class CNullDevice : public CDevice
 {
@@ -86,7 +80,6 @@ public:
     void SetTextureStageParams(int index, const TextureStageParams &params) override;
 
     void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT) override;
-    void SetTextureCoordGeneration(int index, TextureGenerationParams &params) override;
 
     void DrawPrimitive(PrimitiveType type, const Vertex* vertices, int vertexCount, Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     void DrawPrimitive(PrimitiveType type, const VertexTex2* vertices, int vertexCount, Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
@@ -160,11 +153,6 @@ public:
     int GetMaxTextureSize() override;
 
     bool IsFramebufferSupported() override;
-
-private:
-    Math::Matrix m_matrix;
-    Material     m_material;
-    Light        m_light;
 };
 
 

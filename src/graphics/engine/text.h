@@ -118,7 +118,6 @@ enum FontTitle
 enum FontHighlight
 {
     FONT_HIGHLIGHT_NONE      = 0x00 << 6,
-    FONT_HIGHLIGHT_LINK      = 0x01 << 6, //!< link underline
     FONT_HIGHLIGHT_TABLE     = 0x02 << 6, //!< code background in SatCom
     FONT_HIGHLIGHT_KEY       = 0x03 << 6, //!< background for keys in documentation in SatCom
     FONT_HIGHLIGHT_TOKEN     = 0x04 << 6, //!< keywords in CBot scripts
@@ -142,8 +141,10 @@ enum FontMask
     FONT_MASK_TITLE = 0x030,
     //! Mask for FontHighlight
     FONT_MASK_HIGHLIGHT = 0x3c0,
+    //! Mask for links
+    FONT_MASK_LINK = 0x400,
     //! Mask for image bit (TODO: not used?)
-    FONT_MASK_IMAGE = 0x400
+    FONT_MASK_IMAGE = 0x800
 };
 
 
@@ -193,7 +194,6 @@ struct CharTexture
     unsigned int id = 0;
     Math::IntPoint charPos;
     Math::IntPoint charSize;
-    Math::IntPoint tileSize;
 };
 
 // Definition is private - in text.cpp
@@ -282,6 +282,7 @@ public:
     float       GetDescent(FontType font, float size);
     //! Returns the height font metric
     float       GetHeight(FontType font, float size);
+    int GetHeightInt(FontType font, float size);
 
     //! Returns width of string (multi-format)
     TEST_VIRTUAL float GetStringWidth(const std::string& text,
@@ -291,6 +292,7 @@ public:
     TEST_VIRTUAL float GetStringWidth(std::string text, FontType font, float size);
     //! Returns width of single character
     TEST_VIRTUAL float GetCharWidth(UTF8Char ch, FontType font, float size, float offset);
+    int GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset);
 
     //! Justifies a line of text (multi-format)
     int         Justify(const std::string &text, std::vector<FontMetaChar>::iterator format,
@@ -320,11 +322,11 @@ protected:
 
     void        DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
                            std::vector<FontMetaChar>::iterator end,
-                           float size, Math::Point pos, float width, int eol, Color color);
+                           float size, Math::IntPoint pos, int width, int eol, Color color);
     void        DrawString(const std::string &text, FontType font,
-                           float size, Math::Point pos, float width, int eol, Color color);
-    void        DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size);
-    void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::Point &pos, Color color);
+                           float size, Math::IntPoint pos, int width, int eol, Color color);
+    void        DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint size);
+    void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::IntPoint &pos, Color color);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end);
 

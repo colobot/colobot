@@ -30,11 +30,6 @@ enum class LevelCategory
     CodeBattles,
     CustomLevels,
     Max,
-
-    // These are special types not runnable by the user
-    Win,
-    Lost,
-    Perso,
 };
 
 std::string GetLevelCategoryDir(LevelCategory category);

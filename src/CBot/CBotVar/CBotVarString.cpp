@@ -19,117 +19,27 @@
 
 #include "CBot/CBotVar/CBotVarString.h"
 
-#include "CBot/CBotEnums.h"
-#include "CBot/CBotToken.h"
-#include "CBot/CBotUtils.h"
-
 namespace CBot
 {
 
-////////////////////////////////////////////////////////////////////////////////
-CBotVarString::CBotVarString(const CBotToken& name)
-{
-    m_token    = new CBotToken(name);
-    m_next    = nullptr;
-    m_pMyThis = nullptr;
-    m_pUserPtr = nullptr;
-    m_InitExpr = nullptr;
-    m_LimExpr = nullptr;
-    m_type  = CBotTypString;
-    m_binit = InitType::UNDEF;
-    m_bStatic = false;
-    m_mPrivate = ProtectionLevel::Public;
-
-    m_val.clear();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CBotVarString::Copy(CBotVar* pSrc, bool bName)
-{
-    CBotVarString*    p = static_cast<CBotVarString*>(pSrc);
-
-    if (bName)    *m_token    = *p->m_token;
-    m_type        = p->m_type;
-    m_val        = p->m_val;
-    m_binit        = p->m_binit;
-//-    m_bStatic    = p->m_bStatic;
-    m_next        = nullptr;
-    m_pMyThis    = nullptr;//p->m_pMyThis;
-    m_pUserPtr    = p->m_pUserPtr;
-
-    // keeps indentificator the same (by default)
-    if (m_ident == 0 ) m_ident     = p->m_ident;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CBotVarString::SetValString(const std::string& val)
-{
-    m_val = val;
-    m_binit    = CBotVar::InitType::DEF;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string CBotVarString::GetValString()
-{
-    if ( m_binit == CBotVar::InitType::UNDEF )
-    {
-        return LoadString(TX_UNDEF);
-    }
-    if ( m_binit == CBotVar::InitType::IS_NAN )
-    {
-        return LoadString(TX_NAN);
-    }
-
-    return    m_val;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void CBotVarString::Add(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GetValString() + right->GetValString();
-    m_binit = CBotVar::InitType::DEF;
+    SetValString(left->GetValString() + right->GetValString());
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool CBotVarString::Eq(CBotVar* left, CBotVar* right)
 {
-    return (left->GetValString() == right->GetValString());
+    return left->GetValString() == right->GetValString();
 }
 
-////////////////////////////////////////////////////////////////////////////////
 bool CBotVarString::Ne(CBotVar* left, CBotVar* right)
 {
-    return (left->GetValString() != right->GetValString());
+    return left->GetValString() != right->GetValString();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-bool CBotVarString::Lo(CBotVar* left, CBotVar* right)
-{
-    return (left->GetValString() == right->GetValString());
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool CBotVarString::Hi(CBotVar* left, CBotVar* right)
-{
-    return (left->GetValString() == right->GetValString());
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool CBotVarString::Ls(CBotVar* left, CBotVar* right)
-{
-    return (left->GetValString() == right->GetValString());
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool CBotVarString::Hs(CBotVar* left, CBotVar* right)
-{
-    return (left->GetValString() == right->GetValString());
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CBotVarString::Save1State(FILE* pf)
 {
-    return WriteString(pf, m_val);                            // the value of the variable
+    return WriteString(pf, m_val);
 }
 
 } // namespace CBot

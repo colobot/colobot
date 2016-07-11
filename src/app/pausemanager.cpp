@@ -26,6 +26,7 @@
 #include "level/robotmain.h"
 
 #include <algorithm>
+#include <boost/algorithm/string/join.hpp>
 
 struct ActivePause
 {
@@ -41,6 +42,17 @@ struct ActivePause
     PauseMusic music;
 };
 
+std::string GetPauseName(PauseType type)
+{
+    std::vector<std::string> x;
+    if ((type & PAUSE_ENGINE) != 0) x.push_back("engine");
+    if ((type & PAUSE_HIDE_SHORTCUTS) != 0) x.push_back("hide_shortcuts");
+    if ((type & PAUSE_PHOTO) != 0) x.push_back("photo");
+    if ((type & PAUSE_OBJECT_UPDATES) != 0) x.push_back("object_updates");
+    if ((type & PAUSE_MUTE_SOUND) != 0) x.push_back("mute_sound");
+    if ((type & PAUSE_CAMERA) != 0) x.push_back("camera");
+    return boost::algorithm::join(x, "|");
+}
 
 CPauseManager::CPauseManager()
 {
@@ -52,7 +64,7 @@ CPauseManager::~CPauseManager()
 
 ActivePause* CPauseManager::ActivatePause(PauseType type, PauseMusic music)
 {
-    //GetLogger()->Debug("Activated pause mode - %s\n", GetPauseName(type).c_str());
+    GetLogger()->Debug("Activated pause mode - %s\n", GetPauseName(type).c_str());
     auto pause = MakeUnique<ActivePause>(type, music);
     ActivePause* ptr = pause.get();
     m_activePause.push_back(std::move(pause));
@@ -63,7 +75,7 @@ ActivePause* CPauseManager::ActivatePause(PauseType type, PauseMusic music)
 void CPauseManager::DeactivatePause(ActivePause* pause)
 {
     if (pause == nullptr) return;
-    //GetLogger()->Debug("Deactivated pause mode - %s\n", GetPauseName(pause->type).c_str());
+    GetLogger()->Debug("Deactivated pause mode - %s\n", GetPauseName(pause->type).c_str());
     auto it = std::remove_if(
         m_activePause.begin(), m_activePause.end(),
         [&](const std::unique_ptr<ActivePause>& x) { return x.get() == pause; }

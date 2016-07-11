@@ -1577,10 +1577,13 @@ bool CPhysics::EventFrame(const Event &event)
 
     if ( m_bLand && m_fallingHeight != 0.0f ) // if fell
     {
-        float force = (m_fallingHeight - m_object->GetPosition().y) * m_fallDamageFraction;
-        if (m_object->DamageObject(DamageType::Fall, force))
+        if (m_object->Implements(ObjectInterfaceType::Damageable))
         {
-            return false; // ugly hack, but works for 0.1.6 release :/
+            float force = (m_fallingHeight - m_object->GetPosition().y) * m_fallDamageFraction;
+            if (m_object->DamageObject(DamageType::Fall, force))
+            {
+                return false; // ugly hack, but works for 0.1.6 release :/
+            }
         }
         m_fallingHeight = 0.0f;
     }

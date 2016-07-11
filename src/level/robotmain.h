@@ -113,6 +113,7 @@ class CMainMap;
 class CInterface;
 class CDisplayText;
 class CDisplayInfo;
+class CDebugMenu;
 }
 
 struct NewScriptName
@@ -140,6 +141,12 @@ struct ShowLimit
     float           time = 0.0f;
 };
 
+struct MinMax
+{
+    int min = -1;
+    int max = -1;
+};
+
 
 const int SATCOM_HUSTON     = 0;
 const int SATCOM_SAT        = 1;
@@ -160,9 +167,6 @@ public:
     Ui::CInterface* GetInterface();
     Ui::CDisplayText* GetDisplayText();
     CPauseManager* GetPauseManager();
-
-    void        ResetAfterVideoConfigChanged();
-    void        ReloadAllTextures();
 
     void        ChangePhase(Phase phase);
     bool        ProcessEvent(Event &event);
@@ -197,13 +201,11 @@ public:
 
     void        ResetObject();
     void        UpdateAudio(bool frame);
-    void        SetEndMission(Error result, float delay);
+    void        SetMissionResultFromScript(Error result, float delay);
     Error       CheckEndMission(bool frame);
-    Error       CheckEndMissionForGroup(std::vector<CSceneEndCondition*>& endTakes);
-    int         GetObligatoryToken();
-    char*       GetObligatoryToken(int i);
-    int         IsObligatoryToken(const char* token);
-    bool        IsProhibitedToken(const char* token);
+    Error       ProcessEndMissionTake();
+    Error       ProcessEndMissionTakeForGroup(std::vector<CSceneEndCondition*>& endTakes);
+    const std::map<std::string, MinMax>& GetObligatoryTokenList();
     void        UpdateMap();
     bool        GetShowMap();
 
@@ -364,6 +366,10 @@ public:
 
     bool        IsSelectable(CObject* obj);
 
+    void SetDebugCrashSpheres(bool draw);
+
+    bool GetDebugCrashSpheres();
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -384,8 +390,6 @@ protected:
     void        ClearTooltip();
     CObject*    DetectObject(Math::Point pos);
     void        ChangeCamera();
-    void        RemoteCamera(float pan, float zoom, float rTime);
-    void        KeyCamera(EventType event, InputSlot key);
     void        AbortMovie();
     void        SelectOneObject(CObject* obj, bool displayError=true);
     void        HelpObject();
@@ -395,10 +399,10 @@ protected:
     void        StartDisplayVisit(EventType event);
     void        FrameVisit(float rTime);
     void        StopDisplayVisit();
-    void        ExecuteCmd(char *cmd);
+    void        ExecuteCmd(const std::string& cmd);
     void        UpdateSpeedLabel();
 
-    int         AutosaveRotate(bool freeOne);
+    void        AutosaveRotate();
     void        Autosave();
     bool        DestroySelectedObject();
     void        PushToSelectionHistory(CObject* obj);
@@ -435,6 +439,7 @@ protected:
     std::unique_ptr<Ui::CInterface> m_interface;
     std::unique_ptr<Ui::CDisplayInfo> m_displayInfo;
     std::unique_ptr<Ui::CDisplayText> m_displayText;
+    std::unique_ptr<Ui::CDebugMenu> m_debugMenu;
     std::unique_ptr<CSettings> m_settings;
 
     //! Progress of loaded player
@@ -451,6 +456,8 @@ protected:
     LevelCategory   m_levelCategory;
     int             m_levelChap = 0;
     int             m_levelRank = 0;
+    //! if set, loads this file instead of building from category/chap/rank
+    std::string     m_levelFile = "";
     std::string     m_sceneReadPath;
 
     float           m_winDelay = 0.0f;
@@ -497,7 +504,6 @@ protected:
     char            m_mapFilename[100] = {};
 
     ActivePause*    m_suspend = nullptr;
-    Gfx::CameraType m_suspendInitCamera = Gfx::CAM_TYPE_NULL;
 
     Math::Point     m_tooltipPos;
     std::string     m_tooltipName;
@@ -510,8 +516,8 @@ protected:
 
     std::string     m_scriptName = "";
     std::string     m_scriptFile = "";
-    int             m_endingWinRank = 0;
-    int             m_endingLostRank = 0;
+    std::string     m_endingWin = "";
+    std::string     m_endingLost = "";
     bool            m_winTerminate = false;
 
     float           m_globalMagnifyDamage = 0.0f;
@@ -527,9 +533,6 @@ protected:
 
     std::vector<NewScriptName> m_newScriptName;
 
-    float           m_cameraPan = 0.0f;
-    float           m_cameraZoom = 0.0f;
-
     EventType       m_visitLast = EVENT_NULL;
     CObject*        m_visitObject = nullptr;
     CObject*        m_visitArrow = nullptr;
@@ -540,16 +543,15 @@ protected:
     ActivePause*    m_visitPause = nullptr;
 
     std::vector<std::unique_ptr<CSceneEndCondition>> m_endTake;
+    //! If true, the mission ends immediately after completing the requirements without requiring SpaceShip takeoff
+    bool            m_endTakeImmediat = false;
     long            m_endTakeResearch = 0;
     float           m_endTakeWinDelay = 0.0f;
     float           m_endTakeLostDelay = 0.0f;
 
     std::vector<std::unique_ptr<CAudioChangeCondition>> m_audioChange;
 
-    int             m_obligatoryTotal = 0;
-    char            m_obligatoryToken[100][20] = {};
-    int             m_prohibitedTotal = 0;
-    char            m_prohibitedToken[100][20] = {};
+    std::map<std::string, MinMax> m_obligatoryTokens;
 
     //! Enabled buildings
     int             m_build = 0;
@@ -559,16 +561,14 @@ protected:
     std::map<int, int>  m_researchDone;
 
     Error           m_missionResult = ERR_OK;
+    //! true if m_missionResult has been set by LevelController script, this disables normal EndMissionTake processing
+    bool            m_missionResultFromScript = false;
 
     ShowLimit       m_showLimit[MAXSHOWLIMIT];
 
-    Gfx::Color      m_colorRefBot;
     std::map<int, Gfx::Color> m_colorNewBot;
-    Gfx::Color      m_colorRefAlien;
     Gfx::Color      m_colorNewAlien;
-    Gfx::Color      m_colorRefGreen;
     Gfx::Color      m_colorNewGreen;
-    Gfx::Color      m_colorRefWater;
     Gfx::Color      m_colorNewWater;
     float           m_colorShiftWater = 0.0f;
 

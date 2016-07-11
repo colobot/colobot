@@ -20,6 +20,7 @@
 #include "CBot/CBotInstr/CBotDefString.h"
 
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
+#include "CBot/CBotInstr/CBotDefArray.h"
 #include "CBot/CBotInstr/CBotTwoOpExpr.h"
 
 #include "CBot/CBotStack.h"
@@ -61,6 +62,7 @@ CBotInstr* CBotDefString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, 
     inst->m_expr = nullptr;
 
     CBotToken*    vartoken = p;
+    CBotVar*    var = nullptr;
     inst->SetToken(vartoken);
 
     if (nullptr != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
@@ -73,8 +75,27 @@ CBotInstr* CBotDefString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, 
             goto error;
         }
 
+        if (IsOfType(p,  ID_OPBRK))
+        {
+            delete inst;    // type is not CBotDefString
+            p = vartoken;   // returns the variable name
+
+            // compiles an array declaration
+
+            CBotInstr* inst2 = CBotDefArray::Compile(p, pStk, CBotTypString);
+
+            inst = static_cast<CBotDefString*>(inst2);
+            goto suite;     // no assignment, variable already created
+        }
+
         if (IsOfType(p,  ID_ASS))
         {
+            pStk->SetStartError(p->GetStart());
+            if ( IsOfType(p, ID_SEP) )
+            {
+                pStk->SetError(CBotErrNoExpression, p->GetStart());
+                goto error;
+            }
             if (nullptr == ( inst->m_expr = CBotTwoOpExpr::Compile( p, pStk )))
             {
                 goto error;
@@ -86,13 +107,13 @@ CBotInstr* CBotDefString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, 
             }*/
         }
 
-        CBotVar*    var = CBotVar::Create(*vartoken, CBotTypString);
+        var = CBotVar::Create(*vartoken, CBotTypString);
         var->SetInit(inst->m_expr != nullptr ? CBotVar::InitType::DEF : CBotVar::InitType::UNDEF);
         var->SetUniqNum(
             (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
         pStack->AddVar(var);
-
-        if (IsOfType(p,  ID_COMMA))
+suite:
+        if (pStk->IsOk() && IsOfType(p,  ID_COMMA))
         {
             if (nullptr != ( inst->m_next2b = CBotDefString::Compile(p, pStk, true, noskip)))
             {

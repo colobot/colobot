@@ -44,29 +44,25 @@ namespace Gfx
 enum CameraType
 {
     //! Undefined
-    CAM_TYPE_NULL     = 0,
-    //! Free camera (? never in principle ?)
-    CAM_TYPE_FREE     = 1,
+    CAM_TYPE_NULL = 0,
+    //! Free camera
+    CAM_TYPE_FREE,
     //! Camera while editing a program
-    CAM_TYPE_EDIT     = 2,
+    CAM_TYPE_EDIT,
     //! Camera on board a robot
-    CAM_TYPE_ONBOARD  = 3,
+    CAM_TYPE_ONBOARD,
     //! Camera behind a robot
-    CAM_TYPE_BACK     = 4,
+    CAM_TYPE_BACK,
     //! Static camera following robot
-    CAM_TYPE_FIX      = 5,
+    CAM_TYPE_FIX,
     //! Camera steady after explosion
-    CAM_TYPE_EXPLO    = 6,
-    //! Camera during a film script
-    CAM_TYPE_SCRIPT   = 7,
-    //! Camera for displaying information
-    CAM_TYPE_INFO     = 8,
-    //! Visit instead of an error
-    CAM_TYPE_VISIT    = 9,
-    //! Camera for dialog
-    CAM_TYPE_DIALOG   = 10,
+    CAM_TYPE_EXPLO,
+    //! Camera during a cutscene
+    CAM_TYPE_SCRIPT,
+    //! Visit camera, rotates around given position
+    CAM_TYPE_VISIT,
     //! Static camera height
-    CAM_TYPE_PLANE    = 11,
+    CAM_TYPE_PLANE,
 };
 
 enum CameraSmooth
@@ -93,15 +89,15 @@ enum CameraEffect
     CAM_EFFECT_NULL         = 0,
     //! Digging in
     CAM_EFFECT_TERRAFORM    = 1,
-    //! ? Vehicle driving is severely ?
+    //! Hard landing
     CAM_EFFECT_CRASH        = 2,
     //! Explosion
     CAM_EFFECT_EXPLO        = 3,
-    //! ? Not mortal shot ?
+    //! Shot by an enemy
     CAM_EFFECT_SHOT         = 4,
     //! Vibration during construction
     CAM_EFFECT_VIBRATION    = 5,
-    //! ? Spleen reactor ?
+    //! Overheated reactor
     CAM_EFFECT_PET          = 6,
 };
 
@@ -126,7 +122,9 @@ enum CameraOverEffect
   \class CCamera
   \brief Camera moving in 3D scene
 
-  ... */
+  This class manages everything related to animating the camera in 3D scene.
+  Calculated values are then passed to Gfx::CEngine.
+*/
 class CCamera
 {
 public:
@@ -136,70 +134,83 @@ public:
     //! Management of an event
     bool        EventProcess(const Event &event);
 
-    //! Initializes the camera
+    /**
+     * \brief Initializes the camera
+     * \param eye Initial eye position
+     * \param lookat Initial lookat position
+     * \param delay Time of the initial entry animation
+     */
     void        Init(Math::Vector eye, Math::Vector lookat, float delay);
 
     //! Sets the object controlling the camera
     void        SetControllingObject(CObject* object);
+    //! Gets the object controlling the camera
     CObject*    GetControllingObject();
 
     //! Change the type of camera
-    void            SetType(CameraType type);
-    CameraType GetType();
+    void        SetType(CameraType type);
+    //! Get the type of the camera
+    CameraType  GetType();
 
-    //! Management of the smoothing mode
-    void              SetSmooth(CameraSmooth type);
+    //! Set smoothing mode
+    void         SetSmooth(CameraSmooth type);
+    //! Get smoothing mode
     CameraSmooth GetSmooth();
 
-    //! Management of the setback distance
-    void        SetDist(float dist);
-    float       GetDist();
 
-    //! Manage angle mode CAM_TYPE_FIX
-    void        SetFixDirectionH(float angle);
-    float       GetFixDirectionH();
-    void        SetFixDirectionV(float angle);
-    float       GetFixDirectionV();
-
-    //! Managing the triggering mode of the camera panning
-    void        SetRemotePan(float value);
-    float       GetRemotePan();
-
-    //! Management of the remote zoom (0 .. 1) of the camera
-    void        SetRemoteZoom(float value);
-    float       GetRemoteZoom();
-
-    //! Start with a tour round the camera
-    void        StartVisit(Math::Vector goal, float dist);
-    //! Circular end of a visit with the camera
-    void        StopVisit();
-
-    //! Returns the point of view of the camera
+    //! Returns the current point of view of the camera
     void        GetCamera(Math::Vector &eye, Math::Vector &lookat);
 
-    //! Specifies a special movement of camera to frame action
+    //! \name Visit camera management (CAM_TYPE_VISIT) - camera in this mode shows a position, constantly rotating around it
+    //@{
+    //! Start visit camera
+    void        StartVisit(Math::Vector goal, float dist);
+    //! Stop visit camera
+    void        StopVisit();
+    //@}
+
+    //! \name Camera "centering" - moves the camera to show some happening action (e.g. sniffer sniffing)
+    //@{
+    //! Move camera to show happening action
     bool        StartCentering(CObject *object, float angleH, float angleV, float dist, float time);
-    //! Ends a special movement of camera to frame action
+    //! Go back to normal position after showing some happening action
     bool        StopCentering(CObject *object, float time);
-    //! Stop framing special in the current position
+    //! Abort centering animation in the current position
     void        AbortCentering();
+    //@}
 
-    //! Removes the special effect with the camera
-    void        FlushEffect();
-    //! Starts a special effect with the camera
+    //! \name Camera shake effects
+    //@{
+    //! Starts a camera shake effect
     void        StartEffect(CameraEffect effect, Math::Vector pos, float force);
+    //! Removes the camera shake effect
+    void        FlushEffect();
+    //@}
 
-    //! Removes the effect of superposition in the foreground
-    void        FlushOver();
-    //! Specifies the base color
-    void        SetOverBaseColor(Color color);
+    //! \name Camera overlay effects
+    //@{
+    //! Starts camera overlay effect
     void        StartOver(CameraOverEffect effect, Math::Vector pos, float force);
+    //! Removes camera overlay effect
+    void        FlushOver();
+    //! Specifies camera overlay effect base color
+    void        SetOverBaseColor(Color color);
+    //@}
 
-    //! Sets the soft movement of the camera
-    void        FixCamera();
-    void        SetScriptEye(Math::Vector eye);
-    void        SetScriptLookat(Math::Vector lookat);
+    //! \name Script camera - cutscenes controlled by external code
+    //@{
+    //! Script camera: Set camera position
+    void        SetScriptCamera(Math::Vector eye, Math::Vector lookat);
+    //! Script camera: Animate to given camera position
+    void        SetScriptCameraAnimate(Math::Vector eye, Math::Vector lookat);
+    //! Script camera: Animate to given eye position
+    void        SetScriptCameraAnimateEye(Math::Vector eye);
+    //! Script camera: Animate to given lookat position
+    void        SetScriptCameraAnimateLookat(Math::Vector lookat);
+    //@}
 
+    //! \name Configuration settings
+    //@{
     void        SetEffect(bool enable);
     bool        GetEffect();
     void        SetBlood(bool enable);
@@ -210,59 +221,72 @@ public:
     bool        GetCameraInvertX();
     void        SetCameraInvertY(bool invert);
     bool        GetCameraInvertY();
+    //@}
 
+    //! Temporarily freeze camera movement
+    void        SetFreeze(bool freeze);
+
+    //! Set camera speed
     void        SetCameraSpeed(float speed);
 
 protected:
-    //! Changes the camera according to the mouse moved
-    bool        EventMouseMove(const Event &event);
-    //! Mouse wheel operation
-    void        EventMouseWheel(const Event &event);
-    //! Mouse button handling
-    void        EventMouseButton(const Event &event);
-    //! Changes the camera according to the time elapsed
-    bool        EventFrame(const Event &event);
-    //! Moves the point of view
-    bool        EventFrameFree(const Event &event);
-    //! Moves the point of view
-    bool        EventFrameEdit(const Event &event);
-    //! Moves the point of view
-    bool        EventFrameDialog(const Event &event);
-    //! Moves the point of view
+    //! Advances the effect of the camera
+    void        EffectFrame(const Event &event);
+    //! Advanced overlay effect in the foreground
+    void        OverFrame(const Event &event);
+
+    bool        EventFrameFree(const Event &event, bool keysAllowed);
     bool        EventFrameBack(const Event &event);
-    //! Moves the point of view
     bool        EventFrameFix(const Event &event);
-    //! Moves the point of view
     bool        EventFrameExplo(const Event &event);
-    //! Moves the point of view
     bool        EventFrameOnBoard(const Event &event);
-    //! Moves the point of view
-    bool        EventFrameInfo(const Event &event);
-    //! Moves the point of view
     bool        EventFrameVisit(const Event &event);
-    //! Moves the point of view
     bool        EventFrameScript(const Event &event);
 
-    //! Specifies the location and direction of view to the 3D engine
-    void        SetViewTime(const Math::Vector &eyePt, const Math::Vector &lookatPt, float rTime);
-    //! Avoid the obstacles
-    bool        IsCollision(Math::Vector &eye, Math::Vector lookat);
-    //! Avoid the obstacles
-    bool        IsCollisionBack(Math::Vector &eye, Math::Vector lookat);
-    //! Avoid the obstacles
-    bool        IsCollisionFix(Math::Vector &eye, Math::Vector lookat);
+    /**
+     * \brief Calculates camera animation and sends updated camera position to the 3D engine
+     * \param eyePt Eye point
+     * \param lookatPt Lookat point
+     * \param rTime Time since last time this function was called (used to calculate animation)
+     * \see SetViewParams
+     */
+    void        UpdateCameraAnimation(const Math::Vector &eyePt, const Math::Vector &lookatPt, float rTime);
+
+    /**
+     * \brief Avoid the obstacles
+     *
+     * For CAM_TYPE_BACK: make obstacles transparent
+     * For CAM_TYPE_FIX or CAM_TYPE_PLANE: adjust eye not to hit the obstacles
+     *
+     * \param eye Eye position, may be adjusted
+     * \param lookat Lookat point
+     */
+    void        IsCollision(Math::Vector &eye, Math::Vector lookat);
+    //! Avoid the obstacles (CAM_TYPE_BACK)
+    void        IsCollisionBack();
+    //! Avoid the obstacles (CAM_TYPE_FIX or CAM_TYPE_PLANE)
+    void        IsCollisionFix(Math::Vector &eye, Math::Vector lookat);
 
     //! Adjusts the camera not to enter the ground
     Math::Vector ExcludeTerrain(Math::Vector eye, Math::Vector lookat, float &angleH, float &angleV);
     //! Adjusts the camera not to enter an object
     Math::Vector ExcludeObject(Math::Vector eye, Math::Vector lookat, float &angleH, float &angleV);
 
-    //! Specifies the location and direction of view
-    void        SetViewParams(const Math::Vector &eye, const Math::Vector &lookat, const Math::Vector &up);
-    //! Advances the effect of the camera
-    void        EffectFrame(const Event &event);
-    //! Advanced overlay effect in the foreground
-    void        OverFrame(const Event &event);
+    /**
+     * \brief Updates the location and direction of the camera in the 3D engine
+     * \param eye Eye point
+     * \param lookat Lookat point
+     * \param up Up vector
+     * \see CEngine::SetViewParams
+     */
+    void        SetViewParams(const Math::Vector &eye, const Math::Vector &lookat, const Math::Vector &up = Math::Vector(0.0f, 1.0f, 0.0f));
+
+    /**
+     * \brief Calculate camera movement (from user inputs) to apply
+     * \return Math::Vector where x, y represent respectively horizontal and vertical angle change in radians and z represents zoom (distance change)
+     * \remarks Should not be called more often than once every EVENT_FRAME
+     **/
+    Math::Vector CalculateCameraMovement(const Event &event, bool keysAllowed = true);
 
 protected:
     CEngine*     m_engine;
@@ -276,12 +300,10 @@ protected:
     //! Type of smoothing
     CameraSmooth m_smooth;
     //! Object linked to the camera
-    CObject*          m_cameraObj;
+    CObject*     m_cameraObj;
 
-    //! Distance between the eyes
-    float       m_eyeDistance;
-    //! Time of initial centering
-    float       m_initDelay;
+    //! Remaining time of initial camera entry animation
+    float        m_initDelay;
 
     //! Current eye
     Math::Vector    m_actualEye;
@@ -289,14 +311,14 @@ protected:
     Math::Vector    m_actualLookat;
     //! Final eye
     Math::Vector    m_finalEye;
-    //! Final aim
+    //! Final lookat
     Math::Vector    m_finalLookat;
-    //! Normal eye
-    Math::Vector    m_normEye;
-    //! Normal aim
-    Math::Vector    m_normLookat;
+    //! Eye position at the moment of entering CAM_TYPE_INFO/CAM_TYPE_VISIT
+    Math::Vector    m_prevEye;
+    //! Lookat position at the moment of entering CAM_TYPE_INFO/CAM_TYPE_VISIT
+    Math::Vector    m_prevLookat;
 
-    float       m_focus;
+    float            m_focus;
 
     //! CAM_TYPE_FREE: eye
     Math::Vector    m_eyePt;
@@ -313,19 +335,18 @@ protected:
 
     //! CAM_TYPE_BACK: distance
     float       m_backDist;
-    //! CAM_TYPE_BACK: distance minimal
+    //! CAM_TYPE_BACK: minimal distance
     float       m_backMin;
-    //! CAM_TYPE_BACK: additional direction
+    //! CAM_TYPE_BACK: additional horizontal direction
     float       m_addDirectionH;
-    //! CAM_TYPE_BACK: additional direction
+    //! CAM_TYPE_BACK: additional vertical direction
     float       m_addDirectionV;
-    bool        m_transparency;
 
     //! CAM_TYPE_FIX: distance
     float       m_fixDist;
-    //! CAM_TYPE_FIX: direction
+    //! CAM_TYPE_FIX: horizontal direction
     float       m_fixDirectionH;
-    //! CAM_TYPE_FIX: direction
+    //! CAM_TYPE_FIX: vertical direction
     float       m_fixDirectionV;
 
     //! CAM_TYPE_VISIT: target position
@@ -339,15 +360,14 @@ protected:
     //! CAM_TYPE_VISIT: direction
     float        m_visitDirectionV;
 
-    //! CAM_TYPE_EDIT: height
-    float        m_editHeight;
-
-    float        m_remotePan;
-
     //! Last known mouse position, used to calculate change since last frame
     Math::Point  m_mousePos = Math::Point(0.5f, 0.5f);
+    //! Change of mouse position since last frame
     Math::Point  m_mouseDelta = Math::Point(0.0f, 0.0f);
+    //! Change of camera position caused by edge camera
     Math::Point  m_mouseDeltaEdge = Math::Point(0.0f, 0.0f);
+    //! Change of mouse wheel since last frame
+    float        m_mouseWheelDelta = 0.0f;
 
     CenteringPhase m_centeringPhase;
     float       m_centeringAngleH;
@@ -376,16 +396,17 @@ protected:
     Math::Vector m_scriptEye;
     Math::Vector m_scriptLookat;
 
-    //! Shocks if explosion?
+    //! Is camera frozen?
+    bool m_freeze = false;
+
+    //! \name Configuration settings
+    //@{
     bool        m_effect;
-    //! Blood?
     bool        m_blood;
-    //! Scroll in the edges?
-    bool m_oldCameraScroll;
-    //! X inversion in the edges?
+    bool        m_oldCameraScroll;
     bool        m_cameraInvertX;
-    //! Y inversion in the edges?
     bool        m_cameraInvertY;
+    //@}
 };
 
 

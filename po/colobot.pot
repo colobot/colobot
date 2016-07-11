@@ -16,6 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 msgid "Colobot rules!"
 msgstr ""
@@ -83,34 +84,34 @@ msgstr ""
 msgid "Load a saved mission"
 msgstr ""
 
-msgid " Chapters:"
+msgid "Chapters:"
 msgstr ""
 
-msgid " Planets:"
+msgid "Planets:"
 msgstr ""
 
-msgid " Custom levels:"
+msgid "Custom levels:"
 msgstr ""
 
-msgid " Levels in this chapter:"
+msgid "Levels in this chapter:"
 msgstr ""
 
-msgid " Exercises in the chapter:"
+msgid "Exercises in the chapter:"
 msgstr ""
 
-msgid " Challenges in the chapter:"
+msgid "Challenges in the chapter:"
 msgstr ""
 
-msgid " Missions on this planet:"
+msgid "Missions on this planet:"
 msgstr ""
 
-msgid " Free game on this planet:"
+msgid "Free game on this planet:"
 msgstr ""
 
-msgid " Summary:"
+msgid "Summary:"
 msgstr ""
 
-msgid " Resolution:"
+msgid "Resolution:"
 msgstr ""
 
 msgid "1) First click on the key you want to redefine."
@@ -144,7 +145,7 @@ msgid "Do you really want to destroy the selected building?"
 msgstr ""
 
 #, c-format
-msgid "Do you want to delete %s's saved games? "
+msgid "Do you want to delete %s's saved games?"
 msgstr ""
 
 msgid "Yes"
@@ -298,7 +299,7 @@ msgstr ""
 msgid "Restart\\Restart the mission from the beginning"
 msgstr ""
 
-msgid "Save\\Save the current mission "
+msgid "Save\\Save the current mission"
 msgstr ""
 
 msgid "Load\\Load a saved mission"
@@ -358,6 +359,9 @@ msgstr ""
 msgid "Render distance\\Maximum visibility"
 msgstr ""
 
+msgid "Pause blur\\Blur the background on the pause screen"
+msgstr ""
+
 msgid "Particles in the interface\\Steam clouds and sparks in the interface"
 msgstr ""
 
@@ -370,9 +374,7 @@ msgstr ""
 msgid "Film sequences\\Films before and after the missions"
 msgstr ""
 
-msgid ""
-"Camera border scrolling\\Scrolling when the mouse touches right or left "
-"border"
+msgid "Camera border scrolling\\Scrolling when the mouse touches right or left border"
 msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
@@ -459,14 +461,28 @@ msgstr ""
 msgid "Previous object\\Selects the previous object"
 msgstr ""
 
-msgid ""
-"Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgstr ""
+
+msgid "Camera left\\Turns the camera left"
+msgstr ""
+
+msgid "Camera right\\Turns the camera right"
+msgstr ""
+
+msgid "Camera up\\Turns the camera up"
+msgstr ""
+
+msgid "Camera down\\Turns the camera down"
 msgstr ""
 
 msgid "Camera closer\\Moves the camera forward"
 msgstr ""
 
 msgid "Camera back\\Moves the camera backward"
+msgstr ""
+
+msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
 msgstr ""
 
 msgid "Next object\\Selects the next object"
@@ -508,12 +524,6 @@ msgstr ""
 msgid "Speed 6.0x\\Sextuple speed"
 msgstr ""
 
-msgid "Camera up\\Increase camera angle while visiting message origin"
-msgstr ""
-
-msgid "Camera down\\Decrease camera angle while visiting message origin"
-msgstr ""
-
 msgid "Pause\\Pause the game without opening menu"
 msgstr ""
 
@@ -523,7 +533,7 @@ msgstr ""
 msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
 msgstr ""
 
-msgid "Background sound :\\Volume of audio tracks"
+msgid "Background sound:\\Volume of audio tracks"
 msgstr ""
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
@@ -541,8 +551,7 @@ msgstr ""
 msgid "Normal\\Normal sound volume"
 msgstr ""
 
-msgid ""
-"Access to solution\\Shows the solution (detailed instructions for missions)"
+msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
 msgstr ""
 
 msgid "Invert\\Invert values on this axis"
@@ -611,13 +620,13 @@ msgstr ""
 msgid "\\Face 1"
 msgstr ""
 
-msgid "\\Face 4"
+msgid "\\Face 2"
 msgstr ""
 
 msgid "\\Face 3"
 msgstr ""
 
-msgid "\\Face 2"
+msgid "\\Face 4"
 msgstr ""
 
 msgid "\\No eyeglasses"
@@ -920,18 +929,6 @@ msgstr ""
 msgid "Camera (\\key camera;)"
 msgstr ""
 
-msgid "Camera to left"
-msgstr ""
-
-msgid "Camera to right"
-msgstr ""
-
-msgid "Camera nearest"
-msgstr ""
-
-msgid "Camera awayest"
-msgstr ""
-
 msgid "Help about selected object"
 msgstr ""
 
@@ -1043,22 +1040,22 @@ msgstr ""
 msgid "Clone program"
 msgstr ""
 
-msgid "Open (Ctrl+o)"
+msgid "Open (Ctrl+O)"
 msgstr ""
 
-msgid "Save (Ctrl+s)"
+msgid "Save (Ctrl+S)"
 msgstr ""
 
-msgid "Undo (Ctrl+z)"
+msgid "Undo (Ctrl+Z)"
 msgstr ""
 
-msgid "Cut (Ctrl+x)"
+msgid "Cut (Ctrl+X)"
 msgstr ""
 
-msgid "Copy (Ctrl+c)"
+msgid "Copy (Ctrl+C)"
 msgstr ""
 
-msgid "Paste (Ctrl+v)"
+msgid "Paste (Ctrl+V)"
 msgstr ""
 
 msgid "Font size"
@@ -1067,7 +1064,7 @@ msgstr ""
 msgid "Instructions (\\key help;)"
 msgstr ""
 
-msgid "Programming help  (\\key prog;)"
+msgid "Programming help (\\key prog;)"
 msgstr ""
 
 msgid "Compile"
@@ -1448,10 +1445,10 @@ msgstr ""
 msgid "Transforms only titanium"
 msgstr ""
 
-msgid "Doors blocked by a robot or another object "
+msgid "Doors blocked by a robot or another object"
 msgstr ""
 
-msgid "You must get on the spaceship to take off "
+msgid "You must get on the spaceship to take off"
 msgstr ""
 
 msgid "Nothing to analyze"
@@ -1505,8 +1502,7 @@ msgstr ""
 msgid "Inappropriate object"
 msgstr ""
 
-msgid ""
-"The mission is not accomplished yet (press \\key help; for more details)"
+msgid "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr ""
 
 msgid "Bot destroyed"
@@ -1516,13 +1512,6 @@ msgid "Building destroyed"
 msgstr ""
 
 msgid "Unable to control enemy objects"
-msgstr ""
-
-#, c-format
-msgid "\"%s\" missing in this exercise"
-msgstr ""
-
-msgid "Do not use in this exercise"
 msgstr ""
 
 msgid "Inappropriate bot"
@@ -1537,7 +1526,7 @@ msgstr ""
 msgid "Research program completed"
 msgstr ""
 
-msgid "Plans for tracked robots available "
+msgid "Plans for tracked robots available"
 msgstr ""
 
 msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
@@ -1612,7 +1601,7 @@ msgstr ""
 msgid "Opening bracket missing"
 msgstr ""
 
-msgid "Closing bracket missing "
+msgid "Closing bracket missing"
 msgstr ""
 
 msgid "The expression must return a boolean value"
@@ -1636,10 +1625,10 @@ msgstr ""
 msgid "End of block missing"
 msgstr ""
 
-msgid "Instruction \"else\" without corresponding \"if\" "
+msgid "Instruction \"else\" without corresponding \"if\""
 msgstr ""
 
-msgid "Opening brace missing "
+msgid "Opening brace missing"
 msgstr ""
 
 msgid "Wrong type for the assignment"
@@ -1648,7 +1637,7 @@ msgstr ""
 msgid "A variable can not be declared twice"
 msgstr ""
 
-msgid "The types of the two operands are incompatible "
+msgid "The types of the two operands are incompatible"
 msgstr ""
 
 msgid "Unknown function"
@@ -1693,7 +1682,7 @@ msgstr ""
 msgid "Function already exists"
 msgstr ""
 
-msgid "Parameters missing "
+msgid "Parameters missing"
 msgstr ""
 
 msgid "No function with this name accepts this kind of parameter"
@@ -1738,6 +1727,9 @@ msgstr ""
 msgid "Public required"
 msgstr ""
 
+msgid "Expression expected after ="
+msgstr ""
+
 msgid "Dividing by zero"
 msgstr ""
 
@@ -1747,7 +1739,7 @@ msgstr ""
 msgid "Negative value rejected by \"throw\""
 msgstr ""
 
-msgid "The function returned no value "
+msgid "The function returned no value"
 msgstr ""
 
 msgid "No function running"
@@ -1788,3 +1780,19 @@ msgstr ""
 
 msgid "Button %1"
 msgstr ""
+
+#, c-format
+msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
+msgstr[0] ""
+msgstr[1] ""
+
+#, c-format
+msgid "You cannot use \"%s\" in this exercise (used: %d)"
+msgstr ""
+
+#, c-format
+msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
+msgstr[0] ""
+msgstr[1] ""

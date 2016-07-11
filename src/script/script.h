@@ -66,7 +66,7 @@ public:
     bool        GetScript(Ui::CEdit* edit);
     bool        GetCompile();
 
-    void        GetTitle(char* buffer);
+    const std::string& GetTitle();
 
     void        SetStepMode(bool bStep);
     bool        GetStepMode();
@@ -92,8 +92,8 @@ public:
     bool        WriteStack(FILE *file);
     bool        Compare(CScript* other);
 
-    void        SetFilename(char *filename);
-    char*       GetFilename();
+    void        SetFilename(const std::string &filename);
+    const std::string& GetFilename();
 
 protected:
     bool        IsEmpty();
@@ -119,10 +119,11 @@ protected:
     bool    m_bStepMode = false;        // step by step
     bool    m_bContinue = false;        // external function to continue
     bool    m_bCompile = false;     // compilation ok?
-    char    m_title[50] = {};        // script title
-    char    m_mainFunction[50] = {};
-    char    m_filename[50] = {};     // file name
-    char    m_token[50] = {};        // missing instruction
+    std::string m_title = "";        // script title
+    std::string m_mainFunction = "";
+    std::string m_filename = "";     // file name
+    std::string m_token = "";        // missing instruction
+    int m_tokenUsed = 0, m_tokenAllowed = 0;
     CBot::CBotError m_error = CBot::CBotNoErr;        // error (0=ok)
     int     m_cursor1 = 0;
     int     m_cursor2 = 0;

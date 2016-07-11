@@ -482,40 +482,6 @@ enum EngineMouseType
     ENG_MOUSE_COUNT
 };
 
-/**
- * \struct EngineMouse
- * \brief Information about mouse cursor
- */
-struct EngineMouse
-{
-    //! Index of texture element for 1st image
-    int icon1;
-    //! Index of texture element for 2nd image
-    int icon2;
-    //! Shadow texture part
-    int iconShadow;
-    //! Mode to render 1st image in
-    EngineRenderState mode1;
-    //! Mode to render 2nd image in
-    EngineRenderState mode2;
-    //! Hot point
-    Math::Point hotPoint;
-
-    EngineMouse(int icon1 = -1,
-                int icon2 = -1,
-                int iconShadow = -1,
-                EngineRenderState mode1 = ENG_RSTATE_NORMAL,
-                EngineRenderState mode2 = ENG_RSTATE_NORMAL,
-                Math::Point hotPoint = Math::Point())
-     : icon1(icon1)
-     , icon2(icon2)
-     , iconShadow(iconShadow)
-     , mode1(mode1)
-     , mode2(mode2)
-     , hotPoint(hotPoint)
-    {}
-};
-
 
 /**
  * \class CEngine
@@ -654,9 +620,6 @@ public:
     bool            Create();
     //! Frees all resources before exit
     void            Destroy();
-
-    //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
-    void            ResetAfterVideoConfigChanged();
 
 
     //! Called once per frame, the call is the entry point for rendering
@@ -844,7 +807,7 @@ public:
 
     //! Detects the target object that is selected with the mouse
     /** Returns the rank of the object or -1. */
-    int             DetectObject(Math::Point mouse);
+    int             DetectObject(Math::Point mouse, Math::Vector& targetPos, bool terrain = false);
 
     //! Creates a shadow for the given object
     void            CreateShadowSpot(int objRank);
@@ -904,8 +867,7 @@ public:
     void            SetMaterial(const Material& mat);
 
     //! Specifies the location and direction of view
-    void            SetViewParams(const Math::Vector& eyePt, const Math::Vector& lookatPt,
-                                  const Math::Vector& upVec, float eyeDistance);
+    void SetViewParams(const Math::Vector &eyePt, const Math::Vector &lookatPt, const Math::Vector &upVec);
 
     //! Loads texture, creating it if not already present
     Texture         LoadTexture(const std::string& name);
@@ -1165,6 +1127,12 @@ public:
     EngineMouseType GetMouseType();
     //@}
 
+    //@{
+    //! Management of pause blur
+    void            SetPauseBlurEnabled(bool enable);
+    bool            GetPauseBlurEnabled();
+    //@}
+
     //! Returns the view matrix
     const Math::Matrix& GetMatView();
     //! Returns the camera center point
@@ -1187,9 +1155,35 @@ public:
     void            ClearDisplayCrashSpheres();
     void            AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres);
 
+    void            SetDebugLights(bool debugLights);
+    bool            GetDebugLights();
+    void            DebugDumpLights();
+
+    void            SetDebugResources(bool debugResources);
+    bool            GetDebugResources();
+
+    void            SetDebugGoto(bool debugGoto);
+    bool            GetDebugGoto();
+    void            AddDebugGotoLine(std::vector<Gfx::VertexCol> line);
+    void            SetDebugGotoBitmap(std::unique_ptr<CImage> debugImage);
+
+    void            SetWindowCoordinates();
+    void            SetInterfaceCoordinates();
+
+    void            EnablePauseBlur();
+    void            DisablePauseBlur();
+
 protected:
+    //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
+    /** Instead of calling this directly, send EVENT_RESOLUTION_CHANGED event **/
+    void            ResetAfterVideoConfigChanged();
+
     //! Prepares the interface for 3D scene
     void        Draw3DScene();
+    //! Capture the 3D scene for pause blur
+    void        Capture3DScene();
+    //! Draw the 3D scene capured for pause blur
+    void        DrawCaptured3DScene();
     //! Renders shadow map
     void        RenderShadowMap();
     //! Enables or disables shadow mapping
@@ -1223,7 +1217,7 @@ protected:
     //! Draws the mouse cursor
     void        DrawMouse();
     //! Draw part of mouse cursor sprite
-    void        DrawMouseSprite(Math::Point pos, Math::Point size, int icon);
+    void        DrawMouseSprite(Math::IntPoint pos, Math::IntPoint size, int icon);
     //! Draw statistic texts
     void        DrawStats();
     //! Draw mission timer
@@ -1249,7 +1243,7 @@ protected:
     bool        GetBBox2D(int objRank, Math::Point& min, Math::Point& max);
 
     //! Detects whether the mouse is in a triangle.
-    bool        DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist);
+    bool        DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist, Math::Vector& pos);
 
     //! Transforms a 3D point (x, y, z) in 2D space (x, y, -) of the window
     /** The coordinated p2D.z gives the distance. */
@@ -1281,6 +1275,7 @@ protected:
     static void WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data);
 
     //! Reloads all textures
+    /** This additionally sends EVENT_RELOAD_TEXTURES to reload all textures not maintained by CEngine **/
     void ReloadAllTextures();
 
 protected:
@@ -1391,6 +1386,7 @@ protected:
     float           m_terrainVision;
     bool            m_backForce;
     float           m_tracePrecision;
+    bool            m_pauseBlurEnabled;
 
     bool            m_dirty;
     bool            m_fog;
@@ -1448,12 +1444,8 @@ protected:
      *  so are disabled for subsequent load calls. */
     std::set<std::string> m_texBlacklist;
 
-    //! Mouse cursor definitions
-    EngineMouse     m_mice[ENG_MOUSE_COUNT];
     //! Texture with mouse cursors
     Texture         m_miceTexture;
-    //! Size of mouse cursor
-    Math::Point     m_mouseSize;
     //! Type of mouse cursor
     EngineMouseType m_mouseType;
 
@@ -1472,15 +1464,26 @@ protected:
     bool            m_debugLights;
     bool            m_debugDumpLights;
     bool            m_debugCrashSpheres = false;
+    bool            m_debugResources = false;
+    bool            m_debugGoto = false;
 
     std::string     m_timerText;
 
     std::unordered_map<std::string, int> m_staticMeshBaseObjects;
 
     std::vector<Math::Sphere> m_displayCrashSpheres;
+    std::vector<std::vector<VertexCol>> m_displayGoto;
+    std::unique_ptr<CImage> m_displayGotoImage;
 
     //! Pause the animation updates
     bool            m_pause = false;
+
+    //! true means that current 3D scene was captured and is not to be rendered again
+    bool            m_worldCaptured = false;
+    //! true means that currently rendered world is to be captured
+    bool            m_captureWorld = false;
+    //! Texture with captured 3D world
+    Texture         m_capturedWorldTexture;
 };
 
 

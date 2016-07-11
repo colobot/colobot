@@ -27,9 +27,6 @@ namespace Gfx
 
 CNullDevice::CNullDevice()
 {
-    m_matrix = Math::Matrix();
-    m_material = Material();
-    m_light = Light();
 }
 
 CNullDevice::~CNullDevice()
@@ -154,10 +151,6 @@ void CNullDevice::SetTextureStageParams(int index, const TextureStageParams &par
 }
 
 void CNullDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT)
-{
-}
-
-void CNullDevice::SetTextureCoordGeneration(int index, TextureGenerationParams &params)
 {
 }
 

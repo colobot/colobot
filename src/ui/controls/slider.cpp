@@ -21,7 +21,6 @@
 #include "ui/controls/slider.h"
 
 #include "common/event.h"
-#include "common/misc.h"
 #include "common/stringutils.h"
 
 #include "graphics/engine/engine.h"
@@ -357,6 +356,7 @@ bool CSlider::EventProcess(const Event &event)
                     m_event->AddEvent(Event(m_buttonRight->GetEventType()));
             }
         }
+        return false;
     }
 
     return true;

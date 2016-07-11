@@ -150,7 +150,6 @@ COldObject::COldObject(int id)
     m_character.wheelRight = 1.0f;
 
     m_cameraType = Gfx::CAM_TYPE_BACK;
-    m_cameraDist = 50.0f;
     m_bCameraLock = false;
 
     for (int i=0 ; i<OBJECTMAXPART ; i++ )
@@ -1031,7 +1030,6 @@ void COldObject::Read(CLevelParserLine* line)
 
     if (line->GetParam("camera")->IsDefined())
         SetCameraType(line->GetParam("camera")->AsCameraType());
-    SetCameraDist(line->GetParam("cameraDist")->AsFloat(50.0f));
     SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
 
     if (line->GetParam("pyro")->IsDefined())
@@ -2187,15 +2185,17 @@ void COldObject::PartiFrame(float rTime)
         channel = m_objectPart[i].masterParti;
         if ( channel == -1 )  continue;
 
-        if ( !m_particle->GetPosition(channel, pos) )
+        if ( !m_particle->ParticleExists(channel) )
         {
             m_objectPart[i].masterParti = -1;  // particle no longer exists!
             continue;
         }
 
+        pos = m_particle->GetPosition(channel);
+
         SetPartPosition(i, pos);
 
-        // Each song spins differently.
+        // Each part rotates differently
         switch( i%5 )
         {
             case 0:  factor = Math::Vector( 0.5f, 0.3f, 0.6f); break;
@@ -2495,16 +2495,6 @@ void COldObject::SetCameraType(Gfx::CameraType type)
 Gfx::CameraType COldObject::GetCameraType()
 {
     return m_cameraType;
-}
-
-void COldObject::SetCameraDist(float dist)
-{
-    m_cameraDist = dist;
-}
-
-float COldObject::GetCameraDist()
-{
-    return m_cameraDist;
 }
 
 void COldObject::SetCameraLock(bool lock)
@@ -2973,6 +2963,7 @@ void COldObject::UpdateSelectParticle()
     // Updates lens.
     for ( i=0 ; i<4 ; i++ )
     {
+        if (m_partiSel[i] == -1) continue;
         pos[i] = Math::Transform(m_objectPart[0].matWorld, pos[i]);
         dim[i].y = dim[i].x;
         m_particle->SetParam(m_partiSel[i], pos[i], dim[i], zoom[i], angle, 1.0f);

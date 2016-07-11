@@ -40,6 +40,7 @@ enum PauseType
     PAUSE_PHOTO = (1<<2), //!< photo mode, TODO: remove
     PAUSE_OBJECT_UPDATES = (1<<3), //!< do not send events to objects
     PAUSE_MUTE_SOUND = (1<<4), //!< mute sound
+    PAUSE_CAMERA = (1<<5), //!< freeze camera
 };
 inline PauseType& operator|=(PauseType& a, const PauseType& b)
 {

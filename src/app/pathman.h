@@ -18,7 +18,7 @@
  */
 
 /**
- *  \file common/pathman.h
+ *  \file app/pathman.h
  *  \brief Class for managing data/lang/save paths
  */
 

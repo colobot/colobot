@@ -22,7 +22,6 @@
 
 #include "common/event.h"
 #include "common/make_unique.h"
-#include "common/misc.h"
 
 #include "graphics/engine/engine.h"
 
@@ -292,6 +291,7 @@ bool CScroll::EventProcess(const Event &event)
                     m_event->AddEvent(Event(m_buttonDown->GetEventType()));
             }
         }
+        return false;
     }
 
     return true;

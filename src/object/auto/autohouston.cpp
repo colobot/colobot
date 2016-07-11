@@ -17,8 +17,9 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-
 #include "object/auto/autohouston.h"
+
+#include "math/geometry.h"
 
 #include "object/old_object.h"
 
@@ -30,23 +31,19 @@
 
 CAutoHouston::CAutoHouston(COldObject* object) : CAuto(object)
 {
-    Math::Vector    pos;
-    int         i;
-
-    for ( i=0 ; i<HUSTONMAXLENS ; i++ )
+    for (int i = 0; i < HUSTONMAXLENS; i++)
     {
         m_lens[i].parti = -1;
     }
 
-    pos = m_object->GetPosition();
     m_lens[0].type = Gfx::PARTISELR;
     m_lens[1].type = Gfx::PARTISELR;
     m_lens[2].type = Gfx::PARTISELR;
     m_lens[3].type = Gfx::PARTISELR;
-    m_lens[0].pos = pos+Math::Vector(0.0f+13.0f, 34.0f, 30.0f      );
-    m_lens[1].pos = pos+Math::Vector(0.0f-13.0f, 34.0f, 30.0f      );
-    m_lens[2].pos = pos+Math::Vector(0.0f      , 34.0f, 30.0f+13.0f);
-    m_lens[3].pos = pos+Math::Vector(0.0f      , 34.0f, 30.0f-13.0f);
+    m_lens[0].pos = Math::Vector(0.0f+13.0f, 34.0f, 30.0f      );
+    m_lens[1].pos = Math::Vector(0.0f-13.0f, 34.0f, 30.0f      );
+    m_lens[2].pos = Math::Vector(0.0f      , 34.0f, 30.0f+13.0f);
+    m_lens[3].pos = Math::Vector(0.0f      , 34.0f, 30.0f-13.0f);
     m_lens[0].dim = 4.0f;
     m_lens[1].dim = 4.0f;
     m_lens[2].dim = 4.0f;
@@ -60,49 +57,50 @@ CAutoHouston::CAutoHouston(COldObject* object) : CAuto(object)
     m_lens[2].off = 0.4f;
     m_lens[3].off = 0.4f;
 
+    int i = 4;
+
     // Part under the radar.
-    i = 4;
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = pos+Math::Vector(-7.0f, 9.9f, 40.1f);
+    m_lens[i].pos = Math::Vector(-7.0f, 9.9f, 40.1f);
     m_lens[i].dim = 1.8f;
     m_lens[i].total = 0.4f;
     m_lens[i].off = 0.2f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = pos+Math::Vector(-7.0f, 7.2f, 34.8f);
+    m_lens[i].pos = Math::Vector(-7.0f, 7.2f, 34.8f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.7f;
     m_lens[i].off = 0.3f;
     i ++;
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = pos+Math::Vector(-7.0f, 6.5f, 34.3f);
+    m_lens[i].pos = Math::Vector(-7.0f, 6.5f, 34.3f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.7f;
     m_lens[i].off = 0.3f;
     i ++;
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = pos+Math::Vector(-7.0f, 6.5f, 33.4f);
+    m_lens[i].pos = Math::Vector(-7.0f, 6.5f, 33.4f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.0f;
     m_lens[i].off = 0.0f;
     i ++;
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = pos+Math::Vector(-7.0f, 6.5f, 33.0f);
+    m_lens[i].pos = Math::Vector(-7.0f, 6.5f, 33.0f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 1.0f;
     m_lens[i].off = 0.5f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = pos+Math::Vector(-7.0f, 8.5f, 14.0f);
+    m_lens[i].pos = Math::Vector(-7.0f, 8.5f, 14.0f);
     m_lens[i].dim = 1.2f;
     m_lens[i].total = 0.8f;
     m_lens[i].off = 0.2f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = pos+Math::Vector(4.0f, 6.0f, 8.6f);
+    m_lens[i].pos = Math::Vector(4.0f, 6.0f, 8.6f);
     m_lens[i].dim = 1.0f;
     m_lens[i].total = 0.9f;
     m_lens[i].off = 0.7f;
@@ -110,53 +108,53 @@ CAutoHouston::CAutoHouston(COldObject* object) : CAuto(object)
 
     // Part with three windows.
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = pos+Math::Vector(-7.0f, 9.9f, -19.9f);
+    m_lens[i].pos = Math::Vector(-7.0f, 9.9f, -19.9f);
     m_lens[i].dim = 1.0f;
     m_lens[i].total = 0.6f;
     m_lens[i].off = 0.3f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = pos+Math::Vector(-7.0f, 7.2f, 34.8f-60.0f);
+    m_lens[i].pos = Math::Vector(-7.0f, 7.2f, 34.8f-60.0f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.7f;
     m_lens[i].off = 0.3f;
     i ++;
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = pos+Math::Vector(-7.0f, 6.5f, 34.3f-60.0f);
+    m_lens[i].pos = Math::Vector(-7.0f, 6.5f, 34.3f-60.0f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.0f;
     m_lens[i].off = 0.0f;
     i ++;
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = pos+Math::Vector(-7.0f, 6.5f, 33.4f-60.0f);
+    m_lens[i].pos = Math::Vector(-7.0f, 6.5f, 33.4f-60.0f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.6f;
     m_lens[i].off = 0.4f;
     i ++;
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = pos+Math::Vector(-7.0f, 6.5f, 33.0f-60.0f);
+    m_lens[i].pos = Math::Vector(-7.0f, 6.5f, 33.0f-60.0f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.8f;
     m_lens[i].off = 0.2f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = pos+Math::Vector(-6.5f, 13.5f, -37.0f);
+    m_lens[i].pos = Math::Vector(-6.5f, 13.5f, -37.0f);
     m_lens[i].dim = 1.0f;
     m_lens[i].total = 0.0f;
     m_lens[i].off = 0.0f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = pos+Math::Vector(-7.0f, 12.2f, -39.8f);
+    m_lens[i].pos = Math::Vector(-7.0f, 12.2f, -39.8f);
     m_lens[i].dim = 1.8f;
     m_lens[i].total = 1.5f;
     m_lens[i].off = 0.5f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = pos+Math::Vector(-7.0f, 8.5f, -47.0f);
+    m_lens[i].pos = Math::Vector(-7.0f, 8.5f, -47.0f);
     m_lens[i].dim = 0.6f;
     m_lens[i].total = 0.7f;
     m_lens[i].off = 0.5f;
@@ -204,15 +202,11 @@ void CAutoHouston::Start(int param)
 
 bool CAutoHouston::EventProcess(const Event &event)
 {
-    Math::Vector    speed;
-    Math::Point     dim;
-    float       angle;
-    int         i;
-
     CAuto::EventProcess(event);
 
     if ( m_engine->GetPause() )  return true;
 
+    float angle;
     angle = -m_time*1.0f;
     m_object->SetPartRotationY(1, angle);  // rotates the radar
     angle = sinf(m_time*4.0f)*0.3f;
@@ -223,8 +217,7 @@ bool CAutoHouston::EventProcess(const Event &event)
     m_progress += event.rTime*m_speed;
 
     // Flashes the keys.
-    speed = Math::Vector(0.0f, 0.0f, 0.0f);
-    for ( i=0 ; i<m_lensTotal ; i++ )
+    for (int i = 0; i < m_lensTotal; i++ )
     {
         if ( m_lens[i].total != 0.0f &&
              Math::Mod(m_time, m_lens[i].total) < m_lens[i].off )
@@ -239,9 +232,14 @@ bool CAutoHouston::EventProcess(const Event &event)
         {
             if ( m_lens[i].parti == -1 )
             {
+                Math::Point dim;
                 dim.x = m_lens[i].dim;
                 dim.y = dim.x;
-                m_lens[i].parti = m_particle->CreateParticle(m_lens[i].pos, speed, dim, m_lens[i].type, 1.0f, 0.0f, 0.0f);
+
+                Math::Vector pos = m_lens[i].pos;
+                Math::RotatePoint(Math::Vector(0.0f, 0.0f, 0.0f), -m_object->GetRotationY(), 0.0f, pos);
+
+                m_lens[i].parti = m_particle->CreateParticle(m_object->GetPosition()+pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, m_lens[i].type, 1.0f, 0.0f, 0.0f);
             }
         }
     }

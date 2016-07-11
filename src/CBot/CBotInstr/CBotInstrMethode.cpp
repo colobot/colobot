@@ -103,6 +103,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     if (pVar->GetPointer() == nullptr)
     {
         pj->SetError(CBotErrNull, prevToken);
+        return pj->Return(pile1);
     }
 
     if (pile1->IfStep()) return false;
@@ -119,7 +120,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
 
         pThis->SetName("this");
         pThis->SetUniqNum(-2);
-        pile1->AddVar(pThis);
+        pile1->SetVar(pThis);
         pile1->IncState();
     }
     int        i = 0;
@@ -144,7 +145,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     ppVars[i] = nullptr;
 
     CBotClass*    pClass = CBotClass::Find(m_className);
-    CBotVar*    pThis  = pile1->FindVar(-2, false);
+    CBotVar*    pThis  = pile1->GetVar();
     CBotVar*    pResult = nullptr;
     if (m_typRes.GetType() > 0) pResult = CBotVar::Create("", m_typRes);
     if (m_typRes.Eq(CBotTypClass))
@@ -174,7 +175,10 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
     CBotStack*    pile2 = pile1->RestoreStack();        // and for the parameters coming
     if (pile2 == nullptr) return;
 
-    CBotVar*    pThis  = pile1->FindVar("this");
+    CBotVar*    pThis  = pile1->GetVar();
+
+    assert(pThis != nullptr); // see fix for issues #256 & #436
+
     pThis->SetUniqNum(-2);
 
     int        i = 0;
@@ -226,7 +230,7 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
         // Test.Action (Test = Other);
         // Action must act on the value before test = Other!
         pThis->SetName("this");
-        pile1->AddVar(pThis);
+        pile1->SetVar(pThis);
         pile1->IncState();
     }
     int        i = 0;
@@ -250,7 +254,7 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     ppVars[i] = nullptr;
 
     CBotClass*    pClass = CBotClass::Find(m_className);
-    CBotVar*    pThis  = pile1->FindVar("this");
+    CBotVar*    pThis  = pile1->GetVar();
     CBotVar*    pResult = nullptr;
     if (m_typRes.GetType()>0) pResult = CBotVar::Create("", m_typRes);
     if (m_typRes.Eq(CBotTypClass))

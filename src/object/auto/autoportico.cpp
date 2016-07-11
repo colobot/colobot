@@ -164,19 +164,17 @@ bool CAutoPortico::EventProcess(const Event &event)
 
             m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
-            pos = m_startPos;
-            pos.x += -100.0f;
-            pos.y +=    9.0f;
-            pos.z += -200.0f;
-            m_camera->SetScriptEye(pos);
+            Math::Vector eye = m_startPos;
+            eye.x += -100.0f;
+            eye.y +=    9.0f;
+            eye.z += -200.0f;
 
-            pos = m_object->GetPosition();
-            pos.x +=   0.0f;
-            pos.y +=  10.0f;
-            pos.z += -40.0f;
-            m_camera->SetScriptLookat(pos);
+            Math::Vector lookat = m_object->GetPosition();
+            lookat.x +=   0.0f;
+            lookat.y +=  10.0f;
+            lookat.z += -40.0f;
 
-            m_camera->FixCamera();
+            m_camera->SetScriptCamera(eye, lookat);
         }
     }
 
@@ -329,23 +327,20 @@ bool CAutoPortico::EventProcess(const Event &event)
 
     if ( m_cameraProgress < 1.0f )
     {
-        if ( m_cameraProgress < 0.5f )
-        {
-        }
-        else
+        if ( m_cameraProgress >= 0.5f )
         {
             pos = m_startPos;
             pos.x += -100.0f-(m_cameraProgress-0.5f)*1.0f*120.0f;
             pos.y +=    9.0f;
             pos.z += -200.0f+(m_cameraProgress-0.5f)*1.0f*210.0f;
-            m_camera->SetScriptEye(pos);
+            m_camera->SetScriptCameraAnimateEye(pos);
         }
 
         pos = m_object->GetPosition();
         pos.x +=   0.0f;
         pos.y +=  10.0f;
         pos.z += -40.0f;
-        m_camera->SetScriptLookat(pos);
+        m_camera->SetScriptCameraAnimateLookat(pos);
     }
 
     return true;

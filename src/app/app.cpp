@@ -21,6 +21,7 @@
 
 #include "app/controller.h"
 #include "app/input.h"
+#include "app/pathman.h"
 #include "app/system.h"
 
 #include "common/config_file.h"
@@ -28,7 +29,6 @@
 #include "common/key.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
-#include "common/pathman.h"
 #include "common/stringutils.h"
 #include "common/version.h"
 
@@ -42,11 +42,11 @@
 
 #include "object/object_manager.h"
 
+#include "sound/sound.h"
 #ifdef OPENAL_SOUND
     #include "sound/oalsound/alsound.h"
 #endif
 
-#include <boost/filesystem.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <SDL.h>
@@ -833,7 +833,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
 
     m_device->ConfigChanged(m_deviceConfig);
 
-    m_engine->ResetAfterVideoConfigChanged();
+    m_eventQueue->AddEvent(Event(EVENT_RESOLUTION_CHANGED));
 
     return true;
 }
@@ -1812,13 +1812,17 @@ void CApplication::SetLanguage(Language language)
 
     char* defaultLocale = setlocale(LC_ALL, ""); // Load system locale
     GetLogger()->Debug("Default system locale: %s\n", defaultLocale);
+    if (!locale.empty()) // Override system locale?
+    {
+        setlocale(LC_ALL, locale.c_str());
+    }
     setlocale(LC_NUMERIC, "C"); // Force numeric locale to "C" (fixes decimal point problems)
-    char* systemLocale = setlocale(LC_ALL, nullptr); // Get current locale configuration
-    GetLogger()->Debug("Setting locale: %s\n", systemLocale);
+    std::string systemLocale = setlocale(LC_ALL, nullptr); // Get current locale configuration
+    GetLogger()->Debug("Setting locale: %s\n", systemLocale.c_str());
     // Update C++ locale
     try
     {
-        std::locale::global(std::locale(systemLocale));
+        std::locale::global(std::locale(systemLocale.c_str()));
     }
     catch (...)
     {

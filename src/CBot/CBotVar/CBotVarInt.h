@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "CBot/CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVarValue.h"
 
 namespace CBot
 {
@@ -27,35 +27,19 @@ namespace CBot
 /**
  * \brief CBotVar subclass for managing integer values (::CBotTypInt)
  */
-class CBotVarInt : public CBotVar
+class CBotVarInt : public CBotVarNumber<int, CBotTypInt>
 {
 public:
-    /**
-     * \brief Constructor. Do not call directly, use CBotVar::Create()
-     */
-    CBotVarInt(const CBotToken& name);
+    CBotVarInt(const CBotToken &name) : CBotVarNumber(name) {}
 
     void SetValInt(int val, const std::string& s = "") override;
-    void SetValFloat(float val) override;
-    int GetValInt() override;
-    float GetValFloat() override;
     std::string GetValString() override;
 
     void Copy(CBotVar* pSrc, bool bName = true) override;
 
-    void Add(CBotVar* left, CBotVar* right) override;
-    void Sub(CBotVar* left, CBotVar* right) override;
-    void Mul(CBotVar* left, CBotVar* right) override;
-    CBotError Div(CBotVar* left, CBotVar* right) override;
-    CBotError Modulo(CBotVar* left, CBotVar* right) override;
-    void Power(CBotVar* left, CBotVar* right) override;
-
-    bool Lo(CBotVar* left, CBotVar* right) override;
-    bool Hi(CBotVar* left, CBotVar* right) override;
-    bool Ls(CBotVar* left, CBotVar* right) override;
-    bool Hs(CBotVar* left, CBotVar* right) override;
-    bool Eq(CBotVar* left, CBotVar* right) override;
-    bool Ne(CBotVar* left, CBotVar* right) override;
+    void Neg() override;
+    void Inc() override;
+    void Dec() override;
 
     void XOr(CBotVar* left, CBotVar* right) override;
     void Or(CBotVar* left, CBotVar* right) override;
@@ -66,16 +50,10 @@ public:
     void SR(CBotVar* left, CBotVar* right) override;
     void ASR(CBotVar* left, CBotVar* right) override;
 
-    void Neg() override;
-    void Inc() override;
-    void Dec() override;
-
     bool Save0State(FILE* pf) override;
     bool Save1State(FILE* pf) override;
 
-private:
-    //! The value.
-    int m_val;
+protected:
     //! The name if given by DefineNum.
     std::string m_defnum;
     friend class CBotVar;

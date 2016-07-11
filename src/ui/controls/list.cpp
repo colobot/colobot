@@ -288,7 +288,7 @@ bool CList::EventProcess(const Event &event)
 
         UpdateScroll();
         UpdateButton();
-        return true;
+        return false;
     }
 
     CControl::EventProcess(event);

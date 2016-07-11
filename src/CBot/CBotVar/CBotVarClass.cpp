@@ -343,10 +343,12 @@ std::string CBotVarClass::GetValString()
                 res += " (";
             }
         }
+
+        res += " )";
     }
     else
     {
-        res = "( ";
+        res = "{ ";
 
         CBotVar*    pv = m_pVar;
         while ( pv != nullptr )
@@ -355,9 +357,10 @@ std::string CBotVarClass::GetValString()
             if ( pv->GetNext() != nullptr ) res += ", ";
             pv = pv->GetNext();
         }
+
+        res += " }";
     }
 
-    res += " )";
     return    res;
 }
 

@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: colobot 0.1.7\n"
-"POT-Creation-Date: 2016-03-25 19:24+0100\n"
-"PO-Revision-Date: 2016-03-25 21:13+0100\n"
+"POT-Creation-Date: 2016-03-30 13:45+0200\n"
+"PO-Revision-Date: 2016-03-30 13:49+0100\n"
 "Last-Translator: Didier Raboud <odyx@debian.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -33,6 +33,12 @@ msgstr "Apprentissage de la programmation par le jeu"
 #, no-wrap
 msgid "Colonize with bots"
 msgstr "Colonise avec des roBots"
+
+#. type: Keywords=
+#: colobot.ini:4
+#, no-wrap
+msgid "robots;3d;space;astronaut;java;c++"
+msgstr "robots;3d;espace;astronaute;cosmonaute;java;c++"
 
 #. type: =head1
 #: colobot.pod:3

@@ -51,6 +51,11 @@ public:
     CBotVar();
 
     /**
+     * \brief Constructor. Do not call directly, use CBotVar::Create()
+     */
+    CBotVar(const CBotToken& name);
+
+    /**
      * \brief Destructor. Do not call directly, use CBotVar::Destroy()
      */
     virtual ~CBotVar();
@@ -438,6 +443,14 @@ public:
      * Using one that is not implemented will result in a failed assertion.
      */
     //@{
+
+    operator int();
+    operator float();
+    operator std::string();
+    void operator=(const CBotVar& var);
+    void operator=(int x);
+    void operator=(float x);
+    void operator=(const std::string &x);
 
     /**
      * \brief Set the value

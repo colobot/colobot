@@ -148,7 +148,7 @@ CScreenSetup* CMainUserInterface::GetSetupScreen(Phase phase)
 
 void CMainUserInterface::ChangePhase(Phase phase)
 {
-    m_main->GetCamera()->SetType(Gfx::CAM_TYPE_DIALOG);
+    m_main->GetCamera()->SetType(Gfx::CAM_TYPE_NULL);
     m_engine->SetOverFront(false);
     m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_BLACK); // TODO: color ok?
 

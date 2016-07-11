@@ -214,6 +214,13 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 
             type2 = pStk->GetTypResult();                       // what kind of results?
 
+            if ( type1.Eq(99) || type2.Eq(99) )                 // operand is void
+            {
+                pStack->SetError(CBotErrBadType2, &inst->m_token);
+                delete inst;
+                return nullptr;
+            }
+
             // what kind of result?
             int TypeRes = std::max( type1.GetType(CBotTypResult::GetTypeMode::NULL_AS_POINTER), type2.GetType(CBotTypResult::GetTypeMode::NULL_AS_POINTER) );
             if (typeOp == ID_ADD && type1.Eq(CBotTypString))
@@ -267,7 +274,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
                         return pStack->Return(nullptr, pStk);
                     }
 
-                    if ( TypeRes != CBotTypString )
+                    if ( TypeRes != CBotTypString )                     // keep string conversion
                         TypeRes = std::max(type1.GetType(), type2.GetType());
                     inst = i;
                 }
@@ -370,7 +377,9 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
     // what kind of result?
     int TypeRes = std::max(type1.GetType(), type2.GetType());
 
-    if ( GetTokenType() == ID_ADD && type1.Eq(CBotTypString) )
+    // see "any type convertible chain" in compile method
+    if ( GetTokenType() == ID_ADD &&
+        (type1.Eq(CBotTypString) || type2.Eq(CBotTypString)) )
     {
         TypeRes = CBotTypString;
     }
@@ -397,7 +406,8 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
     CBotVar*    result = CBotVar::Create("", TypeRes);
 
     // creates a variable to perform the calculation in the appropriate type
-    TypeRes = std::max(type1.GetType(), type2.GetType());
+    if ( TypeRes != CBotTypString )                                     // keep string conversion
+        TypeRes = std::max(type1.GetType(), type2.GetType());
 
     if ( GetTokenType() == ID_ADD && type1.Eq(CBotTypString) )
     {

@@ -18,7 +18,7 @@
  */
 
 
-#include "common/pathman.h"
+#include "app/pathman.h"
 
 #include "common/config.h"
 
@@ -145,6 +145,7 @@ void CPathManager::InitPaths()
 
 void CPathManager::LoadModsFromDir(const std::string &dir)
 {
+    GetLogger()->Trace("Looking for mods in '%s' ...\n", dir.c_str());
     try
     {
         #if PLATFORM_WINDOWS

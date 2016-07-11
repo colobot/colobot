@@ -93,6 +93,15 @@ inline float Max(float a, float b, float c, float d, float e)
     return Math::Max( Math::Max(a, b), Math::Max(c, d), e );
 }
 
+//! Clamps the value to a range specified by min and max
+template<typename T>
+inline T Clamp(T value, T min, T max)
+{
+    if (value < min) return min;
+    else if (value > max) return max;
+    else return value;
+}
+
 //! Returns the normalized value (0 .. 1)
 inline float Norm(float a)
 {

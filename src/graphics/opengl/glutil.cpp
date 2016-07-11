@@ -23,9 +23,9 @@
 #include "common/logger.h"
 #include "common/make_unique.h"
 
+#include "graphics/opengl/gl14device.h"
 #include "graphics/opengl/gl21device.h"
 #include "graphics/opengl/gl33device.h"
-#include "graphics/opengl/gldevice.h"
 
 #include <SDL.h>
 #include <physfs.h>
@@ -71,9 +71,9 @@ FramebufferSupport DetectFramebufferSupport()
 
 std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::string& name)
 {
-    if      (name == "default") return MakeUnique<CGLDevice>(config);
-    else if (name == "opengl")  return MakeUnique<CGLDevice>(config);
-    else if (name == "gl14")    return MakeUnique<CGLDevice>(config);
+    if      (name == "default") return MakeUnique<CGL14Device>(config);
+    else if (name == "opengl")  return MakeUnique<CGL14Device>(config);
+    else if (name == "gl14")    return MakeUnique<CGL14Device>(config);
     else if (name == "gl21")    return MakeUnique<CGL21Device>(config);
     else if (name == "gl33")    return MakeUnique<CGL33Device>(config);
     else if (name == "auto")
@@ -82,7 +82,7 @@ std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::str
 
              if (version >= 33) return MakeUnique<CGL33Device>(config);
         else if (version >= 21) return MakeUnique<CGL21Device>(config);
-        else                    return MakeUnique<CGLDevice>(config);
+        else                    return MakeUnique<CGL14Device>(config);
     }
 
     return nullptr;
@@ -480,8 +480,8 @@ GLint LoadShader(GLint type, const char* filename)
         auto message = MakeUniqueArray<GLchar>(len + 1);
         glGetShaderInfoLog(shader, len + 1, nullptr, message.get());
 
-        GetLogger()->Error("Shader compilation error occured!\n%s\n", message.get());
-        lastShaderError = std::string("Shader compilation error occured!\n\n") + std::string(message.get());
+        GetLogger()->Error("Shader compilation error occurred!\n%s\n", message.get());
+        lastShaderError = std::string("Shader compilation error occurred!\n\n") + std::string(message.get());
 
         glDeleteShader(shader);
         return 0;
@@ -513,8 +513,8 @@ GLint LinkProgram(int count, GLint shaders[])
         auto message = MakeUniqueArray<GLchar>(len + 1);
         glGetProgramInfoLog(program, len + 1, nullptr, message.get());
 
-        GetLogger()->Error("Shader program linking error occured!\n%s\n", message.get());
-        lastShaderError = std::string("Shader program linking error occured!\n\n") + std::string(message.get());
+        GetLogger()->Error("Shader program linking error occurred!\n%s\n", message.get());
+        lastShaderError = std::string("Shader program linking error occurred!\n\n") + std::string(message.get());
 
         glDeleteProgram(program);
 

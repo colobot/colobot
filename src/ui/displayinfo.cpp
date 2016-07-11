@@ -23,7 +23,6 @@
 #include "app/app.h"
 #include "app/pausemanager.h"
 
-#include "common/misc.h"
 #include "common/restext.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
@@ -81,7 +80,6 @@ CDisplayInfo::CDisplayInfo()
     m_toto = nullptr;
     m_bSoluce = false;
     m_bEditLock = false;
-    m_infoCamera = Gfx::CAM_TYPE_NULL;
     m_index = -1;
 }
 
@@ -363,9 +361,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
 
     m_main->SetEditLock(true, false);
     m_main->SetEditFull(false);
-    m_satcomPause = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_HIDE_SHORTCUTS|PAUSE_MUTE_SOUND, PAUSE_MUSIC_SATCOM);
-    m_infoCamera = m_camera->GetType();
-    m_camera->SetType(Gfx::CAM_TYPE_INFO);
+    m_satcomPause = m_pause->ActivatePause(PAUSE_ENGINE|PAUSE_HIDE_SHORTCUTS|PAUSE_MUTE_SOUND|PAUSE_CAMERA, PAUSE_MUSIC_SATCOM);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
     if (pw != nullptr) pw->ClearState(STATE_VISIBLE | STATE_ENABLE);
@@ -834,7 +830,6 @@ void CDisplayInfo::StopDisplayInfo()
     }
     m_pause->DeactivatePause(m_satcomPause);
     m_satcomPause = nullptr;
-    m_camera->SetType(m_infoCamera);
 
     m_engine->SetDrawWorld(true);  // draws all on the interface
     m_engine->SetDrawFront(false);  // draws nothing on the interface

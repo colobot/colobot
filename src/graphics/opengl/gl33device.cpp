@@ -173,7 +173,7 @@ bool CGL33Device::Create()
 
     if (!InitializeGLEW())
     {
-        m_errorMessage = "An error occured while initializing GLEW.";
+        m_errorMessage = "An error occurred while initializing GLEW.";
         return false;
     }
 
@@ -1007,11 +1007,6 @@ void CGL33Device::SetTextureStageParams(int index, const TextureStageParams &par
     m_textureStageParams[index] = params;
 
     UpdateTextureParams(index);
-}
-
-void CGL33Device::SetTextureCoordGeneration(int index, TextureGenerationParams &params)
-{
-
 }
 
 void CGL33Device::UpdateTextureParams(int index)

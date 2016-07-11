@@ -112,6 +112,9 @@ void CScreenSetupGraphics::CreateInterface()
     {
         pc->SetState(STATE_DEAD);
     }
+    pos.y -= 0.048f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_PAUSE_BLUR);
+    pc->SetState(STATE_SHADOW);
 
     pos.x = ox+sx*8.5f;
     pos.y = 0.65f;
@@ -248,8 +251,12 @@ bool CScreenSetupGraphics::EventProcess(const Event &event)
     switch( event.type )
     {
         case EVENT_INTERFACE_PARTI:
+            ChangeSetupButtons();
+            break;
+
         case EVENT_INTERFACE_CLIP:
             ChangeSetupButtons();
+            m_engine->ApplyChange();
             break;
 
         case EVENT_INTERFACE_DIRTY:
@@ -265,6 +272,11 @@ bool CScreenSetupGraphics::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_LIGHT:
             m_engine->SetLightMode(!m_engine->GetLightMode());
+            UpdateSetupButtons();
+            break;
+
+        case EVENT_INTERFACE_PAUSE_BLUR:
+            m_engine->SetPauseBlurEnabled(!m_engine->GetPauseBlurEnabled());
             UpdateSetupButtons();
             break;
 
@@ -357,6 +369,12 @@ void CScreenSetupGraphics::UpdateSetupButtons()
     if ( pc != nullptr )
     {
         pc->SetState(STATE_CHECK, m_engine->GetLightMode());
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_PAUSE_BLUR));
+    if ( pc != nullptr )
+    {
+        pc->SetState(STATE_CHECK, m_engine->GetPauseBlurEnabled());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_SPOTS));

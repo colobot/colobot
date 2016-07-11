@@ -90,7 +90,7 @@ struct Point
         return sqrtf(x*x + y*y);
     }
 
-        //! Returns the inverted point
+    //! Returns the inverted point
     inline Point operator-() const
     {
         return Point(-x, -y);
@@ -110,7 +110,7 @@ struct Point
         return Point(left.x + right.x, left.y + right.y);
     }
 
-    //! Subtracts the given vector
+    //! Subtracts the given point
     inline const Point& operator-=(const Point &right)
     {
         x -= right.x;

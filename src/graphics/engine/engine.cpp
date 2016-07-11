@@ -59,6 +59,7 @@
 #include "ui/controls/interface.h"
 
 #include <iomanip>
+#include <SDL_surface.h>
 #include <SDL_thread.h>
 
 template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
@@ -67,6 +68,60 @@ template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
 namespace Gfx
 {
 
+/**
+ * \struct EngineMouse
+ * \brief Information about mouse cursor
+ */
+struct EngineMouse
+{
+    //! Index of texture element for 1st image
+    int icon1;
+    //! Index of texture element for 2nd image
+    int icon2;
+    //! Shadow texture part
+    int iconShadow;
+    //! Mode to render 1st image in
+    EngineRenderState mode1;
+    //! Mode to render 2nd image in
+    EngineRenderState mode2;
+    //! Hot point
+    Math::IntPoint hotPoint;
+
+    EngineMouse(int icon1 = -1,
+                int icon2 = -1,
+                int iconShadow = -1,
+                EngineRenderState mode1 = ENG_RSTATE_NORMAL,
+                EngineRenderState mode2 = ENG_RSTATE_NORMAL,
+                Math::IntPoint hotPoint = Math::IntPoint())
+        : icon1(icon1)
+        , icon2(icon2)
+        , iconShadow(iconShadow)
+        , mode1(mode1)
+        , mode2(mode2)
+        , hotPoint(hotPoint)
+    {}
+};
+
+const Math::IntPoint MOUSE_SIZE(32, 32);
+const std::map<EngineMouseType, EngineMouse> MOUSE_TYPES = {
+    {{ENG_MOUSE_NORM},    {EngineMouse( 0,  1, 32, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::IntPoint( 1,  1))}},
+    {{ENG_MOUSE_WAIT},    {EngineMouse( 2,  3, 33, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::IntPoint( 8, 12))}},
+    {{ENG_MOUSE_HAND},    {EngineMouse( 4,  5, 34, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::IntPoint( 7,  2))}},
+    {{ENG_MOUSE_NO},      {EngineMouse( 6,  7, 35, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::IntPoint(10, 10))}},
+    {{ENG_MOUSE_EDIT},    {EngineMouse( 8,  9, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 6, 10))}},
+    {{ENG_MOUSE_CROSS},   {EngineMouse(10, 11, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(10, 10))}},
+    {{ENG_MOUSE_MOVEV},   {EngineMouse(12, 13, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 5, 11))}},
+    {{ENG_MOUSE_MOVEH},   {EngineMouse(14, 15, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(11,  5))}},
+    {{ENG_MOUSE_MOVED},   {EngineMouse(16, 17, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 9,  9))}},
+    {{ENG_MOUSE_MOVEI},   {EngineMouse(18, 19, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 9,  9))}},
+    {{ENG_MOUSE_MOVE},    {EngineMouse(20, 21, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(11, 11))}},
+    {{ENG_MOUSE_TARGET},  {EngineMouse(22, 23, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(15, 15))}},
+    {{ENG_MOUSE_SCROLLL}, {EngineMouse(24, 25, 43, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 2,  9))}},
+    {{ENG_MOUSE_SCROLLR}, {EngineMouse(26, 27, 44, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(17,  9))}},
+    {{ENG_MOUSE_SCROLLU}, {EngineMouse(28, 29, 45, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 9,  2))}},
+    {{ENG_MOUSE_SCROLLD}, {EngineMouse(30, 31, 46, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 9, 17))}},
+};
+
 CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     : m_app(app),
       m_systemUtils(systemUtils),
@@ -74,8 +129,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
       m_fogColor(),
       m_deepView(),
       m_fogStart(),
-      m_highlightRank(),
-      m_mice()
+      m_highlightRank()
 {
     m_device = nullptr;
 
@@ -148,6 +202,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_editIndentMode = true;
     m_editIndentValue = 4;
     m_tracePrecision = 1.0f;
+    m_pauseBlurEnabled = true;
 
 
     m_updateGeometry = false;
@@ -158,24 +213,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_debugLights = false;
     m_debugDumpLights = false;
 
-    m_mice[ENG_MOUSE_NORM]    = EngineMouse( 0,  1, 32, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 1.0f,  1.0f));
-    m_mice[ENG_MOUSE_WAIT]    = EngineMouse( 2,  3, 33, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 8.0f, 12.0f));
-    m_mice[ENG_MOUSE_HAND]    = EngineMouse( 4,  5, 34, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 7.0f,  2.0f));
-    m_mice[ENG_MOUSE_NO]      = EngineMouse( 6,  7, 35, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point(10.0f, 10.0f));
-    m_mice[ENG_MOUSE_EDIT]    = EngineMouse( 8,  9, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 6.0f, 10.0f));
-    m_mice[ENG_MOUSE_CROSS]   = EngineMouse(10, 11, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(10.0f, 10.0f));
-    m_mice[ENG_MOUSE_MOVEV]   = EngineMouse(12, 13, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 5.0f, 11.0f));
-    m_mice[ENG_MOUSE_MOVEH]   = EngineMouse(14, 15, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(11.0f,  5.0f));
-    m_mice[ENG_MOUSE_MOVED]   = EngineMouse(16, 17, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  9.0f));
-    m_mice[ENG_MOUSE_MOVEI]   = EngineMouse(18, 19, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  9.0f));
-    m_mice[ENG_MOUSE_MOVE]    = EngineMouse(20, 21, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(11.0f, 11.0f));
-    m_mice[ENG_MOUSE_TARGET]  = EngineMouse(22, 23, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(15.0f, 15.0f));
-    m_mice[ENG_MOUSE_SCROLLL] = EngineMouse(24, 25, 43, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 2.0f,  9.0f));
-    m_mice[ENG_MOUSE_SCROLLR] = EngineMouse(26, 27, 44, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(17.0f,  9.0f));
-    m_mice[ENG_MOUSE_SCROLLU] = EngineMouse(28, 29, 45, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  2.0f));
-    m_mice[ENG_MOUSE_SCROLLD] = EngineMouse(30, 31, 46, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f, 17.0f));
-
-    m_mouseSize    = Math::Point(0.04f, 0.04f * (800.0f / 600.0f));
     m_mouseType    = ENG_MOUSE_NORM;
 
     m_fpsCounter = 0;
@@ -278,7 +315,6 @@ void CEngine::SetTerrain(CTerrain* terrain)
 bool CEngine::Create()
 {
     m_size = m_app->GetVideoConfig().size;
-    m_mouseSize = Math::Point(0.04f, 0.04f * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
 
     // Use the setters to set defaults, because they automatically disable what is not supported
     SetShadowMapping(m_shadowMapping);
@@ -357,12 +393,9 @@ void CEngine::Destroy()
 void CEngine::ResetAfterVideoConfigChanged()
 {
     m_size = m_app->GetVideoConfig().size;
-    m_mouseSize = Math::Point(0.04f, 0.04f * (static_cast<float>(m_size.x) / static_cast<float>(m_size.y)));
-
-    CRobotMain::GetInstancePointer()->ResetAfterVideoConfigChanged(); //TODO: Remove cross-reference to CRobotMain
 
     // Update the camera projection matrix for new aspect ratio
-    SetFocus(m_focus);
+    ApplyChange();
 
     // This needs to be recreated on resolution change
     m_device->DeleteFramebuffer("multisample");
@@ -373,13 +406,26 @@ void CEngine::ReloadAllTextures()
     FlushTextureCache();
     m_text->FlushCache();
 
-    CRobotMain::GetInstancePointer()->ReloadAllTextures(); //TODO: Remove cross-reference to CRobotMain
+    m_app->GetEventQueue()->AddEvent(Event(EVENT_RELOAD_TEXTURES));
     UpdateGroundSpotTextures();
-    LoadAllTextures();
+    // LoadAllTextures() is called from CRobotMain on EVENT_RELOAD_TEXTURES
+    // This is required because all dynamic textures need to be loaded first
+
+    // recapture 3D scene
+    if (m_worldCaptured)
+    {
+        m_captureWorld = true;
+        m_worldCaptured = false;
+    }
 }
 
 bool CEngine::ProcessEvent(const Event &event)
 {
+    if (event.type == EVENT_RESOLUTION_CHANGED)
+    {
+        ResetAfterVideoConfigChanged();
+    }
+
     if (event.type == EVENT_KEY_DOWN)
     {
         auto data = event.GetData<KeyEventData>();
@@ -387,18 +433,6 @@ bool CEngine::ProcessEvent(const Event &event)
         if (data->key == KEY(F12))
         {
             m_showStats = !m_showStats;
-            return false;
-        }
-
-        if (data->key == KEY(F11))
-        {
-            m_debugLights = !m_debugLights;
-            return false;
-        }
-
-        if (data->key == KEY(F10))
-        {
-            m_debugDumpLights = true;
             return false;
         }
     }
@@ -1750,17 +1784,18 @@ bool CEngine::DetectBBox(int objRank, Math::Point mouse)
              mouse.y <= max.y );
 }
 
-int CEngine::DetectObject(Math::Point mouse)
+int CEngine::DetectObject(Math::Point mouse, Math::Vector& targetPos, bool terrain)
 {
     float min = 1000000.0f;
     int nearest = -1;
+    Math::Vector pos;
 
     for (int objRank = 0; objRank < static_cast<int>( m_objects.size() ); objRank++)
     {
         if (! m_objects[objRank].used)
             continue;
 
-        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN && !terrain)
             continue;
 
         if (! DetectBBox(objRank, mouse))
@@ -1789,10 +1824,11 @@ int CEngine::DetectObject(Math::Point mouse)
                     for (int i = 0; i < static_cast<int>( p3.vertices.size() ); i += 3)
                     {
                         float dist = 0.0f;
-                        if (DetectTriangle(mouse, &p3.vertices[i], objRank, dist) && dist < min)
+                        if (DetectTriangle(mouse, &p3.vertices[i], objRank, dist, pos) && dist < min)
                         {
                             min = dist;
                             nearest = objRank;
+                            targetPos = pos;
                         }
                     }
                 }
@@ -1801,10 +1837,11 @@ int CEngine::DetectObject(Math::Point mouse)
                     for (int i = 0; i < static_cast<int>( p3.vertices.size() ) - 2; i += 1)
                     {
                         float dist = 0.0f;
-                        if (DetectTriangle(mouse, &p3.vertices[i], objRank, dist) && dist < min)
+                        if (DetectTriangle(mouse, &p3.vertices[i], objRank, dist, pos) && dist < min)
                         {
                             min = dist;
                             nearest = objRank;
+                            targetPos = pos;
                         }
                     }
                 }
@@ -1815,7 +1852,7 @@ int CEngine::DetectObject(Math::Point mouse)
     return nearest;
 }
 
-bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist)
+bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist, Math::Vector& pos)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -1861,6 +1898,16 @@ bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRan
 
     if (! Math::IsInsideTriangle(a, b, c, mouse))
         return false;
+
+    Math::Vector a2 = Math::Transform(m_objects[objRank].transform, triangle[0].coord);
+    Math::Vector b2 = Math::Transform(m_objects[objRank].transform, triangle[1].coord);
+    Math::Vector c2 = Math::Transform(m_objects[objRank].transform, triangle[2].coord);
+    Math::Vector e  = Math::Transform(m_matView.Inverse(), Math::Vector(0.0f, 0.0f, -1.0f));
+    Math::Vector f  = Math::Transform(m_matView.Inverse(), Math::Vector(
+        (mouse.x*2.0f-1.0f)*m_matProj.Inverse().Get(1,1),
+        (mouse.y*2.0f-1.0f)*m_matProj.Inverse().Get(2,2),
+        0.0f));
+    Math::Intersect(a2, b2, c2, e, f, pos);
 
     dist = (p2D[0].z + p2D[1].z + p2D[2].z) / 3.0f;
     return true;
@@ -2178,8 +2225,7 @@ void CEngine::SetMaterial(const Material& mat)
     m_device->SetMaterial(mat);
 }
 
-void CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& lookatPt,
-                                 const Math::Vector& upVec, float eyeDistance)
+void CEngine::SetViewParams(const Math::Vector &eyePt, const Math::Vector &lookatPt, const Math::Vector &upVec)
 {
     m_eyePt = eyePt;
     m_lookatPt = lookatPt;
@@ -2729,7 +2775,10 @@ float CEngine::GetDeepView(int rank)
 
 void CEngine::SetFogStart(float start, int rank)
 {
-    m_fogStart[rank] = start;
+    if (start < 0.0f)
+        m_fogStart[rank] = 0.0f;
+    else
+        m_fogStart[rank] = start;
 }
 
 float CEngine::GetFogStart(int rank)
@@ -3021,6 +3070,16 @@ EngineMouseType CEngine::GetMouseType()
     return m_mouseType;
 }
 
+void CEngine::SetPauseBlurEnabled(bool enable)
+{
+    m_pauseBlurEnabled = enable;
+}
+
+bool CEngine::GetPauseBlurEnabled()
+{
+    return m_pauseBlurEnabled;
+}
+
 const Math::Matrix& CEngine::GetMatView()
 {
     return m_matView;
@@ -3059,6 +3118,13 @@ void CEngine::UpdateMatProj()
 void CEngine::ApplyChange()
 {
     SetFocus(m_focus);
+
+    // recapture 3D scene
+    if (m_worldCaptured)
+    {
+        m_captureWorld = true;
+        m_worldCaptured = false;
+    }
 }
 
 void CEngine::ClearDisplayCrashSpheres()
@@ -3128,15 +3194,30 @@ void CEngine::Render()
 
     m_device->BeginScene();
 
-    UseMSAA(true);
+    // use currently captured scene for world
+    if (m_worldCaptured && !m_captureWorld)
+    {
+        DrawCaptured3DScene();
+    }
+    else
+    {
+        UseMSAA(true);
 
-    DrawBackground();                // draws the background
+        DrawBackground();                // draws the background
 
+        if (m_drawWorld)
+            Draw3DScene();
 
-    if (m_drawWorld)
-        Draw3DScene();
+        UseMSAA(false);
 
-    UseMSAA(false);
+        // marked to capture currently rendered world
+        if (m_captureWorld)
+        {
+            Capture3DScene();
+            m_device->Clear();
+            DrawCaptured3DScene();
+        }
+    }
 
     m_app->StartPerformanceCounter(PCNT_RENDER_INTERFACE);
     DrawInterface();
@@ -3148,6 +3229,15 @@ void CEngine::Render()
 
 void CEngine::Draw3DScene()
 {
+    if (!m_worldCaptured)
+    {
+        if (m_capturedWorldTexture.Valid())
+        {
+            m_device->DestroyTexture(m_capturedWorldTexture);
+            m_capturedWorldTexture = Texture();
+        }
+    }
+
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
 
     UpdateGroundSpotTextures();
@@ -3229,7 +3319,6 @@ void CEngine::Draw3DScene()
     // Draws the old-style shadow spots, if shadow mapping disabled
     if (!m_shadowMapping)
         DrawShadowSpots();
-
 
     m_app->StopPerformanceCounter(PCNT_RENDER_TERRAIN);
 
@@ -3374,6 +3463,21 @@ void CEngine::Draw3DScene()
     if (m_debugCrashSpheres)
         DrawCrashSpheres();
 
+    if (m_debugGoto)
+    {
+        Math::Matrix worldMatrix;
+        worldMatrix.LoadIdentity();
+        m_device->SetTransform(TRANSFORM_WORLD, worldMatrix);
+
+        SetState(ENG_RSTATE_OPAQUE_COLOR);
+
+        for (const auto& line : m_displayGoto)
+        {
+            m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line.data(), line.size());
+        }
+    }
+    m_displayGoto.clear();
+
     m_app->StartPerformanceCounter(PCNT_RENDER_PARTICLE);
     m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
     m_app->StopPerformanceCounter(PCNT_RENDER_PARTICLE);
@@ -3385,6 +3489,143 @@ void CEngine::Draw3DScene()
     DrawForegroundImage();   // draws the foreground
 
     if (! m_overFront) DrawOverColor();      // draws the foreground color
+}
+
+void CEngine::Capture3DScene()
+{
+    // destroy existing texture
+    if (m_capturedWorldTexture.Valid())
+    {
+        m_device->DestroyTexture(m_capturedWorldTexture);
+        m_capturedWorldTexture = Texture();
+    }
+
+    // obtain pixels from screen
+    int width = m_size.x;
+    int height = m_size.y;
+
+    auto pixels = m_device->GetFrameBufferPixels();
+    unsigned char* data = reinterpret_cast<unsigned char*>(pixels->GetPixelsData());
+
+    // calculate 2nd mipmap
+    int newWidth = width / 4;
+    int newHeight = height / 4;
+    std::unique_ptr<unsigned char[]> mipmap = MakeUniqueArray<unsigned char>(4 * newWidth * newHeight);
+
+    for (int x = 0; x < newWidth; x++)
+    {
+        for (int y = 0; y < newHeight; y++)
+        {
+            float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    int index = 4 * ((4 * x + i) + width * (4 * y + j));
+
+                    for (int k = 0; k < 4; k++)
+                        color[k] += data[index + k];
+                }
+            }
+
+            int index = 4 * (x + newWidth * y);
+
+            for (int k = 0; k < 4; k++)
+            {
+                mipmap[index + k] = static_cast<unsigned char>(color[k] * (1.0f / 16.0f));
+            }
+        }
+    }
+
+    // calculate Gaussian blur
+    std::unique_ptr<unsigned char[]> blured = MakeUniqueArray<unsigned char>(4 * newWidth * newHeight);
+
+    float matrix[7][7] =
+        {
+            { 0.00000067f, 0.00002292f, 0.00019117f, 0.00038771f, 0.00019117f, 0.00002292f, 0.00000067f },
+            { 0.00002292f, 0.00078634f, 0.00655965f, 0.01330373f, 0.00655965f, 0.00078633f, 0.00002292f },
+            { 0.00019117f, 0.00655965f, 0.05472157f, 0.11098164f, 0.05472157f, 0.00655965f, 0.00019117f },
+            { 0.00038771f, 0.01330373f, 0.11098164f, 0.22508352f, 0.11098164f, 0.01330373f, 0.00038771f },
+            { 0.00019117f, 0.00655965f, 0.05472157f, 0.11098164f, 0.05472157f, 0.00655965f, 0.00019117f },
+            { 0.00002292f, 0.00078633f, 0.00655965f, 0.01330373f, 0.00655965f, 0.00078633f, 0.00002292f },
+            { 0.00000067f, 0.00002292f, 0.00019117f, 0.00038771f, 0.00019117f, 0.00002292f, 0.00000067f }
+        };
+
+    for (int x = 0; x < newWidth; x++)
+    {
+        for (int y = 0; y < newHeight; y++)
+        {
+            float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+            for (int i = -3; i <= 3; i++)
+            {
+                for (int j = -3; j <= 3; j++)
+                {
+                    int xp = Math::Clamp(x + i, 0, newWidth - 1);
+                    int yp = Math::Clamp(y + j, 0, newHeight - 1);
+
+                    float weight = matrix[i + 3][j + 3];
+
+                    int index = 4 * (newWidth * yp + xp);
+
+                    for (int k = 0; k < 4; k++)
+                        color[k] += weight * mipmap[index + k];
+                }
+            }
+
+            int index = 4 * (newWidth * y + x);
+
+            for (int k = 0; k < 4; k++)
+            {
+                float value = Math::Clamp(color[k], 0.0f, 255.0f);
+                blured[index + k] = static_cast<unsigned char>(value);
+            }
+        }
+    }
+
+    // create SDL surface and final texture
+    ImageData image;
+    image.surface = SDL_CreateRGBSurfaceFrom(blured.get(), newWidth, newHeight, 32, 0, 0, 0, 0, 0xFF000000);
+
+    TextureCreateParams params;
+    params.filter = TEX_FILTER_BILINEAR;
+    params.format = TEX_IMG_RGBA;
+    params.mipmap = false;
+
+    m_capturedWorldTexture = m_device->CreateTexture(&image, params);
+
+    SDL_FreeSurface(image.surface);
+
+    m_captureWorld = false;
+    m_worldCaptured = true;
+}
+
+void CEngine::DrawCaptured3DScene()
+{
+    Math::Matrix identity;
+
+    m_device->SetTransform(TRANSFORM_PROJECTION, identity);
+    m_device->SetTransform(TRANSFORM_VIEW, identity);
+    m_device->SetTransform(TRANSFORM_WORLD, identity);
+
+    m_device->SetRenderState(RENDER_STATE_BLENDING, false);
+    m_device->SetRenderState(RENDER_STATE_CULLING, false);
+
+    Vertex vertices[4];
+
+    vertices[0] = Vertex(Math::Vector(-1.0f, -1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(0.0f, 0.0f));
+    vertices[1] = Vertex(Math::Vector(1.0f, -1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(1.0f, 0.0f));
+    vertices[2] = Vertex(Math::Vector(-1.0f, 1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(0.0f, 1.0f));
+    vertices[3] = Vertex(Math::Vector(1.0f, 1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(1.0f, 1.0f));
+
+    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
+
+    m_device->SetTexture(TEXTURE_PRIMARY, m_capturedWorldTexture);
+    m_device->SetTextureEnabled(TEXTURE_PRIMARY, true);
+    m_device->SetTextureEnabled(TEXTURE_SECONDARY, false);
+
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
 }
 
 void CEngine::DrawCrashSpheres()
@@ -3770,9 +4011,7 @@ void CEngine::DrawInterface()
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
     m_device->SetRenderState(RENDER_STATE_FOG, false);
 
-    m_device->SetTransform(TRANSFORM_VIEW,       m_matViewInterface);
-    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
+    SetInterfaceCoordinates();
 
     // Force new state to disable lighting
     m_interfaceMode = true;
@@ -3871,9 +4110,7 @@ void CEngine::DrawInterface()
 
         m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 
-        m_device->SetTransform(TRANSFORM_VIEW,       m_matViewInterface);
-        m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
-        m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
+        SetInterfaceCoordinates();
     }
 
     // Draw foreground color
@@ -3967,7 +4204,7 @@ void CEngine::UpdateGroundSpotTextures()
             set = true;
         }
 
-        if (clear || set)
+        if (clear || set || m_debugResources || m_displayGotoImage != nullptr)
         {
             CImage shadowImg(Math::IntPoint(256, 256));
             shadowImg.Fill(Gfx::IntColor(255, 255, 255, 255));
@@ -4123,6 +4360,43 @@ void CEngine::UpdateGroundSpotTextures()
                             color.b = Math::Norm(1.0f-intensity);
                             shadowImg.SetPixel(Math::IntPoint(ppx, ppy), color);
                         }
+                    }
+                }
+            }
+
+            if (m_debugResources)
+            {
+                for (float x = min.x; x < max.x; x += 1.0f)
+                {
+                    for (float y = min.y; y < max.y; y += 1.0f)
+                    {
+                        Math::Vector pos(
+                            x / 4.0f / 254.0f * 3200.0f - 1600.0f,
+                            0.0f,
+                            y / 4.0f / 254.0f * 3200.0f - 1600.0f
+                        );
+                        TerrainRes res = m_terrain->GetResource(pos);
+                        Math::IntPoint p(x-min.x, y-min.y);
+                        if (res == TR_NULL)
+                        {
+                            shadowImg.SetPixel(p, Gfx::Color(0.5f, 0.5f, 0.5f));
+                            continue;
+                        }
+                        shadowImg.SetPixelInt(p, ResourceToColor(res));
+                    }
+                }
+            }
+
+            if (m_displayGotoImage != nullptr)
+            {
+                Math::IntPoint size = m_displayGotoImage->GetSize();
+                for (float x = min.x; x < max.x; x += 1.0f)
+                {
+                    for (float y = min.y; y < max.y; y += 1.0f)
+                    {
+                        int px = x / 4.0f / 254.0f * size.x;
+                        int py = y / 4.0f / 254.0f * size.y;
+                        shadowImg.SetPixelInt(Math::IntPoint(x-min.x, y-min.y), m_displayGotoImage->GetPixelInt(Math::IntPoint(px, py)));
                     }
                 }
             }
@@ -4592,8 +4866,8 @@ void CEngine::DrawOverColor()
 void CEngine::DrawHighlight()
 {
     Math::Point min, max;
-    min.x =  1000000.0f;
-    min.y =  1000000.0f;
+    min.x = 1000000.0f;
+    min.y = 1000000.0f;
     max.x = -1000000.0f;
     max.y = -1000000.0f;
 
@@ -4610,10 +4884,10 @@ void CEngine::DrawHighlight()
         }
     }
 
-    if ( min.x ==  1000000.0f ||
-         min.y ==  1000000.0f ||
-         max.x == -1000000.0f ||
-         max.y == -1000000.0f )
+    if (min.x == 1000000.0f ||
+        min.y == 1000000.0f ||
+        max.x == -1000000.0f ||
+        max.y == -1000000.0f)
     {
         m_highlight = false;  // not highlighted
     }
@@ -4624,7 +4898,7 @@ void CEngine::DrawHighlight()
         m_highlight = true;
     }
 
-    if (! m_highlight)
+    if (!m_highlight)
         return;
 
     Math::Point p1 = m_highlightP1;
@@ -4640,8 +4914,8 @@ void CEngine::DrawHighlight()
 
     SetState(ENG_RSTATE_OPAQUE_COLOR);
 
-    float d = 0.5f+sinf(m_highlightTime*6.0f)*0.5f;
-    d *= (p2.x-p1.x)*0.1f;
+    float d = 0.5f + sinf(m_highlightTime * 6.0f) * 0.5f;
+    d *= (p2.x - p1.x) * 0.1f;
     p1.x += d;
     p1.y += d;
     p2.x -= d;
@@ -4650,11 +4924,11 @@ void CEngine::DrawHighlight()
     Color color(1.0f, 1.0f, 0.0f);  // yellow
 
     VertexCol line[3] =
-    {
-        VertexCol(Math::Vector(), color),
-        VertexCol(Math::Vector(), color),
-        VertexCol(Math::Vector(), color)
-    };
+        {
+            VertexCol(Math::Vector(), color),
+            VertexCol(Math::Vector(), color),
+            VertexCol(Math::Vector(), color)
+        };
 
     float dx = (p2.x - p1.x) / 5.0f;
     float dy = (p2.y - p1.y) / 5.0f;
@@ -4686,6 +4960,8 @@ void CEngine::DrawMouse()
     if (mode != MOUSE_ENGINE && mode != MOUSE_BOTH)
         return;
 
+    SetWindowCoordinates();
+
     Material material;
     material.diffuse = Color(1.0f, 1.0f, 1.0f);
     material.ambient = Color(0.5f, 0.5f, 0.5f);
@@ -4693,33 +4969,34 @@ void CEngine::DrawMouse()
     m_device->SetMaterial(material);
     m_device->SetTexture(0, m_miceTexture);
 
-    int index = static_cast<int>(m_mouseType);
+    Math::Point mousePos = CInput::GetInstancePointer()->GetMousePos();
+    Math::IntPoint pos(mousePos.x * m_size.x, m_size.y - mousePos.y * m_size.y);
+    pos.x -= MOUSE_TYPES.at(m_mouseType).hotPoint.x;
+    pos.y -= MOUSE_TYPES.at(m_mouseType).hotPoint.y;
 
-    Math::Point pos = CInput::GetInstancePointer()->GetMousePos();
-    pos.x = pos.x - (m_mice[index].hotPoint.x * m_mouseSize.x) / 32.0f;
-    pos.y = pos.y - ((32.0f - m_mice[index].hotPoint.y) * m_mouseSize.y) / 32.0f;
-
-    Math::Point shadowPos;
-    shadowPos.x = pos.x + (4.0f/800.0f);
-    shadowPos.y = pos.y - (3.0f/600.0f);
+    Math::IntPoint shadowPos;
+    shadowPos.x = pos.x + 4;
+    shadowPos.y = pos.y - 3;
 
     SetState(ENG_RSTATE_TCOLOR_WHITE);
-    DrawMouseSprite(shadowPos, m_mouseSize, m_mice[index].iconShadow);
+    DrawMouseSprite(shadowPos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).iconShadow);
 
-    SetState(m_mice[index].mode1);
-    DrawMouseSprite(pos, m_mouseSize, m_mice[index].icon1);
+    SetState(MOUSE_TYPES.at(m_mouseType).mode1);
+    DrawMouseSprite(pos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).icon1);
 
-    SetState(m_mice[index].mode2);
-    DrawMouseSprite(pos, m_mouseSize, m_mice[index].icon2);
+    SetState(MOUSE_TYPES.at(m_mouseType).mode2);
+    DrawMouseSprite(pos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).icon2);
+
+    SetInterfaceCoordinates();
 }
 
-void CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
+void CEngine::DrawMouseSprite(Math::IntPoint pos, Math::IntPoint size, int icon)
 {
     if (icon == -1)
         return;
 
-    Math::Point p1 = pos;
-    Math::Point p2 = p1 + size;
+    Math::IntPoint p1 = pos;
+    Math::IntPoint p2 = p1 + size;
 
     float u1 = (32.0f / 256.0f) * (icon % 8);
     float v1 = (32.0f / 256.0f) * (icon / 8);
@@ -4736,10 +5013,10 @@ void CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
 
     Vertex vertex[4] =
     {
-        Vertex(Math::Vector(p1.x, p1.y, 0.0f), normal, Math::Point(u1, v2)),
-        Vertex(Math::Vector(p1.x, p2.y, 0.0f), normal, Math::Point(u1, v1)),
-        Vertex(Math::Vector(p2.x, p1.y, 0.0f), normal, Math::Point(u2, v2)),
-        Vertex(Math::Vector(p2.x, p2.y, 0.0f), normal, Math::Point(u2, v1))
+        Vertex(Math::Vector(p1.x, p2.y, 0.0f), normal, Math::Point(u1, v2)),
+        Vertex(Math::Vector(p1.x, p1.y, 0.0f), normal, Math::Point(u1, v1)),
+        Vertex(Math::Vector(p2.x, p2.y, 0.0f), normal, Math::Point(u2, v2)),
+        Vertex(Math::Vector(p2.x, p1.y, 0.0f), normal, Math::Point(u2, v1))
     };
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
@@ -5073,6 +5350,96 @@ void CEngine::SetStaticMeshTransparency(int meshHandle, float value)
 {
     int objRank = meshHandle;
     SetObjectTransparency(objRank, value);
+}
+
+void CEngine::SetDebugLights(bool debugLights)
+{
+    m_debugLights = debugLights;
+}
+
+bool CEngine::GetDebugLights()
+{
+    return m_debugLights;
+}
+
+void CEngine::DebugDumpLights()
+{
+    m_debugDumpLights = true;
+}
+
+void CEngine::SetDebugResources(bool debugResources)
+{
+    m_debugResources = debugResources;
+    m_firstGroundSpot = true; // Force a refresh of ground spot textures
+    UpdateGroundSpotTextures();
+}
+
+bool CEngine::GetDebugResources()
+{
+    return m_debugResources;
+}
+
+void CEngine::SetDebugGoto(bool debugGoto)
+{
+    m_debugGoto = debugGoto;
+    if (!m_debugGoto)
+    {
+        m_displayGotoImage.reset();
+    }
+}
+
+bool CEngine::GetDebugGoto()
+{
+    return m_debugGoto;
+}
+
+void CEngine::AddDebugGotoLine(std::vector<Gfx::VertexCol> line)
+{
+    m_displayGoto.push_back(line);
+}
+
+void CEngine::SetDebugGotoBitmap(std::unique_ptr<CImage> debugImage)
+{
+    m_displayGotoImage = std::move(debugImage);
+    m_firstGroundSpot = true; // Force ground spot texture reload
+    UpdateGroundSpotTextures();
+}
+
+void CEngine::SetInterfaceCoordinates()
+{
+    m_device->SetTransform(TRANSFORM_VIEW,       m_matViewInterface);
+    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
+    m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
+}
+
+void CEngine::EnablePauseBlur()
+{
+    if (!m_pauseBlurEnabled) return;
+
+    m_captureWorld = true;
+    m_worldCaptured = false;
+}
+
+void CEngine::DisablePauseBlur()
+{
+    m_captureWorld = false;
+    m_worldCaptured = false;
+}
+
+void CEngine::SetWindowCoordinates()
+{
+    Math::Matrix matWorldWindow;
+    matWorldWindow.LoadIdentity();
+
+    Math::Matrix matViewWindow;
+    matViewWindow.LoadIdentity();
+
+    Math::Matrix matProjWindow;
+    Math::LoadOrthoProjectionMatrix(matProjWindow, 0.0f, m_size.x, m_size.y, 0.0f, -1.0f, 1.0f);
+
+    m_device->SetTransform(TRANSFORM_VIEW,       matViewWindow);
+    m_device->SetTransform(TRANSFORM_PROJECTION, matProjWindow);
+    m_device->SetTransform(TRANSFORM_WORLD,      matWorldWindow);
 }
 
 } // namespace Gfx

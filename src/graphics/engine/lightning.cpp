@@ -82,16 +82,24 @@ bool CLightning::EventProcess(const Event &event)
 
 bool CLightning::EventFrame(const Event &event)
 {
+    if (m_terrain == nullptr)
+        m_terrain = CRobotMain::GetInstancePointer()->GetTerrain();
+
+    if (m_camera == nullptr)
+        m_camera = CRobotMain::GetInstancePointer()->GetCamera();
+
+    if (m_sound == nullptr)
+        m_sound = CApplication::GetInstancePointer()->GetSound();
+
     if (m_engine->GetPause()) return true;
     if (CRobotMain::GetInstancePointer()->GetMovieLock()) return true;
 
     m_progress += event.rTime*m_speed;
 
-    if (m_phase == LightningPhase::Wait)
+    if (m_phase == LightningPhase::Wait && m_lightningExists)
     {
         if (m_progress >= 1.0f)
         {
-
             m_pos.x = (Math::Rand()-0.5f)*(3200.0f-200.0f);
             m_pos.z = (Math::Rand()-0.5f)*(3200.0f-200.0f);
             m_pos.y = 0.0f;
@@ -127,21 +135,7 @@ bool CLightning::EventFrame(const Event &event)
                 }
             }
 
-            Math::Vector eye = m_engine->GetEyePt();
-            float dist = Math::Distance(m_pos, eye);
-            float deep = m_engine->GetDeepView();
-
-            if (dist < deep)
-            {
-                Math::Vector pos = eye+((m_pos-eye)*0.2f);  // like so close!
-                m_sound->Play(SOUND_BLITZ, pos);
-
-                m_camera->StartOver(CAM_OVER_EFFECT_LIGHTNING, m_pos, 1.0f);
-
-                m_phase    = LightningPhase::Flash;
-                m_progress = 0.0f;
-                m_speed    = 1.0f;
-            }
+            StrikeAtPos(m_pos);
         }
     }
 
@@ -193,15 +187,6 @@ bool CLightning::Create(float sleep, float delay, float magnetic)
     m_progress = 0.0f;
     m_speed    = 1.0f / m_sleep;
 
-    if (m_terrain == nullptr)
-        m_terrain = CRobotMain::GetInstancePointer()->GetTerrain();
-
-    if (m_camera == nullptr)
-        m_camera = CRobotMain::GetInstancePointer()->GetCamera();
-
-    if (m_sound == nullptr)
-        m_sound = CApplication::GetInstancePointer()->GetSound();
-
     return false;
 }
 
@@ -233,7 +218,6 @@ bool CLightning::SetStatus(float sleep, float delay, float magnetic, float progr
 
 void CLightning::Draw()
 {
-    if (!m_lightningExists) return;
     if (m_phase != LightningPhase::Flash) return;
 
     CDevice* device = m_engine->GetDevice();
@@ -367,5 +351,26 @@ CObject* CLightning::SearchObject(Math::Vector pos)
     return bestObj;
 }
 
+
+void CLightning::StrikeAtPos(Math::Vector pos)
+{
+    m_pos = pos;
+
+    Math::Vector eye = m_engine->GetEyePt();
+    float dist = Math::Distance(m_pos, eye);
+    float deep = m_engine->GetDeepView();
+
+    if (dist < deep)
+    {
+        Math::Vector pos = eye+((m_pos-eye)*0.2f);  // like so close!
+        m_sound->Play(SOUND_BLITZ, pos);
+
+        m_camera->StartOver(CAM_OVER_EFFECT_LIGHTNING, m_pos, 1.0f);
+
+        m_phase    = LightningPhase::Flash;
+        m_progress = 0.0f;
+        m_speed    = 1.0f;
+    }
+}
 
 } // namespace Gfx
