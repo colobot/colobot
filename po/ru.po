@@ -413,7 +413,7 @@ msgid "Custom levels:"
 msgstr "Пользовательские уровни:"
 
 msgid "Custom levels\\Levels from mods created by the users"
-msgstr "Пользовательские уровни\\Уровни из модов, созданных пользователями"
+msgstr "Пользоват. уровни\\Уровни из модов, созданных пользователями"
 
 msgid "Customize your appearance"
 msgstr "Настроить свой внешний вид"
@@ -475,10 +475,10 @@ msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Пыль\\Пыль и грязь на ботах и зданиях"
 
 msgid "Dynamic lighting\\Mobile light sources"
-msgstr "Динамическое освещение\\Подвижные источники света"
+msgstr "Динамич. освещение\\Подвижные источники света"
 
 msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
-msgstr "Динамические тени\\Динамические тени + самозатенение"
+msgstr "Динамич. тени ++\\Динамические тени + самозатенение"
 
 msgid "Dynamic shadows\\Beautiful shadows!"
 msgstr "Динамические тени\\Прекрасные тени!"
