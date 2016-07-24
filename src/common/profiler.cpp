@@ -53,6 +53,8 @@ void CProfiler::StopPerformanceCounter(PerformanceCounter counter)
     SystemTimeStamp* timeStamp = m_systemUtils->CreateTimeStamp();
     m_systemUtils->GetCurrentTimeStamp(timeStamp);
     m_performanceCounters[counter] += m_systemUtils->TimeStampExactDiff(m_runningPerformanceCounters.top(), timeStamp);
+    m_systemUtils->DestroyTimeStamp(timeStamp);
+    m_systemUtils->DestroyTimeStamp(m_runningPerformanceCounters.top());
     m_runningPerformanceCounters.pop();
 
     if (counter == PCNT_ALL)

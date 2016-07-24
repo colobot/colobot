@@ -36,6 +36,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <algorithm>
 
 
 std::unique_ptr<CSystemUtils> CSystemUtils::Create()
@@ -152,11 +153,7 @@ SystemTimeStamp* CSystemUtils::CreateTimeStamp()
 
 void CSystemUtils::DestroyTimeStamp(SystemTimeStamp *stamp)
 {
-    for (auto& timeStamp : m_timeStamps)
-    {
-        if (timeStamp.get() == stamp)
-            timeStamp.reset();
-    }
+    m_timeStamps.erase(std::remove_if(m_timeStamps.begin(), m_timeStamps.end(), [&](const std::unique_ptr<SystemTimeStamp>& timeStamp) { return timeStamp.get() == stamp; }));
 }
 
 void CSystemUtils::CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src)
