@@ -3187,9 +3187,6 @@ void CEngine::Render()
         color = m_backgroundColorDown;
 
     m_device->SetClearColor(color);
-    // Render shadow map
-    if (m_drawWorld && m_shadowMapping)
-        RenderShadowMap();
 
     // Begin the scene
     m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
@@ -3203,6 +3200,10 @@ void CEngine::Render()
     }
     else
     {
+        // Render shadow map
+        if (m_drawWorld && m_shadowMapping)
+            RenderShadowMap();
+
         UseMSAA(true);
 
         DrawBackground();                // draws the background
