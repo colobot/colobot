@@ -2681,7 +2681,7 @@ void CRobotMain::ScenePerso()
     m_lightMan->FlushLights();
     m_particle->FlushParticle();
 
-    m_levelFile = "levels/other/perso000.txt";
+    m_levelFile = "levels/other/perso.txt";
     try
     {
         CreateScene(false, true, false);  // sets scene
