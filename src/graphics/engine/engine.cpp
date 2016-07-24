@@ -5032,7 +5032,7 @@ void CEngine::DrawStats()
 
     float height = m_text->GetAscent(FONT_COLOBOT, 13.0f);
     float width = 0.4f;
-    const int TOTAL_LINES = 20;
+    const int TOTAL_LINES = 21;
 
     Math::Point pos(0.05f * m_size.x/m_size.y, 0.05f + TOTAL_LINES * height);
 
@@ -5083,9 +5083,11 @@ void CEngine::DrawStats()
     long long engineUpdate = CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_ENGINE) -
                              CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_PARTICLE);
 
+    long long gameUpdate = CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_GAME) -
+                           CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_CBOT);
+
     long long otherUpdate = CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_ALL) -
-                            engineUpdate -
-                            CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_PARTICLE) -
+                            CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_ENGINE) -
                             CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_GAME);
 
     long long otherRender = CProfiler::GetPerformanceCounterTime(PCNT_RENDER_ALL) -
@@ -5101,7 +5103,8 @@ void CEngine::DrawStats()
     drawStatsCounter("Frame update",      PCNT_UPDATE_ALL);
     drawStatsValue  ("    Engine update",     engineUpdate);
     drawStatsCounter("    Particle update",   PCNT_UPDATE_PARTICLE);
-    drawStatsCounter("    Game update",       PCNT_UPDATE_GAME);
+    drawStatsValue  ("    Game update",       gameUpdate);
+    drawStatsCounter("    CBot programs",     PCNT_UPDATE_CBOT);
     drawStatsValue(  "    Other update",      otherUpdate);
     drawStatsLine(   "");
     drawStatsCounter("Frame render",      PCNT_RENDER_ALL);

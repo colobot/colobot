@@ -36,6 +36,7 @@ enum PerformanceCounter
     PCNT_UPDATE_ENGINE,         //! < frame update in CEngine
     PCNT_UPDATE_PARTICLE,       //! < frame update in CParticle
     PCNT_UPDATE_GAME,           //! < frame update in CRobotMain
+    PCNT_UPDATE_CBOT,           //! < running CBot code (part of CRobotMain update)
 
     PCNT_RENDER_ALL,            //! < the whole rendering process
     PCNT_RENDER_PARTICLE,       //! < rendering the particles in 3D
