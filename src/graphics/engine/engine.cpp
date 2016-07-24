@@ -27,6 +27,7 @@
 #include "common/key.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
+#include "common/profiler.h"
 #include "common/stringutils.h"
 
 #include "common/system/system.h"
@@ -448,9 +449,9 @@ void CEngine::FrameUpdate()
 
     m_lightMan->UpdateProgression(rTime);
 
-    m_app->StartPerformanceCounter(PCNT_UPDATE_PARTICLE);
+    CProfiler::StartPerformanceCounter(PCNT_UPDATE_PARTICLE);
     m_particle->FrameParticle(rTime);
-    m_app->StopPerformanceCounter(PCNT_UPDATE_PARTICLE);
+    CProfiler::StopPerformanceCounter(PCNT_UPDATE_PARTICLE);
 
     ComputeDistance();
     UpdateGeometry();
@@ -3220,9 +3221,9 @@ void CEngine::Render()
         }
     }
 
-    m_app->StartPerformanceCounter(PCNT_RENDER_INTERFACE);
+    CProfiler::StartPerformanceCounter(PCNT_RENDER_INTERFACE);
     DrawInterface();
-    m_app->StopPerformanceCounter(PCNT_RENDER_INTERFACE);
+    CProfiler::StopPerformanceCounter(PCNT_RENDER_INTERFACE);
 
     // End the scene
     m_device->EndScene();
@@ -3261,7 +3262,7 @@ void CEngine::Draw3DScene()
 
     m_water->DrawBack();  // draws water background
 
-    m_app->StartPerformanceCounter(PCNT_RENDER_TERRAIN);
+    CProfiler::StartPerformanceCounter(PCNT_RENDER_TERRAIN);
 
     // Draw terrain
 
@@ -3321,11 +3322,11 @@ void CEngine::Draw3DScene()
     if (!m_shadowMapping)
         DrawShadowSpots();
 
-    m_app->StopPerformanceCounter(PCNT_RENDER_TERRAIN);
+    CProfiler::StopPerformanceCounter(PCNT_RENDER_TERRAIN);
 
     // Draw other objects
 
-    m_app->StartPerformanceCounter(PCNT_RENDER_OBJECTS);
+    CProfiler::StartPerformanceCounter(PCNT_RENDER_OBJECTS);
 
     bool transparent = false;
 
@@ -3442,7 +3443,7 @@ void CEngine::Draw3DScene()
         }
     }
 
-    m_app->StopPerformanceCounter(PCNT_RENDER_OBJECTS);
+    CProfiler::StopPerformanceCounter(PCNT_RENDER_OBJECTS);
 
     m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
@@ -3455,9 +3456,9 @@ void CEngine::Draw3DScene()
         m_lightMan->DebugDumpLights();
     }
 
-    m_app->StartPerformanceCounter(PCNT_RENDER_WATER);
+    CProfiler::StartPerformanceCounter(PCNT_RENDER_WATER);
     m_water->DrawSurf(); // draws water surface
-    m_app->StopPerformanceCounter(PCNT_RENDER_WATER);
+    CProfiler::StopPerformanceCounter(PCNT_RENDER_WATER);
 
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
@@ -3479,9 +3480,9 @@ void CEngine::Draw3DScene()
     }
     m_displayGoto.clear();
 
-    m_app->StartPerformanceCounter(PCNT_RENDER_PARTICLE);
+    CProfiler::StartPerformanceCounter(PCNT_RENDER_PARTICLE);
     m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
-    m_app->StopPerformanceCounter(PCNT_RENDER_PARTICLE);
+    CProfiler::StopPerformanceCounter(PCNT_RENDER_PARTICLE);
 
     m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
 
@@ -3707,7 +3708,7 @@ void CEngine::RenderShadowMap()
 
     if (!m_shadowMapping) return;
 
-    m_app->StartPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
+    CProfiler::StartPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
 
     // If no shadow map texture exists, create it
     if (m_shadowMap.id == 0)
@@ -3897,7 +3898,7 @@ void CEngine::RenderShadowMap()
     m_device->SetColorMask(true, true, true, true);
     m_device->Clear();
 
-    m_app->StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
+    CProfiler::StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
 
     m_device->SetRenderMode(RENDER_MODE_NORMAL);
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
@@ -5030,7 +5031,7 @@ void CEngine::DrawStats()
         return;
 
     float height = m_text->GetAscent(FONT_COLOBOT, 13.0f);
-    float width = 0.25f;
+    float width = 0.4f;
     const int TOTAL_LINES = 20;
 
     Math::Point pos(0.05f * m_size.x/m_size.y, 0.05f + TOTAL_LINES * height);
@@ -5053,56 +5054,56 @@ void CEngine::DrawStats()
 
     SetState(ENG_RSTATE_TEXT);
 
-    std::stringstream str;
-
-    auto drawStatsLine = [&](const std::string& name, const std::string& value)
+    auto drawStatsLine = [&](const std::string& name = "", const std::string& value = "", const std::string& value2 = "")
     {
         if (!name.empty())
-        {
-            str.str("");
-            str << name << ": " << value;
-            m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-        }
+            m_text->DrawText(name+":", FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+        pos.x += 0.25f;
+        if (!value.empty())
+            m_text->DrawText(value, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+        pos.x += 0.15f;
+        if (!value2.empty())
+            m_text->DrawText(value2, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+        pos.x -= 0.4f;
         pos.y -= height;
     };
 
-    auto drawStatsValue = [&](const std::string& name, float value)
+    auto drawStatsValue = [&](const std::string& name, long long time)
     {
-        str.str("");
-        str << std::fixed << std::setprecision(2) << value;
-        drawStatsLine(name, str.str());
+        float value = static_cast<float>(time)/CProfiler::GetPerformanceCounterTime(PCNT_ALL);
+        drawStatsLine(name, StrUtils::Format("%.2f", value), StrUtils::Format("%.2f ms", time/1e6f));
     };
 
     auto drawStatsCounter = [&](const std::string& name, PerformanceCounter counter)
     {
-        drawStatsValue(name, m_app->GetPerformanceCounterData(counter));
+        drawStatsValue(name, CProfiler::GetPerformanceCounterTime(counter));
     };
 
 
-    float engineUpdate = m_app->GetPerformanceCounterData(PCNT_UPDATE_ENGINE) -
-                         m_app->GetPerformanceCounterData(PCNT_UPDATE_PARTICLE);
+    long long engineUpdate = CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_ENGINE) -
+                             CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_PARTICLE);
 
-    float otherUpdate = m_app->GetPerformanceCounterData(PCNT_UPDATE_ALL) -
-                        engineUpdate -
-                        m_app->GetPerformanceCounterData(PCNT_UPDATE_PARTICLE) -
-                        m_app->GetPerformanceCounterData(PCNT_UPDATE_GAME);
+    long long otherUpdate = CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_ALL) -
+                            engineUpdate -
+                            CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_PARTICLE) -
+                            CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_GAME);
 
-    float otherRender = m_app->GetPerformanceCounterData(PCNT_RENDER_ALL) -
-                        m_app->GetPerformanceCounterData(PCNT_RENDER_PARTICLE) -
-                        m_app->GetPerformanceCounterData(PCNT_RENDER_WATER) -
-                        m_app->GetPerformanceCounterData(PCNT_RENDER_TERRAIN) -
-                        m_app->GetPerformanceCounterData(PCNT_RENDER_OBJECTS) -
-                        m_app->GetPerformanceCounterData(PCNT_RENDER_INTERFACE) -
-                        m_app->GetPerformanceCounterData(PCNT_RENDER_SHADOW_MAP);
+    long long otherRender = CProfiler::GetPerformanceCounterTime(PCNT_RENDER_ALL) -
+                            CProfiler::GetPerformanceCounterTime(PCNT_RENDER_PARTICLE) -
+                            CProfiler::GetPerformanceCounterTime(PCNT_RENDER_WATER) -
+                            CProfiler::GetPerformanceCounterTime(PCNT_RENDER_TERRAIN) -
+                            CProfiler::GetPerformanceCounterTime(PCNT_RENDER_OBJECTS) -
+                            CProfiler::GetPerformanceCounterTime(PCNT_RENDER_INTERFACE) -
+                            CProfiler::GetPerformanceCounterTime(PCNT_RENDER_SHADOW_MAP);
 
     drawStatsCounter("Event processing", PCNT_EVENT_PROCESSING);
-    drawStatsLine("", "");
+    drawStatsLine(   "");
     drawStatsCounter("Frame update",      PCNT_UPDATE_ALL);
     drawStatsValue  ("    Engine update",     engineUpdate);
     drawStatsCounter("    Particle update",   PCNT_UPDATE_PARTICLE);
     drawStatsCounter("    Game update",       PCNT_UPDATE_GAME);
     drawStatsValue(  "    Other update",      otherUpdate);
-    drawStatsLine("", "");
+    drawStatsLine(   "");
     drawStatsCounter("Frame render",      PCNT_RENDER_ALL);
     drawStatsCounter("    Particle render",   PCNT_RENDER_PARTICLE);
     drawStatsCounter("    Water render",      PCNT_RENDER_WATER);
@@ -5112,11 +5113,11 @@ void CEngine::DrawStats()
     drawStatsCounter("    Shadow map render", PCNT_RENDER_SHADOW_MAP);
     drawStatsValue(  "    Other render",      otherRender);
     drawStatsCounter("Swap buffers & VSync",  PCNT_SWAP_BUFFERS);
-    drawStatsLine("", "");
+    drawStatsLine(   "");
     drawStatsLine(   "Triangles",         StrUtils::ToString<int>(m_statisticTriangle));
-    drawStatsValue(  "FPS",               m_fps);
-    drawStatsLine("", "");
-    str.str("");
+    drawStatsLine(   "FPS",               StrUtils::Format("%.3f", m_fps));
+    drawStatsLine(   "");
+    std::stringstream str;
     str << std::fixed << std::setprecision(2) << m_statisticPos.x << "; " << m_statisticPos.z;
     drawStatsLine(   "Position",          str.str());
 }

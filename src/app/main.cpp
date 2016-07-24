@@ -29,6 +29,7 @@
 
 #include "common/logger.h"
 #include "common/make_unique.h"
+#include "common/profiler.h"
 #include "common/restext.h"
 #include "common/version.h"
 
@@ -98,6 +99,8 @@ int main(int argc, char *argv[])
 
     auto systemUtils = CSystemUtils::Create(); // platform-specific utils
     systemUtils->Init();
+
+    CProfiler::SetSystemUtils(systemUtils.get());
 
     // Add file output to the logger
     std::string logFileName;

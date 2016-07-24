@@ -28,6 +28,7 @@
 #include "common/key.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
+#include "common/profiler.h"
 #include "common/stringutils.h"
 #include "common/version.h"
 
@@ -113,9 +114,7 @@ CApplication::CApplication(CSystemUtils* systemUtils)
       m_private(MakeUnique<ApplicationPrivate>()),
       m_configFile(MakeUnique<CConfigFile>()),
       m_input(MakeUnique<CInput>()),
-      m_pathManager(MakeUnique<CPathManager>(systemUtils)),
-      m_performanceCounters(),
-      m_performanceCountersData()
+      m_pathManager(MakeUnique<CPathManager>(systemUtils))
 {
     m_exitCode      = 0;
     m_active        = false;
@@ -145,11 +144,6 @@ CApplication::CApplication(CSystemUtils* systemUtils)
     m_manualFrameLast = m_systemUtils->CreateTimeStamp();
     m_manualFrameTime = m_systemUtils->CreateTimeStamp();
 
-    for (int i = 0; i < PCNT_MAX; ++i)
-    {
-        m_performanceCounters[i][0] = m_systemUtils->CreateTimeStamp();
-        m_performanceCounters[i][1] = m_systemUtils->CreateTimeStamp();
-    }
 
     m_joystickEnabled = false;
 
@@ -173,12 +167,6 @@ CApplication::~CApplication()
 
     m_systemUtils->DestroyTimeStamp(m_manualFrameLast);
     m_systemUtils->DestroyTimeStamp(m_manualFrameTime);
-
-    for (int i = 0; i < PCNT_MAX; ++i)
-    {
-        m_systemUtils->DestroyTimeStamp(m_performanceCounters[i][0]);
-        m_systemUtils->DestroyTimeStamp(m_performanceCounters[i][1]);
-    }
 
     m_joystickEnabled = false;
 
@@ -995,12 +983,10 @@ int CApplication::Run()
 
     while (true)
     {
-        ResetPerformanceCounters();
-
         if (m_active)
         {
-            StartPerformanceCounter(PCNT_ALL);
-            StartPerformanceCounter(PCNT_EVENT_PROCESSING);
+            CProfiler::StartPerformanceCounter(PCNT_ALL);
+            CProfiler::StartPerformanceCounter(PCNT_EVENT_PROCESSING);
         }
 
         // To be sure no old event remains
@@ -1089,9 +1075,9 @@ int CApplication::Run()
                     m_controller->ProcessEvent(event);
             }
 
-            StopPerformanceCounter(PCNT_EVENT_PROCESSING);
+            CProfiler::StopPerformanceCounter(PCNT_EVENT_PROCESSING);
 
-            StartPerformanceCounter(PCNT_UPDATE_ALL);
+            CProfiler::StartPerformanceCounter(PCNT_UPDATE_ALL);
 
             // Prepare and process step simulation event
             Event event = CreateUpdateEvent();
@@ -1101,16 +1087,16 @@ int CApplication::Run()
 
                 m_sound->FrameMove(m_relTime);
 
-                StartPerformanceCounter(PCNT_UPDATE_GAME);
+                CProfiler::StartPerformanceCounter(PCNT_UPDATE_GAME);
                 m_controller->ProcessEvent(event);
-                StopPerformanceCounter(PCNT_UPDATE_GAME);
+                CProfiler::StopPerformanceCounter(PCNT_UPDATE_GAME);
 
-                StartPerformanceCounter(PCNT_UPDATE_ENGINE);
+                CProfiler::StartPerformanceCounter(PCNT_UPDATE_ENGINE);
                 m_engine->FrameUpdate();
-                StopPerformanceCounter(PCNT_UPDATE_ENGINE);
+                CProfiler::StopPerformanceCounter(PCNT_UPDATE_ENGINE);
             }
 
-            StopPerformanceCounter(PCNT_UPDATE_ALL);
+            CProfiler::StopPerformanceCounter(PCNT_UPDATE_ALL);
 
             /* Update mouse position explicitly right before rendering
              * because mouse events are usually way behind */
@@ -1118,9 +1104,7 @@ int CApplication::Run()
 
             Render();
 
-            StopPerformanceCounter(PCNT_ALL);
-
-            UpdatePerformanceCountersData();
+            CProfiler::StopPerformanceCounter(PCNT_ALL);
         }
     }
 
@@ -1405,14 +1389,14 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
 /** Renders the frame and swaps buffers as necessary */
 void CApplication::Render()
 {
-    StartPerformanceCounter(PCNT_RENDER_ALL);
+    CProfiler::StartPerformanceCounter(PCNT_RENDER_ALL);
     m_engine->Render();
-    StopPerformanceCounter(PCNT_RENDER_ALL);
+    CProfiler::StopPerformanceCounter(PCNT_RENDER_ALL);
 
-    StartPerformanceCounter(PCNT_SWAP_BUFFERS);
+    CProfiler::StartPerformanceCounter(PCNT_SWAP_BUFFERS);
     if (m_deviceConfig.doubleBuf)
         SDL_GL_SwapWindow(m_private->window);
-    StopPerformanceCounter(PCNT_SWAP_BUFFERS);
+    CProfiler::StopPerformanceCounter(PCNT_SWAP_BUFFERS);
 }
 
 void CApplication::RenderIfNeeded(int updateRate)
@@ -1847,45 +1831,6 @@ void CApplication::SetLanguage(Language language)
     textdomain("colobot");
 
     GetLogger()->Debug("SetLanguage: Test gettext translation: '%s'\n", gettext("Colobot rules!"));
-}
-
-void CApplication::StartPerformanceCounter(PerformanceCounter counter)
-{
-    m_systemUtils->GetCurrentTimeStamp(m_performanceCounters[counter][0]);
-}
-
-void CApplication::StopPerformanceCounter(PerformanceCounter counter)
-{
-    m_systemUtils->GetCurrentTimeStamp(m_performanceCounters[counter][1]);
-}
-
-float CApplication::GetPerformanceCounterData(PerformanceCounter counter) const
-{
-    return m_performanceCountersData[counter];
-}
-
-void CApplication::ResetPerformanceCounters()
-{
-    for (int i = 0; i < PCNT_MAX; ++i)
-    {
-        StartPerformanceCounter(static_cast<PerformanceCounter>(i));
-        StopPerformanceCounter(static_cast<PerformanceCounter>(i));
-    }
-}
-
-void CApplication::UpdatePerformanceCountersData()
-{
-    long long sum = m_systemUtils->TimeStampExactDiff(m_performanceCounters[PCNT_ALL][0],
-                                                      m_performanceCounters[PCNT_ALL][1]);
-
-    for (int i = 0; i < PCNT_MAX; ++i)
-    {
-        long long diff = m_systemUtils->TimeStampExactDiff(m_performanceCounters[i][0],
-                                                           m_performanceCounters[i][1]);
-
-        m_performanceCountersData[static_cast<PerformanceCounter>(i)] =
-            static_cast<float>(diff) / static_cast<float>(sum);
-    }
 }
 
 bool CApplication::GetSceneTestMode()

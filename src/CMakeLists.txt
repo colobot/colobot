@@ -117,6 +117,8 @@ set(BASE_SOURCES
     common/logger.cpp
     common/logger.h
     common/make_unique.h
+    common/profiler.cpp
+    common/profiler.h
     common/regex_utils.cpp
     common/regex_utils.h
     common/resources/inputstream.cpp
