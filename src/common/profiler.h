@@ -39,7 +39,8 @@ enum PerformanceCounter
     PCNT_UPDATE_CBOT,           //! < running CBot code (part of CRobotMain update)
 
     PCNT_RENDER_ALL,            //! < the whole rendering process
-    PCNT_RENDER_PARTICLE,       //! < rendering the particles in 3D
+    PCNT_RENDER_PARTICLE_WORLD, //! < rendering the particles in 3D
+    PCNT_RENDER_PARTICLE_IFACE, //! < rendering the particles in 2D interface
     PCNT_RENDER_WATER,          //! < rendering the water
     PCNT_RENDER_TERRAIN,        //! < rendering the terrain
     PCNT_RENDER_OBJECTS,        //! < rendering the 3D objects

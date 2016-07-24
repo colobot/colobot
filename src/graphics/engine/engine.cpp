@@ -3481,9 +3481,9 @@ void CEngine::Draw3DScene()
     }
     m_displayGoto.clear();
 
-    CProfiler::StartPerformanceCounter(PCNT_RENDER_PARTICLE);
+    CProfiler::StartPerformanceCounter(PCNT_RENDER_PARTICLE_WORLD);
     m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
-    CProfiler::StopPerformanceCounter(PCNT_RENDER_PARTICLE);
+    CProfiler::StopPerformanceCounter(PCNT_RENDER_PARTICLE_WORLD);
 
     m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
 
@@ -4034,7 +4034,9 @@ void CEngine::DrawInterface()
 
     if (!m_screenshotMode && m_renderInterface)
     {
+        CProfiler::StartPerformanceCounter(PCNT_RENDER_PARTICLE_IFACE);
         m_particle->DrawParticle(SH_INTERFACE);  // draws the particles of the interface
+        CProfiler::StopPerformanceCounter(PCNT_RENDER_PARTICLE_IFACE);
     }
 
     // 3D objects drawn in front of interface
@@ -5033,7 +5035,7 @@ void CEngine::DrawStats()
 
     float height = m_text->GetAscent(FONT_COLOBOT, 13.0f);
     float width = 0.4f;
-    const int TOTAL_LINES = 21;
+    const int TOTAL_LINES = 22;
 
     Math::Point pos(0.05f * m_size.x/m_size.y, 0.05f + TOTAL_LINES * height);
 
@@ -5080,6 +5082,7 @@ void CEngine::DrawStats()
         drawStatsValue(name, CProfiler::GetPerformanceCounterTime(counter));
     };
 
+    // TODO: Find a more generic way to calculate these in CProfiler
 
     long long engineUpdate = CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_ENGINE) -
                              CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_PARTICLE);
@@ -5092,7 +5095,7 @@ void CEngine::DrawStats()
                             CProfiler::GetPerformanceCounterTime(PCNT_UPDATE_GAME);
 
     long long otherRender = CProfiler::GetPerformanceCounterTime(PCNT_RENDER_ALL) -
-                            CProfiler::GetPerformanceCounterTime(PCNT_RENDER_PARTICLE) -
+                            CProfiler::GetPerformanceCounterTime(PCNT_RENDER_PARTICLE_WORLD) -
                             CProfiler::GetPerformanceCounterTime(PCNT_RENDER_WATER) -
                             CProfiler::GetPerformanceCounterTime(PCNT_RENDER_TERRAIN) -
                             CProfiler::GetPerformanceCounterTime(PCNT_RENDER_OBJECTS) -
@@ -5109,11 +5112,12 @@ void CEngine::DrawStats()
     drawStatsValue(  "    Other update",      otherUpdate);
     drawStatsLine(   "");
     drawStatsCounter("Frame render",      PCNT_RENDER_ALL);
-    drawStatsCounter("    Particle render",   PCNT_RENDER_PARTICLE);
+    drawStatsCounter("    Particle render",   PCNT_RENDER_PARTICLE_WORLD);
     drawStatsCounter("    Water render",      PCNT_RENDER_WATER);
     drawStatsCounter("    Terrain render",    PCNT_RENDER_TERRAIN);
     drawStatsCounter("    Objects render",    PCNT_RENDER_OBJECTS);
     drawStatsCounter("    UI render",         PCNT_RENDER_INTERFACE);
+    drawStatsCounter("        particles",     PCNT_RENDER_PARTICLE_IFACE);
     drawStatsCounter("    Shadow map render", PCNT_RENDER_SHADOW_MAP);
     drawStatsValue(  "    Other render",      otherRender);
     drawStatsCounter("Swap buffers & VSync",  PCNT_SWAP_BUFFERS);
