@@ -17,39 +17,29 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file app/system_other.h
- * \brief Fallback code for other systems
- */
+#include "common/system/system_other.h"
 
-#include "app/system.h"
 
-#include <SDL.h>
-
-#include <iostream>
-
-//@colobot-lint-exclude UndefinedFunctionRule
-
-struct SystemTimeStamp
+void CSystemUtilsOther::Init()
 {
-    Uint32 sdlTicks;
+}
 
-    SystemTimeStamp()
-    {
-        sdlTicks = 0;
-    }
-};
-
-class CSystemUtilsOther : public CSystemUtils
+SystemDialogResult CSystemUtilsOther::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
 {
-public:
-    void Init() override;
-    SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
+    return ConsoleSystemDialog(type, title, message);
+}
 
-    void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
-    long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
+void CSystemUtilsOther::GetCurrentTimeStamp(SystemTimeStamp* stamp)
+{
+    stamp->sdlTicks = SDL_GetTicks();
+}
 
-    void Usleep(int usec) override;
-};
+long long int CSystemUtilsOther::TimeStampExactDiff(SystemTimeStamp* before, SystemTimeStamp* after)
+{
+    return (after->sdlTicks - before->sdlTicks) * 1000000ll;
+}
 
-//@end-colobot-lint-exclude
+void CSystemUtilsOther::Usleep(int usec)
+{
+    SDL_Delay(usec / 1000); // close enough
+}

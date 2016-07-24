@@ -22,7 +22,6 @@
 #include "app/controller.h"
 #include "app/input.h"
 #include "app/pathman.h"
-#include "app/system.h"
 
 #include "common/config_file.h"
 #include "common/image.h"
@@ -33,6 +32,8 @@
 #include "common/version.h"
 
 #include "common/resources/resourcemanager.h"
+
+#include "common/system/system.h"
 
 #include "graphics/core/nulldevice.h"
 

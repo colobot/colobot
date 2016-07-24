@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "app/system_macosx.h"
+#include "common/system/system_macosx.h"
 
 #include "common/logger.h"
 

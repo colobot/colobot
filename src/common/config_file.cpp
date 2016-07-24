@@ -20,13 +20,13 @@
 
 #include "common/config_file.h"
 
-#include "app/system.h"
-
 #include "common/logger.h"
 #include "common/make_unique.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
+
+#include "common/system/system.h"
 
 #include <memory>
 #include <utility>

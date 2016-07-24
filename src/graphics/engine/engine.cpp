@@ -22,13 +22,14 @@
 
 #include "app/app.h"
 #include "app/input.h"
-#include "app/system.h"
 
 #include "common/image.h"
 #include "common/key.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
 #include "common/stringutils.h"
+
+#include "common/system/system.h"
 
 #include "common/thread/resource_owning_thread.h"
 

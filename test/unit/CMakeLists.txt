@@ -1,8 +1,8 @@
 # Platform-dependent tests
 if(PLATFORM_WINDOWS)
-    set(PLATFORM_TESTS app/system_windows_test.cpp)
+    set(PLATFORM_TESTS common/system/system_windows_test.cpp)
 elseif(PLATFORM_LINUX)
-    set(PLATFORM_TESTS app/system_linux_test.cpp)
+    set(PLATFORM_TESTS common/system/system_linux_test.cpp)
 endif()
 
 # Sources

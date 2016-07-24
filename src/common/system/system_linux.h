@@ -18,11 +18,11 @@
  */
 
 /**
- * \file app/system_linux.h
+ * \file common/system/system_linux.h
  * \brief Linux-specific implementation of system functions
  */
 
-#include "app/system.h"
+#include "common/system/system.h"
 
 #include <sys/time.h>
 

@@ -18,39 +18,29 @@
  */
 
 /**
- * \file app/system_windows.h
- * \brief Windows-specific implementation of system functions
+ * \file common/system/system_macosx.h
+ * \brief MacOSX-specific implementation of system functions
  */
 
-#include "app/system.h"
+#include "common/system/system.h"
+#include "common/system/system_other.h"
 
 //@colobot-lint-exclude UndefinedFunctionRule
 
-struct SystemTimeStamp
-{
-    long long counterValue = 0;
-};
-
-class CSystemUtilsWindows : public CSystemUtils
+class CSystemUtilsMacOSX : public CSystemUtilsOther
 {
 public:
     void Init() override;
 
-    SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
-
-    void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
-    long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
-
+    std::string GetDataPath() override;
+    std::string GetLangPath() override;
     std::string GetSaveDir() override;
 
     void Usleep(int usec) override;
 
-public:
-    static std::string UTF8_Encode(const std::wstring &wstr);
-    static std::wstring UTF8_Decode(const std::string &str);
-
-protected:
-    long long m_counterFrequency = 0;
+private:
+    std::string m_ASPath;
+    std::string m_dataPath;
 };
 
 //@end-colobot-lint-exclude

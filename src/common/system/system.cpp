@@ -18,18 +18,18 @@
  */
 
 
-#include "app/system.h"
+#include "common/system/system.h"
 
 #include "common/config.h"
 
 #if defined(PLATFORM_WINDOWS)
-    #include "app/system_windows.h"
+    #include "common/system/system_windows.h"
 #elif defined(PLATFORM_LINUX)
-    #include "app/system_linux.h"
+    #include "common/system/system_linux.h"
 #elif defined(PLATFORM_MACOSX)
-    #include "app/system_macosx.h"
+    #include "common/system/system_macosx.h"
 #else
-    #include "app/system_other.h"
+    #include "common/system/system_other.h"
 #endif
 
 #include "common/make_unique.h"

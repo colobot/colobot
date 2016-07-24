@@ -26,10 +26,6 @@
 
 #include "app/app.h"
 #include "app/signal_handlers.h"
-#include "app/system.h"
-#if PLATFORM_WINDOWS
-    #include "app/system_windows.h"
-#endif
 
 #include "common/logger.h"
 #include "common/make_unique.h"
@@ -37,6 +33,11 @@
 #include "common/version.h"
 
 #include "common/resources/resourcemanager.h"
+
+#include "common/system/system.h"
+#if PLATFORM_WINDOWS
+    #include "common/system/system_windows.h"
+#endif
 
 #if PLATFORM_WINDOWS
     #include <windows.h>

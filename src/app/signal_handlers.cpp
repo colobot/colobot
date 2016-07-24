@@ -19,12 +19,12 @@
 
 #include "app/signal_handlers.h"
 
-#include "app/system.h"
-
 #include "common/stringutils.h"
 #include "common/version.h"
 
 #include "common/resources/resourcemanager.h"
+
+#include "common/system/system.h"
 
 #include "level/robotmain.h"
 

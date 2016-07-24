@@ -17,8 +17,8 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "app/system.h"
-#include "app/system_windows.h"
+#include "common/system/system.h"
+#include "common/system/system_windows.h"
 
 #include <gtest/gtest.h>
 
