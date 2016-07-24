@@ -23,7 +23,7 @@
 #include "common/config.h"
 
 #if PLATFORM_WINDOWS
-    #include "app/system_windows.h"
+    #include "common/system/system_windows.h"
 #endif
 
 #include "common/logger.h"
