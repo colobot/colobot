@@ -174,7 +174,8 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
             CBotClass* result = pStk->GetClass();
             if ( !pStk->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_POINTER).Eq(CBotTypNullPointer) &&
                ( !pStk->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_POINTER).Eq(CBotTypPointer) ||
-                 ( result != nullptr && !result->IsChildOf(pClass) )))     // type compatible ?
+                 ( result != nullptr && !(pClass->IsChildOf(result) ||
+                                          result->IsChildOf(pClass)))))     // type compatible ?
             {
                 pStk->SetError(CBotErrBadType1, p->GetStart());
                 goto error;
@@ -268,9 +269,10 @@ bool CBotDefClass::Execute(CBotStack* &pj)
             // evaluates the expression for the assignment
             if (!m_expr->Execute(pile)) return false;
 
+            CBotVar* pv = pile->GetVar();
+
             if ( bIntrincic )
             {
-                CBotVar*    pv = pile->GetVar();
                 if ( pv == nullptr || pv->GetPointer() == nullptr )
                 {
                     pile->SetError(CBotErrNull, &m_token);
@@ -280,8 +282,15 @@ bool CBotDefClass::Execute(CBotStack* &pj)
             }
             else
             {
+                CBotClass* c = pv->GetTypResult().GetClass();
+                if ( !c->IsChildOf(pClass))
+                {
+                    pile->SetError(CBotErrBadType1, &m_token);
+                    return pj->Return(pile);
+                }
+
                 CBotVarClass* pInstance;
-                pInstance = (static_cast<CBotVarPointer*>(pile->GetVar()))->GetPointer();    // value for the assignment
+                pInstance = (static_cast<CBotVarPointer*>(pv))->GetPointer();    // value for the assignment
                 pThis->SetPointer(pInstance);
             }
             pThis->SetInit(CBotVar::InitType::DEF);
