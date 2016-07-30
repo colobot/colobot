@@ -354,9 +354,7 @@ bool CBotClass::ExecuteMethode(long& nIdent,
 
     if (m_parent != nullptr)
     {
-        ret = m_parent->m_pCalls->DoCall(name, pThis, ppParams, pResult, pStack, pToken);
-        if (ret >= 0) return ret;
-        ret = m_parent->m_pMethod->DoCall(nIdent, name, pThis, ppParams, pStack, pToken, m_parent);
+        ret = m_parent->ExecuteMethode(nIdent, name, pThis, ppParams, pResult, pStack, pToken);
     }
     return ret;
 }
