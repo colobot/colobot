@@ -80,9 +80,9 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
         // also creates an instance of the parent class
         // cout << "creating parent: " << pClass2->GetName() << endl;
         // m_pParent = new CBotVarClass(name, CBotTypResult(type.GetType(),pClass2) ); //, nIdent);
-        CBotTypResult type = CBotTypResult(type.GetType(), pClass2);
-        CBotVarClass* instance = new CBotVarClass(name, type); //, nIdent);
-        CBotVarPointer* pointer = new CBotVarPointer(name, type);
+        CBotTypResult type2 = CBotTypResult(type.GetType(), pClass2);
+        CBotVarClass* instance = new CBotVarClass(name, type2); //, nIdent);
+        CBotVarPointer* pointer = new CBotVarPointer(name, type2);
         pointer->SetPointer(instance);
         m_pParent = pointer;
 
