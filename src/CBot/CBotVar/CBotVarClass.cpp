@@ -31,9 +31,6 @@
 
 #include <cassert>
 
-#include <iostream>
-using namespace std;
-
 namespace CBot
 {
 
@@ -78,20 +75,13 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
     if ( pClass2 != nullptr )
     {
         // also creates an instance of the parent class
-        // cout << "creating parent: " << pClass2->GetName() << endl;
-        // m_pParent = new CBotVarClass(name, CBotTypResult(type.GetType(),pClass2) ); //, nIdent);
         CBotTypResult type2 = CBotTypResult(type.GetType(), pClass2);
         CBotVarClass* instance = new CBotVarClass(name, type2); //, nIdent);
         CBotVarPointer* pointer = new CBotVarPointer(name, type2);
         pointer->SetPointer(instance);
         m_pParent = pointer;
-
-        //m_pParent = CBotVar::Create(name, CBotTypResult(type.GetType(), pClass2)); //, nIdent);
     }
 
-    // if (pClass != nullptr) {
-    //     cout << "setting class: " << pClass->GetName() << endl;
-    // }
     SetClass( pClass );
 
 }
@@ -174,7 +164,6 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
 
     if ( m_pClass == pClass ) return;
 
-    //cout << "setting class setter: " << pClass->GetName() << endl;
     m_pClass = pClass;
 
     // initializes the variables associated with this class

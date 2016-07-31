@@ -27,10 +27,6 @@
 #include "CBot/CBotClass.h"
 
 #include "CBot/CBotVar/CBotVar.h"
-#include "CBot/CBotVar/CBotVarClass.h"
-
-#include <iostream>
-using namespace std;
 
 namespace CBot
 {
@@ -149,7 +145,6 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     ppVars[i] = nullptr;
 
     CBotVar*    pThis  = pile1->GetVar();
-    cout << "here" << endl;
     CBotVar*    pResult = nullptr;
     CBotClass*  pClass;
     if (pThis->GetPointer() != nullptr)

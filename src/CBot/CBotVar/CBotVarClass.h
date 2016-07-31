@@ -98,7 +98,6 @@ public:
 
     void ConstructorSet() override;
 
-
 private:
     //! List of all class instances - first
     static std::set<CBotVarClass*> m_instances;
