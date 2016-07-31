@@ -282,11 +282,14 @@ bool CBotDefClass::Execute(CBotStack* &pj)
             }
             else
             {
-                CBotClass* c = pv->GetTypResult().GetClass();
-                if ( !c->IsChildOf(pClass))
+                if ( !(pv == nullptr || pv->GetPointer() == nullptr) )
                 {
-                    pile->SetError(CBotErrBadType1, &m_token);
-                    return pj->Return(pile);
+                    CBotClass* c = pv->GetTypResult().GetClass();
+                    if ( !c->IsChildOf(pClass))
+                    {
+                        pile->SetError(CBotErrBadType1, &m_token);
+                        return pj->Return(pile);
+                    }
                 }
 
                 CBotVarClass* pInstance;
