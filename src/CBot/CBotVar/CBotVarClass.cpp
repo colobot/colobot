@@ -19,6 +19,8 @@
 
 #include "CBot/CBotVar/CBotVarClass.h"
 
+#include "CBot/CBotVar/CBotVarPointer.h"
+
 #include "CBot/CBotClass.h"
 #include "CBot/CBotStack.h"
 #include "CBot/CBotDefines.h"
@@ -28,6 +30,9 @@
 #include "CBot/CBotInstr/CBotInstr.h"
 
 #include <cassert>
+
+#include <iostream>
+using namespace std;
 
 namespace CBot
 {
@@ -73,9 +78,20 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
     if ( pClass2 != nullptr )
     {
         // also creates an instance of the parent class
-        m_pParent = new CBotVarClass(name, CBotTypResult(type.GetType(),pClass2) ); //, nIdent);
+        // cout << "creating parent: " << pClass2->GetName() << endl;
+        // m_pParent = new CBotVarClass(name, CBotTypResult(type.GetType(),pClass2) ); //, nIdent);
+        CBotTypResult type = CBotTypResult(type.GetType(), pClass2);
+        CBotVarClass* instance = new CBotVarClass(name, type); //, nIdent);
+        CBotVarPointer* pointer = new CBotVarPointer(name, type);
+        pointer->SetPointer(instance);
+        m_pParent = pointer;
+
+        //m_pParent = CBotVar::Create(name, CBotTypResult(type.GetType(), pClass2)); //, nIdent);
     }
 
+    // if (pClass != nullptr) {
+    //     cout << "setting class: " << pClass->GetName() << endl;
+    // }
     SetClass( pClass );
 
 }
@@ -158,6 +174,7 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
 
     if ( m_pClass == pClass ) return;
 
+    //cout << "setting class setter: " << pClass->GetName() << endl;
     m_pClass = pClass;
 
     // initializes the variables associated with this class
@@ -228,6 +245,12 @@ CBotClass* CBotVarClass::GetClass()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+CBotVar* CBotVarClass::GetParent()
+{
+    return    m_pParent;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void CBotVarClass::Update(void* pUser)
 {
     // retrieves the user pointer according to the class
@@ -250,7 +273,7 @@ CBotVar* CBotVarClass::GetItem(const std::string& name)
         p = p->GetNext();
     }
 
-    if ( m_pParent != nullptr ) return m_pParent->GetItem(name);
+    if ( m_pParent != nullptr ) return m_pParent->GetPointer()->GetItem(name);
     return nullptr;
 }
 
@@ -265,7 +288,7 @@ CBotVar* CBotVarClass::GetItemRef(int nIdent)
         p = p->GetNext();
     }
 
-    if ( m_pParent != nullptr ) return m_pParent->GetItemRef(nIdent);
+    if ( m_pParent != nullptr ) return m_pParent->GetPointer()->GetItemRef(nIdent);
     return nullptr;
 }
 
@@ -335,7 +358,7 @@ std::string CBotVarClass::GetValString()
                 pv = pv->GetNext();
                 if ( pv != nullptr ) res += ", ";
             }
-            my = my->m_pParent;
+            my = my->m_pParent->GetPointer();
             if ( my != nullptr )
             {
                 res += ") extends ";

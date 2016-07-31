@@ -26,6 +26,8 @@
 namespace CBot
 {
 
+class CBotVarPointer;
+
 /**
  * \brief CBotVar subclass for managing classes (::CBotTypClass, ::CBotTypIntrinsic)
  *
@@ -73,6 +75,8 @@ public:
 
     //@}
 
+    CBotVar* GetParent();
+
     CBotVarClass* GetPointer() override;
 
     //! \name Unique instance identifier
@@ -94,13 +98,14 @@ public:
 
     void ConstructorSet() override;
 
+
 private:
     //! List of all class instances - first
     static std::set<CBotVarClass*> m_instances;
     //! Class definition
     CBotClass* m_pClass;
-    //! Parent class instance
-    CBotVarClass* m_pParent;
+    //! Parent class pointer
+    CBotVarPointer* m_pParent;
     //! Class members
     CBotVar* m_pVar;
     //! Reference counter

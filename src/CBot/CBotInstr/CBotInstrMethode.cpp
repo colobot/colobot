@@ -27,6 +27,10 @@
 #include "CBot/CBotClass.h"
 
 #include "CBot/CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVarClass.h"
+
+#include <iostream>
+using namespace std;
 
 namespace CBot
 {
@@ -144,9 +148,18 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     }
     ppVars[i] = nullptr;
 
-    CBotClass*    pClass = CBotClass::Find(m_className);
     CBotVar*    pThis  = pile1->GetVar();
+    cout << "here" << endl;
     CBotVar*    pResult = nullptr;
+    CBotClass*  pClass;
+    if (pThis->GetPointer() != nullptr)
+    {
+        pClass = pThis->GetPointer()->GetClass();
+    }
+    else
+    {
+        pClass = pThis->GetClass();
+    }
     if (m_typRes.GetType() > 0) pResult = CBotVar::Create("", m_typRes);
     if (m_typRes.Eq(CBotTypClass))
     {
@@ -253,9 +266,17 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     }
     ppVars[i] = nullptr;
 
-    CBotClass*    pClass = CBotClass::Find(m_className);
     CBotVar*    pThis  = pile1->GetVar();
     CBotVar*    pResult = nullptr;
+    CBotClass*  pClass;
+    if (pThis->GetPointer() != nullptr)
+    {
+        pClass = pThis->GetPointer()->GetClass();
+    }
+    else
+    {
+        pClass = pThis->GetClass();
+    }
     if (m_typRes.GetType()>0) pResult = CBotVar::Create("", m_typRes);
     if (m_typRes.Eq(CBotTypClass))
     {

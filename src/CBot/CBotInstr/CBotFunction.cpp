@@ -34,9 +34,13 @@
 #include "CBot/CBotUtils.h"
 
 #include "CBot/CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVarClass.h"
 
 #include <cassert>
 #include <sstream>
+
+#include <iostream>
+using namespace std;
 
 namespace CBot
 {
@@ -752,8 +756,16 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, 
             {
                 // sets the variable "super" on the stack
                 CBotVar* psuper = CBotVar::Create("super", CBotTypNullPointer);
-                psuper->Copy(pThis, false); // in fact identical to "this"
+                // psuper->Copy(pThis, false); // in fact identical to "this"
+                // cout << "here2" << endl;
+                // cout << typeid(*pThis).name() << endl;
+                // cout << pThis->GetClass()->GetName() << " " <<
+                //     dynamic_cast<CBotVarClass*>(pThis->GetPointer())->
+                //         m_pParent->GetClass()->GetName() << endl;
+                // cout << pThis->GetClass()->GetParent()->GetName() << endl;
+                psuper->Copy(pThis->GetPointer()->GetParent(), false);
                 psuper->SetUniqNum(-3);     // special value
+                //psuper->SetClass(pClass);
                 pStk->AddVar(psuper);
             }
             // initializes the variables as parameters
