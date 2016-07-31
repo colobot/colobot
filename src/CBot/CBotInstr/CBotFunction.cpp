@@ -34,6 +34,7 @@
 #include "CBot/CBotUtils.h"
 
 #include "CBot/CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVarClass.h"
 
 #include <cassert>
 #include <sstream>

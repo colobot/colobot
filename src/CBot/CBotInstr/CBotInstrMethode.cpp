@@ -27,6 +27,7 @@
 #include "CBot/CBotClass.h"
 
 #include "CBot/CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVarClass.h"
 
 namespace CBot
 {
