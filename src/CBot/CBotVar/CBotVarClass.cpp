@@ -328,7 +328,7 @@ std::string CBotVarClass::GetValString()
         res = m_pClass->GetName() + std::string("( ");
 
         CBotVarClass*    my = this;
-        while ( my != nullptr )
+        while ( true )
         {
             CBotVar*    pv = my->m_pVar;
             while ( pv != nullptr )
@@ -347,12 +347,16 @@ std::string CBotVarClass::GetValString()
                 pv = pv->GetNext();
                 if ( pv != nullptr ) res += ", ";
             }
-            my = my->m_pParent->GetPointer();
-            if ( my != nullptr )
+            if ( my->m_pParent != nullptr )
             {
+                my = my->m_pParent->GetPointer();
                 res += ") extends ";
                 res += my->m_pClass->GetName();
                 res += " (";
+            }
+            else
+            {
+                break;
             }
         }
 
