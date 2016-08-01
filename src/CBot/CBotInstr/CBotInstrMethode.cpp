@@ -54,6 +54,8 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
     CBotToken*    pp = p;
     p = p->GetNext();
 
+    // Allow method names to start with '~' in order to allow calling parent
+    // destructors from a child class's destructor.
     std::string name = pp->GetString();
     if ( IsOfType(pp, ID_NOT) )
     {

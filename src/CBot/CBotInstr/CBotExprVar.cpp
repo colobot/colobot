@@ -121,7 +121,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, CBotVar::Prot
                         CBotToken* nameStart = p;
 
                         // After a dot, names can start with a ~ in order to
-                        // facilitate calling super desconstructors
+                        // facilitate calling super destructors.
                         if (p->GetType() == ID_NOT)
                         {
                             nameStart = p->GetNext();
