@@ -54,9 +54,16 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
     CBotToken*    pp = p;
     p = p->GetNext();
 
+    std::string name = pp->GetString();
+    if ( IsOfType(pp, ID_NOT) )
+    {
+        name = std::string("~") + p->GetString();
+        p = p->GetNext();
+    }
+
     if (p->GetType() == ID_OPENPAR)
     {
-        inst->m_methodName = pp->GetString();
+        inst->m_methodName = name;
 
         // compiles the list of parameters
         CBotVar*    ppVars[1000];
