@@ -1188,3 +1188,21 @@ TEST_F(CBotUT, AccessMembersInParameters_Issue256)
         "}\n"
     );
 }
+
+// The this pointer should always point to the current instance, even if we are
+// using the 'super' meta instance that points to the parent.
+TEST_F(CBotUT, ThisPointerInsideSuperCall)
+{
+    ExecuteTest(
+        "public class Base {\n"
+        "    Base GetThis() { return this; }\n"
+        "}\n"
+        "public class Child extends Base {\n"
+        "    Child GetThis() { return super.GetThis(); }\n"
+        "}\n"
+        "extern void test() {\n"
+        "    Child c();\n"
+        "    ASSERT(c == c.GetThis());\n"
+        "}\n"
+    );
+}
