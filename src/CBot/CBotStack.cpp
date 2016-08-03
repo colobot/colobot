@@ -19,6 +19,8 @@
 
 #include "CBot/CBotStack.h"
 
+#include "CBot/CBotClass.h"
+
 #include "CBot/CBotInstr/CBotFunction.h"
 
 #include "CBot/CBotVar/CBotVarPointer.h"
@@ -866,10 +868,11 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
                     if (isClass && p == nullptr) // set id for each item in this instance
                     {
                         CBotVar* pVars = pNew->GetItemList();
-                        long itemId = 1;
-                        while (pVars != nullptr)
+                        CBotVar* pv = pNew->GetClass()->GetVar();
+                        while (pVars != nullptr && pv != nullptr)
                         {
-                            pVars->m_ident = itemId++;
+                            pVars->m_ident = pv->m_ident;
+                            pv = pv->GetNext();
                             pVars = pVars->GetNext();
                         }
                     }
