@@ -760,7 +760,17 @@ bool CBotVar::Save0State(FILE* pf)
     if (!WriteWord(pf, 100+static_cast<int>(m_mPrivate)))return false;        // private variable?
     if (!WriteWord(pf, m_bStatic))return false;                // static variable?
     if (!WriteWord(pf, m_type.GetType()))return false;        // saves the type (always non-zero)
-    if (!WriteWord(pf, static_cast<unsigned short>(m_binit))) return false;                // variable defined?
+
+    if (m_type.Eq(CBotTypPointer) && GetPointer() != nullptr)
+    {
+        if (GetPointer()->m_bConstructor)                    // constructor was called?
+        {
+            if (!WriteWord(pf, (2000 + static_cast<unsigned short>(m_binit)) )) return false;
+            return WriteString(pf, m_token->GetString());    // and variable name
+        }
+    }
+
+    if (!WriteWord(pf, static_cast<unsigned short>(m_binit))) return false;          // variable defined?
     return WriteString(pf, m_token->GetString());            // and variable name
 }
 
@@ -800,6 +810,13 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
         if ( w == CBotTypClass ) w = CBotTypIntrinsic;            // necessarily intrinsic
 
         if (!ReadWord(pf, wi)) return false;                    // init ?
+        bool bConstructor = false;
+        if (w == CBotTypPointer && wi >= 2000)
+        {
+            wi -= 2000;
+            bConstructor = true;
+        }
+
         CBotVar::InitType initType = static_cast<CBotVar::InitType>(wi);
         if (!ReadString(pf, name)) return false;                // variable name
 
@@ -868,9 +885,10 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 
         case CBotTypPointer:
         case CBotTypNullPointer:
-            if (!ReadString(pf, s)) return false;
+            if (!ReadString(pf, s)) return false;   // name of the class
             {
-                pNew = CBotVar::Create(token, CBotTypResult(w, s));// creates a variable
+                CBotTypResult ptrType(w, s);
+                pNew = CBotVar::Create(token, ptrType);// creates a variable
 //                CBotVarClass* p = nullptr;
                 long id;
                 ReadLong(pf, id);
@@ -880,6 +898,8 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
                 CBotVar* pInstance = nullptr;
                 if ( !CBotVar::RestoreState( pf, pInstance ) ) return false;
                 (static_cast<CBotVarPointer*>(pNew))->SetPointer( pInstance );            // and point over
+
+                if (bConstructor) pNew->ConstructorSet(); // constructor was called
 
 //                if ( p != nullptr ) (static_cast<CBotVarPointer*>(pNew))->SetPointer( p );    // rather this one
 
