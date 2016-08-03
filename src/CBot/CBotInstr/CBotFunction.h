@@ -179,8 +179,9 @@ public:
      * \param ppVars
      * \param pStack
      * \param pClass
+     * \return Returns true if the method call was restored.
      */
-    void RestoreCall(long& nIdent,
+    bool RestoreCall(long& nIdent,
                      const std::string& name,
                      CBotVar* pThis,
                      CBotVar** ppVars,

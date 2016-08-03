@@ -801,7 +801,7 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar* pThis, CBotVar** ppVars,
+bool CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar* pThis, CBotVar** ppVars,
                                CBotStack* pStack, CBotClass* pClass)
 {
     CBotTypResult   type;
@@ -810,14 +810,20 @@ void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar* p
     if ( pt != nullptr )
     {
         CBotStack*  pStk = pStack->RestoreStack(pt);
-        if ( pStk == nullptr ) return;
+        if ( pStk == nullptr ) return true;
         pStk->SetProgram(pt->m_pProg);                  // it may have changed module
 
         CBotVar*    pthis = pStk->FindVar("this");
         pthis->SetUniqNum(-2);
 
+        if (pClass->GetParent() != nullptr)
+        {
+            CBotVar* psuper = pStk->FindVar("super");
+            if (psuper != nullptr) psuper->SetUniqNum(-3);
+        }
+
         CBotStack*  pStk3 = pStk->RestoreStack(nullptr);   // to set parameters passed
-        if ( pStk3 == nullptr ) return;
+        if ( pStk3 == nullptr ) return true;
 
         pt->m_param->RestoreState(pStk3, true);                 // parameters
 
@@ -831,7 +837,9 @@ void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar* p
         // finally calls the found function
 
         pt->m_block->RestoreState(pStk3, true);                 // interrupt !
+        return true;
     }
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

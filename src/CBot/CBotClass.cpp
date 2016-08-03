@@ -368,7 +368,14 @@ void CBotClass::RestoreMethode(long& nIdent,
                                CBotVar** ppParams,
                                CBotStack*& pStack)
 {
-    m_pMethod->RestoreCall(nIdent, name, pThis, ppParams, pStack, this);
+    CBotClass* pClass = this;
+    while (pClass != nullptr)
+    {
+        bool ok = pClass->m_pMethod->RestoreCall(nIdent, name, pThis, ppParams, pStack, pClass);
+        if (ok) return;
+        pClass = pClass->m_parent;
+    }
+    assert(false);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
