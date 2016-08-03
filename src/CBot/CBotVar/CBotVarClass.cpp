@@ -47,25 +47,26 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
          !type.Eq(CBotTypArrayBody)) assert(0);
 
     m_token        = new CBotToken(name);
-    m_next        = nullptr;
-    m_pMyThis    = nullptr;
-    m_pUserPtr    = OBJECTCREATED;//nullptr;
-    m_InitExpr = nullptr;
-    m_LimExpr = nullptr;
-    m_pVar        = nullptr;
-    m_type        = type;
+    m_next         = nullptr;
+    m_pMyThis      = nullptr;
+    m_pUserPtr     = OBJECTCREATED; //nullptr;
+    m_InitExpr     = nullptr;
+    m_LimExpr      = nullptr;
+    m_pVar         = nullptr;
+    m_type         = type;
     if ( type.Eq(CBotTypArrayPointer) )    m_type.SetType( CBotTypArrayBody );
     else if ( !type.Eq(CBotTypArrayBody) ) m_type.SetType( CBotTypClass );
                                                  // officel type for this object
 
-    m_pClass    = nullptr;
-    m_pParent    = nullptr;
+    m_pClass       = nullptr;
+    m_pParent      = nullptr;
+    m_pThis        = nullptr;
     m_binit        = InitType::UNDEF;
-    m_bStatic    = false;
-    m_mPrivate    = ProtectionLevel::Public;
+    m_bStatic      = false;
+    m_mPrivate     = ProtectionLevel::Public;
     m_bConstructor = false;
-    m_CptUse    = 0;
-    m_ItemIdent = type.Eq(CBotTypIntrinsic) ? 0 : CBotVar::NextUniqNum();
+    m_CptUse       = 0;
+    m_ItemIdent    = type.Eq(CBotTypIntrinsic) ? 0 : CBotVar::NextUniqNum();
 
     // add to the list
     m_instances.insert(this);
@@ -80,6 +81,14 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
         CBotVarPointer* pointer = new CBotVarPointer(name, type2);
         pointer->SetPointer(instance);
         m_pParent = pointer;
+
+        // Set up the this pointer for the parent chain
+        CBotVarClass *p = m_pParent->GetPointer();
+        while (true) {
+            p->m_pThis = this;
+            if (p->m_pParent == nullptr) break;
+            p = p->m_pParent->GetPointer();
+        }
     }
 
     SetClass( pClass );
@@ -234,9 +243,15 @@ CBotClass* CBotVarClass::GetClass()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar* CBotVarClass::GetParent()
+CBotVarPointer* CBotVarClass::GetParent()
 {
     return    m_pParent;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CBotVarClass* CBotVarClass::GetThis()
+{
+    return    m_pThis;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

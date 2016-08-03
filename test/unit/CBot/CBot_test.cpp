@@ -1198,11 +1198,30 @@ TEST_F(CBotUT, ThisPointerInsideSuperCall)
         "    Base GetThis() { return this; }\n"
         "}\n"
         "public class Child extends Base {\n"
-        "    Child GetThis() { return super.GetThis(); }\n"
+        "    Base GetThis() { return super.GetThis(); }\n"
         "}\n"
         "extern void test() {\n"
         "    Child c();\n"
         "    ASSERT(c == c.GetThis());\n"
         "}\n"
+    );
+}
+
+TEST_F(CBotUT, ThisPointerInsideSuperCallGrandparent)
+{
+    ExecuteTest(
+        "public class Base {\n"
+        "    Base GetThis() { return this; }\n"
+        "}\n"
+        "public class Child extends Base {\n"
+        "    Base GetThis() { return super.GetThis(); }\n"
+        "}\n"
+        "public class Grandchild extends Child {\n"
+        "    Base GetThis() { return super.GetThis(); }\n"
+        "}\n"
+        "extern void test() {\n"
+        "    Grandchild g();\n"
+        "    ASSERT(g == g.GetThis());\n"
+        "}"
     );
 }

@@ -75,7 +75,15 @@ public:
 
     //@}
 
-    CBotVar* GetParent();
+    CBotVarPointer* GetParent();
+
+    /**
+     * \brief Returns the this instance that should be used to call methods
+     *
+     * Especially important for the parent instances for the `super` pointer in
+     * inherited classes.
+     */
+    CBotVarClass* GetThis();
 
     CBotVarClass* GetPointer() override;
 
@@ -103,8 +111,11 @@ private:
     static std::set<CBotVarClass*> m_instances;
     //! Class definition
     CBotClass* m_pClass;
-    //! Parent class pointer
+    //! Parent instance pointer
     CBotVarPointer* m_pParent;
+    //! For parent instances (m_pParent) used in super calls, this points to the
+    //! original instance.
+    CBotVarClass* m_pThis;
     //! Class members
     CBotVar* m_pVar;
     //! Reference counter
