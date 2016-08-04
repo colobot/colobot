@@ -69,6 +69,7 @@ private:
     CBotInstr* m_expr;
     friend class CBotLeftExpr;
     friend class CBotExprVar;
+    friend class CBotExprRetVar;
 };
 
 } // namespace CBot

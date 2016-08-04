@@ -83,6 +83,10 @@ private:
     long m_MethodeIdent;
     //! Name of the class.
     std::string m_className;
+
+    //! Instruction to return a member of the returned object.
+    CBotInstr* m_exprRetVar;
+
 };
 
 } // namespace CBot
