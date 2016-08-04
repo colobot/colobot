@@ -84,7 +84,8 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
 
         // Set up the this pointer for the parent chain
         CBotVarClass *p = m_pParent->GetPointer();
-        while (true) {
+        while (true)
+        {
             p->m_pThis = this;
             if (p->m_pParent == nullptr) break;
             p = p->m_pParent->GetPointer();

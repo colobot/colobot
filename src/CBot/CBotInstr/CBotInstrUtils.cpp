@@ -154,7 +154,8 @@ bool TypesCompatibles(const CBotTypResult& type1, const CBotTypResult& type2)
         if (max == CBotTypArrayPointer)
             return TypesCompatibles(type1.GetTypElem(), type2.GetTypElem());
 
-        if (max == CBotTypClass || max == CBotTypPointer) {
+        if (max == CBotTypClass || max == CBotTypPointer)
+        {
             CBotClass*    c1 = type1.GetClass();
             CBotClass*    c2 = type2.GetClass();
 

@@ -748,7 +748,8 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, 
             pthis->Copy(pThis, false);
             pthis->SetUniqNum(-2);      // special value
 
-            if (pThis->GetPointer()->GetThis() != nullptr) {
+            if (pThis->GetPointer()->GetThis() != nullptr)
+            {
                 pthis->SetPointer(pThis->GetPointer()->GetThis());
             }
 
