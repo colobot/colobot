@@ -115,7 +115,7 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
                 goto error;
             }
 
-            CBotTypResult valType = pStk->GetTypResult();
+            CBotTypResult valType = pStk->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
 
             if (!TypeCompatible(valType, type, ID_ASS) )
             {
@@ -133,7 +133,7 @@ CBotInstr* CBotListArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
                     goto error;
                 }
 
-                CBotTypResult valType = pStk->GetTypResult();
+                CBotTypResult valType = pStk->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
 
                 if (!TypeCompatible(valType, type, ID_ASS) )
                 {
@@ -185,8 +185,11 @@ bool CBotListArray::Execute(CBotStack* &pj, CBotVar* pVar)
             pj->SetError(CBotErrOutArray, p->GetToken());
             return false;
         }
+        CBotTypResult type = pVar2->GetTypResult();
 
         if (!p->Execute(pile1, pVar2)) return false;        // evaluate expression
+
+        if (type.Eq(CBotTypPointer)) pVar2->SetType(type);  // keep pointer type
 
         pile1->IncState();
     }

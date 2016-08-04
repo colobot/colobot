@@ -903,6 +903,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
                 (static_cast<CBotVarPointer*>(pNew))->SetPointer( pInstance );            // and point over
 
                 if (bConstructor) pNew->ConstructorSet(); // constructor was called
+                if (ptrType.Eq(CBotTypPointer)) pNew->SetType(ptrType); // keep pointer type
 
 //                if ( p != nullptr ) (static_cast<CBotVarPointer*>(pNew))->SetPointer( p );    // rather this one
 

@@ -63,6 +63,7 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
 
         if (pStack->IsOk())
         {
+            inst->m_thisIdent = var->GetUniqNum();
             CBotClass* pClass = var->GetClass();    // pointer to the class
             inst->m_className = pClass->GetName();  // name of the class
             CBotTypResult r = pClass->CompileMethode(inst->m_methodName, var, ppVars,
@@ -144,8 +145,14 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     }
     ppVars[i] = nullptr;
 
-    CBotClass*    pClass = CBotClass::Find(m_className);
     CBotVar*    pThis  = pile1->GetVar();
+    CBotClass*  pClass;
+
+    if (m_thisIdent == -3) // super.method()
+        pClass = CBotClass::Find(m_className);
+    else
+        pClass = pThis->GetClass();
+
     CBotVar*    pResult = nullptr;
     if (m_typRes.GetType() > 0) pResult = CBotVar::Create("", m_typRes);
     if (m_typRes.Eq(CBotTypClass))
@@ -204,7 +211,13 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
     }
     ppVars[i] = nullptr;
 
-    CBotClass*    pClass = CBotClass::Find(m_className);
+    CBotClass*    pClass;
+
+    if (m_thisIdent == -3) // super.method()
+        pClass = CBotClass::Find(m_className);
+    else
+        pClass = pThis->GetClass();
+
 //    CBotVar*    pResult = nullptr;
 
 //    CBotVar*    pRes = pResult;
@@ -253,8 +266,14 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     }
     ppVars[i] = nullptr;
 
-    CBotClass*    pClass = CBotClass::Find(m_className);
     CBotVar*    pThis  = pile1->GetVar();
+    CBotClass*  pClass;
+
+    if (m_thisIdent == -3) // super.method()
+        pClass = CBotClass::Find(m_className);
+    else
+        pClass = pThis->GetClass();
+
     CBotVar*    pResult = nullptr;
     if (m_typRes.GetType()>0) pResult = CBotVar::Create("", m_typRes);
     if (m_typRes.Eq(CBotTypClass))
