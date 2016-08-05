@@ -1,0 +1,1 @@
+Images used in Doxygen documentation

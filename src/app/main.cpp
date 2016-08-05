@@ -48,13 +48,22 @@
 #include <vector>
 #include <boost/filesystem.hpp>
 
-/* Doxygen main page */
-
 /**
-
 \mainpage
 
-Doxygen documentation of Colobot project
+Doxygen documentation of Colobot: Gold Edition project.
+
+<b>Colobot</b> <i>(COLOnize with BOTs)</i> is a game combining elements of real time strategy (RTS)
+and educational game, aiming to teach programming through entertainment. You are playing as an astronaut
+on a journey with robot helpers to find a planet for colonization. It features a C++ and Java-like,
+object-oriented language, CBOT, which can be used to program the robots available in the game.
+
+The original version of the game was developed by [Epsitec](http://www.epsitec.ch/) and released in 2001.
+Later, in 2005 another version named Ceebot was released. In March 2012, through attempts
+by Polish Colobot fans, Epsitec agreeed to release the source code of the game on GPLv3 license.
+The license was given specfifically to our community, <b>TerranovaTeam</b>,
+part of <b>International Colobot Community (ICC)</b> (previously known as <i>Polish Portal of Colobot (PPC)</i>;
+Polish: <i>Polski Portal Colobota</i>) with our website at http://colobot.info/.
 
 \section Intro Introduction
 
@@ -71,17 +80,21 @@ The source code was split from the original all-in-one directory to subdirectori
 each containing one major part of the project.
 The current layout is the following:
  - src/CBot - separate library with CBot language
- - src/app - class CApplication and everything concerned with SDL plus other system-dependent
-   code such as displaying a message box, finding files, etc.
+ - src/app - class CApplication and everything concerned with SDL
  - src/common - shared structs, enums, defines, etc.; should not have any external dependencies
+ - src/common/resources - filesystem management using PHYSFS library
+ - src/common/system - system-dependent code such as displaying a message box, finding files, etc.
+ - src/common/thread - wrapper classes for SDL threads
  - src/graphics/core - abstract interface of graphics device (abstract CDevice class)
-   (split from old src/graphics/common)
  - src/graphics/engine - main graphics engine based on abstract graphics device; is composed
-   of CEngine class and associated classes implementing the 3D engine (split from old src/graphics/common)
+   of CEngine class and associated classes implementing the 3D engine
+ - src/graphics/model - code related to loading/saving model files
  - src/graphics/opengl - concrete implementation of CDevice class in OpenGL: CGLDevice
  - src/graphics/d3d - in (far) future - perhaps a newer implementation in DirectX (9? 10?)
  - src/math - mathematical structures and functions
- - src/object - non-graphical game engine, that is robots, buildings, etc.
+ - src/object - non-grphical game object logic, that is robots, buildings, etc.
+ - src/level - main part of non-graphical game engine, that is loading levels etc.
+ - src/level/parser - parser for loading/saving level files from format known as <i>scene files</i>
  - src/ui - 2D user interface (menu, buttons, check boxes, etc.)
  - src/sound - sound and music engine written using fmod library
  - src/physics - physics engine
