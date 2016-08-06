@@ -135,9 +135,14 @@ bool CBotExprRetVar::Execute(CBotStack* &pj)
     {
         pVar = pj->GetVar();
         pVar->Update(pj->GetUserPtr());
+        if (pVar->GetType(CBotVar::GetTypeMode::CLASS_AS_POINTER) == CBotTypNullPointer)
+        {
+            pile1->SetError(CBotErrNull, &m_token);
+            return pj->Return(pile1);
+        }
 
         if ( !m_next3->ExecuteVar(pVar, pile, &m_token, true, false) )
-                return false;
+            return false;
 
         if (pVar)
             pile1->SetCopyVar(pVar);
