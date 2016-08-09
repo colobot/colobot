@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include "common/thread/sdl_mutex_wrapper.h"
+
 #include <SDL_thread.h>
 
 /**
@@ -43,6 +45,16 @@ public:
     SDL_cond* operator*()
     {
         return m_cond;
+    }
+
+    void Signal()
+    {
+        SDL_CondSignal(m_cond);
+    }
+
+    void Wait(SDL_mutex* mutex)
+    {
+        SDL_CondWait(m_cond, mutex);
     }
 
 private:

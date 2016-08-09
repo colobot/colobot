@@ -59,6 +59,11 @@ public:
           m_name(name)
     {}
 
+    ~CResourceOwningThread()
+    {
+        SDL_DetachThread(m_thread);
+    }
+
     void Start()
     {
         CSDLMutexWrapper mutex;
@@ -74,7 +79,7 @@ public:
 
         SDL_LockMutex(*mutex);
 
-        SDL_CreateThread(Run, !m_name.empty() ? m_name.c_str() : nullptr, reinterpret_cast<void*>(&data));
+        m_thread = SDL_CreateThread(Run, !m_name.empty() ? m_name.c_str() : nullptr, reinterpret_cast<void*>(&data));
 
         while (!condition)
         {
@@ -82,6 +87,13 @@ public:
         }
 
         SDL_UnlockMutex(*mutex);
+    }
+
+    void Join()
+    {
+        if (m_thread == nullptr) return;
+        SDL_WaitThread(m_thread, nullptr);
+        m_thread = nullptr;
     }
 
 private:
@@ -117,4 +129,5 @@ private:
     ThreadFunctionPtr m_threadFunction;
     ResourceUPtr m_resource;
     std::string m_name;
+    SDL_Thread* m_thread = nullptr;
 };

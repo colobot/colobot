@@ -153,6 +153,8 @@ set(BASE_SOURCES
     common/thread/resource_owning_thread.h
     common/thread/sdl_cond_wrapper.h
     common/thread/sdl_mutex_wrapper.h
+    common/thread/thread.h
+    common/thread/worker_thread.h
     graphics/core/color.cpp
     graphics/core/color.h
     graphics/core/device.h
