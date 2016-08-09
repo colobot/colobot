@@ -509,21 +509,50 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
         classe->Purge();                            // empty the old definitions // TODO: Doesn't this remove all classes of the current program?
         classe->m_IsDef = false;                    // current definition
 
+        classe->m_pOpenblk = p;
+
         if ( !IsOfType( p, ID_OPBLK) )
         {
             pStack->SetError(CBotErrOpenBlock, p);
             return nullptr;
         }
 
-        while ( pStack->IsOk() && !IsOfType( p, ID_CLBLK ) )
+        int level = 1;
+        do                                          // skip over the definition
         {
-            classe->CompileDefItem(p, pStack, false);
+            int type = p->GetType();
+            p = p->GetNext();
+            if (type == ID_OPBLK) level++;
+            if (type == ID_CLBLK) level--;
         }
+        while (level > 0 && p != nullptr);
+
+        if (level > 0) pStack->SetError(CBotErrCloseBlock, classe->m_pOpenblk);
 
         if (pStack->IsOk()) return classe;
     }
     pStack->SetError(CBotErrNoTerminator, p);
     return nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CBotClass::DefineClasses(CBotClass* pClass, CBotCStack* pStack)
+{
+    while (pClass != nullptr)
+    {
+        CBotClass* pParent = pClass->m_parent;
+        pClass->m_nbVar = (pParent == nullptr) ? 0 : pParent->m_nbVar;
+        CBotToken* p = pClass->m_pOpenblk->GetNext();
+
+        while (pStack->IsOk() && !IsOfType(p, ID_CLBLK))
+        {
+            pClass->CompileDefItem(p, pStack, false);
+        }
+
+        if (!pStack->IsOk()) return;
+
+        pClass = pClass->GetNext();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

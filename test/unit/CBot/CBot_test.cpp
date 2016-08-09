@@ -1283,6 +1283,41 @@ TEST_F(CBotUT, ClassInheritanceTestThis)
     );
 }
 
+TEST_F(CBotUT, ClassCompileCircularReference_Issue433)
+{
+    ExecuteTest(
+        "public class OtherClass {\n"
+        "    TestClass testclass;\n"
+        "}\n"
+        "public class TestClass {\n"
+        "    int test;\n"
+        "    OtherClass otherclass;\n"
+        "}\n"
+        "extern void TestCompileCircularReference()\n"
+        "{\n"
+        "    TestClass t();\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassTestClassDefinedAfterReference)
+{
+    ExecuteTest(
+        "public class OtherClass {\n"
+        "    TestClass testclass = new TestClass();\n"
+        "}\n"
+        "public class TestClass {\n"
+        "    int test = 246;\n"
+        "}\n"
+        "extern void TestDefinedAfterReference()\n"
+        "{\n"
+        "    OtherClass o();\n"
+        "    TestClass t = o.testclass;\n"
+        "    ASSERT(t.test == 246);\n"
+        "}\n"
+    );
+}
+
 TEST_F(CBotUT, String)
 {
     ExecuteTest(

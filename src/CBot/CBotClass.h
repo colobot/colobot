@@ -292,6 +292,14 @@ public:
                                CBotCStack* pStack);
 
     /*!
+     * \brief DefineClasses Calls CompileDefItem for each class in a list
+     * of classes, defining fields and pre-compiling methods.
+     * \param pClass List of classes
+     * \param pStack
+     */
+    static void DefineClasses(CBotClass* pClass, CBotCStack* pStack);
+
+    /*!
      * \brief CompileDefItem
      * \param p
      * \param pStack
@@ -384,6 +392,8 @@ private:
     //! Linked list of all class methods
     CBotFunction* m_pMethod;
     void (*m_rUpdate)(CBotVar* thisVar, void* user);
+
+    CBotToken* m_pOpenblk;
 
     //! How many times the program currently holding the lock called Lock()
     int m_lockCurrentCount = 0;
