@@ -19,6 +19,8 @@
 
 #include "CBot/CBotVar/CBotVarClass.h"
 
+#include "CBot/CBotVar/CBotVarPointer.h"
+
 #include "CBot/CBotClass.h"
 #include "CBot/CBotStack.h"
 #include "CBot/CBotDefines.h"
@@ -45,25 +47,26 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
          !type.Eq(CBotTypArrayBody)) assert(0);
 
     m_token        = new CBotToken(name);
-    m_next        = nullptr;
-    m_pMyThis    = nullptr;
-    m_pUserPtr    = OBJECTCREATED;//nullptr;
-    m_InitExpr = nullptr;
-    m_LimExpr = nullptr;
-    m_pVar        = nullptr;
-    m_type        = type;
+    m_next         = nullptr;
+    m_pMyThis      = nullptr;
+    m_pUserPtr     = OBJECTCREATED; //nullptr;
+    m_InitExpr     = nullptr;
+    m_LimExpr      = nullptr;
+    m_pVar         = nullptr;
+    m_type         = type;
     if ( type.Eq(CBotTypArrayPointer) )    m_type.SetType( CBotTypArrayBody );
     else if ( !type.Eq(CBotTypArrayBody) ) m_type.SetType( CBotTypClass );
                                                  // officel type for this object
 
-    m_pClass    = nullptr;
-    m_pParent    = nullptr;
+    m_pClass       = nullptr;
+    m_pParent      = nullptr;
+    m_pThis        = nullptr;
     m_binit        = InitType::UNDEF;
-    m_bStatic    = false;
-    m_mPrivate    = ProtectionLevel::Public;
+    m_bStatic      = false;
+    m_mPrivate     = ProtectionLevel::Public;
     m_bConstructor = false;
-    m_CptUse    = 0;
-    m_ItemIdent = type.Eq(CBotTypIntrinsic) ? 0 : CBotVar::NextUniqNum();
+    m_CptUse       = 0;
+    m_ItemIdent    = type.Eq(CBotTypIntrinsic) ? 0 : CBotVar::NextUniqNum();
 
     // add to the list
     m_instances.insert(this);
@@ -73,7 +76,20 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
     if ( pClass2 != nullptr )
     {
         // also creates an instance of the parent class
-        m_pParent = new CBotVarClass(name, CBotTypResult(type.GetType(),pClass2) ); //, nIdent);
+        CBotTypResult type2 = CBotTypResult(type.GetType(), pClass2);
+        CBotVarClass* instance = new CBotVarClass(name, type2); //, nIdent);
+        CBotVarPointer* pointer = new CBotVarPointer(name, type2);
+        pointer->SetPointer(instance);
+        m_pParent = pointer;
+
+        // Set up the this pointer for the parent chain
+        CBotVarClass *p = m_pParent->GetPointer();
+        while (true)
+        {
+            p->m_pThis = this;
+            if (p->m_pParent == nullptr) break;
+            p = p->m_pParent->GetPointer();
+        }
     }
 
     SetClass( pClass );
@@ -228,6 +244,18 @@ CBotClass* CBotVarClass::GetClass()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+CBotVarPointer* CBotVarClass::GetParent()
+{
+    return    m_pParent;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CBotVarClass* CBotVarClass::GetThis()
+{
+    return    m_pThis;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void CBotVarClass::Update(void* pUser)
 {
     // retrieves the user pointer according to the class
@@ -250,7 +278,7 @@ CBotVar* CBotVarClass::GetItem(const std::string& name)
         p = p->GetNext();
     }
 
-    if ( m_pParent != nullptr ) return m_pParent->GetItem(name);
+    if ( m_pParent != nullptr ) return m_pParent->GetPointer()->GetItem(name);
     return nullptr;
 }
 
@@ -265,7 +293,7 @@ CBotVar* CBotVarClass::GetItemRef(int nIdent)
         p = p->GetNext();
     }
 
-    if ( m_pParent != nullptr ) return m_pParent->GetItemRef(nIdent);
+    if ( m_pParent != nullptr ) return m_pParent->GetPointer()->GetItemRef(nIdent);
     return nullptr;
 }
 
@@ -316,7 +344,7 @@ std::string CBotVarClass::GetValString()
         res = m_pClass->GetName() + std::string("( ");
 
         CBotVarClass*    my = this;
-        while ( my != nullptr )
+        while ( true )
         {
             CBotVar*    pv = my->m_pVar;
             while ( pv != nullptr )
@@ -335,12 +363,16 @@ std::string CBotVarClass::GetValString()
                 pv = pv->GetNext();
                 if ( pv != nullptr ) res += ", ";
             }
-            my = my->m_pParent;
-            if ( my != nullptr )
+            if ( my->m_pParent != nullptr )
             {
+                my = my->m_pParent->GetPointer();
                 res += ") extends ";
                 res += my->m_pClass->GetName();
                 res += " (";
+            }
+            else
+            {
+                break;
             }
         }
 

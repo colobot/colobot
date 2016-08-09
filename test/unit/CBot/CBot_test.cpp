@@ -1188,3 +1188,77 @@ TEST_F(CBotUT, AccessMembersInParameters_Issue256)
         "}\n"
     );
 }
+
+// The this pointer should always point to the current instance, even if we are
+// using the 'super' meta instance that points to the parent.
+TEST_F(CBotUT, ThisPointerInsideSuperCall)
+{
+    ExecuteTest(
+        "public class Base {\n"
+        "    Base GetThis() { return this; }\n"
+        "}\n"
+        "public class Child extends Base {\n"
+        "    Base GetThis() { return super.GetThis(); }\n"
+        "}\n"
+        "extern void test() {\n"
+        "    Child c();\n"
+        "    ASSERT(c == c.GetThis());\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ThisPointerInsideSuperCallGrandparent)
+{
+    ExecuteTest(
+        "public class Base {\n"
+        "    Base GetThis() { return this; }\n"
+        "}\n"
+        "public class Child extends Base {\n"
+        "    Base GetThis() { return super.GetThis(); }\n"
+        "}\n"
+        "public class Grandchild extends Child {\n"
+        "    Base GetThis() { return super.GetThis(); }\n"
+        "}\n"
+        "extern void test() {\n"
+        "    Grandchild g();\n"
+        "    ASSERT(g == g.GetThis());\n"
+        "}"
+    );
+}
+
+TEST_F(CBotUT, DynamicDispatch)
+{
+    ExecuteTest(
+        "public class Base {\n"
+        "    int foo() { return 1; }\n"
+        "}\n"
+        "public class Child extends Base {\n"
+        "    int foo() { return 2; }\n"
+        "}\n"
+        "extern void test() {\n"
+        "    Base b();\n"
+        "    ASSERT(b.foo() == 1);\n"
+        "    Child c();\n"
+        "    ASSERT(c.foo() == 2);\n"
+        "    b = c;\n"
+        "    ASSERT(b.foo() == 2);\n"
+        "}"
+    );
+}
+
+TEST_F(CBotUT, WrappedSuperMethod)
+{
+    ExecuteTest(
+        "public class Base {\n"
+        "    int wrapped() { this.foo() +  1; }\n"
+        "    int foo() { throw 1; }\n"
+        "}\n"
+        "public class Child extends Base {\n"
+        "    int foo() { return 2; }\n"
+        "}\n"
+        "extern void test() {\n"
+        "    Child c();\n"
+        "    ASSERT(c.wrapped() == 3);\n"
+        "}"
+    );
+}

@@ -155,7 +155,15 @@ bool TypesCompatibles(const CBotTypResult& type1, const CBotTypResult& type2)
             return TypesCompatibles(type1.GetTypElem(), type2.GetTypElem());
 
         if (max == CBotTypClass || max == CBotTypPointer)
-            return type1.GetClass() == type2.GetClass() ;
+        {
+            CBotClass*    c1 = type1.GetClass();
+            CBotClass*    c2 = type2.GetClass();
+
+            // accept the case in reverse
+            // the transaction will be denied at runtime if the pointer is not
+            // compatible
+            return c1->IsChildOf(c2) || c2->IsChildOf(c1);
+        }
 
         return true ;
     }

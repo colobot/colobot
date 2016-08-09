@@ -34,6 +34,8 @@
 #include "CBot/CBotUtils.h"
 
 #include "CBot/CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVarClass.h"
+#include "CBot/CBotVar/CBotVarPointer.h"
 
 #include <cassert>
 #include <sstream>
@@ -745,6 +747,12 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, 
             CBotVar* pthis = CBotVar::Create("this", CBotTypNullPointer);
             pthis->Copy(pThis, false);
             pthis->SetUniqNum(-2);      // special value
+
+            if (pThis->GetPointer()->GetThis() != nullptr)
+            {
+                pthis->SetPointer(pThis->GetPointer()->GetThis());
+            }
+
             pStk->AddVar(pthis);
 
             CBotClass*  pClass = pThis->GetClass()->GetParent();
@@ -752,7 +760,7 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, 
             {
                 // sets the variable "super" on the stack
                 CBotVar* psuper = CBotVar::Create("super", CBotTypNullPointer);
-                psuper->Copy(pThis, false); // in fact identical to "this"
+                psuper->Copy(pThis->GetPointer()->GetParent(), false);
                 psuper->SetUniqNum(-3);     // special value
                 pStk->AddVar(psuper);
             }

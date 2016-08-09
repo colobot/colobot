@@ -118,10 +118,18 @@ CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, CBotVar::Prot
                     if (IsOfType(p, ID_DOT))
                     {
                         CBotToken* pp = p;
+                        CBotToken* nameStart = p;
 
-                        if (p->GetType() == TokenTypVar)    // must be a name
+                        // After a dot, names can start with a ~ in order to
+                        // facilitate calling super destructors.
+                        if (p->GetType() == ID_NOT)
                         {
-                            if (p->GetNext()->GetType() == ID_OPENPAR)  // a method call?
+                            nameStart = p->GetNext();
+                        }
+
+                        if (nameStart->GetType() == TokenTypVar)    // must be a name
+                        {
+                            if (nameStart->GetNext()->GetType() == ID_OPENPAR)  // a method call?
                             {
                                 CBotInstr* i = CBotInstrMethode::Compile(p, pStk, var);
                                 if (!pStk->IsOk()) goto err;

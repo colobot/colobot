@@ -27,6 +27,7 @@
 #include "CBot/CBotClass.h"
 
 #include "CBot/CBotVar/CBotVar.h"
+#include "CBot/CBotVar/CBotVarClass.h"
 
 namespace CBot
 {
@@ -53,9 +54,18 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
     CBotToken*    pp = p;
     p = p->GetNext();
 
+    // Allow method names to start with '~' in order to allow calling parent
+    // destructors from a child class's destructor.
+    std::string name = pp->GetString();
+    if ( IsOfType(pp, ID_NOT) )
+    {
+        name = std::string("~") + p->GetString();
+        p = p->GetNext();
+    }
+
     if (p->GetType() == ID_OPENPAR)
     {
-        inst->m_methodName = pp->GetString();
+        inst->m_methodName = name;
 
         // compiles the list of parameters
         CBotVar*    ppVars[1000];
@@ -144,9 +154,17 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     }
     ppVars[i] = nullptr;
 
-    CBotClass*    pClass = CBotClass::Find(m_className);
     CBotVar*    pThis  = pile1->GetVar();
     CBotVar*    pResult = nullptr;
+    CBotClass*  pClass;
+    if (pThis->GetPointer() != nullptr)
+    {
+        pClass = pThis->GetPointer()->GetClass();
+    }
+    else
+    {
+        pClass = pThis->GetClass();
+    }
     if (m_typRes.GetType() > 0) pResult = CBotVar::Create("", m_typRes);
     if (m_typRes.Eq(CBotTypClass))
     {
@@ -253,9 +271,17 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     }
     ppVars[i] = nullptr;
 
-    CBotClass*    pClass = CBotClass::Find(m_className);
     CBotVar*    pThis  = pile1->GetVar();
     CBotVar*    pResult = nullptr;
+    CBotClass*  pClass;
+    if (pThis->GetPointer() != nullptr)
+    {
+        pClass = pThis->GetPointer()->GetClass();
+    }
+    else
+    {
+        pClass = pThis->GetClass();
+    }
     if (m_typRes.GetType()>0) pResult = CBotVar::Create("", m_typRes);
     if (m_typRes.Eq(CBotTypClass))
     {
