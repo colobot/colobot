@@ -18,7 +18,8 @@
  */
 
 #include "CBot/CBotInstr/CBotInstrCall.h"
-#include "CBot/CBotInstr/CBotExpression.h"
+#include "CBot/CBotInstr/CBotExprRetVar.h"
+#include "CBot/CBotInstr/CBotInstrUtils.h"
 
 #include "CBot/CBotStack.h"
 
@@ -47,62 +48,26 @@ CBotInstrCall::~CBotInstrCall()
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotInstrCall::Compile(CBotToken* &p, CBotCStack* pStack)
 {
-    CBotVar*    ppVars[1000];
-
-    int         i = 0;
 
     CBotToken*  pp = p;
     p = p->GetNext();
 
-    pStack->SetStartError(p->GetStart());
-    CBotCStack* pile = pStack;
-
-    if ( IsOfType(p, ID_OPENPAR) )
+    if (p->GetType() == ID_OPENPAR)
     {
-        int start, end;
+
+        CBotVar*    ppVars[1000];
+
         CBotInstrCall* inst = new CBotInstrCall();
         inst->SetToken(pp);
 
         // compile la list of parameters
-        if (!IsOfType(p, ID_CLOSEPAR)) while (true)
+        inst->m_parameters = CompileParams(p, pStack, ppVars);
+
+        if ( !pStack->IsOk() )
         {
-            start = p->GetStart();
-            pile = pile->TokenStack();                      // keeps the results on the stack
-
-            CBotInstr*  param = CBotExpression::Compile(p, pile);
-            end   = p->GetStart();
-            if (inst->m_parameters == nullptr ) inst->m_parameters = param;
-            else inst->m_parameters->AddNext(param);            // constructs the list
-
-            if ( !pile->IsOk() )
-            {
-                delete inst;
-                return pStack->Return(nullptr, pile);
-            }
-
-            if ( param != nullptr )
-            {
-                if ( pile->GetTypResult().Eq(99) )
-                {
-                    delete pStack->TokenStack();
-                    pStack->SetError(CBotErrVoid, p->GetStart());
-                    delete inst;
-                    return nullptr;
-                }
-                ppVars[i] = pile->GetVar();
-                ppVars[i]->GetToken()->SetPos(start, end);
-                i++;
-
-                if (IsOfType(p, ID_COMMA)) continue;            // skips the comma
-                if (IsOfType(p, ID_CLOSEPAR)) break;
-            }
-
-            pStack->SetError(CBotErrClosePar, p->GetStart());
-            delete pStack->TokenStack();
             delete inst;
             return nullptr;
         }
-        ppVars[i] = nullptr;
 
         // the routine is known?
 //      CBotClass*  pClass = nullptr;
@@ -124,6 +89,17 @@ CBotInstr* CBotInstrCall::Compile(CBotToken* &p, CBotCStack* pStack)
         }
         else pStack->SetVar(nullptr);          // routine returns void
 
+        if (nullptr != (inst->m_exprRetVar = CBotExprRetVar::Compile(p, pStack)))
+        {
+            inst->m_exprRetVar->SetToken(&inst->m_token);
+            delete pStack->TokenStack();
+        }
+        if ( !pStack->IsOk() )
+        {
+            delete inst;
+            return nullptr;
+        }
+
         return inst;
     }
     p = pp;
@@ -137,6 +113,17 @@ bool CBotInstrCall::Execute(CBotStack* &pj)
     CBotVar*    ppVars[1000];
     CBotStack*  pile  = pj->AddStack(this);
     if ( pile->StackOver() ) return pj->Return( pile );
+
+    CBotStack* pile3 = nullptr;
+    if (m_exprRetVar != nullptr) // func().member
+    {
+        pile3 = pile->AddStack2();
+        if (pile3->GetState() == 1) // function call is done?
+        {
+            if (!m_exprRetVar->Execute(pile3)) return false;
+            return pj->Return(pile3);
+        }
+    }
 
 //    CBotStack*  pile1 = pile;
 
@@ -165,6 +152,14 @@ bool CBotInstrCall::Execute(CBotStack* &pj)
 
     if ( !pile2->ExecuteCall(m_nFuncIdent, GetToken(), ppVars, m_typRes)) return false; // interrupt
 
+    if (m_exprRetVar != nullptr) // func().member
+    {
+        pile3->SetCopyVar( pile2->GetVar() ); // copy the result
+        pile2->SetVar(nullptr);
+        pile3->SetState(1);      // set call is done
+        return false;            // go back to the top ^^^
+    }
+
     return pj->Return(pile2);   // release the entire stack
 }
 
@@ -175,6 +170,16 @@ void CBotInstrCall::RestoreState(CBotStack* &pj, bool bMain)
 
     CBotStack*  pile  = pj->RestoreStack(this);
     if ( pile == nullptr ) return;
+
+    if (m_exprRetVar != nullptr)    // func().member
+    {
+        CBotStack* pile3 = pile->AddStack2();
+        if (pile3->GetState() == 1) // function call is done?
+        {
+            m_exprRetVar->RestoreState(pile3, bMain);
+            return;
+        }
+    }
 
 //    CBotStack*  pile1 = pile;
 

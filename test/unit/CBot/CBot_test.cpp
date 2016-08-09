@@ -1465,3 +1465,254 @@ TEST_F(CBotUT, AccessMembersInParameters_Issue256)
         "}\n"
     );
 }
+
+TEST_F(CBotUT, InstrCallAccessMemberVoid)
+{
+    ExecuteTest(
+        "void Test() {}\n"
+        "extern void TestAccessMemberVoid() {\n"
+        "    Test().x;\n"
+        "}\n",
+        CBotErrNoTerminator
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberNonObject)
+{
+    ExecuteTest(
+        "int GetInt() {\n"
+        "    return 1;\n"
+        "}\n"
+        "extern void TestAccessMemberNonObject() {\n"
+        "    GetInt().x;\n"
+        "}\n",
+        CBotErrNoTerminator
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberObjectNull)
+{
+    ExecuteTest(
+        "public class TestClass { int x = 1; }\n"
+        "TestClass GetObjectNull() {\n"
+        "    TestClass t = null;"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberObjectNull() {\n"
+        "    GetObjectNull().x;\n"
+        "}\n",
+        CBotErrNull
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberReturnNull)
+{
+    ExecuteTest(
+        "public class TestClass { int x = 1; }\n"
+        "TestClass GetReturnNull() {\n"
+        "    return null;\n"
+        "}\n"
+        "extern void TestAccessMemberReturnNull() {\n"
+        "    GetReturnNull().x;\n"
+        "}\n",
+        CBotErrNull
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberNotVar)
+{
+    ExecuteTest(
+        "public class TestClass {}\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberNotVar() {\n"
+        "    TestClass tc();\n"
+        "    GetObject(tc).123;\n"
+        "}\n",
+        CBotErrUndefClass
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVarNonMember)
+{
+    ExecuteTest(
+        "public class TestClass { int x = 1; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarNonMember() {\n"
+        "    TestClass tc();\n"
+        "    GetObject(tc).y;\n"
+        "}\n",
+        CBotErrUndefItem
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVarUndefined)
+{
+    ExecuteTest(
+        "public class TestClass { int x; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarUndefined() {\n"
+        "    TestClass tc();\n"
+        "    GetObject(tc).x;\n"
+        "}\n",
+        CBotErrNotInit
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVarPrivate)
+{
+    ExecuteTest(
+        "public class TestClass { private int x = 123; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarPrivate() {\n"
+        "    TestClass tc();\n"
+        "    ASSERT(123 == GetObject(tc).x);\n"
+        "}\n",
+        CBotErrPrivate
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVar)
+{
+    ExecuteTest(
+        "public class TestClass { int x = 123; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVar() {\n"
+        "    TestClass tc();\n"
+        "    ASSERT(123 == GetObject(tc).x);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVarArrayBadIndex)
+{
+    ExecuteTest(
+        "public class TestClass { int[] a; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarArrayEmpty() {\n"
+        "    TestClass tc();\n"
+        "    int i = GetObject(tc).a[4.7];\n"
+        "}\n",
+        CBotErrBadIndex
+    );
+}
+TEST_F(CBotUT, InstrCallAccessMemberVarArrayCloseIndex)
+{
+    ExecuteTest(
+        "public class TestClass { int[] a = {123}; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarArrayEmpty() {\n"
+        "    TestClass tc();\n"
+        "    int i = GetObject(tc).a[0;\n"
+        "}\n",
+        CBotErrCloseIndex
+    );
+}
+TEST_F(CBotUT, InstrCallAccessMemberVarArrayEmpty)
+{
+    ExecuteTest(
+        "public class TestClass { int[] a; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarArrayEmpty() {\n"
+        "    TestClass tc();\n"
+        "    int i = GetObject(tc).a[0];\n"
+        "}\n",
+        CBotErrOutArray
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVarArrayOutOfRange)
+{
+    ExecuteTest(
+        "public class TestClass { int a[] = {123}; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarArrayOut() {\n"
+        "    TestClass tc();\n"
+        "    int i = GetObject(tc).a[1];\n"
+        "}\n",
+        CBotErrOutArray
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVarArray)
+{
+    ExecuteTest(
+        "public class TestClass { int a[] = {123}; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarArray() {\n"
+        "    TestClass tc();\n"
+        "    ASSERT(123 == GetObject(tc).a[0]);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberMethod)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int x = 123;\n"
+        "    int testGetX() { return x; }\n"
+        "}\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberMethod() {\n"
+        "    TestClass tc();\n"
+        "    ASSERT(123 == GetObject(tc).testGetX());\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberMethodChain)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int x = 123;\n"
+        "    TestClass testGetThis() { return this; }\n"
+        "    int testGetX() { return x; }\n"
+        "}\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberMethodChain() {\n"
+        "    TestClass tc();\n"
+        "    ASSERT(123 == GetObject(tc).testGetThis().testGetX());\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberNewObjectDestructor)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int x = 123;\n"
+        "    static bool b = false;\n"
+        "    void ~TestClass() { b = true; }\n"
+        "}\n"
+        "TestClass GetNewObject() { return new TestClass(); }\n"
+        "extern void TestAccessMemberNewObject() {\n"
+        "    TestClass tc();\n"
+        "    ASSERT(123 == GetNewObject().x);\n"
+        "    ASSERT(tc.b == true);\n"
+        "}\n"
+    );
+}

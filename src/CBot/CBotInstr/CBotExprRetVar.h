@@ -25,23 +25,18 @@ namespace CBot
 {
 
 /**
- * \brief A call to a function - func()
+ * \brief Access a member/element of the variable on the stack
  *
- * \see CBotInstrMethode for class methods
+ *
+ *
  */
-class CBotInstrCall : public CBotInstr
+class CBotExprRetVar : public CBotInstr
 {
 public:
-    CBotInstrCall();
-    ~CBotInstrCall();
+    CBotExprRetVar();
+    ~CBotExprRetVar();
 
-    /*!
-     * \brief Compile
-     * \param p
-     * \param pStack
-     * \return
-     */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
+    static CBotInstr* Compile(CBotToken*& p, CBotCStack* pStack);
 
     /*!
      * \brief Execute
@@ -58,22 +53,11 @@ public:
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() override { return "CBotInstrCall"; }
+    virtual const std::string GetDebugName() override { return "CBotExprRetVar"; }
     virtual std::string GetDebugData() override;
-    virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;
 
 private:
-    //! The parameters to be evaluated.
-    CBotInstr* m_parameters;
-    //! Complete type of the result.
-    CBotTypResult m_typRes;
-    //! Id of a function.
-    long m_nFuncIdent;
 
-    //! Instruction to return a member of the returned object.
-    CBotInstr* m_exprRetVar;
-
-    friend class CBotDebug;
 };
 
 } // namespace CBot

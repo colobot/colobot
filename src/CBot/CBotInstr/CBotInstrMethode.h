@@ -86,6 +86,9 @@ private:
     //! Variable ID
     long m_thisIdent;
 
+    //! Instruction to return a member of the returned object.
+    CBotInstr* m_exprRetVar;
+
 };
 
 } // namespace CBot
