@@ -174,9 +174,9 @@ CBotClass* CBotVarPointer::GetClass()
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotVarPointer::Save1State(FILE* pf)
 {
-    if ( m_pClass )
+    if ( m_type.GetClass() != nullptr )
     {
-        if (!WriteString(pf, m_pClass->GetName())) return false;    // name of the class
+        if (!WriteString(pf, m_type.GetClass()->GetName())) return false;    // name of the class
     }
     else
     {
