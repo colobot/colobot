@@ -289,7 +289,6 @@ msgstr "Камера (\\key camera;)"
 msgid "Camera back\\Moves the camera backward"
 msgstr "Отдалить камеру\\Перемещение камеры назад"
 
-#, fuzzy
 msgid "Camera border scrolling\\Scrolling when the mouse touches right or left border"
 msgstr "Прокрутка\\Прокрутка, когда указатель мыши касается правой или левой грани экрана"
 
@@ -796,14 +795,12 @@ msgstr "Загрузить\\Загрузить выбранную миссию"
 msgid "Loading basic level settings"
 msgstr "Загрузка основных настроек уровня"
 
-#, fuzzy
 msgid "Loading finished!"
 msgstr "Загрузка завершена!"
 
 msgid "Loading music"
 msgstr "Загрузка музыки"
 
-#, fuzzy
 msgid "Loading objects"
 msgstr "Загрузка объектов"
 
@@ -1871,7 +1868,6 @@ msgstr "epsitec.com"
 #~ msgid "Developed by :"
 #~ msgstr "Разработка :"
 
-#, fuzzy
 #~ msgid "Do you want to quit Colobot: Gold Edition?"
 #~ msgstr "Вы хотите закрыть Colobot: Gold Edition?"
 
