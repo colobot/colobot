@@ -99,6 +99,10 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
             else m_functions->AddNext(next);
         }
     }
+
+    // Define fields and pre-compile methods for each class in this program
+    if (pStack->IsOk()) CBotClass::DefineClasses(m_classes, pStack.get());
+
     if ( !pStack->IsOk() )
     {
         m_error = pStack->GetError(m_errorStart, m_errorEnd);
