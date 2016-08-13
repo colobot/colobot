@@ -282,6 +282,8 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
     RadarFilter filter_flying = static_cast<RadarFilter>(filter & (FILTER_ONLYLANDING | FILTER_ONLYFLYING));
     RadarFilter filter_enemy = static_cast<RadarFilter>(filter & (FILTER_FRIENDLY | FILTER_ENEMY | FILTER_NEUTRAL));
 
+    // Use a multimap to allow for multiple objects at exactly the same distance
+    // from the origin to be returned.
     std::multimap<float, CObject*> best;
 
     for ( auto it = m_objects.begin() ; it != m_objects.end() ; ++it )
