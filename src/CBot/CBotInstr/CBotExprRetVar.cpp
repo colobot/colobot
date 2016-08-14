@@ -41,17 +41,13 @@ CBotExprRetVar::~CBotExprRetVar()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotExprRetVar::Compile(CBotToken*& p, CBotCStack* pStack)
+CBotInstr* CBotExprRetVar::Compile(CBotToken*& p, CBotCStack* pStack, bool bMethodsOnly)
 {
     if (p->GetType() == ID_DOT)
     {
         CBotVar*     var = pStack->GetVar();
 
-        if (var == nullptr)
-        {
-            pStack->SetError(CBotErrNoTerminator, p->GetStart());
-            return nullptr;
-        }
+        if (var == nullptr) return nullptr;
 
         CBotCStack* pStk = pStack->TokenStack();
         CBotInstr* inst = new CBotExprRetVar();
@@ -61,6 +57,8 @@ CBotInstr* CBotExprRetVar::Compile(CBotToken*& p, CBotCStack* pStack)
             pStk->SetStartError(p->GetStart());
             if (var->GetType() == CBotTypArrayPointer)
             {
+                if (bMethodsOnly) goto err;
+
                 if (IsOfType( p, ID_OPBRK ))
                 {
                     CBotIndexExpr* i = new CBotIndexExpr();
@@ -92,10 +90,15 @@ CBotInstr* CBotExprRetVar::Compile(CBotToken*& p, CBotCStack* pStack)
                     {
                         if (p->GetNext()->GetType() == ID_OPENPAR)
                         {
-                            CBotInstr* i = CBotInstrMethode::Compile(p, pStk, var);
+                            CBotInstr* i = CBotInstrMethode::Compile(p, pStk, var, bMethodsOnly);
                             if (!pStk->IsOk()) goto err;
                             inst->AddNext3(i);
                             return pStack->Return(inst, pStk);
+                        }
+                        else if (bMethodsOnly)
+                        {
+                            p = p->GetPrev();
+                            goto err;
                         }
                         else
                         {

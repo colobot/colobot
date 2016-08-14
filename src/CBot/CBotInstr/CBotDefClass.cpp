@@ -19,6 +19,7 @@
 
 #include "CBot/CBotInstr/CBotDefClass.h"
 
+#include "CBot/CBotInstr/CBotExprRetVar.h"
 #include "CBot/CBotInstr/CBotInstrUtils.h"
 
 #include "CBot/CBotInstr/CBotLeftExprVar.h"
@@ -44,6 +45,7 @@ CBotDefClass::CBotDefClass()
     m_expr          = nullptr;
     m_hasParams     = false;
     m_nMethodeIdent = 0;
+    m_exprRetVar    = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -150,6 +152,16 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
                 goto error;
             }
 
+            pStk->SetCopyVar(var);
+            // chained method ?
+            if (nullptr != (inst->m_exprRetVar = CBotExprRetVar::Compile(p, pStk, true)))
+            {
+                inst->m_exprRetVar->SetToken(vartoken);
+                delete pStk->TokenStack();
+            }
+            pStk->SetVar(nullptr);
+
+            if ( !pStk->IsOk() ) goto error;
         }
 
         if (IsOfType(p,  ID_ASS))                           // with a assignment?
@@ -231,6 +243,19 @@ bool CBotDefClass::Execute(CBotStack* &pj)
 
     CBotStack*  pile = pj->AddStack(this);//essential for SetState()
 //  if ( pile == EOX ) return true;
+
+    if (m_exprRetVar != nullptr) // Class c().method();
+    {
+        if (pile->IfStep()) return false;
+        if (pile->GetState() == 4)
+        {
+            CBotStack* pile3 = pile->AddStack();
+            if (!m_exprRetVar->Execute(pile3)) return false;
+            pile3->SetVar(nullptr);
+            pile->Return(pile3); // release pile3 stack
+            pile->SetState(5);
+        }
+    }
 
     CBotToken*  pt = &m_token;
     CBotClass*  pClass = CBotClass::Find(pt);
@@ -363,6 +388,14 @@ bool CBotDefClass::Execute(CBotStack* &pj)
         pile->SetState(3);                                  // finished this part
     }
 
+    if (m_exprRetVar != nullptr && pile->GetState() == 3) // Class c().method();
+    {
+        CBotStack* pile3 = pile->AddStack();
+        pile3->SetCopyVar(pThis);
+        pile->SetState(4);
+        return false;              // go back to the top ^^^
+    }
+
     if ( pile->IfStep() ) return false;
 
     if ( m_next2b != nullptr &&
@@ -385,6 +418,16 @@ void CBotDefClass::RestoreState(CBotStack* &pj, bool bMain)
         std::string  name = m_var->m_token.GetString();
         pThis = pile->FindVar(name);
         pThis->SetUniqNum((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent); // its attribute a unique number
+    }
+
+    if (m_exprRetVar != nullptr) // Class c().method();
+    {
+        if (pile->GetState() == 4)
+        {
+            CBotStack* pile3 = pile->RestoreStack();
+            m_exprRetVar->RestoreState(pile3, bMain);
+            return;
+        }
     }
 
     CBotToken*  pt = &m_token;

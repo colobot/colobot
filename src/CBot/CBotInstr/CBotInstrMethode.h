@@ -38,9 +38,10 @@ public:
      * \param p
      * \param pStack
      * \param pVar
+     * \param bMethodChain If true, allows chaining methods only
      * \return
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, CBotVar* pVar);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, CBotVar* pVar, bool bMethodChain = false);
 
     /*!
      * \brief Execute

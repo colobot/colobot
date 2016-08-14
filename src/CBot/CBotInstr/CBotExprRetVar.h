@@ -36,7 +36,7 @@ public:
     CBotExprRetVar();
     ~CBotExprRetVar();
 
-    static CBotInstr* Compile(CBotToken*& p, CBotCStack* pStack);
+    static CBotInstr* Compile(CBotToken*& p, CBotCStack* pStack, bool bMethodsOnly = false);
 
     /*!
      * \brief Execute
