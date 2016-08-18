@@ -5057,7 +5057,7 @@ void CEngine::DrawStats()
 
     SetState(ENG_RSTATE_TEXT);
 
-    auto drawStatsLine = [&](const std::string& name = "", const std::string& value = "", const std::string& value2 = "")
+    auto drawStatsLine = [&](const std::string& name, const std::string& value, const std::string& value2)
     {
         if (!name.empty())
             m_text->DrawText(name+":", FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
@@ -5103,14 +5103,14 @@ void CEngine::DrawStats()
                             CProfiler::GetPerformanceCounterTime(PCNT_RENDER_SHADOW_MAP);
 
     drawStatsCounter("Event processing", PCNT_EVENT_PROCESSING);
-    drawStatsLine(   "");
+    drawStatsLine(   "", "", "");
     drawStatsCounter("Frame update",      PCNT_UPDATE_ALL);
     drawStatsValue  ("    Engine update",     engineUpdate);
     drawStatsCounter("    Particle update",   PCNT_UPDATE_PARTICLE);
     drawStatsValue  ("    Game update",       gameUpdate);
     drawStatsCounter("    CBot programs",     PCNT_UPDATE_CBOT);
     drawStatsValue(  "    Other update",      otherUpdate);
-    drawStatsLine(   "");
+    drawStatsLine(   "", "", "");
     drawStatsCounter("Frame render",      PCNT_RENDER_ALL);
     drawStatsCounter("    Particle render",   PCNT_RENDER_PARTICLE_WORLD);
     drawStatsCounter("    Water render",      PCNT_RENDER_WATER);
@@ -5121,13 +5121,13 @@ void CEngine::DrawStats()
     drawStatsCounter("    Shadow map render", PCNT_RENDER_SHADOW_MAP);
     drawStatsValue(  "    Other render",      otherRender);
     drawStatsCounter("Swap buffers & VSync",  PCNT_SWAP_BUFFERS);
-    drawStatsLine(   "");
-    drawStatsLine(   "Triangles",         StrUtils::ToString<int>(m_statisticTriangle));
-    drawStatsLine(   "FPS",               StrUtils::Format("%.3f", m_fps));
-    drawStatsLine(   "");
+    drawStatsLine(   "", "", "");
+    drawStatsLine(   "Triangles",         StrUtils::ToString<int>(m_statisticTriangle), "");
+    drawStatsLine(   "FPS",               StrUtils::Format("%.3f", m_fps), "");
+    drawStatsLine(   "", "", "");
     std::stringstream str;
     str << std::fixed << std::setprecision(2) << m_statisticPos.x << "; " << m_statisticPos.z;
-    drawStatsLine(   "Position",          str.str());
+    drawStatsLine(   "Position",          str.str(), "");
 }
 
 void CEngine::DrawTimer()
