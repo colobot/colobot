@@ -132,7 +132,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
     message(STATUS "Detected GCC version 4.7+")
 
-    set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Wold-style-cast")
+    set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Wold-style-cast -pedantic-errors")
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
     set(TEST_CXX_FLAGS "-pthread")
@@ -144,7 +144,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
     message(STATUS "Detected Clang version 3.1+")
 
-    set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Wold-style-cast")
+    set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Wold-style-cast -pedantic-errors")
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
     set(TEST_CXX_FLAGS "-pthread")
