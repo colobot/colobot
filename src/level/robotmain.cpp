@@ -981,10 +981,13 @@ bool CRobotMain::ProcessEvent(Event &event)
                     {
                         CLevelParserLine line("CreateObject");
                         line.AddParam("type", MakeUnique<CLevelParserParam>(obj->GetType()));
+
                         Math::Vector pos = obj->GetPosition()/g_unit;
                         pos.y = 0.0f;
                         line.AddParam("pos", MakeUnique<CLevelParserParam>(pos));
-                        line.AddParam("dir", MakeUnique<CLevelParserParam>(obj->GetRotationY()));
+
+                        float dir = Math::NormAngle(obj->GetRotationY()) / Math::PI;
+                        line.AddParam("dir", MakeUnique<CLevelParserParam>(dir));
 
                         std::stringstream ss;
                         ss << line;
