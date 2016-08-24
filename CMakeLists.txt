@@ -153,10 +153,14 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     message(STATUS "Detected MSVC compiler")
 
     set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\" /wd\"4351\" /EHsc") # disable some useless warnings
-    set(RELEASE_CXX_FLAGS "")
-    set(DEBUG_CXX_FLAGS "")
+    set(RELEASE_CXX_FLAGS "/MD")
+    set(DEBUG_CXX_FLAGS "/MDd /ZI")
     set(TEST_CXX_FLAGS "")
     add_definitions(-DNOEXCEPT= -DHAS_MSVC_EXCEPTION_BUG)
+
+    # Needed for Debug information (it's set to "No" by default for some reason)
+    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "/DEBUG")
+    set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "/DEBUG")
 else()
     message(FATAL_ERROR "Your C++ compiler doesn't seem to be supported.")
 endif()
