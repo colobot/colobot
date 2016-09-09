@@ -24,6 +24,7 @@
 #include "CBot/CBotCStack.h"
 #include "CBot/CBotClass.h"
 
+#include "CBot/CBotInstr/CBotExprRetVar.h"
 #include "CBot/CBotInstr/CBotInstrUtils.h"
 
 #include "CBot/CBotVar/CBotVar.h"
@@ -105,7 +106,17 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
 
         // makes pointer to the object on the stack
         pStk->SetVar(pVar);
-        return pStack->Return(inst, pStk);
+
+        pp = p;
+        // chained method ?
+        if (nullptr != (inst->m_exprRetVar = CBotExprRetVar::Compile(p, pStk, true)))
+        {
+            inst->m_exprRetVar->SetToken(pp);
+            delete pStk->TokenStack();
+        }
+
+        if (pStack->IsOk())
+            return pStack->Return(inst, pStk);
     }
 error:
     delete inst;
@@ -116,6 +127,16 @@ error:
 bool CBotNew::Execute(CBotStack* &pj)
 {
     CBotStack*    pile = pj->AddStack(this);    //main stack
+
+    if (m_exprRetVar != nullptr) // new Class().method()
+    {
+        if (pile->GetState() == 2)
+        {
+            CBotStack* pile3 = pile->AddStack();
+            if (!m_exprRetVar->Execute(pile3)) return false;
+            return pj->Return(pile3);
+        }
+    }
 
     if (pile->IfStep()) return false;
 
@@ -186,6 +207,16 @@ bool CBotNew::Execute(CBotStack* &pj)
         pThis->ConstructorSet();    // indicates that the constructor has been called
     }
 
+    if (m_exprRetVar != nullptr) // new Class().method()
+    {
+        pile->AddStack()->Delete();          // release pile2 stack
+        CBotStack* pile3 = pile->AddStack(); // add new stack
+        pile3->SetCopyVar(pThis); // copy the pointer (from pile1)
+        pile1->Delete();          // release secondary stack(pile1)
+        pile->SetState(2);
+        return false;             // go back to the top ^^^
+    }
+
     return pj->Return(pile1);   // passes below
 }
 
@@ -196,6 +227,16 @@ void CBotNew::RestoreState(CBotStack* &pj, bool bMain)
 
     CBotStack*    pile = pj->RestoreStack(this);    //primary stack
     if (pile == nullptr) return;
+
+    if (m_exprRetVar != nullptr)    // new Class().method()
+    {
+        if (pile->GetState() == 2)
+        {
+            CBotStack* pile3 = pile->RestoreStack();
+            m_exprRetVar->RestoreState(pile3, bMain);
+            return;
+        }
+    }
 
     CBotStack*    pile1 = pj->AddStack2();  //secondary stack
 

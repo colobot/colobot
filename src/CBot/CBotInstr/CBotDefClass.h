@@ -85,6 +85,9 @@ private:
     //! Constructor method unique identifier
     long m_nMethodeIdent;
 
+    //! Instruction to chain method calls after constructor
+    CBotInstr* m_exprRetVar;
+
 };
 
 } // namespace CBot

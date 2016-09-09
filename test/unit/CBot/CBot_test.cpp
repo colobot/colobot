@@ -1751,3 +1751,38 @@ TEST_F(CBotUT, InstrCallAccessMemberNewObjectDestructor)
         "}\n"
     );
 }
+
+TEST_F(CBotUT, ClassConstructorMethodChain)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int a = 123;\n"
+        "    int b = 246;\n"
+        "    TestClass testSetA(int x) { a = x; return this; }\n"
+        "    TestClass testSetB(int y) { b = y; return this; }\n"
+        "}\n"
+        "extern void ConstructorMethodChain() {\n"
+        "    TestClass tc().testSetA(111).testSetB(222);\n"
+        "    ASSERT(tc.a == 111);\n"
+        "    ASSERT(tc.b == 222);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassNewConstructorMethodChain)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int a = 123;\n"
+        "    int b = 246;\n"
+        "    TestClass testSetA(int x) { a = x; return this; }\n"
+        "    TestClass testSetB(int y) { b = y; return this; }\n"
+        "}\n"
+        "extern void NewConstructorMethodChain() {\n"
+        "    TestClass tc;\n"
+        "    tc = new TestClass().testSetA(111).testSetB(222);\n"
+        "    ASSERT(tc.a == 111);\n"
+        "    ASSERT(tc.b == 222);\n"
+        "}\n"
+    );
+}

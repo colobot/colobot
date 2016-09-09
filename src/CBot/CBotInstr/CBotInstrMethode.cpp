@@ -46,7 +46,7 @@ CBotInstrMethode::~CBotInstrMethode()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar* var)
+CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar* var, bool bMethodChain)
 {
     CBotInstrMethode* inst = new CBotInstrMethode();
     inst->SetToken(p);  // corresponding token
@@ -90,9 +90,10 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
             }
             else pStack->SetVar(nullptr);
 
-            if (nullptr != (inst->m_exprRetVar = CBotExprRetVar::Compile(p, pStack)))
+            pp = p;
+            if (nullptr != (inst->m_exprRetVar = CBotExprRetVar::Compile(p, pStack, bMethodChain)))
             {
-                inst->m_exprRetVar->SetToken(&inst->m_token);
+                inst->m_exprRetVar->SetToken(pp);
                 delete pStack->TokenStack();
             }
 
