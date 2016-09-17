@@ -1874,3 +1874,33 @@ TEST_F(CBotUT, AmbiguousCallWithNumbers)
         "}\n"
     );
 }
+
+TEST_F(CBotUT, ClassMethodWithPublicKeyword)
+{
+    auto publicProgram = ExecuteTest(
+        "public class TestClass {\n"
+        "    public int Test() { return 1; }\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "int Test() { return 2; }\n"
+        "\n"
+        "extern void DontCallMethodInTestClass()\n"
+        "{\n"
+        "    ASSERT(2 == Test());\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "int Test() { return 2; }\n"
+        "\n"
+        "public class OtherClass {}\n"
+        "\n"
+        "extern void OtherClass::TestCallWithThis()\n"
+        "{\n"
+        "    this.Test();\n"
+        "}\n",
+        CBotErrUndefCall
+    );
+}

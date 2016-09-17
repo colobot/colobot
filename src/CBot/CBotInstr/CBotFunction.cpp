@@ -224,10 +224,6 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
                 func->m_closeblk = (p != nullptr && p->GetPrev() != nullptr) ? *(p->GetPrev()) : CBotToken();
                 if ( pStk->IsOk() )
                 {
-                    if ( func->m_bPublic )  // public function, return known for all
-                    {
-                        CBotFunction::AddPublic(func);
-                    }
                     return pStack->ReturnFunc(func, pStk);
                 }
             }
