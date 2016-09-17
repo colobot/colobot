@@ -466,8 +466,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& n
 
     if ( name.empty() ) return nullptr;
 
-    int     delta   = 99999;                // seeks the lowest signature
-    CBotFunction*   pFunc = nullptr;           // the best function found
+    std::map<CBotFunction*, int> funcMap;
 
     if ( this != nullptr )
     {
@@ -482,44 +481,48 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& n
                 CBotVar* pw = ppVars[i++];              // provided list parameter
                 while ( pv != nullptr && pw != nullptr)
                 {
-                    if (!TypesCompatibles(pv->GetTypResult(), pw->GetTypResult()))
+                    CBotTypResult paramType = pv->GetTypResult();
+                    CBotTypResult argType = pw->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
+
+                    if (!TypesCompatibles(paramType, argType))
                     {
-                        if ( pFunc == nullptr ) TypeOrError = CBotErrBadParam;
+                        if ( funcMap.empty() ) TypeOrError.SetType(CBotErrBadParam);
                         break;
                     }
-                    int d = pv->GetType() - pw->GetType(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
-                    alpha += d>0 ? d : -10*d;       // quality loss, 10 times more expensive!
 
+                    if (paramType.Eq(CBotTypPointer) && !argType.Eq(CBotTypNullPointer))
+                    {
+                        CBotClass* c1 = paramType.GetClass();
+                        CBotClass* c2 = argType.GetClass();
+                        while (c2 != c1 && c2 != nullptr)    // implicit cast
+                        {
+                            alpha += 10;
+                            c2 = c2->GetParent();
+                        }
+                    }
+                    else
+                    {
+                        int d = pv->GetType() - pw->GetType(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
+                        alpha += d>0 ? d : -10*d;       // quality loss, 10 times more expensive!
+                    }
                     pv = pv->GetNext();
                     pw = ppVars[i++];
                 }
                 if ( pw != nullptr )
                 {
-                    if ( pFunc != nullptr ) continue;
+                    if ( !funcMap.empty() ) continue;
                     if ( TypeOrError.Eq(CBotErrLowParam) ) TypeOrError.SetType(CBotErrNbParam);
                     if ( TypeOrError.Eq(CBotErrUndefCall)) TypeOrError.SetType(CBotErrOverParam);
                     continue;                   // too many parameters
                 }
                 if ( pv != nullptr )
                 {
-                    if ( pFunc != nullptr ) continue;
+                    if ( !funcMap.empty() ) continue;
                     if ( TypeOrError.Eq(CBotErrOverParam) ) TypeOrError.SetType(CBotErrNbParam);
                     if ( TypeOrError.Eq(CBotErrUndefCall) ) TypeOrError.SetType(CBotErrLowParam);
                     continue;                   // not enough parameters
                 }
-
-                if (alpha == 0)                 // perfect signature
-                {
-                    nIdent = pt->m_nFuncIdent;
-                    TypeOrError = pt->m_retTyp;
-                    return pt;
-                }
-
-                if ( alpha < delta )            // a better signature?
-                {
-                    pFunc = pt;
-                    delta = alpha;
-                }
+                funcMap.insert( std::pair<CBotFunction*, int>(pt, alpha) );
             }
         }
     }
@@ -537,50 +540,72 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& n
                 CBotVar* pw = ppVars[i++];              // list of provided parameters
                 while ( pv != nullptr && pw != nullptr)
                 {
-                    if (!TypesCompatibles(pv->GetTypResult(), pw->GetTypResult()))
+                    CBotTypResult paramType = pv->GetTypResult();
+                    CBotTypResult argType = pw->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
+
+                    if (!TypesCompatibles(paramType, argType))
                     {
-                        if ( pFunc == nullptr ) TypeOrError = CBotErrBadParam;
+                        if ( funcMap.empty() ) TypeOrError.SetType(CBotErrBadParam);
                         break;
                     }
-                    int d = pv->GetType() - pw->GetType(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
-                    alpha += d>0 ? d : -10*d;       // quality loss, 10 times more expensive!
 
+                    if (paramType.Eq(CBotTypPointer) && !argType.Eq(CBotTypNullPointer))
+                    {
+                        CBotClass* c1 = paramType.GetClass();
+                        CBotClass* c2 = argType.GetClass();
+                        while (c2 != c1 && c2 != nullptr)    // implicit cast
+                        {
+                            alpha += 10;
+                            c2 = c2->GetParent();
+                        }
+                    }
+                    else
+                    {
+                        int d = pv->GetType() - pw->GetType(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
+                        alpha += d>0 ? d : -10*d;       // quality loss, 10 times more expensive!
+                    }
                     pv = pv->GetNext();
                     pw = ppVars[i++];
                 }
                 if ( pw != nullptr )
                 {
-                    if ( pFunc != nullptr ) continue;
+                    if ( !funcMap.empty() ) continue; // previous useable function
                     if ( TypeOrError.Eq(CBotErrLowParam) ) TypeOrError.SetType(CBotErrNbParam);
                     if ( TypeOrError.Eq(CBotErrUndefCall)) TypeOrError.SetType(CBotErrOverParam);
                     continue;                   // to many parameters
                 }
                 if ( pv != nullptr )
                 {
-                    if ( pFunc != nullptr ) continue;
+                    if ( !funcMap.empty() ) continue; // previous useable function
                     if ( TypeOrError.Eq(CBotErrOverParam) ) TypeOrError.SetType(CBotErrNbParam);
                     if ( TypeOrError.Eq(CBotErrUndefCall) ) TypeOrError.SetType(CBotErrLowParam);
                     continue;                   // not enough parameters
                 }
-
-                if (alpha == 0)                 // perfect signature
-                {
-                    nIdent = pt->m_nFuncIdent;
-                    TypeOrError = pt->m_retTyp;
-                    return pt;
-                }
-
-                if ( alpha < delta )            // a better signature?
-                {
-                    pFunc = pt;
-                    delta = alpha;
-                }
+                funcMap.insert( std::pair<CBotFunction*, int>(pt, alpha) );
             }
         }
     }
 
-    if ( pFunc != nullptr )
+    if ( !funcMap.empty() )
     {
+        auto it = funcMap.begin();
+        CBotFunction* pFunc = it->first;        // the best function found
+        signed int    delta = it->second;       // seeks the lowest signature
+
+        for (++it ; it != funcMap.end() ; it++)
+        {
+            if (it->second < delta) // a better signature?
+            {
+                TypeOrError.SetType(CBotNoErr);
+                pFunc = it->first;
+                delta = it->second;
+                continue;
+            }
+
+            if (it->second == delta) TypeOrError.SetType(CBotErrAmbiguousCall);
+        }
+
+        if (TypeOrError.Eq(CBotErrAmbiguousCall)) return nullptr;
         nIdent = pFunc->m_nFuncIdent;
         TypeOrError = pFunc->m_retTyp;
         return pFunc;

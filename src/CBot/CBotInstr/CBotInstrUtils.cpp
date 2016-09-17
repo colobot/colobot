@@ -149,12 +149,20 @@ bool TypesCompatibles(const CBotTypResult& type1, const CBotTypResult& type2)
 
     if (max >= CBotTypBoolean)
     {
+        if (t1 == CBotTypPointer && t2 == CBotTypNullPointer) return true;
         if (t2 != t1) return false;
+
+        if (max == CBotTypPointer)
+        {
+            CBotClass*    c1 = type1.GetClass();
+            CBotClass*    c2 = type2.GetClass();
+            return c2->IsChildOf(c1);
+        }
 
         if (max == CBotTypArrayPointer)
             return TypesCompatibles(type1.GetTypElem(), type2.GetTypElem());
 
-        if (max == CBotTypClass || max == CBotTypPointer)
+        if (max == CBotTypClass)
             return type1.GetClass() == type2.GetClass() ;
 
         return true ;

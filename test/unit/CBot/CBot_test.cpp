@@ -1786,3 +1786,91 @@ TEST_F(CBotUT, ClassNewConstructorMethodChain)
         "}\n"
     );
 }
+
+TEST_F(CBotUT, PassNullAsArgument)
+{
+    auto publicProgram = ExecuteTest(
+        "public class BaseClass {}\n"
+        "public class SubClass extends BaseClass {}\n"
+    );
+
+    ExecuteTest(
+        "bool Test(BaseClass b) {\n"
+        "    return (b == null);\n"
+        "}\n"
+        "extern void PassNullAsArgument() {\n"
+        "    ASSERT(true == Test(null));\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "void Test(BaseClass b) {}\n"
+        "void Test(SubClass s) {}\n"
+        "\n"
+        "extern void AmbiguousCallArgumentNull() {\n"
+        "    Test(null);\n"
+        "}\n",
+        CBotErrAmbiguousCall
+    );
+}
+
+TEST_F(CBotUT, ClassImplicitCastArguments)
+{
+    auto publicProgram = ExecuteTest(
+        "public class BaseClass { int a = 360; }\n"
+        "public class SubClass extends BaseClass {}\n"
+    );
+
+    ExecuteTest(
+        "bool Test(BaseClass b) {\n"
+        "    SubClass s = b;\n"
+        "    return (360 == s.a);\n"
+        "}\n"
+        "extern void UpcastPassingArguments() {\n"
+        "    ASSERT(true == Test(new SubClass()));\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "void Test(BaseClass b, SubClass s) {}\n"
+        "void Test(SubClass s, BaseClass b) {}\n"
+        "\n"
+        "extern void UpcastAmbiguousCall() {\n"
+        "    Test(new SubClass(), new SubClass());\n"
+        "}\n",
+        CBotErrAmbiguousCall
+    );
+
+    ExecuteTest(
+        "bool Test(BaseClass b, SubClass s) { return false; }\n"
+        "bool Test(SubClass s, BaseClass b) { return false; }\n"
+        "bool Test(SubClass s, SubClass s2) { return true; }\n"
+        "\n"
+        "extern void NoErrorMoreSpecific() {\n"
+        "    ASSERT(true == Test(new SubClass(), new SubClass()));\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, AmbiguousCallWithNumbers)
+{
+    ExecuteTest(
+        "void Test(int i, float f) {}\n"
+        "void Test(float f, int i) {}\n"
+        "\n"
+        "extern void AmbiguousCallNumbers() {\n"
+        "    Test(1, 2);\n"
+        "}\n",
+        CBotErrAmbiguousCall
+    );
+
+    ExecuteTest(
+        "bool Test(int i, float f) { return false; }\n"
+        "bool Test(float f, int i) { return false; }\n"
+        "bool Test(int i, int ii)  { return true; }\n"
+        "\n"
+        "extern void NoErrorMoreSpecific() {\n"
+        "    ASSERT(true == Test(1, 2));\n"
+        "}\n"
+    );
+}
