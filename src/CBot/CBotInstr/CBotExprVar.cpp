@@ -67,8 +67,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, CBotVar::Prot
 
             if (ident > 0 && ident < 9000)
             {
-                if ( var->IsPrivate(privat) &&
-                     !pStk->GetProgram()->m_bCompileClass)
+                if (CBotFieldExpr::ProtectionError(pStk, nullptr, var, privat))
                 {
                     pStk->SetError(CBotErrPrivate, p);
                     goto err;
@@ -133,12 +132,12 @@ CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, CBotVar::Prot
                                 CBotFieldExpr* i = new CBotFieldExpr();     // new element
                                 i->SetToken(pp);                            // keeps the name of the token
                                 inst->AddNext3(i);                          // add after
+                                CBotVar*   preVar = var;
                                 var = var->GetItem(p->GetString());         // get item correspondent
                                 if (var != nullptr)
                                 {
                                     i->SetUniqNum(var->GetUniqNum());
-                                    if ( var->IsPrivate() &&
-                                     !pStk->GetProgram()->m_bCompileClass)
+                                    if (CBotFieldExpr::ProtectionError(pStk, preVar, var, privat))
                                     {
                                         pStk->SetError(CBotErrPrivate, pp);
                                         goto err;

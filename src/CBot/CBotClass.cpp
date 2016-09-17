@@ -682,6 +682,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                                 initType = CBotVar::InitType::DEF;
                             pcopy->SetInit(initType);
                             pcopy->SetUniqNum(pv->GetUniqNum());
+                            pcopy->SetPrivate(pv->GetPrivate());
                             pile->AddVar(pcopy);
                             pv = pv->GetNext();
                         }

@@ -333,13 +333,6 @@ public:
     CBotFunction* GetFunctions();
 
     /**
-     * \brief true while compiling class
-     *
-     * TODO: refactor this
-     */
-    bool m_bCompileClass;
-
-    /**
      * \brief Returns static list of all registered external calls
      */
     static CBotExternalCallList* GetExternalCalls();

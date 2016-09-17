@@ -105,12 +105,12 @@ CBotInstr* CBotExprRetVar::Compile(CBotToken*& p, CBotCStack* pStack, bool bMeth
                             CBotFieldExpr* i = new CBotFieldExpr();
                             i->SetToken(pp);
                             inst->AddNext3(i);
+                            CBotVar*   preVar = var;
                             var = var->GetItem(p->GetString());
                             if (var != nullptr)
                             {
                                 i->SetUniqNum(var->GetUniqNum());
-                                if ( var->IsPrivate() &&
-                                 !pStk->GetProgram()->m_bCompileClass)
+                                if (CBotFieldExpr::ProtectionError(pStk, preVar, var))
                                 {
                                     pStk->SetError(CBotErrPrivate, pp);
                                     goto err;

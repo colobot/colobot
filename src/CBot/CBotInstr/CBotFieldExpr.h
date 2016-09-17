@@ -65,6 +65,17 @@ public:
      */
     void RestoreStateVar(CBotStack* &pj, bool bMain) override;
 
+    /*!
+     * \brief ProtectionError Test if access to a variable is not allowed.
+     * \param pStack
+     * \param pPrev
+     * \param pVar
+     * \param privat
+     * \return True if pVar is protected in the current context.
+     */
+    static bool ProtectionError(CBotCStack* pStack, CBotVar* pPrev, CBotVar* pVar,
+                                CBotVar::ProtectionLevel privat = CBotVar::ProtectionLevel::Protected);
+
 protected:
     virtual const std::string GetDebugName() override { return "CBotFieldExpr"; }
     virtual std::string GetDebugData() override;
