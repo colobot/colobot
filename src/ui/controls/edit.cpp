@@ -47,19 +47,20 @@
 namespace Ui
 {
 
-const float MARGX           = (5.0f/640.0f);
-const float MARGY           = (5.0f/480.0f);
-const float MARGYS          = (4.0f/480.0f);
-const float MARGY1          = (1.0f/480.0f);
+const float MARGX            = (5.0f/640.0f);
+const float MARGY            = (5.0f/480.0f);
+const float MARGYS           = (4.0f/480.0f);
+const float MARGY1           = (1.0f/480.0f);
 //! time limit for double-click
-const float DELAY_DBCLICK   = 0.75f;
+const float DELAY_DBCLICK    = 0.75f;
 //! time limit for scroll
-const float DELAY_SCROLL    = 0.1f;
+const float DELAY_SCROLL     = 0.1f;
 //! expansion for \b;
-const float BIG_FONT        = 1.6f;
-
-
-
+const float BIG_FONT         = 1.6f;
+//! start characters
+const int DEFAULT_CHARACTERS = 100;
+//! infinite edit flag
+const int INFINITE_EDIT = -1;
 
 //! Indicates whether a character is a space.
 
@@ -90,11 +91,14 @@ bool IsSep(int character)
 //! Object's constructor.
 CEdit::CEdit()
     : CControl(),
+      m_text(),
       m_lineOffset(),
       m_lineIndent()
 {
-    m_maxChar = 100;
-    m_text = std::vector<char>(m_maxChar+1, '\0');
+    SetInfinite();
+
+    m_text = std::vector<char>(DEFAULT_CHARACTERS, '\0');
+
     m_len = 0;
 
     m_fontType = Gfx::FONT_COURIER;
@@ -1260,10 +1264,21 @@ void CEdit::SetText(const char *text, bool bNew)
     int     i, j, font;
     bool    bBOL;
 
+    if ( text == nullptr )
+    {
+        return;
+    }
+
     if ( !bNew )  UndoMemorize(OPERUNDO_SPEC);
 
     m_len = strlen(text);
-    if ( m_len > m_maxChar )  m_len = m_maxChar;
+    if ( !IsInfinite() && m_len > m_maxChar )  m_len = m_maxChar;
+
+    if ( IsInfinite() )
+    {
+        m_text.resize( m_len + 1, '\0' );
+        m_format.resize( m_len + 1, m_fontType);
+    }
 
     if ( m_format.size() == 0 )
     {
@@ -1360,6 +1375,7 @@ void CEdit::SetText(const char *text, bool bNew)
 
     m_cursor1 = 0;
     m_cursor2 = 0;  // cursor to the beginning
+
     Justif();
     ColumnFix();
 }
@@ -1439,13 +1455,13 @@ void CEdit::FreeImage()
 
 bool CEdit::ReadText(std::string filename, int addSize)
 {
-    int         len, i, j, n, font, iLines, iCount;
+    int         len, len2, i, j, n, font, iLines, iCount;
     char        iName[50];
     float       iWidth;
     InputSlot   slot;
     bool        bInSoluce, bBOL;
 
-    if ( filename == "" )  return false;
+    if ( filename.empty() )  return false;
 
     CInputStream stream;
     stream.open(filename);
@@ -1458,22 +1474,28 @@ bool CEdit::ReadText(std::string filename, int addSize)
 
     len = stream.size();
 
-    m_maxChar = len+addSize+100;
+    len2 = len+addSize+100;
+
+    if ( !IsInfinite() )
+    {
+        m_maxChar = len2;
+    }
+
     m_len = len;
     m_cursor1 = 0;
     m_cursor2 = 0;
 
     FreeImage();
 
-    m_text = std::vector<char>(m_maxChar+1, '\0');
+    m_text = std::vector<char>(len2+1, '\0');
 
-    std::vector<char> buffer(m_maxChar+1, '\0');
+    std::vector<char> buffer(len2+1, '\0');
 
     stream.read(buffer.data(), len);
 
     m_format.clear();
-    m_format.reserve(m_maxChar+1);
-    for (i = 0; i <= m_maxChar+1; i++)
+    m_format.reserve(len2+1);
+    for (i = 0; i <= len2+1; i++)
     {
         m_format.push_back(m_fontType);
     }
@@ -1918,6 +1940,8 @@ void CEdit::GetIndentedText(std::ostream& stream, unsigned int start, unsigned i
 
 void CEdit::SetMaxChar(int max)
 {
+    if ( max < 0 ) return;
+
     FreeImage();
 
     m_maxChar = max;
@@ -1940,9 +1964,22 @@ void CEdit::SetMaxChar(int max)
 
 int CEdit::GetMaxChar()
 {
+    if ( IsInfinite() )
+    {
+        return m_text.size();
+    }
     return m_maxChar;
 }
 
+bool CEdit::IsInfinite()
+{
+    return m_maxChar == INFINITE_EDIT;
+}
+
+void CEdit::SetInfinite()
+{
+    m_maxChar = INFINITE_EDIT;
+}
 
 // Mode management "editable".
 
@@ -2121,10 +2158,21 @@ void CEdit::SetMultiFont(bool bMulti)
 
     if (bMulti)
     {
-        m_format.reserve(m_maxChar+1);
-        for (int i = 0; i <= m_maxChar+1; i++)
+        if ( !IsInfinite() )
         {
-            m_format.push_back(m_fontType);
+            m_format.reserve(m_maxChar+1);
+            for (int i = 0; i <= m_maxChar+1; i++)
+            {
+                m_format.push_back(m_fontType);
+            }
+        }
+        else
+        {
+            m_format.reserve(m_text.size() + 1);
+            for (int i = 0; i <= static_cast<int>(m_text.size() + 1); i++)
+            {
+                m_format.push_back(m_fontType);
+            }
         }
     }
 }
@@ -2560,6 +2608,7 @@ bool CEdit::Paste()
     }
 
     UndoMemorize(OPERUNDO_SPEC);
+
     for ( unsigned int i = 0; i < strlen(text); i++ )
     {
         c = text[i];
@@ -2706,7 +2755,16 @@ void CEdit::InsertOne(char character)
         DeleteOne(0);  // deletes the selected characters
     }
 
-    if ( m_len >= m_maxChar )  return;
+    if ( IsInfinite() )
+    {
+        m_text.resize( m_text.size() + 1, '\0' );
+        m_format.push_back(m_fontType);
+    }
+
+    if ( !IsInfinite() && m_len >= m_maxChar )
+    {
+        return;
+    }
 
     for ( i=m_len ; i>m_cursor1 ; i-- )
     {
@@ -2938,13 +2996,16 @@ bool CEdit::MinMaj(bool bMaj)
 void CEdit::Justif()
 {
     float   width, size, indentLength = 0.0f;
-    int     i, j, line, indent;
+    int     i, j, k, line, indent;
     bool    bDual, bString, bRem;
+
+    m_lineOffset.clear();
+    m_lineIndent.clear();
 
     indent = 0;
     m_lineTotal = 0;
-    m_lineOffset[m_lineTotal] = 0;
-    m_lineIndent[m_lineTotal] = indent;
+    m_lineOffset.push_back( 0 );
+    m_lineIndent.push_back( indent );
     m_lineTotal ++;
 
     if ( m_bAutoIndent )
@@ -2954,7 +3015,7 @@ void CEdit::Justif()
     }
 
     bString = bRem = false;
-    i = 0;
+    i = k = 0;
     while ( true )
     {
         bDual = false;
@@ -2998,6 +3059,7 @@ void CEdit::Justif()
         }
 
         if ( i >= m_len )  break;
+        //if ( ++k > 100000 ) break; // nasty fix
 
         if ( m_bAutoIndent )
         {
@@ -3014,26 +3076,27 @@ void CEdit::Justif()
             if ( indent < 0 )  indent = 0;
         }
 
-        m_lineOffset[m_lineTotal] = i;
-        m_lineIndent[m_lineTotal] = indent;
+        m_lineOffset.push_back( i );
+        m_lineIndent.push_back( indent );
         m_lineTotal ++;
         if ( bDual )
         {
-            m_lineOffset[m_lineTotal] = i;
-            m_lineIndent[m_lineTotal] = indent;
+            m_lineOffset.push_back( i );
+            m_lineIndent.push_back( indent );
             m_lineTotal ++;
         }
-        if ( m_lineTotal >= EDITLINEMAX-2 )  break;
+        if ( k == i ) break;
+        k = i;
     }
 
     if ( m_len > 0 && m_text[m_len-1] == '\n' )
     {
-        m_lineOffset[m_lineTotal] = m_len;
-        m_lineIndent[m_lineTotal] = 0;
+        m_lineOffset.push_back( m_len );
+        m_lineIndent.push_back( 0 );
         m_lineTotal ++;
     }
-    m_lineOffset[m_lineTotal] = m_len;
-    m_lineIndent[m_lineTotal] = 0;
+    m_lineOffset.push_back( m_len );
+    m_lineIndent.push_back( 0 );
 
     if ( m_bAutoIndent )
     {
@@ -3068,7 +3131,7 @@ void CEdit::Justif()
 
     UpdateScroll();
 
-    m_timeBlink = 0.0f;  // lights the cursor immediately
+    m_timeBlink = 0.0f; // lights the cursor immediately
 }
 
 // Returns the rank of the line where the cursor is located.

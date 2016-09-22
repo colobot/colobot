@@ -131,7 +131,7 @@ Program* CProgramStorageObjectImpl::CloneProgram(Program* program)
 
     // TODO: Is there any reason CScript doesn't have a function to get the program code directly?
     auto edit = MakeUnique<Ui::CEdit>();
-    edit->SetMaxChar(Ui::EDITSTUDIOMAX);
+    edit->SetInfinite();
     program->script->PutScript(edit.get(), "");
     newprog->script->GetScript(edit.get());
 

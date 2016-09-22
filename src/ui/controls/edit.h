@@ -34,11 +34,6 @@ namespace Ui
 
 class CScroll;
 
-
-//! maximum number of characters in CBOT edit
-const int EDITSTUDIOMAX     = 20000;
-//! maximum total number of lines
-const int EDITLINEMAX       = 1000;
 //! max number of levels preserves
 const int EDITHISTORYMAX    = 50;
 
@@ -106,9 +101,6 @@ struct HyperHistory
     int firstLine = 0;
 };
 
-
-
-
 class CEdit : public CControl
 {
 public:
@@ -134,6 +126,8 @@ public:
 
     void        SetMaxChar(int max);
     int         GetMaxChar();
+    bool        IsInfinite();
+    void        SetInfinite();
 
     void        SetEditCap(bool bMode);
     bool        GetEditCap();
@@ -232,51 +226,51 @@ protected:
     void        GetIndentedText(std::ostream& stream, unsigned int start, unsigned int end);
 
 protected:
-    std::unique_ptr<CScroll> m_scroll;           // vertical scrollbar on the right
+    std::unique_ptr<CScroll>                 m_scroll;           // vertical scrollbar on the right
 
-    int     m_maxChar;          // max length of the buffer m_text
-    std::vector<char> m_text;             // text (without zero terminator)
-    std::vector<Gfx::FontMetaChar> m_format;           // format characters
-    int     m_len;              // length used in m_text
-    int     m_cursor1;          // offset cursor
-    int     m_cursor2;          // offset cursor
+    int                                      m_maxChar;          // max length of the buffer m_text or -1 to be infinite
+    std::vector<char>                        m_text;             // text (without zero terminator)
+    std::vector<Gfx::FontMetaChar>           m_format;           // format characters
+    int                                      m_len;              // length used in m_text
+    int                                      m_cursor1;          // offset cursor
+    int                                      m_cursor2;          // offset cursor
 
-    bool        m_bMulti;           // true -> multi-line
-    bool        m_bEdit;            // true -> editable
-    bool        m_bHilite;          // true -> hilitable
-    bool        m_bInsideScroll;        // true -> lift as part
-    bool        m_bDisplaySpec;         // true -> displays the special characters
-    bool        m_bMultiFont;           // true -> more fonts possible
-    bool        m_bSoluce;          // true -> shows the links-solution
-    bool        m_bGeneric;         // true -> generic that defile
-    bool        m_bAutoIndent;          // true -> automatic indentation
-    float       m_lineHeight;           // height of a row
-    float       m_lineAscent;           // height above the baseline
-    float       m_lineDescent;          // height below the baseline
-    int     m_lineVisible;          // total number of viewable lines
-    int     m_lineFirst;            // the first line displayed
-    int     m_lineTotal;            // number lines used (in m_lineOffset)
-    int     m_lineOffset[EDITLINEMAX];
-    char        m_lineIndent[EDITLINEMAX];
-    std::vector<ImageLine> m_image;
-    std::vector<HyperLink> m_link;
-    std::vector<HyperMarker> m_marker;
-    int     m_historyTotal;
-    int     m_historyCurrent;
-    HyperHistory    m_history[EDITHISTORYMAX];
-    float       m_time;             // absolute time
-    float       m_timeBlink;
-    float       m_timeLastClick;
-    float       m_timeLastScroll;
-    Math::Point     m_mouseFirstPos;
-    Math::Point     m_mouseLastPos;
-    float       m_column;
+    bool                                     m_bMulti;           // true -> multi-line
+    bool                                     m_bEdit;            // true -> editable
+    bool                                     m_bHilite;          // true -> hilitable
+    bool                                     m_bInsideScroll;        // true -> lift as part
+    bool                                     m_bDisplaySpec;         // true -> displays the special characters
+    bool                                     m_bMultiFont;           // true -> more fonts possible
+    bool                                     m_bSoluce;          // true -> shows the links-solution
+    bool                                     m_bGeneric;         // true -> generic that defile
+    bool                                     m_bAutoIndent;          // true -> automatic indentation
+    float                                    m_lineHeight;           // height of a row
+    float                                    m_lineAscent;           // height above the baseline
+    float                                    m_lineDescent;          // height below the baseline
+    int                                      m_lineVisible;          // total number of viewable lines
+    int                                      m_lineFirst;            // the first line displayed
+    int                                      m_lineTotal;            // number lines used (in m_lineOffset)
+    std::vector<int>                         m_lineOffset;
+    std::vector<char>                        m_lineIndent;
+    std::vector<ImageLine>                   m_image;
+    std::vector<HyperLink>                   m_link;
+    std::vector<HyperMarker>                 m_marker;
+    int                                      m_historyTotal;
+    int                                      m_historyCurrent;
+    std::array<HyperHistory, EDITHISTORYMAX> m_history;
+    float                                    m_time;             // absolute time
+    float                                    m_timeBlink;
+    float                                    m_timeLastClick;
+    float                                    m_timeLastScroll;
+    Math::Point                              m_mouseFirstPos;
+    Math::Point                              m_mouseLastPos;
+    float                                    m_column;
 
-    bool        m_bCapture;
+    bool                                     m_bCapture;
 
-    bool        m_bUndoForce;
-    OperUndo    m_undoOper;
-    EditUndo    m_undo[EDITUNDOMAX];
+    bool                                     m_bUndoForce;
+    OperUndo                                 m_undoOper;
+    std::array<EditUndo, EDITUNDOMAX>        m_undo;
 };
 
 

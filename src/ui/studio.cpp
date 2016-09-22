@@ -606,7 +606,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     edit->SetState(STATE_SHADOW);
     edit->SetInsideScroll(false);
 //? if ( m_bRunning )  edit->SetEdit(false);
-    edit->SetMaxChar(EDITSTUDIOMAX);
+    edit->SetInfinite();
     edit->SetFontType(Gfx::FONT_COURIER);
     edit->SetFontStretch(1.0f);
     edit->SetDisplaySpec(true);

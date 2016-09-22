@@ -927,7 +927,7 @@ bool CScript::SendScript(const char* text)
     if ( !Compile() )  return false;*/
 
     Ui::CEdit* edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
-    edit->SetMaxChar(Ui::EDITSTUDIOMAX);
+    edit->SetInfinite();
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
     edit->SetText(text, true);
     GetScript(edit);
@@ -947,7 +947,7 @@ bool CScript::ReadScript(const char* filename)
     m_script.reset();
 
     edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
-    edit->SetMaxChar(Ui::EDITSTUDIOMAX);
+    edit->SetInfinite();
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
     edit->ReadText(filename);
     GetScript(edit);
@@ -966,7 +966,7 @@ bool CScript::WriteScript(const char* filename)
     }
 
     Ui::CEdit* edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
-    edit->SetMaxChar(Ui::EDITSTUDIOMAX);
+    edit->SetInfinite();
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
     edit->SetText(m_script.get());
     edit->WriteText(filename);
