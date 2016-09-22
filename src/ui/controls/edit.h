@@ -125,8 +125,11 @@ public:
     bool        WriteText(std::string filename);
 
     void        SetMaxChar(int max);
+    //! Get max characters that can be hold before truncation or if is Infinite edit actual allocated characters in m_text
     int         GetMaxChar();
+    //! Has no character limit for edit
     bool        IsInfinite();
+    //! Set no character limit for edit
     void        SetInfinite();
 
     void        SetEditCap(bool bMode);

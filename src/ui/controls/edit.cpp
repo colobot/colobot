@@ -3059,7 +3059,6 @@ void CEdit::Justif()
         }
 
         if ( i >= m_len )  break;
-        //if ( ++k > 100000 ) break; // nasty fix
 
         if ( m_bAutoIndent )
         {
