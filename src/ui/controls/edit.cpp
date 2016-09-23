@@ -89,7 +89,7 @@ bool IsSep(int character)
 //! Object's constructor.
 CEdit::CEdit()
     : CControl(),
-      m_text( CHARACTERS_MAX, '\0' ),
+      m_text( CHARACTERS_MAX + 1, '\0' ),
       m_lineOffset(),
       m_lineIndent()
 {
@@ -1261,7 +1261,7 @@ void CEdit::SetText(const std::string& text, bool bNew)
     if ( !bNew )  UndoMemorize(OPERUNDO_SPEC);
 
     m_len = text.size();
-    if ( m_len >= static_cast<int>(m_text.size()) )  m_len = m_text.size();
+    if ( m_len >= static_cast<int>(GetMaxChar()) )  m_len = GetMaxChar();
 
     if ( m_format.size() == 0 )
     {
@@ -1918,11 +1918,11 @@ void CEdit::SetMaxChar(int max)
 {
     FreeImage();
 
-    m_text = std::string(max, '\0');
+    m_text = std::string(max + 1, '\0');
 
     m_format.clear();
-    m_format.reserve(m_text.size());
-    for (int i = 0; i <= static_cast<int>(m_text.size()); i++)
+    m_format.reserve(max + 1);
+    for (int i = 0; i <= static_cast<int>(max + 1); i++)
     {
         m_format.push_back(m_fontType);
     }
@@ -1936,7 +1936,7 @@ void CEdit::SetMaxChar(int max)
 
 int CEdit::GetMaxChar()
 {
-    return m_text.size();
+    return m_text.capacity() - 1;
 }
 
 
@@ -2117,8 +2117,8 @@ void CEdit::SetMultiFont(bool bMulti)
 
     if (bMulti)
     {
-        m_format.reserve(m_text.size());
-        for (int i = 0; i <= static_cast<int>(m_text.size()); i++)
+        m_format.reserve(GetMaxChar());
+        for (int i = 0; i <= static_cast<int>(GetMaxChar()); i++)
         {
             m_format.push_back(m_fontType);
         }
@@ -2702,7 +2702,7 @@ void CEdit::InsertOne(char character)
         DeleteOne(0);  // deletes the selected characters
     }
 
-    if ( m_len >= static_cast<int>(m_text.size()) )  return;
+    if ( m_len >= static_cast<int>(GetMaxChar()) )  return;
 
     for ( i=m_len ; i>m_cursor1 ; i-- )
     {
