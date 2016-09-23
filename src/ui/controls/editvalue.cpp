@@ -298,13 +298,13 @@ void CEditValue::SetValue(float value, bool bSendMessage)
 
 float CEditValue::GetValue()
 {
-    char    text[100];
+    std::string text;
     float   value = 0.0f;
 
     if ( m_edit != nullptr )
     {
-        m_edit->GetText(text, 100);
-        sscanf(text, "%f", &value);
+        text = m_edit->GetText(100);
+        sscanf(text.c_str(), "%f", &value);
 
         if ( m_type == EVT_100 )
         {

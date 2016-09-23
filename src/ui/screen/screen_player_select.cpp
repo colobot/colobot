@@ -232,7 +232,7 @@ void CScreenPlayerSelect::UpdateNameControl()
     CList*      pl;
     CButton*    pb;
     CEdit*      pe;
-    char        name[100];
+    std::string name;
     int         total, sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -244,7 +244,7 @@ void CScreenPlayerSelect::UpdateNameControl()
 
     total = pl->GetTotal();
     sel   = pl->GetSelect();
-    pe->GetText(name, 100);
+    name = pe->GetText(100);
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NDELETE));
     if ( pb != nullptr )
@@ -255,13 +255,13 @@ void CScreenPlayerSelect::UpdateNameControl()
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NOK));
     if ( pb != nullptr )
     {
-        pb->SetState(STATE_ENABLE, name[0]!=0 || sel!=-1);
+        pb->SetState(STATE_ENABLE, !name.empty() || sel!=-1);
     }
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PERSO));
     if ( pb != nullptr )
     {
-        pb->SetState(STATE_ENABLE, name[0]!=0 || sel!=-1);
+        pb->SetState(STATE_ENABLE, !name.empty() || sel!=-1);
     }
 }
 
@@ -272,7 +272,7 @@ void CScreenPlayerSelect::UpdateNameList()
     CWindow*    pw;
     CList*      pl;
     CEdit*      pe;
-    char        name[100];
+    std::string name;
     int         total, i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -282,7 +282,7 @@ void CScreenPlayerSelect::UpdateNameList()
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
     if ( pe == nullptr )  return;
 
-    pe->GetText(name, 100);
+    name = pe->GetText(100);
     total = pl->GetTotal();
 
     for ( i=0 ; i<total ; i++ )
@@ -339,7 +339,7 @@ void CScreenPlayerSelect::NameSelect()
     CWindow*    pw;
     CList*      pl;
     CEdit*      pe;
-    char        name[100];
+    std::string name;
     int         sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -349,7 +349,7 @@ void CScreenPlayerSelect::NameSelect()
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
     if ( pe == nullptr )  return;
 
-    pe->GetText(name, 100);
+    name = pe->GetText(100);
     sel  = pl->GetSelect();
 
     if ( sel == -1 )
@@ -377,9 +377,9 @@ bool CScreenPlayerSelect::NameCreate()
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
     if ( pe == nullptr )  return false;
 
-    char name[100];
-    pe->GetText(name, 100);
-    if ( name[0] == 0 )
+    std::string name;
+    name = pe->GetText(100);
+    if ( name.empty() )
     {
         m_sound->Play(SOUND_TZOING);
         return false;

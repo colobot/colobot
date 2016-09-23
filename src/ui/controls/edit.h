@@ -36,14 +36,15 @@ class CScroll;
 
 //! max number of levels preserves
 const int EDITHISTORYMAX    = 50;
-
 //! max number of successive undo
 const int EDITUNDOMAX = 20;
+//! max characters
+const int CHARACTERS_MAX = 1000000;
 
 struct EditUndo
 {
     //! original text
-    std::vector<char> text;
+    std::string text;
     //! length of the text
     int     len = 0;
     //! offset cursor
@@ -101,6 +102,9 @@ struct HyperHistory
     int firstLine = 0;
 };
 
+
+
+
 class CEdit : public CControl
 {
 public:
@@ -116,21 +120,16 @@ public:
     bool        EventProcess(const Event &event) override;
     void        Draw() override;
 
-    void        SetText(const char *text, bool bNew=true);
-    void        GetText(char *buffer, int max);
-    char*       GetText();
-    int         GetTextLength();
+    void               SetText(const std::string& text, bool bNew=true);
+    std::string        GetText(int max);
+    const std::string& GetText();
+    int                GetTextLength();
 
-    bool        ReadText(std::string filename, int addSize=0);
+    bool        ReadText(std::string filename);
     bool        WriteText(std::string filename);
 
     void        SetMaxChar(int max);
-    //! Get max characters that can be hold before truncation or if is Infinite edit actual allocated characters in m_text
     int         GetMaxChar();
-    //! Has no character limit for edit
-    bool        IsInfinite();
-    //! Set no character limit for edit
-    void        SetInfinite();
 
     void        SetEditCap(bool bMode);
     bool        GetEditCap();
@@ -229,51 +228,50 @@ protected:
     void        GetIndentedText(std::ostream& stream, unsigned int start, unsigned int end);
 
 protected:
-    std::unique_ptr<CScroll>                 m_scroll;           // vertical scrollbar on the right
+    std::unique_ptr<CScroll> m_scroll;           // vertical scrollbar on the right
 
-    int                                      m_maxChar;          // max length of the buffer m_text or -1 to be infinite
-    std::vector<char>                        m_text;             // text (without zero terminator)
-    std::vector<Gfx::FontMetaChar>           m_format;           // format characters
-    int                                      m_len;              // length used in m_text
-    int                                      m_cursor1;          // offset cursor
-    int                                      m_cursor2;          // offset cursor
+    std::string m_text;             // text (without zero terminator)
+    std::vector<Gfx::FontMetaChar> m_format;           // format characters
+    int     m_len;              // length used in m_text
+    int     m_cursor1;          // offset cursor
+    int     m_cursor2;          // offset cursor
 
-    bool                                     m_bMulti;           // true -> multi-line
-    bool                                     m_bEdit;            // true -> editable
-    bool                                     m_bHilite;          // true -> hilitable
-    bool                                     m_bInsideScroll;        // true -> lift as part
-    bool                                     m_bDisplaySpec;         // true -> displays the special characters
-    bool                                     m_bMultiFont;           // true -> more fonts possible
-    bool                                     m_bSoluce;          // true -> shows the links-solution
-    bool                                     m_bGeneric;         // true -> generic that defile
-    bool                                     m_bAutoIndent;          // true -> automatic indentation
-    float                                    m_lineHeight;           // height of a row
-    float                                    m_lineAscent;           // height above the baseline
-    float                                    m_lineDescent;          // height below the baseline
-    int                                      m_lineVisible;          // total number of viewable lines
-    int                                      m_lineFirst;            // the first line displayed
-    int                                      m_lineTotal;            // number lines used (in m_lineOffset)
-    std::vector<int>                         m_lineOffset;
-    std::vector<char>                        m_lineIndent;
-    std::vector<ImageLine>                   m_image;
-    std::vector<HyperLink>                   m_link;
-    std::vector<HyperMarker>                 m_marker;
-    int                                      m_historyTotal;
-    int                                      m_historyCurrent;
+    bool        m_bMulti;           // true -> multi-line
+    bool        m_bEdit;            // true -> editable
+    bool        m_bHilite;          // true -> hilitable
+    bool        m_bInsideScroll;        // true -> lift as part
+    bool        m_bDisplaySpec;         // true -> displays the special characters
+    bool        m_bMultiFont;           // true -> more fonts possible
+    bool        m_bSoluce;          // true -> shows the links-solution
+    bool        m_bGeneric;         // true -> generic that defile
+    bool        m_bAutoIndent;          // true -> automatic indentation
+    float       m_lineHeight;           // height of a row
+    float       m_lineAscent;           // height above the baseline
+    float       m_lineDescent;          // height below the baseline
+    int     m_lineVisible;          // total number of viewable lines
+    int     m_lineFirst;            // the first line displayed
+    int     m_lineTotal;            // number lines used (in m_lineOffset)
+    std::vector<int> m_lineOffset;
+    std::vector<char> m_lineIndent;
+    std::vector<ImageLine> m_image;
+    std::vector<HyperLink> m_link;
+    std::vector<HyperMarker> m_marker;
+    int     m_historyTotal;
+    int     m_historyCurrent;
     std::array<HyperHistory, EDITHISTORYMAX> m_history;
-    float                                    m_time;             // absolute time
-    float                                    m_timeBlink;
-    float                                    m_timeLastClick;
-    float                                    m_timeLastScroll;
-    Math::Point                              m_mouseFirstPos;
-    Math::Point                              m_mouseLastPos;
-    float                                    m_column;
+    float       m_time;             // absolute time
+    float       m_timeBlink;
+    float       m_timeLastClick;
+    float       m_timeLastScroll;
+    Math::Point     m_mouseFirstPos;
+    Math::Point     m_mouseLastPos;
+    float       m_column;
 
-    bool                                     m_bCapture;
+    bool        m_bCapture;
 
-    bool                                     m_bUndoForce;
-    OperUndo                                 m_undoOper;
-    std::array<EditUndo, EDITUNDOMAX>        m_undo;
+    bool        m_bUndoForce;
+    OperUndo    m_undoOper;
+    std::array<EditUndo, EDITUNDOMAX> m_undo;
 };
 
 

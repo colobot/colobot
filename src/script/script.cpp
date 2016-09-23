@@ -105,9 +105,11 @@ void CScript::PutScript(Ui::CEdit* edit, const char* name)
 bool CScript::GetScript(Ui::CEdit* edit)
 {
     int len = edit->GetTextLength();
-    m_script = MakeUniqueArray<char>(len+1);
+    m_script = MakeUniqueArray<char>(len+2);
 
-    edit->GetText(m_script.get(), len+1);
+    std::string tmp = edit->GetText(len+1);
+    strncpy(m_script.get(), tmp.c_str(), len+1);
+
     edit->GetCursor(m_cursor2, m_cursor1);
     m_len = strlen(m_script.get());
 
@@ -598,7 +600,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
     edit->SetFormat(rangeStart, rangeEnd, Gfx::FONT_HIGHLIGHT_COMMENT); // anything not processed is a comment
 
     // NOTE: Images are registered as index in some array, and that can be 0 which normally ends the string!
-    std::string text = std::string(edit->GetText(), edit->GetMaxChar());
+    std::string text = std::string( edit->GetText() );
     text = text.substr(rangeStart, rangeEnd-rangeStart);
 
     auto tokens = CBot::CBotToken::CompileTokens(text.c_str());
@@ -927,7 +929,6 @@ bool CScript::SendScript(const char* text)
     if ( !Compile() )  return false;*/
 
     Ui::CEdit* edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
-    edit->SetInfinite();
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
     edit->SetText(text, true);
     GetScript(edit);
@@ -947,7 +948,6 @@ bool CScript::ReadScript(const char* filename)
     m_script.reset();
 
     edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
-    edit->SetInfinite();
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
     edit->ReadText(filename);
     GetScript(edit);
@@ -966,7 +966,6 @@ bool CScript::WriteScript(const char* filename)
     }
 
     Ui::CEdit* edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
-    edit->SetInfinite();
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
     edit->SetText(m_script.get());
     edit->WriteText(filename);

@@ -436,8 +436,8 @@ void CStudio::SearchToken(CEdit* edit)
 {
     ObjectType  type;
     int         len, cursor1, cursor2, i, character, level;
-    char*       text;
-    char        token[100];
+    std::string text;
+    std::string token( 100, '\0');
 
     text = edit->GetText();
     len  = edit->GetTextLength();
@@ -503,7 +503,7 @@ void CStudio::SearchToken(CEdit* edit)
     }
     token[i] = 0;
 
-    m_helpFilename = GetHelpFilename(token);
+    m_helpFilename = GetHelpFilename(token.c_str());
     if ( m_helpFilename.length() == 0 )
     {
         for ( i=0 ; i<OBJECT_MAX ; i++ )
@@ -512,30 +512,30 @@ void CStudio::SearchToken(CEdit* edit)
             text = const_cast<char *>(GetObjectName(type));
             if ( text[0] != 0 )
             {
-                if ( strcmp(token, text) == 0 )
+                if ( token == text ) //strcmp(token, text) == 0 )
                 {
                     m_helpFilename = GetHelpFilename(type);
-                    SetInfoText(std::string(token), true);
+                    SetInfoText(token, true);
                     return;
                 }
             }
             text = const_cast<char *>(GetObjectAlias(type));
             if ( text[0] != 0 )
             {
-                if ( strcmp(token, text) == 0 )
+                if ( token == text ) //strcmp(token, text) == 0 )
                 {
                     m_helpFilename = GetHelpFilename(type);
-                    SetInfoText(std::string(token), true);
+                    SetInfoText(token, true);
                     return;
                 }
             }
         }
     }
 
-    text = const_cast<char *>(GetHelpText(token));
+    text = const_cast<char *>(GetHelpText(token.c_str()));
     if ( text[0] == 0 && m_helpFilename.length() > 0 )
     {
-        SetInfoText(std::string(token), true);
+        SetInfoText(token, true);
     }
     else
     {
@@ -606,7 +606,6 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     edit->SetState(STATE_SHADOW);
     edit->SetInsideScroll(false);
 //? if ( m_bRunning )  edit->SetEdit(false);
-    edit->SetInfinite();
     edit->SetFontType(Gfx::FONT_COURIER);
     edit->SetFontStretch(1.0f);
     edit->SetDisplaySpec(true);
@@ -1245,7 +1244,7 @@ void CStudio::AdjustDialog()
     CEdit*      pe;
     Math::Point     wpos, wdim, ppos, ddim;
     int         nli, nch;
-    char        name[100];
+    std::string        name;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
@@ -1302,7 +1301,7 @@ void CStudio::AdjustDialog()
             pe->SetDim(ddim);
 
             nch = static_cast< int >((ddim.x*640.0f-22.0f)/8.0f);
-            pe->GetText(name, 100);
+            name = pe->GetText(100);
             pe->SetMaxChar(nch);
             name[nch] = 0;  // truncates the text according to max
             pe->SetText(name);
@@ -1467,7 +1466,7 @@ void CStudio::SetFilenameField(CEdit* edit, const std::string& filename)
             name = name.substr(0, edit->GetMaxChar());  // truncates according to max length
         }
     }
-    edit->SetText(name.c_str());
+    edit->SetText(name);
 }
 
 // Updates the list after a change in name.
@@ -1494,7 +1493,7 @@ void CStudio::UpdateDialogAction()
     CWindow*    pw;
     CEdit*      pe;
     CButton*    pb;
-    char        name[100];
+    std::string        name;
     int         len, i;
     bool        bError;
 
@@ -1505,8 +1504,8 @@ void CStudio::UpdateDialogAction()
     pb = static_cast< CButton* >(pw->SearchControl(EVENT_DIALOG_OK));
     if ( pb == nullptr )  return;
 
-    pe->GetText(name, 100);
-    len = strlen(name);
+    name = pe->GetText(100);
+    len = name.size();
     if ( len == 0 )
     {
         bError = true;
@@ -1558,7 +1557,7 @@ void CStudio::UpdateDialogPublic()
     if ( pl != nullptr )
     {
         // GetResource(RES_TEXT, RT_IO_LIST, name); // TODO: unused?
-        pl->SetName(SearchDirectory(false).c_str(), false);
+        pl->SetName(SearchDirectory(false), false);
     }
 }
 
@@ -1619,25 +1618,25 @@ bool CStudio::ReadProgram()
 {
     CWindow*    pw;
     CEdit*      pe;
-    char        filename[100];
-    char        dir[100];
-    char*       p;
+    std::string        filename;
+    std::string        dir;
+    size_t p;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return false;
 
     pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));
     if ( pe == nullptr )  return false;
-    pe->GetText(filename, 100);
-    if ( filename[0] == 0 )  return false;
+    filename = pe->GetText(100);
+    if ( filename.empty() )  return false;
 
-    p = strstr(filename, ".txt");
-    if ( p == nullptr || p != filename+strlen(filename)-4 )
+    p = filename.find(".txt");
+    if ( p == std::string::npos )
     {
-        strcat(filename, ".txt");
+        filename += ".txr";
     }
-    strcpy(dir, SearchDirectory(true).c_str());
-    strcat(dir, filename);
+    dir = SearchDirectory(true);
+    dir += filename;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));
     if ( pw == nullptr )  return false;
@@ -1657,32 +1656,32 @@ bool CStudio::WriteProgram()
 {
     CWindow*    pw;
     CEdit*      pe;
-    char        filename[100];
-    char        dir[100];
-    char*       p;
+    std::string        filename;
+    std::string        dir;
+    size_t p;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return false;
 
     pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));
     if ( pe == nullptr )  return false;
-    pe->GetText(filename, 100);
-    if ( filename[0] == 0 )  return false;
+    filename = pe->GetText(100);
+    if ( filename.empty() )  return false;
 
-    p = strstr(filename, ".txt");
-    if ( p == nullptr || p != filename+strlen(filename)-4 )
+    p = filename.find(".txt");
+    if ( p == std::string::npos )
     {
-        strcat(filename, ".txt");
+        filename += ".txr";
     }
-    strcpy(dir, SearchDirectory(true).c_str());
-    strcat(dir, filename);
+    dir = SearchDirectory(true);
+    dir += filename;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));
     if ( pw == nullptr )  return false;
     pe = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
     if ( pe == nullptr )  return false;
 
-    if ( !pe->WriteText(std::string(dir)) )  return false;
+    if ( !pe->WriteText(dir) )  return false;
 
     m_script->SetFilename(filename);
     return true;

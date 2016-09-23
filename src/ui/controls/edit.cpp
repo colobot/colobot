@@ -47,20 +47,18 @@
 namespace Ui
 {
 
-const float MARGX            = (5.0f/640.0f);
-const float MARGY            = (5.0f/480.0f);
-const float MARGYS           = (4.0f/480.0f);
-const float MARGY1           = (1.0f/480.0f);
+const float MARGX           = (5.0f/640.0f);
+const float MARGY           = (5.0f/480.0f);
+const float MARGYS          = (4.0f/480.0f);
+const float MARGY1          = (1.0f/480.0f);
 //! time limit for double-click
-const float DELAY_DBCLICK    = 0.75f;
+const float DELAY_DBCLICK   = 0.75f;
 //! time limit for scroll
-const float DELAY_SCROLL     = 0.1f;
+const float DELAY_SCROLL    = 0.1f;
 //! expansion for \b;
-const float BIG_FONT         = 1.6f;
-//! start characters
-const int DEFAULT_CHARACTERS = 100;
-//! infinite edit flag
-const int INFINITE_EDIT = -1;
+const float BIG_FONT        = 1.6f;
+
+
 
 //! Indicates whether a character is a space.
 
@@ -91,14 +89,10 @@ bool IsSep(int character)
 //! Object's constructor.
 CEdit::CEdit()
     : CControl(),
-      m_text(),
+      m_text( CHARACTERS_MAX, '\0' ),
       m_lineOffset(),
       m_lineIndent()
 {
-    SetInfinite();
-
-    m_text = std::vector<char>(DEFAULT_CHARACTERS, '\0');
-
     m_len = 0;
 
     m_fontType = Gfx::FONT_COURIER;
@@ -1259,26 +1253,15 @@ void CEdit::DrawColor(Math::Point pos, Math::Point dim, Gfx::Color color)
 
 // Give the text to edit.
 
-void CEdit::SetText(const char *text, bool bNew)
+void CEdit::SetText(const std::string& text, bool bNew)
 {
     int     i, j, font;
     bool    bBOL;
 
-    if ( text == nullptr )
-    {
-        return;
-    }
-
     if ( !bNew )  UndoMemorize(OPERUNDO_SPEC);
 
-    m_len = strlen(text);
-    if ( !IsInfinite() && m_len > m_maxChar )  m_len = m_maxChar;
-
-    if ( IsInfinite() )
-    {
-        m_text.resize( m_len + 1, '\0' );
-        m_format.resize( m_len + 1, m_fontType);
-    }
+    m_len = text.size();
+    if ( m_len >= static_cast<int>(m_text.size()) )  m_len = m_text.size();
 
     if ( m_format.size() == 0 )
     {
@@ -1301,7 +1284,7 @@ void CEdit::SetText(const char *text, bool bNew)
         }
         else
         {
-            strncpy(m_text.data(), text, m_len);
+            m_text = std::string( text, 0, m_len );
         }
     }
     else
@@ -1375,28 +1358,25 @@ void CEdit::SetText(const char *text, bool bNew)
 
     m_cursor1 = 0;
     m_cursor2 = 0;  // cursor to the beginning
-
     Justif();
     ColumnFix();
 }
 
-// Returns a pointer to the edited text.
+// Returns a const reference to the edited text.
 
-char* CEdit::GetText()
+const std::string& CEdit::GetText()
 {
-    m_text[m_len] = 0;
-    return m_text.data();
+    return m_text;
 }
 
 // Returns the edited text.
 
-void CEdit::GetText(char *buffer, int max)
+std::string CEdit::GetText(int max)
 {
     if ( m_len < max )  max = m_len;
     if ( m_len > max )  max = max-1;
 
-    strncpy(buffer, m_text.data(), max);
-    buffer[max] = 0;
+    return std::string( m_text, 0, max );
 }
 
 // Returns the length of the text.
@@ -1453,7 +1433,7 @@ void CEdit::FreeImage()
 
 // Read from a text file.
 
-bool CEdit::ReadText(std::string filename, int addSize)
+bool CEdit::ReadText(std::string filename)
 {
     int         len, len2, i, j, n, font, iLines, iCount;
     char        iName[50];
@@ -1473,13 +1453,9 @@ bool CEdit::ReadText(std::string filename, int addSize)
     }
 
     len = stream.size();
+    len2 = CHARACTERS_MAX;
 
-    len2 = len+addSize+100;
-
-    if ( !IsInfinite() )
-    {
-        m_maxChar = len2;
-    }
+    assert( len < len2 );
 
     m_len = len;
     m_cursor1 = 0;
@@ -1487,7 +1463,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
 
     FreeImage();
 
-    m_text = std::vector<char>(len2+1, '\0');
+    m_text = std::string(len2+1, '\0');
 
     std::vector<char> buffer(len2+1, '\0');
 
@@ -1844,7 +1820,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
         {
             if (buffer[i] == '\n' && inCbotBackground)
             {
-                CScript::ColorizeScript(this, cbotStart, j);
+                CScript::ColorizeScript(this, cbotStart, j); // Fix
                 inCbotBackground = false;
             }
 
@@ -1940,17 +1916,13 @@ void CEdit::GetIndentedText(std::ostream& stream, unsigned int start, unsigned i
 
 void CEdit::SetMaxChar(int max)
 {
-    if ( max < 0 ) return;
-
     FreeImage();
 
-    m_maxChar = max;
-
-    m_text = std::vector<char>(m_maxChar+1, '\0');
+    m_text = std::string(max, '\0');
 
     m_format.clear();
-    m_format.reserve(m_maxChar+1);
-    for (int i = 0; i <= m_maxChar+1; i++)
+    m_format.reserve(m_text.size());
+    for (int i = 0; i <= static_cast<int>(m_text.size()); i++)
     {
         m_format.push_back(m_fontType);
     }
@@ -1964,22 +1936,9 @@ void CEdit::SetMaxChar(int max)
 
 int CEdit::GetMaxChar()
 {
-    if ( IsInfinite() )
-    {
-        return m_text.size();
-    }
-    return m_maxChar;
+    return m_text.size();
 }
 
-bool CEdit::IsInfinite()
-{
-    return m_maxChar == INFINITE_EDIT;
-}
-
-void CEdit::SetInfinite()
-{
-    m_maxChar = INFINITE_EDIT;
-}
 
 // Mode management "editable".
 
@@ -2158,21 +2117,10 @@ void CEdit::SetMultiFont(bool bMulti)
 
     if (bMulti)
     {
-        if ( !IsInfinite() )
+        m_format.reserve(m_text.size());
+        for (int i = 0; i <= static_cast<int>(m_text.size()); i++)
         {
-            m_format.reserve(m_maxChar+1);
-            for (int i = 0; i <= m_maxChar+1; i++)
-            {
-                m_format.push_back(m_fontType);
-            }
-        }
-        else
-        {
-            m_format.reserve(m_text.size() + 1);
-            for (int i = 0; i <= static_cast<int>(m_text.size() + 1); i++)
-            {
-                m_format.push_back(m_fontType);
-            }
+            m_format.push_back(m_fontType);
         }
     }
 }
@@ -2608,7 +2556,6 @@ bool CEdit::Paste()
     }
 
     UndoMemorize(OPERUNDO_SPEC);
-
     for ( unsigned int i = 0; i < strlen(text); i++ )
     {
         c = text[i];
@@ -2755,16 +2702,7 @@ void CEdit::InsertOne(char character)
         DeleteOne(0);  // deletes the selected characters
     }
 
-    if ( IsInfinite() )
-    {
-        m_text.resize( m_text.size() + 1, '\0' );
-        m_format.push_back(m_fontType);
-    }
-
-    if ( !IsInfinite() && m_len >= m_maxChar )
-    {
-        return;
-    }
+    if ( m_len >= static_cast<int>(m_text.size()) )  return;
 
     for ( i=m_len ; i>m_cursor1 ; i-- )
     {
@@ -3130,7 +3068,7 @@ void CEdit::Justif()
 
     UpdateScroll();
 
-    m_timeBlink = 0.0f; // lights the cursor immediately
+    m_timeBlink = 0.0f;  // lights the cursor immediately
 }
 
 // Returns the rank of the line where the cursor is located.
