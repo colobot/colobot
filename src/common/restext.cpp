@@ -717,6 +717,7 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrPrivate]       = TR("Private element");
     stringsCbot[CBot::CBotErrNoPublic]      = TR("Public required");
     stringsCbot[CBot::CBotErrNoExpression]  = TR("Expression expected after =");
+    stringsCbot[CBot::CBotErrAmbiguousCall] = TR("Ambiguous call to overloaded function");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");

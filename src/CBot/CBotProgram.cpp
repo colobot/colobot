@@ -124,14 +124,13 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
         if ( p->GetType() == ID_CLASS ||
             ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
         {
-            m_bCompileClass = true;
             CBotClass::Compile(p, pStack.get());                  // completes the definition of the class
         }
         else
         {
-            m_bCompileClass = false;
             CBotFunction::Compile(p, pStack.get(), next);
             if (next->IsExtern()) functions.push_back(next->GetName()/* + next->GetParams()*/);
+            if (next->IsPublic()) CBotFunction::AddPublic(next);
             next->m_pProg = this;                           // keeps pointers to the module
             next = next->Next();
         }

@@ -1730,6 +1730,9 @@ msgstr ""
 msgid "Expression expected after ="
 msgstr ""
 
+msgid "Ambiguous call to overloaded function"
+msgstr ""
+
 msgid "Dividing by zero"
 msgstr ""
 

@@ -64,8 +64,7 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
             inst->m_nIdent = var->GetUniqNum();
             if (inst->m_nIdent > 0 && inst->m_nIdent < 9000)
             {
-                if ( var->IsPrivate(CBotVar::ProtectionLevel::ReadOnly) &&
-                     !pStk->GetProgram()->m_bCompileClass)
+                if (CBotFieldExpr::CheckProtectionError(pStk, nullptr, var, CBotVar::ProtectionLevel::ReadOnly))
                 {
                     pStk->SetError(CBotErrPrivate, p);
                     goto err;
@@ -125,11 +124,12 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
                         if (p->GetType() == TokenTypVar)                // must be a name
                         {
+                            CBotVar*   preVar = var;
                             var = var->GetItem(p->GetString());            // get item correspondent
                             if (var != nullptr)
                             {
-                                if ( var->IsPrivate(CBotVar::ProtectionLevel::ReadOnly) &&
-                                     !pStk->GetProgram()->m_bCompileClass)
+                                if (CBotFieldExpr::CheckProtectionError(pStk, preVar, var,
+                                                                        CBotVar::ProtectionLevel::ReadOnly))
                                 {
                                     pStk->SetError(CBotErrPrivate, pp);
                                     goto err;

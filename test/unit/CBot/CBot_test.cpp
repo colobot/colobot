@@ -1786,3 +1786,270 @@ TEST_F(CBotUT, ClassNewConstructorMethodChain)
         "}\n"
     );
 }
+
+TEST_F(CBotUT, PassNullAsArgument)
+{
+    auto publicProgram = ExecuteTest(
+        "public class BaseClass {}\n"
+        "public class SubClass extends BaseClass {}\n"
+    );
+
+    ExecuteTest(
+        "bool Test(BaseClass b) {\n"
+        "    return (b == null);\n"
+        "}\n"
+        "extern void PassNullAsArgument() {\n"
+        "    ASSERT(true == Test(null));\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "void Test(BaseClass b) {}\n"
+        "void Test(SubClass s) {}\n"
+        "\n"
+        "extern void AmbiguousCallArgumentNull() {\n"
+        "    Test(null);\n"
+        "}\n",
+        CBotErrAmbiguousCall
+    );
+}
+
+TEST_F(CBotUT, ClassImplicitCastArguments)
+{
+    auto publicProgram = ExecuteTest(
+        "public class BaseClass { int a = 360; }\n"
+        "public class SubClass extends BaseClass {}\n"
+    );
+
+    ExecuteTest(
+        "bool Test(BaseClass b) {\n"
+        "    SubClass s = b;\n"
+        "    return (360 == s.a);\n"
+        "}\n"
+        "extern void UpcastPassingArguments() {\n"
+        "    ASSERT(true == Test(new SubClass()));\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "void Test(BaseClass b, SubClass s) {}\n"
+        "void Test(SubClass s, BaseClass b) {}\n"
+        "\n"
+        "extern void UpcastAmbiguousCall() {\n"
+        "    Test(new SubClass(), new SubClass());\n"
+        "}\n",
+        CBotErrAmbiguousCall
+    );
+
+    ExecuteTest(
+        "bool Test(BaseClass b, SubClass s) { return false; }\n"
+        "bool Test(SubClass s, BaseClass b) { return false; }\n"
+        "bool Test(SubClass s, SubClass s2) { return true; }\n"
+        "\n"
+        "extern void NoErrorMoreSpecific() {\n"
+        "    ASSERT(true == Test(new SubClass(), new SubClass()));\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, AmbiguousCallWithNumbers)
+{
+    ExecuteTest(
+        "void Test(int i, float f) {}\n"
+        "void Test(float f, int i) {}\n"
+        "\n"
+        "extern void AmbiguousCallNumbers() {\n"
+        "    Test(1, 2);\n"
+        "}\n",
+        CBotErrAmbiguousCall
+    );
+
+    ExecuteTest(
+        "bool Test(int i, float f) { return false; }\n"
+        "bool Test(float f, int i) { return false; }\n"
+        "bool Test(int i, int ii)  { return true; }\n"
+        "\n"
+        "extern void NoErrorMoreSpecific() {\n"
+        "    ASSERT(true == Test(1, 2));\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassMethodWithPublicKeyword)
+{
+    auto publicProgram = ExecuteTest(
+        "public class TestClass {\n"
+        "    public int Test() { return 1; }\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "int Test() { return 2; }\n"
+        "\n"
+        "extern void DontCallMethodInTestClass()\n"
+        "{\n"
+        "    ASSERT(2 == Test());\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "int Test() { return 2; }\n"
+        "\n"
+        "public class OtherClass {}\n"
+        "\n"
+        "extern void OtherClass::TestCallWithThis()\n"
+        "{\n"
+        "    this.Test();\n"
+        "}\n",
+        CBotErrUndefCall
+    );
+}
+
+TEST_F(CBotUT, ClassTestProtectedMember)
+{
+    auto publicProgram = ExecuteTest(
+        "public class BaseClass {\n"
+        "    protected int a_protected = 1;\n"
+        "    bool test() {\n"
+        "        a_protected = 1;\n"
+        "        int a = a_protected;\n"
+        "        return true;\n"
+        "    }\n"
+        "}\n"
+        "extern void Test() {\n"
+        "    BaseClass b();\n"
+        "    ASSERT(true == b.test());\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "public class SubClass extends BaseClass {\n"
+        "    bool testProtected() {\n"
+        "        a_protected = 1;\n"
+        "        int a = a_protected;\n"
+        "        return true;\n"
+        "    }\n"
+        "}\n"
+        "extern void TestSubClassAccessProtected() {\n"
+        "    SubClass  s();\n"
+        "    ASSERT(true == s.test());\n"
+        "    ASSERT(true == s.testProtected());\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void TestErrorProtected() {\n"
+        "    BaseClass b();\n"
+        "    int i = b.a_protected;\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "extern void ErrorProtectedAssignment() {\n"
+        "    BaseClass b();\n"
+        "    b.a_protected = 1;\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SomeOtherClass {\n"
+        "    void testErrorProtected() {\n"
+        "        BaseClass b();\n"
+        "        int i = b.a_protected;\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SomeOtherClass {\n"
+        "    void testErrorProtectedAssignment() {\n"
+        "        BaseClass b();\n"
+        "        b.a_protected = 1;\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+}
+
+TEST_F(CBotUT, ClassTestPrivateMember)
+{
+    auto publicProgram = ExecuteTest(
+        "public class BaseClass {\n"
+        "    private int a_private = 2;\n"
+        "\n"
+        "    bool test() {\n"
+        "        a_private = 2;\n"
+        "        int a = a_private;\n"
+        "        return true;\n"
+        "    }\n"
+        "    bool NoErrorPrivateSameClass() {\n"
+        "        BaseClass b = new BaseClass();\n"
+        "        int a = b.a_private;\n"
+        "        b.a_private = 2;\n"
+        "        return true;\n"
+        "    }\n"
+        "}\n"
+        "extern void Test() {\n"
+        "    BaseClass b();\n"
+        "    ASSERT(true == b.test());\n"
+        "    ASSERT(true == b.NoErrorPrivateSameClass());\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "public class SubClass extends BaseClass {\n"
+        "    void testErrorPrivate() {\n"
+        "        int a = a_private;\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SubClass extends BaseClass {\n"
+        "    void testErrorPrivateAssignment() {\n"
+        "        a_private = 2;\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "extern void TestErrorPrivate() {\n"
+        "    BaseClass b();\n"
+        "    int i = b.a_private;\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "extern void ErrorPrivateAssignment() {\n"
+        "    BaseClass b();\n"
+        "    b.a_private = 2;\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SomeOtherClass {\n"
+        "    void testErrorPrivate() {\n"
+        "        BaseClass b();\n"
+        "        int i = b.a_private;\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SomeOtherClass {\n"
+        "    void testErrorPrivateAssignment() {\n"
+        "        BaseClass b();\n"
+        "        b.a_private = 1;\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+}

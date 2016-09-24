@@ -84,6 +84,9 @@ msgstr "Уже что-то несу"
 msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
 msgstr "Альтернативный режим камеры\\Движение в стороны вместо поворачивания (в режиме свободной камеры)"
 
+msgid "Ambiguous call to overloaded function"
+msgstr ""
+
 msgid "Analysis already performed"
 msgstr "Анализ уже выполнен"
 

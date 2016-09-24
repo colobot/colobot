@@ -134,4 +134,57 @@ std::string CBotFieldExpr::GetDebugData()
     return ss.str();
 }
 
+////////////////////////////////////////////////////////////////////////////////
+bool CBotFieldExpr::CheckProtectionError(CBotCStack* pStack, CBotVar* pPrev, CBotVar* pVar,
+                                         CBotVar::ProtectionLevel privat)
+{
+    CBotVar::ProtectionLevel varPriv = pVar->GetPrivate();
+
+    if (privat == CBotVar::ProtectionLevel::ReadOnly && varPriv == privat)
+        return true;
+
+    if (varPriv == CBotVar::ProtectionLevel::Public) return false;
+
+    std::string prevName = (pPrev == nullptr) ? "" : pPrev->GetName();
+
+    // implicit 'this.'var,  this.var,  or super.var
+    if (pPrev == nullptr || prevName == "this" || prevName == "super") // member of the current class
+    {
+        if (varPriv == CBotVar::ProtectionLevel::Private)  // var is private ?
+        {
+            CBotToken  token("this");
+            CBotVar*   pThis = pStack->FindVar(token);
+            CBotClass* pClass = pThis->GetClass();         // the current class
+
+            CBotVar* pVarList = pClass->GetVar();
+
+            int ident = pVar->GetUniqNum();
+            // check if var is inherited from a parent class
+            if (pVarList == nullptr || ident < pVarList->GetUniqNum())
+                return true;
+        }
+    }
+    else                                                                // any other context
+    {
+        if (pVar->IsPrivate())    // var is protected or private ?
+        {
+            CBotToken token("this");
+            CBotVar*  pThis = pStack->FindVar(token);
+
+            if (pThis == nullptr) return true;                   // inside a function ?
+            if (pThis->GetType() != CBotTypPointer) return true;
+
+            CBotClass* pClass = pThis->GetClass();               // the current class
+
+            if (!pClass->IsChildOf(pPrev->GetClass()))     // var is member of some other class ?
+                return true;
+
+            if (varPriv == CBotVar::ProtectionLevel::Private &&  // private member of a parent class
+                pClass != pPrev->GetClass()) return true;
+        }
+    }
+
+    return false;
+}
+
 } // namespace CBot

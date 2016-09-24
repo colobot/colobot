@@ -639,7 +639,6 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 {
                     // return a method precompiled in pass 1
                     CBotFunction*   pf = m_pMethod;
-                    CBotFunction*   prev = nullptr;
                     CBotToken* ppp = p;
                     CBotCStack* pStk = pStack->TokenStack(nullptr, true);
                     CBotDefParam* params = CBotDefParam::Compile(p, pStk );
@@ -648,7 +647,6 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     while ( pf != nullptr )                             // search by name and parameters
                     {
                         if (pf->GetName() == pp && pf->CheckParam( params )) break;
-                        prev = pf;
                         pf = pf->Next();
                     }
 
@@ -684,6 +682,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                                 initType = CBotVar::InitType::DEF;
                             pcopy->SetInit(initType);
                             pcopy->SetUniqNum(pv->GetUniqNum());
+                            pcopy->SetPrivate(pv->GetPrivate());
                             pile->AddVar(pcopy);
                             pv = pv->GetNext();
                         }
@@ -693,18 +692,12 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     // compiles a method
                     p = pBase;
                     CBotFunction* f =
-                    CBotFunction::Compile(p, pile, nullptr/*, false*/);
+                    CBotFunction::Compile(p, pile, pf/*, false*/);
 
                     if ( f != nullptr )
                     {
                         f->m_pProg = pStack->GetProgram();
                         f->m_bSynchro = bSynchro;
-                        // replaces the element in the chain
-                        f->m_next = pf->m_next;
-                        pf->m_next = nullptr;
-                        delete pf;
-                        if (prev == nullptr) m_pMethod = f;
-                        else prev->m_next = f;
                     }
                     pStack->Return(nullptr, pile);
                 }

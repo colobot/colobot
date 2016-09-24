@@ -65,6 +65,21 @@ public:
      */
     void RestoreStateVar(CBotStack* &pj, bool bMain) override;
 
+    /*!
+     * \brief Check if access to a variable is allowed or not depending on public/private/protected setting
+     *
+     * If this function returns true, the caller is responsible for failing the compilation with ::CBotErrPrivate error.
+     * This function doesn't set the error flag itself.
+     *
+     * \param pStack Current compilation stack frame
+     * \param pPrev Class instance which variable to check is part of, or nullptr if not part of a class
+     * \param pVar Variable to check
+     * \param privat CBotVar::ProtectionLevel::ReadOnly if requesting read-only access, anything else otherwise
+     * \return true if pVar is inaccessible in the current context, false if access should be allowed
+     */
+    static bool CheckProtectionError(CBotCStack* pStack, CBotVar* pPrev, CBotVar* pVar,
+                                     CBotVar::ProtectionLevel privat = CBotVar::ProtectionLevel::Protected);
+
 protected:
     virtual const std::string GetDebugName() override { return "CBotFieldExpr"; }
     virtual std::string GetDebugData() override;
