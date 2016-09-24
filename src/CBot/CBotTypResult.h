@@ -106,7 +106,7 @@ public:
 
     /**
      * \brief Returns ::CBotType or ::CBotError stored in this object
-     * \param mode Mode, see ::GetTypeMode enum
+     * \param mode Mode, see GetTypeMode enum
      */
     int         GetType(GetTypeMode mode = GetTypeMode::NORMAL) const;
 

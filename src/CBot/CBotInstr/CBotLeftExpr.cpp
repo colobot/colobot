@@ -64,7 +64,7 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
             inst->m_nIdent = var->GetUniqNum();
             if (inst->m_nIdent > 0 && inst->m_nIdent < 9000)
             {
-                if (CBotFieldExpr::ProtectionError(pStk, nullptr, var, CBotVar::ProtectionLevel::ReadOnly))
+                if (CBotFieldExpr::CheckProtectionError(pStk, nullptr, var, CBotVar::ProtectionLevel::ReadOnly))
                 {
                     pStk->SetError(CBotErrPrivate, p);
                     goto err;
@@ -128,7 +128,8 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
                             var = var->GetItem(p->GetString());            // get item correspondent
                             if (var != nullptr)
                             {
-                                if (CBotFieldExpr::ProtectionError(pStk, preVar, var, CBotVar::ProtectionLevel::ReadOnly))
+                                if (CBotFieldExpr::CheckProtectionError(pStk, preVar, var,
+                                                                        CBotVar::ProtectionLevel::ReadOnly))
                                 {
                                     pStk->SetError(CBotErrPrivate, pp);
                                     goto err;

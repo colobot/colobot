@@ -110,7 +110,7 @@ CBotInstr* CBotExprRetVar::Compile(CBotToken*& p, CBotCStack* pStack, bool bMeth
                             if (var != nullptr)
                             {
                                 i->SetUniqNum(var->GetUniqNum());
-                                if (CBotFieldExpr::ProtectionError(pStk, preVar, var))
+                                if (CBotFieldExpr::CheckProtectionError(pStk, preVar, var))
                                 {
                                     pStk->SetError(CBotErrPrivate, pp);
                                     goto err;
