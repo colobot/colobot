@@ -1633,7 +1633,7 @@ bool CStudio::ReadProgram()
     p = filename.find(".txt");
     if ( p == std::string::npos )
     {
-        filename += ".txr";
+        filename += ".txt";
     }
     dir = SearchDirectory(true);
     dir += filename;
@@ -1671,7 +1671,7 @@ bool CStudio::WriteProgram()
     p = filename.find(".txt");
     if ( p == std::string::npos )
     {
-        filename += ".txr";
+        filename += ".txt";
     }
     dir = SearchDirectory(true);
     dir += filename;
