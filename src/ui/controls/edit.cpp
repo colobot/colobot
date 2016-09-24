@@ -1820,7 +1820,7 @@ bool CEdit::ReadText(std::string filename)
         {
             if (buffer[i] == '\n' && inCbotBackground)
             {
-                CScript::ColorizeScript(this, cbotStart, j); // Fix
+                CScript::ColorizeScript(this, cbotStart, j);
                 inCbotBackground = false;
             }
 
