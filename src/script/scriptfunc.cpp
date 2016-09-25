@@ -3000,6 +3000,14 @@ public:
                 m_file = std::move(os);
             }
         }
+        else if (mode == CBotFileAccessHandler::OpenMode::Append)
+        {
+            auto os = MakeUnique<COutputStream>(filename, std::ios_base::app);
+            if (os->is_open())
+            {
+                m_file = std::move(os);
+            }
+        }
 
         if (Opened())
         {
