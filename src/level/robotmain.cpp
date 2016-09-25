@@ -780,10 +780,10 @@ bool CRobotMain::ProcessEvent(Event &event)
     if (event.type == EVENT_KEY_DOWN &&
         event.GetData<KeyEventData>()->key == KEY(RETURN) && m_cmdEdit)
     {
-        char cmd[50];
+        std::string cmd;
         Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
-        pe->GetText(cmd, 50);
+        cmd = pe->GetText(50);
         pe->SetText("");
         pe->ClearState(Ui::STATE_VISIBLE);
         m_interface->SetFocus(nullptr);
