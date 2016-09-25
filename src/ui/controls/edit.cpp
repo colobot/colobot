@@ -89,7 +89,8 @@ bool IsSep(int character)
 //! Object's constructor.
 CEdit::CEdit()
     : CControl(),
-      m_text( CHARACTERS_MAX + 1, '\0' ),
+      m_maxChar(1000000),
+      m_text(),
       m_lineOffset(),
       m_lineIndent()
 {
@@ -1261,7 +1262,11 @@ void CEdit::SetText(const std::string& text, bool bNew)
     if ( !bNew )  UndoMemorize(OPERUNDO_SPEC);
 
     m_len = text.size();
-    if ( m_len >= static_cast<int>(GetMaxChar()) )  m_len = GetMaxChar();
+
+    if( m_len >= GetMaxChar() ) m_len = GetMaxChar();
+
+    m_text.resize( m_len + 1, '\0' );
+    m_format.resize( m_len + 1, m_fontType );
 
     if ( m_format.size() == 0 )
     {
@@ -1453,9 +1458,7 @@ bool CEdit::ReadText(std::string filename)
     }
 
     len = stream.size();
-    len2 = CHARACTERS_MAX;
-
-    assert( len < len2 );
+    len2 = len + 1;
 
     m_len = len;
     m_cursor1 = 0;
@@ -1470,11 +1473,7 @@ bool CEdit::ReadText(std::string filename)
     stream.read(buffer.data(), len);
 
     m_format.clear();
-    m_format.reserve(len2+1);
-    for (i = 0; i <= len2+1; i++)
-    {
-        m_format.push_back(m_fontType);
-    }
+    m_format.resize(len2+1, m_fontType);
 
     stream.close();
 
@@ -1918,14 +1917,12 @@ void CEdit::SetMaxChar(int max)
 {
     FreeImage();
 
-    m_text = std::string(max + 1, '\0');
+    m_maxChar = max;
+
+    m_text.resize( m_maxChar + 1, '\0' );
 
     m_format.clear();
-    m_format.reserve(max + 1);
-    for (int i = 0; i <= static_cast<int>(max + 1); i++)
-    {
-        m_format.push_back(m_fontType);
-    }
+    m_format.resize(m_maxChar + 1, m_fontType);
 
     m_len = 0;
     m_cursor1 = 0;
@@ -1936,7 +1933,7 @@ void CEdit::SetMaxChar(int max)
 
 int CEdit::GetMaxChar()
 {
-    return m_text.capacity() - 1;
+    return m_maxChar;
 }
 
 
@@ -2117,11 +2114,7 @@ void CEdit::SetMultiFont(bool bMulti)
 
     if (bMulti)
     {
-        m_format.reserve(GetMaxChar());
-        for (int i = 0; i <= static_cast<int>(GetMaxChar()); i++)
-        {
-            m_format.push_back(m_fontType);
-        }
+        m_format.resize( m_text.size() + 1, m_fontType );
     }
 }
 
@@ -2702,7 +2695,10 @@ void CEdit::InsertOne(char character)
         DeleteOne(0);  // deletes the selected characters
     }
 
-    if ( m_len >= static_cast<int>(GetMaxChar()) )  return;
+    if ( m_len >= GetMaxChar() )  return;
+
+    m_text.resize( m_text.size() + 1, '\0' );
+    m_format.resize( m_format.size() + 1, m_fontType );
 
     for ( i=m_len ; i>m_cursor1 ; i-- )
     {

@@ -594,8 +594,8 @@ void CScript::UpdateList(Ui::CList* list)
 
 void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
 {
-    if (rangeEnd > edit->GetMaxChar())
-        rangeEnd = edit->GetMaxChar();
+    if (rangeEnd > edit->GetTextLength())
+        rangeEnd = edit->GetTextLength();
 
     edit->SetFormat(rangeStart, rangeEnd, Gfx::FONT_HIGHLIGHT_COMMENT); // anything not processed is a comment
 

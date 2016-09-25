@@ -512,7 +512,7 @@ void CStudio::SearchToken(CEdit* edit)
             text = const_cast<char *>(GetObjectName(type));
             if ( text[0] != 0 )
             {
-                if ( token == text ) //strcmp(token, text) == 0 )
+                if ( token == text )
                 {
                     m_helpFilename = GetHelpFilename(type);
                     SetInfoText(token, true);
@@ -522,7 +522,7 @@ void CStudio::SearchToken(CEdit* edit)
             text = const_cast<char *>(GetObjectAlias(type));
             if ( text[0] != 0 )
             {
-                if ( token == text ) //strcmp(token, text) == 0 )
+                if ( token == text )
                 {
                     m_helpFilename = GetHelpFilename(type);
                     SetInfoText(token, true);

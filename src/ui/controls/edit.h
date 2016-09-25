@@ -38,8 +38,6 @@ class CScroll;
 const int EDITHISTORYMAX    = 50;
 //! max number of successive undo
 const int EDITUNDOMAX = 20;
-//! max characters
-const int CHARACTERS_MAX = 1000000;
 
 struct EditUndo
 {
@@ -230,6 +228,7 @@ protected:
 protected:
     std::unique_ptr<CScroll> m_scroll;           // vertical scrollbar on the right
 
+    int m_maxChar;
     std::string m_text;             // text (without zero terminator)
     std::vector<Gfx::FontMetaChar> m_format;           // format characters
     int     m_len;              // length used in m_text
