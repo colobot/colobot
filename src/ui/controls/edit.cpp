@@ -557,7 +557,7 @@ bool CEdit::IsLinkPos(Math::Point pos)
 {
     int     i;
 
-    if ( m_format.size() == 0 )  return false;
+    if ( m_format.empty() )  return false;
 
     i = MouseDetect(pos);
     if ( i == -1 )  return false;
@@ -720,7 +720,7 @@ int CEdit::MouseDetect(Math::Point mouse)
         {
             len = m_lineOffset[i+1] - m_lineOffset[i];
 
-            if ( m_format.size() == 0 )
+            if ( m_format.empty() )
             {
 //                c = m_engine->GetText()->Detect(m_text.data()+m_lineOffset[i],
 //                                                len, offset, m_fontSize,
@@ -1017,7 +1017,7 @@ void CEdit::Draw()
             o1 = c1;  if ( o1 < beg     )  o1 = beg;
             o2 = c2;  if ( o2 > beg+len )  o2 = beg+len;
 
-            if ( m_format.size() == 0 )
+            if ( m_format.empty() )
             {
                 start.x = ppos.x+m_engine->GetText()->GetStringWidth(std::string(m_text.data()+beg).substr(0, o1-beg), m_fontType, size);
                 end.x   = m_engine->GetText()->GetStringWidth(std::string(m_text.data()+o1).substr(0, o2-o1), m_fontType, size);
@@ -1051,7 +1051,7 @@ void CEdit::Draw()
             eol = 2;  // square (eot)
         }
         if ( !m_bMulti || !m_bDisplaySpec )  eol = 0;
-        if ( m_format.size() == 0 )
+        if ( m_format.empty() )
         {
             m_engine->GetText()->DrawText(std::string(m_text.data()+beg).substr(0, len), m_fontType, size, ppos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, eol);
         }
@@ -1092,7 +1092,7 @@ void CEdit::Draw()
 
                 len = m_cursor1 - m_lineOffset[i];
 
-                if ( m_format.size() == 0 )
+                if ( m_format.empty() )
                 {
                     m_engine->GetText()->SizeText(std::string(m_text.data()+m_lineOffset[i]).substr(0, len), m_fontType,
                                                   size, pos, Gfx::TEXT_ALIGN_LEFT,
@@ -1268,96 +1268,68 @@ void CEdit::SetText(const std::string& text, bool bNew)
     m_text.resize( m_len + 1, '\0' );
     m_format.resize( m_len + 1, m_fontType );
 
-    if ( m_format.size() == 0 )
+    font = m_fontType;
+    j = 0;
+    bBOL = true;
+    for ( i=0 ; i<m_len ; i++ )
     {
         if ( m_bAutoIndent )
         {
-            j = 0;
-            bBOL = true;
-            for ( i=0 ; i<m_len ; i++ )
+            if ( text[i] == '\t' )
             {
-                if ( text[i] == '\t' )
+                if ( !bBOL )
                 {
-                    if ( !bBOL )  m_text[j++] = ' ';
-                    continue;  // removes tabs
+                    m_text[j] = ' ';
+                    m_format[j] = font;
+                    j ++;
                 }
-                bBOL = ( text[i] == '\n' );
-
-                m_text[j++] = text[i];
+                continue;  // removes tabs
             }
-            m_len = j;
+            bBOL = ( text[i] == '\n' );
+        }
+
+        if ( text[i] == '\\' && text[i+2] == ';' )
+        {
+            if ( text[i+1] == 'n' )  // normal ?
+            {
+                font &= ~Gfx::FONT_MASK_FONT;
+                font |= Gfx::FONT_COLOBOT;
+                i += 2;
+            }
+            else if ( text[i+1] == 'c' )  // cbot ?
+            {
+                font &= ~Gfx::FONT_MASK_FONT;
+                font |= Gfx::FONT_COURIER;
+                i += 2;
+            }
+            else if ( text[i+1] == 'b' )  // big title ?
+            {
+                font &= ~Gfx::FONT_MASK_TITLE;
+                font |= Gfx::FONT_TITLE_BIG;
+                i += 2;
+            }
+            else if ( text[i+1] == 't' )  // title ?
+            {
+                font &= ~Gfx::FONT_MASK_TITLE;
+                font |= Gfx::FONT_TITLE_NORM;
+                i += 2;
+            }
+            else if ( text[i+1] == 's' )  // subtitle ?
+            {
+                font &= ~Gfx::FONT_MASK_TITLE;
+                font |= Gfx::FONT_TITLE_LITTLE;
+                i += 2;
+            }
         }
         else
         {
-            m_text = std::string( text, 0, m_len );
+            m_text[j] = text[i];
+            m_format[j] = font;
+            j ++;
+            font &= ~Gfx::FONT_MASK_TITLE;  // reset title
         }
     }
-    else
-    {
-        font = m_fontType;
-        j = 0;
-        bBOL = true;
-        for ( i=0 ; i<m_len ; i++ )
-        {
-            if ( m_bAutoIndent )
-            {
-                if ( text[i] == '\t' )
-                {
-                    if ( !bBOL )
-                    {
-                        m_text[j] = ' ';
-                        m_format[j] = font;
-                        j ++;
-                    }
-                    continue;  // removes tabs
-                }
-                bBOL = ( text[i] == '\n' );
-            }
-
-            if ( text[i] == '\\' && text[i+2] == ';' )
-            {
-                if ( text[i+1] == 'n' )  // normal ?
-                {
-                    font &= ~Gfx::FONT_MASK_FONT;
-                    font |= Gfx::FONT_COLOBOT;
-                    i += 2;
-                }
-                else if ( text[i+1] == 'c' )  // cbot ?
-                {
-                    font &= ~Gfx::FONT_MASK_FONT;
-                    font |= Gfx::FONT_COURIER;
-                    i += 2;
-                }
-                else if ( text[i+1] == 'b' )  // big title ?
-                {
-                    font &= ~Gfx::FONT_MASK_TITLE;
-                    font |= Gfx::FONT_TITLE_BIG;
-                    i += 2;
-                }
-                else if ( text[i+1] == 't' )  // title ?
-                {
-                    font &= ~Gfx::FONT_MASK_TITLE;
-                    font |= Gfx::FONT_TITLE_NORM;
-                    i += 2;
-                }
-                else if ( text[i+1] == 's' )  // subtitle ?
-                {
-                    font &= ~Gfx::FONT_MASK_TITLE;
-                    font |= Gfx::FONT_TITLE_LITTLE;
-                    i += 2;
-                }
-            }
-            else
-            {
-                m_text[j] = text[i];
-                m_format[j] = font;
-                j ++;
-
-                font &= ~Gfx::FONT_MASK_TITLE;  // reset title
-            }
-        }
-        m_len = j;
-    }
+    m_len = j;
 
     if ( bNew )  UndoFlush();
 
@@ -2408,7 +2380,7 @@ void CEdit::MoveLine(int move, bool bWord, bool bSelect)
         column -= indentLength*m_lineIndent[line];
     }
 
-    if ( m_format.size() == 0 )
+    if ( m_format.empty() )
     {
         c = m_engine->GetText()->Detect(std::string(m_text.data()+m_lineOffset[line]),
                                         m_fontType, m_fontSize,
@@ -2439,7 +2411,7 @@ void CEdit::ColumnFix()
 
     line = GetCursorLine(m_cursor1);
 
-    if ( m_format.size() == 0 )
+    if ( m_format.empty() )
     {
         m_column = m_engine->GetText()->GetStringWidth(
                                 std::string(m_text.data()+m_lineOffset[line]),
@@ -2960,7 +2932,7 @@ void CEdit::Justif()
             width -= indentLength*m_lineIndent[m_lineTotal-1];
         }
 
-        if ( m_format.size() == 0 )
+        if ( m_format.empty() )
         {
             // TODO check if good
 
@@ -3164,7 +3136,7 @@ bool CEdit::UndoRecall()
 
 bool CEdit::ClearFormat()
 {
-    if ( m_format.size() == 0 )
+    if ( m_format.empty() )
     {
         SetMultiFont(true);
     }
