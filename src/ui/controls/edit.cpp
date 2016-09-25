@@ -89,7 +89,7 @@ bool IsSep(int character)
 //! Object's constructor.
 CEdit::CEdit()
     : CControl(),
-      m_maxChar(1000000),
+      m_maxChar( std::numeric_limits<int>::max() ),
       m_text(),
       m_lineOffset(),
       m_lineIndent()
