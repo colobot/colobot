@@ -58,7 +58,7 @@ public:
     bool        EventProcess(const Event &event);
 
     void        StartEditScript(CScript *script, std::string name, Program* program);
-    bool        StopEditScript(bool bCancel);
+    bool        StopEditScript(bool closeWithErrors);
 
     void        SetInfoText(std::string text, bool bClickable);
 

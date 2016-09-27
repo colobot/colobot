@@ -875,7 +875,7 @@ void CStudio::AdjustEditScript()
 
 // Ends edition of a program.
 
-bool CStudio::StopEditScript(bool bCancel)
+bool CStudio::StopEditScript(bool closeWithErrors)
 {
     CWindow*    pw;
     CEdit*      edit;
@@ -883,7 +883,7 @@ bool CStudio::StopEditScript(bool bCancel)
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));
     if ( pw == nullptr )  return false;
 
-    if ( !bCancel && !m_script->IsRunning() )
+    if ( !closeWithErrors && !m_script->IsRunning() )
     {
         edit = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
         if ( edit != nullptr )

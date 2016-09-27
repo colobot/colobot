@@ -64,8 +64,19 @@ public:
 protected:
     bool        EventFrame(const Event &event);
 
+    /**
+     * \brief Start the program editor
+     * \param program Program instance to edit
+     * \param name Program name, used only if the program is empty to insert main function stub code
+     * \remarks If the editor is already open, the behaviour is undefined
+     */
     void        StartEditScript(Program* program, std::string name);
-    void        StopEditScript(bool bCancel);
+    /**
+     * \brief Close the program editor
+     * \param closeWithErrors If true, the editor will be forced to close even if the program contains errors
+     * \remarks If the editor isn't open, the behaviour is undefined
+     */
+    void        StopEditScript(bool closeWithErrors);
 
     void        GroundFlat();
     void        ColorFlag(int color);
