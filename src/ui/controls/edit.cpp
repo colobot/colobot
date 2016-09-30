@@ -449,6 +449,19 @@ bool CEdit::EventProcess(const Event &event)
             return true;
         }
 
+        if ( data->key == KEY(BACKSPACE) && bControl )
+        {
+            DeleteWord(-1);
+            SendModifEvent();
+            return true;
+        }
+        if ( data->key == KEY(DELETE) && bControl )
+        {
+            DeleteWord(1);
+            SendModifEvent();
+            return true;
+        }
+
         if ( data->key == KEY(RETURN) && !bControl )
         {
             Insert('\n');
@@ -2746,6 +2759,34 @@ void CEdit::DeleteOne(int dir)
     m_cursor2 = m_cursor1;
 }
 
+
+// Delete word
+
+void CEdit::DeleteWord(int dir)
+{
+    if ( dir < 0 )
+    {
+        while ( IsSpace( m_text[--m_cursor1] ) );
+        m_cursor2 = ++m_cursor1;
+        while ( IsWord( m_text[--m_cursor2] ) );
+        ++m_cursor2;
+
+        if ( m_cursor1 < 0 || m_cursor2 < 0 ) return;
+
+        Delete( -1 );
+    }
+    else
+    {
+        m_cursor1--;
+        while ( IsSpace( m_text[++m_cursor1] ) );
+        m_cursor2 = m_cursor1;
+        while ( IsWord( m_text[++m_cursor2] ) );
+
+        if ( m_cursor1 > m_len || m_cursor2 > m_len ) return;
+
+        Delete( -1 );
+    }
+}
 
 // Calculates the indentation level of brackets {and}.
 
