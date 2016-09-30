@@ -3011,7 +3011,7 @@ public:
 
         if (Opened())
         {
-            GetLogger()->Info("CBot open file '%s'\n", filename.c_str());
+            GetLogger()->Info("CBot open file '%s', mode '%c'\n", filename.c_str(), mode);
             m_numFilesOpen++;
         }
     }
@@ -3020,7 +3020,7 @@ public:
     {
         if (Opened())
         {
-            GetLogger()->Debug("CBot close file\n");
+            GetLogger()->Info("CBot close file\n");
             m_numFilesOpen--;
         }
 
@@ -3079,8 +3079,9 @@ public:
 
     virtual bool DeleteFile(const std::string& filename) override
     {
-        GetLogger()->Info("CBot delete file '%s'\n", filename.c_str());
-        return CResourceManager::Remove(PrepareFilename(filename));
+        std::string fname = PrepareFilename(filename);
+        GetLogger()->Info("CBot delete file '%s'\n", fname.c_str());
+        return CResourceManager::Remove(fname);
     }
 
 private:
