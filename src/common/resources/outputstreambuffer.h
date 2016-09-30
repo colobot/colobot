@@ -35,7 +35,13 @@ public:
     COutputStreamBuffer(const COutputStreamBuffer &) = delete;
     COutputStreamBuffer &operator= (const COutputStreamBuffer &) = delete;
 
-    void open(const std::string &filename);
+    /** Open Stream Buffer for writing
+     *
+     * \param filename
+     * \param Mode one of: std::ios_base::out - Open for writing, std::ios_base::app - Append to file
+     *
+     */
+    void open(const std::string &filename, std::ios_base::openmode mode);
     void close();
     bool is_open();
 
