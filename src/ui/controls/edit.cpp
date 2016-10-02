@@ -2764,9 +2764,14 @@ void CEdit::DeleteOne(int dir)
 
 void CEdit::DeleteWord(int dir)
 {
+    if ( !m_bEdit ) return;
+
     if ( dir < 0 )
     {
-        while ( IsSpace( m_text[--m_cursor1] ) );
+        while ( IsWord( m_text[m_cursor1++] ) );
+        m_cursor2 = m_cursor1;
+
+        while ( !IsWord( m_text[--m_cursor1] ) );
         m_cursor2 = ++m_cursor1;
         while ( IsWord( m_text[--m_cursor2] ) );
         ++m_cursor2;
@@ -2777,8 +2782,10 @@ void CEdit::DeleteWord(int dir)
     }
     else
     {
-        m_cursor1--;
-        while ( IsSpace( m_text[++m_cursor1] ) );
+        while ( IsWord( m_text[m_cursor1--] ) );
+        m_cursor2 = m_cursor1;
+
+        while ( !IsWord( m_text[++m_cursor1] ) );
         m_cursor2 = m_cursor1;
         while ( IsWord( m_text[++m_cursor2] ) );
 
