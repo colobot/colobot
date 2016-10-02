@@ -82,10 +82,10 @@ CBotStack* CBotStack::AllocateStack()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStack::Delete()
 {
-    if ( this == nullptr ) return;
+    assert ( this != nullptr );
 
-    m_next->Delete();
-    m_next2->Delete();
+    if (m_next != nullptr) m_next->Delete();
+    if (m_next2 != nullptr) m_next2->Delete();
 
     if (m_prev != nullptr)
     {
@@ -192,8 +192,8 @@ bool CBotStack::Return(CBotStack* pfils)
     m_var = pfils->m_var;                        // result transmitted
     pfils->m_var = nullptr;                        // not to destroy the variable
 
-    m_next->Delete();m_next = nullptr;                // releases the stack above
-    m_next2->Delete();m_next2 = nullptr;            // also the second stack (catch)
+    if (m_next != nullptr) m_next->Delete();m_next = nullptr;                // releases the stack above
+    if (m_next2 != nullptr) m_next2->Delete();m_next2 = nullptr;            // also the second stack (catch)
 
     return IsOk();                        // interrupted if error
 }
@@ -281,7 +281,7 @@ bool CBotStack::IfContinue(int state, const std::string& name)
     m_state = state;                            // where again?
     m_error = CBotNoErr;
     m_labelBreak.clear();
-    m_next->Delete();            // purge above stack
+    if (m_next != nullptr) m_next->Delete();            // purge above stack
     return true;
 }
 
@@ -478,7 +478,7 @@ bool CBotStack::Execute()
 
     if (!instr->Run(nullptr, pile)) return false;            // resume interrupted execution
 
-    pile->m_next->Delete();
+    if (pile->m_next != nullptr) pile->m_next->Delete();
 
     pile->m_callFinished = true;
     return true;

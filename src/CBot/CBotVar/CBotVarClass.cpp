@@ -69,11 +69,10 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
     m_instances.insert(this);
 
     CBotClass* pClass = type.GetClass();
-    CBotClass* pClass2 = pClass->GetParent();
-    if ( pClass2 != nullptr )
+    if ( pClass != nullptr && pClass->GetParent() != nullptr )
     {
         // also creates an instance of the parent class
-        m_pParent = new CBotVarClass(name, CBotTypResult(type.GetType(),pClass2) ); //, nIdent);
+        m_pParent = new CBotVarClass(name, CBotTypResult(type.GetType(), pClass->GetParent()) ); //, nIdent);
     }
 
     SetClass( pClass );

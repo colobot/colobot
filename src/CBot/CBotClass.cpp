@@ -92,7 +92,7 @@ void CBotClass::ClearPublic()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotClass::Purge()
 {
-    if ( this == nullptr ) return;
+    assert ( this != nullptr );
 
     delete      m_pVar;
     m_pVar      = nullptr;
@@ -104,7 +104,7 @@ void CBotClass::Purge()
 
     m_nbVar     = m_parent == nullptr ? 0 : m_parent->m_nbVar;
 
-    m_next->Purge();
+    if (m_next != nullptr) m_next->Purge();
     m_next = nullptr;          // no longer belongs to this chain
 }
 
@@ -205,7 +205,7 @@ std::string  CBotClass::GetName()
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass*  CBotClass::GetParent()
 {
-    if ( this == nullptr ) return nullptr;
+    assert ( this != nullptr );
     return m_parent;
 }
 
