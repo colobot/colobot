@@ -145,20 +145,24 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
-
-    if (option == 0)  // head in helmet?
-        modelManager->AddModelReference("human1c.mod", false, rank);
-    else if (option == 1)  // head without helmet?
-        modelManager->AddModelReference("human1h.mod", false, rank);
-    else if (option == 2)  // without a backpack?
-        modelManager->AddModelReference("human1v.mod", false, rank);
-
+    modelManager->AddModelReference("human1.mod", false, rank);
     m_object->SetPosition(pos);
     m_object->SetRotationY(angle);
 
     // A vehicle must have an obligatory collision with a sphere of center (0, y, 0) (see GetCrashSphere).
     m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 2.0f, SOUND_AIE, 0.20f));
     m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 1.0f, 0.0f), 4.0f));
+
+    if (option != 2)// with backpack?
+    {
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        m_object->SetObjectRank(16, rank);
+        m_object->SetObjectParent(16, 0);
+        modelManager->AddModelReference("bag.mod", false, rank);
+        m_object->SetPartRotation(16, Math::Vector(0, 0, 90.0f*Math::PI/180.0f));
+        m_object->SetPartPosition(16, Math::Vector(0.0f, 1.6f, 0.0f));
+    }
 
     // Creates the head.
     rank = m_engine->CreateObject();
@@ -168,7 +172,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
 
     if ( type == OBJECT_HUMAN )
     {
-        if (option == 0)  // head in helmet?
+        /*if (option == 0)  // head in helmet?
         {
             face = m_main->GetGamerFace();
             sprintf(filename, "human2c%d.mod", face+1);
@@ -180,6 +184,20 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
             face = m_main->GetGamerFace();
             sprintf(filename, "human2h%d.mod", face+1);
             modelManager->AddModelReference(filename, false, rank);
+
+        }*/
+        face = m_main->GetGamerFace();
+        sprintf(filename, "human2h%d.mod", face+1);
+        modelManager->AddModelReference(filename, false, rank);
+
+        if (option == 0) //head in helmet?
+        {
+            rank = m_engine->CreateObject();
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+            m_object->SetObjectRank(17, rank);
+            m_object->SetObjectParent(17,0);
+            modelManager->AddModelReference("human2.mod", false, rank);
+            m_object->SetPartPosition(17, Math::Vector(0.0f, 2.7f, 0.0f));
         }
     }
     else if (type == OBJECT_TECH)
