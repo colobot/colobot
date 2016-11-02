@@ -1,8 +1,3 @@
-from __future__ import print_function
-import fileinput
-import re
-import os
-
 # Script to use when releasing new versions
 # Run from main repo directory with data submodule pulled in data/
 #
@@ -20,6 +15,9 @@ import os
 # * Update dev in main repo to point to the new merge commit
 #
 # After finished, verify everything is correct and push the changes
+
+import os
+import re
 
 print('\033[1;34m[*] Make sure all remote changes are pulled...\033[0m')
 os.system('git checkout dev')
