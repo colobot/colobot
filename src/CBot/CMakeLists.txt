@@ -54,6 +54,8 @@ set(SOURCES
     CBotInstr/CBotExprLitNum.h
     CBotInstr/CBotExprLitString.cpp
     CBotInstr/CBotExprLitString.h
+    CBotInstr/CBotExprRetVar.cpp
+    CBotInstr/CBotExprRetVar.h
     CBotInstr/CBotExprUnaire.cpp
     CBotInstr/CBotExprUnaire.h
     CBotInstr/CBotExprVar.cpp

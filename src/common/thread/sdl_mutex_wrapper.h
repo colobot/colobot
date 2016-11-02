@@ -45,6 +45,16 @@ public:
         return m_mutex;
     }
 
+    void Lock()
+    {
+        SDL_LockMutex(m_mutex);
+    }
+
+    void Unlock()
+    {
+        SDL_UnlockMutex(m_mutex);
+    }
+
 private:
     SDL_mutex* m_mutex;
 };

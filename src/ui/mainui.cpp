@@ -213,9 +213,10 @@ void CMainUserInterface::ChangePhase(Phase phase)
 
     if ( IsMainMenuPhase(m_phase) )
     {
-        if (!m_sound->IsPlayingMusic() && m_sound->IsCachedMusic("music/Intro1.ogg"))
+        if (!m_sound->IsPlayingMusic())
         {
             m_sound->PlayMusic("music/Intro1.ogg", false);
+            m_sound->CacheMusic("music/Intro2.ogg");
         }
     }
 

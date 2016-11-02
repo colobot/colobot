@@ -780,10 +780,10 @@ bool CRobotMain::ProcessEvent(Event &event)
     if (event.type == EVENT_KEY_DOWN &&
         event.GetData<KeyEventData>()->key == KEY(RETURN) && m_cmdEdit)
     {
-        char cmd[50];
+        std::string cmd;
         Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
-        pe->GetText(cmd, 50);
+        cmd = pe->GetText(50);
         pe->SetText("");
         pe->ClearState(Ui::STATE_VISIBLE);
         m_interface->SetFocus(nullptr);
@@ -981,10 +981,13 @@ bool CRobotMain::ProcessEvent(Event &event)
                     {
                         CLevelParserLine line("CreateObject");
                         line.AddParam("type", MakeUnique<CLevelParserParam>(obj->GetType()));
+
                         Math::Vector pos = obj->GetPosition()/g_unit;
                         pos.y = 0.0f;
                         line.AddParam("pos", MakeUnique<CLevelParserParam>(pos));
-                        line.AddParam("dir", MakeUnique<CLevelParserParam>(obj->GetRotationY()));
+
+                        float dir = Math::NormAngle(obj->GetRotationY()) / Math::PI;
+                        line.AddParam("dir", MakeUnique<CLevelParserParam>(dir));
 
                         std::stringstream ss;
                         ss << line;
@@ -2681,7 +2684,7 @@ void CRobotMain::ScenePerso()
     m_lightMan->FlushLights();
     m_particle->FlushParticle();
 
-    m_levelFile = "levels/other/perso000.txt";
+    m_levelFile = "levels/other/perso.txt";
     try
     {
         CreateScene(false, true, false);  // sets scene

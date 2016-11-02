@@ -18,29 +18,38 @@
  */
 
 /**
- * \file app/system_macosx.h
- * \brief MacOSX-specific implementation of system functions
+ * \file common/system/system_other.h
+ * \brief Fallback code for other systems
  */
 
-#include "app/system.h"
-#include "app/system_other.h"
+#include "common/system/system.h"
+
+#include <SDL.h>
+
+#include <iostream>
 
 //@colobot-lint-exclude UndefinedFunctionRule
 
-class CSystemUtilsMacOSX : public CSystemUtilsOther
+struct SystemTimeStamp
+{
+    Uint32 sdlTicks;
+
+    SystemTimeStamp()
+    {
+        sdlTicks = 0;
+    }
+};
+
+class CSystemUtilsOther : public CSystemUtils
 {
 public:
     void Init() override;
+    SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
-    std::string GetDataPath() override;
-    std::string GetLangPath() override;
-    std::string GetSaveDir() override;
+    void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
+    long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
 
     void Usleep(int usec) override;
-
-private:
-    std::string m_ASPath;
-    std::string m_dataPath;
 };
 
 //@end-colobot-lint-exclude

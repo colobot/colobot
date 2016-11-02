@@ -22,6 +22,7 @@
 #include "CBot/CBot.h"
 
 #include "common/global.h"
+#include "common/profiler.h"
 
 #include "level/robotmain.h"
 
@@ -74,6 +75,7 @@ bool CProgrammableObjectImpl::EventProcess(const Event &event)
 
         if ( GetActivity() )
         {
+            CProfiler::StartPerformanceCounter(PCNT_UPDATE_CBOT);
             if ( IsProgram() )  // current program?
             {
                 if ( m_currentProgram->script->Continue() )
@@ -86,6 +88,7 @@ bool CProgrammableObjectImpl::EventProcess(const Event &event)
             {
                 TraceRecordFrame();
             }
+            CProfiler::StopPerformanceCounter(PCNT_UPDATE_CBOT);
         }
     }
 

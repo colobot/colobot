@@ -60,7 +60,6 @@ const float BIG_FONT        = 1.6f;
 
 
 
-
 //! Indicates whether a character is a space.
 
 bool IsSpace(int character)
@@ -90,11 +89,11 @@ bool IsSep(int character)
 //! Object's constructor.
 CEdit::CEdit()
     : CControl(),
+      m_maxChar( std::numeric_limits<int>::max() ),
+      m_text(),
       m_lineOffset(),
       m_lineIndent()
 {
-    m_maxChar = 100;
-    m_text = std::vector<char>(m_maxChar+1, '\0');
     m_len = 0;
 
     m_fontType = Gfx::FONT_COURIER;
@@ -558,7 +557,7 @@ bool CEdit::IsLinkPos(Math::Point pos)
 {
     int     i;
 
-    if ( m_format.size() == 0 )  return false;
+    if ( m_format.empty() )  return false;
 
     i = MouseDetect(pos);
     if ( i == -1 )  return false;
@@ -721,7 +720,7 @@ int CEdit::MouseDetect(Math::Point mouse)
         {
             len = m_lineOffset[i+1] - m_lineOffset[i];
 
-            if ( m_format.size() == 0 )
+            if ( m_format.empty() )
             {
 //                c = m_engine->GetText()->Detect(m_text.data()+m_lineOffset[i],
 //                                                len, offset, m_fontSize,
@@ -1018,7 +1017,7 @@ void CEdit::Draw()
             o1 = c1;  if ( o1 < beg     )  o1 = beg;
             o2 = c2;  if ( o2 > beg+len )  o2 = beg+len;
 
-            if ( m_format.size() == 0 )
+            if ( m_format.empty() )
             {
                 start.x = ppos.x+m_engine->GetText()->GetStringWidth(std::string(m_text.data()+beg).substr(0, o1-beg), m_fontType, size);
                 end.x   = m_engine->GetText()->GetStringWidth(std::string(m_text.data()+o1).substr(0, o2-o1), m_fontType, size);
@@ -1052,7 +1051,7 @@ void CEdit::Draw()
             eol = 2;  // square (eot)
         }
         if ( !m_bMulti || !m_bDisplaySpec )  eol = 0;
-        if ( m_format.size() == 0 )
+        if ( m_format.empty() )
         {
             m_engine->GetText()->DrawText(std::string(m_text.data()+beg).substr(0, len), m_fontType, size, ppos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, eol);
         }
@@ -1093,7 +1092,7 @@ void CEdit::Draw()
 
                 len = m_cursor1 - m_lineOffset[i];
 
-                if ( m_format.size() == 0 )
+                if ( m_format.empty() )
                 {
                     m_engine->GetText()->SizeText(std::string(m_text.data()+m_lineOffset[i]).substr(0, len), m_fontType,
                                                   size, pos, Gfx::TEXT_ALIGN_LEFT,
@@ -1255,106 +1254,82 @@ void CEdit::DrawColor(Math::Point pos, Math::Point dim, Gfx::Color color)
 
 // Give the text to edit.
 
-void CEdit::SetText(const char *text, bool bNew)
+void CEdit::SetText(const std::string& text, bool bNew)
 {
     int     i, j, font;
     bool    bBOL;
 
     if ( !bNew )  UndoMemorize(OPERUNDO_SPEC);
 
-    m_len = strlen(text);
-    if ( m_len > m_maxChar )  m_len = m_maxChar;
+    m_len = text.size();
 
-    if ( m_format.size() == 0 )
+    if( m_len >= GetMaxChar() ) m_len = GetMaxChar();
+
+    m_text.resize( m_len + 1, '\0' );
+    m_format.resize( m_len + 1, m_fontType );
+
+    font = m_fontType;
+    j = 0;
+    bBOL = true;
+    for ( i=0 ; i<m_len ; i++ )
     {
         if ( m_bAutoIndent )
         {
-            j = 0;
-            bBOL = true;
-            for ( i=0 ; i<m_len ; i++ )
+            if ( text[i] == '\t' )
             {
-                if ( text[i] == '\t' )
+                if ( !bBOL )
                 {
-                    if ( !bBOL )  m_text[j++] = ' ';
-                    continue;  // removes tabs
+                    m_text[j] = ' ';
+                    m_format[j] = font;
+                    j ++;
                 }
-                bBOL = ( text[i] == '\n' );
-
-                m_text[j++] = text[i];
+                continue;  // removes tabs
             }
-            m_len = j;
+            bBOL = ( text[i] == '\n' );
+        }
+
+        if ( text[i] == '\\' && text[i+2] == ';' )
+        {
+            if ( text[i+1] == 'n' )  // normal ?
+            {
+                font &= ~Gfx::FONT_MASK_FONT;
+                font |= Gfx::FONT_COLOBOT;
+                i += 2;
+            }
+            else if ( text[i+1] == 'c' )  // cbot ?
+            {
+                font &= ~Gfx::FONT_MASK_FONT;
+                font |= Gfx::FONT_COURIER;
+                i += 2;
+            }
+            else if ( text[i+1] == 'b' )  // big title ?
+            {
+                font &= ~Gfx::FONT_MASK_TITLE;
+                font |= Gfx::FONT_TITLE_BIG;
+                i += 2;
+            }
+            else if ( text[i+1] == 't' )  // title ?
+            {
+                font &= ~Gfx::FONT_MASK_TITLE;
+                font |= Gfx::FONT_TITLE_NORM;
+                i += 2;
+            }
+            else if ( text[i+1] == 's' )  // subtitle ?
+            {
+                font &= ~Gfx::FONT_MASK_TITLE;
+                font |= Gfx::FONT_TITLE_LITTLE;
+                i += 2;
+            }
         }
         else
         {
-            strncpy(m_text.data(), text, m_len);
+            m_text[j] = text[i];
+            m_format[j] = font;
+            j ++;
+            font &= ~Gfx::FONT_MASK_TITLE;  // reset title
         }
     }
-    else
-    {
-        font = m_fontType;
-        j = 0;
-        bBOL = true;
-        for ( i=0 ; i<m_len ; i++ )
-        {
-            if ( m_bAutoIndent )
-            {
-                if ( text[i] == '\t' )
-                {
-                    if ( !bBOL )
-                    {
-                        m_text[j] = ' ';
-                        m_format[j] = font;
-                        j ++;
-                    }
-                    continue;  // removes tabs
-                }
-                bBOL = ( text[i] == '\n' );
-            }
-
-            if ( text[i] == '\\' && text[i+2] == ';' )
-            {
-                if ( text[i+1] == 'n' )  // normal ?
-                {
-                    font &= ~Gfx::FONT_MASK_FONT;
-                    font |= Gfx::FONT_COLOBOT;
-                    i += 2;
-                }
-                else if ( text[i+1] == 'c' )  // cbot ?
-                {
-                    font &= ~Gfx::FONT_MASK_FONT;
-                    font |= Gfx::FONT_COURIER;
-                    i += 2;
-                }
-                else if ( text[i+1] == 'b' )  // big title ?
-                {
-                    font &= ~Gfx::FONT_MASK_TITLE;
-                    font |= Gfx::FONT_TITLE_BIG;
-                    i += 2;
-                }
-                else if ( text[i+1] == 't' )  // title ?
-                {
-                    font &= ~Gfx::FONT_MASK_TITLE;
-                    font |= Gfx::FONT_TITLE_NORM;
-                    i += 2;
-                }
-                else if ( text[i+1] == 's' )  // subtitle ?
-                {
-                    font &= ~Gfx::FONT_MASK_TITLE;
-                    font |= Gfx::FONT_TITLE_LITTLE;
-                    i += 2;
-                }
-            }
-            else
-            {
-                m_text[j] = text[i];
-                m_format[j] = font;
-                j ++;
-
-                font &= ~Gfx::FONT_MASK_TITLE;  // reset title
-            }
-        }
-        m_len = j;
-    }
+    m_len = j;
 
     if ( bNew )  UndoFlush();
 
@@ -1364,23 +1339,21 @@ void CEdit::SetText(const char *text, bool bNew)
     ColumnFix();
 }
 
-// Returns a pointer to the edited text.
+// Returns a const reference to the edited text.
 
-char* CEdit::GetText()
+const std::string& CEdit::GetText()
 {
-    m_text[m_len] = 0;
-    return m_text.data();
+    return m_text;
 }
 
 // Returns the edited text.
 
-void CEdit::GetText(char *buffer, int max)
+std::string CEdit::GetText(int max)
 {
     if ( m_len < max )  max = m_len;
     if ( m_len > max )  max = max-1;
 
-    strncpy(buffer, m_text.data(), max);
-    buffer[max] = 0;
+    return std::string( m_text, 0, max );
 }
 
 // Returns the length of the text.
@@ -1437,15 +1410,15 @@ void CEdit::FreeImage()
 
 // Read from a text file.
 
-bool CEdit::ReadText(std::string filename, int addSize)
+bool CEdit::ReadText(std::string filename)
 {
-    int         len, i, j, n, font, iLines, iCount;
+    int         len, len2, i, j, n, font, iLines, iCount;
     char        iName[50];
     float       iWidth;
     InputSlot   slot;
     bool        bInSoluce, bBOL;
 
-    if ( filename == "" )  return false;
+    if ( filename.empty() )  return false;
 
     CInputStream stream;
     stream.open(filename);
@@ -1457,26 +1430,22 @@ bool CEdit::ReadText(std::string filename, int addSize)
     }
 
     len = stream.size();
+    len2 = len + 1;
 
-    m_maxChar = len+addSize+100;
     m_len = len;
     m_cursor1 = 0;
     m_cursor2 = 0;
 
     FreeImage();
 
-    m_text = std::vector<char>(m_maxChar+1, '\0');
+    m_text = std::string(len2+1, '\0');
 
-    std::vector<char> buffer(m_maxChar+1, '\0');
+    std::vector<char> buffer(len2+1, '\0');
 
     stream.read(buffer.data(), len);
 
     m_format.clear();
-    m_format.reserve(m_maxChar+1);
-    for (i = 0; i <= m_maxChar+1; i++)
-    {
-        m_format.push_back(m_fontType);
-    }
+    m_format.resize(len2+1, m_fontType);
 
     stream.close();
 
@@ -1922,14 +1891,10 @@ void CEdit::SetMaxChar(int max)
 
     m_maxChar = max;
 
-    m_text = std::vector<char>(m_maxChar+1, '\0');
+    m_text.resize( m_maxChar + 1, '\0' );
 
     m_format.clear();
-    m_format.reserve(m_maxChar+1);
-    for (int i = 0; i <= m_maxChar+1; i++)
-    {
-        m_format.push_back(m_fontType);
-    }
+    m_format.resize(m_maxChar + 1, m_fontType);
 
     m_len = 0;
     m_cursor1 = 0;
@@ -2121,11 +2086,7 @@ void CEdit::SetMultiFont(bool bMulti)
 
     if (bMulti)
     {
-        m_format.reserve(m_maxChar+1);
-        for (int i = 0; i <= m_maxChar+1; i++)
-        {
-            m_format.push_back(m_fontType);
-        }
+        m_format.resize( m_text.size() + 1, m_fontType );
     }
 }
 
@@ -2419,7 +2380,7 @@ void CEdit::MoveLine(int move, bool bWord, bool bSelect)
         column -= indentLength*m_lineIndent[line];
     }
 
-    if ( m_format.size() == 0 )
+    if ( m_format.empty() )
     {
         c = m_engine->GetText()->Detect(std::string(m_text.data()+m_lineOffset[line]),
                                         m_fontType, m_fontSize,
@@ -2450,7 +2411,7 @@ void CEdit::ColumnFix()
 
     line = GetCursorLine(m_cursor1);
 
-    if ( m_format.size() == 0 )
+    if ( m_format.empty() )
     {
         m_column = m_engine->GetText()->GetStringWidth(
                                 std::string(m_text.data()+m_lineOffset[line]),
@@ -2706,7 +2667,10 @@ void CEdit::InsertOne(char character)
         DeleteOne(0);  // deletes the selected characters
     }
 
-    if ( m_len >= m_maxChar )  return;
+    if ( m_len >= GetMaxChar() )  return;
+
+    m_text.resize( m_text.size() + 1, '\0' );
+    m_format.resize( m_format.size() + 1, m_fontType );
 
     for ( i=m_len ; i>m_cursor1 ; i-- )
     {
@@ -2938,13 +2902,16 @@ bool CEdit::MinMaj(bool bMaj)
 void CEdit::Justif()
 {
     float   width, size, indentLength = 0.0f;
-    int     i, j, line, indent;
+    int     i, j, k, line, indent;
     bool    bDual, bString, bRem;
+
+    m_lineOffset.clear();
+    m_lineIndent.clear();
 
     indent = 0;
     m_lineTotal = 0;
-    m_lineOffset[m_lineTotal] = 0;
-    m_lineIndent[m_lineTotal] = indent;
+    m_lineOffset.push_back( 0 );
+    m_lineIndent.push_back( indent );
     m_lineTotal ++;
 
     if ( m_bAutoIndent )
@@ -2954,7 +2921,7 @@ void CEdit::Justif()
     }
 
     bString = bRem = false;
-    i = 0;
+    i = k = 0;
     while ( true )
     {
         bDual = false;
@@ -2965,7 +2932,7 @@ void CEdit::Justif()
             width -= indentLength*m_lineIndent[m_lineTotal-1];
         }
 
-        if ( m_format.size() == 0 )
+        if ( m_format.empty() )
         {
             // TODO check if good
 
@@ -3014,26 +2981,27 @@ void CEdit::Justif()
             if ( indent < 0 )  indent = 0;
         }
 
-        m_lineOffset[m_lineTotal] = i;
-        m_lineIndent[m_lineTotal] = indent;
+        m_lineOffset.push_back( i );
+        m_lineIndent.push_back( indent );
         m_lineTotal ++;
         if ( bDual )
         {
-            m_lineOffset[m_lineTotal] = i;
-            m_lineIndent[m_lineTotal] = indent;
+            m_lineOffset.push_back( i );
+            m_lineIndent.push_back( indent );
             m_lineTotal ++;
         }
-        if ( m_lineTotal >= EDITLINEMAX-2 )  break;
+        if ( k == i ) break;
+        k = i;
     }
 
     if ( m_len > 0 && m_text[m_len-1] == '\n' )
     {
-        m_lineOffset[m_lineTotal] = m_len;
-        m_lineIndent[m_lineTotal] = 0;
+        m_lineOffset.push_back( m_len );
+        m_lineIndent.push_back( 0 );
         m_lineTotal ++;
     }
-    m_lineOffset[m_lineTotal] = m_len;
-    m_lineIndent[m_lineTotal] = 0;
+    m_lineOffset.push_back( m_len );
+    m_lineIndent.push_back( 0 );
 
     if ( m_bAutoIndent )
     {
@@ -3168,7 +3136,7 @@ bool CEdit::UndoRecall()
 
 bool CEdit::ClearFormat()
 {
-    if ( m_format.size() == 0 )
+    if ( m_format.empty() )
     {
         SetMultiFont(true);
     }

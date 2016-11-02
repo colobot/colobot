@@ -275,7 +275,7 @@ bool CObjectInterface::EventProcess(const Event &event)
         }
         if( action == EVENT_STUDIO_CLONE )
         {
-            StopEditScript(false);
+            StopEditScript(true);
             Program* newProgram = m_programStorage->CloneProgram(m_programStorage->GetProgram(m_selScript));
             m_selScript = m_programStorage->GetProgramIndex(newProgram);
             m_main->SaveOneScript(m_object);
@@ -738,12 +738,12 @@ void CObjectInterface::StartEditScript(Program* program, std::string name)
 
 // End of editing a program.
 
-void CObjectInterface::StopEditScript(bool bCancel)
+void CObjectInterface::StopEditScript(bool closeWithErrors)
 {
-    if ( !m_studio->StopEditScript(bCancel) )  return;
+    if ( !m_studio->StopEditScript(closeWithErrors) )  return;
     m_studio.reset();
 
-    if ( !bCancel )  m_programStorage->SetActiveVirus(false);
+    if ( !closeWithErrors )  m_programStorage->SetActiveVirus(false);
 
     CreateInterface(true);  // puts the control buttons
 }

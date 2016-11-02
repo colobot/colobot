@@ -89,8 +89,6 @@ endif()
 # Source files
 set(BASE_SOURCES
     ${OPENAL_SRC}
-    app/${SYSTEM_CPP_MODULE}
-    app/${SYSTEM_H_MODULE}
     app/app.cpp
     app/app.h
     app/controller.cpp
@@ -103,10 +101,6 @@ set(BASE_SOURCES
     app/pausemanager.h
     app/signal_handlers.cpp
     app/signal_handlers.h
-    app/system.cpp
-    app/system.h
-    app/system_other.cpp
-    app/system_other.h
     common/config_file.cpp
     common/config_file.h
     common/error.h
@@ -123,6 +117,8 @@ set(BASE_SOURCES
     common/logger.cpp
     common/logger.h
     common/make_unique.h
+    common/profiler.cpp
+    common/profiler.h
     common/regex_utils.cpp
     common/regex_utils.h
     common/resources/inputstream.cpp
@@ -143,6 +139,12 @@ set(BASE_SOURCES
     common/resources/sndfile_wrapper.h
     common/restext.cpp
     common/restext.h
+    common/system/system.cpp
+    common/system/system.h
+    common/system/system_other.cpp
+    common/system/system_other.h
+    common/system/${SYSTEM_CPP_MODULE}
+    common/system/${SYSTEM_H_MODULE}
     common/settings.cpp
     common/settings.h
     common/singleton.h
@@ -151,6 +153,8 @@ set(BASE_SOURCES
     common/thread/resource_owning_thread.h
     common/thread/sdl_cond_wrapper.h
     common/thread/sdl_mutex_wrapper.h
+    common/thread/thread.h
+    common/thread/worker_thread.h
     graphics/core/color.cpp
     graphics/core/color.h
     graphics/core/device.h

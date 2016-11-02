@@ -17,39 +17,47 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file app/system_other.h
- * \brief Fallback code for other systems
- */
+#pragma once
 
-#include "app/system.h"
+#include "CBot/CBotInstr/CBotInstr.h"
 
-#include <SDL.h>
-
-#include <iostream>
-
-//@colobot-lint-exclude UndefinedFunctionRule
-
-struct SystemTimeStamp
+namespace CBot
 {
-    Uint32 sdlTicks;
 
-    SystemTimeStamp()
-    {
-        sdlTicks = 0;
-    }
-};
-
-class CSystemUtilsOther : public CSystemUtils
+/**
+ * \brief Access a member/element of the variable on the stack
+ *
+ *
+ *
+ */
+class CBotExprRetVar : public CBotInstr
 {
 public:
-    void Init() override;
-    SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
+    CBotExprRetVar();
+    ~CBotExprRetVar();
 
-    void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
-    long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
+    static CBotInstr* Compile(CBotToken*& p, CBotCStack* pStack, bool bMethodsOnly = false);
 
-    void Usleep(int usec) override;
+    /*!
+     * \brief Execute
+     * \param pj
+     * \return
+     */
+    bool Execute(CBotStack* &pj) override;
+
+    /*!
+     * \brief RestoreState
+     * \param pj
+     * \param bMain
+     */
+    void RestoreState(CBotStack* &pj, bool bMain) override;
+
+protected:
+    virtual const std::string GetDebugName() override { return "CBotExprRetVar"; }
+    virtual std::string GetDebugData() override;
+
+private:
+
 };
 
-//@end-colobot-lint-exclude
+} // namespace CBot

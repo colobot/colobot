@@ -37,7 +37,7 @@ msgid "..power cell"
 msgstr "Батарею"
 
 msgid "1) First click on the key you want to redefine."
-msgstr "1) Сначала нажми на клавишу, которую вы хотите переопределить."
+msgstr "1) Сначала нажмите на клавишу, которую вы хотите переопределить."
 
 msgid "2) Then press the key you want to use instead."
 msgstr "2) После этого нажмите на клавишу, которую вы хотите использовать."
@@ -61,7 +61,7 @@ msgid "Abort\\Abort the current mission"
 msgstr "Выход\\Прервать текущую миссию"
 
 msgid "Access beyond array limit"
-msgstr "Доступ к массиву за предел"
+msgstr "Доступ к элементу за пределами массива"
 
 msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
 msgstr "Доступ к решению\\Показывает решение (подробные инструкции для миссий)"
@@ -70,7 +70,7 @@ msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Доступ к решению\\Показывает решение \"4: Решение\" в упражнениях"
 
 msgid "Add new program"
-msgstr ""
+msgstr "Добавить новую программу"
 
 msgid "Alien Queen"
 msgstr "Королева чужих"
@@ -82,6 +82,9 @@ msgid "Already carrying something"
 msgstr "Уже что-то несу"
 
 msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
+msgstr "Альтернативный режим камеры\\Движение в стороны вместо поворачивания (в режиме свободной камеры)"
+
+msgid "Ambiguous call to overloaded function"
 msgstr ""
 
 msgid "Analysis already performed"
@@ -94,7 +97,7 @@ msgid "Analyzes only organic matter"
 msgstr "Анализирую только органические вещества"
 
 msgid "Anisotropy level\\Anisotropy level"
-msgstr ""
+msgstr "Уровень анизотр. фильтр.\\Уровень анизотропной фильтрации"
 
 msgid "Ant"
 msgstr "Муравей"
@@ -121,13 +124,13 @@ msgid "Automatic indent\\When program editing"
 msgstr "Автоматический отступ\\При редактировании программы"
 
 msgid "Autosave interval\\How often your game will autosave"
-msgstr ""
+msgstr "Интервал автосохр.\\Как часно ваша игра будет сохраняться автоматически"
 
 msgid "Autosave slots\\How many autosave slots you'll have"
-msgstr ""
+msgstr "Кол-во автосохр.\\Как много мест для автосохранений у вас есть"
 
 msgid "Autosave\\Enables autosave"
-msgstr ""
+msgstr "Автосохранение\\Включает автоматическое сохранение"
 
 msgid "Back"
 msgstr "Назад"
@@ -152,7 +155,7 @@ msgid "Black box"
 msgstr "Черный ящик"
 
 msgid "Blood\\Display blood when the astronaut is hit"
-msgstr ""
+msgstr "Кровь\\Показывать кровь когда астронавт ранен"
 
 msgid "Blue"
 msgstr "Синий"
@@ -179,7 +182,7 @@ msgid "Build a derrick"
 msgstr "Построить буровую вышку"
 
 msgid "Build a destroyer"
-msgstr ""
+msgstr "Построить уничтожитель"
 
 msgid "Build a exchange post"
 msgstr "Построить пост по обмену сообщениями"
@@ -289,9 +292,8 @@ msgstr "Камера (\\key camera;)"
 msgid "Camera back\\Moves the camera backward"
 msgstr "Отдалить камеру\\Перемещение камеры назад"
 
-#, fuzzy
 msgid "Camera border scrolling\\Scrolling when the mouse touches right or left border"
-msgstr "Прокрутка\\Прокрутка, когда указатель мыши касается граней экрана"
+msgstr "Прокрутка\\Прокрутка, когда указатель мыши касается правой или левой грани экрана"
 
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Приблизать камеру\\Перемещение камеры вперед"
@@ -313,10 +315,10 @@ msgid "Camera up\\Turns the camera up"
 msgstr "Камера (\\key camera;)"
 
 msgid "Can not produce not researched object"
-msgstr ""
+msgstr "Невозможно изготовить неизученный объект"
 
 msgid "Can not produce this object in this mission"
-msgstr ""
+msgstr "Невозможно изготовить этот объект в этой миссии"
 
 msgid "Can't open file"
 msgstr "Невозможно открыть файл"
@@ -346,7 +348,7 @@ msgid "Chapters:"
 msgstr "Разделы:"
 
 msgid "Cheat console\\Show cheat console"
-msgstr ""
+msgstr "Консоль чит-кодов\\Показать консоль для чит-кодов"
 
 msgid "Checkpoint"
 msgstr "Контрольная точка"
@@ -355,7 +357,7 @@ msgid "Climb\\Increases the power of the jet"
 msgstr "Взлет и подъем\\Увеличивает мощность реактивного двигателя"
 
 msgid "Clone program"
-msgstr ""
+msgstr "Клонировать программу"
 
 #, fuzzy
 msgid "Clone selected program"
@@ -371,13 +373,13 @@ msgid "Code battles"
 msgstr ""
 
 msgid "Code battles\\Program your robot to be the best of them all!"
-msgstr ""
+msgstr "Code battles\\Запрограммируйте собственного робота чтобы быть лучшим среди них!"
 
 msgid "Colobot rules!"
 msgstr "Правила игры!"
 
 msgid "Colobot: Gold Edition"
-msgstr ""
+msgstr "Colobot: Gold Edition"
 
 msgid "Command line"
 msgstr "Командная строка"
@@ -413,7 +415,7 @@ msgid "Custom levels:"
 msgstr "Пользовательские уровни:"
 
 msgid "Custom levels\\Levels from mods created by the users"
-msgstr ""
+msgstr "Пользоват. уровни\\Уровни из модов, созданных пользователями"
 
 msgid "Customize your appearance"
 msgstr "Настроить свой внешний вид"
@@ -441,7 +443,7 @@ msgid "Descend\\Reduces the power of the jet"
 msgstr "Снижение и посадка\\Понижение мощности реактивного двигателя"
 
 msgid "Destroy"
-msgstr ""
+msgstr "Уничтожить"
 
 msgid "Destroy the building"
 msgstr "Уничтожить здание"
@@ -475,13 +477,13 @@ msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Пыль\\Пыль и грязь на ботах и зданиях"
 
 msgid "Dynamic lighting\\Mobile light sources"
-msgstr "Динамическое освещение\\Подвижные источники света"
+msgstr "Динамич. освещение\\Подвижные источники света"
 
 msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
-msgstr ""
+msgstr "Динамич. тени ++\\Динамические тени + самозатенение"
 
 msgid "Dynamic shadows\\Beautiful shadows!"
-msgstr ""
+msgstr "Динамические тени\\Прекрасные тени!"
 
 msgid "Edit the selected program"
 msgstr "Изменить выбранную программу"
@@ -517,13 +519,13 @@ msgid "Exercises\\Programming exercises"
 msgstr "Упражнения\\Упражнения по программированию"
 
 msgid "Explode (\\key action;)"
-msgstr ""
+msgstr "Взорвать (\\key action;)"
 
 msgid "Explosive"
 msgstr "Взрывчатка"
 
 msgid "Expression expected after ="
-msgstr ""
+msgstr "Выражение ожидалось после ="
 
 msgid "Extend shield (\\key action;)"
 msgstr "Поднять щит (\\key action;)"
@@ -620,7 +622,7 @@ msgid "Gantry crane"
 msgstr "Козловой кран"
 
 msgid "Generating"
-msgstr ""
+msgstr "Выработка"
 
 msgid "Gold Edition development by:"
 msgstr "\"Золотое издание\" было разработано:"
@@ -647,7 +649,7 @@ msgid "Ground not flat enough"
 msgstr "Земля недостаточно плоская"
 
 msgid "Hair color:"
-msgstr "Волосы:"
+msgstr "Цвет волос:"
 
 msgid "Head\\Face and hair"
 msgstr "Голова\\Лицо и волосы"
@@ -692,7 +694,7 @@ msgid "Inappropriate cell type"
 msgstr "Батарея не подходит"
 
 msgid "Inappropriate object"
-msgstr ""
+msgstr "Неподходящий объект"
 
 msgid "Incorrect index type"
 msgstr "Неверный тип индекса"
@@ -731,10 +733,10 @@ msgid "Instructions\\Shows the instructions for the current mission"
 msgstr "Инструкции\\Показывает инструкции по текущей миссии"
 
 msgid "Internal error - tell the developers"
-msgstr ""
+msgstr "Внутренняя ошибка - сообщите разработчикам"
 
 msgid "Invert\\Invert values on this axis"
-msgstr ""
+msgstr "Инвертир.\\Инвертировать значения по этой оси"
 
 msgid "Jet temperature"
 msgstr "Температура реактивного двигателя"
@@ -794,21 +796,19 @@ msgid "Load\\Loads the selected mission"
 msgstr "Загрузить\\Загрузить выбранную миссию"
 
 msgid "Loading basic level settings"
-msgstr ""
+msgstr "Загрузка основных настроек уровня"
 
-#, fuzzy
 msgid "Loading finished!"
-msgstr "Программа выполнена"
+msgstr "Загрузка завершена!"
 
 msgid "Loading music"
-msgstr ""
+msgstr "Загрузка музыки"
 
-#, fuzzy
 msgid "Loading objects"
-msgstr "Список объектов"
+msgstr "Загрузка объектов"
 
 msgid "Loading terrain"
-msgstr ""
+msgstr "Загрузка местности"
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
 msgstr "Низкое\\Минимальное качество графики (быстро)"
@@ -882,7 +882,7 @@ msgid "Next object\\Selects the next object"
 msgstr "Следующий объект\\Выбор следующего объекта"
 
 msgid "No"
-msgstr ""
+msgstr "Нет"
 
 msgid "No energy in the subsoil"
 msgstr "Под землей нет запасов энергии"
@@ -906,7 +906,7 @@ msgid "No more energy"
 msgstr "Нет энергии"
 
 msgid "No ore in the subsoil"
-msgstr ""
+msgstr "Под поверхностью нет руды"
 
 msgid "No power cell"
 msgstr "Нет батареи"
@@ -921,13 +921,13 @@ msgid "No titanium ore to convert"
 msgstr "Нет титановых руд для преобразования"
 
 msgid "No titanium to transform"
-msgstr ""
+msgstr "Нет титана для преобразования"
 
 msgid "No uranium to transform"
 msgstr "Нет урана для преобразования"
 
 msgid "No userlevels installed!"
-msgstr ""
+msgstr "Не установленны пользовательские уровни!"
 
 msgid "Normal size"
 msgstr "Нормальный размер"
@@ -945,7 +945,7 @@ msgid "Not enough energy yet"
 msgstr "Не хватает энергии"
 
 msgid "Not found anything to destroy"
-msgstr ""
+msgstr "Ничего не найдено для уничтожения"
 
 msgid "Nothing to analyze"
 msgstr "Нечего анализировать"
@@ -1032,16 +1032,16 @@ msgid "Paste (Ctrl+V)"
 msgstr "Вставить (Ctrl+V)"
 
 msgid "Pause blur\\Blur the background on the pause screen"
-msgstr ""
+msgstr "Размытие при паузе\\Размытие фона во время паузы"
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
-msgstr ""
+msgstr "Пауза в фоне\\Приостанавливает игру когда окно не в фокусе"
 
 msgid "Pause/continue"
 msgstr "Пауза/продолжить"
 
 msgid "Pause\\Pause the game without opening menu"
-msgstr ""
+msgstr "Пауза\\Приостанавливает игру без открытия меню"
 
 msgid "Phazer shooter"
 msgstr "Фазовый стрелок"
@@ -1125,7 +1125,7 @@ msgid "Private\\Private folder"
 msgstr "Личное\\Личная папка"
 
 msgid "Processing level file"
-msgstr ""
+msgstr "Обработка файла уровня"
 
 #, fuzzy
 msgid "Program cloned"
@@ -1165,7 +1165,7 @@ msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Землетряс. при взрывах\\Тряска экрана при взрывах"
 
 msgid "Quit\\Quit Colobot: Gold Edition"
-msgstr ""
+msgstr "Выход\\Выйти из Colobot: Gold Edition"
 
 msgid "Quit\\Quit the current mission or exercise"
 msgstr "Выход\\Выход из текущей миссии"
@@ -1192,7 +1192,7 @@ msgid "Red flag"
 msgstr "Красный флаг"
 
 msgid "Reflections on the buttons \\Shiny buttons"
-msgstr "Отражения кнопок \\Блестящие кнопки"
+msgstr "Отражения на кнопках \\Блестящие кнопки"
 
 msgid "Remains of Apollo mission"
 msgstr "Остатки миссии Аполлон"
@@ -1239,7 +1239,7 @@ msgid "Restoring CBot execution state"
 msgstr ""
 
 msgid "Restoring saved objects"
-msgstr ""
+msgstr "Восстановить сохранённые объекты"
 
 msgid "Return to start"
 msgstr "Вернуться в начало"
@@ -1308,7 +1308,7 @@ msgid "Semicolon terminator missing"
 msgstr "Отсутствует точка с запятой"
 
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
-msgstr ""
+msgstr "Разрешение тени\\Больше означает более лучшие дистанция и качество, но более медленные"
 
 msgid "Shield level"
 msgstr "Уровень брони"
@@ -1457,13 +1457,13 @@ msgid "Target bot"
 msgstr "Целевой бот"
 
 msgid "Terrain relief"
-msgstr ""
+msgstr "Рельеф местности"
 
 msgid "Texture filtering\\Texture filtering"
-msgstr ""
+msgstr "Фильтрация текстур\\Фильтрация текстур"
 
 msgid "Textures"
-msgstr ""
+msgstr "Текстуры"
 
 msgid "The expression must return a boolean value"
 msgstr "Выражение должно возвращать логическое значение"
@@ -1484,7 +1484,7 @@ msgid "This class does not exist"
 msgstr "Этот класс не существует"
 
 msgid "This is example code that cannot be run directly"
-msgstr ""
+msgstr "Это пример кода который не может быть непосредственно запущен"
 
 msgid "This is not a member of this class"
 msgstr "Это не член этого класса"
@@ -1493,13 +1493,13 @@ msgid "This label does not exist"
 msgstr "Эта метка не существует"
 
 msgid "This menu is for userlevels from mods, but you didn't install any"
-msgstr ""
+msgstr "Это меню для пользовательских уровней из модов, но вы ни одного не уставили"
 
 msgid "This object is not a member of a class"
 msgstr "Этот объект не член класса"
 
 msgid "This program is read-only, clone it to edit"
-msgstr ""
+msgstr "Эта программа только для чтения, для редактирования клонируйте её"
 
 msgid "Thump (\\key action;)"
 msgstr "Удар (\\key action;)"
@@ -1529,13 +1529,13 @@ msgid "Too close to a building"
 msgstr "Слишком близко к зданию"
 
 msgid "Too close to an existing flag"
-msgstr ""
+msgstr "Слишком близко к существующему флагу"
 
 msgid "Too close to space ship"
 msgstr "Слишком близко к кораблю"
 
 msgid "Too many flags of this color (maximum 5)"
-msgstr ""
+msgstr "Слишком много флагов этого цвета (максимум 5)"
 
 msgid "Too many parameters"
 msgstr "Слишком много параметров"
@@ -1577,7 +1577,7 @@ msgid "Type declaration missing"
 msgstr "Не задан тип"
 
 msgid "Unable to control enemy objects"
-msgstr ""
+msgstr "Невозможно контролировать вражеские объекты"
 
 msgid "Undo (Ctrl+Z)"
 msgstr "Отмена (Ctrl+Z)"
@@ -1679,7 +1679,7 @@ msgid "Yellow flag"
 msgstr "Желтый флаг"
 
 msgid "Yes"
-msgstr ""
+msgstr "Да"
 
 msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
 msgstr "Вы можете лететь с помощью клавиш (\\key gup;) и (\\key gdown;)"
@@ -1761,7 +1761,7 @@ msgid "\\Red flags"
 msgstr "\\Красный флаг"
 
 msgid "\\Return to Colobot: Gold Edition"
-msgstr ""
+msgstr "Вернуться к Colobot: Gold Edition"
 
 msgid "\\SatCom on standby"
 msgstr "\\SatCom ждет"
@@ -1794,7 +1794,7 @@ msgid "\\Use the orange pencil"
 msgstr "\\Использовать оранжевое перо"
 
 msgid "\\Use the purple pencil"
-msgstr ""
+msgstr "Использовать фиолетовое перо"
 
 msgid "\\Use the red pencil"
 msgstr "\\Использовать красное перо"
@@ -1833,7 +1833,7 @@ msgstr "epsitec.com"
 #~ msgstr "Здание слишком близко"
 
 #~ msgid "COLOBOT"
-#~ msgstr "КОЛОБОТ"
+#~ msgstr "COLOBOT"
 
 #~ msgid "Camera awayest"
 #~ msgstr "Отдалить камеру"
@@ -1871,9 +1871,8 @@ msgstr "epsitec.com"
 #~ msgid "Developed by :"
 #~ msgstr "Разработка :"
 
-#, fuzzy
 #~ msgid "Do you want to quit Colobot: Gold Edition?"
-#~ msgstr "Вы хотите закрыть COLOBOT?"
+#~ msgstr "Вы хотите закрыть Colobot: Gold Edition?"
 
 #~ msgid "Exit film\\Film at the exit of exercises"
 #~ msgstr "Ролик при выходе\\Ролик во время выхода из упражнения"

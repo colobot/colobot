@@ -23,14 +23,16 @@
 #include "common/config.h"
 
 #include "app/app.h"
-#include "app/system.h"
-#ifdef PLATFORM_WINDOWS
-    #include "app/system_windows.h"
-#endif
+
 
 #include "common/logger.h"
 
 #include "common/resources/resourcemanager.h"
+
+#include "common/system/system.h"
+#ifdef PLATFORM_WINDOWS
+    #include "common/system/system_windows.h"
+#endif
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>

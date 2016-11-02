@@ -94,34 +94,6 @@ enum MouseMode
     MOUSE_NONE,   //! < no cursor visible
 };
 
-/**
- * \enum PerformanceCounter
- * \brief Type of counter testing performance
- */
-enum PerformanceCounter
-{
-    PCNT_EVENT_PROCESSING, //! < event processing (except update events)
-
-    PCNT_UPDATE_ALL,            //! < the whole frame update process
-    PCNT_UPDATE_ENGINE,         //! < frame update in CEngine
-    PCNT_UPDATE_PARTICLE,       //! < frame update in CParticle
-    PCNT_UPDATE_GAME,           //! < frame update in CRobotMain
-
-    PCNT_RENDER_ALL,            //! < the whole rendering process
-    PCNT_RENDER_PARTICLE,       //! < rendering the particles in 3D
-    PCNT_RENDER_WATER,          //! < rendering the water
-    PCNT_RENDER_TERRAIN,        //! < rendering the terrain
-    PCNT_RENDER_OBJECTS,        //! < rendering the 3D objects
-    PCNT_RENDER_INTERFACE,      //! < rendering 2D interface
-    PCNT_RENDER_SHADOW_MAP,     //! < rendering shadow map
-
-    PCNT_SWAP_BUFFERS,          //! < swapping buffers and vsync
-
-    PCNT_ALL,                   //! < all counters together
-
-    PCNT_MAX
-};
-
 enum DebugMode
 {
     DEBUG_SYS_EVENTS = 1 << 0,
@@ -292,13 +264,6 @@ public:
     void        SetLanguage(Language language);
     //@}
 
-    //! Management of performance counters
-    //@{
-    void        StartPerformanceCounter(PerformanceCounter counter);
-    void        StopPerformanceCounter(PerformanceCounter counter);
-    float       GetPerformanceCounterData(PerformanceCounter counter) const;
-    //@}
-
     bool        GetSceneTestMode();
 
     //! Renders the image in window
@@ -332,11 +297,6 @@ protected:
 
     //! Internal procedure to reset time counters
     void InternalResumeSimulation();
-
-    //! Resets all performance counters to zero
-    void ResetPerformanceCounters();
-    //! Updates performance counters from gathered timer data
-    void UpdatePerformanceCountersData();
 
 protected:
     //! System utils instance
@@ -381,9 +341,6 @@ protected:
     SystemTimeStamp* m_baseTimeStamp;
     SystemTimeStamp* m_lastTimeStamp;
     SystemTimeStamp* m_curTimeStamp;
-
-    SystemTimeStamp* m_performanceCounters[PCNT_MAX][2];
-    float            m_performanceCountersData[PCNT_MAX];
 
     long long       m_realAbsTimeBase;
     long long       m_realAbsTime;

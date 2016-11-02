@@ -69,6 +69,10 @@ private:
     CBotTypResult m_typRes;
     //! Id of a function.
     long m_nFuncIdent;
+
+    //! Instruction to return a member of the returned object.
+    CBotInstr* m_exprRetVar;
+
     friend class CBotDebug;
 };
 

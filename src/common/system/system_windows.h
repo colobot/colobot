@@ -18,22 +18,20 @@
  */
 
 /**
- * \file app/system_linux.h
- * \brief Linux-specific implementation of system functions
+ * \file common/system/system_windows.h
+ * \brief Windows-specific implementation of system functions
  */
 
-#include "app/system.h"
-
-#include <sys/time.h>
+#include "common/system/system.h"
 
 //@colobot-lint-exclude UndefinedFunctionRule
 
 struct SystemTimeStamp
 {
-    timespec clockTime = {0, 0};
+    long long counterValue = 0;
 };
 
-class CSystemUtilsLinux : public CSystemUtils
+class CSystemUtilsWindows : public CSystemUtils
 {
 public:
     void Init() override;
@@ -47,8 +45,12 @@ public:
 
     void Usleep(int usec) override;
 
-private:
-    bool m_zenityAvailable = false;
+public:
+    static std::string UTF8_Encode(const std::wstring &wstr);
+    static std::wstring UTF8_Decode(const std::string &str);
+
+protected:
+    long long m_counterFrequency = 0;
 };
 
 //@end-colobot-lint-exclude

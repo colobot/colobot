@@ -19,6 +19,8 @@
 
 #include "CBot/CBotStack.h"
 
+#include "CBot/CBotClass.h"
+
 #include "CBot/CBotInstr/CBotFunction.h"
 
 #include "CBot/CBotVar/CBotVarPointer.h"
@@ -80,10 +82,10 @@ CBotStack* CBotStack::AllocateStack()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStack::Delete()
 {
-    if ( this == nullptr ) return;
+    assert ( this != nullptr );
 
-    m_next->Delete();
-    m_next2->Delete();
+    if (m_next != nullptr) m_next->Delete();
+    if (m_next2 != nullptr) m_next2->Delete();
 
     if (m_prev != nullptr)
     {
@@ -190,8 +192,8 @@ bool CBotStack::Return(CBotStack* pfils)
     m_var = pfils->m_var;                        // result transmitted
     pfils->m_var = nullptr;                        // not to destroy the variable
 
-    m_next->Delete();m_next = nullptr;                // releases the stack above
-    m_next2->Delete();m_next2 = nullptr;            // also the second stack (catch)
+    if (m_next != nullptr) m_next->Delete();m_next = nullptr;                // releases the stack above
+    if (m_next2 != nullptr) m_next2->Delete();m_next2 = nullptr;            // also the second stack (catch)
 
     return IsOk();                        // interrupted if error
 }
@@ -279,7 +281,7 @@ bool CBotStack::IfContinue(int state, const std::string& name)
     m_state = state;                            // where again?
     m_error = CBotNoErr;
     m_labelBreak.clear();
-    m_next->Delete();            // purge above stack
+    if (m_next != nullptr) m_next->Delete();            // purge above stack
     return true;
 }
 
@@ -476,7 +478,7 @@ bool CBotStack::Execute()
 
     if (!instr->Run(nullptr, pile)) return false;            // resume interrupted execution
 
-    pile->m_next->Delete();
+    if (pile->m_next != nullptr) pile->m_next->Delete();
 
     pile->m_callFinished = true;
     return true;
@@ -760,7 +762,17 @@ bool CBotVar::Save0State(FILE* pf)
     if (!WriteWord(pf, 100+static_cast<int>(m_mPrivate)))return false;        // private variable?
     if (!WriteWord(pf, m_bStatic))return false;                // static variable?
     if (!WriteWord(pf, m_type.GetType()))return false;        // saves the type (always non-zero)
-    if (!WriteWord(pf, static_cast<unsigned short>(m_binit))) return false;                // variable defined?
+
+    if (m_type.Eq(CBotTypPointer) && GetPointer() != nullptr)
+    {
+        if (GetPointer()->m_bConstructor)                    // constructor was called?
+        {
+            if (!WriteWord(pf, (2000 + static_cast<unsigned short>(m_binit)) )) return false;
+            return WriteString(pf, m_token->GetString());    // and variable name
+        }
+    }
+
+    if (!WriteWord(pf, static_cast<unsigned short>(m_binit))) return false;          // variable defined?
     return WriteString(pf, m_token->GetString());            // and variable name
 }
 
@@ -800,6 +812,13 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
         if ( w == CBotTypClass ) w = CBotTypIntrinsic;            // necessarily intrinsic
 
         if (!ReadWord(pf, wi)) return false;                    // init ?
+        bool bConstructor = false;
+        if (w == CBotTypPointer && wi >= 2000)
+        {
+            wi -= 2000;
+            bConstructor = true;
+        }
+
         CBotVar::InitType initType = static_cast<CBotVar::InitType>(wi);
         if (!ReadString(pf, name)) return false;                // variable name
 
@@ -849,10 +868,11 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
                     if (isClass && p == nullptr) // set id for each item in this instance
                     {
                         CBotVar* pVars = pNew->GetItemList();
-                        long itemId = 1;
-                        while (pVars != nullptr)
+                        CBotVar* pv = pNew->GetClass()->GetVar();
+                        while (pVars != nullptr && pv != nullptr)
                         {
-                            pVars->m_ident = itemId++;
+                            pVars->m_ident = pv->m_ident;
+                            pv = pv->GetNext();
                             pVars = pVars->GetNext();
                         }
                     }
@@ -868,9 +888,10 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 
         case CBotTypPointer:
         case CBotTypNullPointer:
-            if (!ReadString(pf, s)) return false;
+            if (!ReadString(pf, s)) return false;   // name of the class
             {
-                pNew = CBotVar::Create(token, CBotTypResult(w, s));// creates a variable
+                CBotTypResult ptrType(w, s);
+                pNew = CBotVar::Create(token, ptrType);// creates a variable
 //                CBotVarClass* p = nullptr;
                 long id;
                 ReadLong(pf, id);
@@ -880,6 +901,9 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
                 CBotVar* pInstance = nullptr;
                 if ( !CBotVar::RestoreState( pf, pInstance ) ) return false;
                 (static_cast<CBotVarPointer*>(pNew))->SetPointer( pInstance );            // and point over
+
+                if (bConstructor) pNew->ConstructorSet(); // constructor was called
+                if (ptrType.Eq(CBotTypPointer)) pNew->SetType(ptrType); // keep pointer type
 
 //                if ( p != nullptr ) (static_cast<CBotVarPointer*>(pNew))->SetPointer( p );    // rather this one
 

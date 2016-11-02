@@ -236,6 +236,7 @@ enum CBotError : int
     CBotErrPrivate       = 5041, //!< protected item
     CBotErrNoPublic      = 5042, //!< missing word "public"
     CBotErrNoExpression  = 5043, //!< expression expected after =
+    CBotErrAmbiguousCall = 5044, //!< ambiguous call to overloaded function
 
     // Runtime errors
     CBotErrZeroDiv       = 6000, //!< division by zero

@@ -20,6 +20,7 @@
 #include <sstream>
 #include "CBot/CBotInstr/CBotInstrMethode.h"
 
+#include "CBot/CBotInstr/CBotExprRetVar.h"
 #include "CBot/CBotInstr/CBotInstrUtils.h"
 
 #include "CBot/CBotStack.h"
@@ -45,7 +46,7 @@ CBotInstrMethode::~CBotInstrMethode()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar* var)
+CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar* var, bool bMethodChain)
 {
     CBotInstrMethode* inst = new CBotInstrMethode();
     inst->SetToken(p);  // corresponding token
@@ -63,6 +64,7 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
 
         if (pStack->IsOk())
         {
+            inst->m_thisIdent = var->GetUniqNum();
             CBotClass* pClass = var->GetClass();    // pointer to the class
             inst->m_className = pClass->GetName();  // name of the class
             CBotTypResult r = pClass->CompileMethode(inst->m_methodName, var, ppVars,
@@ -86,7 +88,17 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
                 }
                 pStack->SetVar(pResult);
             }
-            return inst;
+            else pStack->SetVar(nullptr);
+
+            pp = p;
+            if (nullptr != (inst->m_exprRetVar = CBotExprRetVar::Compile(p, pStack, bMethodChain)))
+            {
+                inst->m_exprRetVar->SetToken(pp);
+                delete pStack->TokenStack();
+            }
+
+            if ( pStack->IsOk() )
+                return inst;
         }
         delete inst;
         return nullptr;
@@ -104,6 +116,18 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     {
         pj->SetError(CBotErrNull, prevToken);
         return pj->Return(pile1);
+    }
+
+    CBotStack*    pile3 = nullptr;
+    if (m_exprRetVar != nullptr)    // .func().member
+    {
+        pile3 = pile1->AddStack2();
+        if (pile3->GetState() == 1)
+        {
+            if (!m_exprRetVar->Execute(pile3)) return false;
+            pVar = nullptr;
+            return pj->Return(pile3);
+        }
     }
 
     if (pile1->IfStep()) return false;
@@ -144,8 +168,14 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     }
     ppVars[i] = nullptr;
 
-    CBotClass*    pClass = CBotClass::Find(m_className);
     CBotVar*    pThis  = pile1->GetVar();
+    CBotClass*  pClass;
+
+    if (m_thisIdent == -3) // super.method()
+        pClass = CBotClass::Find(m_className);
+    else
+        pClass = pThis->GetClass();
+
     CBotVar*    pResult = nullptr;
     if (m_typRes.GetType() > 0) pResult = CBotVar::Create("", m_typRes);
     if (m_typRes.Eq(CBotTypClass))
@@ -159,6 +189,15 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
                                  pResult, pile2, GetToken())) return false;
     if (pRes != pResult) delete pRes;
 
+    if (m_exprRetVar != nullptr) // .func().member
+    {
+        pile3->SetCopyVar( pile2->GetVar() );
+        pile2->SetVar(nullptr);
+        pile3->SetState(1);      // set call is done
+        pVar = nullptr;
+        return false;            // go back to the top ^^^
+    }
+
     pVar = nullptr;                // does not return value for this
     return pj->Return(pile2);   // release the entire stack
 }
@@ -171,6 +210,16 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
     CBotVar*    ppVars[1000];
     CBotStack*    pile1 = pile->RestoreStack(this);     // place for the copy of This
     if (pile1 == nullptr) return;
+
+    if (m_exprRetVar != nullptr)    // .func().member
+    {
+        CBotStack* pile3 = pile1->AddStack2();
+        if (pile3->GetState() == 1) // function call is done?
+        {
+            m_exprRetVar->RestoreState(pile3, bMain);
+            return;
+        }
+    }
 
     CBotStack*    pile2 = pile1->RestoreStack();        // and for the parameters coming
     if (pile2 == nullptr) return;
@@ -204,7 +253,13 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
     }
     ppVars[i] = nullptr;
 
-    CBotClass*    pClass = CBotClass::Find(m_className);
+    CBotClass*    pClass;
+
+    if (m_thisIdent == -3) // super.method()
+        pClass = CBotClass::Find(m_className);
+    else
+        pClass = pThis->GetClass();
+
 //    CBotVar*    pResult = nullptr;
 
 //    CBotVar*    pRes = pResult;
@@ -253,8 +308,14 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     }
     ppVars[i] = nullptr;
 
-    CBotClass*    pClass = CBotClass::Find(m_className);
     CBotVar*    pThis  = pile1->GetVar();
+    CBotClass*  pClass;
+
+    if (m_thisIdent == -3) // super.method()
+        pClass = CBotClass::Find(m_className);
+    else
+        pClass = pThis->GetClass();
+
     CBotVar*    pResult = nullptr;
     if (m_typRes.GetType()>0) pResult = CBotVar::Create("", m_typRes);
     if (m_typRes.Eq(CBotTypClass))

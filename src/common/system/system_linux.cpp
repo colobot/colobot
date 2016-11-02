@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "app/system_linux.h"
+#include "common/system/system_linux.h"
 
 #include "common/logger.h"
 

@@ -45,10 +45,13 @@ COutputStreamBuffer::~COutputStreamBuffer()
 }
 
 
-void COutputStreamBuffer::open(const std::string &filename)
+void COutputStreamBuffer::open(const std::string &filename, std::ios_base::openmode mode)
 {
     if (PHYSFS_isInit())
-        m_file = PHYSFS_openWrite(CResourceManager::CleanPath(filename).c_str());
+    {
+        if ( mode == std::ios_base::out ) m_file = PHYSFS_openWrite(CResourceManager::CleanPath(filename).c_str());
+        else if ( mode == std::ios_base::app ) m_file = PHYSFS_openAppend(CResourceManager::CleanPath(filename).c_str());
+    }
 }
 
 

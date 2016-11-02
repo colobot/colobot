@@ -26,6 +26,8 @@
 
 #include "sound/sound.h"
 
+#include "common/thread/worker_thread.h"
+
 #include "sound/oalsound/buffer.h"
 #include "sound/oalsound/channel.h"
 #include "sound/oalsound/check.h"
@@ -83,7 +85,7 @@ public:
 
     bool Create() override;
     bool Cache(SoundType, const std::string &) override;
-    bool CacheMusic(const std::string &) override;
+    void CacheMusic(const std::string &) override;
     bool IsCached(SoundType) override;
     bool IsCachedMusic(const std::string &) override;
 
@@ -106,12 +108,10 @@ public:
     bool StopAll() override;
     bool MuteAll(bool mute) override;
 
-    bool PlayMusic(const std::string &filename, bool repeat, float fadeTime=2.0f) override;
-    bool RestartMusic() override;
-    void SuspendMusic() override;
+    void PlayMusic(const std::string &filename, bool repeat, float fadeTime = 2.0f) override;
     void StopMusic(float fadeTime=2.0f) override;
     bool IsPlayingMusic() override;
-    bool PlayPauseMusic(const std::string &filename, bool repeat) override;
+    void PlayPauseMusic(const std::string &filename, bool repeat) override;
     void StopPauseMusic() override;
 
 private:
@@ -134,4 +134,5 @@ private:
     OldMusic m_previousMusic;
     Math::Vector m_eye;
     Math::Vector m_lookat;
+    CWorkerThread m_thread;
 };

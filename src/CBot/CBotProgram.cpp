@@ -47,13 +47,13 @@ CBotProgram::CBotProgram(CBotVar* thisVar)
 CBotProgram::~CBotProgram()
 {
 //  delete  m_classes;
-    m_classes->Purge();
+    if (m_classes != nullptr) m_classes->Purge();
     m_classes = nullptr;
 
     CBotClass::FreeLock(this);
 
     delete m_functions;
-    m_stack->Delete();
+    if (m_stack != nullptr) m_stack->Delete();
 }
 
 bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& functions, void* pUser)
@@ -62,7 +62,7 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     Stop();
 
 //  delete      m_classes;
-    m_classes->Purge();      // purge the old definitions of classes
+    if (m_classes != nullptr) m_classes->Purge();      // purge the old definitions of classes
                             // but without destroying the object
     m_classes = nullptr;
     delete m_functions; m_functions = nullptr;
@@ -99,6 +99,10 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
             else m_functions->AddNext(next);
         }
     }
+
+    // Define fields and pre-compile methods for each class in this program
+    if (pStack->IsOk()) CBotClass::DefineClasses(m_classes, pStack.get());
+
     if ( !pStack->IsOk() )
     {
         m_error = pStack->GetError(m_errorStart, m_errorEnd);
@@ -120,14 +124,13 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
         if ( p->GetType() == ID_CLASS ||
             ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
         {
-            m_bCompileClass = true;
             CBotClass::Compile(p, pStack.get());                  // completes the definition of the class
         }
         else
         {
-            m_bCompileClass = false;
             CBotFunction::Compile(p, pStack.get(), next);
             if (next->IsExtern()) functions.push_back(next->GetName()/* + next->GetParams()*/);
+            if (next->IsPublic()) CBotFunction::AddPublic(next);
             next->m_pProg = this;                           // keeps pointers to the module
             next = next->Next();
         }
@@ -224,8 +227,11 @@ bool CBotProgram::Run(void* pUser, int timer)
 
 void CBotProgram::Stop()
 {
-    m_stack->Delete();
-    m_stack = nullptr;
+    if (m_stack != nullptr)
+    {
+        m_stack->Delete();
+        m_stack = nullptr;
+    }
     m_entryPoint = nullptr;
     CBotClass::FreeLock(this);
 }
@@ -362,11 +368,15 @@ bool CBotProgram::RestoreState(FILE* pf)
     if (!ReadString( pf, s )) return false;
     Start(s);       // point de reprise
 
-    m_stack->Delete();
-    m_stack = nullptr;
+    if (m_stack != nullptr)
+    {
+        m_stack->Delete();
+        m_stack = nullptr;
+    }
 
     // retrieves the stack from the memory
     // uses a nullptr pointer (m_stack) but it's ok like that
+    // TODO: no it's not okay like that! but it looks like it doesn't get optimized out at least ~krzys_h
     if (!m_stack->RestoreState(pf, m_stack)) return false;
     m_stack->SetProgram(this);                     // bases for routines
 

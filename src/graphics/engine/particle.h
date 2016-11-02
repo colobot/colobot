@@ -162,9 +162,9 @@ enum ParticlePhase
 
 struct Particle
 {
-    bool            used = false;      //!< true if this channel is used, false if not
+    bool            used = false;      // TRUE -> particle used
     bool            ray = false;       // TRUE -> ray with goal
-    unsigned short  uniqueStamp = 0;    //!< unique marker added to particle channel ID to make sure this is still the same particle
+    unsigned short  uniqueStamp = 0;    // unique mark
     short           sheet = 0;      // sheet (0..n)
     ParticleType    type = {};       // type PARTI*
     ParticlePhase   phase = {};      // phase PARPH*
@@ -279,7 +279,7 @@ public:
     void        SetPhase(int channel, ParticlePhase phase, float duration);
 
     //! Returns the position of the particle
-    Math::Vector GetPosition(int channel);
+    bool        GetPosition(int channel, Math::Vector &pos);
 
     //! Returns the color if you're in the fog or black if you're not
     Color       GetFogColor(Math::Vector pos);
@@ -291,18 +291,15 @@ public:
     //! Draws all the particles
     void        DrawParticle(int sheet);
 
-    //! Checks if given particle channel still exists
-    bool        ParticleExists(int channel);
-
 protected:
     //! Removes a particle of given rank
     void        DeleteRank(int rank);
     /**
      * \brief Adapts the channel so it can be used as an offset in m_particle
      * \param channel Channel number to process, will be modified to be index of particle in m_particle
-     * \throw std::runtime_error if this particle does not exist any more
+     * \return true if success, false if particle doesn't exist anymore
      **/
-    void        GetRankFromChannel(int &channel);
+    bool        CheckChannel(int &channel);
     //! Draws a triangular particle
     void        DrawParticleTriangle(int i);
     //! Draw a normal particle

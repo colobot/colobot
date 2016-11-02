@@ -28,20 +28,20 @@ COutputStream::COutputStream()
 {
 }
 
-COutputStream::COutputStream(const std::string& filename)
+COutputStream::COutputStream(const std::string& filename, std::ios_base::openmode mode)
     : COutputStreamBufferContainer(),
       std::ostream(&m_buffer)
 {
-    open(filename);
+    open(filename, mode);
 }
 
 COutputStream::~COutputStream()
 {
 }
 
-void COutputStream::open(const std::string& filename)
+void COutputStream::open(const std::string& filename, std::ios_base::openmode mode)
 {
-    m_buffer.open(filename);
+    m_buffer.open(filename, mode);
 }
 
 void COutputStream::close()

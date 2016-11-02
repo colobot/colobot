@@ -51,7 +51,7 @@ bool FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exc
     {
         // recover mode
         mode = pVar->GetValString();
-        if ( mode != "r" && mode != "w" ) { Exception = CBotErrBadParam; return false; }
+        if ( mode != "r" && mode != "w" && mode != "a" ) { Exception = CBotErrBadParam; return false; }
 
         // no third parameter
         if ( pVar->GetNext() != nullptr ) { Exception = CBotErrOverParam; return false; }
@@ -70,7 +70,13 @@ bool FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exc
     {
         // opens the requested file
         assert(g_fileHandler != nullptr);
-        std::unique_ptr<CBotFile> file = g_fileHandler->OpenFile(filename, mode == "r" ? CBotFileAccessHandler::OpenMode::Read : CBotFileAccessHandler::OpenMode::Write);
+
+        CBotFileAccessHandler::OpenMode openMode;
+        if ( mode == "r" ) openMode = CBotFileAccessHandler::OpenMode::Read;
+        else if ( mode == "w" ) openMode = CBotFileAccessHandler::OpenMode::Write;
+        else if ( mode == "a" ) openMode = CBotFileAccessHandler::OpenMode::Append;
+
+        std::unique_ptr<CBotFile> file = g_fileHandler->OpenFile(filename, openMode);
 
         if (!file->Opened()) { Exception = CBotErrFileOpen; return false; }
 

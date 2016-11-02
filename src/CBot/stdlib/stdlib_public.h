@@ -44,7 +44,7 @@ class CBotFileAccessHandler
 public:
     virtual ~CBotFileAccessHandler() {}
 
-    enum class OpenMode : char { Read = 'r', Write = 'w' };
+    enum class OpenMode : char { Read = 'r', Write = 'w', Append = 'a' };
     virtual std::unique_ptr<CBotFile> OpenFile(const std::string& filename, OpenMode mode) = 0;
     virtual bool DeleteFile(const std::string& filename) = 0;
 };

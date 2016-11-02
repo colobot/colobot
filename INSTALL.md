@@ -40,7 +40,7 @@ statically linked Win32 binaries. More information is available in
 
 #### Compiling with MSYS2/MinGW-w64
 
-See [this wiki page](http://colobot.info/wiki/dev/Compiling_GOLD_on_Windows_with_MSYS2) for details.
+See the [INSTALL-MSYS2.md](INSTALL-MSYS2.md) file for details.
 
 #### Compiling with MSVC
 
@@ -125,7 +125,7 @@ So if you provided prefix "/some/prefix", you can run:
 
 ### Compiling on MacOS X
 
-As of 0.1.2-alpha, we have added MacOS X support. See [INSTALL-MacOSX.md](https://github.com/colobot/colobot/blob/master/INSTALL-MacOSX.md)
+As of 0.1.2-alpha, we have added MacOS X support. See [INSTALL-MacOSX.md](INSTALL-MacOSX.md)
 file for details.
 
 

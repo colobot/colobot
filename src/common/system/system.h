@@ -18,7 +18,7 @@
  */
 
 /**
- * \file app/system.h
+ * \file common/system/system.h
  * \brief System functions: time stamps, info dialogs, etc.
  */
 

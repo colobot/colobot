@@ -84,6 +84,9 @@ msgstr "Nie można nieść więcej przedmiotów"
 msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
 msgstr "Alternatywny tryb kamery\\Poruszaj na boki zamiast obracać (w kamerze swobodnej)"
 
+msgid "Ambiguous call to overloaded function"
+msgstr "Niejednoznaczne wywołanie przeciążonej funkcji"
+
 msgid "Analysis already performed"
 msgstr "Analiza została już wykonana"
 

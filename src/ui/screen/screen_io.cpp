@@ -193,11 +193,10 @@ void CScreenIO::IODeleteScene()
 }
 
 // clears filename only to leave letter or numbers
-std::string clearName(char *name)
+std::string clearName(std::string name)
 {
     std::string ret;
-    int len = strlen(name);
-    for (int i = 0; i < len; i++)
+    for (int i = 0; i < static_cast<int>(name.size()); i++)
     {
         if (isalnum(name[i]))
         {
@@ -214,7 +213,7 @@ void CScreenIO::IOWriteScene()
     CWindow*    pw;
     CList*      pl;
     CEdit*      pe;
-    char        info[100];
+    std::string info;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
@@ -226,7 +225,7 @@ void CScreenIO::IOWriteScene()
     int sel = pl->GetSelect();
     if ( sel == -1 ) return;
 
-    pe->GetText(info, 100);
+    info = pe->GetText(100);
 
     m_interface->DeleteControl(EVENT_WINDOW5);
 

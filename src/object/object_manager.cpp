@@ -282,7 +282,10 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
     RadarFilter filter_flying = static_cast<RadarFilter>(filter & (FILTER_ONLYLANDING | FILTER_ONLYFLYING));
     RadarFilter filter_enemy = static_cast<RadarFilter>(filter & (FILTER_FRIENDLY | FILTER_ENEMY | FILTER_NEUTRAL));
 
-    std::map<float, CObject*> best;
+    // Use a multimap to allow for multiple objects at exactly the same distance
+    // from the origin to be returned.
+    std::multimap<float, CObject*> best;
+
     for ( auto it = m_objects.begin() ; it != m_objects.end() ; ++it )
     {
         pObj = it->second.get();
@@ -357,7 +360,7 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
         a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
         if ( Math::TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) || focus >= Math::PI*2.0f )
         {
-            best[d] = pObj;
+            best.insert(std::make_pair(d, pObj));
         }
     }
 

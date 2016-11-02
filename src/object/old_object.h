@@ -55,9 +55,9 @@ const int OBJECTMAXPART         = 40;
 struct ObjectPart
 {
     bool         bUsed = false;
-    int          object = -1;         //!< identifier of the object in Gfx::CEngine
-    int          parentPart = -1;     //!< identifier of parent part
-    int          masterParti = -1;    //!< particle channel this part is connected to after explosion
+    int          object = -1;         // number of the object in CEngine
+    int          parentPart = -1;     // number of father part
+    int          masterParti = -1;        // master canal of the particle
     Math::Vector position;
     Math::Vector angle;
     Math::Vector zoom;

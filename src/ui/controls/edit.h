@@ -34,21 +34,15 @@ namespace Ui
 
 class CScroll;
 
-
-//! maximum number of characters in CBOT edit
-const int EDITSTUDIOMAX     = 20000;
-//! maximum total number of lines
-const int EDITLINEMAX       = 1000;
 //! max number of levels preserves
 const int EDITHISTORYMAX    = 50;
-
 //! max number of successive undo
 const int EDITUNDOMAX = 20;
 
 struct EditUndo
 {
     //! original text
-    std::vector<char> text;
+    std::string text;
     //! length of the text
     int     len = 0;
     //! offset cursor
@@ -124,12 +118,12 @@ public:
     bool        EventProcess(const Event &event) override;
     void        Draw() override;
 
-    void        SetText(const char *text, bool bNew=true);
-    void        GetText(char *buffer, int max);
-    char*       GetText();
-    int         GetTextLength();
+    void               SetText(const std::string& text, bool bNew=true);
+    std::string        GetText(int max);
+    const std::string& GetText();
+    int                GetTextLength();
 
-    bool        ReadText(std::string filename, int addSize=0);
+    bool        ReadText(std::string filename);
     bool        WriteText(std::string filename);
 
     void        SetMaxChar(int max);
@@ -234,8 +228,8 @@ protected:
 protected:
     std::unique_ptr<CScroll> m_scroll;           // vertical scrollbar on the right
 
-    int     m_maxChar;          // max length of the buffer m_text
-    std::vector<char> m_text;             // text (without zero terminator)
+    int m_maxChar;
+    std::string m_text;             // text (without zero terminator)
     std::vector<Gfx::FontMetaChar> m_format;           // format characters
     int     m_len;              // length used in m_text
     int     m_cursor1;          // offset cursor
@@ -256,14 +250,14 @@ protected:
     int     m_lineVisible;          // total number of viewable lines
     int     m_lineFirst;            // the first line displayed
     int     m_lineTotal;            // number lines used (in m_lineOffset)
-    int     m_lineOffset[EDITLINEMAX];
-    char        m_lineIndent[EDITLINEMAX];
+    std::vector<int> m_lineOffset;
+    std::vector<char> m_lineIndent;
     std::vector<ImageLine> m_image;
     std::vector<HyperLink> m_link;
     std::vector<HyperMarker> m_marker;
     int     m_historyTotal;
     int     m_historyCurrent;
-    HyperHistory    m_history[EDITHISTORYMAX];
+    std::array<HyperHistory, EDITHISTORYMAX> m_history;
     float       m_time;             // absolute time
     float       m_timeBlink;
     float       m_timeLastClick;
@@ -276,7 +270,7 @@ protected:
 
     bool        m_bUndoForce;
     OperUndo    m_undoOper;
-    EditUndo    m_undo[EDITUNDOMAX];
+    std::array<EditUndo, EDITUNDOMAX> m_undo;
 };
 
 

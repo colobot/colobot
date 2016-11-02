@@ -81,6 +81,9 @@ msgstr "Porte déjà quelque chose"
 msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
 msgstr ""
 
+msgid "Ambiguous call to overloaded function"
+msgstr ""
+
 msgid "Analysis already performed"
 msgstr "Analyse déjà effectuée"
 

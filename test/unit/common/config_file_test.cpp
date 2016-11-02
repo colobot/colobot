@@ -17,10 +17,10 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "app/system.h"
-
 #include "common/config_file.h"
 #include "common/logger.h"
+
+#include "common/system/system.h"
 
 #include <iostream>
 #include <string>

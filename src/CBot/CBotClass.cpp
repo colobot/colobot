@@ -92,7 +92,7 @@ void CBotClass::ClearPublic()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotClass::Purge()
 {
-    if ( this == nullptr ) return;
+    assert ( this != nullptr );
 
     delete      m_pVar;
     m_pVar      = nullptr;
@@ -104,7 +104,7 @@ void CBotClass::Purge()
 
     m_nbVar     = m_parent == nullptr ? 0 : m_parent->m_nbVar;
 
-    m_next->Purge();
+    if (m_next != nullptr) m_next->Purge();
     m_next = nullptr;          // no longer belongs to this chain
 }
 
@@ -205,7 +205,7 @@ std::string  CBotClass::GetName()
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass*  CBotClass::GetParent()
 {
-    if ( this == nullptr ) return nullptr;
+    assert ( this != nullptr );
     return m_parent;
 }
 
@@ -333,7 +333,7 @@ CBotTypResult CBotClass::CompileMethode(const std::string& name,
 
     r = m_pMethod->CompileCall(name, ppParams, nIdent);
     if ( r.Eq(CBotErrUndefCall) && m_parent != nullptr )
-        return m_parent->m_pMethod->CompileCall(name, ppParams, nIdent);
+        return m_parent->CompileMethode(name, pThis, ppParams, pStack, nIdent);
     return r;
 }
 
@@ -354,9 +354,7 @@ bool CBotClass::ExecuteMethode(long& nIdent,
 
     if (m_parent != nullptr)
     {
-        ret = m_parent->m_pCalls->DoCall(name, pThis, ppParams, pResult, pStack, pToken);
-        if (ret >= 0) return ret;
-        ret = m_parent->m_pMethod->DoCall(nIdent, name, pThis, ppParams, pStack, pToken, m_parent);
+        ret = m_parent->ExecuteMethode(nIdent, name, pThis, ppParams, pResult, pStack, pToken);
     }
     return ret;
 }
@@ -368,7 +366,14 @@ void CBotClass::RestoreMethode(long& nIdent,
                                CBotVar** ppParams,
                                CBotStack*& pStack)
 {
-    m_pMethod->RestoreCall(nIdent, name, pThis, ppParams, pStack, this);
+    CBotClass* pClass = this;
+    while (pClass != nullptr)
+    {
+        bool ok = pClass->m_pMethod->RestoreCall(nIdent, name, pThis, ppParams, pStack, pClass);
+        if (ok) return;
+        pClass = pClass->m_parent;
+    }
+    assert(false);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -504,21 +509,50 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
         classe->Purge();                            // empty the old definitions // TODO: Doesn't this remove all classes of the current program?
         classe->m_IsDef = false;                    // current definition
 
+        classe->m_pOpenblk = p;
+
         if ( !IsOfType( p, ID_OPBLK) )
         {
             pStack->SetError(CBotErrOpenBlock, p);
             return nullptr;
         }
 
-        while ( pStack->IsOk() && !IsOfType( p, ID_CLBLK ) )
+        int level = 1;
+        do                                          // skip over the definition
         {
-            classe->CompileDefItem(p, pStack, false);
+            int type = p->GetType();
+            p = p->GetNext();
+            if (type == ID_OPBLK) level++;
+            if (type == ID_CLBLK) level--;
         }
+        while (level > 0 && p != nullptr);
+
+        if (level > 0) pStack->SetError(CBotErrCloseBlock, classe->m_pOpenblk);
 
         if (pStack->IsOk()) return classe;
     }
     pStack->SetError(CBotErrNoTerminator, p);
     return nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CBotClass::DefineClasses(CBotClass* pClass, CBotCStack* pStack)
+{
+    while (pClass != nullptr)
+    {
+        CBotClass* pParent = pClass->m_parent;
+        pClass->m_nbVar = (pParent == nullptr) ? 0 : pParent->m_nbVar;
+        CBotToken* p = pClass->m_pOpenblk->GetNext();
+
+        while (pStack->IsOk() && !IsOfType(p, ID_CLBLK))
+        {
+            pClass->CompileDefItem(p, pStack, false);
+        }
+
+        if (!pStack->IsOk()) return;
+
+        pClass = pClass->GetNext();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -605,7 +639,6 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 {
                     // return a method precompiled in pass 1
                     CBotFunction*   pf = m_pMethod;
-                    CBotFunction*   prev = nullptr;
                     CBotToken* ppp = p;
                     CBotCStack* pStk = pStack->TokenStack(nullptr, true);
                     CBotDefParam* params = CBotDefParam::Compile(p, pStk );
@@ -614,7 +647,6 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     while ( pf != nullptr )                             // search by name and parameters
                     {
                         if (pf->GetName() == pp && pf->CheckParam( params )) break;
-                        prev = pf;
                         pf = pf->Next();
                     }
 
@@ -650,6 +682,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                                 initType = CBotVar::InitType::DEF;
                             pcopy->SetInit(initType);
                             pcopy->SetUniqNum(pv->GetUniqNum());
+                            pcopy->SetPrivate(pv->GetPrivate());
                             pile->AddVar(pcopy);
                             pv = pv->GetNext();
                         }
@@ -659,18 +692,12 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     // compiles a method
                     p = pBase;
                     CBotFunction* f =
-                    CBotFunction::Compile(p, pile, nullptr/*, false*/);
+                    CBotFunction::Compile(p, pile, pf/*, false*/);
 
                     if ( f != nullptr )
                     {
                         f->m_pProg = pStack->GetProgram();
                         f->m_bSynchro = bSynchro;
-                        // replaces the element in the chain
-                        f->m_next = pf->m_next;
-                        pf->m_next = nullptr;
-                        delete pf;
-                        if (prev == nullptr) m_pMethod = f;
-                        else prev->m_next = f;
                     }
                     pStack->Return(nullptr, pile);
                 }

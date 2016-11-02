@@ -72,9 +72,6 @@ public:
      */
     void CacheAll();
 
-    /** Function called to add all music files to list */
-    void CacheCommonMusic();
-
     /** Function called to cache sound effect file.
      *  This function is called by plugin interface for each file.
      * \param sound - id of a file, will be used to identify sound files
@@ -85,10 +82,10 @@ public:
 
     /** Function called to cache music file.
      *  This function is called by CRobotMain for each file used in the mission.
+     *  This function is executed asynchronously
      * \param file - file to load
-     * \return return true on success
      */
-    virtual bool CacheMusic(const std::string &file);
+    virtual void CacheMusic(const std::string &file);
 
     /** Function to check if sound effect file was cached.
      * \param sound - id of a sound effect file
@@ -205,22 +202,12 @@ public:
     virtual bool MuteAll(bool mute);
 
     /** Start playing music
+     * This function is executed asynchronously
      * \param filename - name of file to play
      * \param repeat - repeat playing
-     * \param fadeTime - time of transition between music
-     * \return return true on success
+     * \param fadeTime - time of transition between music, 0 to disable
      */
-    virtual bool PlayMusic(const std::string &filename, bool repeat, float fadeTime=2.0f);
-
-    /** Restart music
-     * \return return true on success
-     */
-    virtual bool RestartMusic();
-
-    /** Susspend playing music
-     * \return nothing
-     */
-    virtual void SuspendMusic();
+    virtual void PlayMusic(const std::string &filename, bool repeat, float fadeTime = 2.0f);
 
     /** Stop playing music
      * \return nothing
@@ -233,11 +220,12 @@ public:
     virtual bool IsPlayingMusic();
 
     /** Start playing pause music
+     * This function is executed asynchronously
      * \param filename - name of file to play
      * \param repeat - repeat playing
      * \return return true on success
      */
-     virtual bool PlayPauseMusic(const std::string &filename, bool repeat);
+     virtual void PlayPauseMusic(const std::string &filename, bool repeat);
 
      /** Stop playing pause music and return to the mission music
       * \return nothing

@@ -35,3 +35,6 @@ Makefile
 # Ignore QtCreator temp files
 CMakeLists.txt.user
 CMakeLists.txt.user.*
+
+# Ignore Visual Studio Code files
+/.vscode

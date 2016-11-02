@@ -66,6 +66,9 @@ private:
     long m_nMethodeIdent;
     CBotToken m_vartoken;
 
+    //! Instruction to chain method calls after constructor
+    CBotInstr* m_exprRetVar;
+
 };
 
 } // namespace CBot

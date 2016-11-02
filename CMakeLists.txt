@@ -16,9 +16,9 @@ set(COLOBOT_VERSION_MINOR    1)
 set(COLOBOT_VERSION_REVISION 8)
 
 # Used on official releases
-set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
+#set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
 # Used on unreleased, development builds
-#set(COLOBOT_VERSION_UNRELEASED "+alpha")
+set(COLOBOT_VERSION_UNRELEASED "+alpha")
 
 # Append git characteristics to version
 if(DEFINED COLOBOT_VERSION_UNRELEASED)
@@ -132,7 +132,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
     message(STATUS "Detected GCC version 4.7+")
 
-    set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Wold-style-cast")
+    set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Wold-style-cast -pedantic-errors")
+    set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -fno-delete-null-pointer-checks") # Temporary hack, see #828
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
     set(TEST_CXX_FLAGS "-pthread")
@@ -144,7 +145,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
     message(STATUS "Detected Clang version 3.1+")
 
-    set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Wold-style-cast")
+    set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Wold-style-cast -pedantic-errors")
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
     set(TEST_CXX_FLAGS "-pthread")
@@ -152,11 +153,15 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     message(STATUS "Detected MSVC compiler")
 
-    set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\" /wd\"4351\"") # disable some useless warnings
-    set(RELEASE_CXX_FLAGS "")
-    set(DEBUG_CXX_FLAGS "")
+    set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\" /wd\"4351\" /EHsc") # disable some useless warnings
+    set(RELEASE_CXX_FLAGS "/MD")
+    set(DEBUG_CXX_FLAGS "/MDd /ZI")
     set(TEST_CXX_FLAGS "")
     add_definitions(-DNOEXCEPT= -DHAS_MSVC_EXCEPTION_BUG)
+
+    # Needed for Debug information (it's set to "No" by default for some reason)
+    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "/DEBUG")
+    set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "/DEBUG")
 else()
     message(FATAL_ERROR "Your C++ compiler doesn't seem to be supported.")
 endif()

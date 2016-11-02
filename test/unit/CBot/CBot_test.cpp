@@ -1006,6 +1006,318 @@ TEST_F(CBotUT, ClassStringAdd_Issue535)
     );
 }
 
+TEST_F(CBotUT, ClassInheritanceAssignment)
+{
+    ExecuteTest(
+        "public class BaseClass {}\n"
+        "public class MidClass extends BaseClass {}\n"
+        "public class SubClass extends MidClass {}\n"
+        "extern void ClassInheritanceVars()\n"
+        "{\n"
+        "    BaseClass bc = new MidClass();\n"
+        "    MidClass  mc = bc;\n"
+        "    mc = new SubClass();\n"
+        "    SubClass  sc = mc;\n"
+        "    bc = mc;\n"
+        "    bc = new MidClass();\n"
+        "    bc = new SubClass();\n"
+        "    sc = bc;\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassInheritanceVars)
+{
+    ExecuteTest(
+        "public class BaseClass {\n"
+        "    int a = 123;\n"
+        "    int b = 456;\n"
+        "    int c = 789;\n"
+        "}\n"
+        "public class MidClass extends BaseClass {\n"
+        "    int b = 1011;\n"
+        "    int c = 1213;\n"
+        "    int d = 1415;\n"
+        "}\n"
+        "public class SubClass extends MidClass {\n"
+        "    int c = 1617;\n"
+        "    int d = 1819;\n"
+        "    int e = 2021;\n"
+        "}\n"
+        "extern void ClassInheritanceVars()\n"
+        "{\n"
+        "    BaseClass bc();\n"
+        "    ASSERT(bc.a == 123);\n"
+        "    ASSERT(bc.b == 456);\n"
+        "    ASSERT(bc.c == 789);\n"
+        "    MidClass  mc();\n"
+        "    ASSERT(mc.a == 123);\n"
+        "    ASSERT(mc.b == 1011);\n"
+        "    ASSERT(mc.c == 1213);\n"
+        "    ASSERT(mc.d == 1415);\n"
+        "    SubClass  sc();\n"
+        "    ASSERT(sc.a == 123);\n"
+        "    ASSERT(sc.b == 1011);\n"
+        "    ASSERT(sc.c == 1617);\n"
+        "    ASSERT(sc.d == 1819);\n"
+        "    ASSERT(sc.e == 2021);\n"
+        // Test polymorphism
+        "    bc = mc;\n"
+        "    ASSERT(bc.a == 123);\n"
+        "    ASSERT(bc.b == 456);\n"
+        "    ASSERT(bc.c == 789);\n"
+        "    mc = sc;\n"
+        "    ASSERT(mc.a == 123);\n"
+        "    ASSERT(mc.b == 1011);\n"
+        "    ASSERT(mc.c == 1213);\n"
+        "    ASSERT(mc.d == 1415);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassInheritanceMethods)
+{
+    ExecuteTest(
+        "public class BaseClass {\n"
+        "    int a = 123;\n"
+        "    int b = 456;\n"
+        "    int c = 789;\n"
+        "    int testOverride() { return 123; }\n"
+        "    int testNoOverride() { return 456; }\n"
+        "    int testInsideBaseClass() {\n"
+        "        ASSERT(a == 123);\n"
+        "        ASSERT(b == 456);\n"
+        "        ASSERT(c == 789);\n"
+        "        ASSERT(456 == testNoOverride());\n"
+        "        return c;\n"
+        "    }\n"
+        "    int testInsideBaseOverride() { return testOverride(); }\n"
+        "}\n"
+        "public class MidClass extends BaseClass {\n"
+        "    int b = 1011;\n"
+        "    int c = 1213;\n"
+        "    int d = 1415;\n"
+        "    int testOverride() { return 1011; }\n"
+        "    int testInsideMidClass() {\n"
+        "        ASSERT(a == 123);\n"
+        "        ASSERT(b == 1011);\n"
+        "        ASSERT(c == 1213);\n"
+        "        ASSERT(d == 1415);\n"
+        "        ASSERT(456  == testNoOverride());\n"
+        "        ASSERT(789  == testInsideBaseClass());\n"
+        "        return c;\n"
+        "    }\n"
+        "    int testSuper() {\n"
+        "        ASSERT(super.a == 123);\n"
+        "        ASSERT(super.b == 456);\n"
+        "        ASSERT(super.c == 789);\n"
+        "        ASSERT(123 == super.testOverride());\n"
+        "        ASSERT(789 == super.testInsideBaseClass());\n"
+        "        return super.testInsideBaseOverride();\n"
+        "    }\n"
+        "    int testInsideMidOverride() { return testOverride(); }\n"
+        "}\n"
+        "public class SubClass extends MidClass {\n"
+        "    int c = 1617;\n"
+        "    int d = 1819;\n"
+        "    int e = 2021;\n"
+        "    int testOverride() { return 1617; }\n"
+        "    int testInsideSubClass() {\n"
+        "        ASSERT(a == 123);\n"
+        "        ASSERT(b == 1011);\n"
+        "        ASSERT(c == 1617);\n"
+        "        ASSERT(d == 1819);\n"
+        "        ASSERT(e == 2021);\n"
+        "        ASSERT(456  == testNoOverride());\n"
+        "        ASSERT(789  == testInsideBaseClass());\n"
+        "        ASSERT(1213 == testInsideMidClass());\n"
+        "        return c;\n"
+        "    }\n"
+        "    int testSuper() {\n"
+        "        ASSERT(super.a == 123);\n"
+        "        ASSERT(super.b == 1011);\n"
+        "        ASSERT(super.c == 1213);\n"
+        "        ASSERT(super.d == 1415);\n"
+        "        ASSERT(1011 == super.testOverride());\n"
+        "        ASSERT(789  == super.testInsideBaseClass());\n"
+        "        ASSERT(1213 == super.testInsideMidClass());\n"
+        "        return super.testSuper();\n"
+        "    }\n"
+        "    int testInsideSubOverride() { return testOverride(); }\n"
+        "}\n"
+        "extern void InheritanceMethods()\n"
+        "{\n"
+        "    BaseClass bc();\n"
+        "    ASSERT(123 == bc.testOverride());\n"
+        "    ASSERT(456 == bc.testNoOverride());\n"
+        "    ASSERT(789 == bc.testInsideBaseClass());\n"
+        "    ASSERT(123 == bc.testInsideBaseOverride());\n"
+        "    MidClass  mc();\n"
+        "    ASSERT(1011 == mc.testSuper());\n"
+        "    ASSERT(1011 == mc.testOverride());\n"
+        "    ASSERT(456  == mc.testNoOverride());\n"
+        "    ASSERT(789  == mc.testInsideBaseClass());\n"
+        "    ASSERT(1213 == mc.testInsideMidClass());\n"
+        "    ASSERT(1011 == mc.testInsideBaseOverride());\n"
+        "    ASSERT(1011 == mc.testInsideMidOverride());\n"
+        "    SubClass  sc();\n"
+        "    ASSERT(1617 == sc.testSuper());\n"
+        "    ASSERT(1617 == sc.testOverride());\n"
+        "    ASSERT(456  == sc.testNoOverride());\n"
+        "    ASSERT(789  == sc.testInsideBaseClass());\n"
+        "    ASSERT(1213 == sc.testInsideMidClass());\n"
+        "    ASSERT(1617 == sc.testInsideSubClass());\n"
+        "    ASSERT(1617 == sc.testInsideBaseOverride());\n"
+        "    ASSERT(1617 == sc.testInsideMidOverride());\n"
+        "    ASSERT(1617 == sc.testInsideSubOverride());\n"
+        // Test polymorphism
+        "    bc = mc;\n"
+        "    ASSERT(1011 == bc.testOverride());\n"
+        "    ASSERT(789  == bc.testInsideBaseClass());\n"
+        "    ASSERT(1011 == bc.testInsideBaseOverride());\n"
+        "    bc = sc;\n"
+        "    ASSERT(1617 == bc.testOverride());\n"
+        "    ASSERT(789  == bc.testInsideBaseClass());\n"
+        "    ASSERT(1617 == bc.testInsideBaseOverride());\n"
+        "    mc = sc;\n"
+        "    ASSERT(1617 == mc.testSuper());\n"
+        "    ASSERT(1617 == mc.testOverride());\n"
+        "    ASSERT(789  == mc.testInsideBaseClass());\n"
+        "    ASSERT(1213 == mc.testInsideMidClass());\n"
+        "    ASSERT(1617 == mc.testInsideBaseOverride());\n"
+        "    ASSERT(1617 == mc.testInsideMidOverride());\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassInheritanceTestThis)
+{
+    ExecuteTest(
+        "public class BaseClass {\n"
+        "    int a = 123;\n"
+        "    int b = 456;\n"
+        "    int c = 789;\n"
+        "    void testBaseMembersAndParams(int a, int b, int c) {\n"
+        "        ASSERT(a != 123);\n"
+        "        ASSERT(b != 456);\n"
+        "        ASSERT(c != 789);\n"
+        "        ASSERT(this.a == 123);\n"
+        "        ASSERT(this.b == 456);\n"
+        "        ASSERT(this.c == 789);\n"
+        "    }\n"
+        "    BaseClass testSuperReturnThis(){ return this; }\n"
+        "    BaseClass testReturnThisFromBaseClass() { return this; }\n"
+        "}\n"
+        "public class MidClass extends BaseClass {\n"
+        "    int b = 1011;\n"
+        "    int c = 1213;\n"
+        "    int d = 1415;\n"
+        "    void testMidMembersAndParams(int a, int b, int c, int d) {\n"
+        "        ASSERT(a != 123);\n"
+        "        ASSERT(b != 1011);\n"
+        "        ASSERT(c != 1213);\n"
+        "        ASSERT(d != 1415);\n"
+        "        ASSERT(this.a == 123);\n"
+        "        ASSERT(this.b == 1011);\n"
+        "        ASSERT(this.c == 1213);\n"
+        "        ASSERT(this.d == 1415);\n"
+        "    }\n"
+        "    MidClass testSuperReturnThis(){ return super.testSuperReturnThis(); }\n"
+        "    MidClass testReturnThisFromMidClass() { return this; }\n"
+        "}\n"
+        "public class SubClass extends MidClass {\n"
+        "    int c = 1617;\n"
+        "    int d = 1819;\n"
+        "    int e = 2021;\n"
+        "    void testSubMembersAndParams(int a, int b, int c, int d, int e) {\n"
+        "        ASSERT(a != 123);\n"
+        "        ASSERT(b != 1011);\n"
+        "        ASSERT(c != 1617);\n"
+        "        ASSERT(d != 1819);\n"
+        "        ASSERT(e != 2021);\n"
+        "        ASSERT(this.a == 123);\n"
+        "        ASSERT(this.b == 1011);\n"
+        "        ASSERT(this.c == 1617);\n"
+        "        ASSERT(this.d == 1819);\n"
+        "        ASSERT(this.e == 2021);\n"
+        "    }\n"
+        "    SubClass testSuperReturnThis(){ return super.testSuperReturnThis(); }\n"
+        "    SubClass testReturnThisFromSubClass() { return this; }\n"
+        "}\n"
+        "extern void ClassInheritanceTestThis()\n"
+        "{\n"
+        "    BaseClass bc();\n"
+        "    MidClass  mc();\n"
+        "    SubClass  sc();\n"
+        "    ASSERT(bc == bc.testSuperReturnThis());\n"
+        "    ASSERT(bc == bc.testReturnThisFromBaseClass());\n"
+        "                 bc.testBaseMembersAndParams(-1, -2, -3);\n"
+        "    ASSERT(mc == mc.testSuperReturnThis());\n"
+        "    ASSERT(mc == mc.testReturnThisFromBaseClass());\n"
+        "    ASSERT(mc == mc.testReturnThisFromMidClass());\n"
+        "                 mc.testBaseMembersAndParams(-1, -2, -3);\n"
+        "                 mc.testMidMembersAndParams(-1, -2, -3, -4);\n"
+        "    ASSERT(sc == sc.testSuperReturnThis());\n"
+        "    ASSERT(sc == sc.testReturnThisFromBaseClass());\n"
+        "    ASSERT(sc == sc.testReturnThisFromMidClass());\n"
+        "    ASSERT(sc == sc.testReturnThisFromSubClass());\n"
+        "                 sc.testBaseMembersAndParams(-1, -2, -3);\n"
+        "                 sc.testMidMembersAndParams(-1, -2, -3, -4);\n"
+        "                 sc.testSubMembersAndParams(-1, -2, -3, -4, -5);\n"
+        // Test polymorphism
+        "    bc = mc;\n"
+        "    ASSERT(mc == bc.testSuperReturnThis());\n"
+        "    ASSERT(mc == bc.testReturnThisFromBaseClass());\n"
+        "                 bc.testBaseMembersAndParams(-1, -2, -3);\n"
+        "    bc = sc;\n"
+        "    ASSERT(sc == bc.testSuperReturnThis());\n"
+        "    ASSERT(sc == bc.testReturnThisFromBaseClass());\n"
+        "                 bc.testBaseMembersAndParams(-1, -2, -3);\n"
+        "    mc = sc;\n"
+        "    ASSERT(sc == mc.testSuperReturnThis());\n"
+        "    ASSERT(sc == mc.testReturnThisFromBaseClass());\n"
+        "    ASSERT(sc == mc.testReturnThisFromMidClass());\n"
+        "                 mc.testBaseMembersAndParams(-1, -2, -3);\n"
+        "                 mc.testMidMembersAndParams(-1, -2, -3, -4);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassCompileCircularReference_Issue433)
+{
+    ExecuteTest(
+        "public class OtherClass {\n"
+        "    TestClass testclass;\n"
+        "}\n"
+        "public class TestClass {\n"
+        "    int test;\n"
+        "    OtherClass otherclass;\n"
+        "}\n"
+        "extern void TestCompileCircularReference()\n"
+        "{\n"
+        "    TestClass t();\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassTestClassDefinedAfterReference)
+{
+    ExecuteTest(
+        "public class OtherClass {\n"
+        "    TestClass testclass = new TestClass();\n"
+        "}\n"
+        "public class TestClass {\n"
+        "    int test = 246;\n"
+        "}\n"
+        "extern void TestDefinedAfterReference()\n"
+        "{\n"
+        "    OtherClass o();\n"
+        "    TestClass t = o.testclass;\n"
+        "    ASSERT(t.test == 246);\n"
+        "}\n"
+    );
+}
+
 TEST_F(CBotUT, String)
 {
     ExecuteTest(
@@ -1186,5 +1498,558 @@ TEST_F(CBotUT, AccessMembersInParameters_Issue256)
         "    Test3 t();\n"
         "    t.test();\n"
         "}\n"
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVoid)
+{
+    ExecuteTest(
+        "void Test() {}\n"
+        "extern void TestAccessMemberVoid() {\n"
+        "    Test().x;\n"
+        "}\n",
+        CBotErrNoTerminator
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberNonObject)
+{
+    ExecuteTest(
+        "int GetInt() {\n"
+        "    return 1;\n"
+        "}\n"
+        "extern void TestAccessMemberNonObject() {\n"
+        "    GetInt().x;\n"
+        "}\n",
+        CBotErrNoTerminator
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberObjectNull)
+{
+    ExecuteTest(
+        "public class TestClass { int x = 1; }\n"
+        "TestClass GetObjectNull() {\n"
+        "    TestClass t = null;"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberObjectNull() {\n"
+        "    GetObjectNull().x;\n"
+        "}\n",
+        CBotErrNull
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberReturnNull)
+{
+    ExecuteTest(
+        "public class TestClass { int x = 1; }\n"
+        "TestClass GetReturnNull() {\n"
+        "    return null;\n"
+        "}\n"
+        "extern void TestAccessMemberReturnNull() {\n"
+        "    GetReturnNull().x;\n"
+        "}\n",
+        CBotErrNull
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberNotVar)
+{
+    ExecuteTest(
+        "public class TestClass {}\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberNotVar() {\n"
+        "    TestClass tc();\n"
+        "    GetObject(tc).123;\n"
+        "}\n",
+        CBotErrUndefClass
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVarNonMember)
+{
+    ExecuteTest(
+        "public class TestClass { int x = 1; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarNonMember() {\n"
+        "    TestClass tc();\n"
+        "    GetObject(tc).y;\n"
+        "}\n",
+        CBotErrUndefItem
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVarUndefined)
+{
+    ExecuteTest(
+        "public class TestClass { int x; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarUndefined() {\n"
+        "    TestClass tc();\n"
+        "    GetObject(tc).x;\n"
+        "}\n",
+        CBotErrNotInit
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVarPrivate)
+{
+    ExecuteTest(
+        "public class TestClass { private int x = 123; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarPrivate() {\n"
+        "    TestClass tc();\n"
+        "    ASSERT(123 == GetObject(tc).x);\n"
+        "}\n",
+        CBotErrPrivate
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVar)
+{
+    ExecuteTest(
+        "public class TestClass { int x = 123; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVar() {\n"
+        "    TestClass tc();\n"
+        "    ASSERT(123 == GetObject(tc).x);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVarArrayBadIndex)
+{
+    ExecuteTest(
+        "public class TestClass { int[] a; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarArrayEmpty() {\n"
+        "    TestClass tc();\n"
+        "    int i = GetObject(tc).a[4.7];\n"
+        "}\n",
+        CBotErrBadIndex
+    );
+}
+TEST_F(CBotUT, InstrCallAccessMemberVarArrayCloseIndex)
+{
+    ExecuteTest(
+        "public class TestClass { int[] a = {123}; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarArrayEmpty() {\n"
+        "    TestClass tc();\n"
+        "    int i = GetObject(tc).a[0;\n"
+        "}\n",
+        CBotErrCloseIndex
+    );
+}
+TEST_F(CBotUT, InstrCallAccessMemberVarArrayEmpty)
+{
+    ExecuteTest(
+        "public class TestClass { int[] a; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarArrayEmpty() {\n"
+        "    TestClass tc();\n"
+        "    int i = GetObject(tc).a[0];\n"
+        "}\n",
+        CBotErrOutArray
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVarArrayOutOfRange)
+{
+    ExecuteTest(
+        "public class TestClass { int a[] = {123}; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarArrayOut() {\n"
+        "    TestClass tc();\n"
+        "    int i = GetObject(tc).a[1];\n"
+        "}\n",
+        CBotErrOutArray
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberVarArray)
+{
+    ExecuteTest(
+        "public class TestClass { int a[] = {123}; }\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberVarArray() {\n"
+        "    TestClass tc();\n"
+        "    ASSERT(123 == GetObject(tc).a[0]);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberMethod)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int x = 123;\n"
+        "    int testGetX() { return x; }\n"
+        "}\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberMethod() {\n"
+        "    TestClass tc();\n"
+        "    ASSERT(123 == GetObject(tc).testGetX());\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberMethodChain)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int x = 123;\n"
+        "    TestClass testGetThis() { return this; }\n"
+        "    int testGetX() { return x; }\n"
+        "}\n"
+        "TestClass GetObject(TestClass t) {\n"
+        "    return t;\n"
+        "}\n"
+        "extern void TestAccessMemberMethodChain() {\n"
+        "    TestClass tc();\n"
+        "    ASSERT(123 == GetObject(tc).testGetThis().testGetX());\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, InstrCallAccessMemberNewObjectDestructor)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int x = 123;\n"
+        "    static bool b = false;\n"
+        "    void ~TestClass() { b = true; }\n"
+        "}\n"
+        "TestClass GetNewObject() { return new TestClass(); }\n"
+        "extern void TestAccessMemberNewObject() {\n"
+        "    TestClass tc();\n"
+        "    ASSERT(123 == GetNewObject().x);\n"
+        "    ASSERT(tc.b == true);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassConstructorMethodChain)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int a = 123;\n"
+        "    int b = 246;\n"
+        "    TestClass testSetA(int x) { a = x; return this; }\n"
+        "    TestClass testSetB(int y) { b = y; return this; }\n"
+        "}\n"
+        "extern void ConstructorMethodChain() {\n"
+        "    TestClass tc().testSetA(111).testSetB(222);\n"
+        "    ASSERT(tc.a == 111);\n"
+        "    ASSERT(tc.b == 222);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassNewConstructorMethodChain)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int a = 123;\n"
+        "    int b = 246;\n"
+        "    TestClass testSetA(int x) { a = x; return this; }\n"
+        "    TestClass testSetB(int y) { b = y; return this; }\n"
+        "}\n"
+        "extern void NewConstructorMethodChain() {\n"
+        "    TestClass tc;\n"
+        "    tc = new TestClass().testSetA(111).testSetB(222);\n"
+        "    ASSERT(tc.a == 111);\n"
+        "    ASSERT(tc.b == 222);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, PassNullAsArgument)
+{
+    auto publicProgram = ExecuteTest(
+        "public class BaseClass {}\n"
+        "public class SubClass extends BaseClass {}\n"
+    );
+
+    ExecuteTest(
+        "bool Test(BaseClass b) {\n"
+        "    return (b == null);\n"
+        "}\n"
+        "extern void PassNullAsArgument() {\n"
+        "    ASSERT(true == Test(null));\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "void Test(BaseClass b) {}\n"
+        "void Test(SubClass s) {}\n"
+        "\n"
+        "extern void AmbiguousCallArgumentNull() {\n"
+        "    Test(null);\n"
+        "}\n",
+        CBotErrAmbiguousCall
+    );
+}
+
+TEST_F(CBotUT, ClassImplicitCastArguments)
+{
+    auto publicProgram = ExecuteTest(
+        "public class BaseClass { int a = 360; }\n"
+        "public class SubClass extends BaseClass {}\n"
+    );
+
+    ExecuteTest(
+        "bool Test(BaseClass b) {\n"
+        "    SubClass s = b;\n"
+        "    return (360 == s.a);\n"
+        "}\n"
+        "extern void UpcastPassingArguments() {\n"
+        "    ASSERT(true == Test(new SubClass()));\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "void Test(BaseClass b, SubClass s) {}\n"
+        "void Test(SubClass s, BaseClass b) {}\n"
+        "\n"
+        "extern void UpcastAmbiguousCall() {\n"
+        "    Test(new SubClass(), new SubClass());\n"
+        "}\n",
+        CBotErrAmbiguousCall
+    );
+
+    ExecuteTest(
+        "bool Test(BaseClass b, SubClass s) { return false; }\n"
+        "bool Test(SubClass s, BaseClass b) { return false; }\n"
+        "bool Test(SubClass s, SubClass s2) { return true; }\n"
+        "\n"
+        "extern void NoErrorMoreSpecific() {\n"
+        "    ASSERT(true == Test(new SubClass(), new SubClass()));\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, AmbiguousCallWithNumbers)
+{
+    ExecuteTest(
+        "void Test(int i, float f) {}\n"
+        "void Test(float f, int i) {}\n"
+        "\n"
+        "extern void AmbiguousCallNumbers() {\n"
+        "    Test(1, 2);\n"
+        "}\n",
+        CBotErrAmbiguousCall
+    );
+
+    ExecuteTest(
+        "bool Test(int i, float f) { return false; }\n"
+        "bool Test(float f, int i) { return false; }\n"
+        "bool Test(int i, int ii)  { return true; }\n"
+        "\n"
+        "extern void NoErrorMoreSpecific() {\n"
+        "    ASSERT(true == Test(1, 2));\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassMethodWithPublicKeyword)
+{
+    auto publicProgram = ExecuteTest(
+        "public class TestClass {\n"
+        "    public int Test() { return 1; }\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "int Test() { return 2; }\n"
+        "\n"
+        "extern void DontCallMethodInTestClass()\n"
+        "{\n"
+        "    ASSERT(2 == Test());\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "int Test() { return 2; }\n"
+        "\n"
+        "public class OtherClass {}\n"
+        "\n"
+        "extern void OtherClass::TestCallWithThis()\n"
+        "{\n"
+        "    this.Test();\n"
+        "}\n",
+        CBotErrUndefCall
+    );
+}
+
+TEST_F(CBotUT, ClassTestProtectedMember)
+{
+    auto publicProgram = ExecuteTest(
+        "public class BaseClass {\n"
+        "    protected int a_protected = 1;\n"
+        "    bool test() {\n"
+        "        a_protected = 1;\n"
+        "        int a = a_protected;\n"
+        "        return true;\n"
+        "    }\n"
+        "}\n"
+        "extern void Test() {\n"
+        "    BaseClass b();\n"
+        "    ASSERT(true == b.test());\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "public class SubClass extends BaseClass {\n"
+        "    bool testProtected() {\n"
+        "        a_protected = 1;\n"
+        "        int a = a_protected;\n"
+        "        return true;\n"
+        "    }\n"
+        "}\n"
+        "extern void TestSubClassAccessProtected() {\n"
+        "    SubClass  s();\n"
+        "    ASSERT(true == s.test());\n"
+        "    ASSERT(true == s.testProtected());\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void TestErrorProtected() {\n"
+        "    BaseClass b();\n"
+        "    int i = b.a_protected;\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "extern void ErrorProtectedAssignment() {\n"
+        "    BaseClass b();\n"
+        "    b.a_protected = 1;\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SomeOtherClass {\n"
+        "    void testErrorProtected() {\n"
+        "        BaseClass b();\n"
+        "        int i = b.a_protected;\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SomeOtherClass {\n"
+        "    void testErrorProtectedAssignment() {\n"
+        "        BaseClass b();\n"
+        "        b.a_protected = 1;\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+}
+
+TEST_F(CBotUT, ClassTestPrivateMember)
+{
+    auto publicProgram = ExecuteTest(
+        "public class BaseClass {\n"
+        "    private int a_private = 2;\n"
+        "\n"
+        "    bool test() {\n"
+        "        a_private = 2;\n"
+        "        int a = a_private;\n"
+        "        return true;\n"
+        "    }\n"
+        "    bool NoErrorPrivateSameClass() {\n"
+        "        BaseClass b = new BaseClass();\n"
+        "        int a = b.a_private;\n"
+        "        b.a_private = 2;\n"
+        "        return true;\n"
+        "    }\n"
+        "}\n"
+        "extern void Test() {\n"
+        "    BaseClass b();\n"
+        "    ASSERT(true == b.test());\n"
+        "    ASSERT(true == b.NoErrorPrivateSameClass());\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "public class SubClass extends BaseClass {\n"
+        "    void testErrorPrivate() {\n"
+        "        int a = a_private;\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SubClass extends BaseClass {\n"
+        "    void testErrorPrivateAssignment() {\n"
+        "        a_private = 2;\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "extern void TestErrorPrivate() {\n"
+        "    BaseClass b();\n"
+        "    int i = b.a_private;\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "extern void ErrorPrivateAssignment() {\n"
+        "    BaseClass b();\n"
+        "    b.a_private = 2;\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SomeOtherClass {\n"
+        "    void testErrorPrivate() {\n"
+        "        BaseClass b();\n"
+        "        int i = b.a_private;\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SomeOtherClass {\n"
+        "    void testErrorPrivateAssignment() {\n"
+        "        BaseClass b();\n"
+        "        b.a_private = 1;\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
     );
 }

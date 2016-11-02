@@ -132,6 +132,11 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
                 (static_cast<CBotVarClass*>(newvar))->Copy(ppVars[i], false);
                 break;
             case CBotTypPointer:
+                {
+                    newvar->SetPointer(ppVars[i]->GetPointer());
+                    newvar->SetType(p->m_type);     // keep pointer type
+                }
+                break;
             case CBotTypArrayPointer:
                 {
                     newvar->SetPointer(ppVars[i]->GetPointer());

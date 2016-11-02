@@ -64,8 +64,7 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
             inst->m_nIdent = var->GetUniqNum();
             if (inst->m_nIdent > 0 && inst->m_nIdent < 9000)
             {
-                if ( var->IsPrivate(CBotVar::ProtectionLevel::ReadOnly) &&
-                     !pStk->GetProgram()->m_bCompileClass)
+                if (CBotFieldExpr::CheckProtectionError(pStk, nullptr, var, CBotVar::ProtectionLevel::ReadOnly))
                 {
                     pStk->SetError(CBotErrPrivate, p);
                     goto err;
@@ -125,11 +124,12 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
                         if (p->GetType() == TokenTypVar)                // must be a name
                         {
+                            CBotVar*   preVar = var;
                             var = var->GetItem(p->GetString());            // get item correspondent
                             if (var != nullptr)
                             {
-                                if ( var->IsPrivate(CBotVar::ProtectionLevel::ReadOnly) &&
-                                     !pStk->GetProgram()->m_bCompileClass)
+                                if (CBotFieldExpr::CheckProtectionError(pStk, preVar, var,
+                                                                        CBotVar::ProtectionLevel::ReadOnly))
                                 {
                                     pStk->SetError(CBotErrPrivate, pp);
                                     goto err;
@@ -182,15 +182,18 @@ bool CBotLeftExpr::Execute(CBotStack* &pj, CBotStack* array)
             if (t2.Eq(CBotTypPointer))
             {
                 CBotClass*    c1 = t1.GetClass();
-                CBotClass*    c2 = t2.GetClass();
+                CBotClass*    c2 = var2->GetClass();
                 if ( !c2->IsChildOf(c1))
                 {
                     CBotToken* pt = &m_token;
                     pile->SetError(CBotErrBadType1, pt);
                     return pj->Return(pile);    // operation performed
                 }
+                var1->SetVal(var2);     // set pointer
+                var1->SetType(t1);      // keep pointer type
             }
-            var1->SetVal(var2);     // do assignment
+            else
+                var1->SetVal(var2);     // do assignment
         }
         pile->SetCopyVar(var1);     // replace the stack with the copy of the variable
                                     // (for name)
