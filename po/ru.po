@@ -85,7 +85,7 @@ msgid "Alternative camera mode\\Move sideways instead of rotating (in free camer
 msgstr "Альтернативный режим камеры\\Движение в стороны вместо поворачивания (в режиме свободной камеры)"
 
 msgid "Ambiguous call to overloaded function"
-msgstr ""
+msgstr "Странный вызов перегруженной функции"
 
 msgid "Analysis already performed"
 msgstr "Анализ уже выполнен"
@@ -370,10 +370,10 @@ msgid "Closing bracket missing"
 msgstr "Закрывающая скобка отсутствует"
 
 msgid "Code battles"
-msgstr ""
+msgstr "Битвы роботов"
 
 msgid "Code battles\\Program your robot to be the best of them all!"
-msgstr "Code battles\\Запрограммируйте собственного робота чтобы быть лучшим среди них!"
+msgstr "Битвы роботов\\Запрограммируйте собственного робота чтобы быть лучшим среди них!"
 
 msgid "Colobot rules!"
 msgstr "Правила игры!"
@@ -817,7 +817,7 @@ msgid "Lunar Roving Vehicle"
 msgstr "Луноход"
 
 msgid "MSAA\\Multisample anti-aliasing"
-msgstr ""
+msgstr "MSAA\\Улучшенная фильтрация"
 
 msgid "Maximize"
 msgstr "Развернуть"
@@ -826,7 +826,7 @@ msgid "Minimize"
 msgstr "Свернуть"
 
 msgid "Mipmap level\\Mipmap level"
-msgstr ""
+msgstr "Уровень уменьшающей фильтрации\\Уровень уменьшающей фильтрации"
 
 msgid "Mission name"
 msgstr "Название миссии"
@@ -1230,13 +1230,13 @@ msgid "Resolution:"
 msgstr "Разрешение:"
 
 msgid "Resources"
-msgstr ""
+msgstr "Ресурсы"
 
 msgid "Restart\\Restart the mission from the beginning"
 msgstr "Заново\\Начать данную миссию с начала"
 
 msgid "Restoring CBot execution state"
-msgstr ""
+msgstr "Восстановление состояния CBot"
 
 msgid "Restoring saved objects"
 msgstr "Восстановить сохранённые объекты"
