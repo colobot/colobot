@@ -243,6 +243,8 @@ set(BASE_SOURCES
     math/const.h
     math/func.h
     math/geometry.h
+    math/half.cpp
+    math/half.h
     math/intpoint.h
     math/matrix.h
     math/point.h
