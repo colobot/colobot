@@ -165,6 +165,7 @@ set(BASE_SOURCES
     graphics/core/nulldevice.cpp
     graphics/core/nulldevice.h
     graphics/core/texture.h
+    graphics/core/type.h
     graphics/core/vertex.h
     graphics/engine/camera.cpp
     graphics/engine/camera.h
