@@ -30,22 +30,22 @@ namespace Math
 //! Converts float to half-float
 uint16_t FloatToHalf(float value)
 {
-    uint16_t sign = (copysign(1.0f, value) > 0.0f ? 0x0000 : 0x8000);
+    uint16_t sign = (std::copysign(1.0f, value) > 0.0f ? 0x0000 : 0x8000);
 
     // Infinity
-    if (isinf(value))
+    if (std::isinf(value))
     {
         return sign | 0x7C00;
     }
     // NaN
-    else if (isnan(value))
+    else if (std::isnan(value))
     {
         return sign | 0x7FFF;
     }
 
     int exponent;
 
-    float significand = fabs(frexp(value, &exponent));
+    float significand = std::fabs(std::frexp(value, &exponent));
 
     // Exponent bias
     exponent += 15;
@@ -67,7 +67,7 @@ uint16_t FloatToHalf(float value)
     }
 
     // Normal value
-    uint16_t mantissa = static_cast<uint16_t>(ldexp(2 * significand - 1, 10));
+    uint16_t mantissa = static_cast<uint16_t>(std::ldexp(2 * significand - 1, 10));
 
     uint16_t bits = sign | mantissa | ((exponent - 1) << 10);
 
@@ -90,7 +90,7 @@ float HaltToFloat(uint16_t value)
     // Subnormal
     else if ((exponent == 0) && (mantissa != 0))
     {
-        result = ldexp(static_cast<float>(mantissa), -24);
+        result = std::ldexp(static_cast<float>(mantissa), -24);
     }
     // Infinity
     else if ((exponent == 31) && (mantissa == 0))
@@ -100,17 +100,17 @@ float HaltToFloat(uint16_t value)
     // NaN
     else if ((exponent == 31) && (mantissa != 0))
     {
-        result = nanf("");
+        result = std::nanf("");
     }
     // Normal number
     else
     {
-        result = ldexp(static_cast<float>(mantissa | 0x0400), exponent - 25);
+        result = std::ldexp(static_cast<float>(mantissa | 0x0400), exponent - 25);
     }
 
     float sign = ((value & 0x8000) == 0 ? 1.0f : -1.0f);
 
-    return copysignf(result, sign);
+    return std::copysignf(result, sign);
 }
 
 } // namespace Math
