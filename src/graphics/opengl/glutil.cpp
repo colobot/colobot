@@ -335,8 +335,10 @@ GLenum TranslateGfxPrimitive(PrimitiveType type)
     case PRIMITIVE_POINTS:         flag = GL_POINTS; break;
     case PRIMITIVE_LINES:          flag = GL_LINES; break;
     case PRIMITIVE_LINE_STRIP:     flag = GL_LINE_STRIP; break;
+    case PRIMITIVE_LINE_LOOP:      flag = GL_LINE_LOOP; break;
     case PRIMITIVE_TRIANGLES:      flag = GL_TRIANGLES; break;
     case PRIMITIVE_TRIANGLE_STRIP: flag = GL_TRIANGLE_STRIP; break;
+    case PRIMITIVE_TRIANGLE_FAN:   flag = GL_TRIANGLE_FAN; break;
     default: assert(false); break;
     }
     return flag;
@@ -439,6 +441,23 @@ GLenum TranslateTextureCoordinateGen(int index)
     assert(index >= 0 && index < 4);
 
     return textureCoordGen[index];
+}
+
+GLenum TranslateType(Type type)
+{
+    switch (type)
+    {
+    case Type::BYTE: return GL_BYTE;
+    case Type::UBYTE: return GL_UNSIGNED_BYTE;
+    case Type::SHORT: return GL_SHORT;
+    case Type::USHORT: return GL_UNSIGNED_SHORT;
+    case Type::INT: return GL_INT;
+    case Type::UINT: return GL_UNSIGNED_INT;
+    case Type::HALF: return GL_HALF_FLOAT;
+    case Type::FLOAT: return GL_FLOAT;
+    case Type::DOUBLE: return GL_DOUBLE;
+    default: return 0;
+    }
 }
 
 std::string lastShaderError;

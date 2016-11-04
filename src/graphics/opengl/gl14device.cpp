@@ -1379,6 +1379,168 @@ void CGL14Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
     glDisableClientState(GL_COLOR_ARRAY);
 }
 
+void CGL14Device::DrawPrimitive(PrimitiveType type, const void *vertices,
+    int size, const VertexFormat &format, int vertexCount)
+{
+    const char *ptr = reinterpret_cast<const char*>(vertices);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(format.vertex.size,
+        TransformType(format.vertex.type),
+        format.vertex.stride,
+        ptr + format.vertex.offset);
+
+    if (format.color.enabled)
+    {
+        glEnableClientState(GL_COLOR_ARRAY);
+        glColorPointer(format.color.size,
+            TransformType(format.color.type),
+            format.color.stride,
+            ptr + format.color.offset);
+    }
+    else
+        glColor4fv(format.color.values);
+
+    if (format.normal.enabled)
+    {
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glNormalPointer(TransformType(format.normal.type),
+            format.normal.stride,
+            ptr + format.normal.offset);
+    }
+    else
+        glNormal3fv(format.normal.values);
+
+    glClientActiveTexture(GL_TEXTURE0 + m_remap[0]);
+    if (format.tex1.enabled)
+    {
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glTexCoordPointer(format.tex1.size,
+            TransformType(format.tex1.type),
+            format.tex1.stride,
+            ptr + format.tex1.offset);
+    }
+    else
+        glTexCoord2fv(format.tex1.values);
+
+    glClientActiveTexture(GL_TEXTURE0 + m_remap[1]);
+    if (format.tex2.enabled)
+    {
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glTexCoordPointer(format.tex2.size,
+            TransformType(format.tex2.type),
+            format.tex2.stride,
+            ptr + format.tex2.offset);
+    }
+    else
+        glTexCoord2fv(format.tex2.values);
+
+    glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    if (format.color.enabled) glDisableClientState(GL_COLOR_ARRAY);
+    if (format.normal.enabled) glDisableClientState(GL_NORMAL_ARRAY);
+
+    if (format.tex1.enabled)
+    {
+        glClientActiveTexture(GL_TEXTURE0 + m_remap[0]);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
+
+    if (format.tex2.enabled)
+    {
+        glClientActiveTexture(GL_TEXTURE0 + m_remap[1]);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
+}
+
+void CGL14Device::DrawPrimitives(PrimitiveType type, const void *vertices,
+    int size, const VertexFormat &format, int first[], int count[], int drawCount)
+{
+    const char *ptr = reinterpret_cast<const char*>(vertices);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(format.vertex.size,
+        TransformType(format.vertex.type),
+        format.vertex.stride,
+        ptr + format.vertex.offset);
+
+    if (format.color.enabled)
+    {
+        glEnableClientState(GL_COLOR_ARRAY);
+        glColorPointer(format.color.size,
+            TransformType(format.color.type),
+            format.color.stride,
+            ptr + format.color.offset);
+    }
+    else
+        glColor4fv(format.color.values);
+
+    if (format.normal.enabled)
+    {
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glNormalPointer(TransformType(format.normal.type),
+            format.normal.stride,
+            ptr + format.normal.offset);
+    }
+    else
+        glNormal3fv(format.normal.values);
+
+    glClientActiveTexture(GL_TEXTURE0 + m_remap[0]);
+    if (format.tex1.enabled)
+    {
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glTexCoordPointer(format.tex1.size,
+            TransformType(format.tex1.type),
+            format.tex1.stride,
+            ptr + format.tex1.offset);
+    }
+    else
+        glTexCoord2fv(format.tex1.values);
+
+    glClientActiveTexture(GL_TEXTURE0 + m_remap[1]);
+    if (format.tex2.enabled)
+    {
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glTexCoordPointer(format.tex2.size,
+            TransformType(format.tex2.type),
+            format.tex2.stride,
+            ptr + format.tex2.offset);
+    }
+    else
+        glTexCoord2fv(format.tex2.values);
+
+    GLenum t = TranslateGfxPrimitive(type);
+
+    if (m_multiDrawArrays)
+    {
+        glMultiDrawArrays(t, first, count, drawCount);
+    }
+    else
+    {
+        for (int i = 0; i < drawCount; i++)
+            glDrawArrays(t, first[i], count[i]);
+    }
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    if (format.color.enabled) glDisableClientState(GL_COLOR_ARRAY);
+    if (format.normal.enabled) glDisableClientState(GL_NORMAL_ARRAY);
+
+    if (format.tex1.enabled)
+    {
+        glClientActiveTexture(GL_TEXTURE0 + m_remap[0]);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
+
+    if (format.tex2.enabled)
+    {
+        glClientActiveTexture(GL_TEXTURE0 + m_remap[1]);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
+}
+
 void CGL14Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     int first[], int count[], int drawCount, Color color)
 {

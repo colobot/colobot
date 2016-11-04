@@ -523,21 +523,18 @@ bool CGL33Device::Create()
 
     m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
 
-    // create dynamic buffers
-    for (int i = 0; i < 3; i++)
-    {
-        glGenVertexArrays(1, &m_dynamicBuffers[i].vao);
+    // create dynamic buffer
+    glGenVertexArrays(1, &m_dynamicBuffer.vao);
 
-        m_dynamicBuffers[i].size = 4 * 1024 * 1024;
-        m_dynamicBuffers[i].offset = 0;
+    m_dynamicBuffer.size = 4 * 1024 * 1024;
+    m_dynamicBuffer.offset = 0;
 
-        glGenBuffers(1, &m_dynamicBuffers[i].vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, m_dynamicBuffers[i].vbo);
-        glBufferData(GL_ARRAY_BUFFER, m_dynamicBuffers[i].size, nullptr, GL_STREAM_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glGenBuffers(1, &m_dynamicBuffer.vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_dynamicBuffer.vbo);
+    glBufferData(GL_ARRAY_BUFFER, m_dynamicBuffer.size, nullptr, GL_STREAM_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        m_vboMemory += m_dynamicBuffers[i].size;
-    }
+    m_vboMemory += m_dynamicBuffer.size;
 
     GetLogger()->Info("CDevice created successfully\n");
 
@@ -563,13 +560,10 @@ void CGL33Device::Destroy()
     DestroyAllTextures();
 
     // delete dynamic buffer
-    for (int i = 0; i < 3; i++)
-    {
-        glDeleteVertexArrays(1, &m_dynamicBuffers[i].vao);
-        glDeleteBuffers(1, &m_dynamicBuffers[i].vbo);
+    glDeleteVertexArrays(1, &m_dynamicBuffer.vao);
+    glDeleteBuffers(1, &m_dynamicBuffer.vbo);
 
-        m_vboMemory -= m_dynamicBuffers[i].size;
-    }
+    m_vboMemory -= m_dynamicBuffer.size;
 
     m_lights.clear();
     m_lightsEnabled.clear();
@@ -1075,46 +1069,39 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int 
 
     unsigned int size = vertexCount * sizeof(Vertex);
 
-    DynamicBuffer& buffer = m_dynamicBuffers[0];
+    DynamicBuffer& buffer = m_dynamicBuffer;
 
     BindVAO(buffer.vao);
     BindVBO(buffer.vbo);
 
     unsigned int offset = UploadVertexData(buffer, vs, size);
 
-    // Start of the buffer, reinitialize binding state
-    if (offset == 0)
-    {
-        // Vertex coordinate
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-            reinterpret_cast<void*>(offsetof(Vertex, coord)));
+    // Vertex coordinate
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+        reinterpret_cast<void*>(offset + offsetof(Vertex, coord)));
 
-        // Normal
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-            reinterpret_cast<void*>(offsetof(Vertex, normal)));
+    // Normal
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+        reinterpret_cast<void*>(offset + offsetof(Vertex, normal)));
 
-        // Color
-        glDisableVertexAttribArray(2);
-
-        // Texture coordinate 0
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-            reinterpret_cast<void*>(offsetof(Vertex, texCoord)));
-
-        // Texture coordinate 1
-        glDisableVertexAttribArray(4);
-        glVertexAttrib2f(4, 0.0f, 0.0f);
-    }
-
+    // Color
+    glDisableVertexAttribArray(2);
     glVertexAttrib4fv(2, color.Array());
+
+    // Texture coordinate 0
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+        reinterpret_cast<void*>(offset + offsetof(Vertex, texCoord)));
+
+    // Texture coordinate 1
+    glDisableVertexAttribArray(4);
+    glVertexAttrib2f(4, 0.0f, 0.0f);
 
     UpdateRenderingMode();
 
-    int first = offset / sizeof(Vertex);
-
-    glDrawArrays(TranslateGfxPrimitive(type), first, vertexCount);
+    glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 }
 
 void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount, Color color)
@@ -1123,46 +1110,40 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, 
 
     unsigned int size = vertexCount * sizeof(VertexTex2);
 
-    DynamicBuffer& buffer = m_dynamicBuffers[1];
+    DynamicBuffer& buffer = m_dynamicBuffer;
 
     BindVAO(buffer.vao);
     BindVBO(buffer.vbo);
 
     unsigned int offset = UploadVertexData(buffer, vs, size);
 
-    if (offset == 0)
-    {
-        // Vertex coordinate
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
-            reinterpret_cast<void*>(offsetof(VertexTex2, coord)));
+    // Vertex coordinate
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
+        reinterpret_cast<void*>(offset + offsetof(VertexTex2, coord)));
 
-        // Normal
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
-            reinterpret_cast<void*>(offsetof(VertexTex2, normal)));
+    // Normal
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
+        reinterpret_cast<void*>(offset + offsetof(VertexTex2, normal)));
 
-        // Color
-        glDisableVertexAttribArray(2);
-
-        // Texture coordinate 0
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
-            reinterpret_cast<void*>(offsetof(VertexTex2, texCoord)));
-
-        // Texture coordinate 1
-        glEnableVertexAttribArray(4);
-        glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
-            reinterpret_cast<void*>(offsetof(VertexTex2, texCoord2)));
-    }
-
+    // Color
+    glDisableVertexAttribArray(2);
     glVertexAttrib4fv(2, color.Array());
+
+    // Texture coordinate 0
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
+        reinterpret_cast<void*>(offset + offsetof(VertexTex2, texCoord)));
+
+    // Texture coordinate 1
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
+        reinterpret_cast<void*>(offset + offsetof(VertexTex2, texCoord2)));
 
     UpdateRenderingMode();
 
-    int first = offset / sizeof(VertexTex2);
-
-    glDrawArrays(TranslateGfxPrimitive(type), first, vertexCount);
+    glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 }
 
 void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
@@ -1171,43 +1152,82 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
 
     unsigned int size = vertexCount * sizeof(VertexCol);
 
-    DynamicBuffer& buffer = m_dynamicBuffers[2];
+    DynamicBuffer& buffer = m_dynamicBuffer;
 
     BindVAO(buffer.vao);
     BindVBO(buffer.vbo);
 
     unsigned int offset = UploadVertexData(buffer, vs, size);
 
-    if (offset == 0)
-    {
-        // Vertex coordinate
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexCol),
-            reinterpret_cast<void*>(offsetof(VertexCol, coord)));
+    // Vertex coordinate
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexCol),
+        reinterpret_cast<void*>(offset + offsetof(VertexCol, coord)));
 
-        // Normal
-        glDisableVertexAttribArray(1);
-        glVertexAttrib3f(1, 0.0f, 0.0f, 1.0f);
+    // Normal
+    glDisableVertexAttribArray(1);
+    glVertexAttrib3f(1, 0.0f, 0.0f, 1.0f);
 
-        // Color
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(VertexCol),
-            reinterpret_cast<void*>(offsetof(VertexCol, color)));
+    // Color
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(VertexCol),
+        reinterpret_cast<void*>(offset + offsetof(VertexCol, color)));
 
-        // Texture coordinate 0
-        glDisableVertexAttribArray(3);
-        glVertexAttrib2f(3, 0.0f, 0.0f);
+    // Texture coordinate 0
+    glDisableVertexAttribArray(3);
+    glVertexAttrib2f(3, 0.0f, 0.0f);
 
-        // Texture coordinate 1
-        glDisableVertexAttribArray(4);
-        glVertexAttrib2f(4, 0.0f, 0.0f);
-    }
+    // Texture coordinate 1
+    glDisableVertexAttribArray(4);
+    glVertexAttrib2f(4, 0.0f, 0.0f);
 
     UpdateRenderingMode();
 
-    int first = offset / sizeof(VertexCol);
+    glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
+}
 
-    glDrawArrays(TranslateGfxPrimitive(type), first, vertexCount);
+void CGL33Device::DrawPrimitive(PrimitiveType type, const void *vertices,
+    int size, const VertexFormat &format, int vertexCount)
+{
+    DynamicBuffer& buffer = m_dynamicBuffer;
+
+    BindVAO(buffer.vao);
+    BindVBO(buffer.vbo);
+
+    unsigned int offset = UploadVertexData(buffer, vertices, size);
+
+    // Update vertex attribute bindings
+    UpdateVertexAttribute(0, format.vertex, offset);
+    UpdateVertexAttribute(1, format.normal, offset);
+    UpdateVertexAttribute(2, format.color, offset);
+    UpdateVertexAttribute(3, format.tex1, offset);
+    UpdateVertexAttribute(4, format.tex2, offset);
+
+    UpdateRenderingMode();
+
+    glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
+}
+
+void CGL33Device::DrawPrimitives(PrimitiveType type, const void *vertices,
+    int size, const VertexFormat &format, int first[], int count[], int drawCount)
+{
+    DynamicBuffer& buffer = m_dynamicBuffer;
+
+    BindVAO(buffer.vao);
+    BindVBO(buffer.vbo);
+
+    unsigned int offset = UploadVertexData(buffer, vertices, size);
+
+    // Update vertex attribute bindings
+    UpdateVertexAttribute(0, format.vertex, offset);
+    UpdateVertexAttribute(1, format.normal, offset);
+    UpdateVertexAttribute(2, format.color, offset);
+    UpdateVertexAttribute(3, format.tex1, offset);
+    UpdateVertexAttribute(4, format.tex2, offset);
+
+    UpdateRenderingMode();
+
+    glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
 }
 
 void CGL33Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
@@ -1227,51 +1247,39 @@ void CGL33Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
 
     unsigned int size = vertexCount * sizeof(Vertex);
 
-    DynamicBuffer& buffer = m_dynamicBuffers[0];
+    DynamicBuffer& buffer = m_dynamicBuffer;
 
     BindVAO(buffer.vao);
     BindVBO(buffer.vbo);
 
     unsigned int offset = UploadVertexData(buffer, vs, size);
 
-    if (offset == 0)
-    {
-        // Vertex coordinate
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-            reinterpret_cast<void*>(offsetof(Vertex, coord)));
+    // Vertex coordinate
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+        reinterpret_cast<void*>(offset + offsetof(Vertex, coord)));
 
-        // Normal
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-            reinterpret_cast<void*>(offsetof(Vertex, normal)));
+    // Normal
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+        reinterpret_cast<void*>(offset + offsetof(Vertex, normal)));
 
-        // Color
-        glDisableVertexAttribArray(2);
-
-        // Texture coordinate 0
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-            reinterpret_cast<void*>(offsetof(Vertex, texCoord)));
-
-        // Texture coordinate 1
-        glDisableVertexAttribArray(4);
-        glVertexAttrib2f(4, 0.0f, 0.0f);
-    }
-
+    // Color
+    glDisableVertexAttribArray(2);
     glVertexAttrib4fv(2, color.Array());
+
+    // Texture coordinate 0
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+        reinterpret_cast<void*>(offset + offsetof(Vertex, texCoord)));
+
+    // Texture coordinate 1
+    glDisableVertexAttribArray(4);
+    glVertexAttrib2f(4, 0.0f, 0.0f);
 
     UpdateRenderingMode();
 
-    int firstOffset = offset / sizeof(Vertex);
-
-    for (int i = 0; i < drawCount; i++)
-        first[i] += firstOffset;
-
     glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
-
-    for (int i = 0; i < drawCount; i++)
-        first[i] -= firstOffset;
 }
 
 void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
@@ -1291,52 +1299,40 @@ void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
 
     unsigned int size = vertexCount * sizeof(VertexTex2);
 
-    DynamicBuffer& buffer = m_dynamicBuffers[1];
+    DynamicBuffer& buffer = m_dynamicBuffer;
 
     BindVAO(buffer.vao);
     BindVBO(buffer.vbo);
 
     unsigned int offset = UploadVertexData(buffer, vs, size);
 
-    if (offset == 0)
-    {
-        // Vertex coordinate
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
-            reinterpret_cast<void*>(offsetof(VertexTex2, coord)));
+    // Vertex coordinate
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
+        reinterpret_cast<void*>(offset + offsetof(VertexTex2, coord)));
 
-        // Normal
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
-            reinterpret_cast<void*>(offsetof(VertexTex2, normal)));
+    // Normal
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
+        reinterpret_cast<void*>(offset + offsetof(VertexTex2, normal)));
 
-        // Color
-        glDisableVertexAttribArray(2);
-
-        // Texture coordinate 0
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
-            reinterpret_cast<void*>(offsetof(VertexTex2, texCoord)));
-
-        // Texture coordinate 1
-        glEnableVertexAttribArray(4);
-        glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
-            reinterpret_cast<void*>(offsetof(VertexTex2, texCoord2)));
-    }
-
+    // Color
+    glDisableVertexAttribArray(2);
     glVertexAttrib4fv(2, color.Array());
+
+    // Texture coordinate 0
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
+        reinterpret_cast<void*>(offset + offsetof(VertexTex2, texCoord)));
+
+    // Texture coordinate 1
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
+        reinterpret_cast<void*>(offset + offsetof(VertexTex2, texCoord2)));
 
     UpdateRenderingMode();
 
-    int firstOffset = offset / sizeof(VertexTex2);
-
-    for (int i = 0; i < drawCount; i++)
-        first[i] += firstOffset;
-
     glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
-
-    for (int i = 0; i < drawCount; i++)
-        first[i] -= firstOffset;
 }
 
 void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
@@ -1356,49 +1352,38 @@ void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
 
     unsigned int size = vertexCount * sizeof(VertexCol);
 
-    DynamicBuffer& buffer = m_dynamicBuffers[2];
+    DynamicBuffer& buffer = m_dynamicBuffer;
 
     BindVAO(buffer.vao);
     BindVBO(buffer.vbo);
 
     unsigned int offset = UploadVertexData(buffer, vs, size);
 
-    if (offset == 0)
-    {
-        // Vertex coordinate
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexCol),
-            reinterpret_cast<void*>(offsetof(VertexCol, coord)));
+    // Vertex coordinate
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexCol),
+        reinterpret_cast<void*>(offset + offsetof(VertexCol, coord)));
 
-        // Normal
-        glDisableVertexAttribArray(1);
-        glVertexAttrib3f(1, 0.0f, 0.0f, 1.0f);
+    // Normal
+    glDisableVertexAttribArray(1);
+    glVertexAttrib3f(1, 0.0f, 0.0f, 1.0f);
 
-        // Color
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(VertexCol),
-            reinterpret_cast<void*>(offsetof(VertexCol, color)));
+    // Color
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(VertexCol),
+        reinterpret_cast<void*>(offset + offsetof(VertexCol, color)));
 
-        // Texture coordinate 0
-        glDisableVertexAttribArray(3);
-        glVertexAttrib2f(3, 0.0f, 0.0f);
+    // Texture coordinate 0
+    glDisableVertexAttribArray(3);
+    glVertexAttrib2f(3, 0.0f, 0.0f);
 
-        // Texture coordinate 1
-        glDisableVertexAttribArray(4);
-        glVertexAttrib2f(4, 0.0f, 0.0f);
-    }
+    // Texture coordinate 1
+    glDisableVertexAttribArray(4);
+    glVertexAttrib2f(4, 0.0f, 0.0f);
 
     UpdateRenderingMode();
 
-    int firstOffset = offset / sizeof(VertexCol);
-
-    for (int i = 0; i < drawCount; i++)
-        first[i] += firstOffset;
-
     glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
-
-    for (int i = 0; i < drawCount; i++)
-        first[i] -= firstOffset;
 }
 
 unsigned int CGL33Device::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
@@ -2057,7 +2042,7 @@ inline void CGL33Device::BindVAO(GLuint vao)
     m_currentVAO = vao;
 }
 
-unsigned int CGL33Device::UploadVertexData(DynamicBuffer& buffer, void* data, unsigned int size)
+unsigned int CGL33Device::UploadVertexData(DynamicBuffer& buffer, const void* data, unsigned int size)
 {
     unsigned int nextOffset = buffer.offset + size;
 
@@ -2080,7 +2065,7 @@ unsigned int CGL33Device::UploadVertexData(DynamicBuffer& buffer, void* data, un
     if (ptr != nullptr)
     {
         memcpy(ptr, data, size);
-
+        
         glUnmapBuffer(GL_ARRAY_BUFFER);
     }
     // mapping failed, we must upload data with glBufferSubData
@@ -2093,6 +2078,25 @@ unsigned int CGL33Device::UploadVertexData(DynamicBuffer& buffer, void* data, un
     buffer.offset = nextOffset;
 
     return currentOffset;
+}
+
+void CGL33Device::UpdateVertexAttribute(int index, const VertexAttribute &attribute, int offset)
+{
+    if (attribute.enabled)
+    {
+        glEnableVertexAttribArray(index);
+        glVertexAttribPointer(index,
+            attribute.size,
+            TranslateType(attribute.type),
+            attribute.normalized ? GL_TRUE : GL_FALSE,
+            attribute.stride,
+            reinterpret_cast<void*>(offset + attribute.offset));
+    }
+    else
+    {
+        glDisableVertexAttribArray(index);
+        glVertexAttrib4fv(index, attribute.values);
+    }
 }
 
 bool CGL33Device::IsAnisotropySupported()

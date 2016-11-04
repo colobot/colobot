@@ -115,6 +115,11 @@ public:
 
     void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT) override;
 
+    virtual void DrawPrimitive(PrimitiveType type, const void *vertices,
+        int size, const VertexFormat &format, int vertexCount) override;
+    virtual void DrawPrimitives(PrimitiveType type, const void *vertices,
+        int size, const VertexFormat &format, int first[], int count[], int drawCount) override;
+
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
@@ -202,7 +207,9 @@ private:
     inline void BindVAO(GLuint vao);
 
     //! Uploads data to dynamic buffer and returns offset to it
-    unsigned int UploadVertexData(DynamicBuffer& buffer, void* data, unsigned int size);
+    unsigned int UploadVertexData(DynamicBuffer& buffer, const void* data, unsigned int size);
+
+    inline void UpdateVertexAttribute(int index, const VertexAttribute &attribute, int offset);
 
 private:
     //! Current config
@@ -283,7 +290,7 @@ private:
     //! Shader program for shadow rendering
     GLuint m_shadowProgram = 0;
 
-    DynamicBuffer m_dynamicBuffers[3];
+    DynamicBuffer m_dynamicBuffer;
 
     //! Current mode
     unsigned int m_mode = 0;

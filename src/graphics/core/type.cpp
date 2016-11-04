@@ -18,45 +18,39 @@
 */
 
 /**
-* \file graphics/core/type.h
+* \file graphics/core/type.cpp
 * \brief Type support and conversion
 */
 
-#pragma once
+#include "graphics/core/type.h"
+
+#include <cassert>
 
 // Graphics module namespace
 namespace Gfx
 {
 
-/**
-* \enum class Type
-* \brief Value types for vertex attributes
-*/
-enum class Type : unsigned char
-{
-    //! Unsigned byte (8-bit)
-    UBYTE = 0,
-    //! Signed byte (8-bit)
-    BYTE,
-    //! Unsigned short (16-bit)
-    USHORT,
-    //! Signed short (16-bit)
-    SHORT,
-    //! Unsigned int (32-bit)
-    UINT,
-    //! Signed int (32-bit)
-    INT,
-    //! Half precision floating-point (16-bit)
-    HALF,
-    //! Single precision floating-point (32-bit)
-    FLOAT,
-    //! Double precision floating-point (64-bit)
-    DOUBLE,
-};
-
 //! Returns size in bytes of given type
-int GetTypeSize(Type type);
-
-// TODO: functions for conversion between types
+int GetTypeSize(Type type)
+{
+    switch (type)
+    {
+    case Type::BYTE:
+    case Type::UBYTE:
+        return 1;
+    case Type::SHORT:
+    case Type::USHORT:
+    case Type::HALF:
+        return 2;
+    case Type::INT:
+    case Type::UINT:
+    case Type::FLOAT:
+        return 4;
+    case Type::DOUBLE:
+        return 8;
+    default:
+        return 0;
+    }
+}
 
 } // namespace Gfx
