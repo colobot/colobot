@@ -27,6 +27,7 @@
 
 #include "ui/controls/control.h"
 
+#include <array>
 #include <memory>
 
 namespace Ui
