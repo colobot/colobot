@@ -2194,7 +2194,7 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetTextureStageWrap(0, TEX_WRAP_REPEAT, TEX_WRAP_REPEAT);
         m_device->SetTextureStageWrap(1, TEX_WRAP_REPEAT, TEX_WRAP_REPEAT);
     }
-    else // if (state & ENG_RSTATE_CLAMP) or otherwise
+    else if (state & ENG_RSTATE_CLAMP)
     {
         m_device->SetTextureStageWrap(0, TEX_WRAP_CLAMP, TEX_WRAP_CLAMP);
         m_device->SetTextureStageWrap(1, TEX_WRAP_CLAMP, TEX_WRAP_CLAMP);
