@@ -295,6 +295,14 @@ private:
     bool m_shadowMapping = false;
     //! true means that quality shadows are enabled
     bool m_shadowQuality = true;
+
+
+    //! Pointers to OpenGL functions
+    PFNGLGENBUFFERSPROC m_glGenBuffers;
+    PFNGLDELETEBUFFERSPROC m_glDeleteBuffers;
+    PFNGLBINDBUFFERPROC m_glBindBuffer;
+    PFNGLBUFFERDATAPROC m_glBufferData;
+    PFNGLBUFFERSUBDATAPROC m_glBufferSubData;
 };
 
 

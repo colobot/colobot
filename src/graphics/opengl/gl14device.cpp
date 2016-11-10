@@ -258,11 +258,25 @@ bool CGL14Device::Create()
     {
         GetLogger()->Info("Core VBO supported\n", glMajor, glMinor);
         m_vertexBufferType = VBT_VBO_CORE;
+
+        // Set function pointers
+        m_glGenBuffers = glGenBuffers;
+        m_glDeleteBuffers = glDeleteBuffers;
+        m_glBindBuffer = glBindBuffer;
+        m_glBufferData = glBufferData;
+        m_glBufferSubData = glBufferSubData;
     }
     else if (vboARB)     // VBO ARB extension available
     {
         GetLogger()->Info("ARB VBO supported\n");
         m_vertexBufferType = VBT_VBO_ARB;
+
+        // Set function pointers
+        m_glGenBuffers = glGenBuffersARB;
+        m_glDeleteBuffers = glDeleteBuffersARB;
+        m_glBindBuffer = glBindBufferARB;
+        m_glBufferData = glBufferDataARB;
+        m_glBufferSubData = glBufferSubDataARB;
     }
     else                // no VBO support
     {
@@ -800,44 +814,22 @@ Texture CGL14Device::CreateDepthTexture(int width, int height, int depth)
 
     GLuint format = GL_DEPTH_COMPONENT;
 
-    if (m_shadowMappingSupport == SMS_CORE)
+    switch (depth)
     {
-        switch (depth)
-        {
-        case 16:
-            format = GL_DEPTH_COMPONENT16;
-            break;
-        case 24:
-            format = GL_DEPTH_COMPONENT24;
-            break;
-        case 32:
-            format = GL_DEPTH_COMPONENT32;
-            break;
-        }
-
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_DEPTH_COMPONENT, GL_INT, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    case 16:
+        format = GL_DEPTH_COMPONENT16;
+        break;
+    case 24:
+        format = GL_DEPTH_COMPONENT24;
+        break;
+    case 32:
+        format = GL_DEPTH_COMPONENT32;
+        break;
     }
-    else
-    {
-        switch (depth)
-        {
-        case 16:
-            format = GL_DEPTH_COMPONENT16_ARB;
-            break;
-        case 24:
-            format = GL_DEPTH_COMPONENT24_ARB;
-            break;
-        case 32:
-            format = GL_DEPTH_COMPONENT32_ARB;
-            break;
-        }
 
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_DEPTH_COMPONENT, GL_INT, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL);
-    }
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_DEPTH_COMPONENT, GL_INT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
     float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
@@ -1656,20 +1648,10 @@ unsigned int CGL14Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
         info.vertexCount = vertexCount;
         info.bufferId = 0;
 
-        if(m_vertexBufferType == VBT_VBO_CORE)
-        {
-            glGenBuffers(1, &info.bufferId);
-            glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
-            glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(Vertex), vertices, GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
-        else
-        {
-            glGenBuffersARB(1, &info.bufferId);
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, info.bufferId);
-            glBufferDataARB(GL_ARRAY_BUFFER_ARB, vertexCount * sizeof(Vertex), vertices, GL_STATIC_DRAW_ARB);
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-        }
+        m_glGenBuffers(1, &info.bufferId);
+        m_glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+        m_glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(Vertex), vertices, GL_STATIC_DRAW);
+        m_glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         m_vboObjects[id] = info;
     }
@@ -1700,20 +1682,10 @@ unsigned int CGL14Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
         info.vertexCount = vertexCount;
         info.bufferId = 0;
 
-        if(m_vertexBufferType == VBT_VBO_CORE)
-        {
-            glGenBuffers(1, &info.bufferId);
-            glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
-            glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexTex2), vertices, GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
-        else
-        {
-            glGenBuffersARB(1, &info.bufferId);
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, info.bufferId);
-            glBufferDataARB(GL_ARRAY_BUFFER_ARB, vertexCount * sizeof(VertexTex2), vertices, GL_STATIC_DRAW_ARB);
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-        }
+        m_glGenBuffers(1, &info.bufferId);
+        m_glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+        m_glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexTex2), vertices, GL_STATIC_DRAW);
+        m_glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         m_vboObjects[id] = info;
     }
@@ -1744,20 +1716,10 @@ unsigned int CGL14Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
         info.vertexCount = vertexCount;
         info.bufferId = 0;
 
-        if(m_vertexBufferType == VBT_VBO_CORE)
-        {
-            glGenBuffers(1, &info.bufferId);
-            glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
-            glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexCol), vertices, GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
-        else
-        {
-            glGenBuffersARB(1, &info.bufferId);
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, info.bufferId);
-            glBufferDataARB(GL_ARRAY_BUFFER_ARB, vertexCount * sizeof(VertexCol), vertices, GL_STATIC_DRAW_ARB);
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-        }
+        m_glGenBuffers(1, &info.bufferId);
+        m_glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+        m_glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexCol), vertices, GL_STATIC_DRAW);
+        m_glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         m_vboObjects[id] = info;
     }
@@ -1788,18 +1750,9 @@ void CGL14Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
         info.vertexType = VERTEX_TYPE_NORMAL;
         info.vertexCount = vertexCount;
 
-        if(m_vertexBufferType == VBT_VBO_CORE)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
-            glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(Vertex), vertices, GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
-        else
-        {
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, info.bufferId);
-            glBufferDataARB(GL_ARRAY_BUFFER_ARB, vertexCount * sizeof(Vertex), vertices, GL_STATIC_DRAW_ARB);
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-        }
+        m_glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+        m_glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(Vertex), vertices, GL_STATIC_DRAW);
+        m_glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     else
     {
@@ -1824,18 +1777,9 @@ void CGL14Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
         info.vertexType = VERTEX_TYPE_TEX2;
         info.vertexCount = vertexCount;
 
-        if(m_vertexBufferType == VBT_VBO_CORE)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
-            glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexTex2), vertices, GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
-        else
-        {
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, info.bufferId);
-            glBufferDataARB(GL_ARRAY_BUFFER_ARB, vertexCount * sizeof(VertexTex2), vertices, GL_STATIC_DRAW_ARB);
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-        }
+        m_glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+        m_glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexTex2), vertices, GL_STATIC_DRAW);
+        m_glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     else
     {
@@ -1860,18 +1804,9 @@ void CGL14Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
         info.vertexType = VERTEX_TYPE_COL;
         info.vertexCount = vertexCount;
 
-        if(m_vertexBufferType == VBT_VBO_CORE)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
-            glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexCol), vertices, GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
-        else
-        {
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, info.bufferId);
-            glBufferDataARB(GL_ARRAY_BUFFER_ARB, vertexCount * sizeof(VertexCol), vertices, GL_STATIC_DRAW_ARB);
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-        }
+        m_glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+        m_glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexCol), vertices, GL_STATIC_DRAW);
+        m_glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     else
     {
@@ -1891,10 +1826,7 @@ void CGL14Device::DrawStaticBuffer(unsigned int bufferId)
         if (it == m_vboObjects.end())
             return;
 
-        if(m_vertexBufferType == VBT_VBO_CORE)
-            glBindBuffer(GL_ARRAY_BUFFER, (*it).second.bufferId);
-        else
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, (*it).second.bufferId);
+        m_glBindBuffer(GL_ARRAY_BUFFER, (*it).second.bufferId);
 
         if ((*it).second.vertexType == VERTEX_TYPE_NORMAL)
         {
@@ -1957,10 +1889,7 @@ void CGL14Device::DrawStaticBuffer(unsigned int bufferId)
             glDisableClientState(GL_COLOR_ARRAY);
         }
 
-        if(m_vertexBufferType == VBT_VBO_CORE)
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        else
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+        m_glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     else
     {
@@ -1976,10 +1905,7 @@ void CGL14Device::DestroyStaticBuffer(unsigned int bufferId)
         if (it == m_vboObjects.end())
             return;
 
-        if(m_vertexBufferType == VBT_VBO_CORE)
-            glDeleteBuffers(1, &(*it).second.bufferId);
-        else
-            glDeleteBuffersARB(1, &(*it).second.bufferId);
+        m_glDeleteBuffers(1, &(*it).second.bufferId);
 
         m_vboObjects.erase(it);
     }
