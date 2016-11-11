@@ -192,8 +192,18 @@ bool CBotStack::Return(CBotStack* pfils)
     m_var = pfils->m_var;                        // result transmitted
     pfils->m_var = nullptr;                        // not to destroy the variable
 
-    if (m_next != nullptr) m_next->Delete();m_next = nullptr;                // releases the stack above
-    if (m_next2 != nullptr) m_next2->Delete();m_next2 = nullptr;            // also the second stack (catch)
+    if (m_next != nullptr)
+    {
+        // releases the stack above
+        m_next->Delete();
+        m_next = nullptr;
+    }
+    if (m_next2 != nullptr)
+    {
+        // also the second stack (catch)
+        m_next2->Delete();
+        m_next2 = nullptr;
+    }
 
     return IsOk();                        // interrupted if error
 }
@@ -731,8 +741,7 @@ bool CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
     if (!ReadWord(pf, w)) return false;
     if ( w == 0 ) return true; // 0 - terminator
 
-    if ( this == nullptr ) pStack = AllocateStack();
-    else pStack = AddStack();
+    pStack = AddStack();
 
     if ( w == 2 ) // 2 - m_next2
     {

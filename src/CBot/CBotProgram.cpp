@@ -363,8 +363,7 @@ bool CBotProgram::RestoreState(FILE* pf)
     }
 
     // retrieves the stack from the memory
-    // uses a nullptr pointer (m_stack) but it's ok like that
-    // TODO: no it's not okay like that! but it looks like it doesn't get optimized out at least ~krzys_h
+    m_stack = CBotStack::AllocateStack();
     if (!m_stack->RestoreState(pf, m_stack)) return false;
     m_stack->SetProgram(this);                     // bases for routines
 

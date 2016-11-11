@@ -199,7 +199,7 @@ const CBotToken& CBotToken::operator=(const CBotToken& src)
 ////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetType()
 {
-    if (this == nullptr) return 0;
+    assert(this != nullptr);
     if (m_type == TokenTypKeyWord) return m_keywordId;
     return m_type;
 }
@@ -225,14 +225,14 @@ void CBotToken::SetString(const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetStart()
 {
-    if (this == nullptr) return -1;
+    assert(this != nullptr);
     return m_start;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetEnd()
 {
-    if (this == nullptr) return -1;
+    assert(this != nullptr);
     return m_end;
 }
 
