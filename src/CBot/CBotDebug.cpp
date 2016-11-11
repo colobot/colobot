@@ -40,7 +40,6 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
     for (CBotFunction* func : program->GetFunctions())
     {
         funcIdMap[func->m_nFuncIdent] = func;
-        func = func->GetNext();
     }
 
     std::set<CBotInstr*> finished;

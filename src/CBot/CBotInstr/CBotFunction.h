@@ -39,7 +39,7 @@ namespace CBot
  * void classname::test() { ... }
  * \endcode
  */
-class CBotFunction : public CBotInstr, public CBotLinkedList<CBotFunction>
+class CBotFunction : public CBotInstr
 {
 public:
     CBotFunction();
@@ -90,9 +90,6 @@ public:
     void RestoreState(CBotVar** ppVars,
                       CBotStack* &pj,
                       CBotVar* pInstance = nullptr);
-
-    using CBotLinkedList<CBotFunction>::GetNext;
-    using CBotLinkedList<CBotFunction>::AddNext;
 
     /*!
      * \brief Compile a function call
