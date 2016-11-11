@@ -394,12 +394,13 @@ void CBotVarClass::DecrementUse()
 
             CBotVar*    pThis  = CBotVar::Create("this", CBotTypNullPointer);
             pThis->SetPointer(this);
-            CBotVar*    pResult = nullptr;
 
             std::string    nom = std::string("~") + m_pClass->GetName();
             long        ident = 0;
 
-            while ( pile->IsOk() && !m_pClass->ExecuteMethode(ident, nom, pThis, ppVars, pResult, pile, nullptr)) ;    // waits for the end
+            CBotToken token(nom); // TODO
+
+            while ( pile->IsOk() && !m_pClass->ExecuteMethode(ident, pThis, ppVars, CBotTypResult(CBotTypVoid), pile, &token)) ;    // waits for the end
 
             pile->ResetError(err, start,end);
 

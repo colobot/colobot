@@ -37,7 +37,6 @@
 #include "CBot/CBotDefParam.h"
 #include "CBot/CBotUtils.h"
 #include "CBot/CBotFileUtils.h"
-#include "CBot/CBotCallMethode.h"
 
 #include <algorithm>
 
@@ -55,7 +54,7 @@ CBotClass::CBotClass(const std::string& name,
     m_parent    = parent;
     m_name      = name;
     m_pVar      = nullptr;
-    m_pCalls    = nullptr;
+    m_externalMethods = new CBotExternalCallList();
     m_rUpdate   = nullptr;
     m_IsDef     = true;
     m_bIntrinsic= bIntrinsic;
@@ -70,7 +69,7 @@ CBotClass::~CBotClass()
     m_publicClasses.erase(this);
 
     delete  m_pVar;
-    delete  m_pCalls;
+    delete  m_externalMethods;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,8 +93,7 @@ void CBotClass::Purge()
 
     delete      m_pVar;
     m_pVar      = nullptr;
-    delete      m_pCalls;
-    m_pCalls    = nullptr;
+    m_externalMethods->Clear();
     for (CBotFunction* f : m_pMethod) delete f;
     m_pMethod.clear();
     m_IsDef     = false;
@@ -278,29 +276,7 @@ bool CBotClass::AddFunction(const std::string& name,
                             bool rExec(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
                             CBotTypResult rCompile(CBotVar* pThis, CBotVar*& pVar))
 {
-    // stores pointers to the two functions
-    CBotCallMethode*    p = m_pCalls;
-    CBotCallMethode*    pp = nullptr;
-
-    while ( p != nullptr )
-    {
-        if ( name == p->m_name )
-        {
-            if ( pp == nullptr ) m_pCalls = p->m_next;
-            else              pp->m_next = p->m_next;
-            delete p;
-            break;
-        }
-        pp = p;
-        p = p->m_next;
-    }
-
-    p = new CBotCallMethode(name, rExec, rCompile);
-
-    if (m_pCalls == nullptr) m_pCalls = p;
-    else    m_pCalls->AddNext(p);               // added to the list
-
-    return true;
+    return m_externalMethods->AddFunction(name, std::unique_ptr<CBotExternalCall>(new CBotExternalCallClass(rExec, rCompile)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -311,22 +287,22 @@ bool CBotClass::SetUpdateFunc(void rUpdate(CBotVar* thisVar, void* user))
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult CBotClass::CompileMethode(const std::string& name,
+CBotTypResult CBotClass::CompileMethode(CBotToken* name,
                                         CBotVar* pThis,
                                         CBotVar** ppParams,
                                         CBotCStack* pStack,
-                                        long& nIdent)
+                                        long &nIdent)
 {
     nIdent = 0; // forget the previous one if necessary
 
     // find the methods declared by AddFunction
 
-    CBotTypResult r = m_pCalls->CompileCall(name, pThis, ppParams, pStack);
+    CBotTypResult r = m_externalMethods->CompileCall(name, pThis, ppParams, pStack);
     if ( r.GetType() >= 0) return r;
 
     // find the methods declared by user
 
-    r = CBotFunction::CompileCall(m_pMethod, name, ppParams, nIdent);
+    r = CBotFunction::CompileCall(m_pMethod, name->GetString(), ppParams, nIdent);
     if ( r.Eq(CBotErrUndefCall) && m_parent != nullptr )
         return m_parent->CompileMethode(name, pThis, ppParams, pStack, nIdent);
     return r;
@@ -334,37 +310,39 @@ CBotTypResult CBotClass::CompileMethode(const std::string& name,
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::ExecuteMethode(long& nIdent,
-                               const std::string& name,
                                CBotVar* pThis,
                                CBotVar** ppParams,
-                               CBotVar*& pResult,
+                               CBotTypResult pResultType,
                                CBotStack*& pStack,
                                CBotToken* pToken)
 {
-    int ret = m_pCalls->DoCall(name, pThis, ppParams, pResult, pStack, pToken);
-    if (ret>=0) return ret;
+    int ret = m_externalMethods->DoCall(pToken, pThis, ppParams, pStack, pResultType);
+    if (ret >= 0) return ret;
 
-    ret = CBotFunction::DoCall(m_pMethod, nIdent, name, pThis, ppParams, pStack, pToken, this);
+    ret = CBotFunction::DoCall(m_pMethod, nIdent, pToken->GetString(), pThis, ppParams, pStack, pToken, this);
     if (ret >= 0) return ret;
 
     if (m_parent != nullptr)
     {
-        ret = m_parent->ExecuteMethode(nIdent, name, pThis, ppParams, pResult, pStack, pToken);
+        ret = m_parent->ExecuteMethode(nIdent, pThis, ppParams, pResultType, pStack, pToken);
     }
     return ret;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotClass::RestoreMethode(long& nIdent,
-                               const std::string& name,
+                               CBotToken* name,
                                CBotVar* pThis,
                                CBotVar** ppParams,
                                CBotStack*& pStack)
 {
+    if (m_externalMethods->RestoreCall(name, pThis, ppParams, pStack))
+        return;
+
     CBotClass* pClass = this;
     while (pClass != nullptr)
     {
-        bool ok = CBotFunction::RestoreCall(pClass->m_pMethod, nIdent, name, pThis, ppParams, pStack, pClass);
+        bool ok = CBotFunction::RestoreCall(pClass->m_pMethod, nIdent, name->GetString(), pThis, ppParams, pStack, pClass);
         if (ok) return;
         pClass = pClass->m_parent;
     }

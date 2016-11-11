@@ -38,6 +38,7 @@ class CBotStack;
 class CBotDefParam;
 class CBotToken;
 class CBotCStack;
+class CBotExternalCallList;
 
 /**
  * \brief A CBot class definition
@@ -134,13 +135,8 @@ public:
                              bool intrinsic = false);
 
     /*!
-     * \brief AddFunction This call allows to add as external new method
-     * used by the objects of this class. See (**) at end of this file for
-     * more details.
-     * \param name
-     * \param rExec
-     * \param rCompile
-     * \return
+     * \brief Add a function that can be called from CBot
+     * \see CBotProgram::AddFunction
      */
     bool AddFunction(const std::string& name,
                      bool rExec(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
@@ -235,11 +231,11 @@ public:
      * \param nIdent
      * \return
      */
-    CBotTypResult CompileMethode(const std::string& name,
+    CBotTypResult CompileMethode(CBotToken* name,
                                  CBotVar* pThis,
                                  CBotVar** ppParams,
                                  CBotCStack* pStack,
-                                 long& nIdent);
+                                 long &nIdent);
 
     /*!
      * \brief ExecuteMethode Executes a method.
@@ -247,18 +243,13 @@ public:
      * \param name
      * \param pThis
      * \param ppParams
-     * \param pResult
+     * \param pResultType
      * \param pStack
      * \param pToken
      * \return
      */
-    bool ExecuteMethode(long& nIdent,
-                        const std::string& name,
-                        CBotVar* pThis,
-                        CBotVar** ppParams,
-                        CBotVar*& pResult,
-                        CBotStack*& pStack,
-                        CBotToken* pToken);
+    bool ExecuteMethode(long &nIdent, CBotVar* pThis, CBotVar** ppParams, CBotTypResult pResultType,
+                        CBotStack*&pStack, CBotToken* pToken);
 
     /*!
      * \brief RestoreMethode Restored the execution stack.
@@ -268,11 +259,11 @@ public:
      * \param ppParams
      * \param pStack
      */
-    void RestoreMethode(long& nIdent,
-                        const std::string& name,
+    void RestoreMethode(long &nIdent,
+                        CBotToken* name,
                         CBotVar* pThis,
                         CBotVar** ppParams,
-                        CBotStack*& pStack);
+                        CBotStack*&pStack);
 
     /*!
      * \brief Compile Compiles a class declared by the user.
@@ -389,7 +380,7 @@ private:
     //! Linked list of all class fields
     CBotVar* m_pVar;
     //! Linked list of all class external calls
-    CBotCallMethode* m_pCalls;
+    CBotExternalCallList* m_externalMethods;
     //! List of all class methods
     std::list<CBotFunction*> m_pMethod{};
     void (*m_rUpdate)(CBotVar* thisVar, void* user);

@@ -168,4 +168,48 @@ bool CBotExternalCallDefault::Run(CBotVar* thisVar, CBotStack* pStack)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+CBotExternalCallClass::CBotExternalCallClass(RuntimeFunc rExec, CompileFunc rCompile)
+{
+    m_rExec = rExec;
+    m_rComp = rCompile;
+}
+
+CBotExternalCallClass::~CBotExternalCallClass()
+{
+}
+
+CBotTypResult CBotExternalCallClass::Compile(CBotVar* thisVar, CBotVar* args, void* user)
+{
+    return m_rComp(thisVar, args);
+}
+
+bool CBotExternalCallClass::Run(CBotVar* thisVar, CBotStack* pStack)
+{
+    if (pStack->IsCallFinished()) return true;
+    CBotStack* pile = pStack->AddStackExternalCall(this);
+    CBotVar* args = pile->GetVar();
+
+    CBotStack* pile2 = pile->AddStack();
+
+    CBotVar* result = pile2->GetVar();
+
+    int exception = CBotNoErr; // TODO: Change to CBotError
+    bool res = m_rExec(thisVar, args, result, exception, pStack->GetUserPtr());
+
+    if (!res)
+    {
+        if (exception != CBotNoErr)
+        {
+            pStack->SetError(static_cast<CBotError>(exception));
+        }
+        return false;
+    }
+
+    if (result != nullptr) pStack->SetCopyVar(result);
+
+    return true;
+}
+
 }

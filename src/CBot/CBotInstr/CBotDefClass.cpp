@@ -131,7 +131,7 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
         {
             // the constructor is there?
 //          std::string  noname;
-            CBotTypResult r = pClass->CompileMethode(pClass->GetName(), var, ppVars, pStk, inst->m_nMethodeIdent);
+            CBotTypResult r = pClass->CompileMethode(&token, var, ppVars, pStk, inst->m_nMethodeIdent);
             delete pStk->TokenStack();                          // releases the supplement stack
             int typ = r.GetType();
 
@@ -369,11 +369,7 @@ bool CBotDefClass::Execute(CBotStack* &pj)
             ppVars[i] = nullptr;
 
             // creates a variable for the result
-            CBotVar*    pResult = nullptr;     // constructor still void
-
-            if ( !pClass->ExecuteMethode(m_nMethodeIdent, pClass->GetName(),
-                                         pThis, ppVars,
-                                         pResult, pile2, GetToken())) return false; // interrupt
+            if ( !pClass->ExecuteMethode(m_nMethodeIdent, pThis, ppVars, CBotTypResult(CBotTypVoid), pile2, GetToken())) return false; // interrupt
 
             pThis->SetInit(CBotVar::InitType::DEF);
             pThis->ConstructorSet();        // indicates that the constructor has been called
@@ -483,9 +479,7 @@ void CBotDefClass::RestoreState(CBotStack* &pj, bool bMain)
             ppVars[i] = nullptr;
 
             // creates a variable for the result
-//            CBotVar*    pResult = nullptr;     // constructor still void
-
-            pClass->RestoreMethode(m_nMethodeIdent, pClass->GetName(), pThis, ppVars, pile2);
+            pClass->RestoreMethode(m_nMethodeIdent, pt, pThis, ppVars, pile2);
             return;
         }
     }

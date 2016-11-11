@@ -2,8 +2,6 @@ set(SOURCES
     CBot.h
     CBotCStack.cpp
     CBotCStack.h
-    CBotCallMethode.cpp
-    CBotCallMethode.h
     CBotClass.cpp
     CBotClass.h
     CBotDebug.cpp

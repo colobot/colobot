@@ -67,8 +67,7 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
             inst->m_thisIdent = var->GetUniqNum();
             CBotClass* pClass = var->GetClass();    // pointer to the class
             inst->m_className = pClass->GetName();  // name of the class
-            CBotTypResult r = pClass->CompileMethode(inst->m_methodName, var, ppVars,
-                                                     pStack, inst->m_MethodeIdent);
+            CBotTypResult r = pClass->CompileMethode(pp, var, ppVars, pStack, inst->m_MethodeIdent);
             delete pStack->TokenStack();    // release parameters on the stack
             inst->m_typRes = r;
 
@@ -176,18 +175,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     else
         pClass = pThis->GetClass();
 
-    CBotVar*    pResult = nullptr;
-    if (m_typRes.GetType() > 0) pResult = CBotVar::Create("", m_typRes);
-    if (m_typRes.Eq(CBotTypClass))
-    {
-        pResult->SetClass(m_typRes.GetClass());
-    }
-    CBotVar*    pRes = pResult;
-
-    if ( !pClass->ExecuteMethode(m_MethodeIdent, m_methodName,
-                                 pThis, ppVars,
-                                 pResult, pile2, GetToken())) return false;
-    if (pRes != pResult) delete pRes;
+    if ( !pClass->ExecuteMethode(m_MethodeIdent, pThis, ppVars, m_typRes, pile2, GetToken())) return false;
 
     if (m_exprRetVar != nullptr) // .func().member
     {
@@ -264,8 +252,7 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
 
 //    CBotVar*    pRes = pResult;
 
-    pClass->RestoreMethode(m_MethodeIdent, m_methodName,
-                           pThis, ppVars, pile2);
+    pClass->RestoreMethode(m_MethodeIdent, &m_token, pThis, ppVars, pile2);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -316,23 +303,11 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     else
         pClass = pThis->GetClass();
 
-    CBotVar*    pResult = nullptr;
-    if (m_typRes.GetType()>0) pResult = CBotVar::Create("", m_typRes);
-    if (m_typRes.Eq(CBotTypClass))
-    {
-        pResult->SetClass(m_typRes.GetClass());
-    }
-    CBotVar*    pRes = pResult;
-
-    if ( !pClass->ExecuteMethode(m_MethodeIdent, m_methodName,
-                                 pThis, ppVars,
-                                 pResult, pile2, GetToken())) return false;    // interupted
+    if ( !pClass->ExecuteMethode(m_MethodeIdent, pThis, ppVars, m_typRes, pile2, GetToken())) return false;    // interupted
 
     // set the new value of this in place of the old variable
     CBotVar*    old = pile1->FindVar(m_token, false);
     old->Copy(pThis, false);
-
-    if (pRes != pResult) delete pRes;
 
     return pj->Return(pile2);    // release the entire stack
 }
