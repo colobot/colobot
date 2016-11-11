@@ -40,6 +40,8 @@
 #include "ui/controls/list.h"
 #include "ui/controls/window.h"
 
+#include <boost/algorithm/string/trim.hpp>
+
 namespace Ui
 {
 
@@ -245,6 +247,7 @@ void CScreenPlayerSelect::UpdateNameControl()
     total = pl->GetTotal();
     sel   = pl->GetSelect();
     name = pe->GetText(100);
+    boost::trim(name);
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NDELETE));
     if ( pb != nullptr )
@@ -379,6 +382,7 @@ bool CScreenPlayerSelect::NameCreate()
 
     std::string name;
     name = pe->GetText(100);
+    boost::trim(name);
     if ( name.empty() )
     {
         m_sound->Play(SOUND_TZOING);
