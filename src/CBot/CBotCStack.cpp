@@ -378,7 +378,7 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
             if ( pp->CheckParam( pParam ) )
                 return true;
         }
-        pp = pp->Next();
+        pp = pp->GetNext();
     }
 
     for (CBotFunction* pp : CBotFunction::m_publicFunctions)

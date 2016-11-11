@@ -39,7 +39,7 @@ namespace CBot
  * void classname::test() { ... }
  * \endcode
  */
-class CBotFunction : public CBotInstr
+class CBotFunction : public CBotInstr, public CBotLinkedList<CBotFunction>
 {
 public:
     CBotFunction();
@@ -91,11 +91,8 @@ public:
                       CBotStack* &pj,
                       CBotVar* pInstance = nullptr);
 
-    /*!
-     * \brief AddNext
-     * \param p
-     */
-    void AddNext(CBotFunction* p);
+    using CBotLinkedList<CBotFunction>::GetNext;
+    using CBotLinkedList<CBotFunction>::AddNext;
 
     /*!
      * \brief Compile a function call
@@ -225,12 +222,6 @@ public:
     bool IsExtern();
 
     /*!
-     * \brief Next
-     * \return
-     */
-    CBotFunction* Next();
-
-    /*!
      * \brief GetPosition
      * \param start
      * \param stop
@@ -257,7 +248,6 @@ private:
     CBotDefParam* m_param;
     //! The instruction block.
     CBotInstr* m_block;
-    CBotFunction* m_next;
     //! If returns CBotTypClass.
     CBotToken m_retToken;
     //! Complete type of the result.

@@ -132,7 +132,7 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
             if (next->IsExtern()) functions.push_back(next->GetName()/* + next->GetParams()*/);
             if (next->IsPublic()) CBotFunction::AddPublic(next);
             next->m_pProg = this;                           // keeps pointers to the module
-            next = next->Next();
+            next = next->GetNext();
         }
     }
 
@@ -157,7 +157,7 @@ bool CBotProgram::Start(const std::string& name)
     while (m_entryPoint != nullptr)
     {
         if (m_entryPoint->GetName() == name ) break;
-        m_entryPoint = m_entryPoint->m_next;
+        m_entryPoint = m_entryPoint->GetNext();
     }
 
     if (m_entryPoint == nullptr)
@@ -178,7 +178,7 @@ bool CBotProgram::GetPosition(const std::string& name, int& start, int& stop, CB
     while (p != nullptr)
     {
         if ( p->GetName() == name ) break;
-        p = p->m_next;
+        p = p->GetNext();
     }
 
     if ( p == nullptr ) return false;

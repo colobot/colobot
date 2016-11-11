@@ -464,7 +464,7 @@ bool CBotClass::CheckCall(CBotProgram* program, CBotDefParam* pParam, CBotToken*
             if ( pp->CheckParam( pParam ) )
                 return true;
         }
-        pp = pp->Next();
+        pp = pp->GetNext();
     }
 
     return false;
@@ -647,7 +647,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     while ( pf != nullptr )                             // search by name and parameters
                     {
                         if (pf->GetName() == pp && pf->CheckParam( params )) break;
-                        pf = pf->Next();
+                        pf = pf->GetNext();
                     }
 
                     bool bConstructor = (pp == GetName());

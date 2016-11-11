@@ -41,7 +41,7 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
     while (func != nullptr)
     {
         funcIdMap[func->m_nFuncIdent] = func;
-        func = func->Next();
+        func = func->GetNext();
     }
 
     std::set<CBotInstr*> finished;
@@ -123,7 +123,7 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
             prev = GetPointerAsString(func);
         }
 
-        func = func->Next();
+        func = func->GetNext();
     }
 
     ss << "}" << std::endl;

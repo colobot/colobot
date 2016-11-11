@@ -46,7 +46,6 @@ CBotFunction::CBotFunction()
 {
     m_param = nullptr;            // empty parameter list
     m_block = nullptr;            // the instruction block
-    m_next       = nullptr;            // functions can be chained
     m_bPublic    = false;           // function not public
     m_bExtern    = false;           // function not extern
     m_pProg      = nullptr;
@@ -63,7 +62,6 @@ CBotFunction::~CBotFunction()
 {
     delete m_param;                // empty parameter list
     delete m_block;                // the instruction block
-    delete  m_next;
 
     // remove public list if there is
     if (m_bPublic)
@@ -412,15 +410,6 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotFunction::AddNext(CBotFunction* p)
-{
-    CBotFunction*   pp = this;
-    while (pp->m_next != nullptr) pp = pp->m_next;
-
-    pp->m_next = p;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 CBotTypResult CBotFunction::CompileCall(CBotFunction* localFunctionList, const std::string &name, CBotVar** ppVars, long &nIdent)
 {
     CBotTypResult type;
@@ -441,7 +430,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(CBotFunction* localFunctionList, l
 
     if ( nIdent )
     {
-        if ( localFunctionList != nullptr ) for ( pt = localFunctionList ; pt != nullptr ; pt = pt->m_next )
+        if ( localFunctionList != nullptr ) for ( pt = localFunctionList ; pt != nullptr ; pt = pt->GetNext() )
         {
             if ( pt->m_nFuncIdent == nIdent )
             {
@@ -467,7 +456,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(CBotFunction* localFunctionList, l
 
     if ( localFunctionList != nullptr )
     {
-        for ( pt = localFunctionList ; pt != nullptr ; pt = pt->m_next )
+        for ( pt = localFunctionList ; pt != nullptr ; pt = pt->GetNext() )
         {
             if ( pt->m_token.GetString() == name )
             {
@@ -904,12 +893,6 @@ std::string CBotFunction::GetParams()
 
     params += " )";
     return params;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CBotFunction* CBotFunction::Next()
-{
-    return  m_next;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
