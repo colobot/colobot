@@ -200,16 +200,16 @@ bool CBotProgram::Run(void* pUser, int timer)
     }
 
     // completed on a mistake?
-    if (!ok && !m_stack->IsOk())
+    if (ok || !m_stack->IsOk())
     {
         m_error = m_stack->GetError(m_errorStart, m_errorEnd);
         m_stack->Delete();
         m_stack = nullptr;
         CBotClass::FreeLock(this);
+        m_entryPoint = nullptr;
         return true;                                // execution is finished!
     }
 
-    if ( ok ) m_entryPoint = nullptr;                        // more function in execution
     return ok;
 }
 
