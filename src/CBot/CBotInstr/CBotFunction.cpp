@@ -334,7 +334,10 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
 
     if ( pile->GetState() == 0 )
     {
-        if ( !m_param->Execute(ppVars, pile) ) return false;    // define parameters
+        if (m_param != nullptr)
+        {
+            if ( !m_param->Execute(ppVars, pile) ) return false;    // define parameters
+        }
         pile->IncState();
     }
 
@@ -647,7 +650,10 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
             }
 
             // initializes the variables as parameters
-            pt->m_param->Execute(ppVars, pStk3);            // cannot be interrupted
+            if (pt->m_param != nullptr)
+            {
+                pt->m_param->Execute(ppVars, pStk3);            // cannot be interrupted
+            }
 
             pStk1->IncState();
         }
@@ -766,7 +772,10 @@ int CBotFunction::DoCall(const std::list<CBotFunction*>& localFunctionList, long
                 pStk->AddVar(psuper);
             }
             // initializes the variables as parameters
-            pt->m_param->Execute(ppVars, pStk3);            // cannot be interrupted
+            if (pt->m_param != nullptr)
+            {
+                pt->m_param->Execute(ppVars, pStk3);            // cannot be interrupted
+            }
             pStk->IncState();
         }
 

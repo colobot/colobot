@@ -104,6 +104,7 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
 bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
 {
     int             i = 0;
+    assert(this != nullptr);
     CBotDefParam*   p = this;
 
     while ( p != nullptr )
