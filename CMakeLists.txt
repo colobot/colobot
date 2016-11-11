@@ -133,7 +133,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     message(STATUS "Detected GCC version 4.7+")
 
     set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Wold-style-cast -pedantic-errors")
-    set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -fno-delete-null-pointer-checks") # Temporary hack, see #828
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
     set(TEST_CXX_FLAGS "-pthread")

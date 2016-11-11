@@ -350,7 +350,7 @@ CBotTypResult CBotCStack::CompileCall(CBotToken* &p, CBotVar** ppVars, long& nId
     val = m_prog->GetExternalCalls()->CompileCall(p, nullptr, ppVars, this);
     if (val.GetType() < 0)
     {
-        val = m_prog->GetFunctions()->CompileCall(p->GetString(), ppVars, nIdent);
+        val = CBotFunction::CompileCall(m_prog->GetFunctions(), p->GetString(), ppVars, nIdent);
         if ( val.GetType() < 0 )
         {
     //        pVar = nullptr;                    // the error is not on a particular parameter

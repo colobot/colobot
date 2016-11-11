@@ -331,7 +331,7 @@ CBotTypResult CBotClass::CompileMethode(const std::string& name,
 
     // find the methods declared by user
 
-    r = m_pMethod->CompileCall(name, ppParams, nIdent);
+    r = CBotFunction::CompileCall(m_pMethod, name, ppParams, nIdent);
     if ( r.Eq(CBotErrUndefCall) && m_parent != nullptr )
         return m_parent->CompileMethode(name, pThis, ppParams, pStack, nIdent);
     return r;
@@ -349,7 +349,7 @@ bool CBotClass::ExecuteMethode(long& nIdent,
     int ret = m_pCalls->DoCall(name, pThis, ppParams, pResult, pStack, pToken);
     if (ret>=0) return ret;
 
-    ret = m_pMethod->DoCall(nIdent, name, pThis, ppParams, pStack, pToken, this);
+    ret = CBotFunction::DoCall(m_pMethod, nIdent, name, pThis, ppParams, pStack, pToken, this);
     if (ret >= 0) return ret;
 
     if (m_parent != nullptr)
@@ -369,7 +369,7 @@ void CBotClass::RestoreMethode(long& nIdent,
     CBotClass* pClass = this;
     while (pClass != nullptr)
     {
-        bool ok = pClass->m_pMethod->RestoreCall(nIdent, name, pThis, ppParams, pStack, pClass);
+        bool ok = CBotFunction::RestoreCall(pClass->m_pMethod, nIdent, name, pThis, ppParams, pStack, pClass);
         if (ok) return;
         pClass = pClass->m_parent;
     }

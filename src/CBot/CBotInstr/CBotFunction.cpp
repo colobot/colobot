@@ -421,26 +421,27 @@ void CBotFunction::AddNext(CBotFunction* p)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult CBotFunction::CompileCall(const std::string& name, CBotVar** ppVars, long& nIdent)
+CBotTypResult CBotFunction::CompileCall(CBotFunction* localFunctionList, const std::string &name, CBotVar** ppVars, long &nIdent)
 {
-    nIdent = 0;
-    CBotTypResult   type;
-
-//    CBotFunction*   pt = FindLocalOrPublic(nIdent, name, ppVars, type);
-    FindLocalOrPublic(nIdent, name, ppVars, type);
+    CBotTypResult type;
+    if (!FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type))
+    {
+        // Reset the identifier to "not found" value
+        nIdent = 0;
+    }
     return type;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& name, CBotVar** ppVars,
-                                              CBotTypResult& TypeOrError, bool bPublic)
+CBotFunction* CBotFunction::FindLocalOrPublic(CBotFunction* localFunctionList, long &nIdent, const std::string &name,
+                                              CBotVar** ppVars, CBotTypResult &TypeOrError, bool bPublic)
 {
     TypeOrError.SetType(CBotErrUndefCall);      // no routine of the name
     CBotFunction*   pt;
 
     if ( nIdent )
     {
-        if ( this != nullptr ) for ( pt = this ; pt != nullptr ; pt = pt->m_next )
+        if ( localFunctionList != nullptr ) for ( pt = localFunctionList ; pt != nullptr ; pt = pt->m_next )
         {
             if ( pt->m_nFuncIdent == nIdent )
             {
@@ -464,9 +465,9 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& n
 
     std::map<CBotFunction*, int> funcMap;
 
-    if ( this != nullptr )
+    if ( localFunctionList != nullptr )
     {
-        for ( pt = this ; pt != nullptr ; pt = pt->m_next )
+        for ( pt = localFunctionList ; pt != nullptr ; pt = pt->m_next )
         {
             if ( pt->m_token.GetString() == name )
             {
@@ -610,12 +611,13 @@ CBotFunction* CBotFunction::FindLocalOrPublic(long& nIdent, const std::string& n
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken)
+int CBotFunction::DoCall(CBotProgram* program, CBotFunction* localFunctionList, long &nIdent, const std::string &name,
+                         CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken)
 {
     CBotTypResult   type;
     CBotFunction*   pt = nullptr;
 
-    pt = FindLocalOrPublic(nIdent, name, ppVars, type);
+    pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type);
 
     if ( pt != nullptr )
     {
@@ -634,7 +636,7 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar** ppVars
         {
             if ( !pt->m_MasterClass.empty() )
             {
-                CBotVar* pInstance = m_pProg->m_thisVar;
+                CBotVar* pInstance = program->m_thisVar;
                 // make "this" known
                 CBotVar* pThis ;
                 if ( pInstance == nullptr )
@@ -670,7 +672,7 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar** ppVars
         if ( !pStk3->GetRetVar(                     // puts the result on the stack
             pt->m_block->Execute(pStk3) ))          // GetRetVar said if it is interrupted
         {
-            if ( !pStk3->IsOk() && pt->m_pProg != m_pProg )
+            if ( !pStk3->IsOk() && pt->m_pProg != program )
             {
                 pStk3->SetPosError(pToken);         // indicates the error on the procedure call
             }
@@ -683,7 +685,8 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar** ppVars
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar** ppVars, CBotStack* pStack)
+void CBotFunction::RestoreCall(CBotFunction* localFunctionList,
+                               long &nIdent, const std::string &name, CBotVar** ppVars, CBotStack* pStack)
 {
     CBotTypResult   type;
     CBotFunction*   pt = nullptr;
@@ -692,7 +695,7 @@ void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar** 
 
     // search function to return the ok identifier
 
-    pt = FindLocalOrPublic(nIdent, name, ppVars, type);
+    pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type);
 
     if ( pt != nullptr )
     {
@@ -740,13 +743,13 @@ void CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar** 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, CBotVar** ppVars, CBotStack* pStack,
-                         CBotToken* pToken, CBotClass* pClass)
+int CBotFunction::DoCall(CBotFunction* localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
+                         CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken, CBotClass* pClass)
 {
     CBotTypResult   type;
     CBotProgram*    pProgCurrent = pStack->GetProgram();
 
-    CBotFunction*   pt = FindLocalOrPublic(nIdent, name, ppVars, type, false);
+    CBotFunction*   pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type, false);
 
     if ( pt != nullptr )
     {
@@ -822,11 +825,11 @@ int CBotFunction::DoCall(long& nIdent, const std::string& name, CBotVar* pThis, 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotFunction::RestoreCall(long& nIdent, const std::string& name, CBotVar* pThis, CBotVar** ppVars,
-                               CBotStack* pStack, CBotClass* pClass)
+bool CBotFunction::RestoreCall(CBotFunction* localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
+                               CBotVar** ppVars, CBotStack* pStack, CBotClass* pClass)
 {
     CBotTypResult   type;
-    CBotFunction*   pt = FindLocalOrPublic(nIdent, name, ppVars, type);
+    CBotFunction*   pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type);
 
     if ( pt != nullptr )
     {
