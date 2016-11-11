@@ -4262,15 +4262,15 @@ void CEngine::UpdateGroundSpotTextures()
                             else
                                 intensity = Math::Point(ppx-cx, ppy-cy).Length()/dot;
 
-                            Gfx::Color color;
-                            color.r = Math::Norm(m_groundSpots[i].color.r+intensity);
-                            color.g = Math::Norm(m_groundSpots[i].color.g+intensity);
-                            color.b = Math::Norm(m_groundSpots[i].color.b+intensity);
-
                             ppx -= min.x;  // on the texture
                             ppy -= min.y;
+                            Math::IntPoint pp(ppx, ppy);
 
-                            shadowImg.SetPixel(Math::IntPoint(ppx, ppy), color);
+                            Gfx::Color color = shadowImg.GetPixel(pp);
+                            color.r *= Math::Norm(m_groundSpots[i].color.r+intensity);
+                            color.g *= Math::Norm(m_groundSpots[i].color.g+intensity);
+                            color.b *= Math::Norm(m_groundSpots[i].color.b+intensity);
+                            shadowImg.SetPixel(pp, color);
                         }
                     }
                 }
@@ -4298,12 +4298,13 @@ void CEngine::UpdateGroundSpotTextures()
 
                             if (intensity < 0.0f) intensity = 0.0f;
 
-                            Gfx::Color color;
-                            color.r = Math::Norm(m_groundSpots[i].color.r+intensity);
-                            color.g = Math::Norm(m_groundSpots[i].color.g+intensity);
-                            color.b = Math::Norm(m_groundSpots[i].color.b+intensity);
+                            Math::IntPoint pp(ix, iy);
 
-                            shadowImg.SetPixel(Math::IntPoint(ix, iy), color);
+                            Gfx::Color color = shadowImg.GetPixel(pp);
+                            color.r *= Math::Norm(m_groundSpots[i].color.r+intensity);
+                            color.g *= Math::Norm(m_groundSpots[i].color.g+intensity);
+                            color.b *= Math::Norm(m_groundSpots[i].color.b+intensity);
+                            shadowImg.SetPixel(pp, color);
                         }
                     }
                 }
@@ -4351,19 +4352,21 @@ void CEngine::UpdateGroundSpotTextures()
                         int j = (ix+dot) + (iy+dot) * m_groundMark.dx;
                         if (m_groundMark.table[j] == 1)  // green ?
                         {
-                            Gfx::Color color;
-                            color.r = Math::Norm(1.0f-intensity);
-                            color.g = 1.0f;
-                            color.b = Math::Norm(1.0f-intensity);
-                            shadowImg.SetPixel(Math::IntPoint(ppx, ppy), color);
+                            Math::IntPoint pp(ppx, ppy);
+                            Gfx::Color color = shadowImg.GetPixel(pp);
+                            color.r *= Math::Norm(1.0f-intensity);
+                            color.g *= 1.0f;
+                            color.b *= Math::Norm(1.0f-intensity);
+                            shadowImg.SetPixel(pp, color);
                         }
                         if (m_groundMark.table[j] == 2)  // red ?
                         {
-                            Gfx::Color color;
-                            color.r = 1.0f;
-                            color.g = Math::Norm(1.0f-intensity);
-                            color.b = Math::Norm(1.0f-intensity);
-                            shadowImg.SetPixel(Math::IntPoint(ppx, ppy), color);
+                            Math::IntPoint pp(ppx, ppy);
+                            Gfx::Color color = shadowImg.GetPixel(pp);
+                            color.r *= 1.0f;
+                            color.g *= Math::Norm(1.0f-intensity);
+                            color.b *= Math::Norm(1.0f-intensity);
+                            shadowImg.SetPixel(pp, color);
                         }
                     }
                 }
