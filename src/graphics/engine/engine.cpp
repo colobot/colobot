@@ -4404,6 +4404,9 @@ void CEngine::UpdateGroundSpotTextures()
                     {
                         int px = x / 4.0f / 254.0f * size.x;
                         int py = y / 4.0f / 254.0f * size.y;
+                        // This can happen because the shadow??.png textures have a 1 pixel margin around them
+                        if (px < 0 || px >= size.x || py < 0 || py >= size.y)
+                            continue;
                         shadowImg.SetPixelInt(Math::IntPoint(x-min.x, y-min.y), m_displayGotoImage->GetPixelInt(Math::IntPoint(px, py)));
                     }
                 }
