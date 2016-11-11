@@ -36,9 +36,8 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
     std::stringstream ss;
     ss << "digraph {" << std::endl;
 
-    CBotFunction* func = program->GetFunctions();
     std::map<long, CBotFunction*> funcIdMap;
-    while (func != nullptr)
+    for (CBotFunction* func : program->GetFunctions())
     {
         funcIdMap[func->m_nFuncIdent] = func;
         func = func->GetNext();
@@ -111,9 +110,8 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
     {
         DumpInstr(program->m_entryPoint);
     }
-    func = program->GetFunctions();
     std::string prev = GetPointerAsString(program->m_entryPoint);
-    while (func != nullptr)
+    for (CBotFunction* func : program->GetFunctions())
     {
         if (func != program->m_entryPoint)
         {
@@ -122,8 +120,6 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
             //ss << prev << " -> " << GetPointerAsString(func) << " [style=invis]" << std::endl;
             prev = GetPointerAsString(func);
         }
-
-        func = func->GetNext();
     }
 
     ss << "}" << std::endl;

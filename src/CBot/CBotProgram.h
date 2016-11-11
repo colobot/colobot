@@ -23,6 +23,7 @@
 #include "CBot/CBotEnums.h"
 
 #include <vector>
+#include <list>
 
 namespace CBot
 {
@@ -124,12 +125,12 @@ public:
      * 3. Second pass - compiling definitions of all functions and classes
      *
      * \param program Code to compile
-     * \param[out] functions Returns the names of functions declared as extern
+     * \param[out] externFunctions Returns the names of functions declared as extern
      * \param pUser Optional pointer to be passed to compile function (see AddFunction())
      * \return true if compilation is successful, false if an compilation error occurs
      * \see GetError() to retrieve the error
      */
-    bool Compile(const std::string& program, std::vector<std::string>& functions, void* pUser = nullptr);
+    bool Compile(const std::string& program, std::vector<std::string>& externFunctions, void* pUser = nullptr);
 
     /**
      * \brief Returns the last error
@@ -328,9 +329,9 @@ public:
      *
      * This list includes all the functions (not only extern)
      *
-     * \return Linked list of CBotFunction instances
+     * \return List of CBotFunction instances
      */
-    CBotFunction* GetFunctions();
+    const std::list<CBotFunction*>& GetFunctions();
 
     /**
      * \brief Returns static list of all registered external calls
@@ -341,11 +342,11 @@ private:
     //! All external calls
     static CBotExternalCallList* m_externalCalls;
     //! All user-defined functions
-    CBotFunction* m_functions = nullptr;
+    std::list<CBotFunction*> m_functions{};
     //! The entry point function
     CBotFunction* m_entryPoint = nullptr;
     //! Classes defined in this program
-    CBotClass* m_classes = nullptr;
+    std::list<CBotClass*> m_classes{};
     //! Execution stack
     CBotStack* m_stack = nullptr;
     //! "this" variable

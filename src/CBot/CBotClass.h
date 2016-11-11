@@ -26,6 +26,7 @@
 #include <string>
 #include <deque>
 #include <set>
+#include <list>
 
 namespace CBot
 {
@@ -102,7 +103,7 @@ class CBotCStack;
  *  float y = var->GetValFloat();
  *  \endcode
  */
-class CBotClass : public CBotLinkedList<CBotClass>
+class CBotClass
 {
 public:
     /*!
@@ -294,10 +295,10 @@ public:
     /*!
      * \brief DefineClasses Calls CompileDefItem for each class in a list
      * of classes, defining fields and pre-compiling methods.
-     * \param pClass List of classes
+     * \param pClassList List of classes
      * \param pStack
      */
-    static void DefineClasses(CBotClass* pClass, CBotCStack* pStack);
+    static void DefineClasses(std::list<CBotClass*> pClassList, CBotCStack* pStack);
 
     /*!
      * \brief CompileDefItem
@@ -389,8 +390,8 @@ private:
     CBotVar* m_pVar;
     //! Linked list of all class external calls
     CBotCallMethode* m_pCalls;
-    //! Linked list of all class methods
-    CBotFunction* m_pMethod;
+    //! List of all class methods
+    std::list<CBotFunction*> m_pMethod{};
     void (*m_rUpdate)(CBotVar* thisVar, void* user);
 
     CBotToken* m_pOpenblk;

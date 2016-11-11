@@ -1012,7 +1012,7 @@ TEST_F(CBotUT, ClassInheritanceAssignment)
         "public class BaseClass {}\n"
         "public class MidClass extends BaseClass {}\n"
         "public class SubClass extends MidClass {}\n"
-        "extern void ClassInheritanceVars()\n"
+        "extern void ClassInheritanceAssignment()\n"
         "{\n"
         "    BaseClass bc = new MidClass();\n"
         "    MidClass  mc = bc;\n"

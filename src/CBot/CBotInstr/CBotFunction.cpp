@@ -410,7 +410,7 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult CBotFunction::CompileCall(CBotFunction* localFunctionList, const std::string &name, CBotVar** ppVars, long &nIdent)
+CBotTypResult CBotFunction::CompileCall(const std::list<CBotFunction*>& localFunctionList, const std::string &name, CBotVar** ppVars, long &nIdent)
 {
     CBotTypResult type;
     if (!FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type))
@@ -422,17 +422,16 @@ CBotTypResult CBotFunction::CompileCall(CBotFunction* localFunctionList, const s
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotFunction* CBotFunction::FindLocalOrPublic(CBotFunction* localFunctionList, long &nIdent, const std::string &name,
+CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name,
                                               CBotVar** ppVars, CBotTypResult &TypeOrError, bool bPublic)
 {
     TypeOrError.SetType(CBotErrUndefCall);      // no routine of the name
-    CBotFunction*   pt;
 
     if ( nIdent )
     {
-        if ( localFunctionList != nullptr ) for ( pt = localFunctionList ; pt != nullptr ; pt = pt->GetNext() )
+        for (CBotFunction* pt : localFunctionList)
         {
-            if ( pt->m_nFuncIdent == nIdent )
+            if (pt->m_nFuncIdent == nIdent)
             {
                 TypeOrError = pt->m_retTyp;
                 return pt;
@@ -454,62 +453,59 @@ CBotFunction* CBotFunction::FindLocalOrPublic(CBotFunction* localFunctionList, l
 
     std::map<CBotFunction*, int> funcMap;
 
-    if ( localFunctionList != nullptr )
+    for (CBotFunction* pt : localFunctionList)
     {
-        for ( pt = localFunctionList ; pt != nullptr ; pt = pt->GetNext() )
+        if ( pt->m_token.GetString() == name )
         {
-            if ( pt->m_token.GetString() == name )
+            int i = 0;
+            int alpha = 0;                          // signature of parameters
+            // parameters are compatible?
+            CBotDefParam* pv = pt->m_param;         // expected list of parameters
+            CBotVar* pw = ppVars[i++];              // provided list parameter
+            while ( pv != nullptr && pw != nullptr)
             {
-                int i = 0;
-                int alpha = 0;                          // signature of parameters
-                // parameters are compatible?
-                CBotDefParam* pv = pt->m_param;         // expected list of parameters
-                CBotVar* pw = ppVars[i++];              // provided list parameter
-                while ( pv != nullptr && pw != nullptr)
-                {
-                    CBotTypResult paramType = pv->GetTypResult();
-                    CBotTypResult argType = pw->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
+                CBotTypResult paramType = pv->GetTypResult();
+                CBotTypResult argType = pw->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
 
-                    if (!TypesCompatibles(paramType, argType))
-                    {
-                        if ( funcMap.empty() ) TypeOrError.SetType(CBotErrBadParam);
-                        break;
-                    }
+                if (!TypesCompatibles(paramType, argType))
+                {
+                    if ( funcMap.empty() ) TypeOrError.SetType(CBotErrBadParam);
+                    break;
+                }
 
-                    if (paramType.Eq(CBotTypPointer) && !argType.Eq(CBotTypNullPointer))
-                    {
-                        CBotClass* c1 = paramType.GetClass();
-                        CBotClass* c2 = argType.GetClass();
-                        while (c2 != c1 && c2 != nullptr)    // implicit cast
-                        {
-                            alpha += 10;
-                            c2 = c2->GetParent();
-                        }
-                    }
-                    else
-                    {
-                        int d = pv->GetType() - pw->GetType(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
-                        alpha += d>0 ? d : -10*d;       // quality loss, 10 times more expensive!
-                    }
-                    pv = pv->GetNext();
-                    pw = ppVars[i++];
-                }
-                if ( pw != nullptr )
+                if (paramType.Eq(CBotTypPointer) && !argType.Eq(CBotTypNullPointer))
                 {
-                    if ( !funcMap.empty() ) continue;
-                    if ( TypeOrError.Eq(CBotErrLowParam) ) TypeOrError.SetType(CBotErrNbParam);
-                    if ( TypeOrError.Eq(CBotErrUndefCall)) TypeOrError.SetType(CBotErrOverParam);
-                    continue;                   // too many parameters
+                    CBotClass* c1 = paramType.GetClass();
+                    CBotClass* c2 = argType.GetClass();
+                    while (c2 != c1 && c2 != nullptr)    // implicit cast
+                    {
+                        alpha += 10;
+                        c2 = c2->GetParent();
+                    }
                 }
-                if ( pv != nullptr )
+                else
                 {
-                    if ( !funcMap.empty() ) continue;
-                    if ( TypeOrError.Eq(CBotErrOverParam) ) TypeOrError.SetType(CBotErrNbParam);
-                    if ( TypeOrError.Eq(CBotErrUndefCall) ) TypeOrError.SetType(CBotErrLowParam);
-                    continue;                   // not enough parameters
+                    int d = pv->GetType() - pw->GetType(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
+                    alpha += d>0 ? d : -10*d;       // quality loss, 10 times more expensive!
                 }
-                funcMap.insert( std::pair<CBotFunction*, int>(pt, alpha) );
+                pv = pv->GetNext();
+                pw = ppVars[i++];
             }
+            if ( pw != nullptr )
+            {
+                if ( !funcMap.empty() ) continue;
+                if ( TypeOrError.Eq(CBotErrLowParam) ) TypeOrError.SetType(CBotErrNbParam);
+                if ( TypeOrError.Eq(CBotErrUndefCall)) TypeOrError.SetType(CBotErrOverParam);
+                continue;                   // too many parameters
+            }
+            if ( pv != nullptr )
+            {
+                if ( !funcMap.empty() ) continue;
+                if ( TypeOrError.Eq(CBotErrOverParam) ) TypeOrError.SetType(CBotErrNbParam);
+                if ( TypeOrError.Eq(CBotErrUndefCall) ) TypeOrError.SetType(CBotErrLowParam);
+                continue;                   // not enough parameters
+            }
+            funcMap.insert( std::pair<CBotFunction*, int>(pt, alpha) );
         }
     }
 
@@ -600,7 +596,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(CBotFunction* localFunctionList, l
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotFunction::DoCall(CBotProgram* program, CBotFunction* localFunctionList, long &nIdent, const std::string &name,
+int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name,
                          CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken)
 {
     CBotTypResult   type;
@@ -674,7 +670,7 @@ int CBotFunction::DoCall(CBotProgram* program, CBotFunction* localFunctionList, 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotFunction::RestoreCall(CBotFunction* localFunctionList,
+void CBotFunction::RestoreCall(const std::list<CBotFunction*>& localFunctionList,
                                long &nIdent, const std::string &name, CBotVar** ppVars, CBotStack* pStack)
 {
     CBotTypResult   type;
@@ -732,7 +728,7 @@ void CBotFunction::RestoreCall(CBotFunction* localFunctionList,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotFunction::DoCall(CBotFunction* localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
+int CBotFunction::DoCall(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
                          CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken, CBotClass* pClass)
 {
     CBotTypResult   type;
@@ -814,7 +810,7 @@ int CBotFunction::DoCall(CBotFunction* localFunctionList, long &nIdent, const st
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotFunction::RestoreCall(CBotFunction* localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
+bool CBotFunction::RestoreCall(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
                                CBotVar** ppVars, CBotStack* pStack, CBotClass* pClass)
 {
     CBotTypResult   type;

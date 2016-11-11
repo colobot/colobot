@@ -369,8 +369,7 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
 
     if ( m_prog->GetExternalCalls()->CheckCall(name) ) return true;
 
-    CBotFunction*    pp = m_prog->GetFunctions();
-    while ( pp != nullptr )
+    for (CBotFunction* pp : m_prog->GetFunctions())
     {
         if ( pToken->GetString() == pp->GetName() )
         {
@@ -378,7 +377,6 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
             if ( pp->CheckParam( pParam ) )
                 return true;
         }
-        pp = pp->GetNext();
     }
 
     for (CBotFunction* pp : CBotFunction::m_publicFunctions)

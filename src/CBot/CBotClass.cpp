@@ -56,7 +56,6 @@ CBotClass::CBotClass(const std::string& name,
     m_name      = name;
     m_pVar      = nullptr;
     m_pCalls    = nullptr;
-    m_pMethod   = nullptr;
     m_rUpdate   = nullptr;
     m_IsDef     = true;
     m_bIntrinsic= bIntrinsic;
@@ -72,7 +71,6 @@ CBotClass::~CBotClass()
 
     delete  m_pVar;
     delete  m_pCalls;
-    delete  m_pMethod;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -98,14 +96,11 @@ void CBotClass::Purge()
     m_pVar      = nullptr;
     delete      m_pCalls;
     m_pCalls    = nullptr;
-    delete      m_pMethod;
-    m_pMethod   = nullptr;
+    for (CBotFunction* f : m_pMethod) delete f;
+    m_pMethod.clear();
     m_IsDef     = false;
 
     m_nbVar     = m_parent == nullptr ? 0 : m_parent->m_nbVar;
-
-    if (m_next != nullptr) m_next->Purge();
-    m_next = nullptr;          // no longer belongs to this chain
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -455,8 +450,7 @@ bool CBotClass::CheckCall(CBotProgram* program, CBotDefParam* pParam, CBotToken*
 
     if ( program->GetExternalCalls()->CheckCall(name) ) return true;
 
-    CBotFunction*   pp = m_pMethod;
-    while ( pp != nullptr )
+    for (CBotFunction* pp : m_pMethod)
     {
         if ( pToken->GetString() == pp->GetName() )
         {
@@ -464,7 +458,6 @@ bool CBotClass::CheckCall(CBotProgram* program, CBotDefParam* pParam, CBotToken*
             if ( pp->CheckParam( pParam ) )
                 return true;
         }
-        pp = pp->GetNext();
     }
 
     return false;
@@ -506,7 +499,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
             }
         }
         CBotClass* classe = (pOld == nullptr) ? new CBotClass(name, pPapa) : pOld;
-        classe->Purge();                            // empty the old definitions // TODO: Doesn't this remove all classes of the current program?
+        classe->Purge();                            // empty the old definitions
         classe->m_IsDef = false;                    // current definition
 
         classe->m_pOpenblk = p;
@@ -536,9 +529,9 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotClass::DefineClasses(CBotClass* pClass, CBotCStack* pStack)
+void CBotClass::DefineClasses(std::list<CBotClass*> pClassList, CBotCStack* pStack)
 {
-    while (pClass != nullptr)
+    for (CBotClass* pClass : pClassList)
     {
         CBotClass* pParent = pClass->m_parent;
         pClass->m_nbVar = (pParent == nullptr) ? 0 : pParent->m_nbVar;
@@ -550,8 +543,6 @@ void CBotClass::DefineClasses(CBotClass* pClass, CBotCStack* pStack)
         }
 
         if (!pStack->IsOk()) return;
-
-        pClass = pClass->GetNext();
     }
 }
 
@@ -627,28 +618,25 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 if ( !bSecond )
                 {
                     p = pBase;
-                    CBotFunction* f =
-                    CBotFunction::Compile1(p, pStack, this);
+                    CBotFunction* f = CBotFunction::Compile1(p, pStack, this);
 
                     if ( f == nullptr ) return false;
 
-                    if (m_pMethod == nullptr) m_pMethod = f;
-                    else m_pMethod->AddNext(f);
+                    m_pMethod.push_back(f);
                 }
                 else
                 {
                     // return a method precompiled in pass 1
-                    CBotFunction*   pf = m_pMethod;
                     CBotToken* ppp = p;
                     CBotCStack* pStk = pStack->TokenStack(nullptr, true);
                     CBotDefParam* params = CBotDefParam::Compile(p, pStk );
                     delete pStk;
                     p = ppp;
-                    while ( pf != nullptr )                             // search by name and parameters
-                    {
-                        if (pf->GetName() == pp && pf->CheckParam( params )) break;
-                        pf = pf->GetNext();
-                    }
+                    std::list<CBotFunction*>::iterator pfIter = std::find_if(m_pMethod.begin(), m_pMethod.end(), [&pp, &params](CBotFunction* x) {
+                        return x->GetName() == pp && x->CheckParam( params );
+                    });
+                    assert(pfIter != m_pMethod.end());
+                    CBotFunction* pf = *pfIter;
 
                     bool bConstructor = (pp == GetName());
                     CBotCStack* pile = pStack->TokenStack(nullptr, true);

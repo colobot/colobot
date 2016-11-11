@@ -106,7 +106,7 @@ public:
      * \return Type returned by the function or error code
      * \see FindLocalOrPublic
      */
-    static CBotTypResult CompileCall(CBotFunction* localFunctionList,
+    static CBotTypResult CompileCall(const std::list<CBotFunction*>& localFunctionList,
                                      const std::string &name, CBotVar** ppVars, long &nIdent);
 
     /*!
@@ -125,7 +125,7 @@ public:
      * \param bPublic Whether to look in public functions or not
      * \return Pointer to found CBotFunction instance, or nullptr in case of no match or ambiguity (see TypeOrError for error code)
      */
-    static CBotFunction* FindLocalOrPublic(CBotFunction* localFunctionList, long &nIdent, const std::string &name,
+    static CBotFunction* FindLocalOrPublic(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name,
                                            CBotVar** ppVars, CBotTypResult &TypeOrError, bool bPublic = true);
 
     /*!
@@ -140,7 +140,7 @@ public:
      * \return
      */
 
-    static int DoCall(CBotProgram* program, CBotFunction* localFunctionList, long &nIdent, const std::string &name,
+    static int DoCall(CBotProgram* program, const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name,
                       CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken);
 
     /*!
@@ -151,7 +151,7 @@ public:
      * \param ppVars
      * \param pStack
      */
-    static void RestoreCall(CBotFunction* localFunctionList,
+    static void RestoreCall(const std::list<CBotFunction*>& localFunctionList,
                             long &nIdent, const std::string &name, CBotVar** ppVars, CBotStack* pStack);
 
     /*!
@@ -167,7 +167,7 @@ public:
      * \param pClass
      * \return
      */
-    static int DoCall(CBotFunction* localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
+    static int DoCall(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
                       CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken, CBotClass* pClass);
 
     /*!
@@ -181,7 +181,7 @@ public:
      * \param pClass
      * \return Returns true if the method call was restored.
      */
-    static bool RestoreCall(CBotFunction* localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
+    static bool RestoreCall(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
                             CBotVar** ppVars, CBotStack* pStack, CBotClass* pClass);
 
     /*!
