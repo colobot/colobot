@@ -2766,33 +2766,35 @@ void CEdit::DeleteWord(int dir)
 {
     if ( !m_bEdit ) return;
 
+    m_cursor2 = m_cursor1;
+
     if ( dir < 0 )
     {
-        while ( IsWord( m_text[m_cursor1++] ) );
-        m_cursor2 = m_cursor1;
-
-        while ( !IsWord( m_text[--m_cursor1] ) );
-        m_cursor2 = ++m_cursor1;
-        while ( IsWord( m_text[--m_cursor2] ) );
-        ++m_cursor2;
-
-        if ( m_cursor1 < 0 || m_cursor2 < 0 ) return;
-
-        Delete( -1 );
+        --m_cursor1;
+        while ( m_cursor1 < m_len && std::isgraph( m_text[m_cursor1++] ) );
+        --m_cursor1;
+        while ( m_cursor1 < m_len && std::isspace( m_text[m_cursor1++] ) );
+        m_cursor2 = --m_cursor1;
+        while ( m_cursor2 > 0 && std::isspace( m_text[--m_cursor2] ) );
+        while ( m_cursor2 > 0 && std::isgraph( m_text[--m_cursor2] ) );
+        while ( m_cursor2 > 0 && std::isspace( m_text[--m_cursor2] ) );
+        if ( m_cursor2 > 0 ) ++m_cursor2;
     }
     else
     {
-        while ( IsWord( m_text[m_cursor1--] ) );
-        m_cursor2 = m_cursor1;
-
-        while ( !IsWord( m_text[++m_cursor1] ) );
-        m_cursor2 = m_cursor1;
-        while ( IsWord( m_text[++m_cursor2] ) );
-
-        if ( m_cursor1 > m_len || m_cursor2 > m_len ) return;
-
-        Delete( -1 );
+        ++m_cursor1;
+        while ( m_cursor1 > 0 && std::isgraph( m_text[--m_cursor1] ) );
+        ++m_cursor1;
+        while ( m_cursor1 > 0 && std::isspace( m_text[--m_cursor1] ) );
+        if ( m_cursor1 > 0 ) m_cursor2 = ++m_cursor1;
+        else m_cursor2 = m_cursor1;
+        while ( m_cursor2 < m_len && std::isspace( m_text[++m_cursor2] ) );
+        while ( m_cursor2 < m_len && std::isgraph( m_text[++m_cursor2] ) );
+        while ( m_cursor2 < m_len && std::isspace( m_text[++m_cursor2] ) );
     }
+    if ( m_cursor1 > m_cursor2 )  Math::Swap(m_cursor1, m_cursor2);
+
+    Delete( -1 );
 }
 
 // Calculates the indentation level of brackets {and}.
