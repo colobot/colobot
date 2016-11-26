@@ -2065,7 +2065,7 @@ unsigned int CGL33Device::UploadVertexData(DynamicBuffer& buffer, const void* da
     if (ptr != nullptr)
     {
         memcpy(ptr, data, size);
-        
+
         glUnmapBuffer(GL_ARRAY_BUFFER);
     }
     // mapping failed, we must upload data with glBufferSubData

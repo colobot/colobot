@@ -38,7 +38,7 @@ int g_nextFileId = 1;
 
 bool FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
-    std::string  mode;
+    CBotFileAccessHandler::OpenMode openMode = CBotFileAccessHandler::OpenMode::Read;
 
     // must be a character string
     if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
@@ -50,8 +50,11 @@ bool FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exc
     if ( pVar != nullptr )
     {
         // recover mode
-        mode = pVar->GetValString();
-        if ( mode != "r" && mode != "w" && mode != "a" ) { Exception = CBotErrBadParam; return false; }
+        std::string mode = pVar->GetValString();
+        if ( mode == "r" ) openMode = CBotFileAccessHandler::OpenMode::Read;
+        else if ( mode == "w" ) openMode = CBotFileAccessHandler::OpenMode::Write;
+        else if ( mode == "a" ) openMode = CBotFileAccessHandler::OpenMode::Append;
+        else { Exception = CBotErrBadParam; return false; }
 
         // no third parameter
         if ( pVar->GetNext() != nullptr ) { Exception = CBotErrOverParam; return false; }
@@ -66,27 +69,20 @@ bool FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exc
     // which must not be initialized
     if ( pVar->IsDefined()) { Exception = CBotErrFileOpen; return false; }
 
-    if ( !mode.empty() )
-    {
-        // opens the requested file
-        assert(g_fileHandler != nullptr);
+    // opens the requested file
+    assert(g_fileHandler != nullptr);
 
-        CBotFileAccessHandler::OpenMode openMode;
-        if ( mode == "r" ) openMode = CBotFileAccessHandler::OpenMode::Read;
-        else if ( mode == "w" ) openMode = CBotFileAccessHandler::OpenMode::Write;
-        else if ( mode == "a" ) openMode = CBotFileAccessHandler::OpenMode::Append;
+    std::unique_ptr<CBotFile> file = g_fileHandler->OpenFile(filename, openMode);
 
-        std::unique_ptr<CBotFile> file = g_fileHandler->OpenFile(filename, openMode);
+    if (!file->Opened()) { Exception = CBotErrFileOpen; return false; }
 
-        if (!file->Opened()) { Exception = CBotErrFileOpen; return false; }
+    int fileHandle = g_nextFileId++;
+    g_files[fileHandle] = std::move(file);
 
-        int fileHandle = g_nextFileId++;
-        g_files[fileHandle] = std::move(file);
+    // save the file handle
+    pVar = pThis->GetItem("handle");
+    pVar->SetValInt(fileHandle);
 
-        // save the file handle
-        pVar = pThis->GetItem("handle");
-        pVar->SetValInt(fileHandle);
-    }
     return true;
 }
 

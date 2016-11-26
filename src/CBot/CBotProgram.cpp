@@ -148,9 +148,7 @@ bool CBotProgram::Start(const std::string& name)
 {
     Stop();
 
-    auto it = std::find_if(m_functions.begin(), m_functions.end(), [&name](CBotFunction* x) {
-        return x->GetName() == name;
-    });
+    auto it = std::find_if(m_functions.begin(), m_functions.end(), [&name](CBotFunction* x) { return x->GetName() == name; });
     if (it == m_functions.end())
     {
         m_error = CBotErrNoRun;
@@ -166,9 +164,7 @@ bool CBotProgram::Start(const std::string& name)
 
 bool CBotProgram::GetPosition(const std::string& name, int& start, int& stop, CBotGet modestart, CBotGet modestop)
 {
-    auto it = std::find_if(m_functions.begin(), m_functions.end(), [&name](CBotFunction* x) {
-        return x->GetName() == name;
-    });
+    auto it = std::find_if(m_functions.begin(), m_functions.end(), [&name](CBotFunction* x) { return x->GetName() == name; });
     if (it == m_functions.end()) return false;
 
     (*it)->GetPosition(start, stop, modestart, modestop);

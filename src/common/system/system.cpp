@@ -22,6 +22,8 @@
 
 #include "common/config.h"
 
+#include "common/make_unique.h"
+
 #if defined(PLATFORM_WINDOWS)
     #include "common/system/system_windows.h"
 #elif defined(PLATFORM_LINUX)
@@ -31,8 +33,6 @@
 #else
     #include "common/system/system_other.h"
 #endif
-
-#include "common/make_unique.h"
 
 #include <cassert>
 #include <iostream>

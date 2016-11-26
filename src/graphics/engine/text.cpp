@@ -643,37 +643,37 @@ UTF8Char CText::TranslateSpecialChar(int specialChar)
 
         case CHAR_NEWLINE:
             // Unicode: U+21B2
-            ch.c1 = 0xE2;
-            ch.c2 = 0x86;
-            ch.c3 = 0xB2;
+            ch.c1 = static_cast<char>(0xE2);
+            ch.c2 = static_cast<char>(0x86);
+            ch.c3 = static_cast<char>(0xB2);
             break;
 
         case CHAR_DOT:
             // Unicode: U+23C5
-            ch.c1 = 0xE2;
-            ch.c2 = 0x8F;
-            ch.c3 = 0x85;
+            ch.c1 = static_cast<char>(0xE2);
+            ch.c2 = static_cast<char>(0x8F);
+            ch.c3 = static_cast<char>(0x85);
             break;
 
         case CHAR_SQUARE:
             // Unicode: U+25FD
-            ch.c1 = 0xE2;
-            ch.c2 = 0x97;
-            ch.c3 = 0xBD;
+            ch.c1 = static_cast<char>(0xE2);
+            ch.c2 = static_cast<char>(0x97);
+            ch.c3 = static_cast<char>(0xBD);
             break;
 
         case CHAR_SKIP_RIGHT:
             // Unicode: U+25B6
-            ch.c1 = 0xE2;
-            ch.c2 = 0x96;
-            ch.c3 = 0xB6;
+            ch.c1 = static_cast<char>(0xE2);
+            ch.c2 = static_cast<char>(0x96);
+            ch.c3 = static_cast<char>(0xB6);
             break;
 
         case CHAR_SKIP_LEFT:
             // Unicode: U+25C0
-            ch.c1 = 0xE2;
-            ch.c2 = 0x97;
-            ch.c3 = 0x80;
+            ch.c1 = static_cast<char>(0xE2);
+            ch.c2 = static_cast<char>(0x97);
+            ch.c3 = static_cast<char>(0x80);
             break;
 
         default:

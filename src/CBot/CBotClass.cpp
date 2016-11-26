@@ -610,7 +610,8 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     CBotDefParam* params = CBotDefParam::Compile(p, pStk );
                     delete pStk;
                     p = ppp;
-                    std::list<CBotFunction*>::iterator pfIter = std::find_if(m_pMethod.begin(), m_pMethod.end(), [&pp, &params](CBotFunction* x) {
+                    std::list<CBotFunction*>::iterator pfIter = std::find_if(m_pMethod.begin(), m_pMethod.end(), [&pp, &params](CBotFunction* x)
+                    {
                         return x->GetName() == pp && x->CheckParam( params );
                     });
                     assert(pfIter != m_pMethod.end());

@@ -49,20 +49,20 @@ namespace Gfx
 struct VertexAttribute
 {
     //! true enables vertex attribute
-    bool enabled;
+    bool enabled = false;
     //! true means normalized value (integer types only)
-    bool normalized;
+    bool normalized = false;
     //! Number of elements in the vertex attribute.
     //! Valid values are 1, 2, 3, and 4. Depends on specific attribute.
-    unsigned char size;
+    unsigned char size = 0;
     //! Type of values in vertex attribute
-    Type type;
+    Type type = Type::UBYTE;
     //! Offset to the vertex attribute
-    int offset;
+    int offset = 0;
     //! Stride of vertex attribute
-    int stride;
+    int stride = 0;
     //! Default values used when attribute is disabled
-    float values[4];
+    float values[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 };
 
 /**
@@ -81,15 +81,15 @@ struct VertexAttribute
 struct VertexFormat
 {
     //! Vertex coordinate
-    VertexAttribute vertex;
+    VertexAttribute vertex{};
     //! Color
-    VertexAttribute color;
+    VertexAttribute color{};
     //! Normal
-    VertexAttribute normal;
+    VertexAttribute normal{};
     //! Texture coordinate 1
-    VertexAttribute tex1;
+    VertexAttribute tex1{};
     //! Texture coordinate 2
-    VertexAttribute tex2;
+    VertexAttribute tex2{};
 };
 
 /**

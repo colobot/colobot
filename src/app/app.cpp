@@ -674,7 +674,8 @@ bool CApplication::Create()
     // Create the robot application.
     m_controller = MakeUnique<CController>();
 
-    CThread musicLoadThread([this]() {
+    CThread musicLoadThread([this]()
+    {
         GetLogger()->Debug("Cache sounds...\n");
         SystemTimeStamp* musicLoadStart = m_systemUtils->CreateTimeStamp();
         m_systemUtils->GetCurrentTimeStamp(musicLoadStart);
@@ -685,7 +686,8 @@ bool CApplication::Create()
         m_systemUtils->GetCurrentTimeStamp(musicLoadEnd);
         float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, STU_MSEC);
         GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
-    }, "Sound loading thread");
+    },
+    "Sound loading thread");
     musicLoadThread.Start();
 
     if (m_runSceneCategory == LevelCategory::Max)

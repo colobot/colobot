@@ -298,11 +298,11 @@ private:
 
 
     //! Pointers to OpenGL functions
-    PFNGLGENBUFFERSPROC m_glGenBuffers;
-    PFNGLDELETEBUFFERSPROC m_glDeleteBuffers;
-    PFNGLBINDBUFFERPROC m_glBindBuffer;
-    PFNGLBUFFERDATAPROC m_glBufferData;
-    PFNGLBUFFERSUBDATAPROC m_glBufferSubData;
+    PFNGLGENBUFFERSPROC m_glGenBuffers = nullptr;
+    PFNGLDELETEBUFFERSPROC m_glDeleteBuffers = nullptr;
+    PFNGLBINDBUFFERPROC m_glBindBuffer = nullptr;
+    PFNGLBUFFERDATAPROC m_glBufferData = nullptr;
+    PFNGLBUFFERSUBDATAPROC m_glBufferSubData = nullptr;
 };
 
 
