@@ -1,11 +1,12 @@
 # Didier Raboud <odyx@debian.org>, 2012, 2015, 2016.
+# Martin Quinson <mquinson@debian.org>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Colobot 0.1.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: DATE\n"
-"PO-Revision-Date: 2016-03-25 15:01+0100\n"
-"Last-Translator: Didier Raboud <odyx@debian.org>\n"
+"PO-Revision-Date: 2016-12-02 15:31+0100\n"
+"Last-Translator: Martin Quinson <mquinson@debian.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -79,10 +80,10 @@ msgid "Already carrying something"
 msgstr "Porte déjà quelque chose"
 
 msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
-msgstr ""
+msgstr "Mode caméra alternatif\\Déplacements latéraux au lieu des rotations (pour la caméra libre)"
 
 msgid "Ambiguous call to overloaded function"
-msgstr ""
+msgstr "Appel ambigu à une fonction surchargée"
 
 msgid "Analysis already performed"
 msgstr "Analyse déjà effectuée"
@@ -294,21 +295,17 @@ msgstr "Défilement dans les bords\\Défilement lorsque la souris touche les bor
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Caméra plus proche\\Avance la caméra"
 
-#, fuzzy
 msgid "Camera down\\Turns the camera down"
-msgstr "Caméra plus proche\\Avance la caméra"
+msgstr "Baisser caméra\\Baisse la caméra"
 
-#, fuzzy
 msgid "Camera left\\Turns the camera left"
-msgstr "Caméra plus proche\\Avance la caméra"
+msgstr "Caméra à gauche\\Tourne la caméra vers la gauche"
 
-#, fuzzy
 msgid "Camera right\\Turns the camera right"
-msgstr "Tourner à droite\\Moteur à droite"
+msgstr "Caméra à droite\\Tourne la caméra vers la droite"
 
-#, fuzzy
 msgid "Camera up\\Turns the camera up"
-msgstr "Caméra (\\key camera;)"
+msgstr "Lever caméra\\Monte la caméra"
 
 msgid "Can not produce not researched object"
 msgstr "Impossible de créer un objet n'ayant pas été recherché"
@@ -519,7 +516,7 @@ msgid "Explosive"
 msgstr "Explosif"
 
 msgid "Expression expected after ="
-msgstr ""
+msgstr "Expression attendue après ="
 
 msgid "Extend shield (\\key action;)"
 msgstr "Déploie le bouclier (\\key action;)"
@@ -730,7 +727,7 @@ msgid "Internal error - tell the developers"
 msgstr "Erreur interne - contacter les développeurs"
 
 msgid "Invert\\Invert values on this axis"
-msgstr ""
+msgstr "Inversion\\Inverse les valeurs sur cet axe"
 
 msgid "Jet temperature"
 msgstr "Température du réacteur"
@@ -1024,10 +1021,10 @@ msgid "Paste (Ctrl+V)"
 msgstr "Coller (Ctrl+V)"
 
 msgid "Pause blur\\Blur the background on the pause screen"
-msgstr ""
+msgstr "Flouter les pauses\\Floute le fond de l'écran de pause"
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
-msgstr ""
+msgstr "Pause en arrière-plan\\Met le jeu en pause quand la fenêtre n'a plus le focus"
 
 msgid "Pause/continue"
 msgstr "Pause/continuer"
@@ -1219,16 +1216,16 @@ msgid "Resolution:"
 msgstr "Résolutions :"
 
 msgid "Resources"
-msgstr ""
+msgstr "Ressources"
 
 msgid "Restart\\Restart the mission from the beginning"
 msgstr "Recommencer\\Recommencer la mission au début"
 
 msgid "Restoring CBot execution state"
-msgstr ""
+msgstr "Restaurer l'état d'exécution CBOT"
 
 msgid "Restoring saved objects"
-msgstr ""
+msgstr "Restaurer des objets sauvés"
 
 msgid "Return to start"
 msgstr "Remet au départ"
@@ -1677,24 +1674,24 @@ msgstr "Vous ne pouvez pas transporter un objet radioactif"
 msgid "You can not carry an object under water"
 msgstr "Vous ne pouvez pas transporter un objet sous l'eau"
 
-#, fuzzy, c-format
+#, c-format
 msgid "You cannot use \"%s\" in this exercise (used: %d)"
-msgstr "Interdit dans cet exercice"
+msgstr "Vous ne pouvez pas utiliser «%s» dans cet exercice (utilisé : %d)"
 
 msgid "You found a usable object"
 msgstr "Vous avez trouvé un objet utilisable"
 
-#, fuzzy, c-format
+#, c-format
 msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
 msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
-msgstr[0] "Interdit dans cet exercice"
-msgstr[1] "Interdit dans cet exercice"
+msgstr[0] "Vous devez utiliser «%1$s» au moins une fois dans cet exercice (utilisé %2$d fois)"
+msgstr[1] "Vous devez utiliser «%1$s» au moins %3$d fois dans cet exercice (utilisé %2$d fois)"
 
-#, fuzzy, c-format
+#, c-format
 msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
 msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
-msgstr[0] "Interdit dans cet exercice"
-msgstr[1] "Interdit dans cet exercice"
+msgstr[0] "Vous devez utiliser «%1$s» au plus une fois dans cet exercice (utilisé %2$d fois)"
+msgstr[1] "Vous devez utiliser «%1$s» au plus %3$d fois dans cet exercice (utilisé %2$d fois)"
 
 msgid "You must get on the spaceship to take off"
 msgstr "Vous devez embarquer pour pouvoir décoller"
@@ -1864,9 +1861,8 @@ msgstr "epsitec.com"
 #~ msgid "Developed by :"
 #~ msgstr "Développé par :"
 
-#, fuzzy
 #~ msgid "Do you want to quit Colobot: Gold Edition?"
-#~ msgstr "Voulez-vous quitter COLOBOT ?"
+#~ msgstr "Voulez-vous quitter Colobot: Édition Gold ?"
 
 #~ msgid "Exit film\\Film at the exit of exercises"
 #~ msgstr "Retour animé\\Retour animé dans les exercices"
