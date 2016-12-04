@@ -1072,7 +1072,49 @@ Error CTaskGoto::IsEnded()
 
 CObject* CTaskGoto::SearchTarget(Math::Vector pos, float margin)
 {
-    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, pos, OBJECT_NULL, margin/g_unit);
+    //return CObjectManager::GetInstancePointer()->FindNearest(nullptr, pos, OBJECT_NULL, margin/g_unit);
+
+    /*
+     * TODO: FindNearest() can't be used here. Reverted to code from before 4fef3af9ef1fbe61a0c4c3f5c176f56257428efb
+     *
+     * The reason is that in the case of multiple objects being placed at the same position,
+     * this function needs to return the last one in order of creation. FindNearest() does the opposite.
+     *
+     * Whoever designed goto() so that it has to guess which object the user wants based only on position - thanks
+     * for making it so confusing :/
+     *
+     * This works well enough assuming that portable objects from the level file are always created after the objects
+     * they are placed on, for example BlackBox is created after GoalArea, TitaniumOre is created after Converter etc.
+     * This is probably required anyway to prevent them from sinking into the ground.
+     *
+     * User-created objects don't make a difference because there is no way you can place them precisely enough
+     * for floats to compare with ==.
+     *
+     * See issue #732
+     */
+
+    CObject     *pBest;
+    Math::Vector    oPos;
+    float       dist, min;
+
+    pBest = 0;
+    min = 1000000.0f;
+    for ( CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects() )
+    {
+        if ( !pObj->GetActive() )  continue;
+        if ( IsObjectBeingTransported(pObj) )  continue;  // object transtorted?
+
+        oPos = pObj->GetPosition();
+        dist = Math::DistanceProjected(pos, oPos);
+
+        if ( dist <= margin && dist <= min )
+        {
+            min = dist;
+            pBest = pObj;
+        }
+    }
+
+    return pBest;
 }
 
 // Adjusts the target as a function of the object.
