@@ -5638,7 +5638,7 @@ bool CRobotMain::IsBuildingEnabled(ObjectType type)
     if(type == OBJECT_PARA) return IsBuildingEnabled(BUILD_PARA);
     if(type == OBJECT_DESTROYER) return IsBuildingEnabled(BUILD_DESTROYER);
 
-    return true;
+    return false;
 }
 
 bool CRobotMain::IsResearchEnabled(ResearchType type)
