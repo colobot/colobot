@@ -763,6 +763,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                 m_interface->SetFocus(pe);
                 if (m_phase == PHASE_SIMUL) m_cmdEditPause = m_pause->ActivatePause(PAUSE_ENGINE);
                 m_cmdEdit = true;
+                m_commadHistoryIndex = -1;
             }
             return false;
         }
@@ -775,6 +776,26 @@ bool CRobotMain::ProcessEvent(Event &event)
                 return false;
             }
         }
+    }
+
+    if (event.type == EVENT_KEY_DOWN &&
+        event.GetData<KeyEventData>()->key == KEY(UP) && m_cmdEdit)
+    {
+        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+        if (pe == nullptr) return false;
+        std::string cmd = GetNextFromCommandHistory();
+        if (cmd != "") pe->SetText(cmd);
+        return false;
+    }
+
+    if (event.type == EVENT_KEY_DOWN &&
+        event.GetData<KeyEventData>()->key == KEY(DOWN) && m_cmdEdit)
+    {
+        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+        if (pe == nullptr) return false;
+        std::string cmd = GetPreviousFromCommandHistory();
+        if (cmd != "") pe->SetText(cmd);
+        return false;
     }
 
     if (event.type == EVENT_KEY_DOWN &&
@@ -793,6 +814,7 @@ bool CRobotMain::ProcessEvent(Event &event)
             m_cmdEditPause = nullptr;
         }
         ExecuteCmd(cmd);
+        if (m_isCommand) PushToCommandHistory(cmd);
         m_cmdEdit = false;
         return false;
     }
@@ -1147,7 +1169,12 @@ bool CRobotMain::ProcessEvent(Event &event)
 //! Executes a command
 void CRobotMain::ExecuteCmd(const std::string& cmd)
 {
-    if (cmd.empty()) return;
+    m_isCommand = true;
+    if (cmd.empty())
+    {
+        m_isCommand = false;
+        return;
+    }
 
     if (m_phase == PHASE_SIMUL)
     {
@@ -1444,6 +1471,8 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
 
     if (m_phase == PHASE_SIMUL)
         m_displayText->DisplayError(ERR_CMD, Math::Vector(0.0f,0.0f,0.0f));
+
+    m_isCommand = false;
 }
 
 
@@ -5865,4 +5894,29 @@ void CRobotMain::SetDebugCrashSpheres(bool draw)
 bool CRobotMain::GetDebugCrashSpheres()
 {
     return m_debugCrashSpheres;
+}
+
+void CRobotMain::PushToCommandHistory(std::string str)
+{
+    if (!m_commandHistory.empty() && m_commandHistory.front() == str)
+        return; // already in history
+
+    m_commandHistory.push_front(str);
+
+    if (m_commandHistory.size() > 50) // to avoid infinite growth
+        m_commandHistory.pop_back();
+}
+
+std::string CRobotMain::GetNextFromCommandHistory()
+{
+    if (m_commandHistory.empty() || m_commandHistory.size() <= m_commadHistoryIndex + 1)
+        return "";
+    return m_commandHistory[++m_commadHistoryIndex];
+}
+
+std::string CRobotMain::GetPreviousFromCommandHistory()
+{
+    if (m_commandHistory.empty() || m_commadHistoryIndex < 1)
+        return "";
+    return m_commandHistory[--m_commadHistoryIndex];
 }

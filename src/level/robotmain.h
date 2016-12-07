@@ -413,6 +413,9 @@ protected:
     void        SetCodeBattleSpectatorMode(bool mode);
     void        UpdateDebugCrashSpheres();
 
+    void        PushToCommandHistory(std::string obj);
+    std::string    GetNextFromCommandHistory();
+    std::string    GetPreviousFromCommandHistory();
 
 protected:
     CApplication*       m_app = nullptr;
@@ -585,4 +588,8 @@ protected:
 
     std::deque<CObject*> m_selectionHistory;
     bool            m_debugCrashSpheres;
+
+    std::deque<std::string> m_commandHistory;
+    bool        m_isCommand;
+    int m_commadHistoryIndex;
 };
