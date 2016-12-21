@@ -84,7 +84,10 @@ bool IsSep(int character)
     return !IsWord(character);
 }
 
-
+bool IsDelimiter(char c)
+{
+    return c == ' ' || c == '.';
+}
 
 //! Object's constructor.
 CEdit::CEdit()
@@ -2759,42 +2762,52 @@ void CEdit::DeleteOne(int dir)
     m_cursor2 = m_cursor1;
 }
 
-
 // Delete word
 
 void CEdit::DeleteWord(int dir)
 {
     if ( !m_bEdit ) return;
 
-    m_cursor2 = m_cursor1;
+    m_cursor1 = m_cursor2;
 
-    if ( dir < 0 )
+    if ( dir < 0 ) // left
     {
-        --m_cursor1;
-        while ( m_cursor1 < m_len && std::isgraph( m_text[m_cursor1++] ) );
-        --m_cursor1;
-        while ( m_cursor1 < m_len && std::isspace( m_text[m_cursor1++] ) );
-        m_cursor2 = --m_cursor1;
-        while ( m_cursor2 > 0 && std::isspace( m_text[--m_cursor2] ) );
-        while ( m_cursor2 > 0 && std::isgraph( m_text[--m_cursor2] ) );
-        while ( m_cursor2 > 0 && std::isspace( m_text[--m_cursor2] ) );
-        if ( m_cursor2 > 0 ) ++m_cursor2;
+        if ( !IsDelimiter( m_text[m_cursor1] ) )
+        {
+            bool flag = false;
+            while( m_cursor1 < m_len && !IsDelimiter( m_text[++m_cursor1] ) ) flag = true;
+            if( flag ) --m_cursor1;
+        }
+        else if ( IsDelimiter( m_text[m_cursor1] ) )
+        {
+            bool flag = false;
+            while( m_cursor1 < m_len && IsDelimiter( m_text[++m_cursor1] ) ) flag = true;
+            if( flag ) --m_cursor1;
+        }
+        if ( IsDelimiter( m_text[m_cursor2] ) )
+        {
+            bool flag = false;
+            while ( m_cursor2 >= 0 && IsDelimiter( m_text[--m_cursor2] ) ) flag = true;
+            if ( flag ) ++m_cursor1;
+        }
+        bool flag = false;
+        while ( m_cursor2 >= 0 && !IsDelimiter( m_text[m_cursor2--] ) ) flag = true;
+        if ( flag ) ++m_cursor2;
+        if ( m_text[m_cursor2] == '.' ) ++m_cursor2;
+        Delete( -1 );
     }
-    else
+    else //right
     {
-        ++m_cursor1;
-        while ( m_cursor1 > 0 && std::isgraph( m_text[--m_cursor1] ) );
-        ++m_cursor1;
-        while ( m_cursor1 > 0 && std::isspace( m_text[--m_cursor1] ) );
-        if ( m_cursor1 > 0 ) m_cursor2 = ++m_cursor1;
-        else m_cursor2 = m_cursor1;
-        while ( m_cursor2 < m_len && std::isspace( m_text[++m_cursor2] ) );
-        while ( m_cursor2 < m_len && std::isgraph( m_text[++m_cursor2] ) );
-        while ( m_cursor2 < m_len && std::isspace( m_text[++m_cursor2] ) );
+        while ( !IsDelimiter( m_text[m_cursor2] ) && m_cursor2 < m_len ) ++m_cursor2;
+        bool flag = false;
+        while ( !IsDelimiter( m_text[m_cursor1] ) && m_cursor1 >= 0 )
+        {
+            --m_cursor1;
+            flag = true;
+        }
+        if( flag ) ++m_cursor1;
+        Delete( 1 );
     }
-    if ( m_cursor1 > m_cursor2 )  Math::Swap(m_cursor1, m_cursor2);
-
-    Delete( -1 );
 }
 
 // Calculates the indentation level of brackets {and}.
