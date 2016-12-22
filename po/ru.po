@@ -1236,7 +1236,7 @@ msgid "Restart\\Restart the mission from the beginning"
 msgstr "Заново\\Начать данную миссию с начала"
 
 msgid "Restoring CBot execution state"
-msgstr "Восстановление игры"
+msgstr "Восстановление состояния CBot"
 
 msgid "Restoring saved objects"
 msgstr "Восстановить сохранённые объекты"
