@@ -86,7 +86,7 @@ bool IsSep(int character)
 
 bool IsDelimiter(char c)
 {
-    return c == ' ' || c == '.';
+    return c == ' ' || c == '.' || c == '\n';
 }
 
 //! Object's constructor.
@@ -2770,43 +2770,86 @@ void CEdit::DeleteWord(int dir)
 
     m_cursor1 = m_cursor2;
 
-    if ( dir < 0 ) // left
+    if( dir < 0)
     {
-        if ( !IsDelimiter( m_text[m_cursor1] ) )
+        if ( !m_cursor1 ) return;
+        if ( m_text[m_cursor1] == '.' ) m_cursor2 = --m_cursor1;
+        else if ( !IsDelimiter( m_text[m_cursor1] ) && !IsDelimiter( m_text[m_cursor1-1] ) )
         {
-            bool flag = false;
-            while( m_cursor1 < m_len && !IsDelimiter( m_text[++m_cursor1] ) ) flag = true;
-            if( flag ) --m_cursor1;
+            while ( m_cursor1 < m_len  && !IsDelimiter( m_text[m_cursor1] ) ) ++m_cursor1;
         }
-        else if ( IsDelimiter( m_text[m_cursor1] ) )
-        {
-            bool flag = false;
-            while( m_cursor1 < m_len && IsDelimiter( m_text[++m_cursor1] ) ) flag = true;
-            if( flag ) --m_cursor1;
-        }
+
         if ( IsDelimiter( m_text[m_cursor2] ) )
         {
-            bool flag = false;
-            while ( m_cursor2 >= 0 && IsDelimiter( m_text[--m_cursor2] ) ) flag = true;
-            if ( flag ) ++m_cursor1;
+            while ( m_cursor2 > 0 && IsDelimiter( m_text[m_cursor2] ) )
+            {
+                if ( m_text[m_cursor2] == '.' )
+                {
+                    ++m_cursor2;
+                    Delete( -1 );
+                    return;
+                }
+                --m_cursor2;
+            }
         }
-        bool flag = false;
-        while ( m_cursor2 >= 0 && !IsDelimiter( m_text[m_cursor2--] ) ) flag = true;
-        if ( flag ) ++m_cursor2;
+
+        if ( !IsDelimiter( m_text[m_cursor2] ) )
+        {
+            while ( m_cursor2 > 0 && !IsDelimiter( m_text[m_cursor2] ) )
+            {
+                if ( m_text[m_cursor2] == '.' )
+                {
+                    ++m_cursor2;
+                    Delete( -1 );
+                    return;
+                }
+                --m_cursor2;
+            }
+        }
         if ( m_text[m_cursor2] == '.' ) ++m_cursor2;
         Delete( -1 );
     }
-    else //right
+    else
     {
-        while ( !IsDelimiter( m_text[m_cursor2] ) && m_cursor2 < m_len ) ++m_cursor2;
-        bool flag = false;
-        while ( !IsDelimiter( m_text[m_cursor1] ) && m_cursor1 >= 0 )
+        if ( m_cursor1 == m_len ) return;
+        if ( m_text[m_cursor1] == '.' )
         {
-            --m_cursor1;
-            flag = true;
+            DeleteOne( 1 );
+            return;
         }
-        if( flag ) ++m_cursor1;
-        Delete( 1 );
+        if ( !IsDelimiter( m_text[m_cursor1] ) && !IsDelimiter( m_text[m_cursor1-1] ) )
+        {
+            while ( m_cursor1 > 0 && !IsDelimiter( m_text[m_cursor1] ) ) --m_cursor1;
+            ++m_cursor1;
+        }
+
+        if ( IsDelimiter( m_text[m_cursor2] ) )
+        {
+            while ( m_cursor2 < m_len && IsDelimiter( m_text[m_cursor2] ) )
+            {
+                if ( m_text[m_cursor2] == '.' )
+                {
+                    --m_cursor2;
+                    break;
+                }
+                ++m_cursor2;
+            }
+        }
+
+        if ( !IsDelimiter( m_text[m_cursor2] ) )
+        {
+            while ( m_cursor2 < m_len && !IsDelimiter( m_text[m_cursor2] ) )
+            {
+                if ( m_text[m_cursor2] == '.' )
+                {
+                    --m_cursor2;
+                    break;
+                }
+                ++m_cursor2;
+            }
+        }
+
+        Delete( -1 );
     }
 }
 
