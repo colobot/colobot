@@ -28,6 +28,8 @@
 #include "level/player_profile.h"
 #include "level/robotmain.h"
 
+#include "math/geometry.h"
+
 #include "ui/controls/button.h"
 #include "ui/controls/color.h"
 #include "ui/controls/interface.h"
@@ -331,6 +333,10 @@ bool CScreenApperance::EventProcess(const Event &event)
             break;
         }
 
+        case EVENT_UPDINTERFACE:
+            CameraPerso();
+            break;
+
         case EVENT_INTERFACE_PHEAD:
             m_apperanceTab = 0;
             UpdatePerso();
@@ -617,18 +623,13 @@ void CScreenApperance::UpdatePerso()
 
 void CScreenApperance::CameraPerso()
 {
-    Gfx::CCamera* camera = m_main->GetCamera();
-
-    camera->SetType(Gfx::CAM_TYPE_SCRIPT);
     if ( m_apperanceTab == 0 )
     {
-        camera->SetScriptCamera(Math::Vector(6.0f, 0.0f, 0.0f),
-                                Math::Vector(0.0f, 0.2f, 1.5f));
+        SetCamera(0.325f, -0.15f, 5.0f);
     }
     else
     {
-        camera->SetScriptCamera(Math::Vector(18.0f, 0.0f, 4.5f),
-                                Math::Vector(0.0f, 1.6f, 4.5f));
+        SetCamera(0.325f, 0.3f, 18.0f);
     }
 }
 
@@ -694,6 +695,36 @@ void CScreenApperance::ColorPerso()
     if ( ps != nullptr )  color.b = ps->GetVisibleValue()/255.0f;
     if ( m_apperanceTab == 0 )  apperance.colorHair = color;
     else                        apperance.colorBand = color;
+}
+
+void CScreenApperance::SetCamera(float x, float y, float cameraDistance)
+{
+    Gfx::CCamera* camera = m_main->GetCamera();
+    Gfx::CEngine* engine = Gfx::CEngine::GetInstancePointer();
+
+    camera->SetType(Gfx::CAM_TYPE_SCRIPT);
+
+    Math::Vector p2D(x, y, cameraDistance);
+    Math::Vector p3D;
+    Math::Matrix matView;
+    Math::Matrix matProj = engine->GetMatProj();
+
+    Math::LoadViewMatrix(matView, Math::Vector(0.0f, 0.0f, -cameraDistance),
+                            Math::Vector(0.0f, 0.0f, 0.0f),
+                            Math::Vector(0.0f, 0.0f, 1.0f));
+
+    p2D.x = p2D.x * 2.0f - 1.0f;  // [0..1] -> [-1..1]
+    p2D.y = p2D.y * 2.0f - 1.0f;
+
+    p3D.x = p2D.x * p2D.z / matProj.Get(1,1);
+    p3D.y = p2D.y * p2D.z / matProj.Get(2,2);
+    p3D.z = p2D.z;
+
+    p3D = Math::Transform(matView.Inverse(), p3D);
+    p3D = -p3D;
+
+    camera->SetScriptCamera(Math::Vector(cameraDistance, p3D.y, p3D.x),
+                            Math::Vector(0.0f, p3D.y, p3D.x));
 }
 
 } // namespace Ui
