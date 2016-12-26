@@ -763,7 +763,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                 m_interface->SetFocus(pe);
                 if (m_phase == PHASE_SIMUL) m_cmdEditPause = m_pause->ActivatePause(PAUSE_ENGINE);
                 m_cmdEdit = true;
-                m_commadHistoryIndex = -1;
+                m_commandHistoryIndex = -1; // no element selected in command history
             }
             return false;
         }
@@ -778,23 +778,25 @@ bool CRobotMain::ProcessEvent(Event &event)
         }
     }
 
+    // Browse forward command history with UP key
     if (event.type == EVENT_KEY_DOWN &&
         event.GetData<KeyEventData>()->key == KEY(UP) && m_cmdEdit)
     {
         Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
         std::string cmd = GetNextFromCommandHistory();
-        if (cmd != "") pe->SetText(cmd);
+        if (!cmd.empty()) pe->SetText(cmd);
         return false;
     }
 
+    // Browse backward command history with DOWN key
     if (event.type == EVENT_KEY_DOWN &&
         event.GetData<KeyEventData>()->key == KEY(DOWN) && m_cmdEdit)
     {
         Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
         std::string cmd = GetPreviousFromCommandHistory();
-        if (cmd != "") pe->SetText(cmd);
+        if (!cmd.empty()) pe->SetText(cmd);
         return false;
     }
 
@@ -814,7 +816,7 @@ bool CRobotMain::ProcessEvent(Event &event)
             m_cmdEditPause = nullptr;
         }
         ExecuteCmd(cmd);
-        if (m_isCommand) PushToCommandHistory(cmd);
+        PushToCommandHistory(cmd);
         m_cmdEdit = false;
         return false;
     }
@@ -1169,12 +1171,7 @@ bool CRobotMain::ProcessEvent(Event &event)
 //! Executes a command
 void CRobotMain::ExecuteCmd(const std::string& cmd)
 {
-    m_isCommand = true;
-    if (cmd.empty())
-    {
-        m_isCommand = false;
-        return;
-    }
+    if(cmd.empty()) return;
 
     if (m_phase == PHASE_SIMUL)
     {
@@ -1471,8 +1468,6 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
 
     if (m_phase == PHASE_SIMUL)
         m_displayText->DisplayError(ERR_CMD, Math::Vector(0.0f,0.0f,0.0f));
-
-    m_isCommand = false;
 }
 
 
@@ -5898,8 +5893,8 @@ bool CRobotMain::GetDebugCrashSpheres()
 
 void CRobotMain::PushToCommandHistory(std::string str)
 {
-    if (!m_commandHistory.empty() && m_commandHistory.front() == str)
-        return; // already in history
+    if (!m_commandHistory.empty() && m_commandHistory.front() == str) // already in history
+        return;
 
     m_commandHistory.push_front(str);
 
@@ -5909,14 +5904,14 @@ void CRobotMain::PushToCommandHistory(std::string str)
 
 std::string CRobotMain::GetNextFromCommandHistory()
 {
-    if (m_commandHistory.empty() || m_commandHistory.size() <= m_commadHistoryIndex + 1)
+    if (m_commandHistory.empty() || m_commandHistory.size() <= m_commandHistoryIndex + 1) // no next element
         return "";
-    return m_commandHistory[++m_commadHistoryIndex];
+    return m_commandHistory[++m_commandHistoryIndex];
 }
 
 std::string CRobotMain::GetPreviousFromCommandHistory()
 {
-    if (m_commandHistory.empty() || m_commadHistoryIndex < 1)
+    if (m_commandHistory.empty() || m_commandHistoryIndex < 1) // first or none element selected
         return "";
-    return m_commandHistory[--m_commadHistoryIndex];
+    return m_commandHistory[--m_commandHistoryIndex];
 }

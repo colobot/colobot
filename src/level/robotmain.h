@@ -413,9 +413,13 @@ protected:
     void        SetCodeBattleSpectatorMode(bool mode);
     void        UpdateDebugCrashSpheres();
 
+    //! Adds element to the beginning of command history
     void        PushToCommandHistory(std::string obj);
+    //! Returns next/previous element from command history and updates index
+    //@{
     std::string    GetNextFromCommandHistory();
     std::string    GetPreviousFromCommandHistory();
+    //@}
 
 protected:
     CApplication*       m_app = nullptr;
@@ -589,7 +593,8 @@ protected:
     std::deque<CObject*> m_selectionHistory;
     bool            m_debugCrashSpheres;
 
+    //! Cheat console command history
     std::deque<std::string> m_commandHistory;
-    bool        m_isCommand;
-    int m_commadHistoryIndex;
+    //! Index of currently selected element in command history
+    int             m_commandHistoryIndex;
 };
