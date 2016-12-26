@@ -1171,7 +1171,7 @@ bool CRobotMain::ProcessEvent(Event &event)
 //! Executes a command
 void CRobotMain::ExecuteCmd(const std::string& cmd)
 {
-    if(cmd.empty()) return;
+    if (cmd.empty()) return;
 
     if (m_phase == PHASE_SIMUL)
     {
