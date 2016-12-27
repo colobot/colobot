@@ -5904,7 +5904,7 @@ void CRobotMain::PushToCommandHistory(std::string str)
 
 std::string CRobotMain::GetNextFromCommandHistory()
 {
-    if (m_commandHistory.empty() || m_commandHistory.size() <= m_commandHistoryIndex + 1) // no next element
+    if (m_commandHistory.empty() || (int)m_commandHistory.size() <= m_commandHistoryIndex + 1) // no next element
         return "";
     return m_commandHistory[++m_commandHistoryIndex];
 }
