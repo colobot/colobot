@@ -275,10 +275,15 @@ public:
                               CBotCStack* pStack);
 
     /*!
-     * \brief Compile1
-     * \param p
-     * \param pStack
-     * \return
+     * \brief Pre-compile a new class
+     * \param p[in, out] Pointer to first token of the class, will be updated to point to first token after the class definition
+     * \param pStack Compile stack
+     *
+     * This function is used to find the beginning and end of class definition.
+     *
+     * If any errors in the code are detected, this function will set the error on compile stack and return nullptr.
+     *
+     * \return Precompiled class, or nullptr in case of error
      */
     static CBotClass* Compile1(CBotToken* &p,
                                CBotCStack* pStack);

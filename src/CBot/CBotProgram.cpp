@@ -93,11 +93,15 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
         if ( p->GetType() == ID_CLASS ||
             ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
         {
-            m_classes.push_back(CBotClass::Compile1(p, pStack.get()));
+            CBotClass* newclass = CBotClass::Compile1(p, pStack.get());
+            if (newclass != nullptr)
+                m_classes.push_back(newclass);
         }
         else
         {
-            m_functions.push_back(CBotFunction::Compile1(p, pStack.get(), nullptr));
+            CBotFunction* newfunc  = CBotFunction::Compile1(p, pStack.get(), nullptr);
+            if (newfunc != nullptr)
+                m_functions.push_back(newfunc);
         }
     }
 

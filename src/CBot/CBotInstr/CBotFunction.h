@@ -60,11 +60,16 @@ public:
                                  bool bLocal = true);
 
     /*!
-     * \brief Compile1 Pre-compile a new function.
-     * \param p
-     * \param pStack
-     * \param pClass
-     * \return
+     * \brief Pre-compile a new function
+     * \param p[in, out] Pointer to first token of the function, will be updated to point to first token after the function definition
+     * \param pStack Compile stack
+     * \param pClass If this is a class method, pointer to class this function is part of, otherwise nullptr
+     *
+     * This function is used to find the beginning and end of function definition.
+     *
+     * If any errors in the code are detected, this function will set the error on compile stack and return nullptr.
+     *
+     * \return Precompiled function, or nullptr in case of error
      */
     static CBotFunction* Compile1(CBotToken* &p,
                                   CBotCStack* pStack,
