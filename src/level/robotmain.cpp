@@ -2589,7 +2589,7 @@ bool CRobotMain::EventFrame(const Event &event)
             if (m_lostDelay <= 0.0f)
             {
                 if (m_movieLock)
-                    m_winDelay = 1.0f;
+                    m_lostDelay = 1.0f;
                 else
                     m_eventQueue->AddEvent(Event(EVENT_LOST));
             }
@@ -5054,7 +5054,6 @@ Error CRobotMain::CheckEndMission(bool frame)
         Error result = ProcessEndMissionTake();
         if (result != ERR_MISSION_NOTERM) return result;
     }
-
     // Take action depending on m_missionResult
 
     if (m_missionResult == INFO_LOSTq)
