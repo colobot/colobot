@@ -1093,19 +1093,15 @@ CObject* CTaskGoto::SearchTarget(Math::Vector pos, float margin)
      * See issue #732
      */
 
-    CObject     *pBest;
-    Math::Vector    oPos;
-    float       dist, min;
-
-    pBest = 0;
-    min = 1000000.0f;
+    CObject* pBest = nullptr;
+    float min = 1000000.0f;
     for ( CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects() )
     {
         if ( !pObj->GetActive() )  continue;
         if ( IsObjectBeingTransported(pObj) )  continue;  // object transtorted?
 
-        oPos = pObj->GetPosition();
-        dist = Math::DistanceProjected(pos, oPos);
+        Math::Vector oPos = pObj->GetPosition();
+        float dist = Math::DistanceProjected(pos, oPos);
 
         if ( dist <= margin && dist <= min )
         {

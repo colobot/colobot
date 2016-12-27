@@ -19,10 +19,10 @@
 
 #include "ui/debug_menu.h"
 
+#include "app/app.h"
+
 #include "common/event.h"
 #include "common/stringutils.h"
-
-#include "app/app.h"
 
 #include "graphics/engine/lightning.h"
 #include "graphics/engine/terrain.h"
