@@ -120,6 +120,8 @@ struct NewScriptName
 {
     ObjectType  type = OBJECT_NULL;
     std::string name = "";
+
+    NewScriptName(ObjectType type, const std::string& name) : type(type), name(name) {}
 };
 
 
@@ -156,6 +158,17 @@ const int SATCOM_PROG       = 4;
 const int SATCOM_SOLUCE     = 5;
 const int SATCOM_MAX        = 6;
 
+/**
+ * \brief Main class managing the game world
+ *
+ * This is the main class of the whole game engine. It's main job is to manage main parts of the gameplay,
+ * like loading levels and checking for win conditions, but it's also a place where all things that don't fit
+ * elsewhere have landed.
+ *
+ * \todo In the future, it would be nice to refactor this class to remove as much unrelated stuff as possible
+ *
+ * \nosubgrouping
+ */
 class CRobotMain : public CSingleton<CRobotMain>
 {
 public:
@@ -168,11 +181,16 @@ public:
     Ui::CDisplayText* GetDisplayText();
     CPauseManager* GetPauseManager();
 
+    /**
+     * \name Phase management
+     */
+    //@{
     void        ChangePhase(Phase phase);
     bool        ProcessEvent(Event &event);
     Phase       GetPhase();
+    //@}
 
-    bool        CreateShortcuts();
+    //! Load the scene for apperance customization
     void        ScenePerso();
 
     void        SetMovieLock(bool lock);
@@ -187,16 +205,32 @@ public:
     void        SetFriendAim(bool friendAim);
     bool        GetFriendAim();
 
+    //! \name Simulation speed management
+    //@{
     void        SetSpeed(float speed);
     float       GetSpeed();
+    //@}
 
+    //! \brief Create the shortcuts at the top of the screen, if they should be visible
+    //! \see CMainShort::CreateShortcuts
+    bool        CreateShortcuts();
+    //! \brief Update the shortcuts at the top of the screen
+    //! \see CMainShort::UpdateShortcuts
     void        UpdateShortcuts();
-    void        SelectHuman();
+    //! Find the astronaut (::OBJECT_HUMAN) object
     CObject*    SearchHuman();
-    CObject*    SearchToto();
-    CObject*    SearchNearest(Math::Vector pos, CObject* exclu);
+    /**
+     * \brief Select an object
+     * \param obj Object to select
+     * \param displayError If true and the object is currently in error state, automatically display the error message
+     *
+     * \note This function automatically adds objects to selection history (see PushToSelectionHistory())
+     */
     bool        SelectObject(CObject* obj, bool displayError=true);
+    //! Return the object that was selected at the start of the scene
     CObject*    GetSelectObject();
+    //! Deselect currently selected object
+    //! \return Object that was deselected
     CObject*    DeselectAll();
 
     void        ResetObject();
@@ -251,9 +285,10 @@ public:
     void        ClearInterface();
     void        ChangeColor();
 
-    float       SearchNearestObject(Math::Vector center, CObject *exclu);
     bool        FreeSpace(Math::Vector &center, float minRadius, float maxRadius, float space, CObject *exclu);
     bool        FlatFreeSpace(Math::Vector &center, float minFlat, float minRadius, float maxRadius, float space, CObject *exclu);
+    //! \name In-world indicators
+    //@{
     float       GetFlatZoneRadius(Math::Vector center, float maxRadius, CObject *exclu);
     void        HideDropZone(CObject* metal);
     void        ShowDropZone(CObject* metal, CObject* transporter);
@@ -262,28 +297,34 @@ public:
                              float radius, float duration=SHOWLIMITTIME);
     void        StartShowLimit();
     void        FrameShowLimit(float rTime);
+    //@}
 
     void        SaveAllScript();
     void        SaveOneScript(CObject *obj);
     bool        SaveFileStack(CObject *obj, FILE *file, int objRank);
     bool        ReadFileStack(CObject *obj, FILE *file, int objRank);
 
-    void        FlushNewScriptName();
-    void        AddNewScriptName(ObjectType type, const std::string& name);
-    std::string GetNewScriptName(ObjectType type, int rank);
+    //! Return list of scripts to load to robot created in BotFactory
+    std::vector<std::string> GetNewScriptNames(ObjectType type);
 
     void        SelectPlayer(std::string playerName);
     CPlayerProfile* GetPlayerProfile();
 
+    /**
+     * \name Saved game read/write
+     */
+    //@{
     bool        IOIsBusy();
     bool        IOWriteScene(std::string filename, std::string filecbot, std::string filescreenshot, const std::string& info, bool emergencySave = false);
     void        IOWriteSceneFinished();
     CObject*    IOReadScene(std::string filename, std::string filecbot);
     void        IOWriteObject(CLevelParserLine *line, CObject* obj, const std::string& programDir, int objRank);
     CObject*    IOReadObject(CLevelParserLine *line, const std::string& programDir, const std::string& objCounterText, float objectProgress, int objRank = -1);
+    //@}
 
     int         CreateSpot(Math::Vector pos, Gfx::Color color);
 
+    //! Find the currently selected object
     CObject*    GetSelect();
 
     void        DisplayError(Error err, CObject* pObj, float time=10.0f);
@@ -298,12 +339,17 @@ public:
 
     void        StartMissionTimer();
 
+    /**
+     * \name Autosave management
+     */
+    //@{
     void        SetAutosave(bool enable);
     bool        GetAutosave();
     void        SetAutosaveInterval(int interval);
     int         GetAutosaveInterval();
     void        SetAutosaveSlots(int slots);
     int         GetAutosaveSlots();
+    //@}
 
     //! Enable mode where completing mission closes the game
     void        SetExitAfterMission(bool exit);
@@ -311,49 +357,97 @@ public:
     //! Returns true if player can interact with things manually
     bool        CanPlayerInteract();
 
+    /**
+     * \name Team definition management
+     */
+    //@{
     //! Returns team name for the given team id
     const std::string& GetTeamName(int id);
 
     //! Returns true if team-specific colored texture is available
     bool        IsTeamColorDefined(int id);
+    //@}
 
-    //! Get/set enabled buildings
+    /**
+     * \name EnableBuild/EnableResearch/DoneResearch
+     * Management of enabled buildings, enabled researches, and completed researches
+     */
     //@{
+    /**
+     * \brief Get enabled buildings
+     * \return Bitmask of BuildType values
+     */
     int         GetEnableBuild();
+    /**
+     * \brief Set enabled buildings
+     * \param enableBuild Bitmask of BuildType values
+     */
     void        SetEnableBuild(int enableBuild);
-    //@}
-    //! Get/set enabled researches
-    //@{
-    int         GetEnableResearch();
-    void        SetEnableResearch(int enableResearch);
-    //@}
-    //! Get/set done researches
-    //@{
-    int         GetDoneResearch(int team);
-    void        SetDoneResearch(int doneResearch, int team);
-    //@}
 
-    //! Returns true if the given building is enabled
-    //@{
+    /**
+     * \brief Get enabled researches
+     * \return Bitmask of ResearchType values
+     */
+    int         GetEnableResearch();
+    /**
+     * \brief Set enabled researches
+     * \param enableResearch Bitmask of ResearchType values
+     */
+    void        SetEnableResearch(int enableResearch);
+    /**
+     * \brief Get done researches
+     * \param team Team to get researches for
+     * \return Bitmask of ResearchType values
+     */
+    int         GetDoneResearch(int team = 0);
+    /**
+     * \brief Set done researches
+     * \param doneResearch Bitmask of ResearchType values
+     * \param team Team to set researches for
+     */
+    void        SetDoneResearch(int doneResearch, int team = 0);
+
+    //! \brief Check if the given building is enabled
     bool        IsBuildingEnabled(BuildType type);
+    //! \brief Check if the given building is enabled
     bool        IsBuildingEnabled(ObjectType type);
-    //@}
-    //! Returns true if the given research is enabled
+    //! \brief Check if the given research is enabled
     bool        IsResearchEnabled(ResearchType type);
-    //! Returns true if the given research is done
+    //! \brief Check if the given research is done
     bool        IsResearchDone(ResearchType type, int team);
-    //! Marks research as done
+    //! \brief Mark given research as done
     void        MarkResearchDone(ResearchType type, int team);
 
-    //! Retruns true if all requirements to build this object are met (EnableBuild + DoneResearch)
-    //@{
-    bool        CanBuild(ObjectType type, int team);
+    /**
+     * \brief Check if all requirements to build this object are met (EnableBuild + DoneResearch)
+     * \return true if the building can be built, false otherwise
+     * \see CanBuildError() for a version which returns a specific reason for the build being denied
+     */
+    inline bool CanBuild(ObjectType type, int team)
+    {
+        return CanBuildError(type, team) == ERR_OK;
+    }
+    /**
+     * \brief Check if all requirements to build this object are met (EnableBuild + DoneResearch)
+     * \return One of Error values - ::ERR_OK if the building can be built, ::ERR_BUILD_DISABLED or ::ERR_BUILD_RESEARCH otherwise
+     * \see CanBuild() for a version which returns a boolean
+     */
     Error       CanBuildError(ObjectType type, int team);
-    //@}
 
-    //! Retruns true if all requirements to create this object in BotFactory are met (DoneResearch)
-    //@{
-    bool        CanFactory(ObjectType type, int team);
+    /**
+     * \brief Check if all requirements to build this object in BotFactory are met (DoneResearch)
+     * \return true if the robot can be built, false otherwise
+     * \see CanFactoryError() for a version which returns a specific reason for the build being denied
+     */
+    inline bool CanFactory(ObjectType type, int team)
+    {
+        return CanFactoryError(type, team) == ERR_OK;
+    }
+    /**
+     * \brief Check if all requirements to build this object in BotFactory are met (DoneResearch)
+     * \return One of Error values - ::ERR_OK if the robot can be built, ::ERR_BUILD_DISABLED or ::ERR_BUILD_RESEARCH otherwise
+     * \see CanFactory() for a version which returns a boolean
+     */
     Error       CanFactoryError(ObjectType type, int team);
     //@}
 
@@ -364,7 +458,9 @@ public:
 
     void        StartDetectEffect(COldObject* object, CObject* target);
 
+    //! Enable crash sphere debug rendering
     void SetDebugCrashSpheres(bool draw);
+    //! Check if crash sphere debug rendering is enabled
     bool GetDebugCrashSpheres();
 
 protected:
@@ -388,8 +484,11 @@ protected:
     CObject*    DetectObject(Math::Point pos);
     void        ChangeCamera();
     void        AbortMovie();
+    //! \brief Select an object, without deselecting the previous one
     void        SelectOneObject(CObject* obj, bool displayError=true);
     void        HelpObject();
+    //! \brief Switch to previous object
+    //! \see PopFromSelectionHistory()
     bool        DeselectObject();
     void        DeleteAllObjects();
     void        UpdateInfoText();
@@ -405,9 +504,13 @@ protected:
     void        PushToSelectionHistory(CObject* obj);
     CObject*    PopFromSelectionHistory();
 
+    //! \name Code battle interface
+    //@{
     void        CreateCodeBattleInterface();
     void        DestroyCodeBattleInterface();
     void        SetCodeBattleSpectatorMode(bool mode);
+    //@}
+
     void        UpdateDebugCrashSpheres();
 
 
@@ -469,9 +572,9 @@ protected:
     ActivePause*    m_freePhotoPause = nullptr;
     bool            m_cmdEdit = false;
     ActivePause*    m_cmdEditPause = nullptr;
-    bool            m_selectInsect = false;
-    bool            m_showSoluce = false;
-    bool            m_showAll = false;
+    bool            m_cheatSelectInsect = false;
+    bool            m_cheatShowSoluce = false;
+    bool            m_cheatAllMission = false;
     bool            m_cheatRadar = false;
     bool            m_shortCut = false;
     std::string     m_audioTrack;
@@ -493,7 +596,7 @@ protected:
     bool            m_editLock = false;        // edition in progress?
     bool            m_editFull = false;        // edition in full screen?
     bool            m_hilite = false;
-    bool            m_trainerPilot = false;    // remote trainer?
+    bool            m_cheatTrainerPilot = false;    // remote trainer?
     bool            m_friendAim = false;
     bool            m_resetCreate = false;
     bool            m_mapShow = false;

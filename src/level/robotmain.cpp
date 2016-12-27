@@ -202,8 +202,8 @@ CRobotMain::CRobotMain()
     m_editLock     = false;
     m_editFull     = false;
     m_hilite       = false;
-    m_selectInsect = false;
-    m_showSoluce   = false;
+    m_cheatSelectInsect = false;
+    m_cheatShowSoluce   = false;
 
     m_codeBattleInit = false;
     m_codeBattleStarted = false;
@@ -211,14 +211,14 @@ CRobotMain::CRobotMain()
     m_teamNames.clear();
 
     #if DEV_BUILD
-    m_showAll      = true; // for development
+    m_cheatAllMission      = true; // for development
     #else
-    m_showAll      = false;
+    m_cheatAllMission      = false;
     #endif
 
     m_cheatRadar   = false;
     m_fixScene     = false;
-    m_trainerPilot = false;
+    m_cheatTrainerPilot = false;
     m_friendAim    = false;
     m_resetCreate  = false;
     m_shortCut     = true;
@@ -451,7 +451,7 @@ void CRobotMain::ChangePhase(Phase phase)
         m_lightning->Flush();
         m_planet->Flush();
         m_interface->Flush();
-        FlushNewScriptName();
+        m_newScriptName.clear();
         m_sound->SetListener(Math::Vector(0.0f, 0.0f, 0.0f), Math::Vector(0.0f, 0.0f, 1.0f));
         m_sound->StopAll();
         m_camera->SetType(Gfx::CAM_TYPE_NULL);
@@ -922,7 +922,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                 }
                 if (data->slot == INPUT_SLOT_HUMAN)
                 {
-                    SelectHuman();
+                    SelectObject(SearchHuman());
                 }
                 if (data->slot == INPUT_SLOT_NEXT && ((event.kmodState & KEY_MOD(CTRL)) != 0))
                 {
@@ -1159,7 +1159,7 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
 
         if (cmd == "trainerpilot")
         {
-            m_trainerPilot = !m_trainerPilot;
+            m_cheatTrainerPilot = !m_cheatTrainerPilot;
             return;
         }
 
@@ -1410,20 +1410,20 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
 
     if (cmd == "selectinsect")
     {
-        m_selectInsect = !m_selectInsect;
+        m_cheatSelectInsect = !m_cheatSelectInsect;
         return;
     }
 
     if (cmd == "showsoluce")
     {
-        m_showSoluce = !m_showSoluce;
+        m_cheatShowSoluce = !m_cheatShowSoluce;
         m_ui->ShowSoluceUpdate();
         return;
     }
 
     if (cmd == "allmission")
     {
-        m_showAll = !m_showAll;
+        m_cheatAllMission = !m_cheatAllMission;
         m_ui->AllMissionUpdate();
         return;
     }
@@ -1763,20 +1763,17 @@ void CRobotMain::StopDisplayVisit()
 
 
 
-//! Updates all the shortcuts
 void CRobotMain::UpdateShortcuts()
 {
     m_short->UpdateShortcuts();
 }
 
-//! Returns the object that default was select after the creation of a scene
 CObject* CRobotMain::GetSelectObject()
 {
     if (m_selectObject != nullptr) return m_selectObject;
     return SearchHuman();
 }
 
-//! Deselects everything, and returns the object that was selected
 CObject* CRobotMain::DeselectAll()
 {
     CObject* prev = nullptr;
@@ -1833,17 +1830,8 @@ void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
     {
         m_camera->SetType(Gfx::CAM_TYPE_BACK);
     }
-
-    CObject* toto = SearchToto();
-    if (toto != nullptr)
-    {
-        assert(toto->Implements(ObjectInterfaceType::Movable));
-        CMotionToto* mt = static_cast<CMotionToto*>(dynamic_cast<CMovableObject*>(toto)->GetMotion());
-        mt->SetLinkType(type);
-    }
 }
 
-//! Selects the object aimed by the mouse
 bool CRobotMain::SelectObject(CObject* obj, bool displayError)
 {
     if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
@@ -1852,7 +1840,7 @@ bool CRobotMain::SelectObject(CObject* obj, bool displayError)
     if (m_movieLock || m_editLock) return false;
     if (m_movie->IsExist()) return false;
     if (obj != nullptr &&
-        (!obj->Implements(ObjectInterfaceType::Controllable) || !(dynamic_cast<CControllableObject*>(obj)->GetSelectable() || m_selectInsect))) return false;
+        (!obj->Implements(ObjectInterfaceType::Controllable) || !(dynamic_cast<CControllableObject*>(obj)->GetSelectable() || m_cheatSelectInsect))) return false;
 
     if (m_missionType == MISSION_CODE_BATTLE && m_codeBattleStarted && m_codeBattleSpectator)
     {
@@ -1883,7 +1871,6 @@ bool CRobotMain::SelectObject(CObject* obj, bool displayError)
     return true;
 }
 
-//! Deselects the selected object
 bool CRobotMain::DeselectObject()
 {
     DeselectAll();
@@ -1919,49 +1906,11 @@ void CRobotMain::DeleteAllObjects()
     m_objMan->DeleteAllObjects();
 }
 
-//! Selects the human
-void CRobotMain::SelectHuman()
-{
-    SelectObject(SearchHuman());
-}
-
-//! Returns the object human
 CObject* CRobotMain::SearchHuman()
 {
     return m_objMan->FindNearest(nullptr, OBJECT_HUMAN);
 }
 
-//! Returns the object toto
-CObject* CRobotMain::SearchToto()
-{
-    return m_objMan->FindNearest(nullptr, OBJECT_TOTO);
-}
-
-//! Returns the nearest selectable object from a given position
-CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
-{
-    float min = 100000.0f;
-    CObject* best = nullptr;
-    for (CObject* obj : m_objMan->GetAllObjects())
-    {
-        if (obj == exclu) continue;
-        if (!obj->Implements(ObjectInterfaceType::Controllable) || !(dynamic_cast<CControllableObject*>(obj)->GetSelectable() || m_selectInsect)) continue;
-
-        ObjectType type = obj->GetType();
-        if (type == OBJECT_TOTO) continue;
-
-        Math::Vector oPos = obj->GetPosition();
-        float dist = Math::DistanceProjected(oPos, pos);
-        if (dist < min)
-        {
-            min = dist;
-            best = obj;
-        }
-    }
-    return best;
-}
-
-//! Returns the selected object
 CObject* CRobotMain::GetSelect()
 {
     for (CObject* obj : m_objMan->GetAllObjects())
@@ -2113,7 +2062,7 @@ void CRobotMain::HiliteObject(Math::Point pos)
             }
         }
 
-        if (obj->Implements(ObjectInterfaceType::Controllable) && (dynamic_cast<CControllableObject*>(obj)->GetSelectable() || m_selectInsect))
+        if (obj->Implements(ObjectInterfaceType::Controllable) && (dynamic_cast<CControllableObject*>(obj)->GetSelectable() || m_cheatSelectInsect))
         {
             if (dynamic_cast<CControllableObject*>(obj)->GetSelectable())
             {
@@ -2652,7 +2601,6 @@ bool CRobotMain::EventObject(const Event &event)
 
 
 
-//! Load the scene for the character
 void CRobotMain::ScenePerso()
 {
     DeleteAllObjects();  // removes all the current 3D Scene
@@ -3629,7 +3577,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "NewScript" && !resetObject)
             {
-                AddNewScriptName(line->GetParam("type")->AsObjectType(OBJECT_NULL), const_cast<char*>(line->GetParam("name")->AsPath("ai").c_str()));
+                m_newScriptName.push_back(NewScriptName(line->GetParam("type")->AsObjectType(OBJECT_NULL), const_cast<char*>(line->GetParam("name")->AsPath("ai").c_str())));
                 continue;
             }
 
@@ -3950,15 +3898,17 @@ void CRobotMain::ChangeColor()
 }
 
 //! Calculates the distance to the nearest object
-float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
+namespace
+{
+float SearchNearestObject(CObjectManager* objMan, Math::Vector center, CObject* exclu)
 {
     float min = 100000.0f;
-    for (CObject* obj : m_objMan->GetAllObjects())
+    for (CObject* obj : objMan->GetAllObjects())
     {
         if (!obj->GetDetectable()) continue;  // inactive?
         if (IsObjectBeingTransported(obj)) continue;
 
-        if (obj == exclu)  continue;
+        if (obj == exclu) continue;
 
         ObjectType type = obj->GetType();
 
@@ -3968,34 +3918,35 @@ float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
             if (oPos.x != center.x ||
                 oPos.z != center.z)
             {
-                float dist = Math::Distance(center, oPos)-80.0f;
+                float dist = Math::Distance(center, oPos) - 80.0f;
                 if (dist < 0.0f) dist = 0.0f;
                 min = Math::Min(min, dist);
                 continue;
             }
         }
 
-        if (type == OBJECT_STATION   ||
-            type == OBJECT_REPAIR    ||
+        if (type == OBJECT_STATION ||
+            type == OBJECT_REPAIR ||
             type == OBJECT_DESTROYER)
         {
             Math::Vector oPos = obj->GetPosition();
-            float dist = Math::Distance(center, oPos)-8.0f;
+            float dist = Math::Distance(center, oPos) - 8.0f;
             if (dist < 0.0f) dist = 0.0f;
             min = Math::Min(min, dist);
         }
 
-        for (const auto& crashSphere : obj->GetAllCrashSpheres())
+        for (const auto &crashSphere : obj->GetAllCrashSpheres())
         {
             Math::Vector oPos = crashSphere.sphere.pos;
             float oRadius = crashSphere.sphere.radius;
 
-            float dist = Math::Distance(center, oPos)-oRadius;
+            float dist = Math::Distance(center, oPos) - oRadius;
             if (dist < 0.0f) dist = 0.0f;
             min = Math::Min(min, dist);
         }
     }
     return min;
+}
 }
 
 //! Calculates a free space
@@ -4018,7 +3969,7 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
                 pos.z = p.y;
                 pos.y = 0.0f;
                 m_terrain->AdjustToFloor(pos, true);
-                float dist = SearchNearestObject(pos, exclu);
+                float dist = SearchNearestObject(m_objMan.get(), pos, exclu);
                 if (dist >= space)
                 {
                     float flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
@@ -4047,7 +3998,7 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
                 pos.z = p.y;
                 pos.y = 0.0f;
                 m_terrain->AdjustToFloor(pos, true);
-                float dist = SearchNearestObject(pos, exclu);
+                float dist = SearchNearestObject(m_objMan.get(), pos, exclu);
                 if (dist >= space)
                 {
                     float flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
@@ -4083,7 +4034,7 @@ bool CRobotMain::FlatFreeSpace(Math::Vector &center, float minFlat, float minRad
                 pos.z = p.y;
                 pos.y = 0.0f;
                 m_terrain->AdjustToFloor(pos, true);
-                float dist = SearchNearestObject(pos, exclu);
+                float dist = SearchNearestObject(m_objMan.get(), pos, exclu);
                 if (dist >= space)
                 {
                     float flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
@@ -4116,7 +4067,7 @@ bool CRobotMain::FlatFreeSpace(Math::Vector &center, float minFlat, float minRad
                 pos.z = p.y;
                 pos.y = 0.0f;
                 m_terrain->AdjustToFloor(pos, true);
-                float dist = SearchNearestObject(pos, exclu);
+                float dist = SearchNearestObject(m_objMan.get(), pos, exclu);
                 if (dist >= space)
                 {
                     float flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
@@ -4140,7 +4091,7 @@ bool CRobotMain::FlatFreeSpace(Math::Vector &center, float minFlat, float minRad
 float CRobotMain::GetFlatZoneRadius(Math::Vector center, float maxRadius,
                                     CObject *exclu)
 {
-    float dist = SearchNearestObject(center, exclu);
+    float dist = SearchNearestObject(m_objMan.get(), center, exclu);
     if (dist == 0.0f) return 0.0f;
     if (dist < maxRadius)
         maxRadius = dist;
@@ -4412,36 +4363,19 @@ bool CRobotMain::ReadFileStack(CObject *obj, FILE *file, int objRank)
     return programmable->ReadStack(file);
 }
 
-
-//! Empty the list
-void CRobotMain::FlushNewScriptName()
+std::vector<std::string> CRobotMain::GetNewScriptNames(ObjectType type)
 {
-    m_newScriptName.clear();
-}
-
-//! Adds a script name
-void CRobotMain::AddNewScriptName(ObjectType type, const std::string& name)
-{
-    NewScriptName newscript;
-    newscript.type = type;
-    newscript.name = name;
-    m_newScriptName.push_back(newscript);
-}
-
-//! Seeks a script name for a given type
-std::string CRobotMain::GetNewScriptName(ObjectType type, int rank)
-{
-    for (unsigned int i = 0; i < m_newScriptName.size(); i++)
+    std::vector<std::string> names;
+    for (const auto& newScript : m_newScriptName)
     {
-        if (m_newScriptName[i].type == type        ||
-            m_newScriptName[i].type == OBJECT_NULL  )
+        if (newScript.type == type        ||
+            newScript.type == OBJECT_NULL  )
         {
-            if (rank == 0) return m_newScriptName[i].name;
-            else           rank --;
+            names.push_back(newScript.name);
         }
     }
 
-    return "";
+    return names;
 }
 
 
@@ -5114,7 +5048,7 @@ const std::map<std::string, MinMax>& CRobotMain::GetObligatoryTokenList()
 //! Indicates whether it is possible to control a driving robot
 bool CRobotMain::GetTrainerPilot()
 {
-    return m_trainerPilot;
+    return m_cheatTrainerPilot;
 }
 
 //! Indicates whether the scene is fixed, without interaction
@@ -5137,7 +5071,7 @@ const std::string& CRobotMain::GetScriptFile()
 
 bool CRobotMain::GetShowSoluce()
 {
-    return m_showSoluce;
+    return m_cheatShowSoluce;
 }
 
 bool CRobotMain::GetSceneSoluce()
@@ -5148,7 +5082,7 @@ bool CRobotMain::GetSceneSoluce()
 
 bool CRobotMain::GetShowAll()
 {
-    return m_showAll;
+    return m_cheatAllMission;
 }
 
 bool CRobotMain::GetRadar()
@@ -5272,7 +5206,6 @@ void CRobotMain::UpdateSpeedLabel()
 }
 
 
-//! Creates interface shortcuts to the units
 bool CRobotMain::CreateShortcuts()
 {
     if (m_phase != PHASE_SIMUL) return false;
@@ -5662,11 +5595,6 @@ Error CRobotMain::CanBuildError(ObjectType type, int team)
     return ERR_OK;
 }
 
-bool CRobotMain::CanBuild(ObjectType type, int team)
-{
-    return CanBuildError(type, team) == ERR_OK;
-}
-
 Error CRobotMain::CanFactoryError(ObjectType type, int team)
 {
     ToolType tool = GetToolFromObject(type);
@@ -5688,11 +5616,6 @@ Error CRobotMain::CanFactoryError(ObjectType type, int team)
     if (type == OBJECT_MOBILEsa          && !IsResearchDone(RESEARCH_SUBM,     team)) return ERR_BUILD_DISABLED; // Can be only researched manually in Scene file
 
     return ERR_OK;
-}
-
-bool CRobotMain::CanFactory(ObjectType type, int team)
-{
-    return CanFactoryError(type, team) == ERR_OK;
 }
 
 void CRobotMain::PushToSelectionHistory(CObject* obj)

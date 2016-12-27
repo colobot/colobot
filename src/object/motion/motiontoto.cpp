@@ -57,7 +57,6 @@ CMotionToto::CMotionToto(COldObject* object) : CMotion(object)
     m_blinkTime   = 0.0f;
     m_blinkProgress = -1.0f;
     m_lastMotorParticle = 0.0f;
-    m_type = OBJECT_NULL;
     m_mousePos = Math::Point(0.0f, 0.0f);
 }
 
@@ -325,36 +324,39 @@ bool CMotionToto::EventFrame(const Event &event)
         distance = 30.0f-progress*18.0f;  // remoteness
         shift    = 18.0f-progress*11.0f;  // shift is left
         verti    = 10.0f-progress* 8.0f;  // shift at the top
+        
+        CObject* selected = m_main->GetSelect();
+        ObjectType type = selected != nullptr ? selected->GetType() : OBJECT_NULL;
 
         if ( m_actionType == -1 &&
-             (m_type == OBJECT_HUMAN    ||
-              m_type == OBJECT_TECH     ||
-              m_type == OBJECT_MOBILEwa ||
-              m_type == OBJECT_MOBILEta ||
-              m_type == OBJECT_MOBILEfa ||
-              m_type == OBJECT_MOBILEia ||
-              m_type == OBJECT_MOBILEwc ||
-              m_type == OBJECT_MOBILEtc ||
-              m_type == OBJECT_MOBILEfc ||
-              m_type == OBJECT_MOBILEic ||
-              m_type == OBJECT_MOBILEwi ||
-              m_type == OBJECT_MOBILEti ||
-              m_type == OBJECT_MOBILEfi ||
-              m_type == OBJECT_MOBILEii ||
-              m_type == OBJECT_MOBILEws ||
-              m_type == OBJECT_MOBILEts ||
-              m_type == OBJECT_MOBILEfs ||
-              m_type == OBJECT_MOBILEis ||
-              m_type == OBJECT_MOBILErt ||
-              m_type == OBJECT_MOBILErc ||
-              m_type == OBJECT_MOBILErr ||
-              m_type == OBJECT_MOBILErs ||
-              m_type == OBJECT_MOBILEsa ||
-              m_type == OBJECT_MOBILEwt ||
-              m_type == OBJECT_MOBILEtt ||
-              m_type == OBJECT_MOBILEft ||
-              m_type == OBJECT_MOBILEit ||
-              m_type == OBJECT_MOBILEdr ) )  // vehicle?
+             (type == OBJECT_HUMAN    ||
+              type == OBJECT_TECH     ||
+              type == OBJECT_MOBILEwa ||
+              type == OBJECT_MOBILEta ||
+              type == OBJECT_MOBILEfa ||
+              type == OBJECT_MOBILEia ||
+              type == OBJECT_MOBILEwc ||
+              type == OBJECT_MOBILEtc ||
+              type == OBJECT_MOBILEfc ||
+              type == OBJECT_MOBILEic ||
+              type == OBJECT_MOBILEwi ||
+              type == OBJECT_MOBILEti ||
+              type == OBJECT_MOBILEfi ||
+              type == OBJECT_MOBILEii ||
+              type == OBJECT_MOBILEws ||
+              type == OBJECT_MOBILEts ||
+              type == OBJECT_MOBILEfs ||
+              type == OBJECT_MOBILEis ||
+              type == OBJECT_MOBILErt ||
+              type == OBJECT_MOBILErc ||
+              type == OBJECT_MOBILErr ||
+              type == OBJECT_MOBILErs ||
+              type == OBJECT_MOBILEsa ||
+              type == OBJECT_MOBILEwt ||
+              type == OBJECT_MOBILEtt ||
+              type == OBJECT_MOBILEft ||
+              type == OBJECT_MOBILEit ||
+              type == OBJECT_MOBILEdr ) )  // vehicle?
         {
             m_clownTime += event.rTime;
             if ( m_clownTime >= m_clownDelay )
@@ -831,11 +833,4 @@ Error CMotionToto::SetAction(int action, float time)
     }
 
     return ERR_OK;
-}
-
-// Specifies the type of the object is attached to toto.
-
-void CMotionToto::SetLinkType(ObjectType type)
-{
-    m_type = type;
 }

@@ -43,7 +43,6 @@ public:
     void    Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager) override;
     bool    EventProcess(const Event &event) override;
     Error   SetAction(int action, float time=0.2f) override;
-    void    SetLinkType(ObjectType type);
 
     void    StartDisplayInfo();
     void    StopDisplayInfo();
@@ -65,6 +64,5 @@ protected:
     float       m_blinkTime;
     float       m_blinkProgress;
     int         m_soundChannel;
-    ObjectType  m_type;
     Math::Point     m_mousePos;
 };
