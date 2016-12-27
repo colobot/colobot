@@ -104,7 +104,7 @@ Error CAutoResearch::StartAction(int param)
 {
     if ( m_phase != ALP_WAIT )
     {
-        return ERR_UNKNOWN;
+        return ERR_OBJ_BUSY;
     }
 
     m_research = static_cast<ResearchType>(param);

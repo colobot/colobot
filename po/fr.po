@@ -1479,6 +1479,9 @@ msgstr "Cette étiquette n'existe pas"
 msgid "This menu is for userlevels from mods, but you didn't install any"
 msgstr "Ce menu donne accès aux niveaux spéciaux (importés ou personnalisés), mais aucun n'est installé."
 
+msgid "This object is currently busy"
+msgstr ""
+
 msgid "This object is not a member of a class"
 msgstr "L'objet n'est pas une instance d'une classe"
 

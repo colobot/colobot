@@ -1346,6 +1346,9 @@ msgstr ""
 msgid "Unknown command"
 msgstr ""
 
+msgid "This object is currently busy"
+msgstr ""
+
 msgid "Impossible when flying"
 msgstr ""
 

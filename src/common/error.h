@@ -31,6 +31,7 @@ enum Error
     ERR_CONTINUE          = 2,        //! <  continues
     ERR_STOP              = 3,        //! <  stops
     ERR_CMD               = 4,        //! <  unknown command
+    ERR_OBJ_BUSY          = 5,        //! <  object is busy
     ERR_MANIP_FLY         = 101,      //! <  impossible in flight
     ERR_MANIP_BUSY        = 102,      //! <  taking: hands already occupied
     ERR_MANIP_NIL         = 103,      //! <  taking: nothing has to take

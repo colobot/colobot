@@ -563,6 +563,7 @@ void InitializeRestext()
 
     stringsErr[ERR_UNKNOWN]         = TR("Internal error - tell the developers");
     stringsErr[ERR_CMD]             = TR("Unknown command");
+    stringsErr[ERR_OBJ_BUSY]        = TR("This object is currently busy");
     stringsErr[ERR_MANIP_FLY]       = TR("Impossible when flying");
     stringsErr[ERR_MANIP_BUSY]      = TR("Already carrying something");
     stringsErr[ERR_MANIP_NIL]       = TR("Nothing to grab");

@@ -1507,6 +1507,9 @@ msgstr "Dieses Label existiert nicht"
 msgid "This menu is for userlevels from mods, but you didn't install any"
 msgstr ""
 
+msgid "This object is currently busy"
+msgstr ""
+
 msgid "This object is not a member of a class"
 msgstr "Das Objekt ist nicht eine Instanz einer Klasse"
 

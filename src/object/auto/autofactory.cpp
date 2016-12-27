@@ -129,7 +129,7 @@ Error CAutoFactory::StartAction(int param)
     {
         if ( m_phase != AFP_WAIT )
         {
-            return ERR_OK;
+            return ERR_OBJ_BUSY;
         }
 
         m_type = type;
