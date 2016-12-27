@@ -172,7 +172,7 @@ enum EventType
     EVENT_LABEL16           = 106,
     EVENT_LABEL17           = 107,
     EVENT_LABEL18           = 108,
-    EVENT_LABEL19           = 109,
+    EVENT_LABEL19           = 109, // cursor position overlay
 
     EVENT_LIST0             = 110,
     EVENT_LIST1             = 111,

@@ -20,6 +20,9 @@
 #include "ui/debug_menu.h"
 
 #include "common/event.h"
+#include "common/stringutils.h"
+
+#include "app/app.h"
 
 #include "graphics/engine/lightning.h"
 #include "graphics/engine/terrain.h"
@@ -34,7 +37,10 @@
 #include "ui/controls/button.h"
 #include "ui/controls/check.h"
 #include "ui/controls/interface.h"
+#include "ui/controls/label.h"
 #include "ui/controls/window.h"
+
+#include <SDL_clipboard.h>
 
 namespace Ui
 {
@@ -55,10 +61,17 @@ CDebugMenu::~CDebugMenu()
 
 void CDebugMenu::ToggleInterface()
 {
-    if (m_interface->SearchControl(EVENT_WINDOW7) == nullptr)
+    if (!IsActive())
+    {
         CreateInterface();
+        CLabel* pl = m_interface->CreateLabel(Math::Point(0.0f, 0.9f), Math::Point(1.0f, 0.1f), -1, EVENT_LABEL19, "??");
+        pl->SetFontType(Gfx::FONT_COURIER);
+    }
     else
+    {
+        m_interface->DeleteControl(EVENT_LABEL19);
         DestroyInterface();
+    }
 }
 
 const Math::Point dim = Math::Point(33.0f/640.0f, 33.0f/480.0f);
@@ -359,6 +372,18 @@ bool CDebugMenu::EventProcess(const Event &event)
             }
             break;
 
+        case EVENT_FRAME:
+            HandleFrameUpdate(event);
+            break;
+
+        case EVENT_KEY_DOWN:
+            if (event.GetData<KeyEventData>()->key == KEY(c) && (event.kmodState & KMOD_CTRL) != 0)
+            {
+                if (IsActive())
+                {
+                    return !HandleCopy(event.mousePos);
+                }
+            }
 
         default:
             break;
@@ -425,6 +450,40 @@ bool CDebugMenu::HandleTeleport(Math::Point mousePos)
     UpdateInterface();
 
     return true;
+}
+
+void CDebugMenu::HandleFrameUpdate(const Event &event)
+{
+    std::string str = "-";
+    Math::Vector pos;
+    int obj;
+    if ((obj = m_engine->DetectObject(event.mousePos, pos, true)) != -1)
+        str = StrUtils::Format("pos=% 3.2f; % 3.2f    height=% 3.2f    objId=% 4d", pos.x, pos.z, pos.y, obj);
+
+    CLabel* pl = static_cast<CLabel*>(m_interface->SearchControl(EVENT_LABEL19));
+    if (pl == nullptr) return;
+    pl->SetName(str.c_str());
+}
+
+bool CDebugMenu::HandleCopy(Math::Point mousePos)
+{
+    Math::Vector pos;
+    if (m_engine->DetectObject(mousePos, pos, true) == -1)
+    {
+        m_sound->Play(SOUND_CLICK, 1.0f, 0.5f);
+        return false;
+    }
+
+    std::string str = StrUtils::Format("pos=%.2f;%.2f", pos.x, pos.z);
+
+    GetLogger()->Debug("%s\n", str.c_str());
+    SDL_SetClipboardText(str.c_str());
+    return true;
+}
+
+bool CDebugMenu::IsActive()
+{
+    return m_interface->SearchControl(EVENT_WINDOW7) != nullptr;
 }
 
 }
