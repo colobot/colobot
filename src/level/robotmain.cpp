@@ -1851,7 +1851,8 @@ bool CRobotMain::SelectObject(CObject* obj, bool displayError)
 
     if (m_movieLock || m_editLock) return false;
     if (m_movie->IsExist()) return false;
-    if (obj != nullptr && !IsSelectable(obj)) return false;
+    if (obj != nullptr &&
+        (!obj->Implements(ObjectInterfaceType::Controllable) || !(dynamic_cast<CControllableObject*>(obj)->GetSelectable() || m_selectInsect))) return false;
 
     if (m_missionType == MISSION_CODE_BATTLE && m_codeBattleStarted && m_codeBattleSpectator)
     {
@@ -1944,7 +1945,7 @@ CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (obj == exclu) continue;
-        if (!IsSelectable(obj)) continue;
+        if (!obj->Implements(ObjectInterfaceType::Controllable) || !(dynamic_cast<CControllableObject*>(obj)->GetSelectable() || m_selectInsect)) continue;
 
         ObjectType type = obj->GetType();
         if (type == OBJECT_TOTO) continue;
@@ -2017,30 +2018,6 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         }
     }
     return nullptr;
-}
-
-//! Indicates whether an object is selectable
-// TODO: Refactor this, calling CControllableObject::GetSelectable should always be enough
-bool CRobotMain::IsSelectable(CObject* obj)
-{
-    if (obj->GetType() == OBJECT_TOTO) return true;
-    if (!obj->Implements(ObjectInterfaceType::Controllable)) return false;
-
-    if (!m_selectInsect)
-    {
-        // TODO: Some function in CControllableObject
-        if ( obj->GetType() == OBJECT_MOTHER   ||
-             obj->GetType() == OBJECT_ANT      ||
-             obj->GetType() == OBJECT_SPIDER   ||
-             obj->GetType() == OBJECT_BEE      ||
-             obj->GetType() == OBJECT_WORM     ||
-             obj->GetType() == OBJECT_MOBILEtg )
-        {
-            return false;
-        }
-    }
-
-    return dynamic_cast<CControllableObject*>(obj)->GetSelectable();
 }
 
 
@@ -2136,10 +2113,13 @@ void CRobotMain::HiliteObject(Math::Point pos)
             }
         }
 
-        if (IsSelectable(obj))
+        if (obj->Implements(ObjectInterfaceType::Controllable) && (dynamic_cast<CControllableObject*>(obj)->GetSelectable() || m_selectInsect))
         {
-            assert(obj->Implements(ObjectInterfaceType::Controllable));
-            dynamic_cast<CControllableObject*>(obj)->SetHighlight(true);
+            if (dynamic_cast<CControllableObject*>(obj)->GetSelectable())
+            {
+                // Don't highlight objects that would not be selectable without selectinsect
+                dynamic_cast<CControllableObject*>(obj)->SetHighlight(true);
+            }
             m_map->SetHighlight(obj);
             m_short->SetHighlight(obj);
             m_hilite = true;

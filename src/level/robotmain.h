@@ -364,10 +364,7 @@ public:
 
     void        StartDetectEffect(COldObject* object, CObject* target);
 
-    bool        IsSelectable(CObject* obj);
-
     void SetDebugCrashSpheres(bool draw);
-
     bool GetDebugCrashSpheres();
 
 protected:
