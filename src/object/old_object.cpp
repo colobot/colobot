@@ -2654,7 +2654,10 @@ bool COldObject::IsDying()
 
 bool COldObject::GetActive()
 {
-    return !GetLock() && !(Implements(ObjectInterfaceType::Destroyable) && IsDying()) && !m_bFlat;
+    // Dying astronaut (m_dying == DeathType::Dead) should be treated as active
+    // This is for EndMissionTake to not detect him as actually dead until the animation is finished
+
+    return !GetLock() && !(Implements(ObjectInterfaceType::Destroyable) && IsDying() && GetDying() != DeathType::Dead) && !m_bFlat;
 }
 
 bool COldObject::GetDetectable()
