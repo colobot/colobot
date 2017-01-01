@@ -198,13 +198,17 @@ public:
 private:
     //! Updates the texture params for given texture stage
     void UpdateTextureParams(int index);
-    //! Updates rendering mode
-    void UpdateRenderingMode();
+    //! Updates texture state
+    inline void UpdateTextureState(int index);
+    //! Update light parameters
+    void UpdateLights();
 
     //! Binds VBO
     inline void BindVBO(GLuint vbo);
     //! Binds VAO
     inline void BindVAO(GLuint vao);
+    //! Binds texture
+    inline void BindTexture(int index, GLuint texture);
 
     //! Uploads data to dynamic buffer and returns offset to it
     unsigned int UploadVertexData(DynamicBuffer& buffer, const void* data, unsigned int size);
@@ -233,6 +237,8 @@ private:
 
     //! Whether lighting is enabled
     bool m_lighting = false;
+    //! true means that light update is needed
+    bool m_updateLights = false;
     //! Current lights
     std::vector<Light> m_lights;
     //! Current lights enable status
@@ -247,6 +253,8 @@ private:
 
     //! Set of all created textures
     std::set<Texture> m_allTextures;
+    //! Free texture unit
+    const int m_freeTexture = 3;
 
     //! Type of vertex structure
     enum VertexType

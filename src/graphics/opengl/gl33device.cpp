@@ -233,7 +233,7 @@ bool CGL33Device::Create()
     glViewport(0, 0, m_config.size.x, m_config.size.y);
 
     // this is set in shader
-    m_capabilities.maxLights = 8;
+    m_capabilities.maxLights = 4;
 
     m_lights           = std::vector<Light>(m_capabilities.maxLights, Light());
     m_lightsEnabled    = std::vector<bool>(m_capabilities.maxLights, false);
@@ -381,14 +381,14 @@ bool CGL33Device::Create()
 
         uni.shadowColor = glGetUniformLocation(m_normalProgram, "uni_ShadowColor");
 
-        uni.lightingEnabled = glGetUniformLocation(m_normalProgram, "uni_LightingEnabled");
+        uni.lightCount = glGetUniformLocation(m_normalProgram, "uni_LightCount");
 
         uni.ambientColor = glGetUniformLocation(m_normalProgram, "uni_AmbientColor");
         uni.diffuseColor = glGetUniformLocation(m_normalProgram, "uni_DiffuseColor");
         uni.specularColor = glGetUniformLocation(m_normalProgram, "uni_SpecularColor");
 
         GLchar name[64];
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < m_capabilities.maxLights; i++)
         {
             LightLocations &light = uni.lights[i];
 
@@ -440,12 +440,9 @@ bool CGL33Device::Create()
         glUniform1f(uni.shadowColor, 0.5f);
 
         glUniform1i(uni.alphaTestEnabled, 0);
-        glUniform1f(uni.alphaReference, 1.0f);
+        glUniform1f(uni.alphaReference, 0.5f);
 
-        glUniform1i(uni.lightingEnabled, 0);
-
-        for (int i = 0; i < 8; i++)
-            glUniform1i(uni.lights[i].enabled, 0);
+        glUniform1i(uni.lightCount, 0);
     }
 
     // Obtain uniform locations for interface program
@@ -637,7 +634,9 @@ void CGL33Device::SetRenderMode(RenderMode mode)
 
     m_uni = &m_uniforms[m_mode];
 
-    UpdateRenderingMode();
+    UpdateTextureState(0);
+    UpdateTextureState(1);
+    UpdateTextureState(2);
 }
 
 void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
@@ -708,23 +707,7 @@ void CGL33Device::SetLight(int index, const Light &light)
 
     m_lights[index] = light;
 
-    LightLocations &uni = m_uni->lights[index];
-
-    glUniform4fv(uni.ambient, 1, light.ambient.Array());
-    glUniform4fv(uni.diffuse, 1, light.diffuse.Array());
-    glUniform4fv(uni.specular, 1, light.specular.Array());
-    glUniform3f(uni.attenuation, light.attenuation0, light.attenuation1, light.attenuation2);
-
-    if (light.type == LIGHT_DIRECTIONAL)
-    {
-        glUniform4f(uni.position, -light.direction.x, -light.direction.y, -light.direction.z, 0.0f);
-    }
-    else
-    {
-        glUniform4f(uni.position, light.position.x, light.position.y, light.position.z, 1.0f);
-    }
-
-    // TODO: add spotlight params
+    m_updateLights = true;
 }
 
 void CGL33Device::SetLightEnabled(int index, bool enabled)
@@ -734,7 +717,7 @@ void CGL33Device::SetLightEnabled(int index, bool enabled)
 
     m_lightsEnabled[index] = enabled;
 
-    glUniform1i(m_uni->lights[index].enabled, enabled ? 1 : 0);
+    m_updateLights = true;
 }
 
 /** If image is invalid, returns invalid texture.
@@ -769,10 +752,9 @@ Texture CGL33Device::CreateTexture(ImageData *data, const TextureCreateParams &p
 
     result.originalSize = result.size;
 
-    glActiveTexture(GL_TEXTURE0);
-
     glGenTextures(1, &result.id);
-    glBindTexture(GL_TEXTURE_2D, result.id);
+
+    BindTexture(m_freeTexture, result.id);
 
     // Set texture parameters
     GLint minF = GL_NEAREST, magF = GL_NEAREST;
@@ -835,9 +817,6 @@ Texture CGL33Device::CreateTexture(ImageData *data, const TextureCreateParams &p
 
     m_allTextures.insert(result);
 
-    // Restore the previous state of 1st stage
-    glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
-
     return result;
 }
 
@@ -849,10 +828,9 @@ Texture CGL33Device::CreateDepthTexture(int width, int height, int depth)
     result.size.x = width;
     result.size.y = height;
 
-    glActiveTexture(GL_TEXTURE0);
-
     glGenTextures(1, &result.id);
-    glBindTexture(GL_TEXTURE_2D, result.id);
+
+    BindTexture(m_freeTexture, result.id);
 
     GLuint format = GL_DEPTH_COMPONENT;
 
@@ -881,16 +859,14 @@ Texture CGL33Device::CreateDepthTexture(int width, int height, int depth)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color);
 
-    glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
-
     return result;
 }
 
 void CGL33Device::UpdateTexture(const Texture& texture, Math::IntPoint offset, ImageData* data, TexImgFormat format)
 {
-    glActiveTexture(GL_TEXTURE0);
+    if (texture.id == 0) return;
 
-    glBindTexture(GL_TEXTURE_2D, texture.id);
+    BindTexture(m_freeTexture, texture.id);
 
     PreparedTextureData texData = PrepareTextureData(data, format);
 
@@ -945,18 +921,16 @@ void CGL33Device::SetTexture(int index, const Texture &texture)
 {
     assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
 
-    bool same = m_currentTextures[index].id == texture.id;
+    if (m_currentTextures[index].id == texture.id)
+        return;
+
+    BindTexture(index, texture.id);
 
     m_currentTextures[index] = texture; // remember the new value
 
-    if (same)
-        return; // nothing to do
-
-    glActiveTexture(GL_TEXTURE0 + index);
-    glBindTexture(GL_TEXTURE_2D, texture.id);
-
     // Params need to be updated for the new bound texture
     UpdateTextureParams(index);
+    UpdateTextureState(index);
 }
 
 void CGL33Device::SetTexture(int index, unsigned int textureId)
@@ -966,27 +940,25 @@ void CGL33Device::SetTexture(int index, unsigned int textureId)
     if (m_currentTextures[index].id == textureId)
         return; // nothing to do
 
-    m_currentTextures[index].id = textureId;
+    BindTexture(index, textureId);
 
-    glActiveTexture(GL_TEXTURE0 + index);
-    glBindTexture(GL_TEXTURE_2D, textureId);
+    m_currentTextures[index].id = textureId;
 
     // Params need to be updated for the new bound texture
     UpdateTextureParams(index);
+    UpdateTextureState(index);
 }
 
 void CGL33Device::SetTextureEnabled(int index, bool enabled)
 {
     assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
 
-    bool same = m_texturesEnabled[index] == enabled;
+    if (m_texturesEnabled[index] == enabled)
+        return;
 
     m_texturesEnabled[index] = enabled;
 
-    if (same)
-        return; // nothing to do
-
-    UpdateRenderingMode();
+    UpdateTextureState(index);
 }
 
 /**
@@ -1065,6 +1037,8 @@ void CGL33Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode 
 
 void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount, Color color)
 {
+    if (m_updateLights) UpdateLights();
+
     Vertex* vs = const_cast<Vertex*>(vertices);
 
     unsigned int size = vertexCount * sizeof(Vertex);
@@ -1099,13 +1073,13 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int 
     glDisableVertexAttribArray(4);
     glVertexAttrib2f(4, 0.0f, 0.0f);
 
-    UpdateRenderingMode();
-
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 }
 
 void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount, Color color)
 {
+    if (m_updateLights) UpdateLights();
+
     VertexTex2* vs = const_cast<VertexTex2*>(vertices);
 
     unsigned int size = vertexCount * sizeof(VertexTex2);
@@ -1141,13 +1115,13 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, 
     glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
         reinterpret_cast<void*>(offset + offsetof(VertexTex2, texCoord2)));
 
-    UpdateRenderingMode();
-
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 }
 
 void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
 {
+    if (m_updateLights) UpdateLights();
+
     VertexCol* vs = const_cast<VertexCol*>(vertices);
 
     unsigned int size = vertexCount * sizeof(VertexCol);
@@ -1180,8 +1154,6 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
     // Texture coordinate 1
     glDisableVertexAttribArray(4);
     glVertexAttrib2f(4, 0.0f, 0.0f);
-
-    UpdateRenderingMode();
 
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 }
@@ -1189,6 +1161,8 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
 void CGL33Device::DrawPrimitive(PrimitiveType type, const void *vertices,
     int size, const VertexFormat &format, int vertexCount)
 {
+    if (m_updateLights) UpdateLights();
+
     DynamicBuffer& buffer = m_dynamicBuffer;
 
     BindVAO(buffer.vao);
@@ -1202,8 +1176,6 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const void *vertices,
     UpdateVertexAttribute(2, format.color, offset);
     UpdateVertexAttribute(3, format.tex1, offset);
     UpdateVertexAttribute(4, format.tex2, offset);
-
-    UpdateRenderingMode();
 
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 }
@@ -1211,6 +1183,8 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const void *vertices,
 void CGL33Device::DrawPrimitives(PrimitiveType type, const void *vertices,
     int size, const VertexFormat &format, int first[], int count[], int drawCount)
 {
+    if (m_updateLights) UpdateLights();
+
     DynamicBuffer& buffer = m_dynamicBuffer;
 
     BindVAO(buffer.vao);
@@ -1225,14 +1199,14 @@ void CGL33Device::DrawPrimitives(PrimitiveType type, const void *vertices,
     UpdateVertexAttribute(3, format.tex1, offset);
     UpdateVertexAttribute(4, format.tex2, offset);
 
-    UpdateRenderingMode();
-
     glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
 }
 
 void CGL33Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     int first[], int count[], int drawCount, Color color)
 {
+    if (m_updateLights) UpdateLights();
+
     Vertex* vs = const_cast<Vertex*>(vertices);
 
     int vertexCount = 0;
@@ -1277,14 +1251,14 @@ void CGL33Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     glDisableVertexAttribArray(4);
     glVertexAttrib2f(4, 0.0f, 0.0f);
 
-    UpdateRenderingMode();
-
     glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
 }
 
 void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
     int first[], int count[], int drawCount, Color color)
 {
+    if (m_updateLights) UpdateLights();
+
     VertexTex2* vs = const_cast<VertexTex2*>(vertices);
 
     int vertexCount = 0;
@@ -1330,14 +1304,14 @@ void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
     glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
         reinterpret_cast<void*>(offset + offsetof(VertexTex2, texCoord2)));
 
-    UpdateRenderingMode();
-
     glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
 }
 
 void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
     int first[], int count[], int drawCount)
 {
+    if (m_updateLights) UpdateLights();
+
     VertexCol* vs = const_cast<VertexCol*>(vertices);
 
     int vertexCount = 0;
@@ -1380,8 +1354,6 @@ void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
     // Texture coordinate 1
     glDisableVertexAttribArray(4);
     glVertexAttrib2f(4, 0.0f, 0.0f);
-
-    UpdateRenderingMode();
 
     glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
 }
@@ -1701,13 +1673,13 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 
 void CGL33Device::DrawStaticBuffer(unsigned int bufferId)
 {
+    if (m_updateLights) UpdateLights();
+
     auto it = m_vboObjects.find(bufferId);
     if (it == m_vboObjects.end())
         return;
 
     VertexBufferInfo &info = (*it).second;
-
-    UpdateRenderingMode();
 
     BindVAO(info.vao);
 
@@ -1836,7 +1808,9 @@ void CGL33Device::SetRenderState(RenderState state, bool enabled)
     {
         m_lighting = enabled;
 
-        glUniform1i(m_uni->lightingEnabled, enabled ? 1 : 0);
+        m_updateLights = true;
+
+        //glUniform1i(m_uni->lightingEnabled, enabled ? 1 : 0);
 
         return;
     }
@@ -1962,13 +1936,9 @@ void CGL33Device::CopyFramebufferToTexture(Texture& texture, int xOffset, int yO
 {
     if (texture.id == 0) return;
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture.id);
+    BindTexture(m_freeTexture, texture.id);
 
     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, x, y, width, height);
-
-    // Restore previous texture
-    glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
 }
 
 std::unique_ptr<CFrameBufferPixels> CGL33Device::GetFrameBufferPixels() const
@@ -2014,16 +1984,52 @@ void CGL33Device::DeleteFramebuffer(std::string name)
     }
 }
 
-void CGL33Device::UpdateRenderingMode()
+inline void CGL33Device::UpdateTextureState(int index)
 {
-    bool enabled = m_texturesEnabled[0] && m_currentTextures[0].id != 0;
-    glUniform1i(m_uni->textureEnabled[0], enabled ? 1 : 0);
+    bool enabled = m_texturesEnabled[index] && (m_currentTextures[index].id != 0);
+    glUniform1i(m_uni->textureEnabled[index], enabled ? 1 : 0);
+}
 
-    enabled = m_texturesEnabled[1] && m_currentTextures[1].id != 0;
-    glUniform1i(m_uni->textureEnabled[1], enabled ? 1 : 0);
+void CGL33Device::UpdateLights()
+{
+    m_updateLights = false;
 
-    enabled = m_texturesEnabled[2] && m_currentTextures[2].id != 0;
-    glUniform1i(m_uni->textureEnabled[2], enabled ? 1 : 0);
+    // If not in normal rendering mode, return immediately
+    if (m_mode != 0) return;
+
+    // Lighting enabled
+    if (m_lighting)
+    {
+        int index = 0;
+
+        // Iterate all lights
+        for (unsigned int i = 0; i < m_lights.size(); i++)
+        {
+            // If disabled, ignore and continue
+            if (!m_lightsEnabled[i]) continue;
+
+            // If not directional, ignore and continue
+            if (m_lights[i].type != LIGHT_DIRECTIONAL) continue;
+
+            Light &light = m_lights[i];
+            LightLocations &uni = m_uni->lights[index];
+
+            glUniform4fv(uni.ambient, 1, light.ambient.Array());
+            glUniform4fv(uni.diffuse, 1, light.diffuse.Array());
+            glUniform4fv(uni.specular, 1, light.specular.Array());
+
+            glUniform4f(uni.position, -light.direction.x, -light.direction.y, -light.direction.z, 0.0f);
+
+            index++;
+        }
+
+        glUniform1i(m_uni->lightCount, index);
+    }
+    // Lighting disabled
+    else
+    {
+        glUniform1i(m_uni->lightCount, 0);
+    }
 }
 
 inline void CGL33Device::BindVBO(GLuint vbo)
@@ -2040,6 +2046,12 @@ inline void CGL33Device::BindVAO(GLuint vao)
 
     glBindVertexArray(vao);
     m_currentVAO = vao;
+}
+
+inline void CGL33Device::BindTexture(int index, GLuint texture)
+{
+    glActiveTexture(GL_TEXTURE0 + index);
+    glBindTexture(GL_TEXTURE_2D, texture);
 }
 
 unsigned int CGL33Device::UploadVertexData(DynamicBuffer& buffer, const void* data, unsigned int size)

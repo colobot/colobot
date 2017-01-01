@@ -196,6 +196,8 @@ struct UniformLocations
 
     //! true enables lighting
     GLint lightingEnabled = -1;
+    // Number of enabled lights
+    GLint lightCount = -1;
     //! Ambient color
     GLint ambientColor = -1;
     //! Diffuse color
