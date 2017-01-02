@@ -763,6 +763,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                 m_interface->SetFocus(pe);
                 if (m_phase == PHASE_SIMUL) m_cmdEditPause = m_pause->ActivatePause(PAUSE_ENGINE);
                 m_cmdEdit = true;
+                m_commandHistoryIndex = -1; // no element selected in command history
             }
             return false;
         }
@@ -775,6 +776,28 @@ bool CRobotMain::ProcessEvent(Event &event)
                 return false;
             }
         }
+    }
+
+    // Browse forward command history with UP key
+    if (event.type == EVENT_KEY_DOWN &&
+        event.GetData<KeyEventData>()->key == KEY(UP) && m_cmdEdit)
+    {
+        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+        if (pe == nullptr) return false;
+        std::string cmd = GetNextFromCommandHistory();
+        if (!cmd.empty()) pe->SetText(cmd);
+        return false;
+    }
+
+    // Browse backward command history with DOWN key
+    if (event.type == EVENT_KEY_DOWN &&
+        event.GetData<KeyEventData>()->key == KEY(DOWN) && m_cmdEdit)
+    {
+        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+        if (pe == nullptr) return false;
+        std::string cmd = GetPreviousFromCommandHistory();
+        if (!cmd.empty()) pe->SetText(cmd);
+        return false;
     }
 
     if (event.type == EVENT_KEY_DOWN &&
@@ -793,6 +816,7 @@ bool CRobotMain::ProcessEvent(Event &event)
             m_cmdEditPause = nullptr;
         }
         ExecuteCmd(cmd);
+        PushToCommandHistory(cmd);
         m_cmdEdit = false;
         return false;
     }
@@ -5767,4 +5791,29 @@ void CRobotMain::SetDebugCrashSpheres(bool draw)
 bool CRobotMain::GetDebugCrashSpheres()
 {
     return m_debugCrashSpheres;
+}
+
+void CRobotMain::PushToCommandHistory(std::string str)
+{
+    if (!m_commandHistory.empty() && m_commandHistory.front() == str) // already in history
+        return;
+
+    m_commandHistory.push_front(str);
+
+    if (m_commandHistory.size() > 50) // to avoid infinite growth
+        m_commandHistory.pop_back();
+}
+
+std::string CRobotMain::GetNextFromCommandHistory()
+{
+    if (m_commandHistory.empty() || static_cast<int>(m_commandHistory.size()) <= m_commandHistoryIndex + 1) // no next element
+        return "";
+    return m_commandHistory[++m_commandHistoryIndex];
+}
+
+std::string CRobotMain::GetPreviousFromCommandHistory()
+{
+    if (m_commandHistory.empty() || m_commandHistoryIndex < 1) // first or none element selected
+        return "";
+    return m_commandHistory[--m_commandHistoryIndex];
 }
