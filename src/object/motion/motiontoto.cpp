@@ -324,7 +324,7 @@ bool CMotionToto::EventFrame(const Event &event)
         distance = 30.0f-progress*18.0f;  // remoteness
         shift    = 18.0f-progress*11.0f;  // shift is left
         verti    = 10.0f-progress* 8.0f;  // shift at the top
-        
+
         CObject* selected = m_main->GetSelect();
         ObjectType type = selected != nullptr ? selected->GetType() : OBJECT_NULL;
 
