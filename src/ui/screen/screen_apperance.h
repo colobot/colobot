@@ -40,6 +40,9 @@ protected:
     void FixPerso(int rank, int index);
     void ColorPerso();
 
+    //! Move camera in that way that astronaut's origin is in (x, y) point on window
+    void SetCamera(float x, float y, float cameraDistance);
+
 protected:
     int             m_apperanceTab;         // perso: tab selected
     float           m_apperanceAngle;           // perso: angle of presentation

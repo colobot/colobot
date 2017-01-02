@@ -3087,6 +3087,11 @@ const Math::Matrix& CEngine::GetMatView()
     return m_matView;
 }
 
+const Math::Matrix& CEngine::GetMatProj()
+{
+    return m_matProj;
+}
+
 Math::Vector CEngine::GetEyePt()
 {
     return m_eyePt;

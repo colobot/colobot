@@ -1135,6 +1135,8 @@ public:
 
     //! Returns the view matrix
     const Math::Matrix& GetMatView();
+    //! Returns the projection matrix
+    const Math::Matrix& GetMatProj();
     //! Returns the camera center point
     TEST_VIRTUAL Math::Vector GetEyePt();
     //! Returns the camera target point
