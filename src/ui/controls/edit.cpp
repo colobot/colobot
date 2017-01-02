@@ -84,9 +84,16 @@ bool IsSep(int character)
     return !IsWord(character);
 }
 
+bool IsBreaker(char c)
+{
+    return ( c == '.'  || c == '{' || c == '}' ||
+             c == ';' || c == ':' || c == '[' || c == ']' ||
+             c == '(' || c == ')' || c == '=' );
+}
+
 bool IsDelimiter(char c)
 {
-    return c == ' ' || c == '.' || c == '\n';
+    return IsSpace( c ) || IsBreaker( c );
 }
 
 //! Object's constructor.
@@ -2773,80 +2780,99 @@ void CEdit::DeleteWord(int dir)
     if( dir < 0)
     {
         if ( !m_cursor1 ) return;
-        if ( m_text[m_cursor1] == '.' ) m_cursor2 = --m_cursor1;
+        if ( IsBreaker( m_text[m_cursor1] ) )
+        {
+            m_cursor2 = --m_cursor1;
+            GetLogger()->Info( "CASE 0\n" );
+        }
         else if ( !IsDelimiter( m_text[m_cursor1] ) && !IsDelimiter( m_text[m_cursor1-1] ) )
         {
             while ( m_cursor1 < m_len  && !IsDelimiter( m_text[m_cursor1] ) ) ++m_cursor1;
+            GetLogger()->Info( "CASE 1\n" );
         }
 
         if ( IsDelimiter( m_text[m_cursor2] ) )
         {
             while ( m_cursor2 > 0 && IsDelimiter( m_text[m_cursor2] ) )
             {
-                if ( m_text[m_cursor2] == '.' )
+                if ( IsBreaker( m_text[m_cursor2] ) )
                 {
                     ++m_cursor2;
                     Delete( -1 );
+                    GetLogger()->Info( "CASE 2A\n" );
                     return;
                 }
                 --m_cursor2;
             }
+            GetLogger()->Info( "CASE 2\n" );
         }
 
         if ( !IsDelimiter( m_text[m_cursor2] ) )
         {
             while ( m_cursor2 > 0 && !IsDelimiter( m_text[m_cursor2] ) )
             {
-                if ( m_text[m_cursor2] == '.' )
+                if ( IsBreaker( m_text[m_cursor2] ) )
                 {
                     ++m_cursor2;
                     Delete( -1 );
+                    GetLogger()->Info( "CASE 3A\n" );
                     return;
                 }
                 --m_cursor2;
             }
+            GetLogger()->Info( "CASE 3\n" );
         }
-        if ( m_text[m_cursor2] == '.' ) ++m_cursor2;
+        if ( IsBreaker( m_text[m_cursor2] ) )
+        {
+            ++m_cursor2;
+            GetLogger()->Info( "CASE 4\n" );
+        }
         Delete( -1 );
     }
     else
     {
         if ( m_cursor1 == m_len ) return;
-        if ( m_text[m_cursor1] == '.' )
+        if ( IsBreaker( m_text[m_cursor1] ) )
         {
             DeleteOne( 1 );
+            GetLogger()->Info( "CASE 0\n" );
             return;
         }
         if ( !IsDelimiter( m_text[m_cursor1] ) && !IsDelimiter( m_text[m_cursor1-1] ) )
         {
             while ( m_cursor1 > 0 && !IsDelimiter( m_text[m_cursor1] ) ) --m_cursor1;
             ++m_cursor1;
+            GetLogger()->Info( "CASE 1\n" );
         }
 
         if ( IsDelimiter( m_text[m_cursor2] ) )
         {
             while ( m_cursor2 < m_len && IsDelimiter( m_text[m_cursor2] ) )
             {
-                if ( m_text[m_cursor2] == '.' )
+                if ( IsBreaker( m_text[m_cursor2] ) )
                 {
                     --m_cursor2;
+                    GetLogger()->Info( "CASE 2A\n" );
                     break;
                 }
                 ++m_cursor2;
             }
+            GetLogger()->Info( "CASE 2\n" );
         }
 
         if ( !IsDelimiter( m_text[m_cursor2] ) )
         {
             while ( m_cursor2 < m_len && !IsDelimiter( m_text[m_cursor2] ) )
             {
-                if ( m_text[m_cursor2] == '.' )
+                if ( IsBreaker( m_text[m_cursor2] ) )
                 {
                     --m_cursor2;
+                    GetLogger()->Info( "CASE 3A\n" );
                     break;
                 }
                 ++m_cursor2;
             }
+            GetLogger()->Info( "CASE 3\n" );
         }
 
         Delete( -1 );
