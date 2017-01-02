@@ -242,7 +242,7 @@ bool CGL21Device::Create()
     glViewport(0, 0, m_config.size.x, m_config.size.y);
 
     // this is set in shader
-    int numLights = 8;
+    int numLights = 4;
 
     m_lights        = std::vector<Light>(numLights, Light());
     m_lightsEnabled = std::vector<bool> (numLights, false);
@@ -408,7 +408,7 @@ bool CGL21Device::Create()
         uni.fogColor = glGetUniformLocation(m_normalProgram, "uni_FogColor");
 
         uni.shadowColor = glGetUniformLocation(m_normalProgram, "uni_ShadowColor");
-        uni.lightingEnabled = glGetUniformLocation(m_normalProgram, "uni_LightingEnabled");
+        uni.lightCount = glGetUniformLocation(m_normalProgram, "uni_LightCount");
 
         uni.ambientColor = glGetUniformLocation(m_normalProgram, "uni_Material.ambient");
         uni.diffuseColor = glGetUniformLocation(m_normalProgram, "uni_Material.diffuse");
@@ -417,12 +417,6 @@ bool CGL21Device::Create()
         GLchar name[64];
         for (int i = 0; i < 8; i++)
         {
-            sprintf(name, "uni_Light[%d].Enabled", i);
-            uni.lights[i].enabled = glGetUniformLocation(m_normalProgram, name);
-
-            sprintf(name, "uni_Light[%d].Type", i);
-            uni.lights[i].type = glGetUniformLocation(m_normalProgram, name);
-
             sprintf(name, "uni_Light[%d].Position", i);
             uni.lights[i].position = glGetUniformLocation(m_normalProgram, name);
 
@@ -434,18 +428,6 @@ bool CGL21Device::Create()
 
             sprintf(name, "uni_Light[%d].Specular", i);
             uni.lights[i].specular = glGetUniformLocation(m_normalProgram, name);
-
-            sprintf(name, "uni_Light[%d].Attenuation", i);
-            uni.lights[i].attenuation = glGetUniformLocation(m_normalProgram, name);
-
-            sprintf(name, "uni_Light[%d].SpotDirection", i);
-            uni.lights[i].spotDirection = glGetUniformLocation(m_normalProgram, name);
-
-            sprintf(name, "uni_Light[%d].Exponent", i);
-            uni.lights[i].spotExponent = glGetUniformLocation(m_normalProgram, name);
-
-            sprintf(name, "uni_Light[%d].SpotCutoff", i);
-            uni.lights[i].spotCutoff = glGetUniformLocation(m_normalProgram, name);
         }
 
         // Set default uniform values
@@ -476,10 +458,7 @@ bool CGL21Device::Create()
 
         glUniform1f(uni.shadowColor, 0.5f);
 
-        glUniform1i(uni.lightingEnabled, 0);
-
-        for (int i = 0; i < 8; i++)
-            glUniform1i(uni.lights[i].enabled, 0);
+        glUniform1i(uni.lightCount, 0);
     }
 
     // Obtain uniform locations from interface rendering program and initialize them
@@ -594,6 +573,7 @@ void CGL21Device::ConfigChanged(const DeviceConfig& newConfig)
 
     // Reset state
     m_lighting = false;
+    m_updateLights = true;
 
     glViewport(0, 0, m_config.size.x, m_config.size.y);
 
@@ -721,36 +701,7 @@ void CGL21Device::SetLight(int index, const Light &light)
 
     m_lights[index] = light;
 
-    LightLocations &loc = m_uniforms[m_mode].lights[index];
-
-    glUniform4fv(loc.ambient, 1, light.ambient.Array());
-    glUniform4fv(loc.diffuse, 1, light.diffuse.Array());
-    glUniform4fv(loc.specular, 1, light.specular.Array());
-    glUniform3f(loc.attenuation, light.attenuation0, light.attenuation1, light.attenuation2);
-
-    if (light.type == LIGHT_DIRECTIONAL)
-    {
-        glUniform1i(loc.type, 1);
-        glUniform4f(loc.position, -light.direction.x, -light.direction.y, -light.direction.z, 0.0f);
-    }
-    else if (light.type == LIGHT_POINT)
-    {
-        glUniform1i(loc.type, 2);
-        glUniform4f(loc.position, light.position.x, light.position.y, light.position.z, 1.0f);
-
-        glUniform3f(loc.spotDirection, 0.0f, 1.0f, 0.0f);
-        glUniform1f(loc.spotCutoff, -1.0f);
-        glUniform1f(loc.spotExponent, 1.0f);
-    }
-    else if (light.type == LIGHT_SPOT)
-    {
-        glUniform1i(loc.type, 3);
-        glUniform4f(loc.position, light.position.x, light.position.y, light.position.z, 1.0f);
-
-        glUniform3f(loc.spotDirection, -light.direction.x, -light.direction.y, -light.direction.z);
-        glUniform1f(loc.spotCutoff, std::cos(light.spotAngle));
-        glUniform1f(loc.spotExponent, light.spotIntensity);
-    }
+    m_updateLights = true;
 }
 
 void CGL21Device::SetLightEnabled(int index, bool enabled)
@@ -760,7 +711,7 @@ void CGL21Device::SetLightEnabled(int index, bool enabled)
 
     m_lightsEnabled[index] = enabled;
 
-    glUniform1i(m_uniforms[m_mode].lights[index].enabled, enabled ? 1 : 0);
+    m_updateLights = true;
 }
 
 /** If image is invalid, returns invalid texture.
@@ -798,11 +749,12 @@ Texture CGL21Device::CreateTexture(ImageData *data, const TextureCreateParams &p
 
     result.originalSize = result.size;
 
-    glActiveTexture(GL_TEXTURE0);
-    glEnable(GL_TEXTURE_2D);
-
     glGenTextures(1, &result.id);
+
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, result.id);
+
+    glEnable(GL_TEXTURE_2D);
 
     // Set texture parameters
     GLint minF = GL_NEAREST, magF = GL_NEAREST;
@@ -991,7 +943,7 @@ void CGL21Device::SetTexture(int index, const Texture &texture)
     glBindTexture(GL_TEXTURE_2D, texture.id);
 
     // Params need to be updated for the new bound texture
-    UpdateTextureStatus();
+    UpdateTextureState(index);
     UpdateTextureParams(index);
 }
 
@@ -1009,7 +961,7 @@ void CGL21Device::SetTexture(int index, unsigned int textureId)
     glBindTexture(GL_TEXTURE_2D, textureId);
 
     // Params need to be updated for the new bound texture
-    UpdateTextureStatus();
+    UpdateTextureState(index);
     UpdateTextureParams(index);
 }
 
@@ -1024,15 +976,54 @@ void CGL21Device::SetTextureEnabled(int index, bool enabled)
     if (same)
         return; // nothing to do
 
-    UpdateTextureStatus();
+    UpdateTextureState(index);
 }
 
-void CGL21Device::UpdateTextureStatus()
+void CGL21Device::UpdateTextureState(int index)
 {
-    for (int i = 0; i < 3; i++)
+    bool enabled = m_texturesEnabled[index] && (m_currentTextures[index].id != 0);
+    glUniform1i(m_uniforms[m_mode].textureEnabled[index], enabled ? 1 : 0);
+}
+
+void CGL21Device::UpdateLights()
+{
+    m_updateLights = false;
+
+    // If not in normal rendering mode, return immediately
+    if (m_mode != 0) return;
+
+    // Lighting enabled
+    if (m_lighting)
     {
-        bool enabled = m_texturesEnabled[i] && (m_currentTextures[i].id != 0);
-        glUniform1i(m_uniforms[m_mode].textureEnabled[i], enabled ? 1 : 0);
+        int index = 0;
+
+        // Iterate all lights
+        for (unsigned int i = 0; i < m_lights.size(); i++)
+        {
+            // If disabled, ignore and continue
+            if (!m_lightsEnabled[i]) continue;
+
+            // If not directional, ignore and continue
+            if (m_lights[i].type != LIGHT_DIRECTIONAL) continue;
+
+            Light &light = m_lights[i];
+            LightLocations &uni = m_uniforms[m_mode].lights[index];
+
+            glUniform4fv(uni.ambient, 1, light.ambient.Array());
+            glUniform4fv(uni.diffuse, 1, light.diffuse.Array());
+            glUniform4fv(uni.specular, 1, light.specular.Array());
+
+            glUniform4f(uni.position, -light.direction.x, -light.direction.y, -light.direction.z, 0.0f);
+
+            index++;
+        }
+
+        glUniform1i(m_uniforms[m_mode].lightCount, index);
+    }
+    // Lighting disabled
+    else
+    {
+        glUniform1i(m_uniforms[m_mode].lightCount, 0);
     }
 }
 
@@ -1042,6 +1033,12 @@ inline void CGL21Device::BindVBO(GLuint vbo)
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     m_currentVBO = vbo;
+}
+
+inline void CGL21Device::BindTexture(int index, GLuint texture)
+{
+    glActiveTexture(GL_TEXTURE0 + index);
+    glBindTexture(GL_TEXTURE_2D, texture);
 }
 
 /**
@@ -1121,6 +1118,8 @@ void CGL21Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode 
 void CGL21Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount,
                               Color color)
 {
+    if (m_updateLights) UpdateLights();
+
     BindVBO(0);
 
     Vertex* vs = const_cast<Vertex*>(vertices);
@@ -1148,6 +1147,8 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int 
 void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
                               Color color)
 {
+    if (m_updateLights) UpdateLights();
+
     BindVBO(0);
 
     VertexTex2* vs = const_cast<VertexTex2*>(vertices);
@@ -1180,6 +1181,8 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, 
 
 void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
 {
+    if (m_updateLights) UpdateLights();
+
     BindVBO(0);
 
     VertexCol* vs = const_cast<VertexCol*>(vertices);
@@ -1199,6 +1202,8 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
 void CGL21Device::DrawPrimitive(PrimitiveType type, const void *vertices,
     int size, const VertexFormat &format, int vertexCount)
 {
+    if (m_updateLights) UpdateLights();
+
     BindVBO(0);
 
     const char *ptr = reinterpret_cast<const char*>(vertices);
@@ -1277,6 +1282,8 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const void *vertices,
 void CGL21Device::DrawPrimitives(PrimitiveType type, const void *vertices,
     int size, const VertexFormat &format, int first[], int count[], int drawCount)
 {
+    if (m_updateLights) UpdateLights();
+
     BindVBO(0);
 
     const char *ptr = reinterpret_cast<const char*>(vertices);
@@ -1355,6 +1362,8 @@ void CGL21Device::DrawPrimitives(PrimitiveType type, const void *vertices,
 void CGL21Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     int first[], int count[], int drawCount, Color color)
 {
+    if (m_updateLights) UpdateLights();
+
     BindVBO(0);
 
     Vertex* vs = const_cast<Vertex*>(vertices);
@@ -1381,6 +1390,8 @@ void CGL21Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
 void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
     int first[], int count[], int drawCount, Color color)
 {
+    if (m_updateLights) UpdateLights();
+
     BindVBO(0);
 
     VertexTex2* vs = const_cast<VertexTex2*>(vertices);
@@ -1414,6 +1425,8 @@ void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
 void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
     int first[], int count[], int drawCount)
 {
+    if (m_updateLights) UpdateLights();
+
     BindVBO(0);
 
     VertexCol* vs = const_cast<VertexCol*>(vertices);
@@ -1573,6 +1586,8 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
     auto it = m_vboObjects.find(bufferId);
     if (it == m_vboObjects.end())
         return;
+
+    if (m_updateLights) UpdateLights();
 
     BindVBO((*it).second.bufferId);
 
@@ -1741,9 +1756,11 @@ void CGL21Device::SetRenderState(RenderState state, bool enabled)
     }
     else if (state == RENDER_STATE_LIGHTING)
     {
+        if (m_lighting == enabled) return;
+
         m_lighting = enabled;
 
-        glUniform1i(m_uniforms[m_mode].lightingEnabled, enabled ? 1 : 0);
+        m_updateLights = true;
 
         return;
     }

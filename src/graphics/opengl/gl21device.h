@@ -183,10 +183,14 @@ public:
 private:
     //! Updates the texture params for given texture stage
     void UpdateTextureParams(int index);
-    //! Updates texture status
-    void UpdateTextureStatus();
+    //! Updates texture state
+    void UpdateTextureState(int index);
+    //! Update light parameters
+    void UpdateLights();
     //! Binds VBO
     inline void BindVBO(GLuint vbo);
+    //! Binds texture
+    inline void BindTexture(int index, GLuint texture);
 
 private:
     //! Current config
@@ -208,6 +212,8 @@ private:
 
     //! Whether lighting is enabled
     bool m_lighting = false;
+    //! true means that lights need to be updated
+    bool m_updateLights = false;
     //! Current lights
     std::vector<Light> m_lights;
     //! Current lights enable status

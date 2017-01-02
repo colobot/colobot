@@ -194,8 +194,6 @@ struct UniformLocations
     //! Shadow color
     GLint shadowColor = -1;
 
-    //! true enables lighting
-    GLint lightingEnabled = -1;
     // Number of enabled lights
     GLint lightCount = -1;
     //! Ambient color

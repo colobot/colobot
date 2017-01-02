@@ -19,6 +19,8 @@
 // FRAGMENT SHADER - NORMAL MODE
 #version 120
 
+#define CONFIG_QUALITY_SHADOWS 1
+
 uniform sampler2D uni_PrimaryTexture;
 uniform sampler2D uni_SecondaryTexture;
 uniform sampler2DShadow uni_ShadowTexture;
@@ -34,6 +36,26 @@ uniform vec4 uni_FogColor;
 
 uniform float uni_ShadowColor;
 
+struct LightParams
+{
+    vec4 Position;
+    vec4 Ambient;
+    vec4 Diffuse;
+    vec4 Specular;
+};
+
+struct Material
+{
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+};
+
+uniform Material uni_Material;
+
+uniform int uni_LightCount;
+uniform LightParams uni_Light[4];
+
 varying float pass_Distance;
 varying vec4 pass_Color;
 varying vec3 pass_Normal;
@@ -47,6 +69,55 @@ void main()
 {
     vec4 color = pass_Color;
 
+    if (uni_LightCount > 0)
+    {
+        vec4 ambient = vec4(0.0f);
+        vec4 diffuse = vec4(0.0f);
+        vec4 specular = vec4(0.0f);
+
+        vec3 normal = normalize(pass_Normal);
+
+        for (int i = 0; i < uni_LightCount; i++)
+        {
+            LightParams light = uni_Light[i];
+
+            vec3 lightDirection = light.Position.xyz;
+            vec3 reflectDirection = -reflect(lightDirection, normal);
+
+            float diffuseComponent = clamp(dot(normal, lightDirection), 0.0f, 1.0f);
+            float specularComponent = clamp(pow(dot(normal, lightDirection + reflectDirection), 10.0f), 0.0f, 1.0f);
+
+            ambient += light.Ambient;
+            diffuse += diffuseComponent * light.Diffuse;
+            specular += specularComponent * light.Specular;
+        }
+
+        float shadow = 1.0f;
+
+        if (uni_TextureEnabled[2])
+        {
+#ifdef CONFIG_QUALITY_SHADOWS
+            float offset = 0.00025f;
+
+            float value = (1.0f / 5.0f) * (shadow2D(uni_ShadowTexture, pass_TexCoord2).x
+                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3( offset,    0.0f, 0.0f)).x
+                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(-offset,    0.0f, 0.0f)).x
+                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(   0.0f,  offset, 0.0f)).x
+                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(   0.0f, -offset, 0.0f)).x);
+
+            shadow = mix(uni_ShadowColor, 1.0f, value);
+#else
+            shadow = mix(uni_ShadowColor, 1.0f, shadow2D(uni_ShadowTexture, pass_TexCoord2).x);
+#endif
+        }
+
+        vec4 result = ambient * uni_Material.ambient
+                + diffuse * uni_Material.diffuse * shadow
+                + specular * uni_Material.specular * shadow;
+
+        color = clamp(vec4(result.rgb, 1.0f), 0.0f, 1.0f);
+    }
+
     if (uni_TextureEnabled[0])
     {
         color = color * texture2D(uni_PrimaryTexture, pass_TexCoord0);
@@ -55,16 +126,6 @@ void main()
     if (uni_TextureEnabled[1])
     {
         color = color * texture2D(uni_SecondaryTexture, pass_TexCoord1);
-    }
-
-    if (uni_TextureEnabled[2])
-    {
-        vec3 normal = pass_Normal * (2.0f * gl_Color.x - 1.0f);
-
-        if (dot(normal, const_LightDirection) < 0.0f)
-            color.rgb *= uni_ShadowColor;
-        else
-            color.rgb *= mix(uni_ShadowColor, 1.0f, shadow2D(uni_ShadowTexture, pass_TexCoord2).x);
     }
 
     if (uni_FogEnabled)
