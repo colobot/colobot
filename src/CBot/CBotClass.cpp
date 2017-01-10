@@ -442,7 +442,7 @@ bool CBotClass::CheckCall(CBotProgram* program, CBotDefParam* pParam, CBotToken*
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
+CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack, CBotProgram* program)
 {
     if ( !IsOfType(p, ID_PUBLIC) )
     {
@@ -455,7 +455,8 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
     std::string name = p->GetString();
 
     CBotClass* pOld = CBotClass::Find(name);
-    if ( pOld != nullptr && pOld->m_IsDef )
+    if ( (pOld != nullptr && pOld->m_IsDef) || /* public class exists in different program */
+         program->ClassExists(name))           /* class exists in this program */
     {
         pStack->SetError( CBotErrRedefClass, p );
         return nullptr;
@@ -489,14 +490,13 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
         }
 
         int level = 1;
-        do                                          // skip over the definition
+        while (level > 0 && p != nullptr)
         {
             int type = p->GetType();
             p = p->GetNext();
             if (type == ID_OPBLK) level++;
             if (type == ID_CLBLK) level--;
-        }
-        while (level > 0 && p != nullptr);
+        }     
 
         if (level > 0) pStack->SetError(CBotErrCloseBlock, classe->m_pOpenblk);
 

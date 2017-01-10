@@ -278,6 +278,7 @@ public:
      * \brief Pre-compile a new class
      * \param p[in, out] Pointer to first token of the class, will be updated to point to first token after the class definition
      * \param pStack Compile stack
+     * \param program Currently precompiling program
      *
      * This function is used to find the beginning and end of class definition.
      *
@@ -286,7 +287,8 @@ public:
      * \return Precompiled class, or nullptr in case of error
      */
     static CBotClass* Compile1(CBotToken* &p,
-                               CBotCStack* pStack);
+                               CBotCStack* pStack,
+                               CBotProgram* program);
 
     /*!
      * \brief DefineClasses Calls CompileDefItem for each class in a list
