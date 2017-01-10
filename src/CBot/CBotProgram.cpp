@@ -93,7 +93,8 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
         if ( p->GetType() == ID_CLASS ||
             ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
         {
-            CBotClass* newclass = CBotClass::Compile1(p, pStack.get());
+            CBotClass* newclass = CBotClass::Compile1(p, pStack.get(), this);
+
             if (newclass != nullptr)
                 m_classes.push_back(newclass);
         }
@@ -279,6 +280,16 @@ bool CBotProgram::GetError(CBotError& code, int& start, int& end, CBotProgram*& 
 const std::list<CBotFunction*>& CBotProgram::GetFunctions()
 {
     return m_functions;
+}
+
+bool CBotProgram::ClassExists(std::string name)
+{
+    for (CBotClass* p : m_classes)
+    {
+        if ( p->GetName() == name ) return true;
+    }
+
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
