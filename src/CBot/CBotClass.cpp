@@ -490,16 +490,13 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack, CBotProgram* p
         }
 
         int level = 1;
-        do                                          // skip over the definition
+        while (level > 0 && p != nullptr)
         {
-            if (p == nullptr) break; // end of code
-
             int type = p->GetType();
             p = p->GetNext();
             if (type == ID_OPBLK) level++;
             if (type == ID_CLBLK) level--;
-        }
-        while (level > 0 && p != nullptr);
+        }     
 
         if (level > 0) pStack->SetError(CBotErrCloseBlock, classe->m_pOpenblk);
 
