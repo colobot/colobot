@@ -171,7 +171,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     CBotClass*  pClass;
 
     if (m_thisIdent == -3) // super.method()
-        pClass = CBotClass::Find(m_className);
+        pClass = CBotClass::Find(m_className, pj->GetProgram());
     else
         pClass = pThis->GetClass();
 
@@ -244,7 +244,7 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
     CBotClass*    pClass;
 
     if (m_thisIdent == -3) // super.method()
-        pClass = CBotClass::Find(m_className);
+        pClass = CBotClass::Find(m_className, pile->GetProgram());
     else
         pClass = pThis->GetClass();
 
@@ -299,7 +299,7 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     CBotClass*  pClass;
 
     if (m_thisIdent == -3) // super.method()
-        pClass = CBotClass::Find(m_className);
+        pClass = CBotClass::Find(m_className, pj->GetProgram());
     else
         pClass = pThis->GetClass();
 

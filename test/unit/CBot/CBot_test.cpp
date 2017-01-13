@@ -1073,6 +1073,79 @@ TEST_F(CBotUT, PublicAndPrivateClasses2)
     );
 }
 
+TEST_F(CBotUT, PublicFunctionUsesPrivateClass)
+{
+    // Keep the program, so that the class continues to exist after ExecuteTest finishes
+    auto publicProgram = ExecuteTest(
+        "public void Foo()\n"
+        "{\n"
+        "     PrivateClass c();\n"
+        "     c.a = 12;\n"
+        "}\n"
+        "private class PrivateClass\n"
+        "{\n"
+        "     public int a = 14;\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void TestFunction()\n"
+        "{\n"
+        "     Foo();\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, PublicFunctionUsesPrivateClassMethod)
+{
+    // Keep the program, so that the class continues to exist after ExecuteTest finishes
+    auto publicProgram = ExecuteTest(
+        "public void Foo()\n"
+        "{\n"
+        "     PrivateClass c();\n"
+        "     c.Func();\n"
+        "     ASSERT(c.a == 10);\n"
+        "}\n"
+        "private class PrivateClass\n"
+        "{\n"
+        "     public int a = 5;\n"
+        "     public void Func()\n"
+        "     {\n"
+        "          a = 10;\n"
+        "     }\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void TestFunction()\n"
+        "{\n"
+        "     Foo();\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, UsePublicFunctionThatUsePrivateFunction)
+{
+    // Keep the program, so that the class continues to exist after ExecuteTest finishes
+    auto publicProgram = ExecuteTest(
+        "public void Foo()\n"
+        "{\n"
+        "     PriFoo();\n"
+        "}\n"
+        "void PriFoo()\n"
+        "{\n"
+        "     int a = 14;\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void TestFunction()\n"
+        "{\n"
+        "     Foo();\n"
+        "}\n"
+    );
+}
+
 TEST_F(CBotUT, PublicClasses)
 {
     // Keep the program, so that the class continues to exist after ExecuteTest finishes

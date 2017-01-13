@@ -36,7 +36,6 @@ namespace CBot
 {
 
 CBotExternalCallList* CBotProgram::m_externalCalls = new CBotExternalCallList();
-CBotProgram* CBotProgram::m_currentProgram = nullptr;
 
 CBotProgram::CBotProgram()
 {
@@ -56,8 +55,6 @@ CBotProgram::~CBotProgram()
 
 bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& externFunctions, void* pUser)
 {
-    m_currentProgram = this;
-
     // Cleanup the previously compiled program
     Stop();
 
@@ -174,8 +171,6 @@ bool CBotProgram::GetPosition(const std::string& name, int& start, int& stop, CB
 
 bool CBotProgram::Run(void* pUser, int timer)
 {
-    m_currentProgram = this;
-
     if (m_stack == nullptr || m_entryPoint == nullptr)
     {
         m_error = CBotErrNoRun;
@@ -438,11 +433,6 @@ void CBotProgram::Free()
 CBotExternalCallList* CBotProgram::GetExternalCalls()
 {
     return m_externalCalls;
-}
-
-CBotProgram* CBotProgram::GetCurrentProgram()
-{
-    return m_currentProgram;
 }
 
 } // namespace CBot

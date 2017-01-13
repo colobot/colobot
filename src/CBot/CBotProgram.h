@@ -330,14 +330,6 @@ public:
                      CBotGet modestop = GetPosBloc);
 
     /**
-     * \brief Return program that is being compiled or run now.
-     * This function should be called only during execution Compile or Run function
-     *
-     * \return Program that call Compile or Run method last
-     */
-    static CBotProgram* GetCurrentProgram();
-
-    /**
      * \brief Returns the list of all user-defined functions in this program as instances of CBotFunction
      *
      * This list includes all the functions (not only extern)
@@ -368,7 +360,6 @@ public:
 private:
     //! All external calls
     static CBotExternalCallList* m_externalCalls;
-    static CBotProgram* m_currentProgram;
     //! All user-defined functions
     std::list<CBotFunction*> m_functions{};
     //! The entry point function

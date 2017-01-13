@@ -48,7 +48,7 @@ CBotTypResult::CBotTypResult(int type, const std::string& name)
          type == CBotTypClass   ||
          type == CBotTypIntrinsic )
     {
-        m_class = CBotClass::Find(name);
+        m_class = CBotClass::Find(name, nullptr);
         if (m_class && m_class->IsIntrinsic() ) m_type = CBotTypIntrinsic;
     }
 }

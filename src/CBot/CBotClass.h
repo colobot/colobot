@@ -190,20 +190,22 @@ public:
     bool IsChildOf(CBotClass* pClass);
 
     /*!
-     * \brief Find class in current program or in list of public classes
-     * \param pToken
-     * \param onlyPublic search only in list of public classes
+     * \brief Find class in program or in list of public classes.
+     * If program is null, search only in list of public classes.
+     * \param pToken Name of class
+     * \param program
      * \return A class by it's its name.
      */
-    static CBotClass* Find(CBotToken* &pToken, bool onlyPublic = false);
+    static CBotClass* Find(CBotToken* &pToken, CBotProgram* program);
 
     /*!
-     * \brief Find class in current program or in list of public classes
-     * \param name
-     * \param onlyPublic search only in list of public classes
+     * \brief Find class in program or in list of public classes.
+     * If program is null, search only in list of public classes.
+     * \param name Name of class
+     * \param program
      * \return
      */
-    static CBotClass* Find(const std::string& name, bool onlyPublic = false);
+    static CBotClass* Find(const std::string& name, CBotProgram* program);
 
     /*!
      * \brief Check if class exists in current program or in list of public classes
@@ -211,7 +213,7 @@ public:
      * \param onlyPublic search only in list of public classes
      * \return
      */
-    static bool Exists(const std::string& name, bool onlyPublic = false);
+    static bool Exists(const std::string& name, CBotProgram* program);
 
     /*!
      * \brief GetVar Return the list of variables.

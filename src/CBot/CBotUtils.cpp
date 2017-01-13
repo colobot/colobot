@@ -80,7 +80,7 @@ CBotTypResult TypeParam(CBotToken* &p, CBotCStack* pile)
         return CBotTypResult( 0 );
 
     case TokenTypVar:
-        pClass = CBotClass::Find(p);
+        pClass = CBotClass::Find(p, pile->GetProgram());
         if ( pClass != nullptr)
         {
             p = p->GetNext();

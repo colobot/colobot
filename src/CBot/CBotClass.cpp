@@ -257,24 +257,19 @@ bool CBotClass::IsIntrinsic()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotClass* CBotClass::Find(CBotToken* &pToken, bool onlyPublic)
+CBotClass* CBotClass::Find(CBotToken* &pToken, CBotProgram* program)
 {
-    return Find(pToken->GetString(), onlyPublic);
+    return Find(pToken->GetString(), program);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotClass* CBotClass::Find(const std::string& name, bool onlyPublic)
+CBotClass* CBotClass::Find(const std::string& name, CBotProgram* program)
 {
-    if (!onlyPublic)
+    if (program != nullptr)
     {
-        CBotProgram* program = CBotProgram::GetCurrentProgram();
+        CBotClass* classe = program->FindClass(name);
 
-        if (program != nullptr)
-        {
-            CBotClass* classe = program->FindClass(name);
-
-            if (classe != nullptr) return classe;
-        }
+        if (classe != nullptr) return classe;
     }
 
     for (CBotClass* p : m_publicClasses)
@@ -286,9 +281,9 @@ CBotClass* CBotClass::Find(const std::string& name, bool onlyPublic)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotClass::Exists(const std::string& name, bool onlyPublic)
+bool CBotClass::Exists(const std::string& name, CBotProgram* program)
 {
-    return CBotClass::Find(name, onlyPublic) != nullptr;
+    return CBotClass::Find(name, program) != nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -419,7 +414,7 @@ bool CBotClass::RestoreStaticState(FILE* pf)
         if ( w == 0 ) return true;
 
         if (!ReadString( pf, ClassName )) return false;
-        pClass = Find(ClassName);
+        pClass = Find(ClassName, nullptr);
 
         while (true)
         {
@@ -464,6 +459,8 @@ bool CBotClass::CheckCall(CBotProgram* program, CBotDefParam* pParam, CBotToken*
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 {
+    CBotProgram* program = pStack->GetProgram();
+
     bool isPrivate;
 
     if ( IsOfType(p, ID_PUBLIC) ) isPrivate = false;
@@ -483,8 +480,8 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 
     std::string name = p->GetString(); // name of class
 
-    if ( (isPrivate && CBotProgram::GetCurrentProgram()->ClassExists(name)) ||  // check only in current program
-         (!isPrivate && CBotClass::Exists(name)) )                              // check in current program and list of public classes
+    if ( (isPrivate && program->ClassExists(name)) ||            // check only in current program
+         (!isPrivate && CBotClass::Exists(name, program)) )      // check in current program and list of public classes
     {
         pStack->SetError( CBotErrRedefClass, p );
         return nullptr;
@@ -497,7 +494,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
         if ( IsOfType( p, ID_EXTENDS ) )
         {
             std::string name = p->GetString();
-            pPapa = CBotClass::Find(name);
+            pPapa = CBotClass::Find(name, program);
 
             if (!IsOfType(p, TokenTypVar) || pPapa == nullptr )
             {
@@ -788,6 +785,8 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
 {
+    CBotProgram* program = pStack->GetProgram();
+
     // skip public, private and class keywords
     IsOfType(p, ID_PUBLIC);
     IsOfType(p, ID_PRIVATE);
@@ -799,13 +798,13 @@ CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
     if (IsOfType(p, TokenTypVar))
     {
         // the class was created by Compile1
-        CBotClass* pOld = CBotClass::Find(name);
+        CBotClass* pOld = CBotClass::Find(name, program);
 
         if ( IsOfType( p, ID_EXTENDS ) )
         {
             // TODO: Not sure how correct is that - I have no idea how the precompilation (Compile1 method) works ~krzys_h
             std::string name = p->GetString();
-            CBotClass* pPapa = CBotClass::Find(name);
+            CBotClass* pPapa = CBotClass::Find(name, program);
 
             if (!IsOfType(p, TokenTypVar) || pPapa == nullptr)
             {
