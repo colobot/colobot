@@ -237,6 +237,9 @@ enum CBotError : int
     CBotErrNoPublic      = 5042, //!< missing word "public"
     CBotErrNoExpression  = 5043, //!< expression expected after =
     CBotErrAmbiguousCall = 5044, //!< ambiguous call to overloaded function
+    CBotErrNoPrivilege   = 5045, //!< missing public, protected or private
+    CBotErrBadPrivilege  = 5046, //!< wrong privilege (e.g. class can't be protected)
+    CBotErrNotClass      = 5047, //!< this class does not exist
 
     // Runtime errors
     CBotErrZeroDiv       = 6000, //!< division by zero
@@ -245,16 +248,15 @@ enum CBotError : int
     CBotErrNoRetVal      = 6003, //!< function did not return results
     CBotErrNoRun         = 6004, //!< Run() without active function
     CBotErrUndefFunc     = 6005, //!< calling a function that no longer exists
-    CBotErrNotClass      = 6006, //!< this class does not exist
-    CBotErrNull          = 6007, //!< null pointer
-    CBotErrNan           = 6008, //!< calculation with a NAN
-    CBotErrOutArray      = 6009, //!< index out of array
-    CBotErrStackOver     = 6010, //!< stack overflow
-    CBotErrDeletedPtr    = 6011, //!< pointer to an object destroyed
-    CBotErrFileOpen      = 6012, //!< cannot open the file
-    CBotErrNotOpen       = 6013, //!< channel not open
-    CBotErrRead          = 6014, //!< error while reading
-    CBotErrWrite         = 6015, //!< writing error
+    CBotErrNull          = 6006, //!< null pointer
+    CBotErrNan           = 6007, //!< calculation with a NAN
+    CBotErrOutArray      = 6008, //!< index out of array
+    CBotErrStackOver     = 6009, //!< stack overflow
+    CBotErrDeletedPtr    = 6010, //!< pointer to an object destroyed
+    CBotErrFileOpen      = 6011, //!< cannot open the file
+    CBotErrNotOpen       = 6012, //!< channel not open
+    CBotErrRead          = 6013, //!< error while reading
+    CBotErrWrite         = 6014, //!< writing error
 
     CBotErrMAX, //!< Max errors
 };

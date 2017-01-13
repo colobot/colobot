@@ -200,6 +200,11 @@ public:
      */
     void Stop();
 
+    /*!
+     * \brief Delete all classes and functions defined in this program
+     */
+    void Purge();
+
     /**
      * \brief Sets the number of steps (parts of instructions) to execute in Run() before suspending the program execution
      * \param n new timer value
@@ -325,6 +330,14 @@ public:
                      CBotGet modestop = GetPosBloc);
 
     /**
+     * \brief Return program that is being compiled or run now.
+     * This function should be called only during execution Compile or Run function
+     *
+     * \return Program that call Compile or Run method last
+     */
+    static CBotProgram* GetCurrentProgram();
+
+    /**
      * \brief Returns the list of all user-defined functions in this program as instances of CBotFunction
      *
      * This list includes all the functions (not only extern)
@@ -334,10 +347,18 @@ public:
     const std::list<CBotFunction*>& GetFunctions();
 
     /**
-     * \brief Check if class with that name exists (public or private)
+     * \brief Check if class with that name exists in this program (public or private)
+     * \param name Name of class
      * \return True if exists, otherwise false
      */
     bool ClassExists(std::string name);
+
+    /**
+     * \brief Find class in this program (public or private)
+     * \param name Name of class
+     * \return Found class, otherwise null
+     */
+    CBotClass* FindClass(std::string name);
 
     /**
      * \brief Returns static list of all registered external calls
@@ -347,6 +368,7 @@ public:
 private:
     //! All external calls
     static CBotExternalCallList* m_externalCalls;
+    static CBotProgram* m_currentProgram;
     //! All user-defined functions
     std::list<CBotFunction*> m_functions{};
     //! The entry point function

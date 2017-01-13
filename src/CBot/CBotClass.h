@@ -116,7 +116,8 @@ public:
      */
     CBotClass(const std::string& name,
               CBotClass* parent,
-              bool bIntrinsic = false);
+              bool bIntrinsic = false,
+              bool isPrivate = false);
 
     /*!
      * \brief CBotClass Destructor.
@@ -189,18 +190,28 @@ public:
     bool IsChildOf(CBotClass* pClass);
 
     /*!
-     * \brief Find Trouve une classe d'après son nom
+     * \brief Find class in current program or in list of public classes
      * \param pToken
+     * \param onlyPublic search only in list of public classes
      * \return A class by it's its name.
      */
-    static CBotClass* Find(CBotToken* &pToken);
+    static CBotClass* Find(CBotToken* &pToken, bool onlyPublic = false);
 
     /*!
-     * \brief Find
+     * \brief Find class in current program or in list of public classes
      * \param name
+     * \param onlyPublic search only in list of public classes
      * \return
      */
-    static CBotClass* Find(const std::string& name);
+    static CBotClass* Find(const std::string& name, bool onlyPublic = false);
+
+    /*!
+     * \brief Check if class exists in current program or in list of public classes
+     * \param name
+     * \param onlyPublic search only in list of public classes
+     * \return
+     */
+    static bool Exists(const std::string& name, bool onlyPublic = false);
 
     /*!
      * \brief GetVar Return the list of variables.
@@ -278,7 +289,6 @@ public:
      * \brief Pre-compile a new class
      * \param p[in, out] Pointer to first token of the class, will be updated to point to first token after the class definition
      * \param pStack Compile stack
-     * \param program Currently precompiling program
      *
      * This function is used to find the beginning and end of class definition.
      *
@@ -287,8 +297,7 @@ public:
      * \return Precompiled class, or nullptr in case of error
      */
     static CBotClass* Compile1(CBotToken* &p,
-                               CBotCStack* pStack,
-                               CBotProgram* program);
+                               CBotCStack* pStack);
 
     /*!
      * \brief DefineClasses Calls CompileDefItem for each class in a list
@@ -373,13 +382,14 @@ private:
     //! List of all public classes
     static std::set<CBotClass*> m_publicClasses;
 
-
     //! true if this class is fully compiled, false if only precompiled
     bool m_IsDef;
     //! Name of this class
     std::string m_name;
     //! Parent class
     CBotClass* m_parent;
+    //! true if class is private
+    bool m_isPrivate;
     //! Number of variables in the chain
     int m_nbVar;
     //! Intrinsic class

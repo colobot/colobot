@@ -250,12 +250,11 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     // If not, this might be an instance of class definnition
     CBotToken*    ppp = p;
     if (IsOfType(ppp, TokenTypVar))
+    if (IsOfType(ppp, TokenTypVar) ||                                                            // <- ClassName variableName
+        (IsOfType(ppp, ID_OPBRK) && IsOfType(ppp, ID_CLBRK) && IsOfType(ppp, TokenTypVar)))      // <- ClassName[] variableName
     {
-        if (CBotClass::Find(p) != nullptr) // Does class with this name exist?
-        {
-            // Yes, compile the declaration of the instance
-            return CBotDefClass::Compile(p, pStack);
-        }
+        // Yes, compile the declaration of the instance
+        return CBotDefClass::Compile(p, pStack);
     }
 
     // This can be an arithmetic expression

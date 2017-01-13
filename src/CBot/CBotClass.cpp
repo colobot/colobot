@@ -49,10 +49,12 @@ std::set<CBotClass*> CBotClass::m_publicClasses{};
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass::CBotClass(const std::string& name,
                      CBotClass* parent,
-                     bool bIntrinsic)
+                     bool bIntrinsic,
+                     bool isPrivate)
 {
     m_parent    = parent;
     m_name      = name;
+    m_isPrivate = isPrivate;
     m_pVar      = nullptr;
     m_externalMethods = new CBotExternalCallList();
     m_rUpdate   = nullptr;
@@ -60,7 +62,7 @@ CBotClass::CBotClass(const std::string& name,
     m_bIntrinsic= bIntrinsic;
     m_nbVar     = m_parent == nullptr ? 0 : m_parent->m_nbVar;
 
-    m_publicClasses.insert(this);
+    if (!isPrivate) m_publicClasses.insert(this);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -255,20 +257,38 @@ bool CBotClass::IsIntrinsic()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotClass* CBotClass::Find(CBotToken* &pToken)
+CBotClass* CBotClass::Find(CBotToken* &pToken, bool onlyPublic)
 {
-    return Find(pToken->GetString());
+    return Find(pToken->GetString(), onlyPublic);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotClass* CBotClass::Find(const std::string& name)
+CBotClass* CBotClass::Find(const std::string& name, bool onlyPublic)
 {
+    if (!onlyPublic)
+    {
+        CBotProgram* program = CBotProgram::GetCurrentProgram();
+
+        if (program != nullptr)
+        {
+            CBotClass* classe = program->FindClass(name);
+
+            if (classe != nullptr) return classe;
+        }
+    }
+
     for (CBotClass* p : m_publicClasses)
     {
         if ( p->GetName() == name ) return p;
     }
 
     return nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CBotClass::Exists(const std::string& name, bool onlyPublic)
+{
+    return CBotClass::Find(name, onlyPublic) != nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -442,21 +462,29 @@ bool CBotClass::CheckCall(CBotProgram* program, CBotDefParam* pParam, CBotToken*
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack, CBotProgram* program)
+CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 {
-    if ( !IsOfType(p, ID_PUBLIC) )
+    bool isPrivate;
+
+    if ( IsOfType(p, ID_PUBLIC) ) isPrivate = false;
+    else if ( IsOfType(p, ID_PRIVATE) ) isPrivate = true;
+    else if ( IsOfType(p, ID_PROTECTED) )
     {
-        pStack->SetError(CBotErrNoPublic, p);
+        pStack->SetError( CBotErrBadPrivilege, p );
+        return nullptr;
+    }
+    else
+    {
+        pStack->SetError( CBotErrNoPrivilege, p );
         return nullptr;
     }
 
-    if ( !IsOfType(p, ID_CLASS) ) return nullptr;
+    IsOfType(p, ID_CLASS); // skip class keyword
 
-    std::string name = p->GetString();
+    std::string name = p->GetString(); // name of class
 
-    CBotClass* pOld = CBotClass::Find(name);
-    if ( (pOld != nullptr && pOld->m_IsDef) || /* public class exists in different program */
-         program->ClassExists(name))           /* class exists in this program */
+    if ( (isPrivate && CBotProgram::GetCurrentProgram()->ClassExists(name)) ||  // check only in current program
+         (!isPrivate && CBotClass::Exists(name)) )                              // check in current program and list of public classes
     {
         pStack->SetError( CBotErrRedefClass, p );
         return nullptr;
@@ -477,9 +505,8 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack, CBotProgram* p
                 return nullptr;
             }
         }
-        CBotClass* classe = (pOld == nullptr) ? new CBotClass(name, pPapa) : pOld;
-        classe->Purge();                            // empty the old definitions
-        classe->m_IsDef = false;                    // current definition
+        CBotClass* classe = new CBotClass(name, pPapa, false, isPrivate);
+        classe->Purge();
 
         classe->m_pOpenblk = p;
 
@@ -490,16 +517,13 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack, CBotProgram* p
         }
 
         int level = 1;
-        do                                          // skip over the definition
+        while (level > 0 && p != nullptr)
         {
-            if (p == nullptr) break; // end of code
-
             int type = p->GetType();
             p = p->GetNext();
             if (type == ID_OPBLK) level++;
             if (type == ID_CLBLK) level--;
         }
-        while (level > 0 && p != nullptr);
 
         if (level > 0) pStack->SetError(CBotErrCloseBlock, classe->m_pOpenblk);
 
@@ -764,8 +788,10 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
 {
-    if ( !IsOfType(p, ID_PUBLIC) ) return nullptr;
-    if ( !IsOfType(p, ID_CLASS) ) return nullptr;
+    // skip public, private and class keywords
+    IsOfType(p, ID_PUBLIC);
+    IsOfType(p, ID_PRIVATE);
+    IsOfType(p, ID_CLASS);
 
     std::string name = p->GetString();
 

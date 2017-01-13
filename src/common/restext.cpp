@@ -719,6 +719,8 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrNoPublic]      = TR("Public required");
     stringsCbot[CBot::CBotErrNoExpression]  = TR("Expression expected after =");
     stringsCbot[CBot::CBotErrAmbiguousCall] = TR("Ambiguous call to overloaded function");
+    stringsCbot[CBot::CBotErrNoPrivilege]   = TR("Access privilege required");
+    stringsCbot[CBot::CBotErrBadPrivilege]  = TR("Wrong access privilege");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");

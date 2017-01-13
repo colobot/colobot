@@ -963,8 +963,117 @@ TEST_F(CBotUT, ClassMissingCloseBlock)
     );
 }
 
-// TODO: NOOOOOO!!! Nononononono :/
-TEST_F(CBotUT, DISABLED_PublicClasses)
+TEST_F(CBotUT, ClassPrivate)
+{
+    ExecuteTest(
+        "private class Something\n"
+        "{\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassPrivateUseFunction)
+{
+    ExecuteTest(
+        "private class Something\n"
+        "{\n"
+        "     void Foo()\n"
+        "     {\n"
+        "     }\n"
+        "}\n"
+        "void DoSomething()\n"
+        "{\n"
+        "     Something obj();\n"
+        "     obj.Foo();\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, ClassPrivateCantUseInOtherProgram)
+{
+    // Keep the program, so that the class continues to exist after ExecuteTest finishes
+    auto publicProgram = ExecuteTest(
+        "private class Something\n"
+        "{\n"
+        "     void Foo()\n"
+        "     {\n"
+        "     }\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "void DoSomething()\n"
+        "{\n"
+        "     Something obj();\n"
+        "     obj.Foo();\n"
+        "}\n",
+        CBotErrNotClass
+    );
+}
+
+TEST_F(CBotUT, TwoPrivateClassesInTwoPrograms)
+{
+    // Keep the program, so that the class continues to exist after ExecuteTest finishes
+    auto publicProgram = ExecuteTest(
+        "private class Something\n"
+        "{\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "private class Something\n"
+        "{\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, TwoPrivateClassesInOneProgram)
+{
+    ExecuteTest(
+        "private class Something\n"
+        "{\n"
+        "}\n"
+        "private class Something\n"
+        "{\n"
+        "}\n",
+        CBotErrRedefClass
+    );
+}
+
+TEST_F(CBotUT, PublicAndPrivateClasses1)
+{
+    // Keep the program, so that the class continues to exist after ExecuteTest finishes
+    auto publicProgram = ExecuteTest(
+        "public class Something\n"
+        "{\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "private class Something\n"
+        "{\n"
+        "}\n"
+    );
+
+}
+
+TEST_F(CBotUT, PublicAndPrivateClasses2)
+{
+    // Keep the program, so that the class continues to exist after ExecuteTest finishes
+    auto publicProgram = ExecuteTest(
+        "private class Something\n"
+        "{\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "public class Something\n"
+        "{\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, PublicClasses)
 {
     // Keep the program, so that the class continues to exist after ExecuteTest finishes
     auto publicProgram = ExecuteTest(
@@ -987,7 +1096,49 @@ TEST_F(CBotUT, DISABLED_PublicClasses)
         "{\n"
         "    TestClass t();\n"
         "}\n",
-        CBotErrUndefClass
+        CBotErrNotClass
+    );
+}
+
+TEST_F(CBotUT, CreateNonExistentClass1)
+{
+    ExecuteTest(
+        "extern void TestPublic()\n"
+        "{\n"
+        "    NotExistentClass t();\n"
+        "}\n",
+        CBotErrNotClass
+    );
+}
+
+TEST_F(CBotUT, CreateNonExistentClass2)
+{
+    ExecuteTest(
+        "extern void TestPublic()\n"
+        "{\n"
+        "    NotExistentClass t = new NotExistentClass();\n"
+        "}\n",
+        CBotErrNotClass
+    );
+}
+
+TEST_F(CBotUT, DefineClassWithoutAccessPrivilege)
+{
+    ExecuteTest(
+        "class TestClass\n"
+        "{\n"
+        "}\n",
+        CBotErrNoPrivilege
+    );
+}
+
+TEST_F(CBotUT, DefineClassWithBadAccessPrivilege)
+{
+    ExecuteTest(
+        "protected class TestClass\n"
+        "{\n"
+        "}\n",
+        CBotErrBadPrivilege
     );
 }
 

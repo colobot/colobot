@@ -36,6 +36,7 @@ namespace CBot
 {
 
 CBotExternalCallList* CBotProgram::m_externalCalls = new CBotExternalCallList();
+CBotProgram* CBotProgram::m_currentProgram = nullptr;
 
 CBotProgram::CBotProgram()
 {
@@ -48,29 +49,19 @@ CBotProgram::CBotProgram(CBotVar* thisVar)
 
 CBotProgram::~CBotProgram()
 {
-//  delete  m_classes;
-    for (CBotClass* c : m_classes)
-        c->Purge();
-    m_classes.clear();
-
     CBotClass::FreeLock(this);
 
-    for (CBotFunction* f : m_functions) delete f;
-    m_functions.clear();
+    Purge();
 }
 
 bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& externFunctions, void* pUser)
 {
+    m_currentProgram = this;
+
     // Cleanup the previously compiled program
     Stop();
 
-    for (CBotClass* c : m_classes)
-        c->Purge();      // purge the old definitions of classes
-                         // but without destroying the object
-
-    m_classes.clear();
-    for (CBotFunction* f : m_functions) delete f;
-    m_functions.clear();
+    Purge();
 
     externFunctions.clear();
     m_error = CBotNoErr;
@@ -90,10 +81,11 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     {
         if ( IsOfType(p, ID_SEP) ) continue;                // semicolons lurking
 
-        if ( p->GetType() == ID_CLASS ||
-            ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
+        int type = p->GetType();
+        if ( type == ID_CLASS ||
+             (( type == ID_PUBLIC || type == ID_PROTECTED || type == ID_PRIVATE) && p->GetNext()->GetType() == ID_CLASS ))
         {
-            CBotClass* newclass = CBotClass::Compile1(p, pStack.get(), this);
+            CBotClass* newclass = CBotClass::Compile1(p, pStack.get());
 
             if (newclass != nullptr)
                 m_classes.push_back(newclass);
@@ -112,8 +104,9 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     if ( !pStack->IsOk() )
     {
         m_error = pStack->GetError(m_errorStart, m_errorEnd);
-        for (CBotFunction* f : m_functions) delete f;
-        m_functions.clear();
+
+        Purge();
+
         return false;
     }
 
@@ -124,8 +117,9 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     {
         if ( IsOfType(p, ID_SEP) ) continue;                // semicolons lurking
 
-        if ( p->GetType() == ID_CLASS ||
-            ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
+        int type = p->GetType();
+        if ( type == ID_CLASS ||
+             (( type == ID_PUBLIC || type == ID_PROTECTED || type == ID_PRIVATE) && p->GetNext()->GetType() == ID_CLASS ))
         {
             CBotClass::Compile(p, pStack.get());                  // completes the definition of the class
         }
@@ -142,11 +136,13 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     if ( !pStack->IsOk() )
     {
         m_error = pStack->GetError(m_errorStart, m_errorEnd);
-        for (CBotFunction* f : m_functions) delete f;
-        m_functions.clear();
+
+        Purge();
+
+        return false;
     }
 
-    return !m_functions.empty();
+    return true;
 }
 
 bool CBotProgram::Start(const std::string& name)
@@ -178,6 +174,8 @@ bool CBotProgram::GetPosition(const std::string& name, int& start, int& stop, CB
 
 bool CBotProgram::Run(void* pUser, int timer)
 {
+    m_currentProgram = this;
+
     if (m_stack == nullptr || m_entryPoint == nullptr)
     {
         m_error = CBotErrNoRun;
@@ -223,6 +221,19 @@ void CBotProgram::Stop()
     }
     m_entryPoint = nullptr;
     CBotClass::FreeLock(this);
+}
+
+void CBotProgram::Purge()
+{
+    for (CBotClass* c : m_classes)
+    {
+        c->Purge();
+        delete c;
+    }
+    m_classes.clear();
+
+    for (CBotFunction* f : m_functions) delete f;
+    m_functions.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -284,12 +295,17 @@ const std::list<CBotFunction*>& CBotProgram::GetFunctions()
 
 bool CBotProgram::ClassExists(std::string name)
 {
+    return FindClass(name) != nullptr;
+}
+
+CBotClass* CBotProgram::FindClass(std::string name)
+{
     for (CBotClass* p : m_classes)
     {
-        if ( p->GetName() == name ) return true;
+        if ( p->GetName() == name ) return p;
     }
 
-    return false;
+    return nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -422,6 +438,11 @@ void CBotProgram::Free()
 CBotExternalCallList* CBotProgram::GetExternalCalls()
 {
     return m_externalCalls;
+}
+
+CBotProgram* CBotProgram::GetCurrentProgram()
+{
+    return m_currentProgram;
 }
 
 } // namespace CBot
