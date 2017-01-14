@@ -57,7 +57,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
         return nullptr;
     }
 
-    CBotClass* pClass = CBotClass::Find(p);
+    CBotClass* pClass = CBotClass::Find(p, pStack->GetProgram());
     if (pClass == nullptr)
     {
         pStack->SetError(CBotErrBadNew, p);
@@ -145,7 +145,7 @@ bool CBotNew::Execute(CBotStack* &pj)
     CBotVar*    pThis = nullptr;
 
     CBotToken*    pt = &m_vartoken;
-    CBotClass*    pClass = CBotClass::Find(pt);
+    CBotClass*    pClass = CBotClass::Find(pt, pj->GetProgram());
 
     // create the variable "this" pointer type to the stack
 
@@ -236,7 +236,7 @@ void CBotNew::RestoreState(CBotStack* &pj, bool bMain)
     CBotStack*    pile1 = pj->AddStack2();  //secondary stack
 
     CBotToken*    pt = &m_vartoken;
-    CBotClass*    pClass = CBotClass::Find(pt);
+    CBotClass*    pClass = CBotClass::Find(pt, pj->GetProgram());
 
     // create the variable "this" pointer type to the object
 

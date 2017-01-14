@@ -61,7 +61,7 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
     if ( pClass == nullptr )
     {
         pStack->SetStartError(p->GetStart());
-        pClass = CBotClass::Find(p);
+        pClass = CBotClass::Find(p, pStack->GetProgram());
         if ( pClass == nullptr )
         {
             // not found? is bizare
@@ -258,7 +258,7 @@ bool CBotDefClass::Execute(CBotStack* &pj)
     }
 
     CBotToken*  pt = &m_token;
-    CBotClass*  pClass = CBotClass::Find(pt);
+    CBotClass*  pClass = CBotClass::Find(pt, pj->GetProgram());
 
     bool bIntrincic = pClass->IsIntrinsic();
 
@@ -332,7 +332,7 @@ bool CBotDefClass::Execute(CBotStack* &pj)
             if ( !bIntrincic && pile->GetState() == 1)
             {
                 CBotToken*  pt = &m_token;
-                CBotClass* pClass = CBotClass::Find(pt);
+                CBotClass* pClass = CBotClass::Find(pt, pj->GetProgram());
 
                 // creates an instance of the requested class
 
@@ -427,7 +427,7 @@ void CBotDefClass::RestoreState(CBotStack* &pj, bool bMain)
     }
 
     CBotToken*  pt = &m_token;
-    CBotClass*  pClass = CBotClass::Find(pt);
+    CBotClass*  pClass = CBotClass::Find(pt, pj->GetProgram());
     bool bIntrincic = pClass->IsIntrinsic();
 
     if ( bMain && pile->GetState()<3)

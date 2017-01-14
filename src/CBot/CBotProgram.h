@@ -200,6 +200,11 @@ public:
      */
     void Stop();
 
+    /*!
+     * \brief Delete all classes and functions defined in this program
+     */
+    void Purge();
+
     /**
      * \brief Sets the number of steps (parts of instructions) to execute in Run() before suspending the program execution
      * \param n new timer value
@@ -332,6 +337,20 @@ public:
      * \return List of CBotFunction instances
      */
     const std::list<CBotFunction*>& GetFunctions();
+
+    /**
+     * \brief Check if class with that name exists in this program (public or private)
+     * \param name Name of class
+     * \return True if exists, otherwise false
+     */
+    bool ClassExists(std::string name);
+
+    /**
+     * \brief Find class in this program (public or private)
+     * \param name Name of class
+     * \return Found class, otherwise null
+     */
+    CBotClass* FindClass(std::string name);
 
     /**
      * \brief Returns static list of all registered external calls

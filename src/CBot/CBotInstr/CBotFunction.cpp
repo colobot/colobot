@@ -52,6 +52,7 @@ CBotFunction::CBotFunction()
 //  m_nThisIdent = 0;
     m_nFuncIdent = 0;
     m_bSynchro    = false;
+    m_MasterClass = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -173,15 +174,15 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
         {
             if ( IsOfType( p, ID_DBLDOTS ) )        // method for a class
             {
-                func->m_MasterClass = pp->GetString();
-                func->m_classToken = *pp;
-                CBotClass* pClass = CBotClass::Find(pp);
-                if ( pClass == nullptr ) goto bad;
+                CBotClass* masterClass = CBotClass::Find(pp, pStack->GetProgram());
 
-//              pp = p;
+                if ( masterClass == nullptr ) goto bad;
+
+                func->m_MasterClass = masterClass;
+                func->m_classToken = *pp;
+
                 func->m_token = *p;
                 if (!IsOfType(p, TokenTypVar)) goto bad;
-
             }
             func->m_openpar = *p;
             func->m_param = CBotDefParam::Compile(p, pStk );
@@ -190,7 +191,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
             {
                 pStk->SetRetType(func->m_retTyp);   // for knowledge what type returns
 
-                if (!func->m_MasterClass.empty())
+                if (func->m_MasterClass)
                 {
                     // return "this" known
                     CBotVar* pThis = CBotVar::Create("this", CBotTypResult( CBotTypClass, func->m_MasterClass ));
@@ -276,17 +277,7 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
         {
             if ( IsOfType( p, ID_DBLDOTS ) )        // method for a class
             {
-                func->m_MasterClass = pp->GetString();
-                CBotClass* pClass = CBotClass::Find(pp);
-                if ( pClass == nullptr )
-                {
-                    pStk->SetError(CBotErrNotClass, pp);
-                    goto bad;
-                }
-
-                pp = p;
-                func->m_token = *p;
-                if (!IsOfType(p, TokenTypVar)) goto bad;
+                IsOfType(p, TokenTypVar); // skip the function name
 
             }
             func->m_param = CBotDefParam::Compile(p, pStk );
@@ -316,8 +307,6 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
             }
             pStk->SetError(CBotErrRedefFunc, pp);
         }
-bad:
-        pStk->SetError(CBotErrNoFunc, p);
     }
     pStk->SetError(CBotErrNoType, p);
     delete func;
@@ -341,7 +330,7 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
         pile->IncState();
     }
 
-    if ( pile->GetState() == 1 && !m_MasterClass.empty() )
+    if ( pile->GetState() == 1 && m_MasterClass )
     {
         // makes "this" known
         CBotVar* pThis = nullptr;
@@ -351,7 +340,7 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
         }
         else
         {
-            if (m_MasterClass != pInstance->GetClass()->GetName())
+            if (m_MasterClass != pInstance->GetClass())
             {
                 pile->SetError(CBotErrBadType2, &m_classToken);
                 return false;
@@ -402,7 +391,7 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
 
     m_param->RestoreState(pile2, true);                 // parameters
 
-    if ( !m_MasterClass.empty() )
+    if ( m_MasterClass )
     {
         CBotVar* pThis = pile->FindVar("this");
         pThis->SetInit(CBotVar::InitType::IS_POINTER);
@@ -622,7 +611,7 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
 
         if ( pStk1->GetState() == 0 )
         {
-            if ( !pt->m_MasterClass.empty() )
+            if ( pt->m_MasterClass )
             {
                 CBotVar* pInstance = program->m_thisVar;
                 // make "this" known
@@ -633,7 +622,7 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
                 }
                 else
                 {
-                    if (pt->m_MasterClass != pInstance->GetClass()->GetName())
+                    if (pt->m_MasterClass != pInstance->GetClass())
                     {
                         pStack->SetError(CBotErrBadType2, &pt->m_classToken);
                         return false;
@@ -711,7 +700,7 @@ void CBotFunction::RestoreCall(const std::list<CBotFunction*>& localFunctionList
         // preparing parameters on the stack
 
         {
-            if ( !pt->m_MasterClass.empty() )
+            if ( pt->m_MasterClass )
             {
 //                CBotVar* pInstance = m_pProg->m_thisVar;
                 // make "this" known

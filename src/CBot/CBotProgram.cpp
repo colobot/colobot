@@ -48,15 +48,9 @@ CBotProgram::CBotProgram(CBotVar* thisVar)
 
 CBotProgram::~CBotProgram()
 {
-//  delete  m_classes;
-    for (CBotClass* c : m_classes)
-        c->Purge();
-    m_classes.clear();
-
     CBotClass::FreeLock(this);
 
-    for (CBotFunction* f : m_functions) delete f;
-    m_functions.clear();
+    Purge();
 }
 
 bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& externFunctions, void* pUser)
@@ -64,13 +58,7 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     // Cleanup the previously compiled program
     Stop();
 
-    for (CBotClass* c : m_classes)
-        c->Purge();      // purge the old definitions of classes
-                         // but without destroying the object
-
-    m_classes.clear();
-    for (CBotFunction* f : m_functions) delete f;
-    m_functions.clear();
+    Purge();
 
     externFunctions.clear();
     m_error = CBotNoErr;
@@ -90,10 +78,12 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     {
         if ( IsOfType(p, ID_SEP) ) continue;                // semicolons lurking
 
-        if ( p->GetType() == ID_CLASS ||
-            ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
+        int type = p->GetType();
+        if ( type == ID_CLASS ||
+             (( type == ID_PUBLIC || type == ID_PROTECTED || type == ID_PRIVATE) && p->GetNext()->GetType() == ID_CLASS ))
         {
             CBotClass* newclass = CBotClass::Compile1(p, pStack.get());
+
             if (newclass != nullptr)
                 m_classes.push_back(newclass);
         }
@@ -111,8 +101,9 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     if ( !pStack->IsOk() )
     {
         m_error = pStack->GetError(m_errorStart, m_errorEnd);
-        for (CBotFunction* f : m_functions) delete f;
-        m_functions.clear();
+
+        Purge();
+
         return false;
     }
 
@@ -123,8 +114,9 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     {
         if ( IsOfType(p, ID_SEP) ) continue;                // semicolons lurking
 
-        if ( p->GetType() == ID_CLASS ||
-            ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
+        int type = p->GetType();
+        if ( type == ID_CLASS ||
+             (( type == ID_PUBLIC || type == ID_PROTECTED || type == ID_PRIVATE) && p->GetNext()->GetType() == ID_CLASS ))
         {
             CBotClass::Compile(p, pStack.get());                  // completes the definition of the class
         }
@@ -141,11 +133,13 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     if ( !pStack->IsOk() )
     {
         m_error = pStack->GetError(m_errorStart, m_errorEnd);
-        for (CBotFunction* f : m_functions) delete f;
-        m_functions.clear();
+
+        Purge();
+
+        return false;
     }
 
-    return !m_functions.empty();
+    return true;
 }
 
 bool CBotProgram::Start(const std::string& name)
@@ -224,6 +218,19 @@ void CBotProgram::Stop()
     CBotClass::FreeLock(this);
 }
 
+void CBotProgram::Purge()
+{
+    for (CBotClass* c : m_classes)
+    {
+        c->Purge();
+        delete c;
+    }
+    m_classes.clear();
+
+    for (CBotFunction* f : m_functions) delete f;
+    m_functions.clear();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::GetRunPos(std::string& functionName, int& start, int& end)
 {
@@ -279,6 +286,21 @@ bool CBotProgram::GetError(CBotError& code, int& start, int& end, CBotProgram*& 
 const std::list<CBotFunction*>& CBotProgram::GetFunctions()
 {
     return m_functions;
+}
+
+bool CBotProgram::ClassExists(std::string name)
+{
+    return FindClass(name) != nullptr;
+}
+
+CBotClass* CBotProgram::FindClass(std::string name)
+{
+    for (CBotClass* p : m_classes)
+    {
+        if ( p->GetName() == name ) return p;
+    }
+
+    return nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

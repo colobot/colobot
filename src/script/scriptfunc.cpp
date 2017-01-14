@@ -3434,7 +3434,7 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 
 CBotVar* CScriptFunctions::CreateObjectVar(CObject* obj)
 {
-    CBotClass* bc = CBotClass::Find("object");
+    CBotClass* bc = CBotClass::Find("object", nullptr);
     if ( bc != nullptr )
     {
         bc->SetUpdateFunc(CScriptFunctions::uObject);

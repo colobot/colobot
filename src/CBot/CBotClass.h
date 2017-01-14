@@ -116,7 +116,8 @@ public:
      */
     CBotClass(const std::string& name,
               CBotClass* parent,
-              bool bIntrinsic = false);
+              bool bIntrinsic = false,
+              bool isPrivate = false);
 
     /*!
      * \brief CBotClass Destructor.
@@ -189,18 +190,30 @@ public:
     bool IsChildOf(CBotClass* pClass);
 
     /*!
-     * \brief Find Trouve une classe d'après son nom
-     * \param pToken
+     * \brief Find class in program or in list of public classes.
+     * If program is null, search only in list of public classes.
+     * \param pToken Name of class
+     * \param program
      * \return A class by it's its name.
      */
-    static CBotClass* Find(CBotToken* &pToken);
+    static CBotClass* Find(CBotToken* &pToken, CBotProgram* program);
 
     /*!
-     * \brief Find
-     * \param name
+     * \brief Find class in program or in list of public classes.
+     * If program is null, search only in list of public classes.
+     * \param name Name of class
+     * \param program
      * \return
      */
-    static CBotClass* Find(const std::string& name);
+    static CBotClass* Find(const std::string& name, CBotProgram* program);
+
+    /*!
+     * \brief Check if class exists in current program or in list of public classes
+     * \param name
+     * \param onlyPublic search only in list of public classes
+     * \return
+     */
+    static bool Exists(const std::string& name, CBotProgram* program);
 
     /*!
      * \brief GetVar Return the list of variables.
@@ -371,13 +384,14 @@ private:
     //! List of all public classes
     static std::set<CBotClass*> m_publicClasses;
 
-
     //! true if this class is fully compiled, false if only precompiled
     bool m_IsDef;
     //! Name of this class
     std::string m_name;
     //! Parent class
     CBotClass* m_parent;
+    //! true if class is private
+    bool m_isPrivate;
     //! Number of variables in the chain
     int m_nbVar;
     //! Intrinsic class
