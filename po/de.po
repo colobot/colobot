@@ -522,6 +522,12 @@ msgstr "Liste der Übungen des Kapitels:"
 msgid "Exercises\\Programming exercises"
 msgstr "Programmieren\\Programmierübungen"
 
+msgid "Expected \"class\" keyword"
+msgstr ""
+
+msgid "Expected name of class"
+msgstr ""
+
 msgid "Explode (\\key action;)"
 msgstr "Explodieren (\\key action;)"
 

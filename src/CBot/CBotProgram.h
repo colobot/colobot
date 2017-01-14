@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include "CBot/CBotCStack.h"
 #include "CBot/CBotTypResult.h"
 #include "CBot/CBotEnums.h"
 
@@ -200,6 +201,8 @@ public:
      */
     void Stop();
 
+    void Purge();
+
     /**
      * \brief Sets the number of steps (parts of instructions) to execute in Run() before suspending the program execution
      * \param n new timer value
@@ -345,6 +348,8 @@ public:
     static CBotExternalCallList* GetExternalCalls();
 
 private:
+    bool HandleErrorIfExists(CBotCStack* stack);
+
     //! All external calls
     static CBotExternalCallList* m_externalCalls;
     //! All user-defined functions

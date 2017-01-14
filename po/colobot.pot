@@ -1739,6 +1739,15 @@ msgstr ""
 msgid "Function needs return type \"void\""
 msgstr ""
 
+msgid "Expected \"class\" keyword"
+msgstr ""
+
+msgid "Expected name of class"
+msgstr ""
+
+msgid "This class does not exist"
+msgstr ""
+
 msgid "Dividing by zero"
 msgstr ""
 
@@ -1755,9 +1764,6 @@ msgid "No function running"
 msgstr ""
 
 msgid "Calling an unknown function"
-msgstr ""
-
-msgid "This class does not exist"
 msgstr ""
 
 msgid "Unknown Object"

@@ -110,6 +110,8 @@ set(SOURCES
     CBotInstr/CBotTwoOpExpr.h
     CBotInstr/CBotWhile.cpp
     CBotInstr/CBotWhile.h
+    CBotParser.cpp
+    CBotParser.h
     CBotProgram.cpp
     CBotProgram.h
     CBotStack.cpp

@@ -39,6 +39,7 @@
 #include "CBot/CBotVar/CBotVar.h"
 
 #include "CBot/CBotClass.h"
+#include "CBot/CBotParser.h"
 #include "CBot/CBotStack.h"
 
 #include <cassert>
@@ -247,15 +248,9 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
         return nullptr;
     }
 
-    // If not, this might be an instance of class definnition
-    CBotToken*    ppp = p;
-    if (IsOfType(ppp, TokenTypVar))
+    if (CBotParser::IsClassInstance(p))
     {
-        if (CBotClass::Find(p) != nullptr) // Does class with this name exist?
-        {
-            // Yes, compile the declaration of the instance
-            return CBotDefClass::Compile(p, pStack);
-        }
+        return CBotDefClass::Compile(p, pStack);
     }
 
     // This can be an arithmetic expression

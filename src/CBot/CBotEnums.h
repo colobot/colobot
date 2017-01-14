@@ -238,6 +238,9 @@ enum CBotError : int
     CBotErrNoExpression  = 5043, //!< expression expected after =
     CBotErrAmbiguousCall = 5044, //!< ambiguous call to overloaded function
     CBotErrFuncNotVoid   = 5045, //!< function needs return type "void"
+    CBotErrClassExpected = 5046, //!< Expected class keyword
+    CBotErrClassNameExpected = 5047, //!< Expected name of class
+    CBotErrNotClass      = 5048, //!< this class does not exist
 
     // Runtime errors
     CBotErrZeroDiv       = 6000, //!< division by zero
@@ -246,7 +249,6 @@ enum CBotError : int
     CBotErrNoRetVal      = 6003, //!< function did not return results
     CBotErrNoRun         = 6004, //!< Run() without active function
     CBotErrUndefFunc     = 6005, //!< calling a function that no longer exists
-    CBotErrNotClass      = 6006, //!< this class does not exist
     CBotErrNull          = 6007, //!< null pointer
     CBotErrNan           = 6008, //!< calculation with a NAN
     CBotErrOutArray      = 6009, //!< index out of array

@@ -720,6 +720,9 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrNoExpression]  = TR("Expression expected after =");
     stringsCbot[CBot::CBotErrAmbiguousCall] = TR("Ambiguous call to overloaded function");
     stringsCbot[CBot::CBotErrFuncNotVoid]   = TR("Function needs return type \"void\"");
+    stringsCbot[CBot::CBotErrClassExpected] = TR("Expected \"class\" keyword");
+    stringsCbot[CBot::CBotErrClassNameExpected] = TR("Expected name of class");
+    stringsCbot[CBot::CBotErrNotClass]      = TR("This class does not exist");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");
@@ -727,7 +730,6 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrNoRetVal]      = TR("The function returned no value");
     stringsCbot[CBot::CBotErrNoRun]         = TR("No function running");
     stringsCbot[CBot::CBotErrUndefFunc]     = TR("Calling an unknown function");
-    stringsCbot[CBot::CBotErrNotClass]      = TR("This class does not exist");
     stringsCbot[CBot::CBotErrNull]          = TR("Unknown Object");
     stringsCbot[CBot::CBotErrNan]           = TR("Operation impossible with value \"nan\"");
     stringsCbot[CBot::CBotErrOutArray]      = TR("Access beyond array limit");
