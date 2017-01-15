@@ -334,6 +334,12 @@ public:
     const std::list<CBotFunction*>& GetFunctions();
 
     /**
+     * \brief Check if class with that name exists (public or local)
+     * \return True if exists, otherwise false
+     */
+    bool ClassExists(std::string name);
+
+    /**
      * \brief Returns static list of all registered external calls
      */
     static CBotExternalCallList* GetExternalCalls();

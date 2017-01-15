@@ -281,6 +281,16 @@ const std::list<CBotFunction*>& CBotProgram::GetFunctions()
     return m_functions;
 }
 
+bool CBotProgram::ClassExists(std::string name)
+{
+    for (CBotClass* p : m_classes)
+    {
+        if ( p->GetName() == name ) return true;
+    }
+
+    return false;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
 {
