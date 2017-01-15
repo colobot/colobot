@@ -334,8 +334,8 @@ public:
     const std::list<CBotFunction*>& GetFunctions();
 
     /**
-     * \brief Check if class with that name exists (public or local)
-     * \return True if exists, otherwise false
+     * \brief Check if class with that name was created in this program
+     * \return True if class was defined in this program, otherwise, false
      */
     bool ClassExists(std::string name);
 
