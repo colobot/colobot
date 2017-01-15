@@ -932,13 +932,33 @@ TEST_F(CBotUT, ClassMethodRedefined)
     );
 }
 
-// TODO: Not only doesn't work but segfaults
-TEST_F(CBotUT, DISABLED_ClassRedefined)
+TEST_F(CBotUT, ClassRedefinedInDifferentPrograms)
+{
+    auto publicProgram = ExecuteTest(
+        "public class TestClass {}\n"
+    );
+
+    ExecuteTest(
+        "public class TestClass {}\n",
+        CBotErrRedefClass
+    );
+}
+
+TEST_F(CBotUT, ClassRedefinedInOneProgram)
 {
     ExecuteTest(
         "public class TestClass {}\n"
         "public class TestClass {}\n",
         CBotErrRedefClass
+    );
+}
+
+TEST_F(CBotUT, ClassMissingCloseBlock)
+{
+    ExecuteTest(
+        "public class Something\n"
+        "{\n",
+        CBotErrCloseBlock
     );
 }
 
