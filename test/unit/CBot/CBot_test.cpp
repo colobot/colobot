@@ -867,14 +867,13 @@ TEST_F(CBotUT, ClassNullPointer)
     );
 }
 
-// TODO: This doesn't work
-TEST_F(CBotUT, DISABLED_ClassDestructorNaming)
+TEST_F(CBotUT, ClassDestructorNaming)
 {
     ExecuteTest(
         "public class TestClass {\n"
         "    public void ~SomethingElse() {}\n"
         "}\n",
-        static_cast<CBotError>(-1) // TODO: no error for that
+        CBotErrNoFunc
     );
     ExecuteTest(
         "public class SomethingElse {\n"
@@ -882,7 +881,26 @@ TEST_F(CBotUT, DISABLED_ClassDestructorNaming)
         "public class TestClass2 {\n"
         "    public void ~SomethingElse() {}\n"
         "}\n",
-        static_cast<CBotError>(-1) // TODO: no error for that
+        CBotErrNoFunc
+    );
+}
+
+TEST_F(CBotUT, ClassDestructorSyntax)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    void ~TestClass(int i) {}\n"
+        "}\n"
+        "extern void DestructorNoParams() {}\n",
+        CBotErrClosePar
+    );
+
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int ~TestClass() {}\n"
+        "}\n"
+        "extern void DestructorReturnTypeVoid() {}\n",
+        CBotErrFuncNotVoid
     );
 }
 
@@ -929,6 +947,39 @@ TEST_F(CBotUT, ClassMethodRedefined)
         "    }\n"
         "}\n",
         CBotErrRedefFunc
+    );
+
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    void ~TestClass() {}\n"
+        "    void ~TestClass() {}\n"
+        "}\n",
+        CBotErrRedefFunc
+    );
+}
+
+TEST_F(CBotUT, ClassFieldNaming)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int ~i = 1;\n"
+        "}\n",
+        CBotErrNoVar
+    );
+
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int TestClass = 1;\n"
+        "}\n",
+        CBotErrNoVar
+    );
+
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int i = 1;\n"
+        "    int i = 2;\n"
+        "}\n",
+        CBotErrRedefVar
     );
 }
 

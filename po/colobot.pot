@@ -1736,6 +1736,9 @@ msgstr ""
 msgid "Ambiguous call to overloaded function"
 msgstr ""
 
+msgid "Function needs return type \"void\""
+msgstr ""
+
 msgid "Dividing by zero"
 msgstr ""
 

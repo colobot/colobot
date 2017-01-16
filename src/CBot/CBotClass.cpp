@@ -249,6 +249,19 @@ CBotVar* CBotClass::GetItemRef(int nIdent)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool CBotClass::CheckVar(const std::string &name)
+{
+    CBotVar*    p = m_pVar;
+
+    while ( p != nullptr )
+    {
+        if ( p->GetName() == name ) return true;
+        p = p->GetNext();
+    }
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::IsIntrinsic()
 {
     return  m_bIntrinsic;
@@ -556,6 +569,8 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
     while (pStack->IsOk())
     {
         CBotTypResult  type2 = CBotTypResult(type);                     // reset type after comma
+        CBotToken*     varToken = p;
+
         std::string pp = p->GetString();
         if ( IsOfType(p, ID_NOT) )
         {
@@ -564,33 +579,6 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 
         if (IsOfType(p, TokenTypVar))
         {
-            CBotInstr* limites = nullptr;
-            while ( IsOfType( p, ID_OPBRK ) )   // a table?
-            {
-                CBotInstr* i = nullptr;
-                pStack->SetStartError( p->GetStart() );
-                if ( p->GetType() != ID_CLBRK )
-                {
-                    i = CBotExpression::Compile( p, pStack );           // expression for the value
-                    if (i == nullptr || pStack->GetType() != CBotTypInt) // must be a number
-                    {
-                        pStack->SetError(CBotErrBadIndex, p->GetStart());
-                        return false;
-                    }
-                }
-                else
-                    i = new CBotEmpty();                            // special if not a formula
-
-                type2 = CBotTypResult(CBotTypArrayPointer, type2);
-
-                if (limites == nullptr) limites = i;
-                else limites->AddNext3(i);
-
-                if (IsOfType(p, ID_CLBRK)) continue;
-                pStack->SetError(CBotErrCloseIndex, p->GetStart());
-                return false;
-            }
-
             if ( p->GetType() == ID_OPENPAR )
             {
                 if ( !bSecond )
@@ -673,9 +661,48 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
             }
 
             // definition of an element
-            if (type2.Eq(0))
+            if (type.Eq(0))
             {
                 pStack->SetError(CBotErrNoTerminator, p);
+                return false;
+            }
+
+            if (pp[0] == '~' || pp == GetName()) // bad variable name
+            {
+                pStack->SetError(CBotErrNoVar, varToken);
+                return false;
+            }
+
+            if (!bSecond && CheckVar(pp)) // variable already exists
+            {
+                pStack->SetError(CBotErrRedefVar, varToken);
+                return false;
+            }
+
+            CBotInstr* limites = nullptr;
+            while ( IsOfType( p, ID_OPBRK ) )   // an array
+            {
+                CBotInstr* i = nullptr;
+                pStack->SetStartError( p->GetStart() );
+                if ( p->GetType() != ID_CLBRK )
+                {
+                    i = CBotExpression::Compile( p, pStack );           // expression for the value
+                    if (i == nullptr || pStack->GetType() != CBotTypInt) // must be a number
+                    {
+                        pStack->SetError(CBotErrBadIndex, p->GetStart());
+                        return false;
+                    }
+                }
+                else
+                    i = new CBotEmpty();                            // special if not a formula
+
+                type2 = CBotTypResult(CBotTypArrayPointer, type2);
+
+                if (limites == nullptr) limites = i;
+                else limites->AddNext3(i);
+
+                if (IsOfType(p, ID_CLBRK)) continue;
+                pStack->SetError(CBotErrCloseIndex, p->GetStart());
                 return false;
             }
 

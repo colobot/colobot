@@ -605,6 +605,9 @@ msgstr "Funkcja już istnieje"
 msgid "Function name missing"
 msgstr "Brakująca nazwa funkcji"
 
+msgid "Function needs return type \"void\""
+msgstr ""
+
 msgid "Game speed"
 msgstr "Prędkość gry"
 
