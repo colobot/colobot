@@ -165,6 +165,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
         if ( IsOfType(p, ID_NOT) )
         {
             CBotToken d(std::string("~") + p->GetString());
+            d.SetPos(pp->GetStart(), p->GetEnd());
             func->m_token = d;
         }
 
@@ -268,6 +269,7 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
         if ( IsOfType(p, ID_NOT) )
         {
             CBotToken d(std::string("~") + p->GetString());
+            d.SetPos(pp->GetStart(), p->GetEnd());
             func->m_token = d;
         }
 
@@ -289,10 +291,40 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
                 if (!IsOfType(p, TokenTypVar)) goto bad;
 
             }
-            func->m_param = CBotDefParam::Compile(p, pStk );
+
+            CBotToken* openPar = p;
+            func->m_param = CBotDefParam::Compile(p, pStk); // compile parameters
+
+            if (pStk->IsOk() && pClass != nullptr) // method in a class
+            {
+                // check if a constructor has return type void
+                if (func->GetName() == pClass->GetName() && !func->m_retTyp.Eq(CBotTypVoid))
+                {
+                    pp = &(func->m_retToken);
+                    pStk->SetError(CBotErrFuncNotVoid, pp);
+                }
+
+                if (pStk->IsOk() && pp->GetString() == "~") // destructor
+                {
+                    // check destructor name
+                    if (func->GetName() != ("~" + pClass->GetName()))
+                        pStk->SetError(CBotErrNoFunc, pp);
+                    // confirm no parameters
+                    if (pStk->IsOk() && func->m_param != nullptr)
+                        pStk->SetError(CBotErrClosePar, openPar->GetNext());
+                    // must return void
+                    if (pStk->IsOk() && !func->m_retTyp.Eq(CBotTypVoid))
+                    {
+                        pp = &(func->m_retToken);
+                        pStk->SetError(CBotErrFuncNotVoid, pp);
+                    }
+                }
+            }
+
             if (pStk->IsOk())
             {
                 // looks if the function exists elsewhere
+                pp = &(func->m_token);
                 if (( pClass != nullptr || !pStack->CheckCall(pp, func->m_param)) &&
                     ( pClass == nullptr || !pClass->CheckCall(pStack->GetProgram(), func->m_param, pp)) )
                 {

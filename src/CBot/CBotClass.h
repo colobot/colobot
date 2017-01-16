@@ -222,6 +222,13 @@ public:
     CBotVar* GetItemRef(int nIdent);
 
     /*!
+     * \brief Check whether a variable is already defined in a class
+     * \param name Name of the variable
+     * \return True if a variable is defined in the class
+     */
+    bool CheckVar(const std::string &name);
+
+    /*!
      * \brief CompileMethode Compiles a method associated with an instance of
      * class the method can be declared by the user or AddFunction.
      * \param name
