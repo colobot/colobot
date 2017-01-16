@@ -72,13 +72,12 @@ public:
      * This function doesn't set the error flag itself.
      *
      * \param pStack Current compilation stack frame
-     * \param pPrev Class instance which variable to check is part of, or nullptr if not part of a class
+     * \param pPrev Class instance which variable to check is part of, or nullptr when compiler inserts 'this.' before
      * \param pVar Variable to check
-     * \param privat CBotVar::ProtectionLevel::ReadOnly if requesting read-only access, anything else otherwise
+     * \param bCheckReadOnly True for operations that would modify the value of the variable
      * \return true if pVar is inaccessible in the current context, false if access should be allowed
      */
-    static bool CheckProtectionError(CBotCStack* pStack, CBotVar* pPrev, CBotVar* pVar,
-                                     CBotVar::ProtectionLevel privat = CBotVar::ProtectionLevel::Protected);
+    static bool CheckProtectionError(CBotCStack* pStack, CBotVar* pPrev, CBotVar* pVar, bool bCheckReadOnly = false);
 
 protected:
     virtual const std::string GetDebugName() override { return "CBotFieldExpr"; }
