@@ -1060,7 +1060,7 @@ TEST_F(CBotUT, DISABLED_PublicClasses)
     );
 }
 
-TEST_F(CBotUT, CreateNonExistentClass1)
+TEST_F(CBotUT, CreateNonExistentClass)
 {
     ExecuteTest(
         "extern void TestPublic()\n"
