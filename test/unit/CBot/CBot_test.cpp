@@ -2073,3 +2073,56 @@ TEST_F(CBotUT, ClassTestPrivateMember)
         CBotErrPrivate
     );
 }
+
+TEST_F(CBotUT, IncrementDecrementSyntax)
+{
+    auto publicProgram = ExecuteTest(
+        "public class TestClass {\n"
+        "    int GetInt() { return 1; }\n"
+        "}\n"
+        "extern void TestIncrementDecrement()\n"
+        "{\n"
+        "    int i = 1;\n"
+        "    ASSERT(2 == ++i);\n"
+        "    ASSERT(2 == i++);\n"
+        "    ASSERT(3 ==  i );\n"
+        "    ASSERT(2 == --i);\n"
+        "    ASSERT(2 == i--);\n"
+        "    ASSERT(1 ==  i );\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void PreIncrementMethodCall()\n"
+        "{\n"
+        "    TestClass tc();\n"
+        "    ++tc.GetInt();\n"
+        "}\n",
+        CBotErrBadType1
+    );
+
+    ExecuteTest(
+        "extern void PostIncrementMethodCall()\n"
+        "{\n"
+        "    TestClass tc();\n"
+        "    tc.GetInt()++;\n"
+        "}\n",
+        CBotErrBadType1
+    );
+
+    ExecuteTest(
+        "extern void BadPreIncrementEmpty()\n"
+        "{\n"
+        "    ++;\n"
+        "}\n",
+        CBotErrBadType1
+    );
+
+    ExecuteTest(
+        "extern void BadPreIncrementNotAVar()\n"
+        "{\n"
+        "    ++123;\n"
+        "}\n",
+        CBotErrBadType1
+    );
+}

@@ -135,12 +135,11 @@ std::string CBotFieldExpr::GetDebugData()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotFieldExpr::CheckProtectionError(CBotCStack* pStack, CBotVar* pPrev, CBotVar* pVar,
-                                         CBotVar::ProtectionLevel privat)
+bool CBotFieldExpr::CheckProtectionError(CBotCStack* pStack, CBotVar* pPrev, CBotVar* pVar, bool bCheckReadOnly)
 {
     CBotVar::ProtectionLevel varPriv = pVar->GetPrivate();
 
-    if (privat == CBotVar::ProtectionLevel::ReadOnly && varPriv == privat)
+    if (bCheckReadOnly && varPriv == CBotVar::ProtectionLevel::ReadOnly)
         return true;
 
     if (varPriv == CBotVar::ProtectionLevel::Public) return false;

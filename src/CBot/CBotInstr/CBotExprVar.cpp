@@ -44,7 +44,7 @@ CBotExprVar::~CBotExprVar()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, CBotVar::ProtectionLevel privat)
+CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, bool bCheckReadOnly)
 {
 //    CBotToken*    pDebut = p;
     CBotCStack* pStk = pStack->TokenStack();
@@ -67,7 +67,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, CBotVar::Prot
 
             if (ident > 0 && ident < 9000)
             {
-                if (CBotFieldExpr::CheckProtectionError(pStk, nullptr, var, privat))
+                if (CBotFieldExpr::CheckProtectionError(pStk, nullptr, var, bCheckReadOnly))
                 {
                     pStk->SetError(CBotErrPrivate, p);
                     goto err;
@@ -122,6 +122,8 @@ CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, CBotVar::Prot
                         {
                             if (p->GetNext()->GetType() == ID_OPENPAR)  // a method call?
                             {
+                                if (bCheckReadOnly) goto err; // don't allow increment a method call "++"
+
                                 CBotInstr* i = CBotInstrMethode::Compile(p, pStk, var);
                                 if (!pStk->IsOk()) goto err;
                                 inst->AddNext3(i);  // added after
@@ -137,7 +139,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, CBotVar::Prot
                                 if (var != nullptr)
                                 {
                                     i->SetUniqNum(var->GetUniqNum());
-                                    if (CBotFieldExpr::CheckProtectionError(pStk, preVar, var, privat))
+                                    if (CBotFieldExpr::CheckProtectionError(pStk, preVar, var, bCheckReadOnly))
                                     {
                                         pStk->SetError(CBotErrPrivate, pp);
                                         goto err;
