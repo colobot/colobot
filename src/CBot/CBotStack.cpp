@@ -737,11 +737,11 @@ bool CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
 {
     unsigned short w;
 
-    pStack = nullptr;
+    if (pStack != this) pStack = nullptr;
     if (!ReadWord(pf, w)) return false;
     if ( w == 0 ) return true; // 0 - terminator
 
-    pStack = AddStack();
+    if (pStack == nullptr) pStack = AddStack();
 
     if ( w == 2 ) // 2 - m_next2
     {

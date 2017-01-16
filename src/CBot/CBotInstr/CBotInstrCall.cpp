@@ -36,6 +36,7 @@ namespace CBot
 CBotInstrCall::CBotInstrCall()
 {
     m_parameters = nullptr;
+    m_exprRetVar = nullptr;
     m_nFuncIdent = 0;
 }
 
@@ -43,6 +44,7 @@ CBotInstrCall::CBotInstrCall()
 CBotInstrCall::~CBotInstrCall()
 {
     delete m_parameters;
+    delete m_exprRetVar;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
