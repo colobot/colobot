@@ -51,6 +51,9 @@ CBotDefClass::CBotDefClass()
 ////////////////////////////////////////////////////////////////////////////////
 CBotDefClass::~CBotDefClass()
 {
+    delete m_parameters;
+    delete m_exprRetVar;
+    delete m_expr;
     delete m_var;
 }
 
@@ -246,9 +249,9 @@ bool CBotDefClass::Execute(CBotStack* &pj)
 
     if (m_exprRetVar != nullptr) // Class c().method();
     {
-        if (pile->IfStep()) return false;
         if (pile->GetState() == 4)
         {
+            if (pile->IfStep()) return false;
             CBotStack* pile3 = pile->AddStack();
             if (!m_exprRetVar->Execute(pile3)) return false;
             pile3->SetVar(nullptr);

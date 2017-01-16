@@ -83,7 +83,11 @@ CBotClass* CBotClass::Create(const std::string& name,
 ////////////////////////////////////////////////////////////////////////////////
 void CBotClass::ClearPublic()
 {
-    m_publicClasses.clear();
+    while ( !m_publicClasses.empty() )
+    {
+        auto it = m_publicClasses.begin();
+        delete *it; // calling destructor removes the class from the list
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -593,17 +597,16 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 else
                 {
                     // return a method precompiled in pass 1
-                    CBotToken* ppp = p;
                     CBotCStack* pStk = pStack->TokenStack(nullptr, true);
                     CBotDefParam* params = CBotDefParam::Compile(p, pStk );
                     delete pStk;
-                    p = ppp;
                     std::list<CBotFunction*>::iterator pfIter = std::find_if(m_pMethod.begin(), m_pMethod.end(), [&pp, &params](CBotFunction* x)
                     {
                         return x->GetName() == pp && x->CheckParam( params );
                     });
                     assert(pfIter != m_pMethod.end());
                     CBotFunction* pf = *pfIter;
+                    delete params;
 
                     bool bConstructor = (pp == GetName());
                     CBotCStack* pile = pStack->TokenStack(nullptr, true);
@@ -690,7 +693,6 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     if (i == nullptr || pStack->GetType() != CBotTypInt) // must be a number
                     {
                         pStack->SetError(CBotErrBadIndex, p->GetStart());
-                        return false;
                     }
                 }
                 else
@@ -701,8 +703,9 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 if (limites == nullptr) limites = i;
                 else limites->AddNext3(i);
 
-                if (IsOfType(p, ID_CLBRK)) continue;
+                if (pStack->IsOk() && IsOfType(p, ID_CLBRK)) continue;
                 pStack->SetError(CBotErrCloseIndex, p->GetStart());
+                delete limites;
                 return false;
             }
 
@@ -775,7 +778,10 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 }
             }
             else
+            {
                 delete i;
+                delete limites;
+            }
 
             if ( IsOfType(p, ID_COMMA) ) continue;
             if ( IsOfType(p, ID_SEP) ) break;

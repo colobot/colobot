@@ -185,6 +185,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
 
             }
             func->m_openpar = *p;
+            delete func->m_param;
             func->m_param = CBotDefParam::Compile(p, pStk );
             func->m_closepar = *(p->GetPrev());
             if (pStk->IsOk())

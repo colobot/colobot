@@ -167,10 +167,15 @@ CBotTypResult& CBotTypResult::operator=(const CBotTypResult& src)
     m_type = src.m_type;
     m_limite = src.m_limite;
     m_class = src.m_class;
-    m_next = nullptr;
     if (src.m_next != nullptr )
     {
+        delete m_next;
         m_next = new CBotTypResult(*src.m_next);
+    }
+    else
+    {
+        delete m_next;
+        m_next = nullptr;
     }
     return *this;
 }
