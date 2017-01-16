@@ -37,6 +37,7 @@
 #include "CBot/CBotDefParam.h"
 #include "CBot/CBotUtils.h"
 #include "CBot/CBotFileUtils.h"
+#include "CBot/CBotParser.h"
 
 #include <algorithm>
 
@@ -461,66 +462,44 @@ bool CBotClass::CheckCall(CBotProgram* program, CBotDefParam* pParam, CBotToken*
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 {
-    if ( !IsOfType(p, ID_PUBLIC) )
-    {
-        pStack->SetError(CBotErrNoPublic, p);
-        return nullptr;
-    }
+    if (CBotParser::SkipRequiredType(p, ID_PUBLIC, pStack, CBotErrNoPublic)) return nullptr;
 
-    if ( !IsOfType(p, ID_CLASS) ) return nullptr;
+    if (CBotParser::SkipRequiredType(p, ID_CLASS, pStack, CBotErrClassExpected)) return nullptr;
 
-    std::string name = p->GetString();
+    std::string className = CBotParser::GetString(p);
 
-    CBotClass* pOld = CBotClass::Find(name);
+    if (CBotParser::SkipRequiredType(p, TokenTypVar, pStack, CBotErrClassNameExpected)) return nullptr;
+
+    CBotClass* pOld = CBotClass::Find(className);
     if ( (pOld != nullptr && pOld->m_IsDef) ||          /* public class exists in different program */
-         pStack->GetProgram()->ClassExists(name))       /* class exists in this program */
+         pStack->GetProgram()->ClassExists(className))  /* class exists in this program */
     {
         pStack->SetError( CBotErrRedefClass, p );
         return nullptr;
     }
 
-    // a name of the class is there?
-    if (IsOfType(p, TokenTypVar))
+    CBotClass* pPapa = nullptr;
+    if ( CBotParser::SkipType( p, ID_EXTENDS ) )
     {
-        CBotClass* pPapa = nullptr;
-        if ( IsOfType( p, ID_EXTENDS ) )
+        std::string parentClassName = CBotParser::GetString(p);
+        pPapa = CBotClass::Find(parentClassName);
+
+        if (!CBotParser::SkipType(p, TokenTypVar) || pPapa == nullptr )
         {
-            std::string name = p->GetString();
-            pPapa = CBotClass::Find(name);
-
-            if (!IsOfType(p, TokenTypVar) || pPapa == nullptr )
-            {
-                pStack->SetError( CBotErrNotClass, p );
-                return nullptr;
-            }
-        }
-        CBotClass* classe = (pOld == nullptr) ? new CBotClass(name, pPapa) : pOld;
-        classe->Purge();                            // empty the old definitions
-        classe->m_IsDef = false;                    // current definition
-
-        classe->m_pOpenblk = p;
-
-        if ( !IsOfType( p, ID_OPBLK) )
-        {
-            pStack->SetError(CBotErrOpenBlock, p);
+            pStack->SetError( CBotErrNotClass, p );
             return nullptr;
         }
-
-        int level = 1;
-        while (level > 0 && p != nullptr)
-        {
-            int type = p->GetType();
-            p = p->GetNext();
-            if (type == ID_OPBLK) level++;
-            if (type == ID_CLBLK) level--;
-        }
-
-        if (level > 0) pStack->SetError(CBotErrCloseBlock, classe->m_pOpenblk);
-
-        if (pStack->IsOk()) return classe;
     }
-    pStack->SetError(CBotErrNoTerminator, p);
-    return nullptr;
+    CBotClass* cbotClass = (pOld == nullptr) ? new CBotClass(className, pPapa) : pOld;
+    cbotClass->Purge();                            // empty the old definitions
+    cbotClass->m_IsDef = false;                    // current definition
+
+    cbotClass->m_pOpenblk = p;
+
+    CBotParser::ValidateBlock(p, pStack);
+
+    if (pStack->IsOk()) return cbotClass;
+    else return nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -794,48 +773,45 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
 {
-    if ( !IsOfType(p, ID_PUBLIC) ) return nullptr;
-    if ( !IsOfType(p, ID_CLASS) ) return nullptr;
+    CBotParser::SkipTokens(p, {ID_PUBLIC, ID_CLASS});
 
-    std::string name = p->GetString();
+    std::string className = CBotParser::ReadString(p);
 
-    // a name for the class is there?
-    if (IsOfType(p, TokenTypVar))
+    CBotClass* cbotClass = CBotClass::Find(className);    // the class was created by Compile1
+
+    if ( CBotParser::SkipType( p, ID_EXTENDS ) )
     {
-        // the class was created by Compile1
-        CBotClass* pOld = CBotClass::Find(name);
+        // TODO: Not sure how correct is that - I have no idea how the precompilation (Compile1 method) works ~krzys_h
+        std::string parentClassName = CBotParser::GetString(p);
+        CBotClass* parentClass = CBotClass::Find(parentClassName);
 
-        if ( IsOfType( p, ID_EXTENDS ) )
+        if (parentClass == nullptr)
         {
-            // TODO: Not sure how correct is that - I have no idea how the precompilation (Compile1 method) works ~krzys_h
-            std::string name = p->GetString();
-            CBotClass* pPapa = CBotClass::Find(name);
-
-            if (!IsOfType(p, TokenTypVar) || pPapa == nullptr)
-            {
-                pStack->SetError( CBotErrNotClass, p );
-                return nullptr;
-            }
-            pOld->m_parent = pPapa;
+            pStack->SetError( CBotErrNotClass, p );
+            return nullptr;
         }
-        else
-        {
-            if (pOld != nullptr)
-            {
-                pOld->m_parent = nullptr;
-            }
-        }
-        IsOfType( p, ID_OPBLK); // necessarily
+        cbotClass->m_parent = parentClass;
 
-        while ( pStack->IsOk() && !IsOfType( p, ID_CLBLK ) )
-        {
-            pOld->CompileDefItem(p, pStack, true);
-        }
-
-        pOld->m_IsDef = true;           // complete definition
-        if (pStack->IsOk()) return pOld;
+        CBotParser::Next(p);
     }
-    pStack->SetError(CBotErrNoTerminator, p);
+    else
+    {
+        cbotClass->m_parent = nullptr;
+    }
+
+    CBotParser::SkipType( p, ID_OPBLK);
+
+    while ( pStack->IsOk() && !CBotParser::SkipType( p, ID_CLBLK ) )
+    {
+        cbotClass->CompileDefItem(p, pStack, true);
+    }
+
+    if (pStack->IsOk())
+    {
+        cbotClass->m_IsDef = true;  // complete definition
+        return cbotClass;
+    }
+
     return nullptr;
 }
 

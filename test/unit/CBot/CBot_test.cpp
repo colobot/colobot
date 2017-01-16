@@ -292,6 +292,10 @@ protected:
 TEST_F(CBotUT, EmptyTest)
 {
     ExecuteTest(
+        ""
+    );
+
+    ExecuteTest(
         "extern void EmptyTest()\n"
         "{\n"
         "}\n"
@@ -328,6 +332,19 @@ TEST_F(CBotUT, UndefinedFunction)
         "    foo();\n"
         "}\n",
         CBotErrUndefCall
+    );
+}
+
+TEST_F(CBotUT, FunctionBeforeClassDefinition)
+{
+    ExecuteTest(
+	"extern Test Foo()\n"
+        "{\n"
+        "    return new Test();\n"
+        "}\n"
+        "public class Test\n"
+        "{\n"
+        "}\n"    
     );
 }
 
@@ -777,6 +794,8 @@ TEST_F(CBotUT, ClassConstructor)
         "    ASSERT(t3.instanceCounter == 2);\n"
         "    ASSERT(t3 != null);\n"
         "    ASSERT(t3 != t1);\n"
+        "    TestClass d1 = new TestClass();\n"
+        "    TestClass d2 = new TestClass(), d3(), d4;\n"
         "}\n"
     );
 }
@@ -1038,6 +1057,81 @@ TEST_F(CBotUT, DISABLED_PublicClasses)
         "    TestClass t();\n"
         "}\n",
         CBotErrUndefClass
+    );
+}
+
+TEST_F(CBotUT, CreateNonExistentClass)
+{
+    ExecuteTest(
+        "extern void TestPublic()\n"
+        "{\n"
+        "    NonExistentClass t();\n"
+        "}\n",
+        CBotErrNotClass
+    );
+
+    ExecuteTest(
+        "extern void TestPublic()\n"
+        "{\n"
+        "    NonExistentClass t = new NonExistentClass();\n"
+        "}\n",
+        CBotErrNotClass
+    );
+}
+
+TEST_F(CBotUT, DefineClassWithoutPublic)
+{
+    ExecuteTest(
+        "class TestClass\n"
+        "{\n"
+        "}\n",
+        CBotErrNoPublic
+    );
+}
+
+TEST_F(CBotUT, DefineClassWithTwoPublic)
+{
+    ExecuteTest(
+        "public public class TestClass\n"
+        "{\n"
+        "}\n",
+        CBotErrClassExpected
+    );
+}
+
+TEST_F(CBotUT, DefineClassWithBadName)
+{
+    ExecuteTest(
+        "public class 123\n"
+        "{\n"
+        "}\n",
+        CBotErrClassNameExpected
+    );
+
+    ExecuteTest(
+        "public class while\n"
+        "{\n"
+        "}\n",
+        CBotErrClassNameExpected
+    );
+}
+
+// TODO: I think we need End of File token
+TEST_F(CBotUT, DISABLED_DefineClassWithoutName)
+{
+    // It works ( CBot compiler says that expected class name and mark '{' ), but ...
+    ExecuteTest(
+        "public class\n"
+        "{\n"
+        "}\n",
+        CBotErrClassNameExpected
+    );
+
+    /* ... it throws error ( CBot compiler says that expected class name, but it doesn't know what
+       it should mark - there is nothing after class keyword ) */
+    ExecuteTest(
+        "public class",
+        CBotErrClassNameExpected
     );
 }
 

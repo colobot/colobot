@@ -28,6 +28,8 @@ namespace CBot
 class CBotInstr;
 class CBotDefParam;
 class CBotToken;
+class CBotFunction;
+class CBotProgram;
 
 /*!
  * \brief The CBotCStack class Management of the stack of compilation.
