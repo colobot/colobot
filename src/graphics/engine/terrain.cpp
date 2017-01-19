@@ -165,11 +165,6 @@ void CTerrain::AddMaterial(int id, const std::string& texName, const Math::Point
                            int up, int right, int down, int left,
                            float hardness)
 {
-    InitMaterialPoints();
-
-    if (id == 0)
-        id = m_materialAutoID++;
-
     TerrainMaterial tm;
     tm.texName  = texName;
     tm.id       = id;
@@ -180,12 +175,22 @@ void CTerrain::AddMaterial(int id, const std::string& texName, const Math::Point
     tm.mat[3]   = left;
     tm.hardness = hardness;
 
-    m_materials.push_back(tm);
+    AddMaterial(tm);
+}
 
-    if (m_maxMaterialID < up+1   )  m_maxMaterialID = up+1;
-    if (m_maxMaterialID < right+1)  m_maxMaterialID = right+1;
-    if (m_maxMaterialID < down+1 )  m_maxMaterialID = down+1;
-    if (m_maxMaterialID < left+1 )  m_maxMaterialID = left+1;
+void CTerrain::AddMaterial(TerrainMaterial material)
+{
+    InitMaterialPoints();
+
+    if (material.id == 0)
+        material.id = m_materialAutoID++;
+
+    m_materials.push_back(material);
+
+    if ( m_maxMaterialID < material.mat[0]+1 )  m_maxMaterialID = material.mat[0]+1;
+    if ( m_maxMaterialID < material.mat[1]+1 )  m_maxMaterialID = material.mat[1]+1;
+    if ( m_maxMaterialID < material.mat[2]+1 )  m_maxMaterialID = material.mat[2]+1;
+    if ( m_maxMaterialID < material.mat[3]+1 )  m_maxMaterialID = material.mat[3]+1;
 
     m_useMaterials = true;
     m_textureSubdivCount = 4;
@@ -1857,7 +1862,12 @@ void CTerrain::AddFlyingLimit(Math::Vector center,
     fl.extRadius = extRadius;
     fl.intRadius = intRadius;
     fl.maxHeight = maxHeight;
-    m_flyingLimits.push_back(fl);
+    AddFlyingLimit(fl);
+}
+
+void CTerrain::AddFlyingLimit(FlyingLimit limit)
+{
+    m_flyingLimits.push_back(limit);
 }
 
 float CTerrain::GetFlyingLimit(Math::Vector pos, bool noLimit)

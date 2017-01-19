@@ -144,6 +144,11 @@ void CPlanet::Draw()
     }
 }
 
+void CPlanet::Add(Planet planet)
+{
+    m_planets.push_back(planet);
+}
+
 void CPlanet::Create(PlanetType type, Math::Point start, float dim, float speed,
                      float dir, const std::string& name, Math::Point uv1, Math::Point uv2,
                      bool transparent)
@@ -163,7 +168,7 @@ void CPlanet::Create(PlanetType type, Math::Point start, float dim, float speed,
 
     planet.transparent = transparent;
 
-    m_planets.push_back(planet);
+    Add(planet);
 }
 
 bool CPlanet::PlanetExist()

@@ -160,12 +160,111 @@ void CLevelParser::Load()
     if (!file.is_open())
         throw CLevelParserException("Failed to open file: " + m_filename);
 
+    LoadFromStream(file);
+
+    file.close();
+}
+
+void CLevelParser::Save()
+{
+    COutputStream file;
+    file.open(m_filename);
+    if (!file.is_open())
+        throw CLevelParserException("Failed to open file: " + m_filename);
+
+    for (auto& line : m_lines)
+    {
+        file << *(line.get()) << "\n";
+    }
+
+    file.close();
+}
+
+void CLevelParser::SetLevelPaths(LevelCategory category, int chapter, int rank)
+{
+    m_pathCat  = BuildCategoryPath(category);
+    m_pathChap = chapter != 0 ? BuildScenePath(category, chapter, 0, false) : "";
+    m_pathLvl  = chapter != 0 && rank != 0 ? BuildScenePath(category, chapter, rank, false) : "";
+}
+
+std::string CLevelParser::InjectLevelPaths(const std::string& path, const std::string& defaultDir)
+{
+    std::string newPath = path;
+    if(!m_pathLvl.empty() ) boost::replace_all(newPath, "%lvl%",  m_pathLvl);
+    if(!m_pathChap.empty()) boost::replace_all(newPath, "%chap%", m_pathChap);
+    if(!m_pathCat.empty() ) boost::replace_all(newPath, "%cat%",  m_pathCat);
+    if(newPath == path && !path.empty())
+    {
+        newPath = defaultDir + (!defaultDir.empty() ? "/" : "") + newPath;
+    }
+
+    std::string langPath = newPath;
+    std::string langStr(1, CApplication::GetInstancePointer()->GetLanguageChar());
+    boost::replace_all(langPath, "%lng%", langStr);
+    if(CResourceManager::Exists(langPath))
+        return langPath;
+
+    // Fallback to English if file doesn't exist
+    boost::replace_all(newPath, "%lng%", "E");
+    if(CResourceManager::Exists(newPath))
+        return newPath;
+
+    return langPath; // Return current language file if none of the files exist
+}
+
+const std::string& CLevelParser::GetFilename()
+{
+    return m_filename;
+}
+
+const std::vector<CLevelParserLineUPtr>& CLevelParser::GetLines()
+{
+    return m_lines;
+}
+
+void CLevelParser::AddLine(CLevelParserLineUPtr line)
+{
+    line->SetLevel(this);
+    m_lines.push_back(std::move(line));
+}
+
+CLevelParserLine* CLevelParser::Get(const std::string& command)
+{
+    CLevelParserLine* line = GetIfDefined(command);
+    if (line == nullptr)
+        throw CLevelParserException("Command not found: " + command);
+    return line;
+}
+
+CLevelParserLine* CLevelParser::GetIfDefined(const std::string& command)
+{
+    for (auto& line : m_lines)
+    {
+        if (line->GetCommand() == command)
+            return line.get();
+    }
+    return nullptr;
+}
+
+int CLevelParser::CountLines(const std::string& command)
+{
+    int count = 0;
+    for (auto& line : m_lines)
+    {
+        if (line->GetCommand() == command)
+            count++;
+    }
+    return count;
+}
+
+void CLevelParser::LoadFromStream(std::istream& stream)
+{
     char lang = CApplication::GetInstancePointer()->GetLanguageChar();
 
     std::string line;
     int lineNumber = 0;
     std::set<std::string> translatableLines;
-    while (getline(file, line))
+    while (getline(stream, line))
     {
         lineNumber++;
 
@@ -295,93 +394,4 @@ void CLevelParser::Load()
             AddLine(std::move(parserLine));
         }
     }
-
-    file.close();
-}
-
-void CLevelParser::Save()
-{
-    COutputStream file;
-    file.open(m_filename);
-    if (!file.is_open())
-        throw CLevelParserException("Failed to open file: " + m_filename);
-
-    for (auto& line : m_lines)
-    {
-        file << *(line.get()) << "\n";
-    }
-
-    file.close();
-}
-
-void CLevelParser::SetLevelPaths(LevelCategory category, int chapter, int rank)
-{
-    m_pathCat  = BuildCategoryPath(category);
-    m_pathChap = chapter != 0 ? BuildScenePath(category, chapter, 0, false) : "";
-    m_pathLvl  = chapter != 0 && rank != 0 ? BuildScenePath(category, chapter, rank, false) : "";
-}
-
-std::string CLevelParser::InjectLevelPaths(const std::string& path, const std::string& defaultDir)
-{
-    std::string newPath = path;
-    if(!m_pathLvl.empty() ) boost::replace_all(newPath, "%lvl%",  m_pathLvl);
-    if(!m_pathChap.empty()) boost::replace_all(newPath, "%chap%", m_pathChap);
-    if(!m_pathCat.empty() ) boost::replace_all(newPath, "%cat%",  m_pathCat);
-    if(newPath == path && !path.empty())
-    {
-        newPath = defaultDir + (!defaultDir.empty() ? "/" : "") + newPath;
-    }
-
-    std::string langPath = newPath;
-    std::string langStr(1, CApplication::GetInstancePointer()->GetLanguageChar());
-    boost::replace_all(langPath, "%lng%", langStr);
-    if(CResourceManager::Exists(langPath))
-        return langPath;
-
-    // Fallback to English if file doesn't exist
-    boost::replace_all(newPath, "%lng%", "E");
-    if(CResourceManager::Exists(newPath))
-        return newPath;
-
-    return langPath; // Return current language file if none of the files exist
-}
-
-const std::string& CLevelParser::GetFilename()
-{
-    return m_filename;
-}
-
-void CLevelParser::AddLine(CLevelParserLineUPtr line)
-{
-    line->SetLevel(this);
-    m_lines.push_back(std::move(line));
-}
-
-CLevelParserLine* CLevelParser::Get(const std::string& command)
-{
-    CLevelParserLine* line = GetIfDefined(command);
-    if (line == nullptr)
-        throw CLevelParserException("Command not found: " + command);
-    return line;
-}
-
-CLevelParserLine* CLevelParser::GetIfDefined(const std::string& command)
-{
-    for (auto& line : m_lines)
-    {
-        if (line->GetCommand() == command)
-            return line.get();
-    }
-    return nullptr;
-}
-
-int CLevelParser::CountLines(const std::string& command)
-{
-    int count = 0;
-    for (auto& line : m_lines)
-    {
-        if (line->GetCommand() == command)
-            count++;
-    }
-    return count;
 }

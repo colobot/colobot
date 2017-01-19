@@ -102,6 +102,14 @@ public:
     //! Adjusts the eye of the camera, not to be in the water
     void        AdjustEye(Math::Vector &eye);
 
+    //! Set new color of water (changes will applied after call CWater::UpdateTextureColor())
+    void        SetColor(Gfx::Color color, float shift);
+    //! Update texture of water
+    void        UpdateTextureColor();
+
+public:
+    static const Gfx::Color COLOR_REF_WATER;
+
 protected:
     //! Makes water evolve
     bool        EventFrame(const Event &event);
@@ -144,6 +152,9 @@ protected:
     float           m_lastLava = 0.0f;
     int             m_subdiv = 4;
 
+    Gfx::Color      m_color;
+    float           m_colorShift = 0.0f;
+
     //! Number of brick*mosaics
     int             m_brickCount = 0;
     //! Size of a item in an brick
@@ -183,7 +194,6 @@ protected:
 
     bool            m_draw = true;
     bool            m_lava = false;
-    Color           m_color = Color(1.0f, 1.0f, 1.0f, 1.0f);
 };
 
 

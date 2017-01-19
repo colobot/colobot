@@ -224,6 +224,9 @@ set(BASE_SOURCES
     level/build_type.h
     level/level_category.cpp
     level/level_category.h
+    level/level_load_mode.h
+    level/level_loader.cpp
+    level/level_loader.h
     level/mainmovie.cpp
     level/mainmovie.h
     level/parser/parser.cpp

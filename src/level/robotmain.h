@@ -35,6 +35,8 @@
 
 #include "level/build_type.h"
 #include "level/level_category.h"
+#include "level/level_load_mode.h"
+#include "level/level_loader.h"
 #include "level/mainmovie.h"
 #include "level/research_type.h"
 
@@ -91,6 +93,7 @@ class CPlayerProfile;
 class CSettings;
 class COldObject;
 class CPauseManager;
+class CLevelLoader;
 struct ActivePause;
 
 namespace Gfx
@@ -149,14 +152,17 @@ struct MinMax
     int max = -1;
 };
 
+enum SatCom
+{
+    Huston     = 0,
+    Sat        = 1,
+    Object     = 2,
+    Loading    = 3,
+    Prog       = 4,
+    Solution   = 5,
+    MAX        = 6
+};
 
-const int SATCOM_HUSTON     = 0;
-const int SATCOM_SAT        = 1;
-const int SATCOM_OBJECT     = 2;
-const int SATCOM_LOADING    = 3;
-const int SATCOM_PROG       = 4;
-const int SATCOM_SOLUCE     = 5;
-const int SATCOM_MAX        = 6;
 
 /**
  * \brief Main class managing the game world
@@ -246,10 +252,10 @@ public:
     MainMovieType GetMainMovie();
 
     void        FlushDisplayInfo();
-    void        StartDisplayInfo(int index, bool movie);
+    void        StartDisplayInfo(SatCom index, bool movie);
     void        StartDisplayInfo(const std::string& filename, int index);
     void        StopDisplayInfo();
-    char*       GetDisplayInfoName(int index);
+    const std::string& GetDisplayInfoName(int index);
 
     void        StartSuspend();
     void        StopSuspend();
@@ -323,6 +329,7 @@ public:
     //@}
 
     int         CreateSpot(Math::Vector pos, Gfx::Color color);
+    int         CreateSpot(Math::Vector pos, Gfx::Color color, Gfx::EngineObjectType type);
 
     //! Find the currently selected object
     CObject*    GetSelect();
@@ -463,6 +470,13 @@ public:
     //! Check if crash sphere debug rendering is enabled
     bool GetDebugCrashSpheres();
 
+    // Reference colors used when recoloring textures, see ChangeColor()
+    static const Gfx::Color COLOR_REF_BOT;
+    static const Gfx::Color COLOR_REF_ALIEN;
+    static const Gfx::Color COLOR_REF_GREEN;
+
+    static const float UNIT; // default for g_unit
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -470,12 +484,12 @@ protected:
 
     void        ShowSaveIndicator(bool show);
 
-    void        CreateScene(bool soluce, bool fixScene, bool resetObject);
+    void        CreateScene(bool solutionEnabled, bool fixScene, LevelLoadMode mode);
     void        ResetCreate();
 
     void        LevelLoadingError(const std::string& error, const std::runtime_error& exception, Phase exitPhase = PHASE_LEVEL_LIST);
 
-    int         CreateLight(Math::Vector direction, Gfx::Color color);
+    int         CreateLight(Math::Vector direction, Gfx::Color color, Gfx::EngineObjectType type);
     void        HiliteClear();
     void        HiliteObject(Math::Point pos);
     void        HiliteFrame(float rTime);
@@ -616,7 +630,7 @@ protected:
     std::string     m_tooltipName;
     float           m_tooltipTime = 0.0f;
 
-    char            m_infoFilename[SATCOM_MAX][100] = {}; // names of text files
+    std::string     m_infoFilename[SatCom::MAX] = {}; // names of text files
     CObject*        m_infoObject = nullptr;
     int             m_infoUsed = 0;
     ActivePause*    m_satcomMoviePause = nullptr;
@@ -676,8 +690,6 @@ protected:
     std::map<int, Gfx::Color> m_colorNewBot;
     Gfx::Color      m_colorNewAlien;
     Gfx::Color      m_colorNewGreen;
-    Gfx::Color      m_colorNewWater;
-    float           m_colorShiftWater = 0.0f;
 
     bool            m_missionTimerEnabled = false;
     bool            m_missionTimerStarted = false;

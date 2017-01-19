@@ -48,6 +48,7 @@ const int WATERLINE_PREALLOCATE_COUNT = 500;
 const int VAPOR_SIZE = 10;
 } // anonymous namespace
 
+const Color CWater::COLOR_REF_WATER = Color( 25.0f/256.0f, 255.0f/256.0f, 240.0f/256.0f);  // cyan
 
 CWater::CWater(CEngine* engine)
     : m_engine(engine),
@@ -342,7 +343,7 @@ void CWater::DrawSurf()
     m_engine->SetTexture(m_fileName, 1);
 
     if (m_type[rankview] == WATER_TT)
-        m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_DUAL_WHITE | ENG_RSTATE_WRAP, m_color);
+        m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_DUAL_WHITE | ENG_RSTATE_WRAP, Color(1.0f, 1.0f, 1.0f, 1.0f)); // transparent water
 
     else if (m_type[rankview] == WATER_TO)
         m_engine->SetState(ENG_RSTATE_NORMAL | ENG_RSTATE_DUAL_WHITE | ENG_RSTATE_WRAP);
@@ -621,5 +622,25 @@ void CWater::AdjustEye(Math::Vector &eye)
     }
 }
 
+void CWater::SetColor(Gfx::Color color, float shift)
+{
+    m_color = color;
+    m_colorShift = shift;
+}
+
+void CWater::UpdateTextureColor()
+{
+    Gfx::Color black = Gfx::Color(0.0f, 0.0f, 0.f);
+
+    // PARTIPLOUF0 and PARTIDROP :
+    Math::Point ts = Math::Point(0.500f, 0.500f);
+    Math::Point ti = Math::Point(0.875f, 0.750f);
+    m_engine->ChangeTextureColor("textures/effect00.png", COLOR_REF_WATER, m_color, black, black, 0.20f, -1.0f, ts, ti, nullptr, m_colorShift, true);
+
+    // PARTIFLIC :
+    ts = Math::Point(0.00f, 0.75f);
+    ti = Math::Point(0.25f, 1.00f);
+    m_engine->ChangeTextureColor("textures/effect02.png", COLOR_REF_WATER, m_color, black, black, 0.20f, -1.0f, ts, ti, nullptr, m_colorShift, true);
+}
 
 } // namespace Gfx

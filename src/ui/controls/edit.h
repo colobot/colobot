@@ -124,7 +124,7 @@ public:
     const std::string& GetText();
     int                GetTextLength();
 
-    bool        ReadText(std::string filename);
+    bool        ReadText(const std::string& filename);
     bool        WriteText(std::string filename);
 
     void        SetMaxChar(int max);
@@ -167,7 +167,7 @@ public:
     bool        Undo();
 
     void        HyperFlush();
-    void        HyperHome(std::string filename);
+    void        HyperHome(const std::string& filename);
     bool        HyperTest(EventType event);
     bool        HyperGo(EventType event);
 
@@ -188,6 +188,8 @@ protected:
 
     void        HyperJump(std::string name, std::string marker);
     bool        HyperAdd(std::string filename, int firstLine);
+
+    std::string PrepareImageFilename(const std::string& name);
 
     void        DrawImage(Math::Point pos, std::string name, float width, float offset, float height, int nbLine);
     void        DrawBack(Math::Point pos, Math::Point dim);

@@ -49,40 +49,10 @@ class CEngine;
 class CPlanet
 {
 public:
-    CPlanet(CEngine* engine);
-    ~CPlanet();
-
-    //! Removes all the planets
-    void        Flush();
-    //! Management of an event
-    bool        EventProcess(const Event &event);
-    //! Creates a new planet
-    void        Create(PlanetType type, Math::Point start, float dim, float speed, float dir,
-                       const std::string& name, Math::Point uv1, Math::Point uv2,
-                       bool transparent);
-    //! Indicates if there is at least one planet
-    bool        PlanetExist();
-    //! Load all the textures for the planets
-    void        LoadTexture();
-    //! Draws all the planets
-    void        Draw();
-
-    //! Set which planet types to display
-    void        SetVisiblePlanetType(PlanetType type);
-
-protected:
-    //! Makes the planets evolve
-    bool        EventFrame(const Event &event);
-
-protected:
-    CEngine* m_engine = nullptr;
-    float m_time = 0.0f;
-    PlanetType m_visibleType = PlanetType::Sky;
-
     /**
-    * \struct Planet
-    * \brief Planet texture definition
-    */
+     * \struct Planet
+     * \brief Planet texture definition
+     */
     struct Planet
     {
         //! Type of planet
@@ -106,6 +76,39 @@ protected:
         //! Transparent texture
         bool            transparent = false;
     };
+
+    CPlanet(CEngine* engine);
+    ~CPlanet();
+
+    //! Removes all the planets
+    void        Flush();
+    //! Management of an event
+    bool        EventProcess(const Event &event);
+    //! Adds planet
+    void        Add(Planet planet);
+    //! Creates a new planet
+    void        Create(PlanetType type, Math::Point start, float dim, float speed, float dir,
+                       const std::string& name, Math::Point uv1, Math::Point uv2,
+                       bool transparent);
+    //! Indicates if there is at least one planet
+    bool        PlanetExist();
+    //! Load all the textures for the planets
+    void        LoadTexture();
+    //! Draws all the planets
+    void        Draw();
+
+    //! Set which planet types to display
+    void        SetVisiblePlanetType(PlanetType type);
+
+protected:
+    //! Makes the planets evolve
+    bool        EventFrame(const Event &event);
+
+protected:
+    CEngine* m_engine = nullptr;
+    float m_time = 0.0f;
+    PlanetType m_visibleType = PlanetType::Sky;
+
     std::vector<Planet> m_planets;
 };
 
