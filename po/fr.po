@@ -1494,6 +1494,9 @@ msgstr ""
 msgid "This object is not a member of a class"
 msgstr "L'objet n'est pas une instance d'une classe"
 
+msgid "This parameter needs a default value"
+msgstr ""
+
 msgid "This program is read-only, clone it to edit"
 msgstr "Ce programme est en lecture-seule, le dupliquer pour pouvoir l'éditer"
 

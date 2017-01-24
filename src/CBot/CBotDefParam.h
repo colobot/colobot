@@ -64,6 +64,12 @@ public:
     bool Execute(CBotVar** ppVars, CBotStack* &pj);
 
     /*!
+     * \brief Check if this parameter has a default value expression.
+     * \return true if the parameter was compiled with a default value.
+     */
+    bool HasDefault();
+
+    /*!
      * \brief RestoreState
      * \param pj
      * \param bMain
@@ -96,6 +102,9 @@ private:
     //! Type of paramteter.
     CBotTypResult m_type;
     long m_nIdent;
+
+    //! Default value expression for the parameter.
+    CBotInstr* m_expr;
 };
 
 } // namespace CBot

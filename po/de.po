@@ -1522,6 +1522,9 @@ msgstr ""
 msgid "This object is not a member of a class"
 msgstr "Das Objekt ist nicht eine Instanz einer Klasse"
 
+msgid "This parameter needs a default value"
+msgstr ""
+
 msgid "This program is read-only, clone it to edit"
 msgstr ""
 

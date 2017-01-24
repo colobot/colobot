@@ -1594,11 +1594,12 @@ TEST_F(CBotUT, StringFunctions)
     );
 }
 
-TEST_F(CBotUT, DISABLED_TestNANParam_Issue642)
+TEST_F(CBotUT, TestNANParam_Issue642)
 {
     ExecuteTest(
         "float test(float x) {\n"
-        "     return x;\n"
+        "    ASSERT(x == nan);\n"
+        "    return x;\n"
         "}\n"
         "extern void TestNANParam() {\n"
         "    ASSERT(nan == nan);\n" // TODO: Shouldn't it be nan != nan ??
@@ -2306,5 +2307,82 @@ TEST_F(CBotUT, IncrementDecrementSyntax)
         "    ++123;\n"
         "}\n",
         CBotErrBadType1
+    );
+}
+
+TEST_F(CBotUT, ParametersWithDefaultValues)
+{
+    ExecuteTest(
+        "extern void ParametersWithDefaultValues() {\n"
+        "    ASSERT(true == Test());\n"
+        "    ASSERT(true == Test(1));\n"
+        "    ASSERT(true == Test(1, 2));\n"
+        "}\n"
+        "bool Test(int i = 1, float f = 2.0) {\n"
+        "    return (i == 1) && (f == 2.0);\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void NotUsingDefaultValues() {\n"
+        "    ASSERT(true == Test(2, 4.0));\n"
+        "}\n"
+        "bool Test(int i = 1, float f = 2.0) {\n"
+        "    return (i == 2) && (f == 4.0);\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void NextParamNeedsDefaultValue() {\n"
+        "}\n"
+        "void Test(int i = 1, float f) {}\n"
+        "\n",
+        CBotErrDefaultValue
+    );
+
+    ExecuteTest(
+        "extern void ParamMissingExpression() {\n"
+        "}\n"
+        "void Test(int i = 1, float f = ) {}\n"
+        "\n",
+        CBotErrNoExpression
+    );
+
+    ExecuteTest(
+        "extern void ParamDefaultBadType() {\n"
+        "}\n"
+        "void Test(int i = 1, float f = null) {}\n"
+        "\n",
+        CBotErrBadType1
+    );
+
+    ExecuteTest(
+        "extern void DefaultValuesAmbiguousCall() {\n"
+        "    Test();\n"
+        "}\n"
+        "void Test(int i = 1) {}\n"
+        "void Test(float f = 2.0) {}\n"
+        "\n",
+        CBotErrAmbiguousCall
+    );
+
+    ExecuteTest(
+        "extern void AmbiguousCallOneDefault() {\n"
+        "    Test(1);\n"
+        "}\n"
+        "void Test(int i, float f = 2) {}\n"
+        "void Test(int i) {}\n"
+        "\n",
+        CBotErrAmbiguousCall
+    );
+
+    ExecuteTest(
+        "extern void DifferentNumberOfDefaultValues() {\n"
+        "    Test(1, 2.0);\n"
+        "}\n"
+        "void Test(int i, float f = 2.0) {}\n"
+        "void Test(int i, float f = 2.0, int ii = 1) {}\n"
+        "\n",
+        CBotErrAmbiguousCall
     );
 }

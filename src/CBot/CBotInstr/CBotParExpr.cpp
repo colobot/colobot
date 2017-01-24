@@ -132,6 +132,16 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
         return pStack->Return(nullptr, pStk);
     }
 
+    return CompileLitExpr(p, pStack);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CBotInstr* CBotParExpr::CompileLitExpr(CBotToken* &p, CBotCStack* pStack)
+{
+    CBotCStack* pStk = pStack->TokenStack();
+
+    CBotToken* pp = p;
+
     // is it a number or DefineNum?
     if (p->GetType() == TokenTypNum ||
         p->GetType() == TokenTypDef )

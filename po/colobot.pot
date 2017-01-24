@@ -1745,6 +1745,9 @@ msgstr ""
 msgid "Non-void function needs \"return;\""
 msgstr ""
 
+msgid "This parameter needs a default value"
+msgstr ""
+
 msgid "Dividing by zero"
 msgstr ""
 

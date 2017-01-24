@@ -503,8 +503,13 @@ CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& lo
             // parameters are compatible?
             CBotDefParam* pv = pt->m_param;         // expected list of parameters
             CBotVar* pw = ppVars[i++];              // provided list parameter
-            while ( pv != nullptr && pw != nullptr)
+            while ( pv != nullptr && (pw != nullptr || pv->HasDefault()) )
             {
+                if (pw == nullptr)     // end of arguments
+                {
+                    pv = pv->GetNext();
+                    continue;          // skip params with default values
+                }
                 CBotTypResult paramType = pv->GetTypResult();
                 CBotTypResult argType = pw->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
 
@@ -561,8 +566,13 @@ CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& lo
                 // parameters sont-ils compatibles ?
                 CBotDefParam* pv = pt->m_param;         // list of expected parameters
                 CBotVar* pw = ppVars[i++];              // list of provided parameters
-                while ( pv != nullptr && pw != nullptr)
+                while ( pv != nullptr && (pw != nullptr || pv->HasDefault()) )
                 {
+                    if (pw == nullptr)     // end of arguments
+                    {
+                        pv = pv->GetNext();
+                        continue;          // skip params with default values
+                    }
                     CBotTypResult paramType = pv->GetTypResult();
                     CBotTypResult argType = pw->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
 
@@ -690,7 +700,14 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
             // initializes the variables as parameters
             if (pt->m_param != nullptr)
             {
-                pt->m_param->Execute(ppVars, pStk3);            // cannot be interrupted
+                if (!pt->m_param->Execute(ppVars, pStk3)) // interupts only if error on a default value
+                {
+                    if ( pt->m_pProg != program )
+                    {
+                        pStk3->SetPosError(pToken);       // indicates the error on the procedure call
+                    }
+                    return pStack->Return(pStk3);
+                }
             }
 
             pStk1->IncState();
@@ -812,7 +829,14 @@ int CBotFunction::DoCall(const std::list<CBotFunction*>& localFunctionList, long
             // initializes the variables as parameters
             if (pt->m_param != nullptr)
             {
-                pt->m_param->Execute(ppVars, pStk3);            // cannot be interrupted
+                if (!pt->m_param->Execute(ppVars, pStk3)) // interupts only if error on a default value
+                {
+                    if ( pt->m_pProg != pProgCurrent )
+                    {
+                        pStk3->SetPosError(pToken);       // indicates the error on the procedure call
+                    }
+                    return pStack->Return(pStk3);
+                }
             }
             pStk->IncState();
         }

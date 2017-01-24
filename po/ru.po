@@ -1510,6 +1510,9 @@ msgstr ""
 msgid "This object is not a member of a class"
 msgstr "Этот объект не член класса"
 
+msgid "This parameter needs a default value"
+msgstr ""
+
 msgid "This program is read-only, clone it to edit"
 msgstr "Эта программа только для чтения, для редактирования клонируйте её"
 

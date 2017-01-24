@@ -1496,6 +1496,9 @@ msgstr "Ten objekt jest obecnie zajęty"
 msgid "This object is not a member of a class"
 msgstr "Ten obiekt nie jest członkiem klasy"
 
+msgid "This parameter needs a default value"
+msgstr ""
+
 msgid "This program is read-only, clone it to edit"
 msgstr "Ten program jest tylko do odczytu, skopiuj go, aby edytować"
 
