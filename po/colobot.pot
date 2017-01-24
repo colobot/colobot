@@ -1742,6 +1742,9 @@ msgstr ""
 msgid "Class name expected"
 msgstr ""
 
+msgid "Non-void function needs \"return;\""
+msgstr ""
+
 msgid "Dividing by zero"
 msgstr ""
 

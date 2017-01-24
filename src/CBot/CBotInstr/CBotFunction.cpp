@@ -228,6 +228,12 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
                 func->m_closeblk = (p != nullptr && p->GetPrev() != nullptr) ? *(p->GetPrev()) : CBotToken();
                 if ( pStk->IsOk() )
                 {
+                    if (!func->m_retTyp.Eq(CBotTypVoid) && !func->HasReturn())
+                    {
+                        int errPos = func->m_closeblk.GetStart();
+                        pStk->ResetError(CBotErrNoReturn, errPos, errPos);
+                        goto bad;
+                    }
                     return pStack->ReturnFunc(func, pStk);
                 }
             }
@@ -936,6 +942,12 @@ std::string CBotFunction::GetParams()
 void CBotFunction::AddPublic(CBotFunction* func)
 {
     m_publicFunctions.insert(func);
+}
+
+bool CBotFunction::HasReturn()
+{
+    if (m_block != nullptr) return m_block->HasReturn();
+    return false;
 }
 
 std::string CBotFunction::GetDebugData()

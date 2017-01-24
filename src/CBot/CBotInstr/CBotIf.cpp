@@ -163,6 +163,15 @@ void CBotIf :: RestoreState(CBotStack* &pj, bool bMain)
     }
 }
 
+bool CBotIf::HasReturn()
+{
+    if (m_block != nullptr && m_blockElse != nullptr)
+    {
+        if (m_block->HasReturn() && m_blockElse->HasReturn()) return true;
+    }
+    return CBotInstr::HasReturn(); // check next block or instruction
+}
+
 std::map<std::string, CBotInstr*> CBotIf::GetDebugLinks()
 {
     auto links = CBotInstr::GetDebugLinks();

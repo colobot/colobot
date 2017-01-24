@@ -801,8 +801,7 @@ TEST_F(CBotUT, FunctionBadReturn)
     );
 }
 
-// TODO: Doesn't work
-TEST_F(CBotUT, DISABLED_FunctionNoReturn)
+TEST_F(CBotUT, FunctionNoReturn)
 {
     ExecuteTest(
         "int func()\n"
@@ -812,7 +811,49 @@ TEST_F(CBotUT, DISABLED_FunctionNoReturn)
         "{\n"
         "    func();\n"
         "}\n",
-        static_cast<CBotError>(-1) // TODO: no error for that
+        CBotErrNoReturn
+    );
+
+    ExecuteTest(
+        "int FuncDoesNotReturnAValue()\n"
+        "{\n"
+        "    if (false) return 1;\n"
+        "    while (false) return 1;\n"
+        "    if (true) ; else return 1;\n"
+        "    do { break; return 1; } while (false);\n"
+        "    do { continue; return 1; } while (false);\n"
+        "}\n",
+        CBotErrNoReturn
+    );
+
+    ExecuteTest(
+        "int FuncHasReturn()\n"
+        "{\n"
+        "    return 1;\n"
+        "}\n"
+        "int BlockHasReturn()\n"
+        "{\n"
+        "    {\n"
+        "        {\n"
+        "        }\n"
+        "        return 2;\n"
+        "    }\n"
+        "}\n"
+        "int IfElseHasReturn()\n"
+        "{\n"
+        "    if (false) {\n"
+        "        return 3;\n"
+        "    } else {\n"
+        "        if (false) return 3;\n"
+        "        else return 3;\n"
+        "    }\n"
+        "}\n"
+        "extern void Test()\n"
+        "{\n"
+        "    ASSERT(1 == FuncHasReturn());\n"
+        "    ASSERT(2 == BlockHasReturn());\n"
+        "    ASSERT(3 == IfElseHasReturn());\n"
+        "}\n"
     );
 }
 

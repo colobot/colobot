@@ -56,6 +56,13 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
+    /**
+     * \brief Check this block of instructions for a return statement.
+     * If not found, the next block or instruction is checked.
+     * \return true if a return statement was found.
+     */
+    bool HasReturn() override;
+
 protected:
     virtual const std::string GetDebugName() override { return "CBotListInstr"; }
     virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;

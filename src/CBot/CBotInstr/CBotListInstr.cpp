@@ -117,6 +117,12 @@ void CBotListInstr::RestoreState(CBotStack* &pj, bool bMain)
     if (p != nullptr) p->RestoreState(pile, true);
 }
 
+bool CBotListInstr::HasReturn()
+{
+    if (m_instr != nullptr && m_instr->HasReturn()) return true;
+    return CBotInstr::HasReturn(); // check next block or instruction
+}
+
 std::map<std::string, CBotInstr*> CBotListInstr::GetDebugLinks()
 {
     auto links = CBotInstr::GetDebugLinks();

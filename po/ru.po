@@ -935,6 +935,9 @@ msgstr "Нет урана для преобразования"
 msgid "No userlevels installed!"
 msgstr "Не установленны пользовательские уровни!"
 
+msgid "Non-void function needs \"return;\""
+msgstr ""
+
 msgid "Normal size"
 msgstr "Нормальный размер"
 

@@ -281,6 +281,12 @@ public:
      */
     static bool ChkLvl(const std::string& label, int type);
 
+    /**
+     * \brief Check a list of instructions for a return statement.
+     * \return true if a return statement was found.
+     */
+    virtual bool HasReturn();
+
 protected:
     friend class CBotDebug;
     /**

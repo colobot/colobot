@@ -926,6 +926,9 @@ msgstr "Brak uranu do przetworzenia"
 msgid "No userlevels installed!"
 msgstr "Brak zainstalowanych poziomów użytkownika!"
 
+msgid "Non-void function needs \"return;\""
+msgstr ""
+
 msgid "Normal size"
 msgstr "Normalna wielkość"
 

@@ -924,6 +924,9 @@ msgstr "Pas d'uranium à transformer"
 msgid "No userlevels installed!"
 msgstr "Pas de niveaux spéciaux installés !"
 
+msgid "Non-void function needs \"return;\""
+msgstr ""
+
 msgid "Normal size"
 msgstr "Taille normale"
 

@@ -359,6 +359,13 @@ CBotInstr* CBotInstr::CompileArray(CBotToken* &p, CBotCStack* pStack, CBotTypRes
     return nullptr;
 }
 
+bool CBotInstr::HasReturn()
+{
+    assert(this != nullptr);
+    if (m_next != nullptr) return m_next->HasReturn();
+    return false; // end of the list
+}
+
 std::map<std::string, CBotInstr*> CBotInstr::GetDebugLinks()
 {
     return {

@@ -942,6 +942,9 @@ msgstr "Kein konvertierbares Platin"
 msgid "No userlevels installed!"
 msgstr ""
 
+msgid "Non-void function needs \"return;\""
+msgstr ""
+
 msgid "Normal size"
 msgstr "Normale Größe"
 
