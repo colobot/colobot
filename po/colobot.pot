@@ -1739,6 +1739,9 @@ msgstr ""
 msgid "Function needs return type \"void\""
 msgstr ""
 
+msgid "Class name expected"
+msgstr ""
+
 msgid "Dividing by zero"
 msgstr ""
 

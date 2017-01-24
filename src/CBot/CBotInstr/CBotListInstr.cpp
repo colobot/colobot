@@ -52,7 +52,7 @@ CBotInstr* CBotListInstr::Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal
         if (IsOfType(p, ID_SEP)) continue;              // empty statement ignored
         if (p->GetType() == ID_CLBLK) break;
 
-        if (IsOfType(p, 0))
+        if (p->GetType() == TokenTypNone)
         {
             pStack->SetError(CBotErrCloseBlock, p->GetStart());
             delete inst;

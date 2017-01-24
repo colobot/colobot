@@ -52,7 +52,7 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
     {
         CBotDefParam* list = nullptr;
 
-        while (!IsOfType(p, ID_CLOSEPAR))
+        if (!IsOfType(p, ID_CLOSEPAR)) while (true)
         {
             CBotDefParam* param = new CBotDefParam();
             if (list == nullptr) list = param;
@@ -85,10 +85,12 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
                     var->SetUniqNum(param->m_nIdent);
                     pStack->AddVar(var);                                // place on the stack
 
-                    if (IsOfType(p, ID_COMMA) || p->GetType() == ID_CLOSEPAR)
-                        continue;
+                    if (IsOfType(p, ID_COMMA)) continue;
+                    if (IsOfType(p, ID_CLOSEPAR)) break;
+
+                    pStack->SetError(CBotErrClosePar, p->GetStart());
                 }
-                pStack->SetError(CBotErrClosePar, p->GetStart());
+                pStack->SetError(CBotErrNoVar, p->GetStart());
             }
             pStack->SetError(CBotErrNoType, p);
             delete list;

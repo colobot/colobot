@@ -471,26 +471,27 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 
     std::string name = p->GetString();
 
-    CBotClass* pOld = CBotClass::Find(name);
-    if ( (pOld != nullptr && pOld->m_IsDef) ||          /* public class exists in different program */
-         pStack->GetProgram()->ClassExists(name))       /* class exists in this program */
-    {
-        pStack->SetError( CBotErrRedefClass, p );
-        return nullptr;
-    }
-
     // a name of the class is there?
     if (IsOfType(p, TokenTypVar))
     {
+        CBotClass* pOld = CBotClass::Find(name);
+        if ((pOld != nullptr && pOld->m_IsDef) ||          /* public class exists in different program */
+            pStack->GetProgram()->ClassExists(name))       /* class exists in this program */
+        {
+            pStack->SetError(CBotErrRedefClass, p->GetPrev());
+            return nullptr;
+        }
+
         CBotClass* pPapa = nullptr;
         if ( IsOfType( p, ID_EXTENDS ) )
         {
             std::string name = p->GetString();
             pPapa = CBotClass::Find(name);
+            CBotToken* pp = p;
 
             if (!IsOfType(p, TokenTypVar) || pPapa == nullptr )
             {
-                pStack->SetError( CBotErrNotClass, p );
+                pStack->SetError(CBotErrNoClassName, pp);
                 return nullptr;
             }
         }
@@ -519,6 +520,9 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 
         if (pStack->IsOk()) return classe;
     }
+    else
+        pStack->SetError(CBotErrNoClassName, p);
+
     pStack->SetError(CBotErrNoTerminator, p);
     return nullptr;
 }
@@ -810,10 +814,11 @@ CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
             // TODO: Not sure how correct is that - I have no idea how the precompilation (Compile1 method) works ~krzys_h
             std::string name = p->GetString();
             CBotClass* pPapa = CBotClass::Find(name);
+            CBotToken* pp = p;
 
             if (!IsOfType(p, TokenTypVar) || pPapa == nullptr)
             {
-                pStack->SetError( CBotErrNotClass, p );
+                pStack->SetError(CBotErrNoClassName, pp);
                 return nullptr;
             }
             pOld->m_parent = pPapa;

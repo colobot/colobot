@@ -356,6 +356,9 @@ msgstr ""
 msgid "Checkpoint"
 msgstr "Checkpoint"
 
+msgid "Class name expected"
+msgstr ""
+
 msgid "Climb\\Increases the power of the jet"
 msgstr "Steigen\\Leistung des Triebwerks steigern"
 

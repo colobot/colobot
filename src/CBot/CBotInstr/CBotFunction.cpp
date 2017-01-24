@@ -177,7 +177,11 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
                 func->m_MasterClass = pp->GetString();
                 func->m_classToken = *pp;
                 CBotClass* pClass = CBotClass::Find(pp);
-                if ( pClass == nullptr ) goto bad;
+                if ( pClass == nullptr )
+                {
+                    pStk->SetError(CBotErrNoClassName, pp);
+                    goto bad;
+                }
 
 //              pp = p;
                 func->m_token = *p;
@@ -280,13 +284,8 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
             if ( IsOfType( p, ID_DBLDOTS ) )        // method for a class
             {
                 func->m_MasterClass = pp->GetString();
-                CBotClass* pClass = CBotClass::Find(pp);
-                if ( pClass == nullptr )
-                {
-                    pStk->SetError(CBotErrNotClass, pp);
-                    goto bad;
-                }
-
+                // existence of the class is checked
+                // later in CBotFunction::Compile()
                 pp = p;
                 func->m_token = *p;
                 if (!IsOfType(p, TokenTypVar)) goto bad;

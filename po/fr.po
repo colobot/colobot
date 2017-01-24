@@ -346,6 +346,9 @@ msgstr "Console de triche\\Montre la console de triche"
 msgid "Checkpoint"
 msgstr "Indicateur"
 
+msgid "Class name expected"
+msgstr ""
+
 msgid "Climb\\Increases the power of the jet"
 msgstr "Monter\\Augmenter la puissance du réacteur"
 

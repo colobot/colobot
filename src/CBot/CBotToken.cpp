@@ -439,6 +439,13 @@ std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
         pp = p;
     }
 
+    // terminator token
+    nxt = new CBotToken();
+    nxt->m_type = TokenTypNone;
+    nxt->m_end = nxt->m_start = pos;
+    prv->m_next = nxt;
+    nxt->m_prev = prv;
+
     return std::unique_ptr<CBotToken>(tokenbase);
 }
 

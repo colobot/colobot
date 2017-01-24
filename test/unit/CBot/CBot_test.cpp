@@ -298,6 +298,96 @@ TEST_F(CBotUT, EmptyTest)
     );
 }
 
+TEST_F(CBotUT, FunctionCompileErrors)
+{
+    ExecuteTest(
+        "public",
+        CBotErrNoType
+    );
+
+    ExecuteTest(
+        "extern",
+        CBotErrNoType
+    );
+
+    ExecuteTest(
+        "public void",
+        CBotErrNoFunc
+    );
+
+    ExecuteTest(
+        "extern void",
+        CBotErrNoFunc
+    );
+
+    ExecuteTest(
+        "extern void MissingParameterType(",
+        CBotErrNoType
+    );
+
+    ExecuteTest(
+        "extern void MissingParamName(int",
+        CBotErrNoVar
+    );
+
+    ExecuteTest(
+        "extern void MissingCloseParen(int i",
+        CBotErrClosePar
+    );
+
+    ExecuteTest(
+        "extern void ParamTrailingComma(int i, ) {\n"
+        "}\n",
+        CBotErrNoType
+    );
+
+   ExecuteTest(
+        "extern void MissingOpenBlock(int i)",
+        CBotErrOpenBlock
+    );
+
+    ExecuteTest(
+        "extern void MissingCloseBlock()\n"
+        "{\n",
+        CBotErrCloseBlock
+    );
+
+}
+
+TEST_F(CBotUT, ClassCompileErrors)
+{
+    ExecuteTest(
+        "public class",
+        CBotErrNoClassName
+    );
+
+    ExecuteTest(
+        "public class 1234",
+        CBotErrNoClassName
+    );
+
+    ExecuteTest(
+        "public class TestClass",
+        CBotErrOpenBlock
+    );
+
+    ExecuteTest(
+        "public class TestClass\n"
+        "{\n",
+        CBotErrCloseBlock
+    );
+
+    ExecuteTest(
+        "public class TestClass extends",
+        CBotErrNoClassName
+    );
+
+    ExecuteTest(
+        "public class TestClass extends 1234",
+        CBotErrNoClassName
+    );
+}
+
 TEST_F(CBotUT, DivideByZero)
 {
     ExecuteTest(

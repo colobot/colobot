@@ -348,6 +348,9 @@ msgstr "Konsola komend\\Pokaż konsolę komend"
 msgid "Checkpoint"
 msgstr "Punkt kontrolny"
 
+msgid "Class name expected"
+msgstr ""
+
 msgid "Climb\\Increases the power of the jet"
 msgstr "W górę\\Zwiększa moc silnika"
 

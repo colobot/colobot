@@ -238,6 +238,7 @@ enum CBotError : int
     CBotErrNoExpression  = 5043, //!< expression expected after =
     CBotErrAmbiguousCall = 5044, //!< ambiguous call to overloaded function
     CBotErrFuncNotVoid   = 5045, //!< function needs return type "void"
+    CBotErrNoClassName   = 5046, //!< class name expected
 
     // Runtime errors
     CBotErrZeroDiv       = 6000, //!< division by zero

@@ -353,6 +353,9 @@ msgstr "Консоль чит-кодов\\Показать консоль для
 msgid "Checkpoint"
 msgstr "Контрольная точка"
 
+msgid "Class name expected"
+msgstr ""
+
 msgid "Climb\\Increases the power of the jet"
 msgstr "Взлет и подъем\\Увеличивает мощность реактивного двигателя"
 
