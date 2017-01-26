@@ -52,7 +52,7 @@ CBotInstr* CBotListInstr::Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal
         if (IsOfType(p, ID_SEP)) continue;              // empty statement ignored
         if (p->GetType() == ID_CLBLK) break;
 
-        if (IsOfType(p, 0))
+        if (p->GetType() == TokenTypNone)
         {
             pStack->SetError(CBotErrCloseBlock, p->GetStart());
             delete inst;
@@ -115,6 +115,12 @@ void CBotListInstr::RestoreState(CBotStack* &pj, bool bMain)
     }
 
     if (p != nullptr) p->RestoreState(pile, true);
+}
+
+bool CBotListInstr::HasReturn()
+{
+    if (m_instr != nullptr && m_instr->HasReturn()) return true;
+    return CBotInstr::HasReturn(); // check next block or instruction
 }
 
 std::map<std::string, CBotInstr*> CBotListInstr::GetDebugLinks()

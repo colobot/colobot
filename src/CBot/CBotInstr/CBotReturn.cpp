@@ -111,6 +111,11 @@ void CBotReturn::RestoreState(CBotStack* &pj, bool bMain)
     }
 }
 
+bool CBotReturn::HasReturn()
+{
+    return true;
+}
+
 std::map<std::string, CBotInstr*> CBotReturn::GetDebugLinks()
 {
     auto links = CBotInstr::GetDebugLinks();

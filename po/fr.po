@@ -346,6 +346,9 @@ msgstr "Console de triche\\Montre la console de triche"
 msgid "Checkpoint"
 msgstr "Indicateur"
 
+msgid "Class name expected"
+msgstr ""
+
 msgid "Climb\\Increases the power of the jet"
 msgstr "Monter\\Augmenter la puissance du réacteur"
 
@@ -921,6 +924,9 @@ msgstr "Pas d'uranium à transformer"
 msgid "No userlevels installed!"
 msgstr "Pas de niveaux spéciaux installés !"
 
+msgid "Non-void function needs \"return;\""
+msgstr ""
+
 msgid "Normal size"
 msgstr "Taille normale"
 
@@ -1487,6 +1493,9 @@ msgstr ""
 
 msgid "This object is not a member of a class"
 msgstr "L'objet n'est pas une instance d'une classe"
+
+msgid "This parameter needs a default value"
+msgstr ""
 
 msgid "This program is read-only, clone it to edit"
 msgstr "Ce programme est en lecture-seule, le dupliquer pour pouvoir l'éditer"

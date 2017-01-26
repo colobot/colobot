@@ -720,6 +720,9 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrNoExpression]  = TR("Expression expected after =");
     stringsCbot[CBot::CBotErrAmbiguousCall] = TR("Ambiguous call to overloaded function");
     stringsCbot[CBot::CBotErrFuncNotVoid]   = TR("Function needs return type \"void\"");
+    stringsCbot[CBot::CBotErrNoClassName]   = TR("Class name expected");
+    stringsCbot[CBot::CBotErrNoReturn]      = TR("Non-void function needs \"return;\"");
+    stringsCbot[CBot::CBotErrDefaultValue]  = TR("This parameter needs a default value");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");

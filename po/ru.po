@@ -353,6 +353,9 @@ msgstr "Консоль чит-кодов\\Показать консоль для
 msgid "Checkpoint"
 msgstr "Контрольная точка"
 
+msgid "Class name expected"
+msgstr ""
+
 msgid "Climb\\Increases the power of the jet"
 msgstr "Взлет и подъем\\Увеличивает мощность реактивного двигателя"
 
@@ -932,6 +935,9 @@ msgstr "Нет урана для преобразования"
 msgid "No userlevels installed!"
 msgstr "Не установленны пользовательские уровни!"
 
+msgid "Non-void function needs \"return;\""
+msgstr ""
+
 msgid "Normal size"
 msgstr "Нормальный размер"
 
@@ -1503,6 +1509,9 @@ msgstr ""
 
 msgid "This object is not a member of a class"
 msgstr "Этот объект не член класса"
+
+msgid "This parameter needs a default value"
+msgstr ""
 
 msgid "This program is read-only, clone it to edit"
 msgstr "Эта программа только для чтения, для редактирования клонируйте её"

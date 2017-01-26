@@ -56,6 +56,14 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
+    /**
+     * \brief Check 'if' and 'else' for return statements.
+     * Returns true when 'if' and 'else' have return statements,
+     * if not, the next block or instruction is checked.
+     * \return true if a return statement is found.
+     */
+    bool HasReturn() override;
+
 protected:
     virtual const std::string GetDebugName() override { return "CBotIf"; }
     virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;

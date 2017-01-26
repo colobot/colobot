@@ -200,7 +200,7 @@ bool CBotNew::Execute(CBotStack* &pj)
         }
         ppVars[i] = nullptr;
 
-        if ( !pClass->ExecuteMethode(m_nMethodeIdent, pThis, ppVars, CBotTypResult(CBotTypVoid), pile2, GetToken())) return false;    // interrupt
+        if ( !pClass->ExecuteMethode(m_nMethodeIdent, pThis, ppVars, CBotTypResult(CBotTypVoid), pile2, &m_vartoken)) return false;    // interrupt
 
         pThis->ConstructorSet();    // indicates that the constructor has been called
     }

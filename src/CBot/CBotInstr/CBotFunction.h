@@ -235,6 +235,12 @@ public:
                      CBotGet modestart,
                      CBotGet modestop);
 
+    /*!
+     * \brief Check if the function has a return statment that will execute.
+     * \return true if a return statment was found.
+     */
+    bool HasReturn() override;
+
 protected:
     virtual const std::string GetDebugName() override { return "CBotFunction"; }
     virtual std::string GetDebugData() override;

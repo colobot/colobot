@@ -19,6 +19,9 @@
 
 #include "CBot/CBotDefParam.h"
 
+#include "CBot/CBotInstr/CBotInstrUtils.h"
+#include "CBot/CBotInstr/CBotParExpr.h"
+
 #include "CBot/CBotUtils.h"
 #include "CBot/CBotCStack.h"
 
@@ -33,11 +36,13 @@ namespace CBot
 CBotDefParam::CBotDefParam()
 {
     m_nIdent = 0;
+    m_expr = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotDefParam::~CBotDefParam()
 {
+    delete m_expr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,8 +56,9 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
     if (IsOfType(p, ID_OPENPAR))
     {
         CBotDefParam* list = nullptr;
+        bool prevHasDefault = false;
 
-        while (!IsOfType(p, ID_CLOSEPAR))
+        if (!IsOfType(p, ID_CLOSEPAR)) while (true)
         {
             CBotDefParam* param = new CBotDefParam();
             if (list == nullptr) list = param;
@@ -77,6 +83,26 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
                         break;
                     }
 
+                    if (IsOfType(p, ID_ASS))       // default value assignment
+                    {
+                        CBotCStack* pStk = pStack->TokenStack(nullptr, true);
+                        if (nullptr != (param->m_expr = CBotParExpr::CompileLitExpr(p, pStk)))
+                        {
+                            CBotTypResult valueType = pStk->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC);
+
+                            if (!TypesCompatibles(type, valueType))
+                                pStack->SetError(CBotErrBadType1, p->GetPrev());
+
+                            prevHasDefault = true;
+                        }
+                        else pStack->SetError(CBotErrNoExpression, p);
+                        delete pStk;
+                    }
+                    else
+                        if (prevHasDefault) pStack->SetError(CBotErrDefaultValue, p->GetPrev());
+
+                    if (!pStack->IsOk()) break;
+
                     if ( type.Eq(CBotTypArrayPointer) ) type.SetType(CBotTypArrayBody);
                     CBotVar*    var = CBotVar::Create(pp->GetString(), type);       // creates the variable
 //                  if ( pClass ) var->SetClass(pClass);
@@ -85,10 +111,12 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
                     var->SetUniqNum(param->m_nIdent);
                     pStack->AddVar(var);                                // place on the stack
 
-                    if (IsOfType(p, ID_COMMA) || p->GetType() == ID_CLOSEPAR)
-                        continue;
+                    if (IsOfType(p, ID_COMMA)) continue;
+                    if (IsOfType(p, ID_CLOSEPAR)) break;
+
+                    pStack->SetError(CBotErrClosePar, p->GetStart());
                 }
-                pStack->SetError(CBotErrClosePar, p->GetStart());
+                pStack->SetError(CBotErrNoVar, p->GetStart());
             }
             pStack->SetError(CBotErrNoType, p);
             delete list;
@@ -107,40 +135,63 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
     assert(this != nullptr);
     CBotDefParam*   p = this;
 
+    bool useDefault = false;
+
     while ( p != nullptr )
     {
         // creates a local variable on the stack
         CBotVar*    newvar = CBotVar::Create(p->m_token.GetString(), p->m_type);
 
+        CBotVar*   pVar = nullptr;
+        CBotStack* pile = nullptr; // stack for default expression
+
+        if (useDefault || (ppVars == nullptr || ppVars[i] == nullptr))
+        {
+            assert(p->m_expr != nullptr);
+
+            pile = pj->AddStack();
+            useDefault = true;
+
+            while (pile->IsOk() && !p->m_expr->Execute(pile));
+            if (!pile->IsOk()) return pj->Return(pile);      // return the error
+
+            pVar = pile->GetVar();
+        }
+        else
+            pVar = ppVars[i];
+
         // serves to make the transformation of types:
-        if ( ppVars != nullptr && ppVars[i] != nullptr )
+        if ((useDefault && pVar != nullptr) ||
+            (ppVars != nullptr && pVar != nullptr))
         {
             switch (p->m_type.GetType())
             {
             case CBotTypInt:
-                newvar->SetValInt(ppVars[i]->GetValInt());
+                newvar->SetValInt(pVar->GetValInt());
+                newvar->SetInit(pVar->GetInit()); // copy nan
                 break;
             case CBotTypFloat:
-                newvar->SetValFloat(ppVars[i]->GetValFloat());
+                newvar->SetValFloat(pVar->GetValFloat());
+                newvar->SetInit(pVar->GetInit()); // copy nan
                 break;
             case CBotTypString:
-                newvar->SetValString(ppVars[i]->GetValString());
+                newvar->SetValString(pVar->GetValString());
                 break;
             case CBotTypBoolean:
-                newvar->SetValInt(ppVars[i]->GetValInt());
+                newvar->SetValInt(pVar->GetValInt());
                 break;
             case CBotTypIntrinsic:
-                (static_cast<CBotVarClass*>(newvar))->Copy(ppVars[i], false);
+                (static_cast<CBotVarClass*>(newvar))->Copy(pVar, false);
                 break;
             case CBotTypPointer:
                 {
-                    newvar->SetPointer(ppVars[i]->GetPointer());
+                    newvar->SetPointer(pVar->GetPointer());
                     newvar->SetType(p->m_type);     // keep pointer type
                 }
                 break;
             case CBotTypArrayPointer:
                 {
-                    newvar->SetPointer(ppVars[i]->GetPointer());
+                    newvar->SetPointer(pVar->GetPointer());
                 }
                 break;
             default:
@@ -150,10 +201,17 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
         newvar->SetUniqNum(p->m_nIdent);
         pj->AddVar(newvar);     // add a variable
         p = p->m_next;
-        i++;
+        if (!useDefault) i++;
+        if (pile != nullptr) pile->Delete();
     }
 
     return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CBotDefParam::HasDefault()
+{
+    return (m_expr != nullptr);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
