@@ -1041,7 +1041,7 @@ void COldObject::Read(CLevelParserLine* line)
     SetAnimateOnReset(line->GetParam("reset")->AsBool(false));
     if (Implements(ObjectInterfaceType::Controllable))
     {
-        SetSelectable(line->GetParam("selectable")->AsBool(true));
+        SetSelectable(line->GetParam("selectable")->AsBool(IsSelectableByDefault(m_type)));
     }
     if (Implements(ObjectInterfaceType::JetFlying))
     {
@@ -3173,4 +3173,18 @@ float COldObject::GetLightningHitProbability()
         return 0.5f;
     }
     return 0.0f;
+}
+
+bool COldObject::IsSelectableByDefault(ObjectType type)
+{
+    if ( type == OBJECT_MOTHER   ||
+         type == OBJECT_ANT      ||
+         type == OBJECT_SPIDER   ||
+         type == OBJECT_BEE      ||
+         type == OBJECT_WORM     ||
+         type == OBJECT_MOBILEtg )
+    {
+        return false;
+    }
+    return true;
 }

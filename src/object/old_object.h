@@ -302,6 +302,12 @@ protected:
     void        TransformCrashSphere(Math::Sphere &crashSphere) override;
     void TransformCameraCollisionSphere(Math::Sphere& collisionSphere) override;
 
+    /**
+     * \brief Check if given object type should be selectable by default
+     * \note This is a default value for the selectable= parameter and can still be overriden in the scene file or using the \a selectinsect cheat
+     */
+    static bool IsSelectableByDefault(ObjectType type);
+
 protected:
     Gfx::CEngine*       m_engine;
     Gfx::CLightManager* m_lightMan;
