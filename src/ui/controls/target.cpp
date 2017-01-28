@@ -149,7 +149,7 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
         if ( !target->GetDetectable() )  continue;
         if ( target->GetProxyActivate() )  continue;
         if ( target->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(target)->GetSelect() )  continue;
-        if ( target->Implements(ObjectInterfaceType::Controllable) && !dynamic_cast<CControllableObject*>(target)->GetSelectable() )  continue;
+        if ( !target->Implements(ObjectInterfaceType::Controllable) || !dynamic_cast<CControllableObject*>(target)->GetSelectable() )  continue;
 
         if (!target->Implements(ObjectInterfaceType::Old)) continue; // TODO: To be removed after COldObjectInterface is gone
 
