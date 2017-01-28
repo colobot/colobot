@@ -31,10 +31,11 @@
 #include "shortcut.h"
 #include "compass.h"
 #include "gauge.h"
-#include "geiger.h"
 #include "progress.h"
+#include "menu.h"
 #include "map.h"
 #include "window.h"
+#include "camera.h"
 #include "interface.h"
 
 
@@ -50,11 +51,14 @@ CInterface::CInterface(CInstanceManager* iMan)
 	m_iMan->AddInstance(CLASS_INTERFACE, this);
 
 	m_engine = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
+	m_camera = 0;
 
 	for ( i=0 ; i<MAXCONTROL ; i++ )
 	{
 		m_table[i] = 0;
 	}
+
+	m_defMouse = D3DMOUSENORM;
 }
 
 // Destructeur de l'objet.
@@ -79,6 +83,14 @@ void CInterface::Flush()
 			m_table[i] = 0;
 		}
 	}
+}
+
+
+// Spécifie la souris par défaut.
+
+void CInterface::SetDefMouse(D3DMouse mouse)
+{
+	m_defMouse = mouse;
 }
 
 
@@ -474,28 +486,6 @@ CGauge* CInterface::CreateGauge(FPOINT pos, FPOINT dim, int icon, EventMsg event
 	return 0;
 }
 
-// Crée une nouvelle jauge.
-
-CGeiger* CInterface::CreateGeiger(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
-{
-	CGeiger*	pc;
-	int			i;
-
-	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-	for ( i=10 ; i<MAXCONTROL ; i++ )
-	{
-		if ( m_table[i] == 0 )
-		{
-			m_table[i] = new CGeiger(m_iMan);
-			pc = (CGeiger*)m_table[i];
-			pc->Create(pos, dim, icon, eventMsg);
-			return pc;
-		}
-	}
-	return 0;
-}
-
 // Crée un nouvel indicateur d'avance.
 
 CProgress* CInterface::CreateProgress(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
@@ -511,6 +501,28 @@ CProgress* CInterface::CreateProgress(FPOINT pos, FPOINT dim, int icon, EventMsg
 		{
 			m_table[i] = new CProgress(m_iMan);
 			pc = (CProgress*)m_table[i];
+			pc->Create(pos, dim, icon, eventMsg);
+			return pc;
+		}
+	}
+	return 0;
+}
+
+// Crée un nouveau menu.
+
+CMenu* CInterface::CreateMenu(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+{
+	CMenu*		pc;
+	int			i;
+
+	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+
+	for ( i=10 ; i<MAXCONTROL ; i++ )
+	{
+		if ( m_table[i] == 0 )
+		{
+			m_table[i] = new CMenu(m_iMan);
+			pc = (CMenu*)m_table[i];
 			pc->Create(pos, dim, icon, eventMsg);
 			return pc;
 		}
@@ -626,7 +638,12 @@ BOOL CInterface::EventProcess(const Event &event)
 
 	if ( event.event == EVENT_MOUSEMOVE )
 	{
-		m_engine->SetMouseType(D3DMOUSENORM);
+//?		m_engine->SetMouseType(m_defMouse);
+		if ( m_camera == 0 )
+		{
+			m_camera = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
+		}
+		m_engine->SetMouseType(m_camera->RetMouseDef(event.pos, m_defMouse));
 	}
 
 	for ( i=MAXCONTROL-1 ; i>=0 ; i-- )

@@ -240,16 +240,6 @@ typedef struct
 InfoMOD;
 
 
-// Change un nom.bmp en nom.tga
-
-void ChangeBMPtoTGA(char *filename)
-{
-	char*	p;
-
-	p = strstr(filename, ".bmp");
-	if ( p != 0 )  strcpy(p, ".tga");
-}
-
 
 // Lit un fichier MOD.
 
@@ -271,19 +261,11 @@ BOOL CModFile::AddModel(char *filename, int first, BOOL bEdit, BOOL bMeta)
 		p = strchr(filename, '\\');
 		if ( p == 0 )
 		{
-#if _EGAMES
-			err = g_metafile.Open("ww2.dat", filename, "b");
-#else
-			err = g_metafile.Open("buzzingcars2.dat", filename, "b");
-#endif
+			err = g_metafile.Open("blupimania2.dat", filename, "b");
 		}
 		else
 		{
-#if _EGAMES
-			err = g_metafile.Open("ww2.dat", p+1, "b");
-#else
-			err = g_metafile.Open("buzzingcars2.dat", p+1, "b");
-#endif
+			err = g_metafile.Open("blupimania2.dat", p+1, "b");
 		}
 		if ( err != 0 )  bMeta = FALSE;
 	}
@@ -304,130 +286,27 @@ BOOL CModFile::AddModel(char *filename, int first, BOOL bEdit, BOOL bMeta)
 	nb = info.total;
 	m_triangleUsed += nb;
 
-	if ( info.rev == 1 && info.vers == 0 )
+	if ( bMeta )
 	{
-		OldModelTriangle1	old;
-
-		for ( i=first ; i<m_triangleUsed ; i++ )
-		{
-			if ( bMeta )
-			{
-				g_metafile.Read(&old, sizeof(OldModelTriangle1));
-			}
-			else
-			{
-				fread(&old, sizeof(OldModelTriangle1), 1, file);
-			}
-
-			ZeroMemory(&m_triangleTable[i], sizeof(ModelTriangle));
-			m_triangleTable[i].bUsed = old.bUsed;
-			m_triangleTable[i].bSelect = old.bSelect;
-
-			m_triangleTable[i].p1.x = old.p1.x;
-			m_triangleTable[i].p1.y = old.p1.y;
-			m_triangleTable[i].p1.z = old.p1.z;
-			m_triangleTable[i].p1.nx = old.p1.nx;
-			m_triangleTable[i].p1.ny = old.p1.ny;
-			m_triangleTable[i].p1.nz = old.p1.nz;
-			m_triangleTable[i].p1.tu = old.p1.tu;
-			m_triangleTable[i].p1.tv = old.p1.tv;
-
-			m_triangleTable[i].p2.x = old.p2.x;
-			m_triangleTable[i].p2.y = old.p2.y;
-			m_triangleTable[i].p2.z = old.p2.z;
-			m_triangleTable[i].p2.nx = old.p2.nx;
-			m_triangleTable[i].p2.ny = old.p2.ny;
-			m_triangleTable[i].p2.nz = old.p2.nz;
-			m_triangleTable[i].p2.tu = old.p2.tu;
-			m_triangleTable[i].p2.tv = old.p2.tv;
-
-			m_triangleTable[i].p3.x = old.p3.x;
-			m_triangleTable[i].p3.y = old.p3.y;
-			m_triangleTable[i].p3.z = old.p3.z;
-			m_triangleTable[i].p3.nx = old.p3.nx;
-			m_triangleTable[i].p3.ny = old.p3.ny;
-			m_triangleTable[i].p3.nz = old.p3.nz;
-			m_triangleTable[i].p3.tu = old.p3.tu;
-			m_triangleTable[i].p3.tv = old.p3.tv;
-
-			m_triangleTable[i].material = old.material;
-			strcpy(m_triangleTable[i].texName, old.texName);
-			m_triangleTable[i].min = old.min;
-			m_triangleTable[i].max = old.max;
-		}
-	}
-	else if ( info.rev == 1 && info.vers == 1 )
-	{
-		OldModelTriangle2	old;
-
-		for ( i=first ; i<m_triangleUsed ; i++ )
-		{
-			if ( bMeta )
-			{
-				g_metafile.Read(&old, sizeof(OldModelTriangle2));
-			}
-			else
-			{
-				fread(&old, sizeof(OldModelTriangle2), 1, file);
-			}
-
-			ZeroMemory(&m_triangleTable[i], sizeof(ModelTriangle));
-			m_triangleTable[i].bUsed = old.bUsed;
-			m_triangleTable[i].bSelect = old.bSelect;
-
-			m_triangleTable[i].p1.x = old.p1.x;
-			m_triangleTable[i].p1.y = old.p1.y;
-			m_triangleTable[i].p1.z = old.p1.z;
-			m_triangleTable[i].p1.nx = old.p1.nx;
-			m_triangleTable[i].p1.ny = old.p1.ny;
-			m_triangleTable[i].p1.nz = old.p1.nz;
-			m_triangleTable[i].p1.tu = old.p1.tu;
-			m_triangleTable[i].p1.tv = old.p1.tv;
-
-			m_triangleTable[i].p2.x = old.p2.x;
-			m_triangleTable[i].p2.y = old.p2.y;
-			m_triangleTable[i].p2.z = old.p2.z;
-			m_triangleTable[i].p2.nx = old.p2.nx;
-			m_triangleTable[i].p2.ny = old.p2.ny;
-			m_triangleTable[i].p2.nz = old.p2.nz;
-			m_triangleTable[i].p2.tu = old.p2.tu;
-			m_triangleTable[i].p2.tv = old.p2.tv;
-
-			m_triangleTable[i].p3.x = old.p3.x;
-			m_triangleTable[i].p3.y = old.p3.y;
-			m_triangleTable[i].p3.z = old.p3.z;
-			m_triangleTable[i].p3.nx = old.p3.nx;
-			m_triangleTable[i].p3.ny = old.p3.ny;
-			m_triangleTable[i].p3.nz = old.p3.nz;
-			m_triangleTable[i].p3.tu = old.p3.tu;
-			m_triangleTable[i].p3.tv = old.p3.tv;
-
-			m_triangleTable[i].material = old.material;
-			strcpy(m_triangleTable[i].texName, old.texName);
-			m_triangleTable[i].min = old.min;
-			m_triangleTable[i].max = old.max;
-			m_triangleTable[i].state = old.state;
-			m_triangleTable[i].reserve2 = old.reserve2;
-			m_triangleTable[i].reserve3 = old.reserve3;
-			m_triangleTable[i].reserve4 = old.reserve4;
-		}
+		g_metafile.Read(m_triangleTable+first, sizeof(ModelTriangle)*nb);
 	}
 	else
 	{
-		if ( bMeta )
-		{
-			g_metafile.Read(m_triangleTable+first, sizeof(ModelTriangle)*nb);
-		}
-		else
-		{
-			fread(m_triangleTable+first, sizeof(ModelTriangle), nb, file);
-		}
+		fread(m_triangleTable+first, sizeof(ModelTriangle), nb, file);
 	}
 
-	for ( i=first ; i<m_triangleUsed ; i++ )
+#if 0
+	if ( bEdit )
 	{
-		ChangeBMPtoTGA(m_triangleTable[i].texName);
+		for ( i=first ; i<m_triangleUsed ; i++ )
+		{
+			if ( strcmp(m_triangleTable[i].texName, "bot2.tga") == 0 )
+			{
+				strcpy(m_triangleTable[i].texName, "blupi.tga");
+			}
+		}
 	}
+#endif
 
 	if ( !bEdit )
 	{
@@ -505,48 +384,6 @@ BOOL CModFile::WriteModel(char *filename)
 
 BOOL CModFile::CreateEngineObject(int objRank, int addState)
 {
-#if 0
-	char	texName2[20];
-	int		texNum, i, state;
-
-	for ( i=0 ; i<m_triangleUsed ; i++ )
-	{
-		if ( !m_triangleTable[i].bUsed )  continue;
-
-		state = m_triangleTable[i].state;
-		texName2[0] = 0;
-
-		if ( m_triangleTable[i].texNum2 != 0 )
-		{
-			if ( m_triangleTable[i].texNum2 == 1 )
-			{
-				texNum = m_engine->RetSecondTexture();
-			}
-			else
-			{
-				texNum = m_triangleTable[i].texNum2;
-			}
-
-			if ( texNum >= 1 && texNum <= 10 )
-			{
-				state = m_triangleTable[i].state|D3DSTATEDUALb;
-			}
-			if ( texNum >= 11 && texNum <= 20 )
-			{
-				state = m_triangleTable[i].state|D3DSTATEDUALw;
-			}
-			sprintf(texName2, "dirty%.2d.bmp", texNum);
-		}
-
-		m_engine->AddTriangle(objRank, &m_triangleTable[i].p1, 3,
-							  m_triangleTable[i].material,
-							  state+addState,
-							  m_triangleTable[i].texName, texName2,
-							  m_triangleTable[i].min,
-							  m_triangleTable[i].max, FALSE);
-	}
-	return TRUE;
-#else
 	char	texName1[20];
 	char	texName2[20];
 	int		texNum, i, state;
@@ -596,7 +433,6 @@ BOOL CModFile::CreateEngineObject(int objRank, int addState)
 							  m_triangleTable[i].max, FALSE);
 	}
 	return TRUE;
-#endif
 }
 
 
@@ -620,6 +456,192 @@ void CModFile::Mirror()
 		m_triangleTable[i].p1.nz = -m_triangleTable[i].p1.nz;
 		m_triangleTable[i].p2.nz = -m_triangleTable[i].p2.nz;
 		m_triangleTable[i].p3.nz = -m_triangleTable[i].p3.nz;
+	}
+}
+
+// Effectue une rotation autour de l'axe Y.
+// Le centre de la rotation est toujours (0;0;0).
+
+void CModFile::Rotate(float angle)
+{
+	FPOINT		rot;
+	int			i;
+
+	if ( angle == 0.0f )  return;
+
+	for ( i=0 ; i<m_triangleUsed ; i++ )
+	{
+		rot = RotatePoint(angle, FPOINT(m_triangleTable[i].p1.x,
+										m_triangleTable[i].p1.z));
+		m_triangleTable[i].p1.x = rot.x;
+		m_triangleTable[i].p1.z = rot.y;
+
+		rot = RotatePoint(angle, FPOINT(m_triangleTable[i].p2.x,
+										m_triangleTable[i].p2.z));
+		m_triangleTable[i].p2.x = rot.x;
+		m_triangleTable[i].p2.z = rot.y;
+
+		rot = RotatePoint(angle, FPOINT(m_triangleTable[i].p3.x,
+										m_triangleTable[i].p3.z));
+		m_triangleTable[i].p3.x = rot.x;
+		m_triangleTable[i].p3.z = rot.y;
+
+		rot = RotatePoint(angle, FPOINT(m_triangleTable[i].p1.nx,
+										m_triangleTable[i].p1.nz));
+		m_triangleTable[i].p1.nx = rot.x;
+		m_triangleTable[i].p1.nz = rot.y;
+
+		rot = RotatePoint(angle, FPOINT(m_triangleTable[i].p2.nx,
+										m_triangleTable[i].p2.nz));
+		m_triangleTable[i].p2.nx = rot.x;
+		m_triangleTable[i].p2.nz = rot.y;
+
+		rot = RotatePoint(angle, FPOINT(m_triangleTable[i].p3.nx,
+										m_triangleTable[i].p3.nz));
+		m_triangleTable[i].p3.nx = rot.x;
+		m_triangleTable[i].p3.nz = rot.y;
+	}
+}
+
+// Effectue une translation.
+
+void CModFile::Translate(const D3DVECTOR &dist)
+{
+	int			i;
+
+	for ( i=0 ; i<m_triangleUsed ; i++ )
+	{
+		m_triangleTable[i].p1.x += dist.x;
+		m_triangleTable[i].p1.y += dist.y;
+		m_triangleTable[i].p1.z += dist.z;
+
+		m_triangleTable[i].p2.x += dist.x;
+		m_triangleTable[i].p2.y += dist.y;
+		m_triangleTable[i].p2.z += dist.z;
+
+		m_triangleTable[i].p3.x += dist.x;
+		m_triangleTable[i].p3.y += dist.y;
+		m_triangleTable[i].p3.z += dist.z;
+	}
+}
+
+// Ajuste les normales pour que le terrain soit lisse.
+
+void CModFile::TerrainNormalAdjust()
+{
+	int			i;
+
+	for ( i=0 ; i<m_triangleUsed ; i++ )
+	{
+		if ( Abs(m_triangleTable[i].p1.y-8.0f) < 0.1f )
+		{
+			m_triangleTable[i].p1.nx = 0.0f;
+			m_triangleTable[i].p1.ny = 1.0f;
+			m_triangleTable[i].p1.nz = 0.0f;
+		}
+
+		if ( Abs(m_triangleTable[i].p2.y-8.0f) < 0.1f )
+		{
+			m_triangleTable[i].p2.nx = 0.0f;
+			m_triangleTable[i].p2.ny = 1.0f;
+			m_triangleTable[i].p2.nz = 0.0f;
+		}
+
+		if ( Abs(m_triangleTable[i].p3.y-8.0f) < 0.1f )
+		{
+			m_triangleTable[i].p3.nx = 0.0f;
+			m_triangleTable[i].p3.ny = 1.0f;
+			m_triangleTable[i].p3.nz = 0.0f;
+		}
+
+		// Rend plus foncé les parties basses.
+		m_triangleTable[i].p1.ny -= (8.0f-m_triangleTable[i].p1.y)/4.0f;
+		m_triangleTable[i].p2.ny -= (8.0f-m_triangleTable[i].p2.y)/4.0f;
+		m_triangleTable[i].p3.ny -= (8.0f-m_triangleTable[i].p3.y)/4.0f;
+	}
+}
+
+// Ajuste les normales pour faire une ombre à un endroit donné.
+// Plus le facteur est grand (>1) et plus l'ombre est prononcée.
+
+void CModFile::TerrainNormalShadow(const D3DVECTOR &pos, float factor)
+{
+	int			i;
+
+	if ( factor == 1.0f )  return;
+
+	for ( i=0 ; i<m_triangleUsed ; i++ )
+	{
+		if ( Abs(m_triangleTable[i].p1.x-pos.x) < 1.0f &&
+			 Abs(m_triangleTable[i].p1.z-pos.z) < 1.0f )
+		{
+			m_triangleTable[i].p1.ny /= factor;
+		}
+
+		if ( Abs(m_triangleTable[i].p2.x-pos.x) < 1.0f &&
+			 Abs(m_triangleTable[i].p2.z-pos.z) < 1.0f )
+		{
+			m_triangleTable[i].p2.ny /= factor;
+		}
+
+		if ( Abs(m_triangleTable[i].p3.x-pos.x) < 1.0f &&
+			 Abs(m_triangleTable[i].p3.z-pos.z) < 1.0f )
+		{
+			m_triangleTable[i].p3.ny /= factor;
+		}
+	}
+}
+
+// Modifie pseudo aléatoirement le terrain.
+
+void CModFile::TerrainRandomize(float rv, float rh)
+{
+	int			i;
+
+	for ( i=0 ; i<m_triangleUsed ; i++ )
+	{
+		PseudoRandom(m_triangleTable[i].p1, rv, rh);
+		PseudoRandom(m_triangleTable[i].p2, rv, rh);
+		PseudoRandom(m_triangleTable[i].p3, rv, rh);
+	}
+}
+
+// Conversion d'une coordonnée X en mapping TU.
+
+float ConvertX2TU(float x, int rank)
+{
+	x = (x+4.0f)/8.0f;  // 0..1
+	x = (((rank%4)*64.0f+0.5f)/256.0f)+x*(63.0f/256.0f);
+	return x;
+}
+
+// Conversion d'une coordonnée Y en mapping TV.
+
+float ConvertZ2TV(float z, int rank)
+{
+	z = (z+4.0f)/8.0f;  // 0..1
+	z = (((rank/4)*64.0f+0.5f)/256.0f)+z*(63.0f/256.0f);
+	return z;
+}
+
+// Modifie la texture pour le terrain.
+
+void CModFile::TerrainTexture(char *name, int rank)
+{
+	int			i;
+
+	for ( i=0 ; i<m_triangleUsed ; i++ )
+	{
+		strcpy(m_triangleTable[i].texName, name);
+
+		m_triangleTable[i].p1.tu = ConvertX2TU(m_triangleTable[i].p1.x, rank);
+		m_triangleTable[i].p1.tv = ConvertZ2TV(m_triangleTable[i].p1.z, rank);
+
+		m_triangleTable[i].p2.tu = ConvertX2TU(m_triangleTable[i].p2.x, rank);
+		m_triangleTable[i].p2.tv = ConvertZ2TV(m_triangleTable[i].p2.z, rank);
+
+		m_triangleTable[i].p3.tu = ConvertX2TU(m_triangleTable[i].p3.x, rank);
+		m_triangleTable[i].p3.tv = ConvertZ2TV(m_triangleTable[i].p3.z, rank);
 	}
 }
 

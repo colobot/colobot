@@ -433,22 +433,24 @@ void CList::Draw()
 		if ( m_icon == 0 )
 		{
 			m_engine->SetTexture("button1.tga");
-			m_engine->SetState(D3DSTATENORMAL);
+//?			m_engine->SetState(D3DSTATENORMAL);
+			m_engine->SetState(D3DSTATETTb);
 
-			uv1.x =  64.0f/256.0f;
-			uv1.y =   0.0f/256.0f;  // u-v texture
-			uv2.x =  96.0f/256.0f;
-			uv2.y =  32.0f/256.0f;
+			uv1.x = 224.0f/256.0f;
+			uv1.y =  96.0f/256.0f;  // u-v texture
+			uv2.x = 256.0f/256.0f;
+			uv2.y = 128.0f/256.0f;
 		}
 		else
 		{
 			m_engine->SetTexture("button1.tga");
-			m_engine->SetState(D3DSTATENORMAL);
+//?			m_engine->SetState(D3DSTATENORMAL);
+			m_engine->SetState(D3DSTATETTb);
 
-			uv1.x =  64.0f/256.0f;
-			uv1.y =   0.0f/256.0f;  // u-v texture
-			uv2.x =  96.0f/256.0f;
-			uv2.y =  32.0f/256.0f;
+			uv1.x = 224.0f/256.0f;
+			uv1.y =  96.0f/256.0f;  // u-v texture
+			uv2.x = 256.0f/256.0f;
+			uv2.y = 128.0f/256.0f;
 
 			if ( m_button[0] != 0 )
 			{
@@ -474,7 +476,8 @@ void CList::Draw()
 		{
 			pos = m_button[i]->RetPos();
 			dim = m_button[i]->RetDim();
-			pos.y += dim.y*1.1f;
+//?			pos.y += dim.y*1.1f;
+			pos.y += dim.y*1.0f;
 			dim.y *= 0.4f;
 			pos.y -= dim.y;
 
@@ -561,11 +564,11 @@ void CList::Draw()
 				if ( m_check[i+m_firstLine] )
 				{
 					m_engine->SetTexture("button1.tga");
-					m_engine->SetState(D3DSTATETTb);
-					uv1.x =   0.0f/256.0f;
-					uv1.y = 128.0f/256.0f;
-					uv2.x =  64.0f/256.0f;
-					uv2.y = 144.0f/256.0f;
+					m_engine->SetState(D3DSTATENORMAL);
+					uv1.x =  64.0f/256.0f;
+					uv1.y =  64.0f/256.0f;
+					uv2.x =  96.0f/256.0f;
+					uv2.y =  96.0f/256.0f;
 					uv1.x += dp;
 					uv1.y += dp;
 					uv2.x -= dp;
@@ -586,11 +589,11 @@ void CList::Draw()
 				else
 				{
 					m_engine->SetTexture("button1.tga");
-					m_engine->SetState(D3DSTATETTb);
+					m_engine->SetState(D3DSTATENORMAL);
 					uv1.x =  32.0f/256.0f;
-					uv1.y = 160.0f/256.0f;
+					uv1.y =  64.0f/256.0f;
 					uv2.x =  64.0f/256.0f;
-					uv2.y = 176.0f/256.0f;
+					uv2.y =  96.0f/256.0f;
 					uv1.x += dp;
 					uv1.y += dp;
 					uv2.x -= dp;

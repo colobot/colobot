@@ -49,6 +49,9 @@ public:
 	void		SetSelectCap(BOOL bEnable);
 	BOOL		RetSelectCap();
 
+	void		SetCheck(int i, BOOL bMode);
+	BOOL		RetCheck(int i);
+
 	void		SetEnable(int i, BOOL bEnable);
 	BOOL		RetEnable(int i);
 
@@ -57,6 +60,14 @@ public:
 
 	void		SetName(int i, char* name);
 	char*		RetName(int i);
+
+	void		SetIndex(int i, int index);
+	int			RetIndex(int i);
+
+	void		SetSortValue(int i, int value);
+	int			RetSortValue(int i);
+
+	void		Sort();
 
 	void		SetTabs(int i, float pos, int justif=1, FontType font=FONT_COLOBOT);
 	float		RetTabs(int i);
@@ -98,7 +109,10 @@ protected:
 	FPOINT		h_headDim;
 	char		m_head[100];
 	char		m_text[ARRAYMAXTOTAL][200];
+	char		m_check[ARRAYMAXTOTAL];
 	char		m_enable[ARRAYMAXTOTAL];
+	int			m_index[ARRAYMAXTOTAL];
+	int			m_sort[ARRAYMAXTOTAL];
 };
 
 

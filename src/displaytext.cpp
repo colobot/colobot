@@ -206,7 +206,7 @@ void CDisplayText::DisplayText(char *text, float time, float size,
 		{
 			if ( type == TT_ERROR   )  sound = SOUND_ERROR;
 			if ( type == TT_WARNING )  sound = SOUND_WARNING;
-			if ( type == TT_INFO    )  sound = SOUND_INFO;
+			if ( type == TT_INFO    )  sound = SOUND_MESSAGE;
 			if ( type == TT_MESSAGE )  sound = SOUND_MESSAGE;
 			if ( type == TT_START   )  sound = SOUND_CLICK;
 		}

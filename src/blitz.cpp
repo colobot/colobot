@@ -108,12 +108,12 @@ BOOL CBlitz::EventFrame(const Event &event)
 			pObj = SearchObject(m_pos);
 			if ( pObj == 0 )
 			{
-				m_terrain->MoveOnFloor(m_pos, TRUE);
+				m_terrain->MoveOnFloor(m_pos);
 			}
 			else
 			{
 				m_pos = pObj->RetPosition(0);
-				m_terrain->MoveOnFloor(m_pos, TRUE);
+				m_terrain->MoveOnFloor(m_pos);
 
 				type = pObj->RetType();
 				pObj->ExploObject(EXPLO_BOUM, 1.0f);
@@ -346,20 +346,8 @@ CObject* CBlitz::SearchObject(D3DVECTOR pos)
 		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
 
 		type = pObj->RetType();
-		if ( type == OBJECT_PARA )  // bâtiment à effet paratonnerre ?
-		{
-			pObjPara[nbPara] = pObj;
-			pPos[nbPara] = pObj->RetPosition(0);
-			nbPara ++;
-		}
 
 		detect = 0.0f;
-		if ( type == OBJECT_TOWER   ||
-			 type == OBJECT_NUCLEAR ||
-			 type == OBJECT_PARA    )
-		{
-			detect = m_magnetic;
-		}
 		if ( type == OBJECT_METAL    ||
 			 type == OBJECT_BARREL   ||
 			 type == OBJECT_ATOMIC   )

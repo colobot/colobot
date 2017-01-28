@@ -11,49 +11,47 @@
 #include "struct.h"
 #include "D3DEngine.h"
 #include "D3DMath.h"
+#include "language.h"
 #include "global.h"
 #include "event.h"
 #include "misc.h"
 #include "iman.h"
 #include "restext.h"
 #include "math3d.h"
-#include "recorder.h"
-#include "mainmovie.h"
 #include "robotmain.h"
+#include "mainundo.h"
 #include "light.h"
 #include "terrain.h"
 #include "water.h"
 #include "blitz.h"
 #include "camera.h"
 #include "particule.h"
-#include "physics.h"
-#include "brain.h"
 #include "motion.h"
-#include "motionhuman.h"
-#include "motionvehicle.h"
+#include "motionblupi.h"
 #include "motionbot.h"
+#include "motiontrax.h"
+#include "motionperfo.h"
+#include "motiongun.h"
+#include "motionbird.h"
+#include "motionptero.h"
+#include "motionfish.h"
+#include "motionsnake.h"
+#include "motionsubm.h"
+#include "motionjet.h"
+#include "tasklist.h"
 #include "modfile.h"
 #include "auto.h"
-#include "autotower.h"
-#include "autoroot.h"
 #include "autojostle.h"
-#include "autoalien.h"
 #include "autodoor.h"
 #include "autodock.h"
-#include "autoremote.h"
-#include "autostand.h"
-#include "autogenerator.h"
-#include "autocomputer.h"
-#include "autorepair.h"
-#include "autofire.h"
-#include "autohelico.h"
-#include "autocompass.h"
-#include "autoblitzer.h"
-#include "autoinca.h"
-#include "autohook.h"
-#include "autobarrel.h"
-#include "autobomb.h"
-#include "autohome.h"
+#include "autocatapult.h"
+#include "autofiole.h"
+#include "autolift.h"
+#include "autogoal.h"
+#include "automax1x.h"
+#include "autoflash.h"
+#include "autoscrap.h"
+#include "automeca.h"
 #include "task.h"
 #include "pyro.h"
 #include "sound.h"
@@ -67,6 +65,8 @@
 #define ADJUST_ONBOARD	FALSE		// TRUE -> ajuste la caméra ONBOARD
 #define ADJUST_ARM		FALSE		// TRUE -> ajuste le bras manipulateur
 #define LOSS_SHIELD		0.24f		// perte du bouclier par coup
+
+#define BOX_ADOWN		0.0f
 
 #if ADJUST_ONBOARD
 static float debug_x = 0.0f;
@@ -90,15 +90,12 @@ void uObject(CBotVar* botThis, void* user)
 	CObject*	object = (CObject*)user;
 	CObject*	power;
 	CObject*	fret;
-	CPhysics*	physics;
 	CBotVar		*pVar, *pSub;
 	ObjectType	type;
 	D3DVECTOR	pos;
 	float		value;
 
 	if ( object == 0 )  return;
-
-	physics = object->RetPhysics();
 
 	// Met à jour le type de l'objet.
 	pVar = botThis->GivItemList();  // "category"
@@ -132,7 +129,8 @@ void uObject(CBotVar* botThis, void* user)
 	pos = object->RetAngle(0);
 	pos += object->RetInclinaison();
 	pVar = pVar->GivNext();  // "orientation"
-	pVar->SetValFloat(360.0f-Mod(pos.y*180.0f/PI, 360.0f));
+//?	pVar->SetValFloat(360.0f-Mod(pos.y*180.0f/PI, 360.0f));
+	pVar->SetValFloat(360.0f-NormAngle(pos.y)*180.0f/PI);
 	pVar = pVar->GivNext();  // "pitch"
 	pVar->SetValFloat(pos.z*180.0f/PI);
 	pVar = pVar->GivNext();  // "roll"
@@ -153,8 +151,7 @@ void uObject(CBotVar* botThis, void* user)
 
 	// Met à jour la hauteur au-dessus du sol.
 	pVar = pVar->GivNext();  // "altitude"
-	if ( physics == 0 )  value = 0.0f;
-	else                 value = physics->RetFloorHeight();
+	value = 0.0f;
 	pVar->SetValFloat(value/UNIT);
 
 	// Met à jour le temps de l'objet.
@@ -195,25 +192,29 @@ CObject::CObject(CInstanceManager* iMan)
 	m_camera      = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
 	m_displayText = (CDisplayText*)m_iMan->SearchInstance(CLASS_DISPLAYTEXT);
 	m_main        = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
+	m_undo        = (CMainUndo*)m_iMan->SearchInstance(CLASS_UNDO);
 	m_sound       = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
-	m_physics     = 0;
-	m_brain       = 0;
 	m_motion      = 0;
+	m_taskList    = 0;
 	m_auto        = 0;
 	m_runScript   = 0;
 
 	m_type = OBJECT_FIX;
-	m_model = 0;
-	m_subModel = 0;
 	m_id = ++g_id;
 	m_option = 0;
-	m_shadowLight   = -1;
-	m_effectLight   = -1;
-	m_linVibration  = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_cirVibration  = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_cirChoc       = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_inclinaison   = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_lastParticule = 0.0f;
+	m_linVibration   = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_cirVibration   = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_cirChoc        = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_inclinaison    = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_lastPosTerrain = D3DVECTOR(NAN, NAN, NAN);
+	m_bAdjustShadow  = TRUE;
+	m_bTerrainHole   = FALSE;
+	m_lastParticule  = 0.0f;
+
+	for ( i=0 ; i<10 ; i++ )
+	{
+		m_additional[i] = 0;
+	}
 
 	m_power = 0;
 	m_fret  = 0;
@@ -221,11 +222,12 @@ CObject::CObject(CInstanceManager* iMan)
 	m_truckLink  = 0;
 	m_shield     = 1.0f;
 	m_burnShield = 1.0f;
+	m_strong = 0.0f;
+	m_futurStrong = 0.0f;
 	m_transparency = 0.0f;
 	m_bHilite = FALSE;
 	m_bSelect = FALSE;
 	m_bSelectable = TRUE;
-	m_bVisible = TRUE;
 	m_bEnable = TRUE;
 	m_bGadget = FALSE;
 	m_bTrainer = FALSE;
@@ -236,23 +238,23 @@ CObject::CObject(CInstanceManager* iMan)
 	m_aTime = 0.0f;
 	m_shotTime = 0.0f;
 	m_bLock     = FALSE;
-	m_bStarting = FALSE;
 	m_bExplo    = FALSE;
+	m_bNoUndoable = FALSE;
 	m_bBurn     = FALSE;
 	m_bDead     = FALSE;
 	m_bFlat     = FALSE;
-	m_defRank = -1;
 	m_magnifyDamage = 1.0f;
 	m_param = 0.0f;
-	m_passCounter = 0;
-	m_rankCounter = -1;
+	m_flashTime = 0.0f;
+	m_flashDelay = 0.0f;
+	m_flashPart = 0;
+	m_generation = -1;
+
+	m_arrowMode = 0;  // flèches n'importe comment
+	m_arrowPos = 8.0f;
 
 	ZeroMemory(&m_character, sizeof(Character));
-	m_character.wheelFrontPos = D3DVECTOR( 1.0f, 1.0f, 1.0f);
-	m_character.wheelBackPos  = D3DVECTOR(-1.0f, 1.0f, 1.0f);
-	m_character.wheelFrontDim = 1.0f;
-	m_character.wheelBackDim  = 1.0f;
-	m_character.mass          = 1000.0f;
+	m_character.mass = 1000.0f;
 
 	m_cameraType = CAMERA_BACK;
 	m_cameraDist = 50.0f;
@@ -264,22 +266,10 @@ CObject::CObject(CInstanceManager* iMan)
 	}
 	m_totalPart = 0;
 
-	for ( i=0 ; i<10 ; i++ )
-	{
-		m_partiSel[i] = -1;
-	}
-
 	for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
 	{
 		m_cmdLine[i] = NAN;
 	}
-
-	FlushCrashShere();
-	FlushCrashLine();
-	m_globalSpherePos = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_globalSphereRadius = 0.0f;
-	m_jotlerSpherePos = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_jotlerSphereRadius = 0.0f;
 
 	CBotClass* bc = CBotClass::Find("object");
 	if ( bc != 0 )
@@ -290,10 +280,6 @@ CObject::CObject(CInstanceManager* iMan)
 	m_botVar = CBotVar::Create("", CBotTypResult(CBotTypClass, "object"));
 	m_botVar->SetUserPtr(this);
 	m_botVar->SetIdent(m_id);
-
-	m_bRecorderRecord = FALSE;
-	m_bRecorderPlay   = FALSE;
-	m_recorder = 0;
 }
 
 // Destructeur de l'objet.
@@ -306,9 +292,8 @@ CObject::~CObject()
 		delete m_botVar;
 	}
 
-	delete m_physics;
-	delete m_brain;
 	delete m_motion;
+	delete m_taskList;
 	delete m_auto;
 
 	m_iMan->DeleteInstance(CLASS_OBJECT, this);
@@ -323,6 +308,15 @@ void CObject::DeleteObject(BOOL bAll)
 {
 	CPyro*		pPyro;
 	int			i;
+
+	if ( m_fret != 0 )
+	{
+		m_fret->SetTruck(0);
+	}
+	if ( m_truck != 0 )
+	{
+		m_truck->SetFret(0);
+	}
 
 	if ( m_botVar != 0 )
 	{
@@ -369,73 +363,9 @@ void CObject::DeleteObject(BOOL bAll)
 		{
 			SetSelect(FALSE);
 		}
-
-		if ( m_type == OBJECT_FACTORY1 ||
-			 m_type == OBJECT_FACTORY2 ||
-			 m_type == OBJECT_FACTORY3 ||
-			 m_type == OBJECT_FACTORY4 ||
-			 m_type == OBJECT_FACTORY5 ||
-			 m_type == OBJECT_FACTORY6 ||
-			 m_type == OBJECT_FACTORY7 ||
-			 m_type == OBJECT_FACTORY8 ||
-			 m_type == OBJECT_FACTORY9 ||
-			 m_type == OBJECT_FACTORY10||
-			 m_type == OBJECT_FACTORY11||
-			 m_type == OBJECT_FACTORY12||
-			 m_type == OBJECT_FACTORY13||
-			 m_type == OBJECT_FACTORY14||
-			 m_type == OBJECT_FACTORY15||
-			 m_type == OBJECT_FACTORY16||
-			 m_type == OBJECT_FACTORY17||
-			 m_type == OBJECT_FACTORY18||
-			 m_type == OBJECT_FACTORY19||
-			 m_type == OBJECT_FACTORY20||
-			 m_type == OBJECT_TOWER    ||
-			 m_type == OBJECT_NUCLEAR  ||
-			 m_type == OBJECT_PARA     ||
-			 m_type == OBJECT_COMPUTER ||
-			 m_type == OBJECT_REPAIR   ||
-			 m_type == OBJECT_SWEET    ||
-			 m_type == OBJECT_DOOR1    ||
-			 m_type == OBJECT_DOOR2    ||
-			 m_type == OBJECT_DOOR3    ||
-			 m_type == OBJECT_DOOR4    ||
-			 m_type == OBJECT_DOOR5    ||
-			 m_type == OBJECT_DOCK     ||
-			 m_type == OBJECT_REMOTE   ||
-			 m_type == OBJECT_STAND    ||
-			 m_type == OBJECT_GENERATOR||
-			 m_type == OBJECT_START    ||
-			 m_type == OBJECT_END      ||
-			 m_type == OBJECT_SUPPORT  )  // batiment?
-		{
-			m_terrain->DeleteBuildingLevel(RetPosition(0));  // applanit le terrain
-		}
 	}
 
 	m_type = OBJECT_NULL;  // objet invalide jusqu'à destruction complète
-
-	if ( m_shadowLight != -1 )
-	{
-		m_light->DeleteLight(m_shadowLight);
-		m_shadowLight = -1;
-	}
-
-	if ( m_effectLight != -1 )
-	{
-		m_light->DeleteLight(m_effectLight);
-		m_effectLight = -1;
-	}
-
-	if ( m_physics != 0 )
-	{
-		m_physics->DeleteObject(bAll);
-	}
-
-	if ( m_brain != 0 )
-	{
-		m_brain->DeleteObject(bAll);
-	}
 
 	if ( m_motion != 0 )
 	{
@@ -452,7 +382,7 @@ void CObject::DeleteObject(BOOL bAll)
 		if ( m_objectPart[i].bUsed )
 		{
 			m_objectPart[i].bUsed = FALSE;
-			m_engine->DeleteObject(m_objectPart[i].object);
+			m_engine->DeleteObject(m_objectPart[i].objRank);
 
 			if ( m_objectPart[i].masterParti != -1 )
 			{
@@ -467,30 +397,17 @@ void CObject::DeleteObject(BOOL bAll)
 
 void CObject::Simplify()
 {
-	if ( m_brain != 0 )
-	{
-		m_brain->StopProgram();
-	}
-
-	if ( m_physics != 0 )
-	{
-		m_physics->DeleteObject();
-		delete m_physics;
-		m_physics = 0;
-	}
-
-	if ( m_brain != 0 )
-	{
-		m_brain->DeleteObject();
-		delete m_brain;
-		m_brain = 0;
-	}
-
 	if ( m_motion != 0 )
 	{
 		m_motion->DeleteObject();
 		delete m_motion;
 		m_motion = 0;
+	}
+
+	if ( m_taskList != 0 )
+	{
+		delete m_taskList;
+		m_taskList = 0;
 	}
 
 	if ( m_auto != 0 )
@@ -511,13 +428,10 @@ BOOL CObject::ExploObject(ExploType type, float force, D3DVECTOR impact)
 	PyroType	pyroType;
 	CPyro*		pyro;
 	float		loss, shield;
-	int			i, nb, level, part, objRank, total;
 
 	if ( type == EXPLO_BURN )
 	{
 		if ( m_type == OBJECT_MOBILEtg ||
-			 m_type == OBJECT_TRAX     ||
-			 m_type == OBJECT_UFO      ||
 			 m_type == OBJECT_METAL    ||
 			 m_type == OBJECT_BARREL   ||
 			 m_type == OBJECT_BARRELa  ||
@@ -536,8 +450,6 @@ BOOL CObject::ExploObject(ExploType type, float force, D3DVECTOR impact)
 		m_shotTime = 0.0f;
 	}
 
-	if ( m_type == OBJECT_HUMAN && m_bDead )  return FALSE;
-
 	// Calcule la puissance perdue par l'explosion.
 	if ( force == 0.0f )
 	{
@@ -549,46 +461,6 @@ BOOL CObject::ExploObject(ExploType type, float force, D3DVECTOR impact)
 	}
 	loss *= m_magnifyDamage;
 
-	// Diminue la puissance du bouclier.
-	if ( m_type == OBJECT_CAR )  // voiture ?
-	{
-		m_motion->TwistPart(impact, force);
-
-//?		nb = (int)(loss*60.0f);
-		level = m_main->RetLevel()-1;  // 0..3
-		if ( level < 1 )  level = 1;  // 1..3
-		nb = (int)(loss*20.0f*level);
-		if ( nb == 0 )  nb = 1;
-		if ( nb >  5 )  nb = 5;
-		if ( ExploPart(nb, force) )  // perd qq pièces
-		{
-			pyro = new CPyro(m_iMan);
-			pyro->SetImpact(impact);
-			pyro->Create(PT_EXPLOP, this, 1.0f);
-			return FALSE;
-		}
-		else
-		{
-			return TRUE;  // voiture détruite
-		}
-	}
-
-	if ( m_type == OBJECT_UFO )
-	{
-		total = 0;
-		for ( i=0 ; i<100 ; i++ )
-		{
-			part = 1+rand()%18;
-			objRank = RetObjectRank(part);
-			if ( objRank != -1 )
-			{
-				ExploPiece(part);
-				total ++;
-				if ( total >= 6 )  break;
-			}
-		}
-	}
-
 	shield = RetShield();
 	shield -= loss;
 	if ( shield < 0.0f )  shield = 0.0f;  // mort
@@ -596,28 +468,7 @@ BOOL CObject::ExploObject(ExploType type, float force, D3DVECTOR impact)
 
 	if ( shield > 0.0f )  // pas encore mort ?
 	{
-		if ( type == EXPLO_WATER )
-		{
-			if ( m_type == OBJECT_HUMAN )
-			{
-				pyroType = PT_SHOTH;
-			}
-			else
-			{
-				pyroType = PT_SHOTW;
-			}
-		}
-		else
-		{
-			if ( m_type == OBJECT_HUMAN )
-			{
-				pyroType = PT_SHOTH;
-			}
-			else
-			{
-				pyroType = PT_SHOTT;
-			}
-		}
+		pyroType = PT_SHOTT;
 	}
 	else	// complètement mort ?
 	{
@@ -628,25 +479,10 @@ BOOL CObject::ExploObject(ExploType type, float force, D3DVECTOR impact)
 				pyroType = PT_BURNO;
 				SetBurn(TRUE);
 			}
-			else if ( m_type == OBJECT_HUMAN )
-			{
-				pyroType = PT_DEADG;
-			}
 			else
 			{
 				pyroType = PT_BURNT;
 				SetBurn(TRUE);
-			}
-		}
-		else if ( type == EXPLO_WATER )
-		{
-			if ( m_type == OBJECT_HUMAN )
-			{
-				pyroType = PT_DEADW;
-			}
-			else
-			{
-				pyroType = PT_FRAGW;
 			}
 		}
 		else	// explosion ?
@@ -655,48 +491,15 @@ BOOL CObject::ExploObject(ExploType type, float force, D3DVECTOR impact)
 			{
 				pyroType = PT_FRAGO;
 			}
-			else if ( m_type == OBJECT_HUMAN )
-			{
-				pyroType = PT_DEADG;
-			}
-			else if ( m_type == OBJECT_FACTORY1 ||
-					  m_type == OBJECT_FACTORY2 ||
-					  m_type == OBJECT_FACTORY3 ||
-					  m_type == OBJECT_FACTORY4 ||
-					  m_type == OBJECT_FACTORY5 ||
-					  m_type == OBJECT_FACTORY6 ||
-					  m_type == OBJECT_FACTORY7 ||
-					  m_type == OBJECT_FACTORY8 ||
-					  m_type == OBJECT_FACTORY9 ||
-					  m_type == OBJECT_FACTORY10||
-					  m_type == OBJECT_FACTORY11||
-					  m_type == OBJECT_FACTORY12||
-					  m_type == OBJECT_FACTORY13||
-					  m_type == OBJECT_FACTORY14||
-					  m_type == OBJECT_FACTORY15||
-					  m_type == OBJECT_FACTORY16||
-					  m_type == OBJECT_FACTORY17||
-					  m_type == OBJECT_FACTORY18||
-					  m_type == OBJECT_FACTORY19||
-					  m_type == OBJECT_FACTORY20||
-					  m_type == OBJECT_TOWER    ||
-					  m_type == OBJECT_NUCLEAR  ||
-					  m_type == OBJECT_PARA     ||
-					  m_type == OBJECT_COMPUTER ||
-					  m_type == OBJECT_REPAIR   ||
-					  m_type == OBJECT_SWEET    ||
-					  m_type == OBJECT_DOOR1    ||
+			else if ( m_type == OBJECT_DOOR1    ||
 					  m_type == OBJECT_DOOR2    ||
 					  m_type == OBJECT_DOOR3    ||
 					  m_type == OBJECT_DOOR4    ||
 					  m_type == OBJECT_DOOR5    ||
 					  m_type == OBJECT_DOCK     ||
-					  m_type == OBJECT_REMOTE   ||
-					  m_type == OBJECT_STAND    ||
-					  m_type == OBJECT_GENERATOR||
+					  m_type == OBJECT_CATAPULT ||
 					  m_type == OBJECT_START    ||
-					  m_type == OBJECT_END      ||
-					  m_type == OBJECT_SUPPORT  )  // batiment ?
+					  m_type == OBJECT_END      )  // batiment ?
 			{
 				pyroType = PT_FRAGT;
 			}
@@ -720,20 +523,11 @@ BOOL CObject::ExploObject(ExploType type, float force, D3DVECTOR impact)
 	pyro = new CPyro(m_iMan);
 	pyro->Create(pyroType, this, loss);
 
-	if ( shield == 0.0f )  // mort ?
-	{
-		if ( m_brain != 0 )
-		{
-			m_brain->StopProgram();
-		}
-	}
-
 	if ( shield > 0.0f )  return FALSE;  // pas encore mort
 
 	if ( RetSelect() )
 	{
 		SetSelect(FALSE);  // désélectionne l'objet
-		m_camera->SetType(CAMERA_EXPLO);
 		m_main->DeselectAll();
 	}
 	
@@ -747,8 +541,7 @@ BOOL CObject::ExploObject(ExploType type, float force, D3DVECTOR impact)
 			 m_type == OBJECT_ATOMIC  ||
 			 m_type == OBJECT_BULLET  ||
 			 m_type == OBJECT_BBOX    ||
-			 m_type == OBJECT_TNT     ||  // (*)
-			(m_type >= OBJECT_ROADSIGN1 && m_type <= OBJECT_ROADSIGN30) )
+			 m_type == OBJECT_TNT     )  // (*)
 		{
 			m_botVar->SetUserPtr(OBJECTDELETED);
 		}
@@ -761,71 +554,6 @@ BOOL CObject::ExploObject(ExploType type, float force, D3DVECTOR impact)
 //		d'exister, pour que les programmes des fourmis continuent
 //		de fonctionner comme si de rien était !
 
-
-// Crée des morceaux d'objet qui partent.
-// Retourne FALSE si la voiture est détruite.
-
-BOOL CObject::ExploPart(int total, float force)
-{
-	D3DVECTOR	p1, p2, p3, p4;
-	CPyro*		pyro;
-	float		dim;
-	int			i, part, param;
-
-	// Crée une tache d'huile au sol.
-	if ( force > 0.2f &&
-		 m_objectPart[0].position.y > m_water->RetLevel() )
-	{
-		dim = force*20.0f;
-		if ( dim > 20.0f )  dim = 20.0f;
-		p1 = p2 = p3 = p4 = RetPosition(0);
-		p1.x -= dim;  p1.z += dim;
-		p2.x += dim;  p2.z += dim;
-		p3.x -= dim;  p3.z -= dim;
-		p4.x += dim;  p4.z -= dim;
-		m_particule->CreateWheelTrace(p1, p2, p3, p4, PARTITRACE4);
-	}
-
-	if ( total > 1 && RetSelect() )
-	{
-		m_camera->StartOver(OE_CRASH, RetPosition(0), force);
-	}
-
-	for ( i=0 ; i<total ; i++ )
-	{
-		part = m_motion->RetRemovePart(param);
-		if ( part == -1 )
-		{
-			if ( total == 999 )  return TRUE;
-
-			pyro = new CPyro(m_iMan);
-			pyro->Create(PT_EXPLOS, this, 1.0f);
-
-			pyro = new CPyro(m_iMan);
-			pyro->Create(PT_BURNS, this, 1.0f);
-
-			DetachPart(3);
-			DetachPart(4);
-			DetachPart(5);
-			DetachPart(6);  // 4 roues
-			DetachPart(7);  // moteur
-			DetachPart(8);  // volant
-
-			if ( m_fret != 0 )  // transporte un robot ?
-			{
-				pyro = new CPyro(m_iMan);
-				pyro->Create(PT_EXPLOT, m_fret, 1.0f);
-			}
-
-			SetDead(TRUE);
-			m_camera->SetType(CAMERA_BACK);
-			return FALSE;  // voiture détruite
-		}
-
-		DetachPiece(part, param);
-	}
-	return TRUE;  // pas encore détruite
-}
 
 // Crée un morceau d'objet qui part.
 
@@ -843,16 +571,8 @@ BOOL CObject::DetachPart(int part, D3DVECTOR speed)
 
 	if ( speed.x == 0.0f && speed.y == 0.0f && speed.z == 0.0f )
 	{
-		if ( m_physics == 0 )
-		{
-			speedx = 0.0f;
-			speedy = 0.0f;
-		}
-		else
-		{
-			speedx = m_physics->RetLinMotionX(MO_REASPEED)/m_physics->RetLinMotionX(MO_ADVSPEED);
-			speedy = m_physics->RetCirMotionY(MO_REASPEED)/m_physics->RetCirMotionY(MO_ADVSPEED);
-		}
+		speedx = 0.0f;
+		speedy = 0.0f;
 
 		speed.x = speedx*0.8f;
 		speed.y = 10.0f+speedx*10.0f;
@@ -878,84 +598,14 @@ BOOL CObject::DetachPart(int part, D3DVECTOR speed)
 	return TRUE;
 }
 
-// Crée un morceau d'objet qui devient une pièce indépendante.
-
-BOOL CObject::DetachPiece(int part, int param, D3DVECTOR speed)
-{
-	CObject*	pObj;
-	CPyro*		pyro;
-	D3DVECTOR	pos, angle, min, max, dim;
-	float		radius;
-	int			objRank;
-
-	if ( !FlatParent(part) )  return FALSE;
-	pos = RetPosition(part);
-	angle = RetAngle(0);
-
-	objRank = RetObjectRank(part);
-	m_engine->GetBBox(objRank, min, max);
-	dim = max-min;
-
-	m_objectPart[part].bUsed = FALSE;  // supprime pièce à la voiture
-	UpdateTotalPart();
-
-	pObj = new CObject(m_iMan);
-	pObj->SetType(OBJECT_PIECE);
-	m_engine->SetObjectType(objRank, TYPEFIX);
-	pObj->SetObjectRank(0, objRank);
-	pObj->SetPosition(0, pos);
-	pObj->SetAngle(0, angle);
-
-	radius = (dim.x+dim.y+dim.z)/3.0f/2.0f;
-	pObj->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), radius, SOUND_CHOCo, 0.45f);
-	pObj->CreateShadowCircle(radius*1.5f, 0.3f);
-
-	pyro = new CPyro(m_iMan);
-	pyro->Create(PT_PIECE, pObj, 1.0f, param);  // voltige
-
-	return TRUE;
-}
-
-// Fait exploser un morceau d'objet.
-
-BOOL CObject::ExploPiece(int part)
-{
-	CObject*	pObj;
-	CPyro*		pyro;
-	D3DVECTOR	pos, angle, min, max, dim;
-	int			objRank;
-
-	if ( !FlatParent(part) )  return FALSE;
-	pos = RetPosition(part);
-	angle = RetAngle(0);
-
-	objRank = RetObjectRank(part);
-	m_engine->GetBBox(objRank, min, max);
-	dim = max-min;
-
-	m_objectPart[part].bUsed = FALSE;  // supprime pièce à la voiture
-	UpdateTotalPart();
-
-	pObj = new CObject(m_iMan);
-	pObj->SetType(OBJECT_PIECE);
-	m_engine->SetObjectType(objRank, TYPEFIX);
-	pObj->SetObjectRank(0, objRank);
-	pObj->SetPosition(0, pos);
-	pObj->SetAngle(0, angle);
-
-	pyro = new CPyro(m_iMan);
-	pyro->Create(PT_FRAGT, pObj);  // explosion
-
-	return TRUE;
-}
-
 
 // Initialise une nouvelle partie.
 
 void CObject::InitPart(int part)
 {
 	m_objectPart[part].bUsed      = TRUE;
-	m_objectPart[part].object     = -1;
+	m_objectPart[part].bHide      = FALSE;
+	m_objectPart[part].objRank    = -1;
 	m_objectPart[part].parentPart = -1;
 
 	m_objectPart[part].position   = D3DVECTOR(0.0f, 0.0f, 0.0f);
@@ -964,6 +614,7 @@ void CObject::InitPart(int part)
 	m_objectPart[part].angle.z    = 0.0f;
 	m_objectPart[part].zoom       = D3DVECTOR(1.0f, 1.0f, 1.0f);
 
+	m_objectPart[part].bVarTex    = FALSE;
 	m_objectPart[part].bTranslate = TRUE;
 	m_objectPart[part].bRotate    = TRUE;
 	m_objectPart[part].bZoom      = FALSE;
@@ -1007,7 +658,7 @@ void CObject::DeletePart(int part)
 	}
 
 	m_objectPart[part].bUsed = FALSE;
-	m_engine->DeleteObject(m_objectPart[part].object);
+	m_engine->DeleteObject(m_objectPart[part].objRank);
 	UpdateTotalPart();
 }
 
@@ -1035,7 +686,7 @@ void CObject::SetObjectRank(int part, int objRank)
 		InitPart(part);
 		UpdateTotalPart();
 	}
-	m_objectPart[part].object = objRank;
+	m_objectPart[part].objRank = objRank;
 }
 
 // Retourne le numéro d'une partie.
@@ -1043,7 +694,7 @@ void CObject::SetObjectRank(int part, int objRank)
 int CObject::RetObjectRank(int part)
 {
 	if ( !m_objectPart[part].bUsed )  return -1;
-	return m_objectPart[part].object;
+	return m_objectPart[part].objRank;
 }
 
 // Spécifie quel est le parent d'ue partie.
@@ -1055,6 +706,36 @@ void CObject::SetObjectParent(int part, int parent)
 	m_objectPart[part].parentPart = parent;
 }
 
+// Spécifie si une partie est visible ou non.
+
+void CObject::SetHide(int part, BOOL bHide)
+{
+	int		i;
+
+	if ( part == -1 )
+	{
+		for ( i=0 ; i<m_totalPart ; i++ )
+		{
+			if ( !m_objectPart[i].bUsed )  continue;
+
+			m_objectPart[i].bHide = bHide;
+			m_engine->SetObjectHide(m_objectPart[i].objRank, bHide);
+		}
+	}
+	else
+	{
+		if ( m_objectPart[part].bUsed )
+		{
+			m_objectPart[part].bHide = bHide;
+			m_engine->SetObjectHide(m_objectPart[part].objRank, bHide);
+		}
+	}
+}
+
+BOOL CObject::RetHide(int part)
+{
+	return m_objectPart[part].bHide;
+}
 
 // Spécifie le type de l'objet.
 
@@ -1068,28 +749,6 @@ ObjectType CObject::RetType()
 	return m_type;
 }
 
-// Spécifie le modèle de voiture.
-
-void CObject::SetModel(int model)
-{
-	m_model = model;
-}
-
-int CObject::RetModel()
-{
-	return m_model;
-}
-
-void CObject::SetSubModel(int subModel)
-{
-	m_subModel = subModel;
-}
-
-int CObject::RetSubModel()
-{
-	return m_subModel;
-}
-
 // Choix de l'option à utiliser.
 
 void CObject::SetOption(int option)
@@ -1100,6 +759,116 @@ void CObject::SetOption(int option)
 int CObject::RetOption()
 {
 	return m_option;
+}
+
+// Choix de l'accessaoire.
+
+void CObject::SetAdditional(int type, int add)
+{
+	m_additional[type] = add;
+}
+
+int CObject::RetAdditional(int type)
+{
+	return m_additional[type];
+}
+
+
+// Rend un objet indétectable.
+
+void CObject::NoDetect()
+{
+	int		i, objRank;
+
+	for ( i=0 ; i<OBJECTMAXPART ; i++ )
+	{
+		if ( m_objectPart[i].bUsed )
+		{
+			objRank = m_objectPart[i].objRank;
+			m_engine->SetObjectDetect(objRank, FALSE);  // indétectable
+		}
+	}
+}
+
+// Choix de la variante de texture d'une partie.
+
+void CObject::SetVarTex(int part)
+{
+	int		i;
+
+	for ( i=0 ; i<OBJECTMAXPART ; i++ )
+	{
+		SetVarTex(i, FALSE);
+	}
+
+	if ( part != -1 )
+	{
+		SetVarTex(part, TRUE);
+	}
+}
+
+// Choix de la variante de texture d'une partie.
+// Permet de faire apparaître en jaune les boutons survolés.
+
+void CObject::SetVarTex(int part, BOOL bVar)
+{
+	float			sign, offset;
+	int				rank;
+	char			texName1[50];
+
+	if ( m_objectPart[part].bVarTex == bVar )  return;
+
+	m_objectPart[part].bVarTex = bVar;
+	sign = bVar?1.0f:-1.0f;
+
+	offset = NAN;
+
+	if ( (m_type >= OBJECT_BOX1 && m_type <= OBJECT_BOX20) ||
+		 (m_type >= OBJECT_KEY1 && m_type <= OBJECT_KEY5 ) )
+	{
+		strcpy(texName1, "box.tga");
+		if ( part == 1 )  offset = 10.0f/256.0f;
+		if ( part == 2 )  offset = 42.0f/256.0f;
+		if ( part == 3 )  offset = 10.0f/256.0f;
+		if ( part == 4 )  offset = 42.0f/256.0f;
+		if ( part == 5 )  offset = 18.0f/256.0f;
+		if ( part == 6 )  offset = 32.0f/256.0f;
+		if ( part == 7 )  offset = 18.0f/256.0f;
+		if ( part == 8 )  offset = 32.0f/256.0f;
+	}
+
+	if ( m_type == OBJECT_DOCK )
+	{
+		strcpy(texName1, "object2.tga");
+		if ( part == 4 )  offset = 32.0f/256.0f;
+		if ( part == 5 )  offset = 32.0f/256.0f;
+		if ( part == 6 )  offset = 37.0f/256.0f;
+		if ( part == 7 )  offset = 16.0f/256.0f;
+		if ( part == 8 )  offset = 16.0f/256.0f;
+	}
+
+	if ( m_type == OBJECT_CATAPULT )
+	{
+		strcpy(texName1, "catapult.tga");
+		if ( part == 1 )  offset = 32.0f/256.0f;
+	}
+
+	if ( m_type == OBJECT_TRAX  ||
+		 m_type == OBJECT_PERFO ||
+		 m_type == OBJECT_GUN   )
+	{
+		strcpy(texName1, "trax.tga");
+		if ( part == 3 )  offset = 64.0f/256.0f;
+		if ( part == 4 )  offset = 64.0f/256.0f;
+		if ( part == 5 )  offset = 64.0f/256.0f;
+	}
+
+	if ( offset == NAN )  return;
+
+	rank = m_objectPart[part].objRank;
+	offset *= sign;
+	m_engine->AddTextureMapping(rank, texName1, "",
+								0.0f, 1000000.0f, D3DMAPPINGX, offset);
 }
 
 
@@ -1141,481 +910,25 @@ int CObject::SearchDescendant(int parent, int n)
 }
 
 
-// Supprime toutes les sphères utilisées pour les collisions.
+// Bloque une zone correspondant à un obstacle fixe.
 
-void CObject::FlushCrashShere()
+void CObject::CreateLockZone(int dx, int dz, LockZone type)
 {
-	m_crashSphereUsed = 0;
-}
+	D3DMATRIX*	mat;
+	D3DVECTOR	pos;
 
-// Ajoute une nouvelle sphère.
+	mat = RetWorldMatrix(0);
+	pos = Transform(*mat, D3DVECTOR(8.0f*dx, 0.0f, 8.0f*dz));
 
-int CObject::CreateCrashSphere(D3DVECTOR pos, float radius, Sound sound,
-							   float hardness)
-{
-	float	zoom;
-
-	if ( m_crashSphereUsed >= MAXCRASHSPHERE )  return -1;
-
-	zoom = RetZoomX(0);
-	m_crashSpherePos[m_crashSphereUsed] = pos;
-	m_crashSphereRadius[m_crashSphereUsed] = radius*zoom;
-	m_crashSphereHardness[m_crashSphereUsed] = hardness;
-	m_crashSphereSound[m_crashSphereUsed] = sound;
-	return m_crashSphereUsed++;
-}
-
-// Déplace une sphère.
-
-void CObject::MoveCrashSphere(int rank, D3DVECTOR pos, float radius)
-{
-	m_crashSpherePos[rank] = pos;
-	m_crashSphereRadius[rank] = radius;
-}
-
-// Retourne le nombre de sphères.
-
-int CObject::RetCrashSphereTotal()
-{
-	return m_crashSphereUsed;
-}
-
-// Retourne une sphère pour les collisions.
-// La position est absolue dans le monde.
-
-BOOL CObject::GetCrashSphere(int rank, D3DVECTOR &pos, float &radius)
-{
-	if ( rank < 0 || rank >= m_crashSphereUsed )
+	if ( type == LZ_TUNNELh ||
+		 type == LZ_TUNNELv )
 	{
-		pos = m_objectPart[0].position;
-		radius = 0.0f;
-		return FALSE;
+		m_terrain->SetLockZone(pos, type, TRUE);
 	}
-
-	// Retourne la sphère pour les collisions, qui ne tient pas
-	// compte de l'inclinaison du véhicule. Ceci est nécessaire
-	// pour les collisions avec les véhicules, afin de ne pas tenir
-	// compte de SetInclinaison, par exemple.
-	// La sphère doit avoir obligatoirement un centre (0;y;0).
-	if ( rank == 0 && m_crashSphereUsed == 1 &&
-		 m_crashSpherePos[0].x == 0.0f &&
-		 m_crashSpherePos[0].z == 0.0f )
+	else
 	{
-		pos = m_objectPart[0].position + m_crashSpherePos[0];
-		radius = m_crashSphereRadius[0];
-		return TRUE;
+		m_terrain->SetLockZone(pos, type, FALSE);
 	}
-
-	if ( m_objectPart[0].bTranslate ||
-		 m_objectPart[0].bRotate    )
-	{
-		UpdateTransformObject();
-	}
-	pos = Transform(m_objectPart[0].matWorld, m_crashSpherePos[rank]);
-	radius = m_crashSphereRadius[rank];
-	return TRUE;
-}
-
-// Retourne la dureté d'une sphère.
-
-Sound CObject::RetCrashSphereSound(int rank)
-{
-	return m_crashSphereSound[rank];
-}
-
-// Retourne la dureté d'une sphère.
-
-float CObject::RetCrashSphereHardness(int rank)
-{
-	return m_crashSphereHardness[rank];
-}
-
-// Supprime une sphère.
-
-void CObject::DeleteCrashSphere(int rank)
-{
-	int		i;
-
-	if ( rank < 0 || rank >= m_crashSphereUsed )  return;
-
-	for ( i=rank+1 ; i<MAXCRASHSPHERE ; i++ )
-	{
-		m_crashSpherePos[i-1]    = m_crashSpherePos[i];
-		m_crashSphereRadius[i-1] = m_crashSphereRadius[i];
-	}
-	m_crashSphereUsed --;
-}
-
-// Spécifie la sphère globale, relative à l'objet.
-
-void CObject::SetGlobalSphere(D3DVECTOR pos, float radius)
-{
-	float	zoom;
-
-	zoom = RetZoomX(0);
-	m_globalSpherePos    = pos;
-	m_globalSphereRadius = radius*zoom;
-}
-
-// Retourne la sphère globale, dans l'univers.
-
-void CObject::GetGlobalSphere(D3DVECTOR &pos, float &radius)
-{
-	pos = Transform(m_objectPart[0].matWorld, m_globalSpherePos);
-	radius = m_globalSphereRadius;
-}
-
-
-// Spécifie la sphère de bousculade, relative à l'objet.
-
-void CObject::SetJotlerSphere(D3DVECTOR pos, float radius)
-{
-	m_jotlerSpherePos    = pos;
-	m_jotlerSphereRadius = radius;
-}
-
-// Retourne la sphère de bousculade, dans l'univers.
-
-void CObject::GetJotlerSphere(D3DVECTOR &pos, float &radius)
-{
-	pos = Transform(m_objectPart[0].matWorld, m_jotlerSpherePos);
-	radius = m_jotlerSphereRadius;
-}
-
-
-// Supprime toutes les lignes utilisées pour les collisions.
-
-void CObject::FlushCrashLine()
-{
-	m_crashLineUsed = 0;
-	m_crashLineMin = FPOINT( 10000.0f,  10000.0f);
-	m_crashLineMax = FPOINT(-10000.0f, -10000.0f);
-	m_crashLineHeight = NAN;
-}
-
-// Spécifie la hauteur de l'objet (à partir du sol).
-
-void CObject::SetCrashLineHeight(float h)
-{
-	m_crashLineHeight = h;
-}
-
-// Retourne la hauteur de l'objet.
-
-float CObject::RetCrashLineHeight()
-{
-	return m_crashLineHeight;
-}
-
-// Ajoute une nouvelle ligne.
-
-int CObject::CreateCrashLine(FPOINT pos, Sound sound, float hardness, BOOL bNew)
-{
-#if 0
-	D3DVECTOR	p;
-	float		zoom;
-
-	if ( m_crashLineUsed >= MAXCRASHLINE )  return -1;
-
-	zoom = RetZoomX(0);
-	m_crashLinePos[m_crashLineUsed] = pos;
-	m_crashLineNew[m_crashLineUsed] = bNew;
-	m_crashLineHardness[m_crashLineUsed] = hardness;
-	m_crashLineSound[m_crashLineUsed] = sound;
-
-	if ( m_objectPart[0].bTranslate ||
-		 m_objectPart[0].bRotate    )
-	{
-		UpdateTransformObject();
-	}
-	p.x = pos.x;
-	p.z = pos.y;
-	p.y = m_objectPart[0].position.y;
-	p = Transform(m_objectPart[0].matWorld, p);
-	if ( p.x < m_crashLineMin.x )  m_crashLineMin.x = p.x;
-	if ( p.z < m_crashLineMin.y )  m_crashLineMin.y = p.z;
-	if ( p.x > m_crashLineMax.x )  m_crashLineMax.x = p.x;
-	if ( p.z > m_crashLineMax.y )  m_crashLineMax.y = p.z;
-
-	return m_crashLineUsed++;
-#else
-	FPOINT		p;
-	float		zoom;
-
-	if ( m_crashLineUsed >= MAXCRASHLINE )  return -1;
-
-	zoom = RetZoomX(0);
-	m_crashLinePos[m_crashLineUsed] = pos;
-	m_crashLineNew[m_crashLineUsed] = bNew;
-	m_crashLineHardness[m_crashLineUsed] = hardness;
-	m_crashLineSound[m_crashLineUsed] = sound;
-
-	p = RotatePoint(-m_objectPart[0].angle.y, pos);
-	p.x += m_objectPart[0].position.x;
-	p.y += m_objectPart[0].position.z;
-	if ( p.x < m_crashLineMin.x )  m_crashLineMin.x = p.x;
-	if ( p.y < m_crashLineMin.y )  m_crashLineMin.y = p.y;
-	if ( p.x > m_crashLineMax.x )  m_crashLineMax.x = p.x;
-	if ( p.y > m_crashLineMax.y )  m_crashLineMax.y = p.y;
-
-	return m_crashLineUsed++;
-#endif
-}
-
-// Met à jour la bbox.
-
-void CObject::UpdateBBoxCrashLine()
-{
-#if 0
-	D3DVECTOR	p;
-	int			i;
-
-	if ( m_objectPart[0].bTranslate ||
-		 m_objectPart[0].bRotate    )
-	{
-		UpdateTransformObject();
-	}
-
-	m_crashLineMin = FPOINT( 10000.0f,  10000.0f);
-	m_crashLineMax = FPOINT(-10000.0f, -10000.0f);
-
-	for ( i=0 ; i<m_crashLineUsed ; i++ )
-	{
-		p.x = m_crashLinePos[i].x;
-		p.z = m_crashLinePos[i].y;
-		p.y = m_objectPart[0].position.y;
-		p = Transform(m_objectPart[0].matWorld, p);
-		if ( p.x < m_crashLineMin.x )  m_crashLineMin.x = p.x;
-		if ( p.z < m_crashLineMin.y )  m_crashLineMin.y = p.z;
-		if ( p.x > m_crashLineMax.x )  m_crashLineMax.x = p.x;
-		if ( p.z > m_crashLineMax.y )  m_crashLineMax.y = p.z;
-	}
-#else
-	FPOINT		p;
-	int			i;
-
-	if ( m_objectPart[0].bTranslate ||
-		 m_objectPart[0].bRotate    )
-	{
-		UpdateTransformObject();
-	}
-
-	m_crashLineMin = FPOINT( 10000.0f,  10000.0f);
-	m_crashLineMax = FPOINT(-10000.0f, -10000.0f);
-
-	for ( i=0 ; i<m_crashLineUsed ; i++ )
-	{
-		p = RotatePoint(-m_objectPart[0].angle.y, m_crashLinePos[i]);
-		p.x += m_objectPart[0].position.x;
-		p.y += m_objectPart[0].position.z;
-		if ( p.x < m_crashLineMin.x )  m_crashLineMin.x = p.x;
-		if ( p.y < m_crashLineMin.y )  m_crashLineMin.y = p.y;
-		if ( p.x > m_crashLineMax.x )  m_crashLineMax.x = p.x;
-		if ( p.y > m_crashLineMax.y )  m_crashLineMax.y = p.y;
-	}
-#endif
-}
-
-// Retourne le nombre de lignes.
-
-int CObject::RetCrashLineTotal()
-{
-	return m_crashLineUsed;
-}
-
-// Retourne une ligne pour les collisions.
-// La position est absolue dans le monde.
-
-BOOL CObject::GetCrashLine(int rank, FPOINT &pos, BOOL &bNew)
-{
-#if 0
-	D3DVECTOR	p;
-
-	if ( rank >= m_crashLineUsed )  return FALSE;
-
-	if ( m_objectPart[0].bTranslate ||
-		 m_objectPart[0].bRotate    )
-	{
-		UpdateTransformObject();
-	}
-	p.x = m_crashLinePos[rank].x;
-	p.z = m_crashLinePos[rank].y;
-	p.y = 0.0f;
-	p = Transform(m_objectPart[0].matWorld, p);
-	pos.x = p.x;
-	pos.y = p.z;
-
-	bNew = m_crashLineNew[rank];
-	return TRUE;
-#else
-	if ( rank >= m_crashLineUsed )  return FALSE;
-
-	pos = RotatePoint(-m_objectPart[0].angle.y, m_crashLinePos[rank]);
-	pos.x += m_objectPart[0].position.x;
-	pos.y += m_objectPart[0].position.z;
-
-	bNew = m_crashLineNew[rank];
-	return TRUE;
-#endif
-}
-
-// Retourne la dureté d'une ligne.
-
-Sound CObject::RetCrashLineSound(int rank)
-{
-	return m_crashLineSound[rank];
-}
-
-// Retourne la dureté d'une ligne.
-
-float CObject::RetCrashLineHardness(int rank)
-{
-	return m_crashLineHardness[rank];
-}
-
-// Retourne la bbox de toutes les lignes.
-
-void CObject::RetCrashLineBBox(FPOINT &min, FPOINT &max)
-{
-	min = m_crashLineMin;
-	max = m_crashLineMax;
-}
-
-// Indique s'il s'agit d'un objet fusionnable.
-// L'objet doit obligatoirement être indestructible !
-
-BOOL CObject::IsCrashLineFusion()
-{
-	return ( m_type == OBJECT_BARRIER6  ||
-			 m_type == OBJECT_BARRIER7  ||
-			 m_type == OBJECT_BARRIER8  ||
-			 m_type == OBJECT_BARRIER9  ||
-			 m_type == OBJECT_BARRIER10 ||
-			 m_type == OBJECT_BARRIER11 ||
-			 m_type == OBJECT_BARRIER12 ||
-			 m_type == OBJECT_BARRIER14 ||
-			 m_type == OBJECT_BARRIER15 ||
-			 m_type == OBJECT_BARRIER16 );
-}
-
-// Essaye de fusionner les lignes de collision de l'objet courant
-// avec un autre. Ainsi, plusieurs barrières mises bout à bout ne
-// formeront plus qu'un obstacle, regroupé dans la première barrière
-// crée. L'objet courant n'a alors plus aucune ligne de collision.
-
-void CObject::CrashLineFusion()
-{
-	CObject*	pObj;
-	D3DVECTOR	iCenter, oCenter;
-	FPOINT		iPos[4], oPos[4];
-	float		iLen, oLen, iWidth, oWidth, h;
-	int			i, j;
-	BOOL		bNew;
-
-	if ( !IsCrashLineFusion() )  return;
-	if ( RetCrashLineTotal() != 5 )  return;
-
-	iLen = Length(m_crashLinePos[0], m_crashLinePos[1]);
-	iWidth = Length(m_crashLinePos[1], m_crashLinePos[2]);
-
-	for ( j=0 ; j<4 ; j++ )
-	{
-		if ( !GetCrashLine(j, iPos[j], bNew) )  return;
-	}
-
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		if ( !pObj->IsCrashLineFusion() )  continue;
-		if ( pObj->RetCrashLineTotal() != 5 )  continue;
-		if ( pObj->RetAngleY(0) != RetAngleY(0) )  continue;
-
-		oLen = Length(pObj->m_crashLinePos[0], pObj->m_crashLinePos[1]);
-		oWidth = Length(pObj->m_crashLinePos[1], pObj->m_crashLinePos[2]);
-
-		if ( iWidth != oWidth )  continue;
-
-		for ( j=0 ; j<4 ; j++ )
-		{
-			if ( !pObj->GetCrashLine(j, oPos[j], bNew) )  continue;
-		}
-
-		if ( Abs(iPos[1].x-oPos[0].x) < 5.0f &&
-			 Abs(iPos[1].y-oPos[0].y) < 5.0f &&
-			 Abs(iPos[2].x-oPos[3].x) < 5.0f &&
-			 Abs(iPos[2].y-oPos[3].y) < 5.0f )
-		{
-			pObj->m_crashLinePos[0].x -= iLen;
-			pObj->m_crashLinePos[3].x -= iLen;
-			pObj->m_crashLinePos[4].x -= iLen;
-			pObj->UpdateBBoxCrashLine();
-			if ( pObj->RetCrashLineHeight() != NAN )
-			{
-				iCenter = RetPosition(0);
-				oCenter = pObj->RetPosition(0);
-				h = iCenter.y-oCenter.y;
-				if ( h < 0.0f)  h = 0.0f;
-				pObj->SetCrashLineHeight(pObj->RetCrashLineHeight()+h);
-			}
-			FlushCrashLine();
-//?CreateResource(RetPosition(0), 0.0f, 1.0f, OBJECT_WAYPOINT, FALSE);
-			return;
-		}
-
-		if ( Abs(iPos[0].x-oPos[1].x) < 5.0f &&
-			 Abs(iPos[0].y-oPos[1].y) < 5.0f &&
-			 Abs(iPos[3].x-oPos[2].x) < 5.0f &&
-			 Abs(iPos[3].y-oPos[2].y) < 5.0f )
-		{
-			pObj->m_crashLinePos[1].x += iLen;
-			pObj->m_crashLinePos[2].x += iLen;
-			pObj->UpdateBBoxCrashLine();
-			if ( pObj->RetCrashLineHeight() != NAN )
-			{
-				iCenter = RetPosition(0);
-				oCenter = pObj->RetPosition(0);
-				h = iCenter.y-oCenter.y;
-				if ( h < 0.0f)  h = 0.0f;
-				pObj->SetCrashLineHeight(pObj->RetCrashLineHeight()+h);
-			}
-			FlushCrashLine();
-//?CreateResource(RetPosition(0), 0.0f, 1.0f, OBJECT_WAYPOINT, FALSE);
-			return;
-		}
-	}
-}
-
-// Indique si la caméra est obstruée par un objet.
-
-BOOL CObject::IsOccludeCamera(const D3DVECTOR &eye, const D3DVECTOR &look)
-{
-	FPOINT	oP1,oP2,oP3,oP4, e,l, inter;
-	BOOL	bNew;
-	int		u;
-
-	if ( m_type != OBJECT_BARRIER14 &&
-		 m_type != OBJECT_BARRIER15 &&
-		 m_type != OBJECT_BARRIER16 )  return TRUE;
-
-	e.x = eye.x;
-	e.y = eye.z;
-	l.x = look.x;
-	l.y = look.z;
-
-	u = m_crashLineUsed;
-	m_crashLineUsed = 5;  // à cause de CrashLineFusion
-	GetCrashLine(0, oP1, bNew);
-	GetCrashLine(1, oP2, bNew);
-	GetCrashLine(2, oP3, bNew);
-	GetCrashLine(3, oP4, bNew);
-	m_crashLineUsed = u;
-
-	if ( IntersectSegment(e,l, oP1,oP2, inter) )  return TRUE;
-	if ( IntersectSegment(e,l, oP3,oP4, inter) )  return TRUE;
-
-	return FALSE;
 }
 
 
@@ -1625,17 +938,55 @@ void CObject::SetFloorHeight(float height)
 {
 	D3DVECTOR	pos;
 
-	pos = m_objectPart[0].position;
-	m_terrain->MoveOnFloor(pos);
-
-	if ( m_physics != 0 )
+	if ( m_type != OBJECT_BARRIER29 &&  // tuyaux ?
+		 m_type != OBJECT_BARRIER39 &&  // tuyaux ?
+		 m_type != OBJECT_BARRIER48 &&  // tuyaux ?
+		 m_type != OBJECT_BARRIER49 &&  // tuyaux ?
+		 m_type != OBJECT_BARRIER67 )   // tuyaux ?
 	{
-		m_physics->SetLand(height == 0.0f);
-		m_physics->SetMotor(height != 0.0f);
+		pos = m_objectPart[0].position;
+		m_terrain->MoveOnFloor(pos);
+
+		m_objectPart[0].position.y = pos.y+height+m_character.height;
+		m_objectPart[0].bTranslate = TRUE;  // il faudra recalculer les matrices
+	}
+	else
+	{
+		if ( !m_main->RetEdit() )  // détectable si édition !
+		{
+			NoDetect();
+		}
 	}
 
-	m_objectPart[0].position.y = pos.y+height+m_character.height;
-	m_objectPart[0].bTranslate = TRUE;  // il faudra recalculer les matrices
+	// Tous les objets en dessous du sol (y<0) sont rendus
+	// indétectable (c'est des éléments du décor morts), sauf
+	// blupi qui arrive avec le lift (donc y<0).
+	if ( pos.y < 0.0f &&  // objet en dessous du sol ?
+		 m_type != OBJECT_BLUPI &&
+		 m_type != OBJECT_MAX1X )
+	{
+		if ( !m_main->RetEdit() )  // détectable si édition !
+		{
+			NoDetect();
+		}
+	}
+
+	// Les caisses en dessous du sol (y<0) sont transformées
+	// en sol (comme lorsqu'elles tombent dans un trou).
+	if ( pos.y < 0.0f &&  // objet en dessous du sol ?
+		 (m_type == OBJECT_BOX1 ||
+		  m_type == OBJECT_BOX2 ||
+		  m_type == OBJECT_BOX3 ||
+		  m_type == OBJECT_BOX4 ||
+		  m_type == OBJECT_BOX5 ||
+		  m_type == OBJECT_BOX6 ||
+		  m_type == OBJECT_BOX9 ) )
+	{
+		m_terrain->SetResource(pos, TR_BOX);
+		SetLock(TRUE);
+		SetDead(TRUE);
+		TerrainEmbedded();  // incruste dans le terrain
+	}
 }
 
 // Ajuste l'inclinaison d'un objet posé sur le sol.
@@ -1734,113 +1085,48 @@ D3DVECTOR CObject::RetInclinaison()
 
 void CObject::SetPosition(int part, const D3DVECTOR &pos)
 {
-	D3DVECTOR	shPos, n[20], norm;
-	float		height, radius;
-	int			rank, i, j;
+	D3DVECTOR	shPos;
+	float		height;
+	int			rank;
 
 	m_objectPart[part].position = pos;
 	m_objectPart[part].bTranslate = TRUE;  // il faudra recalculer les matrices
 
-	if ( part == 0 && m_physics != 0 )
+	if ( part == 0 && !m_bFlat && m_truck == 0 )  // partie principale ?
 	{
-		m_physics->UpdateCorner();
-	}
-
-	if ( part == 0 && !m_bFlat )  // partie principale ?
-	{
-		rank = m_objectPart[0].object;
+		rank = m_objectPart[0].objRank;
 
 		shPos = pos;
-		m_terrain->MoveOnFloor(shPos, TRUE);
+
+		if ( m_type == OBJECT_DOCK )
+		{
+			shPos.y -= m_character.height;
+		}
+		else
+		{
+			if ( m_bAdjustShadow )
+			{
+				m_terrain->MoveOnFloor(shPos);
+			}
+			else
+			{
+				shPos.y = 0.0f;
+			}
+		}
+
 		m_engine->SetObjectShadowPos(rank, shPos);
 
-		height = 0.0f;
+		height = pos.y-shPos.y;
 		m_engine->SetObjectShadowHeight(rank, height);
 
-		// Calcul la normale au terrain en 9 points stratégiques,
-		// puis effectue une moyenne pondérée (les points au centre
-		// ont plus d'importance).
-		radius = m_engine->RetObjectShadowRadius(rank);
-		i = 0;
-
-		m_terrain->GetNormal(norm, pos);
-		n[i++] = norm;
-		n[i++] = norm;
-		n[i++] = norm;
-
-		shPos = pos;
-		shPos.x += radius*0.6f;
-		shPos.z += radius*0.6f;
-		m_terrain->GetNormal(norm, shPos);
-		n[i++] = norm;
-		n[i++] = norm;
-
-		shPos = pos;
-		shPos.x -= radius*0.6f;
-		shPos.z += radius*0.6f;
-		m_terrain->GetNormal(norm, shPos);
-		n[i++] = norm;
-		n[i++] = norm;
-
-		shPos = pos;
-		shPos.x += radius*0.6f;
-		shPos.z -= radius*0.6f;
-		m_terrain->GetNormal(norm, shPos);
-		n[i++] = norm;
-		n[i++] = norm;
-
-		shPos = pos;
-		shPos.x -= radius*0.6f;
-		shPos.z -= radius*0.6f;
-		m_terrain->GetNormal(norm, shPos);
-		n[i++] = norm;
-		n[i++] = norm;
-
-		shPos = pos;
-		shPos.x += radius;
-		shPos.z += radius;
-		m_terrain->GetNormal(norm, shPos);
-		n[i++] = norm;
-
-		shPos = pos;
-		shPos.x -= radius;
-		shPos.z += radius;
-		m_terrain->GetNormal(norm, shPos);
-		n[i++] = norm;
-
-		shPos = pos;
-		shPos.x += radius;
-		shPos.z -= radius;
-		m_terrain->GetNormal(norm, shPos);
-		n[i++] = norm;
-
-		shPos = pos;
-		shPos.x -= radius;
-		shPos.z -= radius;
-		m_terrain->GetNormal(norm, shPos);
-		n[i++] = norm;
-
-		norm = 0.0f;
-		for ( j=0 ; j<i ; j++ )
+		if ( m_bTerrainHole && m_bAdjustShadow )
 		{
-			norm += n[j];
-		}
-		norm /= (float)i;  // moyenne vectorielle
-
-		m_engine->SetObjectShadowNormal(rank, norm);
-
-		if ( m_shadowLight != -1 )
-		{
-			shPos = pos;
-			shPos.y += m_shadowHeight;
-			m_light->SetLightPos(m_shadowLight, shPos);
-		}
-
-		if ( m_effectLight != -1 )
-		{
-			shPos = pos;
-			shPos.y += m_effectHeight;
-			m_light->SetLightPos(m_effectLight, shPos);
+			shPos = Grid(shPos, 8.0f);
+			if ( shPos.x != m_lastPosTerrain.x ||
+				 shPos.z != m_lastPosTerrain.z )
+			{
+				AdjustShadow(shPos);
+			}
 		}
 	}
 }
@@ -1862,7 +1148,7 @@ void CObject::SetAngle(int part, const D3DVECTOR &angle)
 	if ( part == 0 && !m_bFlat )  // partie principale ?
 	{
 		a = m_objectPart[0].angle.y+m_cirVibration.y+m_cirChoc.y+m_inclinaison.y;
-		m_engine->SetObjectShadowAngle(m_objectPart[0].object, a);
+		m_engine->SetObjectShadowAngle(m_objectPart[0].objRank, a);
 	}
 }
 
@@ -1883,7 +1169,7 @@ void CObject::SetAngleY(int part, float angle)
 	if ( part == 0 && !m_bFlat )  // partie principale ?
 	{
 		a = m_objectPart[0].angle.y+m_cirVibration.y+m_cirChoc.y+m_inclinaison.y;
-		m_engine->SetObjectShadowAngle(m_objectPart[0].object, a);
+		m_engine->SetObjectShadowAngle(m_objectPart[0].objRank, a);
 	}
 }
 
@@ -2062,7 +1348,7 @@ void CObject::SetTruck(CObject* truck)
 	m_truck = truck;
 
 	// Ombre invisible si l'objet est transporté.
-	m_engine->SetObjectShadowHide(m_objectPart[0].object, (m_truck != 0));
+	m_engine->SetObjectShadowHide(m_objectPart[0].objRank, (m_truck != 0));
 }
 
 CObject* CObject::RetTruck()
@@ -2136,7 +1422,7 @@ void CObject::SetDrawWorld(BOOL bDraw)
 	{
 		if ( m_objectPart[i].bUsed )
 		{
-			m_engine->SetDrawWorld(m_objectPart[i].object, bDraw);
+			m_engine->SetDrawWorld(m_objectPart[i].objRank, bDraw);
 		}
 	}
 }
@@ -2151,81 +1437,298 @@ void CObject::SetDrawFront(BOOL bDraw)
 	{
 		if ( m_objectPart[i].bUsed )
 		{
-			m_engine->SetDrawFront(m_objectPart[i].object, bDraw);
+			m_engine->SetDrawFront(m_objectPart[i].objRank, bDraw);
 		}
 	}
+}
+
+
+// Crée un objet quelconque.
+
+BOOL CObject::CreateObject(D3DVECTOR pos, float angle, float zoom,
+						   float height, ObjectType type, int option,
+						   int addHat, int addGlass,
+						   int addGlove, int addShoe, int addBag)
+{
+	SetOption(option);
+	SetAdditional(ADD_HAT,   addHat);
+	SetAdditional(ADD_GLASS, addGlass);
+	SetAdditional(ADD_GLOVE, addGlove);
+	SetAdditional(ADD_SHOE,  addShoe);
+	SetAdditional(ADD_BAG,   addBag);
+
+	if ( (type >= OBJECT_BUILDING1 && type <= OBJECT_BUILDING10) ||
+		 (type >= OBJECT_CARCASS1  && type <= OBJECT_CARCASS10 ) ||
+		 (type >= OBJECT_ORGA1     && type <= OBJECT_ORGA10    ) ||
+		 type == OBJECT_DOOR1     ||
+		 type == OBJECT_DOOR2     ||
+		 type == OBJECT_DOOR3     ||
+		 type == OBJECT_DOOR4     ||
+		 type == OBJECT_DOOR5     ||
+		 type == OBJECT_DOCK      ||
+		 type == OBJECT_CATAPULT  ||
+		 type == OBJECT_START     ||
+		 type == OBJECT_END       )
+	{
+		CreateBuilding(pos, angle, zoom, height, type);
+
+		if ( m_auto != 0 )
+		{
+			m_auto->Init();
+		}
+	}
+	else
+	if ( type == OBJECT_FRET        ||
+		 type == OBJECT_STONE       ||
+		 type == OBJECT_URANIUM     ||
+		 type == OBJECT_METAL       ||
+		 type == OBJECT_BARREL      ||
+		 type == OBJECT_BARRELa     ||
+		 type == OBJECT_ATOMIC      ||
+		 type == OBJECT_BULLET      ||
+		 type == OBJECT_BBOX        ||
+		 type == OBJECT_TNT         ||
+		 type == OBJECT_MINE        ||
+		 type == OBJECT_WAYPOINT    ||
+		 type == OBJECT_SHOW        ||
+		 type == OBJECT_WINFIRE     ||
+		 type == OBJECT_MARK        ||
+		 type == OBJECT_FIOLE       ||
+		 type == OBJECT_GLU         ||
+		 type == OBJECT_LIFT        ||
+		 type == OBJECT_GOAL        ||
+		 type == OBJECT_COLUMN1     ||
+		 type == OBJECT_COLUMN2     ||
+		 type == OBJECT_COLUMN3     ||
+		 type == OBJECT_COLUMN4     ||
+		 type == OBJECT_GLASS1      ||
+		 type == OBJECT_GLASS2      ||
+		 type == OBJECT_SCRAP0      ||
+		 type == OBJECT_SCRAP1      ||
+		 type == OBJECT_SCRAP2      ||
+		 type == OBJECT_SCRAP3      ||
+		 type == OBJECT_SCRAP4      ||
+		 type == OBJECT_SCRAP5      ||
+		 type == OBJECT_SCRAP6      ||
+		 type == OBJECT_SCRAP7      ||
+		 type == OBJECT_SCRAP8      ||
+		 type == OBJECT_SCRAP9      )
+	{
+		CreateResource(pos, angle, zoom, type);
+	}
+	else
+	if ( type == OBJECT_BLUPI )
+	{
+		SetOption(option);
+		SetAdditional(ADD_HAT,   addHat);
+		SetAdditional(ADD_GLASS, addGlass);
+		SetAdditional(ADD_GLOVE, addGlove);
+		SetAdditional(ADD_SHOE,  addShoe);
+		SetAdditional(ADD_BAG,   addBag);
+		CreateBlupi(pos, angle, zoom, type);
+	}
+	else
+	if ( type == OBJECT_BLUPI   ||
+		 type == OBJECT_BOT1    ||
+		 type == OBJECT_BOT2    ||
+		 type == OBJECT_BOT3    ||
+		 type == OBJECT_BOT4    ||
+		 type == OBJECT_BOT5    ||
+		 type == OBJECT_CARROT  ||
+		 type == OBJECT_WALKER  ||
+		 type == OBJECT_CRAZY   )
+	{
+		SetOption(option);
+		CreateBot(pos, angle, zoom, type);
+	}
+	else
+	if ( type == OBJECT_BIRD  ||
+		 type == OBJECT_PTERO ||
+		 type == OBJECT_FISH  ||
+		 type == OBJECT_SNAKE ||
+		 type == OBJECT_SUBM  ||
+		 type == OBJECT_JET   )
+	{
+		SetOption(option);
+		CreateAnimal(pos, angle, zoom, type);
+	}
+	else
+	if ( type == OBJECT_MAX1X )
+	{
+		SetOption(option);
+		CreateSpecial(pos, angle, zoom, type);
+	}
+	else
+	if ( type >= OBJECT_BARRIER0  &&
+		 type <= OBJECT_BARRIER99 )
+	{
+		CreateBarrier(pos, angle, zoom, height, type);
+	}
+	else
+	if ( (type >= OBJECT_BOX1  &&
+		  type <= OBJECT_BOX20 ) ||
+		 (type >= OBJECT_KEY1  &&
+		  type <= OBJECT_KEY5  ) )
+	{
+		CreateBox(pos, angle, zoom, height, type);
+	}
+	else
+	if ( type >= OBJECT_GROUND0  &&
+		 type <= OBJECT_GROUND19 )
+	{
+		SetOption(option);
+		CreateGround(pos, angle, type);
+	}
+	else
+	if ( type == OBJECT_STONE1  ||
+		 type == OBJECT_STONE2  ||
+		 type == OBJECT_STONE3  ||
+		 type == OBJECT_STONE4  ||
+		 type == OBJECT_STONE5  ||
+		 type == OBJECT_STONE6  ||
+		 type == OBJECT_STONE7  ||
+		 type == OBJECT_STONE8  ||
+		 type == OBJECT_STONE9  ||
+		 type == OBJECT_STONE10 )
+	{
+		CreateStone(pos, angle, zoom, height, type);
+	}
+	else
+	if ( type == OBJECT_PLANT0  ||
+		 type == OBJECT_PLANT1  ||
+		 type == OBJECT_PLANT2  ||
+		 type == OBJECT_PLANT3  ||
+		 type == OBJECT_PLANT4  ||
+		 type == OBJECT_PLANT5  ||
+		 type == OBJECT_PLANT6  ||
+		 type == OBJECT_PLANT7  ||
+		 type == OBJECT_PLANT8  ||
+		 type == OBJECT_PLANT9  ||
+		 type == OBJECT_PLANT10 ||
+		 type == OBJECT_PLANT11 ||
+		 type == OBJECT_PLANT12 ||
+		 type == OBJECT_PLANT13 ||
+		 type == OBJECT_PLANT14 ||
+		 type == OBJECT_PLANT15 ||
+		 type == OBJECT_PLANT16 ||
+		 type == OBJECT_PLANT17 ||
+		 type == OBJECT_PLANT18 ||
+		 type == OBJECT_PLANT19 ||
+		 type == OBJECT_TREE0   ||
+		 type == OBJECT_TREE1   ||
+		 type == OBJECT_TREE2   ||
+		 type == OBJECT_TREE3   ||
+		 type == OBJECT_TREE4   ||
+		 type == OBJECT_TREE5   ||
+		 type == OBJECT_TREE6   ||
+		 type == OBJECT_TREE7   ||
+		 type == OBJECT_TREE8   ||
+		 type == OBJECT_TREE9   )
+	{
+		CreatePlant(pos, angle, zoom, height, type);
+	}
+	else
+	if ( type == OBJECT_MUSHROOM0 ||
+		 type == OBJECT_MUSHROOM1 ||
+		 type == OBJECT_MUSHROOM2 ||
+		 type == OBJECT_MUSHROOM3 ||
+		 type == OBJECT_MUSHROOM4 ||
+		 type == OBJECT_MUSHROOM5 ||
+		 type == OBJECT_MUSHROOM6 ||
+		 type == OBJECT_MUSHROOM7 ||
+		 type == OBJECT_MUSHROOM8 ||
+		 type == OBJECT_MUSHROOM9 )
+	{
+		CreateMushroom(pos, angle, zoom, height, type);
+	}
+	else
+	if ( type == OBJECT_QUARTZ0 ||
+		 type == OBJECT_QUARTZ1 ||
+		 type == OBJECT_QUARTZ2 ||
+		 type == OBJECT_QUARTZ3 ||
+		 type == OBJECT_QUARTZ4 ||
+		 type == OBJECT_QUARTZ5 ||
+		 type == OBJECT_QUARTZ6 ||
+		 type == OBJECT_QUARTZ7 ||
+		 type == OBJECT_QUARTZ8 ||
+		 type == OBJECT_QUARTZ9 )
+	{
+		CreateQuartz(pos, angle, zoom, height, type);
+	}
+	else
+	if ( type == OBJECT_ROOT0 ||
+		 type == OBJECT_ROOT1 ||
+		 type == OBJECT_ROOT2 ||
+		 type == OBJECT_ROOT3 ||
+		 type == OBJECT_ROOT4 ||
+		 type == OBJECT_ROOT5 ||
+		 type == OBJECT_ROOT6 ||
+		 type == OBJECT_ROOT7 ||
+		 type == OBJECT_ROOT8 ||
+		 type == OBJECT_ROOT9 )
+	{
+		CreateRoot(pos, angle, zoom, height, type);
+	}
+	else
+	if ( type == OBJECT_RUINmobilew1 ||
+		 type == OBJECT_RUINmobilew2 ||
+		 type == OBJECT_RUINmobilet1 ||
+		 type == OBJECT_RUINmobilet2 ||
+		 type == OBJECT_RUINmobiler1 ||
+		 type == OBJECT_RUINmobiler2 ||
+		 type == OBJECT_RUINfactory  ||
+		 type == OBJECT_RUINdoor     ||
+		 type == OBJECT_RUINsupport  ||
+		 type == OBJECT_RUINradar    ||
+		 type == OBJECT_RUINconvert  ||
+		 type == OBJECT_RUINbase     ||
+		 type == OBJECT_RUINhead     )
+	{
+		CreateRuin(pos, angle, zoom, height, type);
+	}
+	else
+	if ( type == OBJECT_TRAX  ||
+		 type == OBJECT_PERFO ||
+		 type == OBJECT_GUN   )
+	{
+		SetOption(option);
+		CreateVehicle(pos, angle, zoom, type);
+	}
+
+	return TRUE;
 }
 
 
 // Crée un véhicule roulant quelconque posé sur le sol.
 
 BOOL CObject::CreateVehicle(D3DVECTOR pos, float angle, float zoom,
-							ObjectType type, int model, int subModel,
-							BOOL bPlumb, BOOL bTrainer)
+							ObjectType type)
 {
-	char	actualTex[20];
-	char	futureTex[20];
-
 	m_type = type;
-	m_model = model;
-	m_subModel = subModel;
 
-	if ( m_subModel == 1 )
+	SetZoom(0, zoom);
+
+	if ( type == OBJECT_TRAX )
 	{
-		sprintf(actualTex, "car%.2d.tga", m_model);
-		sprintf(futureTex, "car%.2db.tga", m_model);
-		m_engine->SetReplaceTex(actualTex, futureTex);
+		m_motion = new CMotionTrax(m_iMan, this);
+		if ( m_motion == 0 )  return FALSE;
 	}
-	if ( m_subModel == 2 )
+	if ( type == OBJECT_PERFO )
 	{
-		sprintf(actualTex, "car%.2d.tga", m_model);
-		sprintf(futureTex, "car%.2dc.tga", m_model);
-		m_engine->SetReplaceTex(actualTex, futureTex);
+		m_motion = new CMotionPerfo(m_iMan, this);
+		if ( m_motion == 0 )  return FALSE;
 	}
-	if ( m_subModel == 3 )
+	if ( type == OBJECT_GUN )
 	{
-		sprintf(actualTex, "car%.2d.tga", m_model);
-		sprintf(futureTex, "car%.2dd.tga", m_model);
-		m_engine->SetReplaceTex(actualTex, futureTex);
+		m_motion = new CMotionGun(m_iMan, this);
+		if ( m_motion == 0 )  return FALSE;
 	}
 
-	SetTrainer(bTrainer);
+	m_taskList = new CTaskList(m_iMan, this);
+	if ( m_taskList == 0 )  return FALSE;
 
-	m_physics = new CPhysics(m_iMan, this);
-	m_brain   = new CBrain(m_iMan, this);
-
-	m_physics->SetBrain(m_brain);
-	m_brain->SetPhysics(m_physics);
-
-	if ( type == OBJECT_HUMAN ||
-		 type == OBJECT_TECH  )
+	if ( !m_motion->Create(pos, angle, type) )
 	{
-		m_motion = new CMotionHuman(m_iMan, this);
-	}
-	else
-	{
-		m_motion = new CMotionVehicle(m_iMan, this);
-	}
-	if ( m_motion == 0 )  return FALSE;
-
-	m_physics->SetMotion(m_motion);
-	m_brain->SetMotion(m_motion);
-	m_motion->SetPhysics(m_physics);
-	m_motion->SetBrain(m_brain);
-	if ( !m_motion->Create(pos, angle, type, TRUE) )
-	{
-		if ( m_physics != 0 )
-		{
-			m_physics->DeleteObject();
-			delete m_physics;
-			m_physics = 0;
-		}
-		if ( m_brain != 0 )
-		{
-			m_brain->DeleteObject();
-			delete m_brain;
-			m_brain = 0;
-		}
 		if ( m_motion != 0 )
 		{
 			m_motion->DeleteObject();
@@ -2238,125 +1741,124 @@ BOOL CObject::CreateVehicle(D3DVECTOR pos, float angle, float zoom,
 	return TRUE;
 }
 
-// Crée l'ombre sous un véhicule sous forme d'une lumière
-// négative.
+// Crée l'ombre sous un objet.
 
-BOOL CObject::CreateShadowLight(float height, D3DCOLORVALUE color)
+BOOL CObject::CreateShadow(float radius, float intensity,
+						   D3DShadowType type, BOOL bTerrainHole,
+						   float sunFactor)
 {
-	D3DLIGHT7	light;
 	D3DVECTOR	pos;
+	float		zoom, angle;
+	char		bHole[9];
 
-	if ( !m_engine->RetLightMode() )  return TRUE;
-
-	pos = RetPosition(0);
-	m_shadowHeight = height;
-
-    ZeroMemory( &light, sizeof(light) );
-	light.dltType       = D3DLIGHT_SPOT;
-	light.dcvDiffuse.r  = color.r;
-	light.dcvDiffuse.g  = color.g;
-	light.dcvDiffuse.b  = color.b;
-	light.dvPosition.x  = pos.x;
-	light.dvPosition.y  = pos.y+height;
-	light.dvPosition.z  = pos.z;
-	light.dvDirection.x =  0.0f;
-	light.dvDirection.y = -1.0f;  // contre en bas
-	light.dvDirection.z =  0.0f;
-	light.dvRange = D3DLIGHT_RANGE_MAX;
-	light.dvFalloff = 1.0f;
-	light.dvAttenuation0 = 1.0f;
-	light.dvAttenuation1 = 0.0f;
-	light.dvAttenuation2 = 0.0f;
-	light.dvTheta = 0.0f;
-	light.dvPhi = PI/4.0f;
-
-	m_shadowLight = m_light->CreateLight();
-	if ( m_shadowLight == -1 )  return FALSE;
-
-	m_light->SetLight(m_shadowLight, light);
-
-	// N'éclaire que les objets du terrain.
-	m_light->SetLightIncluType(m_shadowLight, TYPETERRAIN);
-
-	return TRUE;
-}
-
-// Retourne le numéro de la lumière d'ombre négative.
-
-int CObject::RetShadowLight()
-{
-	return m_shadowLight;
-}
-
-// Crée la lumière pour les effects d'un véhicule.
-
-BOOL CObject::CreateEffectLight(float height, D3DCOLORVALUE color)
-{
-	D3DLIGHT7	light;
-
-	if ( !m_engine->RetLightMode() )  return TRUE;
-
-	m_effectHeight = height;
-
-    ZeroMemory( &light, sizeof(light) );
-	light.dltType       = D3DLIGHT_SPOT;
-	light.dcvDiffuse.r  = color.r;
-	light.dcvDiffuse.g  = color.g;
-	light.dcvDiffuse.b  = color.b;
-	light.dvPosition.x  =  0.0f;
-	light.dvPosition.y  =  0.0f+height;
-	light.dvPosition.z  =  0.0f;
-	light.dvDirection.x =  0.0f;
-	light.dvDirection.y = -1.0f;  // contre en bas
-	light.dvDirection.z =  0.0f;
-	light.dvRange = D3DLIGHT_RANGE_MAX;
-	light.dvFalloff = 1.0f;
-	light.dvAttenuation0 = 1.0f;
-	light.dvAttenuation1 = 0.0f;
-	light.dvAttenuation2 = 0.0f;
-	light.dvTheta = 0.0f;
-	light.dvPhi = PI/4.0f;
-
-	m_effectLight = m_light->CreateLight();
-	if ( m_effectLight == -1 )  return FALSE;
-
-	m_light->SetLight(m_effectLight, light);
-	m_light->SetLightIntensity(m_effectLight, 0.0f);
-
-	return TRUE;
-}
-
-// Retourne le numéro de la lumière des effets.
-
-int CObject::RetEffectLight()
-{
-	return m_effectLight;
-}
-
-// Crée l'ombre circulaire sous un véhicule.
-
-BOOL CObject::CreateShadowCircle(float radius, float intensity,
-								 D3DShadowType type)
-{
-	float	zoom;
+	m_bTerrainHole = bTerrainHole;
 
 	zoom = RetZoomX(0);
 
-	m_engine->ShadowCreate(m_objectPart[0].object);
+	angle = m_objectPart[0].angle.y;
+	if ( m_type >= OBJECT_BARRIER92 &&
+		 m_type <= OBJECT_BARRIER99 )
+	{
+		angle = Mod(angle, PI);
+	}
 
-	m_engine->SetObjectShadowRadius(m_objectPart[0].object, radius*zoom);
-	m_engine->SetObjectShadowIntensity(m_objectPart[0].object, intensity);
-	m_engine->SetObjectShadowHeight(m_objectPart[0].object, 0.0f);
-	m_engine->SetObjectShadowAngle(m_objectPart[0].object, m_objectPart[0].angle.y);
-	m_engine->SetObjectShadowType(m_objectPart[0].object, type);
+	m_engine->ShadowCreate(m_objectPart[0].objRank);
+	m_engine->SetObjectShadowRadius(m_objectPart[0].objRank, radius*zoom);
+	m_engine->SetObjectShadowIntensity(m_objectPart[0].objRank, intensity);
+	m_engine->SetObjectShadowHeight(m_objectPart[0].objRank, 0.0f);
+	m_engine->SetObjectShadowSunFactor(m_objectPart[0].objRank, sunFactor);
+	m_engine->SetObjectShadowAngle(m_objectPart[0].objRank, angle);
+	m_engine->SetObjectShadowType(m_objectPart[0].objRank, type);
+
+	if ( m_bTerrainHole )
+	{
+		pos = Grid(RetPosition(0), 8.0f);
+		AdjustShadow(pos);
+	}
+	else
+	{
+		bHole[0] = 0;
+		bHole[1] = 0;
+		bHole[2] = 0;
+		bHole[3] = 0;
+		bHole[4] = 0;
+		bHole[5] = 0;
+		bHole[6] = 0;
+		bHole[7] = 0;
+		bHole[8] = 0;
+		m_engine->SetObjectShadowHole(m_objectPart[0].objRank, RetPosition(0), bHole);
+	}
 
 	return TRUE;
+}
+
+// Ajuste l'ombre sous un objet, en fonction des trous dans le terrain.
+
+void CObject::AdjustShadow(D3DVECTOR pos)
+{
+	char		bHole[9];
+
+	m_lastPosTerrain = pos;
+
+	pos = m_lastPosTerrain;
+	pos.x -= 8.0f;
+	pos.z += 8.0f;
+	bHole[0] = !m_terrain->IsSolid(pos);
+
+	pos = m_lastPosTerrain;
+	pos.z += 8.0f;
+	bHole[1] = !m_terrain->IsSolid(pos);
+
+	pos = m_lastPosTerrain;
+	pos.x += 8.0f;
+	pos.z += 8.0f;
+	bHole[2] = !m_terrain->IsSolid(pos);
+
+	pos = m_lastPosTerrain;
+	pos.x -= 8.0f;
+	bHole[3] = !m_terrain->IsSolid(pos);
+
+	pos = m_lastPosTerrain;
+	bHole[4] = !m_terrain->IsSolid(pos);
+
+	pos = m_lastPosTerrain;
+	pos.x += 8.0f;
+	bHole[5] = !m_terrain->IsSolid(pos);
+
+	pos = m_lastPosTerrain;
+	pos.x -= 8.0f;
+	pos.z -= 8.0f;
+	bHole[6] = !m_terrain->IsSolid(pos);
+
+	pos = m_lastPosTerrain;
+	pos.z -= 8.0f;
+	bHole[7] = !m_terrain->IsSolid(pos);
+
+	pos = m_lastPosTerrain;
+	pos.x += 8.0f;
+	pos.z -= 8.0f;
+	bHole[8] = !m_terrain->IsSolid(pos);
+
+	m_engine->SetObjectShadowHole(m_objectPart[0].objRank, m_lastPosTerrain, bHole);
+}
+
+// Spécifie si les ombres doivent être ajustées au terrain lorsque
+// l'objet bouge.
+
+void CObject::SetAdjustShadow(BOOL bAdjust)
+{
+	m_bAdjustShadow = bAdjust;
+}
+
+BOOL CObject::RetAdjustShadow()
+{
+	return m_bAdjustShadow;
 }
 
 // Crée un batiment quelconque posé sur le sol.
 
 BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
-							 float height, ObjectType type, BOOL bPlumb)
+							 float height, ObjectType type)
 {
 	CModFile*	pModFile;
 	FPOINT		p;
@@ -2369,743 +1871,8 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 	SetType(type);
 
 	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEFIX);  // c'est un objet fixe
+	m_engine->SetObjectType(rank, TYPEOBJECT);  // c'est un objet fixe
 	SetObjectRank(0, rank);
-
-	if ( m_type == OBJECT_FACTORY1 )  // 2 tuyaux verticaux ?
-	{
-		pModFile->ReadModel("objects\\factory1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-#if 0
-		CreateCrashSphere(D3DVECTOR(  0.0f,  0.0f,   0.0f), 40.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 30.0f,  5.0f,  10.0f),  9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 30.0f,  5.0f,  30.0f),  9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 35.0f,  5.0f, -10.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 35.0f,  5.0f, -20.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 35.0f,  5.0f, -30.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 25.0f,  5.0f, -30.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f,  5.0f, -35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-20.0f,  5.0f, -35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-30.0f,  5.0f, -35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f,  5.0f,  35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-20.0f,  5.0f,  35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-30.0f,  5.0f,  35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-35.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-35.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-35.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#endif
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_FACTORY2 )  // usine avec 2 cheminées ?
-	{
-		pModFile->ReadModel("objects\\factory2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-#if 0
-		CreateCrashSphere(D3DVECTOR(  0.0f,  0.0f,   0.0f), 40.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 26.0f,  3.0f,  26.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 26.0f,  3.0f, -26.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-26.0f,  3.0f,  26.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-26.0f,  3.0f, -26.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 36.0f,  3.0f,  36.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 36.0f,  3.0f, -36.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-36.0f,  3.0f,  36.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-36.0f,  3.0f, -36.0f),  4.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#endif
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_FACTORY3 )  // usine avec toît /|/| ?
-	{
-		pModFile->ReadModel("objects\\factory3.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-#if 0
-		CreateCrashSphere(D3DVECTOR(  0.0f,  0.0f,   0.0f), 40.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 26.0f,  3.0f,  26.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 26.0f,  3.0f, -26.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-26.0f,  3.0f,  26.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-26.0f,  3.0f, -26.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 36.0f,  3.0f,  36.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 36.0f,  3.0f, -36.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-36.0f,  3.0f,  36.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-36.0f,  3.0f, -36.0f),  4.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#endif
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_FACTORY4 )  // ailettes refroidisseur ?
-	{
-		pModFile->ReadModel("objects\\factory4.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-#if 0
-		CreateCrashSphere(D3DVECTOR(  0.0f,  0.0f,   0.0f), 40.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f,  3.0f,  37.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 37.0f,  3.0f,  15.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f,  3.0f, -37.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 37.0f,  3.0f, -15.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f,  3.0f,  37.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-37.0f,  3.0f,  15.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f,  3.0f, -37.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-37.0f,  3.0f, -15.0f),  3.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-17.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 17.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -17.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  17.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 17.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-17.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  17.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -17.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-17.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#endif
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_FACTORY5 )  // ?
-	{
-		pModFile->ReadModel("objects\\factory5.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-#if 0
-		CreateCrashSphere(D3DVECTOR(  0.0f,  0.0f,   0.0f), 40.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 35.0f,  3.0f,  15.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 35.0f,  3.0f,  25.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f,  3.0f,  35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 25.0f,  3.0f,  35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 35.0f,  3.0f, -15.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 35.0f,  3.0f, -25.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f,  3.0f, -35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 25.0f,  3.0f, -35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-35.0f,  3.0f,  15.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-35.0f,  3.0f,  25.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f,  3.0f,  35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-25.0f,  3.0f,  35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-35.0f,  3.0f, -15.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-35.0f,  3.0f, -25.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f,  3.0f, -35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-25.0f,  3.0f, -35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-30.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 30.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 30.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-30.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-30.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#endif
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_FACTORY6 )  // 2 tuyaux haut ?
-	{
-		pModFile->ReadModel("objects\\factory6.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-	}
-
-	if ( m_type == OBJECT_FACTORY7 )  // pont de chargement haut ?
-	{
-		pModFile->ReadModel("objects\\factory7.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-	}
-
-	if ( m_type == OBJECT_FACTORY8 )  // départ tuyau 6 ?
-	{
-		pModFile->ReadModel("objects\\factory8.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-#if 0
-		CreateCrashSphere(D3DVECTOR(  0.0f,  0.0f,   0.0f), 40.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 26.0f,  3.0f,  26.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 26.0f,  3.0f, -26.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-26.0f,  3.0f,  26.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-26.0f,  3.0f, -26.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 36.0f,  3.0f,  36.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 36.0f,  3.0f, -36.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-36.0f,  3.0f,  36.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-36.0f,  3.0f, -36.0f),  4.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-30.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 30.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 30.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-30.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-30.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#endif
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_FACTORY9 )  // cilo rond ?
-	{
-		pModFile->ReadModel("objects\\factory9.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashSphere(D3DVECTOR( 19.0f, 3.0f,   5.0f), 1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 19.0f, 3.0f,  -5.0f), 1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-19.0f, 3.0f,   5.0f), 1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-19.0f, 3.0f,  -5.0f), 1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  5.0f, 3.0f,  19.0f), 1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -5.0f, 3.0f,  19.0f), 1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  5.0f, 3.0f, -19.0f), 1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -5.0f, 3.0f, -19.0f), 1.5f, SOUND_BOUMm, 0.45f);
-
-		CreateShadowCircle(20.0f, 0.5f);
-	}
-
-	if ( m_type == OBJECT_FACTORY10 )  // tanker A2 ?
-	{
-		pModFile->ReadModel("objects\\factory10.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 40.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_FACTORY11 )  // tanker C5 ?
-	{
-		pModFile->ReadModel("objects\\factory11.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 40.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_FACTORY12 )  // tanker F4 ?
-	{
-		pModFile->ReadModel("objects\\factory12.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 40.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_FACTORY13 )  // cilo carré ?
-	{
-		pModFile->ReadModel("objects\\factory13.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashSphere(D3DVECTOR( 9.0f, 3.0f,   29.5f), 1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 9.0f, 3.0f,  -29.5f), 1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-9.0f, 3.0f,   29.5f), 1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-9.0f, 3.0f,  -29.5f), 1.5f, SOUND_BOUMm, 0.45f);
-
-		CreateShadowCircle(20.0f, 0.5f);
-	}
-
-	if ( m_type == OBJECT_FACTORY14 )  // tapis roulant ?
-	{
-		pModFile->ReadModel("objects\\factory14.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-18.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(  5.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(  5.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-18.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-18.0f, -4.0f), SOUND_BOUMm, 0.45f);
-
-//?		CreateShadowCircle(18.0f, 1.0f, D3DSHADOWBARRIER2);
-	}
-
-	if ( m_type == OBJECT_GRAVEL )  // tas de gravier ?
-	{
-		pModFile->ReadModel("objects\\gravel.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetZoom(0, zoom);
-		SetFloorHeight(0.0f);
-
-//?		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 15.0f, SOUND_BOUMv, 0.15f);
-		m_terrain->AddBuildingLevel(pos, 6.0f*zoom, 14.0f*zoom, 10.0f*zoom, 0.5f);
-	}
-
-	if ( m_type == OBJECT_TUB )  // bac de gravier ?
-	{
-		pModFile->ReadModel("objects\\tub.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetZoom(0, zoom);
-		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-20.0f, -20.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f, -20.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  20.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  20.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -20.0f), SOUND_BOUMm, 0.45f);
-	}
-
-	if ( m_type == OBJECT_ALIEN1 )  // usine ?
-	{
-		pModFile->ReadModel("objects\\alien1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_ALIEN2 )  // tour ?
-	{
-		pModFile->ReadModel("objects\\alien2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\alien21.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 40.0f, 0.0f));
-
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_ALIEN3 )  // tour haute ?
-	{
-		pModFile->ReadModel("objects\\alien3.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\alien21.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 50.0f, 0.0f));
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(2, rank);
-		SetObjectParent(2, 0);
-		pModFile->ReadModel("objects\\alien21.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, 80.0f, 0.0f));
-
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_ALIEN4 )  // habitation ?
-	{
-		pModFile->ReadModel("objects\\alien4.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_ALIEN5 )  // marteau ?
-	{
-		pModFile->ReadModel("objects\\alien5.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\alien51.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 25.0f, 17.0f));
-
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_ALIEN6 )  // écraseur ?
-	{
-		pModFile->ReadModel("objects\\alien6.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\alien61.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(-26.0f, 13.0f, 0.0f));
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(2, rank);
-		SetObjectParent(2, 0);
-		pModFile->ReadModel("objects\\alien62.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(26.0f, 13.0f, 0.0f));
-
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_ALIEN7 )  // électrocuteur ?
-	{
-		pModFile->ReadModel("objects\\alien7.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_ALIEN8 )  // générateur ?
-	{
-		pModFile->ReadModel("objects\\alien8.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		rank = m_engine->CreateObject();  // bras
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\alien81.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(25.0f, 13.0f, 15.0f));
-		SetAngleY(1, 50.0f*PI/180.0f);
-
-		rank = m_engine->CreateObject();  // pince gauche
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(2, rank);
-		SetObjectParent(2, 1);
-		pModFile->ReadModel("objects\\alien82.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(-3.0f, 0.0f, -47.0f));
-		SetAngleY(2, 45.0f*PI/180.0f);
-
-		rank = m_engine->CreateObject();  // pince droite
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(3, rank);
-		SetObjectParent(3, 1);
-		pModFile->ReadModel("objects\\alien83.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(3.0f, 0.0f, -47.0f));
-		SetAngleY(3, -45.0f*PI/180.0f);
-
-		rank = m_engine->CreateObject();  // bouton rouge
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(4, rank);
-		SetObjectParent(4, 0);
-		pModFile->ReadModel("objects\\alien84.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(4, D3DVECTOR(-14.0f, 5.0f, 40.0f));
-
-		// bouton rouge :
-		CreateCrashSphere(D3DVECTOR(-14.0f, 3.0f, 42.0f), 3.0f, SOUND_BOUMm, 0.44f);
-
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
-	}
-
-	if ( m_type == OBJECT_ALIEN9 )  // torture ?
-	{
-		pModFile->ReadModel("objects\\alien9.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\alien91.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 34.0f, 0.0f));
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(2, rank);
-		SetObjectParent(2, 1);
-		pModFile->ReadModel("objects\\alien92.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, -1.0f, 0.0f));
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(3, rank);
-		SetObjectParent(3, 2);
-		pModFile->ReadModel("objects\\alien93.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(0.0f, 1.0f, 0.0f));
-
-		CreateCrashLine(FPOINT(-15.0f, -15.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 15.0f, -15.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 15.0f,  15.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-15.0f,  15.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-15.0f, -15.0f), SOUND_BOUMm, 0.45f);
-	}
-
-	if ( m_type == OBJECT_INCA1 )  // temple ?
-	{
-		pModFile->ReadModel("objects\\inca1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-	}
-
-	if ( m_type == OBJECT_INCA2 )  // temple ?
-	{
-		pModFile->ReadModel("objects\\inca2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-	}
-
-	if ( m_type == OBJECT_INCA3 )  // temple ?
-	{
-		pModFile->ReadModel("objects\\inca3.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-50.0f, -30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 50.0f, -30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 50.0f,  30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-50.0f,  30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-50.0f, -30.0f), SOUND_BOUMm, 0.45f);
-	}
-
-	if ( m_type == OBJECT_INCA4 )  // temple ?
-	{
-		pModFile->ReadModel("objects\\inca4.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-40.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -10.0f), SOUND_BOUMm, 0.45f);
-	}
-
-	if ( m_type == OBJECT_INCA5 )  // temple ?
-	{
-		pModFile->ReadModel("objects\\inca5.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-	}
-
-	if ( m_type == OBJECT_INCA6 )  // statue ?
-	{
-		pModFile->ReadModel("objects\\inca6.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-	}
-
-	if ( m_type == OBJECT_INCA7 )  // temple électrocuteur ?
-	{
-		pModFile->ReadModel("objects\\inca71.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		rank = m_engine->CreateObject();  // bouton rouge
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\inca72.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(-10.0f, 5.0f, 0.0f));
-
-		rank = m_engine->CreateObject();  // pilier
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(2, rank);
-		SetObjectParent(2, 0);
-		pModFile->ReadModel("objects\\inca73.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, 10.0f, 0.0f));
-
-		rank = m_engine->CreateObject();  // porte gauche
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(3, rank);
-		SetObjectParent(3, 2);
-		pModFile->ReadModel("objects\\inca74.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(0.0f, 25.0f, 0.0f));
-
-		rank = m_engine->CreateObject();  // porte droite
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(4, rank);
-		SetObjectParent(4, 2);
-		pModFile->ReadModel("objects\\inca75.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(4, D3DVECTOR(0.0f, 25.0f, 0.0f));
-	
-		// bouton rouge :
-		CreateCrashSphere(D3DVECTOR(-12.0f, 3.0f,  0.0f), 3.0f, SOUND_BOUMm, 0.44f);
-
-		CreateCrashLine(FPOINT(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-	}
 
 	if ( m_type == OBJECT_BUILDING1 )  // bâtiment ?
 	{
@@ -3114,12 +1881,6 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
 	}
 
 	if ( m_type == OBJECT_BUILDING2 )  // bâtiment ?
@@ -3129,12 +1890,6 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
 	}
 
 	if ( m_type == OBJECT_BUILDING3 )  // bâtiment ?
@@ -3144,12 +1899,6 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
-
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
 	}
 
 	if ( m_type == OBJECT_CARCASS1 )  // carcasse ?
@@ -3161,13 +1910,6 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		SetFloorHeight(0.0f);
 		SetZoom(0, 1.4f);
 
-		CreateCrashLine(FPOINT(-6.0f, -3.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 6.0f, -3.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 6.0f,  3.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-6.0f,  3.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-6.0f, -3.0f), SOUND_BOUMm, 0.45f);
-
-		CreateShadowCircle(4.6f, 1.0f, D3DSHADOWCAR07);
 		FloorAdjust();
 	}
 
@@ -3180,13 +1922,7 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		SetFloorHeight(0.0f);
 		SetZoom(0, 1.4f);
 
-		CreateCrashLine(FPOINT(-6.0f, -3.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 6.0f, -3.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 6.0f,  3.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-6.0f,  3.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-6.0f, -3.0f), SOUND_BOUMm, 0.45f);
-
-		CreateShadowCircle(7.0f, 0.2f);
+		CreateShadow(7.0f, 0.2f);
 		FloorAdjust();
 	}
 
@@ -3198,9 +1934,6 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
 		SetZoom(0, zoom);
-
-		CreateCrashSphere(D3DVECTOR(-25.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 24.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
 	}
 
 	if ( m_type == OBJECT_ORGA2 )  // organique ?
@@ -3211,9 +1944,6 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
 		SetZoom(0, zoom);
-
-		CreateCrashSphere(D3DVECTOR(-25.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 28.0f, 3.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
 	}
 
 	if ( m_type == OBJECT_ORGA3 )  // organique ?
@@ -3224,153 +1954,6 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
 		SetZoom(0, zoom);
-
-		CreateCrashSphere(D3DVECTOR(-25.0f, 3.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 24.0f, 3.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-	}
-
-	if ( m_type == OBJECT_TOWER )
-	{
-		pModFile->ReadModel("objects\\tower1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\tower2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 40.0f, 0.0f));
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(2, rank);
-		SetObjectParent(2, 1);
-		pModFile->ReadModel("objects\\tower3.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, 9.0f, 0.0f));
-		SetAngleZ(2, 0.0f);
-
-		CreateCrashSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 11.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 7.0f, 0.0f), 11.0f);
-
-		CreateShadowCircle(9.0f, 1.0f);
-	}
-
-	if ( m_type == OBJECT_NUCLEAR )
-	{
-		pModFile->ReadModel("objects\\nuclear1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashSphere(D3DVECTOR( 0.0f,  0.0f, 0.0f), 55.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 60.0f);
-	}
-
-	if ( m_type == OBJECT_PARA )
-	{
-		pModFile->ReadModel("objects\\para.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		m_terrain->AddBuildingLevel(pos, 24.5f, 27.4f, 2.2f, 0.5f);
-
-		CreateCrashSphere(D3DVECTOR( 19.5f, 4.5f,  19.5f), 4.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-19.5f, 4.5f,  19.5f), 4.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 19.5f, 4.5f, -19.5f), 4.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-19.5f, 4.5f, -19.5f), 4.5f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 15.0f, 0.0f), 30.0f);
-	}
-
-	if ( m_type == OBJECT_COMPUTER )
-	{
-		pModFile->ReadModel("objects\\compu1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		rank = m_engine->CreateObject();  // bouton rouge
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\compu2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(-6.0f, 5.0f, 0.0f));
-		SetZoom(1, D3DVECTOR(0.8f, 0.7f, 0.7f));
-
-		rank = m_engine->CreateObject();  // bouton rouge
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(2, rank);
-		SetObjectParent(2, 0);
-		pModFile->ReadModel("objects\\compu2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(3.0f, 5.0f, -5.2f));
-		SetZoom(2, D3DVECTOR(0.8f, 0.7f, 0.7f));
-		SetAngleY(2, -120.0f*PI/180.0f);
-
-		rank = m_engine->CreateObject();  // bouton rouge
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(3, rank);
-		SetObjectParent(3, 0);
-		pModFile->ReadModel("objects\\compu2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(3.0f, 5.0f, 5.2f));
-		SetZoom(3, D3DVECTOR(0.8f, 0.7f, 0.7f));
-		SetAngleY(3, 120.0f*PI/180.0f);
-
-		// boutons rouges :
-		CreateCrashSphere(D3DVECTOR(-9.0f, 3.0f,  0.0f), 2.0f, SOUND_BOUMm, 0.44f);
-		CreateCrashSphere(D3DVECTOR( 4.4f, 3.0f,  7.8f), 2.0f, SOUND_BOUMm, 0.43f);
-		CreateCrashSphere(D3DVECTOR( 4.4f, 3.0f, -7.8f), 2.0f, SOUND_BOUMm, 0.42f);
-
-		CreateCrashSphere(D3DVECTOR( 0.0f,  2.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 10.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 10.0f);
-		CreateShadowCircle(12.0f, 1.0f);
-	}
-
-	if ( m_type == OBJECT_REPAIR )
-	{
-		pModFile->ReadModel("objects\\repair1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\repair2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(-11.0f, 13.5f, 0.0f));
-		SetAngleZ(1, PI*0.5f);
-
-		CreateCrashSphere(D3DVECTOR(-11.0f, 3.0f, 0.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(-11.0f, 3.0f, 0.0f), 8.0f);
-		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
-	}
-
-	if ( m_type == OBJECT_SWEET )
-	{
-		pModFile->ReadModel("objects\\sweet.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		CreateCrashSphere(D3DVECTOR(-4.0f, 3.0f, 0.0f), 7.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.0f, 3.0f, 0.0f), 7.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 10.0f);
-		CreateShadowCircle(12.0f, 1.0f);
 	}
 
 	if ( m_type == OBJECT_DOOR1 )
@@ -3388,131 +1971,11 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		pModFile->ReadModel("objects\\door11.mod");
 		pModFile->CreateEngineObject(rank);
 
-		// Sphères déplacées par MoveCrashSphere.
-		CreateCrashSphere(D3DVECTOR(  0.0f, 35.0f,  24.0f),  6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 35.0f,  12.0f),  6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 35.0f,   0.0f),  6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 35.0f, -12.0f),  6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 35.0f, -24.0f),  6.0f, SOUND_BOUMm, 0.45f);
+		CreateLockZone( 0, 0, LZ_FIX);
+		CreateLockZone(-1, 0, LZ_FIX);
+		CreateLockZone( 1, 0, LZ_FIX);
 
-#if 0
-		CreateCrashSphere(D3DVECTOR(  5.0f,  3.0f,  42.0f), 12.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -5.0f,  3.0f,  42.0f), 12.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 14.0f,  3.0f,  33.0f),  3.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-14.0f,  3.0f,  33.0f),  3.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 14.0f,  3.0f,  51.0f),  3.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-14.0f,  3.0f,  51.0f),  3.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 36.0f,  38.0f),  9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  5.0f,  3.0f, -42.0f), 12.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -5.0f,  3.0f, -42.0f), 12.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 14.0f,  3.0f, -33.0f),  3.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-14.0f,  3.0f, -33.0f),  3.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 14.0f,  3.0f, -51.0f),  3.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-14.0f,  3.0f, -51.0f),  3.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 36.0f, -38.0f),  9.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-17.0f,  30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 17.0f,  30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 17.0f,  55.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-17.0f,  55.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-17.0f,  30.0f), SOUND_BOUMm, 0.45f);
-
-		CreateCrashLine(FPOINT(-17.0f, -55.0f), SOUND_BOUMm, 0.45f, TRUE);
-		CreateCrashLine(FPOINT( 17.0f, -55.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 17.0f, -30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-17.0f, -30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-17.0f, -55.0f), SOUND_BOUMm, 0.45f);
-#endif
-	}
-
-	if ( m_type == OBJECT_DOOR2 )
-	{
-		pModFile->ReadModel("objects\\door20.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
-
-		// machoire gauche
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\door21.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 17.0f, 20.0f));
-
-		// machoire droite
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(2, rank);
-		SetObjectParent(2, 0);
-		pModFile->ReadModel("objects\\door21.mod");
-		pModFile->Mirror();
-		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, 17.0f, -20.0f));
-
-		// grande roue
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(3, rank);
-		SetObjectParent(3, 0);
-		pModFile->ReadModel("objects\\door23.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(21.0f, 9.0f, -38.0f));
-
-		// piston
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(4, rank);
-		SetObjectParent(4, 0);
-		pModFile->ReadModel("objects\\door24.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(4, D3DVECTOR(26.0f, 28.0f, -38.0f));
-
-		// bielle
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(5, rank);
-		SetObjectParent(5, 4);
-		pModFile->ReadModel("objects\\door25.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(5, D3DVECTOR(0.0f, 0.0f, 0.0f));
-
-		// petite roue
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(6, rank);
-		SetObjectParent(6, 0);
-		pModFile->ReadModel("objects\\door26.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(6, D3DVECTOR(21.0f, 17.0f, -42.0f));
-
-		// Sphères déplacées par MoveCrashSphere.
-		CreateCrashSphere(D3DVECTOR(-15.0f, 5.0f, -23.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -8.0f, 5.0f, -23.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f, -23.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  8.0f, 5.0f, -23.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f, 5.0f, -23.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		// Sphères déplacées par MoveCrashSphere.
-		CreateCrashSphere(D3DVECTOR(-15.0f, 5.0f,  23.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -8.0f, 5.0f,  23.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f,  23.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  8.0f, 5.0f,  23.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f, 5.0f,  23.0f),  4.0f, SOUND_BOUMm, 0.45f);
-
-		// Sphère du mécanisme.
-		CreateCrashSphere(D3DVECTOR( 20.0f, 4.0f, -38.0f),  7.0f, SOUND_BOUMm, 0.44f);
-
-		CreateCrashSphere(D3DVECTOR(-12.0f, 5.0f, -38.0f),  9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f, -38.0f),  9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 12.0f, 5.0f, -38.0f),  9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f, -48.0f), 11.0f, SOUND_BOUMm, 0.45f);
-
-		CreateCrashSphere(D3DVECTOR(-12.0f, 5.0f,  38.0f),  9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f,  38.0f),  9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 12.0f, 5.0f,  38.0f),  9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f,  48.0f), 11.0f, SOUND_BOUMm, 0.45f);
+		CreateShadow(12.0f, 0.5f, D3DSHADOWNORM, TRUE, 2.0f);
 	}
 
 	if ( m_type == OBJECT_DOOR3 )
@@ -3523,98 +1986,51 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
 
-		// piston écraseur
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(1, rank);
 		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\door31.mod");
+		pModFile->ReadModel("objects\\door11.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 20.0f, 0.0f));
 
-		// grande roue
+		CreateLockZone( 0, 0, LZ_FIX);
+		CreateLockZone(-1, 0, LZ_FIX);
+		CreateLockZone( 1, 0, LZ_FIX);
+
+		CreateShadow(12.0f, 0.5f, D3DSHADOWNORM, TRUE, 2.0f);
+	}
+
+	if ( m_type == OBJECT_DOOR2 )
+	{
+		pModFile->ReadModel("objects\\door20.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(0, pos);
+		SetAngleY(0, angle);
+		SetFloorHeight(0.0f);
+
+		// porte gauche
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(3, rank);
-		SetObjectParent(3, 0);
-		pModFile->ReadModel("objects\\door23.mod");
+		SetObjectRank(1, rank);
+		SetObjectParent(1, 0);
+		pModFile->ReadModel("objects\\door21.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(21.0f, 9.0f, -43.0f));
+		SetPosition(1, D3DVECTOR(-5.0f, 0.0f, -1.0f));
 
-		// piston
+		// porte droite
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(4, rank);
-		SetObjectParent(4, 0);
-		pModFile->ReadModel("objects\\door24.mod");
+		SetObjectRank(2, rank);
+		SetObjectParent(2, 0);
+		pModFile->ReadModel("objects\\door22.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(4, D3DVECTOR(26.0f, 28.0f, -43.0f));
+		SetPosition(2, D3DVECTOR(5.0f, 0.0f, -1.0f));
 
-		// bielle
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(5, rank);
-		SetObjectParent(5, 4);
-		pModFile->ReadModel("objects\\door25.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(5, D3DVECTOR(0.0f, 0.0f, 0.0f));
+		CreateLockZone( 0, 0, LZ_FIX);
+		CreateLockZone(-1, 0, LZ_FIX);
+		CreateLockZone( 1, 0, LZ_FIX);
 
-		// petite roue
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(6, rank);
-		SetObjectParent(6, 0);
-		pModFile->ReadModel("objects\\door26.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(6, D3DVECTOR(21.0f, 17.0f, -47.0f));
-
-		// Sphères déplacées par MoveCrashSphere.
-		CreateCrashSphere(D3DVECTOR( 14.0f, 25.0f,   0.0f),  6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-14.0f, 25.0f,   0.0f),  6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 25.0f,  14.0f),  6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 25.0f, -14.0f),  6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 25.0f,  10.0f),  6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 25.0f, -10.0f),  6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f, 25.0f,  10.0f),  6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f, 25.0f, -10.0f),  6.0f, SOUND_BOUMm, 0.45f);
-
-		// Sphère du mécanisme.
-		CreateCrashSphere(D3DVECTOR( 20.0f, 4.0f, -43.0f),  7.0f, SOUND_BOUMm, 0.44f);
-
-#if 0
-		CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f, -48.0f), 20.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f, 5.0f, -35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f, 5.0f, -35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f, 5.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f, 5.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 25.0f, 3.0f, -32.5f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-25.0f, 3.0f, -32.5f),  3.0f, SOUND_BOUMm, 0.45f);
-
-		CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f,  48.0f), 20.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f, 5.0f,  35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f, 5.0f,  35.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f, 5.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f, 5.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 25.0f, 3.0f,  32.5f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-25.0f, 3.0f,  32.5f),  3.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashSphere(D3DVECTOR( 25.0f, 3.0f, -32.5f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-25.0f, 3.0f, -32.5f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 25.0f, 3.0f,  32.5f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-25.0f, 3.0f,  32.5f),  3.0f, SOUND_BOUMm, 0.45f);
-
-		CreateCrashLine(FPOINT(-20.0f,  30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  67.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  67.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  30.0f), SOUND_BOUMm, 0.45f);
-
-		CreateCrashLine(FPOINT(-20.0f, -67.0f), SOUND_BOUMm, 0.45f, TRUE);
-		CreateCrashLine(FPOINT( 20.0f, -67.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f, -30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -30.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -67.0f), SOUND_BOUMm, 0.45f);
-#endif
+		CreateShadow(12.0f, 0.5f, D3DSHADOWNORM, TRUE, 2.0f);
 	}
 
 	if ( m_type == OBJECT_DOOR4 )
@@ -3625,112 +2041,136 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f,  34.0f), 6.0f, SOUND_CHOCm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, -34.0f), 6.0f, SOUND_CHOCm, 0.45f);
+		// porte gauche
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(1, rank);
+		SetObjectParent(1, 0);
+		pModFile->ReadModel("objects\\door21.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(1, D3DVECTOR(-5.0f, 0.0f, -1.0f));
+
+		// porte droite
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(2, rank);
+		SetObjectParent(2, 0);
+		pModFile->ReadModel("objects\\door22.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(2, D3DVECTOR(5.0f, 0.0f, -1.0f));
+
+		CreateLockZone( 0, 0, LZ_FIX);
+		CreateLockZone(-1, 0, LZ_FIX);
+		CreateLockZone( 1, 0, LZ_FIX);
+
+		CreateShadow(12.0f, 0.5f, D3DSHADOWNORM, TRUE, 2.0f);
 	}
 
 	if ( m_type == OBJECT_DOCK )
 	{
-		pModFile->ReadModel("objects\\dock1.mod");
+		pModFile->ReadModel("objects\\dock0.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
 
+		// Portique
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(1, rank);
 		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\dock2.mod");
+		pModFile->ReadModel("objects\\dock1.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 20.0f, 0.0f));
 
+		// Charriot
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(2, rank);
 		SetObjectParent(2, 1);
-		pModFile->ReadModel("objects\\dock3.mod");
+		pModFile->ReadModel("objects\\dock2.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, 0.0f, 0.0f));
 
+		// Piston
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(3, rank);
 		SetObjectParent(3, 2);
-		pModFile->ReadModel("objects\\dock4.mod");
+		pModFile->ReadModel("objects\\dock3.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(0.0f, (16.0f-14.0f)*3.0f/10.0f, 0.0f));
+		SetPosition(3, D3DVECTOR(0.0f, 10.0f, 0.0f));
 
+		// ^
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(4, rank);
-		SetObjectParent(4, 2);
-		pModFile->ReadModel("objects\\dock5.mod");
+		SetObjectParent(4, 1);
+		pModFile->ReadModel("objects\\dock4.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(4, D3DVECTOR(0.0f, (16.0f-14.0f)*6.0f/10.0f, 0.0f));
 
+		// v
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(5, rank);
-		SetObjectParent(5, 2);
+		SetObjectParent(5, 1);
+		pModFile->ReadModel("objects\\dock5.mod");
+		pModFile->CreateEngineObject(rank);
+
+		// piston
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(6, rank);
+		SetObjectParent(6, 1);
 		pModFile->ReadModel("objects\\dock6.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(5, D3DVECTOR(0.0f, 16.0f-14.0f, 0.0f));
 
-		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
-		m_terrain->AddSlowerZone(pos, 20.0f, 30.0f, 0.2f);
+		// <
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(7, rank);
+		SetObjectParent(7, 1);
+		pModFile->ReadModel("objects\\dock7.mod");
+		pModFile->CreateEngineObject(rank);
 
-#if 0
-		CreateCrashSphere(D3DVECTOR(  0.0f, 6.0f, 27.0f), 15.0f, SOUND_BOUMm, 0.45f);
+		// >
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(8, rank);
+		SetObjectParent(8, 1);
+		pModFile->ReadModel("objects\\dock8.mod");
+		pModFile->CreateEngineObject(rank);
 
-		CreateCrashSphere(D3DVECTOR(-15.5f, 2.0f,-12.0f),  1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f, 7.0f,-12.0f),  1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.5f, 2.0f, 12.0f),  1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-14.0f, 2.0f, 17.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-14.0f, 2.0f, 22.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-14.0f, 2.0f, 27.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-14.0f, 2.0f, 32.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-14.0f, 2.0f, 37.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.5f, 2.0f, 42.0f),  1.5f, SOUND_BOUMm, 0.45f);
+		// reste
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(9, rank);
+		SetObjectParent(9, 1);
+		pModFile->ReadModel("objects\\dock9.mod");
+		pModFile->CreateEngineObject(rank);
 
-		CreateCrashSphere(D3DVECTOR( 15.5f, 2.0f,-12.0f),  1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f, 7.0f,-12.0f),  1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.5f, 2.0f, 12.0f),  1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 14.0f, 2.0f, 17.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 14.0f, 2.0f, 22.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 14.0f, 2.0f, 27.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 14.0f, 2.0f, 32.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 14.0f, 2.0f, 37.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.5f, 2.0f, 42.0f),  1.5f, SOUND_BOUMm, 0.45f);
+		CreateLockZone(-4, -3, LZ_FIX);
+		CreateLockZone(-4, -2, LZ_FIX);
+		CreateLockZone(-4, -1, LZ_FIX);
+		CreateLockZone(-4,  0, LZ_FIX);
+		CreateLockZone(-4,  1, LZ_FIX);
+		CreateLockZone(-4,  2, LZ_FIX);
+		CreateLockZone(-4,  3, LZ_FIX);
 
-		CreateCrashSphere(D3DVECTOR(-10.0f, 2.0f, 14.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -5.0f, 2.0f, 14.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 2.0f, 14.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 2.0f, 14.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 2.0f, 14.0f),  2.5f, SOUND_BOUMm, 0.45f);
+		CreateLockZone( 4, -3, LZ_FIX);
+		CreateLockZone( 4, -2, LZ_FIX);
+		CreateLockZone( 4, -1, LZ_FIX);
+		CreateLockZone( 4,  0, LZ_FIX);
+		CreateLockZone( 4,  1, LZ_FIX);
+		CreateLockZone( 4,  2, LZ_FIX);
+		CreateLockZone( 4,  3, LZ_FIX);
 
-		CreateCrashSphere(D3DVECTOR(-10.0f, 2.0f, 40.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -5.0f, 2.0f, 40.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 2.0f, 40.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 2.0f, 40.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 2.0f, 40.0f),  2.5f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashSphere(D3DVECTOR(-15.5f, 2.0f,-12.0f),  1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f, 7.0f,-12.0f),  1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.5f, 2.0f,-12.0f),  1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f, 7.0f,-12.0f),  1.5f, SOUND_BOUMm, 0.45f);
+		CreateShadow(5.0f, 1.0f, D3DSHADOWDOCK, FALSE, 0.0f);  // cible
 
-		CreateCrashLine(FPOINT(-15.0f, 12.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 15.0f, 12.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 15.0f, 42.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-15.0f, 42.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-15.0f, 12.0f), SOUND_BOUMm, 0.45f);
-#endif
+		m_arrowPos = 0.0f;
 	}
 
-	if ( m_type == OBJECT_REMOTE )
+	if ( m_type == OBJECT_CATAPULT )
 	{
-		pModFile->ReadModel("objects\\remote1.mod");
+		pModFile->ReadModel("objects\\cata0.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
@@ -3740,41 +2180,29 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(1, rank);
 		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\remote2.mod");
+		pModFile->ReadModel("objects\\cata1.mod");  // bouton
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(3.6f, 4.4f, 0.0f));
 
-		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
-
-		CreateCrashSphere(D3DVECTOR( 6.0f, 3.0f,  4.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 6.0f, 3.0f,  0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 6.0f, 3.0f, -4.0f), 1.0f, SOUND_BOUMm, 0.45f);
-	}
-
-	if ( m_type == OBJECT_STAND )
-	{
-		pModFile->ReadModel("objects\\stand.mod");
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(2, rank);
+		SetObjectParent(2, 0);
+		pModFile->ReadModel("objects\\cata2.mod");  // marteau
 		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
+		SetPosition(2, D3DVECTOR(0.0f, 14.0f, 0.0f));
 
-		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
-
-		CreateCrashLine(FPOINT(-30.0f, -60.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 22.0f, -60.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 22.0f,  60.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-30.0f,  60.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-30.0f, -60.0f), SOUND_BOUMm, 0.45f);
-	}
-
-	if ( m_type == OBJECT_GENERATOR )
-	{
-		pModFile->ReadModel("objects\\generat.mod");
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(3, rank);
+		SetObjectParent(3, 0);
+		pModFile->ReadModel("objects\\cata3.mod");  // moteur
 		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
+		SetPosition(3, D3DVECTOR(0.0f, 8.0f, 0.0f));
+
+		CreateLockZone(0, -1, LZ_FIX);
+		CreateLockZone(0,  1, LZ_FIX);
+
+		m_arrowPos = 0.0f;
 	}
 
 	if ( m_type == OBJECT_START )
@@ -3784,8 +2212,6 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
-
-		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 	}
 
 	if ( m_type == OBJECT_END )
@@ -3795,25 +2221,14 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
-
-		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
-	}
-
-	if ( m_type == OBJECT_SUPPORT )
-	{
-		pModFile->ReadModel("objects\\support.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetFloorHeight(0.0f);
 	}
 
 	pos = RetPosition(0);
+	pos.y = 0.0f;
 	pos.y += height;
 	SetPosition(0, pos);  // pour afficher les ombres tout de suite
 
-	CreateOtherObject(type);
-	m_engine->LoadAllTexture();
+	CreateAuto(type);
 
 	delete pModFile;
 	return TRUE;
@@ -3822,12 +2237,14 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float zoom,
 // Crée une petite ressource posée sur le sol.
 
 BOOL CObject::CreateResource(D3DVECTOR pos, float angle, float zoom,
-							 ObjectType type, BOOL bPlumb)
+							 ObjectType type)
 {
-	CModFile*	pModFile;
-	char		name[50];
-	int			rank;
-	float		radius, height, density;
+	CModFile*		pModFile;
+	D3DTypeObj		typeObj;
+	D3DShadowType	sType;
+	char			name[50];
+	int				rank, i;
+	float			radius, height, density;
 
 	if ( type != OBJECT_SHOW )
 	{
@@ -3838,8 +2255,22 @@ BOOL CObject::CreateResource(D3DVECTOR pos, float angle, float zoom,
 
 	SetType(type);
 
+	typeObj = TYPEOBJECT;
+	if ( type == OBJECT_LIFT )
+	{
+		typeObj = TYPETERRAIN;
+	}
+	if ( type == OBJECT_FIOLE  ||
+		 type == OBJECT_GLU    ||
+		 type == OBJECT_GOAL   ||
+		 type == OBJECT_MINE   ||
+		 type == OBJECT_GLASS1 )
+	{
+		typeObj = TYPEMETAL;
+	}
+
 	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEFIX);  // c'est un objet fixe
+	m_engine->SetObjectType(rank, typeObj);  // c'est un objet fixe
 	SetObjectRank(0, rank);
 	m_character.mass = 1000.0f;
 
@@ -3852,104 +2283,125 @@ BOOL CObject::CreateResource(D3DVECTOR pos, float angle, float zoom,
 	if ( type == OBJECT_ATOMIC      )  strcpy(name, "objects\\atomic.mod");
 	if ( type == OBJECT_BULLET      )  strcpy(name, "objects\\bullet.mod");
 	if ( type == OBJECT_BBOX        )  strcpy(name, "objects\\bbox.mod");
-	if ( type == OBJECT_KEYa        )  strcpy(name, "objects\\keya.mod");
-	if ( type == OBJECT_KEYb        )  strcpy(name, "objects\\keyb.mod");
-	if ( type == OBJECT_KEYc        )  strcpy(name, "objects\\keyc.mod");
-	if ( type == OBJECT_KEYd        )  strcpy(name, "objects\\keyd.mod");
 	if ( type == OBJECT_TNT         )  strcpy(name, "objects\\tnt.mod");
 	if ( type == OBJECT_MINE        )  strcpy(name, "objects\\mine.mod");
-	if ( type == OBJECT_POLE        )  strcpy(name, "objects\\pole.mod");
-	if ( type == OBJECT_BOMB        )  strcpy(name, "objects\\bomb1.mod");
-	if ( type == OBJECT_CONE        )  strcpy(name, "objects\\cone.mod");
-	if ( type == OBJECT_PIPES       )  strcpy(name, "objects\\pipes.mod");
 	if ( type == OBJECT_WAYPOINT    )  strcpy(name, "objects\\waypoint.mod");
-	if ( type == OBJECT_TRAJECT     )  strcpy(name, "objects\\traject.mod");
-	if ( type == OBJECT_TARGET      )  strcpy(name, "objects\\xxx.mod");
 	if ( type == OBJECT_SHOW        )  strcpy(name, "objects\\show.mod");
 	if ( type == OBJECT_WINFIRE     )  strcpy(name, "objects\\winfire.mod");
-	if ( type == OBJECT_BAG         )  strcpy(name, "objects\\bag.mod");
 	if ( type == OBJECT_MARK        )  strcpy(name, "objects\\mark.mod");
-	if ( type == OBJECT_CROWN       )  strcpy(name, "objects\\crown.mod");
-	if ( type == OBJECT_ROADSIGN1   )  strcpy(name, "objects\\road1.mod");
-	if ( type == OBJECT_ROADSIGN2   )  strcpy(name, "objects\\road2.mod");
-	if ( type == OBJECT_ROADSIGN3   )  strcpy(name, "objects\\road3.mod");
-	if ( type == OBJECT_ROADSIGN4   )  strcpy(name, "objects\\road4.mod");
-	if ( type == OBJECT_ROADSIGN5   )  strcpy(name, "objects\\road5.mod");
-	if ( type == OBJECT_ROADSIGN6   )  strcpy(name, "objects\\road6.mod");
-	if ( type == OBJECT_ROADSIGN7   )  strcpy(name, "objects\\road7.mod");
-	if ( type == OBJECT_ROADSIGN8   )  strcpy(name, "objects\\road8.mod");
-	if ( type == OBJECT_ROADSIGN9   )  strcpy(name, "objects\\road9.mod");
-	if ( type == OBJECT_ROADSIGN10  )  strcpy(name, "objects\\road10.mod");
-	if ( type == OBJECT_ROADSIGN11  )  strcpy(name, "objects\\road11.mod");
-	if ( type == OBJECT_ROADSIGN12  )  strcpy(name, "objects\\road12.mod");
-	if ( type == OBJECT_ROADSIGN13  )  strcpy(name, "objects\\road13.mod");
-	if ( type == OBJECT_ROADSIGN14  )  strcpy(name, "objects\\road14.mod");
-	if ( type == OBJECT_ROADSIGN15  )  strcpy(name, "objects\\road15.mod");
-	if ( type == OBJECT_ROADSIGN16  )  strcpy(name, "objects\\road16.mod");
-	if ( type == OBJECT_ROADSIGN17  )  strcpy(name, "objects\\road17.mod");
-	if ( type == OBJECT_ROADSIGN18  )  strcpy(name, "objects\\road18.mod");
-	if ( type == OBJECT_ROADSIGN19  )  strcpy(name, "objects\\road19.mod");
-	if ( type == OBJECT_ROADSIGN20  )  strcpy(name, "objects\\road20.mod");
-	if ( type == OBJECT_ROADSIGN21  )  strcpy(name, "objects\\road21.mod");
-	if ( type == OBJECT_ROADSIGN22  )  strcpy(name, "objects\\road22.mod");
-	if ( type == OBJECT_ROADSIGN23  )  strcpy(name, "objects\\road23.mod");
-	if ( type == OBJECT_ROADSIGN24  )  strcpy(name, "objects\\road24.mod");
-	if ( type == OBJECT_ROADSIGN25  )  strcpy(name, "objects\\road25.mod");
-	if ( type == OBJECT_ROADSIGN26  )  strcpy(name, "objects\\road26.mod");
-	if ( type == OBJECT_ROADSIGN27  )  strcpy(name, "objects\\road27.mod");
-	if ( type == OBJECT_ROADSIGN28  )  strcpy(name, "objects\\road28.mod");
-	if ( type == OBJECT_ROADSIGN29  )  strcpy(name, "objects\\road29.mod");
-	if ( type == OBJECT_ROADSIGN30  )  strcpy(name, "objects\\road30.mod");
-	if ( type == OBJECT_PUB11       )  strcpy(name, "objects\\pub11.mod");
-	if ( type == OBJECT_PUB12       )  strcpy(name, "objects\\pub12.mod");
-	if ( type == OBJECT_PUB13       )  strcpy(name, "objects\\pub13.mod");
-	if ( type == OBJECT_PUB14       )  strcpy(name, "objects\\pub14.mod");
-	if ( type == OBJECT_PUB21       )  strcpy(name, "objects\\pub21.mod");
-	if ( type == OBJECT_PUB22       )  strcpy(name, "objects\\pub22.mod");
-	if ( type == OBJECT_PUB23       )  strcpy(name, "objects\\pub23.mod");
-	if ( type == OBJECT_PUB24       )  strcpy(name, "objects\\pub24.mod");
-	if ( type == OBJECT_PUB31       )  strcpy(name, "objects\\pub31.mod");
-	if ( type == OBJECT_PUB32       )  strcpy(name, "objects\\pub32.mod");
-	if ( type == OBJECT_PUB33       )  strcpy(name, "objects\\pub33.mod");
-	if ( type == OBJECT_PUB34       )  strcpy(name, "objects\\pub34.mod");
-	if ( type == OBJECT_PUB41       )  strcpy(name, "objects\\pub41.mod");
-	if ( type == OBJECT_PUB42       )  strcpy(name, "objects\\pub42.mod");
-	if ( type == OBJECT_PUB43       )  strcpy(name, "objects\\pub43.mod");
-	if ( type == OBJECT_PUB44       )  strcpy(name, "objects\\pub44.mod");
-	if ( type == OBJECT_PUB51       )  strcpy(name, "objects\\pub51.mod");
-	if ( type == OBJECT_PUB52       )  strcpy(name, "objects\\pub52.mod");
-	if ( type == OBJECT_PUB53       )  strcpy(name, "objects\\pub53.mod");
-	if ( type == OBJECT_PUB54       )  strcpy(name, "objects\\pub54.mod");
-	if ( type == OBJECT_PUB61       )  strcpy(name, "objects\\pub61.mod");
-	if ( type == OBJECT_PUB62       )  strcpy(name, "objects\\pub62.mod");
-	if ( type == OBJECT_PUB63       )  strcpy(name, "objects\\pub63.mod");
-	if ( type == OBJECT_PUB64       )  strcpy(name, "objects\\pub64.mod");
-	if ( type == OBJECT_PUB71       )  strcpy(name, "objects\\pub71.mod");
-	if ( type == OBJECT_PUB72       )  strcpy(name, "objects\\pub72.mod");
-	if ( type == OBJECT_PUB73       )  strcpy(name, "objects\\pub73.mod");
-	if ( type == OBJECT_PUB74       )  strcpy(name, "objects\\pub74.mod");
-	if ( type == OBJECT_PUB81       )  strcpy(name, "objects\\pub81.mod");
-	if ( type == OBJECT_PUB82       )  strcpy(name, "objects\\pub82.mod");
-	if ( type == OBJECT_PUB83       )  strcpy(name, "objects\\pub83.mod");
-	if ( type == OBJECT_PUB84       )  strcpy(name, "objects\\pub84.mod");
-	if ( type == OBJECT_PUB91       )  strcpy(name, "objects\\pub91.mod");
-	if ( type == OBJECT_PUB92       )  strcpy(name, "objects\\pub92.mod");
-	if ( type == OBJECT_PUB93       )  strcpy(name, "objects\\pub93.mod");
-	if ( type == OBJECT_PUB94       )  strcpy(name, "objects\\pub94.mod");
-	if ( type == OBJECT_TRAXf       )  strcpy(name, "objects\\trax1f.mod");
+	if ( type == OBJECT_FIOLE       )  strcpy(name, "objects\\fiole.mod");
+	if ( type == OBJECT_GLU         )  strcpy(name, "objects\\glu.mod");
+	if ( type == OBJECT_LIFT        )  strcpy(name, "objects\\lift.mod");
+	if ( type == OBJECT_GOAL        )  strcpy(name, "objects\\goal.mod");
+	if ( type == OBJECT_COLUMN1     )  strcpy(name, "objects\\column1a.mod");
+	if ( type == OBJECT_COLUMN2     )  strcpy(name, "objects\\column2a.mod");
+	if ( type == OBJECT_COLUMN3     )  strcpy(name, "objects\\column3a.mod");
+	if ( type == OBJECT_COLUMN4     )  strcpy(name, "objects\\column4a.mod");
+	if ( type == OBJECT_GLASS1      )  strcpy(name, "objects\\glass1.mod");
+	if ( type == OBJECT_GLASS2      )  strcpy(name, "objects\\glass2.mod");
+	if ( type == OBJECT_SCRAP0      )  strcpy(name, "objects\\scrap0.mod");
+	if ( type == OBJECT_SCRAP1      )  strcpy(name, "objects\\scrap1.mod");
+	if ( type == OBJECT_SCRAP2      )  strcpy(name, "objects\\scrap2.mod");
+	if ( type == OBJECT_SCRAP3      )  strcpy(name, "objects\\scrap3.mod");
+	if ( type == OBJECT_SCRAP4      )  strcpy(name, "objects\\scrap4.mod");
+	if ( type == OBJECT_SCRAP5      )  strcpy(name, "objects\\scrap5.mod");
+	if ( type == OBJECT_SCRAP6      )  strcpy(name, "objects\\scrap6.mod");
+	if ( type == OBJECT_SCRAP7      )  strcpy(name, "objects\\scrap7.mod");
+	if ( type == OBJECT_SCRAP8      )  strcpy(name, "objects\\scrap8.mod");
+	if ( type == OBJECT_SCRAP9      )  strcpy(name, "objects\\scrap9.mod");
 
-	if ( (type >= OBJECT_ROADSIGN1  && type <= OBJECT_ROADSIGN30) ||
-		 (type >= OBJECT_PUB11      && type <= OBJECT_PUB94     ) )
+	if ( type == OBJECT_GLASS1 ||
+		 type == OBJECT_GLASS2 )
 	{
-		angle -= PI/2.0f;  // pour des raisons historiques !
+		angle = Mod(angle, PI);
 	}
 
 	pModFile->ReadModel(name);
 	pModFile->CreateEngineObject(rank);
-
 	SetPosition(0, pos);
 	SetAngleY(0, angle);
 	SetZoom(0, zoom);
+
+	if ( type == OBJECT_FIOLE )
+	{
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(1, rank);
+		SetObjectParent(1, 0);
+		pModFile->ReadModel("objects\\fiolea.mod");
+		pModFile->CreateEngineObject(rank);
+		m_arrowPos = 0.0f;
+	}
+
+	if ( type == OBJECT_GLU )
+	{
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(1, rank);
+		SetObjectParent(1, 0);
+		pModFile->ReadModel("objects\\glua.mod");
+		pModFile->CreateEngineObject(rank);
+		m_arrowPos = 0.0f;
+	}
+
+	if ( type == OBJECT_LIFT )
+	{
+		CreateAuto(type);
+		delete pModFile;
+		return TRUE;
+	}
+
+	if ( type == OBJECT_GOAL )
+	{
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(1, rank);
+		SetObjectParent(1, 0);
+		pModFile->ReadModel("objects\\goala.mod");
+		pModFile->CreateEngineObject(rank);
+		m_arrowPos = 0.0f;
+	}
+
+	if ( type == OBJECT_GLASS1 )
+	{
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(1, rank);
+		SetObjectParent(1, 0);
+		pModFile->ReadModel("objects\\glass11.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(1, D3DVECTOR(0.0f, 10.5f, 0.0f));
+	}
+	if ( type == OBJECT_GLASS2 )
+	{
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(1, rank);
+		SetObjectParent(1, 0);
+		pModFile->ReadModel("objects\\glass21.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(1, D3DVECTOR(0.0f, 10.5f, 0.0f));
+	}
+
+	if ( type >= OBJECT_COLUMN1 &&
+		 type <= OBJECT_COLUMN4 )
+	{
+		for ( i=0 ; i<3 ; i++ )
+		{
+			pos.y -= 200.0f;
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(1+i, rank);
+			SetObjectParent(1+i, 0);
+			sprintf(name, "objects\\column%db.mod", type-OBJECT_COLUMN1+1);
+			pModFile->ReadModel(name);
+			pModFile->CreateEngineObject(rank);
+			SetPosition(1+i, pos);
+		}
+		NoDetect();
+		delete pModFile;
+		return TRUE;
+	}
 
 	if ( type == OBJECT_SHOW )  // reste en l'air ?
 	{
@@ -3960,223 +2412,66 @@ BOOL CObject::CreateResource(D3DVECTOR pos, float angle, float zoom,
 	radius  = 1.5f;
 	density = 1.0f;
 	height  = 0.0f;
-
-	if ( type == OBJECT_BOMB )
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\bomb2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 4.2f, 0.0f));
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(2, rank);
-		SetObjectParent(2, 1);
-		pModFile->ReadModel("objects\\bomb2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, 2.0f, 0.0f));
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(3, rank);
-		SetObjectParent(3, 2);
-		pModFile->ReadModel("objects\\bomb2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(0.0f, 2.0f, 0.0f));
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(4, rank);
-		SetObjectParent(4, 3);
-		pModFile->ReadModel("objects\\bomb2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(4, D3DVECTOR(0.0f, 2.0f, 0.0f));
-	}
+	sType   = D3DSHADOWNORM;
 
 	if ( type == OBJECT_WAYPOINT    )
 	{
 	}
-	else if ( type == OBJECT_TARGET )
-	{
-		radius = 0.0f;
-	}
-	else if ( type == OBJECT_BOMB )
-	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 2.0f);
-		radius = 3.0f;
-	}
 	else if ( type == OBJECT_MINE )
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, -1.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 3.0f);
+		CreateLockZone(0, 0, LZ_MINE);
 		radius = 3.0f;
-	}
-	else if ( type == OBJECT_POLE )
-	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 3.5f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 3.5f);
-		radius = 3.0f;
-	}
-	else if ( type == OBJECT_BAG )
-	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f);
-		SetZoom(0, 1.5f);
-		radius =  5.0f;
-		height = -1.4f;
 	}
 	else if ( type == OBJECT_MARK )
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f, 4.0f), 6.0f, SOUND_BOUMm, 0.45f);
 		radius =  10.0f;
 		density = 0.6f;
-	}
-	else if ( type == OBJECT_CROWN )
-	{
-		D3DVECTOR	z;
-		z = RetZoom(0);
-		z.y *= 0.8f;
-		SetZoom(0, z);
-		radius =  12.0f;
-		density = 0.8f;
 	}
 	else if ( type == OBJECT_BARREL  ||
 			  type == OBJECT_BARRELa )
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 2.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 		radius  = 3.0f;
 		density = 0.6f;
 		m_character.mass = 1500.0f;
 	}
-	else if ( type == OBJECT_CONE )
+	else if ( type == OBJECT_FIOLE ||
+			  type == OBJECT_GLU   )
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMv, 0.45f);
-		radius  = 1.2f;
+		CreateLockZone(0, 0, LZ_FIOLE);
+	}
+	else if ( type == OBJECT_GLASS1 ||
+			  type == OBJECT_GLASS2 )
+	{
+		CreateLockZone(0, 0, LZ_GLASS);
+		radius  = 4.0f;
 		density = 1.0f;
-		m_character.mass = 700.0f;
+		sType   = D3DSHADOWGLASS;
 	}
-	else if ( type == OBJECT_PIPES )
+	else if ( type == OBJECT_LIFT  ||
+			  type == OBJECT_GOAL  )
 	{
-		CreateCrashLine(FPOINT(-20.0f, -6.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f, -6.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  6.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  6.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -6.0f), SOUND_CHOCm, 0.45f);
 		radius  = 0.0f;
-		CreateShadowCircle(20.0f, 1.0f, D3DSHADOWWORM);
+		density = 0.0f;
 	}
-	else if ( type >= OBJECT_ROADSIGN1 &&
-			  type <= OBJECT_ROADSIGN5 )
+	else if ( type >= OBJECT_SCRAP0 &&
+			  type <= OBJECT_SCRAP9 )
 	{
-		CreateCrashSphere(D3DVECTOR( 4.0f, 3.0f, 0.0f), 2.0f, SOUND_CHOCo, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 3.0f, 0.0f), 2.0f, SOUND_CHOCo, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-3.0f, 3.0f, 0.0f), 2.0f, SOUND_CHOCo, 0.45f);
-		radius  = 5.0f;
-		density = 0.3f;
-	}
-	else if ( type >= OBJECT_ROADSIGN6  &&
-			  type <= OBJECT_ROADSIGN21 )
-	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 2.5f, SOUND_CHOCo, 0.45f);
-		radius  = 2.0f;
-		density = 0.3f;
-		bPlumb  = TRUE;  // toujours droit
-	}
-	else if ( type >= OBJECT_ROADSIGN22 &&
-			  type <= OBJECT_ROADSIGN25 )
-	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f,  32.5f), 3.0f, SOUND_CHOCm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f, -32.5f), 3.0f, SOUND_CHOCm, 0.45f);
 		radius  = 0.0f;
-		bPlumb  = TRUE;  // toujours droit
-	}
-	else if ( type >= OBJECT_PUB11 &&
-			  type <= OBJECT_PUB94 )
-	{
-		SetZoom(0, 0.5f*zoom);  // pour éclaircir l'image !!!
-		CreateCrashLine(FPOINT(-15.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT( 15.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT( 15.0f,  1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT(-15.0f,  1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT(-15.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		radius  = 0.0f;
-		bPlumb  = TRUE;  // toujours droit
-	}
-	else if ( type == OBJECT_TRAXf )
-	{
-		// Crée la chenille droite.
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\trax2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(-1.0f, 3.0f, -4.0f));
-
-		// Crée la chenille gauche.
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(2, rank);
-		SetObjectParent(2, 0);
-		pModFile->ReadModel("objects\\trax3.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(-1.0f, 3.0f, 4.0f));
-
-		// Crée la pelle.
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(3, rank);
-		SetObjectParent(3, 0);
-		pModFile->ReadModel("objects\\trax4.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(-1.0f, 4.0f, 0.0f));
-
-		// Crée le levier droite.
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(4, rank);
-		SetObjectParent(4, 0);
-		pModFile->ReadModel("objects\\trax5.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(4, D3DVECTOR(-3.5f, 8.0f, -3.0f));
-
-		// Crée le levier gauche.
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(5, rank);
-		SetObjectParent(5, 0);
-		pModFile->ReadModel("objects\\trax5.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(5, D3DVECTOR(-3.5f, 8.0f, 3.0f));
-
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 11.0f, SOUND_CHOCo, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 14.0f);
-		radius = 10.0f;
-	}
-	else if ( type == OBJECT_TRAJECT )
-	{
-		radius = 0.0f;
+		density = 0.0f;
 	}
 	else
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 1.5f);
+		CreateLockZone(0, 0, LZ_FIX);
 	}
 
 	if ( radius != 0.0f )
 	{
-		CreateShadowCircle(radius, density);
+		CreateShadow(radius, density, sType, TRUE, 1.0f);
 	}
 
 	SetFloorHeight(0.0f);
-	CreateOtherObject(type);
-	m_engine->LoadAllTexture();
-	if ( !bPlumb )  FloorAdjust();
+	CreateAuto(type);
 
 	pos = RetPosition(0);
 	pos.y += height;
@@ -4186,52 +2481,80 @@ BOOL CObject::CreateResource(D3DVECTOR pos, float angle, float zoom,
 	return TRUE;
 }
 
+// Crée un blupi posé sur le sol.
+
+BOOL CObject::CreateBlupi(D3DVECTOR pos, float angle, float zoom,
+						  ObjectType type)
+{
+	CAuto*		pAuto;
+
+	m_type = type;
+
+	SetZoom(0, zoom);
+
+	m_motion = new CMotionBlupi(m_iMan, this);
+	if ( m_motion == 0 )  return FALSE;
+
+	m_taskList = new CTaskList(m_iMan, this);
+	if ( m_taskList == 0 )  return FALSE;
+
+	if ( !m_motion->Create(pos, angle, type) )
+	{
+		if ( m_motion != 0 )
+		{
+			m_motion->DeleteObject();
+			delete m_motion;
+			m_motion = 0;
+		}
+		return FALSE;
+	}
+
+	if ( m_option == 1 )
+	{
+		CObject*	lift;
+
+		lift = new CObject(m_iMan);
+		lift->CreateResource(pos, 0.0f, 1.0f, OBJECT_LIFT);
+
+		if ( m_main->RetEdit() )
+		{
+			pAuto = lift->RetAuto();
+			if ( pAuto != 0 )
+			{
+				pAuto->Start(1);
+			}
+		}
+	}
+
+	return TRUE;
+}
+
 // Crée un robot posé sur le sol.
 
 BOOL CObject::CreateBot(D3DVECTOR pos, float angle, float zoom,
-						ObjectType type, BOOL bPlumb)
+						ObjectType type)
 {
 	m_type = type;
 
 	SetZoom(0, zoom);
 
-	if ( type == OBJECT_CARROT  ||
-		 type == OBJECT_STARTER ||
+	if ( type == OBJECT_BOT1    ||
+		 type == OBJECT_BOT2    ||
+		 type == OBJECT_BOT3    ||
+		 type == OBJECT_BOT4    ||
+		 type == OBJECT_BOT5    ||
+		 type == OBJECT_CARROT  ||
 		 type == OBJECT_WALKER  ||
-		 type == OBJECT_CRAZY   ||
-		 type == OBJECT_GUIDE   ||
-		 type == OBJECT_EVIL1   ||
-		 type == OBJECT_EVIL3   ||
-		 type == OBJECT_EVIL4   ||
-		 type == OBJECT_EVIL5   )
+		 type == OBJECT_CRAZY   )
 	{
-		m_physics = new CPhysics(m_iMan, this);
-		m_brain   = new CBrain(m_iMan, this);
-
-		m_physics->SetBrain(m_brain);
-		m_brain->SetPhysics(m_physics);
-
 		m_motion = new CMotionBot(m_iMan, this);
 		if ( m_motion == 0 )  return FALSE;
 
-		m_physics->SetMotion(m_motion);
-		m_brain->SetMotion(m_motion);
-		m_motion->SetPhysics(m_physics);
-		m_motion->SetBrain(m_brain);
-		if ( !m_motion->Create(pos, angle, type, TRUE) )
+		m_taskList = new CTaskList(m_iMan, this);
+		if ( m_taskList == 0 )  return FALSE;
+
+		if ( !m_motion->Create(pos, angle, type) )
 		{
-			if ( m_physics != 0 )
-			{
-				m_physics->DeleteObject();
-				delete m_physics;
-				m_physics = 0;
-			}
-			if ( m_brain != 0 )
-			{
-				m_brain->DeleteObject();
-				delete m_brain;
-				m_brain = 0;
-			}
 			if ( m_motion != 0 )
 			{
 				m_motion->DeleteObject();
@@ -4245,161 +2568,169 @@ BOOL CObject::CreateBot(D3DVECTOR pos, float angle, float zoom,
 	{
 		m_motion = new CMotionBot(m_iMan, this);
 		if ( m_motion == 0 )  return FALSE;
-		if ( !m_motion->Create(pos, angle, type, bPlumb) )  return FALSE;
+		if ( !m_motion->Create(pos, angle, type) )  return FALSE;
 	}
 
 	return TRUE;
 }
 
-// Crée une object additionnel pour un véhicule.
+// Crée un animal.
 
-BOOL CObject::CreateAdditionnal(D3DVECTOR pos, float angle, float zoom,
-								ObjectType type, BOOL bPlumb)
+BOOL CObject::CreateAnimal(D3DVECTOR pos, float angle, float zoom,
+						   ObjectType type)
+{
+	m_type = type;
+
+	SetZoom(0, zoom);
+
+	if ( m_type == OBJECT_BIRD )
+	{
+		m_motion = new CMotionBird(m_iMan, this);
+		if ( m_motion == 0 )  return FALSE;
+		if ( !m_motion->Create(pos, angle, type) )  return FALSE;
+	}
+	if ( m_type == OBJECT_PTERO )
+	{
+		m_motion = new CMotionPtero(m_iMan, this);
+		if ( m_motion == 0 )  return FALSE;
+		if ( !m_motion->Create(pos, angle, type) )  return FALSE;
+	}
+	if ( m_type == OBJECT_FISH )
+	{
+		m_motion = new CMotionFish(m_iMan, this);
+		if ( m_motion == 0 )  return FALSE;
+		if ( !m_motion->Create(pos, angle, type) )  return FALSE;
+	}
+	if ( m_type == OBJECT_SNAKE )
+	{
+		m_motion = new CMotionSnake(m_iMan, this);
+		if ( m_motion == 0 )  return FALSE;
+		if ( !m_motion->Create(pos, angle, type) )  return FALSE;
+	}
+	if ( m_type == OBJECT_SUBM )
+	{
+		m_motion = new CMotionSubm(m_iMan, this);
+		if ( m_motion == 0 )  return FALSE;
+		if ( !m_motion->Create(pos, angle, type) )  return FALSE;
+	}
+	if ( m_type == OBJECT_JET )
+	{
+		m_motion = new CMotionJet(m_iMan, this);
+		if ( m_motion == 0 )  return FALSE;
+		if ( !m_motion->Create(pos, angle, type) )  return FALSE;
+	}
+
+	NoDetect();
+	return TRUE;
+}
+
+// Crée un bidule spécial.
+
+BOOL CObject::CreateSpecial(D3DVECTOR pos, float angle, float zoom,
+							ObjectType type)
 {
 	CModFile*	pModFile;
+	FPOINT		p;
 	int			rank;
 
-	if ( type != OBJECT_SHOW )
-	{
-		if ( m_engine->RetRestCreate() < 1 )  return FALSE;
-	}
+	if ( m_engine->RetRestCreate() < 10 )  return FALSE;
 
 	pModFile = new CModFile(m_iMan);
 
 	SetType(type);
 
 	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEFIX);  // c'est un objet fixe
+	m_engine->SetObjectType(rank, TYPEOBJECT);  // c'est un objet fixe
 	SetObjectRank(0, rank);
-	m_character.mass = 1000.0f;
 
-	if ( type == OBJECT_FIRE )
+	if ( m_type == OBJECT_MAX1X )
 	{
-		pModFile->ReadModel("objects\\fire1.mod");
+		pModFile->ReadModel("objects\\max1x0.mod");  // 2 portes fermées
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
-		SetZoom(0, zoom);
+		SetFloorHeight(0.0f);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(1, rank);
 		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\fire2.mod");
+		pModFile->ReadModel("objects\\max1x1.mod");  // porte gauche
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 4.5f, 0.0f));
+		SetPosition(1, D3DVECTOR(-4.0f, 0.0f, 0.0f));
+		SetHide(1, TRUE);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(2, rank);
-		SetObjectParent(2, 1);
-		pModFile->ReadModel("objects\\fire3.mod");
+		SetObjectParent(2, 0);
+		pModFile->ReadModel("objects\\max1x2.mod");  // porte droite
 		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, 2.0f, 0.0f));
-		SetAngleZ(2, 20.0f*PI/180.0f);
-	}
-
-	if ( type == OBJECT_HELICO )
-	{
-		pModFile->ReadModel("objects\\helico1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetZoom(0, zoom);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\helico2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 5.0f, 0.0f));
-	}
-
-	if ( type == OBJECT_COMPASS )
-	{
-		pModFile->ReadModel("objects\\compass1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetZoom(0, zoom);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\compass2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 5.0f, 0.0f));
-	}
-
-	if ( type == OBJECT_BLITZER )
-	{
-		pModFile->ReadModel("objects\\blitzer.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetZoom(0, zoom);
-	}
-
-	if ( type == OBJECT_HOOK )
-	{
-		pModFile->ReadModel("objects\\hook1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetZoom(0, zoom);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\hook2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 4.6f, 0.0f));
-		SetAngleY(1, PI);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(2, rank);
-		SetObjectParent(2, 1);
-		pModFile->ReadModel("objects\\hook3.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(-8.0f, 0.9f, 0.0f));
+		SetPosition(2, D3DVECTOR(4.0f, 0.0f, 0.0f));
+		SetHide(2, TRUE);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(3, rank);
-		SetObjectParent(3, 2);
-		pModFile->ReadModel("objects\\hook4.mod");
+		SetObjectParent(3, 0);
+		pModFile->ReadModel("objects\\max1x3.mod");  // support 1
 		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(0.0f, -2.1f, 0.0f));
-	}
-
-	if ( type == OBJECT_AQUA )
-	{
-		pModFile->ReadModel("objects\\aqua1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		SetZoom(0, zoom);
+		SetPosition(3, D3DVECTOR(0.0f, -12.5f, 0.0f));
+		SetHide(3, TRUE);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\aqua2.mod");
+		SetObjectRank(4, rank);
+		SetObjectParent(4, 3);
+		pModFile->ReadModel("objects\\max1x3.mod");  // support 2
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 0.0f, 0.0f));
+		SetPosition(4, D3DVECTOR(0.0f, 1.7f, 0.0f));
+		SetHide(4, TRUE);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f);
-		CreateShadowCircle(2.0f, 0.8f);
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(5, rank);
+		SetObjectParent(5, 4);
+		pModFile->ReadModel("objects\\max1x3.mod");  // support 3
+		pModFile->CreateEngineObject(rank);
+		SetPosition(5, D3DVECTOR(0.0f, 1.7f, 0.0f));
+		SetHide(5, TRUE);
+
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(6, rank);
+		SetObjectParent(6, 5);
+		pModFile->ReadModel("objects\\max1x4.mod");  // clown
+		pModFile->CreateEngineObject(rank);
+		SetPosition(6, D3DVECTOR(0.0f, 1.7f, 0.0f));
+		SetHide(6, TRUE);
+
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(7, rank);
+		SetObjectParent(7, 0);
+		pModFile->ReadModel("objects\\max1x5.mod");  // fond
+		pModFile->CreateEngineObject(rank);
+		SetPosition(7, D3DVECTOR(0.0f, 0.0f, 0.0f));
+		SetHide(7, TRUE);
+
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(8, rank);
+		SetObjectParent(8, 0);
+		pModFile->ReadModel("objects\\max1x6.mod");  // parois
+		pModFile->CreateEngineObject(rank);
+		SetPosition(8, D3DVECTOR(0.0f, 0.0f, 0.0f));
+		m_engine->SetObjectDetect(rank, FALSE);
+
+		CreateLockZone(0, 0, LZ_MAX1X);
 	}
 
-	SetFloorHeight(0.0f);
-	CreateOtherObject(type);
-	m_engine->LoadAllTexture();
-	if ( !bPlumb )  FloorAdjust();
+	pos = RetPosition(0);
+	pos.y = 0.0f;
+	SetPosition(0, pos);  // pour afficher les ombres tout de suite
+
+	CreateAuto(type);
 
 	delete pModFile;
 	return TRUE;
@@ -4408,10 +2739,14 @@ BOOL CObject::CreateAdditionnal(D3DVECTOR pos, float angle, float zoom,
 // Crée une barrière posée sur le sol.
 
 BOOL CObject::CreateBarrier(D3DVECTOR pos, float angle, float zoom,
-							float height, ObjectType type, BOOL bPlumb)
+							float height, ObjectType type)
 {
-	CModFile*	pModFile;
-	int			rank;
+	CModFile*		pModFile;
+	float			radius, intensity, sunFactor;
+	D3DShadowType	sType;
+	LockZone		lz;
+	int				rank;
+	char			text[100];
 
 	if ( m_engine->RetRestCreate() < 1 )  return FALSE;
 
@@ -4419,394 +2754,330 @@ BOOL CObject::CreateBarrier(D3DVECTOR pos, float angle, float zoom,
 
 	SetType(type);
 
-	if ( type == OBJECT_BARRIER0 )  // barrière //// jaune-noire 2.5m
+	radius = 5.0f;
+	intensity = 1.0f;
+	sunFactor = 1.0f;
+	sType = D3DSHADOWSQUARE;
+
+	if ( type >= OBJECT_BARRIER0  &&
+		 type <= OBJECT_BARRIER99 )
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier0.mod");
+		sprintf(text, "objects\\barrier%d.mod", type-OBJECT_BARRIER0);
+		pModFile->ReadModel(text);
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_CHOCo, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_CHOCo, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_CHOCo, 0.45f);
-		SetCrashLineHeight(2.0f);
-		CreateShadowCircle(8.0f, 0.2f);
+		if ( type == OBJECT_BARRIER40 )  // gros engrenage ?
+		{
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(1, rank);
+			SetObjectParent(1, 0);
+			pModFile->ReadModel("objects\\barrier401.mod");
+			pModFile->CreateEngineObject(rank);
+			SetPosition(1, D3DVECTOR(0.0f, 6.0f, 0.0f));
+		}
+
+		if ( type == OBJECT_BARRIER41 )  // gros engrenage ?
+		{
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(1, rank);
+			SetObjectParent(1, 0);
+			pModFile->ReadModel("objects\\barrier411.mod");
+			pModFile->CreateEngineObject(rank);
+			SetPosition(1, D3DVECTOR(0.0f, 6.0f, 0.0f));
+
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(2, rank);
+			SetObjectParent(2, 0);
+			pModFile->ReadModel("objects\\barrier412.mod");
+			pModFile->CreateEngineObject(rank);
+			SetPosition(2, D3DVECTOR(0.0f, 11.0f, 0.0f));
+		}
+
+		if ( type == OBJECT_BARRIER42 )  // gros axe ?
+		{
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(1, rank);
+			SetObjectParent(1, 0);
+			pModFile->ReadModel("objects\\barrier421.mod");
+			pModFile->CreateEngineObject(rank);
+			SetPosition(1, D3DVECTOR(0.0f, 6.0f, 0.0f));
+		}
+
+		if ( type == OBJECT_BARRIER46 )  // chateau avec drapeau ?
+		{
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(1, rank);
+			SetObjectParent(1, 0);
+			pModFile->ReadModel("objects\\barrier461.mod");
+			pModFile->CreateEngineObject(rank);
+			SetPosition(1, D3DVECTOR(0.0f, 19.0f, 0.0f));
+
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(2, rank);
+			SetObjectParent(2, 1);
+			pModFile->ReadModel("objects\\barrier462.mod");
+			pModFile->CreateEngineObject(rank);
+			SetPosition(2, D3DVECTOR(2.0f, 0.0f, 0.0f));
+
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(3, rank);
+			SetObjectParent(3, 2);
+			pModFile->ReadModel("objects\\barrier463.mod");
+			pModFile->CreateEngineObject(rank);
+			SetPosition(3, D3DVECTOR(2.0f, 0.0f, 0.0f));
+
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(4, rank);
+			SetObjectParent(4, 3);
+			pModFile->ReadModel("objects\\barrier464.mod");
+			pModFile->CreateEngineObject(rank);
+			SetPosition(4, D3DVECTOR(2.0f, 0.0f, 0.0f));
+		}
+
+		if ( type == OBJECT_BARRIER58 )  // futura étuve ?
+		{
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(1, rank);
+			SetObjectParent(1, 0);
+			pModFile->ReadModel("objects\\barrier581.mod");
+			pModFile->CreateEngineObject(rank);
+			SetPosition(1, D3DVECTOR(0.0f, 6.0f, 0.0f));
+		}
+
+		if ( type == OBJECT_BARRIER62 )  // futura canon ?
+		{
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(1, rank);
+			SetObjectParent(1, 0);
+			pModFile->ReadModel("objects\\barrier621.mod");
+			pModFile->CreateEngineObject(rank);
+			SetPosition(1, D3DVECTOR(0.0f, 3.0f, 0.0f));
+
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(2, rank);
+			SetObjectParent(2, 1);
+			pModFile->ReadModel("objects\\barrier622.mod");
+			pModFile->CreateEngineObject(rank);
+			SetPosition(2, D3DVECTOR(0.0f, 5.0f, 0.0f));
+		}
+
+		if ( type == OBJECT_BARRIER77 )  // labo parabole ?
+		{
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(1, rank);
+			SetObjectParent(1, 0);
+			pModFile->ReadModel("objects\\barrier771.mod");
+			pModFile->CreateEngineObject(rank);
+			SetPosition(1, D3DVECTOR(0.0f, 7.0f, 0.0f));
+
+			rank = m_engine->CreateObject();
+			m_engine->SetObjectType(rank, TYPEDESCENDANT);
+			SetObjectRank(2, rank);
+			SetObjectParent(2, 1);
+			pModFile->ReadModel("objects\\barrier772.mod");
+			pModFile->CreateEngineObject(rank);
+			SetPosition(2, D3DVECTOR(0.0f, 4.0f, -0.7f));
+		}
+
+		if ( type == OBJECT_BARRIER1 )  // barrière unreal ?
+		{
+			radius = 2.0f;
+			intensity = 0.4f;
+		}
+		if ( type == OBJECT_BARRIER2 )
+		{
+			radius = 4.0f;
+		}
+		if ( type >= OBJECT_BARRIER18 &&
+			 type <= OBJECT_BARRIER22 )  // cinéma ?
+		{
+			intensity = 0.2f;
+		}
+		if ( type >= OBJECT_BARRIER50 &&
+			 type <= OBJECT_BARRIER57 )  // rochers ?
+		{
+			intensity = 0.3f;
+		}
+		if ( type == OBJECT_BARRIER65 )  // futura barrière ?
+		{
+			radius = 4.0f;
+			intensity = 0.1f;
+		}
+		if ( type == OBJECT_BARRIER66 )  // trésor ?
+		{
+			radius = 4.0f;
+			intensity = 0.5f;
+		}
+		if ( type >= OBJECT_BARRIER92 &&
+			 type <= OBJECT_BARRIER99 )  // palissade ?
+		{
+			radius  = 4.0f;
+			intensity = 1.0f;
+			sType = D3DSHADOWPALISSADE;
+		}
+
+		if ( type == OBJECT_BARRIER0  )  sunFactor = 1.5f;
+		if ( type == OBJECT_BARRIER1  )  sunFactor = 0.5f;
+		if ( type == OBJECT_BARRIER2  )  sunFactor = 0.5f;
+		if ( type == OBJECT_BARRIER3  )  sunFactor = 0.5f;
+		if ( type == OBJECT_BARRIER4  )  sunFactor = 1.5f;
+		if ( type == OBJECT_BARRIER5  )  sunFactor = 1.5f;
+		if ( type == OBJECT_BARRIER6  )  sunFactor = 2.0f;
+		if ( type == OBJECT_BARRIER7  )  sunFactor = 0.3f;
+		if ( type == OBJECT_BARRIER8  )  sunFactor = 0.6f;
+		if ( type == OBJECT_BARRIER9  )  sunFactor = 0.6f;
+		if ( type == OBJECT_BARRIER10 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER11 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER12 )  sunFactor = 2.0f;
+		if ( type == OBJECT_BARRIER13 )  sunFactor = 0.6f;
+		if ( type == OBJECT_BARRIER14 )  sunFactor = 0.9f;
+		if ( type == OBJECT_BARRIER15 )  sunFactor = 0.6f;
+		if ( type == OBJECT_BARRIER16 )  sunFactor = 0.7f;
+		if ( type == OBJECT_BARRIER17 )  sunFactor = 0.3f;
+		if ( type == OBJECT_BARRIER18 )  sunFactor = 1.5f;
+		if ( type == OBJECT_BARRIER19 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER20 )  sunFactor = 1.1f;
+		if ( type == OBJECT_BARRIER21 )  sunFactor = 2.0f;
+		if ( type == OBJECT_BARRIER22 )  sunFactor = 1.7f;
+		if ( type == OBJECT_BARRIER23 )  sunFactor = 1.3f;
+		if ( type == OBJECT_BARRIER24 )  sunFactor = 1.3f;
+		if ( type == OBJECT_BARRIER25 )  sunFactor = 1.3f;
+		if ( type == OBJECT_BARRIER26 )  sunFactor = 1.6f;
+		if ( type == OBJECT_BARRIER27 )  sunFactor = 0.3f;
+		if ( type == OBJECT_BARRIER28 )  sunFactor = 1.3f;
+		if ( type == OBJECT_BARRIER29 )  sunFactor = 0.0f;
+		if ( type == OBJECT_BARRIER30 )  sunFactor = 1.2f;
+		if ( type == OBJECT_BARRIER31 )  sunFactor = 0.8f;
+		if ( type == OBJECT_BARRIER32 )  sunFactor = 0.6f;
+		if ( type == OBJECT_BARRIER33 )  sunFactor = 0.8f;
+		if ( type == OBJECT_BARRIER34 )  sunFactor = 1.4f;
+		if ( type == OBJECT_BARRIER35 )  sunFactor = 0.7f;
+		if ( type == OBJECT_BARRIER36 )  sunFactor = 0.8f;
+		if ( type == OBJECT_BARRIER37 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER38 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER39 )  sunFactor = 0.0f;
+		if ( type == OBJECT_BARRIER40 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER41 )  sunFactor = 1.3f;
+		if ( type == OBJECT_BARRIER42 )  sunFactor = 0.7f;
+		if ( type == OBJECT_BARRIER43 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER44 )  sunFactor = 2.0f;
+		if ( type == OBJECT_BARRIER45 )  sunFactor = 2.1f;
+		if ( type == OBJECT_BARRIER46 )  sunFactor = 2.0f;
+		if ( type == OBJECT_BARRIER47 )  sunFactor = 2.3f;
+		if ( type == OBJECT_BARRIER48 )  sunFactor = 0.0f;
+		if ( type == OBJECT_BARRIER49 )  sunFactor = 0.0f;
+		if ( type == OBJECT_BARRIER50 )  sunFactor = 0.8f;
+		if ( type == OBJECT_BARRIER51 )  sunFactor = 1.3f;
+		if ( type == OBJECT_BARRIER52 )  sunFactor = 0.4f;
+		if ( type == OBJECT_BARRIER53 )  sunFactor = 0.6f;
+		if ( type == OBJECT_BARRIER54 )  sunFactor = 0.5f;
+		if ( type == OBJECT_BARRIER55 )  sunFactor = 0.5f;
+		if ( type == OBJECT_BARRIER56 )  sunFactor = 0.5f;
+		if ( type == OBJECT_BARRIER57 )  sunFactor = 1.3f;
+		if ( type == OBJECT_BARRIER58 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER59 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER60 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER61 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER62 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER63 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER64 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER65 )  sunFactor = 0.3f;
+		if ( type == OBJECT_BARRIER66 )  sunFactor = 0.5f;
+		if ( type == OBJECT_BARRIER67 )  sunFactor = 0.0f;
+		if ( type == OBJECT_BARRIER68 )  sunFactor = 1.3f;
+		if ( type == OBJECT_BARRIER69 )  sunFactor = 0.7f;
+		if ( type == OBJECT_BARRIER70 )  sunFactor = 0.3f;
+		if ( type == OBJECT_BARRIER71 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER72 )  sunFactor = 0.5f;
+		if ( type == OBJECT_BARRIER73 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER74 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER75 )  sunFactor = 1.2f;
+		if ( type == OBJECT_BARRIER76 )  sunFactor = 1.1f;
+		if ( type == OBJECT_BARRIER77 )  sunFactor = 0.9f;
+		if ( type == OBJECT_BARRIER78 )  sunFactor = 0.4f;
+		if ( type == OBJECT_BARRIER79 )  sunFactor = 0.5f;
+		if ( type == OBJECT_BARRIER80 )  sunFactor = 1.1f;
+		if ( type == OBJECT_BARRIER81 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER82 )  sunFactor = 0.4f;
+		if ( type == OBJECT_BARRIER83 )  sunFactor = 0.5f;
+		if ( type == OBJECT_BARRIER84 )  sunFactor = 1.1f;
+		if ( type == OBJECT_BARRIER85 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER86 )  sunFactor = 0.4f;
+		if ( type == OBJECT_BARRIER87 )  sunFactor = 0.8f;
+		if ( type == OBJECT_BARRIER88 )  sunFactor = 0.6f;
+		if ( type == OBJECT_BARRIER89 )  sunFactor = 1.0f;
+		if ( type == OBJECT_BARRIER90 )  sunFactor = 0.6f;
+		if ( type == OBJECT_BARRIER91 )  sunFactor = 0.6f;
+		if ( type == OBJECT_BARRIER92 )  sunFactor = 0.01f;
+		if ( type == OBJECT_BARRIER93 )  sunFactor = 0.01f;
+		if ( type == OBJECT_BARRIER94 )  sunFactor = 0.01f;
+		if ( type == OBJECT_BARRIER95 )  sunFactor = 0.01f;
+		if ( type == OBJECT_BARRIER96 )  sunFactor = 0.01f;
+		if ( type == OBJECT_BARRIER97 )  sunFactor = 0.01f;
+		if ( type == OBJECT_BARRIER98 )  sunFactor = 0.01f;
+		if ( type == OBJECT_BARRIER99 )  sunFactor = 0.01f;
+
+		radius *= 0.8f+((sunFactor-0.5f)/1.5f)*0.4f;
 	}
 
-	if ( type == OBJECT_BARRIER1 )  // barrière //// jaune-noire 5m
+	lz = LZ_FIX;
+	if ( type == OBJECT_BARRIER24 ||  // tunnel ?
+		 type == OBJECT_BARRIER57 ||  // tunnel ?
+		 type == OBJECT_BARRIER65 )   // barrière ?
 	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-10.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f,  1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f,  1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		SetCrashLineHeight(2.0f);
-		CreateShadowCircle(8.0f, 1.0f, D3DSHADOWBARRIER1);
+		angle = Mod(angle, PI);
+		if ( angle < PI*0.25f || angle > PI*0.75f )
+		{
+			lz = LZ_TUNNELh;
+		}
+		else
+		{
+			lz = LZ_TUNNELv;
+		}
 	}
-
-	if ( type == OBJECT_BARRIER2 )  // barrière >>>> rouge-grise 10m
+#if 1
+	if ( type == OBJECT_BARRIER29 ||  // tuyaux ?
+		 type == OBJECT_BARRIER39 ||  // tuyaux ?
+		 type == OBJECT_BARRIER48 ||  // tuyaux ?
+		 type == OBJECT_BARRIER49 ||  // tuyaux ?
+		 type == OBJECT_BARRIER67 )   // tuyaux ?
 	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-20.0f, -3.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f, -3.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  3.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  3.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -3.0f), SOUND_BOUMm, 0.45f);
-		SetCrashLineHeight(3.0f);
+		lz = LZ_PIPE;
 	}
+#endif
+	CreateLockZone(0, 0, lz);
 
-	if ( type == OBJECT_BARRIER3 )  // barrière carrée
+	if ( sunFactor != 0.0f )
 	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier3.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		SetCrashLineHeight(3.0f);
-		CreateShadowCircle(16.0f, 1.0f);
-	}
-
-	if ( type == OBJECT_BARRIER4 )  // barrière en bois cassée 5m
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier4.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-10.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f,  1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f,  1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		SetCrashLineHeight(2.0f);
-		CreateShadowCircle(8.0f, 1.0f, D3DSHADOWBARRIER1);
-	}
-
-	if ( type == OBJECT_BARRIER5 )  // barrière en bois droite 5m
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier5.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-10.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f,  1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f,  1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		SetCrashLineHeight(2.0f);
-		CreateShadowCircle(8.0f, 1.0f, D3DSHADOWBARRIER1);
-	}
-
-	if ( type == OBJECT_BARRIER6 )  // barrière métal 5m
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier6.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-10.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f,  1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f,  1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		SetCrashLineHeight(2.0f);
-		CreateShadowCircle(8.0f, 1.0f, D3DSHADOWBARRIER1);
-	}
-
-	if ( type == OBJECT_BARRIER7 )  // barrière métal 10m
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier7.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		SetCrashLineHeight(2.0f);
-		CreateShadowCircle(16.0f, 1.0f, D3DSHADOWBARRIER2);
-	}
-
-	if ( type == OBJECT_BARRIER8 )  // barrière métal 14m
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier8.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-28.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 28.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 28.0f,  1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-28.0f,  1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-28.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		SetCrashLineHeight(2.0f);
-		CreateShadowCircle(19.0f, 1.0f, D3DSHADOWBARRIER2);
-	}
-
-	if ( type == OBJECT_BARRIER9 )  // barrière rouge-blanche 10m
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier9.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  1.0f), SOUND_CHOCo, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_CHOCo, 0.45f);
-		SetCrashLineHeight(3.0f);
-		CreateShadowCircle(15.0f, 1.0f, D3DSHADOWBARRIER2);
-	}
-
-	if ( type == OBJECT_BARRIER10 )  // tuyau extrémité 10m
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier10.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		SetCrashLineHeight(3.0f);
-		CreateShadowCircle(15.0f, 1.0f, D3DSHADOWBARRIER2);
-	}
-
-	if ( type == OBJECT_BARRIER11 )  // tuyau milieu 10m
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier11.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashSphere(D3DVECTOR(-20.0f, 3.0f, 0.0f), 3.5f, SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		SetCrashLineHeight(3.0f);
-		CreateShadowCircle(15.0f, 1.0f, D3DSHADOWBARRIER2);
-	}
-
-	if ( type == OBJECT_BARRIER12 )  // tuyau milieu avec robinet 10m
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier12.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashSphere(D3DVECTOR(-20.0f, 3.0f, 0.0f), 3.5f, SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  1.0f), SOUND_CHOCm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_CHOCm, 0.45f);
-		SetCrashLineHeight(3.0f);
-		CreateShadowCircle(15.0f, 1.0f, D3DSHADOWBARRIER2);
-	}
-
-	if ( type == OBJECT_BARRIER13 )  // tuyau aérien 10m
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier13.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashSphere(D3DVECTOR(-20.0f, 3.0f, 0.0f), 3.5f, SOUND_CHOCm, 0.45f);
-		CreateShadowCircle(15.0f, 1.0f, D3DSHADOWBARRIER2);
-	}
-
-	if ( type == OBJECT_BARRIER14 )  // mur 10m
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier14.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f, -1.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  1.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  1.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 21.0f);
-		bPlumb = TRUE;
-	}
-
-	if ( type == OBJECT_BARRIER15 )  // mur haut 10m
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier15.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f, -1.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  1.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  1.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -1.0f), SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 21.0f);
-		bPlumb = TRUE;
-	}
-
-	if ( type == OBJECT_BARRIER16 )  // mur  14m
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier16.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-28.0f, -1.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 28.0f, -1.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 28.0f,  1.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-28.0f,  1.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-28.0f, -1.0f), SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 30.0f);
-		bPlumb = TRUE;
-	}
-
-	if ( type == OBJECT_BARRIER17 )  // barrière panneaux >
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier17.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-20.0f, -2.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f, -2.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  2.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  2.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -2.5f), SOUND_BOUMm, 0.45f);
-		SetCrashLineHeight(3.0f);
-	}
-	if ( type == OBJECT_BARRIER18 )  // barrière panneaux <
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier17.mod");
-		pModFile->Mirror();
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashLine(FPOINT(-20.0f, -2.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f, -2.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 20.0f,  2.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f,  2.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-20.0f, -2.5f), SOUND_BOUMm, 0.45f);
-		SetCrashLineHeight(3.0f);
-	}
-
-	if ( type == OBJECT_BARRIER19 )  // poteau >
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\barrier19.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 1.2f, SOUND_CHOCo, 0.45f);
-		SetCrashLineHeight(3.0f);
-		CreateShadowCircle(2.5f, 0.5f);
+		CreateShadow(radius, intensity, sType, TRUE, sunFactor);
 	}
 
 	pos = RetPosition(0);
 	SetPosition(0, pos);  // pour afficher les ombres tout de suite
 
 	SetFloorHeight(0.0f);
-	CreateOtherObject(type);
-	if ( !bPlumb )
-	{
-		FloorAdjust();
-		if ( type != OBJECT_BARRIER3  &&
-			 type != OBJECT_BARRIER14 )
-		{
-			SetAngleX(0, 0.0f);
-		}
-	}
+	CreateAuto(type);
 
 	pos = RetPosition(0);
 	pos.y += height;
 	SetPosition(0, pos);
-
-	CrashLineFusion();
 
 	delete pModFile;
 	return TRUE;
@@ -4815,270 +3086,257 @@ BOOL CObject::CreateBarrier(D3DVECTOR pos, float angle, float zoom,
 // Crée une caisse posée sur le sol.
 
 BOOL CObject::CreateBox(D3DVECTOR pos, float angle, float zoom,
-						float height, ObjectType type, BOOL bPlumb)
+						float height, ObjectType type)
 {
 	CModFile*	pModFile;
+	float		radius, sunFactor;
 	int			rank;
 	char		text[100];
+	BOOL		bSquare;
 
 	if ( m_engine->RetRestCreate() < 1 )  return FALSE;
 
 	pModFile = new CModFile(m_iMan);
 
 	SetType(type);
+	radius = 4.5f;
+	sunFactor = 1.0f;
+	bSquare = TRUE;
 
-	if ( type == OBJECT_BOX1 )
+	if ( type >= OBJECT_BOX1  &&
+		 type <= OBJECT_BOX20 )
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
-		sprintf(text, "objects\\box1%d.mod", rand()%6);
+		sprintf(text, "objects\\box%d.mod", type-OBJECT_BOX1+1);
 		pModFile->ReadModel(text);
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
-		m_character.height = 4.0f;
 
-#if 0
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 4.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-4.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-#endif
-		CreateShadowCircle(5.0f, 1.0f);
+		m_arrowPos = 8.0f;
+		if ( type == OBJECT_BOX8 )  // colonne ?
+		{
+			m_arrowPos = 5.0f;
+			sunFactor = 2.0f;
+		}
 	}
 
-	if ( type == OBJECT_BOX2 )
+	if ( type == OBJECT_BOX7 )  // sphère ?
+	{
+		m_taskList = new CTaskList(m_iMan, this);
+		if ( m_taskList == 0 )  return FALSE;
+
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(9, rank);
+		SetObjectParent(9, 0);
+		pModFile->ReadModel("objects\\box7b.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(9, D3DVECTOR(0.0f, 4.0f, 0.0f));
+
+		m_arrowPos = 6.5f;
+		bSquare = FALSE;
+		radius = 4.0f;
+	}
+
+	if ( type == OBJECT_BOX10 )  // bombe ?
+	{
+		m_taskList = new CTaskList(m_iMan, this);
+		if ( m_taskList == 0 )  return FALSE;
+
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(9, rank);
+		SetObjectParent(9, 0);
+		pModFile->ReadModel("objects\\box10b.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(9, D3DVECTOR(0.0f, 4.0f, 0.0f));
+
+		m_arrowPos = 5.8f;
+		bSquare = FALSE;
+		radius = 4.0f;
+	}
+
+	if ( type == OBJECT_BOX11 )  // caisse x-x ?
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(10, rank);
+		SetObjectParent(10, 0);
+		pModFile->ReadModel("objects\\box11w.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(10, D3DVECTOR(2.5f, 1.4f, 3.0f));
+
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(11, rank);
+		SetObjectParent(11, 0);
+		pModFile->ReadModel("objects\\box11w.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(11, D3DVECTOR(-2.5f, 1.4f, 3.0f));
+
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(12, rank);
+		SetObjectParent(12, 0);
+		pModFile->ReadModel("objects\\box11w.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(12, D3DVECTOR(2.5f, 1.4f, -3.0f));
+
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(13, rank);
+		SetObjectParent(13, 0);
+		pModFile->ReadModel("objects\\box11w.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(13, D3DVECTOR(-2.5f, 1.4f, -3.0f));
+	}
+
+	if ( type == OBJECT_BOX12 )  // caisse z-z ?
+	{
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(10, rank);
+		SetObjectParent(10, 0);
+		pModFile->ReadModel("objects\\box12w.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(10, D3DVECTOR(3.0f, 1.4f, 2.5f));
+
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(11, rank);
+		SetObjectParent(11, 0);
+		pModFile->ReadModel("objects\\box12w.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(11, D3DVECTOR(-3.0f, 1.4f, 2.5f));
+
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(12, rank);
+		SetObjectParent(12, 0);
+		pModFile->ReadModel("objects\\box12w.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(12, D3DVECTOR(3.0f, 1.4f, -2.5f));
+
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(13, rank);
+		SetObjectParent(13, 0);
+		pModFile->ReadModel("objects\\box12w.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(13, D3DVECTOR(-3.0f, 1.4f, -2.5f));
+	}
+
+	if ( type == OBJECT_BOX13 )  // cca ?
+	{
+		m_taskList = new CTaskList(m_iMan, this);
+		if ( m_taskList == 0 )  return FALSE;
+	}
+
+	if ( type >= OBJECT_KEY1 &&
+		 type <= OBJECT_KEY5 )
+	{
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
-		sprintf(text, "objects\\box1%d.mod", rand()%6);
+		sprintf(text, "objects\\key%d.mod", type-OBJECT_KEY1+1);
 		pModFile->ReadModel(text);
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
-		m_character.height = 4.0f;
 
+		m_arrowPos = 4.0f;
+		bSquare = FALSE;
+	}
+
+	if ( type != OBJECT_BOX12 )  // pas caisse z-z ?
+	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(1, rank);
 		SetObjectParent(1, 0);
-		sprintf(text, "objects\\box1%d.mod", rand()%6);
-		pModFile->ReadModel(text);
+		pModFile->ReadModel("objects\\boxa.mod");  // ouest
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR((Rand()-0.5f)*4.0f, 8.0f, (Rand()-0.5f)*4.0f));
-		SetAngleY(1, Rand()*PI);
-
-#if 0
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 4.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-4.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-#endif
-		CreateShadowCircle(5.0f, 1.0f);
-		m_character.mass = 4000.0f;
-	}
-
-	if ( type == OBJECT_BOX3 )
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		sprintf(text, "objects\\box1%d.mod", rand()%6);
-		pModFile->ReadModel(text);
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		m_character.height = 4.0f;
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		sprintf(text, "objects\\box1%d.mod", rand()%6);
-		pModFile->ReadModel(text);
+		SetObjectRank(3, rank);
+		SetObjectParent(3, 0);
+		pModFile->ReadModel("objects\\boxc.mod");  // est
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR((Rand()-0.5f)*3.0f, 8.0f, (Rand()-0.5f)*3.0f));
-		SetAngleY(1, Rand()*PI);
+	}
 
+	if ( type != OBJECT_BOX11 )  // pas caisse x-x ?
+	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(2, rank);
-		SetObjectParent(2, 1);
-		sprintf(text, "objects\\box1%d.mod", rand()%6);
-		pModFile->ReadModel(text);
+		SetObjectParent(2, 0);
+		pModFile->ReadModel("objects\\boxb.mod");  // nord
 		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR((Rand()-0.5f)*2.0f, 8.0f, (Rand()-0.5f)*2.0f));
-		SetAngleY(2, Rand()*PI);
-
-#if 0
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 4.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-4.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-#endif
-		CreateShadowCircle(5.0f, 1.0f);
-		m_character.mass = 6000.0f;
-	}
-
-	if ( type == OBJECT_BOX4 )
-	{
-		m_physics = new CPhysics(m_iMan, this);
-		m_physics->SetType(TYPE_MASS);
-
-		m_character.mass = 2000.0f;
-
-//?		m_physics->SetLinMotion(MO_STOACCEL, D3DVECTOR(20.0f, 50.0f, 20.0f));
-		m_physics->SetLinMotion(MO_STOACCEL, D3DVECTOR( 5.0f, 50.0f,  5.0f));
-//?		m_physics->SetLinMotionY(MO_MOTSPEED, -200.0f);
-		m_physics->SetLinMotion(MO_TERSLIDE, D3DVECTOR( 1.0f,  1.0f,  1.0f));
-		m_physics->SetLinMotion(MO_TERFORCE, D3DVECTOR(50.0f, 50.0f, 50.0f));
-		m_physics->SetCirMotion(MO_MOTACCEL, D3DVECTOR( 1.0f,  1.0f,  1.0f));
 
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		sprintf(text, "objects\\box1%d.mod", rand()%6);
-		pModFile->ReadModel(text);
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(4, rank);
+		SetObjectParent(4, 0);
+		pModFile->ReadModel("objects\\boxd.mod");  // sud
 		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-		m_character.height = 4.0f;
-
-#if 0
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 4.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-4.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-#endif
-		CreateShadowCircle(5.0f, 1.0f);
 	}
 
-	if ( type == OBJECT_BOX5 )
+	if ( type != OBJECT_BOX7  &&  // pas sphère ?
+		 type != OBJECT_BOX8  &&  // pas colonne ?
+		 type != OBJECT_BOX10 &&  // pas bombe ?
+		 type != OBJECT_BOX12 &&  // pas caisse z-z ?
+		 type != OBJECT_BOX13 &&  // pas cca ?
+		 m_main->RetHandleMove() > 0 )
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\box5.mod");
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(5, rank);
+		SetObjectParent(5, 0);
+		pModFile->ReadModel("objects\\boxe.mod");  // ouest
 		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
 
-		CreateCrashLine(FPOINT(-4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 4.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-4.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateShadowCircle(5.0f, 1.0f);
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(7, rank);
+		SetObjectParent(7, 0);
+		pModFile->ReadModel("objects\\boxg.mod");  // est
+		pModFile->CreateEngineObject(rank);
 	}
 
-	if ( type == OBJECT_BOX6 )
+	if ( type != OBJECT_BOX7  &&  // pas sphère ?
+		 type != OBJECT_BOX8  &&  // pas colonne ?
+		 type != OBJECT_BOX10 &&  // pas bombe ?
+		 type != OBJECT_BOX11 &&  // pas caisse x-x ?
+		 type != OBJECT_BOX13 &&  // pas cca ?
+		 m_main->RetHandleMove() > 0 )
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\box6.mod");
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(6, rank);
+		SetObjectParent(6, 0);
+		pModFile->ReadModel("objects\\boxf.mod");  // nord
 		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
 
-		CreateCrashLine(FPOINT(-4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 4.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-4.0f,  4.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-4.0f, -4.0f), SOUND_BOUMm, 0.45f);
-		CreateShadowCircle(5.0f, 1.0f);
-	}
-
-	if ( type == OBJECT_TOYS1 )
-	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\toys1.mod");
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(8, rank);
+		SetObjectParent(8, 0);
+		pModFile->ReadModel("objects\\boxh.mod");  // sud
 		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 2.2f, SOUND_CHOCo, 0.45f);
-		CreateShadowCircle(3.0f, 1.0f);
 	}
 
-	if ( type == OBJECT_TOYS2 )
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\toys2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 2.2f, SOUND_CHOCo, 0.45f);
-		CreateShadowCircle(3.0f, 1.0f);
-	}
-
-	if ( type == OBJECT_TOYS3 )
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\toys3.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 2.2f, SOUND_CHOCo, 0.45f);
-		CreateShadowCircle(3.0f, 1.0f);
-	}
-
-	if ( type == OBJECT_TOYS4 )
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\toys4.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 2.2f, SOUND_CHOCo, 0.45f);
-		CreateShadowCircle(3.0f, 1.0f);
-	}
-
-	if ( type == OBJECT_TOYS5 )
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\toys5.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 2.2f, SOUND_CHOCo, 0.45f);
-		CreateShadowCircle(3.0f, 1.0f);
-	}
+	CreateLockZone(0, 0, bSquare?LZ_BOX:LZ_BOXo);
+	CreateShadow(radius, 1.0f, bSquare?D3DSHADOWSQUARE:D3DSHADOWNORM, TRUE, sunFactor);
 
 	pos = RetPosition(0);
 	SetPosition(0, pos);  // pour afficher les ombres tout de suite
 
 	SetFloorHeight(0.0f);
-	CreateOtherObject(type);
-	if ( !bPlumb )  FloorAdjust();
+	CreateAuto(type);
 
 	pos = RetPosition(0);
 	pos.y += height;
@@ -5088,10 +3346,54 @@ BOOL CObject::CreateBox(D3DVECTOR pos, float angle, float zoom,
 	return TRUE;
 }
 
+// Crée un sol spécial à niveau.
+
+BOOL CObject::CreateGround(D3DVECTOR pos, float angle, ObjectType type)
+{
+	CModFile*	pModFile;
+	int			rank;
+	char		text[100];
+
+	if ( m_engine->RetRestCreate() < 1 )  return FALSE;
+
+	pModFile = new CModFile(m_iMan);
+	SetType(type);
+
+	if ( type >= OBJECT_GROUND0  &&
+		 type <= OBJECT_GROUND19 )
+	{
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPETERRAIN);
+		SetObjectRank(0, rank);
+		sprintf(text, "objects\\ground%d.mod", type-OBJECT_GROUND0);
+		pModFile->ReadModel(text);
+		pModFile->CreateEngineObject(rank);
+		SetPosition(0, pos);
+		SetAngleY(0, angle);
+	}
+
+	if ( type == OBJECT_GROUND2 )
+	{
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEDESCENDANT);
+		SetObjectRank(1, rank);
+		SetObjectParent(1, 0);
+		pModFile->ReadModel("objects\\ground2b.mod");
+		pModFile->CreateEngineObject(rank);
+
+		m_engine->SetObjectHide(RetObjectRank(1), m_option==0);
+	}
+
+	m_terrain->SetResource(pos, TR_BOX);
+
+	delete pModFile;
+	return TRUE;
+}
+
 // Crée une pierre posée sur le sol.
 
 BOOL CObject::CreateStone(D3DVECTOR pos, float angle, float zoom,
-						float height, ObjectType type, BOOL bPlumb)
+						float height, ObjectType type)
 {
 	CModFile*	pModFile;
 	int			rank;
@@ -5105,7 +3407,7 @@ BOOL CObject::CreateStone(D3DVECTOR pos, float angle, float zoom,
 	if ( type == OBJECT_STONE1 )  // cube 1
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\stone1.mod");
 		pModFile->CreateEngineObject(rank);
@@ -5113,22 +3415,14 @@ BOOL CObject::CreateStone(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-#if 1
-		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-6.0f, -6.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 6.0f, -6.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 6.0f,  6.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-6.0f,  6.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-6.0f, -6.0f), SOUND_BOUMm, 0.45f);
-#endif
-		CreateShadowCircle(8.0f, 1.0f);
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(8.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_STONE2 )  // cube 2
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\stone2.mod");
 		pModFile->CreateEngineObject(rank);
@@ -5136,22 +3430,14 @@ BOOL CObject::CreateStone(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-#if 1
-		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 8.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-8.0f, -8.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 8.0f, -8.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 8.0f,  8.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-8.0f,  8.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-8.0f, -8.0f), SOUND_BOUMm, 0.45f);
-#endif
-		CreateShadowCircle(10.0f, 1.0f);
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(10.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_STONE3 )  // cube 3
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\stone3.mod");
 		pModFile->CreateEngineObject(rank);
@@ -5159,22 +3445,14 @@ BOOL CObject::CreateStone(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-#if 1
-		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 10.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-9.5f, -9.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 9.5f, -9.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 9.5f,  9.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-9.5f,  9.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-9.5f, -9.5f), SOUND_BOUMm, 0.45f);
-#endif
-		CreateShadowCircle(12.0f, 1.0f);
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(12.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_STONE4 )  // cube 4
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\stone4.mod");
 		pModFile->CreateEngineObject(rank);
@@ -5182,22 +3460,14 @@ BOOL CObject::CreateStone(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-#if 1
-		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 15.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-14.0f, -14.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 14.0f, -14.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 14.0f,  14.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-14.0f,  14.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-14.0f, -14.0f), SOUND_BOUMm, 0.45f);
-#endif
-		CreateShadowCircle(18.0f, 1.0f);
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(18.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_STONE5 )  // pilier h=30
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\stone5.mod");
 		pModFile->CreateEngineObject(rank);
@@ -5205,22 +3475,14 @@ BOOL CObject::CreateStone(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-#if 1
-		CreateCrashSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 8.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-8.0f, -8.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 8.0f, -8.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 8.0f,  8.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-8.0f,  8.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-8.0f, -8.0f), SOUND_BOUMm, 0.45f);
-#endif
-		CreateShadowCircle(10.0f, 1.0f);
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(10.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_STONE6 )  // dalle haute pour piliers espacés d=60
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\stone6.mod");
 		pModFile->CreateEngineObject(rank);
@@ -5229,67 +3491,10 @@ BOOL CObject::CreateStone(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(0, angle);
 	}
 
-	if ( type == OBJECT_CROSS1 )
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\cross1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetZoom(0, zoom);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		CreateCrashSphere(D3DVECTOR( 33.5f, 3.0f,  33.5f), 3.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 33.5f, 3.0f, -33.5f), 3.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-33.5f, 3.0f,  33.5f), 3.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-33.5f, 3.0f, -33.5f), 3.5f, SOUND_BOUMm, 0.45f);
-	}
-
 	SetPosition(0, pos);  // pour afficher les ombres tout de suite
 
 	SetFloorHeight(0.0f);
-	CreateOtherObject(type);
-	if ( !bPlumb )  FloorAdjust();
-
-	pos = RetPosition(0);
-	pos.y += height;
-	SetPosition(0, pos);
-
-	delete pModFile;
-	return TRUE;
-}
-
-// Crée une pièce mécanique posée sur le sol.
-
-BOOL CObject::CreatePiece(D3DVECTOR pos, float angle, float zoom,
-						float height, ObjectType type, BOOL bPlumb)
-{
-	CModFile*	pModFile;
-	int			rank;
-	char		name[50];
-
-	if ( m_engine->RetRestCreate() < 1 )  return FALSE;
-
-	pModFile = new CModFile(m_iMan);
-
-	SetType(type);
-
-	sprintf(name, "objects\\piece%d.mod", type-OBJECT_PIECE0);
-	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEFIX);
-	SetObjectRank(0, rank);
-	pModFile->ReadModel(name);
-	pModFile->CreateEngineObject(rank);
-	SetZoom(0, zoom);
-	SetPosition(0, pos);
-	SetAngleY(0, angle);
-
-	CreateShadowCircle(1.0f, 0.5f);
-
-	SetFloorHeight(0.0f);
-	CreateOtherObject(type);
-	if ( !bPlumb )  FloorAdjust();
+	CreateAuto(type);
 
 	pos = RetPosition(0);
 	pos.y += height;
@@ -5302,7 +3507,7 @@ BOOL CObject::CreatePiece(D3DVECTOR pos, float angle, float zoom,
 // Crée une plante posée sur le sol.
 
 BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float zoom,
-						  float height, ObjectType type, BOOL bPlumb)
+						  float height, ObjectType type)
 {
 	CModFile*	pModFile;
 	int			rank;
@@ -5320,7 +3525,7 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float zoom,
 		 type == OBJECT_PLANT4 )  // standard ?
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		if ( type == OBJECT_PLANT0 )  pModFile->ReadModel("objects\\plant0.mod");
 		if ( type == OBJECT_PLANT1 )  pModFile->ReadModel("objects\\plant1.mod");
@@ -5333,49 +3538,27 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float zoom,
 
 		height -= 2.0f;
 
-//?		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 6.0f);
-		SetJotlerSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 8.0f);
-
-		CreateShadowCircle(8.0f, 0.5f);
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(8.0f*zoom, 0.5f);
 	}
 
 	if ( type == OBJECT_PLANT5 ||
 		 type == OBJECT_PLANT6 ||
-		 type == OBJECT_PLANT7 )  // trèfle ?
+		 type == OBJECT_PLANT7 ||
+		 type == OBJECT_PLANT8 ||
+		 type == OBJECT_PLANT9 )  // plante tombante ?
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		if ( type == OBJECT_PLANT5 )  pModFile->ReadModel("objects\\plant5.mod");
 		if ( type == OBJECT_PLANT6 )  pModFile->ReadModel("objects\\plant6.mod");
 		if ( type == OBJECT_PLANT7 )  pModFile->ReadModel("objects\\plant7.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-//?		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f);
-		SetJotlerSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f);
-
-		CreateShadowCircle(5.0f, 0.3f);
-	}
-
-	if ( type == OBJECT_PLANT8 ||
-		 type == OBJECT_PLANT9 )  // courgette ?
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
 		if ( type == OBJECT_PLANT8 )  pModFile->ReadModel("objects\\plant8.mod");
 		if ( type == OBJECT_PLANT9 )  pModFile->ReadModel("objects\\plant9.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
-
-		CreateCrashSphere(D3DVECTOR(0.0f,  2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
-
-		CreateShadowCircle(10.0f, 0.5f);
 	}
 
 	if ( type == OBJECT_PLANT10 ||
@@ -5385,7 +3568,7 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float zoom,
 		 type == OBJECT_PLANT14 )  // plante grasse ?
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		if ( type == OBJECT_PLANT10 )  pModFile->ReadModel("objects\\plant10.mod");
 		if ( type == OBJECT_PLANT11 )  pModFile->ReadModel("objects\\plant11.mod");
@@ -5396,11 +3579,8 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-//?		CreateCrashSphere(D3DVECTOR(0.0f, 12.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 6.0f);
-		SetJotlerSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 8.0f);
-
-		CreateShadowCircle(8.0f, 0.3f);
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(8.0f*zoom, 0.3f);
 	}
 
 	if ( type == OBJECT_PLANT15 ||
@@ -5410,7 +3590,7 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float zoom,
 		 type == OBJECT_PLANT19 )  // fougère ?
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		if ( type == OBJECT_PLANT15 )  pModFile->ReadModel("objects\\plant15.mod");
 		if ( type == OBJECT_PLANT16 )  pModFile->ReadModel("objects\\plant16.mod");
@@ -5421,105 +3601,120 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		if ( type != OBJECT_PLANT19 )
-		{
-//?			CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
-//?			SetGlobalSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 6.0f);
-		}
-		SetJotlerSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 8.0f);
-
-		CreateShadowCircle(8.0f, 0.5f);
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(8.0f*zoom, 0.5f);
 	}
 
-	if ( type == OBJECT_TREE0 )
+	if ( type == OBJECT_TREE0 )  // arbre ?
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\tree0.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR( 0.0f,  3.0f, 2.0f), 3.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-1.0f, 10.0f, 1.0f), 2.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 17.0f, 0.0f), 2.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 1.0f, 27.0f, 0.0f), 2.0f, SOUND_CHOCa, 0.45f);
-
-		CreateShadowCircle(8.0f, 0.5f);
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(8.0f*zoom, 0.5f);
 	}
 
-	if ( type == OBJECT_TREE1 )
+	if ( type == OBJECT_TREE1 )  // arbre ?
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\tree1.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR( 0.0f,  3.0f, 2.0f), 3.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-2.0f, 11.0f, 1.0f), 2.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-2.0f, 19.0f, 2.0f), 2.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 2.0f, 26.0f, 0.0f), 2.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 2.0f, 34.0f,-2.0f), 2.0f, SOUND_CHOCa, 0.45f);
-
-		CreateShadowCircle(8.0f, 0.5f);
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(8.0f*zoom, 0.5f);
 	}
 
-	if ( type == OBJECT_TREE2 )
+	if ( type == OBJECT_TREE2 )  // arbre ?
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\tree2.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR( 0.0f,  3.0f, 1.0f), 3.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-2.0f, 10.0f, 1.0f), 2.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-2.0f, 19.0f, 2.0f), 2.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 2.0f, 25.0f, 0.0f), 2.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 3.0f, 32.0f,-2.0f), 2.0f, SOUND_CHOCa, 0.45f);
-
-		CreateShadowCircle(8.0f, 0.5f);
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(8.0f*zoom, 0.5f);
 	}
 
-	if ( type == OBJECT_TREE3 )
+	if ( type == OBJECT_TREE3 )  // arbre ?
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\tree3.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(-2.0f,  3.0f, 2.0f), 3.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-3.0f,  9.0f, 1.0f), 2.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 18.0f, 0.0f), 2.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 27.0f, 7.0f), 2.0f, SOUND_CHOCa, 0.45f);
-
-		CreateShadowCircle(8.0f, 0.5f);
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(8.0f*zoom, 0.5f);
 	}
 
-	if ( type == OBJECT_TREE4 )
+	if ( type == OBJECT_TREE4 )  // palmier ?
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\tree4.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 10.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 21.0f, 0.0f),  8.0f, SOUND_CHOCa, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 32.0f, 0.0f),  7.0f, SOUND_CHOCa, 0.45f);
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(8.0f*zoom, 0.5f);
+	}
 
-		CreateShadowCircle(8.0f, 0.5f);
+	if ( type == OBJECT_TREE5 )  // palmier ?
+	{
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEOBJECT);
+		SetObjectRank(0, rank);
+		pModFile->ReadModel("objects\\tree5.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(0, pos);
+		SetAngleY(0, angle);
+
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(8.0f*zoom, 0.5f);
+	}
+
+	if ( type == OBJECT_TREE6 )  // palmier ?
+	{
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEOBJECT);
+		SetObjectRank(0, rank);
+		pModFile->ReadModel("objects\\tree6.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(0, pos);
+		SetAngleY(0, angle);
+
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(8.0f*zoom, 0.5f);
+	}
+
+	if ( type == OBJECT_TREE7 )  // palmier ?
+	{
+		rank = m_engine->CreateObject();
+		m_engine->SetObjectType(rank, TYPEOBJECT);
+		SetObjectRank(0, rank);
+		pModFile->ReadModel("objects\\tree7.mod");
+		pModFile->CreateEngineObject(rank);
+		SetPosition(0, pos);
+		SetAngleY(0, angle);
+
+		CreateLockZone(0, 0, LZ_FIX);
+		CreateShadow(8.0f*zoom, 0.5f);
 	}
 
 	SetZoom(0, zoom);
@@ -5528,7 +3723,7 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float zoom,
 	SetPosition(0, pos);  // pour afficher les ombres tout de suite
 
 	SetFloorHeight(0.0f);
-	CreateOtherObject(type);
+	CreateAuto(type);
 
 	pos = RetPosition(0);
 	pos.y += height;
@@ -5541,7 +3736,7 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float zoom,
 // Crée un champignon posé sur le sol.
 
 BOOL CObject::CreateMushroom(D3DVECTOR pos, float angle, float zoom,
-							 float height, ObjectType type, BOOL bPlumb)
+							 float height, ObjectType type)
 {
 	CModFile*	pModFile;
 	int			rank;
@@ -5555,35 +3750,31 @@ BOOL CObject::CreateMushroom(D3DVECTOR pos, float angle, float zoom,
 	if ( type == OBJECT_MUSHROOM1 )
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\mush1.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 5.5f);
-		SetJotlerSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 5.5f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(6.0f, 0.5f);
+		CreateShadow(6.0f, 0.5f);
 	}
 
 	if ( type == OBJECT_MUSHROOM2 )
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\mush2.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 5.5f);
-		SetJotlerSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 5.5f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(5.0f, 0.5f);
+		CreateShadow(5.0f, 0.5f);
 	}
 
 	SetZoom(0, zoom);
@@ -5592,7 +3783,7 @@ BOOL CObject::CreateMushroom(D3DVECTOR pos, float angle, float zoom,
 	SetPosition(0, pos);  // pour afficher les ombres tout de suite
 
 	SetFloorHeight(0.0f);
-	CreateOtherObject(type);
+	CreateAuto(type);
 
 	pos = RetPosition(0);
 	pos.y += height;
@@ -5605,7 +3796,7 @@ BOOL CObject::CreateMushroom(D3DVECTOR pos, float angle, float zoom,
 // Crée un quartz posé sur le sol.
 
 BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float zoom,
-						   float height, ObjectType type, BOOL bPlumb)
+						   float height, ObjectType type)
 {
 	CModFile*	pModFile;
 	float		radius;
@@ -5627,10 +3818,9 @@ BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 3.5f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 3.5f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(4.0f, 0.5f);
+		CreateShadow(4.0f, 0.5f);
 	}
 	if ( type == OBJECT_QUARTZ1 )
 	{
@@ -5642,10 +3832,9 @@ BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 5.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(5.0f, 0.5f);
+		CreateShadow(5.0f, 0.5f);
 	}
 	if ( type == OBJECT_QUARTZ2 )
 	{
@@ -5657,10 +3846,9 @@ BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 6.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(6.0f, 0.5f);
+		CreateShadow(6.0f, 0.5f);
 	}
 	if ( type == OBJECT_QUARTZ3 )
 	{
@@ -5672,10 +3860,9 @@ BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float zoom,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 10.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(10.0f, 0.5f);
+		CreateShadow(10.0f, 0.5f);
 	}
 
 	SetZoom(0, zoom);
@@ -5684,7 +3871,7 @@ BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float zoom,
 	SetPosition(0, pos);  // pour afficher les ombres tout de suite
 
 	SetFloorHeight(0.0f);
-	CreateOtherObject(type);
+	CreateAuto(type);
 
 	pos = RetPosition(0);
 	pos.y += height;
@@ -5720,7 +3907,7 @@ BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float zoom,
 // Crée une racine posée sur le sol.
 
 BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float zoom,
-						 float height, ObjectType type, BOOL bPlumb)
+						 float height, ObjectType type)
 {
 	CModFile*	pModFile;
 	int			rank;
@@ -5734,7 +3921,7 @@ BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float zoom,
 	if ( type == OBJECT_ROOT0 )
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\root0.mod");
 		pModFile->CreateEngineObject(rank);
@@ -5742,21 +3929,14 @@ BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(0, angle);
 		SetZoom(0, 2.0f*zoom);
 
-		CreateCrashSphere(D3DVECTOR(-5.0f,  1.0f,  0.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 4.0f,  1.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 4.0f,  1.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 2.0f,  5.0f, -1.0f), 1.5f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-4.0f,  5.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-2.0f,  8.0f, -0.5f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 10.0f, -0.5f), 1.0f, SOUND_BOUMv, 0.15f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 11.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(16.0f, 0.5f);
+		CreateShadow(16.0f, 0.5f);
 	}
 	if ( type == OBJECT_ROOT1 )
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\root1.mod");
 		pModFile->CreateEngineObject(rank);
@@ -5764,21 +3944,14 @@ BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(0, angle);
 		SetZoom(0, 2.0f*zoom);
 
-		CreateCrashSphere(D3DVECTOR(-4.0f,  1.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 0.0f,  1.0f,  2.0f), 1.5f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 3.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-2.0f,  5.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 2.0f,  5.0f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 0.0f,  8.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 12.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 12.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(16.0f, 0.5f);
+		CreateShadow(16.0f, 0.5f);
 	}
 	if ( type == OBJECT_ROOT2 )
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\root2.mod");
 		pModFile->CreateEngineObject(rank);
@@ -5786,20 +3959,14 @@ BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(0, angle);
 		SetZoom(0, 2.0f*zoom);
 
-		CreateCrashSphere(D3DVECTOR(-3.0f,  1.0f,  0.5f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 3.0f,  1.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-1.0f,  4.5f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 3.0f,  7.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 0.0f,  7.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 4.0f, 11.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 10.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(16.0f, 0.5f);
+		CreateShadow(16.0f, 0.5f);
 	}
 	if ( type == OBJECT_ROOT3 )
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\root3.mod");
 		pModFile->CreateEngineObject(rank);
@@ -5807,22 +3974,14 @@ BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(0, angle);
 		SetZoom(0, 2.0f*zoom);
 
-		CreateCrashSphere(D3DVECTOR(-4.0f,  1.0f,  1.0f), 3.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 4.0f,  1.0f, -3.0f), 3.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 6.0f,  1.0f,  4.0f), 3.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-2.5f,  7.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 4.0f,  7.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 3.0f,  6.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 12.0f,  0.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 1.0f, 16.0f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 14.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(22.0f, 0.5f);
+		CreateShadow(22.0f, 0.5f);
 	}
 	if ( type == OBJECT_ROOT4 )
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\root4.mod");
 		pModFile->CreateEngineObject(rank);
@@ -5830,24 +3989,14 @@ BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(0, angle);
 		SetZoom(0, 2.0f*zoom);
 
-		CreateCrashSphere(D3DVECTOR( -7.0f,  2.0f,  3.0f), 4.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  5.0f,  2.0f, -6.0f), 4.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  6.0f,  2.0f,  6.0f), 3.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-11.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  1.0f,  1.0f, -7.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( -4.0f, 10.0f,  3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  1.0f, 11.0f,  7.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  3.0f, 11.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( -3.0f, 17.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( -3.0f, 23.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 12.0f, 0.0f), 20.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(30.0f, 0.5f);
+		CreateShadow(30.0f, 0.5f);
 	}
 	if ( type == OBJECT_ROOT5 )  // gravity root ?
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
+		m_engine->SetObjectType(rank, TYPEOBJECT);
 		SetObjectRank(0, rank);
 		pModFile->ReadModel("objects\\root4.mod");
 		pModFile->CreateEngineObject(rank);
@@ -5865,183 +4014,16 @@ BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float zoom,
 		SetAngleX(1, -30.0f*PI/180.0f);
 		SetAngleZ(1,  20.0f*PI/180.0f);
 
-		CreateCrashSphere(D3DVECTOR( -7.0f,  2.0f,  3.0f), 4.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  5.0f,  2.0f, -6.0f), 4.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  6.0f,  2.0f,  6.0f), 3.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-11.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  1.0f,  1.0f, -7.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( -4.0f, 10.0f,  3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  1.0f, 11.0f,  7.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  3.0f, 11.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( -3.0f, 17.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( -3.0f, 23.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 12.0f, 0.0f), 20.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(30.0f, 0.5f);
+		CreateShadow(30.0f, 0.5f);
 	}
 
 	pos = RetPosition(0);
 	SetPosition(0, pos);  // pour afficher les ombres tout de suite
 
 	SetFloorHeight(0.0f);
-	CreateOtherObject(type);
-
-	pos = RetPosition(0);
-	pos.y += height;
-	SetPosition(0, pos);
-
-	delete pModFile;
-	return TRUE;
-}
-
-// Crée une petite maison.
-
-BOOL CObject::CreateHome(D3DVECTOR pos, float angle, float zoom,
-						 float height, ObjectType type, BOOL bPlumb)
-{
-	CModFile*	pModFile;
-	int			rank;
-
-	if ( m_engine->RetRestCreate() < 1 )  return FALSE;
-
-	pModFile = new CModFile(m_iMan);
-
-	SetType(type);
-
-	if ( type == OBJECT_HOME1 )
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\home1.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(1, rank);
-		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\home102.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(8.5f, 14.0f, 8.5f));
-		SetAngleY(1, PI*1.75f);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(2, rank);
-		SetObjectParent(2, 0);
-		pModFile->ReadModel("objects\\home102.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(-8.5f, 14.0f, 8.5f));
-		SetAngleY(2, PI*1.25f);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(3, rank);
-		SetObjectParent(3, 0);
-		pModFile->ReadModel("objects\\home102.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(8.5f, 14.0f, -8.5f));
-		SetAngleY(3, PI*0.25f);
-
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEDESCENDANT);
-		SetObjectRank(4, rank);
-		SetObjectParent(4, 0);
-		pModFile->ReadModel("objects\\home102.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(4, D3DVECTOR(-8.5f, 14.0f, -8.5f));
-		SetAngleY(4, PI*0.75f);
-
-#if 0
-		CreateCrashSphere(D3DVECTOR( 0.0f, 2.0f,  0.0f), 10.0f, SOUND_BOUMm, 0.25f);
-		CreateCrashSphere(D3DVECTOR(-6.0f, 2.0f,  6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-6.0f, 2.0f,  0.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-6.0f, 2.0f, -6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 2.0f,  6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 2.0f,  0.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 2.0f, -6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 6.0f, 2.0f,  6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 6.0f, 2.0f,  0.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 6.0f, 2.0f, -6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-#endif
-		CreateShadowCircle(16.0f, 0.5f);
-	}
-
-	if ( type == OBJECT_HOME2 )
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\home2.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-#if 0
-		CreateCrashSphere(D3DVECTOR( 0.0f, 2.0f,  0.0f), 10.0f, SOUND_BOUMm, 0.25f);
-		CreateCrashSphere(D3DVECTOR(-6.0f, 2.0f,  6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-6.0f, 2.0f,  0.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-6.0f, 2.0f, -6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 2.0f,  6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 2.0f,  0.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 2.0f, -6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 6.0f, 2.0f,  6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 6.0f, 2.0f,  0.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 6.0f, 2.0f, -6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-#endif
-		CreateShadowCircle(16.0f, 0.5f);
-	}
-
-	if ( type == OBJECT_HOME3 )
-	{
-		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEFIX);
-		SetObjectRank(0, rank);
-		pModFile->ReadModel("objects\\home3.mod");
-		pModFile->CreateEngineObject(rank);
-		SetPosition(0, pos);
-		SetAngleY(0, angle);
-
-#if 0
-		CreateCrashSphere(D3DVECTOR( 0.0f, 2.0f,  0.0f), 10.0f, SOUND_BOUMm, 0.25f);
-		CreateCrashSphere(D3DVECTOR(-6.0f, 2.0f,  6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-6.0f, 2.0f,  0.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-6.0f, 2.0f, -6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 2.0f,  6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 2.0f,  0.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 2.0f, -6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 6.0f, 2.0f,  6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 6.0f, 2.0f,  0.0f),  4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 6.0f, 2.0f, -6.0f),  4.0f, SOUND_BOUMm, 0.45f);
-#else
-		CreateCrashLine(FPOINT(-9.5f, -9.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 9.5f, -9.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT( 9.5f,  9.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-9.5f,  9.5f), SOUND_BOUMm, 0.45f);
-		CreateCrashLine(FPOINT(-9.5f, -9.5f), SOUND_BOUMm, 0.45f);
-#endif
-		CreateShadowCircle(16.0f, 0.5f);
-	}
-
-	pos = RetPosition(0);
-	SetPosition(0, pos);  // pour afficher les ombres tout de suite
-
-	SetFloorHeight(0.0f);
-	CreateOtherObject(type);
+	CreateAuto(type);
 
 	pos = RetPosition(0);
 	pos.y += height;
@@ -6054,7 +4036,7 @@ BOOL CObject::CreateHome(D3DVECTOR pos, float angle, float zoom,
 // Crée une ruine posée sur le sol.
 
 BOOL CObject::CreateRuin(D3DVECTOR pos, float angle, float zoom,
-						 float height, ObjectType type, BOOL bPlumb)
+						 float height, ObjectType type)
 {
 	CModFile*	pModFile;
 	char		name[50];
@@ -6067,7 +4049,7 @@ BOOL CObject::CreateRuin(D3DVECTOR pos, float angle, float zoom,
 	SetType(type);
 
 	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEFIX);  // c'est un objet fixe
+	m_engine->SetObjectType(rank, TYPEOBJECT);  // c'est un objet fixe
 	SetObjectRank(0, rank);
 
 	name[0] = 0;
@@ -6143,10 +4125,9 @@ BOOL CObject::CreateRuin(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(9, PI-0.2f);
 		SetAngleX(9, 0.2f);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 10.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(4.0f, 1.0f);
+		CreateShadow(4.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINmobilew2 )  // véhicule à roues ?
@@ -6177,10 +4158,9 @@ BOOL CObject::CreateRuin(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(9, PI+0.3f);
 		SetAngleX(9, -0.3f);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 10.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(4.0f, 1.0f);
+		CreateShadow(4.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINmobilet1 )  // véhicule à chenilles ?
@@ -6199,138 +4179,84 @@ BOOL CObject::CreateRuin(D3DVECTOR pos, float angle, float zoom,
 		SetAngleY(1, -0.4f);
 		SetAngleZ(1, -0.1f);
 
-		CreateCrashSphere(D3DVECTOR(1.0f, 2.8f, -1.0f), 5.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(1.0f, 5.0f, -1.0f), 10.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(5.0f, 1.0f);
+		CreateShadow(5.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINmobilet2 )  // véhicule à chenilles ?
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.8f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 10.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(5.0f, 1.0f);
+		CreateShadow(5.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINmobiler1 )  // véhicule roller ?
 	{
-		CreateCrashSphere(D3DVECTOR(1.0f, 2.8f, -1.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(1.0f, 5.0f, -1.0f), 10.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(5.0f, 1.0f);
+		CreateShadow(5.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINmobiler2 )  // véhicule roller ?
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 10.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(6.0f, 1.0f);
+		CreateShadow(6.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINfactory )  // factory ?
 	{
-		CreateCrashSphere(D3DVECTOR(  9.0f,  1.0f, -11.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f,  2.0f, -11.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f,  4.0f, -10.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-12.0f, 11.0f,  -4.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f,  4.0f,  -2.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-11.0f,  8.0f,   3.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-11.0f,  2.0f,   4.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-11.0f,  2.0f,  10.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -4.0f,  0.0f,  10.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 18.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(20.0f, 0.7f);
+		CreateShadow(20.0f, 0.7f);
 	}
 
 	if ( type == OBJECT_RUINdoor )  // porte convert ?
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 6.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(6.0f, 1.0f);
+		CreateShadow(6.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINsupport )  // porte radar ?
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(3.0f, 1.0f);
+		CreateShadow(3.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINradar )  // base radar ?
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 6.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(6.0f, 1.0f);
+		CreateShadow(6.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINconvert )  // convert ?
 	{
-		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
-
-		CreateCrashSphere(D3DVECTOR(-10.0f,  0.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f,  0.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(-3.0f, 0.0f, 0.0f), 14.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 	}
 
 	if ( type == OBJECT_RUINbase )  // base ?
 	{
-		CreateCrashSphere(D3DVECTOR(  0.0f, 15.0f,   0.0f),28.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 17.0f,  6.0f,  42.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 17.0f, 17.0f,  42.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-17.0f,  6.0f,  42.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-17.0f, 17.0f,  42.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-42.0f,  6.0f,  17.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-42.0f, 17.0f,  17.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-42.0f,  6.0f, -17.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-42.0f, 17.0f, -17.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-17.0f,  6.0f, -42.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-17.0f, 10.0f, -42.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f, 13.0f, -34.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 31.0f, 15.0f, -13.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 21.0f,  8.0f, -39.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 26.0f,  8.0f, -33.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 48.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(40.0f, 1.0f);
+		CreateShadow(40.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINhead )  // coiffe base ?
 	{
-		CreateCrashSphere(D3DVECTOR(  0.0f, 13.0f,   0.0f),20.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, -8.0f,   0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f,-16.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f,-22.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-21.0f,  7.0f,   9.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -9.0f,  7.0f,  21.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 21.0f,  7.0f,   9.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  9.0f,  7.0f,  21.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-21.0f,  7.0f,  -9.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -9.0f,  7.0f, -21.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 21.0f,  7.0f,  -9.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  9.0f,  7.0f, -21.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 35.0f);
+		CreateLockZone(0, 0, LZ_FIX);
 
-		CreateShadowCircle(30.0f, 1.0f);
+		CreateShadow(30.0f, 1.0f);
 	}
 
 	pos = RetPosition(0);
 	SetPosition(0, pos);  // pour afficher les ombres tout de suite
 
 	SetFloorHeight(0.0f);
-	CreateOtherObject(type);
-
-	if ( type != OBJECT_RUINfactory &&
-		 type != OBJECT_RUINconvert &&
-		 type != OBJECT_RUINbase    )
-	{
-		if ( !bPlumb )  FloorAdjust();
-	}
+	CreateAuto(type);
 
 	pos = RetPosition(0);
 	pos.y += height;
@@ -6480,12 +4406,8 @@ BOOL CObject::CreateRuin(D3DVECTOR pos, float angle, float zoom,
 
 // Crée tous les sous-objets permettant de gérer cet objet.
 
-void CObject::CreateOtherObject(ObjectType type)
+void CObject::CreateAuto(ObjectType type)
 {
-	if ( type == OBJECT_TOWER )
-	{
-		m_auto = new CAutoTower(m_iMan, this);
-	}
 	if ( type == OBJECT_DOOR1 ||
 		 type == OBJECT_DOOR2 ||
 		 type == OBJECT_DOOR3 ||
@@ -6493,137 +4415,60 @@ void CObject::CreateOtherObject(ObjectType type)
 	{
 		m_auto = new CAutoDoor(m_iMan, this);
 	}
-	if ( type == OBJECT_ALIEN2 ||
-		 type == OBJECT_ALIEN3 ||
-		 type == OBJECT_ALIEN5 ||
-		 type == OBJECT_ALIEN6 ||
-		 type == OBJECT_ALIEN7 ||
-		 type == OBJECT_ALIEN8 ||
-		 type == OBJECT_ALIEN9 )
-	{
-		m_auto = new CAutoAlien(m_iMan, this);
-	}
 	if ( type == OBJECT_DOCK )
 	{
 		m_auto = new CAutoDock(m_iMan, this);
 	}
-	if ( type == OBJECT_REMOTE )
+	if ( type == OBJECT_CATAPULT )
 	{
-		m_auto = new CAutoRemote(m_iMan, this);
+		m_auto = new CAutoCatapult(m_iMan, this);
 	}
-	if ( type == OBJECT_STAND )
+	if ( type == OBJECT_FIOLE ||
+		 type == OBJECT_GLU   )
 	{
-		m_auto = new CAutoStand(m_iMan, this);
+		m_auto = new CAutoFiole(m_iMan, this);
 	}
-	if ( type == OBJECT_GENERATOR )
+	if ( type == OBJECT_LIFT )
 	{
-		m_auto = new CAutoGenerator(m_iMan, this);
+		m_auto = new CAutoLift(m_iMan, this);
 	}
-	if ( type == OBJECT_COMPUTER )
+	if ( type == OBJECT_GOAL )
 	{
-		m_auto = new CAutoComputer(m_iMan, this);
+		m_auto = new CAutoGoal(m_iMan, this);
 	}
-	if ( type == OBJECT_REPAIR )
+	if ( type == OBJECT_MAX1X )
 	{
-		m_auto = new CAutoRepair(m_iMan, this);
+		m_auto = new CAutoMax1x(m_iMan, this);
 	}
-	if ( type == OBJECT_FIRE )
+	if ( type == OBJECT_BARRIER27 ||  // antenne ?
+		 type == OBJECT_BARRIER28 ||  // antenne ?
+		 type == OBJECT_BARRIER43 )   // pupitre ?
 	{
-		m_auto = new CAutoFire(m_iMan, this);
+		m_auto = new CAutoFlash(m_iMan, this);
 	}
-	if ( type == OBJECT_HELICO )
+	if ( type >= OBJECT_SCRAP0 &&
+		 type <= OBJECT_SCRAP9 )
 	{
-		m_auto = new CAutoHelico(m_iMan, this);
+		m_auto = new CAutoScrap(m_iMan, this);
 	}
-	if ( type == OBJECT_COMPASS )
+	if ( type == OBJECT_BARRIER40 ||
+		 type == OBJECT_BARRIER41 ||
+		 type == OBJECT_BARRIER42 ||
+		 type == OBJECT_BARRIER46 ||  // chateau avec drapeau ?
+		 type == OBJECT_BARRIER58 ||  // futura étuve ?
+		 type == OBJECT_BARRIER59 ||  // futura coupleur ?
+		 type == OBJECT_BARRIER62 ||  // futura canon ?
+		 type == OBJECT_BARRIER63 ||  // futura antenne ?
+		 type == OBJECT_BARRIER64 ||  // futura creuset ?
+		 type == OBJECT_BARRIER66 ||  // trésor ?
+		 type == OBJECT_BARRIER74 ||  // labo étuve ?
+		 type == OBJECT_BARRIER75 ||  // labo étuve ?
+		 type == OBJECT_BARRIER76 ||  // labo coupleur ?
+		 type == OBJECT_BARRIER77 )   // labo parabole ?
 	{
-		m_auto = new CAutoCompass(m_iMan, this);
-	}
-	if ( type == OBJECT_BLITZER )
-	{
-		m_auto = new CAutoBlitzer(m_iMan, this);
-	}
-	if ( type == OBJECT_INCA7 )
-	{
-		m_auto = new CAutoInca(m_iMan, this);
-	}
-	if ( type == OBJECT_HOOK )
-	{
-		m_auto = new CAutoHook(m_iMan, this);
-	}
-	if ( type == OBJECT_BARREL    ||
-		 type == OBJECT_BARRELa   ||
-		 type == OBJECT_CARCASS1  ||
-		 type == OBJECT_CARCASS2  ||
-		 type == OBJECT_CARCASS3  ||
-		 type == OBJECT_CARCASS4  ||
-		 type == OBJECT_CARCASS5  ||
-		 type == OBJECT_CARCASS6  ||
-		 type == OBJECT_CARCASS7  ||
-		 type == OBJECT_CARCASS8  ||
-		 type == OBJECT_CARCASS9  ||
-		 type == OBJECT_CARCASS10 )
-	{
-		m_auto = new CAutoBarrel(m_iMan, this);
-	}
-	if ( type == OBJECT_BOMB )
-	{
-		m_auto = new CAutoBomb(m_iMan, this);
-	}
-	if ( type == OBJECT_HOME1 ||
-		 type == OBJECT_HOME2 ||
-		 type == OBJECT_HOME3 ||
-		 type == OBJECT_HOME4 ||
-		 type == OBJECT_HOME5 )
-	{
-		m_auto = new CAutoHome(m_iMan, this);
-	}
-	if ( type == OBJECT_ROOT5 )
-	{
-		m_auto = new CAutoRoot(m_iMan, this);
+		m_auto = new CAutoMeca(m_iMan, this);
 	}
 }
-
-
-// Lit un programme.
-
-BOOL CObject::ReadProgram(int rank, char* filename)
-{
-	if ( m_brain != 0 )
-	{
-		return m_brain->ReadProgram(rank, filename);
-	}
-	return FALSE;
-}
-
-// Ecrit un programme.
-
-BOOL CObject::WriteProgram(int rank, char* filename)
-{
-	if ( m_brain != 0 )
-	{
-		return m_brain->WriteProgram(rank, filename);
-	}
-	return FALSE;
-}
-
-// Démarre un programme.
-
-BOOL CObject::RunProgram(int rank)
-{
-	if ( m_brain != 0 )
-	{
-		m_brain->RunProgram(rank);
-		return TRUE;
-	}
-	if ( m_auto != 0 )
-	{
-		m_auto->Start(rank);
-		return TRUE;
-	}
-	return FALSE;
-}
-
 
 
 
@@ -6721,7 +4566,7 @@ BOOL CObject::UpdateTransformObject(int part, BOOL bForceUpdate)
 
 	if ( bModif )
 	{
-		m_engine->SetObjectTransform(m_objectPart[part].object,
+		m_engine->SetObjectTransform(m_objectPart[part].objRank,
 									 m_objectPart[part].matWorld);
 	}
 
@@ -6847,6 +4692,41 @@ BOOL CObject::FlatParent(int part)
 	return TRUE;
 }
 
+// Incruste un objet dans le terrain, lorsqu'une caisse tombe
+// dans un trou.
+
+BOOL CObject::TerrainEmbedded()
+{
+	int		i;
+
+	m_terrain->SetLockZone(RetPosition(0), LZ_FREE);
+	m_engine->SetObjectType(m_objectPart[0].objRank, TYPETERRAIN);  // c'est un terrain
+	m_engine->ShadowDelete(m_objectPart[0].objRank);
+
+	for ( i=1 ; i<OBJECTMAXPART ; i++ )
+	{
+		if ( m_objectPart[i].bUsed )
+		{
+			if ( m_type == OBJECT_BOX11 ||
+				 m_type == OBJECT_BOX12 )
+			{
+				if ( i >= 10 && i <= 13 )  continue;  // roue ?
+			}
+
+			m_objectPart[i].bUsed = FALSE;
+			m_engine->DeleteObject(m_objectPart[i].objRank);
+
+			if ( m_objectPart[i].masterParti != -1 )
+			{
+				m_particule->DeleteParticule(m_objectPart[i].masterParti);
+				m_objectPart[i].masterParti = -1;
+			}
+		}
+	}
+
+	return TRUE;
+}
+
 
 
 // Action manuelle.
@@ -6893,55 +4773,6 @@ BOOL CObject::EventProcess(const Event &event)
 #endif
 	}
 
-	if ( m_physics != 0 )
-	{
-		if ( m_bRecorderPlay && m_recorder != 0 )  // joue l'objet ?
-		{
-			RecorderEvent	re;
-			D3DVECTOR		pos;
-			float			time;
-
-			time = m_main->RetRecordTime();
-			m_recorder->Get(time, re);
-			pos = re.position;
-
-			if ( !m_main->IsRecordTime() && !m_engine->RetPause() )
-			{
-				pos.y -= 100.0f;  // voiture cachée
-			}
-
-			SetPosition(0, pos);
-			SetAngle(0, re.angle);
-		}
-		else
-		{
-			if ( !m_physics->EventProcess(event) )  // objet détruit ?
-			{
-				if ( RetSelect() )
-				{
-					if ( !m_bDead )  m_camera->SetType(CAMERA_EXPLO);
-					m_main->DeselectAll();
-				}
-				m_main->StopStartCounter();  // moteur explosé
-				return FALSE;
-			}
-
-			if ( m_bRecorderRecord && m_recorder != 0 )  // enregistre l'objet ?
-			{
-				RecorderEvent	re;
-				float			time;
-
-				time = m_main->RetRecordTime();
-				re.position  = RetPosition(0);
-				re.position += RetLinVibration();
-				re.angle     = RetAngle(0);
-				re.angle    += RetInclinaison();
-				re.angle    += RetCirVibration();
-				m_recorder->Put(time, re);
-			}
-		}
-	}
-
 	if ( m_auto != 0 )
 	{
 		if ( !m_auto->EventProcess(event) )
@@ -6976,11 +4807,7 @@ BOOL CObject::EventProcess(const Event &event)
 
 BOOL CObject::EventFrame(const Event &event)
 {
-	if ( m_type == OBJECT_HUMAN && m_main->RetMainMovie() == MM_SATCOMopen )
-	{
-		UpdateTransformObject();
-		return TRUE;
-	}
+	int		generation;
 
 	if ( m_type != OBJECT_SHOW && m_engine->RetPause() )  return TRUE;
 
@@ -6991,7 +4818,65 @@ BOOL CObject::EventFrame(const Event &event)
 
 	UpdateMapping();
 	UpdateTransformObject();
-	UpdateSelectParticule();
+
+	if ( m_bTerrainHole && m_bAdjustShadow )
+	{
+		generation = m_terrain->RetGeneration();
+		if ( generation != m_generation )  // modification du relief ?
+		{
+			AdjustShadow(m_lastPosTerrain);  // refait les ombres
+			m_generation = generation;
+		}
+	}
+
+	if ( m_taskList != 0 )
+	{
+		m_taskList->EventFrame(event);
+	}
+
+	if ( m_flashTime == 0.0f )
+	{
+		if ( m_bHilite )  // caisse survolée par la souris ?
+		{
+			if ( m_arrowMode != 1 )  // flèche pas visibles ?
+			{
+				m_arrowMode = 1;  // flèches visibles
+				ShowActions(TRUE, -1, 0.0f);
+//?				m_flashDelay = 0.2f;
+				m_flashDelay = 0.0f;
+			}
+		}
+		else	// caisse non survolée ?
+		{
+			if ( m_arrowMode != -1 )  // flèche pas cachées ?
+			{
+				if ( m_flashDelay > 0.0f )
+				{
+					m_flashDelay -= event.rTime;
+					if ( m_flashDelay < 0.0f )  m_flashDelay = 0.0f;
+				}
+
+				if ( m_flashDelay == 0.0f )
+				{
+					m_arrowMode = -1;  // flèches cachées
+					ShowActions(FALSE, -1, 0.0f);
+				}
+			}
+		}
+	}
+	else
+	{
+		m_flashTime -= event.rTime*2.0f;
+		if ( m_flashTime > 0.0f )
+		{
+			m_arrowMode = 0;  // flèches n'importe comment
+			ShowActions(TRUE, m_flashPart, m_flashTime);
+		}
+		else
+		{
+			m_flashTime = 0.0f;
+		}
+	}
 
 	return TRUE;
 }
@@ -7000,6 +4885,339 @@ BOOL CObject::EventFrame(const Event &event)
 
 void CObject::UpdateMapping()
 {
+}
+
+
+// Indique si une partie est un bouton-action.
+
+BOOL CObject::IsAction(int part)
+{
+	if ( (m_type >= OBJECT_BOX1 && m_type <= OBJECT_BOX20) ||
+		 (m_type >= OBJECT_KEY1 && m_type <= OBJECT_KEY5 ) )
+	{
+		return ( part >= 1 && part <= 8 );
+	}
+
+	if ( m_type == OBJECT_DOCK )
+	{
+		return ( part >= 4 && part <= 8 );
+	}
+
+	if ( m_type == OBJECT_CATAPULT )
+	{
+		return ( part == 1 );
+	}
+
+	if ( m_type == OBJECT_FIOLE ||
+		 m_type == OBJECT_GLU   )
+	{
+		return ( part == 1 );
+	}
+
+	if ( m_type == OBJECT_GOAL )
+	{
+		return ( part == 1 );
+	}
+
+	if ( m_type == OBJECT_TRAX  ||
+		 m_type == OBJECT_PERFO ||
+		 m_type == OBJECT_GUN   )
+	{
+		return ( part >= 3 && part <= 5 );
+	}
+
+	return FALSE;
+}
+
+// Montre ou cache les boutons-actions de l'objet.
+//	bShow=TRUE,  part=-1, time=0 -> montre tous les boutons
+//	bShow=FALSE, part=-1, time=0 -> cache tous les boutons
+//	bShow=TRUE,  part= n, time=n -> montre un seul bouton mobile
+
+void CObject::ShowActions(BOOL bShow, int part, float time)
+{
+	CObject*	pSel;
+	D3DVECTOR	pos;
+
+	pSel = m_main->RetSelect();
+
+	if ( (m_type >= OBJECT_BOX1 && m_type <= OBJECT_BOX20) ||
+		 (m_type >= OBJECT_KEY1 && m_type <= OBJECT_KEY5 ) )
+	{
+		if ( bShow && (part == -1 || part == 1) )  // ouest ?
+		{
+			pos.x = -sinf(time*PI*8.0f)*0.5f;
+			pos.y = m_arrowPos;
+			pos.z = 0.0f;
+			SetPosition(1, pos);
+			SetHide(1, FALSE);
+		}
+		else
+		{
+			SetHide(1, TRUE);
+		}
+
+		if ( bShow && (part == -1 || part == 2) )  // nord ?
+		{
+			pos.x = 0.0f;
+			pos.y = m_arrowPos;
+			pos.z = sinf(time*PI*8.0f)*0.5f;
+			SetPosition(2, pos);
+			SetHide(2, FALSE);
+		}
+		else
+		{
+			SetHide(2, TRUE);
+		}
+
+		if ( bShow && (part == -1 || part == 3) )  // est ?
+		{
+			pos.x = sinf(time*PI*8.0f)*0.5f;
+			pos.y = m_arrowPos;
+			pos.z = 0.0f;
+			SetPosition(3, pos);
+			SetHide(3, FALSE);
+		}
+		else
+		{
+			SetHide(3, TRUE);
+		}
+
+		if ( bShow && (part == -1 || part == 4) )  // sud ?
+		{
+			pos.x = 0.0f;
+			pos.y = m_arrowPos;
+			pos.z = -sinf(time*PI*8.0f)*0.5f;
+			SetPosition(4, pos);
+			SetHide(4, FALSE);
+		}
+		else
+		{
+			SetHide(4, TRUE);
+		}
+
+		if ( pSel != 0 && pSel->RetFuturStrong() != 0.0f )  // glu/potion ?
+		{
+			bShow = FALSE;  // pas de poignées "rep"
+		}
+		if ( m_main->RetSuperShift19() != 0 )
+		{
+			bShow = FALSE;  // pas de poignées "rep"
+		}
+
+		if ( bShow && (part == -1 || part == 5) )  // ouest-rep ?
+		{
+			pos.x = -sinf(time*PI*8.0f)*0.5f;
+			pos.y = m_arrowPos;
+			pos.z = 0.0f;
+			SetPosition(5, pos);
+			SetHide(5, FALSE);
+		}
+		else
+		{
+			SetHide(5, TRUE);
+		}
+
+		if ( bShow && (part == -1 || part == 6) )  // nord-rep ?
+		{
+			pos.x = 0.0f;
+			pos.y = m_arrowPos;
+			pos.z = sinf(time*PI*8.0f)*0.5f;
+			SetPosition(6, pos);
+			SetHide(6, FALSE);
+		}
+		else
+		{
+			SetHide(6, TRUE);
+		}
+
+		if ( bShow && (part == -1 || part == 7) )  // est-rep ?
+		{
+			pos.x = sinf(time*PI*8.0f)*0.5f;
+			pos.y = m_arrowPos;
+			pos.z = 0.0f;
+			SetPosition(7, pos);
+			SetHide(7, FALSE);
+		}
+		else
+		{
+			SetHide(7, TRUE);
+		}
+
+		if ( bShow && (part == -1 || part == 8) )  // sud-rep ?
+		{
+			pos.x = 0.0f;
+			pos.y = m_arrowPos;
+			pos.z = -sinf(time*PI*8.0f)*0.5f;
+			SetPosition(8, pos);
+			SetHide(8, FALSE);
+		}
+		else
+		{
+			SetHide(8, TRUE);
+		}
+	}
+
+	if ( m_type == OBJECT_DOCK )
+	{
+		if ( bShow && (part == -1 || part == 4) )  // ^
+		{
+			pos.x =  sinf(time*PI*8.0f)*0.5f;
+			pos.y = -sinf(time*PI*8.0f)*0.5f+m_arrowPos;
+			pos.z = 0.0f;
+			SetPosition(4, pos);
+			SetHide(4, FALSE);
+		}
+		else
+		{
+			SetHide(4, TRUE);
+		}
+
+		if ( bShow && (part == -1 || part == 5) )  // v
+		{
+			pos.x = -sinf(time*PI*8.0f)*0.5f;
+			pos.y =  sinf(time*PI*8.0f)*0.5f+m_arrowPos;
+			pos.z = 0.0f;
+			SetPosition(5, pos);
+			SetHide(5, FALSE);
+		}
+		else
+		{
+			SetHide(5, TRUE);
+		}
+
+		if ( bShow && (part == -1 || part == 6) )  // piston
+		{
+			pos.x = -sinf(time*PI*8.0f)*0.5f;
+			pos.y =  sinf(time*PI*8.0f)*0.5f+m_arrowPos;
+			pos.z = 0.0f;
+			SetPosition(6, pos);
+			SetHide(6, FALSE);
+		}
+		else
+		{
+			SetHide(6, TRUE);
+		}
+
+		if ( bShow && (part == -1 || part == 7) )  // <
+		{
+			pos.x = 0.0f;
+			pos.y = m_arrowPos;
+			pos.z = sinf(time*PI*8.0f);
+			SetPosition(7, pos);
+			SetHide(7, FALSE);
+		}
+		else
+		{
+			SetHide(7, TRUE);
+		}
+
+		if ( bShow && (part == -1 || part == 8) )  // >
+		{
+			pos.x = 0.0f;
+			pos.y = m_arrowPos;
+			pos.z = -sinf(time*PI*8.0f);
+			SetPosition(8, pos);
+			SetHide(8, FALSE);
+		}
+		else
+		{
+			SetHide(8, TRUE);
+		}
+	}
+
+	if ( m_type == OBJECT_CATAPULT )
+	{
+		if ( bShow && (part == -1 || part == 1) )  // go
+		{
+			pos.x = 0.0f;
+			pos.y = -sinf(time*PI*8.0f)*0.3f;
+			pos.z =  sinf(time*PI*8.0f)*0.3f;
+			SetPosition(1, pos);
+			SetHide(1, FALSE);
+		}
+		else
+		{
+			SetHide(1, TRUE);
+		}
+	}
+
+	if ( m_type == OBJECT_FIOLE ||
+		 m_type == OBJECT_GLU   )
+	{
+		if ( bShow && (part == -1 || part == 1) )
+		{
+			pos.x = 0.0f;
+			pos.y = m_arrowPos+sinf(time*PI*8.0f)*0.2f;
+			pos.z = 0.0f;
+			SetPosition(1, pos);
+			SetHide(1, FALSE);
+		}
+		else
+		{
+			SetHide(1, TRUE);
+		}
+	}
+
+	if ( m_type == OBJECT_GOAL )
+	{
+		if ( bShow && (part == -1 || part == 1) )
+		{
+			pos.x = 0.0f;
+			pos.y = m_arrowPos+sinf(time*PI*8.0f)*0.2f;
+			pos.z = 0.0f;
+			SetPosition(1, pos);
+			SetHide(1, FALSE);
+		}
+		else
+		{
+			SetHide(1, TRUE);
+		}
+	}
+
+	if ( m_type == OBJECT_TRAX  ||
+		 m_type == OBJECT_PERFO ||
+		 m_type == OBJECT_GUN )
+	{
+		if ( bShow && (part == -1 || part == 3) )  // avance ?
+		{
+			pos.x = -sinf(time*PI*8.0f)*0.2f;
+			pos.y =  sinf(time*PI*8.0f)*0.2f;
+			pos.z = 0.0f;
+			SetPosition(3, pos);
+			SetHide(3, FALSE);
+		}
+		else
+		{
+			SetHide(3, TRUE);
+		}
+
+		if ( bShow && (part == -1 || part == 4) )  // gauche (tourne droite) ?
+		{
+			pos.x = 0.0f;
+			pos.y = sinf(time*PI*8.0f)*0.2f;
+			pos.z = sinf(time*PI*8.0f)*0.2f;
+			SetPosition(4, pos);
+			SetHide(4, FALSE);
+		}
+		else
+		{
+			SetHide(4, TRUE);
+		}
+
+		if ( bShow && (part == -1 || part == 5) )  // droite (tourne gauche) ?
+		{
+			pos.x = 0.0f;
+			pos.y = sinf(time*PI*8.0f)*0.2f;
+			pos.z = -sinf(time*PI*8.0f)*0.2f;
+			SetPosition(5, pos);
+			SetHide(5, FALSE);
+		}
+		else
+		{
+			SetHide(5, TRUE);
+		}
+	}
 }
 
 
@@ -7026,7 +5244,7 @@ void CObject::PartiFrame(float rTime)
 		SetPosition(i, pos);
 
 		// Chaque morceau tournoie différemment.
-		switch( i%5 )
+		switch( (i+m_id)%5 )
 		{
 			case 0:  factor = D3DVECTOR( 0.5f, 0.3f, 0.6f); break;
 			case 1:  factor = D3DVECTOR(-0.3f, 0.4f,-0.2f); break;
@@ -7049,32 +5267,15 @@ void CObject::SetViewFromHere(D3DVECTOR &eye, float &dirH, float &dirV,
 							  D3DVECTOR	&lookat, D3DVECTOR &upVec,
 							  CameraType type)
 {
-	float	speed;
 	int		part;
 
 	UpdateTransformObject();
 
 	part = 0;
-	if ( m_type == OBJECT_HUMAN ||
-		 m_type == OBJECT_TECH  )
-	{
-		eye.x = -0.2f;
-		eye.y =  3.3f;
-		eye.z =  0.0f;
-//?		eye.x =  1.0f;
-//?		eye.y =  3.3f;
-//?		eye.z =  0.0f;
-	}
-	else if ( m_type == OBJECT_CAR )
-	{
-		eye = m_character.camera;
-	}
-	else
-	{
-		eye.x =  0.7f;  // entre les supports
-		eye.y =  4.8f;
-		eye.z =  0.0f;
-	}
+	eye.x =  0.7f;  // entre les supports
+	eye.y =  4.8f;
+	eye.z =  0.0f;
+
 #if ADJUST_ONBOARD
 	eye.x += debug_x;
 	eye.y += debug_y;
@@ -7099,25 +5300,6 @@ void CObject::SetViewFromHere(D3DVECTOR &eye, float &dirH, float &dirV,
 
 	// Penche la caméra dans les virages.
 	upVec = D3DVECTOR(0.0f, 1.0f, 0.0f);
-	if ( m_physics != 0 )
-	{
-		if ( m_physics->RetLand() )  // au sol ?
-		{
-			speed = m_physics->RetLinMotionX(MO_REASPEED);
-			lookat.y -= speed*0.002f;
-
-			speed = m_physics->RetCirMotionY(MO_REASPEED);
-			upVec.z -= speed*0.04f;
-		}
-		else	// en vol ?
-		{
-			speed = m_physics->RetLinMotionX(MO_REASPEED);
-			lookat.y += speed*0.002f;
-
-			speed = m_physics->RetCirMotionY(MO_REASPEED);
-			upVec.z += speed*0.08f;
-		}
-	}
 	upVec = Transform(m_objectPart[0].matRotate, upVec);
 
 	dirH = -(m_objectPart[part].angle.y+PI/2.0f);
@@ -7166,19 +5348,17 @@ float CObject::RetShield()
 		 m_type == OBJECT_BULLET   ||
 		 m_type == OBJECT_METAL    ||
 		 m_type == OBJECT_BBOX     ||
-		 m_type == OBJECT_KEYa     ||
-		 m_type == OBJECT_KEYb     ||
-		 m_type == OBJECT_KEYc     ||
-		 m_type == OBJECT_KEYd     ||
 		 m_type == OBJECT_TNT      ||
 		 m_type == OBJECT_MINE     ||
-		 m_type == OBJECT_POLE     ||
-		 m_type == OBJECT_BOMB     ||
 		 m_type == OBJECT_WAYPOINT ||
 		 m_type == OBJECT_BARREL   ||
 		 m_type == OBJECT_BARRELa  ||
 		 m_type == OBJECT_ATOMIC   ||
-		(m_type >= OBJECT_ROADSIGN1 && m_type <= OBJECT_ROADSIGN30) )
+		 m_type == OBJECT_FIOLE    ||
+		 m_type == OBJECT_GLU      ||
+		 m_type == OBJECT_GOAL     ||
+		 m_type == OBJECT_GLASS1   ||
+		 m_type == OBJECT_GLASS2   )
 	{
 		return 0.0f;
 	}
@@ -7199,6 +5379,30 @@ float CObject::RetBurnShield()
 }
 
 
+// Gestion de la force.
+
+void CObject::SetStrong(float level)
+{
+	m_strong = level;
+}
+
+float CObject::RetStrong()
+{
+	if ( m_type == OBJECT_TRAX )  return 1.0f; // toujours puissant
+	return m_strong;
+}
+
+void CObject::SetFuturStrong(float level)
+{
+	m_futurStrong = level;
+}
+
+float CObject::RetFuturStrong()
+{
+	return m_futurStrong;
+}
+
+
 // Gestion du facteur de transparence de l'objet.
 
 void CObject::SetTransparency(float value)
@@ -7211,7 +5415,7 @@ void CObject::SetTransparency(float value)
 	{
 		if ( m_objectPart[i].bUsed )
 		{
-			m_engine->SetObjectTransparency(m_objectPart[i].object, value);
+			m_engine->SetObjectTransparency(m_objectPart[i].objRank, value);
 		}
 	}
 }
@@ -7268,6 +5472,12 @@ BOOL CObject::JostleObject(float force)
 {
 	CAutoJostle*	pa;
 
+	if ( m_type == OBJECT_GOAL )
+	{
+		m_auto->SetAction(1);
+		return TRUE;
+	}
+
 	if ( m_auto != 0 )  return FALSE;
 
 	m_auto = new CAutoJostle(m_iMan, this);
@@ -7311,23 +5521,33 @@ BOOL CObject::RetCameraLock()
 
 
 
+// Démarre le flash de l'objet.
+
+void CObject::SetFlash(int part)
+{
+//?	m_flashTime = 0.5f;
+	m_flashTime = 1.0f/(PI*1.0f);
+	m_flashPart = part;
+}
+
 // Gestion de la mise en évidence de l'objet.
 
-void CObject::SetHilite(BOOL bMode)
+void CObject::SetHilite(BOOL bMode, BOOL bSelectable)
 {
-	int		list[OBJECTMAXPART+1];
-	int		i, j;
+	int			list[OBJECTMAXPART+1];
+	int			i, j;
 
 	m_bHilite = bMode;
+	m_arrowMode = 0;  // flèches n'importe comment
 
-	if ( m_bHilite )
+	if ( m_bHilite && bSelectable )
 	{
 		j = 0;
 		for ( i=0 ; i<m_totalPart ; i++ )
 		{
 			if ( m_objectPart[i].bUsed )
 			{
-				list[j++] = m_objectPart[i].object;
+				list[j++] = m_objectPart[i].objRank;
 			}
 		}
 		list[j] = -1;  // terminateur
@@ -7350,18 +5570,12 @@ void CObject::SetSelect(BOOL bMode, BOOL bDisplayError)
 
 	if ( m_main->RetFixScene() )
 	{
-		CreateSelectParticule();  // crée/supprime les particules
 		return;
 	}
 
 	m_bSelect = bMode;
 
-	if ( m_physics != 0 )
-	{
-		m_physics->CreateInterface(m_bSelect);
-	}
-
-	CreateSelectParticule();  // crée/supprime les particules
+	m_engine->SetObjectShadowSelect(m_objectPart[0].objRank, m_bSelect);
 
 	if ( !m_bSelect )
 	{
@@ -7369,10 +5583,6 @@ void CObject::SetSelect(BOOL bMode, BOOL bDisplayError)
 	}
 
 	err = ERR_OK;
-	if ( m_physics != 0 )
-	{
-		err = m_physics->RetError();
-	}
 	if ( m_auto != 0 )
 	{
 		err = m_auto->RetError();
@@ -7404,41 +5614,6 @@ void CObject::SetSelectable(BOOL bMode)
 BOOL CObject::RetSelectable()
 {
 	return m_bSelectable;
-}
-
-
-// Gestion de l'activité d'un objet.
-
-void CObject::SetActivity(BOOL bMode)
-{
-	if ( m_brain != 0 )
-	{
-		m_brain->SetActivity(bMode);
-	}
-}
-
-BOOL CObject::RetActivity()
-{
-	if ( m_brain != 0 )
-	{
-		return m_brain->RetActivity();
-	}
-	return FALSE;
-}
-
-
-// Gestion de la visibilité d'un objet.
-// L'objet n'est pas caché visuellement ni inactif, mais ignoré
-// des détections ! Par exemple: ver sous terre.
-
-void CObject::SetVisible(BOOL bVisible)
-{
-	m_bVisible = bVisible;
-}
-
-BOOL CObject::RetVisible()
-{
-	return m_bVisible;
 }
 
 
@@ -7519,23 +5694,13 @@ float CObject::RetParam()
 void CObject::SetLock(BOOL bLock)
 {
 	m_bLock = bLock;
+
+	if ( m_bLock )  m_bHilite = FALSE;
 }
 
 BOOL CObject::RetLock()
 {
 	return m_bLock;
-}
-
-// Gestion du mode "bloqué" pendant le compte à rebour (3, 2, 1, GO).
-
-void CObject::SetStarting(BOOL bStarting)
-{
-	m_bStarting = bStarting;
-}
-
-BOOL CObject::RetStarting()
-{
-	return m_bStarting;
 }
 
 // Gestion du mode "en cours d'explosion" d'un objet.
@@ -7549,6 +5714,20 @@ void CObject::SetExplo(BOOL bExplo)
 BOOL CObject::RetExplo()
 {
 	return m_bExplo;
+}
+
+
+// Gestion du mode "undo impossible maintenant" d'un objet.
+// Un objet dans ce mode n'est pas sauvegardé.
+
+void CObject::SetNoUndoable(BOOL bExplo)
+{
+	m_bNoUndoable = bExplo;
+}
+
+BOOL CObject::RetNoUndoable()
+{
+	return m_bNoUndoable;
 }
 
 
@@ -7574,11 +5753,6 @@ void CObject::SetDead(BOOL bDead)
 {
 	m_bDead = bDead;
 
-	if ( bDead && m_brain != 0 )
-	{
-		m_brain->StopProgram();  // stoppe la tâche en cours
-	}
-
 //?	if ( m_botVar != 0 )
 //?	{
 //?		if ( m_bDead )  m_botVar->SetUserPtr(OBJECTDELETED);
@@ -7598,227 +5772,19 @@ BOOL CObject::RetRuin()
 
 BOOL CObject::RetActif()
 {
-	return !m_bLock && !m_bBurn && !m_bFlat && m_bVisible && m_bEnable && !m_bGhost;
+	return !m_bLock && !m_bBurn && !m_bFlat && m_bEnable && !m_bGhost;
 }
 
 
+// Retourne la hauteur d'un objet.
 
-// Gestion du compteur du nombre de passages.
-
-void CObject::SetPassCounter(int counter)
+float CObject::RetHeight()
 {
-	m_passCounter = counter;
-}
+	if ( m_type == OBJECT_BLUPI )  return 6.5f;
+	if ( m_type == OBJECT_BOX8 )  return 16.0f;  // colonne ?
+	if ( m_type >= OBJECT_KEY1 && m_type <= OBJECT_KEY5 )  return 7.0f;
 
-int CObject::RetPassCounter()
-{
-	return m_passCounter;
-}
-
-// Gestion de l'ordre de passages.
-
-void CObject::SetRankCounter(int rank)
-{
-	m_rankCounter = rank;
-}
-
-int CObject::RetRankCounter()
-{
-	return m_rankCounter;
-}
-
-
-
-// Indique si un programme est en cours d'exécution.
-
-BOOL CObject::IsProgram()
-{
-	if ( m_brain == 0 )  return FALSE;
-	return m_brain->IsProgram();
-}
-
-
-// Crée ou supprime les particules associées à l'objet.
-
-void CObject::CreateSelectParticule()
-{
-	D3DVECTOR	pos, speed;
-	FPOINT		dim;
-	int			i;
-
-	// Supprime les particules précédentes.
-	for ( i=0 ; i<10 ; i++ )
-	{
-		if ( m_partiSel[i] != -1 )
-		{
-			m_particule->DeleteParticule(m_partiSel[i]);
-			m_partiSel[i] = -1;
-		}
-	}
-
-	if ( m_bSelect || IsProgram() || m_main->RetFixScene() )
-	{
-		// Crée les particules lens pour les phares.
-		if ( m_type == OBJECT_CAR      ||
-			 m_type == OBJECT_MOBILEtg ||
-			 m_type == OBJECT_MOBILEfb ||
-			 m_type == OBJECT_MOBILEob ||
-			 m_type == OBJECT_TRAX     ||
-			 m_type == OBJECT_UFO      )  // véhicule ?
-		{
-			pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
-			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-			dim.x = 0.0f;
-			dim.y = 0.0f;
-			m_partiSel[0] = m_particule->CreateParticule(pos, speed, dim, PARTISELY, 1.0f, 0.0f);
-			m_partiSel[1] = m_particule->CreateParticule(pos, speed, dim, PARTISELY, 1.0f, 0.0f);
-			m_partiSel[2] = m_particule->CreateParticule(pos, speed, dim, PARTISELR, 1.0f, 0.0f);
-			m_partiSel[3] = m_particule->CreateParticule(pos, speed, dim, PARTISELR, 1.0f, 0.0f);
-			m_partiSel[4] = m_particule->CreateParticule(pos, speed, dim, PARTISELY, 1.0f, 0.0f);
-			m_partiSel[5] = m_particule->CreateParticule(pos, speed, dim, PARTISELY, 1.0f, 0.0f);
-			m_partiSel[6] = m_particule->CreateParticule(pos, speed, dim, PARTISELR, 1.0f, 0.0f);
-			UpdateSelectParticule();
-		}
-	}
-}
-
-// Met à jour les particules associées à l'objet.
-
-void CObject::UpdateSelectParticule()
-{
-	D3DVECTOR	pos[10];
-	FPOINT		dim[10], pp;
-	float		zoom[10];
-	float		angle;
-	int			i;
-
-	if ( !m_bSelect && !IsProgram() && !m_main->RetFixScene() )  return;
-
-	dim[0].x = 1.0f;
-	dim[1].x = 1.0f;
-	dim[2].x = 1.2f;
-	dim[3].x = 1.2f;
-	dim[4].x = 1.2f;
-	dim[5].x = 1.2f;
-	dim[6].x = 0.2f;
-
-	// Lens avants jaunes.
-	if ( m_type == OBJECT_MOBILEtg )  // cible ?
-	{
-		pos[0] = D3DVECTOR(3.4f, 6.5f,  2.0f);
-		pos[1] = D3DVECTOR(3.4f, 6.5f, -2.0f);
-	}
-	else if ( m_type == OBJECT_CAR )
-	{
-		pos[0] = m_character.lightFL;
-		pos[1] = m_character.lightFR;
-	}
-	else if ( m_type == OBJECT_TRAX )
-	{
-		pos[0] = D3DVECTOR(6.2f, 10.0f,  2.5f);
-		pos[1] = D3DVECTOR(6.2f, 10.0f, -2.5f);
-	}
-	else if ( m_type == OBJECT_UFO )
-	{
-		angle = m_aTime*2.0f;
-		angle *= 180.0f/PI/22.5f;
-		angle = (float)((int)angle);
-		angle /= 180.0f/PI/22.5f;
-		pp = RotatePoint(angle, 6.0f);
-		pos[0] = D3DVECTOR(pp.x, -0.5f, pp.y);
-		pp = RotatePoint(-angle, 6.0f);
-		pos[1] = D3DVECTOR(pp.x, -0.5f, pp.y);
-	}
-	else
-	{
-		pos[0] = D3DVECTOR(4.2f, 2.5f,  1.5f);
-		pos[1] = D3DVECTOR(4.2f, 2.5f, -1.5f);
-	}
-
-	// Lens arrières rouges+blanche.
-	if ( m_type == OBJECT_CAR )
-	{
-		pos[2] = m_character.lightSL;
-		pos[3] = m_character.lightSR;
-		pos[4] = m_character.lightRL;
-		pos[5] = m_character.lightRR;
-	}
-	if ( m_type == OBJECT_MOBILEtg )  // cible ?
-	{
-		pos[2] = D3DVECTOR(-2.4f, 6.5f,  2.0f);
-		pos[3] = D3DVECTOR(-2.4f, 6.5f, -2.0f);
-		pos[4] = D3DVECTOR(-2.4f, 6.0f,  2.0f);
-		pos[5] = D3DVECTOR(-2.4f, 6.0f, -2.0f);
-	}
-
-	// Lens sur l'antenne.
-	pos[6] = m_character.antenna;
-
-	angle = RetAngleY(0)/PI;
-
-	zoom[0] = 1.0f;
-	zoom[1] = 1.0f;
-	zoom[2] = 1.0f;
-	zoom[3] = 1.0f;
-	zoom[4] = 1.0f;
-	zoom[5] = 1.0f;
-	zoom[6] = 1.0f;
-
-	if ( IsProgram() &&  // programme en cours ?
-		 Mod(m_aTime, 0.7f) < 0.3f )
-	{
-		zoom[0] = 0.0f;  // clignotte
-		zoom[1] = 0.0f;
-		zoom[2] = 0.0f;
-		zoom[3] = 0.0f;
-		zoom[4] = 0.0f;
-		zoom[5] = 0.0f;
-	}
-
-	if ( m_type == OBJECT_CAR )
-	{
-		if ( m_physics != 0 )
-		{
-			for ( i=0 ; i<6 ; i++ )
-			{
-				if ( !m_physics->RetLight(i) )  zoom[i] = 0.0f;  // éteint
-				if ( m_main->RetFixScene() && (i==2 || i==3) )  zoom[i] = 0.5f;
-			}
-		}
-
-		if ( Mod(m_aTime, 0.3f) < 0.15f )  zoom[6] = 0.0f;
-		if ( m_bDead )  zoom[6] = 0.0f;
-	}
-
-	if ( m_type == OBJECT_TRAX )
-	{
-		zoom[0] = 4.0f;
-		zoom[1] = 4.0f;
-		zoom[2] = 0.0f;
-		zoom[3] = 0.0f;
-		zoom[4] = 0.0f;
-		zoom[5] = 0.0f;
-		zoom[6] = 0.0f;
-	}
-
-	if ( m_type == OBJECT_UFO )
-	{
-		zoom[0] = 2.0f;
-		zoom[1] = 2.0f;
-		zoom[2] = 0.0f;
-		zoom[3] = 0.0f;
-		zoom[4] = 0.0f;
-		zoom[5] = 0.0f;
-		zoom[6] = 0.0f;
-	}
-
-	// Met à jour tous les lens.
-	for ( i=0 ; i<7 ; i++ )
-	{
-		pos[i] = Transform(m_objectPart[0].matWorld, pos[i]);
-		dim[i].y = dim[i].x;
-		m_particule->SetParam(m_partiSel[i], pos[i], dim[i], zoom[i], angle, 1.0f);
-	}
+	return 8.0f;  // hauteur standard
 }
 
 
@@ -7841,25 +5807,18 @@ CBotVar* CObject::RetBotVar()
 	return m_botVar;
 }
 
-// Retourne la physique associée à l'objet.
-
-CPhysics* CObject::RetPhysics()
-{
-	return m_physics;
-}
-
-// Retourne le cerveau associé à l'objet.
-
-CBrain* CObject::RetBrain()
-{
-	return m_brain;
-}
-
 // Retourne le mouvement associé à l'objet.
 
 CMotion* CObject::RetMotion()
 {
 	return m_motion;
+}
+
+// Retourne la liste de tâches accociée à l'objet.
+
+CTaskList* CObject::RetTaskList()
+{
+	return m_taskList;
 }
 
 // Retourne l'automate associé à l'objet.
@@ -7875,59 +5834,379 @@ void CObject::SetAuto(CAuto* automat)
 }
 
 
+// Ajoute une tâche dans la liste.
 
-// Gestion du rang dans le fichier de définition.
-
-void CObject::SetDefRank(int rank)
+BOOL CObject::StartTaskList(TaskOrder order, D3DVECTOR pos,
+							CObject *target, int part, float param)
 {
-	m_defRank = rank;
+	TaskOrder	cOrder;
+	D3DVECTOR	cPos;
+	float		cParam;
+	int			cId, cPart, id;
+
+	if ( m_taskList == 0 )  return FALSE;
+
+	if ( target == 0 )
+	{
+		id = 0;
+	}
+	else
+	{
+		id = target->RetID();
+	}
+
+	if ( order == TO_GOTODRINK && target != 0 )
+	{
+		if ( target->RetType() == OBJECT_FIOLE )  m_futurStrong =  1.0f;
+		if ( target->RetType() == OBJECT_GLU   )  m_futurStrong = -1.0f;
+	}
+	if ( order == TO_GOTOPUSH )
+	{
+		m_futurStrong = 0.0f;
+	}
+
+	// Si l'ordre est de pousser une caisse, regarde si c'est la
+	// même caisse et le même bouton, pour transformer l'ordre
+	// "pousse n fois" en "pousse n+1 fois".
+	if ( order == TO_GOTOPUSH )
+	{
+		if ( m_taskList->SubHead(cOrder, cPos, cId, cPart, cParam) )
+		{
+			if ( (cOrder == TO_GOTOPUSH ||
+				  cOrder == TO_PUSH     ) &&
+				 cId == id && cPart == part )
+			{
+				return m_taskList->AddHead(cOrder, pos, id, part, cParam+param);
+			}
+
+			m_taskList->AddHead(cOrder, cPos, cId, cPart, cParam);
+		}
+	}
+
+	return m_taskList->AddHead(order, pos, id, part, param);
 }
 
-int  CObject::RetDefRank()
-{
-	return m_defRank;
-}
 
+// Cherche une ressource de type "Pousser 3 fois".
+
+void GetResource19(int res, int sh19, char *buffer)
+{
+	char	text[50];
+
+#if _ENGLISH
+	if ( sh19 <= 1 )
+	{
+		GetResource(RES_TEXT, res, buffer);  // RT_ACTION_PUSH1
+	}
+	else if ( sh19 == 2 )
+	{
+		GetResource(RES_TEXT, res+1, buffer);  // RT_ACTION_PUSH2
+	}
+	else
+	{
+		GetResource(RES_TEXT, res+2, text);  // RT_ACTION_PUSHx
+		sprintf(buffer, text, sh19);
+	}
+#else
+	if ( sh19 <= 1 )
+	{
+		GetResource(RES_TEXT, res, buffer);  // RT_ACTION_PUSH1
+	}
+	else
+	{
+		GetResource(RES_TEXT, res+2, text);  // RT_ACTION_PUSHx
+		sprintf(buffer, text, sh19);
+	}
+#endif
+}
 
 // Donne le nom de l'objet pour le tooltip.
 
-BOOL CObject::GetTooltipName(char* name)
+BOOL CObject::GetTooltipName(int part, char* name)
 {
+	CObject*	pSel;
+	float		strong;
+	int			sh19;
+
+	pSel = m_main->RetSelect();
+	sh19 = m_main->RetSuperShift19();
+
+	if ( m_type == OBJECT_BOX7  ||  // sphère ?
+		 m_type == OBJECT_BOX10 )   // bombe ?
+	{
+		if ( part >= 1 && part <= 4 )
+		{
+			GetResource(RES_TEXT, RT_ACTION_ROLL, name);
+			return TRUE;
+		}
+	}
+
+	if ( (m_type >= OBJECT_BOX1 && m_type <= OBJECT_BOX20) ||
+		 (m_type >= OBJECT_KEY1 && m_type <= OBJECT_KEY5 ) )
+	{
+		if ( part >= 1 && part <= 4 )
+		{
+			if ( pSel == 0 )
+			{
+				strong = 0.0f;
+			}
+			else
+			{
+				strong = pSel->RetFuturStrong();
+			}
+
+			if ( strong < 0.0f )  // glu ?
+			{
+				GetResource(RES_TEXT, RT_ACTION_PULL1, name);
+			}
+			else
+			{
+				if ( sh19 <= 1 || strong != 0.0f )
+				{
+					GetResource(RES_TEXT, RT_ACTION_PUSH1, name);
+				}
+				else
+				{
+					GetResource19(RT_ACTION_PUSH1, sh19, name);
+				}
+			}
+			return TRUE;
+		}
+		if ( part >= 5 && part <= 8 )
+		{
+			GetResource(RES_TEXT, RT_ACTION_PUSHn, name);
+			return TRUE;
+		}
+	}
+
+	if ( m_type == OBJECT_DOCK )
+	{
+		if ( part == 6 )
+		{
+			GetResource(RES_TEXT, RT_ACTION_DOCKg, name);
+			return TRUE;
+		}
+		if ( part >= 4 && part <= 8 )
+		{
+			GetResource19(RT_ACTION_DOCKm, sh19, name);
+			return TRUE;
+		}
+	}
+
+	if ( m_type == OBJECT_CATAPULT )
+	{
+		if ( part == 1 )
+		{
+			GetResource(RES_TEXT, RT_ACTION_CATAPULT, name);
+			return TRUE;
+		}
+	}
+
+	if ( m_type == OBJECT_TRAX  ||
+		 m_type == OBJECT_PERFO )
+	{
+		if ( part == 3 )
+		{
+			GetResource19(RT_ACTION_TRAXa, sh19, name);
+			return TRUE;
+		}
+		if ( part == 4 )
+		{
+			GetResource19(RT_ACTION_TRAXl, sh19, name);
+			return TRUE;
+		}
+		if ( part == 5 )
+		{
+			GetResource19(RT_ACTION_TRAXr, sh19, name);
+			return TRUE;
+		}
+	}
+
+	if ( m_type == OBJECT_GUN )
+	{
+		if ( part == 3 )
+		{
+			GetResource19(RT_ACTION_GUNa, sh19, name);
+			return TRUE;
+		}
+		if ( part == 4 )
+		{
+			GetResource19(RT_ACTION_GUNl, sh19, name);
+			return TRUE;
+		}
+		if ( part == 5 )
+		{
+			GetResource19(RT_ACTION_GUNr, sh19, name);
+			return TRUE;
+		}
+	}
+
 	GetResource(RES_OBJECT, m_type, name);
 	return ( name[0] != 0 );
 }
 
 
-// Gestion du mode d'enregistrement.
+// Ecrit la situation de l'objet.
 
-void CObject::SetRecorderRecordMode(BOOL bRecord)
+void CObject::WriteSituation()
 {
-	m_bRecorderRecord = bRecord;
+	D3DVECTOR	pos;
+	float		angle;
+	int			i;
+	char		op[10];
+
+	m_undo->WriteTokenInt("id", m_id);
+	m_undo->WriteTokenInt("type", m_type);
+	m_undo->WriteTokenInt("lock", m_bLock);
+	m_undo->WriteTokenInt("dead", m_bDead);
+
+	pos = RetPosition(0);
+	m_undo->WriteTokenPos("pos", pos);
+
+	angle = RetAngleY(0);
+	m_undo->WriteTokenFloat("ay", angle);
+
+	for ( i=0 ; i<10 ; i++ )
+	{
+		if ( m_additional[i] != 0 )
+		{
+			sprintf(op, "add%d", i);
+			m_undo->WriteTokenInt(op, m_additional[i]);
+		}
+	}
+
+	if ( m_strong != 0.0f )
+	{
+		m_undo->WriteTokenFloat("strong", m_strong);
+	}
+
+	if ( m_truckLink != 0 )
+	{
+		m_undo->WriteTokenInt("truckLink", m_truckLink);
+	}
+
+	if ( m_truck != 0 )
+	{
+		m_undo->WriteTokenInt("truck", m_truck->RetID());
+	}
+
+	if ( m_fret != 0 )
+	{
+		m_undo->WriteTokenInt("fret", m_fret->RetID());
+	}
+
+	if ( m_auto != 0 )
+	{
+		m_auto->WriteSituation();
+	}
+
+	if ( m_type == OBJECT_CRAZY )
+	{
+		if ( m_motion != 0 )
+		{
+			m_motion->WriteSituation();
+		}
+	}
 }
 
-BOOL CObject::RetRecorderRecordMode()
-{
-	return m_bRecorderRecord;
-}
+// Lit la situation de l'objet.
 
-void CObject::SetRecorderPlayMode(BOOL bPlay)
+void CObject::ReadSituation()
 {
-	m_bRecorderPlay = bPlay;
-}
+	CObject*	pObj;
+	D3DVECTOR	nPos, iPos, pos, speed;
+	FPOINT		dim;
+	float		angle;
+	int			i;
 
-BOOL CObject::RetRecorderPlayMode()
-{
-	return m_bRecorderPlay;
-}
+	if ( m_undo->ReadTokenInt("type", i) )
+	{
+		m_type = (ObjectType)i;
+	}
 
-void CObject::SetRecorder(CRecorder* recorder)
-{
-	m_recorder = recorder;
-}
+	if ( m_undo->ReadTokenPos("pos", nPos) )
+	{
+		iPos = RetPosition(0);
+		if ( nPos.x != iPos.x ||
+			 nPos.y != iPos.y ||
+			 nPos.z != iPos.z )  // position changée ?
+		{
+			SetPosition(0, nPos);
 
-CRecorder* CObject::RetRecorder()
-{
-	return m_recorder;
-}
+			for ( i=0 ; i<=20 ; i++ )
+			{
+				pos = nPos + (iPos-nPos)*(i/20.0f);
+				pos.x += (Rand()-0.5f)*4.0f;
+				pos.z += (Rand()-0.5f)*4.0f;
+				speed.x = 0.0f;
+				speed.z = 0.0f;
+				speed.y = 2.0f;
+				dim.x = 3.0f;
+				dim.y = dim.x;
+				m_particule->CreateParticule(pos, speed, dim, (ParticuleType)(PARTILENS1+rand()%4), 1.0f);
+			}
+		}
+	}
 
+	if ( m_undo->ReadTokenFloat("ay", angle) )
+	{
+		SetAngleY(0, angle);
+	}
+
+	m_strong = 0.0f;
+	m_undo->ReadTokenFloat("strong", m_strong);
+	m_futurStrong = m_strong;
+
+	m_truckLink = 0;
+	if ( m_undo->ReadTokenInt("truckLink", i) )
+	{
+		m_truckLink = i;
+	}
+
+	pObj = 0;
+	if ( m_undo->ReadTokenInt("truck", i) )
+	{
+		pObj = m_undo->SearchObjectID(i);
+	}
+	SetTruck(pObj);
+
+	pObj = 0;
+	if ( m_undo->ReadTokenInt("fret", i) )
+	{
+		pObj = m_undo->SearchObjectID(i);
+	}
+	SetFret(pObj);
+
+	if ( m_auto != 0 )
+	{
+		m_auto->ReadSituation();
+	}
+
+	if ( m_type == OBJECT_BLUPI )
+	{
+		if ( m_motion != 0 )
+		{
+			if ( m_truck == 0 )
+			{
+				m_motion->SetAction(MBLUPI_WAIT);
+				m_motion->SetAction(MBLUPI_WALK);
+				m_motion->SetAction(MBLUPI_MOUTH);
+			}
+			else
+			{
+				m_motion->SetAction(MBLUPI_TRUCK);
+				m_motion->SetAction(MBLUPI_WALK);
+				m_motion->SetAction(MBLUPI_MOUTH);
+			}
+		}
+	}
+
+	if ( m_type == OBJECT_CRAZY )
+	{
+		if ( m_motion != 0 )
+		{
+			m_motion->ReadSituation();
+		}
+	}
+}
 

@@ -24,10 +24,9 @@ class CArray;
 class CShortcut;
 class CMap;
 class CGauge;
-class CPesetas;
-class CGeiger;
 class CProgress;
 class CCompass;
+class CLink;
 
 
 #define MAXWINDOW	100
@@ -57,10 +56,9 @@ public:
 	CShortcut*	CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CMap*		CreateMap(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CGauge*		CreateGauge(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CPesetas*	CreatePesetas(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CGeiger*	CreateGeiger(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CProgress*	CreateProgress(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CCompass*	CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	CLink*		CreateLink(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	BOOL		DeleteControl(EventMsg eventMsg);
 	CControl*	SearchControl(EventMsg eventMsg);
 	CControl*	SearchControl(int tabOrder);

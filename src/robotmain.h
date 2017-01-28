@@ -7,18 +7,20 @@
 
 enum Phase
 {
+	PHASE_NULL,
 	PHASE_INIT,
 	PHASE_TERM,
 	PHASE_NAME,
 	PHASE_PERSO,
-	PHASE_MISSION,
-	PHASE_FREE,
+	PHASE_PUZZLE,
+	PHASE_DEFI,
 	PHASE_USER,
 	PHASE_PROTO,
+	PHASE_FADEIN,
 	PHASE_LOADING,
 	PHASE_SIMUL,
-	PHASE_CAR,
-	PHASE_MODEL,
+	PHASE_MODELe,
+	PHASE_MODELi,
 	PHASE_SETUPd,
 	PHASE_SETUPg,
 	PHASE_SETUPp,
@@ -43,17 +45,18 @@ enum Phase
 	PHASE_READ,
 };
 
-enum StarterType
+enum Scene
 {
-	STARTER_NONE	= 0,
-	STARTER_321		= 1,
-	STARTER_QUICK	= 2,
+	SCENE_NULL,
+	SCENE_FIX,
+	SCENE_SIMUL,
 };
 
 
 class CInstanceManager;
-class CMainMovie;
 class CMainDialog;
+class CMainEdit;
+class CMainUndo;
 class CMainShort;
 class CMainMap;
 class CEvent;
@@ -73,39 +76,16 @@ class CWindow;
 class CControl;
 class CDisplayText;
 class CSound;
-class CRecorder;
 class CAuto;
+class CFileBuffer;
 
 enum ObjectType;
 enum CameraType;
-enum MainMovieType;
 enum ParticuleType;
 enum Sound;
+enum D3DMouse;
 
 
-typedef struct
-{
-	D3DVECTOR	pos;
-	float		dist;
-	ObjectType	type;
-	int			min;		// gagné si >
-	int			max;		// gagné si <
-	int			lost;		// perdu si <=
-	int			show;		// affiche ?
-	int			last;
-	BOOL		bImmediat;
-}
-EndTake;
-
-typedef struct
-{
-	D3DVECTOR	eye;		// oeil caméra
-	D3DVECTOR	look;		// visée caméra
-	float		delay;		// durée du pas
-	float		progress;	// progression de pas
-	Sound		sound;		// son a générer
-}
-MovieStep;
 
 
 #define MAXSHOWPARTI	200
@@ -119,59 +99,43 @@ public:
 
 	void		CreateIni();
 
-	void		ChangePhase(Phase phase);
-	Phase		RetPhase();
 	BOOL		EventProcess(const Event &event);
+	void		ChangePhase(Phase phase, Phase fadeIn=(Phase)0);
 
-	void		ScenePerso();
-
-	void		SetMovieLock(BOOL bLock);
+	void		SetMovieLock(BOOL bLock, BOOL bFinal);
 	BOOL		RetMovieLock();
-	void		SetMovieAuto(CAuto *automat);
 	BOOL		RetFreePhoto();
 	void		SetFriendAim(BOOL bFriend);
 	BOOL		RetFriendAim();
-	void		SetSuperWin();
-	void		SetSuperLost();
-	void		SetSuperLost(D3DVECTOR lookat);
 
 	void		ChangePause(BOOL bPause);
 
 	void		SetSpeed(float speed);
 	float		RetSpeed();
 
-	CObject*	SearchObject(ObjectType type);
-	CObject*	SearchHuman();
 	BOOL		SelectObject(CObject* pObj, BOOL bDisplayError=TRUE);
-	CObject*	RetSelectObject();
+	CObject*	RetSelect();
+	void		SetSelect(CObject* pSel);
 	CObject*	DeselectAll();
+	void		SelectOther(CObject* pSel);
 	BOOL		DeleteObject();
+	BOOL		MagicDetect(FPOINT mouse, D3DVECTOR &pos, CObject* &pObj, int &part);
+	BOOL		DetectObject(FPOINT pos, CObject* &pObj, int &part);
+	BOOL		DetectObject(FPOINT pos, BOOL bAction, CObject* &pObj, int &part);
 
 	Error		CheckEndMission(BOOL bFrame);
-	int			RetLapProgress();
-	ObjectType	RetTypeProgress();
-	BOOL		IncProgress();
 	void		UpdateMap();
 	BOOL		RetShowMap();
 
-	MainMovieType RetMainMovie();
-
-	void		StartDisplayInfo();
+	void		StartDisplaySign();
+	void		StartDisplayInfo(char *text);
 	void		StopDisplayInfo();
 
-	void		ShowHideButtons(BOOL bShow);
 	void		StartSuspend();
 	void		StopSuspend();
 
-	void		SetStopwatch(BOOL bRun);
-	void		StopStartCounter();
-	BOOL		IsStartCounter();
-	BOOL		IsStarter();
 	BOOL		IsGameTime();
-	BOOL		IsRecordTime();
-	BOOL		RetEndingGame();
 	float		RetGameTime();
-	float		RetRecordTime();
 
 	void		SetFontSize(float size);
 	float		RetFontSize();
@@ -180,105 +144,97 @@ public:
 	void		SetWindowDim(FPOINT dim);
 	FPOINT		RetWindowDim();
 
-	void		SetIOPublic(BOOL bMode);
-	BOOL		RetIOPublic();
-	void		SetIOPos(FPOINT pos);
-	FPOINT		RetIOPos();
-	void		SetIODim(FPOINT dim);
-	FPOINT		RetIODim();
-
-	char*		RetTitle();
+	void		SetResume(int language, char *text);
+	char*		RetResume(int language);
 	char*		RetResume();
-	BOOL		RetTrainerPilot();
+	void		SetSign(int language, char *text);
+	char*		RetSign(int language);
+	char*		RetSign();
+	void		SetAuthor(char *text);
+	char*		RetAuthor();
 	BOOL		RetFixScene();
-	BOOL		RetGlint();
-	BOOL		RetMovies();
-	BOOL		RetNiceReset();
-	BOOL		RetHimselfDamage();
-	BOOL		RetMotorBlast();
+	int			RetHandleMove();
+	BOOL		RetEdit();
+	BOOL		RetTest();
+	BOOL		RetProto();
+	BOOL		RetAgain();
 	BOOL		RetShowAll();
 	BOOL		RetCheatRadar();
 	char*		RetSavegameDir();
 	char*		RetPublicDir();
 	char*		RetFilesDir();
 	int			RetLevel();
+	int			RetTotalBlupi();
+	int			RetTotalGoal();
+	BOOL		RetCheatUsed();
+	void		UpdateInterface();
+	int			RetSuperShift19();
 
 	void		SetGamerName(char *name);
 	char*		RetGamerName();
 
-	void		FlushCarState();
-	void		MemorizeCarState();
-	char*		GetCarState();
+	void		IncTotalManip(int manip=1);
+	void		SetTotalManip(int manip);
+	int			RetTotalManip();
 
 	void		StartMusic();
 	void		ClearInterface();
 	void		ChangeColor();
-	void		ChangeColorCar(int model, int subModel, D3DCOLORVALUE color);
 
-	float		SearchNearestObject(D3DVECTOR center, CObject *exclu);
-	BOOL		FreeSpace(D3DVECTOR &center, float minRadius, float maxRadius, float space, CObject *exclu);
-	float		RetFlatZoneRadius(D3DVECTOR center, float maxRadius, CObject *exclu);
+	void		InitEye();
+	void		MouseMoveClear();
 
-	void		CompileScript();
+	int			RetAdditional(int rank, int type);
 
-	void		InfoCollision(ObjectType type);
-
-	void		FlushStarterType();
-	StarterType	RetStarterType();
-	int			RetRaceType();
-	int			RetHornAction();
-
-	void		RecorderWrite(int rank, int model);
-	void		RecorderRead(int rank, int model);
-	BOOL		RecorderExist(int rank, int model);
-	CRecorder*	RetRecorderRecord();
-
-	void		IncDecorStamp();
-	int			RetDecorStamp();
+	int			CheckPuzzle();
+	BOOL		WriteScene();
 
 protected:
 	BOOL		EventFrame(const Event &event);
 	BOOL		EventObject(const Event &event);
-	void		InitEye();
-	void		InitEye(CObject *pObj);
 
-	void		Convert();
 	void		CreateScene(BOOL bFixScene);
 
+	void		StopAction();
+	BOOL		FilterMousePos(FPOINT pos);
 	void		ChangeTabOrder(int dir, int param);
-	void		CreateModel();
-	D3DVECTOR	LookatPoint( D3DVECTOR eye, float angleH, float angleV, float length );
-	CObject*	CreateObject(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, int bPlumb=-1, BOOL bTrainer=FALSE, int option=0);
+	void		CreateModel(int type);
+	CObject*	CreateObject(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, int option=0, int addHat=0, int addGlass=0, int addGlove=0, int addShoe=0, int addBag=0);
 	void		CreateLimit(ObjectType type, int max);
+	void		CreateSunbeam(int total, float min, float max, float desym, ParticuleType type);
 	int			CreateLight(D3DVECTOR direction, D3DCOLORVALUE color);
 	int			CreateSpot(D3DVECTOR pos, D3DCOLORVALUE color);
 	void		CreateTooltip(FPOINT pos, char* text);
 	void		ClearTooltip();
-	void		ChangeCamera();
 	void		AbortMovie();
+	void		SelectBegin(FPOINT mouse);
+	void		SelectMove(FPOINT mouse);
+	void		SelectEnd(FPOINT mouse);
+	void		ScrollBegin(FPOINT mouse);
+	void		ScrollMove(FPOINT mouse);
+	BOOL		ScrollEnd(FPOINT mouse);
+	void		GroupOper(FPOINT mouse);
 	void		SelectOneObject(CObject* pObj, BOOL bDisplayError=TRUE);
 	BOOL		DeselectObject();
+	BOOL		IsSelectable(CObject* pObj);
 	void		DeleteAllObjects();
 	void		UpdateInfoText();
-	CObject*	RetSelect();
-	int			RetVehiclePart();
-	int			RetConeTotal();
-	float		RetBonusPoints();
 	void		ExecuteCmd(char *cmd);
-	BOOL		TestGadgetQuantity(int rank);
-	void		UpdateProgress();
 	void		UpdateTime();
 	void		HiliteClear();
 	void		HiliteObject(FPOINT pos);
 	void		HiliteFrame(float rTime);
-	void		MovieStart();
-	void		MovieFrame(float rTime);
-	void		MovieAbort();
+	void		StartLift();
+	CObject*	SearchObject(D3DVECTOR center, float radius, BOOL bAll);
+	void		ReadSuperShift();
+	void		Crypt(char *dir, BOOL bCrypt);
+	BOOL		CryptFile(char *filename, BOOL bCrypt);
 
 protected:
 	CInstanceManager* m_iMan;
-	CMainMovie*		m_movie;
 	CMainDialog*	m_dialog;
+	CMainEdit*		m_edit;
+	CMainUndo*		m_undo;
 	CMainMap*		m_map;
 	CEvent*			m_event;
 	CD3DEngine*		m_engine;
@@ -294,48 +250,62 @@ protected:
 	CCamera*		m_camera;
 	CDisplayText*	m_displayText;
 	CSound*			m_sound;
+	CFileBuffer*	m_fileBuffer;
 
 	float			m_time;
 	float			m_gameTime;
-	float			m_recordTime;
 	float			m_checkEndTime;
 	float			m_winDelay;
 	float			m_lostDelay;
-	BOOL			m_bFixScene;	// scène fixe, sans interraction
+	float			m_firstInfoDelay;
+	Scene			m_scene;
+	int				m_handleMode;
+	int				m_adviseMode;
 	CObject*		m_selectObject;
-	char*			m_carState;		// état du véhicule
 	char			m_sceneName[20];
+	D3DMouse		m_defMouse;
+	int				m_undoCounter;
+	int				m_stopCounter;
+	BOOL			m_typeButton;
+	int				m_totalBlupi;
+	int				m_totalGoal;
+	BYTE			m_superShift[256];
+	int				m_superShift19;
+	int				m_lastSuperShift19;
+	int				m_totalManip;
 
 	Phase			m_phase;
-	int				m_cameraRank;
-	D3DCOLORVALUE	m_color;
+	Phase			m_lastPhase;
 	BOOL			m_bFreePhoto;
 	BOOL			m_bCmdEdit;
 	BOOL			m_bShowPos;
-	BOOL			m_bSelectInsect;
 	BOOL			m_bShowAll;
-	BOOL			m_bCheatRadar;
 	BOOL			m_bAudioRepeat;
-	BOOL			m_bSuperWin;
-	BOOL			m_bSuperLost;
-	BOOL			m_bLostLookat;
-	D3DVECTOR		m_lostLookat;
-	int				m_geiger;
 	int				m_audioTrack;
-	int				m_movieInfoIndex;
-	int				m_decorStamp;
 	FPOINT			m_lastMousePos;
+	FPOINT			m_infoPos;
+	FPOINT			m_infoDim;
 
 	BOOL			m_bMovieLock;		// film en cours ?
+	BOOL			m_bMovieFinal;		// film de fin (envol)
 	BOOL			m_bPause;			// simulation en pause
-	BOOL			m_bTrainerPilot;	// télécommande trainer ?
+	BOOL			m_bHilite;
 	BOOL			m_bSuspend;
 	BOOL			m_bFriendAim;
 	BOOL			m_bSkipFrame;
 	BOOL			m_bDisplayInfo;
-	BOOL			m_bStopwatch;
 	BOOL			m_bCheatUsed;
-	CAuto*			m_movieAuto;
+
+	BOOL			m_bSelect;
+	FPOINT			m_selectBegin;
+	FPOINT			m_selectEnd;
+	BOOL			m_bScroll;
+	FPOINT			m_scrollBegin;
+	FPOINT			m_scrollEnd;
+	int				m_scrollQuantity;
+
+	D3DVECTOR		m_terrainSpritePos;
+	int				m_terrainSpriteChannel;
 
 	FPOINT			m_tooltipPos;
 	char			m_tooltipName[100];
@@ -343,88 +313,31 @@ protected:
 
 	CObject*		m_infoObject;
 
-	char			m_title[100];
-	char			m_resume[500];
+	char			m_resume[26][1000];
+	char			m_sign[26][1000];
+	char			m_author[100];
 	int				m_endingWinRank;
 	int				m_endingLostRank;
-	BOOL			m_bWinTerminate;
 
 	float			m_fontSize;
 	FPOINT			m_windowPos;
 	FPOINT			m_windowDim;
 
-	BOOL			m_IOPublic;
-	FPOINT			m_IOPos;
-	FPOINT			m_IODim;
-
-	int				m_endTakeTotal;
-	EndTake			m_endTake[10];
-	long			m_endTakeResearch;
-	float			m_endTakeWinDelay;
-	float			m_endTakeLostDelay;
-
-	int				m_movieTotal;
-	int				m_movieIndex;
-	MovieStep		m_movieTable[20];
-	CameraType		m_movieType;
-
-	int				m_progressTotal;
-	int				m_progressLap;
-	int				m_progressAdd;
-	int				m_progressLevel;
-	ObjectType		m_progressType;
-
-	float			m_bonusLimit;
-	float			m_bonusRecord;
-	int				m_maxPesetas;
-
-	int				m_startCounter;
-	float			m_startDelay;
-
 	char			m_gamerName[100];
 
-	long			m_freeBuild;		// bâtiments constructibles
-	long			m_freeResearch;		// recherches effectuées
-
-	int				m_statStartVehicle;
-	int				m_statEndVehicle;
-	int				m_statStartCone;
-	int				m_statEndCone;
-	float			m_statStartTime;
-	float			m_statEndTime;
-	float			m_statLapTime;
-	float			m_statBestTime;
-	BOOL			m_bStatRecordAll;
-	BOOL			m_bStatRecordOne;
-
-	int				m_starterTry;		// nb d'animation déjà effectuées
-	int				m_starterLast;		// dernière mission jouée avec starter
-	int				m_raceType;
-	int				m_hornAction;
-
-	D3DCOLORVALUE	m_colorRefVeh;
-	D3DCOLORVALUE	m_colorNewVeh;
 	D3DCOLORVALUE	m_colorRefBot;
 	D3DCOLORVALUE	m_colorNewBot;
-	D3DCOLORVALUE	m_colorRefAlien;
-	D3DCOLORVALUE	m_colorNewAlien;
 	D3DCOLORVALUE	m_colorRefGreen;
 	D3DCOLORVALUE	m_colorNewGreen;
 	D3DCOLORVALUE	m_colorRefWater;
 	D3DCOLORVALUE	m_colorNewWater;
 	float			m_colorShiftWater;
 
-	CRecorder*		m_recorderRecord;
-	CRecorder*		m_recorderPlay;
-
 	int				m_repeat;			// 1 -> répétition d'une mission
-	int				m_lastRank;			// dernière mission jouée
+	char			m_lastFilename[100]; // dernière mission jouée
 
-	float			m_messageTime;
-	Sound			m_messageSound;
-	char			m_messageText[100];
-	float			m_messageDelay;
-	float			m_messageSize;
+	int				m_additionalTotal;
+	int				m_additional[10][10];	// accessoires
 };
 
 

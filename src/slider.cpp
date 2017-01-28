@@ -449,8 +449,8 @@ void CSlider::Draw()
 	if ( m_state & STATE_SHADOW )
 	{
 		spos = ppos;
-		spos.x -= 0.005f*0.75f;
-		spos.y += 0.005f;
+//?		spos.x -= 0.005f*0.75f;
+//?		spos.y += 0.005f;
 		DrawShadow(spos, ddim);
 	}
 
@@ -475,7 +475,7 @@ void CSlider::Draw()
 			ddim.x = dim.x;
 			ddim.y = CURSOR_WIDTH;
 		}
-		DrawShadow(ppos, ddim, 0.7f);
+		DrawShadow(ppos, ddim, 1.0f);
 		DrawVertex(ppos, ddim, 2);
 	}
 
@@ -488,12 +488,21 @@ void CSlider::Draw()
 	{
 		if ( m_bHoriz )
 		{
+#if 0
 			value = (m_min+m_visibleValue*(m_max-m_min))*10.0f;
 			sprintf(text, "%d", (int)(value+0.5f));
 			h = m_engine->RetText()->RetHeight(m_fontSize, m_fontType);
 			pos.x = m_pos.x+m_dim.x+(10.0f/640.0f);
 			pos.y = m_pos.y+(m_dim.y-h)/2.0f-(2.0f/480.0f);
 			m_engine->RetText()->DrawText(text, pos, m_dim.x, 1, m_fontSize, m_fontStretch, m_fontType, 0);
+#else
+			value = (m_min+m_visibleValue*(m_max-m_min))*10.0f;
+			sprintf(text, "%d", (int)(value+0.5f));
+			h = m_engine->RetText()->RetHeight(m_fontSize, m_fontType);
+			pos.x = m_pos.x-(10.0f/640.0f);
+			pos.y = m_pos.y+(m_dim.y-h)/2.0f-(2.0f/480.0f);
+			m_engine->RetText()->DrawText(text, pos, m_dim.x, -1, m_fontSize, m_fontStretch, m_fontType, 0);
+#endif
 		}
 		else
 		{
@@ -528,7 +537,8 @@ void CSlider::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	if ( icon == 0 )
 	{
 		m_engine->SetTexture("button1.tga");
-		m_engine->SetState(D3DSTATENORMAL);
+//?		m_engine->SetState(D3DSTATENORMAL);
+		m_engine->SetState(D3DSTATETTb);
 		uv1.x =  64.0f/256.0f;
 		uv1.y =   0.0f/256.0f;
 		uv2.x =  96.0f/256.0f;
@@ -540,7 +550,8 @@ void CSlider::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	else if ( icon == 1 )
 	{
 		m_engine->SetTexture("button1.tga");
-		m_engine->SetState(D3DSTATENORMAL);
+//?		m_engine->SetState(D3DSTATENORMAL);
+		m_engine->SetState(D3DSTATETTb);
 		uv1.x = 224.0f/256.0f;
 		uv1.y =   0.0f/256.0f;
 		uv2.x = 256.0f/256.0f;
@@ -553,13 +564,13 @@ void CSlider::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	{
 		m_engine->SetTexture("button1.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x = 224.0f/256.0f;  // curseur
-		uv1.y =  32.0f/256.0f;
-		uv2.x = 256.0f/256.0f;
-		uv2.y =  64.0f/256.0f;
+		uv1.x = 128.0f/256.0f;  // curseur
+		uv1.y =  64.0f/256.0f;
+		uv2.x = 160.0f/256.0f;
+		uv2.y =  96.0f/256.0f;
 		corner.x = 2.0f/640.0f;
 		corner.y = 2.0f/480.0f;
-		ex = 2.0f/256.0f;
+		ex = 4.0f/256.0f;
 	}
 
 	dp = 0.5f/256.0f;

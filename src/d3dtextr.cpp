@@ -278,13 +278,8 @@ HRESULT TextureContainer::LoadImageData()
 	{
 		if ( _tcsrchr( m_strName, _T('\\') ) == 0 )
 		{
-#if _EGAMES
-			lstrcpy( strMetaname, "ww1.dat" );
+			lstrcpy( strMetaname, "blupimania1.dat" );
 			lstrcpy( strSuppl, "b" );
-#else
-			lstrcpy( strMetaname, "buzzingcars1.dat" );
-			lstrcpy( strSuppl, "b" );
-#endif
 			lstrcpy( strFilename, m_strName );
 		}
 		else

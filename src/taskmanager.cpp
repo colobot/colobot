@@ -18,6 +18,16 @@
 #include "taskadvance.h"
 #include "taskturn.h"
 #include "taskgoto.h"
+#include "taskpush.h"
+#include "taskroll.h"
+#include "taskdock.h"
+#include "taskcatapult.h"
+#include "tasktrax.h"
+#include "taskperfo.h"
+#include "taskgun.h"
+#include "taskdrink.h"
+#include "taskgoal.h"
+#include "taskdive.h"
 #include "taskfire.h"
 #include "taskmanager.h"
 
@@ -55,10 +65,10 @@ Error CTaskManager::StartTaskWait(float time)
 
 // Avance droit devant d'une certaine distance.
 
-Error CTaskManager::StartTaskAdvance(float length)
+Error CTaskManager::StartTaskMove(float length, BOOL bNoError)
 {
 	m_task = new CTaskAdvance(m_iMan, m_object);
-	return ((CTaskAdvance*)m_task)->Start(length);
+	return ((CTaskAdvance*)m_task)->Start(length, bNoError);
 }
 
 // Tourne d'un certain angle.
@@ -71,10 +81,90 @@ Error CTaskManager::StartTaskTurn(float angle)
 
 // Atteint une position donnée.
 
-Error CTaskManager::StartTaskGoto(D3DVECTOR pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode)
+Error CTaskManager::StartTaskGoto(D3DVECTOR pos, CObject *target, int part)
 {
 	m_task = new CTaskGoto(m_iMan, m_object);
-	return ((CTaskGoto*)m_task)->Start(pos, altitude, goalMode, crashMode);
+	return ((CTaskGoto*)m_task)->Start(pos, target, part);
+}
+
+// Pousse une caisse.
+
+Error CTaskManager::StartTaskPush(int part, int nbTiles)
+{
+	m_task = new CTaskPush(m_iMan, m_object);
+	return ((CTaskPush*)m_task)->Start(part, nbTiles);
+}
+
+// Roule une sphère.
+
+Error CTaskManager::StartTaskRoll(D3DVECTOR dir)
+{
+	m_task = new CTaskRoll(m_iMan, m_object);
+	return ((CTaskRoll*)m_task)->Start(dir);
+}
+
+// Manoeuvre un dock.
+
+Error CTaskManager::StartTaskDock(CObject *dock, int part)
+{
+	m_task = new CTaskDock(m_iMan, m_object);
+	return ((CTaskDock*)m_task)->Start(dock, part);
+}
+
+// Manoeuvre une catapulte.
+
+Error CTaskManager::StartTaskCatapult(CObject *catapult, int part)
+{
+	m_task = new CTaskCatapult(m_iMan, m_object);
+	return ((CTaskCatapult*)m_task)->Start(catapult, part);
+}
+
+// Manoeuvre un trax.
+
+Error CTaskManager::StartTaskTrax(CObject *trax, int part)
+{
+	m_task = new CTaskTrax(m_iMan, m_object);
+	return ((CTaskTrax*)m_task)->Start(trax, part);
+}
+
+// Manoeuvre une perforatrice.
+
+Error CTaskManager::StartTaskPerfo(CObject *perfo, int part)
+{
+	m_task = new CTaskPerfo(m_iMan, m_object);
+	return ((CTaskPerfo*)m_task)->Start(perfo, part);
+}
+
+// Manoeuvre un canon.
+
+Error CTaskManager::StartTaskGun(CObject *gun, int part)
+{
+	m_task = new CTaskGun(m_iMan, m_object);
+	return ((CTaskGun*)m_task)->Start(gun, part);
+}
+
+// Boit une fiole.
+
+Error CTaskManager::StartTaskDrink(CObject *fiole)
+{
+	m_task = new CTaskDrink(m_iMan, m_object);
+	return ((CTaskDrink*)m_task)->Start(fiole);
+}
+
+// S'envole avec un ballon.
+
+Error CTaskManager::StartTaskGoal(CObject *goal)
+{
+	m_task = new CTaskGoal(m_iMan, m_object);
+	return ((CTaskGoal*)m_task)->Start(goal);
+}
+
+// Plonge.
+
+Error CTaskManager::StartTaskDive(CObject *dive)
+{
+	m_task = new CTaskDive(m_iMan, m_object);
+	return ((CTaskDive*)m_task)->Start(dive);
 }
 
 // Tire.
@@ -117,6 +207,31 @@ BOOL CTaskManager::IsPilot()
 }
 
 
+// Indique si la tâche en cours est annulable.
+
+BOOL CTaskManager::IsUndoable()
+{
+	if ( m_task == 0 )  return FALSE;
+	return m_task->IsUndoable();
+}
+
+// Indique si la tâche en cours est stoppable.
+
+BOOL CTaskManager::IsStopable()
+{
+	if ( m_task == 0 )  return FALSE;
+	return m_task->IsStopable();
+}
+
+// Stoppe proprement la tâche en cours.
+
+BOOL CTaskManager::Stop()
+{
+	if ( m_task == 0 )  return FALSE;
+	return m_task->Stop();
+}
+
+
 // Termine brutalement l'action en cours.
 
 BOOL CTaskManager::Abort()
@@ -125,4 +240,11 @@ BOOL CTaskManager::Abort()
 	return m_task->Abort();
 }
 
+
+// Retourne la tache en cours.
+
+CTask* CTaskManager::RetRunningTask()
+{
+	return m_task;
+}
 

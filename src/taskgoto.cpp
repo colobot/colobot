@@ -16,16 +16,16 @@
 #include "terrain.h"
 #include "water.h"
 #include "object.h"
-#include "physics.h"
-#include "brain.h"
+#include "particule.h"
+#include "motion.h"
+#include "motionblupi.h"
+#include "motionbot.h"
 #include "task.h"
 #include "taskgoto.h"
 
 
 
-#define FLY_DIST_GROUND	80.0f		// distance minimale pour rester au sol
-#define FLY_DEF_HEIGHT	50.0f		// hauteur de vol par défaut
-#define BM_DIM_STEP		5.0f
+#define BM_DIM_STEP		8.0f
 
 
 
@@ -37,14 +37,22 @@ CTaskGoto::CTaskGoto(CInstanceManager* iMan, CObject* object)
 {
 	CTask::CTask(iMan, object);
 
-	m_bmArray = 0;
+	m_bStopPending = FALSE;
+
+	m_dimTile = m_terrain->RetDimTile();
+	m_nbTiles = m_terrain->RetNbTiles();
+	m_nbTiles2 = m_nbTiles/2;
+
+	m_listTable = 0;
+	m_listFlags = 0;
+	m_listTotal = 0;
 }
 
 // Destructeur de l'objet.
 
 CTaskGoto::~CTaskGoto()
 {
-	BitmapClose();
+	ListFlush();
 }
 
 
@@ -54,507 +62,167 @@ BOOL CTaskGoto::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, goal;
 	FPOINT		rot, repulse;
-	float		a, g, dist, linSpeed, cirSpeed, h;
-	Error		ret;
+	float		a, g, dist, speed, move, dir, factor;
+	float		linSpeed, cirSpeed;
 
 	if ( m_engine->RetPause() )  return TRUE;
 	if ( event.event != EVENT_FRAME )  return TRUE;
 
-	// Objet momentanément immobile (fourmi sur le dos) ?
-	if ( m_object->RetFixed() )
-	{
-		m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
-		m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
-		return TRUE;
-	}
-
 	if ( m_error != ERR_OK )  return FALSE;
 
-	if ( m_phase == TGP_BEAMLEAK )  // fuite ?
+	m_totalTime += event.rTime;
+
+	if ( m_phase == TGP_GOTO && m_pathIndex >= 0 )  // goto dot list ?
 	{
-		m_leakTime += event.rTime;
-
-		pos = m_object->RetPosition(0);
-
-		rot.x = m_leakPos.x-pos.x;
-		rot.y = m_leakPos.z-pos.z;
-		dist = Length(rot.x, rot.y);
-		rot.x /= dist;
-		rot.y /= dist;
+		pos = m_object->RetPosition(0);  // position actuelle
+		goal = m_pathPos[m_pathIndex];  // position à atteindre
+		dist = Length2d(pos, goal);  // longueur à avancer
+		rot.x = (goal.x-pos.x)/dist;
+		rot.y = (goal.z-pos.z)/dist;
 
 		a = m_object->RetAngleY(0);
 		g = RotateAngle(rot.x, -rot.y);  // CW !
-		a = Direction(a, g)*1.0f;
-		cirSpeed = a;
-		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
-		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
-
-		a = NormAngle(a);
-		if ( a > PI*0.5f && a < PI*1.5f )
+		speed = m_motion->RetCirSpeed();
+		if ( m_object->RetStrong() > 0.0f )  speed *= 1.5f;
+		if ( m_object->RetStrong() < 0.0f )  speed *= 0.7f;
+		dir = Direction(a, g);
+		if ( g-a > PI )  g -= PI*2.0f;
+		if ( a-g > PI )  a -= PI*2.0f;
+		if ( a < g )
 		{
-			linSpeed = 1.0f;  // obstacle derrière -> avance
-			cirSpeed = -cirSpeed;
+			a += speed*event.rTime;  // rotation CCW
+			if ( a > g )  a = g;
 		}
 		else
 		{
-			linSpeed = -1.0f;  // obstacle devant -> recule
+			a -= speed*event.rTime;  // rotation CW
+			if ( a < g )  a = g;
 		}
+		m_object->SetAngleY(0, NormAngle(a));
 
-		if ( m_bLeakRecede )
+		if ( Abs(dir) < 50.0f*PI/180.0f )  // presque fini de tourner ?
 		{
-			linSpeed = -1.0f;
+			linSpeed = 1.0f;
 			cirSpeed = 0.0f;
-		}
-
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
-		m_physics->SetMotorSpeedX(linSpeed);  // avance
-		return TRUE;
-	}
-
-	if ( m_phase == TGP_BEAMSEARCH )  // recherche chemin ?
-	{
-		if ( m_bmStep == 0 )
-		{
-			// Libère la zone autour du départ.
-			BitmapClearCircle(m_object->RetPosition(0), BM_DIM_STEP*1.8f);
-		}
-
-		pos = m_object->RetPosition(0);
-
-		if ( m_bmFretObject == 0 )
-		{
-			goal = m_goal;
-			dist = 0.0f;
-		}
-		else
-		{
-			goal = m_goalObject;
-			dist = TAKE_DIST+2.0f;
-		}
-
-		ret = BeamSearch(pos, goal, dist);
-		if ( ret == ERR_OK )
-		{
-#if 0
-			D3DVECTOR	min, max;
-			min = pos;
-			max = m_goal;
-			if ( min.x > max.x )  Swap(min.x, max.x);
-			if ( min.z > max.z )  Swap(min.z, max.z);
-			min.x -= 50.0f;
-			min.z -= 50.0f;
-			max.x += 50.0f;
-			max.z += 50.0f;
-			BitmapDebug(min, max, m_object->RetPosition(0), m_goal);
-#endif
-			if ( m_physics->RetLand() )  m_phase = TGP_BEAMWCOLD;
-			else                         m_phase = TGP_BEAMGOTO;
-			m_bmIndex = 0;
-			m_bmWatchDogPos = m_object->RetPosition(0);
-			m_bmWatchDogTime = 0.0f;
-		}
-		if ( ret == ERR_GOTO_IMPOSSIBLE || ret == ERR_GOTO_ITER )
-		{
-#if 0
-			D3DVECTOR	min, max;
-			min = pos;
-			max = m_goal;
-			if ( min.x > max.x )  Swap(min.x, max.x);
-			if ( min.z > max.z )  Swap(min.z, max.z);
-			min.x -= 50.0f;
-			min.z -= 50.0f;
-			max.x += 50.0f;
-			max.z += 50.0f;
-			BitmapDebug(min, max, m_object->RetPosition(0), m_goal);
-#endif
-			m_error = ret;
-			return FALSE;
-		}
-		return TRUE;
-	}
-
-	if ( m_phase == TGP_BEAMWCOLD )  // attend refroidissement réacteur ?
-	{
-		return TRUE;
-	}
-
-	if ( m_phase == TGP_BEAMUP )  // décolle ?
-	{
-		m_physics->SetMotorSpeedY(1.0f);  // monte
-		return TRUE;
-	}
-
-	if ( m_phase == TGP_BEAMGOTO )  // goto dot list ?
-	{
-		if ( m_physics->RetCollision() )  // collision ?
-		{
-			m_physics->SetCollision(FALSE);  // y'a plus
-		}
-
-		pos = m_object->RetPosition(0);
-
-		rot.x = m_bmPoints[m_bmIndex].x-pos.x;
-		rot.y = m_bmPoints[m_bmIndex].z-pos.z;
-		dist = Length(rot.x, rot.y);
-		rot.x /= dist;
-		rot.y /= dist;
-
-		a = m_object->RetAngleY(0);
-		g = RotateAngle(rot.x, -rot.y);  // CW !
-		cirSpeed = Direction(a, g)*2.0f;
-		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
-		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
-		if ( dist < 4.0f )  cirSpeed *= dist/4.0f;  // si proche -> tourne moins
-
-		if ( m_bmIndex == m_bmTotal )  // dernier point ?
-		{
-			linSpeed = dist/(m_physics->RetLinStopLength()*1.5f);
-			if ( linSpeed > 1.0f )  linSpeed = 1.0f;
-		}
-		else
-		{
-			linSpeed = 1.0f;  // fonce sans s'arrêter
-		}
-
-		linSpeed *= 1.0f-(1.0f-0.3f)*Abs(cirSpeed);
-
-//?		if ( dist < 20.0f && Abs(cirSpeed) >= 0.5f )
-		if ( Abs(cirSpeed) >= 0.2f )
-		{
-			linSpeed = 0.0f;  // tourne d'abord, puis avance
-		}
-
-		dist = Length2d(pos, m_bmWatchDogPos);
-		if ( dist < 1.0f && linSpeed != 0.0f )
-		{
-			m_bmWatchDogTime += event.rTime;
-		}
-		else
-		{
-			m_bmWatchDogTime = 0.0f;
-			m_bmWatchDogPos = pos;
-		}
-
-		if ( m_bmWatchDogTime >= 1.0f )  // immobile depuis longtemps ?
-		{
-			m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
-			m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
-			BeamStart();  // on recommence tout
-			return TRUE;
-		}
-
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
-		m_physics->SetMotorSpeedX(linSpeed);  // avance
-		return TRUE;
-	}
-
-	if ( m_phase == TGP_BEAMDOWN )  // atterri ?
-	{
-		m_physics->SetMotorSpeedY(-0.5f);  // tombe
-		return TRUE;
-	}
-
-	if ( m_phase == TGP_LAND )  // atterri ?
-	{
-		m_physics->SetMotorSpeedY(-0.5f);  // tombe
-		return TRUE;
-	}
-
-	if ( m_goalMode == TGG_EXPRESS )
-	{
-		if ( m_crashMode == TGC_HALT )
-		{
-			if ( m_physics->RetCollision() )  // collision ?
+			speed = m_motion->RetLinSpeed();
+			if ( m_object->RetStrong() > 0.0f )  speed *= 1.5f;
+			if ( m_object->RetStrong() < 0.0f )  speed *= 0.7f;
+			factor = 1.0f;
+			if ( m_totalAdvance < m_linStopLength )  // première droite ?
 			{
-				m_physics->SetCollision(FALSE);  // y'a plus
-				m_error = ERR_STOP;
-				return TRUE;
+				factor = 1.0f-(m_linStopLength-m_totalAdvance)/m_linStopLength;
+				factor = 0.2f+factor*0.8f;
 			}
+			if ( m_pathIndex == 0 &&  // dernière droite ?
+				 dist < m_linStopLength )
+			{
+				factor = 1.0f-(m_linStopLength-dist)/m_linStopLength;
+				factor = 0.2f+factor*0.8f;
+			}
+			speed *= factor;
+			linSpeed *= factor;
+			move = speed*event.rTime;
+			if ( move > dist )  move = dist;
+			pos = pos + (goal-pos)*move/dist;
+			m_totalAdvance += move;
 		}
-
-		pos = m_object->RetPosition(0);
-
-		if ( m_altitude > 0.0f )
+		else
 		{
-			h = m_terrain->RetFloorHeight(pos, TRUE, TRUE);
 			linSpeed = 0.0f;
-			if ( h < m_altitude )
-			{
-				linSpeed = 0.1f;  // monte
-			}
-			if ( h > m_altitude )
-			{
-				linSpeed = -0.2f;  // descend
-			}
-			m_physics->SetMotorSpeedY(linSpeed);
+			cirSpeed = 1.0f;
 		}
+		ProgressLinSpeed(linSpeed);
+		ProgressCirSpeed(cirSpeed);
+		m_object->SetPosition(0, pos);
 
-		rot.x = m_goal.x-pos.x;
-		rot.y = m_goal.z-pos.z;
-		a = m_object->RetAngleY(0);
-		g = RotateAngle(rot.x, -rot.y);  // CW !
-		cirSpeed = Direction(a, g)*1.0f;
-		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
-		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
-
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
-		m_physics->SetMotorSpeedX(1.0f);  // avance
 		return TRUE;
 	}
 
-	if ( m_phase == TGP_ADVANCE )  // va vers l'objectif ?
-	{
-		if ( m_physics->RetCollision() )  // collision ?
-		{
-			m_physics->SetCollision(FALSE);  // y'a plus
-			m_time = 0.0f;
-			m_phase = TGP_CRWAIT;
-			return TRUE;
-		}
-
-#if 0
-		pos = m_object->RetPosition(0);
-		a = m_object->RetAngleY(0);
-		g = RotateAngle(m_goal.x-pos.x, pos.z-m_goal.z);  // CW !
-		cirSpeed = Direction(a, g)*1.0f;
-		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
-		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
-
-		dist = Length2d(m_goal, pos);
-		linSpeed = dist/(m_physics->RetLinStopLength()*1.5f);
-		if ( linSpeed >  1.0f )  linSpeed =  1.0f;
-
-		if ( dist < 20.0f && Abs(cirSpeed) >= 0.5f )
-		{
-			linSpeed = 0.0f;  // tourne d'abord, puis avance
-		}
-#else
-		pos = m_object->RetPosition(0);
-
-		rot.x = m_goal.x-pos.x;
-		rot.y = m_goal.z-pos.z;
-		dist = Length(rot.x, rot.y);
-		rot.x /= dist;
-		rot.y /= dist;
-
-		ComputeRepulse(repulse);
-		rot.x += repulse.x*2.0f;
-		rot.y += repulse.y*2.0f;
-
-		a = m_object->RetAngleY(0);
-		g = RotateAngle(rot.x, -rot.y);  // CW !
-		cirSpeed = Direction(a, g)*1.0f;
-		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
-		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
-
-		dist = Length2d(m_goal, pos);
-		linSpeed = dist/(m_physics->RetLinStopLength()*1.5f);
-		if ( linSpeed > 1.0f )  linSpeed =  1.0f;
-
-		linSpeed *= 1.0f-(1.0f-0.3f)*Abs(cirSpeed);
-
-		if ( dist < 20.0f && Abs(cirSpeed) >= 0.5f )
-		{
-			linSpeed = 0.0f;  // tourne d'abord, puis avance
-		}
-#endif
-
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
-		m_physics->SetMotorSpeedX(linSpeed);  // avance
-	}
-
-	if ( m_phase == TGP_TURN   ||  // tourne vers l'objet ?
-		 m_phase == TGP_CRTURN ||  // tourne après collision ?
-		 m_phase == TGP_CLTURN )   // tourne après collision ?
+	if ( m_phase == TGP_TURN )  // tourne vers l'objet ?
 	{
 		a = m_object->RetAngleY(0);
 		g = m_angle;
-		cirSpeed = Direction(a, g)*1.0f;
-		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
-		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
-
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
-	}
-
-	if ( m_phase == TGP_CRWAIT ||  // attend après collision ?
-		 m_phase == TGP_CLWAIT )   // attend après collision ?
-	{
-		m_time += event.rTime;
-		m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
-		m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
-	}
-
-	if ( m_phase == TGP_CRADVANCE )  // avance après collision ?
-	{
-		if ( m_physics->RetCollision() )  // collision ?
+		speed = m_motion->RetCirSpeed();
+		if ( m_object->RetStrong() > 0.0f )  speed *= 1.5f;
+		if ( m_object->RetStrong() < 0.0f )  speed *= 0.7f;
+		if ( g-a > PI )  g -= PI*2.0f;
+		if ( a-g > PI )  a -= PI*2.0f;
+		if ( a < g )
 		{
-			m_physics->SetCollision(FALSE);  // y'a plus
-			m_time = 0.0f;
-			m_phase = TGP_CLWAIT;
-			return TRUE;
+			a += speed*event.rTime;  // rotation CCW
+			if ( a > g )  a = g;
 		}
-		m_physics->SetMotorSpeedX(0.5f);  // avance mollo
-	}
-
-	if ( m_phase == TGP_CLADVANCE )  // avance après collision ?
-	{
-		if ( m_physics->RetCollision() )  // collision ?
+		else
 		{
-			m_physics->SetCollision(FALSE);  // y'a plus
-			m_time = 0.0f;
-			m_phase = TGP_CRWAIT;
-			return TRUE;
+			a -= speed*event.rTime;  // rotation CW
+			if ( a < g )  a = g;
 		}
-		m_physics->SetMotorSpeedX(0.5f);  // avance mollo
+		m_object->SetAngleY(0, NormAngle(a));
+		ProgressLinSpeed(0.0f);
+		ProgressCirSpeed(1.0f);
 	}
 
-	if ( m_phase == TGP_MOVE )  // avance finale ?
+	if ( m_phase == TGP_RUSH )  // élan initial ?
 	{
-		m_bmTimeLimit -= event.rTime;
-		m_physics->SetMotorSpeedX(1.0f);
+		m_delay -= event.rTime;
 	}
 
 	return TRUE;
 }
 
-
-
 // Assigne le but à atteindre.
-// "dist" est la distance de laquelle il faut s'éloigner pour
-// prendre ou déposer un objet.
 
-Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
-					   TaskGotoGoal goalMode, TaskGotoCrash crashMode)
+Error CTaskGoto::Start(D3DVECTOR goal, CObject *target, int part)
 {
 	D3DVECTOR	pos;
-	CObject*	target;
-	ObjectType	type;
-	float		dist;
-	int			x, y;
 
-	type = m_object->RetType();
+	goal.y = 0.0f+m_object->RetCharacter()->height;
 
-	if ( goalMode == TGG_DEFAULT )
-	{
-		goalMode = TGG_STOP;
-	}
-
-	if ( crashMode == TGC_DEFAULT )
-	{
-		crashMode = TGC_BEAM;
-	}
-
-	m_altitude   = altitude;
-	m_goalMode   = goalMode;
-	m_crashMode  = crashMode;
+	m_type = m_object->RetType();
+	m_typeTarget = OBJECT_NULL;
 	m_goalObject = goal;
 	m_goal       = goal;
+	m_phase      = TGP_GOTO;
+	m_error      = ERR_OK;
+	m_bFinalTurn = FALSE;
+	m_bFinalRush = FALSE;
+	m_finalAngle = 0.0f;
+	m_linStopLength = 1.5f;
+	m_totalAdvance = 0.0f;
+	m_finalMargin = 0.0f;
+	m_totalTime = 0.0f;
 
-	m_bTake = FALSE;
-	m_phase = TGP_ADVANCE;
-	m_error = ERR_OK;
-	m_try = 0;
-	m_bmFretObject = 0;
-	m_bmFinalMove = 0.0f;
+	if ( target != 0 )
+	{
+		m_goal = target->RetPosition(0);
+		m_goal.y += m_object->RetCharacter()->height;
+		AdjustTarget(target, part);
+	}
+
+	m_goalx = (int)(m_goal.x/m_dimTile) + m_nbTiles2;
+	m_goaly = (int)(m_goal.z/m_dimTile) + m_nbTiles2;
 
 	pos = m_object->RetPosition(0);
-	dist = Length2d(pos, m_goal);
-	if ( dist < 10.0f && m_crashMode == TGC_BEAM )
+	pos = Grid(pos, 8.0f);
+
+	if ( m_type == OBJECT_BLUPI &&
+		 target != 0            &&
+		 m_bFinalTurn           &&
+		 ((m_typeTarget >= OBJECT_BOX1  && m_typeTarget <= OBJECT_BOX6 ) ||
+		  (m_typeTarget >= OBJECT_BOX8  && m_typeTarget <= OBJECT_BOX9 ) ||
+		  (m_typeTarget >= OBJECT_BOX11 && m_typeTarget <= OBJECT_BOX20) ||
+		  (m_typeTarget >= OBJECT_KEY1  && m_typeTarget <= OBJECT_KEY5 ) ) &&
+		 pos.x == m_goal.x      &&
+		 pos.z == m_goal.z      )
 	{
-		m_crashMode = TGC_RIGHTLEFT;
+		m_bFinalRush = TRUE;
 	}
 
-	m_bApprox = FALSE;
-	if ( type == OBJECT_HUMAN    ||
-		 type == OBJECT_TECH     ||
-		 type == OBJECT_MOBILEfb ||
-		 type == OBJECT_MOBILEob ||
-		 type == OBJECT_TRAX     ||
-		 type == OBJECT_UFO      ||
-		 type == OBJECT_CARROT   ||
-		 type == OBJECT_STARTER  ||
-		 type == OBJECT_WALKER   ||
-		 type == OBJECT_CRAZY    ||
-		 type == OBJECT_EVIL1    ||
-		 type == OBJECT_EVIL2    ||
-		 type == OBJECT_EVIL3    ||
-		 type == OBJECT_EVIL4    ||
-		 type == OBJECT_EVIL5    )
+	if ( !PathFinder(pos, m_goal) )
 	{
-		m_bApprox = TRUE;
+		m_error = ERR_GOTO_BUSY;
+		return m_error;
 	}
-
-	if ( !m_bApprox && m_crashMode != TGC_BEAM )
-	{
-		target = SearchTarget(goal, 1.0f);
-		if ( target != 0 )
-		{
-			m_goal = target->RetPosition(0);
-			dist = 0.0f;
-			if ( !AdjustBuilding(m_goal, 1.0f, dist) )
-			{
-				dist = 0.0f;
-				AdjustTarget(target, m_goal, dist);
-			}
-			m_bTake = TRUE;  // objet à prendre à l'arrivée (rotation finale)
-		}
-	}
-
-	m_lastDistance = 1000.0f;
-	m_physics->SetCollision(FALSE);
-
-	if ( m_crashMode == TGC_BEAM )  // avec l'algorithme des rayons ?
-	{
-		target = SearchTarget(goal, 1.0f);
-		if ( target != 0 )
-		{
-			m_goal = target->RetPosition(0);
-			dist = 4.0f;
-			if ( AdjustBuilding(m_goal, 1.0f, dist) )
-			{
-				m_bmFinalMove = dist;
-			}
-			else
-			{
-				dist = 4.0f;
-				if ( AdjustTarget(target, m_goal, dist) )
-				{
-					m_bmFretObject = target;  // fret posé au sol
-				}
-				else
-				{
-					m_bmFinalMove = dist;
-				}
-			}
-			m_bTake = TRUE;  // objet à prendre à l'arrivée (rotation finale)
-		}
-
-		BeamStart();
-
-		if ( m_bmFretObject == 0 && type != OBJECT_TRAX )
-		{
-			x = (int)((m_goal.x+1600.0f)/BM_DIM_STEP);
-			y = (int)((m_goal.z+1600.0f)/BM_DIM_STEP);
-			if ( BitmapTestDot(0, x, y) )  // arrivée occupée ?
-			{
-#if 0
-				D3DVECTOR	min, max;
-				min = m_object->RetPosition(0);
-				max = m_goal;
-				if ( min.x > max.x )  Swap(min.x, max.x);
-				if ( min.z > max.z )  Swap(min.z, max.z);
-				min.x -= 50.0f;
-				min.z -= 50.0f;
-				max.x += 50.0f;
-				max.z += 50.0f;
-				BitmapDebug(min, max, m_object->RetPosition(0), m_goal);
-#endif
-				m_error = ERR_GOTO_BUSY;
-				return m_error;
-			}
-		}
-	}
-
 	return ERR_OK;
 }
 
@@ -562,329 +230,164 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
 
 Error CTaskGoto::IsEnded()
 {
-	D3DVECTOR	pos;
-	float		limit, angle, dist;
+	D3DVECTOR	pos, goal;
+	float		dist, angle, limit;
 
 	if ( m_engine->RetPause() )  return ERR_CONTINUE;
 	if ( m_error != ERR_OK )  return m_error;
 
-	pos = m_object->RetPosition(0);
-
-	if ( m_phase == TGP_BEAMLEAK )  // fuite ?
+	if ( m_phase == TGP_GOTO )  // goto dot list ?
 	{
-		if ( m_leakTime >= m_leakDelay )
+		pos = m_object->RetPosition(0);  // position actuelle
+
+		if ( m_pathIndex >= 0 )
 		{
-			m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
-			m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
-			BeamInit();
-			m_phase = TGP_BEAMSEARCH;  // faudra chercher le chemin
+			if ( m_pathIndex == 0 )
+			{
+				if ( m_finalMargin == 0.0f )
+				{
+					limit = 0.2f;  // précis si dernier point
+				}
+				else
+				{
+					limit = m_finalMargin;
+				}
+			}
+			else
+			{
+				limit = 1.0f;  // moins précis si pas dernier point
+			}
+			goal = m_pathPos[m_pathIndex];  // position à atteindre
+			dist = Length2d(pos, goal);  // longueur à avancer
 		}
-		return ERR_CONTINUE;
-	}
-
-	if ( m_phase == TGP_BEAMSEARCH )  // recherche du chemin ?
-	{
-		return ERR_CONTINUE;
-	}
-
-	if ( m_phase == TGP_BEAMWCOLD )  // attend refroidissement réacteur ?
-	{
-		m_phase = TGP_BEAMUP;
-	}
-
-	if ( m_phase == TGP_BEAMUP )  // décolle ?
-	{
-		m_phase = TGP_BEAMGOTO;
-	}
-
-	if ( m_phase == TGP_BEAMGOTO )  // goto dot list ?
-	{
-		if ( m_physics->RetLand() )  // au sol ?
+		else
 		{
 			limit = 1.0f;
+			dist = 0.0f;
 		}
-		else	// en vol ?
+
+		if ( dist < limit )
 		{
-			limit = 2.0f;
-			if ( m_bmIndex < m_bmTotal )  limit *= 2.0f;  // point intermédiaire
-		}
-		if ( m_bApprox )  limit = 2.0f;
+			JostleObject(pos);
 
-		if ( Abs(pos.x - m_bmPoints[m_bmIndex].x) < limit &&
-			 Abs(pos.z - m_bmPoints[m_bmIndex].z) < limit )
-		{
-			m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
-			m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
+			m_pathIndex --;  // index point suivant à atteindre
 
-			m_bmIndex = BeamShortcut();
-
-			if ( m_bmIndex > m_bmTotal )
+			if ( m_pathIndex >= 0 &&  // pas encore arrivé ?
+				 !m_bStopPending )
 			{
-				m_phase = TGP_BEAMDOWN;
+				// Nouvel obstacle survenu entre-temps ?
+				if ( IsLockZone(m_pathPos[m_pathIndex]) )
+				{
+					pos = m_object->RetPosition(0);
+					pos = Grid(pos, 8.0f);
+					if ( !PathFinder(pos, m_goal) )  // nouveau chemin
+					{
+						ProgressLinSpeed(0.0f);
+						ProgressCirSpeed(0.0f);
+						m_error = ERR_GOTO_BUSY;
+						return m_error;
+					}
+					return ERR_CONTINUE;
+				}
 			}
-		}
-	}
-
-	if ( m_phase == TGP_BEAMDOWN )  // atteri ?
-	{
-		if ( m_bTake )
-		{
-			m_angle = RotateAngle(m_goalObject.x-pos.x, pos.z-m_goalObject.z);
-			m_phase = TGP_TURN;
-		}
-		else
-		{
-			m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
-			m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
-			return ERR_STOP;
-		}
-	}
-
-	if ( m_goalMode == TGG_EXPRESS )
-	{
-		dist = Length2d(m_goal, pos);
-		if ( dist < 10.0f && dist > m_lastDistance )
-		{
-			return ERR_STOP;
-		}
-		m_lastDistance = dist;
-	}
-
-	if ( m_phase == TGP_ADVANCE )  // va vers l'objectif ?
-	{
-		if ( m_physics->RetLand() )  limit = 0.1f;  // au sol
-		else                         limit = 1.0f;  // en vol
-		if ( m_bApprox )  limit = 2.0f;
-
-		if ( Abs(pos.x - m_goal.x) < limit &&
-			 Abs(pos.z - m_goal.z) < limit )
-		{
-			m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
-			m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
-			m_phase = TGP_LAND;
-		}
-	}
-
-	if ( m_phase == TGP_LAND )  // atterri ?
-	{
-		if ( m_bTake )
-		{
-			m_angle = RotateAngle(m_goalObject.x-pos.x, pos.z-m_goalObject.z);
-			m_phase = TGP_TURN;
-		}
-		else
-		{
-			return ERR_STOP;
+			else	// est-on arrivé ?
+			{
+				if ( m_bFinalTurn )
+				{
+					m_angle = RotateAngle(m_goalObject.x-pos.x, pos.z-m_goalObject.z);
+					m_angle += m_finalAngle;
+					m_angle = Grid(m_angle, PI/2.0f);
+					m_angle = NormAngle(m_angle);
+					m_phase = TGP_TURN;
+				}
+				else
+				{
+					ProgressLinSpeed(0.0f);
+					ProgressCirSpeed(0.0f);
+					FreeLockZone();
+					return ERR_STOP;
+				}
+			}
 		}
 	}
 
 	if ( m_phase == TGP_TURN )  // tourne vers l'objet ?
 	{
 		angle = NormAngle(m_object->RetAngleY(0));
-		limit = 0.02f;
-		if ( m_bApprox )  limit = 0.10f;
-		if ( Abs(angle-m_angle) < limit )
+		if ( Abs(angle-m_angle) < 0.02f )
 		{
-			m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
-			if ( m_bmFinalMove == 0.0f )  return ERR_STOP;
+			m_object->SetAngleY(0, m_angle);
+			ProgressLinSpeed(0.0f);
+			ProgressCirSpeed(0.0f);
+			FreeLockZone();
 
-			m_bmFinalPos = m_object->RetPosition(0);
-			m_bmFinalDist = m_physics->RetLinLength(m_bmFinalMove);
-			m_bmTimeLimit = m_physics->RetLinTimeLength(Abs(m_bmFinalMove))*1.5f;
-			if ( m_bmTimeLimit < 0.5f )  m_bmTimeLimit = 0.5f;
-			m_phase = TGP_MOVE;
-		}
-	}
-
-	if ( m_phase == TGP_CRWAIT )  // attend après collision ?
-	{
-		if ( m_crashMode == TGC_HALT )
-		{
-			m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
-			m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
-			m_error = ERR_GENERIC;
-			return m_error;
-		}
-		if ( m_time >= 1.0f )
-		{
-			if ( m_crashMode == TGC_RIGHTLEFT ||
-				 m_crashMode == TGC_RIGHT     )  angle =  PI/2.0f;  // 90 à droite
-			else                            angle = -PI/2.0f;  // 90 à gauche
-			m_angle = NormAngle(m_object->RetAngleY(0)+angle);
-			m_phase = TGP_CRTURN;
-//?			m_phase = TGP_ADVANCE;
-		}
-	}
-
-	if ( m_phase == TGP_CRTURN )  // tourne après collision ?
-	{
-		angle = NormAngle(m_object->RetAngleY(0));
-		limit = 0.1f;
-		if ( Abs(angle-m_angle) < limit )
-		{
-			m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
-			m_pos = pos;
-			m_phase = TGP_CRADVANCE;
-		}
-	}
-
-	if ( m_phase == TGP_CRADVANCE )  // avance après collision ?
-	{
-		if ( Length(pos, m_pos) >= 5.0f )
-		{
-			m_phase = TGP_ADVANCE;
-		}
-	}
-
-	if ( m_phase == TGP_CLWAIT )  // attend après collision ?
-	{
-		if ( m_time >= 1.0f )
-		{
-			if ( m_crashMode == TGC_RIGHTLEFT )  angle = -PI;
-			if ( m_crashMode == TGC_LEFTRIGHT )  angle =  PI;
-			if ( m_crashMode == TGC_RIGHT     )  angle =  PI/2.0f;
-			if ( m_crashMode == TGC_LEFT      )  angle = -PI/2.0f;
-			m_angle = NormAngle(m_object->RetAngleY(0)+angle);
-			m_phase = TGP_CLTURN;
-		}
-	}
-
-	if ( m_phase == TGP_CLTURN )  // tourne après collision ?
-	{
-		angle = NormAngle(m_object->RetAngleY(0));
-		limit = 0.1f;
-		if ( Abs(angle-m_angle) < limit )
-		{
-			m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
-			m_pos = pos;
-			m_phase = TGP_CLADVANCE;
-		}
-	}
-
-	if ( m_phase == TGP_CLADVANCE )  // avance après collision ?
-	{
-		if ( Length(pos, m_pos) >= 10.0f )
-		{
-			m_phase = TGP_ADVANCE;
-			m_try ++;
-		}
-	}
-
-	if ( m_phase == TGP_MOVE )  // avance finale ?
-	{
-		if ( m_bmTimeLimit <= 0.0f )
-		{
-			m_physics->SetMotorSpeedX(0.0f);  // stoppe
-			Abort();
+			if ( m_bFinalRush && m_totalTime < 0.8f )
+			{
+				StartAction(MBLUPI_RUSH);
+				m_phase = TGP_RUSH;
+				m_delay = 0.8f-m_totalTime;
+				return ERR_CONTINUE;
+			}
 			return ERR_STOP;
 		}
+	}
 
-		dist = Length(m_bmFinalPos, m_object->RetPosition(0));
-		if ( dist < m_bmFinalDist )  return ERR_CONTINUE;
-		m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
-		return ERR_STOP;
+	if ( m_phase == TGP_RUSH )  // élan initial ?
+	{
+		if ( m_delay <= 0.0f )
+		{
+			StartAction(MBLUPI_WAIT);
+			return ERR_STOP;
+		}
 	}
 
 	return ERR_CONTINUE;
 }
 
 
-// Cherche l'objet à la position cible.
+// Termine brutalement l'action en cours.
 
-CObject* CTaskGoto::SearchTarget(D3DVECTOR pos, float margin)
+BOOL CTaskGoto::Abort()
 {
-	CObject		*pObj, *pBest;
-	ObjectType	type;
-	D3DVECTOR	oPos;
-	float		dist, min;
-	int			i;
-
-	type = m_object->RetType();
-	if ( type == OBJECT_TRAX )  return 0;
-
-	pBest = 0;
-	min = 1000000.0f;
-	for ( i=0 ; i<1000000 ; i++ )
+	if ( m_pathIndex >= 0 )
 	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		if ( !pObj->RetActif() )  continue;
-		if ( pObj->RetTruck() != 0 )  continue;  // objet porté ?
-
-		oPos = pObj->RetPosition(0);
-		dist = Length2d(pos, oPos);
-
-		if ( dist <= margin && dist <= min )
-		{
-			min = dist;
-			pBest = pObj;
-		}
+		m_lastPos = m_pathPos[m_pathIndex];
+		FreeLockZone();
 	}
-
-	return pBest;
+	return TRUE;
 }
 
-// Ajuste la cible en fonction de l'objet.
-// Retourne TRUE s'il s'agit de fret posé au sol, dont on peut
-// s'approcher par n'importe quel côté.
+// Indique si la tache en cours est stoppable.
 
-BOOL CTaskGoto::AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance)
+BOOL CTaskGoto::IsStopable()
 {
-	ObjectType	type;
-	D3DVECTOR	goal;
-	float		dist, suppl;
-
-	type = pObj->RetType();
-
-	if ( type == OBJECT_FRET         ||
-		 type == OBJECT_STONE        ||
-		 type == OBJECT_URANIUM      ||
-		 type == OBJECT_METAL        ||
-		 type == OBJECT_BARREL       ||
-		 type == OBJECT_ATOMIC       ||
-		 type == OBJECT_BULLET       ||
-		 type == OBJECT_BBOX         ||
-		 type == OBJECT_KEYa         ||
-		 type == OBJECT_KEYb         ||
-		 type == OBJECT_KEYc         ||
-		 type == OBJECT_KEYd         ||
-		 type == OBJECT_TNT          ||
-		 type == OBJECT_BOMB         ||
-		 type == OBJECT_RUINmobilew1 ||
-		 type == OBJECT_RUINmobilew2 ||
-		 type == OBJECT_RUINmobilet1 ||
-		 type == OBJECT_RUINmobilet2 ||
-		 type == OBJECT_RUINmobiler1 ||
-		 type == OBJECT_RUINmobiler2 )
-	{
-		pos = m_object->RetPosition(0);
-		goal = pObj->RetPosition(0);
-		dist = Length(goal, pos);
-		pos = (pos-goal)*(TAKE_DIST+distance)/dist + goal;
-		return TRUE;  // approche par tous les côtés
-	}
-
-	if ( GetHotPoint(pObj, goal, TRUE, distance, suppl) )
-	{
-		pos = goal;
-		distance += suppl;
-		return FALSE;  // approche unique
-	}
-
-	pos = pObj->RetPosition(0);
-	distance = 0.0f;
-	return FALSE;  // approche unique
+	return !m_bStopPending;
 }
 
-// S'il on est sur un objet produit par un bâtiment (minerai produit
-// par derrick), modifie la position par-rapport au bâtiment.
+// Stoppe proprement la tache en cours.
 
-BOOL CTaskGoto::AdjustBuilding(D3DVECTOR &pos, float margin, float &distance)
+BOOL CTaskGoto::Stop()
+{
+	if ( m_bStopPending )  return FALSE;
+
+	if ( m_phase == TGP_GOTO )  // goto dot list ?
+	{
+		m_bStopPending = TRUE;
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+
+// Fait bouger les ballons et les plantes.
+
+void CTaskGoto::JostleObject(D3DVECTOR center)
 {
 	CObject*	pObj;
-	D3DVECTOR	oPos;
-	float		dist, suppl;
+	D3DVECTOR	pos;
+	ObjectType	type;
+	float		dist;
 	int			i;
 
 	for ( i=0 ; i<1000000 ; i++ )
@@ -892,840 +395,633 @@ BOOL CTaskGoto::AdjustBuilding(D3DVECTOR &pos, float margin, float &distance)
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		if ( !pObj->RetActif() )  continue;
-		if ( pObj->RetTruck() != 0 )  continue;  // objet porté ?
-
-		if ( !GetHotPoint(pObj, oPos, FALSE, 0.0f, suppl) )  continue;
-		dist = Length2d(pos, oPos);
-		if ( dist <= margin )
-		{
-			GetHotPoint(pObj, pos, TRUE, distance, suppl);
-			distance += suppl;
-			return TRUE;
-		}
-	}
-	return FALSE;
-}
-
-// Retourne le point où est produit ou posé qq chose sur un bâtiment.
-
-BOOL CTaskGoto::GetHotPoint(CObject *pObj, D3DVECTOR &pos,
-							BOOL bTake, float distance, float &suppl)
-{
-	ObjectType	type;
-	D3DMATRIX*	mat;
-
-	pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	suppl = 0.0f;
-	type = pObj->RetType();
-
-	if ( type == OBJECT_TOWER )
-	{
-		mat = pObj->RetWorldMatrix(0);
-		pos.x += 5.0f;
-		if ( bTake && distance != 0.0f )  suppl = 4.0f;
-		if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance+suppl;
-		pos = Transform(*mat, pos);
-		return TRUE;
-	}
-
-	if ( type == OBJECT_NUCLEAR )
-	{
-		mat = pObj->RetWorldMatrix(0);
-		pos.x += 22.0f;
-		if ( bTake && distance != 0.0f )  suppl = 4.0f;
-		if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance+suppl;
-		pos = Transform(*mat, pos);
-		return TRUE;
-	}
-
-	suppl = 0.0f;
-	return FALSE;
-}
-
-
-// Cherche un objet trop proche qu'il faut fuire.
-
-BOOL CTaskGoto::LeakSearch(D3DVECTOR &pos, float &delay)
-{
-	CObject		*pObj, *pObstacle;
-	ObjectType	type;
-	D3DVECTOR	iPos, oPos, bPos;
-	float		iRadius, oRadius, bRadius, dist, min, dir;
-	int			i, j;
-
-	type = m_object->RetType();
-	if ( type == OBJECT_TRAX )  return FALSE;
-
-	if ( !m_physics->RetLand() )  return FALSE;  // en vol ?
-
-	m_object->GetCrashSphere(0, iPos, iRadius);
-
-	min = 100000.0f;
-	bRadius = 0.0f;
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		if ( pObj == m_object )  continue;
-		if ( !pObj->RetActif() )  continue;
-		if ( pObj->RetTruck() != 0 )  continue;  // objet porté ?
-
-		j = 0;
-		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
-		{
-			dist = Length2d(oPos, iPos);
-			if ( dist < min )
-			{
-				min = dist;
-				bPos = oPos;
-				bRadius = oRadius;
-				pObstacle = pObj;
-			}
-		}
-	}
-	if ( min > iRadius+bRadius+4.0f )  return FALSE;
-
-	m_bLeakRecede = FALSE;
-
-	dist = 4.0f;
-	dir  = 1.0f;
-
-	pos = bPos;
-	delay = m_physics->RetLinTimeLength(dist, dir);
-	return TRUE;
-}
-
-
-// Calcule la force de répulsion en fonction des obstacles.
-// La longueur du vecteur rendu est comprise entre 0 et 1.
-
-void CTaskGoto::ComputeRepulse(FPOINT &dir)
-{
-	ObjectType	iType, oType;
-	D3DVECTOR	iPos, oPos;
-	FPOINT		repulse;
-	CObject		*pObj;
-	float		gDist, add, addi, fac, dist, iRadius, oRadius;
-	int			i, j;
-
-	dir.x = 0.0f;
-	dir.y = 0.0f;
-
-	iType = m_object->RetType();
-
-	m_object->GetCrashSphere(0, iPos, iRadius);
-	gDist = Length(iPos, m_goal);
-
-	add = m_physics->RetLinStopLength()*1.1f;  // distance de freinage
-	fac = 2.0f;
-
-	if ( iType == OBJECT_CAR      ||
-		 iType == OBJECT_MOBILEtg )  // roues ?
-	{
-		add = 5.0f;
-		fac = 1.5f;
-	}
-	if ( iType == OBJECT_MOBILEfb ||
-		 iType == OBJECT_MOBILEob ||
-		 iType == OBJECT_TRAX     )  // chenilles ?
-	{
-		add = 4.0f;
-		fac = 1.5f;
-	}
-
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		if ( pObj == m_object )  continue;
-		if ( pObj->RetTruck() != 0 )  continue;
-
-		oType = pObj->RetType();
-
-		addi = add;
-		
-		j = 0;
-		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
-		{
-			if ( oPos.y-oRadius > iPos.y+iRadius )  continue;
-			if ( oPos.y+oRadius < iPos.y-iRadius )  continue;
-
-			dist = Length(oPos, m_goal);
-			if ( dist <= 1.0f )  continue;  // sur le but ?
-
-			oRadius += iRadius+addi;
-			dist = Length2d(oPos, iPos);
-			if ( dist > gDist )  continue;  // plus loin que le but ?
-			if ( dist <= oRadius )
-			{
-				repulse.x = iPos.x-oPos.x;
-				repulse.y = iPos.z-oPos.z;
-
-				dist = powf(dist/oRadius, fac);
-				dist = 0.2f-0.2f*dist;
-				repulse.x *= dist;
-				repulse.y *= dist;
-
-				dir.x += repulse.x;
-				dir.y += repulse.y;
-			}
-		}
-	}
-}
-
-// Calcule la force de répulsion verticale en fonction des obstacles.
-// La longueur du vecteur rendu est comprise entre -1 et 1.
-
-void CTaskGoto::ComputeFlyingRepulse(float &dir)
-{
-	ObjectType	oType;
-	D3DVECTOR	iPos, oPos;
-	CObject		*pObj;
-	float		add, fac, dist, iRadius, oRadius, repulse;
-	int			i, j;
-
-	m_object->GetCrashSphere(0, iPos, iRadius);
-
-	add = 0.0f;
-	fac = 1.5f;
-	dir = 0.0f;
-
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		if ( pObj == m_object )  continue;
-		if ( pObj->RetTruck() != 0 )  continue;
-
-		oType = pObj->RetType();
-
-		j = 0;
-		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
-		{
-			oRadius += iRadius+add;
-			dist = Length2d(oPos, iPos);
-			if ( dist <= oRadius )
-			{
-				repulse = iPos.y-oPos.y;
-
-				dist = powf(dist/oRadius, fac);
-				dist = 0.2f-0.2f*dist;
-				repulse *= dist;
-
-				dir += repulse;
-			}
-		}
-	}
-
-	if ( dir < -1.0f )  dir = -1.0f;
-	if ( dir >  1.0f )  dir =  1.0f;
-}
-
-
-
-// Parmi tous les points suivants, cherche s'il en existe un qui
-// permet d'y aller directement à vol d'oiseau. Si oui, saute tous
-// les points intermédiaires inutiles.
-
-int CTaskGoto::BeamShortcut()
-{
-	int		i;
-
-	for ( i=m_bmTotal ; i>=m_bmIndex+2 ; i-- )  // cherche depuis le dernier
-	{
-		if ( BitmapTestLine(m_bmPoints[m_bmIndex], m_bmPoints[i], 0.0f, FALSE) )
-		{
-			return i;  // bingo, trouvé
-		}
-	}
-
-	return m_bmIndex+1;  // va simplement au point suivant
-}
-
-// C'est le grand départ.
-
-void CTaskGoto::BeamStart()
-{
-	D3DVECTOR	min, max;
-
-	BitmapOpen();
-	BitmapObject();
-
-	min = m_object->RetPosition(0);
-	max = m_goal;
-	if ( min.x > max.x )  Swap(min.x, max.x);
-	if ( min.z > max.z )  Swap(min.z, max.z);
-	min.x -= 10.0f*BM_DIM_STEP;
-	min.z -= 10.0f*BM_DIM_STEP;
-	max.x += 10.0f*BM_DIM_STEP;
-	max.z += 10.0f*BM_DIM_STEP;
-	BitmapTerrain(min, max);
-
-	if ( LeakSearch(m_leakPos, m_leakDelay) )
-	{
-		m_phase = TGP_BEAMLEAK;  // il faut d'abord fuire
-		m_leakTime = 0.0f;
-	}
-	else
-	{
-		m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
-		m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
-		BeamInit();
-		m_phase = TGP_BEAMSEARCH;  // faudra chercher le chemin
-	}
-}
-
-// Initialisation avant le premier BeamSearch.
-
-void CTaskGoto::BeamInit()
-{
-	int		i;
-
-	for ( i=0 ; i<MAXPOINTS ; i++ )
-	{
-		m_bmIter[i] = -1;
-	}
-	m_bmStep = 0;
-}
-
-// Calcule les points par où passer pour aller de start à goal.
-// Retourne :
-// ERR_OK si c'est bon
-// ERR_GOTO_IMPOSSIBLE si impossible
-// ERR_GOTO_ITER si avorté car trop de récursions
-// ERR_CONTINUE si pas encore fini
-// goalRadius: distance à laquelle il faut s'approcher du but
-
-Error CTaskGoto::BeamSearch(const D3DVECTOR &start, const D3DVECTOR &goal,
-							float goalRadius)
-{
-	float     step, len;
-	int       nbIter;
-
-	m_bmStep ++;
-
-	len = Length2d(start, goal);
-	step = len/5.0f;
-	if ( step < BM_DIM_STEP*2.1f )  step = BM_DIM_STEP*2.1f;
-	if ( step > 20.0f            )  step = 20.0f;
-	nbIter = 200;  // pour ne pas trop baisser le framerate
-	m_bmIterCounter = 0;
-	return BeamExplore(start, start, goal, goalRadius, 165.0f*PI/180.0f, 22, step, 0, nbIter);
-}
-
-// prevPos: position précédente
-// curPos:  position courante
-// goalPos: position qu'on cherche à atteindre
-// angle:   angle par rapport au but qu'on explore
-// nbDiv:   nombre du sous-divisions qu'on fait avec angle
-// step     longuer d'un pas
-// i        nombre de récursions effectuées
-// nbIter   nombre max. d'iterations qu'on a le droit de faire avant d'interrompre provisoirement
-
-Error CTaskGoto::BeamExplore(const D3DVECTOR &prevPos, const D3DVECTOR &curPos,
-							 const D3DVECTOR &goalPos, float goalRadius,
-							 float angle, int nbDiv, float step,
-							 int i, int nbIter)
-{
-	D3DVECTOR	newPos;
-	Error		ret;
-	int			iDiv, iClear, iLar;
-	
-	iLar = 0;
-	if ( i >= MAXPOINTS )  return ERR_GOTO_ITER;  // trop de récursion
-	
-	if ( m_bmIter[i] == -1 )
-	{
-		m_bmIter[i] = 0;
-
-		if ( i == 0 )
-		{
-			m_bmPoints[i] = curPos;
-		}
-		else
-		{
-			if ( !BitmapTestLine(prevPos, curPos, angle/nbDiv, TRUE) )  return ERR_GOTO_IMPOSSIBLE;
-
-			m_bmPoints[i] = curPos;
-
-			if ( Length2d(curPos, goalPos)-goalRadius <= step )
-			{
-				if ( goalRadius == 0.0f )
-				{
-					newPos = goalPos;
-				}
-				else
-				{
-					newPos = BeamPoint(curPos, goalPos, 0, Length2d(curPos, goalPos)-goalRadius);
-				}
-				if ( BitmapTestLine(curPos, newPos, angle/nbDiv, FALSE) )
-				{
-					m_bmPoints[i+1] = newPos;
-					m_bmTotal = i+1;
-					return ERR_OK;
-				}
-			}
-		}
-	}
-	
-	if ( iLar >= m_bmIter[i] )
-	{
-		newPos = BeamPoint(curPos, goalPos, 0, step);
-		ret = BeamExplore(curPos, newPos, goalPos, goalRadius, angle, nbDiv, step, i+1, nbIter);
-		if ( ret != ERR_GOTO_IMPOSSIBLE )  return ret;
-		m_bmIter[i] = iLar+1;
-		for ( iClear=i+1 ; iClear<=MAXPOINTS ; iClear++ )  m_bmIter[iClear] = -1;
-		m_bmIterCounter ++;
-		if ( m_bmIterCounter >= nbIter )  return ERR_CONTINUE;
-	}
-	iLar ++;
-
-	for ( iDiv=1 ; iDiv<=nbDiv ; iDiv++ )
-	{
-		if ( iLar >= m_bmIter[i] )
-		{
-			newPos = BeamPoint(curPos, goalPos, angle*iDiv/nbDiv, step);
-			ret = BeamExplore(curPos, newPos, goalPos, goalRadius, angle, nbDiv, step, i+1, nbIter);
-			if ( ret != ERR_GOTO_IMPOSSIBLE )  return ret;
-			m_bmIter[i] = iLar+1;
-			for ( iClear=i+1 ; iClear<=MAXPOINTS ; iClear++ )  m_bmIter[iClear] = -1;
-			m_bmIterCounter ++;
-			if ( m_bmIterCounter >= nbIter )  return ERR_CONTINUE;
-		}
-		iLar ++;
-
-		if ( iLar >= m_bmIter[i] )
-		{
-			newPos = BeamPoint(curPos, goalPos, -angle*iDiv/nbDiv, step);
-			ret = BeamExplore(curPos, newPos, goalPos, goalRadius, angle, nbDiv, step, i+1, nbIter);
-			if ( ret != ERR_GOTO_IMPOSSIBLE )  return ret;
-			m_bmIter[i] = iLar+1;
-			for ( iClear=i+1 ; iClear<=MAXPOINTS ; iClear++ )  m_bmIter[iClear] = -1;
-			m_bmIterCounter ++;
-			if ( m_bmIterCounter >= nbIter )  return ERR_CONTINUE;
-		}
-		iLar ++;
-	}
-
-	return ERR_GOTO_IMPOSSIBLE;
-}
-
-// Soit une droite "start-goal". Calcule le point situé à la distance
-// "step" du point "start" et faisant un angle "angle" avec la droite.
-
-D3DVECTOR CTaskGoto::BeamPoint(const D3DVECTOR &startPoint,
-							   const D3DVECTOR &goalPoint,
-							   float angle, float step)
-{
-	D3DVECTOR	resPoint;
-	float		goalAngle;
-
-	goalAngle = RotateAngle(goalPoint.x-startPoint.x, goalPoint.z-startPoint.z);
-
-	resPoint.x = startPoint.x + cosf(goalAngle+angle)*step;
-	resPoint.z = startPoint.z + sinf(goalAngle+angle)*step;
-	resPoint.y = 0.0f;
-
-	return resPoint;
-}
-
-// Affiche une partion de bitmap.
-
-void CTaskGoto::BitmapDebug(const D3DVECTOR &min, const D3DVECTOR &max,
-							const D3DVECTOR &start, const D3DVECTOR &goal)
-{
-	int		minx, miny, maxx, maxy, x, y, i ,n;
-	char	s[2000];
-
-	minx = (int)((min.x+1600.0f)/BM_DIM_STEP);
-	miny = (int)((min.z+1600.0f)/BM_DIM_STEP);
-	maxx = (int)((max.x+1600.0f)/BM_DIM_STEP);
-	maxy = (int)((max.z+1600.0f)/BM_DIM_STEP);
-
-	if ( minx > maxx )  Swap(minx, maxx);
-	if ( miny > maxy )  Swap(miny, maxy);
-
-	OutputDebugString("Bitmap :\n");
-	for ( y=miny ; y<=maxy ; y++ )
-	{
-		s[0] = 0;
-		for ( x=minx ; x<=maxx ; x++ )
-		{
-			n = -1;
-			for ( i=0 ; i<=m_bmTotal ; i++ )
-			{
-				if ( x == (int)((m_bmPoints[i].x+1600.0f)/BM_DIM_STEP) &&
-					 y == (int)((m_bmPoints[i].z+1600.0f)/BM_DIM_STEP) )
-				{
-					n = i;
-					break;
-				}
-			}
-
-			if ( BitmapTestDot(0, x,y) )
-			{
-				strcat(s, "o");
-			}
-			else
-			{
-				if ( BitmapTestDot(1, x,y) )
-				{
-					strcat(s, "-");
-				}
-				else
-				{
-					strcat(s, ".");
-				}
-			}
-
-			if ( x == (int)((start.x+1600.0f)/BM_DIM_STEP) &&
-				 y == (int)((start.z+1600.0f)/BM_DIM_STEP) )
-			{
-				strcat(s, "s");
-			}
-			else
-			if ( x == (int)((goal.x+1600.0f)/BM_DIM_STEP) &&
-				 y == (int)((goal.z+1600.0f)/BM_DIM_STEP) )
-			{
-				strcat(s, "g");
-			}
-			else
-			if ( n != -1 )
-			{
-				char ss[2];
-				ss[0] = 'A'+n;
-				ss[1] = 0;
-				strcat(s, ss);
-			}
-			else
-			{
-				strcat(s, " ");
-			}
-		}
-		strcat(s, "\n");
-		OutputDebugString(s);
-	}
-}
-
-// Teste si un chemin le long d'une droite est possible.
-
-BOOL CTaskGoto::BitmapTestLine(const D3DVECTOR &start, const D3DVECTOR &goal,
-							   float stepAngle, BOOL bSecond)
-{
-	D3DVECTOR	pos, inc;
-	float		dist, step;
-	float		distNoB2;
-	int			i, max, x, y;
-
-	if ( m_bmArray == 0 )  return TRUE;
-
-	dist = Length2d(start, goal);
-	if ( dist == 0.0f )  return TRUE;
-	step = BM_DIM_STEP*0.5f;
-
-	inc.x = (goal.x-start.x)*step/dist;
-	inc.z = (goal.z-start.z)*step/dist;
-
-	pos = start;
-
-	if ( bSecond )
-	{
-		x = (int)((pos.x+1600.0f)/BM_DIM_STEP);
-		y = (int)((pos.z+1600.0f)/BM_DIM_STEP);
-		BitmapSetDot(1, x, y);  // met le flag du point de départ
-	}
-
-	max = (int)(dist/step);
-	if ( max == 0 )  max = 1;
-	distNoB2 = BM_DIM_STEP*sqrtf(2.0f)/sinf(stepAngle);
-	for ( i=0 ; i<max ; i++ )
-	{
-		if ( i == max-1 )
-		{
-			pos = goal;  // teste le point d'arrivée
-		}
-		else
-		{
-			pos.x += inc.x;
-			pos.z += inc.z;
-		}
-
-		x = (int)((pos.x+1600.0f)/BM_DIM_STEP);
-		y = (int)((pos.z+1600.0f)/BM_DIM_STEP);
-
-		if ( bSecond )
-		{
-			if ( i > 2 && BitmapTestDot(1, x, y) )  return FALSE;
-
-			if ( step*(i+1) > distNoB2 && i < max-2 )
-			{
-				BitmapSetDot(1, x, y);
-			}
-		}
-
-		if ( BitmapTestDot(0, x, y) )  return FALSE;
-	}
-	return TRUE;
-}
-
-// Ajoute les objets dans le bitmap.
-
-void CTaskGoto::BitmapObject()
-{
-	CObject		*pObj;
-	ObjectType	type;
-	D3DVECTOR	iPos, oPos;
-	float		iRadius, oRadius, h;
-	int			i, j;
-
-	m_object->GetCrashSphere(0, iPos, iRadius);
-
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
+		if ( pObj->RetExplo() )  continue;
+		if ( pObj->RetLock() )  continue;  // déjà stoppé ?
 
 		type = pObj->RetType();
 
-		if ( pObj == m_object )  continue;
-		if ( pObj == m_bmFretObject )  continue;
-		if ( pObj->RetTruck() != 0 )  continue;
-	
-		h = m_terrain->RetFloorLevel(pObj->RetPosition(0), FALSE);
-
-		j = 0;
-		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+		if ( type == OBJECT_GOAL )
 		{
-			if ( oPos.y-oRadius > h+8.0f )  continue;
+			pos = pObj->RetPosition(0);
+			dist = Length2d(pos, center);
 
-			if ( type == OBJECT_PARA )  oRadius -= 2.0f;
-			BitmapSetCircle(oPos, oRadius+iRadius+4.0f);
+			if ( dist <= 5.0f )
+			{
+				pObj->JostleObject(1.0f);
+			}
+		}
+
+		if ( (type >= OBJECT_PLANT0  &&
+			  type <= OBJECT_PLANT4  ) ||
+			 (type >= OBJECT_PLANT10 &&
+			  type <= OBJECT_PLANT19 ) )
+		{
+			pos = pObj->RetPosition(0);
+			if ( pos.y < -2.0f )  continue;
+			dist = Length2d(pos, center);
+
+			if ( dist <= 10.0f )
+			{
+				pObj->JostleObject(1.0f);
+			}
 		}
 	}
 }
 
-// Ajoute une portion de terrain dans le bitmap.
 
-void CTaskGoto::BitmapTerrain(const D3DVECTOR &min, const D3DVECTOR &max)
+// Si on arrive sur une caisse, modifie la position pour arriver par
+// le bon côté de la caisse.
+// Retourne TRUE s'il faut ignorer l'objet goal.
+
+void CTaskGoto::AdjustTarget(CObject *target, int part)
 {
-	int		minx, miny, maxx, maxy;
+	D3DVECTOR	spos;
+	float		angle;
 
-	minx = (int)((min.x+1600.0f)/BM_DIM_STEP);
-	miny = (int)((min.z+1600.0f)/BM_DIM_STEP);
-	maxx = (int)((max.x+1600.0f)/BM_DIM_STEP);
-	maxy = (int)((max.z+1600.0f)/BM_DIM_STEP);
+	m_typeTarget = target->RetType();
 
-	BitmapTerrain(minx, miny, maxx, maxy);
+	if ( (m_typeTarget >= OBJECT_BOX1 && m_typeTarget <= OBJECT_BOX20) ||
+		 (m_typeTarget >= OBJECT_KEY1 && m_typeTarget <= OBJECT_KEY5 ) )
+	{
+		if ( part == 1 || part == 5 )  // flèche ouest ?
+		{
+			m_goal = target->RetPosition(0);
+			m_goal.x -= PUSH_DIST;
+			m_goal.y += m_object->RetCharacter()->height;
+			m_bFinalTurn = TRUE;
+			m_finalAngle = 0.0f;
+		}
+		if ( part == 2 || part == 6 )  // flèche nord ?
+		{
+			m_goal = target->RetPosition(0);
+			m_goal.z += PUSH_DIST;
+			m_goal.y += m_object->RetCharacter()->height;
+			m_bFinalTurn = TRUE;
+			m_finalAngle = 0.0f;
+		}
+		if ( part == 3 || part == 7 )  // flèche est ?
+		{
+			m_goal = target->RetPosition(0);
+			m_goal.x += PUSH_DIST;
+			m_goal.y += m_object->RetCharacter()->height;
+			m_bFinalTurn = TRUE;
+			m_finalAngle = 0.0f;
+		}
+		if ( part == 4 || part == 8 )  // flèche sud ?
+		{
+			m_goal = target->RetPosition(0);
+			m_goal.z -= PUSH_DIST;
+			m_goal.y += m_object->RetCharacter()->height;
+			m_bFinalTurn = TRUE;
+			m_finalAngle = 0.0f;
+		}
+	}
+
+	if ( m_typeTarget == OBJECT_DOCK )
+	{
+		if ( part == 4 || part == 5 )   // ^/v ?
+		{
+			spos = target->RetPosition(1);
+			m_goal = target->RetPosition(0);
+			m_goal.x += -24.0f;
+			m_goal.z +=  -8.0f+spos.z;
+			m_goal.y += m_object->RetCharacter()->height;
+			m_bFinalTurn = TRUE;
+			m_finalAngle = PI;
+		}
+		if ( part == 6 )  // piston ?
+		{
+			spos = target->RetPosition(1);
+			m_goal = target->RetPosition(0);
+			m_goal.x += -24.0f;
+			m_goal.z += spos.z;
+			m_goal.y += m_object->RetCharacter()->height;
+			m_bFinalTurn = TRUE;
+			m_finalAngle = PI;
+		}
+		if ( part == 7 || part == 8 )   // </> ?
+		{
+			spos = target->RetPosition(1);
+			m_goal = target->RetPosition(0);
+			m_goal.x += -24.0f;
+			m_goal.z +=   8.0f+spos.z;
+			m_goal.y += m_object->RetCharacter()->height;
+			m_bFinalTurn = TRUE;
+			m_finalAngle = PI;
+		}
+	}
+
+	if ( m_typeTarget == OBJECT_CATAPULT )
+	{
+		if ( part == 1 )   // action ?
+		{
+			m_goal = D3DVECTOR(0.0f, 0.0f, -16.0f);
+			angle = target->RetAngleY(0);
+			RotatePoint(D3DVECTOR(0.0f, 0.0f, 0.0f), -angle, 0.0f, m_goal);
+			m_goal.y += m_object->RetCharacter()->height;
+			m_goal += target->RetPosition(0);
+			m_goal = Grid(m_goal, 8.0f);
+			m_bFinalTurn = TRUE;
+			m_finalAngle = 0.0f;
+		}
+	}
+
+	if ( m_typeTarget == OBJECT_BARRIER69 )  // plongeoir ?
+	{
+		m_goal = D3DVECTOR(-8.0f, 0.0f, 0.0f);
+		angle = target->RetAngleY(0);
+		RotatePoint(D3DVECTOR(0.0f, 0.0f, 0.0f), -angle, 0.0f, m_goal);
+		m_goal.y += m_object->RetCharacter()->height;
+		m_goal += target->RetPosition(0);
+		m_goal = Grid(m_goal, 8.0f);
+		m_bFinalTurn = TRUE;
+		m_finalAngle = 0.0f;
+	}
+
+	if ( m_typeTarget == OBJECT_TRAX  ||
+		 m_typeTarget == OBJECT_PERFO ||
+		 m_typeTarget == OBJECT_GUN   )
+	{
+		if ( part == 3 )   // avance ?
+		{
+			m_goal = D3DVECTOR(-8.0f, 0.0f, 0.0f);
+			angle = target->RetAngleY(0);
+			RotatePoint(D3DVECTOR(0.0f, 0.0f, 0.0f), -angle, 0.0f, m_goal);
+			m_goal.y += m_object->RetCharacter()->height;
+			m_goal += target->RetPosition(0);
+			m_goal = Grid(m_goal, 8.0f);
+			m_bFinalTurn = TRUE;
+			m_finalAngle = 0.0f;
+		}
+		if ( part == 4 )  // gauche ?
+		{
+			m_goal = D3DVECTOR(0.0f, 0.0f, 8.0f);
+			angle = target->RetAngleY(0);
+			RotatePoint(D3DVECTOR(0.0f, 0.0f, 0.0f), -angle, 0.0f, m_goal);
+			m_goal.y += m_object->RetCharacter()->height;
+			m_goal += target->RetPosition(0);
+			m_goal = Grid(m_goal, 8.0f);
+			m_bFinalTurn = TRUE;
+			m_finalAngle = 0.0f;
+		}
+		if ( part == 5 )   // droite ?
+		{
+			m_goal = D3DVECTOR(0.0f, 0.0f, -8.0f);
+			angle = target->RetAngleY(0);
+			RotatePoint(D3DVECTOR(0.0f, 0.0f, 0.0f), -angle, 0.0f, m_goal);
+			m_goal.y += m_object->RetCharacter()->height;
+			m_goal += target->RetPosition(0);
+			m_goal = Grid(m_goal, 8.0f);
+			m_bFinalTurn = TRUE;
+			m_finalAngle = 0.0f;
+		}
+	}
+
+	if ( m_typeTarget == OBJECT_FIOLE ||
+		 m_typeTarget == OBJECT_GLU   )
+	{
+		m_finalMargin = 8.0f;
+		m_bFinalTurn = TRUE;
+		m_finalAngle = 0.0f;
+	}
 }
 
-// Ajoute une portion de terrain dans le bitmap.
 
-void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
+// Démarre une action pour Blupi.
+
+void CTaskGoto::StartAction(int action, float speed)
 {
-	ObjectType	type;
+	CMotion*	motion;
+
+	motion = m_object->RetMotion();
+	if ( motion == 0 )  return;
+
+	if ( m_type == OBJECT_BLUPI )
+	{
+		motion->SetAction(action, speed);
+	}
+}
+
+// Spécifie la progression pour une action pour Blupi.
+
+void CTaskGoto::ProgressAction(float progress)
+{
+	CMotion*	motion;
+
+	motion = m_object->RetMotion();
+	if ( motion == 0 )  return;
+
+	motion->SetActionProgress(progress);
+}
+
+// Spécifie la vitesse linéaire pour une action pour Blupi.
+
+void CTaskGoto::ProgressLinSpeed(float speed)
+{
+	CMotion*	motion;
+
+	motion = m_object->RetMotion();
+	if ( motion == 0 )  return;
+
+	motion->SetActionLinSpeed(speed);
+}
+
+// Spécifie la vitesse circulaire pour une action pour Blupi.
+
+void CTaskGoto::ProgressCirSpeed(float speed)
+{
+	CMotion*	motion;
+
+	motion = m_object->RetMotion();
+	if ( motion == 0 )  return;
+
+	motion->SetActionCirSpeed(speed);
+}
+
+
+// Teste si un déplacement dans la case "goal" suivante est possible..
+// Retourne TRUE si on ne peut pas atteindre la position.
+// Retourne FALSE et bloque la position si le déplacement est possible.
+
+BOOL CTaskGoto::IsLockZone(const D3DVECTOR &goal)
+{
+	D3DVECTOR	pos, corner;
+	LockZone	lz;
+
+	FreeLockZone();
+
+	if ( m_finalMargin != 0.0f )
+	{
+		if ( goal.x == m_goal.x && goal.z == m_goal.z )
+		{
+			return FALSE;
+		}
+	}
+
+	lz = m_terrain->RetLockZone(goal);
+	if ( lz != LZ_FREE    &&
+		 lz != LZ_MAX1X   &&
+		 lz != LZ_TUNNELh &&
+		 lz != LZ_TUNNELv )  return TRUE;
+
+	pos = Grid(m_object->RetPosition(0), 8.0f);
+	if ( Abs(Abs(goal.x-pos.x)-Abs(goal.z-pos.z)) < 1.0f )  // diagonale ?
+	{
+		corner.x = pos.x;
+		corner.z = goal.z;
+		corner.y = 0.0f;
+		if ( m_terrain->IsLockZoneSquare(corner) )  return TRUE;
+
+		corner.x = goal.x;
+		corner.z = pos.z;
+		corner.y = 0.0f;
+		if ( m_terrain->IsLockZoneSquare(corner) )  return TRUE;
+	}
+
+	m_lastPos = pos;
+	m_terrain->SetLockZone(goal, LZ_BLUPI);
+
+	return FALSE;
+}
+
+// Libère la dernière position.
+
+void CTaskGoto::FreeLockZone()
+{
+	if ( m_lastPos.x != NAN )
+	{
+		m_terrain->SetLockZone(m_lastPos, LZ_FREE);
+		m_lastPos.x = NAN;
+	}
+}
+
+
+// Essaye plusieurs fois de trouver le chemin.
+// Dans une première passe, essaye en évitant les max1x fermés.
+// Dans une deuxième passe, essaye même les max1x fermés.
+
+BOOL CTaskGoto::PathFinder(D3DVECTOR start, D3DVECTOR goal)
+{
+	m_pass = 0;  // première passe
+	m_secondNeed = 0;
+	if ( PathFinderPass(start, goal) )  return TRUE;
+
+	if ( m_secondNeed == 0 )  return FALSE;
+	m_pass = 1;  // deuxième passe
+	return PathFinderPass(start, goal);
+}
+
+// Cherche le chemin le plus court, selon une idée géniale de Denis.
+// Soit le labyrinthe suivant ("S"=start, "G"=goal, "X"=obstacle) :
+//		S . . X . . . G
+//		. . . X . X . .
+//		. . . . . X . .
+//		. X X . . X . .
+//		. . X . . . . .
+//		. . . . . . . .
+// On cherche d'abord les cases possibles "1" autour de "S".
+// On cherche ensuite les cases possibles "2" autour des "1".
+// On cherche ensuite les cases possibles "n+1" autour des "n", etc.
+// Toutes ces cases visitées sont ajoutées dans une liste (m_listTable),
+// avec l'index de la case père.
+//		S 1 2 X 6 7 8 G
+//		1 1 2 X 5 X . .
+//		2 2 2 3 4 X 8 8
+//		3 X X 3 4 X 7 7
+//		4 5 X 4 4 5 6 7
+//		5 5 6 5 5 5 6 7
+// Dès qu'on atteint "G", on remonte "8", "7" ... "1" en arrière
+// dans la liste (m_listTable) grace à l'index de la case père,
+// ce qui permet d'obtenir ce chemin (dans m_pathPos), depuis la fin :
+//		S . . X 6 7 8 G
+//		. 1 . X 5 X . .
+//		. . 2 3 4 X . .
+//		. X X . . X . .
+//		. . X . . . . .
+//		. . . . . . . .
+// On obtient ainsi le chemin le plus court dans tous les cas !
+// On teste les 8 cases "1" (n+1) autour de la case courante (n) :
+//		1 1 1
+//		1 S 1
+//		1 1 1
+// Celles des coins ont la restriction suivante :
+//		. a 1
+//		. S b
+//		. . .
+// On accepte d'aller de "S" à "1" si "a" ET "b" sont des obstacles
+// arrondis (blupi, mine, sphère, etc.).
+
+BOOL CTaskGoto::PathFinderPass(D3DVECTOR start, D3DVECTOR goal)
+{
 	D3DVECTOR	p;
-	float		aLimit, angle, h;
-	int			x, y;
-	BOOL		bAcceptWater, bFly;
+	FPOINT		current, pos;
+	int			i, i1,i2, ii1,ii2, x,y;
 
-	if ( minx > maxx )  Swap(minx, maxx);
-	if ( miny > maxy )  Swap(miny, maxy);
+	m_lastPos = D3DVECTOR(NAN, NAN, NAN);
 
-	if ( minx < 0          )  minx = 0;
-	if ( miny < 0          )  miny = 0;
-	if ( maxx > m_bmSize-1 )  maxx = m_bmSize-1;
-	if ( maxy > m_bmSize-1 )  maxy = m_bmSize-1;
+	m_listGoalx = (int)(goal.x/m_dimTile) + m_nbTiles2;
+	m_listGoaly = (int)(goal.z/m_dimTile) + m_nbTiles2;
 
-	if ( minx > m_bmMinX )  minx = m_bmMinX;
-	if ( miny > m_bmMinY )  miny = m_bmMinY;
-	if ( maxx < m_bmMaxX )  maxx = m_bmMaxX;
-	if ( maxy < m_bmMaxY )  maxy = m_bmMaxY;
+	ListCreate();  // crée la liste et le bitmap
+	m_pathIndex = -1;  // corrige un bug cherché longtemps avec Denis !!!
 
-	if ( minx >= m_bmMinX && maxx <= m_bmMaxX &&
-		 miny >= m_bmMinY && maxy <= m_bmMaxY )  return;
+	// Met le premier point (start) dans la liste.
+	m_bListFound = FALSE;
+	i1 = m_listTotal;
+	x = (int)(start.x/m_dimTile) + m_nbTiles2;
+	y = (int)(start.z/m_dimTile) + m_nbTiles2;
+	ListAdd(-1, x,y);
+	i2 = m_listTotal;
 
-	aLimit = 20.0f*PI/180.0f;
-	bAcceptWater = FALSE;
-	bFly = FALSE;
-
-	type = m_object->RetType();
-
-	if ( type == OBJECT_CAR      ||
-		 type == OBJECT_MOBILEtg )  // roues ?
+	// Met tous les points "n+1" autour des précédents "n".
+	while ( !m_bListFound )  // tant que goal pas atteint
 	{
-		aLimit = 20.0f*PI/180.0f;
-	}
+		ii1 = m_listTotal;
 
-	if ( type == OBJECT_MOBILEfb ||
-		 type == OBJECT_MOBILEob ||
-		 type == OBJECT_TRAX     )  // chenilles ?
-	{
-		aLimit = 35.0f*PI/180.0f;
-	}
-
-	for ( y=miny ; y<=maxy ; y++ )
-	{
-		for ( x=minx ; x<=maxx ; x++ )
+		for ( i=i1 ; i<i2 ; i++ )  // parcourt toutes les cases "n"
 		{
-			if ( x >= m_bmMinX && x <= m_bmMaxX &&
-				 y >= m_bmMinY && y <= m_bmMaxY )  continue;
+			x = m_listTable[i].x;
+			y = m_listTable[i].y;  // case centrale "n"
 
-			p.x = x*BM_DIM_STEP-1600.0f;
-			p.z = y*BM_DIM_STEP-1600.0f;
-
-			if ( bFly )  // robot volant ?
+			if ( IsTerrainFree(x,y, x+1,y) )
 			{
-				h = m_terrain->RetFloorLevel(p, TRUE);
-				if ( h >= m_terrain->RetFlyingMaxHeight()-5.0f )
-				{
-					BitmapSetDot(0, x, y);
-				}
-				continue;
+				if ( ListAdd(i, x+1,y) )  break;
 			}
 
-			if ( !bAcceptWater )  // ne va pas sous l'eau ?
+			if ( IsTerrainFree(x,y, x-1,y) )
 			{
-				h = m_terrain->RetFloorLevel(p, TRUE);
-				if ( h < m_water->RetLevel()-2.0f )  // sous l'eau (*) ?
-				{
-//?					BitmapSetDot(0, x, y);
-					BitmapSetCircle(p, BM_DIM_STEP*1.0f);
-					continue;
-				}
+				if ( ListAdd(i, x-1,y) )  break;
 			}
 
-			angle = m_terrain->RetFineSlope(p);
-			if ( angle > aLimit )
+			if ( IsTerrainFree(x,y, x,y+1) )
 			{
-				BitmapSetDot(0, x, y);
+				if ( ListAdd(i, x,y+1) )  break;
+			}
+
+			if ( IsTerrainFree(x,y, x,y-1) )
+			{
+				if ( ListAdd(i, x,y-1) )  break;
+			}
+
+			if ( IsTerrainFreeR(x,y, x+1,y+1) &&
+				 IsTerrainRound(x,y, x+0,y+1) &&
+				 IsTerrainRound(x,y, x+1,y+0) )
+			{
+				if ( ListAdd(i, x+1,y+1) )  break;
+			}
+
+			if ( IsTerrainFreeR(x,y, x-1,y+1) &&
+				 IsTerrainRound(x,y, x+0,y+1) &&
+				 IsTerrainRound(x,y, x-1,y+0) )
+			{
+				if ( ListAdd(i, x-1,y+1) )  break;
+			}
+
+			if ( IsTerrainFreeR(x,y, x+1,y-1) &&
+				 IsTerrainRound(x,y, x+0,y-1) &&
+				 IsTerrainRound(x,y, x+1,y+0) )
+			{
+				if ( ListAdd(i, x+1,y-1) )  break;
+			}
+
+			if ( IsTerrainFreeR(x,y, x-1,y-1) &&
+				 IsTerrainRound(x,y, x+0,y-1) &&
+				 IsTerrainRound(x,y, x-1,y+0) )
+			{
+				if ( ListAdd(i, x-1,y-1) )  break;
 			}
 		}
+
+		ii2 = m_listTotal;
+		if ( ii1 == ii2 )  return FALSE;
+
+		i1 = ii1;
+		i2 = ii2;  // les cases "n+1" deviendront "n" au prochain while
 	}
 
-	m_bmMinX = minx;
-	m_bmMinY = miny;
-	m_bmMaxX = maxx;
-	m_bmMaxY = maxy;  // agrandi la zone rectangulaire
-}
+	// Récupère le chemin le plus court depuis la fin.
+	m_pathIndex = 0;
+	i = m_listTotal-1;  // index dernière case (c'est toujours le goal)
+	while ( i != 0 )
+	{
+		x = m_listTable[i].x;
+		y = m_listTable[i].y;
 
-// (*)	Accepte qu'un robot soit 50cm sous l'eau, par exemple
-//		sur Tropica 3 !
+		p.x = (x-m_nbTiles2)*m_dimTile;
+		p.z = (y-m_nbTiles2)*m_dimTile;
+		p.y = m_object->RetCharacter()->height;
+		m_pathPos[m_pathIndex++] = p;
 
-// Ouvre un bitmap vide.
+		if ( m_pathIndex >= MAXPATH )  return FALSE;
 
-BOOL CTaskGoto::BitmapOpen()
-{
-	BitmapClose();
+		i = m_listTable[i].father;  // index case "n-1" père
+	}
+	m_pathIndex --;
 
-	m_bmSize = (int)(3200.0f/BM_DIM_STEP);
-	m_bmArray = (unsigned char*)malloc(m_bmSize*m_bmSize/8*2);
-	ZeroMemory(m_bmArray, m_bmSize*m_bmSize/8*2);
-
-	m_bmOffset = m_bmSize/2;
-	m_bmLine = m_bmSize/8;
-
-	m_bmMinX = m_bmSize;  // zone rectangulaire inexistante
-	m_bmMinY = m_bmSize;
-	m_bmMaxX = 0;
-	m_bmMaxY = 0;
+	// Lock le premier segment qui sera avancé.
+	if ( m_pathIndex >= 0 )
+	{
+		if ( IsLockZone(m_pathPos[m_pathIndex]) )  return FALSE;
+	}
 
 	return TRUE;
 }
 
-// Ferme le bitmap.
+// Détermine si une position du terrain est libre.
+// Si on va sur le goal est qu'il s'agit d'une fiole, le mouvement
+// (diagonale) est refusé.
 
-BOOL CTaskGoto::BitmapClose()
+BOOL CTaskGoto::IsTerrainFreeR(int ix, int iy, int x, int y)
 {
-	free(m_bmArray);
-	m_bmArray = 0;
-	return TRUE;
+	if ( x == m_goalx && y == m_goaly && m_finalMargin != 0.0f )
+	{
+		return FALSE;
+	}
+
+	return IsTerrainFree(ix, iy, x, y);
 }
 
-// Met un cercle dans le bitmap.
+// Détermine si une position du terrain est libre.
 
-void CTaskGoto::BitmapSetCircle(const D3DVECTOR &pos, float radius)
+BOOL CTaskGoto::IsTerrainFree(int ix, int iy, int x, int y)
 {
-	float	d, r;
-	int		cx, cy, ix, iy;
+	LockZone	lz;
 
-	cx = (int)((pos.x+1600.0f)/BM_DIM_STEP);
-	cy = (int)((pos.z+1600.0f)/BM_DIM_STEP);
-	r = radius/BM_DIM_STEP;
+	if ( !m_terrain->IsSolid(x,y) )  return FALSE;
 
-	for ( iy=cy-(int)r ; iy<=cy+(int)r ; iy++ )
+	lz = m_terrain->RetLockZone(ix,iy, TRUE);
+	if ( lz == LZ_TUNNELh && ix == x )  return FALSE;
+	if ( lz == LZ_TUNNELv && iy == y )  return FALSE;
+
+	lz = m_terrain->RetLockZone(x,y, TRUE);
+
+	if ( x == m_goalx && y == m_goaly )  // est-on sur l'arrivée ?
 	{
-		for ( ix=cx-(int)r ; ix<=cx+(int)r ; ix++ )
+		if ( lz == LZ_MAX1X )
 		{
-			d = Length((float)(ix-cx), (float)(iy-cy));
-			if ( d > r )  continue;
-			BitmapSetDot(0, ix, iy);
+			lz = LZ_FREE;  // si arrivée = trappe -> comme si libre
+		}
+		if ( m_finalMargin != 0.0f )
+		{
+			lz = LZ_FREE;  // si arrivée = potion -> comme si libre
 		}
 	}
-}
 
-// Enlève un cercle dans le bitmap.
+	if ( lz == LZ_FREE )  return TRUE;
 
-void CTaskGoto::BitmapClearCircle(const D3DVECTOR &pos, float radius)
-{
-	float	d, r;
-	int		cx, cy, ix, iy;
+	if ( lz == LZ_TUNNELh && iy == y )  return TRUE;
+	if ( lz == LZ_TUNNELv && ix == x )  return TRUE;
 
-	cx = (int)((pos.x+1600.0f)/BM_DIM_STEP);
-	cy = (int)((pos.z+1600.0f)/BM_DIM_STEP);
-	r = radius/BM_DIM_STEP;
-
-	for ( iy=cy-(int)r ; iy<=cy+(int)r ; iy++ )
+	if ( m_pass == 0 )  // première passe ?
 	{
-		for ( ix=cx-(int)r ; ix<=cx+(int)r ; ix++ )
+		if ( lz == LZ_MAX1X )
 		{
-			d = Length((float)(ix-cx), (float)(iy-cy));
-			if ( d > r )  continue;
-			BitmapClearDot(0, ix, iy);
+			m_secondNeed ++;  // une deuxième passe serait utile
+			return FALSE;
 		}
 	}
-}
-
-// Met un point dans le bitmap.
-// x:y: 0..m_bmSize-1
-
-void CTaskGoto::BitmapSetDot(int rank, int x, int y)
-{
-	if ( x < 0 || x >= m_bmSize ||
-		 y < 0 || y >= m_bmSize )  return;
-
-	m_bmArray[rank*m_bmLine*m_bmSize + m_bmLine*y + x/8] |= (1<<x%8);
-}
-
-// Enlève un point dans le bitmap.
-// x:y: 0..m_bmSize-1
-
-void CTaskGoto::BitmapClearDot(int rank, int x, int y)
-{
-	if ( x < 0 || x >= m_bmSize ||
-		 y < 0 || y >= m_bmSize )  return;
-
-	m_bmArray[rank*m_bmLine*m_bmSize + m_bmLine*y + x/8] &= ~(1<<x%8);
-}
-
-// Teste un point dans le bitmap.
-// x:y: 0..m_bmSize-1
-
-BOOL CTaskGoto::BitmapTestDot(int rank, int x, int y)
-{
-	if ( x < 0 || x >= m_bmSize ||
-		 y < 0 || y >= m_bmSize )  return FALSE;
-
-	if ( x < m_bmMinX || x > m_bmMaxX ||
-		 y < m_bmMinY || y > m_bmMaxY )
+	else	// deuxième passe ?
 	{
-		BitmapTerrain(x-10,y-10, x+10,y+10);  // refait une couche
+		if ( lz == LZ_MAX1X )  return TRUE;
 	}
 
-	return m_bmArray[rank*m_bmLine*m_bmSize + m_bmLine*y + x/8] & (1<<x%8);
+	return FALSE;
+}
+
+// Détermine si une position du terrain est libre ou occupée
+// par un objet rond.
+
+BOOL CTaskGoto::IsTerrainRound(int ix, int iy, int x, int y)
+{
+	LockZone	lz;
+
+	if ( !m_terrain->IsSolid(x,y) )  return FALSE;
+
+	lz = m_terrain->RetLockZone(ix,iy, TRUE);
+	if ( lz == LZ_TUNNELh ||
+		 lz == LZ_TUNNELv )  return FALSE;
+
+	lz = m_terrain->RetLockZone(x,y, TRUE);
+
+	if ( x == m_goalx && y == m_goaly )  // est-on sur l'arrivée ?
+	{
+		if ( lz == LZ_MAX1X )
+		{
+			lz = LZ_FREE;  // si arrivée = trappe -> comme si libre
+		}
+		if ( m_finalMargin != 0.0f )
+		{
+			lz = LZ_FREE;  // si arrivée = potion -> comme si libre
+		}
+	}
+
+	if ( lz == LZ_FREE  ||
+		 lz == LZ_FIXo  ||
+		 lz == LZ_MINE  ||
+		 lz == LZ_FIOLE ||
+		 lz == LZ_BLUPI ||
+		 lz == LZ_BOXo  )  return TRUE;
+
+	if ( m_pass == 0 )  // première passe ?
+	{
+		if ( lz == LZ_MAX1X )
+		{
+			m_secondNeed ++;  // une deuxième passe serait utile
+			return FALSE;
+		}
+	}
+	else	// deuxième passe ?
+	{
+		if ( lz == LZ_MAX1X )  return TRUE;
+	}
+
+	return FALSE;
+}
+
+// Libère la liste et le bitmap.
+
+void CTaskGoto::ListFlush()
+{
+	free(m_listTable);
+	m_listTable = 0;
+
+	free(m_listFlags);
+	m_listFlags = 0;
+}
+
+// Crée une liste et un bitmap vide.
+
+void CTaskGoto::ListCreate()
+{
+	ListFlush();  // libère si nécessaire
+
+	m_listTable = (ListItem*)malloc(sizeof(ListItem)*m_nbTiles*m_nbTiles);
+	m_listTotal = 0;
+
+	m_listFlags = (char*)malloc(sizeof(char)*m_nbTiles*m_nbTiles);
+	ZeroMemory(m_listFlags, sizeof(char)*m_nbTiles*m_nbTiles);
+}
+
+// Ajoute un élément à la fin de la liste, seulement s'il n'existe
+// encore aucun élément à cette coordonnée.
+// Retourne TRUE si on a atteint le goal et qu'il faut arrêter.
+
+BOOL CTaskGoto::ListAdd(int father, int x, int y)
+{
+	if ( m_listFlags[y*m_nbTiles+x] != 0 )  return FALSE;
+	m_listFlags[y*m_nbTiles+x] = 1;
+
+	if ( x == m_listGoalx && y == m_listGoaly )  // goal atteint ?
+	{
+		m_bListFound = TRUE;
+	}
+
+	m_listTable[m_listTotal].father = father;
+	m_listTable[m_listTotal].x = x;
+	m_listTable[m_listTotal].y = y;
+	m_listTotal ++;
+
+	return m_bListFound;
 }
 
 

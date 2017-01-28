@@ -15,95 +15,49 @@ class CControl;
 class CParticule;
 class CCamera;
 class CSound;
+class CGamerFile;
 
 enum Phase;
 enum CameraType;
+enum Phase;
 
 
-#define USERLISTMAX		100
-#define GHOSTLISTMAX	100
-#define MAXSCENE		1000
+#define LISTMAX			200
+#define MAXSCENE		(16*9)
 
-typedef struct
-{
-	char	numTry;
-	char	bPassed;
-}
-SceneInfo;
+#define DIALOG_NULL			0
+#define DIALOG_CREATEGAMER	1
+#define DIALOG_DELETEGAMER	2
+#define DIALOG_DELETEPUZZLE	3
+#define DIALOG_NEWPUZZLE	4
+#define DIALOG_INFOPUZZLE	5
+#define DIALOG_ERROR		6
+#define DIALOG_EXPORTPUZZLE	7
+#define DIALOG_IMPORTPUZZLE	8
+#define DIALOG_RENAMEPUZZLE	9
 
-typedef struct
-{
-	char	chap;
-	char	scene;
-}
-ListInfo;
+#define INDEX_PUZZLE	0
+#define INDEX_DEFI		1
+#define INDEX_USER		2
+#define INDEX_PROTO		3
+#define INDEX_MAX		4
 
-enum StateCar
-{
-	SC_SHOWCASE,	// voiture en vitrine
-	SC_OWNER,		// voiture acquise
-	SC_FORSALE,		// voiture à vendre
-};
 
 typedef struct
 {
 	int				total;			// nb de voitures achetées
 	int				buyable;		// nb de voitures achetables
 	int				bonus;			// nb de voitures dispo en bonus
-	int				selectCar;		// voiture choisie (0..n)
-	int				usedCars[50];	// voitures achetées (1..n)
-	int				subModel[50];	// peintures utilisées (1..n)
-	D3DCOLORVALUE	colorBody[50];	// couleurs carrosseries
-	StateCar		stateCars[50];	// états des voitures (pour _SE)
-	int				pesetas;		// argent disponible
 	int				level;			// niveau de difficulté (1..3)
 }
 GamerPerso;
 
-
-#define MAXRECORD	10
-
-typedef struct
-{
-	char		gamerName[20];		// nom du joueur
-	float		time;				// temps effectué
-	float		bonus, value1, value2;
-	int			points;
-	short		model;				// modèle de la voiture
-	short		subModel;			// sous-modèle de la voiture
-	short		reserve;
-}
-RecordInfo;
-
-typedef struct
-{
-	int			version;			// type d'enregistrement
-	int			reserve;
-	int			select;				// record à sélectionner
-	int			total;				// nb de records
-	RecordInfo	list[MAXRECORD];	// liste des records
-}
-RecordList;
-
-typedef struct
-{
-	float		minSpeed;			// vitesse minimale
-	float		maxSpeed;			// vitesse maximale
-}
-CarSpec;
-
 typedef struct
 {
 	char		filename[100];
-	char		title[100];
-	char		gamer[20];
-	int			type;
-	int			mission;
-	int			model;
-	float		chrono;
+	char		bSolved;
 }
-GhostFile;
-
+ListFile;
 
 
 class CMainDialog
@@ -113,51 +67,31 @@ public:
 	~CMainDialog();
 
 	BOOL	EventProcess(const Event &event);
-	void	ChangePhase(Phase phase);
+	void	ChangePhase(Phase phase, Phase fadeIn=(Phase)0);
 
-	void	LaunchSimul();
-	void	SetSceneName(char* name);
-	void	SetSceneRank(int rank);
-	char*	RetSceneName();
-	char*	RetSceneBase();
-	int		RetSceneRank();
-	char*	RetSceneDir();
+	void	LaunchSimul(BOOL bEdit, BOOL bTest);
 	char*	RetSavegameDir();
 	char*	RetPublicDir();
-	BOOL	RetDuel();
 
-	BOOL	RetTooltip();
-	BOOL	RetGlint();
-	BOOL	RetMovies();
-	BOOL	RetNiceReset();
-	BOOL	RetHimselfDamage();
-	BOOL	RetMotorBlast();
+	BOOL	RetEdit();
+	BOOL	RetTest();
+	BOOL	RetProto();
+	BOOL	RetAgain();
+	void	SetAgain(BOOL bAgain);
 
-	CameraType	RetDefCamera();
-	void		SetDefCamera(CameraType type);
-
-	void	BuildSceneName(char *filename, char *base, int rank);
-	void	BuildResumeName(char *filename, char *base, int rank);
+	void	BuildSceneName(char *filename);
 	char*	RetFilesDir();
-	BOOL	ReadGhostMode(int rank);
-	void	ReadCarSpec(int rank, CarSpec &spec);
-	int		ReadPesetasNext();
-	int		ReadPesetasLimit(int rank);
-	void	UpdateScenePesetasPerso();
-	void	UpdateScenePesetasMax(int rank);
-	void	UpdateSceneResume(int rank);
-	void	UpdateSceneResume(int rank, CEdit* pe);
-	BOOL	ReadSceneTitle(char *scene, int rank, char *buffer);
-	void	UpdateSceneImage(int rank);
-	void	UpdateScenePlay(int rank);
-	void	UpdateSceneGhost(int rank);
 
 	void	StartAbort();
-	void	StartChoiceLevel();
-	void	StartCreateGame();
-	void	StartDeleteGame(char *gamer);
-	void	StartDeleteFile(char *filename);
-	void	StartKidLevel();
+	void	StartCreateGamer();
+	void	StartDeleteGamer(char *gamer);
+	void	StartDeletePuzzle();
+	void	StartNewPuzzle();
+	void	StartInfoPuzzle();
+	void	StartExportPuzzle();
+	void	StartImportPuzzle();
+	void	StartRenamePuzzle();
+	void	StartError(int err);
 	void	StartQuit();
 	void	StartDialog(FPOINT dim, BOOL bFire, BOOL bOK, BOOL bCancel);
 	void	FrameDialog(float rTime);
@@ -170,68 +104,38 @@ public:
 	void	SetupMemorize();
 	void	SetupRecall();
 
-	BOOL	ReadGamerInfo();
-	BOOL	WriteGamerInfo();
 	BOOL	ReadGamerMission();
 	BOOL	WriteGamerMission();
-	D3DCOLORVALUE RetGamerColorCar();
-	void	SetGamerInfoTry(int rank, int numTry);
-	int		RetGamerInfoTry(int rank);
-	void	SetGamerInfoPassed(int rank, BOOL bPassed);
+	void	IncGamerInfoTry();
+	void	SetGamerTotalTime(float time);
+	float	RetGamerTotalTime();
+	void	SetGamerInfoPassed();
 	BOOL	RetGamerInfoPassed(int rank);
 	void	NextMission();
-	void	PesetasUnlock();
-	void	SetPesetas(int value);
-	int		RetPesetas();
-	BOOL	RetGhost();
-	BOOL	RetGhostExist();
+	BOOL	RetWriteFile();
 	int		RetLevel();
-	void	BuyAllPerso();
 
-	int		RetModel();
-	int		RetSubModel();
-
+	void	FlushPerso();
 	void	AllMissionUpdate();
 
-	BOOL	ReadRecord(int rank, int type);
-	BOOL	WriteRecord(int rank, int type);
-	BOOL	AddRecord(float time, float bonus, float value1, float value2, int points, int type);
-	float	TimeRecord(float time, int type);
-	BOOL	FirstRecord(int type);
-	void	UpdateRecord(CArray *pa, int type);
-	char*	RetGhostRead();
-
-	BOOL	ComputeCheck(int rank, int check[]);
-
 protected:
+	BOOL	IsAccessibleDefiUser();
 	void	ChangeTabOrder(EventMsg window, int dir, int param);
 	void	GlintMove();
+	void	FrameMove(float rTime);
 	void	FrameParticule(float rTime);
 	void	NiceParticule(FPOINT mouse, BOOL bPress);
 	void	ReadNameList();
 	void	UpdateNameControl();
+	BOOL	ReadScene(char *filename, char *univers, char *resume, char *author, BOOL &bSolved, int &environment);
+	void	UpdatePuzzleScroll();
+	void	UpdatePuzzleButtons(BOOL bInit);
+	BOOL	IsAccessibleDefi(int environment);
+	void	UpdateSceneList(int &sel);
+	void	UpdateButtonList();
 	BOOL	NameSelect();
 	BOOL	NameCreate();
 	void	NameDelete();
-	void	LevelSelect(int level);
-	void	UpdatePerso();
-	void	ElevationPerso();
-	void	CameraPerso();
-	BOOL	IsBuyablePerso();
-	void	BuyablePerso();
-	void	NextPerso(int dir);
-	void	SelectPerso();
-	void	BuyPerso();
-	int		RetPersoModel(int rank);
-	int		IndexPerso(int model);
-	BOOL	UsedPerso(int model);
-	int		PricePerso(int model);
-	void	NamePerso(char *buffer, int model);
-	void	SpecPerso(CarSpec &spec, int model);
-	void	FixPerso(int rank);
-	void	FlushPerso();
-	void	DefPerso(int rank);
-	void	UpdateSceneList(int &sel);
 	void	UpdateDisplayDevice();
 	void	UpdateDisplayMode();
 	void	ChangeDisplay();
@@ -241,12 +145,19 @@ protected:
 	void	ChangeSetupQuality(int quality);
 	void	UpdateKey();
 	void	ChangeKey(EventMsg event);
-	BOOL	MissionExist(int rank);
-	void	UpdateGhostList(BOOL bAll);
-	void	SelectGhostList();
-	int		WriteGhostFile();
-	BOOL	DeleteGhostFile();
-	BOOL	ReadGhostFile();
+	void	UpdateNewPuzzle();
+	void	UpdateImportPuzzle(CArray *pa);
+	void	UpdateExportType();
+	BOOL	CreateNewPuzzle(int environment, char *filename);
+	BOOL	DeletePuzzle(int i);
+	void	DeleteGamerFile(char *puzzle);
+	BOOL	ExportPuzzle(int i);
+	BOOL	ImportPuzzle(int i);
+	BOOL	RenamePuzzle(int i, char *newName);
+	BOOL	SearchNewName(char *dir, char *base, char *filename, char *quick);
+	BOOL	CopyFile(char *filenameSrc, char *filenameDst);
+	BOOL	SolvedPuzzle(int i, BOOL bSolved, int totalManip);
+	void	GamerChanged();
 
 protected:
 	CInstanceManager* m_iMan;
@@ -261,39 +172,31 @@ protected:
 	Phase			m_phase;			// copie de CRobotMain
 	Phase			m_phaseSetup;		// onglet choisi
 	Phase			m_phaseTerm;		// phase trainer/scene/proto
-	Phase			m_phasePerso;		// phase trainer/scene/proto
+	Phase			m_phaseFadeIn;		// phase après le fade in
 	float			m_phaseTime;
 
 	GamerPerso		m_perso;			// perso: description
-	GamerPerso		m_persoCopy;		// perso: copie si annulation
-	float			m_persoElevation;	// perso: élévation caméra
-	float			m_persoAngle;		// perso: angle de présentation
-	float			m_persoTime;		// perso: temps absolu
-	BOOL			m_persoRun;			// perso: moteur tourne ?
 
 	char			m_sceneDir[_MAX_FNAME];		// dossier scene\ 
 	char			m_savegameDir[_MAX_FNAME];	// dossier savegame\ 
+	char			m_defiDir[_MAX_FNAME];		// dossier defi\ 
 	char			m_publicDir[_MAX_FNAME];	// dossier program\ 
-	char			m_userDir[_MAX_FNAME];		// dossier user\ 
 	char			m_filesDir[_MAX_FNAME];		// dossier files\ 
-	char			m_duelDir[_MAX_FNAME];		// dossier duel\ 
 
-	int				m_index;			// 0..5
-	int				m_sel[6];			// mission choisie (0..99)
+	int				m_index;			// INDEX_*
+	int				m_sel;				// mission choisie (0..n)
+	int				m_list;				// offset dans m_listBuffer
 	char			m_sceneName[20];	// nom de la scène à jouer
-	char			m_sceneBase[20];	// nom de la scène à jouer
-	int				m_sceneRank;		// rang de la scène à jouer
 	BOOL			m_bSimulSetup;		// réglages pendant le jeu
-	BOOL			m_accessEnable;
-	BOOL			m_accessMission;
-	BOOL			m_accessUser;
 	BOOL			m_bDeleteGamer;
-	BOOL			m_bGhostExist;
-	BOOL			m_bGhostEnable;
-	BOOL			m_bPesetas;
+	BOOL			m_bEdit;
+	BOOL			m_bTest;
+	BOOL			m_bProto;
+	char			m_selectFilename[INDEX_MAX][100];
+	int				m_scrollOffset;
 
-	int				m_userTotal;
-	char			m_userList[USERLISTMAX][100];
+	float			m_fadeOutDelay;
+	float			m_fadeOutProgress;
 
 	int				m_shotDelay;		// nb de frames avant copie
 	char			m_shotName[100];	// nom du fichier à générer
@@ -302,17 +205,9 @@ protected:
 	int				m_setupSelMode;
 	BOOL			m_setupFull;
 
-	BOOL			m_bTooltip;			// info-bulles à afficher ?
-	BOOL			m_bGlint;			// reflets sur boutons ?
 	BOOL			m_bRain;			// pluie dans l'interface ?
-	BOOL			m_bMovies;			// cinématiques ?
-	BOOL			m_bNiceReset;		// pour CTaskReset
-	BOOL			m_bHimselfDamage;	// pour les tirs
-	BOOL			m_bOnBoard;			// caméra sur le capot
-	BOOL			m_bEffect;			// pour CCamera
-	BOOL			m_bFlash;			// pour CCamera
-	BOOL			m_bMotorBlast;		// explosion du moteur
-	CameraType		m_defCamera;		// caméra par défaut
+	BOOL			m_bAgain;			// joue après clic "Recommencer"
+	BOOL			m_bPlayEnable;
 
 	FPOINT			m_glintMouse;
 	float			m_glintTime;
@@ -321,10 +216,8 @@ protected:
 
 	BOOL			m_bDialog;			// dialogue présent ?
 	BOOL			m_bDialogFire;		// cadre en feu ?
-	BOOL			m_bDialogCreate;
-	BOOL			m_bDialogDelete;
-	BOOL			m_bDialogFile;
-	BOOL			m_bDialogKid;
+	int				m_dialogType;		// type du dialogue en cours
+	BOOL			m_bWriteFile;
 	FPOINT			m_dialogPos;
 	FPOINT			m_dialogDim;
 	float			m_dialogParti;
@@ -332,29 +225,33 @@ protected:
 	BOOL			m_bInitPause;
 	CameraType		m_initCamera;
 	char			m_dialogName[100];
+	int				m_environment;
+	char			m_newPuzzleFilename[100];
+
+	BOOL			m_bMoveAnimation;
+	CButton*		m_moveButton;
+	FPOINT			m_moveButtonPos;
+	FPOINT			m_moveButtonDim;
+	int				m_movePhase;
+	float			m_moveProgress;
+	FPOINT			m_moveCenter;
+	float			m_moveZoom;
+	float			m_moveAngle;
 
 	int				m_partiPhase[10];
 	float			m_partiTime[10];
 	FPOINT			m_partiPos[10];
 
-	SceneInfo		m_sceneInfo[MAXSCENE];
-	ListInfo		m_listInfo[MAXSCENE];
+	CGamerFile*		m_gamerFile;
 
-	RecordList		m_recordAll;		// records glogaux mission en cours
-	RecordList		m_recordOne;		// records tours mission en cours
+	int				m_listTotal;
+	ListFile		m_listBuffer[LISTMAX];
 
-	int				m_ghostTotal;
-	int				m_ghostSelect;
-	GhostFile		m_ghostList[GHOSTLISTMAX];
-	char			m_ghostName[100];
+	int				m_importSelect;
+	int				m_importTotal;
+	ListFile		m_importBuffer[LISTMAX];
 
-	BOOL			m_bDuel;
-	int				m_duelLevel;
-	int				m_duelType;
-	int				m_duelMission;
-	int				m_duelModel;
-	int				m_duelSubModel;
-	D3DCOLORVALUE	m_duelColor;
+	int				m_exportType;
 };
 
 

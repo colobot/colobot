@@ -47,7 +47,7 @@ CMap::CMap(CInstanceManager* iMan) : CControl(iMan)
 	m_waterColor.g = 0.80f;
 	m_waterColor.b = 1.00f;  // bleu
 
-	m_half = m_terrain->RetMosaic()*m_terrain->RetBrick()*m_terrain->RetSize()/2.0f;
+	m_half = m_terrain->RetNbTiles()*m_terrain->RetDimTile()/2.0f;
 
 	m_hiliteRank = -1;
 	FlushObject();
@@ -747,7 +747,7 @@ void CMap::UpdateTerrain()
 
 	if ( !m_engine->OpenImage("map.tga") )  return;
 
-	scale = m_terrain->RetScaleRelief();
+	scale = 1.0f;
 	water = m_water->RetLevel();
 	color.a = 0.0f;
 
@@ -829,7 +829,7 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
 	if ( !m_engine->OpenImage("map.tga") )  return;
 	m_engine->LoadImage();
 
-	scale = m_terrain->RetScaleRelief();
+	scale = 1.0f;
 	water = m_water->RetLevel();
 	color.a = 0.0f;
 
@@ -844,7 +844,7 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
 			if ( pos.x >= -m_half && pos.x <= m_half &&
 				 pos.z >= -m_half && pos.z <= m_half )
 			{
-				level = m_terrain->RetFloorLevel(pos, TRUE)/scale;
+				level = m_terrain->RetFloorLevel(pos)/scale;
 			}
 			else
 			{
@@ -885,7 +885,7 @@ void CMap::FlushObject()
 
 	m_totalFix  = 0;  // index objet fixes
 	m_totalMove = MAPMAXOBJECT-2;  // index véhicules mobiles
-	m_bRadar = m_main->RetCheatRadar();  // pas de radar
+	m_bRadar = FALSE;  // pas de radar
 
 	for ( i=0 ; i<MAPMAXOBJECT ; i++ )
 	{
@@ -914,15 +914,7 @@ void CMap::UpdateObject(CObject* pObj)
 	dir  = -(pObj->RetAngleY(0)+PI/2.0f);
 
 	color = MAPCOLOR_NULL;
-	if ( type == OBJECT_FACTORY1 ||
-		 type == OBJECT_FACTORY2 ||
-		 type == OBJECT_FACTORY3 ||
-		 type == OBJECT_FACTORY4 ||
-		 type == OBJECT_FACTORY5 ||
-		 type == OBJECT_TOWER    ||
-		 type == OBJECT_NUCLEAR  ||
-		 type == OBJECT_PARA     ||
-		 type == OBJECT_DOOR1    ||
+	if ( type == OBJECT_DOOR1    ||
 		 type == OBJECT_DOOR2    ||
 		 type == OBJECT_DOOR3    ||
 		 type == OBJECT_DOOR4    ||
@@ -932,17 +924,11 @@ void CMap::UpdateObject(CObject* pObj)
 	{
 		color = MAPCOLOR_FIX;
 	}
-	if ( type == OBJECT_BBOX ||
-		 type == OBJECT_KEYa ||
-		 type == OBJECT_KEYb ||
-		 type == OBJECT_KEYc ||
-		 type == OBJECT_KEYd )
+	if ( type == OBJECT_BBOX )
 	{
 		color = MAPCOLOR_BBOX;
 	}
-	if ( type == OBJECT_HUMAN    ||
-		 type == OBJECT_CAR      ||
-		 type == OBJECT_MOBILEtg ||
+	if ( type == OBJECT_MOBILEtg ||
 		 type == OBJECT_MOBILEfb ||
 		 type == OBJECT_MOBILEob )  // véhicule mobile ?
 	{

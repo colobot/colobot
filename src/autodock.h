@@ -16,24 +16,13 @@ enum ParticuleType;
 
 enum AutoDockPhase
 {
-	ADCP_WAIT		= 1,	// attend véhicule
-	ADCP_STOPCHECK	= 2,	// attend véhicule immobile
-
-	ADCP_OUTMOVE1	= 10,	// va vers stock
-	ADCP_OUTDOWN1	= 11,	// 
-	ADCP_OUTUP1		= 12,	// 
-	ADCP_OUTMOVE2	= 13,	// va vers véhicule
-	ADCP_OUTDOWN2	= 14,	// 
-	ADCP_OUTUP2		= 15,	// 
-
-	ADCP_INMOVE1	= 20,	// va vers véhicule
-	ADCP_INDOWN1	= 21,	// 
-	ADCP_INUP1		= 22,	// 
-	ADCP_INMOVE2	= 23,	// va vers stock
-	ADCP_INDOWN2	= 24,	// 
-	ADCP_INUP2		= 25,	// 
-
-	ADCP_START		= 30,	// attend le départ
+	ADKP_WAIT	= 1,	// attend ordre
+	ADKP_MOVEZP	= 2,	// translation sur les rails en z+
+	ADKP_MOVEZM	= 3,	// translation sur les rails en z-
+	ADKP_MOVEXP	= 4,	// charriot en x+
+	ADKP_MOVEXM	= 5,	// charriot en x-
+	ADKP_TAKE	= 6,	// prend un objet
+	ADKP_ERROR	= 7,	// ne reste rien
 };
 
 
@@ -47,52 +36,44 @@ public:
 	void		DeleteObject(BOOL bAll=FALSE);
 
 	void		Init();
-	void		Start(int param);
+	BOOL		Start(int part);
 	BOOL		EventProcess(const Event &event);
 	BOOL		Abort();
+	BOOL		IsRunning();
 	Error		RetError();
 
-protected:
-	void		FireStopUpdate(BOOL bLightOn);
-	void		MoveDock();
-	CObject*	SearchEvil();
-	CObject*	SearchVehicle();
-	CObject*	SearchStockOut();
-	float		RetObjectHeight(CObject *pObj);
-	D3DVECTOR	RetVehiclePoint(CObject *pObj);
-	BOOL		SearchFreePos(D3DVECTOR &os);
-	void		ParticuleFrame(float rTime);
-	void		SoundManip(float time, float amplitude=1.0f, float frequency=1.0f);
-	void		StartBzzz();
-	void		StopBzzz();
-	void		StartVehicleAction(int action);
-	void		TruckObject(CObject *pObj, BOOL bTake);
-	void		ArmObject(CObject *pObj, BOOL bTake);
-	void		CameraBegin();
-	void		CameraEnd();
+	void		WriteSituation();
+	void		ReadSituation();
 
 protected:
+	void		UpdatePosition();
+	BOOL		DecRest();
+	void		UpdateRest(float rTime);
+	BOOL		IsFlatGround();
+	CObject*	SearchFret();
+	CObject*	SearchObject(D3DVECTOR center, float radius);
+	BOOL		IsFreePos(D3DVECTOR dir);
+	D3DVECTOR	CalcPosPiston();
+	D3DVECTOR	CalcPosPiston(D3DVECTOR piston);
+	void		StartAction(CObject *pObj, int action, float speed=0.2f);
+	void		SoundManip(float time, float amplitude, float frequency);
+	void		StartBzzz();
+	void		StopBzzz();
+	void		PosBzzz();
+
+protected:
+	int				m_rest;
 	AutoDockPhase	m_phase;
 	float			m_progress;
+	float			m_progressRest;
 	float			m_speed;
-	int				m_partiStop[6];
-	D3DVECTOR		m_center;
 	D3DVECTOR		m_currentPos;
-	D3DVECTOR		m_startPos;
-	D3DVECTOR		m_goalPos;
-	float			m_startAngle;
-	float			m_goalAngle;
-	float			m_heightFret;
-	float			m_heightVehicle;
-	CObject*		m_vehicle;
-	CObject*		m_fret;
-	D3DVECTOR		m_fretPos;
-	D3DVECTOR		m_fretOffset;
-	D3DVECTOR		m_vehiclePos;
+	D3DVECTOR		m_initialPos;
+	D3DVECTOR		m_posPiston;
+	D3DVECTOR		m_posPistonGround;
+	BOOL			m_bTake;
 	float			m_lastParticule;
-	float			m_lastEffect;
 	int				m_channelSound;
-	CameraType		m_cameraType;
 };
 
 

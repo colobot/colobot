@@ -39,7 +39,7 @@ CCheck::~CCheck()
 
 BOOL CCheck::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
-	char	name[100];
+	char	name[200];
 	char*	p;
 
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
@@ -115,7 +115,8 @@ void CCheck::Draw()
 	}
 
 	m_engine->SetTexture("button1.tga");
-	m_engine->SetState(D3DSTATENORMAL);
+//?	m_engine->SetState(D3DSTATENORMAL);
+	m_engine->SetState(D3DSTATETTb);
 
 	zoomExt = 1.00f;
 	zoomInt = 0.95f;

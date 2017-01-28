@@ -24,9 +24,12 @@ class CArray;
 class CShortcut;
 class CMap;
 class CGauge;
-class CGeiger;
 class CCompass;
 class CProgress;
+class CMenu;
+class CCamera;
+
+enum D3DMouse;
 
 
 #define MAXCONTROL	100
@@ -40,6 +43,8 @@ public:
 
 	BOOL		EventProcess(const Event &event);
 	BOOL		GetTooltip(FPOINT pos, char* name);
+
+	void		SetDefMouse(D3DMouse mouse);
 
 	void		Flush();
 	CWindow*	CreateWindows(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
@@ -59,8 +64,8 @@ public:
 	CShortcut*	CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CCompass*	CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CGauge*		CreateGauge(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CGeiger*	CreateGeiger(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CProgress*	CreateProgress(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	CMenu*		CreateMenu(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CMap*		CreateMap(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	BOOL		DeleteControl(EventMsg eventMsg);
 	CControl*	SearchControl(EventMsg eventMsg);
@@ -74,8 +79,10 @@ protected:
 protected:
 	CInstanceManager* m_iMan;
 	CD3DEngine*		m_engine;
+	CCamera*		m_camera;
 
 	CControl*		m_table[MAXCONTROL];
+	D3DMouse		m_defMouse;
 };
 
 

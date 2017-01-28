@@ -63,6 +63,8 @@ BOOL IsSep(int character)
 
 
 
+
+
 // Constructeur de l'objet.
 
 CEdit::CEdit(CInstanceManager* iMan) : CControl(iMan)
@@ -80,6 +82,7 @@ CEdit::CEdit(CInstanceManager* iMan) : CControl(iMan)
 	m_fontType = FONT_COLOBOT;
 	m_scroll        = 0;
 	m_bEdit         = TRUE;
+	m_bFilename     = FALSE;
 	m_bHilite       = TRUE;
 	m_bInsideScroll = TRUE;
 	m_bCapture      = FALSE;
@@ -151,6 +154,7 @@ BOOL CEdit::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 		m_scroll = new CScroll(m_iMan);
 		pc = (CScroll*)m_scroll;
 		pc->Create(pos, dim, -1, EVENT_NULL);
+		pc->SetState(STATE_SHADOW);
 		MoveAdjust();
 	}
 
@@ -319,15 +323,6 @@ BOOL CEdit::EventProcess(const Event &event)
 			if ( MinMaj(TRUE) )  return TRUE;
 		}
 
-//?		if ( event.param == VK_TAB && !bShift && !bControl && !m_bAutoIndent )
-//?		{
-//?			if ( Shift(FALSE) )  return TRUE;
-//?		}
-//?		if ( event.param == VK_TAB && bShift && !bControl && !m_bAutoIndent )
-//?		{
-//?			if ( Shift(TRUE) )  return TRUE;
-//?		}
-
 		if ( m_bEdit )
 		{
 			if ( event.param == VK_LEFT )
@@ -427,7 +422,7 @@ BOOL CEdit::EventProcess(const Event &event)
 		}
 	}
 
-	if ( event.event == EVENT_CHAR && m_bFocus )
+	if ( event.event == EVENT_CHAR && m_bFocus && m_bEdit )
 	{
 		if ( event.param >= ' ' && event.param <= 255 )
 		{
@@ -952,21 +947,22 @@ void CEdit::DrawBack(FPOINT pos, FPOINT dim)
 	if ( m_bGeneric )  return;
 
 	m_engine->SetTexture("button1.tga");
-	m_engine->SetState(D3DSTATENORMAL);
+//?	m_engine->SetState(D3DSTATENORMAL);
+	m_engine->SetState(D3DSTATETTb);
 
 	if ( m_state & STATE_CHECK )
 	{
-		uv1.x =   0.0f/256.0f;
-		uv1.y =   0.0f/256.0f;
-		uv2.x =  32.0f/256.0f;
-		uv2.y =  32.0f/256.0f;
+		uv1.x =  64.0f/256.0f;
+		uv1.y =  32.0f/256.0f;
+		uv2.x =  96.0f/256.0f;
+		uv2.y =  64.0f/256.0f;
 	}
 	else
 	{
-		uv1.x =  64.0f/256.0f;
-		uv1.y =   0.0f/256.0f;
-		uv2.x =  96.0f/256.0f;
-		uv2.y =  32.0f/256.0f;
+		uv1.x = 224.0f/256.0f;
+		uv1.y =  96.0f/256.0f;
+		uv2.x = 256.0f/256.0f;
+		uv2.y = 128.0f/256.0f;
 	}
 
 	dp = 0.5f/256.0f;
@@ -1018,7 +1014,7 @@ void CEdit::SetText(char *text, BOOL bNew)
 {
 	KeyRank		key;
 	char		iName[50];
-	int			i, j, font, n, res;
+	int			i, j, font, n, res[2];
 	BOOL		bBOL;
 
 	if ( !bNew )  UndoMemorize(OPERUNDO_SPEC);
@@ -1113,10 +1109,10 @@ void CEdit::SetText(char *text, BOOL bNew)
 			{
 				if ( SearchKey(text+i+5, key) )
 				{
-					res = m_engine->RetKey(key, 0);
-					if ( res != 0 )
+					RetKeys(key, res);
+					if ( res[0] != 0 )
 					{
-						if ( GetResource(RES_KEY, res, iName) )
+						if ( GetResource(RES_KEY, res[0], iName) )
 						{
 							n = 0;
 							while ( iName[n] != 0 )
@@ -1126,10 +1122,9 @@ void CEdit::SetText(char *text, BOOL bNew)
 								j ++;
 							}
 
-							res = m_engine->RetKey(key, 1);
-							if ( res != 0 )
+							if ( res[1] != 0 )
 							{
-								if ( GetResource(RES_KEY, res, iName) )
+								if ( GetResource(RES_KEY, res[1], iName) )
 								{
 									GetResource(RES_TEXT, RT_KEY_OR, text);
 									n = 0;
@@ -1285,7 +1280,7 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 {
 	FILE		*file = NULL;
 	char		*buffer;
-	int			len, i, j, n, font, iIndex, iLines, iCount, iLink, res;
+	int			len, i, j, n, font, iIndex, iLines, iCount, iLink, res[2];
 	char		iName[50];
 	char		text[50];
 	float		iWidth;
@@ -1420,7 +1415,7 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 		{
 			if ( m_bSoluce || !bInSoluce )
 			{
-#if _DEMO|_SE
+#if _DEMO | _SE
 				strcpy(iName, "demo");
 #else
 				GetNameParam(buffer+i+7, 0, iName);
@@ -1581,10 +1576,10 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 			{
 				if ( SearchKey(buffer+i+5, key) )
 				{
-					res = m_engine->RetKey(key, 0);
-					if ( res != 0 )
+					RetKeys(key, res);
+					if ( res[0] != 0 )
 					{
-						if ( GetResource(RES_KEY, res, iName) )
+						if ( GetResource(RES_KEY, res[0], iName) )
 						{
 							m_text[j] = ' ';
 							m_format[j] = font;
@@ -1600,10 +1595,9 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 							m_format[j] = font;
 							j ++;
 
-							res = m_engine->RetKey(key, 1);
-							if ( res != 0 )
+							if ( res[1] != 0 )
 							{
-								if ( GetResource(RES_KEY, res, iName) )
+								if ( GetResource(RES_KEY, res[1], iName) )
 								{
 									GetResource(RES_TEXT, RT_KEY_OR, text);
 									n = 0;
@@ -1767,6 +1761,18 @@ void CEdit::SetEditCap(BOOL bMode)
 BOOL CEdit::RetEditCap()
 {
 	return m_bEdit;
+}
+
+// Gestion du mode "nom de fichier".
+
+void CEdit::SetFilenameCap(BOOL bMode)
+{
+	m_bFilename = bMode;
+}
+
+BOOL CEdit::RetFilenameCap()
+{
+	return m_bFilename;
 }
 
 // Gestion du mode "hilitable" (ça c'est du franch).
@@ -2600,6 +2606,19 @@ void CEdit::InsertOne(char character)
 	if ( !m_bEdit )  return;
 	if ( !m_bMulti && character == '\n' )  return;
 
+	if ( m_bFilename )
+	{
+		if ( character == '*'  ||
+			 character == '/'  ||
+			 character == '\\' ||
+			 character == '\"' ||
+			 character == '<'  ||
+			 character == '>'  ||
+			 character == '?'  ||
+			 character == ':'  ||
+			 character == '|'  )  return;
+	}
+
 	if ( m_cursor1 != m_cursor2 )
 	{
 		DeleteOne(0);  // supprime les caractères sélectionnés
@@ -3110,4 +3129,25 @@ BOOL CEdit::SetFormat(int cursor1, int cursor2, int format)
 	return TRUE;
 }
 
+
+// Retourne les touches uniquement "clavier".
+
+void CEdit::RetKeys(int keyRank, int res[])
+{
+	res[0] = m_engine->RetKey(keyRank, 0);
+	res[1] = m_engine->RetKey(keyRank, 1);
+
+	if ( m_engine->IsKeyMouse(res[1])    ||
+		 m_engine->IsKeyJoystick(res[1]) )
+	{
+		res[1] = 0;
+	}
+
+	if ( m_engine->IsKeyMouse(res[0])    ||
+		 m_engine->IsKeyJoystick(res[0]) )
+	{
+		res[0] = res[1];
+		res[1] = 0;
+	}
+}
 

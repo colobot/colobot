@@ -11,19 +11,20 @@ class CTerrain;
 class CWater;
 class CCamera;
 class CParticule;
-class CPhysics;
-class CBrain;
 class CMotion;
+class CTaskList;
 class CAuto;
 class CDisplayText;
 class CRobotMain;
+class CMainUndo;
 class CBotVar;
 class CScript;
-class CRecorder;
 
 enum CameraType;
 enum Sound;
 enum D3DShadowType;
+enum TaskOrder;
+enum LockZone;
 
 
 
@@ -31,119 +32,28 @@ enum D3DShadowType;
 // numéro zéro !
 
 #define OBJECTMAXPART		40
-#define MAXCRASHSPHERE		40
-#define MAXCRASHLINE		20
 #define OBJECTMAXCMDLINE	20
+
+#define ADD_HAT				0
+#define ADD_GLASS			1
+#define ADD_GLOVE			2
+#define ADD_SHOE			3
+#define ADD_BAG				4
+
+
 
 enum ObjectType
 {
 	OBJECT_NULL			= 0,	// objet détruit
 	OBJECT_FIX			= 1,	// décor fixe
-	OBJECT_PIECE		= 2,	// pièce de voiture
-	OBJECT_FACTORY1		= 10,	// usine fixe
-	OBJECT_FACTORY2		= 11,	// usine fixe
-	OBJECT_FACTORY3		= 12,	// usine fixe
-	OBJECT_FACTORY4		= 13,	// usine fixe
-	OBJECT_FACTORY5		= 14,	// usine fixe
-	OBJECT_FACTORY6		= 15,	// usine fixe
-	OBJECT_FACTORY7		= 16,	// usine fixe
-	OBJECT_FACTORY8		= 17,	// usine fixe
-	OBJECT_FACTORY9		= 18,	// usine fixe
-	OBJECT_FACTORY10	= 19,	// usine fixe
-	OBJECT_FACTORY11	= 20,	// usine fixe
-	OBJECT_FACTORY12	= 21,	// usine fixe
-	OBJECT_FACTORY13	= 22,	// usine fixe
-	OBJECT_FACTORY14	= 23,	// usine fixe
-	OBJECT_FACTORY15	= 24,	// usine fixe
-	OBJECT_FACTORY16	= 25,	// usine fixe
-	OBJECT_FACTORY17	= 26,	// usine fixe
-	OBJECT_FACTORY18	= 27,	// usine fixe
-	OBJECT_FACTORY19	= 28,	// usine fixe
-	OBJECT_FACTORY20	= 29,	// usine fixe
-	OBJECT_TOWER		= 30,	// tour de défense
-	OBJECT_NUCLEAR		= 31,	// centrale nucléaire
 	OBJECT_START		= 32,	// départ
 	OBJECT_END			= 33,	// arrivée
-	OBJECT_PARA			= 34,	// paratonnerre
-	OBJECT_SUPPORT		= 35,	// présentoir
-	OBJECT_DOCK			= 36,	// portique
-	OBJECT_REMOTE		= 37,	// télécommande
-	OBJECT_STAND		= 38,	// tribune
-	OBJECT_GENERATOR	= 39,	// générateur
 	OBJECT_DOOR1		= 40,	// porte 1
 	OBJECT_DOOR2		= 41,	// porte 2
 	OBJECT_DOOR3		= 42,	// porte 3
 	OBJECT_DOOR4		= 43,	// porte 4
 	OBJECT_DOOR5		= 44,	// porte 5
-	OBJECT_COMPUTER		= 45,	// ordi
-	OBJECT_REPAIR		= 46,	// center de réparation
-	OBJECT_SWEET		= 47,	// maisonette
-	OBJECT_ROADSIGN1	= 60,	// signal 1
-	OBJECT_ROADSIGN2	= 61,	// signal 2
-	OBJECT_ROADSIGN3	= 62,	// signal 3
-	OBJECT_ROADSIGN4	= 63,	// signal 4
-	OBJECT_ROADSIGN5	= 64,	// signal 5
-	OBJECT_ROADSIGN6	= 65,	// signal 6
-	OBJECT_ROADSIGN7	= 66,	// signal 7
-	OBJECT_ROADSIGN8	= 67,	// signal 8
-	OBJECT_ROADSIGN9	= 68,	// signal 9
-	OBJECT_ROADSIGN10	= 69,	// signal 10
-	OBJECT_ROADSIGN11	= 70,	// signal 11
-	OBJECT_ROADSIGN12	= 71,	// signal 12
-	OBJECT_ROADSIGN13	= 72,	// signal 13
-	OBJECT_ROADSIGN14	= 73,	// signal 14
-	OBJECT_ROADSIGN15	= 74,	// signal 15
-	OBJECT_ROADSIGN16	= 75,	// signal 16
-	OBJECT_ROADSIGN17	= 76,	// signal 17
-	OBJECT_ROADSIGN18	= 77,	// signal 18
-	OBJECT_ROADSIGN19	= 78,	// signal 19
-	OBJECT_ROADSIGN20	= 79,	// signal 20
-	OBJECT_ROADSIGN21	= 80,	// signal 21
-	OBJECT_ROADSIGN22	= 81,	// signal 22
-	OBJECT_ROADSIGN23	= 82,	// signal 23
-	OBJECT_ROADSIGN24	= 83,	// signal 24
-	OBJECT_ROADSIGN25	= 84,	// signal 25
-	OBJECT_ROADSIGN26	= 85,	// signal 26
-	OBJECT_ROADSIGN27	= 86,	// signal 27
-	OBJECT_ROADSIGN28	= 87,	// signal 28
-	OBJECT_ROADSIGN29	= 88,	// signal 29
-	OBJECT_ROADSIGN30	= 89,	// signal 30
-	OBJECT_PUB11		= 100,	// pub
-	OBJECT_PUB12		= 101,	// pub
-	OBJECT_PUB13		= 102,	// pub
-	OBJECT_PUB14		= 103,	// pub
-	OBJECT_PUB21		= 104,	// pub
-	OBJECT_PUB22		= 105,	// pub
-	OBJECT_PUB23		= 106,	// pub
-	OBJECT_PUB24		= 107,	// pub
-	OBJECT_PUB31		= 108,	// pub
-	OBJECT_PUB32		= 109,	// pub
-	OBJECT_PUB33		= 110,	// pub
-	OBJECT_PUB34		= 111,	// pub
-	OBJECT_PUB41		= 112,	// pub
-	OBJECT_PUB42		= 113,	// pub
-	OBJECT_PUB43		= 114,	// pub
-	OBJECT_PUB44		= 115,	// pub
-	OBJECT_PUB51		= 116,	// pub
-	OBJECT_PUB52		= 117,	// pub
-	OBJECT_PUB53		= 118,	// pub
-	OBJECT_PUB54		= 119,	// pub
-	OBJECT_PUB61		= 120,	// pub
-	OBJECT_PUB62		= 121,	// pub
-	OBJECT_PUB63		= 122,	// pub
-	OBJECT_PUB64		= 123,	// pub
-	OBJECT_PUB71		= 124,	// pub
-	OBJECT_PUB72		= 125,	// pub
-	OBJECT_PUB73		= 126,	// pub
-	OBJECT_PUB74		= 127,	// pub
-	OBJECT_PUB81		= 128,	// pub
-	OBJECT_PUB82		= 129,	// pub
-	OBJECT_PUB83		= 130,	// pub
-	OBJECT_PUB84		= 131,	// pub
-	OBJECT_PUB91		= 132,	// pub
-	OBJECT_PUB92		= 133,	// pub
-	OBJECT_PUB93		= 134,	// pub
-	OBJECT_PUB94		= 135,	// pub
+	OBJECT_DOCK			= 50,	// transbordeur
 	OBJECT_FRET		    = 150,	// transportable
 	OBJECT_STONE	    = 151,	// pierre
 	OBJECT_URANIUM	    = 152,	// uranium
@@ -155,29 +65,27 @@ enum ObjectType
 	OBJECT_BBOX		    = 158,	// black-box
 	OBJECT_TNT			= 159,	// caisse de TNT
 	OBJECT_MINE			= 160,	// bombe fixe
-	OBJECT_POLE			= 161,	// poteau
-	OBJECT_CONE			= 162,	// cône
-	OBJECT_AQUA			= 163,	// aquarium
-	OBJECT_PIPES		= 164,	// tuyaux
-	OBJECT_GRAVEL		= 165,	// tas de gravier
-	OBJECT_TUB			= 166,	// bac de gravier
-	OBJECT_FIRE			= 170,	// lance d'incendie
-	OBJECT_HELICO		= 171,	// hélicoptère
-	OBJECT_COMPASS		= 172,	// boussole
-	OBJECT_BLITZER		= 173,	// électrocuteur
-	OBJECT_HOOK			= 174,	// crochet
-	OBJECT_TOYS1		= 180,	// jouet 1
-	OBJECT_TOYS2		= 181,	// jouet 2
-	OBJECT_TOYS3		= 182,	// jouet 3
-	OBJECT_TOYS4		= 183,	// jouet 4
-	OBJECT_TOYS5		= 184,	// jouet 5
-	OBJECT_BOMB			= 190,	// bombe transportable
+	OBJECT_FIOLE		= 161,	// potion magique
+	OBJECT_LIFT			= 162,	// ascenseur de départ
+	OBJECT_GOAL			= 163,	// ballon d'arrivée
+	OBJECT_COLUMN1		= 164,	// pilier
+	OBJECT_COLUMN2		= 165,	// pilier
+	OBJECT_COLUMN3		= 166,	// pilier
+	OBJECT_COLUMN4		= 167,	// pilier
+	OBJECT_GLASS1		= 168,	// vitre
+	OBJECT_CATAPULT		= 169,	// catapulte
+	OBJECT_GLASS2		= 170,	// vitre
+	OBJECT_GLU			= 171,	// potion de glu
+	OBJECT_BIRD			= 180,	// oiseau
+	OBJECT_PTERO		= 181,	// pterodactyl
+	OBJECT_FISH			= 182,	// poisson
+	OBJECT_SNAKE		= 183,	// serpent
+	OBJECT_MAX1X		= 184,	// un seul passage
+	OBJECT_SUBM			= 185,	// sous-marin
+	OBJECT_JET			= 186,	// avion
 	OBJECT_WINFIRE		= 191,	// feu d'artifice
 	OBJECT_SHOW			= 192,	// montre un lieu
-	OBJECT_BAG			= 193,	// sac de survie
-	OBJECT_CROSS1		= 195,	// croisement
 	OBJECT_MARK			= 196,	// cible pour bot2
-	OBJECT_CROWN		= 197,	// couronne
 	OBJECT_PLANT0		= 200,	// plante 0
 	OBJECT_PLANT1		= 201,	// plante 1
 	OBJECT_PLANT2		= 202,	// plante 2
@@ -208,72 +116,152 @@ enum ObjectType
 	OBJECT_TREE7		= 227,	// arbre 7
 	OBJECT_TREE8		= 228,	// arbre 8
 	OBJECT_TREE9		= 229,	// arbre 9
-	OBJECT_CAR			= 250,	// voiture
-	OBJECT_MOBILEtg	    = 300,	// cible d'exercice
-	OBJECT_MOBILEfb	    = 301,	// fireball
-	OBJECT_MOBILEob	    = 302,	// orgaball
-	OBJECT_TRAX		    = 303,	// trax
-	OBJECT_TRAXf	    = 304,	// trax fixe
-	OBJECT_UFO		    = 305,	// ufo
+	OBJECT_TRAX         = 300,	// trax pousseur
+	OBJECT_PERFO        = 301,	// trax perforateur
+	OBJECT_GUN	        = 302,	// trax canon
+	OBJECT_MOBILEtg	    = 303,	// cible d'exercice
+	OBJECT_MOBILEfb	    = 304,	// fireball
+	OBJECT_MOBILEob	    = 305,	// orgaball
+	OBJECT_BLUPI		= 310,	// blupi
 	OBJECT_BOT1			= 320,	// robot 1
 	OBJECT_BOT2			= 321,	// robot 2
 	OBJECT_BOT3			= 322,	// robot 3
 	OBJECT_BOT4			= 323,	// robot 4
 	OBJECT_BOT5			= 324,	// robot 5
-	OBJECT_EVIL1		= 330,	// méchant 1
-	OBJECT_EVIL2		= 331,	// méchant 2
-	OBJECT_EVIL3		= 332,	// méchant 3
-	OBJECT_EVIL4		= 333,	// méchant 4
-	OBJECT_EVIL5		= 334,	// méchant 5
 	OBJECT_CARROT	    = 340,	// carotte à suivre
-	OBJECT_STARTER	    = 341,	// starter
 	OBJECT_WALKER	    = 342,	// marcheur
 	OBJECT_CRAZY	    = 343,	// fou
-	OBJECT_GUIDE	    = 344,	// guide
 	OBJECT_WAYPOINT 	= 350,	// chemin
-	OBJECT_TRAJECT	 	= 351,	// trajectoire
-	OBJECT_TARGET		= 352,	// cible
-	OBJECT_FLAGb		= 360,	// drapeau bleu
-	OBJECT_FLAGr		= 361,	// drapeau rouge
-	OBJECT_FLAGg		= 362,	// drapeau vert
-	OBJECT_FLAGy		= 363,	// drapeau jaune
-	OBJECT_FLAGv		= 364,	// drapeau violet
-	OBJECT_KEYa			= 370,	// clé a
-	OBJECT_KEYb			= 371,	// clé b
-	OBJECT_KEYc			= 372,	// clé c
-	OBJECT_KEYd			= 373,	// clé d
-	OBJECT_HUMAN	    = 400,	// homme
-	OBJECT_TECH		    = 402,	// technicien
-	OBJECT_BARRIER0		= 500,	// barrière
-	OBJECT_BARRIER1		= 501,	// barrière
-	OBJECT_BARRIER2		= 502,	// barrière
-	OBJECT_BARRIER3		= 503,	// barrière
-	OBJECT_BARRIER4		= 504,	// barrière
-	OBJECT_BARRIER5		= 505,	// barrière
-	OBJECT_BARRIER6		= 506,	// barrière
-	OBJECT_BARRIER7		= 507,	// barrière
-	OBJECT_BARRIER8		= 508,	// barrière
-	OBJECT_BARRIER9		= 509,	// barrière
-	OBJECT_BARRIER10	= 510,	// barrière
-	OBJECT_BARRIER11	= 511,	// barrière
-	OBJECT_BARRIER12	= 512,	// barrière
-	OBJECT_BARRIER13	= 513,	// barrière
-	OBJECT_BARRIER14	= 514,	// barrière
-	OBJECT_BARRIER15	= 515,	// barrière
-	OBJECT_BARRIER16	= 516,	// barrière
-	OBJECT_BARRIER17	= 517,	// barrière
-	OBJECT_BARRIER18	= 518,	// barrière
-	OBJECT_BARRIER19	= 519,	// barrière
-	OBJECT_BOX1			= 520,	// caisse
-	OBJECT_BOX2			= 521,	// caisse
-	OBJECT_BOX3			= 522,	// caisse
-	OBJECT_BOX4			= 523,	// caisse
-	OBJECT_BOX5			= 524,	// caisse
-	OBJECT_BOX6			= 525,	// caisse
-	OBJECT_BOX7			= 526,	// caisse
-	OBJECT_BOX8			= 527,	// caisse
-	OBJECT_BOX9			= 528,	// caisse
-	OBJECT_BOX10		= 529,	// caisse
+	OBJECT_SCRAP0		= 360,	// déchet flottant
+	OBJECT_SCRAP1		= 361,	// déchet flottant
+	OBJECT_SCRAP2		= 362,	// déchet flottant
+	OBJECT_SCRAP3		= 363,	// déchet flottant
+	OBJECT_SCRAP4		= 364,	// déchet flottant
+	OBJECT_SCRAP5		= 365,	// déchet flottant
+	OBJECT_SCRAP6		= 366,	// déchet flottant
+	OBJECT_SCRAP7		= 367,	// déchet flottant
+	OBJECT_SCRAP8		= 368,	// déchet flottant
+	OBJECT_SCRAP9		= 369,	// déchet flottant
+	OBJECT_BARRIER0		= 400,	// barrière
+	OBJECT_BARRIER1		= 401,	// barrière
+	OBJECT_BARRIER2		= 402,	// barrière
+	OBJECT_BARRIER3		= 403,	// barrière
+	OBJECT_BARRIER4		= 404,	// barrière
+	OBJECT_BARRIER5		= 405,	// barrière
+	OBJECT_BARRIER6		= 406,	// barrière
+	OBJECT_BARRIER7		= 407,	// barrière
+	OBJECT_BARRIER8		= 408,	// barrière
+	OBJECT_BARRIER9		= 409,	// barrière
+	OBJECT_BARRIER10	= 410,	// barrière
+	OBJECT_BARRIER11	= 411,	// barrière
+	OBJECT_BARRIER12	= 412,	// barrière
+	OBJECT_BARRIER13	= 413,	// barrière
+	OBJECT_BARRIER14	= 414,	// barrière
+	OBJECT_BARRIER15	= 415,	// barrière
+	OBJECT_BARRIER16	= 416,	// barrière
+	OBJECT_BARRIER17	= 417,	// barrière
+	OBJECT_BARRIER18	= 418,	// barrière
+	OBJECT_BARRIER19	= 419,	// barrière
+	OBJECT_BARRIER20	= 420,	// barrière
+	OBJECT_BARRIER21	= 421,	// barrière
+	OBJECT_BARRIER22	= 422,	// barrière
+	OBJECT_BARRIER23	= 423,	// barrière
+	OBJECT_BARRIER24	= 424,	// barrière
+	OBJECT_BARRIER25	= 425,	// barrière
+	OBJECT_BARRIER26	= 426,	// barrière
+	OBJECT_BARRIER27	= 427,	// barrière
+	OBJECT_BARRIER28	= 428,	// barrière
+	OBJECT_BARRIER29	= 429,	// barrière
+	OBJECT_BARRIER30	= 430,	// barrière
+	OBJECT_BARRIER31	= 431,	// barrière
+	OBJECT_BARRIER32	= 432,	// barrière
+	OBJECT_BARRIER33	= 433,	// barrière
+	OBJECT_BARRIER34	= 434,	// barrière
+	OBJECT_BARRIER35	= 435,	// barrière
+	OBJECT_BARRIER36	= 436,	// barrière
+	OBJECT_BARRIER37	= 437,	// barrière
+	OBJECT_BARRIER38	= 438,	// barrière
+	OBJECT_BARRIER39	= 439,	// barrière
+	OBJECT_BARRIER40	= 440,	// barrière
+	OBJECT_BARRIER41	= 441,	// barrière
+	OBJECT_BARRIER42	= 442,	// barrière
+	OBJECT_BARRIER43	= 443,	// barrière
+	OBJECT_BARRIER44	= 444,	// barrière
+	OBJECT_BARRIER45	= 445,	// barrière
+	OBJECT_BARRIER46	= 446,	// barrière
+	OBJECT_BARRIER47	= 447,	// barrière
+	OBJECT_BARRIER48	= 448,	// barrière
+	OBJECT_BARRIER49	= 449,	// barrière
+	OBJECT_BARRIER50	= 450,	// barrière
+	OBJECT_BARRIER51	= 451,	// barrière
+	OBJECT_BARRIER52	= 452,	// barrière
+	OBJECT_BARRIER53	= 453,	// barrière
+	OBJECT_BARRIER54	= 454,	// barrière
+	OBJECT_BARRIER55	= 455,	// barrière
+	OBJECT_BARRIER56	= 456,	// barrière
+	OBJECT_BARRIER57	= 457,	// barrière
+	OBJECT_BARRIER58	= 458,	// barrière
+	OBJECT_BARRIER59	= 459,	// barrière
+	OBJECT_BARRIER60	= 460,	// barrière
+	OBJECT_BARRIER61	= 461,	// barrière
+	OBJECT_BARRIER62	= 462,	// barrière
+	OBJECT_BARRIER63	= 463,	// barrière
+	OBJECT_BARRIER64	= 464,	// barrière
+	OBJECT_BARRIER65	= 465,	// barrière
+	OBJECT_BARRIER66	= 466,	// barrière
+	OBJECT_BARRIER67	= 467,	// barrière
+	OBJECT_BARRIER68	= 468,	// barrière
+	OBJECT_BARRIER69	= 469,	// barrière
+	OBJECT_BARRIER70	= 470,	// barrière
+	OBJECT_BARRIER71	= 471,	// barrière
+	OBJECT_BARRIER72	= 472,	// barrière
+	OBJECT_BARRIER73	= 473,	// barrière
+	OBJECT_BARRIER74	= 474,	// barrière
+	OBJECT_BARRIER75	= 475,	// barrière
+	OBJECT_BARRIER76	= 476,	// barrière
+	OBJECT_BARRIER77	= 477,	// barrière
+	OBJECT_BARRIER78	= 478,	// barrière
+	OBJECT_BARRIER79	= 479,	// barrière
+	OBJECT_BARRIER80	= 480,	// barrière
+	OBJECT_BARRIER81	= 481,	// barrière
+	OBJECT_BARRIER82	= 482,	// barrière
+	OBJECT_BARRIER83	= 483,	// barrière
+	OBJECT_BARRIER84	= 484,	// barrière
+	OBJECT_BARRIER85	= 485,	// barrière
+	OBJECT_BARRIER86	= 486,	// barrière
+	OBJECT_BARRIER87	= 487,	// barrière
+	OBJECT_BARRIER88	= 488,	// barrière
+	OBJECT_BARRIER89	= 489,	// barrière
+	OBJECT_BARRIER90	= 490,	// barrière
+	OBJECT_BARRIER91	= 491,	// barrière
+	OBJECT_BARRIER92	= 492,	// barrière
+	OBJECT_BARRIER93	= 493,	// barrière
+	OBJECT_BARRIER94	= 494,	// barrière
+	OBJECT_BARRIER95	= 495,	// barrière
+	OBJECT_BARRIER96	= 496,	// barrière
+	OBJECT_BARRIER97	= 497,	// barrière
+	OBJECT_BARRIER98	= 498,	// barrière
+	OBJECT_BARRIER99	= 499,	// barrière
+	OBJECT_BOX1			= 500,	// caisse
+	OBJECT_BOX2			= 501,	// caisse
+	OBJECT_BOX3			= 502,	// caisse
+	OBJECT_BOX4			= 503,	// caisse
+	OBJECT_BOX5			= 504,	// caisse
+	OBJECT_BOX6			= 505,	// caisse
+	OBJECT_BOX7			= 506,	// sphère
+	OBJECT_BOX8			= 507,	// colonne
+	OBJECT_BOX9			= 508,	// caisse light
+	OBJECT_BOX10		= 509,	// bombe
+	OBJECT_BOX11		= 510,	// caisse x-x
+	OBJECT_BOX12		= 511,	// caisse z-z
+	OBJECT_BOX13		= 512,	// caisse à coussins d'air (cca)
+	OBJECT_BOX14		= 513,	// 
+	OBJECT_BOX15		= 514,	// 
+	OBJECT_BOX16		= 515,	// 
+	OBJECT_BOX17		= 516,	// 
+	OBJECT_BOX18		= 517,	// 
+	OBJECT_BOX19		= 518,	// 
+	OBJECT_BOX20		= 519,	// 
 	OBJECT_STONE1		= 530,	// pierre
 	OBJECT_STONE2		= 531,	// pierre
 	OBJECT_STONE3		= 532,	// pierre
@@ -284,16 +272,31 @@ enum ObjectType
 	OBJECT_STONE8		= 537,	// pierre
 	OBJECT_STONE9		= 538,	// pierre
 	OBJECT_STONE10		= 539,	// pierre
-	OBJECT_PIECE0		= 540,	// pièce
-	OBJECT_PIECE1		= 541,	// pièce
-	OBJECT_PIECE2		= 542,	// pièce
-	OBJECT_PIECE3		= 543,	// pièce
-	OBJECT_PIECE4		= 544,	// pièce
-	OBJECT_PIECE5		= 545,	// pièce
-	OBJECT_PIECE6		= 546,	// pièce
-	OBJECT_PIECE7		= 547,	// pièce
-	OBJECT_PIECE8		= 548,	// pièce
-	OBJECT_PIECE9		= 549,	// pièce
+	OBJECT_KEY1			= 550,	// clé
+	OBJECT_KEY2			= 551,	// clé
+	OBJECT_KEY3			= 552,	// clé
+	OBJECT_KEY4			= 553,	// clé
+	OBJECT_KEY5			= 554,	// clé
+	OBJECT_GROUND0		= 600,	// sol spécial
+	OBJECT_GROUND1		= 601,	// sol spécial
+	OBJECT_GROUND2		= 602,	// sol spécial
+	OBJECT_GROUND3		= 603,	// sol spécial
+	OBJECT_GROUND4		= 604,	// sol spécial
+	OBJECT_GROUND5		= 605,	// sol spécial
+	OBJECT_GROUND6		= 606,	// sol spécial
+	OBJECT_GROUND7		= 607,	// sol spécial
+	OBJECT_GROUND8		= 608,	// sol spécial
+	OBJECT_GROUND9		= 609,	// sol spécial
+	OBJECT_GROUND10		= 610,	// sol spécial
+	OBJECT_GROUND11		= 611,	// sol spécial
+	OBJECT_GROUND12		= 612,	// sol spécial
+	OBJECT_GROUND13		= 613,	// sol spécial
+	OBJECT_GROUND14		= 614,	// sol spécial
+	OBJECT_GROUND15		= 615,	// sol spécial
+	OBJECT_GROUND16		= 616,	// sol spécial
+	OBJECT_GROUND17		= 617,	// sol spécial
+	OBJECT_GROUND18		= 618,	// sol spécial
+	OBJECT_GROUND19		= 619,	// sol spécial
 	OBJECT_RUINmobilew1 = 700,	// ruine 1
 	OBJECT_RUINmobilew2 = 701,	// ruine 1
 	OBJECT_RUINmobilet1 = 702,	// ruine 2
@@ -347,31 +350,6 @@ enum ObjectType
 	OBJECT_MUSHROOM7	= 837,	// champignon 7
 	OBJECT_MUSHROOM8	= 838,	// champignon 8
 	OBJECT_MUSHROOM9	= 839,	// champignon 9
-	OBJECT_HOME1		= 910,	// maison 1
-	OBJECT_HOME2		= 911,	// maison 2
-	OBJECT_HOME3		= 912,	// maison 3
-	OBJECT_HOME4		= 913,	// maison 4
-	OBJECT_HOME5		= 914,	// maison 5
-	OBJECT_ALIEN1	    = 920,	// usine alien
-	OBJECT_ALIEN2	    = 921,	// usine alien
-	OBJECT_ALIEN3	    = 922,	// usine alien
-	OBJECT_ALIEN4	    = 923,	// usine alien
-	OBJECT_ALIEN5	    = 924,	// usine alien
-	OBJECT_ALIEN6	    = 925,	// usine alien
-	OBJECT_ALIEN7	    = 926,	// usine alien
-	OBJECT_ALIEN8	    = 927,	// usine alien
-	OBJECT_ALIEN9	    = 928,	// usine alien
-	OBJECT_ALIEN10		= 929,	// usine alien
-	OBJECT_INCA1	    = 930,	// temple
-	OBJECT_INCA2	    = 931,	// temple
-	OBJECT_INCA3	    = 932,	// temple
-	OBJECT_INCA4	    = 933,	// temple
-	OBJECT_INCA5	    = 934,	// temple
-	OBJECT_INCA6	    = 935,	// temple
-	OBJECT_INCA7	    = 936,	// temple
-	OBJECT_INCA8	    = 937,	// temple
-	OBJECT_INCA9	    = 938,	// temple
-	OBJECT_INCA10		= 939,	// temple
 	OBJECT_BUILDING1	= 940,	// bâtiment
 	OBJECT_BUILDING2	= 941,	// bâtiment
 	OBJECT_BUILDING3	= 942,	// bâtiment
@@ -408,12 +386,14 @@ enum ObjectType
 typedef struct
 {
 	char		bUsed;
-	int			object;			// numéro de l'objet dans CD3DEngine
+	char		bHide;
+	int			objRank;		// numéro de l'objet dans CD3DEngine
 	int			parentPart;		// numéro de la partie père
 	int			masterParti;	// canal de la particule maître
 	D3DVECTOR	position;
 	D3DVECTOR	angle;
 	D3DVECTOR	zoom;
+	char		bVarTex;
 	char		bTranslate;
 	char		bRotate;
 	char		bZoom;
@@ -426,48 +406,9 @@ ObjectPart;
 
 typedef struct
 {
-	D3DVECTOR	wheelFrontPos;	// position roue avant gauche
-	D3DVECTOR	wheelBackPos;	// position roue arrière gauche
-	float		wheelFrontDim;	// rayon roues avants
-	float		wheelBackDim;	// rayon roues arrières
-	float		wheelFrontWidth;// largeur des pneus avants
-	float		wheelBackWidth;	// largeur des pneus arrières
-	float		crashFront;		// distance jusqu'à l'avant pour collisions
-	float		crashBack;		// distance jusqu'à l'arrière pour collisions
-	float		crashWidth;		// distance latérale pour collisions
 	float		height;			// hauteur normale au-dessus du sol
-	float		suspDetect;		// détection suspension
-	float		suspHeight;		// hauteur suspension
-	float		suspFrequency;	// fréquence suspension
-	float		suspAbsorber;	// amortisseur suspension
-	float		rolling;		// tandance au roulis dans les virages
-	float		nicking;		// tandance au nick avant/arrière
-	float		maxRolling;		// angle max de roulis
-	float		maxNicking;		// angle max de nick
-	float		overProp;		// tandance à survirer si propulsion
-	float		overFactor;		// tandance au survirage dans les courbes
-	float		overAngle;		// angle max de survirage
-	float		overMul;		// accentiation de l'effet de survirage
-	float		brakeDir;		// efficacité direction pendant freinage
-	D3DVECTOR	posFret;		// position pour le fret
-	D3DVECTOR	angleFret;		// angle pour le fret
-	D3DVECTOR	antenna;		// pointe de l'antenne
-	D3DVECTOR	lightFL;		// phase avant gauche
-	D3DVECTOR	lightFR;		// phase avant droite
-	D3DVECTOR	lightSL;		// phase stop gauche
-	D3DVECTOR	lightSR;		// phase stop droite
-	D3DVECTOR	lightRL;		// phase recule gauche
-	D3DVECTOR	lightRR;		// phase recule droite
 	D3DVECTOR	camera;			// position caméra en mode CAMERA_ONBOARD
-	float		hookDist;		// distance pour porter avec le crochet
 	float		mass;			// poid du véhicule
-	float		turnSlide;		// glissement si virage rapide
-	float		gripLimit;		// limite d'adérance latérale
-	float		gripSlide;		// tenue de route latérale
-	float		accelLow;		// facteur d'accélération si vitesse nulle
-	float		accelHigh;		// facteur d'accélération si vitesse max
-	float		accelSmooth;	// progresion de l'accélération
-	int			motorSound;		// son pour le moteur
 }
 Character;
 
@@ -475,7 +416,6 @@ enum ExploType
 {
 	EXPLO_BOUM		= 1,
 	EXPLO_BURN		= 2,
-	EXPLO_WATER		= 3,
 };
 
 enum RadarFilter
@@ -497,12 +437,11 @@ public:
 	void		DeleteObject(BOOL bAll=FALSE);
 	void		Simplify();
 	BOOL		ExploObject(ExploType type, float force, D3DVECTOR impact=D3DVECTOR(NAN,NAN,NAN));
-	BOOL		ExploPart(int total, float force);
 	BOOL		DetachPart(int part, D3DVECTOR speed=D3DVECTOR(0.0f, 0.0f, 0.0f));
-	BOOL		DetachPiece(int part, int param, D3DVECTOR speed=D3DVECTOR(0.0f, 0.0f, 0.0f));
-	BOOL		ExploPiece(int part);
 
 	BOOL		EventProcess(const Event &event);
+	void		ShowActions(BOOL bShow, int part, float time);
+	BOOL		IsAction(int part);
 	void		UpdateMapping();
 
 	int			CreatePart();
@@ -510,15 +449,18 @@ public:
 	void		SetObjectRank(int part, int objRank);
 	int			RetObjectRank(int part);
 	void		SetObjectParent(int part, int parent);
+	void		SetHide(int part, BOOL bHide);
+	BOOL		RetHide(int part);
 	void		SetType(ObjectType type);
 	ObjectType	RetType();
-	void		SetModel(int model);
-	int			RetModel();
-	void		SetSubModel(int subModel);
-	int			RetSubModel();
 	char*		RetName();
 	void		SetOption(int option);
 	int			RetOption();
+	void		SetAdditional(int type, int add);
+	int			RetAdditional(int type);
+	void		NoDetect();
+	void		SetVarTex(int part);
+	void		SetVarTex(int part, BOOL bVar);
 
 	void		SetID(int id);
 	int			RetID();
@@ -526,55 +468,9 @@ public:
 	void		SetDrawWorld(BOOL bDraw);
 	void		SetDrawFront(BOOL bDraw);
 
-	BOOL		CreateVehicle(D3DVECTOR pos, float angle, float zoom, ObjectType type, int model, int subModel, BOOL bPlumb, BOOL bTrainer);
-	BOOL		CreateBuilding(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, BOOL bPlumb);
-	BOOL		CreateResource(D3DVECTOR pos, float angle, float zoom, ObjectType type, BOOL bPlumb);
-	BOOL		CreateBot(D3DVECTOR pos, float angle, float zoom, ObjectType type, BOOL bPlumb);
-	BOOL		CreateAdditionnal(D3DVECTOR pos, float angle, float zoom, ObjectType type, BOOL bPlumb);
-	BOOL		CreateBarrier(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, BOOL bPlumb);
-	BOOL		CreateBox(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, BOOL bPlumb);
-	BOOL		CreateStone(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, BOOL bPlumb);
-	BOOL		CreatePiece(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, BOOL bPlumb);
-	BOOL		CreatePlant(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, BOOL bPlumb);
-	BOOL		CreateMushroom(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, BOOL bPlumb);
-	BOOL		CreateQuartz(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, BOOL bPlumb);
-	BOOL		CreateRoot(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, BOOL bPlumb);
-	BOOL		CreateHome(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, BOOL bPlumb);
-	BOOL		CreateRuin(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, BOOL bPlumb);
+	BOOL		CreateObject(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, int option=0, int addHat=0, int addGlass=0, int addGlove=0, int addShoe=0, int addBag=0);
 
-	BOOL		ReadProgram(int rank, char* filename);
-	BOOL		WriteProgram(int rank, char* filename);
-	BOOL		RunProgram(int rank);
-
-	int			RetShadowLight();
-	int			RetEffectLight();
-
-	void		FlushCrashShere();
-	int			CreateCrashSphere(D3DVECTOR pos, float radius, Sound sound, float hardness=0.45f);
-	void		MoveCrashSphere(int rank, D3DVECTOR pos, float radius);
-	int			RetCrashSphereTotal();
-	BOOL		GetCrashSphere(int rank, D3DVECTOR &pos, float &radius);
-	float		RetCrashSphereHardness(int rank);
-	Sound		RetCrashSphereSound(int rank);
-	void		DeleteCrashSphere(int rank);
-	void		SetGlobalSphere(D3DVECTOR pos, float radius);
-	void		GetGlobalSphere(D3DVECTOR &pos, float &radius);
-	void		SetJotlerSphere(D3DVECTOR pos, float radius);
-	void		GetJotlerSphere(D3DVECTOR &pos, float &radius);
-
-	void		FlushCrashLine();
-	void		SetCrashLineHeight(float h);
-	float		RetCrashLineHeight();
-	int			CreateCrashLine(FPOINT pos, Sound sound, float hardness=0.45f, BOOL bNew=FALSE);
-	void		UpdateBBoxCrashLine();
-	int			RetCrashLineTotal();
-	BOOL		GetCrashLine(int rank, FPOINT &pos, BOOL &bNew);
-	float		RetCrashLineHardness(int rank);
-	Sound		RetCrashLineSound(int rank);
-	void		RetCrashLineBBox(FPOINT &min, FPOINT &max);
-	BOOL		IsCrashLineFusion();
-	void		CrashLineFusion();
-	BOOL		IsOccludeCamera(const D3DVECTOR &eye, const D3DVECTOR &look);
+	void		CreateLockZone(int dx, int dz, LockZone type);
 
 	void		SetFloorHeight(float height);
 	void		FloorAdjust();
@@ -647,6 +543,11 @@ public:
 	void		SetBurnShield(float level);
 	float		RetBurnShield();
 
+	void		SetStrong(float level);
+	float		RetStrong();
+	void		SetFuturStrong(float level);
+	float		RetFuturStrong();
+
 	void		SetTransparency(float value);
 	float		RetTransparency();
 
@@ -668,7 +569,9 @@ public:
 	void		SetCameraLock(BOOL bLock);
 	BOOL		RetCameraLock();
 
-	void		SetHilite(BOOL bMode);
+	void		SetFlash(int part);
+
+	void		SetHilite(BOOL bMode, BOOL bSelectable);
 	BOOL		RetHilite();
 
 	void		SetSelect(BOOL bMode, BOOL bDisplayError=TRUE);
@@ -676,12 +579,6 @@ public:
 
 	void		SetSelectable(BOOL bMode);
 	BOOL		RetSelectable();
-
-	void		SetActivity(BOOL bMode);
-	BOOL		RetActivity();
-
-	void		SetVisible(BOOL bVisible);
-	BOOL		RetVisible();
 
 	void		SetEnable(BOOL bEnable);
 	BOOL		RetEnable();
@@ -700,10 +597,10 @@ public:
 
 	void		SetExplo(BOOL bExplo);
 	BOOL		RetExplo();
+	void		SetNoUndoable(BOOL bNoUndo);
+	BOOL		RetNoUndoable();
 	void		SetLock(BOOL bLock);
 	BOOL		RetLock();
-	void		SetStarting(BOOL bStarting);
-	BOOL		RetStarting();
 	void		SetBurn(BOOL bBurn);
 	BOOL		RetBurn();
 	void		SetDead(BOOL bDead);
@@ -711,52 +608,57 @@ public:
 	BOOL		RetRuin();
 	BOOL		RetActif();
 
-	void		SetPassCounter(int counter);
-	int			RetPassCounter();
-	void		SetRankCounter(int rank);
-	int			RetRankCounter();
-
-	BOOL		IsProgram();
-	void		CreateSelectParticule();
+	float		RetHeight();
 
 	void		SetRunScript(CScript* script);
 	CScript*	RetRunScript();
 	CBotVar*	RetBotVar();
-	CPhysics*	RetPhysics();
-	CBrain*		RetBrain();
 	CMotion*	RetMotion();
+	CTaskList*	RetTaskList();
 	CAuto*		RetAuto();
 	void		SetAuto(CAuto* automat);
+	BOOL		StartTaskList(TaskOrder order, D3DVECTOR pos, CObject *target, int part, float param);
 
-	void		SetDefRank(int rank);
-	int			RetDefRank();
+	BOOL		GetTooltipName(int part, char* name);
 
-	BOOL		GetTooltipName(char* name);
-
-	BOOL		CreateShadowCircle(float radius, float intensity, D3DShadowType type=D3DSHADOWNORM);
-	BOOL		CreateShadowLight(float height, D3DCOLORVALUE color);
-	BOOL		CreateEffectLight(float height, D3DCOLORVALUE color);
+	BOOL		CreateShadow(float radius, float intensity, D3DShadowType type=D3DSHADOWNORM, BOOL bTerrainHole=FALSE, float sunFactor=0.0f);
+	void		AdjustShadow(D3DVECTOR pos);
+	void		SetAdjustShadow(BOOL bAdjust);
+	BOOL		RetAdjustShadow();
 
 	void		FlatParent();
 	BOOL		FlatParent(int part);
+	BOOL		TerrainEmbedded();
 
-	void		SetRecorderRecordMode(BOOL bRecord);
-	BOOL		RetRecorderRecordMode();
-	void		SetRecorderPlayMode(BOOL bPlay);
-	BOOL		RetRecorderPlayMode();
-	void		SetRecorder(CRecorder* recorder);
-	CRecorder*	RetRecorder();
+	void		WriteSituation();
+	void		ReadSituation();
 
 protected:
+	BOOL		CreateVehicle(D3DVECTOR pos, float angle, float zoom, ObjectType type);
+	BOOL		CreateBuilding(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type);
+	BOOL		CreateResource(D3DVECTOR pos, float angle, float zoom, ObjectType type);
+	BOOL		CreateBlupi(D3DVECTOR pos, float angle, float zoom, ObjectType type);
+	BOOL		CreateBot(D3DVECTOR pos, float angle, float zoom, ObjectType type);
+	BOOL		CreateAnimal(D3DVECTOR pos, float angle, float zoom, ObjectType type);
+	BOOL		CreateSpecial(D3DVECTOR pos, float angle, float zoom, ObjectType type);
+	BOOL		CreateBarrier(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type);
+	BOOL		CreateBox(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type);
+	BOOL		CreateGround(D3DVECTOR pos, float angle, ObjectType type);
+	BOOL		CreateStone(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type);
+	BOOL		CreatePlant(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type);
+	BOOL		CreateMushroom(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type);
+	BOOL		CreateQuartz(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type);
+	BOOL		CreateRoot(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type);
+	BOOL		CreateRuin(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type);
+
 	BOOL		EventFrame(const Event &event);
 	void		PartiFrame(float rTime);
-	void		CreateOtherObject(ObjectType type);
+	void		CreateAuto(ObjectType type);
 	void		InitPart(int part);
 	void		UpdateTotalPart();
 	int			SearchDescendant(int parent, int n);
 	BOOL		UpdateTransformObject(int part, BOOL bForceUpdate);
 	BOOL		UpdateTransformObject();
-	void		UpdateSelectParticule();
 
 protected:
 	CInstanceManager* m_iMan;
@@ -766,26 +668,22 @@ protected:
 	CWater*			m_water;
 	CCamera*		m_camera;
 	CParticule*		m_particule;
-	CPhysics*		m_physics;
-	CBrain*			m_brain;
 	CMotion*		m_motion;
+	CTaskList*		m_taskList;
 	CAuto*			m_auto;
 	CDisplayText*	m_displayText;
 	CRobotMain*		m_main;
+	CMainUndo*		m_undo;
 	CSound*			m_sound;
 	CBotVar*		m_botVar;
 	CScript*		m_runScript;
 
 	ObjectType	m_type;				// OBJECT_*
-	int			m_model;			// modèle de voiture
-	int			m_subModel;			// modèle de la peinture
 	int			m_id;				// identificateur unique
 	Character	m_character;		// caractéristiques
 	int			m_option;			// option
-	int			m_shadowLight;		// numéro de la lumière de l'ombre
+	int			m_additional[10];	// accessoire
 	float		m_shadowHeight;		// hauteur de la lumière de l'ombre
-	int			m_effectLight;		// numéro de la lumière des effets
-	float		m_effectHeight;		// hauteur de la lumière des effets
 	D3DVECTOR	m_linVibration;		// vibration linéaire
 	D3DVECTOR	m_cirVibration;		// vibration circulaire
 	D3DVECTOR	m_cirChoc;			// rotation suite à un choc
@@ -796,6 +694,8 @@ protected:
 	int			m_truckLink;		// partie
 	float		m_shield;			// bouclier
 	float		m_burnShield;		// bouclier de résistance au feu
+	float		m_strong;			// force (0..1)
+	float		m_futurStrong;		// force (0..1)
 	float		m_transparency;		// transparence (0..1)
 	float		m_aTime;
 	float		m_shotTime;			// temps depuis dernier coup
@@ -803,12 +703,11 @@ protected:
 	BOOL		m_bHilite;
 	BOOL		m_bSelect;			// objet sélectionné
 	BOOL		m_bSelectable;		// objet sélectionnable
-	BOOL		m_bVisible;			// objet actif mais indétectable
 	BOOL		m_bEnable;			// objet mort
 	BOOL		m_bGadget;			// objet non indispensable
 	BOOL		m_bLock;
-	BOOL		m_bStarting;
 	BOOL		m_bExplo;
+	BOOL		m_bNoUndoable;
 	BOOL		m_bBurn;
 	BOOL		m_bDead;
 	BOOL		m_bFlat;
@@ -820,42 +719,24 @@ protected:
 	CameraType	m_cameraType;
 	float		m_cameraDist;
 	BOOL		m_bCameraLock;
-	int			m_defRank;
 	float		m_magnifyDamage;
 	float		m_param;
+	float		m_flashTime;
+	float		m_flashDelay;
+	int			m_flashPart;
+	int			m_generation;
 
-	int			m_crashSphereUsed;	// nb de sphères utilisées
-	D3DVECTOR	m_crashSpherePos[MAXCRASHSPHERE];
-	float		m_crashSphereRadius[MAXCRASHSPHERE];
-	float		m_crashSphereHardness[MAXCRASHSPHERE];
-	Sound		m_crashSphereSound[MAXCRASHSPHERE];
-	D3DVECTOR	m_globalSpherePos;
-	float		m_globalSphereRadius;
-	D3DVECTOR	m_jotlerSpherePos;
-	float		m_jotlerSphereRadius;
+	BOOL		m_bAdjustShadow;
+	BOOL		m_bTerrainHole;
+	D3DVECTOR	m_lastPosTerrain;	// centre pour l'ombre
 
-	int			m_crashLineUsed;	// nb de lignes utilisées
-	FPOINT		m_crashLinePos[MAXCRASHLINE];
-	char		m_crashLineNew[MAXCRASHLINE];
-	float		m_crashLineHardness[MAXCRASHLINE];
-	Sound		m_crashLineSound[MAXCRASHLINE];
-	FPOINT		m_crashLineMin;
-	FPOINT		m_crashLineMax;
-	float		m_crashLineHeight;
+	int			m_arrowMode;
+	float		m_arrowPos;
 
 	int			m_totalPart;
 	ObjectPart	m_objectPart[OBJECTMAXPART];
 
-	int			m_partiSel[10];
-
-	int			m_passCounter;
-	int			m_rankCounter;
-
 	float		m_cmdLine[OBJECTMAXCMDLINE];
-
-	BOOL		m_bRecorderRecord;
-	BOOL		m_bRecorderPlay;
-	CRecorder*	m_recorder;
 };
 
 

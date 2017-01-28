@@ -18,10 +18,9 @@
 #include "terrain.h"
 #include "water.h"
 #include "object.h"
-#include "physics.h"
-#include "brain.h"
 #include "camera.h"
 #include "robotmain.h"
+#include "mainundo.h"
 #include "sound.h"
 #include "cmdtoken.h"
 #include "motion.h"
@@ -43,19 +42,23 @@ CMotion::CMotion(CInstanceManager* iMan, CObject* object)
 	m_water     = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
 	m_camera    = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
 	m_main      = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
+	m_undo        = (CMainUndo*)m_iMan->SearchInstance(CLASS_UNDO);
 	m_sound     = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
 
 	m_object    = object;
-	m_physics   = 0;
-	m_brain     = 0;
 
-	m_actionType = -1;
-	m_actionTime = 0.0f;
-	m_progress   = 0.0f;
+	m_actionType  = -1;
+	m_actionSpeed = 0.0f;
+	m_actionTime  = 0.0f;
+	m_progress    = 0.0f;
 
 	m_linVibration  = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_cirVibration  = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_inclinaison   = D3DVECTOR(0.0f, 0.0f, 0.0f);
+
+	m_actionProgress = 0.0f;
+	m_actionLinSpeed = 0.0f;
+	m_actionCirSpeed = 0.0f;
 
 	m_wheelType = WT_NORM;
 }
@@ -74,20 +77,9 @@ void CMotion::DeleteObject(BOOL bAll)
 }
 
 
-void CMotion::SetPhysics(CPhysics* physics)
-{
-	m_physics = physics;
-}
-
-void CMotion::SetBrain(CBrain* brain)
-{
-	m_brain = brain;
-}
-
-
 // Crée.
 
-BOOL CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb)
+BOOL CMotion::Create(D3DVECTOR pos, float angle, ObjectType type)
 {
 	return TRUE;
 }
@@ -103,8 +95,9 @@ BOOL CMotion::EventProcess(const Event &event)
 
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	
-	m_progress += event.rTime*m_actionTime;
+	m_progress += event.rTime*m_actionSpeed;
 	if ( m_progress > 1.0f )  m_progress = 1.0f;  // (*)
+	m_actionTime += event.rTime;
 
 	pos = m_object->RetPosition(0);
 	if ( pos.y < m_water->RetLevel(m_object) )  // sous l'eau ?
@@ -143,10 +136,11 @@ BOOL CMotion::EventProcess(const Event &event)
 
 // Démarre une action.
 
-Error CMotion::SetAction(int action, float time)
+Error CMotion::SetAction(int action, float speed)
 {
 	m_actionType = action;
-	m_actionTime = 1.0f/time;
+	m_actionSpeed = speed;
+	m_actionTime = 0.0f;
 	m_progress = 0.0f;
 	return ERR_OK;
 }
@@ -216,53 +210,47 @@ D3DVECTOR CMotion::RetInclinaison()
 }
 
 
-// Initialse la torsion de toutes les pièces pour qu'elles soient
-// toutes droites.
+// Retourne la vitesse linéaire.
 
-void CMotion::TwistInit()
+float CMotion::RetLinSpeed()
 {
+	return 0.0f;
 }
 
-// Tord qq pièces suite à un choc.
+// Retourne la vitesse circulaire.
 
-void CMotion::TwistPart(D3DVECTOR impact, float force)
+float CMotion::RetCirSpeed()
 {
+	return 0.0f;
 }
 
-// Retourne le numéro de la prochaine partie à détruire.
+// Retourne la distance linéaire de freinage.
 
-int CMotion::RetRemovePart(int &param)
+float CMotion::RetLinStopLength()
 {
-	param = 0;
-	return -1;
+	return 0.0f;
 }
 
-// Indique si un phare existe.
 
-BOOL CMotion::RetLight(int rank)
+// Spécifie la progression dans l'action.
+
+void CMotion::SetActionProgress(float progress)
 {
-	return FALSE;
+	m_actionProgress = progress;
 }
 
-// Indique la présence d'une partie spécifique.
+// Spécifie la vitesse linéaire dans l'action.
 
-BOOL CMotion::ExistPart(TypePart part)
+void CMotion::SetActionLinSpeed(float speed)
 {
-	return FALSE;
+	m_actionLinSpeed = speed;
 }
 
-// Donne le nombre de pièces total du véhicule.
+// Spécifie la vitesse circulaire dans l'action.
 
-int CMotion::RetTotalPart()
+void CMotion::SetActionCirSpeed(float speed)
 {
-	return 0;
-}
-
-// Donne le nombre de pièces utilisées du véhicule.
-
-int CMotion::RetUsedPart()
-{
-	return 0;
+	m_actionCirSpeed = speed;
 }
 
 
@@ -287,6 +275,19 @@ int CMotion::RetStateLength()
 }
 
 void CMotion::GetStateBuffer(char *buffer)
+{
+}
+
+
+// Ecrit la situation de l'objet.
+
+void CMotion::WriteSituation()
+{
+}
+
+// lit la situation de l'objet.
+
+void CMotion::ReadSituation()
 {
 }
 

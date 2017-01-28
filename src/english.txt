@@ -1,0 +1,474 @@
+#if _ENGLISH
+	if ( type == RES_TEXT )
+	{
+		#if _FULL
+		if ( num == RT_VERSION_ID          )  strcpy(text, "0.0 /e");
+		#endif
+		#if _DEMO
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Demo 0.0 /e");
+		#endif
+		if ( num == RT_WINDOW_MAXIMIZED    )  strcpy(text, "Maximize");
+		if ( num == RT_WINDOW_MINIMIZED    )  strcpy(text, "Minimize");
+		if ( num == RT_WINDOW_STANDARD     )  strcpy(text, "Normal size");
+		if ( num == RT_WINDOW_CLOSE        )  strcpy(text, "Close");
+
+		if ( num == RT_KEY_OR              )  strcpy(text, " or ");
+
+		if ( num == RT_PLAY_LISTm          )  strcpy(text, " Select a puzzle:");
+		if ( num == RT_PLAY_LISTd          )  strcpy(text, " Challenges :");
+		if ( num == RT_PLAY_LISTu          )  strcpy(text, " %s's workshop :");
+		if ( num == RT_PLAY_LISTp          )  strcpy(text, " Prototypes:");
+
+		if ( num == RT_SETUP_DEVICE        )  strcpy(text, " Players:");
+		if ( num == RT_SETUP_MODE          )  strcpy(text, " Resolution:");
+		if ( num == RT_SETUP_KEY1          )  strcpy(text, "1) First click on the key you want to redefine.");
+		if ( num == RT_SETUP_KEY2          )  strcpy(text, "2) Then push the key you want to use instead.");
+
+		if ( num == RT_PERSO_LIST          )  strcpy(text, "Player list:");
+
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Do you want to quit BlupiMania ?");
+		if ( num == RT_DIALOG_YES          )  strcpy(text, "Abort\\Abort the current puzzle");
+		if ( num == RT_DIALOG_NO           )  strcpy(text, "Continue\\Continue the current puzzlr");
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Quit\\Quit BlupiMania");
+		if ( num == RT_DIALOG_NOQUIT       )  strcpy(text, "Continue\\Continue the game");
+		if ( num == RT_DIALOG_DELGAME      )  strcpy(text, "Do you want to delete %s's progression ?");
+		if ( num == RT_DIALOG_DELFILE      )  strcpy(text, "Delete the existing file %s ?");
+		if ( num == RT_DIALOG_YESDEL       )  strcpy(text, "Delete");
+		if ( num == RT_DIALOG_NODEL        )  strcpy(text, "Cancel");
+		if ( num == RT_DIALOG_NEWGAME      )  strcpy(text, "Player name:");
+		if ( num == RT_DIALOG_YESNEW       )  strcpy(text, "Create");
+		if ( num == RT_DIALOG_NONEW        )  strcpy(text, "Cancel");
+		if ( num == RT_DIALOG_PLAY         )  strcpy(text, "Start puzzle...");
+		if ( num == RT_DIALOG_REPLAY       )  strcpy(text, "Play again just for fun...");
+		if ( num == RT_DIALOG_QUITEDIT     )  strcpy(text, "Save modifications ?");
+		if ( num == RT_DIALOG_YESQUITEDIT  )  strcpy(text, "Yes\\Save and quit");
+		if ( num == RT_DIALOG_NOQUITEDIT   )  strcpy(text, "No\\Quit without saving");
+		if ( num == RT_DIALOG_CANQUITEDIT  )  strcpy(text, "Cancel\\Continue workshop");
+		if ( num == RT_DIALOG_NEWPUZZLE    )  strcpy(text, "Do you want to create a new puzzle \"%s\" ?");
+		if ( num == RT_DIALOG_YESNEWP      )  strcpy(text, "Create");
+		if ( num == RT_DIALOG_NONEWP       )  strcpy(text, "Cancel");
+		if ( num == RT_DIALOG_DELPUZ       )  strcpy(text, "Do you want to delete the puzzle ?");
+		if ( num == RT_DIALOG_DELPUZd      )  strcpy(text, "(for all players)");
+		if ( num == RT_DIALOG_DELPUZu      )  strcpy(text, "(only for your workshop)");
+		if ( num == RT_DIALOG_YESDELPUZ    )  strcpy(text, "Delete");
+		if ( num == RT_DIALOG_NODELPUZ     )  strcpy(text, "Cancel");
+		if ( num == RT_DIALOG_RESUMEINFO   )  strcpy(text, "Instructions");
+		if ( num == RT_DIALOG_AUTHORINFO   )  strcpy(text, "Authorr");
+		if ( num == RT_DIALOG_SIGNINFO     )  strcpy(text, "Hints");
+		if ( num == RT_DIALOG_YESINFO      )  strcpy(text, "OK");
+		if ( num == RT_DIALOG_YESERROR     )  strcpy(text, "OK");
+		if ( num == RT_DIALOG_EXPORTGAME   )  strcpy(text, "Where do you want do export the puzzle ?");
+		if ( num == RT_DIALOG_YESEXPORT    )  strcpy(text, "Export");
+		if ( num == RT_DIALOG_NOEXPORT     )  strcpy(text, "Cancel");
+		if ( num == RT_DIALOG_IMPORTGAME   )  strcpy(text, "Puzzles \"My documents\" :");
+		if ( num == RT_DIALOG_YESIMPORT    )  strcpy(text, "Import");
+		if ( num == RT_DIALOG_NOIMPORT     )  strcpy(text, "Cancel");
+		if ( num == RT_DIALOG_TEST         )  strcpy(text, "Test");
+		if ( num == RT_DIALOG_DEFI         )  strcpy(text, "Take up the challenge...");
+		if ( num == RT_DIALOG_FILE         )  strcpy(text, "File");
+		if ( num == RT_DIALOG_RENAMEGAME   )  strcpy(text, "Rename puzzle file.");
+		if ( num == RT_DIALOG_YESRENAME    )  strcpy(text, "Rename");
+		if ( num == RT_DIALOG_NORENAME     )  strcpy(text, "Cancel");
+		if ( num == RT_DIALOG_RENAMEOLD    )  strcpy(text, "Current name");
+		if ( num == RT_DIALOG_RENAMENEW    )  strcpy(text, "New name");
+
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "www.epsitec.com");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "Developed by EPSITEC");
+		if ( num == RT_GENERIC_DEMO1       )  strcpy(text, "You have played with the DEMO version of BlupiMania.");
+		if ( num == RT_GENERIC_DEMO2       )  strcpy(text, "The full version is now available ...");
+		if ( num == RT_GENERIC_DEMO3       )  strcpy(text, "... it contains 28 challenging missions and 9 races ...");
+		if ( num == RT_GENERIC_DEMO4       )  strcpy(text, "... as well as a \"duel\" mode for comparing performances.");
+		if ( num == RT_GENERIC_DEMO5       )  strcpy(text, "More details on www.epsitec.com !");
+
+		if ( num == RT_ACTION_GOTO         )  strcpy(text, "Go to");
+		if ( num == RT_ACTION_PUSH1        )  strcpy(text, "Push once");
+		if ( num == RT_ACTION_PUSHn        )  strcpy(text, "Push more");
+		if ( num == RT_ACTION_PULL1        )  strcpy(text, "");
+		if ( num == RT_ACTION_ROLL         )  strcpy(text, "Roll");
+		if ( num == RT_ACTION_DOCKm        )  strcpy(text, "Activate");
+		if ( num == RT_ACTION_DOCKg        )  strcpy(text, "Grab/drop");
+		if ( num == RT_ACTION_TRAXa        )  strcpy(text, "Move forward");
+		if ( num == RT_ACTION_TRAXl        )  strcpy(text, "Turn right");
+		if ( num == RT_ACTION_TRAXr        )  strcpy(text, "Turn left");
+		if ( num == RT_ACTION_GUNa         )  strcpy(text, "Move forward then pull");
+		if ( num == RT_ACTION_GUNl         )  strcpy(text, "Turn left then pull");
+		if ( num == RT_ACTION_GUNr         )  strcpy(text, "Turn right then pull");
+		if ( num == RT_ACTION_CATAPULT     )  strcpy(text, "Throw");
+
+		if ( num == RT_ADVISE_LITGOTO      )  strcpy(text, "...");
+		if ( num == RT_ADVISE_GOTOPUSH     )  strcpy(text, "...");
+		if ( num == RT_ADVISE_NOSIGN       )  strcpy(text, "No hints available for this puzzle.");
+
+		if ( num == RT_USER_HEADER         )  strcpy(text, "File\tUnivers\tTested\tInstructions");
+		if ( num == RT_DEFI_HEADER         )  strcpy(text, "File\tUnivers\tAuthor\tInstructions");
+		if ( num == RT_IMPORT_HEADER       )  strcpy(text, "File\tUnivers\tAuthor\tInstructions");
+
+		if ( num == RT_UNIVERS0            )  strcpy(text, "Castella");
+		if ( num == RT_UNIVERS1            )  strcpy(text, "Paradiso");
+		if ( num == RT_UNIVERS2            )  strcpy(text, "Volcano");
+		if ( num == RT_UNIVERS3            )  strcpy(text, "Mechano");
+		if ( num == RT_UNIVERS4            )  strcpy(text, "Sahara");
+		if ( num == RT_UNIVERS5            )  strcpy(text, "Fridge");
+		if ( num == RT_UNIVERS6            )  strcpy(text, "Samba");
+		if ( num == RT_UNIVERS7            )  strcpy(text, "Medieva");
+		if ( num == RT_UNIVERS8            )  strcpy(text, "Vegeta");
+		if ( num == RT_UNIVERS9            )  strcpy(text, "Inferno");
+		if ( num == RT_UNIVERS10           )  strcpy(text, "Futura");
+		if ( num == RT_UNIVERS11           )  strcpy(text, "Alibaba");
+		if ( num == RT_UNIVERS12           )  strcpy(text, "Studio");
+		if ( num == RT_UNIVERS13           )  strcpy(text, "Cata");
+		if ( num == RT_UNIVERS14           )  strcpy(text, "Allegro");
+		if ( num == RT_UNIVERS15           )  strcpy(text, "Concreto");
+		if ( num == RT_UNIVERS16           )  strcpy(text, "Lab");
+		if ( num == RT_UNIVERS17           )  strcpy(text, "Drinka");
+		if ( num == RT_UNIVERS18           )  strcpy(text, "Woodo");
+		if ( num == RT_UNIVERS19           )  strcpy(text, "Natura");
+	}
+
+	if ( type == RES_EVENT )
+	{
+		if ( num == EVENT_BUTTON_OK        )  strcpy(text, "OK");
+		if ( num == EVENT_BUTTON_CANCEL    )  strcpy(text, "Cancel");
+		if ( num == EVENT_BUTTON_QUIT      )  strcpy(text, "Menu (\\key quit;)");
+
+		if ( num == EVENT_DIALOG_OK        )  strcpy(text, "OK");
+		if ( num == EVENT_DIALOG_CANCEL    )  strcpy(text, "Cancel");
+
+		if ( num == EVENT_INTERFACE_PUZZLE )  strcpy(text, "Puzzles\\Progressive puzzles");
+		if ( num == EVENT_INTERFACE_DEFI   )  strcpy(text, "Challenges\\Other player's puzzles");
+		if ( num == EVENT_INTERFACE_USER   )  strcpy(text, "Workshop\\Create your own puzzles");
+		if ( num == EVENT_INTERFACE_PROTO  )  strcpy(text, "Proto\\Prototypes under development");
+		if ( num == EVENT_INTERFACE_NAME   )  strcpy(text, "New player\\Choose player name");
+		if ( num == EVENT_INTERFACE_SETUP  )  strcpy(text, "Options\\Options");
+		if ( num == EVENT_INTERFACE_AGAIN  )  strcpy(text, "Restart\\Restart the puzzle from the beginning");
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Return to BlupiMania");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Quit\\Quit BlupiMania");
+		if ( num == EVENT_INTERFACE_BACK   )  strcpy(text, "Cancel\\Back to previous screen");
+		if ( num == EVENT_INTERFACE_TERM   )  strcpy(text, "Menu\\Return to the main menu");
+		if ( num == EVENT_INTERFACE_PLAY   )  strcpy(text, "Play\\Start selected mission!");
+		if ( num == EVENT_INTERFACE_NEW    )  strcpy(text, "New\\Create a new puzzle");
+		if ( num == EVENT_INTERFACE_DELETE )  strcpy(text, "Delete\\Supprimer le puzzle");
+		if ( num == EVENT_INTERFACE_RENAME )  strcpy(text, "Rename\\Rename the puzzle");
+		if ( num == EVENT_INTERFACE_EXPORT )  strcpy(text, "Export\\Export the puzzle");
+		if ( num == EVENT_INTERFACE_IMPORT )  strcpy(text, "Import\\Import the puzzle");
+		if ( num == EVENT_INTERFACE_EDIT   )  strcpy(text, "Modify\\Modify th puzzle");
+		if ( num == EVENT_INTERFACE_OK     )  strcpy(text, "OK\\Back to previous screen");
+
+		if ( num == EVENT_INTERFACE_EXPORTdefi )  strcpy(text, "In the challanges (for all players)");
+		if ( num == EVENT_INTERFACE_EXPORTdoc  )  strcpy(text, "In the \"My documents\" folder");
+
+		if ( num == EVENT_INTERFACE_SETUPd )  strcpy(text, "Device\\Driver and resolution settings");
+		if ( num == EVENT_INTERFACE_SETUPg )  strcpy(text, "Graphics\\Graphics settings");
+		if ( num == EVENT_INTERFACE_SETUPp )  strcpy(text, "Game\\Game settings");
+		if ( num == EVENT_INTERFACE_SETUPc )  strcpy(text, "Controls\\Keyboard, wheel and gamepad settings");
+		if ( num == EVENT_INTERFACE_SETUPs )  strcpy(text, "Sound\\Volume of music and sound effects");
+		if ( num == EVENT_INTERFACE_RESOL  )  strcpy(text, "Resolution");
+		if ( num == EVENT_INTERFACE_FULL   )  strcpy(text, "Full screen\\Full screen or window mode");
+		if ( num == EVENT_INTERFACE_APPLY  )  strcpy(text, "Apply changes\\Activates the changed settings");
+
+		if ( num == EVENT_INTERFACE_SHADOW      )  strcpy(text, "Shadows\\Shadows on the ground");
+		if ( num == EVENT_INTERFACE_DIRTY       )  strcpy(text, "Dirt\\Dirt on objects");
+		if ( num == EVENT_INTERFACE_SUNBEAM     )  strcpy(text, "Sunbeams\\Sun beams");
+		if ( num == EVENT_INTERFACE_LENSFLARE   )  strcpy(text, "Lens flare\\Lens flare of the virtual camera");
+		if ( num == EVENT_INTERFACE_DECOR       )  strcpy(text, "Decorations\\Trees, plants, animals, ducts, and other stuff.");
+		if ( num == EVENT_INTERFACE_DETAIL      )  strcpy(text, "Detailed objects\\");
+		if ( num == EVENT_INTERFACE_METEO       )  strcpy(text, "Weather\\Rain and snow");
+		if ( num == EVENT_INTERFACE_AMBIANCE    )  strcpy(text, "Effects on water\\");
+		if ( num == EVENT_INTERFACE_EXPLOVIB    )  strcpy(text, "Screen tilting during explosions\\");
+		if ( num == EVENT_INTERFACE_SPEEDSCH    )  strcpy(text, "Horizontal scroll speed\\");
+		if ( num == EVENT_INTERFACE_SPEEDSCV    )  strcpy(text, "Vertical scroll speed\\");
+		if ( num == EVENT_INTERFACE_MOUSESCROLL )  strcpy(text, "Défilement avec la souris\\Lorsque la souris touche les bords");
+		if ( num == EVENT_INTERFACE_INVSCH      )  strcpy(text, "Horizontal scrolling inverted\\When the mouse pointer bumps into the edges");
+		if ( num == EVENT_INTERFACE_INVSCV      )  strcpy(text, "Vertical scrolling inverted\\When the mouse pointer bumps into the edges");
+		if ( num == EVENT_INTERFACE_MOVIE       )  strcpy(text, "Film sequences\\Show non interactive film  sequences");
+		if ( num == EVENT_INTERFACE_HELP        )  strcpy(text, "Show hints\\Show hints after some time");
+		if ( num == EVENT_INTERFACE_TOOLTIPS    )  strcpy(text, "Tooltips\\Show tooltips when the mouse pointer stops over controls");
+		if ( num == EVENT_INTERFACE_NICEMOUSE   )  strcpy(text, "Mouse pointer with shadow\\");
+		if ( num == EVENT_INTERFACE_ACCEL       )  strcpy(text, "Accelerate when puzzle is long to solve\\Blupi runs faster after 10 minutes in the same puzzle");
+		if ( num == EVENT_INTERFACE_VOLBLUPI    )  strcpy(text, "Blupi's voices\\");
+		if ( num == EVENT_INTERFACE_VOLSOUND    )  strcpy(text, "Sound effects\\");
+		if ( num == EVENT_INTERFACE_VOLAMBIANCE )  strcpy(text, "Ambiant sound\\");
+		if ( num == EVENT_INTERFACE_SOUND3D     )  strcpy(text, "3D sound\\3D sound");
+
+		if ( num == EVENT_INTERFACE_KDEF   )  strcpy(text, "Default controls\\Resets all controls to default values");
+		if ( num == EVENT_INTERFACE_KLEFT  )  strcpy(text, "Scroll left\\Scroll left when mouse pointer bumps against edge");
+		if ( num == EVENT_INTERFACE_KRIGHT )  strcpy(text, "Scroll right\\Scroll right when mouse pointer bumps against edge");
+		if ( num == EVENT_INTERFACE_KUP    )  strcpy(text, "Scroll up\\Scroll up when mouse pointer bumps against edge");
+		if ( num == EVENT_INTERFACE_KDOWN  )  strcpy(text, "Scroll down\\Scroll down when mouse pointer bumps against edge");
+		if ( num == EVENT_INTERFACE_KROTCW )  strcpy(text, "Rotate CW\\Rotate camera clockwise");
+		if ( num == EVENT_INTERFACE_KROTCCW)  strcpy(text, "Rotate CCW\\Rotate camera counter clockwise");
+		if ( num == EVENT_INTERFACE_KSTOP  )  strcpy(text, "Stop action\\Stop Blupi's current action");
+		if ( num == EVENT_INTERFACE_KQUIT  )  strcpy(text, "Quit\\Quit the current puzzle");
+		if ( num == EVENT_INTERFACE_KHELP  )  strcpy(text, "Instructions\\Show instructions for the current puzzle");
+
+		if ( num == EVENT_INTERFACE_MIN    )  strcpy(text, "Lowest\\Minimum graphic quality (highest frame rate)");
+		if ( num == EVENT_INTERFACE_NORM   )  strcpy(text, "Normal\\Normal graphic quality");
+		if ( num == EVENT_INTERFACE_MAX    )  strcpy(text, "Highest\\Highest graphic quality (lowest frame rate)");
+
+		if ( num == EVENT_INTERFACE_SILENT )  strcpy(text, "Silent\\No sound");
+		if ( num == EVENT_INTERFACE_NOISY  )  strcpy(text, "Normal\\Normal sound volume");
+
+		if ( num == EVENT_INTERFACE_NEDIT  )  strcpy(text, "\\New player name");
+		if ( num == EVENT_INTERFACE_NOK    )  strcpy(text, "Select\\Choose the selected player");
+		if ( num == EVENT_INTERFACE_NCREATE)  strcpy(text, "New\\Create a new player");
+		if ( num == EVENT_INTERFACE_NDELETE)  strcpy(text, "Delete\\Delete the selected player from the list");
+
+		if ( num == EVENT_INTERFACE_UNDO   )  strcpy(text, "Undo last action");
+		if ( num == EVENT_INTERFACE_STOP   )  strcpy(text, "Stop (\\key stop;)");
+		if ( num == EVENT_INTERFACE_SIGN   )  strcpy(text, "Get hints");
+		if ( num == EVENT_LABEL_SIGN       )  strcpy(text, "Hints");
+
+		if ( num == EVENT_EDIT_WATER       )  strcpy(text, "Water");
+		if ( num == EVENT_EDIT_GROUND      )  strcpy(text, "Ground");
+		if ( num == EVENT_EDIT_OBJECT      )  strcpy(text, "Objects");
+		if ( num == EVENT_EDIT_INFO        )  strcpy(text, "Informations about the puzzle");
+
+		if ( num == EVENT_CMD              )  strcpy(text, "Command line");
+		if ( num == EVENT_SPEED            )  strcpy(text, "Game speed");
+	}
+
+	if ( type == RES_OBJECT )
+	{
+		if ( num == OBJECT_BLUPI           )  strcpy(text, "Blupi");
+		if ( num == OBJECT_BOX1            )  strcpy(text, "Crate");
+		if ( num == OBJECT_BOX2            )  strcpy(text, "Crate");
+		if ( num == OBJECT_BOX3            )  strcpy(text, "Crate");
+		if ( num == OBJECT_BOX4            )  strcpy(text, "Crate");
+		if ( num == OBJECT_BOX5            )  strcpy(text, "Crate");
+		if ( num == OBJECT_BOX6            )  strcpy(text, "Crate");
+		if ( num == OBJECT_BOX7            )  strcpy(text, "Big bowl");
+		if ( num == OBJECT_BOX8            )  strcpy(text, "Heavy column");
+		if ( num == OBJECT_BOX9            )  strcpy(text, "Crate");
+		if ( num == OBJECT_BOX10           )  strcpy(text, "Crate");
+		if ( num == OBJECT_BOX11           )  strcpy(text, "Crate with wheels");
+		if ( num == OBJECT_BOX12           )  strcpy(text, "Crate with wheels");
+		if ( num == OBJECT_BOX13           )  strcpy(text, "Crate on air cushion");
+		if ( num == OBJECT_KEY1            )  strcpy(text, "Orange key");
+		if ( num == OBJECT_KEY2            )  strcpy(text, "Blue jey");
+		if ( num == OBJECT_DOOR1           )  strcpy(text, "Orange door");
+		if ( num == OBJECT_DOOR2           )  strcpy(text, "Blue door");
+		if ( num == OBJECT_DOOR3           )  strcpy(text, "Orange door");
+		if ( num == OBJECT_DOOR4           )  strcpy(text, "Blue door");
+		if ( num == OBJECT_DOCK            )  strcpy(text, "Crane");
+		if ( num == OBJECT_CATAPULT        )  strcpy(text, "Catapult");
+		if ( num == OBJECT_TRAX            )  strcpy(text, "Pusher");
+		if ( num == OBJECT_PERFO           )  strcpy(text, "Perforateur mécanique");
+		if ( num == OBJECT_GUN             )  strcpy(text, "Crate blaster");
+		if ( num == OBJECT_MINE            )  strcpy(text, "Bomb");
+		if ( num == OBJECT_GLASS1          )  strcpy(text, "Reinforced pane");
+		if ( num == OBJECT_GLASS2          )  strcpy(text, "Reinforced pane");
+		if ( num == OBJECT_FIOLE           )  strcpy(text, "Magic potion");
+		if ( num == OBJECT_GLU             )  strcpy(text, "Glue potion");
+		if ( num == OBJECT_GOAL            )  strcpy(text, "Goal");
+		if ( num == OBJECT_CRAZY           )  strcpy(text, "Crazy bot");
+		if ( num == OBJECT_BOT1            )  strcpy(text, "Bot 1");
+		if ( num == OBJECT_BOT2            )  strcpy(text, "Bot 2");
+		if ( num == OBJECT_BOT3            )  strcpy(text, "Bot 3");
+		if ( num == OBJECT_BOT4            )  strcpy(text, "Bot 4");
+		if ( num == OBJECT_BOT5            )  strcpy(text, "Bot 5");
+	}
+
+	if ( type == RES_ERR )
+	{
+		strcpy(text, "Error");
+		if ( num == ERR_CMD             )  strcpy(text, "Unknown command");
+		if ( num == ERR_INSTALL         )  strcpy(text, "BlupiMania has not been installed correctly.");
+		if ( num == ERR_NOCD            )  strcpy(text, "Please insert the BlupiMania CD\nand re-run the game.");
+		if ( num == ERR_MOVE_IMPOSSIBLE )  strcpy(text, "Error in instruction move");
+		if ( num == ERR_GOTO_IMPOSSIBLE )  strcpy(text, "Goto: destination inaccessible");
+		if ( num == ERR_GOTO_ITER       )  strcpy(text, "Goto: destination inaccessible");
+		if ( num == ERR_GOTO_BUSY       )  strcpy(text, "Goto: destination occupied");
+		if ( num == ERR_FIRE_VEH        )  strcpy(text, "Bot inappropriate");
+		if ( num == ERR_FIRE_ENERGY     )  strcpy(text, "Not enough energy");
+		if ( num == ERR_MISSION_NOTERM  )  strcpy(text, "The mission is not accomplished yet (push \\key help; for more details)");
+		if ( num == ERR_PUZZLE_ZEROBLUPI)  strcpy(text, "Il doit y avoir au moins un Blupi !");
+		if ( num == ERR_PUZZLE_ZEROGOAL )  strcpy(text, "Il doit y avoir au moins un ballon !");
+		if ( num == ERR_PUZZLE_LOGOAL   )  strcpy(text, "Il n'y a pas assez de ballons !");
+		if ( num == ERR_PUZZLE_HIGOAL   )  strcpy(text, "Il y a trop de ballons !");
+		if ( num == ERR_PUZZLE_MAXBLUPI )  strcpy(text, "4 Blupi ou robots au maximum par puzzle !");
+		if ( num == ERR_PUZZLE_MAXGOAL  )  strcpy(text, "8 ballons au maximum par puzzle !");
+		if ( num == ERR_PUZZLE_MAX      )  strcpy(text, "Il n'est pas possible de créer plus d'objets de ce type !");
+
+		if ( num == INFO_WIN            )  strcpy(text, "<< Well done, mission accomplished >>");
+		if ( num == INFO_LOST           )  strcpy(text, "<< Sorry, mission failed >>");
+		if ( num == INFO_LOSTq          )  strcpy(text, "<< Sorry, mission failed >>");
+	}
+
+	if ( type == RES_CBOT )
+	{
+		strcpy(text, "Error");
+		if ( num == TX_OPENPAR       ) strcpy(text, "Opening bracket missing");
+		if ( num == TX_CLOSEPAR      ) strcpy(text, "Closing bracket missing ");
+		if ( num == TX_NOTBOOL       ) strcpy(text, "The expression must return a boolean value");
+		if ( num == TX_UNDEFVAR      ) strcpy(text, "Variable not declared");
+		if ( num == TX_BADLEFT       ) strcpy(text, "Assignment impossible");
+		if ( num == TX_ENDOF         ) strcpy(text, "Semicolon terminator missing");
+		if ( num == TX_OUTCASE       ) strcpy(text, "Instruction ""case"" outside a block ""switch""");
+		if ( num == TX_NOTERM        ) strcpy(text, "Instructions after the final closing brace");
+		if ( num == TX_CLOSEBLK      ) strcpy(text, "End of block missing");
+		if ( num == TX_ELSEWITHOUTIF ) strcpy(text, "Instruction ""else"" without corresponding ""if"" ");
+		if ( num == TX_OPENBLK       ) strcpy(text, "Opening brace missing ");//début d'un bloc attendu?
+		if ( num == TX_BADTYPE       ) strcpy(text, "Wrong type for the assignment");
+		if ( num == TX_REDEFVAR      ) strcpy(text, "A variable can not be declared twice");
+		if ( num == TX_BAD2TYPE      ) strcpy(text, "The types of the two operands are incompatible ");
+		if ( num == TX_UNDEFCALL     ) strcpy(text, "Unknown function");
+		if ( num == TX_MISDOTS       ) strcpy(text, "Sign "" : "" missing");
+		if ( num == TX_WHILE         ) strcpy(text, "Keyword ""while"" missing");
+		if ( num == TX_BREAK         ) strcpy(text, "Instruction ""break"" outside a loop");
+		if ( num == TX_LABEL         ) strcpy(text, "A label must be followed by ""for"", ""while"", ""do"" or ""switch""");
+		if ( num == TX_NOLABEL       ) strcpy(text, "This label does not exist");// Cette étiquette n'existe pas
+		if ( num == TX_NOCASE        ) strcpy(text, "Instruction ""case"" missing");
+		if ( num == TX_BADNUM        ) strcpy(text, "Number missing");
+		if ( num == TX_VOID          ) strcpy(text, "Void parameter");
+		if ( num == TX_NOTYP         ) strcpy(text, "Type declaration missing");
+		if ( num == TX_NOVAR         ) strcpy(text, "Variable name missing");
+		if ( num == TX_NOFONC        ) strcpy(text, "Function name missing");
+		if ( num == TX_OVERPARAM     ) strcpy(text, "Too many parameters");
+		if ( num == TX_REDEF         ) strcpy(text, "Function already exists");
+		if ( num == TX_LOWPARAM      ) strcpy(text, "Parameters missing ");
+		if ( num == TX_BADPARAM      ) strcpy(text, "No function of this name accepts this kind of parameter");
+		if ( num == TX_NUMPARAM      ) strcpy(text, "No function of this name accepts this number of parameters");
+		if ( num == TX_NOITEM        ) strcpy(text, "This is not a member of this class");
+		if ( num == TX_DOT           ) strcpy(text, "This object is not a member of a class");
+		if ( num == TX_NOCONST       ) strcpy(text, "Appropriate constructor missing");
+		if ( num == TX_REDEFCLASS    ) strcpy(text, "This class already exists");
+		if ( num == TX_CLBRK         ) strcpy(text, """ ] "" missing");
+		if ( num == TX_RESERVED      ) strcpy(text, "Reserved keyword of CBOT language");
+		if ( num == TX_BADNEW        ) strcpy(text, "Bad argument for ""new""");
+		if ( num == TX_OPBRK         ) strcpy(text, """ [ "" expected");
+		if ( num == TX_BADSTRING     ) strcpy(text, "String missing");
+		if ( num == TX_BADINDEX      ) strcpy(text, "Incorrect index type");
+		if ( num == TX_PRIVATE       ) strcpy(text, "Private element");
+		if ( num == TX_NOPUBLIC      ) strcpy(text, "Public required");
+		if ( num == TX_DIVZERO       ) strcpy(text, "Dividing through zero");
+		if ( num == TX_NOTINIT       ) strcpy(text, "Variable not initialized");
+		if ( num == TX_BADTHROW      ) strcpy(text, "Negative value rejected by ""throw""");//C'est quoi, ça?
+		if ( num == TX_NORETVAL      ) strcpy(text, "The function returned no value ");
+		if ( num == TX_NORUN         ) strcpy(text, "No function running");
+		if ( num == TX_NOCALL        ) strcpy(text, "Calling an unknown function");
+		if ( num == TX_NOCLASS       ) strcpy(text, "This class does not exist");
+		if ( num == TX_NULLPT        ) strcpy(text, "Unknown Object");
+		if ( num == TX_OPNAN         ) strcpy(text, "Operation impossible with value ""nan""");
+		if ( num == TX_OUTARRAY      ) strcpy(text, "Access beyond array limit");
+		if ( num == TX_STACKOVER     ) strcpy(text, "Stack overflow");
+		if ( num == TX_DELETEDPT     ) strcpy(text, "Illegal object");
+		if ( num == TX_FILEOPEN      ) strcpy(text, "Can't open file");
+		if ( num == TX_NOTOPEN       ) strcpy(text, "File not open");
+		if ( num == TX_ERRREAD       ) strcpy(text, "Read error");
+		if ( num == TX_ERRWRITE      ) strcpy(text, "Write error");
+	}
+
+	if ( type == RES_KEY )
+	{
+		if ( num == 0                   )  strcpy(text, "< none >");
+		if ( num == VK_LEFT             )  strcpy(text, "Left arrow");
+		if ( num == VK_RIGHT            )  strcpy(text, "Right arrow");
+		if ( num == VK_UP               )  strcpy(text, "Arrow up");
+		if ( num == VK_DOWN             )  strcpy(text, "Arrow down");
+		if ( num == VK_CANCEL           )  strcpy(text, "Control-break");
+		if ( num == VK_BACK             )  strcpy(text, "<--");
+		if ( num == VK_TAB              )  strcpy(text, "Tab");
+		if ( num == VK_CLEAR            )  strcpy(text, "Clear");
+		if ( num == VK_RETURN           )  strcpy(text, "Enter");
+		if ( num == VK_SHIFT            )  strcpy(text, "Shift");
+		if ( num == VK_CONTROL          )  strcpy(text, "Ctrl");
+		if ( num == VK_MENU             )  strcpy(text, "Alt");
+		if ( num == VK_PAUSE            )  strcpy(text, "Pause");
+		if ( num == VK_CAPITAL          )  strcpy(text, "Caps Lock");
+		if ( num == VK_ESCAPE           )  strcpy(text, "Esc");
+		if ( num == VK_SPACE            )  strcpy(text, "Space bar");
+		if ( num == VK_PRIOR            )  strcpy(text, "Page Up");
+		if ( num == VK_NEXT             )  strcpy(text, "Page Down");
+		if ( num == VK_END              )  strcpy(text, "End");
+		if ( num == VK_HOME             )  strcpy(text, "Home");
+		if ( num == VK_SELECT           )  strcpy(text, "Select");
+		if ( num == VK_EXECUTE          )  strcpy(text, "Execute");
+		if ( num == VK_SNAPSHOT         )  strcpy(text, "Print Scrn");
+		if ( num == VK_INSERT           )  strcpy(text, "Insert");
+		if ( num == VK_DELETE           )  strcpy(text, "Delete");
+		if ( num == VK_HELP             )  strcpy(text, "Help");
+		if ( num == VK_LWIN             )  strcpy(text, "Left Windows");
+		if ( num == VK_RWIN             )  strcpy(text, "Right Windows");
+		if ( num == VK_APPS             )  strcpy(text, "Application key");
+		if ( num == VK_NUMPAD0          )  strcpy(text, "NumPad 0");
+		if ( num == VK_NUMPAD1          )  strcpy(text, "NumPad 1");
+		if ( num == VK_NUMPAD2          )  strcpy(text, "NumPad 2");
+		if ( num == VK_NUMPAD3          )  strcpy(text, "NumPad 3");
+		if ( num == VK_NUMPAD4          )  strcpy(text, "NumPad 4");
+		if ( num == VK_NUMPAD5          )  strcpy(text, "NumPad 5");
+		if ( num == VK_NUMPAD6          )  strcpy(text, "NumPad 6");
+		if ( num == VK_NUMPAD7          )  strcpy(text, "NumPad 7");
+		if ( num == VK_NUMPAD8          )  strcpy(text, "NumPad 8");
+		if ( num == VK_NUMPAD9          )  strcpy(text, "NumPad 9");
+		if ( num == VK_MULTIPLY         )  strcpy(text, "NumPad *");
+		if ( num == VK_ADD              )  strcpy(text, "NumPad +");
+		if ( num == VK_SEPARATOR        )  strcpy(text, "NumPad sep");
+		if ( num == VK_SUBTRACT         )  strcpy(text, "NumPad -");
+		if ( num == VK_DECIMAL          )  strcpy(text, "NumPad .");
+		if ( num == VK_DIVIDE           )  strcpy(text, "NumPad /");
+		if ( num == VK_F1               )  strcpy(text, "F1");
+		if ( num == VK_F2               )  strcpy(text, "F2");
+		if ( num == VK_F3               )  strcpy(text, "F3");
+		if ( num == VK_F4               )  strcpy(text, "F4");
+		if ( num == VK_F5               )  strcpy(text, "F5");
+		if ( num == VK_F6               )  strcpy(text, "F6");
+		if ( num == VK_F7               )  strcpy(text, "F7");
+		if ( num == VK_F8               )  strcpy(text, "F8");
+		if ( num == VK_F9               )  strcpy(text, "F9");
+		if ( num == VK_F10              )  strcpy(text, "F10");
+		if ( num == VK_F11              )  strcpy(text, "F11");
+		if ( num == VK_F12              )  strcpy(text, "F12");
+		if ( num == VK_F13              )  strcpy(text, "F13");
+		if ( num == VK_F14              )  strcpy(text, "F14");
+		if ( num == VK_F15              )  strcpy(text, "F15");
+		if ( num == VK_F16              )  strcpy(text, "F16");
+		if ( num == VK_F17              )  strcpy(text, "F17");
+		if ( num == VK_F18              )  strcpy(text, "F18");
+		if ( num == VK_F19              )  strcpy(text, "F19");
+		if ( num == VK_F20              )  strcpy(text, "F20");
+		if ( num == VK_NUMLOCK          )  strcpy(text, "Num Lock");
+		if ( num == VK_SCROLL           )  strcpy(text, "Scroll");
+		if ( num == VK_ATTN             )  strcpy(text, "Attn");
+		if ( num == VK_CRSEL            )  strcpy(text, "CrSel");
+		if ( num == VK_EXSEL            )  strcpy(text, "ExSel");
+		if ( num == VK_EREOF            )  strcpy(text, "Erase EOF");
+		if ( num == VK_PLAY             )  strcpy(text, "Play");
+		if ( num == VK_ZOOM             )  strcpy(text, "Zoom");
+		if ( num == VK_PA1              )  strcpy(text, "PA1");
+		if ( num == VK_OEM_CLEAR        )  strcpy(text, "Clear");
+		if ( num == VK_BUTTON1          )  strcpy(text, "Button 1");
+		if ( num == VK_BUTTON2          )  strcpy(text, "Button 2");
+		if ( num == VK_BUTTON3          )  strcpy(text, "Button 3");
+		if ( num == VK_BUTTON4          )  strcpy(text, "Button 4");
+		if ( num == VK_BUTTON5          )  strcpy(text, "Button 5");
+		if ( num == VK_BUTTON6          )  strcpy(text, "Button 6");
+		if ( num == VK_BUTTON7          )  strcpy(text, "Button 7");
+		if ( num == VK_BUTTON8          )  strcpy(text, "Button 8");
+		if ( num == VK_BUTTON9          )  strcpy(text, "Button 9");
+		if ( num == VK_BUTTON10         )  strcpy(text, "Button 10");
+		if ( num == VK_BUTTON11         )  strcpy(text, "Button 11");
+		if ( num == VK_BUTTON12         )  strcpy(text, "Button 12");
+		if ( num == VK_BUTTON13         )  strcpy(text, "Button 13");
+		if ( num == VK_BUTTON14         )  strcpy(text, "Button 14");
+		if ( num == VK_BUTTON15         )  strcpy(text, "Button 15");
+		if ( num == VK_BUTTON16         )  strcpy(text, "Button 16");
+		if ( num == VK_BUTTON17         )  strcpy(text, "Button 17");
+		if ( num == VK_BUTTON18         )  strcpy(text, "Button 18");
+		if ( num == VK_BUTTON19         )  strcpy(text, "Button 19");
+		if ( num == VK_BUTTON20         )  strcpy(text, "Button 20");
+		if ( num == VK_BUTTON21         )  strcpy(text, "Button 21");
+		if ( num == VK_BUTTON22         )  strcpy(text, "Button 22");
+		if ( num == VK_BUTTON23         )  strcpy(text, "Button 23");
+		if ( num == VK_BUTTON24         )  strcpy(text, "Button 24");
+		if ( num == VK_BUTTON25         )  strcpy(text, "Button 25");
+		if ( num == VK_BUTTON26         )  strcpy(text, "Button 26");
+		if ( num == VK_BUTTON27         )  strcpy(text, "Button 27");
+		if ( num == VK_BUTTON28         )  strcpy(text, "Button 28");
+		if ( num == VK_BUTTON29         )  strcpy(text, "Button 29");
+		if ( num == VK_BUTTON30         )  strcpy(text, "Button 30");
+		if ( num == VK_BUTTON31         )  strcpy(text, "Button 31");
+		if ( num == VK_BUTTON32         )  strcpy(text, "Button 32");
+		if ( num == VK_WHEELUP          )  strcpy(text, "Wheel up");
+		if ( num == VK_WHEELDOWN        )  strcpy(text, "Wheel down");
+	}
+#endif

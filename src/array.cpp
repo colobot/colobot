@@ -42,7 +42,10 @@ CArray::CArray(CInstanceManager* iMan) : CControl(iMan)
 	for ( i=0 ; i<ARRAYMAXTOTAL ; i++ )
 	{
 		m_text[i][0] = 0;
+		m_check[i] = FALSE;
 		m_enable[i] = TRUE;
+		m_index[i] = 0;
+		m_sort[i] = 0;
 	}
 
 	for ( i=0 ; i<10 ; i++ )
@@ -435,22 +438,24 @@ void CArray::Draw()
 		if ( m_icon == 0 )
 		{
 			m_engine->SetTexture("button1.tga");
-			m_engine->SetState(D3DSTATENORMAL);
+//?			m_engine->SetState(D3DSTATENORMAL);
+			m_engine->SetState(D3DSTATETTb);
 
-			uv1.x =  64.0f/256.0f;
-			uv1.y =   0.0f/256.0f;  // u-v texture
-			uv2.x =  96.0f/256.0f;
-			uv2.y =  32.0f/256.0f;
+			uv1.x = 224.0f/256.0f;
+			uv1.y =  96.0f/256.0f;  // u-v texture
+			uv2.x = 256.0f/256.0f;
+			uv2.y = 128.0f/256.0f;
 		}
 		else
 		{
 			m_engine->SetTexture("button1.tga");
-			m_engine->SetState(D3DSTATENORMAL);
+//?			m_engine->SetState(D3DSTATENORMAL);
+			m_engine->SetState(D3DSTATETTb);
 
-			uv1.x =  64.0f/256.0f;
-			uv1.y =   0.0f/256.0f;  // u-v texture
-			uv2.x =  96.0f/256.0f;
-			uv2.y =  32.0f/256.0f;
+			uv1.x = 224.0f/256.0f;
+			uv1.y =  96.0f/256.0f;  // u-v texture
+			uv2.x = 256.0f/256.0f;
+			uv2.y = 128.0f/256.0f;
 
 			if ( m_button[0] != 0 )
 			{
@@ -476,7 +481,8 @@ void CArray::Draw()
 		{
 			pos = m_button[i]->RetPos();
 			dim = m_button[i]->RetDim();
-			pos.y += dim.y*1.1f;
+//?			pos.y += dim.y*1.1f;
+			pos.y += dim.y*1.0f;
 			dim.y *= 0.4f;
 			pos.y -= dim.y;
 
@@ -519,6 +525,113 @@ void CArray::Draw()
 				m_engine->SetTexture("button1.tga");
 				m_engine->SetState(D3DSTATETTb);
 				DrawPart(pos, dim, 7, 1.0f, 8.0f/256.0f);  // blanc par-dessus
+			}
+
+			if ( (m_state & STATE_EXTEND) && i < m_totalLine )
+			{
+				pos = m_button[i]->RetPos();
+				dim = m_button[i]->RetDim();
+				pos.x += dim.x-dim.y*0.75f;
+				dim.x = dim.y*0.75f;
+#if 0
+				pos.x += 2.0f/640.0f;
+				pos.y += 2.0f/480.0f;
+				dim.x -= 4.0f/640.0f;
+				dim.y -= 4.0f/480.0f;
+#endif
+
+				if ( m_check[i+m_firstLine] )
+				{
+					if ( m_enable[i+m_firstLine] )
+					{
+						m_engine->SetTexture("button1.tga");
+						m_engine->SetState(D3DSTATENORMAL);
+						uv1.x =  64.0f/256.0f;
+						uv1.y =  64.0f/256.0f;
+						uv2.x =  96.0f/256.0f;
+						uv2.y =  96.0f/256.0f;
+						uv1.x += dp;
+						uv1.y += dp;
+						uv2.x -= dp;
+						uv2.y -= dp;
+						DrawIcon(pos, dim, uv1, uv2);  // dessine carré vert
+
+						pos.x += 2.0f/640.0f;
+						pos.y += 2.0f/480.0f;
+						dim.x -= 4.0f/640.0f;
+						dim.y -= 4.0f/480.0f;
+						m_engine->SetState(D3DSTATETTw);
+						uv1.x =  0.0f/256.0f;  // v
+						uv1.y = 64.0f/256.0f;
+						uv2.x = 32.0f/256.0f;
+						uv2.y = 96.0f/256.0f;
+						uv1.x += dp;
+						uv1.y += dp;
+						uv2.x -= dp;
+						uv2.y -= dp;
+						DrawIcon(pos, dim, uv1, uv2);  // dessine v
+					}
+					else
+					{
+						m_engine->SetTexture("button1.tga");
+						m_engine->SetState(D3DSTATETTw);
+						uv1.x = 160.0f/256.0f;
+						uv1.y = 128.0f/256.0f;
+						uv2.x = 192.0f/256.0f;
+						uv2.y = 160.0f/256.0f;
+						uv1.x += dp;
+						uv1.y += dp;
+						uv2.x -= dp;
+						uv2.y -= dp;
+						DrawIcon(pos, dim, uv1, uv2);  // dessine carré
+					}
+				}
+				else
+				{
+					if ( m_enable[i+m_firstLine] )
+					{
+						m_engine->SetTexture("button1.tga");
+						m_engine->SetState(D3DSTATENORMAL);
+						uv1.x =  32.0f/256.0f;
+						uv1.y =  64.0f/256.0f;
+						uv2.x =  64.0f/256.0f;
+						uv2.y =  96.0f/256.0f;
+						uv1.x += dp;
+						uv1.y += dp;
+						uv2.x -= dp;
+						uv2.y -= dp;
+						DrawIcon(pos, dim, uv1, uv2);  // dessine carré rouge
+
+						pos.x += 2.0f/640.0f;
+						pos.y += 2.0f/480.0f;
+						dim.x -= 4.0f/640.0f;
+						dim.y -= 4.0f/480.0f;
+						m_engine->SetState(D3DSTATETTw);
+						uv1.x = 96.0f/256.0f;  // x
+						uv1.y = 32.0f/256.0f;
+						uv2.x =128.0f/256.0f;
+						uv2.y = 64.0f/256.0f;
+						uv1.x += dp;
+						uv1.y += dp;
+						uv2.x -= dp;
+						uv2.y -= dp;
+						DrawIcon(pos, dim, uv1, uv2);  // dessine x
+					}
+					else
+					{
+						m_engine->SetTexture("button1.tga");
+						m_engine->SetState(D3DSTATETTw);
+						uv1.x = 160.0f/256.0f;
+						uv1.y = 128.0f/256.0f;
+						uv2.x = 192.0f/256.0f;
+						uv2.y = 160.0f/256.0f;
+						uv1.x += dp;
+						uv1.y += dp;
+						uv2.x -= dp;
+						uv2.y -= dp;
+						DrawIcon(pos, dim, uv1, uv2);  // dessine carré
+					}
+				}
 			}
 		}
 	}
@@ -673,6 +786,25 @@ BOOL CArray::RetSelectCap()
 }
 
 
+// Spécifie le bit "check" pour une case.
+
+void CArray::SetCheck(int i, BOOL bMode)
+{
+	if ( i < 0 || i >= m_totalLine )  return;
+
+	m_check[i] = bMode;
+}
+
+// Retourne le bit "check" pour une case.
+
+BOOL CArray::RetCheck(int i)
+{
+	if ( i < 0 || i >= m_totalLine )  return FALSE;
+
+	return m_check[i];
+}
+
+
 // Spécifie le bit "enable" pour une case.
 
 void CArray::SetEnable(int i, BOOL bMode)
@@ -756,6 +888,111 @@ char* CArray::RetName(int i)
 	if ( i < 0 || i >= m_totalLine )  return 0;
 
 	return m_text[i];
+}
+
+
+// Spécifie l'index libre.
+
+void CArray::SetIndex(int i, int index)
+{
+	if ( i < 0 || i >= m_totalLine )  return;
+
+	m_index[i] = index;
+}
+
+// Retourne l'index libre
+
+int CArray::RetIndex(int i)
+{
+	if ( i < 0 || i >= m_totalLine )  return -1;
+
+	return m_index[i];
+}
+
+
+// Spécifie la valeur de tri.
+
+void CArray::SetSortValue(int i, int value)
+{
+	if ( i < 0 || i >= m_totalLine )  return;
+
+	m_sort[i] = value;
+}
+
+// Retourne la valeur de tri.
+
+int CArray::RetSortValue(int i)
+{
+	if ( i < 0 || i >= m_totalLine )  return 0;
+
+	return m_sort[i];
+}
+
+
+// Trie toute la liste.
+
+void CArray::Sort()
+{
+	int		i, ti;
+	char	tc;
+	char	text[200];
+	BOOL	bDo, bSwap;
+
+	do  // trie tous les noms :
+	{
+		bDo = FALSE;
+		for ( i=0 ; i<m_totalLine-1 ; i++ )
+		{
+			bSwap = FALSE;
+
+			if ( m_sort[i] > m_sort[i+1] )
+			{
+				bSwap = TRUE;
+			}
+			else if ( m_sort[i] == m_sort[i+1] )
+			{
+				if ( stricmp(m_text[i], m_text[i+1]) > 0 )
+				{
+					bSwap = TRUE;
+				}
+			}
+
+			if ( bSwap )
+			{
+				strcpy(text,        m_text[i]);
+				strcpy(m_text[i],   m_text[i+1]);
+				strcpy(m_text[i+1], text);
+
+				tc           = m_check[i];
+				m_check[i]   = m_check[i+1];
+				m_check[i+1] = tc;
+
+				tc            = m_enable[i];
+				m_enable[i]   = m_enable[i+1];
+				m_enable[i+1] = tc;
+
+				ti           = m_index[i];
+				m_index[i]   = m_index[i+1];
+				m_index[i+1] = ti;
+
+				ti          = m_sort[i];
+				m_sort[i]   = m_sort[i+1];
+				m_sort[i+1] = ti;
+
+				if ( m_selectLine == i )
+				{
+					m_selectLine = i+1;
+				}
+				else if ( m_selectLine == i+1 )
+				{
+					m_selectLine = i;
+				}
+
+				bDo = TRUE;
+			}
+		}
+	}
+	while ( bDo );
 }
 
 

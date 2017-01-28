@@ -39,6 +39,19 @@ typedef struct
 WaterVapor;
 
 
+#define MAXWATERPICK	5
+
+typedef struct
+{
+	float		progress;
+	float		speed;
+	float		height;
+	float		radius;
+	D3DVECTOR	pos;
+}
+WaterPick;
+
+
 enum WaterType
 {
 	WATER_NULL		= 0,	// pas d'eau
@@ -47,6 +60,16 @@ enum WaterType
 	WATER_CT		= 3,	// couleur transparente
 	WATER_CO		= 4,	// couleur opaque
 };
+
+enum Meteo
+{
+	METEO_NORM		= 0,	// beau fixe
+	METEO_LAVA		= 1,	// lave rouge
+	METEO_ORGA		= 2,	// lave organique
+	METEO_SNOW		= 3,	// pluie
+	METEO_RAIN		= 4,	// neige
+};
+
 
 
 class CWater
@@ -58,7 +81,8 @@ public:
 	void		SetD3DDevice(LPDIRECT3DDEVICE7 device);
 	BOOL		EventProcess(const Event &event);
 	void		Flush();
-	BOOL		Create(WaterType type1, WaterType type2, const char *filename, D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient, float level, float glint, D3DVECTOR eddy);
+	BOOL		Init(WaterType type1, WaterType type2, const char *filename, D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient, float level, float glint, D3DVECTOR eddy, D3DVECTOR vortex, float pick, float tension, float shadowForce, D3DCOLOR farColorLight, D3DCOLOR farColorDark, float farStart, float farEnd, Meteo meteo, BOOL bBold);
+	BOOL		Create();
 	void		DrawBack();
 	void		DrawSurf();
 
@@ -66,14 +90,17 @@ public:
 	float		RetLevel();
 	float		RetLevel(CObject* object);
 
-	void		SetLava(BOOL bLava);
-	BOOL		RetLava();
-
 	void		AdjustEye(D3DVECTOR &eye);
+
+	BOOL		SearchArea(D3DVECTOR &pos, float length);
+	BOOL		IsWaterRect(const D3DVECTOR &p1, const D3DVECTOR &p2);
 
 protected:
 	BOOL		EventFrame(const Event &event);
 	void		LavaFrame(float rTime);
+	void		WaterPickFlush();
+	BOOL		WaterPickCheck(int rank);
+	void		WaterPickFrame(float rTime);
 	void		AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm, FPOINT &uv1, FPOINT &uv2);
 	BOOL		RetWater(int x, int y);
 	BOOL		CreateLine(int x, int y, int len);
@@ -95,22 +122,31 @@ protected:
 	float			m_level;		// niveau global
 	float			m_glint;		// amplitude des reflets
 	D3DVECTOR		m_eddy;			// amplitude des remous
+	D3DVECTOR		m_vortex;		// amplitude des tourbillons
 	D3DCOLORVALUE	m_diffuse;		// couleur diffuse
 	D3DCOLORVALUE	m_ambient;		// couleur ambiante
+	D3DCOLOR		m_farColorLight;// couleur brouillard
+	D3DCOLOR		m_farColorDark;	// couleur brouillard
+	float			m_farStart;
+	float			m_farEnd;
+	float			m_pick;
+	float			m_tension;
+	float			m_shadowForce;
 	float			m_time;
 	float			m_lastLava;
-	int				m_subdiv;
+	BOOL			m_bBold;
 
-	int				m_brick;		// nb de briques*mosaïque
-	float			m_size;			// taille d'un élément dans une brique
+	int				m_nbTiles;		// nb de tuiles
+	float			m_dimTile;		// taille d'un élément dans une brique
 
 	int				m_lineUsed;
 	WaterLine		m_line[MAXWATERLINE];
 
 	WaterVapor		m_vapor[MAXWATVAPOR];
+	WaterPick		m_waterPick[MAXWATERPICK];
 
 	BOOL			m_bDraw;
-	BOOL			m_bLava;
+	Meteo			m_meteo;
 	D3DCOLOR		m_color;
 };
 

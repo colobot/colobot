@@ -10,29 +10,18 @@ class CLight;
 class CParticule;
 class CTerrain;
 class CCamera;
-class CBrain;
-class CPhysics;
 class CObject;
 
 
-#define MB_WAIT		0		// attend au repos
-#define MB_TRUCK	1		// soulevé par la grue
-#define MB_FEAR		2		// peur
-#define MB_GOHOME	3		// va à la maison
-#define MB_HOME1	4		// à la maison 1
-#define MB_HOME2	5		// à la maison 2
-#define MB_FLIC		6		// gendarme (BOT1)
-#define MB_FIRE		6		// tir (EVIL1)
-#define MB_WALK1	7		// marche 1 (WALKER)
-#define MB_WALK2	8		// marche 2 (WALKER)
-#define MB_WALK3	9		// marche 3 (WALKER)
-#define MB_WALK4	10		// marche 4 (WALKER)
-#define MB_MAX		11
-
-#define MB_HAPPY	100
-#define MB_ANGRY	101
-#define MB_BREAK	102
-#define MB_REPAIR	103
+#define MBOT_WAIT		0		// attend au repos
+#define MBOT_YOUPIE		1		// content
+#define MBOT_GOAL		2		// suspendu au ballon
+#define MBOT_TURN		3		// tourne
+#define MBOT_WALK1		4		// marche 1
+#define MBOT_WALK2		5		// marche 2
+#define MBOT_WALK3		6		// marche 3
+#define MBOT_WALK4		7		// marche 4
+#define MBOT_MAX		8
 
 
 
@@ -43,36 +32,38 @@ public:
 	~CMotionBot();
 
 	void		DeleteObject(BOOL bAll=FALSE);
-	BOOL		Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb);
+	BOOL		Create(D3DVECTOR pos, float angle, ObjectType type);
 	BOOL		EventProcess(const Event &event);
 	Error		SetAction(int action, float time=0.2f);
+
+	float		RetLinSpeed();
+	float		RetCirSpeed();
+	float		RetLinStopLength();
+
+	void		WriteSituation();
+	void		ReadSituation();
 
 protected:
 	void		CreatePhysics();
 	BOOL		EventFrame(const Event &event);
-	void		SpeedAdapt(float effect[], D3DVECTOR &linVib, D3DVECTOR &cirVib, float rTime);
+	void		BrainFrameCrazy();
+	CObject*	SearchBlupi(D3DVECTOR center);
+	void		CrazyParticule(BOOL bTurn);
 	void		FireBot2();
 	void		FireEvil1a();
 	void		FireEvil1b();
-	void		BubbleBot1();
-	void		UpdateFaceMapping(int face);
+	void		StepSound();
 
 protected:
 	int			m_option;
-	int			m_face;
 	float		m_aTime;
-	short		m_armAngles[3*20*MB_MAX];
+	short		m_armAngles[3*20*MBOT_MAX];
 	int			m_armPartIndex;
 	float		m_lastParticule;
 	float		m_lastSound;
 	float		m_walkTime;
-	float		m_starterTime;
-	int			m_starterPhase;
-	int			m_partiGuide;
-	CameraType	m_cameraType;
-	CObject*	m_cameraObj;
 	D3DVECTOR	m_cirVib;
-	BOOL		m_bBreak;
+	BOOL		m_bFirstSound;
 };
 
 

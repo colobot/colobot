@@ -15,8 +15,6 @@
 #include "iman.h"
 #include "terrain.h"
 #include "object.h"
-#include "physics.h"
-#include "brain.h"
 #include "task.h"
 #include "taskwait.h"
 

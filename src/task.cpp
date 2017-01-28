@@ -18,12 +18,11 @@
 #include "terrain.h"
 #include "water.h"
 #include "object.h"
-#include "physics.h"
-#include "brain.h"
 #include "motion.h"
 #include "camera.h"
 #include "sound.h"
 #include "robotmain.h"
+#include "mainundo.h"
 #include "displaytext.h"
 #include "task.h"
 
@@ -43,12 +42,11 @@ CTask::CTask(CInstanceManager* iMan, CObject* object)
 	m_water       = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
 	m_camera      = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
 	m_main        = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
+	m_undo        = (CMainUndo*)m_iMan->SearchInstance(CLASS_UNDO);
 	m_displayText = (CDisplayText*)m_iMan->SearchInstance(CLASS_DISPLAYTEXT);
 	m_sound       = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
 
 	m_object      = object;
-	m_physics     = m_object->RetPhysics();
-	m_brain       = m_object->RetBrain();
 	m_motion      = m_object->RetMotion();
 }
 
@@ -82,4 +80,38 @@ BOOL CTask::Abort()
 	return TRUE;
 }
 
+
+// Indique si l'action est annulable.
+
+BOOL CTask::IsUndoable()
+{
+	return FALSE;
+}
+
+// Indique si l'action est stoppable.
+
+BOOL CTask::IsStopable()
+{
+	return FALSE;
+}
+
+// Stoppe proprement l'action en cours.
+
+BOOL CTask::Stop()
+{
+	return FALSE;
+}
+
+
+// Ecrit la situation de l'objet.
+
+void CTask::WriteSituation()
+{
+}
+
+// lit la situation de l'objet.
+
+void CTask::ReadSituation()
+{
+}
 

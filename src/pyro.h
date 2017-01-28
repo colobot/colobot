@@ -22,36 +22,19 @@ enum PyroType
 	PT_NULL		= 0,
 	PT_FRAGT	= 10,		// fragmentation objet technique
 	PT_FRAGO	= 11,		// fragmentation objet organique
-	PT_FRAGW	= 12,		// fragmentation objet sous l'eau
-	PT_FRAGA	= 13,		// fragmentation objet atomique (bleu)
+	PT_FRAGG	= 12,		// fragmentation objet en verre
+	PT_GLASS	= 13,		// fragmentation d'une vitre
+	PT_GOAL		= 14,		// fragmentation d'un ballon
 	PT_EXPLOT	= 20,		// explosion objet technique
 	PT_EXPLOO	= 21,		// explosion objet organique
-	PT_EXPLOW	= 22,		// explosion objet sous l'eau
 	PT_EXPLOS	= 23,		// explosion seule
 	PT_EXPLOP	= 24,		// explosion partie voiture
+	PT_BREAKT	= 30,		// casse objet technique
 	PT_SHOTT	= 40,		// coup objet technique
-	PT_SHOTH	= 41,		// coup homme
-	PT_SHOTM	= 42,		// coup pondeuse
-	PT_SHOTW	= 43,		// coup sous l'eau
 	PT_BURNT	= 60,		// brûle objet technique
 	PT_BURNO	= 61,		// brûle objet organique
 	PT_BURNS	= 62,		// brûle objet seul
-	PT_EJECT	= 70,		// objet éjecté
-	PT_FINDING	= 71,		// objet découvert
-	PT_PAINTING	= 72,		// voiture peinte
-	PT_ACROBATIC= 73,		// robot voltigeant suite à un choc
-	PT_PIECE	= 74,		// pièce de véhicule perdue
-	PT_SABOTAGE	= 75,		// sabotage en cours
-	PT_WPCHECK	= 80,		// indicateur atteint
-	PT_WPVIBRA	= 81,		// indicateur touché
-	PT_FLCREATE	= 82,		// drapeau créé
-	PT_FLDELETE	= 83,		// drapeau détruit
-	PT_WIN		= 90,		// feu d'artifice
-	PT_LOST		= 91,		// fumée noire
-	PT_DEADG	= 92,		// mort par balle
-	PT_DEADW	= 93,		// mort noyé
-	PT_SPIDER	= 94,		// explosion araignée
-	PT_EGG		= 95,		// casse l'oeuf
+	PT_PLOUF	= 70,		// objet tombe à l'eau
 };
 
 
@@ -91,6 +74,7 @@ public:
 	BOOL		EventProcess(const Event &event);
 	Error		IsEnded();
 	void		CutObjectLink(CObject* pObj);
+	BOOL		IsObject(CObject* pObj);
 
 protected:
 	void		DisplayError(PyroType type, CObject* pObj);
@@ -99,8 +83,15 @@ protected:
 
 	void		CreateTriangle(CObject* pObj, ObjectType oType, int part);
 
+	void		GlassStart(ObjectType oType);
+
 	void		ExploStart(ObjectType oType);
+	void		ExploProgress();
 	void		ExploTerminate();
+
+	void		PloufStart();
+	void		PloufProgress();
+	void		PloufTerminate();
 
 	void		OrgaStart();
 	void		OrgaProgress();
@@ -111,12 +102,6 @@ protected:
 	void		BurnProgress();
 	BOOL		BurnIsKeepPart(int part);
 	void		BurnTerminate();
-
-	void		AcrobaticStart(D3DVECTOR min, D3DVECTOR max);
-	void		AcrobaticTransform(ObjectType type, D3DVECTOR cdg, D3DVECTOR angle, D3DVECTOR min, D3DVECTOR max);
-	void		AcrobaticGroundAdapt(ObjectType type, D3DVECTOR &angle, D3DVECTOR &pos);
-	void		AcrobaticProgress();
-	void		AcrobaticTerminate();
 
 	void		LightOperFlush();
 	void		LightOperAdd(float progress, float intensity, float r, float g, float b);
@@ -166,10 +151,6 @@ protected:
 	PyroBurnPart	m_burnPart[10];
 	int				m_burnKeepPart[10];
 	float			m_burnFall;
-
-	int				m_crashSphereUsed;	// nb de sphères utilisées
-	D3DVECTOR		m_crashSpherePos[50];
-	float			m_crashSphereRadius[50];
 };
 
 

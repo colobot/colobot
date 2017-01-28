@@ -14,10 +14,10 @@
 #include "misc.h"
 #include "iman.h"
 #include "math3d.h"
+#include "robotmain.h"
 #include "terrain.h"
 #include "water.h"
 #include "object.h"
-#include "physics.h"
 #include "camera.h"
 
 
@@ -33,6 +33,7 @@ CCamera::CCamera(CInstanceManager* iMan)
 	m_engine  = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
 	m_terrain = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
 	m_water   = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
+	m_main    = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
 
 	m_type       = CAMERA_FREE;
 	m_smooth     = CS_NORM;
@@ -40,7 +41,6 @@ CCamera::CCamera(CInstanceManager* iMan)
 	m_cameraObj  = 0;
 
 	m_eyeDistance = 10.0f;
-	m_initDelay   =  0.0f;
 
 	m_actualEye    = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_actualLookat = D3DVECTOR(0.0f, 0.0f, 0.0f);
@@ -56,12 +56,17 @@ CCamera::CCamera(CInstanceManager* iMan)
 	m_rightPosMove   = FPOINT(0.5f, 0.5f);
 
 	m_eyePt        = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_lookatPt     = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_directionH   =  0.0f;
 	m_directionV   =  0.0f;
-	m_heightEye    = 20.0f;
+	m_rotH         =  0.0f;
+	m_distance     = FREE_DIST;
+	m_heightEye    = 50.0f;
 	m_heightShift  =  0.0f;
 	m_heightLookat =  0.0f;
 	m_speed        =  2.0f;
+	m_scrollMouse  = FPOINT(0.0f, 0.0f);
+	m_bFinalScroll = FALSE;
 
 	m_backDist      = 0.0f;
 	m_backMin       = 0.0f;
@@ -85,8 +90,6 @@ CCamera::CCamera(CInstanceManager* iMan)
 	m_visitDirectionH = 0.0f;
 	m_visitDirectionV = 0.0f;
 
-	m_editHeight = 40.0f;
-
 	m_mouseDirH    = 0.0f;
 	m_mouseDirV    = 0.0f;
 	m_mouseMarging = 0.01f;
@@ -109,25 +112,13 @@ CCamera::CCamera(CInstanceManager* iMan)
 	m_scriptEye    = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_scriptLookat = D3DVECTOR(0.0f, 0.0f, 0.0f);
 
-	m_bEffect = TRUE;
-	m_bFlash  = TRUE;
+	m_overType = OE_NULL;
 }
 
 // Destructeur de l'objet.
 
 CCamera::~CCamera()
 {
-}
-
-
-void CCamera::SetEffect(BOOL bEnable)
-{
-	m_bEffect = bEnable;
-}
-
-void CCamera::SetFlash(BOOL bFlash)
-{
-	m_bFlash = bFlash;
 }
 
 
@@ -142,20 +133,26 @@ void CCamera::SetMotorSpeed(float speed)
 
 // Initialise la caméra.
 
-void CCamera::Init(D3DVECTOR eye, D3DVECTOR lookat, float delay)
+void CCamera::Init(D3DVECTOR lookat, float dirH, float dirV, float dist)
 {
 	D3DVECTOR	vUpVec;
 
-	m_initDelay = delay;
-
-//?	eye.y    += m_terrain->RetFloorLevel(eye,    TRUE);
-//?	lookat.y += m_terrain->RetFloorLevel(lookat, TRUE);
-
 	m_type = CAMERA_FREE;
-	m_eyePt = eye;
-
-	m_directionH = RotateAngle(eye.x-lookat.x, eye.z-lookat.z)+PI/2.0f;
-	m_directionV = -RotateAngle(Length2d(eye, lookat), eye.y-lookat.y);
+	m_directionH = dirH;
+	m_directionV = dirV;
+	m_rotH = 0.0f;
+	m_distance = dist;
+	m_lookatPt = lookat;
+	m_lookatPt.y = 0.0f;
+	m_eyePt = RotateView(m_lookatPt, m_directionH+PI/2.0f, m_directionV-PI, m_distance);
+	m_actualEye = m_eyePt;
+	m_actualLookat = m_lookatPt;
+	m_finalEye = m_actualEye;
+	m_finalLookat = m_actualLookat;
+	m_scriptEye = m_actualEye;
+	m_scriptLookat = m_actualLookat;
+	m_scrollMouse  = FPOINT(0.0f, 0.0f);
+	m_bFinalScroll = FALSE;
 
 	m_eyeDistance = 10.0f;
 	m_heightLookat = 10.0f;
@@ -168,17 +165,53 @@ void CCamera::Init(D3DVECTOR eye, D3DVECTOR lookat, float delay)
 	m_fixDirectionH = PI*0.25f;
 	m_fixDirectionV = -PI*0.10f;
 	m_centeringPhase = CP_NULL;
-	m_actualEye = m_eyePt;
-	m_actualLookat = LookatPoint(m_eyePt, m_directionH, m_directionV, 50.0f);
-	m_finalEye = m_actualEye;
-	m_finalLookat = m_actualLookat;
-	m_scriptEye = m_actualEye;
-	m_scriptLookat = m_actualLookat;
 	m_focus = 1.00f;
 
 	FlushEffect();
 	FlushOver();
 	SetType(CAMERA_FREE);
+}
+
+
+// Spécifie le point visé.
+
+void CCamera::SetLookat(D3DVECTOR lookat)
+{
+	m_lookatPt = lookat;
+	m_lookatPt.y = 0.0f;
+}
+
+// Spécifie la direction horizontale.
+
+void CCamera::SetDirH(float dirH)
+{
+	m_directionH = dirH;
+}
+
+// Spécifie la direction verticale.
+
+void CCamera::SetDirV(float dirV)
+{
+	m_directionV = dirV;
+}
+
+// Spécifie l'éloignement de la caméra.
+
+void CCamera::SetDistance(float dist)
+{
+	m_distance = dist;
+}
+
+// Retourne le point de vue de la caméra.
+
+void CCamera::RetCamera(D3DVECTOR &eye, D3DVECTOR &lookat,
+						float &dirH, float &dirV, float &dist)
+{
+	eye = m_eyePt;
+	lookat = m_lookatPt;
+	dirH = m_directionH;
+	dirV = m_directionV;
+	dist = m_distance;
 }
 
 
@@ -240,8 +273,7 @@ void CCamera::SetType(CameraType type)
 	}
 	m_bTransparency = FALSE;
 
-	if ( type == CAMERA_INFO  ||
-		 type == CAMERA_VISIT )  // xx -> info ?
+	if ( type == CAMERA_VISIT )  // xx -> info ?
 	{
 		m_normEye    = m_engine->RetEyePt();
 		m_normLookat = m_engine->RetLookatPt();
@@ -251,8 +283,7 @@ void CCamera::SetType(CameraType type)
 		return;
 	}
 
-	if ( m_type == CAMERA_INFO  ||
-		 m_type == CAMERA_VISIT )  // info -> xx ?
+	if ( m_type == CAMERA_VISIT )  // info -> xx ?
 	{
 		m_engine->SetFocus(m_focus);  // remet focus initial
 		m_type = type;
@@ -267,29 +298,9 @@ void CCamera::SetType(CameraType type)
 		m_eyePt = LookatPoint(m_eyePt, m_directionH, m_directionV, -50.0f);
 	}
 
-	if ( m_type == CAMERA_BACK && type == CAMERA_EDIT )  // back -> edit ?
-	{
-		m_eyePt = LookatPoint(m_eyePt, m_directionH, m_directionV, -1.0f);
-	}
-
 	if ( m_type == CAMERA_ONBOARD && type == CAMERA_FREE )  // onboard -> free ?
 	{
 		m_eyePt = LookatPoint(m_eyePt, m_directionH, m_directionV, -30.0f);
-	}
-
-	if ( m_type == CAMERA_ONBOARD && type == CAMERA_EDIT )  // onboard -> edit ?
-	{
-		m_eyePt = LookatPoint(m_eyePt, m_directionH, m_directionV, -30.0f);
-	}
-
-	if ( m_type == CAMERA_ONBOARD && type == CAMERA_EXPLO )  // onboard -> explo ?
-	{
-		m_eyePt = LookatPoint(m_eyePt, m_directionH, m_directionV, -50.0f);
-	}
-
-	if ( m_type == CAMERA_BACK && type == CAMERA_EXPLO )  // back -> explo ?
-	{
-		m_eyePt = LookatPoint(m_eyePt, m_directionH, m_directionV, -20.0f);
 	}
 
 	if ( type == CAMERA_FIX )
@@ -308,43 +319,7 @@ void CCamera::SetType(CameraType type)
 		else                     oType = m_cameraObj->RetType();
 
 		m_backDist = 20.0f;
-		if ( oType == OBJECT_HUMAN    )  m_backDist =  15.0f;
-		if ( oType == OBJECT_TECH     )  m_backDist =  20.0f;
-		if ( oType == OBJECT_TOWER    )  m_backDist =  45.0f;
-		if ( oType == OBJECT_NUCLEAR  )  m_backDist =  70.0f;
-		if ( oType == OBJECT_PARA     )  m_backDist = 180.0f;
-		if ( oType == OBJECT_DOCK     )  m_backDist =  50.0f;
-		if ( oType == OBJECT_HOME1    )  m_backDist =  40.0f;
-		if ( oType == OBJECT_HOME2    )  m_backDist =  40.0f;
-		if ( oType == OBJECT_HOME3    )  m_backDist =  40.0f;
-		if ( oType == OBJECT_HOME4    )  m_backDist =  40.0f;
-		if ( oType == OBJECT_HOME5    )  m_backDist =  40.0f;
-		if ( oType == OBJECT_STARTER  )  m_backDist =   5.0f;
-		if ( oType == OBJECT_INCA7    )  m_backDist = 100.0f;
-
 		m_backMin = m_backDist/3.0f;
-		if ( oType == OBJECT_HUMAN    )  m_backMin =  10.0f;
-		if ( oType == OBJECT_TECH     )  m_backMin =  10.0f;
-		if ( oType == OBJECT_NUCLEAR  )  m_backMin =  32.0f;
-		if ( oType == OBJECT_PARA     )  m_backMin =  40.0f;
-		if ( oType == OBJECT_DOCK     )  m_backMin =  20.0f;
-
-		if ( oType == OBJECT_HOME1 ||
-			 oType == OBJECT_HOME3 ||
-			 oType == OBJECT_HOME4 ||
-			 oType == OBJECT_HOME5 )
-		{
-			m_addDirectionV = -PI*0.10f;
-		}
-		if ( oType == OBJECT_HOME2 )
-		{
-			m_addDirectionV = -PI*0.04f;
-		}
-		if ( oType == OBJECT_INCA7 )
-		{
-			m_addDirectionV = PI*0.02f;
-			m_addDirectionH = PI*1.0f;
-		}
 	}
 
 	if ( type == CAMERA_ONBOARD )
@@ -471,6 +446,28 @@ float CCamera::RetFixDirection()
 }
 
 
+// Gestion du scroll avec le bouton droite de la souris.
+
+void CCamera::SetScrollMouse(FPOINT mouse, BOOL bFinal)
+{
+	if ( m_engine->RetSetup(ST_MOUSESCROLL) == 0.0f )
+	{
+		mouse = FPOINT(0.0f, 0.0f);
+	}
+	else
+	{
+		mouse.x *= 200.0f;
+		mouse.y *= 200.0f;
+		mouse.x *= 0.5f+m_engine->RetSetup(ST_SPEEDSCH);
+		mouse.y *= 0.5f+m_engine->RetSetup(ST_SPEEDSCV);
+		if ( m_engine->RetSetup(ST_INVSCH) != 0.0f )  mouse.x *= -1.0f;
+		if ( m_engine->RetSetup(ST_INVSCV) != 0.0f )  mouse.y *= -1.0f;
+	}
+	m_scrollMouse = mouse;
+	m_bFinalScroll = bFinal;
+}
+
+
 // Début d'une visite circulaire avec la caméra.
 
 void CCamera::StartVisit(D3DVECTOR goal, float dist)
@@ -489,15 +486,6 @@ void CCamera::StartVisit(D3DVECTOR goal, float dist)
 void CCamera::StopVisit()
 {
 	SetType(m_visitType);  // remet le type initial
-}
-
-
-// Retourne le point de vue de la caméra.
-
-void CCamera::RetCamera(D3DVECTOR &eye, D3DVECTOR &lookat)
-{
-	eye = m_eyePt;
-	lookat = LookatPoint(m_eyePt, m_directionH, m_directionV, 50.0f);
 }
 
 
@@ -562,8 +550,7 @@ BOOL CCamera::StopCentering(CObject *object, float time)
 
 void CCamera::AbortCentering()
 {
-	if ( m_type == CAMERA_INFO  ||
-		 m_type == CAMERA_VISIT )  return;
+	if ( m_type == CAMERA_VISIT )  return;
 
 	if ( m_centeringPhase == CP_NULL )  return;
 
@@ -595,7 +582,7 @@ void CCamera::FlushEffect()
 
 void CCamera::StartEffect(CameraEffect effect, D3DVECTOR pos, float force)
 {
-	if ( !m_bEffect )  return;
+	if ( m_engine->RetSetup(ST_EXPLOVIB) == 0.0f )  return;
 
 	m_effectType     = effect;
 	m_effectPos      = pos;
@@ -609,8 +596,7 @@ void CCamera::EffectFrame(const Event &event)
 {
 	float		dist, force;
 
-	if ( m_type == CAMERA_INFO  ||
-		 m_type == CAMERA_VISIT )  return;
+	if ( m_type == CAMERA_VISIT )  return;
 
 	if ( m_effectType == CE_NULL )  return;
 
@@ -690,6 +676,8 @@ void CCamera::EffectFrame(const Event &event)
 
 void CCamera::FlushOver()
 {
+	if ( m_overType == OE_NULL )  return;
+
 	m_overType = OE_NULL;
 	m_overColorBase.r = 0.0f;  // noir
 	m_overColorBase.g = 0.0f;
@@ -711,8 +699,6 @@ void CCamera::StartOver(OverEffect effect, D3DVECTOR pos, float force)
 {
 	D3DCOLOR	color;
 	float		dist, decay;
-
-	if ( !m_bFlash )  return;
 
 	m_overType = effect;
 	m_overTime = 0.0f;
@@ -816,8 +802,7 @@ void CCamera::OverFrame(const Event &event)
 	D3DCOLORVALUE	color;
 	float			intensity;
 
-	if ( m_type == CAMERA_INFO  ||
-		 m_type == CAMERA_VISIT )  return;
+	if ( m_type == CAMERA_VISIT )  return;
 
 	if ( m_overType == OE_NULL )
 	{
@@ -908,8 +893,7 @@ void CCamera::OverFrame(const Event &event)
 
 void CCamera::FixCamera()
 {
-#if 0
-	m_initDelay     = 0.0f;
+#if 1
 	m_backSleepTime = 0.0f;
 	m_backRotSpeed  = 0.0f;
 	m_actualEye    = m_finalEye    = m_scriptEye;
@@ -918,7 +902,6 @@ void CCamera::FixCamera()
 #else
 	Event	event;
 
-	m_initDelay     = 0.0f;
 	m_backSleepTime = 0.0f;
 	m_backRotSpeed  = 0.0f;
 
@@ -939,20 +922,52 @@ void CCamera::SetViewTime(const D3DVECTOR &vEyePt,
 	D3DVECTOR	vUpVec, eye, lookat;
 	float		prog, dEye, dLook, h, margin;
 
-	if ( m_type == CAMERA_INFO )
+	if ( m_type == CAMERA_FREE )
 	{
 		eye    = vEyePt;
 		lookat = vLookatPt;
+		if ( !IsCollision(eye, lookat) )
+		{
+			m_finalEye    = eye;
+			m_finalLookat = lookat;
+		}
+
+		dEye = Length(m_finalEye, m_actualEye);
+		prog = powf(dEye, 1.5f)*rTime*3.0f;
+		if ( dEye == 0.0f )
+		{
+			m_actualEye = m_finalEye;
+		}
+		else
+		{
+			if ( prog > dEye )  prog = dEye;
+			m_actualEye = (m_finalEye-m_actualEye)/dEye*prog + m_actualEye;
+		}
+
+		dLook = Length(m_finalLookat, m_actualLookat);
+		prog = powf(dLook, 1.5f)*rTime*3.0f;
+		if ( dLook == 0.0f )
+		{
+			m_actualLookat = m_finalLookat;
+		}
+		else
+		{
+			if ( prog > dLook )  prog = dLook;
+			m_actualLookat = (m_finalLookat-m_actualLookat)/dLook*prog + m_actualLookat;
+		}
+
+		eye = m_effectOffset+m_actualEye;
+//?		m_water->AdjustEye(eye);
+
+		lookat = m_effectOffset+m_actualLookat;
+
+		if ( dEye < 5.0f && dLook < 5.0f )
+		{
+			m_smooth = m_smoothNext;
+		}
 	}
 	else
 	{
-		if ( m_initDelay > 0.0f )
-		{
-			m_initDelay -= rTime;
-			if ( m_initDelay < 0.0f )  m_initDelay = 0.0f;
-			rTime /= 1.0f+m_initDelay;
-		}
-
 		eye    = vEyePt;
 		lookat = vLookatPt;
 		if ( !IsCollision(eye, lookat) )
@@ -998,12 +1013,11 @@ void CCamera::SetViewTime(const D3DVECTOR &vEyePt,
 		}
 
 		eye = m_effectOffset+m_actualEye;
-		m_water->AdjustEye(eye);
+//?		m_water->AdjustEye(eye);
 
 		h = m_terrain->RetFloorLevel(eye);
 		margin = 4.0f;
 		if ( m_type == CAMERA_SCRIPT )  margin = -100.0f;
-		if ( m_type == CAMERA_FREE   )  margin = -100.0f;
 		if ( eye.y < h+margin )
 		{
 			eye.y = h+margin;
@@ -1035,64 +1049,6 @@ BOOL CCamera::IsCollision(D3DVECTOR &eye, D3DVECTOR lookat)
 
 BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 {
-	CObject		*pObj;
-	D3DVECTOR	oPos, min, max, proj;
-	ObjectType	oType;
-	float		oRadius, dpp, del, len;
-	int			i;
-
-	min.x = Min(m_actualEye.x, m_actualLookat.x);
-	min.y = Min(m_actualEye.y, m_actualLookat.y);
-	min.z = Min(m_actualEye.z, m_actualLookat.z);
-
-	max.x = Max(m_actualEye.x, m_actualLookat.x);
-	max.y = Max(m_actualEye.y, m_actualLookat.y);
-	max.z = Max(m_actualEye.z, m_actualLookat.z);
-
-	m_bTransparency = FALSE;
-
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		if ( pObj->RetTruck() )  continue;  // pile ou fret?
-		if ( pObj->RetGhost() )  continue;
-
-		SetTransparency(pObj, 0.0f);  // objet opaque
-
-		if ( pObj == m_cameraObj )  continue;
-
-		oType = pObj->RetType();
-		if ( oType == OBJECT_CAR    ||
-			 oType == OBJECT_HUMAN  ||
-			 oType == OBJECT_TECH   ||
-			 oType == OBJECT_FIX    ||
-			 oType == OBJECT_FRET   )  continue;
-
-		pObj->GetGlobalSphere(oPos, oRadius);
-		if ( oRadius <= 2.0f )  continue;  // ignore les petits objets
-
-		if ( oPos.x+oRadius < min.x ||
-			 oPos.y+oRadius < min.y ||
-			 oPos.z+oRadius < min.z ||
-			 oPos.x-oRadius > max.x ||
-			 oPos.y-oRadius > max.y ||
-			 oPos.z-oRadius > max.z )  continue;
-
-		proj = Projection(m_actualEye, m_actualLookat, oPos);
-		dpp = Length(proj, oPos);
-		if ( dpp > oRadius )  continue;
-
-		del = Length(m_actualEye, m_actualLookat);
-		len = Length(m_actualEye, proj);
-		if ( len > del )  continue;
-
-		if ( !pObj->IsOccludeCamera(m_actualEye, m_actualLookat) )  continue;
-
-		SetTransparency(pObj, 1.0f);  // objet transparent
-		m_bTransparency = TRUE;
-	}
 	return FALSE;
 }
 
@@ -1100,51 +1056,6 @@ BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 
 BOOL CCamera::IsCollisionFix(D3DVECTOR &eye, D3DVECTOR lookat)
 {
-	CObject		*pObj;
-	D3DVECTOR	oPos, proj;
-	ObjectType	type;
-	float		oRadius, dist;
-	int			i;
-
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		if ( pObj == m_cameraObj )  continue;
-
-		type = pObj->RetType();
-		if ( type == OBJECT_FRET    ||
-			 type == OBJECT_STONE   ||
-			 type == OBJECT_URANIUM ||
-			 type == OBJECT_METAL   ||
-			 type == OBJECT_BARREL  ||
-			 type == OBJECT_BARRELa ||
-			 type == OBJECT_ATOMIC  ||
-			 type == OBJECT_BULLET  ||
-			 type == OBJECT_BBOX    ||
-			 type == OBJECT_KEYa    ||
-			 type == OBJECT_KEYb    ||
-			 type == OBJECT_KEYc    ||
-			 type == OBJECT_KEYd    ||
-			 type == OBJECT_BOT1    ||
-			 type == OBJECT_BOT2    ||
-			 type == OBJECT_BOT3    ||
-			 type == OBJECT_BOT4    ||
-			 type == OBJECT_BOT5    )  continue;
-
-		pObj->GetGlobalSphere(oPos, oRadius);
-		if ( oRadius == 0.0f )  continue;
-
-		dist = Length(eye, oPos);
-		if ( dist < oRadius )
-		{
-			dist = Length(eye, lookat);
-			proj = Projection(eye, lookat, oPos);
-			eye = (lookat-eye)*oRadius/dist + proj;
-			return FALSE;
-		}
-	}
 	return FALSE;
 }
 
@@ -1159,31 +1070,34 @@ BOOL CCamera::EventProcess(const Event &event)
 			EventFrame(event);
 			break;
 
-#if 0
-		case EVENT_RBUTTONDOWN:
-			m_bRightDown = TRUE;
-			m_rightPosInit = event.pos;
-			m_rightPosCenter = FPOINT(0.5f, 0.5f);
-			m_engine->MoveMousePos(m_rightPosCenter);
-//?			m_engine->SetMouseHide(TRUE);  // cache la souris
-			break;
-
-		case EVENT_RBUTTONUP:
-			m_bRightDown = FALSE;
-			m_engine->MoveMousePos(m_rightPosInit);
-//?			m_engine->SetMouseHide(FALSE);  // remontre la souris
-			m_addDirectionH = 0.0f;
-			m_addDirectionV = -PI*0.05f;
-			break;
-#endif
-
 		case EVENT_MOUSEMOVE:
 			EventMouseMove(event);
 			break;
 
 		case EVENT_KEYDOWN:
-			if ( event.param == VK_WHEELUP   )  EventMouseWheel(+1);
-			if ( event.param == VK_WHEELDOWN )  EventMouseWheel(-1);
+			if ( event.param == m_engine->RetKey(KEYRANK_ROTCW, 0) ||
+				 event.param == m_engine->RetKey(KEYRANK_ROTCW, 1) )
+			{
+				EventMouseWheel(+1, event.param, TRUE);
+			}
+			if ( event.param == m_engine->RetKey(KEYRANK_ROTCCW, 0) ||
+				 event.param == m_engine->RetKey(KEYRANK_ROTCCW, 1) )
+			{
+				EventMouseWheel(-1, event.param, TRUE);
+			}
+			break;
+
+		case EVENT_KEYUP:
+			if ( event.param == m_engine->RetKey(KEYRANK_ROTCW, 0) ||
+				 event.param == m_engine->RetKey(KEYRANK_ROTCW, 1) )
+			{
+				EventMouseWheel(+1, event.param, FALSE);
+			}
+			if ( event.param == m_engine->RetKey(KEYRANK_ROTCCW, 0) ||
+				 event.param == m_engine->RetKey(KEYRANK_ROTCCW, 1) )
+			{
+				EventMouseWheel(-1, event.param, FALSE);
+			}
 			break;
 	}
 	return TRUE;
@@ -1199,20 +1113,21 @@ BOOL CCamera::EventMouseMove(const Event &event)
 
 // Molette souris actionnée.
 
-void CCamera::EventMouseWheel(int dir)
+void CCamera::EventMouseWheel(int dir, long param, BOOL bDown)
 {
-	if ( m_type == CAMERA_BACK )
+	if ( m_type == CAMERA_FREE )
 	{
-//?		if ( dir > 0 )
-//?		{
-//?			m_backDist -= 8.0f;
-//?			if ( m_backDist < m_backMin )  m_backDist = m_backMin;
-//?		}
-//?		if ( dir < 0 )
-//?		{
-//?			m_backDist += 8.0f;
-//?			if ( m_backDist > 200.0f )  m_backDist = 200.0f;
-//?		}
+		if ( param == VK_WHEELUP   ||
+			 param == VK_WHEELDOWN )
+		{
+			m_directionH += 15.0f*PI/180.0f*dir;
+		}
+		else
+		{
+			m_rotH = bDown?(float)dir:0.0f;
+		}
+
+		m_main->MouseMoveClear();
 	}
 
 	if ( m_type == CAMERA_FIX )
@@ -1257,10 +1172,6 @@ BOOL CCamera::EventFrame(const Event &event)
 	{
 		return EventFrameFree(event);
 	}
-	if ( m_type == CAMERA_EDIT )
-	{
-		return EventFrameEdit(event);
-	}
 	if ( m_type == CAMERA_DIALOG )
 	{
 		return EventFrameDialog(event);
@@ -1273,10 +1184,6 @@ BOOL CCamera::EventFrame(const Event &event)
 	{
 		return EventFrameFix(event);
 	}
-	if ( m_type == CAMERA_EXPLO )
-	{
-		return EventFrameExplo(event);
-	}
 	if ( m_type == CAMERA_ONBOARD )
 	{
 		return EventFrameOnBoard(event);
@@ -1284,10 +1191,6 @@ BOOL CCamera::EventFrame(const Event &event)
 	if ( m_type == CAMERA_SCRIPT )
 	{
 		return EventFrameScript(event);
-	}
-	if ( m_type == CAMERA_INFO )
-	{
-		return EventFrameInfo(event);
 	}
 	if ( m_type == CAMERA_VISIT )
 	{
@@ -1298,154 +1201,172 @@ BOOL CCamera::EventFrame(const Event &event)
 }
 
 
+// Retourne le sprite par défaut à utiliser pour la souris.
+
+D3DMouse CCamera::RetMouseDef(FPOINT pos, D3DMouse def)
+{
+	D3DMouse	type;
+
+	type = def;
+	m_mousePos = pos;
+
+	if ( m_engine->RetSetup(ST_MOUSESCROLL) == 0.0f )  return type;
+
+	m_mouseDirH = 0.0f;
+	m_mouseDirV = 0.0f;
+
+	if ( pos.x < m_mouseMarging && pos.x >= 0.0f )
+	{
+		m_mouseDirH = pos.x/m_mouseMarging - 1.0f;
+	}
+
+	if ( pos.x > 1.0f-m_mouseMarging && pos.x <= 1.0f )
+	{
+		m_mouseDirH = 1.0f - (1.0f-pos.x)/m_mouseMarging;
+	}
+
+	if ( pos.y < m_mouseMarging && pos.y >= 0.0f )
+	{
+		m_mouseDirV = pos.y/m_mouseMarging - 1.0f;
+	}
+
+	if ( pos.y > 1.0f-m_mouseMarging && pos.y <= 1.0f )
+	{
+		m_mouseDirV = 1.0f - (1.0f-pos.y)/m_mouseMarging;
+	}
+
+	if ( m_type == CAMERA_FREE )
+	{
+		if ( m_mouseDirH > 0.0f )
+		{
+			type = D3DMOUSESCROLLR;
+		}
+		if ( m_mouseDirH < 0.0f )
+		{
+			type = D3DMOUSESCROLLL;
+		}
+		if ( m_mouseDirV > 0.0f )
+		{
+			type = D3DMOUSESCROLLU;
+		}
+		if ( m_mouseDirV < 0.0f )
+		{
+			type = D3DMOUSESCROLLD;
+		}
+	}
+
+	if ( m_engine->RetSetup(ST_INVSCH) != 0.0f )  m_mouseDirH *= -1.0f;
+	if ( m_engine->RetSetup(ST_INVSCV) != 0.0f )  m_mouseDirV *= -1.0f;
+
+	return type;
+}
+
 
 // Déplace le point de vue.
 
 BOOL CCamera::EventFrameFree(const Event &event)
 {
-	D3DVECTOR	pos, vLookatPt;
-	float		factor;
+	D3DVECTOR	pos, eye, lookat;
+	FPOINT		rot;
+	float		factor, level, speed;
 
-	factor = m_heightEye*0.5f+30.0f;
+	factor = 30.0f;
 
-	if ( m_mouseDirH != 0.0f )
-	{
-		m_directionH -= m_mouseDirH*event.rTime*0.7f*m_speed;
-	}
-	if ( m_mouseDirV != 0.0f )
-	{
-		m_eyePt = LookatPoint(m_eyePt, m_directionH, m_directionV, m_mouseDirV*event.rTime*factor*m_speed);
-	}
+	m_directionH += m_rotH*event.rTime*2.0f;
 
 	// Up/Down.
-	m_eyePt = LookatPoint(m_eyePt, m_directionH, m_directionV, event.axeY*event.rTime*factor*m_speed*1.0f);
+	if ( event.axeY != 0.0f )
+	{
+		if ( event.keyState & KS_CONTROL )
+		{
+			m_directionV += event.axeY*event.rTime*m_speed*0.7f;
+#if 0
+			if ( m_directionV <  0.0f*PI/180.0f )  m_directionV =  0.0f*PI/180.0f;
+			if ( m_directionV > 85.0f*PI/180.0f )  m_directionV = 85.0f*PI/180.0f;
+#else
+			if ( m_directionV < 30.0f*PI/180.0f )  m_directionV = 30.0f*PI/180.0f;
+			if ( m_directionV > 60.0f*PI/180.0f )  m_directionV = 60.0f*PI/180.0f;
+#endif
+		}
+		else
+		{
+			speed = m_engine->RetSetup(ST_SPEEDSCV)*2.0f;
+			m_lookatPt = LookatPoint(m_lookatPt, m_directionH, 0.0f, event.axeY*event.rTime*factor*m_speed*speed);
+			m_terrain->ValidPosition(m_lookatPt, -8.0f*10);
+			m_lookatPt.y = 0.0f;
+		}
+	}
+
+	if ( m_mouseDirV != 0.0f )
+	{
+		speed = m_engine->RetSetup(ST_SPEEDSCV)*2.0f;
+		m_lookatPt = LookatPoint(m_lookatPt, m_directionH, 0.0f, m_mouseDirV*speed);
+		m_terrain->ValidPosition(m_lookatPt, -8.0f*10);
+		m_lookatPt.y = 0.0f;
+	}
 
 	// Left/Right.
-	if ( event.keyState & KS_CONTROL )
+	if ( event.axeX != 0.0f )
 	{
-		if ( event.axeX < 0.0f )
+		if ( event.keyState & KS_CONTROL )
 		{
-			m_eyePt = LookatPoint(m_eyePt, m_directionH+PI/2.0f, m_directionV, -event.axeX*event.rTime*factor*m_speed);
+			m_directionH -= event.axeX*event.rTime*m_speed*0.7f;
 		}
-		if ( event.axeX > 0.0f )
+		else
 		{
-			m_eyePt = LookatPoint(m_eyePt, m_directionH-PI/2.0f, m_directionV, event.axeX*event.rTime*factor*m_speed);
-		}
-	}
-	else
-	{
-		m_directionH -= event.axeX*event.rTime*0.7f*m_speed;
-	}
-
-	// +/-.
-	if ( event.keyState & KS_NUMMINUS )
-	{
-		if ( m_heightEye < 500.0f )
-		{
-			m_heightEye += event.rTime*factor*m_speed*0.1f;
-		}
-	}
-	if ( event.keyState & KS_NUMPLUS )
-	{
-		if ( m_heightEye > -20.0f )
-		{
-			m_heightEye -= event.rTime*factor*m_speed*0.1f;
-		}
-	}
-
-	// PageUp/PageDown.
-	if ( event.keyState & KS_PAGEUP )
-	{
-		if ( m_heightShift < 50.0f )
-		{
-			m_heightShift += event.rTime*m_speed*5.0f;
-		}
-	}
-	if ( event.keyState & KS_PAGEDOWN )
-	{
-		if ( m_heightShift > -50.0f )
-		{
-			m_heightShift -= event.rTime*m_speed*5.0f;
-		}
-	}
-
-	m_terrain->ValidPosition(m_eyePt, 10.0f);
-
-	m_eyePt.y += 20.0f;
-	if ( m_terrain->MoveOnFloor(m_eyePt, TRUE) )
-	{
-		m_eyePt.y += m_heightEye;
-
-		pos = m_eyePt;
-		if ( m_terrain->MoveOnFloor(pos, TRUE) )
-		{
-			pos.y -= 2.0f;
-			if ( m_eyePt.y < pos.y )
+			speed = m_engine->RetSetup(ST_SPEEDSCH)*3.0f;
+			if ( event.axeX < 0.0f )
 			{
-				m_eyePt.y = pos.y;
+				m_lookatPt = LookatPoint(m_lookatPt, m_directionH+PI/2.0f, 0.0f, -event.axeX*event.rTime*factor*m_speed*speed);
 			}
+			if ( event.axeX > 0.0f )
+			{
+				m_lookatPt = LookatPoint(m_lookatPt, m_directionH-PI/2.0f, 0.0f, event.axeX*event.rTime*factor*m_speed*speed);
+			}
+			m_terrain->ValidPosition(m_lookatPt, -8.0f*10);
+			m_lookatPt.y = 0.0f;
 		}
 	}
-	m_eyePt.y -= 20.0f;
-
-	vLookatPt = LookatPoint( m_eyePt, m_directionH, m_directionV, 50.0f );
-
-	if ( m_terrain->MoveOnFloor(vLookatPt, TRUE) )
-	{
-		vLookatPt.y += m_heightLookat;
-	}
-
-	vLookatPt.y += m_heightShift;
-
-	SetViewTime(m_eyePt, vLookatPt, event.rTime);
-	
-	return TRUE;
-}
-
-// Déplace le point de vue.
-
-BOOL CCamera::EventFrameEdit(const Event &event)
-{
-	D3DVECTOR	pos, vLookatPt;
-	float		factor;
-
-	factor = m_editHeight*0.5f+30.0f;
 
 	if ( m_mouseDirH != 0.0f )
 	{
-		m_directionH -= m_mouseDirH*event.rTime*0.7f*m_speed;
-	}
-	if ( m_mouseDirV != 0.0f )
-	{
-		m_eyePt = LookatPoint(m_eyePt, m_directionH, m_directionV, m_mouseDirV*event.rTime*factor*m_speed);
+		speed = m_engine->RetSetup(ST_SPEEDSCH)*2.0f;
+		m_lookatPt = LookatPoint(m_lookatPt, m_directionH+PI/2.0f, 0.0f, -m_mouseDirH*speed);
+		m_terrain->ValidPosition(m_lookatPt, -8.0f*10);
+		m_lookatPt.y = 0.0f;
 	}
 
-	m_terrain->ValidPosition(m_eyePt, 10.0f);
-	
-	if ( m_terrain->MoveOnFloor(m_eyePt, FALSE) )
-	{
-		m_eyePt.y += m_editHeight;
+	m_eyePt = RotateView(m_lookatPt, m_directionH+PI/2.0f, m_directionV-PI, m_distance);
 
-		pos = m_eyePt;
-		if ( m_terrain->MoveOnFloor(pos, FALSE) )
+	level = m_terrain->RetFloorLevel(m_eyePt)+2.0f;
+	if ( m_eyePt.y < level )  m_eyePt.y = level;
+
+	eye = m_eyePt;
+	lookat = m_lookatPt;
+
+	if ( m_scrollMouse.x != 0.0f ||
+		 m_scrollMouse.y != 0.0f )
+	{
+		rot = RotatePoint(m_directionH, m_scrollMouse);
+
+		if ( m_bFinalScroll )
 		{
-			pos.y += 2.0f;
-			if ( m_eyePt.y < pos.y )
-			{
-				m_eyePt.y = pos.y;
-			}
+			m_eyePt.x += rot.x;
+			m_eyePt.z += rot.y;
+			m_lookatPt.x += rot.x;
+			m_lookatPt.z += rot.y;
+			m_scrollMouse  = FPOINT(0.0f, 0.0f);
+			m_bFinalScroll = FALSE;
 		}
 
+		eye.x += rot.x;
+		eye.z += rot.y;
+		lookat.x += rot.x;
+		lookat.z += rot.y;
+		m_terrain->ValidPosition(lookat, -8.0f*10);
 	}
 
-	vLookatPt = LookatPoint( m_eyePt, m_directionH, m_directionV, 50.0f );
-
-	if ( m_terrain->MoveOnFloor(vLookatPt, TRUE) )
-	{
-		vLookatPt.y += m_heightLookat;
-	}
-
-	SetViewTime(m_eyePt, vLookatPt, event.rTime);
+	SetViewTime(eye, lookat, event.rTime);
 	
 	return TRUE;
 }
@@ -1461,12 +1382,10 @@ BOOL CCamera::EventFrameDialog(const Event &event)
 
 BOOL CCamera::EventFrameBack(const Event &event)
 {
-	D3DMATRIX*	mat;
-	CPhysics*	physics;
 	ObjectType	type;
 	D3DVECTOR	pos, vLookatPt;
 	FPOINT		mouse;
-	float		centeringH, centeringV, centeringD, h, v, d, floor;
+	float		centeringH, centeringV, centeringD, h, v, d;
 
 	if ( m_cameraObj == 0 )
 	{
@@ -1499,8 +1418,7 @@ BOOL CCamera::EventFrameBack(const Event &event)
 		m_backSleepTime = 0.0f;
 		m_backRotSpeed  = 0.0f;
 	}
-	if ( type != OBJECT_CAR    &&
-		 type != OBJECT_HUMAN  &&
+	if ( type != OBJECT_BLUPI  &&
 		 type != OBJECT_BOT1   &&
 		 type != OBJECT_BOT2   &&
 		 type != OBJECT_BOT3   &&
@@ -1581,50 +1499,11 @@ BOOL CCamera::EventFrameBack(const Event &event)
 	if ( m_cameraObj != 0 )
 	{
 		vLookatPt = m_cameraObj->RetPosition(0);
-		     if ( type == OBJECT_HUMAN   )  vLookatPt.y +=  1.0f;
-		else if ( type == OBJECT_TECH    )  vLookatPt.y +=  1.0f;
-		else if ( type == OBJECT_STARTER )  vLookatPt.y +=  1.5f;
-		else                                vLookatPt.y +=  4.0f;
-
-		if ( type == OBJECT_DOCK )
-		{
-			mat = m_cameraObj->RetWorldMatrix(0);
-			vLookatPt = Transform(*mat, D3DVECTOR(0.0f, 0.0f, 27.0f));
-		}
+		vLookatPt.y +=  4.0f;
 
 		h = -m_cameraObj->RetAngleY(0);  // angle véhicule/batiment
 
-		if ( type == OBJECT_FACTORY1  ||
-			 type == OBJECT_FACTORY2  ||
-			 type == OBJECT_FACTORY3  ||
-			 type == OBJECT_FACTORY4  ||
-			 type == OBJECT_FACTORY5  ||
-			 type == OBJECT_FACTORY6  ||
-			 type == OBJECT_FACTORY7  ||
-			 type == OBJECT_FACTORY8  ||
-			 type == OBJECT_FACTORY9  ||
-			 type == OBJECT_FACTORY10 ||
-			 type == OBJECT_ALIEN1    ||
-			 type == OBJECT_ALIEN2    ||
-			 type == OBJECT_ALIEN3    ||
-			 type == OBJECT_ALIEN4    ||
-			 type == OBJECT_ALIEN5    ||
-			 type == OBJECT_ALIEN6    ||
-			 type == OBJECT_ALIEN7    ||
-			 type == OBJECT_ALIEN8    ||
-			 type == OBJECT_ALIEN9    ||
-			 type == OBJECT_ALIEN10   ||
-			 type == OBJECT_INCA1     ||
-			 type == OBJECT_INCA2     ||
-			 type == OBJECT_INCA3     ||
-			 type == OBJECT_INCA4     ||
-			 type == OBJECT_INCA5     ||
-			 type == OBJECT_INCA6     ||
-			 type == OBJECT_INCA7     ||
-			 type == OBJECT_INCA8     ||
-			 type == OBJECT_INCA9     ||
-			 type == OBJECT_INCA10    ||
-			 type == OBJECT_BUILDING1 ||
+		if ( type == OBJECT_BUILDING1 ||
 			 type == OBJECT_BUILDING2 ||
 			 type == OBJECT_BUILDING3 ||
 			 type == OBJECT_BUILDING4 ||
@@ -1634,12 +1513,6 @@ BOOL CCamera::EventFrameBack(const Event &event)
 			 type == OBJECT_BUILDING8 ||
 			 type == OBJECT_BUILDING9 ||
 			 type == OBJECT_BUILDING10||
-			 type == OBJECT_TOWER     ||
-			 type == OBJECT_NUCLEAR   ||
-			 type == OBJECT_PARA      ||
-			 type == OBJECT_COMPUTER  ||
-			 type == OBJECT_REPAIR    ||
-			 type == OBJECT_SWEET     ||
 			 type == OBJECT_DOOR1     ||
 			 type == OBJECT_DOOR2     ||
 			 type == OBJECT_DOOR3     ||
@@ -1649,14 +1522,6 @@ BOOL CCamera::EventFrameBack(const Event &event)
 			 type == OBJECT_END       )  // batiment ?
 		{
 			h += PI*0.20f;  // presque de face
-		}
-		else if ( type == OBJECT_DOCK )
-		{
-			h += -PI*0.45f;  // zouli
-		}
-		else if ( type == OBJECT_STARTER )
-		{
-			h += 0.0f;  // de face
 		}
 		else	// véhicule ?
 		{
@@ -1680,18 +1545,6 @@ BOOL CCamera::EventFrameBack(const Event &event)
 		m_centeringCurrentV = m_centeringAngleV*centeringV;
 
 		m_eyePt = RotateView(vLookatPt, h, v, d);
-
-		physics = m_cameraObj->RetPhysics();
-		if ( physics != 0 && physics->RetLand() )  // au sol ?
-		{
-			pos = vLookatPt+(vLookatPt-m_eyePt);
-			floor = m_terrain->RetFloorHeight(pos)-4.0f;
-			if ( floor > 0.0f )
-			{
-				if ( floor > 10.0f )  floor = 10.0f;
-				m_eyePt.y += floor;  // montre la descente devant
-			}
-		}
 
 		m_eyePt = ExcludeTerrain(m_eyePt, vLookatPt, h, v);
 		m_eyePt = ExcludeObject(m_eyePt, vLookatPt, h, v);
@@ -1751,50 +1604,6 @@ BOOL CCamera::EventFrameFix(const Event &event)
 
 // Déplace le point de vue.
 
-BOOL CCamera::EventFrameExplo(const Event &event)
-{
-	D3DVECTOR	pos, vLookatPt;
-	float		factor;
-
-	factor = m_heightEye*0.5f+30.0f;
-
-	if ( m_mouseDirH != 0.0f )
-	{
-		m_directionH -= m_mouseDirH*event.rTime*0.7f*m_speed;
-	}
-
-	m_terrain->ValidPosition(m_eyePt, 10.0f);
-	
-	if ( m_terrain->MoveOnFloor(m_eyePt, FALSE) )
-	{
-		m_eyePt.y += m_heightEye;
-
-		pos = m_eyePt;
-		if ( m_terrain->MoveOnFloor(pos, FALSE) )
-		{
-			pos.y += 2.0f;
-			if ( m_eyePt.y < pos.y )
-			{
-				m_eyePt.y = pos.y;
-			}
-		}
-
-	}
-
-	vLookatPt = LookatPoint( m_eyePt, m_directionH, m_directionV, 50.0f );
-
-	if ( m_terrain->MoveOnFloor(vLookatPt, TRUE) )
-	{
-		vLookatPt.y += m_heightLookat;
-	}
-
-	SetViewTime(m_eyePt, vLookatPt, event.rTime);
-	
-	return TRUE;
-}
-
-// Déplace le point de vue.
-
 BOOL CCamera::EventFrameOnBoard(const Event &event)
 {
 	D3DVECTOR	vLookatPt, vUpVec, eye, lookat, pos;
@@ -1810,16 +1619,6 @@ BOOL CCamera::EventFrameOnBoard(const Event &event)
 		m_actualEye    = eye;
 		m_actualLookat = lookat;
 	}
-	return TRUE;
-}
-
-// Déplace le point de vue.
-
-BOOL CCamera::EventFrameInfo(const Event &event)
-{
-	SetViewTime(D3DVECTOR(0.0f, 0.0f, 0.0f),
-				D3DVECTOR(0.0f, 0.0f, 1.0f),
-				event.rTime);
 	return TRUE;
 }
 
@@ -1891,13 +1690,12 @@ void CCamera::SetScriptLookat(D3DVECTOR lookat)
 void CCamera::SetViewParams(const D3DVECTOR &eye, const D3DVECTOR &lookat,
 							const D3DVECTOR &up)
 {
-	BOOL		bUnder;
+//?	BOOL		bUnder;
 
 	m_engine->SetViewParams(eye, lookat, up, m_eyeDistance);
 
-	bUnder = (eye.y < m_water->RetLevel());  // est-on sous l'eau ?
-	if ( m_type == CAMERA_INFO )  bUnder = FALSE;
-	m_engine->SetRankView(bUnder?1:0);
+//?	bUnder = (eye.y < m_water->RetLevel());  // est-on sous l'eau ?
+//?	m_engine->SetRankView(bUnder?1:0);
 }
 
 
@@ -1928,29 +1726,6 @@ D3DVECTOR CCamera::ExcludeTerrain(D3DVECTOR eye, D3DVECTOR lookat,
 D3DVECTOR CCamera::ExcludeObject(D3DVECTOR eye, D3DVECTOR lookat,
 								 float &angleH, float &angleV)
 {
-	CObject*	pObj;
-	D3DVECTOR	oPos;
-	float		oRad, dist;
-	int			i, j;
-
-return eye;
-//?
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		j = 0;
-		while ( pObj->GetCrashSphere(j++, oPos, oRad) )
-		{
-			dist = Length(oPos, eye);
-			if ( dist < oRad+2.0f )
-			{
-				eye.y = oPos.y+oRad+2.0f;
-			}
-		}
-	}
-
 	return eye;
 }
 

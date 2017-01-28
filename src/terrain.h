@@ -6,59 +6,47 @@
 
 class CInstanceManager;
 class CD3DEngine;
-class CWater;
+class CModFile;
+class CParticule;
 
+enum ParticuleType;
 
-
-#define FLATLIMIT	(5.0f*PI/180.0f)
-#define MAXTRAJECT	200
 
 
 enum TerrainRes
 {
-	TR_NULL		= 0,
-	TR_STONE	= 1,
-	TR_URANIUM	= 2,
-	TR_POWER	= 3,
-	TR_KEYa		= 4,
-	TR_KEYb		= 5,
-	TR_KEYc		= 6,
-	TR_KEYd		= 7,
+	TR_SOLID0	= 0,		// sol de niveau 0
+	TR_SOLID1	= 1,
+	TR_SOLID2	= 2,
+	TR_SOLID3	= 3,
+	TR_SOLID4	= 4,
+	TR_SOLID5	= 5,
+	TR_SOLID6	= 6,
+	TR_SOLID7	= 7,
+	TR_BOX		= 20,		// sol bouché par une caisse
+	TR_LIFT		= 21,		// arrivée de blupi
+	TR_HOLE		= -1,		// trou de niveau -8
+	TR_SPACE	= -2,		// trou infini
 };
 
 
-#define MAXBUILDINGLEVEL	100
-
-typedef struct
+enum LockZone
 {
-	D3DVECTOR	center;
-	float		factor;
-	float		min;
-	float		max;
-	float		level;
-	float		height;
-	float		bboxMinX;
-	float		bboxMaxX;
-	float		bboxMinZ;
-	float		bboxMaxZ;
-}
-BuildingLevel;
-
-
-#define MAXSLOWERZONE	10
-
-typedef struct
-{
-	D3DVECTOR	center;
-	float		min;
-	float		max;
-	float		factor;
-	float		bboxMinX;
-	float		bboxMaxX;
-	float		bboxMinZ;
-	float		bboxMaxZ;
-}
-SlowerZone;
+	LZ_FREE		= 0,		// zone libre
+	LZ_MAX1X	= 1,		// zone libre (un passage fermé)
+	LZ_TUNNELh	= 2,		// zone tunnel -
+	LZ_TUNNELv	= 3,		// zone tunnel |
+	LZ_FIX		= 10,		// zone fixe
+	LZ_FIXo		= 11,		// zone fixe ronde
+	LZ_MINE		= 12,		// zone avec mine
+	LZ_FIOLE	= 13,		// zone avec fiole
+	LZ_GLASS	= 14,		// zone avec vitre
+	LZ_PIPE		= 15,		// zone avec tuyau
+	LZ_BLUPI	= 20,		// zone occupée par blupi
+	LZ_BOT		= 21,		// zone occupée par un robot
+	LZ_BOX		= 22,		// zone occupée par une caisse
+	LZ_BOXo		= 23,		// zone occupée par une caisse ronde
+};
 
 
 #define MAXMATTERRAIN		100
@@ -81,16 +69,18 @@ typedef struct
 DotLevel;
 
 
-#define MAXFLYINGLIMIT	10
+#define MAXSIGNMARK		50
 
 typedef struct
 {
-	D3DVECTOR	center;
-	float		extRadius;
-	float		intRadius;
-	float		maxHeight;
+	BOOL			bUsed;
+	ParticuleType	type;
+	D3DVECTOR		pos;
+	float			angle;
+	int				channel;
 }
-FlyingLimit;
+SignMark;
+
 
 
 
@@ -100,18 +90,55 @@ public:
 	CTerrain(CInstanceManager* iMan);
 	~CTerrain();
 
-	BOOL		Generate(int mosaic, int brickP2, float size, float vision, int depth, float hardness);
-	BOOL		InitTextures(char* baseName, int* table, int dx, int dy);
-	void		LevelFlush();
-	BOOL		LevelMaterial(int id, char* baseName, float u, float v, int up, int right, int down, int left, float hardness);
-	BOOL		LevelInit(int id);
-	BOOL		LevelGenerate(int *id, float min, float max, float slope, float freq, D3DVECTOR center, float radius);
-	void		LevelRoadAdapt(BOOL bF1);
-	void		FlushRelief();
-	BOOL		ReliefFromBMP(const char* filename, float scaleRelief);
-	BOOL		ReliefFromDXF(const char* filename, float scaleRelief);
-	BOOL		CreateObjects(BOOL bMultiRes);
-	BOOL		Terraform(const D3DVECTOR &p1, const D3DVECTOR &p2, float height);
+	BOOL		Generate(int nbTiles, float dimTile);
+	BOOL		ResInit(BOOL bEmpty);
+	BOOL		InitTextures(char *texName1, char *texName2, int *idWall1, int *idWall2, int *idWall3, int *idFlat, int *idHole, int *idGround, int depth, float slope, int model, float rv, float rh, float bv, float bh, BOOL bSmooth);
+	void		SetHardness(float *hardness);
+	BOOL		CreateObjects();
+	BOOL		DeleteObjects();
+
+	int			RetObjRank();
+	int			RetModel();
+
+	int			LenResource();
+	void		GetResource(char *buffer);
+	void		PutResource(char *buffer);
+	void		RestoreResourceCopy();
+	TerrainRes	RetResource(int x, int y, BOOL bCopy=FALSE);
+	TerrainRes	RetResource(const D3DVECTOR &p, BOOL bCopy=FALSE);
+	BOOL		SetResource(int x, int y, TerrainRes res, BOOL bCopy=FALSE);
+	BOOL		SetResource(const D3DVECTOR &p, TerrainRes res, BOOL bCopy=FALSE);
+	BOOL		IsSolid(TerrainRes res);
+	BOOL		IsSolid(int x, int y);
+	BOOL		IsSolid(const D3DVECTOR &p);
+
+	float		RetHardness(int x, int y);
+	float		RetHardness(const D3DVECTOR &p);
+
+	float		RetShadows(int x, int y);
+	float		RetShadows(const D3DVECTOR &p);
+
+	int			LenLockZone();
+	void		GetLockZone(char *buffer);
+	void		PutLockZone(char *buffer);
+	void		SetLockZone(int x, int y, LockZone type, BOOL bInit=FALSE);
+	void		SetLockZone(const D3DVECTOR &pos, LockZone type, BOOL bInit=FALSE);
+	LockZone	RetLockZone(int x, int y, BOOL bInit=FALSE);
+	LockZone	RetLockZone(const D3DVECTOR &pos, BOOL bInit=FALSE);
+	BOOL		IsLockZone(int x, int y);
+	BOOL		IsLockZone(const D3DVECTOR &pos);
+	BOOL		IsLockZoneSquare(int x, int y);
+	BOOL		IsLockZoneSquare(const D3DVECTOR &pos);
+
+	void		SignMarkFlush();
+	BOOL		SignMarkCreate(D3DVECTOR pos, float angle, ParticuleType type);
+	BOOL		SignMarkDelete(D3DVECTOR pos);
+	void		SignMarkShow(BOOL bShow);
+	BOOL		SignMarkGet(D3DVECTOR pos, float &angle, ParticuleType &type);
+	BOOL		SignMarkGet(int i, D3DVECTOR &pos, float &angle, ParticuleType &type);
+
+	void		SetDebugLockZone(BOOL bShow);
+	BOOL		RetDebugLockZone();
 
 	void		SetWind(D3DVECTOR speed);
 	D3DVECTOR	RetWind();
@@ -119,112 +146,62 @@ public:
 	float		RetFineSlope(const D3DVECTOR &pos);
 	float		RetCoarseSlope(const D3DVECTOR &pos);
 	BOOL		GetNormal(D3DVECTOR &n, const D3DVECTOR &p);
-	float		RetFloorLevel(const D3DVECTOR &p, BOOL bBrut=FALSE, BOOL bWater=FALSE);
-	float		RetFloorHeight(const D3DVECTOR &p, BOOL bBrut=FALSE, BOOL bWater=FALSE);
-	BOOL		MoveOnFloor(D3DVECTOR &p, BOOL bBrut=FALSE, BOOL bWater=FALSE);
+	float		RetFloorLevel(const D3DVECTOR &p);
+	float		RetFloorHeight(const D3DVECTOR &p);
+	BOOL		MoveOnFloor(D3DVECTOR &p);
 	BOOL		ValidPosition(D3DVECTOR &p, float marging);
 	void		LimitPos(D3DVECTOR &pos);
+	BOOL		GroundDetect(FPOINT mouse, D3DVECTOR &pos);
 
-	void		FlushBuildingLevel();
-	BOOL		AddBuildingLevel(D3DVECTOR center, float min, float max, float height, float factor);
-	BOOL		UpdateBuildingLevel(D3DVECTOR center);
-	BOOL		DeleteBuildingLevel(D3DVECTOR center);
-	float		RetBuildingFactor(const D3DVECTOR &p);
-
-	void		FlushSlowerZone();
-	BOOL		AddSlowerZone(D3DVECTOR center, float min, float max, float factor);
-	BOOL		DeleteSlowerZone(D3DVECTOR center);
-	float		RetSlowerZone(const D3DVECTOR &p);
-
-	float		RetHardness(const D3DVECTOR &p);
-
-	int			RetMosaic();
-	int			RetBrick();
-	float		RetSize();
-	float		RetScaleRelief();
-
-	float		RetFlatZoneRadius(D3DVECTOR center, float max);
-
-	void		SetFlyingMaxHeight(float height);
-	float		RetFlyingMaxHeight();
-	void		FlushFlyingLimit();
-	BOOL		AddFlyingLimit(D3DVECTOR center, float extRadius, float intRadius, float maxHeight);
-	float		RetFlyingLimit(D3DVECTOR pos, BOOL bNoLimit);
-
-	void		FlushTraject();
-	BOOL		AddTraject(const D3DVECTOR &pos);
-	BOOL		GetTraject(int rank, D3DVECTOR &pos);
+	int			RetNbTiles();
+	float		RetDimTile();
+	float		RetDim();
+	int			RetGeneration();
 
 protected:
-	BOOL		ReliefAddDot(D3DVECTOR pos, float scaleRelief);
-	void		AdjustRelief();
-	D3DVECTOR	RetVector(int x, int y);
-	D3DVERTEX2	RetVertex(int x, int y, int step);
-	BOOL		CreateMosaic(int ox, int oy, int step, int objRank, const D3DMATERIAL7 &mat, float min, float max);
-	BOOL		CreateSquare(BOOL bMultiRes, int x, int y);
-
-	TerrainMaterial* LevelSearchMat(int id);
-	void		LevelTextureName(int x, int y, char *name, FPOINT &uv);
-	float		LevelRetHeight(int x, int y);
-	BOOL		LevelGetDot(int x, int y, float min, float max, float slope);
-	int			LevelTestMat(char *mat);
-	void		LevelSetDot(int x, int y, int id, char *mat);
-	BOOL		LevelIfDot(int x, int y, int id, char *mat);
-	BOOL		LevelPutDot(int x, int y, int id);
-	void		LevelOpenTable();
-	void		LevelCloseTable();
-
-	int			RoadSearchID(int bits);
-	int			RoadSearchBits(int id);
-	int			RoadGetID(int x, int y);
-	int			RoadSearchBitsFull(int x, int y, BOOL bF1);
-	int			RoadSearchBitsDiag(int x, int y);
-
-	void		AdjustBuildingLevel(D3DVECTOR &p);
+	BOOL		InitShadows();
+	void		AdapteTileVertex(D3DVERTEX2 &v);
+	void		CreateTile(int objRank, int x, int y, float level, float tu, float tv);
+	void		CreateWall(int objRank, int x, int y, float level, float tu, float tv, const D3DVECTOR &n, float dx0, float dz0, float dx2, float dz2);
+	void		CreateBorder(CModFile *pModFile, int objRank, float angle, int x, int y, char *type);
+	void		ComputeUV(int *id, float &tu, float &tv);
+	float		RetShadowPound(float x, float y);
 
 protected:
 	CInstanceManager* m_iMan;
 	CD3DEngine*		m_engine;
-	CWater*			m_water;
+	CParticule*		m_particule;
 
-	int				m_mosaic;		// nb de mosaïque
-	int				m_brick;		// nb de briques par mosaïque
-	float			m_size;			// taille d'un élément dans une brique
-	float			m_vision;		// vision avant un changement de résolution
-	float*			m_relief;		// table du relief
-	int*			m_texture;		// table des textures
-	int*			m_objRank;		// table des rangs des objets
-	BOOL			m_bMultiText;
-	BOOL			m_bLevelText;
-	float			m_scaleMapping;	// échelle du mapping
-	float			m_scaleRelief;
-	int				m_subdivMapping;
-	int				m_depth;		// nb de résolutions différentes (1,2,3,4)
-	char			m_texBaseName[20];
-	char			m_texBaseExt[10];
-	float			m_defHardness;
-	
-	TerrainMaterial	m_levelMat[MAXMATTERRAIN+1];
-	int				m_levelMatTotal;
-	int				m_levelMatMax;
-	int				m_levelDotSize;
-	DotLevel*		m_levelDot;
-	int				m_levelID;
+	int				m_nbTiles;		// nb de tuiles
+	int				m_nbTiles2;		// nb de tuiles /2
+	float			m_dimTile;		// dimensions d'une tuile
+	int				m_depth;
+	float			m_slope;
+	int				m_model;
+	float			m_modelRv;
+	float			m_modelRh;
+	float			m_baseRv;
+	float			m_baseRh;
+	BOOL			m_bSmooth;
 
-	int				m_buildingUsed;
-	BuildingLevel	m_buildingTable[MAXBUILDINGLEVEL];
-
-	int				m_slowerUsed;
-	BuildingLevel	m_slowerTable[MAXSLOWERZONE];
+	char			m_texName1[50];	// texture principale
+	char			m_texName2[50];	// texture secondaire
+	int				m_idWall1[50];	// id parois verticales
+	int				m_idWall2[50];	// id parois verticales
+	int				m_idWall3[50];	// id parois verticales
+	int				m_idFlat[50];	// id sol au niveau 0
+	int				m_idHole[50];	// id sol au niveau -8
+	int				m_idGround[50];	// id sol terrain 3D
+	float			m_hardness[8];	// duretés
+	char*			m_resources;	// nature du terrain
+	char*			m_shadows;		// ombres pour l'eau
+	char*			m_lockZone;		// zones bloquées
+	BOOL			m_lockZoneDebug;
+	int				m_objRank;		// rang de l'objet terrain
+	int				m_generation;
+	SignMark		m_signMark[MAXSIGNMARK];
 
 	D3DVECTOR		m_wind;			// vitesse du vent
-
-	float			m_flyingMaxHeight;
-	int				m_flyingLimitTotal;
-	FlyingLimit		m_flyingLimit[MAXFLYINGLIMIT];
-
-	int				m_trajectTotal;
-	D3DVECTOR		m_trajectTable[MAXTRAJECT];
 };
 
 

@@ -15,7 +15,6 @@
 #include "math3d.h"
 #include "event.h"
 #include "object.h"
-#include "physics.h"
 #include "auto.h"
 #include "robotmain.h"
 #include "terrain.h"
@@ -35,17 +34,11 @@
 
 BOOL IsSoft(ObjectType type)
 {
-	return ( type == OBJECT_HUMAN    ||
-			 type == OBJECT_CAR      ||
-			 type == OBJECT_MARK     ||
+	return ( type == OBJECT_MARK     ||
 			 type == OBJECT_METAL    ||
 			 type == OBJECT_BARREL   ||
 			 type == OBJECT_BARRELa  ||
-			 type == OBJECT_ATOMIC   ||  // fret ?
-			 type == OBJECT_TOWER    ||
-			 type == OBJECT_NUCLEAR  ||
-			 type == OBJECT_PARA     ||
-			 type == OBJECT_COMPUTER );  // bâtiment ?
+			 type == OBJECT_ATOMIC   );
 }
 
 // Vérifie si un objet est un ennemi destructible.
@@ -75,6 +68,8 @@ CParticule::CParticule(CInstanceManager *iMan, CD3DEngine* engine)
 	m_exploGunCounter = 0;
 	m_lastTimeGunDel = 0.0f;
 	m_absTime = 0.0f;
+	m_sunbeamIntensity = 1.0f;
+	m_bGoto = FALSE;
 
 	FlushParticule();
 }
@@ -117,6 +112,11 @@ void CParticule::FlushParticule()
 		m_track[i].bUsed = FALSE;
 	}
 
+	for ( i=0 ; i<MAXSUNBEAM ; i++ )
+	{
+		m_sunbeam[i].bUsed = FALSE;
+	}
+
 	m_wheelTraceTotal = 0;
 	m_wheelTraceIndex = 0;
 
@@ -127,6 +127,8 @@ void CParticule::FlushParticule()
 
 	m_fogTotal = 0;
 	m_exploGunCounter = 0;
+	m_sunbeamIntensity = 1.0f;
+	m_bGoto = FALSE;
 }
 
 // Supprime toutes les particules d'une feuille.
@@ -153,8 +155,16 @@ void CParticule::FlushParticule(int sheet)
 		m_track[i].bUsed = FALSE;
 	}
 
-	m_wheelTraceTotal = 0;
-	m_wheelTraceIndex = 0;
+	for ( i=0 ; i<MAXSUNBEAM ; i++ )
+	{
+		m_sunbeam[i].bUsed = FALSE;
+	}
+
+	if ( sheet == SH_WORLD )
+	{
+		m_wheelTraceTotal = 0;
+		m_wheelTraceIndex = 0;
+	}
 }
 
 
@@ -178,29 +188,21 @@ int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 								ParticuleType type,
 								float duration, float mass, int sheet)
 {
-//?	float	dist;
+	float	level;
 	int		i, j, t;
 
 	if ( m_main == 0 )
 	{
 		m_main = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
 	}
-
-#if 0
-	if ( sheet == SH_WORLD       &&
-		 type != PARTISELY       &&
-		 type != PARTISELR       &&
-		 type != PARTIGUN1       &&
-		 type != PARTIGUN2       &&
-		 type != PARTIGUN3       &&
-		 type != PARTIGUN4       &&
-		 type != PARTIQUARTZ     &&
-		 !m_main->RetMovieLock() )
+	if ( m_terrain == 0 )
 	{
-		dist = Length(pos, m_engine->RetEyePt());
-		if ( dist > 300.0f )  return -1;
+		m_terrain = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
 	}
-#endif
+	if ( m_water == 0 )
+	{
+		m_water = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
+	}
 
 	t = -1;
 	if ( type == PARTIEXPLOT   ||
@@ -225,7 +227,6 @@ int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 		 type == PARTIGUN2     ||
 		 type == PARTIGUN3     ||
 		 type == PARTIGUN4     ||
-		 type == PARTIQUEUE    ||
 		 type == PARTIORGANIC1 ||
 		 type == PARTIORGANIC2 ||
 		 type == PARTIFLAME    ||
@@ -256,7 +257,16 @@ int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 		 type == PARTIDROP     ||
 		 type == PARTIWATER    ||
 		 type == PARTIEXPLOG1  ||
-		 type == PARTIEXPLOG2  )
+		 type == PARTIEXPLOG2  ||
+		 type == PARTILOCKZONE ||
+		 type == PARTIGRIDb    ||
+		 type == PARTIGRIDt    ||
+		 type == PARTIGRIDw    ||
+		 type == PARTIGRIDs    ||
+		 type == PARTIGRIDe    ||
+		 type == PARTISNOW     ||
+		 type == PARTIRAIN     ||
+		 type == PARTIFLIC     )
 	{
 		t = 1;  // effect00
 	}
@@ -270,6 +280,8 @@ int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 		 type == PARTICONTROL ||
 		 type == PARTISPHERE1 ||
 		 type == PARTICHOC    ||
+		 type == PARTIPOWER   ||
+		 type == PARTIGLU     ||
 		 type == PARTIFOG4    ||
 		 type == PARTIFOG5    ||
 		 type == PARTIFOG6    ||
@@ -279,33 +291,41 @@ int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 	{
 		t = 2;  // effect01
 	}
-	if ( type == PARTIGUN1    ||
-		 type == PARTIFLIC    ||
-		 type == PARTISPHERE0 ||
-		 type == PARTISPHERE3 ||
-		 type == PARTIFOG0    ||
-		 type == PARTIFOG1    ||
-		 type == PARTIFOG2    ||
-		 type == PARTIFOG3    )
+	if ( type == PARTIGUN1       ||
+		 type == PARTISPHERE0    ||
+		 type == PARTISPHERE3    ||
+		 type == PARTIFOG0       ||
+		 type == PARTIFOG1       ||
+		 type == PARTIFOG2       ||
+		 type == PARTIFOG3       ||
+		 type == PARTITERSPTIRE  ||
+		 type == PARTISIGNMARK0  ||
+		 type == PARTISIGNMARK1  ||
+		 type == PARTISIGNMARK2  ||
+		 type == PARTISIGNMARK3  ||
+		 type == PARTISIGNMARK4  ||
+		 type == PARTISIGNMARK5  ||
+		 type == PARTISIGNMARK6  ||
+		 type == PARTISIGNMARK7  ||
+		 type == PARTISIGNMARK8  ||
+		 type == PARTISIGNMARK9  ||
+		 type == PARTISIGNMARK10 ||
+		 type == PARTISIGNMARK11 )
 	{
 		t = 3;  // effect02
 	}
-	if ( type == PARTISMOKE1  ||
-		 type == PARTISMOKE2  ||
-		 type == PARTISMOKE3  ||
-		 type == PARTIWHEEL   ||
-		 type == PARTITRACE1  ||
-		 type == PARTITRACE2  ||
-		 type == PARTITRACE3  ||
-		 type == PARTITRACE4  ||
-		 type == PARTITRACE5  ||
-		 type == PARTITRACE6  ||
-		 type == PARTITRACE7  ||
-		 type == PARTITRACE8  ||
-		 type == PARTISTONE1  ||
-		 type == PARTISTONE2  ||
-		 type == PARTISTONE3  ||
-		 type == PARTISTONE4  )
+	if ( type == PARTISMOKE1    ||
+		 type == PARTISMOKE2    ||
+		 type == PARTISMOKE3    ||
+		 type == PARTIWHEEL     ||
+		 type == PARTITRACE1    ||
+		 type == PARTITRACE2    ||
+		 type == PARTITRACE3    ||
+		 type == PARTITRACE4    ||
+		 type == PARTITRACE5    ||
+		 type == PARTITRACE6    ||
+		 type == PARTITRACE7    ||
+		 type == PARTITRACE8    )
 	{
 		t = 4;  // effect03
 	}
@@ -339,25 +359,21 @@ int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 			m_particule[i].texInf.x  = 0.0f;
 			m_particule[i].texInf.y  = 0.0f;
 			m_particule[i].time      = 0.0f;
-			m_particule[i].phaseTime = 0.0f;
-			m_particule[i].testTime  = 0.0f;
-			m_particule[i].objLink   = 0;
 			m_particule[i].objFather = 0;
 			m_particule[i].trackRank = -1;
 
 			m_totalInterface[t][sheet] ++;
+
+			if ( type == PARTIFLIC )
+			{
+				m_particule[i].zoom = 0.0f;
+			}
 
 			if ( type == PARTIEXPLOT ||
 				 type == PARTIEXPLOA ||
 				 type == PARTIEXPLOO )
 			{
 				m_particule[i].angle = Rand()*PI*2.0f;
-			}
-
-			if ( type == PARTIGUN1 ||
-				 type == PARTIGUN4 )
-			{
-				m_particule[i].testTime = 1.0f;  // impact tout de suite
 			}
 
 			if ( type >= PARTIFOG0 &&
@@ -371,6 +387,24 @@ int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 				 type == PARTIDUST2 )
 			{
 				m_particule[i].angle = Rand()*PI*2.0f;
+			}
+
+			if ( type == PARTISNOW ||
+				 type == PARTIRAIN )
+			{
+				if ( m_terrain->IsLockZone(pos) )
+				{
+					level = NAN;
+				}
+				else
+				{
+					level = m_terrain->RetFloorLevel(pos);
+					if ( level < m_water->RetLevel() )
+					{
+						level = m_water->RetLevel();
+					}
+				}
+				m_particule[i].ground = level;
 			}
 
 			return i | ((m_particule[i].uniqueStamp&0xffff)<<16);
@@ -388,8 +422,6 @@ int CParticule::CreateFrag(D3DVECTOR pos, D3DVECTOR speed,
 						   ParticuleType type,
 						   float duration, float mass, int sheet)
 {
-	D3DVECTOR	p1, p2, p3, n;
-	float		l1, l2, l3, dx, dy;
 	int			i, j, t;
 
 	t = 0;
@@ -419,66 +451,12 @@ int CParticule::CreateFrag(D3DVECTOR pos, D3DVECTOR speed,
 			m_particule[i].texInf.x  = 0.0f;
 			m_particule[i].texInf.y  = 0.0f;
 			m_particule[i].time      = 0.0f;
-			m_particule[i].phaseTime = 0.0f;
-			m_particule[i].testTime  = 0.0f;
-			m_particule[i].objLink   = 0;
 			m_particule[i].objFather = 0;
 			m_particule[i].trackRank = -1;
 			m_triangle[i] = *triangle;
 
 			m_totalInterface[t][sheet] ++;
 
-			p1.x = m_triangle[i].triangle[0].x;
-			p1.y = m_triangle[i].triangle[0].y;
-			p1.z = m_triangle[i].triangle[0].z;
-
-			p2.x = m_triangle[i].triangle[1].x;
-			p2.y = m_triangle[i].triangle[1].y;
-			p2.z = m_triangle[i].triangle[1].z;
-
-			p3.x = m_triangle[i].triangle[2].x;
-			p3.y = m_triangle[i].triangle[2].y;
-			p3.z = m_triangle[i].triangle[2].z;
-
-			l1 = Length(p1, p2);
-			l2 = Length(p2, p3);
-			l3 = Length(p3, p1);
-			dx = Abs(Min(l1, l2, l3))*0.5f;
-			dy = Abs(Max(l1, l2, l3))*0.5f;
-			p1 = D3DVECTOR(-dx,  dy, 0.0f);
-			p2 = D3DVECTOR( dx,  dy, 0.0f);
-			p3 = D3DVECTOR(-dx, -dy, 0.0f);
-
-			m_triangle[i].triangle[0].x = p1.x;
-			m_triangle[i].triangle[0].y = p1.y;
-			m_triangle[i].triangle[0].z = p1.z;
-
-			m_triangle[i].triangle[1].x = p2.x;
-			m_triangle[i].triangle[1].y = p2.y;
-			m_triangle[i].triangle[1].z = p2.z;
-
-			m_triangle[i].triangle[2].x = p3.x;
-			m_triangle[i].triangle[2].y = p3.y;
-			m_triangle[i].triangle[2].z = p3.z;
-
-			n = D3DVECTOR(0.0f, 0.0f, -1.0f);
-
-			m_triangle[i].triangle[0].nx = n.x;
-			m_triangle[i].triangle[0].ny = n.y;
-			m_triangle[i].triangle[0].nz = n.z;
-
-			m_triangle[i].triangle[1].nx = n.x;
-			m_triangle[i].triangle[1].ny = n.y;
-			m_triangle[i].triangle[1].nz = n.z;
-
-			m_triangle[i].triangle[2].nx = n.x;
-			m_triangle[i].triangle[2].ny = n.y;
-			m_triangle[i].triangle[2].nz = n.z;
-
-			if ( type == PARTIFRAG )
-			{
-				m_particule[i].angle = Rand()*PI*2.0f;
-			}
 			return i | ((m_particule[i].uniqueStamp&0xffff)<<16);
 		}
 	}
@@ -525,8 +503,6 @@ int CParticule::CreatePart(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 			m_particule[i].texInf.x  = 0.0f;
 			m_particule[i].texInf.y  = 0.0f;
 			m_particule[i].time      = 0.0f;
-			m_particule[i].phaseTime = 0.0f;
-			m_particule[i].testTime  = 0.0f;
 			m_particule[i].trackRank = -1;
 
 			m_totalInterface[t][sheet] ++;
@@ -585,9 +561,6 @@ int CParticule::CreateRay(D3DVECTOR pos, D3DVECTOR goal,
 			m_particule[i].texInf.x  = 0.0f;
 			m_particule[i].texInf.y  = 0.0f;
 			m_particule[i].time      = 0.0f;
-			m_particule[i].phaseTime = 0.0f;
-			m_particule[i].testTime  = 0.0f;
-			m_particule[i].objLink   = 0;
 			m_particule[i].objFather = 0;
 			m_particule[i].trackRank = -1;
 
@@ -645,7 +618,7 @@ void CParticule::CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2,
 {
 	int		i, max;
 
-	max = (int)(m_engine->RetWheelTraceQuantity()*MAXWHEELTRACE);
+	max = MAXWHEELTRACE;
 	i = m_wheelTraceIndex++;
 	if ( m_wheelTraceIndex > max )  m_wheelTraceIndex = 0;
 
@@ -661,16 +634,16 @@ void CParticule::CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2,
 		m_terrain = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
 	}
 
-	m_terrain->MoveOnFloor(m_wheelTrace[i].pos[0]);
+	m_wheelTrace[i].pos[0].y = 0.0f;
 	m_wheelTrace[i].pos[0].y += 0.2f;  // juste en dessus du sol
 
-	m_terrain->MoveOnFloor(m_wheelTrace[i].pos[1]);
+	m_wheelTrace[i].pos[1].y = 0.0f;
 	m_wheelTrace[i].pos[1].y += 0.2f;  // juste en dessus du sol
 
-	m_terrain->MoveOnFloor(m_wheelTrace[i].pos[2]);
+	m_wheelTrace[i].pos[2].y = 0.0f;
 	m_wheelTrace[i].pos[2].y += 0.2f;  // juste en dessus du sol
 
-	m_terrain->MoveOnFloor(m_wheelTrace[i].pos[3]);
+	m_wheelTrace[i].pos[3].y = 0.0f;
 	m_wheelTrace[i].pos[3].y += 0.2f;  // juste en dessus du sol
 
 	if ( m_wheelTraceTotal < max )
@@ -681,6 +654,39 @@ void CParticule::CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2,
 	{
 		m_wheelTraceTotal = max;
 	}
+}
+
+// Crée un rayon de solail.
+
+BOOL CParticule::CreateSunbeam(const D3DVECTOR &pos, float dim, float angle,
+							   ParticuleType type)
+{
+	int		i;
+
+	// Cherche une place libre.
+	for ( i=0 ; i<MAXSUNBEAM ; i++ )
+	{
+		if ( !m_sunbeam[i].bUsed )  // libre ?
+		{
+			m_sunbeam[i].bUsed = TRUE;
+			m_sunbeam[i].type  = type;
+			m_sunbeam[i].pos   = pos;
+			m_sunbeam[i].dim   = dim;
+			m_sunbeam[i].angle = angle;
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+// Crée un effet pour montrer une destination.
+
+void CParticule::CreateGoto(D3DVECTOR pos)
+{
+	m_bGoto = TRUE;
+	m_gotoPos = pos;
+	m_gotoProgress = 0.0f;
 }
 
 
@@ -776,15 +782,6 @@ void CParticule::DeleteParticule(int channel)
 }
 
 
-// Spécifie l'objet auquel la particule est liée.
-
-BOOL CParticule::SetObjectLink(int channel, CObject *object)
-{
-	if ( !CheckChannel(channel) )  return FALSE;
-	m_particule[channel].objLink = object;
-	return TRUE;
-}
-
 // Spécifie l'objet père qui a créé la particule.
 
 BOOL CParticule::SetObjectFather(int channel, CObject *object)
@@ -848,15 +845,6 @@ BOOL CParticule::SetParam(int channel, D3DVECTOR pos, FPOINT dim, float zoom,
 	return TRUE;
 }
 
-BOOL CParticule::SetPhase(int channel, ParticulePhase phase, float duration)
-{
-	if ( !CheckChannel(channel) )  return FALSE;
-	m_particule[channel].phase = phase;
-	m_particule[channel].duration = duration;
-	m_particule[channel].phaseTime = m_particule[channel].time;
-	return TRUE;
-}
-
 // Retourne la position de la particule.
 
 BOOL CParticule::GetPosition(int channel, D3DVECTOR &pos)
@@ -864,6 +852,14 @@ BOOL CParticule::GetPosition(int channel, D3DVECTOR &pos)
 	if ( !CheckChannel(channel) )  return FALSE;
 	pos = m_particule[channel].pos;
 	return TRUE;
+}
+
+
+// Indique l'intensité générale des rayons de soleil.
+
+void CParticule::SetSunbeamIntensity(float intensity)
+{
+	m_sunbeamIntensity = intensity;
 }
 
 
@@ -878,13 +874,11 @@ void CParticule::SetFrameUpdate(int sheet, BOOL bUpdate)
 
 void CParticule::FrameParticule(float rTime)
 {
-	CObject*	object;
-	CPhysics*	physics;
 	D3DVECTOR	eye, pos, speed;
 	FPOINT		ts, ti, dim;
 	BOOL		bPause;
-	float		progress, dp, h, amplitude;
-	int			i, r;
+	float		progress, dp, h, amplitude, duration;
+	int			i, j, r;
 
 	if ( m_main == 0 )
 	{
@@ -908,6 +902,15 @@ void CParticule::FrameParticule(float rTime)
 		m_absTime += rTime;
 	}
 
+	if ( m_bGoto )
+	{
+		m_gotoProgress += rTime;
+		if ( m_gotoProgress >= 1.0f )
+		{
+			m_bGoto = FALSE;
+		}
+	}
+
 	eye = m_engine->RetEyePt();
 
 	for ( i=0 ; i<MAXPARTICULE*MAXPARTITYPE ; i++ )
@@ -920,7 +923,7 @@ void CParticule::FrameParticule(float rTime)
 			m_particule[i].pos += m_particule[i].speed*rTime;
 		}
 
-		progress = (m_particule[i].time-m_particule[i].phaseTime)/m_particule[i].duration;
+		progress = m_particule[i].time/m_particule[i].duration;
 
 		// Gère les particules avec masse qui rebondissent.
 		if ( m_particule[i].mass != 0.0f        &&
@@ -928,46 +931,65 @@ void CParticule::FrameParticule(float rTime)
 		{
 			m_particule[i].speed.y -= m_particule[i].mass*rTime;
 
-			if ( m_particule[i].sheet == SH_INTERFACE )
+			if ( m_particule[i].type == PARTIFRAG )
 			{
-				h = 0.0f;
+				if ( m_particule[i].sheet == SH_INTERFACE )
+				{
+					h = 0.0f;
+				}
+				else
+				{
+					h = m_terrain->RetFloorLevel(m_particule[i].pos);
+				}
+				h += m_particule[i].dim.y*0.75f;
+				if ( m_particule[i].pos.y < h )  // choc avec le sol ?
+				{
+					DeleteRank(i);
+					continue;
+				}
 			}
 			else
 			{
-				h = m_terrain->RetFloorLevel(m_particule[i].pos, TRUE);
-			}
-			h += m_particule[i].dim.y*0.75f;
-			if ( m_particule[i].pos.y < h )  // choc avec le sol ?
-			{
-				if ( m_particule[i].type == PARTIPART &&
-					 m_particule[i].weight > 5.0f &&  // assez lourd ?
-					 m_particule[i].bounce < 3 )
+				if ( m_particule[i].sheet == SH_INTERFACE )
 				{
-					amplitude = m_particule[i].weight*0.1f;
-					amplitude *= 1.0f-0.3f*m_particule[i].bounce;
-					if ( amplitude > 1.0f )  amplitude = 1.0f;
-					if ( amplitude > 0.0f )
+					h = 0.0f;
+				}
+				else
+				{
+					h = m_terrain->RetFloorLevel(m_particule[i].pos);
+				}
+				h += m_particule[i].dim.y*0.75f;
+				if ( m_particule[i].pos.y < h )  // choc avec le sol ?
+				{
+					if ( m_particule[i].type == PARTIPART &&
+						 m_particule[i].weight > 5.0f &&  // assez lourd ?
+						 m_particule[i].bounce < 3 )
 					{
-//?						Play(SOUND_BOUM, m_particule[i].pos, amplitude);
-						Play((Sound)(SOUND_FALLo1+rand()%2), m_particule[i].pos, amplitude);
+						amplitude = m_particule[i].weight*0.1f;
+						amplitude *= 1.0f-0.3f*m_particule[i].bounce;
+						if ( amplitude > 1.0f )  amplitude = 1.0f;
+						if ( amplitude > 0.0f )
+						{
+							Play((Sound)(SOUND_FALLo1+rand()%2), m_particule[i].pos, amplitude, 1.0f);
+						}
 					}
-				}
 
-				if ( m_particule[i].bounce < 3 )
-				{
-					m_particule[i].pos.y = h;
-					m_particule[i].speed.y *= -0.4f;
-					m_particule[i].speed.x *=  0.4f;
-					m_particule[i].speed.z *=  0.4f;
-					m_particule[i].bounce ++;  // un choc de plus
-				}
-				else	// disparaît après 3 rebonds ?
-				{
-					if ( m_particule[i].pos.y < h-20.0f ||
-						 m_particule[i].time >= 20.0f   )
+					if ( m_particule[i].bounce < 3 )
 					{
-						DeleteRank(i);
-						continue;
+						m_particule[i].pos.y = h;
+						m_particule[i].speed.y *= -0.4f;
+						m_particule[i].speed.x *=  0.4f;
+						m_particule[i].speed.z *=  0.4f;
+						m_particule[i].bounce ++;  // un choc de plus
+					}
+					else	// disparaît après 3 rebonds ?
+					{
+						if ( m_particule[i].pos.y < h-20.0f ||
+							 m_particule[i].time >= 20.0f   )
+						{
+							DeleteRank(i);
+							continue;
+						}
 					}
 				}
 			}
@@ -996,11 +1018,11 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTITRACK2 )  // jet bleu ?
+		if ( m_particule[i].type == PARTITRACK2 )  // jet vert ?
 		{
 			m_particule[i].zoom = 1.0f-(m_particule[i].time-m_particule[i].duration);
 
-			ts.x = 0.500f;
+			ts.x = 0.625f;
 			ts.y = 0.000f;
 			ti.x = ts.x+0.125f;
 			ti.y = ts.y+0.125f;
@@ -1016,13 +1038,13 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTITRACK4 )  // explosion insecte ?
+		if ( m_particule[i].type == PARTITRACK4 )  // explosion organique ?
 		{
 //?			m_particule[i].zoom = 1.0f-(m_particule[i].time-m_particule[i].duration);
 			m_particule[i].zoom = 1.0f-progress;
 
-			ts.x = 0.625f;
-			ts.y = 0.000f;
+			ts.x = 0.500f;
+			ts.y = 0.750f;
 			ti.x = ts.x+0.125f;
 			ti.y = ts.y+0.125f;
 		}
@@ -1060,13 +1082,7 @@ void CParticule::FrameParticule(float rTime)
 
 		if ( m_particule[i].type == PARTITRACK11 )  // tir phazer ?
 		{
-			object = SearchObjectGun(m_particule[i].goal, m_particule[i].pos, m_particule[i].type, m_particule[i].objFather);
 			m_particule[i].goal = m_particule[i].pos;
-			if ( object != 0 )
-			{
-				object->ExploObject(EXPLO_BOUM, 0.0f);
-			}
-
 			m_particule[i].zoom = 1.0f-(m_particule[i].time-m_particule[i].duration);
 
 			ts.x = 0.375f;
@@ -1285,43 +1301,6 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTIGUN2 )  // tir fourmi ?
-		{
-			if ( progress >= 1.0f )
-			{
-				DeleteRank(i);
-				continue;
-			}
-
-			if ( m_particule[i].testTime >= 0.2f )
-			{
-				m_particule[i].testTime = 0.0f;
-				object = SearchObjectGun(m_particule[i].goal, m_particule[i].pos, m_particule[i].type, m_particule[i].objFather);
-				m_particule[i].goal = m_particule[i].pos;
-				if ( object != 0 )
-				{
-					if ( object->RetType() != OBJECT_HUMAN )
-					{
-						Play(SOUND_TOUCH, m_particule[i].pos, 1.0f);
-					}
-					object->ExploObject(EXPLO_BOUM, 0.0f);  // démarre explosion
-					physics = object->RetPhysics();
-					if ( physics != 0 )
-					{
-						physics->FFBCrash(1.0f, 0.1f, 10.0f);
-					}
-				}
-			}
-
-			m_particule[i].angle = Rand()*PI*2.0f;
-			m_particule[i].zoom = 1.0f-progress;
-
-			ts.x = 0.125f;
-			ts.y = 0.875f;
-			ti.x = ts.x+0.125f;
-			ti.y = ts.y+0.125f;
-		}
-
 		if ( m_particule[i].type == PARTIFLIC )
 		{
 			if ( progress >= 1.0f )
@@ -1333,10 +1312,51 @@ void CParticule::FrameParticule(float rTime)
 			m_particule[i].zoom = 0.1f+progress;
 			m_particule[i].intensity = 1.0f-progress;
 
-			ts.x = 0.00f;
-			ts.y = 0.75f;
+			ts.x = 0.25f;
+			ts.y = 0.50f;
 			ti.x = ts.x+0.25f;
 			ti.y = ts.y+0.25f;
+		}
+
+		if ( m_particule[i].type == PARTIPOWER )
+		{
+			if ( progress >= 1.0f )
+			{
+				DeleteRank(i);
+				continue;
+			}
+
+//?			m_particule[i].zoom = 0.1f+progress;
+//?			m_particule[i].intensity = 1.0f-progress;
+			m_particule[i].intensity = 1.0f-progress;
+
+			ts.x = 0.00f;
+			ts.y = 0.75f;
+			if ( rand()%2 == 0 )  ts.x += 0.25f;
+			ti.x = ts.x+0.25f;
+			ti.y = ts.y+0.25f;
+			if ( rand()%2 == 0 )  Swap(ts.x, ti.x);
+			if ( rand()%2 == 0 )  Swap(ts.y, ti.y);
+		}
+
+		if ( m_particule[i].type == PARTIGLU )
+		{
+			if ( progress >= 1.0f )
+			{
+				DeleteRank(i);
+				continue;
+			}
+
+//?			m_particule[i].zoom = 0.1f+progress;
+//?			m_particule[i].intensity = 1.0f-progress;
+			m_particule[i].intensity = 1.0f-progress;
+
+			ts.x = 0.50f;
+			ts.y = 0.00f;
+			ti.x = ts.x+0.25f;
+			ti.y = ts.y+0.25f;
+			if ( rand()%2 == 0 )  Swap(ts.x, ti.x);
+			if ( rand()%2 == 0 )  Swap(ts.y, ti.y);
 		}
 
 		if ( m_particule[i].type == PARTICHOC )
@@ -1354,6 +1374,188 @@ void CParticule::FrameParticule(float rTime)
 			ts.y = 0.50f;
 			ti.x = ts.x+0.25f;
 			ti.y = ts.y+0.25f;
+		}
+
+		if ( m_particule[i].type == PARTITERSPTIRE )
+		{
+			m_particule[i].zoom = 1.0f;
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.00f;
+			ts.y = 0.50f;
+			ti.x = ts.x+0.25f;
+			ti.y = ts.y+0.25f;
+		}
+
+		if ( m_particule[i].type == PARTILOCKZONE )
+		{
+			m_particule[i].zoom = 1.0f;
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.875f;
+			ts.y = 0.625f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+
+		if ( m_particule[i].type == PARTIGRIDb )
+		{
+			m_particule[i].zoom = 1.0f;
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.000f;
+			ts.y = 0.500f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTIGRIDt )
+		{
+			m_particule[i].zoom = 1.0f;
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.125f;
+			ts.y = 0.500f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTIGRIDw )
+		{
+			m_particule[i].zoom = 1.0f;
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.125f;
+			ts.y = 0.625f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTIGRIDs )
+		{
+			m_particule[i].zoom = 1.0f;
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.000f;
+			ts.y = 0.625f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTIGRIDe )
+		{
+			m_particule[i].zoom = 1.0f;
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.875f;
+			ts.y = 0.500f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+
+		if ( m_particule[i].type == PARTISIGNMARK0 )
+		{
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.250f;
+			ts.y = 0.500f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTISIGNMARK1 )
+		{
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.250f;
+			ts.y = 0.625f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTISIGNMARK2 )
+		{
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.375f;
+			ts.y = 0.500f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTISIGNMARK3 )
+		{
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.375f;
+			ts.y = 0.625f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTISIGNMARK4 )
+		{
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.500f;
+			ts.y = 0.500f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTISIGNMARK5 )
+		{
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.500f;
+			ts.y = 0.625f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTISIGNMARK6 )
+		{
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.625f;
+			ts.y = 0.500f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTISIGNMARK7 )
+		{
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.625f;
+			ts.y = 0.625f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTISIGNMARK8 )
+		{
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.750f;
+			ts.y = 0.500f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTISIGNMARK9 )
+		{
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.750f;
+			ts.y = 0.625f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTISIGNMARK10 )
+		{
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.875f;
+			ts.y = 0.500f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+		if ( m_particule[i].type == PARTISIGNMARK11 )
+		{
+			m_particule[i].intensity = 1.0f;
+
+			ts.x = 0.875f;
+			ts.y = 0.625f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
 		}
 
 		if ( m_particule[i].type == PARTIFOG0 )
@@ -1468,8 +1670,7 @@ void CParticule::FrameParticule(float rTime)
 		}
 
 		if ( m_particule[i].type == PARTIEXPLOT ||
-			 m_particule[i].type == PARTIEXPLOA ||
-			 m_particule[i].type == PARTIEXPLOO )
+			 m_particule[i].type == PARTIEXPLOA )
 		{
 			if ( progress >= 1.0f )
 			{
@@ -1485,16 +1686,29 @@ void CParticule::FrameParticule(float rTime)
 				ts.x = 0.750f;  // orange
 				ts.y = 0.750f;
 			}
-			else if ( m_particule[i].type == PARTIEXPLOA )
+			else
 			{
 				ts.x = 0.625f;  // bleu
 				ts.y = 0.875f;
 			}
-			else
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+
+		if ( m_particule[i].type == PARTIEXPLOO )
+		{
+			if ( progress >= 1.0f )
 			{
-				ts.x = 0.875f;  // vert
-				ts.y = 0.750f;
+				DeleteRank(i);
+				continue;
 			}
+
+//?			m_particule[i].zoom = 1.0f-progress/2.0f;
+			m_particule[i].zoom = 1.0f+progress*2.0f;
+			m_particule[i].intensity = 1.0f-progress;
+
+			ts.x = 0.875f;  // vert
+			ts.y = 0.750f;
 			ti.x = ts.x+0.125f;
 			ti.y = ts.y+0.125f;
 		}
@@ -1556,8 +1770,7 @@ void CParticule::FrameParticule(float rTime)
 
 		if ( m_particule[i].type == PARTIBUBBLE )
 		{
-			if ( progress >= 1.0f ||
-				 m_particule[i].pos.y >= m_water->RetLevel() )
+			if ( progress >= 1.0f )
 			{
 				DeleteRank(i);
 				continue;
@@ -1566,7 +1779,7 @@ void CParticule::FrameParticule(float rTime)
 			m_particule[i].zoom = 1.0f-progress/2.0f;
 			m_particule[i].intensity = 1.0f-progress;
 
-			ts.x = 0.250f;
+			ts.x = 0.125f;
 			ts.y = 0.875f;
 			ti.x = ts.x+0.125f;
 			ti.y = ts.y+0.125f;
@@ -1621,30 +1834,6 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.25f;
 		}
 
-		if ( m_particule[i].type >= PARTISTONE1 &&
-			 m_particule[i].type <= PARTISTONE4 )
-		{
-			if ( progress >= 1.0f )
-			{
-				DeleteRank(i);
-				continue;
-			}
-
-			if ( progress < 0.75f )
-			{
-				m_particule[i].intensity = 1.0f;
-			}
-			else
-			{
-				m_particule[i].intensity = 1.0f-(progress-0.75f)/0.25f;
-			}
-
-			ts.x = 0.500f+0.125f*(m_particule[i].type-PARTISTONE1);
-			ts.y = 0.000f;
-			ti.x = ts.x+0.125f;
-			ti.y = ts.y+0.125f;
-		}
-
 		if ( m_particule[i].type == PARTIBIGO )
 		{
 			if ( progress >= 1.0f )
@@ -1693,6 +1882,74 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
+		if ( m_particule[i].type == PARTISNOW )
+		{
+			if ( progress >= 1.0f ||
+				 m_particule[i].pos.y < m_particule[i].ground )
+			{
+				DeleteRank(i);
+				continue;
+			}
+
+			ts.x = 0.000f;
+			ts.y = 0.125f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+
+		if ( m_particule[i].type == PARTIRAIN )
+		{
+			if ( m_particule[i].pos.y < m_particule[i].ground &&
+				 m_engine->RetSetup(ST_AMBIANCE) != 0 &&
+				 Length2d(m_particule[i].pos, eye) < 40.0f )
+			{
+				r = rand()%4;
+				if ( r == 0 || m_particule[i].ground >= -8.0f )
+				{
+					pos = m_particule[i].pos;
+					pos.y = m_particule[i].ground;
+					dim.x = 1.5f;  // hauteur
+					dim.y = 0.3f;  // diamètre
+					CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), dim, PARTIPLOUF0, 1.4f, 0.0f);
+				}
+				else
+				{
+					for ( j=0 ; j<4 ; j++ )
+					{
+						pos = m_particule[i].pos;
+						pos.x += (Rand()-0.5f)*4.0f;
+						pos.z += (Rand()-0.5f)*4.0f;
+						pos.y = m_water->RetLevel()+1.0f;
+						dim.x = 2.0f+Rand()*2.0f;
+						dim.y = dim.x;
+						duration = 2.0f+Rand()*2.0f;
+						CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), dim, PARTIFLIC, duration, 0.0f);
+					}
+				}
+
+				if ( m_particule[i].ground >= -8.0f )  // sur le sol ?
+				{
+					Play((Sound)(SOUND_FLIC2+rand()%2), m_particule[i].pos, 0.4f, 0.8f+Rand()*0.4f);
+				}
+				else	// sur l'eau ?
+				{
+					Play((Sound)(SOUND_FLIC1+rand()%2), m_particule[i].pos, 0.4f, 0.8f+Rand()*0.4f);
+				}
+			}
+
+			if ( progress >= 1.0f ||
+				 m_particule[i].pos.y < m_particule[i].ground )
+			{
+				DeleteRank(i);
+				continue;
+			}
+
+			ts.x = 0.750f;
+			ts.y = 0.625f;
+			ti.x = ts.x+0.125f;
+			ti.y = ts.y+0.125f;
+		}
+
 		if ( m_particule[i].type == PARTIROOT )
 		{
 			if ( progress >= 1.0f )
@@ -1701,6 +1958,10 @@ void CParticule::FrameParticule(float rTime)
 				continue;
 			}
 
+#if 1
+			m_particule[i].zoom = 1.0f+progress*3.0f;
+			m_particule[i].intensity = 1.0f-progress;
+#else
 			if ( progress < 0.25f )
 			{
 				m_particule[i].zoom = progress/0.25f;
@@ -1709,6 +1970,7 @@ void CParticule::FrameParticule(float rTime)
 			{
 				m_particule[i].intensity = 1.0f-(progress-0.25f)/0.75f;
 			}
+#endif
 
 			ts.x = 0.000f;
 			ts.y = 0.000f;
@@ -1790,29 +2052,6 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = 0.0f;
 		}
 
-		if ( m_particule[i].type == PARTIQUEUE )
-		{
-			if ( m_particule[i].testTime >= 0.05f )
-			{
-				m_particule[i].testTime = 0.0f;
-
-				D3DVECTOR	pos, speed;
-				FPOINT		dim;
-
-				pos = m_particule[i].pos;
-//?				speed = -m_particule[i].speed*0.5f;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-				dim.x = 1.0f*(Rand()*0.8f+0.6f);
-				dim.y = dim.x;
-				CreateParticule(pos, speed, dim, PARTIGAS, 0.5f);
-			}
-
-			ts.x = 0.375f;
-			ts.y = 0.750f;
-			ti.x = ts.x+0.125f;
-			ti.y = ts.y+0.125f;
-		}
-
 		if ( m_particule[i].type == PARTIORGANIC1 )
 		{
 			if ( progress >= 1.0f )
@@ -1848,7 +2087,7 @@ void CParticule::FrameParticule(float rTime)
 //?			m_particule[i].zoom = (m_particule[i].time-m_particule[i].duration);
 			m_particule[i].zoom = 1.0f-progress;
 
-			ts.x = 0.125f;
+			ts.x = 0.000f;
 			ts.y = 0.875f;
 			ti.x = ts.x+0.125f;
 			ti.y = ts.y+0.125f;
@@ -1864,7 +2103,7 @@ void CParticule::FrameParticule(float rTime)
 
 			m_particule[i].zoom = 1.0f-(m_particule[i].time-m_particule[i].duration);
 
-			ts.x = 0.125f;
+			ts.x = 0.000f;
 			ts.y = 0.875f;
 			ti.x = ts.x+0.125f;
 			ti.y = ts.y+0.125f;
@@ -2302,17 +2541,6 @@ void CParticule::FrameParticule(float rTime)
 				continue;
 			}
 
-//?			if ( m_particule[i].testTime >= 0.2f )
-//?			{
-//?				m_particule[i].testTime = 0.0f;
-//?				object = SearchObjectRay(m_particule[i].pos, m_particule[i].goal,
-//?										 m_particule[i].type, m_particule[i].objFather);
-//?				if ( object != 0 )
-//?				{
-//?					object->ExploObject(EXPLO_BOUM, 0.0f);
-//?				}
-//?			}
-
 			ts.x = 0.00f;
 			ts.y = 0.00f;
 			ti.x = ts.x+0.25f;
@@ -2340,7 +2568,6 @@ void CParticule::FrameParticule(float rTime)
 		m_particule[i].texInf.x = ti.x-dp;
 		m_particule[i].texInf.y = ti.y-dp;
 		m_particule[i].time     += rTime;
-		m_particule[i].testTime += rTime;
 	}
 }
 
@@ -2422,12 +2649,12 @@ void CParticule::TrackDraw(int i, ParticuleType type)
 		texSup.x = 95.5f/256.0f;
 		texSup.y = 22.0f/256.0f;  // orange
 	}
-	if ( type == PARTITRACK2 )  // jet bleu ?
+	if ( type == PARTITRACK2 )  // jet vert ?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y = 13.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
-		texSup.y = 14.0f/256.0f;  // bleu
+		texSup.y = 14.0f/256.0f;  // vert
 	}
 	if ( type == PARTITRACK3 )  // araignée ?
 	{
@@ -2436,12 +2663,12 @@ void CParticule::TrackDraw(int i, ParticuleType type)
 		texSup.x = 95.5f/256.0f;
 		texSup.y =  6.0f/256.0f;  // brun
 	}
-	if ( type == PARTITRACK4 )  // explosion insecte ?
+	if ( type == PARTITRACK4 )  // explosion organique ?
 	{
 		texInf.x = 64.5f/256.0f;
-		texInf.y =  9.0f/256.0f;
+		texInf.y = 49.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
-		texSup.y = 10.0f/256.0f;  // vert foncé
+		texSup.y = 50.0f/256.0f;  // rouge
 	}
 	if ( type == PARTITRACK5 )  // derrick ?
 	{
@@ -2574,24 +2801,46 @@ void CParticule::TrackDraw(int i, ParticuleType type)
 
 void CParticule::DrawParticuleTriangle(int i)
 {
-	CObject*		object;
 	D3DMATRIX		matrix;
-	D3DVECTOR		eye, pos, angle;
+	D3DVECTOR		pos, angle;
 
 	if ( m_particule[i].zoom == 0.0f )  return;
 
-	eye = m_engine->RetEyePt();
 	pos = m_particule[i].pos;
 
-	object = m_particule[i].objLink;
-	if ( object != 0 )
+	switch ( i%6 )
 	{
-		pos += object->RetPosition(0);
+		case 0:
+			angle.x = 0.0f;
+			angle.y = m_particule[i].angle;
+			angle.z = 0.0f;
+			break;
+		case 1:
+			angle.x = 0.0f;
+			angle.y = -m_particule[i].angle;
+			angle.z = 0.0f;
+			break;
+		case 2:
+			angle.x = m_particule[i].angle;
+			angle.y = 0.0f,
+			angle.z = 0.0f;
+			break;
+		case 3:
+			angle.x = -m_particule[i].angle;
+			angle.y = 0.0f,
+			angle.z = 0.0f;
+			break;
+		case 4:
+			angle.x = 0.0f;
+			angle.y = 0.0f;
+			angle.z = m_particule[i].angle;
+			break;
+		case 5:
+			angle.x = 0.0f;
+			angle.y = 0.0f;
+			angle.z = -m_particule[i].angle;
+			break;
 	}
-
-	angle.x = -RotateAngle(Length2d(pos, eye), pos.y-eye.y);
-	angle.y = RotateAngle(pos.z-eye.z, pos.x-eye.x);
-	angle.z = m_particule[i].angle;
 
 	MatRotateXZY(matrix, angle);
 	matrix._41 = pos.x;
@@ -2608,7 +2857,6 @@ void CParticule::DrawParticuleTriangle(int i)
 
 void CParticule::DrawParticuleNorm(int i)
 {
-	CObject*		object;
 	D3DVERTEX2		vertex[4];	// 2 triangles
 	D3DMATRIX		matrix;
 	D3DVECTOR		corner[4], eye, pos, n, angle;
@@ -2662,12 +2910,6 @@ void CParticule::DrawParticuleNorm(int i)
 		eye = m_engine->RetEyePt();
 		pos = m_particule[i].pos;
 
-		object = m_particule[i].objLink;
-		if ( object != 0 )
-		{
-			pos += object->RetPosition(0);
-		}
-
 		angle.x = -RotateAngle(Length2d(pos, eye), pos.y-eye.y);
 		angle.y = RotateAngle(pos.z-eye.z, pos.x-eye.x);
 		angle.z = m_particule[i].angle;
@@ -2713,7 +2955,6 @@ void CParticule::DrawParticuleNorm(int i)
 
 void CParticule::DrawParticuleFlat(int i)
 {
-	CObject*		object;
 	D3DVERTEX2		vertex[4];	// 2 triangles
 	D3DMATRIX		matrix;
 	D3DVECTOR		corner[4], pos, n, angle, eye;
@@ -2723,12 +2964,6 @@ void CParticule::DrawParticuleFlat(int i)
 	if ( m_particule[i].intensity == 0.0f )  return;
 
 	pos = m_particule[i].pos;
-
-	object = m_particule[i].objLink;
-	if ( object != 0 )
-	{
-		pos += object->RetPosition(0);
-	}
 
 	angle.x = PI/2.0f;
 	angle.y = 0.0f;
@@ -2793,13 +3028,11 @@ void CParticule::DrawParticuleFlat(int i)
 
 void CParticule::DrawParticuleFog(int i)
 {
-	CObject*		object;
 	D3DVERTEX2		vertex[4];	// 2 triangles
 	D3DMATRIX		matrix;
 	D3DVECTOR		corner[4], pos, n, angle, eye;
 	FPOINT			dim, zoom;
 
-	if ( !m_engine->RetFog() )  return;
 	if ( m_particule[i].intensity == 0.0f )  return;
 
 	pos = m_particule[i].pos;
@@ -2830,12 +3063,6 @@ void CParticule::DrawParticuleFog(int i)
 
 	dim.x *= zoom.x;
 	dim.y *= zoom.y;
-
-	object = m_particule[i].objLink;
-	if ( object != 0 )
-	{
-		pos += object->RetPosition(0);
-	}
 
 	angle.x = PI/2.0f;
 	angle.y = 0.0f;
@@ -2889,7 +3116,6 @@ void CParticule::DrawParticuleFog(int i)
 
 void CParticule::DrawParticuleRay(int i)
 {
-	CObject*		object;
 	D3DVERTEX2		vertex[4];	// 2 triangles
 	D3DMATRIX		matrix;
 	D3DVECTOR		corner[4], eye, pos, goal, n, angle, proj;
@@ -2904,12 +3130,6 @@ void CParticule::DrawParticuleRay(int i)
 	eye = m_engine->RetEyePt();
 	pos = m_particule[i].pos;
 	goal = m_particule[i].goal;
-
-	object = m_particule[i].objLink;
-	if ( object != 0 )
-	{
-		pos += object->RetPosition(0);
-	}
 
 	a = RotateAngle(FPOINT(pos.x,pos.z), FPOINT(goal.x,goal.z), FPOINT(eye.x,eye.z));
 	bLeft = (a < PI);
@@ -3057,7 +3277,6 @@ void CParticule::DrawParticuleRay(int i)
 
 void CParticule::DrawParticuleSphere(int i)
 {
-	CObject*		object;
 	D3DVERTEX2		vertex[2*16*(16+1)];  // triangles
 	D3DMATRIX		matrix, rot;
 	D3DVECTOR		pos, angle, v0, v1;
@@ -3079,11 +3298,6 @@ void CParticule::DrawParticuleSphere(int i)
 	m_engine->SetState(D3DSTATETTb|D3DSTATE2FACE|D3DSTATEWRAP, RetColor(m_particule[i].intensity));
 
 	pos = m_particule[i].pos;
-	object = m_particule[i].objLink;
-	if ( object != 0 )
-	{
-		pos += object->RetPosition(0);
-	}
 
 	D3DUtil_SetIdentityMatrix(matrix);
 	matrix._11 = zoom;
@@ -3357,12 +3571,8 @@ void CParticule::DrawParticuleWheel(int i)
 		ti.x = ts.x+0.125f;
 		ti.y = ts.y+0.250f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE8 )  // bot3 ?
+	else if ( m_wheelTrace[i].type == PARTITRACE8 )  // goto ?
 	{
-		ts.x = 0.750f;
-		ts.y = 0.250f;
-		ti.x = ts.x+0.250f;
-		ti.y = ts.y+0.250f;
 	}
 	else
 	{
@@ -3376,6 +3586,180 @@ void CParticule::DrawParticuleWheel(int i)
 	ti.y = ti.y-dp;
 
 	n = D3DVECTOR(0.0f, 1.0f, 0.0f);
+
+	vertex[0] = D3DVERTEX2(pos[0], n, ts.x, ts.y);
+	vertex[1] = D3DVERTEX2(pos[1], n, ti.x, ts.y);
+	vertex[2] = D3DVERTEX2(pos[2], n, ts.x, ti.y);
+	vertex[3] = D3DVERTEX2(pos[3], n, ti.x, ti.y);
+
+	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
+	m_engine->AddStatisticTriangle(2);
+}
+
+// Dessine une rayon de soleil.
+// Le rayon est le plus visible si on regarde contre le soleil,
+// c'est-à-dire au sud-est. On est face au soleil lorsque
+// RetEyeDirH() = PI*0.75 (135 degrés).
+
+void CParticule::DrawParticuleSunbeam(int i)
+{
+	D3DVECTOR	pos[4], center;
+	D3DVERTEX2	vertex[4];	// 2 triangles
+	D3DVECTOR	n;
+	FPOINT		ts, ti, rot;
+	float		dist, eyeDirH, angle, intensity, dim, dp;
+
+	dist = Length2d(m_engine->RetEyePt(), m_sunbeam[i].pos);
+	if ( dist < 30.0f )  return;
+
+	eyeDirH = m_engine->RetEyeDirH();
+
+	angle = NormAngle(eyeDirH+m_sunbeam[i].angle);
+	if ( angle <= PI*0.25f || angle >= PI*1.25f )  return;
+	angle -= PI*0.25f;
+	intensity = sinf(angle);
+	intensity *= Norm((dist-30.0f)/30.0f);  // moins visible si proche
+	intensity *= m_sunbeamIntensity;
+	m_engine->SetState(D3DSTATETTb, RetColor(intensity));
+
+	dim = m_sunbeam[i].dim;
+
+	rot = RotatePoint(eyeDirH-PI/2.0f, dim);
+	pos[1].x = m_sunbeam[i].pos.x+rot.x;
+	pos[1].y = -16.0f;
+	pos[1].z = m_sunbeam[i].pos.z+rot.y;
+	pos[3].x = m_sunbeam[i].pos.x+rot.x;
+	pos[3].y = 100.0f;
+	pos[3].z = m_sunbeam[i].pos.z+rot.y;
+
+	rot = RotatePoint(eyeDirH+PI/2.0f, dim);
+	pos[0].x = m_sunbeam[i].pos.x+rot.x;
+	pos[0].y = -16.0f;
+	pos[0].z = m_sunbeam[i].pos.z+rot.y;
+	pos[2].x = m_sunbeam[i].pos.x+rot.x;
+	pos[2].y = 100.0f;
+	pos[2].z = m_sunbeam[i].pos.z+rot.y;
+
+	if ( m_sunbeam[i].type == PARTISUNBEAM0 )
+	{
+		ts.x =  96.0f/256.0f;
+		ts.y =  32.0f/256.0f;
+		ti.x = 128.0f/256.0f;
+		ti.y =  64.0f/256.0f;
+	}
+	else if ( m_sunbeam[i].type == PARTISUNBEAM1 )
+	{
+		ts.x = 128.0f/256.0f;
+		ts.y =  32.0f/256.0f;
+		ti.x = 160.0f/256.0f;
+		ti.y =  64.0f/256.0f;
+	}
+	else if ( m_sunbeam[i].type == PARTISUNBEAM2 )
+	{
+		ts.x =  96.0f/256.0f;
+		ts.y = 192.0f/256.0f;
+		ti.x = 128.0f/256.0f;
+		ti.y = 224.0f/256.0f;
+	}
+	else if ( m_sunbeam[i].type == PARTISUNBEAM3 )
+	{
+		ts.x = 128.0f/256.0f;
+		ts.y = 192.0f/256.0f;
+		ti.x = 160.0f/256.0f;
+		ti.y = 224.0f/256.0f;
+	}
+	else if ( m_sunbeam[i].type == PARTISUNBEAM4 )
+	{
+		ts.x =  64.0f/256.0f;
+		ts.y =   0.0f/256.0f;
+		ti.x =  96.0f/256.0f;
+		ti.y =   4.0f/256.0f;
+	}
+	else
+	{
+		return;
+	}
+
+	dp = (1.0f/256.0f)/2.0f;
+	ts.x = ts.x+dp;
+	ts.y = ts.y+dp;
+	ti.x = ti.x-dp;
+	ti.y = ti.y-dp;
+
+	rot = RotatePoint(eyeDirH, 1.0f);
+	n = D3DVECTOR(rot.x, 0.0f, rot.y);
+
+	vertex[0] = D3DVERTEX2(pos[0], n, ts.x, ti.y);
+	vertex[1] = D3DVERTEX2(pos[1], n, ti.x, ti.y);
+	vertex[2] = D3DVERTEX2(pos[2], n, ts.x, ts.y);
+	vertex[3] = D3DVERTEX2(pos[3], n, ti.x, ts.y);
+
+	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
+	m_engine->AddStatisticTriangle(2);
+}
+
+// Dessine un goto.
+
+void CParticule::DrawParticuleGoto()
+{
+	D3DVECTOR	pos[4], center;
+	D3DVERTEX2	vertex[4];	// 2 triangles
+	D3DVECTOR	n;
+	FPOINT		ts, ti;
+	float		dp, zoom;
+
+	zoom = (1.0f-powf(m_gotoProgress, 4.0f))*4.0f;
+
+	pos[0].x = m_gotoPos.x-zoom;
+	pos[0].y = m_gotoPos.y;
+	pos[0].z = m_gotoPos.z+zoom;
+
+	pos[1].x = m_gotoPos.x+zoom;
+	pos[1].y = m_gotoPos.y;
+	pos[1].z = m_gotoPos.z+zoom;
+
+	pos[2].x = m_gotoPos.x-zoom;
+	pos[2].y = m_gotoPos.y;
+	pos[2].z = m_gotoPos.z-zoom;
+
+	pos[3].x = m_gotoPos.x+zoom;
+	pos[3].y = m_gotoPos.y;
+	pos[3].z = m_gotoPos.z-zoom;
+
+	n = D3DVECTOR(0.0f, 1.0f, 0.0f);
+
+	dp = (1.0f/256.0f)/2.0f;
+
+	m_engine->SetTexture("effect03.tga");
+	m_engine->SetState(D3DSTATETTb);
+
+	ts.x = 0.500f;
+	ts.y = 0.000f;
+	ti.x = ts.x+0.250f;
+	ti.y = ts.y+0.250f;
+	ts.x = ts.x+dp;
+	ts.y = ts.y+dp;
+	ti.x = ti.x-dp;
+	ti.y = ti.y-dp;
+
+	vertex[0] = D3DVERTEX2(pos[0], n, ts.x, ts.y);
+	vertex[1] = D3DVERTEX2(pos[1], n, ti.x, ts.y);
+	vertex[2] = D3DVERTEX2(pos[2], n, ts.x, ti.y);
+	vertex[3] = D3DVERTEX2(pos[3], n, ti.x, ti.y);
+
+	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
+	m_engine->AddStatisticTriangle(2);
+
+	m_engine->SetState(D3DSTATETTw);
+
+	ts.x = 0.750f;
+	ts.y = 0.000f;
+	ti.x = ts.x+0.250f;
+	ti.y = ts.y+0.250f;
+	ts.x = ts.x+dp;
+	ts.y = ts.y+dp;
+	ti.x = ti.x-dp;
+	ti.y = ti.y-dp;
 
 	vertex[0] = D3DVERTEX2(pos[0], n, ts.x, ts.y);
 	vertex[1] = D3DVERTEX2(pos[1], n, ti.x, ts.y);
@@ -3429,8 +3813,23 @@ void CParticule::DrawParticule(int sheet)
 	mat.ambient.b = 0.5f;
 	m_engine->SetMaterial(mat);
 
+	// Dessine les rayons de soleil.
+	if ( sheet == SH_WORLD &&
+		 m_engine->RetSetup(ST_SUNBEAM) != 0.0f )
+	{
+		m_engine->SetTexture("effect00.tga");
+		m_engine->SetState(D3DSTATETTb);
+		D3DUtil_SetIdentityMatrix(matrix);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+		for ( i=0 ; i<MAXSUNBEAM ; i++ )
+		{
+			if ( !m_sunbeam[i].bUsed )  continue;
+			DrawParticuleSunbeam(i);
+		}
+	}
+
 	// Dessine les traces de pneu.
-	if ( m_wheelTraceTotal > 0 )
+	if ( m_wheelTraceTotal > 0 && sheet == SH_WORLD )
 	{
 		m_engine->SetTexture("effect03.tga");
 		m_engine->SetState(D3DSTATETTw);
@@ -3440,6 +3839,13 @@ void CParticule::DrawParticule(int sheet)
 		{
 			DrawParticuleWheel(i);
 		}
+	}
+
+	if ( m_bGoto && sheet == SH_WORLD )
+	{
+		D3DUtil_SetIdentityMatrix(matrix);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+		DrawParticuleGoto();
 	}
 
 //?	for ( t=1 ; t<MAXPARTITYPE ; t++ )
@@ -3480,8 +3886,7 @@ void CParticule::DrawParticule(int sheet)
 			{
 				DrawParticuleRay(i);
 			}
-			else if ( m_particule[i].type == PARTIFLIC ||  // rond dans l'eau ?
-					  m_particule[i].type == PARTICHOC )   // trace de pneu ?
+			else if ( m_particule[i].type >= PARTIFLAT )
 			{
 				DrawParticuleFlat(i);
 			}
@@ -3512,194 +3917,17 @@ void CParticule::DrawParticule(int sheet)
 }
 
 
-// Cherche si un objet fait collision avec une balle.
-
-CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
-									 ParticuleType type, CObject *father)
-{
-	CObject		*pObj, *pBest;
-	D3DVECTOR	box1, box2, oPos, p;
-	ObjectType	oType;
-	float		min, oRadius, dist;
-	int			i, j;
-	BOOL		bHimself;
-
-	if ( m_main->RetMovieLock() )  return 0;  // film en cours ?
-
-	bHimself = m_main->RetHimselfDamage();
-
-	min = 5.0f;
-	if ( type == PARTIGUN2 ) min = 2.0f;  // tir insecte ?
-	if ( type == PARTIGUN3 ) min = 3.0f;  // suicide araignée ?
-
-	box1 = old;
-	box2 = pos;
-	if ( box1.x > box2.x )  Swap(box1.x, box2.x);  // box1 < box2
-	if ( box1.y > box2.y )  Swap(box1.y, box2.y);
-	if ( box1.z > box2.z )  Swap(box1.z, box2.z);
-	box1.x -= min;
-	box1.y -= min;
-	box1.z -= min;
-	box2.x += min;
-	box2.y += min;
-	box2.z += min;
-
-	pBest = 0;
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		if ( !pObj->RetActif() )  continue;  // inactif ?
-		if ( pObj->RetDead() )  continue;  // mort ?
-		if ( pObj == father )  continue;
-
-		oType = pObj->RetType();
-
-		if ( type == PARTIGUN1 )  // tir fireball ?
-		{
-			if ( bHimself )  // dégâts à soi-même ?
-			{
-				if ( !IsAlien(oType) &&
-					 !IsSoft(oType)  )  continue;
-			}
-			else	// dégats seulement aux ennemis ?
-			{
-				if ( !IsAlien(oType) )  continue;
-			}
-		}
-		else if ( type == PARTIGUN2 )  // tir insecte ?
-		{
-			if ( !IsSoft(oType) )  continue;
-		}
-		else if ( type == PARTIGUN3 )  // suicide araignée ?
-		{
-			if ( !IsSoft(oType) )  continue;
-		}
-		else if ( type == PARTIGUN4 )  // tir orgaball ?
-		{
-			if ( bHimself )  // dégâts à soi-même ?
-			{
-				if ( !IsAlien(oType) &&
-					 !IsSoft(oType)  )  continue;
-			}
-			else	// dégats seulement aux ennemis ?
-			{
-				if ( !IsAlien(oType) )  continue;
-			}
-		}
-		else if ( type == PARTITRACK11 )  // tir phazer ?
-		{
-			if ( bHimself )  // dégâts à soi-même ?
-			{
-				if ( !IsAlien(oType) &&
-					 !IsSoft(oType)  )  continue;
-			}
-			else	// dégats seulement aux ennemis ?
-			{
-				if ( !IsAlien(oType) )  continue;
-			}
-		}
-		else
-		{
-			continue;
-		}
-
-		oPos = pObj->RetPosition(0);
-
-		// Test au centre de l'objet, ce qui est nécessaire pour
-		// les objets qui n'ont pas de sphère au centre (station).
-		dist = Length(oPos, pos)-4.0f;
-		if ( dist < min )
-		{
-			pBest = pObj;
-		}
-
-		// Test avec toutes les sphères de l'objet.
-		j = 0;
-		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
-		{
-			if ( oPos.x+oRadius < box1.x || oPos.x-oRadius > box2.x ||  // hors de la boîte ?
-				 oPos.y+oRadius < box1.y || oPos.y-oRadius > box2.y ||
-				 oPos.z+oRadius < box1.z || oPos.z-oRadius > box2.z )  continue;
-
-			p = Projection(old, pos, oPos);
-			dist = Length(p, oPos)-oRadius;
-			if ( dist < min )
-			{
-				pBest = pObj;
-			}
-		}
-	}
-
-	return pBest;
-}
-
-// Cherche si un objet fait collision avec un rayon.
-
-CObject* CParticule::SearchObjectRay(D3DVECTOR pos, D3DVECTOR goal,
-									 ParticuleType type, CObject *father)
-{
-	CObject*	pObj;
-	D3DVECTOR	box1, box2, oPos, p;
-	ObjectType	oType;
-	float		min, dist;
-	int			i;
-
-	if ( m_main->RetMovieLock() )  return 0;  // film en cours ?
-
-	min = 10.0f;
-
-	box1 = pos;
-	box2 = goal;
-	if ( box1.x > box2.x )  Swap(box1.x, box2.x);  // box1 < box2
-	if ( box1.y > box2.y )  Swap(box1.y, box2.y);
-	if ( box1.z > box2.z )  Swap(box1.z, box2.z);
-	box1.x -= min;
-	box1.y -= min;
-	box1.z -= min;
-	box2.x += min;
-	box2.y += min;
-	box2.z += min;
-
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		if ( !pObj->RetActif() )  continue;  // inactif ?
-		if ( pObj == father )  continue;
-
-		oType = pObj->RetType();
-
-		if ( type  == PARTIRAY1       &&
-			 oType != OBJECT_MOBILEtg )  continue;
-
-		oPos = pObj->RetPosition(0);
-
-		if ( oPos.x < box1.x || oPos.x > box2.x ||  // hors de la boîte ?
-			 oPos.y < box1.y || oPos.y > box2.y ||
-			 oPos.z < box1.z || oPos.z > box2.z )  continue;
-
-		p = Projection(pos, goal, oPos);
-		dist = Length(p, oPos);
-		if ( dist < min )  return pObj;
-	}
-
-	return 0;
-}
-
-
 // Fait entendre un son.
 
-void CParticule::Play(Sound sound, D3DVECTOR pos, float amplitude)
+void CParticule::Play(Sound sound, D3DVECTOR pos,
+					  float amplitude, float frequency)
 {
 	if ( m_sound == 0 )
 	{
 		m_sound = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
 	}
 
-	m_sound->Play(sound, pos, amplitude);
+	m_sound->Play(sound, pos, amplitude, frequency);
 }
 
 

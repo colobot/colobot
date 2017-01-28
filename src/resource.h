@@ -14,6 +14,9 @@
 #define IDC_CURSORSCROLLU               152
 #define IDC_CURSORSCROLLD               153
 #define IDC_CURSORTARGET                154
+#define IDC_CURSORGOTO                  154
+#define IDC_CURSORSELECT                156
+#define IDC_CURSORSCROLL                157
 #define IDC_DEVICE_COMBO                1000
 #define IDC_MODE_COMBO                  1001
 #define IDC_WINDOWED_CHECKBOX           1012
@@ -31,7 +34,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        168
+#define _APS_NEXT_RESOURCE_VALUE        170
 #define _APS_NEXT_COMMAND_VALUE         40011
 #define _APS_NEXT_CONTROL_VALUE         1015
 #define _APS_NEXT_SYMED_VALUE           102

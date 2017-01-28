@@ -187,7 +187,8 @@ void CKey::Draw()
 	}
 
 	m_engine->SetTexture("button1.tga");
-	m_engine->SetState(D3DSTATENORMAL);
+//?	m_engine->SetState(D3DSTATENORMAL);
+	m_engine->SetState(D3DSTATETTb);
 
 	zoomExt = 1.00f;
 	zoomInt = 0.95f;

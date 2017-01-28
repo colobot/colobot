@@ -55,11 +55,10 @@ protected:
 	D3DCOLORVALUE	m_ambient;		// couleur ambiante
 	float			m_time;
 	float			m_lastTest;
-	int				m_subdiv;
 
 	D3DVECTOR		m_wind;			// vitesse du vent
-	int				m_brick;		// nb de briques*mosaïque
-	float			m_size;			// taille d'un élément dans une brique
+	int				m_nbTiles;		// nb de tuiles
+	float			m_dimTile;		// taille d'une tuile
 
 	int				m_lineUsed;
 	CloudLine		m_line[MAXCLOUDLINE];

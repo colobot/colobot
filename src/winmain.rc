@@ -208,12 +208,12 @@ BEGIN
         BLOCK "100c04b0"
         BEGIN
             VALUE "CompanyName", "www.epsitec.com\0"
-            VALUE "FileDescription", "BuzzingCars\0"
+            VALUE "FileDescription", "BlupiMania\0"
             VALUE "FileVersion", "Version 1.2\0"
-            VALUE "InternalName", "BuzzingCars\0"
+            VALUE "InternalName", "BlupiMania\0"
             VALUE "LegalCopyright", "Copyright © 2001 & 2002 by EPSITEC SA\0"
-            VALUE "OriginalFilename", "buzzingcars.exe\0"
-            VALUE "ProductName", "EPSITEC & BuzzingCars\0"
+            VALUE "OriginalFilename", "BlupiMania.exe\0"
+            VALUE "ProductName", "EPSITEC & BlupiMania\0"
             VALUE "ProductVersion", "Version 1.2\0"
         END
     END
@@ -236,7 +236,9 @@ IDC_CURSORSCROLLL       CURSOR  DISCARDABLE     "cursorha.cur"
 IDC_CURSORSCROLLR       CURSOR  DISCARDABLE     "cursorsc.cur"
 IDC_CURSORSCROLLU       CURSOR  DISCARDABLE     "cur00001.cur"
 IDC_CURSORSCROLLD       CURSOR  DISCARDABLE     "cur00002.cur"
-IDC_CURSORTARGET        CURSOR  DISCARDABLE     "cur00003.cur"
+IDC_CURSORGOTO          CURSOR  DISCARDABLE     "cur00003.cur"
+IDC_CURSORSELECT        CURSOR  DISCARDABLE     "cursorse.cur"
+IDC_CURSORSCROLL        CURSOR  DISCARDABLE     "cur00004.cur"
 #endif    // French (Switzerland) resources
 /////////////////////////////////////////////////////////////////////////////
 

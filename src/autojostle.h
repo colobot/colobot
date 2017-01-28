@@ -22,7 +22,7 @@ public:
 	void		DeleteObject(BOOL bAll=FALSE);
 
 	void		Init();
-	void		Start(int param, float force);
+	BOOL		Start(int param, float force);
 	BOOL		EventProcess(const Event &event);
 	Error		IsEnded();
 
@@ -31,6 +31,7 @@ protected:
 protected:
 	D3DVECTOR	m_zoom;
 	float		m_force;
+	float		m_freq;
 	float		m_progress;
 	float		m_speed;
 	float		m_lastParticule;

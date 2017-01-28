@@ -315,6 +315,11 @@ void CScroll::Draw()
 	float	hButton, h;
 	int		icon, i, n;
 
+	if ( m_state & STATE_SHADOW )
+	{
+		DrawShadow(m_pos, m_dim);
+	}
+
 	hButton = m_buttonUp?m_dim.x/0.75f:0.0f;
 
 	// Dessine le fond.
@@ -329,10 +334,10 @@ void CScroll::Draw()
 	// Dessine la cabine.
 	if ( m_visibleRatio < 1.0f && (m_state & STATE_ENABLE) )
 	{
-		pos.x += 0.003f;  // ch'tite marge
-		pos.y += 0.003f;
-		dim.x -= 0.006f;
-		dim.y -= 0.006f;
+		pos.x += 0.004f;  // ch'tite marge
+		pos.y += 0.004f;
+		dim.x -= 0.008f;
+		dim.y -= 0.008f;
 		pos.y += dim.y*(1.0f-m_visibleRatio)*(1.0f-m_visibleValue);
 		dim.y *= m_visibleRatio;
 		DrawVertex(pos, dim, 2);
@@ -383,6 +388,7 @@ void CScroll::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	{
 		m_engine->SetTexture("button1.tga");
 		m_engine->SetState(D3DSTATENORMAL);
+//?		m_engine->SetState(D3DSTATETTb);
 		uv1.x = 128.0f/256.0f;  // rectangle jaune
 		uv1.y =  16.0f/256.0f;
 		uv2.x = 144.0f/256.0f;
@@ -392,7 +398,8 @@ void CScroll::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	else if ( icon == 1 )
 	{
 		m_engine->SetTexture("button1.tga");
-		m_engine->SetState(D3DSTATENORMAL);
+//?		m_engine->SetState(D3DSTATENORMAL);
+		m_engine->SetState(D3DSTATETTb);
 		uv1.x = 224.0f/256.0f;  // rectangle gris
 		uv1.y =   0.0f/256.0f;
 		uv2.x = 256.0f/256.0f;
@@ -402,17 +409,19 @@ void CScroll::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	else if ( icon == 2 )
 	{
 		m_engine->SetTexture("button1.tga");
-		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x =  64.0f/256.0f;  // rectangle bleu
-		uv1.y =   0.0f/256.0f;
-		uv2.x =  96.0f/256.0f;
-		uv2.y =  32.0f/256.0f;
+//?		m_engine->SetState(D3DSTATENORMAL);
+		m_engine->SetState(D3DSTATETTb);
+		uv1.x = 224.0f/256.0f;  // rectangle bleu
+		uv1.y =  96.0f/256.0f;
+		uv2.x = 256.0f/256.0f;
+		uv2.y = 128.0f/256.0f;
 		ex = 8.0f/256.0f;
 	}
 	else
 	{
 		m_engine->SetTexture("button1.tga");
-		m_engine->SetState(D3DSTATENORMAL);
+//?		m_engine->SetState(D3DSTATENORMAL);
+		m_engine->SetState(D3DSTATETTb);
 		uv1.x =   8.0f/256.0f;  // ligne -
 		uv1.y =  44.0f/256.0f;
 		uv2.x =  24.0f/256.0f;

@@ -5,6 +5,8 @@
 
 #include <dsound.h>
 #include <stdio.h>
+#include "struct.h"
+#include "D3DEngine.h"
 #include "language.h"
 #include "struct.h"
 #include "iman.h"
@@ -282,6 +284,8 @@ CSound::CSound(CInstanceManager* iMan)
 	
 	m_iMan = iMan;
 	m_iMan->AddInstance(CLASS_SOUND, this);
+
+	m_engine = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
 
 	m_bEnable        = FALSE;
 	m_bState         = FALSE;
@@ -646,11 +650,7 @@ void CSound::CacheAll()
 	}
 	else
 	{
-#if _EGAMES
-		strcpy(meta, "ww3.dat");
-#else
-		strcpy(meta, "buzzingcars3.dat");
-#endif
+		strcpy(meta, "blupimania3.dat");
 	}
 
 	for ( i=0 ; i<MAXFILES ; i++ )
@@ -673,17 +673,12 @@ void CSound::CacheAll()
 
 int CSound::RetPriority(Sound sound)
 {
-	if ( sound == SOUND_FLY    ||
-		 sound == SOUND_MOTOR1 ||
-		 sound == SOUND_MOTOR2 ||
-		 sound == SOUND_ERROR  )
+	if ( sound == SOUND_ERROR  )
 	{
 		return 30;
 	}
 
 	if ( sound == SOUND_ENERGY   ||
-		 sound == SOUND_STATION  ||
-		 sound == SOUND_RESEARCH ||
 		 sound == SOUND_BURN     ||
 		 sound == SOUND_NUCLEAR  ||
 		 sound == SOUND_EXPLO    ||
@@ -695,7 +690,10 @@ int CSound::RetPriority(Sound sound)
 	}
 
 	if ( sound == SOUND_BLUP  ||
-		 sound == SOUND_PSHHH )
+		 sound == SOUND_PSHHH ||
+		 sound == SOUND_FLIC1 ||
+		 sound == SOUND_FLIC2 ||
+		 sound == SOUND_FLIC3 )
 	{
 		return 0;
 	}
@@ -946,7 +944,7 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
 	}
 
 	dist = Length(pos, m_eye);
-	if ( dist >= 110.0f )  // très loin ?
+	if ( dist >= 210.0f )  // très loin ?
 	{
 		m_channel[channel].volume = 0.0f;  // silence
 		m_channel[channel].pan    = 0.0f;  // au centre
@@ -958,7 +956,7 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
 		m_channel[channel].pan    = 0.0f;  // au centre
 		return;
 	}
-	m_channel[channel].volume = 1.0f-((dist-10.0f)/100.0f);
+	m_channel[channel].volume = 1.0f-((dist-10.0f)/200.0f);
 
 	a = RotateAngle(m_lookat.x-m_eye.x, m_eye.z-m_lookat.z);
 	g = RotateAngle(pos.x-m_eye.x, m_eye.z-pos.z);
@@ -970,7 +968,8 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
 
 int CSound::Play(Sound sound, float amplitude, float frequency, BOOL bLoop)
 {
-	return Play(sound, m_lookat, amplitude, frequency, bLoop);
+//?	return Play(sound, m_lookat, amplitude, frequency, bLoop);
+	return Play(sound, m_eye, amplitude, frequency, bLoop);
 }
 
 // Fait entendre un son à une position donnée.
@@ -983,6 +982,7 @@ int CSound::Play(Sound sound, D3DVECTOR pos,
 	int			channel, iVolume, iPan, iFreq, uniqueStamp;
 	BOOL		bAlreadyLoaded;
 	DWORD		flag, freq;
+	float		baseAmplitude;
 	HRESULT		err;
 
 	if ( !m_bEnable )  return -1;
@@ -990,6 +990,42 @@ int CSound::Play(Sound sound, D3DVECTOR pos,
 	if ( sound < 0 || sound >= MAXFILES )  return -1;
 
 //?	if ( Length(pos, m_eye) > 100.0f )  return -1;
+
+	if ( sound == SOUND_BLUPIshibi  ||
+		 sound == SOUND_BLUPIouaaa  ||
+		 sound == SOUND_BLUPIhic    ||
+		 sound == SOUND_BLUPIoups   ||
+		 sound == SOUND_BLUPIpfiou  ||
+		 sound == SOUND_BLUPInon    ||
+		 sound == SOUND_BLUPIpousse ||
+		 sound == SOUND_BLUPIeffort ||
+		 sound == SOUND_BLUPIaie    ||
+		 sound == SOUND_BLUPIhhuu   ||
+		 sound == SOUND_BLUPIohhh   ||
+		 sound == SOUND_BLUPIgrrr   ||
+		 sound == SOUND_BLUPIpeur   ||
+		 sound == SOUND_BLUPIslurp  ||
+		 sound == SOUND_BLUPIouaou  ||
+		 sound == SOUND_BLUPIblibli )
+	{
+		baseAmplitude = m_engine->RetSetup(ST_VOLBLUPI);
+	}
+	else
+	if ( sound == SOUND_BLUP  ||
+		 sound == SOUND_PSHHH ||
+		 sound == SOUND_FLIC1 ||
+		 sound == SOUND_FLIC2 ||
+		 sound == SOUND_FLIC3 )
+	{
+		baseAmplitude = m_engine->RetSetup(ST_VOLAMBIANCE);
+	}
+	else
+	{
+		baseAmplitude = m_engine->RetSetup(ST_VOLSOUND);
+	}
+	if ( baseAmplitude == 0.0f )  return -1;
+
+	amplitude *= baseAmplitude;
 
 	if ( m_bWater )  // sous l'eau ?
 	{
@@ -1035,6 +1071,7 @@ int CSound::Play(Sound sound, D3DVECTOR pos,
 #endif
 
 	m_channel[channel].oper[0].bUsed   = FALSE;
+	m_channel[channel].baseAmplitude   = baseAmplitude;
 	m_channel[channel].startAmplitude  = amplitude;
 	m_channel[channel].changeAmplitude = 1.0f;
 	m_channel[channel].startFrequency  = frequency;
@@ -1217,6 +1254,7 @@ BOOL CSound::Position(int channel, D3DVECTOR pos)
 		if ( !m_channel[channel].oper[0].bUsed )
 		{
 			amplitude = m_channel[channel].startAmplitude;
+			amplitude *= m_channel[channel].baseAmplitude;
 			amplitude *= m_channel[channel].volume;
 			amplitude *= (float)m_audioVolume/MAXVOLUME;
 			iVolume = (int)((powf(amplitude, AMPFAC)-1.0f)*10000.0f);
@@ -1258,6 +1296,7 @@ BOOL CSound::Amplitude(int channel, float amplitude)
 	if ( !m_channel[channel].oper[0].bUsed )
 	{
 		volume = amplitude;
+		volume *= m_channel[channel].baseAmplitude;
 		volume *= m_channel[channel].volume;
 		volume *= (float)m_audioVolume/MAXVOLUME;
 		iVolume = (int)((powf(volume, AMPFAC)-1.0f)*10000.0f);
@@ -1422,6 +1461,7 @@ void CSound::FrameMove(float rTime)
 		volume = progress;
 		volume *= m_channel[i].oper[0].finalAmplitude-m_channel[i].startAmplitude;
 		volume += m_channel[i].startAmplitude;
+		volume *= m_channel[i].baseAmplitude;
 		volume *= m_channel[i].changeAmplitude;
 		volume *= m_channel[i].volume;
 		volume *= (float)m_audioVolume/MAXVOLUME;
@@ -1499,6 +1539,7 @@ void CSound::SetListener(D3DVECTOR eye, D3DVECTOR lookat)
 			if ( !m_channel[i].oper[0].bUsed )
 			{
 				amplitude = m_channel[i].startAmplitude;
+				amplitude *= m_channel[i].baseAmplitude;
 				amplitude *= m_channel[i].volume;
 				amplitude *= (float)m_audioVolume/MAXVOLUME;
 				iVolume = (int)((powf(amplitude, AMPFAC)-1.0f)*10000.0f);

@@ -55,6 +55,8 @@ public:
 	void		SetFilename(char *filename);
 	char*		RetFilename();
 
+	CObject*	SearchBlupi(D3DVECTOR center);
+
 protected:
 	BOOL		IsEmpty();
 	BOOL		Compile();

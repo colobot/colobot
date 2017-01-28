@@ -65,7 +65,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
 	if ( err != ERR_OK )
 	{
 		GetResource(RES_ERR, err, string);
-		MessageBox( NULL, string, _T("BuzzingCars"), MB_ICONERROR|MB_OK );
+		MessageBox( NULL, string, _T("BlupiMania"), MB_ICONERROR|MB_OK );
 		return 0;
 	}
 
@@ -139,14 +139,13 @@ CD3DApplication::CD3DApplication()
 	m_bJoyUp    = FALSE;
 	m_bJoyDown  = FALSE;
 
-	m_strWindowTitle  = _T("BuzzingCars");
+	m_strWindowTitle  = _T("BlupiMania");
 	m_bAppUseZBuffer  = TRUE;
 	m_bAppUseStereo   = TRUE;
 	m_bShowStats      = FALSE;
 	m_bDebugMode      = FALSE;
 	m_bAudioState     = TRUE;
 	m_bAudioTrack     = TRUE;
-	m_bNiceMouse      = FALSE;
 	m_fnConfirmDevice = 0;
 
 	ResetKey();
@@ -186,7 +185,7 @@ Error CD3DApplication::RegQuery()
 	DWORD	type, len;
 	char	filename[100];
 
-	i = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Epsitec\\BuzzingCars\\Setup",
+	i = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Epsitec\\BlupiMania-2\\Setup",
 					 0, KEY_READ, &key);
 	if ( i != ERROR_SUCCESS )  return ERR_INSTALL;
 
@@ -293,8 +292,8 @@ Error CD3DApplication::CheckMistery(char *strCmdLine)
 	}
 
 	m_CDpath[0] = 0;
-#if _FULL & !_EGAMES
-	if ( strstr(strCmdLine, "-nocd") == 0 && !m_bDebugMode )
+#if _FULL & !_EDU & !_EGAMES
+	if ( strstr(strCmdLine, "-nocdBM2") == 0 && !m_bDebugMode )
 	{
 		Error	err;
 
@@ -556,8 +555,8 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 		m_pD3DEngine->SetJoystick(iValue);
 	}
 
-	// Crée le fichier buzzingcars.ini à la première exécution.
-	m_pRobotMain->CreateIni();
+	// Crée le fichier blupimania.ini à la première exécution.
+//?	m_pRobotMain->CreateIni();
 
 	m_pRobotMain->ChangePhase(PHASE_WELCOME3);
 	m_pD3DEngine->TimeInit();
@@ -624,10 +623,10 @@ INT CD3DApplication::Run()
 					m_pRobotMain->EventProcess(event);
 				}
 
-				if ( !RetNiceMouse() )
-				{
-					SetMouseType(m_pD3DEngine->RetMouseType());
-				}
+//?				if ( !RetNiceMouse() )
+//?				{
+//?					SetMouseType(m_pD3DEngine->RetMouseType());
+//?				}
 
 				if( FAILED( Render3DEnvironment() ) )
 					DestroyWindow( m_hWnd );
@@ -697,6 +696,14 @@ void CD3DApplication::SetMouseType(D3DMouse type)
 	{
 		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORHAND));
 	}
+	else if ( type == D3DMOUSESELECT )
+	{
+		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSELECT));
+	}
+	else if ( type == D3DMOUSEGOTO )
+	{
+		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORGOTO));
+	}
 	else if ( type == D3DMOUSEEDIT )
 	{
 		hc = LoadCursor(NULL, IDC_IBEAM);
@@ -704,6 +711,22 @@ void CD3DApplication::SetMouseType(D3DMouse type)
 	else if ( type == D3DMOUSEWAIT )
 	{
 		hc = LoadCursor(NULL, IDC_WAIT);
+	}
+	else if ( type == D3DMOUSESCROLLL )
+	{
+		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLL));
+	}
+	else if ( type == D3DMOUSESCROLLR )
+	{
+		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLL));
+	}
+	else if ( type == D3DMOUSESCROLLU )
+	{
+		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLL));
+	}
+	else if ( type == D3DMOUSESCROLLD )
+	{
+		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLL));
 	}
 	else
 	{
@@ -714,35 +737,6 @@ void CD3DApplication::SetMouseType(D3DMouse type)
 	{
 		SetCursor(hc);
 	}
-}
-
-// Choix du mode pour la souris.
-
-void CD3DApplication::SetNiceMouse(BOOL bNice)
-{
-	if ( bNice == m_bNiceMouse )  return;
-	m_bNiceMouse = bNice;
-
-	if ( m_bNiceMouse )
-	{
-		ShowCursor(FALSE);  // cache la vilaine souris windows
-		SetCursor(NULL);
-	}
-	else
-	{
-		ShowCursor(TRUE);  // montre la vilaine souris windows
-		SetCursor(LoadCursor(NULL, IDC_ARROW));
-	}
-}
-
-// Indique s'il faut utiliser la jolie souris ombrée.
-
-BOOL CD3DApplication::RetNiceMouse()
-{
-	if (  m_pDeviceInfo->bWindowed )  return FALSE;
-	if ( !m_pDeviceInfo->bHardware )  return FALSE;
-
-	return m_bNiceMouse;
 }
 
 // Indique s'il est possible d'utiliser la jolie souris ombrée.
@@ -756,6 +750,18 @@ BOOL CD3DApplication::RetNiceMouseCap()
 }
 
 
+
+void CD3DApplication::SetMouseCapture()
+{
+	SetCapture(m_hWnd);
+}
+
+void CD3DApplication::ReleaseMouseCapture()
+{
+	ReleaseCapture();
+}
+
+
 // Static msg handler which passes messages to the application class.
 
 LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -764,6 +770,11 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	{
 		Event	event;
 		short	move;
+
+		if ( g_pD3DApp->m_pD3DEngine->RetSetup(ST_NICEMOUSE) == 0.0f )
+		{
+			g_pD3DApp->SetMouseType(g_pD3DApp->m_pD3DEngine->RetMouseType());
+		}
 
 		ZeroMemory(&event, sizeof(Event));
 
@@ -888,17 +899,16 @@ void CD3DApplication::ResetKey()
 	m_key[KEYRANK_RIGHT  ][0] = VK_RIGHT;
 	m_key[KEYRANK_UP     ][0] = VK_UP;
 	m_key[KEYRANK_DOWN   ][0] = VK_DOWN;
-	m_key[KEYRANK_BRAKE  ][0] = VK_SPACE;
-	m_key[KEYRANK_BRAKE  ][1] = VK_BUTTON1;
-	m_key[KEYRANK_HORN   ][0] = VK_RETURN;
-	m_key[KEYRANK_HORN   ][1] = VK_BUTTON2;
-	m_key[KEYRANK_CAMERA ][0] = VK_F2;
-	m_key[KEYRANK_CAMERA ][1] = VK_BUTTON3;
+	m_key[KEYRANK_ROTCW  ][0] = VK_WHEELUP;
+//?	m_key[KEYRANK_ROTCW  ][1] = VK_PRIOR;  // PageUp
+	m_key[KEYRANK_ROTCW  ][1] = VK_DELETE;  // Delete
+	m_key[KEYRANK_ROTCCW ][0] = VK_WHEELDOWN;
+	m_key[KEYRANK_ROTCCW ][1] = VK_NEXT;  // PageDown
+	m_key[KEYRANK_STOP   ][0] = VK_SPACE;
+	m_key[KEYRANK_HELP   ][0] = VK_F1;
 	m_key[KEYRANK_NEAR   ][0] = VK_ADD;
 	m_key[KEYRANK_AWAY   ][0] = VK_SUBTRACT;
 	m_key[KEYRANK_QUIT   ][0] = VK_ESCAPE;
-	m_key[KEYRANK_HELP   ][0] = VK_F1;
-	m_key[KEYRANK_CBOT   ][0] = VK_F3;
 	m_key[KEYRANK_SPEED10][0] = VK_F4;
 	m_key[KEYRANK_SPEED15][0] = VK_F5;
 	m_key[KEYRANK_SPEED20][0] = VK_F6;
@@ -929,6 +939,22 @@ int CD3DApplication::RetKey(int keyRank, int option)
 		 option >= 2 )  return 0;
 
 	return m_key[keyRank][option];
+}
+
+// Indique si une touche est produite par la souris.
+
+BOOL CD3DApplication::IsKeyMouse(int key)
+{
+	return ( key == VK_WHEELUP   ||
+			 key == VK_WHEELDOWN );
+}
+
+// Indique si une touche est produite par le joystick.
+
+BOOL CD3DApplication::IsKeyJoystick(int key)
+{
+	return ( key >= VK_BUTTON1  &&
+			 key <= VK_BUTTON32 );
 }
 
 
@@ -1105,8 +1131,6 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 			if ( wParam == m_key[KEYRANK_LEFT ][1] )  m_axeKeyX = -1.0f;
 			if ( wParam == m_key[KEYRANK_RIGHT][0] )  m_axeKeyX =  1.0f;
 			if ( wParam == m_key[KEYRANK_RIGHT][1] )  m_axeKeyX =  1.0f;
-			if ( wParam == m_key[KEYRANK_BRAKE][0] )  m_axeKeyW =  1.0f;
-			if ( wParam == m_key[KEYRANK_BRAKE][1] )  m_axeKeyW =  1.0f;
 			if ( wParam == m_key[KEYRANK_NEAR ][0] )  m_keyState |= KS_NUMPLUS;
 			if ( wParam == m_key[KEYRANK_NEAR ][1] )  m_keyState |= KS_NUMPLUS;
 			if ( wParam == m_key[KEYRANK_AWAY ][0] )  m_keyState |= KS_NUMMINUS;
@@ -1130,8 +1154,6 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 			if ( wParam == m_key[KEYRANK_LEFT ][1] )  m_axeKeyX = 0.0f;
 			if ( wParam == m_key[KEYRANK_RIGHT][0] )  m_axeKeyX = 0.0f;
 			if ( wParam == m_key[KEYRANK_RIGHT][1] )  m_axeKeyX = 0.0f;
-			if ( wParam == m_key[KEYRANK_BRAKE][0] )  m_axeKeyW = 0.0f;
-			if ( wParam == m_key[KEYRANK_BRAKE][1] )  m_axeKeyW = 0.0f;
 			if ( wParam == m_key[KEYRANK_NEAR ][0] )  m_keyState &= ~KS_NUMPLUS;
 			if ( wParam == m_key[KEYRANK_NEAR ][1] )  m_keyState &= ~KS_NUMPLUS;
 			if ( wParam == m_key[KEYRANK_AWAY ][0] )  m_keyState &= ~KS_NUMMINUS;
@@ -1681,7 +1703,8 @@ HRESULT CD3DApplication::Change3DEnvironment()
 
 	if( m_pDeviceInfo->bWindowed )
 	{
-		SetNiceMouse(FALSE);  // cache la vilaine souris windows
+		// cache la vilaine souris windows
+		g_pD3DApp->m_pD3DEngine->SetSetup(ST_NICEMOUSE, 0.0f);
 	}
 
 	return S_OK;
@@ -1880,7 +1903,7 @@ void CD3DApplication::DrawSuppl()
 {
 	HDC			hDC;
 	FPOINT		p1, p2;
-	POINT		list[3];
+	POINT		list[5];
 	RECT		rect;
 	HPEN		hPen;
 	HGDIOBJ		old;
@@ -1890,7 +1913,7 @@ void CD3DApplication::DrawSuppl()
 
 	if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return;
 
-	// Affiche le rectangle de sélection.
+	// Affiche le rectangle de mise en évidence.
 	if ( m_pD3DEngine->GetHilite(p1, p2) )
 	{
 		nbOut = 0;
@@ -1962,6 +1985,33 @@ void CD3DApplication::DrawSuppl()
 			if ( old != 0 )  SelectObject(hDC, old);
 			DeleteObject(hPen);
 		}
+	}
+
+	// Affiche le rectangle de sélection.
+	if ( m_pD3DEngine->GetSelect(p1, p2) )
+	{
+		hPen = CreatePen(PS_SOLID, 1, RGB(255,255,0));  // jaune
+		old = SelectObject(hDC, hPen);
+
+		rect.left   = (int)(p1.x*m_ddsdRenderTarget.dwWidth);
+		rect.right  = (int)(p2.x*m_ddsdRenderTarget.dwWidth);
+		rect.top    = (int)((1.0f-p2.y)*m_ddsdRenderTarget.dwHeight);
+		rect.bottom = (int)((1.0f-p1.y)*m_ddsdRenderTarget.dwHeight);
+
+		list[0].x = rect.left;
+		list[0].y = rect.top;
+		list[1].x = rect.right;
+		list[1].y = rect.top;
+		list[2].x = rect.right;
+		list[2].y = rect.bottom;
+		list[3].x = rect.left;
+		list[3].y = rect.bottom;
+		list[4].x = rect.left;
+		list[4].y = rect.top;
+		Polyline(hDC, list, 5);
+
+		if ( old != 0 )  SelectObject(hDC, old);
+		DeleteObject(hPen);
 	}
 
 	m_pddsRenderTarget->ReleaseDC(hDC);
@@ -2412,7 +2462,7 @@ VOID CD3DApplication::DisplayFrameworkError( HRESULT hr, DWORD dwType )
             lstrcpy( strMsg, _T("No Direct3D") );
             break;
         case D3DFWERR_INVALIDMODE:
-            lstrcpy( strMsg, _T("BuzzingCars requires a 16-bit (or higher) "
+            lstrcpy( strMsg, _T("BlupiMania requires a 16-bit (or higher) "
                                 "display mode\nto run in a window.\n\nPlease "
                                 "switch your desktop settings accordingly.") );
             break;
@@ -2469,7 +2519,7 @@ VOID CD3DApplication::DisplayFrameworkError( HRESULT hr, DWORD dwType )
 
     if( MSGERR_APPMUSTEXIT == dwType )
     {
-        lstrcat( strMsg, _T("\n\nBuzzingCars will now exit.") );
+        lstrcat( strMsg, _T("\n\nBlupiMania will now exit.") );
         MessageBox( NULL, strMsg, m_strWindowTitle, MB_ICONERROR|MB_OK );
     }
     else

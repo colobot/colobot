@@ -70,25 +70,20 @@ void CAutoJostle::Init()
 
 // Démarre une émission.
 
-void CAutoJostle::Start(int param, float force)
+BOOL CAutoJostle::Start(int param, float force)
 {
 	ObjectType	type;
 
-	if ( force < 0.0f )  force = 0.0f;
-	if ( force > 1.0f )  force = 1.0f;
-
-	m_force = force;
+	m_force = Norm(force);
 	m_progress = 0.0f;
-	m_speed = 1.0f/(0.5f+force*1.0f);  // 0.5 .. 1.5
+	m_speed = 1.0f/(0.5f+m_force*1.0f);  // 0.5 .. 1.5
+	m_freq = 2.0f;
 	m_time = 0.0f;
 	m_error = ERR_CONTINUE;
 
 	type = m_object->RetType();
-	if ( type >= OBJECT_PLANT5 &&
-		 type <= OBJECT_PLANT7 )  // trèfle ?
-	{
-		m_force *= 3.0f;
-	}
+
+	return TRUE;
 }
 
 
@@ -97,7 +92,7 @@ void CAutoJostle::Start(int param, float force)
 BOOL CAutoJostle::EventProcess(const Event &event)
 {
 	D3DVECTOR	dir;
-	float		factor, angle, zoom;
+	float		time, factor, angle, zoom;
 
 	CAuto::EventProcess(event);
 
@@ -107,6 +102,7 @@ BOOL CAutoJostle::EventProcess(const Event &event)
 	if ( m_progress < 1.0f )
 	{
 		m_progress += event.rTime*m_speed;
+		time = m_time*m_freq;
 
 		if ( m_progress < 0.5f )
 		{
@@ -121,15 +117,15 @@ BOOL CAutoJostle::EventProcess(const Event &event)
 		dir.x = sinf(m_progress*PI*4.0f);
 		dir.z = cosf(m_progress*PI*4.0f);
 
-		angle = sinf(m_time*10.0f)*factor*0.04f;
+		angle = sinf(time*10.0f)*factor*0.04f;
 		m_object->SetAngleX(0, angle*dir.z);
 		m_object->SetAngleZ(0, angle*dir.x);
 
-		zoom = 1.0f+sinf(m_time*8.0f)*factor*0.06f;
+		zoom = 1.0f+sinf(time*8.0f)*factor*0.06f;
 		m_object->SetZoomX(0, zoom*m_zoom.x);
-		zoom = 1.0f+sinf(m_time*5.0f)*factor*0.06f;
+		zoom = 1.0f+sinf(time*5.0f)*factor*0.06f;
 		m_object->SetZoomY(0, zoom*m_zoom.y);
-		zoom = 1.0f+sinf(m_time*7.0f)*factor*0.06f;
+		zoom = 1.0f+sinf(time*7.0f)*factor*0.06f;
 		m_object->SetZoomZ(0, zoom*m_zoom.z);
 	}
 	else

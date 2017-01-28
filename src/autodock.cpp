@@ -18,25 +18,18 @@
 #include "terrain.h"
 #include "camera.h"
 #include "object.h"
-#include "motion.h"
-#include "motionvehicle.h"
-#include "motionbot.h"
-#include "auto.h"
-#include "autobomb.h"
-#include "physics.h"
 #include "interface.h"
 #include "button.h"
 #include "window.h"
 #include "robotmain.h"
+#include "mainundo.h"
+#include "motion.h"
+#include "motionblupi.h"
 #include "sound.h"
+#include "tasklist.h"
 #include "auto.h"
 #include "autodock.h"
 
-
-
-#define HIGHPOS		16.0f		// position haute de la grue
-#define MOVESPEEDv	16.0f		// vitesse de la grue à vide
-#define MOVESPEEDc	8.0f		// vitesse de la grue chargée
 
 
 
@@ -45,14 +38,7 @@
 CAutoDock::CAutoDock(CInstanceManager* iMan, CObject* object)
 						 : CAuto(iMan, object)
 {
-	int		i;
-
 	CAuto::CAuto(iMan, object);
-
-	for ( i=0 ; i<6 ; i++ )
-	{
-		m_partiStop[i] = -1;
-	}
 
 	Init();
 }
@@ -70,7 +56,7 @@ CAutoDock::~CAutoDock()
 
 void CAutoDock::DeleteObject(BOOL bAll)
 {
-	FireStopUpdate(FALSE);
+	m_phase = ADKP_WAIT;
 	CAuto::DeleteObject(bAll);
 }
 
@@ -79,24 +65,116 @@ void CAutoDock::DeleteObject(BOOL bAll)
 
 void CAutoDock::Init()
 {
-	m_time = 0.0f;
+//?	m_rest = 8;
+	m_rest = m_object->RetOption();
+	m_progressRest = 0.0f;
+	m_currentPos = D3DVECTOR(0.0f, 1.0f, 0.0f);  // en haut au centre
 
-	m_phase = ADCP_WAIT;
+	m_time = 0.0f;
+	m_phase    = ADKP_WAIT;
 	m_progress = 0.0f;
-	m_speed    = 1.0f/0.5f;
-	m_center = m_object->RetPosition(0);
-	m_currentPos = D3DVECTOR(0.0f, HIGHPOS, 0.0f);
-	m_fret = 0;
+	m_speed    = 1.0f/1.0f;
+
 	m_lastParticule = 0.0f;
-	m_lastEffect = 0.0f;
 	m_channelSound = -1;
 }
 
 
 // Démarre l'objet.
 
-void CAutoDock::Start(int param)
+BOOL CAutoDock::Start(int part)
 {
+	CObject*	pObj;
+
+	if ( m_phase != ADKP_WAIT )  return FALSE;  // occupé ?
+
+	if ( m_rest == 0 )
+	{
+		m_sound->Play(SOUND_CHOCm, m_posPiston, 1.0f, 1.0f);
+		m_phase    = ADKP_ERROR;
+		m_progress = 0.0f;
+		m_speed    = 1.0f/1.0f;
+		return FALSE;
+	}
+
+	if ( part == 4 )  // ^ ?
+	{
+		if ( m_currentPos.x > -3.0f &&
+			 IsFreePos(D3DVECTOR(-1.0f, 0.0f, 0.0f)) )
+		{
+			m_phase    = ADKP_MOVEXM;
+			m_progress = 0.0f;
+			m_speed    = 1.0f/2.0f;
+			m_bBusy    = TRUE;
+			SoundManip(2.0f, 1.0f, 1.0f);
+		}
+	}
+	if ( part == 5 )  // v ?
+	{
+		if ( m_currentPos.x < 3.0f &&
+			 IsFreePos(D3DVECTOR(1.0f, 0.0f, 0.0f)) )
+		{
+			m_phase    = ADKP_MOVEXP;
+			m_progress = 0.0f;
+			m_speed    = 1.0f/2.0f;
+			m_bBusy    = TRUE;
+			SoundManip(2.0f, 1.0f, 1.0f);
+		}
+	}
+
+	if ( part == 6 )  // piston ?
+	{
+		pObj = SearchObject(m_posPistonGround, 2.0f);
+
+		if ( m_object->RetFret() == 0 )  // ne porte rien ?
+		{
+			if ( pObj != 0 && pObj->RetHeight() > 8.0f )
+			{
+				return FALSE;
+			}
+		}
+		else	// porte un objet ?
+		{
+			if ( pObj != 0 )  return FALSE;
+			if ( !IsFlatGround() )  return FALSE;
+		}
+		m_phase    = ADKP_TAKE;
+		m_progress = 0.0f;
+		m_speed    = 1.0f/1.5f;
+		m_bBusy    = TRUE;
+		m_bTake    = FALSE;
+		m_sound->Play(SOUND_PSHHH, m_posPiston, 1.0f, 1.0f);
+	}
+
+	if ( part == 7 )  // < ?
+	{
+		if ( m_currentPos.z > -1.0f &&
+			 IsFreePos(D3DVECTOR(0.0f, 0.0f, -1.0f)) )
+		{
+			m_phase    = ADKP_MOVEZM;
+			m_progress = 0.0f;
+			m_speed    = 1.0f/2.0f;
+			m_bBusy    = TRUE;
+			SoundManip(2.0f, 1.0f, 0.5f);
+		}
+	}
+	if ( part == 8 )  // > ?
+	{
+		if ( m_currentPos.z < 1.0f &&
+			 IsFreePos(D3DVECTOR(0.0f, 0.0f, 1.0f)) )
+		{
+			m_phase    = ADKP_MOVEZP;
+			m_progress = 0.0f;
+			m_speed    = 1.0f/2.0f;
+			m_bBusy    = TRUE;
+			SoundManip(2.0f, 1.0f, 0.5f);
+		}
+	}
+
+	if ( m_phase == ADKP_WAIT )  return FALSE;  // rien démarré ?
+
+	m_initialPos = m_currentPos;
+	return TRUE;
 }
 
 
@@ -105,401 +183,286 @@ void CAutoDock::Start(int param)
 BOOL CAutoDock::EventProcess(const Event &event)
 {
 	CObject*	fret;
-	CObject*	evil;
-	Character*	character;
-	D3DVECTOR	pos;
+	ObjectType	type;
+	D3DVECTOR	pos, speed;
+	FPOINT		dim;
+	float		progress, pp;
+	LockZone	lz;
+	int			i;
 
 	CAuto::EventProcess(event);
 
 	if ( m_engine->RetPause() )  return TRUE;
 
 	m_progress += event.rTime*m_speed;
+	progress = Norm(m_progress);
 
-	if ( m_phase == ADCP_WAIT )
+	m_posPistonGround = CalcPosPiston();
+	m_posPiston = m_posPistonGround;
+	m_posPiston.y += 8.0f+m_currentPos.y*10.0f;
+
+	UpdateRest(event.rTime);
+
+	if ( m_object->RetFret() == 0 )  // porte rien ?
 	{
-		if ( m_progress >= 1.0f )
-		{
-			evil = SearchEvil();
-			m_vehicle = SearchVehicle();
-			if ( evil != 0 || m_vehicle == 0 )
-			{
-				m_phase    = ADCP_WAIT;
-				m_progress = 0.0f;
-				m_speed    = 1.0f/0.5f;
-			}
-			else
-			{
-				m_vehiclePos = m_vehicle->RetPosition(0);
-				m_phase    = ADCP_STOPCHECK;
-				m_progress = 0.0f;
-				m_speed    = 1.0f/0.2f;
-			}
-		}
+		StopBzzz();  // stoppe le son de l'électro-aimant
 	}
-
-	if ( m_phase == ADCP_STOPCHECK )
+	else	// porte qq chose ?
 	{
-		m_vehicle = SearchVehicle();
-		if ( m_vehicle == 0 )
-		{
-			m_phase    = ADCP_WAIT;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/0.5f;
-			return TRUE;
-		}
-		pos = m_vehicle->RetPosition(0);
-		if ( Length(pos, m_vehiclePos) > 0.1f )
-		{
-			m_phase    = ADCP_WAIT;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/0.2f;
-			return TRUE;
-		}
+		StartBzzz();  // démarre le son de l'électro-aimant
+		PosBzzz();  // déplace le son de l'électro-aimant
 
-		if ( m_progress >= 1.0f )
+		if ( m_lastParticule+0.05f <= m_time )
 		{
-			if ( m_vehicle->RetFret() == 0 )
+			m_lastParticule = m_time;
+
+			pos = m_posPiston;
+			for ( i=0 ; i<5 ; i++ )
 			{
-				fret = SearchStockOut();
-				if ( fret == 0 )
-				{
-					m_phase    = ADCP_WAIT;
-					m_progress = 0.0f;
-					m_speed    = 1.0f/2.0f;
-				}
-				else
-				{
-					m_vehicle->SetLock(TRUE);
-					StartVehicleAction(MV_OPEN);
-					CameraBegin();
-					pos = fret->RetPosition(0);
-					m_startPos = m_currentPos;
-					m_goalPos  = pos-m_center;
-					m_goalPos.y = HIGHPOS;
-					m_heightFret = pos.y+RetObjectHeight(fret)-m_center.y;
-					m_phase    = ADCP_OUTMOVE1;
-					m_progress = 0.0f;
-					m_speed    = 1.0f/(Length2d(m_startPos, m_goalPos)/MOVESPEEDv+0.1f);
-					SoundManip(1.0f/m_speed, 1.0f, 0.5f);
-				}
-			}
-			else
-			{
-				if ( !SearchFreePos(pos) )
-				{
-					m_phase    = ADCP_WAIT;
-					m_progress = 0.0f;
-					m_speed    = 1.0f/2.0f;
-				}
-				else
-				{
-					m_vehicle->SetLock(TRUE);
-					StartVehicleAction(MV_OPEN);
-					CameraBegin();
-					pos = RetVehiclePoint(m_vehicle);
-					pos.y += m_vehicle->RetFret()->RetCharacter()->height;
-					m_heightVehicle = pos.y-m_center.y;
-					m_heightFret = RetObjectHeight(m_vehicle->RetFret());
-					m_startPos = m_currentPos;
-					m_goalPos  = pos-m_center;
-					m_goalPos.y = HIGHPOS;
-					m_phase    = ADCP_INMOVE1;
-					m_progress = 0.0f;
-					m_speed    = 1.0f/(Length2d(m_startPos, m_goalPos)/MOVESPEEDv+0.1f);
-					SoundManip(1.0f/m_speed, 1.0f, 0.5f);
-				}
+				speed.x = (Rand()-0.5f)*20.0f;
+				speed.z = (Rand()-0.5f)*20.0f;
+				speed.y = 5.0f+Rand()*10.0f;
+				dim.x = 0.8f;
+				dim.y = 0.8f;
+				m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 40.0f);
 			}
 		}
 	}
 
-	if ( m_phase == ADCP_OUTMOVE1 )  // va vers stock ?
+	if ( m_phase == ADKP_WAIT )  // attend ?
 	{
-		MoveDock();
-		FireStopUpdate(TRUE);  // clignotte
-		if ( m_progress >= 1.0f )
+		if ( progress >= 1.0f )
 		{
-			m_startPos = m_currentPos;
-			m_goalPos  = m_currentPos;
-			m_goalPos.y = m_heightFret;
-			m_phase    = ADCP_OUTDOWN1;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/1.5f;
-			m_sound->Play(SOUND_PSHHH, m_object->RetPosition(0));
-		}
-	}
-
-	if ( m_phase == ADCP_OUTDOWN1 )
-	{
-		MoveDock();
-		FireStopUpdate(TRUE);  // clignotte
-		if ( m_progress >= 1.0f )
-		{
-			m_fret = SearchStockOut();
-			if ( m_fret == 0 )
-			{
-				FireStopUpdate(FALSE);  // éteint
-				m_phase    = ADCP_WAIT;
-				m_progress = 0.0f;
-				m_speed    = 1.0f/0.5f;
-			}
-			else
-			{
-				m_fret->SetLock(TRUE);
-				TruckObject(m_fret, TRUE);
-				ArmObject(m_fret, TRUE);
-//-				m_fret->SetAngle(0, D3DVECTOR(0.0f, m_vehicle->RetAngleY(0) ,0.0f));
-				m_fretPos = m_fret->RetPosition(0);
-				m_fretOffset = m_currentPos;
-				m_startPos = m_currentPos;
-				m_goalPos  = m_currentPos;
-				m_goalPos.y = HIGHPOS;
-				m_phase    = ADCP_OUTUP1;
-				m_progress = 0.0f;
-				m_speed    = 1.0f/1.0f;
-				SoundManip(1.0f, 1.0f, 1.0f);
-			}
-		}
-	}
-
-	if ( m_phase == ADCP_OUTUP1 )
-	{
-		MoveDock();
-		FireStopUpdate(TRUE);  // clignotte
-		if ( m_progress >= 1.0f )
-		{
-			pos = RetVehiclePoint(m_vehicle);
-			pos.y += m_fret->RetCharacter()->height;
-			m_heightVehicle = pos.y-m_center.y;
-			m_startPos = m_currentPos;
-			m_goalPos  = pos-m_center;
-			m_goalPos.y = HIGHPOS;
-			m_startAngle = NormAngle(m_fret->RetAngleY(0));
-			m_goalAngle = NormAngle(m_vehicle->RetAngleY(0));
-			m_phase    = ADCP_OUTMOVE2;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/(Length2d(m_startPos, m_goalPos)/MOVESPEEDc+0.1f);
-			SoundManip(1.0f/m_speed, 1.0f, 0.5f);
-		}
-	}
-
-	if ( m_phase == ADCP_OUTMOVE2 )  // va vers véhicule ?
-	{
-		MoveDock();
-		FireStopUpdate(TRUE);  // clignotte
-		if ( m_progress >= 1.0f )
-		{
-			m_fret->SetTruck(m_vehicle);  // bot4 bras croisés
-			TruckObject(m_fret, FALSE);
-			m_fret->SetTruck(0);  // vraiment fait phase suivante
-			m_startPos = m_currentPos;
-			m_goalPos  = m_currentPos;
-			m_goalPos.y = m_heightVehicle+RetObjectHeight(m_fret);
-			m_phase    = ADCP_OUTDOWN2;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/1.5f;
-			m_sound->Play(SOUND_PSHHH, m_object->RetPosition(0));
-		}
-	}
-
-	if ( m_phase == ADCP_OUTDOWN2 )
-	{
-		MoveDock();
-		FireStopUpdate(TRUE);  // clignotte
-		if ( m_progress >= 1.0f )
-		{
-			character = m_vehicle->RetCharacter();
-			ArmObject(m_fret, FALSE);
-			m_fret->SetLock(FALSE);
-			m_fret->SetTruck(m_vehicle);
-			m_vehicle->SetFret(m_fret);
-			pos = character->posFret;
-			pos.y += m_fret->RetCharacter()->height;
-			m_fret->SetPosition(0, pos);
-			m_fret->SetAngle(0, character->angleFret);
-			m_fret = 0;
-			m_startPos = m_currentPos;
-			m_goalPos  = m_currentPos;
-			m_goalPos.y = HIGHPOS;
-			m_phase    = ADCP_OUTUP2;
+			m_phase    = ADKP_WAIT;
 			m_progress = 0.0f;
 			m_speed    = 1.0f/1.0f;
-			SoundManip(1.0f, 1.0f, 1.0f);
+			return TRUE;
 		}
 	}
 
-	if ( m_phase == ADCP_OUTUP2 )
+	if ( m_phase == ADKP_MOVEXM )
 	{
-		MoveDock();
-		FireStopUpdate(TRUE);  // clignotte
-		if ( m_progress >= 1.0f )
-		{
-			m_vehicle->SetLock(FALSE);
-			StartVehicleAction(MV_CLOSE);
-			CameraEnd();
-			FireStopUpdate(FALSE);  // éteint
-			m_phase    = ADCP_START;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/10.0f;
-		}
+		m_currentPos.x = m_initialPos.x-Soft(progress);
 	}
-	
-	if ( m_phase == ADCP_INMOVE1 )  // va vers véhicule ?
+	if ( m_phase == ADKP_MOVEXP )
 	{
-		MoveDock();
-		FireStopUpdate(TRUE);  // clignotte
-		if ( m_progress >= 1.0f )
-		{
-			m_startPos = m_currentPos;
-			m_goalPos  = m_currentPos;
-			m_goalPos.y = m_heightVehicle+m_heightFret;
-			m_phase    = ADCP_INDOWN1;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/1.5f;
-			m_sound->Play(SOUND_PSHHH, m_object->RetPosition(0));
-		}
+		m_currentPos.x = m_initialPos.x+Soft(progress);
 	}
 
-	if ( m_phase == ADCP_INDOWN1 )
+	if ( m_phase == ADKP_MOVEZM )
 	{
-		MoveDock();
-		FireStopUpdate(TRUE);  // clignotte
-		if ( m_progress >= 1.0f )
-		{
-			m_fret = m_vehicle->RetFret();
-			if ( m_fret == 0 )
-			{
-				m_startPos = m_currentPos;
-				m_goalPos  = m_currentPos;
-				m_goalPos.y = HIGHPOS;
-				m_phase    = ADCP_INUP1;
-				m_progress = 0.0f;
-				m_speed    = 1.0f/1.0f;
-				SoundManip(1.0f, 1.0f, 1.0f);
-			}
-			else
-			{
-				m_fret->SetLock(TRUE);
-				m_fret->SetTruck(0);
-				m_vehicle->SetFret(0);
-				TruckObject(m_fret, FALSE);
-				ArmObject(m_fret, TRUE);
-				m_fret->SetAngle(0, D3DVECTOR(0.0f, m_vehicle->RetAngleY(0) ,0.0f));
-				m_fretPos = m_currentPos+m_center;
-				m_fretPos.y -= m_heightFret;
-				m_fret->SetPosition(0, m_fretPos);
-				m_fretOffset = m_currentPos;
-				m_startPos = m_currentPos;
-				m_goalPos  = m_currentPos;
-				m_goalPos.y = HIGHPOS;
-				m_phase    = ADCP_INUP1;
-				m_progress = 0.0f;
-				m_speed    = 1.0f/1.0f;
-				SoundManip(1.0f, 1.0f, 1.0f);
-			}
-		}
+		m_currentPos.z = m_initialPos.z-Soft(progress);
+	}
+	if ( m_phase == ADKP_MOVEZP )
+	{
+		m_currentPos.z = m_initialPos.z+Soft(progress);
 	}
 
-	if ( m_phase == ADCP_INUP1 )
+	if ( m_phase == ADKP_TAKE )
 	{
-		MoveDock();
-		FireStopUpdate(TRUE);  // clignotte
-		if ( m_progress >= 1.0f )
+		if ( progress < 0.33f )  // descend ?
 		{
-			if ( m_fret == 0 )
+			pp = progress/0.33f;
+			m_currentPos.y = m_initialPos.y-Bounce(pp);
+		}
+		else	// remonte ?
+		{
+			pp = Norm(1.0f-(progress-0.33f)/0.67f);
+			m_currentPos.y = m_initialPos.y-Soft(pp);
+
+			if ( !m_bTake )
 			{
-				m_vehicle->SetLock(FALSE);
-				StartVehicleAction(MV_CLOSE);
-				CameraEnd();
-				FireStopUpdate(FALSE);  // éteint
-				m_phase    = ADCP_WAIT;
-				m_progress = 0.0f;
-				m_speed    = 1.0f/5.0f;
-			}
-			else
-			{
-				TruckObject(m_fret, TRUE);
-				SearchFreePos(pos);
-				m_startPos = m_currentPos;
-				m_goalPos  = pos-m_center;
-				m_goalPos.y = HIGHPOS;
-				m_startAngle = NormAngle(m_vehicle->RetAngleY(0));
-				m_goalAngle = PI*0.5f;  // dépose de face
-				m_phase    = ADCP_INMOVE2;
-				m_progress = 0.0f;
-				m_speed    = 1.0f/(Length2d(m_startPos, m_goalPos)/MOVESPEEDc+0.1f);
-				SoundManip(1.0f/m_speed, 1.0f, 0.5f);
+				m_bTake = TRUE;
+				if ( m_object->RetFret() == 0 )  // ne porte rien ?
+				{
+					fret = SearchFret();
+					if ( fret != 0 )
+					{
+						m_terrain->SetLockZone(fret->RetPosition(0), LZ_FREE);
+						type = fret->RetType();
+						m_object->SetFret(fret);
+						fret->SetTruck(m_object);
+						fret->SetTruckPart(3);
+						pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
+						if ( type == OBJECT_BLUPI )
+						{
+							pos.y += 4.0f;
+						}
+						fret->SetPosition(0, pos);
+						fret->SetLock(TRUE);
+
+						if ( type == OBJECT_BLUPI )
+						{
+							StartAction(fret, MBLUPI_TRUCK);
+						}
+					}
+				}
+				else	// porte qq chose ?
+				{
+					fret = m_object->RetFret();
+					type = fret->RetType();
+					m_object->SetFret(0);
+					fret->SetTruck(0);
+					pos = m_posPistonGround;
+					if ( type == OBJECT_BLUPI )
+					{
+						pos.y += fret->RetCharacter()->height;
+					}
+					fret->SetPosition(0, pos);
+					fret->SetLock(FALSE);
+
+					lz = LZ_BOX;
+					if ( type == OBJECT_BOX7  )  lz = LZ_BOXo;
+					if ( type == OBJECT_BLUPI )  lz = LZ_BLUPI;
+					m_terrain->SetLockZone(pos, lz);
+
+					if ( type == OBJECT_BLUPI )
+					{
+						StartAction(fret, MBLUPI_WAIT);
+					}
+				}
+				SoundManip(0.5f, 1.0f, 1.5f);
 			}
 		}
 	}
 
-	if ( m_phase == ADCP_INMOVE2 )  // va vers stock ?
+	UpdatePosition();
+
+	if ( progress >= 1.0f )
 	{
-		MoveDock();
-		FireStopUpdate(TRUE);  // clignotte
-		if ( m_progress >= 1.0f )
+		if ( m_phase == ADKP_TAKE )
 		{
-			SearchFreePos(pos);
-			pos.y += m_fret->RetCharacter()->height;
-			m_heightFret = pos.y+RetObjectHeight(m_fret)-m_center.y;
-			m_startPos = m_currentPos;
-			m_goalPos  = m_currentPos;
-			m_goalPos.y = m_heightFret;
-			m_phase    = ADCP_INDOWN2;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/1.5f;
-			m_sound->Play(SOUND_PSHHH, m_object->RetPosition(0));
+			DecRest();
 		}
+		m_phase    = ADKP_WAIT;
+		m_progress = 0.0f;
+		m_speed    = 1.0f/1.0f;
+		m_bBusy    = FALSE;
+		return TRUE;
 	}
 
-	if ( m_phase == ADCP_INDOWN2 )
-	{
-		MoveDock();
-		FireStopUpdate(TRUE);  // clignotte
-		if ( m_progress >= 1.0f )
-		{
-			m_fret->SetLock(FALSE);
-			TruckObject(m_fret, FALSE);
-			ArmObject(m_fret, FALSE);
-			m_fret = 0;
-			m_startPos = m_currentPos;
-			m_goalPos  = m_currentPos;
-			m_goalPos.y = HIGHPOS;
-			m_phase    = ADCP_INUP2;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/1.0f;
-			SoundManip(1.0f, 1.0f, 1.0f);
-		}
-	}
-
-	if ( m_phase == ADCP_INUP2 )
-	{
-		MoveDock();
-		FireStopUpdate(TRUE);  // clignotte
-		if ( m_progress >= 1.0f )
-		{
-			m_vehicle->SetLock(FALSE);
-			StartVehicleAction(MV_CLOSE);
-			CameraEnd();
-			FireStopUpdate(FALSE);  // éteint
-			m_phase    = ADCP_START;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/10.0f;
-		}
-	}
-
-	if ( m_phase == ADCP_START )
-	{
-		if ( SearchVehicle() == 0 || m_progress >= 1.0f )
-		{
-			m_phase    = ADCP_WAIT;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/0.5f;
-		}
-	}
-	
-	ParticuleFrame(event.rTime);
 	return TRUE;
 }
+
+// Met à jour les positions des différentes parties.
+
+void CAutoDock::UpdatePosition()
+{
+	D3DVECTOR	pos;
+	int			objRank;
+
+	pos.x = 0.0f;
+	pos.y = 0.0f;
+	pos.z = m_currentPos.z*8.0f;
+	m_object->SetPosition(1, pos);  // portique
+
+	pos.x = m_currentPos.x*8.0f;
+	pos.y = 0.0f;
+	pos.z = 0.0f;
+	m_object->SetPosition(2, pos);  // charriot
+
+	pos.x = 0.0f;
+	pos.y = m_currentPos.y*10.0f;
+	pos.z = 0.0f;
+	m_object->SetPosition(3, pos);  // piston
+
+	objRank = m_object->RetObjectRank(0);
+	m_engine->SetObjectShadowPos(objRank, m_posPistonGround);
+}
+
+
+// Diminue le nombre d'utilisations restantes.
+
+BOOL CAutoDock::DecRest()
+{
+	if ( m_rest == 0 )  return FALSE;
+
+	m_rest --;
+	m_progressRest = 1.0f;
+
+	if ( m_rest == 0 )
+	{
+		m_sound->Play(SOUND_CHOCm, m_posPiston, 1.0f, 1.0f);
+	}
+	else
+	{
+		m_sound->Play(SOUND_ENERGY, m_posPiston, 1.0f, 1.0f);
+	}
+	return TRUE;
+}
+
+// Met à jour la position du nombre d'utilisations restantes.
+
+void CAutoDock::UpdateRest(float rTime)
+{
+	D3DMATRIX*	mat;
+	D3DVECTOR	pos, speed;
+	FPOINT		dim;
+	float		suppl;
+
+	if ( m_phase == ADKP_ERROR )
+	{
+		if ( m_progress < 0.5f )
+		{
+			suppl = Soft(m_progress/0.5f)*16.0f;
+		}
+		else
+		{
+			suppl = Soft(1.0f-(m_progress-0.5f)/0.5f)*16.0f;
+
+			mat = m_object->RetWorldMatrix(0);
+			pos = Transform(*mat, D3DVECTOR(-30.0f, 4.0f, 0.0f));
+			pos.z += m_currentPos.z*8.0f;
+			pos.x += (Rand()-0.5f)*2.0f;
+			pos.z += (Rand()-0.5f)*2.0f;
+			speed.x = (Rand()-0.5f)*2.0f;
+			speed.z = (Rand()-0.5f)*2.0f;
+			speed.y = 2.0f+Rand()*4.0f;
+			dim.x = 6.0f;
+			dim.y = dim.x;
+			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE2, 3.0f);
+		}
+
+		pos.x = 0.0f;
+		pos.y = m_rest*2.0f+suppl;
+		pos.z = 0.0f;
+		m_object->SetPosition(9, pos);  // jauge
+
+		return;
+	}
+	
+	if ( m_progressRest == 0.0f )
+	{
+		suppl = 0.0f;
+	}
+	else
+	{
+		m_progressRest -= rTime*1.0f;
+		if ( m_progressRest < 0.0f )  m_progressRest = 0.0f;
+		suppl = (1.0f-Bounce(1.0f-m_progressRest))*2.0f;
+
+		if ( m_rest == 0 )
+		{
+			mat = m_object->RetWorldMatrix(0);
+			pos = Transform(*mat, D3DVECTOR(-30.0f, 4.0f, 0.0f));
+			pos.z += m_currentPos.z*8.0f;
+			pos.x += (Rand()-0.5f)*2.0f;
+			pos.z += (Rand()-0.5f)*2.0f;
+			speed.x = (Rand()-0.5f)*2.0f;
+			speed.z = (Rand()-0.5f)*2.0f;
+			speed.y = 2.0f+Rand()*4.0f;
+			dim.x = 6.0f;
+			dim.y = dim.x;
+			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE2, 3.0f);
+		}
+	}
+
+	pos.x = 0.0f;
+	pos.y = m_rest*2.0f+suppl;
+	pos.z = 0.0f;
+	m_object->SetPosition(9, pos);  // jauge
+}
+
 
 // Stoppe l'automate.
 
@@ -509,69 +472,11 @@ BOOL CAutoDock::Abort()
 }
 
 
-// Met à jour les feux de stop.
+// Indique si l'objet effectue une action.
 
-void CAutoDock::FireStopUpdate(BOOL bLightOn)
+BOOL CAutoDock::IsRunning()
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed;
-	FPOINT		dim;
-	int			i;
-
-	static float listpos[3*6] =
-	{
-		-15.0f, 10.0f, -14.0f,
-		-15.0f, 10.0f,  10.0f,
-		-15.0f, 10.0f,  40.0f,
-		 15.0f, 10.0f,  40.0f,
-		 15.0f, 10.0f,  10.0f,
-		 15.0f, 10.0f, -14.0f,
-	};
-
-	if ( !bLightOn )  // éteint ?
-	{
-		for ( i=0 ; i<6 ; i++ )
-		{
-			if ( m_partiStop[i] != -1 )
-			{
-				m_particule->DeleteParticule(m_partiStop[i]);
-				m_partiStop[i] = -1;
-			}
-		}
-		return;
-	}
-
-	mat = m_object->RetWorldMatrix(0);
-
-	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	dim.x = 3.0f;
-	dim.y = dim.x;
-
-	for ( i=0 ; i<6 ; i++ )
-	{
-//?		if ( Mod(m_time+i*0.15f, 0.9f) > 0.2f )
-		if ( Mod(m_time+i*0.15f, 0.45f) > 0.10f )
-		{
-			if ( m_partiStop[i] != -1 )
-			{
-				m_particule->DeleteParticule(m_partiStop[i]);
-				m_partiStop[i] = -1;
-			}
-		}
-		else
-		{
-			if ( m_partiStop[i] == -1 )
-			{
-				pos.x = listpos[i*3+0];
-				pos.y = listpos[i*3+1];
-				pos.z = listpos[i*3+2];
-				pos = Transform(*mat, pos);
-				m_partiStop[i] = m_particule->CreateParticule(pos, speed,
-															  dim, PARTISELR,
-															  1.0f, 0.0f);
-			}
-		}
-	}
+	return ( m_phase != ADKP_WAIT );
 }
 
 
@@ -583,409 +488,138 @@ Error CAutoDock::RetError()
 }
 
 
-// Déplace la grue.
+// Cherche si le sol est à niveau sous le piston.
 
-void CAutoDock::MoveDock()
+BOOL CAutoDock::IsFlatGround()
+{
+	float	level;
+
+	level = m_terrain->RetFloorLevel(m_posPistonGround);
+	return ( level == 0.0f );
+}
+
+// Cherche l'objet transportable sous le piston.
+
+CObject* CAutoDock::SearchFret()
+{
+	CObject*	fret;
+	CTaskList*	taskList;
+	ObjectType	type;
+
+	fret = SearchObject(m_posPistonGround, 2.0f);
+	if ( fret == 0 )  return 0;
+
+	type = fret->RetType();
+
+	if ( (type >= OBJECT_BOX1 && type <= OBJECT_BOX20) ||
+		 (type >= OBJECT_KEY1 && type <= OBJECT_KEY5 ) )
+	{
+		return fret;
+	}
+
+	if ( type == OBJECT_BLUPI )
+	{
+		taskList = fret->RetTaskList();
+		if ( taskList == 0 )  return fret;
+		if ( !taskList->IsRunning() )  return fret;
+	}
+
+	return 0;
+}
+
+// Cherche un objet quelconque.
+
+CObject* CAutoDock::SearchObject(D3DVECTOR center, float radius)
+{
+	CObject		*pObj, *pBest;
+	D3DVECTOR	pos;
+	ObjectType	type;
+	float		min, dist;
+	int			i;
+
+	pBest = 0;
+	min = 100000.0f;
+	for ( i=0 ; i<1000000 ; i++ )
+	{
+		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+		if ( pObj == 0 )  break;
+		if ( pObj == m_object )  continue;  // soi-même ?
+		if ( pObj->RetLock() )  continue;
+		if ( !pObj->RetEnable() )  continue;
+
+		type = pObj->RetType();
+
+		pos = pObj->RetPosition(0);
+		dist = Length2d(pos, center);
+
+		if ( dist <= radius && dist < min )
+		{
+			min = dist;
+			pBest = pObj;
+		}
+	}
+	return pBest;
+}
+
+// Regarde s'il est possible d'atteindre une position donnée.
+// Si le dock porte un objet, on ne peut pas passer par-dessus
+// les objets hauts !
+
+BOOL CAutoDock::IsFreePos(D3DVECTOR dir)
+{
+	CObject*	pObj;
+	D3DVECTOR	piston;
+
+	if ( m_object->RetFret() == 0 )  return TRUE;  // ne porte rien ?
+
+	piston = CalcPosPiston(m_currentPos+dir);
+	pObj = SearchObject(piston, 2.0f);
+	if ( pObj == 0 )  return TRUE;
+
+	if ( pObj->RetHeight() > 8.0f )  return FALSE;
+	return TRUE;
+}
+
+// Calcule la position du piston au sol.
+
+D3DVECTOR CAutoDock::CalcPosPiston()
+{
+	return CalcPosPiston(m_currentPos);
+}
+
+// Calcule la position du piston au sol.
+
+D3DVECTOR CAutoDock::CalcPosPiston(D3DVECTOR piston)
 {
 	D3DVECTOR	pos;
-	float		progress, bounce, angle;
 
-	bounce = progress = Norm(m_progress);
-
-	if ( m_goalPos.y < m_startPos.y )  // descend ?
-	{
-		bounce = Bounce(Norm(progress*1.2f));
-	}
-	m_currentPos.y = m_startPos.y+(m_goalPos.y-m_startPos.y)*bounce;
-
-	pos.x =  0.0f;
-	pos.y = 20.0f;
-	pos.z = m_startPos.z+(m_goalPos.z-m_startPos.z)*progress;
-	m_object->SetPosition(1, pos);
-	m_currentPos.z = pos.z;
-
-	pos.x = m_startPos.x+(m_goalPos.x-m_startPos.x)*progress;
+	pos = m_object->RetPosition(0);
+	pos += piston*8.0f;
 	pos.y = 0.0f;
-	pos.z = 0.0f;
-	m_object->SetPosition(2, pos);
-	m_currentPos.x = pos.x;
-
-	pos.x = 0.0f;
-	pos.y = (m_currentPos.y-14.0f)*3.0f/10.0f;
-	pos.z = 0.0f;
-	m_object->SetPosition(3, pos);
-
-	pos.x = 0.0f;
-	pos.y = (m_currentPos.y-14.0f)*6.0f/10.0f;
-	pos.z = 0.0f;
-	m_object->SetPosition(4, pos);
-
-	pos.x = 0.0f;
-	pos.y = m_currentPos.y-14.0f;
-	pos.z = 0.0f;
-	m_object->SetPosition(5, pos);
-
-	if ( m_fret != 0 )
-	{
-		m_fret->SetPosition(0, m_fretPos+m_currentPos-m_fretOffset);
-
-		if ( m_phase == ADCP_OUTMOVE2 ||
-			 m_phase == ADCP_INMOVE2  )
-		{
-			angle = m_startAngle+(m_goalAngle-m_startAngle)*m_progress;
-			m_fret->SetAngleY(0, angle);
-			m_object->SetAngleY(2, angle);
-		}
-	}
-}
-
-// Cherche un méchant proche.
-
-CObject* CAutoDock::SearchEvil()
-{
-	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
-	ObjectType	oType;
-	float		dist;
-	int			i;
-
-	cPos = m_center;
-
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		oType = pObj->RetType();
-
-		if ( oType != OBJECT_EVIL1 &&
-			 oType != OBJECT_EVIL2 &&
-			 oType != OBJECT_EVIL3 &&
-			 oType != OBJECT_EVIL4 &&
-			 oType != OBJECT_EVIL5 )  continue;
-
-		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, cPos);
-
-		if ( dist <= 40.0f )  return pObj;
-	}
-
-	return 0;
-}
-
-// Cherche un véhicule sur le quai.
-
-CObject* CAutoDock::SearchVehicle()
-{
-	CObject*	pObj;
-	CPhysics*	physics;
-	D3DVECTOR	cPos, oPos, speed, zoom;
-	ObjectType	oType;
-	float		dist;
-	int			i;
-
-	cPos = m_center;
-
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		if ( pObj->RetGhost() )  continue;
-
-		oType = pObj->RetType();
-
-		if ( oType != OBJECT_CAR )  continue;
-
-		zoom = pObj->RetZoom(0);
-		if ( zoom.x != 1.0f ||
-			 zoom.y != 1.0f ||
-			 zoom.z != 1.0f )  continue;
-
-		physics = pObj->RetPhysics();
-		if ( physics != 0 )
-		{
-			speed = physics->RetLinMotion(MO_REASPEED);
-			if ( speed.x > 0.01f )  continue;  // véhicule en mouvement ?
-		}
-
-		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, cPos);
-
-		if ( dist <= 8.0f )  return pObj;
-	}
-
-	return 0;
-}
-
-// Cherche un objet dans le stock pour le sortir.
-
-CObject* CAutoDock::SearchStockOut()
-{
-	D3DMATRIX*	mat;
-	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
-	ObjectType	oType;
-	float		dist;
-	int			i;
-
-	mat = m_object->RetWorldMatrix(0);
-	cPos = Transform(*mat, D3DVECTOR(0.0f, 0.0f, 27.0f));
-
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		oType = pObj->RetType();
-
-		if ( oType != OBJECT_STONE   &&
-			 oType != OBJECT_URANIUM &&
-			 oType != OBJECT_METAL   &&
-			 oType != OBJECT_BARREL  &&
-			 oType != OBJECT_BARRELa &&
-			 oType != OBJECT_ATOMIC  &&
-			 oType != OBJECT_BULLET  &&
-			 oType != OBJECT_BBOX    &&
-			 oType != OBJECT_TNT     &&
-			 oType != OBJECT_BOMB    &&
-			 oType != OBJECT_BOT1    &&
-			 oType != OBJECT_BOT2    &&
-			 oType != OBJECT_BOT3    &&
-			 oType != OBJECT_BOT4    &&
-			 oType != OBJECT_BOT5    &&
-			 oType != OBJECT_WALKER  &&
-			 oType != OBJECT_FIRE    &&
-			 oType != OBJECT_HELICO  &&
-			 oType != OBJECT_COMPASS &&
-			 oType != OBJECT_BLITZER &&
-			 oType != OBJECT_HOOK    &&
-			 oType != OBJECT_AQUA    )  continue;
-
-		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, cPos);
-
-		if ( dist <= 16.0f )  return pObj;
-	}
-
-	return 0;
-}
-
-// Cherche la hauteur d'un objet.
-
-float CAutoDock::RetObjectHeight(CObject *pObj)
-{
-	ObjectType	oType;
-
-	oType = pObj->RetType();
-	if ( oType == OBJECT_BOT1    )  return 3.2f;
-	if ( oType == OBJECT_BOT2    )  return 5.7f;
-	if ( oType == OBJECT_BOT3    )  return 3.8f;
-	if ( oType == OBJECT_BOT4    )  return 4.0f;
-	if ( oType == OBJECT_BOT5    )  return 6.0f;
-	if ( oType == OBJECT_WALKER  )  return 4.0f;
-	if ( oType == OBJECT_BARREL  )  return 5.0f;
-	if ( oType == OBJECT_BARRELa )  return 5.0f;
-	if ( oType == OBJECT_BOMB    )  return 4.3f;
-	if ( oType == OBJECT_FIRE    )  return 7.1f;
-	if ( oType == OBJECT_HELICO  )  return 7.0f;
-	if ( oType == OBJECT_COMPASS )  return 6.0f;
-	if ( oType == OBJECT_BLITZER )  return 8.5f;
-	if ( oType == OBJECT_HOOK    )  return 6.4f;
-	if ( oType == OBJECT_AQUA    )  return 4.0f;
-	return 2.0f;
-}
-
-// Cherche le point où mettre du fret sur un véhicule.
-
-D3DVECTOR CAutoDock::RetVehiclePoint(CObject *pObj)
-{
-	Character*	character;
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos;
-
-	character = pObj->RetCharacter();
-	mat = pObj->RetWorldMatrix(0);
-	pos = Transform(*mat, character->posFret);
-
 	return pos;
 }
 
-// Cherche une position libre ou déposer un objet.
 
-BOOL CAutoDock::SearchFreePos(D3DVECTOR &pos)
+// Démarre une action pour Blupi.
+
+void CAutoDock::StartAction(CObject *pObj, int action, float speed)
 {
-	D3DMATRIX*	mat;
-	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
-	ObjectType	oType;
-	BOOL		bFree[4*4];
-	int			i, x, y;
+	CMotion*	motion;
 
-	for ( i=0 ; i<4*4 ; i++ )  bFree[i] = TRUE;
+	motion = pObj->RetMotion();
+	if ( motion == 0 )  return;
 
-	mat = m_object->RetWorldMatrix(0);
-	cPos = Transform(*mat, D3DVECTOR(-13.0f, 0.0f, 14.0f));
-
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		oType = pObj->RetType();
-
-		if ( oType != OBJECT_STONE   &&
-			 oType != OBJECT_URANIUM &&
-			 oType != OBJECT_METAL   &&
-			 oType != OBJECT_BARREL  &&
-			 oType != OBJECT_BARRELa &&
-			 oType != OBJECT_ATOMIC  &&
-			 oType != OBJECT_BULLET  &&
-			 oType != OBJECT_BBOX    &&
-			 oType != OBJECT_TNT     &&
-			 oType != OBJECT_BOT1    &&
-			 oType != OBJECT_BOT2    &&
-			 oType != OBJECT_BOT3    &&
-			 oType != OBJECT_BOT4    &&
-			 oType != OBJECT_BOT5    &&
-			 oType != OBJECT_WALKER  &&
-			 oType != OBJECT_FIRE    &&
-			 oType != OBJECT_HELICO  &&
-			 oType != OBJECT_COMPASS &&
-			 oType != OBJECT_BLITZER &&
-			 oType != OBJECT_HOOK    &&
-			 oType != OBJECT_AQUA    )  continue;
-
-		oPos = pObj->RetPosition(0)-cPos;
-
-		if ( oPos.x < 0.0f || oPos.x >= 6.5f*4.0f ||
-			 oPos.z < 0.0f || oPos.z >= 6.5f*4.0f )  continue;
-
-		x = (int)(oPos.x/6.5f);
-		y = (int)(oPos.z/6.5f);
-		bFree[x+y*4] = FALSE;
-	}
-
-	for ( i=0 ; i<4*4 ; i++ )
-	{
-		if ( bFree[i] )
-		{
-			cPos.x += 6.5f*(i%4)+6.5f*0.5f;
-			cPos.z += 6.5f*(i/4)+6.5f*0.5f;
-			pos = cPos;
-			return TRUE;
-		}
-	}
-
-	return FALSE;
+	motion->SetAction(action, speed);
 }
 
-// Fait évoluer les particules.
-
-void CAutoDock::ParticuleFrame(float rTime)
-{
-	CPhysics*	physics;
-	D3DVECTOR	pos, speed;
-	FPOINT		dim;
-	int			i;
-
-	// Choc lorsque la grue arrive dans la voiture.
-	if ( (m_phase == ADCP_OUTDOWN2 ||
-		  m_phase == ADCP_INDOWN1  ) && m_progress >= 0.3f/1.2f )
-	{
-		if ( m_lastEffect+5.0f <= m_time )
-		{
-			m_lastEffect = m_time;
-
-			physics = m_vehicle->RetPhysics();
-			if ( physics != 0 )
-			{
-				physics->SuspForce(2, -1.0f, -1.0f, 100.0f);
-				physics->FFBCrash(1.0f, 0.5f, 1.0f);
-			}
-
-			m_camera->StartEffect(CE_SHOT, m_center, 1.0f);
-			m_sound->Play(SOUND_TAKE, m_center);
-		}
-	}
-
-	if ( (m_phase == ADCP_OUTDOWN1 ||
-		  m_phase == ADCP_INDOWN2  ) && m_progress >= 0.2f )
-	{
-		if ( m_lastEffect+5.0f <= m_time )
-		{
-			m_lastEffect = m_time;
-			m_sound->Play(SOUND_TAKE, m_center);
-		}
-	}
-
-	if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) > m_time )  return;
-	m_lastParticule = m_time;
-
-	if ( m_phase == ADCP_OUTUP1   ||
-		 m_phase == ADCP_OUTMOVE2 ||
-		 m_phase == ADCP_OUTDOWN2 ||
-		 m_phase == ADCP_INUP1    ||
-		 m_phase == ADCP_INMOVE2  ||
-		 m_phase == ADCP_INDOWN2  )
-	{
-		pos  = m_object->RetPosition(0);
-		pos += m_object->RetPosition(1);
-		pos += m_object->RetPosition(2);
-		pos += m_object->RetPosition(5);
-		pos.y -= 7.0f;
-
-		for ( i=0 ; i<5 ; i++ )
-		{
-			speed.x = (Rand()-0.5f)*20.0f;
-			speed.z = (Rand()-0.5f)*20.0f;
-			speed.y = 5.0f+Rand()*10.0f;
-			dim.x = 0.8f;
-			dim.y = 0.8f;
-			m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 40.0f);
-		}
-
-		StartBzzz();
-
-		if ( m_channelSound != -1 )
-		{
-			m_sound->Position(m_channelSound, pos);
-		}
-	}
-	else
-	{
-		StopBzzz();
-	}
-
-	if ( m_progress < 0.5f &&
-		(m_phase == ADCP_OUTDOWN1 ||
-		 m_phase == ADCP_OUTDOWN2 ||
-		 m_phase == ADCP_INDOWN1  ||
-		 m_phase == ADCP_INDOWN2  ) )
-	{
-		pos  = m_object->RetPosition(0);
-		pos += m_object->RetPosition(1);
-		pos += m_object->RetPosition(2);
-		pos += m_object->RetPosition(5);
-		pos.y -= 7.0f;
-		pos.x += (Rand()-0.5f)*3.0f;
-		pos.z += (Rand()-0.5f)*3.0f;
-		speed.x = (Rand()-0.5f)*6.0f;
-		speed.z = (Rand()-0.5f)*6.0f;
-		speed.y = 2.5f+Rand()*5.0f;
-		dim.x = Rand()*2.0f+1.2f;
-		dim.y = dim.x;
-		m_particule->CreateParticule(pos, speed, dim, PARTIVAPOR, 3.0f);
-	}
-}
 
 // Fait entendre le son du bras manipulateur.
 
 void CAutoDock::SoundManip(float time, float amplitude, float frequency)
 {
-	int		i;
+	int			i;
 
-	i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f*frequency, TRUE);
+	i = m_sound->Play(SOUND_MANIP, m_posPiston, 0.0f, 0.3f*frequency, TRUE);
 	m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
 	m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
 	m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);
@@ -996,7 +630,7 @@ void CAutoDock::SoundManip(float time, float amplitude, float frequency)
 void CAutoDock::StartBzzz()
 {
 	if ( m_channelSound != -1 )  return;
-	m_channelSound = m_sound->Play(SOUND_NUCLEAR, m_center, 0.5f, 1.0f, TRUE);
+	m_channelSound = m_sound->Play(SOUND_NUCLEAR, m_posPiston, 0.5f, 1.0f, TRUE);
 	m_sound->AddEnvelope(m_channelSound, 0.5f, 1.0f, 1.0f, SOPER_LOOP);
 }
 
@@ -1010,129 +644,45 @@ void CAutoDock::StopBzzz()
 	m_channelSound = -1;
 }
 
-// Démarre une action pour le véhicule.
+// Déplace le son de l'électro-aimant.
 
-void CAutoDock::StartVehicleAction(int action)
+void CAutoDock::PosBzzz()
 {
-	CMotion*	motion;
-	float		delay;
-
-	motion = m_vehicle->RetMotion();
-	if ( motion == 0 )  return;
-
-	delay = 2.0f;
-	if ( action == MV_CLOSE )  delay = 2.0f;
-	motion->SetAction(action, delay);
+	if ( m_channelSound == -1 )  return;
+	m_sound->Position(m_channelSound, m_posPiston);
 }
 
-// Démarre une action "soulevé" pour l'objet pris par la grue.
 
-void CAutoDock::TruckObject(CObject *pObj, BOOL bTake)
+// Ecrit la situation de l'objet.
+
+void CAutoDock::WriteSituation()
 {
-	ObjectType	type;
-	CMotion*	motion;
-	CAuto*		automat;
+	m_undo->WriteTokenInt("phase", m_phase);
+	m_undo->WriteTokenPos("piston", m_currentPos);
+	m_undo->WriteTokenInt("rest", m_rest);
+}
 
-	type = pObj->RetType();
+// lit la situation de l'objet.
 
-	if ( type == OBJECT_BOT1   ||
-		 type == OBJECT_BOT2   ||
-		 type == OBJECT_BOT3   ||
-		 type == OBJECT_BOT4   ||
-		 type == OBJECT_BOT5   ||
-		 type == OBJECT_WALKER )
+void CAutoDock::ReadSituation()
+{
+	D3DVECTOR	pos;
+	int			phase;
+
+	if ( m_undo->ReadTokenInt("phase", phase) )
 	{
-		motion = pObj->RetMotion();
-		if ( motion == 0 )  return;
+		m_phase = (AutoDockPhase)phase;
+		m_progress = 0.0f;
+		m_speed = 1.0f/0.001f;  // instantané (ou presque)
 
-		if ( bTake )
-		{
-			motion->SetAction(MB_TRUCK, 1.0f);
-		}
-		else
-		{
-			motion->SetAction(MB_WAIT, 1.0f);
-		}
 	}
 
-	if ( type == OBJECT_BOMB )
+	if ( m_undo->ReadTokenPos("piston", pos) )
 	{
-		automat = pObj->RetAuto();
-		if ( automat == 0 )  return;
-
-		if ( bTake )
-		{
-			automat->SetAction(AB_TRUCK, 1.0f);
-			automat->SetAction(AB_BURNFLIP, 1.0f);
-		}
-		else
-		{
-			automat->SetAction(AB_STOP, 1.0f);
-		}
+		m_currentPos = pos;
+		UpdatePosition();
 	}
-}
 
-// Modifie l'objet lorsque le bras de la grue arrive dessus.
-
-void CAutoDock::ArmObject(CObject *pObj, BOOL bTake)
-{
-	ObjectType	type;
-	float		angle;
-
-	type = pObj->RetType();
-
-	if ( type == OBJECT_FIRE )
-	{
-		if ( bTake )  angle = 0.0f;  // canon horizontal
-		else          angle = 20.0f*PI/180.0f;
-		pObj->SetAngleZ(2, angle);
-	}
-}
-
-
-// Début du cadrage pour la caméra.
-
-void CAutoDock::CameraBegin()
-{
-#if 0
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, vPos;
-	float		angle;
-
-	mat = m_object->RetWorldMatrix(0);
-	pos = Transform(*mat, D3DVECTOR(0.0f, 0.0f, 30.0f));
-	vPos = m_vehicle->RetPosition(0);
-	angle = RotateAngle(pos.x-vPos.x, vPos.z-pos.z);
-	angle -= m_vehicle->RetAngleY(0);
-	angle = NormAngle(angle);
-	if ( angle < PI )  angle -= PI*0.15f;
-	else               angle += PI*0.15f;
-	m_camera->SetBackHoriz(-angle);
-	m_camera->SetLockRotate(TRUE);
-#else
-	m_cameraType = m_camera->RetType();
-	m_camera->SetObject(m_object);
-	m_camera->SetType(CAMERA_BACK);
-	m_camera->SetSmooth(CS_SOFT);
-#endif
-
-	m_main->SetStopwatch(FALSE);  // stoppe le chrono
-}
-
-// Fin du cadrage pour la caméra.
-
-void CAutoDock::CameraEnd()
-{
-#if 0
-	m_camera->SetBackHoriz(0.0f);
-	m_camera->SetLockRotate(FALSE);
-	m_camera->ResetLockRotate();
-#else
-	m_camera->SetObject(m_vehicle);
-	m_camera->SetType(m_cameraType);
-	m_camera->SetSmooth(CS_NORM);
-#endif
-
-	m_main->SetStopwatch(TRUE);  // redémarre le chrono
+	m_undo->ReadTokenInt("rest", m_rest);
 }
 

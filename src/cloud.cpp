@@ -36,7 +36,6 @@ CCloud::CCloud(CInstanceManager* iMan, CD3DEngine* engine)
 
 	m_level = 0.0f;
 	m_wind  = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_subdiv = 8;
 	m_filename[0] = 0;
 	m_bEnable = TRUE;
 }
@@ -119,10 +118,10 @@ void CCloud::Draw()
 	if ( m_level == 0.0f )  return;
 	if ( m_lineUsed == 0 )  return;
 
-	vertex = (D3DVERTEX2*)malloc(sizeof(D3DVERTEX2)*(m_brick+2)*2);
+	vertex = (D3DVERTEX2*)malloc(sizeof(D3DVERTEX2)*(m_nbTiles+2)*2);
 
 	iDeep = m_engine->RetDeepView();
-	deep = (m_brick*m_size)/2.0f;
+	deep = (m_nbTiles*m_dimTile)/2.0f;
 	m_engine->SetDeepView(deep);
 	m_engine->SetFocus(m_engine->RetFocus());
 	m_engine->UpdateMatProj();  // augmente la profondeur de vue
@@ -159,7 +158,7 @@ void CCloud::Draw()
 	D3DUtil_SetIdentityMatrix(matrix);
 	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
 
-	size = m_size/2.0f;
+	size = m_dimTile/2.0f;
 	eye = m_engine->RetEyePt();
 	n = D3DVECTOR(0.0f, -1.0f, 0.0f);
 
@@ -222,11 +221,11 @@ BOOL CCloud::CreateLine(int x, int y, int len)
 	m_line[m_lineUsed].y   = y;
 	m_line[m_lineUsed].len = len;
 
-	offset = m_brick*m_size/2.0f - m_size/2.0f;
+	offset = m_nbTiles*m_dimTile/2.0f - m_dimTile/2.0f;
 
-	m_line[m_lineUsed].px1 = m_size* m_line[m_lineUsed].x - offset;
-	m_line[m_lineUsed].px2 = m_size*(m_line[m_lineUsed].x+m_line[m_lineUsed].len) - offset;
-	m_line[m_lineUsed].pz  = m_size* m_line[m_lineUsed].y - offset;
+	m_line[m_lineUsed].px1 = m_dimTile* m_line[m_lineUsed].x - offset;
+	m_line[m_lineUsed].px2 = m_dimTile*(m_line[m_lineUsed].x+m_line[m_lineUsed].len) - offset;
+	m_line[m_lineUsed].pz  = m_dimTile* m_line[m_lineUsed].y - offset;
 
 	m_lineUsed ++;
 
@@ -261,18 +260,18 @@ BOOL CCloud::Create(const char *filename,
 
 	m_wind = m_terrain->RetWind();
 
-	m_brick = m_terrain->RetBrick()*m_terrain->RetMosaic()*DIMEXPAND;
-	m_size  = m_terrain->RetSize();
+	m_nbTiles = m_terrain->RetNbTiles()*DIMEXPAND;
+	m_dimTile = m_terrain->RetDimTile();
 
-	m_brick /= m_subdiv*DIMEXPAND;
-	m_size  *= m_subdiv*DIMEXPAND;
+	m_nbTiles /= DIMEXPAND;
+	m_dimTile *= DIMEXPAND;
 
 	if ( m_level == 0.0f )  return TRUE;
 
 	m_lineUsed = 0;
-	for ( y=0 ; y<m_brick ; y++ )
+	for ( y=0 ; y<m_nbTiles ; y++ )
 	{
-		CreateLine(0, y, m_brick);
+		CreateLine(0, y, m_nbTiles);
 	}
 	return TRUE;
 }

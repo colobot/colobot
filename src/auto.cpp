@@ -17,6 +17,7 @@
 #include "particule.h"
 #include "light.h"
 #include "terrain.h"
+#include "water.h"
 #include "cloud.h"
 #include "planet.h"
 #include "blitz.h"
@@ -30,6 +31,7 @@
 #include "gauge.h"
 #include "window.h"
 #include "robotmain.h"
+#include "mainundo.h"
 #include "sound.h"
 #include "displaytext.h"
 #include "cmdtoken.h"
@@ -51,12 +53,14 @@ CAuto::CAuto(CInstanceManager* iMan, CObject* object)
 	m_particule   = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
 	m_light       = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
 	m_terrain     = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
+	m_water       = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
 	m_cloud       = (CCloud*)m_iMan->SearchInstance(CLASS_CLOUD);
 	m_planet      = (CPlanet*)m_iMan->SearchInstance(CLASS_PLANET);
 	m_blitz       = (CBlitz*)m_iMan->SearchInstance(CLASS_BLITZ);
 	m_camera      = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
 	m_interface   = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
 	m_main        = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
+	m_undo        = (CMainUndo*)m_iMan->SearchInstance(CLASS_UNDO);
 	m_displayText = (CDisplayText*)m_iMan->SearchInstance(CLASS_DISPLAYTEXT);
 	m_sound       = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
 
@@ -97,8 +101,9 @@ void CAuto::Init()
 
 // Démarre l'objet.
 
-void CAuto::Start(int param)
+BOOL CAuto::Start(int param)
 {
+	return FALSE;
 }
 
 
@@ -161,6 +166,13 @@ BOOL CAuto::Abort()
 	return FALSE;
 }
 
+// Indique si l'objet effectue une action.
+
+BOOL CAuto::IsRunning()
+{
+	return FALSE;
+}
+
 
 // Démarre une action.
 
@@ -186,7 +198,6 @@ int CAuto::RetAction()
 void CAuto::UpdateInterface(float rTime)
 {
 	CWindow*	pw;
-	CGauge*		pg;
 
 	if ( m_time < m_lastUpdateTime+0.1f )  return;
 	m_lastUpdateTime = m_time;
@@ -195,18 +206,6 @@ void CAuto::UpdateInterface(float rTime)
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
 	if ( pw == 0 )  return;
-
-	pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GLEVEL1);
-	if ( pg != 0 )
-	{
-		pg->SetLevel(m_object->RetShield());
-	}
-
-	pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GPROGRESS);
-	if ( pg != 0 )
-	{
-		pg->SetLevel(m_progressTime);
-	}
 }
 
 
@@ -254,4 +253,16 @@ void CAuto::SetMotor(BOOL bMotor)
 	m_bMotor = bMotor;
 }
 
+
+// Ecrit la situation de l'objet.
+
+void CAuto::WriteSituation()
+{
+}
+
+// lit la situation de l'objet.
+
+void CAuto::ReadSituation()
+{
+}
 

@@ -36,6 +36,8 @@ extern void			Swap(float &a, float &b);
 extern void			Swap(FPOINT &a, FPOINT &b);
 
 extern float		Mod(float a, float m);
+extern float		Grid(float value, float step);
+extern D3DVECTOR	Grid(D3DVECTOR pos, float step);
 extern float		NormAngle(float angle);
 extern BOOL			TestAngle(float angle, float min, float max);
 
@@ -46,7 +48,9 @@ extern FPOINT		RotatePoint(float angle, float dist);
 extern float		RotateAngle(float x, float y);
 extern float		RotateAngle(FPOINT center, FPOINT p1, FPOINT p2);
 extern float		MidPoint(FPOINT a, FPOINT b, float px);
+extern D3DVECTOR	LineProgress(const D3DVECTOR &start, const D3DVECTOR &goal, float progress);
 extern BOOL			IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p);
+extern BOOL			Deforme(FPOINT *t1, FPOINT *t2, FPOINT &p);
 extern BOOL			Intersect(const FPOINT &a, const FPOINT &b, const FPOINT &c, const FPOINT &d, FPOINT &p);
 extern BOOL			IntersectSegment(const FPOINT &a, const FPOINT &b, const FPOINT &c, const FPOINT &d, FPOINT &p);
 extern BOOL			Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR d, D3DVECTOR e, D3DVECTOR &i);
@@ -79,6 +83,8 @@ extern void			MatRotateXZY(D3DMATRIX &mat, D3DVECTOR angle);
 extern void			MatRotateZXY(D3DMATRIX &mat, D3DVECTOR angle);
 
 extern float		Rand();
+extern float		Rand(float init);
+extern void			PseudoRandom(D3DVERTEX2 &p, float rv, float rh);
 extern float		Neutral(float value, float dead);
 
 extern float		Prop(int a, int b, float p);
@@ -89,6 +95,8 @@ extern float		SmoothP(float actual, float hope, float time);
 extern float		Soft(float progress, int iter=1);
 extern float		Bounce(float progress, float middle=0.3f, float bounce=0.4f);
 
+extern D3DCOLOR		RetColor(int r, int g, int b);
+extern void			RetColor(D3DCOLOR intensity, int &r, int &g, int &b);
 extern D3DCOLOR		RetColor(float intensity);
 extern D3DCOLOR		RetColor(D3DCOLORVALUE intensity);
 extern D3DCOLORVALUE RetColor(D3DCOLOR intensity);

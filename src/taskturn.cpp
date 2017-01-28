@@ -15,8 +15,11 @@
 #include "iman.h"
 #include "terrain.h"
 #include "object.h"
-#include "physics.h"
-#include "brain.h"
+#include "motion.h"
+#include "motionbot.h"
+#include "motiongun.h"
+#include "sound.h"
+#include "mainundo.h"
 #include "task.h"
 #include "taskturn.h"
 
@@ -42,17 +45,39 @@ CTaskTurn::~CTaskTurn()
 
 BOOL CTaskTurn::EventProcess(const Event &event)
 {
+	float	a, g, speed;
+
 	if ( m_engine->RetPause() )  return TRUE;
 	if ( event.event != EVENT_FRAME )  return TRUE;
 
-	// Objet momentanément immobile (fourmi sur le dos) ?
-	if ( m_object->RetFixed() )
+	if ( m_initialWait > 0.0f )
 	{
-		m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
-		m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
-		m_bError = TRUE;
+		m_initialWait -= event.rTime;
+		if ( m_initialWait <= 0.0f )
+		{
+			m_sound->Play(SOUND_CRAZY, m_object->RetPosition(0), 1.0f);
+		}
 		return TRUE;
 	}
+
+//?	ProgressCirSpeed(1.0f);
+
+	a = m_object->RetAngleY(0);
+	g = m_finalAngle;
+	speed = m_motion->RetCirSpeed();
+	if ( g-a > PI )  g -= PI*2.0f;
+	if ( a-g > PI )  a -= PI*2.0f;
+	if ( a < g )
+	{
+		a += speed*event.rTime;  // rotation CCW
+		if ( a > g )  a = g;
+	}
+	else
+	{
+		a -= speed*event.rTime;  // rotation CW
+		if ( a < g )  a = g;
+	}
+	m_object->SetAngleY(0, NormAngle(a));
 
 	return TRUE;
 }
@@ -63,23 +88,26 @@ BOOL CTaskTurn::EventProcess(const Event &event)
 
 Error CTaskTurn::Start(float angle)
 {
-	m_startAngle = m_object->RetAngleY(0);
-	m_finalAngle = m_startAngle+angle;
+	m_type = m_object->RetType();
 
-	if ( angle < 0.0f )
+	m_startAngle = m_object->RetAngleY(0);
+	m_finalAngle = NormAngle(m_startAngle+angle);
+
+	ProgressLinSpeed(0.0f);
+	ProgressCirSpeed(angle>0.0f?0.5f:-0.5f);
+
+	m_initialWait = 0.0f;
+	if ( m_object->RetType() == OBJECT_CRAZY )
 	{
-		m_angle = angle+m_physics->RetCirStopLength();
-		m_physics->SetMotorSpeedZ(-1.0f);  // tourne à gauche
-		m_bLeft = TRUE;
+		m_initialWait = 1.0f;
 	}
-	else
+
+	if ( m_type == OBJECT_TRAX  ||
+		 m_type == OBJECT_PERFO ||
+		 m_type == OBJECT_GUN   )
 	{
-		m_angle = angle-m_physics->RetCirStopLength();
-		m_physics->SetMotorSpeedZ(1.0f);  // tourne à droite
-		m_bLeft = FALSE;
+		m_object->SetLock(TRUE);
 	}
-	m_physics->SetMotorSpeedX(0.0f);
-	m_physics->SetMotorSpeedY(0.0f);
 
 	m_bError = FALSE;
 	return ERR_OK;
@@ -99,33 +127,90 @@ Error CTaskTurn::IsEnded()
 	}
 
 	angle = m_object->RetAngleY(0);
+	if ( angle == m_finalAngle )
+	{
+		ProgressLinSpeed(0.0f);
+		ProgressCirSpeed(0.0f);
 
-	if ( m_bLeft )
-	{
-		if ( angle <= m_startAngle+m_angle )
+		if ( m_type == OBJECT_GUN )
 		{
-			m_physics->SetMotorSpeedZ(0.0f);
-//?			m_physics->SetCirMotionY(MO_MOTSPEED, 0.0f);
-			m_physics->SetCirMotionY(MO_CURSPEED, 0.0f);
-//?			m_physics->SetCirMotionY(MO_REASPEED, 0.0f);
-			m_object->SetAngleY(0, m_finalAngle);
-			return ERR_STOP;
+			StartAction(m_object, MGUN_FIRE);
 		}
-	}
-	else
-	{
-		if ( angle >= m_startAngle+m_angle )
+
+		if ( m_type == OBJECT_TRAX  ||
+			 m_type == OBJECT_PERFO ||
+			 m_type == OBJECT_GUN   )
 		{
-			m_physics->SetMotorSpeedZ(0.0f);
-//?			m_physics->SetCirMotionY(MO_MOTSPEED, 0.0f);
-			m_physics->SetCirMotionY(MO_CURSPEED, 0.0f);
-//?			m_physics->SetCirMotionY(MO_REASPEED, 0.0f);
-			m_object->SetAngleY(0, m_finalAngle);
-			return ERR_STOP;
+			m_object->SetLock(FALSE);
 		}
+		return ERR_STOP;
 	}
 
 	return ERR_CONTINUE;
 }
 
+
+// Indique si l'action est annulable.
+
+BOOL CTaskTurn::IsUndoable()
+{
+	return ( m_type == OBJECT_CRAZY );
+}
+
+
+// Spécifie la vitesse linéaire pour une action pour Blupi.
+
+void CTaskTurn::ProgressLinSpeed(float speed)
+{
+	CMotion*	motion;
+
+	motion = m_object->RetMotion();
+	if ( motion == 0 )  return;
+
+	motion->SetActionLinSpeed(speed);
+}
+
+// Spécifie la vitesse circulaire pour une action pour Blupi.
+
+void CTaskTurn::ProgressCirSpeed(float speed)
+{
+	CMotion*	motion;
+
+	motion = m_object->RetMotion();
+	if ( motion == 0 )  return;
+
+	motion->SetActionCirSpeed(speed);
+}
+
+
+// Démarre une action pour un objet.
+
+void CTaskTurn::StartAction(CObject* pObj, int action)
+{
+	CMotion*	motion;
+
+	motion = pObj->RetMotion();
+	if ( motion == 0 )  return;
+
+	motion->SetAction(action);
+}
+
+
+// Ecrit la situation de l'objet.
+
+void CTaskTurn::WriteSituation()
+{
+	m_undo->WriteTokenFloat("wait", m_initialWait);
+	m_undo->WriteTokenFloat("start", m_startAngle);
+	m_undo->WriteTokenFloat("final", m_finalAngle);
+}
+
+// lit la situation de l'objet.
+
+void CTaskTurn::ReadSituation()
+{
+	m_undo->ReadTokenFloat("wait", m_initialWait);
+	m_undo->ReadTokenFloat("start", m_startAngle);
+	m_undo->ReadTokenFloat("final", m_finalAngle);
+}
 

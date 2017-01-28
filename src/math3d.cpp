@@ -141,6 +141,25 @@ inline float Mod(float a, float m)
 	return a - ((int)(a/m))*m;
 }
 
+// Met une valeur sur la grille la plus proche.
+
+float Grid(float value, float step)
+{
+	if ( value < 0.0f )
+	{
+		return (float)((int)((value-step/2.0f)/step)*step);
+	}
+	else
+	{
+		return (float)((int)((value+step/2.0f)/step)*step);
+	}
+}
+
+D3DVECTOR Grid(D3DVECTOR pos, float step)
+{
+	return D3DVECTOR(Grid(pos.x,step), pos.y, Grid(pos.z,step));
+}
+
 // Retourne un angle normalisé, c'est-à-dire compris entre
 // 0 et 2*PI.
 
@@ -350,6 +369,13 @@ float MidPoint(FPOINT a, FPOINT b, float px)
 	return (b.y-a.y)*(px-a.x)/(b.x-a.x)+a.y;
 }
 
+// Fait progresser un point le long d'une droite.
+
+D3DVECTOR LineProgress(const D3DVECTOR &start, const D3DVECTOR &goal, float progress)
+{
+	return start+(goal-start)*progress;
+}
+
 // Vérifie si un point est dans un triangle.
 
 BOOL IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p)
@@ -373,6 +399,49 @@ BOOL IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p)
 	n = MidPoint(c, b, p.x);
 	m = MidPoint(c, a, p.x);
 	if ( (n>p.y||p.y>m) && (n<p.y||p.y<m) )  return FALSE;
+
+	return TRUE;
+}
+
+// Calcule la déformation d'un point sur une droite.
+
+FPOINT Deforme(FPOINT a, FPOINT b, FPOINT c, FPOINT d, FPOINT p)
+{
+	FPOINT	pp;
+	float	Lab, Lap, Lcd, Lcp;
+
+	Lab = Length(a,b);
+	Lap = Length(a,p);
+	Lcd = Length(c,d);
+	Lcp = Lap*Lcd/Lab;
+
+	if ( Lcd == 0.0f )
+	{
+		pp = c;
+	}
+	else
+	{
+		pp.x = c.x+(d.x-c.x)*Lcp/Lcd;
+		pp.y = c.y+(d.y-c.y)*Lcp/Lcd;
+	}
+
+	return pp;
+}
+
+// Calcule la déformation du point p dans le triangle t1,
+// déformé en un nouveau triangle t2.
+
+BOOL Deforme(FPOINT *t1, FPOINT *t2, FPOINT &p)
+{
+	FPOINT	i12, i20, ii12, ii20;
+
+	if ( !Intersect(t1[0],p, t1[1],t1[2], i12) )  return FALSE;
+	if ( !Intersect(t1[1],p, t1[2],t1[0], i20) )  return FALSE;
+
+	ii12 = Deforme(t1[1],t1[2], t2[1],t2[2], i12);
+	ii20 = Deforme(t1[2],t1[0], t2[2],t2[0], i20);
+
+	if ( !Intersect(t2[0],ii12, t2[1],ii20, p) )  return FALSE;
 
 	return TRUE;
 }
@@ -1004,6 +1073,99 @@ float Rand()
 	return (float)rand()/RAND_MAX;
 }
 
+// Retourne une valeur pseudo-aléatoire comprise entre 0 et 1,
+// toujours identique pour un même nombre de départ.
+
+float Rand(float init)
+{
+	static const int A = 48271;
+	static const int M = 2147483647;
+	static const int Q = M / A;
+	static const int R = M % A;
+
+	int		state, tmp;
+
+	state = (int)init;
+
+	if ( state < 0 )  state += M;
+	if ( state == 0 )  state = 1;
+ 
+	tmp = A * ( state % Q ) - R * ( state / Q );
+	if ( tmp >= 0 )
+	{
+		state = tmp;
+	}
+	else
+	{
+		state = tmp + M;
+	}
+
+	return (float) state / M;
+}
+
+
+// Générateur pseudo-aléatoire. Une valeur donnée en entrée
+// produit toujours le même nombre "aléatoire".
+
+void PseudoRandom(D3DVERTEX2 &p, float rv, float rh)
+{
+#if 1
+	D3DVECTOR	i;
+
+	i.x = p.x;
+	i.y = p.y;
+	i.z = p.z;
+
+	p.x = Grid(p.x, 0.25f);
+	p.y = Grid(p.y, 0.25f);
+	p.z = Grid(p.z, 0.25f);
+
+	if ( p.x <= -70.0f || p.x >= 70.0f ||
+		 p.z <= -70.0f || p.z >= 70.0f )  rv = 2.0f;
+
+	rv = rv*Norm((i.y+16.0f)/8.0f);
+	p.y += (Rand(i.x*5841234.68f+i.z*5494311.57f)-0.5f)*2.0f*rv;
+	if ( p.y < i.y )  p.y = i.y;
+
+	p.x += (Rand(i.x*8002353.91f+i.z*4862025.33f)-0.5f)*2.0f*rh;
+	p.z += (Rand(i.x*7432954.03f+i.z*6954024.82f)-0.5f)*2.0f*rh;
+#else
+	D3DVECTOR	i;
+
+	i.x = p.x;
+	i.y = p.y;
+	i.z = p.z;
+
+	p.x = Grid(p.x, 0.25f);
+	p.y = Grid(p.y, 0.25f);
+	p.z = Grid(p.z, 0.25f);
+
+	if ( p.x <= -70.0f || p.x >= 70.0f ||
+		 p.z <= -70.0f || p.z >= 70.0f )  rv = 2.0f;
+
+	rv = rv*Norm((i.y+16.0f)/8.0f);
+//?	p.y += sinf(i.x*0.89f)*rv;
+//?	p.y += sinf(i.x*1.13f)*rv;
+	p.y += sinf(i.x*2.31f)*rv;
+	p.y += sinf(i.x*3.77f)*rv;
+//?	p.y += sinf(i.z*0.77f)*rv;
+//?	p.y += sinf(i.z*1.48f)*rv;
+	p.y += sinf(i.z*2.69f)*rv;
+	p.y += sinf(i.z*3.53f)*rv;
+	if ( p.y < i.y )  p.y = i.y;
+
+	p.x += sinf(i.x*0.43f)*rh;
+	p.x += sinf(i.x*0.61f)*rh;
+	p.x += sinf(i.z*2.48f)*rh;
+	p.x += sinf(i.z*3.77f)*rh;
+
+	p.z += sinf(i.x*0.43f)*rh;
+	p.z += sinf(i.x*0.61f)*rh;
+	p.z += sinf(i.z*2.48f)*rh;
+	p.z += sinf(i.z*3.77f)*rh;
+#endif
+}
+
 
 // Gestion de la zone neutre d'un joystick.
 
@@ -1190,6 +1352,29 @@ float Bounce(float progress, float middle, float bounce)
 	}
 }
 
+
+// Retourne la couleur D3DCOLOR correspondante.
+
+D3DCOLOR RetColor(int r, int g, int b)
+{
+	D3DCOLOR	color;
+
+	color  = 0<<24;
+	color |= r<<16;
+	color |= g<<8;
+	color |= b;
+
+	return color;
+}
+
+// Retourne la couleur RGB correspondante.
+
+void RetColor(D3DCOLOR intensity, int &r, int &g, int &b)
+{
+	r = (intensity>>16)&0xff;
+	g = (intensity>>8 )&0xff;
+	b = (intensity>>0 )&0xff;
+}
 
 // Retourne la couleur D3DCOLOR correspondante.
 

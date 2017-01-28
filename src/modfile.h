@@ -9,40 +9,6 @@ class CD3DEngine;
 
 
 
-
-typedef struct
-{
-	char			bUsed;		// TRUE -> utilisé
-	char			bSelect;	// TRUE -> sélectionné
-	D3DVERTEX		p1;
-	D3DVERTEX		p2;
-	D3DVERTEX		p3;
-	D3DMATERIAL7	material;
-	char			texName[20];
-	float			min;
-	float			max;
-}
-OldModelTriangle1;		// longueur = 196 bytes
-
-typedef struct
-{
-	char			bUsed;		// TRUE -> utilisé
-	char			bSelect;	// TRUE -> sélectionné
-	D3DVERTEX		p1;
-	D3DVERTEX		p2;
-	D3DVERTEX		p3;
-	D3DMATERIAL7	material;
-	char			texName[20];
-	float			min;
-	float			max;
-	long			state;
-	short			reserve1;
-	short			reserve2;
-	short			reserve3;
-	short			reserve4;
-}
-OldModelTriangle2;
-
 typedef struct
 {
 	char			bUsed;		// TRUE -> utilisé
@@ -77,6 +43,12 @@ public:
 
 	BOOL			CreateEngineObject(int objRank, int addState=0);
 	void			Mirror();
+	void			Rotate(float angle);
+	void			Translate(const D3DVECTOR &dist);
+	void			TerrainNormalAdjust();
+	void			TerrainNormalShadow(const D3DVECTOR &pos, float factor);
+	void			TerrainRandomize(float rv, float rh);
+	void			TerrainTexture(char *name, int rank);
 
 	void			SetTriangleUsed(int total);
 	int				RetTriangleUsed();

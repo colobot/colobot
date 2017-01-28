@@ -64,6 +64,8 @@ public:
 	void		ResetKey();
 	void		SetKey(int keyRank, int option, int key);
 	int			RetKey(int keyRank, int option);
+	BOOL		IsKeyMouse(int key);
+	BOOL		IsKeyJoystick(int key);
 
 	void		SetForce(float force);
 	float		RetForce();
@@ -74,9 +76,10 @@ public:
 	BOOL		SetJoyForces(float forceX, float forceY);
 
 	void		SetMouseType(D3DMouse type);
-	void		SetNiceMouse(BOOL bNice);
-	BOOL		RetNiceMouse();
 	BOOL		RetNiceMouseCap();
+
+	void		SetMouseCapture();
+	void		ReleaseMouseCapture();
 
 	BOOL		WriteScreenShot(char *filename, int width, int height);
 
@@ -130,7 +133,6 @@ protected:
 	BOOL			m_bDebugMode;
 	BOOL			m_bAudioState;
 	BOOL			m_bAudioTrack;
-	BOOL			m_bNiceMouse;
 	HRESULT			(*m_fnConfirmDevice)(DDCAPS*, D3DDEVICEDESC7*);
 
 public:

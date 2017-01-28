@@ -35,6 +35,9 @@ enum FontType;
 #define STATE_LOOK2		(1<<18)	// aspect #2
 #define STATE_RADIO		(1<<19)	// radio button
 #define STATE_FLASH		(1<<20)	// clignotte
+#define STATE_TODO		(1<<21)	// puzzle à faire (rouge)
+#define STATE_PASSED	(1<<22)	// puzzle fait (vert)
+#define STATE_DEMO		(1<<23)	// pas accessible dans version DEMO
 
 
 
@@ -59,6 +62,7 @@ public:
 	virtual	int		RetState();
 	virtual void	SetIcon(int icon);
 	virtual int		RetIcon();
+	virtual void	SetTexture(char *filename, FPOINT uv1, FPOINT uv2);
 	virtual void	SetName(char* name, BOOL bTooltip=TRUE);
 	virtual char*	RetName();
 	virtual void	SetJustif(int mode);
@@ -112,6 +116,8 @@ protected:
 	int			m_justif;		// type de justification (-1,0,1)
 	char		m_name[100];	// nom du bouton
 	char		m_tooltip[100];	// nom du tooltip
+	char		m_texture[50];	// texture spéciale
+	FPOINT		m_uv1, m_uv2;	// coordonnées texture
 	BOOL		m_bFocus;
 	BOOL		m_bCapture;
 	int			m_tabOrder;

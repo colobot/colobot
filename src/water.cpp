@@ -23,6 +23,15 @@
 
 
 
+// Converts a FLOAT to a DWORD for use in SetRenderState() calls.
+
+inline DWORD F2DW( FLOAT f )
+{
+	return *((DWORD*)&f);
+}
+
+
+
 // Constructeur du terrain.
 
 CWater::CWater(CInstanceManager* iMan, CD3DEngine* engine)
@@ -37,12 +46,22 @@ CWater::CWater(CInstanceManager* iMan, CD3DEngine* engine)
 
 	m_type[0] = WATER_NULL;
 	m_type[1] = WATER_NULL;
-	m_level = 0.0f;
+	m_level = -12.0f;
 	m_bDraw = TRUE;
-	m_bLava = FALSE;
+	m_meteo = METEO_NORM;
 	m_color = 0xffffffff;
-	m_subdiv = 4;
 	m_filename[0] = 0;
+
+	m_pick = 0.0f;
+	m_tension = 0.0f;
+	m_shadowForce   = 1.0f;
+	m_farColorLight = 0x00ffffff;  // blanc
+	m_farColorDark  = 0x00ffffff;  // blanc
+	m_farStart      = 0.4f;
+	m_farEnd        = 0.8f;
+	m_bBold         = FALSE;
+
+	WaterPickFlush();
 }
 
 // Destructeur du terrain.
@@ -62,14 +81,6 @@ BOOL CWater::EventProcess(const Event &event)
 	if ( event.event == EVENT_KEYDOWN )
 	{
 #if 0
-		if ( event.param == 'S' )
-		{
-				 if ( m_subdiv == 1 )  m_subdiv = 2;
-			else if ( m_subdiv == 2 )  m_subdiv = 4;
-			else if ( m_subdiv == 4 )  m_subdiv = 8;
-			else if ( m_subdiv == 8 )  m_subdiv = 1;
-			SetLevel(m_level);
-		}
 		if ( event.param == 'M' )
 		{
 			SetLevel(m_level+1.0f);
@@ -144,9 +155,13 @@ BOOL CWater::EventFrame(const Event &event)
 
 	if ( m_type[0] == WATER_NULL )  return TRUE;
 
-	if ( m_bLava )
+	if ( m_meteo != METEO_NORM )
 	{
 		LavaFrame(event.rTime);
+	}
+	if ( m_pick != 0.0f )
+	{
+		WaterPickFrame(event.rTime);
 	}
 	return TRUE;
 }
@@ -155,7 +170,7 @@ BOOL CWater::EventFrame(const Event &event)
 
 void CWater::LavaFrame(float rTime)
 {
-	D3DVECTOR	eye, lookat, dir, perp, pos;
+	D3DVECTOR	eye, lookat, dir, perp, pos, speed;
 	FPOINT		dim;
 	float		distance, shift, level;
 	int			i;
@@ -175,6 +190,8 @@ void CWater::LavaFrame(float rTime)
 		eye    = m_engine->RetEyePt();
 		lookat = m_engine->RetLookatPt();
 
+		if ( eye.y > 100.0f )  return;
+
 		distance = Rand()*200.0f;
 		shift = (Rand()-0.5f)*200.0f;
 
@@ -186,17 +203,23 @@ void CWater::LavaFrame(float rTime)
 		perp.z =  dir.x;
 		pos = pos + perp*shift;
 
-		level = m_terrain->RetFloorLevel(pos, TRUE);
-		if ( level < m_level )
-		{
-			pos.y = m_level;
+		if ( !m_terrain->ValidPosition(pos, 8.0f) )  return;
 
-			if ( Rand() < m_engine->RetParticuleDensity() )
-			{
-				dim.x = 3.0f+3.0f*Rand();  // hauteur
-				dim.y = 3.0f+3.0f*Rand();  // diamètre
-				m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), dim, PARTIPLOUF0, 1.4f, 0.0f);
-			}
+		if ( m_meteo != METEO_SNOW &&  // pas neige ?
+			 m_meteo != METEO_RAIN )   // pas pluie ?
+		{
+			level = m_terrain->RetFloorLevel(pos);
+			if ( level >= m_level )  return;
+		}
+
+		pos.y = m_level;
+
+		if ( m_meteo == METEO_LAVA &&  // lave rouge ?
+			 m_engine->RetSetup(ST_AMBIANCE) != 0 )
+		{
+			dim.x = 2.0f+2.0f*Rand();  // hauteur
+			dim.y = 1.5f+1.5f*Rand();  // diamètre
+			m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), dim, PARTIPLOUF0, 1.4f, 0.0f);
 
 			level = Rand();
 			if ( level < 0.8f )
@@ -220,6 +243,47 @@ void CWater::LavaFrame(float rTime)
 					m_lastLava = m_time;
 				}
 			}
+		}
+
+		if ( m_meteo == METEO_ORGA &&  // lave organique ?
+			 m_engine->RetSetup(ST_AMBIANCE) != 0 )
+		{
+			dim.x = 1.5f+1.5f*Rand();  // hauteur
+			dim.y = 0.1f+0.1f*Rand();  // diamètre
+			m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), dim, PARTIPLOUF0, 1.4f, 0.0f);
+
+			level = Rand();
+			if ( level < 0.2f )
+			{
+				if ( VaporCreate(PARTIROOT, pos, 0.2f+Rand()*2.0f) )
+				{
+					m_lastLava = m_time;
+				}
+			}
+		}
+
+		if ( m_meteo == METEO_SNOW &&  // neige ?
+			 m_engine->RetSetup(ST_METEO) != 0 )
+		{
+			pos.y = 40.0f;
+			speed.x = 0.0f;
+			speed.z = 0.0f;
+			speed.y = -8.0f;
+			dim.x = 0.5f;
+			dim.y = dim.x;
+			m_particule->CreateParticule(pos, speed, dim, PARTISNOW, 6.0f);
+		}
+
+		if ( m_meteo == METEO_RAIN &&  // pluie ?
+			 m_engine->RetSetup(ST_METEO) != 0 )
+		{
+			pos.y = 40.0f;
+			speed.x = 0.0f;
+			speed.z = 0.0f;
+			speed.y = -30.0f;
+			dim.x = 3.0f;
+			dim.y = dim.x;
+			m_particule->CreateParticule(pos, speed, dim, PARTIRAIN, 2.0f);
 		}
 	}
 }
@@ -278,6 +342,7 @@ void CWater::VaporFrame(int i, float rTime)
 {
 	D3DVECTOR	pos, speed;
 	FPOINT		dim;
+	float		progress;
 	int			j;
 
 	m_vapor[i].time += rTime;
@@ -289,7 +354,9 @@ void CWater::VaporFrame(int i, float rTime)
 
 	if ( m_vapor[i].time <= m_vapor[i].delay )
 	{
-		if ( m_time-m_vapor[i].last >= m_engine->ParticuleAdapt(0.02f) )
+		progress = m_vapor[i].time/m_vapor[i].delay;
+
+		if ( m_time-m_vapor[i].last >= 0.02f )
 		{
 			m_vapor[i].last = m_time;
 
@@ -322,7 +389,7 @@ void CWater::VaporFrame(int i, float rTime)
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIFLAME);
 			}
-			else
+			else if ( m_vapor[i].type == PARTIVAPOR )
 			{
 				pos = m_vapor[i].pos;
 				pos.x += (Rand()-0.5f)*4.0f;
@@ -335,11 +402,86 @@ void CWater::VaporFrame(int i, float rTime)
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIVAPOR);
 			}
+			else if ( m_vapor[i].type == PARTIROOT )
+			{
+				pos = m_vapor[i].pos;
+				pos.x += (Rand()-0.5f)*2.0f;
+				pos.z += (Rand()-0.5f)*2.0f;
+				pos.y -= 2.0f;
+				speed.x = (Rand()-0.5f)*2.0f;
+				speed.z = (Rand()-0.5f)*2.0f;
+				speed.y = (6.0f+Rand()*6.0f)*(1.0f-progress);
+				dim.x = (Rand()*0.5f+0.5f)*(1.0f-progress);
+				dim.y = dim.x;
+				m_particule->CreateParticule(pos, speed, dim, PARTIROOT, 2.0f);
+			}
 		}
 	}
 	else
 	{
 		m_vapor[i].bUsed = FALSE;
+	}
+}
+
+// Remise à zéro de l'évolution des picks.
+
+void CWater::WaterPickFlush()
+{
+	int		i;
+
+	for ( i=0 ; i<MAXWATERPICK ; i++ )
+	{
+		m_waterPick[i].progress = 1.0f;
+		m_waterPick[i].speed = 1.0f;
+		m_waterPick[i].height = 0.0f;
+		m_waterPick[i].radius = 0.0f;
+		m_waterPick[i].pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	}
+}
+
+// Indique si un pick ne chevauche aucun autre.
+
+BOOL CWater::WaterPickCheck(int rank)
+{
+	float	dist;
+	int		i;
+
+	for ( i=0 ; i<MAXWATERPICK ; i++ )
+	{
+		if ( i == rank )  continue;
+
+		dist = Length2d(m_waterPick[i].pos, m_waterPick[rank].pos);
+		if ( dist < m_waterPick[i].radius+m_waterPick[rank].radius )  return FALSE;
+	}
+	return TRUE;
+}
+
+// Evolution des picks.
+
+void CWater::WaterPickFrame(float rTime)
+{
+	int		i, j;
+
+	for ( i=0 ; i<MAXWATERPICK ; i++ )
+	{
+		if ( m_waterPick[i].progress >= 1.0f )
+		{
+			for ( j=0 ; j<50 ; j++ )
+			{
+				m_waterPick[i].progress = 0.0f;
+				m_waterPick[i].height = m_pick;
+				m_waterPick[i].radius = 12.0f+Rand()*20.0f;
+				m_waterPick[i].speed = m_waterPick[i].radius/3.0f;
+				m_waterPick[i].pos.x = (Rand()-0.5f)*m_nbTiles*m_dimTile;
+				m_waterPick[i].pos.z = (Rand()-0.5f)*m_nbTiles*m_dimTile;
+				m_waterPick[i].pos.y = 0.0f;
+				if ( WaterPickCheck(i) )  break;
+			}
+			if ( j >= 50 )  m_waterPick[i].height = 0.0f;
+		}
+
+		m_waterPick[i].progress += rTime*(1.0f/m_waterPick[i].speed);
+		if ( m_waterPick[i].progress >= 1.0f )  m_waterPick[i].progress = 1.0f;
 	}
 }
 
@@ -353,29 +495,7 @@ void CWater::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm,
 #if 0
 	float		t1, t2;
 
-	uv1.x = (pos.x+10000.0f)/40.0f;
-	uv1.y = (pos.z+10000.0f)/40.0f;
-
-	t1 = m_time*1.5f + pos.x*0.1f * pos.z*0.2f;
-	pos.y += sinf(t1)*m_eddy.y;
-
-	t1 = m_time*0.6f + pos.x*0.1f * pos.z*0.2f;
-	t2 = m_time*0.7f + pos.x*0.3f * pos.z*0.4f;
-	pos.x += sinf(t1)*m_eddy.x;
-	pos.z += sinf(t2)*m_eddy.z;
-
-//?	uv2.x = (pos.x+10000.0f)/40.0f+0.3f;
-//?	uv2.y = (pos.z+10000.0f)/40.0f+0.4f;
-	uv2.x = (pos.x+10000.0f)/20.0f;
-	uv2.y = (pos.z+10000.0f)/20.0f;
-
-	t1 = m_time*0.7f + pos.x*5.5f + pos.z*5.6f;
-	t2 = m_time*0.8f + pos.x*5.7f + pos.z*5.8f;
-	norm = D3DVECTOR(sinf(t1)*m_glint, 1.0f, sinf(t2)*m_glint);
-#else
-	float		t1, t2;
-
-	t1 = m_time*1.5f + pos.x*0.1f * pos.z*0.2f;
+	t1 = m_time*1.5f + pos.x*0.2f * pos.z*0.4f;
 	pos.y += sinf(t1)*m_eddy.y;
 
 	t1 = m_time*1.5f;
@@ -387,21 +507,124 @@ void CWater::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm,
 	t1 = m_time*0.50f + pos.x*2.1f + pos.z*1.1f;
 	t2 = m_time*0.75f + pos.x*2.0f + pos.z*1.0f;
 	norm = D3DVECTOR(sinf(t1)*m_glint, 1.0f, sinf(t2)*m_glint);
+#else
+	D3DVECTOR	p;
+	float		t1, t2, weight, dist, progress, add;
+	int			i;
+
+	t1 = m_time*1.5f + pos.x*0.1f * pos.z*0.2f;
+	pos.y += sinf(t1)*m_eddy.y;
+
+	if ( m_pick != 0.0f )
+	{
+		for ( i=0 ; i<MAXWATERPICK ; i++ )
+		{
+			dist = Length2d(pos, m_waterPick[i].pos);
+			if ( dist < m_waterPick[i].radius )
+			{
+				dist = cosf(dist/m_waterPick[i].radius*(PI*0.5f));
+				progress = sinf(m_waterPick[i].progress*PI*4.0f);
+				progress *= 1.0f-m_waterPick[i].progress;
+				pos.y += progress*dist*m_waterPick[i].height*0.8f;
+
+				dist = cosf(dist/m_waterPick[i].radius*(PI*1.5f));
+				progress = sinf(m_waterPick[i].progress*PI*2.0f);
+				progress *= 1.0f-m_waterPick[i].progress;
+				pos.y += progress*dist*m_waterPick[i].height*0.6f;
+			}
+		}
+	}
+
+	if ( m_tension != 0.0f )
+	{
+		add = 0.0f;
+		p = pos;
+		p.x += 4.0f;
+		if ( m_terrain->RetFloorLevel(p) >= m_level+m_eddy.y )  add = 1.0f;
+		p = pos;
+		p.x -= 4.0f;
+		if ( m_terrain->RetFloorLevel(p) >= m_level+m_eddy.y )  add = 1.0f;
+		p = pos;
+		p.z += 4.0f;
+		if ( m_terrain->RetFloorLevel(p) >= m_level+m_eddy.y )  add = 1.0f;
+		p = pos;
+		p.z -= 4.0f;
+		if ( m_terrain->RetFloorLevel(p) >= m_level+m_eddy.y )  add = 1.0f;
+		pos.y += add*m_tension;
+	}
+
+	t1 = m_time*1.5f;
+
+	uv1.x = (pos.x+10000.0f)/40.0f;
+	uv1.x += sinf(t1)*m_eddy.x*0.02f;
+	uv1.x += sinf(t1+pos.x*m_vortex.x)*m_vortex.y;
+	uv1.x += cosf(t1+pos.z*m_vortex.z)*m_vortex.y;
+
+	uv1.y = (pos.z+10000.0f)/40.0f;
+	uv1.y -= cosf(t1)*m_eddy.z*0.02f;
+	uv1.y += cosf(t1+pos.x*m_vortex.x)*m_vortex.y;
+	uv1.y += sinf(t1+pos.z*m_vortex.z)*m_vortex.y;
+
+	uv2.x = (pos.x+10010.0f)/20.0f;
+	uv2.x += cosf(-t1)*m_eddy.x*0.02f;
+	uv2.x += sinf(-t1-pos.x*m_vortex.x)*m_vortex.y;
+	uv2.x += cosf(-t1-pos.z*m_vortex.z)*m_vortex.y;
+
+	uv2.y = (pos.z+10010.0f)/20.0f;
+	uv2.y -= sinf(-t1)*m_eddy.z*0.02f;
+	uv2.y += cosf(-t1-pos.x*m_vortex.x)*m_vortex.y;
+	uv2.y += sinf(-t1-pos.z*m_vortex.z)*m_vortex.y;
+
+	t1 = m_time*0.50f + pos.x*2.1f + pos.z*1.1f;
+	t2 = m_time*0.75f + pos.x*2.0f + pos.z*1.0f;
+	norm = D3DVECTOR(sinf(t1)*m_glint, 1.0f, sinf(t2)*m_glint);
+
+	// Plus foncé si proche d'une rive. Suppose un éclairage venant
+	// du sud-est (x<0, z>0).
+	if ( m_shadowForce != 0.0f )
+	{
+#if 1
+		weight = m_terrain->RetShadows(pos);
+		if ( m_shadowForce > 0.0f )
+		{
+			norm *= powf(0.1f, weight*m_shadowForce);
+		}
+		else
+		{
+			norm *= (1.0f+weight)*(-m_shadowForce);
+		}
+#else
+		weight = 0.0f;
+		p = pos;
+		p.x += 12.0f;
+		if ( m_terrain->RetFloorLevel(p) >= m_level+m_eddy.y )  weight += 3.0f;
+		p = pos;
+		p.x -= 12.0f;
+		if ( m_terrain->RetFloorLevel(p) >= m_level+m_eddy.y )  weight += 1.0f;
+		p = pos;
+		p.z += 12.0f;
+		if ( m_terrain->RetFloorLevel(p) >= m_level+m_eddy.y )  weight += 3.0f;
+		p = pos;
+		p.z -= 12.0f;
+		if ( m_terrain->RetFloorLevel(p) >= m_level+m_eddy.y )  weight += 1.0f;
+		norm *= powf(0.1f, weight*m_shadowForce);
+#endif
+	}
 #endif
 }
 
-// Dessine la surface arrière de l'eau.
-// Cette surface empèche de voir le ciel (background) sous l'eau !
+// Dessine la surface du fond de l'eau.
 
 void CWater::DrawBack()
 {
 	LPDIRECT3DDEVICE7 device;
-	D3DVERTEX2		vertex[4];		// 2 triangles
+	D3DVERTEX2		vertex[10];		// 8 triangles
 	D3DMATERIAL7	material;
 	D3DMATRIX		matrix;
-	D3DVECTOR		eye, lookat, n, p, p1, p2;
+	D3DVECTOR		eye, lookat, n, p1, p2, pos, dim;
 	FPOINT			uv1, uv2;
 	float			deep, dist;
+	int				x, z;
 
 	if ( !m_bDraw )  return;
 	if ( m_type[0] == WATER_NULL )  return;
@@ -411,62 +634,78 @@ void CWater::DrawBack()
 	lookat = m_engine->RetLookatPt();
 
 	ZeroMemory( &material, sizeof(D3DMATERIAL7) );
-	material.diffuse = m_diffuse;
-	material.ambient = m_ambient;
+//?	material.diffuse.r = 0.0f;
+//?	material.diffuse.g = 0.0f;
+//?	material.diffuse.b = 0.0f;
+//?	material.ambient.r = 0.0f;
+//?	material.ambient.g = 0.0f;
+//?	material.ambient.b = 0.0f;
 	m_engine->SetMaterial(material);
 
 	m_engine->SetTexture("", 0);
 
+	p1.x = -m_nbTiles*m_dimTile/2.0f;
+	p1.z = -m_nbTiles*m_dimTile/2.0f;
+	p1.y = -16.0f;
+
+	p2.x = m_nbTiles*m_dimTile/2.0f;
+	p2.z = m_nbTiles*m_dimTile/2.0f;
+	p2.y = -16.0f;
+
+	dist = 0.0f;
+	dist = Max(dist, Length(eye, D3DVECTOR(p1.x, p1.y, p1.z)));
+	dist = Max(dist, Length(eye, D3DVECTOR(p1.x, p1.y, p2.z)));
+	dist = Max(dist, Length(eye, D3DVECTOR(p2.x, p1.y, p1.z)));
+	dist = Max(dist, Length(eye, D3DVECTOR(p2.x, p1.y, p2.z)));
+
 	device = m_engine->RetD3DDevice();
-	device->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
-	device->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
 	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+	device->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
+#if 1
+	device->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
+	device->SetRenderState(D3DRENDERSTATE_FOGCOLOR, 0x00ffffff);
+	device->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, D3DFOG_LINEAR);
+	device->SetRenderState(D3DRENDERSTATE_FOGSTART, F2DW(dist*0.25f));
+	device->SetRenderState(D3DRENDERSTATE_FOGEND,   F2DW(dist));
+#endif
 	m_engine->SetState(D3DSTATENORMAL);
 
 	deep = m_engine->RetDeepView(0);
-	m_engine->SetDeepView(deep*2.0f, 0);
+	m_engine->SetDeepView(dist, 0);
 	m_engine->SetFocus(m_engine->RetFocus());
-	m_engine->UpdateMatProj();  // double la profondeur de vue
+	m_engine->UpdateMatProj();  // diminue la profondeur de vue
 
 	D3DUtil_SetIdentityMatrix(matrix);
 	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
 
-	p.x = eye.x;
-	p.z = eye.z;
-	dist = Length2d(eye, lookat);
-	p.x = (lookat.x-eye.x)*deep*1.0f/dist + eye.x;
-	p.z = (lookat.z-eye.z)*deep*1.0f/dist + eye.z;
-
-	p1.x =  (lookat.z-eye.z)*deep*2.0f/dist + p.x;
-	p1.z = -(lookat.x-eye.x)*deep*2.0f/dist + p.z;
-	p2.x = -(lookat.z-eye.z)*deep*2.0f/dist + p.x;
-	p2.z =  (lookat.x-eye.x)*deep*2.0f/dist + p.z;
-
-	p1.y = -50.0f;
-	p2.y = m_level;
-
-	n.x = (lookat.x-eye.x)/dist;
-	n.z = (lookat.z-eye.z)/dist;
-	n.y = 0.0f;
+	n.x = 0.0f;
+	n.z = 0.0f;
+	n.y = 0.001f;
 
 	uv1.x = uv1.y = 0.0f;
 	uv2.x = uv2.y = 0.0f;
 
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, p1.z), n, uv1.x,uv2.y);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, p1.z), n, uv1.x,uv1.y);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, p2.z), n, uv2.x,uv2.y);
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, p2.z), n, uv2.x,uv1.y);
-
-	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
-	m_engine->AddStatisticTriangle(2);
+	dim = (p2-p1)/4;
+	pos.z = p1.z;
+	for ( z=0 ; z<4 ; z++ )
+	{
+		pos.x = p1.x;
+		vertex[0] = D3DVERTEX2(D3DVECTOR(pos.x, p1.y, pos.z), n, uv1.x,uv2.y);
+		vertex[1] = D3DVERTEX2(D3DVECTOR(pos.x, p1.y, pos.z+dim.z), n, uv1.x,uv1.y);
+		for ( x=0 ; x<4 ; x++ )
+		{
+			pos.x += dim.x;
+			vertex[2+x*2] = D3DVERTEX2(D3DVECTOR(pos.x, p1.y, pos.z), n, uv1.x,uv2.y);
+			vertex[3+x*2] = D3DVERTEX2(D3DVECTOR(pos.x, p1.y, pos.z+dim.z), n, uv1.x,uv1.y);
+		}
+		device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 10, NULL);
+		m_engine->AddStatisticTriangle(8);
+		pos.z += dim.z;
+	}
 
 	m_engine->SetDeepView(deep, 0);
 	m_engine->SetFocus(m_engine->RetFocus());
 	m_engine->UpdateMatProj();  // remet profondeur de vue initiale
-
-	device->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
-	device->SetRenderState(D3DRENDERSTATE_ZENABLE, TRUE);
-	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
 }
 
 // Dessine la surface plane de l'eau.
@@ -477,18 +716,26 @@ void CWater::DrawSurf()
 	D3DVERTEX2*		vertex;		// triangles
 	D3DMATERIAL7	material;
 	D3DMATRIX		matrix;
-	D3DVECTOR		eye, lookat, n, pos, p;
+	D3DCOLOR		farColor;
+	D3DCOLORVALUE	cvLight, cvDark, cv;
+	D3DVECTOR		eye, lookat, n, pos, p, p1, p2, oBold;
 	FPOINT			uv1, uv2;
 	BOOL			bUnder;
 	DWORD			flags;
-	float			deep, size, sizez, radius;
+	float			deep, size, sizez, radius, dist, dirV;
+	float			angle, intensity, farStart, farEnd;
 	int				rankview, i, j, u;
 
 	if ( !m_bDraw )  return;
 	if ( m_type[0] == WATER_NULL )  return;
 	if ( m_lineUsed == 0 )  return;
 
-	vertex = (D3DVERTEX2*)malloc(sizeof(D3DVERTEX2)*(m_brick+2)*2);
+	if ( m_type[0] == WATER_TT )
+	{
+		DrawBack();  // dessine le fond
+	}
+
+	vertex = (D3DVERTEX2*)malloc(sizeof(D3DVERTEX2)*(m_nbTiles+2)*2);
 
 	eye = m_engine->RetEyePt();
 	lookat = m_engine->RetLookatPt();
@@ -496,11 +743,57 @@ void CWater::DrawSurf()
 	rankview = m_engine->RetRankView();
 	bUnder = ( rankview == 1);
 
+	// Calcule la distance pour le brouillard qui fait apparaître
+	// l'eau blanche au loin.
+	p1.x = -m_nbTiles*m_dimTile/2.0f;
+	p1.z = -m_nbTiles*m_dimTile/2.0f;
+	p1.y = -8.0f;
+
+	p2.x = m_nbTiles*m_dimTile/2.0f;
+	p2.z = m_nbTiles*m_dimTile/2.0f;
+	p2.y = -8.0f;
+
+	dist = 0.0f;
+	dist = Max(dist, Length(eye, D3DVECTOR(p1.x, p1.y, p1.z)));
+	dist = Max(dist, Length(eye, D3DVECTOR(p1.x, p1.y, p2.z)));
+	dist = Max(dist, Length(eye, D3DVECTOR(p2.x, p1.y, p1.z)));
+	dist = Max(dist, Length(eye, D3DVECTOR(p2.x, p1.y, p2.z)));
+
+	// Plus la caméra est verticale et moins le brouillard est présent.
+	dirV = m_engine->RetEyeDirV()/(PI/2.0f);
+	dirV = dirV*2.0f;
+	if ( dirV < 1.0f )  dirV = 1.0f;
+	dist *= dirV;
+
+	// L'intensité est maximale (1.0) si on regarde contre le soleil,
+	// c'est-à-dire au sud-est. On est face au soleil lorsque
+	// m_eyeDirH = PI*0.75 (135 degrés).
+	angle = m_engine->RetEyeDirH();
+	angle = NormAngle(angle-PI*0.75f);
+	intensity = 0.5f+sinf(PI*0.5f+angle)*0.5f;
+
+	cvLight = RetColor(m_farColorLight);
+	cvDark  = RetColor(m_farColorDark);
+	cv.r = cvDark.r+(cvLight.r-cvDark.r)*intensity;
+	cv.g = cvDark.g+(cvLight.g-cvDark.g)*intensity;
+	cv.b = cvDark.b+(cvLight.b-cvDark.b)*intensity;
+	farColor = RetColor(cv);
+
+	farStart = m_farStart;
+	farEnd   = m_farEnd;
+//?	farStart = 1.0f-(1.0f-m_farStart)*(intensity*0.5f+0.5f);
+//?	farEnd   = 1.0f-(1.0f-m_farEnd  )*(intensity*0.5f+0.5f);
+
 	device = m_engine->RetD3DDevice();
 //?	device->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
-//?	device->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
+	device->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
 //?	device->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
 	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+	device->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
+	device->SetRenderState(D3DRENDERSTATE_FOGCOLOR, farColor);
+	device->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, D3DFOG_LINEAR);
+	device->SetRenderState(D3DRENDERSTATE_FOGSTART, F2DW(dist*farStart));
+	device->SetRenderState(D3DRENDERSTATE_FOGEND,   F2DW(dist*farEnd));
 
 	D3DUtil_SetIdentityMatrix(matrix);
 	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
@@ -531,18 +824,22 @@ void CWater::DrawSurf()
 	}
 	device->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
 
-	size = m_size/2.0f;
+	size = m_dimTile/2.0f;
 	if ( bUnder )  sizez = -size;
 	else           sizez =  size;
 
 	// Dessine toutes les lignes.
 	deep = m_engine->RetDeepView(0)*1.5f;
 
+	if ( m_bBold )  oBold = D3DVECTOR(-4.0f, 0.0f, -4.0f);
+	else            oBold = D3DVECTOR( 0.0f, 0.0f,  0.0f);
+
 	for ( i=0 ; i<m_lineUsed ; i++ )
 	{
 		pos.y = m_level;
 		pos.z = m_line[i].pz;
 		pos.x = m_line[i].px1;
+		pos += oBold;
 
 		// Ligne visible ?
 		p = pos;
@@ -599,27 +896,47 @@ void CWater::DrawSurf()
 BOOL CWater::RetWater(int x, int y)
 {
 	D3DVECTOR	pos;
-	float		size, offset, level;
-	int			dx, dy;
+	TerrainRes	res;
+	float		offset;
 
-	x *= m_subdiv;
-	y *= m_subdiv;
-
-	size = m_size/m_subdiv;
-	offset = m_brick*m_size/2.0f;
-
-	for ( dy=0 ; dy<=m_subdiv ; dy++ )
+	if ( m_nbTiles%2 == 0 )
 	{
-		for ( dx=0 ; dx<=m_subdiv ; dx++ )
-		{
-			pos.x = (x+dx)*size - offset;
-			pos.z = (y+dy)*size - offset;
-			pos.y = 0.0f;
-			level = m_terrain->RetFloorLevel(pos, TRUE);
-			if ( level < m_level+m_eddy.y )  return TRUE;
-		}
+		offset = m_nbTiles*m_dimTile/2.0f;
 	}
-	return FALSE;
+	else
+	{
+		offset = m_nbTiles*m_dimTile/2.0f - m_dimTile/2.0f;
+	}
+
+	pos.x = x*m_dimTile - offset;
+	pos.z = y*m_dimTile - offset;
+	pos.y = 0.0f;
+
+	if ( m_bBold )
+	{
+		if ( x <= 0 || x >= m_nbTiles ||
+			 y <= 0 || y >= m_nbTiles )  return FALSE;
+
+		res = m_terrain->RetResource(pos, TRUE);
+		if ( res == TR_SPACE )  return TRUE;
+		pos.x -= 8.0f;
+		res = m_terrain->RetResource(pos, TRUE);
+		if ( res == TR_SPACE )  return TRUE;
+		pos.z -= 8.0f;
+		res = m_terrain->RetResource(pos, TRUE);
+		if ( res == TR_SPACE )  return TRUE;
+		pos.x += 8.0f;
+		res = m_terrain->RetResource(pos, TRUE);
+		if ( res == TR_SPACE )  return TRUE;
+		return FALSE;
+	}
+	else
+	{
+		res = m_terrain->RetResource(pos, TRUE);
+		if ( res == TR_LIFT )  return FALSE;
+		if ( res == TR_SPACE )  return TRUE;
+		return FALSE;
+	}
 }
 
 // Met à jour les positions par-rapport au terrain.
@@ -632,11 +949,18 @@ BOOL CWater::CreateLine(int x, int y, int len)
 	m_line[m_lineUsed].y   = y;
 	m_line[m_lineUsed].len = len;
 
-	offset = m_brick*m_size/2.0f - m_size/2.0f;
+	if ( m_nbTiles%2 == 0 )
+	{
+		offset = m_nbTiles*m_dimTile/2.0f;
+	}
+	else
+	{
+		offset = m_nbTiles*m_dimTile/2.0f - m_dimTile/2.0f;
+	}
 
-	m_line[m_lineUsed].px1 = m_size* m_line[m_lineUsed].x - offset;
-	m_line[m_lineUsed].px2 = m_size*(m_line[m_lineUsed].x+m_line[m_lineUsed].len) - offset;
-	m_line[m_lineUsed].pz  = m_size* m_line[m_lineUsed].y - offset;
+	m_line[m_lineUsed].px1 = m_dimTile* m_line[m_lineUsed].x - offset;
+	m_line[m_lineUsed].px2 = m_dimTile*(m_line[m_lineUsed].x+m_line[m_lineUsed].len) - offset;
+	m_line[m_lineUsed].pz  = m_dimTile* m_line[m_lineUsed].y - offset;
 
 	m_lineUsed ++;
 
@@ -645,12 +969,13 @@ BOOL CWater::CreateLine(int x, int y, int len)
 
 // Crée toutes les étendues d'eau.
 
-BOOL CWater::Create(WaterType type1, WaterType type2, const char *filename,
-					D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient,
-					float level, float glint, D3DVECTOR eddy)
+BOOL CWater::Init(WaterType type1, WaterType type2, const char *filename,
+				  D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient,
+				  float level, float glint, D3DVECTOR eddy, D3DVECTOR vortex,
+				  float pick, float tension, float shadowForce,
+				  D3DCOLOR farColorLight, D3DCOLOR farColorDark,
+				  float farStart, float farEnd, Meteo meteo, BOOL bBold)
 {
-	int			x, y, len;
-
 	m_type[0]  = type1;
 	m_type[1]  = type2;
 	m_diffuse  = diffuse;
@@ -658,9 +983,30 @@ BOOL CWater::Create(WaterType type1, WaterType type2, const char *filename,
 	m_level    = level;
 	m_glint    = glint;
 	m_eddy     = eddy;
+	m_vortex   = vortex;
+	m_pick     = pick;
+	m_tension  = tension;
+	m_shadowForce = shadowForce;
+	m_farColorLight = farColorLight;
+	m_farColorDark  = farColorDark;
+	m_farStart = farStart;
+	m_farEnd   = farEnd;
+	m_meteo    = meteo;
+	m_bBold    = bBold;
 	m_time     = 0.0f;
 	m_lastLava = 0.0f;
 	strcpy(m_filename, filename);
+
+	WaterPickFlush();
+
+	return TRUE;
+}
+
+// Crée toutes les étendues d'eau.
+
+BOOL CWater::Create()
+{
+	int		x, y, len, nbTiles;
 
 	VaporFlush();
 
@@ -674,19 +1020,18 @@ BOOL CWater::Create(WaterType type1, WaterType type2, const char *filename,
 	{
 		m_terrain = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
 	}
-	m_brick = m_terrain->RetBrick()*m_terrain->RetMosaic();
-	m_size  = m_terrain->RetSize();
-
-	m_brick /= m_subdiv;
-	m_size  *= m_subdiv;
+	m_nbTiles = m_terrain->RetNbTiles();
+	m_dimTile = m_terrain->RetDimTile();
 
 	if ( m_type[0] == WATER_NULL )  return TRUE;
 
 	m_lineUsed = 0;
-	for ( y=0 ; y<m_brick ; y++ )
+	nbTiles = m_nbTiles;
+	if ( m_bBold )  nbTiles ++;
+	for ( y=0 ; y<nbTiles ; y++ )
 	{
 		len = 0;
-		for ( x=0 ; x<m_brick ; x++ )
+		for ( x=0 ; x<nbTiles ; x++ )
 		{
 			if ( RetWater(x,y) )  // eau ici ?
 			{
@@ -721,7 +1066,7 @@ void CWater::Flush()
 	m_type[0] = WATER_NULL;
 	m_type[1] = WATER_NULL;
 	m_level = 0.0f;
-	m_bLava = FALSE;
+	m_meteo = METEO_NORM;
 }
 
 
@@ -731,8 +1076,7 @@ BOOL CWater::SetLevel(float level)
 {
 	m_level = level;
 
-	return Create(m_type[0], m_type[1], m_filename, m_diffuse, m_ambient,
-				  m_level, m_glint, m_eddy);
+	return Create();
 }
 
 // Retourne le niveau actuel de l'eau.
@@ -746,39 +1090,7 @@ float CWater::RetLevel()
 
 float CWater::RetLevel(CObject* object)
 {
-	ObjectType	type;
-
-	type = object->RetType();
-
-	if ( type == OBJECT_HUMAN ||
-		 type == OBJECT_TECH  )
-	{
-		return m_level-3.0f;
-	}
-
-	if ( type == OBJECT_CAR      ||
-		 type == OBJECT_MOBILEtg ||
-		 type == OBJECT_MOBILEfb ||
-		 type == OBJECT_MOBILEob )
-	{
-//?		return m_level-2.0f;
-		return m_level;
-	}
-
 	return m_level;
-}
-
-
-// Gestion du mode lave/eau.
-
-void CWater::SetLava(BOOL bLava)
-{
-	m_bLava = bLava;
-}
-
-BOOL CWater::RetLava()
-{
-	return m_bLava;
 }
 
 
@@ -788,7 +1100,7 @@ void CWater::AdjustEye(D3DVECTOR &eye)
 {
 	if ( m_level == 0.0f )  return;
 
-	if ( m_bLava )
+	if ( m_meteo != 0 )
 	{
 		if ( eye.y < m_level+2.0f )
 		{
@@ -805,3 +1117,57 @@ void CWater::AdjustEye(D3DVECTOR &eye)
 	}
 }
 
+
+// Cherche une zone d'eau carrée.
+
+BOOL CWater::SearchArea(D3DVECTOR &pos, float length)
+{
+	D3DVECTOR	p1, p2;
+	float		dim;
+	int			i;
+
+	dim = m_terrain->RetDim();
+
+	for ( i=0 ; i<100 ; i++ )
+	{
+		pos.x = (Rand()-0.5f)*dim;
+		pos.z = (Rand()-0.5f)*dim;
+		pos.y = 0.0f;
+		pos = Grid(pos, 8.0f);
+
+		p1.x = pos.x-length;
+		p1.z = pos.z-length;
+		p2.x = pos.x+length;
+		p2.z = pos.z+length;
+
+		if ( IsWaterRect(p1,p2) )  return TRUE;
+	}
+
+	return FALSE;
+}
+
+// Cherche si une zone rectangulaire est constituée d'eau.
+
+BOOL CWater::IsWaterRect(const D3DVECTOR &p1, const D3DVECTOR &p2)
+{
+	D3DVECTOR	pp1, pp2, p;
+
+	pp1.x = Min(p1.x, p2.x)-8.0f;
+	pp1.z = Min(p1.z, p2.z)-8.0f;
+	pp1.y = 0.0f;
+
+	pp2.x = Max(p1.x, p2.x)+8.0f;
+	pp2.z = Max(p1.z, p2.z)+8.0f;
+	pp2.y = 0.0f;
+
+	p.y = 0.0f;
+	for ( p.z=pp1.z ; p.z<=pp2.z ; p.z+=8.0f )
+	{
+		for ( p.x=pp1.x ; p.x<=pp2.x ; p.x+=8.0f )
+		{
+			if ( m_terrain->RetResource(p) != TR_SPACE )  return FALSE;
+		}
+	}
+
+	return TRUE;
+}

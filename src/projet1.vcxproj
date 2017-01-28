@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <SccProjectName />
     <SccLocalPath />
-    <ProjectGuid>{04892758-1A57-4157-8AAF-2B7BB7DCC22E}</ProjectGuid>
+    <ProjectGuid>{34AF49F6-E665-465B-9D16-17BD5C131EDF}</ProjectGuid>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -45,7 +45,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)\..\..\MicrosoftDirectX7SDK\DXF\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\..\..\MicrosoftDirectX7SDK\DXF\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>BuzzingCars</TargetName>
+    <TargetName>BlupiMania-2</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>.\Release\</OutDir>
@@ -53,7 +53,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)\..\..\MicrosoftDirectX7SDK\DXF\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\..\..\MicrosoftDirectX7SDK\DXF\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>BuzzingCars</TargetName>
+    <TargetName>BlupiMania-2</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -91,8 +91,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <OutputFile>Debug/buzzingcars.exe</OutputFile>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;winmm.lib;d3dx.lib;dinput.lib;ddraw.lib;dxguid.lib;dsound.lib;cbot\cbot.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>Debug/BlupiMania-2.exe</OutputFile>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;winmm.lib;cbot\cbot.lib;d3dx.lib;dinput.lib;ddraw.lib;dxguid.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -130,36 +130,26 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <OutputFile>Release/buzzingcars.exe</OutputFile>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;winmm.lib;d3dx.lib;dinput.lib;ddraw.lib;dxguid.lib;dsound.lib;cbot\cbot.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>Release/BlupiMania-2.exe</OutputFile>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;winmm.lib;cbot\cbot.lib;d3dx.lib;dinput.lib;ddraw.lib;dxguid.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="array.cpp" />
     <ClCompile Include="auto.cpp" />
-    <ClCompile Include="autoalien.cpp" />
-    <ClCompile Include="autobarrel.cpp" />
-    <ClCompile Include="autoblitzer.cpp" />
-    <ClCompile Include="autobomb.cpp" />
-    <ClCompile Include="autocompass.cpp" />
-    <ClCompile Include="autocomputer.cpp" />
+    <ClCompile Include="autocatapult.cpp" />
     <ClCompile Include="autodock.cpp" />
     <ClCompile Include="autodoor.cpp" />
-    <ClCompile Include="autofire.cpp" />
-    <ClCompile Include="autogenerator.cpp" />
-    <ClCompile Include="autohelico.cpp" />
-    <ClCompile Include="autohome.cpp" />
-    <ClCompile Include="autohook.cpp" />
-    <ClCompile Include="autoinca.cpp" />
+    <ClCompile Include="autofiole.cpp" />
+    <ClCompile Include="autoflash.cpp" />
+    <ClCompile Include="autogoal.cpp" />
     <ClCompile Include="autojostle.cpp" />
-    <ClCompile Include="autoremote.cpp" />
-    <ClCompile Include="autorepair.cpp" />
-    <ClCompile Include="autoroot.cpp" />
-    <ClCompile Include="autostand.cpp" />
-    <ClCompile Include="autotower.cpp" />
+    <ClCompile Include="autolift.cpp" />
+    <ClCompile Include="automax1x.cpp" />
+    <ClCompile Include="automeca.cpp" />
+    <ClCompile Include="autoscrap.cpp" />
     <ClCompile Include="blitz.cpp" />
-    <ClCompile Include="brain.cpp" />
     <ClCompile Include="button.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="cbottoken.cpp" />
@@ -169,6 +159,7 @@
     <ClCompile Include="color.cpp" />
     <ClCompile Include="compass.cpp" />
     <ClCompile Include="control.cpp" />
+    <ClCompile Include="cryptfile.cpp" />
     <ClCompile Include="d3dapp.cpp" />
     <ClCompile Include="d3dengine.cpp" />
     <ClCompile Include="d3denum.cpp" />
@@ -180,8 +171,9 @@
     <ClCompile Include="edit.cpp" />
     <ClCompile Include="editvalue.cpp" />
     <ClCompile Include="event.cpp" />
+    <ClCompile Include="filebuffer.cpp" />
+    <ClCompile Include="gamerfile.cpp" />
     <ClCompile Include="gauge.cpp" />
-    <ClCompile Include="geiger.cpp" />
     <ClCompile Include="group.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="iman.cpp" />
@@ -190,29 +182,37 @@
     <ClCompile Include="key.cpp" />
     <ClCompile Include="label.cpp" />
     <ClCompile Include="light.cpp" />
+    <ClCompile Include="link.cpp" />
     <ClCompile Include="list.cpp" />
     <ClCompile Include="maindialog.cpp" />
+    <ClCompile Include="mainedit.cpp" />
     <ClCompile Include="mainmap.cpp" />
-    <ClCompile Include="mainmovie.cpp" />
+    <ClCompile Include="mainundo.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="math3d.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="metafile.cpp" />
     <ClCompile Include="misc.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="modfile.cpp" />
     <ClCompile Include="motion.cpp" />
+    <ClCompile Include="motionbird.cpp" />
+    <ClCompile Include="motionblupi.cpp" />
     <ClCompile Include="motionbot.cpp" />
-    <ClCompile Include="motionhuman.cpp" />
-    <ClCompile Include="motionvehicle.cpp" />
+    <ClCompile Include="motionfish.cpp" />
+    <ClCompile Include="motiongun.cpp" />
+    <ClCompile Include="motionjet.cpp" />
+    <ClCompile Include="motionperfo.cpp" />
+    <ClCompile Include="motionptero.cpp" />
+    <ClCompile Include="motionsnake.cpp" />
+    <ClCompile Include="motionsubm.cpp" />
+    <ClCompile Include="motiontrax.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="particule.cpp" />
-    <ClCompile Include="pesetas.cpp" />
-    <ClCompile Include="physics.cpp" />
     <ClCompile Include="planet.cpp" />
     <ClCompile Include="profile.cpp" />
     <ClCompile Include="progress.cpp" />
     <ClCompile Include="pyro.cpp" />
-    <ClCompile Include="recorder.cpp" />
     <ClCompile Include="restext.cpp" />
     <ClCompile Include="robotmain.cpp" />
     <ClCompile Include="script.cpp" />
@@ -222,9 +222,20 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="task.cpp" />
     <ClCompile Include="taskadvance.cpp" />
+    <ClCompile Include="taskcatapult.cpp" />
+    <ClCompile Include="taskdive.cpp" />
+    <ClCompile Include="taskdock.cpp" />
+    <ClCompile Include="taskdrink.cpp" />
     <ClCompile Include="taskfire.cpp" />
+    <ClCompile Include="taskgoal.cpp" />
     <ClCompile Include="taskgoto.cpp" />
+    <ClCompile Include="taskgun.cpp" />
+    <ClCompile Include="tasklist.cpp" />
     <ClCompile Include="taskmanager.cpp" />
+    <ClCompile Include="taskperfo.cpp" />
+    <ClCompile Include="taskpush.cpp" />
+    <ClCompile Include="taskroll.cpp" />
+    <ClCompile Include="tasktrax.cpp" />
     <ClCompile Include="taskturn.cpp" />
     <ClCompile Include="taskwait.cpp" />
     <ClCompile Include="terrain.cpp" />
@@ -236,9 +247,11 @@
     <CustomBuild Include="cur00001.cur" />
     <CustomBuild Include="cur00002.cur" />
     <CustomBuild Include="cur00003.cur" />
+    <CustomBuild Include="cur00004.cur" />
     <CustomBuild Include="cursor1.cur" />
     <CustomBuild Include="cursorha.cur" />
     <CustomBuild Include="cursorsc.cur" />
+    <CustomBuild Include="cursorse.cur" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="directx.ico" />

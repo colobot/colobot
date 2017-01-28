@@ -6,8 +6,6 @@
 
 class CInstanceManager;
 class CTerrain;
-class CBrain;
-class CPhysics;
 class CObject;
 
 

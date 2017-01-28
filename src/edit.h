@@ -78,6 +78,9 @@ public:
 	void		SetEditCap(BOOL bMode);
 	BOOL		RetEditCap();
 
+	void		SetFilenameCap(BOOL bMode);
+	BOOL		RetFilenameCap();
+
 	void		SetHiliteCap(BOOL bEnable);
 	BOOL		RetHiliteCap();
 
@@ -154,6 +157,8 @@ protected:
 	void		UndoMemorize(OperUndo oper);
 	BOOL		UndoRecall();
 
+	void		RetKeys(int keyRank, int res[]);
+
 protected:
 	CScroll*	m_scroll;			// ascenseur vertical à droite
 
@@ -166,6 +171,7 @@ protected:
 
 	BOOL		m_bMulti;			// TRUE -> multi lignes
 	BOOL		m_bEdit;			// TRUE -> éditable
+	BOOL		m_bFilename;		// TRUE -> nom de fichier
 	BOOL		m_bHilite;			// TRUE -> hilitable
 	BOOL		m_bInsideScroll;	// TRUE -> ascenseur dans le cadre
 	BOOL		m_bDisplaySpec;		// TRUE -> affiche les caractères spéciaux

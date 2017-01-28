@@ -9,6 +9,7 @@ class CD3DEngine;
 class CParticule;
 class CLight;
 class CTerrain;
+class CWater;
 class CCloud;
 class CPlanet;
 class CBlitz;
@@ -16,6 +17,7 @@ class CCamera;
 class CObject;
 class CInterface;
 class CRobotMain;
+class CMainUndo;
 class CDisplayText;
 class CWindow;
 class CSound;
@@ -32,10 +34,11 @@ public:
 	virtual void	DeleteObject(BOOL bAll=FALSE);
 
 	virtual void	Init();
-	virtual void	Start(int param);
+	virtual BOOL	Start(int param);
 	virtual BOOL	EventProcess(const Event &event);
 	virtual Error	IsEnded();
 	virtual BOOL	Abort();
+	virtual BOOL	IsRunning();
 
 	virtual BOOL	SetType(ObjectType type);
 	virtual BOOL	SetValue(int rank, float value);
@@ -47,12 +50,15 @@ public:
 	virtual Error	RetError();
 
 	virtual BOOL	RetBusy();
-	virtual void	SetBusy(BOOL bBuse);
+	virtual void	SetBusy(BOOL bBusy);
 	virtual void	InitProgressTotal(float total);
 	virtual void	EventProgress(float rTime);
 
 	virtual BOOL	RetMotor();
 	virtual void	SetMotor(BOOL bMotor);
+
+	virtual void	WriteSituation();
+	virtual void	ReadSituation();
 
 protected:
 	void		UpdateInterface(float rTime);
@@ -64,12 +70,14 @@ protected:
 	CParticule*		m_particule;
 	CLight*			m_light;
 	CTerrain*		m_terrain;
+	CWater*			m_water;
 	CCloud	*		m_cloud;
 	CPlanet	*		m_planet;
 	CBlitz*			m_blitz;
 	CCamera*		m_camera;
 	CInterface*		m_interface;
 	CRobotMain*		m_main;
+	CMainUndo*		m_undo;
 	CDisplayText*	m_displayText;
 	CObject*		m_object;
 	CSound*			m_sound;

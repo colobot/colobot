@@ -32,10 +32,9 @@
 #include "shortcut.h"
 #include "map.h"
 #include "gauge.h"
-#include "pesetas.h"
-#include "geiger.h"
 #include "progress.h"
 #include "compass.h"
+#include "link.h"
 #include "window.h"
 
 
@@ -502,50 +501,6 @@ CGauge* CWindow::CreateGauge(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg
 	return 0;
 }
 
-// Crée une nouvelle jauge.
-
-CPesetas* CWindow::CreatePesetas(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
-{
-	CPesetas*	pc;
-	int			i;
-
-	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-	for ( i=0 ; i<MAXWINDOW ; i++ )
-	{
-		if ( m_table[i] == 0 )
-		{
-			m_table[i] = new CPesetas(m_iMan);
-			pc = (CPesetas*)m_table[i];
-			pc->Create(pos, dim, icon, eventMsg);
-			return pc;
-		}
-	}
-	return 0;
-}
-
-// Crée une nouvelle jauge.
-
-CGeiger* CWindow::CreateGeiger(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
-{
-	CGeiger*	pc;
-	int			i;
-
-	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-	for ( i=0 ; i<MAXWINDOW ; i++ )
-	{
-		if ( m_table[i] == 0 )
-		{
-			m_table[i] = new CGeiger(m_iMan);
-			pc = (CGeiger*)m_table[i];
-			pc->Create(pos, dim, icon, eventMsg);
-			return pc;
-		}
-	}
-	return 0;
-}
-
 // Crée un nouvel indicateur d'avance.
 
 CProgress* CWindow::CreateProgress(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
@@ -583,6 +538,28 @@ CCompass* CWindow::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg even
 		{
 			m_table[i] = new CCompass(m_iMan);
 			pc = (CCompass*)m_table[i];
+			pc->Create(pos, dim, icon, eventMsg);
+			return pc;
+		}
+	}
+	return 0;
+}
+
+// Crée une nouveau lien graphique.
+
+CLink* CWindow::CreateLink(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+{
+	CLink*	pc;
+	int			i;
+
+	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+
+	for ( i=0 ; i<MAXWINDOW ; i++ )
+	{
+		if ( m_table[i] == 0 )
+		{
+			m_table[i] = new CLink(m_iMan);
+			pc = (CLink*)m_table[i];
 			pc->Create(pos, dim, icon, eventMsg);
 			return pc;
 		}
@@ -1203,7 +1180,6 @@ void CWindow::Draw()
 			DrawShadow(pos, dim);
 		}
 
-#if _EGAMES
 		if ( width <= 124.0f/640.0f )
 		{
 			pos.x = m_pos.x+6.0f/640.0f;
@@ -1224,28 +1200,6 @@ void CWindow::Draw()
 			dim.x = (width-124.0f/640.0f)/2.0f;
 			DrawVertex(pos, dim, 22);
 		}
-#else
-		if ( width <= 168.0f/640.0f )
-		{
-			pos.x = m_pos.x+6.0f/640.0f;
-			dim.x = width;
-			DrawVertex(pos, dim, 21);
-		}
-		else
-		{
-			pos.x = m_pos.x+6.0f/640.0f;
-			dim.x = (width-168.0f/640.0f)/2.0f;
-			DrawVertex(pos, dim, 20);
-
-			pos.x += dim.x;
-			dim.x = 168.0f/640.0f;
-			DrawVertex(pos, dim, 21);
-
-			pos.x += dim.x;
-			dim.x = (width-168.0f/640.0f)/2.0f;
-			DrawVertex(pos, dim, 22);
-		}
-#endif
 
 		if ( m_buttonReduce != 0 )
 		{
@@ -1300,7 +1254,8 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	else if ( icon == 1 )
 	{
 		m_engine->SetTexture("button1.tga");
-		m_engine->SetState(D3DSTATENORMAL);
+//?		m_engine->SetState(D3DSTATENORMAL);
+		m_engine->SetState(D3DSTATETTb);
 		uv1.x = 128.0f/256.0f;  // jaune tooltip
 		uv1.y =   0.0f/256.0f;
 		uv2.x = 224.0f/256.0f;
@@ -1388,10 +1343,10 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	{
 		m_engine->SetTexture("button1.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x = 208.0f/256.0f;  // orange opaque
-		uv1.y =  16.0f/256.0f;
-		uv2.x = 224.0f/256.0f;
-		uv2.y =  32.0f/256.0f;
+		uv1.x =  64.0f/256.0f;
+		uv1.y =  32.0f/256.0f;
+		uv2.x =  96.0f/256.0f;
+		uv2.y =  64.0f/256.0f;
 		uv1.x += dp;
 		uv1.y += dp;
 		uv2.x -= dp;
@@ -1569,7 +1524,7 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 		corner.y = 10.0f/480.0f;
 		DrawIcon(pos, dim, uv1, uv2, corner, 5.0f/256.0f);
 	}
-	else if ( icon == 20 )  // gauche logo BuzzingCars ?
+	else if ( icon == 20 )  // gauche logo BlupiMania ?
 	{
 		m_engine->SetTexture("text.tga");
 		m_engine->SetState(D3DSTATENORMAL);
@@ -1583,7 +1538,7 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 		uv2.y -= dp;
 		DrawIcon(pos, dim, uv1, uv2);
 	}
-	else if ( icon == 21 )  // centre logo BuzzingCars ?
+	else if ( icon == 21 )  // centre logo BlupiMania ?
 	{
 		m_engine->SetTexture("text.tga");
 		m_engine->SetState(D3DSTATENORMAL);
@@ -1597,7 +1552,7 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 		uv2.y -= dp;
 		DrawIcon(pos, dim, uv1, uv2);
 	}
-	else if ( icon == 22 )  // droite logo BuzzingCars ?
+	else if ( icon == 22 )  // droite logo BlupiMania ?
 	{
 		m_engine->SetTexture("text.tga");
 		m_engine->SetState(D3DSTATENORMAL);
@@ -1630,8 +1585,8 @@ void CWindow::DrawHach(FPOINT pos, FPOINT dim)
 	dp = 0.5f/256.0f;
 
 	m_engine->SetTexture("button1.tga");
-	m_engine->SetState(D3DSTATENORMAL);
-//?	m_engine->SetState(D3DSTATETTw);
+//?	m_engine->SetState(D3DSTATENORMAL);
+	m_engine->SetState(D3DSTATETTb);
 
 	ppos.x = pos.x-1.0f/640.0f;
 	ppos.y = pos.y-1.0f/480.0f;

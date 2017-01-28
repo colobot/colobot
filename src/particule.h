@@ -18,12 +18,13 @@ class CSound;
 enum Sound;
 
 
-#define MAXPARTICULE	500
+#define MAXPARTICULE	1000
 #define MAXPARTITYPE	5
 #define MAXTRACK		100
 #define MAXTRACKLEN		10
 #define MAXPARTIFOG		100
 #define MAXWHEELTRACE	1000
+#define MAXSUNBEAM		100
 
 #define SH_WORLD		0		// particule dans le monde sous l'interface)
 #define SH_FRONT		1		// particule dans le monde sur l'interface
@@ -56,7 +57,6 @@ enum ParticuleType
 	PARTIGUN3		= 20,		// balle 3 (araignée)
 	PARTIGUN4		= 21,		// balle 4 (orgaball)
 	PARTIFRAG		= 22,		// fragment triangulaire
-	PARTIQUEUE		= 23,		// queue enflammée
 	PARTIORGANIC1	= 24,		// boule organique mère
 	PARTIORGANIC2	= 25,		// boule organique fille
 	PARTISMOKE1		= 26,		// fumée noire
@@ -70,7 +70,6 @@ enum ParticuleType
 	PARTIRAY4		= 46,		// rayon 4
 	PARTIFLAME		= 47,		// flamme
 	PARTIBUBBLE		= 48,		// bubble
-	PARTIFLIC		= 49,		// rond dans l'eau
 	PARTIEJECT		= 50,		// éjection du réacteur
 	PARTISCRAPS		= 51,		// déchets du réacteur
 	PARTILAVA		= 53,		// toto dit non
@@ -114,7 +113,6 @@ enum ParticuleType
 	PARTILENS3		= 92,		// éclat 3 (rouge)
 	PARTILENS4		= 93,		// éclat 4 (violet)
 	PARTICONTROL	= 94,		// reflet sur bouton
-	PARTICHOC		= 96,		// onde de choc
 	PARTIRECOVER	= 98,		// boule bleu pour recycleur
 	PARTIROOT		= 100,		// fumée gravity root
 	PARTIPLOUF0		= 101,		// plouf
@@ -141,22 +139,50 @@ enum ParticuleType
 	PARTIDUST1		= 127,		// poussière
 	PARTIDUST2		= 128,		// poussière
 	PARTIEXPLOA		= 129,		// explosion atomique (bleu)
-	PARTISTONE1		= 130,		// petite pierre
-	PARTISTONE2		= 131,		// petite pierre
-	PARTISTONE3		= 132,		// petite pierre
-	PARTISTONE4		= 133,		// petite pierre
 	PARTIREACTOR	= 134,		// flame de réacteur (échappement)
 	PARTITRACE1		= 140,		// trace de pneu (freinage)
 	PARTITRACE2		= 141,		// trace de pneu (accélération)
 	PARTITRACE3		= 142,		// trace d'explosion
-	PARTITRACE4		= 143,		// trace d'huile
+	PARTITRACE4		= 143,		// trace de sang rouge (blood)
 	PARTITRACE5		= 144,		// trace radioactive
 	PARTITRACE6		= 145,		// trace de pneu (sol mou)
 	PARTITRACE7		= 146,		// trace de pneu (jante)
-	PARTITRACE8		= 147,		// trace organique verte
+	PARTITRACE8		= 147,		// (pas utilisé)
 	PARTIBIGO		= 148,		// grande explosion organique
 	PARTIBIGT		= 149,		// grande explosion technique
 	PARTIBLITZb		= 150,		// éclair recharge batterie
+	PARTISUNBEAM0	= 151,		// rayon de soleil
+	PARTISUNBEAM1	= 152,		// rayon de soleil
+	PARTISUNBEAM2	= 153,		// rayon de soleil
+	PARTISUNBEAM3	= 154,		// rayon de soleil
+	PARTISUNBEAM4	= 155,		// rayon de soleil
+	PARTISNOW		= 158,		// neige
+	PARTIRAIN		= 159,		// pluie
+
+	PARTIFLAT		= 200,		// FLAT:
+	PARTIFLIC		= 201,		// rond dans l'eau
+	PARTIPOWER		= 202,		// éclair au sol quand bu fiole
+	PARTIGLU		= 203,		// éclair au sol quand bu glu
+	PARTICHOC		= 204,		// onde de choc
+	PARTITERSPTIRE	= 205,		// sprite pour le terrain
+	PARTILOCKZONE	= 206,		// pour debug
+	PARTIGRIDb		= 207,		// éditeur: grille de base
+	PARTIGRIDt		= 207,		// éditeur: grille terrain
+	PARTIGRIDw		= 209,		// éditeur: grille eau
+	PARTIGRIDs		= 210,		// éditeur: grille sélectionnée
+	PARTIGRIDe		= 211,		// éditeur: grille erreur
+	PARTISIGNMARK0	= 220,		// signe indice
+	PARTISIGNMARK1	= 221,		// signe indice
+	PARTISIGNMARK2	= 222,		// signe indice
+	PARTISIGNMARK3	= 223,		// signe indice
+	PARTISIGNMARK4	= 224,		// signe indice
+	PARTISIGNMARK5	= 225,		// signe indice
+	PARTISIGNMARK6	= 226,		// signe indice
+	PARTISIGNMARK7	= 227,		// signe indice
+	PARTISIGNMARK8	= 228,		// signe indice
+	PARTISIGNMARK9	= 229,		// signe indice
+	PARTISIGNMARK10	= 230,		// signe indice
+	PARTISIGNMARK11	= 231,		// signe indice
 };
 
 enum ParticulePhase
@@ -176,6 +202,7 @@ typedef struct
 	float			mass;		// masse de la particule (pour les rebonds)
 	float			weight;		// poids de la particule (pour le bruit)
 	float			duration;	// durée de vie
+	float			ground;		// position du sol
 	D3DVECTOR		pos;		// position absolue (relative si objet lié)
 	D3DVECTOR		goal;		// position but (si bRay)
 	D3DVECTOR		speed;		// vitesses de déplacement
@@ -187,11 +214,7 @@ typedef struct
 	FPOINT			texSup;		// coordonnée texture supérieure
 	FPOINT			texInf;		// cooddonnée texture inférieure
 	float			time;		// âge de la particule (0..n)
-	float			phaseTime;	// âge au début de la phase
-	float			testTime;	// temps depuis dernier test
-	CObject*		objLink;	// objet père (pour réacteur par exemple)
 	CObject*		objFather;	// objet père (pour réacteur par exemple)
-	short			objRank;	// rang de l'objet, ou -1
 	short			trackRank;	// rang de la traînée
 }
 Particule;
@@ -219,6 +242,16 @@ typedef struct
 }
 WheelTrace;
 
+typedef struct
+{
+	char			bUsed;		// TRUE -> particule utilisée
+	ParticuleType	type;		// type PARTI*
+	D3DVECTOR		pos;		// position
+	float			dim;		// demi-largeur
+	float			angle;		// angle supplémentaire
+}
+Sunbeam;
+
 
 
 class CParticule
@@ -237,9 +270,10 @@ public:
 	int			CreateRay(D3DVECTOR pos, D3DVECTOR goal, ParticuleType type, FPOINT dim, float duration=1.0f, int sheet=0);
 	int			CreateTrack(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float length=10.0f, float width=1.0f);
 	void		CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2, const D3DVECTOR &p3, const D3DVECTOR &p4, ParticuleType type);
+	BOOL		CreateSunbeam(const D3DVECTOR &pos, float dim, float angle, ParticuleType type);
+	void		CreateGoto(D3DVECTOR pos);
 	void		DeleteParticule(ParticuleType type);
 	void		DeleteParticule(int channel);
-	BOOL		SetObjectLink(int channel, CObject *object);
 	BOOL		SetObjectFather(int channel, CObject *object);
 	BOOL		SetPosition(int channel, D3DVECTOR pos);
 	BOOL		SetGoal(int channel, D3DVECTOR pos);
@@ -248,8 +282,8 @@ public:
 	BOOL		SetAngle(int channel, float angle);
 	BOOL		SetIntensity(int channel, float intensity);
 	BOOL		SetParam(int channel, D3DVECTOR pos, FPOINT dim, float zoom, float angle, float intensity);
-	BOOL		SetPhase(int channel, ParticulePhase phase, float duration);
 	BOOL		GetPosition(int channel, D3DVECTOR &pos);
+	void		SetSunbeamIntensity(float intensity);
 
 	D3DCOLORVALUE RetFogColor(D3DVECTOR pos);
 
@@ -268,9 +302,9 @@ protected:
 	void		DrawParticuleSphere(int i);
 	void		DrawParticuleCylinder(int i);
 	void		DrawParticuleWheel(int i);
-	CObject*	SearchObjectGun(D3DVECTOR old, D3DVECTOR pos, ParticuleType type, CObject *father);
-	CObject*	SearchObjectRay(D3DVECTOR pos, D3DVECTOR goal, ParticuleType type, CObject *father);
-	void		Play(Sound sound, D3DVECTOR pos, float amplitude);
+	void		DrawParticuleSunbeam(int i);
+	void		DrawParticuleGoto();
+	void		Play(Sound sound, D3DVECTOR pos, float amplitude, float frequency);
 	BOOL		TrackMove(int i, D3DVECTOR pos, float progress);
 	void		TrackDraw(int i, ParticuleType type);
 
@@ -289,6 +323,7 @@ protected:
 	int			m_wheelTraceTotal;
 	int			m_wheelTraceIndex;
 	WheelTrace	m_wheelTrace[MAXWHEELTRACE];
+	Sunbeam		m_sunbeam[MAXSUNBEAM];
 	int			m_totalInterface[MAXPARTITYPE][SH_MAX];
 	BOOL		m_bFrameUpdate[SH_MAX];
 	int			m_fogTotal;
@@ -297,6 +332,11 @@ protected:
 	int			m_exploGunCounter;
 	float		m_lastTimeGunDel;
 	float		m_absTime;
+	float		m_sunbeamIntensity;
+
+	BOOL		m_bGoto;
+	D3DVECTOR	m_gotoPos;
+	float		m_gotoProgress;
 };
 
 

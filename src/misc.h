@@ -21,27 +21,29 @@ enum ClassType
 	CLASS_ENGINE		= 4,
 	CLASS_TERRAIN		= 5,
 	CLASS_OBJECT		= 6,
-	CLASS_PHYSICS		= 7,
-	CLASS_BRAIN			= 8,
-	CLASS_CAMERA		= 9,
-	CLASS_LIGHT			= 10,
-	CLASS_PARTICULE		= 11,
-	CLASS_AUTO			= 12,
-	CLASS_DISPLAYTEXT	= 13,
-	CLASS_PYRO			= 14,
-	CLASS_SCRIPT		= 15,
-	CLASS_TEXT			= 16,
-	CLASS_WATER			= 18,
-	CLASS_CLOUD			= 19,
-	CLASS_MOTION		= 20,
-	CLASS_SOUND			= 21,
-	CLASS_PLANET		= 22,
-	CLASS_TASKMANAGER   = 23,
-	CLASS_DIALOG		= 24,
-	CLASS_MAP			= 25,
-	CLASS_SHORT			= 26,
-	CLASS_BLITZ			= 27,
-	CLASS_RECORDER		= 28,
+	CLASS_CAMERA		= 7,
+	CLASS_LIGHT			= 8,
+	CLASS_PARTICULE		= 9,
+	CLASS_AUTO			= 10,
+	CLASS_DISPLAYTEXT	= 11,
+	CLASS_PYRO			= 12,
+	CLASS_SCRIPT		= 13,
+	CLASS_TEXT			= 14,
+	CLASS_WATER			= 15,
+	CLASS_CLOUD			= 16,
+	CLASS_MOTION		= 17,
+	CLASS_SOUND			= 18,
+	CLASS_PLANET		= 19,
+	CLASS_TASKMANAGER   = 20,
+	CLASS_DIALOG		= 21,
+	CLASS_EDIT			= 22,
+	CLASS_MAP			= 23,
+	CLASS_SHORT			= 24,
+	CLASS_BLITZ			= 25,
+	CLASS_TASKLIST		= 26,
+	CLASS_FILEBUFFER	= 27,
+	CLASS_UNDO			= 28,
+	CLASS_GAMERFILE		= 29,
 };
 
 #define CLASS_MAX		30
@@ -63,7 +65,15 @@ enum Error
 	ERR_GOTO_IMPOSSIBLE	= 210,		// goto impossible
 	ERR_GOTO_ITER		= 211,		// goto trop compliqué
 	ERR_GOTO_BUSY		= 212,		// destination goto occupée
-	ERR_MISSION_NOTERM	= 600,		// mission pas terminée
+	ERR_MISSION_NOTERM	= 300,		// mission pas terminée
+	ERR_PUZZLE_ZEROBLUPI= 301,		// aucun blupi
+	ERR_PUZZLE_ZEROGOAL	= 302,		// aucun ballon
+	ERR_PUZZLE_LOGOAL	= 303,		// trop peu de ballons
+	ERR_PUZZLE_HIGOAL	= 304,		// trop de ballons
+	ERR_PUZZLE_MAXBLUPI	= 305,		// limite de blupi dépassée
+	ERR_PUZZLE_MAXGOAL	= 306,		// limite de ballons dépassée
+	ERR_PUZZLE_MAX		= 307,		// limite d'objets dépassée
+	ERR_CREATE			= 400,		// fichier existe déjà
 
 	INFO_FIRST			= 10000,	// première information
 	INFO_WIN			= 10010,	// gagné
@@ -97,6 +107,10 @@ extern EventMsg	GetUniqueEventMsg();
 extern char RetNoAccent(char letter);
 extern char RetToUpper(char letter);
 extern char RetToLower(char letter);
+
+extern void RemoveEscape(char *dst, char *src);
+extern void InsertEscape(char *dst, char *src);
+extern void SpaceEscape(char *dst, char *src);
 
 extern void TimeToAscii(time_t time, char *buffer);
 extern void PutTime(char *buffer, float time);

@@ -196,6 +196,70 @@ char RetToLower(char letter)
 }
 
 
+// Convertion "\n" en (char)10.
+
+void RemoveEscape(char *dst, char *src)
+{
+	while ( *src != 0 )
+	{
+		if ( src[0] == '\\' && src[1] == 'n' )
+		{
+			*dst++ = '\n';
+			src += 2;
+		}
+		else
+		{
+			*dst++ = *src++;
+		}
+	}
+	*dst = 0;
+}
+
+// Convertion (char)10 en "\n".
+
+void InsertEscape(char *dst, char *src)
+{
+	while ( *src != 0 )
+	{
+		if ( *src == '\n' )
+		{
+			*dst++ = '\\';
+			*dst++ = 'n';
+			src ++;
+		}
+		else
+		{
+			*dst++ = *src++;
+		}
+	}
+	*dst = 0;
+}
+
+// Convertion "\n" ou (char)10 en espace.
+
+void SpaceEscape(char *dst, char *src)
+{
+	while ( *src != 0 )
+	{
+		if ( src[0] == '\\' && src[1] == 'n' )
+		{
+			*dst++ = ' ';
+			src += 2;
+		}
+		else if ( *src == '\n' )
+		{
+			*dst++ = ' ';
+			src ++;
+		}
+		else
+		{
+			*dst++ = *src++;
+		}
+	}
+	*dst = 0;
+}
+
+
 // Conversion du temps en chaîne.
 
 void TimeToAscii(time_t time, char *buffer)

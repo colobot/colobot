@@ -22,7 +22,9 @@
 #define IDC_CURSORSCROLLR      151
 #define IDC_CURSORSCROLLU      152
 #define IDC_CURSORSCROLLD      153
-#define IDC_CURSORTARGET       154
+#define IDC_CURSORGOTO         154
+#define IDC_CURSORSELECT       156
+#define IDC_CURSORSCROLL       157
 
 #define IDC_DEVICE_COMBO      1000 // Device combobox for "Change Device" dlg
 #define IDC_MODE_COMBO        1001 // Mode combobox for "Change Device" dlg

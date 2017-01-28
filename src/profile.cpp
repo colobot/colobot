@@ -19,11 +19,7 @@ static char g_filename[100];
 
 BOOL InitCurrentDirectory()
 {
-#if _EGAMES
-	_fullpath(g_filename, "wildwheels.ini", 100);
-#else
-	_fullpath(g_filename, "buzzingcars.ini", 100);
-#endif
+	_fullpath(g_filename, "blupimania.ini", 100);
 	return TRUE;
 }
 

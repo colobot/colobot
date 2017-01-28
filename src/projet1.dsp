@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib c:\dx7sdk\lib\ddraw.lib c:\dx7sdk\lib\dinput.lib c:\dx7sdk\lib\dxguid.lib c:\dx7sdk\lib\d3dx.lib c:\dx7sdk\lib\dsound.lib cbot\cbot.lib /nologo /subsystem:windows /machine:I386 /out:"Release/buzzingcars.exe"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib c:\dx7sdk\lib\ddraw.lib c:\dx7sdk\lib\dinput.lib c:\dx7sdk\lib\dxguid.lib c:\dx7sdk\lib\d3dx.lib c:\dx7sdk\lib\dsound.lib cbot\cbot.lib /nologo /subsystem:windows /machine:I386 /out:"Release/BlupiMania-2.exe"
 # SUBTRACT LINK32 /debug
 
 !ELSEIF  "$(CFG)" == "projet1 - Win32 Debug"
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib c:\dx7sdk\lib\ddraw.lib c:\dx7sdk\lib\dinput.lib c:\dx7sdk\lib\dxguid.lib c:\dx7sdk\lib\d3dx.lib c:\dx7sdk\lib\dsound.lib cbot\cbot.lib /nologo /subsystem:windows /debug /machine:I386 /out:"Debug/buzzingcars.exe" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib c:\dx7sdk\lib\ddraw.lib c:\dx7sdk\lib\dinput.lib c:\dx7sdk\lib\dxguid.lib c:\dx7sdk\lib\d3dx.lib c:\dx7sdk\lib\dsound.lib cbot\cbot.lib /nologo /subsystem:windows /debug /machine:I386 /out:"Debug/BlupiMania-2.exe" /pdbtype:sept
 # SUBTRACT LINK32 /map
 
 !ENDIF 
@@ -99,27 +99,7 @@ SOURCE=.\auto.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\autoalien.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\autobarrel.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\autoblitzer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\autobomb.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\autocompass.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\autocomputer.cpp
+SOURCE=.\autocatapult.cpp
 # End Source File
 # Begin Source File
 
@@ -131,27 +111,15 @@ SOURCE=.\autodoor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\autofire.cpp
+SOURCE=.\autofiole.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\autogenerator.cpp
+SOURCE=.\autoflash.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\autohelico.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\autohome.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\autohook.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\autoinca.cpp
+SOURCE=.\autogoal.cpp
 # End Source File
 # Begin Source File
 
@@ -159,31 +127,23 @@ SOURCE=.\autojostle.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\autoremote.cpp
+SOURCE=.\autolift.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\autorepair.cpp
+SOURCE=.\automax1x.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\autoroot.cpp
+SOURCE=.\automeca.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\autostand.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\autotower.cpp
+SOURCE=.\autoscrap.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\blitz.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\brain.cpp
 # End Source File
 # Begin Source File
 
@@ -223,6 +183,10 @@ SOURCE=.\control.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\cryptfile.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\cur00001.cur
 # End Source File
 # Begin Source File
@@ -235,6 +199,10 @@ SOURCE=.\cur00003.cur
 # End Source File
 # Begin Source File
 
+SOURCE=.\cur00004.cur
+# End Source File
+# Begin Source File
+
 SOURCE=.\cursor1.cur
 # End Source File
 # Begin Source File
@@ -244,6 +212,10 @@ SOURCE=.\cursorha.cur
 # Begin Source File
 
 SOURCE=.\cursorsc.cur
+# End Source File
+# Begin Source File
+
+SOURCE=.\cursorse.cur
 # End Source File
 # Begin Source File
 
@@ -295,11 +267,15 @@ SOURCE=.\event.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\gauge.cpp
+SOURCE=.\filebuffer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\geiger.cpp
+SOURCE=.\gamerfile.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\gauge.cpp
 # End Source File
 # Begin Source File
 
@@ -339,6 +315,10 @@ SOURCE=.\light.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\link.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\list.cpp
 # End Source File
 # Begin Source File
@@ -347,11 +327,15 @@ SOURCE=.\maindialog.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\mainedit.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\mainmap.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\mainmovie.cpp
+SOURCE=.\mainundo.cpp
 # End Source File
 # Begin Source File
 
@@ -360,6 +344,10 @@ SOURCE=.\map.cpp
 # Begin Source File
 
 SOURCE=.\math3d.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\menu.cpp
 # End Source File
 # Begin Source File
 
@@ -383,15 +371,47 @@ SOURCE=.\motion.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\motionbird.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\motionblupi.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\motionbot.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\motionhuman.cpp
+SOURCE=.\motionfish.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\motionvehicle.cpp
+SOURCE=.\motiongun.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\motionjet.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\motionperfo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\motionptero.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\motionsnake.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\motionsubm.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\motiontrax.cpp
 # End Source File
 # Begin Source File
 
@@ -400,14 +420,6 @@ SOURCE=.\object.cpp
 # Begin Source File
 
 SOURCE=.\particule.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\pesetas.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\physics.cpp
 # End Source File
 # Begin Source File
 
@@ -424,10 +436,6 @@ SOURCE=.\progress.cpp
 # Begin Source File
 
 SOURCE=.\pyro.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\recorder.cpp
 # End Source File
 # Begin Source File
 
@@ -467,7 +475,27 @@ SOURCE=.\taskadvance.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\taskcatapult.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\taskdive.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\taskdock.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\taskdrink.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\taskfire.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\taskgoal.cpp
 # End Source File
 # Begin Source File
 
@@ -475,7 +503,31 @@ SOURCE=.\taskgoto.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\taskgun.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\tasklist.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\taskmanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\taskperfo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\taskpush.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\taskroll.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\tasktrax.cpp
 # End Source File
 # Begin Source File
 
@@ -504,6 +556,13 @@ SOURCE=.\window.cpp
 # Begin Source File
 
 SOURCE=.\winmain.rc
+
+!IF  "$(CFG)" == "projet1 - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "projet1 - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # End Target
 # End Project

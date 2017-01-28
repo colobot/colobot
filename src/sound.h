@@ -10,95 +10,70 @@
 #define MAXOPER		4
 
 class CInstanceManager;
+class CD3DEngine;
 
 
 enum Sound
 {
-	SOUND_CLICK		= 0,
-	SOUND_BOUM		= 1,
-	SOUND_EXPLO		= 2,
-	SOUND_FLY		= 3,
-	SOUND_STEPs		= 4,	// smooth
-	SOUND_MOTOR1	= 5,
-	SOUND_MOTOR2	= 6,
-	SOUND_ERROR		= 7,
-	SOUND_ENERGY	= 8,
-	SOUND_PLOUF		= 9,
-	SOUND_BLUP		= 10,
-	SOUND_WARNING	= 11,
-	SOUND_STATION	= 12,
-	SOUND_RESEARCH	= 13,
-	SOUND_BURN		= 14,
-	SOUND_TZOING	= 15,
-	SOUND_GGG		= 16,
-	SOUND_MANIP		= 17,
-	SOUND_SWIM		= 18,
-	SOUND_RADAR		= 19,
-	SOUND_ALARM		= 20,	// alarme énergie
-	SOUND_PSHHH		= 21,
-	SOUND_NUCLEAR	= 22,
-	SOUND_INFO		= 23,
-	SOUND_OPEN		= 24,
-	SOUND_CLOSE		= 25,
-	SOUND_MESSAGE	= 26,
-	SOUND_BOUMm		= 27,	// metal
-	SOUND_BOUMv		= 28,	// vegetal
-	SOUND_TAKE		= 29,
-	SOUND_EXPLOl	= 30,	// little
-	SOUND_EXPLOlp	= 31,	// little power
-	SOUND_EXPLOp	= 32,	// power
-	SOUND_STEPh		= 33,	// hard
-	SOUND_STEPm		= 34,	// metal
-	SOUND_POWERON	= 35,
-	SOUND_POWEROFF	= 36,
-	SOUND_WAYPOINT	= 37,
-	SOUND_JOSTLE	= 38,
-	SOUND_FINDING	= 39,	// trouvé un objet caché
-	SOUND_FIREp		= 40,	// tir avec phazer
-	SOUND_WHEEL		= 41,	// roue avec pneu
-	SOUND_WHEELb	= 42,	// roue sur la jante
-	SOUND_HOME1		= 43,
-	SOUND_HORN		= 44,
-	SOUND_BREAK1	= 45,
-	SOUND_BREAK2	= 46,
-	SOUND_STARTREADY= 47,
-	SOUND_START3	= 48,
-	SOUND_START2	= 49,
-	SOUND_START1	= 50,
-	SOUND_STARTGO	= 51,
-	SOUND_SPRINKLE	= 52,
-	SOUND_RECORDgall= 53,	// record du circuit
-	SOUND_RECORDgone= 54,	// record du tour
-	SOUND_RECORDlone= 55,	// meilleur tour
-	SOUND_TOUCH		= 56,
-	SOUND_MOTOR3	= 57,
-	SOUND_MOTOR4	= 58,
-	SOUND_MOTOR5	= 59,
-	SOUND_MOTOR6	= 60,
-	SOUND_EXPLOi	= 61,
-	SOUND_HELICO	= 62,
-	SOUND_LAP4		= 63,
-	SOUND_LAP3		= 64,
-	SOUND_LAP2		= 65,
-	SOUND_LAP1		= 66,
-	SOUND_BOT1c		= 67,
-	SOUND_BOT1p		= 68,
-	SOUND_BOT2c		= 69,
-	SOUND_BOT2p		= 70,
-	SOUND_BOT3c		= 71,
-	SOUND_BOT3p		= 72,
-	SOUND_BOT4c		= 73,
-	SOUND_BOT4p		= 74,
-	SOUND_EVIL1		= 75,
-	SOUND_WHEELg	= 76,	// roue sur gravier
-	SOUND_CHOCm		= 77,	// choc métalique
-	SOUND_CHOCa		= 78,	// choc arbre
-	SOUND_FALLg		= 79,	// tombe dans le gravier
-	SOUND_CHOCo		= 80,	// choc objet
-	SOUND_FALLo1	= 81,	// objet tombe
-	SOUND_FALLo2	= 82,	// objet tombe
-	SOUND_FALLo3	= 83,	// objet tombe
-	SOUND_MOTORs	= 84,	// démarrage moteur
+	SOUND_CLICK			= 0,
+	SOUND_BOUM			= 1,
+	SOUND_EXPLO			= 2,
+	SOUND_STEPs			= 3,	// smooth
+	SOUND_ERROR			= 4,
+	SOUND_ENERGY		= 5,
+	SOUND_PLOUF			= 6,
+	SOUND_BLUP			= 7,
+	SOUND_WARNING		= 8,
+	SOUND_BURN			= 9,
+	SOUND_TZOING		= 10,
+	SOUND_MANIP			= 11,
+	SOUND_PSHHH			= 12,
+	SOUND_NUCLEAR		= 13,
+	SOUND_OPEN			= 14,
+	SOUND_CLOSE			= 15,
+	SOUND_MESSAGE		= 16,
+	SOUND_BOUMm			= 17,	// metal
+	SOUND_BOUMv			= 18,	// vegetal
+	SOUND_EXPLOl		= 19,	// little
+	SOUND_EXPLOlp		= 20,	// little power
+	SOUND_EXPLOp		= 21,	// power
+	SOUND_STEPh			= 22,	// hard
+	SOUND_STEPm			= 23,	// metal
+	SOUND_WHEELg		= 24,	// roue sur gravier
+	SOUND_CHOCm			= 25,	// choc métalique
+	SOUND_CHOCa			= 26,	// choc arbre
+	SOUND_CHOCo			= 27,	// choc objet
+	SOUND_FALLo1		= 28,	// objet tombe
+	SOUND_FALLo2		= 29,	// objet tombe
+	SOUND_FALLo3		= 30,	// objet tombe
+	SOUND_BLUPIshibi	= 31,
+	SOUND_BLUPIouaaa	= 32,
+	SOUND_BLUPIhic		= 33,
+	SOUND_BLUPIoups		= 34,
+	SOUND_BLUPIpfiou	= 35,
+	SOUND_BLUPInon		= 36,
+	SOUND_BLUPIpousse	= 37,
+	SOUND_BLUPIeffort	= 38,
+	SOUND_BLUPIaie		= 39,
+	SOUND_BLUPIhhuu		= 40,
+	SOUND_BLUPIohhh		= 41,
+	SOUND_BLUPIgrrr		= 42,
+	SOUND_BLUPIpeur		= 43,
+	SOUND_BLUPIslurp	= 44,
+	SOUND_BLUPIouaou	= 45,
+	SOUND_BLUPIblibli	= 46,
+	SOUND_CRAZY			= 47,
+	SOUND_GLASS			= 48,
+	SOUND_TRAX			= 49,
+	SOUND_TUTUTU		= 50,
+	SOUND_CLOWN			= 51,
+	SOUND_FLIC1			= 52,
+	SOUND_FLIC2			= 53,
+	SOUND_FLIC3			= 54,
+	SOUND_JET			= 55,
+	SOUND_PERFO2		= 56,
+	SOUND_PERFO1		= 57,
+	SOUND_GUN			= 58,
 };
 
 enum SoundNext
@@ -129,6 +104,7 @@ typedef struct
 	unsigned short			uniqueStamp;	// marqueur unique
 	LPDIRECTSOUNDBUFFER		soundBuffer;
 	LPDIRECTSOUND3DBUFFER	soundBuffer3D;
+	float					baseAmplitude;
 	float					startAmplitude;
 	float					changeAmplitude;
 	float					currentAmplitude;
@@ -212,6 +188,7 @@ protected:
 
 protected:
 	CInstanceManager*		m_iMan;
+	CD3DEngine*				m_engine;
 
 	HWND					m_hWnd;
 	BOOL					m_bEnable;

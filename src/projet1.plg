@@ -1,5 +1,5 @@
 --------------------Configuration: projet1 - Win32 Release--------------------
-Begining build with project "D:\Race\projet1\projet1.dsp", at root.
+Begining build with project "D:\Blupimania\projet1\projet1.dsp", at root.
 Active configuration is Win32 (x86) Application (based on Win32 (x86) Application)
 
 Project's tools are:
@@ -7,55 +7,50 @@ Project's tools are:
 			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
 			"Win32 Resource Compiler" with flags "/l 0x100c /fo"Release/winmain.res" /d "NDEBUG" "
 			"Browser Database Maker" with flags "/nologo /o"Release/projet1.bsc" "
-			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib c:\dx7sdk\lib\ddraw.lib c:\dx7sdk\lib\dinput.lib c:\dx7sdk\lib\dxguid.lib c:\dx7sdk\lib\d3dx.lib c:\dx7sdk\lib\dsound.lib cbot\cbot.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/buzzingcars.pdb" /machine:I386 /out:"Release/buzzingcars.exe" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib c:\dx7sdk\lib\ddraw.lib c:\dx7sdk\lib\dinput.lib c:\dx7sdk\lib\dxguid.lib c:\dx7sdk\lib\d3dx.lib c:\dx7sdk\lib\dsound.lib cbot\cbot.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/BlupiMania-2.pdb" /machine:I386 /out:"Release/BlupiMania-2.exe" "
 			"Custom Build" with flags ""
 			"<Component 0xa>" with flags ""
 
-Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSP8806.tmp" with contents </nologo /ML /W3 /GX /Zi /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/projet1.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
-"D:\Race\projet1\d3dapp.cpp"
-"D:\Race\projet1\d3dengine.cpp"
-"D:\Race\projet1\d3dtextr.cpp"
-"D:\Race\projet1\edit.cpp"
-"D:\Race\projet1\gauge.cpp"
-"D:\Race\projet1\maindialog.cpp"
-"D:\Race\projet1\metafile.cpp"
-"D:\Race\projet1\misc.cpp"
-"D:\Race\projet1\modfile.cpp"
-"D:\Race\projet1\motionvehicle.cpp"
-"D:\Race\projet1\pesetas.cpp"
-"D:\Race\projet1\profile.cpp"
-"D:\Race\projet1\restext.cpp"
-"D:\Race\projet1\robotmain.cpp"
-"D:\Race\projet1\script.cpp"
-"D:\Race\projet1\sound.cpp"
-"D:\Race\projet1\window.cpp"
+Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSP980B.tmp" with contents </nologo /ML /W3 /GX /Zi /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/projet1.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\Blupimania\projet1\cryptfile.cpp"
+"D:\Blupimania\projet1\d3dapp.cpp"
+"D:\Blupimania\projet1\d3dengine.cpp"
+"D:\Blupimania\projet1\d3dtextr.cpp"
+"D:\Blupimania\projet1\edit.cpp"
+"D:\Blupimania\projet1\filebuffer.cpp"
+"D:\Blupimania\projet1\gamerfile.cpp"
+"D:\Blupimania\projet1\gauge.cpp"
+"D:\Blupimania\projet1\link.cpp"
+"D:\Blupimania\projet1\maindialog.cpp"
+"D:\Blupimania\projet1\mainedit.cpp"
+"D:\Blupimania\projet1\mainundo.cpp"
+"D:\Blupimania\projet1\metafile.cpp"
+"D:\Blupimania\projet1\misc.cpp"
+"D:\Blupimania\projet1\modfile.cpp"
+"D:\Blupimania\projet1\object.cpp"
+"D:\Blupimania\projet1\profile.cpp"
+"D:\Blupimania\projet1\restext.cpp"
+"D:\Blupimania\projet1\robotmain.cpp"
+"D:\Blupimania\projet1\script.cpp"
+"D:\Blupimania\projet1\sound.cpp"
+"D:\Blupimania\projet1\window.cpp"
 >
-Creating command line "cl.exe @C:\Users\DANIEL~1\AppData\Local\Temp\RSP8806.tmp" 
-Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSP8807.tmp" with contents <kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib c:\dx7sdk\lib\ddraw.lib c:\dx7sdk\lib\dinput.lib c:\dx7sdk\lib\dxguid.lib c:\dx7sdk\lib\d3dx.lib c:\dx7sdk\lib\dsound.lib cbot\cbot.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/buzzingcars.pdb" /machine:I386 /out:"Release/buzzingcars.exe" 
+Creating command line "cl.exe @C:\Users\DANIEL~1\AppData\Local\Temp\RSP980B.tmp" 
+Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSP980C.tmp" with contents <kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib c:\dx7sdk\lib\ddraw.lib c:\dx7sdk\lib\dinput.lib c:\dx7sdk\lib\dxguid.lib c:\dx7sdk\lib\d3dx.lib c:\dx7sdk\lib\dsound.lib cbot\cbot.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/BlupiMania-2.pdb" /machine:I386 /out:"Release/BlupiMania-2.exe" 
 .\Release\array.obj
 .\Release\auto.obj
-.\Release\autoalien.obj
-.\Release\autobarrel.obj
-.\Release\autoblitzer.obj
-.\Release\autobomb.obj
-.\Release\autocompass.obj
-.\Release\autocomputer.obj
+.\Release\autocatapult.obj
 .\Release\autodock.obj
 .\Release\autodoor.obj
-.\Release\autofire.obj
-.\Release\autogenerator.obj
-.\Release\autohelico.obj
-.\Release\autohome.obj
-.\Release\autohook.obj
-.\Release\autoinca.obj
+.\Release\autofiole.obj
+.\Release\autoflash.obj
+.\Release\autogoal.obj
 .\Release\autojostle.obj
-.\Release\autoremote.obj
-.\Release\autorepair.obj
-.\Release\autoroot.obj
-.\Release\autostand.obj
-.\Release\autotower.obj
+.\Release\autolift.obj
+.\Release\automax1x.obj
+.\Release\automeca.obj
+.\Release\autoscrap.obj
 .\Release\blitz.obj
-.\Release\brain.obj
 .\Release\button.obj
 .\Release\camera.obj
 .\Release\cbottoken.obj
@@ -65,6 +60,7 @@ Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSP8807.tmp" with conte
 .\Release\color.obj
 .\Release\compass.obj
 .\Release\control.obj
+.\Release\cryptfile.obj
 .\Release\d3dapp.obj
 .\Release\d3dengine.obj
 .\Release\d3denum.obj
@@ -76,8 +72,9 @@ Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSP8807.tmp" with conte
 .\Release\edit.obj
 .\Release\editvalue.obj
 .\Release\event.obj
+.\Release\filebuffer.obj
+.\Release\gamerfile.obj
 .\Release\gauge.obj
-.\Release\geiger.obj
 .\Release\group.obj
 .\Release\image.obj
 .\Release\iman.obj
@@ -86,29 +83,37 @@ Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSP8807.tmp" with conte
 .\Release\key.obj
 .\Release\label.obj
 .\Release\light.obj
+.\Release\link.obj
 .\Release\list.obj
 .\Release\maindialog.obj
+.\Release\mainedit.obj
 .\Release\mainmap.obj
-.\Release\mainmovie.obj
+.\Release\mainundo.obj
 .\Release\map.obj
 .\Release\math3d.obj
+.\Release\menu.obj
 .\Release\metafile.obj
 .\Release\misc.obj
 .\Release\model.obj
 .\Release\modfile.obj
 .\Release\motion.obj
+.\Release\motionbird.obj
+.\Release\motionblupi.obj
 .\Release\motionbot.obj
-.\Release\motionhuman.obj
-.\Release\motionvehicle.obj
+.\Release\motionfish.obj
+.\Release\motiongun.obj
+.\Release\motionjet.obj
+.\Release\motionperfo.obj
+.\Release\motionptero.obj
+.\Release\motionsnake.obj
+.\Release\motionsubm.obj
+.\Release\motiontrax.obj
 .\Release\object.obj
 .\Release\particule.obj
-.\Release\pesetas.obj
-.\Release\physics.obj
 .\Release\planet.obj
 .\Release\profile.obj
 .\Release\progress.obj
 .\Release\pyro.obj
-.\Release\recorder.obj
 .\Release\restext.obj
 .\Release\robotmain.obj
 .\Release\script.obj
@@ -118,9 +123,20 @@ Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSP8807.tmp" with conte
 .\Release\sound.obj
 .\Release\task.obj
 .\Release\taskadvance.obj
+.\Release\taskcatapult.obj
+.\Release\taskdive.obj
+.\Release\taskdock.obj
+.\Release\taskdrink.obj
 .\Release\taskfire.obj
+.\Release\taskgoal.obj
 .\Release\taskgoto.obj
+.\Release\taskgun.obj
+.\Release\tasklist.obj
 .\Release\taskmanager.obj
+.\Release\taskperfo.obj
+.\Release\taskpush.obj
+.\Release\taskroll.obj
+.\Release\tasktrax.obj
 .\Release\taskturn.obj
 .\Release\taskwait.obj
 .\Release\terrain.obj
@@ -128,19 +144,24 @@ Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSP8807.tmp" with conte
 .\Release\water.obj
 .\Release\window.obj
 .\Release\winmain.res>
-Creating command line "link.exe @C:\Users\DANIEL~1\AppData\Local\Temp\RSP8807.tmp" 
+Creating command line "link.exe @C:\Users\DANIEL~1\AppData\Local\Temp\RSP980C.tmp" 
 Compiling...
+cryptfile.cpp
 d3dapp.cpp
 d3dengine.cpp
 d3dtextr.cpp
 edit.cpp
+filebuffer.cpp
+gamerfile.cpp
 gauge.cpp
+link.cpp
 maindialog.cpp
+mainedit.cpp
+mainundo.cpp
 metafile.cpp
 misc.cpp
 modfile.cpp
-motionvehicle.cpp
-pesetas.cpp
+object.cpp
 profile.cpp
 restext.cpp
 robotmain.cpp
@@ -151,4 +172,4 @@ Linking...
 
 
 
-buzzingcars.exe - 0 error(s), 0 warning(s)
+BlupiMania-2.exe - 0 error(s), 0 warning(s)

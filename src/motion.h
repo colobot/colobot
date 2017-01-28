@@ -11,10 +11,9 @@ class CParticule;
 class CTerrain;
 class CWater;
 class CCamera;
-class CBrain;
-class CPhysics;
 class CObject;
 class CRobotMain;
+class CMainUndo;
 class CSound;
 
 
@@ -40,13 +39,10 @@ public:
 	CMotion(CInstanceManager* iMan, CObject* object);
 	virtual ~CMotion();
 
-	void	SetPhysics(CPhysics* physics);
-	void	SetBrain(CBrain* brain);
-
 	virtual void	DeleteObject(BOOL bAll=FALSE);
-	virtual BOOL	Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb);
+	virtual BOOL	Create(D3DVECTOR pos, float angle, ObjectType type);
 	virtual BOOL	EventProcess(const Event &event);
-	virtual	Error	SetAction(int action, float time=0.2f);
+	virtual	Error	SetAction(int action, float speed=0.2f);
 	virtual int		RetAction();
 	virtual float	RetActionProgress();
 
@@ -60,19 +56,22 @@ public:
 	virtual void		SetInclinaison(D3DVECTOR dir);
 	virtual D3DVECTOR	RetInclinaison();
 
-	virtual void	TwistInit();
-	virtual void	TwistPart(D3DVECTOR impact, float force);
-	virtual int		RetRemovePart(int &param);
-	virtual BOOL	RetLight(int rank);
-	virtual	BOOL	ExistPart(TypePart part);
-	virtual int		RetTotalPart();
-	virtual int		RetUsedPart();
+	virtual float	RetLinSpeed();
+	virtual float	RetCirSpeed();
+	virtual float	RetLinStopLength();
+
+	virtual void	SetActionProgress(float progress);
+	virtual void	SetActionLinSpeed(float speed);
+	virtual void	SetActionCirSpeed(float speed);
 
 	virtual void		SetWheelType(WheelType type);
 	virtual WheelType	RetWheelType();
 
 	virtual int		RetStateLength();
 	virtual void	GetStateBuffer(char *buffer);
+
+	virtual void	WriteSituation();
+	virtual void	ReadSituation();
 
 protected:
 
@@ -85,18 +84,22 @@ protected:
 	CWater*			m_water;
 	CCamera*		m_camera;
 	CObject*		m_object;
-	CBrain*			m_brain;
-	CPhysics*		m_physics;
 	CRobotMain*		m_main;
+	CMainUndo*		m_undo;
 	CSound*			m_sound;
 
 	int				m_actionType;
+	float			m_actionSpeed;
 	float			m_actionTime;
 	float			m_progress;
 
 	D3DVECTOR		m_linVibration;		// vibration linéaire
 	D3DVECTOR		m_cirVibration;		// vibration circulaire
 	D3DVECTOR		m_inclinaison;		// inclinaison
+
+	float			m_actionProgress;
+	float			m_actionLinSpeed;
+	float			m_actionCirSpeed;
 
 	WheelType		m_wheelType;
 };

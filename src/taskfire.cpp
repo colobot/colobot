@@ -15,8 +15,6 @@
 #include "particule.h"
 #include "terrain.h"
 #include "object.h"
-#include "physics.h"
-#include "brain.h"
 #include "camera.h"
 #include "sound.h"
 #include "task.h"
@@ -50,7 +48,6 @@ CTaskFire::~CTaskFire()
 
 BOOL CTaskFire::EventProcess(const Event &event)
 {
-	CPhysics*	physics;
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, speed, dir, vib;
 	ObjectType	type;
@@ -79,12 +76,6 @@ BOOL CTaskFire::EventProcess(const Event &event)
 				pos = Transform(*mat, pos);
 
 				speed = D3DVECTOR(200.0f, 0.0f, 0.0f);
-
-				physics = m_object->RetPhysics();
-				if ( physics != 0 )
-				{
-					speed += physics->RetLinMotion(MO_REASPEED);
-				}
 
 				speed.x += (Rand()-0.5f)*10.0f;
 				speed.y += (Rand()-0.5f)*20.0f;
@@ -150,12 +141,6 @@ BOOL CTaskFire::EventProcess(const Event &event)
 
 				speed = D3DVECTOR(200.0f, 0.0f, 0.0f);
 
-				physics = m_object->RetPhysics();
-				if ( physics != 0 )
-				{
-					speed += physics->RetLinMotion(MO_REASPEED);
-				}
-
 				speed.x += (Rand()-0.5f)*3.0f;
 				speed.y += (Rand()-0.5f)*6.0f;
 				speed.z += (Rand()-0.5f)*6.0f;
@@ -220,7 +205,7 @@ BOOL CTaskFire::EventProcess(const Event &event)
 	if ( m_bRay && m_lastSound <= 0.0f )
 	{
 		m_lastSound = Rand()*0.4f+0.4f;
-		m_sound->Play(SOUND_FIREp, m_object->RetPosition(0));
+//?		m_sound->Play(SOUND_FIREp, m_object->RetPosition(0));
 	}
 
 	return TRUE;
@@ -240,11 +225,7 @@ Error CTaskFire::Start(float delay)
 	if ( type != OBJECT_MOBILEfb &&
 		 type != OBJECT_MOBILEob )  return ERR_FIRE_VEH;
 
-//?	if ( !m_physics->RetLand() )  return ERR_FIRE_FLY;
-
-	speed = m_physics->RetMotorSpeed();
-//?	if ( speed.x != 0.0f ||
-//?		 speed.z != 0.0f )  return ERR_FIRE_MOTOR;
+	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
 
 	m_bRay = FALSE;
 

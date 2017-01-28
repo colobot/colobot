@@ -6,8 +6,6 @@
 
 class CInstanceManager;
 class CTerrain;
-class CBrain;
-class CPhysics;
 class CObject;
 
 
@@ -21,14 +19,21 @@ public:
 
 	Error	Start(float angle);
 	Error	IsEnded();
+	BOOL	IsUndoable();
+
+	void	WriteSituation();
+	void	ReadSituation();
 
 protected:
+	void	ProgressLinSpeed(float speed);
+	void	ProgressCirSpeed(float speed);
+	void	StartAction(CObject* pObj, int action);
 
 protected:
-	float		m_angle;
+	ObjectType	m_type;
+	float		m_initialWait;
 	float		m_startAngle;
 	float		m_finalAngle;
-	BOOL		m_bLeft;
 	BOOL		m_bError;
 };
 

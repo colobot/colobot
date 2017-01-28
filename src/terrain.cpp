@@ -15,11 +15,9 @@
 #include "iman.h"
 #include "math3d.h"
 #include "modfile.h"
-#include "water.h"
+#include "particule.h"
 #include "terrain.h"
 
-
-#define BMPHEAD	1078
 
 
 
@@ -31,1727 +29,1499 @@ CTerrain::CTerrain(CInstanceManager* iMan)
 	m_iMan->AddInstance(CLASS_TERRAIN, this);
 
 	m_engine = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-	m_water  = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
+	m_particule = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
 
-	m_mosaic        = 10;
-	m_brick         = 1<<3;
-	m_size          = 40.0f;
-	m_vision        = 200.0f;
-	m_relief        = 0;
-	m_texture       = 0;
-	m_objRank       = 0;
-	m_scaleMapping  = 1.0f/(m_brick*m_size);
-	m_scaleRelief   = 1.0f;
-	m_subdivMapping = 1;
-	m_depth         = 1;
-	m_texBaseName[0]= 0;
-	m_texBaseExt[0] = 0;
-	m_bMultiText    = TRUE;
-	m_bLevelText    = FALSE;
-	m_levelMatTotal = 0;
-	m_levelMatMax   = 0;
-	m_levelDot      = 0;
-	m_wind          = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_defHardness   = 0.5f;
-
-	FlushBuildingLevel();
-	FlushSlowerZone();
-	FlushFlyingLimit();
+	m_resources = 0;
+	m_shadows = 0;
+	m_lockZone = 0;
+	m_objRank = -1;
+	m_nbTiles = 20;
+	m_nbTiles2 = m_nbTiles/2;
+	m_dimTile = 8.0f;
+	m_texName1[0] = 0;
+	m_texName2[0] = 0;
+	m_idWall1[0] = 1;
+	m_idWall1[1] = 8;
+	m_idWall2[0] = 1;
+	m_idWall2[1] = 9;
+	m_idWall3[0] = 1;
+	m_idWall3[1] = 10;
+	m_idFlat[0] = 1;
+	m_idFlat[1] = 0;
+	m_idHole[0] = 1;
+	m_idHole[1] = 11;
+	m_idGround[0] = 1;
+	m_idGround[1] = 11;
+	m_depth = 1;
+	m_slope = 0.0f;
+	m_model = 0;
+	m_modelRv = 0.0f;
+	m_modelRh = 0.0f;
+	m_baseRv = 0.0f;
+	m_baseRh = 0.0f;
+	m_bSmooth = TRUE;
+	m_generation = 0;
+	m_lockZoneDebug = FALSE;
+	SignMarkFlush();
 }
 
 // Destructeur du terrain.
 
 CTerrain::~CTerrain()
 {
-	free(m_relief);
-	free(m_texture);
-	free(m_objRank);
+	free(m_resources);
+	free(m_shadows);
+	free(m_lockZone);
 }
 
 
-// Génère un nouveau terrain plat.
-// Le terrain est composé de mosaïques, elles-mêmes composées
-// de briques. Chaque brique est composée de 2 triangles.
-// mosaic:       nombre de mosaïques selon les axes X et Z
-// brick:        nombre de briques (puissance de 2)
-// size:         taille d'une brique selon les axes X et Z
-// vision:       vision avant un changement de résolution
-// scaleMapping: échelle pour mapper les textures
-//
-//          ^ z
-//	        |   <--->  brick*size
-//	+---+---+---+---+
-//	|   |   |   |_|_|  mosaic = 4
-//	|   |   |   | | |  brick  = 2 (brickP2=1)
-//	+---+---+---+---+
-//	|\ \|   |   |   |
-//	|\ \|   |   |   |
-//	+---+---o---+---+---> x
-//	|   |   |   |   |
-//	|   |   |   |   |
-//	+---+---+---+---+  Le terrain est ici
-//	|   |   |   |   |  vu de dessus.
-//	|   |   |   |   |
-//	+---+---+---+---+
-//  <--------------->  mosaic*brick*size
+// Génère un nouveau terrain.
 
-BOOL CTerrain::Generate(int mosaic, int brickP2, float size, float vision,
-						int depth, float hardness)
+BOOL CTerrain::Generate(int nbTiles, float dimTile)
 {
-	int		dim;
-
-	m_mosaic        = mosaic;
-	m_brick         = 1<<brickP2;
-	m_size          = size;
-	m_vision        = vision;
-	m_depth         = depth;
-	m_defHardness   = hardness;
-
-	m_engine->SetTerrainVision(vision);
-
-	m_bMultiText    = TRUE;
-	m_bLevelText    = FALSE;
-	m_scaleMapping  = 1.0f/(m_brick*m_size);
-	m_subdivMapping = 1;
-
-	dim = (m_mosaic*m_brick+1)*(m_mosaic*m_brick+1);
-	m_relief = (float*)malloc(sizeof(float)*dim);
-	ZeroMemory(m_relief, sizeof(float)*dim);
-
-	dim = m_mosaic*m_subdivMapping*m_mosaic*m_subdivMapping;
-	m_texture = (int*)malloc(sizeof(int)*dim);
-	ZeroMemory(m_texture, sizeof(int)*dim);
-
-	dim = m_mosaic*m_mosaic;
-	m_objRank = (int*)malloc(sizeof(int)*dim);
-	ZeroMemory(m_objRank, sizeof(int)*dim);
+	m_nbTiles = nbTiles;
+	m_nbTiles2 = nbTiles/2;
+	m_dimTile = dimTile;
 
 	return TRUE;
 }
 
 
-int CTerrain::RetMosaic()
+int CTerrain::RetNbTiles()
 {
-	return m_mosaic;
+	return m_nbTiles;
 }
 
-int CTerrain::RetBrick()
+float CTerrain::RetDimTile()
 {
-	return m_brick;
+	return m_dimTile;
 }
 
-float CTerrain::RetSize()
+float CTerrain::RetDim()
 {
-	return m_size;
+	return m_nbTiles*m_dimTile;
 }
 
-float CTerrain::RetScaleRelief()
+// Retourne un numéro de génération du terrain. Chaque fois
+// que le relief change (caisse incrustée dans un trou par
+// exemple), ce numéro change.
+
+int CTerrain::RetGeneration()
 {
-	return m_scaleRelief;
-}
-
-
-// Initialise les noms des textures à utiliser pour le terrain.
-
-BOOL CTerrain::InitTextures(char* baseName, int* table, int dx, int dy)
-{
-	int		x, y;
-	char*	p;
-
-	m_bLevelText = FALSE;
-
-	strcpy(m_texBaseName, baseName);
-	p = strchr(m_texBaseName, '.');  // p <- ^début de l'extension
-	if ( p == 0 )
-	{
-		strcpy(m_texBaseExt, ".tga");
-	}
-	else
-	{
-		strcpy(m_texBaseExt, p);  // m_texBaseExt <- ".tga" ou ".bmp"
-		*p = 0;                   // m_texBaseName <- nom sans extension
-	}
-
-	for ( y=0 ; y<m_mosaic*m_subdivMapping ; y++ )
-	{
-		for ( x=0 ; x<m_mosaic*m_subdivMapping ; x++ )
-		{
-			m_texture[x+y*m_mosaic] = table[(x%dx)+(y%dy)*dx];
-		}
-	}
-	return TRUE;
+	return m_generation;
 }
 
 
-// Vide les niveaux.
+// Copie une série d'identificateurs.
 
-void CTerrain::LevelFlush()
-{
-	m_levelMatTotal = 0;
-	m_levelMatMax   = 0;
-	m_levelID       = 1000;
-	LevelCloseTable();
-}
-
-// Initialise les noms des textures à utiliser pour le terrain.
-
-BOOL CTerrain::LevelMaterial(int id, char* baseName, float u, float v,
-							 int up, int right, int down, int left,
-							 float hardness)
+void CopyID(int *dst, int *src, int def)
 {
 	int		i;
 
-	i = m_levelMatTotal;
-	if ( i >= MAXMATTERRAIN-1 )  return FALSE;
-
-	LevelOpenTable();
-
-	if ( id == 0 )
+	dst[0] = *src++;
+	for ( i=0 ; i<dst[0] ; i++ )
 	{
-		id = m_levelID++;  // met un id interne standard
+		dst[i+1] = *src++;
 	}
 
-	strcpy(m_levelMat[i].texName, baseName);
-	m_levelMat[i].id     = id;
-	m_levelMat[i].u      = u;
-	m_levelMat[i].v      = v;
-	m_levelMat[i].mat[0] = up;
-	m_levelMat[i].mat[1] = right;
-	m_levelMat[i].mat[2] = down;
-	m_levelMat[i].mat[3] = left;
-	m_levelMat[i].hardness = hardness;
+	if ( dst[0] == 0 )
+	{
+		dst[0] = 1;
+		dst[1] = def;
+	}
+}
 
-	if ( m_levelMatMax < up+1    )  m_levelMatMax = up+1;
-	if ( m_levelMatMax < right+1 )  m_levelMatMax = right+1;
-	if ( m_levelMatMax < down+1  )  m_levelMatMax = down+1;
-	if ( m_levelMatMax < left+1  )  m_levelMatMax = left+1;
+// Initialise les noms des textures à utiliser pour le terrain.
 
-	m_bLevelText = TRUE;
-	m_subdivMapping = 8;
+BOOL CTerrain::InitTextures(char *texName1, char *texName2,
+							int *idWall1, int *idWall2, int *idWall3,
+							int *idFlat, int *idHole, int *idGround,
+							int depth,
+							float slope, int model, float rv, float rh,
+							float bv, float bh, BOOL bSmooth)
+{
+	int		i;
 
-	m_levelMatTotal ++;
+	strcpy(m_texName1, texName1);
+	strcpy(m_texName2, texName2);
+
+	CopyID(m_idWall1,  idWall1,   8);  // paroi 0..-8 si trou -8
+	CopyID(m_idWall2,  idWall2,   9);  // paroi 0..-8 si trou infini
+	CopyID(m_idWall3,  idWall3,  10);  // paroi -8..-16
+	CopyID(m_idFlat,   idFlat,    0);  // sol plat 0
+	CopyID(m_idHole,   idHole,   11);  // sol plat -8
+	CopyID(m_idGround, idGround, 11);  // sol terrain 3D
+
+	m_depth = depth;
+	m_slope = slope;
+	m_model = model;
+	m_modelRv = rv;
+	m_modelRh = rh;
+	m_baseRv = bv;
+	m_baseRh = bh;
+	m_bSmooth = bSmooth;
+	m_generation = 0;
+
+	for ( i=0 ; i<8 ; i++ )
+	{
+		m_hardness[i] = 0.5f;
+	}
+
+	SignMarkFlush();
+
 	return TRUE;
 }
 
 
-// Initialise un relief tout plat.
+// Initialise les duretés du terrain.
 
-void CTerrain::FlushRelief()
+void CTerrain::SetHardness(float *hardness)
 {
-	free(m_relief);
-	m_relief = 0;
+	int		i;
+
+	for ( i=0 ; i<8 ; i++ )
+	{
+		m_hardness[i] = hardness[i];
+	}
 }
 
-// Charge le relief dans un fichier BMP.
-// La taille de l'image doit être de dimension dx et dy,
-// avec dx=dy=(mosaic*brick)+1.
-// L'image doit avoir 8 bits/pixels, 256 niveaux de gris :
-// blanc = sol (y=0)
-// noir = montagne (y=255*scaleRelief)
 
-// Conversion coordonnée image (x;y) -> world (x;-;z) :
-//	Wx =   5*Ix-400
-//	Wz = -(5*Iy-400)
+// Initialise le terrain avec de l'eau partout et un bord TR_HOLE autour.
 
-// Conversion coordonnée world (x;-;z) -> image (x;y) :
-//	Ix = (400+Wx)/5
-//	Iy = (400-Wz)/5
-
-BOOL CTerrain::ReliefFromBMP(const char* filename, float scaleRelief)
+BOOL CTerrain::ResInit(BOOL bEmpty)
 {
-	FILE*			file;
-	unsigned char*	buffer;
-	int				size, sizem, x, y;
-	float			level, limit, dist, border;
+	TerrainRes	res;
+	int			x, y;
 
-	m_scaleRelief = scaleRelief;
+	free(m_resources);
+	m_resources = (char*)malloc(m_nbTiles*m_nbTiles*2);
 
-	file = fopen(filename, "rb");
-	if ( file == NULL )  return FALSE;
-
-	size  = (m_mosaic*m_brick)+1;
-	sizem = ((size+4-1)/4)*4;  // taille multiple de 4 supérieur
-
-	buffer = (unsigned char*)malloc(BMPHEAD+sizem*size);
-	fread(buffer, BMPHEAD+sizem*size, 1, file);
-
-	if ( buffer[18] != (size&0xff) || buffer[19] != (size>>8) ||
-		 buffer[22] != (size&0xff) || buffer[23] != (size>>8) )
+	for ( y=0 ; y<m_nbTiles ; y++ )
 	{
-		free(buffer);
-		fclose(file);
-		return FALSE;
-	}
-
-	limit = 0.9f;
-	for ( y=0 ; y<size ; y++ )
-	{
-		for ( x=0 ; x<size ; x++ )
+		for ( x=0 ; x<m_nbTiles ; x++ )
 		{
-			level = (255-buffer[BMPHEAD+x+sizem*y])*scaleRelief;
+			res = TR_SPACE;
 
-//?			dist = Length((float)(x-size/2), (float)(y-size/2));
-			dist = Max(Abs((float)(x-size/2)), Abs((float)(y-size/2)));
-			dist = dist/(float)(size/2);
-			if ( dist > limit )
+			if ( !bEmpty )
 			{
-				dist = (dist-limit)/(1.0f-limit);  // 0..1
-				if ( dist > 1.0f )  dist = 1.0f;
-				border = 300.0f+Rand()*20.0f;
-//-				level = level+dist*(border-level);
+				if ( x <= 0 || x >= m_nbTiles-1 ||
+					 y <= 0 || y >= m_nbTiles-1 )  res = TR_HOLE;
 			}
 
-			m_relief[x+y*size] = level;
+			SetResource(x,y, res, TRUE);
 		}
 	}
 
-	free(buffer);
-	fclose(file);
-	return TRUE;
-}
+	free(m_shadows);
+	m_shadows = (char*)malloc(m_nbTiles*m_nbTiles);
+	ZeroMemory(m_shadows, m_nbTiles*m_nbTiles);
 
-// Ajoute un point d'élévation dans le buffer du relief.
+	free(m_lockZone);
+	m_lockZone = (char*)malloc(m_nbTiles*m_nbTiles*2);
+	ZeroMemory(m_lockZone, m_nbTiles*m_nbTiles*2);
 
-BOOL CTerrain::ReliefAddDot(D3DVECTOR pos, float scaleRelief)
-{
-	float	dim;
-	int		size, x, y;
-
-	dim = (m_mosaic*m_brick*m_size)/2.0f;
-	size = (m_mosaic*m_brick)+1;
-
-	pos.x = (pos.x+dim)/m_size;
-	pos.z = (pos.z+dim)/m_size;
-
-	x = (int)pos.x;
-	y = (int)pos.z;
-
-	if ( x < 0 || x >= size ||
-		 y < 0 || y >= size )  return FALSE;
-
-	if ( m_relief[x+y*size] < pos.y*scaleRelief )
-	{
-		m_relief[x+y*size] = pos.y*scaleRelief;
-	}
-	return TRUE;
-}
-
-// Charge le relief dans un fichier DXF.
-
-BOOL CTerrain::ReliefFromDXF(const char* filename, float scaleRelief)
-{
-	FILE*		file = NULL;
-	char		line[100];
-	int			command, rankSommet, nbSommet, nbFace, size;
-	D3DVECTOR*	table;
-	BOOL		bWaitNbSommet;
-	BOOL		bWaitNbFace;
-	BOOL		bWaitSommetX;
-	BOOL		bWaitSommetY;
-	BOOL		bWaitSommetZ;
-	BOOL		bWaitFaceX;
-	BOOL		bWaitFaceY;
-	BOOL		bWaitFaceZ;
-	float		x,y,z;
-	int			p1,p2,p3;
-
-	ZeroMemory(m_relief, sizeof(float)*(m_mosaic*m_brick+1)*(m_mosaic*m_brick+1));
-
-	file = fopen(filename, "r");
-	if ( file == NULL )  return FALSE;
-
-	size  = (m_mosaic*m_brick)+1;
-	table = (D3DVECTOR*)malloc(sizeof(D3DVECTOR)*size*size);
-
-	rankSommet = 0;
-	bWaitNbSommet = FALSE;
-	bWaitNbFace   = FALSE;
-	bWaitSommetX  = FALSE;
-	bWaitSommetY  = FALSE;
-	bWaitSommetZ  = FALSE;
-	bWaitFaceX    = FALSE;
-	bWaitFaceY    = FALSE;
-	bWaitFaceZ    = FALSE;
-
-	while ( fgets(line, 100, file) != NULL )
-	{
-		sscanf(line, "%d", &command);
-		if ( fgets(line, 100, file) == NULL )  break;
-
-		if ( command == 66 )
-		{
-			bWaitNbSommet = TRUE;
-		}
-
-		if ( command == 71 && bWaitNbSommet )
-		{
-			bWaitNbSommet = FALSE;
-			sscanf(line, "%d", &nbSommet);
-			if ( nbSommet > size*size )  nbSommet = size*size;
-			rankSommet = 0;
-			bWaitNbFace = TRUE;
-		}
-
-		if ( command == 72 && bWaitNbFace )
-		{
-			bWaitNbFace = FALSE;
-			sscanf(line, "%d", &nbFace);
-			bWaitSommetX = TRUE;
-		}
-
-		if ( command == 10 && bWaitSommetX )
-		{
-			bWaitSommetX = FALSE;
-			sscanf(line, "%f", &x);
-			bWaitSommetY = TRUE;
-		}
-
-		if ( command == 20 && bWaitSommetY )
-		{
-			bWaitSommetY = FALSE;
-			sscanf(line, "%f", &y);
-			bWaitSommetZ = TRUE;
-		}
-
-		if ( command == 30 && bWaitSommetZ )
-		{
-			bWaitSommetZ = FALSE;
-			sscanf(line, "%f", &z);
-
-			nbSommet --;
-			if ( nbSommet >= 0 )
-			{
-				D3DVECTOR p(x,z,y);  // permutation de Y et Z !
-				table[rankSommet++] = p;
-				bWaitSommetX = TRUE;
-			}
-			else
-			{
-				bWaitFaceX = TRUE;
-			}
-		}
-
-		if ( command == 71 && bWaitFaceX )
-		{
-			bWaitFaceX = FALSE;
-			sscanf(line, "%d", &p1);
-			if ( p1 < 0 )  p1 = -p1;
-			bWaitFaceY = TRUE;
-		}
-
-		if ( command == 72 && bWaitFaceY )
-		{
-			bWaitFaceY = FALSE;
-			sscanf(line, "%d", &p2);
-			if ( p2 < 0 )  p2 = -p2;
-			bWaitFaceZ = TRUE;
-		}
-
-		if ( command == 73 && bWaitFaceZ )
-		{
-			bWaitFaceZ = FALSE;
-			sscanf(line, "%d", &p3);
-			if ( p3 < 0 )  p3 = -p3;
-
-			nbFace --;
-			if ( nbFace >= 0 )
-			{
-				ReliefAddDot(table[p3-1], scaleRelief);
-				ReliefAddDot(table[p2-1], scaleRelief);
-				ReliefAddDot(table[p1-1], scaleRelief);
-				bWaitFaceX = TRUE;
-			}
-		}
-
-	}
-
-	free(table);
-	fclose(file);
 	return TRUE;
 }
 
 
-// Ajuste une position pour qu'elle ne dépasse pas les limites.
+// Retourne la longueur pour GetResource/PutResource.
 
-void CTerrain::LimitPos(D3DVECTOR &pos)
+int CTerrain::LenResource()
 {
-	float		dim;
-
-	dim = (m_mosaic*m_brick*m_size)/2.0f*0.92f;
-
-	if ( pos.x < -dim )  pos.x = -dim;
-	if ( pos.x >  dim )  pos.x =  dim;
-	if ( pos.z < -dim )  pos.z = -dim;
-	if ( pos.z >  dim )  pos.z =  dim;
+	return m_nbTiles*m_nbTiles*2;
 }
 
-
-// Ajuste les bords de chaque mosaïque pour être compatible
-// avec toutes les résolutions inférieures.
-
-void CTerrain::AdjustRelief()
+void CTerrain::GetResource(char *buffer)
 {
-	int		x, y, xx, yy, ii, b;
-	float	level1, level2;
+	memcpy(buffer, m_resources, m_nbTiles*m_nbTiles*2);
+}
 
-	if ( m_depth == 1 )  return;
+void CTerrain::PutResource(char *buffer)
+{
+	memcpy(m_resources, buffer, m_nbTiles*m_nbTiles*2);
+}
 
-	ii = m_mosaic*m_brick+1;
-	b = 1<<(m_depth-1);
+// Remet la copie des ressources.
 
-	for ( y=0 ; y<m_mosaic*m_brick ; y+=b )
+void CTerrain::RestoreResourceCopy()
+{
+	memcpy(m_resources, m_resources+m_nbTiles*m_nbTiles, m_nbTiles*m_nbTiles);
+}
+
+// Retourne le type du sol.
+
+TerrainRes CTerrain::RetResource(int x, int y, BOOL bCopy)
+{
+	if ( m_resources == 0 )  return TR_SOLID0;
+
+	if ( x < 0 || x >= m_nbTiles ||
+		 y < 0 || y >= m_nbTiles )  return TR_SPACE;
+
+	if ( bCopy )
 	{
-		for ( x=0 ; x<m_mosaic*m_brick ; x+=b )
-		{
-			yy = 0;
-			if ( (y+yy)%m_brick == 0 )
-			{
-				level1 = m_relief[(x+0)+(y+yy)*ii];
-				level2 = m_relief[(x+b)+(y+yy)*ii];
-				for ( xx=1 ; xx<b ; xx++ )
-				{
-					m_relief[(x+xx)+(y+yy)*ii] = ((level2-level1)/b)*xx+level1;
-				}
-			}
-
-			yy = b;
-			if ( (y+yy)%m_brick == 0 )
-			{
-				level1 = m_relief[(x+0)+(y+yy)*ii];
-				level2 = m_relief[(x+b)+(y+yy)*ii];
-				for ( xx=1 ; xx<b ; xx++ )
-				{
-					m_relief[(x+xx)+(y+yy)*ii] = ((level2-level1)/b)*xx+level1;
-				}
-			}
-
-			xx = 0;
-			if ( (x+xx)%m_brick == 0 )
-			{
-				level1 = m_relief[(x+xx)+(y+0)*ii];
-				level2 = m_relief[(x+xx)+(y+b)*ii];
-				for ( yy=1 ; yy<b ; yy++ )
-				{
-					m_relief[(x+xx)+(y+yy)*ii] = ((level2-level1)/b)*yy+level1;
-				}
-			}
-
-			xx = b;
-			if ( (x+xx)%m_brick == 0 )
-			{
-				level1 = m_relief[(x+xx)+(y+0)*ii];
-				level2 = m_relief[(x+xx)+(y+b)*ii];
-				for ( yy=1 ; yy<b ; yy++ )
-				{
-					m_relief[(x+xx)+(y+yy)*ii] = ((level2-level1)/b)*yy+level1;
-				}
-			}
-		}
+		return (TerrainRes)m_resources[m_nbTiles*m_nbTiles+x+m_nbTiles*y];
+	}
+	else
+	{
+		return (TerrainRes)m_resources[x+m_nbTiles*y];
 	}
 }
 
+// Retourne le type du sol.
 
-// Calcule un vecteur du terrain.
+TerrainRes CTerrain::RetResource(const D3DVECTOR &p, BOOL bCopy)
+{
+	D3DVECTOR	pos;
+	int			x, y;
 
-D3DVECTOR CTerrain::RetVector(int x, int y)
+	pos = Grid(p, m_dimTile);
+	x = (int)(pos.x/m_dimTile) + m_nbTiles2;
+	y = (int)(pos.z/m_dimTile) + m_nbTiles2;
+
+	return RetResource(x, y, bCopy);
+}
+
+// Change le type du sol.
+
+BOOL CTerrain::SetResource(int x, int y, TerrainRes res, BOOL bCopy)
+{
+	if ( m_resources == 0 )  return FALSE;
+
+	m_resources[x+m_nbTiles*y] = res;
+
+	if ( bCopy )
+	{
+		m_resources[m_nbTiles*m_nbTiles+x+m_nbTiles*y] = res;
+	}
+
+	m_generation ++;
+
+	return TRUE;
+}
+
+// Change le type du sol.
+
+BOOL CTerrain::SetResource(const D3DVECTOR &p, TerrainRes res, BOOL bCopy)
+{
+	D3DVECTOR	pos;
+	int			x, y;
+
+	pos = Grid(p, m_dimTile);
+	x = (int)(pos.x/m_dimTile) + m_nbTiles2;
+	y = (int)(pos.z/m_dimTile) + m_nbTiles2;
+
+	if ( m_resources == 0 )  return FALSE;
+
+	if ( x < 0 || x >= m_nbTiles ||
+		 y < 0 || y >= m_nbTiles )  return FALSE;
+
+	m_resources[x+m_nbTiles*y] = res;
+
+	if ( bCopy )
+	{
+		m_resources[m_nbTiles*m_nbTiles+x+m_nbTiles*y] = res;
+	}
+
+	m_generation ++;
+
+	return TRUE;
+}
+
+// Indique s'il est possible de passer.
+
+BOOL CTerrain::IsSolid(TerrainRes res)
+{
+	return ( res == TR_SOLID0 ||
+			 res == TR_SOLID1 ||
+			 res == TR_SOLID2 ||
+			 res == TR_SOLID3 ||
+			 res == TR_SOLID4 ||
+			 res == TR_SOLID5 ||
+			 res == TR_SOLID6 ||
+			 res == TR_SOLID7 ||
+			 res == TR_BOX    );
+}
+
+// Indique s'il est possible de passer.
+
+BOOL CTerrain::IsSolid(int x, int y)
+{
+	return IsSolid(RetResource(x, y));
+}
+
+// Indique s'il est possible de passer.
+
+BOOL CTerrain::IsSolid(const D3DVECTOR &p)
+{
+	return IsSolid(RetResource(p));
+}
+
+
+// Retourne la dureté du terrain.
+
+float CTerrain::RetHardness(int x, int y)
+{
+	TerrainRes	res;
+	
+	res = RetResource(x, y);
+	if ( res == TR_SOLID0 )  return m_hardness[0];
+	if ( res == TR_SOLID1 )  return m_hardness[1];
+	if ( res == TR_SOLID2 )  return m_hardness[2];
+	if ( res == TR_SOLID3 )  return m_hardness[3];
+	if ( res == TR_SOLID4 )  return m_hardness[4];
+	if ( res == TR_SOLID5 )  return m_hardness[5];
+	if ( res == TR_SOLID6 )  return m_hardness[6];
+	if ( res == TR_SOLID7 )  return m_hardness[7];
+	if ( res == TR_BOX    )  return 0.8f;
+	if ( res == TR_LIFT   )  return 1.0f;
+
+	return 0.5f;
+}
+
+// Retourne la dureté du terrain.
+
+float CTerrain::RetHardness(const D3DVECTOR &p)
+{
+	D3DVECTOR	pos;
+	int			x, y;
+
+	pos = Grid(p, m_dimTile);
+	x = (int)(pos.x/m_dimTile) + m_nbTiles2;
+	y = (int)(pos.z/m_dimTile) + m_nbTiles2;
+
+	return RetHardness(x, y);
+}
+
+
+// Initialise les ombres pour l'eau.
+// Suppose un éclairage venant du sud-est (x<0, z>0).
+
+BOOL CTerrain::InitShadows()
+{
+	TerrainRes	res;
+	int			x, y, weight;
+
+	if ( m_shadows == 0 )  return FALSE;
+
+	for ( y=0 ; y<m_nbTiles ; y++ )
+	{
+		for ( x=0 ; x<m_nbTiles ; x++ )
+		{
+			weight = 0;
+
+			res = RetResource(x+0, y+0);
+			if ( res != TR_SPACE )  weight += 3;
+
+			res = RetResource(x+1, y+0);
+			if ( res != TR_SPACE )  weight += 3;
+
+			res = RetResource(x+1, y-1);
+			if ( res != TR_SPACE )  weight += 3;
+
+			res = RetResource(x+0, y-1);
+			if ( res != TR_SPACE )  weight += 3;
+
+			res = RetResource(x-1, y-1);
+			if ( res != TR_SPACE )  weight += 1;
+
+			res = RetResource(x-1, y+0);
+			if ( res != TR_SPACE )  weight += 1;
+
+			res = RetResource(x-1, y+1);
+			if ( res != TR_SPACE )  weight += 1;
+
+			res = RetResource(x+0, y+1);
+			if ( res != TR_SPACE )  weight += 1;
+
+			res = RetResource(x+1, y+1);
+			if ( res != TR_SPACE )  weight += 1;
+
+			m_shadows[x+m_nbTiles*y] = weight;
+		}
+	}
+
+	return TRUE;
+}
+
+// Retourne l'ombre pour l'eau.
+
+float CTerrain::RetShadows(int x, int y)
+{
+	if ( m_shadows == 0 )  return 0.0f;
+
+	if ( x < 0 || x >= m_nbTiles ||
+		 y < 0 || y >= m_nbTiles )  return 0.0f;
+
+	return m_shadows[x+m_nbTiles*y];
+}
+
+// Retourne l'ombre pour l'eau.
+
+float CTerrain::RetShadows(const D3DVECTOR &p)
+{
+	D3DVECTOR	pos;
+	int			x, y;
+
+	pos = Grid(p, m_dimTile);
+	x = (int)(pos.x/m_dimTile) + m_nbTiles2;
+	y = (int)(pos.z/m_dimTile) + m_nbTiles2;
+
+	return RetShadows(x, y);
+}
+
+
+// Retourne la longueur pour GetLockZone/PutLockZone.
+
+int CTerrain::LenLockZone()
+{
+	return m_nbTiles*m_nbTiles*2;
+}
+
+void CTerrain::GetLockZone(char *buffer)
+{
+	memcpy(buffer, m_lockZone, m_nbTiles*m_nbTiles*2);
+}
+
+void CTerrain::PutLockZone(char *buffer)
+{
+	memcpy(m_lockZone, buffer, m_nbTiles*m_nbTiles*2);
+}
+
+// Bloque ou débloque une zone.
+
+void CTerrain::SetLockZone(int x, int y, LockZone type, BOOL bInit)
+{
+	if ( m_lockZone == 0 )  return;
+
+	if ( x < 0 || x >= m_nbTiles ||
+		 y < 0 || y >= m_nbTiles )  return;
+
+	if ( bInit )
+	{
+		m_lockZone[x+m_nbTiles*y] = type;
+		m_lockZone[x+m_nbTiles*y+m_nbTiles*m_nbTiles] = type;
+	}
+	else
+	{
+		if ( type == LZ_FREE )
+		{
+			type = (LockZone)m_lockZone[x+m_nbTiles*y+m_nbTiles*m_nbTiles];
+		}
+		m_lockZone[x+m_nbTiles*y] = type;
+	}
+
+	if ( m_lockZoneDebug )
+	{
+		D3DVECTOR p;
+		p.x = (x-m_nbTiles2)*m_dimTile;
+		p.z = (y-m_nbTiles2)*m_dimTile;
+		p.y = 0.2f;
+		m_engine->ShowLockZone(p, (type!=LZ_FREE && type!=LZ_MAX1X));
+	}
+}
+
+// Bloque ou débloque une zone.
+
+void CTerrain::SetLockZone(const D3DVECTOR &pos, LockZone type, BOOL bInit)
 {
 	D3DVECTOR	p;
+	int			x, y;
 
-	p.x = x*m_size - (m_mosaic*m_brick*m_size)/2;
-	p.z = y*m_size - (m_mosaic*m_brick*m_size)/2;
+	if ( m_lockZone == 0 )  return;
 
-	if ( m_relief != 0                   &&
-		 x >= 0 && x <= m_mosaic*m_brick &&
-		 y >= 0 && y <= m_mosaic*m_brick )
+	p = Grid(pos, m_dimTile);
+	x = (int)(p.x/m_dimTile) + m_nbTiles2;
+	y = (int)(p.z/m_dimTile) + m_nbTiles2;
+
+	if ( x < 0 || x >= m_nbTiles ||
+		 y < 0 || y >= m_nbTiles )  return;
+
+	if ( bInit )
 	{
-		p.y = m_relief[x+y*(m_mosaic*m_brick+1)];
+		m_lockZone[x+m_nbTiles*y] = type;
+		m_lockZone[x+m_nbTiles*y+m_nbTiles*m_nbTiles] = type;
 	}
 	else
 	{
-		p.y = 0.0f;
-	}
-
-	return p;
-}
-
-// Calcule un vertex du terrain.
-// Calcule une normale adoucie, en tenant compte des 6 triangles
-// adjacents :
-//
-//	^ y
-//	|
-//	b---c---+
-//	|\  |\  |
-//	|  \|  \|
-//	a---o---d
-//	|\  |\  |
-//	|  \|  \|
-//	+---f---e--> x
-
-D3DVERTEX2 CTerrain::RetVertex(int x, int y, int step)
-{
-	D3DVERTEX2	v;
-	D3DVECTOR	o, oo, a,b,c,d,e,f, n, s;
-	int			brick;
-
-	o = RetVector(x, y);
-	v.x = o.x;
-	v.y = o.y;
-	v.z = o.z;
-
-	a = RetVector(x-step, y     );
-	b = RetVector(x-step, y+step);
-	c = RetVector(x,      y+step);
-	d = RetVector(x+step, y     );
-	e = RetVector(x+step, y-step);
-	f = RetVector(x,      y-step);
-
-	s = D3DVECTOR(0.0f, 0.0f, 0.0f);
-
-	if ( x-step >= 0 && y+step <= m_mosaic*m_brick+1 )
-	{
-		s += ComputeNormal(b,a,o);
-		s += ComputeNormal(c,b,o);
-	}
-
-	if ( x+step <= m_mosaic*m_brick+1 && y+step <= m_mosaic*m_brick+1 )
-	{
-		s += ComputeNormal(d,c,o);
-	}
-
-	if ( x+step <= m_mosaic*m_brick+1 && y-step >= 0 )
-	{
-		s += ComputeNormal(e,d,o);
-		s += ComputeNormal(f,e,o);
-	}
-
-	if ( x-step >= 0 && y-step >= 0 )
-	{
-		s += ComputeNormal(a,f,o);
-	}
-
-	s = Normalize(s);
-	v.nx = s.x;
-	v.ny = s.y;
-	v.nz = s.z;
-
-	if ( m_bMultiText )
-	{
-		brick = m_brick/m_subdivMapping;
-		oo = RetVector((x/brick)*brick, (y/brick)*brick);
-		o  = RetVector(x, y);
-		v.tu =        (o.x-oo.x)*m_scaleMapping*m_subdivMapping;
-		v.tv = 1.0f - (o.z-oo.z)*m_scaleMapping*m_subdivMapping;
-	}
-	else
-	{
-		v.tu = o.x*m_scaleMapping;
-		v.tv = o.z*m_scaleMapping;
-	}
-
-	return v;
-}
-
-// Crée tous les objets d'une mosaïque.
-// L'origine d'une mosaïque est son centre.
-//
-//	^ z
-//	|
-//	|  2---4---6--
-//	|  |\  |\  |\
-//	|  |  \|  \|
-//	|  1---3---5--- ...
-//	|
-//	+-------------------> x
-
-BOOL CTerrain::CreateMosaic(int ox, int oy, int step, int objRank, 
-							const D3DMATERIAL7 &mat,
-							float min, float max)
-{
-	D3DMATRIX		transform;
-	D3DVERTEX2		o, p1, p2;
-	D3DObjLevel6*	buffer;
-	FPOINT			uv;
-	int				brick, total, size, mx, my, x, y, xx, yy, i;
-	char			texName1[20];
-	char			texName2[20];
-	float			pixel, dp;
-
-	if ( step == 1 && m_engine->RetGroundSpot() )
-	{
-		i = (ox/5) + (oy/5)*(m_mosaic/5);
-		sprintf(texName2, "shadow%.2d.tga", i);
-	}
-	else
-	{
-		texName2[0] = 0;
-	}
-
-	brick = m_brick/m_subdivMapping;
-
-	o = RetVertex(ox*m_brick+m_brick/2, oy*m_brick+m_brick/2, step);
-	total = ((brick/step)+1)*2;
-	size = sizeof(D3DObjLevel6)+sizeof(D3DVERTEX2)*(total-1);
-
-	pixel = 1.0f/256.0f;  // 1 pixel de recouvrement (*)
-//?	dp = 0.5f/512.0f;
-	dp = 1.0f/512.0f;
-
-	for ( my=0 ; my<m_subdivMapping ; my++ )
-	{
-		for ( mx=0 ; mx<m_subdivMapping ; mx++ )
+		if ( type == LZ_FREE )
 		{
-			if ( m_bLevelText )
+			type = (LockZone)m_lockZone[x+m_nbTiles*y+m_nbTiles*m_nbTiles];
+		}
+		m_lockZone[x+m_nbTiles*y] = type;
+	}
+
+	if ( m_lockZoneDebug )
+	{
+		p.y = 0.2f;
+		m_engine->ShowLockZone(p, (type!=LZ_FREE && type!=LZ_MAX1X));
+	}
+}
+
+// Indique si une zone est bloquée.
+
+LockZone CTerrain::RetLockZone(int x, int y, BOOL bInit)
+{
+	if ( x < 0 || x >= m_nbTiles ||
+		 y < 0 || y >= m_nbTiles )  return LZ_FREE;
+
+	if ( bInit )
+	{
+		if ( m_lockZone[x+m_nbTiles*y+m_nbTiles*m_nbTiles] != LZ_FREE )
+		{
+			return (LockZone)m_lockZone[x+m_nbTiles*y+m_nbTiles*m_nbTiles];
+		}
+	}
+	return (LockZone)m_lockZone[x+m_nbTiles*y];
+}
+
+// Indique si une zone est bloquée.
+
+LockZone CTerrain::RetLockZone(const D3DVECTOR &pos, BOOL bInit)
+{
+	D3DVECTOR	p;
+	int			x, y;
+
+	if ( m_lockZone == 0 )  return LZ_FREE;
+
+	p = Grid(pos, m_dimTile);
+	x = (int)(p.x/m_dimTile) + m_nbTiles2;
+	y = (int)(p.z/m_dimTile) + m_nbTiles2;
+
+	if ( x < 0 || x >= m_nbTiles ||
+		 y < 0 || y >= m_nbTiles )  return LZ_FREE;
+
+	if ( bInit )
+	{
+		if ( m_lockZone[x+m_nbTiles*y+m_nbTiles*m_nbTiles] != LZ_FREE )
+		{
+			return (LockZone)m_lockZone[x+m_nbTiles*y+m_nbTiles*m_nbTiles];
+		}
+	}
+	return (LockZone)m_lockZone[x+m_nbTiles*y];
+}
+
+// Indique si une zone est bloquée.
+
+BOOL CTerrain::IsLockZone(int x, int y)
+{
+	int		lz;
+
+	if ( x < 0 || x >= m_nbTiles ||
+		 y < 0 || y >= m_nbTiles )  return TRUE;
+
+	lz = m_lockZone[x+m_nbTiles*y];
+	return ( lz != LZ_FREE  &&
+			 lz != LZ_MAX1X );
+}
+
+// Indique si une zone est bloquée.
+
+BOOL CTerrain::IsLockZone(const D3DVECTOR &pos)
+{
+	D3DVECTOR	p;
+	int			x, y, lz;
+
+	if ( m_lockZone == 0 )  return TRUE;
+
+	p = Grid(pos, m_dimTile);
+	x = (int)(p.x/m_dimTile) + m_nbTiles2;
+	y = (int)(p.z/m_dimTile) + m_nbTiles2;
+
+	if ( x < 0 || x >= m_nbTiles ||
+		 y < 0 || y >= m_nbTiles )  return TRUE;
+
+	lz = m_lockZone[x+m_nbTiles*y];
+	return ( lz != LZ_FREE  &&
+			 lz != LZ_MAX1X );
+}
+
+// Indique si une zone est bloquée par un objet carré.
+// Un objet rond est considéré comme non bloquant.
+
+BOOL CTerrain::IsLockZoneSquare(int x, int y)
+{
+	int		lz;
+
+	if ( x < 0 || x >= m_nbTiles ||
+		 y < 0 || y >= m_nbTiles )  return TRUE;
+
+	lz = m_lockZone[x+m_nbTiles*y];
+	return ( lz != LZ_FREE  &&
+			 lz != LZ_MAX1X &&
+			 lz != LZ_FIXo  &&
+			 lz != LZ_MINE  &&
+			 lz != LZ_FIOLE &&
+			 lz != LZ_BLUPI &&
+			 lz != LZ_BOXo  );
+}
+
+// Indique si une zone est bloquée par un objet carré.
+// Un objet rond est considéré comme non bloquant.
+
+BOOL CTerrain::IsLockZoneSquare(const D3DVECTOR &pos)
+{
+	D3DVECTOR	p;
+	int			x, y, lz;
+
+	if ( m_lockZone == 0 )  return TRUE;
+
+	p = Grid(pos, m_dimTile);
+	x = (int)(p.x/m_dimTile) + m_nbTiles2;
+	y = (int)(p.z/m_dimTile) + m_nbTiles2;
+
+	if ( x < 0 || x >= m_nbTiles ||
+		 y < 0 || y >= m_nbTiles )  return TRUE;
+
+	lz = m_lockZone[x+m_nbTiles*y];
+	return ( lz != LZ_FREE  &&
+			 lz != LZ_MAX1X &&
+			 lz != LZ_FIXo  &&
+			 lz != LZ_MINE  &&
+			 lz != LZ_FIOLE &&
+			 lz != LZ_BLUPI &&
+			 lz != LZ_BOXo  );
+}
+
+
+// Efface toutes les marques.
+
+void CTerrain::SignMarkFlush()
+{
+	int		i;
+
+	for ( i=0 ; i<MAXSIGNMARK ; i++ )
+	{
+		m_signMark[i].bUsed = FALSE;
+	}
+}
+
+// Crée une nouvelle marque.
+
+BOOL CTerrain::SignMarkCreate(D3DVECTOR pos, float angle, ParticuleType type)
+{
+	int		i;
+
+	for ( i=0 ; i<MAXSIGNMARK ; i++ )
+	{
+		if ( !m_signMark[i].bUsed )
+		{
+			m_signMark[i].bUsed = TRUE;
+			m_signMark[i].type  = type;
+			m_signMark[i].pos   = pos;
+			m_signMark[i].angle = angle;
+			m_signMark[i].channel = m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), FPOINT(3.0f, 3.0f), type);
+
+			if ( m_signMark[i].channel == -1 )
 			{
-				xx = ox*m_brick + mx*(m_brick/m_subdivMapping);
-				yy = oy*m_brick + my*(m_brick/m_subdivMapping);
-				LevelTextureName(xx, yy, texName1, uv);
+				m_signMark[i].bUsed = FALSE;
+				return FALSE;
 			}
 			else
 			{
-				i = (ox*m_subdivMapping+mx)+(oy*m_subdivMapping+my)*m_mosaic;
-				sprintf(texName1, "%s%.3d%s", m_texBaseName, m_texture[i], m_texBaseExt);
+				m_particule->SetAngle(m_signMark[i].channel, angle);
 			}
-
-			for ( y=0 ; y<brick ; y+=step )
-			{
-				buffer = (D3DObjLevel6*)malloc(size);
-				ZeroMemory(buffer, sizeof(D3DObjLevel6));
-				buffer->totalPossible = total;
-				buffer->totalUsed = total;
-				buffer->type     = D3DTYPE6S;
-				buffer->material = mat;
-				if ( m_bMultiText )
-				{
-//?					buffer->state = D3DSTATENORMAL;
-					buffer->state = D3DSTATEWRAP;
-				}
-				else
-				{
-					buffer->state = D3DSTATEWRAP;
-				}
-				buffer->state |= D3DSTATESECOND;
-				if ( step == 1 )
-				{
-					buffer->state |= D3DSTATEDUALb;
-				}
-				i = 0;
-				for ( x=0 ; x<=brick ; x+=step )
-				{
-					p1 = RetVertex(ox*m_brick+mx*brick+x, oy*m_brick+my*brick+y+0   , step);
-					p2 = RetVertex(ox*m_brick+mx*brick+x, oy*m_brick+my*brick+y+step, step);
-					p1.x -= o.x;  p1.z -= o.z;
-					p2.x -= o.x;  p2.z -= o.z;
-
-					if ( m_bMultiText )
-					{
-						if ( x == 0 )
-						{
-							p1.tu = 0.0f+(0.5f/256.0f);
-							p2.tu = 0.0f+(0.5f/256.0f);
-						}
-						if ( x == brick )
-						{
-							p1.tu = 1.0f-(0.5f/256.0f);
-							p2.tu = 1.0f-(0.5f/256.0f);
-						}
-						if ( y == 0 )
-						{
-							p1.tv = 1.0f-(0.5f/256.0f);
-						}
-						if ( y == brick-step )
-						{
-							p2.tv = 0.0f+(0.5f/256.0f);
-						}
-					}
-
-					if ( m_bLevelText )
-					{
-						p1.tu /= 4;  // 0..1 -> 0..0.25
-						p1.tv /= 4;
-						p2.tu /= 4;
-						p2.tv /= 4;
-
-						if ( x == 0 )
-						{
-							p1.tu = 0.0f+dp;
-							p2.tu = 0.0f+dp;
-						}
-						if ( x == brick )
-						{
-							p1.tu = (1.0f/4)-dp;
-							p2.tu = (1.0f/4)-dp;
-						}
-						if ( y == 0 )
-						{
-							p1.tv = (1.0f/4)-dp;
-						}
-						if ( y == brick-step )
-						{
-							p2.tv = 0.0f+dp;
-						}
-
-						p1.tu += uv.x;
-						p1.tv += uv.y;
-						p2.tu += uv.x;
-						p2.tv += uv.y;
-					}
-
-#if 1
-					xx = mx*(m_brick/m_subdivMapping) + x;
-					yy = my*(m_brick/m_subdivMapping) + y;
-					p1.tu2 = ((float)(ox%5)*m_brick+xx+0.0f)/(m_brick*5);
-					p1.tv2 = ((float)(oy%5)*m_brick+yy+0.0f)/(m_brick*5);
-					p2.tu2 = ((float)(ox%5)*m_brick+xx+0.0f)/(m_brick*5);
-					p2.tv2 = ((float)(oy%5)*m_brick+yy+1.0f)/(m_brick*5);
-
-					// Correction pour 1 pixel de recouvrement (*).
-					p1.tu2 = (p1.tu2+pixel)*(1.0f-pixel)/(1.0f+pixel);
-					p1.tv2 = (p1.tv2+pixel)*(1.0f-pixel)/(1.0f+pixel);
-					p2.tu2 = (p2.tu2+pixel)*(1.0f-pixel)/(1.0f+pixel);
-					p2.tv2 = (p2.tv2+pixel)*(1.0f-pixel)/(1.0f+pixel);
-#endif
-
-					buffer->vertex[i++] = p1;
-					buffer->vertex[i++] = p2;
-				}
-				m_engine->AddQuick(objRank, buffer, texName1, texName2, min, max, TRUE);
-			}
+			return TRUE;
 		}
-	}
-
-	D3DUtil_SetIdentityMatrix(transform);
-	transform._41 = o.x;
-	transform._43 = o.z;
-	m_engine->SetObjectTransform(objRank, transform);
-
-	return TRUE;
-}
-
-// (*) Il y a 1 pixel de recouvrement autour de chacune des 16 surfaces :
-//
-//	|<--------------256-------------->|
-//	|   |<----------254---------->|   |
-//	|---|---|---|-- ... --|---|---|---|
-//    |  0.0                   1.0  |
-//	  |   |                     |   |
-//   0.0 min                   max 1.0
-//
-// Les coordonnées u-v utilisées pour le texturage sont comprises
-// entre min et max (au lieu de 0 et 1). Ceci permet d'exclure les
-// pixels situés dans une marge d'un pixel tout autour de la surface.
-
-
-// Cherche un matériaux d'après son identificateur.
-
-TerrainMaterial* CTerrain::LevelSearchMat(int id)
-{
-	int		i;
-
-	for ( i=0 ; i<m_levelMatTotal ; i++ )
-	{
-		if ( id == m_levelMat[i].id )
-		{
-			return &m_levelMat[i];
-		}
-	}
-
-	return 0;
-}
-
-// Choix de la texture à utiliser pour un carré donné.
-
-void CTerrain::LevelTextureName(int x, int y, char *name, FPOINT &uv)
-{
-	TerrainMaterial*	tm;
-
-	x /= m_brick/m_subdivMapping;
-	y /= m_brick/m_subdivMapping;
-
-	tm = LevelSearchMat(m_levelDot[x+y*m_levelDotSize].id);
-	if ( tm == 0 )
-	{
-		strcpy(name, "xxx.tga");
-		uv.x = 0.0f;
-		uv.y = 0.0f;
-	}
-	else
-	{
-//?		sprintf(name, "%s.tga", tm->texName);
-		strcpy(name, tm->texName);
-		uv.x = tm->u;
-		uv.y = tm->v;
-	}
-}
-
-// Retourne la hauteur du terrain.
-
-float CTerrain::LevelRetHeight(int x, int y)
-{
-	int		size;
-
-	size = (m_mosaic*m_brick+1);
-
-	if ( x <  0    )  x = 0;
-	if ( x >= size )  x = size-1;
-	if ( y <  0    )  y = 0;
-	if ( y >= size )  y = size-1;
-
-	return m_relief[x+y*size];
-}
-
-// Décide si un point utilise le matériaux.
-
-BOOL CTerrain::LevelGetDot(int x, int y, float min, float max, float slope)
-{
-	float	hc, h[4];
-	int		i;
-
-	hc   = LevelRetHeight(x, y);
-	h[0] = LevelRetHeight(x+0, y+1);
-	h[1] = LevelRetHeight(x+1, y+0);
-	h[2] = LevelRetHeight(x+0, y-1);
-	h[3] = LevelRetHeight(x-1, y+0);
-
-	if ( hc < min ||
-		 hc > max )  return FALSE;
-
-	if ( slope == 0.0f )
-	{
-		return TRUE;
-	}
-
-	if ( slope > 0.0f )
-	{
-		for ( i=0 ; i<4 ; i++ )
-		{
-			if ( Abs(hc-h[i]) >= slope )
-			{
-				return FALSE;
-			}
-		}
-		return TRUE;
-	}
-
-	if ( slope < 0.0f )
-	{
-		for ( i=0 ; i<4 ; i++ )
-		{
-			if ( Abs(hc-h[i]) < -slope )
-			{
-				return FALSE;
-			}
-		}
-		return TRUE;
 	}
 
 	return FALSE;
 }
 
-// Cherche si un matériau existe.
-// Retourne l'index dans m_levelMat ou -1 s'il n'existe pas.
-// m_levelMat[i].id donne l'identificateur.
+// Supprime ume marque.
 
-int CTerrain::LevelTestMat(char *mat)
+BOOL CTerrain::SignMarkDelete(D3DVECTOR pos)
 {
 	int		i;
 
-	for ( i=0 ; i<m_levelMatTotal ; i++ )
+	for ( i=0 ; i<MAXSIGNMARK ; i++ )
 	{
-		if ( m_levelMat[i].mat[0] == mat[0] &&
-			 m_levelMat[i].mat[1] == mat[1] &&
-			 m_levelMat[i].mat[2] == mat[2] &&
-			 m_levelMat[i].mat[3] == mat[3] )  return i;
-	}
-
-	return -1;
-}
-
-// Modifie l'état d'un point et de ses 4 voisins, sans tester si
-// c'est possible.
-
-void CTerrain::LevelSetDot(int x, int y, int id, char *mat)
-{
-	TerrainMaterial*	tm;
-	int					i, ii;
-
-	tm = LevelSearchMat(id);
-	if ( tm == 0 )  return;
-
-	if ( tm->mat[0] != mat[0] ||
-		 tm->mat[1] != mat[1] ||
-		 tm->mat[2] != mat[2] ||
-		 tm->mat[3] != mat[3] )  // id incompatible avec mat ?
-	{
-		ii = LevelTestMat(mat);
-		if ( ii == -1 )  return;
-		id = m_levelMat[ii].id;  // cherche un id compatible avec mat
-	}
-
-	// Modifie le point.
-	m_levelDot[x+y*m_levelDotSize].id     = id;
-	m_levelDot[x+y*m_levelDotSize].mat[0] = mat[0];
-	m_levelDot[x+y*m_levelDotSize].mat[1] = mat[1];
-	m_levelDot[x+y*m_levelDotSize].mat[2] = mat[2];
-	m_levelDot[x+y*m_levelDotSize].mat[3] = mat[3];
-
-	// Modifie le voisin inférieur.
-	if ( (x+0) >= 0 && (x+0) < m_levelDotSize &&
-		 (y-1) >= 0 && (y-1) < m_levelDotSize )
-	{
-		i = (x+0)+(y-1)*m_levelDotSize;
-		if ( m_levelDot[i].mat[0] != mat[2] )
+		if ( m_signMark[i].bUsed )
 		{
-			m_levelDot[i].mat[0] = mat[2];
-			ii = LevelTestMat(m_levelDot[i].mat);
-			if ( ii != -1 )
+			if ( m_signMark[i].pos.x == pos.x &&
+				 m_signMark[i].pos.z == pos.z )
 			{
-				m_levelDot[i].id = m_levelMat[ii].id;
+				m_particule->DeleteParticule(m_signMark[i].channel);
+				m_signMark[i].bUsed = FALSE;
+				return TRUE;
 			}
 		}
 	}
 
-	// Modifie le voisin gauche.
-	if ( (x-1) >= 0 && (x-1) < m_levelDotSize &&
-		 (y+0) >= 0 && (y+0) < m_levelDotSize )
-	{
-		i = (x-1)+(y+0)*m_levelDotSize;
-		if ( m_levelDot[i].mat[1] != mat[3] )
-		{
-			m_levelDot[i].mat[1] = mat[3];
-			ii = LevelTestMat(m_levelDot[i].mat);
-			if ( ii != -1 )
-			{
-				m_levelDot[i].id = m_levelMat[ii].id;
-			}
-		}
-	}
-
-	// Modifie le voisin supérieur.
-	if ( (x+0) >= 0 && (x+0) < m_levelDotSize &&
-		 (y+1) >= 0 && (y+1) < m_levelDotSize )
-	{
-		i = (x+0)+(y+1)*m_levelDotSize;
-		if ( m_levelDot[i].mat[2] != mat[0] )
-		{
-			m_levelDot[i].mat[2] = mat[0];
-			ii = LevelTestMat(m_levelDot[i].mat);
-			if ( ii != -1 )
-			{
-				m_levelDot[i].id = m_levelMat[ii].id;
-			}
-		}
-	}
-
-	// Modifie le voisin droite.
-	if ( (x+1) >= 0 && (x+1) < m_levelDotSize &&
-		 (y+0) >= 0 && (y+0) < m_levelDotSize )
-	{
-		i = (x+1)+(y+0)*m_levelDotSize;
-		if ( m_levelDot[i].mat[3] != mat[1] )
-		{
-			m_levelDot[i].mat[3] = mat[1];
-			ii = LevelTestMat(m_levelDot[i].mat);
-			if ( ii != -1 )
-			{
-				m_levelDot[i].id = m_levelMat[ii].id;
-			}
-		}
-	}
-}
-
-// Teste si un matériau est possible à un endroit donné, en fonction
-// de ses 4 voisins. Si oui, met le point.
-
-BOOL CTerrain::LevelIfDot(int x, int y, int id, char *mat)
-{
-	char			test[4];
-
-	// Compatible avec voisin inférieur ?
-	if ( x+0 >= 0 && x+0 < m_levelDotSize &&
-		 y-1 >= 0 && y-1 < m_levelDotSize )
-	{
-		test[0] = mat[2];
-		test[1] = m_levelDot[(x+0)+(y-1)*m_levelDotSize].mat[1];
-		test[2] = m_levelDot[(x+0)+(y-1)*m_levelDotSize].mat[2];
-		test[3] = m_levelDot[(x+0)+(y-1)*m_levelDotSize].mat[3];
-
-		if ( LevelTestMat(test) == -1 )  return FALSE;
-	}
-
-	// Compatible avec voisin gauche ?
-	if ( x-1 >= 0 && x-1 < m_levelDotSize &&
-		 y+0 >= 0 && y+0 < m_levelDotSize )
-	{
-		test[0] = m_levelDot[(x-1)+(y+0)*m_levelDotSize].mat[0];
-		test[1] = mat[3];
-		test[2] = m_levelDot[(x-1)+(y+0)*m_levelDotSize].mat[2];
-		test[3] = m_levelDot[(x-1)+(y+0)*m_levelDotSize].mat[3];
-
-		if ( LevelTestMat(test) == -1 )  return FALSE;
-	}
-
-	// Compatible avec voisin supérieur ?
-	if ( x+0 >= 0 && x+0 < m_levelDotSize &&
-		 y+1 >= 0 && y+1 < m_levelDotSize )
-	{
-		test[0] = m_levelDot[(x+0)+(y+1)*m_levelDotSize].mat[0];
-		test[1] = m_levelDot[(x+0)+(y+1)*m_levelDotSize].mat[1];
-		test[2] = mat[0];
-		test[3] = m_levelDot[(x+0)+(y+1)*m_levelDotSize].mat[3];
-
-		if ( LevelTestMat(test) == -1 )  return FALSE;
-	}
-
-	// Compatible avec voisin droite ?
-	if ( x+1 >= 0 && x+1 < m_levelDotSize &&
-		 y+0 >= 0 && y+0 < m_levelDotSize )
-	{
-		test[0] = m_levelDot[(x+1)+(y+0)*m_levelDotSize].mat[0];
-		test[1] = m_levelDot[(x+1)+(y+0)*m_levelDotSize].mat[1];
-		test[2] = m_levelDot[(x+1)+(y+0)*m_levelDotSize].mat[2];
-		test[3] = mat[1];
-
-		if ( LevelTestMat(test) == -1 )  return FALSE;
-	}
-
-	LevelSetDot(x, y, id, mat);  // met le point
-	return TRUE;
-}
-
-// Modifie l'état d'un point.
-
-BOOL CTerrain::LevelPutDot(int x, int y, int id)
-{
-	TerrainMaterial	*tm;
-	char			mat[4];
-	int				up, right, down, left;
-
-	x /= m_brick/m_subdivMapping;
-	y /= m_brick/m_subdivMapping;
-
-	if ( x < 0 || x >= m_levelDotSize ||
-		 y < 0 || y >= m_levelDotSize )  return FALSE;
-
-	tm = LevelSearchMat(id);
-	if ( tm == 0 )  return FALSE;
-
-	// Essaye sans modifier les voisins.
-	if ( LevelIfDot(x, y, id, tm->mat) )  return TRUE;
-
-	// Essaye en modifiant un seul voisin (4x).
-	for ( up=0 ; up<m_levelMatMax ; up++ )
-	{
-		mat[0] = up;
-		mat[1] = tm->mat[1];
-		mat[2] = tm->mat[2];
-		mat[3] = tm->mat[3];
-
-		if ( LevelIfDot(x, y, id, mat) )  return TRUE;
-	}
-
-	for ( right=0 ; right<m_levelMatMax ; right++ )
-	{
-		mat[0] = tm->mat[0];
-		mat[1] = right;
-		mat[2] = tm->mat[2];
-		mat[3] = tm->mat[3];
-
-		if ( LevelIfDot(x, y, id, mat) )  return TRUE;
-	}
-
-	for ( down=0 ; down<m_levelMatMax ; down++ )
-	{
-		mat[0] = tm->mat[0];
-		mat[1] = tm->mat[1];
-		mat[2] = down;
-		mat[3] = tm->mat[3];
-
-		if ( LevelIfDot(x, y, id, mat) )  return TRUE;
-	}
-
-	for ( left=0 ; left<m_levelMatMax ; left++ )
-	{
-		mat[0] = tm->mat[0];
-		mat[1] = tm->mat[1];
-		mat[2] = tm->mat[2];
-		mat[3] = left;
-
-		if ( LevelIfDot(x, y, id, mat) )  return TRUE;
-	}
-
-	// Essaye en modifiant deux voisins (6x).
-	for ( up=0 ; up<m_levelMatMax ; up++ )
-	{
-		for ( down=0 ; down<m_levelMatMax ; down++ )
-		{
-			mat[0] = up;
-			mat[1] = tm->mat[1];
-			mat[2] = down;
-			mat[3] = tm->mat[3];
-
-			if ( LevelIfDot(x, y, id, mat) )  return TRUE;
-		}
-	}
-
-	for ( right=0 ; right<m_levelMatMax ; right++ )
-	{
-		for ( left=0 ; left<m_levelMatMax ; left++ )
-		{
-			mat[0] = tm->mat[0];
-			mat[1] = right;
-			mat[2] = tm->mat[2];
-			mat[3] = left;
-
-			if ( LevelIfDot(x, y, id, mat) )  return TRUE;
-		}
-	}
-
-	for ( up=0 ; up<m_levelMatMax ; up++ )
-	{
-		for ( right=0 ; right<m_levelMatMax ; right++ )
-		{
-			mat[0] = up;
-			mat[1] = right;
-			mat[2] = tm->mat[2];
-			mat[3] = tm->mat[3];
-
-			if ( LevelIfDot(x, y, id, mat) )  return TRUE;
-		}
-	}
-
-	for ( right=0 ; right<m_levelMatMax ; right++ )
-	{
-		for ( down=0 ; down<m_levelMatMax ; down++ )
-		{
-			mat[0] = tm->mat[0];
-			mat[1] = right;
-			mat[2] = down;
-			mat[3] = tm->mat[3];
-
-			if ( LevelIfDot(x, y, id, mat) )  return TRUE;
-		}
-	}
-
-	for ( down=0 ; down<m_levelMatMax ; down++ )
-	{
-		for ( left=0 ; left<m_levelMatMax ; left++ )
-		{
-			mat[0] = tm->mat[0];
-			mat[1] = tm->mat[1];
-			mat[2] = down;
-			mat[3] = left;
-
-			if ( LevelIfDot(x, y, id, mat) )  return TRUE;
-		}
-	}
-
-	for ( up=0 ; up<m_levelMatMax ; up++ )
-	{
-		for ( left=0 ; left<m_levelMatMax ; left++ )
-		{
-			mat[0] = up;
-			mat[1] = tm->mat[1];
-			mat[2] = tm->mat[2];
-			mat[3] = left;
-
-			if ( LevelIfDot(x, y, id, mat) )  return TRUE;
-		}
-	}
-
-	// Essaye en modifiant tous les voisins.
-	for ( up=0 ; up<m_levelMatMax ; up++ )
-	{
-		for ( right=0 ; right<m_levelMatMax ; right++ )
-		{
-			for ( down=0 ; down<m_levelMatMax ; down++ )
-			{
-				for ( left=0 ; left<m_levelMatMax ; left++ )
-				{
-					mat[0] = up;
-					mat[1] = right;
-					mat[2] = down;
-					mat[3] = left;
-
-					if ( LevelIfDot(x, y, id, mat) )  return TRUE;
-				}
-			}
-		}
-	}
-
-	OutputDebugString("LevelPutDot error\n");
 	return FALSE;
 }
 
-// Initialise tout le terrain avec un matériau.
+// Indique si toutes les marques sont visibles.
 
-BOOL CTerrain::LevelInit(int id)
+void CTerrain::SignMarkShow(BOOL bShow)
 {
-	TerrainMaterial*	tm;
-	int					i, j;
+	int		i;
 
-	tm = LevelSearchMat(id);
-	if ( tm == 0 )  return FALSE;
-
-	for ( i=0 ; i<m_levelDotSize*m_levelDotSize ; i++ )
+	for ( i=0 ; i<MAXSIGNMARK ; i++ )
 	{
-		m_levelDot[i].id = id;
-
-		for ( j=0 ; j<4 ; j++ )
+		if ( m_signMark[i].bUsed )
 		{
-			m_levelDot[i].mat[j] = tm->mat[j];
+			m_particule->SetZoom(m_signMark[i].channel, bShow?1.0f:0.0f);
+		}
+	}
+}
+
+// Retourne une marque.
+
+BOOL CTerrain::SignMarkGet(D3DVECTOR pos, float &angle, ParticuleType &type)
+{
+	int		i;
+
+	for ( i=0 ; i<MAXSIGNMARK ; i++ )
+	{
+		if ( m_signMark[i].bUsed )
+		{
+			if ( m_signMark[i].pos.x == pos.x &&
+				 m_signMark[i].pos.z == pos.z )
+			{
+				angle = m_signMark[i].angle;
+				type  = m_signMark[i].type;
+				return TRUE;
+			}
 		}
 	}
 
+	return FALSE;
+}
+
+// Retourne une marque.
+
+BOOL CTerrain::SignMarkGet(int i, D3DVECTOR &pos, float &angle, ParticuleType &type)
+{
+	if ( i < 0 || i >= MAXSIGNMARK )  return FALSE;
+	if ( !m_signMark[i].bUsed )  return FALSE;
+
+	pos   = m_signMark[i].pos;
+	angle = m_signMark[i].angle;
+	type  = m_signMark[i].type;
 	return TRUE;
 }
 
-// Génère un niveau dans le terrain.
 
-BOOL CTerrain::LevelGenerate(int *id, float min, float max,
-							 float slope, float freq,
-							 D3DVECTOR center, float radius)
+// Gestion du mode de debug.
+
+void CTerrain::SetDebugLockZone(BOOL bShow)
 {
-	TerrainMaterial	*tm;
-	D3DVECTOR		pos;
-	int				i, numID, x, y, xx, yy, group, rnd;
-	float			dim;
-
-	static char random[100] =
-	{
-		84,25,12, 6,34,52,85,38,97,16,
-		21,31,65,19,62,40,72,22,48,61,
-		56,47, 8,53,73,77, 4,91,26,88,
-		76, 1,44,93,39,11,71,17,98,95,
-		88,83,18,30, 3,57,28,49,74, 9,
-		32,13,96,66,15,70,36,10,59,94,
-		45,86, 2,29,63,42,51, 0,79,27,
-		54, 7,20,69,89,23,64,43,81,92,
-		90,33,46,14,67,35,50, 5,87,60,
-		68,55,24,78,41,75,58,80,37,82,
-	};
-
-	i = 0;
-	while ( id[i] != 0 )
-	{
-		tm = LevelSearchMat(id[i++]);
-		if ( tm == 0 )  return FALSE;
-	}
-	numID = i;
-
-	group = m_brick/m_subdivMapping;
-
-	if ( radius > 0.0f && radius < 5.0f )  // juste un carré ?
-	{
-		dim = (m_mosaic*m_brick*m_size)/2.0f;
-
-		xx = (int)((center.x+dim)/m_size);
-		yy = (int)((center.z+dim)/m_size);
-
-		x = xx/group;
-		y = yy/group;
-
-		tm = LevelSearchMat(id[0]);
-		if ( tm != 0 )
-		{
-			LevelSetDot(x, y, id[0], tm->mat);  // met le point
-		}
-//?		LevelPutDot(xx,yy, id[0]);
-	}
-	else
-	{
-		for ( y=0 ; y<m_levelDotSize ; y++ )
-		{
-			for ( x=0 ; x<m_levelDotSize ; x++ )
-			{
-				if ( radius != 0.0f )
-				{
-					pos.x = ((float)x-m_levelDotSize/2.0f)*group*m_size;
-					pos.z = ((float)y-m_levelDotSize/2.0f)*group*m_size;
-					if ( Length2d(pos, center) > radius )  continue;
-				}
-
-				if ( freq < 100.0f )
-				{
-					rnd = random[(x%10)+(y%10)*10];
-					if ( (float)rnd > freq )  continue;
-				}
-
-				xx = x*group + group/2;
-				yy = y*group + group/2;
-
-				if ( LevelGetDot(xx,yy, min, max, slope) )
-				{
-					rnd = random[(x%10)+(y%10)*10];
-					i = rnd%numID;
-					LevelPutDot(xx,yy, id[i]);
-				}
-			}
-		}
-	}
-
-	return TRUE;
+	m_lockZoneDebug = bShow;
 }
 
-// Gestion spéciale des routes.
-
-#define RL	(1<<0)	// left
-#define RUL	(1<<1)
-#define RU	(1<<2)	// up
-#define RUR	(1<<3)
-#define RR	(1<<4)	// right
-#define RDR	(1<<5)
-#define RD	(1<<6)	//down
-#define RDL	(1<<7)
-
-short table_road[] =
+BOOL CTerrain::RetDebugLockZone()
 {
-	 2,	RL+RR,
-	 3,	RU+RD,
-	 4,	RD,
-	 5,	RD+RR,
-	 6,	RL+RD+RR,
-	 7,	RL+RD,
-	 8,	RU,
-	 9,	RU+RR+RD,
-	10,	RU+RL+RR+RD,
-	11,	RU+RL+RD,
-	12,	RR,
-	13,	RU+RR,
-	14,	RU+RL+RR,
-	15,	RU+RL,
-	16,	RL,
-	17,	RDL+RUR,
-	18,	RDR,
-	19,	RDL,
-	21,	RUL+RDR,
-	22,	RUR,
-	23,	RUL,
-	25,	RDL+RR,
-	26,	RDR+RL,
-	27,	RUR+RD,
-	28,	RUL+RD,
-	29,	RUL+RR,
-	30,	RUR+RL,
-	31,	RDR+RU,
-	32,	RDL+RU,
-	 0
-};
-
-int CTerrain::RoadSearchID(int bits)
-{
-	int		i = 0;
-	while ( table_road[i] != 0 )
-	{
-		if ( table_road[i+1] == bits )  return table_road[i];
-		i += 2;
-	}
-	return 0;
-}
-
-int CTerrain::RoadSearchBits(int id)
-{
-	int		i = 0;
-	while ( table_road[i] != 0 )
-	{
-		if ( table_road[i] == id )  return table_road[i+1];
-		i += 2;
-	}
-	return 0;
-}
-
-int CTerrain::RoadGetID(int x, int y)
-{
-	if ( x < 0 || x >= m_levelDotSize ||
-		 y < 0 || y >= m_levelDotSize )  return 0;
-	return m_levelDot[x+y*m_levelDotSize].id;
-}
-
-// Cherche comment transformer une route pleine.
-
-int CTerrain::RoadSearchBitsFull(int x, int y, BOOL bF1)
-{
-	int		id, bits = 0;
-
-	id = RoadGetID(x, y);
-	if ( id <= 1 || id == 20  || id == 24 )  return bits;  // si pas route -> retour
-
-	if ( bF1 )  // green05/06-h ?
-	{
-		if ( id ==  4 )  return bits;  // 11 ?
-		if ( id ==  6 )  return bits;  // 23 ?
-		if ( id ==  8 )  return bits;  // 25 ?
-		if ( id ==  9 )  return bits;  // 36 ?
-		if ( id == 10 )  return bits;  // 37 ?
-		if ( id == 11 )  return bits;  // 52 ?
-		if ( id == 12 )  return bits;  // || ?
-		if ( id == 14 )  return bits;  // == ?
-		if ( id == 16 )  return bits;  // ^  ?
-	}
-
-	if ( RoadGetID(x-1, y-1) > 1 )  bits |= RDL;
-	if ( RoadGetID(x+0, y-1) > 1 )  bits |= RD;
-	if ( RoadGetID(x+1, y-1) > 1 )  bits |= RDR;
-	if ( RoadGetID(x-1, y+0) > 1 )  bits |= RL;
-	if ( RoadGetID(x+1, y+0) > 1 )  bits |= RR;
-	if ( RoadGetID(x-1, y+1) > 1 )  bits |= RUL;
-	if ( RoadGetID(x+0, y+1) > 1 )  bits |= RU;
-	if ( RoadGetID(x+1, y+1) > 1 )  bits |= RUR;
-
-	if ( bits & RL )  bits &= ~(RUL|RDL);
-	if ( bits & RR )  bits &= ~(RUR|RDR);
-	if ( bits & RD )  bits &= ~(RDL|RDR);
-	if ( bits & RU )  bits &= ~(RUL|RUR);
-
-	return bits;
-}
-
-// Cherche comment transformer un coin estétique.
-
-int CTerrain::RoadSearchBitsDiag(int x, int y)
-{
-	int		b, bits = 0;
-
-	if ( RoadGetID(x, y) > 1 )  return bits;  // si déjà route -> retour
-
-	b = RoadSearchBits(RoadGetID(x-1, y+0));  // à gauche
-	if ( b & RUR )  bits |= RUL;
-	if ( b & RDR )  bits |= RDL;
-
-	b = RoadSearchBits(RoadGetID(x+1, y+0));  // à droite
-	if ( b & RUL )  bits |= RUR;
-	if ( b & RDL )  bits |= RDR;
-
-	b = RoadSearchBits(RoadGetID(x+0, y-1));  // en bas
-	if ( b & RUL )  bits |= RDL;
-	if ( b & RUR )  bits |= RDR;
-
-	b = RoadSearchBits(RoadGetID(x+0, y+1));  // en haut
-	if ( b & RDL )  bits |= RUL;
-	if ( b & RDR )  bits |= RUR;
-
-	return bits;
-}
-
-// Adapte les routes.
-
-void CTerrain::LevelRoadAdapt(BOOL bF1)
-{
-	int		x, y, bits, id;
-
-	for ( y=0 ; y<m_levelDotSize ; y++ )
-	{
-		for ( x=0 ; x<m_levelDotSize ; x++ )
-		{
-			bits = RoadSearchBitsFull(x, y, bF1);
-			if ( bits != 0 )
-			{
-				id = RoadSearchID(bits);
-				if ( id != 0 )
-				{
-					m_levelDot[x+y*m_levelDotSize].id = id;
-				}
-			}
-		}
-	}
-
-	for ( y=0 ; y<m_levelDotSize ; y++ )
-	{
-		for ( x=0 ; x<m_levelDotSize ; x++ )
-		{
-			bits = RoadSearchBitsDiag(x, y);
-			if ( bits != 0 )
-			{
-				id = RoadSearchID(bits);
-				if ( id != 0 )
-				{
-					m_levelDot[x+y*m_levelDotSize].id = id;
-				}
-			}
-		}
-	}
-}
-
-// Initialise une table des niveaux vide.
-
-void CTerrain::LevelOpenTable()
-{
-	int		i, j;
-
-	if ( !m_bLevelText )  return;
-	if ( m_levelDot != 0 )  return;  // déjà alloué
-
-	m_levelDotSize = (m_mosaic*m_brick)/(m_brick/m_subdivMapping)+1;
-	m_levelDot = (DotLevel*)malloc(m_levelDotSize*m_levelDotSize*sizeof(DotLevel));
-
-	for ( i=0 ; i<m_levelDotSize*m_levelDotSize ; i++ )
-	{
-		for ( j=0 ; j<4 ; j++ )
-		{
-			m_levelDot[i].mat[j] = 0;
-		}
-	}
-}
-
-// Ferme la table des niveaux.
-
-void CTerrain::LevelCloseTable()
-{
-	free(m_levelDot);
-	m_levelDot = 0;
+	return m_lockZoneDebug;
 }
 
 
+// Adapte un vertex pour le terrain.
 
-// Crée tous les objets pour une maille carrée du terrain.
-
-BOOL CTerrain::CreateSquare(BOOL bMultiRes, int x, int y)
+void CTerrain::AdapteTileVertex(D3DVERTEX2 &v)
 {
+	D3DVECTOR	pos;
+
+	pos.x = v.x+4.0f;
+	pos.z = v.z+4.0f;
+	if ( RetResource(pos) == TR_LIFT )  return;
+
+	pos.x = v.x-4.0f;
+	pos.z = v.z+4.0f;
+	if ( RetResource(pos) == TR_LIFT )  return;
+
+	pos.x = v.x+4.0f;
+	pos.z = v.z-4.0f;
+	if ( RetResource(pos) == TR_LIFT )  return;
+
+	pos.x = v.x-4.0f;
+	pos.z = v.z-4.0f;
+	if ( RetResource(pos) == TR_LIFT )  return;
+
+	PseudoRandom(v, m_baseRv, m_baseRh);
+}
+
+// Crée une tuile du terrain.
+
+void CTerrain::CreateTile(int objRank, int x, int y, float level,
+						  float tu, float tv)
+{
+	D3DVERTEX2		vertex[4], iv;
 	D3DMATERIAL7	mat;
-	float			min, max;
-	int				step, objRank;
+	D3DVECTOR		center;
+	float			dp;
 
 	ZeroMemory( &mat, sizeof(D3DMATERIAL7) );
 	mat.diffuse.r = 1.0f;
 	mat.diffuse.g = 1.0f;
 	mat.diffuse.b = 1.0f;
-	mat.ambient.r = 0.0f;
-	mat.ambient.g = 0.0f;
-	mat.ambient.b = 0.0f;
+	mat.ambient.r = 0.5f;
+	mat.ambient.g = 0.5f;
+	mat.ambient.b = 0.5f;
 
-	objRank = m_engine->CreateObject();
-	m_engine->SetObjectType(objRank, TYPETERRAIN);  // c'est un terrain
+	center.x = m_dimTile*(x-m_nbTiles2);
+	center.z = m_dimTile*(y-m_nbTiles2);
+	center.y = level;
 
-	m_objRank[x+y*m_mosaic] = objRank;
+	vertex[0].x = center.x-m_dimTile/2.0f;
+	vertex[0].z = center.z-m_dimTile/2.0f;
+	vertex[0].y = center.y;
 
-	if ( bMultiRes )
+	vertex[1].x = center.x-m_dimTile/2.0f;
+	vertex[1].z = center.z+m_dimTile/2.0f;
+	vertex[1].y = center.y;
+
+	vertex[2].x = center.x+m_dimTile/2.0f;
+	vertex[2].z = center.z-m_dimTile/2.0f;
+	vertex[2].y = center.y;
+
+	vertex[3].x = center.x+m_dimTile/2.0f;
+	vertex[3].z = center.z+m_dimTile/2.0f;
+	vertex[3].y = center.y;
+
+	if ( m_baseRv != 0.0f || m_baseRh != 0.0f )
 	{
-		min = 0.0f;
-		max = m_vision;
-		max *= m_engine->RetClippingDistance();
-		for ( step=0 ; step<m_depth ; step++ )
-		{
-			CreateMosaic(x, y, 1<<step, objRank, mat, min, max);
-			min = max;
-			max *= 2;
-			if ( step == m_depth-1 )  max = g_HUGE;
-		}
+		AdapteTileVertex(vertex[0]);
+		AdapteTileVertex(vertex[1]);
+		AdapteTileVertex(vertex[2]);
+		AdapteTileVertex(vertex[3]);
+	}
+
+	dp = 0.5f/256.0f;
+	vertex[0].tu = tu+0.00f+dp;
+	vertex[0].tv = tv+0.25f-dp;
+	vertex[1].tu = tu+0.00f+dp;
+	vertex[1].tv = tv+0.00f+dp;
+	vertex[2].tu = tu+0.25f-dp;
+	vertex[2].tv = tv+0.25f-dp;
+	vertex[3].tu = tu+0.25f-dp;
+	vertex[3].tv = tv+0.00f+dp;
+
+	vertex[0].tu2 = ((float)(x+0)/m_nbTiles);
+	vertex[0].tv2 = ((float)(y+0)/m_nbTiles);
+	vertex[1].tu2 = ((float)(x+0)/m_nbTiles);
+	vertex[1].tv2 = ((float)(y+1)/m_nbTiles);
+	vertex[2].tu2 = ((float)(x+1)/m_nbTiles);
+	vertex[2].tv2 = ((float)(y+0)/m_nbTiles);
+	vertex[3].tu2 = ((float)(x+1)/m_nbTiles);
+	vertex[3].tv2 = ((float)(y+1)/m_nbTiles);
+
+	vertex[0].nx = 0.0f;
+	vertex[0].ny = 1.0f;
+	vertex[0].nz = 0.0f;
+	vertex[1].nx = 0.0f;
+	vertex[1].ny = 1.0f;
+	vertex[1].nz = 0.0f;
+	vertex[2].nx = 0.0f;
+	vertex[2].ny = 1.0f;
+	vertex[2].nz = 0.0f;
+	vertex[3].nx = 0.0f;
+	vertex[3].ny = 1.0f;
+	vertex[3].nz = 0.0f;
+
+	if ( level == -8.0f )
+	{
+		// Met des ombres sur le terrain de niveau -8, en supposant
+		// un soleil placé au sud-est.
+		vertex[0].ny /= RetShadowPound(x-0.5f, y-0.5f);
+		vertex[1].ny /= RetShadowPound(x-0.5f, y+0.5f);
+		vertex[2].ny /= RetShadowPound(x+0.5f, y-0.5f);
+		vertex[3].ny /= RetShadowPound(x+0.5f, y+0.5f);
+	}
+
+	if ( m_texName2[0] == 0 )
+	{
+		m_engine->AddSurface(objRank, vertex, 4, mat, D3DSTATENORMAL,
+							 m_texName1, m_texName2, 0.0f, 10000.0f, FALSE);
 	}
 	else
 	{
-		CreateMosaic(x, y, 1, objRank, mat, 0.0f, g_HUGE);
+		m_engine->AddSurface(objRank, vertex, 4, mat, D3DSTATEDUALb,
+							 m_texName1, m_texName2, 0.0f, 10000.0f, FALSE);
+	}
+}
+
+// Crée une paroi verticale du terrain.
+
+void CTerrain::CreateWall(int objRank, int x, int y, float level,
+						  float tu, float tv, const D3DVECTOR &n,
+						  float dx0, float dz0, float dx2, float dz2)
+{
+	D3DVERTEX2		vertex[4];
+	D3DMATERIAL7	mat;
+	D3DVECTOR		center, nn;
+	float			dp;
+
+	ZeroMemory( &mat, sizeof(D3DMATERIAL7) );
+	mat.diffuse.r = 1.0f;
+	mat.diffuse.g = 1.0f;
+	mat.diffuse.b = 1.0f;
+	mat.ambient.r = 0.5f;
+	mat.ambient.g = 0.5f;
+	mat.ambient.b = 0.5f;
+
+	center.x = m_dimTile*(x-m_nbTiles2);
+	center.z = m_dimTile*(y-m_nbTiles2);
+	center.y = level;
+
+	if ( n.x > 0.0f )  // à droite ?
+	{
+		vertex[0].x = center.x+m_dimTile/2.0f+dx0;
+		vertex[0].z = center.z-m_dimTile/2.0f+dz0;
+		vertex[0].y = center.y-m_dimTile;
+
+		vertex[1].x = center.x+m_dimTile/2.0f;
+		vertex[1].z = center.z-m_dimTile/2.0f;
+		vertex[1].y = center.y;
+
+		vertex[2].x = center.x+m_dimTile/2.0f+dx2;
+		vertex[2].z = center.z+m_dimTile/2.0f+dz2;
+		vertex[2].y = center.y-m_dimTile;
+
+		vertex[3].x = center.x+m_dimTile/2.0f;
+		vertex[3].z = center.z+m_dimTile/2.0f;
+		vertex[3].y = center.y;
+	}
+	else if ( n.x < 0.0f )  // à gauche ?
+	{
+		vertex[0].x = center.x-m_dimTile/2.0f+dx0;
+		vertex[0].z = center.z+m_dimTile/2.0f+dz0;
+		vertex[0].y = center.y-m_dimTile;
+
+		vertex[1].x = center.x-m_dimTile/2.0f;
+		vertex[1].z = center.z+m_dimTile/2.0f;
+		vertex[1].y = center.y;
+
+		vertex[2].x = center.x-m_dimTile/2.0f+dx2;
+		vertex[2].z = center.z-m_dimTile/2.0f+dz2;
+		vertex[2].y = center.y-m_dimTile;
+
+		vertex[3].x = center.x-m_dimTile/2.0f;
+		vertex[3].z = center.z-m_dimTile/2.0f;
+		vertex[3].y = center.y;
+	}
+	else if ( n.z > 0.0f )  // en haut ?
+	{
+		vertex[0].x = center.x+m_dimTile/2.0f+dx0;
+		vertex[0].z = center.z+m_dimTile/2.0f+dz0;
+		vertex[0].y = center.y-m_dimTile;
+
+		vertex[1].x = center.x+m_dimTile/2.0f;
+		vertex[1].z = center.z+m_dimTile/2.0f;
+		vertex[1].y = center.y;
+
+		vertex[2].x = center.x-m_dimTile/2.0f+dx2;
+		vertex[2].z = center.z+m_dimTile/2.0f+dz2;
+		vertex[2].y = center.y-m_dimTile;
+
+		vertex[3].x = center.x-m_dimTile/2.0f;
+		vertex[3].z = center.z+m_dimTile/2.0f;
+		vertex[3].y = center.y;
+	}
+	else	// en bas ?
+	{
+		vertex[0].x = center.x-m_dimTile/2.0f+dx0;
+		vertex[0].z = center.z-m_dimTile/2.0f+dz0;
+		vertex[0].y = center.y-m_dimTile;
+
+		vertex[1].x = center.x-m_dimTile/2.0f;
+		vertex[1].z = center.z-m_dimTile/2.0f;
+		vertex[1].y = center.y;
+
+		vertex[2].x = center.x+m_dimTile/2.0f+dx2;
+		vertex[2].z = center.z-m_dimTile/2.0f+dz2;
+		vertex[2].y = center.y-m_dimTile;
+
+		vertex[3].x = center.x+m_dimTile/2.0f;
+		vertex[3].z = center.z-m_dimTile/2.0f;
+		vertex[3].y = center.y;
 	}
 
-	return TRUE;
+	if ( m_baseRv != 0.0f || m_baseRh != 0.0f )
+	{
+		AdapteTileVertex(vertex[0]);
+		AdapteTileVertex(vertex[1]);
+		AdapteTileVertex(vertex[2]);
+		AdapteTileVertex(vertex[3]);
+	}
+
+	dp = 0.5f/256.0f;
+	vertex[0].tu = tu+0.00f+dp;
+	vertex[0].tv = tv+0.25f-dp;
+	vertex[1].tu = tu+0.00f+dp;
+	vertex[1].tv = tv+0.00f+dp;
+	vertex[2].tu = tu+0.25f-dp;
+	vertex[2].tv = tv+0.25f-dp;
+	vertex[3].tu = tu+0.25f-dp;
+	vertex[3].tv = tv+0.00f+dp;
+
+	vertex[0].tu2 = 0.0f;
+	vertex[0].tv2 = 0.0f;
+	vertex[1].tu2 = 0.0f;
+	vertex[1].tv2 = 0.0f;
+	vertex[2].tu2 = 0.0f;
+	vertex[2].tv2 = 0.0f;
+	vertex[3].tu2 = 0.0f;
+	vertex[3].tv2 = 0.0f;
+
+	nn = ComputeNormal(D3DVECTOR(vertex[0].x, vertex[0].y, vertex[0].z),
+					   D3DVECTOR(vertex[2].x, vertex[2].y, vertex[2].z),
+					   D3DVECTOR(vertex[1].x, vertex[1].y, vertex[1].z));
+
+	vertex[0].nx = nn.x;
+	vertex[0].ny = nn.y;
+	vertex[0].nz = nn.z;
+	vertex[1].nx = nn.x;
+	vertex[1].ny = nn.y;
+	vertex[1].nz = nn.z;
+	vertex[2].nx = nn.x;
+	vertex[2].ny = nn.y;
+	vertex[2].nz = nn.z;
+	vertex[3].nx = nn.x;
+	vertex[3].ny = nn.y;
+	vertex[3].nz = nn.z;
+
+	m_engine->AddSurface(objRank, vertex, 4, mat, D3DSTATENORMAL,
+						 m_texName1, "", 0.0f, 10000.0f, FALSE);
+}
+
+// Calcule les coordonnées u/v d'une texture d'après un identificateur
+// compris entre 0 et 15.
+
+void CTerrain::ComputeUV(int *id, float &tu, float &tv)
+{
+	int		i;
+
+	i = (rand()%id[0])+1;
+	tu = 0.25f*(id[i]%4);
+	tv = 0.25f*(id[i]/4);
+}
+
+// Retourne le poids pour l'ombre, en supposant un soleil placé
+// au sud-.est.
+
+float CTerrain::RetShadowPound(float x, float y)
+{
+	int		flags;
+
+	static int table[16] = {1,4,16,16,4,4,16,16,2,2,4,4,2,2,4,16};
+
+	flags = 0;
+	if ( IsSolid(RetResource((int)(x+0.5f), (int)(y+0.5f))) )  flags |= (1<<0);
+	if ( IsSolid(RetResource((int)(x+0.5f), (int)(y-0.5f))) )  flags |= (1<<1);
+	if ( IsSolid(RetResource((int)(x-0.5f), (int)(y-0.5f))) )  flags |= (1<<2);
+	if ( IsSolid(RetResource((int)(x-0.5f), (int)(y+0.5f))) )  flags |= (1<<3);
+
+	return (float)table[flags];
+}
+
+// Crée un joli bord sous forme d'un objet.
+
+void CTerrain::CreateBorder(CModFile *pModFile, int objRank,
+							float angle, int x, int y, char *type)
+{
+	D3DVECTOR	pos;
+	char		text[50];
+	int			rank;
+
+	pos.x = (x-m_nbTiles2)*m_dimTile;
+	pos.z = (y-m_nbTiles2)*m_dimTile;
+	pos.y = -16.0f;
+
+	sprintf(text, "objects\\terrain%d%s.mod", m_model, type);
+	pModFile->ReadModel(text);
+	pModFile->Rotate(angle);
+
+	if ( m_bSmooth)  pModFile->TerrainNormalAdjust();
+
+	// Met des ombres sur le terrain de niveau -8, en supposant
+	// un soleil placé au sud-est.
+	pModFile->TerrainNormalShadow(D3DVECTOR( 4.0f, 0.0f,  4.0f), RetShadowPound(x+0.5f, y+0.5f));
+	pModFile->TerrainNormalShadow(D3DVECTOR( 4.0f, 0.0f, -4.0f), RetShadowPound(x+0.5f, y-0.5f));
+	pModFile->TerrainNormalShadow(D3DVECTOR(-4.0f, 0.0f, -4.0f), RetShadowPound(x-0.5f, y-0.5f));
+	pModFile->TerrainNormalShadow(D3DVECTOR(-4.0f, 0.0f,  4.0f), RetShadowPound(x-0.5f, y+0.5f));
+
+	rank = (rand()%m_idGround[0])+1;
+	rank = m_idGround[rank];
+	pModFile->TerrainTexture(m_texName1, rank);
+
+	pModFile->Translate(pos);
+	pModFile->TerrainRandomize(m_modelRv, m_modelRh);
+	pModFile->CreateEngineObject(objRank);
 }
 
 // Crée tous les objets du terrain dans le moteur 3D.
 
-BOOL CTerrain::CreateObjects(BOOL bMultiRes)
+BOOL CTerrain::CreateObjects()
 {
-	int		x, y;
+	CModFile*		pModFile;
+	D3DMATRIX		transform;
+	TerrainRes		res, dir[8];
+	float			tu, tv;
+	float			slope, dx0, dz0, dx2, dz2;
+	int				objRank, x, y, id[2], i;
 
-	AdjustRelief();
+	InitShadows();
 
-	for ( y=0 ; y<m_mosaic ; y++ )
+	objRank = m_engine->CreateObject();
+	m_engine->SetObjectType(objRank, TYPETERRAIN);  // c'est un terrain
+	m_objRank = objRank;
+
+	slope = m_slope;
+
+	for ( y=0 ; y<m_nbTiles ; y++ )
 	{
-		for ( x=0 ; x<m_mosaic ; x++ )
+		for ( x=0 ; x<m_nbTiles ; x++ )
 		{
-			CreateSquare(bMultiRes, x, y);
+			res = RetResource(x, y);
+			if ( IsSolid(res) )
+			{
+				if ( res == TR_SOLID0 )
+				{
+					ComputeUV(m_idFlat, tu, tv);
+				}
+				else
+				{
+					id[0] = 1;
+					if ( res == TR_SOLID1 )  id[1] = 1;
+					if ( res == TR_SOLID2 )  id[1] = 2;
+					if ( res == TR_SOLID3 )  id[1] = 3;
+					if ( res == TR_SOLID4 )  id[1] = 4;
+					if ( res == TR_SOLID5 )  id[1] = 5;
+					if ( res == TR_SOLID6 )  id[1] = 6;
+					if ( res == TR_SOLID7 )  id[1] = 7;
+					ComputeUV(id, tu, tv);
+				}
+				CreateTile(objRank, x, y, 0.0f, tu, tv);
+
+				dir[0] = RetResource(x+0, y+1);  // haut
+				dir[1] = RetResource(x+1, y+0);  // droite
+				dir[2] = RetResource(x+0, y-1);  // bas
+				dir[3] = RetResource(x-1, y+0);  // gauche
+
+				if ( !IsSolid(dir[0]) )  // haut
+				{
+					if ( dir[0] == TR_SPACE ||
+						 dir[0] == TR_LIFT  )
+					{
+						ComputeUV(m_idWall2, tu, tv);
+						CreateWall(objRank, x, y, 0.0f, tu, tv, D3DVECTOR(0.0f, 0.0f, 1.0f), 0.0f, 0.0f, 0.0f, 0.0f);
+					}
+					else
+					{
+						ComputeUV(m_idWall1, tu, tv);
+						CreateWall(objRank, x, y, 0.0f, tu, tv, D3DVECTOR(0.0f, 0.0f, 1.0f), 0.0f, 0.0f, 0.0f, 0.0f);
+					}
+				}
+
+				if ( !IsSolid(dir[1]) )  // droite
+				{
+					if ( dir[1] == TR_SPACE ||
+						 dir[1] == TR_LIFT  )
+					{
+						ComputeUV(m_idWall2, tu, tv);
+						CreateWall(objRank, x, y, 0.0f, tu, tv, D3DVECTOR(1.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.0f);
+					}
+					else
+					{
+						ComputeUV(m_idWall1, tu, tv);
+						CreateWall(objRank, x, y, 0.0f, tu, tv, D3DVECTOR(1.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.0f);
+					}
+				}
+
+				if ( !IsSolid(dir[2]) )  // bas
+				{
+					if ( dir[2] == TR_SPACE ||
+						 dir[2] == TR_LIFT  )
+					{
+						ComputeUV(m_idWall2, tu, tv);
+						CreateWall(objRank, x, y, 0.0f, tu, tv, D3DVECTOR(0.0f, 0.0f, -1.0f), 0.0f, 0.0f, 0.0f, 0.0f);
+					}
+					else
+					{
+						ComputeUV(m_idWall1, tu, tv);
+						CreateWall(objRank, x, y, 0.0f, tu, tv, D3DVECTOR(0.0f, 0.0f, -1.0f), 0.0f, 0.0f, 0.0f, 0.0f);
+					}
+				}
+
+				if ( !IsSolid(dir[3]) )  // gauche
+				{
+					if ( dir[3] == TR_SPACE ||
+						 dir[3] == TR_LIFT  )
+					{
+						ComputeUV(m_idWall2, tu, tv);
+						CreateWall(objRank, x, y, 0.0f, tu, tv, D3DVECTOR(-1.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.0f);
+					}
+					else
+					{
+						ComputeUV(m_idWall1, tu, tv);
+						CreateWall(objRank, x, y, 0.0f, tu, tv, D3DVECTOR(-1.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.0f);
+					}
+				}
+			}
+
+			if ( res == TR_HOLE && m_model == 0 )
+			{
+				ComputeUV(m_idHole, tu, tv);
+				CreateTile(objRank, x, y, -8.0f, tu, tv);
+			}
+
+			if ( res != TR_SPACE && m_model == 0 )
+			{
+				dir[0] = RetResource(x+0, y+1);  // haut
+				dir[1] = RetResource(x+1, y+0);  // droite
+				dir[2] = RetResource(x+0, y-1);  // bas
+				dir[3] = RetResource(x-1, y+0);  // gauche
+
+				if ( dir[0] == TR_SPACE ||
+					 dir[0] == TR_LIFT  )
+				{
+					dx0 = (dir[1]==TR_SPACE)? slope:0.0f;
+					dz0 = (dir[0]==TR_SPACE)? slope:0.0f;
+					dx2 = (dir[3]==TR_SPACE)?-slope:0.0f;
+					dz2 = (dir[0]==TR_SPACE)? slope:0.0f;
+					ComputeUV(m_idWall3, tu, tv);
+					for ( i=0 ; i<m_depth ; i++ )
+					{
+						CreateWall(objRank, x, y, -8.0f*(i+1), tu, tv, D3DVECTOR(0.0f, 0.0f, 1.0f), dx0, dz0, dx2, dz2);
+					}
+				}
+
+				if ( dir[1] == TR_SPACE ||
+					 dir[1] == TR_LIFT  )
+				{
+					dx0 = (dir[1]==TR_SPACE)? slope:0.0f;
+					dz0 = (dir[2]==TR_SPACE)?-slope:0.0f;
+					dx2 = (dir[1]==TR_SPACE)? slope:0.0f;
+					dz2 = (dir[0]==TR_SPACE)? slope:0.0f;
+					ComputeUV(m_idWall3, tu, tv);
+					for ( i=0 ; i<m_depth ; i++ )
+					{
+						CreateWall(objRank, x, y, -8.0f*(i+1), tu, tv, D3DVECTOR(1.0f, 0.0f, 0.0f), dx0, dz0, dx2, dz2);
+					}
+				}
+
+				if ( dir[2] == TR_SPACE ||
+					 dir[2] == TR_LIFT  )
+				{
+					dx0 = (dir[3]==TR_SPACE)?-slope:0.0f;
+					dz0 = (dir[2]==TR_SPACE)?-slope:0.0f;
+					dx2 = (dir[1]==TR_SPACE)? slope:0.0f;
+					dz2 = (dir[2]==TR_SPACE)?-slope:0.0f;
+					ComputeUV(m_idWall3, tu, tv);
+					for ( i=0 ; i<m_depth ; i++ )
+					{
+						CreateWall(objRank, x, y, -8.0f*(i+1), tu, tv, D3DVECTOR(0.0f, 0.0f, -1.0f), dx0, dz0, dx2, dz2);
+					}
+				}
+
+				if ( dir[3] == TR_SPACE ||
+					 dir[3] == TR_LIFT  )
+				{
+					dx0 = (dir[3]==TR_SPACE)?-slope:0.0f;
+					dz0 = (dir[0]==TR_SPACE)? slope:0.0f;
+					dx2 = (dir[3]==TR_SPACE)?-slope:0.0f;
+					dz2 = (dir[2]==TR_SPACE)?-slope:0.0f;
+					ComputeUV(m_idWall3, tu, tv);
+					for ( i=0 ; i<m_depth ; i++ )
+					{
+						CreateWall(objRank, x, y, -8.0f*(i+1), tu, tv, D3DVECTOR(-1.0f, 0.0f, 0.0f), dx0, dz0, dx2, dz2);
+					}
+				}
+			}
 		}
 	}
+
+	if ( m_model != 0 )
+	{
+		pModFile = new CModFile(m_iMan);
+
+		for ( y=-1 ; y<m_nbTiles+1 ; y++ )
+		{
+			for ( x=-1 ; x<m_nbTiles+1 ; x++ )
+			{
+				res = RetResource(x, y);
+				if ( res == TR_SPACE )
+				{
+					dir[0] = RetResource(x+0, y+1);  // up
+					dir[1] = RetResource(x+1, y+1);  // 
+					dir[2] = RetResource(x+1, y+0);  // right
+					dir[3] = RetResource(x+1, y-1);  // 
+					dir[4] = RetResource(x+0, y-1);  // down
+					dir[5] = RetResource(x-1, y-1);  // 
+					dir[6] = RetResource(x-1, y+0);  // left
+					dir[7] = RetResource(x-1, y+1);  // 
+
+					// Crée les points (.).
+					if ( dir[3] != TR_SPACE &&
+						 dir[2] == TR_SPACE &&
+						 dir[4] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*0.0f, x, y, "d");
+					}
+
+					if ( dir[1] != TR_SPACE &&
+						 dir[0] == TR_SPACE &&
+						 dir[2] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*0.5f, x, y, "d");
+					}
+
+					if ( dir[7] != TR_SPACE &&
+						 dir[0] == TR_SPACE &&
+						 dir[6] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*1.0f, x, y, "d");
+					}
+
+					if ( dir[5] != TR_SPACE &&
+						 dir[4] == TR_SPACE &&
+						 dir[6] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*1.5f, x, y, "d");
+					}
+
+					// Crée les lignes (I).
+					if ( dir[4] != TR_SPACE &&
+						 dir[2] == TR_SPACE &&
+						 dir[6] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*0.0f, x, y, "i");
+					}
+
+					if ( dir[2] != TR_SPACE &&
+						 dir[0] == TR_SPACE &&
+						 dir[4] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*0.5f, x, y, "i");
+					}
+
+					if ( dir[0] != TR_SPACE &&
+						 dir[2] == TR_SPACE &&
+						 dir[6] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*1.0f, x, y, "i");
+					}
+
+					if ( dir[6] != TR_SPACE &&
+						 dir[0] == TR_SPACE &&
+						 dir[4] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*1.5f, x, y, "i");
+					}
+
+					// Crée les coins (L).
+					if ( dir[2] != TR_SPACE &&
+						 dir[4] != TR_SPACE &&
+						 dir[0] == TR_SPACE &&
+						 dir[6] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*0.0f, x, y, "l");
+					}
+
+					if ( dir[0] != TR_SPACE &&
+						 dir[2] != TR_SPACE &&
+						 dir[4] == TR_SPACE &&
+						 dir[6] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*0.5f, x, y, "l");
+					}
+
+					if ( dir[0] != TR_SPACE &&
+						 dir[6] != TR_SPACE &&
+						 dir[2] == TR_SPACE &&
+						 dir[4] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*1.0f, x, y, "l");
+					}
+
+					if ( dir[4] != TR_SPACE &&
+						 dir[6] != TR_SPACE &&
+						 dir[0] == TR_SPACE &&
+						 dir[2] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*1.5f, x, y, "l");
+					}
+
+					// Crée les coins (U).
+					if ( dir[2] != TR_SPACE &&
+						 dir[4] != TR_SPACE &&
+						 dir[6] != TR_SPACE &&
+						 dir[0] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*0.0f, x, y, "u");
+					}
+
+					if ( dir[0] != TR_SPACE &&
+						 dir[2] != TR_SPACE &&
+						 dir[4] != TR_SPACE &&
+						 dir[6] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*0.5f, x, y, "u");
+					}
+
+					if ( dir[0] != TR_SPACE &&
+						 dir[2] != TR_SPACE &&
+						 dir[6] != TR_SPACE &&
+						 dir[4] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*1.0f, x, y, "u");
+					}
+
+					if ( dir[0] != TR_SPACE &&
+						 dir[4] != TR_SPACE &&
+						 dir[6] != TR_SPACE &&
+						 dir[2] == TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*1.5f, x, y, "u");
+					}
+
+					// Crée le trou (O).
+					if ( dir[0] != TR_SPACE &&
+						 dir[2] != TR_SPACE &&
+						 dir[4] != TR_SPACE &&
+						 dir[6] != TR_SPACE )
+					{
+						CreateBorder(pModFile, objRank, PI*0.0f, x, y, "o");
+					}
+				}
+				if ( res != TR_SPACE )
+				{
+					CreateBorder(pModFile, objRank, PI*0.0f, x, y, "f");
+				}
+			}
+		}
+
+		delete pModFile;
+	}
+
+	D3DUtil_SetIdentityMatrix(transform);
+	m_engine->SetObjectTransform(objRank, transform);
 
 	return TRUE;
 }
 
+// Supprime tous les objets du terrain dans le moteur 3D.
 
-// Modifie le relief du terrain.
-// ATTENTION: ok seulement avec m_depth = 2 !
-
-BOOL CTerrain::Terraform(const D3DVECTOR &p1, const D3DVECTOR &p2, float height)
+BOOL CTerrain::DeleteObjects()
 {
-	POINT		tp1, tp2, pp1, pp2;
-	float		dim, avg;
-	int			x, y, size, nb;
-
-	dim = (m_mosaic*m_brick*m_size)/2.0f;
-	tp1.x = (int)((p1.x+dim+m_size/2.0f)/m_size);
-	tp1.y = (int)((p1.z+dim+m_size/2.0f)/m_size);
-	tp2.x = (int)((p2.x+dim+m_size/2.0f)/m_size);
-	tp2.y = (int)((p2.z+dim+m_size/2.0f)/m_size);
-
-	if ( tp1.x > tp2.x )
-	{
-		x     = tp1.x;
-		tp1.x = tp2.x;
-		tp2.x = x;
-	}
-
-	if ( tp1.y > tp2.y )
-	{
-		y     = tp1.y;
-		tp1.y = tp2.y;
-		tp2.y = y;
-	}
-
-	size = (m_mosaic*m_brick)+1;
-
-	// Calcule la hauteur moyenne actuelle.
-	avg = 0.0f;
-	nb = 0;
-	for ( y=tp1.y ; y<=tp2.y ; y++ )
-	{
-		for ( x=tp1.x ; x<=tp2.x ; x++ )
-		{
-			avg += m_relief[x+y*size];
-			nb ++;
-		}
-	}
-	avg /= (float)nb;
-
-	// Modifie la description du relief.
-	for ( y=tp1.y ; y<=tp2.y ; y++ )
-	{
-		for ( x=tp1.x ; x<=tp2.x ; x++ )
-		{
-			m_relief[x+y*size] = avg+height;
-
-			if ( x%m_brick == 0 && y%m_depth != 0 )
-			{
-				m_relief[(x+0)+(y-1)*size] = avg+height;
-				m_relief[(x+0)+(y+1)*size] = avg+height;
-			}
-
-			if ( y%m_brick == 0 && x%m_depth != 0 )
-			{
-				m_relief[(x-1)+(y+0)*size] = avg+height;
-				m_relief[(x+1)+(y+0)*size] = avg+height;
-			}
-		}
-	}
-	AdjustRelief();
-
-	pp1.x = (tp1.x-2)/m_brick;
-	pp1.y = (tp1.y-2)/m_brick;
-	pp2.x = (tp2.x+1)/m_brick;
-	pp2.y = (tp2.y+1)/m_brick;
-
-	if ( pp1.x <  0        )  pp1.x = 0;
-	if ( pp1.x >= m_mosaic )  pp1.x = m_mosaic-1;
-	if ( pp1.y <  0        )  pp1.y = 0;
-	if ( pp1.y >= m_mosaic )  pp1.y = m_mosaic-1;
-
-	for ( y=pp1.y ; y<=pp2.y ; y++ )
-	{
-		for ( x=pp1.x ; x<=pp2.x ; x++ )
-		{
-			m_engine->DeleteObject(m_objRank[x+y*m_mosaic]);
-			CreateSquare(m_bMultiText, x, y);  // recrée le carré
-		}
-	}
-	m_engine->Update();
-
+	m_engine->DeleteObject(m_objRank);
+	m_objRank = -1;
 	return TRUE;
+}
+
+
+// Retourne le numéro de l'objet terrain.
+
+int CTerrain::RetObjRank()
+{
+	return m_objRank;
+}
+
+// Retourne le modèle de terrain.
+
+int CTerrain::RetModel()
+{
+	return m_model;
 }
 
 
@@ -1772,196 +1542,64 @@ D3DVECTOR CTerrain::RetWind()
 
 float CTerrain::RetFineSlope(const D3DVECTOR &pos)
 {
-	D3DVECTOR	n;
-
-	if ( !GetNormal(n, pos) )  return 0.0f;
-	return Abs(RotateAngle(Length(n.x, n.z), n.y)-PI/2.0f);
+	return 0.0f;
 }
 
 // Donne la pente approximative du terrain à un endroit donné.
 
 float CTerrain::RetCoarseSlope(const D3DVECTOR &pos)
 {
-	float	dim, level[4], min, max;
-	int		x, y;
-
-	if ( m_relief == 0 )  return 0.0f;
-
-	dim = (m_mosaic*m_brick*m_size)/2.0f;
-
-	x = (int)((pos.x+dim)/m_size);
-	y = (int)((pos.z+dim)/m_size);
-
-	if ( x < 0 || x >= m_mosaic*m_brick ||
-		 y < 0 || y >= m_mosaic*m_brick )  return 0.0f;
-
-	level[0] = m_relief[(x+0)+(y+0)*(m_mosaic*m_brick+1)];
-	level[1] = m_relief[(x+1)+(y+0)*(m_mosaic*m_brick+1)];
-	level[2] = m_relief[(x+0)+(y+1)*(m_mosaic*m_brick+1)];
-	level[3] = m_relief[(x+1)+(y+1)*(m_mosaic*m_brick+1)];
-
-	min = Min(level[0], level[1], level[2], level[3]);
-	max = Max(level[0], level[1], level[2], level[3]);
-
-	return atanf((max-min)/m_size);
+	return 0.0f;
 }
 
 // Donne le vecteur normal à la position p(x,-,z) du terrain.
 
 BOOL CTerrain::GetNormal(D3DVECTOR &n, const D3DVECTOR &p)
 {
-	D3DVECTOR	p1, p2, p3, p4;
-	float		dim;
-	int			x, y;
-
-	dim = (m_mosaic*m_brick*m_size)/2.0f;
-
-	x = (int)((p.x+dim)/m_size);
-	y = (int)((p.z+dim)/m_size);
-
-	if ( x < 0 || x > m_mosaic*m_brick ||
-		 y < 0 || y > m_mosaic*m_brick )  return FALSE;
-
-	p1 = RetVector(x+0, y+0);
-	p2 = RetVector(x+1, y+0);
-	p3 = RetVector(x+0, y+1);
-	p4 = RetVector(x+1, y+1);
-
-	if ( Abs(p.z-p2.z) < Abs(p.x-p2.x) )
-	{
-		n = ComputeNormal(p1,p2,p3);
-	}
-	else
-	{
-		n = ComputeNormal(p2,p4,p3);
-	}
+	n = D3DVECTOR(0.0f, -1.0f, 0.0f);
 	return TRUE;
 }
 
 // Retourne la hauteur du sol.
 
-float CTerrain::RetFloorLevel(const D3DVECTOR &p, BOOL bBrut, BOOL bWater)
+float CTerrain::RetFloorLevel(const D3DVECTOR &p)
 {
-	D3DVECTOR	p1, p2, p3, p4, ps;
-	float		dim, level;
-	int			x, y;
+	TerrainRes	res;
 
-	dim = (m_mosaic*m_brick*m_size)/2.0f;
-
-	x = (int)((p.x+dim)/m_size);
-	y = (int)((p.z+dim)/m_size);
-
-	if ( x < 0 || x > m_mosaic*m_brick ||
-		 y < 0 || y > m_mosaic*m_brick )  return FALSE;
-
-	p1 = RetVector(x+0, y+0);
-	p2 = RetVector(x+1, y+0);
-	p3 = RetVector(x+0, y+1);
-	p4 = RetVector(x+1, y+1);
-
-	ps = p;
-	if ( Abs(p.z-p2.z) < Abs(p.x-p2.x) )
-	{
-		if ( !IntersectY(p1, p2, p3, ps) )  return 0.0f;
-	}
-	else
-	{
-		if ( !IntersectY(p2, p4, p3, ps) )  return 0.0f;
-	}
-
-	if ( !bBrut )  AdjustBuildingLevel(ps);
-
-	if ( bWater )  // ne va pas sous l'eau ?
-	{
-		level = m_water->RetLevel();
-		if ( ps.y < level )  ps.y = level;  // pas sous l'eau
-	}
-
-	return ps.y;
+	res = RetResource(p);
+	if ( IsSolid(res) )  return 0.0f;
+	if ( res == TR_HOLE )  return -m_dimTile;
+	return -m_dimTile*4.0f;
 }
 
 // Retourne la hauteur jusqu'au sol. Cette hauteur est positive
 // lorsqu'on est au-dessus du sol.
 
-float CTerrain::RetFloorHeight(const D3DVECTOR &p, BOOL bBrut, BOOL bWater)
+float CTerrain::RetFloorHeight(const D3DVECTOR &p)
 {
-	D3DVECTOR	p1, p2, p3, p4, ps;
-	float		dim, level;
-	int			x, y;
+	TerrainRes	res;
+	float		h;
 
-	dim = (m_mosaic*m_brick*m_size)/2.0f;
-
-	x = (int)((p.x+dim)/m_size);
-	y = (int)((p.z+dim)/m_size);
-
-	if ( x < 0 || x > m_mosaic*m_brick ||
-		 y < 0 || y > m_mosaic*m_brick )  return FALSE;
-
-	p1 = RetVector(x+0, y+0);
-	p2 = RetVector(x+1, y+0);
-	p3 = RetVector(x+0, y+1);
-	p4 = RetVector(x+1, y+1);
-
-	ps = p;
-	if ( Abs(p.z-p2.z) < Abs(p.x-p2.x) )
-	{
-		if ( !IntersectY(p1, p2, p3, ps) )  return 0.0f;
-	}
-	else
-	{
-		if ( !IntersectY(p2, p4, p3, ps) )  return 0.0f;
-	}
-
-	if ( !bBrut )  AdjustBuildingLevel(ps);
-
-	if ( bWater )  // ne va pas sous l'eau ?
-	{
-		level = m_water->RetLevel();
-		if ( ps.y < level )  ps.y = level;  // pas sous l'eau
-	}
-
-	return p.y-ps.y;
+	res = RetResource(p);
+	h = -m_dimTile*2.0f;
+	if ( IsSolid(res) )  h = 0.0f;
+	if ( res == TR_HOLE )  h = -m_dimTile;
+	return p.y-h;
 }
 
 // Modifie la coordonnée "y" du point "p" pour qu'il repose
 // sur le sol du terrain.
 
-BOOL CTerrain::MoveOnFloor(D3DVECTOR &p, BOOL bBrut, BOOL bWater)
+BOOL CTerrain::MoveOnFloor(D3DVECTOR &p)
 {
-	D3DVECTOR	p1, p2, p3, p4;
-	float		dim, level;
-	int			x, y;
+	TerrainRes	res;
+	float		h;
 
-	dim = (m_mosaic*m_brick*m_size)/2.0f;
-
-	x = (int)((p.x+dim)/m_size);
-	y = (int)((p.z+dim)/m_size);
-
-	if ( x < 0 || x > m_mosaic*m_brick ||
-		 y < 0 || y > m_mosaic*m_brick )  return FALSE;
-
-	p1 = RetVector(x+0, y+0);
-	p2 = RetVector(x+1, y+0);
-	p3 = RetVector(x+0, y+1);
-	p4 = RetVector(x+1, y+1);
-
-	if ( Abs(p.z-p2.z) < Abs(p.x-p2.x) )
-	{
-		if ( !IntersectY(p1, p2, p3, p) )  return FALSE;
-	}
-	else
-	{
-		if ( !IntersectY(p2, p4, p3, p) )  return FALSE;
-	}
-
-	if ( !bBrut )  AdjustBuildingLevel(p);
-
-	if ( bWater )  // ne va pas sous l'eau ?
-	{
-		level = m_water->RetLevel();
-		if ( p.y < level )  p.y = level;  // pas sous l'eau
-	}
-
+	res = RetResource(p);
+	h = -m_dimTile*2.0f;
+	if ( IsSolid(res) )  h = 0.0f;
+	if ( res == TR_HOLE )  h = -m_dimTile;
+	p.y = h;
 	return TRUE;
 }
 
@@ -1973,7 +1611,7 @@ BOOL CTerrain::ValidPosition(D3DVECTOR &p, float marging)
 	BOOL	bOK = TRUE;
 	float	limit;
 
-	limit = m_mosaic*m_brick*m_size/2.0f - marging;
+	limit = m_nbTiles*m_dimTile/2.0f - marging;
 
 	if ( p.x < -limit )
 	{
@@ -2002,438 +1640,75 @@ BOOL CTerrain::ValidPosition(D3DVECTOR &p, float marging)
 	return bOK;
 }
 
+// Ajuste une position pour qu'elle ne dépasse pas les limites.
 
-
-// Vide la table des élévations.
-
-void CTerrain::FlushBuildingLevel()
+void CTerrain::LimitPos(D3DVECTOR &pos)
 {
-	m_buildingUsed = 0;
+	float		dim;
+
+	dim = (m_nbTiles*m_dimTile)/2.0f;
+
+	if ( pos.x < -dim )  pos.x = -dim;
+	if ( pos.x >  dim )  pos.x =  dim;
+	if ( pos.z < -dim )  pos.z = -dim;
+	if ( pos.z >  dim )  pos.z =  dim;
 }
 
-// Ajoute une nouvelle élévation pour un batiment.
 
-BOOL CTerrain::AddBuildingLevel(D3DVECTOR center, float min, float max,
-								float height, float factor)
+// Détecte où est la souris sur le terrain, au niveau zéro.
+
+BOOL CTerrain::GroundDetect(FPOINT mouse, D3DVECTOR &pos)
 {
-	int		i;
+	D3DVERTEX2	vertex[3];
+	D3DVECTOR	center;
+	float		min, dist;
+	int			x, y;
 
-	for ( i=0 ; i<m_buildingUsed ; i++ )
+	center.y = 0.0f;
+	vertex[0].y = 0.0f;
+	vertex[1].y = 0.0f;
+	vertex[2].y = 0.0f;
+
+	min = 1000000.0f;
+	for ( y=0 ; y<m_nbTiles ; y++ )
 	{
-		if ( center.x == m_buildingTable[i].center.x &&
-			 center.z == m_buildingTable[i].center.z )
+		for ( x=0 ; x<m_nbTiles ; x++ )
 		{
-			goto update;
-		}
-	}
+			if ( !IsSolid(x,y) )  continue;
 
-	if ( m_buildingUsed >= MAXBUILDINGLEVEL )  return FALSE;
-	i = m_buildingUsed++;
+			center.x = m_dimTile*(x-m_nbTiles2);
+			center.z = m_dimTile*(y-m_nbTiles2);
 
-	update:
-	m_buildingTable[i].center   = center;
-	m_buildingTable[i].min      = min;
-	m_buildingTable[i].max      = max;
-	m_buildingTable[i].level    = RetFloorLevel(center, TRUE);
-	m_buildingTable[i].height   = height;
-	m_buildingTable[i].factor   = factor;
-	m_buildingTable[i].bboxMinX = center.x-max;
-	m_buildingTable[i].bboxMaxX = center.x+max;
-	m_buildingTable[i].bboxMinZ = center.z-max;
-	m_buildingTable[i].bboxMaxZ = center.z+max;
+			vertex[0].x = center.x-m_dimTile/2.0f;
+			vertex[0].z = center.z-m_dimTile/2.0f;
+			vertex[1].x = center.x-m_dimTile/2.0f;
+			vertex[1].z = center.z+m_dimTile/2.0f;
+			vertex[2].x = center.x+m_dimTile/2.0f;
+			vertex[2].z = center.z-m_dimTile/2.0f;
 
-	return TRUE;
-}
-
-// Met à jour l'élévation pour un batiment lorsqu'il a été déplacé
-// en hauteur (suite à un terraformage).
-
-BOOL CTerrain::UpdateBuildingLevel(D3DVECTOR center)
-{
-	int		i;
-
-	for ( i=0 ; i<m_buildingUsed ; i++ )
-	{
-		if ( center.x == m_buildingTable[i].center.x &&
-			 center.z == m_buildingTable[i].center.z )
-		{
-			m_buildingTable[i].center = center;
-			m_buildingTable[i].level  = RetFloorLevel(center, TRUE);
-			return TRUE;
-		}
-	}
-	return FALSE;
-}
-
-// Supprime l'élévation pour un batiment lorsqu'il a été détruit.
-
-BOOL CTerrain::DeleteBuildingLevel(D3DVECTOR center)
-{
-	int		i, j;
-
-	for ( i=0 ; i<m_buildingUsed ; i++ )
-	{
-		if ( center.x == m_buildingTable[i].center.x &&
-			 center.z == m_buildingTable[i].center.z )
-		{
-			for ( j=i+1 ; j<m_buildingUsed ; j++ )
+			if ( m_engine->DetectTriangle(mouse, vertex, m_objRank, dist) &&
+				 dist < min )
 			{
-				m_buildingTable[j-1] = m_buildingTable[j];
+				min = dist;
+				pos = center;
 			}
-			m_buildingUsed --;
-			return TRUE;
-		}
-	}
-	return FALSE;
-}
 
-// Retourne le facteur d'influence si une position est sur une
-// élévation éventuelle.
+			vertex[0].x = center.x-m_dimTile/2.0f;
+			vertex[0].z = center.z+m_dimTile/2.0f;
+			vertex[1].x = center.x+m_dimTile/2.0f;
+			vertex[1].z = center.z-m_dimTile/2.0f;
+			vertex[2].x = center.x+m_dimTile/2.0f;
+			vertex[2].z = center.z+m_dimTile/2.0f;
 
-float CTerrain::RetBuildingFactor(const D3DVECTOR &p)
-{
-	float		dist;
-	int			i;
-
-	for ( i=0 ; i<m_buildingUsed ; i++ )
-	{
-		if ( p.x < m_buildingTable[i].bboxMinX ||
-			 p.x > m_buildingTable[i].bboxMaxX ||
-			 p.z < m_buildingTable[i].bboxMinZ ||
-			 p.z > m_buildingTable[i].bboxMaxZ )  continue;
-
-		dist = Length2d(p, m_buildingTable[i].center);
-
-		if ( dist <= m_buildingTable[i].max )
-		{
-			return m_buildingTable[i].factor;
-		}
-	}
-	return 1.0f;  // on est sur le sol normnal
-}
-
-// Ajuste une position en fonction d'une élévation éventuelle.
-
-void CTerrain::AdjustBuildingLevel(D3DVECTOR &p)
-{
-	D3DVECTOR	border;
-	float		dist, base;
-	int			i;
-
-	for ( i=0 ; i<m_buildingUsed ; i++ )
-	{
-		if ( p.x < m_buildingTable[i].bboxMinX ||
-			 p.x > m_buildingTable[i].bboxMaxX ||
-			 p.z < m_buildingTable[i].bboxMinZ ||
-			 p.z > m_buildingTable[i].bboxMaxZ )  continue;
-
-		dist = Length2d(p, m_buildingTable[i].center);
-
-		if ( dist > m_buildingTable[i].max )  continue;
-
-		if ( dist < m_buildingTable[i].min )
-		{
-			p.y = m_buildingTable[i].level+m_buildingTable[i].height;
-			return;
-		}
-
-#if 0
-		p.y = m_buildingTable[i].level;
-		p.y += (m_buildingTable[i].max-dist)/
-			   (m_buildingTable[i].max-m_buildingTable[i].min)*
-			   m_buildingTable[i].height;
-
-		base = RetFloorLevel(p, TRUE);
-		if ( p.y < base )  p.y = base;
-#else
-		border.x = ((p.x-m_buildingTable[i].center.x)*m_buildingTable[i].max)/
-				   dist+m_buildingTable[i].center.x;
-		border.z = ((p.z-m_buildingTable[i].center.z)*m_buildingTable[i].max)/
-				   dist+m_buildingTable[i].center.z;
-
-		base = RetFloorLevel(border, TRUE);
-
-		p.y = (m_buildingTable[i].max-dist)/
-			  (m_buildingTable[i].max-m_buildingTable[i].min)*
-			  (m_buildingTable[i].level+m_buildingTable[i].height-base)+
-			  base;
-#endif
-		return;
-	}
-}
-
-
-// Vide la table des zones de ralentissement.
-
-void CTerrain::FlushSlowerZone()
-{
-	m_slowerUsed = 0;
-}
-
-// Ajoute une nouvelle zone de ralentissement.
-
-BOOL CTerrain::AddSlowerZone(D3DVECTOR center, float min, float max, float factor)
-{
-	int		i;
-
-	for ( i=0 ; i<m_slowerUsed ; i++ )
-	{
-		if ( center.x == m_slowerTable[i].center.x &&
-			 center.z == m_slowerTable[i].center.z )
-		{
-			goto update;
-		}
-	}
-
-	if ( m_slowerUsed >= MAXSLOWERZONE )  return FALSE;
-	i = m_slowerUsed++;
-
-	update:
-	m_slowerTable[i].center   = center;
-	m_slowerTable[i].min      = min;
-	m_slowerTable[i].max      = max;
-	m_slowerTable[i].factor   = factor;
-	m_slowerTable[i].bboxMinX = center.x-max;
-	m_slowerTable[i].bboxMaxX = center.x+max;
-	m_slowerTable[i].bboxMinZ = center.z-max;
-	m_slowerTable[i].bboxMaxZ = center.z+max;
-
-	return TRUE;
-}
-
-// Supprime une zone de ralentissement.
-
-BOOL CTerrain::DeleteSlowerZone(D3DVECTOR center)
-{
-	int		i, j;
-
-	for ( i=0 ; i<m_slowerUsed ; i++ )
-	{
-		if ( center.x == m_slowerTable[i].center.x &&
-			 center.z == m_slowerTable[i].center.z )
-		{
-			for ( j=i+1 ; j<m_slowerUsed ; j++ )
+			if ( m_engine->DetectTriangle(mouse, vertex, m_objRank, dist) &&
+				 dist < min )
 			{
-				m_slowerTable[j-1] = m_slowerTable[j];
+				min = dist;
+				pos = center;
 			}
-			m_slowerUsed --;
-			return TRUE;
 		}
 	}
-	return FALSE;
+
+	return (min < 1000000.0f);
 }
-
-// Retourne le facteur de ralentissement si une position est sur une
-// zone lente.
-
-float CTerrain::RetSlowerZone(const D3DVECTOR &p)
-{
-	float		dist, factor;
-	int			i;
-
-	for ( i=0 ; i<m_slowerUsed ; i++ )
-	{
-		if ( p.x < m_slowerTable[i].bboxMinX ||
-			 p.x > m_slowerTable[i].bboxMaxX ||
-			 p.z < m_slowerTable[i].bboxMinZ ||
-			 p.z > m_slowerTable[i].bboxMaxZ )  continue;
-
-		dist = Length2d(p, m_slowerTable[i].center);
-
-		if ( dist < m_slowerTable[i].max )
-		{
-			if ( dist <= m_slowerTable[i].min )
-			{
-				factor = 1.0f;
-			}
-			else
-			{
-				factor = (m_slowerTable[i].max-dist)/(m_slowerTable[i].max-m_slowerTable[i].min);
-			}
-			return (1.0f-factor) + (m_slowerTable[i].factor*factor);
-		}
-	}
-	return 1.0f;  // on est sur une zone normale
-}
-
-
-// Retourne la dureté du terrain à un endroit donné.
-// La dureté détermine le bruit (SOUND_STEP et SOUND_BOUM).
-
-float CTerrain::RetHardness(const D3DVECTOR &p)
-{
-	TerrainMaterial*	tm;
-	float				factor, dim;
-	int					x, y, id;
-
-	factor = RetBuildingFactor(p);
-	if ( factor != 1.0f )  return 1.0f;  // sur bâtiment
-
-	if ( m_levelDot == 0 )  return m_defHardness;
-
-	dim = (m_mosaic*m_brick*m_size)/2.0f;
-
-	x = (int)((p.x+dim)/m_size);
-	y = (int)((p.z+dim)/m_size);
-
-	if ( x < 0 || x > m_mosaic*m_brick ||
-		 y < 0 || y > m_mosaic*m_brick )  return m_defHardness;
-
-	x /= m_brick/m_subdivMapping;
-	y /= m_brick/m_subdivMapping;
-
-	if ( x < 0 || x >= m_levelDotSize ||
-		 y < 0 || y >= m_levelDotSize )  return m_defHardness;
-
-	id = m_levelDot[x+y*m_levelDotSize].id;
-	tm = LevelSearchMat(id);
-	if ( tm == 0 )  return m_defHardness;
-
-	return tm->hardness;
-}
-
-
-// Calcule le rayon de la plus grande zone platte disponible.
-// Ce calcul n'est pas optimisé !
-
-float CTerrain::RetFlatZoneRadius(D3DVECTOR center, float max)
-{
-	D3DVECTOR	pos;
-	FPOINT		c, p;
-	float		ref, radius, angle, h;
-	int			i, nb;
-
-	angle = RetFineSlope(center);
-	if ( angle >= FLATLIMIT )  return 0.0f;
-
-	ref = RetFloorLevel(center, TRUE);
-
-	radius = 1.0f;
-	while ( radius <= max )
-	{
-		angle = 0.0f;
-		nb = (int)(2.0f*PI*radius);
-		if ( nb < 8 )  nb = 8;
-		for ( i=0 ; i<nb ; i++ )
-		{
-			c.x = center.x;
-			c.y = center.z;
-			p.x = center.x+radius;
-			p.y = center.z;
-			p = RotatePoint(c, angle, p);
-			pos.x = p.x;
-			pos.z = p.y;
-			h = RetFloorLevel(pos, TRUE);
-			if ( Abs(h-ref) > 1.0f )  return radius;
-
-			angle += PI*2.0f/8.0f;
-		}
-		radius += 1.0f;
-	}
-	return max;
-}
-
-
-
-// Spécifie la hauteur maximale de vol.
-
-void CTerrain::SetFlyingMaxHeight(float height)
-{
-	m_flyingMaxHeight = height;
-}
-
-// Retourne la hauteur maximale de vol.
-
-float CTerrain::RetFlyingMaxHeight()
-{
-	return m_flyingMaxHeight;
-}
-
-
-// Vide la table des limites de vol.
-
-void CTerrain::FlushFlyingLimit()
-{
-	m_flyingMaxHeight = 280.0f;
-	m_flyingLimitTotal = 0;
-}
-
-// Vide la table des limites de vol.
-
-BOOL CTerrain::AddFlyingLimit(D3DVECTOR center,
-							  float extRadius, float intRadius,
-							  float maxHeight)
-{
-	int		i;
-
-	if ( m_flyingLimitTotal >= MAXFLYINGLIMIT )  return FALSE;
-
-	i = m_flyingLimitTotal;
-	m_flyingLimit[i].center    = center;
-	m_flyingLimit[i].extRadius = extRadius;
-	m_flyingLimit[i].intRadius = intRadius;
-	m_flyingLimit[i].maxHeight = maxHeight;
-	m_flyingLimitTotal = i+1;
-
-	return TRUE;
-}
-
-// Retourne la hauteur maximale de vol.
-
-float CTerrain::RetFlyingLimit(D3DVECTOR pos, BOOL bNoLimit)
-{
-	float	dist, h;
-	int		i;
-
-	if ( bNoLimit )  return 280.0f;
-	if ( m_flyingLimitTotal == 0 )  return m_flyingMaxHeight;
-
-	for ( i=0 ; i<m_flyingLimitTotal ; i++ )
-	{
-		dist = Length2d(pos, m_flyingLimit[i].center);
-
-		if ( dist >= m_flyingLimit[i].extRadius )  continue;
-
-		if ( dist <= m_flyingLimit[i].intRadius )
-		{
-			return m_flyingLimit[i].maxHeight;
-		}
-
-		dist -= m_flyingLimit[i].intRadius;
-
-		h = dist*(m_flyingMaxHeight-m_flyingLimit[i].maxHeight)/
-			(m_flyingLimit[i].extRadius-m_flyingLimit[i].intRadius);
-
-		return h + m_flyingLimit[i].maxHeight;
-	}
-
-	return m_flyingMaxHeight;
-}
-
-
-// Vide tous les points de trajectoire.
-
-void CTerrain::FlushTraject()
-{
-	m_trajectTotal = 0;
-}
-
-// Ajoute un point de trajectoire.
-
-BOOL CTerrain::AddTraject(const D3DVECTOR &pos)
-{
-	if ( m_trajectTotal >= MAXTRAJECT )  return FALSE;
-	m_trajectTable[m_trajectTotal++] = pos;
-	return TRUE;
-}
-
-// Donne un point de trajectoire.
-
-BOOL CTerrain::GetTraject(int rank, D3DVECTOR &pos)
-{
-	if ( rank >= m_trajectTotal )  return FALSE;
-	pos = m_trajectTable[rank];
-	return TRUE;
-}
-
 

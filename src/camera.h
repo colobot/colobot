@@ -9,20 +9,18 @@ class CD3DEngine;
 class CTerrain;
 class CWater;
 class CObject;
+class CRobotMain;
 enum D3DMouse;
 
 
 enum CameraType
 {
 	CAMERA_NULL		= 0,	// caméra indéfinie
-	CAMERA_FREE		= 1,	// caméra libre (jamais en principe)
-	CAMERA_EDIT		= 2,	// caméra pendant l'édition d'un programme
+	CAMERA_FREE		= 1,	// caméra libre (toujours en principe)
 	CAMERA_ONBOARD	= 3,	// caméra à bord d'un robot
 	CAMERA_BACK		= 4,	// caméra derrière un robot
 	CAMERA_FIX		= 5,	// caméra fixe après robot
-	CAMERA_EXPLO	= 6,	// caméra immobile après explosion
 	CAMERA_SCRIPT	= 7,	// caméra pendant un film scripté
-	CAMERA_INFO		= 8,	// caméra pendant l'affichage des informations
 	CAMERA_VISIT	= 9,	// visite du lieu d'une erreur
 	CAMERA_DIALOG	= 10,	// caméra pendant dialogue
 };
@@ -69,6 +67,10 @@ enum OverEffect
 
 
 
+#define FREE_DIST	60.0f
+
+
+
 class CCamera
 {
 public:
@@ -77,7 +79,12 @@ public:
 
 	BOOL		EventProcess(const Event &event);
 
-	void		Init(D3DVECTOR eye, D3DVECTOR lookat, float delay);
+	void		Init(D3DVECTOR lookat, float dirH, float dirV, float dist);
+	void		SetLookat(D3DVECTOR lookat);
+	void		SetDirH(float dirH);
+	void		SetDirV(float dirV);
+	void		SetDistance(float dist);
+	void		RetCamera(D3DVECTOR &eye, D3DVECTOR &lookat, float &dirH, float &dirV, float &dist);
 
 	void		SetObject(CObject* object);
 	CObject*	RetObject();
@@ -108,10 +115,10 @@ public:
 	void		SetFixDirection(float angle);
 	float		RetFixDirection();
 
+	void		SetScrollMouse(FPOINT mouse, BOOL bFinal);
+
 	void		StartVisit(D3DVECTOR goal, float dist);
 	void		StopVisit();
-
-	void		RetCamera(D3DVECTOR &eye, D3DVECTOR &lookat);
 
 	BOOL		StartCentering(CObject *object, float angleH, float angleV, float dist, float time);
 	BOOL		StopCentering(CObject *object, float time);
@@ -128,23 +135,18 @@ public:
 	void		SetScriptEye(D3DVECTOR eye);
 	void		SetScriptLookat(D3DVECTOR lookat);
 
-	void		SetEffect(BOOL bEnable);
-	void		SetFlash(BOOL bFlash);
-
+	D3DMouse	RetMouseDef(FPOINT pos, D3DMouse def);
 	void		SetMotorSpeed(float speed);
 
 protected:
 	BOOL		EventMouseMove(const Event &event);
-	void		EventMouseWheel(int dir);
+	void		EventMouseWheel(int dir, long param, BOOL bDown);
 	BOOL		EventFrame(const Event &event);
 	BOOL		EventFrameFree(const Event &event);
-	BOOL		EventFrameEdit(const Event &event);
 	BOOL		EventFrameDialog(const Event &event);
 	BOOL		EventFrameBack(const Event &event);
 	BOOL		EventFrameFix(const Event &event);
-	BOOL		EventFrameExplo(const Event &event);
 	BOOL		EventFrameOnBoard(const Event &event);
-	BOOL		EventFrameInfo(const Event &event);
 	BOOL		EventFrameVisit(const Event &event);
 	BOOL		EventFrameScript(const Event &event);
 
@@ -165,6 +167,7 @@ protected:
 	CD3DEngine*	m_engine;
 	CTerrain*	m_terrain;
 	CWater*		m_water;
+	CRobotMain*	m_main;
 
 	CameraType	m_type;				// type de la caméra (CAMERA_*)
 	CameraSmooth m_smooth;			// type de lissage
@@ -172,7 +175,6 @@ protected:
 	CObject*	m_cameraObj;		// objet lié à la caméra
 
 	float		m_eyeDistance;		// distance entre les yeux
-	float		m_initDelay;		// délai du centrage initial
 
 	D3DVECTOR	m_actualEye;		// oeil actuel
 	D3DVECTOR	m_actualLookat;		// visée actuelle
@@ -188,12 +190,18 @@ protected:
 	FPOINT		m_rightPosMove;
 
 	D3DVECTOR	m_eyePt;			// CAMERA_FREE: oeil
+	D3DVECTOR	m_lookatPt;			// CAMERA_FREE: point visé
 	float		m_directionH;		// CAMERA_FREE: direction horizontale
 	float		m_directionV;		// CAMERA_FREE: direction verticale
+	float		m_rotH;				// CAMERA_FREE: rotation horizontale
+	float		m_distance;			// CAMERA_FREE: éloignement de la caméra
+	float		m_zoom;				// CAMERA_FREE: distance
 	float		m_heightEye;		// CAMERA_FREE: hauteur au-dessus du sol
 	float		m_heightShift;		// CAMERA_FREE: shift vertical
 	float		m_heightLookat;		// CAMERA_FREE: hauteur au-dessus du sol
 	float		m_speed;			// CAMERA_FREE: vitesse de déplacement
+	FPOINT		m_scrollMouse;		// CAMERA_FREE: scroll bouton droite souris
+	BOOL		m_bFinalScroll;		// CAMERA_FREE: scroll bouton relâché
 
 	float		m_backDist;			// CAMERA_BACK: éloignement
 	float		m_backMin;			// CAMERA_BACK: éloignement minimal
@@ -216,8 +224,6 @@ protected:
 	CameraType	m_visitType;		// CAMERA_VISIT: type initial
 	float		m_visitDirectionH;	// CAMERA_VISIT: direction
 	float		m_visitDirectionV;	// CAMERA_VISIT: direction
-
-	float		m_editHeight;		// CAMERA_EDIT: hauteur
 
 	FPOINT		m_mousePos;
 	float		m_mouseDirH;
@@ -250,9 +256,6 @@ protected:
 
 	D3DVECTOR	m_scriptEye;
 	D3DVECTOR	m_scriptLookat;
-
-	BOOL		m_bEffect;			// secousses si explosion ?
-	BOOL		m_bFlash;			// flash si collision ?
 };
 
 

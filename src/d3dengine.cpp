@@ -122,10 +122,7 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	m_bPause          = FALSE;
 	m_bRender         = TRUE;
 	m_bMovieLock      = FALSE;
-	m_bShadow         = TRUE;
 	m_bGroundSpot     = TRUE;
-	m_bDirty          = TRUE;
-	m_bFog            = TRUE;
 	m_speed           = 1.0f;
 	m_secondTexNum    = 0;
 	m_eyeDirH         = 0.0f;
@@ -133,16 +130,17 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	m_backgroundName[0] = 0;  // pas d'image de fond
 	m_backgroundColorUp   = 0;
 	m_backgroundColorDown = 0;
-	m_backgroundCloudUp   = 0;
-	m_backgroundCloudDown = 0;
+	m_backgroundSunFlash = 0.5f;
 	m_bBackgroundFull = FALSE;
 	m_bBackgroundQuarter = FALSE;
 	m_bBackgroundPanel = FALSE;
 	m_bOverFront = TRUE;
 	m_overColor = 0;
 	m_overMode  = D3DSTATETCb;
-	m_frontsizeName[0] = 0;  // pas d'image de devant
+	m_lensFlareTotal = 0;
 	m_hiliteRank[0] = -1;  // liste vide
+	m_bHilite = FALSE;
+	m_bSelect = FALSE;
 	m_mousePos = FPOINT(0.5f, 0.5f);
 	m_mouseType = D3DMOUSENORM;
 	m_bMouseHide = FALSE;
@@ -154,25 +152,17 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	m_bDrawFront = FALSE;
 	m_limitLOD[0] = 100.0f;
 	m_limitLOD[1] = 200.0f;
-	m_particuleDensity = 1.0f;
-	m_wheelTraceQuantity = 1.0f;
 	m_clippingDistance = 1.0f;
 	m_lastClippingDistance = m_clippingDistance;
 	m_objectDetail = 1.0f;
-	m_bSuperDetail = FALSE;
 	m_lastObjectDetail = m_objectDetail;
 	m_terrainVision = 1000.0f;
-	m_gadgetQuantity = 1.0f;
-	m_textureQuality = 1;
-	m_bTotoMode = TRUE;
-	m_bLensMode = TRUE;
-	m_bWaterMode = TRUE;
-	m_bSkyMode = TRUE;
 	m_bBackForce = TRUE;
-	m_bPlanetMode = TRUE;
-	m_bLightMode = TRUE;
 	m_bEditIndentMode = TRUE;
 	m_editIndentValue = 4;
+	m_lockZoneBuffer = 0;
+
+	DefaultSetup();
 
 	m_alphaMode = 1;
 	if ( GetProfileInt("Engine", "AlphaMode", i) )
@@ -365,7 +355,7 @@ void CD3DEngine::SetTerrain(CTerrain* terrain)
 }
 
 
-// Sauvegarde l'état du moteur graphique dans buzzingcars.ini.
+// Sauvegarde l'état du moteur graphique dans blupimania.ini.
 
 BOOL CD3DEngine::WriteProfile()
 {
@@ -702,6 +692,8 @@ int CD3DEngine::CreateObject()
 		{
 			ZeroMemory(&m_objectParam[i], sizeof(D3DObject));
 			m_objectParam[i].bUsed = TRUE;
+			m_objectParam[i].bHide = FALSE;
+			m_objectParam[i].bDetect = TRUE;
 
 			D3DUtil_SetIdentityMatrix(mat);
 			SetObjectTransform(i, mat);
@@ -1334,9 +1326,68 @@ D3DObjLevel6* CD3DEngine::SearchTriangle(int objRank,
 						{
 							p6 = p5->table[l5];
 							if ( p6 == 0 )  continue;
-	//?						if ( p6->state != state ||
+//?							if ( p6->state != state ||
 							if ( (p6->state&(~(D3DSTATEDUALb|D3DSTATEDUALw))) != state ||
 								 memcmp(&p6->material, &mat, sizeof(D3DMATERIAL7)) != 0 )  continue;
+							return p6;
+						}
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+// Cherche une liste de triangles.
+
+D3DObjLevel6* CD3DEngine::SearchTriangle(int objRank,
+										 char* texName1, char* texName2,
+										 float min, float max)
+{
+	D3DObjLevel1*	p1;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
+	D3DObjLevel3*	p3;
+	D3DObjLevel4*	p4;
+	D3DObjLevel5*	p5;
+	D3DObjLevel6*	p6;
+	int				l1, l2a, l2b, l3, l4, l5;
+	short			type;
+
+	type = 0;
+
+	p1 = m_objectPointer;
+	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
+	{
+		p2a = p1->table[l1];
+		if ( p2a->type != type )  continue;
+		for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
+		{
+			p2b = p2a->table[l2a];
+			if ( p2b == 0 )  continue;
+//?			if ( strcmp(p2b->texName1, texName1) != 0 ||
+//?				 strcmp(p2b->texName2, texName2) != 0 )  continue;
+			if ( strcmp(p2b->texName1, texName1) != 0 )  continue;
+			for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
+			{
+				p3 = p2b->table[l2b];
+				if ( p3 == 0 )  continue;
+				if ( p3->objRank != objRank )  continue;
+				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+				{
+					p4 = p3->table[l3];
+					if ( p4 == 0 )  continue;
+					if ( p4->min != min ||
+						 p4->max != max )  continue;
+					for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+					{
+						p5 = p4->table[l4];
+						if ( p5 == 0 )  continue;
+						for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+						{
+							p6 = p5->table[l5];
+							if ( p6 == 0 )  continue;
 							return p6;
 						}
 					}
@@ -1729,6 +1780,45 @@ BOOL CD3DEngine::ChangeTextureMapping(int objRank,
 	return TRUE;
 }
 
+// Change le mapping de texture pour toute une liste de triangles.
+
+BOOL CD3DEngine::AddTextureMapping(int objRank,
+								  char* texName1, char* texName2,
+								  float min, float max,
+								  D3DMaping mode,
+								  float offset)
+{
+	D3DObjLevel6*	p6;
+	D3DVERTEX2*		pv;
+	int				l6, nb;
+
+	p6 = SearchTriangle(objRank, texName1, texName2, min, max);
+	if ( p6 == 0 )  return FALSE;
+
+	pv = &p6->vertex[0];
+	nb = p6->totalUsed;
+
+	if ( mode == D3DMAPPINGX )
+	{
+		for ( l6=0 ; l6<nb ; l6++ )
+		{
+			pv->tu += offset;
+			pv ++;
+		}
+	}
+
+	if ( mode == D3DMAPPINGY )
+	{
+		for ( l6=0 ; l6<nb ; l6++ )
+		{
+			pv->tv += offset;
+			pv ++;
+		}
+	}
+
+	return TRUE;
+}
+
 // Change le mapping de texture pour toute une liste de triangles,
 // afin de simuler une chenille qui tourne.
 // Seul le mapping selon "u" est changé.
@@ -1967,10 +2057,102 @@ BOOL CD3DEngine::IsVisible(int objRank)
 }
 
 
+// Détecte la position au sol visée par la souris.
+
+BOOL CD3DEngine::DetectTerrain(FPOINT mouse, D3DVECTOR &pos, int maxLevel)
+{
+	D3DObjLevel1*	p1;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
+	D3DObjLevel3*	p3;
+	D3DObjLevel4*	p4;
+	D3DObjLevel5*	p5;
+	D3DObjLevel6*	p6;
+	D3DVERTEX2*		pv;
+	int				l1, l2a, l2b, l3, l4, l5, i, objRank, nearest;
+	float			dist, min;
+	D3DVECTOR		p;
+
+	min = 1000000.0f;
+	nearest = -1;
+
+	p1 = m_objectPointer;
+	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
+	{
+		p2a = p1->table[l1];
+		if ( p2a == 0 )  continue;
+		for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
+		{
+			p2b = p2a->table[l2a];
+			if ( p2b == 0 )  continue;
+			for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
+			{
+				p3 = p2b->table[l2b];
+				if ( p3 == 0 )  continue;
+				objRank = p3->objRank;
+				if ( m_objectParam[objRank].bHide )  continue;
+				if ( !m_objectParam[objRank].bDetect )  continue;
+				if ( m_objectParam[objRank].type != TYPETERRAIN )  continue;
+//?				if ( !DetectBBox(objRank, mouse) )  continue;
+				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+				{
+					p4 = p3->table[l3];
+					if ( p4 == 0 )  continue;
+					for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+					{
+						p5 = p4->table[l4];
+						if ( p5 == 0 )  continue;
+						for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+						{
+							p6 = p5->table[l5];
+							if ( p6 == 0 )  continue;
+
+							if ( p6->type == D3DTYPE6T )
+							{
+								pv = &p6->vertex[0];
+								for ( i=0 ; i<p6->totalUsed/3 ; i++ )
+								{
+									if ( DetectTriangle(mouse, pv, objRank, dist, p, 0, maxLevel) &&
+										 dist < min )
+									{
+										min = dist;
+										nearest = objRank;
+										pos = p;
+									}
+									pv += 3;
+								}
+							}
+							if ( p6->type == D3DTYPE6S )
+							{
+								pv = &p6->vertex[0];
+								for ( i=0 ; i<p6->totalUsed-2 ; i++ )
+								{
+									if ( DetectTriangle(mouse, pv, objRank, dist, p, 0, maxLevel) &&
+										 dist < min )
+									{
+										min = dist;
+										nearest = objRank;
+										pos = p;
+									}
+									pv += 1;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return ( nearest != -1 );
+}
+
 // Détecte l'objet visé par la souris.
 // Retourne le rang de l'objet ou -1.
+//	bAction=FALSE -> détecte tout
+//	bAction=TRUE  -> détecte seulement les boutons-actions
+//  bAllDetect=TRUE -> détecte même les objets non détectables !
 
-int CD3DEngine::DetectObject(FPOINT mouse)
+int CD3DEngine::DetectObject(FPOINT mouse, BOOL bAction, BOOL bAllDetect)
 {
 	D3DObjLevel1*	p1;
 	D3DObjLevel2a*	p2a;
@@ -2000,6 +2182,8 @@ int CD3DEngine::DetectObject(FPOINT mouse)
 				p3 = p2b->table[l2b];
 				if ( p3 == 0 )  continue;
 				objRank = p3->objRank;
+				if ( m_objectParam[objRank].bHide )  continue;
+				if ( !bAllDetect && !m_objectParam[objRank].bDetect )  continue;
 				if ( m_objectParam[objRank].type == TYPETERRAIN )  continue;
 				if ( !DetectBBox(objRank, mouse) )  continue;
 				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
@@ -2015,6 +2199,10 @@ int CD3DEngine::DetectObject(FPOINT mouse)
 						{
 							p6 = p5->table[l5];
 							if ( p6 == 0 )  continue;
+							if ( bAction )
+							{
+								if ( (p6->state&D3DSTATEACTION) == 0 )  continue;
+							}
 
 							if ( p6->type == D3DTYPE6T )
 							{
@@ -2053,48 +2241,6 @@ int CD3DEngine::DetectObject(FPOINT mouse)
 	return nearest;
 }
 
-// Détecte si la souris est dans un triangle.
-
-BOOL CD3DEngine::DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle,
-								int objRank, float &dist)
-{
-	D3DVECTOR	p2D[3], p3D;
-	FPOINT		a, b, c;
-	int			i;
-
-	for ( i=0 ; i<3 ; i++ )
-	{
-		p3D.x = triangle[i].x;
-		p3D.y = triangle[i].y;
-		p3D.z = triangle[i].z;
-		if ( !TransformPoint(p2D[i], objRank, p3D) )  return FALSE;
-	}
-
-	if ( mouse.x < p2D[0].x &&
-		 mouse.x < p2D[1].x &&
-		 mouse.x < p2D[2].x )  return FALSE;
-	if ( mouse.x > p2D[0].x &&
-		 mouse.x > p2D[1].x &&
-		 mouse.x > p2D[2].x )  return FALSE;
-	if ( mouse.y < p2D[0].y &&
-		 mouse.y < p2D[1].y &&
-		 mouse.y < p2D[2].y )  return FALSE;
-	if ( mouse.y > p2D[0].y &&
-		 mouse.y > p2D[1].y &&
-		 mouse.y > p2D[2].y )  return FALSE;
-
-	a.x = p2D[0].x;
-	a.y = p2D[0].y;
-	b.x = p2D[1].x;
-	b.y = p2D[1].y;
-	c.x = p2D[2].x;
-	c.y = p2D[2].y;
-	if ( !IsInsideTriangle(a, b, c, mouse) )  return FALSE;
-
-	dist = (p2D[0].z+p2D[1].z+p2D[2].z)/3.0f;
-	return TRUE;
-}
-
 // Détecte si un objet est visé par la souris.
 
 BOOL CD3DEngine::DetectBBox(int objRank, FPOINT mouse)
@@ -2131,11 +2277,192 @@ BOOL CD3DEngine::DetectBBox(int objRank, FPOINT mouse)
 			 mouse.y <= max.y );
 }
 
+// Détecte si la souris est dans un triangle du terrain.
+
+BOOL CD3DEngine::DetectTriangle(FPOINT mouse, D3DVERTEX2 *vertex,
+								int objRank, float &dist, D3DVECTOR &pos,
+								int level, int maxLevel)
+{
+	D3DVECTOR	subTriangle[6];
+	D3DVERTEX2	subVertex[3];
+	D3DVECTOR	p2D[3], p3D;
+	FPOINT		a, b, c, t1[3], t2[3];
+	int			i, nb;
+
+	nb = 0;
+	for ( i=0 ; i<3 ; i++ )
+	{
+		p3D.x = vertex[i].x;
+		p3D.y = vertex[i].y;
+		p3D.z = vertex[i].z;
+		if ( !TransformPoint(p2D[i], objRank, p3D) )  nb ++;
+	}
+	if ( nb == 3 )  return FALSE;  // tous les points derrière la caméra ?
+
+	if ( mouse.x < p2D[0].x &&
+		 mouse.x < p2D[1].x &&
+		 mouse.x < p2D[2].x )  return FALSE;
+	if ( mouse.x > p2D[0].x &&
+		 mouse.x > p2D[1].x &&
+		 mouse.x > p2D[2].x )  return FALSE;
+	if ( mouse.y < p2D[0].y &&
+		 mouse.y < p2D[1].y &&
+		 mouse.y < p2D[2].y )  return FALSE;
+	if ( mouse.y > p2D[0].y &&
+		 mouse.y > p2D[1].y &&
+		 mouse.y > p2D[2].y )  return FALSE;
+
+	a.x = p2D[0].x;
+	a.y = p2D[0].y;
+	b.x = p2D[1].x;
+	b.y = p2D[1].y;
+	c.x = p2D[2].x;
+	c.y = p2D[2].y;
+	if ( !IsInsideTriangle(a, b, c, mouse) )  return FALSE;
+
+	if ( level < maxLevel )
+	{
+		subTriangle[0].x = vertex[0].x;
+		subTriangle[0].y = vertex[0].y;
+		subTriangle[0].z = vertex[0].z;
+		subTriangle[1].x = vertex[1].x;
+		subTriangle[1].y = vertex[1].y;
+		subTriangle[1].z = vertex[1].z;
+		subTriangle[2].x = vertex[2].x;
+		subTriangle[2].y = vertex[2].y;
+		subTriangle[2].z = vertex[2].z;
+		subTriangle[3].x = (vertex[0].x+vertex[1].x)/2.0f;
+		subTriangle[3].y = (vertex[0].y+vertex[1].y)/2.0f;
+		subTriangle[3].z = (vertex[0].z+vertex[1].z)/2.0f;
+		subTriangle[4].x = (vertex[1].x+vertex[2].x)/2.0f;
+		subTriangle[4].y = (vertex[1].y+vertex[2].y)/2.0f;
+		subTriangle[4].z = (vertex[1].z+vertex[2].z)/2.0f;
+		subTriangle[5].x = (vertex[2].x+vertex[0].x)/2.0f;
+		subTriangle[5].y = (vertex[2].y+vertex[0].y)/2.0f;
+		subTriangle[5].z = (vertex[2].z+vertex[0].z)/2.0f;
+
+		subVertex[0].x = subTriangle[0].x;
+		subVertex[0].y = subTriangle[0].y;
+		subVertex[0].z = subTriangle[0].z;
+		subVertex[1].x = subTriangle[3].x;
+		subVertex[1].y = subTriangle[3].y;
+		subVertex[1].z = subTriangle[3].z;
+		subVertex[2].x = subTriangle[5].x;
+		subVertex[2].y = subTriangle[5].y;
+		subVertex[2].z = subTriangle[5].z;
+		if ( DetectTriangle(mouse, subVertex, objRank, dist, pos, level+1, maxLevel) )  return TRUE;
+
+		subVertex[0].x = subTriangle[3].x;
+		subVertex[0].y = subTriangle[3].y;
+		subVertex[0].z = subTriangle[3].z;
+		subVertex[1].x = subTriangle[4].x;
+		subVertex[1].y = subTriangle[4].y;
+		subVertex[1].z = subTriangle[4].z;
+		subVertex[2].x = subTriangle[5].x;
+		subVertex[2].y = subTriangle[5].y;
+		subVertex[2].z = subTriangle[5].z;
+		if ( DetectTriangle(mouse, subVertex, objRank, dist, pos, level+1, maxLevel) )  return TRUE;
+
+		subVertex[0].x = subTriangle[2].x;
+		subVertex[0].y = subTriangle[2].y;
+		subVertex[0].z = subTriangle[2].z;
+		subVertex[1].x = subTriangle[5].x;
+		subVertex[1].y = subTriangle[5].y;
+		subVertex[1].z = subTriangle[5].z;
+		subVertex[2].x = subTriangle[4].x;
+		subVertex[2].y = subTriangle[4].y;
+		subVertex[2].z = subTriangle[4].z;
+		if ( DetectTriangle(mouse, subVertex, objRank, dist, pos, level+1, maxLevel) )  return TRUE;
+
+		subVertex[0].x = subTriangle[1].x;
+		subVertex[0].y = subTriangle[1].y;
+		subVertex[0].z = subTriangle[1].z;
+		subVertex[1].x = subTriangle[4].x;
+		subVertex[1].y = subTriangle[4].y;
+		subVertex[1].z = subTriangle[4].z;
+		subVertex[2].x = subTriangle[3].x;
+		subVertex[2].y = subTriangle[3].y;
+		subVertex[2].z = subTriangle[3].z;
+		if ( DetectTriangle(mouse, subVertex, objRank, dist, pos, level+1, maxLevel) )  return TRUE;
+
+		return FALSE;
+	}
+
+//?	if ( nb != 0 )  return FALSE;
+
+	dist = (p2D[0].z+p2D[1].z+p2D[2].z)/3.0f;
+
+	for ( i=0 ; i<3 ; i++ )
+	{
+		t1[i].x = p2D[i].x;
+		t1[i].y = p2D[i].y;
+
+		p3D.x = vertex[i].x;
+		p3D.y = vertex[i].y;
+		p3D.z = vertex[i].z;
+		pos = Transform(m_objectParam[objRank].transform, p3D);
+		t2[i].x = pos.x;
+		t2[i].y = pos.z;
+	}
+
+	a = mouse;
+	if ( !Deforme(t1, t2, a) )  return FALSE;
+	pos.x = a.x;
+	pos.z = a.y;
+	m_terrain->MoveOnFloor(pos);
+
+	return TRUE;
+}
+
+// Détecte si la souris est dans un triangle d'un objet.
+
+BOOL CD3DEngine::DetectTriangle(FPOINT mouse, D3DVERTEX2 *vertex,
+								int objRank, float &dist)
+{
+	D3DVECTOR	p2D[3], p3D;
+	FPOINT		a, b, c;
+	int			i;
+
+	for ( i=0 ; i<3 ; i++ )
+	{
+		p3D.x = vertex[i].x;
+		p3D.y = vertex[i].y;
+		p3D.z = vertex[i].z;
+		if ( !TransformPoint(p2D[i], objRank, p3D) )  return FALSE;
+	}
+
+	if ( mouse.x < p2D[0].x &&
+		 mouse.x < p2D[1].x &&
+		 mouse.x < p2D[2].x )  return FALSE;
+	if ( mouse.x > p2D[0].x &&
+		 mouse.x > p2D[1].x &&
+		 mouse.x > p2D[2].x )  return FALSE;
+	if ( mouse.y < p2D[0].y &&
+		 mouse.y < p2D[1].y &&
+		 mouse.y < p2D[2].y )  return FALSE;
+	if ( mouse.y > p2D[0].y &&
+		 mouse.y > p2D[1].y &&
+		 mouse.y > p2D[2].y )  return FALSE;
+
+	a.x = p2D[0].x;
+	a.y = p2D[0].y;
+	b.x = p2D[1].x;
+	b.y = p2D[1].y;
+	c.x = p2D[2].x;
+	c.y = p2D[2].y;
+	if ( !IsInsideTriangle(a, b, c, mouse) )  return FALSE;
+
+	dist = (p2D[0].z+p2D[1].z+p2D[2].z)/3.0f;
+	return TRUE;
+}
+
 // Transforme un point 3D (x,y,z) dans l'espace 2D (x,y,-) de la fenêtre.
-// La coordonnée p2D.z donne l'éloignement.
+// La coordonnée p2D.z donne l'éloignement. La valeur est négative
+// lorsque le point est derrière la caméra.
 
 BOOL CD3DEngine::TransformPoint(D3DVECTOR &p2D, int objRank, D3DVECTOR p3D)
 {
+#if 0
 	p3D = Transform(m_objectParam[objRank].transform, p3D);
 	p3D = Transform(m_matView, p3D);
 
@@ -2149,28 +2476,56 @@ BOOL CD3DEngine::TransformPoint(D3DVECTOR &p2D, int objRank, D3DVECTOR p3D)
 	p2D.y = (p2D.y+1.0f)/2.0f;
 
 	return TRUE;
-}
+#else
+	BOOL	bOK = TRUE;
 
+	p3D = Transform(m_objectParam[objRank].transform, p3D);
+	p3D = Transform(m_matView, p3D);
+
+//?	if ( p3D.z < 2.0f )  bOK = FALSE;  // derrière ?
+	if ( p3D.z < 0.1f )  bOK = FALSE;  // derrière ?
+
+	p2D.x = (p3D.x/p3D.z)*m_matProj._11;
+	p2D.y = (p3D.y/p3D.z)*m_matProj._22;
+	p2D.z = p3D.z;
+
+	p2D.x = (p2D.x+1.0f)/2.0f;  // [-1..1] -> [0..1]
+	p2D.y = (p2D.y+1.0f)/2.0f;
+
+	if ( p2D.z < 0.0f )  // derrière la caméra ?
+	{
+		p2D.x = -p2D.x;  // eh oui !
+		p2D.y = -p2D.y;
+	}
+
+	return bOK;
+#endif
+}
 
 // Calcul les distances entre le point de vue et l'origine
 // des différents objets.
 
 void CD3DEngine::ComputeDistance()
 {
-	D3DVECTOR	v;
 	int			i;
 	float		distance;
 
 	if ( s_resol == 0 )
 	{
+		if ( m_setup[ST_DETAIL] == 0.0f )
+		{
+			distance = (RetLimitLOD(0)+RetLimitLOD(1))/2.0f;
+		}
+		else
+		{
+			distance = 0.0f;
+		}
+
 		for ( i=0 ; i<m_objectParamTotal ; i++ )
 		{
 			if ( m_objectParam[i].bUsed == FALSE )  continue;
 
-			v.x = m_eyePt.x - m_objectParam[i].transform._41;
-			v.y = m_eyePt.y - m_objectParam[i].transform._42;
-			v.z = m_eyePt.z - m_objectParam[i].transform._43;
-			m_objectParam[i].distance = Length(v);
+			m_objectParam[i].distance = distance;
 		}
 	}
 	else
@@ -2192,17 +2547,7 @@ void CD3DEngine::ComputeDistance()
 		{
 			if ( m_objectParam[i].bUsed == FALSE )  continue;
 
-			if ( m_objectParam[i].type == TYPETERRAIN )
-			{
-				v.x = m_eyePt.x - m_objectParam[i].transform._41;
-				v.y = m_eyePt.y - m_objectParam[i].transform._42;
-				v.z = m_eyePt.z - m_objectParam[i].transform._43;
-				m_objectParam[i].distance = Length(v);
-			}
-			else
-			{
-				m_objectParam[i].distance = distance;
-			}
+			m_objectParam[i].distance = distance;
 		}
 	}
 }
@@ -2215,12 +2560,6 @@ void CD3DEngine::FirstExecuteAdapt(BOOL bFirst)
 	if ( m_app->IsVideo8MB() )
 	{
 		SetGroundSpot(FALSE);
-		SetSkyMode(FALSE);
-	}
-
-	if ( m_app->IsVideo32MB() && bFirst )
-	{
-		SetObjectDetail(2.0f);
 	}
 }
 
@@ -2358,6 +2697,26 @@ BOOL CD3DEngine::SetObjectType(int objRank, D3DTypeObj type)
 D3DTypeObj CD3DEngine::RetObjectType(int objRank)
 {
 	return m_objectParam[objRank].type;
+}
+
+// Spécifie si un objet est caché.
+
+BOOL CD3DEngine::SetObjectHide(int objRank, BOOL bHide)
+{
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+
+	m_objectParam[objRank].bHide = bHide;
+	return TRUE;
+}
+
+// Spécifie si un objet est détectable.
+
+BOOL CD3DEngine::SetObjectDetect(int objRank, BOOL bDetect)
+{
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+
+	m_objectParam[objRank].bDetect = bDetect;
+	return TRUE;
 }
 
 // Spécifie la transparence d'un objet.
@@ -2498,6 +2857,20 @@ BOOL CD3DEngine::SetObjectShadowType(int objRank, D3DShadowType type)
 	return TRUE;
 }
 
+// Spécifie si l'objet est sélectionné.
+
+BOOL CD3DEngine::SetObjectShadowSelect(int objRank, BOOL bSelect)
+{
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+
+	int i = m_objectParam[objRank].shadowRank;
+	if ( i == -1 )  return FALSE;
+
+	m_shadow[i].bSelect = bSelect;
+	m_shadow[i].time = 0.0f;
+	return TRUE;
+}
+
 // Spécifie la position de l'ombre de l'objet.
 
 BOOL CD3DEngine::SetObjectShadowPos(int objRank, const D3DVECTOR &pos)
@@ -2508,19 +2881,6 @@ BOOL CD3DEngine::SetObjectShadowPos(int objRank, const D3DVECTOR &pos)
 	if ( i == -1 )  return FALSE;
 
 	m_shadow[i].pos = pos;
-	return TRUE;
-}
-
-// Spécifie la normale au terrain de l'ombre de l'objet.
-
-BOOL CD3DEngine::SetObjectShadowNormal(int objRank, const D3DVECTOR &n)
-{
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
-
-	int i = m_objectParam[objRank].shadowRank;
-	if ( i == -1 )  return FALSE;
-
-	m_shadow[i].normal = n;
 	return TRUE;
 }
 
@@ -2588,6 +2948,44 @@ BOOL CD3DEngine::SetObjectShadowHeight(int objRank, float h)
 	return TRUE;
 }
 
+// Spécifie la hauteur du soleil pour l'objet.
+// Détermine l'amplitude du décalage selon le soleil au sud-est.
+// Pour un objet normal, une valeur de 1 est l'idéal.
+// Plus l'objet est haut et plus cette valeur peut grandir.
+// A l'inverse, un objet tout plat (comme la cible du dock) doit utiliser 0.
+
+BOOL CD3DEngine::SetObjectShadowSunFactor(int objRank, float factor)
+{
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+
+	int i = m_objectParam[objRank].shadowRank;
+	if ( i == -1 )  return FALSE;
+
+	m_shadow[i].sunFactor = factor;
+	return TRUE;
+}
+
+// Spécifie où sont les trous (ul,u,ur,l,c,r,dl,d,dr).
+// La position est au centre d'un tile 8x8 du terrain.
+
+BOOL CD3DEngine::SetObjectShadowHole(int objRank, const D3DVECTOR &pos,
+									 char bHole[9])
+{
+	int		j;
+
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+
+	int i = m_objectParam[objRank].shadowRank;
+	if ( i == -1 )  return FALSE;
+
+	m_shadow[i].posTerrain = pos;
+
+	for ( j=0 ; j<9 ; j++ )
+	{
+		m_shadow[i].bHole[j]  = bHole[j];
+	}
+	return TRUE;
+}
 
 // Efface toutes les marques au sol.
 
@@ -2756,27 +3154,6 @@ float CD3DEngine::RetLimitLOD(int rank, BOOL bLast)
 }
 
 
-// Définition de la distance de vision du terrain.
-
-void CD3DEngine::SetTerrainVision(float vision)
-{
-	m_terrainVision = vision;
-}
-
-
-// Gestion du mode global d'ombrage.
-
-void CD3DEngine::SetShadow(BOOL bMode)
-{
-	m_bShadow = bMode;
-}
-
-BOOL CD3DEngine::RetShadow()
-{
-	return m_bShadow;
-}
-
-
 // Gestion du mode global de marquage au sol.
 
 void CD3DEngine::SetGroundSpot(BOOL bMode)
@@ -2787,32 +3164,6 @@ void CD3DEngine::SetGroundSpot(BOOL bMode)
 BOOL CD3DEngine::RetGroundSpot()
 {
 	return m_bGroundSpot;
-}
-
-
-// Gestion du mode global de salissure.
-
-void CD3DEngine::SetDirty(BOOL bMode)
-{
-	m_bDirty = bMode;
-}
-
-BOOL CD3DEngine::RetDirty()
-{
-	return m_bDirty;
-}
-
-
-// Gestion du mode global de nappes de brouillard horizontales.
-
-void CD3DEngine::SetFog(BOOL bMode)
-{
-	m_bFog = bMode;
-}
-
-BOOL CD3DEngine::RetFog()
-{
-	return m_bFog;
 }
 
 
@@ -2957,14 +3308,13 @@ float CD3DEngine::RetFogStart(int rank)
 // Donne l'image d'arrière-plan à utiliser.
 
 void CD3DEngine::SetBackground(char *name, D3DCOLOR up, D3DCOLOR down,
-							   D3DCOLOR cloudUp, D3DCOLOR cloudDown,
+							   float sunFlash,
 							   BOOL bFull, BOOL bQuarter, BOOL bPanel)
 {
 	strcpy(m_backgroundName, name);
 	m_backgroundColorUp   = up;
 	m_backgroundColorDown = down;
-	m_backgroundCloudUp   = cloudUp;
-	m_backgroundCloudDown = cloudDown;
+	m_backgroundSunFlash  = sunFlash;
 	m_bBackgroundFull     = bFull;
 	m_bBackgroundQuarter  = bQuarter;
 	m_bBackgroundPanel    = bPanel;
@@ -2973,28 +3323,44 @@ void CD3DEngine::SetBackground(char *name, D3DCOLOR up, D3DCOLOR down,
 // Donne l'image d'arrière-plan utilisée.
 
 void CD3DEngine::RetBackground(char *name, D3DCOLOR &up, D3DCOLOR &down,
-							   D3DCOLOR &cloudUp, D3DCOLOR &cloudDown,
+							   float &sunFlash,
 							   BOOL &bFull, BOOL &bQuarter)
 {
 	strcpy(name, m_backgroundName);
 	up        = m_backgroundColorUp;
 	down      = m_backgroundColorDown;
-	cloudUp   = m_backgroundCloudUp;
-	cloudDown = m_backgroundCloudDown;
+	sunFlash  = m_backgroundSunFlash;
 	bFull     = m_bBackgroundFull;
 	bQuarter  = m_bBackgroundQuarter;
 }
 
-// Donne l'image d'avant-plan à utiliser.
+// Supprime tous les effets de lentille.
 
-void CD3DEngine::SetFrontsizeName(char *name)
+void CD3DEngine::LensFlareFlush()
 {
-	if ( m_frontsizeName[0] != 0 )
-	{
-		FreeTexture(m_frontsizeName);
-	}
+	int		i;
 
-	strcpy(m_frontsizeName, name);
+	for ( i=0 ; i<m_lensFlareTotal ; i++ )
+	{
+		FreeTexture(m_lensFlareTable[i].texName);
+	}
+	m_lensFlareTotal = 0;
+}
+
+// Ajoute un effet de lentille.
+
+void CD3DEngine::LensFlareAdd(char *texName, float dist, float dim,
+							  float intensity, float offsetH, float offsetV)
+{
+	if ( m_lensFlareTotal >= MAXLENSFLARE )  return;
+
+	strcpy(m_lensFlareTable[m_lensFlareTotal].texName, texName);
+	m_lensFlareTable[m_lensFlareTotal].dist = dist;
+	m_lensFlareTable[m_lensFlareTotal].dim = dim;
+	m_lensFlareTable[m_lensFlareTotal].intensity = intensity;
+	m_lensFlareTable[m_lensFlareTotal].offset.x = offsetH;
+	m_lensFlareTable[m_lensFlareTotal].offset.y = offsetV;
+	m_lensFlareTotal ++;
 }
 
 // Indique s'il faut dessiner d'avant-plan.
@@ -3014,167 +3380,119 @@ void CD3DEngine::SetOverColor(D3DCOLOR color, int mode)
 
 
 
-// Gestion de la densité des particules.
+// Initialise les réglages par défaut.
 
-void CD3DEngine::SetParticuleDensity(float value)
+void CD3DEngine::DefaultSetup()
 {
-	if ( value < 0.0f )  value = 0.0f;
-	if ( value > 1.0f )  value = 1.0f;
-	m_particuleDensity = value;
-}
+	int		i;
 
-float CD3DEngine::RetParticuleDensity()
-{
-	return m_particuleDensity;
-}
-
-float CD3DEngine::ParticuleAdapt(float factor)
-{
-	if ( m_particuleDensity == 0.0f )
+	for ( i=0 ; i<100 ; i++ )
 	{
-		return 1000000.0f;
+		m_setup[i] = 0.0f;
 	}
-	return factor/m_particuleDensity;
+
+	m_setup[ST_SHADOW]      = 1.0f;
+	m_setup[ST_DIRTY]       = 1.0f;
+	m_setup[ST_SUNBEAM]     = 1.0f;
+	m_setup[ST_LENSFLARE]   = 1.0f;
+	m_setup[ST_DECOR]       = 1.0f;
+	m_setup[ST_DETAIL]      = 1.0f;
+	m_setup[ST_METEO]       = 1.0f;
+	m_setup[ST_AMBIANCE]    = 1.0f;
+	m_setup[ST_EXPLOVIB]    = 1.0f;
+	m_setup[ST_SPEEDSCH]    = 0.5f;
+	m_setup[ST_SPEEDSCV]    = 0.5f;
+	m_setup[ST_MOUSESCROLL] = 1.0f;
+	m_setup[ST_MOVIE]       = 1.0f;
+	m_setup[ST_HELP]        = 1.0f;
+	m_setup[ST_TOOLTIPS]    = 1.0f;
+	m_setup[ST_NICEMOUSE]   = 1.0f;
+	m_setup[ST_ACCEL]       = 1.0f;
+	m_setup[ST_VOLBLUPI]    = 0.8f;
+	m_setup[ST_VOLSOUND]    = 0.8f;
+	m_setup[ST_VOLAMBIANCE] = 0.8f;
+	m_setup[ST_SOUND3D]     = 1.0f;
 }
 
-// Gestion de la quantité de traces de pneu.
+// Donne le nom d'un réglage.
 
-void CD3DEngine::SetWheelTraceQuantity(float value)
+BOOL CD3DEngine::RetSetupName(SetupType type, char *buffer)
 {
-	if ( value < 0.0f )  value = 0.0f;
-	if ( value > 1.0f )  value = 1.0f;
-	m_wheelTraceQuantity = value;
-}
-
-float CD3DEngine::RetWheelTraceQuantity()
-{
-	return m_wheelTraceQuantity;
-}
-
-// Gestion de la distance de clipping.
-
-void CD3DEngine::SetClippingDistance(float value)
-{
-	if ( value < 0.5f )  value = 0.5f;
-	if ( value > 2.0f )  value = 2.0f;
-	m_clippingDistance = value;
-}
-
-float CD3DEngine::RetClippingDistance()
-{
-	return m_clippingDistance;
-}
-
-// Gestion du détail des objets.
-
-void CD3DEngine::SetObjectDetail(float value)
-{
-	if ( value < 0.0f )  value = 0.0f;
-	if ( value > 2.0f )  value = 2.0f;
-	m_objectDetail = value;
-}
-
-float CD3DEngine::RetObjectDetail()
-{
-	return m_objectDetail;
-}
-
-// Gestion du détail des objets.
-
-void CD3DEngine::SetSuperDetail(BOOL bSuper)
-{
-	m_bSuperDetail = bSuper;
-}
-
-BOOL CD3DEngine::RetSuperDetail()
-{
-	return m_bSuperDetail;
-}
-
-// Gestion de la quantité d'objets gadgets.
-
-void CD3DEngine::SetGadgetQuantity(float value)
-{
-	if ( value < 0.0f )  value = 0.0f;
-	if ( value > 1.0f )  value = 1.0f;
-
-	m_gadgetQuantity = value;
-}
-
-float CD3DEngine::RetGadgetQuantity()
-{
-	return m_gadgetQuantity;
-}
-
-// Gestion de la qualité des textures.
-
-void CD3DEngine::SetTextureQuality(int value)
-{
-	if ( value < 0 )  value = 0;
-	if ( value > 2 )  value = 2;
-
-	if ( value != m_textureQuality )
+	switch ( type )
 	{
-		m_textureQuality = value;
-		LoadAllTexture();
+		case ST_SHADOW:       strcpy(buffer, "Shadow");        return TRUE;
+		case ST_DIRTY:        strcpy(buffer, "Dirty");         return TRUE;
+		case ST_SUNBEAM:      strcpy(buffer, "Sunbeam");       return TRUE;
+		case ST_LENSFLARE:    strcpy(buffer, "LensFlare");     return TRUE;
+		case ST_DECOR:        strcpy(buffer, "ObjectDecor");   return TRUE;
+		case ST_DETAIL:       strcpy(buffer, "ObjectDetail");  return TRUE;
+		case ST_METEO:        strcpy(buffer, "Meteo");         return TRUE;
+		case ST_AMBIANCE:     strcpy(buffer, "Ambiance");      return TRUE;
+		case ST_EXPLOVIB:     strcpy(buffer, "ExploVib");      return TRUE;
+		case ST_SPEEDSCH:     strcpy(buffer, "SpeedScrollH");  return TRUE;
+		case ST_SPEEDSCV:     strcpy(buffer, "SpeedScrollV");  return TRUE;
+		case ST_MOUSESCROLL:  strcpy(buffer, "MouseScroll");   return TRUE;
+		case ST_INVSCH:       strcpy(buffer, "InvScrollH");    return TRUE;
+		case ST_INVSCV:       strcpy(buffer, "InvSCrollV");    return TRUE;
+		case ST_MOVIE:        strcpy(buffer, "Movie");         return TRUE;
+		case ST_HELP:         strcpy(buffer, "Help");          return TRUE;
+		case ST_TOOLTIPS:     strcpy(buffer, "Tooltips");      return TRUE;
+		case ST_NICEMOUSE:    strcpy(buffer, "NiceMouse");     return TRUE;
+		case ST_ACCEL:        strcpy(buffer, "Accel");         return TRUE;
+		case ST_VOLBLUPI:     strcpy(buffer, "VolBlupi");      return TRUE;
+		case ST_VOLSOUND:     strcpy(buffer, "VolSound");      return TRUE;
+		case ST_VOLAMBIANCE:  strcpy(buffer, "VolAmbiance");   return TRUE;
+		case ST_SOUND3D:      strcpy(buffer, "Sound3D");       return TRUE;
+	}
+	return FALSE;
+}
+
+// Modifie un réglage.
+
+void CD3DEngine::SetSetup(SetupType type, float value)
+{
+	if ( type == ST_NICEMOUSE )
+	{
+		if ( !m_app->RetNiceMouseCap() )  value = 0.0f;
+//-		if ( value == m_setup[type] )  return;
+
+		if ( value == 0.0f )
+		{
+			ShowCursor(TRUE);  // montre la vilaine souris windows
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
+		}
+		else
+		{
+			ShowCursor(FALSE);  // cache la vilaine souris windows
+			SetCursor(NULL);
+		}
+	}
+
+	m_setup[type] = value;
+
+	if ( type == ST_SOUND3D )
+	{
+		if ( m_sound == 0 )
+		{
+			m_sound = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
+		}
+		if ( m_sound != 0 )
+		{
+			m_sound->SetSound3D(value!=0.0f);
+		}
 	}
 }
 
-int CD3DEngine::RetTextureQuality()
+// Donne un réglage.
+
+float CD3DEngine::RetSetup(SetupType type)
 {
-	return m_textureQuality;
-}
+	if ( type == ST_NICEMOUSE )
+	{
+		if ( !m_app->RetNiceMouseCap() )  return 0.0f;
+	}
 
-
-// Gestion du mode de toto.
-
-void CD3DEngine::SetTotoMode(BOOL bPresent)
-{
-	m_bTotoMode = bPresent;
-}
-
-BOOL CD3DEngine::RetTotoMode()
-{
-	return m_bTotoMode;
-}
-
-
-// Gestion du mode d'avant-plan.
-
-void CD3DEngine::SetLensMode(BOOL bPresent)
-{
-	m_bLensMode = bPresent;
-}
-
-BOOL CD3DEngine::RetLensMode()
-{
-	return m_bLensMode;
-}
-
-
-// Gestion du mode de l'eau.
-
-void CD3DEngine::SetWaterMode(BOOL bPresent)
-{
-	m_bWaterMode = bPresent;
-}
-
-BOOL CD3DEngine::RetWaterMode()
-{
-	return m_bWaterMode;
-}
-
-
-// Gestion du mode de ciel.
-
-void CD3DEngine::SetSkyMode(BOOL bPresent)
-{
-	m_bSkyMode = bPresent;
-}
-
-BOOL CD3DEngine::RetSkyMode()
-{
-	return m_bSkyMode;
+	return m_setup[type];
 }
 
 
@@ -3188,32 +3506,6 @@ void CD3DEngine::SetBackForce(BOOL bPresent)
 BOOL CD3DEngine::RetBackForce()
 {
 	return m_bBackForce;
-}
-
-
-// Gestion du mode des planètes.
-
-void CD3DEngine::SetPlanetMode(BOOL bPresent)
-{
-	m_bPlanetMode = bPresent;
-}
-
-BOOL CD3DEngine::RetPlanetMode()
-{
-	return m_bPlanetMode;
-}
-
-
-// Gestion du mode des lumières dynamiques.
-
-void CD3DEngine::SetLightMode(BOOL bPresent)
-{
-	m_bLightMode = bPresent;
-}
-
-BOOL CD3DEngine::RetLightMode()
-{
-	return m_bLightMode;
 }
 
 
@@ -3242,6 +3534,8 @@ int CD3DEngine::RetEditIndentValue()
 	return m_editIndentValue;
 }
 
+
+// Gestion de la vitesse du jeu.
 
 void CD3DEngine::SetSpeed(float speed)
 {
@@ -3371,24 +3665,8 @@ BOOL CD3DEngine::LoadAllTexture()
 
 	LoadTexture("text.tga");
 	LoadTexture("button1.tga");
-#if _FRENCH
-	LoadTexture("board-f.tga");
-#endif
-#if _ENGLISH
-	LoadTexture("board-e.tga");
-#endif
-#if _DEUTSCH
-	LoadTexture("board-d.tga");
-#endif
-#if _ITALIAN
-	LoadTexture("board-f.tga");
-#endif
-#if _SPANISH
-	LoadTexture("board-f.tga");
-#endif
-#if _PORTUGUESE
-	LoadTexture("board-p.tga");
-#endif
+	LoadTexture("button2.tga");
+	LoadTexture("button3.tga");
 	LoadTexture("effect00.tga");
 	LoadTexture("effect01.tga");
 	LoadTexture("effect02.tga");
@@ -3410,9 +3688,13 @@ BOOL CD3DEngine::LoadAllTexture()
 			LoadTexture(m_backgroundName);
 		}
 	}
-	if ( m_frontsizeName[0] != 0 )
+
+	if ( m_setup[ST_LENSFLARE] != 0 )
 	{
-		LoadTexture(m_frontsizeName);
+		for ( i=0 ; i<m_lensFlareTotal ; i++ )
+		{
+			LoadTexture(m_lensFlareTable[i].texName);
+		}
 	}
 
 	m_planet->LoadTexture();
@@ -3465,6 +3747,7 @@ HRESULT CD3DEngine::FrameMove(float rTime)
 	m_light->FrameLight(rTime);
 	m_particule->SetFrameUpdate(SH_WORLD, !m_bPause);
 	m_particule->FrameParticule(rTime);
+	FrameShadow(rTime);
 	ComputeDistance();
 	UpdateGeometry();
 
@@ -3655,9 +3938,9 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
 	}
 
-	bSecond = m_bGroundSpot|m_bDirty;
+	bSecond = m_bGroundSpot | (m_setup[ST_DIRTY]!=0);
 	if ( !m_bGroundSpot && (state & D3DSTATESECOND) != 0 )  bSecond = FALSE;
-	if ( !m_bDirty      && (state & D3DSTATESECOND) == 0 )  bSecond = FALSE;
+	if ( (m_setup[ST_DIRTY]==0) && (state & D3DSTATESECOND) == 0 )  bSecond = FALSE;
 
 	if ( (state & D3DSTATEDUALb) && bSecond )
 	{
@@ -3723,9 +4006,6 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 
 void CD3DEngine::SetTexture(char *name, int stage)
 {
-//?	if ( stage == 1 && !m_bDirty )  return;
-//?	if ( stage == 1 && !m_bShadow )  return;
-
 	if ( strcmp(name, m_lastTexture[stage]) == 0 )  return;
 	strcpy(m_lastTexture[stage], name);
 
@@ -4146,7 +4426,7 @@ void CD3DEngine::RenderGroundSpot()
 							pos.x = (256.0f*(s%4)+ix)*3200.0f/1024.0f - 1600.0f;
 							pos.z = (256.0f*(s/4)+iy)*3200.0f/1024.0f - 1600.0f;
 							pos.y = 0.0f;
-							level = m_terrain->RetFloorLevel(pos, TRUE);
+							level = m_terrain->RetFloorLevel(pos);
 							if ( level < m_groundSpot[i].min ||
 								 level > m_groundSpot[i].max )  continue;
 
@@ -4250,19 +4530,170 @@ void CD3DEngine::RenderGroundSpot()
 	m_bFirstGroundSpot = FALSE;
 }
 
+// Fait évoluer les ombres.
+
+void CD3DEngine::FrameShadow(float rTime)
+{
+	int		i;
+
+	if ( m_bPause )  return;
+
+	for ( i=0 ; i<m_shadowTotal ; i++ )
+	{
+		if ( !m_shadow[i].bUsed )  continue;
+		if ( m_shadow[i].bHide )  continue;
+
+		m_shadow[i].time += rTime;
+	}
+}
+
+// Dessine un morceau rectangulaire d'ombre.
+
+void CD3DEngine::DrawShadowPiece(int i,
+								 const D3DVECTOR &pos,
+								 const D3DVECTOR &shift,
+								 float adjust,
+								 float minx, float maxx,
+								 float minz, float maxz,
+								 FPOINT ti, FPOINT ts)
+{
+	D3DVERTEX2	vertex[4];	// 2 triangles
+	D3DVECTOR	corner[4];
+	FPOINT		rot, dim;
+	float		radius, rmx, rpx, rmz, rpz, limit, dp;
+
+	radius = rmx = rpx = rmz = rpz = m_shadow[i].radius*1.5f;
+
+	limit = maxx-(m_shadow[i].pos.x+shift.x);
+	if ( rpx > limit )  rpx = limit;
+
+	limit = (m_shadow[i].pos.x+shift.x)-minx;
+	if ( rmx > limit )  rmx = limit;
+
+	limit = maxz-(m_shadow[i].pos.z+shift.z);
+	if ( rpz > limit )  rpz = limit;
+
+	limit = (m_shadow[i].pos.z+shift.z)-minz;
+	if ( rmz > limit )  rmz = limit;
+
+	rmx    *= adjust;
+	rpx    *= adjust;
+	rmz    *= adjust;
+	rpz    *= adjust;
+	radius *= adjust;
+
+	corner[0].x = +rpx;
+	corner[0].z = +rpz;
+	corner[0].y = 0.0f;
+
+	corner[1].x = -rmx;
+	corner[1].z = +rpz;
+	corner[1].y = 0.0f;
+
+	corner[2].x = +rpx;
+	corner[2].z = -rmz;
+	corner[2].y = 0.0f;
+
+	corner[3].x = -rmx;
+	corner[3].z = -rmz;
+	corner[3].y = 0.0f;
+
+	if ( corner[0].x <= corner[1].x ||
+		 corner[0].z <= corner[2].z )  return;
+
+	dim.x = (ts.x-ti.x)/2.0f;
+	dim.y = (ts.y-ti.y)/2.0f;
+	ti.x += ((radius-rmx)/radius) * dim.x;
+	ts.x -= ((radius-rpx)/radius) * dim.x;
+	ti.y += ((radius-rmz)/radius) * dim.y;
+	ts.y -= ((radius-rpz)/radius) * dim.y;
+
+	corner[0] += pos;
+	corner[1] += pos;
+	corner[2] += pos;
+	corner[3] += pos;
+
+	dp = 0.5f/256.0f;
+	ti.x += dp;
+	ti.y += dp;
+	ts.x -= dp;
+	ts.y -= dp;
+
+	vertex[0] = D3DVERTEX2(corner[1], D3DVECTOR(0.0f, 1.0f, 0.0f), ti.x, ts.y);
+	vertex[1] = D3DVERTEX2(corner[0], D3DVECTOR(0.0f, 1.0f, 0.0f), ts.x, ts.y);
+	vertex[2] = D3DVERTEX2(corner[3], D3DVECTOR(0.0f, 1.0f, 0.0f), ti.x, ti.y);
+	vertex[3] = D3DVERTEX2(corner[2], D3DVECTOR(0.0f, 1.0f, 0.0f), ts.x, ti.y);
+
+	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
+	AddStatisticTriangle(2);
+}
+
+// Dessine une ombre entière avec une rotation quelconque.
+
+void CD3DEngine::DrawShadowRot(const D3DVECTOR &pos,
+							   float radius,
+							   float angle,
+							   FPOINT ti, FPOINT ts)
+{
+	D3DVERTEX2	vertex[4];	// 2 triangles
+	D3DVECTOR	corner[4];
+	FPOINT		rot;
+	float		dp;
+
+	rot = RotatePoint(angle, FPOINT(radius, radius));
+	corner[0].x = rot.x;
+	corner[0].z = rot.y;
+	corner[0].y = 0.0f;
+
+	rot = RotatePoint(angle, FPOINT(-radius, radius));
+	corner[1].x = rot.x;
+	corner[1].z = rot.y;
+	corner[1].y = 0.0f;
+
+	rot = RotatePoint(angle, FPOINT(radius, -radius));
+	corner[2].x = rot.x;
+	corner[2].z = rot.y;
+	corner[2].y = 0.0f;
+
+	rot = RotatePoint(angle, FPOINT(-radius, -radius));
+	corner[3].x = rot.x;
+	corner[3].z = rot.y;
+	corner[3].y = 0.0f;
+
+	corner[0] += pos;
+	corner[1] += pos;
+	corner[2] += pos;
+	corner[3] += pos;
+
+	dp = 0.5f/256.0f;
+	ti.x += dp;
+	ti.y += dp;
+	ts.x -= dp;
+	ts.y -= dp;
+
+	vertex[0] = D3DVERTEX2(corner[1], D3DVECTOR(0.0f, 1.0f, 0.0f), ti.x, ts.y);
+	vertex[1] = D3DVERTEX2(corner[0], D3DVECTOR(0.0f, 1.0f, 0.0f), ts.x, ts.y);
+	vertex[2] = D3DVERTEX2(corner[3], D3DVECTOR(0.0f, 1.0f, 0.0f), ti.x, ti.y);
+	vertex[3] = D3DVERTEX2(corner[2], D3DVECTOR(0.0f, 1.0f, 0.0f), ts.x, ti.y);
+
+	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
+	AddStatisticTriangle(2);
+}
+
 // Dessine toutes les ombres.
 
 void CD3DEngine::DrawShadow()
 {
-	D3DVERTEX2		vertex[4];	// 2 triangles
-	D3DVECTOR		corner[4], n, pos;
+	D3DVECTOR		pos, shift;
 	D3DMATERIAL7	material;
 	D3DMATRIX		matrix;
-	FPOINT			ts, ti, rot;
+	FPOINT			ti, ts;
 	float			startDeepView, endDeepView;
-	float			intensity, lastIntensity, hFactor, radius, max, height;
-	float			dp, h, d, D;
+	float			intensity, lastIntensity, hFactor, radius, max, height, angle;
+	float			h, d, D, r;
+	float			adjust, minx, maxx, minz, maxz;
 	int				i;
+	BOOL			bRot;
 
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
@@ -4281,8 +4712,6 @@ void CD3DEngine::DrawShadow()
 
 	SetTexture("effect03.tga");
 
-	n = D3DVECTOR(0.0f, 1.0f, 0.0f);
-
 	startDeepView = m_deepView[m_rankView]*m_fogStart[m_rankView];
 	endDeepView = m_deepView[m_rankView];
 
@@ -4292,7 +4721,12 @@ void CD3DEngine::DrawShadow()
 		if ( !m_shadow[i].bUsed )  continue;
 		if ( m_shadow[i].bHide )  continue;
 
-		pos = m_shadow[i].pos;  // pos = centre de l'ombre au sol
+		// Décalage selon l'éclairage placé au sud-est.
+		shift = D3DVECTOR(-1.0f, 0.0f, 1.0f)*m_shadow[i].sunFactor;
+
+		pos = m_shadow[i].pos;
+		pos.x += shift.x;
+		pos.z += shift.z;  // pos = centre de l'ombre au sol
 
 		if ( m_eyePt.y == pos.y )  continue;  // caméra au même niveau ?
 
@@ -4331,169 +4765,14 @@ void CD3DEngine::DrawShadow()
 			pos.y -= h;
 		}
 
+		if ( m_setup[ST_SHADOW] == 0.0f )  goto next;
+
 		// Le hFactor diminue l'intensité et augmente la taille plus
 		// l'objet est haut par rapport au sol.
-		hFactor = m_shadow[i].height/20.0f;
-		if ( hFactor < 0.0f )  hFactor = 0.0f;
-		if ( hFactor > 1.0f )  hFactor = 1.0f;
+		hFactor = Norm(m_shadow[i].height/40.0f);
 		hFactor = powf(1.0f-hFactor, 2.0f);
-		if ( hFactor < 0.2f )  hFactor = 0.2f;
-
-		radius = m_shadow[i].radius*1.5f;
-		radius *= 2.0f-hFactor;  // plus grand si haut
-		radius *= 1.0f-d/D;  // plus petit si proche
-
-		if ( m_shadow[i].type == D3DSHADOWNORM )
-		{
-			corner[0].x = +radius;
-			corner[0].z = +radius;
-			corner[0].y = 0.0f;
-
-			corner[1].x = -radius;
-			corner[1].z = +radius;
-			corner[1].y = 0.0f;
-
-			corner[2].x = +radius;
-			corner[2].z = -radius;
-			corner[2].y = 0.0f;
-
-			corner[3].x = -radius;
-			corner[3].z = -radius;
-			corner[3].y = 0.0f;
-
-			ts.x =  0.0f/256.0f;
-			ti.x = 32.0f/256.0f;
-			ts.y =  0.0f/256.0f;
-			ti.y = 32.0f/256.0f;
-		}
-		else
-		{
-			rot = RotatePoint(-m_shadow[i].angle, FPOINT(radius, radius));
-			corner[0].x = rot.x;
-			corner[0].z = rot.y;
-			corner[0].y = 0.0f;
-
-			rot = RotatePoint(-m_shadow[i].angle, FPOINT(-radius, radius));
-			corner[1].x = rot.x;
-			corner[1].z = rot.y;
-			corner[1].y = 0.0f;
-
-			rot = RotatePoint(-m_shadow[i].angle, FPOINT(radius, -radius));
-			corner[2].x = rot.x;
-			corner[2].z = rot.y;
-			corner[2].y = 0.0f;
-
-			rot = RotatePoint(-m_shadow[i].angle, FPOINT(-radius, -radius));
-			corner[3].x = rot.x;
-			corner[3].z = rot.y;
-			corner[3].y = 0.0f;
-
-			if ( m_shadow[i].type == D3DSHADOWCAR01 )
-			{
-				ts.x =  64.0f/256.0f;
-				ts.y =   0.0f/256.0f;
-				ti.x =  96.0f/256.0f;
-				ti.y =  32.0f/256.0f;
-			}
-			else if ( m_shadow[i].type == D3DSHADOWCAR02 )
-			{
-				ts.x = 128.0f/256.0f;
-				ts.y =  32.0f/256.0f;
-				ti.x = 160.0f/256.0f;
-				ti.y =  64.0f/256.0f;
-			}
-			else if ( m_shadow[i].type == D3DSHADOWCAR03 )
-			{
-				ts.x =  96.0f/256.0f;
-				ts.y =   0.0f/256.0f;
-				ti.x = 128.0f/256.0f;
-				ti.y =  32.0f/256.0f;
-			}
-			else if ( m_shadow[i].type == D3DSHADOWCAR04 )
-			{
-				ts.x =  64.0f/256.0f;
-				ts.y =  32.0f/256.0f;
-				ti.x =  96.0f/256.0f;
-				ti.y =  64.0f/256.0f;
-			}
-			else if ( m_shadow[i].type == D3DSHADOWCAR05 )
-			{
-				ts.x =  96.0f/256.0f;
-				ts.y =  32.0f/256.0f;
-				ti.x = 128.0f/256.0f;
-				ti.y =  64.0f/256.0f;
-			}
-			else if ( m_shadow[i].type == D3DSHADOWCAR06 )
-			{
-				ts.x = 160.0f/256.0f;
-				ts.y =  32.0f/256.0f;
-				ti.x = 192.0f/256.0f;
-				ti.y =  64.0f/256.0f;
-			}
-			else if ( m_shadow[i].type == D3DSHADOWCAR07 )
-			{
-				ts.x = 192.0f/256.0f;
-				ts.y =  32.0f/256.0f;
-				ti.x = 224.0f/256.0f;
-				ti.y =  64.0f/256.0f;
-			}
-			else if ( m_shadow[i].type == D3DSHADOWCAR08 )
-			{
-				ts.x = 224.0f/256.0f;
-				ts.y =  32.0f/256.0f;
-				ti.x = 256.0f/256.0f;
-				ti.y =  64.0f/256.0f;
-			}
-			else if ( m_shadow[i].type == D3DSHADOWWORM )
-			{
-				ts.x =  32.0f/256.0f;
-				ts.y =   0.0f/256.0f;
-				ti.x =  64.0f/256.0f;
-				ti.y =  32.0f/256.0f;
-			}
-			else if ( m_shadow[i].type == D3DSHADOWBARRIER1 )
-			{
-				ts.x =   0.0f/256.0f;
-				ts.y =  32.0f/256.0f;
-				ti.x =  32.0f/256.0f;
-				ti.y =  64.0f/256.0f;
-			}
-			else if ( m_shadow[i].type == D3DSHADOWBARRIER2 )
-			{
-				ts.x =  32.0f/256.0f;
-				ts.y =  32.0f/256.0f;
-				ti.x =  64.0f/256.0f;
-				ti.y =  64.0f/256.0f;
-			}
-			else
-			{
-				ts.x =   0.0f/256.0f;
-				ts.y =   0.0f/256.0f;
-				ti.x =  32.0f/256.0f;
-				ti.y =  32.0f/256.0f;
-			}
-		}
-
-		corner[0] = Cross(corner[0], m_shadow[i].normal);
-		corner[1] = Cross(corner[1], m_shadow[i].normal);
-		corner[2] = Cross(corner[2], m_shadow[i].normal);
-		corner[3] = Cross(corner[3], m_shadow[i].normal);
-
-		corner[0] += pos;
-		corner[1] += pos;
-		corner[2] += pos;
-		corner[3] += pos;
-
-		dp = 0.5f/256.0f;
-		ts.x += dp;
-		ti.x -= dp;
-		ts.y += dp;
-		ti.y -= dp;
-
-		vertex[0] = D3DVERTEX2(corner[1], n, ts.x, ts.y);
-		vertex[1] = D3DVERTEX2(corner[0], n, ti.x, ts.y);
-		vertex[2] = D3DVERTEX2(corner[3], n, ts.x, ti.y);
-		vertex[3] = D3DVERTEX2(corner[2], n, ti.x, ti.y);
+		if ( hFactor < 0.0f )  hFactor = 0.0f;
+		if ( hFactor == 0.0f )  continue;
 
 		intensity = (0.5f+m_shadow[i].intensity*0.5f)*hFactor;
 
@@ -4504,10 +4783,6 @@ void CD3DEngine::DrawShadow()
 			intensity *= 1.0f-(D-startDeepView)/(endDeepView-startDeepView);
 		}
 
-		// Diminue l'intensité si on est presque à l'horizontale
-		// avec l'ombre (ombre très platte).
-//?		if ( height < 4.0f )  intensity *= height/4.0f;
-
 		if ( intensity == 0.0f )  continue;
 
 		if ( lastIntensity != intensity )  // intensité changée ?
@@ -4516,8 +4791,435 @@ void CD3DEngine::DrawShadow()
 			SetState(D3DSTATETTw, RetColor(intensity));
 		}
 
-		m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
-		AddStatisticTriangle(2);
+		adjust = (2.0f-hFactor)*  // plus grand si haut
+				 (1.0f-d/D);      // plus petit si proche
+
+		bRot = FALSE;
+		if ( m_shadow[i].type == D3DSHADOWNORM )
+		{
+			ti.x =  0.0f/256.0f;
+			ti.y =  0.0f/256.0f;
+			ts.x = 32.0f/256.0f;
+			ts.y = 32.0f/256.0f;
+		}
+		else if ( m_shadow[i].type == D3DSHADOWSQUARE )
+		{
+			ti.x = 32.0f/256.0f;
+			ti.y =  0.0f/256.0f;
+			ts.x = 64.0f/256.0f;
+			ts.y = 32.0f/256.0f;
+		}
+		else if ( m_shadow[i].type == D3DSHADOWDOCK )
+		{
+			ti.x =  64.0f/256.0f;
+			ti.y =   0.0f/256.0f;
+			ts.x = 128.0f/256.0f;
+			ts.y =  64.0f/256.0f;
+			bRot = TRUE;
+		}
+		else if ( m_shadow[i].type == D3DSHADOWBIRD )
+		{
+			ti.x = 192.0f/256.0f;
+			ti.y = 192.0f/256.0f;
+			ts.x = 224.0f/256.0f;
+			ts.y = 224.0f/256.0f;
+			bRot = TRUE;
+		}
+		else if ( m_shadow[i].type == D3DSHADOWGLASS )
+		{
+			ti.x =   0.0f/256.0f;
+			ti.y =  32.0f/256.0f;
+			ts.x =  32.0f/256.0f;
+			ts.y =  64.0f/256.0f;
+			bRot = TRUE;
+		}
+		else if ( m_shadow[i].type == D3DSHADOWPALISSADE )
+		{
+			ti.x =  32.0f/256.0f;
+			ti.y =  32.0f/256.0f;
+			ts.x =  64.0f/256.0f;
+			ts.y =  64.0f/256.0f;
+			bRot = TRUE;
+		}
+		else
+		{
+			ti.x =   0.0f/256.0f;
+			ti.y =   0.0f/256.0f;
+			ts.x =  32.0f/256.0f;
+			ts.y =  32.0f/256.0f;
+		}
+
+#if 0
+		ti.x = 224.0f/256.0f;  // motif de debug
+		ti.y = 224.0f/256.0f;
+		ts.x = 256.0f/256.0f;
+		ts.y = 256.0f/256.0f;
+#endif
+
+		if ( bRot )
+		{
+			radius = m_shadow[i].radius*1.5f;
+			radius *= adjust;
+			DrawShadowRot(pos, radius, -m_shadow[i].angle, ti, ts);
+		}
+		else
+		{
+			if ( !m_shadow[i].bHole[0] &&
+				 !m_shadow[i].bHole[1] &&
+				 !m_shadow[i].bHole[2] &&
+				 !m_shadow[i].bHole[3] &&
+				 !m_shadow[i].bHole[4] &&
+				 !m_shadow[i].bHole[5] &&
+				 !m_shadow[i].bHole[6] &&
+				 !m_shadow[i].bHole[7] &&
+				 !m_shadow[i].bHole[8] )  // ombre en un seul morceau ?
+			{
+				minx = m_shadow[i].posTerrain.x-12.0f;
+				maxx = m_shadow[i].posTerrain.x+12.0f;
+				minz = m_shadow[i].posTerrain.z-12.0f;
+				maxz = m_shadow[i].posTerrain.z+12.0f;
+				DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+				goto next;
+			}
+
+			if ( (!m_shadow[i].bHole[0] &&
+				  !m_shadow[i].bHole[1] &&
+				  !m_shadow[i].bHole[2] ) ||
+				 (!m_shadow[i].bHole[6] &&
+				  !m_shadow[i].bHole[7] &&
+				  !m_shadow[i].bHole[8] ) )  // ombre en bandes horizontales ?
+			{
+				minz = m_shadow[i].posTerrain.z+ 4.0f;
+				maxz = m_shadow[i].posTerrain.z+12.0f;
+
+				if ( !m_shadow[i].bHole[0] &&
+					 !m_shadow[i].bHole[1] &&
+					 !m_shadow[i].bHole[2] )
+				{
+					minx = m_shadow[i].posTerrain.x-12.0f;
+					maxx = m_shadow[i].posTerrain.x+12.0f;
+					DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+				}
+				else
+				{
+					if ( !m_shadow[i].bHole[0] )
+					{
+						minx = m_shadow[i].posTerrain.x-12.0f;
+						maxx = m_shadow[i].posTerrain.x- 4.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+					if ( !m_shadow[i].bHole[1] )
+					{
+						minx = m_shadow[i].posTerrain.x- 4.0f;
+						maxx = m_shadow[i].posTerrain.x+ 4.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+					if ( !m_shadow[i].bHole[2] )
+					{
+						minx = m_shadow[i].posTerrain.x+ 4.0f;
+						maxx = m_shadow[i].posTerrain.x+12.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+				}
+
+				minz = m_shadow[i].posTerrain.z- 4.0f;
+				maxz = m_shadow[i].posTerrain.z+ 4.0f;
+
+				if ( !m_shadow[i].bHole[3] &&
+					 !m_shadow[i].bHole[4] &&
+					 !m_shadow[i].bHole[5] )
+				{
+					minx = m_shadow[i].posTerrain.x-12.0f;
+					maxx = m_shadow[i].posTerrain.x+12.0f;
+					DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+				}
+				else
+				{
+					if ( !m_shadow[i].bHole[3] )
+					{
+						minx = m_shadow[i].posTerrain.x-12.0f;
+						maxx = m_shadow[i].posTerrain.x- 4.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+					if ( !m_shadow[i].bHole[4] )
+					{
+						minx = m_shadow[i].posTerrain.x- 4.0f;
+						maxx = m_shadow[i].posTerrain.x+ 4.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+					if ( !m_shadow[i].bHole[5] )
+					{
+						minx = m_shadow[i].posTerrain.x+ 4.0f;
+						maxx = m_shadow[i].posTerrain.x+12.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+				}
+
+				minz = m_shadow[i].posTerrain.z-12.0f;
+				maxz = m_shadow[i].posTerrain.z -4.0f;
+
+				if ( !m_shadow[i].bHole[6] &&
+					 !m_shadow[i].bHole[7] &&
+					 !m_shadow[i].bHole[8] )
+				{
+					minx = m_shadow[i].posTerrain.x-12.0f;
+					maxx = m_shadow[i].posTerrain.x+12.0f;
+					DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+				}
+				else
+				{
+					if ( !m_shadow[i].bHole[6] )
+					{
+						minx = m_shadow[i].posTerrain.x-12.0f;
+						maxx = m_shadow[i].posTerrain.x- 4.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+					if ( !m_shadow[i].bHole[7] )
+					{
+						minx = m_shadow[i].posTerrain.x- 4.0f;
+						maxx = m_shadow[i].posTerrain.x+ 4.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+					if ( !m_shadow[i].bHole[8] )
+					{
+						minx = m_shadow[i].posTerrain.x+ 4.0f;
+						maxx = m_shadow[i].posTerrain.x+12.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+				}
+				goto next;
+			}
+
+			if ( (!m_shadow[i].bHole[0] &&
+				  !m_shadow[i].bHole[3] &&
+				  !m_shadow[i].bHole[6] ) ||
+				 (!m_shadow[i].bHole[2] &&
+				  !m_shadow[i].bHole[5] &&
+				  !m_shadow[i].bHole[8] ) )  // ombre en bandes verticales ?
+			{
+				minx = m_shadow[i].posTerrain.x-12.0f;
+				maxx = m_shadow[i].posTerrain.x- 4.0f;
+
+				if ( !m_shadow[i].bHole[0] &&
+					 !m_shadow[i].bHole[3] &&
+					 !m_shadow[i].bHole[6] )
+				{
+					minz = m_shadow[i].posTerrain.z-12.0f;
+					maxz = m_shadow[i].posTerrain.z+12.0f;
+					DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+				}
+				else
+				{
+					if ( !m_shadow[i].bHole[6] )
+					{
+						minz = m_shadow[i].posTerrain.z-12.0f;
+						maxz = m_shadow[i].posTerrain.z- 4.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+					if ( !m_shadow[i].bHole[3] )
+					{
+						minz = m_shadow[i].posTerrain.z- 4.0f;
+						maxz = m_shadow[i].posTerrain.z+ 4.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+					if ( !m_shadow[i].bHole[0] )
+					{
+						minz = m_shadow[i].posTerrain.z+ 4.0f;
+						maxz = m_shadow[i].posTerrain.z+12.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+				}
+
+				minx = m_shadow[i].posTerrain.x- 4.0f;
+				maxx = m_shadow[i].posTerrain.x+ 4.0f;
+
+				if ( !m_shadow[i].bHole[1] &&
+					 !m_shadow[i].bHole[4] &&
+					 !m_shadow[i].bHole[7] )
+				{
+					minz = m_shadow[i].posTerrain.z-12.0f;
+					maxz = m_shadow[i].posTerrain.z+12.0f;
+					DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+				}
+				else
+				{
+					if ( !m_shadow[i].bHole[7] )
+					{
+						minz = m_shadow[i].posTerrain.z-12.0f;
+						maxz = m_shadow[i].posTerrain.z- 4.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+					if ( !m_shadow[i].bHole[4] )
+					{
+						minz = m_shadow[i].posTerrain.z- 4.0f;
+						maxz = m_shadow[i].posTerrain.z+ 4.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+					if ( !m_shadow[i].bHole[1] )
+					{
+						minz = m_shadow[i].posTerrain.z+ 4.0f;
+						maxz = m_shadow[i].posTerrain.z+12.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+				}
+
+				minx = m_shadow[i].posTerrain.x+ 4.0f;
+				maxx = m_shadow[i].posTerrain.x+12.0f;
+
+				if ( !m_shadow[i].bHole[2] &&
+					 !m_shadow[i].bHole[5] &&
+					 !m_shadow[i].bHole[8] )
+				{
+					minz = m_shadow[i].posTerrain.z-12.0f;
+					maxz = m_shadow[i].posTerrain.z+12.0f;
+					DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+				}
+				else
+				{
+					if ( !m_shadow[i].bHole[8] )
+					{
+						minz = m_shadow[i].posTerrain.z-12.0f;
+						maxz = m_shadow[i].posTerrain.z- 4.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+					if ( !m_shadow[i].bHole[5] )
+					{
+						minz = m_shadow[i].posTerrain.z- 4.0f;
+						maxz = m_shadow[i].posTerrain.z+ 4.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+					if ( !m_shadow[i].bHole[2] )
+					{
+						minz = m_shadow[i].posTerrain.z+ 4.0f;
+						maxz = m_shadow[i].posTerrain.z+12.0f;
+						DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+					}
+				}
+				goto next;
+			}
+
+			// Ombre en 9 morceaux individuels :
+			if ( !m_shadow[i].bHole[0] )
+			{
+				minx = m_shadow[i].posTerrain.x-12.0f;
+				maxx = m_shadow[i].posTerrain.x- 4.0f;
+				minz = m_shadow[i].posTerrain.z+ 4.0f;
+				maxz = m_shadow[i].posTerrain.z+12.0f;
+				DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+			}
+			if ( !m_shadow[i].bHole[1] )
+			{
+				minx = m_shadow[i].posTerrain.x- 4.0f;
+				maxx = m_shadow[i].posTerrain.x+ 4.0f;
+				minz = m_shadow[i].posTerrain.z+ 4.0f;
+				maxz = m_shadow[i].posTerrain.z+12.0f;
+				DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+			}
+			if ( !m_shadow[i].bHole[2] )
+			{
+				minx = m_shadow[i].posTerrain.x+ 4.0f;
+				maxx = m_shadow[i].posTerrain.x+12.0f;
+				minz = m_shadow[i].posTerrain.z+ 4.0f;
+				maxz = m_shadow[i].posTerrain.z+12.0f;
+				DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+			}
+			if ( !m_shadow[i].bHole[3] )
+			{
+				minx = m_shadow[i].posTerrain.x-12.0f;
+				maxx = m_shadow[i].posTerrain.x- 4.0f;
+				minz = m_shadow[i].posTerrain.z- 4.0f;
+				maxz = m_shadow[i].posTerrain.z+ 4.0f;
+				DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+			}
+			if ( !m_shadow[i].bHole[4] )
+			{
+				minx = m_shadow[i].posTerrain.x- 4.0f;
+				maxx = m_shadow[i].posTerrain.x+ 4.0f;
+				minz = m_shadow[i].posTerrain.z- 4.0f;
+				maxz = m_shadow[i].posTerrain.z+ 4.0f;
+				DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+			}
+			if ( !m_shadow[i].bHole[5] )
+			{
+				minx = m_shadow[i].posTerrain.x+ 4.0f;
+				maxx = m_shadow[i].posTerrain.x+12.0f;
+				minz = m_shadow[i].posTerrain.z- 4.0f;
+				maxz = m_shadow[i].posTerrain.z+ 4.0f;
+				DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+			}
+			if ( !m_shadow[i].bHole[6] )
+			{
+				minx = m_shadow[i].posTerrain.x-12.0f;
+				maxx = m_shadow[i].posTerrain.x- 4.0f;
+				minz = m_shadow[i].posTerrain.z-12.0f;
+				maxz = m_shadow[i].posTerrain.z- 4.0f;
+				DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+			}
+			if ( !m_shadow[i].bHole[7] )
+			{
+				minx = m_shadow[i].posTerrain.x- 4.0f;
+				maxx = m_shadow[i].posTerrain.x+ 4.0f;
+				minz = m_shadow[i].posTerrain.z-12.0f;
+				maxz = m_shadow[i].posTerrain.z- 4.0f;
+				DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+			}
+			if ( !m_shadow[i].bHole[8] )
+			{
+				minx = m_shadow[i].posTerrain.x+ 4.0f;
+				maxx = m_shadow[i].posTerrain.x+12.0f;
+				minz = m_shadow[i].posTerrain.z-12.0f;
+				maxz = m_shadow[i].posTerrain.z- 4.0f;
+				DrawShadowPiece(i, pos, shift, adjust, minx, maxx, minz, maxz, ti, ts);
+			}
+		}
+
+next:
+//?		if ( m_shadow[i].bSelect && !m_bPause )  // object sélectionné ?
+		if ( m_shadow[i].bSelect )  // object sélectionné ?
+		{
+			pos.x -= shift.x;
+			pos.z -= shift.z;
+
+			if ( m_shadow[i].time < 1.0f )
+			{
+				SetState(D3DSTATETTb);
+				radius = m_shadow[i].radius*1.5f;
+				angle = -m_shadow[i].time*3.0f;
+				r = radius*Norm(1.0f-m_shadow[i].time)*3.0f;
+				ti.x =   0.0f/256.0f;
+				ti.y = 128.0f/256.0f;
+				ts.x =  64.0f/256.0f;
+				ts.y = 192.0f/256.0f;
+				DrawShadowRot(pos, r, angle, ti, ts);
+
+				SetState(D3DSTATETTw);
+				ti.x =  64.0f/256.0f;
+				ti.y = 128.0f/256.0f;
+				ts.x = 128.0f/256.0f;
+				ts.y = 192.0f/256.0f;
+				DrawShadowRot(pos, r, angle, ti, ts);
+			}
+
+			SetState(D3DSTATETTb);
+			angle = m_shadow[i].time*1.0f;
+			d = (1.0f+sinf(m_shadow[i].time*10.0f))/2.0f;
+			radius = m_shadow[i].radius*1.5f;
+			radius *= 1.0f+d*0.5f;
+			ti.x = 128.0f/256.0f;
+			ti.y = 128.0f/256.0f;
+			ts.x = 192.0f/256.0f;
+			ts.y = 192.0f/256.0f;
+			DrawShadowRot(pos, radius, angle, ti, ts);
+
+			SetState(D3DSTATETTw);
+			ti.x = 192.0f/256.0f;
+			ti.y = 128.0f/256.0f;
+			ts.x = 256.0f/256.0f;
+			ts.y = 192.0f/256.0f;
+			DrawShadowRot(pos, radius, angle, ti, ts);
+
+			lastIntensity = -1.0f;
+		}
 	}
 
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
@@ -4543,6 +5245,9 @@ HRESULT CD3DEngine::Render()
 	CInterface*		pInterface;
 	BOOL			bTransparent;
 	D3DCOLOR		color, tColor;
+	D3DCOLOR		fogColor;
+	D3DCOLORVALUE	cvLight, cvDark, cv;
+	float			angle, intensity;
 
 	if ( !m_bRender )  return S_OK;
 
@@ -4559,14 +5264,7 @@ HRESULT CD3DEngine::Render()
 	}
 
 	// Clear the viewport
-	if ( m_bSkyMode && m_cloud->RetLevel() != 0.0f )  // nuages ?
-	{
-		color = m_backgroundCloudDown;
-	}
-	else
-	{
-		color = m_backgroundColorDown;
-	}
+	color = m_backgroundColorDown;
 	m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,
 						 color, 1.0f, 0L );
 
@@ -4575,11 +5273,22 @@ HRESULT CD3DEngine::Render()
 	// Begin the scene
 	if( FAILED( m_pD3DDevice->BeginScene() ) )  return S_OK;
 
+	// L'intensité est maximale (1.0) si on regarde contre le soleil,
+	// c'est-à-dire au sud-est. On est face au soleil lorsque
+	// m_eyeDirH = PI*0.75 (135 degrés).
+	angle = NormAngle(m_eyeDirH-PI*0.75f);
+	intensity = 0.5f+sinf(PI*0.5f+angle)*0.5f;
+
+	cvLight = RetColor(m_fogColor[0]);
+	cvDark  = RetColor(m_fogColor[1]);
+	cv.r = cvDark.r+(cvLight.r-cvDark.r)*intensity;
+	cv.g = cvDark.g+(cvLight.g-cvDark.g)*intensity;
+	cv.b = cvDark.b+(cvLight.b-cvDark.b)*intensity;
+	fogColor = RetColor(cv);
+	
 	if ( m_bDrawWorld )
 	{
 		DrawBackground();  // dessine l'arrière-plan
-		if ( m_bPlanetMode )  DrawPlanet();  // dessine les planètes
-		if ( m_bSkyMode )  m_cloud->Draw();  // dessine les nuages
 
 		// Display the objects
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, TRUE);
@@ -4589,83 +5298,89 @@ HRESULT CD3DEngine::Render()
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
 
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, m_fogColor[m_rankView]);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, fogColor);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, D3DFOG_LINEAR);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGSTART, F2DW(m_deepView[m_rankView]*m_fogStart[m_rankView]));
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGEND,   F2DW(m_deepView[m_rankView]));
 
 		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &m_matView);
 
-		if ( m_bWaterMode )  m_water->DrawBack();  // dessine l'eau
-
-		if ( m_bShadow )
+		// Dessine le terrain.
+		p1 = m_objectPointer;
+		for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 		{
-			// Dessine le terrain.
-			p1 = m_objectPointer;
-			for ( l1=0 ; l1<p1->totalUsed ; l1++ )
+			p2a = p1->table[l1];
+			if ( p2a == 0 )  continue;
+			for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 			{
-				p2a = p1->table[l1];
-				if ( p2a == 0 )  continue;
-				for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
+				p2b = p2a->table[l2a];
+				if ( p2b == 0 )  continue;
+				SetTexture(p2b->texName1, 0);
+				SetTexture(p2b->texName2, 1);
+				for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
 				{
-					p2b = p2a->table[l2a];
-					if ( p2b == 0 )  continue;
-					SetTexture(p2b->texName1, 0);
-					SetTexture(p2b->texName2, 1);
-					for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
+					p3 = p2b->table[l2b];
+					if ( p3 == 0 )  continue;
+					objRank = p3->objRank;
+					if ( m_objectParam[objRank].bHide )  continue;
+					if ( m_objectParam[objRank].type != TYPETERRAIN )  continue;
+					if ( !m_objectParam[objRank].bDrawWorld )  continue;
+					m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
+											   &m_objectParam[objRank].transform);
+					if ( !IsVisible(objRank) )  continue;
+					m_light->LightUpdate(m_objectParam[objRank].type);
+					for ( l3=0 ; l3<p3->totalUsed ; l3++ )
 					{
-						p3 = p2b->table[l2b];
-						if ( p3 == 0 )  continue;
-						objRank = p3->objRank;
-						if ( m_objectParam[objRank].type != TYPETERRAIN )  continue;
-						if ( !m_objectParam[objRank].bDrawWorld )  continue;
-						m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
-												   &m_objectParam[objRank].transform);
-						if ( !IsVisible(objRank) )  continue;
-						m_light->LightUpdate(m_objectParam[objRank].type);
-						for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+						p4 = p3->table[l3];
+						if ( p4 == 0 )  continue;
+						if ( m_objectParam[objRank].distance <  p4->min ||
+							 m_objectParam[objRank].distance >= p4->max )  continue;
+						for ( l4=0 ; l4<p4->totalUsed ; l4++ )
 						{
-							p4 = p3->table[l3];
-							if ( p4 == 0 )  continue;
-							if ( m_objectParam[objRank].distance <  p4->min ||
-								 m_objectParam[objRank].distance >= p4->max )  continue;
-							for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+							p5 = p4->table[l4];
+							if ( p5 == 0 )  continue;
+							for ( l5=0 ; l5<p5->totalUsed ; l5++ )
 							{
-								p5 = p4->table[l4];
-								if ( p5 == 0 )  continue;
-								for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+								p6 = p5->table[l5];
+								if ( p6 == 0 )  continue;
+								SetMaterial(p6->material);
+								SetState(p6->state);
+								if ( p6->type == D3DTYPE6T )
 								{
-									p6 = p5->table[l5];
-									if ( p6 == 0 )  continue;
-									SetMaterial(p6->material);
-									SetState(p6->state);
-									if ( p6->type == D3DTYPE6T )
-									{
-										pv = &p6->vertex[0];
-										m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST,
-																	D3DFVF_VERTEX2,
-																	pv, p6->totalUsed,
-																	NULL);
-										m_statisticTriangle += p6->totalUsed/3;
-									}
-									if ( p6->type == D3DTYPE6S )
-									{
-										pv = &p6->vertex[0];
-										m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
-																	D3DFVF_VERTEX2,
-																	pv, p6->totalUsed,
-																	NULL);
-										m_statisticTriangle += p6->totalUsed-2;
-									}
+									pv = &p6->vertex[0];
+									m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST,
+																D3DFVF_VERTEX2,
+																pv, p6->totalUsed,
+																NULL);
+									m_statisticTriangle += p6->totalUsed/3;
+								}
+								if ( p6->type == D3DTYPE6S )
+								{
+									pv = &p6->vertex[0];
+									m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
+																D3DFVF_VERTEX2,
+																pv, p6->totalUsed,
+																NULL);
+									m_statisticTriangle += p6->totalUsed-2;
 								}
 							}
 						}
 					}
 				}
 			}
-
-			DrawShadow();  // dessine les ombres
 		}
+
+		m_light->LightUpdate(TYPETERRAIN);
+
+		m_water->DrawSurf();  // dessine l'eau
+
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, fogColor);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, D3DFOG_LINEAR);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGSTART, F2DW(m_deepView[m_rankView]*m_fogStart[m_rankView]));
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGEND,   F2DW(m_deepView[m_rankView]));
+
+		DrawShadow();  // dessine les ombres
 
 		// Dessine les objets.
 		bTransparent = FALSE;
@@ -4685,7 +5400,8 @@ HRESULT CD3DEngine::Render()
 					p3 = p2b->table[l2b];
 					if ( p3 == 0 )  continue;
 					objRank = p3->objRank;
-					if ( m_bShadow && m_objectParam[objRank].type == TYPETERRAIN )  continue;
+					if ( m_objectParam[objRank].bHide )  continue;
+					if ( m_objectParam[objRank].type == TYPETERRAIN )  continue;
 					if ( !m_objectParam[objRank].bDrawWorld )  continue;
 					m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
 											   &m_objectParam[objRank].transform);
@@ -4767,7 +5483,8 @@ HRESULT CD3DEngine::Render()
 						p3 = p2b->table[l2b];
 						if ( p3 == 0 )  continue;
 						objRank = p3->objRank;
-						if ( m_bShadow && m_objectParam[objRank].type == TYPETERRAIN )  continue;
+						if ( m_objectParam[objRank].bHide )  continue;
+						if ( m_objectParam[objRank].type == TYPETERRAIN )  continue;
 						if ( !m_objectParam[objRank].bDrawWorld )  continue;
 						m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
 												   &m_objectParam[objRank].transform);
@@ -4816,13 +5533,11 @@ HRESULT CD3DEngine::Render()
 			}
 		}
 
-		m_light->LightUpdate(TYPETERRAIN);
-		if ( m_bWaterMode )  m_water->DrawSurf();  // dessine l'eau
-//?		m_cloud->Draw();  // dessine les nuages
+//-		m_light->LightUpdate(TYPETERRAIN);
 
 		m_particule->DrawParticule(SH_WORLD);  // dessine les particules du monde 3D
 		m_blitz->Draw();  // dessine les éclairs
-		if ( m_bLensMode )  DrawFrontsize();  // dessine l'avant-plan
+		if ( m_setup[ST_LENSFLARE] != 0.0f )  DrawLensFlare();  // dessine l'avant-plan
 		if ( !m_bOverFront )  DrawOverColor();  // dessine la couleur d'avant-plan
 	}
 
@@ -4854,7 +5569,7 @@ HRESULT CD3DEngine::Render()
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
 
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, m_fogColor[m_rankView]);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, fogColor);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, D3DFOG_LINEAR);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGSTART, F2DW(m_deepView[m_rankView]*m_fogStart[m_rankView]));
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGEND,   F2DW(m_deepView[m_rankView]));
@@ -4877,6 +5592,7 @@ HRESULT CD3DEngine::Render()
 					p3 = p2b->table[l2b];
 					if ( p3 == 0 )  continue;
 					objRank = p3->objRank;
+					if ( m_objectParam[objRank].bHide )  continue;
 					if ( !m_objectParam[objRank].bDrawFront )  continue;
 					m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
 											   &m_objectParam[objRank].transform);
@@ -4955,24 +5671,18 @@ HRESULT CD3DEngine::Render()
 
 void CD3DEngine::DrawBackground()
 {
-	if ( m_bSkyMode && m_cloud->RetLevel() != 0.0f )  // nuages ?
+	float	horizon, sup;
+
+	horizon = Norm((m_eyeDirV-30.0f*PI/180.0f)/(30.0f*PI/180.0f));
+	sup = horizon+1.0f;
+
+	if ( m_backgroundColorUp != m_backgroundColorDown )  // dégradé ?
 	{
-		if ( m_backgroundCloudUp != m_backgroundCloudDown )  // dégradé ?
-		{
-			DrawBackgroundGradient(FPOINT(0.0f, 0.5f), FPOINT(1.0f, 1.0f),
-								   m_backgroundCloudUp, m_backgroundCloudDown);
-		}
-	}
-	else
-	{
-		if ( m_backgroundColorUp != m_backgroundColorDown )  // dégradé ?
-		{
-			DrawBackgroundGradient(FPOINT(0.0f, 0.5f), FPOINT(1.0f, 1.0f),
-								   m_backgroundColorUp, m_backgroundColorDown);
-		}
+		DrawBackgroundGradient(FPOINT(0.0f, horizon), FPOINT(1.0f, sup),
+							   m_backgroundColorUp, m_backgroundColorDown);
 	}
 
-	if ( m_bBackForce || (m_bSkyMode && m_backgroundName[0] != 0) )
+	if ( m_bBackForce || m_backgroundName[0] != 0 )
 	{
 		DrawBackgroundImage();  // image
 	}
@@ -4989,12 +5699,59 @@ void CD3DEngine::DrawBackground()
 
 void CD3DEngine::DrawBackgroundGradient(FPOINT p1, FPOINT p2, D3DCOLOR up, D3DCOLOR down)
 {
-	D3DLVERTEX	vertex[4];	// 2 triangles
-	D3DCOLOR	color[3];
+	D3DLVERTEX		vertex[4];	// 2 triangles
+	D3DCOLOR		color[3], black;
+	D3DCOLORVALUE	cvLight, cvDark, cv;
+	float			angle, intensity;
+
+	black = 0x00000000;
+
+	// Le fond devient plus clair si on regarde contre le soleil,
+	// c'est-à-dire au sud-est. On est face au soleil lorsque
+	// m_eyeDirH = PI*0.75 (135 degrés).
+	if ( m_backgroundSunFlash == -1.0f )
+	{
+		angle = NormAngle(m_eyeDirH-PI*0.75f);
+		intensity = 0.5f+sinf(PI*0.5f+angle)*0.5f;
+
+		cvLight = RetColor(up);
+		cvDark  = RetColor(down);
+		cv.r = cvDark.r+(cvLight.r-cvDark.r)*intensity;
+		cv.g = cvDark.g+(cvLight.g-cvDark.g)*intensity;
+		cv.b = cvDark.b+(cvLight.b-cvDark.b)*intensity;
+		up = down = RetColor(cv);
+
+		p1 = FPOINT(0.0f, 0.0f);
+		p2 = FPOINT(1.0f, 1.0f);
+	}
+	else
+	{
+		angle = m_eyeDirH;
+		if ( angle <= PI*0.25f || angle >= PI*1.25f )
+		{
+			intensity = 0.0f;
+		}
+		else
+		{
+			angle -= PI*0.25f;
+			intensity = sinf(angle);
+		}
+
+		if ( intensity > 0.0f )
+		{
+			intensity = 1.0f-intensity*m_backgroundSunFlash;
+
+			cv = RetColor(up);
+			cv.r = 1.0f-(1.0f-cv.r)*intensity;
+			cv.g = 1.0f-(1.0f-cv.g)*intensity;
+			cv.b = 1.0f-(1.0f-cv.b)*intensity;
+			up = RetColor(cv);
+		}
+	}
 
 	color[0] = up;
 	color[1] = down;
-	color[2] = 0x00000000;
+	color[2] = black;
 
 //?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE );
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
@@ -5005,9 +5762,9 @@ void CD3DEngine::DrawBackgroundGradient(FPOINT p1, FPOINT p2, D3DCOLOR up, D3DCO
 	SetTexture("xxx.tga");  // pas de texture
 	SetState(D3DSTATENORMAL);
 
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewBack);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjBack);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldBack);
 
 	vertex[0] = D3DLVERTEX(D3DVECTOR(p1.x, p1.y, 0.0f), color[1],color[2], 0.0f,0.0f);
 	vertex[1] = D3DLVERTEX(D3DVECTOR(p1.x, p2.y, 0.0f), color[0],color[2], 0.0f,0.0f);
@@ -5069,9 +5826,9 @@ void CD3DEngine::DrawBackgroundImageQuarter(FPOINT p1, FPOINT p2, char *name)
 	SetTexture(name);
 	SetState(D3DSTATEWRAP);
 
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewBack);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjBack);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldBack);
 
 	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
 	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
@@ -5141,60 +5898,87 @@ void CD3DEngine::DrawPlanet()
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE );
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
 
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewBack);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjBack);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldBack);
 
 	m_planet->Draw();  // dessine les planètes
 }
 
 // Dessine l'image d'avant-plan.
 
-void CD3DEngine::DrawFrontsize()
+void CD3DEngine::DrawLensFlare()
+{
+	int		i;
+
+	for ( i=0 ; i<m_lensFlareTotal ; i++ )
+	{
+		DrawLensFlare(i);
+	}
+}
+
+// Dessine un effet de lentille.
+
+void CD3DEngine::DrawLensFlare(int i)
 {
 	D3DVERTEX2	vertex[4];	// 2 triangles
 	D3DVECTOR	n;
-	FPOINT		p1, p2;
-	float		u1, u2, v1, v2;
-
-	if ( m_frontsizeName[0] == 0 )  return;
+	FPOINT		p1, p2, pos, dim;
+	float		u1, u2, v1, v2, angle, intensity;
 
 	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normale
 
-	p1.x = 0.0f;
-	p1.y = 0.0f;
-	p2.x = 1.0f;
-	p2.y = 1.0f;
+	dim.x = m_lensFlareTable[i].dim;
+	dim.y = dim.x*(640.0f/480.0f);  // carré sur l'écran
 
-	u1 = -m_eyeDirH/(PI*0.6f)+PI*0.5f;
-	u2 = u1+0.50f;
+	angle = m_eyeDirH;
+	if ( angle <= PI*0.25f || angle >= PI*1.25f )  return;
+	angle -= PI*0.25f;
+	pos.x = angle/PI;  // 0..1
+	intensity = sinf(angle);
 
-	v1 = 0.2f;
+	pos.y = Norm((m_eyeDirV-30.0f*PI/180.0f)/(30.0f*PI/180.0f));
+	intensity *= 1.0f-pos.y;
+	pos.y += 0.25f;
+
+	pos.x -= 0.5f;
+	pos.x *= m_lensFlareTable[i].dist;
+	pos.x += 0.5f;
+	pos.x += m_lensFlareTable[i].offset.x;
+
+	pos.y -= 0.5f;
+	pos.y *= m_lensFlareTable[i].dist;
+	pos.y += 0.5f;
+	pos.y += m_lensFlareTable[i].offset.y;
+
+	p1.x = pos.x-dim.x/2.0f;
+	p2.x = pos.x+dim.x/2.0f;
+	p1.y = pos.y-dim.y/2.0f;
+	p2.y = pos.y+dim.y/2.0f;
+
+	intensity *= m_lensFlareTable[i].intensity;
+
+	u1 = 0.0f;
+	v1 = 0.0f;
+	u2 = 1.0f;
 	v2 = 1.0f;
-
-#if 0
-	char s[100];
-	sprintf(s, "h=%.2f v=%.2f u=%.2f;%.2f v=%.2f;%.2f", m_eyeDirH, m_eyeDirV, u1, u2, v1, v2);
-	SetInfoText(3, s);
-#endif
 
 	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
 	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
 	vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, u2,v2);
 	vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, u2,v1);
 
-//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE );
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
 
-	SetTexture(m_frontsizeName);
-	SetState(D3DSTATECLAMP|D3DSTATETTb);
+	SetTexture(m_lensFlareTable[i].texName);
+	SetState(D3DSTATETTb, RetColor(intensity));
 
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewBack);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjBack);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldBack);
 
 	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 	AddStatisticTriangle(2);
@@ -5230,9 +6014,9 @@ void CD3DEngine::DrawOverColor()
 	SetTexture("xxx.tga");  // pas de texture
 	SetState(m_overMode);
 
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewBack);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjBack);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldBack);
 
 	vertex[0] = D3DLVERTEX(D3DVECTOR(p1.x, p1.y, 0.0f), color[1],color[2], 0.0f,0.0f);
 	vertex[1] = D3DLVERTEX(D3DVECTOR(p1.x, p2.y, 0.0f), color[0],color[2], 0.0f,0.0f);
@@ -5343,6 +6127,24 @@ BOOL CD3DEngine::GetHilite(FPOINT &p1, FPOINT &p2)
 	p1 = m_hiliteP1;
 	p2 = m_hiliteP2;
 	return m_bHilite;
+}
+
+// Détermine le rectangle de sélection.
+
+void CD3DEngine::SetSelect(FPOINT p1, FPOINT p2, BOOL bSelect)
+{
+	m_selectP1 = p1;
+	m_selectP2 = p2;
+	m_bSelect = bSelect;
+}
+
+// Donne le rectangle de sélection.
+
+BOOL CD3DEngine::GetSelect(FPOINT &p1, FPOINT &p2)
+{
+	p1 = m_selectP1;
+	p2 = m_selectP2;
+	return m_bSelect;
 }
 
 
@@ -5790,6 +6592,20 @@ int CD3DEngine::RetKey(int keyRank, int option)
 	return m_app->RetKey(keyRank, option);
 }
 
+// Indique si une touche est produite par la souris.
+
+BOOL CD3DEngine::IsKeyMouse(int key)
+{
+	return m_app->IsKeyMouse(key);
+}
+
+// Indique si une touche est produite par le joystick.
+
+BOOL CD3DEngine::IsKeyJoystick(int key)
+{
+	return m_app->IsKeyJoystick(key);
+}
+
 
 // Gestion de la force de l'effet FFB.
 
@@ -5871,6 +6687,21 @@ HRESULT CD3DEngine::InitDeviceObjects()
 
 	SetFocus(m_focus);
 
+	// Définitions des matrices pour le fond.
+	D3DUtil_SetIdentityMatrix(m_matWorldBack);
+
+	D3DUtil_SetIdentityMatrix(m_matViewBack);
+	m_matViewBack._41 = -0.5f;
+	m_matViewBack._42 = -0.5f;
+	m_matViewBack._43 =  1.0f;
+
+	D3DUtil_SetIdentityMatrix(m_matProjBack);
+	m_matProjBack._11 =  2.0f;
+	m_matProjBack._22 =  2.0f;
+	m_matProjBack._34 =  1.0f;
+	m_matProjBack._43 = -1.0f;
+	m_matProjBack._44 =  0.0f;
+
 	// Définitions des matrices pour l'interface.
 	D3DUtil_SetIdentityMatrix(m_matWorldInterface);
 
@@ -5887,6 +6718,23 @@ HRESULT CD3DEngine::InitDeviceObjects()
 	m_matProjInterface._44 =  0.0f;
 	
 	return S_OK;
+}
+
+// Spécifie le centre, le zoom et la rotation pour toute l'interface.
+// Le mode normal est center=0.5;0.5, zoom=1 et angle=0.
+
+void CD3DEngine::SetInterfaceMat(FPOINT center, float zoom, float angle)
+{
+	m_matViewInterface._22 =  cosf(angle);
+	m_matViewInterface._23 = -sinf(angle);
+	m_matViewInterface._32 =  sinf(angle);
+	m_matViewInterface._33 =  cosf(angle);  // rotation autour de X
+
+	m_matViewInterface._41 = -center.x;
+	m_matViewInterface._42 = -center.y;  // translation
+
+	m_matProjInterface._11 = zoom*2.0f;
+	m_matProjInterface._22 = zoom*2.0f;  // zoom
 }
 
 
@@ -6011,18 +6859,17 @@ void CD3DEngine::SetMouseHide(BOOL bHide)
 
 	if ( bHide )  // cache la souris ?
 	{
-		m_bNiceMouse = m_app->RetNiceMouse();
-		if ( !m_bNiceMouse )
+		if ( m_setup[ST_NICEMOUSE] == 0.0f )
 		{
-			m_app->SetNiceMouse(TRUE);
+			SetSetup(ST_NICEMOUSE, 1.0f);
 		}
 		m_bMouseHide = TRUE;
 	}
 	else	// montre la souris ?
 	{
-		if ( !m_bNiceMouse )
+		if ( m_setup[ST_NICEMOUSE] == 0.0f )
 		{
-			m_app->SetNiceMouse(FALSE);
+			SetSetup(ST_NICEMOUSE, 0.0f);
 		}
 		m_bMouseHide = FALSE;
 	}
@@ -6033,20 +6880,96 @@ BOOL CD3DEngine::RetMouseHide()
 	return m_bMouseHide;
 }
 
-void CD3DEngine::SetNiceMouse(BOOL bNice)
-{
-	m_app->SetNiceMouse(bNice);
-}
-
-BOOL CD3DEngine::RetNiceMouse()
-{
-	return m_app->RetNiceMouse();
-}
-
 BOOL CD3DEngine::RetNiceMouseCap()
 {
 	return m_app->RetNiceMouseCap();
 }
+
+void CD3DEngine::SetMouseCapture()
+{
+	m_app->SetMouseCapture();
+}
+
+void CD3DEngine::ReleaseMouseCapture()
+{
+	m_app->ReleaseMouseCapture();
+}
+
+
+// Initialise le buffer pour les zones bloquées.
+
+void CD3DEngine::InitLockZone()
+{
+	int		x, y, channel;
+
+	if ( m_lockZoneBuffer != 0 )
+	{
+		for ( y=0 ; y<100 ; y++ )
+		{
+			for ( x=0 ; x<100 ; x++ )
+			{
+				channel = m_lockZoneBuffer[x+y*100];
+				if ( channel != 0 )
+				{
+					m_particule->DeleteParticule(channel);
+					m_lockZoneBuffer[x+y*100] = 0;
+				}
+			}
+		}
+
+		free(m_lockZoneBuffer);
+		m_lockZoneBuffer = 0;
+	}
+}
+
+// Montre une zone bloquée.
+
+void CD3DEngine::ShowLockZone(D3DVECTOR pos, BOOL bLock)
+{
+	D3DVECTOR	speed;
+	FPOINT		dim;
+	int			x, y, channel;
+
+	pos = Grid(pos, 8.0f);
+	x = (int)(pos.x/8.0f)+50;
+	y = (int)(pos.z/8.0f)+50;
+	if ( x < 0 || x >= 100 || y < 0 || y >= 100 )  return;
+
+	CreateLockZone();
+
+	if ( bLock )
+	{
+		if ( m_lockZoneBuffer[x+y*100] == 0 )
+		{
+			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			dim.x = 4.2f;
+			dim.y = dim.x;
+			channel = m_particule->CreateParticule(pos, speed, dim, PARTILOCKZONE);
+			m_lockZoneBuffer[x+y*100] = channel;
+		}
+	}
+	else
+	{
+		channel = m_lockZoneBuffer[x+y*100];
+		if ( channel != 0 )
+		{
+			m_particule->DeleteParticule(channel);
+			m_lockZoneBuffer[x+y*100] = 0;
+		}
+	}
+}
+
+// Crée le buffer pour pouvoir montrer les zones.
+
+void CD3DEngine::CreateLockZone()
+{
+	if ( m_lockZoneBuffer == 0 )
+	{
+		m_lockZoneBuffer = (int*)malloc(sizeof(int)*100*100);
+		ZeroMemory(m_lockZoneBuffer, sizeof(int)*100*100);
+	}
+}
+
 
 // Dessine le sprite de la souris.
 
@@ -6071,11 +6994,17 @@ void CD3DEngine::DrawMouse()
 		{ D3DMOUSEWAIT,    38,39,-1, D3DSTATETTw, D3DSTATETTb,  8.0f, 12.0f},
 		{ D3DMOUSEHAND,    46,47,54, D3DSTATETTw, D3DSTATETTb,  7.0f,  2.0f},
 		{ D3DMOUSEEDIT,    62,63,-1, D3DSTATETTb, D3DSTATETTw,  6.0f, 10.0f},
+		{ D3DMOUSESELECT,  60,61,-1, D3DSTATETTw, D3DSTATETTb, 16.0f, 16.0f},
+		{ D3DMOUSEGOTO,    58,59,-1, D3DSTATETTw, D3DSTATETTb, 16.0f, 16.0f},
+		{ D3DMOUSESCROLLL, 56,57,-1, D3DSTATETTb, D3DSTATETTw, 16.0f, 16.0f},
+		{ D3DMOUSESCROLLR, 56,57,-1, D3DSTATETTb, D3DSTATETTw, 16.0f, 16.0f},
+		{ D3DMOUSESCROLLU, 56,57,-1, D3DSTATETTb, D3DSTATETTw, 16.0f, 16.0f},
+		{ D3DMOUSESCROLLD, 56,57,-1, D3DSTATETTb, D3DSTATETTw, 16.0f, 16.0f},
 		{ D3DMOUSEHIDE },
 	};
 
 	if ( m_bMouseHide )  return;
-	if ( !m_app->RetNiceMouse() )  return;  // souris windows ?
+	if ( m_setup[ST_NICEMOUSE] == 0.0f )  return;  // souris windows ?
 
 	ZeroMemory( &material, sizeof(D3DMATERIAL7) );
 	material.diffuse.r = 1.0f;
