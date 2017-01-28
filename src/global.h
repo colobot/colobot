@@ -41,7 +41,6 @@ extern long		g_id;					// identificateur unique
 extern long		g_build;				// bâtiments constructibles
 extern long		g_researchDone;			// recherches effectuées
 extern long		g_researchEnable;		// recherches accessbles
-extern float	g_unit;					// facteur de conversion
 
 
 

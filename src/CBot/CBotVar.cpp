@@ -91,20 +91,8 @@ CBotVarBoolean::CBotVarBoolean( const CBotToken* name )
 
 CBotVarClass* CBotVarClass::m_ExClass = NULL;
 
-CBotVarClass::CBotVarClass( const CBotToken* name, CBotTypResult& type)
+CBotVarClass::CBotVarClass( const CBotToken* name, CBotTypResult& type )
 {
-/*
-//	int	nIdent = 0;
-	InitCBotVarClass( name, type ) //, nIdent );
-}
-
-CBotVarClass::CBotVarClass( const CBotToken* name, CBotTypResult& type) //, int &nIdent )
-{
-	InitCBotVarClass( name, type ); //, nIdent );
-}
-
-void CBotVarClass::InitCBotVarClass( const CBotToken* name, CBotTypResult& type ) //, int &nIdent )
-{*/
 	if ( !type.Eq(CBotTypClass)        &&
 		 !type.Eq(CBotTypIntrinsic)    &&				// par comodité accepte ces types
 		 !type.Eq(CBotTypPointer)      &&
@@ -123,8 +111,7 @@ void CBotVarClass::InitCBotVarClass( const CBotToken* name, CBotTypResult& type 
 	else if ( !type.Eq(CBotTypArrayBody) ) m_type.SetType( CBotTypClass );	
 					 							// type officel pour cet object
 
-	m_pClass	= NULL;
-	m_pParent	= NULL;
+	m_papa		= NULL;
 	m_binit		= FALSE;
 	m_bStatic	= FALSE;
 	m_mPrivate	= 0;
@@ -138,15 +125,7 @@ void CBotVarClass::InitCBotVarClass( const CBotToken* name, CBotTypResult& type 
 	m_ExPrev  = NULL;
 	m_ExClass = this;
 
-	CBotClass* pClass = type.GivClass();
-	CBotClass* pClass2 = pClass->GivParent();
-	if ( pClass2 != NULL )
-	{
-		// crée également une instance dans la classe père
-		m_pParent = new CBotVarClass(name, CBotTypResult(type.GivType(),pClass2) ); //, nIdent);
-	}
-
-	SetClass( pClass ); //, nIdent );
+	SetClass( type.GivClass() );
 
 }
 
@@ -154,9 +133,6 @@ CBotVarClass::~CBotVarClass( )
 {
 	if ( m_CptUse != 0 )
 		__asm int 3;
-
-	if ( m_pParent ) delete m_pParent;
-	m_pParent = NULL;
 
 	// libère l'objet indirect s'il y a lieu
 //	if ( m_Indirect != NULL )
@@ -468,7 +444,7 @@ void CBotVar::SetInit(BOOL bInit)
 		if ( instance == NULL )
 		{
 			instance = new CBotVarClass(NULL, m_type);
-//			instance->SetClass(((CBotVarPointer*)this)->m_pClass);
+//			instance->SetClass(((CBotVarPointer*)this)->m_papa);
 			SetPointer(instance);
 		}
 		instance->SetInit(1);
@@ -507,12 +483,6 @@ CBotVar* CBotVar::GivItem(const char* name)
 	return NULL;
 }
 
-CBotVar* CBotVar::GivItemRef(int nIdent)
-{
-	__asm int 3;
-	return NULL;
-}
-
 CBotVar* CBotVar::GivItemList()
 {
 	__asm int 3;
@@ -532,11 +502,11 @@ BOOL CBotVar::IsElemOfClass(const char* name)
 
 	if ( m_type.Eq(CBotTypPointer) )
 	{
-		pc = ((CBotVarPointer*)this)->m_pClass;
+		pc = ((CBotVarPointer*)this)->m_papa;
 	}
 	if ( m_type.Eq(CBotTypClass) )
 	{
-		pc = ((CBotVarClass*)this)->m_pClass;
+		pc = ((CBotVarClass*)this)->m_papa;
 	}
 
 	while ( pc != NULL )
@@ -574,7 +544,7 @@ void CBotVar::AddNext(CBotVar* pVar)
 
 void CBotVar::SetVal(CBotVar* var)
 {
-	switch (/*var->*/GivType())
+	switch (var->GivType())
 	{
 	case CBotTypBoolean:
 		SetValInt(var->GivValInt());
@@ -834,9 +804,6 @@ void CBotVarInt::Copy(CBotVar* pSrc, BOOL bName)
 	m_pMyThis	= NULL;
 	m_pUserPtr	= p->m_pUserPtr;
 
-	// garde le même idendificateur (par défaut)
-	if (m_ident == 0 ) m_ident     = p->m_ident;
-
 	m_defnum	= p->m_defnum;
 }
 
@@ -1046,9 +1013,6 @@ void CBotVarFloat::Copy(CBotVar* pSrc, BOOL bName)
 	m_next		= NULL;
 	m_pMyThis	= NULL;//p->m_pMyThis;
 	m_pUserPtr	= p->m_pUserPtr;
-
-	// garde le même idendificateur (par défaut)
-	if (m_ident == 0 ) m_ident     = p->m_ident;
 }
 
 
@@ -1207,9 +1171,6 @@ void CBotVarBoolean::Copy(CBotVar* pSrc, BOOL bName)
 	m_next		= NULL;
 	m_pMyThis	= NULL;//p->m_pMyThis;
 	m_pUserPtr	= p->m_pUserPtr;
-
-	// garde le même idendificateur (par défaut)
-	if (m_ident == 0 ) m_ident     = p->m_ident;
 }
 
 
@@ -1305,9 +1266,6 @@ void CBotVarString::Copy(CBotVar* pSrc, BOOL bName)
 	m_next		= NULL;
 	m_pMyThis	= NULL;//p->m_pMyThis;
 	m_pUserPtr	= p->m_pUserPtr;
-
-	// garde le même idendificateur (par défaut)
-	if (m_ident == 0 ) m_ident     = p->m_ident;
 }
 
 
@@ -1391,19 +1349,11 @@ void CBotVarClass::Copy(CBotVar* pSrc, BOOL bName)
 	m_type		= p->m_type;
 	m_binit		= p->m_binit;
 //-	m_bStatic	= p->m_bStatic;
-	m_pClass	= p->m_pClass;
-	if ( p->m_pParent )
-	{
-__asm int 3;	"que faire du pParent";
-	}
-
+	m_papa		= p->m_papa;
 //	m_next		= NULL;
 	m_pUserPtr	= p->m_pUserPtr;
 	m_pMyThis	= NULL;//p->m_pMyThis;
 	m_ItemIdent = p->m_ItemIdent;
-
-	// garde le même idendificateur (par défaut)
-	if (m_ident == 0 ) m_ident     = p->m_ident;
 
 	delete		m_pVar;
 	m_pVar		= NULL;
@@ -1431,13 +1381,13 @@ void CBotVarClass::SetIdent(long n)
 	m_ItemIdent = n;
 }
 
-void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
+void CBotVarClass::SetClass(CBotClass* pClass)
 {
 	m_type.m_pClass = pClass;
 
-	if ( m_pClass == pClass ) return;
+	if ( m_papa == pClass ) return;
 
-	m_pClass = pClass;
+	m_papa = pClass;
 
 	// initialise les variables associées à cette classe
 	delete m_pVar;
@@ -1491,7 +1441,6 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
 		}
 
 //		pn->SetUniqNum(CBotVar::NextUniqNum());		// numérote les éléments
-		pn->SetUniqNum(pv->GivUniqNum());	//++nIdent
 		pn->m_pMyThis = this;
 
 		if ( m_pVar == NULL) m_pVar = pn;
@@ -1502,7 +1451,7 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
 
 CBotClass* CBotVarClass::GivClass()
 {
-	return	m_pClass;
+	return	m_papa;
 }
 
 
@@ -1513,7 +1462,7 @@ void CBotVarClass::Maj(void* pUser, BOOL bContinu)
 
 	// une routine de mise à jour existe-elle ?
 
-	if ( m_pClass->m_rMaj == NULL ) return;
+	if ( m_papa->m_rMaj == NULL ) return;
 
 	// récupère le pointeur user selon la classe
 	// ou selon le paramètre passé au CBotProgram::Run()
@@ -1521,7 +1470,7 @@ void CBotVarClass::Maj(void* pUser, BOOL bContinu)
 	if ( m_pUserPtr != NULL) pUser = m_pUserPtr;
 	if ( pUser == OBJECTDELETED ||
 		 pUser == OBJECTCREATED ) return;
-	m_pClass->m_rMaj( this, pUser );
+	m_papa->m_rMaj( this, pUser );
 }
 
 CBotVar* CBotVarClass::GivItem(const char* name)
@@ -1533,22 +1482,6 @@ CBotVar* CBotVarClass::GivItem(const char* name)
 		if ( p->GivName() == name ) return p;
 		p = p->GivNext();
 	}
-
-	if ( m_pParent != NULL ) return m_pParent->GivItem(name);
-	return NULL;
-}
-
-CBotVar* CBotVarClass::GivItemRef(int nIdent)
-{
-	CBotVar*	p = m_pVar;
-
-	while ( p != NULL )
-	{
-		if ( p->GivUniqNum() == nIdent ) return p;
-		p = p->GivNext();
-	}
-
-	if ( m_pParent != NULL ) return m_pParent->GivItemRef(nIdent);
 	return NULL;
 }
 
@@ -1597,37 +1530,26 @@ CBotString CBotVarClass::GivValString()
 
 	CBotString	res;
 
-	if ( m_pClass != NULL )						// pas utilisé pour un array
+	if ( m_papa != NULL )						// pas utilisé pour un array
 	{
-		res = m_pClass->GivName() + "( ";
+		res = m_papa->GivName() + "( ";
 
-		CBotVarClass*	my = this;
-		while ( my != NULL )
+		CBotVar*	pv = m_pVar;
+		while ( pv != NULL )
 		{
-			CBotVar*	pv = my->m_pVar;
-			while ( pv != NULL )
-			{
-				res += pv->GivName() + "=";
+			res += pv->GivName() + "=";
 
-				if ( pv->IsStatic() )
-				{
-					CBotVar* pvv = my->m_pClass->GivItem(pv->GivName());
-					res += pvv->GivValString();
-				}
-				else
-				{
-					res += pv->GivValString();
-				}
-				pv = pv->GivNext();
-				if ( pv != NULL ) res += ", ";
-			}
-			my = my->m_pParent;
-			if ( my != NULL )
+			if ( pv->IsStatic() )
 			{
-				res += ") extends ";
-				res += my->m_pClass->GivName();
-				res += " (";
+				CBotVar* pvv = m_papa->GivItem(pv->GivName());
+				res += pvv->GivValString();
 			}
+			else
+			{
+				res += pv->GivValString();
+			}
+			pv = pv->GivNext();
+			if ( pv != NULL ) res += ", ";
 		}
 	}
 	else
@@ -1677,10 +1599,10 @@ void CBotVarClass::DecrementUse()
 			pThis->SetPointer(this);
 			CBotVar*	pResult = NULL;
 
-			CBotString	nom = "~" + m_pClass->GivName();
+			CBotString	nom = "~" + m_papa->GivName();
 			long		ident = 0;
 
-			while ( pile->IsOk() && !m_pClass->ExecuteMethode(ident, nom, pThis, ppVars, pResult, pile, NULL)) ;	// attend la fin
+			while ( pile->IsOk() && !m_papa->ExecuteMethode(ident, nom, pThis, ppVars, pResult, pile, NULL)) ;	// attend la fin
 
 			pile->ResetError(err, start,end);
 
@@ -1790,9 +1712,6 @@ void CBotVarArray::Copy(CBotVar* pSrc, BOOL bName)
 //-	m_bStatic	= p->m_bStatic;
 	m_pMyThis	= NULL;//p->m_pMyThis;
 	m_pUserPtr	= p->m_pUserPtr;
-
-	// garde le même idendificateur (par défaut)
-	if (m_ident == 0 ) m_ident     = p->m_ident;
 }
 
 void CBotVarArray::SetPointer(CBotVar* pVarClass)
@@ -1876,7 +1795,7 @@ CBotVarPointer::CBotVarPointer(const CBotToken* name, CBotTypResult& type )
 	if ( !type.Eq(CBotTypNullPointer) )
 		m_type.SetType(CBotTypPointer);					// quoi qu'il en soit, c'est un pointeur
 	m_binit		= FALSE;
-	m_pClass	= NULL;
+	m_papa		= NULL;
 	m_pVarClass = NULL;									// sera défini par un SetPointer()
 
 	SetClass(type.GivClass() );
@@ -1899,17 +1818,9 @@ void CBotVarPointer::Maj(void* pUser, BOOL bContinu)
 CBotVar* CBotVarPointer::GivItem(const char* name)
 {
 	if ( m_pVarClass == NULL)				// pas d'instance existant ?
-		return m_pClass->GivItem(name);		// rend le pointeur dans la classe elle-même
+		return m_papa->GivItem(name);		// rend le pointeur dans la classe elle-même
 
 	return m_pVarClass->GivItem(name);
-}
-
-CBotVar* CBotVarPointer::GivItemRef(int nIdent)
-{
-	if ( m_pVarClass == NULL)				// pas d'instance existant ?
-		return m_pClass->GivItemRef(nIdent);// rend le pointeur dans la classe elle-même
-
-	return m_pVarClass->GivItemRef(nIdent);
 }
 
 CBotVar* CBotVarPointer::GivItemList()
@@ -1951,9 +1862,9 @@ void CBotVarPointer::SetPointer(CBotVar* pVarClass)
 			__asm int 3;
 
 		((CBotVarClass*)pVarClass)->IncrementUse();			// une référence en plus
-		m_pClass = ((CBotVarClass*)pVarClass)->m_pClass;
+		m_papa = ((CBotVarClass*)pVarClass)->m_papa;
 		m_pUserPtr = pVarClass->m_pUserPtr;					// pas vraiment indispensable
-		m_type = CBotTypResult(CBotTypPointer, m_pClass);	// un pointeur de quel genre
+		m_type = CBotTypResult(CBotTypPointer, m_papa);		// un pointeur de quel genre
 	}
 
 	if ( m_pVarClass != NULL ) m_pVarClass->DecrementUse();
@@ -1982,24 +1893,23 @@ long CBotVarPointer::GivIdent()
 
 void CBotVarPointer::SetClass(CBotClass* pClass)
 {
-//	int		nIdent = 0;
-	m_type.m_pClass = m_pClass = pClass;
-	if ( m_pVarClass != NULL ) m_pVarClass->SetClass(pClass); //, nIdent);
+	m_type.m_pClass = m_papa = pClass;
+	if ( m_pVarClass != NULL ) m_pVarClass->SetClass(pClass);
 }
 
 CBotClass* CBotVarPointer::GivClass()
 {
 	if ( m_pVarClass != NULL ) return m_pVarClass->GivClass();
 
-	return	m_pClass;
+	return	m_papa;
 }
 
 
 BOOL CBotVarPointer::Save1State(FILE* pf)
 {
-	if ( m_pClass )
+	if ( m_papa )
 	{
-		if (!WriteString(pf, m_pClass->GivName())) return FALSE;	// nom de la classe
+		if (!WriteString(pf, m_papa->GivName())) return FALSE;	// nom de la classe
 	}
 	else
 	{
@@ -2029,15 +1939,12 @@ void CBotVarPointer::Copy(CBotVar* pSrc, BOOL bName)
 	if ( m_pVarClass != NULL )
 		 m_pVarClass->IncrementUse();			// une référence en plus
 
-	m_pClass	= p->m_pClass;
+	m_papa		= p->m_papa;
 	m_binit		= p->m_binit;
 //-	m_bStatic	= p->m_bStatic;
 	m_next		= NULL;
 	m_pMyThis	= NULL;//p->m_pMyThis;
 	m_pUserPtr	= p->m_pUserPtr;
-
-	// garde le même idendificateur (par défaut)
-	if (m_ident == 0 ) m_ident     = p->m_ident;
 }
 
 BOOL CBotVarPointer::Eq(CBotVar* left, CBotVar* right)

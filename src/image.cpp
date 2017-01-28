@@ -108,12 +108,12 @@ void CImage::Draw()
 
 	if ( m_icon == 0 )  // cadre en creux ?
 	{
-		m_engine->SetTexture("button2.tga");
+		m_engine->SetTexture("button1.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x = 160.0f/256.0f;
-		uv1.y = 192.0f/256.0f;  // u-v texture
-		uv2.x = 192.0f/256.0f;
-		uv2.y = 224.0f/256.0f;
+		uv1.x =  64.0f/256.0f;
+		uv1.y =   0.0f/256.0f;  // u-v texture
+		uv2.x =  96.0f/256.0f;
+		uv2.y =  32.0f/256.0f;
 		uv1.x += dp;
 		uv1.y += dp;
 		uv2.x -= dp;
@@ -130,10 +130,10 @@ void CImage::Draw()
 		m_engine->SetState(D3DSTATENORMAL);
 		pos = m_pos;
 		dim = m_dim;
-		pos.x +=  5.0f/640.0f;
-		pos.y +=  5.0f/480.0f;
-		dim.x -= 10.0f/640.0f;
-		dim.y -= 10.0f/480.0f;
+		pos.x += 4.0f/640.0f;
+		pos.y += 4.0f/480.0f;
+		dim.x -= 8.0f/640.0f;
+		dim.y -= 8.0f/480.0f;
 		uv1.x = 0.0f;
 		uv1.y = 0.0f;
 		uv2.x = 1.0f;

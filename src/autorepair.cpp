@@ -15,19 +15,19 @@
 #include "iman.h"
 #include "math3d.h"
 #include "particule.h"
-#include "light.h"
-#include "terrain.h"
 #include "camera.h"
 #include "object.h"
-#include "physics.h"
-#include "sound.h"
+#include "brain.h"
+#include "motion.h"
+#include "motionbot.h"
 #include "interface.h"
 #include "button.h"
 #include "window.h"
 #include "robotmain.h"
-#include "cmdtoken.h"
+#include "sound.h"
 #include "auto.h"
 #include "autorepair.h"
+
 
 
 
@@ -40,7 +40,6 @@ CAutoRepair::CAutoRepair(CInstanceManager* iMan, CObject* object)
 	CAuto::CAuto(iMan, object);
 
 	Init();
-	m_phase = ARP_WAIT;  // en pause jusqu'au premier Init()
 }
 
 // Destructeur de l'objet.
@@ -63,15 +62,20 @@ void CAutoRepair::DeleteObject(BOOL bAll)
 
 void CAutoRepair::Init()
 {
-	m_phase    = ARP_WAIT;
+	m_phase = AREP_WAIT;
+	m_pos = m_object->RetPosition(0);
+	m_time = 0.0f;
 	m_progress = 0.0f;
 	m_speed    = 1.0f/1.0f;
-
-	m_time     = 0.0f;
-	m_timeVirus = 0.0f;
 	m_lastParticule = 0.0f;
+	m_bot = 0;
+}
 
-	CAuto::Init();
+
+// Démarre l'objet.
+
+void CAutoRepair::Start(int param)
+{
 }
 
 
@@ -79,121 +83,149 @@ void CAutoRepair::Init()
 
 BOOL CAutoRepair::EventProcess(const Event &event)
 {
-	CObject*	vehicule;
-	D3DVECTOR	pos, speed;
-	FPOINT		dim;
-	float		angle, shield;
+	D3DMATRIX*	mat;
+	D3DVECTOR	pos, src, speed;
+	FPOINT		dim, p, c;
+	float		progress, angle;
 
 	CAuto::EventProcess(event);
 
 	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
 
 	m_progress += event.rTime*m_speed;
-	m_timeVirus -= event.rTime;
+	progress = Norm(m_progress);
 
-	if ( m_object->RetVirusMode() )  // contaminé par un virus ?
+	if ( m_phase == AREP_WAIT )
 	{
-		if ( m_timeVirus <= 0.0f )
+		if ( progress >= 1.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
-		}
-		return TRUE;
-	}
-
-	if ( m_phase == ARP_WAIT )
-	{
-		if ( m_progress >= 1.0f )
-		{
-			if ( SearchVehicle() == 0 )
+			m_bot = SearchObject(OBJECT_BOT1, m_pos, 0.0f, 4.0f);
+			if ( m_bot == 0 )
 			{
-				m_phase    = ARP_WAIT;  // attend encore ...
-				m_progress = 0.0f;
+				m_phase    = AREP_WAIT;
 				m_speed    = 1.0f/1.0f;
+				m_progress = 0.0f;
+				progress = 0.0f;
 			}
 			else
 			{
-				m_sound->Play(SOUND_OPEN, m_object->RetPosition(0), 1.0f, 0.8f);
-
-				m_phase    = ARP_DOWN;
+				m_phase    = AREP_DOWN;
+				m_speed    = 1.0f/1.5f;
 				m_progress = 0.0f;
-				m_speed    = 1.0f/3.0f;
+				progress = 0.0f;
 			}
 		}
 	}
 
-	if ( m_phase == ARP_DOWN )
+	if ( m_phase == AREP_DOWN )
 	{
-		if ( m_progress < 1.0f )
+		angle = PI*0.5f*(1.0f-progress);
+		m_object->SetAngleZ(1, angle);  // descend le capteur
+
+		if ( progress >= 1.0f )
 		{
-			angle = -m_progress*(PI/2.0f)+PI/2.0f;
-			m_object->SetAngleZ(1, angle);
-		}
-		else
-		{
-			m_object->SetAngleZ(1, 0.0f);
-			m_sound->Play(SOUND_REPAIR, m_object->RetPosition(0));
-
-			m_phase    = ARP_REPAIR;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/1.0f;
-		}
-	}
-
-	if ( m_phase == ARP_REPAIR )
-	{
-		vehicule = SearchVehicle();
-		if ( m_progress < 1.0f ||
-			 (vehicule != 0 && vehicule->RetShield() < 1.0f) )
-		{
-			if ( vehicule != 0 )
-			{
-				shield = vehicule->RetShield();
-				shield += event.rTime*0.2f;
-				if ( shield > 1.0f )  shield = 1.0f;
-				vehicule->SetShield(shield);
-			}
-
-			if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
-			{
-				m_lastParticule = m_time;
-
-				pos = m_object->RetPosition(0);
-				pos.x += (Rand()-0.5f)*5.0f;
-				pos.z += (Rand()-0.5f)*5.0f;
-				pos.y += 1.0f;
-				speed.x = (Rand()-0.5f)*12.0f;
-				speed.z = (Rand()-0.5f)*12.0f;
-				speed.y = Rand()*15.0f;
-				dim.x = Rand()*6.0f+4.0f;
-				dim.y = dim.x;
-				m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
-			}
-		}
-		else
-		{
-			m_sound->Play(SOUND_OPEN, m_object->RetPosition(0), 1.0f, 0.8f);
-
-			m_phase    = ARP_UP;
-			m_progress = 0.0f;
+			m_phase    = AREP_REPAIR1;
 			m_speed    = 1.0f/3.0f;
-		}
-	}
-
-	if ( m_phase == ARP_UP )
-	{
-		if ( m_progress < 1.0f )
-		{
-			angle = -(1.0f-m_progress)*(PI/2.0f)+PI/2.0f;
-			m_object->SetAngleZ(1, angle);
-		}
-		else
-		{
-			m_object->SetAngleZ(1, PI/2.0f);
-
-			m_phase    = ARP_WAIT;
 			m_progress = 0.0f;
-			m_speed    = 1.0f/1.0f;
+			progress = 0.0f;
+		}
+	}
+
+	if ( m_phase == AREP_REPAIR1 )
+	{
+		if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+		{
+			m_lastParticule = m_time;
+
+			mat = m_object->RetWorldMatrix(0);
+			src = Transform(*mat, D3DVECTOR(0.0f, 1.0f, 0.0f));
+
+			pos = src;
+			pos.y += 11.0f;
+			speed.x = (Rand()-0.5f)*2.0f;
+			speed.z = (Rand()-0.5f)*2.0f;
+			speed.y = -12.0f;
+			dim.x = Rand()*2.0f+2.0f;
+			dim.y = dim.x;
+			m_particule->CreateParticule(pos, speed, dim, PARTIFIREZ, 1.0f, 0.0f);
+		}
+
+		if ( progress >= 1.0f )
+		{
+			m_phase    = AREP_REPAIR2;
+			m_speed    = 1.0f/4.0f;
+			m_progress = 0.0f;
+			progress = 0.0f;
+		}
+	}
+
+	if ( m_phase == AREP_REPAIR2 )
+	{
+		if ( m_lastParticule+m_engine->ParticuleAdapt(0.10f) <= m_time )
+		{
+			m_lastParticule = m_time;
+
+			mat = m_object->RetWorldMatrix(0);
+			src = Transform(*mat, D3DVECTOR(0.0f, 1.0f, 0.0f));
+
+			pos = src;
+			c.x = pos.x;
+			c.y = pos.z;
+			p.x = c.x;
+			p.y = c.y;
+			p = RotatePoint(c, Rand()*PI*2.0f, p);
+			pos.x = p.x+(Rand()-0.5f)*6.0f;
+			pos.z = p.y+(Rand()-0.5f)*6.0f;
+			pos.y += 2.0f+Rand()*3.0f;
+			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			dim.x = Rand()*6.0f+3.0f;
+			dim.y = dim.x;
+			m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f);
+
+			pos = src;
+			speed.x = (Rand()-0.5f)*50.0f;
+			speed.z = (Rand()-0.5f)*50.0f;
+			speed.y = Rand()*30.0f+15.0f;
+			dim.x = Rand()*0.6f+0.6f;
+			dim.y = dim.x;
+			m_particule->CreateTrack(pos, speed, dim, PARTITRACK2, 2.0f, 50.0f, 1.2f, 1.8f);
+
+			pos = src;
+			pos.y += 11.0f;
+			speed.x = (Rand()-0.5f)*2.0f;
+			speed.z = (Rand()-0.5f)*2.0f;
+			speed.y = -12.0f;
+			dim.x = Rand()*2.0f+2.0f;
+			dim.y = dim.x;
+			m_particule->CreateParticule(pos, speed, dim, PARTIFIREZ, 1.0f, 0.0f);
+
+			m_sound->Play(SOUND_ENERGY, m_object->RetPosition(0),
+						  1.0f, 1.0f+Rand()*1.5f);
+		}
+
+		if ( progress >= 1.0f )
+		{
+			m_bot->SetAngleY(0, m_object->RetAngleY(0));
+			StartAction(MB_REPAIR, 1.0f);  // debout
+			StartAction(MB_WAIT, 1.0f);  // normal
+			m_object->SetLock(TRUE);  // bâtiment plus compté par CheckEndMission
+//?			m_main->IncProgress();
+
+			m_phase    = AREP_TERM;
+			m_speed    = 1.0f/10.0f;
+			m_progress = 0.0f;
+			progress = 0.0f;
+		}
+	}
+
+	if ( m_phase == AREP_TERM )
+	{
+		if ( progress >= 1.0f )
+		{
+			m_phase    = AREP_TERM;
+			m_speed    = 1.0f/10.0f;
+			m_progress = 0.0f;
+			progress = 0.0f;
 		}
 	}
 
@@ -201,92 +233,68 @@ BOOL CAutoRepair::EventProcess(const Event &event)
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Cherche un objet proche.
 
-BOOL CAutoRepair::CreateInterface(BOOL bSelect)
+CObject* CAutoRepair::SearchObject(ObjectType type, D3DVECTOR center,
+								 float minRadius, float maxRadius)
 {
-	CWindow*	pw;
-	FPOINT		pos, ddim;
-	float		ox, oy, sx, sy;
-
-	CAuto::CreateInterface(bSelect);
-
-	if ( !bSelect )  return TRUE;
-
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
-
-	ox = 3.0f/640.0f;
-	oy = 3.0f/480.0f;
-	sx = 33.0f/640.0f;
-	sy = 33.0f/480.0f;
-
-	pos.x = ox+sx*0.0f;
-	pos.y = oy+sy*0;
-	ddim.x = 66.0f/640.0f;
-	ddim.y = 66.0f/480.0f;
-	pw->CreateGroup(pos, ddim, 106, EVENT_OBJECT_TYPE);
-
-	return TRUE;
-}
-
-
-// Cherche le véhicule placé sur la station.
-
-CObject* CAutoRepair::SearchVehicle()
-{
-	CObject*	pObj;
-	CPhysics*	physics;
-	D3DVECTOR	sPos, oPos;
-	ObjectType	type;
-	float		dist;
+	CObject		*pObj, *pBest;
+	CMotion*	motion;
+	D3DVECTOR	pos;
+	float		min, dist;
 	int			i;
 
-	sPos = m_object->RetPosition(0);
-
+	pBest = 0;
+	min = 100000.0f;
 	for ( i=0 ; i<1000000 ; i++ )
 	{
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		type = pObj->RetType();
-		if ( type != OBJECT_MOBILEfa &&
-			 type != OBJECT_MOBILEta &&
-			 type != OBJECT_MOBILEwa &&
-			 type != OBJECT_MOBILEia &&
-			 type != OBJECT_MOBILEfc &&
-			 type != OBJECT_MOBILEtc &&
-			 type != OBJECT_MOBILEwc &&
-			 type != OBJECT_MOBILEic &&
-			 type != OBJECT_MOBILEfi &&
-			 type != OBJECT_MOBILEti &&
-			 type != OBJECT_MOBILEwi &&
-			 type != OBJECT_MOBILEii &&
-			 type != OBJECT_MOBILEfs &&
-			 type != OBJECT_MOBILEts &&
-			 type != OBJECT_MOBILEws &&
-			 type != OBJECT_MOBILEis &&
-			 type != OBJECT_MOBILErt &&
-			 type != OBJECT_MOBILErc &&
-			 type != OBJECT_MOBILErr &&
-			 type != OBJECT_MOBILErs &&
-			 type != OBJECT_MOBILEsa &&
-			 type != OBJECT_MOBILEtg &&
-			 type != OBJECT_MOBILEft &&
-			 type != OBJECT_MOBILEtt &&
-			 type != OBJECT_MOBILEwt &&
-			 type != OBJECT_MOBILEit &&
-			 type != OBJECT_MOBILEdr )  continue;
+		if ( pObj->RetExplo() )  continue;
+		if ( !pObj->RetLock() )  continue;  // libre ?
 
-		physics = pObj->RetPhysics();
-		if ( physics != 0 && !physics->RetLand() )  continue;  // en vol ?
+		if ( type != pObj->RetType() )  continue;
 
-		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, sPos);
-		if ( dist <= 5.0f )  return pObj;
+		if ( type == OBJECT_BOT1 )
+		{
+			motion = pObj->RetMotion();
+			if ( motion == 0 )  continue;
+			if ( motion->RetAction() != MB_WALK1 )  continue;
+		}
+
+		pos = pObj->RetPosition(0);
+		dist = Length2d(pos, center);
+
+		if ( dist >= minRadius && dist <= maxRadius && dist < min )
+		{
+			min = dist;
+			pBest = pObj;
+		}
 	}
+	return pBest;
+}
 
-	return 0;
+// Démarre une action pour le robot.
+
+void CAutoRepair::StartAction(int action, float delay)
+{
+	CMotion*	motion;
+
+	if ( m_bot == 0 )  return;
+
+	motion = m_bot->RetMotion();
+	if ( motion == 0 )  return;
+
+	motion->SetAction(action, delay);
+}
+
+
+// Stoppe l'automate.
+
+BOOL CAutoRepair::Abort()
+{
+	return TRUE;
 }
 
 
@@ -294,55 +302,6 @@ CObject* CAutoRepair::SearchVehicle()
 
 Error CAutoRepair::RetError()
 {
-	if ( m_object->RetVirusMode() )
-	{
-		return ERR_BAT_VIRUS;
-	}
-
 	return ERR_OK;
 }
-
-
-// Sauve tous les paramètres de l'automate.
-
-BOOL CAutoRepair::Write(char *line)
-{
-	char	name[100];
-
-	if ( m_phase == ARP_WAIT )  return FALSE;
-
-	sprintf(name, " aExist=%d", 1);
-	strcat(line, name);
-
-	CAuto::Write(line);
-
-	sprintf(name, " aPhase=%d", m_phase);
-	strcat(line, name);
-
-	sprintf(name, " aProgress=%.2f", m_progress);
-	strcat(line, name);
-
-	sprintf(name, " aSpeed=%.2f", m_speed);
-	strcat(line, name);
-
-	return TRUE;
-}
-
-// Restitue tous les paramètres de l'automate.
-
-BOOL CAutoRepair::Read(char *line)
-{
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
-
-	CAuto::Read(line);
-
-	m_phase = (AutoRepairPhase)OpInt(line, "aPhase", ARP_WAIT);
-	m_progress = OpFloat(line, "aProgress", 0.0f);
-	m_speed = OpFloat(line, "aSpeed", 1.0f);
-
-	m_lastParticule = 0.0f;
-
-	return TRUE;
-}
-
 

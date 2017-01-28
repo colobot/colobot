@@ -33,7 +33,6 @@ enum D3DTypeObj
 	TYPEVEHICULE	= 3,		// objet mobile
 	TYPEDESCENDANT	= 4,		// partie d'un objet mobile
 	TYPEQUARTZ		= 5,		// objet fixe de type quartz
-	TYPEMETAL		= 6,		// objet fixe de type métalique
 };
 
 enum D3DTypeTri
@@ -50,6 +49,9 @@ enum D3DMaping
 	D3DMAPPING1X	= 4,
 	D3DMAPPING1Y	= 5,
 	D3DMAPPING1Z	= 6,
+	D3DMAPPINGMX	= 7,
+	D3DMAPPINGMY	= 8,
+	D3DMAPPINGMZ	= 9,
 };
 
 enum D3DMouse
@@ -59,25 +61,22 @@ enum D3DMouse
 	D3DMOUSEWAIT	= 2,
 	D3DMOUSEEDIT	= 3,
 	D3DMOUSEHAND	= 4,
-	D3DMOUSECROSS	= 5,
-	D3DMOUSESHOW	= 6,
-	D3DMOUSENO		= 7,
-	D3DMOUSEMOVE	= 8,		// +
-	D3DMOUSEMOVEH	= 9,		// -
-	D3DMOUSEMOVEV	= 10,		// |
-	D3DMOUSEMOVED	= 11,		// /
-	D3DMOUSEMOVEI	= 12,		// \ 
-	D3DMOUSESCROLLL	= 13,		// <<
-	D3DMOUSESCROLLR	= 14,		// >>
-	D3DMOUSESCROLLU	= 15,		// ^
-	D3DMOUSESCROLLD	= 16,		// v
-	D3DMOUSETARGET	= 17,
 };
 
 enum D3DShadowType
 {
-	D3DSHADOWNORM	= 0,
-	D3DSHADOWWORM	= 1,
+	D3DSHADOWNORM		= 0,
+	D3DSHADOWWORM		= 1,
+	D3DSHADOWBARRIER1	= 2,
+	D3DSHADOWBARRIER2	= 3,
+	D3DSHADOWCAR01		= 11,
+	D3DSHADOWCAR02		= 12,
+	D3DSHADOWCAR03		= 13,
+	D3DSHADOWCAR04		= 14,
+	D3DSHADOWCAR05		= 15,
+	D3DSHADOWCAR06		= 16,
+	D3DSHADOWCAR07		= 17,
+	D3DSHADOWCAR08		= 18,
 };
 
 
@@ -159,13 +158,22 @@ typedef struct
 	char			texName2[20];
 	D3DObjLevel3*	table[1];
 }
-D3DObjLevel2;
+D3DObjLevel2b;
 
 typedef struct
 {
 	int				totalPossible;
 	int				totalUsed;
-	D3DObjLevel2*	table[1];
+	short			type;
+	D3DObjLevel2b*	table[1];
+}
+D3DObjLevel2a;
+
+typedef struct
+{
+	int				totalPossible;
+	int				totalUsed;
+	D3DObjLevel2a*	table[1];
 }
 D3DObjLevel1;
 
@@ -233,6 +241,16 @@ typedef struct
 	char*		table;			// pointeur à la table
 }
 D3DGroundMark;
+
+
+#define REPLACETEXMAX	10
+
+typedef struct
+{
+	char		actual[20];		// nom actuel de la texture
+	char		future[20];		// nouveau nom souhaité
+}
+ReplaceTex;
 
 
 
@@ -311,11 +329,16 @@ public:
 	BOOL		GetBBox(int objRank, D3DVECTOR &min, D3DVECTOR &max);
 	BOOL		ChangeTextureMapping(int objRank, const D3DMATERIAL7 &mat, int state, char* texName1, char* texName2, float min, float max, D3DMaping mode, float au, float bu, float av, float bv);
 	BOOL		TrackTextureMapping(int objRank, const D3DMATERIAL7 &mat, int state, char* texName1, char* texName2, float min, float max, D3DMaping mode, float pos, float factor, float tl, float ts, float tt);
+	void		TransformObject(int objRank, D3DVECTOR move1, D3DVECTOR angle, D3DVECTOR move2);
 	BOOL		SetObjectTransform(int objRank, const D3DMATRIX &transform);
 	BOOL		GetObjectTransform(int objRank, D3DMATRIX &transform);
 	BOOL		SetObjectType(int objRank, D3DTypeObj type);
 	D3DTypeObj	RetObjectType(int objRank);
 	BOOL		SetObjectTransparency(int objRank, float value);
+
+	void		FlushReplaceTex();
+	BOOL		SetReplaceTex(char *actual, char *future);
+	void		ReplaceTexDo(char *texName);
 
 	BOOL		ShadowCreate(int objRank);
 	void		ShadowDelete(int objRank);
@@ -388,7 +411,7 @@ public:
 	void		SetFogStart(float start, int rank=0);
 	float		RetFogStart(int rank=0);
 
-	void		SetBackground(char *name, D3DCOLOR up=0, D3DCOLOR down=0, D3DCOLOR cloudUp=0, D3DCOLOR cloudDown=0, BOOL bFull=FALSE, BOOL bQuarter=FALSE);
+	void		SetBackground(char *name, D3DCOLOR up=0, D3DCOLOR down=0, D3DCOLOR cloudUp=0, D3DCOLOR cloudDown=0, BOOL bFull=FALSE, BOOL bQuarter=FALSE, BOOL bPanel=FALSE);
 	void		RetBackground(char *name, D3DCOLOR &up, D3DCOLOR &down, D3DCOLOR &cloudUp, D3DCOLOR &cloudDown, BOOL &bFull, BOOL &bQuarter);
 	void		SetFrontsizeName(char *name);
 	void		SetOverFront(BOOL bFront);
@@ -398,11 +421,17 @@ public:
 	float		RetParticuleDensity();
 	float		ParticuleAdapt(float factor);
 
+	void		SetWheelTraceQuantity(float value);
+	float		RetWheelTraceQuantity();
+
 	void		SetClippingDistance(float value);
 	float		RetClippingDistance();
 
 	void		SetObjectDetail(float value);
 	float		RetObjectDetail();
+
+	void		SetSuperDetail(BOOL bSuper);
+	BOOL		RetSuperDetail();
 
 	void		SetGadgetQuantity(float value);
 	float		RetGadgetQuantity();
@@ -443,9 +472,6 @@ public:
 	void		SetSpeed(float speed);
 	float		RetSpeed();
 
-	void		SetTracePrecision(float factor);
-	float		RetTracePrecision();
-
 	void		SetFocus(float focus);
 	float		RetFocus();
 	D3DVECTOR	RetEyePt();
@@ -462,12 +488,16 @@ public:
 	void		SetKey(int keyRank, int option, int key);
 	int			RetKey(int keyRank, int option);
 
-	void		SetJoystick(BOOL bEnable);
-	BOOL		RetJoystick();
+	void		SetForce(float force);
+	float		RetForce();
+	void		SetFFB(BOOL bMode);
+	BOOL		RetFFB();
+	void		SetJoystick(int mode);
+	int			RetJoystick();
+	BOOL		SetJoyForces(float forceX, float forceY);
 
 	void		SetDebugMode(BOOL bMode);
 	BOOL		RetDebugMode();
-	BOOL		RetSetupMode();
 
 	BOOL		IsVisiblePoint(const D3DVECTOR &pos);
 
@@ -497,25 +527,24 @@ public:
 	BOOL		SetDot(int x, int y, D3DCOLORVALUE color);
 	BOOL		CloseImage();
 	BOOL		WriteScreenShot(char *filename, int width, int height);
-	BOOL		GetRenderDC(HDC &hDC);
-	BOOL		ReleaseRenderDC(HDC &hDC);
-	PBITMAPINFO	CreateBitmapInfoStruct(HBITMAP hBmp);
-	BOOL		CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
 
 protected:
-	void		MemSpace1(D3DObjLevel1 *&p, int nb);
-	void		MemSpace2(D3DObjLevel2 *&p, int nb);
-	void		MemSpace3(D3DObjLevel3 *&p, int nb);
-	void		MemSpace4(D3DObjLevel4 *&p, int nb);
-	void		MemSpace5(D3DObjLevel5 *&p, int nb);
-	void		MemSpace6(D3DObjLevel6 *&p, int nb);
+	void		MemSpace1 (D3DObjLevel1  *&p, int nb);
+	void		MemSpace2a(D3DObjLevel2a *&p, int nb);
+	void		MemSpace2b(D3DObjLevel2b *&p, int nb);
+	void		MemSpace3 (D3DObjLevel3  *&p, int nb);
+	void		MemSpace4 (D3DObjLevel4  *&p, int nb);
+	void		MemSpace5 (D3DObjLevel5  *&p, int nb);
+	void		MemSpace6 (D3DObjLevel6  *&p, int nb);
 
-	D3DObjLevel2* AddLevel1(D3DObjLevel1 *&p1, char* texName1, char* texName2);
-	D3DObjLevel3* AddLevel2(D3DObjLevel2 *&p2, int objRank);
-	D3DObjLevel4* AddLevel3(D3DObjLevel3 *&p3, float min, float max);
-	D3DObjLevel5* AddLevel4(D3DObjLevel4 *&p4, int reserve);
-	D3DObjLevel6* AddLevel5(D3DObjLevel5 *&p5, D3DTypeTri type, const D3DMATERIAL7 &mat, int state, int nb);
+	D3DObjLevel2a* AddLevel1 (D3DObjLevel1  *&p1, short type);
+	D3DObjLevel2b* AddLevel2a(D3DObjLevel2a *&p2, char* texName1, char* texName2);
+	D3DObjLevel3*  AddLevel2b(D3DObjLevel2b *&p2, int objRank);
+	D3DObjLevel4*  AddLevel3 (D3DObjLevel3  *&p3, float min, float max);
+	D3DObjLevel5*  AddLevel4 (D3DObjLevel4  *&p4, int reserve);
+	D3DObjLevel6*  AddLevel5 (D3DObjLevel5  *&p5, D3DTypeTri type, const D3DMATERIAL7 &mat, int state, int nb);
 
+	void		TransformVertex(D3DVERTEX2* pv, int nb, const D3DVECTOR &move1, const D3DVECTOR &angle, const D3DVECTOR &move2);
 	BOOL		IsVisible(int objRank);
 	BOOL		DetectBBox(int objRank, FPOINT mouse);
 	BOOL		DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle, int objRank, float &dist);
@@ -525,7 +554,7 @@ protected:
 	void		RenderGroundSpot();
 	void		DrawShadow();
 	void		DrawBackground();
-	void		DrawBackgroundGradient(D3DCOLOR up, D3DCOLOR down);
+	void		DrawBackgroundGradient(FPOINT p1, FPOINT p2, D3DCOLOR up, D3DCOLOR down);
 	void		DrawBackgroundImageQuarter(FPOINT p1, FPOINT p2, char *name);
 	void		DrawBackgroundImage();
 	void		DrawPlanet();
@@ -617,6 +646,7 @@ protected:
 	D3DCOLOR		m_backgroundCloudDown;
 	BOOL			m_bBackgroundFull;
 	BOOL			m_bBackgroundQuarter;
+	BOOL			m_bBackgroundPanel;
 	BOOL			m_bOverFront;
 	D3DCOLOR		m_overColor;
 	int				m_overMode;
@@ -625,10 +655,12 @@ protected:
 	BOOL			m_bDrawFront;
 	float			m_limitLOD[2];
 	float			m_particuleDensity;
+	float			m_wheelTraceQuantity;
 	float			m_clippingDistance;
 	float			m_lastClippingDistance;
 	float			m_objectDetail;
 	float			m_lastObjectDetail;
+	BOOL			m_bSuperDetail;
 	float			m_terrainVision;
 	float			m_gadgetQuantity;
 	int				m_textureQuality;
@@ -641,7 +673,6 @@ protected:
 	BOOL			m_bLightMode;
 	BOOL			m_bEditIndentMode;
 	int				m_editIndentValue;
-	float			m_tracePrecision;
 
 	int				m_hiliteRank[100];
 	BOOL			m_bHilite;
@@ -663,6 +694,8 @@ protected:
 	WORD*			m_imageCopy;
 	int				m_imageDX;
 	int				m_imageDY;
+
+	ReplaceTex		m_replaceTex[REPLACETEXMAX];
 };
 
 

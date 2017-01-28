@@ -24,11 +24,6 @@
 
 
 
-#define ENERGY_FIRE		(0.25f/2.5f)	// énergie consommée /s de tir
-#define ENERGY_FIREr	(0.25f/1.5f)	// énergie consommée /s de rayon
-#define ENERGY_FIREi	(0.10f/2.5f)	// énergie consommée /s d'organique
-
-
 // Constructeur de l'objet.
 
 CTaskFire::CTaskFire(CInstanceManager* iMan, CObject* object)
@@ -55,13 +50,11 @@ CTaskFire::~CTaskFire()
 
 BOOL CTaskFire::EventProcess(const Event &event)
 {
-	CObject*	power;
 	CPhysics*	physics;
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, speed, dir, vib;
 	ObjectType	type;
 	FPOINT		dim;
-	float		energy, fire;
 	int			i, channel;
 
 	if ( m_engine->RetPause() )  return TRUE;
@@ -71,17 +64,6 @@ BOOL CTaskFire::EventProcess(const Event &event)
 	m_time += event.rTime;
 	m_lastSound -= event.rTime;
 	m_progress += event.rTime*m_speed;
-
-	power = m_object->RetPower();
-	if ( power != 0 )
-	{
-		energy = power->RetEnergy();
-			 if ( m_bOrganic )  fire = ENERGY_FIREi;
-		else if ( m_bRay     )  fire = ENERGY_FIREr;
-		else                    fire = ENERGY_FIRE;
-		energy -= event.rTime*fire/power->RetCapacity();
-		power->SetEnergy(energy);
-	}
 
 	if ( m_lastParticule+0.05f <= m_time )
 	{
@@ -113,8 +95,8 @@ BOOL CTaskFire::EventProcess(const Event &event)
 				dim.x = Rand()*0.5f+0.5f;
 				dim.y = dim.x;
 
-				channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN4, 0.8f, 0.0f, 0.0f);
-				m_particule->SetObjectFather(channel, m_object);
+//?				channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN4, 0.8f, 0.0f);
+//?				m_particule->SetObjectFather(channel, m_object);
 			}
 		}
 		else if ( m_bRay )
@@ -151,32 +133,17 @@ BOOL CTaskFire::EventProcess(const Event &event)
 
 				dim.x = 2.0f;
 				dim.y = dim.x;
-				m_particule->CreateParticule(pos, speed, dim, PARTISMOKE2, 2.0f, 0.0f, 0.5f);
+				m_particule->CreateParticule(pos, speed, dim, PARTISMOKE2, 2.0f, 0.0f);
 			}
 		}
 		else
 		{
 			type = m_object->RetType();
-
-			if ( type == OBJECT_MOBILErc )
-			{
-				mat = m_object->RetWorldMatrix(2);  // canon
-			}
-			else
-			{
-				mat = m_object->RetWorldMatrix(1);  // canon
-			}
+			mat = m_object->RetWorldMatrix(1);  // canon
 
 			for ( i=0 ; i<3 ; i++ )
 			{
-				if ( type == OBJECT_MOBILErc )
-				{
-					pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
-				}
-				else
-				{
-					pos = D3DVECTOR(3.0f, 1.0f, 0.0f);
-				}
+				pos = D3DVECTOR(3.0f, 1.0f, 0.0f);
 				pos.y += (Rand()-0.5f)*1.0f;
 				pos.z += (Rand()-0.5f)*1.0f;
 				pos = Transform(*mat, pos);
@@ -198,12 +165,11 @@ BOOL CTaskFire::EventProcess(const Event &event)
 				dim.x = Rand()*0.7f+0.7f;
 				dim.y = dim.x;
 
-				channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN1, 0.8f, 0.0f, 0.0f);
-				m_particule->SetObjectFather(channel, m_object);
+//?				channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN1, 0.8f, 0.0f);
+//?				m_particule->SetObjectFather(channel, m_object);
 			}
 
-			if ( type != OBJECT_MOBILErc &&
-				 m_progress > 0.3f )
+			if ( m_progress > 0.3f )
 			{
 				pos = D3DVECTOR(-1.0f, 1.0f, 0.0f);
 				pos.y += (Rand()-0.5f)*0.4f;
@@ -220,8 +186,8 @@ BOOL CTaskFire::EventProcess(const Event &event)
 				dim.x = Rand()*1.2f+1.2f;
 				dim.y = dim.x;
 
-				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 0.0f);
-//?				m_particule->CreateParticule(pos, speed, dim, PARTISMOKE2, 4.0f, 0.0f, 0.0f);
+				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f);
+//?				m_particule->CreateParticule(pos, speed, dim, PARTISMOKE2, 4.0f, 0.0f);
 			}
 		}
 
@@ -265,23 +231,14 @@ BOOL CTaskFire::EventProcess(const Event &event)
 
 Error CTaskFire::Start(float delay)
 {
-	CObject*	power;
 	D3DVECTOR	pos, goal, speed;
-	float		energy, fire;
 	ObjectType	type;
 
 	m_bError = TRUE;  // opération impossible
 
 	type = m_object->RetType();
-	if ( type != OBJECT_MOBILEfc &&
-		 type != OBJECT_MOBILEtc &&
-		 type != OBJECT_MOBILEwc &&
-		 type != OBJECT_MOBILEic &&
-		 type != OBJECT_MOBILEfi &&
-		 type != OBJECT_MOBILEti &&
-		 type != OBJECT_MOBILEwi &&
-		 type != OBJECT_MOBILEii &&
-		 type != OBJECT_MOBILErc )  return ERR_FIRE_VEH;
+	if ( type != OBJECT_MOBILEfb &&
+		 type != OBJECT_MOBILEob )  return ERR_FIRE_VEH;
 
 //?	if ( !m_physics->RetLand() )  return ERR_FIRE_FLY;
 
@@ -289,13 +246,10 @@ Error CTaskFire::Start(float delay)
 //?	if ( speed.x != 0.0f ||
 //?		 speed.z != 0.0f )  return ERR_FIRE_MOTOR;
 
-	m_bRay = (type == OBJECT_MOBILErc);
+	m_bRay = FALSE;
 
 	m_bOrganic = FALSE;
-	if ( type == OBJECT_MOBILEfi ||
-		 type == OBJECT_MOBILEti ||
-		 type == OBJECT_MOBILEwi ||
-		 type == OBJECT_MOBILEii )
+	if ( type == OBJECT_MOBILEob )
 	{
 		m_bOrganic = TRUE;
 	}
@@ -307,14 +261,6 @@ Error CTaskFire::Start(float delay)
 	}
 	m_delay = delay;
 
-	power = m_object->RetPower();
-	if ( power == 0 )  return ERR_FIRE_ENERGY;
-	energy = power->RetEnergy();
-	     if ( m_bOrganic )  fire = m_delay*ENERGY_FIREi;
-	else if ( m_bRay     )  fire = m_delay*ENERGY_FIREr;
-	else                    fire = m_delay*ENERGY_FIRE;
-	if ( energy < fire/power->RetCapacity()+0.05f )  return ERR_FIRE_ENERGY;
-	
 	m_speed = 1.0f/m_delay;
 	m_progress = 0.0f;
 	m_time = 0.0f;
@@ -326,7 +272,7 @@ Error CTaskFire::Start(float delay)
 
 	if ( m_bOrganic )
 	{
-		m_soundChannel = m_sound->Play(SOUND_FIREi, m_object->RetPosition(0), 1.0f, 1.0f, TRUE);
+//?		m_soundChannel = m_sound->Play(SOUND_FIREi, m_object->RetPosition(0), 1.0f, 1.0f, TRUE);
 		if ( m_soundChannel != -1 )
 		{
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, m_delay, SOPER_CONTINUE);
@@ -338,7 +284,7 @@ Error CTaskFire::Start(float delay)
 	}
 	else
 	{
-		m_soundChannel = m_sound->Play(SOUND_FIRE, m_object->RetPosition(0), 1.0f, 1.0f, TRUE);
+//?		m_soundChannel = m_sound->Play(SOUND_FIRE, m_object->RetPosition(0), 1.0f, 1.0f, TRUE);
 		if ( m_soundChannel != -1 )
 		{
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, m_delay, SOPER_CONTINUE);

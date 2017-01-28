@@ -28,103 +28,115 @@ enum ResType
 // Ressources de type RES_TEXT.
 
 #define RT_VERSION_ID		1
-#define RT_DISINFO_TITLE	2
 #define RT_WINDOW_MAXIMIZED	3
 #define RT_WINDOW_MINIMIZED	4
 #define RT_WINDOW_STANDARD	5
 #define RT_WINDOW_CLOSE		6
 
-#define RT_STUDIO_TITLE		10
-#define RT_SCRIPT_NEW		20
 #define RT_NAME_DEFAULT		21
-#define RT_IO_NEW			22
 #define RT_KEY_OR			23
 
 #define RT_TITLE_BASE		40
 #define RT_TITLE_INIT		41
-#define RT_TITLE_TRAINER	42
-#define RT_TITLE_DEFI		43
-#define RT_TITLE_MISSION	44
-#define RT_TITLE_FREE		45
-#define RT_TITLE_PROTO		46
-#define RT_TITLE_SETUP		47
-#define RT_TITLE_NAME		48
-#define RT_TITLE_PERSO		49
-#define RT_TITLE_WRITE		50
-#define RT_TITLE_READ		51
-#define RT_TITLE_USER		52
-#define RT_TITLE_TEEN		53
+#define RT_TITLE_MISSION	42
+#define RT_TITLE_FREE		43
+#define RT_TITLE_PROTO		44
+#define RT_TITLE_SETUP		45
+#define RT_TITLE_NAME		46
+#define RT_TITLE_PERSO		47
+#define RT_TITLE_USER		50
 
-#define RT_PLAY_CHAPt		60
-#define RT_PLAY_CHAPd		61
-#define RT_PLAY_CHAPm		62
-#define RT_PLAY_CHAPf		63
-#define RT_PLAY_CHAPp		64
-#define RT_PLAY_LISTt		65
-#define RT_PLAY_LISTd		66
 #define RT_PLAY_LISTm		67
 #define RT_PLAY_LISTf		68
 #define RT_PLAY_LISTp		69
-#define RT_PLAY_RESUME		70
-#define RT_PLAY_CHAPu		71
-#define RT_PLAY_LISTu		72
-#define RT_PLAY_CHAPte		73
-#define RT_PLAY_LISTk		74
+#define RT_PLAY_LISTu		70
+#define RT_PLAY_PESETAS		71
+#define RT_PLAY_PCREDIT		72
+#define RT_PLAY_PMISSION	73
+#define RT_PLAY_PNEXT		74
 
 #define RT_SETUP_DEVICE		80
 #define RT_SETUP_MODE		81
 #define RT_SETUP_KEY1		82
 #define RT_SETUP_KEY2		83
 
-#define RT_PERSO_FACE		90
-#define RT_PERSO_GLASSES	91
-#define RT_PERSO_HAIR		92
-#define RT_PERSO_COMBI		93
-#define RT_PERSO_BAND		94
+#define RT_PERSO_LIST		90
+#define RT_PERSO_LEVEL		91
+#define RT_PERSO_BUY		92
 
 #define RT_DIALOG_TITLE		100
 #define RT_DIALOG_ABORT		101
 #define RT_DIALOG_QUIT		102
 #define RT_DIALOG_YES		103
 #define RT_DIALOG_NO		104
-#define RT_DIALOG_DELOBJ	105
 #define RT_DIALOG_DELGAME	106
 #define RT_DIALOG_YESDEL	107
 #define RT_DIALOG_NODEL		108
-#define RT_DIALOG_LOADING	109
-#define RT_DIALOG_YESQUIT	110
-#define RT_DIALOG_NOQUIT	111
-
-#define RT_STUDIO_LISTTT	120
-#define RT_STUDIO_COMPOK	121
-#define RT_STUDIO_PROGSTOP	122
-
-#define RT_SATCOM_LIST		140
-#define RT_SATCOM_BOT		141
-#define RT_SATCOM_BUILDING	142
-#define RT_SATCOM_FRET		143
-#define RT_SATCOM_ALIEN		144
-#define RT_SATCOM_NULL		145
-#define RT_SATCOM_ERROR1	146
-#define RT_SATCOM_ERROR2	147
-
-#define RT_IO_OPEN			150
-#define RT_IO_SAVE			151
-#define RT_IO_LIST			152
-#define RT_IO_NAME			153
-#define RT_IO_DIR			154
-#define RT_IO_PRIVATE		155
-#define RT_IO_PUBLIC		156
+#define RT_DIALOG_NEWGAME	109
+#define RT_DIALOG_YESNEW	110
+#define RT_DIALOG_NONEW		111
+#define RT_DIALOG_YESKID	113
+#define RT_DIALOG_NOKID		114
+#define RT_DIALOG_LOADING	115
+#define RT_DIALOG_YESQUIT	116
+#define RT_DIALOG_NOQUIT	117
+#define RT_DIALOG_DELFILE	118
 
 #define RT_GENERIC_DEV1		170
 #define RT_GENERIC_DEV2		171
 #define RT_GENERIC_EDIT1	172
 #define RT_GENERIC_EDIT2	173
+#define RT_GENERIC_DEMO1	174
+#define RT_GENERIC_DEMO2	175
+#define RT_GENERIC_DEMO3	176
+#define RT_GENERIC_DEMO4	177
+#define RT_GENERIC_DEMO5	178
 
-#define RT_INTERFACE_REC	180
+#define RT_WIN_TIME			180
+#define RT_WIN_SOLID		181
+#define RT_WIN_CONE			182
+#define RT_WIN_POINTS		183
+#define RT_WIN_BONUS		184
+#define RT_WIN_ARRAY		185
+#define RT_WIN_HEADERm		186
+#define RT_WIN_HEADERf		187
+
+#define RT_START_READY		190
+#define RT_START_QUICK		191
+#define RT_START_123		192
+#define RT_START_GO			193
+#define RT_START_REMOTE		194
 
 #define RT_MESSAGE_WIN		200
 #define RT_MESSAGE_LOST		201
+
+#define RT_RECORD_GALL		210
+#define RT_RECORD_GONE		211
+#define RT_RECORD_LONE		212
+#define RT_RECORD_QALL		213
+#define RT_RECORD_QONE		214
+#define RT_RACE_LAP4		215
+#define RT_RACE_LAP3		216
+#define RT_RACE_LAP2		217
+#define RT_RACE_LAP1		218
+#define RT_DUEL_WIN			219
+#define RT_DUEL_LOST		220
+
+#define RT_SPEC_MINSPEED	225
+#define RT_SPEC_MAXSPEED	226
+#define RT_SPEC_DEMO		227
+#define RT_SPEC_DISPO		228
+
+#define RT_MOTOR_REAR		230
+#define RT_MOTOR_NEUTRAL	231
+#define RT_MOTOR_S1			232
+#define RT_MOTOR_S2			233
+#define RT_MOTOR_S3			234
+
+#define RT_IO_LIST			240
+#define RT_IO_NAME			241
+#define RT_IO_HEADER		242
+#define RT_IO_RINFO			243
 
 
 static CD3DEngine*	g_engine = 0;

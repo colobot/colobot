@@ -879,7 +879,7 @@ CBotTypResult CBotCallMethode::CompileCall(const char* name, CBotVar* pThis,
 	{
 		if ( pt->m_name == name )
 		{
-			CBotVar*	pVar = MakeListVars(ppVar, TRUE);
+			CBotVar*	pVar = MakeListVars(ppVar);
 			CBotVar*	pVar2 = pVar;
 			CBotTypResult r = pt->m_rComp(pThis, pVar2);
 			int	ret = r.GivType();

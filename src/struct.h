@@ -6,6 +6,8 @@
 #include <d3d.h>
 
 
+#define UNIT	4.0f
+#undef NAN
 #define NAN		999999
 
 #define D3DFVF_VERTEX2	(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX2)

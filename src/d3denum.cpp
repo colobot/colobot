@@ -161,7 +161,7 @@ static HRESULT WINAPI DeviceEnumCallback( TCHAR* strDesc, TCHAR* strName,
         return D3DENUMRET_OK;
 
     // Find a 640x480x16 mode for the default fullscreen mode
-    for( i=0; i<pDeviceInfo->dwNumModes; i++ )
+    for( DWORD i=0; i<pDeviceInfo->dwNumModes; i++ )
     {
         if( ( pDeviceInfo->pddsdModes[i].dwWidth == 640 ) &&
             ( pDeviceInfo->pddsdModes[i].dwHeight == 480 ) &&

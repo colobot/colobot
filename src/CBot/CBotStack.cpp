@@ -44,15 +44,6 @@ CBotStack* CBotStack::FirstStack()
 		pp->m_bOver = TRUE;
 		pp ++;
 	}
-#ifdef	_DEBUG 
-	int	n = 1;
-	pp = p;
-	for ( i = 0 ; i< MAXSTACK+10 ; i++ )
-	{
-		pp->m_index = n++;
-		pp ++;
-	}
-#endif
 
 	m_error = 0;	// évite des blocages car m_error est static
 	return p;
@@ -90,16 +81,10 @@ void CBotStack::Delete()
 
 	CBotStack*	p = m_prev;
 	BOOL		bOver = m_bOver;
-#ifdef	_DEBUG
-	int			n = m_index;
-#endif
 
 	// efface le bloc libéré
 	memset(this, 0, sizeof(CBotStack));
 	m_bOver	= bOver;
-#ifdef	_DEBUG
-	m_index = n;
-#endif
 
 	if ( p == NULL ) 
 		free( this );
@@ -114,16 +99,10 @@ CBotStack* CBotStack::AddStack(CBotInstr* instr, BOOL bBlock)
 		return m_next;				// reprise dans une pile existante
 	}
 
-#ifdef	_DEBUG
-	int		n = 0;
-#endif
 	CBotStack*	p = this;
 	do
 	{
 		p ++;
-#ifdef	_DEBUG
-		n ++;
-#endif
 	}
 	while ( p->m_prev != NULL );
 

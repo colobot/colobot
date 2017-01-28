@@ -83,8 +83,7 @@ SOURCE=$(InputPath)
 
 ".\TestCBot\CBot.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	copy .\Debug\CBot.dll .\TestCBot\CBot.dll 
-	copy .\Debug\CBot.dll "C:\Program Files\Colobot\CBot.dll" 
-	_Copy.bat 
+	copy .\Debug\CBot.dll C:\Colobot\CBot.dll 
 	
 # End Custom Build
 

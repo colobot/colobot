@@ -1,9 +1,7 @@
 ////////////////////////////////////////////////////////////////////
 // interpréteur pour le language CBot du jeu COLOBOT
 
-// dernière révision : 03/10/2002	DD
-
-#define	EXTENDS	TRUE
+// dernière révision : 25/09/2001	DD
 
 
 #include "resource.h"
@@ -12,7 +10,7 @@
 
 #define	STACKRUN	TRUE			// reprise de l'exécution direct sur une routine suspendue
 #define	STACKMEM	TRUE			// préréserve la mémoire pour la pile d'exécution
-#define	MAXSTACK	990				// taille du stack réservé
+#define	MAXSTACK	100				// taille du stack réservé
 
 #define	EOX			(CBotStack*)-1	// marqueur condition spéciale
 
@@ -34,7 +32,7 @@ class CBotExprVar;	// un nom de variable tel que
 class CBotWhile;	// while (...) {...};
 class CBotIf;		// if (...) {...} else {...}
 class CBotDefParam;	// liste de paramètres d'une fonction
-class CBotRepeat;	// repeat (nb) {...}
+
 
 
 
@@ -53,10 +51,7 @@ private:
 	CBotStack*		m_next2;
 	CBotStack*		m_prev;
 	friend class CBotInstArray;
-
-#ifdef	_DEBUG 
-	int				m_index;
-#endif
+ 
 	int				m_state;
 	int				m_step;
 	static int		m_error;
@@ -286,27 +281,8 @@ protected:
 	CBotInstr*	m_next;					// instructions chaînées
 	CBotInstr*	m_next2b;				// seconde liste pour définition en chaîne
 	CBotInstr*	m_next3;				// troisième liste pour les indices et champs
-	CBotInstr*	m_next3b;				// nécessaire pour la déclaration des tableaux
-/*
-	par exemple, le programme suivant
-	int		x[]; x[1] = 4;
-	int		y[x[1]][10], z;
-    va généré
-	CBotInstrArray
-	m_next3b-> CBotEmpty
-	m_next->
-	CBotExpression ....
-	m_next->
-	CBotInstrArray
-	m_next3b-> CBotExpression ('x') ( m_next3-> CBotIndexExpr ('1') )
-	m_next3b-> CBotExpression ('10')
-	m_next2-> 'z'
-	m_next->...
-
-*/
-
 	static
-	int				m_LoopLvl;
+	int			m_LoopLvl;
 	friend class	CBotClassInst;
 	friend class	CBotInt;
 	friend class	CBotListArray;
@@ -348,8 +324,6 @@ public:
 	CBotInstr*	GivNext();
 	void		AddNext3(CBotInstr* n);
 	CBotInstr*	GivNext3();
-	void		AddNext3b(CBotInstr* n);
-	CBotInstr*	GivNext3b();
 
 	static
 	void		IncLvl(CBotString& label);
@@ -373,22 +347,6 @@ private:
 public:
 				CBotWhile();
 				~CBotWhile();
-	static
-	CBotInstr*	Compile(CBotToken* &p, CBotCStack* pStack);
-	BOOL		Execute(CBotStack* &pj);
-	void		RestoreState(CBotStack* &pj, BOOL bMain);
-};
-
-class CBotRepeat : public CBotInstr
-{
-private:
-	CBotInstr*	m_NbIter;			// le nombre d'itération
-	CBotInstr*	m_Block;			// les instructions
-	CBotString	m_label;			// une étiquette s'il y a
-
-public:
-				CBotRepeat();
-				~CBotRepeat();
 	static
 	CBotInstr*	Compile(CBotToken* &p, CBotCStack* pStack);
 	BOOL		Execute(CBotStack* &pj);
@@ -743,12 +701,10 @@ class CBotFieldExpr : public CBotInstr
 {
 private:
 	friend class CBotExpression;
-	int			m_nIdent;
 
 public:
 				CBotFieldExpr();
 				~CBotFieldExpr();
-	void		SetUniqNum(int num);
 //	static
 //	CBotInstr*	Compile(CBotToken* &p, CBotCStack* pStack);
 	BOOL		ExecuteVar(CBotVar* &pVar, CBotCStack* &pile);
@@ -1286,8 +1242,7 @@ private:
 	CBotVarClass*	m_ExPrev;		// pour cette liste générale
 
 private:
-	CBotClass*		m_pClass;		// la définition de la classe
-	CBotVarClass*	m_pParent;		// l'instance dans la classe parent
+	CBotClass*		m_papa;			// la définition de la classe
 	CBotVar*		m_pVar;			// contenu
 	friend class	CBotVar;		// mon papa est un copain
 	friend class	CBotVarPointer;	// et le pointeur aussi
@@ -1297,16 +1252,12 @@ private:
 
 public:
 				CBotVarClass( const CBotToken* name, CBotTypResult& type );
-//				CBotVarClass( const CBotToken* name, CBotTypResult& type, int &nIdent );
 				~CBotVarClass();
-//	void		InitCBotVarClass( const CBotToken* name, CBotTypResult& type, int &nIdent );
 
 	void		Copy(CBotVar* pSrc, BOOL bName=TRUE);
-	void		SetClass(CBotClass* pClass); //, int &nIdent);
+	void		SetClass(CBotClass* pClass);
 	CBotClass*	GivClass();
 	CBotVar*	GivItem(const char* name);	// rend un élément d'une classe selon son nom (*)
-	CBotVar*	GivItemRef(int nIdent);
-
 	CBotVar*	GivItem(int n, BOOL bExtend);
 	CBotVar*	GivItemList();
 
@@ -1343,8 +1294,8 @@ class CBotVarPointer : public CBotVar
 {
 private:
 	CBotVarClass*
-				m_pVarClass;		// contenu
-	CBotClass*	m_pClass;			// la classe prévue pour ce pointeur
+				m_pVarClass;				// contenu
+	CBotClass*	m_papa;						// la classe prévue pour ce pointeur
 	friend class CBotVar;			// mon papa est un copain
 
 public:
@@ -1355,7 +1306,6 @@ public:
 	void		SetClass(CBotClass* pClass);
 	CBotClass*	GivClass();
 	CBotVar*	GivItem(const char* name);	// rend un élément d'une classe selon son nom (*)
-	CBotVar*	GivItemRef(int nIdent);
 	CBotVar*	GivItemList();
 
 	CBotString	GivValString();

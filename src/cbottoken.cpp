@@ -10,7 +10,6 @@
 #include "struct.h"
 #include "D3DEngine.h"
 #include "D3DMath.h"
-#include "language.h"
 #include "global.h"
 #include "event.h"
 #include "object.h"
@@ -23,34 +22,66 @@
 
 char* RetObjectName(ObjectType type)
 {
-	if ( type == OBJECT_PORTICO     )  return "Portico";
-	if ( type == OBJECT_BASE        )  return "SpaceShip";
-	if ( type == OBJECT_DERRICK     )  return "Derrick";
-	if ( type == OBJECT_FACTORY     )  return "BotFactory";
-	if ( type == OBJECT_STATION     )  return "PowerStation";
-	if ( type == OBJECT_CONVERT     )  return "Converter";
-	if ( type == OBJECT_REPAIR      )  return "RepairCenter";
-	if ( type == OBJECT_DESTROYER   )  return "Destroyer";
+	if ( type == OBJECT_FACTORY1    )  return "Factory1";
+	if ( type == OBJECT_FACTORY2    )  return "Factory2";
+	if ( type == OBJECT_FACTORY3    )  return "Factory3";
+	if ( type == OBJECT_FACTORY4    )  return "Factory4";
+	if ( type == OBJECT_FACTORY5    )  return "Factory5";
+	if ( type == OBJECT_FACTORY6    )  return "Factory6";
+	if ( type == OBJECT_FACTORY7    )  return "Factory7";
+	if ( type == OBJECT_FACTORY8    )  return "Factory8";
+	if ( type == OBJECT_FACTORY9    )  return "Factory9";
+	if ( type == OBJECT_FACTORY10   )  return "Factory10";
 	if ( type == OBJECT_TOWER       )  return "DefenseTower";
-	if ( type == OBJECT_NEST        )  return "AlienNest";
-	if ( type == OBJECT_RESEARCH    )  return "ResearchCenter";
-	if ( type == OBJECT_RADAR       )  return "RadarStation";
-	if ( type == OBJECT_INFO        )  return "ExchangePost";
-	if ( type == OBJECT_ENERGY      )  return "PowerPlant";
-	if ( type == OBJECT_LABO        )  return "AutoLab";
 	if ( type == OBJECT_NUCLEAR     )  return "NuclearPlant";
 	if ( type == OBJECT_PARA        )  return "PowerCaptor";
-	if ( type == OBJECT_SAFE        )  return "Vault";
-	if ( type == OBJECT_HUSTON      )  return "Houston";
-	if ( type == OBJECT_TARGET1     )  return "Target1";
-	if ( type == OBJECT_TARGET2     )  return "Target2";
+	if ( type == OBJECT_DOOR1       )  return "Door1";
+	if ( type == OBJECT_DOOR2       )  return "Door2";
+	if ( type == OBJECT_DOOR3       )  return "Door3";
+	if ( type == OBJECT_DOOR4       )  return "Door4";
+	if ( type == OBJECT_DOOR5       )  return "Door5";
+	if ( type == OBJECT_DOCK        )  return "Dock";
+	if ( type == OBJECT_REMOTE      )  return "Remote";
+	if ( type == OBJECT_STAND       )  return "Stand";
+	if ( type == OBJECT_GENERATOR   )  return "Generator";
 	if ( type == OBJECT_START       )  return "StartArea";
 	if ( type == OBJECT_END         )  return "GoalArea";
-	if ( type == OBJECT_TEEN34      )  return "Stone";
+	if ( type == OBJECT_SUPPORT     )  return "Support";
+	if ( type == OBJECT_ROADSIGN10  )  return "RoadSign10";
+	if ( type == OBJECT_ROADSIGN11  )  return "RoadSign11";
+	if ( type == OBJECT_ROADSIGN12  )  return "RoadSign12";
+	if ( type == OBJECT_ROADSIGN13  )  return "RoadSign13";
+	if ( type == OBJECT_ROADSIGN14  )  return "RoadSign14";
+	if ( type == OBJECT_ROADSIGN15  )  return "RoadSign15";
+	if ( type == OBJECT_ROADSIGN16  )  return "RoadSign16";
+	if ( type == OBJECT_ROADSIGN17  )  return "RoadSign17";
+	if ( type == OBJECT_ROADSIGN18  )  return "RoadSign18";
+	if ( type == OBJECT_ROADSIGN19  )  return "RoadSign19";
+	if ( type == OBJECT_ROADSIGN20  )  return "RoadSign20";
+	if ( type == OBJECT_ROADSIGN21  )  return "RoadSign21";
+	if ( type == OBJECT_ROADSIGN22  )  return "RoadSign22";
+	if ( type == OBJECT_ROADSIGN23  )  return "RoadSign23";
+	if ( type == OBJECT_ROADSIGN24  )  return "RoadSign24";
+	if ( type == OBJECT_ROADSIGN25  )  return "RoadSign25";
+	if ( type == OBJECT_ROADSIGN26  )  return "RoadSign26";
+	if ( type == OBJECT_ROADSIGN27  )  return "RoadSign27";
+	if ( type == OBJECT_ROADSIGN28  )  return "RoadSign28";
+	if ( type == OBJECT_ROADSIGN29  )  return "RoadSign29";
+	if ( type == OBJECT_ROADSIGN30  )  return "RoadSign30";
+	if ( type == OBJECT_ROADSIGN1   )  return "RoadSign1";
+	if ( type == OBJECT_ROADSIGN2   )  return "RoadSign2";
+	if ( type == OBJECT_ROADSIGN3   )  return "RoadSign3";
+	if ( type == OBJECT_ROADSIGN4   )  return "RoadSign4";
+	if ( type == OBJECT_ROADSIGN5   )  return "RoadSign5";
+	if ( type == OBJECT_ROADSIGN6   )  return "RoadSign6";
+	if ( type == OBJECT_ROADSIGN7   )  return "RoadSign7";
+	if ( type == OBJECT_ROADSIGN8   )  return "RoadSign8";
+	if ( type == OBJECT_ROADSIGN9   )  return "RoadSign9";
 	if ( type == OBJECT_STONE       )  return "TitaniumOre";
 	if ( type == OBJECT_URANIUM     )  return "UraniumOre";
 	if ( type == OBJECT_METAL       )  return "Titanium";
-	if ( type == OBJECT_POWER       )  return "PowerCell";
+	if ( type == OBJECT_BARRELa     )  return "BarrelAtomic";
+	if ( type == OBJECT_BARREL      )  return "Barrel";
 	if ( type == OBJECT_ATOMIC      )  return "NuclearCell";
 	if ( type == OBJECT_BULLET      )  return "OrgaMatter";
 	if ( type == OBJECT_BBOX        )  return "BlackBox";
@@ -58,69 +89,39 @@ char* RetObjectName(ObjectType type)
 	if ( type == OBJECT_KEYb        )  return "KeyB";
 	if ( type == OBJECT_KEYc        )  return "KeyC";
 	if ( type == OBJECT_KEYd        )  return "KeyD";
+	if ( type == OBJECT_BOT1        )  return "Bot1";
+	if ( type == OBJECT_BOT2        )  return "Bot2";
+	if ( type == OBJECT_BOT3        )  return "Bot3";
+	if ( type == OBJECT_BOT4        )  return "Bot4";
+	if ( type == OBJECT_BOT5        )  return "Bot5";
 	if ( type == OBJECT_TNT         )  return "TNT";
-	if ( type == OBJECT_SCRAP1      )  return "Scrap";
-	if ( type == OBJECT_BOMB        )  return "Mine";
+	if ( type == OBJECT_MINE        )  return "Mine";
+	if ( type == OBJECT_POLE        )  return "Pole";
+	if ( type == OBJECT_BOMB        )  return "Bomb";
+	if ( type == OBJECT_CONE        )  return "Cone";
 	if ( type == OBJECT_BARRIER1    )  return "Barrier";
 	if ( type == OBJECT_WAYPOINT    )  return "WayPoint";
-	if ( type == OBJECT_FLAGb       )  return "BlueFlag";
-	if ( type == OBJECT_FLAGr       )  return "RedFlag";
-	if ( type == OBJECT_FLAGg       )  return "GreenFlag";
-	if ( type == OBJECT_FLAGy       )  return "YellowFlag";
-	if ( type == OBJECT_FLAGv       )  return "VioletFlag";
-	if ( type == OBJECT_MARKPOWER   )  return "PowerSpot";
-	if ( type == OBJECT_MARKSTONE   )  return "TitaniumSpot";
-	if ( type == OBJECT_MARKURANIUM )  return "UraniumSpot";
-	if ( type == OBJECT_MARKKEYa    )  return "KeyASpot";
-	if ( type == OBJECT_MARKKEYb    )  return "KeyBSpot";
-	if ( type == OBJECT_MARKKEYc    )  return "KeyCSpot";
-	if ( type == OBJECT_MARKKEYd    )  return "KeyDSpot";
-	if ( type == OBJECT_MOBILEwt    )  return "PracticeBot";
-	if ( type == OBJECT_MOBILEwa    )  return "WheeledGrabber";
-	if ( type == OBJECT_MOBILEta    )  return "TrackedGrabber";
-	if ( type == OBJECT_MOBILEfa    )  return "WingedGrabber";
-	if ( type == OBJECT_MOBILEia    )  return "LeggedGrabber";
-	if ( type == OBJECT_MOBILEwc    )  return "WheeledShooter";
-	if ( type == OBJECT_MOBILEtc    )  return "TrackedShooter";
-	if ( type == OBJECT_MOBILEfc    )  return "WingedShooter";
-	if ( type == OBJECT_MOBILEic    )  return "LeggedShooter";
-	if ( type == OBJECT_MOBILEwi    )  return "WheeledOrgaShooter";
-	if ( type == OBJECT_MOBILEti    )  return "TrackedOrgaShooter";
-	if ( type == OBJECT_MOBILEfi    )  return "WingedOrgaShooter";
-	if ( type == OBJECT_MOBILEii    )  return "LeggedOrgaShooter";
-	if ( type == OBJECT_MOBILEws    )  return "WheeledSniffer";
-	if ( type == OBJECT_MOBILEts    )  return "TrackedSniffer";
-	if ( type == OBJECT_MOBILEfs    )  return "WingedSniffer";
-	if ( type == OBJECT_MOBILEis    )  return "LeggedSniffer";
-	if ( type == OBJECT_MOBILErt    )  return "Thumper";
-	if ( type == OBJECT_MOBILErc    )  return "PhazerShooter";
-	if ( type == OBJECT_MOBILErr    )  return "Recycler";
-	if ( type == OBJECT_MOBILErs    )  return "Shielder";
-	if ( type == OBJECT_MOBILEsa    )  return "Subber";
+	if ( type == OBJECT_TRAJECT     )  return "Traject";
+	if ( type == OBJECT_TARGET      )  return "Target";
 	if ( type == OBJECT_MOBILEtg    )  return "TargetBot";
-	if ( type == OBJECT_MOBILEdr    )  return "Scribbler";
+	if ( type == OBJECT_MOBILEfb    )  return "FireballBot";
+	if ( type == OBJECT_MOBILEob    )  return "OrgaballBot";
+	if ( type == OBJECT_TRAX        )  return "Trax";
+	if ( type == OBJECT_UFO         )  return "UFO";
+	if ( type == OBJECT_CARROT      )  return "Carrot";
+	if ( type == OBJECT_STARTER     )  return "Starter";
+	if ( type == OBJECT_WALKER      )  return "Walker";
+	if ( type == OBJECT_GUIDE       )  return "Guide";
+	if ( type == OBJECT_CAR         )  return "Car";
+	if ( type == OBJECT_EVIL1       )  return "Evil1";
+	if ( type == OBJECT_EVIL2       )  return "Evil2";
+	if ( type == OBJECT_EVIL3       )  return "Evil3";
+	if ( type == OBJECT_EVIL4       )  return "Evil4";
+	if ( type == OBJECT_EVIL5       )  return "Evil5";
 	if ( type == OBJECT_HUMAN       )  return "Me";
 	if ( type == OBJECT_TECH        )  return "Tech";
-	if ( type == OBJECT_MOTHER      )  return "AlienQueen";
-	if ( type == OBJECT_EGG         )  return "AlienEgg";
-	if ( type == OBJECT_ANT         )  return "AlienAnt";
-	if ( type == OBJECT_SPIDER      )  return "AlienSpider";
-	if ( type == OBJECT_BEE         )  return "AlienWasp";
-	if ( type == OBJECT_WORM        )  return "AlienWorm";
 	if ( type == OBJECT_RUINmobilew1)  return "Wreck";
-	return "";
-}
-
-// Cherche le nom secondaire d'un objet.
-// (à cause d'Otto qui pense que les allemands n'aiment pas le nucléaire)
-
-char* RetObjectAlias(ObjectType type)
-{
-	if ( type == OBJECT_NUCLEAR     )  return "FuelCellPlant";
-	if ( type == OBJECT_URANIUM     )  return "PlatinumOre";
-	if ( type == OBJECT_ATOMIC      )  return "FuelCell";
-	if ( type == OBJECT_MARKURANIUM )  return "PlatinumSpot";
-	if ( type == OBJECT_ENERGY      )  return "Disintegrator";  // pour CeeBot-K
+	if ( type == OBJECT_PLANT0      )  return "Greenery";
 	return "";
 }
 
@@ -129,30 +130,14 @@ char* RetObjectAlias(ObjectType type)
 
 char* RetHelpFilename(ObjectType type)
 {
-	if ( type == OBJECT_BASE        )  return "help\\object\\base.txt";
-	if ( type == OBJECT_DERRICK     )  return "help\\object\\derrick.txt";
-	if ( type == OBJECT_FACTORY     )  return "help\\object\\factory.txt";
-	if ( type == OBJECT_STATION     )  return "help\\object\\station.txt";
-	if ( type == OBJECT_CONVERT     )  return "help\\object\\convert.txt";
-	if ( type == OBJECT_REPAIR      )  return "help\\object\\repair.txt";
-	if ( type == OBJECT_DESTROYER   )  return "help\\object\\destroy.txt";
 	if ( type == OBJECT_TOWER       )  return "help\\object\\tower.txt";
-	if ( type == OBJECT_NEST        )  return "help\\object\\nest.txt";
-	if ( type == OBJECT_RESEARCH    )  return "help\\object\\research.txt";
-	if ( type == OBJECT_RADAR       )  return "help\\object\\radar.txt";
-	if ( type == OBJECT_INFO        )  return "help\\object\\exchange.txt";
-	if ( type == OBJECT_ENERGY      )  return "help\\object\\energy.txt";
-	if ( type == OBJECT_LABO        )  return "help\\object\\labo.txt";
 	if ( type == OBJECT_NUCLEAR     )  return "help\\object\\nuclear.txt";
 	if ( type == OBJECT_PARA        )  return "help\\object\\captor.txt";
-	if ( type == OBJECT_SAFE        )  return "help\\object\\safe.txt";
-	if ( type == OBJECT_HUSTON      )  return "help\\object\\huston.txt";
 	if ( type == OBJECT_START       )  return "help\\object\\start.txt";
 	if ( type == OBJECT_END         )  return "help\\object\\goal.txt";
 	if ( type == OBJECT_STONE       )  return "help\\object\\titanore.txt";
 	if ( type == OBJECT_URANIUM     )  return "help\\object\\uranore.txt";
 	if ( type == OBJECT_METAL       )  return "help\\object\\titan.txt";
-	if ( type == OBJECT_POWER       )  return "help\\object\\power.txt";
 	if ( type == OBJECT_ATOMIC      )  return "help\\object\\atomic.txt";
 	if ( type == OBJECT_BULLET      )  return "help\\object\\bullet.txt";
 	if ( type == OBJECT_BBOX        )  return "help\\object\\bbox.txt";
@@ -161,50 +146,11 @@ char* RetHelpFilename(ObjectType type)
 	if ( type == OBJECT_KEYc        )  return "help\\object\\key.txt";
 	if ( type == OBJECT_KEYd        )  return "help\\object\\key.txt";
 	if ( type == OBJECT_TNT         )  return "help\\object\\tnt.txt";
-	if ( type == OBJECT_SCRAP1      )  return "help\\object\\scrap.txt";
 	if ( type == OBJECT_BOMB        )  return "help\\object\\mine.txt";
 	if ( type == OBJECT_BARRIER1    )  return "help\\object\\barrier.txt";
 	if ( type == OBJECT_WAYPOINT    )  return "help\\object\\waypoint.txt";
-	if ( type == OBJECT_FLAGb       )  return "help\\object\\flag.txt";
-	if ( type == OBJECT_FLAGr       )  return "help\\object\\flag.txt";
-	if ( type == OBJECT_FLAGg       )  return "help\\object\\flag.txt";
-	if ( type == OBJECT_FLAGy       )  return "help\\object\\flag.txt";
-	if ( type == OBJECT_FLAGv       )  return "help\\object\\flag.txt";
-	if ( type == OBJECT_MARKPOWER   )  return "help\\object\\enerspot.txt";
-	if ( type == OBJECT_MARKSTONE   )  return "help\\object\\stonspot.txt";
-	if ( type == OBJECT_MARKURANIUM )  return "help\\object\\uranspot.txt";
-	if ( type == OBJECT_MOBILEwa    )  return "help\\object\\botgr.txt";
-	if ( type == OBJECT_MOBILEta    )  return "help\\object\\botgc.txt";
-	if ( type == OBJECT_MOBILEfa    )  return "help\\object\\botgj.txt";
-	if ( type == OBJECT_MOBILEia    )  return "help\\object\\botgs.txt";
-	if ( type == OBJECT_MOBILEws    )  return "help\\object\\botsr.txt";
-	if ( type == OBJECT_MOBILEts    )  return "help\\object\\botsc.txt";
-	if ( type == OBJECT_MOBILEfs    )  return "help\\object\\botsj.txt";
-	if ( type == OBJECT_MOBILEis    )  return "help\\object\\botss.txt";
-	if ( type == OBJECT_MOBILEwi    )  return "help\\object\\botor.txt";
-	if ( type == OBJECT_MOBILEti    )  return "help\\object\\botoc.txt";
-	if ( type == OBJECT_MOBILEfi    )  return "help\\object\\botoj.txt";
-	if ( type == OBJECT_MOBILEii    )  return "help\\object\\botos.txt";
-	if ( type == OBJECT_MOBILEwc    )  return "help\\object\\botfr.txt";
-	if ( type == OBJECT_MOBILEtc    )  return "help\\object\\botfc.txt";
-	if ( type == OBJECT_MOBILEfc    )  return "help\\object\\botfj.txt";
-	if ( type == OBJECT_MOBILEic    )  return "help\\object\\botfs.txt";
-	if ( type == OBJECT_MOBILErt    )  return "help\\object\\bottump.txt";
-	if ( type == OBJECT_MOBILErc    )  return "help\\object\\botphaz.txt";
-	if ( type == OBJECT_MOBILErr    )  return "help\\object\\botrecy.txt";
-	if ( type == OBJECT_MOBILErs    )  return "help\\object\\botshld.txt";
-	if ( type == OBJECT_MOBILEsa    )  return "help\\object\\botsub.txt";
-	if ( type == OBJECT_MOBILEwt    )  return "help\\object\\bottr.txt";
 	if ( type == OBJECT_MOBILEtg    )  return "help\\object\\bottarg.txt";
-	if ( type == OBJECT_MOBILEdr    )  return "help\\object\\botdraw.txt";
-	if ( type == OBJECT_APOLLO2     )  return "help\\object\\lrv.txt";
 	if ( type == OBJECT_HUMAN       )  return "help\\object\\human.txt";
-	if ( type == OBJECT_MOTHER      )  return "help\\object\\mother.txt";
-	if ( type == OBJECT_EGG         )  return "help\\object\\egg.txt";
-	if ( type == OBJECT_ANT         )  return "help\\object\\ant.txt";
-	if ( type == OBJECT_SPIDER      )  return "help\\object\\spider.txt";
-	if ( type == OBJECT_BEE         )  return "help\\object\\wasp.txt";
-	if ( type == OBJECT_WORM        )  return "help\\object\\worm.txt";
 	if ( type == OBJECT_RUINmobilew1)  return "help\\object\\wreck.txt";
 	return "";
 }
@@ -216,7 +162,6 @@ char* RetHelpFilename(const char *token)
 {
 	if ( strcmp(token, "if"            ) == 0 )  return "help\\cbot\\if.txt";
 	if ( strcmp(token, "else"          ) == 0 )  return "help\\cbot\\if.txt";
-	if ( strcmp(token, "repeat"        ) == 0 )  return "help\\cbot\\repeat.txt";
 	if ( strcmp(token, "for"           ) == 0 )  return "help\\cbot\\for.txt";
 	if ( strcmp(token, "while"         ) == 0 )  return "help\\cbot\\while.txt";
 	if ( strcmp(token, "do"            ) == 0 )  return "help\\cbot\\do.txt";
@@ -258,7 +203,6 @@ char* RetHelpFilename(const char *token)
 	if ( strcmp(token, "move"          ) == 0 )  return "help\\cbot\\move.txt";
 	if ( strcmp(token, "turn"          ) == 0 )  return "help\\cbot\\turn.txt";
 	if ( strcmp(token, "goto"          ) == 0 )  return "help\\cbot\\goto.txt";
-	if ( strcmp(token, "find"          ) == 0 )  return "help\\cbot\\find.txt";
 	if ( strcmp(token, "grab"          ) == 0 )  return "help\\cbot\\grab.txt";
 	if ( strcmp(token, "drop"          ) == 0 )  return "help\\cbot\\drop.txt";
 	if ( strcmp(token, "sniff"         ) == 0 )  return "help\\cbot\\sniff.txt";
@@ -277,24 +221,6 @@ char* RetHelpFilename(const char *token)
 	if ( strcmp(token, "topo"          ) == 0 )  return "help\\cbot\\topo.txt";
 	if ( strcmp(token, "message"       ) == 0 )  return "help\\cbot\\message.txt";
 	if ( strcmp(token, "abstime"       ) == 0 )  return "help\\cbot\\abstime.txt";
-	if ( strcmp(token, "BlackArrow"    ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "RedArrow"      ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "White"         ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "Black"         ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "Gray"          ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "LightGray"     ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "Red"           ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "Pink"          ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "Purple"        ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "Orange"        ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "Yellow"        ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "Beige"         ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "Brown"         ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "Skin"          ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "Green"         ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "LightGreen"    ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "Blue"          ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "LightBlue"     ) == 0 )  return "help\\cbot\\pendown.txt";
 	if ( strcmp(token, "InFront"       ) == 0 )  return "help\\cbot\\grab.txt";
 	if ( strcmp(token, "Behind"        ) == 0 )  return "help\\cbot\\grab.txt";
 	if ( strcmp(token, "EnergyCell"    ) == 0 )  return "help\\cbot\\grab.txt";
@@ -317,10 +243,6 @@ char* RetHelpFilename(const char *token)
 	if ( strcmp(token, "eof"           ) == 0 )  return "help\\cbot\\eof.txt";
 	if ( strcmp(token, "deletefile"    ) == 0 )  return "help\\cbot\\deletef.txt";
 	if ( strcmp(token, "openfile"      ) == 0 )  return "help\\cbot\\openfile.txt";
-	if ( strcmp(token, "pendown"       ) == 0 )  return "help\\cbot\\pendown.txt";
-	if ( strcmp(token, "penup"         ) == 0 )  return "help\\cbot\\penup.txt";
-	if ( strcmp(token, "pencolor"      ) == 0 )  return "help\\cbot\\pencolor.txt";
-	if ( strcmp(token, "penwidth"      ) == 0 )  return "help\\cbot\\penwidth.txt";
 	if ( strcmp(token, "extern"        ) == 0 )  return "help\\cbot\\extern.txt";
 	if ( strcmp(token, "class"         ) == 0 )  return "help\\cbot\\class.txt";
 	if ( strcmp(token, "static"        ) == 0 )  return "help\\cbot\\static.txt";
@@ -366,7 +288,6 @@ BOOL IsFunction(const char *token)
 	if ( strcmp(token, "retobject"    ) == 0 )  return TRUE;
 	if ( strcmp(token, "search"       ) == 0 )  return TRUE;
 	if ( strcmp(token, "radar"        ) == 0 )  return TRUE;
-	if ( strcmp(token, "detect"       ) == 0 )  return TRUE;
 	if ( strcmp(token, "direction"    ) == 0 )  return TRUE;
 	if ( strcmp(token, "distance"     ) == 0 )  return TRUE;
 	if ( strcmp(token, "distance2d"   ) == 0 )  return TRUE;
@@ -376,7 +297,6 @@ BOOL IsFunction(const char *token)
 	if ( strcmp(token, "move"         ) == 0 )  return TRUE;
 	if ( strcmp(token, "turn"         ) == 0 )  return TRUE;
 	if ( strcmp(token, "goto"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "find"         ) == 0 )  return TRUE;
 	if ( strcmp(token, "grab"         ) == 0 )  return TRUE;
 	if ( strcmp(token, "drop"         ) == 0 )  return TRUE;
 	if ( strcmp(token, "sniff"        ) == 0 )  return TRUE;
@@ -413,10 +333,6 @@ BOOL IsFunction(const char *token)
 	if ( strcmp(token, "eof"          ) == 0 )  return TRUE;
 	if ( strcmp(token, "deletefile"   ) == 0 )  return TRUE;
 	if ( strcmp(token, "openfile"     ) == 0 )  return TRUE;
-	if ( strcmp(token, "pendown"      ) == 0 )  return TRUE;
-	if ( strcmp(token, "penup"        ) == 0 )  return TRUE;
-	if ( strcmp(token, "pencolor"     ) == 0 )  return TRUE;
-	if ( strcmp(token, "penwidth"     ) == 0 )  return TRUE;
 	if ( strcmp(token, "sizeof"       ) == 0 )  return TRUE;
 	return FALSE;
 }
@@ -428,7 +344,6 @@ char* RetHelpText(const char *token)
 {
 	if ( strcmp(token, "if"        ) == 0 )  return "if ( condition ) { bloc }";
 	if ( strcmp(token, "else"      ) == 0 )  return "else { bloc }";
-	if ( strcmp(token, "repeat"    ) == 0 )  return "repeat ( number )";
 	if ( strcmp(token, "for"       ) == 0 )  return "for ( before ; condition ; end )";
 	if ( strcmp(token, "while"     ) == 0 )  return "while ( condition ) { bloc }";
 	if ( strcmp(token, "do"        ) == 0 )  return "do { bloc } while ( condition );";
@@ -450,7 +365,6 @@ char* RetHelpText(const char *token)
 	if ( strcmp(token, "retobject" ) == 0 )  return "retobjet ( );";
 	if ( strcmp(token, "search"    ) == 0 )  return "search ( );";
 	if ( strcmp(token, "radar"     ) == 0 )  return "radar ( cat, angle, focus, min, max, sens );";
-	if ( strcmp(token, "detect"    ) == 0 )  return "detect ( cat );";
 	if ( strcmp(token, "direction" ) == 0 )  return "direction ( position );";
 	if ( strcmp(token, "distance2d") == 0 )  return "distance2d ( p1, p2 );";
 	if ( strcmp(token, "distance"  ) == 0 )  return "distance ( p1, p2 );";
@@ -460,7 +374,6 @@ char* RetHelpText(const char *token)
 	if ( strcmp(token, "move"      ) == 0 )  return "move ( distance );";
 	if ( strcmp(token, "turn"      ) == 0 )  return "turn ( angle );";
 	if ( strcmp(token, "goto"      ) == 0 )  return "goto ( position, altitude );";
-	if ( strcmp(token, "find"      ) == 0 )  return "find ( cat );";
 	if ( strcmp(token, "grab"      ) == 0 )  return "grab ( order );";
 	if ( strcmp(token, "drop"      ) == 0 )  return "drop ( order );";
 	if ( strcmp(token, "sniff"     ) == 0 )  return "sniff ( );";
@@ -497,10 +410,6 @@ char* RetHelpText(const char *token)
 	if ( strcmp(token, "eof"       ) == 0 )  return "eof ( );";
 	if ( strcmp(token, "deletefile") == 0 )  return "deletefile ( filename );";
 	if ( strcmp(token, "openfile"  ) == 0 )  return "openfile ( filename, mode );";
-	if ( strcmp(token, "pendown"   ) == 0 )  return "pendown ( color, width );";
-	if ( strcmp(token, "penup"     ) == 0 )  return "penup ( );";
-	if ( strcmp(token, "pencolor"  ) == 0 )  return "pencolor ( color );";
-	if ( strcmp(token, "penwidth"  ) == 0 )  return "penwidth ( width );";
 	return "";
 }
 

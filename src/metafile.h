@@ -5,7 +5,7 @@
 
 
 
-#define METAMAX		5
+#define METAMAX		6
 
 typedef struct
 {
@@ -32,8 +32,8 @@ public:
 	CMetaFile();
 	~CMetaFile();
 
-	BOOL	IsExist(char *metaname, char *filename);
-	int		Open(char *metaname, char *filename);
+	BOOL	IsExist(char *metaname, char *filename, char *suppl);
+	int		Open(char *metaname, char *filename, char *suppl);
 	int		RetLength();
 	int		Seek(int offset);
 	int		Read(void *buffer, int size);
@@ -43,6 +43,8 @@ public:
 	int		MetaClose();
 
 protected:
+	BOOL	IsExistOne(char *metaname, char *filename);
+	int		OpenOne(char *metaname, char *filename);
 	int		MetaOpen(char *metaname);
 	int		MetaSearch(char *metaname);
 

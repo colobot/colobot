@@ -10,7 +10,6 @@
 #include "struct.h"
 #include "D3DEngine.h"
 #include "D3DMath.h"
-#include "language.h"
 #include "event.h"
 #include "misc.h"
 #include "iman.h"
@@ -35,9 +34,10 @@ CCamera::CCamera(CInstanceManager* iMan)
 	m_terrain = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
 	m_water   = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
 
-	m_type      = CAMERA_FREE;
-	m_smooth    = CS_NORM;
-	m_cameraObj = 0;
+	m_type       = CAMERA_FREE;
+	m_smooth     = CS_NORM;
+	m_smoothNext = CS_NORM;
+	m_cameraObj  = 0;
 
 	m_eyeDistance = 10.0f;
 	m_initDelay   =  0.0f;
@@ -59,11 +59,17 @@ CCamera::CCamera(CInstanceManager* iMan)
 	m_directionH   =  0.0f;
 	m_directionV   =  0.0f;
 	m_heightEye    = 20.0f;
+	m_heightShift  =  0.0f;
 	m_heightLookat =  0.0f;
 	m_speed        =  2.0f;
 
 	m_backDist      = 0.0f;
 	m_backMin       = 0.0f;
+	m_backMotorSpeed= 0.0f;
+	m_bBackLockRotate = FALSE;
+	m_backSleepTime = 0.0f;
+	m_backRotSpeed  = 0.0f;
+	m_rotDirectionH = 0.0f;
 	m_addDirectionH = 0.0f;
 	m_addDirectionV = 0.0f;
 	m_bTransparency = FALSE;
@@ -81,14 +87,9 @@ CCamera::CCamera(CInstanceManager* iMan)
 
 	m_editHeight = 40.0f;
 
-	m_remotePan  = 0.0f;
-	m_remoteZoom = 0.0f;
-
 	m_mouseDirH    = 0.0f;
 	m_mouseDirV    = 0.0f;
 	m_mouseMarging = 0.01f;
-
-	m_motorTurn = 0.0f;
 
 	m_centeringPhase    = CP_NULL;
 	m_centeringAngleH   = 0.0f;
@@ -108,10 +109,8 @@ CCamera::CCamera(CInstanceManager* iMan)
 	m_scriptEye    = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_scriptLookat = D3DVECTOR(0.0f, 0.0f, 0.0f);
 
-	m_bEffect        = TRUE;
-	m_bCameraScroll  = TRUE;
-	m_bCameraInvertX = FALSE;
-	m_bCameraInvertY = FALSE;
+	m_bEffect = TRUE;
+	m_bFlash  = TRUE;
 }
 
 // Destructeur de l'objet.
@@ -126,28 +125,17 @@ void CCamera::SetEffect(BOOL bEnable)
 	m_bEffect = bEnable;
 }
 
-void CCamera::SetCameraScroll(BOOL bScroll)
+void CCamera::SetFlash(BOOL bFlash)
 {
-	m_bCameraScroll = bScroll;
-}
-
-void CCamera::SetCameraInvertX(BOOL bInvert)
-{
-	m_bCameraInvertX = bInvert;
-}
-
-void CCamera::SetCameraInvertY(BOOL bInvert)
-{
-	m_bCameraInvertY = bInvert;
+	m_bFlash = bFlash;
 }
 
 
-// Retourne une force additionnelle pour tourner.
+// Indique la consigne de vitesse moteur avant/arrière.
 
-float CCamera::RetMotorTurn()
+void CCamera::SetMotorSpeed(float speed)
 {
-	if ( m_type == CAMERA_BACK )  return m_motorTurn;
-	return 0.0f;
+	m_backMotorSpeed = speed;
 }
 
 
@@ -160,8 +148,8 @@ void CCamera::Init(D3DVECTOR eye, D3DVECTOR lookat, float delay)
 
 	m_initDelay = delay;
 
-	eye.y    += m_terrain->RetFloorLevel(eye,    TRUE);
-	lookat.y += m_terrain->RetFloorLevel(lookat, TRUE);
+//?	eye.y    += m_terrain->RetFloorLevel(eye,    TRUE);
+//?	lookat.y += m_terrain->RetFloorLevel(lookat, TRUE);
 
 	m_type = CAMERA_FREE;
 	m_eyePt = eye;
@@ -173,6 +161,7 @@ void CCamera::Init(D3DVECTOR eye, D3DVECTOR lookat, float delay)
 	m_heightLookat = 10.0f;
 	m_backDist = 30.0f;
 	m_backMin  = 10.0f;
+	m_rotDirectionH = 0.0f;
 	m_addDirectionH = 0.0f;
 	m_addDirectionV = -PI*0.05f;
 	m_fixDist = 50.0f;
@@ -186,8 +175,6 @@ void CCamera::Init(D3DVECTOR eye, D3DVECTOR lookat, float delay)
 	m_scriptEye = m_actualEye;
 	m_scriptLookat = m_actualLookat;
 	m_focus = 1.00f;
-	m_remotePan  = 0.0f;
-	m_remoteZoom = 0.0f;
 
 	FlushEffect();
 	FlushOver();
@@ -238,9 +225,6 @@ void CCamera::SetType(CameraType type)
 	ObjectType	oType;
 	D3DVECTOR	vUpVec;
 	int			i;
-
-	m_remotePan  = 0.0f;
-	m_remoteZoom = 0.0f;
 
 	if ( m_type == CAMERA_BACK && m_bTransparency )
 	{
@@ -308,56 +292,59 @@ void CCamera::SetType(CameraType type)
 		m_eyePt = LookatPoint(m_eyePt, m_directionH, m_directionV, -20.0f);
 	}
 
-	if ( type == CAMERA_FIX   ||
-		 type == CAMERA_PLANE )
+	if ( type == CAMERA_FIX )
 	{
 		AbortCentering();  // stoppe cadrage spécial
-	}
-
-	m_fixDist = 50.0f;
-	if ( type == CAMERA_PLANE )
-	{
-		m_fixDist = 60.0f;
 	}
 
 	if ( type == CAMERA_BACK )
 	{
 		AbortCentering();  // stoppe cadrage spécial
+		m_rotDirectionH = 0.0f;
 		m_addDirectionH = 0.0f;
 		m_addDirectionV = -PI*0.05f;
 
 		if ( m_cameraObj == 0 )  oType = OBJECT_NULL;
 		else                     oType = m_cameraObj->RetType();
 
-		m_backDist = 30.0f;
-		if ( oType == OBJECT_BASE     )  m_backDist = 200.0f;
-		if ( oType == OBJECT_HUMAN    )  m_backDist =  20.0f;
+		m_backDist = 20.0f;
+		if ( oType == OBJECT_HUMAN    )  m_backDist =  15.0f;
 		if ( oType == OBJECT_TECH     )  m_backDist =  20.0f;
-		if ( oType == OBJECT_FACTORY  )  m_backDist =  50.0f;
-		if ( oType == OBJECT_RESEARCH )  m_backDist =  40.0f;
-		if ( oType == OBJECT_DERRICK  )  m_backDist =  40.0f;
-		if ( oType == OBJECT_REPAIR   )  m_backDist =  35.0f;
-		if ( oType == OBJECT_DESTROYER)  m_backDist =  35.0f;
 		if ( oType == OBJECT_TOWER    )  m_backDist =  45.0f;
 		if ( oType == OBJECT_NUCLEAR  )  m_backDist =  70.0f;
 		if ( oType == OBJECT_PARA     )  m_backDist = 180.0f;
-		if ( oType == OBJECT_SAFE     )  m_backDist =  50.0f;
-		if ( oType == OBJECT_HUSTON   )  m_backDist = 120.0f;
+		if ( oType == OBJECT_DOCK     )  m_backDist =  50.0f;
+		if ( oType == OBJECT_HOME1    )  m_backDist =  40.0f;
+		if ( oType == OBJECT_HOME2    )  m_backDist =  40.0f;
+		if ( oType == OBJECT_HOME3    )  m_backDist =  40.0f;
+		if ( oType == OBJECT_HOME4    )  m_backDist =  40.0f;
+		if ( oType == OBJECT_HOME5    )  m_backDist =  40.0f;
+		if ( oType == OBJECT_STARTER  )  m_backDist =   5.0f;
+		if ( oType == OBJECT_INCA7    )  m_backDist = 100.0f;
 
 		m_backMin = m_backDist/3.0f;
 		if ( oType == OBJECT_HUMAN    )  m_backMin =  10.0f;
 		if ( oType == OBJECT_TECH     )  m_backMin =  10.0f;
-		if ( oType == OBJECT_FACTORY  )  m_backMin =  30.0f;
-		if ( oType == OBJECT_RESEARCH )  m_backMin =  20.0f;
 		if ( oType == OBJECT_NUCLEAR  )  m_backMin =  32.0f;
 		if ( oType == OBJECT_PARA     )  m_backMin =  40.0f;
-		if ( oType == OBJECT_SAFE     )  m_backMin =  25.0f;
-		if ( oType == OBJECT_HUSTON   )  m_backMin =  80.0f;
-	}
+		if ( oType == OBJECT_DOCK     )  m_backMin =  20.0f;
 
-	if ( type != CAMERA_ONBOARD && m_cameraObj != 0 )
-	{
-		m_cameraObj->SetGunGoalH(0.0f);  // met le canon droit
+		if ( oType == OBJECT_HOME1 ||
+			 oType == OBJECT_HOME3 ||
+			 oType == OBJECT_HOME4 ||
+			 oType == OBJECT_HOME5 )
+		{
+			m_addDirectionV = -PI*0.10f;
+		}
+		if ( oType == OBJECT_HOME2 )
+		{
+			m_addDirectionV = -PI*0.04f;
+		}
+		if ( oType == OBJECT_INCA7 )
+		{
+			m_addDirectionV = PI*0.02f;
+			m_addDirectionH = PI*1.0f;
+		}
 	}
 
 	if ( type == CAMERA_ONBOARD )
@@ -383,14 +370,78 @@ CameraType CCamera::RetType()
 
 // Gestion du mode de lissage.
 
+void CCamera::SetSmoothOneTime(CameraSmooth type)
+{
+	if ( type == m_smooth )  return;
+	m_smoothNext = m_smooth;  // revient ensuite au mode initial
+	m_smooth = type;
+}
+
 void CCamera::SetSmooth(CameraSmooth type)
 {
+	m_smoothNext = type;
 	m_smooth = type;
 }
 
 CameraSmooth CCamera::RetSmoth()
 {
 	return m_smooth;
+}
+
+
+// Gestion de la distance de recul.
+
+void CCamera::SetBackDist(float dist)
+{
+	m_backDist = dist;
+}
+
+float CCamera::RetBackDist()
+{
+	return m_backDist;
+}
+
+
+// Gestion de l'angle vertical.
+
+void CCamera::SetBackVerti(float angle)
+{
+	m_addDirectionV = angle;
+}
+
+float CCamera::RetBackVerti()
+{
+	return m_addDirectionV;
+}
+
+
+// Gestion de l'angle horizontal.
+
+void CCamera::SetBackHoriz(float angle)
+{
+	m_addDirectionH = angle;
+}
+
+float CCamera::RetBackHoriz()
+{
+	return m_addDirectionH;
+}
+
+
+void CCamera::ResetLockRotate()
+{
+	m_backSleepTime = 0.0f;
+	m_backRotSpeed  = 0.0f;
+}
+
+void CCamera::SetLockRotate(BOOL bLock)
+{
+	m_bBackLockRotate = bLock;
+}
+
+BOOL CCamera::RetLockRotate()
+{
+	return m_bBackLockRotate;
 }
 
 
@@ -418,53 +469,6 @@ float CCamera::RetFixDirection()
 {
 	return m_fixDirectionH;
 }
-
-
-// Gestion de la télécommande panoramique de la caméra.
-
-void CCamera::SetRemotePan(float value)
-{
-	m_remotePan = value;
-}
-
-float CCamera::RetRemotePan()
-{
-	return m_remotePan;
-}
-
-// Gestion de la télécommande zoom (0..1) de la caméra.
-
-void CCamera::SetRemoteZoom(float value)
-{
-	value = Norm(value);
-
-	if ( m_type == CAMERA_BACK )
-	{
-		m_backDist = m_backMin+(200.0f-m_backMin)*value;
-	}
-
-	if ( m_type == CAMERA_FIX   ||
-		 m_type == CAMERA_PLANE )
-	{
-		m_fixDist = 10.0f+(200.0f-10.0f)*value;
-	}
-}
-
-float CCamera::RetRemoteZoom()
-{
-	if ( m_type == CAMERA_BACK )
-	{
-		return (m_backDist-m_backMin)/(200.0f-m_backMin);
-	}
-
-	if ( m_type == CAMERA_FIX   ||
-		 m_type == CAMERA_PLANE )
-	{
-		return (m_fixDist-10.0f)/(200.0f-10.0f);
-	}
-	return 0.0f;
-}
-
 
 
 // Début d'une visite circulaire avec la caméra.
@@ -547,6 +551,9 @@ BOOL CCamera::StopCentering(CObject *object, float time)
 
 	m_centeringTime     = time;
 	m_centeringProgress = 0.0f;
+
+	m_backSleepTime = 0.0f;
+	m_backRotSpeed  = 0.0f;
 
 	return TRUE;
 }
@@ -665,12 +672,11 @@ void CCamera::EffectFrame(const Event &event)
 	}
 
 	dist = Length(m_eyePt, m_effectPos);
-	dist = Norm((dist-100.f)/100.0f);
+	dist = (dist-100.f)/100.0f;
+	if ( dist < 0.0f )  dist = 0.0f;
+	if ( dist > 1.0f )  dist = 1.0f;
 
 	force *= 1.0f-dist;
-#if _TEEN
-	force *= 2.0f;
-#endif
 	m_effectOffset *= force;
 
 	if ( m_effectProgress >= 1.0f )
@@ -706,6 +712,8 @@ void CCamera::StartOver(OverEffect effect, D3DVECTOR pos, float force)
 	D3DCOLOR	color;
 	float		dist, decay;
 
+	if ( !m_bFlash )  return;
+
 	m_overType = effect;
 	m_overTime = 0.0f;
 
@@ -727,6 +735,30 @@ void CCamera::StartOver(OverEffect effect, D3DVECTOR pos, float force)
 
 		m_overFadeIn  = 0.4f;
 		m_overFadeOut = 0.8f;
+		m_overForce   = 1.0f;
+	}
+
+	if ( m_overType == OE_ORGA )
+	{
+		m_overColor.r = 0.1f;
+		m_overColor.g = 0.8f;
+		m_overColor.b = 0.1f;  // vert
+		m_overMode    = D3DSTATETCb;
+
+		m_overFadeIn  = 0.4f;
+		m_overFadeOut = 0.8f;
+		m_overForce   = 1.0f;
+	}
+
+	if ( m_overType == OE_CRASH )
+	{
+		m_overColor.r = 0.8f;
+		m_overColor.g = 0.8f;
+		m_overColor.b = 0.8f;  // blanc
+		m_overMode    = D3DSTATETCb;
+
+		m_overFadeIn  = 0.0f;
+		m_overFadeOut = 0.2f;
 		m_overForce   = 1.0f;
 	}
 
@@ -876,10 +908,26 @@ void CCamera::OverFrame(const Event &event)
 
 void CCamera::FixCamera()
 {
-	m_initDelay = 0.0f;
+#if 0
+	m_initDelay     = 0.0f;
+	m_backSleepTime = 0.0f;
+	m_backRotSpeed  = 0.0f;
 	m_actualEye    = m_finalEye    = m_scriptEye;
 	m_actualLookat = m_finalLookat = m_scriptLookat;
 	SetViewTime(m_scriptEye, m_scriptLookat, 0.0f);
+#else
+	Event	event;
+
+	m_initDelay     = 0.0f;
+	m_backSleepTime = 0.0f;
+	m_backRotSpeed  = 0.0f;
+
+	ZeroMemory(&event, sizeof(Event));
+	event.event = EVENT_FRAME;
+	EventFrame(event);
+
+	SetViewTime(m_finalEye, m_finalLookat, 100.0f);
+#endif
 }
 
 // Spécifie l'emplacement et la direction du point de vue au moteur 3D.
@@ -889,7 +937,7 @@ void CCamera::SetViewTime(const D3DVECTOR &vEyePt,
 						  float rTime)
 {
 	D3DVECTOR	vUpVec, eye, lookat;
-	float		prog, dist, h;
+	float		prog, dEye, dLook, h, margin;
 
 	if ( m_type == CAMERA_INFO )
 	{
@@ -913,46 +961,60 @@ void CCamera::SetViewTime(const D3DVECTOR &vEyePt,
 			m_finalLookat = lookat;
 		}
 
-		dist = Length(m_finalEye, m_actualEye);
-		if ( m_smooth == CS_NONE )  prog = dist;
-		if ( m_smooth == CS_NORM )  prog = powf(dist, 1.5f)*rTime*0.5f;
-		if ( m_smooth == CS_HARD )  prog = powf(dist, 1.0f)*rTime*4.0f;
-		if ( m_smooth == CS_SPEC )  prog = powf(dist, 1.0f)*rTime*0.05f;
-		if ( dist == 0.0f )
+		dEye = Length(m_finalEye, m_actualEye);
+		if ( m_smooth == CS_NONE )  prog = dEye;
+//?		if ( m_smooth == CS_NORM )  prog = powf(dEye, 1.5f)*rTime*0.5f;
+		if ( m_smooth == CS_NORM )  prog = powf(dEye, 1.5f)*rTime*1.0f;
+//?		if ( m_smooth == CS_NORM )  prog = powf(dEye, 1.5f)*rTime*2.0f;
+		if ( m_smooth == CS_SOFT )  prog = powf(dEye, 1.0f)*rTime*3.0f;
+		if ( m_smooth == CS_HARD )  prog = powf(dEye, 1.0f)*rTime*4.0f;
+		if ( m_smooth == CS_SPEC )  prog = powf(dEye, 1.0f)*rTime*0.05f;
+		if ( dEye == 0.0f )
 		{
 			m_actualEye = m_finalEye;
 		}
 		else
 		{
-			if ( prog > dist )  prog = dist;
-			m_actualEye = (m_finalEye-m_actualEye)/dist*prog + m_actualEye;
+			if ( prog > dEye )  prog = dEye;
+			m_actualEye = (m_finalEye-m_actualEye)/dEye*prog + m_actualEye;
 		}
 
-		dist = Length(m_finalLookat, m_actualLookat);
-		if ( m_smooth == CS_NONE )  prog = dist;
-		if ( m_smooth == CS_NORM )  prog = powf(dist, 1.5f)*rTime*2.0f;
-		if ( m_smooth == CS_HARD )  prog = powf(dist, 1.0f)*rTime*4.0f;
-		if ( m_smooth == CS_SPEC )  prog = powf(dist, 1.0f)*rTime*4.0f;
-		if ( dist == 0.0f )
+		dLook = Length(m_finalLookat, m_actualLookat);
+		if ( m_smooth == CS_NONE )  prog = dLook;
+//?		if ( m_smooth == CS_NORM )  prog = powf(dLook, 1.5f)*rTime*2.0f;
+		if ( m_smooth == CS_NORM )  prog = powf(dLook, 1.5f)*rTime*3.0f;
+//?		if ( m_smooth == CS_NORM )  prog = powf(dLook, 1.5f)*rTime*5.0f;
+		if ( m_smooth == CS_SOFT )  prog = powf(dLook, 1.0f)*rTime*3.0f;
+		if ( m_smooth == CS_HARD )  prog = powf(dLook, 1.0f)*rTime*4.0f;
+		if ( m_smooth == CS_SPEC )  prog = powf(dLook, 1.0f)*rTime*4.0f;
+		if ( dLook == 0.0f )
 		{
 			m_actualLookat = m_finalLookat;
 		}
 		else
 		{
-			if ( prog > dist )  prog = dist;
-			m_actualLookat = (m_finalLookat-m_actualLookat)/dist*prog + m_actualLookat;
+			if ( prog > dLook )  prog = dLook;
+			m_actualLookat = (m_finalLookat-m_actualLookat)/dLook*prog + m_actualLookat;
 		}
 
 		eye = m_effectOffset+m_actualEye;
 		m_water->AdjustEye(eye);
 
 		h = m_terrain->RetFloorLevel(eye);
-		if ( eye.y < h+4.0f )
+		margin = 4.0f;
+		if ( m_type == CAMERA_SCRIPT )  margin = -100.0f;
+		if ( m_type == CAMERA_FREE   )  margin = -100.0f;
+		if ( eye.y < h+margin )
 		{
-			eye.y = h+4.0f;
+			eye.y = h+margin;
 		}
 
 		lookat = m_effectOffset+m_actualLookat;
+
+		if ( dEye < 5.0f && dLook < 5.0f )
+		{
+			m_smooth = m_smoothNext;
+		}
 	}
 
 	vUpVec = D3DVECTOR(0.0f, 1.0f, 0.0f);
@@ -964,9 +1026,8 @@ void CCamera::SetViewTime(const D3DVECTOR &vEyePt,
 
 BOOL CCamera::IsCollision(D3DVECTOR &eye, D3DVECTOR lookat)
 {
-	if ( m_type == CAMERA_BACK  )  return IsCollisionBack(eye, lookat);
-	if ( m_type == CAMERA_FIX   )  return IsCollisionFix(eye, lookat);
-	if ( m_type == CAMERA_PLANE )  return IsCollisionFix(eye, lookat);
+	if ( m_type == CAMERA_BACK )  return IsCollisionBack(eye, lookat);
+	if ( m_type == CAMERA_FIX  )  return IsCollisionFix(eye, lookat);
 	return FALSE;
 }
 
@@ -974,125 +1035,11 @@ BOOL CCamera::IsCollision(D3DVECTOR &eye, D3DVECTOR lookat)
 
 BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 {
-#if 0
 	CObject		*pObj;
 	D3DVECTOR	oPos, min, max, proj;
-	ObjectType	oType, iType;
-	float		oRadius, dpp, dpl, del, dist, len, prox;
+	ObjectType	oType;
+	float		oRadius, dpp, del, len;
 	int			i;
-
-	if ( m_cameraObj == 0 )
-	{
-		iType = OBJECT_NULL;
-	}
-	else
-	{
-		iType = m_cameraObj->RetType();
-	}
-
-	min.x = Min(eye.x, lookat.x);
-	min.y = Min(eye.y, lookat.y);
-	min.z = Min(eye.z, lookat.z);
-
-	max.x = Max(eye.x, lookat.x);
-	max.y = Max(eye.y, lookat.y);
-	max.z = Max(eye.z, lookat.z);
-
-	prox = 8.0f;  // proximité maximale du véhicule
-
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
-
-		if ( pObj == m_cameraObj )  continue;
-
-		oType = pObj->RetType();
-		if ( oType == OBJECT_TOTO      ||
-			 oType == OBJECT_FIX       ||
-			 oType == OBJECT_FRET      ||
-			 oType == OBJECT_STONE     ||
-			 oType == OBJECT_URANIUM   ||
-			 oType == OBJECT_METAL     ||
-			 oType == OBJECT_POWER     ||
-			 oType == OBJECT_ATOMIC    ||
-			 oType == OBJECT_BULLET    ||
-			 oType == OBJECT_BBOX      ||
-			 oType == OBJECT_TNT       ||
-			 oType == OBJECT_BOMB      ||
-			 oType == OBJECT_WAYPOINTb ||
-			 oType == OBJECT_WAYPOINTr ||
-			 oType == OBJECT_WAYPOINTg ||
-			 oType == OBJECT_WAYPOINTy ||
-			 oType == OBJECT_WAYPOINTv ||
-			 oType == OBJECT_FLAGb     ||
-			 oType == OBJECT_FLAGr     ||
-			 oType == OBJECT_FLAGg     ||
-			 oType == OBJECT_FLAGy     ||
-			 oType == OBJECT_FLAGv     ||
-			 oType == OBJECT_ANT       ||
-			 oType == OBJECT_SPIDER    ||
-			 oType == OBJECT_BEE       ||
-			 oType == OBJECT_WORM      )  continue;
-
-		pObj->GetGlobalSphere(oPos, oRadius);
-		if ( oRadius <= 0.0f )  continue;
-
-		if ( oPos.x+oRadius < min.x ||
-			 oPos.y+oRadius < min.y ||
-			 oPos.z+oRadius < min.z ||
-			 oPos.x-oRadius > max.x ||
-			 oPos.y-oRadius > max.y ||
-			 oPos.z-oRadius > max.z )  continue;
-
-		if ( iType == OBJECT_FACTORY )
-		{
-			dpl = Length(oPos, lookat);
-			if ( dpl < oRadius )  continue;
-		}
-
-		proj = Projection(eye, lookat, oPos);
-		dpp = Length(proj, oPos);
-		if ( dpp > oRadius )  continue;
-
-		del = Length(eye, lookat);
-		len = Length(eye, proj);
-		if ( len > del )  continue;
-
-		dist = sqrtf(oRadius*oRadius + dpp*dpp)-3.0f;
-		if ( dist < 0.0f )  dist = 0.0f;
-		proj = (lookat-eye)*dist/del + proj;
-		len  = Length(eye, proj);
-
-		if ( len < del-prox )
-		{
-			eye = proj;
-			eye.y += len/5.0f;
-			return FALSE;
-		}
-		else
-		{
-			eye = (eye-lookat)*prox/del + lookat;
-			eye.y += (del-prox)/5.0f;
-			return FALSE;
-		}
-	}
-	return FALSE;
-#else
-	CObject		*pObj;
-	D3DVECTOR	oPos, min, max, proj;
-	ObjectType	oType, iType;
-	float		oRadius, dpp, del, len, angle;
-	int			i;
-
-	if ( m_cameraObj == 0 )
-	{
-		iType = OBJECT_NULL;
-	}
-	else
-	{
-		iType = m_cameraObj->RetType();
-	}
 
 	min.x = Min(m_actualEye.x, m_actualLookat.x);
 	min.y = Min(m_actualEye.y, m_actualLookat.y);
@@ -1110,38 +1057,18 @@ BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 		if ( pObj == 0 )  break;
 
 		if ( pObj->RetTruck() )  continue;  // pile ou fret?
+		if ( pObj->RetGhost() )  continue;
 
 		SetTransparency(pObj, 0.0f);  // objet opaque
 
 		if ( pObj == m_cameraObj )  continue;
 
-		if ( iType == OBJECT_BASE     ||  // bâtiment ?
-			 iType == OBJECT_DERRICK  ||
-			 iType == OBJECT_FACTORY  ||
-			 iType == OBJECT_STATION  ||
-			 iType == OBJECT_CONVERT  ||
-			 iType == OBJECT_REPAIR   ||
-			 iType == OBJECT_DESTROYER||
-			 iType == OBJECT_TOWER    ||
-			 iType == OBJECT_RESEARCH ||
-			 iType == OBJECT_RADAR    ||
-			 iType == OBJECT_ENERGY   ||
-			 iType == OBJECT_LABO     ||
-			 iType == OBJECT_NUCLEAR  ||
-			 iType == OBJECT_PARA     ||
-			 iType == OBJECT_SAFE     ||
-			 iType == OBJECT_HUSTON   )  continue;
-
 		oType = pObj->RetType();
-		if ( oType == OBJECT_HUMAN  ||
+		if ( oType == OBJECT_CAR    ||
+			 oType == OBJECT_HUMAN  ||
 			 oType == OBJECT_TECH   ||
-			 oType == OBJECT_TOTO   ||
 			 oType == OBJECT_FIX    ||
-			 oType == OBJECT_FRET   ||
-			 oType == OBJECT_ANT    ||
-			 oType == OBJECT_SPIDER ||
-			 oType == OBJECT_BEE    ||
-			 oType == OBJECT_WORM   )  continue;
+			 oType == OBJECT_FRET   )  continue;
 
 		pObj->GetGlobalSphere(oPos, oRadius);
 		if ( oRadius <= 2.0f )  continue;  // ignore les petits objets
@@ -1157,27 +1084,16 @@ BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 		dpp = Length(proj, oPos);
 		if ( dpp > oRadius )  continue;
 
-		if ( oType == OBJECT_FACTORY )
-		{
-			angle = RotateAngle(m_actualEye.x-oPos.x, oPos.z-m_actualEye.z);  // CW !
-			angle = Direction(angle, pObj->RetAngleY(0));
-			if ( Abs(angle) < 30.0f*PI/180.0f )  continue;  // dans la porte ?
-		}
-
 		del = Length(m_actualEye, m_actualLookat);
-		if ( oType == OBJECT_FACTORY )
-		{
-			del += oRadius;
-		}
-
 		len = Length(m_actualEye, proj);
 		if ( len > del )  continue;
+
+		if ( !pObj->IsOccludeCamera(m_actualEye, m_actualLookat) )  continue;
 
 		SetTransparency(pObj, 1.0f);  // objet transparent
 		m_bTransparency = TRUE;
 	}
 	return FALSE;
-#endif
 }
 
 // Evite les obstacles.
@@ -1198,12 +1114,12 @@ BOOL CCamera::IsCollisionFix(D3DVECTOR &eye, D3DVECTOR lookat)
 		if ( pObj == m_cameraObj )  continue;
 
 		type = pObj->RetType();
-		if ( type == OBJECT_TOTO    ||
-			 type == OBJECT_FRET    ||
+		if ( type == OBJECT_FRET    ||
 			 type == OBJECT_STONE   ||
 			 type == OBJECT_URANIUM ||
 			 type == OBJECT_METAL   ||
-			 type == OBJECT_POWER   ||
+			 type == OBJECT_BARREL  ||
+			 type == OBJECT_BARRELa ||
 			 type == OBJECT_ATOMIC  ||
 			 type == OBJECT_BULLET  ||
 			 type == OBJECT_BBOX    ||
@@ -1211,10 +1127,11 @@ BOOL CCamera::IsCollisionFix(D3DVECTOR &eye, D3DVECTOR lookat)
 			 type == OBJECT_KEYb    ||
 			 type == OBJECT_KEYc    ||
 			 type == OBJECT_KEYd    ||
-			 type == OBJECT_ANT     ||
-			 type == OBJECT_SPIDER  ||
-			 type == OBJECT_BEE     ||
-			 type == OBJECT_WORM    )  continue;
+			 type == OBJECT_BOT1    ||
+			 type == OBJECT_BOT2    ||
+			 type == OBJECT_BOT3    ||
+			 type == OBJECT_BOT4    ||
+			 type == OBJECT_BOT5    )  continue;
 
 		pObj->GetGlobalSphere(oPos, oRadius);
 		if ( oRadius == 0.0f )  continue;
@@ -1286,20 +1203,19 @@ void CCamera::EventMouseWheel(int dir)
 {
 	if ( m_type == CAMERA_BACK )
 	{
-		if ( dir > 0 )
-		{
-			m_backDist -= 8.0f;
-			if ( m_backDist < m_backMin )  m_backDist = m_backMin;
-		}
-		if ( dir < 0 )
-		{
-			m_backDist += 8.0f;
-			if ( m_backDist > 200.0f )  m_backDist = 200.0f;
-		}
+//?		if ( dir > 0 )
+//?		{
+//?			m_backDist -= 8.0f;
+//?			if ( m_backDist < m_backMin )  m_backDist = m_backMin;
+//?		}
+//?		if ( dir < 0 )
+//?		{
+//?			m_backDist += 8.0f;
+//?			if ( m_backDist > 200.0f )  m_backDist = 200.0f;
+//?		}
 	}
 
-	if ( m_type == CAMERA_FIX   ||
-		 m_type == CAMERA_PLANE )
+	if ( m_type == CAMERA_FIX )
 	{
 		if ( dir > 0 )
 		{
@@ -1332,6 +1248,8 @@ void CCamera::EventMouseWheel(int dir)
 
 BOOL CCamera::EventFrame(const Event &event)
 {
+	if ( m_type != CAMERA_FREE && m_engine->RetPause() )  return TRUE;
+
 	EffectFrame(event);
 	OverFrame(event);
 
@@ -1351,8 +1269,7 @@ BOOL CCamera::EventFrame(const Event &event)
 	{
 		return EventFrameBack(event);
 	}
-	if ( m_type == CAMERA_FIX   ||
-		 m_type == CAMERA_PLANE )
+	if ( m_type == CAMERA_FIX )
 	{
 		return EventFrameFix(event);
 	}
@@ -1381,90 +1298,6 @@ BOOL CCamera::EventFrame(const Event &event)
 }
 
 
-// Retourne le sprite par défaut à utiliser pour la souris.
-
-D3DMouse CCamera::RetMouseDef(FPOINT pos)
-{
-	D3DMouse	type;
-
-	type = D3DMOUSENORM;
-	m_mousePos = pos;
-
-	if ( m_type == CAMERA_INFO )  return type;
-
-	if ( m_bRightDown )  // bouton droite pressé ?
-	{
-		m_rightPosMove.x = pos.x - m_rightPosCenter.x;
-		m_rightPosMove.y = pos.y - m_rightPosCenter.y;
-		type = D3DMOUSEMOVE;
-	}
-	else
-	{
-		if ( !m_bCameraScroll )  return type;
-
-		m_mouseDirH = 0.0f;
-		m_mouseDirV = 0.0f;
-
-		if ( pos.x < m_mouseMarging )
-		{
-			m_mouseDirH = pos.x/m_mouseMarging - 1.0f;
-		}
-
-		if ( pos.x > 1.0f-m_mouseMarging )
-		{
-			m_mouseDirH = 1.0f - (1.0f-pos.x)/m_mouseMarging;
-		}
-
-		if ( pos.y < m_mouseMarging )
-		{
-			m_mouseDirV = pos.y/m_mouseMarging - 1.0f;
-		}
-
-		if ( pos.y > 1.0f-m_mouseMarging )
-		{
-			m_mouseDirV = 1.0f - (1.0f-pos.y)/m_mouseMarging;
-		}
-	
-		if ( m_type == CAMERA_FREE  ||
-			 m_type == CAMERA_EDIT  ||
-			 m_type == CAMERA_BACK  ||
-			 m_type == CAMERA_FIX   ||
-			 m_type == CAMERA_PLANE ||
-			 m_type == CAMERA_EXPLO )
-		{
-			if ( m_mouseDirH > 0.0f )
-			{
-				type = D3DMOUSESCROLLR;
-			}
-			if ( m_mouseDirH < 0.0f )
-			{
-				type = D3DMOUSESCROLLL;
-			}
-		}
-	
-		if ( m_type == CAMERA_FREE ||
-			 m_type == CAMERA_EDIT )
-		{
-			if ( m_mouseDirV > 0.0f )
-			{
-				type = D3DMOUSESCROLLU;
-			}
-			if ( m_mouseDirV < 0.0f )
-			{
-				type = D3DMOUSESCROLLD;
-			}
-		}
-
-		if ( m_bCameraInvertX )
-		{
-			m_mouseDirH = -m_mouseDirH;
-		}
-	}
-
-	return type;
-}
-
-
 
 // Déplace le point de vue.
 
@@ -1485,7 +1318,7 @@ BOOL CCamera::EventFrameFree(const Event &event)
 	}
 
 	// Up/Down.
-	m_eyePt = LookatPoint(m_eyePt, m_directionH, m_directionV, event.axeY*event.rTime*factor*m_speed);
+	m_eyePt = LookatPoint(m_eyePt, m_directionH, m_directionV, event.axeY*event.rTime*factor*m_speed*1.0f);
 
 	// Left/Right.
 	if ( event.keyState & KS_CONTROL )
@@ -1504,24 +1337,41 @@ BOOL CCamera::EventFrameFree(const Event &event)
 		m_directionH -= event.axeX*event.rTime*0.7f*m_speed;
 	}
 
-	// PageUp/PageDown.
+	// +/-.
 	if ( event.keyState & KS_NUMMINUS )
 	{
 		if ( m_heightEye < 500.0f )
 		{
-			m_heightEye += event.rTime*factor*m_speed;
+			m_heightEye += event.rTime*factor*m_speed*0.1f;
 		}
 	}
 	if ( event.keyState & KS_NUMPLUS )
 	{
-		if ( m_heightEye > -2.0f )
+		if ( m_heightEye > -20.0f )
 		{
-			m_heightEye -= event.rTime*factor*m_speed;
+			m_heightEye -= event.rTime*factor*m_speed*0.1f;
+		}
+	}
+
+	// PageUp/PageDown.
+	if ( event.keyState & KS_PAGEUP )
+	{
+		if ( m_heightShift < 50.0f )
+		{
+			m_heightShift += event.rTime*m_speed*5.0f;
+		}
+	}
+	if ( event.keyState & KS_PAGEDOWN )
+	{
+		if ( m_heightShift > -50.0f )
+		{
+			m_heightShift -= event.rTime*m_speed*5.0f;
 		}
 	}
 
 	m_terrain->ValidPosition(m_eyePt, 10.0f);
-	
+
+	m_eyePt.y += 20.0f;
 	if ( m_terrain->MoveOnFloor(m_eyePt, TRUE) )
 	{
 		m_eyePt.y += m_heightEye;
@@ -1535,8 +1385,8 @@ BOOL CCamera::EventFrameFree(const Event &event)
 				m_eyePt.y = pos.y;
 			}
 		}
-
 	}
+	m_eyePt.y -= 20.0f;
 
 	vLookatPt = LookatPoint( m_eyePt, m_directionH, m_directionV, 50.0f );
 
@@ -1544,6 +1394,8 @@ BOOL CCamera::EventFrameFree(const Event &event)
 	{
 		vLookatPt.y += m_heightLookat;
 	}
+
+	vLookatPt.y += m_heightShift;
 
 	SetViewTime(m_eyePt, vLookatPt, event.rTime);
 	
@@ -1566,18 +1418,6 @@ BOOL CCamera::EventFrameEdit(const Event &event)
 	if ( m_mouseDirV != 0.0f )
 	{
 		m_eyePt = LookatPoint(m_eyePt, m_directionH, m_directionV, m_mouseDirV*event.rTime*factor*m_speed);
-	}
-
-	if ( m_bCameraScroll )
-	{
-	// Left/Right.
-		m_fixDirectionH += m_mouseDirH*event.rTime*1.0f*m_speed;
-		m_fixDirectionH = NormAngle(m_fixDirectionH);
-
-		// Up/Down.
-//?		m_fixDirectionV -= m_mouseDirV*event.rTime*0.5f*m_speed;
-//?		if ( m_fixDirectionV < -PI*0.40f )  m_fixDirectionV = -PI*0.40f;
-//?		if ( m_fixDirectionV >  PI*0.20f )  m_fixDirectionV =  PI*0.20f;
 	}
 
 	m_terrain->ValidPosition(m_eyePt, 10.0f);
@@ -1621,6 +1461,7 @@ BOOL CCamera::EventFrameDialog(const Event &event)
 
 BOOL CCamera::EventFrameBack(const Event &event)
 {
+	D3DMATRIX*	mat;
 	CPhysics*	physics;
 	ObjectType	type;
 	D3DVECTOR	pos, vLookatPt;
@@ -1637,59 +1478,57 @@ BOOL CCamera::EventFrameBack(const Event &event)
 	}
 
 	// +/-.
-	if ( event.keyState & KS_NUMPLUS )
-	{
-		m_backDist -= event.rTime*30.0f*m_speed;
-		if ( m_backDist < m_backMin )  m_backDist = m_backMin;
-	}
-	if ( event.keyState & KS_NUMMINUS )
-	{
-		m_backDist += event.rTime*30.0f*m_speed;
-		if ( m_backDist > 200.0f )  m_backDist = 200.0f;
-	}
+//?	if ( event.keyState & KS_NUMPLUS )
+//?	{
+//?		m_backDist -= event.rTime*30.0f*m_speed;
+//?		if ( m_backDist < m_backMin )  m_backDist = m_backMin;
+//?	}
+//?	if ( event.keyState & KS_NUMMINUS )
+//?	{
+//?		m_backDist += event.rTime*30.0f*m_speed;
+//?		if ( m_backDist > 200.0f )  m_backDist = 200.0f;
+//?	}
 
-	m_motorTurn = 0.0f;
-
-	if ( m_bRightDown )
+	if ( Abs(m_backMotorSpeed) <= 0.1f &&  // véhicule arrêté ?
+		 !m_bBackLockRotate )
 	{
-		m_addDirectionH =  m_rightPosMove.x*6.0f;
-		m_addDirectionV = -m_rightPosMove.y*2.0f;
+		m_backSleepTime += event.rTime;
 	}
 	else
 	{
-		if ( m_bCameraScroll )
-		{
-#if 1
-			// Left/Right.
-			m_addDirectionH += m_mouseDirH*event.rTime*1.0f*m_speed;
-			m_addDirectionH = NormAngle(m_addDirectionH);
+		m_backSleepTime = 0.0f;
+		m_backRotSpeed  = 0.0f;
+	}
+	if ( type != OBJECT_CAR    &&
+		 type != OBJECT_HUMAN  &&
+		 type != OBJECT_BOT1   &&
+		 type != OBJECT_BOT2   &&
+		 type != OBJECT_BOT3   &&
+		 type != OBJECT_BOT4   &&
+		 type != OBJECT_BOT5   &&
+		 type != OBJECT_WALKER &&
+		 type != OBJECT_CRAZY  )
+	{
+		m_backSleepTime = 0.0f;
+		m_backRotSpeed  = 0.0f;
+	}
+	if ( m_centeringPhase != CP_NULL )
+	{
+		m_backSleepTime = 0.0f;
+		m_backRotSpeed  = 0.0f;
+	}
 
-			// Up/Down.
-//?			m_backDist -= m_mouseDirV*event.rTime*30.0f*m_speed;
-//?			if ( m_backDist <  10.0f )  m_backDist =  10.0f;
-//?			if ( m_backDist > 200.0f )  m_backDist = 200.0f;
-#else
-			if ( m_mousePos.y >= 0.18f && m_mousePos.y <= 0.93f )
-			{
-//?				m_addDirectionH = -(m_mousePos.x-0.5f)*4.0f;
-				m_addDirectionV =  (m_mousePos.y-0.5f)*2.0f;
-//?				if ( m_bCameraInvertX )  m_addDirectionH = -m_addDirectionH;
-				if ( m_bCameraInvertY )  m_addDirectionV = -m_addDirectionV;
-
-				if ( m_mousePos.x < 0.5f )  m_motorTurn = -1.0f;
-				if ( m_mousePos.x > 0.5f )  m_motorTurn =  1.0f;
-
-				mouse = m_mousePos;
-				mouse.x = 0.5f;
-				m_engine->MoveMousePos(mouse);
-			}
-			else
-			{
-				m_addDirectionH = 0.0f;
-				m_addDirectionV = 0.0f;
-			}
-#endif
-		}
+	// Fait tourner la caméra après un certain temps d'arrêt.
+	if ( m_backSleepTime < 5.0f )
+	{
+		m_rotDirectionH = Smooth(m_rotDirectionH, 0.0f, event.rTime*5.0f);
+	}
+	else
+	{
+		m_backRotSpeed = Smooth(m_backRotSpeed, 1.0f, event.rTime);
+		m_rotDirectionH -= event.rTime*m_backRotSpeed*0.5f;
+		m_rotDirectionH = NormAngle(m_rotDirectionH);
+		if ( m_rotDirectionH > PI )  m_rotDirectionH -= PI*2.0f;
 	}
 
 	if ( m_mouseDirH != 0 || m_mouseDirV != 0 )
@@ -1742,49 +1581,94 @@ BOOL CCamera::EventFrameBack(const Event &event)
 	if ( m_cameraObj != 0 )
 	{
 		vLookatPt = m_cameraObj->RetPosition(0);
-		     if ( type == OBJECT_BASE  )  vLookatPt.y += 40.0f;
-		else if ( type == OBJECT_HUMAN )  vLookatPt.y +=  1.0f;
-		else if ( type == OBJECT_TECH  )  vLookatPt.y +=  1.0f;
-		else                              vLookatPt.y +=  4.0f;
+		     if ( type == OBJECT_HUMAN   )  vLookatPt.y +=  1.0f;
+		else if ( type == OBJECT_TECH    )  vLookatPt.y +=  1.0f;
+		else if ( type == OBJECT_STARTER )  vLookatPt.y +=  1.5f;
+		else                                vLookatPt.y +=  4.0f;
+
+		if ( type == OBJECT_DOCK )
+		{
+			mat = m_cameraObj->RetWorldMatrix(0);
+			vLookatPt = Transform(*mat, D3DVECTOR(0.0f, 0.0f, 27.0f));
+		}
 
 		h = -m_cameraObj->RetAngleY(0);  // angle véhicule/batiment
-		
-		if ( type == OBJECT_DERRICK  ||
-			 type == OBJECT_FACTORY  ||
-			 type == OBJECT_REPAIR   ||
-			 type == OBJECT_DESTROYER||
-			 type == OBJECT_STATION  ||
-			 type == OBJECT_CONVERT  ||
-			 type == OBJECT_TOWER    ||
-			 type == OBJECT_RESEARCH ||
-			 type == OBJECT_RADAR    ||
-			 type == OBJECT_INFO     ||
-			 type == OBJECT_ENERGY   ||
-			 type == OBJECT_LABO     ||
-			 type == OBJECT_NUCLEAR  ||
-			 type == OBJECT_PARA     ||
-			 type == OBJECT_SAFE     ||
-			 type == OBJECT_HUSTON   ||
-			 type == OBJECT_START    ||
-			 type == OBJECT_END      )  // batiment ?
+
+		if ( type == OBJECT_FACTORY1  ||
+			 type == OBJECT_FACTORY2  ||
+			 type == OBJECT_FACTORY3  ||
+			 type == OBJECT_FACTORY4  ||
+			 type == OBJECT_FACTORY5  ||
+			 type == OBJECT_FACTORY6  ||
+			 type == OBJECT_FACTORY7  ||
+			 type == OBJECT_FACTORY8  ||
+			 type == OBJECT_FACTORY9  ||
+			 type == OBJECT_FACTORY10 ||
+			 type == OBJECT_ALIEN1    ||
+			 type == OBJECT_ALIEN2    ||
+			 type == OBJECT_ALIEN3    ||
+			 type == OBJECT_ALIEN4    ||
+			 type == OBJECT_ALIEN5    ||
+			 type == OBJECT_ALIEN6    ||
+			 type == OBJECT_ALIEN7    ||
+			 type == OBJECT_ALIEN8    ||
+			 type == OBJECT_ALIEN9    ||
+			 type == OBJECT_ALIEN10   ||
+			 type == OBJECT_INCA1     ||
+			 type == OBJECT_INCA2     ||
+			 type == OBJECT_INCA3     ||
+			 type == OBJECT_INCA4     ||
+			 type == OBJECT_INCA5     ||
+			 type == OBJECT_INCA6     ||
+			 type == OBJECT_INCA7     ||
+			 type == OBJECT_INCA8     ||
+			 type == OBJECT_INCA9     ||
+			 type == OBJECT_INCA10    ||
+			 type == OBJECT_BUILDING1 ||
+			 type == OBJECT_BUILDING2 ||
+			 type == OBJECT_BUILDING3 ||
+			 type == OBJECT_BUILDING4 ||
+			 type == OBJECT_BUILDING5 ||
+			 type == OBJECT_BUILDING6 ||
+			 type == OBJECT_BUILDING7 ||
+			 type == OBJECT_BUILDING8 ||
+			 type == OBJECT_BUILDING9 ||
+			 type == OBJECT_BUILDING10||
+			 type == OBJECT_TOWER     ||
+			 type == OBJECT_NUCLEAR   ||
+			 type == OBJECT_PARA      ||
+			 type == OBJECT_COMPUTER  ||
+			 type == OBJECT_REPAIR    ||
+			 type == OBJECT_SWEET     ||
+			 type == OBJECT_DOOR1     ||
+			 type == OBJECT_DOOR2     ||
+			 type == OBJECT_DOOR3     ||
+			 type == OBJECT_DOOR4     ||
+			 type == OBJECT_DOOR5     ||
+			 type == OBJECT_START     ||
+			 type == OBJECT_END       )  // batiment ?
 		{
 			h += PI*0.20f;  // presque de face
+		}
+		else if ( type == OBJECT_DOCK )
+		{
+			h += -PI*0.45f;  // zouli
+		}
+		else if ( type == OBJECT_STARTER )
+		{
+			h += 0.0f;  // de face
 		}
 		else	// véhicule ?
 		{
 			h += PI;  // de dos
 		}
-		h = NormAngle(h)+m_remotePan;
+		h = NormAngle(h);
 		v = 0.0f;  //?
 
 		h += m_centeringCurrentH;
 		h += m_addDirectionH*(1.0f-centeringH);
+		h += m_rotDirectionH*(1.0f-centeringH);
 		h = NormAngle(h);
-
-		if ( type == OBJECT_MOBILEdr )  // dessinateur ?
-		{
-			v -= 0.3f;  // caméra plus haute
-		}
 
 		v += m_centeringCurrentV;
 		v += m_addDirectionV*(1.0f-centeringV);
@@ -1804,6 +1688,7 @@ BOOL CCamera::EventFrameBack(const Event &event)
 			floor = m_terrain->RetFloorHeight(pos)-4.0f;
 			if ( floor > 0.0f )
 			{
+				if ( floor > 10.0f )  floor = 10.0f;
 				m_eyePt.y += floor;  // montre la descente devant
 			}
 		}
@@ -1825,7 +1710,7 @@ BOOL CCamera::EventFrameBack(const Event &event)
 BOOL CCamera::EventFrameFix(const Event &event)
 {
 	D3DVECTOR	pos, vLookatPt;
-	float		h, v, d;
+	float		h, v;
 
 	// +/-.
 	if ( event.keyState & KS_NUMPLUS )
@@ -1839,18 +1724,6 @@ BOOL CCamera::EventFrameFix(const Event &event)
 		if ( m_fixDist > 200.0f )  m_fixDist = 200.0f;
 	}
 
-	if ( m_bCameraScroll )
-	{
-		// Left/Right.
-		m_fixDirectionH += m_mouseDirH*event.rTime*1.0f*m_speed;
-		m_fixDirectionH = NormAngle(m_fixDirectionH);
-
-		// Up/Down.
-//?		m_fixDist -= m_mouseDirV*event.rTime*30.0f*m_speed;
-//?		if ( m_fixDist <  10.0f )  m_fixDist =  10.0f;
-//?		if ( m_fixDist > 200.0f )  m_fixDist = 200.0f;
-	}
-
 	if ( m_mouseDirH != 0 || m_mouseDirV != 0 )
 	{
 		AbortCentering();  // stoppe cadrage spécial
@@ -1860,14 +1733,10 @@ BOOL CCamera::EventFrameFix(const Event &event)
 	{
 		vLookatPt = m_cameraObj->RetPosition(0);
 
-		h = m_fixDirectionH+m_remotePan;
+		h = m_fixDirectionH;
 		v = m_fixDirectionV;
 
-		d = m_fixDist;
-//-		if ( m_type == CAMERA_PLANE )  d += 20.0f;
-		m_eyePt = RotateView(vLookatPt, h, v, d);
-//-		if ( m_type == CAMERA_PLANE )  m_eyePt.y += 50.0f;
-		if ( m_type == CAMERA_PLANE )  m_eyePt.y += m_fixDist/2.0f;
+		m_eyePt = RotateView(vLookatPt, h, v, m_fixDist);
 		m_eyePt = ExcludeTerrain(m_eyePt, vLookatPt, h, v);
 		m_eyePt = ExcludeObject(m_eyePt, vLookatPt, h, v);
 
@@ -1934,8 +1803,8 @@ BOOL CCamera::EventFrameOnBoard(const Event &event)
 	{
 		m_cameraObj->SetViewFromHere(m_eyePt, m_directionH, m_directionV,
 									 vLookatPt, vUpVec, m_type);
-		eye    = m_effectOffset*0.3f+m_eyePt;
-		lookat = m_effectOffset*0.3f+vLookatPt;
+		eye    = m_effectOffset*0.1f+m_eyePt;
+		lookat = m_effectOffset*0.1f+vLookatPt;
 
 		SetViewParams(eye, lookat, vUpVec);
 		m_actualEye    = eye;
@@ -1987,14 +1856,7 @@ BOOL CCamera::EventFrameVisit(const Event &event)
 		if ( m_visitDirectionV > 0.0f )  m_visitDirectionV = 0.0f;
 	}
 
-	if ( m_bCameraScroll )
-	{
-		m_visitDist -= m_mouseDirV*event.rTime*30.0f*m_speed;
-		if ( m_visitDist <  20.0f )  m_visitDist =  20.0f;
-		if ( m_visitDist > 200.0f )  m_visitDist = 200.0f;
-	}
-
-	angleH = (m_visitTime/10.0f)*(PI*2.0f);
+	angleH = -(m_visitTime/10.0f)*(PI*2.0f);
 	angleV = m_visitDirectionV;
 	eye = RotateView(m_visitGoal, angleH, angleV, m_visitDist);
 	eye = ExcludeTerrain(eye, m_visitGoal, angleH, angleV);

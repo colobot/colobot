@@ -31,6 +31,10 @@ enum FontType;
 #define STATE_WARNING	(1<<14)	// cadre hachuré jaune/noir
 #define STATE_VALUE		(1<<15)	// affiche la valeur
 #define STATE_RUN		(1<<16)	// programme en cours
+#define STATE_LOOK1		(1<<17)	// aspect #1
+#define STATE_LOOK2		(1<<18)	// aspect #2
+#define STATE_RADIO		(1<<19)	// radio button
+#define STATE_FLASH		(1<<20)	// clignotte
 
 
 
@@ -69,6 +73,8 @@ public:
 	virtual BOOL	GetTooltip(FPOINT pos, char* name);
 	virtual void	SetFocus(BOOL bFocus);
 	virtual BOOL	RetFocus();
+	virtual void	SetTabOrder(int rank);
+	virtual int		RetTabOrder();
 
 	virtual EventMsg RetEventMsg();
 
@@ -79,10 +85,12 @@ protected:
 			void	GlintCreate(FPOINT ref, BOOL bLeft=TRUE, BOOL bUp=TRUE);
 			void	GlintFrame(const Event &event);
 			void	DrawPart(int icon, float zoom, float ex);
+			void	DrawPart(FPOINT pos, FPOINT dim, int icon, float zoom, float ex);
 			void	DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2, float ex=0.0f);
 			void	DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2, FPOINT corner, float ex);
 			void	DrawWarning(FPOINT pos, FPOINT dim);
 			void	DrawShadow(FPOINT pos, FPOINT dim, float deep=1.0f);
+			void	DrawFocus(FPOINT pos, FPOINT dim);
 	virtual	BOOL	Detect(FPOINT pos);
 
 protected:
@@ -106,6 +114,8 @@ protected:
 	char		m_tooltip[100];	// nom du tooltip
 	BOOL		m_bFocus;
 	BOOL		m_bCapture;
+	int			m_tabOrder;
+	float		m_time;
 
 	BOOL		m_bGlint;
 	FPOINT		m_glintCorner1;

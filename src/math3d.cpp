@@ -81,6 +81,16 @@ inline float Norm(float a)
 }
 
 
+// Retourne la valeur normalisée (-1..1).
+
+inline float NormSign(float a)
+{
+	if ( a < -1.0f )  return -1.0f;
+	if ( a >  1.0f )  return  1.0f;
+	return a;
+}
+
+
 // Retourne la valeur absolue d'un nombre.
 
 inline float Abs(float a)
@@ -340,13 +350,6 @@ float MidPoint(FPOINT a, FPOINT b, float px)
 	return (b.y-a.y)*(px-a.x)/(b.x-a.x)+a.y;
 }
 
-// Avance de "dist" le long du segment p1-p2.
-
-D3DVECTOR SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist)
-{
-	return p1+Normalize(p2-p1)*dist;
-}
-
 // Vérifie si un point est dans un triangle.
 
 BOOL IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p)
@@ -371,6 +374,106 @@ BOOL IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p)
 	m = MidPoint(c, a, p.x);
 	if ( (n>p.y||p.y>m) && (n<p.y||p.y<m) )  return FALSE;
 
+	return TRUE;
+}
+
+// Calcule le point d'intersection entre deux droites ab et cd.
+// Utilise l'algorithme de Gauss-Jordan utilisé pour le calcul
+// matriciel. Les calculs ont été spécialisés au cas simple de
+// l'intersection de segments pour des questions de rapidité.
+//
+//		Q=BX-AX : T=BY-AY
+//		R=CX-DX : U=CY-DY   matrice  [ Q R | S ]
+//		S=CX-AX : V=CY-AY            [ T U | V ]
+//
+// Cette matrice représente les coefficients de l'équation
+// vectorielle suivante :
+//		AB*a + CD*b = AC
+//
+// La coordonnée du point "P" s'obtient par :
+//		P = OA + a*AB
+//
+// ou encore :
+//		P = OC + b*CD
+//
+// Traite les cas particuliers des segments confondus ou parallèles.
+
+BOOL Intersect(const FPOINT &a, const FPOINT &b,
+			   const FPOINT &c, const FPOINT &d,
+			   FPOINT &p)
+{
+	float	q,r,s,t,u,v;
+
+	q = b.x-a.x;
+	r = c.x-d.x;
+	s = c.x-a.x;
+	t = b.y-a.y;
+	u = c.y-d.y;
+	v = c.y-a.y;
+
+	if ( q == 0.0f )  // ab vertical ?
+	{
+		if ( r == 0.0f )  // cd vertical ?
+		{
+			return FALSE;
+		}
+		else
+		{
+			p.x = ((d.x-c.x)*s/r)+c.x;
+			p.y = ((d.y-c.y)*s/r)+c.y;
+			return TRUE;
+		}
+	}
+
+	if ( t != 0.0f )  // ab pas horizontal ?
+	{
+		u = u-(t*r)/q;
+		v = v-(t*s)/q;
+	}
+
+	if ( u == 0.0f )
+	{
+		return FALSE;
+	}
+
+	p.x = ((d.x-c.x)*v/u)+c.x;
+	p.y = ((d.y-c.y)*v/u)+c.y;
+	return TRUE;
+}
+
+// Teste si un point est dans un rectangle p1-p2.
+
+BOOL IsBBox(const FPOINT &p1, const FPOINT &p2, const FPOINT &p)
+{
+	if ( p1.x < p2.x )
+	{
+		if ( p.x < p1.x || p.x > p2.x )  return FALSE;
+	}
+	else
+	{
+		if ( p.x < p2.x || p.x > p1.x )  return FALSE;
+	}
+	if ( p1.y < p2.y )
+	{
+		if ( p.y < p1.y || p.y > p2.y )  return FALSE;
+	}
+	else
+	{
+		if ( p.y < p2.y || p.y > p1.y )  return FALSE;
+	}
+	return TRUE;
+}
+
+// Intersection de deux droites, avec test si le point
+// est bien sur les deux segments ab et cd.
+
+BOOL IntersectSegment(const FPOINT &a, const FPOINT &b,
+					  const FPOINT &c, const FPOINT &d,
+					  FPOINT &p)
+{
+	if ( !Intersect(a,b, c,d, p) )  return FALSE;
+	if ( !IsBBox(a,b, p) )  return FALSE;
+	if ( !IsBBox(c,d, p) )  return FALSE;
 	return TRUE;
 }
 
@@ -426,6 +529,82 @@ BOOL IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p)
 	p.y = a.y + d1/d*(b.y-a.y) + d2/d*(c.y-a.y);
 	return TRUE;
 #endif
+}
+
+
+// Avance de "dist" le long du segment p1-p2.
+
+D3DVECTOR SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist)
+{
+	return p1+Normalize(p2-p1)*dist;
+}
+
+
+// Teste si un point p est "dans" un segment p1-p2.
+// Pour un segment vertical partant de bas en haut, être
+// dedans, c'est être à gauche.
+// Une suite de segments CCW permet de décrire une forme.
+// Si un point est "IsInside" pour tous les segments, il est
+// à l'intérieur la forme (si elle est convexe).
+
+BOOL IsInside(FPOINT p1, FPOINT p2, FPOINT p)
+{
+	p2.x -= p1.x;
+	p2.y -= p1.y;
+
+	p.x -= p1.x;
+	p.y -= p1.y;
+
+	if ( p2.y > 0.0f )
+	{
+		if ( p2.x > 0.0f )
+		{
+			if ( p2.x > p2.y )  // octan 1 ?
+			{
+				return p.y >= p2.y/p2.x*p.x;
+			}
+			else	// octan 2 ?
+			{
+				return p.x <= p2.x/p2.y*p.y;
+			}
+		}
+		else
+		{
+			if ( -p2.x < p2.y )  // octan 3 ?
+			{
+				return p.x <= p2.x/p2.y*p.y;
+			}
+			else	// octan 4 ?
+			{
+				return p.y <= p2.y/p2.x*p.x;
+			}
+		}
+	}
+	else
+	{
+		if ( p2.x < 0.0f )
+		{
+			if ( -p2.x > -p2.y )  // octan 5 ?
+			{
+				return p.y <= p2.y/p2.x*p.x;
+			}
+			else	// octan 6 ?
+			{
+				return p.x >= p2.x/p2.y*p.y;
+			}
+		}
+		else
+		{
+			if ( p2.x < -p2.y )  // octan 7 ?
+			{
+				return p.x >= p2.x/p2.y*p.y;
+			}
+			else	// octan 8 ?
+			{
+				return p.y >= p2.y/p2.x*p.x;
+			}
+		}
+	}
 }
 
 
@@ -631,6 +810,21 @@ D3DVECTOR Transform(const D3DMATRIX &m, D3DVECTOR p)
 	return pp;
 }
 
+
+// Calcule la projection d'un point P sur une droite AB.
+
+FPOINT Projection(const FPOINT &a, const FPOINT &b, const FPOINT &p)
+{
+	FPOINT	pp;
+	float	k;
+
+	k  = (b.x-a.x)*(p.x-a.x) + (b.y-a.y)*(p.y-a.y);
+	k /= (b.x-a.x)*(b.x-a.x) + (b.y-a.y)*(b.y-a.y);
+
+	pp.x = a.x + k*(b.x-a.x);
+	pp.y = a.y + k*(b.y-a.y);
+	return pp;
+}
 
 // Calcule la projection d'un point P sur une droite AB.
 
@@ -846,6 +1040,29 @@ inline float Prop(int a, int b, float p)
 	return aa+p*(bb-aa);
 }
 
+// Fait progresser linéairement une valeur souhaitée à partir
+// de sa valeur actuelle.
+
+float Linear(float actual, float hope, float time)
+{
+	float	futur;
+
+	if ( actual == hope )  return hope;
+
+	if ( hope > actual )
+	{
+		futur = actual+time;
+		if ( futur > hope )  futur = hope;
+	}
+	if ( hope < actual )
+	{
+		futur = actual-time;
+		if ( futur < hope )  futur = hope;
+	}
+
+	return futur;
+}
+
 // Fait progresser mollement une valeur souhaitée à partir de
 // sa valeur actuelle. Plus le temps est grand et plus la
 // progression est rapide.
@@ -853,6 +1070,8 @@ inline float Prop(int a, int b, float p)
 float Smooth(float actual, float hope, float time)
 {
 	float	futur;
+
+	if ( actual == hope )  return hope;
 
 	futur = actual + (hope-actual)*time;
 
@@ -866,6 +1085,81 @@ float Smooth(float actual, float hope, float time)
 	}
 
 	return futur;
+}
+
+// Version précise et lente de Smooth.
+
+float SmoothP(float actual, float hope, float time)
+{
+	float	futur, step;
+	int		iter, i;
+
+	if ( actual == hope )  return hope;
+
+	if ( time < 0.001f )
+	{
+		futur = actual + (hope-actual)*time;
+	}
+	else
+	{
+		iter = (int)(time/0.001f);
+		step = time/iter;
+		futur = actual;
+		for ( i=0 ; i<iter ; i++ )
+		{
+			futur += (hope-futur)*step;
+		}
+	}
+
+	if ( hope > actual )
+	{
+		if ( futur > hope )  futur = hope;
+	}
+	if ( hope < actual )
+	{
+		if ( futur < hope )  futur = hope;
+	}
+
+	return futur;
+}
+
+// Version approximative et rapide de SmoothP.
+// Sur une machine rapide, lorsque le nombre de FPS devient grand,
+// les robots ont des mouvements d'amplitude trop grande en utilisant
+// Smooth. Cette procédure Smoove essaye de corriger cela empiriquement,
+// bien que cela soit mathématiquement faux !
+
+float SmoothA(float actual, float hope, float time)
+{
+	float	futur;
+
+	if ( actual == hope )  return hope;
+
+	futur = actual + (hope-actual)*powf(time, 0.5f);  // sqr
+
+	if ( hope > actual )
+	{
+		if ( futur > hope )  futur = hope;
+	}
+	if ( hope < actual )
+	{
+		if ( futur < hope )  futur = hope;
+	}
+
+	return futur;
+}
+
+// Transforme une progression pour obtenir un mouvement dou.
+
+float Soft(float progress, int iter)
+{
+	int		i;
+
+	for ( i=0 ; i<iter ; i++ )
+	{
+		progress = sinf(PI*1.5f+progress*PI)/2.0f+0.5f;
+	}
+	return progress;
 }
 
 

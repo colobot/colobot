@@ -730,9 +730,6 @@ virtual				~CBotVar( );						// destructeur
 	DllExport
 	virtual
 	CBotVar*		GivItem(const char* name);	// rend un élément d'une classe selon son nom (*)
-	virtual
-	CBotVar*		GivItemRef(int nIdent);		// idem à partir du n° ref
-
 	DllExport
 	virtual
 	CBotVar*		GivItem(int row, BOOL bGrow = FALSE); 
@@ -871,7 +868,6 @@ private:
 private:
 	CBotClass*		m_pParent;		// classe parent
 	CBotString		m_name;			// nom de cette classe-ci
-	int				m_nbVar;		// nombre de variables dans la chaîne
 	CBotVar*		m_pVar;			// contenu de la classe
 	BOOL			m_bIntrinsic;	// classe intrinsèque
 	CBotClass*		m_next;			// chaine les classe
@@ -928,11 +924,6 @@ public:
 	DllExport
 	CBotClass*		GivParent();				// donne la classe père (ou NULL)
 
-	// dit si une classe est dérivée (Extends) d'une autre
-	// rend TRUE aussi si les classes sont identiques
-	DllExport
-	BOOL			IsChildOf(CBotClass* pClass);
-
 	static
 	CBotClass*		Find(CBotToken* &pToken);	// trouve une classe d'après son nom
 
@@ -942,7 +933,6 @@ public:
 
 	CBotVar*		GivVar();					// rend la liste des variables
 	CBotVar*		GivItem(const char* name);	// l'une des variables selon son nom
-	CBotVar*		GivItemRef(int nIdent);
 
 	CBotTypResult	CompileMethode(const char* name, CBotVar* pThis, CBotVar** ppParams, 
 								   CBotCStack* pStack, long& nIdent);

@@ -89,7 +89,7 @@ BEGIN
     ID_RETURN               "return"
     ID_CLASS                "class"
     ID_EXTENDS              "extends"
-    ID_SYNCHO               "synchronized"
+    ID_SUPER                "super"
     ID_NEW                  "new"
     ID_PUBLIC               "public"
     ID_EXTERN               "extern"
@@ -97,7 +97,7 @@ BEGIN
     ID_STATIC               "static"
     ID_PROTECTED            "protected"
     ID_PRIVATE              "private"
-    ID_REPEAT               "repeat"
+    ID_SYNCHO               "synchronized"
 END
 
 STRINGTABLE DISCARDABLE 
@@ -255,11 +255,6 @@ STRINGTABLE DISCARDABLE
 BEGIN
     TX_UNDEF                "undefined"
     TX_NAN                  "not a number"
-END
-
-STRINGTABLE DISCARDABLE 
-BEGIN
-    ID_SUPER                "super"
 END
 
 #endif    // French (France) resources

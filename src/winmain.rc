@@ -64,17 +64,6 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Accelerator
-//
-
-IDR_MAIN_ACCEL ACCELERATORS DISCARDABLE 
-BEGIN
-    VK_F12,         IDM_CHANGEDEVICE,       VIRTKEY, SHIFT, NOINVERT
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // DESIGNINFO
 //
 
@@ -219,13 +208,13 @@ BEGIN
         BLOCK "100c04b0"
         BEGIN
             VALUE "CompanyName", "www.epsitec.com\0"
-            VALUE "FileDescription", "CeeBot\0"
-            VALUE "FileVersion", "Version 1.0\0"
-            VALUE "InternalName", "CeeBot\0"
-            VALUE "LegalCopyright", "Copyright © 2001 by EPSITEC SA\0"
-            VALUE "OriginalFilename", "ceebot.exe\0"
-            VALUE "ProductName", "EPSITEC CeeBot\0"
-            VALUE "ProductVersion", "Version 1.0\0"
+            VALUE "FileDescription", "BuzzingCars\0"
+            VALUE "FileVersion", "Version 1.2\0"
+            VALUE "InternalName", "BuzzingCars\0"
+            VALUE "LegalCopyright", "Copyright © 2001 & 2002 by EPSITEC SA\0"
+            VALUE "OriginalFilename", "buzzingcars.exe\0"
+            VALUE "ProductName", "EPSITEC & BuzzingCars\0"
+            VALUE "ProductVersion", "Version 1.2\0"
         END
     END
     BLOCK "VarFileInfo"

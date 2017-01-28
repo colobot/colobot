@@ -75,14 +75,6 @@ Error CTask::IsEnded()
 }
 
 
-// Indique si l'action est en cours.
-
-BOOL CTask::IsBusy()
-{
-	return TRUE;
-}
-
-
 // Termine brutalement l'action en cours.
 
 BOOL CTask::Abort()

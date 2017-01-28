@@ -81,7 +81,7 @@ void CCompass::Draw()
 
 	device = m_engine->RetD3DDevice();
 
-	m_engine->SetTexture("button2.tga");
+	m_engine->SetTexture("button1.tga");
 	m_engine->SetState(D3DSTATENORMAL);
 
 	p1.x = m_pos.x;
@@ -93,9 +93,9 @@ void CCompass::Draw()
 	c.y = (p1.y+p2.y)/2.0f;  // centre
 
 	uv1.x = 64.0f/256.0f;
-	uv1.y = 32.0f/256.0f;
+	uv1.y =  0.0f/256.0f;
 	uv2.x = 96.0f/256.0f;
-	uv2.y = 64.0f/256.0f;
+	uv2.y = 32.0f/256.0f;
 
 	dp = 0.5f/256.0f;
 	uv1.x += dp;

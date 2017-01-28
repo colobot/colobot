@@ -41,24 +41,26 @@ static float table_color[MAX_COLORS*3] =
 };
 
 
-#define MAX_STATES		10
+#define MAX_STATES		12
 
 static int table_state[MAX_STATES] =
 {
 	D3DSTATENORMAL,
-	D3DSTATEPART1,
-	D3DSTATEPART2,
+	D3DSTATEPART1,  // #1 flan roue
+	D3DSTATEPART2,  // #2 profil pneu
 	D3DSTATEPART3,
 	D3DSTATEPART4,
 	D3DSTATE2FACE,	// #5
 	D3DSTATETTw,
 	D3DSTATETTb,
-	D3DSTATETTw|D3DSTATE2FACE,  // #8
+	D3DSTATETTw|D3DSTATE2FACE,  // #8 (pales helico)
 	D3DSTATETTb|D3DSTATE2FACE,  // #9
+	D3DSTATETTb|D3DSTATE2FACE|D3DSTATEWRAP,  // #10 (vitres blanches)
+	D3DSTATETTw|D3DSTATE2FACE|D3DSTATEWRAP,  // #11 (vitres noires)
 };
 
 
-#define MAX_NAMES		23
+#define MAX_NAMES		48
 
 
 
@@ -76,7 +78,7 @@ CModel::CModel(CInstanceManager* iMan)
 	m_triangleTable = m_modFile->RetTriangleList();
 
 	m_textureRank = 0;
-	strcpy(m_textureName, "lemt.tga");
+	strcpy(m_textureName, "car01.tga");
 	m_color = 0;
 	m_state = 0;
 	m_textureMode = 0;
@@ -84,6 +86,7 @@ CModel::CModel(CInstanceManager* iMan)
 	m_bTextureMirrorX = FALSE;
 	m_bTextureMirrorY = FALSE;
 	m_texturePart = 0;
+	m_textureAngle = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	TexturePartUpdate();
 
 	m_bDisplayTransparent = FALSE;
@@ -97,9 +100,13 @@ CModel::CModel(CInstanceManager* iMan)
 	m_oper = 'P';
 
 	m_secondTexNum = 0;
-	m_secondSubdiv = 1;
+	m_secondSubdiv = 7;
 	m_secondOffsetU = 0;
 	m_secondOffsetV = 0;
+
+	m_modifPos  = 1.0f;
+	m_modifRot  = 22.5f*PI/180.0f;
+	m_modifZoom = 2.0f;
 
 	m_min = 0.0f;
 	m_max = 1000000.0f;
@@ -207,6 +214,14 @@ void CModel::StartUserAction()
 	pb->SetState(STATE_SIMPLY);
 	pb->SetName("-Z");
 
+	dim.x =  80.0f/640.0f;
+	dim.y =  18.0f/480.0f;
+	pos.x =  10.0f/640.0f;
+	pos.y = 300.0f/480.0f;
+	m_interface->CreateEdit(pos, dim, 0, EVENT_EDIT6);
+
+	PutModifValues();
+
 //?	m_modFile->ReadModel("objects\\io.mod");
 	DeselectAll();
 	CurrentInit();
@@ -228,6 +243,7 @@ void CModel::StopUserAction()
 	m_interface->DeleteControl(EVENT_EDIT3);
 	m_interface->DeleteControl(EVENT_EDIT4);
 	m_interface->DeleteControl(EVENT_EDIT5);
+	m_interface->DeleteControl(EVENT_EDIT6);
 	m_interface->DeleteControl(EVENT_BUTTON1);
 	m_interface->DeleteControl(EVENT_BUTTON2);
 	m_interface->DeleteControl(EVENT_BUTTON3);
@@ -331,6 +347,68 @@ void CModel::GetTextureValues()
 }
 
 
+// Met à jour les valeurs éditables pour les modifications.
+
+void CModel::PutModifValues()
+{
+	CEdit*	pe;
+	char	s[100];
+	float	value;
+
+	pe = (CEdit*)m_interface->SearchControl(EVENT_EDIT6);
+	if ( pe != 0 )
+	{
+		if ( m_oper == 'P' )
+		{
+			value = m_modifPos;
+			sprintf(s, "%.2f", value);
+		}
+		if ( m_oper == 'R' )
+		{
+			value = m_modifRot*180.0f/PI;
+			sprintf(s, "%.2f", value);
+		}
+		if ( m_oper == 'Z' )
+		{
+			value = m_modifZoom*100.0f;
+			sprintf(s, "%.2f", value);
+		}
+		pe->SetText(s);
+	}
+}
+
+// Prend les valeurs éditables pour les modifications.
+
+void CModel::GetModifValues()
+{
+	CEdit*	pe;
+	char	s[100];
+	float	value;
+
+	pe = (CEdit*)m_interface->SearchControl(EVENT_EDIT6);
+	if ( pe != 0 )
+	{
+		pe->GetText(s, 100);
+
+		if ( m_oper == 'P' )
+		{
+			sscanf(s, "%f", &value);
+			m_modifPos = value;
+		}
+		if ( m_oper == 'R' )
+		{
+			sscanf(s, "%f", &value);
+			m_modifRot = value*PI/180.0f;
+		}
+		if ( m_oper == 'Z' )
+		{
+			sscanf(s, "%f", &value);
+			m_modifZoom = value/100.0f;
+		}
+	}
+}
+
+
 // Donne le nom du modèle.
 
 void CModel::GetModelName(char *buffer)
@@ -346,7 +424,14 @@ void CModel::GetModelName(char *buffer)
 	else
 	{
 		pe->GetText(s, 100);
-		sprintf(buffer, "objects\\%s.mod", s);
+		if ( s[0] == 0 )
+		{
+			strcpy(buffer, "objects\\io.mod");
+		}
+		else
+		{
+			sprintf(buffer, "objects\\%s.mod", s);
+		}
 	}
 }
 
@@ -433,7 +518,7 @@ BOOL CModel::IsEditFocus()
 BOOL CModel::EventProcess(const Event &event)
 {
 	char	s[100];
-	int		first, last;
+	int		first, last, dir;
 
 	switch( event.event )
 	{
@@ -516,8 +601,16 @@ BOOL CModel::EventProcess(const Event &event)
 				}
 				if ( event.param == 'V' )
 				{
-					m_color ++;
-					if ( m_color >= MAX_COLORS )  m_color = 0;
+					if ( event.keyState & KS_SHIFT )
+					{
+						m_color --;
+						if ( m_color < 0 )  m_color = MAX_COLORS-1;
+					}
+					else
+					{
+						m_color ++;
+						if ( m_color >= MAX_COLORS )  m_color = 0;
+					}
 					UpdateInfoText();
 					ColorSelect();
 				}
@@ -527,15 +620,31 @@ BOOL CModel::EventProcess(const Event &event)
 				}
 				if ( event.param == 'K' )
 				{
-					m_state ++;
-					if ( m_state >= MAX_STATES )  m_state = 0;
+					if ( event.keyState & KS_SHIFT )
+					{
+						m_state --;
+						if ( m_state < 0 )  m_state = MAX_STATES-1;
+					}
+					else
+					{
+						m_state ++;
+						if ( m_state >= MAX_STATES )  m_state = 0;
+					}
 					UpdateInfoText();
 					StateSelect();
 				}
 				if ( event.param == 'M' )
 				{
-					m_textureMode ++;
-					if ( m_textureMode > 3 )  m_textureMode = 0;
+					if ( event.keyState & KS_SHIFT )
+					{
+						m_textureMode --;
+						if ( m_textureMode < 0 )  m_textureMode = 28-1;
+					}
+					else
+					{
+						m_textureMode ++;
+						if ( m_textureMode > 28 )  m_textureMode = 0;
+					}
 					UpdateInfoText();
 					GetTextureValues();
 					MappingSelect(m_textureMode, m_textureRotate,
@@ -572,12 +681,16 @@ BOOL CModel::EventProcess(const Event &event)
 				}
 				if ( event.param == 'O' )
 				{
-					TextureRankChange(+1);
+					if ( event.keyState & KS_SHIFT )  dir = -1;
+					else                              dir =  1;
+					TextureRankChange(dir);
 					UpdateInfoText();
 				}
 				if ( event.param == 'P' )
 				{
-					TexturePartChange(+1);
+					if ( event.keyState & KS_SHIFT )  dir = -1;
+					else                              dir =  1;
+					TexturePartChange(dir);
 					UpdateInfoText();
 					GetTextureValues();
 					MappingSelect(m_textureMode, m_textureRotate,
@@ -601,6 +714,57 @@ BOOL CModel::EventProcess(const Event &event)
 					MappingSelect(m_textureMode, m_textureRotate,
 								  m_bTextureMirrorX, m_bTextureMirrorY,
 								  ti, ts, "");
+				}
+				if ( event.param == 'D' )
+				{
+					if ( event.keyState & KS_SHIFT )
+					{
+						m_textureAngle.x -= m_modifRot*180.0f/PI;
+						if ( m_textureAngle.x < 0.0f )  m_textureAngle.x += 360.0f;
+					}
+					else
+					{
+						m_textureAngle.x += m_modifRot*180.0f/PI;
+						if ( m_textureAngle.x >= 360.0f )  m_textureAngle.x -= 360.0f;
+					}
+					UpdateInfoText();
+					MappingSelect(m_textureMode, m_textureRotate,
+								  m_bTextureMirrorX, m_bTextureMirrorY,
+								  m_textureInf, m_textureSup, m_textureName);
+				}
+				if ( event.param == 'F' )
+				{
+					if ( event.keyState & KS_SHIFT )
+					{
+						m_textureAngle.y -= m_modifRot*180.0f/PI;
+						if ( m_textureAngle.y < 0.0f )  m_textureAngle.y += 360.0f;
+					}
+					else
+					{
+						m_textureAngle.y += m_modifRot*180.0f/PI;
+						if ( m_textureAngle.y >= 360.0f )  m_textureAngle.y -= 360.0f;
+					}
+					UpdateInfoText();
+					MappingSelect(m_textureMode, m_textureRotate,
+								  m_bTextureMirrorX, m_bTextureMirrorY,
+								  m_textureInf, m_textureSup, m_textureName);
+				}
+				if ( event.param == 'G' )
+				{
+					if ( event.keyState & KS_SHIFT )
+					{
+						m_textureAngle.z -= m_modifRot*180.0f/PI;
+						if ( m_textureAngle.z < 0.0f )  m_textureAngle.z += 360.0f;
+					}
+					else
+					{
+						m_textureAngle.z += m_modifRot*180.0f/PI;
+						if ( m_textureAngle.z >= 360.0f )  m_textureAngle.z -= 360.0f;
+					}
+					UpdateInfoText();
+					MappingSelect(m_textureMode, m_textureRotate,
+								  m_bTextureMirrorX, m_bTextureMirrorY,
+								  m_textureInf, m_textureSup, m_textureName);
 				}
 			}
 			if ( m_mode == 2 )
@@ -706,6 +870,7 @@ BOOL CModel::EventProcess(const Event &event)
 		case EVENT_BUTTON3:  // read ?
 			GetModelName(s);
 			m_modFile->ReadModel(s, TRUE, FALSE);  // lit avec frontières standard
+			Adjust();
 			DeselectAll();
 			CurrentInit();
 			EventFrame(event);
@@ -714,6 +879,7 @@ BOOL CModel::EventProcess(const Event &event)
 
 		case EVENT_BUTTON4:  // add ?
 			GetModelName(s);
+//?strcpy(s, "objects\\io.mod");
 			first = m_modFile->RetTriangleUsed();
 			m_modFile->AddModel(s, first, TRUE, FALSE);  // lit avec frontières standard
 			last = m_modFile->RetTriangleUsed();
@@ -728,13 +894,19 @@ BOOL CModel::EventProcess(const Event &event)
 			break;
 
 		case EVENT_BUTTON10:  // pos ?
+			GetModifValues();
 			m_oper = 'P';
+			PutModifValues();
 			break;
 		case EVENT_BUTTON11:  // rotate ?
+			GetModifValues();
 			m_oper = 'R';
+			PutModifValues();
 			break;
 		case EVENT_BUTTON12:  // zoom ?
+			GetModifValues();
 			m_oper = 'Z';
+			PutModifValues();
 			break;
 
 		case EVENT_BUTTON13:  // +X ?
@@ -952,9 +1124,12 @@ void CModel::SmoothSelect()
 		{
 			if ( bDone[j] )  continue;
 			if ( !GetVertex(j, vj) )  continue;
-			if ( vj.x == vi.x &&
-				 vj.y == vi.y &&
-				 vj.z == vi.z )
+//?			if ( vj.x == vi.x &&
+//?				 vj.y == vi.y &&
+//?				 vj.z == vi.z )
+			if ( Abs(vj.x-vi.x) < 0.0001f &&
+				 Abs(vj.y-vi.y) < 0.0001f &&
+				 Abs(vj.z-vi.z) < 0.0001f )
 			{
 				bDone[j] = TRUE;
 				index[rank++] = j;
@@ -1070,35 +1245,34 @@ void CModel::StateSelect()
 
 void CModel::MoveSelect(D3DVECTOR move)
 {
-	if ( m_oper == 'Z' )
+	GetModifValues();
+
+	if ( m_oper == 'P' )
 	{
-		     if ( move.x == +1 )  move.x = 1.1f;
-		else if ( move.x == -1 )  move.x = 1.0f/1.1f;
-		else                      move.x = 1.0f;
-		     if ( move.y == +1 )  move.y = 1.1f;
-		else if ( move.y == -1 )  move.y = 1.0f/1.1f;
-		else                      move.y = 1.0f;
-		     if ( move.z == +1 )  move.z = 1.1f;
-		else if ( move.z == -1 )  move.z = 1.0f/1.1f;
-		else                      move.z = 1.0f;
+		move.x *= m_modifPos;
+		move.y *= m_modifPos;
+		move.z *= m_modifPos;
 	}
 	if ( m_oper == 'R' )
 	{
-#if 0
-		     if ( move.x == +1 )  move.x =  5.0f*PI/180.0f;
-		else if ( move.x == -1 )  move.x = -5.0f*PI/180.0f;
-		     if ( move.y == +1 )  move.y =  5.0f*PI/180.0f;
-		else if ( move.y == -1 )  move.y = -5.0f*PI/180.0f;
-		     if ( move.z == +1 )  move.z =  5.0f*PI/180.0f;
-		else if ( move.z == -1 )  move.z = -5.0f*PI/180.0f;
-#else
-		     if ( move.x == +1 )  move.x =  45.0f*PI/180.0f;
-		else if ( move.x == -1 )  move.x = -45.0f*PI/180.0f;
-		     if ( move.y == +1 )  move.y =  45.0f*PI/180.0f;
-		else if ( move.y == -1 )  move.y = -45.0f*PI/180.0f;
-		     if ( move.z == +1 )  move.z =  45.0f*PI/180.0f;
-		else if ( move.z == -1 )  move.z = -45.0f*PI/180.0f;
-#endif
+		     if ( move.x == +1 )  move.x =  m_modifRot;
+		else if ( move.x == -1 )  move.x = -m_modifRot;
+		     if ( move.y == +1 )  move.y =  m_modifRot;
+		else if ( move.y == -1 )  move.y = -m_modifRot;
+		     if ( move.z == +1 )  move.z =  m_modifRot;
+		else if ( move.z == -1 )  move.z = -m_modifRot;
+	}
+	if ( m_oper == 'Z' )
+	{
+		     if ( move.x == +1 )  move.x = m_modifZoom;
+		else if ( move.x == -1 )  move.x = 1.0f/m_modifZoom;
+		else                      move.x = 1.0f;
+		     if ( move.y == +1 )  move.y = m_modifZoom;
+		else if ( move.y == -1 )  move.y = 1.0f/m_modifZoom;
+		else                      move.y = 1.0f;
+		     if ( move.z == +1 )  move.z = m_modifZoom;
+		else if ( move.z == -1 )  move.z = 1.0f/m_modifZoom;
+		else                      move.z = 1.0f;
 	}
 
 	OperSelect(move, m_oper);
@@ -1144,7 +1318,7 @@ void CModel::OperSelect(D3DVECTOR move, char oper)
 			}
 			if ( oper == 'R' )
 			{
-				if ( move.x != 0 )
+				if ( move.x != 0.0f )
 				{
 					rot.x = m_triangleTable[i].p1.z;
 					rot.y = m_triangleTable[i].p1.y;
@@ -1164,7 +1338,7 @@ void CModel::OperSelect(D3DVECTOR move, char oper)
 					m_triangleTable[i].p3.z = rot.x;
 					m_triangleTable[i].p3.y = rot.y;
 				}
-				if ( move.y != 0 )
+				if ( move.y != 0.0f )
 				{
 					rot.x = m_triangleTable[i].p1.x;
 					rot.y = m_triangleTable[i].p1.z;
@@ -1184,7 +1358,7 @@ void CModel::OperSelect(D3DVECTOR move, char oper)
 					m_triangleTable[i].p3.x = rot.x;
 					m_triangleTable[i].p3.z = rot.y;
 				}
-				if ( move.z != 0 )
+				if ( move.z != 0.0f )
 				{
 					rot.x = m_triangleTable[i].p1.x;
 					rot.y = m_triangleTable[i].p1.y;
@@ -1428,6 +1602,26 @@ BOOL CModel::IsMappingSelectPlausible(D3DMaping D3Dmode)
 void CModel::MappingSelect(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
 						   FPOINT ti, FPOINT ts, char *texName)
 {
+	D3DVECTOR	rot;
+
+	rot = m_textureAngle*PI/180.0f;
+
+	if ( rot.x != 0.0f )  OperSelect(D3DVECTOR(rot.x, 0.0f, 0.0f), 'R');
+	if ( rot.y != 0.0f )  OperSelect(D3DVECTOR(0.0f, rot.y, 0.0f), 'R');
+	if ( rot.z != 0.0f )  OperSelect(D3DVECTOR(0.0f, 0.0f, rot.z), 'R');
+
+	MappingSelectBase(mode, rotate, bMirrorX, bMirrorY, ti, ts, texName);
+
+	if ( rot.z != 0.0f )  OperSelect(D3DVECTOR(0.0f, 0.0f, -rot.z), 'R');
+	if ( rot.y != 0.0f )  OperSelect(D3DVECTOR(0.0f, -rot.y, 0.0f), 'R');
+	if ( rot.x != 0.0f )  OperSelect(D3DVECTOR(-rot.x, 0.0f, 0.0f), 'R');
+}
+
+// Mappe une texture sur les triangles sélectionnés.
+
+void CModel::MappingSelectBase(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
+							   FPOINT ti, FPOINT ts, char *texName)
+{
 	D3DVERTEX2	vertex;
 	D3DVECTOR	min, max;
 	FPOINT		a, b;
@@ -1460,6 +1654,11 @@ void CModel::MappingSelect(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
 	if ( mode == 3 )
 	{
 		MappingSelectFace(mode, rotate, bMirrorX, bMirrorY, ti, ts, texName);
+		return;
+	}
+	if ( mode >= 4 && mode <= 27 )
+	{
+		MappingSelectStretch(mode, rotate, bMirrorX, bMirrorY, ti, ts, texName);
 		return;
 	}
 
@@ -1686,7 +1885,7 @@ void CModel::MappingSelectCylindrical(int mode, int rotate, BOOL bMirrorX, BOOL 
 		p.y = vertex.y;
 		p.z = vertex.z;
 
-#if 1
+#if 0
 		p.x -= center.x;
 		p.y -= center.y;
 		p.z -= center.z;
@@ -1771,14 +1970,8 @@ void CModel::MappingSelectFace(int mode, int rotate, BOOL bMirrorX, BOOL bMirror
 			p.y = vertex[j].y - center.y;
 			p.z = vertex[j].z - center.z;
 
-#if 0
 			u[j] = RotateAngle(p.x, p.z)/(PI*2.0f)+0.5f;
 			if ( u[j] > 1.0f ) u[j] -= 1.0f;
-#else
-			u[j] = RotateAngle(p.x, p.z)/PI;
-//?			if ( u[j] > 1.0f )  u[j] = 2.0f-u[j];
-			if ( u[j] > 1.0f )  u[j] -= 1.0f;
-#endif
 
 			v[j] = p.y/dim.y/2.0f + 0.5f;
 
@@ -1801,6 +1994,106 @@ void CModel::MappingSelectFace(int mode, int rotate, BOOL bMirrorX, BOOL bMirror
 
 			SetVertex(i*3+j, vertex[j]);
 		}
+	}
+
+	SelectTerm();
+}
+
+int StretchIndex(D3DVECTOR *list, int total, D3DVECTOR p)
+{
+	int		i;
+
+	for ( i=0 ; i<total ; i++ )
+	{
+		if ( p.x == list[i].x &&
+			 p.y == list[i].y &&
+			 p.z == list[i].z )  return i;
+	}
+	return -1;
+}
+
+// Mappe une texture sur les triangles sélectionnés.
+
+void CModel::MappingSelectStretch(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
+							   FPOINT ti, FPOINT ts, char *texName)
+{
+	D3DVERTEX2	vertex;
+	D3DVECTOR	p, list[1000];
+	float		u, v;
+	int			used, i, total, index;
+
+	float		uv[4*2] =
+	{
+		0.0f,	0.0f,
+		0.0f,	1.0f,
+		1.0f,	0.0f,
+		1.0f,	1.0f,
+	};
+
+	int			table[24*4] =
+	{
+		0,1,2,3,
+		0,1,3,2,
+		0,2,1,3,
+		0,2,3,1,
+		0,3,1,2,
+		0,3,2,1,
+		1,0,2,3,
+		1,0,3,2,
+		1,2,0,3,
+		1,2,3,0,
+		1,3,0,2,
+		1,3,2,0,
+		2,0,1,3,
+		2,0,3,1,
+		2,1,0,3,
+		2,1,3,0,
+		2,3,0,1,
+		2,3,1,0,
+		3,0,1,2,
+		3,0,2,1,
+		3,1,0,2,
+		3,1,2,0,
+		3,2,0,1,
+		3,2,1,0,
+	};
+
+	mode = (mode-4)*4;
+
+	if ( bMirrorX )
+	{
+		Swap(ti.x, ts.x);
+	}
+
+	if ( !bMirrorY )  // test inversé !
+	{
+		Swap(ti.y, ts.y);
+	}
+
+	total = 0;
+	used = m_modFile->RetTriangleUsed();
+	for ( i=0 ; i<used*3 ; i++ )
+	{
+		if ( !GetVertex(i, vertex) )  continue;
+
+		p.x = vertex.x;
+		p.y = vertex.y;
+		p.z = vertex.z;
+
+		index = StretchIndex(list, total, p);
+		if ( index == -1 )
+		{
+			index = total;
+			list[total++] = p;
+		}
+
+		u = uv[table[mode+index%4]*2+0];
+		v = uv[table[mode+index%4]*2+1];
+
+		vertex.tu = ti.x+(ts.x-ti.x)*u;
+		vertex.tv = ti.y+(ts.y-ti.y)*v;
+
+		SetVertex(i, vertex);
 	}
 
 	SelectTerm();
@@ -2356,6 +2649,28 @@ void CModel::SelectDelete()
 	UpdateInfoText();
 }
 
+// Supprime tous les triangles inutiles.
+
+void CModel::Adjust()
+{
+	int		used ,i;
+
+	used = m_modFile->RetTriangleUsed();
+	for ( i=0 ; i<used ; i++ )
+	{
+		if ( m_triangleTable[i].p1.x == m_triangleTable[i].p2.x &&
+			 m_triangleTable[i].p1.y == m_triangleTable[i].p2.y &&
+			 m_triangleTable[i].p1.z == m_triangleTable[i].p2.z &&
+			 m_triangleTable[i].p1.x == m_triangleTable[i].p3.x &&
+			 m_triangleTable[i].p1.y == m_triangleTable[i].p3.y &&
+			 m_triangleTable[i].p1.z == m_triangleTable[i].p3.z )
+		{
+			m_triangleTable[i].bUsed = FALSE;
+		}
+	}
+	Compress();
+}
+
 // Compresse tous les triangles.
 
 void CModel::Compress()
@@ -2506,7 +2821,7 @@ void CModel::ViewMove(const Event &event, float speed)
 	if ( event.keyState & KS_PAGEDOWN )
 	{
 		m_viewDist += event.rTime*30.0f*speed;
-		if ( m_viewDist > 300.0f )  m_viewDist = 300.0f;
+		if ( m_viewDist > 200.0f )  m_viewDist = 200.0f;
 	}
 }
 
@@ -2520,8 +2835,11 @@ void CModel::UpdateInfoText()
 
 	if ( m_mode == 1 )
 	{
-		sprintf(info, "[1] V:color=%d K:state=%d  Sel=%d..%d (T=%d)",
+		sprintf(info, "[1] V:color=%d K:state=%d  DFG:angle=%d;%d;%d  Sel=%d..%d (T=%d)",
 				m_color, m_state,
+				(int)m_textureAngle.x,
+				(int)m_textureAngle.y,
+				(int)m_textureAngle.z,
 				m_triangleSel1, m_triangleSel2,
 				m_triangleSel2-m_triangleSel1+1);
 		m_engine->SetInfoText(0, info);
@@ -2563,376 +2881,1046 @@ void CModel::UpdateInfoText()
 
 
 
-static int tablePartT[] =	// lemt.tga
+static int tablePartC01[] =	// car01.tga
 {
+	128,   0, 144,  16,  // bleu
+	144,   0, 160,  16,  // gris clair
+	160,   0, 176,  16,  // gris foncé
+	176,   0, 192,  16,  // doré
+	192,  76, 208,  92,  // brun
+	208,  76, 224,  92,  // brun
+	  0,   0, 128,  92,  // aile
+	  0, 124, 128, 216,  // arrière
+	192,   0, 256,  76,  // avant
+	192,  92, 240, 104,  // gardeboue
+	213, 104, 229, 120,  // gardegoue int
+	213, 120, 229, 136,  // gardegoue ext
+	  0,  92, 107, 124,  // tableau de bord
+	128, 104, 213, 168,  // intérieur bas
+	128, 222, 164, 245,  // intérieur haut
+	128,  16, 192,  60,  // radiateur grille
+	128,  60, 192,  72,  // radiateur bouchon
+	  0, 216, 128, 256,  // marche-pied
+	128,  72, 160, 104,  // phare
+	111,  92, 127, 100,  // phare profil
+	160,  72, 192, 104,  // différentiel
+	128, 168, 214, 222,  // coffre
+	128, 208, 214, 220,  // coffre
+	138, 183, 165, 222,  // coffre
+	214, 168, 256, 238,  // support coffre
+	224,  76, 240,  92,  // trou
+	240,  76, 248,  92,  // air
+	128, 245, 256, 256,  // longeron
+	164, 222, 198, 245,  // télécommande
+	107,  92, 111, 124,  // antenne
+	-1
+};
+
+static int tablePartC02[] =	// car02.tga
+{
+	160,   0, 176,  16,  // bleu
+	160,  16, 176,  32,  // gris clair
+	176,  16, 192,  32,  // gris moyen
+	144,  16, 160,  32,  // gris foncé
+	176,   0, 192,  16,  // doré
+	110,  23, 119,  32,  // intérieur coffre
+	192,   0, 224,  32,  // phare av
+	226,  64, 254, 107,  // phare ar
+	200,  60, 216,  68,  // phare profil
+	224,   0, 256,  32,  // différentiel
+	144,   0, 160,  16,  // axe
+	  0,  32, 189,  43,  // chassis
+
+	  0, 178,  87, 256,  // aile arrière
+	 82, 178, 185, 256,  // porte
+	178, 185, 204, 256,  // avant
+	 86, 154, 126, 181,  // montant toît
+	 97, 139, 185, 162,  // toît
+	180, 161, 191, 189,  // montant av
+
+	  0,  43,   9,  65,  // arrière montant g
+	119,  43, 128,  65,  // arrière montant d
+	  7,  43, 121,  65,  // arrière fenêtre
+
+	  0,  65, 128,  88,  // coffre ar
+	  0,  65, 128,  69,  // coffre ar
+
+	  0,  88, 128,  92,  // avant
+	128,  43, 192, 139,  // radiateur
+	119,  23, 135,  31,  // radiateur
+	192,  32, 200, 112,  // intérieur
+	  0,   0, 107,  32,  // tableau de bord
+	213,  64, 256, 112,  // ventillo
+	213, 112, 256, 128,  // carter
+	208,  32, 216,  60,  // moteur
+	216,  32, 224,  48,  // moteur
+	204, 162, 256, 184,  // carbu
+	204, 162, 218, 184,  // carbu
+	204, 162, 256, 163,  // carbu
+	224,  32, 256,  64,  // pot d'échappement
+	107,   0, 110,  32,  // antenne
+	110,   0, 144,  23,  // télécommande
+	200,  32, 208,  60,  // parchoc
+	-1
+};
+
+static int tablePartC03[] =	// car03.tga
+{
+	128,   0, 144,  16,  // bleu
+	 34, 136,  50, 152,  // autre couleur
+	144,   0, 160,  16,  // gris clair
+	160,   0, 176,  16,  // gris foncé
+	176,   0, 192,  16,  // doré
+	  0,   0,  32,  64,  // montant rear up
+	 32,   0,  64,  64,  // montant rear down
+	 64,   0, 128,  64,  // porte
+	130, 154, 256, 256,  // toît dessus
+	136, 154, 142, 256,  // toît tranche
+	 76,  96,  98, 160,  // montant front
+	 76,  90,  98,  96,  // dessus avant
+	  0,  64,  76, 128,  // radiateur
+	128,  32, 213,  96,  // intérieur
+	192,   0, 224,  32,  // phare av
+	 76,  64, 128,  90,  // phare ar
+	224,   0, 256,  32,  // différentiel
+	213,  32, 256,  80,  // ventillo
+	213,  80, 256,  96,  // carter
+	128,  16, 144,  32,  // pot d'échappement
+	144,  16, 152,  32,  // moteur
+	248, 107, 256, 135,  // moteur
+	128,  96, 256, 107,  // chassis
+	128, 107, 235, 139,  // tableau de bord
+	235, 107, 239, 139,  // antenne
+	  0, 136,  34, 159,  // télécommande
+	  0, 160,  96, 256,  // métal
+	 96, 160, 114, 256,  // bois
+	239, 107, 248, 135,  // ressort
+	152,  16, 192,  32,  // entrée carbu
+	240, 135, 256, 139,  // bouchon radiateur
+	  0, 128,  76, 136,  // chassis
+	-1
+};
+
+static int tablePartC04[] =	// car04.tga
+{
+	160,   0, 176,  16,  // rouge
+	168,  65, 184,  81,  // autre couleur
+	160,  16, 176,  32,  // gris clair
+	176,  16, 192,  32,  // gris moyen
+	144,  16, 160,  32,  // gris foncé
+	176,   0, 192,  16,  // doré
+	 76, 128, 196, 138,  // bi-color
+	  0,  32,  76,  89,  // radiateur
+	  0,  89,  76, 124,  // capot
+	  0, 124,  76, 159,  // capot
+	 76,  32, 136,  80,  // gardeboue
+	 76,  80, 136, 128,  // gardeboue
+	200,  97, 256, 121,  // phare ar
+	200, 121, 256, 145,  // phare ar
+	  0, 164, 154, 210,  // côté d
+	154, 164, 256, 210,  // arrière
+	  0, 210, 154, 256,  // côté g
+	154, 210, 256, 256,  // avant
+	136,  32, 256,  65,  // siège
+	152,  97, 176, 121,  // siège d
+	176,  97, 200, 121,  // siège g
+	152,  97, 156, 101,  // siège (cuir uni)
+	192,   0, 224,  32,  // phare av
+	136,  65, 168,  97,  // phare av dos
+	192,  65, 224,  97,  // phare av dos
+	110,  23, 126,  31,  // phare profil
+	126,  23, 142,  31,  // phare profil
+	224,   0, 256,  32,  // différentiel
+	144,   0, 160,  16,  // axe
+	  0,   0, 107,  32,  // tableau de bord
+	107,   0, 110,  32,  // antenne
+	110,   0, 144,  23,  // télécommande
+	224,  65, 256,  97,  // pot d'échappement
+	184,  65, 192,  89,  // parchoc
+	-1
+};
+
+static int tablePartC05[] =	// car05.tga
+{
+	160,   0, 176,  16,  // bleu
+	160,  16, 176,  32,  // gris clair
+	176,  16, 192,  32,  // gris moyen
+	144,  16, 160,  32,  // gris foncé
+	176,   0, 192,  16,  // doré
+	192, 112, 208, 128,  // bleu/vert selon subModel
+	192,   0, 224,  32,  // phare av
+	192, 128, 256, 144,  // phare ar
+	110,  23, 126,  31,  // phare profil
+	224,   0, 256,  32,  // différentiel
+	144,   0, 160,  16,  // axe
+	  0,  32, 165,  43,  // chassis
+	  0,  43, 100, 121,  // porte
+	100,  43, 128, 121,  // carro av
+	128, 139, 154, 256,  // flan arrière
+	200,  60, 208, 112,  // bleu ombré
+	128,  43, 192, 139,  // radiateur
+	 64, 192,  96, 256,  // garde boue bleu
+	 96, 192, 128, 256,  // garde boue bleu
+	 64, 192, 128, 256,  // garde boue bleu
+	  0, 192,  64, 256,  // garde boue bleu
+	 64, 128,  96, 192,  // garde boue vert
+	 96, 128, 128, 192,  // garde boue vert
+	 64, 128, 128, 192,  // garde boue vert
+	  0, 128,  64, 192,  // garde boue vert
+	192,  32, 200, 112,  // intérieur
+	192,  48, 200, 112,  // intérieur
+	  0,   0, 107,  32,  // tableau de bord
+	208,  32, 216,  60,  // moteur
+	216,  32, 224,  48,  // moteur
+	224,  32, 256,  64,  // pot d'échappement
+	107,   0, 110,  32,  // antenne
+	110,   0, 144,  23,  // télécommande
+	200,  32, 208,  60,  // parchoc
+	160, 160, 256, 256,  // métal
+	-1
+};
+
+static int tablePartC06[] =	// car06.tga
+{
+	160,   0, 176,  16,  // bleu
+	192,   0, 208,  16,  // bleu clair
+	160,  16, 176,  32,  // gris clair
+	176,  16, 192,  32,  // gris moyen
+	144,  16, 160,  32,  // gris foncé
+	192,  16, 208,  32,  // jaune "avant"
+	176,   0, 192,  16,  // intérieur
+	  0,  32,   8, 128,  // carro
+	  0,  32,   8,  64,  // carro
+	  0,  96,   8, 128,  // carro
+	  8,  32, 142, 128,  // porte
+	 27, 157, 142, 217,  // aile av
+	 27, 128, 142, 157,  // capot av
+	142,  96, 256, 217,  // toît
+	 64, 217, 256, 256,  // parchoc av
+	 64, 217,  66, 256,  // parchoc av
+	112,   0, 120,  28,  // parchoc ar
+	181,  32, 213,  80,  // phare av
+	  0, 128,  27, 256,  // phare ar
+	224,   0, 256,  32,  // différentiel
+	144,   0, 160,  16,  // axe
+	213,  32, 256,  80,  // ventillo
+	213,  80, 256,  96,  // carter
+	120,   0, 128,  28,  // moteur
+	136,  16, 144,  32,  // carbu
+	128,   0, 144,  16,  // échappement bout
+	216,   0, 224,  32,  // échappement tuyau
+	  0,   0, 107,  32,  // tableau de bord
+	107,   0, 110,  32,  // antenne
+	-1
+};
+
+static int tablePartC07[] =	// car07.tga
+{
+	160,   0, 176,  16,  // bleu
+	160,  16, 176,  32,  // gris clair
+	176,  16, 192,  32,  // gris moyen
+	144,  16, 160,  32,  // gris foncé
+	176,   0, 192,  16,  // intérieur uni
+	248,  32, 256,  96,  // intérieur bas
+	208,   0, 216,  32,  // intérieur toît
+	224,  32, 240,  48,  // toît
+	  0, 128, 157, 208,  // carro arrière
+	157, 128, 230, 208,  // carro porte
+	230, 128, 256, 208,  // carro avant
+	  0, 128,   4, 208,  // carro montant
+	 96, 208, 222, 243,  // carro arrière haut
+	  0, 208,  96, 245,  // carro arrière bas
+	 64,  96, 192, 100,  // avant
+	  0,  32,  64, 128,  // radiateur
+	 64,  32, 128,  96,  // marche pied
+	128,  32, 160,  96,  // garde boue
+	128,  32, 192,  96,  // garde boue
+	224,   0, 256,  32,  // phare av
+	192,  32, 224,  96,  // phare ar
+	110,  24, 126,  32,  // côté phare
+	200,   0, 208,  16,  // bouchon 1
+	200,  16, 208,  32,  // bouchon 2
+	216,   0, 224,  32,  // parchoc
+	  0, 245, 256, 256,  // chassis
+	144,   0, 160,  16,  // échappement bout
+	224,  96, 256, 128,  // différentiel
+	  0,   0, 107,  32,  // tableau de bord
+	110,   0, 144,  23,  // télécommande
+	107,   0, 110,  32,  // antenne
+	-1
+};
+
+static int tablePartC08[] =	// car08.tga
+{
+	  0,   0,  16,  16,  // bleu
+	 16,   0,  32,  16,  // gris clair
+	 32,   0,  48,  16,  // gris moyen
+	 48,   0,  64,  16,  // intérieur uni
+	  0,  16,  34,  39,  // télécommande
+	 64,   0, 160,  96,  // tableau de bord
+	160,   0, 256,  64,  // intérieur
+	  0,  40,  64, 152,  // radiateur face
+	  0, 152,  64, 160,  // radiateur côté
+	  0, 160,  64, 197,  // arrière horizontal
+	 18, 190,  46, 197,  // arrière vertical
+	  0, 160,   2, 179,  // arrière sur tranche flan
+	  0, 177,   2, 197,  // arrière sur tranche flan
+	 64,  96, 256, 187,  // côté
+	  0, 197, 224, 245,  // capot dessus
+	  0, 239, 224, 245,  // capot côté
+	  0, 245, 256, 256,  // chassis
+	224, 197, 228, 229,  // antenne
+	 64, 187, 256, 197,  // frein à main
+	-1
+};
+
+static int tablePartW01[] =	// wheel01.tga
+{
+	  0,   0,  64,  64,  // roue
+	  0,  64,  64,  96,  // profil pneu
+	 10,  10,  54,  54,  // jante
+	  0,  96,  32, 108,  // profil jante
+	  0, 192, 128, 256,  // vitre
+	  0, 108,  64, 141,  // carter
+	  0, 141,  64, 191,  // dessus
+	 64,  96, 128, 148,  // profil
+	128,  96, 192, 146,  // face
+	192,  96, 256, 146,  // dos
+	 32,  96,  40, 104,  // courroie
+	 64, 148,  78, 180,  // carbu
+	 78, 148, 102, 172,  // carbu
+	-1
+};
+
+static int tablePartW02[] =	// wheel02.tga
+{
+	  0,   0,  64,  64,  // roue
+	  0,  64,  64,  96,  // profil pneu
+	 10,  10,  54,  54,  // jante
+	  0,  96,  32, 108,  // profil jante
+	  0, 192, 128, 256,  // vitre
+	  0, 108,  64, 141,  // carter
+	  0, 141,  64, 191,  // dessus
+	 64,  96, 128, 148,  // profil
+	128,  96, 192, 146,  // face
+	192,  96, 256, 146,  // dos
+	 32,  96,  40, 104,  // courroie
+	 64, 148,  78, 180,  // carbu
+	 78, 148, 102, 172,  // carbu
+	102, 148, 150, 170,  // carbu'
+	150, 148, 198, 176,  // carbu'
+	198, 148, 230, 176,  // carbu'
+	-1
+};
+
+static int tablePartW03[] =	// wheel03.tga
+{
+	  0,   0,  64,  64,  // roue
+	  0,  64,  64,  96,  // profil pneu
+	 10,  10,  54,  54,  // jante
+	  0,  96,  32, 108,  // profil jante
+	  0, 192, 128, 256,  // vitre
+	  0, 108,  64, 141,  // carter
+	  0, 141,  64, 191,  // dessus
+	 64,  96, 128, 148,  // profil
+	128,  96, 192, 146,  // face
+	192,  96, 256, 146,  // dos
+	 32,  96,  40, 104,  // courroie
+	 64, 148,  78, 180,  // carbu
+	 78, 148, 102, 172,  // carbu
+	-1
+};
+
+static int tablePartW04[] =	// wheel04.tga
+{
+	  0,   0,  64,  64,  // roue
+	  0,  64,  64,  96,  // profil pneu
+	 10,  10,  54,  54,  // jante
+	  0,  96,  32, 108,  // profil jante
+	  0, 192, 128, 256,  // vitre
+	  0, 108,  64, 149,  // carter
+	 64,  96, 128, 148,  // profil
+	128,  96, 192, 156,  // face
+	192,  96, 256, 156,  // dos
+	  0, 149,  14, 181,  // carbu
+	  0, 149,  56, 181,  // carbu
+	128, 156, 224, 180,  // carbu
+	-1
+};
+
+static int tablePartW05[] =	// wheel05.tga
+{
+	  0,   0,  64,  64,  // roue
+	  0,  64,  64,  96,  // profil pneu
+	 10,  10,  54,  54,  // jante
+	  0,  96,  32, 108,  // profil jante
+	  0, 192, 128, 256,  // vitre
+	  0, 108,  64, 141,  // carter
+	  0, 141,  64, 191,  // dessus
+	 64,  96, 128, 148,  // profil
+	128,  96, 192, 146,  // face
+	192,  96, 256, 146,  // dos
+	 32,  96,  40, 104,  // courroie
+	 64, 148,  78, 180,  // carbu
+	 78, 148, 102, 172,  // carbu
+	-1
+};
+
+static int tablePartW06[] =	// wheel06.tga
+{
+	  0,   0,  64,  64,  // roue
+	  0,  64,  64,  96,  // profil pneu
+	 10,  10,  54,  54,  // jante
+	  0,  96,  32, 108,  // profil jante
+	  0, 192, 128, 256,  // vitre
+	  0, 108,  64, 141,  // carter
+	  0, 141,  64, 191,  // dessus
+	 64,  96, 128, 148,  // profil
+	128,  96, 192, 146,  // face
+	192,  96, 256, 146,  // dos
+	 32,  96,  40, 104,  // courroie
+	 64, 148,  78, 180,  // carbu
+	 78, 148, 102, 172,  // carbu
+	-1
+};
+
+static int tablePartW07[] =	// wheel07.tga
+{
+	  0,   0,  64,  64,  // roue
+	  0,  64,  64,  96,  // profil pneu
+	 10,  10,  54,  54,  // jante
+	  0,  96,  32, 108,  // profil jante
+	  0, 192, 128, 256,  // vitre
+	  0, 108,  64, 141,  // carter
+	  0, 141,  64, 191,  // dessus
+	 64,  96, 128, 148,  // profil
+	128,  96, 192, 146,  // face
+	192,  96, 256, 146,  // dos
+	 32,  96,  40, 104,  // courroie
+	 64, 148,  78, 180,  // carbu
+	 78, 148,  94, 168,  // carbu
+	 78, 148, 126, 168,  // carbu
+	128, 146, 192, 181,  // carbu
+	-1
+};
+
+static int tablePartW08[] =	// wheel08.tga
+{
+	  0,   0,  64,  64,  // roue
+	  0,  64,  64,  96,  // profil pneu
+	 10,  10,  54,  54,  // jante
+	  0,  96,  32, 108,  // profil jante
+	 32,  96,  40, 104,  // gris
+	 32, 104,  48, 120,  // échappement
+	  0, 128, 165, 192,  // moteur d
+	  0, 192, 165, 256,  // moteur g
+	  5, 128,  43, 192,  // moteur face
+	  0, 172, 165, 192,  // moteur dessus
+	165, 128, 221, 256,  // chaîne
+	-1
+};
+
+static int tablePartT[] =	// trax.tga
+{
+	128,   0, 136,   8,  // jaune
+	136,   0, 144,   8,  // gris
 	192,   0, 256,  32,  // profil chenille
-	  0,  64, 128, 128,  // roues pour chenille
-	  0,   0, 128,  64,  // profil
-	 90,   0, 128,  28,  // pivot trainer
-	128,   0, 192,  44,  // coffre avant
-	128,  44, 192,  58,  // callandre
-	128,  58, 192,  87,  // coffre arrière
-	128,  87, 192, 128,  // callandre arrière
-	128, 128, 192, 144,  // sous-callandre arrière
-	  0, 128,  32, 152,  // garde boue arrière
-	  0, 152,  32, 182,  // garde boue milieu
-	  0, 182,  32, 256,  // garde boue avant
-	 32, 128, 112, 176,  // aile
-	224,  48, 232,  64,  // tuyère
-	192,  32, 224,  64,  // feu sous réacteur
-	224,  32, 256,  48,  // pied
-	192,  64, 256, 128,  // capteur
-	192, 128, 224, 176,  // support pile
-	192, 216, 248, 248,  // côté canon
-	220, 216, 222, 245,  // côté canon
-	 64, 176, 128, 224,  // dessus canon
-	128, 152, 192, 160,  // extérieur canon
-	128, 144, 192, 152,  // intérieur canon
-	192, 176, 224, 192,  // petit canon
-	128, 236, 192, 256,  // canon organique
-	214, 192, 224, 216,  // réticule de visée
-	224, 128, 248, 152,  // articulation
-	128, 192, 192, 214,  // piston côté
-	128, 214, 192, 236,  // piston face
-	192, 192, 214, 214,  // piston tranche
-	128, 192, 161, 214,  // piston petit côté
-	 32, 176,  64, 198,  // piston pour radar
-	128, 160, 160, 192,  // roue
-	232,  48, 255,  56,  // profil pneu
-	240, 152, 248, 216,  // hachures verticales
-	248, 192, 256, 256,  // batterie
-	224, 152, 240, 168,  // roche
-	144,  80, 176, 112,  // nucléaire
-	140,  76, 180, 116,  // nucléaire grand
-	144,  80, 152,  88,  // jaune nucléaire
-	224, 168, 240, 192,  // capot résolution C
-	224, 192, 240, 210,  // arrière résolution C
-	 32, 224,  96, 235,  // bras résolution C
-	 32, 235,  96, 246,  // bras résolution C
-	161,   1, 164,   4,  // blanc
-	168,   1, 171,   4,  // gris moyen
-	154,   1, 157,   4,  // gris foncé uni
-	147,   1, 150,   4,  // bleu uni
-	114, 130, 118, 134,  // rouge uni
-	121, 130, 125, 134,  // vert uni
-	114, 137, 118, 141,  // jaune uni
-	121, 137, 125, 141,  // violet uni
+	  0,   0, 128,  53,  // chenille
+	160,   0, 192,  32,  // pot d'échappement
+	  0,  53, 128, 129,  // pelle profil
+	  0, 129, 128, 183,  // pelle face
+	  0, 183, 128, 256,  // carro profil
+	176,  32, 256,  80,  // carro avant
+	128,  32, 176,  80,  // bouton
+	176, 128, 256, 178,  // tableau de bord
+	128,   8, 136,  32,  // levier bas
+	136,   8, 144,  32,  // levier haut
+						 // ufo :
+	144,   0, 152,   8,  // vert
+	152,   0, 160,   8,  // vert
+	128,  80, 160, 128,  // dessus
+	128, 128, 160, 144,  // côté
+	128, 144, 160, 240,  // dessous
+	160,  80, 192, 112,  // réacteur
+	160, 112, 192, 128,  // réacteur
+	192,  80, 256, 123,  // vitre
+
+	178, 178, 256, 256,  // gravier
 	-1
 };
 
-static int tablePartR[] =	// roller.tga
+static int tablePartR[] =	// door.tga
 {
-	  0,   0, 128,  52,  // roues pour chenille
-	 48, 137, 128, 201,  // côté radiateur
-	  0,  52,  32,  84,  // avant radiateur
-	 32,  52,  43,  84,  // arrière radiateur
-	  0,  84,  96, 137,  // grand côté
-	128,   0, 192,  85,  // avant
-	128, 173, 192, 256,  // arrière
-	192,   0, 256,  42,  // dessus
-	128,  85, 192, 109,  // côté pillon
-	128, 109, 192, 173,  // dessus pillon
-	192,  85, 240, 109,  // côté porte pillon
-	  0, 137,  24, 256,  // côté verrin
-	 24, 137,  48, 256,  // côté verrin
-	 48, 201, 128, 233,  // support canon
-	192, 109, 256, 173,  // fond canon
-	192, 173, 240, 205,  // canon 1
-	192, 173, 240, 177,  // canon 2
-	 43,  52,  75,  84,  // avant canon
-	 48, 233, 128, 247,  // piston
-	 96, 105, 128, 137,  // avant phazer
-	 96,  97, 128, 105,  // canon phazer
-	 75,  52, 107,  84,  // échappement
-	192, 205, 243, 256,  // instruction centrale nucléaire
-	192,  42, 256,  85,  // reflet vitres
+	112,  54, 120,  62,  // gris
+	120,  54, 128,  62,  // gris foncé
+	128,  54, 136,  62,  // gris clair
+	  0,   0, 256,  54,  // porte
+	  0,  54, 112, 254,  // montant
+	  0,  54,  10, 254,  // montant
+	192,  54, 256,  86,  // tableau
+	112, 227, 256, 256,  // barrier 2
+	160, 169, 256, 227,  // barrier 3
+	112, 115, 136, 179,  // tonneau 1
+	136, 115, 160, 179,  // tonneau 1
+	160,  54, 192,  86,  // tonneau 1
+	250, 126, 256, 169,  // tonneau 2
+	231, 150, 250, 169,  // tonneau 2
+	202, 150, 221, 169,  // bombe
+	136,  54, 152,  70,  // bombe
+	136,  70, 152,  86,  // bombe
+	152,  54, 160,  86,  // mèche
+	112,  62, 128,  78,  // pierre
+	112,  86, 256, 106,  // bois
+	 48,  38, 208,  54,  // hachures barrière
+	120,  78, 128,  86,  // orange cône
+	128,  62, 136,  86,  // hachures cône
+	136, 179, 160, 203,  // dessous cône
+	 48,   0,  97,  54,  // mine2
+						 // fire :
+	160, 150, 168, 158,  // rouge
+	160, 158, 168, 166,  // gris
+	168, 150, 176, 158,  // tuyau
+	112, 106, 160, 115,  // bombonne
+	226, 126, 250, 150,  // bombonne
+	160, 106, 168, 128,  // support
+	160, 128, 168, 150,  // support
+	168, 106, 176, 150,  // support
+	176, 126, 202, 169,  // articulation
+	176, 106, 256, 126,  // lance
+	202, 126, 226, 150,  // trou
+	 42,  38, 106,  54,  // hachures
+	136, 203, 160, 227,  // arrow
+						 // aquarium
+	221, 150, 229, 158,  // verre
+	221, 158, 229, 166,  // eau
 	-1
 };
 
-static int tablePartW[] =	// subm.tga
+static int tablePartR2[] =	// door2.tga
 {
-	  0,   0, 128,  26,  // chenilles
-	  0,  26,  22, 114,  // portique 1
-	  0, 114,  22, 202,  // portique 2
-	 22,  26,  82,  56,  // côté hublot
-	 22,  56,  82,  86,  // côté ligne rouge
-	 22,  86,  82, 116,  // côté simple
-	 22, 116,  82, 146,  // avant/arrière
-	 22, 146,  82, 176,  // avant/arrière + phare
-	132,  82, 196, 166,  // capot trainer
-	132, 166, 196, 177,  // capot trainer
-	132, 177, 196, 188,  // capot trainer
-	  0, 224,  96, 256,  // côté trainer
-	 30, 224,  48, 256,  // arrière trainer
-	136, 240, 216, 256,  // barrière courte
-	 96, 240, 256, 256,  // barrière longue
-	128,   0, 160,  32,  // black-box 1
-	160,   0, 192,  32,  // black-box 2
-	192,   0, 224,  32,  // black-box 3
-	224, 105, 256, 137,  // TNT 1
-	224, 137, 256, 169,  // TNT 2
-	 82,  32, 146,  82,  // factory résolution C
-	146,  32, 210,  82,  // factory résolution C
-	224,   0, 256, 105,  // tower résolution C
-	 82,  82, 132, 150,  // research résolution C
-	199, 169, 256, 233,  // sac résolution C
-	106, 150, 130, 214,  // clé A
-	 82, 150, 106, 214,  // clé B
-	132, 188, 196, 212,  // clé C
-	132, 212, 196, 236,  // clé D
-	210,  32, 224,  46,  // gris
-	 56, 176,  82, 224,  // sol coffre-fort
+	  8, 184,  16, 192,  // gris 1
+	  0, 176,   8, 184,  // gris 2
+	  8, 176,  16, 184,  // gris 3
+	  0, 184,   8, 192,  // gris 4
+	  0,   0,  32, 144,  // bielle
+	  0, 144,  24, 176,  // axe piston
+	  0, 192,  64, 256,  // grosse roue
+	 24, 144,  40, 160,  // petite roue
+	 16, 176,  24, 192,  // engrenage
+	 32,   0, 112,  80,  // machoire face
+	112, 228, 256, 256,  // machoire côté
+	 32,  80, 112,  88,  // machoire piston
+	 64, 208, 112, 256,  // pillon
+	248,   0, 256, 224,  // face
+	 32,  88,  80, 144,  // aération
+	112,   0, 120,  68,  // piston brillant
+	 24, 160,  88, 192,  // tableau de bord
+	120,   0, 184,  91,  // moteur
+
+	120,  91, 184, 155,  // bâtiment fenêtre large
+	120, 155, 184, 219,  // bâtiment uni
+	184,   0, 248,  64,  // bâtiment fenêtre étroite
+	184,  64, 248, 128,  // bâtiment fenêtre large
+	184, 128, 248, 192,  // bâtiment uni
+	120,  91, 184, 187,  // bâtiment fenêtre large rez
+	184,  64, 248, 160,  // bâtiment fenêtre large rez
+	184, 128, 248, 224,  // bâtiment uni rez
 	-1
 };
 
-static int tablePartDr[] =	// drawer.tga
+static int tablePartW[] =	// dock.tga
 {
-	128,   0, 134,   6,  // bleu
-	128,   6, 134,  12,  // gris foncé
-	128,  12, 134,  18,  // gris clair
-	  0,   0, 128,  32,  // roues chenille
-	192,   0, 256,  32,  // profil chenille
-	140,   0, 160,   8,  // profil phare
-	160,   0, 192,  32,  // face phare
-	  0,  32, 160,  48,  // hachure
-	160,  32, 192,  48,  // côté
-	  0,  48,  96,  96,  // tableau de bord
-	 96,  48, 192, 112,  // radiateur
-	192,  32, 256, 112,  // grille latérale
-	192, 112, 256, 128,  // capot
-	  0,  96,   8, 160,  // chassis
-	  8,  96,  96, 104,  // axe chenilles
-	  8, 104,  16, 160,  // axe carrousel
-	 16, 128,  24, 160,  // flan support
-	224, 128, 256, 160,  // rotule
-	 24, 104,  32, 160,  // bocal (18)
-	 32, 104,  40, 160,  // bocal
-	 40, 104,  48, 160,  // bocal
-	 24, 152,  48, 160,  // bocal fond
-	  0, 240,  32, 256,  // crayon 1: couleur (22)
-	  0, 160,  32, 192,  // crayon 1: dessus 
-	  0, 192,  32, 256,  // crayon 1: pointe
-	 32, 240,  64, 256,  // crayon 2: couleur
-	 32, 160,  64, 192,  // crayon 2: dessus 
-	 32, 192,  64, 256,  // crayon 2: pointe
-	 64, 240,  96, 256,  // crayon 3: couleur
-	 64, 160,  96, 192,  // crayon 3: dessus 
-	 64, 192,  96, 256,  // crayon 3: pointe
-	 96, 240, 128, 256,  // crayon 4: couleur
-	 96, 160, 128, 192,  // crayon 4: dessus 
-	 96, 192, 128, 256,  // crayon 4: pointe
-	128, 240, 160, 256,  // crayon 5: couleur
-	128, 160, 160, 192,  // crayon 5: dessus 
-	128, 192, 160, 256,  // crayon 5: pointe
-	160, 240, 192, 256,  // crayon 6: couleur
-	160, 160, 192, 192,  // crayon 6: dessus 
-	160, 192, 192, 256,  // crayon 6: pointe
-	192, 240, 224, 256,  // crayon 7: couleur
-	192, 160, 224, 192,  // crayon 7: dessus 
-	192, 192, 224, 256,  // crayon 7: pointe
-	224, 240, 256, 256,  // crayon 8: couleur
-	224, 160, 256, 192,  // crayon 8: dessus 
-	224, 192, 256, 256,  // crayon 8: pointe
+	  0, 136,   8, 144,  // gris clair
+	  0, 144,   8, 152,  // gris
+	  8, 144,  16, 152,  // gris foncé
+	  0,   0, 152, 152,  // sol octogone
+	194,   0, 256, 224,  // pillier 1
+	194,   0, 210, 224,  // pillier 2
+	  0, 224, 256, 256,  // portique
+	  0, 248, 256, 256,  // barrière
+	  0, 152,   8, 224,  // piston 1
+	  0, 174,   8, 224,  // piston 2
+	  0, 190,   8, 224,  // piston 3
+	  0, 200,   8, 224,  // piston 4
+	 80, 152, 126, 184,  // aimant
+	 16, 152,  80, 184,  // tableau
+	152,   0, 194,  26,  // flèche
+	  8, 144,  16, 224,  // paratonnerre: haut
+	 16, 184,  80, 208,  // paratonnerre: milieu
+	 80, 184, 112, 216,  // paratonnerre: pic
+	178,  26, 186, 107,  // paratonnerre: haut
+	186,  26, 194, 206,  // paratonnerre: montant
+	165,  26, 178, 224,  // crémaillère
+	112, 184, 151, 216,  // crochet
+	126, 152, 164, 175,  // crochet
 	-1
 };
 
-static int tablePartKi[] =	// kid.tga
+static int tablePartStone[] =	// stone.tga
 {
-	  0,   0, 128,  53,  // ciseaux
-	128,   0, 256, 128,  // CD
-	  0,   0,   8,   8,  // livre 1: fond
-	  8,   0,  16,   8,  // livre 2: fond
-	 16,   0,  24,   8,  // livre: fond
-	 24,   0,  32,   8,  // livre: fond
-	 32,   0,  40,   8,  // livre: fond
-	 40,   0,  48,   8,  // livre: fond
-	  0,  53,  22, 138,  // livre 1: tranche
-	 22,  53,  86, 138,  // livre 1: face
-	  0, 138,  22, 224,  // livre 2: tranche
-	 22, 138,  86, 224,  // livre 2: face
-	 86,  53,  94,  85,  // livre: pages
-	 94,  53, 110, 139,  // livre: tranche
-	110,  53, 126, 139,  // livre: tranche
-	 86, 139, 102, 225,  // livre: tranche
-	102, 139, 118, 225,  // livre: tranche
-	118, 139, 134, 225,  // livre: tranche
-	 64,   0,  72,   8,  // fauille: fond
-	155, 155, 256, 256,  // feuille: carreaux
-	 72,   0,  80,   8,  // lampe
-	 80,   0,  88,   8,  // lampe
-	 80,   8,  88,  16,  // ampoule
-	 72,   8,  80,  16,  // rayons (23)
-	 86,  85,  94, 139,  // lampe
-	  0, 224,  32, 256,  // lampe rotule
-	 64,   8,  72,  16,  // arrosoir: fond
-	134, 128, 142, 256,  // arrosoir: corps
-	142, 128, 150, 256,  // arrosoir: tuyau
-	128, 225, 134, 256,  // arrosoir: intérieur
-	 32, 224,  64, 256,  // arrosoir: ponneau
-	 56,   8,  64,  16,  // skate: roues (31)
-	 48,   8,  56,  16,  // skate: axes
-	 40,   8,  48,  16,  // skate: grip
-	 32,   8,  40,  16,  // skate: tranche
-	 24,   8,  32,  16,  // skate: dessous
-	150, 128, 200, 256,  // skate: motif 1
-	200, 128, 250, 256,  // skate: motif 2
-	 64, 224,  96, 256,  // skate: roue (38)
-	 96, 225, 104, 256,  // skate: amortisseur
+	  0,   0, 256, 256,  // pierre
 	-1
 };
 
-static int tablePartKi2[] =	// kid2.tga
+static int tablePartA1[] =	// alien1.tga
 {
-	  2,   2,  62,  62,  // coca: dessus
-	  0,  64,   8, 192,  // coca: flan
-	  8,  64,  96, 192,  // coca: logo
-	128,   0, 256,  85,  // carton
-	128,  85, 256,  91,  // carton tranche
-	128, 128, 256, 256,  // roue
-	192,  96, 256, 128,  // pneu
-	184,  96, 192, 128,  // jante
-	128,  96, 160, 128,  // intérieur
-	160,  96, 168, 104,  // porte bois
-	160, 104, 168, 112,  // porte métal
-	160, 112, 184, 128,  // vitre
-	 96,   0, 128, 256,  // bouteille: corps (12)
-	 64,   0,  96,  32,  // bouteille: bouchon
-	168,  96, 176, 104,  // bouteille: vert
-	  0, 192,  96, 224,  // bois clair
-	  0, 224,  96, 256,  // bois foncé
-	 64,  32,  96,  64,  // bateau
-	168, 104, 176, 112,  // ballon (18)
-	176, 104, 184, 112,  // ballon
-	176,  96, 184, 104,  // intérieur caisse
+	 80,   0,  88,   8,  // vert
+	 80,   8,  88,  16,  // vert foncé
+	 80,  16,  88,  24,  // vert clair
+	 80,  24,  88,  32,  // gris
+	 80,  32,  88,  40,  // gris foncé
+	 80,  40,  88,  48,  // gris clair
+	  0,   0,  64,  48,  // face 1
+	  0,  48,  64,  96,  // face 2
+	  0,  96,  64, 144,  // face 3
+	  0, 144,  64, 192,  // face 4
+	  0, 192,  64, 202,  // face 5 grise
+	 64, 192, 128, 200,  // face 6
+	 64,   0,  72, 192,  // profil vert 1
+	112,   0, 120, 192,  // profil vert 1 ombré
+	 72,   0,  80,  64,  // profil vert 2
+	 72,  64,  80, 128,  // profil vert 3
+	 72, 128,  80, 192,  // profil vert 4
+	120,  64, 128, 192,  // profil vert 5
+	 80,  64,  88, 128,  // profil gris 1
+	 80, 128,  88, 192,  // profil gris 2
+	 88,  64,  96, 128,  // profil gris 3
+	 88, 128,  96, 192,  // profil gris 4
+	 96,  64, 104, 128,  // profil gris 5
+	 96, 128, 104, 192,  // profil gris 6
+	104,  64, 112, 128,  // profil gris 7
+	  0, 248, 256, 256,  // hachures //
+	128, 230, 192, 256,  // électrocuteur
+	192, 187, 256, 256,  // marteau
+	 88,   0, 107,  19,  // électrocuteur
+	 88,  19, 107,  38,  // écraseur
+	120,   0, 200,  64,  // siège profil
+	200,   0, 256,  64,  // siège face
+	135,  47, 154,  64,  // siège avant
+	192,  64, 256, 128,  // tapis roulant
+	  0, 202, 192, 224,  // profil chenille
+	208, 128, 256, 176,  // bouton rouge
+	128, 128, 192, 197,  // panneau de commande
+	  0, 224, 192, 230,  // montant torture
+	 80,  48,  88,  64,  // poutre
+	120,   0, 160,  40,  // dessous tire-bouchon
+	  0, 230, 126, 238,  // tapis
 	-1
 };
 
-static int tablePartKi3[] =	// kid3.tga
+static int tablePartA2[] =	// alien2.tga
 {
-	  0,   0,  32,  28,  // écrou: flan
-	  0,  28,  32,  44,  // écrou: profil
-	  0,  44,  32,  60,  // écrou: pas de vis
-	  0,  60,  32,  64,  // tuyau
-	  0,  64,  32,  68,  // tuyau
-	  0,  68,   8,  76,  // tuyau
-	  0,  76,  32, 108,  // plastic
-	  8,  68,  16,  76,  // saut: gris clair (7)
-	 16,  68,  24,  76,  // saut: gris foncé
-	 24,  68,  32,  76,  // saut: gris bois
-	  0, 108,  32, 140,  // saut: rotule
-	  0, 140,  32, 144,  // saut: axe
-	128,   0, 256, 128,  // saut: flan
-	  0, 144,   8, 152,  // basket: gris foncé (13)
-	  8, 144,  16, 152,  // basket: gris clair
-	 16, 144,  24, 152,  // basket: gris lacets
-	 24, 144,  32, 152,  // basket: gris semelle
-	  0, 152,   8, 181,  // basket: intérieur
-	  0, 181, 192, 256,  // basket: côté
-	192, 181, 226, 256,  // basket: arrière
-	 32, 135,  96, 181,  // basket: dessus (20)
-	 96, 168, 128, 181,  // basket: avant
-	  8, 152,  16, 160,  // chaise: plastique
-	 16, 152,  24, 160,  // chaise: métal
-	 32,   0,  64,  32,  // chaise: roue
-	  8, 177,  24, 181,  // chaise: roue
-	226, 181, 234, 256,  // chaise: piston (26)
-	 64,  96, 128, 128,  // chaise: relief
-	 96, 135, 128, 167,  // chaise: dessous
-	 32, 128, 250, 135,  // paille 1
-	 38, 128, 256, 135,  // paille 2
-	234, 181, 242, 256,  // allumette
-	  8, 160,  16, 168,  // allumette (dessus)
-	128, 135, 224, 181,  // panneau
-	242, 135, 256, 256,  // poteau (34)
-	 24, 152,  32, 160,  // clou
-	 16, 160,  24, 168,  // tuyau métalique
-	112, 181, 192, 185,  // tuyau intérieur
-	 32,  32,  48,  80,  // pas de vis
-	 24, 160,  32, 168,  // ventillateur: plastique (39)
-	 40,  80,  56,  96,  // ventillateur: plastique dégradé
-	  8, 168,  16, 176,  // ventillateur: métal
-	 32,  80,  40, 112,  // ventillateur: socle 1
-	 64,   0,  96,  16,  // ventillateur: socle 2
-	 48,  32,  56,  80,  // ventillateur: socle 3
-	 64,  16,  96,  32,  // ventillateur: moteur flan
-	 96,   0, 128,  32,  // ventillateur: moteur face
-	102,   6, 122,  26,  // ventillateur: socle dessus
-	 16, 168,  24, 176,  // pot: uni (48)
-	 56,  32,  64,  64,  // pot: haut
-	 56,  64,  64,  96,  // pot: bas
-	 64,  32, 128,  96,  // pot: terre
+	  0,   0, 256, 109,  // côté avec porte
+	 60,  29, 172, 109,  // porte seule
+	 40,  29,  58,  76,  // béton haut
+	 65,  20, 167,  34,  // béton large
+	247,  76, 256, 109,  // bas
+	  0, 109, 122, 256,  // marteau
+	  0, 109,  32, 256,  // marteau
+	122, 109, 204, 256,  // écraseur
+	204, 109, 256, 256,  // écraseur
 	-1
 };
 
-static int tablePartF[] =	// factory.tga
+static int tablePartI1[] =	// inca1.tga
 {
-	  0,   0, 152, 152,  // plancher octogonal fabrique
-	 50,  50, 102, 102,  // dessus pile
-	  0, 152, 128, 252,  // avant
-	128, 152, 256, 252,  // arrière
-	152,  28, 225, 128,  // côté
-	152,  28, 176, 128,  // côté partiel
-	152,   0, 216,  16,  // hachures
-	236,   0, 256,  40,  // axe
-	152, 128, 224, 152,  // support cible
+	  0,   0, 256,  45,  // toît basrelief
+	196,  86, 256, 131,  // toît long
+	 32, 204, 256, 256,  // toît court
+	  0,  45, 256,  86,  // socle
+	  0,  45,  64,  86,  // socle court
+	 64,  45, 128,  86,  // socle court
+	128,  45, 192,  86,  // socle court
+	192,  45, 256,  86,  // socle court
+	183, 131, 256, 204,  // sol
+	 87, 148, 183, 204,  // escaliers
+	 87, 148, 183, 157,  // dessus
+	 87, 148,  96, 204,  // tranche
+	  0, 128,  16, 256,  // colonne 1
+	 16, 128,  32, 256,  // colonne 2
+	  0,  86, 192,  94,  // hachures //
+	  0,  94,   8, 102,  // gris
 	-1
 };
 
-static int tablePartD[] =	// derrick.tga
+static int tablePartB1[] =	// bot1.tga
 {
-	  0,   0,  64,  32,  // grand côté
-	 64,   0,  96,  24,  // petit côté
-	 96,   0, 136,  24,  // attention
-	  0,  32,   8, 160,  // tube 1
-	  8,  32,  16,  96,  // tube 2
-	 16,  32,  24, 160,  // pilier
-	 24,  32,  32, 160,  // tige foret
-	 32,  32,  40, 160,  // tige destructeur
-	  8,  96,  16, 128,  // foret
-	136,   0, 256, 120,  // plancher octogonal station de recharge
-	 40,  32,  64,  56,  // cube métal
-	 64,  24, 128,  48,  // côté tour haut
-	 64,  48, 128, 229,  // côté tour bas
-	136, 120, 256, 240,  // intérieur usine
-	  0, 160,  64, 224,  // toît usine
+	170,  42, 178,  50,  // clair
+	178,  42, 186,  50,  // foncé
+	  0,   0,  58,  64,  // face torax 1
+	  0, 186,  58, 250,  // face torax 2
+	 58, 218,  92, 256,  // face torax 3
+	 58,   0, 112,  64,  // profil torax
+	112,   0, 170,  64,  // dos torax
+	170,   0, 234,  42,  // visage
+	214, 214, 256, 256,  // oeil face
+	198, 214, 214, 256,  // oeil tour
+	170,  50, 184,  64,  // articulation
+	184,  50, 198,  64,  // oreille
+	198,  50, 234,  64,  // attention
+	242,   0, 251,  24,  // pied
+	234,   0, 242,  64,  // ressort
+	 58, 186, 154, 202,  // bras 1
+	 58, 202, 154, 218,  // bras 2
+	210,  42, 218,  50,  // orange
+	242,  24, 250,  64,  // baton guide
+						 // bot2:
+	186,  42, 194,  50,  // foncé
+	194,  42, 202,  50,  // orange
+	112,  64, 176, 116,  // avant torax
+	112, 116, 176, 168,  // arrière torax
+	 48,  86, 112, 126,  // côté haut
+	 48, 125, 112, 148,  // côté bas
+	112, 168, 176, 186,  // côté pied
+	  0, 129,  48, 158,  // face pied
+	 54,  64, 101,  87,  // côté tête
+	 48, 147, 112, 175,  // arrière tête
+	  0,  64,  48, 130,  // articulation bras/pied
+	  0, 158,  13, 175,  // petit
+	176,  64, 256,  91,  // visage
+	 48, 175, 112, 186,  // mitrailleuse
+	 24, 158,  48, 186,  // arrière mitrailleuse
+						 // bot3:
+	176,  91, 184, 214,  // vert
+	176,  91, 256, 214,  // face
+	154, 214, 198, 256,  // couronne
+	116, 218, 154, 256,  // couronne
 	-1
 };
 
-static int tablePartC[] =	// convert.tga
+static int tablePartB2[] =	// bot2.tga
 {
-	  0,   0, 120, 120,  // plancher octogonal convertisseur
-	  0, 120, 128, 176,  // grand côté
-	128, 120, 192, 176,  // petit côté
-	192, 120, 256, 184,  // couvercle convertisseur
-	120,   0, 216,  64,  // face trianble
-	216,   0, 248,  64,  // côté triangle
-	120,  64, 160,  84,  // axe
-	  0, 141, 128, 176,  // recherche: base
-	  0, 176, 128, 214,  // recherche: haut
-	  0, 214, 128, 252,  // recherche: haut (!)
-	174,  64, 190, 120,  // recherche: montant
-	190,  64, 206, 120,  // recherche: montant
-	206,  64, 254,  85,  // radar
-	192, 168, 256, 232,  // hachures carrées
-	248,   0, 256,  64,  // cône fabrique de piles
-	128, 176, 192, 240,  // dessus centrale nucléaire
-	120,  85, 174, 120,  // technicien, visage
-	206, 106, 256, 120,  // technicien, casquette
-	160,  64, 174,  78,  // technicien, visière
+	  0,   0,  80, 120,  // face bot3
+	  0, 128,  64, 181,  // bouche heureux
+	 64, 128, 128, 181,  // bouche triste
+	  0, 120,   8, 128,  // jaune
+	  8, 120,  16, 128,  // noir
+						 // bot4:
+	248,   0, 256,   8,  // gris clair
+	248,   8, 256,  16,  // gris moyen
+	248,  16, 256,  24,  // gris foncé
+	 80,   0, 121,  50,  // tête: face
+	121,   0, 151,  50,  // tête: oreille
+	 80,   0,  84,  50,  // tête: arrière
+	 80,  50, 144, 118,  // torax: avant
+	144,  50, 208, 118,  // torax: arrière
+	 89,  54, 136,  58,  // torax: dessus
+	 80,  50,  84, 118,  // torax: côté
+	232,  32, 256,  56,  // articulation
+	156,  32, 176,  36,  // articulation
+	156,  36, 172,  40,  // articulation
+	152,  32, 156,  50,  // coup
+	152,   0, 248,  16,  // membre 1
+	152,   5, 248,  14,  // membre 1
+	152,  16, 248,  32,  // membre 2
+	152,  21, 248,  26,  // membre 2
+						 // couronne:
+	248,  24, 256,  32,  // or
+	128, 134, 256, 256,  // perles
+	 64, 192, 128, 256,  // diamant
+	 64, 181,  96, 192,  // tranche
+	 96, 181, 128, 192,  // tranche
+	 56, 181,  64, 256,  // tranche
 	-1
 };
 
-static int tablePartS[] =	// search.tga
+static int tablePartD[] =	// remote.tga
 {
-	  0,   0, 128, 128,  // usine 1
-	128,   0, 256, 128,  // usine 2
-	  0, 128, 128, 256,  // pile
-	128, 128, 228, 240,  // support pile
-	228, 128, 256, 184,  // antenne
-	128, 128, 192, 160,  // contrôle 1
-	128, 160, 192, 192,  // contrôle 2
-	128, 192, 192, 224,  // contrôle 3
-	128, 224, 192, 256,  // contrôle 4
+	  0, 192,   8, 200,  // gris clair
+	  8, 192,  16, 200,  // gris foncé
+	 16, 192,  24, 200,  // rouge
+	 24, 192,  32, 200,  // rouge
+	  0,   0, 256, 128,  // grand écran
+	  0, 128, 128, 192,  // haut
+	128, 128, 256, 192,  // bas
+	  0, 200,   4, 232,  // antenne
+	  0, 232,   4, 248,  // support
+	  8, 200,  16, 256,  // dessous
+	  8, 222,  16, 256,  // dessous
+	-1
+};
+
+static int tablePartC[] =	// home1.tga
+{
+	108,  60, 116,  68,  // gris clair
+	116,  60, 124,  68,  // gris foncé
+	  0,   0, 128,  42,  // synthé dessus
+	  0,  42, 128,  60,  // synthé arrière
+	  0,  60,  72, 156,  // hp devant
+	 72,  60,  96,  92,  // hp derrière
+	 96,  60, 108,  92,  // hp côté
+	 72,  92,  96, 108,  // hp dessous
+	 72, 108,  80, 128,  // pied synthé
+	 72, 108,  80, 156,  // pied hp
+	128,   0, 256, 128,  // sol home1
+	 80, 108,  88, 156,  // côté home1
+	108,  68, 116,  76,  // bois
+	116,  68, 124,  76,  // orange
+	108,  76, 116,  84,  // bleu
+	116,  76, 124,  84,  // vert
+	108,  84, 116,  92,  // magenta
+	116,  84, 124,  92,  // violet
+	  0, 160,  32, 192,  // 
+	 32, 160,  64, 192,  // 
+	 64, 160,  96, 192,  // 
+	 96, 160, 128, 192,  // 
+	  0, 192,  32, 224,  // 
+	 32, 192,  64, 224,  // 
+	 64, 192,  96, 224,  // 
+	 96, 192, 128, 224,  // 
+	  0, 224,  32, 256,  // 
+	 32, 224,  64, 256,  // 
+	128, 128, 256, 256,  // cible
+	-1
+};
+
+static int tablePartF1[] =	// factory1.tga
+{
+	108, 200, 116, 208,  // gris foncé
+	108, 208, 116, 216,  // gris clair
+	108, 216, 116, 224,  // rouge
+	  0,   0, 256, 160,  // face 3
+	  0, 160, 128, 192,  // face 3
+	  0, 192, 128, 200,  // face 3
+	240, 160, 248, 256,  // face 1
+	248, 160, 256, 256,  // face 1
+	168, 160, 172, 224,  // face 8
+	128, 160, 168, 224,  // face 8
+	  0, 200, 100, 240,  // face 9
+	  0, 200, 100, 202,  // face 9
+	100, 200, 108, 240,  // face 9
+	  0, 240, 240, 256,  // barrière
+	224, 160, 232, 240,  // tuyau 1
+	232, 160, 240, 240,  // tuyau 2
+	130, 160, 166, 192,  // tuyau bout
+	172, 160, 220, 240,  // moteur
+	-1
+};
+
+static int tablePartF2[] =	// factory2.tga
+{
+	  0,   0, 256,  32,  // face 2
+	  0,  32, 256, 128,  // face 2
+	  0, 128, 120, 224,  // face 5
+	120, 128, 168, 200,  // face 5
+	168, 128, 176, 192,  // face 5
+	176, 128, 184, 192,  // face 5
+	168, 192, 176, 200,  // face 5
+	184, 128, 192, 192,  // face 4
+	192, 128, 200, 192,  // face 4
+	120, 200, 256, 238,  // face 4
+	216, 128, 254, 166,  // face 4
+	120, 238, 256, 246,  // face 6
+	200, 128, 216, 192,  // face 3
+	176, 192, 192, 200,  // pillier
+	192, 192, 208, 200,  // pillier
+	  0, 246, 256, 256,  // barrière rouge-blanc
+	  0, 246,   8, 256,  // barrière rouge
+	240, 246, 256, 256,  // barrière blanc
+	216, 166, 256, 186,  // panneau vanne
+	-1
+};
+
+static int tablePartF3[] =	// factory3.tga
+{
+	  0,   0,  85,  64,  // 
+	 85,   0, 170,  64,  // 
+	170,   0, 255,  64,  // 
+	  0,  64,  85, 128,  // 
+	 85,  64, 170, 128,  // 
+	170,  64, 255, 128,  // 
+	  0, 128,  85, 192,  // 
+	 85, 128, 170, 192,  // 
+	170, 128, 255, 192,  // 
+	  0, 192,  85, 256,  // 
+	 85, 192, 170, 256,  // 
+	170, 192, 255, 256,  // 
+	-1
+};
+
+static int tablePartBox[] =	// box.tga
+{
+	  0,   0,  56,  56,  // caisse 1
+	  0,  56,  56, 112,  // caisse 1
+	 56,   0, 112,  56,  // caisse 2
+	 56,  56, 112, 112,  // caisse 2
+	112,   0, 168,  56,  // caisse 3
+	112,  56, 168, 112,  // caisse 3
+	  0, 112,  56, 168,  // caisse 4
+	  0, 168,  56, 224,  // caisse 4
+	 56, 112, 112, 168,  // caisse 5
+	 56, 168, 112, 224,  // caisse 5
+	112, 112, 172, 176,  // caisse 6
+	112, 176, 172, 240,  // caisse 6
+	168,   0, 224,  39,  // palette 1
+	168,   0, 224,  67,  // palette 2
+	168,   8, 224,  12,  // palette dessus
+	-1
+};
+
+static int tablePartS[] =	// road1.tga
+{
+	  0,   0,   8,   8,  // gris foncé
+	  0,  76,   8,  84,  // gris moyen
+	  0,   0,  64,  38,  // start
+	 64,   0, 128,  38,  // goal
+	128,   0, 192,  38,  // bot1
+	192,   0, 256,  38,  // bot3
+	  0,  38,  64,  76,  // bot2
+	 64,  38, 128,  76,  // evil1
+	  0, 192,  64, 256,  // left
+	 64, 192, 128, 256,  // boss
+	  0, 131,  64, 186,  // !
+	  0,  76,  64, 131,  // atomic
+	 64,  76, 128, 131,  // fire
+	 64, 131, 128, 186,  // load
+	128,  76, 192, 131,  // 10%
+	128, 131, 192, 186,  // stone
+	192, 128, 256, 192,  // arrow up
+	128, 192, 192, 256,  // arrow left
+	192, 192, 256, 256,  // arrow right
+	192,  64, 256, 128,  // engrenage cassé
+	128,  38, 166,  76,  // hachures blanc-noir
+	166,  38, 174,  76,  // support
+	174,  38, 182,  76,  // support
+	224,  48, 232,  64,  // support
+	192,  38, 256,  48,  // néon
+	240,  48, 248,  56,  // néon
+	232,  48, 240,  56,  // néon
+	248,  48, 256,  56,  // gris clair
+	240,  56, 248,  64,  // gris moyen
+	248,  56, 256,  64,  // gris foncé
+	-1
+};
+
+static int tablePartP01[] =	// pub01.tga
+{
+	  0,   0, 128, 128,  // 
+	128,   0, 256, 128,  // 
+	  0, 128, 128, 256,  // 
+	128, 128, 256, 256,  // 
+	-1
+};
+
+static int tablePartP02[] =	// pub02.tga
+{
+	  0,   0, 128, 128,  // 
+	128,   0, 256, 128,  // 
+	  0, 128, 128, 256,  // 
+	128, 128, 256, 256,  // 
+	-1
+};
+
+static int tablePartP03[] =	// pub03.tga
+{
+	  0,   0, 128, 128,  // 
+	128,   0, 256, 128,  // 
+	  0, 128, 128, 256,  // 
+	128, 128, 256, 256,  // 
+	-1
+};
+
+static int tablePartP04[] =	// pub04.tga
+{
+	  0,   0, 128, 128,  // 
+	128,   0, 256, 128,  // 
+	  0, 128, 128, 256,  // 
+	128, 128, 256, 256,  // 
+	-1
+};
+
+static int tablePartP05[] =	// pub05.tga
+{
+	  0,   0, 128, 128,  // 
+	128,   0, 256, 128,  // 
+	  0, 128, 128, 256,  // 
+	128, 128, 256, 256,  // 
+	-1
+};
+
+static int tablePartP06[] =	// pub06.tga
+{
+	  0,   0, 128, 128,  // 
+	128,   0, 256, 128,  // 
+	  0, 128, 128, 256,  // 
+	128, 128, 256, 256,  // 
+	-1
+};
+
+static int tablePartP07[] =	// pub07.tga
+{
+	  0,   0, 128, 128,  // 
+	128,   0, 256, 128,  // 
+	  0, 128, 128, 256,  // 
+	128, 128, 256, 256,  // 
+	-1
+};
+
+static int tablePartP08[] =	// pub08.tga
+{
+	  0,   0, 128, 128,  // 
+	128,   0, 256, 128,  // 
+	  0, 128, 128, 256,  // 
+	128, 128, 256, 256,  // 
+	-1
+};
+
+static int tablePartP09[] =	// pub09.tga
+{
+	  0,   0, 128, 128,  // 
+	128,   0, 256, 128,  // 
+	  0, 128, 128, 256,  // 
+	128, 128, 256, 256,  // 
+	-1
+};
+
+static int tablePartP10[] =	// pub10.tga
+{
+	  0,   0, 128, 128,  // 
+	128,   0, 256, 128,  // 
+	  0, 128, 128, 256,  // 
+	128, 128, 256, 256,  // 
+	-1
+};
+
+static int tablePartSu[] =	// support.tga
+{
+	  0,   0, 224, 224,  // dessus
+	  0, 224,  64, 256,  // biseau
+	 64, 224, 128, 256,  // biseau
+	224,   0, 255, 224,  // côté
+	-1
+};
+
+static int tablePartSe[] =	// search.tga
+{
+	245,   0, 253,   8,  // gris foncé
+	245,   8, 253,  16,  // gris clair
+	245,  16, 253,  24,  // rouge
+	245,  24, 253,  32,  // bleu
+	  0,   0,  71, 128,  // search neutre
+	 71,   0, 142, 128,  // search CTRL
+	142,   0, 213, 128,  // search DEL
+	  0, 128,  71, 256,  // search ALT
+	213,   0, 229,  56,  // montant
+	229,   0, 245,  56,  // montant
+	 71, 128, 199, 166,  // supp
+	213,  56, 237,  80,  // bouton rouge
+	 71, 166, 199, 182,  // pale
+	213,  80, 229, 128,  // rotor
+	199, 128, 247, 145,  // base
+	199, 145, 256, 230,  // support
+	247,  73, 256, 145,  // support
+	119, 230, 145, 256,  // 3 pales en mouvement
+						 // boussole :
+	237,  56, 245, 128,  // rouge
+	229,  80, 237, 104,  // bleu
+	213,  80, 229, 104,  // rotor
+						 // électrocuteur :
+	230, 230, 256, 256,  // sphère
+	 71, 182,  87, 246,  // pile
+	 87, 182, 119, 246,  // pile danger
+	119, 182, 151, 214,  // pile dessus
 	-1
 };
 
@@ -2945,7 +3933,7 @@ static int tablePartP[] =	// plant.tga
 	185,   0, 195, 100,  // tige 2
 	108, 100, 182, 256,  // fougère
 	104,   0, 144, 100,  // courge
-	203,   0, 256,  83,  // armature derrick résolution C
+	196,   0, 256, 256,  // armature
 	-1
 };
 
@@ -2953,74 +3941,20 @@ static int tablePartV[] =	// vegetal.tga
 {
 	  0,   0,  94, 100,  // racine
 	186,   0, 256, 256,  // tronc
-	162,   0, 168, 128,  // mat drapeau bleu
-	168,   0, 174, 128,  // mat drapeau rouge
-	174,   0, 180, 128,  // mat drapeau vert
-	180,   0, 186, 128,  // mat drapeau jaune
-	180, 128, 186, 256,  // mat drapeau violet
-	 94,   0, 107,  32,  // drapeau bleu
-	107,   0, 120,  32,  // drapeau rouge
-	120,   0, 133,  32,  // drapeau vert
-	133,   0, 146,  32,  // drapeau jaune
-	146,   0, 159,  32,  // drapeau violet
-	 94,  64, 126,  96,  // verre 1
-	126,  64, 158,  86,  // verre 2
-	128, 128, 180, 144,  // verre 3a
-	128, 144, 180, 160,  // verre 3b
-	128,  94, 162, 128,  // verre 4
-	  0, 100,  32, 228,  // champignon 1
-	 32, 100,  48, 228,  // champignon 1
-	 48, 100, 112, 228,  // champignon 2
-	112, 100, 128, 228,  // champignon 2
-	128, 160, 180, 212,  // tronc (21)
-	-1
-};
-
-static int tablePartM[] =	// mother.tga
-{
-	  0,   0, 128, 128,  // corps arrière
-	128,   0, 192, 128,  // corps avant
-	  0, 128,  64, 192,  // tête
-	 64, 128, 192, 160,  // pince ext.
-	 64, 160, 192, 192,  // pince int.
-	  0, 192,  64, 256,  // mire
-	-1
-};
-
-static int tablePartA[] =	// ant.tga
-{
-	  0,   0,  64,  64,  // queue
-	  0,  96, 128, 160,  // queue abeille
-	 64,   0, 128,  64,  // corps
-	128,   0, 192,  64,  // tête
-	  0,  64,  64,  72,  // patte
-	  0,  72,  64,  80,  // antenne
-	 64,  64, 150,  96,  // queue ver
-	150,  64, 182,  96,  // corps ver
-	182,  64, 256,  96,  // tête ver
-	224,  32, 256,  64,  // articulation ver
-	128,  96, 220, 160,  // aile
-	  0,  80,  16,  96,  // oeil
-	200,   0, 208,   8,  // vert clair
-	200,   8, 208,  16,  // vert foncé
-	  0, 160,  64, 224,  // corps araignée
-	 64, 160, 128, 192,  // tête araignée
-	208,   0, 216,  64,  // patte araignée
-	216,   0, 224,  32,  // patte araignée
-	224,   0, 256,   8,  // antenne araignée
-	192,   0, 200,   8,  // brun clair
-	192,   8, 200,  16,  // brun foncé
-	128, 160, 256, 256,  // SatCom
+	 94,   0, 186, 128,  // mur
+	  0, 100,   8, 108,  // intérieur
+	  0, 128, 128, 256,  // organique
+	  0, 166, 112, 216,  // organique
 	-1
 };
 
 static int tablePartH[] =	// human.tga
 {
-	  0,   0,  64,  64,  // vissière
 	 64,   0,  96,  64,  // cuisse
 	 96,   0, 128,  64,  // jambe
 	128,   0, 192,  32,  // bras
 	128,  32, 192,  64,  // avant-bras
+	192,  32, 256,  64,  // avant-bras poilu
 	  0,  64, 128, 224,  // ventre
 	128,  64, 256, 224,  // dos
 	 64, 224, 112, 256,  // dessus pied
@@ -3028,78 +3962,11 @@ static int tablePartH[] =	// human.tga
 	112, 224, 144, 240,  // côté pied
 	112, 224, 128, 240,  // côté pied
 	  0, 224,  64, 256,  // gant
-	168, 224, 200, 256,  // oreille
-	112, 240, 144, 256,  // ligne casque
-	200, 224, 208, 256,  // intérieur coup
-	240,   0, 244,  64,  // bombone orange
-	244,   0, 248,  64,  // bombone orange (reflet)
-	248,   0, 252,  64,  // bombone bleu
-	252,   0, 256,  64,  // bombone bleu (reflet)
-	144, 240, 156, 256,  // gris habit
-	156, 240, 168, 256,  // gris articulation
-//?	208, 224, 256, 256,  // SatCom
-	192,   0, 240,  64,  // quartz
-	-1
-};
-
-static int tablePartG[] =	// apollo.tga
-{
-	  0,   0,  64,  64,  // revètement LEM
-	 64,   0, 128,  64,  // revètement LEM
-	128,   8, 136, 128,  // pied
-	  0,  64,  64, 128,  // roue
-	136,  24, 152,  44,  // profil pneu
-	136,   8, 160,  24,  // garde boue
-	 64,  64, 128, 128,  // siège
-	 64, 128, 128, 192,  // siège
-	 64, 192, 128, 212,  // siège
-	128, 128, 240, 192,  // moteur
-	  0, 192,  28, 256,  // moteur
-	 32, 128,  60, 256,  // moteur
-	224,   0, 256, 128,  // avant
-	206,   0, 224, 128,  // avant
-	136,  44, 168,  62,  // avant
-	 64, 212, 108, 256,  // panneau de commande
-	198,   0, 206, 128,  // mat
-	190,  64, 198, 128,  // mat
-	160,   8, 176,  24,  // caméra
-	176,   8, 192,  24,  // moyeu
-	136,  64, 168,  96,  // module
-	168,  64, 190,  96,  // module
-	136,  96, 168, 128,  // module
-	128, 192, 230, 252,  // drapeau
-	  0, 128,  32, 192,  // antenne
-	128,   0, 136,   8,  // jaune
-	136,   0, 144,   8,  // beige
-	144,   0, 152,   8,  // brun
-	168,   0, 176,   8,  // gris très clair
-	152,   0, 160,   8,  // gris clair
-	160,   0, 168,   8,  // gris foncé
-	-1
-};
-
-static int tablePartB[] =	// base1.tga
-{
-	  0,   0,  80, 256,  // intérieur porte
-	 80,   0,  88, 256,  // tranche porte
-	116,   0, 180,  64,  // coiffe 1
-	116,  64, 180, 102,  // coiffe 2
-	180,   0, 244,  37,  // base
-	180,  37, 196, 101,  // support
-	 88,   0, 116, 256,  // colonne
-	212,  37, 256, 128,  // supplément
-	128, 128, 256, 256,  // 1/4 du sol
-	196,  37, 212,  53,  // gris foncé
-	196,  53, 212,  69,  // gris clair
-	-1
-};
-
-static int tablePartCe[] =	// cellar01.tga
-{
-	  0, 128,  64, 192,  // briques
-	 64, 128, 128, 192,  // briques
-	128, 128, 192, 192,  // briques
-	192, 128, 256, 192,  // briques
+	128, 240, 144, 256,  // tissus 1
+	224, 224, 256, 256,  // tissus 2
+	112, 240, 128, 256,  // peau
+	192, 224, 224, 246,  // verres lunettes
+	144, 240, 160, 256,  // branches lunettes
 	-1
 };
 
@@ -3113,29 +3980,54 @@ static int tablePartFa[] =	// face01.tga
 
 int* CModel::RetTextureTable()
 {
-	if ( m_textureRank ==  0 )  return tablePartT;
-	if ( m_textureRank ==  1 )  return tablePartR;
-	if ( m_textureRank ==  2 )  return tablePartW;
-	if ( m_textureRank ==  3 )  return tablePartDr;
-	if ( m_textureRank ==  4 )  return tablePartKi;
-	if ( m_textureRank ==  5 )  return tablePartKi2;
-	if ( m_textureRank ==  6 )  return tablePartKi3;
-	if ( m_textureRank ==  7 )  return tablePartF;
-	if ( m_textureRank ==  8 )  return tablePartD;
-	if ( m_textureRank ==  9 )  return tablePartC;
-	if ( m_textureRank == 10 )  return tablePartS;
-	if ( m_textureRank == 11 )  return tablePartP;
-	if ( m_textureRank == 12 )  return tablePartV;
-	if ( m_textureRank == 13 )  return tablePartM;
-	if ( m_textureRank == 14 )  return tablePartA;
-	if ( m_textureRank == 15 )  return tablePartH;
-	if ( m_textureRank == 16 )  return tablePartG;
-	if ( m_textureRank == 17 )  return tablePartB;
-	if ( m_textureRank == 18 )  return tablePartCe;
-	if ( m_textureRank == 19 )  return tablePartFa;
-	if ( m_textureRank == 20 )  return tablePartFa;
-	if ( m_textureRank == 21 )  return tablePartFa;
-	if ( m_textureRank == 22 )  return tablePartFa;
+	if ( m_textureRank ==  0 )  return tablePartC01;
+	if ( m_textureRank ==  1 )  return tablePartC02;
+	if ( m_textureRank ==  2 )  return tablePartC03;
+	if ( m_textureRank ==  3 )  return tablePartC04;
+	if ( m_textureRank ==  4 )  return tablePartC05;
+	if ( m_textureRank ==  5 )  return tablePartC06;
+	if ( m_textureRank ==  6 )  return tablePartC07;
+	if ( m_textureRank ==  7 )  return tablePartC08;
+	if ( m_textureRank ==  8 )  return tablePartW01;
+	if ( m_textureRank ==  9 )  return tablePartW02;
+	if ( m_textureRank == 10 )  return tablePartW03;
+	if ( m_textureRank == 11 )  return tablePartW04;
+	if ( m_textureRank == 12 )  return tablePartW05;
+	if ( m_textureRank == 13 )  return tablePartW06;
+	if ( m_textureRank == 14 )  return tablePartW07;
+	if ( m_textureRank == 15 )  return tablePartW08;
+	if ( m_textureRank == 16 )  return tablePartT;
+	if ( m_textureRank == 17 )  return tablePartR;
+	if ( m_textureRank == 18 )  return tablePartR2;
+	if ( m_textureRank == 19 )  return tablePartW;
+	if ( m_textureRank == 20 )  return tablePartStone;
+	if ( m_textureRank == 21 )  return tablePartA1;
+	if ( m_textureRank == 22 )  return tablePartA2;
+	if ( m_textureRank == 23 )  return tablePartI1;
+	if ( m_textureRank == 24 )  return tablePartB1;
+	if ( m_textureRank == 25 )  return tablePartB2;
+	if ( m_textureRank == 26 )  return tablePartD;
+	if ( m_textureRank == 27 )  return tablePartC;
+	if ( m_textureRank == 28 )  return tablePartF1;
+	if ( m_textureRank == 29 )  return tablePartF2;
+	if ( m_textureRank == 30 )  return tablePartF3;
+	if ( m_textureRank == 31 )  return tablePartBox;
+	if ( m_textureRank == 32 )  return tablePartS;
+	if ( m_textureRank == 33 )  return tablePartP01;
+	if ( m_textureRank == 34 )  return tablePartP02;
+	if ( m_textureRank == 35 )  return tablePartP03;
+	if ( m_textureRank == 36 )  return tablePartP04;
+	if ( m_textureRank == 37 )  return tablePartP05;
+	if ( m_textureRank == 38 )  return tablePartP06;
+	if ( m_textureRank == 39 )  return tablePartP07;
+	if ( m_textureRank == 40 )  return tablePartP08;
+	if ( m_textureRank == 41 )  return tablePartP09;
+	if ( m_textureRank == 42 )  return tablePartP10;
+	if ( m_textureRank == 43 )  return tablePartSu;
+	if ( m_textureRank == 44 )  return tablePartSe;
+	if ( m_textureRank == 45 )  return tablePartP;
+	if ( m_textureRank == 46 )  return tablePartV;
+	if ( m_textureRank == 47 )  return tablePartH;
 	return 0;
 }
 
@@ -3165,29 +4057,54 @@ void CModel::TextureRankChange(int step)
 	if ( m_textureRank >= MAX_NAMES )  m_textureRank = 0;
 	if ( m_textureRank <  0         )  m_textureRank = MAX_NAMES-1;
 
-	if ( m_textureRank ==  0 )  strcpy(m_textureName, "lemt.tga");
-	if ( m_textureRank ==  1 )  strcpy(m_textureName, "roller.tga");
-	if ( m_textureRank ==  2 )  strcpy(m_textureName, "subm.tga");
-	if ( m_textureRank ==  3 )  strcpy(m_textureName, "drawer.tga");
-	if ( m_textureRank ==  4 )  strcpy(m_textureName, "kid.tga");
-	if ( m_textureRank ==  5 )  strcpy(m_textureName, "kid2.tga");
-	if ( m_textureRank ==  6 )  strcpy(m_textureName, "kid3.tga");
-	if ( m_textureRank ==  7 )  strcpy(m_textureName, "factory.tga");
-	if ( m_textureRank ==  8 )  strcpy(m_textureName, "derrick.tga");
-	if ( m_textureRank ==  9 )  strcpy(m_textureName, "convert.tga");
-	if ( m_textureRank == 10 )  strcpy(m_textureName, "search.tga");
-	if ( m_textureRank == 11 )  strcpy(m_textureName, "plant.tga");
-	if ( m_textureRank == 12 )  strcpy(m_textureName, "vegetal.tga");
-	if ( m_textureRank == 13 )  strcpy(m_textureName, "mother.tga");
-	if ( m_textureRank == 14 )  strcpy(m_textureName, "ant.tga");
-	if ( m_textureRank == 15 )  strcpy(m_textureName, "human.tga");
-	if ( m_textureRank == 16 )  strcpy(m_textureName, "apollo.tga");
-	if ( m_textureRank == 17 )  strcpy(m_textureName, "base1.tga");
-	if ( m_textureRank == 18 )  strcpy(m_textureName, "cellar01.tga");
-	if ( m_textureRank == 19 )  strcpy(m_textureName, "face01.tga");
-	if ( m_textureRank == 20 )  strcpy(m_textureName, "face02.tga");
-	if ( m_textureRank == 21 )  strcpy(m_textureName, "face03.tga");
-	if ( m_textureRank == 22 )  strcpy(m_textureName, "face04.tga");
+	if ( m_textureRank ==  0 )  strcpy(m_textureName, "car01.tga");
+	if ( m_textureRank ==  1 )  strcpy(m_textureName, "car02.tga");
+	if ( m_textureRank ==  2 )  strcpy(m_textureName, "car03.tga");
+	if ( m_textureRank ==  3 )  strcpy(m_textureName, "car04.tga");
+	if ( m_textureRank ==  4 )  strcpy(m_textureName, "car05.tga");
+	if ( m_textureRank ==  5 )  strcpy(m_textureName, "car06.tga");
+	if ( m_textureRank ==  6 )  strcpy(m_textureName, "car07.tga");
+	if ( m_textureRank ==  7 )  strcpy(m_textureName, "car08.tga");
+	if ( m_textureRank ==  8 )  strcpy(m_textureName, "wheel01.tga");
+	if ( m_textureRank ==  9 )  strcpy(m_textureName, "wheel02.tga");
+	if ( m_textureRank == 10 )  strcpy(m_textureName, "wheel03.tga");
+	if ( m_textureRank == 11 )  strcpy(m_textureName, "wheel04.tga");
+	if ( m_textureRank == 12 )  strcpy(m_textureName, "wheel05.tga");
+	if ( m_textureRank == 13 )  strcpy(m_textureName, "wheel06.tga");
+	if ( m_textureRank == 14 )  strcpy(m_textureName, "wheel07.tga");
+	if ( m_textureRank == 15 )  strcpy(m_textureName, "wheel08.tga");
+	if ( m_textureRank == 16 )  strcpy(m_textureName, "trax.tga");
+	if ( m_textureRank == 17 )  strcpy(m_textureName, "door.tga");
+	if ( m_textureRank == 18 )  strcpy(m_textureName, "door2.tga");
+	if ( m_textureRank == 19 )  strcpy(m_textureName, "dock.tga");
+	if ( m_textureRank == 20 )  strcpy(m_textureName, "stone.tga");
+	if ( m_textureRank == 21 )  strcpy(m_textureName, "alien1.tga");
+	if ( m_textureRank == 22 )  strcpy(m_textureName, "alien2.tga");
+	if ( m_textureRank == 23 )  strcpy(m_textureName, "inca1.tga");
+	if ( m_textureRank == 24 )  strcpy(m_textureName, "bot1.tga");
+	if ( m_textureRank == 25 )  strcpy(m_textureName, "bot2.tga");
+	if ( m_textureRank == 26 )  strcpy(m_textureName, "remote.tga");
+	if ( m_textureRank == 27 )  strcpy(m_textureName, "home1.tga");
+	if ( m_textureRank == 28 )  strcpy(m_textureName, "factory1.tga");
+	if ( m_textureRank == 29 )  strcpy(m_textureName, "factory2.tga");
+	if ( m_textureRank == 30 )  strcpy(m_textureName, "factory3.tga");
+	if ( m_textureRank == 31 )  strcpy(m_textureName, "box.tga");
+	if ( m_textureRank == 32 )  strcpy(m_textureName, "road1.tga");
+	if ( m_textureRank == 33 )  strcpy(m_textureName, "pub01.tga");
+	if ( m_textureRank == 34 )  strcpy(m_textureName, "pub02.tga");
+	if ( m_textureRank == 35 )  strcpy(m_textureName, "pub03.tga");
+	if ( m_textureRank == 36 )  strcpy(m_textureName, "pub04.tga");
+	if ( m_textureRank == 37 )  strcpy(m_textureName, "pub05.tga");
+	if ( m_textureRank == 38 )  strcpy(m_textureName, "pub06.tga");
+	if ( m_textureRank == 39 )  strcpy(m_textureName, "pub07.tga");
+	if ( m_textureRank == 40 )  strcpy(m_textureName, "pub08.tga");
+	if ( m_textureRank == 41 )  strcpy(m_textureName, "pub09.tga");
+	if ( m_textureRank == 42 )  strcpy(m_textureName, "pub10.tga");
+	if ( m_textureRank == 43 )  strcpy(m_textureName, "support.tga");
+	if ( m_textureRank == 44 )  strcpy(m_textureName, "search.tga");
+	if ( m_textureRank == 45 )  strcpy(m_textureName, "plant.tga");
+	if ( m_textureRank == 46 )  strcpy(m_textureName, "vegetal.tga");
+	if ( m_textureRank == 47 )  strcpy(m_textureName, "human.tga");
 
 	m_texturePart = 0;
 }
@@ -3201,11 +4118,29 @@ void CModel::TexturePartChange(int step)
 	table = RetTextureTable();
 	if ( table == 0 )  return;
 
-	m_texturePart ++;
-
-	if ( table[m_texturePart*4] == -1 )
+	if ( step > 0 )
 	{
-		m_texturePart = 0;
+		m_texturePart ++;
+
+		if ( table[m_texturePart*4] == -1 )
+		{
+			m_texturePart = 0;
+		}
+	}
+
+	if ( step < 0 )
+	{
+		m_texturePart --;
+
+		if ( m_texturePart < 0 )
+		{
+			m_texturePart = 0;
+			while ( table[m_texturePart*4] != -1 )
+			{
+				m_texturePart ++;
+			}
+			m_texturePart --;
+		}
 	}
 
 	TexturePartUpdate();

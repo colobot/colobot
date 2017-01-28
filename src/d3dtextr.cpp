@@ -256,18 +256,21 @@ HRESULT TextureContainer::LoadImageData()
 	TCHAR*		strExtension;
 	TCHAR		strMetaname[256];
 	TCHAR		strFilename[256];
+	TCHAR		strSuppl[10];
 
 	if ( g_bDebugMode )
 	{
 		if ( _tcsrchr( m_strName, _T('\\') ) == 0 )
 		{
 			lstrcpy( strMetaname, "" );
+			lstrcpy( strSuppl, "" );
 			lstrcpy( strFilename, g_strTexturePath );
 			lstrcat( strFilename, m_strName );
 		}
 		else
 		{
 			lstrcpy( strMetaname, "" );
+			lstrcpy( strSuppl, "" );
 			lstrcpy( strFilename, m_strName );
 		}
 	}
@@ -275,21 +278,24 @@ HRESULT TextureContainer::LoadImageData()
 	{
 		if ( _tcsrchr( m_strName, _T('\\') ) == 0 )
 		{
-#if _SCHOOL
-			lstrcpy( strMetaname, "ceebot1.dat" );
+#if _EGAMES
+			lstrcpy( strMetaname, "ww1.dat" );
+			lstrcpy( strSuppl, "b" );
 #else
-			lstrcpy( strMetaname, "colobot1.dat" );
+			lstrcpy( strMetaname, "buzzingcars1.dat" );
+			lstrcpy( strSuppl, "b" );
 #endif
 			lstrcpy( strFilename, m_strName );
 		}
 		else
 		{
 			lstrcpy( strMetaname, "" );
+			lstrcpy( strSuppl, "" );
 			lstrcpy( strFilename, m_strName );
 		}
 	}
 
-	if ( !g_metafile.IsExist(strMetaname, strFilename) )
+	if ( !g_metafile.IsExist(strMetaname, strFilename, strSuppl) )
 	{
 		return DDERR_NOTFOUND;
 	}
@@ -344,7 +350,7 @@ HRESULT TextureContainer::LoadBitmapFile( TCHAR* strPathname )
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadTargaFile( TCHAR* strMetaname, TCHAR* strFilename )
 {
-	if( g_metafile.Open(strMetaname, strFilename) != 0 )
+	if( g_metafile.Open(strMetaname, strFilename, "b") != 0 )
 		return E_FAIL;
 
 	struct TargaHeader

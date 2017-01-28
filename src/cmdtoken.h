@@ -21,7 +21,6 @@ extern int GetInt(char *line, int rank, int def);
 extern float GetFloat(char *line, int rank, float def);
 extern void GetString(char *line, int rank, char *buffer);
 extern ObjectType GetTypeObject(char *line, int rank, ObjectType def);
-extern char* GetTypeObject(ObjectType type);
 extern WaterType GetTypeWater(char *line, int rank, WaterType def);
 extern D3DTypeObj GetTypeTerrain(char *line, int rank, D3DTypeObj def);
 extern int GetBuild(char *line, int rank);

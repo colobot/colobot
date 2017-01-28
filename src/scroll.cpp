@@ -311,8 +311,9 @@ BOOL CScroll::EventProcess(const Event &event)
 void CScroll::Draw()
 {
 	FPOINT	pos, dim, ppos, ddim;
-	float	hButton;
-	int		icon, n, i;
+	POINT	wdim;
+	float	hButton, h;
+	int		icon, i, n;
 
 	hButton = m_buttonUp?m_dim.x/0.75f:0.0f;
 
@@ -336,18 +337,28 @@ void CScroll::Draw()
 		dim.y *= m_visibleRatio;
 		DrawVertex(pos, dim, 2);
 
-		n = (int)(dim.y*0.8f/0.012f);
+		wdim = m_engine->RetDim();
+		if ( wdim.y <= 768.0f )  // 1024x768 ou moins ?
+		{
+			h = 1.0f/wdim.y;  // 1 pixel
+		}
+		else
+		{
+			h = 2.0f/wdim.y;  // 2 pixels
+		}
+
+		n = (int)(dim.y*0.8f/(h*3.0f));
 		if ( n < 1 )  n = 1;
 		if ( n > 5 )  n = 5;
 
 		ppos.x = pos.x+0.003f;
-		ppos.y = pos.y+(dim.y-(n-1)*0.012f-0.008f)/2.0f;
+		ppos.y = pos.y+(dim.y-(n-1)*(h*3.0f)-(h*2.0f))/2.0f;
 		ddim.x = dim.x-0.006f;
-		ddim.y = 0.008f;
+		ddim.y = (h*2.0f);
 		for ( i=0 ; i<n ; i++ )
 		{
 			DrawVertex(ppos, ddim, 3);  // barre horizontale
-			ppos.y += 0.012f;
+			ppos.y += (h*3.0f);
 		}
 	}
 
@@ -370,22 +381,22 @@ void CScroll::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 
 	if ( icon == 0 )
 	{
-		m_engine->SetTexture("button2.tga");
+		m_engine->SetTexture("button1.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x =   0.0f/256.0f;  // rectangle jaune
-		uv1.y =  32.0f/256.0f;
-		uv2.x =  32.0f/256.0f;
-		uv2.y =  64.0f/256.0f;
-		ex = 8.0f/256.0f;
+		uv1.x = 128.0f/256.0f;  // rectangle jaune
+		uv1.y =  16.0f/256.0f;
+		uv2.x = 144.0f/256.0f;
+		uv2.y =  32.0f/256.0f;
+		ex = 4.0f/256.0f;
 	}
 	else if ( icon == 1 )
 	{
-		m_engine->SetTexture("button2.tga");
+		m_engine->SetTexture("button1.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x = 128.0f/256.0f;  // rectangle gris
-		uv1.y =  32.0f/256.0f;
-		uv2.x = 160.0f/256.0f;
-		uv2.y =  64.0f/256.0f;
+		uv1.x = 224.0f/256.0f;  // rectangle gris
+		uv1.y =   0.0f/256.0f;
+		uv2.x = 256.0f/256.0f;
+		uv2.y =  32.0f/256.0f;
 		ex = 8.0f/256.0f;
 	}
 	else if ( icon == 2 )
@@ -400,12 +411,12 @@ void CScroll::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	}
 	else
 	{
-		m_engine->SetTexture("button2.tga");
+		m_engine->SetTexture("button1.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x = 104.0f/256.0f;  // ligne bleu -
-		uv1.y =  32.0f/256.0f;
-		uv2.x = 128.0f/256.0f;
-		uv2.y =  40.0f/256.0f;
+		uv1.x =   8.0f/256.0f;  // ligne -
+		uv1.y =  44.0f/256.0f;
+		uv2.x =  24.0f/256.0f;
+		uv2.y =  48.0f/256.0f;
 		ex = 0.0f;
 	}
 

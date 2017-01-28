@@ -137,6 +137,7 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	m_backgroundCloudDown = 0;
 	m_bBackgroundFull = FALSE;
 	m_bBackgroundQuarter = FALSE;
+	m_bBackgroundPanel = FALSE;
 	m_bOverFront = TRUE;
 	m_overColor = 0;
 	m_overMode  = D3DSTATETCb;
@@ -154,9 +155,11 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	m_limitLOD[0] = 100.0f;
 	m_limitLOD[1] = 200.0f;
 	m_particuleDensity = 1.0f;
+	m_wheelTraceQuantity = 1.0f;
 	m_clippingDistance = 1.0f;
 	m_lastClippingDistance = m_clippingDistance;
 	m_objectDetail = 1.0f;
+	m_bSuperDetail = FALSE;
 	m_lastObjectDetail = m_objectDetail;
 	m_terrainVision = 1000.0f;
 	m_gadgetQuantity = 1.0f;
@@ -170,7 +173,6 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	m_bLightMode = TRUE;
 	m_bEditIndentMode = TRUE;
 	m_editIndentValue = 4;
-	m_tracePrecision = 1.0f;
 
 	m_alphaMode = 1;
 	if ( GetProfileInt("Engine", "AlphaMode", i) )
@@ -231,6 +233,9 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	ZeroMemory(&m_groundMark, sizeof(D3DGroundMark));
 
 	D3DTextr_SetTexturePath("textures\\");
+	FlushReplaceTex();
+
+	timeBeginPeriod(1);  // résolution de 1ms pour timeGetTime()
 }
 
 // Application destructor. Free memory.
@@ -238,43 +243,50 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 CD3DEngine::~CD3DEngine()
 {
 	D3DObjLevel1*	p1;
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
 	D3DObjLevel3*	p3;
 	D3DObjLevel4*	p4;
 	D3DObjLevel5*	p5;
 	D3DObjLevel6*	p6;
-	int				l1, l2, l3, l4, l5;
+	int				l1, l2a, l2b, l3, l4, l5;
 
 	p1 = m_objectPointer;
 	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 	{
-		p2 = p1->table[l1];
-		if ( p2 == 0 )  continue;
-		for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+		p2a = p1->table[l1];
+		if ( p2a == 0 )  continue;
+		for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 		{
-			p3 = p2->table[l2];
-			if ( p3 == 0 )  continue;
-			for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+			p2b = p2a->table[l2a];
+			if ( p2b == 0 )  continue;
+			for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
 			{
-				p4 = p3->table[l3];
-				if ( p4 == 0 )  continue;
-				for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+				p3 = p2b->table[l2b];
+				if ( p3 == 0 )  continue;
+				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
 				{
-					p5 = p4->table[l4];
-					if ( p5 == 0 )  continue;
-					for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+					p4 = p3->table[l3];
+					if ( p4 == 0 )  continue;
+					for ( l4=0 ; l4<p4->totalUsed ; l4++ )
 					{
-						p6 = p5->table[l5];
-						if ( p6 == 0 )  continue;
-						free(p6);
+						p5 = p4->table[l4];
+						if ( p5 == 0 )  continue;
+						for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+						{
+							p6 = p5->table[l5];
+							if ( p6 == 0 )  continue;
+							free(p6);
+						}
+						free(p5);
 					}
-					free(p5);
+					free(p4);
 				}
-				free(p4);
+				free(p3);
 			}
-			free(p3);
+			free(p2b);
 		}
-		free(p2);
+		free(p2a);
 	}
 	free(p1);
 
@@ -353,7 +365,7 @@ void CD3DEngine::SetTerrain(CTerrain* terrain)
 }
 
 
-// Sauvegarde l'état du moteur graphique dans COLOBOT.INI.
+// Sauvegarde l'état du moteur graphique dans buzzingcars.ini.
 
 BOOL CD3DEngine::WriteProfile()
 {
@@ -576,19 +588,19 @@ void CD3DEngine::MemSpace3(D3DObjLevel3 *&p, int nb)
 	}
 }
 
-// Prépare une structure D3DObjLevel2 pour pouvoir ajouter
+// Prépare une structure D3DObjLevel2b pour pouvoir ajouter
 // qq éléments D3DObjLevel3.
 
-void CD3DEngine::MemSpace2(D3DObjLevel2 *&p, int nb)
+void CD3DEngine::MemSpace2b(D3DObjLevel2b *&p, int nb)
 {
-	D3DObjLevel2*	pp;
+	D3DObjLevel2b*	pp;
 	int				total, size;
 
 	if ( p == 0 )
 	{
 		total = SIZEBLOC_TRANSFORM+nb;
-		size = sizeof(D3DObjLevel2)+sizeof(D3DObjLevel3*)*(total-1);
-		p = (D3DObjLevel2*)malloc(size);
+		size = sizeof(D3DObjLevel2b)+sizeof(D3DObjLevel3*)*(total-1);
+		p = (D3DObjLevel2b*)malloc(size);
 		ZeroMemory(p, size);
 		p->totalPossible = total;
 		return;
@@ -597,10 +609,41 @@ void CD3DEngine::MemSpace2(D3DObjLevel2 *&p, int nb)
 	if ( p->totalUsed+nb > p->totalPossible )
 	{
 		total = p->totalPossible+SIZEBLOC_TRANSFORM+nb;
-		size = sizeof(D3DObjLevel2)+sizeof(D3DObjLevel3*)*(total-1);
-		pp = (D3DObjLevel2*)malloc(size);
+		size = sizeof(D3DObjLevel2b)+sizeof(D3DObjLevel3*)*(total-1);
+		pp = (D3DObjLevel2b*)malloc(size);
 		ZeroMemory(pp, size);
-		CopyMemory(pp, p, sizeof(D3DObjLevel2)+sizeof(D3DObjLevel3*)*(p->totalPossible-1));
+		CopyMemory(pp, p, sizeof(D3DObjLevel2b)+sizeof(D3DObjLevel3*)*(p->totalPossible-1));
+		pp->totalPossible = total;
+		free(p);
+		p = pp;
+	}
+}
+
+// Prépare une structure D3DObjLevel2a pour pouvoir ajouter
+// qq éléments D3DObjLevel2b.
+
+void CD3DEngine::MemSpace2a(D3DObjLevel2a *&p, int nb)
+{
+	D3DObjLevel2a*	pp;
+	int				total, size;
+
+	if ( p == 0 )
+	{
+		total = SIZEBLOC_TRANSFORM+nb;
+		size = sizeof(D3DObjLevel2a)+sizeof(D3DObjLevel2b*)*(total-1);
+		p = (D3DObjLevel2a*)malloc(size);
+		ZeroMemory(p, size);
+		p->totalPossible = total;
+		return;
+	}
+
+	if ( p->totalUsed+nb > p->totalPossible )
+	{
+		total = p->totalPossible+SIZEBLOC_TRANSFORM+nb;
+		size = sizeof(D3DObjLevel2a)+sizeof(D3DObjLevel2b*)*(total-1);
+		pp = (D3DObjLevel2a*)malloc(size);
+		ZeroMemory(pp, size);
+		CopyMemory(pp, p, sizeof(D3DObjLevel2a)+sizeof(D3DObjLevel2b*)*(p->totalPossible-1));
 		pp->totalPossible = total;
 		free(p);
 		p = pp;
@@ -608,7 +651,7 @@ void CD3DEngine::MemSpace2(D3DObjLevel2 *&p, int nb)
 }
 
 // Prépare une structure D3DObjLevel1 pour pouvoir ajouter
-// qq éléments D3DObjLevel2.
+// qq éléments D3DObjLevel2a.
 
 void CD3DEngine::MemSpace1(D3DObjLevel1 *&p, int nb)
 {
@@ -618,7 +661,7 @@ void CD3DEngine::MemSpace1(D3DObjLevel1 *&p, int nb)
 	if ( p == 0 )
 	{
 		total = SIZEBLOC_TEXTURE+nb;
-		size = sizeof(D3DObjLevel1)+sizeof(D3DObjLevel2*)*(total-1);
+		size = sizeof(D3DObjLevel1)+sizeof(D3DObjLevel2a*)*(total-1);
 		p = (D3DObjLevel1*)malloc(size);
 		ZeroMemory(p, size);
 		p->totalPossible = total;
@@ -628,10 +671,10 @@ void CD3DEngine::MemSpace1(D3DObjLevel1 *&p, int nb)
 	if ( p->totalUsed+nb > p->totalPossible )
 	{
 		total = p->totalPossible+SIZEBLOC_TEXTURE+nb;
-		size = sizeof(D3DObjLevel1)+sizeof(D3DObjLevel2*)*(total-1);
+		size = sizeof(D3DObjLevel1)+sizeof(D3DObjLevel2a*)*(total-1);
 		pp = (D3DObjLevel1*)malloc(size);
 		ZeroMemory(pp, size);
-		CopyMemory(pp, p, sizeof(D3DObjLevel1)+sizeof(D3DObjLevel2*)*(p->totalPossible-1));
+		CopyMemory(pp, p, sizeof(D3DObjLevel1)+sizeof(D3DObjLevel2a*)*(p->totalPossible-1));
 		pp->totalPossible = total;
 		free(p);
 		p = pp;
@@ -686,43 +729,50 @@ int CD3DEngine::CreateObject()
 void CD3DEngine::FlushObject()
 {
 	D3DObjLevel1*	p1;
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
 	D3DObjLevel3*	p3;
 	D3DObjLevel4*	p4;
 	D3DObjLevel5*	p5;
 	D3DObjLevel6*	p6;
-	int				l1, l2, l3, l4, l5, i;
+	int				l1, l2a, l2b, l3, l4, l5, i;
 
 	p1 = m_objectPointer;
 	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 	{
-		p2 = p1->table[l1];
-		if ( p2 == 0 )  continue;
-		for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+		p2a = p1->table[l1];
+		if ( p2a == 0 )  continue;
+		for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 		{
-			p3 = p2->table[l2];
-			if ( p3 == 0 )  continue;
-			for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+			p2b = p2a->table[l2a];
+			if ( p2b == 0 )  continue;
+			for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
 			{
-				p4 = p3->table[l3];
-				if ( p4 == 0 )  continue;
-				for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+				p3 = p2b->table[l2b];
+				if ( p3 == 0 )  continue;
+				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
 				{
-					p5 = p4->table[l4];
-					if ( p5 == 0 )  continue;
-					for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+					p4 = p3->table[l3];
+					if ( p4 == 0 )  continue;
+					for ( l4=0 ; l4<p4->totalUsed ; l4++ )
 					{
-						p6 = p5->table[l5];
-						if ( p6 == 0 )  continue;
-						free(p6);
+						p5 = p4->table[l4];
+						if ( p5 == 0 )  continue;
+						for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+						{
+							p6 = p5->table[l5];
+							if ( p6 == 0 )  continue;
+							free(p6);
+						}
+						free(p5);
 					}
-					free(p5);
+					free(p4);
 				}
-				free(p4);
+				free(p3);
 			}
-			free(p3);
+			free(p2b);
 		}
-		free(p2);
+		free(p2a);
 		p1->table[l1] = 0;
 	}
 	p1->totalUsed = 0;
@@ -744,43 +794,49 @@ void CD3DEngine::FlushObject()
 BOOL CD3DEngine::DeleteObject(int objRank)
 {
 	D3DObjLevel1*	p1;
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
 	D3DObjLevel3*	p3;
 	D3DObjLevel4*	p4;
 	D3DObjLevel5*	p5;
 	D3DObjLevel6*	p6;
-	int				l1, l2, l3, l4, l5, i;
+	int				l1, l2a, l2b, l3, l4, l5, i;
 
 	p1 = m_objectPointer;
 	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 	{
-		p2 = p1->table[l1];
-		if ( p2 == 0 )  continue;
-		for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+		p2a = p1->table[l1];
+		if ( p2a == 0 )  continue;
+		for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 		{
-			p3 = p2->table[l2];
-			if ( p3 == 0 )  continue;
-			if ( p3->objRank != objRank )  continue;
-			for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+			p2b = p2a->table[l2a];
+			if ( p2b == 0 )  continue;
+			for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
 			{
-				p4 = p3->table[l3];
-				if ( p4 == 0 )  continue;
-				for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+				p3 = p2b->table[l2b];
+				if ( p3 == 0 )  continue;
+				if ( p3->objRank != objRank )  continue;
+				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
 				{
-					p5 = p4->table[l4];
-					if ( p5 == 0 )  continue;
-					for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+					p4 = p3->table[l3];
+					if ( p4 == 0 )  continue;
+					for ( l4=0 ; l4<p4->totalUsed ; l4++ )
 					{
-						p6 = p5->table[l5];
-						if ( p6 == 0 )  continue;
-						free(p6);
+						p5 = p4->table[l4];
+						if ( p5 == 0 )  continue;
+						for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+						{
+							p6 = p5->table[l5];
+							if ( p6 == 0 )  continue;
+							free(p6);
+						}
+						free(p5);
 					}
-					free(p5);
+					free(p4);
 				}
-				free(p4);
+				free(p3);
+				p2b->table[l2b] = 0;
 			}
-			free(p3);
-			p2->table[l2] = 0;
 		}
 	}
 
@@ -824,19 +880,18 @@ BOOL CD3DEngine::SetDrawFront(int objRank, BOOL bDraw)
 
 // Prépare le niveau 1 pour ajouter un triangle.
 
-D3DObjLevel2* CD3DEngine::AddLevel1(D3DObjLevel1 *&p1, char* texName1, char* texName2)
+D3DObjLevel2a* CD3DEngine::AddLevel1(D3DObjLevel1 *&p1, short type)
 {
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
 	int				l1;
 
 	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 	{
-		p2 = p1->table[l1];
-		if ( p2 == 0 )  continue;
-		if ( strcmp(p2->texName1, texName1) == 0 &&
-			 strcmp(p2->texName2, texName2) == 0 )
+		p2a = p1->table[l1];
+		if ( p2a == 0 )  continue;
+		if ( p2a->type == type )
 		{
-			MemSpace2(p1->table[l1], 1);
+			MemSpace2a(p1->table[l1], 1);
 			return p1->table[l1];
 		}
 	}
@@ -845,37 +900,65 @@ D3DObjLevel2* CD3DEngine::AddLevel1(D3DObjLevel1 *&p1, char* texName1, char* tex
 	l1 = p1->totalUsed++;
 	p1->table[l1] = 0;
 
-	MemSpace2(p1->table[l1], 1);
-	strcpy(p1->table[l1]->texName1, texName1);
-	strcpy(p1->table[l1]->texName2, texName2);
+	MemSpace2a(p1->table[l1], 1);
+	p1->table[l1]->type = type;
 	return p1->table[l1];
 }
 
-// Prépare le niveau 2 pour ajouter un triangle.
+// Prépare le niveau 2a pour ajouter un triangle.
 
-D3DObjLevel3* CD3DEngine::AddLevel2(D3DObjLevel2 *&p2, int objRank)
+D3DObjLevel2b* CD3DEngine::AddLevel2a(D3DObjLevel2a *&p2a, char* texName1, char* texName2)
 {
-	D3DObjLevel3*	p3;
-	int				l2;
+	D3DObjLevel2b*	p2b;
+	int				l2a;
 
-	for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+	for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 	{
-		p3 = p2->table[l2];
-		if ( p3 == 0 )  continue;
-		if ( p3->objRank == objRank )
+		p2b = p2a->table[l2a];
+		if ( p2b == 0 )  continue;
+		if ( strcmp(p2b->texName1, texName1) == 0 &&
+			 strcmp(p2b->texName2, texName2) == 0 )
 		{
-			MemSpace3(p2->table[l2], 1);
-			return p2->table[l2];
+			MemSpace2b(p2a->table[l2a], 1);
+			return p2a->table[l2a];
 		}
 	}
 
-	MemSpace2(p2, 1);
-	l2 = p2->totalUsed++;
-	p2->table[l2] = 0;
+	MemSpace2a(p2a, 1);
+	l2a = p2a->totalUsed++;
+	p2a->table[l2a] = 0;
 
-	MemSpace3(p2->table[l2], 1);
-	p2->table[l2]->objRank = objRank;
-	return p2->table[l2];
+	MemSpace2b(p2a->table[l2a], 1);
+	strcpy(p2a->table[l2a]->texName1, texName1);
+	strcpy(p2a->table[l2a]->texName2, texName2);
+	return p2a->table[l2a];
+}
+
+// Prépare le niveau 2b pour ajouter un triangle.
+
+D3DObjLevel3* CD3DEngine::AddLevel2b(D3DObjLevel2b *&p2b, int objRank)
+{
+	D3DObjLevel3*	p3;
+	int				l2b;
+
+	for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
+	{
+		p3 = p2b->table[l2b];
+		if ( p3 == 0 )  continue;
+		if ( p3->objRank == objRank )
+		{
+			MemSpace3(p2b->table[l2b], 1);
+			return p2b->table[l2b];
+		}
+	}
+
+	MemSpace2b(p2b, 1);
+	l2b = p2b->totalUsed++;
+	p2b->table[l2b] = 0;
+
+	MemSpace3(p2b->table[l2b], 1);
+	p2b->table[l2b]->objRank = objRank;
+	return p2b->table[l2b];
 }
 
 // Prépare le niveau 3 pour ajouter un triangle.
@@ -977,22 +1060,28 @@ BOOL CD3DEngine::AddTriangle(int objRank, D3DVERTEX2* vertex, int nb,
 							 char* texName1, char* texName2,
 							 float min, float max, BOOL bGlobalUpdate)
 {
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
 	D3DObjLevel3*	p3;
 	D3DObjLevel4*	p4;
 	D3DObjLevel5*	p5;
 	D3DObjLevel6*	p6;
 	int				i;
+	short			type;
 
 	m_lastDim = m_dim;
 	m_lastObjectDetail = m_objectDetail;
 	m_lastClippingDistance = m_clippingDistance;
 
-	p2 = AddLevel1(m_objectPointer, texName1, texName2);
-	p3 = AddLevel2(p2, objRank);
-	p4 = AddLevel3(p3, min, max);
-	p5 = AddLevel4(p4, 0);
-	p6 = AddLevel5(p5, D3DTYPE6T, mat, state, nb);  // place pour nb vertex
+	type = 0;
+	if ( state & (D3DSTATETTb|D3DSTATETTw) )  type = 1;
+
+	p2a = AddLevel1 (m_objectPointer, type);
+	p2b = AddLevel2a(p2a, texName1, texName2);
+	p3  = AddLevel2b(p2b, objRank);
+	p4  = AddLevel3 (p3,  min, max);
+	p5  = AddLevel4 (p4,  0);
+	p6  = AddLevel5 (p5,  D3DTYPE6T, mat, state, nb);  // place pour nb vertex
 
 	CopyMemory(&p6->vertex[p6->totalUsed], vertex, sizeof(D3DVERTEX2)*nb);
 	p6->totalUsed += nb;
@@ -1028,18 +1117,24 @@ BOOL CD3DEngine::AddSurface(int objRank, D3DVERTEX2* vertex, int nb,
 							char* texName1, char* texName2,
 							float min, float max, BOOL bGlobalUpdate)
 {
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
 	D3DObjLevel3*	p3;
 	D3DObjLevel4*	p4;
 	D3DObjLevel5*	p5;
 	D3DObjLevel6*	p6;
 	int				i;
+	short			type;
 
-	p2 = AddLevel1(m_objectPointer, texName1, texName2);
-	p3 = AddLevel2(p2, objRank);
-	p4 = AddLevel3(p3, min, max);
-	p5 = AddLevel4(p4, 0);
-	p6 = AddLevel5(p5, D3DTYPE6S, mat, state, nb);  // place pour nb vertex
+	type = 0;
+	if ( state & (D3DSTATETTb|D3DSTATETTw) )  type = 1;
+
+	p2a = AddLevel1 (m_objectPointer, type);
+	p2b = AddLevel2a(p2a, texName1, texName2);
+	p3  = AddLevel2b(p2b, objRank);
+	p4  = AddLevel3 (p3,  min, max);
+	p5  = AddLevel4 (p4,  0);
+	p6  = AddLevel5 (p5,  D3DTYPE6S, mat, state, nb);  // place pour nb vertex
 
 	CopyMemory(&p6->vertex[p6->totalUsed], vertex, sizeof(D3DVERTEX2)*nb);
 	p6->totalUsed += nb;
@@ -1075,16 +1170,18 @@ BOOL CD3DEngine::AddQuick(int objRank, D3DObjLevel6* buffer,
 						  char* texName1, char* texName2,
 						  float min, float max, BOOL bGlobalUpdate)
 {
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
 	D3DObjLevel3*	p3;
 	D3DObjLevel4*	p4;
 	D3DObjLevel5*	p5;
 	int				l5, i;
 
-	p2 = AddLevel1(m_objectPointer, texName1, texName2);
-	p3 = AddLevel2(p2, objRank);
-	p4 = AddLevel3(p3, min, max);
-	p5 = AddLevel4(p4, 0);
+	p2a = AddLevel1 (m_objectPointer, 0);
+	p2b = AddLevel2a(p2a, texName1, texName2);
+	p3  = AddLevel2b(p2b, objRank);
+	p4  = AddLevel3 (p3,  min, max);
+	p5  = AddLevel4 (p4,  0);
 
 	MemSpace5(p5, 1);
 	l5 = p5->totalUsed++;
@@ -1120,10 +1217,11 @@ BOOL CD3DEngine::AddQuick(int objRank, D3DObjLevel6* buffer,
 void CD3DEngine::ChangeLOD()
 {
 	D3DObjLevel1*	p1;
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
 	D3DObjLevel3*	p3;
 	D3DObjLevel4*	p4;
-	int				l1, l2, l3;
+	int				l1, l2a, l2b, l3;
 	float			oldLimit[2], newLimit[2];
 	float			oldTerrain, newTerrain;
 
@@ -1139,37 +1237,42 @@ void CD3DEngine::ChangeLOD()
 	p1 = m_objectPointer;
 	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 	{
-		p2 = p1->table[l1];
-		if ( p2 == 0 )  continue;
-		for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+		p2a = p1->table[l1];
+		if ( p2a == 0 )  continue;
+		for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 		{
-			p3 = p2->table[l2];
-			if ( p3 == 0 )  continue;
-			for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+			p2b = p2a->table[l2a];
+			if ( p2b == 0 )  continue;
+			for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
 			{
-				p4 = p3->table[l3];
-				if ( p4 == 0 )  continue;
+				p3 = p2b->table[l2b];
+				if ( p3 == 0 )  continue;
+				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+				{
+					p4 = p3->table[l3];
+					if ( p4 == 0 )  continue;
 
-				if ( IsEqual(p4->min, 0.0f       ) &&
-					 IsEqual(p4->max, oldLimit[0]) )
-				{
-					p4->max = newLimit[0];
-				}
-				else if ( IsEqual(p4->min, oldLimit[0]) &&
-						  IsEqual(p4->max, oldLimit[1]) )
-				{
-					p4->min = newLimit[0];
-					p4->max = newLimit[1];
-				}
-				else if ( IsEqual(p4->min, oldLimit[1]) &&
-						  IsEqual(p4->max, 1000000.0f ) )
-				{
-					p4->min = newLimit[1];
-				}
-				else if ( IsEqual(p4->min, 0.0f      ) &&
-						  IsEqual(p4->max, oldTerrain) )
-				{
-					p4->max = newTerrain;
+					if ( IsEqual(p4->min, 0.0f       ) &&
+						 IsEqual(p4->max, oldLimit[0]) )
+					{
+						p4->max = newLimit[0];
+					}
+					else if ( IsEqual(p4->min, oldLimit[0]) &&
+							  IsEqual(p4->max, oldLimit[1]) )
+					{
+						p4->min = newLimit[0];
+						p4->max = newLimit[1];
+					}
+					else if ( IsEqual(p4->min, oldLimit[1]) &&
+							  IsEqual(p4->max, 1000000.0f ) )
+					{
+						p4->min = newLimit[1];
+					}
+					else if ( IsEqual(p4->min, 0.0f      ) &&
+							  IsEqual(p4->max, oldTerrain) )
+					{
+						p4->max = newTerrain;
+					}
 				}
 			}
 		}
@@ -1188,44 +1291,54 @@ D3DObjLevel6* CD3DEngine::SearchTriangle(int objRank,
 										 float min, float max)
 {
 	D3DObjLevel1*	p1;
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
 	D3DObjLevel3*	p3;
 	D3DObjLevel4*	p4;
 	D3DObjLevel5*	p5;
 	D3DObjLevel6*	p6;
-	int				l1, l2, l3, l4, l5;
+	int				l1, l2a, l2b, l3, l4, l5;
+	short			type;
+
+	type = 0;
+	if ( state & (D3DSTATETTb|D3DSTATETTw) )  type = 1;
 
 	p1 = m_objectPointer;
 	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 	{
-		p2 = p1->table[l1];
-		if ( p2 == 0 )  continue;
-//?		if ( strcmp(p2->texName1, texName1) != 0 ||
-//?			 strcmp(p2->texName2, texName2) != 0 )  continue;
-		if ( strcmp(p2->texName1, texName1) != 0 )  continue;
-		for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+		p2a = p1->table[l1];
+		if ( p2a->type != type )  continue;
+		for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 		{
-			p3 = p2->table[l2];
-			if ( p3 == 0 )  continue;
-			if ( p3->objRank != objRank )  continue;
-			for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+			p2b = p2a->table[l2a];
+			if ( p2b == 0 )  continue;
+//?			if ( strcmp(p2b->texName1, texName1) != 0 ||
+//?				 strcmp(p2b->texName2, texName2) != 0 )  continue;
+			if ( strcmp(p2b->texName1, texName1) != 0 )  continue;
+			for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
 			{
-				p4 = p3->table[l3];
-				if ( p4 == 0 )  continue;
-				if ( p4->min != min ||
-					 p4->max != max )  continue;
-				for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+				p3 = p2b->table[l2b];
+				if ( p3 == 0 )  continue;
+				if ( p3->objRank != objRank )  continue;
+				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
 				{
-					p5 = p4->table[l4];
-					if ( p5 == 0 )  continue;
-					for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+					p4 = p3->table[l3];
+					if ( p4 == 0 )  continue;
+					if ( p4->min != min ||
+						 p4->max != max )  continue;
+					for ( l4=0 ; l4<p4->totalUsed ; l4++ )
 					{
-						p6 = p5->table[l5];
-						if ( p6 == 0 )  continue;
-//?						if ( p6->state != state ||
-						if ( (p6->state&(~(D3DSTATEDUALb|D3DSTATEDUALw))) != state ||
-							 memcmp(&p6->material, &mat, sizeof(D3DMATERIAL7)) != 0 )  continue;
-						return p6;
+						p5 = p4->table[l4];
+						if ( p5 == 0 )  continue;
+						for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+						{
+							p6 = p5->table[l5];
+							if ( p6 == 0 )  continue;
+	//?						if ( p6->state != state ||
+							if ( (p6->state&(~(D3DSTATEDUALb|D3DSTATEDUALw))) != state ||
+								 memcmp(&p6->material, &mat, sizeof(D3DMATERIAL7)) != 0 )  continue;
+							return p6;
+						}
 					}
 				}
 			}
@@ -1238,33 +1351,159 @@ D3DObjLevel6* CD3DEngine::SearchTriangle(int objRank,
 
 BOOL CD3DEngine::ChangeSecondTexture(int objRank, char* texName2)
 {
-	D3DObjLevel2*	newp2;
+	D3DObjLevel2b*	newp2;
 	D3DObjLevel1*	p1;
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
 	D3DObjLevel3*	p3;
-	int				l1, l2;
+	int				l1, l2a, l2b;
 
 	p1 = m_objectPointer;
 	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 	{
-		p2 = p1->table[l1];
-		if ( p2 == 0 )  continue;
-		if ( strcmp(p2->texName2, texName2) == 0 )  continue;  // déjà nouvelle
-		for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+		p2a = p1->table[l1];
+		for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 		{
-			p3 = p2->table[l2];
-			if ( p3 == 0 )  continue;
-			if ( p3->objRank != objRank )  continue;
+			p2b = p2a->table[l2a];
+			if ( p2b == 0 )  continue;
+			if ( strcmp(p2b->texName2, texName2) == 0 )  continue;  // déjà nouvelle
+			for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
+			{
+				p3 = p2b->table[l2b];
+				if ( p3 == 0 )  continue;
+				if ( p3->objRank != objRank )  continue;
 
-			newp2 = AddLevel1(m_objectPointer, p2->texName1, texName2);
+				newp2 = AddLevel2a(p2a, p2b->texName1, texName2);
 
-			if ( newp2->totalUsed >= newp2->totalPossible )  continue;  // faire mieux !!!
-			newp2->table[newp2->totalUsed++] = p3;
+				if ( newp2->totalUsed >= newp2->totalPossible )  continue;  // faire mieux !!!
+				newp2->table[newp2->totalUsed++] = p3;
 
-			p2->table[l2] = 0;
+				p2b->table[l2b] = 0;
+			}
 		}
 	}
 	return TRUE;
+}
+
+// Transforme un objet au complet.
+// Effectue dans l'ordre :
+//	1)	Une translation "move1"
+//	2)	Une rotation "angle"
+//	3)	Une translation "move2"
+
+void CD3DEngine::TransformObject(int objRank, D3DVECTOR move1, D3DVECTOR angle, D3DVECTOR move2)
+{
+	D3DObjLevel1*	p1;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
+	D3DObjLevel3*	p3;
+	D3DObjLevel4*	p4;
+	D3DObjLevel5*	p5;
+	D3DObjLevel6*	p6;
+	D3DVERTEX2*		pv;
+	int				l1, l2a, l2b, l3, l4, l5;
+
+	p1 = m_objectPointer;
+	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
+	{
+		p2a = p1->table[l1];
+		if ( p2a == 0 )  continue;
+		for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
+		{
+			p2b = p2a->table[l2a];
+			if ( p2b == 0 )  continue;
+			for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
+			{
+				p3 = p2b->table[l2b];
+				if ( p3 == 0 )  continue;
+				if ( p3->objRank != objRank )  continue;
+				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+				{
+					p4 = p3->table[l3];
+					if ( p4 == 0 )  continue;
+					for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+					{
+						p5 = p4->table[l4];
+						if ( p5 == 0 )  continue;
+						for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+						{
+							p6 = p5->table[l5];
+							if ( p6 == 0 )  continue;
+							pv = &p6->vertex[0];
+							TransformVertex(pv, p6->totalUsed, move1, angle, move2);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// Transforme une liste de vertex.
+
+void CD3DEngine::TransformVertex(D3DVERTEX2* pv, int nb,
+								 const D3DVECTOR &move1,
+								 const D3DVECTOR &angle,
+								 const D3DVECTOR &move2)
+{
+	FPOINT	rot;
+	int		i;
+
+	for ( i=0 ; i<nb ; i++ )
+	{
+		pv->x += move1.x;
+		pv->y += move1.y;
+		pv->z += move1.z;
+
+		if ( angle.x != 0.0f )
+		{
+			rot.x = pv->z;
+			rot.y = pv->y;
+			rot = RotatePoint(angle.x, rot);
+			pv->z = rot.x;
+			pv->y = rot.y;
+
+			rot.x = pv->nz;
+			rot.y = pv->ny;
+			rot = RotatePoint(angle.x, rot);
+			pv->nz = rot.x;
+			pv->ny = rot.y;
+		}
+		if ( angle.y != 0.0f )
+		{
+			rot.x = pv->x;
+			rot.y = pv->z;
+			rot = RotatePoint(angle.y, rot);
+			pv->x = rot.x;
+			pv->z = rot.y;
+
+			rot.x = pv->nx;
+			rot.y = pv->nz;
+			rot = RotatePoint(angle.y, rot);
+			pv->nx = rot.x;
+			pv->nz = rot.y;
+		}
+		if ( angle.z != 0.0f )
+		{
+			rot.x = pv->x;
+			rot.y = pv->y;
+			rot = RotatePoint(angle.z, rot);
+			pv->x = rot.x;
+			pv->y = rot.y;
+
+			rot.x = pv->nx;
+			rot.y = pv->ny;
+			rot = RotatePoint(angle.z, rot);
+			pv->nx = rot.x;
+			pv->ny = rot.y;
+		}
+
+		pv->x += move2.x;
+		pv->y += move2.y;
+		pv->z += move2.z;
+
+		pv ++;
+	}
 }
 
 
@@ -1283,81 +1522,87 @@ int CD3DEngine::GetTriangles(int objRank, float min, float max,
 							  D3DTriangle* buffer, int size, float percent)
 {
 	D3DObjLevel1*	p1;
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
 	D3DObjLevel3*	p3;
 	D3DObjLevel4*	p4;
 	D3DObjLevel5*	p5;
 	D3DObjLevel6*	p6;
 	D3DVERTEX2*		pv;
-	int				l1, l2, l3, l4, l5, l6, i, rank;
+	int				l1, l2a, l2b, l3, l4, l5, l6, i, rank;
 
 	rank = 0;
 	i = 0;
 	p1 = m_objectPointer;
 	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 	{
-		p2 = p1->table[l1];
-		if ( p2 == 0 )  continue;
-//?		if ( p2->texName[0] == 0 )  continue;
-		for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+		p2a = p1->table[l1];
+		if ( p2a == 0 )  continue;
+		for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 		{
-			p3 = p2->table[l2];
-			if ( p3 == 0 )  continue;
-			if ( p3->objRank != objRank )  continue;
-			for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+			p2b = p2a->table[l2a];
+			if ( p2b == 0 )  continue;
+//?			if ( p2b->texName[0] == 0 )  continue;
+			for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
 			{
-				p4 = p3->table[l3];
-				if ( p4 == 0 )  continue;
-				if ( p4->min != min ||
-					 p4->max != max )  continue;
-				for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+				p3 = p2b->table[l2b];
+				if ( p3 == 0 )  continue;
+				if ( p3->objRank != objRank )  continue;
+				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
 				{
-					p5 = p4->table[l4];
-					if ( p5 == 0 )  continue;
-					for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+					p4 = p3->table[l3];
+					if ( p4 == 0 )  continue;
+					if ( p4->min != min ||
+						 p4->max != max )  continue;
+					for ( l4=0 ; l4<p4->totalUsed ; l4++ )
 					{
-						p6 = p5->table[l5];
-						if ( p6 == 0 )  continue;
-						if ( p6->type == D3DTYPE6T )
+						p5 = p4->table[l4];
+						if ( p5 == 0 )  continue;
+						for ( l5=0 ; l5<p5->totalUsed ; l5++ )
 						{
-							pv = &p6->vertex[0];
-							for ( l6=0 ; l6<p6->totalUsed/3 ; l6++ )
+							p6 = p5->table[l5];
+							if ( p6 == 0 )  continue;
+							if ( p6->type == D3DTYPE6T )
 							{
-								if ( (float)i/rank <= percent )
+								pv = &p6->vertex[0];
+								for ( l6=0 ; l6<p6->totalUsed/3 ; l6++ )
 								{
-									if ( i >= size )  break;
-									buffer[i].triangle[0] = pv[0];
-									buffer[i].triangle[1] = pv[1];
-									buffer[i].triangle[2] = pv[2];
-									buffer[i].material = p6->material;
-									buffer[i].state = p6->state;
-									strcpy(buffer[i].texName1, p2->texName1);
-									strcpy(buffer[i].texName2, p2->texName2);
-									i ++;
+									if ( (float)i/rank <= percent )
+									{
+										if ( i >= size )  break;
+										buffer[i].triangle[0] = pv[0];
+										buffer[i].triangle[1] = pv[1];
+										buffer[i].triangle[2] = pv[2];
+										buffer[i].material = p6->material;
+										buffer[i].state = p6->state;
+										strcpy(buffer[i].texName1, p2b->texName1);
+										strcpy(buffer[i].texName2, p2b->texName2);
+										i ++;
+									}
+									rank ++;
+									pv += 3;
 								}
-								rank ++;
-								pv += 3;
 							}
-						}
-						if ( p6->type == D3DTYPE6S )
-						{
-							pv = &p6->vertex[0];
-							for ( l6=0 ; l6<p6->totalUsed-2 ; l6++ )
+							if ( p6->type == D3DTYPE6S )
 							{
-								if ( (float)i/rank <= percent )
+								pv = &p6->vertex[0];
+								for ( l6=0 ; l6<p6->totalUsed-2 ; l6++ )
 								{
-									if ( i >= size )  break;
-									buffer[i].triangle[0] = pv[0];
-									buffer[i].triangle[1] = pv[1];
-									buffer[i].triangle[2] = pv[2];
-									buffer[i].material = p6->material;
-									buffer[i].state = p6->state;
-									strcpy(buffer[i].texName1, p2->texName1);
-									strcpy(buffer[i].texName2, p2->texName2);
-									i ++;
+									if ( (float)i/rank <= percent )
+									{
+										if ( i >= size )  break;
+										buffer[i].triangle[0] = pv[0];
+										buffer[i].triangle[1] = pv[1];
+										buffer[i].triangle[2] = pv[2];
+										buffer[i].material = p6->material;
+										buffer[i].state = p6->state;
+										strcpy(buffer[i].texName1, p2b->texName1);
+										strcpy(buffer[i].texName2, p2b->texName2);
+										i ++;
+									}
+									rank ++;
+									pv += 1;
 								}
-								rank ++;
-								pv += 1;
 							}
 						}
 					}
@@ -1390,6 +1635,7 @@ BOOL CD3DEngine::ChangeTextureMapping(int objRank,
 {
 	D3DObjLevel6*	p6;
 	D3DVERTEX2*		pv;
+	float			tmin, tmax, auu, buu;
 	int				l6, nb;
 
 	p6 = SearchTriangle(objRank, mat, state, texName1, texName2, min, max);
@@ -1453,6 +1699,31 @@ BOOL CD3DEngine::ChangeTextureMapping(int objRank,
 			pv->tu = pv->z*au+bu;
 			pv ++;
 		}
+	}
+
+	if ( mode == D3DMAPPINGMX )
+	{
+		for ( l6=0 ; l6<nb ; l6+=3 )
+		{
+			tmin = Min(pv[0].z, pv[1].z, pv[2].z);
+			tmax = Max(pv[0].z, pv[1].z, pv[2].z);
+
+			auu = (bu-au)/(tmax-tmin);
+			buu = bu-tmax*(bu-au)/(tmax-tmin);
+
+			pv[0].tu = pv[0].z*auu+buu;
+			pv[1].tu = pv[1].z*auu+buu;
+			pv[2].tu = pv[2].z*auu+buu;
+			pv += 3;
+		}
+	}
+
+	if ( mode == D3DMAPPINGMY )
+	{
+	}
+
+	if ( mode == D3DMAPPINGMZ )
+	{
 	}
 
 	return TRUE;
@@ -1602,12 +1873,13 @@ BOOL CD3DEngine::TrackTextureMapping(int objRank,
 void CD3DEngine::UpdateGeometry()
 {
 	D3DObjLevel1*	p1;
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
 	D3DObjLevel3*	p3;
 	D3DObjLevel4*	p4;
 	D3DObjLevel5*	p5;
 	D3DObjLevel6*	p6;
-	int				l1, l2, l3, l4, l5, objRank, i;
+	int				l1, l2a, l2b, l3, l4, l5, objRank, i;
 
 	if ( !m_bUpdateGeometry )  return;
 
@@ -1625,38 +1897,43 @@ void CD3DEngine::UpdateGeometry()
 	p1 = m_objectPointer;
 	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 	{
-		p2 = p1->table[l1];
-		if ( p2 == 0 )  continue;
-		for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+		p2a = p1->table[l1];
+		if ( p2a == 0 )  continue;
+		for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 		{
-			p3 = p2->table[l2];
-			if ( p3 == 0 )  continue;
-			objRank = p3->objRank;
-			for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+			p2b = p2a->table[l2a];
+			if ( p2b == 0 )  continue;
+			for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
 			{
-				p4 = p3->table[l3];
-				if ( p4 == 0 )  continue;
-				for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+				p3 = p2b->table[l2b];
+				if ( p3 == 0 )  continue;
+				objRank = p3->objRank;
+				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
 				{
-					p5 = p4->table[l4];
-					if ( p5 == 0 )  continue;
-					for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+					p4 = p3->table[l3];
+					if ( p4 == 0 )  continue;
+					for ( l4=0 ; l4<p4->totalUsed ; l4++ )
 					{
-						p6 = p5->table[l5];
-						if ( p6 == 0 )  continue;
-
-						for ( i=0 ; i<p6->totalUsed ; i++ )
+						p5 = p4->table[l4];
+						if ( p5 == 0 )  continue;
+						for ( l5=0 ; l5<p5->totalUsed ; l5++ )
 						{
-							m_objectParam[objRank].bboxMin.x = Min(p6->vertex[i].x, m_objectParam[objRank].bboxMin.x);
-							m_objectParam[objRank].bboxMin.y = Min(p6->vertex[i].y, m_objectParam[objRank].bboxMin.y);
-							m_objectParam[objRank].bboxMin.z = Min(p6->vertex[i].z, m_objectParam[objRank].bboxMin.z);
-							m_objectParam[objRank].bboxMax.x = Max(p6->vertex[i].x, m_objectParam[objRank].bboxMax.x);
-							m_objectParam[objRank].bboxMax.y = Max(p6->vertex[i].y, m_objectParam[objRank].bboxMax.y);
-							m_objectParam[objRank].bboxMax.z = Max(p6->vertex[i].z, m_objectParam[objRank].bboxMax.z);
-						}
+							p6 = p5->table[l5];
+							if ( p6 == 0 )  continue;
 
-						m_objectParam[objRank].radius = Max(Length(m_objectParam[objRank].bboxMin),
-															Length(m_objectParam[objRank].bboxMax));
+							for ( i=0 ; i<p6->totalUsed ; i++ )
+							{
+								m_objectParam[objRank].bboxMin.x = Min(p6->vertex[i].x, m_objectParam[objRank].bboxMin.x);
+								m_objectParam[objRank].bboxMin.y = Min(p6->vertex[i].y, m_objectParam[objRank].bboxMin.y);
+								m_objectParam[objRank].bboxMin.z = Min(p6->vertex[i].z, m_objectParam[objRank].bboxMin.z);
+								m_objectParam[objRank].bboxMax.x = Max(p6->vertex[i].x, m_objectParam[objRank].bboxMax.x);
+								m_objectParam[objRank].bboxMax.y = Max(p6->vertex[i].y, m_objectParam[objRank].bboxMax.y);
+								m_objectParam[objRank].bboxMax.z = Max(p6->vertex[i].z, m_objectParam[objRank].bboxMax.z);
+							}
+
+							m_objectParam[objRank].radius = Max(Length(m_objectParam[objRank].bboxMin),
+																Length(m_objectParam[objRank].bboxMax));
+						}
 					}
 				}
 			}
@@ -1696,13 +1973,14 @@ BOOL CD3DEngine::IsVisible(int objRank)
 int CD3DEngine::DetectObject(FPOINT mouse)
 {
 	D3DObjLevel1*	p1;
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
 	D3DObjLevel3*	p3;
 	D3DObjLevel4*	p4;
 	D3DObjLevel5*	p5;
 	D3DObjLevel6*	p6;
 	D3DVERTEX2*		pv;
-	int				l1, l2, l3, l4, l5, i, objRank, nearest;
+	int				l1, l2a, l2b, l3, l4, l5, i, objRank, nearest;
 	float			dist, min;
 
 	min = 1000000.0f;
@@ -1711,55 +1989,60 @@ int CD3DEngine::DetectObject(FPOINT mouse)
 	p1 = m_objectPointer;
 	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 	{
-		p2 = p1->table[l1];
-		if ( p2 == 0 )  continue;
-		for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+		p2a = p1->table[l1];
+		if ( p2a == 0 )  continue;
+		for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 		{
-			p3 = p2->table[l2];
-			if ( p3 == 0 )  continue;
-			objRank = p3->objRank;
-			if ( m_objectParam[objRank].type == TYPETERRAIN )  continue;
-			if ( !DetectBBox(objRank, mouse) )  continue;
-			for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+			p2b = p2a->table[l2a];
+			if ( p2b == 0 )  continue;
+			for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
 			{
-				p4 = p3->table[l3];
-				if ( p4 == 0 )  continue;
-				if ( p4->min != 0.0f )  continue;  // LOD B ou C ?
-				for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+				p3 = p2b->table[l2b];
+				if ( p3 == 0 )  continue;
+				objRank = p3->objRank;
+				if ( m_objectParam[objRank].type == TYPETERRAIN )  continue;
+				if ( !DetectBBox(objRank, mouse) )  continue;
+				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
 				{
-					p5 = p4->table[l4];
-					if ( p5 == 0 )  continue;
-					for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+					p4 = p3->table[l3];
+					if ( p4 == 0 )  continue;
+					if ( p4->min != 0.0f )  continue;  // LOD B ou C ?
+					for ( l4=0 ; l4<p4->totalUsed ; l4++ )
 					{
-						p6 = p5->table[l5];
-						if ( p6 == 0 )  continue;
+						p5 = p4->table[l4];
+						if ( p5 == 0 )  continue;
+						for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+						{
+							p6 = p5->table[l5];
+							if ( p6 == 0 )  continue;
 
-						if ( p6->type == D3DTYPE6T )
-						{
-							pv = &p6->vertex[0];
-							for ( i=0 ; i<p6->totalUsed/3 ; i++ )
+							if ( p6->type == D3DTYPE6T )
 							{
-								if ( DetectTriangle(mouse, pv, objRank, dist) &&
-									 dist < min )
+								pv = &p6->vertex[0];
+								for ( i=0 ; i<p6->totalUsed/3 ; i++ )
 								{
-									min = dist;
-									nearest = objRank;
+									if ( DetectTriangle(mouse, pv, objRank, dist) &&
+										 dist < min )
+									{
+										min = dist;
+										nearest = objRank;
+									}
+									pv += 3;
 								}
-								pv += 3;
 							}
-						}
-						if ( p6->type == D3DTYPE6S )
-						{
-							pv = &p6->vertex[0];
-							for ( i=0 ; i<p6->totalUsed-2 ; i++ )
+							if ( p6->type == D3DTYPE6S )
 							{
-								if ( DetectTriangle(mouse, pv, objRank, dist) &&
-									 dist < min )
+								pv = &p6->vertex[0];
+								for ( i=0 ; i<p6->totalUsed-2 ; i++ )
 								{
-									min = dist;
-									nearest = objRank;
+									if ( DetectTriangle(mouse, pv, objRank, dist) &&
+										 dist < min )
+									{
+										min = dist;
+										nearest = objRank;
+									}
+									pv += 1;
 								}
-								pv += 1;
 							}
 						}
 					}
@@ -2085,6 +2368,50 @@ BOOL CD3DEngine::SetObjectTransparency(int objRank, float value)
 
 	m_objectParam[objRank].transparency = value;
 	return TRUE;
+}
+
+
+// Efface tous les remplacements de textures.
+
+void CD3DEngine::FlushReplaceTex()
+{
+	ZeroMemory(m_replaceTex, sizeof(ReplaceTex)*REPLACETEXMAX);
+}
+
+// Ajoute un remplacement de texture.
+
+BOOL CD3DEngine::SetReplaceTex(char *actual, char *future)
+{
+	int		i;
+
+	for ( i=0 ; i<REPLACETEXMAX ; i++ )
+	{
+		if ( m_replaceTex[i].actual[0] == 0 )
+		{
+			strcpy(m_replaceTex[i].actual, actual);
+			strcpy(m_replaceTex[i].future, future);
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+// Remplace un nom de texture si nécessaire.
+
+void CD3DEngine::ReplaceTexDo(char *texName)
+{
+	int		i;
+
+	for ( i=0 ; i<REPLACETEXMAX ; i++ )
+	{
+		if ( m_replaceTex[i].actual[0] == 0 )  break;
+
+		if ( strcmp(texName, m_replaceTex[i].actual) == 0 )
+		{
+			strcpy(texName, m_replaceTex[i].future);
+			return;
+		}
+	}
 }
 
 
@@ -2631,7 +2958,7 @@ float CD3DEngine::RetFogStart(int rank)
 
 void CD3DEngine::SetBackground(char *name, D3DCOLOR up, D3DCOLOR down,
 							   D3DCOLOR cloudUp, D3DCOLOR cloudDown,
-							   BOOL bFull, BOOL bQuarter)
+							   BOOL bFull, BOOL bQuarter, BOOL bPanel)
 {
 	strcpy(m_backgroundName, name);
 	m_backgroundColorUp   = up;
@@ -2640,6 +2967,7 @@ void CD3DEngine::SetBackground(char *name, D3DCOLOR up, D3DCOLOR down,
 	m_backgroundCloudDown = cloudDown;
 	m_bBackgroundFull     = bFull;
 	m_bBackgroundQuarter  = bQuarter;
+	m_bBackgroundPanel    = bPanel;
 }
 
 // Donne l'image d'arrière-plan utilisée.
@@ -2691,7 +3019,7 @@ void CD3DEngine::SetOverColor(D3DCOLOR color, int mode)
 void CD3DEngine::SetParticuleDensity(float value)
 {
 	if ( value < 0.0f )  value = 0.0f;
-	if ( value > 2.0f )  value = 2.0f;
+	if ( value > 1.0f )  value = 1.0f;
 	m_particuleDensity = value;
 }
 
@@ -2707,6 +3035,20 @@ float CD3DEngine::ParticuleAdapt(float factor)
 		return 1000000.0f;
 	}
 	return factor/m_particuleDensity;
+}
+
+// Gestion de la quantité de traces de pneu.
+
+void CD3DEngine::SetWheelTraceQuantity(float value)
+{
+	if ( value < 0.0f )  value = 0.0f;
+	if ( value > 1.0f )  value = 1.0f;
+	m_wheelTraceQuantity = value;
+}
+
+float CD3DEngine::RetWheelTraceQuantity()
+{
+	return m_wheelTraceQuantity;
 }
 
 // Gestion de la distance de clipping.
@@ -2735,6 +3077,18 @@ void CD3DEngine::SetObjectDetail(float value)
 float CD3DEngine::RetObjectDetail()
 {
 	return m_objectDetail;
+}
+
+// Gestion du détail des objets.
+
+void CD3DEngine::SetSuperDetail(BOOL bSuper)
+{
+	m_bSuperDetail = bSuper;
+}
+
+BOOL CD3DEngine::RetSuperDetail()
+{
+	return m_bSuperDetail;
 }
 
 // Gestion de la quantité d'objets gadgets.
@@ -2900,17 +3254,6 @@ float CD3DEngine::RetSpeed()
 }
 
 
-void CD3DEngine::SetTracePrecision(float factor)
-{
-	m_tracePrecision = factor;
-}
-
-float CD3DEngine::RetTracePrecision()
-{
-	return m_tracePrecision;
-}
-
-
 // Met à jour la scène après un changement de paramètres.
 
 void CD3DEngine::ApplyChange()
@@ -3020,23 +3363,36 @@ BOOL CD3DEngine::LoadTexture(char* name, int stage)
 BOOL CD3DEngine::LoadAllTexture()
 {
 	D3DObjLevel1*	p1;
-	D3DObjLevel2*	p2;
-	int				l1, i;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
+	int				l1, l2a, i;
 	char			name[50];
 	BOOL			bOK = TRUE;
 
-#if _POLISH
-	LoadTexture("textp.tga");
-#else
 	LoadTexture("text.tga");
-#endif
-	LoadTexture("mouse.tga");
 	LoadTexture("button1.tga");
-	LoadTexture("button2.tga");
-	LoadTexture("button3.tga");
+#if _FRENCH
+	LoadTexture("board-f.tga");
+#endif
+#if _ENGLISH
+	LoadTexture("board-e.tga");
+#endif
+#if _DEUTSCH
+	LoadTexture("board-d.tga");
+#endif
+#if _ITALIAN
+	LoadTexture("board-f.tga");
+#endif
+#if _SPANISH
+	LoadTexture("board-f.tga");
+#endif
+#if _PORTUGUESE
+	LoadTexture("board-p.tga");
+#endif
 	LoadTexture("effect00.tga");
 	LoadTexture("effect01.tga");
 	LoadTexture("effect02.tga");
+	LoadTexture("effect03.tga");
 	LoadTexture("map.tga");
 
 	if ( m_backgroundName[0] != 0 )
@@ -3064,16 +3420,20 @@ BOOL CD3DEngine::LoadAllTexture()
 	p1 = m_objectPointer;
 	for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 	{
-		p2 = p1->table[l1];
-
-		if ( p2 == 0 || p2->texName1[0] != 0 )
+		p2a = p1->table[l1];
+		for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 		{
-			if ( !LoadTexture(p2->texName1, 0) )  bOK = FALSE;
-		}
+			p2b = p2a->table[l2a];
 
-		if ( p2 == 0 || p2->texName2[0] != 0 )
-		{
-			if ( !LoadTexture(p2->texName2, 1) )  bOK = FALSE;
+			if ( p2b == 0 || p2b->texName1[0] != 0 )
+			{
+				if ( !LoadTexture(p2b->texName1, 0) )  bOK = FALSE;
+			}
+
+			if ( p2b == 0 || p2b->texName2[0] != 0 )
+			{
+				if ( !LoadTexture(p2b->texName2, 1) )  bOK = FALSE;
+			}
 		}
 	}
 	return bOK;
@@ -3103,6 +3463,7 @@ void CD3DEngine::Update()
 HRESULT CD3DEngine::FrameMove(float rTime)
 {
 	m_light->FrameLight(rTime);
+	m_particule->SetFrameUpdate(SH_WORLD, !m_bPause);
 	m_particule->FrameParticule(rTime);
 	ComputeDistance();
 	UpdateGeometry();
@@ -3918,17 +4279,7 @@ void CD3DEngine::DrawShadow()
 	material.ambient.b = 0.5f;
 	SetMaterial(material);
 
-#if _POLISH
-	SetTexture("textp.tga");
-#else
-	SetTexture("text.tga");
-#endif
-
-	dp = 0.5f/256.0f;
-	ts.y = 192.0f/256.0f;
-	ti.y = 224.0f/256.0f;
-	ts.y += dp;
-	ti.y -= dp;
+	SetTexture("effect03.tga");
 
 	n = D3DVECTOR(0.0f, 1.0f, 0.0f);
 
@@ -4010,8 +4361,10 @@ void CD3DEngine::DrawShadow()
 			corner[3].z = -radius;
 			corner[3].y = 0.0f;
 
-			ts.x =  64.0f/256.0f;
-			ti.x =  96.0f/256.0f;
+			ts.x =  0.0f/256.0f;
+			ti.x = 32.0f/256.0f;
+			ts.y =  0.0f/256.0f;
+			ti.y = 32.0f/256.0f;
 		}
 		else
 		{
@@ -4035,15 +4388,89 @@ void CD3DEngine::DrawShadow()
 			corner[3].z = rot.y;
 			corner[3].y = 0.0f;
 
-			if ( m_shadow[i].type == D3DSHADOWWORM )
+			if ( m_shadow[i].type == D3DSHADOWCAR01 )
+			{
+				ts.x =  64.0f/256.0f;
+				ts.y =   0.0f/256.0f;
+				ti.x =  96.0f/256.0f;
+				ti.y =  32.0f/256.0f;
+			}
+			else if ( m_shadow[i].type == D3DSHADOWCAR02 )
+			{
+				ts.x = 128.0f/256.0f;
+				ts.y =  32.0f/256.0f;
+				ti.x = 160.0f/256.0f;
+				ti.y =  64.0f/256.0f;
+			}
+			else if ( m_shadow[i].type == D3DSHADOWCAR03 )
 			{
 				ts.x =  96.0f/256.0f;
+				ts.y =   0.0f/256.0f;
 				ti.x = 128.0f/256.0f;
+				ti.y =  32.0f/256.0f;
+			}
+			else if ( m_shadow[i].type == D3DSHADOWCAR04 )
+			{
+				ts.x =  64.0f/256.0f;
+				ts.y =  32.0f/256.0f;
+				ti.x =  96.0f/256.0f;
+				ti.y =  64.0f/256.0f;
+			}
+			else if ( m_shadow[i].type == D3DSHADOWCAR05 )
+			{
+				ts.x =  96.0f/256.0f;
+				ts.y =  32.0f/256.0f;
+				ti.x = 128.0f/256.0f;
+				ti.y =  64.0f/256.0f;
+			}
+			else if ( m_shadow[i].type == D3DSHADOWCAR06 )
+			{
+				ts.x = 160.0f/256.0f;
+				ts.y =  32.0f/256.0f;
+				ti.x = 192.0f/256.0f;
+				ti.y =  64.0f/256.0f;
+			}
+			else if ( m_shadow[i].type == D3DSHADOWCAR07 )
+			{
+				ts.x = 192.0f/256.0f;
+				ts.y =  32.0f/256.0f;
+				ti.x = 224.0f/256.0f;
+				ti.y =  64.0f/256.0f;
+			}
+			else if ( m_shadow[i].type == D3DSHADOWCAR08 )
+			{
+				ts.x = 224.0f/256.0f;
+				ts.y =  32.0f/256.0f;
+				ti.x = 256.0f/256.0f;
+				ti.y =  64.0f/256.0f;
+			}
+			else if ( m_shadow[i].type == D3DSHADOWWORM )
+			{
+				ts.x =  32.0f/256.0f;
+				ts.y =   0.0f/256.0f;
+				ti.x =  64.0f/256.0f;
+				ti.y =  32.0f/256.0f;
+			}
+			else if ( m_shadow[i].type == D3DSHADOWBARRIER1 )
+			{
+				ts.x =   0.0f/256.0f;
+				ts.y =  32.0f/256.0f;
+				ti.x =  32.0f/256.0f;
+				ti.y =  64.0f/256.0f;
+			}
+			else if ( m_shadow[i].type == D3DSHADOWBARRIER2 )
+			{
+				ts.x =  32.0f/256.0f;
+				ts.y =  32.0f/256.0f;
+				ti.x =  64.0f/256.0f;
+				ti.y =  64.0f/256.0f;
 			}
 			else
 			{
-				ts.x =  64.0f/256.0f;
-				ti.x =  96.0f/256.0f;
+				ts.x =   0.0f/256.0f;
+				ts.y =   0.0f/256.0f;
+				ti.x =  32.0f/256.0f;
+				ti.y =  32.0f/256.0f;
 			}
 		}
 
@@ -4057,8 +4484,11 @@ void CD3DEngine::DrawShadow()
 		corner[2] += pos;
 		corner[3] += pos;
 
+		dp = 0.5f/256.0f;
 		ts.x += dp;
 		ti.x -= dp;
+		ts.y += dp;
+		ti.y -= dp;
 
 		vertex[0] = D3DVERTEX2(corner[1], n, ts.x, ts.y);
 		vertex[1] = D3DVERTEX2(corner[0], n, ti.x, ts.y);
@@ -4102,13 +4532,14 @@ void CD3DEngine::DrawShadow()
 HRESULT CD3DEngine::Render()
 {
 	D3DObjLevel1*	p1;
-	D3DObjLevel2*	p2;
+	D3DObjLevel2a*	p2a;
+	D3DObjLevel2b*	p2b;
 	D3DObjLevel3*	p3;
 	D3DObjLevel4*	p4;
 	D3DObjLevel5*	p5;
 	D3DObjLevel6*	p6;
 	D3DVERTEX2*		pv;
-	int				l1, l2, l3, l4, l5, objRank, tState;
+	int				l1, l2a, l2b, l3, l4, l5, objRank, tState;
 	CInterface*		pInterface;
 	BOOL			bTransparent;
 	D3DCOLOR		color, tColor;
@@ -4173,16 +4604,88 @@ HRESULT CD3DEngine::Render()
 			p1 = m_objectPointer;
 			for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 			{
-				p2 = p1->table[l1];
-				if ( p2 == 0 )  continue;
-				SetTexture(p2->texName1, 0);
-				SetTexture(p2->texName2, 1);
-				for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+				p2a = p1->table[l1];
+				if ( p2a == 0 )  continue;
+				for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 				{
-					p3 = p2->table[l2];
+					p2b = p2a->table[l2a];
+					if ( p2b == 0 )  continue;
+					SetTexture(p2b->texName1, 0);
+					SetTexture(p2b->texName2, 1);
+					for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
+					{
+						p3 = p2b->table[l2b];
+						if ( p3 == 0 )  continue;
+						objRank = p3->objRank;
+						if ( m_objectParam[objRank].type != TYPETERRAIN )  continue;
+						if ( !m_objectParam[objRank].bDrawWorld )  continue;
+						m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
+												   &m_objectParam[objRank].transform);
+						if ( !IsVisible(objRank) )  continue;
+						m_light->LightUpdate(m_objectParam[objRank].type);
+						for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+						{
+							p4 = p3->table[l3];
+							if ( p4 == 0 )  continue;
+							if ( m_objectParam[objRank].distance <  p4->min ||
+								 m_objectParam[objRank].distance >= p4->max )  continue;
+							for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+							{
+								p5 = p4->table[l4];
+								if ( p5 == 0 )  continue;
+								for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+								{
+									p6 = p5->table[l5];
+									if ( p6 == 0 )  continue;
+									SetMaterial(p6->material);
+									SetState(p6->state);
+									if ( p6->type == D3DTYPE6T )
+									{
+										pv = &p6->vertex[0];
+										m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST,
+																	D3DFVF_VERTEX2,
+																	pv, p6->totalUsed,
+																	NULL);
+										m_statisticTriangle += p6->totalUsed/3;
+									}
+									if ( p6->type == D3DTYPE6S )
+									{
+										pv = &p6->vertex[0];
+										m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
+																	D3DFVF_VERTEX2,
+																	pv, p6->totalUsed,
+																	NULL);
+										m_statisticTriangle += p6->totalUsed-2;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			DrawShadow();  // dessine les ombres
+		}
+
+		// Dessine les objets.
+		bTransparent = FALSE;
+		p1 = m_objectPointer;
+		for ( l1=0 ; l1<p1->totalUsed ; l1++ )
+		{
+			p2a = p1->table[l1];
+			if ( p2a == 0 )  continue;
+			for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
+			{
+				p2b = p2a->table[l2a];
+				if ( p2b == 0 )  continue;
+				SetTexture(p2b->texName1, 0);
+				SetTexture(p2b->texName2, 1);
+				for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
+				{
+					p3 = p2b->table[l2b];
 					if ( p3 == 0 )  continue;
 					objRank = p3->objRank;
-					if ( m_objectParam[objRank].type != TYPETERRAIN )  continue;
+					if ( m_bShadow && m_objectParam[objRank].type == TYPETERRAIN )  continue;
 					if ( !m_objectParam[objRank].bDrawWorld )  continue;
 					m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
 											   &m_objectParam[objRank].transform);
@@ -4203,6 +4706,11 @@ HRESULT CD3DEngine::Render()
 								p6 = p5->table[l5];
 								if ( p6 == 0 )  continue;
 								SetMaterial(p6->material);
+								if ( m_objectParam[objRank].transparency != 0.0f )  // transparent ?
+								{
+									bTransparent = TRUE;
+									continue;
+								}
 								SetState(p6->state);
 								if ( p6->type == D3DTYPE6T )
 								{
@@ -4227,73 +4735,6 @@ HRESULT CD3DEngine::Render()
 					}
 				}
 			}
-
-			DrawShadow();  // dessine les ombres
-		}
-
-		// Dessine les objets.
-		bTransparent = FALSE;
-		p1 = m_objectPointer;
-		for ( l1=0 ; l1<p1->totalUsed ; l1++ )
-		{
-			p2 = p1->table[l1];
-			if ( p2 == 0 )  continue;
-			SetTexture(p2->texName1, 0);
-			SetTexture(p2->texName2, 1);
-			for ( l2=0 ; l2<p2->totalUsed ; l2++ )
-			{
-				p3 = p2->table[l2];
-				if ( p3 == 0 )  continue;
-				objRank = p3->objRank;
-				if ( m_bShadow && m_objectParam[objRank].type == TYPETERRAIN )  continue;
-				if ( !m_objectParam[objRank].bDrawWorld )  continue;
-				m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
-										   &m_objectParam[objRank].transform);
-				if ( !IsVisible(objRank) )  continue;
-				m_light->LightUpdate(m_objectParam[objRank].type);
-				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
-				{
-					p4 = p3->table[l3];
-					if ( p4 == 0 )  continue;
-					if ( m_objectParam[objRank].distance <  p4->min ||
-						 m_objectParam[objRank].distance >= p4->max )  continue;
-					for ( l4=0 ; l4<p4->totalUsed ; l4++ )
-					{
-						p5 = p4->table[l4];
-						if ( p5 == 0 )  continue;
-						for ( l5=0 ; l5<p5->totalUsed ; l5++ )
-						{
-							p6 = p5->table[l5];
-							if ( p6 == 0 )  continue;
-							SetMaterial(p6->material);
-							if ( m_objectParam[objRank].transparency != 0.0f )  // transparent ?
-							{
-								bTransparent = TRUE;
-								continue;
-							}
-							SetState(p6->state);
-							if ( p6->type == D3DTYPE6T )
-							{
-								pv = &p6->vertex[0];
-								m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST,
-															D3DFVF_VERTEX2,
-															pv, p6->totalUsed,
-															NULL);
-								m_statisticTriangle += p6->totalUsed/3;
-							}
-							if ( p6->type == D3DTYPE6S )
-							{
-								pv = &p6->vertex[0];
-								m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
-															D3DFVF_VERTEX2,
-															pv, p6->totalUsed,
-															NULL);
-								m_statisticTriangle += p6->totalUsed-2;
-							}
-						}
-					}
-				}
-			}
 		}
 
 		if ( bTransparent )
@@ -4313,55 +4754,60 @@ HRESULT CD3DEngine::Render()
 			p1 = m_objectPointer;
 			for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 			{
-				p2 = p1->table[l1];
-				if ( p2 == 0 )  continue;
-				SetTexture(p2->texName1, 0);
-				SetTexture(p2->texName2, 1);
-				for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+				p2a = p1->table[l1];
+				if ( p2a == 0 )  continue;
+				for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 				{
-					p3 = p2->table[l2];
-					if ( p3 == 0 )  continue;
-					objRank = p3->objRank;
-					if ( m_bShadow && m_objectParam[objRank].type == TYPETERRAIN )  continue;
-					if ( !m_objectParam[objRank].bDrawWorld )  continue;
-					m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
-											   &m_objectParam[objRank].transform);
-					if ( !IsVisible(objRank) )  continue;
-					m_light->LightUpdate(m_objectParam[objRank].type);
-					for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+					p2b = p2a->table[l2a];
+					if ( p2b == 0 )  continue;
+					SetTexture(p2b->texName1, 0);
+					SetTexture(p2b->texName2, 1);
+					for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
 					{
-						p4 = p3->table[l3];
-						if ( p4 == 0 )  continue;
-						if ( m_objectParam[objRank].distance <  p4->min ||
-							 m_objectParam[objRank].distance >= p4->max )  continue;
-						for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+						p3 = p2b->table[l2b];
+						if ( p3 == 0 )  continue;
+						objRank = p3->objRank;
+						if ( m_bShadow && m_objectParam[objRank].type == TYPETERRAIN )  continue;
+						if ( !m_objectParam[objRank].bDrawWorld )  continue;
+						m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
+												   &m_objectParam[objRank].transform);
+						if ( !IsVisible(objRank) )  continue;
+						m_light->LightUpdate(m_objectParam[objRank].type);
+						for ( l3=0 ; l3<p3->totalUsed ; l3++ )
 						{
-							p5 = p4->table[l4];
-							if ( p5 == 0 )  continue;
-							for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+							p4 = p3->table[l3];
+							if ( p4 == 0 )  continue;
+							if ( m_objectParam[objRank].distance <  p4->min ||
+								 m_objectParam[objRank].distance >= p4->max )  continue;
+							for ( l4=0 ; l4<p4->totalUsed ; l4++ )
 							{
-								p6 = p5->table[l5];
-								if ( p6 == 0 )  continue;
-								SetMaterial(p6->material);
-								if ( m_objectParam[objRank].transparency == 0.0f )  continue;
-								SetState(tState, tColor);
-								if ( p6->type == D3DTYPE6T )
+								p5 = p4->table[l4];
+								if ( p5 == 0 )  continue;
+								for ( l5=0 ; l5<p5->totalUsed ; l5++ )
 								{
-									pv = &p6->vertex[0];
-									m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST,
-																D3DFVF_VERTEX2,
-																pv, p6->totalUsed,
-																NULL);
-									m_statisticTriangle += p6->totalUsed/3;
-								}
-								if ( p6->type == D3DTYPE6S )
-								{
-									pv = &p6->vertex[0];
-									m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
-																D3DFVF_VERTEX2,
-																pv, p6->totalUsed,
-																NULL);
-									m_statisticTriangle += p6->totalUsed-2;
+									p6 = p5->table[l5];
+									if ( p6 == 0 )  continue;
+									SetMaterial(p6->material);
+									if ( m_objectParam[objRank].transparency == 0.0f )  continue;
+									SetState(tState, tColor);
+									if ( p6->type == D3DTYPE6T )
+									{
+										pv = &p6->vertex[0];
+										m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST,
+																	D3DFVF_VERTEX2,
+																	pv, p6->totalUsed,
+																	NULL);
+										m_statisticTriangle += p6->totalUsed/3;
+									}
+									if ( p6->type == D3DTYPE6S )
+									{
+										pv = &p6->vertex[0];
+										m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
+																	D3DFVF_VERTEX2,
+																	pv, p6->totalUsed,
+																	NULL);
+										m_statisticTriangle += p6->totalUsed-2;
+									}
 								}
 							}
 						}
@@ -4418,53 +4864,58 @@ HRESULT CD3DEngine::Render()
 		p1 = m_objectPointer;
 		for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 		{
-			p2 = p1->table[l1];
-			if ( p2 == 0 )  continue;
-			SetTexture(p2->texName1, 0);
-			SetTexture(p2->texName2, 1);
-			for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+			p2a = p1->table[l1];
+			if ( p2a == 0 )  continue;
+			for ( l2a=0 ; l2a<p2a->totalUsed ; l2a++ )
 			{
-				p3 = p2->table[l2];
-				if ( p3 == 0 )  continue;
-				objRank = p3->objRank;
-				if ( !m_objectParam[objRank].bDrawFront )  continue;
-				m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
-										   &m_objectParam[objRank].transform);
-				if ( !IsVisible(objRank) )  continue;
-				m_light->LightUpdate(m_objectParam[objRank].type);
-				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+				p2b = p2a->table[l2a];
+				if ( p2b == 0 )  continue;
+				SetTexture(p2b->texName1, 0);
+				SetTexture(p2b->texName2, 1);
+				for ( l2b=0 ; l2b<p2b->totalUsed ; l2b++ )
 				{
-					p4 = p3->table[l3];
-					if ( p4 == 0 )  continue;
-					if ( m_objectParam[objRank].distance <  p4->min ||
-						 m_objectParam[objRank].distance >= p4->max )  continue;
-					for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+					p3 = p2b->table[l2b];
+					if ( p3 == 0 )  continue;
+					objRank = p3->objRank;
+					if ( !m_objectParam[objRank].bDrawFront )  continue;
+					m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
+											   &m_objectParam[objRank].transform);
+					if ( !IsVisible(objRank) )  continue;
+					m_light->LightUpdate(m_objectParam[objRank].type);
+					for ( l3=0 ; l3<p3->totalUsed ; l3++ )
 					{
-						p5 = p4->table[l4];
-						if ( p5 == 0 )  continue;
-						for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+						p4 = p3->table[l3];
+						if ( p4 == 0 )  continue;
+						if ( m_objectParam[objRank].distance <  p4->min ||
+							 m_objectParam[objRank].distance >= p4->max )  continue;
+						for ( l4=0 ; l4<p4->totalUsed ; l4++ )
 						{
-							p6 = p5->table[l5];
-							if ( p6 == 0 )  continue;
-							SetMaterial(p6->material);
-							SetState(p6->state);
-							if ( p6->type == D3DTYPE6T )
+							p5 = p4->table[l4];
+							if ( p5 == 0 )  continue;
+							for ( l5=0 ; l5<p5->totalUsed ; l5++ )
 							{
-								pv = &p6->vertex[0];
-								m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST,
-															D3DFVF_VERTEX2,
-															pv, p6->totalUsed,
-															NULL);
-								m_statisticTriangle += p6->totalUsed/3;
-							}
-							if ( p6->type == D3DTYPE6S )
-							{
-								pv = &p6->vertex[0];
-								m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
-															D3DFVF_VERTEX2,
-															pv, p6->totalUsed,
-															NULL);
-								m_statisticTriangle += p6->totalUsed-2;
+								p6 = p5->table[l5];
+								if ( p6 == 0 )  continue;
+								SetMaterial(p6->material);
+								SetState(p6->state);
+								if ( p6->type == D3DTYPE6T )
+								{
+									pv = &p6->vertex[0];
+									m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST,
+																D3DFVF_VERTEX2,
+																pv, p6->totalUsed,
+																NULL);
+									m_statisticTriangle += p6->totalUsed/3;
+								}
+								if ( p6->type == D3DTYPE6S )
+								{
+									pv = &p6->vertex[0];
+									m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
+																D3DFVF_VERTEX2,
+																pv, p6->totalUsed,
+																NULL);
+									m_statisticTriangle += p6->totalUsed-2;
+								}
 							}
 						}
 					}
@@ -4472,7 +4923,8 @@ HRESULT CD3DEngine::Render()
 			}
 		}
 
-		m_particule->DrawParticule(SH_FRONT);  // dessine les particules du monde 3D
+//?		m_particule->DrawParticule(SH_FRONT);  // dessine les particules du monde 3D
+		m_particule->DrawParticule(SH_WORLD);  // dessine les particules du monde 3D
 
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
@@ -4507,14 +4959,16 @@ void CD3DEngine::DrawBackground()
 	{
 		if ( m_backgroundCloudUp != m_backgroundCloudDown )  // dégradé ?
 		{
-			DrawBackgroundGradient(m_backgroundCloudUp, m_backgroundCloudDown);
+			DrawBackgroundGradient(FPOINT(0.0f, 0.5f), FPOINT(1.0f, 1.0f),
+								   m_backgroundCloudUp, m_backgroundCloudDown);
 		}
 	}
 	else
 	{
 		if ( m_backgroundColorUp != m_backgroundColorDown )  // dégradé ?
 		{
-			DrawBackgroundGradient(m_backgroundColorUp, m_backgroundColorDown);
+			DrawBackgroundGradient(FPOINT(0.0f, 0.5f), FPOINT(1.0f, 1.0f),
+								   m_backgroundColorUp, m_backgroundColorDown);
 		}
 	}
 
@@ -4522,20 +4976,21 @@ void CD3DEngine::DrawBackground()
 	{
 		DrawBackgroundImage();  // image
 	}
+
+	if ( m_bBackgroundPanel )
+	{
+		DrawBackgroundGradient(FPOINT( 94.0f/640.0f, 112.0f/480.0f),
+							   FPOINT(546.0f/640.0f, 342.0f/480.0f),
+							   m_backgroundColorUp, m_backgroundColorDown);
+	}
 }
 
 // Dessine le dégradé d'arrière-plan.
 
-void CD3DEngine::DrawBackgroundGradient(D3DCOLOR up, D3DCOLOR down)
+void CD3DEngine::DrawBackgroundGradient(FPOINT p1, FPOINT p2, D3DCOLOR up, D3DCOLOR down)
 {
 	D3DLVERTEX	vertex[4];	// 2 triangles
 	D3DCOLOR	color[3];
-	FPOINT		p1, p2;
-
-	p1.x = 0.0f;
-	p1.y = 0.5f;
-	p2.x = 1.0f;
-	p2.y = 1.0f;
 
 	color[0] = up;
 	color[1] = down;
@@ -5247,29 +5702,6 @@ BOOL CD3DEngine::WriteScreenShot(char *filename, int width, int height)
 	return m_app->WriteScreenShot(filename, width, height);
 }
 
-// Initialise un hDC sur la surface de rendu.
-
-BOOL CD3DEngine::GetRenderDC(HDC &hDC)
-{
-	return m_app->GetRenderDC(hDC);
-}
-
-// Libère le hDC sur la surface de rendu.
-
-BOOL CD3DEngine::ReleaseRenderDC(HDC &hDC)
-{
-	return m_app->ReleaseRenderDC(hDC);
-}
-
-PBITMAPINFO	CD3DEngine::CreateBitmapInfoStruct(HBITMAP hBmp)
-{
-	return m_app->CreateBitmapInfoStruct(hBmp);
-}
-
-BOOL CD3DEngine::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC)
-{
-	return m_app->CreateBMPFile(pszFile, pbi, hBMP, hDC);
-}
 
 // Retourne le pointeur à la classe CText.
 
@@ -5359,16 +5791,45 @@ int CD3DEngine::RetKey(int keyRank, int option)
 }
 
 
-// Utilise le joystick ou le clavier.
+// Gestion de la force de l'effet FFB.
 
-void CD3DEngine::SetJoystick(BOOL bEnable)
+void CD3DEngine::SetForce(float force)
 {
-	m_app->SetJoystick(bEnable);
+	m_app->SetForce(force);
 }
 
-BOOL CD3DEngine::RetJoystick()
+float CD3DEngine::RetForce()
+{
+	return m_app->RetForce();
+}
+
+// Gestion du force feedback.
+
+void CD3DEngine::SetFFB(BOOL bMode)
+{
+	m_app->SetFFB(bMode);
+}
+
+BOOL CD3DEngine::RetFFB()
+{
+	return m_app->RetFFB();
+}
+
+// Utilise le joystick ou le clavier.
+
+void CD3DEngine::SetJoystick(int mode)
+{
+	m_app->SetJoystick(mode);
+}
+
+int CD3DEngine::RetJoystick()
 {
 	return m_app->RetJoystick();
+}
+
+BOOL CD3DEngine::SetJoyForces(float forceX, float forceY)
+{
+	return m_app->SetJoyForces(forceX, forceY);
 }
 
 
@@ -5380,11 +5841,6 @@ void CD3DEngine::SetDebugMode(BOOL bMode)
 BOOL CD3DEngine::RetDebugMode()
 {
 	return m_app->RetDebugMode();
-}
-
-BOOL CD3DEngine::RetSetupMode()
-{
-	return m_app->RetSetupMode();
 }
 
 
@@ -5611,22 +6067,10 @@ void CD3DEngine::DrawMouse()
 
 	static Mouse table[] =
 	{
-		{ D3DMOUSENORM,     0, 1,32, D3DSTATETTw, D3DSTATETTb,  1.0f,  1.0f},
-		{ D3DMOUSEWAIT,     2, 3,33, D3DSTATETTw, D3DSTATETTb,  8.0f, 12.0f},
-		{ D3DMOUSEHAND,     4, 5,34, D3DSTATETTw, D3DSTATETTb,  7.0f,  2.0f},
-		{ D3DMOUSENO,       6, 7,35, D3DSTATETTw, D3DSTATETTb, 10.0f, 10.0f},
-		{ D3DMOUSEEDIT,     8, 9,-1, D3DSTATETTb, D3DSTATETTw,  6.0f, 10.0f},
-		{ D3DMOUSECROSS,   10,11,-1, D3DSTATETTb, D3DSTATETTw, 10.0f, 10.0f},
-		{ D3DMOUSEMOVEV,   12,13,-1, D3DSTATETTb, D3DSTATETTw,  5.0f, 11.0f},
-		{ D3DMOUSEMOVEH,   14,15,-1, D3DSTATETTb, D3DSTATETTw, 11.0f,  5.0f},
-		{ D3DMOUSEMOVED,   16,17,-1, D3DSTATETTb, D3DSTATETTw,  9.0f,  9.0f},
-		{ D3DMOUSEMOVEI,   18,19,-1, D3DSTATETTb, D3DSTATETTw,  9.0f,  9.0f},
-		{ D3DMOUSEMOVE,    20,21,-1, D3DSTATETTb, D3DSTATETTw, 11.0f, 11.0f},
-		{ D3DMOUSETARGET,  22,23,-1, D3DSTATETTb, D3DSTATETTw, 15.0f, 15.0f},
-		{ D3DMOUSESCROLLL, 24,25,43, D3DSTATETTb, D3DSTATETTw,  2.0f,  9.0f},
-		{ D3DMOUSESCROLLR, 26,27,44, D3DSTATETTb, D3DSTATETTw, 17.0f,  9.0f},
-		{ D3DMOUSESCROLLU, 28,29,45, D3DSTATETTb, D3DSTATETTw,  9.0f,  2.0f},
-		{ D3DMOUSESCROLLD, 30,31,46, D3DSTATETTb, D3DSTATETTw,  9.0f, 17.0f},
+		{ D3DMOUSENORM,    44,45,53, D3DSTATETTw, D3DSTATETTb,  1.0f,  1.0f},
+		{ D3DMOUSEWAIT,    38,39,-1, D3DSTATETTw, D3DSTATETTb,  8.0f, 12.0f},
+		{ D3DMOUSEHAND,    46,47,54, D3DSTATETTw, D3DSTATETTb,  7.0f,  2.0f},
+		{ D3DMOUSEEDIT,    62,63,-1, D3DSTATETTb, D3DSTATETTw,  6.0f, 10.0f},
 		{ D3DMOUSEHIDE },
 	};
 
@@ -5642,7 +6086,7 @@ void CD3DEngine::DrawMouse()
 	material.ambient.b = 0.5f;
 	SetMaterial(material);
 
-	SetTexture("mouse.tga");
+	SetTexture("button1.tga");
 
 	i = 0;
 	while ( table[i].type != D3DMOUSEHIDE )

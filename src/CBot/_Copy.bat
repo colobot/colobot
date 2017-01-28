@@ -1,2 +1,2 @@
-copy debug\cbot.dll "F:\Program Files\Ceebot\cbot.dll" 
+copy release\cbot.dll c:\colobot\cbot.dll
 cls

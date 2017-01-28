@@ -1,5 +1,5 @@
 --------------------Configuration: projet1 - Win32 Release--------------------
-Begining build with project "D:\Robot\projet1\projet1.dsp", at root.
+Begining build with project "D:\Race\projet1\projet1.dsp", at root.
 Active configuration is Win32 (x86) Application (based on Win32 (x86) Application)
 
 Project's tools are:
@@ -7,67 +7,52 @@ Project's tools are:
 			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
 			"Win32 Resource Compiler" with flags "/l 0x100c /fo"Release/winmain.res" /d "NDEBUG" "
 			"Browser Database Maker" with flags "/nologo /o"Release/projet1.bsc" "
-			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib c:\dx7sdk\lib\ddraw.lib c:\dx7sdk\lib\dinput.lib c:\dx7sdk\lib\dxguid.lib c:\dx7sdk\lib\d3dx.lib c:\dx7sdk\lib\dsound.lib cbot\cbot.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/projet1.pdb" /machine:I386 /out:"Release/projet1.exe" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib c:\dx7sdk\lib\ddraw.lib c:\dx7sdk\lib\dinput.lib c:\dx7sdk\lib\dxguid.lib c:\dx7sdk\lib\d3dx.lib c:\dx7sdk\lib\dsound.lib cbot\cbot.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/buzzingcars.pdb" /machine:I386 /out:"Release/buzzingcars.exe" "
 			"Custom Build" with flags ""
 			"<Component 0xa>" with flags ""
 
-Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSPCDA8.tmp" with contents </nologo /ML /W3 /GX /Zi /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/projet1.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
-"D:\Robot\projet1\autobase.cpp"
-"D:\Robot\projet1\brain.cpp"
-"D:\Robot\projet1\button.cpp"
-"D:\Robot\projet1\camera.cpp"
-"D:\Robot\projet1\cbottoken.cpp"
-"D:\Robot\projet1\cmdtoken.cpp"
-"D:\Robot\projet1\color.cpp"
-"D:\Robot\projet1\control.cpp"
-"D:\Robot\projet1\d3dapp.cpp"
-"D:\Robot\projet1\d3dengine.cpp"
-"D:\Robot\projet1\d3dtextr.cpp"
-"D:\Robot\projet1\displayinfo.cpp"
-"D:\Robot\projet1\edit.cpp"
-"D:\Robot\projet1\maindialog.cpp"
-"D:\Robot\projet1\metafile.cpp"
-"D:\Robot\projet1\misc.cpp"
-"D:\Robot\projet1\modfile.cpp"
-"D:\Robot\projet1\particule.cpp"
-"D:\Robot\projet1\physics.cpp"
-"D:\Robot\projet1\profile.cpp"
-"D:\Robot\projet1\restext.cpp"
-"D:\Robot\projet1\robotmain.cpp"
-"D:\Robot\projet1\sound.cpp"
-"D:\Robot\projet1\studio.cpp"
-"D:\Robot\projet1\taskterraform.cpp"
-"D:\Robot\projet1\terrain.cpp"
-"D:\Robot\projet1\text.cpp"
-"D:\Robot\projet1\window.cpp"
+Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSP8806.tmp" with contents </nologo /ML /W3 /GX /Zi /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/projet1.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\Race\projet1\d3dapp.cpp"
+"D:\Race\projet1\d3dengine.cpp"
+"D:\Race\projet1\d3dtextr.cpp"
+"D:\Race\projet1\edit.cpp"
+"D:\Race\projet1\gauge.cpp"
+"D:\Race\projet1\maindialog.cpp"
+"D:\Race\projet1\metafile.cpp"
+"D:\Race\projet1\misc.cpp"
+"D:\Race\projet1\modfile.cpp"
+"D:\Race\projet1\motionvehicle.cpp"
+"D:\Race\projet1\pesetas.cpp"
+"D:\Race\projet1\profile.cpp"
+"D:\Race\projet1\restext.cpp"
+"D:\Race\projet1\robotmain.cpp"
+"D:\Race\projet1\script.cpp"
+"D:\Race\projet1\sound.cpp"
+"D:\Race\projet1\window.cpp"
 >
-Creating command line "cl.exe @C:\Users\DANIEL~1\AppData\Local\Temp\RSPCDA8.tmp" 
-Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSPCDA9.tmp" with contents <kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib c:\dx7sdk\lib\ddraw.lib c:\dx7sdk\lib\dinput.lib c:\dx7sdk\lib\dxguid.lib c:\dx7sdk\lib\d3dx.lib c:\dx7sdk\lib\dsound.lib cbot\cbot.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/projet1.pdb" /machine:I386 /out:"Release/projet1.exe" 
+Creating command line "cl.exe @C:\Users\DANIEL~1\AppData\Local\Temp\RSP8806.tmp" 
+Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSP8807.tmp" with contents <kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib c:\dx7sdk\lib\ddraw.lib c:\dx7sdk\lib\dinput.lib c:\dx7sdk\lib\dxguid.lib c:\dx7sdk\lib\d3dx.lib c:\dx7sdk\lib\dsound.lib cbot\cbot.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/buzzingcars.pdb" /machine:I386 /out:"Release/buzzingcars.exe" 
+.\Release\array.obj
 .\Release\auto.obj
-.\Release\autobase.obj
-.\Release\autoconvert.obj
-.\Release\autoderrick.obj
-.\Release\autodestroyer.obj
-.\Release\autoegg.obj
-.\Release\autoenergy.obj
-.\Release\autofactory.obj
-.\Release\autoflag.obj
-.\Release\autohuston.obj
-.\Release\autoinfo.obj
+.\Release\autoalien.obj
+.\Release\autobarrel.obj
+.\Release\autoblitzer.obj
+.\Release\autobomb.obj
+.\Release\autocompass.obj
+.\Release\autocomputer.obj
+.\Release\autodock.obj
+.\Release\autodoor.obj
+.\Release\autofire.obj
+.\Release\autogenerator.obj
+.\Release\autohelico.obj
+.\Release\autohome.obj
+.\Release\autohook.obj
+.\Release\autoinca.obj
 .\Release\autojostle.obj
-.\Release\autokid.obj
-.\Release\autolabo.obj
-.\Release\automush.obj
-.\Release\autonest.obj
-.\Release\autonuclear.obj
-.\Release\autopara.obj
-.\Release\autoportico.obj
-.\Release\autoradar.obj
+.\Release\autoremote.obj
 .\Release\autorepair.obj
-.\Release\autoresearch.obj
 .\Release\autoroot.obj
-.\Release\autosafe.obj
-.\Release\autostation.obj
+.\Release\autostand.obj
 .\Release\autotower.obj
 .\Release\blitz.obj
 .\Release\brain.obj
@@ -87,12 +72,12 @@ Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSPCDA9.tmp" with conte
 .\Release\d3dmath.obj
 .\Release\d3dtextr.obj
 .\Release\d3dutil.obj
-.\Release\displayinfo.obj
 .\Release\displaytext.obj
 .\Release\edit.obj
 .\Release\editvalue.obj
 .\Release\event.obj
 .\Release\gauge.obj
+.\Release\geiger.obj
 .\Release\group.obj
 .\Release\image.obj
 .\Release\iman.obj
@@ -105,7 +90,6 @@ Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSPCDA9.tmp" with conte
 .\Release\maindialog.obj
 .\Release\mainmap.obj
 .\Release\mainmovie.obj
-.\Release\mainshort.obj
 .\Release\map.obj
 .\Release\math3d.obj
 .\Release\metafile.obj
@@ -113,20 +97,18 @@ Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSPCDA9.tmp" with conte
 .\Release\model.obj
 .\Release\modfile.obj
 .\Release\motion.obj
-.\Release\motionant.obj
-.\Release\motionbee.obj
+.\Release\motionbot.obj
 .\Release\motionhuman.obj
-.\Release\motionmother.obj
-.\Release\motionspider.obj
-.\Release\motiontoto.obj
 .\Release\motionvehicle.obj
-.\Release\motionworm.obj
 .\Release\object.obj
 .\Release\particule.obj
+.\Release\pesetas.obj
 .\Release\physics.obj
 .\Release\planet.obj
 .\Release\profile.obj
+.\Release\progress.obj
 .\Release\pyro.obj
+.\Release\recorder.obj
 .\Release\restext.obj
 .\Release\robotmain.obj
 .\Release\script.obj
@@ -134,27 +116,11 @@ Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSPCDA9.tmp" with conte
 .\Release\shortcut.obj
 .\Release\slider.obj
 .\Release\sound.obj
-.\Release\studio.obj
-.\Release\target.obj
 .\Release\task.obj
 .\Release\taskadvance.obj
-.\Release\taskbuild.obj
 .\Release\taskfire.obj
-.\Release\taskfireant.obj
-.\Release\taskflag.obj
 .\Release\taskgoto.obj
-.\Release\taskgungoal.obj
-.\Release\taskinfo.obj
 .\Release\taskmanager.obj
-.\Release\taskmanip.obj
-.\Release\taskpen.obj
-.\Release\taskrecover.obj
-.\Release\taskreset.obj
-.\Release\tasksearch.obj
-.\Release\taskshield.obj
-.\Release\taskspiderexplo.obj
-.\Release\tasktake.obj
-.\Release\taskterraform.obj
 .\Release\taskturn.obj
 .\Release\taskwait.obj
 .\Release\terrain.obj
@@ -162,38 +128,27 @@ Creating temp file "C:\Users\DANIEL~1\AppData\Local\Temp\RSPCDA9.tmp" with conte
 .\Release\water.obj
 .\Release\window.obj
 .\Release\winmain.res>
-Creating command line "link.exe @C:\Users\DANIEL~1\AppData\Local\Temp\RSPCDA9.tmp" 
+Creating command line "link.exe @C:\Users\DANIEL~1\AppData\Local\Temp\RSP8807.tmp" 
 Compiling...
-autobase.cpp
-brain.cpp
-button.cpp
-camera.cpp
-cbottoken.cpp
-cmdtoken.cpp
-color.cpp
-control.cpp
 d3dapp.cpp
 d3dengine.cpp
 d3dtextr.cpp
-displayinfo.cpp
 edit.cpp
+gauge.cpp
 maindialog.cpp
 metafile.cpp
 misc.cpp
 modfile.cpp
-particule.cpp
-physics.cpp
+motionvehicle.cpp
+pesetas.cpp
 profile.cpp
 restext.cpp
 robotmain.cpp
+script.cpp
 sound.cpp
-studio.cpp
-taskterraform.cpp
-terrain.cpp
-text.cpp
 window.cpp
 Linking...
 
 
 
-projet1.exe - 0 error(s), 0 warning(s)
+buzzingcars.exe - 0 error(s), 0 warning(s)

@@ -11,14 +11,17 @@ class CTerrain;
 class CCamera;
 class CObject;
 
+enum ParticuleType;
+
 
 
 enum AutoRepairPhase
 {
-	ARP_WAIT		= 1,	// attend métal
-	ARP_DOWN		= 2,	// descend le couvercle
-	ARP_REPAIR		= 3,	// construit le véhicule
-	ARP_UP			= 4,	// remonte le couvercle
+	AREP_WAIT		= 1,	// attend robot
+	AREP_DOWN		= 2,	// descend le capteur
+	AREP_REPAIR1	= 3,	// répare
+	AREP_REPAIR2	= 4,	// répare
+	AREP_TERM		= 5,	// c'est fini
 };
 
 
@@ -32,23 +35,22 @@ public:
 	void		DeleteObject(BOOL bAll=FALSE);
 
 	void		Init();
+	void		Start(int param);
 	BOOL		EventProcess(const Event &event);
+	BOOL		Abort();
 	Error		RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
-
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
+protected:
+	CObject*	SearchObject(ObjectType type, D3DVECTOR center, float minRadius, float maxRadius);
+	void		StartAction(int action, float delay);
 
 protected:
-	CObject*	SearchVehicle();
-
-protected:
-	AutoRepairPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_timeVirus;
-	float			m_lastParticule;
+	AutoRepairPhase m_phase;
+	D3DVECTOR	m_pos;
+	float		m_progress;
+	float		m_speed;
+	float		m_lastParticule;
+	CObject*	m_bot;
 };
 
 

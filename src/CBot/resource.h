@@ -23,7 +23,7 @@
 #define ID_RETURN                       2017
 #define ID_CLASS                        2018
 #define ID_EXTENDS                      2019
-#define ID_SYNCHO                       2020
+#define ID_SUPER                        2020
 #define ID_NEW                          2021
 #define ID_PUBLIC                       2022
 #define ID_EXTERN                       2023
@@ -31,7 +31,7 @@
 #define ID_STATIC                       2025
 #define ID_PROTECTED                    2026
 #define ID_PRIVATE                      2027
-#define ID_REPEAT                       2028
+#define ID_SYNCHO                       2028
 #define ID_DEBUGDD                      2099
 #define ID_INT                          2100
 #define ID_FLOAT                        2101
@@ -152,7 +152,6 @@
 #define TX_NOTOPEN                      6013
 #define TX_ERRREAD                      6014
 #define TX_ERRWRITE                     6015
-#define ID_SUPER                        62020
 
 // Next default values for new objects
 // 

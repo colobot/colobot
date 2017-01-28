@@ -60,15 +60,6 @@ public:
 	void		UpdateTerrain();
 	void		UpdateTerrain(int bx, int by, int ex, int ey);
 
-	void		SetFixImage(char *filename);
-	BOOL		RetFixImage();
-
-	void		SetOffset(float ox, float oy);
-	void		SetAngle(float angle);
-	void		SetMode(int mode);
-	void		SetToy(BOOL bToy);
-	void		SetDebug(BOOL bDebug);
-
 	void		SetZoom(float value);
 	float		RetZoom();
 
@@ -93,7 +84,6 @@ protected:
 	void		DrawObjectIcon(FPOINT pos, FPOINT dim, MapColor color, ObjectType type, BOOL bHilite);
 	void		DrawHilite(FPOINT pos);
 	void		DrawTriangle(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT uv1, FPOINT uv2);
-	void		DrawPenta(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT p4, FPOINT p5, FPOINT uv1, FPOINT uv2);
 	void		DrawVertex(FPOINT uv1, FPOINT uv2, float zoom);
 
 protected:
@@ -106,7 +96,6 @@ protected:
 	float			m_half;
 	float			m_zoom;
 	FPOINT			m_offset;
-	float			m_angle;
 	D3DCOLORVALUE	m_floorColor;
 	D3DCOLORVALUE	m_waterColor;
 	MapObject		m_map[MAPMAXOBJECT];
@@ -116,10 +105,6 @@ protected:
 	FPOINT			m_mapPos;
 	FPOINT			m_mapDim;
 	BOOL			m_bRadar;
-	char			m_fixImage[100];
-	int				m_mode;
-	BOOL			m_bToy;
-	BOOL			m_bDebug;
 };
 
 

@@ -5,10 +5,11 @@
 
 
 
-extern BOOL InitDirectInput(HINSTANCE hInst, HWND hWnd);
+extern BOOL InitDirectInput(HINSTANCE hInst, HWND hWnd, BOOL &bFFB);
 extern BOOL SetAcquire(BOOL bActive);
 extern BOOL UpdateInputState(DIJOYSTATE &js);
 extern BOOL FreeDirectInput();
+extern BOOL SetJoyForces(float forceX, float forceY);
 
 
 

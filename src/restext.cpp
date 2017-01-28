@@ -15,9 +15,6 @@
 
 
 
-//** -> texte à traduire !!!
-
-
 
 // Donne le pointeur au moteur.
 
@@ -42,26 +39,20 @@ typedef struct
 }
 KeyDesc;
 
-static KeyDesc keyTable[22] =
+static KeyDesc keyTable[16] =
 {
 	{ KEYRANK_LEFT,		"left;"    },
 	{ KEYRANK_RIGHT,	"right;"   },
 	{ KEYRANK_UP,		"up;"      },
 	{ KEYRANK_DOWN,		"down;"    },
-	{ KEYRANK_GUP,		"gup;"     },
-	{ KEYRANK_GDOWN,	"gdown;"   },
+	{ KEYRANK_BRAKE,	"brake;"   },
+	{ KEYRANK_HORN,		"horn;"    },
 	{ KEYRANK_CAMERA,	"camera;"  },
-	{ KEYRANK_DESEL,	"desel;"   },
-	{ KEYRANK_ACTION,	"action;"  },
 	{ KEYRANK_NEAR,		"near;"    },
 	{ KEYRANK_AWAY,		"away;"    },
-	{ KEYRANK_NEXT,		"next;"    },
-	{ KEYRANK_HUMAN,	"human;"   },
 	{ KEYRANK_QUIT,		"quit;"    },
 	{ KEYRANK_HELP,		"help;"    },
-	{ KEYRANK_PROG,		"prog;"    },
 	{ KEYRANK_CBOT,		"cbot;"    },
-	{ KEYRANK_VISIT,	"visit;"   },
 	{ KEYRANK_SPEED10,	"speed10;" },
 	{ KEYRANK_SPEED15,	"speed15;" },
 	{ KEYRANK_SPEED20,	"speed20;" },
@@ -74,7 +65,7 @@ BOOL SearchKey(char *cmd, KeyRank &key)
 {
 	int		i;
 
-	for ( i=0 ; i<22 ; i++ )
+	for ( i=0 ; i<16 ; i++ )
 	{
 		if ( strstr(cmd, keyTable[i].name) == cmd )
 		{
@@ -154,142 +145,159 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 	if ( type == RES_TEXT )
 	{
 		#if _FULL
-		if ( num == RT_VERSION_ID          )  strcpy(text, "1.18 /e");
+		if ( num == RT_VERSION_ID          )  strcpy(text, "1.3 /e");
 		#endif
-		#if _NET
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A 1.18");
-		#endif
-		#if _SCHOOL & _EDU
-		#if _TEEN
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-Teen EDU 1.18");
-		#else
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A EDU 1.18");
-		#endif
-		#endif
-		#if _SCHOOL & _PERSO
-		#if _TEEN
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-Teen PERSO 1.18");
-		#else
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A PERSO 1.18");
-		#endif
-		#endif
-		#if _SCHOOL & _CEEBOTDEMO
-		#if _TEEN
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-Teen DEMO 1.18");
-		#else
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A DEMO 1.18");
-		#endif
+		#if _NET | _SCHOOL
+		if ( num == RT_VERSION_ID          )  strcpy(text, "School 1.3 /e");
 		#endif
 		#if _DEMO
-		if ( num == RT_VERSION_ID          )  strcpy(text, "Demo 1.18 /e");
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Demo 1.3 /e");
 		#endif
-		if ( num == RT_DISINFO_TITLE       )  strcpy(text, "SatCom");
+		#if _SE
+		if ( num == RT_VERSION_ID          )  strcpy(text, "S-E 1.3 /e");
+		#endif
 		if ( num == RT_WINDOW_MAXIMIZED    )  strcpy(text, "Maximize");
 		if ( num == RT_WINDOW_MINIMIZED    )  strcpy(text, "Minimize");
 		if ( num == RT_WINDOW_STANDARD     )  strcpy(text, "Normal size");
 		if ( num == RT_WINDOW_CLOSE        )  strcpy(text, "Close");
 
-		if ( num == RT_STUDIO_TITLE        )  strcpy(text, "Program editor");
-		if ( num == RT_SCRIPT_NEW          )  strcpy(text, "New");
 		if ( num == RT_NAME_DEFAULT        )  strcpy(text, "Player");
-		if ( num == RT_IO_NEW              )  strcpy(text, "New ...");
 		if ( num == RT_KEY_OR              )  strcpy(text, " or ");
 
-#if _NEWLOOK
-		if ( num == RT_TITLE_BASE          )  strcpy(text, "CeeBot");
-		if ( num == RT_TITLE_INIT          )  strcpy(text, "CeeBot");
+#if _EGAMES
+		if ( num == RT_TITLE_BASE          )  strcpy(text, "Wild Wheels");
+		if ( num == RT_TITLE_INIT          )  strcpy(text, "Wild Wheels");
 #else
-		if ( num == RT_TITLE_BASE          )  strcpy(text, "COLOBOT");
-		if ( num == RT_TITLE_INIT          )  strcpy(text, "COLOBOT");
+		if ( num == RT_TITLE_BASE          )  strcpy(text, "BuzzingCars");
+		if ( num == RT_TITLE_INIT          )  strcpy(text, "BuzzingCars");
 #endif
-		if ( num == RT_TITLE_TRAINER       )  strcpy(text, "Programming exercises");
-		if ( num == RT_TITLE_DEFI          )  strcpy(text, "Challenges");
 		if ( num == RT_TITLE_MISSION       )  strcpy(text, "Missions");
-		if ( num == RT_TITLE_FREE          )  strcpy(text, "Free game");
-		if ( num == RT_TITLE_TEEN          )  strcpy(text, "Free game");
+		if ( num == RT_TITLE_FREE          )  strcpy(text, "Free levels");
 		if ( num == RT_TITLE_USER          )  strcpy(text, "User levels");
 		if ( num == RT_TITLE_PROTO         )  strcpy(text, "Prototypes");
 		if ( num == RT_TITLE_SETUP         )  strcpy(text, "Options");
-		if ( num == RT_TITLE_NAME          )  strcpy(text, "Player's name");
-		if ( num == RT_TITLE_PERSO         )  strcpy(text, "Customize your appearance");
-		if ( num == RT_TITLE_WRITE         )  strcpy(text, "Save the current mission");
-		if ( num == RT_TITLE_READ          )  strcpy(text, "Load a saved mission");
+		if ( num == RT_TITLE_NAME          )  strcpy(text, "Driver name");
+		if ( num == RT_TITLE_PERSO         )  strcpy(text, "Select your car");
 
-		if ( num == RT_PLAY_CHAPt          )  strcpy(text, " Chapters:");
-		if ( num == RT_PLAY_CHAPd          )  strcpy(text, " Chapters:");
-		if ( num == RT_PLAY_CHAPm          )  strcpy(text, " Planets:");
-		if ( num == RT_PLAY_CHAPf          )  strcpy(text, " Planets:");
-		if ( num == RT_PLAY_CHAPu          )  strcpy(text, " User levels:");
-		if ( num == RT_PLAY_CHAPp          )  strcpy(text, " Planets:");
-		if ( num == RT_PLAY_CHAPte         )  strcpy(text, " Chapters:");
-		if ( num == RT_PLAY_LISTt          )  strcpy(text, " Exercises in the chapter:");
-		if ( num == RT_PLAY_LISTd          )  strcpy(text, " Challenges in the chapter:");
-		if ( num == RT_PLAY_LISTm          )  strcpy(text, " Missions on this planet:");
-		if ( num == RT_PLAY_LISTf          )  strcpy(text, " Free game on this planet:");
-		if ( num == RT_PLAY_LISTu          )  strcpy(text, " Missions on this level:");
-		if ( num == RT_PLAY_LISTp          )  strcpy(text, " Prototypes on this planet:");
-		if ( num == RT_PLAY_LISTk          )  strcpy(text, " Free game on this chapter:");
-		if ( num == RT_PLAY_RESUME         )  strcpy(text, " Summary:");
+		if ( num == RT_PLAY_LISTm          )  strcpy(text, " Select a mission:");
+		if ( num == RT_PLAY_LISTf          )  strcpy(text, " Select a circuit:");
+		if ( num == RT_PLAY_LISTu          )  strcpy(text, " User missions:");
+		if ( num == RT_PLAY_LISTp          )  strcpy(text, " Prototypes:");
+		if ( num == RT_PLAY_PESETAS        )  strcpy(text, " Your credit account:");
+		if ( num == RT_PLAY_PCREDIT        )  strcpy(text, "Your savings");
+		if ( num == RT_PLAY_PMISSION       )  strcpy(text, "Max earnings");
+		if ( num == RT_PLAY_PNEXT          )  strcpy(text, "Next level");
 
 		if ( num == RT_SETUP_DEVICE        )  strcpy(text, " Drivers:");
 		if ( num == RT_SETUP_MODE          )  strcpy(text, " Resolution:");
 		if ( num == RT_SETUP_KEY1          )  strcpy(text, "1) First click on the key you want to redefine.");
-		if ( num == RT_SETUP_KEY2          )  strcpy(text, "2) Then press the key you want to use instead.");
+		if ( num == RT_SETUP_KEY2          )  strcpy(text, "2) Then push the key you want to use instead.");
 
-		if ( num == RT_PERSO_FACE          )  strcpy(text, "Face type:");
-		if ( num == RT_PERSO_GLASSES       )  strcpy(text, "Eyeglasses:");
-		if ( num == RT_PERSO_HAIR          )  strcpy(text, "Hair color:");
-		if ( num == RT_PERSO_COMBI         )  strcpy(text, "Suit color:");
-		if ( num == RT_PERSO_BAND          )  strcpy(text, "Strip color:");
+		if ( num == RT_PERSO_LIST          )  strcpy(text, "Driver list:");
+		if ( num == RT_PERSO_LEVEL         )  strcpy(text, "Level of difficulty:");
+		if ( num == RT_PERSO_BUY           )  strcpy(text, "Buy");
 
-#if _NEWLOOK
-		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Do you want to quit CeeBot ?");
-		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "CeeBot");
-		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Quit\\Quit CeeBot");
+#if _EGAMES
+		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "Wild Wheels");
 #else
-		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Do you want to quit COLOBOT ?");
-		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "COLOBOT");
-		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Quit\\Quit COLOBOT");
+		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "BuzzingCars");
 #endif
-		if ( num == RT_DIALOG_ABORT        )  strcpy(text, "Quit the mission?");
+		if ( num == RT_DIALOG_ABORT        )  strcpy(text, "Quit the mission ?");
+#if _EGAMES
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Do you want to quit Wild Wheels ?");
+#else
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Do you want to quit BuzzingCars ?");
+#endif
 		if ( num == RT_DIALOG_YES          )  strcpy(text, "Abort\\Abort the current mission");
 		if ( num == RT_DIALOG_NO           )  strcpy(text, "Continue\\Continue the current mission");
+#if _EGAMES
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Quit\\Quit Wild Wheels");
+#else
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Quit\\Quit BuzzingCars");
+#endif
 		if ( num == RT_DIALOG_NOQUIT       )  strcpy(text, "Continue\\Continue the game");
-		if ( num == RT_DIALOG_DELOBJ       )  strcpy(text, "Do you really want to destroy the selected building?");
-		if ( num == RT_DIALOG_DELGAME      )  strcpy(text, "Do you want to delete %s's saved games? ");
+		if ( num == RT_DIALOG_DELGAME      )  strcpy(text, "Do you want to delete %s's saved games and cars ?");
+		if ( num == RT_DIALOG_DELFILE      )  strcpy(text, "Delete the existing file %s ?");
 		if ( num == RT_DIALOG_YESDEL       )  strcpy(text, "Delete");
 		if ( num == RT_DIALOG_NODEL        )  strcpy(text, "Cancel");
+		if ( num == RT_DIALOG_NEWGAME      )  strcpy(text, "Driver name:");
+		if ( num == RT_DIALOG_YESNEW       )  strcpy(text, "Create");
+		if ( num == RT_DIALOG_NONEW        )  strcpy(text, "Cancel");
+		if ( num == RT_DIALOG_YESKID       )  strcpy(text, "Yes");
+		if ( num == RT_DIALOG_NOKID        )  strcpy(text, "No");
 		if ( num == RT_DIALOG_LOADING      )  strcpy(text, "LOADING");
 
-		if ( num == RT_STUDIO_LISTTT       )  strcpy(text, "Keyword help(\\key cbot;)");
-		if ( num == RT_STUDIO_COMPOK       )  strcpy(text, "Compilation ok (0 errors)");
-		if ( num == RT_STUDIO_PROGSTOP     )  strcpy(text, "Program finished");
+		if ( num == RT_WIN_TIME            )  strcpy(text, "Chronometer");
+		if ( num == RT_WIN_SOLID           )  strcpy(text, "Condition of the vehicle");
+		if ( num == RT_WIN_CONE            )  strcpy(text, "Respect of surroundings");
+		if ( num == RT_WIN_POINTS          )  strcpy(text, "Credits earned");
+		if ( num == RT_WIN_BONUS           )  strcpy(text, "Time bonus");
+		if ( num == RT_WIN_ARRAY           )  strcpy(text, "Best times:");
+		if ( num == RT_WIN_HEADERm         )  strcpy(text, "\t  Car\tDriver\tChrono\tCredits");
+		if ( num == RT_WIN_HEADERf         )  strcpy(text, "\t  Car\tDriver\tChrono\t");
 
-		if ( num == RT_SATCOM_LIST         )  strcpy(text, "\\b;List of objects\n");
-		if ( num == RT_SATCOM_BOT          )  strcpy(text, "\\b;Robots\n");
-		if ( num == RT_SATCOM_BUILDING     )  strcpy(text, "\\b;Buildings\n");
-		if ( num == RT_SATCOM_FRET         )  strcpy(text, "\\b;Moveable objects\n");
-		if ( num == RT_SATCOM_ALIEN        )  strcpy(text, "\\b;Aliens\n");
-		if ( num == RT_SATCOM_NULL         )  strcpy(text, "\\c; (none)\\n;\n");
-		if ( num == RT_SATCOM_ERROR1       )  strcpy(text, "\\b;Error\n");
-		if ( num == RT_SATCOM_ERROR2       )  strcpy(text, "The list is only available if a \\l;radar station\\u object\\radar; is working.\n");
+		if ( num == RT_START_READY         )  strcpy(text, "Ready ?");
+		if ( num == RT_START_QUICK         )  strcpy(text, "3, 2, 1  ...  Ready ?");
+		if ( num == RT_START_123           )  strcpy(text, "%d ...");
+		if ( num == RT_START_GO            )  strcpy(text, "GO !");
+		if ( num == RT_START_REMOTE        )  strcpy(text, "Remote control your car");
 
-		if ( num == RT_IO_OPEN             )  strcpy(text, "Open");
-		if ( num == RT_IO_SAVE             )  strcpy(text, "Save");
-		if ( num == RT_IO_LIST             )  strcpy(text, "Folder: %s");
-		if ( num == RT_IO_NAME             )  strcpy(text, "Name:");
-		if ( num == RT_IO_DIR              )  strcpy(text, "Folder:");
-		if ( num == RT_IO_PRIVATE          )  strcpy(text, "Private\\Private folder");
-		if ( num == RT_IO_PUBLIC           )  strcpy(text, "Public\\Common folder");
+		if ( num == RT_RECORD_GALL         )  strcpy(text, "Circuit record (-%.2f) !");
+		if ( num == RT_RECORD_GONE         )  strcpy(text, "Lap record (-%.2f) !");
+		if ( num == RT_RECORD_LONE         )  strcpy(text, "Best lap (-%.2f) !");
+		if ( num == RT_RECORD_QALL         )  strcpy(text, "> Circuit record <");
+		if ( num == RT_RECORD_QONE         )  strcpy(text, "> Best lap <");
+		if ( num == RT_RACE_LAP4           )  strcpy(text, "4 laps to go");
+		if ( num == RT_RACE_LAP3           )  strcpy(text, "3 laps to go");
+		if ( num == RT_RACE_LAP2           )  strcpy(text, "2 laps to go");
+		if ( num == RT_RACE_LAP1           )  strcpy(text, "Final lap");
+		if ( num == RT_DUEL_WIN            )  strcpy(text, "Ghost car defeated (-%.2f) !");
+		if ( num == RT_DUEL_LOST           )  strcpy(text, "Too slow (+%.2f) !");
 
-		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "Developed by :");
-		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "www.epsitec.com");
-//?		if ( num == RT_GENERIC_EDIT1       )  strcpy(text, "English version published by:");
-//?		if ( num == RT_GENERIC_EDIT2       )  strcpy(text, "www.?.com");
-		if ( num == RT_GENERIC_EDIT1       )  strcpy(text, " ");
-		if ( num == RT_GENERIC_EDIT2       )  strcpy(text, " ");
+		if ( num == RT_SPEC_MINSPEED       )  strcpy(text, "Car too slow !");
+		if ( num == RT_SPEC_MAXSPEED       )  strcpy(text, "Car too fast !");
+#if _SE
+		if ( num == RT_SPEC_DEMO           )  strcpy(text, "Not available in the special edition version");
+#else
+		if ( num == RT_SPEC_DEMO           )  strcpy(text, "Not available in the demo version !");
+#endif
+		if ( num == RT_SPEC_DISPO          )  strcpy(text, "Not yet available !");
 
-		if ( num == RT_INTERFACE_REC       )  strcpy(text, "Recorder");
+		if ( num == RT_MOTOR_REAR          )  strcpy(text, "R");
+		if ( num == RT_MOTOR_NEUTRAL       )  strcpy(text, "N");
+		if ( num == RT_MOTOR_S1            )  strcpy(text, "1");
+		if ( num == RT_MOTOR_S2            )  strcpy(text, "2");
+		if ( num == RT_MOTOR_S3            )  strcpy(text, "3");
+
+		if ( num == RT_IO_LIST             )  strcpy(text, "Available duels:");
+		if ( num == RT_IO_NAME             )  strcpy(text, "Filename :");
+		if ( num == RT_IO_HEADER           )  strcpy(text, "Filename\tMission\tCar\tDriver\tChrono");
+#if _EGAMES
+		if ( num == RT_IO_RINFO            )  strcpy(text, "You can download new Duels on www.epsitec.ch/wildwheels");
+#else
+		if ( num == RT_IO_RINFO            )  strcpy(text, "You can download new Duels on www.ceebot.com");
+#endif
+
+#if _EGAMES
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "Developed by EPSITEC");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "Published by eGames, Inc.");
+#else
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "www.ceebot.com");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "Developed by EPSITEC");
+#endif
+#if _SE
+		if ( num == RT_GENERIC_DEMO1       )  strcpy(text, "You have played with the special edition version of Wild Wheels.");
+		if ( num == RT_GENERIC_DEMO2       )  strcpy(text, "The full version is now available ...");
+		if ( num == RT_GENERIC_DEMO3       )  strcpy(text, "... it contains 28 challenging missions and 9 races ...");
+		if ( num == RT_GENERIC_DEMO4       )  strcpy(text, "... as well as a \"duel\" mode for comparing performances.");
+		if ( num == RT_GENERIC_DEMO5       )  strcpy(text, "More details on www.epsitec.ch/wildwheels !");
+#else
+		if ( num == RT_GENERIC_DEMO1       )  strcpy(text, "You have played with the DEMO version of BuzzingCars.");
+		if ( num == RT_GENERIC_DEMO2       )  strcpy(text, "The full version is now available ...");
+		if ( num == RT_GENERIC_DEMO3       )  strcpy(text, "... it contains 28 challenging missions and 9 races ...");
+		if ( num == RT_GENERIC_DEMO4       )  strcpy(text, "... as well as a \"duel\" mode for comparing performances.");
+		if ( num == RT_GENERIC_DEMO5       )  strcpy(text, "More details on www.ceebot.com !");
+#endif
 	}
 
 	if ( type == RES_EVENT )
@@ -299,545 +307,172 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 		if ( num == EVENT_BUTTON_NEXT      )  strcpy(text, "Next");
 		if ( num == EVENT_BUTTON_PREV      )  strcpy(text, "Previous");
 		if ( num == EVENT_BUTTON_QUIT      )  strcpy(text, "Menu (\\key quit;)");
+		if ( num == EVENT_BUTTON_CAMERA    )  strcpy(text, "Camera (\\key camera;)");
+		if ( num == EVENT_BUTTON_HELP      )  strcpy(text, "Help  (\\key help;)");
+		if ( num == EVENT_BUTTON_BRAKE     )  strcpy(text, "Handbrake (\\key brake;)");
+		if ( num == EVENT_BUTTON_HORN      )  strcpy(text, "Horn (\\key horn;)");
+		if ( num == EVENT_BONUS            )  strcpy(text, "Time Bonus");
+		if ( num == EVENT_TIME             )  strcpy(text, "Chronometer");
+		if ( num == EVENT_PROGRESS         )  strcpy(text, "Performed tasks");
 
 		if ( num == EVENT_DIALOG_OK        )  strcpy(text, "OK");
 		if ( num == EVENT_DIALOG_CANCEL    )  strcpy(text, "Cancel");
 
-		if ( num == EVENT_INTERFACE_TRAINER)  strcpy(text, "Exercises\\Programming exercises");
-		if ( num == EVENT_INTERFACE_DEFI   )  strcpy(text, "Challenges\\Programming challenges");
 		if ( num == EVENT_INTERFACE_MISSION)  strcpy(text, "Missions\\Select mission");
-		if ( num == EVENT_INTERFACE_FREE   )  strcpy(text, "Free game\\Free game without a specific goal");
-		if ( num == EVENT_INTERFACE_TEEN   )  strcpy(text, "Free game\\Free game without a specific goal");
+		if ( num == EVENT_INTERFACE_FREE   )  strcpy(text, "Free races\\Free races without precise goal");
 		if ( num == EVENT_INTERFACE_USER   )  strcpy(text, "User\\User levels");
 		if ( num == EVENT_INTERFACE_PROTO  )  strcpy(text, "Proto\\Prototypes under development");
-		if ( num == EVENT_INTERFACE_NAME   )  strcpy(text, "New player\\Choose player's name");
+		if ( num == EVENT_INTERFACE_DUEL   )  strcpy(text, "Duels\\Duels against ghost cars");
+		if ( num == EVENT_INTERFACE_NAME   )  strcpy(text, "New driver\\Choose driver name");
 		if ( num == EVENT_INTERFACE_SETUP  )  strcpy(text, "Options\\Preferences");
 		if ( num == EVENT_INTERFACE_AGAIN  )  strcpy(text, "Restart\\Restart the mission from the beginning");
-		if ( num == EVENT_INTERFACE_WRITE  )  strcpy(text, "Save\\Save the current mission ");
-		if ( num == EVENT_INTERFACE_READ   )  strcpy(text, "Load\\Load a saved mission");
-#if _NEWLOOK
-		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Return to CeeBot");
-		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Quit\\Quit CeeBot");
+		if ( num == EVENT_INTERFACE_SAVE   )  strcpy(text, "Save\\Save the duel");
+#if _EGAMES
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Return to Wild Wheels");
 #else
-		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Return to COLOBOT");
-		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Quit\\Quit COLOBOT");
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Return to BuzzingCars");
 #endif
-		if ( num == EVENT_INTERFACE_BACK   )  strcpy(text, "<<  Back  \\Back to the previous screen");
-		if ( num == EVENT_INTERFACE_PLAY   )  strcpy(text, "Play\\Start mission!");
+		if ( num == EVENT_INTERFACE_PREV   )  strcpy(text, "\\Previous screen");
+		if ( num == EVENT_INTERFACE_NEXT   )  strcpy(text, "\\Next screen");
+#if _EGAMES
+		if ( num == EVENT_INTERFACE_EXIT   )  strcpy(text, "\\Quit Wild Wheels");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Quit\\Quit Wild Wheels");
+#else
+		if ( num == EVENT_INTERFACE_EXIT   )  strcpy(text, "\\Quit BuzzingCars");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Quit\\Quit BuzzingCars");
+#endif
+		if ( num == EVENT_INTERFACE_BACK   )  strcpy(text, "Cancel\\Back to previous screen");
+		if ( num == EVENT_INTERFACE_TERM   )  strcpy(text, "Menu\\Return to the main menu");
+		if ( num == EVENT_INTERFACE_PLAY   )  strcpy(text, "Play\\Start selected mission!");
+		if ( num == EVENT_INTERFACE_GHOSTm )  strcpy(text, "Display best ghost car\\Show the ghost that has performed best on this circuit");
+		if ( num == EVENT_INTERFACE_OK     )  strcpy(text, "OK\\Back to previous screen");
+
+		if ( num == EVENT_INTERFACE_WOK    )  strcpy(text, "Save the duel\\Save to disk");
+		if ( num == EVENT_INTERFACE_WCANCEL)  strcpy(text, "Cancel\\Back to previous screen");
+		if ( num == EVENT_INTERFACE_ROK    )  strcpy(text, "Start duel\\Start the selected duel");
+		if ( num == EVENT_INTERFACE_RCANCEL)  strcpy(text, "Cancel\\Back to previous screen");
+
 		if ( num == EVENT_INTERFACE_SETUPd )  strcpy(text, "Device\\Driver and resolution settings");
 		if ( num == EVENT_INTERFACE_SETUPg )  strcpy(text, "Graphics\\Graphics settings");
 		if ( num == EVENT_INTERFACE_SETUPp )  strcpy(text, "Game\\Game settings");
-		if ( num == EVENT_INTERFACE_SETUPc )  strcpy(text, "Controls\\Keyboard, joystick and mouse settings");
-		if ( num == EVENT_INTERFACE_SETUPs )  strcpy(text, "Sound\\Music and game sound volume");
-		if ( num == EVENT_INTERFACE_DEVICE )  strcpy(text, "Unit");
+		if ( num == EVENT_INTERFACE_SETUPc )  strcpy(text, "Controls\\Keyboard, wheel and gamepad settings");
+		if ( num == EVENT_INTERFACE_SETUPs )  strcpy(text, "Sound\\Volume of music and sound effects");
 		if ( num == EVENT_INTERFACE_RESOL  )  strcpy(text, "Resolution");
 		if ( num == EVENT_INTERFACE_FULL   )  strcpy(text, "Full screen\\Full screen or window mode");
 		if ( num == EVENT_INTERFACE_APPLY  )  strcpy(text, "Apply changes\\Activates the changed settings");
 
-		if ( num == EVENT_INTERFACE_TOTO   )  strcpy(text, "Robbie\\Your assistant");
 		if ( num == EVENT_INTERFACE_SHADOW )  strcpy(text, "Shadows\\Shadows on the ground");
-		if ( num == EVENT_INTERFACE_GROUND )  strcpy(text, "Marks on the ground\\Marks on the ground");
-		if ( num == EVENT_INTERFACE_DIRTY  )  strcpy(text, "Dust\\Dust and dirt on bots and buildings");
+		if ( num == EVENT_INTERFACE_DIRTY  )  strcpy(text, "Dust\\Dust and dirt on cars and buildings");
 		if ( num == EVENT_INTERFACE_FOG    )  strcpy(text, "Fog\\Fog");
-		if ( num == EVENT_INTERFACE_LENS   )  strcpy(text, "Sunbeams\\Sunbeams in the sky");
-		if ( num == EVENT_INTERFACE_SKY    )  strcpy(text, "Sky\\Clouds and nebulae");
-		if ( num == EVENT_INTERFACE_PLANET )  strcpy(text, "Planets and stars\\Astronomical objects in the sky");
-		if ( num == EVENT_INTERFACE_LIGHT  )  strcpy(text, "Dynamic lighting\\Mobile light sources");
+		if ( num == EVENT_INTERFACE_LENS   )  strcpy(text, "Sunbeams\\Display sunbeams in the sky");
+		if ( num == EVENT_INTERFACE_SKY    )  strcpy(text, "Sky and clouds\\Display real sky images with clouds");
+		if ( num == EVENT_INTERFACE_PLANET )  strcpy(text, "Planets and stars\\Display celestial bodies in the sky");
+		if ( num == EVENT_INTERFACE_LIGHT  )  strcpy(text, "Dynamic lighting\\Use mobile light sources");
+		if ( num == EVENT_INTERFACE_SUPER  )  strcpy(text, "Super details\\Super details");  //DR
 		if ( num == EVENT_INTERFACE_PARTI  )  strcpy(text, "Number of particles\\Explosions, dust, reflections, etc.");
+		if ( num == EVENT_INTERFACE_WHEEL  )  strcpy(text, "Tyre marks\\Tyre marks on the ground");
 		if ( num == EVENT_INTERFACE_CLIP   )  strcpy(text, "Depth of field\\Maximum visibility");
 		if ( num == EVENT_INTERFACE_DETAIL )  strcpy(text, "Details\\Visual quality of 3D objects");
-		if ( num == EVENT_INTERFACE_TEXTURE)  strcpy(text, "Textures\\Quality of textures ");
-		if ( num == EVENT_INTERFACE_GADGET )  strcpy(text, "Num of decorative objects\\Number of purely ornamental objects");
-		if ( num == EVENT_INTERFACE_RAIN   )  strcpy(text, "Particles in the interface\\Steam clouds and sparks in the interface");
-		if ( num == EVENT_INTERFACE_GLINT  )  strcpy(text, "Reflections on the buttons \\Shiny buttons");
-		if ( num == EVENT_INTERFACE_TOOLTIP)  strcpy(text, "Help balloons\\Explain the function of the buttons");
+		if ( num == EVENT_INTERFACE_TEXTURE)  strcpy(text, "Textures\\Quality of displayed textures");
+		if ( num == EVENT_INTERFACE_GADGET )  strcpy(text, "Number of decorative objects \\Number of purely ornamental objects");
+		if ( num == EVENT_INTERFACE_RAIN   )  strcpy(text, "Particles in the interface\\Sparks springling from mounse pointer");
+		if ( num == EVENT_INTERFACE_GLINT  )  strcpy(text, "Reflections on the buttons\\Shiny buttons");
+		if ( num == EVENT_INTERFACE_TOOLTIP)  strcpy(text, "Tool tips\\Explain user interface items");
 		if ( num == EVENT_INTERFACE_MOVIES )  strcpy(text, "Film sequences\\Films before and after the missions");
-		if ( num == EVENT_INTERFACE_NICERST)  strcpy(text, "Exit film\\Film at the exit of exercises");
-		if ( num == EVENT_INTERFACE_HIMSELF)  strcpy(text, "Friendly fire\\Your shooting can damage your own objects ");
-		if ( num == EVENT_INTERFACE_SCROLL )  strcpy(text, "Scrolling\\Scrolling when the mouse touches right or left border");
-		if ( num == EVENT_INTERFACE_INVERTX)  strcpy(text, "Mouse inversion X\\Inversion of the scrolling direction on the X axis");
-		if ( num == EVENT_INTERFACE_INVERTY)  strcpy(text, "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis");
-		if ( num == EVENT_INTERFACE_EFFECT )  strcpy(text, "Quake at explosions\\The screen shakes at explosions");
-		if ( num == EVENT_INTERFACE_MOUSE  )  strcpy(text, "Mouse shadow\\Gives the mouse a shadow");
-		if ( num == EVENT_INTERFACE_EDITMODE) strcpy(text, "Automatic indent\\When program editing");
-		if ( num == EVENT_INTERFACE_EDITVALUE)strcpy(text, "Big indent\\Indent 2 or 4 spaces per level defined by braces");
-		if ( num == EVENT_INTERFACE_SOLUCE4)  strcpy(text, "Access to solutions\\Show program \"4: Solution\" in the exercises");  //**
+		if ( num == EVENT_INTERFACE_CBACK  )  strcpy(text, "Back view\\Camera behind the car");
+		if ( num == EVENT_INTERFACE_CBOARD )  strcpy(text, "Hood view\\Camera on the hood");
+		if ( num == EVENT_INTERFACE_EFFECT )  strcpy(text, "Tilt during explosions\\The screen tilts during explosions");
+		if ( num == EVENT_INTERFACE_FLASH  )  strcpy(text, "Crash flash\\The screen flashes during a car crash");
+		if ( num == EVENT_INTERFACE_BLAST  )  strcpy(text, "Motor may explode\\The motor explodes during high revs on the starting line");
+		if ( num == EVENT_INTERFACE_MOUSE  )  strcpy(text, "Mouse shadow\\Mouse shadow");
 
-		if ( num == EVENT_INTERFACE_KDEF   )  strcpy(text, "Standard controls\\Standard key functions");
-		if ( num == EVENT_INTERFACE_KLEFT  )  strcpy(text, "Turn left\\turns the bot to the left");
-		if ( num == EVENT_INTERFACE_KRIGHT )  strcpy(text, "Turn right\\turns the bot to the right");
-		if ( num == EVENT_INTERFACE_KUP    )  strcpy(text, "Forward\\Moves forward");
-		if ( num == EVENT_INTERFACE_KDOWN  )  strcpy(text, "Backward\\Moves backward");
-		if ( num == EVENT_INTERFACE_KGUP   )  strcpy(text, "Climb\\Increases the power of the jet");
-		if ( num == EVENT_INTERFACE_KGDOWN )  strcpy(text, "Descend\\Reduces the power of the jet");
-		if ( num == EVENT_INTERFACE_KCAMERA)  strcpy(text, "Change camera\\Switches between onboard camera and following camera");
-		if ( num == EVENT_INTERFACE_KDESEL )  strcpy(text, "Previous object\\Selects the previous object");
-		if ( num == EVENT_INTERFACE_KACTION)  strcpy(text, "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)");
-		if ( num == EVENT_INTERFACE_KNEAR  )  strcpy(text, "Camera closer\\Moves the camera forward");
-		if ( num == EVENT_INTERFACE_KAWAY  )  strcpy(text, "Camera back\\Moves the camera backward");
-		if ( num == EVENT_INTERFACE_KNEXT  )  strcpy(text, "Next object\\Selects the next object");
-		if ( num == EVENT_INTERFACE_KHUMAN )  strcpy(text, "Select the astronaut\\Selects the astronaut");
-		if ( num == EVENT_INTERFACE_KQUIT  )  strcpy(text, "Quit\\Quit the current mission or exercise");
-		if ( num == EVENT_INTERFACE_KHELP  )  strcpy(text, "Instructions\\Shows the instructions for the current mission");
-		if ( num == EVENT_INTERFACE_KPROG  )  strcpy(text, "Programming help\\Gives more detailed help with programming");
-		if ( num == EVENT_INTERFACE_KCBOT  )  strcpy(text, "Key word help\\More detailed help about key words");
-		if ( num == EVENT_INTERFACE_KVISIT )  strcpy(text, "Origin of last message\\Shows where the last message was sent from");
-		if ( num == EVENT_INTERFACE_KSPEED10) strcpy(text, "Speed 1.0x\\Normal speed");
-		if ( num == EVENT_INTERFACE_KSPEED15) strcpy(text, "Speed 1.5x\\1.5 times faster");
-		if ( num == EVENT_INTERFACE_KSPEED20) strcpy(text, "Speed 2.0x\\Double speed");
-		if ( num == EVENT_INTERFACE_KSPEED30) strcpy(text, "Speed 3.0x\\Three times faster");
+		if ( num == EVENT_INTERFACE_KDEF   )  strcpy(text, "Default controls\\Resets all controls to default values");
+		if ( num == EVENT_INTERFACE_KLEFT  )  strcpy(text, "Turn left\\Turns steering wheel left");
+		if ( num == EVENT_INTERFACE_KRIGHT )  strcpy(text, "Turn right\\Turns steering wheel right");
+		if ( num == EVENT_INTERFACE_KUP    )  strcpy(text, "Accelerate\\Speed up");
+		if ( num == EVENT_INTERFACE_KDOWN  )  strcpy(text, "Brake and Backwards\\Slows down and eventually moves backwards");
+		if ( num == EVENT_INTERFACE_KBRAKE )  strcpy(text, "Handbrake\\Handbrake");
+		if ( num == EVENT_INTERFACE_KHORN  )  strcpy(text, "Horn\\Horn");
+		if ( num == EVENT_INTERFACE_KCAMERA)  strcpy(text, "Change camera\\Switches between hood camera and rear camera");
+		if ( num == EVENT_INTERFACE_KQUIT  )  strcpy(text, "Quit\\Quit the current mission or race");
+		if ( num == EVENT_INTERFACE_KHELP  )  strcpy(text, "Instructions\\Show instructions for the current mission");
 
-		if ( num == EVENT_INTERFACE_VOLSOUND) strcpy(text, "Sound effects:\\Volume of engines, voice, shooting, etc.");
-		if ( num == EVENT_INTERFACE_VOLMUSIC) strcpy(text, "Background sound :\\Volume of audio tracks on the CD");
-		if ( num == EVENT_INTERFACE_SOUND3D)  strcpy(text, "3D sound\\3D positioning of the sound");
+		if ( num == EVENT_INTERFACE_VOLSOUND) strcpy(text, "Sound effects:\\Volume of engines, voice, explosions, etc.");
+		if ( num == EVENT_INTERFACE_VOLMUSIC) strcpy(text, "Background sound:\\Volume of audio tracks on the CD");
+		if ( num == EVENT_INTERFACE_SOUND3D)  strcpy(text, "3D sound\\3D sound");
+		if ( num == EVENT_INTERFACE_COMMENTS) strcpy(text, "Voice of the commentator\\Various comments during races");
 
 		if ( num == EVENT_INTERFACE_MIN    )  strcpy(text, "Lowest\\Minimum graphic quality (highest frame rate)");
 		if ( num == EVENT_INTERFACE_NORM   )  strcpy(text, "Normal\\Normal graphic quality");
 		if ( num == EVENT_INTERFACE_MAX    )  strcpy(text, "Highest\\Highest graphic quality (lowest frame rate)");
 
-		if ( num == EVENT_INTERFACE_SILENT )  strcpy(text, "Mute\\No sound");
+		if ( num == EVENT_INTERFACE_SILENT )  strcpy(text, "Silent\\No sound");
 		if ( num == EVENT_INTERFACE_NOISY  )  strcpy(text, "Normal\\Normal sound volume");
 
-		if ( num == EVENT_INTERFACE_JOYSTICK) strcpy(text, "Use a joystick\\Joystick or keyboard");
-		if ( num == EVENT_INTERFACE_SOLUCE )  strcpy(text, "Access to solution\\Shows the solution (detailed instructions for missions)");
+		if ( num == EVENT_INTERFACE_STEERING) strcpy(text, "Use a steering wheel or a joystick\\Use a steering wheel or a joystick");
+		if ( num == EVENT_INTERFACE_JOYPAD  ) strcpy(text, "Use a gamepad\\Gamepad or keyboard");
+		if ( num == EVENT_INTERFACE_FFBc    ) strcpy(text, "Force feedback\\Use force feedback effects");
+		if ( num == EVENT_INTERFACE_FFBs    ) strcpy(text, "\\Feedback strength");
 
-		if ( num == EVENT_INTERFACE_NEDIT  )  strcpy(text, "\\New player name");
-		if ( num == EVENT_INTERFACE_NOK    )  strcpy(text, "OK\\Choose the selected player");
-		if ( num == EVENT_INTERFACE_NCANCEL)  strcpy(text, "Cancel\\Keep current player name");
-		if ( num == EVENT_INTERFACE_NDELETE)  strcpy(text, "Delete player\\Deletes the player from the list");
-		if ( num == EVENT_INTERFACE_NLABEL )  strcpy(text, "Player name");
+		if ( num == EVENT_INTERFACE_NEDIT  )  strcpy(text, "\\New driver name");
+		if ( num == EVENT_INTERFACE_NOK    )  strcpy(text, "Select\\Choose the selected driver");
+		if ( num == EVENT_INTERFACE_NCREATE)  strcpy(text, "New\\Create a new driver");
+		if ( num == EVENT_INTERFACE_NDELETE)  strcpy(text, "Delete\\Delete the driver from the list");
 
-		if ( num == EVENT_INTERFACE_IOWRITE)  strcpy(text, "Save\\Saves the current mission");
-		if ( num == EVENT_INTERFACE_IOREAD )  strcpy(text, "Load\\Loads the selected mission");
-		if ( num == EVENT_INTERFACE_IOLIST )  strcpy(text, "List of saved missions");
-		if ( num == EVENT_INTERFACE_IOLABEL)  strcpy(text, "Filename:");
-		if ( num == EVENT_INTERFACE_IONAME )  strcpy(text, "Mission name");
-		if ( num == EVENT_INTERFACE_IOIMAGE)  strcpy(text, "Photography");
-		if ( num == EVENT_INTERFACE_IODELETE) strcpy(text, "Delete\\Deletes the selected file");
+		if ( num == EVENT_INTERFACE_LEVEL1 )  strcpy(text, "Kid\\Really easy kid level");
+		if ( num == EVENT_INTERFACE_LEVEL2 )  strcpy(text, "Cool\\Easy playing level");
+		if ( num == EVENT_INTERFACE_LEVEL3 )  strcpy(text, "Medium\\Medium playing level");
+		if ( num == EVENT_INTERFACE_LEVEL4 )  strcpy(text, "Hard\\Really hard playing level");
 
-		if ( num == EVENT_INTERFACE_PERSO  )  strcpy(text, "Appearance\\Choose your appearance");
-		if ( num == EVENT_INTERFACE_POK    )  strcpy(text, "OK");
-		if ( num == EVENT_INTERFACE_PCANCEL)  strcpy(text, "Cancel");
-		if ( num == EVENT_INTERFACE_PDEF   )  strcpy(text, "Standard\\Standard appearance settings");
-		if ( num == EVENT_INTERFACE_PHEAD  )  strcpy(text, "Head\\Face and hair");
-		if ( num == EVENT_INTERFACE_PBODY  )  strcpy(text, "Suit\\Astronaut suit");
-		if ( num == EVENT_INTERFACE_PLROT  )  strcpy(text, "\\Turn left");
-		if ( num == EVENT_INTERFACE_PRROT  )  strcpy(text, "\\Turn right");
-		if ( num == EVENT_INTERFACE_PCRa   )  strcpy(text, "Red");
-		if ( num == EVENT_INTERFACE_PCGa   )  strcpy(text, "Green");
-		if ( num == EVENT_INTERFACE_PCBa   )  strcpy(text, "Blue");
-		if ( num == EVENT_INTERFACE_PCRb   )  strcpy(text, "Red");
-		if ( num == EVENT_INTERFACE_PCGb   )  strcpy(text, "Green");
-		if ( num == EVENT_INTERFACE_PCBb   )  strcpy(text, "Blue");
-		if ( num == EVENT_INTERFACE_PFACE1 )  strcpy(text, "\\Face 1");
-		if ( num == EVENT_INTERFACE_PFACE2 )  strcpy(text, "\\Face 4");
-		if ( num == EVENT_INTERFACE_PFACE3 )  strcpy(text, "\\Face 3");
-		if ( num == EVENT_INTERFACE_PFACE4 )  strcpy(text, "\\Face 2");
-		if ( num == EVENT_INTERFACE_PGLASS0)  strcpy(text, "\\No eyeglasses");
-		if ( num == EVENT_INTERFACE_PGLASS1)  strcpy(text, "\\Eyeglasses 1");
-		if ( num == EVENT_INTERFACE_PGLASS2)  strcpy(text, "\\Eyeglasses 2");
-		if ( num == EVENT_INTERFACE_PGLASS3)  strcpy(text, "\\Eyeglasses 3");
-		if ( num == EVENT_INTERFACE_PGLASS4)  strcpy(text, "\\Eyeglasses 4");
-		if ( num == EVENT_INTERFACE_PGLASS5)  strcpy(text, "\\Eyeglasses 5");
+		if ( num == EVENT_INTERFACE_POK    )  strcpy(text, "Select\\Start with this car");
+		if ( num == EVENT_INTERFACE_PNEXT  )  strcpy(text, "Next >\\Next car");
+		if ( num == EVENT_INTERFACE_PPREV  )  strcpy(text, "< Previous\\Previous car");
+		if ( num == EVENT_INTERFACE_PGSPEED)  strcpy(text, "Max speed\\");
+		if ( num == EVENT_INTERFACE_PGACCEL)  strcpy(text, "Acceleration\\");
+		if ( num == EVENT_INTERFACE_PGGRIP )  strcpy(text, "Grip\\");
+		if ( num == EVENT_INTERFACE_PGSOLID)  strcpy(text, "Solidity\\");
+		if ( num == EVENT_INTERFACE_PPRICE )  strcpy(text, "%s (vehicle price: %d credits)");
+		if ( num == EVENT_INTERFACE_PPESETAS) strcpy(text, "Your savings: %d credits");
+		if ( num == EVENT_INTERFACE_PSUBMOD0) strcpy(text, "A\\Change the look");
+		if ( num == EVENT_INTERFACE_PSUBMOD1) strcpy(text, "B\\Change the look");
+		if ( num == EVENT_INTERFACE_PSUBMOD2) strcpy(text, "C\\Change the look");
+		if ( num == EVENT_INTERFACE_PSUBMOD3) strcpy(text, "D\\Change the look");
+		if ( num >= EVENT_INTERFACE_PCOLOR0 &&
+			 num <= EVENT_INTERFACE_PCOLOR19) strcpy(text, "\\Change the color");
 
-		if ( num == EVENT_OBJECT_DESELECT  )  strcpy(text, "Previous selection (\\key desel;)");
-		if ( num == EVENT_OBJECT_LEFT      )  strcpy(text, "Turn left (\\key left;)");
-		if ( num == EVENT_OBJECT_RIGHT     )  strcpy(text, "Turn right (\\key right;)");
-		if ( num == EVENT_OBJECT_UP        )  strcpy(text, "Forward (\\key up;)");
-		if ( num == EVENT_OBJECT_DOWN      )  strcpy(text, "Backward (\\key down;)");
-		if ( num == EVENT_OBJECT_GASUP     )  strcpy(text, "Up (\\key gup;)");
-		if ( num == EVENT_OBJECT_GASDOWN   )  strcpy(text, "Down (\\key gdown;)");
-		if ( num == EVENT_OBJECT_HTAKE     )  strcpy(text, "Grab or drop (\\key action;)");
-		if ( num == EVENT_OBJECT_MTAKE     )  strcpy(text, "Grab or drop (\\key action;)");
-		if ( num == EVENT_OBJECT_MFRONT    )  strcpy(text, "..in front");
-		if ( num == EVENT_OBJECT_MBACK     )  strcpy(text, "..behind");
-		if ( num == EVENT_OBJECT_MPOWER    )  strcpy(text, "..power cell");
-		if ( num == EVENT_OBJECT_BHELP     )  strcpy(text, "Instructions for the mission (\\key help;)");
-		if ( num == EVENT_OBJECT_BTAKEOFF  )  strcpy(text, "Take off to finish the mission");
-		if ( num == EVENT_OBJECT_BDERRICK  )  strcpy(text, "Build a derrick");
-		if ( num == EVENT_OBJECT_BSTATION  )  strcpy(text, "Build a power station");
-		if ( num == EVENT_OBJECT_BFACTORY  )  strcpy(text, "Build a bot factory");
-		if ( num == EVENT_OBJECT_BREPAIR   )  strcpy(text, "Build a repair center");
-		if ( num == EVENT_OBJECT_BCONVERT  )  strcpy(text, "Build a converter");
-		if ( num == EVENT_OBJECT_BTOWER    )  strcpy(text, "Build a defense tower");
-		if ( num == EVENT_OBJECT_BRESEARCH )  strcpy(text, "Build a research center");
-		if ( num == EVENT_OBJECT_BRADAR    )  strcpy(text, "Build a radar station");
-		if ( num == EVENT_OBJECT_BENERGY   )  strcpy(text, "Build a power cell factory");
-		if ( num == EVENT_OBJECT_BLABO     )  strcpy(text, "Build an autolab");
-		if ( num == EVENT_OBJECT_BNUCLEAR  )  strcpy(text, "Build a nuclear power plant");
-		if ( num == EVENT_OBJECT_BPARA     )  strcpy(text, "Build a lightning conductor");
-		if ( num == EVENT_OBJECT_BINFO     )  strcpy(text, "Build a exchange post");
-		if ( num == EVENT_OBJECT_GFLAT     )  strcpy(text, "Show if the ground is flat");
-		if ( num == EVENT_OBJECT_FCREATE   )  strcpy(text, "Plant a flag");
-		if ( num == EVENT_OBJECT_FDELETE   )  strcpy(text, "Remove a flag");
-		if ( num == EVENT_OBJECT_FCOLORb   )  strcpy(text, "\\Blue flags");
-		if ( num == EVENT_OBJECT_FCOLORr   )  strcpy(text, "\\Red flags");
-		if ( num == EVENT_OBJECT_FCOLORg   )  strcpy(text, "\\Green flags");
-		if ( num == EVENT_OBJECT_FCOLORy   )  strcpy(text, "\\Yellow flags");
-		if ( num == EVENT_OBJECT_FCOLORv   )  strcpy(text, "\\Violet flags");
-		if ( num == EVENT_OBJECT_FACTORYfa )  strcpy(text, "Build a winged grabber");
-		if ( num == EVENT_OBJECT_FACTORYta )  strcpy(text, "Build a tracked grabber");
-		if ( num == EVENT_OBJECT_FACTORYwa )  strcpy(text, "Build a wheeled grabber");
-		if ( num == EVENT_OBJECT_FACTORYia )  strcpy(text, "Build a legged grabber");
-		if ( num == EVENT_OBJECT_FACTORYfc )  strcpy(text, "Build a winged shooter");
-		if ( num == EVENT_OBJECT_FACTORYtc )  strcpy(text, "Build a tracked shooter");
-		if ( num == EVENT_OBJECT_FACTORYwc )  strcpy(text, "Build a wheeled shooter");
-		if ( num == EVENT_OBJECT_FACTORYic )  strcpy(text, "Build a legged shooter");
-		if ( num == EVENT_OBJECT_FACTORYfi )  strcpy(text, "Build a winged orga shooter");
-		if ( num == EVENT_OBJECT_FACTORYti )  strcpy(text, "Build a tracked orga shooter");
-		if ( num == EVENT_OBJECT_FACTORYwi )  strcpy(text, "Build a wheeled orga shooter");
-		if ( num == EVENT_OBJECT_FACTORYii )  strcpy(text, "Build a legged orga shooter");
-		if ( num == EVENT_OBJECT_FACTORYfs )  strcpy(text, "Build a winged sniffer");
-		if ( num == EVENT_OBJECT_FACTORYts )  strcpy(text, "Build a tracked sniffer");
-		if ( num == EVENT_OBJECT_FACTORYws )  strcpy(text, "Build a wheeled sniffer");
-		if ( num == EVENT_OBJECT_FACTORYis )  strcpy(text, "Build a legged sniffer");
-		if ( num == EVENT_OBJECT_FACTORYrt )  strcpy(text, "Build a thumper");
-		if ( num == EVENT_OBJECT_FACTORYrc )  strcpy(text, "Build a phazer shooter");
-		if ( num == EVENT_OBJECT_FACTORYrr )  strcpy(text, "Build a recycler");
-		if ( num == EVENT_OBJECT_FACTORYrs )  strcpy(text, "Build a shielder");
-		if ( num == EVENT_OBJECT_FACTORYsa )  strcpy(text, "Build a subber");
-		if ( num == EVENT_OBJECT_RTANK     )  strcpy(text, "Run research program for tracked bots");
-		if ( num == EVENT_OBJECT_RFLY      )  strcpy(text, "Run research program for winged bots");
-		if ( num == EVENT_OBJECT_RTHUMP    )  strcpy(text, "Run research program for thumper");
-		if ( num == EVENT_OBJECT_RCANON    )  strcpy(text, "Run research program for shooter");
-		if ( num == EVENT_OBJECT_RTOWER    )  strcpy(text, "Run research program for defense tower");
-		if ( num == EVENT_OBJECT_RPHAZER   )  strcpy(text, "Run research program for phazer shooter");
-		if ( num == EVENT_OBJECT_RSHIELD   )  strcpy(text, "Run research program for shielder");
-		if ( num == EVENT_OBJECT_RATOMIC   )  strcpy(text, "Run research program for nuclear power");
-		if ( num == EVENT_OBJECT_RiPAW     )  strcpy(text, "Run research program for legged bots");
-		if ( num == EVENT_OBJECT_RiGUN     )  strcpy(text, "Run research program for orga shooter");
-		if ( num == EVENT_OBJECT_RESET     )  strcpy(text, "Return to start");
-		if ( num == EVENT_OBJECT_SEARCH    )  strcpy(text, "Sniff (\\key action;)");
-		if ( num == EVENT_OBJECT_TERRAFORM )  strcpy(text, "Thump (\\key action;)");
-		if ( num == EVENT_OBJECT_FIRE      )  strcpy(text, "Shoot (\\key action;)");
-		if ( num == EVENT_OBJECT_RECOVER   )  strcpy(text, "Recycle (\\key action;)");
-		if ( num == EVENT_OBJECT_BEGSHIELD )  strcpy(text, "Extend shield (\\key action;)");
-		if ( num == EVENT_OBJECT_ENDSHIELD )  strcpy(text, "Withdraw shield (\\key action;)");
-		if ( num == EVENT_OBJECT_DIMSHIELD )  strcpy(text, "Shield radius");
-		if ( num == EVENT_OBJECT_PROGRUN   )  strcpy(text, "Execute the selected program");
-		if ( num == EVENT_OBJECT_PROGEDIT  )  strcpy(text, "Edit the selected program");
-		if ( num == EVENT_OBJECT_INFOOK    )  strcpy(text, "\\SatCom on standby");
-		if ( num == EVENT_OBJECT_DELETE    )  strcpy(text, "Destroy the building");
-		if ( num == EVENT_OBJECT_GENERGY   )  strcpy(text, "Energy level");
-		if ( num == EVENT_OBJECT_GSHIELD   )  strcpy(text, "Shield level");
-		if ( num == EVENT_OBJECT_GRANGE    )  strcpy(text, "Jet temperature");
-		if ( num == EVENT_OBJECT_GPROGRESS )  strcpy(text, "Still working ...");
-		if ( num == EVENT_OBJECT_GRADAR    )  strcpy(text, "Number of insects detected");
-		if ( num == EVENT_OBJECT_GINFO     )  strcpy(text, "Transmitted information");
-		if ( num == EVENT_OBJECT_COMPASS   )  strcpy(text, "Compass");
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Condition of the tyres");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "Jet temperature");
+		if ( num == EVENT_OBJECT_GPROGRESS )  strcpy(text, "Task progression");
+		if ( num == EVENT_OBJECT_GSPEED    )  strcpy(text, "Speedometer");
+		if ( num == EVENT_OBJECT_GRPM      )  strcpy(text, "Rev-counter");
+		if ( num == EVENT_OBJECT_GMOTOR    )  strcpy(text, "\\Gearbox");
+		if ( num == EVENT_OBJECT_GCOMPASS  )  strcpy(text, "Compass");
+		if ( num == EVENT_OBJECT_GGEIGER   )  strcpy(text, "Geiger counter");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "General condition");
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Tyre condition");
 //?		if ( num == EVENT_OBJECT_MAP       )  strcpy(text, "Mini-map");
 		if ( num == EVENT_OBJECT_MAPZOOM   )  strcpy(text, "Zoom mini-map");
-		if ( num == EVENT_OBJECT_CAMERA    )  strcpy(text, "Camera (\\key camera;)");
-		if ( num == EVENT_OBJECT_CAMERAleft)  strcpy(text, "Camera to left");
-		if ( num == EVENT_OBJECT_CAMERAright) strcpy(text, "Camera to right");
-		if ( num == EVENT_OBJECT_CAMERAnear)  strcpy(text, "Camera nearest");
-		if ( num == EVENT_OBJECT_CAMERAaway)  strcpy(text, "Camera awayest");
-		if ( num == EVENT_OBJECT_HELP      )  strcpy(text, "Help about selected object");
-		if ( num == EVENT_OBJECT_SOLUCE    )  strcpy(text, "Show the solution");
-		if ( num == EVENT_OBJECT_SHORTCUT00)  strcpy(text, "Switch bots <-> buildings");
-		if ( num == EVENT_OBJECT_LIMIT     )  strcpy(text, "Show the range");
-		if ( num == EVENT_OBJECT_PEN0      )  strcpy(text, "\\Raise the pencil");
-		if ( num == EVENT_OBJECT_PEN1      )  strcpy(text, "\\Use the black pencil");
-		if ( num == EVENT_OBJECT_PEN2      )  strcpy(text, "\\Use the yellow pencil");
-		if ( num == EVENT_OBJECT_PEN3      )  strcpy(text, "\\Use the orange pencil");
-		if ( num == EVENT_OBJECT_PEN4      )  strcpy(text, "\\Use the red pencil");
-		if ( num == EVENT_OBJECT_PEN5      )  strcpy(text, "\\Use the purple pencil");
-		if ( num == EVENT_OBJECT_PEN6      )  strcpy(text, "\\Use the blue pencil");
-		if ( num == EVENT_OBJECT_PEN7      )  strcpy(text, "\\Use the green pencil");
-		if ( num == EVENT_OBJECT_PEN8      )  strcpy(text, "\\Use the brown pencil");
-		if ( num == EVENT_OBJECT_REC       )  strcpy(text, "\\Start recording");
-		if ( num == EVENT_OBJECT_STOP      )  strcpy(text, "\\Stop recording");
-		if ( num == EVENT_DT_VISIT0        ||
-			 num == EVENT_DT_VISIT1        ||
-			 num == EVENT_DT_VISIT2        ||
-			 num == EVENT_DT_VISIT3        ||
-			 num == EVENT_DT_VISIT4        )  strcpy(text, "Show the place");
-		if ( num == EVENT_DT_END           )  strcpy(text, "Continue");
 		if ( num == EVENT_CMD              )  strcpy(text, "Command line");
 		if ( num == EVENT_SPEED            )  strcpy(text, "Game speed");
-
-		if ( num == EVENT_HYPER_PREV       )  strcpy(text, "Back");
-		if ( num == EVENT_HYPER_NEXT       )  strcpy(text, "Forward");
-		if ( num == EVENT_HYPER_HOME       )  strcpy(text, "Home");
-		if ( num == EVENT_HYPER_COPY       )  strcpy(text, "Copy");
-		if ( num == EVENT_HYPER_SIZE1      )  strcpy(text, "Size 1");
-		if ( num == EVENT_HYPER_SIZE2      )  strcpy(text, "Size 2");
-		if ( num == EVENT_HYPER_SIZE3      )  strcpy(text, "Size 3");
-		if ( num == EVENT_HYPER_SIZE4      )  strcpy(text, "Size 4");
-		if ( num == EVENT_HYPER_SIZE5      )  strcpy(text, "Size 5");
-		if ( num == EVENT_SATCOM_HUSTON    )  strcpy(text, "Instructions from Houston");
-#if _TEEN
-		if ( num == EVENT_SATCOM_SAT       )  strcpy(text, "Dictionnary");
-#else
-		if ( num == EVENT_SATCOM_SAT       )  strcpy(text, "Satellite report");
-#endif
-		if ( num == EVENT_SATCOM_LOADING   )  strcpy(text, "Programs dispatched by Houston");
-		if ( num == EVENT_SATCOM_OBJECT    )  strcpy(text, "List of objects");
-		if ( num == EVENT_SATCOM_PROG      )  strcpy(text, "Programming help");
-		if ( num == EVENT_SATCOM_SOLUCE    )  strcpy(text, "Solution");
-
-		if ( num == EVENT_STUDIO_OK        )  strcpy(text, "OK\\Close program editor and return to game");
-		if ( num == EVENT_STUDIO_CANCEL    )  strcpy(text, "Cancel\\Cancel all changes");
-		if ( num == EVENT_STUDIO_NEW       )  strcpy(text, "New");
-		if ( num == EVENT_STUDIO_OPEN      )  strcpy(text, "Open (Ctrl+o)");
-		if ( num == EVENT_STUDIO_SAVE      )  strcpy(text, "Save (Ctrl+s)");
-		if ( num == EVENT_STUDIO_UNDO      )  strcpy(text, "Undo (Ctrl+z)");
-		if ( num == EVENT_STUDIO_CUT       )  strcpy(text, "Cut (Ctrl+x)");
-		if ( num == EVENT_STUDIO_COPY      )  strcpy(text, "Copy (Ctrl+c)");
-		if ( num == EVENT_STUDIO_PASTE     )  strcpy(text, "Paste (Ctrl+v)");
-		if ( num == EVENT_STUDIO_SIZE      )  strcpy(text, "Font size");
-		if ( num == EVENT_STUDIO_TOOL      )  strcpy(text, "Instructions (\\key help;)");
-		if ( num == EVENT_STUDIO_HELP      )  strcpy(text, "Programming help  (\\key prog;)");
-		if ( num == EVENT_STUDIO_COMPILE   )  strcpy(text, "Compile");
-		if ( num == EVENT_STUDIO_RUN       )  strcpy(text, "Execute/stop");
-		if ( num == EVENT_STUDIO_REALTIME  )  strcpy(text, "Pause/continue");
-		if ( num == EVENT_STUDIO_STEP      )  strcpy(text, "One step");
-	}
-
-	if ( type == RES_OBJECT )
-	{
-		if ( num == OBJECT_PORTICO      )  strcpy(text, "Gantry crane");
-		if ( num == OBJECT_BASE         )  strcpy(text, "Spaceship");
-		if ( num == OBJECT_DERRICK      )  strcpy(text, "Derrick");
-		if ( num == OBJECT_FACTORY      )  strcpy(text, "Bot factory");
-		if ( num == OBJECT_REPAIR       )  strcpy(text, "Repair center");
-		if ( num == OBJECT_DESTROYER    )  strcpy(text, "Destroyer");
-		if ( num == OBJECT_STATION      )  strcpy(text, "Power station");
-		if ( num == OBJECT_CONVERT      )  strcpy(text, "Converts ore to titanium");
-		if ( num == OBJECT_TOWER        )  strcpy(text, "Defense tower");
-		if ( num == OBJECT_NEST         )  strcpy(text, "Nest");
-		if ( num == OBJECT_RESEARCH     )  strcpy(text, "Research center");
-		if ( num == OBJECT_RADAR        )  strcpy(text, "Radar station");
-		if ( num == OBJECT_INFO         )  strcpy(text, "Information exchange post");
-#if _TEEN
-		if ( num == OBJECT_ENERGY       )  strcpy(text, "Power cell factory");
-#else
-		if ( num == OBJECT_ENERGY       )  strcpy(text, "Power cell factory");
-#endif
-		if ( num == OBJECT_LABO         )  strcpy(text, "Autolab");
-		if ( num == OBJECT_NUCLEAR      )  strcpy(text, "Nuclear power station");
-		if ( num == OBJECT_PARA         )  strcpy(text, "Lightning conductor");
-		if ( num == OBJECT_SAFE         )  strcpy(text, "Vault");
-		if ( num == OBJECT_HUSTON       )  strcpy(text, "Houston Mission Control");
-		if ( num == OBJECT_TARGET1      )  strcpy(text, "Target");
-		if ( num == OBJECT_TARGET2      )  strcpy(text, "Target");
-		if ( num == OBJECT_START        )  strcpy(text, "Start");
-		if ( num == OBJECT_END          )  strcpy(text, "Finish");
-		if ( num == OBJECT_STONE        )  strcpy(text, "Titanium ore");
-		if ( num == OBJECT_URANIUM      )  strcpy(text, "Uranium ore");
-		if ( num == OBJECT_BULLET       )  strcpy(text, "Organic matter");
-		if ( num == OBJECT_METAL        )  strcpy(text, "Titanium");
-		if ( num == OBJECT_POWER        )  strcpy(text, "Power cell");
-		if ( num == OBJECT_ATOMIC       )  strcpy(text, "Nuclear power cell");
-		if ( num == OBJECT_BBOX         )  strcpy(text, "Black box");
-		if ( num == OBJECT_KEYa         )  strcpy(text, "Key A");
-		if ( num == OBJECT_KEYb         )  strcpy(text, "Key B");
-		if ( num == OBJECT_KEYc         )  strcpy(text, "Key C");
-		if ( num == OBJECT_KEYd         )  strcpy(text, "Key D");
-		if ( num == OBJECT_TNT          )  strcpy(text, "Explosive");
-		if ( num == OBJECT_BOMB         )  strcpy(text, "Fixed mine");
-		if ( num == OBJECT_BAG          )  strcpy(text, "Survival kit");
-		if ( num == OBJECT_WAYPOINT     )  strcpy(text, "Checkpoint");
-		if ( num == OBJECT_FLAGb        )  strcpy(text, "Blue flag");
-		if ( num == OBJECT_FLAGr        )  strcpy(text, "Red flag");
-		if ( num == OBJECT_FLAGg        )  strcpy(text, "Green flag");
-		if ( num == OBJECT_FLAGy        )  strcpy(text, "Yellow flag");
-		if ( num == OBJECT_FLAGv        )  strcpy(text, "Violet flag");
-		if ( num == OBJECT_MARKPOWER    )  strcpy(text, "Energy deposit (site for power station)");
-		if ( num == OBJECT_MARKURANIUM  )  strcpy(text, "Uranium deposit (site for derrick)");
-		if ( num == OBJECT_MARKKEYa     )  strcpy(text, "Found key A (site for derrick)");
-		if ( num == OBJECT_MARKKEYb     )  strcpy(text, "Found key B (site for derrick)");
-		if ( num == OBJECT_MARKKEYc     )  strcpy(text, "Found key C (site for derrick)");
-		if ( num == OBJECT_MARKKEYd     )  strcpy(text, "Found key D (site for derrick)");
-		if ( num == OBJECT_MARKSTONE    )  strcpy(text, "Titanium deposit (site for derrick)");
-		if ( num == OBJECT_MOBILEft     )  strcpy(text, "Practice bot");
-		if ( num == OBJECT_MOBILEtt     )  strcpy(text, "Practice bot");
-		if ( num == OBJECT_MOBILEwt     )  strcpy(text, "Practice bot");
-		if ( num == OBJECT_MOBILEit     )  strcpy(text, "Practice bot");
-		if ( num == OBJECT_MOBILEfa     )  strcpy(text, "Winged grabber");
-		if ( num == OBJECT_MOBILEta     )  strcpy(text, "Tracked grabber");
-		if ( num == OBJECT_MOBILEwa     )  strcpy(text, "Wheeled grabber");
-		if ( num == OBJECT_MOBILEia     )  strcpy(text, "Legged grabber");
-		if ( num == OBJECT_MOBILEfc     )  strcpy(text, "Winged shooter");
-		if ( num == OBJECT_MOBILEtc     )  strcpy(text, "Tracked shooter");
-		if ( num == OBJECT_MOBILEwc     )  strcpy(text, "Wheeled shooter");
-		if ( num == OBJECT_MOBILEic     )  strcpy(text, "Legged shooter");
-		if ( num == OBJECT_MOBILEfi     )  strcpy(text, "Winged orga shooter");
-		if ( num == OBJECT_MOBILEti     )  strcpy(text, "Tracked orga shooter");
-		if ( num == OBJECT_MOBILEwi     )  strcpy(text, "Wheeled orga shooter");
-		if ( num == OBJECT_MOBILEii     )  strcpy(text, "Legged orga shooter");
-		if ( num == OBJECT_MOBILEfs     )  strcpy(text, "Winged sniffer");
-		if ( num == OBJECT_MOBILEts     )  strcpy(text, "Tracked sniffer");
-		if ( num == OBJECT_MOBILEws     )  strcpy(text, "Wheeled sniffer");
-		if ( num == OBJECT_MOBILEis     )  strcpy(text, "Legged sniffer");
-		if ( num == OBJECT_MOBILErt     )  strcpy(text, "Thumper");
-		if ( num == OBJECT_MOBILErc     )  strcpy(text, "Phazer shooter");
-		if ( num == OBJECT_MOBILErr     )  strcpy(text, "Recycler");
-		if ( num == OBJECT_MOBILErs     )  strcpy(text, "Shielder");
-		if ( num == OBJECT_MOBILEsa     )  strcpy(text, "Subber");
-		if ( num == OBJECT_MOBILEtg     )  strcpy(text, "Target bot");
-		if ( num == OBJECT_MOBILEdr     )  strcpy(text, "Drawer bot");
-		if ( num == OBJECT_HUMAN        )  strcpy(text, g_gamerName);
-		if ( num == OBJECT_TECH         )  strcpy(text, "Engineer");
-		if ( num == OBJECT_TOTO         )  strcpy(text, "Robbie");
-		if ( num == OBJECT_MOTHER       )  strcpy(text, "Alien Queen");
-		if ( num == OBJECT_ANT          )  strcpy(text, "Ant");
-		if ( num == OBJECT_SPIDER       )  strcpy(text, "Spider");
-		if ( num == OBJECT_BEE          )  strcpy(text, "Wasp");
-		if ( num == OBJECT_WORM         )  strcpy(text, "Worm");
-		if ( num == OBJECT_EGG          )  strcpy(text, "Egg");
-		if ( num == OBJECT_RUINmobilew1 )  strcpy(text, "Wreckage");
-		if ( num == OBJECT_RUINmobilew2 )  strcpy(text, "Wreckage");
-		if ( num == OBJECT_RUINmobilet1 )  strcpy(text, "Wreckage");
-		if ( num == OBJECT_RUINmobilet2 )  strcpy(text, "Wreckage");
-		if ( num == OBJECT_RUINmobiler1 )  strcpy(text, "Wreckage");
-		if ( num == OBJECT_RUINmobiler2 )  strcpy(text, "Wreckage");
-		if ( num == OBJECT_RUINfactory  )  strcpy(text, "Ruin");
-		if ( num == OBJECT_RUINdoor     )  strcpy(text, "Ruin");
-		if ( num == OBJECT_RUINsupport  )  strcpy(text, "Waste");
-		if ( num == OBJECT_RUINradar    )  strcpy(text, "Ruin");
-		if ( num == OBJECT_RUINconvert  )  strcpy(text, "Ruin");
-		if ( num == OBJECT_RUINbase     )  strcpy(text, "Spaceship ruin");
-		if ( num == OBJECT_RUINhead     )  strcpy(text, "Spaceship ruin");
-		if ( num == OBJECT_APOLLO1      ||
-			 num == OBJECT_APOLLO3      ||
-			 num == OBJECT_APOLLO4      ||
-			 num == OBJECT_APOLLO5      )  strcpy(text, "Remains of Apollo mission");
-		if ( num == OBJECT_APOLLO2      )  strcpy(text, "Lunar Roving Vehicle");
 	}
 
 	if ( type == RES_ERR )
 	{
 		strcpy(text, "Error");
 		if ( num == ERR_CMD             )  strcpy(text, "Unknown command");
-#if _NEWLOOK
-		if ( num == ERR_INSTALL         )  strcpy(text, "CeeBot not installed.");
-		if ( num == ERR_NOCD            )  strcpy(text, "Please insert the CeeBot CD\nand re-run the game.");
-#else
-		if ( num == ERR_INSTALL         )  strcpy(text, "COLOBOT not installed.");
-		if ( num == ERR_NOCD            )  strcpy(text, "Please insert the COLOBOT CD\nand re-run the game.");
-#endif
-		if ( num == ERR_MANIP_VEH       )  strcpy(text, "Inappropriate bot");
-		if ( num == ERR_MANIP_FLY       )  strcpy(text, "Impossible when flying");
-		if ( num == ERR_MANIP_BUSY      )  strcpy(text, "Already carrying something");
-		if ( num == ERR_MANIP_NIL       )  strcpy(text, "Nothing to grab");
-		if ( num == ERR_MANIP_MOTOR     )  strcpy(text, "Impossible when moving");
-		if ( num == ERR_MANIP_OCC       )  strcpy(text, "Place occupied");
-		if ( num == ERR_MANIP_FRIEND    )  strcpy(text, "No other robot");
-		if ( num == ERR_MANIP_RADIO     )  strcpy(text, "You can not carry a radioactive object");
-		if ( num == ERR_MANIP_WATER     )  strcpy(text, "You can not carry an object under water");
-		if ( num == ERR_MANIP_EMPTY     )  strcpy(text, "Nothing to drop");
-		if ( num == ERR_BUILD_FLY       )  strcpy(text, "Impossible when flying");
-		if ( num == ERR_BUILD_WATER     )  strcpy(text, "Impossible under water");
-		if ( num == ERR_BUILD_ENERGY    )  strcpy(text, "Not enough energy");
-		if ( num == ERR_BUILD_METALAWAY )  strcpy(text, "Titanium too far away");
-		if ( num == ERR_BUILD_METALNEAR )  strcpy(text, "Titanium too close");
-		if ( num == ERR_BUILD_METALINEX )  strcpy(text, "No titanium around");
-		if ( num == ERR_BUILD_FLAT      )  strcpy(text, "Ground not flat enough");
-		if ( num == ERR_BUILD_FLATLIT   )  strcpy(text, "Flat ground not large enough");
-		if ( num == ERR_BUILD_BUSY      )  strcpy(text, "Place occupied");
-		if ( num == ERR_BUILD_BASE      )  strcpy(text, "Too close to space ship");
-		if ( num == ERR_BUILD_NARROW    )  strcpy(text, "Too close to a building");
-		if ( num == ERR_BUILD_MOTOR     )  strcpy(text, "Impossible when moving");
-		if ( num == ERR_SEARCH_FLY      )  strcpy(text, "Impossible when flying");
-		if ( num == ERR_SEARCH_VEH      )  strcpy(text, "Inappropriate bot");
-		if ( num == ERR_SEARCH_MOTOR    )  strcpy(text, "Impossible when moving");
-		if ( num == ERR_TERRA_VEH       )  strcpy(text, "Inappropriate bot");
-		if ( num == ERR_TERRA_ENERGY    )  strcpy(text, "Not enough energy");
-		if ( num == ERR_TERRA_FLOOR     )  strcpy(text, "Ground inappropriate");
-		if ( num == ERR_TERRA_BUILDING  )  strcpy(text, "Building too close");
-		if ( num == ERR_TERRA_OBJECT    )  strcpy(text, "Object too close");
-		if ( num == ERR_RECOVER_VEH     )  strcpy(text, "Inappropriate bot");
-		if ( num == ERR_RECOVER_ENERGY  )  strcpy(text, "Not enough energy");
-		if ( num == ERR_RECOVER_NULL    )  strcpy(text, "Nothing to recycle");
-		if ( num == ERR_SHIELD_VEH      )  strcpy(text, "Inappropriate bot");
-		if ( num == ERR_SHIELD_ENERGY   )  strcpy(text, "No more energy");
+		if ( num == ERR_INSTALL         )  strcpy(text, "BuzzingCars has not been installed correctly.");
+		if ( num == ERR_NOCD            )  strcpy(text, "Please insert the BuzzingCars CD\nand re-run the game.");
 		if ( num == ERR_MOVE_IMPOSSIBLE )  strcpy(text, "Error in instruction move");
-		if ( num == ERR_FIND_IMPOSSIBLE )  strcpy(text, "Object not found");
-		if ( num == ERR_GOTO_IMPOSSIBLE )  strcpy(text, "Goto: inaccessible destination");
-		if ( num == ERR_GOTO_ITER       )  strcpy(text, "Goto: inaccessible destination");
+		if ( num == ERR_GOTO_IMPOSSIBLE )  strcpy(text, "Goto: destination inaccessible");
+		if ( num == ERR_GOTO_ITER       )  strcpy(text, "Goto: destination inaccessible");
 		if ( num == ERR_GOTO_BUSY       )  strcpy(text, "Goto: destination occupied");
-		if ( num == ERR_FIRE_VEH        )  strcpy(text, "Inappropriate bot");
+		if ( num == ERR_FIRE_VEH        )  strcpy(text, "Bot inappropriate");
 		if ( num == ERR_FIRE_ENERGY     )  strcpy(text, "Not enough energy");
-		if ( num == ERR_FIRE_FLY        )  strcpy(text, "Impossible when flying");
-		if ( num == ERR_CONVERT_EMPTY   )  strcpy(text, "No titanium ore to convert");
-		if ( num == ERR_DERRICK_NULL    )  strcpy(text, "No ore in the subsoil");
-		if ( num == ERR_STATION_NULL    )  strcpy(text, "No energy in the subsoil");
-		if ( num == ERR_TOWER_POWER     )  strcpy(text, "No power cell");
-		if ( num == ERR_TOWER_ENERGY    )  strcpy(text, "No more energy");
-		if ( num == ERR_RESEARCH_POWER  )  strcpy(text, "No power cell");
-		if ( num == ERR_RESEARCH_ENERGY )  strcpy(text, "Not enough energy");
-		if ( num == ERR_RESEARCH_TYPE   )  strcpy(text, "Inappropriate cell type");
-		if ( num == ERR_RESEARCH_ALREADY)  strcpy(text, "Research program already performed");
-		if ( num == ERR_ENERGY_NULL     )  strcpy(text, "No energy in the subsoil");
-		if ( num == ERR_ENERGY_LOW      )  strcpy(text, "Not enough energy yet");
-		if ( num == ERR_ENERGY_EMPTY    )  strcpy(text, "No titanium to transform");
-		if ( num == ERR_ENERGY_BAD      )  strcpy(text, "Transforms only titanium");
-		if ( num == ERR_BASE_DLOCK      )  strcpy(text, "Doors blocked by a robot or another object ");
-		if ( num == ERR_BASE_DHUMAN     )  strcpy(text, "You must get on the spaceship to take off ");
-		if ( num == ERR_LABO_NULL       )  strcpy(text, "Nothing to analyze");
-		if ( num == ERR_LABO_BAD        )  strcpy(text, "Analyzes only organic matter");
-		if ( num == ERR_LABO_ALREADY    )  strcpy(text, "Analysis already performed");
-		if ( num == ERR_NUCLEAR_NULL    )  strcpy(text, "No energy in the subsoil");
-		if ( num == ERR_NUCLEAR_LOW     )  strcpy(text, "Not yet enough energy");
-		if ( num == ERR_NUCLEAR_EMPTY   )  strcpy(text, "No uranium to transform");
-		if ( num == ERR_NUCLEAR_BAD     )  strcpy(text, "Transforms only uranium");
-		if ( num == ERR_FACTORY_NULL    )  strcpy(text, "No titanium");
-		if ( num == ERR_FACTORY_NEAR    )  strcpy(text, "Object too close");
-		if ( num == ERR_RESET_NEAR      )  strcpy(text, "Place occupied");
-		if ( num == ERR_INFO_NULL       )  strcpy(text, "No information exchange post within range");
-		if ( num == ERR_VEH_VIRUS       )  strcpy(text, "Program infected by a virus");
-		if ( num == ERR_BAT_VIRUS       )  strcpy(text, "Infected by a virus, temporarily out of order");
-		if ( num == ERR_VEH_POWER       )  strcpy(text, "No power cell");
-		if ( num == ERR_VEH_ENERGY      )  strcpy(text, "No more energy");
-		if ( num == ERR_FLAG_FLY        )  strcpy(text, "Impossible when flying");
-		if ( num == ERR_FLAG_WATER      )  strcpy(text, "Impossible when swimming");
-		if ( num == ERR_FLAG_MOTOR      )  strcpy(text, "Impossible when moving");
-		if ( num == ERR_FLAG_BUSY       )  strcpy(text, "Impossible when carrying an object");
-		if ( num == ERR_FLAG_CREATE     )  strcpy(text, "Too many flags of this color (maximum 5)");
-		if ( num == ERR_FLAG_PROXY      )  strcpy(text, "Too close to an existing flag");
-		if ( num == ERR_FLAG_DELETE     )  strcpy(text, "No flag nearby");
-		if ( num == ERR_MISSION_NOTERM  )  strcpy(text, "The mission is not accomplished yet (press \\key help; for more details)");
-		if ( num == ERR_DELETEMOBILE    )  strcpy(text, "Bot destroyed");
-		if ( num == ERR_DELETEBUILDING  )  strcpy(text, "Building destroyed");
-		if ( num == ERR_TOOMANY         )  strcpy(text, "Can not create this, there are too many objects");
-		if ( num == ERR_OBLIGATORYTOKEN )  strcpy(text, "\"%s\" missing in this exercise");  //**
-		if ( num == ERR_PROHIBITEDTOKEN )  strcpy(text, "Do not use in this exercise");  //**
+		if ( num == ERR_MISSION_NOTERM  )  strcpy(text, "The mission is not accomplished yet (push \\key help; for more details)");
 
-		if ( num == INFO_BUILD          )  strcpy(text, "Building completed");
-		if ( num == INFO_CONVERT        )  strcpy(text, "Titanium available");
-		if ( num == INFO_RESEARCH       )  strcpy(text, "Research program completed");
-		if ( num == INFO_RESEARCHTANK   )  strcpy(text, "Plans for tracked robots available ");
-		if ( num == INFO_RESEARCHFLY    )  strcpy(text, "You can fly with the keys (\\key gup;) and (\\key gdown;)");
-		if ( num == INFO_RESEARCHTHUMP  )  strcpy(text, "Plans for thumper available");
-		if ( num == INFO_RESEARCHCANON  )  strcpy(text, "Plans for shooter available");
-		if ( num == INFO_RESEARCHTOWER  )  strcpy(text, "Plans for defense tower available");
-		if ( num == INFO_RESEARCHPHAZER )  strcpy(text, "Plans for phazer shooter available");
-		if ( num == INFO_RESEARCHSHIELD )  strcpy(text, "Plans for shielder available");
-		if ( num == INFO_RESEARCHATOMIC )  strcpy(text, "Plans for nuclear power plant available");
-		if ( num == INFO_FACTORY        )  strcpy(text, "New bot available");
-		if ( num == INFO_LABO           )  strcpy(text, "Analysis performed");
-		if ( num == INFO_ENERGY         )  strcpy(text, "Power cell available");
-		if ( num == INFO_NUCLEAR        )  strcpy(text, "Nuclear power cell available");
-		if ( num == INFO_FINDING        )  strcpy(text, "You found a usable object");
-		if ( num == INFO_MARKPOWER      )  strcpy(text, "Found a site for power station");
-		if ( num == INFO_MARKURANIUM    )  strcpy(text, "Found a site for a derrick");
-		if ( num == INFO_MARKSTONE      )  strcpy(text, "Found a site for a derrick");
-		if ( num == INFO_MARKKEYa       )  strcpy(text, "Found a site for a derrick");
-		if ( num == INFO_MARKKEYb       )  strcpy(text, "Found a site for a derrick");
-		if ( num == INFO_MARKKEYc       )  strcpy(text, "Found a site for a derrick");
-		if ( num == INFO_MARKKEYd       )  strcpy(text, "Found a site for a derrick");
 		if ( num == INFO_WIN            )  strcpy(text, "<<< Well done, mission accomplished >>>");
 		if ( num == INFO_LOST           )  strcpy(text, "<<< Sorry, mission failed >>>");
 		if ( num == INFO_LOSTq          )  strcpy(text, "<<< Sorry, mission failed >>>");
-		if ( num == INFO_WRITEOK        )  strcpy(text, "Current mission saved");
-		if ( num == INFO_DELETEPATH     )  strcpy(text, "Checkpoint crossed");
-		if ( num == INFO_DELETEMOTHER   )  strcpy(text, "Alien Queen killed");
-		if ( num == INFO_DELETEANT      )  strcpy(text, "Ant fatally wounded");
-		if ( num == INFO_DELETEBEE      )  strcpy(text, "Wasp fatally wounded");
-		if ( num == INFO_DELETEWORM     )  strcpy(text, "Worm fatally wounded");
-		if ( num == INFO_DELETESPIDER   )  strcpy(text, "Spider fatally wounded");
-		if ( num == INFO_BEGINSATCOM    )  strcpy(text, "Press \\key help; to read instructions on your SatCom");
 	}
 
 	if ( type == RES_CBOT )
@@ -872,8 +507,8 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 		if ( num == TX_OVERPARAM     ) strcpy(text, "Too many parameters");
 		if ( num == TX_REDEF         ) strcpy(text, "Function already exists");
 		if ( num == TX_LOWPARAM      ) strcpy(text, "Parameters missing ");
-		if ( num == TX_BADPARAM      ) strcpy(text, "No function with this name accepts this kind of parameter");
-		if ( num == TX_NUMPARAM      ) strcpy(text, "No function with this name accepts this number of parameters");
+		if ( num == TX_BADPARAM      ) strcpy(text, "No function of this name accepts this kind of parameter");
+		if ( num == TX_NUMPARAM      ) strcpy(text, "No function of this name accepts this number of parameters");
 		if ( num == TX_NOITEM        ) strcpy(text, "This is not a member of this class");
 		if ( num == TX_DOT           ) strcpy(text, "This object is not a member of a class");
 		if ( num == TX_NOCONST       ) strcpy(text, "Appropriate constructor missing");
@@ -886,7 +521,7 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 		if ( num == TX_BADINDEX      ) strcpy(text, "Incorrect index type");
 		if ( num == TX_PRIVATE       ) strcpy(text, "Private element");
 		if ( num == TX_NOPUBLIC      ) strcpy(text, "Public required");
-		if ( num == TX_DIVZERO       ) strcpy(text, "Dividing by zero");
+		if ( num == TX_DIVZERO       ) strcpy(text, "Dividing through zero");
 		if ( num == TX_NOTINIT       ) strcpy(text, "Variable not initialized");
 		if ( num == TX_BADTHROW      ) strcpy(text, "Negative value rejected by ""throw""");//C'est quoi, ça?
 		if ( num == TX_NORETVAL      ) strcpy(text, "The function returned no value ");
@@ -907,8 +542,8 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 	if ( type == RES_KEY )
 	{
 		if ( num == 0                   )  strcpy(text, "< none >");
-		if ( num == VK_LEFT             )  strcpy(text, "Arrow left");
-		if ( num == VK_RIGHT            )  strcpy(text, "Arrow right");
+		if ( num == VK_LEFT             )  strcpy(text, "Left arrow");
+		if ( num == VK_RIGHT            )  strcpy(text, "Right arrow");
 		if ( num == VK_UP               )  strcpy(text, "Arrow up");
 		if ( num == VK_DOWN             )  strcpy(text, "Arrow down");
 		if ( num == VK_CANCEL           )  strcpy(text, "Control-break");
@@ -922,7 +557,7 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 		if ( num == VK_PAUSE            )  strcpy(text, "Pause");
 		if ( num == VK_CAPITAL          )  strcpy(text, "Caps Lock");
 		if ( num == VK_ESCAPE           )  strcpy(text, "Esc");
-		if ( num == VK_SPACE            )  strcpy(text, "Space");
+		if ( num == VK_SPACE            )  strcpy(text, "Space bar");
 		if ( num == VK_PRIOR            )  strcpy(text, "Page Up");
 		if ( num == VK_NEXT             )  strcpy(text, "Page Down");
 		if ( num == VK_END              )  strcpy(text, "End");
@@ -1019,151 +654,667 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 	}
 #endif
 
+#if _DEUTSCH
+	if ( type == RES_TEXT )
+	{
+		#if _FULL
+		if ( num == RT_VERSION_ID          )  strcpy(text, "1.3 /d");
+		#endif
+		#if _NET | _SCHOOL
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Ecole 1.3 /d");
+		#endif
+		#if _DEMO
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Demo 1.3 /d");
+		#endif
+		#if _SE
+		if ( num == RT_VERSION_ID          )  strcpy(text, "S-E 1.3 /d");
+		#endif
+		if ( num == RT_WINDOW_MAXIMIZED    )  strcpy(text, "Maximale Größe");
+		if ( num == RT_WINDOW_MINIMIZED    )  strcpy(text, "Reduzierte Größe");
+		if ( num == RT_WINDOW_STANDARD     )  strcpy(text, "Normale Größe");
+		if ( num == RT_WINDOW_CLOSE        )  strcpy(text, "Schließen");
+
+		if ( num == RT_NAME_DEFAULT        )  strcpy(text, "Spieler");
+		if ( num == RT_KEY_OR              )  strcpy(text, " oder ");
+
+#if _EGAMES
+		if ( num == RT_TITLE_BASE          )  strcpy(text, "Wild Wheels");
+		if ( num == RT_TITLE_INIT          )  strcpy(text, "Wild Wheels");
+#else
+		if ( num == RT_TITLE_BASE          )  strcpy(text, "BuzzingCars");
+		if ( num == RT_TITLE_INIT          )  strcpy(text, "BuzzingCars");
+#endif
+		if ( num == RT_TITLE_MISSION       )  strcpy(text, "Missionen");
+		if ( num == RT_TITLE_FREE          )  strcpy(text, "Freies Spiel");
+		if ( num == RT_TITLE_USER          )  strcpy(text, "Zusätzliche Level");
+		if ( num == RT_TITLE_PROTO         )  strcpy(text, "Prototypen");
+		if ( num == RT_TITLE_SETUP         )  strcpy(text, "Optionen");
+		if ( num == RT_TITLE_NAME          )  strcpy(text, "Name des Fahrers");
+		if ( num == RT_TITLE_PERSO         )  strcpy(text, "Wählen Sie ein Autos aus");
+
+		if ( num == RT_PLAY_LISTm          )  strcpy(text, " Wählen Sie eine Mission :");
+		if ( num == RT_PLAY_LISTf          )  strcpy(text, " Wählen Sie eine Rennstrecke :");
+		if ( num == RT_PLAY_LISTu          )  strcpy(text, " Zusätzliche Rennstrecken :");
+		if ( num == RT_PLAY_LISTp          )  strcpy(text, " Prototypen :");
+		if ( num == RT_PLAY_PESETAS        )  strcpy(text, " Ihr Kontostand :");
+		if ( num == RT_PLAY_PCREDIT        )  strcpy(text, "Ihre Ersparnisse");
+		if ( num == RT_PLAY_PMISSION       )  strcpy(text, "Max Gewinn");
+		if ( num == RT_PLAY_PNEXT          )  strcpy(text, "Nächste Spielstufe");
+
+		if ( num == RT_SETUP_DEVICE        )  strcpy(text, " Display-Driver :");
+		if ( num == RT_SETUP_MODE          )  strcpy(text, " Auflösung :");
+		if ( num == RT_SETUP_KEY1          )  strcpy(text, "1) Klicken Sie auf den neu zu belegenden Befehl.");
+		if ( num == RT_SETUP_KEY2          )  strcpy(text, "2) Drücken Sie auf die Taste, die benutzt werden soll.");
+
+		if ( num == RT_PERSO_LIST          )  strcpy(text, "Fahrerliste :");
+		if ( num == RT_PERSO_LEVEL         )  strcpy(text, "Spielstärke :");
+		if ( num == RT_PERSO_BUY           )  strcpy(text, "Kaufen");
+
+#if _EGAMES
+		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "Wild Wheels");
+#else
+		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "BuzzingCars");
+#endif
+		if ( num == RT_DIALOG_ABORT        )  strcpy(text, "Mission beenden ?");
+#if _EGAMES
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Wollen Sie Wild Wheels verlassen ?");
+#else
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Wollen Sie BuzzingCars verlassen ?");
+#endif
+		if ( num == RT_DIALOG_YES          )  strcpy(text, "Aufgeben\\Mission aufgeben");
+		if ( num == RT_DIALOG_NO           )  strcpy(text, "Weiterspielen\\Mission weiterspielen");
+#if _EGAMES
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Beenden\\Wild Wheels beenden");
+#else
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Beenden\\BuzzingCars beenden");
+#endif
+		if ( num == RT_DIALOG_NOQUIT       )  strcpy(text, "Weiter spielen\\Weiter spielen");
+		if ( num == RT_DIALOG_DELGAME      )  strcpy(text, "Wollen Sie den Spielstand von %s löschen ?");
+		if ( num == RT_DIALOG_DELFILE      )  strcpy(text, "Wollen Sie die Datei %s löschen ?");
+		if ( num == RT_DIALOG_YESDEL       )  strcpy(text, "Löschen");
+		if ( num == RT_DIALOG_NODEL        )  strcpy(text, "Abbrechen");
+		if ( num == RT_DIALOG_NEWGAME      )  strcpy(text, "Neuer Fahrer :");
+		if ( num == RT_DIALOG_YESNEW       )  strcpy(text, "OK");
+		if ( num == RT_DIALOG_NONEW        )  strcpy(text, "Abbrechen");
+		if ( num == RT_DIALOG_YESKID       )  strcpy(text, "Ja");
+		if ( num == RT_DIALOG_NOKID        )  strcpy(text, "Nein");
+		if ( num == RT_DIALOG_LOADING      )  strcpy(text, "Spiel wird geladen");
+
+		if ( num == RT_WIN_TIME            )  strcpy(text, "Zeit");
+		if ( num == RT_WIN_SOLID           )  strcpy(text, "Zustand des Autos");
+		if ( num == RT_WIN_CONE            )  strcpy(text, "Beachtung der Gegenstände");
+		if ( num == RT_WIN_POINTS          )  strcpy(text, "Krediteinheiten");
+		if ( num == RT_WIN_BONUS           )  strcpy(text, "Zeitbonus");
+		if ( num == RT_WIN_ARRAY           )  strcpy(text, "Beste Zeiten :");
+		if ( num == RT_WIN_HEADERm         )  strcpy(text, "\t  Auto\tFahrer\tZeit\tKred.");
+		if ( num == RT_WIN_HEADERf         )  strcpy(text, "\t  Auto\tFahrer\tZeit\t");
+
+		if ( num == RT_START_READY         )  strcpy(text, "Fertig ?");
+		if ( num == RT_START_QUICK         )  strcpy(text, "3, 2, 1  ...  fertig ?");
+		if ( num == RT_START_123           )  strcpy(text, "%d ...");
+		if ( num == RT_START_GO            )  strcpy(text, "LOS !");
+		if ( num == RT_START_REMOTE        )  strcpy(text, "Steuern Sie Ihr Auto");
+
+		if ( num == RT_RECORD_GALL         )  strcpy(text, "Streckenrekord (-%.2f) !");
+		if ( num == RT_RECORD_GONE         )  strcpy(text, "Rundenrekord (-%.2f) !");
+		if ( num == RT_RECORD_LONE         )  strcpy(text, "Beste Runde (-%.2f) !");
+		if ( num == RT_RECORD_QALL         )  strcpy(text, "> Streckenrekord <");
+		if ( num == RT_RECORD_QONE         )  strcpy(text, "> Rundenrekord <");
+		if ( num == RT_RACE_LAP4           )  strcpy(text, "Noch 4 Runden");
+		if ( num == RT_RACE_LAP3           )  strcpy(text, "Noch 3 Runden");
+		if ( num == RT_RACE_LAP2           )  strcpy(text, "Noch 2 Runden");
+		if ( num == RT_RACE_LAP1           )  strcpy(text, "Letzte Runde");
+		if ( num == RT_DUEL_WIN            )  strcpy(text, "Phantomauto besiegt (-%.2f) !");
+		if ( num == RT_DUEL_LOST           )  strcpy(text, "Zu langsam (+%.2f) !");
+
+		if ( num == RT_SPEC_MINSPEED       )  strcpy(text, "Auto zu langsam !");
+		if ( num == RT_SPEC_MAXSPEED       )  strcpy(text, "Auto zu schnell !");
+		if ( num == RT_SPEC_DEMO           )  strcpy(text, "In der Demo-Version nicht verfügbar !");
+		if ( num == RT_SPEC_DISPO          )  strcpy(text, "In der Demo-Version nicht verfügbar !");
+
+		if ( num == RT_MOTOR_REAR          )  strcpy(text, "R");
+		if ( num == RT_MOTOR_NEUTRAL       )  strcpy(text, "N");
+		if ( num == RT_MOTOR_S1            )  strcpy(text, "1");
+		if ( num == RT_MOTOR_S2            )  strcpy(text, "2");
+		if ( num == RT_MOTOR_S3            )  strcpy(text, "3");
+
+		if ( num == RT_IO_LIST             )  strcpy(text, "Liste der Duelle :");
+		if ( num == RT_IO_NAME             )  strcpy(text, "Name der Datei :");
+		if ( num == RT_IO_HEADER           )  strcpy(text, "Datei\tMission\tAuto\tFahrer\tZeit");
+#if _EGAMES
+		if ( num == RT_IO_RINFO            )  strcpy(text, "Sie können neue Duelle bei www.epsitec.ch/wildwheels herunterladen");
+#else
+		if ( num == RT_IO_RINFO            )  strcpy(text, "Sie können neue Duelle bei www.ceebot.com herunterladen");
+#endif
+
+#if _EGAMES
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "Entwickelt von EPSITEC");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "Published by eGames, Inc.");
+#else
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "www.ceebot.com");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "Entwickelt von EPSITEC");
+#endif
+#if _EGAMES
+		if ( num == RT_GENERIC_DEMO1       )  strcpy(text, "Sie haben mit der DEMO-Version von Wild Wheels gespielt.");
+		if ( num == RT_GENERIC_DEMO2       )  strcpy(text, "Die Vollversion ist ab sofort erhältlich ...");
+		if ( num == RT_GENERIC_DEMO3       )  strcpy(text, "... sie enthält 28 spannende Missionen und 9 Rennstrecken ...");
+		if ( num == RT_GENERIC_DEMO4       )  strcpy(text, "... sowie einen \"Duell\" Modus.");
+		if ( num == RT_GENERIC_DEMO5       )  strcpy(text, "Mehr Details auf www.epsitec.ch/wildwheels !");
+#else
+		if ( num == RT_GENERIC_DEMO1       )  strcpy(text, "Sie haben mit der DEMO-Version von BuzzingCars gespielt.");
+		if ( num == RT_GENERIC_DEMO2       )  strcpy(text, "Die Vollversion ist ab sofort erhältlich ...");
+		if ( num == RT_GENERIC_DEMO3       )  strcpy(text, "... sie enthält 28 spannende Missionen und 9 Rennstrecken ...");
+		if ( num == RT_GENERIC_DEMO4       )  strcpy(text, "... sowie einen \"Duell\" Modus.");
+		if ( num == RT_GENERIC_DEMO5       )  strcpy(text, "Mehr Details auf www.ceebot.com !");
+#endif
+	}
+
+	if ( type == RES_EVENT )
+	{
+		if ( num == EVENT_BUTTON_OK        )  strcpy(text, "OK");
+		if ( num == EVENT_BUTTON_CANCEL    )  strcpy(text, "Abbrechen");
+		if ( num == EVENT_BUTTON_NEXT      )  strcpy(text, "Weiter");
+		if ( num == EVENT_BUTTON_PREV      )  strcpy(text, "Zurück");
+		if ( num == EVENT_BUTTON_QUIT      )  strcpy(text, "Menü (\\key quit;)");
+		if ( num == EVENT_BUTTON_CAMERA    )  strcpy(text, "Kamera (\\key camera;)");
+		if ( num == EVENT_BUTTON_HELP      )  strcpy(text, "Hilfe (\\key help;)");
+		if ( num == EVENT_BUTTON_BRAKE     )  strcpy(text, "Handbremse (\\key brake;)");
+		if ( num == EVENT_BUTTON_HORN      )  strcpy(text, "Hupe (\\key horn;)");
+		if ( num == EVENT_BONUS            )  strcpy(text, "Zeitbonus");
+		if ( num == EVENT_TIME             )  strcpy(text, "Zeit");
+		if ( num == EVENT_PROGRESS         )  strcpy(text, "Fo rtschritt");
+
+		if ( num == EVENT_DIALOG_OK        )  strcpy(text, "OK");
+		if ( num == EVENT_DIALOG_CANCEL    )  strcpy(text, "Abbrechen");
+
+		if ( num == EVENT_INTERFACE_MISSION)  strcpy(text, "Missionen\\Wählen Sie eine Mission");
+		if ( num == EVENT_INTERFACE_FREE   )  strcpy(text, "Freie Rennen\\Rennen außerhalb der Missionen");
+		if ( num == EVENT_INTERFACE_USER   )  strcpy(text, "Benutzerlevel\\Benutzerlevel");
+		if ( num == EVENT_INTERFACE_PROTO  )  strcpy(text, "Proto\\Prototypen");
+		if ( num == EVENT_INTERFACE_DUEL   )  strcpy(text, "Duelle\\Duelle gegen Phantomautos");
+		if ( num == EVENT_INTERFACE_NAME   )  strcpy(text, "Neuer Fahrer\\Neuen Fahrer auswählen");
+		if ( num == EVENT_INTERFACE_SETUP  )  strcpy(text, "Einstellungen\\Sämtliche Einstellungen für das Spiel");
+		if ( num == EVENT_INTERFACE_AGAIN  )  strcpy(text, "Neustart\\Mission von vorne nocheinmal anfangen");
+		if ( num == EVENT_INTERFACE_SAVE   )  strcpy(text, "Speichern\\Duell Speichern");
+#if _EGAMES
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Zu Wild Wheels zurückkehren");
+#else
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Zu BuzzingCars zurückkehren");
+#endif
+		if ( num == EVENT_INTERFACE_PREV   )  strcpy(text, "\\Vorhergehender Bildschirm");
+		if ( num == EVENT_INTERFACE_NEXT   )  strcpy(text, "\\Nächster Bildschirm");
+#if _EGAMES
+		if ( num == EVENT_INTERFACE_EXIT   )  strcpy(text, "\\Wild Wheels verlassen");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Beenden\\Wild Wheels beenden");
+#else
+		if ( num == EVENT_INTERFACE_EXIT   )  strcpy(text, "\\BuzzingCars verlassen");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Beenden\\BuzzingCars beenden");
+#endif
+		if ( num == EVENT_INTERFACE_BACK   )  strcpy(text, "Abbrechen\\Zurück zum Hauptmenü");
+		if ( num == EVENT_INTERFACE_TERM   )  strcpy(text, "Menu\\Zurück zum Hauptmenu");
+		if ( num == EVENT_INTERFACE_PLAY   )  strcpy(text, "Spielen ...\\Ausgewählte Mission jetzt spielen");
+		if ( num == EVENT_INTERFACE_GHOSTm )  strcpy(text, "Bestes Phantomauto zeigen\\Zeigt das Phantomauto mit der besten Zeit");
+		if ( num == EVENT_INTERFACE_OK     )  strcpy(text, "OK\\Zurück zum vorhergehenden Bildschirm");
+
+		if ( num == EVENT_INTERFACE_WOK    )  strcpy(text, "Duell speichern\\Speichert das Duell in der ausgewählten Datei");
+		if ( num == EVENT_INTERFACE_WCANCEL)  strcpy(text, "Abbrechen\\Zurück zum vorhergehenden Bildschirm");
+		if ( num == EVENT_INTERFACE_ROK    )  strcpy(text, "Duell starten\\Startet das ausgewählte Duell");
+		if ( num == EVENT_INTERFACE_RCANCEL)  strcpy(text, "Abbrechen\\Zurück zum vorhergehenden Bildschirm");
+
+		if ( num == EVENT_INTERFACE_SETUPd )  strcpy(text, "3D-Karte\\Treiber und 3D-Einstellungen");
+		if ( num == EVENT_INTERFACE_SETUPg )  strcpy(text, "Grafik\\Grafikoptionen");
+		if ( num == EVENT_INTERFACE_SETUPp )  strcpy(text, "Spiel\\Spieleinstellungen");
+		if ( num == EVENT_INTERFACE_SETUPc )  strcpy(text, "Steuerung\\Einstellungen für Taststur u. Steuergeräte");
+		if ( num == EVENT_INTERFACE_SETUPs )  strcpy(text, "Sound\\Soundeinstellungen");
+		if ( num == EVENT_INTERFACE_RESOL  )  strcpy(text, "Auflösung");
+		if ( num == EVENT_INTERFACE_FULL   )  strcpy(text, "Vollbildschirm\\Vollbildschirmmodus oder Fenstermodus");
+		if ( num == EVENT_INTERFACE_APPLY  )  strcpy(text, "Änderungen übernehmen\\Übernimmt die vorgenommennen Änderrungen");
+
+		if ( num == EVENT_INTERFACE_SHADOW )  strcpy(text, "Schatten\\Schatten");
+		if ( num == EVENT_INTERFACE_DIRTY  )  strcpy(text, "Schmutz\\Schmutz auf Autos und Gebäuden");
+		if ( num == EVENT_INTERFACE_FOG    )  strcpy(text, "Nebel\\Nebel");
+		if ( num == EVENT_INTERFACE_LENS   )  strcpy(text, "Sonnenstrahlen\\Sonnenstrahlen je nach Blickrichtung");
+		if ( num == EVENT_INTERFACE_SKY    )  strcpy(text, "Himmel und Wolken\\Himmel und Wolken");
+		if ( num == EVENT_INTERFACE_PLANET )  strcpy(text, "Planeten und Sterne\\Planeten und Sterne");
+		if ( num == EVENT_INTERFACE_LIGHT  )  strcpy(text, "Bewegliche Lichtquellen\\Benutzt bewegliche Lichtquellen");
+		if ( num == EVENT_INTERFACE_PARTI  )  strcpy(text, "Anzahl Partikel\\Partikel für Exlosionen, Staub usw.");
+		if ( num == EVENT_INTERFACE_WHEEL  )  strcpy(text, "Reifenspuren\\Ihr Auto hinterläßt Reinfenspuren");
+		if ( num == EVENT_INTERFACE_CLIP   )  strcpy(text, "Sichtweite\\Maximale Sichtweite");
+		if ( num == EVENT_INTERFACE_DETAIL )  strcpy(text, "Details\\Grafikqualität der 3D-Objekte");
+		if ( num == EVENT_INTERFACE_TEXTURE)  strcpy(text, "Texturen\\Grafikqualität der Texturen");
+		if ( num == EVENT_INTERFACE_GADGET )  strcpy(text, "Anzahl dekorativer Gegenstände\\Anzahl dekorativer Gegenstände");
+		if ( num == EVENT_INTERFACE_RAIN   )  strcpy(text, "Funkenregen\\Funkenregen in der Benutzeroberfläche");
+		if ( num == EVENT_INTERFACE_GLINT  )  strcpy(text, "Funkelnde Schaltflächen\\Funkelnde Schaltflächen");
+		if ( num == EVENT_INTERFACE_TOOLTIP)  strcpy(text, "Hilfsblasen\\Hilfsblasen");
+		if ( num == EVENT_INTERFACE_MOVIES )  strcpy(text, "Filmsequenzen\\Filme vor oder nach den Missionen");
+		if ( num == EVENT_INTERFACE_CBACK  )  strcpy(text, "Kamera hinten\\Die Kamera befindet sich hinter dem Auto");
+		if ( num == EVENT_INTERFACE_CBOARD )  strcpy(text, "Kamera auf der Motorhaube\\Die Kamera befindet sich auf der Motorhaube");
+		if ( num == EVENT_INTERFACE_EFFECT )  strcpy(text, "Erdbeben bei Explosionen\\Der Bildschirm wackelt bei Explosionen");
+		if ( num == EVENT_INTERFACE_FLASH  )  strcpy(text, "Blitz bei Zusammenstößen\\Der Bildschirm blitzt bei Zusammenstößen kurz auf");
+		if ( num == EVENT_INTERFACE_BLAST  )  strcpy(text, "Motor kann explodieren\\Der Motor explodiert bei zu hohen Drehzahlen vor dem Start");
+		if ( num == EVENT_INTERFACE_MOUSE  )  strcpy(text, "Mauszeiger mit Schatten\\Mauszeiger mit Schatten");
+
+		if ( num == EVENT_INTERFACE_KDEF   )  strcpy(text, "Standardeinstellungen\\Benutzt wieder die Standardeinstellungen für die Steuerung");
+		if ( num == EVENT_INTERFACE_KLEFT  )  strcpy(text, "Nach links\\Dreht das Lenkrad nach links");
+		if ( num == EVENT_INTERFACE_KRIGHT )  strcpy(text, "Nach rechts\\Dreht das Lenkrad nach rechts");
+		if ( num == EVENT_INTERFACE_KUP    )  strcpy(text, "Gas\\Gaspedal");
+		if ( num == EVENT_INTERFACE_KDOWN  )  strcpy(text, "Bremse und Rückwärtsgang\\Bremse und Rückwärtsgang");
+		if ( num == EVENT_INTERFACE_KBRAKE )  strcpy(text, "Handbremse\\Handbremse");
+		if ( num == EVENT_INTERFACE_KHORN  )  strcpy(text, "Hupe\\Hupe");
+		if ( num == EVENT_INTERFACE_KCAMERA)  strcpy(text, "Kamerawechsel\\Wechselt den Standpunkt der Kamera");
+		if ( num == EVENT_INTERFACE_KQUIT  )  strcpy(text, "Aktuelle Mission beenden\\Aktuelle Mission beenden");
+		if ( num == EVENT_INTERFACE_KHELP  )  strcpy(text, "Anweisungen\\Anweisungen für die Mission");
+
+		if ( num == EVENT_INTERFACE_VOLSOUND) strcpy(text, "Geräuscheffekte :\\Lautstärke sämtlicher Geräuscheffekte");
+		if ( num == EVENT_INTERFACE_VOLMUSIC) strcpy(text, "Hintergrundmusik :\\Lautstärke der Hintergrundmusik");
+		if ( num == EVENT_INTERFACE_SOUND3D)  strcpy(text, "3D-Sound\\3D-Sound");
+		if ( num == EVENT_INTERFACE_COMMENTS) strcpy(text, "Stimme des Kommentators\\Diverse Kommentare bei Rennen");
+
+		if ( num == EVENT_INTERFACE_MIN    )  strcpy(text, "Mini\\Minimale Grafikqualität (schneller)");
+		if ( num == EVENT_INTERFACE_NORM   )  strcpy(text, "Normal\\Standard Grafikqualität");
+		if ( num == EVENT_INTERFACE_MAX    )  strcpy(text, "Maxi\\Höchste Grafikqualität (langsamer)");
+
+		if ( num == EVENT_INTERFACE_SILENT )  strcpy(text, "Ruhe\\Keinerlei Geräusche mehr");
+		if ( num == EVENT_INTERFACE_NOISY  )  strcpy(text, "Normal\\Normale Laustärke");
+
+		if ( num == EVENT_INTERFACE_STEERING) strcpy(text, "Joystick oder Lenkrad benutzen\\Joystick oder Lenkrad benutzen");
+		if ( num == EVENT_INTERFACE_JOYPAD  ) strcpy(text, "Gamepad benutzen\\Gamepad benutzen");
+		if ( num == EVENT_INTERFACE_FFBc    ) strcpy(text, "Force Feedback\\Benutzt Force Feedback Effekte");
+		if ( num == EVENT_INTERFACE_FFBs    ) strcpy(text, "\\Feedbackstärke");
+
+		if ( num == EVENT_INTERFACE_NEDIT  )  strcpy(text, "\\Name des Fahrers");
+		if ( num == EVENT_INTERFACE_NOK    )  strcpy(text, "Auswählen\\Wählt den Fahrer in der Liste aus");
+		if ( num == EVENT_INTERFACE_NCREATE)  strcpy(text, "Neu\\Erstellt einen neuen Fahrer");
+		if ( num == EVENT_INTERFACE_NDELETE)  strcpy(text, "Löschen\\Löscht einen Fahrer in der Liste");
+
+		if ( num == EVENT_INTERFACE_LEVEL1 )  strcpy(text, "Kid\\Für Kinder und Sonntagsfahrer");
+		if ( num == EVENT_INTERFACE_LEVEL2 )  strcpy(text, "Cool\\Einfach");
+		if ( num == EVENT_INTERFACE_LEVEL3 )  strcpy(text, "Hart\\Mittelschwer");
+		if ( num == EVENT_INTERFACE_LEVEL4 )  strcpy(text, "Raser\\Echt schwer");
+
+		if ( num == EVENT_INTERFACE_POK    )  strcpy(text, "Benutzen\\Mit diesem Auto losfahren");
+		if ( num == EVENT_INTERFACE_PNEXT  )  strcpy(text, "Zurück >\\Nächstes Auto");
+		if ( num == EVENT_INTERFACE_PPREV  )  strcpy(text, "< Weiter\\Vorhergehendes Auto");
+		if ( num == EVENT_INTERFACE_PGSPEED)  strcpy(text, "Geschwindigkeit\\");
+		if ( num == EVENT_INTERFACE_PGACCEL)  strcpy(text, "Beschleunigung\\");
+		if ( num == EVENT_INTERFACE_PGGRIP )  strcpy(text, "Straßenlage\\");
+		if ( num == EVENT_INTERFACE_PGSOLID)  strcpy(text, "Robustheit\\");
+		if ( num == EVENT_INTERFACE_PPRICE )  strcpy(text, "%s (Preis: %d Krediteinheiten)");
+		if ( num == EVENT_INTERFACE_PPESETAS) strcpy(text, "Ihre Ersparnisse: %d Krediteinheiten");
+		if ( num == EVENT_INTERFACE_PSUBMOD0) strcpy(text, "A\\Verzierung");
+		if ( num == EVENT_INTERFACE_PSUBMOD1) strcpy(text, "B\\Verzierung");
+		if ( num == EVENT_INTERFACE_PSUBMOD2) strcpy(text, "C\\Verzierung");
+		if ( num == EVENT_INTERFACE_PSUBMOD3) strcpy(text, "D\\Verzierung");
+		if ( num >= EVENT_INTERFACE_PCOLOR0 &&
+			 num <= EVENT_INTERFACE_PCOLOR19) strcpy(text, "\\Ändert die Farbe");
+
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Niveau du bouclier");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "Température du réacteur");
+		if ( num == EVENT_OBJECT_GPROGRESS )  strcpy(text, "Travail en cours ...");
+		if ( num == EVENT_OBJECT_GSPEED    )  strcpy(text, "Tacho");
+		if ( num == EVENT_OBJECT_GRPM      )  strcpy(text, "Tourenzöhler");
+		if ( num == EVENT_OBJECT_GMOTOR    )  strcpy(text, "\\Eingelegter Gang");
+		if ( num == EVENT_OBJECT_GCOMPASS  )  strcpy(text, "Kompass");
+		if ( num == EVENT_OBJECT_GGEIGER   )  strcpy(text, "Geigerzöhler");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "Fahrzeugzustand");
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Reifenzustand");
+//?		if ( num == EVENT_OBJECT_MAP       )  strcpy(text, "Mini-carte");
+		if ( num == EVENT_OBJECT_MAPZOOM   )  strcpy(text, "Zoom Mini-Karte");
+		if ( num == EVENT_CMD              )  strcpy(text, "Befehlskonsole");
+		if ( num == EVENT_SPEED            )  strcpy(text, "Spielgeschwindigkeit");
+	}
+
+	if ( type == RES_ERR )
+	{
+		strcpy(text, "Erreur");
+		if ( num == ERR_CMD             )  strcpy(text, "Unbekannter Befehl");
+		if ( num == ERR_INSTALL         )  strcpy(text, "BuzzingCars ist nicht korrekt installiert worden.");
+		if ( num == ERR_NOCD            )  strcpy(text, "Fügen Sie die BuzzingCars CD-Rom\nin das Laufwerk ein und starten\nSie das Spiel erneut.");
+		if ( num == ERR_MOVE_IMPOSSIBLE )  strcpy(text, "Bewegung nicht möglich");
+		if ( num == ERR_GOTO_IMPOSSIBLE )  strcpy(text, "Weg kann nicht gefunden werden");
+		if ( num == ERR_GOTO_ITER       )  strcpy(text, "Position nicht erreichbar");
+		if ( num == ERR_GOTO_BUSY       )  strcpy(text, "Position schon besetzt");
+		if ( num == ERR_FIRE_VEH        )  strcpy(text, "Roboter nicht geeignet");
+		if ( num == ERR_FIRE_ENERGY     )  strcpy(text, "Nicht genügend Energie");
+		if ( num == ERR_MISSION_NOTERM  )  strcpy(text, "Die Mission ist noch nicht beendet (drücken Sie auf \\key help; für mehr Details)");
+
+		if ( num == INFO_WIN            )  strcpy(text, "<<< Bravo, Mission erfolgreich beendet >>>");
+		if ( num == INFO_LOST           )  strcpy(text, "<<< Tut mir Leid, Sie haben versagt >>>");
+		if ( num == INFO_LOSTq          )  strcpy(text, "<<< Tut mir Leid, Sie haben versagt >>>");
+	}
+
+	if ( type == RES_CBOT )
+	{
+		strcpy(text, "Erreur");
+		if ( num == TX_OPENPAR       ) strcpy(text, "Il manque une parenthèse ouvrante");
+		if ( num == TX_CLOSEPAR      ) strcpy(text, "Il manque une parenthèse fermante");
+		if ( num == TX_NOTBOOL       ) strcpy(text, "L'expression doit être un boolean");
+		if ( num == TX_UNDEFVAR      ) strcpy(text, "Variable non déclarée");
+		if ( num == TX_BADLEFT       ) strcpy(text, "Assignation impossible");
+		if ( num == TX_ENDOF         ) strcpy(text, "Terminateur point-virgule non trouvé");
+		if ( num == TX_OUTCASE       ) strcpy(text, "Instruction ""case"" hors d'un bloc ""switch""");
+		if ( num == TX_NOTERM        ) strcpy(text, "Instructions après la fin");
+		if ( num == TX_CLOSEBLK      ) strcpy(text, "Il manque la fin du bloc");
+		if ( num == TX_ELSEWITHOUTIF ) strcpy(text, "Instruction ""else"" sans ""if"" correspondant");
+		if ( num == TX_OPENBLK       ) strcpy(text, "Début d'un bloc attendu");
+		if ( num == TX_BADTYPE       ) strcpy(text, "Mauvais type de résultat pour l'assignation");
+		if ( num == TX_REDEFVAR      ) strcpy(text, "Redéfinition d'une variable");
+		if ( num == TX_BAD2TYPE      ) strcpy(text, "Les deux opérandes ne sont pas de types compatibles");
+		if ( num == TX_UNDEFCALL     ) strcpy(text, "Routine inconnue");
+		if ( num == TX_MISDOTS       ) strcpy(text, "Séparateur "" : "" attendu");
+		if ( num == TX_WHILE         ) strcpy(text, "Manque le mot ""while""");
+		if ( num == TX_BREAK         ) strcpy(text, "Instruction ""break"" en dehors d'une boucle");
+		if ( num == TX_LABEL         ) strcpy(text, "Un label ne peut se placer que devant un ""for"", un ""while"", un ""do"" ou un ""switch""");
+		if ( num == TX_NOLABEL       ) strcpy(text, "Cette étiquette n'existe pas");
+		if ( num == TX_NOCASE        ) strcpy(text, "Manque une instruction ""case""");
+		if ( num == TX_BADNUM        ) strcpy(text, "Un nombre est attendu");
+		if ( num == TX_VOID          ) strcpy(text, "Paramètre void");
+		if ( num == TX_NOTYP         ) strcpy(text, "Déclaration de type attendu");
+		if ( num == TX_NOVAR         ) strcpy(text, "Nom d'une variable attendu");
+		if ( num == TX_NOFONC        ) strcpy(text, "Nom de la fonction attendu");
+		if ( num == TX_OVERPARAM     ) strcpy(text, "Trop de paramètres");
+		if ( num == TX_REDEF         ) strcpy(text, "Cette fonction existe déjà");
+		if ( num == TX_LOWPARAM      ) strcpy(text, "Pas assez de paramètres");
+		if ( num == TX_BADPARAM      ) strcpy(text, "Aucune fonction de ce nom n'accepte ce(s) type(s) de paramètre(s)");
+		if ( num == TX_NUMPARAM      ) strcpy(text, "Aucune fonction de ce nom n'accepte ce nombre de paramètres");
+		if ( num == TX_NOITEM        ) strcpy(text, "Cet élément n'existe pas dans cette classe");
+		if ( num == TX_DOT           ) strcpy(text, "L'objet n'est pas une instance d'une classe");
+		if ( num == TX_NOCONST       ) strcpy(text, "Il n'y a pas de constructeur approprié");
+		if ( num == TX_REDEFCLASS    ) strcpy(text, "Cette classe existe déjà");
+		if ( num == TX_CLBRK         ) strcpy(text, """ ] "" attendu");
+		if ( num == TX_RESERVED      ) strcpy(text, "Ce mot est réservé");
+		if ( num == TX_BADNEW        ) strcpy(text, "Mauvais argument pour ""new""");
+		if ( num == TX_OPBRK         ) strcpy(text, """ [ "" attendu");
+		if ( num == TX_BADSTRING     ) strcpy(text, "Une chaîne de caractère est attendue");
+		if ( num == TX_BADINDEX      ) strcpy(text, "Mauvais type d'index");
+		if ( num == TX_PRIVATE       ) strcpy(text, "Elément protégé");
+		if ( num == TX_NOPUBLIC      ) strcpy(text, "Public requis");
+		if ( num == TX_DIVZERO       ) strcpy(text, "Division par zéro");
+		if ( num == TX_NOTINIT       ) strcpy(text, "Variable non initialisée");
+		if ( num == TX_BADTHROW      ) strcpy(text, "Valeur négative refusée pour ""throw""");
+		if ( num == TX_NORETVAL      ) strcpy(text, "La fonction n'a pas retourné de résultat");
+		if ( num == TX_NORUN         ) strcpy(text, "Pas de fonction en exécution");
+		if ( num == TX_NOCALL        ) strcpy(text, "Appel d'une fonction inexistante");
+		if ( num == TX_NOCLASS       ) strcpy(text, "Cette classe n'existe pas");
+		if ( num == TX_NULLPT        ) strcpy(text, "Objet n'existe pas");
+		if ( num == TX_OPNAN         ) strcpy(text, "Opération sur un ""nan""");
+		if ( num == TX_OUTARRAY      ) strcpy(text, "Accès hors du tableau");
+		if ( num == TX_STACKOVER     ) strcpy(text, "Débordement de la pile");
+		if ( num == TX_DELETEDPT     ) strcpy(text, "Objet inaccessible");
+		if ( num == TX_FILEOPEN      ) strcpy(text, "Ouverture du fichier impossible");
+		if ( num == TX_NOTOPEN       ) strcpy(text, "Le fichier n'est pas ouvert");
+		if ( num == TX_ERRREAD       ) strcpy(text, "Erreur à la lecture");
+		if ( num == TX_ERRWRITE      ) strcpy(text, "Erreur à l'écriture");
+	}
+
+	if ( type == RES_KEY )
+	{
+		if ( num == 0                   )  strcpy(text, "< nicht belegt >");
+		if ( num == VK_LEFT             )  strcpy(text, "Pfeil nach links");
+		if ( num == VK_RIGHT            )  strcpy(text, "Pfeil nach rechts");
+		if ( num == VK_UP               )  strcpy(text, "Pfeil nach oben");
+		if ( num == VK_DOWN             )  strcpy(text, "Pfeil nach unten");
+		if ( num == VK_CANCEL           )  strcpy(text, "Strg-Pause");
+		if ( num == VK_BACK             )  strcpy(text, "<--");
+		if ( num == VK_TAB              )  strcpy(text, "Tab");
+		if ( num == VK_CLEAR            )  strcpy(text, "Clear??");
+		if ( num == VK_RETURN           )  strcpy(text, "Eingabe");
+		if ( num == VK_SHIFT            )  strcpy(text, "Umschalt");
+		if ( num == VK_CONTROL          )  strcpy(text, "Strg");
+		if ( num == VK_MENU             )  strcpy(text, "Alt");
+		if ( num == VK_PAUSE            )  strcpy(text, "Pause");
+		if ( num == VK_CAPITAL          )  strcpy(text, "Caps Lock");
+		if ( num == VK_ESCAPE           )  strcpy(text, "Esc");
+		if ( num == VK_SPACE            )  strcpy(text, "Leertaste");
+		if ( num == VK_PRIOR            )  strcpy(text, "Page Up");
+		if ( num == VK_NEXT             )  strcpy(text, "Page Down");
+		if ( num == VK_END              )  strcpy(text, "End");
+		if ( num == VK_HOME             )  strcpy(text, "Home");
+		if ( num == VK_SELECT           )  strcpy(text, "Select");
+		if ( num == VK_EXECUTE          )  strcpy(text, "Execute");
+		if ( num == VK_SNAPSHOT         )  strcpy(text, "Print Scrn");
+		if ( num == VK_INSERT           )  strcpy(text, "Insert");
+		if ( num == VK_DELETE           )  strcpy(text, "Delete");
+		if ( num == VK_HELP             )  strcpy(text, "Help");
+		if ( num == VK_LWIN             )  strcpy(text, "Left Windows");
+		if ( num == VK_RWIN             )  strcpy(text, "Right Windows");
+		if ( num == VK_APPS             )  strcpy(text, "Application key");
+		if ( num == VK_NUMPAD0          )  strcpy(text, "NumPad 0");
+		if ( num == VK_NUMPAD1          )  strcpy(text, "NumPad 1");
+		if ( num == VK_NUMPAD2          )  strcpy(text, "NumPad 2");
+		if ( num == VK_NUMPAD3          )  strcpy(text, "NumPad 3");
+		if ( num == VK_NUMPAD4          )  strcpy(text, "NumPad 4");
+		if ( num == VK_NUMPAD5          )  strcpy(text, "NumPad 5");
+		if ( num == VK_NUMPAD6          )  strcpy(text, "NumPad 6");
+		if ( num == VK_NUMPAD7          )  strcpy(text, "NumPad 7");
+		if ( num == VK_NUMPAD8          )  strcpy(text, "NumPad 8");
+		if ( num == VK_NUMPAD9          )  strcpy(text, "NumPad 9");
+		if ( num == VK_MULTIPLY         )  strcpy(text, "NumPad *");
+		if ( num == VK_ADD              )  strcpy(text, "NumPad +");
+		if ( num == VK_SEPARATOR        )  strcpy(text, "NumPad sep");
+		if ( num == VK_SUBTRACT         )  strcpy(text, "NumPad -");
+		if ( num == VK_DECIMAL          )  strcpy(text, "NumPad .");
+		if ( num == VK_DIVIDE           )  strcpy(text, "NumPad /");
+		if ( num == VK_F1               )  strcpy(text, "F1");
+		if ( num == VK_F2               )  strcpy(text, "F2");
+		if ( num == VK_F3               )  strcpy(text, "F3");
+		if ( num == VK_F4               )  strcpy(text, "F4");
+		if ( num == VK_F5               )  strcpy(text, "F5");
+		if ( num == VK_F6               )  strcpy(text, "F6");
+		if ( num == VK_F7               )  strcpy(text, "F7");
+		if ( num == VK_F8               )  strcpy(text, "F8");
+		if ( num == VK_F9               )  strcpy(text, "F9");
+		if ( num == VK_F10              )  strcpy(text, "F10");
+		if ( num == VK_F11              )  strcpy(text, "F11");
+		if ( num == VK_F12              )  strcpy(text, "F12");
+		if ( num == VK_F13              )  strcpy(text, "F13");
+		if ( num == VK_F14              )  strcpy(text, "F14");
+		if ( num == VK_F15              )  strcpy(text, "F15");
+		if ( num == VK_F16              )  strcpy(text, "F16");
+		if ( num == VK_F17              )  strcpy(text, "F17");
+		if ( num == VK_F18              )  strcpy(text, "F18");
+		if ( num == VK_F19              )  strcpy(text, "F19");
+		if ( num == VK_F20              )  strcpy(text, "F20");
+		if ( num == VK_NUMLOCK          )  strcpy(text, "Num Lock");
+		if ( num == VK_SCROLL           )  strcpy(text, "Scroll");
+		if ( num == VK_ATTN             )  strcpy(text, "Attn");
+		if ( num == VK_CRSEL            )  strcpy(text, "CrSel");
+		if ( num == VK_EXSEL            )  strcpy(text, "ExSel");
+		if ( num == VK_EREOF            )  strcpy(text, "Erase EOF");
+		if ( num == VK_PLAY             )  strcpy(text, "Play");
+		if ( num == VK_ZOOM             )  strcpy(text, "Zoom");
+		if ( num == VK_PA1              )  strcpy(text, "PA1");
+		if ( num == VK_OEM_CLEAR        )  strcpy(text, "Clear");
+		if ( num == VK_BUTTON1          )  strcpy(text, "Knopf 1");
+		if ( num == VK_BUTTON2          )  strcpy(text, "Knopf 2");
+		if ( num == VK_BUTTON3          )  strcpy(text, "Knopf 3");
+		if ( num == VK_BUTTON4          )  strcpy(text, "Knopf 4");
+		if ( num == VK_BUTTON5          )  strcpy(text, "Knopf 5");
+		if ( num == VK_BUTTON6          )  strcpy(text, "Knopf 6");
+		if ( num == VK_BUTTON7          )  strcpy(text, "Knopf 7");
+		if ( num == VK_BUTTON8          )  strcpy(text, "Knopf 8");
+		if ( num == VK_BUTTON9          )  strcpy(text, "Knopf 9");
+		if ( num == VK_BUTTON10         )  strcpy(text, "Knopf 10");
+		if ( num == VK_BUTTON11         )  strcpy(text, "Knopf 11");
+		if ( num == VK_BUTTON12         )  strcpy(text, "Knopf 12");
+		if ( num == VK_BUTTON13         )  strcpy(text, "Knopf 13");
+		if ( num == VK_BUTTON14         )  strcpy(text, "Knopf 14");
+		if ( num == VK_BUTTON15         )  strcpy(text, "Knopf 15");
+		if ( num == VK_BUTTON16         )  strcpy(text, "Knopf 16");
+		if ( num == VK_BUTTON17         )  strcpy(text, "Knopf 17");
+		if ( num == VK_BUTTON18         )  strcpy(text, "Knopf 18");
+		if ( num == VK_BUTTON19         )  strcpy(text, "Knopf 19");
+		if ( num == VK_BUTTON20         )  strcpy(text, "Knopf 20");
+		if ( num == VK_BUTTON21         )  strcpy(text, "Knopf 21");
+		if ( num == VK_BUTTON22         )  strcpy(text, "Knopf 22");
+		if ( num == VK_BUTTON23         )  strcpy(text, "Knopf 23");
+		if ( num == VK_BUTTON24         )  strcpy(text, "Knopf 24");
+		if ( num == VK_BUTTON25         )  strcpy(text, "Knopf 25");
+		if ( num == VK_BUTTON26         )  strcpy(text, "Knopf 26");
+		if ( num == VK_BUTTON27         )  strcpy(text, "Knopf 27");
+		if ( num == VK_BUTTON28         )  strcpy(text, "Knopf 28");
+		if ( num == VK_BUTTON29         )  strcpy(text, "Knopf 29");
+		if ( num == VK_BUTTON30         )  strcpy(text, "Knopf 30");
+		if ( num == VK_BUTTON31         )  strcpy(text, "Knopf 31");
+		if ( num == VK_BUTTON32         )  strcpy(text, "Knopf 32");
+		if ( num == VK_WHEELUP          )  strcpy(text, "Mausrad nach oben");
+		if ( num == VK_WHEELDOWN        )  strcpy(text, "Mausrad nach unten");
+	}
+#endif
+
 #if _FRENCH
 	if ( type == RES_TEXT )
 	{
 		#if _FULL
-		if ( num == RT_VERSION_ID          )  strcpy(text, "1.18 /f");
+		if ( num == RT_VERSION_ID          )  strcpy(text, "1.3 /f");
 		#endif
-		#if _NET
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A 1.18");
-		#endif
-		#if _SCHOOL & _EDU
-		#if _TEEN
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-Teen EDU 1.18");
-		#else
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A EDU 1.18");
-		#endif
-		#endif
-		#if _SCHOOL & _PERSO
-		#if _TEEN
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-Teen PERSO 1.18");
-		#else
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A PERSO 1.18");
-		#endif
-		#endif
-		#if _SCHOOL & _CEEBOTDEMO
-		#if _TEEN
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-Teen DEMO 1.18");
-		#else
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A DEMO 1.18");
-		#endif
+		#if _NET | _SCHOOL
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Ecole 1.3 /f");
 		#endif
 		#if _DEMO
-		if ( num == RT_VERSION_ID          )  strcpy(text, "Demo 1.18 /f");
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Demo 1.3 /f");
 		#endif
-		if ( num == RT_DISINFO_TITLE       )  strcpy(text, "SatCom");
+		#if _SE
+		if ( num == RT_VERSION_ID          )  strcpy(text, "S-E 1.3 /f");
+		#endif
 		if ( num == RT_WINDOW_MAXIMIZED    )  strcpy(text, "Taille maximale");
 		if ( num == RT_WINDOW_MINIMIZED    )  strcpy(text, "Taille réduite");
 		if ( num == RT_WINDOW_STANDARD     )  strcpy(text, "Taille normale");
 		if ( num == RT_WINDOW_CLOSE        )  strcpy(text, "Fermer");
 
-		if ( num == RT_STUDIO_TITLE        )  strcpy(text, "Edition du programme");
-		if ( num == RT_SCRIPT_NEW          )  strcpy(text, "Nouveau");
 		if ( num == RT_NAME_DEFAULT        )  strcpy(text, "Joueur");
-		if ( num == RT_IO_NEW              )  strcpy(text, "Nouveau ...");
 		if ( num == RT_KEY_OR              )  strcpy(text, " ou ");
 
-#if _NEWLOOK
-		if ( num == RT_TITLE_BASE          )  strcpy(text, "CeeBot");
-		if ( num == RT_TITLE_INIT          )  strcpy(text, "CeeBot");
+#if _EGAMES
+		if ( num == RT_TITLE_BASE          )  strcpy(text, "Wild Wheels");
+		if ( num == RT_TITLE_INIT          )  strcpy(text, "Wild Wheels");
 #else
-		if ( num == RT_TITLE_BASE          )  strcpy(text, "COLOBOT");
-		if ( num == RT_TITLE_INIT          )  strcpy(text, "COLOBOT");
+		if ( num == RT_TITLE_BASE          )  strcpy(text, "BuzzingCars");
+		if ( num == RT_TITLE_INIT          )  strcpy(text, "BuzzingCars");
 #endif
-		if ( num == RT_TITLE_TRAINER       )  strcpy(text, "Programmation");
-		if ( num == RT_TITLE_DEFI          )  strcpy(text, "Défis");
 		if ( num == RT_TITLE_MISSION       )  strcpy(text, "Missions");
 		if ( num == RT_TITLE_FREE          )  strcpy(text, "Jeu libre");
-		if ( num == RT_TITLE_TEEN          )  strcpy(text, "Jeu libre");
 		if ( num == RT_TITLE_USER          )  strcpy(text, "Niveaux supplémentaires");
 		if ( num == RT_TITLE_PROTO         )  strcpy(text, "Prototypes");
 		if ( num == RT_TITLE_SETUP         )  strcpy(text, "Options");
-		if ( num == RT_TITLE_NAME          )  strcpy(text, "Nom du joueur");
-		if ( num == RT_TITLE_PERSO         )  strcpy(text, "Personnalisation de votre apparence");
-		if ( num == RT_TITLE_WRITE         )  strcpy(text, "Enregistrement de la mission en cours");
-		if ( num == RT_TITLE_READ          )  strcpy(text, "Chargement d'une mission enregistrée");
+		if ( num == RT_TITLE_NAME          )  strcpy(text, "Nom du pilote");
+		if ( num == RT_TITLE_PERSO         )  strcpy(text, "Choix de votre voiture");
 
-		if ( num == RT_PLAY_CHAPt          )  strcpy(text, " Liste des chapitres :");
-		if ( num == RT_PLAY_CHAPd          )  strcpy(text, " Liste des chapitres :");
-		if ( num == RT_PLAY_CHAPm          )  strcpy(text, " Liste des planètes :");
-		if ( num == RT_PLAY_CHAPf          )  strcpy(text, " Liste des planètes :");
-		if ( num == RT_PLAY_CHAPu          )  strcpy(text, " Niveaux supplémentaires :");
-		if ( num == RT_PLAY_CHAPp          )  strcpy(text, " Liste des planètes :");
-		if ( num == RT_PLAY_CHAPte         )  strcpy(text, " Liste des chapitres :");
-		if ( num == RT_PLAY_LISTt          )  strcpy(text, " Liste des exercices du chapitre :");
-		if ( num == RT_PLAY_LISTd          )  strcpy(text, " Liste des défis du chapitre :");
-		if ( num == RT_PLAY_LISTm          )  strcpy(text, " Liste des missions du chapitre :");
-		if ( num == RT_PLAY_LISTf          )  strcpy(text, " Liste des jeux libres du chapitre :");
-		if ( num == RT_PLAY_LISTu          )  strcpy(text, " Missions du niveau :");
-		if ( num == RT_PLAY_LISTp          )  strcpy(text, " Liste des prototypes du chapitre :");
-		if ( num == RT_PLAY_LISTk          )  strcpy(text, " Liste des jeux libres du chapitre :");
-		if ( num == RT_PLAY_RESUME         )  strcpy(text, " Résumé :");
+		if ( num == RT_PLAY_LISTm          )  strcpy(text, " Choix de la mission à effectuer:");
+		if ( num == RT_PLAY_LISTf          )  strcpy(text, " Choix du circuit :");
+		if ( num == RT_PLAY_LISTu          )  strcpy(text, " Missions personnelles :");
+		if ( num == RT_PLAY_LISTp          )  strcpy(text, " Liste des prototypes :");
+		if ( num == RT_PLAY_PESETAS        )  strcpy(text, " Situation financière :");
+		if ( num == RT_PLAY_PCREDIT        )  strcpy(text, "Vos économies");
+		if ( num == RT_PLAY_PMISSION       )  strcpy(text, "Gain max possible");
+		if ( num == RT_PLAY_PNEXT          )  strcpy(text, "Niveau suivant");
 
 		if ( num == RT_SETUP_DEVICE        )  strcpy(text, " Pilotes :");
 		if ( num == RT_SETUP_MODE          )  strcpy(text, " Résolutions :");
 		if ( num == RT_SETUP_KEY1          )  strcpy(text, "1) Cliquez d'abord sur la touche à redéfinir.");
 		if ( num == RT_SETUP_KEY2          )  strcpy(text, "2) Appuyez ensuite sur la nouvelle touche souhaitée.");
 
-		if ( num == RT_PERSO_FACE          )  strcpy(text, "Type de visage :");
-		if ( num == RT_PERSO_GLASSES       )  strcpy(text, "Lunettes :");
-		if ( num == RT_PERSO_HAIR          )  strcpy(text, "Couleur des cheveux :");
-		if ( num == RT_PERSO_COMBI         )  strcpy(text, "Couleur de la combinaison :");
-		if ( num == RT_PERSO_BAND          )  strcpy(text, "Couleur des bandes :");
+		if ( num == RT_PERSO_LIST          )  strcpy(text, "Liste des pilotes :");
+		if ( num == RT_PERSO_LEVEL         )  strcpy(text, "Niveau de difficulté :");
+		if ( num == RT_PERSO_BUY           )  strcpy(text, "Acheter");
 
-#if _NEWLOOK
-		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "CeeBot");
-		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Voulez-vous quitter CeeBot ?");
-		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Quitter\\Quitter CeeBot");
+#if _EGAMES
+		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "Wild Wheels");
 #else
-		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "COLOBOT");
-		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Voulez-vous quitter COLOBOT ?");
-		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Quitter\\Quitter COLOBOT");
+		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "BuzzingCars");
 #endif
 		if ( num == RT_DIALOG_ABORT        )  strcpy(text, "Quitter la mission ?");
+#if _EGAMES
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Voulez-vous quitter Wild Wheels ?");
+#else
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Voulez-vous quitter BuzzingCars ?");
+#endif
 		if ( num == RT_DIALOG_YES          )  strcpy(text, "Abandonner\\Abandonner la mission en cours");
 		if ( num == RT_DIALOG_NO           )  strcpy(text, "Continuer\\Continuer la mission en cours");
+#if _EGAMES
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Quitter\\Quitter Wild Wheels");
+#else
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Quitter\\Quitter BuzzingCars");
+#endif
 		if ( num == RT_DIALOG_NOQUIT       )  strcpy(text, "Continuer\\Continuer de jouer");
-		if ( num == RT_DIALOG_DELOBJ       )  strcpy(text, "Voulez-vous vraiment détruire le bâtiment sélectionné ?");
-		if ( num == RT_DIALOG_DELGAME      )  strcpy(text, "Voulez-vous détruire les sauvegardes de %s ?");
+		if ( num == RT_DIALOG_DELGAME      )  strcpy(text, "Voulez-vous détruire la progression et les voitures de %s ?");
+		if ( num == RT_DIALOG_DELFILE      )  strcpy(text, "Voulez-vous supprimer le fichier %s ?");
 		if ( num == RT_DIALOG_YESDEL       )  strcpy(text, "Détruire");
 		if ( num == RT_DIALOG_NODEL        )  strcpy(text, "Annuler");
+		if ( num == RT_DIALOG_NEWGAME      )  strcpy(text, "Nom du pilote à créer :");
+		if ( num == RT_DIALOG_YESNEW       )  strcpy(text, "Créer");
+		if ( num == RT_DIALOG_NONEW        )  strcpy(text, "Annuler");
+		if ( num == RT_DIALOG_YESKID       )  strcpy(text, "Oui");
+		if ( num == RT_DIALOG_NOKID        )  strcpy(text, "Non");
 		if ( num == RT_DIALOG_LOADING      )  strcpy(text, "CHARGEMENT");
 
-		if ( num == RT_STUDIO_LISTTT       )  strcpy(text, "Aide sur le mot-clé (\\key cbot;)");
-		if ( num == RT_STUDIO_COMPOK       )  strcpy(text, "Compilation ok (0 erreur)");
-		if ( num == RT_STUDIO_PROGSTOP     )  strcpy(text, "Programme terminé");
+		if ( num == RT_WIN_TIME            )  strcpy(text, "Chronomètre");
+		if ( num == RT_WIN_SOLID           )  strcpy(text, "Etat du véhicule");
+		if ( num == RT_WIN_CONE            )  strcpy(text, "Respect du décor");
+		if ( num == RT_WIN_POINTS          )  strcpy(text, "Crédits gagnés");
+		if ( num == RT_WIN_BONUS           )  strcpy(text, "Bonus temps");
+		if ( num == RT_WIN_ARRAY           )  strcpy(text, "Classement des meilleurs chronos :");
+		if ( num == RT_WIN_HEADERm         )  strcpy(text, "\t  Voiture\tPilote\tChrono\tCrédits");
+		if ( num == RT_WIN_HEADERf         )  strcpy(text, "\t  Voiture\tPilote\tChrono\t");
 
-		if ( num == RT_SATCOM_LIST         )  strcpy(text, "\\b;Listes des objets\n");
-		if ( num == RT_SATCOM_BOT          )  strcpy(text, "\\b;Listes des robots\n");
-		if ( num == RT_SATCOM_BUILDING     )  strcpy(text, "\\b;Listes des bâtiments\n");
-		if ( num == RT_SATCOM_FRET         )  strcpy(text, "\\b;Listes des objets transportables\n");
-		if ( num == RT_SATCOM_ALIEN        )  strcpy(text, "\\b;Listes des ennemis\n");
-		if ( num == RT_SATCOM_NULL         )  strcpy(text, "\\c; (aucun)\\n;\n");
-		if ( num == RT_SATCOM_ERROR1       )  strcpy(text, "\\b;Erreur\n");
-		if ( num == RT_SATCOM_ERROR2       )  strcpy(text, "Liste non disponible sans \\l;radar\\u object\\radar; !\n");
+		if ( num == RT_START_READY         )  strcpy(text, "Prêt ?");
+		if ( num == RT_START_QUICK         )  strcpy(text, "3, 2, 1  ...  Prêt ?");
+		if ( num == RT_START_123           )  strcpy(text, "%d ...");
+		if ( num == RT_START_GO            )  strcpy(text, "GO !");
+		if ( num == RT_START_REMOTE        )  strcpy(text, "Télécommandez votre voiture");
 
-		if ( num == RT_IO_OPEN             )  strcpy(text, "Ouvrir");
-		if ( num == RT_IO_SAVE             )  strcpy(text, "Enregistrer");
-		if ( num == RT_IO_LIST             )  strcpy(text, "Dossier: %s");
-		if ( num == RT_IO_NAME             )  strcpy(text, "Nom:");
-		if ( num == RT_IO_DIR              )  strcpy(text, "Dans:");
-		if ( num == RT_IO_PRIVATE          )  strcpy(text, "Privé\\Dossier privé");
-		if ( num == RT_IO_PUBLIC           )  strcpy(text, "Public\\Dossier commun à tous les joueurs");
+		if ( num == RT_RECORD_GALL         )  strcpy(text, "Record du circuit (-%.2f) !");
+		if ( num == RT_RECORD_GONE         )  strcpy(text, "Record du tour (-%.2f) !");
+		if ( num == RT_RECORD_LONE         )  strcpy(text, "Meilleur tour (-%.2f) !");
+		if ( num == RT_RECORD_QALL         )  strcpy(text, "> Record du circuit <");
+		if ( num == RT_RECORD_QONE         )  strcpy(text, "> Record du tour <");
+		if ( num == RT_RACE_LAP4           )  strcpy(text, "Encore 4 tours");
+		if ( num == RT_RACE_LAP3           )  strcpy(text, "Encore 3 tours");
+		if ( num == RT_RACE_LAP2           )  strcpy(text, "Encore 2 tours");
+		if ( num == RT_RACE_LAP1           )  strcpy(text, "Dernier tour");
+		if ( num == RT_DUEL_WIN            )  strcpy(text, "Voiture fantôme battue (-%.2f) !");
+		if ( num == RT_DUEL_LOST           )  strcpy(text, "Trop lent (+%.2f) !");
 
-		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "Développé par :");
-		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "www.epsitec.com");
-#if _SCHOOL
-		if ( num == RT_GENERIC_EDIT1       )  strcpy(text, " ");
-		if ( num == RT_GENERIC_EDIT2       )  strcpy(text, " ");
+		if ( num == RT_SPEC_MINSPEED       )  strcpy(text, "Voiture trop lente !");
+		if ( num == RT_SPEC_MAXSPEED       )  strcpy(text, "Voiture trop rapide !");
+		if ( num == RT_SPEC_DEMO           )  strcpy(text, "Pas disponible dans la version DEMO !");
+		if ( num == RT_SPEC_DISPO          )  strcpy(text, "Pas disponible pour l'instant !");
+
+		if ( num == RT_MOTOR_REAR          )  strcpy(text, "R");
+		if ( num == RT_MOTOR_NEUTRAL       )  strcpy(text, "N");
+		if ( num == RT_MOTOR_S1            )  strcpy(text, "1");
+		if ( num == RT_MOTOR_S2            )  strcpy(text, "2");
+		if ( num == RT_MOTOR_S3            )  strcpy(text, "3");
+
+		if ( num == RT_IO_LIST             )  strcpy(text, "Liste des duels disponibles :");
+		if ( num == RT_IO_NAME             )  strcpy(text, "Nom du fichier :");
+		if ( num == RT_IO_HEADER           )  strcpy(text, "Fichier\tMission\tVoiture\tPilote\tChrono");
+#if _EGAMES
+		if ( num == RT_IO_RINFO            )  strcpy(text, "Vous pouvez télécharger de nouveaux duels sur www.epsitec.ch/wildwheels");
 #else
-		//?if ( num == RT_GENERIC_EDIT1       )  strcpy(text, "Version française éditée par :");
-		//?if ( num == RT_GENERIC_EDIT2       )  strcpy(text, "www.alsyd.com");
-		if ( num == RT_GENERIC_EDIT1       )  strcpy(text, " ");
-		if ( num == RT_GENERIC_EDIT2       )  strcpy(text, " ");
+		if ( num == RT_IO_RINFO            )  strcpy(text, "Vous pouvez télécharger de nouveaux duels sur www.ceebot.com");
 #endif
 
-		if ( num == RT_INTERFACE_REC       )  strcpy(text, "Enregistreur");
+#if _EGAMES
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "Développé par EPSITEC");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "Publié par eGames, Inc.");
+#else
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "www.ceebot.com");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "Développé par EPSITEC");
+#endif
+#if _EGAMES
+		if ( num == RT_GENERIC_DEMO1       )  strcpy(text, "Vous avez joué à la version DEMO de Wild Wheels.");
+		if ( num == RT_GENERIC_DEMO2       )  strcpy(text, "La version complète est disponible dès aujourd'hui ...");
+		if ( num == RT_GENERIC_DEMO3       )  strcpy(text, "... elle comprend 28 missions passionnantes et 9 courses libres ...");
+		if ( num == RT_GENERIC_DEMO4       )  strcpy(text, "... ainsi qu'un mode \"duels\" pour se mesurer à d'autres.");
+		if ( num == RT_GENERIC_DEMO5       )  strcpy(text, "Tous les détails sur www.epsitec.ch/wildwheels !");
+#else
+		if ( num == RT_GENERIC_DEMO1       )  strcpy(text, "Vous avez joué à la version DEMO de BuzzingCars.");
+		if ( num == RT_GENERIC_DEMO2       )  strcpy(text, "La version complète est disponible dès aujourd'hui ...");
+		if ( num == RT_GENERIC_DEMO3       )  strcpy(text, "... elle comprend 28 missions passionnantes et 9 courses libres ...");
+		if ( num == RT_GENERIC_DEMO4       )  strcpy(text, "... ainsi qu'un mode \"duels\" pour se mesurer à d'autres.");
+		if ( num == RT_GENERIC_DEMO5       )  strcpy(text, "Tous les détails sur www.ceebot.com !");
+#endif
 	}
 
 	if ( type == RES_EVENT )
@@ -1173,97 +1324,100 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 		if ( num == EVENT_BUTTON_NEXT      )  strcpy(text, "Suivant");
 		if ( num == EVENT_BUTTON_PREV      )  strcpy(text, "Précédent");
 		if ( num == EVENT_BUTTON_QUIT      )  strcpy(text, "Menu (\\key quit;)");
+		if ( num == EVENT_BUTTON_CAMERA    )  strcpy(text, "Caméra (\\key camera;)");
+		if ( num == EVENT_BUTTON_HELP      )  strcpy(text, "Instructions (\\key help;)");
+		if ( num == EVENT_BUTTON_BRAKE     )  strcpy(text, "Frein à main (\\key brake;)");
+		if ( num == EVENT_BUTTON_HORN      )  strcpy(text, "Claxon (\\key horn;)");
+		if ( num == EVENT_BONUS            )  strcpy(text, "Bonus temps");
+		if ( num == EVENT_TIME             )  strcpy(text, "Chronomètre");
+		if ( num == EVENT_PROGRESS         )  strcpy(text, "Tâches accomplies");
 
 		if ( num == EVENT_DIALOG_OK        )  strcpy(text, "D'accord");
 		if ( num == EVENT_DIALOG_CANCEL    )  strcpy(text, "Annuler");
 
-		if ( num == EVENT_INTERFACE_TRAINER)  strcpy(text, "Programmation\\Exercices de programmation");
-		if ( num == EVENT_INTERFACE_DEFI   )  strcpy(text, "Défis\\Défis de programmation");
 		if ( num == EVENT_INTERFACE_MISSION)  strcpy(text, "Missions\\La grande aventure");
-		if ( num == EVENT_INTERFACE_FREE   )  strcpy(text, "Jeu libre\\Jeu libre sans but précis");
-		if ( num == EVENT_INTERFACE_TEEN   )  strcpy(text, "Jeu libre\\Jeu libre sans but précis");
-		if ( num == EVENT_INTERFACE_USER   )  strcpy(text, "Suppl.\\Niveaux supplémentaires");
+		if ( num == EVENT_INTERFACE_FREE   )  strcpy(text, "Courses libres\\Courses libres sans but précis");
+		if ( num == EVENT_INTERFACE_USER   )  strcpy(text, "Suppléments\\Niveaux supplémentaires");
 		if ( num == EVENT_INTERFACE_PROTO  )  strcpy(text, "Proto\\Prototypes en cours d'élaboration");
-		if ( num == EVENT_INTERFACE_NAME   )  strcpy(text, "Autre joueur\\Choix du nom du joueur");
+		if ( num == EVENT_INTERFACE_DUEL   )  strcpy(text, "Duels\\Duels contre des voitures fantômes");
+		if ( num == EVENT_INTERFACE_NAME   )  strcpy(text, "Autre pilote\\Choix du nom du pilote");
 		if ( num == EVENT_INTERFACE_SETUP  )  strcpy(text, "Options\\Réglages");
 		if ( num == EVENT_INTERFACE_AGAIN  )  strcpy(text, "Recommencer\\Recommencer la mission au début");
-		if ( num == EVENT_INTERFACE_WRITE  )  strcpy(text, "Enregistrer\\Enregistrer la mission en cours");
-		if ( num == EVENT_INTERFACE_READ   )  strcpy(text, "Charger\\Charger une mission enregistrée");
-#if _NEWLOOK
-		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Retourner dans CeeBot");
-		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Quitter\\Quitter CeeBot");
+		if ( num == EVENT_INTERFACE_SAVE   )  strcpy(text, "Enregistrer\\Enregistrer le duel");
+#if _EGAMES
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Retourner dans Wild Wheels");
 #else
-		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Retourner dans COLOBOT");
-		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Quitter\\Quitter COLOBOT");
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Retourner dans BuzzingCars");
 #endif
-		if ( num == EVENT_INTERFACE_BACK   )  strcpy(text, "<<  Retour  \\Retour au niveau précédent");
+		if ( num == EVENT_INTERFACE_PREV   )  strcpy(text, "\\Ecran précédent");
+		if ( num == EVENT_INTERFACE_NEXT   )  strcpy(text, "\\Ecran suivant");
+#if _EGAMES
+		if ( num == EVENT_INTERFACE_EXIT   )  strcpy(text, "\\Quitter Wild Wheels");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Quitter\\Quitter Wild Wheels");
+#else
+		if ( num == EVENT_INTERFACE_EXIT   )  strcpy(text, "\\Quitter BuzzingCars");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Quitter\\Quitter BuzzingCars");
+#endif
+		if ( num == EVENT_INTERFACE_BACK   )  strcpy(text, "Annuler\\Retour au niveau précédent");
+		if ( num == EVENT_INTERFACE_TERM   )  strcpy(text, "Menu\\Retour au menu");
 		if ( num == EVENT_INTERFACE_PLAY   )  strcpy(text, "Jouer ...\\Démarrer l'action");
+		if ( num == EVENT_INTERFACE_GHOSTm )  strcpy(text, "Voir la meilleure voiture fantôme\\Voir la voiture fantôme du meilleur temps");
+		if ( num == EVENT_INTERFACE_OK     )  strcpy(text, "D'accord\\Retour au niveau précédent");
+
+		if ( num == EVENT_INTERFACE_WOK    )  strcpy(text, "Enregistrer le duel\\Enregistre dans le fichier choisi");
+		if ( num == EVENT_INTERFACE_WCANCEL)  strcpy(text, "Annuler\\Retour à l'écran précédent");
+		if ( num == EVENT_INTERFACE_ROK    )  strcpy(text, "Démarrer le duel\\Démarre le duel sélectionné dans la liste");
+		if ( num == EVENT_INTERFACE_RCANCEL)  strcpy(text, "Annuler\\Retour à l'écran précédent");
+
 		if ( num == EVENT_INTERFACE_SETUPd )  strcpy(text, "Affichage\\Pilote et résolution d'affichage");
 		if ( num == EVENT_INTERFACE_SETUPg )  strcpy(text, "Graphique\\Options graphiques");
 		if ( num == EVENT_INTERFACE_SETUPp )  strcpy(text, "Jeu\\Options de jouabilité");
 		if ( num == EVENT_INTERFACE_SETUPc )  strcpy(text, "Commandes\\Touches du clavier");
 		if ( num == EVENT_INTERFACE_SETUPs )  strcpy(text, "Son\\Volumes bruitages & musiques");
-		if ( num == EVENT_INTERFACE_DEVICE )  strcpy(text, "Unité");
 		if ( num == EVENT_INTERFACE_RESOL  )  strcpy(text, "Résolution");
 		if ( num == EVENT_INTERFACE_FULL   )  strcpy(text, "Plein écran\\Plein écran ou fenêtré");
 		if ( num == EVENT_INTERFACE_APPLY  )  strcpy(text, "Appliquer les changements\\Active les changements effectués");
 
-		if ( num == EVENT_INTERFACE_TOTO   )  strcpy(text, "Robbie\\Votre assistant");
 		if ( num == EVENT_INTERFACE_SHADOW )  strcpy(text, "Ombres\\Ombres projetées au sol");
-		if ( num == EVENT_INTERFACE_GROUND )  strcpy(text, "Marques sur le sol\\Marques dessinées sur le sol");
-		if ( num == EVENT_INTERFACE_DIRTY  )  strcpy(text, "Salissures\\Salissures des robots et bâtiments");
+		if ( num == EVENT_INTERFACE_DIRTY  )  strcpy(text, "Salissures\\Salissures des voitures et bâtiments");
 		if ( num == EVENT_INTERFACE_FOG    )  strcpy(text, "Brouillard\\Nappes de brouillard");
 		if ( num == EVENT_INTERFACE_LENS   )  strcpy(text, "Rayons du soleil\\Rayons selon l'orientation");
-		if ( num == EVENT_INTERFACE_SKY    )  strcpy(text, "Ciel\\Ciel et nuages");
+		if ( num == EVENT_INTERFACE_SKY    )  strcpy(text, "Ciel et nuages\\Ciel et nuages");
 		if ( num == EVENT_INTERFACE_PLANET )  strcpy(text, "Planètes et étoiles\\Motifs mobiles dans le ciel");
 		if ( num == EVENT_INTERFACE_LIGHT  )  strcpy(text, "Lumières dynamiques\\Eclairages mobiles");
+		if ( num == EVENT_INTERFACE_SUPER  )  strcpy(text, "Voitures super détaillées\\Voitures super détaillées");
 		if ( num == EVENT_INTERFACE_PARTI  )  strcpy(text, "Quantité de particules\\Explosions, poussières, reflets, etc.");
+		if ( num == EVENT_INTERFACE_WHEEL  )  strcpy(text, "Traces de pneu\\Traces de pneu sur le sol");
 		if ( num == EVENT_INTERFACE_CLIP   )  strcpy(text, "Profondeur de champ\\Distance de vue maximale");
 		if ( num == EVENT_INTERFACE_DETAIL )  strcpy(text, "Détails des objets\\Qualité des objets en 3D");
 		if ( num == EVENT_INTERFACE_TEXTURE)  strcpy(text, "Qualité des textures\\Qualité des images");
-		if ( num == EVENT_INTERFACE_GADGET )  strcpy(text, "Nb d'objets décoratifs\\Qualité d'objets non indispensables");
+		if ( num == EVENT_INTERFACE_GADGET )  strcpy(text, "Nombre d'objets décoratifs\\Quantité d'objets non indispensables");
 		if ( num == EVENT_INTERFACE_RAIN   )  strcpy(text, "Particules dans l'interface\\Pluie de particules");
 		if ( num == EVENT_INTERFACE_GLINT  )  strcpy(text, "Reflets sur les boutons\\Boutons brillants");
 		if ( num == EVENT_INTERFACE_TOOLTIP)  strcpy(text, "Bulles d'aide\\Bulles explicatives");
 		if ( num == EVENT_INTERFACE_MOVIES )  strcpy(text, "Séquences cinématiques\\Films avant ou après une mission");
-		if ( num == EVENT_INTERFACE_NICERST)  strcpy(text, "Retour animé\\Retour animé dans les exercices");
-		if ( num == EVENT_INTERFACE_HIMSELF)  strcpy(text, "Dégâts à soi-même\\Vos tirs infligent des dommages à vos unités");
-		if ( num == EVENT_INTERFACE_SCROLL )  strcpy(text, "Défilement dans les bords\\Défilement lorsque la souris touches les bords gauche ou droite");
-		if ( num == EVENT_INTERFACE_INVERTX)  strcpy(text, "Inversion souris X\\Inversion de la rotation lorsque la souris touche un bord");
-		if ( num == EVENT_INTERFACE_INVERTY)  strcpy(text, "Inversion souris Y\\Inversion de la rotation lorsque la souris touche un bord");
+		if ( num == EVENT_INTERFACE_CBACK  )  strcpy(text, "Caméra arrière\\Caméra derrière la voiture");
+		if ( num == EVENT_INTERFACE_CBOARD )  strcpy(text, "Caméra sur le capot\\Caméra sur le capot de la voiture");
 		if ( num == EVENT_INTERFACE_EFFECT )  strcpy(text, "Secousses lors d'explosions\\L'écran vibre lors d'une explosion");
+		if ( num == EVENT_INTERFACE_FLASH  )  strcpy(text, "Flash lors des collisions\\L'écran flashe lors d'une collision");
+		if ( num == EVENT_INTERFACE_BLAST  )  strcpy(text, "Explosion du moteur\\Explosion si démarrage trop violent");
 		if ( num == EVENT_INTERFACE_MOUSE  )  strcpy(text, "Souris ombrée\\Jolie souris avec une ombre");
-		if ( num == EVENT_INTERFACE_EDITMODE) strcpy(text, "Indentation automatique\\Pendant l'édition d'un programme");
-		if ( num == EVENT_INTERFACE_EDITVALUE)strcpy(text, "Grande indentation\\Indente avec 2 ou 4 espaces");
-		if ( num == EVENT_INTERFACE_SOLUCE4)  strcpy(text, "Accès aux solutions\\Programme \"4: Solution\" dans les exercices");
 
 		if ( num == EVENT_INTERFACE_KDEF   )  strcpy(text, "Tout réinitialiser\\Remet toutes les touches standards");
-		if ( num == EVENT_INTERFACE_KLEFT  )  strcpy(text, "Tourner à gauche\\Moteur à gauche");
-		if ( num == EVENT_INTERFACE_KRIGHT )  strcpy(text, "Tourner à droite\\Moteur à droite");
-		if ( num == EVENT_INTERFACE_KUP    )  strcpy(text, "Avancer\\Moteur en avant");
-		if ( num == EVENT_INTERFACE_KDOWN  )  strcpy(text, "Reculer\\Moteur en arrière");
-		if ( num == EVENT_INTERFACE_KGUP   )  strcpy(text, "Monter\\Augmenter la puissance du réacteur");
-		if ( num == EVENT_INTERFACE_KGDOWN )  strcpy(text, "Descendre\\Diminuer la puissance du réacteur");
+		if ( num == EVENT_INTERFACE_KLEFT  )  strcpy(text, "Tourner à gauche\\Volant à gauche");
+		if ( num == EVENT_INTERFACE_KRIGHT )  strcpy(text, "Tourner à droite\\Volant à droite");
+		if ( num == EVENT_INTERFACE_KUP    )  strcpy(text, "Accélérer\\Pédale des gaz");
+		if ( num == EVENT_INTERFACE_KDOWN  )  strcpy(text, "Freiner et reculer\\Pédale de frein");
+		if ( num == EVENT_INTERFACE_KBRAKE )  strcpy(text, "Frein à main\\Frein à main");
+		if ( num == EVENT_INTERFACE_KHORN  )  strcpy(text, "Klaxon\\Klaxon");
 		if ( num == EVENT_INTERFACE_KCAMERA)  strcpy(text, "Changement de caméra\\Autre de point de vue");
-		if ( num == EVENT_INTERFACE_KDESEL )  strcpy(text, "Sélection précédente\\Sélectionne l'objet précédent");
-		if ( num == EVENT_INTERFACE_KACTION)  strcpy(text, "Action standard\\Action du bouton avec le cadre rouge");
-		if ( num == EVENT_INTERFACE_KNEAR  )  strcpy(text, "Caméra plus proche\\Avance la caméra");
-		if ( num == EVENT_INTERFACE_KAWAY  )  strcpy(text, "Caméra plus loin\\Recule la caméra");
-		if ( num == EVENT_INTERFACE_KNEXT  )  strcpy(text, "Sélectionner l'objet suivant\\Sélectionner l'objet suivant");
-		if ( num == EVENT_INTERFACE_KHUMAN )  strcpy(text, "Sélectionner le cosmonaute\\Sélectionner le cosmonaute");
 		if ( num == EVENT_INTERFACE_KQUIT  )  strcpy(text, "Quitter la mission en cours\\Terminer un exercice ou une mssion");
 		if ( num == EVENT_INTERFACE_KHELP  )  strcpy(text, "Instructions mission\\Marche à suivre");
-		if ( num == EVENT_INTERFACE_KPROG  )  strcpy(text, "Instructions programmation\\Explication sur la programmation");
-		if ( num == EVENT_INTERFACE_KCBOT  )  strcpy(text, "Instructions mot-clé\\Explication sur le mot-clé");
-		if ( num == EVENT_INTERFACE_KVISIT )  strcpy(text, "Montrer le lieu d'un message\\Montrer le lieu du dernier message");
-		if ( num == EVENT_INTERFACE_KSPEED10) strcpy(text, "Vitesse 1.0x\\Vitesse normale");
-		if ( num == EVENT_INTERFACE_KSPEED15) strcpy(text, "Vitesse 1.5x\\Une fois et demi plus rapide");
-		if ( num == EVENT_INTERFACE_KSPEED20) strcpy(text, "Vitesse 2.0x\\Deux fois plus rapide");
-		if ( num == EVENT_INTERFACE_KSPEED30) strcpy(text, "Vitesse 3.0x\\Trois fois plus rapide");
 
 		if ( num == EVENT_INTERFACE_VOLSOUND) strcpy(text, "Bruitages :\\Volume des moteurs, voix, etc.");
 		if ( num == EVENT_INTERFACE_VOLMUSIC) strcpy(text, "Fond sonore :\\Volume des pistes audio du CD");
 		if ( num == EVENT_INTERFACE_SOUND3D)  strcpy(text, "Bruitages 3D\\Positionnement sonore dans l'espace");
+		if ( num == EVENT_INTERFACE_COMMENTS) strcpy(text, "Voix du commentateur\\Commentaires variés pendant les courses");
 
 		if ( num == EVENT_INTERFACE_MIN    )  strcpy(text, "Mini\\Qualité minimale (+ rapide)");
 		if ( num == EVENT_INTERFACE_NORM   )  strcpy(text, "Normal\\Qualité standard");
@@ -1272,446 +1426,70 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 		if ( num == EVENT_INTERFACE_SILENT )  strcpy(text, "Silencieux\\Totalement silencieux");
 		if ( num == EVENT_INTERFACE_NOISY  )  strcpy(text, "Normal\\Niveaux normaux");
 
-		if ( num == EVENT_INTERFACE_JOYSTICK) strcpy(text, "Utilise un joystick\\Joystick ou clavier");
-		if ( num == EVENT_INTERFACE_SOLUCE )  strcpy(text, "Accès à la solution\\Donne la solution");
+		if ( num == EVENT_INTERFACE_STEERING) strcpy(text, "Utilise un volant ou un joystick\\Volant, joystick ou clavier");
+		if ( num == EVENT_INTERFACE_JOYPAD  ) strcpy(text, "Utilise une manette de jeu\\Manette de jeu ou clavier");
+		if ( num == EVENT_INTERFACE_FFBc    ) strcpy(text, "Retour de force\\Utilise l'effet retour de force");
+		if ( num == EVENT_INTERFACE_FFBs    ) strcpy(text, "\\Amplitude de l'effet");
 
-		if ( num == EVENT_INTERFACE_NEDIT  )  strcpy(text, "\\Nom du joueur à créer");
-		if ( num == EVENT_INTERFACE_NOK    )  strcpy(text, "D'accord\\Choisir le joueur");
-		if ( num == EVENT_INTERFACE_NCANCEL)  strcpy(text, "Annuler\\Conserver le joueur actuel");
-		if ( num == EVENT_INTERFACE_NDELETE)  strcpy(text, "Supprimer le joueur\\Supprimer le joueur de la liste");
-		if ( num == EVENT_INTERFACE_NLABEL )  strcpy(text, "Nom du joueur");
+		if ( num == EVENT_INTERFACE_NEDIT  )  strcpy(text, "\\Nom du pilote à créer");
+		if ( num == EVENT_INTERFACE_NOK    )  strcpy(text, "Sélectionner\\Choisir le pilote de la liste");
+		if ( num == EVENT_INTERFACE_NCREATE)  strcpy(text, "Nouveau\\Créer un nouveau pilote");
+		if ( num == EVENT_INTERFACE_NDELETE)  strcpy(text, "Supprimer\\Supprimer le pilote de la liste");
 
-		if ( num == EVENT_INTERFACE_IOWRITE)  strcpy(text, "Enregistrer\\Enregistrer la mission en cours");
-		if ( num == EVENT_INTERFACE_IOREAD )  strcpy(text, "Charger\\Charger la mission sélectionnée");
-		if ( num == EVENT_INTERFACE_IOLIST )  strcpy(text, "Liste des missions enregistrées");
-		if ( num == EVENT_INTERFACE_IOLABEL)  strcpy(text, "Nom du fichier :");
-		if ( num == EVENT_INTERFACE_IONAME )  strcpy(text, "Nom de la mission");
-		if ( num == EVENT_INTERFACE_IOIMAGE)  strcpy(text, "Vue de la mission");
-		if ( num == EVENT_INTERFACE_IODELETE) strcpy(text, "Supprimer\\Supprime l'enregistrement sélectionné");
+		if ( num == EVENT_INTERFACE_LEVEL1 )  strcpy(text, "Kid\\Niveau pour les petits");
+		if ( num == EVENT_INTERFACE_LEVEL2 )  strcpy(text, "Cool\\Niveau facile");
+		if ( num == EVENT_INTERFACE_LEVEL3 )  strcpy(text, "Costaud\\Niveau moyen");
+		if ( num == EVENT_INTERFACE_LEVEL4 )  strcpy(text, "Maousse\\Niveau difficile");
 
-		if ( num == EVENT_INTERFACE_PERSO  )  strcpy(text, "Aspect\\Choisir votre aspect");
-		if ( num == EVENT_INTERFACE_POK    )  strcpy(text, "D'accord");
-		if ( num == EVENT_INTERFACE_PCANCEL)  strcpy(text, "Annuler");
-		if ( num == EVENT_INTERFACE_PDEF   )  strcpy(text, "Standard\\Remet les couleurs standards");
-		if ( num == EVENT_INTERFACE_PHEAD  )  strcpy(text, "Tête\\Visage et cheveux");
-		if ( num == EVENT_INTERFACE_PBODY  )  strcpy(text, "Corps\\Combinaison");
-		if ( num == EVENT_INTERFACE_PLROT  )  strcpy(text, "\\Rotation à gauche");
-		if ( num == EVENT_INTERFACE_PRROT  )  strcpy(text, "\\Rotation à droite");
-		if ( num == EVENT_INTERFACE_PCRa   )  strcpy(text, "Rouge");
-		if ( num == EVENT_INTERFACE_PCGa   )  strcpy(text, "Vert");
-		if ( num == EVENT_INTERFACE_PCBa   )  strcpy(text, "Bleu");
-		if ( num == EVENT_INTERFACE_PCRb   )  strcpy(text, "Rouge");
-		if ( num == EVENT_INTERFACE_PCGb   )  strcpy(text, "Vert");
-		if ( num == EVENT_INTERFACE_PCBb   )  strcpy(text, "Bleu");
-		if ( num == EVENT_INTERFACE_PFACE1 )  strcpy(text, "\\Visage 1");
-		if ( num == EVENT_INTERFACE_PFACE2 )  strcpy(text, "\\Visage 4");
-		if ( num == EVENT_INTERFACE_PFACE3 )  strcpy(text, "\\Visage 3");
-		if ( num == EVENT_INTERFACE_PFACE4 )  strcpy(text, "\\Visage 2");
-		if ( num == EVENT_INTERFACE_PGLASS0)  strcpy(text, "\\Pas de lunettes");
-		if ( num == EVENT_INTERFACE_PGLASS1)  strcpy(text, "\\Lunettes 1");
-		if ( num == EVENT_INTERFACE_PGLASS2)  strcpy(text, "\\Lunettes 2");
-		if ( num == EVENT_INTERFACE_PGLASS3)  strcpy(text, "\\Lunettes 3");
-		if ( num == EVENT_INTERFACE_PGLASS4)  strcpy(text, "\\Lunettes 4");
-		if ( num == EVENT_INTERFACE_PGLASS5)  strcpy(text, "\\Lunettes 5");
+		if ( num == EVENT_INTERFACE_POK    )  strcpy(text, "Utiliser\\Départ de la course");
+		if ( num == EVENT_INTERFACE_PNEXT  )  strcpy(text, "Suivante >\\Voiture suivante");
+		if ( num == EVENT_INTERFACE_PPREV  )  strcpy(text, "< Précédente\\Voiture précédente");
+		if ( num == EVENT_INTERFACE_PGSPEED)  strcpy(text, "Vitesse maximale\\");
+		if ( num == EVENT_INTERFACE_PGACCEL)  strcpy(text, "Accélération\\");
+		if ( num == EVENT_INTERFACE_PGGRIP )  strcpy(text, "Tenue de route\\");
+		if ( num == EVENT_INTERFACE_PGSOLID)  strcpy(text, "Solidité\\");
+		if ( num == EVENT_INTERFACE_PPRICE )  strcpy(text, "%s (prix du véhicule: %d crédits)");
+		if ( num == EVENT_INTERFACE_PPESETAS) strcpy(text, "Vos économies: %d crédits");
+		if ( num == EVENT_INTERFACE_PSUBMOD0) strcpy(text, "A\\Change le look");
+		if ( num == EVENT_INTERFACE_PSUBMOD1) strcpy(text, "B\\Change le look");
+		if ( num == EVENT_INTERFACE_PSUBMOD2) strcpy(text, "C\\Change le look");
+		if ( num == EVENT_INTERFACE_PSUBMOD3) strcpy(text, "D\\Change le look");
+		if ( num >= EVENT_INTERFACE_PCOLOR0 &&
+			 num <= EVENT_INTERFACE_PCOLOR19) strcpy(text, "\\Change la couleur");
 
-		if ( num == EVENT_OBJECT_DESELECT  )  strcpy(text, "Sélection précédente (\\key desel;)");
-		if ( num == EVENT_OBJECT_LEFT      )  strcpy(text, "Tourne à gauche (\\key left;)");
-		if ( num == EVENT_OBJECT_RIGHT     )  strcpy(text, "Tourne à droite (\\key right;)");
-		if ( num == EVENT_OBJECT_UP        )  strcpy(text, "Avance (\\key up;)");
-		if ( num == EVENT_OBJECT_DOWN      )  strcpy(text, "Recule (\\key down;)");
-		if ( num == EVENT_OBJECT_GASUP     )  strcpy(text, "Monte (\\key gup;)");
-		if ( num == EVENT_OBJECT_GASDOWN   )  strcpy(text, "Descend (\\key gdown;)");
-		if ( num == EVENT_OBJECT_HTAKE     )  strcpy(text, "Prend ou dépose  (\\key action;)");
-		if ( num == EVENT_OBJECT_MTAKE     )  strcpy(text, "Prend ou dépose  (\\key action;)");
-		if ( num == EVENT_OBJECT_MFRONT    )  strcpy(text, "..devant");
-		if ( num == EVENT_OBJECT_MBACK     )  strcpy(text, "..derrière");
-		if ( num == EVENT_OBJECT_MPOWER    )  strcpy(text, "..pile");
-		if ( num == EVENT_OBJECT_BHELP     )  strcpy(text, "Instructions sur la mission (\\key help;)");
-		if ( num == EVENT_OBJECT_BTAKEOFF  )  strcpy(text, "Décolle pour terminer la mission");
-		if ( num == EVENT_OBJECT_BDERRICK  )  strcpy(text, "Construit un derrick");
-		if ( num == EVENT_OBJECT_BSTATION  )  strcpy(text, "Construit une station");
-		if ( num == EVENT_OBJECT_BFACTORY  )  strcpy(text, "Construit une fabrique de robots");
-		if ( num == EVENT_OBJECT_BREPAIR   )  strcpy(text, "Construit un centre de réparation");
-		if ( num == EVENT_OBJECT_BCONVERT  )  strcpy(text, "Construit un convertisseur");
-		if ( num == EVENT_OBJECT_BTOWER    )  strcpy(text, "Construit une tour");
-		if ( num == EVENT_OBJECT_BRESEARCH )  strcpy(text, "Construit un centre de recherches");
-		if ( num == EVENT_OBJECT_BRADAR    )  strcpy(text, "Construit un radar");
-		if ( num == EVENT_OBJECT_BENERGY   )  strcpy(text, "Construit une fabrique de piles");
-		if ( num == EVENT_OBJECT_BLABO     )  strcpy(text, "Construit un laboratoire");
-		if ( num == EVENT_OBJECT_BNUCLEAR  )  strcpy(text, "Construit une centrale nucléaire");
-		if ( num == EVENT_OBJECT_BPARA     )  strcpy(text, "Construit un paratonnerre");
-		if ( num == EVENT_OBJECT_BINFO     )  strcpy(text, "Construit une borne d'information");
-		if ( num == EVENT_OBJECT_GFLAT     )  strcpy(text, "Montre si le sol est plat");
-		if ( num == EVENT_OBJECT_FCREATE   )  strcpy(text, "Pose un drapeau de couleur");
-		if ( num == EVENT_OBJECT_FDELETE   )  strcpy(text, "Enlève un drapeau");
-		if ( num == EVENT_OBJECT_FCOLORb   )  strcpy(text, "\\Drapeaux bleus");
-		if ( num == EVENT_OBJECT_FCOLORr   )  strcpy(text, "\\Drapeaux rouges");
-		if ( num == EVENT_OBJECT_FCOLORg   )  strcpy(text, "\\Drapeaux verts");
-		if ( num == EVENT_OBJECT_FCOLORy   )  strcpy(text, "\\Drapeaux jaunes");
-		if ( num == EVENT_OBJECT_FCOLORv   )  strcpy(text, "\\Drapeaux violets");
-		if ( num == EVENT_OBJECT_FACTORYfa )  strcpy(text, "Fabrique un déménageur volant");
-		if ( num == EVENT_OBJECT_FACTORYta )  strcpy(text, "Fabrique un déménageur à chenilles");
-		if ( num == EVENT_OBJECT_FACTORYwa )  strcpy(text, "Fabrique un déménageur à roues");
-		if ( num == EVENT_OBJECT_FACTORYia )  strcpy(text, "Fabrique un déménageur à pattes");
-		if ( num == EVENT_OBJECT_FACTORYfc )  strcpy(text, "Fabrique un shooter volant");
-		if ( num == EVENT_OBJECT_FACTORYtc )  strcpy(text, "Fabrique un shooter à chenilles");
-		if ( num == EVENT_OBJECT_FACTORYwc )  strcpy(text, "Fabrique un shooter à roues");
-		if ( num == EVENT_OBJECT_FACTORYic )  strcpy(text, "Fabrique un shooter à pattes");
-		if ( num == EVENT_OBJECT_FACTORYfi )  strcpy(text, "Fabrique un orgaShooter volant");
-		if ( num == EVENT_OBJECT_FACTORYti )  strcpy(text, "Fabrique un orgaShooter à chenilles");
-		if ( num == EVENT_OBJECT_FACTORYwi )  strcpy(text, "Fabrique un orgaShooter à roues");
-		if ( num == EVENT_OBJECT_FACTORYii )  strcpy(text, "Fabrique un orgaShooter à pattes");
-		if ( num == EVENT_OBJECT_FACTORYfs )  strcpy(text, "Fabrique un renifleur volant");
-		if ( num == EVENT_OBJECT_FACTORYts )  strcpy(text, "Fabrique un renifleur à chenilles");
-		if ( num == EVENT_OBJECT_FACTORYws )  strcpy(text, "Fabrique un renifleur à roues");
-		if ( num == EVENT_OBJECT_FACTORYis )  strcpy(text, "Fabrique un renifleur à pattes");
-		if ( num == EVENT_OBJECT_FACTORYrt )  strcpy(text, "Fabrique un robot secoueur");
-		if ( num == EVENT_OBJECT_FACTORYrc )  strcpy(text, "Fabrique un robot phazer");
-		if ( num == EVENT_OBJECT_FACTORYrr )  strcpy(text, "Fabrique un robot recycleur");
-		if ( num == EVENT_OBJECT_FACTORYrs )  strcpy(text, "Fabrique un robot bouclier");
-		if ( num == EVENT_OBJECT_FACTORYsa )  strcpy(text, "Fabrique un robot sous-marin");
-		if ( num == EVENT_OBJECT_RTANK     )  strcpy(text, "Recherche les chenilles");
-		if ( num == EVENT_OBJECT_RFLY      )  strcpy(text, "Recherche les robots volants");
-		if ( num == EVENT_OBJECT_RTHUMP    )  strcpy(text, "Recherche le secoueur");
-		if ( num == EVENT_OBJECT_RCANON    )  strcpy(text, "Recherche le canon shooter");
-		if ( num == EVENT_OBJECT_RTOWER    )  strcpy(text, "Recherche la tour de défense");
-		if ( num == EVENT_OBJECT_RPHAZER   )  strcpy(text, "Recherche le canon phazer");
-		if ( num == EVENT_OBJECT_RSHIELD   )  strcpy(text, "Recherche le bouclier");
-		if ( num == EVENT_OBJECT_RATOMIC   )  strcpy(text, "Recherche le nucléaire");
-		if ( num == EVENT_OBJECT_RiPAW     )  strcpy(text, "Recherche les pattes");
-		if ( num == EVENT_OBJECT_RiGUN     )  strcpy(text, "Recherche le canon orgaShooter");
-		if ( num == EVENT_OBJECT_RESET     )  strcpy(text, "Remet au départ");
-		if ( num == EVENT_OBJECT_SEARCH    )  strcpy(text, "Cherche (\\key action;)");
-		if ( num == EVENT_OBJECT_TERRAFORM )  strcpy(text, "Secoue (\\key action;)");
-		if ( num == EVENT_OBJECT_FIRE      )  strcpy(text, "Tir (\\key action;)");
-		if ( num == EVENT_OBJECT_RECOVER   )  strcpy(text, "Recycle (\\key action;)");
-		if ( num == EVENT_OBJECT_BEGSHIELD )  strcpy(text, "Déploie le bouclier (\\key action;)");
-		if ( num == EVENT_OBJECT_ENDSHIELD )  strcpy(text, "Stoppe le bouclier (\\key action;)");
-		if ( num == EVENT_OBJECT_DIMSHIELD )  strcpy(text, "Rayon du bouclier");
-		if ( num == EVENT_OBJECT_PROGRUN   )  strcpy(text, "Exécute le programme sélectionné");
-		if ( num == EVENT_OBJECT_PROGEDIT  )  strcpy(text, "Edite le programme sélectionné");
-		if ( num == EVENT_OBJECT_INFOOK    )  strcpy(text, "\\Mettre le SatCom en veille");
-		if ( num == EVENT_OBJECT_DELETE    )  strcpy(text, "Démolit le bâtiment");
-		if ( num == EVENT_OBJECT_GENERGY   )  strcpy(text, "Niveau d'énergie");
-		if ( num == EVENT_OBJECT_GSHIELD   )  strcpy(text, "Niveau du bouclier");
-		if ( num == EVENT_OBJECT_GRANGE    )  strcpy(text, "Température du réacteur");
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Niveau du bouclier");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "Température du réacteur");
 		if ( num == EVENT_OBJECT_GPROGRESS )  strcpy(text, "Travail en cours ...");
-		if ( num == EVENT_OBJECT_GRADAR    )  strcpy(text, "Nombre d'insectes détectés");
-		if ( num == EVENT_OBJECT_GINFO     )  strcpy(text, "Informations diffusées");
-		if ( num == EVENT_OBJECT_COMPASS   )  strcpy(text, "Boussole");
+		if ( num == EVENT_OBJECT_GSPEED    )  strcpy(text, "Vitesse");
+		if ( num == EVENT_OBJECT_GRPM      )  strcpy(text, "Compte-tours");
+		if ( num == EVENT_OBJECT_GMOTOR    )  strcpy(text, "\\Boîte de vitesses");
+		if ( num == EVENT_OBJECT_GCOMPASS  )  strcpy(text, "Boussole");
+		if ( num == EVENT_OBJECT_GGEIGER   )  strcpy(text, "Compteur Geiger");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "Etat général");
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Etat des pneus");
 //?		if ( num == EVENT_OBJECT_MAP       )  strcpy(text, "Mini-carte");
 		if ( num == EVENT_OBJECT_MAPZOOM   )  strcpy(text, "Zoom mini-carte");
-		if ( num == EVENT_OBJECT_CAMERA    )  strcpy(text, "Caméra (\\key camera;)");
-		if ( num == EVENT_OBJECT_CAMERAleft)  strcpy(text, "Caméra à gauche");
-		if ( num == EVENT_OBJECT_CAMERAright) strcpy(text, "Caméra à droite");
-		if ( num == EVENT_OBJECT_CAMERAnear)  strcpy(text, "Caméra plus proche");
-		if ( num == EVENT_OBJECT_CAMERAaway)  strcpy(text, "Caméra plus loin");
-		if ( num == EVENT_OBJECT_HELP      )  strcpy(text, "Instructions sur la sélection");
-		if ( num == EVENT_OBJECT_SOLUCE    )  strcpy(text, "Donne la solution");
-		if ( num == EVENT_OBJECT_SHORTCUT00)  strcpy(text, "Permute robots <-> bâtiments");
-		if ( num == EVENT_OBJECT_LIMIT     )  strcpy(text, "Montre le rayon d'action");
-		if ( num == EVENT_OBJECT_PEN0      )  strcpy(text, "\\Relève le crayon");
-		if ( num == EVENT_OBJECT_PEN1      )  strcpy(text, "\\Abaisse le crayon noir");
-		if ( num == EVENT_OBJECT_PEN2      )  strcpy(text, "\\Abaisse le crayon jaune");
-		if ( num == EVENT_OBJECT_PEN3      )  strcpy(text, "\\Abaisse le crayon orange");
-		if ( num == EVENT_OBJECT_PEN4      )  strcpy(text, "\\Abaisse le crayon rouge");
-		if ( num == EVENT_OBJECT_PEN5      )  strcpy(text, "\\Abaisse le crayon violet");
-		if ( num == EVENT_OBJECT_PEN6      )  strcpy(text, "\\Abaisse le crayon bleu");
-		if ( num == EVENT_OBJECT_PEN7      )  strcpy(text, "\\Abaisse le crayon vert");
-		if ( num == EVENT_OBJECT_PEN8      )  strcpy(text, "\\Abaisse le crayon brun");
-		if ( num == EVENT_OBJECT_REC       )  strcpy(text, "\\Démarre l'enregistrement");
-		if ( num == EVENT_OBJECT_STOP      )  strcpy(text, "\\Stoppe l'enregistrement");
-		if ( num == EVENT_DT_VISIT0        ||
-			 num == EVENT_DT_VISIT1        ||
-			 num == EVENT_DT_VISIT2        ||
-			 num == EVENT_DT_VISIT3        ||
-			 num == EVENT_DT_VISIT4        )  strcpy(text, "Montre l'endroit");
-		if ( num == EVENT_DT_END           )  strcpy(text, "Continuer");
 		if ( num == EVENT_CMD              )  strcpy(text, "Console de commande");
 		if ( num == EVENT_SPEED            )  strcpy(text, "Vitesse du jeu");
-
-		if ( num == EVENT_HYPER_PREV       )  strcpy(text, "Page précédente");
-		if ( num == EVENT_HYPER_NEXT       )  strcpy(text, "Page suivante");
-		if ( num == EVENT_HYPER_HOME       )  strcpy(text, "Page initiale");
-		if ( num == EVENT_HYPER_COPY       )  strcpy(text, "Copier");
-		if ( num == EVENT_HYPER_SIZE1      )  strcpy(text, "Taille 1");
-		if ( num == EVENT_HYPER_SIZE2      )  strcpy(text, "Taille 2");
-		if ( num == EVENT_HYPER_SIZE3      )  strcpy(text, "Taille 3");
-		if ( num == EVENT_HYPER_SIZE4      )  strcpy(text, "Taille 4");
-		if ( num == EVENT_HYPER_SIZE5      )  strcpy(text, "Taille 5");
-		if ( num == EVENT_SATCOM_HUSTON    )  strcpy(text, "Instructions de Houston");
-#if _TEEN
-		if ( num == EVENT_SATCOM_SAT       )  strcpy(text, "Dictionnaire anglais-français");
-#else
-		if ( num == EVENT_SATCOM_SAT       )  strcpy(text, "Rapport du satellite");
-#endif
-		if ( num == EVENT_SATCOM_LOADING   )  strcpy(text, "Programmes envoyés par Houston");
-		if ( num == EVENT_SATCOM_OBJECT    )  strcpy(text, "Liste des objets");
-		if ( num == EVENT_SATCOM_PROG      )  strcpy(text, "Aide à la programmation");
-		if ( num == EVENT_SATCOM_SOLUCE    )  strcpy(text, "Solution");
-
-		if ( num == EVENT_STUDIO_OK        )  strcpy(text, "D'accord\\Compiler le programme");
-		if ( num == EVENT_STUDIO_CANCEL    )  strcpy(text, "Annuler\\Annuler toutes les modifications");
-		if ( num == EVENT_STUDIO_NEW       )  strcpy(text, "Nouveau");
-		if ( num == EVENT_STUDIO_OPEN      )  strcpy(text, "Ouvrir (Ctrl+o)");
-		if ( num == EVENT_STUDIO_SAVE      )  strcpy(text, "Enregistrer (Ctrl+s)");
-		if ( num == EVENT_STUDIO_UNDO      )  strcpy(text, "Annuler (Ctrl+z)");
-		if ( num == EVENT_STUDIO_CUT       )  strcpy(text, "Couper (Ctrl+x)");
-		if ( num == EVENT_STUDIO_COPY      )  strcpy(text, "Copier (Ctrl+c)");
-		if ( num == EVENT_STUDIO_PASTE     )  strcpy(text, "Coller (Ctrl+v)");
-		if ( num == EVENT_STUDIO_SIZE      )  strcpy(text, "Taille des caractères");
-		if ( num == EVENT_STUDIO_TOOL      )  strcpy(text, "Instructions (\\key help;)");
-		if ( num == EVENT_STUDIO_HELP      )  strcpy(text, "Aide à la programmation (\\key prog;)");
-		if ( num == EVENT_STUDIO_COMPILE   )  strcpy(text, "Compiler");
-		if ( num == EVENT_STUDIO_RUN       )  strcpy(text, "Démarrer/stopper");
-		if ( num == EVENT_STUDIO_REALTIME  )  strcpy(text, "Pause/continuer");
-		if ( num == EVENT_STUDIO_STEP      )  strcpy(text, "Un pas");
-	}
-
-	if ( type == RES_OBJECT )
-	{
-		if ( num == OBJECT_PORTICO      )  strcpy(text, "Portique");
-		if ( num == OBJECT_BASE         )  strcpy(text, "Vaisseau spatial");
-		if ( num == OBJECT_DERRICK      )  strcpy(text, "Derrick");
-		if ( num == OBJECT_FACTORY      )  strcpy(text, "Fabrique de robots");
-		if ( num == OBJECT_REPAIR       )  strcpy(text, "Centre de réparation");
-		if ( num == OBJECT_DESTROYER    )  strcpy(text, "Destructeur");
-		if ( num == OBJECT_STATION      )  strcpy(text, "Station de recharge");
-		if ( num == OBJECT_CONVERT      )  strcpy(text, "Conversion minerai en titanium");
-		if ( num == OBJECT_TOWER        )  strcpy(text, "Tour de défense");
-		if ( num == OBJECT_NEST         )  strcpy(text, "Nid");
-		if ( num == OBJECT_RESEARCH     )  strcpy(text, "Centre de recherches");
-		if ( num == OBJECT_RADAR        )  strcpy(text, "Radar");
-		if ( num == OBJECT_INFO         )  strcpy(text, "Borne d'information");
-#if _TEEN
-		if ( num == OBJECT_ENERGY       )  strcpy(text, "Désintégrateur");
-#else
-		if ( num == OBJECT_ENERGY       )  strcpy(text, "Fabrique de piles");
-#endif
-		if ( num == OBJECT_LABO         )  strcpy(text, "Laboratoire de matières organiques");
-		if ( num == OBJECT_NUCLEAR      )  strcpy(text, "Centrale nucléaire");
-		if ( num == OBJECT_PARA         )  strcpy(text, "Paratonnerre");
-		if ( num == OBJECT_SAFE         )  strcpy(text, "Coffre-fort");
-		if ( num == OBJECT_HUSTON       )  strcpy(text, "Centre de contrôle");
-		if ( num == OBJECT_TARGET1      )  strcpy(text, "Cible");
-		if ( num == OBJECT_TARGET2      )  strcpy(text, "Cible");
-		if ( num == OBJECT_START        )  strcpy(text, "Départ");
-		if ( num == OBJECT_END          )  strcpy(text, "But");
-		if ( num == OBJECT_STONE        )  strcpy(text, "Minerai de titanium");
-		if ( num == OBJECT_URANIUM      )  strcpy(text, "Minerai d'uranium");
-		if ( num == OBJECT_BULLET       )  strcpy(text, "Matière organique");
-		if ( num == OBJECT_METAL        )  strcpy(text, "Titanium");
-		if ( num == OBJECT_POWER        )  strcpy(text, "Pile normale");
-		if ( num == OBJECT_ATOMIC       )  strcpy(text, "Pile nucléaire");
-		if ( num == OBJECT_BBOX         )  strcpy(text, "Boîte noire");
-		if ( num == OBJECT_KEYa         )  strcpy(text, "Clé A");
-		if ( num == OBJECT_KEYb         )  strcpy(text, "Clé B");
-		if ( num == OBJECT_KEYc         )  strcpy(text, "Clé C");
-		if ( num == OBJECT_KEYd         )  strcpy(text, "Clé D");
-		if ( num == OBJECT_TNT          )  strcpy(text, "Explosif");
-		if ( num == OBJECT_BOMB         )  strcpy(text, "Mine fixe");
-		if ( num == OBJECT_BAG          )  strcpy(text, "Sac de survie");
-		if ( num == OBJECT_WAYPOINT     )  strcpy(text, "Indicateur");
-		if ( num == OBJECT_FLAGb        )  strcpy(text, "Drapeau bleu");
-		if ( num == OBJECT_FLAGr        )  strcpy(text, "Drapeau rouge");
-		if ( num == OBJECT_FLAGg        )  strcpy(text, "Drapeau vert");
-		if ( num == OBJECT_FLAGy        )  strcpy(text, "Drapeau jaune");
-		if ( num == OBJECT_FLAGv        )  strcpy(text, "Drapeau violet");
-		if ( num == OBJECT_MARKPOWER    )  strcpy(text, "Emplacement pour station");
-		if ( num == OBJECT_MARKURANIUM  )  strcpy(text, "Emplacement pour derrick (uranium)");
-		if ( num == OBJECT_MARKKEYa     )  strcpy(text, "Emplacement pour derrick (clé A)");
-		if ( num == OBJECT_MARKKEYb     )  strcpy(text, "Emplacement pour derrick (clé B)");
-		if ( num == OBJECT_MARKKEYc     )  strcpy(text, "Emplacement pour derrick (clé C)");
-		if ( num == OBJECT_MARKKEYd     )  strcpy(text, "Emplacement pour derrick (clé D)");
-		if ( num == OBJECT_MARKSTONE    )  strcpy(text, "Emplacement pour derrick (titanium)");
-		if ( num == OBJECT_MOBILEft     )  strcpy(text, "Robot d'entraînement");
-		if ( num == OBJECT_MOBILEtt     )  strcpy(text, "Robot d'entraînement");
-		if ( num == OBJECT_MOBILEwt     )  strcpy(text, "Robot d'entraînement");
-		if ( num == OBJECT_MOBILEit     )  strcpy(text, "Robot d'entraînement");
-		if ( num == OBJECT_MOBILEfa     )  strcpy(text, "Robot déménageur");
-		if ( num == OBJECT_MOBILEta     )  strcpy(text, "Robot déménageur");
-		if ( num == OBJECT_MOBILEwa     )  strcpy(text, "Robot déménageur");
-		if ( num == OBJECT_MOBILEia     )  strcpy(text, "Robot déménageur");
-		if ( num == OBJECT_MOBILEfc     )  strcpy(text, "Robot shooter");
-		if ( num == OBJECT_MOBILEtc     )  strcpy(text, "Robot shooter");
-		if ( num == OBJECT_MOBILEwc     )  strcpy(text, "Robot shooter");
-		if ( num == OBJECT_MOBILEic     )  strcpy(text, "Robot shooter");
-		if ( num == OBJECT_MOBILEfi     )  strcpy(text, "Robot orgaShooter");
-		if ( num == OBJECT_MOBILEti     )  strcpy(text, "Robot orgaShooter");
-		if ( num == OBJECT_MOBILEwi     )  strcpy(text, "Robot orgaShooter");
-		if ( num == OBJECT_MOBILEii     )  strcpy(text, "Robot orgaShooter");
-		if ( num == OBJECT_MOBILEfs     )  strcpy(text, "Robot renifleur");
-		if ( num == OBJECT_MOBILEts     )  strcpy(text, "Robot renifleur");
-		if ( num == OBJECT_MOBILEws     )  strcpy(text, "Robot renifleur");
-		if ( num == OBJECT_MOBILEis     )  strcpy(text, "Robot renifleur");
-		if ( num == OBJECT_MOBILErt     )  strcpy(text, "Robot secoueur");
-		if ( num == OBJECT_MOBILErc     )  strcpy(text, "Robot phazer");
-		if ( num == OBJECT_MOBILErr     )  strcpy(text, "Robot recycleur");
-		if ( num == OBJECT_MOBILErs     )  strcpy(text, "Robot bouclier");
-		if ( num == OBJECT_MOBILEsa     )  strcpy(text, "Robot sous-marin");
-		if ( num == OBJECT_MOBILEtg     )  strcpy(text, "Cible d'entraînement");
-		if ( num == OBJECT_MOBILEdr     )  strcpy(text, "Robot dessinateur");
-		if ( num == OBJECT_HUMAN        )  strcpy(text, g_gamerName);
-		if ( num == OBJECT_TECH         )  strcpy(text, "Technicien");
-		if ( num == OBJECT_TOTO         )  strcpy(text, "Robbie");
-		if ( num == OBJECT_MOTHER       )  strcpy(text, "Pondeuse");
-		if ( num == OBJECT_ANT          )  strcpy(text, "Fourmi");
-		if ( num == OBJECT_SPIDER       )  strcpy(text, "Araignée");
-		if ( num == OBJECT_BEE          )  strcpy(text, "Guêpe");
-		if ( num == OBJECT_WORM         )  strcpy(text, "Ver");
-		if ( num == OBJECT_EGG          )  strcpy(text, "Oeuf");
-		if ( num == OBJECT_RUINmobilew1 )  strcpy(text, "Epave de robot");
-		if ( num == OBJECT_RUINmobilew2 )  strcpy(text, "Epave de robot");
-		if ( num == OBJECT_RUINmobilet1 )  strcpy(text, "Epave de robot");
-		if ( num == OBJECT_RUINmobilet2 )  strcpy(text, "Epave de robot");
-		if ( num == OBJECT_RUINmobiler1 )  strcpy(text, "Epave de robot");
-		if ( num == OBJECT_RUINmobiler2 )  strcpy(text, "Epave de robot");
-		if ( num == OBJECT_RUINfactory  )  strcpy(text, "Bâtiment en ruine");
-		if ( num == OBJECT_RUINdoor     )  strcpy(text, "Bâtiment en ruine");
-		if ( num == OBJECT_RUINsupport  )  strcpy(text, "Déchet");
-		if ( num == OBJECT_RUINradar    )  strcpy(text, "Bâtiment en ruine");
-		if ( num == OBJECT_RUINconvert  )  strcpy(text, "Bâtiment en ruine");
-		if ( num == OBJECT_RUINbase     )  strcpy(text, "Epave de vaisseau spatial");
-		if ( num == OBJECT_RUINhead     )  strcpy(text, "Epave de vaisseau spatial");
-		if ( num == OBJECT_APOLLO1      ||
-			 num == OBJECT_APOLLO3      ||
-			 num == OBJECT_APOLLO4      ||
-			 num == OBJECT_APOLLO5      )  strcpy(text, "Vestige d'une mission Apollo");
-		if ( num == OBJECT_APOLLO2      )  strcpy(text, "Lunar Roving Vehicle");
 	}
 
 	if ( type == RES_ERR )
 	{
 		strcpy(text, "Erreur");
 		if ( num == ERR_CMD             )  strcpy(text, "Commande inconnue");
-#if _NEWLOOK
-		if ( num == ERR_INSTALL         )  strcpy(text, "CeeBot n'est pas installé.");
-		if ( num == ERR_NOCD            )  strcpy(text, "Veuillez mettre le CD de CeeBot\net relancer le jeu.");
-#else
-		if ( num == ERR_INSTALL         )  strcpy(text, "COLOBOT n'est pas installé.");
-		if ( num == ERR_NOCD            )  strcpy(text, "Veuillez mettre le CD de COLOBOT\net relancer le jeu.");
-#endif
-		if ( num == ERR_MANIP_VEH       )  strcpy(text, "Robot inadapté");
-		if ( num == ERR_MANIP_FLY       )  strcpy(text, "Impossible en vol");
-		if ( num == ERR_MANIP_BUSY      )  strcpy(text, "Porte déjà quelque chose");
-		if ( num == ERR_MANIP_NIL       )  strcpy(text, "Rien à prendre");
-		if ( num == ERR_MANIP_MOTOR     )  strcpy(text, "Impossible en mouvement");
-		if ( num == ERR_MANIP_OCC       )  strcpy(text, "Emplacement occupé");
-		if ( num == ERR_MANIP_FRIEND    )  strcpy(text, "Pas d'autre robot");
-		if ( num == ERR_MANIP_RADIO     )  strcpy(text, "Vous ne pouvez pas transporter un objet radioactif");
-		if ( num == ERR_MANIP_WATER     )  strcpy(text, "Vous ne pouvez pas transporter un objet sous l'eau");
-		if ( num == ERR_MANIP_EMPTY     )  strcpy(text, "Rien à déposer");
-		if ( num == ERR_BUILD_FLY       )  strcpy(text, "Impossible en vol");
-		if ( num == ERR_BUILD_WATER     )  strcpy(text, "Impossible sous l'eau");
-		if ( num == ERR_BUILD_ENERGY    )  strcpy(text, "Pas assez d'énergie");
-		if ( num == ERR_BUILD_METALAWAY )  strcpy(text, "Titanium trop loin");
-		if ( num == ERR_BUILD_METALNEAR )  strcpy(text, "Titanium trop proche");
-		if ( num == ERR_BUILD_METALINEX )  strcpy(text, "Titanium inexistant");
-		if ( num == ERR_BUILD_FLAT      )  strcpy(text, "Sol pas assez plat");
-		if ( num == ERR_BUILD_FLATLIT   )  strcpy(text, "Sol plat pas assez grand");
-		if ( num == ERR_BUILD_BUSY      )  strcpy(text, "Emplacement occupé");
-		if ( num == ERR_BUILD_BASE      )  strcpy(text, "Trop proche du vaisseau spatial");
-		if ( num == ERR_BUILD_NARROW    )  strcpy(text, "Trop proche d'un bâtiment");
-		if ( num == ERR_BUILD_MOTOR     )  strcpy(text, "Impossible en mouvement");
-		if ( num == ERR_SEARCH_FLY      )  strcpy(text, "Impossible en vol");
-		if ( num == ERR_SEARCH_VEH      )  strcpy(text, "Robot inadapté");
-		if ( num == ERR_SEARCH_MOTOR    )  strcpy(text, "Impossible en mouvement");
-		if ( num == ERR_TERRA_VEH       )  strcpy(text, "Robot inadapté");
-		if ( num == ERR_TERRA_ENERGY    )  strcpy(text, "Pas assez d'énergie");
-		if ( num == ERR_TERRA_FLOOR     )  strcpy(text, "Terrain inadapté");
-		if ( num == ERR_TERRA_BUILDING  )  strcpy(text, "Bâtiment trop proche");
-		if ( num == ERR_TERRA_OBJECT    )  strcpy(text, "Objet trop proche");
-		if ( num == ERR_RECOVER_VEH     )  strcpy(text, "Robot inadapté");
-		if ( num == ERR_RECOVER_ENERGY  )  strcpy(text, "Pas assez d'énergie");
-		if ( num == ERR_RECOVER_NULL    )  strcpy(text, "Rien à recycler");
-		if ( num == ERR_SHIELD_VEH      )  strcpy(text, "Robot inadapté");
-		if ( num == ERR_SHIELD_ENERGY   )  strcpy(text, "Plus d'énergie");
+		if ( num == ERR_INSTALL         )  strcpy(text, "BuzzingCars n'est pas installé.");
+		if ( num == ERR_NOCD            )  strcpy(text, "Veuillez mettre le CD de BuzzingCars\net relancer le jeu.");
 		if ( num == ERR_MOVE_IMPOSSIBLE )  strcpy(text, "Déplacement impossible");
-		if ( num == ERR_FIND_IMPOSSIBLE )  strcpy(text, "Objet n'existe pas");
 		if ( num == ERR_GOTO_IMPOSSIBLE )  strcpy(text, "Chemin introuvable");
 		if ( num == ERR_GOTO_ITER       )  strcpy(text, "Position inaccessible");
 		if ( num == ERR_GOTO_BUSY       )  strcpy(text, "Destination occupée");
 		if ( num == ERR_FIRE_VEH        )  strcpy(text, "Robot inadapté");
 		if ( num == ERR_FIRE_ENERGY     )  strcpy(text, "Pas assez d'énergie");
-		if ( num == ERR_FIRE_FLY        )  strcpy(text, "Impossible en vol");
-		if ( num == ERR_CONVERT_EMPTY   )  strcpy(text, "Pas de minerai de titanium à convertir");
-		if ( num == ERR_DERRICK_NULL    )  strcpy(text, "Pas de minerai en sous-sol");
-		if ( num == ERR_STATION_NULL    )  strcpy(text, "Pas d'énergie en sous-sol");
-		if ( num == ERR_TOWER_POWER     )  strcpy(text, "Pas de pile");
-		if ( num == ERR_TOWER_ENERGY    )  strcpy(text, "Plus d'énergie");
-		if ( num == ERR_RESEARCH_POWER  )  strcpy(text, "Pas de pile");
-		if ( num == ERR_RESEARCH_ENERGY )  strcpy(text, "Plus assez d'énergie");
-		if ( num == ERR_RESEARCH_TYPE   )  strcpy(text, "Pas le bon type de pile");
-		if ( num == ERR_RESEARCH_ALREADY)  strcpy(text, "Recherche déjà effectuée");
-		if ( num == ERR_ENERGY_NULL     )  strcpy(text, "Pas d'énergie en sous-sol");
-		if ( num == ERR_ENERGY_LOW      )  strcpy(text, "Pas encore assez d'énergie");
-		if ( num == ERR_ENERGY_EMPTY    )  strcpy(text, "Pas de titanium à transformer");
-		if ( num == ERR_ENERGY_BAD      )  strcpy(text, "Ne transforme que le titanium");
-		if ( num == ERR_BASE_DLOCK      )  strcpy(text, "Portes bloquées par un robot ou un objet");
-		if ( num == ERR_BASE_DHUMAN     )  strcpy(text, "Vous devez embarquer pour pouvoir décoller");
-		if ( num == ERR_LABO_NULL       )  strcpy(text, "Rien à analyser");
-		if ( num == ERR_LABO_BAD        )  strcpy(text, "N'analyse que la matière organique");
-		if ( num == ERR_LABO_ALREADY    )  strcpy(text, "Analyse déjà effectuée");
-		if ( num == ERR_NUCLEAR_NULL    )  strcpy(text, "Pas d'énergie en sous-sol");
-		if ( num == ERR_NUCLEAR_LOW     )  strcpy(text, "Pas encore assez d'énergie");
-		if ( num == ERR_NUCLEAR_EMPTY   )  strcpy(text, "Pas d'uranium à transformer");
-		if ( num == ERR_NUCLEAR_BAD     )  strcpy(text, "Ne transforme que l'uranium");
-		if ( num == ERR_FACTORY_NULL    )  strcpy(text, "Pas de titanium");
-		if ( num == ERR_FACTORY_NEAR    )  strcpy(text, "Quelque chose est trop proche");
-		if ( num == ERR_RESET_NEAR      )  strcpy(text, "Emplacement occupé");
-		if ( num == ERR_INFO_NULL       )  strcpy(text, "Pas trouvé de borne d'information");
-		if ( num == ERR_VEH_VIRUS       )  strcpy(text, "Un programme est infecté par un virus");
-		if ( num == ERR_BAT_VIRUS       )  strcpy(text, "Infecté par un virus, ne fonctionne plus temporairement");
-		if ( num == ERR_VEH_POWER       )  strcpy(text, "Pas de pile");
-		if ( num == ERR_VEH_ENERGY      )  strcpy(text, "Plus d'énergie");
-		if ( num == ERR_FLAG_FLY        )  strcpy(text, "Impossible en vol");
-		if ( num == ERR_FLAG_WATER      )  strcpy(text, "Impossible en nageant");
-		if ( num == ERR_FLAG_MOTOR      )  strcpy(text, "Impossible en mouvement");
-		if ( num == ERR_FLAG_BUSY       )  strcpy(text, "Impossible en portant un objet");
-		if ( num == ERR_FLAG_CREATE     )  strcpy(text, "Trop de drapeaux de cette couleur (maximum 5)");
-		if ( num == ERR_FLAG_PROXY      )  strcpy(text, "Trop proche d'un drapeau existant");
-		if ( num == ERR_FLAG_DELETE     )  strcpy(text, "Aucun drapeau à proximité");
 		if ( num == ERR_MISSION_NOTERM  )  strcpy(text, "La misssion n'est pas terminée (appuyez sur \\key help; pour plus de détails)");
-		if ( num == ERR_DELETEMOBILE    )  strcpy(text, "Robot détruit");
-		if ( num == ERR_DELETEBUILDING  )  strcpy(text, "Bâtiment détruit");
-		if ( num == ERR_TOOMANY         )  strcpy(text, "Création impossible, il y a trop d'objets");
-		if ( num == ERR_OBLIGATORYTOKEN )  strcpy(text, "Il manque \"%s\" dans le programme");
-		if ( num == ERR_PROHIBITEDTOKEN )  strcpy(text, "Interdit dans cet exercice");
 
-		if ( num == INFO_BUILD          )  strcpy(text, "Bâtiment terminé");
-		if ( num == INFO_CONVERT        )  strcpy(text, "Titanium disponible");
-		if ( num == INFO_RESEARCH       )  strcpy(text, "Recherche terminée");
-		if ( num == INFO_RESEARCHTANK   )  strcpy(text, "Fabrication d'un robot à chenilles possible");
-		if ( num == INFO_RESEARCHFLY    )  strcpy(text, "Il est possible de voler avec les touches (\\key gup;) et (\\key gdown;)");
-		if ( num == INFO_RESEARCHTHUMP  )  strcpy(text, "Fabrication d'un robot secoueur possible");
-		if ( num == INFO_RESEARCHCANON  )  strcpy(text, "Fabrication de robots shooter possible");
-		if ( num == INFO_RESEARCHTOWER  )  strcpy(text, "Construction d'une tour de défense possible");
-		if ( num == INFO_RESEARCHPHAZER )  strcpy(text, "Fabrication d'un robot phazer possible");
-		if ( num == INFO_RESEARCHSHIELD )  strcpy(text, "Fabrication d'un robot bouclier possible");
-		if ( num == INFO_RESEARCHATOMIC )  strcpy(text, "Construction d'une centrale nucléaire possible");
-		if ( num == INFO_FACTORY        )  strcpy(text, "Nouveau robot disponible");
-		if ( num == INFO_LABO           )  strcpy(text, "Analyse terminée");
-		if ( num == INFO_ENERGY         )  strcpy(text, "Pile disponible");
-		if ( num == INFO_NUCLEAR        )  strcpy(text, "Pile nucléaire disponible");
-		if ( num == INFO_FINDING        )  strcpy(text, "Vous avez trouvé un objet utilisable");
-		if ( num == INFO_MARKPOWER      )  strcpy(text, "Emplacement pour station trouvé");
-		if ( num == INFO_MARKURANIUM    )  strcpy(text, "Emplacement pour derrick trouvé");
-		if ( num == INFO_MARKSTONE      )  strcpy(text, "Emplacement pour derrick trouvé");
-		if ( num == INFO_MARKKEYa       )  strcpy(text, "Emplacement pour derrick trouvé");
-		if ( num == INFO_MARKKEYb       )  strcpy(text, "Emplacement pour derrick trouvé");
-		if ( num == INFO_MARKKEYc       )  strcpy(text, "Emplacement pour derrick trouvé");
-		if ( num == INFO_MARKKEYd       )  strcpy(text, "Emplacement pour derrick trouvé");
 		if ( num == INFO_WIN            )  strcpy(text, "<<< Bravo, mission terminée >>>");
 		if ( num == INFO_LOST           )  strcpy(text, "<<< Désolé, mission échouée >>>");
 		if ( num == INFO_LOSTq          )  strcpy(text, "<<< Désolé, mission échouée >>>");
-		if ( num == INFO_WRITEOK        )  strcpy(text, "Enregistrement effectué");
-		if ( num == INFO_DELETEPATH     )  strcpy(text, "Indicateur atteint");
-		if ( num == INFO_DELETEMOTHER   )  strcpy(text, "Pondeuse mortellement touchée");
-		if ( num == INFO_DELETEANT      )  strcpy(text, "Fourmi mortellement touchée");
-		if ( num == INFO_DELETEBEE      )  strcpy(text, "Guêpe mortellement touchée");
-		if ( num == INFO_DELETEWORM     )  strcpy(text, "Ver mortellement touché");
-		if ( num == INFO_DELETESPIDER   )  strcpy(text, "Araignée mortellement touchée");
-		if ( num == INFO_BEGINSATCOM    )  strcpy(text, "Consultez votre SatCom en appuyant sur \\key help;");
 	}
 
 	if ( type == RES_CBOT )
@@ -1893,804 +1671,1450 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 	}
 #endif
 
-#if _GERMAN | _WG
+#if _ITALIAN
 	if ( type == RES_TEXT )
 	{
 		#if _FULL
-		if ( num == RT_VERSION_ID          )  strcpy(text, "1.18 /d");
+		if ( num == RT_VERSION_ID          )  strcpy(text, "1.3 /i");
 		#endif
-		#if _NET
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A 1.18");
-		#endif
-		#if _SCHOOL & _EDU
-		#if _TEEN
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-Teen EDU 1.18");
-		#else
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A EDU 1.18");
-		#endif
-		#endif
-		#if _SCHOOL & _PERSO
-		#if _TEEN
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-Teen PERSO 1.18");
-		#else
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A PERSO 1.18");
-		#endif
-		#endif
-		#if _SCHOOL & _CEEBOTDEMO
-		#if _TEEN
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-Teen DEMO 1.18");
-		#else
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A DEMO 1.18");
-		#endif
+		#if _NET | _SCHOOL
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Scuola 1.3 /i");
 		#endif
 		#if _DEMO
-		if ( num == RT_VERSION_ID          )  strcpy(text, "Demo 1.18 /d");
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Demo 1.3 /i");
 		#endif
-		if ( num == RT_DISINFO_TITLE       )  strcpy(text, "SatCom");
-		if ( num == RT_WINDOW_MAXIMIZED    )  strcpy(text, "Großes Fenster");
-		if ( num == RT_WINDOW_MINIMIZED    )  strcpy(text, "Reduzieren");
-		if ( num == RT_WINDOW_STANDARD     )  strcpy(text, "Normale Größe");
-		if ( num == RT_WINDOW_CLOSE        )  strcpy(text, "Schließen");
+		#if _SE
+		if ( num == RT_VERSION_ID          )  strcpy(text, "S-E 1.3 /i");
+		#endif
+		if ( num == RT_WINDOW_MAXIMIZED    )  strcpy(text, "Ingrandisci");
+		if ( num == RT_WINDOW_MINIMIZED    )  strcpy(text, "Riduci a icona");
+		if ( num == RT_WINDOW_STANDARD     )  strcpy(text, "Dimensioni normali");
+		if ( num == RT_WINDOW_CLOSE        )  strcpy(text, "Chiudi");
 
-		if ( num == RT_STUDIO_TITLE        )  strcpy(text, "Programmeditor");
-		if ( num == RT_SCRIPT_NEW          )  strcpy(text, "Neu");
-		if ( num == RT_NAME_DEFAULT        )  strcpy(text, "Spieler");
-		if ( num == RT_IO_NEW              )  strcpy(text, "Neu ...");
-		if ( num == RT_KEY_OR              )  strcpy(text, " oder ");
+		if ( num == RT_NAME_DEFAULT        )  strcpy(text, "Giocatore");
+		if ( num == RT_KEY_OR              )  strcpy(text, " o ");
 
-#if _NEWLOOK
-		if ( num == RT_TITLE_BASE          )  strcpy(text, "CeeBot");
-		if ( num == RT_TITLE_INIT          )  strcpy(text, "CeeBot");
+#if _EGAMES
+		if ( num == RT_TITLE_BASE          )  strcpy(text, "Wild Wheels");
+		if ( num == RT_TITLE_INIT          )  strcpy(text, "Wild Wheels");
 #else
-		if ( num == RT_TITLE_BASE          )  strcpy(text, "COLOBOT");
-		if ( num == RT_TITLE_INIT          )  strcpy(text, "COLOBOT");
+		if ( num == RT_TITLE_BASE          )  strcpy(text, "BuzzingCars");
+		if ( num == RT_TITLE_INIT          )  strcpy(text, "BuzzingCars");
 #endif
-#if _SCHOOL
-		if ( num == RT_TITLE_TRAINER       )  strcpy(text, "Übungen");
-#else
-		if ( num == RT_TITLE_TRAINER       )  strcpy(text, "Programmieren");
-#endif
-		if ( num == RT_TITLE_DEFI          )  strcpy(text, "Challenges");
-		if ( num == RT_TITLE_MISSION       )  strcpy(text, "Missionen");
-		if ( num == RT_TITLE_FREE          )  strcpy(text, "Freestyle");
-		if ( num == RT_TITLE_TEEN          )  strcpy(text, "Freestyle");
-		if ( num == RT_TITLE_USER          )  strcpy(text, "Userlevels");
-		if ( num == RT_TITLE_PROTO         )  strcpy(text, "Prototypen");
-		if ( num == RT_TITLE_SETUP         )  strcpy(text, "Einstellungen");
-		if ( num == RT_TITLE_NAME          )  strcpy(text, "Name ");
-		if ( num == RT_TITLE_PERSO         )  strcpy(text, "Aussehen einstellen");
-		if ( num == RT_TITLE_WRITE         )  strcpy(text, "Aktuelle Mission speichern");
-		if ( num == RT_TITLE_READ          )  strcpy(text, "Gespeicherte Mission laden");
+		if ( num == RT_TITLE_MISSION       )  strcpy(text, "Missioni");
+		if ( num == RT_TITLE_FREE          )  strcpy(text, "Livelli liberi");
+		if ( num == RT_TITLE_USER          )  strcpy(text, "Livelli utente");
+		if ( num == RT_TITLE_PROTO         )  strcpy(text, "Prototipi");
+		if ( num == RT_TITLE_SETUP         )  strcpy(text, "Opzioni");
+		if ( num == RT_TITLE_NAME          )  strcpy(text, "Nome pilota");
+		if ( num == RT_TITLE_PERSO         )  strcpy(text, "Seleziona un'automobile");
 
-		if ( num == RT_PLAY_CHAPt          )  strcpy(text, " Liste der Kapitel:");
-		if ( num == RT_PLAY_CHAPd          )  strcpy(text, " Liste der Kapitel:");
-		if ( num == RT_PLAY_CHAPm          )  strcpy(text, " Liste der Planeten:");
-		if ( num == RT_PLAY_CHAPf          )  strcpy(text, " Liste der Planeten:");
-		if ( num == RT_PLAY_CHAPu          )  strcpy(text, " Userlevels:");
-		if ( num == RT_PLAY_CHAPp          )  strcpy(text, " Liste der Planeten:");
-		if ( num == RT_PLAY_CHAPte         )  strcpy(text, " Liste der Kapitel:");
-		if ( num == RT_PLAY_LISTt          )  strcpy(text, " Liste der Übungen des Kapitels:");
-		if ( num == RT_PLAY_LISTd          )  strcpy(text, " Liste der Challenges des Kapitels:");
-		if ( num == RT_PLAY_LISTm          )  strcpy(text, " Liste der Missionen des Planeten:");
-		if ( num == RT_PLAY_LISTf          )  strcpy(text, " Liste der freien Levels des Planeten:");
-		if ( num == RT_PLAY_LISTu          )  strcpy(text, " Missionen des Userlevels:");
-		if ( num == RT_PLAY_LISTp          )  strcpy(text, " Liste der Prototypen des Planeten:");
-		if ( num == RT_PLAY_LISTk          )  strcpy(text, " Liste der freien Levels des Kapitel:");
-		if ( num == RT_PLAY_RESUME         )  strcpy(text, " Zusammenfassung:");
+		if ( num == RT_PLAY_LISTm          )  strcpy(text, " Seleziona una missione:");
+		if ( num == RT_PLAY_LISTf          )  strcpy(text, " Seleziona un circuito:");
+		if ( num == RT_PLAY_LISTu          )  strcpy(text, " Missioni utente:");
+		if ( num == RT_PLAY_LISTp          )  strcpy(text, " Prototipi:");
+		if ( num == RT_PLAY_PESETAS        )  strcpy(text, " Scheda punteggio:");
+		if ( num == RT_PLAY_PCREDIT        )  strcpy(text, "Punteggio accumulato");
+		if ( num == RT_PLAY_PMISSION       )  strcpy(text, "Punteggio massimo");
+		if ( num == RT_PLAY_PNEXT          )  strcpy(text, "Livello successivo");
 
 		if ( num == RT_SETUP_DEVICE        )  strcpy(text, " Driver:");
-		if ( num == RT_SETUP_MODE          )  strcpy(text, " Auflösung:");
-		if ( num == RT_SETUP_KEY1          )  strcpy(text, "1) Klicken Sie auf die neu zu definierende Taste.");
-		if ( num == RT_SETUP_KEY2          )  strcpy(text, "2) Drücken Sie auf die neue Taste.");
+		if ( num == RT_SETUP_MODE          )  strcpy(text, " Risoluzione:");
+		if ( num == RT_SETUP_KEY1          )  strcpy(text, "1) Fai prima clic sul tasto da reimpostare.");
+		if ( num == RT_SETUP_KEY2          )  strcpy(text, "2) Quindi premi il tasto che desideri utilizzare in alternativa.");
 
-		if ( num == RT_PERSO_FACE          )  strcpy(text, "Kopf:");
-		if ( num == RT_PERSO_GLASSES       )  strcpy(text, "Brille:");
-		if ( num == RT_PERSO_HAIR          )  strcpy(text, "Haarfarbe:");
-		if ( num == RT_PERSO_COMBI         )  strcpy(text, "Farbe des Anzugs:");
-		if ( num == RT_PERSO_BAND          )  strcpy(text, "Farbe der Streifen:");
+		if ( num == RT_PERSO_LIST          )  strcpy(text, "Elenco piloti:");
+		if ( num == RT_PERSO_LEVEL         )  strcpy(text, "Livello di difficoltà:");
+		if ( num == RT_PERSO_BUY           )  strcpy(text, "Acquista");
 
-#if _NEWLOOK
-		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "CeeBot");
-		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Wollen Sie CeeBot schließen ?");
-		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Schließen\\CeeBot schließen");
+#if _EGAMES
+		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "Wild Wheels");
 #else
-		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "COLOBOT");
-		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Wollen Sie COLOBOT schließen ?");
-		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Schließen\\COLOBOT schließen");
+		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "BuzzingCars");
 #endif
-		if ( num == RT_DIALOG_ABORT        )  strcpy(text, "Mission abbrechen ?");
-		if ( num == RT_DIALOG_YES          )  strcpy(text, "Abbrechen\\Mission abbrechen");
-		if ( num == RT_DIALOG_NO           )  strcpy(text, "Weitermachen\\Mission weitermachen");
-		if ( num == RT_DIALOG_NOQUIT       )  strcpy(text, "Weitermachen\\Weitermachen");
-		if ( num == RT_DIALOG_DELOBJ       )  strcpy(text, "Wollen Sie das angewählte Gebäude wirklich zerstören ?");
-		if ( num == RT_DIALOG_DELGAME      )  strcpy(text, "Wollen Sie die gespeicherten Missionen von %s löschen ?");
-		if ( num == RT_DIALOG_YESDEL       )  strcpy(text, "Zerstören");
-		if ( num == RT_DIALOG_NODEL        )  strcpy(text, "Abbrechen");
-		if ( num == RT_DIALOG_LOADING      )  strcpy(text, "Laden");
-
-		if ( num == RT_STUDIO_LISTTT       )  strcpy(text, "Hilfe über den Begriff (\\key cbot;)");
-		if ( num == RT_STUDIO_COMPOK       )  strcpy(text, "Kompilieren OK (0 Fehler)");
-		if ( num == RT_STUDIO_PROGSTOP     )  strcpy(text, "Programm beendet");
-
-		if ( num == RT_SATCOM_LIST         )  strcpy(text, "\\b;Liste der Objekte\n");
-		if ( num == RT_SATCOM_BOT          )  strcpy(text, "\\b;Liste der Roboter\n");
-		if ( num == RT_SATCOM_BUILDING     )  strcpy(text, "\\b;Listes der Gebäude\n");
-		if ( num == RT_SATCOM_FRET         )  strcpy(text, "\\b;Listes der tragbaren Gegenstände\n");
-		if ( num == RT_SATCOM_ALIEN        )  strcpy(text, "\\b;Listes der Feinde\n");
-		if ( num == RT_SATCOM_NULL         )  strcpy(text, "\\c; (keine)\\n;\n");
-		if ( num == RT_SATCOM_ERROR1       )  strcpy(text, "\\b;Fehler\n");
-		if ( num == RT_SATCOM_ERROR2       )  strcpy(text, "Die Liste ist ohne \\l;Radar\\u object\\radar; nicht verfügbar !\n");
-
-		if ( num == RT_IO_OPEN             )  strcpy(text, "Öffnen");
-		if ( num == RT_IO_SAVE             )  strcpy(text, "Speichern");
-		if ( num == RT_IO_LIST             )  strcpy(text, "Ordner: %s");
-		if ( num == RT_IO_NAME             )  strcpy(text, "Name:");
-		if ( num == RT_IO_DIR              )  strcpy(text, "In:");
-		if ( num == RT_IO_PRIVATE          )  strcpy(text, "Privat\\Privater Ordner");
-		if ( num == RT_IO_PUBLIC           )  strcpy(text, "Öffentlich\\Gemeinsamer Ordner für alle Spieler");
-
-		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "Entwickelt von:");
-		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "www.epsitec.com");
-#if _WG
-		if ( num == RT_GENERIC_EDIT1       )  strcpy(text, "Herausgegeben von:");
-		if ( num == RT_GENERIC_EDIT2       )  strcpy(text, "www.wg-verlag.ch");
+		if ( num == RT_DIALOG_ABORT        )  strcpy(text, "Uscire dalla missione?");
+#if _EGAMES
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Uscire dal gioco?");
 #else
-		if ( num == RT_GENERIC_EDIT1       )  strcpy(text, " ");
-		if ( num == RT_GENERIC_EDIT2       )  strcpy(text, " ");
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Uscire dal gioco?");
+#endif
+		if ( num == RT_DIALOG_YES          )  strcpy(text, "Interrompi\\Interrompi missione corrente");
+		if ( num == RT_DIALOG_NO           )  strcpy(text, "Continua\\Continua missione corrente");
+#if _EGAMES
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Esci\\Esci da Wild Wheels");
+#else
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Esci\\Esci da BuzzingCars");
+#endif
+		if ( num == RT_DIALOG_NOQUIT       )  strcpy(text, "Continua\\Continua gioco");
+		if ( num == RT_DIALOG_DELGAME      )  strcpy(text, "Eliminare i giochi e le auto di %s salvati?");
+		if ( num == RT_DIALOG_DELFILE      )  strcpy(text, "Eliminare il file %s esistente?");
+		if ( num == RT_DIALOG_YESDEL       )  strcpy(text, "Elimina");
+		if ( num == RT_DIALOG_NODEL        )  strcpy(text, "Annulla");
+		if ( num == RT_DIALOG_NEWGAME      )  strcpy(text, "Nome pilota:");
+		if ( num == RT_DIALOG_YESNEW       )  strcpy(text, "Crea");
+		if ( num == RT_DIALOG_NONEW        )  strcpy(text, "Annulla");
+		if ( num == RT_DIALOG_YESKID       )  strcpy(text, "Sì");
+		if ( num == RT_DIALOG_NOKID        )  strcpy(text, "No");
+		if ( num == RT_DIALOG_LOADING      )  strcpy(text, "CARICAMENTO IN CORSO");
+
+		if ( num == RT_WIN_TIME            )  strcpy(text, "Cronometro");
+		if ( num == RT_WIN_SOLID           )  strcpy(text, "Condizioni del veicolo");
+		if ( num == RT_WIN_CONE            )  strcpy(text, "Rispetto dell'ambinete circostante");
+		if ( num == RT_WIN_POINTS          )  strcpy(text, "Punti guadagnati");
+		if ( num == RT_WIN_BONUS           )  strcpy(text, "Bonus temporale");
+		if ( num == RT_WIN_ARRAY           )  strcpy(text, "Tempi migliori:");
+		if ( num == RT_WIN_HEADERm         )  strcpy(text, "\t  Automobile\tPilota\tCronometro\tPunti");
+		if ( num == RT_WIN_HEADERf         )  strcpy(text, "\t  Automobile\tPilota\tCronometro\t");
+
+		if ( num == RT_START_READY         )  strcpy(text, "Pronti ?");
+		if ( num == RT_START_QUICK         )  strcpy(text, "3, 2, 1  ...  Pronti ?");
+		if ( num == RT_START_123           )  strcpy(text, "%d ...");
+		if ( num == RT_START_GO            )  strcpy(text, "VIA !");
+		if ( num == RT_START_REMOTE        )  strcpy(text, "Controlla il veicolo a distanza");
+
+		if ( num == RT_RECORD_GALL         )  strcpy(text, "Record circuito (-%.2f) !");
+		if ( num == RT_RECORD_GONE         )  strcpy(text, "Record sul giro (-%.2f) !");
+		if ( num == RT_RECORD_LONE         )  strcpy(text, "Miglior giro (-%.2f) !");
+		if ( num == RT_RECORD_QALL         )  strcpy(text, "> Record circuito <");
+		if ( num == RT_RECORD_QONE         )  strcpy(text, "> Migliore giro <");
+		if ( num == RT_RACE_LAP4           )  strcpy(text, "4 giri rimanenti");
+		if ( num == RT_RACE_LAP3           )  strcpy(text, "3 giri rimanenti");
+		if ( num == RT_RACE_LAP2           )  strcpy(text, "2 giri rimanenti");
+		if ( num == RT_RACE_LAP1           )  strcpy(text, "Giro finale");
+		if ( num == RT_DUEL_WIN            )  strcpy(text, "Automobile fantasma sconfitta (-%.2f) !");
+		if ( num == RT_DUEL_LOST           )  strcpy(text, "Troppo lento (+%.2f) !");
+
+		if ( num == RT_SPEC_MINSPEED       )  strcpy(text, "Automobile troppo lenta!");
+		if ( num == RT_SPEC_MAXSPEED       )  strcpy(text, "Automobile troppo veloce!");
+		if ( num == RT_SPEC_DEMO           )  strcpy(text, "Non disponibile nella versione demo !");
+		if ( num == RT_SPEC_DISPO          )  strcpy(text, "Non disponibile nella versione demo !");
+
+		if ( num == RT_MOTOR_REAR          )  strcpy(text, "R");
+		if ( num == RT_MOTOR_NEUTRAL       )  strcpy(text, "N");
+		if ( num == RT_MOTOR_S1            )  strcpy(text, "1");
+		if ( num == RT_MOTOR_S2            )  strcpy(text, "2");
+		if ( num == RT_MOTOR_S3            )  strcpy(text, "3");
+
+		if ( num == RT_IO_LIST             )  strcpy(text, "Sfide disponibili:");
+		if ( num == RT_IO_NAME             )  strcpy(text, "Nome file:");
+		if ( num == RT_IO_HEADER           )  strcpy(text, "Nome file\tMissione\tAutomobile\tPilota\tCronometro");
+#if _EGAMES
+		if ( num == RT_IO_RINFO            )  strcpy(text, "Puoi scaricare nuove sfide dal sito Web www.epsitec.ch/wildwheels");
+#else
+		if ( num == RT_IO_RINFO            )  strcpy(text, "Puoi scaricare nuove sfide dal sito Web www.ceebot.com");
 #endif
 
-		if ( num == RT_INTERFACE_REC       )  strcpy(text, "Recorder");
+#if _EGAMES
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "Sviluppato da EPSITEC");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "Published by eGames, Inc.");
+#else
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "www.ceebot.com");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "Sviluppato da EPSITEC");
+#endif
+#if _EGAMES
+		if ( num == RT_GENERIC_DEMO1       )  strcpy(text, "Hai giocato con la versione DEMO di Wild Wheels.");
+		if ( num == RT_GENERIC_DEMO2       )  strcpy(text, "È ora disponibile la versione completa...");
+		if ( num == RT_GENERIC_DEMO3       )  strcpy(text, "... contiene 28 avvincenti missioni e 9 gare ...");
+		if ( num == RT_GENERIC_DEMO4       )  strcpy(text, "... nonché una modalità \"sfida\" per mettere a confronto le prestazioni.");
+		if ( num == RT_GENERIC_DEMO5       )  strcpy(text, "Per ulteriori dettagli visitare il sito Web www.epsitec.ch/wildwheels !");
+#else
+		if ( num == RT_GENERIC_DEMO1       )  strcpy(text, "Hai giocato con la versione DEMO di BuzzingCars.");
+		if ( num == RT_GENERIC_DEMO2       )  strcpy(text, "È ora disponibile la versione completa...");
+		if ( num == RT_GENERIC_DEMO3       )  strcpy(text, "... contiene 28 avvincenti missioni e 9 gare ...");
+		if ( num == RT_GENERIC_DEMO4       )  strcpy(text, "... nonché una modalità \"sfida\" per mettere a confronto le prestazioni.");
+		if ( num == RT_GENERIC_DEMO5       )  strcpy(text, "Per ulteriori dettagli visitare il sito Web www.ceebot.com !");
+#endif
 	}
 
 	if ( type == RES_EVENT )
 	{
 		if ( num == EVENT_BUTTON_OK        )  strcpy(text, "OK");
-		if ( num == EVENT_BUTTON_CANCEL    )  strcpy(text, "Abbrechen");
-		if ( num == EVENT_BUTTON_NEXT      )  strcpy(text, "Nächster");
-		if ( num == EVENT_BUTTON_PREV      )  strcpy(text, "Vorherg.");
-		if ( num == EVENT_BUTTON_QUIT      )  strcpy(text, "Menü (\\key quit;)");
+		if ( num == EVENT_BUTTON_CANCEL    )  strcpy(text, "Annulla");
+		if ( num == EVENT_BUTTON_NEXT      )  strcpy(text, "Successivo");
+		if ( num == EVENT_BUTTON_PREV      )  strcpy(text, "Precedente");
+		if ( num == EVENT_BUTTON_QUIT      )  strcpy(text, "Menu (\\key quit;)");
+		if ( num == EVENT_BUTTON_CAMERA    )  strcpy(text, "Videocamera (\\key camera;)");
+		if ( num == EVENT_BUTTON_HELP      )  strcpy(text, "? (\\key help;)");
+		if ( num == EVENT_BUTTON_BRAKE     )  strcpy(text, "Freno a mano (\\key brake;)");
+		if ( num == EVENT_BUTTON_HORN      )  strcpy(text, "Clacson (\\key horn;)");
+		if ( num == EVENT_BONUS            )  strcpy(text, "Bonus temporale");
+		if ( num == EVENT_TIME             )  strcpy(text, "Cronometro");
+		if ( num == EVENT_PROGRESS         )  strcpy(text, "Compiti svolti");
 
 		if ( num == EVENT_DIALOG_OK        )  strcpy(text, "OK");
-		if ( num == EVENT_DIALOG_CANCEL    )  strcpy(text, "Abbrechen");
+		if ( num == EVENT_DIALOG_CANCEL    )  strcpy(text, "Annulla");
 
-#if _SCHOOL
-		if ( num == EVENT_INTERFACE_TRAINER)  strcpy(text, "Übungen\\Programmierübungen");
+		if ( num == EVENT_INTERFACE_MISSION)  strcpy(text, "Missioni\\Seleziona missione");
+		if ( num == EVENT_INTERFACE_FREE   )  strcpy(text, "Gare libere\\Gare libere senza obiettivi precisi");
+		if ( num == EVENT_INTERFACE_USER   )  strcpy(text, "Utente\\Livelli utente");
+		if ( num == EVENT_INTERFACE_PROTO  )  strcpy(text, "Prototipi\\Prototipi in sviluppo");
+		if ( num == EVENT_INTERFACE_DUEL   )  strcpy(text, "Sfide\\Sfide contro automobili fantasma");
+		if ( num == EVENT_INTERFACE_NAME   )  strcpy(text, "Nuovo pilota\\Scegli nome pilota");
+		if ( num == EVENT_INTERFACE_SETUP  )  strcpy(text, "Opzioni\\Preferenze");
+		if ( num == EVENT_INTERFACE_AGAIN  )  strcpy(text, "Riavvia\\Riavvia la missione dall'inizio");
+		if ( num == EVENT_INTERFACE_SAVE   )  strcpy(text, "Salva\\Salva la sfida");
+#if _EGAMES
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Torna a Wild Wheels");
 #else
-		if ( num == EVENT_INTERFACE_TRAINER)  strcpy(text, "Programmieren\\Programmierübungen");
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Torna a BuzzingCars");
 #endif
-		if ( num == EVENT_INTERFACE_DEFI   )  strcpy(text, "Challenges\\Herausforderungen");
-		if ( num == EVENT_INTERFACE_MISSION)  strcpy(text, "Missionen\\Aufbruch ins Weltall");
-		if ( num == EVENT_INTERFACE_FREE   )  strcpy(text, "Freestyle\\Freies Spielen ohne vorgegebenes Ziel");
-		if ( num == EVENT_INTERFACE_TEEN   )  strcpy(text, "Freestyle\\Freies Spielen ohne vorgegebenes Ziel");
-		if ( num == EVENT_INTERFACE_USER   )  strcpy(text, "User\\Userlevels");
-		if ( num == EVENT_INTERFACE_PROTO  )  strcpy(text, "Proto\\In Entwicklung befindliche Prototypen");
-		if ( num == EVENT_INTERFACE_NAME   )  strcpy(text, "Anderer Spieler\\Spielername ändern");
-		if ( num == EVENT_INTERFACE_SETUP  )  strcpy(text, "Einstellungen\\Einstellungen");
-		if ( num == EVENT_INTERFACE_AGAIN  )  strcpy(text, "Neu anfangen\\Die Mission von vorne anfangen");
-		if ( num == EVENT_INTERFACE_WRITE  )  strcpy(text, "Speichern\\Aktuelle Mission speichern");
-		if ( num == EVENT_INTERFACE_READ   )  strcpy(text, "Laden\\Eine gespeicherte Mission öffnen");
-#if _NEWLOOK
-		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Zurück zu CeeBot");
-		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Schließen\\CeeBot schließen");
+		if ( num == EVENT_INTERFACE_PREV   )  strcpy(text, "\\Schermata precedente");
+		if ( num == EVENT_INTERFACE_NEXT   )  strcpy(text, "\\Schermata successiva");
+#if _EGAMES
+		if ( num == EVENT_INTERFACE_EXIT   )  strcpy(text, "\\Esci da Wild Wheels");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Esci\\Esci da Wild Wheels");
 #else
-		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Zurück zu COLOBOT");
-		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Schließen\\COLOBOT schließen");
+		if ( num == EVENT_INTERFACE_EXIT   )  strcpy(text, "\\Esci da BuzzingCars");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Esci\\Esci da BuzzingCars");
 #endif
-		if ( num == EVENT_INTERFACE_BACK   )  strcpy(text, "<<  Zurück  \\Zurück zum Hauptmenü");
-		if ( num == EVENT_INTERFACE_PLAY   )  strcpy(text, "Spielen ...\\Los geht's");
-		if ( num == EVENT_INTERFACE_SETUPd )  strcpy(text, "Bildschirm\\Driver und Bildschirmauflösung");
-		if ( num == EVENT_INTERFACE_SETUPg )  strcpy(text, "Grafik\\Grafische Einstellungen");
-		if ( num == EVENT_INTERFACE_SETUPp )  strcpy(text, "Spiel\\Gameplay Einstellungen");
-		if ( num == EVENT_INTERFACE_SETUPc )  strcpy(text, "Steuerung\\Auswahl der Tasten");
-		if ( num == EVENT_INTERFACE_SETUPs )  strcpy(text, "Geräusche\\Lautstärke Geräusche und Musik");
-		if ( num == EVENT_INTERFACE_DEVICE )  strcpy(text, "Einheit");
-		if ( num == EVENT_INTERFACE_RESOL  )  strcpy(text, "Auflösung");
-		if ( num == EVENT_INTERFACE_FULL   )  strcpy(text, "Vollbildschirm\\Vollbildschirm oder Fenster");
-		if ( num == EVENT_INTERFACE_APPLY  )  strcpy(text, "Änderungen ausführen\\Getätigte Einstellungen ausführen");
+		if ( num == EVENT_INTERFACE_BACK   )  strcpy(text, "Annulla\\Torna alla schermata precedente");
+		if ( num == EVENT_INTERFACE_TERM   )  strcpy(text, "Menu\\Torna al menu principale");
+		if ( num == EVENT_INTERFACE_PLAY   )  strcpy(text, "Gioca\\Inizia la missione selezionata");
+		if ( num == EVENT_INTERFACE_GHOSTm )  strcpy(text, "Visualizza migliore auto fantasma\\Visualizza la migliore automobile fantasma del circuito");
+		if ( num == EVENT_INTERFACE_OK     )  strcpy(text, "OK\\Torna alla schermata precedente");
 
-		if ( num == EVENT_INTERFACE_TOTO   )  strcpy(text, "Robby\\Ihr Assistent");
-		if ( num == EVENT_INTERFACE_SHADOW )  strcpy(text, "Schatten\\Schlagschatten auf dem Boden");
-		if ( num == EVENT_INTERFACE_GROUND )  strcpy(text, "Markierungen\\Markierungen auf dem Boden");
-		if ( num == EVENT_INTERFACE_DIRTY  )  strcpy(text, "Schmutz\\Schmutz auf Robotern und Bauten");
-		if ( num == EVENT_INTERFACE_FOG    )  strcpy(text, "Nebel\\Nebelschwaden");
-		if ( num == EVENT_INTERFACE_LENS   )  strcpy(text, "Sonnenstrahlen\\Sonnenstrahlen");
-		if ( num == EVENT_INTERFACE_SKY    )  strcpy(text, "Himmel\\Himmel und Wolken");
-		if ( num == EVENT_INTERFACE_PLANET )  strcpy(text, "Planeten und Sterne\\Kreisende Planeten und Sterne");
-		if ( num == EVENT_INTERFACE_LIGHT  )  strcpy(text, "Dynamische Beleuchtung\\Dynamische Beleuchtung");
-		if ( num == EVENT_INTERFACE_PARTI  )  strcpy(text, "Anzahl Partikel\\Explosionen, Staub, usw.");
-		if ( num == EVENT_INTERFACE_CLIP   )  strcpy(text, "Sichtweite\\Maximale Sichtweite");
-		if ( num == EVENT_INTERFACE_DETAIL )  strcpy(text, "Details\\Detailliertheit der Objekte in 3D");
-		if ( num == EVENT_INTERFACE_TEXTURE)  strcpy(text, "Qualität der Texturen\\Qualität der Anzeige");
-		if ( num == EVENT_INTERFACE_GADGET )  strcpy(text, "Anzahl Ziergegenstände\\Anzahl Gegenstände ohne Funktion");
-		if ( num == EVENT_INTERFACE_RAIN   )  strcpy(text, "Partikel in den Menüs\\Funken und Sterne in den Menüs");
-		if ( num == EVENT_INTERFACE_GLINT  )  strcpy(text, "Glänzende Tasten\\Glänzende Tasten in den Menüs");
-		if ( num == EVENT_INTERFACE_TOOLTIP)  strcpy(text, "Hilfsblasen\\Hilfsblasen");
-		if ( num == EVENT_INTERFACE_MOVIES )  strcpy(text, "Filme\\Filme vor und nach den Missionen");
-		if ( num == EVENT_INTERFACE_NICERST)  strcpy(text, "Zurücksetzen \\Kleine Show beim Zurücksetzen in den Übungen");
-		if ( num == EVENT_INTERFACE_HIMSELF)  strcpy(text, "Eigenbeschuss\\Ihre Einheiten werden von Ihren Waffen beschädigt.");
-		if ( num == EVENT_INTERFACE_SCROLL )  strcpy(text, "Kameradrehung mit der Maus\\Die Kamera dreht wenn die Maus den Rand erreicht");
-		if ( num == EVENT_INTERFACE_INVERTX)  strcpy(text, "Umkehr X\\Umkehr der Kameradrehung X-Achse");
-		if ( num == EVENT_INTERFACE_INVERTY)  strcpy(text, "Umkehr Y\\Umkehr der Kameradrehung Y-Achse");
-		if ( num == EVENT_INTERFACE_EFFECT )  strcpy(text, "Beben bei Explosionen\\Die Kamera bebt bei Explosionen");
-		if ( num == EVENT_INTERFACE_MOUSE  )  strcpy(text, "Schatten unter der Maus\\Ein Schatten erscheint unter der Maus");
-		if ( num == EVENT_INTERFACE_EDITMODE) strcpy(text, "Automatisches Einrücken\\Beim Bearbeiten der Programme");
-		if ( num == EVENT_INTERFACE_EDITVALUE)strcpy(text, "Einrücken mit 4 Leerstellen\\Einrücken mit 2 oder 4 Leerstellen");
-		if ( num == EVENT_INTERFACE_SOLUCE4)  strcpy(text, "Lösung zugänglich\\Die Lösung ist im Programmslot \"4: Lösung\" zugänglich");
+		if ( num == EVENT_INTERFACE_WOK    )  strcpy(text, "Salva la sfida\\Salva su disco");
+		if ( num == EVENT_INTERFACE_WCANCEL)  strcpy(text, "Annulla\\Torna alla schermata precedente");
+		if ( num == EVENT_INTERFACE_ROK    )  strcpy(text, "Avvia sfida\\Avvia la sfida selezionata");
+		if ( num == EVENT_INTERFACE_RCANCEL)  strcpy(text, "Annulla\\Torna alla schermata precedente");
 
-		if ( num == EVENT_INTERFACE_KDEF   )  strcpy(text, "Alles zurücksetzen\\Standarddefinition aller Tasten");
-		if ( num == EVENT_INTERFACE_KLEFT  )  strcpy(text, "Drehung nach links\\Steuer links");
-		if ( num == EVENT_INTERFACE_KRIGHT )  strcpy(text, "Drehung nach rechts\\Steuer rechts");
-		if ( num == EVENT_INTERFACE_KUP    )  strcpy(text, "Vorwärts\\Bewegung nach vorne");
-		if ( num == EVENT_INTERFACE_KDOWN  )  strcpy(text, "Rückwärts\\Bewegung nach hinten");
-		if ( num == EVENT_INTERFACE_KGUP   )  strcpy(text, "Steigen\\Leistung des Triebwerks steigern");
-		if ( num == EVENT_INTERFACE_KGDOWN )  strcpy(text, "Sinken\\Leistung des Triebwerks drosseln");
-		if ( num == EVENT_INTERFACE_KCAMERA)  strcpy(text, "Andere Kamera\\Sichtpunkt einstellen");
-		if ( num == EVENT_INTERFACE_KDESEL )  strcpy(text, "Vorherg. Auswahl\\Das vorhergehende Objekt auswählen");
-		if ( num == EVENT_INTERFACE_KACTION)  strcpy(text, "Standardhandlung\\Führt die Standardhandlung des Roboters aus.");
-		if ( num == EVENT_INTERFACE_KNEAR  )  strcpy(text, "Kamera näher\\Bewegung der Kamera vorwärts");
-		if ( num == EVENT_INTERFACE_KAWAY  )  strcpy(text, "Kamera weiter\\Bewegung der Kamera rückwärts");
-		if ( num == EVENT_INTERFACE_KNEXT  )  strcpy(text, "Nächstes auswählen\\Nächstes Objekt auswählen");
-		if ( num == EVENT_INTERFACE_KHUMAN )  strcpy(text, "Astronauten auswählen\\Astronauten auswählen");
-		if ( num == EVENT_INTERFACE_KQUIT  )  strcpy(text, "Mission verlassen\\Eine Mission oder Übung verlassen");
-		if ( num == EVENT_INTERFACE_KHELP  )  strcpy(text, "Anweisungen\\Anweisungen für die Mission oder Übung");
-		if ( num == EVENT_INTERFACE_KPROG  )  strcpy(text, "Hilfe CBOT-Sprache\\Hilfe über die Programmiersprache CBOT");
-		if ( num == EVENT_INTERFACE_KCBOT  )  strcpy(text, "Hilfe über Begriff\\Hilfe über einen Begriff");
-		if ( num == EVENT_INTERFACE_KVISIT )  strcpy(text, "Ort der Meldung\\Zeigt den Ort, von dem die letzte Meldung stammt");
-		if ( num == EVENT_INTERFACE_KSPEED10) strcpy(text, "Geschwindigkeit 1.0x\\Normale Spielgeschwindigkeit");
-		if ( num == EVENT_INTERFACE_KSPEED15) strcpy(text, "Geschwindigkeit 1.5x\\Spielgeschwindigkeit anderthalb Mal schneller");
-		if ( num == EVENT_INTERFACE_KSPEED20) strcpy(text, "Geschwindigkeit 2.0x\\Spielgeschwindigkeit doppelt so schnell");
-		if ( num == EVENT_INTERFACE_KSPEED30) strcpy(text, "Geschwindigkeit 3.0x\\Spielgeschwindigkeit drei Mal schneller");
+		if ( num == EVENT_INTERFACE_SETUPd )  strcpy(text, "Dispositivo\\Impostazioni driver e risoluzione");
+		if ( num == EVENT_INTERFACE_SETUPg )  strcpy(text, "Grafica\\Impostazioni grafiche");
+		if ( num == EVENT_INTERFACE_SETUPp )  strcpy(text, "Gioco\\Impostazioni di gioco");
+		if ( num == EVENT_INTERFACE_SETUPc )  strcpy(text, "Controlli\\Impostazioni tastiera, volante e joypad");
+		if ( num == EVENT_INTERFACE_SETUPs )  strcpy(text, "Audio\\Volume di musica ed effetti sonori");
+		if ( num == EVENT_INTERFACE_RESOL  )  strcpy(text, "Risoluzione");
+		if ( num == EVENT_INTERFACE_FULL   )  strcpy(text, "Schermo intero\\Schermo intero o modalità finestra");
+		if ( num == EVENT_INTERFACE_APPLY  )  strcpy(text, "Applica modifiche\\Attiva le impostazioni modificate");
 
-		if ( num == EVENT_INTERFACE_VOLSOUND) strcpy(text, "Geräusche:\\Lautstärke Motoren, Stimmen, usw.");
-		if ( num == EVENT_INTERFACE_VOLMUSIC) strcpy(text, "Geräuschkulisse:\\Lautstärke der Soundtracks der CD");
-		if ( num == EVENT_INTERFACE_SOUND3D)  strcpy(text, "3D-Geräusche\\Orten der Geräusche im Raum");
+		if ( num == EVENT_INTERFACE_SHADOW )  strcpy(text, "Ombre\\Ombre sul terreno");
+		if ( num == EVENT_INTERFACE_DIRTY  )  strcpy(text, "Polvere\\Polvere e sporco su automobili ed edifici");
+		if ( num == EVENT_INTERFACE_FOG    )  strcpy(text, "Nebbia\\Nebbia");
+		if ( num == EVENT_INTERFACE_LENS   )  strcpy(text, "Raggi di sole\\Visualizza raggi di sole nel cielo");
+		if ( num == EVENT_INTERFACE_SKY    )  strcpy(text, "Cielo e nuvole\\Visualizza immagini reali di cielo con nuvole");
+		if ( num == EVENT_INTERFACE_PLANET )  strcpy(text, "Stelle e pianeti\\Visualizza corpi celesti nel cielo");
+		if ( num == EVENT_INTERFACE_LIGHT  )  strcpy(text, "Illuminazione dinamica\\Utilizza sorgenti luminose mobili");
+		if ( num == EVENT_INTERFACE_SUPER  )  strcpy(text, "Dettagli particolareggiati\\Dettagli particolareggiati");  //DR
+		if ( num == EVENT_INTERFACE_PARTI  )  strcpy(text, "Numero di particelle\\Esplosioni, polvere, riflessi e altro.");
+		if ( num == EVENT_INTERFACE_WHEEL  )  strcpy(text, "Segni di frenate\\Segni di frenate sul tracciato");
+		if ( num == EVENT_INTERFACE_CLIP   )  strcpy(text, "Profondità di campo\\Massima visibilità");
+		if ( num == EVENT_INTERFACE_DETAIL )  strcpy(text, "Dettagli\\Qualità grafica degli oggetti 3D");
+		if ( num == EVENT_INTERFACE_TEXTURE)  strcpy(text, "Trame\\Qualità delle trame visualizzate");
+		if ( num == EVENT_INTERFACE_GADGET )  strcpy(text, "Numero di oggetti decorativi\\Numero di oggetti puramente ornamentali");
+		if ( num == EVENT_INTERFACE_RAIN   )  strcpy(text, "Particelle dell'interfaccia\\Scintille che si diffondono dal puntatore del mouse");
+		if ( num == EVENT_INTERFACE_GLINT  )  strcpy(text, "Riflessi sui pulsanti\\Pulsanti luccicanti");
+		if ( num == EVENT_INTERFACE_TOOLTIP)  strcpy(text, "Descrizione comandi\\Spiegazione degli elementi dell'interfaccia");
+		if ( num == EVENT_INTERFACE_MOVIES )  strcpy(text, "Sequenze cinematografiche\\Filmati all'inizio e al termine delle missioni");
+		if ( num == EVENT_INTERFACE_CBACK  )  strcpy(text, "Vista posteriore\\Videocamera sul retro dell'automobile");
+		if ( num == EVENT_INTERFACE_CBOARD )  strcpy(text, "Vista anteriore\\Videocamera sul cofano");
+		if ( num == EVENT_INTERFACE_EFFECT )  strcpy(text, "Ribalta durante esplosioni\\La schermata viene ribaltata durante le esplosioni");
+		if ( num == EVENT_INTERFACE_FLASH  )  strcpy(text, "Lampeggio durante gli scontri\\Lo schermo lampeggia durante gli scontri");
+		if ( num == EVENT_INTERFACE_BLAST  )  strcpy(text, "Esplosione motore\\In partenza il motore può esplodere al massimo dei giri");
+		if ( num == EVENT_INTERFACE_MOUSE  )  strcpy(text, "Ombra del muose\\Riflette l'ombra del puntatore del mouse");
 
-		if ( num == EVENT_INTERFACE_MIN    )  strcpy(text, "Min.\\Minimale Qualität (großes Framerate)");
-		if ( num == EVENT_INTERFACE_NORM   )  strcpy(text, "Normal\\Standardqualität");
-		if ( num == EVENT_INTERFACE_MAX    )  strcpy(text, "Max.\\Beste Qualität (niedriges Framerate)");
+		if ( num == EVENT_INTERFACE_KDEF   )  strcpy(text, "Controlli predefiniti\\Ripristina le impostazioni predefinite dei controlli");
+		if ( num == EVENT_INTERFACE_KLEFT  )  strcpy(text, "Gira a sinistra\\Gira il volante a sinistra");
+		if ( num == EVENT_INTERFACE_KRIGHT )  strcpy(text, "Gira a destra\\Gira il volante a destra");
+		if ( num == EVENT_INTERFACE_KUP    )  strcpy(text, "Accelera\\Aumenta la velocità");
+		if ( num == EVENT_INTERFACE_KDOWN  )  strcpy(text, "Freno e retromarcia\\Rallenta e va a retromarcia");
+		if ( num == EVENT_INTERFACE_KBRAKE )  strcpy(text, "Freno a mano\\Aziona il freno a mano");
+		if ( num == EVENT_INTERFACE_KHORN  )  strcpy(text, "Clacson\\Suona il clacson");
+		if ( num == EVENT_INTERFACE_KCAMERA)  strcpy(text, "Cambia videocamera\\Passa dalla videocamera del cofano alla videocamera posteriore");
+		if ( num == EVENT_INTERFACE_KQUIT  )  strcpy(text, "Esci\\Esci dalla missione o dalla gara corrente");
+		if ( num == EVENT_INTERFACE_KHELP  )  strcpy(text, "Instruzioni\\Visualizza le istruzioni della missione corrente");
 
-		if ( num == EVENT_INTERFACE_SILENT )  strcpy(text, "Kein Ton\\Keine Geräusche und Geräuschkulisse");
-		if ( num == EVENT_INTERFACE_NOISY  )  strcpy(text, "Normal\\Normale Lautstärke");
+		if ( num == EVENT_INTERFACE_VOLSOUND) strcpy(text, "Effetti sonori:\\Volume di motori, voce, esplosioni e così via.");
+		if ( num == EVENT_INTERFACE_VOLMUSIC) strcpy(text, "Audio di sfondo:\\Volume delle tracce audio del CD");
+		if ( num == EVENT_INTERFACE_SOUND3D)  strcpy(text, "Suono 3D\\Suono 3D");
+		if ( num == EVENT_INTERFACE_COMMENTS) strcpy(text, "Voce narratore\\Commenti vari durante le gare");
 
-		if ( num == EVENT_INTERFACE_JOYSTICK) strcpy(text, "Joystick\\Joystick oder Tastatur");
-		if ( num == EVENT_INTERFACE_SOLUCE )  strcpy(text, "Zeigt die Lösung\\Zeigt nach 3mal Scheitern die Lösung");
+		if ( num == EVENT_INTERFACE_MIN    )  strcpy(text, "Minima\\Qualità grafica minima (frequenza di quadro massima)");
+		if ( num == EVENT_INTERFACE_NORM   )  strcpy(text, "Normale\\Qualità grafica media");
+		if ( num == EVENT_INTERFACE_MAX    )  strcpy(text, "Massima\\Qualità grafica massima (frequenza di quadro minima)");
 
-		if ( num == EVENT_INTERFACE_NEDIT  )  strcpy(text, "\\Name des Spielers");
-		if ( num == EVENT_INTERFACE_NOK    )  strcpy(text, "OK\\Spieler auswählen");
-		if ( num == EVENT_INTERFACE_NCANCEL)  strcpy(text, "Abbrechen\\Behält den bisherigen Spieler bei");
-		if ( num == EVENT_INTERFACE_NDELETE)  strcpy(text, "Spieler löschen\\Löscht den Spieler aus der Liste");
-		if ( num == EVENT_INTERFACE_NLABEL )  strcpy(text, "Name ");
+		if ( num == EVENT_INTERFACE_SILENT )  strcpy(text, "Silenzio\\Disattivazione dell'audio");
+		if ( num == EVENT_INTERFACE_NOISY  )  strcpy(text, "Normale\\Volume dell'audio normale");
 
-		if ( num == EVENT_INTERFACE_IOWRITE)  strcpy(text, "Speichern\\Speichert die Mission");
-		if ( num == EVENT_INTERFACE_IOREAD )  strcpy(text, "Laden\\Öffnet eine gespeicherte Mission");
-		if ( num == EVENT_INTERFACE_IOLIST )  strcpy(text, "Liste der gespeicherten Missionen");
-		if ( num == EVENT_INTERFACE_IOLABEL)  strcpy(text, "Dateiname:");
-		if ( num == EVENT_INTERFACE_IONAME )  strcpy(text, "Name der Mission");
-		if ( num == EVENT_INTERFACE_IOIMAGE)  strcpy(text, "Ansicht der Mission");
-		if ( num == EVENT_INTERFACE_IODELETE) strcpy(text, "Löschen\\Löscht die gespeicherte Mission");
+		if ( num == EVENT_INTERFACE_STEERING) strcpy(text, "Utilizza un volante o un joystick\\Utilizza un volante o un joystick");
+		if ( num == EVENT_INTERFACE_JOYPAD  ) strcpy(text, "Utilizza un joypad\\Joypad o tastiera");
+		if ( num == EVENT_INTERFACE_FFBc    ) strcpy(text, "Ritorno di forza\\Usa il ritorno di forza");
+		if ( num == EVENT_INTERFACE_FFBs    ) strcpy(text, "\\Intensità del ritorno di forza");
 
-		if ( num == EVENT_INTERFACE_PERSO  )  strcpy(text, "Aussehen\\Erscheinungsbild des Astronauten einstellen");
-		if ( num == EVENT_INTERFACE_POK    )  strcpy(text, "OK");
-		if ( num == EVENT_INTERFACE_PCANCEL)  strcpy(text, "Abbrechen");
-		if ( num == EVENT_INTERFACE_PDEF   )  strcpy(text, "Standard\\Standardfarben einsetzen");
-		if ( num == EVENT_INTERFACE_PHEAD  )  strcpy(text, "Kopf\\Gesicht und Haare");
-		if ( num == EVENT_INTERFACE_PBODY  )  strcpy(text, "Anzug\\Raumfahrtanzug");
-		if ( num == EVENT_INTERFACE_PLROT  )  strcpy(text, "\\Drehung links");
-		if ( num == EVENT_INTERFACE_PRROT  )  strcpy(text, "\\Drehung rechts");
-		if ( num == EVENT_INTERFACE_PCRa   )  strcpy(text, "Rot");
-		if ( num == EVENT_INTERFACE_PCGa   )  strcpy(text, "Grün");
-		if ( num == EVENT_INTERFACE_PCBa   )  strcpy(text, "Blau");
-		if ( num == EVENT_INTERFACE_PCRb   )  strcpy(text, "Rot");
-		if ( num == EVENT_INTERFACE_PCGb   )  strcpy(text, "Grün");
-		if ( num == EVENT_INTERFACE_PCBb   )  strcpy(text, "Blau");
-		if ( num == EVENT_INTERFACE_PFACE1 )  strcpy(text, "\\Kopf 1");
-		if ( num == EVENT_INTERFACE_PFACE2 )  strcpy(text, "\\Kopf 4");
-		if ( num == EVENT_INTERFACE_PFACE3 )  strcpy(text, "\\Kopf 3");
-		if ( num == EVENT_INTERFACE_PFACE4 )  strcpy(text, "\\Kopf 2");
-		if ( num == EVENT_INTERFACE_PGLASS0)  strcpy(text, "\\Keine Brille");
-		if ( num == EVENT_INTERFACE_PGLASS1)  strcpy(text, "\\Brille 1");
-		if ( num == EVENT_INTERFACE_PGLASS2)  strcpy(text, "\\Brille 2");
-		if ( num == EVENT_INTERFACE_PGLASS3)  strcpy(text, "\\Brille 3");
-		if ( num == EVENT_INTERFACE_PGLASS4)  strcpy(text, "\\Brille 4");
-		if ( num == EVENT_INTERFACE_PGLASS5)  strcpy(text, "\\Brille 5");
+		if ( num == EVENT_INTERFACE_NEDIT  )  strcpy(text, "\\Nome nuovo pilota");
+		if ( num == EVENT_INTERFACE_NOK    )  strcpy(text, "Seleziona\\Scegli il pilota selezionato");
+		if ( num == EVENT_INTERFACE_NCREATE)  strcpy(text, "Nuovo\\Crea un nuovo pilota");
+		if ( num == EVENT_INTERFACE_NDELETE)  strcpy(text, "Elimina\\Elimina il pilota dall'elenco");
 
-		if ( num == EVENT_OBJECT_DESELECT  )  strcpy(text, "Vorherg. Auwahl (\\key desel;)");
-		if ( num == EVENT_OBJECT_LEFT      )  strcpy(text, "Drehung links (\\key left;)");
-		if ( num == EVENT_OBJECT_RIGHT     )  strcpy(text, "Drehung rechts (\\key right;)");
-		if ( num == EVENT_OBJECT_UP        )  strcpy(text, "Vorwärts (\\key up;)");
-		if ( num == EVENT_OBJECT_DOWN      )  strcpy(text, "Rückwärts (\\key down;)");
-		if ( num == EVENT_OBJECT_GASUP     )  strcpy(text, "Steigt (\\key gup;)");
-		if ( num == EVENT_OBJECT_GASDOWN   )  strcpy(text, "Sinkt (\\key gdown;)");
-		if ( num == EVENT_OBJECT_HTAKE     )  strcpy(text, "Nehmen oder hinlegen  (\\key action;)");
-		if ( num == EVENT_OBJECT_MTAKE     )  strcpy(text, "Nehmen oder hinlegen  (\\key action;)");
-		if ( num == EVENT_OBJECT_MFRONT    )  strcpy(text, "..vorne");
-		if ( num == EVENT_OBJECT_MBACK     )  strcpy(text, "..hinten");
-		if ( num == EVENT_OBJECT_MPOWER    )  strcpy(text, "..Batterie");
-		if ( num == EVENT_OBJECT_BHELP     )  strcpy(text, "Anweisungen über die Mission(\\key help;)");
-		if ( num == EVENT_OBJECT_BTAKEOFF  )  strcpy(text, "Abheben nach vollbrachter Mission");
-		if ( num == EVENT_OBJECT_BDERRICK  )  strcpy(text, "Baut einen Bohrturm");
-		if ( num == EVENT_OBJECT_BSTATION  )  strcpy(text, "Baut ein Kraftwerk");
-		if ( num == EVENT_OBJECT_BFACTORY  )  strcpy(text, "Baut eine Roboterfabrik");
-		if ( num == EVENT_OBJECT_BREPAIR   )  strcpy(text, "Baut ein Reparaturzentrum");
-		if ( num == EVENT_OBJECT_BCONVERT  )  strcpy(text, "Baut einen Konverter");
-		if ( num == EVENT_OBJECT_BTOWER    )  strcpy(text, "Baut einen Geschützturm");
-		if ( num == EVENT_OBJECT_BRESEARCH )  strcpy(text, "Baut ein Forschungszentrum");
-		if ( num == EVENT_OBJECT_BRADAR    )  strcpy(text, "Baut ein Radar");
-		if ( num == EVENT_OBJECT_BENERGY   )  strcpy(text, "Baut eine Batteriefabrik");
-		if ( num == EVENT_OBJECT_BLABO     )  strcpy(text, "Baut ein automatisches Labor");
-		if ( num == EVENT_OBJECT_BNUCLEAR  )  strcpy(text, "Baut eine Brennstoffzellenfabrik");
-		if ( num == EVENT_OBJECT_BPARA     )  strcpy(text, "Baut einen Blitzableiter");
-		if ( num == EVENT_OBJECT_BINFO     )  strcpy(text, "Baut einen Infoserver");
-		if ( num == EVENT_OBJECT_GFLAT     )  strcpy(text, "Zeigt ob der Boden eben ist");
-		if ( num == EVENT_OBJECT_FCREATE   )  strcpy(text, "Setzt eine Fahne");
-		if ( num == EVENT_OBJECT_FDELETE   )  strcpy(text, "Sammelt die Fahne ein");
-		if ( num == EVENT_OBJECT_FCOLORb   )  strcpy(text, "\\Blaue Fahne");
-		if ( num == EVENT_OBJECT_FCOLORr   )  strcpy(text, "\\Rote Fahne");
-		if ( num == EVENT_OBJECT_FCOLORg   )  strcpy(text, "\\Grüne Fahne");
-		if ( num == EVENT_OBJECT_FCOLORy   )  strcpy(text, "\\Gelbe Fahne");
-		if ( num == EVENT_OBJECT_FCOLORv   )  strcpy(text, "\\Violette Fahne");
-		if ( num == EVENT_OBJECT_FACTORYfa )  strcpy(text, "Baut einen Jettransporter");
-		if ( num == EVENT_OBJECT_FACTORYta )  strcpy(text, "Baut einen Kettentransporter");
-		if ( num == EVENT_OBJECT_FACTORYwa )  strcpy(text, "Baut einen Radtransporter");
-		if ( num == EVENT_OBJECT_FACTORYia )  strcpy(text, "Baut einen Krabbeltransporter");
-		if ( num == EVENT_OBJECT_FACTORYfc )  strcpy(text, "Baut einen Jetshooter");
-		if ( num == EVENT_OBJECT_FACTORYtc )  strcpy(text, "Baut einen Kettenshooter");
-		if ( num == EVENT_OBJECT_FACTORYwc )  strcpy(text, "Baut einen Radshooter");
-		if ( num == EVENT_OBJECT_FACTORYic )  strcpy(text, "Baut einen Krabbelshooter");
-		if ( num == EVENT_OBJECT_FACTORYfi )  strcpy(text, "Baut einen Jetorgashooter");
-		if ( num == EVENT_OBJECT_FACTORYti )  strcpy(text, "Baut einen Kettenorgashooter");
-		if ( num == EVENT_OBJECT_FACTORYwi )  strcpy(text, "Baut einen Radorgashooter");
-		if ( num == EVENT_OBJECT_FACTORYii )  strcpy(text, "Baut einen Krabbelorgashooter");
-		if ( num == EVENT_OBJECT_FACTORYfs )  strcpy(text, "Baut einen Jetschnüffler");
-		if ( num == EVENT_OBJECT_FACTORYts )  strcpy(text, "Baut einen Kettenschnüffler");
-		if ( num == EVENT_OBJECT_FACTORYws )  strcpy(text, "Baut einen Radschnüffler");
-		if ( num == EVENT_OBJECT_FACTORYis )  strcpy(text, "Baut einen Krabbelschnüffler");
-		if ( num == EVENT_OBJECT_FACTORYrt )  strcpy(text, "Baut einen Stampfer");
-		if ( num == EVENT_OBJECT_FACTORYrc )  strcpy(text, "Baut einen Phazershooter");
-		if ( num == EVENT_OBJECT_FACTORYrr )  strcpy(text, "Baut einen Recycler");
-		if ( num == EVENT_OBJECT_FACTORYrs )  strcpy(text, "Baut einen Schutzschild");
-		if ( num == EVENT_OBJECT_FACTORYsa )  strcpy(text, "Baut einen Kettentaucher");
-		if ( num == EVENT_OBJECT_RTANK     )  strcpy(text, "Forschungsprogramm Kettenantrieb");
-		if ( num == EVENT_OBJECT_RFLY      )  strcpy(text, "Forschungsprogramm Jetantrieb");
-		if ( num == EVENT_OBJECT_RTHUMP    )  strcpy(text, "Forschungsprogramm Stampfer");
-		if ( num == EVENT_OBJECT_RCANON    )  strcpy(text, "Forschungsprogramm Shooterkanone");
-		if ( num == EVENT_OBJECT_RTOWER    )  strcpy(text, "Forschungsprogramm Geschützturm");
-		if ( num == EVENT_OBJECT_RPHAZER   )  strcpy(text, "Forschungsprogramm Phazerkanone");
-		if ( num == EVENT_OBJECT_RSHIELD   )  strcpy(text, "Forschungsprogramm Schutzschild");
-		if ( num == EVENT_OBJECT_RATOMIC   )  strcpy(text, "Forschungsprogramm Brennstoffzelle");
-		if ( num == EVENT_OBJECT_RiPAW     )  strcpy(text, "Forschungsprogramm Krabbelantrieb");
-		if ( num == EVENT_OBJECT_RiGUN     )  strcpy(text, "Forschungsprogramm Orgashooterkanone");
-		if ( num == EVENT_OBJECT_RESET     )  strcpy(text, "Alles zurücksetzen");
-		if ( num == EVENT_OBJECT_SEARCH    )  strcpy(text, "Schnüffeln (\\key action;)");
-		if ( num == EVENT_OBJECT_TERRAFORM )  strcpy(text, "Stampfen (\\key action;)");
-		if ( num == EVENT_OBJECT_FIRE      )  strcpy(text, "Feuer (\\key action;)");
-		if ( num == EVENT_OBJECT_RECOVER   )  strcpy(text, "Recyceln (\\key action;)");
-		if ( num == EVENT_OBJECT_BEGSHIELD )  strcpy(text, "Schutzschild ausfahren (\\key action;)");
-		if ( num == EVENT_OBJECT_ENDSHIELD )  strcpy(text, "Schutzschild einholen (\\key action;)");
-		if ( num == EVENT_OBJECT_DIMSHIELD )  strcpy(text, "Reichweite Schutzschild");
-		if ( num == EVENT_OBJECT_PROGRUN   )  strcpy(text, "Gewähltes Programm ausführen");
-		if ( num == EVENT_OBJECT_PROGEDIT  )  strcpy(text, "Gewähltes Programm bearbeiten");
-		if ( num == EVENT_OBJECT_INFOOK    )  strcpy(text, "\\SatCom in Standby");
-		if ( num == EVENT_OBJECT_DELETE    )  strcpy(text, "Gebäude sprengen");
-		if ( num == EVENT_OBJECT_GENERGY   )  strcpy(text, "Energievorrat");
-		if ( num == EVENT_OBJECT_GSHIELD   )  strcpy(text, "Schäden");
-		if ( num == EVENT_OBJECT_GRANGE    )  strcpy(text, "Triebwerktemperatur");
-		if ( num == EVENT_OBJECT_GPROGRESS )  strcpy(text, "Prozess im Gang ...");
-		if ( num == EVENT_OBJECT_GRADAR    )  strcpy(text, "Anzahl erfasster Insekten");
-		if ( num == EVENT_OBJECT_GINFO     )  strcpy(text, "Gesendete Informationen");
-		if ( num == EVENT_OBJECT_COMPASS   )  strcpy(text, "Kompass");
-//?		if ( num == EVENT_OBJECT_MAP       )  strcpy(text, "Minikarte");
-		if ( num == EVENT_OBJECT_MAPZOOM   )  strcpy(text, "Zoom Minikarte");
-		if ( num == EVENT_OBJECT_CAMERA    )  strcpy(text, "Kamera (\\key camera;)");
-		if ( num == EVENT_OBJECT_CAMERAleft)  strcpy(text, "Kamera links");
-		if ( num == EVENT_OBJECT_CAMERAright) strcpy(text, "Kamera rechts");
-		if ( num == EVENT_OBJECT_CAMERAnear)  strcpy(text, "Kamera näher");
-		if ( num == EVENT_OBJECT_CAMERAaway)  strcpy(text, "Kamera weiter weg");
-		if ( num == EVENT_OBJECT_HELP      )  strcpy(text, "Anweisungen über das ausgewählte Objekt");
-		if ( num == EVENT_OBJECT_SOLUCE    )  strcpy(text, "Zeigt die Lösung");
-		if ( num == EVENT_OBJECT_SHORTCUT00)  strcpy(text, "Anzeige Roboter <-> Bauten");
-		if ( num == EVENT_OBJECT_LIMIT     )  strcpy(text, "Zeigt die Reichweite");
-		if ( num == EVENT_OBJECT_PEN0      )  strcpy(text, "\\Bleistift abheben");
-		if ( num == EVENT_OBJECT_PEN1      )  strcpy(text, "\\Schwarzen Bleistift hinunterlassen");
-		if ( num == EVENT_OBJECT_PEN2      )  strcpy(text, "\\Gelben Bleistift hinunterlassen");
-		if ( num == EVENT_OBJECT_PEN3      )  strcpy(text, "\\Orangefarbenen Bleistift hinunterlassen");
-		if ( num == EVENT_OBJECT_PEN4      )  strcpy(text, "\\Roten Bleistift hinunterlassen");
-		if ( num == EVENT_OBJECT_PEN5      )  strcpy(text, "\\Violetten Bleistift hinunterlassen");
-		if ( num == EVENT_OBJECT_PEN6      )  strcpy(text, "\\Blauen Bleistift hinunterlassen");
-		if ( num == EVENT_OBJECT_PEN7      )  strcpy(text, "\\Grünen Bleistift hinunterlassen");
-		if ( num == EVENT_OBJECT_PEN8      )  strcpy(text, "\\Braunen Bleistift hinunterlassen");
-		if ( num == EVENT_OBJECT_REC       )  strcpy(text, "\\Aufnahme starten");
-		if ( num == EVENT_OBJECT_STOP      )  strcpy(text, "\\Aufnahme stoppen");
-		if ( num == EVENT_DT_VISIT0        ||
-			 num == EVENT_DT_VISIT1        ||
-			 num == EVENT_DT_VISIT2        ||
-			 num == EVENT_DT_VISIT3        ||
-			 num == EVENT_DT_VISIT4        )  strcpy(text, "Zeigt den Ort");
-		if ( num == EVENT_DT_END           )  strcpy(text, "Weitermachen");
-		if ( num == EVENT_CMD              )  strcpy(text, "Befehleingabe");
-		if ( num == EVENT_SPEED            )  strcpy(text, "Spielgeschwindigkeit");
+		if ( num == EVENT_INTERFACE_LEVEL1 )  strcpy(text, "Principianti\\Livello facilissimo");
+		if ( num == EVENT_INTERFACE_LEVEL2 )  strcpy(text, "Intermedi\\Azione di gioco semplice");
+		if ( num == EVENT_INTERFACE_LEVEL3 )  strcpy(text, "Esperti\\Azione di gioco intermedia");
+		if ( num == EVENT_INTERFACE_LEVEL4 )  strcpy(text, "Campioni\\Livello ultradifficile");
 
-		if ( num == EVENT_HYPER_PREV       )  strcpy(text, "Vorherg. Seite");
-		if ( num == EVENT_HYPER_NEXT       )  strcpy(text, "Nächste Seite");
-		if ( num == EVENT_HYPER_HOME       )  strcpy(text, "Home");
-		if ( num == EVENT_HYPER_COPY       )  strcpy(text, "Kopieren");
-		if ( num == EVENT_HYPER_SIZE1      )  strcpy(text, "Größe 1");
-		if ( num == EVENT_HYPER_SIZE2      )  strcpy(text, "Größe 2");
-		if ( num == EVENT_HYPER_SIZE3      )  strcpy(text, "Größe 3");
-		if ( num == EVENT_HYPER_SIZE4      )  strcpy(text, "Größe 4");
-		if ( num == EVENT_HYPER_SIZE5      )  strcpy(text, "Größe 5");
-		if ( num == EVENT_SATCOM_HUSTON    )  strcpy(text, "Anweisungen von Houston");
-#if _TEEN
-		if ( num == EVENT_SATCOM_SAT       )  strcpy(text, "Wörterbuch Englisch-Deutsch");
-#else
-		if ( num == EVENT_SATCOM_SAT       )  strcpy(text, "Satellitenbericht");
-#endif
-		if ( num == EVENT_SATCOM_LOADING   )  strcpy(text, "Von Houston übermittelte Programme");
-		if ( num == EVENT_SATCOM_OBJECT    )  strcpy(text, "Liste der Objekte");
-		if ( num == EVENT_SATCOM_PROG      )  strcpy(text, "Hilfe über Programmieren");
-		if ( num == EVENT_SATCOM_SOLUCE    )  strcpy(text, "Lösung");
+		if ( num == EVENT_INTERFACE_POK    )  strcpy(text, "Seleziona\\Comincia con questa automobile");
+		if ( num == EVENT_INTERFACE_PNEXT  )  strcpy(text, "Successiva >\\Automobile successiva");
+		if ( num == EVENT_INTERFACE_PPREV  )  strcpy(text, "< Precedente\\Automobile precedente");
+		if ( num == EVENT_INTERFACE_PGSPEED)  strcpy(text, "Massima velocità\\");
+		if ( num == EVENT_INTERFACE_PGACCEL)  strcpy(text, "Accelerazione\\");
+		if ( num == EVENT_INTERFACE_PGGRIP )  strcpy(text, "Tenuta\\");
+		if ( num == EVENT_INTERFACE_PGSOLID)  strcpy(text, "Solidità\\");
+		if ( num == EVENT_INTERFACE_PPRICE )  strcpy(text, "%s (prezzo del veicolo: (%d punti)");
+		if ( num == EVENT_INTERFACE_PPESETAS) strcpy(text, "Punteggio accumulato: %d punti");
+		if ( num == EVENT_INTERFACE_PSUBMOD0) strcpy(text, "A\\Modifica l'aspetto");
+		if ( num == EVENT_INTERFACE_PSUBMOD1) strcpy(text, "B\\Modifica l'aspetto");
+		if ( num == EVENT_INTERFACE_PSUBMOD2) strcpy(text, "C\\Modifica l'aspetto");
+		if ( num == EVENT_INTERFACE_PSUBMOD3) strcpy(text, "D\\Modifica l'aspetto");
+		if ( num >= EVENT_INTERFACE_PCOLOR0 &&
+			 num <= EVENT_INTERFACE_PCOLOR19) strcpy(text, "\\Modifica il colore");
 
-		if ( num == EVENT_STUDIO_OK        )  strcpy(text, "OK\\Programm kompilieren");
-		if ( num == EVENT_STUDIO_CANCEL    )  strcpy(text, "Abbrechen\\Editor schließen");
-		if ( num == EVENT_STUDIO_NEW       )  strcpy(text, "Neu");
-		if ( num == EVENT_STUDIO_OPEN      )  strcpy(text, "Öffnen (Ctrl+o)");
-		if ( num == EVENT_STUDIO_SAVE      )  strcpy(text, "Speichern (Ctrl+s)");
-		if ( num == EVENT_STUDIO_UNDO      )  strcpy(text, "Widerrufen (Ctrl+z)");
-		if ( num == EVENT_STUDIO_CUT       )  strcpy(text, "Ausschneiden (Ctrl+x)");
-		if ( num == EVENT_STUDIO_COPY      )  strcpy(text, "Kopieren (Ctrl+c)");
-		if ( num == EVENT_STUDIO_PASTE     )  strcpy(text, "Einfügen (Ctrl+v)");
-		if ( num == EVENT_STUDIO_SIZE      )  strcpy(text, "Zeichengröße");
-		if ( num == EVENT_STUDIO_TOOL      )  strcpy(text, "Anweisungen (\\key help;)");
-		if ( num == EVENT_STUDIO_HELP      )  strcpy(text, "Hilfe über Programmieren (\\key prog;)");
-		if ( num == EVENT_STUDIO_COMPILE   )  strcpy(text, "Kompilieren");
-		if ( num == EVENT_STUDIO_RUN       )  strcpy(text, "Start/Stop");
-		if ( num == EVENT_STUDIO_REALTIME  )  strcpy(text, "Pause/Weitermachen");
-		if ( num == EVENT_STUDIO_STEP      )  strcpy(text, "Ein Schritt");
-	}
-
-	if ( type == RES_OBJECT )
-	{
-		if ( num == OBJECT_PORTICO      )  strcpy(text, "Träger");
-		if ( num == OBJECT_BASE         )  strcpy(text, "Raumschiff");
-		if ( num == OBJECT_DERRICK      )  strcpy(text, "Bohrturm");
-		if ( num == OBJECT_FACTORY      )  strcpy(text, "Roboterfabrik");
-		if ( num == OBJECT_REPAIR       )  strcpy(text, "Reparaturzentrum");
-		if ( num == OBJECT_DESTROYER    )  strcpy(text, "Einstampfer");
-		if ( num == OBJECT_STATION      )  strcpy(text, "Kraftwerk");
-		if ( num == OBJECT_CONVERT      )  strcpy(text, "Konverter Erz-Titan");
-		if ( num == OBJECT_TOWER        )  strcpy(text, "Geschützturm");
-		if ( num == OBJECT_NEST         )  strcpy(text, "Orgastoffquelle");
-		if ( num == OBJECT_RESEARCH     )  strcpy(text, "Forschungszentrum");
-		if ( num == OBJECT_RADAR        )  strcpy(text, "Radar");
-		if ( num == OBJECT_INFO         )  strcpy(text, "Infoserver");
-#if _TEEN
-		if ( num == OBJECT_ENERGY       )  strcpy(text, "Auflöser");
-#else
-		if ( num == OBJECT_ENERGY       )  strcpy(text, "Batteriefabrik");
-#endif
-		if ( num == OBJECT_LABO         )  strcpy(text, "Automatisches Labor");
-		if ( num == OBJECT_NUCLEAR      )  strcpy(text, "Brennstoffzellenfabrik");
-		if ( num == OBJECT_PARA         )  strcpy(text, "Blitzableiter");
-		if ( num == OBJECT_SAFE         )  strcpy(text, "Bunker");
-		if ( num == OBJECT_HUSTON       )  strcpy(text, "Kontrollzentrum");
-		if ( num == OBJECT_TARGET1      )  strcpy(text, "Zielscheibe");
-		if ( num == OBJECT_TARGET2      )  strcpy(text, "Zielscheibe");
-		if ( num == OBJECT_START        )  strcpy(text, "Startfläche");
-		if ( num == OBJECT_END          )  strcpy(text, "Zielfläche");
-		if ( num == OBJECT_STONE        )  strcpy(text, "Titanerz");
-		if ( num == OBJECT_URANIUM      )  strcpy(text, "Platinerz");
-		if ( num == OBJECT_BULLET       )  strcpy(text, "Orgastoff");
-		if ( num == OBJECT_METAL        )  strcpy(text, "Titan");
-		if ( num == OBJECT_POWER        )  strcpy(text, "Elektrolytische Batterie");
-		if ( num == OBJECT_ATOMIC       )  strcpy(text, "Brennstoffzelle");
-		if ( num == OBJECT_BBOX         )  strcpy(text, "Flugschreiber");
-		if ( num == OBJECT_KEYa         )  strcpy(text, "Schlüssel A");
-		if ( num == OBJECT_KEYb         )  strcpy(text, "Schlüssel B");
-		if ( num == OBJECT_KEYc         )  strcpy(text, "Schlüssel C");
-		if ( num == OBJECT_KEYd         )  strcpy(text, "Schlüssel D");
-		if ( num == OBJECT_TNT          )  strcpy(text, "Sprengstoff");
-		if ( num == OBJECT_BOMB         )  strcpy(text, "Landmine");
-		if ( num == OBJECT_BAG          )  strcpy(text, "Überlebenskit");
-		if ( num == OBJECT_WAYPOINT     )  strcpy(text, "Checkpoint");
-		if ( num == OBJECT_FLAGb        )  strcpy(text, "Blaue Fahne");
-		if ( num == OBJECT_FLAGr        )  strcpy(text, "Rote Fahne");
-		if ( num == OBJECT_FLAGg        )  strcpy(text, "Grüne Fahne");
-		if ( num == OBJECT_FLAGy        )  strcpy(text, "Gelbe Fahne");
-		if ( num == OBJECT_FLAGv        )  strcpy(text, "Violette Fahne");
-		if ( num == OBJECT_MARKPOWER    )  strcpy(text, "Markierung für unterirdische Energiequelle");
-		if ( num == OBJECT_MARKURANIUM  )  strcpy(text, "Markierung für unterirdisches Platinvorkommen");
-		if ( num == OBJECT_MARKKEYa     )  strcpy(text, "Markierung für vergrabenen Schlüssel A");
-		if ( num == OBJECT_MARKKEYb     )  strcpy(text, "Markierung für vergrabenen Schlüssel B");
-		if ( num == OBJECT_MARKKEYc     )  strcpy(text, "Markierung für vergrabenen Schlüssel C");
-		if ( num == OBJECT_MARKKEYd     )  strcpy(text, "Markierung für vergrabenen Schlüssel D");
-		if ( num == OBJECT_MARKSTONE    )  strcpy(text, "Markierung für unterirdisches Titanvorkommen");
-		if ( num == OBJECT_MOBILEft     )  strcpy(text, "Übungsroboter");
-		if ( num == OBJECT_MOBILEtt     )  strcpy(text, "Übungsroboter");
-		if ( num == OBJECT_MOBILEwt     )  strcpy(text, "Übungsroboter");
-		if ( num == OBJECT_MOBILEit     )  strcpy(text, "Übungsroboter");
-		if ( num == OBJECT_MOBILEfa     )  strcpy(text, "Transporter");
-		if ( num == OBJECT_MOBILEta     )  strcpy(text, "Transporter");
-		if ( num == OBJECT_MOBILEwa     )  strcpy(text, "Transporter");
-		if ( num == OBJECT_MOBILEia     )  strcpy(text, "Transporter");
-		if ( num == OBJECT_MOBILEfc     )  strcpy(text, "Shooter");
-		if ( num == OBJECT_MOBILEtc     )  strcpy(text, "Shooter");
-		if ( num == OBJECT_MOBILEwc     )  strcpy(text, "Shooter");
-		if ( num == OBJECT_MOBILEic     )  strcpy(text, "Shooter");
-		if ( num == OBJECT_MOBILEfi     )  strcpy(text, "OrgaShooter");
-		if ( num == OBJECT_MOBILEti     )  strcpy(text, "OrgaShooter");
-		if ( num == OBJECT_MOBILEwi     )  strcpy(text, "OrgaShooter");
-		if ( num == OBJECT_MOBILEii     )  strcpy(text, "OrgaShooter");
-		if ( num == OBJECT_MOBILEfs     )  strcpy(text, "Schnüffler");
-		if ( num == OBJECT_MOBILEts     )  strcpy(text, "Schnüffler");
-		if ( num == OBJECT_MOBILEws     )  strcpy(text, "Schnüffler");
-		if ( num == OBJECT_MOBILEis     )  strcpy(text, "Schnüffler");
-		if ( num == OBJECT_MOBILErt     )  strcpy(text, "Stampfer");
-		if ( num == OBJECT_MOBILErc     )  strcpy(text, "Phazershooter");
-		if ( num == OBJECT_MOBILErr     )  strcpy(text, "Recycler");
-		if ( num == OBJECT_MOBILErs     )  strcpy(text, "Schutzschild");
-		if ( num == OBJECT_MOBILEsa     )  strcpy(text, "Kettentaucher");
-		if ( num == OBJECT_MOBILEtg     )  strcpy(text, "Mobile Zielscheibe");
-		if ( num == OBJECT_MOBILEdr     )  strcpy(text, "Zeichner");
-		if ( num == OBJECT_HUMAN        )  strcpy(text, g_gamerName);
-		if ( num == OBJECT_TECH         )  strcpy(text, "Techniker");
-		if ( num == OBJECT_TOTO         )  strcpy(text, "Robby");
-		if ( num == OBJECT_MOTHER       )  strcpy(text, "Insektenkönigin");
-		if ( num == OBJECT_ANT          )  strcpy(text, "Ameise");
-		if ( num == OBJECT_SPIDER       )  strcpy(text, "Spinne");
-		if ( num == OBJECT_BEE          )  strcpy(text, "Wespe");
-		if ( num == OBJECT_WORM         )  strcpy(text, "Wurm");
-		if ( num == OBJECT_EGG          )  strcpy(text, "Ei");
-		if ( num == OBJECT_RUINmobilew1 )  strcpy(text, "Roboterwrack");
-		if ( num == OBJECT_RUINmobilew2 )  strcpy(text, "Roboterwrack");
-		if ( num == OBJECT_RUINmobilet1 )  strcpy(text, "Roboterwrack");
-		if ( num == OBJECT_RUINmobilet2 )  strcpy(text, "Roboterwrack");
-		if ( num == OBJECT_RUINmobiler1 )  strcpy(text, "Roboterwrack");
-		if ( num == OBJECT_RUINmobiler2 )  strcpy(text, "Roboterwrack");
-		if ( num == OBJECT_RUINfactory  )  strcpy(text, "Gebäuderuine");
-		if ( num == OBJECT_RUINdoor     )  strcpy(text, "Gebäuderuine");
-		if ( num == OBJECT_RUINsupport  )  strcpy(text, "Abfall");
-		if ( num == OBJECT_RUINradar    )  strcpy(text, "Gebäuderuine");
-		if ( num == OBJECT_RUINconvert  )  strcpy(text, "Gebäuderuine");
-		if ( num == OBJECT_RUINbase     )  strcpy(text, "Raumschiffruine");
-		if ( num == OBJECT_RUINhead     )  strcpy(text, "Raumschiffruine");
-		if ( num == OBJECT_APOLLO1      ||
-			 num == OBJECT_APOLLO3      ||
-			 num == OBJECT_APOLLO4      ||
-			 num == OBJECT_APOLLO5      )  strcpy(text, "Überreste einer Apollo-Mission");
-		if ( num == OBJECT_APOLLO2      )  strcpy(text, "Lunar Roving Vehicle");
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Condizioni delle gomme");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "Temperatura reattore");
+		if ( num == EVENT_OBJECT_GPROGRESS )  strcpy(text, "Progresso dei compiti");
+		if ( num == EVENT_OBJECT_GSPEED    )  strcpy(text, "Tachimetro");
+		if ( num == EVENT_OBJECT_GRPM      )  strcpy(text, "Contagiri");
+		if ( num == EVENT_OBJECT_GMOTOR    )  strcpy(text, "\\Scatola del cambio");
+		if ( num == EVENT_OBJECT_GCOMPASS  )  strcpy(text, "Bussola");
+		if ( num == EVENT_OBJECT_GGEIGER   )  strcpy(text, "Contatore geiger");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "Condizioni generali");
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Condizioni gomme");
+//?		if ( num == EVENT_OBJECT_MAP       )  strcpy(text, "Mini-map");
+		if ( num == EVENT_OBJECT_MAPZOOM   )  strcpy(text, "Ingrandisci minimappa");
+		if ( num == EVENT_CMD              )  strcpy(text, "Riga di comando");
+		if ( num == EVENT_SPEED            )  strcpy(text, "Velocità gioco");
 	}
 
 	if ( type == RES_ERR )
 	{
-		strcpy(text, "Fehler");
-		if ( num == ERR_CMD             )  strcpy(text, "Befehl unbekannt");
-#if _NEWLOOK
-		if ( num == ERR_INSTALL         )  strcpy(text, "CeeBot wurde nicht installiert.");
-		if ( num == ERR_NOCD            )  strcpy(text, "Legen Sie die CeeBot-CD ein\nund starten Sie das Spiel neu.");
-#else
-		if ( num == ERR_INSTALL         )  strcpy(text, "COLOBOT wurde nicht installiert.");
-		if ( num == ERR_NOCD            )  strcpy(text, "Legen Sie die COLOBOT-CD ein\nund starten Sie das Spiel neu.");
-#endif
-		if ( num == ERR_MANIP_VEH       )  strcpy(text, "Roboter ungeeignet");
-		if ( num == ERR_MANIP_FLY       )  strcpy(text, "Im Flug unmöglich");
-		if ( num == ERR_MANIP_BUSY      )  strcpy(text, "Trägt schon etwas");
-		if ( num == ERR_MANIP_NIL       )  strcpy(text, "Nichts zu ergreifen");
-		if ( num == ERR_MANIP_MOTOR     )  strcpy(text, "In Fahrt unmöglich");
-		if ( num == ERR_MANIP_OCC       )  strcpy(text, "Stelle schon besetzt");
-		if ( num == ERR_MANIP_FRIEND    )  strcpy(text, "Kein anderer Roboter");
-		if ( num == ERR_MANIP_RADIO     )  strcpy(text, "Sie können keinen radioaktiven Gegenstand tragen");
-		if ( num == ERR_MANIP_WATER     )  strcpy(text, "Sie können unter Wasser nichts tragen");
-		if ( num == ERR_MANIP_EMPTY     )  strcpy(text, "Nichts abzulegen");
-		if ( num == ERR_BUILD_FLY       )  strcpy(text, "Im Flug unmöglich");
-		if ( num == ERR_BUILD_WATER     )  strcpy(text, "Unter Wasser unmöglich");
-		if ( num == ERR_BUILD_ENERGY    )  strcpy(text, "Nicht genug Energie");
-		if ( num == ERR_BUILD_METALAWAY )  strcpy(text, "Titan zu weit weg");
-		if ( num == ERR_BUILD_METALNEAR )  strcpy(text, "Titan zu nahe");
-		if ( num == ERR_BUILD_METALINEX )  strcpy(text, "Kein Titan vorhanden");
-		if ( num == ERR_BUILD_FLAT      )  strcpy(text, "Boden nicht eben genug");
-		if ( num == ERR_BUILD_FLATLIT   )  strcpy(text, "Ebener Boden nicht groß genug");
-		if ( num == ERR_BUILD_BUSY      )  strcpy(text, "Stelle schon besetzt");
-		if ( num == ERR_BUILD_BASE      )  strcpy(text, "Zu nahe am Raumschiff");
-		if ( num == ERR_BUILD_NARROW    )  strcpy(text, "Zu nahe an einem Gebäude");
-		if ( num == ERR_BUILD_MOTOR     )  strcpy(text, "In Fahrt unmöglich");
-		if ( num == ERR_SEARCH_FLY      )  strcpy(text, "Im Flug unmöglich");
-		if ( num == ERR_SEARCH_VEH      )  strcpy(text, "Roboter ungeeignet");
-		if ( num == ERR_SEARCH_MOTOR    )  strcpy(text, "In Fahrt unmöglich");
-		if ( num == ERR_TERRA_VEH       )  strcpy(text, "Roboter ungeeignet");
-		if ( num == ERR_TERRA_ENERGY    )  strcpy(text, "Nicht genug Energie");
-		if ( num == ERR_TERRA_FLOOR     )  strcpy(text, "Boden ungeeignet");
-		if ( num == ERR_TERRA_BUILDING  )  strcpy(text, "Gebäude zu nahe");
-		if ( num == ERR_TERRA_OBJECT    )  strcpy(text, "Gegenstand zu nahe");
-		if ( num == ERR_RECOVER_VEH     )  strcpy(text, "Roboter ungeeignet");
-		if ( num == ERR_RECOVER_ENERGY  )  strcpy(text, "Nicht genug Energie");
-		if ( num == ERR_RECOVER_NULL    )  strcpy(text, "Nichts zu recyceln");
-		if ( num == ERR_SHIELD_VEH      )  strcpy(text, "Roboter ungeeignet");
-		if ( num == ERR_SHIELD_ENERGY   )  strcpy(text, "Keine Energie mehr");
-//?		if ( num == ERR_COM             )  strcpy(text, "Kommunikationsproblem mit dem Roboter");
-		if ( num == ERR_MOVE_IMPOSSIBLE )  strcpy(text, "Ziel kann nicht erreicht werden");
-		if ( num == ERR_FIND_IMPOSSIBLE )  strcpy(text, "Das Objekt existiert nicht");
-		if ( num == ERR_GOTO_IMPOSSIBLE )  strcpy(text, "Ziel kann nicht erreicht werden");
-		if ( num == ERR_GOTO_ITER       )  strcpy(text, "Ziel kann nicht erreicht werden");
-		if ( num == ERR_GOTO_BUSY       )  strcpy(text, "Ziel ist schon besetzt");
-		if ( num == ERR_FIRE_VEH        )  strcpy(text, "Roboter ungeeignet");
-		if ( num == ERR_FIRE_ENERGY     )  strcpy(text, "Nicht genug Energie");
-		if ( num == ERR_FIRE_FLY        )  strcpy(text, "Im Flug unmöglich");
-		if ( num == ERR_CONVERT_EMPTY   )  strcpy(text, "Kein konvertierbares Titanerz vorhanden");
-		if ( num == ERR_DERRICK_NULL    )  strcpy(text, "Keine unterirdische Erzlagerstätte");
-		if ( num == ERR_STATION_NULL    )  strcpy(text, "Kein unterirdisches Energievorkommen");
-		if ( num == ERR_TOWER_POWER     )  strcpy(text, "Keine Batterie");
-		if ( num == ERR_TOWER_ENERGY    )  strcpy(text, "Keine Energie mehr");
-		if ( num == ERR_RESEARCH_POWER  )  strcpy(text, "Keine Batterie");
-		if ( num == ERR_RESEARCH_ENERGY )  strcpy(text, "Nicht mehr genug Energie");
-		if ( num == ERR_RESEARCH_TYPE   )  strcpy(text, "Falscher Batterietyp");
-		if ( num == ERR_RESEARCH_ALREADY)  strcpy(text, "Forschungsprogramm schon ausgeführt");
-		if ( num == ERR_ENERGY_NULL     )  strcpy(text, "Kein unterirdisches Energievorkommen");
-		if ( num == ERR_ENERGY_LOW      )  strcpy(text, "Noch nicht genug Energie");
-		if ( num == ERR_ENERGY_EMPTY    )  strcpy(text, "Kein konvertierbares Titanerz vorhanden");
-		if ( num == ERR_ENERGY_BAD      )  strcpy(text, "Wandelt nur Titanerz um");
-		if ( num == ERR_BASE_DLOCK      )  strcpy(text, "Die Türen werden von einem Gegenstand blockiert");
-		if ( num == ERR_BASE_DHUMAN     )  strcpy(text, "Gehen Sie an Bord, bevor Sie abheben");
-		if ( num == ERR_LABO_NULL       )  strcpy(text, "Nichts zu analysieren");
-		if ( num == ERR_LABO_BAD        )  strcpy(text, "Analysiert nur Orgastoff");
-		if ( num == ERR_LABO_ALREADY    )  strcpy(text, "Analyse schon durchgeführt");
-		if ( num == ERR_NUCLEAR_NULL    )  strcpy(text, "Kein unterirdisches Energievorkommen");
-		if ( num == ERR_NUCLEAR_LOW     )  strcpy(text, "Noch nicht genug Energie");
-		if ( num == ERR_NUCLEAR_EMPTY   )  strcpy(text, "Kein konvertierbares Platin");
-		if ( num == ERR_NUCLEAR_BAD     )  strcpy(text, "Wandelt nur Platin um");
-		if ( num == ERR_FACTORY_NULL    )  strcpy(text, "Kein Titan vorhanden");
-		if ( num == ERR_FACTORY_NEAR    )  strcpy(text, "Ein Gegenstand ist zu nahe");
-		if ( num == ERR_RESET_NEAR      )  strcpy(text, "Stelle schon besetzt");
-		if ( num == ERR_INFO_NULL       )  strcpy(text, "Kein Infoserver in Reichweite");
-		if ( num == ERR_VEH_VIRUS       )  strcpy(text, "Ein Programm wurde von einem Virus infiziert");
-		if ( num == ERR_BAT_VIRUS       )  strcpy(text, "Von Virus infiziert, zeitweise außer Betrieb");
-		if ( num == ERR_VEH_POWER       )  strcpy(text, "Keine Batterie");
-		if ( num == ERR_VEH_ENERGY      )  strcpy(text, "Keine Energie mehr");
-		if ( num == ERR_FLAG_FLY        )  strcpy(text, "Im Flug unmöglich");
-		if ( num == ERR_FLAG_WATER      )  strcpy(text, "Im Wasser unmöglich");
-		if ( num == ERR_FLAG_MOTOR      )  strcpy(text, "Beim Gehen unmöglich");
-		if ( num == ERR_FLAG_BUSY       )  strcpy(text, "Unmöglich wenn Sie etwas tragen");
-		if ( num == ERR_FLAG_CREATE     )  strcpy(text, "Zu viele Fahnen dieser Farbe (Maximum 5)");
-		if ( num == ERR_FLAG_PROXY      )  strcpy(text, "Zu nahe an einer anderen Fahne");
-		if ( num == ERR_FLAG_DELETE     )  strcpy(text, "Keine Fahne in Reichweite");
-		if ( num == ERR_MISSION_NOTERM  )  strcpy(text, "Mission noch nicht beendet (Drücken Sie auf \\key help; für weitere Informationen)");
-		if ( num == ERR_DELETEMOBILE    )  strcpy(text, "Roboter zerstört");
-		if ( num == ERR_DELETEBUILDING  )  strcpy(text, "Gebäude zerstört");
-		if ( num == ERR_TOOMANY         )  strcpy(text, "Kein neues Objekt kann erstellt werden (zu viele vorhanden)");
-		if ( num == ERR_OBLIGATORYTOKEN )  strcpy(text, "Es fehlt \"%s\" in Ihrem Programm");
-		if ( num == ERR_PROHIBITEDTOKEN )  strcpy(text, "In dieser Übung verboten");
+		strcpy(text, "Errore");
+		if ( num == ERR_CMD             )  strcpy(text, "Comando sconosciuto");
+		if ( num == ERR_INSTALL         )  strcpy(text, "Wild Wheels non è stato installato correttamente.");
+		if ( num == ERR_NOCD            )  strcpy(text, "Inserire il CD Wild Wheels\ne rieseguire il programma del gioco.");
+		if ( num == ERR_MOVE_IMPOSSIBLE )  strcpy(text, "Errore nel trasferimento di istruzioni");
+		if ( num == ERR_GOTO_IMPOSSIBLE )  strcpy(text, "Vai a: destinazione inaccessibile");
+		if ( num == ERR_GOTO_ITER       )  strcpy(text, "Vai a: destinazione inaccessibile");
+		if ( num == ERR_GOTO_BUSY       )  strcpy(text, "Vai a: destinazione occupata");
+		if ( num == ERR_FIRE_VEH        )  strcpy(text, "Bot errato");
+		if ( num == ERR_FIRE_ENERGY     )  strcpy(text, "Energia insufficiente");
+		if ( num == ERR_MISSION_NOTERM  )  strcpy(text, "La missione non è stata ancora completata (premi \\key help; per ulteriori dettagli)");
 
-		if ( num == INFO_BUILD          )  strcpy(text, "Gebäude fertiggestellt");
-		if ( num == INFO_CONVERT        )  strcpy(text, "Titan verfügbar");
-		if ( num == INFO_RESEARCH       )  strcpy(text, "Forschungsprogramm abgeschlossen");
-		if ( num == INFO_RESEARCHTANK   )  strcpy(text, "Herstellung eines Roboters mit Kettenantrieb möglich");
-		if ( num == INFO_RESEARCHFLY    )  strcpy(text, "Sie können jetzt mit den Tasten \\key gup; und \\key gdown; fliegen");
-		if ( num == INFO_RESEARCHTHUMP  )  strcpy(text, "Herstellung eines Stampfers möglich");
-		if ( num == INFO_RESEARCHCANON  )  strcpy(text, "Herstellung eines Shooters möglich");
-		if ( num == INFO_RESEARCHTOWER  )  strcpy(text, "Errichtung eines Geschützturms möglich");
-		if ( num == INFO_RESEARCHPHAZER )  strcpy(text, "Herstellung eines Phazershooters möglich");
-		if ( num == INFO_RESEARCHSHIELD )  strcpy(text, "Herstellung eines Schutzschildes möglich");
-		if ( num == INFO_RESEARCHATOMIC )  strcpy(text, "Errichtung einer Brennstoffzellenfabrik möglich");
-		if ( num == INFO_FACTORY        )  strcpy(text, "Neuer Roboter verfügbar");
-		if ( num == INFO_LABO           )  strcpy(text, "Analyse vollendet");
-		if ( num == INFO_ENERGY         )  strcpy(text, "Batterie verfügbar");
-		if ( num == INFO_NUCLEAR        )  strcpy(text, "Brennstoffzelle verfügbar");
-		if ( num == INFO_FINDING        )  strcpy(text, "Sie haben ein brauchbares Objekt gefunden");
-		if ( num == INFO_MARKPOWER      )  strcpy(text, "Geeignete Stelle für Kraftwerk gefunden");
-		if ( num == INFO_MARKURANIUM    )  strcpy(text, "Geeignete Stelle für Bohrturm gefunden");
-		if ( num == INFO_MARKSTONE      )  strcpy(text, "Geeignete Stelle für Bohrturm gefunden");
-		if ( num == INFO_MARKKEYa       )  strcpy(text, "Geeignete Stelle für Bohrturm gefunden");
-		if ( num == INFO_MARKKEYb       )  strcpy(text, "Geeignete Stelle für Bohrturm gefunden");
-		if ( num == INFO_MARKKEYc       )  strcpy(text, "Geeignete Stelle für Bohrturm gefunden");
-		if ( num == INFO_MARKKEYd       )  strcpy(text, "Geeignete Stelle für Bohrturm gefunden");
-		if ( num == INFO_WIN            )  strcpy(text, "<<< Bravo, Mission vollendet >>>");
-		if ( num == INFO_LOST           )  strcpy(text, "<<< Mission gescheitert >>>");
-		if ( num == INFO_LOSTq          )  strcpy(text, "<<< Mission gescheitert >>>");
-		if ( num == INFO_WRITEOK        )  strcpy(text, "Mission gespeichert");
-		if ( num == INFO_DELETEPATH     )  strcpy(text, "Checkpoint erreicht");
-		if ( num == INFO_DELETEMOTHER   )  strcpy(text, "Insektenkönigin tödlich verwundet");
-		if ( num == INFO_DELETEANT      )  strcpy(text, "Ameise tödlich verwundet");
-		if ( num == INFO_DELETEBEE      )  strcpy(text, "Wespe tödlich verwundet");
-		if ( num == INFO_DELETEWORM     )  strcpy(text, "Wurm tödlich verwundet");
-		if ( num == INFO_DELETESPIDER   )  strcpy(text, "Spinne tödlich verwundet");
-		if ( num == INFO_BEGINSATCOM    )  strcpy(text, "Beziehen Sie sich auf Ihren SatCom, indem Sie auf \\key help; drücken");
+		if ( num == INFO_WIN            )  strcpy(text, "<<< Congratulazioni, missione compiuta >>>");
+		if ( num == INFO_LOST           )  strcpy(text, "<<< Spiacente, missione non riuscita >>>");
+		if ( num == INFO_LOSTq          )  strcpy(text, "<<< Spiacente, missione non riuscita >>>");
 	}
 
 	if ( type == RES_CBOT )
 	{
-		strcpy(text, "Fehler");
-		if ( num == TX_OPENPAR       ) strcpy(text, "Es fehlt eine offene Klammer ""(""");
-		if ( num == TX_CLOSEPAR      ) strcpy(text, "Es fehlt eine geschlossene Klammer "")""");
-		if ( num == TX_NOTBOOL       ) strcpy(text, "Der Ausdruck muss einen boolschen Wert ergeben");
-		if ( num == TX_UNDEFVAR      ) strcpy(text, "Variable nicht deklariert");
-		if ( num == TX_BADLEFT       ) strcpy(text, "Zuweisung unmöglich");
-		if ( num == TX_ENDOF         ) strcpy(text, "Es fehlt ein Strichpunkt "";"" am Ende der Anweisung");
-		if ( num == TX_OUTCASE       ) strcpy(text, "Anweisung ""case"" ohne vorhergehende Anweisung ""switch""");
-		if ( num == TX_NOTERM        ) strcpy(text, "Hier ist eine Anweisung nach dem Ende des Programms");
-		if ( num == TX_CLOSEBLK      ) strcpy(text, "Es fehlt eine geschlossene geschweifte Klammer ""}"" (Ende des Blocks)");
-		if ( num == TX_ELSEWITHOUTIF ) strcpy(text, "Anweisung ""else"" ohne vorhergehende Anweisung ""if""");
-		if ( num == TX_OPENBLK       ) strcpy(text, "Es fehlt eine offene geschweifte Klammer""{""");
-		if ( num == TX_BADTYPE       ) strcpy(text, "Der Ausdruck ergibt einen falschen Typ für die Zuweisung");
-		if ( num == TX_REDEFVAR      ) strcpy(text, "Eine Variable wird zum zweiten Mal deklariert");
-		if ( num == TX_BAD2TYPE      ) strcpy(text, "Die zwei Operanden sind nicht kompatibel");
-		if ( num == TX_UNDEFCALL     ) strcpy(text, "Unbekannte Funktion");
-		if ( num == TX_MISDOTS       ) strcpy(text, "Es fehlt ein Doppelpunkt "" : """);
-		if ( num == TX_WHILE         ) strcpy(text, "Es fehlt das Wort ""while""");
-		if ( num == TX_BREAK         ) strcpy(text, "Anweisung ""break"" außerhalb einer Schleife");
-		if ( num == TX_LABEL         ) strcpy(text, "Ein Label kann nur vor den Anweisungen ""for"", ""while"", ""do"" oder ""switch"" vorkommen");
-		if ( num == TX_NOLABEL       ) strcpy(text, "Dieses Label existiert nicht");
-		if ( num == TX_NOCASE        ) strcpy(text, "Es fehlt eine Anweisung ""case""");
-		if ( num == TX_BADNUM        ) strcpy(text, "Es fehlt eine Zahl");
-		if ( num == TX_VOID          ) strcpy(text, "Parameter void");
-		if ( num == TX_NOTYP         ) strcpy(text, "Hier muss ein Variablentyp stehen");
-		if ( num == TX_NOVAR         ) strcpy(text, "Es fehlt der Name einer Variable");
-		if ( num == TX_NOFONC        ) strcpy(text, "Hier muss der Name der Funktion stehen");
-		if ( num == TX_OVERPARAM     ) strcpy(text, "Zu viele Parameter");
-		if ( num == TX_REDEF         ) strcpy(text, "Diese Funktion gibt es schon");
-		if ( num == TX_LOWPARAM      ) strcpy(text, "Nicht genug Parameter");
-		if ( num == TX_BADPARAM      ) strcpy(text, "Keine Funktion mit diesem Namen verträgt Parameter diesen Typs");
-		if ( num == TX_NUMPARAM      ) strcpy(text, "Keine Funktion mit diesem Namen verträgt diese Anzahl Parameter");
-		if ( num == TX_NOITEM        ) strcpy(text, "Dieses Element gibt es nicht in dieser Klasse");
-		if ( num == TX_DOT           ) strcpy(text, "Das Objekt ist nicht eine Instanz einer Klasse");
-		if ( num == TX_NOCONST       ) strcpy(text, "Es gibt keinen geeigneten Konstruktor");
-		if ( num == TX_REDEFCLASS    ) strcpy(text, "Diese Klasse gibt es schon");
-		if ( num == TX_CLBRK         ) strcpy(text, "Es fehlt eine geschlossene eckige Klammer "" ] """);
-		if ( num == TX_RESERVED      ) strcpy(text, "Dieses Wort ist reserviert");
-		if ( num == TX_BADNEW        ) strcpy(text, "Falsche Argumente für ""new""");
-		if ( num == TX_OPBRK         ) strcpy(text, "Es fehlt eine offene eckige Klammer "" [ """);
-		if ( num == TX_BADSTRING     ) strcpy(text, "Hier wird eine Zeichenkette erwartet");
-		if ( num == TX_BADINDEX      ) strcpy(text, "Falscher Typ für einen Index");
-		if ( num == TX_PRIVATE       ) strcpy(text, "Geschütztes Element (private)");
-		if ( num == TX_NOPUBLIC      ) strcpy(text, "Hier muss das Wort ""public"" stehen");
-		if ( num == TX_DIVZERO       ) strcpy(text, "Teilung durch Null");
-		if ( num == TX_NOTINIT       ) strcpy(text, "Der Wert dieser Variable wurde nicht definiert");
-		if ( num == TX_BADTHROW      ) strcpy(text, "Negativer Wert ungeeignet für Anweisung ""throw""");
-		if ( num == TX_NORETVAL      ) strcpy(text, "Die Funktion hat kein Ergebnis zurückgegeben");
-		if ( num == TX_NORUN         ) strcpy(text, "Keine Funktion wird ausgeführt");
-		if ( num == TX_NOCALL        ) strcpy(text, "Die aufgerufene Funktion existiert nicht");
-		if ( num == TX_NOCLASS       ) strcpy(text, "Diese Klasse existiert nicht");
-		if ( num == TX_NULLPT        ) strcpy(text, "Das Objekt existiert nicht");
-		if ( num == TX_OPNAN         ) strcpy(text, "Operation mit dem Wert ""nan""");
-		if ( num == TX_OUTARRAY      ) strcpy(text, "Zugriff im Array außerhalb der Grenzen");
-		if ( num == TX_STACKOVER     ) strcpy(text, "Stack overflow");
-		if ( num == TX_DELETEDPT     ) strcpy(text, "Objekt nicht verfügbar");
-		if ( num == TX_FILEOPEN      ) strcpy(text, "Die Datei kann nicht geöffnet werden");
-		if ( num == TX_NOTOPEN       ) strcpy(text, "Die Datei wurde nicht geöffnet");
-		if ( num == TX_ERRREAD       ) strcpy(text, "Fehler beim Lesezugriff");
-		if ( num == TX_ERRWRITE      ) strcpy(text, "Fehler beim Schreibzugriff");
+		strcpy(text, "Errore");
+		if ( num == TX_OPENPAR       ) strcpy(text, "Parentesi di apertura mancante");
+		if ( num == TX_CLOSEPAR      ) strcpy(text, "Parentesi di chiusura mancante ");
+		if ( num == TX_NOTBOOL       ) strcpy(text, "L'espressione deve restituire un valore boleano");
+		if ( num == TX_UNDEFVAR      ) strcpy(text, "Variabile non dichiarata");
+		if ( num == TX_BADLEFT       ) strcpy(text, "Assegnazione impossibile");
+		if ( num == TX_ENDOF         ) strcpy(text, "Terminatore punto e virgola mancante");
+		if ( num == TX_OUTCASE       ) strcpy(text, "Istruzione ""case"" fuori del blocco ""switch""");
+		if ( num == TX_NOTERM        ) strcpy(text, "Istruzioni dopo la parentesi graffa di chiusura finale");
+		if ( num == TX_CLOSEBLK      ) strcpy(text, "Fine del blocco mancante");
+		if ( num == TX_ELSEWITHOUTIF ) strcpy(text, "Istruzione ""else"" senza corrispondente ""if"" ");
+		if ( num == TX_OPENBLK       ) strcpy(text, "Parentesi graffa di apertura mancante ");//début d'un bloc attendu?
+		if ( num == TX_BADTYPE       ) strcpy(text, "Tipo di assegnazione errato");
+		if ( num == TX_REDEFVAR      ) strcpy(text, "Non è possibile dichiarare due volte una variabile");
+		if ( num == TX_BAD2TYPE      ) strcpy(text, "Le tipologie dei due operandi non sono compatibili");
+		if ( num == TX_UNDEFCALL     ) strcpy(text, "Funzione sconosciuta");
+		if ( num == TX_MISDOTS       ) strcpy(text, "Segno "" : "" mancante");
+		if ( num == TX_WHILE         ) strcpy(text, "Parola chiave ""while"" mancante");
+		if ( num == TX_BREAK         ) strcpy(text, "Istruzione ""break"" fuori del cliclo");
+		if ( num == TX_LABEL         ) strcpy(text, "Un'etichetta deve esser seguita da ""for"", ""while"", ""do"" o ""switch""");
+		if ( num == TX_NOLABEL       ) strcpy(text, "Etichetta inesistente");// Cette étiquette n'existe pas
+		if ( num == TX_NOCASE        ) strcpy(text, "Istruzione ""case"" mancante");
+		if ( num == TX_BADNUM        ) strcpy(text, "Numero mancante");
+		if ( num == TX_VOID          ) strcpy(text, "Parametro nullo");
+		if ( num == TX_NOTYP         ) strcpy(text, "Dichiarazione Type mancante");
+		if ( num == TX_NOVAR         ) strcpy(text, "Nome variabile mancante");
+		if ( num == TX_NOFONC        ) strcpy(text, "Nome funzione mancante");
+		if ( num == TX_OVERPARAM     ) strcpy(text, "Parametri in eccesso");
+		if ( num == TX_REDEF         ) strcpy(text, "La funzione esiste già");
+		if ( num == TX_LOWPARAM      ) strcpy(text, "Parametri mancanti ");
+		if ( num == TX_BADPARAM      ) strcpy(text, "Nessuna funzione con questo nome accetta questo tipo di parametro");
+		if ( num == TX_NUMPARAM      ) strcpy(text, "Nessuna funzione con questo nome accetta questo numero di parametri");
+		if ( num == TX_NOITEM        ) strcpy(text, "Non appartiene a questa classe");
+		if ( num == TX_DOT           ) strcpy(text, "Questo oggetto non appartiene ad alcuna classe");
+		if ( num == TX_NOCONST       ) strcpy(text, "Costruttore appropriato mancante");
+		if ( num == TX_REDEFCLASS    ) strcpy(text, "Questa classe esiste già");
+		if ( num == TX_CLBRK         ) strcpy(text, """ ] "" mancante");
+		if ( num == TX_RESERVED      ) strcpy(text, "Parola chiave riservata del linguaggio CBOT");
+		if ( num == TX_BADNEW        ) strcpy(text, "Argomento errato per ""new""");
+		if ( num == TX_OPBRK         ) strcpy(text, """ [ "" previsto");
+		if ( num == TX_BADSTRING     ) strcpy(text, "Stringa mancante");
+		if ( num == TX_BADINDEX      ) strcpy(text, "Tipo di indice errato");
+		if ( num == TX_PRIVATE       ) strcpy(text, "Elemento privato");
+		if ( num == TX_NOPUBLIC      ) strcpy(text, "Richiesto pubblico");
+		if ( num == TX_DIVZERO       ) strcpy(text, "Divisione per zero");
+		if ( num == TX_NOTINIT       ) strcpy(text, "Variabile non inizializzata");
+		if ( num == TX_BADTHROW      ) strcpy(text, "Valore negativo respinto da ""throw""");//C'est quoi, ça?
+		if ( num == TX_NORETVAL      ) strcpy(text, "La funzione non ha restituito alcun valore ");
+		if ( num == TX_NORUN         ) strcpy(text, "Nessuna funzione in esecuzione");
+		if ( num == TX_NOCALL        ) strcpy(text, "Richiamo di una funzione sconosciuta");
+		if ( num == TX_NOCLASS       ) strcpy(text, "Classe inesistente");
+		if ( num == TX_NULLPT        ) strcpy(text, "Oggetto sconosciuto");
+		if ( num == TX_OPNAN         ) strcpy(text, "Operazione impossibile con il valore ""nan""");
+		if ( num == TX_OUTARRAY      ) strcpy(text, "Accesso oltre il limite della matrice");
+		if ( num == TX_STACKOVER     ) strcpy(text, "Overflow dello stack");
+		if ( num == TX_DELETEDPT     ) strcpy(text, "Oggetto non valido");
+		if ( num == TX_FILEOPEN      ) strcpy(text, "Impossibile aprire il file");
+		if ( num == TX_NOTOPEN       ) strcpy(text, "Il file non è aperto");
+		if ( num == TX_ERRREAD       ) strcpy(text, "Errore di lettura");
+		if ( num == TX_ERRWRITE      ) strcpy(text, "Errore di scrittura");
 	}
 
 	if ( type == RES_KEY )
 	{
-		if ( num == 0                   )  strcpy(text, "< keine >");
-		if ( num == VK_LEFT             )  strcpy(text, "Pfeiltaste links");
-		if ( num == VK_RIGHT            )  strcpy(text, "Pfeiltaste rechts");
-		if ( num == VK_UP               )  strcpy(text, "Pfeil nach oben");
-		if ( num == VK_DOWN             )  strcpy(text, "Pfeil nach unten");
-		if ( num == VK_CANCEL           )  strcpy(text, "Ctrl-Break");
+		if ( num == 0                   )  strcpy(text, "< nessuno >");
+		if ( num == VK_LEFT             )  strcpy(text, "Freccia a sinistra");
+		if ( num == VK_RIGHT            )  strcpy(text, "Freccia a destra");
+		if ( num == VK_UP               )  strcpy(text, "Freccia su");
+		if ( num == VK_DOWN             )  strcpy(text, "Freccia giù");
+		if ( num == VK_CANCEL           )  strcpy(text, "CTRL+INTER");
+		if ( num == VK_BACK             )  strcpy(text, "<--");
+		if ( num == VK_TAB              )  strcpy(text, "Tabulazione");
+		if ( num == VK_CLEAR            )  strcpy(text, "Cancella");
+		if ( num == VK_RETURN           )  strcpy(text, "Invio");
+		if ( num == VK_SHIFT            )  strcpy(text, "Maiusc");
+		if ( num == VK_CONTROL          )  strcpy(text, "CTRL");
+		if ( num == VK_MENU             )  strcpy(text, "Alt");
+		if ( num == VK_PAUSE            )  strcpy(text, "Pausa");
+		if ( num == VK_CAPITAL          )  strcpy(text, "Bloc Maiusc");
+		if ( num == VK_ESCAPE           )  strcpy(text, "Esc");
+		if ( num == VK_SPACE            )  strcpy(text, "Barra spaziatrice");
+		if ( num == VK_PRIOR            )  strcpy(text, "PGSU");
+		if ( num == VK_NEXT             )  strcpy(text, "PGGIÙ");
+		if ( num == VK_END              )  strcpy(text, "Fine");
+		if ( num == VK_HOME             )  strcpy(text, "Home");
+		if ( num == VK_SELECT           )  strcpy(text, "Seleziona");
+		if ( num == VK_EXECUTE          )  strcpy(text, "Esegui");
+		if ( num == VK_SNAPSHOT         )  strcpy(text, "Stamp");
+		if ( num == VK_INSERT           )  strcpy(text, "Ins");
+		if ( num == VK_DELETE           )  strcpy(text, "Canc");
+		if ( num == VK_HELP             )  strcpy(text, "?");
+		if ( num == VK_LWIN             )  strcpy(text, "Finestre di sinistra");
+		if ( num == VK_RWIN             )  strcpy(text, "Finestre di destra");
+		if ( num == VK_APPS             )  strcpy(text, "Tasto Applicazione");
+		if ( num == VK_NUMPAD0          )  strcpy(text, "Tast. num 0");
+		if ( num == VK_NUMPAD1          )  strcpy(text, "Tast. num 1");
+		if ( num == VK_NUMPAD2          )  strcpy(text, "Tast. num 2");
+		if ( num == VK_NUMPAD3          )  strcpy(text, "Tast. num 3");
+		if ( num == VK_NUMPAD4          )  strcpy(text, "Tast. num 4");
+		if ( num == VK_NUMPAD5          )  strcpy(text, "Tast. num 5");
+		if ( num == VK_NUMPAD6          )  strcpy(text, "Tast. num 6");
+		if ( num == VK_NUMPAD7          )  strcpy(text, "Tast. num 7");
+		if ( num == VK_NUMPAD8          )  strcpy(text, "Tast. num 8");
+		if ( num == VK_NUMPAD9          )  strcpy(text, "Tast. num 9");
+		if ( num == VK_MULTIPLY         )  strcpy(text, "Tast. num *");
+		if ( num == VK_ADD              )  strcpy(text, "Tast. num +");
+		if ( num == VK_SEPARATOR        )  strcpy(text, "Separatore tast. num");
+		if ( num == VK_SUBTRACT         )  strcpy(text, "Tast. num -");
+		if ( num == VK_DECIMAL          )  strcpy(text, "Tast. num .");
+		if ( num == VK_DIVIDE           )  strcpy(text, "Tast. num /");
+		if ( num == VK_F1               )  strcpy(text, "F1");
+		if ( num == VK_F2               )  strcpy(text, "F2");
+		if ( num == VK_F3               )  strcpy(text, "F3");
+		if ( num == VK_F4               )  strcpy(text, "F4");
+		if ( num == VK_F5               )  strcpy(text, "F5");
+		if ( num == VK_F6               )  strcpy(text, "F6");
+		if ( num == VK_F7               )  strcpy(text, "F7");
+		if ( num == VK_F8               )  strcpy(text, "F8");
+		if ( num == VK_F9               )  strcpy(text, "F9");
+		if ( num == VK_F10              )  strcpy(text, "F10");
+		if ( num == VK_F11              )  strcpy(text, "F11");
+		if ( num == VK_F12              )  strcpy(text, "F12");
+		if ( num == VK_F13              )  strcpy(text, "F13");
+		if ( num == VK_F14              )  strcpy(text, "F14");
+		if ( num == VK_F15              )  strcpy(text, "F15");
+		if ( num == VK_F16              )  strcpy(text, "F16");
+		if ( num == VK_F17              )  strcpy(text, "F17");
+		if ( num == VK_F18              )  strcpy(text, "F18");
+		if ( num == VK_F19              )  strcpy(text, "F19");
+		if ( num == VK_F20              )  strcpy(text, "F20");
+		if ( num == VK_NUMLOCK          )  strcpy(text, "Bloc Num");
+		if ( num == VK_SCROLL           )  strcpy(text, "Bloc Scorr");
+		if ( num == VK_ATTN             )  strcpy(text, "Attn");
+		if ( num == VK_CRSEL            )  strcpy(text, "CrSel");
+		if ( num == VK_EXSEL            )  strcpy(text, "ExSel");
+		if ( num == VK_EREOF            )  strcpy(text, "Elimina EOF");
+		if ( num == VK_PLAY             )  strcpy(text, "Gioca");
+		if ( num == VK_ZOOM             )  strcpy(text, "Zoom");
+		if ( num == VK_PA1              )  strcpy(text, "PA1");
+		if ( num == VK_OEM_CLEAR        )  strcpy(text, "Elimina");
+		if ( num == VK_BUTTON1          )  strcpy(text, "Pulsante 1");
+		if ( num == VK_BUTTON2          )  strcpy(text, "Pulsante 2");
+		if ( num == VK_BUTTON3          )  strcpy(text, "Pulsante 3");
+		if ( num == VK_BUTTON4          )  strcpy(text, "Pulsante 4");
+		if ( num == VK_BUTTON5          )  strcpy(text, "Pulsante 5");
+		if ( num == VK_BUTTON6          )  strcpy(text, "Pulsante 6");
+		if ( num == VK_BUTTON7          )  strcpy(text, "Pulsante 7");
+		if ( num == VK_BUTTON8          )  strcpy(text, "Pulsante 8");
+		if ( num == VK_BUTTON9          )  strcpy(text, "Pulsante 9");
+		if ( num == VK_BUTTON10         )  strcpy(text, "Pulsante 10");
+		if ( num == VK_BUTTON11         )  strcpy(text, "Pulsante 11");
+		if ( num == VK_BUTTON12         )  strcpy(text, "Pulsante 12");
+		if ( num == VK_BUTTON13         )  strcpy(text, "Pulsante 13");
+		if ( num == VK_BUTTON14         )  strcpy(text, "Pulsante 14");
+		if ( num == VK_BUTTON15         )  strcpy(text, "Pulsante 15");
+		if ( num == VK_BUTTON16         )  strcpy(text, "Pulsante 16");
+		if ( num == VK_BUTTON17         )  strcpy(text, "Pulsante 17");
+		if ( num == VK_BUTTON18         )  strcpy(text, "Pulsante 18");
+		if ( num == VK_BUTTON19         )  strcpy(text, "Pulsante 19");
+		if ( num == VK_BUTTON20         )  strcpy(text, "Pulsante 20");
+		if ( num == VK_BUTTON21         )  strcpy(text, "Pulsante 21");
+		if ( num == VK_BUTTON22         )  strcpy(text, "Pulsante 22");
+		if ( num == VK_BUTTON23         )  strcpy(text, "Pulsante 23");
+		if ( num == VK_BUTTON24         )  strcpy(text, "Pulsante 24");
+		if ( num == VK_BUTTON25         )  strcpy(text, "Pulsante 25");
+		if ( num == VK_BUTTON26         )  strcpy(text, "Pulsante 26");
+		if ( num == VK_BUTTON27         )  strcpy(text, "Pulsante 27");
+		if ( num == VK_BUTTON28         )  strcpy(text, "Pulsante 28");
+		if ( num == VK_BUTTON29         )  strcpy(text, "Pulsante 29");
+		if ( num == VK_BUTTON30         )  strcpy(text, "Pulsante 30");
+		if ( num == VK_BUTTON31         )  strcpy(text, "Pulsante 31");
+		if ( num == VK_BUTTON32         )  strcpy(text, "Pulsante 32");
+		if ( num == VK_WHEELUP          )  strcpy(text, "Volante su");
+		if ( num == VK_WHEELDOWN        )  strcpy(text, "Volante giù");
+	}
+#endif
+
+#if _SPANISH
+	if ( type == RES_TEXT )
+	{
+		#if _FULL
+		if ( num == RT_VERSION_ID          )  strcpy(text, "1.3 /s");
+		#endif
+		#if _NET | _SCHOOL
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Colegio 1.3 /s");
+		#endif
+		#if _DEMO
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Demo 1.3 /s");
+		#endif
+		#if _SE
+		if ( num == RT_VERSION_ID          )  strcpy(text, "S-E 1.3 /s");
+		#endif
+		if ( num == RT_WINDOW_MAXIMIZED    )  strcpy(text, "Maximizar");
+		if ( num == RT_WINDOW_MINIMIZED    )  strcpy(text, "Minimizar");
+		if ( num == RT_WINDOW_STANDARD     )  strcpy(text, "Tamaño normal");
+		if ( num == RT_WINDOW_CLOSE        )  strcpy(text, "Cerrar");
+
+		if ( num == RT_NAME_DEFAULT        )  strcpy(text, "Jugador");
+		if ( num == RT_KEY_OR              )  strcpy(text, " o ");
+
+#if _EGAMES
+		if ( num == RT_TITLE_BASE          )  strcpy(text, "Wild Wheels");
+		if ( num == RT_TITLE_INIT          )  strcpy(text, "Wild Wheels");
+#else
+		if ( num == RT_TITLE_BASE          )  strcpy(text, "BuzzingCars");
+		if ( num == RT_TITLE_INIT          )  strcpy(text, "BuzzingCars");
+#endif
+		if ( num == RT_TITLE_MISSION       )  strcpy(text, "Misiones");
+		if ( num == RT_TITLE_FREE          )  strcpy(text, "Niveles libres");
+		if ( num == RT_TITLE_USER          )  strcpy(text, "Niveles de usuario");
+		if ( num == RT_TITLE_PROTO         )  strcpy(text, "Prototipos");
+		if ( num == RT_TITLE_SETUP         )  strcpy(text, "Opciones");
+		if ( num == RT_TITLE_NAME          )  strcpy(text, "Nombre del conductor");
+		if ( num == RT_TITLE_PERSO         )  strcpy(text, "Selecciona el coche");
+
+		if ( num == RT_PLAY_LISTm          )  strcpy(text, " Selecciona una misión:");
+		if ( num == RT_PLAY_LISTf          )  strcpy(text, " Selecciona un circuito:");
+		if ( num == RT_PLAY_LISTu          )  strcpy(text, " Misiones de usuario:");
+		if ( num == RT_PLAY_LISTp          )  strcpy(text, " Prototipos:");
+		if ( num == RT_PLAY_PESETAS        )  strcpy(text, " Tu cuenta de crédito:");
+		if ( num == RT_PLAY_PCREDIT        )  strcpy(text, "Tus ahorros");
+		if ( num == RT_PLAY_PMISSION       )  strcpy(text, "Ganancias máximas");
+		if ( num == RT_PLAY_PNEXT          )  strcpy(text, "Nivel siguiente");
+
+		if ( num == RT_SETUP_DEVICE        )  strcpy(text, " Conductores:");
+		if ( num == RT_SETUP_MODE          )  strcpy(text, " Resolución:");
+		if ( num == RT_SETUP_KEY1          )  strcpy(text, "1) Haz clic primero en la tecla que quieres redefinir.");
+		if ( num == RT_SETUP_KEY2          )  strcpy(text, "2) Pulsa la tecla que quieres usar en su lugar.");
+
+		if ( num == RT_PERSO_LIST          )  strcpy(text, "Lista de conductores:");
+		if ( num == RT_PERSO_LEVEL         )  strcpy(text, "Nivel de dificultad:");
+		if ( num == RT_PERSO_BUY           )  strcpy(text, "Comprar");
+
+#if _EGAMES
+		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "Wild Wheels");
+#else
+		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "BuzzingCars");
+#endif
+		if ( num == RT_DIALOG_ABORT        )  strcpy(text, "¿Abandonar la misión?");
+#if _EGAMES
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "¿Quieres salir de Wild Wheels?");
+#else
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "¿Quieres salir de BuzzingCars?");
+#endif
+		if ( num == RT_DIALOG_YES          )  strcpy(text, "Anular\\Anular la misión actual");
+		if ( num == RT_DIALOG_NO           )  strcpy(text, "Continuar\\Continuar la misión actual");
+#if _EGAMES
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Salir\\Salir de Wild Wheels");
+#else
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Salir\\Salir de BuzzingCars");
+#endif
+		if ( num == RT_DIALOG_NOQUIT       )  strcpy(text, "Continuar\\Continuar el juego");
+		if ( num == RT_DIALOG_DELGAME      )  strcpy(text, "¿Quieres eliminar juegos y coches guardados de %s?");
+		if ( num == RT_DIALOG_DELFILE      )  strcpy(text, "¿Eliminar el archivo %s existente?");
+		if ( num == RT_DIALOG_YESDEL       )  strcpy(text, "Eliminar");
+		if ( num == RT_DIALOG_NODEL        )  strcpy(text, "Cancelar");
+		if ( num == RT_DIALOG_NEWGAME      )  strcpy(text, "Nombre del conductor:");
+		if ( num == RT_DIALOG_YESNEW       )  strcpy(text, "Crear");
+		if ( num == RT_DIALOG_NONEW        )  strcpy(text, "Cancelar");
+		if ( num == RT_DIALOG_YESKID       )  strcpy(text, "Sí");
+		if ( num == RT_DIALOG_NOKID        )  strcpy(text, "No");
+		if ( num == RT_DIALOG_LOADING      )  strcpy(text, "CARGANDO");
+
+		if ( num == RT_WIN_TIME            )  strcpy(text, "Cronómetro");
+		if ( num == RT_WIN_SOLID           )  strcpy(text, "Estado del vehículo");
+		if ( num == RT_WIN_CONE            )  strcpy(text, "Respeto del entorno");
+		if ( num == RT_WIN_POINTS          )  strcpy(text, "Créditos ganados");
+		if ( num == RT_WIN_BONUS           )  strcpy(text, "Bonificación de tiempo");
+		if ( num == RT_WIN_ARRAY           )  strcpy(text, "Mejores tiempos:");
+		if ( num == RT_WIN_HEADERm         )  strcpy(text, "\t  Coche\tConductor\tCronómetro\tCréditos");
+		if ( num == RT_WIN_HEADERf         )  strcpy(text, "\t  Coche\tConductor\tCronómetro\t");
+
+		if ( num == RT_START_READY         )  strcpy(text, "¿Listo?");
+		if ( num == RT_START_QUICK         )  strcpy(text, "3, 2, 1  ...  ¿Listo?");
+		if ( num == RT_START_123           )  strcpy(text, "%d ...");
+		if ( num == RT_START_GO            )  strcpy(text, "¡ADELANTE!");
+		if ( num == RT_START_REMOTE        )  strcpy(text, "Coche con control remoto");
+
+		if ( num == RT_RECORD_GALL         )  strcpy(text, "Récord del circuito (-%.2f)");
+		if ( num == RT_RECORD_GONE         )  strcpy(text, "Récord de vuelta (-%.2f)");
+		if ( num == RT_RECORD_LONE         )  strcpy(text, "Mejor vuelta (-%.2f)");
+		if ( num == RT_RECORD_QALL         )  strcpy(text, "> Récord del circuito <");
+		if ( num == RT_RECORD_QONE         )  strcpy(text, "> Mejor vuelta <");
+		if ( num == RT_RACE_LAP4           )  strcpy(text, "Quedan 4 vueltas");
+		if ( num == RT_RACE_LAP3           )  strcpy(text, "Quedan 3 vueltas");
+		if ( num == RT_RACE_LAP2           )  strcpy(text, "Quedan 2 vueltas");
+		if ( num == RT_RACE_LAP1           )  strcpy(text, "Última vuelta");
+		if ( num == RT_DUEL_WIN            )  strcpy(text, "Se ha derrotado al coche fantasma (-%.2f)");
+		if ( num == RT_DUEL_LOST           )  strcpy(text, "Demasiado lento (+%.2f)");
+
+		if ( num == RT_SPEC_MINSPEED       )  strcpy(text, "Coche demasiado lento");
+		if ( num == RT_SPEC_MAXSPEED       )  strcpy(text, "Coche demasiado rápido");
+		if ( num == RT_SPEC_DEMO           )  strcpy(text, "No disponible en la versión de demostración.");
+		if ( num == RT_SPEC_DISPO          )  strcpy(text, "No disponible en la versión de demostración.");
+
+		if ( num == RT_MOTOR_REAR          )  strcpy(text, "R");
+		if ( num == RT_MOTOR_NEUTRAL       )  strcpy(text, "N");
+		if ( num == RT_MOTOR_S1            )  strcpy(text, "1");
+		if ( num == RT_MOTOR_S2            )  strcpy(text, "2");
+		if ( num == RT_MOTOR_S3            )  strcpy(text, "3");
+
+		if ( num == RT_IO_LIST             )  strcpy(text, "Duelos disponibles:");
+		if ( num == RT_IO_NAME             )  strcpy(text, "Nombre de archivo:");
+		if ( num == RT_IO_HEADER           )  strcpy(text, "Nombre de archivo\tMisión\tCoche\tConductor\tCronómetro");
+#if _EGAMES
+		if ( num == RT_IO_RINFO            )  strcpy(text, "Puedes descargar duelos nuevos de www.epsitec.ch/wildwheels");
+#else
+		if ( num == RT_IO_RINFO            )  strcpy(text, "Puedes descargar duelos nuevos de www.ceebot.com");
+#endif
+
+#if _EGAMES
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "Desarrollado por EPSITEC");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "Published by eGames, Inc.");
+#else
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "www.ceebot.com");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "Desarrollado por EPSITEC");
+#endif
+#if _EGAMES
+		if ( num == RT_GENERIC_DEMO1       )  strcpy(text, "Has jugado con la versión de DEMOSTRACIÓN de Wild Wheels.");
+		if ( num == RT_GENERIC_DEMO2       )  strcpy(text, "La versión completa ya está disponible...");
+		if ( num == RT_GENERIC_DEMO3       )  strcpy(text, "... consta de 28 misiones desafiantes y 9 carreras...");
+		if ( num == RT_GENERIC_DEMO4       )  strcpy(text, "... así como de un modo de \"duelo\" para comparar actuaciones.");
+		if ( num == RT_GENERIC_DEMO5       )  strcpy(text, "Más información en www.epsitec.ch/wildwheels");
+#else
+		if ( num == RT_GENERIC_DEMO1       )  strcpy(text, "Has jugado con la versión de DEMOSTRACIÓN de BuzzingCars.");
+		if ( num == RT_GENERIC_DEMO2       )  strcpy(text, "La versión completa ya está disponible...");
+		if ( num == RT_GENERIC_DEMO3       )  strcpy(text, "... consta de 28 misiones desafiantes y 9 carreras...");
+		if ( num == RT_GENERIC_DEMO4       )  strcpy(text, "... así como de un modo de \"duelo\" para comparar actuaciones.");
+		if ( num == RT_GENERIC_DEMO5       )  strcpy(text, "Más información en www.ceebot.com");
+#endif
+	}
+
+	if ( type == RES_EVENT )
+	{
+		if ( num == EVENT_BUTTON_OK        )  strcpy(text, "Aceptar");
+		if ( num == EVENT_BUTTON_CANCEL    )  strcpy(text, "Cancelar");
+		if ( num == EVENT_BUTTON_NEXT      )  strcpy(text, "Siguiente");
+		if ( num == EVENT_BUTTON_PREV      )  strcpy(text, "Anterior");
+		if ( num == EVENT_BUTTON_QUIT      )  strcpy(text, "Menú (\\key quit;)");
+		if ( num == EVENT_BUTTON_CAMERA    )  strcpy(text, "Cámara (\\key camera;)");
+		if ( num == EVENT_BUTTON_HELP      )  strcpy(text, "Ayuda (\\key help;)");
+		if ( num == EVENT_BUTTON_BRAKE     )  strcpy(text, "Freno de mano (\\key brake;)");
+		if ( num == EVENT_BUTTON_HORN      )  strcpy(text, "Bocina (\\key horn;)");
+		if ( num == EVENT_BONUS            )  strcpy(text, "Bonificación de tiempo");
+		if ( num == EVENT_TIME             )  strcpy(text, "Cronómetro");
+		if ( num == EVENT_PROGRESS         )  strcpy(text, "Tareas realizadas");
+
+		if ( num == EVENT_DIALOG_OK        )  strcpy(text, "Aceptar");
+		if ( num == EVENT_DIALOG_CANCEL    )  strcpy(text, "Cancelar");
+
+		if ( num == EVENT_INTERFACE_MISSION)  strcpy(text, "Misiones\\Seleccionar misión");
+		if ( num == EVENT_INTERFACE_FREE   )  strcpy(text, "Carreras libres\\Carreras libres sin objetivo preciso");
+		if ( num == EVENT_INTERFACE_USER   )  strcpy(text, "Uuarios\\Niveles de usuario");
+		if ( num == EVENT_INTERFACE_PROTO  )  strcpy(text, "Prototipos\\Prototipos en construcción");
+		if ( num == EVENT_INTERFACE_DUEL   )  strcpy(text, "Duelos\\Duelos contra coches fantasma");
+		if ( num == EVENT_INTERFACE_NAME   )  strcpy(text, "Conductor nuevo\\Elegir nombre de conductor");
+		if ( num == EVENT_INTERFACE_SETUP  )  strcpy(text, "Opciones\\Preferencias");
+		if ( num == EVENT_INTERFACE_AGAIN  )  strcpy(text, "Reiniciar\\Reiniciar la misión desde el principio");
+		if ( num == EVENT_INTERFACE_SAVE   )  strcpy(text, "Guardar\\Guardar el duelo");
+#if _EGAMES
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Volver a Wild Wheels");
+#else
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Volver a BuzzingCars");
+#endif
+		if ( num == EVENT_INTERFACE_PREV   )  strcpy(text, "\\Pantalla anterior");
+		if ( num == EVENT_INTERFACE_NEXT   )  strcpy(text, "\\Pantalla siguiente");
+#if _EGAMES
+		if ( num == EVENT_INTERFACE_EXIT   )  strcpy(text, "\\Salir de Wild Wheels");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Salir\\Salir de Wild Wheels");
+#else
+		if ( num == EVENT_INTERFACE_EXIT   )  strcpy(text, "\\Salir de BuzzingCars");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Salir\\Salir de BuzzingCars");
+#endif
+		if ( num == EVENT_INTERFACE_BACK   )  strcpy(text, "Cancelar\\Volver a la pantalla anterior");
+		if ( num == EVENT_INTERFACE_TERM   )  strcpy(text, "Menú\\Volver al menú principal");
+		if ( num == EVENT_INTERFACE_PLAY   )  strcpy(text, "Jugar\\Comenzar misión seleccionada");
+		if ( num == EVENT_INTERFACE_GHOSTm )  strcpy(text, "Mostrar mejor coche fantasma\\Mostrar el coche fantasma con la mejor actuación en este circuito");
+		if ( num == EVENT_INTERFACE_OK     )  strcpy(text, "Aceptar\\Volver a la pantalla anterior");
+
+		if ( num == EVENT_INTERFACE_WOK    )  strcpy(text, "Guardar el duelo\\Guardar en disco");
+		if ( num == EVENT_INTERFACE_WCANCEL)  strcpy(text, "Cancelar\\Volver a la pantalla anterior");
+		if ( num == EVENT_INTERFACE_ROK    )  strcpy(text, "Iniciar duelo\\Iniciar el duelo seleccionado");
+		if ( num == EVENT_INTERFACE_RCANCEL)  strcpy(text, "Cancelar\\Volver a la pantalla anterior");
+
+		if ( num == EVENT_INTERFACE_SETUPd )  strcpy(text, "Dispositivo\\Configuración de controlador y resolución");
+		if ( num == EVENT_INTERFACE_SETUPg )  strcpy(text, "Gráficos\\Configuración de gráficos");
+		if ( num == EVENT_INTERFACE_SETUPp )  strcpy(text, "Juego\\Configuración de juego");
+		if ( num == EVENT_INTERFACE_SETUPc )  strcpy(text, "Controles\\Configuración de teclado, volante y gamepad");
+		if ( num == EVENT_INTERFACE_SETUPs )  strcpy(text, "Sonido\\Volumen de música y efectos de sonido");
+		if ( num == EVENT_INTERFACE_RESOL  )  strcpy(text, "Resolución");
+		if ( num == EVENT_INTERFACE_FULL   )  strcpy(text, "Pantalla completa\\Modo de pantalla completa o ventana");
+		if ( num == EVENT_INTERFACE_APPLY  )  strcpy(text, "Aplicar cambios\\Activa la configuración modificada");
+
+		if ( num == EVENT_INTERFACE_SHADOW )  strcpy(text, "Sombras\\Sombras en el suelo");
+		if ( num == EVENT_INTERFACE_DIRTY  )  strcpy(text, "Polvo\\Polvo y suciedad en coches y edificios");
+		if ( num == EVENT_INTERFACE_FOG    )  strcpy(text, "Niebla\\Niebla");
+		if ( num == EVENT_INTERFACE_LENS   )  strcpy(text, "Rayos de sol\\Mostrar rayos de sol en el cielo");
+		if ( num == EVENT_INTERFACE_SKY    )  strcpy(text, "Cielo y nubes\\Mostrar imágenes reales de cielo con nubes");
+		if ( num == EVENT_INTERFACE_PLANET )  strcpy(text, "Planetas y estrellas\\Mostrar cuerpos celestes en el cielo");
+		if ( num == EVENT_INTERFACE_LIGHT  )  strcpy(text, "Iluminación dinámica\\Usar fuentes de luz móviles");
+		if ( num == EVENT_INTERFACE_SUPER  )  strcpy(text, "Estupendos detalles\\Estupendos detalles");  //DR
+		if ( num == EVENT_INTERFACE_PARTI  )  strcpy(text, "Número de partículas\\Explosiones, polvo, reflejos, etc.");
+		if ( num == EVENT_INTERFACE_WHEEL  )  strcpy(text, "Marcas de neumáticos\\Marcas de neumáticos en el suelo");
+		if ( num == EVENT_INTERFACE_CLIP   )  strcpy(text, "Profundidad de campo\\Visibilidad máxima");
+		if ( num == EVENT_INTERFACE_DETAIL )  strcpy(text, "Detalles\\Calidad visual de objetos 3D");
+		if ( num == EVENT_INTERFACE_TEXTURE)  strcpy(text, "Texturas\\Calidad de texturas mostradas");
+		if ( num == EVENT_INTERFACE_GADGET )  strcpy(text, "Número de objetos decorativos\\Número de objetos meramente decorativos");
+		if ( num == EVENT_INTERFACE_RAIN   )  strcpy(text, "Partículas en la interfaz\\Chispas que salen del puntero del ratón");
+		if ( num == EVENT_INTERFACE_GLINT  )  strcpy(text, "Reflejos en los botones\\Botones brillantes");
+		if ( num == EVENT_INTERFACE_TOOLTIP)  strcpy(text, "Información sobre herramientas\\Explica elementos de la interfaz de usuario");
+		if ( num == EVENT_INTERFACE_MOVIES )  strcpy(text, "Secuencias de cine\\Películas antes y después de las misiones");
+		if ( num == EVENT_INTERFACE_CBACK  )  strcpy(text, "Vista desde atrás\\Cámara detrás del coche");
+		if ( num == EVENT_INTERFACE_CBOARD )  strcpy(text, "Vista desde el capó\\Cámara en el capó");
+		if ( num == EVENT_INTERFACE_EFFECT )  strcpy(text, "Inclinación durante explosiones\\La pantalla se inclina durante las explosiones");
+		if ( num == EVENT_INTERFACE_FLASH  )  strcpy(text, "Parpadeo durante choques\\La pantalla parpadea durante un choque de coche");
+		if ( num == EVENT_INTERFACE_BLAST  )  strcpy(text, "El motor puede explotar\\El motor explota durante la aceleración en la línea de salida");
+		if ( num == EVENT_INTERFACE_MOUSE  )  strcpy(text, "Sombra de ratón\\Sombra de ratón");
+
+		if ( num == EVENT_INTERFACE_KDEF   )  strcpy(text, "Controles predeterminados\\Restablece todos los controles a los valores predeterminados");
+		if ( num == EVENT_INTERFACE_KLEFT  )  strcpy(text, "Girar a la izquierda\\Gira el volante a la izquierda");
+		if ( num == EVENT_INTERFACE_KRIGHT )  strcpy(text, "Girar a la derecha\\Gira el volante a la derecha");
+		if ( num == EVENT_INTERFACE_KUP    )  strcpy(text, "Acelerar\\Acelerar");
+		if ( num == EVENT_INTERFACE_KDOWN  )  strcpy(text, "Frenar e ir hacia atrás\\Se detiene y se mueve hacia atrás");
+		if ( num == EVENT_INTERFACE_KBRAKE )  strcpy(text, "Freno de mano\\Freno de mano");
+		if ( num == EVENT_INTERFACE_KHORN  )  strcpy(text, "Bocina\\Bocina");
+		if ( num == EVENT_INTERFACE_KCAMERA)  strcpy(text, "Cambiar cámara\\Conmuta entre la cámara del capó y la cámara de atrás");
+		if ( num == EVENT_INTERFACE_KQUIT  )  strcpy(text, "Salir\\Salir de la misión o carrera actual");
+		if ( num == EVENT_INTERFACE_KHELP  )  strcpy(text, "Instrucciones\\Mostrar instrucciones para la misión actual");
+
+		if ( num == EVENT_INTERFACE_VOLSOUND) strcpy(text, "Efectos de sonido:\\Volumen de motores, voz, explosiones, etc.");
+		if ( num == EVENT_INTERFACE_VOLMUSIC) strcpy(text, "Sonido de fondo:\\Volumen de las pistas de sonido del CD");
+		if ( num == EVENT_INTERFACE_SOUND3D)  strcpy(text, "Sonido 3D\\Sonido 3D");
+		if ( num == EVENT_INTERFACE_COMMENTS) strcpy(text, "Voz del comentarista\\Varios comentarios durante las carreras");
+
+		if ( num == EVENT_INTERFACE_MIN    )  strcpy(text, "Más baja\\Calidad de gráficos mínima (frecuencia de cuadro más alta)");
+		if ( num == EVENT_INTERFACE_NORM   )  strcpy(text, "Normal\\Calidad de gráficos normal");
+		if ( num == EVENT_INTERFACE_MAX    )  strcpy(text, "Más alta\\Calidad de gráficos más alta (frecuencia de cuadro más baja)");
+
+		if ( num == EVENT_INTERFACE_SILENT )  strcpy(text, "Silencio\\Sin sonido");
+		if ( num == EVENT_INTERFACE_NOISY  )  strcpy(text, "Normal\\Volumen de sonido normal");
+
+		if ( num == EVENT_INTERFACE_STEERING) strcpy(text, "Usar un volante o joystick\\Usar un volante o joystick");
+		if ( num == EVENT_INTERFACE_JOYPAD  ) strcpy(text, "Usar un gamepad\\Gamepad o teclado");
+		if ( num == EVENT_INTERFACE_FFBc    ) strcpy(text, "Force Feedback\\Usar efectos Force Feedback");
+		if ( num == EVENT_INTERFACE_FFBs    ) strcpy(text, "\\Intensidad de Force Feedback");
+
+		if ( num == EVENT_INTERFACE_NEDIT  )  strcpy(text, "\\Nombre de nuevo conductor");
+		if ( num == EVENT_INTERFACE_NOK    )  strcpy(text, "Seleccionar\\Elegir el conductor seleccionado");
+		if ( num == EVENT_INTERFACE_NCREATE)  strcpy(text, "Nuevo\\Crear un conductor nuevo");
+		if ( num == EVENT_INTERFACE_NDELETE)  strcpy(text, "Eliminar\\Eliminar al conductor de la lista");
+
+		if ( num == EVENT_INTERFACE_LEVEL1 )  strcpy(text, "Niño\\Nivel muy fácil para niños");
+		if ( num == EVENT_INTERFACE_LEVEL2 )  strcpy(text, "Fácil\\Nivel de juego fácil");
+		if ( num == EVENT_INTERFACE_LEVEL3 )  strcpy(text, "Medio\\Nivel de juego medio");
+		if ( num == EVENT_INTERFACE_LEVEL4 )  strcpy(text, "Difícil\\Nivel de juego muy difícil");
+
+		if ( num == EVENT_INTERFACE_POK    )  strcpy(text, "Seleccionar\\Iniciar con este coche");
+		if ( num == EVENT_INTERFACE_PNEXT  )  strcpy(text, "Siguiente >\\Siguiente coche");
+		if ( num == EVENT_INTERFACE_PPREV  )  strcpy(text, "< Anterior\\Coche anterior");
+		if ( num == EVENT_INTERFACE_PGSPEED)  strcpy(text, "Velocidad máxima\\");
+		if ( num == EVENT_INTERFACE_PGACCEL)  strcpy(text, "Aceleración\\");
+		if ( num == EVENT_INTERFACE_PGGRIP )  strcpy(text, "Agarre\\");
+		if ( num == EVENT_INTERFACE_PGSOLID)  strcpy(text, "Solidez\\");
+		if ( num == EVENT_INTERFACE_PPRICE )  strcpy(text, "%s (precio del vehículo: %d créditos)");
+		if ( num == EVENT_INTERFACE_PPESETAS) strcpy(text, "Tus ahorros: %d créditos");
+		if ( num == EVENT_INTERFACE_PSUBMOD0) strcpy(text, "A\\Cambiar la apariencia");
+		if ( num == EVENT_INTERFACE_PSUBMOD1) strcpy(text, "B\\Cambiar la apariencia");
+		if ( num == EVENT_INTERFACE_PSUBMOD2) strcpy(text, "C\\Cambiar la apariencia");
+		if ( num == EVENT_INTERFACE_PSUBMOD3) strcpy(text, "D\\Cambiar la apariencia");
+		if ( num >= EVENT_INTERFACE_PCOLOR0 &&
+			 num <= EVENT_INTERFACE_PCOLOR19) strcpy(text, "\\Cambiar el color");
+
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Estado de los neumáticos");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "Temperatura del propulsor");
+		if ( num == EVENT_OBJECT_GPROGRESS )  strcpy(text, "Progresión de la tarea");
+		if ( num == EVENT_OBJECT_GSPEED    )  strcpy(text, "Velocímetro");
+		if ( num == EVENT_OBJECT_GRPM      )  strcpy(text, "Cuentarrevoluciones");
+		if ( num == EVENT_OBJECT_GMOTOR    )  strcpy(text, "\\Caja de cambio");
+		if ( num == EVENT_OBJECT_GCOMPASS  )  strcpy(text, "Brújula");
+		if ( num == EVENT_OBJECT_GGEIGER   )  strcpy(text, "Contador Geiger");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "Estado general");
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Estado de neumáticos");
+//?		if ( num == EVENT_OBJECT_MAP       )  strcpy(text, "Mini-map");
+		if ( num == EVENT_OBJECT_MAPZOOM   )  strcpy(text, "Acercar minimapa");
+		if ( num == EVENT_CMD              )  strcpy(text, "Línea de comandos");
+		if ( num == EVENT_SPEED            )  strcpy(text, "Velocidad de juego");
+	}
+
+	if ( type == RES_ERR )
+	{
+		strcpy(text, "Error");
+		if ( num == ERR_CMD             )  strcpy(text, "Comando desconocido");
+		if ( num == ERR_INSTALL         )  strcpy(text, "Wild Wheels no se ha instalado correctamente.");
+		if ( num == ERR_NOCD            )  strcpy(text, "Introduce el CD de Wild Wheels\ny ejecuta el juego.");
+		if ( num == ERR_MOVE_IMPOSSIBLE )  strcpy(text, "Error al realizar la instrucción");
+		if ( num == ERR_GOTO_IMPOSSIBLE )  strcpy(text, "Ir a: destino no accesible");
+		if ( num == ERR_GOTO_ITER       )  strcpy(text, "Ir a: destino no accesible");
+		if ( num == ERR_GOTO_BUSY       )  strcpy(text, "Ir a: destino ocupado");
+		if ( num == ERR_FIRE_VEH        )  strcpy(text, "BOT inapropiado");
+		if ( num == ERR_FIRE_ENERGY     )  strcpy(text, "No hay suficiente energía");
+		if ( num == ERR_MISSION_NOTERM  )  strcpy(text, "Aún no se ha realizado la misión (pulsa la \\key help; para más información)");
+
+		if ( num == INFO_WIN            )  strcpy(text, "<<< Enhorabuena, misión cumplida >>>");
+		if ( num == INFO_LOST           )  strcpy(text, "<<< Lo sentimos, misión no lograda >>>");
+		if ( num == INFO_LOSTq          )  strcpy(text, "<<< Lo sentimos, misión no lograda >>>");
+	}
+
+	if ( type == RES_CBOT )
+	{
+		strcpy(text, "Error");
+		if ( num == TX_OPENPAR       ) strcpy(text, "Falta paréntesis de apertura");
+		if ( num == TX_CLOSEPAR      ) strcpy(text, "Falta paréntesis de cierre ");
+		if ( num == TX_NOTBOOL       ) strcpy(text, "La expresión debe devolver un valor booleano");
+		if ( num == TX_UNDEFVAR      ) strcpy(text, "No se ha declarado la variable");
+		if ( num == TX_BADLEFT       ) strcpy(text, "Asignación imposible");
+		if ( num == TX_ENDOF         ) strcpy(text, "Falta terminador de punto y coma");
+		if ( num == TX_OUTCASE       ) strcpy(text, "Instrucción ""case"" fuera de un bloque ""switch""");
+		if ( num == TX_NOTERM        ) strcpy(text, "Instrucciones después de la llave de cierre final");
+		if ( num == TX_CLOSEBLK      ) strcpy(text, "Falta el final del bloque");
+		if ( num == TX_ELSEWITHOUTIF ) strcpy(text, "Instrucción ""else"" sin su correspondiente ""if"" ");
+		if ( num == TX_OPENBLK       ) strcpy(text, "Abriendo la llave que falta ");//début d'un bloc attendu?
+		if ( num == TX_BADTYPE       ) strcpy(text, "Tipo incorrecto para la asignación");
+		if ( num == TX_REDEFVAR      ) strcpy(text, "Una variable no puede declararse dos veces");
+		if ( num == TX_BAD2TYPE      ) strcpy(text, "Los tipos de los dos operadores son incompatibles ");
+		if ( num == TX_UNDEFCALL     ) strcpy(text, "Función desconocida");
+		if ( num == TX_MISDOTS       ) strcpy(text, "Falta el signo "" : """);
+		if ( num == TX_WHILE         ) strcpy(text, "Falta la palabra clave ""while""");
+		if ( num == TX_BREAK         ) strcpy(text, "Instrucción ""break"" fuera de bucle");
+		if ( num == TX_LABEL         ) strcpy(text, "Una etiqueta debe ir seguida de ""for"", ""while"", ""do"" o ""switch""");
+		if ( num == TX_NOLABEL       ) strcpy(text, "Esta etiqueta no existe");// Cette étiquette n'existe pas
+		if ( num == TX_NOCASE        ) strcpy(text, "Falta la instrucción ""case""");
+		if ( num == TX_BADNUM        ) strcpy(text, "Falta el número");
+		if ( num == TX_VOID          ) strcpy(text, "Parámetro nulo");
+		if ( num == TX_NOTYP         ) strcpy(text, "Falta la declaración de tipo");
+		if ( num == TX_NOVAR         ) strcpy(text, "Falta el nombre de la variable");
+		if ( num == TX_NOFONC        ) strcpy(text, "Falta el nombre de la función");
+		if ( num == TX_OVERPARAM     ) strcpy(text, "Demasiados parámetros");
+		if ( num == TX_REDEF         ) strcpy(text, "La función ya existe");
+		if ( num == TX_LOWPARAM      ) strcpy(text, "Faltan parámetros ");
+		if ( num == TX_BADPARAM      ) strcpy(text, "Ninguna función de este nombre acepta este tipo de parámetro");
+		if ( num == TX_NUMPARAM      ) strcpy(text, "Ninguna función de este nombre acepta este número de parámetros");
+		if ( num == TX_NOITEM        ) strcpy(text, "No es un miembro de esta clase");
+		if ( num == TX_DOT           ) strcpy(text, "Este objeto no es un miembro de una clase");
+		if ( num == TX_NOCONST       ) strcpy(text, "Falta el constructor adecuado");
+		if ( num == TX_REDEFCLASS    ) strcpy(text, "Esta clase ya existe");
+		if ( num == TX_CLBRK         ) strcpy(text, """ Falta ] """);
+		if ( num == TX_RESERVED      ) strcpy(text, "Palabra clave reservada del idioma CBOT");
+		if ( num == TX_BADNEW        ) strcpy(text, "Argumento incorrecto para ""new""");
+		if ( num == TX_OPBRK         ) strcpy(text, """ Se esperaba [ """);
+		if ( num == TX_BADSTRING     ) strcpy(text, "Falta cadena");
+		if ( num == TX_BADINDEX      ) strcpy(text, "Tipo de índice incorrecto");
+		if ( num == TX_PRIVATE       ) strcpy(text, "Elemento privado");
+		if ( num == TX_NOPUBLIC      ) strcpy(text, "Se requiere público");
+		if ( num == TX_DIVZERO       ) strcpy(text, "Dividiendo por cero");
+		if ( num == TX_NOTINIT       ) strcpy(text, "Variable no inicializada");
+		if ( num == TX_BADTHROW      ) strcpy(text, """throw"" rechaza el valor negativo");//C'est quoi, ça?
+		if ( num == TX_NORETVAL      ) strcpy(text, "La función no devolvió ningún valor ");
+		if ( num == TX_NORUN         ) strcpy(text, "No se ejecuta ninguna función");
+		if ( num == TX_NOCALL        ) strcpy(text, "Llamando a una función desconocida");
+		if ( num == TX_NOCLASS       ) strcpy(text, "Esta clase no existe");
+		if ( num == TX_NULLPT        ) strcpy(text, "Objeto desconocido");
+		if ( num == TX_OPNAN         ) strcpy(text, "Operación imposible con el valor ""nan""");
+		if ( num == TX_OUTARRAY      ) strcpy(text, "Acceso fuera del límite de la matriz");
+		if ( num == TX_STACKOVER     ) strcpy(text, "Pila desbordada");
+		if ( num == TX_DELETEDPT     ) strcpy(text, "Objeto ilegal");
+		if ( num == TX_FILEOPEN      ) strcpy(text, "No puede abrirse el archivo");
+		if ( num == TX_NOTOPEN       ) strcpy(text, "Archivo sin abrir");
+		if ( num == TX_ERRREAD       ) strcpy(text, "Error de lectura");
+		if ( num == TX_ERRWRITE      ) strcpy(text, "Error de escritura");
+	}
+
+	if ( type == RES_KEY )
+	{
+		if ( num == 0                   )  strcpy(text, "< ninguno >");
+		if ( num == VK_LEFT             )  strcpy(text, "Flecha Izquierda");
+		if ( num == VK_RIGHT            )  strcpy(text, "Flecha Derecha");
+		if ( num == VK_UP               )  strcpy(text, "Flecha Arriba");
+		if ( num == VK_DOWN             )  strcpy(text, "Flecha Abajo");
+		if ( num == VK_CANCEL           )  strcpy(text, "Control-interrupción");
 		if ( num == VK_BACK             )  strcpy(text, "<--");
 		if ( num == VK_TAB              )  strcpy(text, "Tab");
-		if ( num == VK_CLEAR            )  strcpy(text, "Clear");
-		if ( num == VK_RETURN           )  strcpy(text, "Eingabe");
+		if ( num == VK_CLEAR            )  strcpy(text, "Borrar");
+		if ( num == VK_RETURN           )  strcpy(text, "Entrar");
+		if ( num == VK_SHIFT            )  strcpy(text, "Mayús");
+		if ( num == VK_CONTROL          )  strcpy(text, "Ctrl");
+		if ( num == VK_MENU             )  strcpy(text, "Alt");
+		if ( num == VK_PAUSE            )  strcpy(text, "Pausa");
+		if ( num == VK_CAPITAL          )  strcpy(text, "Bloq Mayús");
+		if ( num == VK_ESCAPE           )  strcpy(text, "Esc");
+		if ( num == VK_SPACE            )  strcpy(text, "Barra espaciadora");
+		if ( num == VK_PRIOR            )  strcpy(text, "Re Pág");
+		if ( num == VK_NEXT             )  strcpy(text, "Av Pág");
+		if ( num == VK_END              )  strcpy(text, "Fin");
+		if ( num == VK_HOME             )  strcpy(text, "Inicio");
+		if ( num == VK_SELECT           )  strcpy(text, "Seleccionar");
+		if ( num == VK_EXECUTE          )  strcpy(text, "Ejecutar");
+		if ( num == VK_SNAPSHOT         )  strcpy(text, "Impr Pant");
+		if ( num == VK_INSERT           )  strcpy(text, "Insertar");
+		if ( num == VK_DELETE           )  strcpy(text, "Eliminar");
+		if ( num == VK_HELP             )  strcpy(text, "Ayuda");
+		if ( num == VK_LWIN             )  strcpy(text, "Ventanas izquierdas");
+		if ( num == VK_RWIN             )  strcpy(text, "Ventanas derechas");
+		if ( num == VK_APPS             )  strcpy(text, "Tecla de aplicación");
+		if ( num == VK_NUMPAD0          )  strcpy(text, "Teclado numérico 0");
+		if ( num == VK_NUMPAD1          )  strcpy(text, "Teclado numérico 1");
+		if ( num == VK_NUMPAD2          )  strcpy(text, "Teclado numérico 2");
+		if ( num == VK_NUMPAD3          )  strcpy(text, "Teclado numérico 3");
+		if ( num == VK_NUMPAD4          )  strcpy(text, "Teclado numérico 4");
+		if ( num == VK_NUMPAD5          )  strcpy(text, "Teclado numérico 5");
+		if ( num == VK_NUMPAD6          )  strcpy(text, "Teclado numérico 6");
+		if ( num == VK_NUMPAD7          )  strcpy(text, "Teclado numérico 7");
+		if ( num == VK_NUMPAD8          )  strcpy(text, "Teclado numérico 8");
+		if ( num == VK_NUMPAD9          )  strcpy(text, "Teclado numérico 9");
+		if ( num == VK_MULTIPLY         )  strcpy(text, "Teclado numérico *");
+		if ( num == VK_ADD              )  strcpy(text, "Teclado numérico +");
+		if ( num == VK_SEPARATOR        )  strcpy(text, "Teclado numérico separador");
+		if ( num == VK_SUBTRACT         )  strcpy(text, "Teclado numérico -");
+		if ( num == VK_DECIMAL          )  strcpy(text, "Teclado numérico .");
+		if ( num == VK_DIVIDE           )  strcpy(text, "Teclado numérico /");
+		if ( num == VK_F1               )  strcpy(text, "F1");
+		if ( num == VK_F2               )  strcpy(text, "F2");
+		if ( num == VK_F3               )  strcpy(text, "F3");
+		if ( num == VK_F4               )  strcpy(text, "F4");
+		if ( num == VK_F5               )  strcpy(text, "F5");
+		if ( num == VK_F6               )  strcpy(text, "F6");
+		if ( num == VK_F7               )  strcpy(text, "F7");
+		if ( num == VK_F8               )  strcpy(text, "F8");
+		if ( num == VK_F9               )  strcpy(text, "F9");
+		if ( num == VK_F10              )  strcpy(text, "F10");
+		if ( num == VK_F11              )  strcpy(text, "F11");
+		if ( num == VK_F12              )  strcpy(text, "F12");
+		if ( num == VK_F13              )  strcpy(text, "F13");
+		if ( num == VK_F14              )  strcpy(text, "F14");
+		if ( num == VK_F15              )  strcpy(text, "F15");
+		if ( num == VK_F16              )  strcpy(text, "F16");
+		if ( num == VK_F17              )  strcpy(text, "F17");
+		if ( num == VK_F18              )  strcpy(text, "F18");
+		if ( num == VK_F19              )  strcpy(text, "F19");
+		if ( num == VK_F20              )  strcpy(text, "F20");
+		if ( num == VK_NUMLOCK          )  strcpy(text, "Bloq Num");
+		if ( num == VK_SCROLL           )  strcpy(text, "Desplazar");
+		if ( num == VK_ATTN             )  strcpy(text, "Atención");
+		if ( num == VK_CRSEL            )  strcpy(text, "CrSel");
+		if ( num == VK_EXSEL            )  strcpy(text, "ExSel");
+		if ( num == VK_EREOF            )  strcpy(text, "Borrar EOF");
+		if ( num == VK_PLAY             )  strcpy(text, "Jugar");
+		if ( num == VK_ZOOM             )  strcpy(text, "Zoom");
+		if ( num == VK_PA1              )  strcpy(text, "PA1");
+		if ( num == VK_OEM_CLEAR        )  strcpy(text, "Borrar");
+		if ( num == VK_BUTTON1          )  strcpy(text, "Botón 1");
+		if ( num == VK_BUTTON2          )  strcpy(text, "Botón 2");
+		if ( num == VK_BUTTON3          )  strcpy(text, "Botón 3");
+		if ( num == VK_BUTTON4          )  strcpy(text, "Botón 4");
+		if ( num == VK_BUTTON5          )  strcpy(text, "Botón 5");
+		if ( num == VK_BUTTON6          )  strcpy(text, "Botón 6");
+		if ( num == VK_BUTTON7          )  strcpy(text, "Botón 7");
+		if ( num == VK_BUTTON8          )  strcpy(text, "Botón 8");
+		if ( num == VK_BUTTON9          )  strcpy(text, "Botón 9");
+		if ( num == VK_BUTTON10         )  strcpy(text, "Botón 10");
+		if ( num == VK_BUTTON11         )  strcpy(text, "Botón 11");
+		if ( num == VK_BUTTON12         )  strcpy(text, "Botón 12");
+		if ( num == VK_BUTTON13         )  strcpy(text, "Botón 13");
+		if ( num == VK_BUTTON14         )  strcpy(text, "Botón 14");
+		if ( num == VK_BUTTON15         )  strcpy(text, "Botón 15");
+		if ( num == VK_BUTTON16         )  strcpy(text, "Botón 16");
+		if ( num == VK_BUTTON17         )  strcpy(text, "Botón 17");
+		if ( num == VK_BUTTON18         )  strcpy(text, "Botón 18");
+		if ( num == VK_BUTTON19         )  strcpy(text, "Botón 19");
+		if ( num == VK_BUTTON20         )  strcpy(text, "Botón 20");
+		if ( num == VK_BUTTON21         )  strcpy(text, "Botón 21");
+		if ( num == VK_BUTTON22         )  strcpy(text, "Botón 22");
+		if ( num == VK_BUTTON23         )  strcpy(text, "Botón 23");
+		if ( num == VK_BUTTON24         )  strcpy(text, "Botón 24");
+		if ( num == VK_BUTTON25         )  strcpy(text, "Botón 25");
+		if ( num == VK_BUTTON26         )  strcpy(text, "Botón 26");
+		if ( num == VK_BUTTON27         )  strcpy(text, "Botón 27");
+		if ( num == VK_BUTTON28         )  strcpy(text, "Botón 28");
+		if ( num == VK_BUTTON29         )  strcpy(text, "Botón 29");
+		if ( num == VK_BUTTON30         )  strcpy(text, "Botón 30");
+		if ( num == VK_BUTTON31         )  strcpy(text, "Botón 31");
+		if ( num == VK_BUTTON32         )  strcpy(text, "Botón 32");
+		if ( num == VK_WHEELUP          )  strcpy(text, "Subir volante");
+		if ( num == VK_WHEELDOWN        )  strcpy(text, "Bajar volante");
+	}
+#endif
+
+#if _PORTUGUESE
+	if ( type == RES_TEXT )
+	{
+		#if _FULL
+		if ( num == RT_VERSION_ID          )  strcpy(text, "1.3 /p");
+		#endif
+		#if _NET | _SCHOOL
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Escola 1.3 /p");
+		#endif
+		#if _DEMO
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Demo 1.3 /p");
+		#endif
+		#if _SE
+		if ( num == RT_VERSION_ID          )  strcpy(text, "S-E 1.3 /p");
+		#endif
+		if ( num == RT_WINDOW_MAXIMIZED    )  strcpy(text, "Maximizar");
+		if ( num == RT_WINDOW_MINIMIZED    )  strcpy(text, "Minimizar");
+		if ( num == RT_WINDOW_STANDARD     )  strcpy(text, "Tamanho normal");
+		if ( num == RT_WINDOW_CLOSE        )  strcpy(text, "Fechar");
+
+		if ( num == RT_NAME_DEFAULT        )  strcpy(text, "Jogador");
+		if ( num == RT_KEY_OR              )  strcpy(text, " ou ");
+
+#if _EGAMES
+		if ( num == RT_TITLE_BASE          )  strcpy(text, "Wild Wheels");
+		if ( num == RT_TITLE_INIT          )  strcpy(text, "Wild Wheels");
+#else
+		if ( num == RT_TITLE_BASE          )  strcpy(text, "BuzzingCars");
+		if ( num == RT_TITLE_INIT          )  strcpy(text, "BuzzingCars");
+#endif
+		if ( num == RT_TITLE_MISSION       )  strcpy(text, "Missões");
+		if ( num == RT_TITLE_FREE          )  strcpy(text, "Níveis livres");
+		if ( num == RT_TITLE_USER          )  strcpy(text, "Níveis do usuário");
+		if ( num == RT_TITLE_PROTO         )  strcpy(text, "Protótipos");
+		if ( num == RT_TITLE_SETUP         )  strcpy(text, "Opções");
+		if ( num == RT_TITLE_NAME          )  strcpy(text, "Nome do piloto");
+		if ( num == RT_TITLE_PERSO         )  strcpy(text, "Selecione seu carro");
+
+		if ( num == RT_PLAY_LISTm          )  strcpy(text, " Selecione uma missão:");
+		if ( num == RT_PLAY_LISTf          )  strcpy(text, " Selecione um circuito:");
+		if ( num == RT_PLAY_LISTu          )  strcpy(text, " Missões do usuário:");
+		if ( num == RT_PLAY_LISTp          )  strcpy(text, " Protótipos:");
+		if ( num == RT_PLAY_PESETAS        )  strcpy(text, " Sua conta de créditos:");
+		if ( num == RT_PLAY_PCREDIT        )  strcpy(text, "Suas economias");
+		if ( num == RT_PLAY_PMISSION       )  strcpy(text, "Ganhos máximos");
+		if ( num == RT_PLAY_PNEXT          )  strcpy(text, "Próximo nível");
+
+		if ( num == RT_SETUP_DEVICE        )  strcpy(text, " Drivers:");
+		if ( num == RT_SETUP_MODE          )  strcpy(text, " Resolução:");
+		if ( num == RT_SETUP_KEY1          )  strcpy(text, "1) Primeiro clique na tecla que deseja redefinir.");
+		if ( num == RT_SETUP_KEY2          )  strcpy(text, "2) Depois pressione a tecla que deseja usar.");
+
+		if ( num == RT_PERSO_LIST          )  strcpy(text, "Lista de pilotos:");
+		if ( num == RT_PERSO_LEVEL         )  strcpy(text, "Nível de dificuldade:");
+		if ( num == RT_PERSO_BUY           )  strcpy(text, "Comprar");
+
+#if _EGAMES
+		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "Wild Wheels");
+#else
+		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "BuzzingCars");
+#endif
+		if ( num == RT_DIALOG_ABORT        )  strcpy(text, "Sair da missão?");
+#if _EGAMES
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Deseja sair de Wild Wheels?");
+#else
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Deseja sair de BuzzingCars?");
+#endif
+		if ( num == RT_DIALOG_YES          )  strcpy(text, "Anular\\Anular a missão atual");
+		if ( num == RT_DIALOG_NO           )  strcpy(text, "Continuar\\Continuar a missão atual");
+#if _EGAMES
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Sair\\Sair de Wild Wheels");
+#else
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Sair\\Sair de BuzzingCars");
+#endif
+		if ( num == RT_DIALOG_NOQUIT       )  strcpy(text, "Continuar\\Continuar o jogo");
+		if ( num == RT_DIALOG_DELGAME      )  strcpy(text, "Deseja excluir os jogos e os carros salvos de %s?");
+		if ( num == RT_DIALOG_DELFILE      )  strcpy(text, "Excluir o arquivo existente %s?");
+		if ( num == RT_DIALOG_YESDEL       )  strcpy(text, "Excluir");
+		if ( num == RT_DIALOG_NODEL        )  strcpy(text, "Cancelar");
+		if ( num == RT_DIALOG_NEWGAME      )  strcpy(text, "Nome do piloto:");
+		if ( num == RT_DIALOG_YESNEW       )  strcpy(text, "Criar");
+		if ( num == RT_DIALOG_NONEW        )  strcpy(text, "Cancelar");
+		if ( num == RT_DIALOG_YESKID       )  strcpy(text, "Sim");
+		if ( num == RT_DIALOG_NOKID        )  strcpy(text, "Não");
+		if ( num == RT_DIALOG_LOADING      )  strcpy(text, "CARREGANDO");
+
+		if ( num == RT_WIN_TIME            )  strcpy(text, "Cronômetro");
+		if ( num == RT_WIN_SOLID           )  strcpy(text, "Condição do veículo");
+		if ( num == RT_WIN_CONE            )  strcpy(text, "Respeito ao ambiente");
+		if ( num == RT_WIN_POINTS          )  strcpy(text, "Créditos acumulados");
+		if ( num == RT_WIN_BONUS           )  strcpy(text, "Bônus de tempo");
+		if ( num == RT_WIN_ARRAY           )  strcpy(text, "Melhores tempos:");
+		if ( num == RT_WIN_HEADERm         )  strcpy(text, "\t  Carro\tPiloto\tCrono\tCréditos");
+		if ( num == RT_WIN_HEADERf         )  strcpy(text, "\t  Carro\tPiloto\tCrono\t");
+
+		if ( num == RT_START_READY         )  strcpy(text, "Pronto?");
+		if ( num == RT_START_QUICK         )  strcpy(text, "3, 2, 1  ...  Pronto?");
+		if ( num == RT_START_123           )  strcpy(text, "%d ...");
+		if ( num == RT_START_GO            )  strcpy(text, "Já!");
+		if ( num == RT_START_REMOTE        )  strcpy(text, "Controle seu carro remotamente");
+
+		if ( num == RT_RECORD_GALL         )  strcpy(text, "Recorde do circuito (-%.2f)!");
+		if ( num == RT_RECORD_GONE         )  strcpy(text, "Recorde de volta (-%.2f)!");
+		if ( num == RT_RECORD_LONE         )  strcpy(text, "Melhor volta (-%.2f)!");
+		if ( num == RT_RECORD_QALL         )  strcpy(text, "> Recorde do circuito <");
+		if ( num == RT_RECORD_QONE         )  strcpy(text, "> Melhor volta <");
+		if ( num == RT_RACE_LAP4           )  strcpy(text, "Faltam 4 voltas");
+		if ( num == RT_RACE_LAP3           )  strcpy(text, "Faltam 3 voltas");
+		if ( num == RT_RACE_LAP2           )  strcpy(text, "Faltam 2 voltas");
+		if ( num == RT_RACE_LAP1           )  strcpy(text, "Última volta");
+		if ( num == RT_DUEL_WIN            )  strcpy(text, "Carro fantasma derrotado (-%.2f)!");
+		if ( num == RT_DUEL_LOST           )  strcpy(text, "Muito lento (+%.2f)!");
+
+		if ( num == RT_SPEC_MINSPEED       )  strcpy(text, "Carro muito lento!");
+		if ( num == RT_SPEC_MAXSPEED       )  strcpy(text, "Carro muito veloz!");
+		if ( num == RT_SPEC_DEMO           )  strcpy(text, "Não disponível na versão demo!");
+		if ( num == RT_SPEC_DISPO          )  strcpy(text, "Não disponível na versão demo!");
+
+		if ( num == RT_MOTOR_REAR          )  strcpy(text, "R");
+		if ( num == RT_MOTOR_NEUTRAL       )  strcpy(text, "N");
+		if ( num == RT_MOTOR_S1            )  strcpy(text, "1");
+		if ( num == RT_MOTOR_S2            )  strcpy(text, "2");
+		if ( num == RT_MOTOR_S3            )  strcpy(text, "3");
+
+		if ( num == RT_IO_LIST             )  strcpy(text, "Duelos disponíveis:");
+		if ( num == RT_IO_NAME             )  strcpy(text, "Nome do arquivo:");
+		if ( num == RT_IO_HEADER           )  strcpy(text, "Nome do arquivo\tMissão\tCarro\tPiloto\tCrono");
+#if _EGAMES
+		if ( num == RT_IO_RINFO            )  strcpy(text, "Você pode descarregar novos duelos em www.epsitec.ch/wildwheels");
+#else
+		if ( num == RT_IO_RINFO            )  strcpy(text, "Você pode descarregar novos duelos em www.ceebot.com");
+#endif
+
+#if _EGAMES
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "Desenvolvido por EPSITEC");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "Published by eGames, Inc.");
+#else
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "www.ceebot.com");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "Desenvolvido por EPSITEC");
+#endif
+#if _EGAMES
+		if ( num == RT_GENERIC_DEMO1       )  strcpy(text, "Você jogou com a versão DEMO de Wild Wheels.");
+		if ( num == RT_GENERIC_DEMO2       )  strcpy(text, "A versão completa está agora disponível...");
+		if ( num == RT_GENERIC_DEMO3       )  strcpy(text, "... contém 28 missões cheias de desafios e 9 corridas...");
+		if ( num == RT_GENERIC_DEMO4       )  strcpy(text, "... bem como um modo \"duelo\" para comparar desempenhos.");
+		if ( num == RT_GENERIC_DEMO5       )  strcpy(text, "Mais informações em www.epsitec.ch/wildwheels!");
+#else
+		if ( num == RT_GENERIC_DEMO1       )  strcpy(text, "Você jogou com a versão DEMO de BuzzingCars.");
+		if ( num == RT_GENERIC_DEMO2       )  strcpy(text, "A versão completa está agora disponível...");
+		if ( num == RT_GENERIC_DEMO3       )  strcpy(text, "... contém 28 missões cheias de desafios e 9 corridas...");
+		if ( num == RT_GENERIC_DEMO4       )  strcpy(text, "... bem como um modo \"duelo\" para comparar desempenhos.");
+		if ( num == RT_GENERIC_DEMO5       )  strcpy(text, "Mais informações em www.ceebot.com!");
+#endif
+	}
+
+	if ( type == RES_EVENT )
+	{
+		if ( num == EVENT_BUTTON_OK        )  strcpy(text, "OK");
+		if ( num == EVENT_BUTTON_CANCEL    )  strcpy(text, "Cancelar");
+		if ( num == EVENT_BUTTON_NEXT      )  strcpy(text, "Próximo");
+		if ( num == EVENT_BUTTON_PREV      )  strcpy(text, "Anterior");
+		if ( num == EVENT_BUTTON_QUIT      )  strcpy(text, "Menu (\\key quit;)");
+		if ( num == EVENT_BUTTON_CAMERA    )  strcpy(text, "Câmara (\\key camera;)");
+		if ( num == EVENT_BUTTON_HELP      )  strcpy(text, "Ajuda (\\key help;)");
+		if ( num == EVENT_BUTTON_BRAKE     )  strcpy(text, "Freio de mão (\\key brake;)");
+		if ( num == EVENT_BUTTON_HORN      )  strcpy(text, "Buzina (\\key horn;)");
+		if ( num == EVENT_BONUS            )  strcpy(text, "Bônus de tempo");
+		if ( num == EVENT_TIME             )  strcpy(text, "Cronômetro");
+		if ( num == EVENT_PROGRESS         )  strcpy(text, "Tarefas realizadas");
+
+		if ( num == EVENT_DIALOG_OK        )  strcpy(text, "OK");
+		if ( num == EVENT_DIALOG_CANCEL    )  strcpy(text, "Cancelar");
+
+		if ( num == EVENT_INTERFACE_MISSION)  strcpy(text, "Missões\\Selecionar missão");
+		if ( num == EVENT_INTERFACE_FREE   )  strcpy(text, "Corridas livres\\Corridas livres sem objetivo preciso");
+		if ( num == EVENT_INTERFACE_USER   )  strcpy(text, "Usuário\\Níveis do usuário");
+		if ( num == EVENT_INTERFACE_PROTO  )  strcpy(text, "Proto\\Protótipos em desenvolvimento");
+		if ( num == EVENT_INTERFACE_DUEL   )  strcpy(text, "Duelos\\Duelos contra carros fantasmas");
+		if ( num == EVENT_INTERFACE_NAME   )  strcpy(text, "Novo piloto\\Escolha o nome do piloto");
+		if ( num == EVENT_INTERFACE_SETUP  )  strcpy(text, "Opções\\Preferências");
+		if ( num == EVENT_INTERFACE_AGAIN  )  strcpy(text, "Reiniciar\\Reinicia a missão a partir do começo");
+		if ( num == EVENT_INTERFACE_SAVE   )  strcpy(text, "Salvar\\Salva o duelo");
+#if _EGAMES
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Volta ao Wild Wheels");
+#else
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Volta ao BuzzingCars");
+#endif
+		if ( num == EVENT_INTERFACE_PREV   )  strcpy(text, "\\Tela anterior");
+		if ( num == EVENT_INTERFACE_NEXT   )  strcpy(text, "\\Próxima tela");
+#if _EGAMES
+		if ( num == EVENT_INTERFACE_EXIT   )  strcpy(text, "\\Sai de Wild Wheels");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Sair\\Sai de Wild Wheels");
+#else
+		if ( num == EVENT_INTERFACE_EXIT   )  strcpy(text, "\\Sai de BuzzingCars");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Sair\\Sai de BuzzingCars");
+#endif
+		if ( num == EVENT_INTERFACE_BACK   )  strcpy(text, "Cancelar\\Volta à tela anterior");
+		if ( num == EVENT_INTERFACE_TERM   )  strcpy(text, "Menu\\Volta ao menu principal");
+		if ( num == EVENT_INTERFACE_PLAY   )  strcpy(text, "Reproduzir\\Inicia missão selecionada!");
+		if ( num == EVENT_INTERFACE_GHOSTm )  strcpy(text, "Exibir o melhor carro fantasma\\Mostra o fantasma com o melhor desempenho neste circuito");
+		if ( num == EVENT_INTERFACE_OK     )  strcpy(text, "OK\\Volta à tela anterior");
+
+		if ( num == EVENT_INTERFACE_WOK    )  strcpy(text, "Salvar o duelo\\Salva em disco");
+		if ( num == EVENT_INTERFACE_WCANCEL)  strcpy(text, "Cancelar\\Volta à tela anterior");
+		if ( num == EVENT_INTERFACE_ROK    )  strcpy(text, "Iniciar duelo\\Inicia o duelo selecionado");
+		if ( num == EVENT_INTERFACE_RCANCEL)  strcpy(text, "Cancelar\\Volta à tela anterior");
+
+		if ( num == EVENT_INTERFACE_SETUPd )  strcpy(text, "Dispositivo\\Configurações de driver e resolução");
+		if ( num == EVENT_INTERFACE_SETUPg )  strcpy(text, "Gráficos\\Configurações de gráficos");
+		if ( num == EVENT_INTERFACE_SETUPp )  strcpy(text, "Jogo\\Configurações do jogo");
+		if ( num == EVENT_INTERFACE_SETUPc )  strcpy(text, "Controles\\Configurações do teclado, volante e gamepad");
+		if ( num == EVENT_INTERFACE_SETUPs )  strcpy(text, "Som\\Volume de música e efeitos sonoros");
+		if ( num == EVENT_INTERFACE_RESOL  )  strcpy(text, "Resolução");
+		if ( num == EVENT_INTERFACE_FULL   )  strcpy(text, "Tela cheia\\Tela cheia ou modo de janela");
+		if ( num == EVENT_INTERFACE_APPLY  )  strcpy(text, "Aplicar alterações\\Ativa as configurações alteradas");
+
+		if ( num == EVENT_INTERFACE_SHADOW )  strcpy(text, "Sombras\\Sombras no chão");
+		if ( num == EVENT_INTERFACE_DIRTY  )  strcpy(text, "Poeira\\Poeira e sujeira nos carros e prédios");
+		if ( num == EVENT_INTERFACE_FOG    )  strcpy(text, "Nevoeiro\\Nevoeiro");
+		if ( num == EVENT_INTERFACE_LENS   )  strcpy(text, "Raios de sol\\Exibe raios de sol no céu");
+		if ( num == EVENT_INTERFACE_SKY    )  strcpy(text, "Céu e nuvens\\Exibe imagens reais de céu com nuvens");
+		if ( num == EVENT_INTERFACE_PLANET )  strcpy(text, "Planetas e astros\\Exibe corpos celestes no céu");
+		if ( num == EVENT_INTERFACE_LIGHT  )  strcpy(text, "Iluminação dinâmica\\Usa fontes de luz móveis");
+		if ( num == EVENT_INTERFACE_SUPER  )  strcpy(text, "Superdetalhes\\Superdetalhes");  //DR
+		if ( num == EVENT_INTERFACE_PARTI  )  strcpy(text, "Várias partículas\\Explosões, poeira, reflexos, etc.");
+		if ( num == EVENT_INTERFACE_WHEEL  )  strcpy(text, "Marcas de pneus\\Marcas de pneus no chão");
+		if ( num == EVENT_INTERFACE_CLIP   )  strcpy(text, "Profundidade de campo\\Máxima visibilidade");
+		if ( num == EVENT_INTERFACE_DETAIL )  strcpy(text, "Detalhes\\Qualidade visual de objetos em 3D");
+		if ( num == EVENT_INTERFACE_TEXTURE)  strcpy(text, "Texturas\\Qualidade das texturas exibidas");
+		if ( num == EVENT_INTERFACE_GADGET )  strcpy(text, "Vários objetos decorativos\\Vários objetos puramente ornamentais");
+		if ( num == EVENT_INTERFACE_RAIN   )  strcpy(text, "Partículas na interface\\Faíscas saltando do ponteiro do mouse");
+		if ( num == EVENT_INTERFACE_GLINT  )  strcpy(text, "Reflexos nos botões\\Botões brilhantes");
+		if ( num == EVENT_INTERFACE_TOOLTIP)  strcpy(text, "Dicas de ferramentas\\Explica os itens da interface");
+		if ( num == EVENT_INTERFACE_MOVIES )  strcpy(text, "Seqüências de filmes\\Filmes antes e depois das missões");
+		if ( num == EVENT_INTERFACE_CBACK  )  strcpy(text, "Visão de trás\\Câmara atrás do carro");
+		if ( num == EVENT_INTERFACE_CBOARD )  strcpy(text, "Visão do capô\\Câmara no capô do carro");
+		if ( num == EVENT_INTERFACE_EFFECT )  strcpy(text, "Inclinação durante explosões\\A tela inclina-se durante explosões");
+		if ( num == EVENT_INTERFACE_FLASH  )  strcpy(text, "Clarões de colisão\\Clarões na tela quando um carro bate");
+		if ( num == EVENT_INTERFACE_BLAST  )  strcpy(text, "O motor pode explodir\\O motor explode durante revoluções aceleradas na linha de partida");
+		if ( num == EVENT_INTERFACE_MOUSE  )  strcpy(text, "Sombra do mouse\\Sombra do mouse");
+
+		if ( num == EVENT_INTERFACE_KDEF   )  strcpy(text, "Controles padrão\\Redefine todos os controles para os valores padrão");
+		if ( num == EVENT_INTERFACE_KLEFT  )  strcpy(text, "Virar para a esquerda\\Vira o volante para a esquerda");
+		if ( num == EVENT_INTERFACE_KRIGHT )  strcpy(text, "Virar para a direita\\Vira o volante para a direita");
+		if ( num == EVENT_INTERFACE_KUP    )  strcpy(text, "Acelerar\\Aumentar a velocidade");
+		if ( num == EVENT_INTERFACE_KDOWN  )  strcpy(text, "Freio e retrocesso\\Diminui a velocidade e por fim move-se para trás");
+		if ( num == EVENT_INTERFACE_KBRAKE )  strcpy(text, "Freio de mão\\Freio de mão");
+		if ( num == EVENT_INTERFACE_KHORN  )  strcpy(text, "Buzina\\Buzina");
+		if ( num == EVENT_INTERFACE_KCAMERA)  strcpy(text, "Alterar câmara\\Alterna entre a câmara no capô e a câmara de trás");
+		if ( num == EVENT_INTERFACE_KQUIT  )  strcpy(text, "Sair\\Sai da missão ou da corrida atual");
+		if ( num == EVENT_INTERFACE_KHELP  )  strcpy(text, "Instruções\\Mostra as instruções para a missão atual");
+
+		if ( num == EVENT_INTERFACE_VOLSOUND) strcpy(text, "Efeitos sonoros:\\Volume de motores, voz, explosões, etc.");
+		if ( num == EVENT_INTERFACE_VOLMUSIC) strcpy(text, "Som de fundo:\\Volume das trilhas de áudio no CD");
+		if ( num == EVENT_INTERFACE_SOUND3D)  strcpy(text, "Som 3D\\Som 3D");
+		if ( num == EVENT_INTERFACE_COMMENTS) strcpy(text, "Voz do comentador\\Vários comentários durante as corridas");
+
+		if ( num == EVENT_INTERFACE_MIN    )  strcpy(text, "Mínima\\Qualidade gráfica mínima (a mais alta taxa de quadros)");
+		if ( num == EVENT_INTERFACE_NORM   )  strcpy(text, "Normal\\Qualidade gráfica normal");
+		if ( num == EVENT_INTERFACE_MAX    )  strcpy(text, "Máxima\\Qualidade gráfica mais alta (a mais baixa taxa de quadros)");
+
+		if ( num == EVENT_INTERFACE_SILENT )  strcpy(text, "Silêncio\\Sem som");
+		if ( num == EVENT_INTERFACE_NOISY  )  strcpy(text, "Normal\\Volume de som normal");
+
+		if ( num == EVENT_INTERFACE_STEERING) strcpy(text, "Usar um volante ou um joystick\\Usa um volante ou um joystick");
+		if ( num == EVENT_INTERFACE_JOYPAD  ) strcpy(text, "Usar um gamepad\\Gamepad ou teclado");
+		if ( num == EVENT_INTERFACE_FFBc    ) strcpy(text, "Força reativa\\Usa efeitos de força reativa");
+		if ( num == EVENT_INTERFACE_FFBs    ) strcpy(text, "\\Força reativa");
+
+		if ( num == EVENT_INTERFACE_NEDIT  )  strcpy(text, "\\Novo nome de piloto");
+		if ( num == EVENT_INTERFACE_NOK    )  strcpy(text, "Selecionar\\Escolha o piloto selecionado");
+		if ( num == EVENT_INTERFACE_NCREATE)  strcpy(text, "Novo\\Cria um novo piloto");
+		if ( num == EVENT_INTERFACE_NDELETE)  strcpy(text, "Excluir\\Exclui o piloto da lista");
+
+		if ( num == EVENT_INTERFACE_LEVEL1 )  strcpy(text, "Infantil\\Nível infantil realmente fácil");
+		if ( num == EVENT_INTERFACE_LEVEL2 )  strcpy(text, "Moderado\\Nível de jogo fácil");
+		if ( num == EVENT_INTERFACE_LEVEL3 )  strcpy(text, "Médio\\Nível de jogo médio");
+		if ( num == EVENT_INTERFACE_LEVEL4 )  strcpy(text, "Difícil\\Nível de jogo realmente difícil");
+
+		if ( num == EVENT_INTERFACE_POK    )  strcpy(text, "Selecionar\\Inicia com este carro");
+		if ( num == EVENT_INTERFACE_PNEXT  )  strcpy(text, "Próximo >\\Próximo carro");
+		if ( num == EVENT_INTERFACE_PPREV  )  strcpy(text, "< Anterior\\Carro anterior");
+		if ( num == EVENT_INTERFACE_PGSPEED)  strcpy(text, "Velocidade máx\\");
+		if ( num == EVENT_INTERFACE_PGACCEL)  strcpy(text, "Aceleração\\");
+		if ( num == EVENT_INTERFACE_PGGRIP )  strcpy(text, "Empunhadura\\");
+		if ( num == EVENT_INTERFACE_PGSOLID)  strcpy(text, "Solidez\\");
+		if ( num == EVENT_INTERFACE_PPRICE )  strcpy(text, "%s (preço do veículo: %d créditos)");
+		if ( num == EVENT_INTERFACE_PPESETAS) strcpy(text, "Suas economias: %d créditos");
+		if ( num == EVENT_INTERFACE_PSUBMOD0) strcpy(text, "A\\Altera a aparência");
+		if ( num == EVENT_INTERFACE_PSUBMOD1) strcpy(text, "B\\Altera a aparência");
+		if ( num == EVENT_INTERFACE_PSUBMOD2) strcpy(text, "C\\Altera a aparência");
+		if ( num == EVENT_INTERFACE_PSUBMOD3) strcpy(text, "D\\Altera a aparência");
+		if ( num >= EVENT_INTERFACE_PCOLOR0 &&
+			 num <= EVENT_INTERFACE_PCOLOR19) strcpy(text, "\\Altera a cor");
+
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Condição dos pneus");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "Temperatura do jato");
+		if ( num == EVENT_OBJECT_GPROGRESS )  strcpy(text, "Progressão da tarefa");
+		if ( num == EVENT_OBJECT_GSPEED    )  strcpy(text, "Velocímetro");
+		if ( num == EVENT_OBJECT_GRPM      )  strcpy(text, "Contador de revoluções");
+		if ( num == EVENT_OBJECT_GMOTOR    )  strcpy(text, "\\Caixa de câmbio");
+		if ( num == EVENT_OBJECT_GCOMPASS  )  strcpy(text, "Bússola");
+		if ( num == EVENT_OBJECT_GGEIGER   )  strcpy(text, "Medidor Geiger");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "Condição geral");
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Condição dos pneus");
+//?		if ( num == EVENT_OBJECT_MAP       )  strcpy(text, "Mini-map");
+		if ( num == EVENT_OBJECT_MAPZOOM   )  strcpy(text, "Zoom em minimapa");
+		if ( num == EVENT_CMD              )  strcpy(text, "Linha de comando");
+		if ( num == EVENT_SPEED            )  strcpy(text, "Velocidade do jogo");
+	}
+
+	if ( type == RES_ERR )
+	{
+		strcpy(text, "Erro");
+		if ( num == ERR_CMD             )  strcpy(text, "Comando desconhecido");
+		if ( num == ERR_INSTALL         )  strcpy(text, "Wild Wheels não foi instalado corretamente.");
+		if ( num == ERR_NOCD            )  strcpy(text, "Insira o CD de Wild Wheels\ne reexecute o jogo.");
+		if ( num == ERR_MOVE_IMPOSSIBLE )  strcpy(text, "Erro em movimento de instrução");
+		if ( num == ERR_GOTO_IMPOSSIBLE )  strcpy(text, "Ir a: destino inacessível");
+		if ( num == ERR_GOTO_ITER       )  strcpy(text, "Ir a: destino inacessível");
+		if ( num == ERR_GOTO_BUSY       )  strcpy(text, "Ir a: destino ocupado");
+		if ( num == ERR_FIRE_VEH        )  strcpy(text, "Bot inapropriado");
+		if ( num == ERR_FIRE_ENERGY     )  strcpy(text, "Energia insuficiente");
+		if ( num == ERR_MISSION_NOTERM  )  strcpy(text, "A missão ainda não foi concluída (pressione \\key help; para mais detalhes)");
+
+		if ( num == INFO_WIN            )  strcpy(text, "<<< Parabéns, missão concluída >>>");
+		if ( num == INFO_LOST           )  strcpy(text, "<<< Desculpe, missão fracassada >>>");
+		if ( num == INFO_LOSTq          )  strcpy(text, "<<< Desculpe, missão fracassada >>>");
+	}
+
+	if ( type == RES_CBOT )
+	{
+		strcpy(text, "Erro");
+		if ( num == TX_OPENPAR       ) strcpy(text, "Parêntese de abertura faltando");
+		if ( num == TX_CLOSEPAR      ) strcpy(text, "Parêntese de fechamento faltando ");
+		if ( num == TX_NOTBOOL       ) strcpy(text, "A expressão deve retornar um valor booleano");
+		if ( num == TX_UNDEFVAR      ) strcpy(text, "Variável não declarada");
+		if ( num == TX_BADLEFT       ) strcpy(text, "Atribuição impossível");
+		if ( num == TX_ENDOF         ) strcpy(text, "Finalizador de ponto e vírgula faltando");
+		if ( num == TX_OUTCASE       ) strcpy(text, "Instrução ""case"" fora de um bloco ""switch""");
+		if ( num == TX_NOTERM        ) strcpy(text, "Instruções depois do colchete de fechamento final");
+		if ( num == TX_CLOSEBLK      ) strcpy(text, "Fim de bloco faltando");
+		if ( num == TX_ELSEWITHOUTIF ) strcpy(text, "Instrução ""else"" sem ""if"" correspondente ");
+		if ( num == TX_OPENBLK       ) strcpy(text, "Colchete de abertura faltando ");//début d'un bloc attendu?
+		if ( num == TX_BADTYPE       ) strcpy(text, "Tipo errado para a atribuição");
+		if ( num == TX_REDEFVAR      ) strcpy(text, "Uma variável não pode ser declarada duas vezes");
+		if ( num == TX_BAD2TYPE      ) strcpy(text, "Os tipos dos dois operandos são incompatíveis ");
+		if ( num == TX_UNDEFCALL     ) strcpy(text, "Função desconhecida");
+		if ( num == TX_MISDOTS       ) strcpy(text, "Sinal "" : "" faltando");
+		if ( num == TX_WHILE         ) strcpy(text, "Palavra-chave ""while"" faltando");
+		if ( num == TX_BREAK         ) strcpy(text, "Instrução ""break"" fora de um loop");
+		if ( num == TX_LABEL         ) strcpy(text, "Uma etiqueta deve ser seguida de ""for"", ""while"", ""do"" ou ""switch""");
+		if ( num == TX_NOLABEL       ) strcpy(text, "Esta etiqueta não existe");// Cette étiquette n'existe pas
+		if ( num == TX_NOCASE        ) strcpy(text, "Instrução ""case"" faltando");
+		if ( num == TX_BADNUM        ) strcpy(text, "Número faltando");
+		if ( num == TX_VOID          ) strcpy(text, "Parâmetro nulo");
+		if ( num == TX_NOTYP         ) strcpy(text, "Declaração de tipo faltando");
+		if ( num == TX_NOVAR         ) strcpy(text, "Nome de variável faltando");
+		if ( num == TX_NOFONC        ) strcpy(text, "Nome de função faltando");
+		if ( num == TX_OVERPARAM     ) strcpy(text, "Muitos parâmetros");
+		if ( num == TX_REDEF         ) strcpy(text, "A função já existe");
+		if ( num == TX_LOWPARAM      ) strcpy(text, "Parâmetros faltando ");
+		if ( num == TX_BADPARAM      ) strcpy(text, "Nenhuma função deste nome aceita este tipo de parâmetro");
+		if ( num == TX_NUMPARAM      ) strcpy(text, "Nenhuma função deste nome aceita este número de parâmetros");
+		if ( num == TX_NOITEM        ) strcpy(text, "Este não é um membro desta classe");
+		if ( num == TX_DOT           ) strcpy(text, "Este objeto não é um membro de uma classe");
+		if ( num == TX_NOCONST       ) strcpy(text, "Construtor apropriado faltando");
+		if ( num == TX_REDEFCLASS    ) strcpy(text, "Esta classe já existe");
+		if ( num == TX_CLBRK         ) strcpy(text, """ ] "" faltando");
+		if ( num == TX_RESERVED      ) strcpy(text, "Palavra-chave reservada de linguagem CBOT");
+		if ( num == TX_BADNEW        ) strcpy(text, "Argumento incorreto para ""new""");
+		if ( num == TX_OPBRK         ) strcpy(text, """ [ "" esperado");
+		if ( num == TX_BADSTRING     ) strcpy(text, "Seqüência faltando");
+		if ( num == TX_BADINDEX      ) strcpy(text, "Tipo de índice incorreto");
+		if ( num == TX_PRIVATE       ) strcpy(text, "Elementro privado");
+		if ( num == TX_NOPUBLIC      ) strcpy(text, "Público requerido");
+		if ( num == TX_DIVZERO       ) strcpy(text, "Dividindo por zero");
+		if ( num == TX_NOTINIT       ) strcpy(text, "Variável não inicializada");
+		if ( num == TX_BADTHROW      ) strcpy(text, "Valor negativo rejeitado por ""throw""");//C'est quoi, ça?
+		if ( num == TX_NORETVAL      ) strcpy(text, "A função não retornou um valor ");
+		if ( num == TX_NORUN         ) strcpy(text, "Nenhuma função em execução");
+		if ( num == TX_NOCALL        ) strcpy(text, "Chamando uma função desconhecida");
+		if ( num == TX_NOCLASS       ) strcpy(text, "Esta classe não existe");
+		if ( num == TX_NULLPT        ) strcpy(text, "Objeto desconhecido");
+		if ( num == TX_OPNAN         ) strcpy(text, "Operação impossível com valor ""nan""");
+		if ( num == TX_OUTARRAY      ) strcpy(text, "Acesso além do limite de matriz");
+		if ( num == TX_STACKOVER     ) strcpy(text, "Estouro de pilha");
+		if ( num == TX_DELETEDPT     ) strcpy(text, "Objeto ilegal");
+		if ( num == TX_FILEOPEN      ) strcpy(text, "Não é possível abrir arquivo");
+		if ( num == TX_NOTOPEN       ) strcpy(text, "O arquivo não está aberto");
+		if ( num == TX_ERRREAD       ) strcpy(text, "Erro de leitura");
+		if ( num == TX_ERRWRITE      ) strcpy(text, "Erro de gravação");
+	}
+
+	if ( type == RES_KEY )
+	{
+		if ( num == 0                   )  strcpy(text, "< nenhum >");
+		if ( num == VK_LEFT             )  strcpy(text, "Seta esquerda");
+		if ( num == VK_RIGHT            )  strcpy(text, "Seta direita");
+		if ( num == VK_UP               )  strcpy(text, "Seta acima");
+		if ( num == VK_DOWN             )  strcpy(text, "Seta abaixo");
+		if ( num == VK_CANCEL           )  strcpy(text, "Control-break");
+		if ( num == VK_BACK             )  strcpy(text, "<--");
+		if ( num == VK_TAB              )  strcpy(text, "Guia");
+		if ( num == VK_CLEAR            )  strcpy(text, "Limpar");
+		if ( num == VK_RETURN           )  strcpy(text, "Enter");
 		if ( num == VK_SHIFT            )  strcpy(text, "Shift");
 		if ( num == VK_CONTROL          )  strcpy(text, "Ctrl");
 		if ( num == VK_MENU             )  strcpy(text, "Alt");
 		if ( num == VK_PAUSE            )  strcpy(text, "Pause");
 		if ( num == VK_CAPITAL          )  strcpy(text, "Caps Lock");
 		if ( num == VK_ESCAPE           )  strcpy(text, "Esc");
-		if ( num == VK_SPACE            )  strcpy(text, "Leertaste");
+		if ( num == VK_SPACE            )  strcpy(text, "Barra de espaçamento");
 		if ( num == VK_PRIOR            )  strcpy(text, "Page Up");
 		if ( num == VK_NEXT             )  strcpy(text, "Page Down");
 		if ( num == VK_END              )  strcpy(text, "End");
 		if ( num == VK_HOME             )  strcpy(text, "Home");
-		if ( num == VK_SELECT           )  strcpy(text, "Select");
-		if ( num == VK_EXECUTE          )  strcpy(text, "Execute");
+		if ( num == VK_SELECT           )  strcpy(text, "Selecionar");
+		if ( num == VK_EXECUTE          )  strcpy(text, "Executar");
 		if ( num == VK_SNAPSHOT         )  strcpy(text, "Print Scrn");
 		if ( num == VK_INSERT           )  strcpy(text, "Insert");
 		if ( num == VK_DELETE           )  strcpy(text, "Delete");
-		if ( num == VK_HELP             )  strcpy(text, "Help");
-		if ( num == VK_LWIN             )  strcpy(text, "Left Windows");
-		if ( num == VK_RWIN             )  strcpy(text, "Right Windows");
-		if ( num == VK_APPS             )  strcpy(text, "Application key");
+		if ( num == VK_HELP             )  strcpy(text, "Ajuda");
+		if ( num == VK_LWIN             )  strcpy(text, "Janelas à esquerda");
+		if ( num == VK_RWIN             )  strcpy(text, "Janelas à direita");
+		if ( num == VK_APPS             )  strcpy(text, "Tecla do aplicativo");
 		if ( num == VK_NUMPAD0          )  strcpy(text, "NumPad 0");
 		if ( num == VK_NUMPAD1          )  strcpy(text, "NumPad 1");
 		if ( num == VK_NUMPAD2          )  strcpy(text, "NumPad 2");
@@ -2732,914 +3156,45 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 		if ( num == VK_ATTN             )  strcpy(text, "Attn");
 		if ( num == VK_CRSEL            )  strcpy(text, "CrSel");
 		if ( num == VK_EXSEL            )  strcpy(text, "ExSel");
-		if ( num == VK_EREOF            )  strcpy(text, "Erase EOF");
-		if ( num == VK_PLAY             )  strcpy(text, "Play");
+		if ( num == VK_EREOF            )  strcpy(text, "Apagar EOF");
+		if ( num == VK_PLAY             )  strcpy(text, "Reproduzir");
 		if ( num == VK_ZOOM             )  strcpy(text, "Zoom");
 		if ( num == VK_PA1              )  strcpy(text, "PA1");
-		if ( num == VK_OEM_CLEAR        )  strcpy(text, "Clear");
-		if ( num == VK_BUTTON1          )  strcpy(text, "Knopf 1");
-		if ( num == VK_BUTTON2          )  strcpy(text, "Knopf 2");
-		if ( num == VK_BUTTON3          )  strcpy(text, "Knopf 3");
-		if ( num == VK_BUTTON4          )  strcpy(text, "Knopf 4");
-		if ( num == VK_BUTTON5          )  strcpy(text, "Knopf 5");
-		if ( num == VK_BUTTON6          )  strcpy(text, "Knopf 6");
-		if ( num == VK_BUTTON7          )  strcpy(text, "Knopf 7");
-		if ( num == VK_BUTTON8          )  strcpy(text, "Knopf 8");
-		if ( num == VK_BUTTON9          )  strcpy(text, "Knopf 9");
-		if ( num == VK_BUTTON10         )  strcpy(text, "Knopf 10");
-		if ( num == VK_BUTTON11         )  strcpy(text, "Knopf 11");
-		if ( num == VK_BUTTON12         )  strcpy(text, "Knopf 12");
-		if ( num == VK_BUTTON13         )  strcpy(text, "Knopf 13");
-		if ( num == VK_BUTTON14         )  strcpy(text, "Knopf 14");
-		if ( num == VK_BUTTON15         )  strcpy(text, "Knopf 15");
-		if ( num == VK_BUTTON16         )  strcpy(text, "Knopf 16");
-		if ( num == VK_BUTTON17         )  strcpy(text, "Knopf 17");
-		if ( num == VK_BUTTON18         )  strcpy(text, "Knopf 18");
-		if ( num == VK_BUTTON19         )  strcpy(text, "Knopf 19");
-		if ( num == VK_BUTTON20         )  strcpy(text, "Knopf 20");
-		if ( num == VK_BUTTON21         )  strcpy(text, "Knopf 21");
-		if ( num == VK_BUTTON22         )  strcpy(text, "Knopf 22");
-		if ( num == VK_BUTTON23         )  strcpy(text, "Knopf 23");
-		if ( num == VK_BUTTON24         )  strcpy(text, "Knopf 24");
-		if ( num == VK_BUTTON25         )  strcpy(text, "Knopf 25");
-		if ( num == VK_BUTTON26         )  strcpy(text, "Knopf 26");
-		if ( num == VK_BUTTON27         )  strcpy(text, "Knopf 27");
-		if ( num == VK_BUTTON28         )  strcpy(text, "Knopf 28");
-		if ( num == VK_BUTTON29         )  strcpy(text, "Knopf 29");
-		if ( num == VK_BUTTON30         )  strcpy(text, "Knopf 30");
-		if ( num == VK_BUTTON31         )  strcpy(text, "Knopf 31");
-		if ( num == VK_BUTTON32         )  strcpy(text, "Knopf 32");
-		if ( num == VK_WHEELUP          )  strcpy(text, "Mausrad nach vorne");
-		if ( num == VK_WHEELDOWN        )  strcpy(text, "Mausrad zurück");
-	}
-#endif
-
-#if _POLISH
-	if ( type == RES_TEXT )
-	{
-		#if _FULL
-		if ( num == RT_VERSION_ID          )  strcpy(text, "Wersja 1.18 /pl");
-		#endif
-		#if _NET
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A 1.18");
-		#endif
-		#if _SCHOOL & _EDU
-		#if _TEEN
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-Teen EDU 1.18");
-		#else
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A EDU 1.18");
-		#endif
-		#endif
-		#if _SCHOOL & _PERSO
-		#if _TEEN
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-Teen PERSO 1.18");
-		#else
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A PERSO 1.18");
-		#endif
-		#endif
-		#if _SCHOOL & _CEEBOTDEMO
-		#if _TEEN
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-Teen DEMO 1.18");
-		#else
-		if ( num == RT_VERSION_ID          )  strcpy(text, "CeeBot-A DEMO 1.18");
-		#endif
-		#endif
-		#if _DEMO
-		if ( num == RT_VERSION_ID          )  strcpy(text, "Demo 1.18 /pl");
-		#endif
-		if ( num == RT_DISINFO_TITLE       )  strcpy(text, "SatCom");
-		if ( num == RT_WINDOW_MAXIMIZED    )  strcpy(text, "Powiêksz");
-		if ( num == RT_WINDOW_MINIMIZED    )  strcpy(text, "Pomniejsz");
-		if ( num == RT_WINDOW_STANDARD     )  strcpy(text, "Normalna wielkoœæ");
-		if ( num == RT_WINDOW_CLOSE        )  strcpy(text, "Zamknij");
-
-		if ( num == RT_STUDIO_TITLE        )  strcpy(text, "Edytor programu");
-		if ( num == RT_SCRIPT_NEW          )  strcpy(text, "Nowy");
-		if ( num == RT_NAME_DEFAULT        )  strcpy(text, "Gracz");
-		if ( num == RT_IO_NEW              )  strcpy(text, "Nowy ...");
-		if ( num == RT_KEY_OR              )  strcpy(text, " lub ");
-
-#if _NEWLOOK
-		if ( num == RT_TITLE_BASE          )  strcpy(text, "CeeBot");
-		if ( num == RT_TITLE_INIT          )  strcpy(text, "CeeBot");
-#else
-		if ( num == RT_TITLE_BASE          )  strcpy(text, "COLOBOT");
-		if ( num == RT_TITLE_INIT          )  strcpy(text, "COLOBOT");
-#endif
-		if ( num == RT_TITLE_TRAINER       )  strcpy(text, "Æwiczenia programistyczne");
-		if ( num == RT_TITLE_DEFI          )  strcpy(text, "Wyzwania");
-		if ( num == RT_TITLE_MISSION       )  strcpy(text, "Misje");
-		if ( num == RT_TITLE_FREE          )  strcpy(text, "Swobodna gra");
-		if ( num == RT_TITLE_TEEN          )  strcpy(text, "Swobodna gra");
-		if ( num == RT_TITLE_USER          )  strcpy(text, "Poziomy u¿ytkownika");
-		if ( num == RT_TITLE_PROTO         )  strcpy(text, "Prototypy");
-		if ( num == RT_TITLE_SETUP         )  strcpy(text, "Opcje");
-		if ( num == RT_TITLE_NAME          )  strcpy(text, "Imiê gracza");
-		if ( num == RT_TITLE_PERSO         )  strcpy(text, "Dostosuj wygl¹d");
-		if ( num == RT_TITLE_WRITE         )  strcpy(text, "Zapisz bie¿¹c¹ misjê");
-		if ( num == RT_TITLE_READ          )  strcpy(text, "Wczytaj zapisan¹ misjê");
-
-		if ( num == RT_PLAY_CHAPt          )  strcpy(text, " Rozdzia³y:");
-		if ( num == RT_PLAY_CHAPd          )  strcpy(text, " Rozdzia³y:");
-		if ( num == RT_PLAY_CHAPm          )  strcpy(text, " Planety:");
-		if ( num == RT_PLAY_CHAPf          )  strcpy(text, " Planety:");
-		if ( num == RT_PLAY_CHAPu          )  strcpy(text, " Poziomy u¿ytkownika:");
-		if ( num == RT_PLAY_CHAPp          )  strcpy(text, " Planety:");
-		if ( num == RT_PLAY_CHAPte         )  strcpy(text, " Planety:");
-		if ( num == RT_PLAY_LISTt          )  strcpy(text, " Æwiczenia w tym rozdziale:");
-		if ( num == RT_PLAY_LISTd          )  strcpy(text, " Wyzwania w tym rozdziale:");
-		if ( num == RT_PLAY_LISTm          )  strcpy(text, " Misje na tej planecie:");
-		if ( num == RT_PLAY_LISTf          )  strcpy(text, " Swobodna gra na tej planecie:");
-		if ( num == RT_PLAY_LISTu          )  strcpy(text, " Misje na tym poziomie:");
-		if ( num == RT_PLAY_LISTp          )  strcpy(text, " Prototypy na tej planecie:");
-		if ( num == RT_PLAY_LISTk          )  strcpy(text, " Prototypy na tej planecie:");
-		if ( num == RT_PLAY_RESUME         )  strcpy(text, " Streszczenie:");
-
-		if ( num == RT_SETUP_DEVICE        )  strcpy(text, " Sterowniki:");
-		if ( num == RT_SETUP_MODE          )  strcpy(text, " Rozdzielczoœæ:");
-		if ( num == RT_SETUP_KEY1          )  strcpy(text, "1) Najpierw kliknij klawisz, który chcesz przedefiniowaæ.");
-		if ( num == RT_SETUP_KEY2          )  strcpy(text, "2) Nastêpnie naciœnij klawisz, którego chcesz u¿ywaæ.");
-
-		if ( num == RT_PERSO_FACE          )  strcpy(text, "Rodzaj twarzy:");
-		if ( num == RT_PERSO_GLASSES       )  strcpy(text, "Okulary:");
-		if ( num == RT_PERSO_HAIR          )  strcpy(text, "Kolor w³osów:");
-		if ( num == RT_PERSO_COMBI         )  strcpy(text, "Kolor skafandra:");
-		if ( num == RT_PERSO_BAND          )  strcpy(text, "Kolor pasków:");
-
-#if _NEWLOOK
-		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "CeeBot");
-		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Czy na pewno chcesz opuœciæ grê CeeBot?");
-		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Zakoñcz\\Koñczy grê CeeBot");
-#else
-		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "COLOBOT");
-		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Czy na pewno chcesz opuœciæ grê COLOBOT?");
-		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Zakoñcz\\Koñczy grê COLOBOT");
-#endif
-		if ( num == RT_DIALOG_ABORT        )  strcpy(text, "Opuœciæ misjê?");
-		if ( num == RT_DIALOG_YES          )  strcpy(text, "Przerwij\\Przerywa bie¿¹c¹ misjê");
-		if ( num == RT_DIALOG_NO           )  strcpy(text, "Kontynuuj\\Kontynuuje bie¿¹c¹ misjê");
-		if ( num == RT_DIALOG_NOQUIT       )  strcpy(text, "Kontynuuj\\Kontynuuje grê");
-		if ( num == RT_DIALOG_DELOBJ       )  strcpy(text, "Czy na pewno chcesz zniszczyæ zaznaczony budynek?");
-		if ( num == RT_DIALOG_DELGAME      )  strcpy(text, "Czy na pewno chcesz skasowaæ zapisane gry gracza %s? ");
-		if ( num == RT_DIALOG_YESDEL       )  strcpy(text, "Usuñ");
-		if ( num == RT_DIALOG_NODEL        )  strcpy(text, "Anuluj");
-		if ( num == RT_DIALOG_LOADING      )  strcpy(text, "WCZYTYWANIE");
-
-		if ( num == RT_STUDIO_LISTTT       )  strcpy(text, "Skróty klawiszowe (\\key cbot;)");
-		if ( num == RT_STUDIO_COMPOK       )  strcpy(text, "Program skompilowany (0 b³êdów)");
-		if ( num == RT_STUDIO_PROGSTOP     )  strcpy(text, "Program zakoñczony");
-
-		if ( num == RT_SATCOM_LIST         )  strcpy(text, "\\b;Lista obiektów\n");
-		if ( num == RT_SATCOM_BOT          )  strcpy(text, "\\b;Roboty\n");
-		if ( num == RT_SATCOM_BUILDING     )  strcpy(text, "\\b;Budynki\n");
-		if ( num == RT_SATCOM_FRET         )  strcpy(text, "\\b;Obiekty ruchome\n");
-		if ( num == RT_SATCOM_ALIEN        )  strcpy(text, "\\b;Obcy\n");
-		if ( num == RT_SATCOM_NULL         )  strcpy(text, "\\c; (brak)\\n;\n");
-		if ( num == RT_SATCOM_ERROR1       )  strcpy(text, "\\b;B³¹d\n");
-		if ( num == RT_SATCOM_ERROR2       )  strcpy(text, "Lista jest dostêpna jedynie gdy dzia³a \\l;stacja radarowa\\u object\\radar;.\n");
-
-		if ( num == RT_IO_OPEN             )  strcpy(text, "Otwórz");
-		if ( num == RT_IO_SAVE             )  strcpy(text, "Zapisz");
-		if ( num == RT_IO_LIST             )  strcpy(text, "Folder: %s");
-		if ( num == RT_IO_NAME             )  strcpy(text, "Nazwa:");
-		if ( num == RT_IO_DIR              )  strcpy(text, "Folder:");
-		if ( num == RT_IO_PRIVATE          )  strcpy(text, "Prywatny\\Folder prywatny");
-		if ( num == RT_IO_PUBLIC           )  strcpy(text, "Publiczny\\Folder ogólnodostêpny");
-
-		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "Twórcy:");
-		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "www.epsitec.com");
-		if ( num == RT_GENERIC_EDIT1       )  strcpy(text, "Wersja polska wydana przez:");
-		if ( num == RT_GENERIC_EDIT2       )  strcpy(text, "www.manta.com.pl");
-		if ( num == RT_GENERIC_EDIT1       )  strcpy(text, " ");
-		if ( num == RT_GENERIC_EDIT2       )  strcpy(text, " ");
-
-		if ( num == RT_INTERFACE_REC       )  strcpy(text, "Recorder");
-	}
-
-	if ( type == RES_EVENT )
-	{
-		if ( num == EVENT_BUTTON_OK        )  strcpy(text, "OK");
-		if ( num == EVENT_BUTTON_CANCEL    )  strcpy(text, "Anuluj");
-		if ( num == EVENT_BUTTON_NEXT      )  strcpy(text, "Nastêpny");
-		if ( num == EVENT_BUTTON_PREV      )  strcpy(text, "Poprzedni");
-		if ( num == EVENT_BUTTON_QUIT      )  strcpy(text, "Menu (\\key quit;)");
-
-		if ( num == EVENT_DIALOG_OK        )  strcpy(text, "OK");
-		if ( num == EVENT_DIALOG_CANCEL    )  strcpy(text, "Anuluj");
-
-		if ( num == EVENT_INTERFACE_TRAINER)  strcpy(text, "Æwiczenia\\Æwiczenia programistyczne");
-		if ( num == EVENT_INTERFACE_DEFI   )  strcpy(text, "Wyzwania\\Wyzwania programistyczne");
-		if ( num == EVENT_INTERFACE_MISSION)  strcpy(text, "Misje\\Wybierz misjê");
-		if ( num == EVENT_INTERFACE_FREE   )  strcpy(text, "Swobodna gra\\Swobodna gra bez konkretnych celów");
-		if ( num == EVENT_INTERFACE_TEEN   )  strcpy(text, "Swobodna gra\\Swobodna gra bez konkretnych celów");
-		if ( num == EVENT_INTERFACE_USER   )  strcpy(text, "Poziomy\\Poziomy u¿ytkownika");
-		if ( num == EVENT_INTERFACE_PROTO  )  strcpy(text, "Prototypy\\Prototypy w trakcie rozwijania");
-		if ( num == EVENT_INTERFACE_NAME   )  strcpy(text, "Nowy gracz\\Wybierz imiê gracza");
-		if ( num == EVENT_INTERFACE_SETUP  )  strcpy(text, "Opcje\\Preferencje");
-		if ( num == EVENT_INTERFACE_AGAIN  )  strcpy(text, "Uruchom ponownie\\Uruchamia ponownie misjê od pocz¹tku");
-		if ( num == EVENT_INTERFACE_WRITE  )  strcpy(text, "Zapisz\\Zapisuje bie¿¹c¹ misjê");
-		if ( num == EVENT_INTERFACE_READ   )  strcpy(text, "Wczytaj\\Wczytuje zapisan¹ misjê");
-#if _NEWLOOK
-		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Powróæ do gry CeeBot");
-		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Zakoñcz\\Koñczy grê CeeBot");
-#else
-		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Powróæ do gry COLOBOT");
-		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Zakoñcz\\Koñczy grê COLOBOT");
-#endif
-		if ( num == EVENT_INTERFACE_BACK   )  strcpy(text, "<<  Wstecz  \\Wraca do poprzedniego ekranu");
-		if ( num == EVENT_INTERFACE_PLAY   )  strcpy(text, "Graj\\Rozpoczyna misjê!");
-		if ( num == EVENT_INTERFACE_SETUPd )  strcpy(text, "Urz¹dzenie\\Ustawienia sterownika i rozdzielczoœci");
-		if ( num == EVENT_INTERFACE_SETUPg )  strcpy(text, "Grafika\\Ustawienia grafiki");
-		if ( num == EVENT_INTERFACE_SETUPp )  strcpy(text, "Gra\\Ustawienia gry");
-		if ( num == EVENT_INTERFACE_SETUPc )  strcpy(text, "Sterowanie\\Ustawienia klawiatury, joysticka i myszy");
-		if ( num == EVENT_INTERFACE_SETUPs )  strcpy(text, "DŸwiêk\\G³oœnoœæ muzyki i dŸwiêków gry");
-		if ( num == EVENT_INTERFACE_DEVICE )  strcpy(text, "Jednostka");
-		if ( num == EVENT_INTERFACE_RESOL  )  strcpy(text, "Rozdzielczoœæ");
-		if ( num == EVENT_INTERFACE_FULL   )  strcpy(text, "Pe³ny ekran\\Pe³ny ekran lub tryb okna");
-		if ( num == EVENT_INTERFACE_APPLY  )  strcpy(text, "Zastosuj zmiany\\Aktywuje zmienione ustawienia");
-
-		if ( num == EVENT_INTERFACE_TOTO   )  strcpy(text, "Robbie\\Twój asystent");
-		if ( num == EVENT_INTERFACE_SHADOW )  strcpy(text, "Cienie\\Cienie na ziemi");
-		if ( num == EVENT_INTERFACE_GROUND )  strcpy(text, "Znaki na ziemi\\Znaki na ziemi");
-		if ( num == EVENT_INTERFACE_DIRTY  )  strcpy(text, "Kurz\\Kurz i bród na robotach i budynkach");
-		if ( num == EVENT_INTERFACE_FOG    )  strcpy(text, "Mg³a\\Mg³a");
-		if ( num == EVENT_INTERFACE_LENS   )  strcpy(text, "Promienie s³oneczne\\Promienie s³oneczne na niebie");
-		if ( num == EVENT_INTERFACE_SKY    )  strcpy(text, "Niebo\\Chmury i mg³awice");
-		if ( num == EVENT_INTERFACE_PLANET )  strcpy(text, "Planety i gwiazdy\\Obiekty astronomiczne na niebie");
-		if ( num == EVENT_INTERFACE_LIGHT  )  strcpy(text, "Dynamiczne oœwietlenie\\Ruchome Ÿród³a œwiat³a");
-		if ( num == EVENT_INTERFACE_PARTI  )  strcpy(text, "Liczba cz¹stek\\Wybuchy, kurz, odbicia, itp.");
-		if ( num == EVENT_INTERFACE_CLIP   )  strcpy(text, "G³êbokoœæ pola\\Maksymalna widocznoœæ");
-		if ( num == EVENT_INTERFACE_DETAIL )  strcpy(text, "Szczegó³y\\Jakoœæ wizualna obiektów 3D");
-		if ( num == EVENT_INTERFACE_TEXTURE)  strcpy(text, "Tekstury\\Jakoœæ tekstur ");
-		if ( num == EVENT_INTERFACE_GADGET )  strcpy(text, "Iloœæ elementów dekoracyjnych \\Iloœæ elementów czysto dekoracyjnych");
-		if ( num == EVENT_INTERFACE_RAIN   )  strcpy(text, "Cz¹stki w interfejsie\\Para i iskry z silników w interfejsie");
-		if ( num == EVENT_INTERFACE_GLINT  )  strcpy(text, "Odbicia na przyciskach \\Œwiec¹ce przyciski");
-		if ( num == EVENT_INTERFACE_TOOLTIP)  strcpy(text, "Dymki pomocy\\Wyjaœnia funkcje przycisków");
-		if ( num == EVENT_INTERFACE_MOVIES )  strcpy(text, "Sekwencje filmowe\\Filmy przed rozpoczêciem i na zakoñczenie misji");
-		if ( num == EVENT_INTERFACE_NICERST)  strcpy(text, "Koñcowy film\\Film na zakoñczenie æwiczeñ");
-		if ( num == EVENT_INTERFACE_HIMSELF)  strcpy(text, "Przyjacielski ogieñ\\W³asne strza³y uszkadzaj¹ Twoje obiekty");
-		if ( num == EVENT_INTERFACE_SCROLL )  strcpy(text, "Przewijanie\\Ekran jest przewijany gdy mysz dotknie prawej lub lewej jego krawêdzi");
-		if ( num == EVENT_INTERFACE_INVERTX)  strcpy(text, "Odwrócenie myszy X\\Odwrócenie kierunków przewijania w poziomie");
-		if ( num == EVENT_INTERFACE_INVERTY)  strcpy(text, "Odwrócenie myszy Y\\Odwrócenie kierunków przewijania w pionie");
-		if ( num == EVENT_INTERFACE_EFFECT )  strcpy(text, "Wstrz¹sy przy wybuchach\\Ekran trzêsie siê podczas wybuchów");
-		if ( num == EVENT_INTERFACE_MOUSE  )  strcpy(text, "Cieñ kursora myszy\\Dodaje cieñ kursorowi myszy");
-		if ( num == EVENT_INTERFACE_EDITMODE) strcpy(text, "Automatyczne wciêcia\\Automatyczne wciêcia podczas edycji programu");
-		if ( num == EVENT_INTERFACE_EDITVALUE)strcpy(text, "Du¿e wciêcie\\2 lub 4 spacje wciêcia na ka¿dy poziom zdefiniowany przez klamry");
-		if ( num == EVENT_INTERFACE_SOLUCE4)  strcpy(text, "Accès aux solutions\\Programme \"4: Solution\" dans les exercices");
-
-		if ( num == EVENT_INTERFACE_KDEF   )  strcpy(text, "Standardowa kontrola\\Standardowe klawisze funkcyjne");
-		if ( num == EVENT_INTERFACE_KLEFT  )  strcpy(text, "Skrêæ w lewo\\Obraca robota w lewo");
-		if ( num == EVENT_INTERFACE_KRIGHT )  strcpy(text, "Obróæ w prawo\\Obraca robota w prawo");
-		if ( num == EVENT_INTERFACE_KUP    )  strcpy(text, "Naprzód\\Porusza do przodu");
-		if ( num == EVENT_INTERFACE_KDOWN  )  strcpy(text, "Wstecz\\Porusza do ty³u");
-		if ( num == EVENT_INTERFACE_KGUP   )  strcpy(text, "W górê\\Zwiêksza moc silnika");
-		if ( num == EVENT_INTERFACE_KGDOWN )  strcpy(text, "W dó³\\Zmniejsza moc silnika");
-		if ( num == EVENT_INTERFACE_KCAMERA)  strcpy(text, "Zmieñ kamerê\\Prze³¹cza pomiêdzy kamer¹ pok³adow¹ i œledz¹c¹");
-		if ( num == EVENT_INTERFACE_KDESEL )  strcpy(text, "Poprzedni obiekt\\Zaznacz poprzedni obiekt");
-		if ( num == EVENT_INTERFACE_KACTION)  strcpy(text, "Standardowa akcja\\Standardowa akcja robota (podnieœ/upuœæ, strzelaj, szukaj, itp.)");
-		if ( num == EVENT_INTERFACE_KNEAR  )  strcpy(text, "Kamera bli¿ej\\Przybli¿a kamerê");
-		if ( num == EVENT_INTERFACE_KAWAY  )  strcpy(text, "Kamera dalej\\Oddala kamerê");
-		if ( num == EVENT_INTERFACE_KNEXT  )  strcpy(text, "Nastêpny obiekt\\Zaznacza nastêpny obiekt");
-		if ( num == EVENT_INTERFACE_KHUMAN )  strcpy(text, "Zaznacz astronautê\\Zaznacza astronautê");
-		if ( num == EVENT_INTERFACE_KQUIT  )  strcpy(text, "Zakoñcz\\Koñczy bie¿¹c¹ misjê lub æwiczenie");
-		if ( num == EVENT_INTERFACE_KHELP  )  strcpy(text, "Rozkazy\\Pokazuje rozkazy dotycz¹ce bie¿¹cej misji");
-		if ( num == EVENT_INTERFACE_KPROG  )  strcpy(text, "Podrêcznik programowania\\Dostarcza szczegó³ow¹ pomoc w programowaniu");
-		if ( num == EVENT_INTERFACE_KCBOT  )  strcpy(text, "Pomoc dot. s³ów kluczowych\\Dok³adniejsza pomoc na temat s³ów kluczowych");
-		if ( num == EVENT_INTERFACE_KVISIT )  strcpy(text, "Miejsce nadania wiadomoœci\\Pokazuje sk¹d zosta³a wys³ana ostatnia wiadomoœæ");
-		if ( num == EVENT_INTERFACE_KSPEED10) strcpy(text, "Prêdkoœæ 1,0x\\Prêdkoœæ normalna");
-		if ( num == EVENT_INTERFACE_KSPEED15) strcpy(text, "Prêdkoœæ 1,5x\\1,5 raza szybciej");
-		if ( num == EVENT_INTERFACE_KSPEED20) strcpy(text, "Prêdkoœæ 2,0x\\Dwa razy szybciej");
-		if ( num == EVENT_INTERFACE_KSPEED30) strcpy(text, "Prêdkoœæ 3,0x\\Trzy razy szybciej");
-
-		if ( num == EVENT_INTERFACE_VOLSOUND) strcpy(text, "Efekty dŸwiêkowe:\\G³oœnoœæ silników, g³osów, strza³ów, itp.");
-		if ( num == EVENT_INTERFACE_VOLMUSIC) strcpy(text, "Muzyka w tle :\\G³oœnoœæ œcie¿ek dŸwiêkowych z p³yty CD");
-		if ( num == EVENT_INTERFACE_SOUND3D)  strcpy(text, "DŸwiêk 3D\\Przestrzenne pozycjonowanie dŸwiêków");
-
-		if ( num == EVENT_INTERFACE_MIN    )  strcpy(text, "Najni¿sza\\Minimalna jakoœæ grafiki (najwy¿sza czêstotliwoœæ odœwie¿ania)");
-		if ( num == EVENT_INTERFACE_NORM   )  strcpy(text, "Normalna\\Normalna jakoœæ grafiki");
-		if ( num == EVENT_INTERFACE_MAX    )  strcpy(text, "Najwy¿sza\\Maksymalna jakoœæ grafiki (najni¿sza czêstotliwoœæ odœwie¿ania)");
-
-		if ( num == EVENT_INTERFACE_SILENT )  strcpy(text, "Cisza\\Brak dŸwiêków");
-		if ( num == EVENT_INTERFACE_NOISY  )  strcpy(text, "Normalne\\Normalna g³oœnoœæ dŸwiêków");
-
-		if ( num == EVENT_INTERFACE_JOYSTICK) strcpy(text, "U¿ywaj joysticka\\Joystick lub klawiatura");
-		if ( num == EVENT_INTERFACE_SOLUCE )  strcpy(text, "Dostêp do rozwi¹zania\\Pokazuje rozwi¹zanie (szczegó³owe instrukcje dotycz¹ce misji)");
-
-		if ( num == EVENT_INTERFACE_NEDIT  )  strcpy(text, "\\Nowe imiê gracza");
-		if ( num == EVENT_INTERFACE_NOK    )  strcpy(text, "OK\\Wybiera zaznaczonego gracza");
-		if ( num == EVENT_INTERFACE_NCANCEL)  strcpy(text, "Anuluj\\Zachowuje bie¿¹ce imiê gracza");
-		if ( num == EVENT_INTERFACE_NDELETE)  strcpy(text, "Usuñ gracza\\Usuwa gracza z listy");
-		if ( num == EVENT_INTERFACE_NLABEL )  strcpy(text, "Imiê gracza");
-
-		if ( num == EVENT_INTERFACE_IOWRITE)  strcpy(text, "Zapisz\\Zapisuje bie¿¹c¹ misjê");
-		if ( num == EVENT_INTERFACE_IOREAD )  strcpy(text, "Wczytaj\\Wczytuje zaznaczon¹ misjê");
-		if ( num == EVENT_INTERFACE_IOLIST )  strcpy(text, "Lista zapisanych misji");
-		if ( num == EVENT_INTERFACE_IOLABEL)  strcpy(text, "Nazwa pliku:");
-		if ( num == EVENT_INTERFACE_IONAME )  strcpy(text, "Nazwa misji");
-		if ( num == EVENT_INTERFACE_IOIMAGE)  strcpy(text, "Fotografia");
-		if ( num == EVENT_INTERFACE_IODELETE) strcpy(text, "Usuñ\\Usuwa zaznaczony plik");
-
-		if ( num == EVENT_INTERFACE_PERSO  )  strcpy(text, "Wygl¹d\\Wybierz swoj¹ postaæ");
-		if ( num == EVENT_INTERFACE_POK    )  strcpy(text, "OK");
-		if ( num == EVENT_INTERFACE_PCANCEL)  strcpy(text, "Anuluj");
-		if ( num == EVENT_INTERFACE_PDEF   )  strcpy(text, "Standardowe\\Standardowe ustawienia wygl¹du");
-		if ( num == EVENT_INTERFACE_PHEAD  )  strcpy(text, "G³owa\\Twarz i w³osy");
-		if ( num == EVENT_INTERFACE_PBODY  )  strcpy(text, "Skafander\\Skafander astronauty");
-		if ( num == EVENT_INTERFACE_PLROT  )  strcpy(text, "\\Obróæ w lewo");
-		if ( num == EVENT_INTERFACE_PRROT  )  strcpy(text, "\\Obróæ w prawo");
-		if ( num == EVENT_INTERFACE_PCRa   )  strcpy(text, "Czerwony");
-		if ( num == EVENT_INTERFACE_PCGa   )  strcpy(text, "Zielony");
-		if ( num == EVENT_INTERFACE_PCBa   )  strcpy(text, "Niebieski");
-		if ( num == EVENT_INTERFACE_PCRb   )  strcpy(text, "Czerwony");
-		if ( num == EVENT_INTERFACE_PCGb   )  strcpy(text, "Zielony");
-		if ( num == EVENT_INTERFACE_PCBb   )  strcpy(text, "Niebieski");
-		if ( num == EVENT_INTERFACE_PFACE1 )  strcpy(text, "\\Twarz 1");
-		if ( num == EVENT_INTERFACE_PFACE2 )  strcpy(text, "\\Twarz 4");
-		if ( num == EVENT_INTERFACE_PFACE3 )  strcpy(text, "\\Twarz 3");
-		if ( num == EVENT_INTERFACE_PFACE4 )  strcpy(text, "\\Twarz 2");
-		if ( num == EVENT_INTERFACE_PGLASS0)  strcpy(text, "\\Bez okularów");
-		if ( num == EVENT_INTERFACE_PGLASS1)  strcpy(text, "\\Okulary 1");
-		if ( num == EVENT_INTERFACE_PGLASS2)  strcpy(text, "\\Okulary 2");
-		if ( num == EVENT_INTERFACE_PGLASS3)  strcpy(text, "\\Okulary 3");
-		if ( num == EVENT_INTERFACE_PGLASS4)  strcpy(text, "\\Okulary 4");
-		if ( num == EVENT_INTERFACE_PGLASS5)  strcpy(text, "\\Okulary 5");
-
-		if ( num == EVENT_OBJECT_DESELECT  )  strcpy(text, "Poprzednie zaznaczenie (\\key desel;)");
-		if ( num == EVENT_OBJECT_LEFT      )  strcpy(text, "Skrêæ w lewo (\\key left;)");
-		if ( num == EVENT_OBJECT_RIGHT     )  strcpy(text, "Skrêæ w prawo (\\key right;)");
-		if ( num == EVENT_OBJECT_UP        )  strcpy(text, "Naprzód (\\key up;)");
-		if ( num == EVENT_OBJECT_DOWN      )  strcpy(text, "Cofnij (\\key down;)");
-		if ( num == EVENT_OBJECT_GASUP     )  strcpy(text, "Góra (\\key gup;)");
-		if ( num == EVENT_OBJECT_GASDOWN   )  strcpy(text, "Dó³ (\\key gdown;)");
-		if ( num == EVENT_OBJECT_HTAKE     )  strcpy(text, "Podnieœ lub upuœæ (\\key action;)");
-		if ( num == EVENT_OBJECT_MTAKE     )  strcpy(text, "Podnieœ lub upuœæ (\\key action;)");
-		if ( num == EVENT_OBJECT_MFRONT    )  strcpy(text, "..przed");
-		if ( num == EVENT_OBJECT_MBACK     )  strcpy(text, "..za");
-		if ( num == EVENT_OBJECT_MPOWER    )  strcpy(text, "..ogniwo elektryczne");
-		if ( num == EVENT_OBJECT_BHELP     )  strcpy(text, "Rozkazy dotycz¹ce misji (\\key help;)");
-		if ( num == EVENT_OBJECT_BTAKEOFF  )  strcpy(text, "Odleæ, aby zakoñczyæ misjê");
-		if ( num == EVENT_OBJECT_BDERRICK  )  strcpy(text, "Zbuduj kopalniê");
-		if ( num == EVENT_OBJECT_BSTATION  )  strcpy(text, "Zbuduj elektrowniê");
-		if ( num == EVENT_OBJECT_BFACTORY  )  strcpy(text, "Zbuduj fabrykê robotów");
-		if ( num == EVENT_OBJECT_BREPAIR   )  strcpy(text, "Zbuduj warsztat");
-		if ( num == EVENT_OBJECT_BCONVERT  )  strcpy(text, "Zbuduj hutê");
-		if ( num == EVENT_OBJECT_BTOWER    )  strcpy(text, "Zbuduj wie¿ê obronn¹");
-		if ( num == EVENT_OBJECT_BRESEARCH )  strcpy(text, "Zbuduj centrum badawcze");
-		if ( num == EVENT_OBJECT_BRADAR    )  strcpy(text, "Zbuduj stacjê radarow¹");
-		if ( num == EVENT_OBJECT_BENERGY   )  strcpy(text, "Zbuduj fabrykê ogniw elektrycznych");
-		if ( num == EVENT_OBJECT_BLABO     )  strcpy(text, "Zbuduj laboratorium");
-		if ( num == EVENT_OBJECT_BNUCLEAR  )  strcpy(text, "Zbuduj elektrowniê atomow¹");
-		if ( num == EVENT_OBJECT_BPARA     )  strcpy(text, "Zbuduj odgromnik");
-		if ( num == EVENT_OBJECT_BINFO     )  strcpy(text, "Zbuduj stacjê przekaŸnikow¹");
-		if ( num == EVENT_OBJECT_GFLAT     )  strcpy(text, "Poka¿ czy teren jest p³aski");
-		if ( num == EVENT_OBJECT_FCREATE   )  strcpy(text, "Postaw flagê");
-		if ( num == EVENT_OBJECT_FDELETE   )  strcpy(text, "Usuñ flagê");
-		if ( num == EVENT_OBJECT_FCOLORb   )  strcpy(text, "\\Niebieskie flagi");
-		if ( num == EVENT_OBJECT_FCOLORr   )  strcpy(text, "\\Czerwone flagi");
-		if ( num == EVENT_OBJECT_FCOLORg   )  strcpy(text, "\\Zielone flagi");
-		if ( num == EVENT_OBJECT_FCOLORy   )  strcpy(text, "\\¯ó³te flagi");
-		if ( num == EVENT_OBJECT_FCOLORv   )  strcpy(text, "\\Fioletowe flagi");
-		if ( num == EVENT_OBJECT_FACTORYfa )  strcpy(text, "Zbuduj transporter lataj¹cy");
-		if ( num == EVENT_OBJECT_FACTORYta )  strcpy(text, "Zbuduj transporter na g¹sienicach");
-		if ( num == EVENT_OBJECT_FACTORYwa )  strcpy(text, "Zbuduj transporter na ko³ach");
-		if ( num == EVENT_OBJECT_FACTORYia )  strcpy(text, "Zbuduj transporter na nogach");
-		if ( num == EVENT_OBJECT_FACTORYfc )  strcpy(text, "Zbuduj dzia³o lataj¹ce");
-		if ( num == EVENT_OBJECT_FACTORYtc )  strcpy(text, "Zbuduj dzia³o na g¹sienicach");
-		if ( num == EVENT_OBJECT_FACTORYwc )  strcpy(text, "Zbuduj dzia³o na ko³ach");
-		if ( num == EVENT_OBJECT_FACTORYic )  strcpy(text, "Zbuduj dzia³o na nogach");
-		if ( num == EVENT_OBJECT_FACTORYfi )  strcpy(text, "Zbuduj lataj¹ce dzia³o organiczne");
-		if ( num == EVENT_OBJECT_FACTORYti )  strcpy(text, "Zbuduj dzia³o organiczne na g¹sienicach");
-		if ( num == EVENT_OBJECT_FACTORYwi )  strcpy(text, "Zbuduj dzia³o organiczne na ko³ach");
-		if ( num == EVENT_OBJECT_FACTORYii )  strcpy(text, "Zbuduj dzia³o organiczne na nogach");
-		if ( num == EVENT_OBJECT_FACTORYfs )  strcpy(text, "Zbuduj szperacz lataj¹cy");
-		if ( num == EVENT_OBJECT_FACTORYts )  strcpy(text, "Zbuduj szperacz na g¹sienicach");
-		if ( num == EVENT_OBJECT_FACTORYws )  strcpy(text, "Zbuduj szperacz na ko³ach");
-		if ( num == EVENT_OBJECT_FACTORYis )  strcpy(text, "Zbuduj szperacz na nogach");
-		if ( num == EVENT_OBJECT_FACTORYrt )  strcpy(text, "Zbuduj robota uderzacza");
-		if ( num == EVENT_OBJECT_FACTORYrc )  strcpy(text, "Zbuduj dzia³o fazowe");
-		if ( num == EVENT_OBJECT_FACTORYrr )  strcpy(text, "Zbuduj robota recyklera");
-		if ( num == EVENT_OBJECT_FACTORYrs )  strcpy(text, "Zbuduj robota os³aniajacza");
-		if ( num == EVENT_OBJECT_FACTORYsa )  strcpy(text, "Zbuduj robota nurka");
-		if ( num == EVENT_OBJECT_RTANK     )  strcpy(text, "Rozpocznij prace badawcze nad transporterem na g¹sienicach");
-		if ( num == EVENT_OBJECT_RFLY      )  strcpy(text, "Rozpocznij prace badawcze nad transporterem lataj¹cym");
-		if ( num == EVENT_OBJECT_RTHUMP    )  strcpy(text, "Rozpocznij prace badawcze nad robotem uderzaczem");
-		if ( num == EVENT_OBJECT_RCANON    )  strcpy(text, "Rozpocznij prace badawcze nad dzia³em");
-		if ( num == EVENT_OBJECT_RTOWER    )  strcpy(text, "Rozpocznij prace badawcze nad wie¿¹ obronn¹");
-		if ( num == EVENT_OBJECT_RPHAZER   )  strcpy(text, "Rozpocznij prace badawcze nad dzia³em fazowym");
-		if ( num == EVENT_OBJECT_RSHIELD   )  strcpy(text, "Rozpocznij prace badawcze nad robotem os³aniaczem");
-		if ( num == EVENT_OBJECT_RATOMIC   )  strcpy(text, "Rozpocznij prace badawcze nad energi¹ atomow¹");
-		if ( num == EVENT_OBJECT_RiPAW     )  strcpy(text, "Rozpocznij prace badawcze nad transporterem na nogach");
-		if ( num == EVENT_OBJECT_RiGUN     )  strcpy(text, "Rozpocznij prace badawcze nad dzia³em organicznym");
-		if ( num == EVENT_OBJECT_RESET     )  strcpy(text, "Powrót do pocz¹tku");
-		if ( num == EVENT_OBJECT_SEARCH    )  strcpy(text, "Szukaj (\\key action;)");
-		if ( num == EVENT_OBJECT_TERRAFORM )  strcpy(text, "Uderz (\\key action;)");
-		if ( num == EVENT_OBJECT_FIRE      )  strcpy(text, "Strzelaj (\\key action;)");
-		if ( num == EVENT_OBJECT_RECOVER   )  strcpy(text, "Odzyskaj (\\key action;)");
-		if ( num == EVENT_OBJECT_BEGSHIELD )  strcpy(text, "Rozszerz os³onê (\\key action;)");
-		if ( num == EVENT_OBJECT_ENDSHIELD )  strcpy(text, "Wy³¹cz os³onê (\\key action;)");
-		if ( num == EVENT_OBJECT_DIMSHIELD )  strcpy(text, "Zasiêg os³ony");
-		if ( num == EVENT_OBJECT_PROGRUN   )  strcpy(text, "Wykonaj zaznaczony program");
-		if ( num == EVENT_OBJECT_PROGEDIT  )  strcpy(text, "Edytuj zaznaczony program");
-		if ( num == EVENT_OBJECT_INFOOK    )  strcpy(text, "\\Prze³¹cz przekaŸnik SatCom w stan gotowoœci");
-		if ( num == EVENT_OBJECT_DELETE    )  strcpy(text, "Zniszcz budynek");
-		if ( num == EVENT_OBJECT_GENERGY   )  strcpy(text, "Poziom energii");
-		if ( num == EVENT_OBJECT_GSHIELD   )  strcpy(text, "Poziom os³ony");
-		if ( num == EVENT_OBJECT_GRANGE    )  strcpy(text, "Temperatura silnika");
-		if ( num == EVENT_OBJECT_GPROGRESS )  strcpy(text, "Wci¹¿ pracuje...");
-		if ( num == EVENT_OBJECT_GRADAR    )  strcpy(text, "Liczba wykrytych insektów");
-		if ( num == EVENT_OBJECT_GINFO     )  strcpy(text, "Przes³ane informacje");
-		if ( num == EVENT_OBJECT_COMPASS   )  strcpy(text, "Kompas");
-//?		if ( num == EVENT_OBJECT_MAP       )  strcpy(text, "Mapka");
-		if ( num == EVENT_OBJECT_MAPZOOM   )  strcpy(text, "Powiêkszenie mapki");
-		if ( num == EVENT_OBJECT_CAMERA    )  strcpy(text, "Kamera (\\key camera;)");
-		if ( num == EVENT_OBJECT_CAMERAleft)  strcpy(text, "Camera to left");
-		if ( num == EVENT_OBJECT_CAMERAright) strcpy(text, "Camera to right");
-		if ( num == EVENT_OBJECT_CAMERAnear)  strcpy(text, "Camera nearest");
-		if ( num == EVENT_OBJECT_CAMERAaway)  strcpy(text, "Camera awayest");
-		if ( num == EVENT_OBJECT_HELP      )  strcpy(text, "Pomoc na temat zaznaczonego obiektu");
-		if ( num == EVENT_OBJECT_SOLUCE    )  strcpy(text, "Poka¿ rozwi¹zanie");
-		if ( num == EVENT_OBJECT_SHORTCUT00)  strcpy(text, "Prze³¹cz roboty <-> budynki");
-		if ( num == EVENT_OBJECT_LIMIT     )  strcpy(text, "Poka¿ zasiêg");
-		if ( num == EVENT_OBJECT_PEN0      )  strcpy(text, "\\Relève le crayon");
-		if ( num == EVENT_OBJECT_PEN1      )  strcpy(text, "\\Abaisse le crayon noir");
-		if ( num == EVENT_OBJECT_PEN2      )  strcpy(text, "\\Abaisse le crayon jaune");
-		if ( num == EVENT_OBJECT_PEN3      )  strcpy(text, "\\Abaisse le crayon orange");
-		if ( num == EVENT_OBJECT_PEN4      )  strcpy(text, "\\Abaisse le crayon rouge");
-		if ( num == EVENT_OBJECT_PEN5      )  strcpy(text, "\\Abaisse le crayon violet");
-		if ( num == EVENT_OBJECT_PEN6      )  strcpy(text, "\\Abaisse le crayon bleu");
-		if ( num == EVENT_OBJECT_PEN7      )  strcpy(text, "\\Abaisse le crayon vert");
-		if ( num == EVENT_OBJECT_PEN8      )  strcpy(text, "\\Abaisse le crayon brun");
-		if ( num == EVENT_OBJECT_REC       )  strcpy(text, "\\Démarre l'enregistrement");
-		if ( num == EVENT_OBJECT_STOP      )  strcpy(text, "\\Stoppe l'enregistrement");
-		if ( num == EVENT_DT_VISIT0        ||
-			 num == EVENT_DT_VISIT1        ||
-			 num == EVENT_DT_VISIT2        ||
-			 num == EVENT_DT_VISIT3        ||
-			 num == EVENT_DT_VISIT4        )  strcpy(text, "Poka¿ miejsce");
-		if ( num == EVENT_DT_END           )  strcpy(text, "Kontynuuj");
-		if ( num == EVENT_CMD              )  strcpy(text, "Linia polecenia");
-		if ( num == EVENT_SPEED            )  strcpy(text, "Prêdkoœæ gry");
-
-		if ( num == EVENT_HYPER_PREV       )  strcpy(text, "Wstecz");
-		if ( num == EVENT_HYPER_NEXT       )  strcpy(text, "Naprzód");
-		if ( num == EVENT_HYPER_HOME       )  strcpy(text, "Pocz¹tek");
-		if ( num == EVENT_HYPER_COPY       )  strcpy(text, "Kopiuj");
-		if ( num == EVENT_HYPER_SIZE1      )  strcpy(text, "Wielkoœæ 1");
-		if ( num == EVENT_HYPER_SIZE2      )  strcpy(text, "Wielkoœæ 2");
-		if ( num == EVENT_HYPER_SIZE3      )  strcpy(text, "Wielkoœæ 3");
-		if ( num == EVENT_HYPER_SIZE4      )  strcpy(text, "Wielkoœæ 4");
-		if ( num == EVENT_HYPER_SIZE5      )  strcpy(text, "Wielkoœæ 5");
-		if ( num == EVENT_SATCOM_HUSTON    )  strcpy(text, "Rozkazy z Houston");
-#if _TEEN
-		if ( num == EVENT_SATCOM_SAT       )  strcpy(text, "Raport z satelity");
-#else
-		if ( num == EVENT_SATCOM_SAT       )  strcpy(text, "Raport z satelity");
-#endif
-		if ( num == EVENT_SATCOM_LOADING   )  strcpy(text, "Program dostarczony z Houston");
-		if ( num == EVENT_SATCOM_OBJECT    )  strcpy(text, "Lista obiektów");
-		if ( num == EVENT_SATCOM_PROG      )  strcpy(text, "Podrêcznik programowania");
-		if ( num == EVENT_SATCOM_SOLUCE    )  strcpy(text, "Rozwi¹zanie");
-
-		if ( num == EVENT_STUDIO_OK        )  strcpy(text, "OK\\Zamyka edytor programu i powraca do gry");
-		if ( num == EVENT_STUDIO_CANCEL    )  strcpy(text, "Anuluj\\Pomija wszystkie zmiany");
-		if ( num == EVENT_STUDIO_NEW       )  strcpy(text, "Nowy");
-		if ( num == EVENT_STUDIO_OPEN      )  strcpy(text, "Otwórz (Ctrl+O)");
-		if ( num == EVENT_STUDIO_SAVE      )  strcpy(text, "Zapisz (Ctrl+S)");
-		if ( num == EVENT_STUDIO_UNDO      )  strcpy(text, "Cofnij (Ctrl+Z)");
-		if ( num == EVENT_STUDIO_CUT       )  strcpy(text, "Wytnij (Ctrl+X)");
-		if ( num == EVENT_STUDIO_COPY      )  strcpy(text, "Kopiuj (Ctrl+C)");
-		if ( num == EVENT_STUDIO_PASTE     )  strcpy(text, "Wklej (Ctrl+V)");
-		if ( num == EVENT_STUDIO_SIZE      )  strcpy(text, "Wielkoœæ czcionki");
-		if ( num == EVENT_STUDIO_TOOL      )  strcpy(text, "Rozkazy (\\key help;)");
-		if ( num == EVENT_STUDIO_HELP      )  strcpy(text, "Podrêcznik programowania  (\\key prog;)");
-		if ( num == EVENT_STUDIO_COMPILE   )  strcpy(text, "Kompiluj");
-		if ( num == EVENT_STUDIO_RUN       )  strcpy(text, "Wykonaj/Zatrzymaj");
-		if ( num == EVENT_STUDIO_REALTIME  )  strcpy(text, "Pauza/Kontynuuj");
-		if ( num == EVENT_STUDIO_STEP      )  strcpy(text, "Jeden krok");
-	}
-
-	if ( type == RES_OBJECT )
-	{
-		if ( num == OBJECT_PORTICO      )  strcpy(text, "¯uraw przesuwalny");
-		if ( num == OBJECT_BASE         )  strcpy(text, "Statek kosmiczny");
-		if ( num == OBJECT_DERRICK      )  strcpy(text, "Kopalnia");
-		if ( num == OBJECT_FACTORY      )  strcpy(text, "Fabryka robotów");
-		if ( num == OBJECT_REPAIR       )  strcpy(text, "Warsztat");
-		if ( num == OBJECT_DESTROYER    )  strcpy(text, "Destroyer");
-		if ( num == OBJECT_STATION      )  strcpy(text, "Stacja energetyczna");
-		if ( num == OBJECT_CONVERT      )  strcpy(text, "Przetop rudê na tytan");
-		if ( num == OBJECT_TOWER        )  strcpy(text, "Wie¿a obronna");
-		if ( num == OBJECT_NEST         )  strcpy(text, "Gniazdo");
-		if ( num == OBJECT_RESEARCH     )  strcpy(text, "Centrum badawcze");
-		if ( num == OBJECT_RADAR        )  strcpy(text, "Stacja radarowa");
-		if ( num == OBJECT_INFO         )  strcpy(text, "Stacja przekaŸnikowa informacji");
-#if _TEEN
-		if ( num == OBJECT_ENERGY       )  strcpy(text, "Fabryka ogniw elektrycznych");
-#else
-		if ( num == OBJECT_ENERGY       )  strcpy(text, "Fabryka ogniw elektrycznych");
-#endif
-		if ( num == OBJECT_LABO         )  strcpy(text, "Laboratorium");
-		if ( num == OBJECT_NUCLEAR      )  strcpy(text, "Elektrownia atomowa");
-		if ( num == OBJECT_PARA         )  strcpy(text, "Odgromnik");
-		if ( num == OBJECT_SAFE         )  strcpy(text, "Skrytka");
-		if ( num == OBJECT_HUSTON       )  strcpy(text, "Centrum Kontroli Misji w Houston");
-		if ( num == OBJECT_TARGET1      )  strcpy(text, "Cel");
-		if ( num == OBJECT_TARGET2      )  strcpy(text, "Cel");
-		if ( num == OBJECT_START        )  strcpy(text, "Pocz¹tek");
-		if ( num == OBJECT_END          )  strcpy(text, "Koniec");
-		if ( num == OBJECT_STONE        )  strcpy(text, "Ruda tytanu");
-		if ( num == OBJECT_URANIUM      )  strcpy(text, "Ruda uranu");
-		if ( num == OBJECT_BULLET       )  strcpy(text, "Materia organiczna");
-		if ( num == OBJECT_METAL        )  strcpy(text, "Tytan");
-		if ( num == OBJECT_POWER        )  strcpy(text, "Ogniwo elektryczne");
-		if ( num == OBJECT_ATOMIC       )  strcpy(text, "Atomowe ogniwa elektryczne");
-		if ( num == OBJECT_BBOX         )  strcpy(text, "Czarna skrzynka");
-		if ( num == OBJECT_KEYa         )  strcpy(text, "Klucz A");
-		if ( num == OBJECT_KEYb         )  strcpy(text, "Klucz B");
-		if ( num == OBJECT_KEYc         )  strcpy(text, "Klucz C");
-		if ( num == OBJECT_KEYd         )  strcpy(text, "Klucz D");
-		if ( num == OBJECT_TNT          )  strcpy(text, "Materia³y wybuchowe");
-		if ( num == OBJECT_BOMB         )  strcpy(text, "Mina");
-		if ( num == OBJECT_BAG          )  strcpy(text, "Zestaw przetrwania");
-		if ( num == OBJECT_WAYPOINT     )  strcpy(text, "Punkt kontrolny");
-		if ( num == OBJECT_FLAGb        )  strcpy(text, "Niebieska flaga");
-		if ( num == OBJECT_FLAGr        )  strcpy(text, "Czerwona flaga");
-		if ( num == OBJECT_FLAGg        )  strcpy(text, "Zielona flaga");
-		if ( num == OBJECT_FLAGy        )  strcpy(text, "¯ó³ta flaga");
-		if ( num == OBJECT_FLAGv        )  strcpy(text, "Fioletowa flaga");
-		if ( num == OBJECT_MARKPOWER    )  strcpy(text, "ród³o energii (miejsce na elektrowniê)");
-		if ( num == OBJECT_MARKURANIUM  )  strcpy(text, "Z³o¿e uranu (miejsce na kopalniê)");
-		if ( num == OBJECT_MARKKEYa     )  strcpy(text, "Znaleziono klucz A (miejsce na kopalniê)");
-		if ( num == OBJECT_MARKKEYb     )  strcpy(text, "Znaleziono klucz B (miejsce na kopalniê)");
-		if ( num == OBJECT_MARKKEYc     )  strcpy(text, "Znaleziono klucz C (miejsce na kopalniê)");
-		if ( num == OBJECT_MARKKEYd     )  strcpy(text, "Znaleziono klucz D (miejsce na kopalniê)");
-		if ( num == OBJECT_MARKSTONE    )  strcpy(text, "Z³o¿e tytanu (miejsce na kopalniê)");
-		if ( num == OBJECT_MOBILEft     )  strcpy(text, "Robot treningowy");
-		if ( num == OBJECT_MOBILEtt     )  strcpy(text, "Robot treningowy");
-		if ( num == OBJECT_MOBILEwt     )  strcpy(text, "Robot treningowy");
-		if ( num == OBJECT_MOBILEit     )  strcpy(text, "Robot treningowy");
-		if ( num == OBJECT_MOBILEfa     )  strcpy(text, "Transporter lataj¹cy");
-		if ( num == OBJECT_MOBILEta     )  strcpy(text, "Transporter na g¹sienicach");
-		if ( num == OBJECT_MOBILEwa     )  strcpy(text, "Transporter na ko³ach");
-		if ( num == OBJECT_MOBILEia     )  strcpy(text, "Transporter na nogach");
-		if ( num == OBJECT_MOBILEfc     )  strcpy(text, "Dzia³o lataj¹ce");
-		if ( num == OBJECT_MOBILEtc     )  strcpy(text, "Dzia³o na g¹sienicach");
-		if ( num == OBJECT_MOBILEwc     )  strcpy(text, "Dzia³o na ko³ach");
-		if ( num == OBJECT_MOBILEic     )  strcpy(text, "Dzia³o na nogach");
-		if ( num == OBJECT_MOBILEfi     )  strcpy(text, "Lataj¹ce dzia³o organiczne");
-		if ( num == OBJECT_MOBILEti     )  strcpy(text, "Dzia³o organiczne na g¹sienicach");
-		if ( num == OBJECT_MOBILEwi     )  strcpy(text, "Dzia³o organiczne na ko³ach");
-		if ( num == OBJECT_MOBILEii     )  strcpy(text, "Dzia³o organiczne na nogach");
-		if ( num == OBJECT_MOBILEfs     )  strcpy(text, "Szperacz lataj¹cy");
-		if ( num == OBJECT_MOBILEts     )  strcpy(text, "Szperacz na g¹sienicach");
-		if ( num == OBJECT_MOBILEws     )  strcpy(text, "Szperacz na ko³ach");
-		if ( num == OBJECT_MOBILEis     )  strcpy(text, "Szperacz na nogach");
-		if ( num == OBJECT_MOBILErt     )  strcpy(text, "Uderzacz");
-		if ( num == OBJECT_MOBILErc     )  strcpy(text, "Dzia³o fazowe");
-		if ( num == OBJECT_MOBILErr     )  strcpy(text, "Recykler");
-		if ( num == OBJECT_MOBILErs     )  strcpy(text, "Os³aniacz");
-		if ( num == OBJECT_MOBILEsa     )  strcpy(text, "Robot nurek");
-		if ( num == OBJECT_MOBILEtg     )  strcpy(text, "Robot cel");
-		if ( num == OBJECT_MOBILEdr     )  strcpy(text, "Drawer bot");
-		if ( num == OBJECT_HUMAN        )  strcpy(text, g_gamerName);
-		if ( num == OBJECT_TECH         )  strcpy(text, "In¿ynier");
-		if ( num == OBJECT_TOTO         )  strcpy(text, "Robbie");
-		if ( num == OBJECT_MOTHER       )  strcpy(text, "Królowa Obcych");
-		if ( num == OBJECT_ANT          )  strcpy(text, "Mrówka");
-		if ( num == OBJECT_SPIDER       )  strcpy(text, "Paj¹k");
-		if ( num == OBJECT_BEE          )  strcpy(text, "Osa");
-		if ( num == OBJECT_WORM         )  strcpy(text, "Robal");
-		if ( num == OBJECT_EGG          )  strcpy(text, "Jajo");
-		if ( num == OBJECT_RUINmobilew1 )  strcpy(text, "Wrak");
-		if ( num == OBJECT_RUINmobilew2 )  strcpy(text, "Wrak");
-		if ( num == OBJECT_RUINmobilet1 )  strcpy(text, "Wrak");
-		if ( num == OBJECT_RUINmobilet2 )  strcpy(text, "Wrak");
-		if ( num == OBJECT_RUINmobiler1 )  strcpy(text, "Wrak");
-		if ( num == OBJECT_RUINmobiler2 )  strcpy(text, "Wrak");
-		if ( num == OBJECT_RUINfactory  )  strcpy(text, "Ruiny");
-		if ( num == OBJECT_RUINdoor     )  strcpy(text, "Ruiny");
-		if ( num == OBJECT_RUINsupport  )  strcpy(text, "Odpady");
-		if ( num == OBJECT_RUINradar    )  strcpy(text, "Ruiny");
-		if ( num == OBJECT_RUINconvert  )  strcpy(text, "Ruiny");
-		if ( num == OBJECT_RUINbase     )  strcpy(text, "Ruiny statku kosmicznego");
-		if ( num == OBJECT_RUINhead     )  strcpy(text, "Ruiny statku kosmicznego");
-		if ( num == OBJECT_APOLLO1      ||
-			 num == OBJECT_APOLLO3      ||
-			 num == OBJECT_APOLLO4      ||
-			 num == OBJECT_APOLLO5      )  strcpy(text, "Pozosta³oœci z misji Apollo");
-		if ( num == OBJECT_APOLLO2      )  strcpy(text, "Pojazd Ksiê¿ycowy");
-	}
-
-	if ( type == RES_ERR )
-	{
-		strcpy(text, "B³¹d");
-		if ( num == ERR_CMD             )  strcpy(text, "Nieznane polecenie");
-#if _NEWLOOK
-		if ( num == ERR_INSTALL         )  strcpy(text, "Gra CeeBot nie jest zainstalowana.");
-		if ( num == ERR_NOCD            )  strcpy(text, "W³ó¿ dysk CD z gr¹ CeeBot\ni uruchom grê jeszcze raz.");
-#else
-		if ( num == ERR_INSTALL         )  strcpy(text, "Gra COLOBOT nie jest zainstalowana.");
-		if ( num == ERR_NOCD            )  strcpy(text, "W³ó¿ dysk CD z gr¹ COLOBOT\ni uruchom grê jeszcze raz.");
-#endif
-		if ( num == ERR_MANIP_VEH       )  strcpy(text, "Nieodpowiedni robot");
-		if ( num == ERR_MANIP_FLY       )  strcpy(text, "Niemo¿liwe podczas lotu");
-		if ( num == ERR_MANIP_BUSY      )  strcpy(text, "Nie mo¿na nieœæ wiêcej przedmiotów");
-		if ( num == ERR_MANIP_NIL       )  strcpy(text, "Nie ma nic do podniesienia");
-		if ( num == ERR_MANIP_MOTOR     )  strcpy(text, "Niemo¿liwe podczas ruchu");
-		if ( num == ERR_MANIP_OCC       )  strcpy(text, "Miejsce zajête");
-		if ( num == ERR_MANIP_FRIEND    )  strcpy(text, "Brak innego robota");
-		if ( num == ERR_MANIP_RADIO     )  strcpy(text, "Nie mo¿esz przenosiæ przedmiotów radioaktywnych");
-		if ( num == ERR_MANIP_WATER     )  strcpy(text, "Nie mo¿esz przenosiæ przedmiotów pod wod¹");
-		if ( num == ERR_MANIP_EMPTY     )  strcpy(text, "Nie ma nic do upuszczenia");
-		if ( num == ERR_BUILD_FLY       )  strcpy(text, "Niemo¿liwe podczas lotu");
-		if ( num == ERR_BUILD_WATER     )  strcpy(text, "Niemo¿liwe pod wod¹");
-		if ( num == ERR_BUILD_ENERGY    )  strcpy(text, "Za ma³o energii");
-		if ( num == ERR_BUILD_METALAWAY )  strcpy(text, "Tytan za daleko");
-		if ( num == ERR_BUILD_METALNEAR )  strcpy(text, "Tytan za blisko");
-		if ( num == ERR_BUILD_METALINEX )  strcpy(text, "Brak tytanu w pobli¿u");
-		if ( num == ERR_BUILD_FLAT      )  strcpy(text, "Powierzchnia nie jest wystarczaj¹co p³aska");
-		if ( num == ERR_BUILD_FLATLIT   )  strcpy(text, "Za ma³o p³askiego terenu");
-		if ( num == ERR_BUILD_BUSY      )  strcpy(text, "Miejsce zajête");
-		if ( num == ERR_BUILD_BASE      )  strcpy(text, "Za blisko statku kosmicznego");
-		if ( num == ERR_BUILD_NARROW    )  strcpy(text, "Za blisko budynku");
-		if ( num == ERR_BUILD_MOTOR     )  strcpy(text, "Niemo¿liwe podczas ruchu");
-		if ( num == ERR_SEARCH_FLY      )  strcpy(text, "Niemo¿liwe podczas lotu");
-		if ( num == ERR_SEARCH_VEH      )  strcpy(text, "Nieodpowiedni robot");
-		if ( num == ERR_SEARCH_MOTOR    )  strcpy(text, "Niemo¿liwe podczas ruchu");
-		if ( num == ERR_TERRA_VEH       )  strcpy(text, "Nieodpowiedni robot");
-		if ( num == ERR_TERRA_ENERGY    )  strcpy(text, "Za ma³o energii");
-		if ( num == ERR_TERRA_FLOOR     )  strcpy(text, "Nieodpowiedni teren");
-		if ( num == ERR_TERRA_BUILDING  )  strcpy(text, "Budynek za blisko");
-		if ( num == ERR_TERRA_OBJECT    )  strcpy(text, "Obiekt za blisko");
-		if ( num == ERR_RECOVER_VEH     )  strcpy(text, "Nieodpowiedni robot");
-		if ( num == ERR_RECOVER_ENERGY  )  strcpy(text, "Za ma³o energii");
-		if ( num == ERR_RECOVER_NULL    )  strcpy(text, "Nie ma niczego do odzysku");
-		if ( num == ERR_SHIELD_VEH      )  strcpy(text, "Nieodpowiedni robot");
-		if ( num == ERR_SHIELD_ENERGY   )  strcpy(text, "Nie ma wiêcej energii");
-		if ( num == ERR_MOVE_IMPOSSIBLE )  strcpy(text, "B³¹d w poleceniu ruchu");
-		if ( num == ERR_FIND_IMPOSSIBLE )  strcpy(text, "Obiekt nieznany");
-		if ( num == ERR_GOTO_IMPOSSIBLE )  strcpy(text, "Goto: miejsce docelowe niedostêpne");
-		if ( num == ERR_GOTO_ITER       )  strcpy(text, "Goto: miejsce docelowe niedostêpne");
-		if ( num == ERR_GOTO_BUSY       )  strcpy(text, "Goto: miejsce docelowe zajête");
-		if ( num == ERR_FIRE_VEH        )  strcpy(text, "Nieodpowiedni robot");
-		if ( num == ERR_FIRE_ENERGY     )  strcpy(text, "Za ma³o energii");
-		if ( num == ERR_FIRE_FLY        )  strcpy(text, "Niemo¿liwe podczas lotu");
-		if ( num == ERR_CONVERT_EMPTY   )  strcpy(text, "Brak rudy tytanu do przetopienia");
-		if ( num == ERR_DERRICK_NULL    )  strcpy(text, "W ziemi nie ma ¿adnej rudy");
-		if ( num == ERR_STATION_NULL    )  strcpy(text, "Brak energii w ziemi");
-		if ( num == ERR_TOWER_POWER     )  strcpy(text, "Brak ogniwa elektrycznego");
-		if ( num == ERR_TOWER_ENERGY    )  strcpy(text, "Nie ma wiêcej energii");
-		if ( num == ERR_RESEARCH_POWER  )  strcpy(text, "Brak ogniwa elektrycznego");
-		if ( num == ERR_RESEARCH_ENERGY )  strcpy(text, "Za ma³o energii");
-		if ( num == ERR_RESEARCH_TYPE   )  strcpy(text, "Nieodpowiedni rodzaj ogniw");
-		if ( num == ERR_RESEARCH_ALREADY)  strcpy(text, "Program badawczy zosta³ ju¿ wykonany");
-		if ( num == ERR_ENERGY_NULL     )  strcpy(text, "Brak energii w ziemi");
-		if ( num == ERR_ENERGY_LOW      )  strcpy(text, "Wci¹¿ za ma³o energii");
-		if ( num == ERR_ENERGY_EMPTY    )  strcpy(text, "Brak tytanu do przetworzenia");
-		if ( num == ERR_ENERGY_BAD      )  strcpy(text, "Przetwarza jedynie tytan");
-		if ( num == ERR_BASE_DLOCK      )  strcpy(text, "Drzwi zablokowane przez robota lub inny obiekt ");
-		if ( num == ERR_BASE_DHUMAN     )  strcpy(text, "Musisz byæ na statku kosmicznym aby nim odlecieæ");
-		if ( num == ERR_LABO_NULL       )  strcpy(text, "Nie ma niczego do zanalizowania");
-		if ( num == ERR_LABO_BAD        )  strcpy(text, "Analizuje jedynie materiê organiczn¹");
-		if ( num == ERR_LABO_ALREADY    )  strcpy(text, "Analiza zosta³a ju¿ wykonana");
-		if ( num == ERR_NUCLEAR_NULL    )  strcpy(text, "Brak energii w ziemi");
-		if ( num == ERR_NUCLEAR_LOW     )  strcpy(text, "Wci¹¿ za ma³o energii");
-		if ( num == ERR_NUCLEAR_EMPTY   )  strcpy(text, "Brak uranu do przetworzenia");
-		if ( num == ERR_NUCLEAR_BAD     )  strcpy(text, "Przetwarza jedynie uran");
-		if ( num == ERR_FACTORY_NULL    )  strcpy(text, "Brak tytanu");
-		if ( num == ERR_FACTORY_NEAR    )  strcpy(text, "Obiekt za blisko");
-		if ( num == ERR_RESET_NEAR      )  strcpy(text, "Miejsce zajête");
-		if ( num == ERR_INFO_NULL       )  strcpy(text, "Nie ma ¿adnej stacji przekaŸnikowej w zasiêgu");
-		if ( num == ERR_VEH_VIRUS       )  strcpy(text, "Program zawirusowany");
-		if ( num == ERR_BAT_VIRUS       )  strcpy(text, "Zainfekowane wirusem, chwilowo niesprawne");
-		if ( num == ERR_VEH_POWER       )  strcpy(text, "Brak ogniwa elektrycznego");
-		if ( num == ERR_VEH_ENERGY      )  strcpy(text, "Nie ma wiêcej energii");
-		if ( num == ERR_FLAG_FLY        )  strcpy(text, "Niemo¿liwe podczas lotu");
-		if ( num == ERR_FLAG_WATER      )  strcpy(text, "Niemo¿liwe podczas p³ywania");
-		if ( num == ERR_FLAG_MOTOR      )  strcpy(text, "Niemo¿liwe podczas ruchu");
-		if ( num == ERR_FLAG_BUSY       )  strcpy(text, "Niemo¿liwe podczas przenoszenia przedmiotu");
-		if ( num == ERR_FLAG_CREATE     )  strcpy(text, "Za du¿o flag w tym kolorze (maksymalnie 5)");
-		if ( num == ERR_FLAG_PROXY      )  strcpy(text, "Za blisko istniej¹cej flagi");
-		if ( num == ERR_FLAG_DELETE     )  strcpy(text, "Nie ma flagi w pobli¿u");
-		if ( num == ERR_MISSION_NOTERM  )  strcpy(text, "Misja nie jest wype³niona (naciœnij \\key help; aby uzyskaæ szczegó³y)");
-		if ( num == ERR_DELETEMOBILE    )  strcpy(text, "Robot zniszczony");
-		if ( num == ERR_DELETEBUILDING  )  strcpy(text, "Budynek zniszczony");
-		if ( num == ERR_TOOMANY         )  strcpy(text, "Nie mo¿na tego utworzyæ, za du¿o obiektów");
-		if ( num == ERR_OBLIGATORYTOKEN )  strcpy(text, "It misses \"%s\" in this exercise");
-		if ( num == ERR_PROHIBITEDTOKEN )  strcpy(text, "Do not use in this exercise");
-
-		if ( num == INFO_BUILD          )  strcpy(text, "Budowa zakoñczona");
-		if ( num == INFO_CONVERT        )  strcpy(text, "Tytan dostêpny");
-		if ( num == INFO_RESEARCH       )  strcpy(text, "Program badawczy zakoñczony");
-		if ( num == INFO_RESEARCHTANK   )  strcpy(text, "Dostêpne plany tranporterów na g¹sienicach");
-		if ( num == INFO_RESEARCHFLY    )  strcpy(text, "Mo¿esz lataæ u¿ywaj¹c klawiszy (\\key gup;) oraz (\\key gdown;)");
-		if ( num == INFO_RESEARCHTHUMP  )  strcpy(text, "Dostêpne plany robota uderzacza");
-		if ( num == INFO_RESEARCHCANON  )  strcpy(text, "Dostêpne plany dzia³a");
-		if ( num == INFO_RESEARCHTOWER  )  strcpy(text, "Dostêpne plany wie¿y obronnej");
-		if ( num == INFO_RESEARCHPHAZER )  strcpy(text, "Dostêpne plany dzia³a fazowego");
-		if ( num == INFO_RESEARCHSHIELD )  strcpy(text, "Dostêpne plany robota os³aniacza");
-		if ( num == INFO_RESEARCHATOMIC )  strcpy(text, "Dostêpne plany elektrowni atomowej");
-		if ( num == INFO_FACTORY        )  strcpy(text, "Dostêpny nowy robot");
-		if ( num == INFO_LABO           )  strcpy(text, "Analiza wykonana");
-		if ( num == INFO_ENERGY         )  strcpy(text, "Wytworzono ogniwo elektryczne");
-		if ( num == INFO_NUCLEAR        )  strcpy(text, "Wytworzono atomowe ogniwo elektryczne");
-		if ( num == INFO_FINDING        )  strcpy(text, "Znaleziono u¿yteczny przedmiot");
-		if ( num == INFO_MARKPOWER      )  strcpy(text, "Znaleziono miejsce na elektrowniê");
-		if ( num == INFO_MARKURANIUM    )  strcpy(text, "Znaleziono miejsce na kopalniê");
-		if ( num == INFO_MARKSTONE      )  strcpy(text, "Znaleziono miejsce na kopalniê");
-		if ( num == INFO_MARKKEYa       )  strcpy(text, "Znaleziono miejsce na kopalniê");
-		if ( num == INFO_MARKKEYb       )  strcpy(text, "Znaleziono miejsce na kopalniê");
-		if ( num == INFO_MARKKEYc       )  strcpy(text, "Znaleziono miejsce na kopalniê");
-		if ( num == INFO_MARKKEYd       )  strcpy(text, "Znaleziono miejsce na kopalniê");
-		if ( num == INFO_WIN            )  strcpy(text, "<<< Dobra robota, misja wype³niona >>>");
-		if ( num == INFO_LOST           )  strcpy(text, "<<< Niestety, misja nie powiod³a siê >>>");
-		if ( num == INFO_LOSTq          )  strcpy(text, "<<< Niestety, misja nie powiod³a siê >>>");
-		if ( num == INFO_WRITEOK        )  strcpy(text, "Bie¿¹ca misja zapisana");
-		if ( num == INFO_DELETEPATH     )  strcpy(text, "Przekroczono punkt kontrolny");
-		if ( num == INFO_DELETEMOTHER   )  strcpy(text, "Królowa Obcych zosta³a zabita");
-		if ( num == INFO_DELETEANT      )  strcpy(text, "Mrówka œmiertelnie raniona");
-		if ( num == INFO_DELETEBEE      )  strcpy(text, "Osa œmiertelnie raniona");
-		if ( num == INFO_DELETEWORM     )  strcpy(text, "Robal œmiertelnie raniony");
-		if ( num == INFO_DELETESPIDER   )  strcpy(text, "Paj¹k œmiertelnie raniony");
-		if ( num == INFO_BEGINSATCOM    )  strcpy(text, "Naciœnij klawisz \\key help; aby wyœwietliæ rozkazy na przekaŸniku SatCom");
-	}
-
-	if ( type == RES_CBOT )
-	{
-		strcpy(text, "B³¹d");
-		if ( num == TX_OPENPAR       ) strcpy(text, "Brak nawiasu otwieraj¹cego");
-		if ( num == TX_CLOSEPAR      ) strcpy(text, "Brak nawiasu zamykaj¹cego");
-		if ( num == TX_NOTBOOL       ) strcpy(text, "Wyra¿enie musi zwróciæ wartoœæ logiczn¹");
-		if ( num == TX_UNDEFVAR      ) strcpy(text, "Zmienna nie zosta³a zadeklarowana");
-		if ( num == TX_BADLEFT       ) strcpy(text, "Przypisanie niemo¿liwe");
-		if ( num == TX_ENDOF         ) strcpy(text, "Brak œrednika na koñcu wiersza");
-		if ( num == TX_OUTCASE       ) strcpy(text, "Polecenie ""case"" na zewn¹trz bloku ""switch""");
-		if ( num == TX_NOTERM        ) strcpy(text, "Polecenie po koñcowej klamrze zamykaj¹cej");
-		if ( num == TX_CLOSEBLK      ) strcpy(text, "Brak koñca bloku");
-		if ( num == TX_ELSEWITHOUTIF ) strcpy(text, "Polecenie ""else"" bez wyst¹pienia ""if"" ");
-		if ( num == TX_OPENBLK       ) strcpy(text, "Brak klamry otwieraj¹cej");//début d'un bloc attendu?
-		if ( num == TX_BADTYPE       ) strcpy(text, "Z³y typ dla przypisania");
-		if ( num == TX_REDEFVAR      ) strcpy(text, "Zmienna nie mo¿e byæ zadeklarowana dwukrotnie");
-		if ( num == TX_BAD2TYPE      ) strcpy(text, "Niezgodne typy operatorów");
-		if ( num == TX_UNDEFCALL     ) strcpy(text, "Funkcja nieznana");
-		if ( num == TX_MISDOTS       ) strcpy(text, "Brak znaku "" : ");
-		if ( num == TX_WHILE         ) strcpy(text, "Brak kluczowego s³owa ""while");
-		if ( num == TX_BREAK         ) strcpy(text, "Polecenie ""break"" na zewn¹trz pêtli");
-		if ( num == TX_LABEL         ) strcpy(text, "Po etykiecie musi wyst¹piæ ""for"", ""while"", ""do"" lub ""switch""");
-		if ( num == TX_NOLABEL       ) strcpy(text, "Taka etykieta nie istnieje");// Cette étiquette n'existe pas
-		if ( num == TX_NOCASE        ) strcpy(text, "Brak polecenia ""case");
-		if ( num == TX_BADNUM        ) strcpy(text, "Brak liczby");
-		if ( num == TX_VOID          ) strcpy(text, "Pusty parametr");
-		if ( num == TX_NOTYP         ) strcpy(text, "Brak deklaracji typu");
-		if ( num == TX_NOVAR         ) strcpy(text, "Brak nazwy zmiennej");
-		if ( num == TX_NOFONC        ) strcpy(text, "Brakuj¹ca nazwa funkcji");
-		if ( num == TX_OVERPARAM     ) strcpy(text, "Za du¿o parametrów");
-		if ( num == TX_REDEF         ) strcpy(text, "Funkcja ju¿ istnieje");
-		if ( num == TX_LOWPARAM      ) strcpy(text, "Brak wymaganego parametru");
-		if ( num == TX_BADPARAM      ) strcpy(text, "Funkcja o tej nazwie nie akceptuje parametrów tego typu");
-		if ( num == TX_NUMPARAM      ) strcpy(text, "Funkcja o tej nazwie nie akceptuje takiej liczby parametrów");
-		if ( num == TX_NOITEM        ) strcpy(text, "To nie jest obiekt tej klasy");
-		if ( num == TX_DOT           ) strcpy(text, "Ten obiekt nie jest cz³onkiem klasy");
-		if ( num == TX_NOCONST       ) strcpy(text, "Brak odpowiedniego konstruktora");
-		if ( num == TX_REDEFCLASS    ) strcpy(text, "Taka klasa ju¿ istnieje");
-		if ( num == TX_CLBRK         ) strcpy(text, "Brak "" ] """);
-		if ( num == TX_RESERVED      ) strcpy(text, "S³owo zarezerwowane jêzyka CBOT");
-		if ( num == TX_BADNEW        ) strcpy(text, "Z³y argument dla funkcji ""new""");
-		if ( num == TX_OPBRK         ) strcpy(text, "Oczekiwane "" [ """);
-		if ( num == TX_BADSTRING     ) strcpy(text, "Brak ³añcucha");
-		if ( num == TX_BADINDEX      ) strcpy(text, "Nieprawid³owy typ indeksu");
-		if ( num == TX_PRIVATE       ) strcpy(text, "Element prywatny");
-		if ( num == TX_NOPUBLIC      ) strcpy(text, "Wymagany publiczny");
-		if ( num == TX_DIVZERO       ) strcpy(text, "Dzielenie przez zero");
-		if ( num == TX_NOTINIT       ) strcpy(text, "Zmienna nie zosta³a zainicjalizowana");
-		if ( num == TX_BADTHROW      ) strcpy(text, "Wartoœæ ujemna odrzucona przez ""throw""");//C'est quoi, ça?
-		if ( num == TX_NORETVAL      ) strcpy(text, "Funkcja nie zwróci³a ¿adnej wartoœci ");
-		if ( num == TX_NORUN         ) strcpy(text, "¯adna funkcja nie dzia³a");
-		if ( num == TX_NOCALL        ) strcpy(text, "Odwo³anie do nieznanej funkcji");
-		if ( num == TX_NOCLASS       ) strcpy(text, "Taka klasa nie istnieje");
-		if ( num == TX_NULLPT        ) strcpy(text, "Obiekt nieznany");
-		if ( num == TX_OPNAN         ) strcpy(text, "Dzia³anie niemo¿liwe z wartoœci¹ ""nan""");
-		if ( num == TX_OUTARRAY      ) strcpy(text, "Dostêp poza tablicê");
-		if ( num == TX_STACKOVER     ) strcpy(text, "Przepe³nienie stosu");
-		if ( num == TX_DELETEDPT     ) strcpy(text, "Nieprawid³owy obiekt");
-		if ( num == TX_FILEOPEN      ) strcpy(text, "Nie mo¿na otworzyæ pliku");
-		if ( num == TX_NOTOPEN       ) strcpy(text, "Plik nie jest otwarty");
-		if ( num == TX_ERRREAD       ) strcpy(text, "B³¹d odczytu");
-		if ( num == TX_ERRWRITE      ) strcpy(text, "B³¹d zapisu");
-	}
-
-	if ( type == RES_KEY )
-	{
-		if ( num == 0                   )  strcpy(text, "< brak >");
-		if ( num == VK_LEFT             )  strcpy(text, "Strza³ka w lewo");
-		if ( num == VK_RIGHT            )  strcpy(text, "Strza³ka w prawo");
-		if ( num == VK_UP               )  strcpy(text, "Strza³ka w górê");
-		if ( num == VK_DOWN             )  strcpy(text, "Strza³ka w dó³");
-		if ( num == VK_CANCEL           )  strcpy(text, "Ctrl-break");
-		if ( num == VK_BACK             )  strcpy(text, "<--");
-		if ( num == VK_TAB              )  strcpy(text, "Tab");
-		if ( num == VK_CLEAR            )  strcpy(text, "Delete");
-		if ( num == VK_RETURN           )  strcpy(text, "Enter");
-		if ( num == VK_SHIFT            )  strcpy(text, "Shift");
-		if ( num == VK_CONTROL          )  strcpy(text, "Ctrl");
-		if ( num == VK_MENU             )  strcpy(text, "Alt");
-		if ( num == VK_PAUSE            )  strcpy(text, "Pause");
-		if ( num == VK_CAPITAL          )  strcpy(text, "Caps Lock");
-		if ( num == VK_ESCAPE           )  strcpy(text, "Esc");
-		if ( num == VK_SPACE            )  strcpy(text, "Spacja");
-		if ( num == VK_PRIOR            )  strcpy(text, "Page Up");
-		if ( num == VK_NEXT             )  strcpy(text, "Page Down");
-		if ( num == VK_END              )  strcpy(text, "End");
-		if ( num == VK_HOME             )  strcpy(text, "Home");
-		if ( num == VK_SELECT           )  strcpy(text, "Zaznacz");
-		if ( num == VK_EXECUTE          )  strcpy(text, "Wykonaj");
-		if ( num == VK_SNAPSHOT         )  strcpy(text, "Print Scrn");
-		if ( num == VK_INSERT           )  strcpy(text, "Insert");
-		if ( num == VK_DELETE           )  strcpy(text, "Delete");
-		if ( num == VK_HELP             )  strcpy(text, "Pomoc");
-		if ( num == VK_LWIN             )  strcpy(text, "Lewy klawisz Windows");
-		if ( num == VK_RWIN             )  strcpy(text, "Prawy klawisz Windows");
-		if ( num == VK_APPS             )  strcpy(text, "Klawisz menu kontekstowego");
-		if ( num == VK_NUMPAD0          )  strcpy(text, "Klaw. Num. 0");
-		if ( num == VK_NUMPAD1          )  strcpy(text, "Klaw. Num. 1");
-		if ( num == VK_NUMPAD2          )  strcpy(text, "Klaw. Num. 2");
-		if ( num == VK_NUMPAD3          )  strcpy(text, "Klaw. Num. 3");
-		if ( num == VK_NUMPAD4          )  strcpy(text, "Klaw. Num. 4");
-		if ( num == VK_NUMPAD5          )  strcpy(text, "Klaw. Num. 5");
-		if ( num == VK_NUMPAD6          )  strcpy(text, "Klaw. Num. 6");
-		if ( num == VK_NUMPAD7          )  strcpy(text, "Klaw. Num. 7");
-		if ( num == VK_NUMPAD8          )  strcpy(text, "Klaw. Num. 8");
-		if ( num == VK_NUMPAD9          )  strcpy(text, "Klaw. Num. 9");
-		if ( num == VK_MULTIPLY         )  strcpy(text, "Klaw. Num. *");
-		if ( num == VK_ADD              )  strcpy(text, "Klaw. Num. +");
-		if ( num == VK_SEPARATOR        )  strcpy(text, "Klaw. Num. separator");
-		if ( num == VK_SUBTRACT         )  strcpy(text, "Klaw. Num. -");
-		if ( num == VK_DECIMAL          )  strcpy(text, "Klaw. Num. .");
-		if ( num == VK_DIVIDE           )  strcpy(text, "Klaw. Num. /");
-		if ( num == VK_F1               )  strcpy(text, "F1");
-		if ( num == VK_F2               )  strcpy(text, "F2");
-		if ( num == VK_F3               )  strcpy(text, "F3");
-		if ( num == VK_F4               )  strcpy(text, "F4");
-		if ( num == VK_F5               )  strcpy(text, "F5");
-		if ( num == VK_F6               )  strcpy(text, "F6");
-		if ( num == VK_F7               )  strcpy(text, "F7");
-		if ( num == VK_F8               )  strcpy(text, "F8");
-		if ( num == VK_F9               )  strcpy(text, "F9");
-		if ( num == VK_F10              )  strcpy(text, "F10");
-		if ( num == VK_F11              )  strcpy(text, "F11");
-		if ( num == VK_F12              )  strcpy(text, "F12");
-		if ( num == VK_F13              )  strcpy(text, "F13");
-		if ( num == VK_F14              )  strcpy(text, "F14");
-		if ( num == VK_F15              )  strcpy(text, "F15");
-		if ( num == VK_F16              )  strcpy(text, "F16");
-		if ( num == VK_F17              )  strcpy(text, "F17");
-		if ( num == VK_F18              )  strcpy(text, "F18");
-		if ( num == VK_F19              )  strcpy(text, "F19");
-		if ( num == VK_F20              )  strcpy(text, "F20");
-		if ( num == VK_NUMLOCK          )  strcpy(text, "Num Lock");
-		if ( num == VK_SCROLL           )  strcpy(text, "Scroll Lock");
-		if ( num == VK_ATTN             )  strcpy(text, "Attn");
-		if ( num == VK_CRSEL            )  strcpy(text, "CrSel");
-		if ( num == VK_EXSEL            )  strcpy(text, "ExSel");
-		if ( num == VK_EREOF            )  strcpy(text, "Erase EOF");
-		if ( num == VK_PLAY             )  strcpy(text, "Graj");
-		if ( num == VK_ZOOM             )  strcpy(text, "Powiêkszenie");
-		if ( num == VK_PA1              )  strcpy(text, "PA1");
-		if ( num == VK_OEM_CLEAR        )  strcpy(text, "Wyczyœæ");
-		if ( num == VK_BUTTON1          )  strcpy(text, "Przycisk 1");
-		if ( num == VK_BUTTON2          )  strcpy(text, "Przycisk 2");
-		if ( num == VK_BUTTON3          )  strcpy(text, "Przycisk 3");
-		if ( num == VK_BUTTON4          )  strcpy(text, "Przycisk 4");
-		if ( num == VK_BUTTON5          )  strcpy(text, "Przycisk 5");
-		if ( num == VK_BUTTON6          )  strcpy(text, "Przycisk 6");
-		if ( num == VK_BUTTON7          )  strcpy(text, "Przycisk 7");
-		if ( num == VK_BUTTON8          )  strcpy(text, "Przycisk 8");
-		if ( num == VK_BUTTON9          )  strcpy(text, "Przycisk 9");
-		if ( num == VK_BUTTON10         )  strcpy(text, "Przycisk 10");
-		if ( num == VK_BUTTON11         )  strcpy(text, "Przycisk 11");
-		if ( num == VK_BUTTON12         )  strcpy(text, "Przycisk 12");
-		if ( num == VK_BUTTON13         )  strcpy(text, "Przycisk 13");
-		if ( num == VK_BUTTON14         )  strcpy(text, "Przycisk 14");
-		if ( num == VK_BUTTON15         )  strcpy(text, "Przycisk 15");
-		if ( num == VK_BUTTON16         )  strcpy(text, "Przycisk 16");
-		if ( num == VK_BUTTON17         )  strcpy(text, "Przycisk 17");
-		if ( num == VK_BUTTON18         )  strcpy(text, "Przycisk 18");
-		if ( num == VK_BUTTON19         )  strcpy(text, "Przycisk 19");
-		if ( num == VK_BUTTON20         )  strcpy(text, "Przycisk 20");
-		if ( num == VK_BUTTON21         )  strcpy(text, "Przycisk 21");
-		if ( num == VK_BUTTON22         )  strcpy(text, "Przycisk 22");
-		if ( num == VK_BUTTON23         )  strcpy(text, "Przycisk 23");
-		if ( num == VK_BUTTON24         )  strcpy(text, "Przycisk 24");
-		if ( num == VK_BUTTON25         )  strcpy(text, "Przycisk 25");
-		if ( num == VK_BUTTON26         )  strcpy(text, "Przycisk 26");
-		if ( num == VK_BUTTON27         )  strcpy(text, "Przycisk 27");
-		if ( num == VK_BUTTON28         )  strcpy(text, "Przycisk 28");
-		if ( num == VK_BUTTON29         )  strcpy(text, "Przycisk 29");
-		if ( num == VK_BUTTON30         )  strcpy(text, "Przycisk 30");
-		if ( num == VK_BUTTON31         )  strcpy(text, "Przycisk 31");
-		if ( num == VK_BUTTON32         )  strcpy(text, "Przycisk 32");
-		if ( num == VK_WHEELUP          )  strcpy(text, "Kó³ko w górê");
-		if ( num == VK_WHEELDOWN        )  strcpy(text, "Kó³ko w dó³");
+		if ( num == VK_OEM_CLEAR        )  strcpy(text, "Limpar");
+		if ( num == VK_BUTTON1          )  strcpy(text, "Botão 1");
+		if ( num == VK_BUTTON2          )  strcpy(text, "Botão 2");
+		if ( num == VK_BUTTON3          )  strcpy(text, "Botão 3");
+		if ( num == VK_BUTTON4          )  strcpy(text, "Botão 4");
+		if ( num == VK_BUTTON5          )  strcpy(text, "Botão 5");
+		if ( num == VK_BUTTON6          )  strcpy(text, "Botão 6");
+		if ( num == VK_BUTTON7          )  strcpy(text, "Botão 7");
+		if ( num == VK_BUTTON8          )  strcpy(text, "Botão 8");
+		if ( num == VK_BUTTON9          )  strcpy(text, "Botão 9");
+		if ( num == VK_BUTTON10         )  strcpy(text, "Botão 10");
+		if ( num == VK_BUTTON11         )  strcpy(text, "Botão 11");
+		if ( num == VK_BUTTON12         )  strcpy(text, "Botão 12");
+		if ( num == VK_BUTTON13         )  strcpy(text, "Botão 13");
+		if ( num == VK_BUTTON14         )  strcpy(text, "Botão 14");
+		if ( num == VK_BUTTON15         )  strcpy(text, "Botão 15");
+		if ( num == VK_BUTTON16         )  strcpy(text, "Botão 16");
+		if ( num == VK_BUTTON17         )  strcpy(text, "Botão 17");
+		if ( num == VK_BUTTON18         )  strcpy(text, "Botão 18");
+		if ( num == VK_BUTTON19         )  strcpy(text, "Botão 19");
+		if ( num == VK_BUTTON20         )  strcpy(text, "Botão 20");
+		if ( num == VK_BUTTON21         )  strcpy(text, "Botão 21");
+		if ( num == VK_BUTTON22         )  strcpy(text, "Botão 22");
+		if ( num == VK_BUTTON23         )  strcpy(text, "Botão 23");
+		if ( num == VK_BUTTON24         )  strcpy(text, "Botão 24");
+		if ( num == VK_BUTTON25         )  strcpy(text, "Botão 25");
+		if ( num == VK_BUTTON26         )  strcpy(text, "Botão 26");
+		if ( num == VK_BUTTON27         )  strcpy(text, "Botão 27");
+		if ( num == VK_BUTTON28         )  strcpy(text, "Botão 28");
+		if ( num == VK_BUTTON29         )  strcpy(text, "Botão 29");
+		if ( num == VK_BUTTON30         )  strcpy(text, "Botão 30");
+		if ( num == VK_BUTTON31         )  strcpy(text, "Botão 31");
+		if ( num == VK_BUTTON32         )  strcpy(text, "Botão 32");
+		if ( num == VK_WHEELUP          )  strcpy(text, "Roda acima");
+		if ( num == VK_WHEELDOWN        )  strcpy(text, "Roda abaixo");
 	}
 #endif
 

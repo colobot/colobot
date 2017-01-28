@@ -20,7 +20,6 @@ CBotClass::CBotClass(const char* name, CBotClass* pPapa, BOOL bIntrinsic)
 	m_bIntrinsic= bIntrinsic;
 	m_cptLock	= 0;
 	m_cptOne	= 0;
-	m_nbVar		= m_pParent == NULL ? 0 : m_pParent->m_nbVar;
 
 	for ( int j= 0; j< 5 ; j++ )
 	{
@@ -73,8 +72,6 @@ void CBotClass::Purge()
 	delete		m_pMethod;
 	m_pMethod	= NULL;
 	m_IsDef		= FALSE;
-
-	m_nbVar		= m_pParent == NULL ? 0 : m_pParent->m_nbVar;
 
 	m_next->Purge();
 	m_next = NULL;			// n'appartient plus à cette chaîne
@@ -182,11 +179,8 @@ BOOL CBotClass::AddItem(CBotString name, CBotTypResult type, int mPrivate)
 
 BOOL CBotClass::AddItem(CBotVar* pVar)
 {
-	pVar->SetUniqNum(++m_nbVar);
-
 	if ( m_pVar == NULL ) m_pVar = pVar;
 	else m_pVar->AddNext(pVar);
-
 	return TRUE;
 }
 
@@ -205,21 +199,8 @@ CBotString  CBotClass::GivName()
 
 CBotClass*  CBotClass::GivParent()
 {
-	if ( this == NULL ) return NULL;
 	return m_pParent;
 }
-
-BOOL  CBotClass::IsChildOf(CBotClass* pClass)
-{
-	CBotClass* p = this;
-	while ( p != NULL )
-	{
-		if ( p == pClass ) return TRUE;
-		p = p->m_pParent;
-	}
-	return FALSE;
-}
-
 
 CBotVar* CBotClass::GivVar()
 {
@@ -235,20 +216,6 @@ CBotVar* CBotClass::GivItem(const char* name)
 		if ( p->GivName() == name ) return p;
 		p = p->GivNext();
 	}
-	if ( m_pParent != NULL ) return m_pParent->GivItem(name);
-	return NULL;
-}
-
-CBotVar* CBotClass::GivItemRef(int nIdent)
-{
-	CBotVar*	p = m_pVar;
-
-	while ( p != NULL )
-	{
-		if ( p->GivUniqNum() == nIdent ) return p;
-		p = p->GivNext();
-	}
-	if ( m_pParent != NULL ) return m_pParent->GivItemRef(nIdent);
 	return NULL;
 }
 
@@ -327,8 +294,6 @@ CBotTypResult CBotClass::CompileMethode(const char* name,
 	// recherche dans les méthodes déclarées par l'utilisateur
 
 	r = m_pMethod->CompileCall(name, ppParams, nIdent);
-	if ( r.Eq(TX_UNDEFCALL) && m_pParent != NULL )
-		return m_pParent->m_pMethod->CompileCall(name, ppParams, nIdent);
 	return r;
 }
 
@@ -574,19 +539,12 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
 			CBotClass* result = pStk->GivClass();
 			if ( !pStk->GivTypResult(1).Eq(CBotTypNullPointer) &&
 			   ( !pStk->GivTypResult(1).Eq(CBotTypPointer) ||
-				 ( result != NULL && !pClass->IsChildOf(result) )))		// type compatible ?
+				 ( result != NULL && result != pClass )))		// type compatible ?
 			{
 				pStk->SetError(TX_BADTYPE, p->GivStart());
 				goto error;
 			}
-//			if ( !bIntrinsic ) var->SetPointer(pStk->GivVar()->GivPointer());
-			if ( !bIntrinsic ) 
-			{
-				// n'utilise pas le résultat sur la pile, pour imposer la classe
-				CBotVar* pvar = CBotVar::Create("", pClass);
-				var->SetPointer( pvar );					// var déjà déclarée pointe l'instance
-				delete pvar;								// supprime le second pointeur
-			}
+			if ( !bIntrinsic ) var->SetPointer(pStk->GivVar()->GivPointer());
 			var->SetInit(TRUE);							// marque le pointeur comme init
 		}
 		else if (inst->m_hasParams)

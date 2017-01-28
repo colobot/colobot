@@ -198,13 +198,6 @@ void CKey::Draw()
 	{
 		icon = 3;
 	}
-	if ( m_state & STATE_DEFAULT )
-	{
-		DrawPart(23, 1.3f, 0.0f);
-
-		zoomExt *= 1.15f;
-		zoomInt *= 1.15f;
-	}
 	if ( m_state & STATE_HILIGHT )
 	{
 		icon = 1;

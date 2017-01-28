@@ -156,6 +156,7 @@ BOOL CWater::EventFrame(const Event &event)
 void CWater::LavaFrame(float rTime)
 {
 	D3DVECTOR	eye, lookat, dir, perp, pos;
+	FPOINT		dim;
 	float		distance, shift, level;
 	int			i;
 
@@ -189,6 +190,13 @@ void CWater::LavaFrame(float rTime)
 		if ( level < m_level )
 		{
 			pos.y = m_level;
+
+			if ( Rand() < m_engine->RetParticuleDensity() )
+			{
+				dim.x = 3.0f+3.0f*Rand();  // hauteur
+				dim.y = 3.0f+3.0f*Rand();  // diamètre
+				m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), dim, PARTIPLOUF0, 1.4f, 0.0f);
+			}
 
 			level = Rand();
 			if ( level < 0.8f )
@@ -298,7 +306,7 @@ void CWater::VaporFrame(int i, float rTime)
 					speed.y = 8.0f+Rand()*5.0f;
 					dim.x = Rand()*1.5f+1.5f;
 					dim.y = dim.x;
-					m_particule->CreateParticule(pos, speed, dim, PARTIERROR, 2.0f, 10.0f);
+					m_particule->CreateParticule(pos, speed, dim, PARTILAVA, 2.0f, 10.0f);
 				}
 			}
 			else if ( m_vapor[i].type == PARTIFLAME )
@@ -748,35 +756,13 @@ float CWater::RetLevel(CObject* object)
 		return m_level-3.0f;
 	}
 
-	if ( type == OBJECT_MOBILEfa ||
-		 type == OBJECT_MOBILEta ||
-		 type == OBJECT_MOBILEwa ||
-		 type == OBJECT_MOBILEia ||
-		 type == OBJECT_MOBILEfc ||
-		 type == OBJECT_MOBILEtc ||
-		 type == OBJECT_MOBILEwc ||
-		 type == OBJECT_MOBILEic ||
-		 type == OBJECT_MOBILEfi ||
-		 type == OBJECT_MOBILEti ||
-		 type == OBJECT_MOBILEwi ||
-		 type == OBJECT_MOBILEii ||
-		 type == OBJECT_MOBILEfs ||
-		 type == OBJECT_MOBILEts ||
-		 type == OBJECT_MOBILEws ||
-		 type == OBJECT_MOBILEis ||
-		 type == OBJECT_MOBILErt ||
-		 type == OBJECT_MOBILErc ||
-		 type == OBJECT_MOBILErr ||
-		 type == OBJECT_MOBILErs ||
-		 type == OBJECT_MOBILEsa ||
+	if ( type == OBJECT_CAR      ||
 		 type == OBJECT_MOBILEtg ||
-		 type == OBJECT_MOBILEft ||
-		 type == OBJECT_MOBILEtt ||
-		 type == OBJECT_MOBILEwt ||
-		 type == OBJECT_MOBILEit ||
-		 type == OBJECT_MOBILEdr )
+		 type == OBJECT_MOBILEfb ||
+		 type == OBJECT_MOBILEob )
 	{
-		return m_level-2.0f;
+//?		return m_level-2.0f;
+		return m_level;
 	}
 
 	return m_level;
@@ -800,6 +786,8 @@ BOOL CWater::RetLava()
 
 void CWater::AdjustEye(D3DVECTOR &eye)
 {
+	if ( m_level == 0.0f )  return;
+
 	if ( m_bLava )
 	{
 		if ( eye.y < m_level+2.0f )

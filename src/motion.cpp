@@ -56,6 +56,8 @@ CMotion::CMotion(CInstanceManager* iMan, CObject* object)
 	m_linVibration  = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_cirVibration  = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_inclinaison   = D3DVECTOR(0.0f, 0.0f, 0.0f);
+
+	m_wheelType = WT_NORM;
 }
 
 // Destructeur de l'objet.
@@ -85,7 +87,7 @@ void CMotion::SetBrain(CBrain* brain)
 
 // Crée.
 
-BOOL CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, float power)
+BOOL CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb)
 {
 	return TRUE;
 }
@@ -97,8 +99,7 @@ BOOL CMotion::EventProcess(const Event &event)
 	D3DVECTOR	pos, dir;
 	float		time;
 
-	if ( m_object->RetType() != OBJECT_TOTO &&
-		 m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return TRUE;
 
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	
@@ -157,6 +158,13 @@ int CMotion::RetAction()
 	return m_actionType;
 }
 
+// Retourne la progressionde l'action en cours.
+
+float CMotion::RetActionProgress()
+{
+	return m_progress;
+}
+
 
 // Spécifie un paramètre spécial.
 
@@ -168,38 +176,6 @@ BOOL CMotion::SetParam(int rank, float value)
 float CMotion::RetParam(int rank)
 {
 	return 0.0f;
-}
-
-
-// Sauve tous les paramètres de l'objet.
-
-BOOL CMotion::Write(char *line)
-{
-	char	name[100];
-
-	if ( m_actionType == -1 )  return FALSE;
-
-	sprintf(name, " mType=%d", m_actionType);
-	strcat(line, name);
-
-	sprintf(name, " mTime=%.2f", m_actionTime);
-	strcat(line, name);
-
-	sprintf(name, " mProgress=%.2f", m_progress);
-	strcat(line, name);
-
-	return FALSE;
-}
-
-// Restitue tous les paramètres de l'objet.
-
-BOOL CMotion::Read(char *line)
-{
-	m_actionType = OpInt(line, "mType", -1);
-	m_actionTime = OpFloat(line, "mTime", 0.0f);
-	m_progress = OpFloat(line, "mProgress", 0.0f);
-
-	return FALSE;
 }
 
 
@@ -237,5 +213,80 @@ void CMotion::SetInclinaison(D3DVECTOR dir)
 D3DVECTOR CMotion::RetInclinaison()
 {
 	return m_inclinaison;
+}
+
+
+// Initialse la torsion de toutes les pièces pour qu'elles soient
+// toutes droites.
+
+void CMotion::TwistInit()
+{
+}
+
+// Tord qq pièces suite à un choc.
+
+void CMotion::TwistPart(D3DVECTOR impact, float force)
+{
+}
+
+// Retourne le numéro de la prochaine partie à détruire.
+
+int CMotion::RetRemovePart(int &param)
+{
+	param = 0;
+	return -1;
+}
+
+// Indique si un phare existe.
+
+BOOL CMotion::RetLight(int rank)
+{
+	return FALSE;
+}
+
+// Indique la présence d'une partie spécifique.
+
+BOOL CMotion::ExistPart(TypePart part)
+{
+	return FALSE;
+}
+
+// Donne le nombre de pièces total du véhicule.
+
+int CMotion::RetTotalPart()
+{
+	return 0;
+}
+
+// Donne le nombre de pièces utilisées du véhicule.
+
+int CMotion::RetUsedPart()
+{
+	return 0;
+}
+
+
+// Gestion du type de roues.
+
+void CMotion::SetWheelType(WheelType type)
+{
+	m_wheelType = type;
+}
+
+WheelType CMotion::RetWheelType()
+{
+	return m_wheelType;
+}
+
+
+// Gestion de l'état d'un véhicule.
+
+int CMotion::RetStateLength()
+{
+	return 0;
+}
+
+void CMotion::GetStateBuffer(char *buffer)
+{
 }
 

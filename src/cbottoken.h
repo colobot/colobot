@@ -12,7 +12,6 @@ enum ObjectType;
 // Procédures.
 
 extern char* RetObjectName(ObjectType type);
-extern char* RetObjectAlias(ObjectType type);
 extern char* RetHelpFilename(ObjectType type);
 extern char* RetHelpFilename(const char *token);
 extern BOOL IsType(const char *token);

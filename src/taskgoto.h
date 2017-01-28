@@ -69,8 +69,6 @@ public:
 	Error		IsEnded();
 
 protected:
-	CObject*	WormSearch(D3DVECTOR &impact);
-	void		WormFrame(float rTime);
 	CObject*	SearchTarget(D3DVECTOR pos, float margin);
 	BOOL		AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance);
 	BOOL		AdjustBuilding(D3DVECTOR &pos, float margin, float &distance);
@@ -113,9 +111,7 @@ protected:
 	float			m_stopLength;	// distance de freinage
 	float			m_time;
 	D3DVECTOR		m_pos;
-	BOOL			m_bWorm;
 	BOOL			m_bApprox;
-	float			m_wormLastTime;
 	float			m_lastDistance;
 
 	int				m_bmSize;		// largeur ou hauteur du tableau

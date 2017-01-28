@@ -184,7 +184,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
 
 	func->m_retToken = *p;
 //	CBotClass*	pClass;
-	func->m_retTyp = TypeParam(p, pStk);		// type du résultat
+	func->m_retTyp = TypeParam(p, pStack);		// type du résultat
 
 	if (func->m_retTyp.GivType() >= 0)
 	{
@@ -231,14 +231,14 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
 					// n'enregistre que le pointeur à la première, 
 					// le reste est chainé
 					CBotVar* pv = pThis->GivItemList();
-//					int num = 1;
+					int num = 1;
 					while (pv != NULL)
 					{
 						CBotVar* pcopy = CBotVar::Create(pv);
 //						pcopy->SetInit(2);
 						pcopy->Copy(pv);
 						pcopy->SetPrivate(pv->GivPrivate());
-//						pcopy->SetUniqNum(pv->GivUniqNum()); //num++);
+						pcopy->SetUniqNum(num++);
 						pStk->AddVar(pcopy);
 						pv = pv->GivNext();
 					}
@@ -766,15 +766,6 @@ int CBotFunction::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBotVar
 			pthis->SetUniqNum(-2);		// valeur spéciale
 			pStk->AddVar(pthis);
 
-			CBotClass*	pClass = pThis->GivClass()->GivParent();
-			if ( pClass )
-			{
-				// met la variable "super" sur la pile
-				CBotVar* psuper = CBotVar::Create("super", CBotTypNullPointer);
-				psuper->Copy(pThis, FALSE);	// en fait identique à "this"
-				psuper->SetUniqNum(-3);		// valeur spéciale
-				pStk->AddVar(psuper);
-			}
 			// initialise les variables selon paramètres
 			pt->m_Param->Execute(ppVars, pStk3);			// ne peut pas être interrompu
 			pStk->IncState();
@@ -1364,21 +1355,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 	// un nom pour la classe est-il là ?
 	if (IsOfType(p, TokenTypVar))
 	{
-		CBotClass* pPapa = NULL;
-#if		EXTENDS
-		if ( IsOfType( p, ID_EXTENDS ) )
-		{
-			CBotString name = p->GivString();
-			pPapa = CBotClass::Find(name);
-
-			if (!IsOfType(p, TokenTypVar) || pPapa == NULL )
-			{
-				pStack->SetError( TX_NOCLASS, p );
-				return NULL;
-			}
-		}
-#endif
-		CBotClass* classe = (pOld == NULL) ? new CBotClass(name, pPapa) : pOld;
+		CBotClass* classe = (pOld == NULL) ? new CBotClass(name, NULL) : pOld;
 		classe->Purge();							// vide les anciennes définitions
 		classe->m_IsDef = FALSE;					// définition en cours
 
@@ -1398,6 +1375,7 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 	pStack->SetError(TX_ENDOF, p);
 	return NULL;
 }
+
 
 BOOL CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, BOOL bSecond)
 {
@@ -1488,45 +1466,30 @@ BOOL CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, BOOL bSecond)
 						pf = pf->Next();
 					}
 
+					CBotToken TokenThis(CBotString("this"), CBotString());
 					BOOL bConstructor = (pp->GivString() == GivName());
 					CBotCStack* pile = pStack->TokenStack(NULL, TRUE);
 
 					// rend "this" connu
-					CBotToken TokenThis(CBotString("this"), CBotString());
 					CBotVar* pThis = CBotVar::Create(&TokenThis, CBotTypResult( CBotTypClass, this ) );
 					pThis->SetUniqNum(-2);
 					pile->AddVar(pThis);
 
-					if ( m_pParent )
+					int num = 1;
+					CBotVar* pv = m_pVar;
+					while (pv != NULL)
 					{
-						// rend "super" connu
-						CBotToken TokenSuper(CBotString("super"), CBotString());
-						CBotVar* pThis = CBotVar::Create(&TokenSuper, CBotTypResult( CBotTypClass, m_pParent ) );
-						pThis->SetUniqNum(-3);
-						pile->AddVar(pThis);
-					}
-
-//					int num = 1;
-					CBotClass*	my = this;
-					while (my != NULL)
-					{
-						// place une copie des varibles de la classe (this) sur la pile
-						CBotVar* pv = my->m_pVar;
-						while (pv != NULL)
-						{
-							CBotVar* pcopy = CBotVar::Create(pv);
-							pcopy->SetInit(!bConstructor || pv->IsStatic());
-							pcopy->SetUniqNum(pv->GivUniqNum());
-							pile->AddVar(pcopy);
-							pv = pv->GivNext();
-						}
-						my = my->m_pParent;
+						CBotVar* pcopy = CBotVar::Create(pv);
+						pcopy->SetInit(!bConstructor || pv->IsStatic());
+						pcopy->SetUniqNum(num++);
+						pile->AddVar(pcopy);
+						pv = pv->GivNext();
 					}
 
 					// compile une méthode
 					p = pBase;
 					CBotFunction* f = 
-					CBotFunction::Compile(p, pile, NULL/*, FALSE*/);
+					CBotFunction::Compile(p, pStack, NULL/*, FALSE*/);
 
 					if ( f != NULL )
 					{
@@ -1539,9 +1502,9 @@ BOOL CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, BOOL bSecond)
 						if (prev == NULL) m_pMethod = f;
 						else prev->m_next = f;
 					}
-					pStack->Return(NULL, pile);
 				}
 
+	//			pStack->Return(NULL, pStack);
 				return pStack->IsOk();
 			}
 
@@ -1574,7 +1537,8 @@ BOOL CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, BOOL bSecond)
 				pv -> SetStatic( bStatic );
 				pv -> SetPrivate( mProtect );
 
-				AddItem( pv );
+				if (m_pVar == NULL) m_pVar = pv;
+				else m_pVar->AddNext(pv);
 
 				pv->m_InitExpr = i;
 				pv->m_LimExpr = limites;
@@ -1612,13 +1576,6 @@ CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
 	{
 		// la classe à été créée par Compile1
 		CBotClass* pOld = CBotClass::Find(name);
-
-#if		EXTENDS
-		if ( IsOfType( p, ID_EXTENDS ) )
-		{
-			IsOfType(p, TokenTypVar); // forcément
-		}
-#endif
 		IsOfType( p, ID_OPBLK);	// forcément
 
 		while ( pStack->IsOk() && !IsOfType( p, ID_CLBLK ) )

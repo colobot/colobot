@@ -20,12 +20,13 @@ class CEditValue;
 class CScroll;
 class CSlider;
 class CList;
+class CArray;
 class CShortcut;
 class CMap;
 class CGauge;
+class CGeiger;
 class CCompass;
-class CTarget;
-class CCamera;
+class CProgress;
 
 
 #define MAXCONTROL	100
@@ -54,12 +55,17 @@ public:
 	CScroll*	CreateScroll(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CSlider*	CreateSlider(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CList*		CreateList(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg, float expand=1.2f);
+	CArray*		CreateArray(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg, float expand=1.2f);
 	CShortcut*	CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CCompass*	CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CTarget*	CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	CGauge*		CreateGauge(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	CGeiger*	CreateGeiger(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	CProgress*	CreateProgress(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CMap*		CreateMap(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	BOOL		DeleteControl(EventMsg eventMsg);
 	CControl*	SearchControl(EventMsg eventMsg);
+	CControl*	SearchControl(int tabOrder);
+	CControl*	SearchControl();
 
 	void		Draw();
 
@@ -68,7 +74,6 @@ protected:
 protected:
 	CInstanceManager* m_iMan;
 	CD3DEngine*		m_engine;
-	CCamera*		m_camera;
 
 	CControl*		m_table[MAXCONTROL];
 };

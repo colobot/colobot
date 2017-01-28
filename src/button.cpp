@@ -9,7 +9,6 @@
 
 #include "struct.h"
 #include "D3DEngine.h"
-#include "language.h"
 #include "math3d.h"
 #include "event.h"
 #include "misc.h"
@@ -132,6 +131,18 @@ BOOL CButton::EventProcess(const Event &event)
 		m_repeat = 0.0f;
 	}
 
+	if ( m_bFocus &&
+		 (m_state & STATE_VISIBLE) &&
+		 (m_state & STATE_ENABLE)  &&
+		 event.event == EVENT_KEYDOWN &&
+		 (event.param == VK_RETURN ||
+		  event.param == VK_BUTTON1) )
+	{
+		Event newEvent = event;
+		newEvent.event = m_eventMsg;
+		m_event->AddEvent(newEvent);
+	}
+
 	return TRUE;
 }
 
@@ -140,19 +151,16 @@ BOOL CButton::EventProcess(const Event &event)
 
 void CButton::Draw()
 {
-	FPOINT	pos, dim, uv1, uv2;
-#if !_NEWLOOK
-	float	dp;
-#endif
+	FPOINT	pos, dim;
 
 	if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
 	if ( m_state & STATE_WARNING )  // hachures jaunes-noires ?
 	{
-		pos.x = m_pos.x-( 8.0f/640.0f);
-		pos.y = m_pos.y-( 4.0f/480.0f);
-		dim.x = m_dim.x+(16.0f/640.0f);
-		dim.y = m_dim.y+( 8.0f/480.0f);
+		pos.x = m_pos.x-(4.0f/640.0f);
+		pos.y = m_pos.y-(4.0f/480.0f);
+		dim.x = m_dim.x+(8.0f/640.0f);
+		dim.y = m_dim.y+(8.0f/480.0f);
 		if ( m_state & STATE_SHADOW )
 		{
 			DrawShadow(pos, dim);
@@ -164,47 +172,12 @@ void CButton::Draw()
 	{
 		DrawShadow(m_pos, m_dim);
 	}
+	if ( m_bFocus )
+	{
+		DrawFocus(m_pos, m_dim);
+	}
 
 	CControl::Draw();
-
-#if !_NEWLOOK
-	if ( m_name[0] != 0                &&  // bouton avec nom ?
-		 (m_state & STATE_CARD  ) == 0 &&
-		 (m_state & STATE_SIMPLY) == 0 )
-	{
-		m_engine->SetTexture("button2.tga");
-		m_engine->SetState(D3DSTATENORMAL);
-
-		dp = 0.5f/256.0f;
-
-		uv1.x = 128.0f/256.0f;
-		uv1.y =  96.0f/256.0f;
-		uv2.x = 136.0f/256.0f;
-		uv2.y = 128.0f/256.0f;
-
-		if ( (m_state & STATE_ENABLE) == 0 )
-		{
-			uv1.x += 16.0f/256.0f;
-			uv2.x += 16.0f/256.0f;
-		}
-
-		uv1.x += dp;
-		uv1.y += dp;
-		uv2.x -= dp;
-		uv2.y -= dp;
-
-		pos.y = m_pos.y+5.0f/480.0f;
-		dim.y = m_dim.y-10.0f/480.0f;
-		pos.x = m_pos.x+5.0f/640.0f;
-		dim.x = 3.0f/640.0f;
-		DrawIcon(pos, dim, uv1, uv2, 0.0f);
-
-		uv1.x += 8.0f/256.0f;
-		uv2.x += 8.0f/256.0f;
-		pos.x = m_pos.x+m_dim.x-5.0f/640.0f-3.0f/640.0f;
-		DrawIcon(pos, dim, uv1, uv2, 0.0f);
-	}
-#endif
 }
 
 

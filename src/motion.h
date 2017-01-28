@@ -18,6 +18,22 @@ class CRobotMain;
 class CSound;
 
 
+
+enum TypePart
+{
+	TP_TOP			= 0,		// toît
+};
+
+
+enum WheelType
+{
+	WT_NORM			= 0,		// roues normales
+	WT_BURN			= 1,		// roues cramées
+	WT_SLIDE		= 2,		// roues glissantes
+};
+
+
+
 class CMotion
 {
 public:
@@ -28,16 +44,14 @@ public:
 	void	SetBrain(CBrain* brain);
 
 	virtual void	DeleteObject(BOOL bAll=FALSE);
-	virtual BOOL	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
+	virtual BOOL	Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb);
 	virtual BOOL	EventProcess(const Event &event);
 	virtual	Error	SetAction(int action, float time=0.2f);
 	virtual int		RetAction();
+	virtual float	RetActionProgress();
 
 	virtual BOOL	SetParam(int rank, float value);
 	virtual float	RetParam(int rank);
-
-	virtual BOOL	Write(char *line);
-	virtual BOOL	Read(char *line);
 
 	virtual void		SetLinVibration(D3DVECTOR dir);
 	virtual D3DVECTOR	RetLinVibration();
@@ -45,6 +59,20 @@ public:
 	virtual D3DVECTOR	RetCirVibration();
 	virtual void		SetInclinaison(D3DVECTOR dir);
 	virtual D3DVECTOR	RetInclinaison();
+
+	virtual void	TwistInit();
+	virtual void	TwistPart(D3DVECTOR impact, float force);
+	virtual int		RetRemovePart(int &param);
+	virtual BOOL	RetLight(int rank);
+	virtual	BOOL	ExistPart(TypePart part);
+	virtual int		RetTotalPart();
+	virtual int		RetUsedPart();
+
+	virtual void		SetWheelType(WheelType type);
+	virtual WheelType	RetWheelType();
+
+	virtual int		RetStateLength();
+	virtual void	GetStateBuffer(char *buffer);
 
 protected:
 
@@ -69,6 +97,8 @@ protected:
 	D3DVECTOR		m_linVibration;		// vibration linéaire
 	D3DVECTOR		m_cirVibration;		// vibration circulaire
 	D3DVECTOR		m_inclinaison;		// inclinaison
+
+	WheelType		m_wheelType;
 };
 
 

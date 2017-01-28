@@ -28,6 +28,7 @@ extern float		Max(float a, float b, float c, float d);
 extern float		Max(float a, float b, float c, float d, float e);
 
 extern float		Norm(float a);
+extern float		NormSign(float a);
 extern float		Abs(float a);
 	
 extern void			Swap(int &a, int &b);
@@ -45,10 +46,13 @@ extern FPOINT		RotatePoint(float angle, float dist);
 extern float		RotateAngle(float x, float y);
 extern float		RotateAngle(FPOINT center, FPOINT p1, FPOINT p2);
 extern float		MidPoint(FPOINT a, FPOINT b, float px);
-extern D3DVECTOR	SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist);
 extern BOOL			IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p);
+extern BOOL			Intersect(const FPOINT &a, const FPOINT &b, const FPOINT &c, const FPOINT &d, FPOINT &p);
+extern BOOL			IntersectSegment(const FPOINT &a, const FPOINT &b, const FPOINT &c, const FPOINT &d, FPOINT &p);
 extern BOOL			Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR d, D3DVECTOR e, D3DVECTOR &i);
 extern BOOL			IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p);
+extern D3DVECTOR	SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist);
+extern BOOL			IsInside(FPOINT p1, FPOINT p2, FPOINT p);
 extern void			RotatePoint(float cx, float cy, float angle, float &px, float &py);
 extern void			RotatePoint(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
 extern void			RotatePoint2(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
@@ -63,6 +67,7 @@ extern float		Angle( D3DVECTOR u, D3DVECTOR v );
 extern D3DVECTOR	Cross( D3DVECTOR u, D3DVECTOR v );
 extern D3DVECTOR	ComputeNormal( D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3 );
 extern D3DVECTOR	Transform(const D3DMATRIX &m, D3DVECTOR p);
+extern FPOINT		Projection(const FPOINT &a, const FPOINT &b, const FPOINT &p);
 extern D3DVECTOR	Projection(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &p);
 
 extern void			MappingObject( D3DVERTEX2* pVertices, int nb, float scale );
@@ -77,7 +82,11 @@ extern float		Rand();
 extern float		Neutral(float value, float dead);
 
 extern float		Prop(int a, int b, float p);
+extern float		Linear(float actual, float hope, float time);
 extern float		Smooth(float actual, float hope, float time);
+extern float		SmoothA(float actual, float hope, float time);
+extern float		SmoothP(float actual, float hope, float time);
+extern float		Soft(float progress, int iter=1);
 extern float		Bounce(float progress, float middle=0.3f, float bounce=0.4f);
 
 extern D3DCOLOR		RetColor(float intensity);

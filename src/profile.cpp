@@ -7,8 +7,8 @@
 #include <d3d.h>
 #include <stdlib.h>
 
-#include "language.h"
 #include "struct.h"
+#include "language.h"
 #include "profile.h"
 
 
@@ -19,10 +19,10 @@ static char g_filename[100];
 
 BOOL InitCurrentDirectory()
 {
-#if _SCHOOL
-	_fullpath(g_filename, "ceebot.ini", 100);
+#if _EGAMES
+	_fullpath(g_filename, "wildwheels.ini", 100);
 #else
-	_fullpath(g_filename, "colobot.ini", 100);
+	_fullpath(g_filename, "buzzingcars.ini", 100);
 #endif
 	return TRUE;
 }

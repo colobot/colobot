@@ -64,7 +64,6 @@ ModelTriangle;		// longueur = 208 bytes
 
 
 
-
 class CModFile
 {
 public:

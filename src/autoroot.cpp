@@ -69,7 +69,7 @@ void CAutoRoot::Init()
 	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	dim.x = 100.0f;
 	dim.y = dim.x;
-	m_particule->CreateParticule(m_center, speed, dim, PARTISPHERE5, 0.5f, 0.0f, 0.0f);
+	m_particule->CreateParticule(m_center, speed, dim, PARTISPHERE5, 0.5f, 0.0f);
 
 	m_terrain->AddFlyingLimit(pos, 100.0f, 80.0f, pos.y-60.0f);
 }
@@ -104,7 +104,7 @@ BOOL CAutoRoot::EventProcess(const Event &event)
 		speed.y = Rand()*12.0f;
 		dim.x = Rand()*6.0f+4.0f;
 		dim.y = dim.x;
-		m_particule->CreateParticule(pos, speed, dim, PARTIROOT, 1.0f, 0.0f, 0.0f);
+		m_particule->CreateParticule(pos, speed, dim, PARTIROOT, 1.0f, 0.0f);
 	}
 
 	return TRUE;

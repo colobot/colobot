@@ -44,7 +44,6 @@ public:
 
 	virtual BOOL	EventProcess(const Event &event);
 	virtual	Error	IsEnded();
-	virtual BOOL	IsBusy();
 	virtual BOOL	Abort();
 
 protected:

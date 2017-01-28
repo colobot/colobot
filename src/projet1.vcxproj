@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName />
+    <SccLocalPath />
+    <ProjectGuid>{04892758-1A57-4157-8AAF-2B7BB7DCC22E}</ProjectGuid>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\Debug\</OutDir>
+    <IntDir>.\Debug\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)\..\..\MicrosoftDirectX7SDK\DXF\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\..\..\MicrosoftDirectX7SDK\DXF\lib;$(LibraryPath)</LibraryPath>
+    <TargetName>BuzzingCars</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>.\Release\</OutDir>
+    <IntDir>.\Release\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\..\..\MicrosoftDirectX7SDK\DXF\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\..\..\MicrosoftDirectX7SDK\DXF\lib;$(LibraryPath)</LibraryPath>
+    <TargetName>BuzzingCars</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Debug\projet1.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Debug\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Debug\projet1.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <RedirectOutputAndErrors>NUL</RedirectOutputAndErrors>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x100c</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Debug\projet1.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>Debug/buzzingcars.exe</OutputFile>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;winmm.lib;d3dx.lib;dinput.lib;ddraw.lib;dxguid.lib;dsound.lib;cbot\cbot.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
+      <PrecompiledHeaderOutputFile>.\Release\projet1.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Release\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Release\projet1.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <RedirectOutputAndErrors>NUL</RedirectOutputAndErrors>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x100c</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Release\projet1.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>Release/buzzingcars.exe</OutputFile>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;winmm.lib;d3dx.lib;dinput.lib;ddraw.lib;dxguid.lib;dsound.lib;cbot\cbot.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="array.cpp" />
+    <ClCompile Include="auto.cpp" />
+    <ClCompile Include="autoalien.cpp" />
+    <ClCompile Include="autobarrel.cpp" />
+    <ClCompile Include="autoblitzer.cpp" />
+    <ClCompile Include="autobomb.cpp" />
+    <ClCompile Include="autocompass.cpp" />
+    <ClCompile Include="autocomputer.cpp" />
+    <ClCompile Include="autodock.cpp" />
+    <ClCompile Include="autodoor.cpp" />
+    <ClCompile Include="autofire.cpp" />
+    <ClCompile Include="autogenerator.cpp" />
+    <ClCompile Include="autohelico.cpp" />
+    <ClCompile Include="autohome.cpp" />
+    <ClCompile Include="autohook.cpp" />
+    <ClCompile Include="autoinca.cpp" />
+    <ClCompile Include="autojostle.cpp" />
+    <ClCompile Include="autoremote.cpp" />
+    <ClCompile Include="autorepair.cpp" />
+    <ClCompile Include="autoroot.cpp" />
+    <ClCompile Include="autostand.cpp" />
+    <ClCompile Include="autotower.cpp" />
+    <ClCompile Include="blitz.cpp" />
+    <ClCompile Include="brain.cpp" />
+    <ClCompile Include="button.cpp" />
+    <ClCompile Include="camera.cpp" />
+    <ClCompile Include="cbottoken.cpp" />
+    <ClCompile Include="check.cpp" />
+    <ClCompile Include="cloud.cpp" />
+    <ClCompile Include="cmdtoken.cpp" />
+    <ClCompile Include="color.cpp" />
+    <ClCompile Include="compass.cpp" />
+    <ClCompile Include="control.cpp" />
+    <ClCompile Include="d3dapp.cpp" />
+    <ClCompile Include="d3dengine.cpp" />
+    <ClCompile Include="d3denum.cpp" />
+    <ClCompile Include="d3dframe.cpp" />
+    <ClCompile Include="d3dmath.cpp" />
+    <ClCompile Include="d3dtextr.cpp" />
+    <ClCompile Include="d3dutil.cpp" />
+    <ClCompile Include="displaytext.cpp" />
+    <ClCompile Include="edit.cpp" />
+    <ClCompile Include="editvalue.cpp" />
+    <ClCompile Include="event.cpp" />
+    <ClCompile Include="gauge.cpp" />
+    <ClCompile Include="geiger.cpp" />
+    <ClCompile Include="group.cpp" />
+    <ClCompile Include="image.cpp" />
+    <ClCompile Include="iman.cpp" />
+    <ClCompile Include="interface.cpp" />
+    <ClCompile Include="joystick.cpp" />
+    <ClCompile Include="key.cpp" />
+    <ClCompile Include="label.cpp" />
+    <ClCompile Include="light.cpp" />
+    <ClCompile Include="list.cpp" />
+    <ClCompile Include="maindialog.cpp" />
+    <ClCompile Include="mainmap.cpp" />
+    <ClCompile Include="mainmovie.cpp" />
+    <ClCompile Include="map.cpp" />
+    <ClCompile Include="math3d.cpp" />
+    <ClCompile Include="metafile.cpp" />
+    <ClCompile Include="misc.cpp" />
+    <ClCompile Include="model.cpp" />
+    <ClCompile Include="modfile.cpp" />
+    <ClCompile Include="motion.cpp" />
+    <ClCompile Include="motionbot.cpp" />
+    <ClCompile Include="motionhuman.cpp" />
+    <ClCompile Include="motionvehicle.cpp" />
+    <ClCompile Include="object.cpp" />
+    <ClCompile Include="particule.cpp" />
+    <ClCompile Include="pesetas.cpp" />
+    <ClCompile Include="physics.cpp" />
+    <ClCompile Include="planet.cpp" />
+    <ClCompile Include="profile.cpp" />
+    <ClCompile Include="progress.cpp" />
+    <ClCompile Include="pyro.cpp" />
+    <ClCompile Include="recorder.cpp" />
+    <ClCompile Include="restext.cpp" />
+    <ClCompile Include="robotmain.cpp" />
+    <ClCompile Include="script.cpp" />
+    <ClCompile Include="scroll.cpp" />
+    <ClCompile Include="shortcut.cpp" />
+    <ClCompile Include="slider.cpp" />
+    <ClCompile Include="sound.cpp" />
+    <ClCompile Include="task.cpp" />
+    <ClCompile Include="taskadvance.cpp" />
+    <ClCompile Include="taskfire.cpp" />
+    <ClCompile Include="taskgoto.cpp" />
+    <ClCompile Include="taskmanager.cpp" />
+    <ClCompile Include="taskturn.cpp" />
+    <ClCompile Include="taskwait.cpp" />
+    <ClCompile Include="terrain.cpp" />
+    <ClCompile Include="text.cpp" />
+    <ClCompile Include="water.cpp" />
+    <ClCompile Include="window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="cur00001.cur" />
+    <CustomBuild Include="cur00002.cur" />
+    <CustomBuild Include="cur00003.cur" />
+    <CustomBuild Include="cursor1.cur" />
+    <CustomBuild Include="cursorha.cur" />
+    <CustomBuild Include="cursorsc.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="directx.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="language.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="winmain.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

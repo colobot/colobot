@@ -11,6 +11,7 @@ class CWater;
 
 
 #define FLATLIMIT	(5.0f*PI/180.0f)
+#define MAXTRAJECT	200
 
 
 enum TerrainRes
@@ -42,6 +43,22 @@ typedef struct
 	float		bboxMaxZ;
 }
 BuildingLevel;
+
+
+#define MAXSLOWERZONE	10
+
+typedef struct
+{
+	D3DVECTOR	center;
+	float		min;
+	float		max;
+	float		factor;
+	float		bboxMinX;
+	float		bboxMaxX;
+	float		bboxMinZ;
+	float		bboxMaxZ;
+}
+SlowerZone;
 
 
 #define MAXMATTERRAIN		100
@@ -89,10 +106,10 @@ public:
 	BOOL		LevelMaterial(int id, char* baseName, float u, float v, int up, int right, int down, int left, float hardness);
 	BOOL		LevelInit(int id);
 	BOOL		LevelGenerate(int *id, float min, float max, float slope, float freq, D3DVECTOR center, float radius);
+	void		LevelRoadAdapt(BOOL bF1);
 	void		FlushRelief();
-	BOOL		ReliefFromBMP(const char* filename, float scaleRelief, BOOL adjustBorder);
+	BOOL		ReliefFromBMP(const char* filename, float scaleRelief);
 	BOOL		ReliefFromDXF(const char* filename, float scaleRelief);
-	BOOL		ResFromBMP(const char* filename);
 	BOOL		CreateObjects(BOOL bMultiRes);
 	BOOL		Terraform(const D3DVECTOR &p1, const D3DVECTOR &p2, float height);
 
@@ -106,7 +123,6 @@ public:
 	float		RetFloorHeight(const D3DVECTOR &p, BOOL bBrut=FALSE, BOOL bWater=FALSE);
 	BOOL		MoveOnFloor(D3DVECTOR &p, BOOL bBrut=FALSE, BOOL bWater=FALSE);
 	BOOL		ValidPosition(D3DVECTOR &p, float marging);
-	TerrainRes	RetResource(const D3DVECTOR &p);
 	void		LimitPos(D3DVECTOR &pos);
 
 	void		FlushBuildingLevel();
@@ -114,6 +130,12 @@ public:
 	BOOL		UpdateBuildingLevel(D3DVECTOR center);
 	BOOL		DeleteBuildingLevel(D3DVECTOR center);
 	float		RetBuildingFactor(const D3DVECTOR &p);
+
+	void		FlushSlowerZone();
+	BOOL		AddSlowerZone(D3DVECTOR center, float min, float max, float factor);
+	BOOL		DeleteSlowerZone(D3DVECTOR center);
+	float		RetSlowerZone(const D3DVECTOR &p);
+
 	float		RetHardness(const D3DVECTOR &p);
 
 	int			RetMosaic();
@@ -121,7 +143,6 @@ public:
 	float		RetSize();
 	float		RetScaleRelief();
 
-	void		GroundFlat(D3DVECTOR pos);
 	float		RetFlatZoneRadius(D3DVECTOR center, float max);
 
 	void		SetFlyingMaxHeight(float height);
@@ -129,6 +150,10 @@ public:
 	void		FlushFlyingLimit();
 	BOOL		AddFlyingLimit(D3DVECTOR center, float extRadius, float intRadius, float maxHeight);
 	float		RetFlyingLimit(D3DVECTOR pos, BOOL bNoLimit);
+
+	void		FlushTraject();
+	BOOL		AddTraject(const D3DVECTOR &pos);
+	BOOL		GetTraject(int rank, D3DVECTOR &pos);
 
 protected:
 	BOOL		ReliefAddDot(D3DVECTOR pos, float scaleRelief);
@@ -148,6 +173,12 @@ protected:
 	BOOL		LevelPutDot(int x, int y, int id);
 	void		LevelOpenTable();
 	void		LevelCloseTable();
+
+	int			RoadSearchID(int bits);
+	int			RoadSearchBits(int id);
+	int			RoadGetID(int x, int y);
+	int			RoadSearchBitsFull(int x, int y, BOOL bF1);
+	int			RoadSearchBitsDiag(int x, int y);
 
 	void		AdjustBuildingLevel(D3DVECTOR &p);
 
@@ -183,12 +214,17 @@ protected:
 	int				m_buildingUsed;
 	BuildingLevel	m_buildingTable[MAXBUILDINGLEVEL];
 
-	unsigned char*	m_resources;
+	int				m_slowerUsed;
+	BuildingLevel	m_slowerTable[MAXSLOWERZONE];
+
 	D3DVECTOR		m_wind;			// vitesse du vent
 
 	float			m_flyingMaxHeight;
 	int				m_flyingLimitTotal;
 	FlyingLimit		m_flyingLimit[MAXFLYINGLIMIT];
+
+	int				m_trajectTotal;
+	D3DVECTOR		m_trajectTable[MAXTRAJECT];
 };
 
 

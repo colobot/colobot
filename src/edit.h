@@ -47,27 +47,6 @@ typedef struct
 }
 ImageLine;
 
-typedef struct
-{
-	char	name[40];		// nom du fichier texte (sans help\)
-	char	marker[20];		// nom du marqueur
-}
-HyperLink;
-
-typedef struct
-{
-	char	name[20];		// nom du marqueur
-	int		pos;			// position dans le texte
-}
-HyperMarker;
-
-typedef struct
-{
-	char	filename[50];	// nom complet du fichier texte
-	int		firstLine;		// rang de la première ligne affichée
-}
-HyperHistory;
-
 
 
 
@@ -132,11 +111,6 @@ public:
 	BOOL		Paste();
 	BOOL		Undo();
 
-	void		HyperFlush();
-	void		HyperHome(char *filename);
-	BOOL		HyperTest(EventMsg event);
-	BOOL		HyperGo(EventMsg event);
-
 	void		SetFontSize(float size);
 
 	BOOL		ClearFormat();
@@ -144,16 +118,12 @@ public:
 
 protected:
 	void		SendModifEvent();
-	BOOL		IsLinkPos(FPOINT pos);
 	void		MouseDoubleClick(FPOINT mouse);
 	void		MouseClick(FPOINT mouse);
 	void		MouseMove(FPOINT mouse);
 	void		MouseRelease(FPOINT mouse);
 	int			MouseDetect(FPOINT mouse);
 	void		MoveAdjust();
-
-	void		HyperJump(char *name, char *marker);
-	BOOL		HyperAdd(char *filename, int firstLine);
 
 	void		DrawImage(FPOINT pos, char *name, float width, float offset, float height, int nbLine);
 	void		DrawBack(FPOINT pos, FPOINT dim);
@@ -213,12 +183,6 @@ protected:
 	char		m_lineIndent[EDITLINEMAX];
 	int			m_imageTotal;
 	ImageLine	m_image[EDITIMAGEMAX];
-	HyperLink	m_link[EDITLINKMAX];
-	int			m_markerTotal;
-	HyperMarker	m_marker[EDITLINKMAX];
-	int			m_historyTotal;
-	int			m_historyCurrent;
-	HyperHistory m_history[EDITHISTORYMAX];
 	float		m_time;				// temps absolu
 	float		m_timeBlink;
 	float		m_timeLastClick;

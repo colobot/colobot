@@ -1,0 +1,432 @@
+#if _DEUTSCH
+	if ( type == RES_TEXT )
+	{
+		#if _FULL
+		if ( num == RT_VERSION_ID          )  strcpy(text, "BETA 0.5 /f");
+		#endif
+		#if _NET | _SCHOOL
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Ecole 0.5 /f");
+		#endif
+		#if _DEMO
+		if ( num == RT_VERSION_ID          )  strcpy(text, "Demo 0.5 /f");
+		#endif
+		if ( num == RT_WINDOW_MAXIMIZED    )  strcpy(text, "Maximale Grösse");
+		if ( num == RT_WINDOW_MINIMIZED    )  strcpy(text, "Reduzierte Grösse");
+		if ( num == RT_WINDOW_STANDARD     )  strcpy(text, "Normale Grösse");
+		if ( num == RT_WINDOW_CLOSE        )  strcpy(text, "Schliessen");
+
+		if ( num == RT_NAME_DEFAULT        )  strcpy(text, "Spieler");
+		if ( num == RT_KEY_OR              )  strcpy(text, " oder ");
+
+		if ( num == RT_TITLE_BASE          )  strcpy(text, "BuzzingCars");
+		if ( num == RT_TITLE_INIT          )  strcpy(text, "BuzzingCars");
+		if ( num == RT_TITLE_MISSION       )  strcpy(text, "Missionen");
+		if ( num == RT_TITLE_FREE          )  strcpy(text, "Freies Spiel");
+		if ( num == RT_TITLE_USER          )  strcpy(text, "Zusätzliche Level");
+		if ( num == RT_TITLE_PROTO         )  strcpy(text, "Prototypen");
+		if ( num == RT_TITLE_SETUP         )  strcpy(text, "Optionen");
+		if ( num == RT_TITLE_NAME          )  strcpy(text, "Name des Fahrers");
+		if ( num == RT_TITLE_PERSO         )  strcpy(text, "Wählen Sie ein Autos aus");
+
+		if ( num == RT_PLAY_LISTm          )  strcpy(text, " Wählen Sie eine Mission :");
+		if ( num == RT_PLAY_LISTf          )  strcpy(text, " Wählen Sie eine Rennstrecke :");
+		if ( num == RT_PLAY_LISTu          )  strcpy(text, " Zusätzliche Rennstrecken :");
+		if ( num == RT_PLAY_LISTp          )  strcpy(text, " Prototypen :");
+		if ( num == RT_PLAY_PESETAS        )  strcpy(text, " Ihr Kontostand :");
+		if ( num == RT_PLAY_PCREDIT        )  strcpy(text, "Ihre Ersparnisse");
+		if ( num == RT_PLAY_PMISSION       )  strcpy(text, "Max Gewinn");
+		if ( num == RT_PLAY_PNEXT          )  strcpy(text, "Nächste Spielstufe");
+
+		if ( num == RT_SETUP_DEVICE        )  strcpy(text, " Fahrer :");
+		if ( num == RT_SETUP_MODE          )  strcpy(text, " Auflösung :");
+		if ( num == RT_SETUP_KEY1          )  strcpy(text, "1) Klicken Sie auf den neu zu belegenden Befehl.");
+		if ( num == RT_SETUP_KEY2          )  strcpy(text, "2) Drücken Sie auf die Taste, die benutzt werden soll.");
+
+		if ( num == RT_PERSO_LIST          )  strcpy(text, "Fahrerliste :");
+		if ( num == RT_PERSO_LEVEL         )  strcpy(text, "Spielstärke :");
+		if ( num == RT_PERSO_BUY           )  strcpy(text, "Kaufen");
+
+		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "BuzzingCars");
+		if ( num == RT_DIALOG_ABORT        )  strcpy(text, "Mission beenden ?");
+		if ( num == RT_DIALOG_QUIT         )  strcpy(text, "Wollen Sie BuzzingCars verlassen ?");
+		if ( num == RT_DIALOG_YES          )  strcpy(text, "Aufgeben\\Aktuelle Mission aufgeben");
+		if ( num == RT_DIALOG_NO           )  strcpy(text, "Weiter spielen\\Mission weiter spielen");
+		if ( num == RT_DIALOG_YESQUIT      )  strcpy(text, "Beenden\\BuzzingCars beenden");
+		if ( num == RT_DIALOG_NOQUIT       )  strcpy(text, "Weiter spielen\\Weiter spielen");
+		if ( num == RT_DIALOG_DELGAME      )  strcpy(text, "Wollen Sie den Spielstand von %s löschen ?");
+		if ( num == RT_DIALOG_YESDEL       )  strcpy(text, "Löschen");
+		if ( num == RT_DIALOG_NODEL        )  strcpy(text, "Abbrechen");
+		if ( num == RT_DIALOG_NEWGAME      )  strcpy(text, "Neuer Fahrer :");
+		if ( num == RT_DIALOG_YESNEW       )  strcpy(text, "OK");
+		if ( num == RT_DIALOG_NONEW        )  strcpy(text, "Abbrechen");
+		if ( num == RT_DIALOG_YESKID       )  strcpy(text, "Ja");
+		if ( num == RT_DIALOG_NOKID        )  strcpy(text, "Nein");
+		if ( num == RT_DIALOG_LOADING      )  strcpy(text, "Spiel wird geladen");
+
+		if ( num == RT_WIN_TIME            )  strcpy(text, "Zeit");
+		if ( num == RT_WIN_SOLID           )  strcpy(text, "Zustand des Autos");
+		if ( num == RT_WIN_CONE            )  strcpy(text, "??Respect du décor");
+		if ( num == RT_WIN_POINTS          )  strcpy(text, "Krediteinheiten");
+		if ( num == RT_WIN_BONUS           )  strcpy(text, "Zeitbonus");
+		if ( num == RT_WIN_ARRAY           )  strcpy(text, "Beste Zeiten :");
+		if ( num == RT_WIN_HEADERm         )  strcpy(text, "\t  Fahrer\tAuto\tZeit\tKred.");
+		if ( num == RT_WIN_HEADERf         )  strcpy(text, "\t  Fahrer\tAuto\tZeit\t");
+
+		if ( num == RT_START_READY         )  strcpy(text, "Fertig ?");
+		if ( num == RT_START_QUICK         )  strcpy(text, "3, 2, 1  ...  fertig ?");
+		if ( num == RT_START_123           )  strcpy(text, "%d ...");
+		if ( num == RT_START_GO            )  strcpy(text, "LOS !");
+		if ( num == RT_START_REMOTE        )  strcpy(text, "Steuern Sie Ihr Auto");
+
+		if ( num == RT_RECORD_GALL         )  strcpy(text, "Streckenrekord (-%.2f) !");
+		if ( num == RT_RECORD_GONE         )  strcpy(text, "Rundenrekord (-%.2f) !");
+		if ( num == RT_RECORD_LONE         )  strcpy(text, "Beste Runde (-%.2f) !");
+		if ( num == RT_RECORD_QALL         )  strcpy(text, "> Streckenrekord <");
+		if ( num == RT_RECORD_QONE         )  strcpy(text, "> Rundenrekord <");
+		if ( num == RT_RACE_LAP4           )  strcpy(text, "Noch 4 Runden");
+		if ( num == RT_RACE_LAP3           )  strcpy(text, "Noch 3 Runden");
+		if ( num == RT_RACE_LAP2           )  strcpy(text, "Noch 2 Runden");
+		if ( num == RT_RACE_LAP1           )  strcpy(text, "Letzte Runde");
+
+		if ( num == RT_SPEC_MINSPEED       )  strcpy(text, "Auto zu langsam !");
+		if ( num == RT_SPEC_MAXSPEED       )  strcpy(text, "Auto zu schnell !");
+
+		if ( num == RT_MOTOR_REAR          )  strcpy(text, "R");
+		if ( num == RT_MOTOR_NEUTRAL       )  strcpy(text, "N");
+		if ( num == RT_MOTOR_S1            )  strcpy(text, "1");
+		if ( num == RT_MOTOR_S2            )  strcpy(text, "2");
+		if ( num == RT_MOTOR_S3            )  strcpy(text, "3");
+
+		if ( num == RT_GENERIC_DEV1        )  strcpy(text, "Entwickelt von :");
+		if ( num == RT_GENERIC_DEV2        )  strcpy(text, "www.epsitec.com");
+		if ( num == RT_GENERIC_EDIT1       )  strcpy(text, "Deutsche Version :");
+		if ( num == RT_GENERIC_EDIT2       )  strcpy(text, "www.alsyd.com");
+	}
+
+	if ( type == RES_EVENT )
+	{
+		if ( num == EVENT_BUTTON_OK        )  strcpy(text, "OK");
+		if ( num == EVENT_BUTTON_CANCEL    )  strcpy(text, "Abbrechen");
+		if ( num == EVENT_BUTTON_NEXT      )  strcpy(text, "Weiter");
+		if ( num == EVENT_BUTTON_PREV      )  strcpy(text, "Zurück");
+		if ( num == EVENT_BUTTON_QUIT      )  strcpy(text, "Menü (\\key quit;)");
+		if ( num == EVENT_BUTTON_CAMERA    )  strcpy(text, "Kamera (\\key camera;)");
+		if ( num == EVENT_BUTTON_HELP      )  strcpy(text, "Hilfe (\\key help;)");
+		if ( num == EVENT_BUTTON_BRAKE     )  strcpy(text, "hndbremse (\\key brake;)");
+		if ( num == EVENT_BUTTON_HORN      )  strcpy(text, "Hupe (\\key horn;)");
+		if ( num == EVENT_BONUS            )  strcpy(text, "Zeitbonus");
+		if ( num == EVENT_TIME             )  strcpy(text, "Zeit");
+		if ( num == EVENT_PROGRESS         )  strcpy(text, "Fortschritt");
+
+		if ( num == EVENT_DIALOG_OK        )  strcpy(text, "OK");
+		if ( num == EVENT_DIALOG_CANCEL    )  strcpy(text, "Abbrechen");
+
+		if ( num == EVENT_INTERFACE_MISSION)  strcpy(text, "Mission\\Wählen Sie eine Mission");
+		if ( num == EVENT_INTERFACE_FREE   )  strcpy(text, "Freie Rennen\\Rennen Ausserhalb der Missionen");
+		if ( num == EVENT_INTERFACE_USER   )  strcpy(text, "Benutzerlevel\\Benutzerlevel");
+		if ( num == EVENT_INTERFACE_PROTO  )  strcpy(text, "Proto\\Prototypen");
+		if ( num == EVENT_INTERFACE_NAME   )  strcpy(text, "Neuer Fahrer\\Neuen Fahrer auswählen");
+		if ( num == EVENT_INTERFACE_SETUP  )  strcpy(text, "Optionen\\Optionen");
+		if ( num == EVENT_INTERFACE_AGAIN  )  strcpy(text, "Neustart\\Mission von vorne nocheinmal anfangen");
+		if ( num == EVENT_INTERFACE_ABORT  )  strcpy(text, "\\Zu BuzzingCars zurückkehren");
+		if ( num == EVENT_INTERFACE_QUIT   )  strcpy(text, "Beenden\\BuzzingCars beenden");
+		if ( num == EVENT_INTERFACE_BACK   )  strcpy(text, "Abbrechen\\Zurück zum Hauptmenü");
+		if ( num == EVENT_INTERFACE_TERM   )  strcpy(text, "Menu");
+		if ( num == EVENT_INTERFACE_PLAY   )  strcpy(text, "Spielen ...\\Ausgewählt Mission jetzt spielen");
+		if ( num == EVENT_INTERFACE_GHOST  )  strcpy(text, "Bestes Phantomauto zeigen\\Zeigt das Phantomauto mit der besten Zeit");
+		if ( num == EVENT_INTERFACE_OK     )  strcpy(text, "OK\\Zurück zum vorhergehenden Bildschirm");
+
+		if ( num == EVENT_INTERFACE_SETUPd )  strcpy(text, "3D-Karte\\Treiber und 3D-Einstellungen");
+		if ( num == EVENT_INTERFACE_SETUPg )  strcpy(text, "Graphik\\Grafikoptionen");
+		if ( num == EVENT_INTERFACE_SETUPp )  strcpy(text, "Spiel\\Spieleinstellungen");
+		if ( num == EVENT_INTERFACE_SETUPc )  strcpy(text, "Steuerung\\Einstellungen für Taststur u. Steuergeräte");
+		if ( num == EVENT_INTERFACE_SETUPs )  strcpy(text, "Sound\\Soundeinstellungen");
+		if ( num == EVENT_INTERFACE_RESOL  )  strcpy(text, "Auflösung");
+		if ( num == EVENT_INTERFACE_FULL   )  strcpy(text, "Vollbildschirm\\Vollbildschirmmodus oder Fenstermodus");
+		if ( num == EVENT_INTERFACE_APPLY  )  strcpy(text, "Änderungen übernehmen\\Übernimmt die vorgenommennen Änderrungen");
+
+		if ( num == EVENT_INTERFACE_SHADOW )  strcpy(text, "Schatten\\Schatten");
+		if ( num == EVENT_INTERFACE_DIRTY  )  strcpy(text, "Schmutz\\Schmutz auf Auto und Gebäuden");
+		if ( num == EVENT_INTERFACE_FOG    )  strcpy(text, "Nebel\\Nebel");
+		if ( num == EVENT_INTERFACE_LENS   )  strcpy(text, "Sonnenstrahlen\\Sonnenstrahlen je nach Blickrichtung");
+		if ( num == EVENT_INTERFACE_SKY    )  strcpy(text, "Himmel und Wolken\\Himmel und Wolken");
+		if ( num == EVENT_INTERFACE_PLANET )  strcpy(text, "Planeten und Sterne\\Planeten und Sterne");
+		if ( num == EVENT_INTERFACE_LIGHT  )  strcpy(text, "Bewegliche Lichtquellen\\Bewegliche Lichtquellen");
+		if ( num == EVENT_INTERFACE_PARTI  )  strcpy(text, "Anzahl Partikel\\Partikel für Exlosionen, Staub usw.");
+		if ( num == EVENT_INTERFACE_WHEEL  )  strcpy(text, "Reifenspuren\\Ihr Auto hinterlässt Reinfenspuren");
+		if ( num == EVENT_INTERFACE_CLIP   )  strcpy(text, "Sichtweite\\Sichtweite");
+		if ( num == EVENT_INTERFACE_DETAIL )  strcpy(text, "Details\\Grafikqualität der 3D-Objekte");
+		if ( num == EVENT_INTERFACE_TEXTURE)  strcpy(text, "Texturen\\Grafikqualität der Texturen");
+		if ( num == EVENT_INTERFACE_GADGET )  strcpy(text, "Anzahl dekorativer Gegenstände\\Anzahl dekorativer Gegenstände");
+		if ( num == EVENT_INTERFACE_RAIN   )  strcpy(text, "Funkenregen\\Funkenregen in der Benutzeroberfläche");
+		if ( num == EVENT_INTERFACE_GLINT  )  strcpy(text, "Funkelnde Schaltflächen\\Funkelnde Schaltflächen");
+		if ( num == EVENT_INTERFACE_TOOLTIP)  strcpy(text, "Hilfsblasen\\Hilfsblasen");
+		if ( num == EVENT_INTERFACE_MOVIES )  strcpy(text, "Filmsequenzen\\Filme vor oder nach den Missionen");
+		if ( num == EVENT_INTERFACE_CBACK  )  strcpy(text, "Kamera hinten\\Die Kamera ist hiner dem Auto");
+		if ( num == EVENT_INTERFACE_CBOARD )  strcpy(text, "Kamera auf der Motorhaube\\Die ist Kamera auf der Motorhaube");
+		if ( num == EVENT_INTERFACE_EFFECT )  strcpy(text, "Erdbeben bei Explosionen\\Der Bildschirm wackelt bei Explosionen");
+		if ( num == EVENT_INTERFACE_FLASH  )  strcpy(text, "Blitz bei Zusammenstössen\\Der Bildschirm blitzt bei Zusammenstössen kurz auf");
+		if ( num == EVENT_INTERFACE_MOUSE  )  strcpy(text, "Mauszeiger mit Schatten\\Mauszeiger mit Schatten");
+
+		if ( num == EVENT_INTERFACE_KDEF   )  strcpy(text, "Standardeinstellungen\\Benutzt wieder die Standardeinstellungen für die Steuerung");
+		if ( num == EVENT_INTERFACE_KLEFT  )  strcpy(text, "Nach links\\Dreht das Lenkrad nach links");
+		if ( num == EVENT_INTERFACE_KRIGHT )  strcpy(text, "Nach rechts\\Dreht das Lenkrad nach rechts");
+		if ( num == EVENT_INTERFACE_KUP    )  strcpy(text, "Gas\\Gaspedal");
+		if ( num == EVENT_INTERFACE_KDOWN  )  strcpy(text, "Bremse und Rückwärtsgang\\Bremse und Rückwärtsgang");
+		if ( num == EVENT_INTERFACE_KBRAKE )  strcpy(text, "Handbremse\\Handbremse");
+		if ( num == EVENT_INTERFACE_KHORN  )  strcpy(text, "Hupe\\Hupe");
+		if ( num == EVENT_INTERFACE_KCAMERA)  strcpy(text, "Kamerawechsel\\Wechselt den Standpunkt der Kamera");
+		if ( num == EVENT_INTERFACE_KQUIT  )  strcpy(text, "Aktuelle Mission beenden\\Aktuelle Mission beenden");
+		if ( num == EVENT_INTERFACE_KHELP  )  strcpy(text, "Instruktionen\\Instruktionen für die Mission");
+
+		if ( num == EVENT_INTERFACE_VOLSOUND) strcpy(text, "Geräuscheffekte :\\Lautstärke sämtlicher Geräuscheffekte");
+		if ( num == EVENT_INTERFACE_VOLMUSIC) strcpy(text, "Hintergrundmusik :\\Lautstärke der Hintergrundmusik");
+		if ( num == EVENT_INTERFACE_SOUND3D)  strcpy(text, "3D-Sound\\3D-Sound");
+
+		if ( num == EVENT_INTERFACE_MIN    )  strcpy(text, "Mini\\Minimale Grafikqualität (schneller)");
+		if ( num == EVENT_INTERFACE_NORM   )  strcpy(text, "Normal\\Standard Grafikqualität");
+		if ( num == EVENT_INTERFACE_MAX    )  strcpy(text, "Maxi\\Höchste Grafikqualität (langsamer)");
+
+		if ( num == EVENT_INTERFACE_SILENT )  strcpy(text, "Ruhe\\Keinerlei Geräusche mehr");
+		if ( num == EVENT_INTERFACE_NOISY  )  strcpy(text, "Normal\\Normale Laustärke");
+
+		if ( num == EVENT_INTERFACE_STEERING) strcpy(text, "Joystick oder Lenkrad benutzen\\Joystick oder Lenkrad benutzen");
+		if ( num == EVENT_INTERFACE_JOYPAD  ) strcpy(text, "Gamepad benutzen\\Gamepad benutzen");
+
+		if ( num == EVENT_INTERFACE_NEDIT  )  strcpy(text, "\\Name des Fahrers");
+		if ( num == EVENT_INTERFACE_NOK    )  strcpy(text, "Auswählen\\Wählt den Fahrer in der Liste aus");
+		if ( num == EVENT_INTERFACE_NCREATE)  strcpy(text, "Neu\\Erstellt einen neuen Fahrer");
+		if ( num == EVENT_INTERFACE_NDELETE)  strcpy(text, "Löschen\\Löscht einen Fahrer in der Liste");
+
+		if ( num == EVENT_INTERFACE_LEVEL1 )  strcpy(text, "Kid\\Für Kinder und Sonntagsfahrer");
+		if ( num == EVENT_INTERFACE_LEVEL2 )  strcpy(text, "Cool\\Einfach");
+		if ( num == EVENT_INTERFACE_LEVEL3 )  strcpy(text, "Hart\\Mittelschwer");
+		if ( num == EVENT_INTERFACE_LEVEL4 )  strcpy(text, "Raser\\Echt schwer");
+
+		if ( num == EVENT_INTERFACE_POK    )  strcpy(text, "Benutzen");
+		if ( num == EVENT_INTERFACE_PNEXT  )  strcpy(text, "Zurück >\\");
+		if ( num == EVENT_INTERFACE_PPREV  )  strcpy(text, "< Weiter\\");
+		if ( num == EVENT_INTERFACE_PGSPEED)  strcpy(text, "Höchtgeschwindigkeit");
+		if ( num == EVENT_INTERFACE_PGACCEL)  strcpy(text, "Beschleunigung");
+		if ( num == EVENT_INTERFACE_PGGRIP )  strcpy(text, "Strassenlage");
+		if ( num == EVENT_INTERFACE_PGSOLID)  strcpy(text, "Robustheit");
+		if ( num == EVENT_INTERFACE_PPRICE )  strcpy(text, "%s (Preis: %d Krediteinheiten)");
+		if ( num == EVENT_INTERFACE_PPESETAS) strcpy(text, "Ihre Ersparnisse: %d Krediteinheiten");
+		if ( num == EVENT_INTERFACE_PSUBMOD0) strcpy(text, "A");
+		if ( num == EVENT_INTERFACE_PSUBMOD1) strcpy(text, "B");
+		if ( num == EVENT_INTERFACE_PSUBMOD2) strcpy(text, "C");
+		if ( num == EVENT_INTERFACE_PSUBMOD3) strcpy(text, "D");
+
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Niveau du bouclier");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "Température du réacteur");
+		if ( num == EVENT_OBJECT_GPROGRESS )  strcpy(text, "Travail en cours ...");
+		if ( num == EVENT_OBJECT_GSPEED    )  strcpy(text, "Tacho");
+		if ( num == EVENT_OBJECT_GRPM      )  strcpy(text, "Tourenzöhler");
+		if ( num == EVENT_OBJECT_GMOTOR    )  strcpy(text, "\\Gangschaltung");
+		if ( num == EVENT_OBJECT_GCOMPASS  )  strcpy(text, "Kompass");
+		if ( num == EVENT_OBJECT_GGEIGER   )  strcpy(text, "Geigerzöhler");
+		if ( num == EVENT_OBJECT_GLEVEL1   )  strcpy(text, "Fahrzeugzustand");
+		if ( num == EVENT_OBJECT_GLEVEL2   )  strcpy(text, "Reifenzustand");
+//?		if ( num == EVENT_OBJECT_MAP       )  strcpy(text, "Mini-carte");
+		if ( num == EVENT_OBJECT_MAPZOOM   )  strcpy(text, "Zoom Mini-Karte");
+		if ( num == EVENT_CMD              )  strcpy(text, "Befehlskonsole");
+		if ( num == EVENT_SPEED            )  strcpy(text, "Spielgeschwindigkeit");
+	}
+
+	if ( type == RES_ERR )
+	{
+		strcpy(text, "Erreur");
+		if ( num == ERR_CMD             )  strcpy(text, "Commande inconnue");
+		if ( num == ERR_INSTALL         )  strcpy(text, "BuzzingCars n'est pas installé.");
+		if ( num == ERR_NOCD            )  strcpy(text, "Veuillez mettre le CD de BuzzingCars\net relancer le jeu.");
+		if ( num == ERR_MOVE_IMPOSSIBLE )  strcpy(text, "Déplacement impossible");
+		if ( num == ERR_GOTO_IMPOSSIBLE )  strcpy(text, "Chemin introuvable");
+		if ( num == ERR_GOTO_ITER       )  strcpy(text, "Position inaccessible");
+		if ( num == ERR_GOTO_BUSY       )  strcpy(text, "Destination occupée");
+		if ( num == ERR_FIRE_VEH        )  strcpy(text, "Robot inadapté");
+		if ( num == ERR_FIRE_ENERGY     )  strcpy(text, "Pas assez d'énergie");
+		if ( num == ERR_MISSION_NOTERM  )  strcpy(text, "La misssion n'est pas terminée (appuyez sur \\key help; pour plus de détails)");
+
+		if ( num == INFO_WIN            )  strcpy(text, "<<< Bravo, mission terminée >>>");
+		if ( num == INFO_LOST           )  strcpy(text, "<<< Désolé, mission échouée >>>");
+		if ( num == INFO_LOSTq          )  strcpy(text, "<<< Désolé, mission échouée >>>");
+	}
+
+	if ( type == RES_CBOT )
+	{
+		strcpy(text, "Erreur");
+		if ( num == TX_OPENPAR       ) strcpy(text, "Il manque une parenthèse ouvrante");
+		if ( num == TX_CLOSEPAR      ) strcpy(text, "Il manque une parenthèse fermante");
+		if ( num == TX_NOTBOOL       ) strcpy(text, "L'expression doit être un boolean");
+		if ( num == TX_UNDEFVAR      ) strcpy(text, "Variable non déclarée");
+		if ( num == TX_BADLEFT       ) strcpy(text, "Assignation impossible");
+		if ( num == TX_ENDOF         ) strcpy(text, "Terminateur point-virgule non trouvé");
+		if ( num == TX_OUTCASE       ) strcpy(text, "Instruction ""case"" hors d'un bloc ""switch""");
+		if ( num == TX_NOTERM        ) strcpy(text, "Instructions après la fin");
+		if ( num == TX_CLOSEBLK      ) strcpy(text, "Il manque la fin du bloc");
+		if ( num == TX_ELSEWITHOUTIF ) strcpy(text, "Instruction ""else"" sans ""if"" correspondant");
+		if ( num == TX_OPENBLK       ) strcpy(text, "Début d'un bloc attendu");
+		if ( num == TX_BADTYPE       ) strcpy(text, "Mauvais type de résultat pour l'assignation");
+		if ( num == TX_REDEFVAR      ) strcpy(text, "Redéfinition d'une variable");
+		if ( num == TX_BAD2TYPE      ) strcpy(text, "Les deux opérandes ne sont pas de types compatibles");
+		if ( num == TX_UNDEFCALL     ) strcpy(text, "Routine inconnue");
+		if ( num == TX_MISDOTS       ) strcpy(text, "Séparateur "" : "" attendu");
+		if ( num == TX_WHILE         ) strcpy(text, "Manque le mot ""while""");
+		if ( num == TX_BREAK         ) strcpy(text, "Instruction ""break"" en dehors d'une boucle");
+		if ( num == TX_LABEL         ) strcpy(text, "Un label ne peut se placer que devant un ""for"", un ""while"", un ""do"" ou un ""switch""");
+		if ( num == TX_NOLABEL       ) strcpy(text, "Cette étiquette n'existe pas");
+		if ( num == TX_NOCASE        ) strcpy(text, "Manque une instruction ""case""");
+		if ( num == TX_BADNUM        ) strcpy(text, "Un nombre est attendu");
+		if ( num == TX_VOID          ) strcpy(text, "Paramètre void");
+		if ( num == TX_NOTYP         ) strcpy(text, "Déclaration de type attendu");
+		if ( num == TX_NOVAR         ) strcpy(text, "Nom d'une variable attendu");
+		if ( num == TX_NOFONC        ) strcpy(text, "Nom de la fonction attendu");
+		if ( num == TX_OVERPARAM     ) strcpy(text, "Trop de paramètres");
+		if ( num == TX_REDEF         ) strcpy(text, "Cette fonction existe déjà");
+		if ( num == TX_LOWPARAM      ) strcpy(text, "Pas assez de paramètres");
+		if ( num == TX_BADPARAM      ) strcpy(text, "Aucune fonction de ce nom n'accepte ce(s) type(s) de paramètre(s)");
+		if ( num == TX_NUMPARAM      ) strcpy(text, "Aucune fonction de ce nom n'accepte ce nombre de paramètres");
+		if ( num == TX_NOITEM        ) strcpy(text, "Cet élément n'existe pas dans cette classe");
+		if ( num == TX_DOT           ) strcpy(text, "L'objet n'est pas une instance d'une classe");
+		if ( num == TX_NOCONST       ) strcpy(text, "Il n'y a pas de constructeur approprié");
+		if ( num == TX_REDEFCLASS    ) strcpy(text, "Cette classe existe déjà");
+		if ( num == TX_CLBRK         ) strcpy(text, """ ] "" attendu");
+		if ( num == TX_RESERVED      ) strcpy(text, "Ce mot est réservé");
+		if ( num == TX_BADNEW        ) strcpy(text, "Mauvais argument pour ""new""");
+		if ( num == TX_OPBRK         ) strcpy(text, """ [ "" attendu");
+		if ( num == TX_BADSTRING     ) strcpy(text, "Une chaîne de caractère est attendue");
+		if ( num == TX_BADINDEX      ) strcpy(text, "Mauvais type d'index");
+		if ( num == TX_PRIVATE       ) strcpy(text, "Elément protégé");
+		if ( num == TX_NOPUBLIC      ) strcpy(text, "Public requis");
+		if ( num == TX_DIVZERO       ) strcpy(text, "Division par zéro");
+		if ( num == TX_NOTINIT       ) strcpy(text, "Variable non initialisée");
+		if ( num == TX_BADTHROW      ) strcpy(text, "Valeur négative refusée pour ""throw""");
+		if ( num == TX_NORETVAL      ) strcpy(text, "La fonction n'a pas retourné de résultat");
+		if ( num == TX_NORUN         ) strcpy(text, "Pas de fonction en exécution");
+		if ( num == TX_NOCALL        ) strcpy(text, "Appel d'une fonction inexistante");
+		if ( num == TX_NOCLASS       ) strcpy(text, "Cette classe n'existe pas");
+		if ( num == TX_NULLPT        ) strcpy(text, "Objet n'existe pas");
+		if ( num == TX_OPNAN         ) strcpy(text, "Opération sur un ""nan""");
+		if ( num == TX_OUTARRAY      ) strcpy(text, "Accès hors du tableau");
+		if ( num == TX_STACKOVER     ) strcpy(text, "Débordement de la pile");
+		if ( num == TX_DELETEDPT     ) strcpy(text, "Objet inaccessible");
+		if ( num == TX_FILEOPEN      ) strcpy(text, "Ouverture du fichier impossible");
+		if ( num == TX_NOTOPEN       ) strcpy(text, "Le fichier n'est pas ouvert");
+		if ( num == TX_ERRREAD       ) strcpy(text, "Erreur à la lecture");
+		if ( num == TX_ERRWRITE      ) strcpy(text, "Erreur à l'écriture");
+	}
+
+	if ( type == RES_KEY )
+	{
+		if ( num == 0                   )  strcpy(text, "< aucune >");
+		if ( num == VK_LEFT             )  strcpy(text, "Flèche Gauche");
+		if ( num == VK_RIGHT            )  strcpy(text, "Flèche Droite");
+		if ( num == VK_UP               )  strcpy(text, "Flèche Haut");
+		if ( num == VK_DOWN             )  strcpy(text, "Flèche Bas");
+		if ( num == VK_CANCEL           )  strcpy(text, "Control-break");
+		if ( num == VK_BACK             )  strcpy(text, "<--");
+		if ( num == VK_TAB              )  strcpy(text, "Tab");
+		if ( num == VK_CLEAR            )  strcpy(text, "Clear");
+		if ( num == VK_RETURN           )  strcpy(text, "Entrée");
+		if ( num == VK_SHIFT            )  strcpy(text, "Shift");
+		if ( num == VK_CONTROL          )  strcpy(text, "Ctrl");
+		if ( num == VK_MENU             )  strcpy(text, "Alt");
+		if ( num == VK_PAUSE            )  strcpy(text, "Pause");
+		if ( num == VK_CAPITAL          )  strcpy(text, "Caps Lock");
+		if ( num == VK_ESCAPE           )  strcpy(text, "Esc");
+		if ( num == VK_SPACE            )  strcpy(text, "Espace");
+		if ( num == VK_PRIOR            )  strcpy(text, "Page Up");
+		if ( num == VK_NEXT             )  strcpy(text, "Page Down");
+		if ( num == VK_END              )  strcpy(text, "End");
+		if ( num == VK_HOME             )  strcpy(text, "Home");
+		if ( num == VK_SELECT           )  strcpy(text, "Select");
+		if ( num == VK_EXECUTE          )  strcpy(text, "Execute");
+		if ( num == VK_SNAPSHOT         )  strcpy(text, "Print Scrn");
+		if ( num == VK_INSERT           )  strcpy(text, "Insert");
+		if ( num == VK_DELETE           )  strcpy(text, "Delete");
+		if ( num == VK_HELP             )  strcpy(text, "Help");
+		if ( num == VK_LWIN             )  strcpy(text, "Left Windows");
+		if ( num == VK_RWIN             )  strcpy(text, "Right Windows");
+		if ( num == VK_APPS             )  strcpy(text, "Application key");
+		if ( num == VK_NUMPAD0          )  strcpy(text, "NumPad 0");
+		if ( num == VK_NUMPAD1          )  strcpy(text, "NumPad 1");
+		if ( num == VK_NUMPAD2          )  strcpy(text, "NumPad 2");
+		if ( num == VK_NUMPAD3          )  strcpy(text, "NumPad 3");
+		if ( num == VK_NUMPAD4          )  strcpy(text, "NumPad 4");
+		if ( num == VK_NUMPAD5          )  strcpy(text, "NumPad 5");
+		if ( num == VK_NUMPAD6          )  strcpy(text, "NumPad 6");
+		if ( num == VK_NUMPAD7          )  strcpy(text, "NumPad 7");
+		if ( num == VK_NUMPAD8          )  strcpy(text, "NumPad 8");
+		if ( num == VK_NUMPAD9          )  strcpy(text, "NumPad 9");
+		if ( num == VK_MULTIPLY         )  strcpy(text, "NumPad *");
+		if ( num == VK_ADD              )  strcpy(text, "NumPad +");
+		if ( num == VK_SEPARATOR        )  strcpy(text, "NumPad sep");
+		if ( num == VK_SUBTRACT         )  strcpy(text, "NumPad -");
+		if ( num == VK_DECIMAL          )  strcpy(text, "NumPad .");
+		if ( num == VK_DIVIDE           )  strcpy(text, "NumPad /");
+		if ( num == VK_F1               )  strcpy(text, "F1");
+		if ( num == VK_F2               )  strcpy(text, "F2");
+		if ( num == VK_F3               )  strcpy(text, "F3");
+		if ( num == VK_F4               )  strcpy(text, "F4");
+		if ( num == VK_F5               )  strcpy(text, "F5");
+		if ( num == VK_F6               )  strcpy(text, "F6");
+		if ( num == VK_F7               )  strcpy(text, "F7");
+		if ( num == VK_F8               )  strcpy(text, "F8");
+		if ( num == VK_F9               )  strcpy(text, "F9");
+		if ( num == VK_F10              )  strcpy(text, "F10");
+		if ( num == VK_F11              )  strcpy(text, "F11");
+		if ( num == VK_F12              )  strcpy(text, "F12");
+		if ( num == VK_F13              )  strcpy(text, "F13");
+		if ( num == VK_F14              )  strcpy(text, "F14");
+		if ( num == VK_F15              )  strcpy(text, "F15");
+		if ( num == VK_F16              )  strcpy(text, "F16");
+		if ( num == VK_F17              )  strcpy(text, "F17");
+		if ( num == VK_F18              )  strcpy(text, "F18");
+		if ( num == VK_F19              )  strcpy(text, "F19");
+		if ( num == VK_F20              )  strcpy(text, "F20");
+		if ( num == VK_NUMLOCK          )  strcpy(text, "Num Lock");
+		if ( num == VK_SCROLL           )  strcpy(text, "Scroll");
+		if ( num == VK_ATTN             )  strcpy(text, "Attn");
+		if ( num == VK_CRSEL            )  strcpy(text, "CrSel");
+		if ( num == VK_EXSEL            )  strcpy(text, "ExSel");
+		if ( num == VK_EREOF            )  strcpy(text, "Erase EOF");
+		if ( num == VK_PLAY             )  strcpy(text, "Play");
+		if ( num == VK_ZOOM             )  strcpy(text, "Zoom");
+		if ( num == VK_PA1              )  strcpy(text, "PA1");
+		if ( num == VK_OEM_CLEAR        )  strcpy(text, "Clear");
+		if ( num == VK_BUTTON1          )  strcpy(text, "Bouton 1");
+		if ( num == VK_BUTTON2          )  strcpy(text, "Bouton 2");
+		if ( num == VK_BUTTON3          )  strcpy(text, "Bouton 3");
+		if ( num == VK_BUTTON4          )  strcpy(text, "Bouton 4");
+		if ( num == VK_BUTTON5          )  strcpy(text, "Bouton 5");
+		if ( num == VK_BUTTON6          )  strcpy(text, "Bouton 6");
+		if ( num == VK_BUTTON7          )  strcpy(text, "Bouton 7");
+		if ( num == VK_BUTTON8          )  strcpy(text, "Bouton 8");
+		if ( num == VK_BUTTON9          )  strcpy(text, "Bouton 9");
+		if ( num == VK_BUTTON10         )  strcpy(text, "Bouton 10");
+		if ( num == VK_BUTTON11         )  strcpy(text, "Bouton 11");
+		if ( num == VK_BUTTON12         )  strcpy(text, "Bouton 12");
+		if ( num == VK_BUTTON13         )  strcpy(text, "Bouton 13");
+		if ( num == VK_BUTTON14         )  strcpy(text, "Bouton 14");
+		if ( num == VK_BUTTON15         )  strcpy(text, "Bouton 15");
+		if ( num == VK_BUTTON16         )  strcpy(text, "Bouton 16");
+		if ( num == VK_BUTTON17         )  strcpy(text, "Bouton 17");
+		if ( num == VK_BUTTON18         )  strcpy(text, "Bouton 18");
+		if ( num == VK_BUTTON19         )  strcpy(text, "Bouton 19");
+		if ( num == VK_BUTTON20         )  strcpy(text, "Bouton 20");
+		if ( num == VK_BUTTON21         )  strcpy(text, "Bouton 21");
+		if ( num == VK_BUTTON22         )  strcpy(text, "Bouton 22");
+		if ( num == VK_BUTTON23         )  strcpy(text, "Bouton 23");
+		if ( num == VK_BUTTON24         )  strcpy(text, "Bouton 24");
+		if ( num == VK_BUTTON25         )  strcpy(text, "Bouton 25");
+		if ( num == VK_BUTTON26         )  strcpy(text, "Bouton 26");
+		if ( num == VK_BUTTON27         )  strcpy(text, "Bouton 27");
+		if ( num == VK_BUTTON28         )  strcpy(text, "Bouton 28");
+		if ( num == VK_BUTTON29         )  strcpy(text, "Bouton 29");
+		if ( num == VK_BUTTON30         )  strcpy(text, "Bouton 30");
+		if ( num == VK_BUTTON31         )  strcpy(text, "Bouton 31");
+		if ( num == VK_BUTTON32         )  strcpy(text, "Bouton 32");
+		if ( num == VK_WHEELUP          )  strcpy(text, "Molette haut");
+		if ( num == VK_WHEELDOWN        )  strcpy(text, "Molette bas");
+	}
+#endif

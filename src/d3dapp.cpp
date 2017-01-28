@@ -4,7 +4,7 @@
 #define D3D_OVERLOADS
 
 #include <windows.h>
-#include <pbt.h>
+//#include <pbt.h>
 #include <mmsystem.h>
 #include <stdio.h>
 #include <direct.h>
@@ -65,11 +65,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
 	if ( err != ERR_OK )
 	{
 		GetResource(RES_ERR, err, string);
-#if _NEWLOOK
-		MessageBox( NULL, string, _T("CeeBot"), MB_ICONERROR|MB_OK );
-#else
-		MessageBox( NULL, string, _T("COLOBOT"), MB_ICONERROR|MB_OK );
-#endif
+		MessageBox( NULL, string, _T("BuzzingCars"), MB_ICONERROR|MB_OK );
 		return 0;
 	}
 
@@ -118,14 +114,19 @@ CD3DApplication::CD3DApplication()
 	m_pddsDepthBuffer  = 0;
 
 	m_keyState = 0;
-	m_axeKey = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_axeKeyX = 0.0f;
+	m_axeKeyY = 0.0f;
+	m_axeKeyZ = 0.0f;
+	m_axeKeyW = 0.0f;
 	m_axeJoy = D3DVECTOR(0.0f, 0.0f, 0.0f);
 
 	m_vidMemTotal  = 0;
 	m_bActive      = FALSE;
 	m_bActivateApp = FALSE;
 	m_bReady       = FALSE;
-	m_bJoystick    = FALSE;
+	m_joystick     = 0;  // clavier
+	m_FFBforce     = 1.0f;
+	m_bFFB         = FALSE;
 	m_aTime        = 0.0f;
 
 	for ( i=0 ; i<32 ; i++ )
@@ -133,11 +134,12 @@ CD3DApplication::CD3DApplication()
 		m_bJoyButton[i] = FALSE;
 	}
 
-#if _NEWLOOK
-	m_strWindowTitle  = _T("CeeBot");
-#else
-	m_strWindowTitle  = _T("COLOBOT");
-#endif
+	m_bJoyLeft  = FALSE;
+	m_bJoyRight = FALSE;
+	m_bJoyUp    = FALSE;
+	m_bJoyDown  = FALSE;
+
+	m_strWindowTitle  = _T("BuzzingCars");
 	m_bAppUseZBuffer  = TRUE;
 	m_bAppUseStereo   = TRUE;
 	m_bShowStats      = FALSE;
@@ -145,7 +147,6 @@ CD3DApplication::CD3DApplication()
 	m_bAudioState     = TRUE;
 	m_bAudioTrack     = TRUE;
 	m_bNiceMouse      = FALSE;
-	m_bSetupMode      = TRUE;
 	m_fnConfirmDevice = 0;
 
 	ResetKey();
@@ -185,15 +186,7 @@ Error CD3DApplication::RegQuery()
 	DWORD	type, len;
 	char	filename[100];
 
-#if _NEWLOOK
- #if _TEEN
-	i = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Epsitec\\CeeBot-Teen\\Setup",
- #else
-	i = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Epsitec\\CeeBot-A\\Setup",
- #endif
-#else
-	i = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Epsitec\\Colobot\\Setup",
-#endif
+	i = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Epsitec\\BuzzingCars\\Setup",
 					 0, KEY_READ, &key);
 	if ( i != ERROR_SUCCESS )  return ERR_INSTALL;
 
@@ -209,7 +202,7 @@ Error CD3DApplication::RegQuery()
 	i = GetDriveType(filename);
 	if ( i != DRIVE_CDROM )  return ERR_NOCD;
 
-	strcat(filename, "install.ini");
+	strcat(filename, "autorun.inf");
 	file = fopen(filename, "rb");  // fichier install.ini inexistant ?
 	if ( file == NULL )  return ERR_NOCD;
 	fclose(file);
@@ -300,7 +293,7 @@ Error CD3DApplication::CheckMistery(char *strCmdLine)
 	}
 
 	m_CDpath[0] = 0;
-#if _FULL
+#if _FULL & !_EGAMES
 	if ( strstr(strCmdLine, "-nocd") == 0 && !m_bDebugMode )
 	{
 		Error	err;
@@ -308,29 +301,10 @@ Error CD3DApplication::CheckMistery(char *strCmdLine)
 		err = RegQuery();
 		if ( err != ERR_OK )  return err;
 
-		//?err = AudioQuery();
-		//?if ( err != ERR_OK )  return err;
+//?		err = AudioQuery();
+//?		if ( err != ERR_OK )  return err;
 	}
-#endif
-#if _SCHOOL & _EDU
-	if ( strstr(strCmdLine, "-nosetup") != 0 )
-	{
-		m_bSetupMode = FALSE;
-	}
-	m_bAudioTrack = FALSE;
-#endif
-#if _SCHOOL & _PERSO
-	Error err = RegQuery();
-	if ( err != ERR_OK )  return err;
-	m_bAudioTrack = FALSE;
-#endif
-#if _SCHOOL & _CEEBOTDEMO
-	m_bAudioTrack = FALSE;
-#endif
-#if _NET
-	m_bAudioTrack = FALSE;
-#endif
-#if _DEMO
+#else
 	m_bAudioTrack = FALSE;
 #endif
 
@@ -380,11 +354,6 @@ BOOL CD3DApplication::RetDebugMode()
 	return m_bDebugMode;
 }
 
-BOOL CD3DApplication::RetSetupMode()
-{
-	return m_bSetupMode;
-}
-
 
 
 
@@ -407,9 +376,10 @@ DWORD WINAPI ThreadRoutine(LPVOID)
 		ZeroMemory(&event, sizeof(Event));
 		event.event = EVENT_FRAME;
 		event.rTime = TIME_THREAD;
-		event.axeX = AxeLimit(g_pD3DApp->m_axeKey.x + g_pD3DApp->m_axeJoy.x);
-		event.axeY = AxeLimit(g_pD3DApp->m_axeKey.y + g_pD3DApp->m_axeJoy.y);
-		event.axeZ = AxeLimit(g_pD3DApp->m_axeKey.z + g_pD3DApp->m_axeJoy.z);
+		event.axeX = AxeLimit(g_pD3DApp->m_axeKeyX + g_pD3DApp->m_axeJoy.x);
+		event.axeY = AxeLimit(g_pD3DApp->m_axeKeyY + g_pD3DApp->m_axeJoy.y);
+		event.axeZ = AxeLimit(g_pD3DApp->m_axeKeyZ + g_pD3DApp->m_axeJoy.z);
+		event.axeW = g_pD3DApp->m_axeKeyW;
 		event.keyState = g_pD3DApp->m_keyState;
 
 		if ( g_pD3DApp->m_pRobotMain != 0 )
@@ -450,6 +420,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 	char	deviceName[100];
 	char	modeName[100];
 	int		iValue;
+	float	fValue;
 	DWORD	style;
 	BOOL	bFull, b3D;
 
@@ -571,32 +542,24 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 		m_pD3DEngine->FirstExecuteAdapt(TRUE);
 	}
 
-	// Crée le fichier colobot.ini à la première exécution.
+	// Utilise un joystick ?
+	if ( GetProfileFloat("Setup", "JoystickForce", fValue) )
+	{
+		m_pD3DEngine->SetForce(fValue);
+	}
+	if ( GetProfileInt("Setup", "JoystickFFB", iValue) )
+	{
+		m_pD3DEngine->SetFFB(iValue);
+	}
+	if ( GetProfileInt("Setup", "UseJoystick", iValue) )
+	{
+		m_pD3DEngine->SetJoystick(iValue);
+	}
+
+	// Crée le fichier buzzingcars.ini à la première exécution.
 	m_pRobotMain->CreateIni();
 
-#if _DEMO
-	m_pRobotMain->ChangePhase(PHASE_NAME);
-#else
-#if _NET | _SCHOOL
-	m_pRobotMain->ChangePhase(PHASE_WELCOME2);
-#else
-#if _FRENCH
-	m_pRobotMain->ChangePhase(PHASE_WELCOME2);
-#endif
-#if _ENGLISH
-	m_pRobotMain->ChangePhase(PHASE_WELCOME2);
-#endif
-#if _GERMAN
-	m_pRobotMain->ChangePhase(PHASE_WELCOME2);
-#endif
-#if _WG
-	m_pRobotMain->ChangePhase(PHASE_WELCOME1);
-#endif
-#if _POLISH
-	m_pRobotMain->ChangePhase(PHASE_WELCOME1);
-#endif
-#endif
-#endif
+	m_pRobotMain->ChangePhase(PHASE_WELCOME3);
 	m_pD3DEngine->TimeInit();
 
 #if USE_THREAD
@@ -734,61 +697,13 @@ void CD3DApplication::SetMouseType(D3DMouse type)
 	{
 		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORHAND));
 	}
-	else if ( type == D3DMOUSECROSS )
-	{
-		hc = LoadCursor(NULL, IDC_CROSS);
-	}
 	else if ( type == D3DMOUSEEDIT )
 	{
 		hc = LoadCursor(NULL, IDC_IBEAM);
 	}
-	else if ( type == D3DMOUSENO )
-	{
-		hc = LoadCursor(NULL, IDC_NO);
-	}
-	else if ( type == D3DMOUSEMOVE )
-	{
-		hc = LoadCursor(NULL, IDC_SIZEALL);
-	}
-	else if ( type == D3DMOUSEMOVEH )
-	{
-		hc = LoadCursor(NULL, IDC_SIZEWE);
-	}
-	else if ( type == D3DMOUSEMOVEV )
-	{
-		hc = LoadCursor(NULL, IDC_SIZENS);
-	}
-	else if ( type == D3DMOUSEMOVED )
-	{
-		hc = LoadCursor(NULL, IDC_SIZENESW);
-	}
-	else if ( type == D3DMOUSEMOVEI )
-	{
-		hc = LoadCursor(NULL, IDC_SIZENWSE);
-	}
 	else if ( type == D3DMOUSEWAIT )
 	{
 		hc = LoadCursor(NULL, IDC_WAIT);
-	}
-	else if ( type == D3DMOUSESCROLLL )
-	{
-		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLLL));
-	}
-	else if ( type == D3DMOUSESCROLLR )
-	{
-		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLLR));
-	}
-	else if ( type == D3DMOUSESCROLLU )
-	{
-		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLLU));
-	}
-	else if ( type == D3DMOUSESCROLLD )
-	{
-		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLLD));
-	}
-	else if ( type == D3DMOUSETARGET )
-	{
-		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORTARGET));
 	}
 	else
 	{
@@ -852,17 +767,12 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 
 		ZeroMemory(&event, sizeof(Event));
 
-#if 0
-		if ( uMsg == WM_KEYDOWN ||
-			 uMsg == WM_CHAR ||
-			 uMsg == WM_XBUTTONDOWN ||
-			 uMsg == WM_XBUTTONUP )
-		{
-			char s[100];
-			sprintf(s, "event: %d %d %d\n", uMsg, wParam, lParam);
-			OutputDebugString(s);
-		}
-#endif
+//?		if ( uMsg  != 275 )
+//?		{
+//?			char s[100];
+//?			sprintf(s, "event: %d %d %d\n", uMsg, wParam, lParam);
+//?			OutputDebugString(s);
+//?		}
 
 		if ( uMsg == WM_LBUTTONDOWN )  event.event = EVENT_LBUTTONDOWN;
 		if ( uMsg == WM_RBUTTONDOWN )  event.event = EVENT_RBUTTONDOWN;
@@ -873,16 +783,11 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 		if ( uMsg == WM_KEYUP       )  event.event = EVENT_KEYUP;
 		if ( uMsg == WM_CHAR        )  event.event = EVENT_CHAR;
 
-		if ( uMsg == WM_XBUTTONUP )
-		{
-			if ( (wParam>>16) == XBUTTON1 )  event.event = EVENT_HYPER_PREV;
-			if ( (wParam>>16) == XBUTTON2 )  event.event = EVENT_HYPER_NEXT;
-		}
-
 		event.param = wParam;
-		event.axeX = AxeLimit(g_pD3DApp->m_axeKey.x + g_pD3DApp->m_axeJoy.x);
-		event.axeY = AxeLimit(g_pD3DApp->m_axeKey.y + g_pD3DApp->m_axeJoy.y);
-		event.axeZ = AxeLimit(g_pD3DApp->m_axeKey.z + g_pD3DApp->m_axeJoy.z);
+		event.axeX = AxeLimit(g_pD3DApp->m_axeKeyX + g_pD3DApp->m_axeJoy.x);
+		event.axeY = AxeLimit(g_pD3DApp->m_axeKeyY + g_pD3DApp->m_axeJoy.y);
+		event.axeZ = AxeLimit(g_pD3DApp->m_axeKeyZ + g_pD3DApp->m_axeJoy.z);
+		event.axeW = g_pD3DApp->m_axeKeyW;
 		event.keyState = g_pD3DApp->m_keyState;
 
 		if ( uMsg == WM_LBUTTONDOWN ||
@@ -961,7 +866,10 @@ BOOL CALLBACK AboutProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM )
 void CD3DApplication::FlushPressKey()
 {
 	m_keyState = 0;
-	m_axeKey = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_axeKeyX = 0.0f;
+	m_axeKeyY = 0.0f;
+	m_axeKeyZ = 0.0f;
+	m_axeKeyW = 0.0f;
 	m_axeJoy = D3DVECTOR(0.0f, 0.0f, 0.0f);
 }
 
@@ -980,27 +888,17 @@ void CD3DApplication::ResetKey()
 	m_key[KEYRANK_RIGHT  ][0] = VK_RIGHT;
 	m_key[KEYRANK_UP     ][0] = VK_UP;
 	m_key[KEYRANK_DOWN   ][0] = VK_DOWN;
-	m_key[KEYRANK_GUP    ][0] = VK_SHIFT;
-	m_key[KEYRANK_GDOWN  ][0] = VK_CONTROL;
-	m_key[KEYRANK_CAMERA ][0] = VK_SPACE;
-	m_key[KEYRANK_CAMERA ][1] = VK_BUTTON2;
-	m_key[KEYRANK_DESEL  ][0] = VK_NUMPAD0;
-	m_key[KEYRANK_DESEL  ][1] = VK_BUTTON6;
-	m_key[KEYRANK_ACTION ][0] = VK_RETURN;
-	m_key[KEYRANK_ACTION ][1] = VK_BUTTON1;
+	m_key[KEYRANK_BRAKE  ][0] = VK_SPACE;
+	m_key[KEYRANK_BRAKE  ][1] = VK_BUTTON1;
+	m_key[KEYRANK_HORN   ][0] = VK_RETURN;
+	m_key[KEYRANK_HORN   ][1] = VK_BUTTON2;
+	m_key[KEYRANK_CAMERA ][0] = VK_F2;
+	m_key[KEYRANK_CAMERA ][1] = VK_BUTTON3;
 	m_key[KEYRANK_NEAR   ][0] = VK_ADD;
-	m_key[KEYRANK_NEAR   ][1] = VK_BUTTON5;
 	m_key[KEYRANK_AWAY   ][0] = VK_SUBTRACT;
-	m_key[KEYRANK_AWAY   ][1] = VK_BUTTON4;
-	m_key[KEYRANK_NEXT   ][0] = VK_TAB;
-	m_key[KEYRANK_NEXT   ][1] = VK_BUTTON3;
-	m_key[KEYRANK_HUMAN  ][0] = VK_HOME;
-	m_key[KEYRANK_HUMAN  ][1] = VK_BUTTON7;
 	m_key[KEYRANK_QUIT   ][0] = VK_ESCAPE;
 	m_key[KEYRANK_HELP   ][0] = VK_F1;
-	m_key[KEYRANK_PROG   ][0] = VK_F2;
 	m_key[KEYRANK_CBOT   ][0] = VK_F3;
-	m_key[KEYRANK_VISIT  ][0] = VK_DECIMAL;
 	m_key[KEYRANK_SPEED10][0] = VK_F4;
 	m_key[KEYRANK_SPEED15][0] = VK_F5;
 	m_key[KEYRANK_SPEED20][0] = VK_F6;
@@ -1034,21 +932,95 @@ int CD3DApplication::RetKey(int keyRank, int option)
 }
 
 
+// Gestion de la force de l'effet FFB.
+
+void CD3DApplication::SetForce(float force)
+{
+	m_FFBforce = force;
+}
+
+float CD3DApplication::RetForce()
+{
+	return m_FFBforce;
+}
+
+// Gestion du force feedback. Il faut appeler SetFFB avant SetJoystick.
+
+void CD3DApplication::SetFFB(BOOL bMode)
+{
+	m_bFFB = bMode;
+}
+
+BOOL CD3DApplication::RetFFB()
+{
+	return m_bFFB;
+}
 
 // Utilise le joystick ou le clavier.
+// 0=clavier, 1=volant, 2=joypad
 
-void CD3DApplication::SetJoystick(BOOL bEnable)
+void CD3DApplication::SetJoystick(int mode)
 {
-	m_bJoystick = bEnable;
+	m_joystick = mode;
 
-	if ( m_bJoystick )  // joystick ?
+	if ( m_joystick != 0 )  // joystick ?
 	{
-		if ( !InitDirectInput(m_instance, m_hWnd) )  // initialise joystick
+		if ( !InitDirectInput(m_instance, m_hWnd, m_bFFB) )  // initialise joystick
 		{
-			m_bJoystick = FALSE;
+			m_joystick = 0;
 		}
 		else
 		{
+			if ( m_joystick == 1 )  // volant ?
+			{
+				if ( m_key[KEYRANK_UP][0] >= VK_BUTTON1  &&
+					 m_key[KEYRANK_UP][0] <= VK_BUTTON32 )
+				{
+					m_key[KEYRANK_UP][0] = m_key[KEYRANK_UP][1];
+					m_key[KEYRANK_UP][1] = 0;
+					if ( m_key[KEYRANK_UP][0] == 0 )
+					{
+						m_key[KEYRANK_UP][0] = VK_UP;
+					}
+				}
+				if ( m_key[KEYRANK_UP][1] >= VK_BUTTON1  &&
+					 m_key[KEYRANK_UP][1] <= VK_BUTTON32 )
+				{
+					m_key[KEYRANK_UP][1] = 0;
+				}
+				if ( m_key[KEYRANK_DOWN][0] >= VK_BUTTON1  &&
+					 m_key[KEYRANK_DOWN][0] <= VK_BUTTON32 )
+				{
+					m_key[KEYRANK_DOWN][0] = m_key[KEYRANK_DOWN][1];
+					m_key[KEYRANK_DOWN][1] = 0;
+					if ( m_key[KEYRANK_DOWN][0] == 0 )
+					{
+						m_key[KEYRANK_DOWN][0] = VK_DOWN;
+					}
+				}
+				if ( m_key[KEYRANK_DOWN][1] >= VK_BUTTON1  &&
+					 m_key[KEYRANK_DOWN][1] <= VK_BUTTON32 )
+				{
+					m_key[KEYRANK_DOWN][1] = 0;
+				}
+			}
+			if ( m_joystick == 2 )  // joypad ?
+			{
+				if ( (m_key[KEYRANK_UP][0] < VK_BUTTON1 ||
+					  m_key[KEYRANK_UP][0] > VK_BUTTON32) &&
+					 (m_key[KEYRANK_UP][1] < VK_BUTTON1 ||
+					  m_key[KEYRANK_UP][1] > VK_BUTTON32) )
+				{
+					m_key[KEYRANK_UP][1] = VK_BUTTON8;
+				}
+				if ( (m_key[KEYRANK_DOWN][0] < VK_BUTTON1 ||
+					  m_key[KEYRANK_DOWN][0] > VK_BUTTON32) &&
+					 (m_key[KEYRANK_DOWN][1] < VK_BUTTON1 ||
+					  m_key[KEYRANK_DOWN][1] > VK_BUTTON32) )
+				{
+					m_key[KEYRANK_DOWN][1] = VK_BUTTON7;
+				}
+			}
 			SetAcquire(TRUE);
 			SetTimer(m_hWnd, 0, 1000/30, NULL);
 		}
@@ -1061,9 +1033,17 @@ void CD3DApplication::SetJoystick(BOOL bEnable)
 	}
 }
 
-BOOL CD3DApplication::RetJoystick()
+int CD3DApplication::RetJoystick()
 {
-	return m_bJoystick;
+	return m_joystick;
+}
+
+BOOL CD3DApplication::SetJoyForces(float forceX, float forceY)
+{
+	float	force;
+
+	force = 0.2f+m_FFBforce*0.8f;
+	return ::SetJoyForces(forceX*force, forceY*force);
 }
 
 
@@ -1117,18 +1097,16 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 	switch( uMsg )
 	{
 		case WM_KEYDOWN:
-			if ( wParam == m_key[KEYRANK_UP   ][0] )  m_axeKey.y =  1.0f;
-			if ( wParam == m_key[KEYRANK_UP   ][1] )  m_axeKey.y =  1.0f;
-			if ( wParam == m_key[KEYRANK_DOWN ][0] )  m_axeKey.y = -1.0f;
-			if ( wParam == m_key[KEYRANK_DOWN ][1] )  m_axeKey.y = -1.0f;
-			if ( wParam == m_key[KEYRANK_LEFT ][0] )  m_axeKey.x = -1.0f;
-			if ( wParam == m_key[KEYRANK_LEFT ][1] )  m_axeKey.x = -1.0f;
-			if ( wParam == m_key[KEYRANK_RIGHT][0] )  m_axeKey.x =  1.0f;
-			if ( wParam == m_key[KEYRANK_RIGHT][1] )  m_axeKey.x =  1.0f;
-			if ( wParam == m_key[KEYRANK_GUP  ][0] )  m_axeKey.z =  1.0f;
-			if ( wParam == m_key[KEYRANK_GUP  ][1] )  m_axeKey.z =  1.0f;
-			if ( wParam == m_key[KEYRANK_GDOWN][0] )  m_axeKey.z = -1.0f;
-			if ( wParam == m_key[KEYRANK_GDOWN][1] )  m_axeKey.z = -1.0f;
+			if ( wParam == m_key[KEYRANK_UP   ][0] )  m_axeKeyY =  1.0f;
+			if ( wParam == m_key[KEYRANK_UP   ][1] )  m_axeKeyY =  1.0f;
+			if ( wParam == m_key[KEYRANK_DOWN ][0] )  m_axeKeyY = -1.0f;
+			if ( wParam == m_key[KEYRANK_DOWN ][1] )  m_axeKeyY = -1.0f;
+			if ( wParam == m_key[KEYRANK_LEFT ][0] )  m_axeKeyX = -1.0f;
+			if ( wParam == m_key[KEYRANK_LEFT ][1] )  m_axeKeyX = -1.0f;
+			if ( wParam == m_key[KEYRANK_RIGHT][0] )  m_axeKeyX =  1.0f;
+			if ( wParam == m_key[KEYRANK_RIGHT][1] )  m_axeKeyX =  1.0f;
+			if ( wParam == m_key[KEYRANK_BRAKE][0] )  m_axeKeyW =  1.0f;
+			if ( wParam == m_key[KEYRANK_BRAKE][1] )  m_axeKeyW =  1.0f;
 			if ( wParam == m_key[KEYRANK_NEAR ][0] )  m_keyState |= KS_NUMPLUS;
 			if ( wParam == m_key[KEYRANK_NEAR ][1] )  m_keyState |= KS_NUMPLUS;
 			if ( wParam == m_key[KEYRANK_AWAY ][0] )  m_keyState |= KS_NUMMINUS;
@@ -1144,18 +1122,16 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 			break;
 
 		case WM_KEYUP:
-			if ( wParam == m_key[KEYRANK_UP   ][0] )  m_axeKey.y = 0.0f;
-			if ( wParam == m_key[KEYRANK_UP   ][1] )  m_axeKey.y = 0.0f;
-			if ( wParam == m_key[KEYRANK_DOWN ][0] )  m_axeKey.y = 0.0f;
-			if ( wParam == m_key[KEYRANK_DOWN ][1] )  m_axeKey.y = 0.0f;
-			if ( wParam == m_key[KEYRANK_LEFT ][0] )  m_axeKey.x = 0.0f;
-			if ( wParam == m_key[KEYRANK_LEFT ][1] )  m_axeKey.x = 0.0f;
-			if ( wParam == m_key[KEYRANK_RIGHT][0] )  m_axeKey.x = 0.0f;
-			if ( wParam == m_key[KEYRANK_RIGHT][1] )  m_axeKey.x = 0.0f;
-			if ( wParam == m_key[KEYRANK_GUP  ][0] )  m_axeKey.z = 0.0f;
-			if ( wParam == m_key[KEYRANK_GUP  ][1] )  m_axeKey.z = 0.0f;
-			if ( wParam == m_key[KEYRANK_GDOWN][0] )  m_axeKey.z = 0.0f;
-			if ( wParam == m_key[KEYRANK_GDOWN][1] )  m_axeKey.z = 0.0f;
+			if ( wParam == m_key[KEYRANK_UP   ][0] )  m_axeKeyY = 0.0f;
+			if ( wParam == m_key[KEYRANK_UP   ][1] )  m_axeKeyY = 0.0f;
+			if ( wParam == m_key[KEYRANK_DOWN ][0] )  m_axeKeyY = 0.0f;
+			if ( wParam == m_key[KEYRANK_DOWN ][1] )  m_axeKeyY = 0.0f;
+			if ( wParam == m_key[KEYRANK_LEFT ][0] )  m_axeKeyX = 0.0f;
+			if ( wParam == m_key[KEYRANK_LEFT ][1] )  m_axeKeyX = 0.0f;
+			if ( wParam == m_key[KEYRANK_RIGHT][0] )  m_axeKeyX = 0.0f;
+			if ( wParam == m_key[KEYRANK_RIGHT][1] )  m_axeKeyX = 0.0f;
+			if ( wParam == m_key[KEYRANK_BRAKE][0] )  m_axeKeyW = 0.0f;
+			if ( wParam == m_key[KEYRANK_BRAKE][1] )  m_axeKeyW = 0.0f;
 			if ( wParam == m_key[KEYRANK_NEAR ][0] )  m_keyState &= ~KS_NUMPLUS;
 			if ( wParam == m_key[KEYRANK_NEAR ][1] )  m_keyState &= ~KS_NUMPLUS;
 			if ( wParam == m_key[KEYRANK_AWAY ][0] )  m_keyState &= ~KS_NUMMINUS;
@@ -1232,7 +1208,7 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
             break;
 
         case WM_TIMER:
-			if ( m_bActivateApp && m_bJoystick )
+			if ( m_bActivateApp && m_joystick != 0 )
 			{
                 if ( UpdateInputState(js) )
 				{
@@ -1240,9 +1216,63 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					m_axeJoy.y = -js.lY/1000.0f;  // avancer
 					m_axeJoy.z = -js.rglSlider[0]/1000.0f;  // monter
 
-					m_axeJoy.x = Neutral(m_axeJoy.x, 0.2f);
+					if ( m_axeJoy.x > 0.5f && !m_bJoyRight )
+					{
+						m_bJoyRight = TRUE;
+						PostMessage(m_hWnd, WM_KEYDOWN, VK_JRIGHT, 0);
+					}
+					if ( m_axeJoy.x < 0.3f && m_bJoyRight )
+					{
+						m_bJoyRight = FALSE;
+//?						PostMessage(m_hWnd, WM_KEYUP, VK_JRIGHT, 0);
+					}
+
+					if ( m_axeJoy.x < -0.5f && !m_bJoyLeft )
+					{
+						m_bJoyLeft = TRUE;
+						PostMessage(m_hWnd, WM_KEYDOWN, VK_JLEFT, 0);
+					}
+					if ( m_axeJoy.x > -0.3f && m_bJoyLeft )
+					{
+						m_bJoyLeft = FALSE;
+//?						PostMessage(m_hWnd, WM_KEYUP, VK_JLEFT, 0);
+					}
+
+					if ( m_axeJoy.y > 0.5f && !m_bJoyUp )
+					{
+						m_bJoyUp = TRUE;
+						PostMessage(m_hWnd, WM_KEYDOWN, VK_JUP, 0);
+					}
+					if ( m_axeJoy.y < 0.3f && m_bJoyUp )
+					{
+						m_bJoyUp = FALSE;
+//?						PostMessage(m_hWnd, WM_KEYUP, VK_JUP, 0);
+					}
+
+					if ( m_axeJoy.y < -0.5f && !m_bJoyDown )
+					{
+						m_bJoyDown = TRUE;
+						PostMessage(m_hWnd, WM_KEYDOWN, VK_JDOWN, 0);
+					}
+					if ( m_axeJoy.y > -0.3f && m_bJoyDown )
+					{
+						m_bJoyDown = FALSE;
+//?						PostMessage(m_hWnd, WM_KEYUP, VK_JDOWN, 0);
+					}
+
+//?					m_axeJoy.x = Neutral(m_axeJoy.x, 0.2f);
 					m_axeJoy.y = Neutral(m_axeJoy.y, 0.2f);
 					m_axeJoy.z = Neutral(m_axeJoy.z, 0.2f);
+
+					// Si les gaz sont sur un bouton du joypad,
+					// ignore l'axe Y du joystick !
+					if ( (m_key[KEYRANK_UP][0] >= VK_BUTTON1  &&
+						  m_key[KEYRANK_UP][0] <= VK_BUTTON32 ) ||
+						 (m_key[KEYRANK_UP][1] >= VK_BUTTON1  &&
+						  m_key[KEYRANK_UP][1] <= VK_BUTTON32 ) )
+					{
+						m_axeJoy.y = 0.0f;
+					}
 
 //?					char s[100];
 //?					sprintf(s, "x=%d y=%d z=%  x=%d y=%d z=%d\n", js.lX,js.lY,js.lZ,js.lRx,js.lRy,js.lRz);
@@ -1279,7 +1309,7 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				m_bActivateApp = TRUE;
 			}
 
-			if ( m_bActivateApp && m_bJoystick )
+			if ( m_bActivateApp && m_joystick != 0 )
 			{
 				SetAcquire(TRUE);  // ré-active le joystick
 			}
@@ -1523,6 +1553,8 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
         m_pD3D       = m_pFramework->GetDirect3D();
         m_pD3DDevice = m_pFramework->GetD3DDevice();
 
+//?		m_pDD->SetCooperativeLevel(m_hWnd, DDSCL_FULLSCREEN);
+
 		m_pD3DEngine->SetD3DDevice(m_pD3DDevice);
 
 		m_pddsRenderTarget = m_pFramework->GetRenderSurface();
@@ -1664,14 +1696,16 @@ void CD3DApplication::StepSimul(float rTime)
 {
 	Event	event;
 
+	if ( rTime == 0.0f )  return;  // (*)
 	if ( m_pRobotMain == 0 )  return;
 
 	ZeroMemory(&event, sizeof(Event));
 	event.event = EVENT_FRAME;  // drôle de bug en release "Maximize speed" !!!
 	event.rTime = rTime;
-	event.axeX = AxeLimit(m_axeKey.x + m_axeJoy.x);
-	event.axeY = AxeLimit(m_axeKey.y + m_axeJoy.y);
-	event.axeZ = AxeLimit(m_axeKey.z + m_axeJoy.z);
+	event.axeX = AxeLimit(m_axeKeyX + m_axeJoy.x);
+	event.axeY = AxeLimit(m_axeKeyY + m_axeJoy.y);
+	event.axeZ = AxeLimit(m_axeKeyZ + m_axeJoy.z);
+	event.axeW = m_axeKeyW;
 	event.keyState = m_keyState;
 
 //?char s[100];
@@ -1679,6 +1713,11 @@ void CD3DApplication::StepSimul(float rTime)
 //?OutputDebugString(s);
 	m_pRobotMain->EventProcess(event);
 }
+
+// (*)	Avec une machine rapide (Athlon 1800+) et Windows XP,
+//		un delta t nul se produit parfois, au début d'une mission.
+//		Ceci a des conséquences facheuses: suspensions inefficaces
+//		lors du choix d'une voiture, caméra restant sur le starter, etc.
 
 
 // Draws the scene.
@@ -1998,7 +2037,7 @@ VOID CD3DApplication::OutputText( DWORD x, DWORD y, TCHAR* str )
 // Defines a function that allocates memory for and initializes
 // members within a BITMAPINFOHEADER structure
 
-PBITMAPINFO CD3DApplication::CreateBitmapInfoStruct(HBITMAP hBmp)
+PBITMAPINFO CreateBitmapInfoStruct(HBITMAP hBmp)
 { 
 	BITMAP		bmp;
 	PBITMAPINFO	pbmi;
@@ -2063,13 +2102,17 @@ PBITMAPINFO CD3DApplication::CreateBitmapInfoStruct(HBITMAP hBmp)
 // retrieves the array of palette indices, opens the file, copies
 // the data, and closes the file. 
 
-BOOL CD3DApplication::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC)
+BOOL CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC)
 { 
-	FILE*				file;		// file handle
+	HANDLE				hf;			// file handle
 	BITMAPFILEHEADER	hdr;		// bitmap file-header
 	PBITMAPINFOHEADER	pbih;		// bitmap info-header
 	LPBYTE				lpBits;		// memory pointer
 	DWORD				dwTotal;	// total count of bytes
+	DWORD				cb;			// incremental count of bytes
+	BYTE*				hp;			// byte pointer
+	DWORD				dwTmp; 
+ 
  
 	pbih = (PBITMAPINFOHEADER)pbi;
 	lpBits = (LPBYTE)GlobalAlloc(GMEM_FIXED, pbih->biSizeImage);
@@ -2082,8 +2125,16 @@ BOOL CD3DApplication::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBM
 		return FALSE;
  
 	// Create the .BMP file.
-	file = fopen(pszFile, "wb");
-	if ( file == NULL )  return FALSE;
+	hf = CreateFile(pszFile,
+					GENERIC_READ|GENERIC_WRITE,
+					(DWORD)0,
+					(LPSECURITY_ATTRIBUTES)NULL,
+					CREATE_ALWAYS,
+					FILE_ATTRIBUTE_NORMAL,
+					(HANDLE)NULL);
+ 
+	if ( hf == INVALID_HANDLE_VALUE )
+		return FALSE;
  
 	hdr.bfType = 0x4d42; // 0x42 = "B" 0x4d = "M"
  
@@ -2101,17 +2152,34 @@ BOOL CD3DApplication::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBM
 					* sizeof (RGBQUAD);
  
 	// Copy the BITMAPFILEHEADER into the .BMP file.
-	fwrite(&hdr, sizeof(BITMAPFILEHEADER), 1, file);
+	if ( !WriteFile(hf, (LPVOID)&hdr, sizeof(BITMAPFILEHEADER),
+					(LPDWORD)&dwTmp, (LPOVERLAPPED)NULL) )
+		return FALSE;
  
 	// Copy the BITMAPINFOHEADER and RGBQUAD array into the file.
-	fwrite(pbih, sizeof(BITMAPINFOHEADER)+pbih->biClrUsed*sizeof(RGBQUAD), 1, file);
+	if ( !WriteFile(hf, (LPVOID)pbih, sizeof(BITMAPINFOHEADER)
+					+ pbih->biClrUsed * sizeof (RGBQUAD),
+					(LPDWORD) &dwTmp, (LPOVERLAPPED) NULL) )
+		return FALSE;
  
 	// Copy the array of color indices into the .BMP file.
-	dwTotal = pbih->biSizeImage;
-	fwrite(lpBits, dwTotal, 1, file);
+	dwTotal = cb = pbih->biSizeImage;
+	hp = lpBits;
+	while ( cb > 10000 )
+	{ 
+		if ( !WriteFile(hf, (LPSTR)hp, (int)10000,
+						(LPDWORD)&dwTmp, (LPOVERLAPPED) NULL) )
+			return FALSE;
+		cb -= 10000; 
+		hp += 10000; 
+	} 
+	if ( !WriteFile(hf, (LPSTR)hp, (int)cb,
+					(LPDWORD)&dwTmp, (LPOVERLAPPED) NULL) )
+		 return FALSE;
  
 	// Close the .BMP file.
-	fclose(file);
+ 	if ( !CloseHandle(hf) )
+		 return FALSE;
  
 	// Free memory.
 	GlobalFree((HGLOBAL)lpBits);
@@ -2169,24 +2237,6 @@ BOOL CD3DApplication::WriteScreenShot(char *filename, int width, int height)
 	m_pddsRenderTarget->ReleaseDC(hDC);
 	return TRUE;
 }
-
-
-// Initialise un hDC sur la surface de rendu.
-
-BOOL CD3DApplication::GetRenderDC(HDC &hDC)
-{
-	if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return FALSE;
-	return TRUE;
-}
-
-// Libère le hDC sur la surface de rendu.
-
-BOOL CD3DApplication::ReleaseRenderDC(HDC &hDC)
-{
-	m_pddsRenderTarget->ReleaseDC(hDC);
-	return TRUE;
-}
-
 
 
 
@@ -2362,7 +2412,7 @@ VOID CD3DApplication::DisplayFrameworkError( HRESULT hr, DWORD dwType )
             lstrcpy( strMsg, _T("No Direct3D") );
             break;
         case D3DFWERR_INVALIDMODE:
-            lstrcpy( strMsg, _T("COLOBOT requires a 16-bit (or higher) "
+            lstrcpy( strMsg, _T("BuzzingCars requires a 16-bit (or higher) "
                                 "display mode\nto run in a window.\n\nPlease "
                                 "switch your desktop settings accordingly.") );
             break;
@@ -2419,7 +2469,7 @@ VOID CD3DApplication::DisplayFrameworkError( HRESULT hr, DWORD dwType )
 
     if( MSGERR_APPMUSTEXIT == dwType )
     {
-        lstrcat( strMsg, _T("\n\nCOLOBOT will now exit.") );
+        lstrcat( strMsg, _T("\n\nBuzzingCars will now exit.") );
         MessageBox( NULL, strMsg, m_strWindowTitle, MB_ICONERROR|MB_OK );
     }
     else

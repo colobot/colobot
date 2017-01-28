@@ -54,6 +54,9 @@ BOOL CModFile::CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3,
 	D3DVECTOR	n;
 	int			i;
 
+	if ( p1.x == p2.x && p1.y == p2.y && p1.z == p2.z &&
+		 p1.x == p3.x && p1.y == p3.y && p1.z == p3.z )  return TRUE;
+
 	if ( m_triangleUsed >= MAX_VERTICES )
 	{
 		OutputDebugString("ERROR: CreateTriangle::Too many triangles\n");
@@ -268,18 +271,18 @@ BOOL CModFile::AddModel(char *filename, int first, BOOL bEdit, BOOL bMeta)
 		p = strchr(filename, '\\');
 		if ( p == 0 )
 		{
-#if _SCHOOL
-			err = g_metafile.Open("ceebot2.dat", filename);
+#if _EGAMES
+			err = g_metafile.Open("ww2.dat", filename, "b");
 #else
-			err = g_metafile.Open("colobot2.dat", filename);
+			err = g_metafile.Open("buzzingcars2.dat", filename, "b");
 #endif
 		}
 		else
 		{
-#if _SCHOOL
-			err = g_metafile.Open("ceebot2.dat", p+1);
+#if _EGAMES
+			err = g_metafile.Open("ww2.dat", p+1, "b");
 #else
-			err = g_metafile.Open("colobot2.dat", p+1);
+			err = g_metafile.Open("buzzingcars2.dat", p+1, "b");
 #endif
 		}
 		if ( err != 0 )  bMeta = FALSE;
@@ -555,6 +558,8 @@ BOOL CModFile::CreateEngineObject(int objRank, int addState)
 		state = m_triangleTable[i].state;
 		strcpy(texName1, m_triangleTable[i].texName);
 		texName2[0] = 0;
+
+		m_engine->ReplaceTexDo(texName1);
 
 		if ( strcmp(texName1, "plant.tga") == 0 )
 		{

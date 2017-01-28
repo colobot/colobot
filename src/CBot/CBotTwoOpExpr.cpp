@@ -370,7 +370,6 @@ BOOL CBotTwoOpExpr::Execute(CBotStack* &pStack)
 
 	CBotVar*	temp;
 
-	if ( TypeRes == CBotTypPointer ) TypeRes = CBotTypNullPointer;
 	if ( TypeRes == CBotTypClass ) temp = CBotVar::Create( (CBotToken*)NULL, CBotTypResult(CBotTypIntrinsic, type1.GivClass() ) );
 	else						   temp = CBotVar::Create( (CBotToken*)NULL, TypeRes );
 

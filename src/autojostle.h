@@ -29,11 +29,12 @@ public:
 protected:
 
 protected:
-	float			m_force;
-	float			m_progress;
-	float			m_speed;
-	float			m_lastParticule;
-	Error			m_error;
+	D3DVECTOR	m_zoom;
+	float		m_force;
+	float		m_progress;
+	float		m_speed;
+	float		m_lastParticule;
+	Error		m_error;
 };
 
 

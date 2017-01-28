@@ -40,6 +40,9 @@ public:
 	void		SetTotal(int i);
 	int			RetTotal();
 
+	void		SetMultiple(int i);
+	int			RetMultiple();
+
 	void		SetSelect(int i);
 	int			RetSelect();
 
@@ -58,10 +61,13 @@ public:
 	void		SetEnable(int i, BOOL bEnable);
 	BOOL		RetEnable(int i);
 
+	void		SetLook(int i, int look);
+	int			RetLook(int i);
+
 	void		SetTabs(int i, float pos, int justif=1);
 	float		RetTabs(int i);
 
-	void		ShowSelect(BOOL bFixed);
+	void		ShowSelect();
 
 	EventMsg	RetEventMsgButton(int i);
 	EventMsg	RetEventMsgScroll();
@@ -85,6 +91,7 @@ protected:
 	int			m_displayLine;	// nb de lignes visibles
 	int			m_selectLine;	// ligne sélectionnée
 	int			m_firstLine;	// première ligne visible
+	int			m_multiple;		// multiple pour 1ère ligne visible
 	BOOL		m_bBlink;
 	BOOL		m_bSelectCap;
 	float		m_blinkTime;
@@ -94,6 +101,7 @@ protected:
 	char		m_text[LISTMAXTOTAL][100];
 	char		m_check[LISTMAXTOTAL];
 	char		m_enable[LISTMAXTOTAL];
+	char		m_look[LISTMAXTOTAL];
 };
 
 

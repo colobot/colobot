@@ -14,6 +14,7 @@
 #include "D3DMath.h"
 #include "D3DUtil.h"
 #include "language.h"
+#include "math3d.h"
 #include "event.h"
 #include "misc.h"
 
@@ -211,7 +212,22 @@ void TimeToAscii(time_t time, char *buffer)
 					when.tm_mday, when.tm_mon+1, year,
 					when.tm_hour, when.tm_min);
 #endif
-#if _GERMAN | _WG
+#if _DEUTSCH
+	sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d",
+					when.tm_mday, when.tm_mon+1, year,
+					when.tm_hour, when.tm_min);
+#endif
+#if _ITALIAN
+	sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d",
+					when.tm_mday, when.tm_mon+1, year,
+					when.tm_hour, when.tm_min);
+#endif
+#if _SPANISH
+	sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d",
+					when.tm_mday, when.tm_mon+1, year,
+					when.tm_hour, when.tm_min);
+#endif
+#if _PORTUGUESE
 	sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d",
 					when.tm_mday, when.tm_mon+1, year,
 					when.tm_hour, when.tm_min);
@@ -236,12 +252,41 @@ void TimeToAscii(time_t time, char *buffer)
 					when.tm_mon+1, when.tm_mday, year,
 					hour, when.tm_min, format);
 #endif
-#if _POLISH
-	sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d",
-					when.tm_mday, when.tm_mon+1, year,
-					when.tm_hour, when.tm_min);
-#endif
 }
+
+// Formate un temps en minutes, secondes et centièmes.
+
+void PutTime(char *buffer, float time)
+{
+	float	m,s,c;
+
+	m = time/60.0f;
+	s = Mod(time, 60.0f);
+	c = Mod(s, 1.0f);
+	s -= c;
+	sprintf(buffer, "%d:%.2d:%.2d", (int)m, (int)s, (int)(c*100));
+}
+
+// Formate un nombre en %, aligné à droite.
+
+void Put100(char *buffer, int value)
+{
+	if ( value <  10 )  *buffer++ = ' ';
+	if ( value < 100 )  *buffer++ = ' ';
+
+	sprintf(buffer, "  %d %%", value);
+}
+
+// Formate un nombre de points, aligné à droite.
+
+void PutPoints(char *buffer, int value)
+{
+	if ( value <  10 )  { *buffer++ = ' ';  *buffer++ = ' '; }
+	if ( value < 100 )  { *buffer++ = ' ';  *buffer++ = ' '; }
+
+	sprintf(buffer, " >  %d  <", value);
+}
+
 
 
 // Effectue une copie d'un fichier.
@@ -414,10 +459,16 @@ char RetLanguageLetter()
 #if _ENGLISH
 	return 'E';
 #endif
-#if _GERMAN | _WG
+#if _DEUTSCH
 	return 'D';
 #endif
-#if _POLISH
+#if _ITALIAN
+	return 'I';
+#endif
+#if _SPANISH
+	return 'S';
+#endif
+#if _PORTUGUESE
 	return 'P';
 #endif
 	return 'X';

@@ -18,7 +18,6 @@
 #include "object.h"
 #include "camera.h"
 #include "auto.h"
-#include "autopara.h"
 #include "sound.h"
 #include "blitz.h"
 
@@ -82,7 +81,6 @@ BOOL CBlitz::EventProcess(const Event &event)
 BOOL CBlitz::EventFrame(const Event &event)
 {
 	CObject*	pObj;
-	CAutoPara*	automat;
 	ObjectType	type;
 	D3DVECTOR	eye, pos;
 	float		dist, deep, max;
@@ -118,23 +116,7 @@ BOOL CBlitz::EventFrame(const Event &event)
 				m_terrain->MoveOnFloor(m_pos, TRUE);
 
 				type = pObj->RetType();
-				if ( type == OBJECT_BASE )
-				{
-					m_pos.y += 120.0f;  // sommet de la fusée
-				}
-				else if ( type == OBJECT_PARA )
-				{
-					automat = (CAutoPara*)pObj->RetAuto();
-					if ( automat != 0 )
-					{
-						automat->StartBlitz();
-					}
-					m_pos.y += 67.0f;  // sommet du paratonnerre
-				}
-				else
-				{
-					pObj->ExploObject(EXPLO_BOUM, 1.0f);
-				}
+				pObj->ExploObject(EXPLO_BOUM, 1.0f);
 			}
 
 			eye = m_engine->RetEyePt();
@@ -144,7 +126,7 @@ BOOL CBlitz::EventFrame(const Event &event)
 			if ( dist < deep )
 			{
 				pos = eye+((m_pos-eye)*0.2f);  // comme si proche !
-				m_sound->Play(SOUND_BLITZ, pos);
+//?				m_sound->Play(SOUND_BLITZ, pos);
 
 				m_camera->StartOver(OE_BLITZ, m_pos, 1.0f);
 
@@ -364,8 +346,7 @@ CObject* CBlitz::SearchObject(D3DVECTOR pos)
 		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
 
 		type = pObj->RetType();
-		if ( type == OBJECT_BASE ||
-			 type == OBJECT_PARA )  // bâtiment à effet paratonnerre ?
+		if ( type == OBJECT_PARA )  // bâtiment à effet paratonnerre ?
 		{
 			pObjPara[nbPara] = pObj;
 			pPos[nbPara] = pObj->RetPosition(0);
@@ -373,58 +354,21 @@ CObject* CBlitz::SearchObject(D3DVECTOR pos)
 		}
 
 		detect = 0.0f;
-		if ( type == OBJECT_BASE     ||
-			 type == OBJECT_DERRICK  ||
-			 type == OBJECT_FACTORY  ||
-			 type == OBJECT_REPAIR   ||
-			 type == OBJECT_DESTROYER||
-			 type == OBJECT_STATION  ||
-			 type == OBJECT_CONVERT  ||
-			 type == OBJECT_TOWER    ||
-			 type == OBJECT_RESEARCH ||
-			 type == OBJECT_RADAR    ||
-			 type == OBJECT_INFO     ||
-			 type == OBJECT_ENERGY   ||
-			 type == OBJECT_LABO     ||
-			 type == OBJECT_NUCLEAR  ||
-			 type == OBJECT_PARA     ||
-			 type == OBJECT_SAFE     ||
-			 type == OBJECT_HUSTON   )
+		if ( type == OBJECT_TOWER   ||
+			 type == OBJECT_NUCLEAR ||
+			 type == OBJECT_PARA    )
 		{
 			detect = m_magnetic;
 		}
 		if ( type == OBJECT_METAL    ||
-			 type == OBJECT_POWER    ||
+			 type == OBJECT_BARREL   ||
 			 type == OBJECT_ATOMIC   )
 		{
 			detect = m_magnetic*0.3f;
 		}
-		if ( type == OBJECT_MOBILEfa ||
-			 type == OBJECT_MOBILEta ||
-			 type == OBJECT_MOBILEwa ||
-			 type == OBJECT_MOBILEia ||
-			 type == OBJECT_MOBILEfc ||
-			 type == OBJECT_MOBILEtc ||
-			 type == OBJECT_MOBILEwc ||
-			 type == OBJECT_MOBILEic ||
-			 type == OBJECT_MOBILEfi ||
-			 type == OBJECT_MOBILEti ||
-			 type == OBJECT_MOBILEwi ||
-			 type == OBJECT_MOBILEii ||
-			 type == OBJECT_MOBILEfs ||
-			 type == OBJECT_MOBILEts ||
-			 type == OBJECT_MOBILEws ||
-			 type == OBJECT_MOBILEis ||
-			 type == OBJECT_MOBILErt ||
-			 type == OBJECT_MOBILErc ||
-			 type == OBJECT_MOBILErr ||
-			 type == OBJECT_MOBILErs ||
-			 type == OBJECT_MOBILEsa ||
-			 type == OBJECT_MOBILEft ||
-			 type == OBJECT_MOBILEtt ||
-			 type == OBJECT_MOBILEwt ||
-			 type == OBJECT_MOBILEit ||
-			 type == OBJECT_MOBILEdr )
+		if ( type == OBJECT_MOBILEtg ||
+			 type == OBJECT_MOBILEfb ||
+			 type == OBJECT_MOBILEob )
 		{
 			detect = m_magnetic*0.5f;
 		}

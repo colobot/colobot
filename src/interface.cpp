@@ -13,6 +13,7 @@
 #include "event.h"
 #include "misc.h"
 #include "iman.h"
+#include "text.h"
 #include "control.h"
 #include "button.h"
 #include "color.h"
@@ -26,12 +27,14 @@
 #include "scroll.h"
 #include "slider.h"
 #include "list.h"
+#include "array.h"
 #include "shortcut.h"
 #include "compass.h"
-#include "target.h"
+#include "gauge.h"
+#include "geiger.h"
+#include "progress.h"
 #include "map.h"
 #include "window.h"
-#include "camera.h"
 #include "interface.h"
 
 
@@ -47,7 +50,6 @@ CInterface::CInterface(CInstanceManager* iMan)
 	m_iMan->AddInstance(CLASS_INTERFACE, this);
 
 	m_engine = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-	m_camera = 0;
 
 	for ( i=0 ; i<MAXCONTROL ; i++ )
 	{
@@ -383,6 +385,29 @@ CList* CInterface::CreateList(FPOINT pos, FPOINT dim, int icon, EventMsg eventMs
 	return 0;
 }
 
+// Crée une nouvelle liste.
+
+CArray* CInterface::CreateArray(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
+							float expand)
+{
+	CArray*		pc;
+	int			i;
+
+	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+
+	for ( i=10 ; i<MAXCONTROL ; i++ )
+	{
+		if ( m_table[i] == 0 )
+		{
+			m_table[i] = new CArray(m_iMan);
+			pc = (CArray*)m_table[i];
+			pc->Create(pos, dim, icon, eventMsg, expand);
+			return pc;
+		}
+	}
+	return 0;
+}
+
 // Crée un nouveau raccourci.
 
 CShortcut* CInterface::CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
@@ -405,7 +430,7 @@ CShortcut* CInterface::CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg
 	return 0;
 }
 
-// Crée un nouvelle boussole.
+// Crée une nouvelle boussole.
 
 CCompass* CInterface::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -427,11 +452,11 @@ CCompass* CInterface::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg e
 	return 0;
 }
 
-// Crée un nouvelle cible.
+// Crée une nouvelle jauge.
 
-CTarget* CInterface::CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CGauge* CInterface::CreateGauge(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
-	CTarget*	pc;
+	CGauge*		pc;
 	int			i;
 
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
@@ -440,8 +465,52 @@ CTarget* CInterface::CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eve
 	{
 		if ( m_table[i] == 0 )
 		{
-			m_table[i] = new CTarget(m_iMan);
-			pc = (CTarget*)m_table[i];
+			m_table[i] = new CGauge(m_iMan);
+			pc = (CGauge*)m_table[i];
+			pc->Create(pos, dim, icon, eventMsg);
+			return pc;
+		}
+	}
+	return 0;
+}
+
+// Crée une nouvelle jauge.
+
+CGeiger* CInterface::CreateGeiger(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+{
+	CGeiger*	pc;
+	int			i;
+
+	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+
+	for ( i=10 ; i<MAXCONTROL ; i++ )
+	{
+		if ( m_table[i] == 0 )
+		{
+			m_table[i] = new CGeiger(m_iMan);
+			pc = (CGeiger*)m_table[i];
+			pc->Create(pos, dim, icon, eventMsg);
+			return pc;
+		}
+	}
+	return 0;
+}
+
+// Crée un nouvel indicateur d'avance.
+
+CProgress* CInterface::CreateProgress(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+{
+	CProgress*	pc;
+	int			i;
+
+	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+
+	for ( i=10 ; i<MAXCONTROL ; i++ )
+	{
+		if ( m_table[i] == 0 )
+		{
+			m_table[i] = new CProgress(m_iMan);
+			pc = (CProgress*)m_table[i];
 			pc->Create(pos, dim, icon, eventMsg);
 			return pc;
 		}
@@ -511,6 +580,44 @@ CControl* CInterface::SearchControl(EventMsg eventMsg)
 	return 0;
 }
 
+// Donne un contrôle d'après son rang.
+
+CControl* CInterface::SearchControl(int tabOrder)
+{
+	int		i;
+
+	for ( i=0 ; i<MAXWINDOW ; i++ )
+	{
+		if ( m_table[i] != 0 )
+		{
+			if ( tabOrder == m_table[i]->RetTabOrder() )
+			{
+				return m_table[i];
+			}
+		}
+	}
+	return 0;
+}
+
+// Donne le contrôle qui a le focus.
+
+CControl* CInterface::SearchControl()
+{
+	int		i;
+
+	for ( i=0 ; i<MAXWINDOW ; i++ )
+	{
+		if ( m_table[i] != 0 )
+		{
+			if ( m_table[i]->RetFocus() )
+			{
+				return m_table[i];
+			}
+		}
+	}
+	return 0;
+}
+
 // Gestion d'un événement.
 
 BOOL CInterface::EventProcess(const Event &event)
@@ -519,11 +626,7 @@ BOOL CInterface::EventProcess(const Event &event)
 
 	if ( event.event == EVENT_MOUSEMOVE )
 	{
-		if ( m_camera == 0 )
-		{
-			m_camera = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
-		}
-		m_engine->SetMouseType(m_camera->RetMouseDef(event.pos));
+		m_engine->SetMouseType(D3DMOUSENORM);
 	}
 
 	for ( i=MAXCONTROL-1 ; i>=0 ; i-- )

@@ -1,151 +1,98 @@
-Types des objets COLOBOT
-------------------------
+#1
 
+Title.F      text="Apprentissage"
+Resume.F     text="Apprenez à piloter sans limite de temps."
 
-	...					// sac de survie
+Title.F      text="Slalom"
+Resume.F     text="Apprenez à déraper."
 
-	BaseCamp			// fusée principale
-	Derrick				// derrick
-	BotFactory			// fabrique de véhicules
-	PowerStation		// station de recharge
-	Converter			// conversion minerai en titanium
-	RepairCenter		// centre de réparation
-	DefenceTower		// tour de défense
-	AlienNest			// nid
-	ResearchCenter		// centre de recherches
-	RadarStation		// radar
-	PowerPlant			// fabrique de piles
-	AutoLab				// analyseur de matières organiques
-	NuclearPlant		// centrale nucléaire
-	StartArea			// départ
-	GoalArea			// arrivée
-	ExchangePost		// borne d'information
+Title.F      text="Nettoyage"
+Resume.F     text="Nettoyez l'usine de tous les tonneaux contenant des matières radioactives, en les faisant exploser."
 
-	TitaniumOre			// minerai de titanium
-	UraniumOre			// minerai d'uranium
-	Titanium			// titanium
-	PowerPack			// pile normale
-	NuclearPack			// pile nucléaire
-	OrgaStuff			// matière organique
-	BlackBox			// boîte noire
-	TNT					// explosif
+Title.F      text="Contre la montre"
+Resume.F     text="Effectuez 4 tours le plus rapidement possible. Vous ne devez en aucun cas dépasser le temps limite !"
 
-	PowerSpot			// énergie en sous-sol
-	TitaniumSpot		// titanium en sous-sol
-	UraniumSpot			// uranium en sous-sol
-	PathSpot			// chemin
+#2
 
-	TrainingRollerBot	// véhicule d'entraînement :
-	TrainingCrawlerBot
-	TrainingJetBot
-	TrainingSpiderBot
+Title.F      text="Rallye"
+Resume.F     text="Rejoignez l'arrivée dans les temps ..."
 
-	GrabberRollerBot	// véhicule manipulateur :
-	GrabberCrawlerBot
-	GrabberJetBot
-	GrabberSpiderBot
+Title.F      text="Chaud devant"
+Resume.F     text="Transportez une bombe dans l'autre entrepôt situé quelque part dans le complexe industriel."
 
-	FireballRollerBot	// véhicule de défense :
-	FireballCrawlerBot
-	FireballJetBot
-	FireballSpiderBot
+Title.F      text="Robots fous"
+Resume.F     text="Sans ordinateur, les robots sont à moitié fous. Trouvez le moyen de redémarrer les deux ordinateurs centraux."
 
-	OrgaballRollerBot	// véhicule de défense :
-	OrgaballCrawlerBot
-	OrgaballJetBot
-	OrgaballSpiderBot
+Title.F      text="Contre la montre"
+Resume.F     text="Effectuez 3 tours le plus rapidement possible. Vous ne devez en aucun cas dépasser le temps limite !"
 
-	SnifferRollerBot	// véhicule sondeur :
-	SnifferCrawlerBot
-	SnifferJetBot
-	SnifferSpiderBot
+#3
 
-	ThumperBot			// véhicule de terrassement
-	FazerBot			// véhicule de défense
-	RecyclerBot			// véhicule de récupération
-	ShieldBot			// véhicule de protection
-	SubBot				// sous-marin
-	TargetBot			// cible d'entraînement
+Title.F      text="Taxi"
+Resume.F     text="Conduisez chaque droïde sur son lieu de travail spécifique."
 
-	Me					// homme
-	Wiz					// toto
+Title.F      text="Sabotage"
+Resume.F     text="Essayez d'atteindre l'arrivée sain et sauf. Les freins ont été sabotés, et l'accélérateur est bloqué à fond !"
 
-	AlienBigLady		// mère pondeuse
-	AlienEgg			// oeuf
-	AlienAnt			// fourmi
-	AlienSpider			// araignée
-	AlienWasp			// guèpe
-	AlienWorm			// ver
+Title.F      text="Pêche miraculeuse"
+Resume.F     text="Repêchez et réparez les trois robots hors-service. N'oubliez pas que votre tableau de bord possède une boussole."
 
-	Wreck				// épave de véhicule
-	Ruin				// bâtiment en ruine
-	Firework			// feu d'artifice
-	Mine				// mine
-	Barrier				// barrière
-	Greenery			// plante
-	Tree				// arbre
-	Quartz				// quartz
-	MegaStalk			// racine
-	...					// gravi-plante
+Title.F      text="Contre la montre"
+Resume.F     text="Effectuez 3 tours le plus rapidement possible. Vous ne devez en aucun cas dépasser le temps limite !"
 
+#4
 
-Fonction du langage CBOT :
+Title.F      text="Frein à main"
+Resume.F     text="Suivez le droïde d'entraînement pendant 3 tours, en utilisant au mieux le frein à main (\key brake;)."
 
-	Move				// avance d'une certaine distance
-	Turn				// tourne d'un certain angle
-	Goto				// va à une coordonnée donnée
-	Motor				// commande directe des moteurs gauche & droite
-	Jet					// commande directe du réacteur
+Title.F      text="Déménageur"
+Resume.F     text="Transportez un droïde dans un autre entrepôt."
 
-	Radar				// détecte un objet
-	Direction			// calcule une direction
-	Distance			// calcule la distance entre deux points
-	Wait				// attend
-	Produce				// crée un objet
-	Message				// affiche un message
+Title.F      text="Evasion"
+Resume.F     text="Aidez le droïde qui est retenu prisonnier dans l'usine des verts à s'évader."
 
-	Grab				// prend un objet avec le bras manipulateur
-	Drop				// dépose un objet avec le bras manipulateur
-	Sniff				// sonde le sous-sol
-	Receive				// reçoit une information
-	Send				// envoie une information
-	Thump				// terraforme le terrain
-	Recycle				// récupère une épave
-	Shield				// actionne le bouclier de protection
-	Fire				// tir avec un canon
-	Aim					// hausse du canon
+Title.F      text="Contre la montre"
+Resume.F     text="Effectuez 2 tours le plus rapidement possible. Vous ne devez en aucun cas dépasser le temps limite !"
 
+#5
 
-Classes :
+Title.F      text="Le bon berger"
+Resume.F     text="Ramenez dans la bergerie les quatre droïdes égarés. Un bon coup de claxon (\key horn;) peut les convaincre de monter à bord de votre taxi."
 
-	point				// point avec coordonnées x,y,z
-	object				// descriptif d'un objet
+Title.F      text="Méchant"
+Resume.F     text="Trouvez le point faible de ces colosses."
 
+Title.F      text="Liberté"
+Resume.F     text="Retrouvez la liberté sans détruire la voiture."
 
-Descripteur d'un objet :
+Title.F      text="Contre la montre"
+Resume.F     text="Effectuez 3 tours le plus rapidement possible. Vous ne devez en aucun cas dépasser le temps limite !"
 
-	category			// catégorie de l'objet
-	energyPack			// object pile
-	load				// objet transporté
-	position			// position x,y,z
-	direction			// orientation
-	energyLevel			// niveau d'énergie
-	shieldLevel			// niveau du bouclier
-	altitude			// hauteur par rapport au sol
+#6
 
+Title.F      text="Silence !"
+Resume.F     text="Trouvez la lance incendie dans le complexe industriel puis réduisez au silence les droïdes qui perturbent le voisinage."
 
-Argument de la commande Manip( ) :
+Title.F      text="Poursuite"
+Resume.F     text="Eliminez cette créature verdarte qui vous nargue. Vous devez heurter plusieurs fois sa soucoupe volante pour la détruire."
 
-	InFront				// prend ou dépose devant
-	Behind				// prend ou dépose derrière
-	EnergyPack			// prend ou dépose sa propre pile
+Title.F      text="Non à la torture"
+Resume.F     text="Court-circuitez à temps toutes les machines de torture."
 
+Title.F      text="Contre la montre"
+Resume.F     text="Effectuez 3 tours le plus rapidement possible. Vous ne devez en aucun cas dépasser le temps limite !"
 
-Filtre pour la commande Radar( ) ;
+#7
 
-	FilterNone			// pas de filtre
-	FilterOnlyLanding	// seulement les robots qui roulent
-	FilterOnlyFliying	// seulement les robots qui volent
+Title.F      text="Parasites"
+Resume.F     text="Supprimez tous les parasites verts."
 
+Title.F      text="Halte au massacre"
+Resume.F     text="Stoppez les 5 usines en moins de 2 minutes, pour éviter un massacre absurde et inutile."
 
-DR 14.03.01
+Title.F      text="Contre la montre"
+Resume.F     text="Effectuez 3 tours le plus rapidement possible. Vous ne devez en aucun cas dépasser le temps limite !"
+
+Title.F      text="Régicide"
+Resume.F     text="Tuez le roi."
+

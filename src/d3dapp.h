@@ -55,7 +55,6 @@ public:
 	BOOL		RetShowStat();
 	void		SetDebugMode(BOOL bMode);
 	BOOL		RetDebugMode();
-	BOOL		RetSetupMode();
 
 	BOOL		EnumDevices(char *bufDevices, int lenDevices, char *bufModes, int lenModes, int &totalDevices, int &selectDevices, int &totalModes, int &selectModes);
 	BOOL		RetFullScreen();
@@ -66,8 +65,13 @@ public:
 	void		SetKey(int keyRank, int option, int key);
 	int			RetKey(int keyRank, int option);
 
-	void		SetJoystick(BOOL bEnable);
-	BOOL		RetJoystick();
+	void		SetForce(float force);
+	float		RetForce();
+	void		SetFFB(BOOL bMode);
+	BOOL		RetFFB();
+	void		SetJoystick(int mode);
+	int			RetJoystick();
+	BOOL		SetJoyForces(float forceX, float forceY);
 
 	void		SetMouseType(D3DMouse type);
 	void		SetNiceMouse(BOOL bNice);
@@ -75,11 +79,6 @@ public:
 	BOOL		RetNiceMouseCap();
 
 	BOOL		WriteScreenShot(char *filename, int width, int height);
-
-	BOOL		GetRenderDC(HDC &hDC);
-	BOOL		ReleaseRenderDC(HDC &hDC);
-	PBITMAPINFO	CreateBitmapInfoStruct(HBITMAP hBmp);
-	BOOL		CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
 
 protected:
 	HRESULT		ConfirmDevice( DDCAPS* pddDriverCaps, D3DDEVICEDESC7* pd3dDeviceDesc );
@@ -119,7 +118,9 @@ protected:
 	BOOL			m_bActive;
 	BOOL			m_bActivateApp;
 	BOOL			m_bReady;
-	BOOL			m_bJoystick;
+	int				m_joystick;
+	float			m_FFBforce;
+	BOOL			m_bFFB;
 
 	DWORD			m_vidMemTotal;
 	TCHAR*			m_strWindowTitle;
@@ -130,7 +131,6 @@ protected:
 	BOOL			m_bAudioState;
 	BOOL			m_bAudioTrack;
 	BOOL			m_bNiceMouse;
-	BOOL			m_bSetupMode;
 	HRESULT			(*m_fnConfirmDevice)(DDCAPS*, D3DDEVICEDESC7*);
 
 public:
@@ -139,9 +139,17 @@ public:
 	CSound*			m_pSound;
 
 	int				m_keyState;
+	float			m_axeKeyX;		// avancer/reculer
+	float			m_axeKeyY;		// tourner
+	float			m_axeKeyZ;		// monter/descendre
+	float			m_axeKeyW;		// frain à main
 	D3DVECTOR		m_axeKey;
 	D3DVECTOR		m_axeJoy;
 	BOOL			m_bJoyButton[32];
+	BOOL			m_bJoyLeft;
+	BOOL			m_bJoyRight;
+	BOOL			m_bJoyUp;
+	BOOL			m_bJoyDown;
 	FPOINT			m_mousePos;
 	DWORD			m_mshMouseWheel;
 

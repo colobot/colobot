@@ -43,10 +43,12 @@ protected:
 	void		BBoxCompute(D3DVECTOR &min, D3DVECTOR &max);
 	BOOL		IsMappingSelectPlausible(D3DMaping D3Dmode);
 	void		MappingSelect(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY, FPOINT ti, FPOINT ts, char *texName);
+	void		MappingSelectBase(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY, FPOINT ti, FPOINT ts, char *texName);
 	void		MappingSelectSpherical(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY, FPOINT ti, FPOINT ts, char *texName);
 	D3DVECTOR	RetMappingCenter(D3DVECTOR pos, D3DVECTOR min);
 	void		MappingSelectCylindrical(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY, FPOINT ti, FPOINT ts, char *texName);
 	void		MappingSelectFace(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY, FPOINT ti, FPOINT ts, char *texName);
+	void		MappingSelectStretch(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY, FPOINT ti, FPOINT ts, char *texName);
 	void		MappingSelect2(int texNum2, int subdiv, int offsetU, int offsetV, BOOL bMirrorX, BOOL bMirrorY);
 	void		MappingSelectPlane2(int mode, BOOL bMirrorX, BOOL bMirrorY);
 	void		MappingSelectSpherical2(BOOL bMirrorX, BOOL bMirrorY);
@@ -62,6 +64,7 @@ protected:
 	void		SelectTerm();
 	void		DefaultSelect();
 	void		SelectDelete();
+	void		Adjust();
 	void		Compress();
 	void		MinMaxSelect();
 	void		MinMaxChange();
@@ -72,6 +75,8 @@ protected:
 	void		TexturePartChange(int step);
 	void		PutTextureValues();
 	void		GetTextureValues();
+	void		PutModifValues();
+	void		GetModifValues();
 	void		GetModelName(char *buffer);
 	void		GetDXFName(char *buffer);
 	void		GetScriptName(char *buffer);
@@ -97,6 +102,7 @@ protected:
 	int				m_texturePart;
 	int				m_textureRank;
 	char			m_textureName[20];
+	D3DVECTOR		m_textureAngle;
 	BOOL			m_bDisplayTransparent;
 	BOOL			m_bDisplayOnlySelection;
 	float			m_viewHeight;
@@ -112,6 +118,9 @@ protected:
 	char			m_oper;
 	float			m_min;
 	float			m_max;
+	float			m_modifPos;
+	float			m_modifRot;
+	float			m_modifZoom;
 };
 
 
