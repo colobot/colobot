@@ -369,6 +369,12 @@ set(BASE_SOURCES
     object/old_object.h
     object/old_object_interface.cpp
     object/old_object_interface.h
+    object/subclass/buzzingcars/bc_barrier.cpp
+    object/subclass/buzzingcars/bc_barrier.h
+    object/subclass/buzzingcars/bc_building.cpp
+    object/subclass/buzzingcars/bc_building.h
+    object/subclass/buzzingcars/bc_resource.cpp
+    object/subclass/buzzingcars/bc_resource.h
     object/subclass/base_alien.cpp
     object/subclass/base_alien.h
     object/subclass/base_building.cpp

@@ -46,7 +46,14 @@ void CSoundInterface::CacheAll()
     for ( int i = 0; i < SOUND_MAX; i++ )
     {
         std::stringstream filename;
-        filename << "sounds/sound" << std::setfill('0') << std::setw(3) << i << ".wav";
+        std::string subdir = "";
+        int subdir_i = i;
+        if (i >= 100) // TODO: Terrible hack ~krzys_h
+        {
+            subdir = "buzzingcars/";
+            subdir_i -= 100;
+        }
+        filename << "sounds/" << subdir << "sound" << std::setfill('0') << std::setw(3) << subdir_i << ".wav";
         if ( !Cache(static_cast<SoundType>(i), filename.str()) )
             GetLogger()->Warn("Unable to load audio: %s\n", filename.str().c_str());
     }

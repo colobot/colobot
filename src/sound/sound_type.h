@@ -116,6 +116,53 @@ enum SoundType
   SOUND_EXPLOg1  = 79,  /*!< ShooterBots damaging objects. */
   SOUND_EXPLOg2  = 80,  /*!< OrgaShooterBots damaging objects. */
   SOUND_MOTORd  = 81,   /*!< Scribbler/ToyBot engine. */
+
+  // BuzzingCars specific
+SOUND_MOTOR1    = 105,
+SOUND_MOTOR2    = 106,
+SOUND_TAKE      = 129,
+SOUND_WHEEL     = 141,   // roue avec pneu
+SOUND_WHEELb    = 142,   // roue sur la jante
+SOUND_HOME1     = 143,
+SOUND_HORN      = 144,
+SOUND_BREAK1    = 145,
+SOUND_BREAK2    = 146,
+SOUND_STARTREADY= 147,
+SOUND_START3    = 148,
+SOUND_START2    = 149,
+SOUND_START1    = 150,
+SOUND_STARTGO   = 151,
+SOUND_SPRINKLE  = 152,
+SOUND_RECORDgall= 153,   // record du circuit
+SOUND_RECORDgone= 154,   // record du tour
+SOUND_RECORDlone= 155,   // meilleur tour
+SOUND_MOTOR3    = 157,
+SOUND_MOTOR4    = 158,
+SOUND_MOTOR5    = 159,
+SOUND_MOTOR6    = 160,
+SOUND_HELICO    = 162,
+SOUND_LAP4      = 163,
+SOUND_LAP3      = 164,
+SOUND_LAP2      = 165,
+SOUND_LAP1      = 166,
+SOUND_BOT1c     = 167,
+SOUND_BOT1p     = 168,
+SOUND_BOT2c     = 169,
+SOUND_BOT2p     = 170,
+SOUND_BOT3c     = 171,
+SOUND_BOT3p     = 172,
+SOUND_BOT4c     = 173,
+SOUND_BOT4p     = 174,
+SOUND_EVIL1     = 175,
+SOUND_WHEELg    = 176,   // roue sur gravier
+SOUND_CHOCm     = 177,   // choc m�talique
+SOUND_CHOCa     = 178,   // choc arbre
+SOUND_FALLg     = 179,   // tombe dans le gravier
+SOUND_CHOCo     = 180,   // choc objet
+SOUND_FALLo1    = 181,   // objet tombe
+SOUND_FALLo2    = 182,   // objet tombe
+SOUND_FALLo3    = 183,   // objet tombe
+
   SOUND_MAX             /** number of items in enum */
 };
 

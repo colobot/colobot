@@ -42,6 +42,10 @@
 #include "object/auto/automush.h"
 #include "object/auto/autoroot.h"
 
+#include "object/subclass/buzzingcars/bc_barrier.h"
+#include "object/subclass/buzzingcars/bc_building.h"
+#include "object/subclass/buzzingcars/bc_resource.h"
+
 #include "object/subclass/base_alien.h"
 #include "object/subclass/base_building.h"
 #include "object/subclass/base_robot.h"
@@ -310,6 +314,178 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
 
         case OBJECT_MOBILErs:
             return CShielder::Create(params, m_oldModelManager, m_engine);
+
+        case OBJECT_FACTORY1:
+        case OBJECT_FACTORY2:
+        case OBJECT_FACTORY3:
+        case OBJECT_FACTORY4:
+        case OBJECT_FACTORY5:
+        case OBJECT_FACTORY6:
+        case OBJECT_FACTORY7:
+        case OBJECT_FACTORY8:
+        case OBJECT_FACTORY9:
+        case OBJECT_FACTORY10:
+        case OBJECT_FACTORY11:
+        case OBJECT_FACTORY12:
+        case OBJECT_FACTORY13:
+        case OBJECT_FACTORY14:
+        case OBJECT_GRAVEL:
+        case OBJECT_TUB:
+        case OBJECT_ALIEN1:
+        case OBJECT_ALIEN2:
+        case OBJECT_ALIEN3:
+        case OBJECT_ALIEN4:
+        case OBJECT_ALIEN5:
+        case OBJECT_ALIEN6:
+        case OBJECT_ALIEN7:
+        case OBJECT_ALIEN8:
+        case OBJECT_ALIEN9:
+        case OBJECT_INCA1:
+        case OBJECT_INCA2:
+        case OBJECT_INCA3:
+        case OBJECT_INCA4:
+        case OBJECT_INCA5:
+        case OBJECT_INCA6:
+        case OBJECT_INCA7:
+        case OBJECT_BUILDING1:
+        case OBJECT_BUILDING2:
+        case OBJECT_BUILDING3:
+        case OBJECT_CARCASS1:
+        case OBJECT_CARCASS2:
+        case OBJECT_ORGA1:
+        case OBJECT_ORGA2:
+        case OBJECT_ORGA3:
+//        case OBJECT_TOWER:
+//        case OBJECT_NUCLEAR:
+//        case OBJECT_PARA:
+        case OBJECT_COMPUTER:
+//        case OBJECT_REPAIR:
+        case OBJECT_SWEET:
+        case OBJECT_DOOR1:
+        case OBJECT_DOOR2:
+        case OBJECT_DOOR3:
+        case OBJECT_DOOR4:
+        case OBJECT_DOCK:
+        case OBJECT_REMOTE:
+        case OBJECT_STAND:
+        case OBJECT_GENERATOR:
+//        case OBJECT_START:
+//        case OBJECT_END:
+        case OBJECT_SUPPORT:
+            return CBCBuilding::Create(params, m_oldModelManager, m_engine);
+
+//        case OBJECT_STONE:
+//        case OBJECT_URANIUM:
+//        case OBJECT_METAL:
+        case OBJECT_BARREL:
+        case OBJECT_BARRELa:
+//        case OBJECT_ATOMIC:
+//        case OBJECT_BULLET:
+//        case OBJECT_BBOX:
+//        case OBJECT_KEYa:
+//        case OBJECT_KEYb:
+//        case OBJECT_KEYc:
+//        case OBJECT_KEYd:
+//        case OBJECT_TNT:
+        case OBJECT_MINE:
+        case OBJECT_POLE:
+//        case OBJECT_BOMB:
+        case OBJECT_CONE:
+        case OBJECT_PIPES:
+//        case OBJECT_WAYPOINT:
+        case OBJECT_TRAJECT:
+        case OBJECT_TARGET:
+//        case OBJECT_SHOW:
+//        case OBJECT_WINFIRE:
+//        case OBJECT_BAG:
+        case OBJECT_MARK:
+        case OBJECT_CROWN:
+        case OBJECT_ROADSIGN1:
+        case OBJECT_ROADSIGN2:
+        case OBJECT_ROADSIGN3:
+        case OBJECT_ROADSIGN4:
+        case OBJECT_ROADSIGN5:
+        case OBJECT_ROADSIGN6:
+        case OBJECT_ROADSIGN7:
+        case OBJECT_ROADSIGN8:
+        case OBJECT_ROADSIGN9:
+        case OBJECT_ROADSIGN10:
+        case OBJECT_ROADSIGN11:
+        case OBJECT_ROADSIGN12:
+        case OBJECT_ROADSIGN13:
+        case OBJECT_ROADSIGN14:
+        case OBJECT_ROADSIGN15:
+        case OBJECT_ROADSIGN16:
+        case OBJECT_ROADSIGN17:
+        case OBJECT_ROADSIGN18:
+        case OBJECT_ROADSIGN19:
+        case OBJECT_ROADSIGN20:
+        case OBJECT_ROADSIGN21:
+        case OBJECT_ROADSIGN22:
+        case OBJECT_ROADSIGN23:
+        case OBJECT_ROADSIGN24:
+        case OBJECT_ROADSIGN25:
+        case OBJECT_ROADSIGN26:
+        case OBJECT_ROADSIGN27:
+        case OBJECT_ROADSIGN28:
+        case OBJECT_ROADSIGN29:
+        case OBJECT_ROADSIGN30:
+        case OBJECT_PUB11:
+        case OBJECT_PUB12:
+        case OBJECT_PUB13:
+        case OBJECT_PUB14:
+        case OBJECT_PUB21:
+        case OBJECT_PUB22:
+        case OBJECT_PUB23:
+        case OBJECT_PUB24:
+        case OBJECT_PUB31:
+        case OBJECT_PUB32:
+        case OBJECT_PUB33:
+        case OBJECT_PUB34:
+        case OBJECT_PUB41:
+        case OBJECT_PUB42:
+        case OBJECT_PUB43:
+        case OBJECT_PUB44:
+        case OBJECT_PUB51:
+        case OBJECT_PUB52:
+        case OBJECT_PUB53:
+        case OBJECT_PUB54:
+        case OBJECT_PUB61:
+        case OBJECT_PUB62:
+        case OBJECT_PUB63:
+        case OBJECT_PUB64:
+        case OBJECT_PUB71:
+        case OBJECT_PUB72:
+        case OBJECT_PUB73:
+        case OBJECT_PUB74:
+        case OBJECT_PUB81:
+        case OBJECT_PUB82:
+        case OBJECT_PUB83:
+        case OBJECT_PUB84:
+        case OBJECT_PUB91:
+        case OBJECT_PUB92:
+        case OBJECT_PUB93:
+        case OBJECT_PUB94:
+        case OBJECT_TRAXf:
+            return CBCResource::Create(params, m_oldModelManager, m_engine);
+
+        case OBJECT_BARRIER4:
+        case OBJECT_BARRIER5:
+        case OBJECT_BARRIER6:
+        case OBJECT_BARRIER7:
+        case OBJECT_BARRIER8:
+        case OBJECT_BARRIER9:
+        case OBJECT_BARRIER10:
+        case OBJECT_BARRIER11:
+        case OBJECT_BARRIER12:
+        case OBJECT_BARRIER13:
+        case OBJECT_BARRIER14:
+        case OBJECT_BARRIER15:
+        case OBJECT_BARRIER16:
+        case OBJECT_BARRIER17:
+        case OBJECT_BARRIER18:
+        case OBJECT_BARRIER19:
+            return CBCBarrier::Create(params, m_oldModelManager, m_engine);
 
         default:
             break;
