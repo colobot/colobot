@@ -1,0 +1,77 @@
+diff a/src/object/auto/auto.h b/src/object/auto/auto.h	(rejected hunks)
+@@ -9,7 +9,6 @@ class CD3DEngine;
+ class CParticule;
+ class CLight;
+ class CTerrain;
+-class CWater;
+ class CCloud;
+ class CPlanet;
+ class CBlitz;
+@@ -28,7 +27,7 @@ class CAuto
+ {
+ public:
+    CAuto(CInstanceManager* iMan, CObject* object);
+-   ~CAuto();
++   virtual ~CAuto();
+ 
+    virtual void    DeleteObject(BOOL bAll=FALSE);
+ 
+@@ -42,7 +41,9 @@ public:
+    virtual BOOL    SetValue(int rank, float value);
+    virtual BOOL    SetString(char *string);
+ 
+-   virtual BOOL    CreateInterface(BOOL bSelect);
++   virtual Error   SetAction(int action, float time=0.2f);
++   virtual int     RetAction();
++
+    virtual Error   RetError();
+ 
+    virtual BOOL    RetBusy();
+@@ -53,15 +54,7 @@ public:
+    virtual BOOL    RetMotor();
+    virtual void    SetMotor(BOOL bMotor);
+ 
+-   virtual BOOL    Write(char *line);
+-   virtual BOOL    Read(char *line);
+-
+ protected:
+-   void        CheckInterface(CWindow *pw, EventMsg event, BOOL bState);
+-   void        EnableInterface(CWindow *pw, EventMsg event, BOOL bState);
+-   void        VisibleInterface(CWindow *pw, EventMsg event, BOOL bState);
+-   void        DeadInterface(CWindow *pw, EventMsg event, BOOL bState);
+-   void        UpdateInterface();
+    void        UpdateInterface(float rTime);
+ 
+ protected:
+@@ -71,7 +64,6 @@ protected:
+    CParticule*     m_particule;
+    CLight*         m_light;
+    CTerrain*       m_terrain;
+-   CWater*         m_water;
+    CCloud  *       m_cloud;
+    CPlanet *       m_planet;
+    CBlitz*         m_blitz;
+@@ -82,13 +74,16 @@ protected:
+    CObject*        m_object;
+    CSound*         m_sound;
+ 
+-   ObjectType  m_type;
+-   BOOL        m_bBusy;
+-   BOOL        m_bMotor;
+-   float       m_time;
+-   float       m_lastUpdateTime;
+-   float       m_progressTime;
+-   float       m_progressTotal;
++   ObjectType      m_type;
++   BOOL            m_bBusy;
++   BOOL            m_bMotor;
++   float           m_time;
++   float           m_lastUpdateTime;
++   float           m_progressTime;
++   float           m_progressTotal;
++   int             m_actionType;
++   float           m_actionTime;
++   float           m_actionProgress;
+ };
+ 
+ 

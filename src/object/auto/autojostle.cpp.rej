@@ -1,0 +1,31 @@
+diff a/src/object/auto/autojostle.cpp b/src/object/auto/autojostle.cpp	(rejected hunks)
+@@ -62,6 +62,7 @@ void CAutoJostle::Init()
+ {
+    m_time = 0.0f;
+    m_error = ERR_CONTINUE;
++   m_zoom = m_object->RetZoom(0);
+ 
+    CAuto::Init();
+ }
+@@ -125,17 +126,17 @@ BOOL CAutoJostle::EventProcess(const Event &event)
+        m_object->SetAngleZ(0, angle*dir.x);
+ 
+        zoom = 1.0f+sinf(m_time*8.0f)*factor*0.06f;
+-       m_object->SetZoomX(0, zoom);
++       m_object->SetZoomX(0, zoom*m_zoom.x);
+        zoom = 1.0f+sinf(m_time*5.0f)*factor*0.06f;
+-       m_object->SetZoomY(0, zoom);
++       m_object->SetZoomY(0, zoom*m_zoom.y);
+        zoom = 1.0f+sinf(m_time*7.0f)*factor*0.06f;
+-       m_object->SetZoomZ(0, zoom);
++       m_object->SetZoomZ(0, zoom*m_zoom.z);
+    }
+    else
+    {
+        m_object->SetAngleX(0, 0.0f);
+        m_object->SetAngleZ(0, 0.0f);
+-       m_object->SetZoom(0, D3DVECTOR(1.0f, 1.0f, 1.0f));
++       m_object->SetZoom(0, m_zoom);
+        m_error = ERR_STOP;
+    }
+ 

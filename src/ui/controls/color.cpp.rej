@@ -1,0 +1,86 @@
+diff a/src/ui/controls/color.cpp b/src/ui/controls/color.cpp	(rejected hunks)
+@@ -9,7 +9,6 @@
+ 
+ #include "struct.h"
+ #include "D3DEngine.h"
+-#include "language.h"
+ #include "math3d.h"
+ #include "event.h"
+ #include "misc.h"
+@@ -115,6 +114,18 @@ BOOL CColor::EventProcess(const Event &event)
+        m_repeat = 0.0f;
+    }
+ 
++   if ( m_bFocus &&
++        (m_state & STATE_VISIBLE) &&
++        (m_state & STATE_ENABLE)  &&
++        event.event == EVENT_KEYDOWN &&
++        (event.param == VK_RETURN ||
++         event.param == VK_BUTTON1) )
++   {
++       Event newEvent = event;
++       newEvent.event = m_eventMsg;
++       m_event->AddEvent(newEvent);
++   }
++
+    return TRUE;
+ }
+ 
+@@ -134,45 +145,17 @@ void CColor::Draw()
+    {
+        DrawShadow(m_pos, m_dim);
+    }
++   if ( m_bFocus )
++   {
++       DrawFocus(m_pos, m_dim);
++   }
+ 
+-   m_engine->SetTexture("button1.tga");
+-   m_engine->SetState(D3DSTATENORMAL);
+    CControl::Draw();
+ 
+-#if _TEEN
+-   color = ::RetColor(m_color);
+-
+-   m_engine->SetTexture("xxx.tga");  // pas de texture
+-   m_engine->SetState(D3DSTATENORMAL);
+-
+-   device = m_engine->RetD3DDevice();
+-
+    p1.x = m_pos.x+(4.0f/640.0f);
+    p1.y = m_pos.y+(4.0f/480.0f);
+    p2.x = m_pos.x+m_dim.x-(4.0f/640.0f);
+    p2.y = m_pos.y+m_dim.y-(4.0f/480.0f);
+-   vertex[0] = D3DLVERTEX(D3DVECTOR(p1.x, p1.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
+-   vertex[1] = D3DLVERTEX(D3DVECTOR(p1.x, p2.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
+-   vertex[2] = D3DLVERTEX(D3DVECTOR(p2.x, p1.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
+-   vertex[3] = D3DLVERTEX(D3DVECTOR(p2.x, p2.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
+-   device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, vertex, 4, NULL);
+-
+-   p1.x = m_pos.x+(5.0f/640.0f);
+-   p1.y = m_pos.y+(5.0f/480.0f);
+-   p2.x = m_pos.x+m_dim.x-(5.0f/640.0f);
+-   p2.y = m_pos.y+m_dim.y-(5.0f/480.0f);
+-   vertex[0] = D3DLVERTEX(D3DVECTOR(p1.x, p1.y, 0.0f), color,0x00000000, 0.0f,0.0f);
+-   vertex[1] = D3DLVERTEX(D3DVECTOR(p1.x, p2.y, 0.0f), color,0x00000000, 0.0f,0.0f);
+-   vertex[2] = D3DLVERTEX(D3DVECTOR(p2.x, p1.y, 0.0f), color,0x00000000, 0.0f,0.0f);
+-   vertex[3] = D3DLVERTEX(D3DVECTOR(p2.x, p2.y, 0.0f), color,0x00000000, 0.0f,0.0f);
+-   device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, vertex, 4, NULL);
+-
+-   m_engine->AddStatisticTriangle(4);
+-#else
+-   p1.x = m_pos.x+(3.0f/640.0f);
+-   p1.y = m_pos.y+(3.0f/480.0f);
+-   p2.x = m_pos.x+m_dim.x-(3.0f/640.0f);
+-   p2.y = m_pos.y+m_dim.y-(3.0f/480.0f);
+ 
+    color = ::RetColor(m_color);
+ 
+@@ -187,7 +170,6 @@ void CColor::Draw()
+    device = m_engine->RetD3DDevice();
+    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, vertex, 4, NULL);
+    m_engine->AddStatisticTriangle(2);
+-#endif
+ }
+ 
+ 

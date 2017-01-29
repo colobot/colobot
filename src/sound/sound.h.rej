@@ -1,0 +1,214 @@
+diff a/src/sound/sound.h b/src/sound/sound.h	(rejected hunks)
+@@ -17,85 +17,88 @@ enum Sound
+    SOUND_CLICK     = 0,
+    SOUND_BOUM      = 1,
+    SOUND_EXPLO     = 2,
+-   SOUND_FLYh      = 3,    // human
+-   SOUND_FLY       = 4,
+-   SOUND_STEPs     = 5,    // smooth
+-   SOUND_MOTORw    = 6,    // wheel
+-   SOUND_MOTORt    = 7,    // tank
+-   SOUND_MOTORr    = 8,    // roller
+-   SOUND_ERROR     = 9,
+-   SOUND_CONVERT   = 10,
+-   SOUND_ENERGY    = 11,
+-   SOUND_PLOUF     = 12,
+-   SOUND_BLUP      = 13,
+-   SOUND_WARNING   = 14,
+-   SOUND_DERRICK   = 15,
+-   SOUND_LABO      = 16,
+-   SOUND_STATION   = 17,
+-   SOUND_REPAIR    = 18,
+-   SOUND_RESEARCH  = 19,
+-   SOUND_INSECTs   = 20,   // spider
+-   SOUND_BURN      = 21,
+-   SOUND_TZOING    = 22,
+-   SOUND_GGG       = 23,
+-   SOUND_MANIP     = 24,
+-   SOUND_FIRE      = 25,   // tir avec fireball
+-   SOUND_HUMAN1    = 26,   // respiration
+-   SOUND_STEPw     = 27,   // water
+-   SOUND_SWIM      = 28,
+-   SOUND_RADAR     = 29,
+-   SOUND_BUILD     = 30,
+-   SOUND_ALARM     = 31,   // alarme énergie
+-   SOUND_SLIDE     = 32,
+-   SOUND_EXPLOi    = 33,   // insect
+-   SOUND_INSECTa   = 34,   // ant
+-   SOUND_INSECTb   = 35,   // bee
+-   SOUND_INSECTw   = 36,   // worm
+-   SOUND_INSECTm   = 37,   // mother
+-   SOUND_TREMBLE   = 38,
+-   SOUND_PSHHH     = 39,
+-   SOUND_NUCLEAR   = 40,
+-   SOUND_INFO      = 41,
+-   SOUND_OPEN      = 42,
+-   SOUND_CLOSE     = 43,
+-   SOUND_FACTORY   = 44,
+-   SOUND_EGG       = 45,
+-   SOUND_MOTORs    = 46,   // submarine
+-   SOUND_MOTORi    = 47,   // insect (pattes)
+-   SOUND_SHIELD    = 48,
+-   SOUND_FIREi     = 49,   // tir avec orgaball (insect)
+-   SOUND_GUNDEL    = 50,
+-   SOUND_PSHHH2    = 51,   // shield
+-   SOUND_MESSAGE   = 52,
+-   SOUND_BOUMm     = 53,   // metal
+-   SOUND_BOUMv     = 54,   // vegetal
+-   SOUND_BOUMs     = 55,   // smooth
+-   SOUND_EXPLOl    = 56,   // little
+-   SOUND_EXPLOlp   = 57,   // little power
+-   SOUND_EXPLOp    = 58,   // power
+-   SOUND_STEPh     = 59,   // hard
+-   SOUND_STEPm     = 60,   // metal
+-   SOUND_POWERON   = 61,
+-   SOUND_POWEROFF  = 62,
+-   SOUND_AIE       = 63,
+-   SOUND_WAYPOINT  = 64,
+-   SOUND_RECOVER   = 65,
+-   SOUND_DEADi     = 66,
+-   SOUND_JOSTLE    = 67,
+-   SOUND_GFLAT     = 68,
+-   SOUND_DEADg     = 69,   // mort par balle
+-   SOUND_DEADw     = 70,   // mort noyé
+-   SOUND_FLYf      = 71,   // reactor fail
+-   SOUND_ALARMt    = 72,   // alarme température
+-   SOUND_FINDING   = 73,   // trouvé un objet caché
+-   SOUND_THUMP     = 74,
+-   SOUND_TOUCH     = 75,
+-   SOUND_BLITZ     = 76,
+-   SOUND_MUSHROOM  = 77,
+-   SOUND_FIREp     = 78,   // tir avec phazer
+-   SOUND_EXPLOg1   = 79,   // impact gun 1
+-   SOUND_EXPLOg2   = 80,   // impact gun 2
+-   SOUND_MOTORd    = 81,   // moteur à friction
++   SOUND_FLY       = 3,
++   SOUND_STEPs     = 4,    // smooth
++   SOUND_MOTOR1    = 5,
++   SOUND_MOTOR2    = 6,
++   SOUND_ERROR     = 7,
++   SOUND_ENERGY    = 8,
++   SOUND_PLOUF     = 9,
++   SOUND_BLUP      = 10,
++   SOUND_WARNING   = 11,
++   SOUND_STATION   = 12,
++   SOUND_RESEARCH  = 13,
++   SOUND_BURN      = 14,
++   SOUND_TZOING    = 15,
++   SOUND_GGG       = 16,
++   SOUND_MANIP     = 17,
++   SOUND_SWIM      = 18,
++   SOUND_RADAR     = 19,
++   SOUND_ALARM     = 20,   // alarme énergie
++   SOUND_PSHHH     = 21,
++   SOUND_NUCLEAR   = 22,
++   SOUND_INFO      = 23,
++   SOUND_OPEN      = 24,
++   SOUND_CLOSE     = 25,
++   SOUND_MESSAGE   = 26,
++   SOUND_BOUMm     = 27,   // metal
++   SOUND_BOUMv     = 28,   // vegetal
++   SOUND_TAKE      = 29,
++   SOUND_EXPLOl    = 30,   // little
++   SOUND_EXPLOlp   = 31,   // little power
++   SOUND_EXPLOp    = 32,   // power
++   SOUND_STEPh     = 33,   // hard
++   SOUND_STEPm     = 34,   // metal
++   SOUND_POWERON   = 35,
++   SOUND_POWEROFF  = 36,
++   SOUND_WAYPOINT  = 37,
++   SOUND_JOSTLE    = 38,
++   SOUND_FINDING   = 39,   // trouvé un objet caché
++   SOUND_FIREp     = 40,   // tir avec phazer
++   SOUND_WHEEL     = 41,   // roue avec pneu
++   SOUND_WHEELb    = 42,   // roue sur la jante
++   SOUND_HOME1     = 43,
++   SOUND_HORN      = 44,
++   SOUND_BREAK1    = 45,
++   SOUND_BREAK2    = 46,
++   SOUND_STARTREADY= 47,
++   SOUND_START3    = 48,
++   SOUND_START2    = 49,
++   SOUND_START1    = 50,
++   SOUND_STARTGO   = 51,
++   SOUND_SPRINKLE  = 52,
++   SOUND_RECORDgall= 53,   // record du circuit
++   SOUND_RECORDgone= 54,   // record du tour
++   SOUND_RECORDlone= 55,   // meilleur tour
++   SOUND_TOUCH     = 56,
++   SOUND_MOTOR3    = 57,
++   SOUND_MOTOR4    = 58,
++   SOUND_MOTOR5    = 59,
++   SOUND_MOTOR6    = 60,
++   SOUND_EXPLOi    = 61,
++   SOUND_HELICO    = 62,
++   SOUND_LAP4      = 63,
++   SOUND_LAP3      = 64,
++   SOUND_LAP2      = 65,
++   SOUND_LAP1      = 66,
++   SOUND_BOT1c     = 67,
++   SOUND_BOT1p     = 68,
++   SOUND_BOT2c     = 69,
++   SOUND_BOT2p     = 70,
++   SOUND_BOT3c     = 71,
++   SOUND_BOT3p     = 72,
++   SOUND_BOT4c     = 73,
++   SOUND_BOT4p     = 74,
++   SOUND_EVIL1     = 75,
++   SOUND_WHEELg    = 76,   // roue sur gravier
++   SOUND_CHOCm     = 77,   // choc métalique
++   SOUND_CHOCa     = 78,   // choc arbre
++   SOUND_FALLg     = 79,   // tombe dans le gravier
++   SOUND_CHOCo     = 80,   // choc objet
++   SOUND_FALLo1    = 81,   // objet tombe
++   SOUND_FALLo2    = 82,   // objet tombe
++   SOUND_FALLo3    = 83,   // objet tombe
++   SOUND_MOTORs    = 84,   // démarrage moteur
+ };
+ 
+ enum SoundNext
+@@ -127,8 +130,11 @@ typedef struct
+    LPDIRECTSOUNDBUFFER     soundBuffer;
+    LPDIRECTSOUND3DBUFFER   soundBuffer3D;
+    float                   startAmplitude;
++   float                   changeAmplitude;
++   float                   currentAmplitude;
+    float                   startFrequency;
+    float                   changeFrequency;
++   float                   currentFrequency;
+    int                     initFrequency;
+    float                   volume;         // 2D: volume 1..0 selon position
+    float                   pan;            // 2D: pan -1..+1 selon position
+@@ -158,6 +164,12 @@ public:
+    BOOL    RetSound3D();
+    BOOL    RetSound3DCap();
+ 
++   void    SetComments(BOOL bMode);
++   BOOL    RetComments();
++
++   void    SetWater(BOOL bWater);
++   BOOL    RetWater();
++
+    void    SetAudioVolume(int volume);
+    int     RetAudioVolume();
+    void    SetMidiVolume(int volume);
+@@ -171,7 +183,10 @@ public:
+    BOOL    FlushEnvelope(int channel);
+    BOOL    AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper);
+    BOOL    Position(int channel, D3DVECTOR pos);
++   BOOL    Amplitude(int channel, float amplitude);
+    BOOL    Frequency(int channel, float frequency);
++   float   RetAmplitude(int channel);
++   float   RetFrequency(int channel);
+    BOOL    Stop(int channel);
+    BOOL    StopAll();
+    BOOL    MuteAll(BOOL bMute);
+@@ -203,6 +218,8 @@ protected:
+    BOOL                    m_bState;
+    BOOL                    m_bAudioTrack;
+    BOOL                    m_ctrl3D;
++   BOOL                    m_bComments;
++   BOOL                    m_bWater;
+    BOOL                    m_bDebugMode;
+    LPDIRECTSOUND           m_lpDS;
+    LPDIRECTSOUND3DLISTENER m_listener;

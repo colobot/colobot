@@ -1,0 +1,9 @@
+diff a/src/object/task/task.h b/src/object/task/task.h	(rejected hunks)
+@@ -44,7 +44,6 @@ public:
+ 
+    virtual BOOL    EventProcess(const Event &event);
+    virtual Error   IsEnded();
+-   virtual BOOL    IsBusy();
+    virtual BOOL    Abort();
+ 
+ protected:

@@ -1,0 +1,670 @@
+diff a/src/ui/controls/map.cpp b/src/ui/controls/map.cpp	(rejected hunks)
+@@ -38,7 +38,6 @@ CMap::CMap(CInstanceManager* iMan) : CControl(iMan)
+    m_zoom     = 2.0f;
+    m_offset.x = 0.0f;
+    m_offset.y = 0.0f;
+-   m_angle    = 0.0f;
+ 
+    m_floorColor.r = 1.00f;
+    m_floorColor.g = 0.50f;
+@@ -52,11 +51,6 @@ CMap::CMap(CInstanceManager* iMan) : CControl(iMan)
+ 
+    m_hiliteRank = -1;
+    FlushObject();
+-
+-   m_fixImage[0] = 0;
+-   m_mode = 0;
+-   m_bToy = FALSE;
+-   m_bDebug = FALSE;
+ }
+ 
+ // Destructeur de l'objet.
+@@ -78,48 +72,11 @@ BOOL CMap::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+ }
+ 
+ 
+-// Choix de l'offset, lorsqu'une image fixe est affichée.
+-
+-void CMap::SetOffset(float ox, float oy)
+-{
+-   m_offset.x = ox;
+-   m_offset.y = oy;
+-   m_half = m_terrain->RetMosaic()*m_terrain->RetBrick()*m_terrain->RetSize()/2.0f;
+-}
+-
+-// Choix de l'angle global de rotation.
+-
+-void CMap::SetAngle(float angle)
+-{
+-   m_angle = angle;
+-}
+-
+-// Spécifie le mode spécial.
+-
+-void CMap::SetMode(int mode)
+-{
+-   m_mode = mode;
+-}
+-
+-// Spécifie le type de l'icône pour l'objet sélectionné.
+-
+-void CMap::SetToy(BOOL bToy)
+-{
+-   m_bToy = bToy;
+-}
+-
+-void CMap::SetDebug(BOOL bDebug)
+-{
+-   m_bDebug = bDebug;
+-}
+-
+-
+ // Choix du facteur de zoom de la carte.
+ 
+ void CMap::SetZoom(float value)
+ {
+    m_zoom = value;
+-   m_half = m_terrain->RetMosaic()*m_terrain->RetBrick()*m_terrain->RetSize()/2.0f;
+ }
+ 
+ float CMap::RetZoom()
+@@ -127,7 +84,6 @@ float CMap::RetZoom()
+    return m_zoom;
+ }
+ 
+-// Choix d'un offset fixe.
+ 
+ // Active ou désactive la carte.
+ 
+@@ -158,21 +114,6 @@ void CMap::SetWaterColor(D3DCOLORVALUE color)
+ }
+ 
+ 
+-// Spécifie une image fixe à la place du dessin du relief.
+-
+-void CMap::SetFixImage(char *filename)
+-{
+-   strcpy(m_fixImage, filename);
+-}
+-
+-// Indique si on utilise une image fixe.
+-
+-BOOL CMap::RetFixImage()
+-{
+-   return (m_fixImage[0] != 0);
+-}
+-
+-
+ // Gestion d'un événement.
+ 
+ BOOL CMap::EventProcess(const Event &event)
+@@ -231,7 +172,6 @@ void CMap::SetHilite(CObject* pObj)
+    int     i;
+ 
+    m_hiliteRank = -1;
+-   if ( m_bToy || m_fixImage[0] != 0 )  return;  // carte avec image fixe ?
+    if ( pObj == 0 )  return;
+ 
+    for ( i=0 ; i<MAPMAXOBJECT ; i++ )
+@@ -314,32 +254,18 @@ void CMap::Draw()
+ 
+    if ( !m_bEnable )  return;
+ 
+-   if ( m_fixImage[0] == 0 && m_map[MAPMAXOBJECT-1].bUsed )
++   if ( m_map[MAPMAXOBJECT-1].bUsed )
+    {
+        m_offset = AdjustOffset(m_map[MAPMAXOBJECT-1].pos);
+    }
+ 
+-   if ( m_fixImage[0] == 0 )  // dessin du relief ?
+-   {
+-       m_engine->SetTexture("map.tga");
+-       m_engine->SetState(D3DSTATENORMAL);
+-       uv1.x = 0.5f+(m_offset.x-(m_half/m_zoom))/(m_half*2.0f);
+-       uv1.y = 0.5f-(m_offset.y+(m_half/m_zoom))/(m_half*2.0f);
+-       uv2.x = 0.5f+(m_offset.x+(m_half/m_zoom))/(m_half*2.0f);
+-       uv2.y = 0.5f-(m_offset.y-(m_half/m_zoom))/(m_half*2.0f);
+-       DrawVertex(uv1, uv2, 0.97f);  // dessine la carte
+-   }
+-   else    // image fixe ?
+-   {
+-       m_engine->LoadTexture(m_fixImage);
+-       m_engine->SetTexture(m_fixImage);
+-       m_engine->SetState(D3DSTATENORMAL);
+-       uv1.x = 0.0f;
+-       uv1.y = 0.0f;
+-       uv2.x = 1.0f;
+-       uv2.y = 1.0f;
+-       DrawVertex(uv1, uv2, 0.97f);  // dessine la carte
+-   }
++   m_engine->SetTexture("map.tga");
++   m_engine->SetState(D3DSTATENORMAL);
++   uv1.x = 0.5f+(m_offset.x-(m_half/m_zoom))/(m_half*2.0f);
++   uv1.y = 0.5f-(m_offset.y+(m_half/m_zoom))/(m_half*2.0f);
++   uv2.x = 0.5f+(m_offset.x+(m_half/m_zoom))/(m_half*2.0f);
++   uv2.y = 0.5f-(m_offset.y-(m_half/m_zoom))/(m_half*2.0f);
++   DrawVertex(uv1, uv2, 0.97f);  // dessine la carte
+ 
+    i = MAPMAXOBJECT-1;
+    if ( m_map[i].bUsed )  // sélection :
+@@ -427,7 +353,6 @@ void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
+    BOOL    bEnding;
+    int     quart;
+ 
+-   if ( m_bToy || m_fixImage[0] != 0 )  return;  // carte avec image fixe ?
+    if ( color != MAPCOLOR_MOVE )  return;
+ 
+    pos.x = (pos.x-m_offset.x)*(m_zoom*0.5f)/m_half+0.5f;
+@@ -504,7 +429,7 @@ void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
+ void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
+                      BOOL bSelect, BOOL bHilite)
+ {
+-   FPOINT      p1, p2, p3, p4, p5, dim, uv1, uv2;
++   FPOINT      p1, p2, p3, dim, uv1, uv2;
+    BOOL        bOut, bUp, bDown, bLeft, bRight;
+ 
+    pos.x = (pos.x-m_offset.x)*(m_zoom*0.5f)/m_half+0.5f;
+@@ -569,16 +494,8 @@ void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
+ 
+    if ( bSelect )
+    {
+-       if ( m_bToy )
+-       {
+-           dim.x *= 1.2f+sinf(m_time*8.0f)*0.1f;
+-           dim.y *= 1.2f+sinf(m_time*8.0f)*0.1f;
+-       }
+-       else
+-       {
+-           dim.x *= 1.2f+sinf(m_time*8.0f)*0.3f;
+-           dim.y *= 1.2f+sinf(m_time*8.0f)*0.3f;
+-       }
++       dim.x *= 1.2f+sinf(m_time*8.0f)*0.3f;
++       dim.y *= 1.2f+sinf(m_time*8.0f)*0.3f;
+    }
+    if ( color == MAPCOLOR_BASE ||
+         color == MAPCOLOR_FIX  ||
+@@ -600,65 +517,23 @@ void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
+        dim.x *= 1.4f;
+        dim.y *= 1.4f;
+    }
+-   if ( type == OBJECT_TEEN28 )  // bouteille ?
+-   {
+-       dim.x *= 3.0f;
+-       dim.y *= 3.0f;
+-       bHilite = TRUE;
+-   }
+-   if ( type == OBJECT_TEEN34 )  // caillou ?
+-   {
+-       dim.x *= 2.0f;
+-       dim.y *= 2.0f;
+-       bHilite = TRUE;
+-   }
+ 
+    if ( color == MAPCOLOR_MOVE && bSelect )
+    {
+-       if ( m_bToy )
+-       {
+-           p1.x = pos.x;
+-           p1.y = pos.y+dim.y*1.4f;
+-           p1 = RotatePoint(pos, dir, p1);
+-           p1.x = pos.x+(p1.x-pos.x)*0.75f;
+-
+-           p2.x = pos.x+dim.x*1.2f;
+-           p2.y = pos.y+dim.y*0.8f;
+-           p2 = RotatePoint(pos, dir, p2);
+-           p2.x = pos.x+(p2.x-pos.x)*0.75f;
+-
+-           p3.x = pos.x+dim.x*1.2f;
+-           p3.y = pos.y-dim.y*1.0f;
+-           p3 = RotatePoint(pos, dir, p3);
+-           p3.x = pos.x+(p3.x-pos.x)*0.75f;
+-
+-           p4.x = pos.x-dim.x*1.2f;
+-           p4.y = pos.y-dim.y*1.0f;
+-           p4 = RotatePoint(pos, dir, p4);
+-           p4.x = pos.x+(p4.x-pos.x)*0.75f;
+-
+-           p5.x = pos.x-dim.x*1.2f;
+-           p5.y = pos.y+dim.y*0.8f;
+-           p5 = RotatePoint(pos, dir, p5);
+-           p5.x = pos.x+(p5.x-pos.x)*0.75f;
+-       }
+-       else
+-       {
+-           p1.x = pos.x;
+-           p1.y = pos.y+dim.y*2.4f;
+-           p1 = RotatePoint(pos, dir, p1);
+-           p1.x = pos.x+(p1.x-pos.x)*0.75f;
+-
+-           p2.x = pos.x+dim.x*1.0f;
+-           p2.y = pos.y-dim.y*1.6f;
+-           p2 = RotatePoint(pos, dir, p2);
+-           p2.x = pos.x+(p2.x-pos.x)*0.75f;
+-
+-           p3.x = pos.x-dim.x*1.0f;
+-           p3.y = pos.y-dim.y*1.6f;
+-           p3 = RotatePoint(pos, dir, p3);
+-           p3.x = pos.x+(p3.x-pos.x)*0.75f;
+-       }
++       p1.x = pos.x;
++       p1.y = pos.y+dim.y*2.4f;
++       p1 = RotatePoint(pos, dir, p1);
++       p1.x = pos.x+(p1.x-pos.x)*0.75f;
++
++       p2.x = pos.x+dim.x*1.0f;
++       p2.y = pos.y-dim.y*1.6f;
++       p2 = RotatePoint(pos, dir, p2);
++       p2.x = pos.x+(p2.x-pos.x)*0.75f;
++
++       p3.x = pos.x-dim.x*1.0f;
++       p3.y = pos.y-dim.y*1.6f;
++       p3 = RotatePoint(pos, dir, p3);
++       p3.x = pos.x+(p3.x-pos.x)*0.75f;
+    }
+ 
+    pos.x -= dim.x/2.0f;
+@@ -676,22 +551,11 @@ void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
+        {
+            m_engine->SetTexture("button2.tga");
+            m_engine->SetState(D3DSTATENORMAL);
+-           if ( m_bToy )
+-           {
+-               uv1.x = 164.5f/256.0f;  // pentagone noir
+-               uv1.y = 228.5f/256.0f;
+-               uv2.x = 172.0f/256.0f;
+-               uv2.y = 236.0f/256.0f;
+-               DrawPenta(p1, p2, p3, p4, p5, uv1, uv2);
+-           }
+-           else
+-           {
+-               uv1.x = 144.5f/256.0f;  // triangle rouge
+-               uv1.y = 240.5f/256.0f;
+-               uv2.x = 159.0f/256.0f;
+-               uv2.y = 255.0f/256.0f;
+-               DrawTriangle(p1, p2, p3, uv1, uv2);
+-           }
++           uv1.x = 144.5f/256.0f;  // triangle rouge
++           uv1.y = 240.5f/256.0f;
++           uv2.x = 159.0f/256.0f;
++           uv2.y = 255.0f/256.0f;
++           DrawTriangle(p1, p2, p3, uv1, uv2);
+        }
+        DrawObjectIcon(pos, dim, color, type, bHilite);
+    }
+@@ -775,107 +639,6 @@ void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
+ void CMap::DrawObjectIcon(FPOINT pos, FPOINT dim, MapColor color,
+                          ObjectType type, BOOL bHilite)
+ {
+-   FPOINT  ppos, ddim, uv1, uv2;
+-   float   dp;
+-   int     icon;
+-
+-   dp = 0.5f/256.0f;
+-
+-   m_engine->SetTexture("button3.tga");
+-   m_engine->SetState(D3DSTATENORMAL);
+-   if ( color == MAPCOLOR_MOVE )
+-   {
+-       uv1.x = 160.0f/256.0f;  // bleu
+-       uv1.y = 224.0f/256.0f;
+-   }
+-   else if ( color == MAPCOLOR_ALIEN )
+-   {
+-       uv1.x = 224.0f/256.0f;  // vert
+-       uv1.y = 224.0f/256.0f;
+-   }
+-   else
+-   {
+-       uv1.x = 192.0f/256.0f;  // jaune
+-       uv1.y = 224.0f/256.0f;
+-   }
+-   uv2.x = uv1.x+32.0f/256.0f;
+-   uv2.y = uv1.y+32.0f/256.0f;
+-   uv1.x += dp;
+-   uv1.y += dp;
+-   uv2.x -= dp;
+-   uv2.y -= dp;
+-   DrawIcon(pos, dim, uv1, uv2);  // fond coloré
+-
+-   if ( bHilite )
+-   {
+-       icon = -1;
+-       if ( type == OBJECT_FACTORY  )  icon = 32;
+-       if ( type == OBJECT_DERRICK  )  icon = 33;
+-       if ( type == OBJECT_CONVERT  )  icon = 34;
+-       if ( type == OBJECT_RESEARCH )  icon = 35;
+-       if ( type == OBJECT_STATION  )  icon = 36;
+-       if ( type == OBJECT_TOWER    )  icon = 37;
+-       if ( type == OBJECT_LABO     )  icon = 38;
+-       if ( type == OBJECT_ENERGY   )  icon = 39;
+-       if ( type == OBJECT_RADAR    )  icon = 40;
+-       if ( type == OBJECT_INFO     )  icon = 44;
+-       if ( type == OBJECT_REPAIR   )  icon = 41;
+-       if ( type == OBJECT_DESTROYER)  icon = 41;
+-       if ( type == OBJECT_NUCLEAR  )  icon = 42;
+-       if ( type == OBJECT_PARA     )  icon = 46;
+-       if ( type == OBJECT_SAFE     )  icon = 47;
+-       if ( type == OBJECT_HUSTON   )  icon = 48;
+-       if ( type == OBJECT_TARGET1  )  icon = 45;
+-       if ( type == OBJECT_BASE     )  icon = 43;
+-       if ( type == OBJECT_HUMAN    )  icon =  8;
+-       if ( type == OBJECT_MOBILEfa )  icon = 11;
+-       if ( type == OBJECT_MOBILEta )  icon = 10;
+-       if ( type == OBJECT_MOBILEwa )  icon =  9;
+-       if ( type == OBJECT_MOBILEia )  icon = 22;
+-       if ( type == OBJECT_MOBILEfc )  icon = 17;
+-       if ( type == OBJECT_MOBILEtc )  icon = 16;
+-       if ( type == OBJECT_MOBILEwc )  icon = 15;
+-       if ( type == OBJECT_MOBILEic )  icon = 23;
+-       if ( type == OBJECT_MOBILEfi )  icon = 27;
+-       if ( type == OBJECT_MOBILEti )  icon = 26;
+-       if ( type == OBJECT_MOBILEwi )  icon = 25;
+-       if ( type == OBJECT_MOBILEii )  icon = 28;
+-       if ( type == OBJECT_MOBILEfs )  icon = 14;
+-       if ( type == OBJECT_MOBILEts )  icon = 13;
+-       if ( type == OBJECT_MOBILEws )  icon = 12;
+-       if ( type == OBJECT_MOBILEis )  icon = 24;
+-       if ( type == OBJECT_MOBILErt )  icon = 18;
+-       if ( type == OBJECT_MOBILErc )  icon = 19;
+-       if ( type == OBJECT_MOBILErr )  icon = 20;
+-       if ( type == OBJECT_MOBILErs )  icon = 29;
+-       if ( type == OBJECT_MOBILEsa )  icon = 21;
+-       if ( type == OBJECT_MOBILEft )  icon = 30;
+-       if ( type == OBJECT_MOBILEtt )  icon = 30;
+-       if ( type == OBJECT_MOBILEwt )  icon = 30;
+-       if ( type == OBJECT_MOBILEit )  icon = 30;
+-       if ( type == OBJECT_MOBILEtg )  icon = 45;
+-       if ( type == OBJECT_MOBILEdr )  icon = 48;
+-       if ( type == OBJECT_APOLLO2  )  icon = 49;
+-       if ( type == OBJECT_MOTHER   )  icon = 31;
+-       if ( type == OBJECT_ANT      )  icon = 31;
+-       if ( type == OBJECT_SPIDER   )  icon = 31;
+-       if ( type == OBJECT_BEE      )  icon = 31;
+-       if ( type == OBJECT_WORM     )  icon = 31;
+-       if ( type == OBJECT_TEEN28    )  icon = 48;  // bouteille
+-       if ( type == OBJECT_TEEN34    )  icon = 48;  // caillou
+-       if ( icon == -1 )  return;
+-
+-       m_engine->SetState(D3DSTATETTw);
+-       uv1.x = (32.0f/256.0f)*(icon%8);
+-       uv1.y = (32.0f/256.0f)*(icon/8);
+-       uv2.x = uv1.x+32.0f/256.0f;
+-       uv2.y = uv1.y+32.0f/256.0f;
+-       uv1.x += dp;
+-       uv1.y += dp;
+-       uv2.x -= dp;
+-       uv2.y -= dp;
+-       DrawIcon(pos, dim, uv1, uv2);  // icône
+-   }
+ }
+ 
+ // Dessine l'objet survolé par la souris.
+@@ -885,8 +648,6 @@ void CMap::DrawHilite(FPOINT pos)
+    FPOINT      dim, uv1, uv2;
+    BOOL        bOut, bUp, bDown, bLeft, bRight;
+ 
+-   if ( m_bToy || m_fixImage[0] != 0 )  return;  // carte avec image fixe ?
+-
+    pos.x = (pos.x-m_offset.x)*(m_zoom*0.5f)/m_half+0.5f;
+    pos.y = (pos.y-m_offset.y)*(m_zoom*0.5f)/m_half+0.5f;
+ 
+@@ -934,36 +695,6 @@ void CMap::DrawTriangle(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT uv1, FPOINT uv2)
+    m_engine->AddStatisticTriangle(1);
+ }
+ 
+-// Dessine une icône pentagonulaire (à 5 côtés, quoi !).
+-
+-void CMap::DrawPenta(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT p4, FPOINT p5, FPOINT uv1, FPOINT uv2)
+-{
+-   LPDIRECT3DDEVICE7 device;
+-   D3DVERTEX2  vertex[5];  // 1 pentagone
+-   D3DVECTOR   n;
+-
+-   device = m_engine->RetD3DDevice();
+-
+-   n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normale
+-
+-#if 1
+-   vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,uv1.y);
+-   vertex[1] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, uv1.x,uv2.y);
+-   vertex[2] = D3DVERTEX2(D3DVECTOR(p5.x, p5.y, 0.0f), n, uv2.x,uv2.y);
+-   vertex[3] = D3DVERTEX2(D3DVECTOR(p3.x, p3.y, 0.0f), n, uv2.x,uv2.y);
+-   vertex[4] = D3DVERTEX2(D3DVECTOR(p4.x, p4.y, 0.0f), n, uv2.x,uv2.y);
+-
+-   device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 5, NULL);
+-#else
+-   vertex[0] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, uv1.x,uv1.y);
+-   vertex[1] = D3DVERTEX2(D3DVECTOR(p3.x, p3.y, 0.0f), n, uv1.x,uv2.y);
+-   vertex[2] = D3DVERTEX2(D3DVECTOR(p4.x, p4.y, 0.0f), n, uv2.x,uv2.y);
+-
+-   device->DrawPrimitive(D3DPT_TRIANGLELIST, D3DFVF_VERTEX2, vertex, 3, NULL);
+-#endif
+-   m_engine->AddStatisticTriangle(3);
+-}
+-
+ // Dessine le tableau des vertex.
+ 
+ void CMap::DrawVertex(FPOINT uv1, FPOINT uv2, float zoom)
+@@ -1014,7 +745,6 @@ void CMap::UpdateTerrain()
+    float           scale, water, level, intensity;
+    int             x, y;
+ 
+-   if ( m_fixImage[0] != 0  )  return;  // image fixe ?
+    if ( !m_engine->OpenImage("map.tga") )  return;
+ 
+    scale = m_terrain->RetScaleRelief();
+@@ -1029,6 +759,7 @@ void CMap::UpdateTerrain()
+            pos.z = -((float)y-128.0f)*m_half/128.0f;
+            pos.y = 0.0f;
+ 
++#if 0
+            if ( pos.x >= -m_half && pos.x <= m_half &&
+                 pos.z >= -m_half && pos.z <= m_half )
+            {
+@@ -1038,10 +769,31 @@ void CMap::UpdateTerrain()
+            {
+                level = 1000.0f;
+            }
++           intensity = Norm(level/256.0f);
+ 
+-           intensity = level/256.0f;
+-           if ( intensity < 0.0f )  intensity = 0.0f;
+-           if ( intensity > 1.0f )  intensity = 1.0f;
++           if ( level >= water )  // sur l'eau ?
++           {
++               color.r = m_floorColor.r + (intensity-0.5f);
++               color.g = m_floorColor.g + (intensity-0.5f);
++               color.b = m_floorColor.b + (intensity-0.5f);
++           }
++           else    // sous l'eau ?
++           {
++               color.r = m_waterColor.r + (intensity-0.5f);
++               color.g = m_waterColor.g + (intensity-0.5f);
++               color.b = m_waterColor.b + (intensity-0.5f);
++           }
++#else
++           if ( pos.x >= -m_half && pos.x <= m_half &&
++                pos.z >= -m_half && pos.z <= m_half )
++           {
++               level = m_terrain->RetHardness(pos);
++           }
++           else
++           {
++               level = 1.0f;
++           }
++           intensity = Norm(level);
+ 
+            if ( level >= water )  // sur l'eau ?
+            {
+@@ -1055,6 +807,7 @@ void CMap::UpdateTerrain()
+                color.g = m_waterColor.g + (intensity-0.5f);
+                color.b = m_waterColor.b + (intensity-0.5f);
+            }
++#endif
+ 
+            m_engine->SetDot(x, y, color);
+        }
+@@ -1073,7 +826,6 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
+    float           scale, water, level, intensity;
+    int             x, y;
+ 
+-   if ( m_fixImage[0] != 0  )  return;  // image fixe ?
+    if ( !m_engine->OpenImage("map.tga") )  return;
+    m_engine->LoadImage();
+ 
+@@ -1148,7 +900,6 @@ void CMap::UpdateObject(CObject* pObj)
+    ObjectType      type;
+    MapColor        color;
+    D3DVECTOR       pos;
+-   FPOINT          ppos;
+    float           dir;
+ 
+    if ( !m_bEnable )  return;
+@@ -1156,52 +907,28 @@ void CMap::UpdateObject(CObject* pObj)
+ 
+    if ( !pObj->RetActif() )  return;
+    if ( !pObj->RetSelectable() )  return;
+-   if ( pObj->RetProxyActivate() )  return;
+    if ( pObj->RetTruck() != 0 )  return;
+ 
+    type = pObj->RetType();
+    pos  = pObj->RetPosition(0);
+    dir  = -(pObj->RetAngleY(0)+PI/2.0f);
+ 
+-   if ( m_angle != 0.0f )
+-   {
+-       ppos = RotatePoint(m_angle, FPOINT(pos.x, pos.z));
+-       pos.x = ppos.x;
+-       pos.z = ppos.y;
+-       dir += m_angle;
+-   }
+-
+-   if ( type == OBJECT_RADAR )
+-   {
+-       m_bRadar = TRUE;  // radar existe
+-   }
+-
+    color = MAPCOLOR_NULL;
+-   if ( type == OBJECT_BASE )
+-   {
+-       color = MAPCOLOR_BASE;
+-   }
+-   if ( type == OBJECT_DERRICK  ||
+-        type == OBJECT_FACTORY  ||
+-        type == OBJECT_STATION  ||
+-        type == OBJECT_CONVERT  ||
+-        type == OBJECT_REPAIR   ||
+-        type == OBJECT_DESTROYER||
++   if ( type == OBJECT_FACTORY1 ||
++        type == OBJECT_FACTORY2 ||
++        type == OBJECT_FACTORY3 ||
++        type == OBJECT_FACTORY4 ||
++        type == OBJECT_FACTORY5 ||
+         type == OBJECT_TOWER    ||
+-        type == OBJECT_RESEARCH ||
+-        type == OBJECT_RADAR    ||
+-        type == OBJECT_INFO     ||
+-        type == OBJECT_ENERGY   ||
+-        type == OBJECT_LABO     ||
+         type == OBJECT_NUCLEAR  ||
+         type == OBJECT_PARA     ||
+-        type == OBJECT_SAFE     ||
+-        type == OBJECT_HUSTON   ||
+-        type == OBJECT_TARGET1  ||
++        type == OBJECT_DOOR1    ||
++        type == OBJECT_DOOR2    ||
++        type == OBJECT_DOOR3    ||
++        type == OBJECT_DOOR4    ||
++        type == OBJECT_DOOR5    ||
+         type == OBJECT_START    ||
+-        type == OBJECT_END      ||  // objet fixe ?
+-        type == OBJECT_TEEN28    ||  // bouteille ?
+-        type == OBJECT_TEEN34    )   // caillou ?
++        type == OBJECT_END      )  // objet fixe ?
+    {
+        color = MAPCOLOR_FIX;
+    }
+@@ -1214,79 +941,20 @@ void CMap::UpdateObject(CObject* pObj)
+        color = MAPCOLOR_BBOX;
+    }
+    if ( type == OBJECT_HUMAN    ||
+-        type == OBJECT_MOBILEwa ||
+-        type == OBJECT_MOBILEta ||
+-        type == OBJECT_MOBILEfa ||
+-        type == OBJECT_MOBILEia ||
+-        type == OBJECT_MOBILEwc ||
+-        type == OBJECT_MOBILEtc ||
+-        type == OBJECT_MOBILEfc ||
+-        type == OBJECT_MOBILEic ||
+-        type == OBJECT_MOBILEwi ||
+-        type == OBJECT_MOBILEti ||
+-        type == OBJECT_MOBILEfi ||
+-        type == OBJECT_MOBILEii ||
+-        type == OBJECT_MOBILEws ||
+-        type == OBJECT_MOBILEts ||
+-        type == OBJECT_MOBILEfs ||
+-        type == OBJECT_MOBILEis ||
+-        type == OBJECT_MOBILErt ||
+-        type == OBJECT_MOBILErc ||
+-        type == OBJECT_MOBILErr ||
+-        type == OBJECT_MOBILErs ||
+-        type == OBJECT_MOBILEsa ||
++        type == OBJECT_CAR      ||
+         type == OBJECT_MOBILEtg ||
+-        type == OBJECT_MOBILEwt ||
+-        type == OBJECT_MOBILEtt ||
+-        type == OBJECT_MOBILEft ||
+-        type == OBJECT_MOBILEit ||
+-        type == OBJECT_MOBILEdr ||
+-        type == OBJECT_APOLLO2  )  // véhicule mobile ?
++        type == OBJECT_MOBILEfb ||
++        type == OBJECT_MOBILEob )  // véhicule mobile ?
+    {
+        color = MAPCOLOR_MOVE;
+    }
+-   if ( type == OBJECT_ANT      ||
+-        type == OBJECT_BEE      ||
+-        type == OBJECT_WORM     ||
+-        type == OBJECT_SPIDER   )  // ennemi mobile ?
+-   {
+-       color = MAPCOLOR_ALIEN;
+-   }
+-   if ( type == OBJECT_WAYPOINT ||
+-        type == OBJECT_FLAGb    )
++   if ( type == OBJECT_WAYPOINT )
+    {
+        color = MAPCOLOR_WAYPOINTb;
+    }
+-   if ( type == OBJECT_FLAGr )
+-   {
+-       color = MAPCOLOR_WAYPOINTr;
+-   }
+-   if ( type == OBJECT_FLAGg )
+-   {
+-       color = MAPCOLOR_WAYPOINTg;
+-   }
+-   if ( type == OBJECT_FLAGy )
+-   {
+-       color = MAPCOLOR_WAYPOINTy;
+-   }
+-   if ( type == OBJECT_FLAGv )
+-   {
+-       color = MAPCOLOR_WAYPOINTv;
+-   }
+ 
+    if ( color == MAPCOLOR_NULL )  return;
+ 
+-   if ( m_fixImage[0] != 0 && !m_bDebug )  // carte avec image fixe ?
+-   {
+-       if ( (type == OBJECT_TEEN28 ||
+-             type == OBJECT_TEEN34 ) &&
+-            m_mode == 0 )  return;
+-
+-       if ( type != OBJECT_TEEN28 &&
+-            type != OBJECT_TEEN34 &&
+-            color != MAPCOLOR_MOVE )  return;
+-   }
+-
+    if ( pObj->RetSelect() )
+    {
+        m_map[MAPMAXOBJECT-1].type   = type;

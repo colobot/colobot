@@ -1,0 +1,311 @@
+diff a/src/ui/controls/control.cpp b/src/ui/controls/control.cpp	(rejected hunks)
+@@ -9,7 +9,6 @@
+ 
+ #include "struct.h"
+ #include "D3DEngine.h"
+-#include "language.h"
+ #include "restext.h"
+ #include "math3d.h"
+ #include "event.h"
+@@ -46,6 +45,8 @@ CControl::CControl(CInstanceManager* iMan)
+    m_tooltip[0]  = 0;
+    m_bFocus      = FALSE;
+    m_bCapture    = FALSE;
++   m_tabOrder    = -1;
++   m_time        = 0.0f;
+ 
+    m_bGlint        = FALSE;
+    m_glintCorner1  = FPOINT(0.0f, 0.0f);
+@@ -310,6 +311,19 @@ BOOL CControl::RetFocus()
+ }
+ 
+ 
++// Gestion de l'ordre du bouton.
++
++void CControl::SetTabOrder(int rank)
++{
++   m_tabOrder = rank;
++}
++
++int CControl::RetTabOrder()
++{
++   return m_tabOrder;
++}
++
++
+ // Retourne l'événement associé au contrôle.
+ 
+ EventMsg CControl::RetEventMsg()
+@@ -324,9 +338,10 @@ BOOL CControl::EventProcess(const Event &event)
+ {
+    if ( m_state & STATE_DEAD )  return TRUE;
+ 
+-   if ( event.event == EVENT_FRAME && m_bGlint )
++   if ( event.event == EVENT_FRAME )
+    {
+-       GlintFrame(event);
++       m_time += event.rTime;
++       if ( m_bGlint )  GlintFrame(event);
+    }
+ 
+    if ( event.event == EVENT_MOUSEMOVE )
+@@ -447,7 +462,7 @@ void CControl::GlintFrame(const Event &event)
+        dim.x = ((15.0f+Rand()*15.0f)/640.0f);
+        dim.y = dim.x/0.75f;
+        m_particule->CreateParticule(pos, speed, dim, PARTICONTROL,
+-                                    1.0f, 0.0f, 0.0f, SH_INTERFACE);
++                                    1.0f, 0.0f, SH_INTERFACE);
+ 
+        m_glintProgress = 0.0f;
+    }
+@@ -458,9 +473,9 @@ void CControl::GlintFrame(const Event &event)
+ 
+ void CControl::Draw()
+ {
+-   FPOINT      pos;
++   FPOINT      pos, dim;
+    float       zoomExt, zoomInt;
+-   int         icon;
++   int         icon, i;
+ 
+    if ( (m_state & STATE_VISIBLE) == 0 )  return;
+ 
+@@ -476,16 +491,21 @@ void CControl::Draw()
+    }
+ 
+    icon = 2;
+-   if ( m_state & STATE_CARD )
++   if ( m_state & STATE_SIMPLY )
+    {
+-       icon = 26;
++       icon = 15;
+    }
+-   if ( m_state & STATE_DEFAULT )
++   if ( m_state & STATE_LOOK1 )
+    {
+-       DrawPart(23, 1.3f, 0.0f);
+-
+-       zoomExt *= 1.15f;
+-       zoomInt *= 1.15f;
++       icon = 28;
++   }
++   if ( m_state & STATE_LOOK2 )
++   {
++       icon = 29;
++   }
++   if ( m_state & STATE_CARD )
++   {
++       icon = 26;
+    }
+    if ( m_state & STATE_HILIGHT )
+    {
+@@ -513,52 +533,46 @@ void CControl::Draw()
+    }
+    if ( m_state & STATE_DEAD )
+    {
+-       icon = 17;
++       icon = 7;
+    }
+-
+-   if ( m_state & STATE_OKAY )
++   if ( (m_state & STATE_FLASH) && Mod(m_time, 0.4f) < 0.2f )
+    {
+-       m_engine->SetTexture("button3.tga");
+-       icon = 3;  // jaune pressé avec point vert
++       icon = 0;
+    }
+ 
+    if ( m_name[0] == 0 )  // bouton sans nom ?
+    {
+-//?        DrawPart(icon, zoomExt, 0.0f);
+        DrawPart(icon, zoomExt, 8.0f/256.0f);
+ 
+        if ( m_state & STATE_DEAD )  return;
+ 
+-       icon = m_icon;
+-       if ( icon >= 192 )
++       i = m_icon;
++       if ( i >= 192 )
+        {
+-           icon -= 192;
+-#if _POLISH
+-           m_engine->SetTexture("textp.tga");
+-#else
++           i -= 192;
+            m_engine->SetTexture("text.tga");
+-#endif
+-           m_engine->SetState(D3DSTATETTw);
+-       }
+-       else if ( icon >= 128 )
+-       {
+-           icon -= 128;
+-           m_engine->SetTexture("button3.tga");
+-           m_engine->SetState(D3DSTATETTw);
+-       }
+-       else if ( icon >= 64 )
+-       {
+-           icon -= 64;
+-           m_engine->SetTexture("button2.tga");
+            m_engine->SetState(D3DSTATETTw);
+        }
+        else
+        {
+            m_engine->SetState(D3DSTATETTw);
+        }
+-       if ( icon != -1 )
++
++       pos = m_pos;
++       dim = m_dim;
++       pos.x += dim.x/2.0f;
++       pos.y += dim.y/2.0f;
++       if ( dim.x > dim.y*0.75f )  dim.x = dim.y*0.75f;
++       else                        dim.y = dim.x/0.75f;
++       pos.x -= dim.x/2.0f;
++       pos.y -= dim.y/2.0f;
++       DrawPart(pos, dim, i, zoomInt, 0.0f);
++
++       if ( (m_state & STATE_ENABLE) == 0 )
+        {
+-           DrawPart(icon, zoomInt, 0.0f);
++           m_engine->SetTexture("button1.tga");
++           m_engine->SetState(D3DSTATETTb);
++           DrawPart(icon, zoomExt, 8.0f/256.0f);  // blanc par-dessus
+        }
+    }
+    else    // bouton avec nom ?
+@@ -588,6 +602,13 @@ void CControl::Draw()
+            pos.y -= m_engine->RetText()->RetHeight(m_fontSize, m_fontType)/2.0f;
+            m_engine->RetText()->DrawText(m_name, pos, m_dim.x, m_justif, m_fontSize, m_fontStretch, m_fontType, 0);
+        }
++
++       if ( (m_state & STATE_ENABLE) == 0 )
++       {
++           m_engine->SetTexture("button1.tga");
++           m_engine->SetState(D3DSTATETTb);
++           DrawPart(icon, 1.0f, 8.0f/256.0f);  // blanc par-dessus
++       }
+    }
+ }
+ 
+@@ -595,13 +616,20 @@ void CControl::Draw()
+ 
+ void CControl::DrawPart(int icon, float zoom, float ex)
+ {
++   DrawPart(m_pos, m_dim, icon, zoom, ex);
++}
++
++// Dessine le tableau des vertex.
++
++void CControl::DrawPart(FPOINT pos, FPOINT dim, int icon, float zoom, float ex)
++{
+    FPOINT      p1, p2, c, uv1, uv2;
+    float       dp;
+ 
+-   p1.x = m_pos.x;
+-   p1.y = m_pos.y;
+-   p2.x = m_pos.x + m_dim.x;
+-   p2.y = m_pos.y + m_dim.y;
++   p1.x = pos.x;
++   p1.y = pos.y;
++   p2.x = pos.x + dim.x;
++   p2.y = pos.y + dim.y;
+ 
+    if ( (m_state & STATE_CARD ) &&
+         (m_state & STATE_CHECK) )
+@@ -775,19 +803,32 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
+ 
+ void CControl::DrawWarning(FPOINT pos, FPOINT dim)
+ {
+-   FPOINT      uv1, uv2;
++   FPOINT      ppos, ddim, uv1, uv2;
+    float       dp;
+ 
+    dp = 0.5f/256.0f;
+ 
+-   m_engine->SetTexture("button2.tga");
++   m_engine->SetTexture("button1.tga");
+    m_engine->SetState(D3DSTATENORMAL);
+ 
+-   uv1.x =  64.0f/256.0f;
+-   uv1.y = 208.0f/256.0f;
+-   uv2.x = 160.0f/256.0f;
+-   uv2.y = 224.0f/256.0f;
++   ppos.x = pos.x-1.0f/640.0f;
++   ppos.y = pos.y-1.0f/480.0f;
++   ddim.x = dim.x+2.0f/640.0f;
++   ddim.y = dim.y+2.0f/480.0f;
++   uv1.x =   0.0f/256.0f;
++   uv1.y = 144.0f/256.0f;
++   uv2.x =   8.0f/256.0f;
++   uv2.y = 152.0f/256.0f;
++   uv1.x += dp;
++   uv1.y += dp;
++   uv2.x -= dp;
++   uv2.y -= dp;
++   DrawIcon(ppos, ddim, uv1, uv2);  // cadre noir
+ 
++   uv1.x =   0.0f/256.0f;
++   uv1.y = 144.0f/256.0f;
++   uv2.x = 128.0f/256.0f;
++   uv2.y = 160.0f/256.0f;
+    uv1.x += dp;
+    uv1.y += dp;
+    uv2.x -= dp;
+@@ -824,7 +865,7 @@ void CControl::DrawShadow(FPOINT pos, FPOINT dim, float deep)
+ 
+    dp = 0.5f/256.0f;
+ 
+-   m_engine->SetTexture("button2.tga");
++   m_engine->SetTexture("button1.tga");
+    m_engine->SetState(D3DSTATETTw);
+ 
+    pos.x += deep*0.010f*0.75f;
+@@ -832,9 +873,9 @@ void CControl::DrawShadow(FPOINT pos, FPOINT dim, float deep)
+    dim.x += deep*0.005f*0.75f;
+    dim.y += deep*0.005f;
+ 
+-   uv1.x = 192.0f/256.0f;
++   uv1.x =  32.0f/256.0f;
+    uv1.y =  32.0f/256.0f;
+-   uv2.x = 224.0f/256.0f;
++   uv2.x =  64.0f/256.0f;
+    uv2.y =  64.0f/256.0f;
+ 
+    uv1.x += dp;
+@@ -848,6 +889,36 @@ void CControl::DrawShadow(FPOINT pos, FPOINT dim, float deep)
+    DrawIcon(pos, dim, uv1, uv2, corner, 6.0f/256.0f);
+ }
+ 
++// Dessine le focus du bouton.
++
++void CControl::DrawFocus(FPOINT pos, FPOINT dim)
++{
++   FPOINT      uv1, uv2;
++   float       dp;
++
++   dp = 0.5f/256.0f;
++
++   m_engine->SetTexture("button1.tga");
++   m_engine->SetState(D3DSTATENORMAL);
++
++   pos.x -= 4.0f/640.0f;
++   pos.y -= 4.0f/480.0f;
++   dim.x += 8.0f/640.0f;
++   dim.y += 8.0f/480.0f;
++
++   uv1.x = 176.0f/256.0f;
++   uv1.y =  16.0f/256.0f;
++   uv2.x = 192.0f/256.0f;
++   uv2.y =  32.0f/256.0f;
++
++   uv1.x += dp;
++   uv1.y += dp;
++   uv2.x -= dp;
++   uv2.y -= dp;
++
++   DrawIcon(pos, dim, uv1, uv2);
++}
++
+ 
+ // Détecte si une position est dans le bouton.
+ 

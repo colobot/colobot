@@ -1,0 +1,486 @@
+diff a/src/object/motion/motionhuman.cpp b/src/object/motion/motionhuman.cpp	(rejected hunks)
+@@ -30,9 +30,10 @@
+ 
+ 
+ #define ADJUST_ANGLE   FALSE       // TRUE -> ajuste les angles des membres
+-#define ADJUST_ACTION  (3*3*3*3*MH_SPEC+3*3*3*MHS_SATCOM)
++#define ADJUST_ACTION  (3*3*3*3*MH_SPEC+3*3*3*MHS_DRIVE1)
+ 
+ #define START_TIME     1000.0f     // début du temps relatif
++#define ZOOM           0.7f
+ 
+ 
+ 
+@@ -57,7 +58,6 @@ CMotionHuman::CMotionHuman(CInstanceManager* iMan, CObject* object)
+    m_lastSoundHhh = 0.0f;
+    m_time = 0.0f;
+    m_tired = 0.0f;
+-   m_bDisplayPerso = FALSE;
+ }
+ 
+ // Destructeur de l'objet.
+@@ -91,12 +91,10 @@ Error CMotionHuman::SetAction(int action, float time)
+ 
+ // Crée le cosmonaute posé sur le sol.
+ 
+-BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
+-                         float power)
++BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb)
+ {
+    CModFile*   pModFile;
+-   char        filename[100];
+-   int         rank, option, face, glasses;
++   int         rank, option;
+ 
+    if ( m_engine->RetRestCreate() < 16 )  return FALSE;
+ 
+@@ -105,62 +103,20 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
+    m_object->SetType(type);
+    option = m_object->RetOption();
+ 
+-   if ( m_main->RetGamerOnlyHead() )
+-   {
+-       rank = m_engine->CreateObject();
+-       m_engine->SetObjectType(rank, TYPEVEHICULE);  // c'est un objet mobile
+-       m_object->SetObjectRank(0, rank);
+-       face = m_main->RetGamerFace();
+-       sprintf(filename, "objects\\human2h%d.mod", face+1);
+-       pModFile->ReadModel(filename);
+-       pModFile->CreateEngineObject(rank);
+-
+-       glasses = m_main->RetGamerGlasses();
+-       if ( glasses != 0 )
+-       {
+-           rank = m_engine->CreateObject();
+-           m_engine->SetObjectType(rank, TYPEDESCENDANT);
+-           m_object->SetObjectRank(1, rank);
+-           m_object->SetObjectParent(1, 0);
+-           sprintf(filename, "objects\\human2g%d.mod", glasses);
+-           pModFile->ReadModel(filename);
+-           pModFile->CreateEngineObject(rank);
+-       }
+-
+-       CreatePhysics(type);
+-       m_object->SetFloorHeight(0.0f);
+-
+-       m_engine->LoadAllTexture();
+-
+-       delete pModFile;
+-       return TRUE;
+-   }
+-
+    // Crée la base principale.
+    rank = m_engine->CreateObject();
+    m_engine->SetObjectType(rank, TYPEVEHICULE);  // c'est un objet mobile
+    m_object->SetObjectRank(0, rank);
+-
+-   if ( option == 0 )  // tête dans casque ?
+-   {
+-       pModFile->ReadModel("objects\\human1c.mod");
+-   }
+-   if ( option == 1 )  // tête à l'air ?
+-   {
+-       pModFile->ReadModel("objects\\human1h.mod");
+-   }
+-   if ( option == 2 )  // sans sac à dos ?
+-   {
+-       pModFile->ReadModel("objects\\human1v.mod");
+-   }
++   pModFile->ReadModel("objects\\human1.mod");
+    pModFile->CreateEngineObject(rank);
+ 
+    m_object->SetPosition(0, pos);
+    m_object->SetAngleY(0, angle);
++   m_object->SetZoom(0, ZOOM);
+ 
+    // Un véhicule doit avoir obligatoirement une sphère de
+    // collision avec un centre (0;y;0) (voir GetCrashSphere).
+-   m_object->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 2.0f, SOUND_AIE, 0.20f);
++   m_object->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.20f);
+    m_object->SetGlobalSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 4.0f);
+ 
+    // Crée la tête.
+@@ -168,47 +124,18 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
+    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_object->SetObjectRank(1, rank);
+    m_object->SetObjectParent(1, 0);
+-
+-   if ( type == OBJECT_HUMAN )
+-   {
+-       if ( option == 0 )  // tête dans casque ?
+-       {
+-           face = m_main->RetGamerFace();
+-           sprintf(filename, "objects\\human2c%d.mod", face+1);
+-           pModFile->ReadModel(filename);
+-       }
+-       if ( option == 1 ||  // tête à l'air ?
+-            option == 2 )   // sans sac à dos ?
+-       {
+-           face = m_main->RetGamerFace();
+-           sprintf(filename, "objects\\human2h%d.mod", face+1);
+-           pModFile->ReadModel(filename);
+-       }
+-   }
+-   if ( type == OBJECT_TECH )
+-   {
+-       pModFile->ReadModel("objects\\human2t.mod");
+-   }
++   pModFile->ReadModel("objects\\human2.mod");
+    pModFile->CreateEngineObject(rank);
+    m_object->SetPosition(1, D3DVECTOR(0.0f, 2.7f, 0.0f));
+-   if ( option == 1 ||  // tête à l'air ?
+-        option == 2 )   // sans sac à dos ?
+-   {
+-       m_object->SetZoom(1, D3DVECTOR(1.0f, 1.05f, 1.0f));
+-   }
++   m_object->SetZoom(1, D3DVECTOR(1.1f, 1.2f, 1.1f));
+ 
+    // Crée les lunettes.
+-   glasses = m_main->RetGamerGlasses();
+-   if ( glasses != 0 && type == OBJECT_HUMAN )
+-   {
+-       rank = m_engine->CreateObject();
+-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+-       m_object->SetObjectRank(15, rank);
+-       m_object->SetObjectParent(15, 1);
+-       sprintf(filename, "objects\\human2g%d.mod", glasses);
+-       pModFile->ReadModel(filename);
+-       pModFile->CreateEngineObject(rank);
+-   }
++   rank = m_engine->CreateObject();
++   m_engine->SetObjectType(rank, TYPEDESCENDANT);
++   m_object->SetObjectRank(15, rank);
++   m_object->SetObjectParent(15, 1);
++   pModFile->ReadModel("objects\\human2g.mod");
++   pModFile->CreateEngineObject(rank);
+ 
+    // Crée le bras droite.
+    rank = m_engine->CreateObject();
+@@ -225,7 +152,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
+    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_object->SetObjectRank(3, rank);
+    m_object->SetObjectParent(3, 2);
+-   pModFile->ReadModel("objects\\human4r.mod");
++   pModFile->ReadModel("objects\\human4.mod");
+    pModFile->CreateEngineObject(rank);
+    m_object->SetPosition(3, D3DVECTOR(1.3f, 0.0f, 0.0f));
+    m_object->SetAngle(3, D3DVECTOR(0.0f*PI/180.0f, -20.0f*PI/180.0f, 0.0f*PI/180.0f));
+@@ -285,7 +212,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
+    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_object->SetObjectRank(9, rank);
+    m_object->SetObjectParent(9, 8);
+-   pModFile->ReadModel("objects\\human4l.mod");
++   pModFile->ReadModel("objects\\human4.mod");
+    pModFile->Mirror();
+    pModFile->CreateEngineObject(rank);
+    m_object->SetPosition(9, D3DVECTOR(1.3f, 0.0f, 0.0f));
+@@ -334,20 +261,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
+    m_object->SetPosition(13, D3DVECTOR(0.0f, -1.5f, 0.0f));
+    m_object->SetAngle(13, D3DVECTOR(10.0f*PI/180.0f, -5.0f*PI/180.0f, 5.0f*PI/180.0f));
+ 
+-   // Crée le pistolet.
+-   if ( option != 2 )  // avec sac à dos ?
+-   {
+-       rank = m_engine->CreateObject();
+-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+-       m_object->SetObjectRank(14, rank);
+-       m_object->SetObjectParent(14, 0);
+-       pModFile->ReadModel("objects\\human9.mod");
+-       pModFile->CreateEngineObject(rank);
+-       m_object->SetPosition(14, D3DVECTOR(-1.5f, 0.3f, -1.35f));
+-       m_object->SetAngleZ(14, PI);
+-   }
+-
+-   m_object->CreateShadowCircle(2.0f, 0.8f);
++   m_object->CreateShadowCircle(2.0f*ZOOM, 0.8f);
+ 
+    CreatePhysics(type);
+    m_object->SetFloorHeight(0.0f);
+@@ -494,14 +408,14 @@ void CMotionHuman::CreatePhysics(ObjectType type)
+ 
+    int member_spec[] =
+    {
+-   //  x1,y1,z1,   x2,y2,z2,   x3,y3,z3,   // tir :
+-       65,5,-20,   10,0,40,    0,0,0,      // s0: bras/cuisses/-
+-       -50,-30,50, 0,0,-70,    0,0,0,      // s0: avant-bras/jambes/-
+-       0,50,0,     -10,0,35,   0,0,0,      // s0: mains/pieds/-
+-                                           // prend arme :
+-       160,135,-20,10,0,5,     0,0,0,      // s1: bras/cuisses/-
+-       10,-60,40,  0,0,-10,    0,0,0,      // s1: avant-bras/jambes/-
+-       0,-5,-25,   -10,5,5,    0,0,0,      // s1: mains/pieds/-
++   //  x1,y1,z1,   x2,y2,z2,   x3,y3,z3,   // drive1 :
++       0,20,-20,   10,0,5,     0,0,0,      // s0: bras/cuisses/-
++       0,-40,30,   0,0,-10,    0,0,0,      // s0: avant-bras/jambes/-
++       15,15,10,   -10,5,5,    0,0,0,      // s0: mains/pieds/-
++                                           // drive2 :
++       0,35,-20,   10,0,5,     0,0,0,      // s0: bras/cuisses/-
++       0,-95,5,    0,0,-10,    0,0,0,      // s0: avant-bras/jambes/-
++       0,45,25,    -10,5,5,    0,0,0,      // s0: mains/pieds/-
+                                            // porte à terre :
+        25,40,-40,  10,0,60,    0,0,0,      // s2: bras/cuisses/-
+        0,-45,0,    0,0,-120,   0,0,0,      // s2: avant-bras/jambes/-
+@@ -560,19 +474,31 @@ void CMotionHuman::CreatePhysics(ObjectType type)
+        0,20,0,     -10,5,5,    0,0,0,      // s15: mains/pieds/-
+    };
+ 
+-   m_physics->SetType(TYPE_FLYING);
++   m_physics->SetType(TYPE_TANK);
+ 
+    character = m_object->RetCharacter();
+-   character->wheelFront = 4.0f;
+-   character->wheelBack  = 4.0f;
+-   character->wheelLeft  = 4.0f;
+-   character->wheelRight = 4.0f;
+-   character->height     = 3.5f;
++   character->wheelFrontPos = D3DVECTOR( 4.0f, 1.0f, 4.0f);
++   character->wheelBackPos  = D3DVECTOR(-4.0f, 1.0f, 4.0f);
++   character->wheelFrontDim = 1.0f;
++   character->wheelBackDim  = 1.0f;
++   character->height        = 3.5f*ZOOM;
++   character->suspHeight    = 0.0f;
++   character->rolling       = 0.0f;
++   character->nicking       = 0.0f;
++   character->overProp      = 0.0f;
++   character->overAngle     = 0.0f*PI/180.0f;
++   character->brakeDir      = 0.0f;
++   character->mass          = 100.0f;
++   character->gripLimit     = 0.0f;
++   character->gripSlide     = 00.0f;
++   character->accelLow      = 1.0f;
++   character->accelHigh     = 1.0f;
++   character->accelSmooth   = 1.0f;
+ 
+    if ( type == OBJECT_HUMAN )
+    {
+-       m_physics->SetLinMotionX(MO_ADVSPEED, 50.0f);
+-       m_physics->SetLinMotionX(MO_RECSPEED, 35.0f);
++       m_physics->SetLinMotionX(MO_ADVSPEED, 17.0f);
++       m_physics->SetLinMotionX(MO_RECSPEED, 12.0f);
+        m_physics->SetLinMotionX(MO_ADVACCEL, 20.0f);
+        m_physics->SetLinMotionX(MO_RECACCEL, 20.0f);
+        m_physics->SetLinMotionX(MO_STOACCEL, 20.0f);
+@@ -746,18 +672,6 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+        bOnBoard = TRUE;
+    }
+ 
+-   if ( m_bDisplayPerso && m_main->RetGamerOnlyHead() )
+-   {
+-       m_time += event.rTime;
+-       m_object->SetLinVibration(D3DVECTOR(0.0f, -0.55f, 0.0f));
+-       m_object->SetCirVibration(D3DVECTOR(0.0f, m_main->RetPersoAngle(), 0.0f));
+-       return TRUE;
+-   }
+-   if ( m_bDisplayPerso )
+-   {
+-       m_object->SetCirVibration(D3DVECTOR(0.0f, m_main->RetPersoAngle()+0.2f, 0.0f));
+-   }
+-
+    shield = m_object->RetShield();
+    shield += event.rTime*(1.0f/120.0f);  // régénération en 120 secondes
+    if ( shield > 1.0f )  shield = 1.0f;
+@@ -971,7 +885,10 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+        }
+        else if ( m_actionType != -1 )  // action spéciale en cours ?
+        {
+-           st = 3*3*3*3*MH_SPEC + 3*3*3*m_actionType + (i%2)*3;
++           ii = m_actionType;
++           if ( m_actionType == MHS_DRIVE1 && i == 0 )  ii = MHS_DRIVE2;
++           if ( m_actionType == MHS_DRIVE2 && i == 0 )  ii = MHS_DRIVE1;
++           st = 3*3*3*3*MH_SPEC + 3*3*3*ii + (i%2)*3;
+            nd = st;
+            time = event.rTime*m_actionTime;
+            m_armTimeAction = 0.0f;
+@@ -1209,27 +1126,24 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+ 
+    hr = Min(hr, hl);
+ 
+-   if ( m_actionType == MHS_FIRE )  // tir ?
++   if ( m_actionType == MHS_DRIVE1 ||  // conduit ?
++        m_actionType == MHS_DRIVE2 )   // conduit ?
+    {
+        time = event.rTime*m_actionTime;
+ 
+-       dir.x = (Rand()-0.5f)/8.0f;
+-       dir.z = (Rand()-0.5f)/8.0f;
+-       dir.y = -0.5f;  // légèrement plus bas
+-       actual = m_object->RetLinVibration();
+-       dir.x = Smooth(actual.x, dir.x, time);
+-//?        dir.y = Smooth(actual.y, dir.y, time);
+-       dir.y = -hr;
+-       dir.z = Smooth(actual.z, dir.z, time);
++       dir.x = 0.0f;
++       dir.z = 0.0f;
++       dir.y = 0.0f;
+        m_object->SetLinVibration(dir);
+ 
+        dir.x = 0.0f;
+-       dir.y = (Rand()-0.5f)/3.0f;
+-       dir.z = -0.1f;  // légèrement penché en avant
++       dir.z = 0.0f;
++       dir.y = m_progress*0.4f;
++       if ( m_actionType == MHS_DRIVE2 )  dir.y = -dir.y;
+        actual = m_object->RetInclinaison();
+-       dir.x = Smooth(actual.x, dir.x, time);
+-       dir.y = Smooth(actual.y, dir.y, time);
+-       dir.z = Smooth(actual.z, dir.z, time);
++       dir.x = Smooth(actual.x, dir.x, event.rTime*2.0f);
++       dir.y = Smooth(actual.y, dir.y, event.rTime*2.0f);
++       dir.z = Smooth(actual.z, dir.z, event.rTime*2.0f);
+        m_object->SetInclinaison(dir);
+    }
+    else if ( m_actionType == MHS_TAKE      ||  // prend ?
+@@ -1325,7 +1239,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+                speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+                dim.x = 1.2f+Rand()*1.2f;
+                dim.y = dim.x;
+-               m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 0.0f);
++               m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f);
+            }
+            m_sound->Play(SOUND_BOUMv, m_object->RetPosition(0));
+ 
+@@ -1336,7 +1250,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+ 
+        dir.x = 0.0f;
+        dir.z = 0.0f;
+-       dir.y = -1.5f*prog;
++       dir.y = -1.2f*prog;
+        actual = m_object->RetLinVibration();
+        dir.x = Smooth(actual.x, dir.x, time);
+        dir.y = Smooth(actual.y, dir.y, time);
+@@ -1363,7 +1277,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+ 
+        dir.x = 0.0f;
+        dir.z = 0.0f;
+-       dir.y = -1.5f;
++       dir.y = -1.2f;
+        actual = m_object->RetLinVibration();
+        dir.x = Smooth(actual.x, dir.x, time);
+        dir.y = Smooth(actual.y, dir.y, time);
+@@ -1395,7 +1309,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+                speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+                dim.x = 2.0f+Rand()*1.5f;
+                dim.y = dim.x;
+-               m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 0.0f);
++               m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f);
+            }
+            m_sound->Play(SOUND_BOUMv, m_object->RetPosition(0));
+ 
+@@ -1405,7 +1319,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+        time = 100.0f;
+        prog = powf(prog, 3.0f);
+ 
+-       dir.y = -(1.5f+1.5f*prog);
++       dir.y = -(1.2f+0.5f*prog);
+        dir.x = 0.0f;
+        dir.z = 0.0f;
+        actual = m_object->RetLinVibration();
+@@ -1432,7 +1346,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+ 
+        time = 100.0f;
+ 
+-       dir.y = -(1.5f+1.5f);
++       dir.y = -(1.2f+0.5f);
+        dir.x = 0.0f;
+        dir.z = 0.0f;
+        actual = m_object->RetLinVibration();
+@@ -1519,7 +1433,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+        speed.z = (Rand()-0.5f)*0.5f;
+        dim.x = 0.5f+Rand()*0.5f;
+        dim.y = dim.x;
+-       m_particule->CreateParticule(pos, speed, dim, PARTILENS1, 5.0f, 0.0f, 0.0f);
++       m_particule->CreateParticule(pos, speed, dim, PARTILENS1, 5.0f, 0.0f);
+    }
+    else if ( m_actionType == MHS_SATCOM )  // regarde le SatCom ?
+    {
+@@ -1644,6 +1558,9 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+    else if ( m_object->RetDead() )  // mort ?
+    {
+    }
++   else if ( m_actionType == MHS_DEADg4 )   // mort ?
++   {
++   }
+    else
+    {
+        m_object->SetAngleZ(1, Smooth(m_object->RetAngleZ(1), sinf(m_armTimeAbs*1.0f)*0.2f, event.rTime*5.0f));
+@@ -1697,39 +1614,32 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+            pos = m_object->RetPosition(0);
+ 
+            level = m_water->RetLevel();
+-           if ( pos.y <= level+3.0f )  // sous l'eau ?
++           hard = m_terrain->RetHardness(pos);
++
++           if ( hard >= 0.875 )
+            {
+-               sound[0] = SOUND_STEPw;
++               sound[0] = SOUND_STEPm;  // metal
+            }
+            else
+            {
+-               hard = m_terrain->RetHardness(pos);
++               hard /= 0.875;
++               sound[0] = SOUND_STEPs;  // smooth
++               sound[1] = SOUND_STEPh;  // hard
+ 
+-               if ( hard >= 0.875 )
++               volume[0] *= 1.0f-hard;
++               volume[1] *= hard;
++               if ( hard < 0.5f )
+                {
+-                   sound[0] = SOUND_STEPm;  // metal
++                   volume[0] *= 1.0f+hard*2.0f;
++                   volume[1] *= 1.0f+hard*2.0f;
+                }
+                else
+                {
+-                   hard /= 0.875;
+-                   sound[0] = SOUND_STEPs;  // smooth
+-                   sound[1] = SOUND_STEPh;  // hard
+-
+-                   volume[0] *= 1.0f-hard;
+-                   volume[1] *= hard;
+-                   if ( hard < 0.5f )
+-                   {
+-                       volume[0] *= 1.0f+hard*2.0f;
+-                       volume[1] *= 1.0f+hard*2.0f;
+-                   }
+-                   else
+-                   {
+-                       volume[0] *= 3.0f-hard*2.0f;
+-                       volume[1] *= 3.0f-hard*2.0f;
+-                   }
+-                   freq[0] *= 1.0f+hard;
+-                   freq[1] *= 0.5f+hard;
++                   volume[0] *= 3.0f-hard*2.0f;
++                   volume[1] *= 3.0f-hard*2.0f;
+                }
++               freq[0] *= 1.0f+hard;
++               freq[1] *= 0.5f+hard;
+            }
+ 
+            if ( sound[0] != SOUND_CLICK )
+@@ -1761,7 +1671,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+         m_object->RetSelect()  &&
+         m_object->RetOption() == 0 )  // casque ?
+    {
+-       m_sound->Play(SOUND_HUMAN1, m_object->RetPosition(0), (0.5f+m_tired*0.2f));
++//?        m_sound->Play(SOUND_HUMAN1, m_object->RetPosition(0), (0.5f+m_tired*0.2f));
+        m_lastSoundHhh = (4.0f-m_tired*2.5f)+(4.0f-m_tired*2.5f)*Rand();
+    }
+ 
+@@ -1769,16 +1679,3 @@ BOOL CMotionHuman::EventFrame(const Event &event)
+ }
+ 
+ 
+-// Gestion du mode d'affichage lors de la personnalisation du perso.
+-
+-void CMotionHuman::StartDisplayPerso()
+-{
+-   m_bDisplayPerso = TRUE;
+-}
+-
+-void CMotionHuman::StopDisplayPerso()
+-{
+-   m_bDisplayPerso = FALSE;
+-}
+-
+-

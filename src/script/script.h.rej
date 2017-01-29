@@ -1,0 +1,44 @@
+diff a/src/script/script.h b/src/script/script.h	(rejected hunks)
+@@ -27,7 +27,6 @@ public:
+ 
+    static void InitFonctions();
+ 
+-   void        PutScript(CEdit* edit, char* name);
+    BOOL        GetScript(CEdit* edit);
+    BOOL        RetCompile();
+ 
+@@ -43,13 +42,10 @@ public:
+    BOOL        GetCursor(int &cursor1, int &cursor2);
+    void        UpdateList(CList* list);
+    void        ColorizeScript(CEdit* edit);
+-   BOOL        IntroduceVirus();
+ 
+    int         RetError();
+    void        GetError(char* buffer);
+ 
+-   void        New(CEdit* edit, char* name);
+-   BOOL        SendScript(char* text);
+    BOOL        ReadScript(char* filename);
+    BOOL        WriteScript(char* filename);
+    BOOL        ReadStack(FILE *file);
+@@ -61,7 +57,6 @@ public:
+ 
+ protected:
+    BOOL        IsEmpty();
+-   BOOL        CheckToken();
+    BOOL        Compile();
+ 
+ public:
+@@ -87,12 +82,10 @@ public:
+    BOOL            m_bCompile;     // compilation ok ?
+    char            m_title[50];    // titre du script
+    char            m_filename[50]; // nom du fichier
+-   char            m_token[50];    // instruction manquante
+    int             m_error;        // erreur (0=ok)
+    int             m_cursor1;
+    int             m_cursor2;
+    Event           m_event;
+-   float           m_returnValue;
+ };
+ 
+ 

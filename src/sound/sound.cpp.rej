@@ -1,0 +1,516 @@
+diff a/src/sound/sound.cpp b/src/sound/sound.cpp	(rejected hunks)
+@@ -18,6 +18,11 @@
+ #define LXIMAGE        640
+ #define LYIMAGE        480
+ 
++#define AMPFAC     0.2f
++
++#define FACTOR_AW  0.5f    // facteur amplitude sous l'eau
++#define FACTOR_FW  0.5f    // facteur fréquence sous l'eau
++
+ 
+ 
+ // Header .WAV file.
+@@ -220,15 +225,14 @@ BOOL InitAudioTrackVolume(int volume)
+    mxlc.dwLineID = mxl.dwLineID;
+ //?    mxlc.dwControlType = MIXERCONTROL_CONTROLTYPE_PEAKMETER;
+ //?    mxlc.dwControlType = MIXERCONTROL_CONTROLF_UNIFORM;
+-   mxlc.dwControlType = MIXERCONTROL_CONTROLTYPE_VOLUME;
+    mxlc.cControls = 1;
+    mxlc.cbmxctrl = sizeof(mxc);
+    mxlc.pamxctrl = &mxc;
+    ZeroMemory(&mxc, sizeof(mxc));
+    mxc.cbStruct = sizeof(mxc);
+    rc = mixerGetLineControls((HMIXEROBJ)hMixer,&mxlc,
+-                              MIXER_GETLINECONTROLSF_ONEBYTYPE);
+-//?                               MIXER_GETLINECONTROLSF_ALL);
++//?                               MIXER_GETLINECONTROLSF_ONEBYTYPE);
++                              MIXER_GETLINECONTROLSF_ALL);
+    if ( rc != MMSYSERR_NOERROR )
+    {
+        return FALSE;  // Couldn't get the control.
+@@ -283,6 +287,8 @@ CSound::CSound(CInstanceManager* iMan)
+    m_bState         = FALSE;
+    m_bAudioTrack    = TRUE;
+    m_ctrl3D         = TRUE;
++   m_bComments      = TRUE;
++   m_bWater         = FALSE;
+    m_bDebugMode     = FALSE;
+    m_MidiDeviceID   = 0;
+    m_MIDIMusic      = 0;
+@@ -427,10 +433,12 @@ BOOL CSound::Create(HWND hWnd, BOOL b3D)
+    wfx.nBlockAlign     = wfx.wBitsPerSample / 8 * wfx.nChannels;
+    wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign;
+    hr = primary->SetFormat(&wfx);
++#if _DEBUG
+    if ( hr != S_OK )
+    {
+        DisplayError("SetFormat", SOUND_CLICK, hr);
+    }
++#endif
+ 
+    // Release the primary buffer, since it is not need anymore.
+    primary->Release();
+@@ -501,6 +509,34 @@ BOOL CSound::RetSound3DCap()
+ }
+ 
+ 
++// Indique si on est sous l'eau.
++
++void CSound::SetWater(BOOL bWater)
++{
++   m_bWater = bWater;
++}
++
++BOOL CSound::RetWater()
++{
++   return m_bWater;
++}
++
++// Indique s'il faut entendre la voix du robot commentateur.
++
++void CSound::SetComments(BOOL bMode)
++{
++   m_bComments = bMode;
++}
++
++BOOL CSound::RetComments()
++{
++#if _FRENCH|_ENGLISH|_DEUTSCH
++   return m_bComments;
++#else
++   return FALSE;
++#endif
++}
++
+ 
+ // Retourne l'état de DirectSound.
+ 
+@@ -571,7 +607,7 @@ BOOL CSound::ReadFile(Sound sound, char *metaname, char *filename)
+    int         err;
+ 
+    // Open the wave file.
+-   err = g_metafile.Open(metaname, filename);
++   err = g_metafile.Open(metaname, filename, "");
+    if ( err != 0 ) return FALSE;
+ 
+    // Read in the wave header.
+@@ -610,10 +646,10 @@ void CSound::CacheAll()
+    }
+    else
+    {
+-#if _SCHOOL
+-       strcpy(meta, "ceebot3.dat");
++#if _EGAMES
++       strcpy(meta, "ww3.dat");
+ #else
+-       strcpy(meta, "colobot3.dat");
++       strcpy(meta, "buzzingcars3.dat");
+ #endif
+    }
+ 
+@@ -637,45 +673,29 @@ void CSound::CacheAll()
+ 
+ int CSound::RetPriority(Sound sound)
+ {
+-   if ( sound == SOUND_FLYh   ||
+-        sound == SOUND_FLY    ||
+-        sound == SOUND_MOTORw ||
+-        sound == SOUND_MOTORt ||
+-        sound == SOUND_MOTORr ||
+-        sound == SOUND_MOTORs ||
+-        sound == SOUND_SLIDE  ||
++   if ( sound == SOUND_FLY    ||
++        sound == SOUND_MOTOR1 ||
++        sound == SOUND_MOTOR2 ||
+         sound == SOUND_ERROR  )
+    {
+        return 30;
+    }
+ 
+-   if ( sound == SOUND_CONVERT  ||
+-        sound == SOUND_ENERGY   ||
+-        sound == SOUND_DERRICK  ||
++   if ( sound == SOUND_ENERGY   ||
+         sound == SOUND_STATION  ||
+-        sound == SOUND_REPAIR   ||
+         sound == SOUND_RESEARCH ||
+         sound == SOUND_BURN     ||
+-        sound == SOUND_BUILD    ||
+-        sound == SOUND_TREMBLE  ||
+         sound == SOUND_NUCLEAR  ||
+         sound == SOUND_EXPLO    ||
+         sound == SOUND_EXPLOl   ||
+         sound == SOUND_EXPLOlp  ||
+-        sound == SOUND_EXPLOp   ||
+-        sound == SOUND_EXPLOi   )
++        sound == SOUND_EXPLOp   )
+    {
+        return 20;
+    }
+ 
+-   if ( sound == SOUND_BLUP    ||
+-        sound == SOUND_INSECTs ||
+-        sound == SOUND_INSECTa ||
+-        sound == SOUND_INSECTb ||
+-        sound == SOUND_INSECTw ||
+-        sound == SOUND_INSECTm ||
+-        sound == SOUND_PSHHH   ||
+-        sound == SOUND_EGG     )
++   if ( sound == SOUND_BLUP  ||
++        sound == SOUND_PSHHH )
+    {
+        return 0;
+    }
+@@ -925,22 +945,6 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
+        return;
+    }
+ 
+-#if _TEEN
+-   dist = Length(pos, m_eye);
+-   if ( dist >= 210.0f )  // très loin ?
+-   {
+-       m_channel[channel].volume = 0.0f;  // silence
+-       m_channel[channel].pan    = 0.0f;  // au centre
+-       return;
+-   }
+-   if ( dist <= 10.0f )  // très proche ?
+-   {
+-       m_channel[channel].volume = 1.0f;  // volume maximal
+-       m_channel[channel].pan    = 0.0f;  // au centre
+-       return;
+-   }
+-   m_channel[channel].volume = 1.0f-((dist-10.0f)/200.0f);
+-#else
+    dist = Length(pos, m_eye);
+    if ( dist >= 110.0f )  // très loin ?
+    {
+@@ -955,7 +959,6 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
+        return;
+    }
+    m_channel[channel].volume = 1.0f-((dist-10.0f)/100.0f);
+-#endif
+ 
+    a = RotateAngle(m_lookat.x-m_eye.x, m_eye.z-m_lookat.z);
+    g = RotateAngle(pos.x-m_eye.x, m_eye.z-pos.z);
+@@ -984,9 +987,16 @@ int CSound::Play(Sound sound, D3DVECTOR pos,
+ 
+    if ( !m_bEnable )  return -1;
+    if ( !m_bState || m_audioVolume == 0 )  return -1;
++   if ( sound < 0 || sound >= MAXFILES )  return -1;
+ 
+ //?    if ( Length(pos, m_eye) > 100.0f )  return -1;
+ 
++   if ( m_bWater )  // sous l'eau ?
++   {
++       amplitude *= FACTOR_AW;
++       frequency *= FACTOR_FW;
++   }
++
+    if ( !SearchFreeBuffer(sound, channel, bAlreadyLoaded) )  return -1;
+ 
+    if ( !bAlreadyLoaded )
+@@ -1024,73 +1034,93 @@ int CSound::Play(Sound sound, D3DVECTOR pos,
+    OutputDebugString(s);
+ #endif
+ 
+-   m_channel[channel].oper[0].bUsed = FALSE;
+-   m_channel[channel].startAmplitude = amplitude;
+-   m_channel[channel].startFrequency = frequency;
++   m_channel[channel].oper[0].bUsed   = FALSE;
++   m_channel[channel].startAmplitude  = amplitude;
++   m_channel[channel].changeAmplitude = 1.0f;
++   m_channel[channel].startFrequency  = frequency;
+    m_channel[channel].changeFrequency = 1.0f;
+ 
+    if ( m_ctrl3D )
+    {
+        sb.dwSize = sizeof(DS3DBUFFER);
+        err = m_channel[channel].soundBuffer3D->GetAllParameters(&sb);
++#if _DEBUG
+        DisplayError("GetAllParameters", sound, err);
++#endif
+ 
+        sb.vPosition = pos;
+ //?        sb.dwInsideConeAngle = 90;
+ //?        sb.dwOutsideConeAngle = 180;
+ //?        sb.vConeOrientation = D3DVECTOR(0.0f, 1.0f, 0.0f);
+        sb.lConeOutsideVolume = DSBVOLUME_MIN;
+-#if _TEEN
+-       sb.flMinDistance = 50.0f;
+-#else
+        sb.flMinDistance = 20.0f;
+-#endif
+        sb.flMaxDistance = DS3D_DEFAULTMAXDISTANCE;
+ 
+        err = m_channel[channel].soundBuffer3D->SetAllParameters(&sb, DS3D_IMMEDIATE);
++#if _DEBUG
+        DisplayError("SetAllParameters", sound, err);
++#endif
+    }
+ 
+    amplitude *= m_channel[channel].volume;
+    amplitude *= (float)m_audioVolume/MAXVOLUME;
+-   iVolume = (int)((powf(amplitude, 0.2f)-1.0f)*10000.0f);
++   iVolume = (int)((powf(amplitude, AMPFAC)-1.0f)*10000.0f);
+    if ( iVolume > 0 )  iVolume = 0;
++   m_channel[channel].currentAmplitude = amplitude;
+    err = m_channel[channel].soundBuffer->SetVolume(iVolume);
++#if _DEBUG
+    DisplayError("SetVolume", sound, err);
++#endif
+ 
+    if ( !m_ctrl3D )
+    {
+        iPan = (int)(m_channel[channel].pan*10000.0f);
+        err = m_channel[channel].soundBuffer->SetPan(iPan);
++#if _DEBUG
+        DisplayError("SetPan", sound, err);
++#endif
+    }
+ 
+    if ( !bAlreadyLoaded )
+    {
+        err = m_channel[channel].soundBuffer->GetFrequency(&freq);
++#if _DEBUG
+        DisplayError("GetFrequency", sound, err);
++#endif
+        m_channel[channel].initFrequency = freq;
+    }
+    iFreq = (int)(frequency*m_channel[channel].initFrequency);
++   m_channel[channel].currentFrequency = frequency;
+    err = m_channel[channel].soundBuffer->SetFrequency(iFreq);
++#if _DEBUG
+    DisplayError("SetFrequency", sound, err);
++#endif
+ 
+    err = m_channel[channel].soundBuffer->SetCurrentPosition(0);
++#if _DEBUG
+    DisplayError("SetCurrentPosition", sound, err);
++#endif
+ 
+    flag = bLoop?DSBPLAY_LOOPING:0;
+ //?    flag |= DSBPLAY_LOCHARDWARE|DSBPLAY_TERMINATEBY_DISTANCE;
+ //?    flag |= DSBPLAY_TERMINATEBY_DISTANCE;
+    err = m_channel[channel].soundBuffer->Play(0, 0, flag);
++#if _DEBUG
+    DisplayError("Play", sound, err);
++#endif
+    if ( err == DSERR_BADFORMAT )
+    {
+        iFreq = m_channel[channel].initFrequency;
++       m_channel[channel].currentFrequency = 1.0f;
+        err = m_channel[channel].soundBuffer->SetFrequency(iFreq);
++#if _DEBUG
+        DisplayError("SetFrequency (repeat)", sound, err);
++#endif
+ 
+        err = m_channel[channel].soundBuffer->Play(0, 0, flag);
++#if _DEBUG
+        DisplayError("Play (repeat)", sound, err);
++#endif
+    }
+ 
+    uniqueStamp = m_channel[channel].uniqueStamp;
+@@ -1142,6 +1172,12 @@ BOOL CSound::AddEnvelope(int channel, float amplitude, float frequency,
+    {
+        if ( m_channel[channel].oper[i].bUsed )  continue;
+ 
++       if ( i == 0 )  // première enveloppe ?
++       {
++           m_channel[channel].startAmplitude = amplitude;
++           m_channel[channel].startFrequency = frequency;
++       }
++
+        m_channel[channel].oper[i].bUsed = TRUE;
+        m_channel[channel].oper[i].finalAmplitude = amplitude;
+        m_channel[channel].oper[i].finalFrequency = frequency;
+@@ -1183,17 +1219,56 @@ BOOL CSound::Position(int channel, D3DVECTOR pos)
+            amplitude = m_channel[channel].startAmplitude;
+            amplitude *= m_channel[channel].volume;
+            amplitude *= (float)m_audioVolume/MAXVOLUME;
+-           iVolume = (int)((powf(amplitude, 0.2f)-1.0f)*10000.0f);
++           iVolume = (int)((powf(amplitude, AMPFAC)-1.0f)*10000.0f);
+            if ( iVolume > 0 )  iVolume = 0;
++           m_channel[channel].currentAmplitude = amplitude;
+            err = m_channel[channel].soundBuffer->SetVolume(iVolume);
++#if _DEBUG
+            DisplayError("SetVolume", m_channel[channel].type, err);
++#endif
+        }
+ 
+        pan = m_channel[channel].pan;
+        iPan = (int)(pan*10000.0f);
+        err = m_channel[channel].soundBuffer->SetPan(iPan);
++#if _DEBUG
+        DisplayError("SetPan", m_channel[channel].type, err);
++#endif
++   }
++   return TRUE;
++}
++
++// Modifie l'amplitude d'un son.
++
++BOOL CSound::Amplitude(int channel, float amplitude)
++{
++   HRESULT err;
++   float   volume;
++   int     iVolume;
++
++   if ( !CheckChannel(channel) )  return FALSE;
++
++   if ( m_bWater )  // sous l'eau ?
++   {
++       amplitude *= FACTOR_AW;
++   }
++
++   m_channel[channel].changeAmplitude = amplitude;
++
++   if ( !m_channel[channel].oper[0].bUsed )
++   {
++       volume = amplitude;
++       volume *= m_channel[channel].volume;
++       volume *= (float)m_audioVolume/MAXVOLUME;
++       iVolume = (int)((powf(volume, AMPFAC)-1.0f)*10000.0f);
++       if ( iVolume > 0 )  iVolume = 0;
++       m_channel[channel].currentAmplitude = volume;
++       err = m_channel[channel].soundBuffer->SetVolume(iVolume);
++#if _DEBUG
++       DisplayError("Amplitude", m_channel[channel].type, err);
++#endif
+    }
++
+    return TRUE;
+ }
+ 
+@@ -1207,18 +1282,45 @@ BOOL CSound::Frequency(int channel, float frequency)
+ 
+    if ( !CheckChannel(channel) )  return FALSE;
+ 
++   if ( m_bWater )  // sous l'eau ?
++   {
++       frequency *= FACTOR_FW;
++   }
++
+    m_channel[channel].changeFrequency = frequency;
+ 
+    if ( !m_channel[channel].oper[0].bUsed )
+    {
+        iFreq = (int)(frequency*m_channel[channel].initFrequency);
++       m_channel[channel].currentFrequency = frequency;
+        err = m_channel[channel].soundBuffer->SetFrequency(iFreq);
++#if _DEBUG
+        DisplayError("Frequency", m_channel[channel].type, err);
++#endif
+    }
+ 
+    return TRUE;
+ }
+ 
++// Retourne l'amplitude en cours.
++
++float CSound::RetAmplitude(int channel)
++{
++   if ( !CheckChannel(channel) )  return 0.0f;
++   return m_channel[channel].currentAmplitude;
++//?    return m_channel[channel].changeAmplitude;
++}
++
++// Retourne la fréquence en cours.
++
++float CSound::RetFrequency(int channel)
++{
++   if ( !CheckChannel(channel) )  return 0.0f;
++   return m_channel[channel].currentFrequency;
++//?    return m_channel[channel].changeFrequency;
++}
++
++
+ // Stoppe un son.
+ 
+ BOOL CSound::Stop(int channel)
+@@ -1303,7 +1405,6 @@ void CSound::FrameMove(float rTime)
+    for ( i=0 ; i<m_maxSound ; i++ )
+    {
+        if ( !m_channel[i].bUsed )  continue;
+-       if ( !m_channel[i].oper[0].bUsed )  continue;
+ 
+        if ( m_channel[i].bMute )
+        {
+@@ -1311,6 +1412,8 @@ void CSound::FrameMove(float rTime)
+            continue;
+        }
+ 
++       if ( !m_channel[i].oper[0].bUsed )  continue;
++
+        m_channel[i].oper[0].currentTime += rTime;
+ 
+        progress = m_channel[i].oper[0].currentTime / m_channel[i].oper[0].totalTime;
+@@ -1319,10 +1422,12 @@ void CSound::FrameMove(float rTime)
+        volume = progress;
+        volume *= m_channel[i].oper[0].finalAmplitude-m_channel[i].startAmplitude;
+        volume += m_channel[i].startAmplitude;
++       volume *= m_channel[i].changeAmplitude;
+        volume *= m_channel[i].volume;
+        volume *= (float)m_audioVolume/MAXVOLUME;
+-       iVolume = (int)((powf(volume, 0.2f)-1.0f)*10000.0f);
++       iVolume = (int)((powf(volume, AMPFAC)-1.0f)*10000.0f);
+        if ( iVolume > 0 )  iVolume = 0;
++       m_channel[i].currentAmplitude = volume;
+        m_channel[i].soundBuffer->SetVolume(iVolume);
+ 
+        freq = progress;
+@@ -1330,8 +1435,14 @@ void CSound::FrameMove(float rTime)
+        freq += m_channel[i].startFrequency;
+        freq *= m_channel[i].changeFrequency;
+        iFreq = (int)(freq*m_channel[i].initFrequency);
++       m_channel[i].currentFrequency = freq;
+        err = m_channel[i].soundBuffer->SetFrequency(iFreq);
++#if _DEBUG
+        DisplayError("FrameMove::Frequency", m_channel[i].type, err);
++#endif
++//?char s[100];
++//?sprintf(s, "frame: f=%.2f\n", freq);
++//?OutputDebugString(s);
+ 
+        if ( m_channel[i].oper[0].currentTime >=
+             m_channel[i].oper[0].totalTime )
+@@ -1390,16 +1501,21 @@ void CSound::SetListener(D3DVECTOR eye, D3DVECTOR lookat)
+                amplitude = m_channel[i].startAmplitude;
+                amplitude *= m_channel[i].volume;
+                amplitude *= (float)m_audioVolume/MAXVOLUME;
+-               iVolume = (int)((powf(amplitude, 0.2f)-1.0f)*10000.0f);
++               iVolume = (int)((powf(amplitude, AMPFAC)-1.0f)*10000.0f);
+                if ( iVolume > 0 )  iVolume = 0;
++               m_channel[i].currentAmplitude = amplitude;
+                err = m_channel[i].soundBuffer->SetVolume(iVolume);
++#if _DEBUG
+                DisplayError("SetVolume", m_channel[i].type, err);
++#endif
+            }
+ 
+            pan = m_channel[i].pan;
+            iPan = (int)(pan*10000.0f);
+            err = m_channel[i].soundBuffer->SetPan(iPan);
++#if _DEBUG
+            DisplayError("SetPan", m_channel[i].type, err);
++#endif
+        }
+        return;
+    }
+@@ -1489,7 +1605,6 @@ BOOL CSound::PlayMusic(int rank, BOOL bRepeat)
+ 
+ BOOL CSound::PlayAudioTrack(int rank)
+ {
+-#if _SOUNDTRACKS
+    MCI_OPEN_PARMS  mciOpenParms;
+    MCI_PLAY_PARMS  mciPlayParms;
+    MCI_SET_PARMS   mciSetParms;
+@@ -1570,7 +1685,6 @@ BOOL CSound::PlayAudioTrack(int rank)
+    }
+ 
+    m_MIDIMusic = rank;
+-#endif
+    return TRUE;
+ }
+ 

@@ -1,0 +1,189 @@
+diff a/src/object/motion/motion.cpp b/src/object/motion/motion.cpp	(rejected hunks)
+@@ -56,6 +56,8 @@ CMotion::CMotion(CInstanceManager* iMan, CObject* object)
+    m_linVibration  = D3DVECTOR(0.0f, 0.0f, 0.0f);
+    m_cirVibration  = D3DVECTOR(0.0f, 0.0f, 0.0f);
+    m_inclinaison   = D3DVECTOR(0.0f, 0.0f, 0.0f);
++
++   m_wheelType = WT_NORM;
+ }
+ 
+ // Destructeur de l'objet.
+@@ -85,7 +87,7 @@ void CMotion::SetBrain(CBrain* brain)
+ 
+ // Crée.
+ 
+-BOOL CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, float power)
++BOOL CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb)
+ {
+    return TRUE;
+ }
+@@ -97,8 +99,7 @@ BOOL CMotion::EventProcess(const Event &event)
+    D3DVECTOR   pos, dir;
+    float       time;
+ 
+-   if ( m_object->RetType() != OBJECT_TOTO &&
+-        m_engine->RetPause() )  return TRUE;
++   if ( m_engine->RetPause() )  return TRUE;
+ 
+    if ( event.event != EVENT_FRAME )  return TRUE;
+    
+@@ -157,6 +158,13 @@ int CMotion::RetAction()
+    return m_actionType;
+ }
+ 
++// Retourne la progressionde l'action en cours.
++
++float CMotion::RetActionProgress()
++{
++   return m_progress;
++}
++
+ 
+ // Spécifie un paramètre spécial.
+ 
+@@ -171,71 +179,114 @@ float CMotion::RetParam(int rank)
+ }
+ 
+ 
+-// Sauve tous les paramètres de l'objet.
++// Donne la vibration linéaire.
+ 
+-BOOL CMotion::Write(char *line)
++void CMotion::SetLinVibration(D3DVECTOR dir)
+ {
+-   char    name[100];
++   m_linVibration = dir;
++}
+ 
+-   if ( m_actionType == -1 )  return FALSE;
++D3DVECTOR CMotion::RetLinVibration()
++{
++   return m_linVibration;
++}
++
++// Donne la vibration circulaire.
++
++void CMotion::SetCirVibration(D3DVECTOR dir)
++{
++   m_cirVibration = dir;
++}
+ 
+-   sprintf(name, " mType=%d", m_actionType);
+-   strcat(line, name);
++D3DVECTOR CMotion::RetCirVibration()
++{
++   return m_cirVibration;
++}
+ 
+-   sprintf(name, " mTime=%.2f", m_actionTime);
+-   strcat(line, name);
++// Donne l'inclinaison.
+ 
+-   sprintf(name, " mProgress=%.2f", m_progress);
+-   strcat(line, name);
++void CMotion::SetInclinaison(D3DVECTOR dir)
++{
++   m_inclinaison = dir;
++}
+ 
+-   return FALSE;
++D3DVECTOR CMotion::RetInclinaison()
++{
++   return m_inclinaison;
+ }
+ 
+-// Restitue tous les paramètres de l'objet.
+ 
+-BOOL CMotion::Read(char *line)
++// Initialse la torsion de toutes les pièces pour qu'elles soient
++// toutes droites.
++
++void CMotion::TwistInit()
+ {
+-   m_actionType = OpInt(line, "mType", -1);
+-   m_actionTime = OpFloat(line, "mTime", 0.0f);
+-   m_progress = OpFloat(line, "mProgress", 0.0f);
++}
++
++// Tord qq pièces suite à un choc.
++
++void CMotion::TwistPart(D3DVECTOR impact, float force)
++{
++}
++
++// Retourne le numéro de la prochaine partie à détruire.
++
++int CMotion::RetRemovePart(int &param)
++{
++   param = 0;
++   return -1;
++}
+ 
++// Indique si un phare existe.
++
++BOOL CMotion::RetLight(int rank)
++{
+    return FALSE;
+ }
+ 
++// Indique la présence d'une partie spécifique.
+ 
+-// Donne la vibration linéaire.
++BOOL CMotion::ExistPart(TypePart part)
++{
++   return FALSE;
++}
+ 
+-void CMotion::SetLinVibration(D3DVECTOR dir)
++// Donne le nombre de pièces total du véhicule.
++
++int CMotion::RetTotalPart()
+ {
+-   m_linVibration = dir;
++   return 0;
+ }
+ 
+-D3DVECTOR CMotion::RetLinVibration()
++// Donne le nombre de pièces utilisées du véhicule.
++
++int CMotion::RetUsedPart()
+ {
+-   return m_linVibration;
++   return 0;
+ }
+ 
+-// Donne la vibration circulaire.
+ 
+-void CMotion::SetCirVibration(D3DVECTOR dir)
++// Gestion du type de roues.
++
++void CMotion::SetWheelType(WheelType type)
+ {
+-   m_cirVibration = dir;
++   m_wheelType = type;
+ }
+ 
+-D3DVECTOR CMotion::RetCirVibration()
++WheelType CMotion::RetWheelType()
+ {
+-   return m_cirVibration;
++   return m_wheelType;
+ }
+ 
+-// Donne l'inclinaison.
+ 
+-void CMotion::SetInclinaison(D3DVECTOR dir)
++// Gestion de l'état d'un véhicule.
++
++int CMotion::RetStateLength()
+ {
+-   m_inclinaison = dir;
++   return 0;
+ }
+ 
+-D3DVECTOR CMotion::RetInclinaison()
++void CMotion::GetStateBuffer(char *buffer)
+ {
+-   return m_inclinaison;
+ }
+ 

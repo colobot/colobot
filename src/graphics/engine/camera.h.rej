@@ -1,0 +1,141 @@
+diff a/src/graphics/engine/camera.h b/src/graphics/engine/camera.h	(rejected hunks)
+@@ -25,7 +25,6 @@ enum CameraType
+    CAMERA_INFO     = 8,    // caméra pendant l'affichage des informations
+    CAMERA_VISIT    = 9,    // visite du lieu d'une erreur
+    CAMERA_DIALOG   = 10,   // caméra pendant dialogue
+-   CAMERA_PLANE    = 11,   // caméra fixe en hauteur
+ };
+ 
+ enum CameraSmooth
+@@ -33,7 +32,8 @@ enum CameraSmooth
+    CS_NONE         = 0,    // brusque
+    CS_NORM         = 1,    // normal
+    CS_HARD         = 2,    // dur
+-   CS_SPEC         = 3,    // spécial
++   CS_SOFT         = 3,    // dou
++   CS_SPEC         = 4,    // spécial
+ };
+ 
+ enum CenteringPhase
+@@ -59,10 +59,12 @@ enum OverEffect
+ {
+    OE_NULL         = 0,    // pas d'effet
+    OE_BLOOD        = 1,    // flash rouge
+-   OE_FADEINw      = 2,    // blanc -> rien
+-   OE_FADEOUTw     = 3,    // rien -> blanc
+-   OE_FADEOUTb     = 4,    // rien -> bleu
+-   OE_BLITZ        = 5,    // éclair
++   OE_ORGA         = 2,    // flash vert
++   OE_FADEINw      = 3,    // blanc -> rien
++   OE_FADEOUTw     = 4,    // rien -> blanc
++   OE_FADEOUTb     = 5,    // rien -> bleu
++   OE_BLITZ        = 6,    // éclair
++   OE_CRASH        = 7,    // collision
+ };
+ 
+ 
+@@ -83,21 +85,29 @@ public:
+    void        SetType(CameraType type);
+    CameraType  RetType();
+ 
++   void        SetSmoothOneTime(CameraSmooth type);
+    void        SetSmooth(CameraSmooth type);
+    CameraSmooth RetSmoth();
+ 
++   void        SetBackDist(float dist);
++   float       RetBackDist();
++
++   void        SetBackVerti(float angle);
++   float       RetBackVerti();
++
++   void        SetBackHoriz(float angle);
++   float       RetBackHoriz();
++
++   void        ResetLockRotate();
++   void        SetLockRotate(BOOL bLock);
++   BOOL        RetLockRotate();
++
+    void        SetDist(float dist);
+    float       RetDist();
+ 
+    void        SetFixDirection(float angle);
+    float       RetFixDirection();
+ 
+-   void        SetRemotePan(float value);
+-   float       RetRemotePan();
+-
+-   void        SetRemoteZoom(float value);
+-   float       RetRemoteZoom();
+-
+    void        StartVisit(D3DVECTOR goal, float dist);
+    void        StopVisit();
+ 
+@@ -119,12 +129,9 @@ public:
+    void        SetScriptLookat(D3DVECTOR lookat);
+ 
+    void        SetEffect(BOOL bEnable);
+-   void        SetCameraScroll(BOOL bScroll);
+-   void        SetCameraInvertX(BOOL bInvert);
+-   void        SetCameraInvertY(BOOL bInvert);
++   void        SetFlash(BOOL bFlash);
+ 
+-   float       RetMotorTurn();
+-   D3DMouse    RetMouseDef(FPOINT pos);
++   void        SetMotorSpeed(float speed);
+ 
+ protected:
+    BOOL        EventMouseMove(const Event &event);
+@@ -161,6 +168,7 @@ protected:
+ 
+    CameraType  m_type;             // type de la caméra (CAMERA_*)
+    CameraSmooth m_smooth;          // type de lissage
++   CameraSmooth m_smoothNext;      // type de lissage
+    CObject*    m_cameraObj;        // objet lié à la caméra
+ 
+    float       m_eyeDistance;      // distance entre les yeux
+@@ -183,11 +191,17 @@ protected:
+    float       m_directionH;       // CAMERA_FREE: direction horizontale
+    float       m_directionV;       // CAMERA_FREE: direction verticale
+    float       m_heightEye;        // CAMERA_FREE: hauteur au-dessus du sol
++   float       m_heightShift;      // CAMERA_FREE: shift vertical
+    float       m_heightLookat;     // CAMERA_FREE: hauteur au-dessus du sol
+    float       m_speed;            // CAMERA_FREE: vitesse de déplacement
+ 
+    float       m_backDist;         // CAMERA_BACK: éloignement
+    float       m_backMin;          // CAMERA_BACK: éloignement minimal
++   BOOL        m_bBackLockRotate;  // CAMERA_BACK: rotation autorisée ?
++   float       m_backMotorSpeed;   // CAMERA_BACK: vitesse moteur
++   float       m_backSleepTime;    // CAMERA_BACK: durée depuis arrêt
++   float       m_backRotSpeed;     // CAMERA_BACK: vitesse angulaire
++   float       m_rotDirectionH;    // CAMERA_BACK: direction supplémentaire
+    float       m_addDirectionH;    // CAMERA_BACK: direction supplémentaire
+    float       m_addDirectionV;    // CAMERA_BACK: direction supplémentaire
+    BOOL        m_bTransparency;
+@@ -205,16 +219,11 @@ protected:
+ 
+    float       m_editHeight;       // CAMERA_EDIT: hauteur
+ 
+-   float       m_remotePan;
+-   float       m_remoteZoom;
+-
+    FPOINT      m_mousePos;
+    float       m_mouseDirH;
+    float       m_mouseDirV;
+    float       m_mouseMarging;
+ 
+-   float       m_motorTurn;
+-
+    CenteringPhase m_centeringPhase;
+    float       m_centeringAngleH;
+    float       m_centeringAngleV;
+@@ -243,9 +252,7 @@ protected:
+    D3DVECTOR   m_scriptLookat;
+ 
+    BOOL        m_bEffect;          // secousses si explosion ?
+-   BOOL        m_bCameraScroll;    // scroll dans les bords ?
+-   BOOL        m_bCameraInvertX;   // inversion X dans les bords ?
+-   BOOL        m_bCameraInvertY;   // inversion Y dans les bords ?
++   BOOL        m_bFlash;           // flash si collision ?
+ };
+ 
+ 

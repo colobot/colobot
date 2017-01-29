@@ -1,0 +1,965 @@
+diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hunks)
+@@ -54,7 +54,7 @@ BOOL CTaskGoto::EventProcess(const Event &event)
+ {
+    D3DVECTOR   pos, goal;
+    FPOINT      rot, repulse;
+-   float       a, g, dist, linSpeed, cirSpeed, h, hh, factor, dir;
++   float       a, g, dist, linSpeed, cirSpeed, h;
+    Error       ret;
+ 
+    if ( m_engine->RetPause() )  return TRUE;
+@@ -70,11 +70,6 @@ BOOL CTaskGoto::EventProcess(const Event &event)
+ 
+    if ( m_error != ERR_OK )  return FALSE;
+ 
+-   if ( m_bWorm )
+-   {
+-       WormFrame(event.rTime);
+-   }
+-
+    if ( m_phase == TGP_BEAMLEAK )  // fuite ?
+    {
+        m_leakTime += event.rTime;
+@@ -135,7 +130,6 @@ BOOL CTaskGoto::EventProcess(const Event &event)
+        {
+            goal = m_goalObject;
+            dist = TAKE_DIST+2.0f;
+-           if ( m_bmFretObject->RetType() == OBJECT_BASE )  dist = 12.0f;
+        }
+ 
+        ret = BeamSearch(pos, goal, dist);
+@@ -199,47 +193,6 @@ BOOL CTaskGoto::EventProcess(const Event &event)
+ 
+        pos = m_object->RetPosition(0);
+ 
+-       if ( m_physics->RetType() == TYPE_FLYING && m_altitude == 0.0f )
+-       {
+-           if ( m_physics->RetLand() )
+-           {
+-               m_physics->SetMotorSpeedY(0.0f);
+-           }
+-           else
+-           {
+-               m_physics->SetMotorSpeedY(-1.0f);
+-           }
+-       }
+-
+-       if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )
+-       {
+-           goal = m_bmPoints[m_bmIndex];
+-           goal.y = pos.y;
+-           h = m_terrain->RetFloorHeight(goal, TRUE, TRUE);
+-           dist = Length2d(pos, goal);
+-           if ( dist != 0.0f )  // anticipe ?
+-           {
+-               linSpeed = m_physics->RetLinMotionX(MO_REASPEED);
+-               linSpeed /= m_physics->RetLinMotionX(MO_ADVSPEED);
+-               goal.x = pos.x + (goal.x-pos.x)*linSpeed*20.0f/dist;
+-               goal.z = pos.z + (goal.z-pos.z)*linSpeed*20.0f/dist;
+-           }
+-           goal.y = pos.y;
+-           hh = m_terrain->RetFloorHeight(goal, TRUE, TRUE);
+-           h = Min(h, hh);
+-           linSpeed = 0.0f;
+-           if ( h < m_altitude-1.0f )
+-           {
+-               linSpeed = 0.2f+((m_altitude-1.0f)-h)*0.1f;  // monte
+-               if ( linSpeed > 1.0f )  linSpeed = 1.0f;
+-           }
+-           if ( h > m_altitude+1.0f )
+-           {
+-               linSpeed = -0.2f;  // descend
+-           }
+-           m_physics->SetMotorSpeedY(linSpeed);
+-       }
+-
+        rot.x = m_bmPoints[m_bmIndex].x-pos.x;
+        rot.y = m_bmPoints[m_bmIndex].z-pos.z;
+        dist = Length(rot.x, rot.y);
+@@ -349,32 +302,6 @@ BOOL CTaskGoto::EventProcess(const Event &event)
+        return TRUE;
+    }
+ 
+-   if ( m_phase != TGP_TURN                 &&
+-        m_physics->RetType() == TYPE_FLYING &&
+-        m_altitude > 0.0f                   )
+-   {
+-       pos = m_object->RetPosition(0);
+-       dist = Length2d(m_goal, pos);
+-       factor = (dist-20.0f)/20.0f;
+-       if ( factor < 0.0f )  factor = 0.0f;
+-       if ( factor > 1.0f )  factor = 1.0f;
+-
+-       h = m_terrain->RetFloorHeight(m_object->RetPosition(0), TRUE, TRUE);
+-       linSpeed = 0.0f;
+-       if ( h < (m_altitude-0.5f)*factor && factor == 1.0f )
+-       {
+-           linSpeed = 0.1f;  // monte
+-       }
+-       if ( h > m_altitude*factor )
+-       {
+-           linSpeed = -0.2f;  // descend
+-       }
+-       ComputeFlyingRepulse(dir);
+-       linSpeed += dir*0.2f;
+-
+-       m_physics->SetMotorSpeedY(linSpeed);
+-   }
+-
+    if ( m_phase == TGP_ADVANCE )  // va vers l'objectif ?
+    {
+        if ( m_physics->RetCollision() )  // collision ?
+@@ -417,21 +344,11 @@ BOOL CTaskGoto::EventProcess(const Event &event)
+        a = m_object->RetAngleY(0);
+        g = RotateAngle(rot.x, -rot.y);  // CW !
+        cirSpeed = Direction(a, g)*1.0f;
+-//?        if ( m_physics->RetType() == TYPE_FLYING &&
+-//?             m_physics->RetLand()                )  // volant au sol ?
+-//?        {
+-//?            cirSpeed *= 4.0f;  // plus de pèche
+-//?        }
+        if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
+        if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
+ 
+        dist = Length2d(m_goal, pos);
+        linSpeed = dist/(m_physics->RetLinStopLength()*1.5f);
+-//?        if ( m_physics->RetType() == TYPE_FLYING &&
+-//?             m_physics->RetLand()                )  // volant au sol ?
+-//?        {
+-//?            linSpeed *= 8.0f;  // plus de pèche
+-//?        }
+        if ( linSpeed > 1.0f )  linSpeed =  1.0f;
+ 
+        linSpeed *= 1.0f-(1.0f-0.3f)*Abs(cirSpeed);
+@@ -501,114 +418,6 @@ BOOL CTaskGoto::EventProcess(const Event &event)
+ }
+ 
+ 
+-// Cherche une cible pour le ver.
+-
+-CObject* CTaskGoto::WormSearch(D3DVECTOR &impact)
+-{
+-   CObject*    pObj;
+-   CObject*    pBest = 0;
+-   D3DVECTOR   iPos, oPos;
+-   ObjectType  oType;
+-   float       distance, min, radius;
+-   int         i;
+-
+-   iPos = m_object->RetPosition(0);
+-   min = 1000000.0f;
+-
+-   for ( i=0 ; i<1000000 ; i++ )
+-   {
+-       pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+-       if ( pObj == 0 )  break;
+-
+-       oType = pObj->RetType();
+-       if ( oType != OBJECT_MOBILEfa &&
+-            oType != OBJECT_MOBILEta &&
+-            oType != OBJECT_MOBILEwa &&
+-            oType != OBJECT_MOBILEia &&
+-            oType != OBJECT_MOBILEfc &&
+-            oType != OBJECT_MOBILEtc &&
+-            oType != OBJECT_MOBILEwc &&
+-            oType != OBJECT_MOBILEic &&
+-            oType != OBJECT_MOBILEfi &&
+-            oType != OBJECT_MOBILEti &&
+-            oType != OBJECT_MOBILEwi &&
+-            oType != OBJECT_MOBILEii &&
+-            oType != OBJECT_MOBILEfs &&
+-            oType != OBJECT_MOBILEts &&
+-            oType != OBJECT_MOBILEws &&
+-            oType != OBJECT_MOBILEis &&
+-            oType != OBJECT_MOBILErt &&
+-            oType != OBJECT_MOBILErc &&
+-            oType != OBJECT_MOBILErr &&
+-            oType != OBJECT_MOBILErs &&
+-            oType != OBJECT_MOBILEsa &&
+-            oType != OBJECT_MOBILEtg &&
+-            oType != OBJECT_MOBILEft &&
+-            oType != OBJECT_MOBILEtt &&
+-            oType != OBJECT_MOBILEwt &&
+-            oType != OBJECT_MOBILEit &&
+-            oType != OBJECT_MOBILEdr &&
+-            oType != OBJECT_DERRICK  &&
+-            oType != OBJECT_STATION  &&
+-            oType != OBJECT_FACTORY  &&
+-            oType != OBJECT_REPAIR   &&
+-            oType != OBJECT_DESTROYER &&
+-            oType != OBJECT_CONVERT  &&
+-            oType != OBJECT_TOWER    &&
+-            oType != OBJECT_RESEARCH &&
+-            oType != OBJECT_RADAR    &&
+-            oType != OBJECT_INFO     &&
+-            oType != OBJECT_ENERGY   &&
+-            oType != OBJECT_LABO     &&
+-            oType != OBJECT_NUCLEAR  &&
+-            oType != OBJECT_PARA     &&
+-            oType != OBJECT_SAFE     &&
+-            oType != OBJECT_HUSTON   )  continue;
+-
+-       if ( pObj->RetVirusMode() )  continue;  // objet infecté ?
+-
+-       if ( !pObj->GetCrashSphere(0, oPos, radius) )  continue;
+-       distance = Length2d(oPos, iPos);
+-       if ( distance < min )
+-       {
+-           min = distance;
+-           pBest = pObj;
+-       }
+-   }
+-   if ( pBest == 0 )  return 0;
+-
+-   impact = pBest->RetPosition(0);
+-   return pBest;
+-}
+-
+-// Contamine les objets proches du ver.
+-
+-void CTaskGoto::WormFrame(float rTime)
+-{
+-   CObject*    pObj;
+-   D3DVECTOR   impact, pos;
+-   float       dist;
+-
+-   m_wormLastTime += rTime;
+-
+-   if ( m_wormLastTime >= 0.5f )
+-   {
+-       m_wormLastTime = 0.0f;
+-
+-       pObj = WormSearch(impact);
+-       if ( pObj != 0 )
+-       {
+-           pos = m_object->RetPosition(0);
+-           dist = Length(pos, impact);
+-           if ( dist <= 15.0f )
+-           {
+-               pObj->SetVirusMode(TRUE);  // paf, infecté !
+-           }
+-       }
+-   }
+-}
+-
+-
+ 
+ // Assigne le but à atteindre.
+ // "dist" est la distance de laquelle il faut s'éloigner pour
+@@ -628,27 +437,11 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
+    if ( goalMode == TGG_DEFAULT )
+    {
+        goalMode = TGG_STOP;
+-       if ( type == OBJECT_MOTHER ||
+-            type == OBJECT_ANT    ||
+-            type == OBJECT_SPIDER ||
+-            type == OBJECT_WORM   )
+-       {
+-           goalMode = TGG_EXPRESS;
+-       }
+    }
+ 
+    if ( crashMode == TGC_DEFAULT )
+    {
+-//?        crashMode = TGC_RIGHTLEFT;
+        crashMode = TGC_BEAM;
+-       if ( type == OBJECT_MOTHER ||
+-            type == OBJECT_ANT    ||
+-            type == OBJECT_SPIDER ||
+-            type == OBJECT_WORM   ||
+-            type == OBJECT_BEE    )
+-       {
+-           crashMode = TGC_HALT;
+-       }
+    }
+ 
+    m_altitude   = altitude;
+@@ -671,25 +464,22 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
+        m_crashMode = TGC_RIGHTLEFT;
+    }
+ 
+-   m_bWorm = FALSE;
+-   if ( type == OBJECT_WORM )
+-   {
+-       m_bWorm = TRUE;
+-       m_wormLastTime = 0.0f;
+-   }
+-
+    m_bApprox = FALSE;
+    if ( type == OBJECT_HUMAN    ||
+         type == OBJECT_TECH     ||
+-        type == OBJECT_MOTHER   ||
+-        type == OBJECT_ANT      ||
+-        type == OBJECT_SPIDER   ||
+-        type == OBJECT_BEE      ||
+-        type == OBJECT_WORM     ||
+-        type == OBJECT_MOBILErt ||
+-        type == OBJECT_MOBILErc ||
+-        type == OBJECT_MOBILErr ||
+-        type == OBJECT_MOBILErs )
++        type == OBJECT_MOBILEfb ||
++        type == OBJECT_MOBILEob ||
++        type == OBJECT_TRAX     ||
++        type == OBJECT_UFO      ||
++        type == OBJECT_CARROT   ||
++        type == OBJECT_STARTER  ||
++        type == OBJECT_WALKER   ||
++        type == OBJECT_CRAZY    ||
++        type == OBJECT_EVIL1    ||
++        type == OBJECT_EVIL2    ||
++        type == OBJECT_EVIL3    ||
++        type == OBJECT_EVIL4    ||
++        type == OBJECT_EVIL5    )
+    {
+        m_bApprox = TRUE;
+    }
+@@ -739,19 +529,9 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
+            m_bTake = TRUE;  // objet à prendre à l'arrivée (rotation finale)
+        }
+ 
+-       if ( m_physics->RetType() == TYPE_FLYING && m_altitude == 0.0f )
+-       {
+-           pos = m_object->RetPosition(0);
+-           dist = Length2d(pos, m_goal);
+-           if ( dist > FLY_DIST_GROUND )  // plus de 20 mètres ?
+-           {
+-               m_altitude = FLY_DEF_HEIGHT;  // altitude par défaut
+-           }
+-       }
+-
+        BeamStart();
+ 
+-       if ( m_bmFretObject == 0 )
++       if ( m_bmFretObject == 0 && type != OBJECT_TRAX )
+        {
+            x = (int)((m_goal.x+1600.0f)/BM_DIM_STEP);
+            y = (int)((m_goal.z+1600.0f)/BM_DIM_STEP);
+@@ -783,7 +563,7 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
+ Error CTaskGoto::IsEnded()
+ {
+    D3DVECTOR   pos;
+-   float       limit, angle, dist, h, level;
++   float       limit, angle, dist;
+ 
+    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_error != ERR_OK )  return m_error;
+@@ -809,38 +589,16 @@ Error CTaskGoto::IsEnded()
+ 
+    if ( m_phase == TGP_BEAMWCOLD )  // attend refroidissement réacteur ?
+    {
+-       if ( m_altitude != 0.0f &&
+-            m_physics->RetReactorRange() < 1.0f )  return ERR_CONTINUE;
+        m_phase = TGP_BEAMUP;
+    }
+ 
+    if ( m_phase == TGP_BEAMUP )  // décolle ?
+    {
+-       if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )
+-       {
+-           level = m_terrain->RetFloorLevel(pos, TRUE, TRUE);
+-           h = level+m_altitude-20.0f;
+-           limit = m_terrain->RetFlyingMaxHeight();
+-           if ( h > limit )  h = limit;
+-           if ( pos.y < h-1.0f )  return ERR_CONTINUE;
+-
+-           m_physics->SetMotorSpeedY(0.0f);  // stoppe la montée
+-       }
+        m_phase = TGP_BEAMGOTO;
+    }
+ 
+    if ( m_phase == TGP_BEAMGOTO )  // goto dot list ?
+    {
+-       if ( m_altitude != 0.0f &&
+-            m_physics->RetReactorRange() < 0.1f )  // surchauffe ?
+-       {
+-           m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
+-           m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
+-           m_physics->SetMotorSpeedY(-1.0f);  // tombe
+-           m_phase = TGP_BEAMWCOLD;
+-           return ERR_CONTINUE;
+-       }
+-
+        if ( m_physics->RetLand() )  // au sol ?
+        {
+            limit = 1.0f;
+@@ -869,17 +627,6 @@ Error CTaskGoto::IsEnded()
+ 
+    if ( m_phase == TGP_BEAMDOWN )  // atteri ?
+    {
+-       if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )
+-       {
+-           if ( !m_physics->RetLand() )  return ERR_CONTINUE;
+-           m_physics->SetMotorSpeedY(0.0f);  // stoppe la descente
+-
+-           m_altitude = 0.0f;
+-           m_phase = TGP_BEAMGOTO;  // avance finement au sol pour finir
+-           m_bmIndex = m_bmTotal;
+-           return ERR_CONTINUE;
+-       }
+-
+        if ( m_bTake )
+        {
+            m_angle = RotateAngle(m_goalObject.x-pos.x, pos.z-m_goalObject.z);
+@@ -920,12 +667,6 @@ Error CTaskGoto::IsEnded()
+ 
+    if ( m_phase == TGP_LAND )  // atterri ?
+    {
+-       if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )
+-       {
+-           if ( !m_physics->RetLand() )  return ERR_CONTINUE;
+-           m_physics->SetMotorSpeedY(0.0f);
+-       }
+-
+        if ( m_bTake )
+        {
+            m_angle = RotateAngle(m_goalObject.x-pos.x, pos.z-m_goalObject.z);
+@@ -1053,10 +794,14 @@ Error CTaskGoto::IsEnded()
+ CObject* CTaskGoto::SearchTarget(D3DVECTOR pos, float margin)
+ {
+    CObject     *pObj, *pBest;
++   ObjectType  type;
+    D3DVECTOR   oPos;
+    float       dist, min;
+    int         i;
+ 
++   type = m_object->RetType();
++   if ( type == OBJECT_TRAX )  return 0;
++
+    pBest = 0;
+    min = 1000000.0f;
+    for ( i=0 ; i<1000000 ; i++ )
+@@ -1087,26 +832,16 @@ CObject* CTaskGoto::SearchTarget(D3DVECTOR pos, float margin)
+ BOOL CTaskGoto::AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance)
+ {
+    ObjectType  type;
+-   Character*  character;
+-   D3DMATRIX*  mat;
+    D3DVECTOR   goal;
+    float       dist, suppl;
+ 
+-   type = m_object->RetType();
+-   if ( type == OBJECT_BEE  ||
+-        type == OBJECT_WORM )
+-   {
+-       pos = pObj->RetPosition(0);
+-       return FALSE;  // approche unique
+-   }
+-
+    type = pObj->RetType();
+ 
+    if ( type == OBJECT_FRET         ||
+         type == OBJECT_STONE        ||
+         type == OBJECT_URANIUM      ||
+         type == OBJECT_METAL        ||
+-        type == OBJECT_POWER        ||
++        type == OBJECT_BARREL       ||
+         type == OBJECT_ATOMIC       ||
+         type == OBJECT_BULLET       ||
+         type == OBJECT_BBOX         ||
+@@ -1115,11 +850,6 @@ BOOL CTaskGoto::AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance)
+         type == OBJECT_KEYc         ||
+         type == OBJECT_KEYd         ||
+         type == OBJECT_TNT          ||
+-        type == OBJECT_SCRAP1       ||
+-        type == OBJECT_SCRAP2       ||
+-        type == OBJECT_SCRAP3       ||
+-        type == OBJECT_SCRAP4       ||
+-        type == OBJECT_SCRAP5       ||
+         type == OBJECT_BOMB         ||
+         type == OBJECT_RUINmobilew1 ||
+         type == OBJECT_RUINmobilew2 ||
+@@ -1135,51 +865,6 @@ BOOL CTaskGoto::AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance)
+        return TRUE;  // approche par tous les côtés
+    }
+ 
+-   if ( type == OBJECT_BASE )
+-   {
+-       pos = m_object->RetPosition(0);
+-       goal = pObj->RetPosition(0);
+-       dist = Length(goal, pos);
+-       pos = (pos-goal)*(TAKE_DIST+distance)/dist + goal;
+-       return TRUE;  // approche par tous les côtés
+-   }
+-
+-   if ( type == OBJECT_MOBILEfa ||
+-        type == OBJECT_MOBILEta ||
+-        type == OBJECT_MOBILEwa ||
+-        type == OBJECT_MOBILEia ||
+-        type == OBJECT_MOBILEfs ||
+-        type == OBJECT_MOBILEts ||
+-        type == OBJECT_MOBILEws ||
+-        type == OBJECT_MOBILEis ||
+-        type == OBJECT_MOBILEfc ||
+-        type == OBJECT_MOBILEtc ||
+-        type == OBJECT_MOBILEwc ||
+-        type == OBJECT_MOBILEic ||
+-        type == OBJECT_MOBILEfi ||
+-        type == OBJECT_MOBILEti ||
+-        type == OBJECT_MOBILEwi ||
+-        type == OBJECT_MOBILEii ||
+-        type == OBJECT_MOBILErt ||
+-        type == OBJECT_MOBILErc ||
+-        type == OBJECT_MOBILErr ||
+-        type == OBJECT_MOBILErs ||
+-        type == OBJECT_MOBILEsa ||
+-        type == OBJECT_MOBILEtg ||
+-        type == OBJECT_MOBILEft ||
+-        type == OBJECT_MOBILEtt ||
+-        type == OBJECT_MOBILEwt ||
+-        type == OBJECT_MOBILEit ||
+-        type == OBJECT_MOBILEdr )
+-   {
+-       character = pObj->RetCharacter();
+-       pos = character->posPower;
+-       pos.x -= TAKE_DIST+TAKE_DIST_OTHER+distance;
+-       mat = pObj->RetWorldMatrix(0);
+-       pos = Transform(*mat, pos);
+-       return FALSE;  // approche unique
+-   }
+-
+    if ( GetHotPoint(pObj, goal, TRUE, distance, suppl) )
+    {
+        pos = goal;
+@@ -1234,46 +919,6 @@ BOOL CTaskGoto::GetHotPoint(CObject *pObj, D3DVECTOR &pos,
+    suppl = 0.0f;
+    type = pObj->RetType();
+ 
+-   if ( type == OBJECT_DERRICK )
+-   {
+-       mat = pObj->RetWorldMatrix(0);
+-       pos.x += 8.0f;
+-       if ( bTake && distance != 0.0f )  suppl = 4.0f;
+-       if ( bTake )  pos.x += TAKE_DIST+distance+suppl;
+-       pos = Transform(*mat, pos);
+-       return TRUE;
+-   }
+-
+-   if ( type == OBJECT_CONVERT )
+-   {
+-       mat = pObj->RetWorldMatrix(0);
+-       pos.x += 0.0f;
+-       if ( bTake && distance != 0.0f )  suppl = 4.0f;
+-       if ( bTake )  pos.x += TAKE_DIST+distance+suppl;
+-       pos = Transform(*mat, pos);
+-       return TRUE;
+-   }
+-
+-   if ( type == OBJECT_RESEARCH )
+-   {
+-       mat = pObj->RetWorldMatrix(0);
+-       pos.x += 10.0f;
+-       if ( bTake && distance != 0.0f )  suppl = 2.5f;
+-       if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance+suppl;
+-       pos = Transform(*mat, pos);
+-       return TRUE;
+-   }
+-
+-   if ( type == OBJECT_ENERGY )
+-   {
+-       mat = pObj->RetWorldMatrix(0);
+-       pos.x += 6.0f;
+-       if ( bTake && distance != 0.0f )  suppl = 6.0f;
+-       if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance;
+-       pos = Transform(*mat, pos);
+-       return TRUE;
+-   }
+-
+    if ( type == OBJECT_TOWER )
+    {
+        mat = pObj->RetWorldMatrix(0);
+@@ -1284,16 +929,6 @@ BOOL CTaskGoto::GetHotPoint(CObject *pObj, D3DVECTOR &pos,
+        return TRUE;
+    }
+ 
+-   if ( type == OBJECT_LABO )
+-   {
+-       mat = pObj->RetWorldMatrix(0);
+-       pos.x += 6.0f;
+-       if ( bTake && distance != 0.0f )  suppl = 6.0f;
+-       if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance;
+-       pos = Transform(*mat, pos);
+-       return TRUE;
+-   }
+-
+    if ( type == OBJECT_NUCLEAR )
+    {
+        mat = pObj->RetWorldMatrix(0);
+@@ -1304,55 +939,6 @@ BOOL CTaskGoto::GetHotPoint(CObject *pObj, D3DVECTOR &pos,
+        return TRUE;
+    }
+ 
+-   if ( type == OBJECT_FACTORY )
+-   {
+-       mat = pObj->RetWorldMatrix(0);
+-       pos.x += 4.0f;
+-       if ( bTake && distance != 0.0f )  suppl = 6.0f;
+-       if ( bTake )  pos.x += TAKE_DIST+distance+suppl;
+-       pos = Transform(*mat, pos);
+-       return TRUE;
+-   }
+-
+-   if ( type == OBJECT_STATION )
+-   {
+-       mat = pObj->RetWorldMatrix(0);
+-       pos.x += 4.0f;
+-       if ( bTake && distance != 0.0f )  suppl = 4.0f;
+-       if ( bTake )  pos.x += distance;
+-       pos = Transform(*mat, pos);
+-       return TRUE;
+-   }
+-
+-   if ( type == OBJECT_REPAIR )
+-   {
+-       mat = pObj->RetWorldMatrix(0);
+-       pos.x += 4.0f;
+-       if ( bTake && distance != 0.0f )  suppl = 4.0f;
+-       if ( bTake )  pos.x += distance;
+-       pos = Transform(*mat, pos);
+-       return TRUE;
+-   }
+-
+-   if ( type == OBJECT_DESTROYER )
+-   {
+-       mat = pObj->RetWorldMatrix(0);
+-       pos.x += 0.0f;
+-       if ( bTake && distance != 0.0f )  suppl = 4.0f;
+-       if ( bTake )  pos.x += TAKE_DIST+distance+suppl;
+-       pos = Transform(*mat, pos);
+-       return TRUE;
+-   }
+-
+-   if ( type == OBJECT_PARA && m_physics->RetType() == TYPE_FLYING )
+-   {
+-       mat = pObj->RetWorldMatrix(0);
+-       if ( bTake && distance != 0.0f )  suppl = 20.0f;
+-       if ( bTake )  pos.x += distance+suppl;
+-       pos = Transform(*mat, pos);
+-       return TRUE;
+-   }
+-
+    suppl = 0.0f;
+    return FALSE;
+ }
+@@ -1363,10 +949,14 @@ BOOL CTaskGoto::GetHotPoint(CObject *pObj, D3DVECTOR &pos,
+ BOOL CTaskGoto::LeakSearch(D3DVECTOR &pos, float &delay)
+ {
+    CObject     *pObj, *pObstacle;
++   ObjectType  type;
+    D3DVECTOR   iPos, oPos, bPos;
+    float       iRadius, oRadius, bRadius, dist, min, dir;
+    int         i, j;
+ 
++   type = m_object->RetType();
++   if ( type == OBJECT_TRAX )  return FALSE;
++
+    if ( !m_physics->RetLand() )  return FALSE;  // en vol ?
+ 
+    m_object->GetCrashSphere(0, iPos, iRadius);
+@@ -1401,12 +991,6 @@ BOOL CTaskGoto::LeakSearch(D3DVECTOR &pos, float &delay)
+ 
+    dist = 4.0f;
+    dir  = 1.0f;
+-   if ( pObstacle->RetType() == OBJECT_FACTORY )
+-   {
+-       dist = 16.0f;
+-       dir  = -1.0f;
+-       m_bLeakRecede = TRUE;  // recule simplement
+-   }
+ 
+    pos = bPos;
+    delay = m_physics->RetLinTimeLength(dist, dir);
+@@ -1419,65 +1003,17 @@ BOOL CTaskGoto::LeakSearch(D3DVECTOR &pos, float &delay)
+ 
+ void CTaskGoto::ComputeRepulse(FPOINT &dir)
+ {
+-#if 0
+-   D3DVECTOR   iPos, oPos;
+-   FPOINT      repulse;
+-   CObject     *pObj;
+-   float       dist, iRadius, oRadius;
+-   int         i;
+-
+-   dir.x = 0.0f;
+-   dir.y = 0.0f;
+-
+-   m_object->GetCrashSphere(0, iPos, iRadius);
+-
+-   for ( i=0 ; i<1000000 ; i++ )
+-   {
+-       pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+-       if ( pObj == 0 )  break;
+-
+-       if ( pObj == m_object )  continue;
+-       if ( pObj->RetTruck() != 0 )  continue;
+-       
+-       oPos = pObj->RetPosition(0);
+-       dist = Length(oPos, m_goalObject);
+-       if ( dist <= 1.0f )  continue;
+-
+-       pObj->GetGlobalSphere(oPos, oRadius);
+-       oRadius += iRadius+m_physics->RetLinStopLength()*1.1f;
+-       dist = Length2d(oPos, iPos);
+-       if ( dist <= oRadius )
+-       {
+-           repulse.x = iPos.x-oPos.x;
+-           repulse.y = iPos.z-oPos.z;
+-
+-//?            dist = 0.2f-(0.2f*dist/oRadius);
+-           dist = powf(dist/oRadius, 2.0f);
+-           dist = 0.2f-0.2f*dist;
+-           repulse.x *= dist;
+-           repulse.y *= dist;
+-//?            repulse.x /= dist;
+-//?            repulse.y /= dist;
+-
+-           dir.x += repulse.x;
+-           dir.y += repulse.y;
+-       }
+-   }
+-#else
+    ObjectType  iType, oType;
+    D3DVECTOR   iPos, oPos;
+    FPOINT      repulse;
+    CObject     *pObj;
+    float       gDist, add, addi, fac, dist, iRadius, oRadius;
+    int         i, j;
+-   BOOL        bAlien;
+ 
+    dir.x = 0.0f;
+    dir.y = 0.0f;
+ 
+-   // Le ver passe partout et à travers tout !
+    iType = m_object->RetType();
+-   if ( iType == OBJECT_WORM )  return;
+ 
+    m_object->GetCrashSphere(0, iPos, iRadius);
+    gDist = Length(iPos, m_goal);
+@@ -1485,74 +1021,19 @@ void CTaskGoto::ComputeRepulse(FPOINT &dir)
+    add = m_physics->RetLinStopLength()*1.1f;  // distance de freinage
+    fac = 2.0f;
+ 
+-   if ( iType == OBJECT_MOBILEwa ||
+-        iType == OBJECT_MOBILEwc ||
+-        iType == OBJECT_MOBILEwi ||
+-        iType == OBJECT_MOBILEws ||
+-        iType == OBJECT_MOBILEwt )  // roues ?
++   if ( iType == OBJECT_CAR      ||
++        iType == OBJECT_MOBILEtg )  // roues ?
+    {
+        add = 5.0f;
+        fac = 1.5f;
+    }
+-   if ( iType == OBJECT_MOBILEta ||
+-        iType == OBJECT_MOBILEtc ||
+-        iType == OBJECT_MOBILEti ||
+-        iType == OBJECT_MOBILEts ||
+-        iType == OBJECT_MOBILEtt ||
+-        iType == OBJECT_MOBILEdr )  // chenilles ?
+-   {
+-       add = 4.0f;
+-       fac = 1.5f;
+-   }
+-   if ( iType == OBJECT_MOBILEfa ||
+-        iType == OBJECT_MOBILEfc ||
+-        iType == OBJECT_MOBILEfi ||
+-        iType == OBJECT_MOBILEfs ||
+-        iType == OBJECT_MOBILEft )  // volant ?
+-   {
+-       if ( m_physics->RetLand() )
+-       {
+-           add = 5.0f;
+-           fac = 1.5f;
+-       }
+-       else
+-       {
+-           add = 10.0f;
+-           fac = 1.5f;
+-       }
+-   }
+-   if ( iType == OBJECT_MOBILEia ||
+-        iType == OBJECT_MOBILEic ||
+-        iType == OBJECT_MOBILEii ||
+-        iType == OBJECT_MOBILEis ||
+-        iType == OBJECT_MOBILEit )  // pattes ?
++   if ( iType == OBJECT_MOBILEfb ||
++        iType == OBJECT_MOBILEob ||
++        iType == OBJECT_TRAX     )  // chenilles ?
+    {
+        add = 4.0f;
+        fac = 1.5f;
+    }
+-   if ( iType == OBJECT_BEE )  // guêpe ?
+-   {
+-       if ( m_physics->RetLand() )
+-       {
+-           add = 3.0f;
+-           fac = 1.5f;
+-       }
+-       else
+-       {
+-           add = 5.0f;
+-           fac = 1.5f;
+-       }
+-   }
+-
+-   bAlien = FALSE;
+-   if ( iType == OBJECT_MOTHER ||
+-        iType == OBJECT_ANT    ||
+-        iType == OBJECT_SPIDER ||
+-        iType == OBJECT_BEE    ||
+-        iType == OBJECT_WORM   )
+-   {
+-       bAlien = TRUE;
+-   }
+ 
+    for ( i=0 ; i<1000000 ; i++ )
+    {
+@@ -1564,40 +1045,7 @@ void CTaskGoto::ComputeRepulse(FPOINT &dir)
+ 
+        oType = pObj->RetType();
+ 
+-       if ( oType == OBJECT_WORM )  continue;
+-
+-       if ( bAlien )
+-       {
+-           if ( oType == OBJECT_STONE   ||
+-                oType == OBJECT_URANIUM ||
+-                oType == OBJECT_METAL   ||
+-                oType == OBJECT_POWER   ||
+-                oType == OBJECT_ATOMIC  ||
+-                oType == OBJECT_BULLET  ||
+-                oType == OBJECT_BBOX    ||
+-                oType == OBJECT_KEYa    ||
+-                oType == OBJECT_KEYb    ||
+-                oType == OBJECT_KEYc    ||
+-                oType == OBJECT_KEYd    ||
+-                oType == OBJECT_TNT     ||
+-                oType == OBJECT_SCRAP1  ||
+-                oType == OBJECT_SCRAP2  ||
+-                oType == OBJECT_SCRAP3  ||
+-                oType == OBJECT_SCRAP4  ||
+-                oType == OBJECT_SCRAP5  ||
+-                oType == OBJECT_BOMB    ||
+-               (oType >= OBJECT_PLANT0    &&
+-                oType <= OBJECT_PLANT19   ) ||
+-               (oType >= OBJECT_MUSHROOM0 &&
+-                oType <= OBJECT_MUSHROOM9 ) )  continue;
+-       }
+-
+        addi = add;
+-       if ( iType == OBJECT_BEE &&
+-            oType == OBJECT_BEE )
+-       {
+-           addi = 2.0f;  // entre guèpes, faut pas trop s'embêter
+-       }
+        
+        j = 0;
+        while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+@@ -1626,7 +1074,6 @@ void CTaskGoto::ComputeRepulse(FPOINT &dir)
+            }
+        }
+    }
+-#endif
+ }
+ 
+ // Calcule la force de répulsion verticale en fonction des obstacles.
+@@ -1656,8 +1103,6 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
+ 
+        oType = pObj->RetType();
+ 
+-       if ( oType == OBJECT_WORM )  continue;
+-
+        j = 0;
+        while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+        {
+@@ -2051,23 +1496,11 @@ void CTaskGoto::BitmapObject()
+        if ( pObj->RetTruck() != 0 )  continue;
+    
+        h = m_terrain->RetFloorLevel(pObj->RetPosition(0), FALSE);
+-       if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )
+-       {
+-           h += m_altitude;
+-       }
+ 
+        j = 0;
+        while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+        {
+-           if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )  // volant ?
+-           {
+-               if ( oPos.y-oRadius > h+8.0f ||
+-                    oPos.y+oRadius < h-8.0f )  continue;
+-           }
+-           else    // rampant ?
+-           {
+-               if ( oPos.y-oRadius > h+8.0f )  continue;
+-           }
++           if ( oPos.y-oRadius > h+8.0f )  continue;
+ 
+            if ( type == OBJECT_PARA )  oRadius -= 2.0f;
+            BitmapSetCircle(oPos, oRadius+iRadius+4.0f);
+@@ -2121,61 +1554,19 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
+ 
+    type = m_object->RetType();
+ 
+-   if ( type == OBJECT_MOBILEwa ||
+-        type == OBJECT_MOBILEwc ||
+-        type == OBJECT_MOBILEws ||
+-        type == OBJECT_MOBILEwi ||
+-        type == OBJECT_MOBILEwt ||
++   if ( type == OBJECT_CAR      ||
+         type == OBJECT_MOBILEtg )  // roues ?
+    {
+        aLimit = 20.0f*PI/180.0f;
+    }
+ 
+-   if ( type == OBJECT_MOBILEta ||
+-        type == OBJECT_MOBILEtc ||
+-        type == OBJECT_MOBILEti ||
+-        type == OBJECT_MOBILEts )  // chenilles ?
+-   {
+-       aLimit = 35.0f*PI/180.0f;
+-   }
+-
+-   if ( type == OBJECT_MOBILErt ||
+-        type == OBJECT_MOBILErc ||
+-        type == OBJECT_MOBILErr ||
+-        type == OBJECT_MOBILErs )  // grosses chenilles ?
++   if ( type == OBJECT_MOBILEfb ||
++        type == OBJECT_MOBILEob ||
++        type == OBJECT_TRAX     )  // chenilles ?
+    {
+        aLimit = 35.0f*PI/180.0f;
+    }
+ 
+-   if ( type == OBJECT_MOBILEsa )  // chenilles sous-marin ?
+-   {
+-       aLimit = 35.0f*PI/180.0f;
+-       bAcceptWater = TRUE;
+-   }
+-
+-   if ( type == OBJECT_MOBILEdr )  // chenilles dessinateur ?
+-   {
+-       aLimit = 35.0f*PI/180.0f;
+-   }
+-
+-   if ( type == OBJECT_MOBILEfa ||
+-        type == OBJECT_MOBILEfc ||
+-        type == OBJECT_MOBILEfs ||
+-        type == OBJECT_MOBILEfi ||
+-        type == OBJECT_MOBILEft )  // volant ?
+-   {
+-       aLimit = 15.0f*PI/180.0f;
+-       bFly = TRUE;
+-   }
+-
+-   if ( type == OBJECT_MOBILEia ||
+-        type == OBJECT_MOBILEic ||
+-        type == OBJECT_MOBILEis ||
+-        type == OBJECT_MOBILEii )  // pattes d'insecte ?
+-   {
+-       aLimit = 60.0f*PI/180.0f;
+-   }
+-   
+    for ( y=miny ; y<=maxy ; y++ )
+    {
+        for ( x=minx ; x<=maxx ; x++ )

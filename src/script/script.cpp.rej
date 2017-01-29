@@ -1,0 +1,2247 @@
+diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
+@@ -11,27 +11,28 @@
+ #include "struct.h"
+ #include "D3DEngine.h"
+ #include "D3DMath.h"
+-#include "global.h"
++#include "language.h"
+ #include "event.h"
+ #include "misc.h"
+ #include "iman.h"
+ #include "restext.h"
+ #include "math3d.h"
++#include "pyro.h"
+ #include "robotmain.h"
+ #include "terrain.h"
+ #include "water.h"
+ #include "object.h"
+ #include "physics.h"
++#include "motion.h"
+ #include "interface.h"
+ #include "edit.h"
+ #include "list.h"
+ #include "text.h"
++#include "sound.h"
+ #include "displaytext.h"
+ #include "taskmanager.h"
+ #include "task.h"
+-#include "taskmanip.h"
+ #include "taskgoto.h"
+-#include "taskshield.h"
+ #include "cbottoken.h"
+ #include "script.h"
+ 
+@@ -155,10 +156,10 @@ BOOL GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
+ 
+    if ( var->GivType() <= CBotTypDouble )
+    {
+-       pos.x = var->GivValFloat()*g_unit;
++       pos.x = var->GivValFloat()*UNIT;
+        var = var->GivNext();
+ 
+-       pos.z = var->GivValFloat()*g_unit;
++       pos.z = var->GivValFloat()*UNIT;
+        var = var->GivNext();
+ 
+        pos.y = 0.0f;
+@@ -170,21 +171,21 @@ BOOL GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
+        {
+            exception = CBotErrUndefItem;  return TRUE;
+        }
+-       pos.x = pX->GivValFloat()*g_unit;
++       pos.x = pX->GivValFloat()*UNIT;
+ 
+        pY = var->GivItem("y");
+        if ( pY == NULL )
+        {
+            exception = CBotErrUndefItem;  return TRUE;
+        }
+-       pos.z = pY->GivValFloat()*g_unit;  // attention y -> z !
++       pos.z = pY->GivValFloat()*UNIT;  // attention y -> z !
+ 
+        pZ = var->GivItem("z");
+        if ( pZ == NULL )
+        {
+            exception = CBotErrUndefItem;  return TRUE;
+        }
+-       pos.y = pZ->GivValFloat()*g_unit;  // attention z -> y !
++       pos.y = pZ->GivValFloat()*UNIT;  // attention z -> y !
+ 
+        var = var->GivNext();
+    }
+@@ -404,7 +405,6 @@ BOOL rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
+        if ( !pObj->RetActif() )  continue;
+ 
+        oType = pObj->RetType();
+-       if ( oType == OBJECT_TOTO )  continue;
+ 
+        if ( oType == OBJECT_RUINmobilew2 ||
+             oType == OBJECT_RUINmobilet1 ||
+@@ -415,18 +415,10 @@ BOOL rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
+            oType = OBJECT_RUINmobilew1;  // n'importe quelle ruine
+        }
+ 
+-       if ( oType == OBJECT_SCRAP2 ||
+-            oType == OBJECT_SCRAP3 ||
+-            oType == OBJECT_SCRAP4 ||
+-            oType == OBJECT_SCRAP5 )  // déchet ?
++       if ( oType >= OBJECT_PLANT0  &&
++            oType <= OBJECT_PLANT19 )
+        {
+-           oType = OBJECT_SCRAP1;  // n'importe quel déchet
+-       }
+-
+-       if ( oType == OBJECT_BARRIER2 ||
+-            oType == OBJECT_BARRIER3 )  // barrière ?
+-       {
+-           oType = OBJECT_BARRIER1;  // n'importe quelle barrière
++           oType = OBJECT_PLANT0;  // n'importe quelle ruine
+        }
+ 
+        if ( bArray )
+@@ -522,8 +514,8 @@ BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
+    type    = OBJECT_NULL;
+    angle   = 0.0f;
+    focus   = PI*2.0f;
+-   minDist = 0.0f*g_unit;
+-   maxDist = 1000.0f*g_unit;
++   minDist = 0.0f*UNIT;
++   maxDist = 1000.0f*UNIT;
+    sens    = 1.0f;
+    filter  = FILTER_NONE;
+ 
+@@ -553,12 +545,12 @@ BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
+                var = var->GivNext();
+                if ( var != 0 )
+                {
+-                   minDist = var->GivValFloat()*g_unit;
++                   minDist = var->GivValFloat()*UNIT;
+ 
+                    var = var->GivNext();
+                    if ( var != 0 )
+                    {
+-                       maxDist = var->GivValFloat()*g_unit;
++                       maxDist = var->GivValFloat()*UNIT;
+ 
+                        var = var->GivNext();
+                        if ( var != 0 )
+@@ -592,10 +584,8 @@ BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
+ 
+        if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+        if ( !pObj->RetActif() )  continue;
+-       if ( pObj->RetProxyActivate() )  continue;
+ 
+        oType = pObj->RetType();
+-       if ( oType == OBJECT_TOTO )  continue;
+ 
+        if ( oType == OBJECT_RUINmobilew2 ||
+             oType == OBJECT_RUINmobilet1 ||
+@@ -606,18 +596,10 @@ BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
+            oType = OBJECT_RUINmobilew1;  // n'importe quelle ruine
+        }
+ 
+-       if ( oType == OBJECT_SCRAP2 ||
+-            oType == OBJECT_SCRAP3 ||
+-            oType == OBJECT_SCRAP4 ||
+-            oType == OBJECT_SCRAP5 )  // déchet ?
+-       {
+-           oType = OBJECT_SCRAP1;  // n'importe quel déchet
+-       }
+-
+-       if ( oType == OBJECT_BARRIER2 ||
+-            oType == OBJECT_BARRIER3 )  // barrière ?
++       if ( oType >= OBJECT_PLANT0  &&
++            oType <= OBJECT_PLANT19 )
+        {
+-           oType = OBJECT_BARRIER1;  // n'importe quelle barrière
++           oType = OBJECT_PLANT0;  // n'importe quelle ruine
+        }
+ 
+        if ( filter == FILTER_ONLYLANDING )
+@@ -679,217 +661,151 @@ BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
+ }
+ 
+ 
+-// Suivi d'une tâche.
+-
+-BOOL Process(CScript* script, CBotVar* result, int &exception)
+-{
+-   Error       err;
+-
+-   err = script->m_primaryTask->IsEnded();
+-   if ( err != ERR_CONTINUE )  // tâche terminée ?
+-   {
+-       delete script->m_primaryTask;
+-       script->m_primaryTask = 0;
+-
+-       script->m_bContinue = FALSE;
+-
+-       if ( err == ERR_STOP )  err = ERR_OK;
+-       result->SetValInt(err);  // indique l'erreur ou ok
+-       if ( err != ERR_OK && script->m_errMode == ERM_STOP )
+-       {
+-           exception = err;
+-           return FALSE;
+-       }
+-       return TRUE;  // c'est fini
+-   }
+-
+-   script->m_primaryTask->EventProcess(script->m_event);
+-   script->m_bContinue = TRUE;
+-   return FALSE;  // pas fini
+-}
+-
+-
+-// Compilation de l'instruction "detect(type)".
++// Compilation de l'instruction "trajrank(angle, focus, min, max, sens)".
+ 
+-CBotTypResult cDetect(CBotVar* &var, void* user)
++CBotTypResult cTrajRank(CBotVar* &var, void* user)
+ {
+-   if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+-   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
++   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
++   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // angle
+    var = var->GivNext();
+-   if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+-   return CBotTypResult(CBotTypBoolean);
++   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
++   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // focus
++   var = var->GivNext();
++   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
++   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // min
++   var = var->GivNext();
++   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
++   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // max
++   var = var->GivNext();
++   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
++   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // sens
++   var = var->GivNext();
++   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
++   return CBotTypResult(CBotErrOverParam);
+ }
+ 
+-// Instruction "detect(type)".
++// Instruction "trajrank(angle, focus, min, max, sens)".
+ 
+-BOOL rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
++BOOL rTrajRank(CBotVar* var, CBotVar* result, int& exception, void* user)
+ {
+    CScript*    script = ((CObject*)user)->RetRunScript();
+    CObject*    pThis = (CObject*)user;
+-   CObject     *pObj, *pGoal, *pBest;
+-   CPhysics*   physics;
+-   CBotVar*    array;
+    D3DVECTOR   iPos, oPos;
+-   RadarFilter filter;
+-   float       bGoal, best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
+-   int         type, oType, i;
+-   BOOL        bArray;
+-   Error       err;
++   float       best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
++   int         i, iBest;
+ 
+-   exception = 0;
++   angle   = 0.0f;
++   focus   = PI*2.0f;
++   minDist = 0.0f*UNIT;
++   maxDist = 1000.0f*UNIT;
++   sens    = 1.0f;
+ 
+-   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
++   if ( var != 0 )
+    {
+-       type    = OBJECT_NULL;
+-       angle   = 0.0f;
+-       focus   = 45.0f*PI/180.0f;
+-       minDist = 0.0f*g_unit;
+-       maxDist = 20.0f*g_unit;
+-       sens    = 1.0f;
+-       filter  = FILTER_NONE;
++       angle = -var->GivValFloat()*PI/180.0f;
+ 
++       var = var->GivNext();
+        if ( var != 0 )
+        {
+-           if ( var->GivType() == CBotTypArrayPointer )
+-           {
+-               array = var->GivItemList();
+-               bArray = TRUE;
+-           }
+-           else
++           focus = var->GivValFloat()*PI/180.0f;
++
++           var = var->GivNext();
++           if ( var != 0 )
+            {
+-               type = var->GivValInt();
+-               bArray = FALSE;
+-           }
+-       }
++               minDist = var->GivValFloat()*UNIT;
+ 
+-       iPos   = pThis->RetPosition(0);
+-       iAngle = pThis->RetAngleY(0)+angle;
+-       iAngle = NormAngle(iAngle);  // 0..2*PI
++               var = var->GivNext();
++               if ( var != 0 )
++               {
++                   maxDist = var->GivValFloat()*UNIT;
+ 
+-       bGoal = 100000.0f;
+-       pGoal = 0;
+-       if ( sens >= 0.0f )  best = 100000.0f;
+-       else                 best = 0.0f;
+-       pBest = 0;
+-       for ( i=0 ; i<1000000 ; i++ )
+-       {
+-           pObj = (CObject*)script->m_iMan->SearchInstance(CLASS_OBJECT, i);
+-           if ( pObj == 0 )  break;
+-           if ( pObj == pThis )  continue;
+-
+-           if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+-           if ( !pObj->RetActif() )  continue;
+-           if ( pObj->RetProxyActivate() )  continue;
+-
+-           oType = pObj->RetType();
+-           if ( oType == OBJECT_TOTO )  continue;
+-
+-           if ( oType == OBJECT_RUINmobilew2 ||
+-                oType == OBJECT_RUINmobilet1 ||
+-                oType == OBJECT_RUINmobilet2 ||
+-                oType == OBJECT_RUINmobiler1 ||
+-                oType == OBJECT_RUINmobiler2 )
+-           {
+-               oType = OBJECT_RUINmobilew1;  // n'importe quelle ruine
++                   var = var->GivNext();
++                   if ( var != 0 )
++                   {
++                       sens = var->GivValFloat();
++                   }
++               }
+            }
++       }
++   }
+ 
+-           if ( oType == OBJECT_SCRAP2 ||
+-                oType == OBJECT_SCRAP3 ||
+-                oType == OBJECT_SCRAP4 ||
+-                oType == OBJECT_SCRAP5 )  // déchet ?
+-           {
+-               oType = OBJECT_SCRAP1;  // n'importe quel déchet
+-           }
++   iPos   = pThis->RetPosition(0);
++   iAngle = pThis->RetAngleY(0)+angle;
++   iAngle = NormAngle(iAngle);  // 0..2*PI
+ 
+-           if ( oType == OBJECT_BARRIER2 ||
+-                oType == OBJECT_BARRIER3 )  // barrière ?
+-           {
+-               oType = OBJECT_BARRIER1;  // n'importe quelle barrière
+-           }
++   if ( sens >= 0.0f )  best = 100000.0f;
++   else                 best = 0.0f;
++   iBest = -1;
++   for ( i=0 ; i<1000000 ; i++ )
++   {
++       if ( !script->m_terrain->GetTraject(i, oPos) )  break;
+ 
+-           if ( filter == FILTER_ONLYLANDING )
+-           {
+-               physics = pObj->RetPhysics();
+-               if ( physics != 0 && !physics->RetLand() )  continue;
+-           }
+-           if ( filter == FILTER_ONLYFLYING )
+-           {
+-               physics = pObj->RetPhysics();
+-               if ( physics != 0 && physics->RetLand() )  continue;
+-           }
++       d = Length2d(iPos, oPos);
++       if ( d < minDist || d > maxDist )  continue;  // trop proche ou trop loin ?
+ 
+-           if ( bArray )
++       if ( focus >= PI*2.0f )
++       {
++           if ( (sens >= 0.0f && d < best) ||
++                (sens <  0.0f && d > best) )
+            {
+-               if ( !FindList(array, oType) )  continue;
++               best = d;
++               iBest = i;
+            }
+-           else
++           continue;
++       }
++
++       a = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
++       if ( TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
++       {
++           if ( (sens >= 0.0f && d < best) ||
++                (sens <  0.0f && d > best) )
+            {
+-               if ( type != oType && type != OBJECT_NULL )  continue;
++               best = d;
++               iBest = i;
+            }
++       }
++   }
+ 
+-           oPos = pObj->RetPosition(0);
+-           d = Length2d(iPos, oPos);
+-           a = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
++   result->SetValInt(iBest);
++   return TRUE;
++}
+ 
+-           if ( d < bGoal &&
+-                TestAngle(a, iAngle-(5.0f*PI/180.0f)/2.0f, iAngle+(5.0f*PI/180.0f)/2.0f) )
+-           {
+-               bGoal = d;
+-               pGoal = pObj;
+-           }
++// Compilation de l'instruction "trajpos(rank)".
+ 
+-           if ( d < minDist || d > maxDist )  continue;  // trop proche ou trop loin ?
++CBotTypResult cTrajPos(CBotVar* &var, void* user)
++{
++   if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
++   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
++   var = var->GivNext();
++   if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
++   return CBotTypResult(CBotTypIntrinsic, "point");
++}
+ 
+-           if ( focus >= PI*2.0f )
+-           {
+-               if ( (sens >= 0.0f && d < best) ||
+-                    (sens <  0.0f && d > best) )
+-               {
+-                   best = d;
+-                   pBest = pObj;
+-               }
+-               continue;
+-           }
++// Instruction "trajpos(rank)".
+ 
+-           if ( TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
+-           {
+-               if ( (sens >= 0.0f && d < best) ||
+-                    (sens <  0.0f && d > best) )
+-               {
+-                   best = d;
+-                   pBest = pObj;
+-               }
+-           }
+-       }
++BOOL rTrajPos(CBotVar* var, CBotVar* result, int& exception, void* user)
++{
++   CScript*    script = ((CObject*)user)->RetRunScript();
++   CBotVar*    pSub;
++   D3DVECTOR   pos;
++   int         rank;
+ 
+-       pThis->StartDetectEffect(pGoal, pBest!=0);
++   rank = var->GivValInt();
+ 
+-       if ( pBest == 0 )
+-       {
+-           script->m_returnValue = 0.0f;
+-       }
+-       else
+-       {
+-           script->m_returnValue = 1.0f;
+-       }
++   if ( !script->m_terrain->GetTraject(rank, pos) )
++   {
++       pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
++   }
+ 
+-       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-       err = script->m_primaryTask->StartTaskWait(0.3f);
+-       if ( err != ERR_OK )
+-       {
+-           delete script->m_primaryTask;
+-           script->m_primaryTask = 0;
+-           result->SetValInt(err);  // indique l'erreur
+-           if ( script->m_errMode == ERM_STOP )
+-           {
+-               exception = err;
+-               return FALSE;
+-           }
+-           return TRUE;
+-       }
++   pSub = result->GivItemList();
++   if ( pSub != 0 )
++   {
++       pSub->SetValFloat(pos.x/UNIT);
++       pSub = pSub->GivNext();  // "y"
++       pSub->SetValFloat(pos.z/UNIT);
++       pSub = pSub->GivNext();  // "z"
++       pSub->SetValFloat(pos.y/UNIT);
+    }
+-   if ( !Process(script, result, exception) )  return FALSE;  // pas terminé
+-   result->SetValFloat(script->m_returnValue);
+    return TRUE;
+ }
+ 
+@@ -983,7 +899,8 @@ BOOL rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
+         type == OBJECT_STONE    ||
+         type == OBJECT_URANIUM  ||
+         type == OBJECT_METAL    ||
+-        type == OBJECT_POWER    ||
++        type == OBJECT_BARREL   ||
++        type == OBJECT_BARRELa  ||
+         type == OBJECT_ATOMIC   ||
+         type == OBJECT_BULLET   ||
+         type == OBJECT_BBOX     ||
+@@ -992,18 +909,14 @@ BOOL rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
+         type == OBJECT_KEYc     ||
+         type == OBJECT_KEYd     ||
+         type == OBJECT_TNT      ||
+-        type == OBJECT_SCRAP1   ||
+-        type == OBJECT_SCRAP2   ||
+-        type == OBJECT_SCRAP3   ||
+-        type == OBJECT_SCRAP4   ||
+-        type == OBJECT_SCRAP5   ||
+         type == OBJECT_BOMB     ||
+         type == OBJECT_WAYPOINT ||
++        type == OBJECT_TRAJECT  ||
+         type == OBJECT_SHOW     ||
+         type == OBJECT_WINFIRE  )
+    {
+        object = new CObject(script->m_iMan);
+-       if ( !object->CreateResource(pos, angle, type) )
++       if ( !object->CreateResource(pos, angle, 1.0f, type, FALSE) )
+        {
+            delete object;
+            result->SetValInt(1);  // erreur
+@@ -1011,26 +924,27 @@ BOOL rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
+        }
+    }
+    else
+-   if ( type == OBJECT_MOTHER ||
+-        type == OBJECT_ANT    ||
+-        type == OBJECT_SPIDER ||
+-        type == OBJECT_BEE    ||
+-        type == OBJECT_WORM   )
++   if ( type >= OBJECT_PIECE0 &&
++        type <= OBJECT_PIECE9 )
+    {
+-       CObject*    egg;
+-
+        object = new CObject(script->m_iMan);
+-       if ( !object->CreateInsect(pos, angle, type) )
++       if ( !object->CreatePiece(pos, angle, 1.0f, 0.0f, type, FALSE) )
+        {
+            delete object;
+            result->SetValInt(1);  // erreur
+            return TRUE;
+        }
+-
+-       egg = new CObject(script->m_iMan);
+-       if ( !egg->CreateResource(pos, angle, OBJECT_EGG, 0.0f) )
++       else
+        {
+-           delete egg;
++           CPyro*      pyro;
++           D3DVECTOR   impact;
++
++           pyro = new CPyro(script->m_iMan);
++           impact.x = pos.x+(Rand()-0.5f)*40.0f;
++           impact.z = pos.z+(Rand()-0.5f)*40.0f;
++           impact.y = pos.y;
++           pyro->SetImpact(impact);
++           pyro->Create(PT_SABOTAGE, object);
+        }
+    }
+    else
+@@ -1077,7 +991,7 @@ BOOL rDistance(CBotVar* var, CBotVar* result, int& exception, void* user)
+    if ( !GetPoint(var, exception, p2) )  return TRUE;
+ 
+    value = Length(p1, p2);
+-   result->SetValFloat(value/g_unit);
++   result->SetValFloat(value/UNIT);
+    return TRUE;
+ }
+ 
+@@ -1092,7 +1006,7 @@ BOOL rDistance2d(CBotVar* var, CBotVar* result, int& exception, void* user)
+    if ( !GetPoint(var, exception, p2) )  return TRUE;
+ 
+    value = Length2d(p1, p2);
+-   result->SetValFloat(value/g_unit);
++   result->SetValFloat(value/UNIT);
+    return TRUE;
+ }
+ 
+@@ -1133,9 +1047,9 @@ BOOL rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
+    D3DVECTOR   center;
+    float       rMin, rMax, dist;
+ 
+-   rMin = 10.0f*g_unit;
+-   rMax = 50.0f*g_unit;
+-   dist =  4.0f*g_unit;
++   rMin = 10.0f*UNIT;
++   rMax = 50.0f*UNIT;
++   dist =  4.0f*UNIT;
+ 
+    if ( var == 0 )
+    {
+@@ -1147,17 +1061,17 @@ BOOL rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
+ 
+        if ( var != 0 )
+        {
+-           rMin = var->GivValFloat()*g_unit;
++           rMin = var->GivValFloat()*UNIT;
+            var = var->GivNext();
+ 
+            if ( var != 0 )
+            {
+-               rMax = var->GivValFloat()*g_unit;
++               rMax = var->GivValFloat()*UNIT;
+                var = var->GivNext();
+ 
+                if ( var != 0 )
+                {
+-                   dist = var->GivValFloat()*g_unit;
++                   dist = var->GivValFloat()*UNIT;
+                    var = var->GivNext();
+                }
+            }
+@@ -1170,11 +1084,11 @@ BOOL rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
+        pSub = result->GivItemList();
+        if ( pSub != 0 )
+        {
+-           pSub->SetValFloat(center.x/g_unit);
++           pSub->SetValFloat(center.x/UNIT);
+            pSub = pSub->GivNext();  // "y"
+-           pSub->SetValFloat(center.z/g_unit);
++           pSub->SetValFloat(center.z/UNIT);
+            pSub = pSub->GivNext();  // "z"
+-           pSub->SetValFloat(center.y/g_unit);
++           pSub->SetValFloat(center.y/UNIT);
+        }
+    }
+    return TRUE;
+@@ -1210,16 +1124,46 @@ BOOL rFlatGround(CBotVar* var, CBotVar* result, int& exception, void* user)
+    float       rMax, dist;
+ 
+    if ( !GetPoint(var, exception, center) )  return TRUE;
+-   rMax = var->GivValFloat()*g_unit;
++   rMax = var->GivValFloat()*UNIT;
+    var = var->GivNext();
+ 
+    dist = script->m_main->RetFlatZoneRadius(center, rMax, pThis);
+-   result->SetValFloat(dist/g_unit);
++   result->SetValFloat(dist/UNIT);
+ 
+    return TRUE;
+ }
+ 
+ 
++// Suivi d'une tâche.
++
++BOOL Process(CScript* script, CBotVar* result, int &exception)
++{
++   Error       err;
++
++   err = script->m_primaryTask->IsEnded();
++   if ( err != ERR_CONTINUE )  // tâche terminée ?
++   {
++       delete script->m_primaryTask;
++       script->m_primaryTask = 0;
++
++       script->m_bContinue = FALSE;
++
++       if ( err == ERR_STOP )  err = ERR_OK;
++       result->SetValInt(err);  // indique l'erreur ou ok
++       if ( err != ERR_OK && script->m_errMode == ERM_STOP )
++       {
++           exception = err;
++           return FALSE;
++       }
++       return TRUE;  // c'est fini
++   }
++
++   script->m_primaryTask->EventProcess(script->m_event);
++   script->m_bContinue = TRUE;
++   return FALSE;  // pas fini
++}
++
++
+ // Instruction "wait(t)".
+ 
+ BOOL rWait(CBotVar* var, CBotVar* result, int& exception, void* user)
+@@ -1265,7 +1209,7 @@ BOOL rMove(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        value = var->GivValFloat();
+-       err = script->m_primaryTask->StartTaskAdvance(value*g_unit);
++       err = script->m_primaryTask->StartTaskAdvance(value*UNIT);
+        if ( err != ERR_OK )
+        {
+            delete script->m_primaryTask;
+@@ -1313,6 +1257,22 @@ BOOL rTurn(CBotVar* var, CBotVar* result, int& exception, void* user)
+    return Process(script, result, exception);
+ }
+ 
++// Instruction "turnim(angle)".
++
++BOOL rTurnIm(CBotVar* var, CBotVar* result, int& exception, void* user)
++{
++   CScript*    script = ((CObject*)user)->RetRunScript();
++   CObject*    pThis = (CObject*)user;
++   float       value;
++
++   exception = 0;
++
++   value = var->GivValFloat();
++   value = -value*PI/180.0f;
++   pThis->SetAngleY(0, pThis->RetAngleY(0)+value);
++   return TRUE;
++}
++
+ // Compilation de l'instruction "goto(pos, altitude, crash, goal)".
+ 
+ CBotTypResult cGoto(CBotVar* &var, void* user)
+@@ -1359,11 +1319,11 @@ BOOL rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
+ 
+        goal  = TGG_DEFAULT;
+        crash = TGC_DEFAULT;
+-       altitude = 0.0f*g_unit;
++       altitude = 0.0f*UNIT;
+ 
+        if ( var != 0 )
+        {
+-           altitude = var->GivValFloat()*g_unit;
++           altitude = var->GivValFloat()*UNIT;
+ 
+            var = var->GivNext();
+            if ( var != 0 )
+@@ -1395,807 +1355,97 @@ BOOL rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
+    return Process(script, result, exception);
+ }
+ 
+-// Instruction "find(type)".
++// Instruction "gotoim(pos)".
+ 
+-BOOL rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
++BOOL rGotoIm(CBotVar* var, CBotVar* result, int& exception, void* user)
+ {
+-   CScript*        script = ((CObject*)user)->RetRunScript();
+-   D3DVECTOR       pos;
+-   TaskGotoGoal    goal;
+-   TaskGotoCrash   crash;
+-   float           altitude;
+-   Error           err;
+-   CObject*        pThis = (CObject*)user;
+-   CObject         *pObj, *pBest;
+-   CBotVar*        array;
+-   D3DVECTOR       iPos, oPos;
+-   float           best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
+-   int             type, oType, i;
+-   BOOL            bArray;
++   CScript*    script = ((CObject*)user)->RetRunScript();
++   CObject*    pThis = (CObject*)user;
++   D3DVECTOR   pos;
+ 
+    exception = 0;
+ 
+-   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   {
+-       type    = OBJECT_NULL;
+-       angle   = 0.0f;
+-       focus   = PI*2.0f;
+-       minDist = 0.0f*g_unit;
+-       maxDist = 1000.0f*g_unit;
+-       sens    = 1.0f;
++   if ( !GetPoint(var, exception, pos) )  return TRUE;
++   pThis->SetPosition(0, pos);
++   return TRUE;
++}
+ 
+-       if ( var->GivType() == CBotTypArrayPointer )
+-       {
+-           array = var->GivItemList();
+-           bArray = TRUE;
+-       }
+-       else
+-       {
+-           type = var->GivValInt();
+-           bArray = FALSE;
+-       }
++// Compilation "fire(delay)".
+ 
+-       best = 100000.0f;
+-       pBest = 0;
+-       for ( i=0 ; i<1000000 ; i++ )
+-       {
+-           pObj = (CObject*)script->m_iMan->SearchInstance(CLASS_OBJECT, i);
+-           if ( pObj == 0 )  break;
+-           if ( pObj == pThis )  continue;
+-
+-           if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+-           if ( !pObj->RetActif() )  continue;
+-           if ( pObj->RetProxyActivate() )  continue;
+-
+-           oType = pObj->RetType();
+-           if ( oType == OBJECT_TOTO )  continue;
+-
+-           if ( oType == OBJECT_RUINmobilew2 ||
+-                oType == OBJECT_RUINmobilet1 ||
+-                oType == OBJECT_RUINmobilet2 ||
+-                oType == OBJECT_RUINmobiler1 ||
+-                oType == OBJECT_RUINmobiler2 )
+-           {
+-               oType = OBJECT_RUINmobilew1;  // n'importe quelle ruine
+-           }
++CBotTypResult cFire(CBotVar* &var, void* user)
++{
++   return CBotTypResult(CBotTypFloat);
++}
+ 
+-           if ( oType == OBJECT_SCRAP2 ||
+-                oType == OBJECT_SCRAP3 ||
+-                oType == OBJECT_SCRAP4 ||
+-                oType == OBJECT_SCRAP5 )  // déchet ?
+-           {
+-               oType = OBJECT_SCRAP1;  // n'importe quel déchet
+-           }
++// Instruction "fire(delay)".
+ 
+-           if ( oType == OBJECT_BARRIER2 ||
+-                oType == OBJECT_BARRIER3 )  // barrière ?
+-           {
+-               oType = OBJECT_BARRIER1;  // n'importe quelle barrière
+-           }
+-
+-           if ( bArray )
+-           {
+-               if ( !FindList(array, oType) )  continue;
+-           }
+-           else
+-           {
+-               if ( type != oType && type != OBJECT_NULL )  continue;
+-           }
+-
+-           oPos = pObj->RetPosition(0);
+-           d = Length2d(iPos, oPos);
+-           if ( d < minDist || d > maxDist )  continue;  // trop proche ou trop loin ?
+-
+-           if ( focus >= PI*2.0f )
+-           {
+-               if ( d < best )
+-               {
+-                   best = d;
+-                   pBest = pObj;
+-               }
+-               continue;
+-           }
+-
+-           a = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+-           if ( TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
+-           {
+-               if ( d < best )
+-               {
+-                   best = d;
+-                   pBest = pObj;
+-               }
+-           }
+-       }
+-
+-       if ( pBest == 0 )
+-       {
+-           exception = ERR_FIND_IMPOSSIBLE;
+-           return FALSE;
+-       }
+-
+-       pos = pBest->RetPosition(0);
+-       goal  = TGG_DEFAULT;
+-       crash = TGC_DEFAULT;
+-       altitude = 0.0f*g_unit;
+-
+-       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-       err = script->m_primaryTask->StartTaskGoto(pos, altitude, goal, crash);
+-       if ( err != ERR_OK )
+-       {
+-           delete script->m_primaryTask;
+-           script->m_primaryTask = 0;
+-           result->SetValInt(err);  // indique l'erreur
+-           if ( script->m_errMode == ERM_STOP )
+-           {
+-               exception = err;
+-               return FALSE;
+-           }
+-           return TRUE;
+-       }
+-   }
+-   return Process(script, result, exception);
+-}
+-
+-// Compilation "grab/drop(oper)".
+-
+-CBotTypResult cGrabDrop(CBotVar* &var, void* user)
+-{
+-   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+-   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+-   var = var->GivNext();
+-   if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+-   return CBotTypResult(CBotTypFloat);
+-}
+-
+-// Instruction "grab(oper)".
+-
+-BOOL rGrab(CBotVar* var, CBotVar* result, int& exception, void* user)
+-{
+-   CScript*    script = ((CObject*)user)->RetRunScript();
+-   CObject*    pThis = (CObject*)user;
+-   ObjectType  oType;
+-   TaskManipArm type;
+-   Error       err;
+-
+-   exception = 0;
+-
+-   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   {
+-       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-       if ( var == 0 )  type = TMA_FFRONT;
+-       else             type = (TaskManipArm)var->GivValInt();
+-
+-       oType = pThis->RetType();
+-       if ( oType == OBJECT_HUMAN ||
+-            oType == OBJECT_TECH  )
+-       {
+-           err = script->m_primaryTask->StartTaskTake();
+-       }
+-       else
+-       {
+-           err = script->m_primaryTask->StartTaskManip(TMO_GRAB, type);
+-       }
+-
+-       if ( err != ERR_OK )
+-       {
+-           delete script->m_primaryTask;
+-           script->m_primaryTask = 0;
+-           result->SetValInt(err);  // indique l'erreur
+-           if ( script->m_errMode == ERM_STOP )
+-           {
+-               exception = err;
+-               return FALSE;
+-           }
+-           return TRUE;
+-       }
+-   }
+-   return Process(script, result, exception);
+-}
+-
+-// Instruction "drop(oper)".
+-
+-BOOL rDrop(CBotVar* var, CBotVar* result, int& exception, void* user)
+-{
+-   CScript*    script = ((CObject*)user)->RetRunScript();
+-   CObject*    pThis = (CObject*)user;
+-   ObjectType  oType;
+-   TaskManipArm type;
+-   Error       err;
+-
+-   exception = 0;
+-
+-   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   {
+-       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-       if ( var == 0 )  type = TMA_FFRONT;
+-       else             type = (TaskManipArm)var->GivValInt();
+-
+-       oType = pThis->RetType();
+-       if ( oType == OBJECT_HUMAN ||
+-            oType == OBJECT_TECH  )
+-       {
+-           err = script->m_primaryTask->StartTaskTake();
+-       }
+-       else
+-       {
+-           err = script->m_primaryTask->StartTaskManip(TMO_DROP, type);
+-       }
+-
+-       if ( err != ERR_OK )
+-       {
+-           delete script->m_primaryTask;
+-           script->m_primaryTask = 0;
+-           result->SetValInt(err);  // indique l'erreur
+-           if ( script->m_errMode == ERM_STOP )
+-           {
+-               exception = err;
+-               return FALSE;
+-           }
+-           return TRUE;
+-       }
+-   }
+-   return Process(script, result, exception);
+-}
+-
+-// Instruction "sniff()".
+-
+-BOOL rSniff(CBotVar* var, CBotVar* result, int& exception, void* user)
+-{
+-   CScript*    script = ((CObject*)user)->RetRunScript();
+-   Error       err;
+-
+-   exception = 0;
+-
+-   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   {
+-       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-       err = script->m_primaryTask->StartTaskSearch();
+-       if ( err != ERR_OK )
+-       {
+-           delete script->m_primaryTask;
+-           script->m_primaryTask = 0;
+-           result->SetValInt(err);  // indique l'erreur
+-           if ( script->m_errMode == ERM_STOP )
+-           {
+-               exception = err;
+-               return FALSE;
+-           }
+-           return TRUE;
+-       }
+-   }
+-   return Process(script, result, exception);
+-}
+-
+-// Compilation de l'instruction "receive(nom, power)".
+-
+-CBotTypResult cReceive(CBotVar* &var, void* user)
+-{
+-   if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+-   if ( var->GivType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
+-   var = var->GivNext();
+-
+-   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+-   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+-   var = var->GivNext();
+-
+-   if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+-   return CBotTypResult(CBotTypFloat);
+-}
+-
+-// Instruction "receive(nom, power)".
+-
+-BOOL rReceive(CBotVar* var, CBotVar* result, int& exception, void* user)
+-{
+-   CScript*    script = ((CObject*)user)->RetRunScript();
+-   CObject*    pThis = (CObject*)user;
+-   CBotString  cbs;
+-   Error       err;
+-   const char* p;
+-   float       value, power;
+-
+-   exception = 0;
+-
+-   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   {
+-       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-
+-       cbs = var->GivValString();
+-       p = cbs;
+-       var = var->GivNext();
+-
+-       power = 10.0f*g_unit;
+-       if ( var != 0 )
+-       {
+-           power = var->GivValFloat()*g_unit;
+-           var = var->GivNext();
+-       }
+-
+-       err = script->m_primaryTask->StartTaskInfo((char*)p, 0.0f, power, FALSE);
+-       if ( err != ERR_OK )
+-       {
+-           delete script->m_primaryTask;
+-           script->m_primaryTask = 0;
+-           result->SetInit(IS_NAN);
+-           return TRUE;
+-       }
+-   }
+-   if ( !Process(script, result, exception) )  return FALSE;  // pas terminé
+-
+-   value = pThis->RetInfoReturn();
+-   if ( value == NAN )
+-   {
+-       result->SetInit(IS_NAN);
+-   }
+-   else
+-   {
+-       result->SetValFloat(value);
+-   }
+-   return TRUE;
+-}
+-
+-// Compilation de l'instruction "send(nom, value, power)".
+-
+-CBotTypResult cSend(CBotVar* &var, void* user)
+-{
+-   if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+-   if ( var->GivType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
+-   var = var->GivNext();
+-
+-   if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+-   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+-   var = var->GivNext();
+-   
+-   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+-   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+-   var = var->GivNext();
+-
+-   if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+-   return CBotTypResult(CBotTypFloat);
+-}
+-
+-// Instruction "send(nom, value, power)".
+-
+-BOOL rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
++BOOL rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
+ {
+    CScript*    script = ((CObject*)user)->RetRunScript();
+    CObject*    pThis = (CObject*)user;
+-   CBotString  cbs;
++   float       delay;
++   D3DVECTOR   impact;
+    Error       err;
+-   const char* p;
+-   float       value, power;
+-
+-   exception = 0;
+-
+-   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   {
+-       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-
+-       cbs = var->GivValString();
+-       p = cbs;
+-       var = var->GivNext();
+-
+-       value = var->GivValFloat();
+-       var = var->GivNext();
+-
+-       power = 10.0f*g_unit;
+-       if ( var != 0 )
+-       {
+-           power = var->GivValFloat()*g_unit;
+-           var = var->GivNext();
+-       }
+-
+-       err = script->m_primaryTask->StartTaskInfo((char*)p, value, power, TRUE);
+-       if ( err != ERR_OK )
+-       {
+-           delete script->m_primaryTask;
+-           script->m_primaryTask = 0;
+-           result->SetValInt(err);  // indique l'erreur
+-           if ( script->m_errMode == ERM_STOP )
+-           {
+-               exception = err;
+-               return FALSE;
+-           }
+-           return TRUE;
+-       }
+-   }
+-   return Process(script, result, exception);
+-}
+-
+-// Cherche la borne d'information la plus proche.
+-
+-CObject* SearchInfo(CScript* script, CObject* object, float power)
+-{
+-   CObject     *pObj, *pBest;
+-   D3DVECTOR   iPos, oPos;
+    ObjectType  type;
+-   float       dist, min;
+-   int         i;
+-
+-   iPos = object->RetPosition(0);
+-
+-   min = 100000.0f;
+-   pBest = 0;
+-   for ( i=0 ; i<1000000 ; i++ )
+-   {
+-       pObj = (CObject*)script->m_iMan->SearchInstance(CLASS_OBJECT, i);
+-       if ( pObj == 0 )  break;
+-
+-       type = pObj->RetType();
+-       if ( type != OBJECT_INFO )  continue;
+-
+-       if ( !pObj->RetActif() )  continue;
+-
+-       oPos = pObj->RetPosition(0);
+-       dist = Length(oPos, iPos);
+-       if ( dist > power )  continue;  // trop loin ?
+-       if ( dist < min )
+-       {
+-           min = dist;
+-           pBest = pObj;
+-       }
+-   }
+-
+-   return pBest;
+-}
+-
+-// Compilation de l'instruction "deleteinfo(nom, power)".
+-
+-CBotTypResult cDeleteInfo(CBotVar* &var, void* user)
+-{
+-   if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+-   if ( var->GivType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
+-   var = var->GivNext();
+-
+-   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+-   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+-   var = var->GivNext();
+-
+-   if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+-   return CBotTypResult(CBotTypFloat);
+-}
+-
+-// Instruction "deleteinfo(nom, power)".
+-
+-BOOL rDeleteInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
+-{
+-   CScript*    script = ((CObject*)user)->RetRunScript();
+-   CObject*    pThis = (CObject*)user;
+-   CObject*    pInfo;
+-   CBotString  cbs;
+-   Info        info;
+-   const char* p;
+-   float       power;
+-   int         i, total;
+-
+-   exception = 0;
+-
+-   cbs = var->GivValString();
+-   p = cbs;
+-   var = var->GivNext();
+-
+-   power = 10.0f*g_unit;
+-   if ( var != 0 )
+-   {
+-       power = var->GivValFloat()*g_unit;
+-       var = var->GivNext();
+-   }
+-
+-   pInfo = SearchInfo(script, pThis, power);
+-   if ( pInfo == 0 )
+-   {
+-       result->SetValFloat(0.0f);  // false
+-       return TRUE;
+-   }
+-
+-   total = pInfo->RetInfoTotal();
+-   for ( i=0 ; i<total ; i++ )
+-   {
+-       info = pInfo->RetInfo(i);
+-       if ( strcmp(info.name, p) == 0 )
+-       {
+-           pInfo->DeleteInfo(i);
+-           result->SetValFloat(1.0f);  // true
+-           return TRUE;
+-       }
+-   }
+-   result->SetValFloat(0.0f);  // false
+-   return TRUE;
+-}
+-
+-// Compilation de l'instruction "testinfo(nom, power)".
+-
+-CBotTypResult cTestInfo(CBotVar* &var, void* user)
+-{
+-   if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+-   if ( var->GivType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
+-   var = var->GivNext();
+-
+-   if ( var == 0 )  return CBotTypResult(CBotTypBoolean);
+-   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+-   var = var->GivNext();
+-
+-   if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+-   return CBotTypResult(CBotTypBoolean);
+-}
+-
+-// Instruction "testinfo(nom, power)".
+-
+-BOOL rTestInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
+-{
+-   CScript*    script = ((CObject*)user)->RetRunScript();
+-   CObject*    pThis = (CObject*)user;
+-   CObject*    pInfo;
+-   CBotString  cbs;
+-   Info        info;
+-   const char* p;
+-   float       power;
+-   int         i, total;
+-
+-   exception = 0;
+-
+-   cbs = var->GivValString();
+-   p = cbs;
+-   var = var->GivNext();
+-
+-   power = 10.0f*g_unit;
+-   if ( var != 0 )
+-   {
+-       power = var->GivValFloat()*g_unit;
+-       var = var->GivNext();
+-   }
+-
+-   pInfo = SearchInfo(script, pThis, power);
+-   if ( pInfo == 0 )
+-   {
+-       result->SetValInt(FALSE);
+-       return TRUE;
+-   }
+-
+-   total = pInfo->RetInfoTotal();
+-   for ( i=0 ; i<total ; i++ )
+-   {
+-       info = pInfo->RetInfo(i);
+-       if ( strcmp(info.name, p) == 0 )
+-       {
+-           result->SetValInt(TRUE);
+-           return TRUE;
+-       }
+-   }
+-   result->SetValInt(FALSE);
+-   return TRUE;
+-}
+-
+-// Instruction "thump()".
+-
+-BOOL rThump(CBotVar* var, CBotVar* result, int& exception, void* user)
+-{
+-   CScript*    script = ((CObject*)user)->RetRunScript();
+-   Error       err;
+ 
+    exception = 0;
+ 
+    if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+    {
+        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-       err = script->m_primaryTask->StartTaskTerraform();
+-       if ( err != ERR_OK )
+-       {
+-           delete script->m_primaryTask;
+-           script->m_primaryTask = 0;
+-           result->SetValInt(err);  // indique l'erreur
+-           if ( script->m_errMode == ERM_STOP )
+-           {
+-               exception = err;
+-               return FALSE;
+-           }
+-           return TRUE;
+-       }
+-   }
+-   return Process(script, result, exception);
+-}
+ 
+-// Instruction "recycle()".
+-
+-BOOL rRecycle(CBotVar* var, CBotVar* result, int& exception, void* user)
+-{
+-   CScript*    script = ((CObject*)user)->RetRunScript();
+-   Error       err;
++       type = pThis->RetType();
+ 
+-   exception = 0;
++       if ( var == 0 )  delay = 0.0f;
++       else             delay = var->GivValFloat();
++       err = script->m_primaryTask->StartTaskFire(delay);
+ 
+-   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   {
+-       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-       err = script->m_primaryTask->StartTaskRecover();
+        if ( err != ERR_OK )
+        {
+            delete script->m_primaryTask;
+            script->m_primaryTask = 0;
+            result->SetValInt(err);  // indique l'erreur
+-           if ( script->m_errMode == ERM_STOP )
+-           {
+-               exception = err;
+-               return FALSE;
+-           }
+            return TRUE;
+        }
+    }
+    return Process(script, result, exception);
+ }
+ 
+-// Compilation "shield(oper, radius)".
++// Compilation de l'instruction "action(n, delay)".
+ 
+-CBotTypResult cShield(CBotVar* &var, void* user)
++CBotTypResult cAction(CBotVar* &var, void* user)
+ {
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GivNext();
+ 
+-   if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
++   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GivNext();
+ 
+-   if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+-
+-   return CBotTypResult(CBotTypFloat);
+-}
+-
+-// Instruction "shield(oper, radius)".
+-
+-BOOL rShield(CBotVar* var, CBotVar* result, int& exception, void* user)
+-{
+-   CScript*    script = ((CObject*)user)->RetRunScript();
+-   CObject*    pThis = (CObject*)user;
+-   float       oper, radius;
+-   Error       err;
+-
+-   oper = var->GivValFloat();  // 0=down, 1=up
+-   var = var->GivNext();
+-
+-   radius = var->GivValFloat();
+-   if ( radius < 10.0f )  radius = 10.0f;
+-   if ( radius > 25.0f )  radius = 25.0f;
+-   radius = (radius-10.0f)/15.0f;
+-
+-   if ( *script->m_secondaryTask == 0 )  // bouclier replié ?
+-   {
+-       if ( oper == 0.0f )  // down ?
+-       {
+-           result->SetValInt(1);  // indique une erreur
+-       }
+-       else    // up ?
+-       {
+-           pThis->SetParam(radius);
+-
+-           *script->m_secondaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-           err = (*script->m_secondaryTask)->StartTaskShield(TSM_UP, 1000.0f);
+-           if ( err != ERR_OK )
+-           {
+-               delete *script->m_secondaryTask;
+-               *script->m_secondaryTask = 0;
+-               result->SetValInt(err);  // indique l'erreur
+-           }
+-       }
+-   }
+-   else    // bouclier deployé ?
+-   {
+-       if ( oper == 0.0f )  // down ?
+-       {
+-           (*script->m_secondaryTask)->StartTaskShield(TSM_DOWN, 0.0f);
+-       }
+-       else    // up ?
+-       {
+-//?            result->SetValInt(1);  // indique une erreur
+-           pThis->SetParam(radius);
+-           (*script->m_secondaryTask)->StartTaskShield(TSM_UPDATE, 0.0f);
+-       }
+-   }
+-
+-   return TRUE;
+-}
+-
+-// Compilation "fire(delay)".
+-
+-CBotTypResult cFire(CBotVar* &var, void* user)
+-{
+-#if 0
+-   CObject*    pThis = (CObject*)user;
+-   ObjectType  type;
+-
+-   type = pThis->RetType();
+-
+-   if ( type == OBJECT_ANT )
+-   {
+-       return cOnePoint(var, user);
+-   }
+-   else if ( type == OBJECT_SPIDER )
+-   {
+-       return cNull(var, user);
+-   }
+-   else
+-   {
+-       if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+-       if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+-       var = var->GivNext();
+-       if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+-       return CBotTypResult(CBotTypFloat);
+-   }
+-#else
+-   return CBotTypResult(CBotTypFloat);
+-#endif
+-}
+-
+-// Instruction "fire(delay)".
+-
+-BOOL rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
+-{
+-   CScript*    script = ((CObject*)user)->RetRunScript();
+-   CObject*    pThis = (CObject*)user;
+-   float       delay;
+-   D3DVECTOR   impact;
+-   Error       err;
+-   ObjectType  type;
+-
+-   exception = 0;
+-
+-   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   {
+-       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-
+-       type = pThis->RetType();
+-
+-       if ( type == OBJECT_ANT )
+-       {
+-           if ( !GetPoint(var, exception, impact) )  return TRUE;
+-           impact.y += pThis->RetWaterLevel();
+-           err = script->m_primaryTask->StartTaskFireAnt(impact);
+-       }
+-       else if ( type == OBJECT_SPIDER )
+-       {
+-           err = script->m_primaryTask->StartTaskSpiderExplo();
+-       }
+-       else
+-       {
+-           if ( var == 0 )  delay = 0.0f;
+-           else             delay = var->GivValFloat();
+-           err = script->m_primaryTask->StartTaskFire(delay);
+-       }
+-
+-       if ( err != ERR_OK )
+-       {
+-           delete script->m_primaryTask;
+-           script->m_primaryTask = 0;
+-           result->SetValInt(err);  // indique l'erreur
+-           return TRUE;
+-       }
+-   }
+-   return Process(script, result, exception);
++   if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
++
++   return CBotTypResult(CBotTypFloat);
+ }
+ 
+-// Instruction "aim(dir)".
++// Instruction "action(n, delay)".
+ 
+-BOOL rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
++BOOL rAction(CBotVar* var, CBotVar* result, int& exception, void* user)
+ {
+-   CScript*    script = ((CObject*)user)->RetRunScript();
+-   float       value;
+-   Error       err;
+-
+-   exception = 0;
++   CObject*    pThis = (CObject*)user;
++   CMotion*    motion = ((CObject*)user)->RetMotion();
++   int         action;
++   float       delay;
+ 
+-   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
++   delay = 0.2f;
++   action = var->GivValInt();
++   var = var->GivNext();
++   if ( var != 0 )
+    {
+-       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-       value = var->GivValFloat();
+-       err = script->m_primaryTask->StartTaskGunGoal(value*PI/180.0f, 0.0f);
+-       if ( err != ERR_OK )
+-       {
+-           delete script->m_primaryTask;
+-           script->m_primaryTask = 0;
+-           result->SetValInt(err);  // indique l'erreur
+-           return TRUE;
+-       }
++       delay = var->GivValFloat();
+    }
+-   return Process(script, result, exception);
++   motion->SetAction(action, delay);
++   return TRUE;
+ }
+ 
+ // Compilation de l'instruction "motor(left, right)".
+@@ -2288,7 +1538,7 @@ BOOL rTopo(CBotVar* var, CBotVar* result, int& exception, void* user)
+ 
+    level = script->m_terrain->RetFloorLevel(pos);
+    level -= script->m_water->RetLevel();
+-   result->SetValFloat(level/g_unit);
++   result->SetValFloat(level/UNIT);
+    return TRUE;
+ }
+ 
+@@ -2328,8 +1578,7 @@ BOOL rMessage(CBotVar* var, CBotVar* result, int& exception, void* user)
+        type = (TextType)var->GivValInt();
+    }
+ 
+-   script->m_displayText->DisplayText((char*)p, script->m_object, 10.0f, type);
+-   script->m_main->CheckEndMessage((char*)p);
++   script->m_displayText->DisplayText((char*)p, 10.0f, FONTSIZE, type);
+ 
+    return TRUE;
+ }
+@@ -2451,197 +1700,96 @@ BOOL rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user)
+    return TRUE;
+ }
+ 
+-// Compilation de l'instruction "pendown(color, width)".
++// Instruction "superwin()".
+ 
+-CBotTypResult cPenDown(CBotVar* &var, void* user)
++BOOL rSuperWin(CBotVar* var, CBotVar* result, int& exception, void* user)
+ {
+-   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+-   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+-   var = var->GivNext();
+-
+-   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+-   if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+-   var = var->GivNext();
++   CScript*    script = ((CObject*)user)->RetRunScript();
+ 
+-   if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+-   return CBotTypResult(CBotErrOverParam);
++   script->m_main->SetSuperWin();
++   return TRUE;
+ }
+ 
+-// Instruction "pendown(color, width)".
++// Instruction "superlost()".
+ 
+-BOOL rPenDown(CBotVar* var, CBotVar* result, int& exception, void* user)
++BOOL rSuperLost(CBotVar* var, CBotVar* result, int& exception, void* user)
+ {
+    CScript*    script = ((CObject*)user)->RetRunScript();
+-   CObject*    pThis = (CObject*)user;
+-   int         color;
+-   float       width;
+-   Error       err;
+-
+-   if ( pThis->RetType() == OBJECT_MOBILEdr )
+-   {
+-       exception = 0;
+-
+-       if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-       {
+-           if ( var != 0 )
+-           {
+-               color = var->GivValInt();
+-               if ( color <  0 )  color =  0;
+-               if ( color > 17 )  color = 17;
+-               pThis->SetTraceColor(color);
+ 
+-               var = var->GivNext();
+-               if ( var != 0 )
+-               {
+-                   width = var->GivValFloat();
+-                   if ( width < 0.1f )  width = 0.1f;
+-                   if ( width > 1.0f )  width = 1.0f;
+-                   pThis->SetTraceWidth(width);
+-               }
+-           }
+-           pThis->SetTraceDown(TRUE);
++   script->m_main->SetSuperLost();
++   return TRUE;
++}
+ 
+-           script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-           err = script->m_primaryTask->StartTaskPen(pThis->RetTraceDown(), pThis->RetTraceColor());
+-           if ( err != ERR_OK )
+-           {
+-               delete script->m_primaryTask;
+-               script->m_primaryTask = 0;
+-               result->SetValInt(err);  // indique l'erreur
+-               if ( script->m_errMode == ERM_STOP )
+-               {
+-                   exception = err;
+-                   return FALSE;
+-               }
+-               return TRUE;
+-           }
+-       }
+-       return Process(script, result, exception);
+-   }
+-   else
+-   {
+-       if ( var != 0 )
+-       {
+-           color = var->GivValInt();
+-           if ( color <  0 )  color =  0;
+-           if ( color > 17 )  color = 17;
+-           pThis->SetTraceColor(color);
++// Instruction "GameLevel()".
+ 
+-           var = var->GivNext();
+-           if ( var != 0 )
+-           {
+-               width = var->GivValFloat();
+-               if ( width < 0.1f )  width = 0.1f;
+-               if ( width > 1.0f )  width = 1.0f;
+-               pThis->SetTraceWidth(width);
+-           }
+-       }
+-       pThis->SetTraceDown(TRUE);
++BOOL rGameLevel(CBotVar* var, CBotVar* result, int& exception, void* user)
++{
++   CScript*    script = ((CObject*)user)->RetRunScript();
++   float       value;
+ 
+-       return TRUE;
+-   }
++   value = (float)script->m_main->RetLevel();
++   result->SetValFloat(value);
++   return TRUE;
+ }
+ 
+-// Instruction "penup()".
++// Instruction "iprogress()".
+ 
+-BOOL rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user)
++BOOL rIProgress(CBotVar* var, CBotVar* result, int& exception, void* user)
+ {
+    CScript*    script = ((CObject*)user)->RetRunScript();
+-   CObject*    pThis = (CObject*)user;
+-   Error       err;
+-
+-   if ( pThis->RetType() == OBJECT_MOBILEdr )
+-   {
+-       exception = 0;
+-
+-       if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-       {
+-           pThis->SetTraceDown(FALSE);
+ 
+-           script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-           err = script->m_primaryTask->StartTaskPen(pThis->RetTraceDown(), pThis->RetTraceColor());
+-           if ( err != ERR_OK )
+-           {
+-               delete script->m_primaryTask;
+-               script->m_primaryTask = 0;
+-               result->SetValInt(err);  // indique l'erreur
+-               if ( script->m_errMode == ERM_STOP )
+-               {
+-                   exception = err;
+-                   return FALSE;
+-               }
+-               return TRUE;
+-           }
+-       }
+-       return Process(script, result, exception);
+-   }
+-   else
+-   {
+-       pThis->SetTraceDown(FALSE);
+-       return TRUE;
+-   }
++   script->m_main->IncProgress();
++   return TRUE;
+ }
+ 
+-// Instruction "pencolor()".
++// Instruction "tstarter()".
+ 
+-BOOL rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user)
++BOOL rTStarter(CBotVar* var, CBotVar* result, int& exception, void* user)
+ {
+    CScript*    script = ((CObject*)user)->RetRunScript();
+-   CPhysics*   physics = ((CObject*)user)->RetPhysics();
+-   CObject*    pThis = (CObject*)user;
+-   int         color;
+-   Error       err;
++   float       value;
+ 
+-   if ( pThis->RetType() == OBJECT_MOBILEdr )
+-   {
+-       exception = 0;
++   value = (float)script->m_main->RetStarterType();
++   result->SetValFloat(value);
++   return TRUE;
++}
+ 
+-       if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-       {
+-           color = var->GivValInt();
+-           if ( color <  0 )  color =  0;
+-           if ( color > 17 )  color = 17;
+-           pThis->SetTraceColor(color);
+-
+-           script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+-           err = script->m_primaryTask->StartTaskPen(pThis->RetTraceDown(), pThis->RetTraceColor());
+-           if ( err != ERR_OK )
+-           {
+-               delete script->m_primaryTask;
+-               script->m_primaryTask = 0;
+-               result->SetValInt(err);  // indique l'erreur
+-               if ( script->m_errMode == ERM_STOP )
+-               {
+-                   exception = err;
+-                   return FALSE;
+-               }
+-               return TRUE;
+-           }
+-       }
+-       return Process(script, result, exception);
+-   }
+-   else
+-   {
+-       color = var->GivValInt();
+-       if ( color <  0 )  color =  0;
+-       if ( color > 17 )  color = 17;
+-       pThis->SetTraceColor(color);
++// Instruction "language()".
+ 
+-       return TRUE;
+-   }
++BOOL rLanguage(CBotVar* var, CBotVar* result, int& exception, void* user)
++{
++   CScript*    script = ((CObject*)user)->RetRunScript();
++
++#if _FRENCH
++   result->SetValFloat(1);
++#endif
++#if _ENGLISH
++   result->SetValFloat(2);
++#endif
++#if _DEUTSCH
++   result->SetValFloat(3);
++#endif
++#if _ITALIAN
++   result->SetValFloat(4);
++#endif
++#if _SPANISH
++   result->SetValFloat(5);
++#endif
++#if _PORTUGUESE
++   result->SetValFloat(6);
++#endif
++   return TRUE;
+ }
+ 
+-// Instruction "penwidth()".
++// Instruction "decorstamp()".
+ 
+-BOOL rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user)
++BOOL rDecorStamp(CBotVar* var, CBotVar* result, int& exception, void* user)
+ {
+-   CObject*    pThis = (CObject*)user;
+-   float       width;
++   CScript*    script = ((CObject*)user)->RetRunScript();
++   float       stamp;
+ 
+-   width = var->GivValFloat();
+-   if ( width < 0.1f )  width = 0.1f;
+-   if ( width > 1.0f )  width = 1.0f;
+-   pThis->SetTraceWidth(width);
++   stamp = (float)script->m_main->RetDecorStamp();
++   result->SetValFloat(stamp);
+    return TRUE;
+ }
+ 
+@@ -2696,7 +1844,8 @@ void CScript::InitFonctions()
+    CBotProgram::AddFunction("retobject", rRetObject, cRetObject);
+    CBotProgram::AddFunction("search",    rSearch,    cSearch);
+    CBotProgram::AddFunction("radar",     rRadar,     cRadar);
+-   CBotProgram::AddFunction("detect",    rDetect,    cDetect);
++   CBotProgram::AddFunction("trajrank",  rTrajRank,  cTrajRank);
++   CBotProgram::AddFunction("trajpos",   rTrajPos,   cTrajPos);
+    CBotProgram::AddFunction("direction", rDirection, cDirection);
+    CBotProgram::AddFunction("produce",   rProduce,   cProduce);
+    CBotProgram::AddFunction("distance",  rDistance,  cDistance);
+@@ -2706,20 +1855,11 @@ void CScript::InitFonctions()
+    CBotProgram::AddFunction("wait",      rWait,      cOneFloat);
+    CBotProgram::AddFunction("move",      rMove,      cOneFloat);
+    CBotProgram::AddFunction("turn",      rTurn,      cOneFloat);
++   CBotProgram::AddFunction("turnim",    rTurnIm,    cOneFloat);
+    CBotProgram::AddFunction("goto",      rGoto,      cGoto);
+-   CBotProgram::AddFunction("find",      rFind,      cOneFloat);
+-   CBotProgram::AddFunction("grab",      rGrab,      cGrabDrop);
+-   CBotProgram::AddFunction("drop",      rDrop,      cGrabDrop);
+-   CBotProgram::AddFunction("sniff",     rSniff,     cNull);
+-   CBotProgram::AddFunction("receive",   rReceive,   cReceive);
+-   CBotProgram::AddFunction("send",      rSend,      cSend);
+-   CBotProgram::AddFunction("deleteinfo",rDeleteInfo,cDeleteInfo);
+-   CBotProgram::AddFunction("testinfo",  rTestInfo,  cTestInfo);
+-   CBotProgram::AddFunction("thump",     rThump,     cNull);
+-   CBotProgram::AddFunction("recycle",   rRecycle,   cNull);
+-   CBotProgram::AddFunction("shield",    rShield,    cShield);
++   CBotProgram::AddFunction("gotoim",    rGotoIm,    cOnePoint);
++   CBotProgram::AddFunction("action",    rAction,    cAction);
+    CBotProgram::AddFunction("fire",      rFire,      cFire);
+-   CBotProgram::AddFunction("aim",       rAim,       cOneFloat);
+    CBotProgram::AddFunction("motor",     rMotor,     cMotor);
+    CBotProgram::AddFunction("jet",       rJet,       cOneFloat);
+    CBotProgram::AddFunction("topo",      rTopo,      cTopo);
+@@ -2730,10 +1870,13 @@ void CScript::InitFonctions()
+    CBotProgram::AddFunction("ipf",       rIPF,       cOneFloat);
+    CBotProgram::AddFunction("abstime",   rAbsTime,   cNull);
+    CBotProgram::AddFunction("deletefile",rDeleteFile,cString);
+-   CBotProgram::AddFunction("pendown",   rPenDown,   cPenDown);
+-   CBotProgram::AddFunction("penup",     rPenUp,     cNull);
+-   CBotProgram::AddFunction("pencolor",  rPenColor,  cOneFloat);
+-   CBotProgram::AddFunction("penwidth",  rPenWidth,  cOneFloat);
++   CBotProgram::AddFunction("superwin",  rSuperWin,  cNull);
++   CBotProgram::AddFunction("superlost", rSuperLost, cNull);
++   CBotProgram::AddFunction("gamelevel", rGameLevel, cNull);
++   CBotProgram::AddFunction("iprogress", rIProgress, cNull);
++   CBotProgram::AddFunction("tstarter",  rTStarter,  cNull);
++   CBotProgram::AddFunction("language",  rLanguage,  cNull);
++   CBotProgram::AddFunction("decorstamp",rDecorStamp,cNull);
+ }
+ 
+ // Destructeur de l'objet.
+@@ -2750,23 +1893,6 @@ CScript::~CScript()
+ }
+ 
+ 
+-// Donne le script éditable à un pavé de texte.
+-
+-void CScript::PutScript(CEdit* edit, char* name)
+-{
+-   if ( m_script == 0 )
+-   {
+-       New(edit, name);
+-   }
+-   else
+-   {
+-       edit->SetText(m_script);
+-       edit->SetCursor(m_cursor2, m_cursor1);
+-       edit->ShowSelect();
+-   }
+-   edit->SetFocus(TRUE);
+-}
+-
+ // Reprend le script d'un pavé de texte.
+ 
+ BOOL CScript::GetScript(CEdit* edit)
+@@ -2780,17 +1906,8 @@ BOOL CScript::GetScript(CEdit* edit)
+    m_script = (char*)malloc(sizeof(char)*(len+1));
+ 
+    edit->GetText(m_script, len+1);
+-   edit->GetCursor(m_cursor2, m_cursor1);
+    m_len = strlen(m_script);
+ 
+-   if ( !CheckToken() )
+-   {
+-       edit->SetCursor(m_cursor2, m_cursor1);
+-       edit->ShowSelect();
+-       edit->SetFocus(TRUE);
+-       return FALSE;
+-   }
+-
+    if ( !Compile() )
+    {
+        edit->SetCursor(m_cursor2, m_cursor1);
+@@ -2823,76 +1940,6 @@ BOOL CScript::IsEmpty()
+    return TRUE;
+ }
+ 
+-// Vérifie si un programme ne contient pas les instructions interdites
+-// et s'il contient bien au moins une fois toutes les instructions
+-// obligatoires.
+-
+-BOOL CScript::CheckToken()
+-{
+-   CBotToken*  bt;
+-   CBotString  bs;
+-   const char* token;
+-   int         error, type, cursor1, cursor2, i;
+-   char        used[100];
+-
+-   if ( !m_object->RetCheckToken() )  return TRUE;
+-
+-   m_error = 0;
+-   m_title[0] = 0;
+-   m_token[0] = 0;
+-   m_bCompile = FALSE;
+-
+-   for ( i=0 ; i<m_main->RetObligatoryToken() ; i++ )
+-   {
+-       used[i] = 0;  // token pas utilisé
+-   }
+-
+-   bt = CBotToken::CompileTokens(m_script, error);
+-   while ( bt != 0 )
+-   {
+-       bs = bt->GivString();
+-       token = bs;
+-       type = bt->GivType();
+-
+-       cursor1 = bt->GivStart();
+-       cursor2 = bt->GivEnd();
+-
+-       i = m_main->IsObligatoryToken((char*)token);
+-       if ( i != -1 )
+-       {
+-           used[i] = 1;  // token utilisé
+-       }
+-
+-       if ( !m_main->IsProhibitedToken((char*)token) )
+-       {
+-           m_error = ERR_PROHIBITEDTOKEN;
+-           m_cursor1 = cursor1;
+-           m_cursor2 = cursor2;
+-           strcpy(m_title, "<erreur>");
+-           CBotToken::Delete(bt);
+-           return FALSE;
+-       }
+-
+-       bt = bt->GivNext();
+-   }
+-
+-   // Au moins une fois chaque instruction obligatoire ?
+-   for ( i=0 ; i<m_main->RetObligatoryToken() ; i++ )
+-   {
+-       if ( used[i] == 0 )  // token pas utilisé ?
+-       {
+-           strcpy(m_token, m_main->RetObligatoryToken(i));
+-           m_error = ERR_OBLIGATORYTOKEN;
+-           strcpy(m_title, "<erreur>");
+-           CBotToken::Delete(bt);
+-           return FALSE;
+-       }
+-   }
+-
+-   CBotToken::Delete(bt);
+-   return TRUE;
+-}
+-
+ // Compile le script d'un pavé de texte.
+ 
+ BOOL CScript::Compile()
+@@ -3040,7 +2087,7 @@ BOOL CScript::Continue(const Event &event)
+                {
+                    char    s[100];
+                    GetError(s);
+-                   m_displayText->DisplayText(s, m_object, 10.0f, TT_ERROR);
++                   m_displayText->DisplayText(s, 10.0f, FONTSIZE, TT_ERROR);
+                }
+                m_engine->SetPause(TRUE);  // remet la pause
+                return TRUE;
+@@ -3073,7 +2120,7 @@ BOOL CScript::Continue(const Event &event)
+        {
+            char    s[100];
+            GetError(s);
+-           m_displayText->DisplayText(s, m_object, 10.0f, TT_ERROR);
++           m_displayText->DisplayText(s, 10.0f, FONTSIZE, TT_ERROR);
+        }
+        return TRUE;
+    }
+@@ -3115,7 +2162,7 @@ BOOL CScript::Step(const Event &event)
+        {
+            char    s[100];
+            GetError(s);
+-           m_displayText->DisplayText(s, m_object, 10.0f, TT_ERROR);
++           m_displayText->DisplayText(s, 10.0f, FONTSIZE, TT_ERROR);
+        }
+        return TRUE;
+    }
+@@ -3424,58 +2471,6 @@ void InsertToken(char* script, int pos, char* token)
+    memcpy(script+pos, token, lToken);
+ }
+ 
+-// Introduit un virus dans un programme.
+-
+-BOOL CScript::IntroduceVirus()
+-{
+-   int     i, start, iFound;
+-   int     found[11*2];
+-   char*   newScript;
+-
+-   char*   names[11*2] =
+-   {
+-       "==",           "!=",
+-       "!=",           "==",
+-       ">",            "<",
+-       "<",            ">",
+-       "true",         "false",
+-       "false",        "true",
+-       "grab",         "drop",
+-       "drop",         "grab",
+-       "InFront",      "Behind",
+-       "Behind",       "EnergyCell",
+-       "EnergyCell",   "InFront",
+-   };
+-
+-   iFound = 0;
+-   for ( i=0 ; i<11 ; i++ )
+-   {
+-       start = SearchToken(m_script, names[i*2]);
+-       if ( start != -1 )
+-       {
+-           found[iFound++] = i*2;
+-           found[iFound++] = start;
+-       }
+-   }
+-   if ( iFound == 0 )  return FALSE;
+-
+-   i = (rand()%(iFound/2))*2;
+-   start = found[i+1];
+-   i     = found[i+0];
+-
+-   newScript = (char*)malloc(sizeof(char)*(m_len+strlen(names[i+1])+1));
+-   strcpy(newScript, m_script);
+-   delete m_script;
+-   m_script = newScript;
+-
+-   DeleteToken(m_script, start, strlen(names[i]));
+-   InsertToken(m_script, start, names[i+1]);
+-   m_len = strlen(m_script);
+-   Compile();  // recompile avec le virus
+-
+-   return TRUE;
+-}
+-
+ 
+ // Retourne le numéro de l'erreur.
+ 
+@@ -3494,13 +2489,7 @@ void CScript::GetError(char* buffer)
+    }
+    else
+    {
+-       if ( m_error == ERR_OBLIGATORYTOKEN )
+-       {
+-           char s[100];
+-           GetResource(RES_ERR, m_error, s);
+-           sprintf(buffer, s, m_token);
+-       }
+-       else if ( m_error < 1000 )
++       if ( m_error < 1000 )
+        {
+            GetResource(RES_ERR, m_error, buffer);
+        }
+@@ -3512,130 +2501,6 @@ void CScript::GetError(char* buffer)
+ }
+ 
+ 
+-// Nouveau programme.
+-
+-void CScript::New(CEdit* edit, char* name)
+-{
+-   FILE    *file = NULL;
+-   char    res[100];
+-   char    text[100];
+-   char    filename[100];
+-   char    script[500];
+-   char    buffer[500];
+-   char    *sf;
+-   int     cursor1, cursor2, len, i, j;
+-
+-   GetResource(RES_TEXT, RT_SCRIPT_NEW, res);
+-   if ( name[0] == 0 )  strcpy(text, res);
+-   else                 strcpy(text, name);
+-
+-   sprintf(script, "extern void object::%s()\n{\n\t\n\t\n\t\n}\n", text);
+-   edit->SetText(script, FALSE);
+-
+-   if ( strcmp(text, res) == 0 )
+-   {
+-       cursor1 = 20;
+-       cursor2 = 20+strlen(text);  // màj "Nouveau"
+-   }
+-   else
+-   {
+-       if ( edit->RetAutoIndent() )
+-       {
+-           cursor1 = 20+strlen(text)+6;
+-           cursor2 = cursor1;  // curseur dans { }
+-       }
+-       else
+-       {
+-           cursor1 = 20+strlen(text)+8;
+-           cursor2 = cursor1;  // curseur dans { }
+-       }
+-   }
+-
+-   edit->SetCursor(cursor2, cursor1);
+-   edit->ShowSelect();
+-   edit->SetFocus(TRUE);
+-   
+-   sf = m_main->RetScriptFile();
+-   if ( sf[0] != 0 )  // charge un programme vide spécifique ?
+-   {
+-       strcpy(filename, "script\\");
+-       strcat(filename, sf);
+-       file = fopen(filename, "rb");
+-       if ( file != NULL )
+-       {
+-           fseek(file, 0, SEEK_END);
+-           len = ftell(file);
+-           fseek(file, 0, SEEK_SET);
+-
+-           if ( len > 500-1 )  len = 500-1;
+-           fread(buffer, 1, len, file);
+-           buffer[len] = 0;
+-           fclose(file);
+-
+-           cursor1 = 0;
+-           i = 0;
+-           j = 0;
+-           while ( TRUE )
+-           {
+-               if ( buffer[i] == 0 )  break;
+-
+-               if ( buffer[i] == '\r' )
+-               {
+-                   i ++;
+-                   continue;
+-               }
+-
+-               if ( buffer[i] == '\t' && edit->RetAutoIndent() )
+-               {
+-                   i ++;
+-                   continue;
+-               }
+-
+-               if ( buffer[i+0] == '%' &&
+-                    buffer[i+1] == 's' )
+-               {
+-                   strcpy(script+j, text);
+-                   j += strlen(text);
+-                   i += 2;
+-                   continue;
+-               }
+-
+-               if ( buffer[i] == '#' )
+-               {
+-                   cursor1 = j;
+-                   i ++;
+-                   continue;
+-               }
+-
+-               script[j++] = buffer[i++];
+-           }
+-           script[j] = 0;
+-           edit->SetText(script, FALSE);
+-
+-           cursor2 = cursor1;
+-           edit->SetCursor(cursor2, cursor1);
+-           edit->ShowSelect();
+-           edit->SetFocus(TRUE);
+-       }
+-   }
+-
+-   ColorizeScript(edit);
+-}
+-
+-
+-// Fourni un script de toutes pièces.
+-
+-BOOL CScript::SendScript(char* text)
+-{
+-   m_len = strlen(text);
+-   m_script = (char*)malloc(sizeof(char)*(m_len+1));
+-   strcpy(m_script, text);
+-   if ( !CheckToken() )  return FALSE;
+-   if ( !Compile() )  return FALSE;
+-
+-   return TRUE;
+-}
+-
+ // Lit un script sous la forme d'un fichier texte.
+ 
+ BOOL CScript::ReadScript(char* filename)

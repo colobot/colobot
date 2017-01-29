@@ -1,0 +1,79 @@
+diff a/src/ui/controls/check.cpp b/src/ui/controls/check.cpp	(rejected hunks)
+@@ -76,6 +76,18 @@ BOOL CCheck::EventProcess(const Event &event)
+        }
+    }
+ 
++   if ( m_bFocus &&
++        (m_state & STATE_VISIBLE) &&
++        (m_state & STATE_ENABLE)  &&
++        event.event == EVENT_KEYDOWN &&
++        (event.param == VK_RETURN ||
++         event.param == VK_BUTTON1) )
++   {
++       Event newEvent = event;
++       newEvent.event = m_eventMsg;
++       m_event->AddEvent(newEvent);
++   }
++
+    return TRUE;
+ }
+ 
+@@ -97,6 +109,10 @@ void CCheck::Draw()
+    {
+        DrawShadow(m_pos, m_dim);
+    }
++   if ( m_bFocus )
++   {
++       DrawFocus(m_pos, m_dim);
++   }
+ 
+    m_engine->SetTexture("button1.tga");
+    m_engine->SetState(D3DSTATENORMAL);
+@@ -105,13 +121,6 @@ void CCheck::Draw()
+    zoomInt = 0.95f;
+ 
+    icon = 2;
+-   if ( m_state & STATE_DEFAULT )
+-   {
+-       DrawPart(23, 1.3f, 0.0f);
+-
+-       zoomExt *= 1.15f;
+-       zoomInt *= 1.15f;
+-   }
+    if ( m_state & STATE_HILIGHT )
+    {
+        icon = 1;
+@@ -131,13 +140,21 @@ void CCheck::Draw()
+    }
+    DrawPart(icon, zoomExt, 0.0f);  // dessine le bouton
+ 
++   if ( (m_state & STATE_ENABLE) == 0 )
++   {
++       m_engine->SetTexture("button1.tga");
++       m_engine->SetState(D3DSTATETTb);
++       DrawPart(icon, zoomExt, 8.0f/256.0f);  // blanc par-dessus
++   }
++
+    if ( (m_state & STATE_DEAD) == 0 )
+    {
+        m_engine->SetState(D3DSTATETTw);
+ 
+        if ( m_state & STATE_CHECK )
+        {
+-           icon = 16;  // vu
++           if ( m_state & STATE_RADIO )  icon = 30;  // rond
++           else                          icon = 16;  // vu
+            DrawPart(icon, zoomInt, 0.0f);  // dessine l'icône
+        }
+    }
+@@ -148,8 +165,8 @@ void CCheck::Draw()
+ 
+    // Dessine le nom.
+    pos.x = m_pos.x+m_dim.y/0.9f;
+-   pos.y = m_pos.y+m_dim.y*0.50f;
+-   pos.y -= m_engine->RetText()->RetHeight(m_fontSize, m_fontType)/2.0f;
++   pos.y = m_pos.y+m_dim.y*0.5f;
++   pos.y -= m_engine->RetText()->RetHeight(m_fontSize, m_fontType)*0.6f;
+    m_engine->RetText()->DrawText(m_name, pos, m_dim.x, 1, m_fontSize, m_fontStretch, m_fontType, 0);
+ }
+ 

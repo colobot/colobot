@@ -1,0 +1,9 @@
+diff a/src/common/global.h b/src/common/global.h	(rejected hunks)
+@@ -41,7 +41,6 @@ extern long       g_id;                   // identificateur unique
+ extern long        g_build;                // bâtiments constructibles
+ extern long        g_researchDone;         // recherches effectuées
+ extern long        g_researchEnable;       // recherches accessbles
+-extern float   g_unit;                 // facteur de conversion
+ 
+ 
+ 

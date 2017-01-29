@@ -1,0 +1,951 @@
+diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
+@@ -15,6 +15,7 @@
+ #include "misc.h"
+ #include "restext.h"
+ #include "iman.h"
++#include "text.h"
+ #include "button.h"
+ #include "color.h"
+ #include "check.h"
+@@ -27,12 +28,14 @@
+ #include "scroll.h"
+ #include "slider.h"
+ #include "list.h"
++#include "array.h"
+ #include "shortcut.h"
+ #include "map.h"
+ #include "gauge.h"
++#include "pesetas.h"
++#include "geiger.h"
++#include "progress.h"
+ #include "compass.h"
+-#include "target.h"
+-#include "text.h"
+ #include "window.h"
+ 
+ 
+@@ -410,6 +413,29 @@ CList* CWindow::CreateList(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
+    return 0;
+ }
+ 
++// Crée une nouvelle liste.
++
++CArray* CWindow::CreateArray(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
++                        float expand)
++{
++   CArray*     pc;
++   int         i;
++
++   if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
++
++   for ( i=0 ; i<MAXWINDOW ; i++ )
++   {
++       if ( m_table[i] == 0 )
++       {
++           m_table[i] = new CArray(m_iMan);
++           pc = (CArray*)m_table[i];
++           pc->Create(pos, dim, icon, eventMsg, expand);
++           return pc;
++       }
++   }
++   return 0;
++}
++
+ // Crée un nouveau raccourci.
+ 
+ CShortcut* CWindow::CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+@@ -476,11 +502,11 @@ CGauge* CWindow::CreateGauge(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg
+    return 0;
+ }
+ 
+-// Crée une nouvelle boussole.
++// Crée une nouvelle jauge.
+ 
+-CCompass* CWindow::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
++CPesetas* CWindow::CreatePesetas(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+ {
+-   CCompass*   pc;
++   CPesetas*   pc;
+    int         i;
+ 
+    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+@@ -489,8 +515,8 @@ CCompass* CWindow::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg even
+    {
+        if ( m_table[i] == 0 )
+        {
+-           m_table[i] = new CCompass(m_iMan);
+-           pc = (CCompass*)m_table[i];
++           m_table[i] = new CPesetas(m_iMan);
++           pc = (CPesetas*)m_table[i];
+            pc->Create(pos, dim, icon, eventMsg);
+            return pc;
+        }
+@@ -498,11 +524,11 @@ CCompass* CWindow::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg even
+    return 0;
+ }
+ 
+-// Crée une nouvelle cible.
++// Crée une nouvelle jauge.
+ 
+-CTarget* CWindow::CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
++CGeiger* CWindow::CreateGeiger(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+ {
+-   CTarget*    pc;
++   CGeiger*    pc;
+    int         i;
+ 
+    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+@@ -511,8 +537,52 @@ CTarget* CWindow::CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventM
+    {
+        if ( m_table[i] == 0 )
+        {
+-           m_table[i] = new CTarget(m_iMan);
+-           pc = (CTarget*)m_table[i];
++           m_table[i] = new CGeiger(m_iMan);
++           pc = (CGeiger*)m_table[i];
++           pc->Create(pos, dim, icon, eventMsg);
++           return pc;
++       }
++   }
++   return 0;
++}
++
++// Crée un nouvel indicateur d'avance.
++
++CProgress* CWindow::CreateProgress(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
++{
++   CProgress*  pc;
++   int         i;
++
++   if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
++
++   for ( i=0 ; i<MAXWINDOW ; i++ )
++   {
++       if ( m_table[i] == 0 )
++       {
++           m_table[i] = new CProgress(m_iMan);
++           pc = (CProgress*)m_table[i];
++           pc->Create(pos, dim, icon, eventMsg);
++           return pc;
++       }
++   }
++   return 0;
++}
++
++// Crée une nouvelle boussole.
++
++CCompass* CWindow::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
++{
++   CCompass*   pc;
++   int         i;
++
++   if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
++
++   for ( i=0 ; i<MAXWINDOW ; i++ )
++   {
++       if ( m_table[i] == 0 )
++       {
++           m_table[i] = new CCompass(m_iMan);
++           pc = (CCompass*)m_table[i];
+            pc->Create(pos, dim, icon, eventMsg);
+            return pc;
+        }
+@@ -541,7 +611,7 @@ BOOL CWindow::DeleteControl(EventMsg eventMsg)
+    return FALSE;
+ }
+ 
+-// Donne un contrôle.
++// Donne un contrôle d'après son événement.
+ 
+ CControl* CWindow::SearchControl(EventMsg eventMsg)
+ {
+@@ -560,6 +630,44 @@ CControl* CWindow::SearchControl(EventMsg eventMsg)
+    return 0;
+ }
+ 
++// Donne un contrôle d'après son rang.
++
++CControl* CWindow::SearchControl(int tabOrder)
++{
++   int     i;
++
++   for ( i=0 ; i<MAXWINDOW ; i++ )
++   {
++       if ( m_table[i] != 0 )
++       {
++           if ( tabOrder == m_table[i]->RetTabOrder() )
++           {
++               return m_table[i];
++           }
++       }
++   }
++   return 0;
++}
++
++// Donne le contrôle qui a le focus.
++
++CControl* CWindow::SearchControl()
++{
++   int     i;
++
++   for ( i=0 ; i<MAXWINDOW ; i++ )
++   {
++       if ( m_table[i] != 0 )
++       {
++           if ( m_table[i]->RetFocus() )
++           {
++               return m_table[i];
++           }
++       }
++   }
++   return 0;
++}
++
+ 
+ // Donne le tooltip lié à la fenêtre.
+ 
+@@ -686,14 +794,14 @@ void CWindow::MoveAdjust()
+    FPOINT      pos, dim;
+    float       h, offset;
+ 
+-   h = m_engine->RetText()->RetHeight(m_fontSize, m_fontType);
+-   dim.y = h*1.2f;
++   h = 18.0f/480.0f;
++   dim.y = h;
+    dim.x = dim.y*0.75f;
+ 
+    if ( m_buttonClose != 0 )
+    {
+-       pos.x = m_pos.x+m_dim.x-0.01f-dim.x;
+-       pos.y = m_pos.y+m_dim.y-0.01f-h*1.2f;
++       pos.x = m_pos.x+m_dim.x-10.0f/640.0f-dim.x;
++       pos.y = m_pos.y+m_dim.y-10.0f/480.0f-h;
+        m_buttonClose->SetPos(pos);
+        m_buttonClose->SetDim(dim);
+        offset = dim.x*1.0f;
+@@ -705,16 +813,16 @@ void CWindow::MoveAdjust()
+ 
+    if ( m_buttonFull != 0 )
+    {
+-       pos.x = m_pos.x+m_dim.x-0.01f-dim.x-offset;
+-       pos.y = m_pos.y+m_dim.y-0.01f-h*1.2f;
++       pos.x = m_pos.x+m_dim.x-10.0f/640.0f-dim.x-offset;
++       pos.y = m_pos.y+m_dim.y-10.0f/480.0f-h;
+        m_buttonFull->SetPos(pos);
+        m_buttonFull->SetDim(dim);
+    }
+ 
+    if ( m_buttonReduce != 0 )
+    {
+-       pos.x = m_pos.x+m_dim.x-0.01f-dim.x*2.0f-offset;
+-       pos.y = m_pos.y+m_dim.y-0.01f-h*1.2f;
++       pos.x = m_pos.x+m_dim.x-10.0f/640.0f-dim.x*2.0f-offset;
++       pos.y = m_pos.y+m_dim.y-10.0f/480.0f-h;
+        m_buttonReduce->SetPos(pos);
+        m_buttonReduce->SetDim(dim);
+    }
+@@ -955,52 +1063,7 @@ int CWindow::BorderDetect(FPOINT pos)
+ BOOL CWindow::EventProcess(const Event &event)
+ {
+    FPOINT      pos;
+-   int         i, flags;
+-
+-   if ( event.event == EVENT_MOUSEMOVE )
+-   {
+-       if ( m_bCapture )
+-       {
+-           m_engine->SetMouseType(m_pressMouse);
+-       }
+-       else
+-       {
+-           m_pressMouse = D3DMOUSENORM;
+-
+-           if ( m_name[0] != 0 && m_bMovable &&  // barre de titre ?
+-                Detect(event.pos) )
+-           {
+-               flags = BorderDetect(event.pos);
+-               if ( flags == -1 )
+-               {
+-                   m_pressMouse = D3DMOUSEMOVE;  // +
+-               }
+-               else if ( ((flags & (1<<0)) && (flags & (1<<3))) ||
+-                         ((flags & (1<<1)) && (flags & (1<<2))) )
+-               {
+-                   m_pressMouse = D3DMOUSEMOVEI;  // \ 
+-               }
+-               else if ( ((flags & (1<<0)) && (flags & (1<<1))) ||
+-                         ((flags & (1<<2)) && (flags & (1<<3))) )
+-               {
+-                   m_pressMouse = D3DMOUSEMOVED;  // /
+-               }
+-               else if ( (flags & (1<<0)) || (flags & (1<<2)) )
+-               {
+-                   m_pressMouse = D3DMOUSEMOVEH;  // -
+-               }
+-               else if ( (flags & (1<<1)) || (flags & (1<<3)) )
+-               {
+-                   m_pressMouse = D3DMOUSEMOVEV;  // |
+-               }
+-           }
+-
+-           if ( m_pressMouse != D3DMOUSENORM )
+-           {
+-               m_engine->SetMouseType(m_pressMouse);
+-           }
+-       }
+-   }
++   int         i;
+ 
+    if ( !m_bCapture )
+    {
+@@ -1113,7 +1176,7 @@ BOOL CWindow::EventProcess(const Event &event)
+ void CWindow::Draw()
+ {
+    FPOINT      pos, dim;
+-   float       width, h, sw;
++   float       width, h;
+    int         i;
+ 
+    if ( (m_state & STATE_VISIBLE) == 0 )  return;
+@@ -1127,45 +1190,62 @@ void CWindow::Draw()
+ 
+    if ( m_name[0] != 0 )  // barre de titre ?
+    {
+-       h = m_engine->RetText()->RetHeight(m_fontSize, m_fontType);
++       h = 35.0f/640.0f;
++       width = m_dim.x-12.0f/640.0f;
++
++       pos.y = m_pos.y+m_dim.y-6.0f/480.0f-h;
++       dim.y = h;
+ 
+        // Dessine l'ombre sous la barre de titre.
+        {
+-           FPOINT  sPos, sDim;
+-
+-           pos.x = m_pos.x+0.01f;
+-           dim.x = m_dim.x-0.02f;
+-           pos.y = m_pos.y+m_dim.y-0.01f-h*1.2f;
+-           dim.y = h*1.2f;
++           pos.x = m_pos.x+6.0f/640.0f;
++           dim.x = width;
+            DrawShadow(pos, dim);
+        }
+ 
+-       width = m_dim.x;
+-       if ( m_bRedim    )  width -= h*1.2f*0.75f*2.0f;
+-       if ( m_bClosable )  width -= h*1.2f*0.75f;
+-
+-       pos.x = m_pos.x+0.01f;
+-       dim.x = width-0.02f;
+-       pos.y = m_pos.y+m_dim.y-0.01f-h*1.2f;
+-       dim.y = h*1.2f;
+-       DrawVertex(pos, dim, (m_state&STATE_ENABLE)?2:9);
++#if _EGAMES
++       if ( width <= 124.0f/640.0f )
++       {
++           pos.x = m_pos.x+6.0f/640.0f;
++           dim.x = width;
++           DrawVertex(pos, dim, 21);
++       }
++       else
++       {
++           pos.x = m_pos.x+6.0f/640.0f;
++           dim.x = (width-124.0f/640.0f)/2.0f;
++           DrawVertex(pos, dim, 20);
+ 
+-       sw = m_engine->RetText()->RetStringWidth(m_name, strlen(m_name), m_fontSize, m_fontStretch, m_fontType);
++           pos.x += dim.x;
++           dim.x = 124.0f/640.0f;
++           DrawVertex(pos, dim, 21);
+ 
+-       if ( m_state&STATE_ENABLE )
++           pos.x += dim.x;
++           dim.x = (width-124.0f/640.0f)/2.0f;
++           DrawVertex(pos, dim, 22);
++       }
++#else
++       if ( width <= 168.0f/640.0f )
+        {
+-           pos.x = m_pos.x+0.015f;
+-           dim.x = (width-sw-0.06f)/2.0f;
+-           pos.y = m_pos.y+m_dim.y-0.01f-h*1.0f;
+-           dim.y = h*0.8f;
+-           DrawHach(pos, dim);  // hachures gauches
+-           pos.x = m_pos.x+width-dim.x-0.015f;
+-           DrawHach(pos, dim);  // hachures droites
++           pos.x = m_pos.x+6.0f/640.0f;
++           dim.x = width;
++           DrawVertex(pos, dim, 21);
+        }
++       else
++       {
++           pos.x = m_pos.x+6.0f/640.0f;
++           dim.x = (width-168.0f/640.0f)/2.0f;
++           DrawVertex(pos, dim, 20);
+ 
+-       pos.x = m_pos.x+width/2.0f;
+-       pos.y = m_pos.y+m_dim.y-0.01f-h*1.10f;
+-       m_engine->RetText()->DrawText(m_name, pos, width, 0, m_fontSize, m_fontStretch, m_fontType, 0);
++           pos.x += dim.x;
++           dim.x = 168.0f/640.0f;
++           DrawVertex(pos, dim, 21);
++
++           pos.x += dim.x;
++           dim.x = (width-168.0f/640.0f)/2.0f;
++           DrawVertex(pos, dim, 22);
++       }
++#endif
+ 
+        if ( m_buttonReduce != 0 )
+        {
+@@ -1196,20 +1276,19 @@ void CWindow::Draw()
+ 
+ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
+ {
+-   FPOINT      p1, p2, uv1, uv2, corner;
++   FPOINT      p1, p2, ppos, ddim, uv1, uv2, corner;
+    float       dp;
+-   int         i;
+ 
+    dp = 0.5f/256.0f;
+ 
+    if ( icon == 0 )
+    {
+-       m_engine->SetTexture("button2.tga");
++       m_engine->SetTexture("button1.tga");
+        m_engine->SetState(D3DSTATETTw);
+-       uv1.x =  64.0f/256.0f;  // bleu foncé transparent
+-       uv1.y =  64.0f/256.0f;
+-       uv2.x = 128.0f/256.0f;
+-       uv2.y = 128.0f/256.0f;
++       uv1.x = 128.0f/256.0f;
++       uv1.y = 128.0f/256.0f;
++       uv2.x = 160.0f/256.0f;
++       uv2.y = 160.0f/256.0f;
+        uv1.x += dp;
+        uv1.y += dp;
+        uv2.x -= dp;
+@@ -1236,24 +1315,24 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
+    {
+        m_engine->SetTexture("button1.tga");
+        m_engine->SetState(D3DSTATENORMAL);
+-       uv1.x = 128.0f/256.0f;  // jaune
+-       uv1.y =  16.0f/256.0f;
+-       uv2.x = 224.0f/256.0f;
+-       uv2.y =  32.0f/256.0f;
++       uv1.x =  64.0f/256.0f;  // jaune
++       uv1.y =  32.0f/256.0f;
++       uv2.x =  96.0f/256.0f;
++       uv2.y =  64.0f/256.0f;
+        uv1.x += dp;
+        uv1.y += dp;
+        uv2.x -= dp;
+        uv2.y -= dp;
+-       DrawIcon(pos, dim, uv1, uv2, 8.0f/256.0f);
++       DrawIcon(pos, dim, uv1, uv2);
+    }
+    else if ( icon == 3 )
+    {
+-       m_engine->SetTexture("button2.tga");
++       m_engine->SetTexture("button1.tga");
+        m_engine->SetState(D3DSTATETTb);
+-       uv1.x =   0.0f/256.0f;  // bleu transparent avec barre jaune supérieure
+-       uv1.y =  64.0f/256.0f;
+-       uv2.x =  64.0f/256.0f;
+-       uv2.y = 128.0f/256.0f;
++       uv1.x = 128.0f/256.0f;
++       uv1.y = 128.0f/256.0f;
++       uv2.x = 160.0f/256.0f;
++       uv2.y = 160.0f/256.0f;
+        uv1.x += dp;
+        uv1.y += dp;
+        uv2.x -= dp;
+@@ -1262,172 +1341,15 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
+    }
+    else if ( icon == 4 )  // SatCom ?
+    {
+-       pos.x -=  50.0f/640.0f;
+-       pos.y -=  30.0f/480.0f;
+-       dim.x += 100.0f/640.0f;
+-       dim.y +=  60.0f/480.0f;
+-
+-       m_engine->SetTexture("human.tga");
+-       m_engine->SetState(D3DSTATENORMAL);
+-       uv1.x = 140.0f/256.0f;
+-       uv1.y =  32.0f/256.0f;
+-       uv2.x = 182.0f/256.0f;
+-       uv2.y =  64.0f/256.0f;
+-       uv1.x += dp;
+-       uv1.y += dp;
+-       uv2.x -= dp;
+-       uv2.y -= dp;
+-       DrawIcon(pos, dim, uv1, uv2);  // vêtement
+-
+-       pos.x += 20.0f/640.0f;
+-       pos.y -= 10.0f/480.0f;
+-       dim.x -= 20.0f/640.0f;
+-       dim.y +=  0.0f/480.0f;
+-
+-       m_engine->SetTexture("button2.tga");
+-       m_engine->SetState(D3DSTATETTw);
+-       uv1.x = 192.0f/256.0f;
+-       uv1.y =  32.0f/256.0f;
+-       uv2.x = 224.0f/256.0f;
+-       uv2.y =  64.0f/256.0f;
+-       uv1.x += dp;
+-       uv1.y += dp;
+-       uv2.x -= dp;
+-       uv2.y -= dp;
+-       corner.x = 30.0f/640.0f;
+-       corner.y = 30.0f/480.0f;
+-       DrawIcon(pos, dim, uv1, uv2, corner, 5.0f/256.0f);  // ombre
+-
+-       pos.x +=  0.0f/640.0f;
+-       pos.y += 20.0f/480.0f;
+-       dim.x -= 20.0f/640.0f;
+-       dim.y -= 20.0f/480.0f;
+-
+-       m_engine->SetTexture("button1.tga");
+-       m_engine->SetState(D3DSTATENORMAL);
+-       uv1.x =  64.0f/256.0f;
+-       uv1.y =   0.0f/256.0f;
+-       uv2.x =  96.0f/256.0f;
+-       uv2.y =  32.0f/256.0f;
+-       uv1.x += dp;
+-       uv1.y += dp;
+-       uv2.x -= dp;
+-       uv2.y -= dp;
+-       corner.x = 14.0f/640.0f;
+-       corner.y = 14.0f/480.0f;
+-       DrawIcon(pos, dim, uv1, uv2, corner, 8.0f/256.0f);  // ext. bleu
+-
+-       pos.x += 20.0f/640.0f;
+-       pos.y += 10.0f/480.0f;
+-       dim.x -= 40.0f/640.0f;
+-       dim.y -= 20.0f/480.0f;
+-
+-       uv1.x =  96.0f/256.0f;
+-       uv1.y =   0.0f/256.0f;
+-       uv2.x = 128.0f/256.0f;
+-       uv2.y =  32.0f/256.0f;
+-       uv1.x += dp;
+-       uv1.y += dp;
+-       uv2.x -= dp;
+-       uv2.y -= dp;
+-       corner.x = 14.0f/640.0f;
+-       corner.y = 14.0f/480.0f;
+-       DrawIcon(pos, dim, uv1, uv2, corner, 8.0f/256.0f);  // int. bleu
+-
+-       pos.x += 10.0f/640.0f;
+-       pos.y += 10.0f/480.0f;
+-       dim.x -= 20.0f/640.0f;
+-       dim.y -= 20.0f/480.0f;
+-
+-       m_engine->SetTexture("button3.tga");
+-       uv1.x =   0.0f/256.0f;
+-       uv1.y = 224.0f/256.0f;
+-       uv2.x =  32.0f/256.0f;
+-       uv2.y = 256.0f/256.0f;
+-       uv1.x += dp;
+-       uv1.y += dp;
+-       uv2.x -= dp;
+-       uv2.y -= dp;
+-       DrawIcon(pos, dim, uv1, uv2);  // fond bleu foncé
+-
+-       m_engine->SetTexture("button2.tga");
+-       uv1.x = 224.0f/256.0f;
+-       uv1.y = 224.0f/256.0f;
+-       uv2.x = 249.0f/256.0f;
+-       uv2.y = 235.0f/256.0f;
+-       uv1.x += dp;
+-       uv1.y += dp;
+-       uv2.x -= dp;
+-       uv2.y -= dp;
+-       pos.x = 20.0f/640.0f;
+-       pos.y = 70.0f/480.0f;
+-       dim.x = 25.0f/640.0f;
+-       dim.y = 11.0f/480.0f;
+-       for ( i=0 ; i<5 ; i++ )
+-       {
+-           DrawIcon(pos, dim, uv1, uv2);  // = inf/gauche
+-           pos.y += 15.0f/480.0f;
+-       }
+-       pos.y = (480.0f-70.0f-11.0f)/480.0f;
+-       for ( i=0 ; i<5 ; i++ )
+-       {
+-           DrawIcon(pos, dim, uv1, uv2);  // = sup/gauche
+-           pos.y -= 15.0f/480.0f;
+-       }
+-       pos.x = (640.0f-25.0f-20.0f)/640.0f;
+-       pos.y = 70.0f/480.0f;
+-       for ( i=0 ; i<5 ; i++ )
+-       {
+-           DrawIcon(pos, dim, uv1, uv2);  // = inf/droite
+-           pos.y += 15.0f/480.0f;
+-       }
+-       pos.y = (480.0f-70.0f-11.0f)/480.0f;
+-       for ( i=0 ; i<5 ; i++ )
+-       {
+-           DrawIcon(pos, dim, uv1, uv2);  // = sup/droite
+-           pos.y -= 15.0f/480.0f;
+-       }
+-
+-       uv1.x = 208.0f/256.0f;
+-       uv1.y = 224.0f/256.0f;
+-       uv2.x = 224.0f/256.0f;
+-       uv2.y = 240.0f/256.0f;
+-       uv1.x += dp;
+-       uv1.y += dp;
+-       uv2.x -= dp;
+-       uv2.y -= dp;
+-       dim.x = 10.0f/640.0f;
+-       dim.y = 10.0f/480.0f;
+-       pos.x = 534.0f/640.0f;
+-       pos.y = 430.0f/480.0f;
+-       for ( i=0 ; i<3 ; i++ )
+-       {
+-           DrawIcon(pos, dim, uv1, uv2);  // micro
+-           pos.x += 12.0f/640.0f;
+-       }
+-       pos.x = 528.0f/640.0f;
+-       pos.y -= 12.0f/480.0f;
+-       for ( i=0 ; i<4 ; i++ )
+-       {
+-           DrawIcon(pos, dim, uv1, uv2);  // micro
+-           pos.x += 12.0f/640.0f;
+-       }
+-       pos.x = 534.0f/640.0f;
+-       pos.y -= 12.0f/480.0f;
+-       for ( i=0 ; i<3 ; i++ )
+-       {
+-           DrawIcon(pos, dim, uv1, uv2);  // micro
+-           pos.x += 12.0f/640.0f;
+-       }
+    }
+    else if ( icon == 5 )
+    {
+-       m_engine->SetTexture("button2.tga");
++       m_engine->SetTexture("button1.tga");
+        m_engine->SetState(D3DSTATETTb);
+-       uv1.x =  64.0f/256.0f;  // vert transparent
+-       uv1.y = 160.0f/256.0f;
+-       uv2.x = 160.0f/256.0f;
+-       uv2.y = 176.0f/256.0f;
++       uv1.x = 160.0f/256.0f;  // vert transparent
++       uv1.y =  16.0f/256.0f;
++       uv2.x = 176.0f/256.0f;
++       uv2.y =  32.0f/256.0f;
+        uv1.x += dp;
+        uv1.y += dp;
+        uv2.x -= dp;
+@@ -1436,12 +1358,12 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
+    }
+    else if ( icon == 6 )
+    {
+-       m_engine->SetTexture("button2.tga");
++       m_engine->SetTexture("button1.tga");
+        m_engine->SetState(D3DSTATETTb);
+-       uv1.x =  64.0f/256.0f;  // rouge transparent
+-       uv1.y = 176.0f/256.0f;
+-       uv2.x = 160.0f/256.0f;
+-       uv2.y = 192.0f/256.0f;
++       uv1.x = 176.0f/256.0f;  // rouge transparent
++       uv1.y =  16.0f/256.0f;
++       uv2.x = 192.0f/256.0f;
++       uv2.y =  32.0f/256.0f;
+        uv1.x += dp;
+        uv1.y += dp;
+        uv2.x -= dp;
+@@ -1450,25 +1372,25 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
+    }
+    else if ( icon == 7 )
+    {
+-       m_engine->SetTexture("button2.tga");
++       m_engine->SetTexture("button1.tga");
+        m_engine->SetState(D3DSTATETTb);
+-       uv1.x =  64.0f/256.0f;  // bleu transparent
+-       uv1.y = 192.0f/256.0f;
+-       uv2.x = 160.0f/256.0f;
+-       uv2.y = 208.0f/256.0f;
++       uv1.x = 192.0f/256.0f;  // bleu transparent
++       uv1.y =  16.0f/256.0f;
++       uv2.x = 208.0f/256.0f;
++       uv2.y =  32.0f/256.0f;
+        uv1.x += dp;
+        uv1.y += dp;
+        uv2.x -= dp;
+        uv2.y -= dp;
+        DrawIcon(pos, dim, uv1, uv2, 8.0f/256.0f);
+    }
+-   else if ( icon == 8 )
++   else if ( icon == 8 )  // dialogue modal ?
+    {
+        m_engine->SetTexture("button1.tga");
+        m_engine->SetState(D3DSTATENORMAL);
+-       uv1.x =   0.0f/256.0f;  // orange opaque
+-       uv1.y =   0.0f/256.0f;
+-       uv2.x =  32.0f/256.0f;
++       uv1.x = 208.0f/256.0f;  // orange opaque
++       uv1.y =  16.0f/256.0f;
++       uv2.x = 224.0f/256.0f;
+        uv2.y =  32.0f/256.0f;
+        uv1.x += dp;
+        uv1.y += dp;
+@@ -1480,12 +1402,12 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
+    }
+    else if ( icon == 9 )
+    {
+-       m_engine->SetTexture("button2.tga");
++       m_engine->SetTexture("button1.tga");
+        m_engine->SetState(D3DSTATENORMAL);
+-       uv1.x =  32.0f/256.0f;  // gris opaque
+-       uv1.y =  32.0f/256.0f;
+-       uv2.x =  64.0f/256.0f;
+-       uv2.y =  64.0f/256.0f;
++       uv1.x = 144.0f/256.0f;  // gris opaque
++       uv1.y =  16.0f/256.0f;
++       uv2.x = 160.0f/256.0f;
++       uv2.y =  32.0f/256.0f;
+        uv1.x += dp;
+        uv1.y += dp;
+        uv2.x -= dp;
+@@ -1500,23 +1422,24 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
+    }
+    else if ( icon == 11 )
+    {
+-       m_engine->SetTexture("button2.tga");
++       m_engine->SetTexture("button1.tga");
+        m_engine->SetState(D3DSTATETTb);
+-       uv1.x =  64.0f/256.0f;  // jaune transparent
+-       uv1.y = 224.0f/256.0f;
+-       uv2.x = 160.0f/256.0f;
+-       uv2.y = 240.0f/256.0f;
++       uv1.x = 208.0f/256.0f;  // orange transparent
++       uv1.y =  16.0f/256.0f;
++       uv2.x = 224.0f/256.0f;
++       uv2.y =  32.0f/256.0f;
+        uv1.x += dp;
+        uv1.y += dp;
+        uv2.x -= dp;
+        uv2.y -= dp;
+        DrawIcon(pos, dim, uv1, uv2, 8.0f/256.0f);
+    }
+-   else if ( icon == 12 )
++   else if ( icon == 12 )  // fenêtre de l'interface ?
+    {
+        m_engine->SetTexture("button1.tga");
+-       m_engine->SetState(D3DSTATENORMAL);
+-       uv1.x = 128.0f/256.0f;  // gris sale opaque
++//?        m_engine->SetState(D3DSTATENORMAL);
++       m_engine->SetState(D3DSTATETTb);
++       uv1.x = 128.0f/256.0f;  // gris sale transparent
+        uv1.y = 128.0f/256.0f;
+        uv2.x = 160.0f/256.0f;
+        uv2.y = 160.0f/256.0f;
+@@ -1524,8 +1447,8 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
+        uv1.y += dp;
+        uv2.x -= dp;
+        uv2.y -= dp;
+-       corner.x = 6.0f/640.0f;
+-       corner.y = 6.0f/480.0f;
++       corner.x = 8.0f/640.0f;
++       corner.y = 8.0f/480.0f;
+        DrawIcon(pos, dim, uv1, uv2, corner, 5.0f/256.0f);
+    }
+    else if ( icon == 13 )
+@@ -1560,32 +1483,180 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
+        corner.y = 6.0f/480.0f;
+        DrawIcon(pos, dim, uv1, uv2, corner, 5.0f/256.0f);
+    }
++   else if ( icon == 15 )  // choix d'une voiture ?
++   {
++       m_engine->SetTexture("button1.tga");
++//?        m_engine->SetState(D3DSTATENORMAL);
++//?        m_engine->SetState(D3DSTATETTw);
++       m_engine->SetState(D3DSTATETTb);
++       uv1.x = 144.0f/256.0f;
++       uv1.y =  16.0f/256.0f;
++       uv2.x = 160.0f/256.0f;
++       uv2.y =  32.0f/256.0f;
++       uv1.x += dp;
++       uv1.y += dp;
++       uv2.x -= dp;
++       uv2.y -= dp;
++
++       p1.x = 30.0f/640.0f;  // bord gauche
++       p1.y = 64.0f/480.0f;  // bord inférieur
++       p2.x = 30.0f/640.0f;  // bord droite
++       p2.y = 90.0f/480.0f;  // bord supérieur
++
++       ppos.y = pos.y;
++       ddim.y = p1.y;
++       ppos.x = pos.x;
++       ddim.x = p1.x;
++       DrawIcon(ppos, ddim, uv1, uv2);
++       ppos.x += ddim.x;
++       ddim.x = dim.x-p1.x-p2.x;
++       DrawIcon(ppos, ddim, uv1, uv2);
++       ppos.x += ddim.x;
++       ddim.x = p2.x;
++       DrawIcon(ppos, ddim, uv1, uv2);
++
++       ppos.y += ddim.y;
++       ddim.y = dim.y-p1.y-p2.y;
++       ppos.x = pos.x;
++       ddim.x = p1.x;
++       DrawIcon(ppos, ddim, uv1, uv2);
++       ppos.x += ddim.x;
++       ddim.x = dim.x-p1.x-p2.x;
++//     DrawIcon(ppos, ddim, uv1, uv2);
++       ppos.x += ddim.x;
++       ddim.x = p2.x;
++       DrawIcon(ppos, ddim, uv1, uv2);
++
++       ppos.y += ddim.y;
++       ddim.y = p2.y;
++       ppos.x = pos.x;
++       ddim.x = p1.x;
++       DrawIcon(ppos, ddim, uv1, uv2);
++       ppos.x += ddim.x;
++       ddim.x = dim.x-p1.x-p2.x;
++       DrawIcon(ppos, ddim, uv1, uv2);
++       ppos.x += ddim.x;
++       ddim.x = p2.x;
++       DrawIcon(ppos, ddim, uv1, uv2);
++
++       m_engine->SetState(D3DSTATETTw);
++       uv1.x = 160.0f/256.0f;  // gris sale transparent
++       uv1.y = 128.0f/256.0f;
++       uv2.x = 192.0f/256.0f;
++       uv2.y = 160.0f/256.0f;
++       uv1.x += dp;
++       uv1.y += dp;
++       uv2.x -= dp;
++       uv2.y -= dp;
++       corner.x = 6.0f/640.0f;
++       corner.y = 6.0f/480.0f;
++       DrawIcon(pos, dim, uv1, uv2, corner, 4.0f/256.0f);
++   }
++   else if ( icon == 16 )  // menu pendant jeu ?
++   {
++       m_engine->SetTexture("button1.tga");
++//?        m_engine->SetState(D3DSTATENORMAL);
++       m_engine->SetState(D3DSTATETTb);
++       uv1.x = 128.0f/256.0f;  // gris sale opaque
++       uv1.y = 128.0f/256.0f;
++       uv2.x = 160.0f/256.0f;
++       uv2.y = 160.0f/256.0f;
++       uv1.x += dp;
++       uv1.y += dp;
++       uv2.x -= dp;
++       uv2.y -= dp;
++       corner.x = 10.0f/640.0f;
++       corner.y = 10.0f/480.0f;
++       DrawIcon(pos, dim, uv1, uv2, corner, 5.0f/256.0f);
++   }
++   else if ( icon == 20 )  // gauche logo BuzzingCars ?
++   {
++       m_engine->SetTexture("text.tga");
++       m_engine->SetState(D3DSTATENORMAL);
++       uv1.x =   0.0f/256.0f;
++       uv1.y = 206.0f/256.0f;
++       uv2.x =   8.0f/256.0f;
++       uv2.y = 256.0f/256.0f;
++       uv1.x += dp;
++       uv1.y += dp;
++       uv2.x -= dp;
++       uv2.y -= dp;
++       DrawIcon(pos, dim, uv1, uv2);
++   }
++   else if ( icon == 21 )  // centre logo BuzzingCars ?
++   {
++       m_engine->SetTexture("text.tga");
++       m_engine->SetState(D3DSTATENORMAL);
++       uv1.x =   8.0f/256.0f;
++       uv1.y = 206.0f/256.0f;
++       uv2.x = 248.0f/256.0f;
++       uv2.y = 256.0f/256.0f;
++       uv1.x += dp;
++       uv1.y += dp;
++       uv2.x -= dp;
++       uv2.y -= dp;
++       DrawIcon(pos, dim, uv1, uv2);
++   }
++   else if ( icon == 22 )  // droite logo BuzzingCars ?
++   {
++       m_engine->SetTexture("text.tga");
++       m_engine->SetState(D3DSTATENORMAL);
++       uv1.x = 248.0f/256.0f;
++       uv1.y = 206.0f/256.0f;
++       uv2.x = 256.0f/256.0f;
++       uv2.y = 256.0f/256.0f;
++       uv1.x += dp;
++       uv1.y += dp;
++       uv2.x -= dp;
++       uv2.y -= dp;
++       DrawIcon(pos, dim, uv1, uv2);
++   }
+ }
+ 
+ // Dessine des hachures.
+ 
+ void CWindow::DrawHach(FPOINT pos, FPOINT dim)
+ {
+-#if _NEWLOOK
+-#else
+    FPOINT      ppos, ddim, uv1, uv2;
+    float       dp, max, ndim;
+    BOOL        bStop;
+ 
++   ppos.x = pos.x-5.0f/640.0f;
++   ppos.y = pos.y+1.0f/480.0f;
++   ddim.x = dim.x+4.0f/640.0f;
++   ddim.y = dim.y+4.0f/480.0f;
++   DrawShadow(ppos, ddim);
++
+    dp = 0.5f/256.0f;
+ 
+-   m_engine->SetTexture("button2.tga");
++   m_engine->SetTexture("button1.tga");
+    m_engine->SetState(D3DSTATENORMAL);
+-   uv1.x =  64.0f/256.0f;  // hachures
+-   uv1.y = 208.0f/256.0f;
+-   uv2.x = 145.0f/256.0f;
+-   uv2.y = 224.0f/256.0f;
++//?    m_engine->SetState(D3DSTATETTw);
++
++   ppos.x = pos.x-1.0f/640.0f;
++   ppos.y = pos.y-1.0f/480.0f;
++   ddim.x = dim.x+2.0f/640.0f;
++   ddim.y = dim.y+2.0f/480.0f;
++   uv1.x =   0.0f/256.0f;
++   uv1.y = 144.0f/256.0f;
++   uv2.x =   8.0f/256.0f;
++   uv2.y = 152.0f/256.0f;
++   uv1.x += dp;
++   uv1.y += dp;
++   uv2.x -= dp;
++   uv2.y -= dp;
++   DrawIcon(ppos, ddim, uv1, uv2);  // cadre noir
++
++   uv1.x =   0.0f/256.0f;  // hachures
++   uv1.y = 144.0f/256.0f;
++   uv2.x = 128.0f/256.0f;
++   uv2.y = 160.0f/256.0f;
+    uv1.x += dp;
+    uv1.y += dp;
+    uv2.x -= dp;
+    uv2.y -= dp;
+ 
+-   max = dim.y*(uv2.x-uv1.x)/(uv2.y-uv1.y);
++   max = (dim.y*(uv2.x-uv1.x)/(uv2.y-uv1.y))*0.75f;
+ 
+    ppos = pos;
+    ddim = dim;
+@@ -1605,6 +1676,5 @@ void CWindow::DrawHach(FPOINT pos, FPOINT dim)
+        ppos.x += ddim.x;
+    }
+    while ( !bStop );
+-#endif
+ }
+ 

@@ -1,0 +1,521 @@
+diff a/src/ui/controls/edit.cpp b/src/ui/controls/edit.cpp	(rejected hunks)
+@@ -77,7 +77,7 @@ CEdit::CEdit(CInstanceManager* iMan) : CControl(iMan)
+    m_format = 0;
+    m_len = 0;
+ 
+-   m_fontType = FONT_COURIER;
++   m_fontType = FONT_COLOBOT;
+    m_scroll        = 0;
+    m_bEdit         = TRUE;
+    m_bHilite       = TRUE;
+@@ -92,8 +92,6 @@ CEdit::CEdit(CInstanceManager* iMan) : CControl(iMan)
+    m_column        = 0;
+    m_imageTotal    = 0;
+ 
+-   HyperFlush();
+-
+    for ( i=0 ; i<EDITUNDOMAX ; i++ )
+    {
+        m_undo[i].text = 0;
+@@ -141,7 +139,8 @@ BOOL CEdit::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+ 
+    m_bMulti = FALSE;
+    MoveAdjust();
+-   if ( m_lineVisible <= 1 )
++//?    if ( m_lineVisible <= 1 )
++   if ( dim.y <= 32.0f/480.0f )
+    {
+        m_bMulti = FALSE;
+    }
+@@ -259,14 +258,7 @@ BOOL CEdit::EventProcess(const Event &event)
+            }
+            else
+            {
+-               if ( IsLinkPos(event.pos) )
+-               {
+-                   m_engine->SetMouseType(D3DMOUSEHAND);
+-               }
+-               else
+-               {
+-                   m_engine->SetMouseType(D3DMOUSENORM);
+-               }
++               m_engine->SetMouseType(D3DMOUSENORM);
+            }
+        }
+    }
+@@ -312,19 +304,6 @@ BOOL CEdit::EventProcess(const Event &event)
+            return TRUE;
+        }
+ 
+-       if ( event.param == 'O' && !bShift && bControl )
+-       {
+-           Event   newEvent;
+-           m_event->MakeEvent(newEvent, EVENT_STUDIO_OPEN);
+-           m_event->AddEvent(newEvent);
+-       }
+-       if ( event.param == 'S' && !bShift && bControl )
+-       {
+-           Event   newEvent;
+-           m_event->MakeEvent(newEvent, EVENT_STUDIO_SAVE);
+-           m_event->AddEvent(newEvent);
+-       }
+-
+        if ( event.param == 'Z' && !bShift && bControl )
+        {
+            Undo();
+@@ -340,14 +319,14 @@ BOOL CEdit::EventProcess(const Event &event)
+            if ( MinMaj(TRUE) )  return TRUE;
+        }
+ 
+-       if ( event.param == VK_TAB && !bShift && !bControl && !m_bAutoIndent )
+-       {
+-           if ( Shift(FALSE) )  return TRUE;
+-       }
+-       if ( event.param == VK_TAB && bShift && !bControl && !m_bAutoIndent )
+-       {
+-           if ( Shift(TRUE) )  return TRUE;
+-       }
++//?        if ( event.param == VK_TAB && !bShift && !bControl && !m_bAutoIndent )
++//?        {
++//?            if ( Shift(FALSE) )  return TRUE;
++//?        }
++//?        if ( event.param == VK_TAB && bShift && !bControl && !m_bAutoIndent )
++//?        {
++//?            if ( Shift(TRUE) )  return TRUE;
++//?        }
+ 
+        if ( m_bEdit )
+        {
+@@ -442,8 +421,8 @@ BOOL CEdit::EventProcess(const Event &event)
+        }
+        if ( event.param == VK_TAB )
+        {
+-           Insert('\t');
+-           SendModifEvent();
++//?            Insert('\t');
++//?            SendModifEvent();
+            return TRUE;
+        }
+    }
+@@ -535,23 +514,6 @@ void CEdit::SendModifEvent()
+ }
+ 
+ 
+-// Détecte si la souris est sur un caractère lien hypertexte.
+-
+-BOOL CEdit::IsLinkPos(FPOINT pos)
+-{
+-   int     i;
+-
+-   if ( m_format == 0 )  return FALSE;
+-
+-   i = MouseDetect(pos);
+-   if ( i == -1 )  return FALSE;
+-   if ( i >= m_len )  return FALSE;
+-
+-   if ( (m_format[i]&COLOR_MASK) == COLOR_LINK )  return TRUE;
+-   return FALSE;
+-}
+-
+-
+ // Positionne le curseur suite à un double-clic.
+ 
+ void CEdit::MouseDoubleClick(FPOINT mouse)
+@@ -614,28 +576,6 @@ void CEdit::MouseClick(FPOINT mouse)
+ 
+ void CEdit::MouseRelease(FPOINT mouse)
+ {
+-   int     i, j, rank;
+-
+-   i = MouseDetect(mouse);
+-   if ( i == -1 )  return;
+-
+-   if ( !m_bEdit )
+-   {
+-       if ( m_format != 0 && i < m_len && m_cursor1 == m_cursor2 &&
+-           (m_format[i]&COLOR_MASK) == COLOR_LINK )
+-       {
+-           rank = -1;
+-           for ( j=0 ; j<=i ; j++ )
+-           {
+-               if ( (j == 0 || (m_format[j-1]&COLOR_MASK) != COLOR_LINK) &&
+-                    (m_format[j+0]&COLOR_MASK) == COLOR_LINK )
+-               {
+-                   rank ++;
+-               }
+-           }
+-           HyperJump(m_link[rank].name, m_link[rank].marker);
+-       }
+-   }
+ }
+ 
+ // Positionne le curseur suite à un déplacement.
+@@ -731,139 +671,6 @@ int CEdit::MouseDetect(FPOINT mouse)
+ }
+ 
+ 
+-// Efface tout l'historique.
+-
+-void CEdit::HyperFlush()
+-{
+-   m_historyTotal = 0;
+-   m_historyCurrent = -1;
+-}
+-
+-// Indique quelle est la page home.
+-
+-void CEdit::HyperHome(char *filename)
+-{
+-   HyperFlush();
+-   HyperAdd(filename, 0);
+-}
+-
+-// Effectue un hyper saut à travers un lien.
+-
+-void CEdit::HyperJump(char *name, char *marker)
+-{
+-   char    filename[100];
+-   char    sMarker[100];
+-   int     i, line, pos;
+-
+-   if ( m_historyCurrent >= 0 )
+-   {
+-       m_history[m_historyCurrent].firstLine = m_lineFirst;
+-   }
+-
+-   strcpy(sMarker, marker);
+-
+-//?    sprintf(filename, "help\\%s.txt", name);
+-   if ( name[0] == '%' )
+-   {
+-       UserDir(filename, name, "");
+-       strcat(filename, ".txt");
+-   }
+-   else
+-   {
+-       sprintf(filename, "help\\%s.txt", name);
+-   }
+-   if ( ReadText(filename) )
+-   {
+-       Justif();
+-
+-       line = 0;
+-       for ( i=0 ; i<m_markerTotal ; i++ )
+-       {
+-           if ( strcmp(sMarker, m_marker[i].name) == 0 )
+-           {
+-               pos = m_marker[i].pos;
+-               for ( i=0 ; i<m_lineTotal ; i++ )
+-               {
+-                   if ( pos >= m_lineOffset[i] )
+-                   {
+-                       line = i;
+-                   }
+-               }
+-               break;
+-           }
+-       }
+-
+-       SetFirstLine(line);
+-       HyperAdd(filename, line);
+-   }
+-}
+-
+-// Ajoute un texte visité à l'historique.
+-
+-BOOL CEdit::HyperAdd(char *filename, int firstLine)
+-{
+-   if ( m_historyCurrent >= EDITHISTORYMAX-1 )  return FALSE;
+-
+-   m_historyCurrent ++;
+-   strcpy(m_history[m_historyCurrent].filename, filename);
+-   m_history[m_historyCurrent].firstLine = firstLine;
+-
+-   m_historyTotal = m_historyCurrent+1;
+-   return TRUE;
+-}
+-
+-// Indique si un bouton EVENT_HYPER_* est actif ou non.
+-
+-BOOL CEdit::HyperTest(EventMsg event)
+-{
+-   if ( event == EVENT_HYPER_HOME )
+-   {
+-       return ( m_historyCurrent > 0 );
+-   }
+-
+-   if ( event == EVENT_HYPER_PREV )
+-   {
+-       return ( m_historyCurrent > 0 );
+-   }
+-
+-   if ( event == EVENT_HYPER_NEXT )
+-   {
+-       return ( m_historyCurrent < m_historyTotal-1 );
+-   }
+-
+-   return FALSE;
+-}
+-
+-// Effectue l'action correspondant à un bouton EVENT_HYPER_*.
+-
+-BOOL CEdit::HyperGo(EventMsg event)
+-{
+-   if ( !HyperTest(event) )  return FALSE;
+-
+-   m_history[m_historyCurrent].firstLine = m_lineFirst;
+-
+-   if ( event == EVENT_HYPER_HOME )
+-   {
+-       m_historyCurrent = 0;
+-   }
+-
+-   if ( event == EVENT_HYPER_PREV )
+-   {
+-       m_historyCurrent --;
+-   }
+-
+-   if ( event == EVENT_HYPER_NEXT )
+-   {
+-       m_historyCurrent ++;
+-   }
+-
+-   ReadText(m_history[m_historyCurrent].filename);
+-   Justif();
+-   SetFirstLine(m_history[m_historyCurrent].firstLine);
+-   return TRUE;
+-}
+-
+-
+ // Dessine la ligne éditable.
+ 
+ void CEdit::Draw()
+@@ -1144,29 +951,22 @@ void CEdit::DrawBack(FPOINT pos, FPOINT dim)
+ 
+    if ( m_bGeneric )  return;
+ 
+-   m_engine->SetTexture("button2.tga");
++   m_engine->SetTexture("button1.tga");
+    m_engine->SetState(D3DSTATENORMAL);
+ 
+-   if ( m_bMulti )
++   if ( m_state & STATE_CHECK )
+    {
+-       uv1.x = 128.0f/256.0f;  // bleu clair
+-       uv1.y =  64.0f/256.0f;
+-       uv2.x = 160.0f/256.0f;
+-       uv2.y =  96.0f/256.0f;
++       uv1.x =   0.0f/256.0f;
++       uv1.y =   0.0f/256.0f;
++       uv2.x =  32.0f/256.0f;
++       uv2.y =  32.0f/256.0f;
+    }
+    else
+    {
+-       uv1.x = 160.0f/256.0f;  // bleu moyen
+-       uv1.y = 192.0f/256.0f;
+-       uv2.x = 192.0f/256.0f;
+-       uv2.y = 224.0f/256.0f;
+-   }
+-   if ( m_icon == 1 )
+-   {
+-       uv1.x = 192.0f/256.0f;  // orange
+-       uv1.y =  96.0f/256.0f;
+-       uv2.x = 224.0f/256.0f;
+-       uv2.y = 128.0f/256.0f;
++       uv1.x =  64.0f/256.0f;
++       uv1.y =   0.0f/256.0f;
++       uv2.x =  96.0f/256.0f;
++       uv2.y =  32.0f/256.0f;
+    }
+ 
+    dp = 0.5f/256.0f;
+@@ -1194,17 +994,13 @@ void CEdit::DrawPart(FPOINT pos, FPOINT dim, int icon)
+    FPOINT      uv1, uv2;
+    float       dp;
+ 
+-#if _POLISH
+-   m_engine->SetTexture("textp.tga");
+-#else
+    m_engine->SetTexture("text.tga");
+-#endif
+    m_engine->SetState(D3DSTATENORMAL);
+ 
+-   uv1.x = (16.0f/256.0f)*(icon%16);
+-   uv1.y = (240.0f/256.0f);
++   uv1.x = (64.0f/256.0f)+(16.0f/256.0f)*(icon%16);
++   uv1.y = (196.0f/256.0f);
+    uv2.x = (16.0f/256.0f)+uv1.x;
+-   uv2.y = (16.0f/256.0f)+uv1.y;
++   uv2.y = (10.0f/256.0f)+uv1.y;
+ 
+    dp = 0.5f/256.0f;
+    uv1.x += dp;
+@@ -1220,8 +1016,10 @@ void CEdit::DrawPart(FPOINT pos, FPOINT dim, int icon)
+ 
+ void CEdit::SetText(char *text, BOOL bNew)
+ {
+-   int     i, j, font;
+-   BOOL    bBOL;
++   KeyRank     key;
++   char        iName[50];
++   int         i, j, font, n, res;
++   BOOL        bBOL;
+ 
+    if ( !bNew )  UndoMemorize(OPERUNDO_SPEC);
+ 
+@@ -1285,7 +1083,7 @@ void CEdit::SetText(char *text, BOOL bNew)
+                else if ( text[i+1] == 'c' )  // cbot ?
+                {
+                    font &= ~FONT_MASK;
+-                   font |= FONT_COURIER;
++                   font |= FONT_COLOBOT;
+                    i += 2;
+                }
+                else if ( text[i+1] == 'b' )  // big title ?
+@@ -1307,6 +1105,61 @@ void CEdit::SetText(char *text, BOOL bNew)
+                    i += 2;
+                }
+            }
++           else if ( text[i+0] == '\\' &&  // \key name; ?
++                     text[i+1] == 'k'  &&
++                     text[i+2] == 'e'  &&
++                     text[i+3] == 'y'  &&
++                     text[i+4] == ' '  )
++           {
++               if ( SearchKey(text+i+5, key) )
++               {
++                   res = m_engine->RetKey(key, 0);
++                   if ( res != 0 )
++                   {
++                       if ( GetResource(RES_KEY, res, iName) )
++                       {
++                           n = 0;
++                           while ( iName[n] != 0 )
++                           {
++                               m_text[j] = iName[n++];
++                               m_format[j] = font;
++                               j ++;
++                           }
++
++                           res = m_engine->RetKey(key, 1);
++                           if ( res != 0 )
++                           {
++                               if ( GetResource(RES_KEY, res, iName) )
++                               {
++                                   GetResource(RES_TEXT, RT_KEY_OR, text);
++                                   n = 0;
++                                   while ( text[n] != 0 )
++                                   {
++                                       m_text[j] = text[n++];
++                                       m_format[j] = font&~COLOR_MASK;
++                                       j ++;
++                                   }
++                                   n = 0;
++                                   while ( iName[n] != 0 )
++                                   {
++                                       m_text[j] = iName[n++];
++                                       m_format[j] = font;
++                                       j ++;
++                                   }
++                               }
++                           }
++                           while ( text[i++] != ';' );
++                           i--;
++                           continue;
++                       }
++                   }
++               }
++               m_text[j] = '?';
++               m_format[j] = font;
++               j ++;
++               while ( text[i++] != ';' );
++               i --;
++           }
+            else
+            {
+                m_text[j] = text[i];
+@@ -1471,7 +1324,6 @@ BOOL CEdit::ReadText(char *filename, int addSize)
+    iIndex = 0;
+    iLink = 0;
+    m_imageTotal = 0;
+-   m_markerTotal = 0;
+    i = j = 0;
+    bBOL = TRUE;
+    while ( i < m_len )
+@@ -1512,7 +1364,7 @@ BOOL CEdit::ReadText(char *filename, int addSize)
+                if ( m_bSoluce || !bInSoluce )
+                {
+                    font &= ~FONT_MASK;
+-                   font |= FONT_COURIER;
++                   font |= FONT_COLOBOT;
+                }
+                i += 3;
+            }
+@@ -1558,39 +1410,6 @@ BOOL CEdit::ReadText(char *filename, int addSize)
+            }
+        }
+        else if ( m_format != 0       &&
+-                 buffer[i+0] == '\\' &&  // \u nom marker; ?
+-                 buffer[i+1] == 'u'  &&
+-                 buffer[i+2] == ' '  )
+-       {
+-           if ( m_bSoluce || !bInSoluce )
+-           {
+-               if ( iLink < EDITLINKMAX )
+-               {
+-                   GetNameParam(buffer+i+3, 0, m_link[iLink].name);
+-                   GetNameParam(buffer+i+3, 1, m_link[iLink].marker);
+-                   iLink ++;
+-               }
+-               font &= ~COLOR_MASK;
+-           }
+-           i += strchr(buffer+i, ';')-(buffer+i)+1;
+-       }
+-       else if ( m_format != 0       &&
+-                 buffer[i+0] == '\\' &&  // \m marker; ?
+-                 buffer[i+1] == 'm'  &&
+-                 buffer[i+2] == ' '  )
+-       {
+-           if ( m_bSoluce || !bInSoluce )
+-           {
+-               if ( m_markerTotal < EDITLINKMAX )
+-               {
+-                   GetNameParam(buffer+i+3, 0, m_marker[m_markerTotal].name);
+-                   m_marker[m_markerTotal].pos = j;
+-                   m_markerTotal ++;
+-               }
+-           }
+-           i += strchr(buffer+i, ';')-(buffer+i)+1;
+-       }
+-       else if ( m_format != 0       &&
+                  buffer[i+0] == '\\' &&  // \image nom lx ly; ?
+                  buffer[i+1] == 'i'  &&
+                  buffer[i+2] == 'm'  &&
+@@ -1601,7 +1420,7 @@ BOOL CEdit::ReadText(char *filename, int addSize)
+        {
+            if ( m_bSoluce || !bInSoluce )
+            {
+-#if _DEMO
++#if _DEMO|_SE
+                strcpy(iName, "demo");
+ #else
+                GetNameParam(buffer+i+7, 0, iName);
+@@ -2046,17 +1865,6 @@ void CEdit::SetFirstLine(int rank)
+ 
+ int CEdit::RetFirstLine()
+ {
+-   if ( m_historyTotal > 0 )
+-   {
+-       if ( m_historyCurrent == 0 )
+-       {
+-           return m_lineFirst;
+-       }
+-       else
+-       {
+-           return m_history[0].firstLine;
+-       }
+-   }
+    return m_lineFirst;
+ }
+ 

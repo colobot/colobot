@@ -1,0 +1,161 @@
+diff a/src/graphics/engine/particle.h b/src/graphics/engine/particle.h	(rejected hunks)
+@@ -25,7 +25,7 @@ enum Sound;
+ #define MAXPARTIFOG        100
+ #define MAXWHEELTRACE  1000
+ 
+-#define SH_WORLD       0       // particule dans le monde sous l'interface
++#define SH_WORLD       0       // particule dans le monde sous l'interface)
+ #define SH_FRONT       1       // particule dans le monde sur l'interface
+ #define SH_INTERFACE   2       // particule dans l'interface
+ #define SH_MAX         3
+@@ -63,19 +63,7 @@ enum ParticuleType
+    PARTISMOKE2     = 27,       // fumée noire
+    PARTISMOKE3     = 28,       // fumée noire
+    PARTISMOKE4     = 29,       // fumée noire
+-   PARTIBLOOD      = 30,       // sang homme
+-   PARTIBLOODM     = 31,       // sang pondeuse
+    PARTIVAPOR      = 32,       // vapeur
+-   PARTIVIRUS1     = 33,       // virus 1
+-   PARTIVIRUS2     = 34,       // virus 2
+-   PARTIVIRUS3     = 35,       // virus 3
+-   PARTIVIRUS4     = 36,       // virus 4
+-   PARTIVIRUS5     = 37,       // virus 5
+-   PARTIVIRUS6     = 38,       // virus 6
+-   PARTIVIRUS7     = 39,       // virus 7
+-   PARTIVIRUS8     = 40,       // virus 8
+-   PARTIVIRUS9     = 41,       // virus 9
+-   PARTIVIRUS10    = 42,       // virus 10
+    PARTIRAY1       = 43,       // rayon 1 (tour)
+    PARTIRAY2       = 44,       // rayon 2 (electric arc)
+    PARTIRAY3       = 45,       // rayon 3
+@@ -85,10 +73,7 @@ enum ParticuleType
+    PARTIFLIC       = 49,       // rond dans l'eau
+    PARTIEJECT      = 50,       // éjection du réacteur
+    PARTISCRAPS     = 51,       // déchets du réacteur
+-   PARTITOTO       = 52,       // réacteur de toto
+-   PARTIERROR      = 53,       // toto dit non
+-   PARTIWARNING    = 54,       // toto dit bof
+-   PARTIINFO       = 54,       // toto dit oui
++   PARTILAVA       = 53,       // toto dit non
+    PARTIQUARTZ     = 55,       // reflet quartz
+    PARTISPHERE0    = 56,       // sphère d'explosion
+    PARTISPHERE1    = 57,       // sphère d'énergie
+@@ -129,9 +114,7 @@ enum ParticuleType
+    PARTILENS3      = 92,       // éclat 3 (rouge)
+    PARTILENS4      = 93,       // éclat 4 (violet)
+    PARTICONTROL    = 94,       // reflet sur bouton
+-   PARTISHOW       = 95,       // montre un lieu
+    PARTICHOC       = 96,       // onde de choc
+-   PARTIGFLAT      = 97,       // montre si le sol est plat
+    PARTIRECOVER    = 98,       // boule bleu pour recycleur
+    PARTIROOT       = 100,      // fumée gravity root
+    PARTIPLOUF0     = 101,      // plouf
+@@ -150,34 +133,30 @@ enum ParticuleType
+    PARTIFOG7       = 114,      // brouillard 7
+    PARTIFOG8       = 115,      // brouillard 8
+    PARTIFOG9       = 116,      // brouillard 9
+-   PARTILIMIT1     = 117,      // montre les limites 1
+-   PARTILIMIT2     = 118,      // montre les limites 2
+-   PARTILIMIT3     = 119,      // montre les limites 3
+-   PARTILIMIT4     = 120,      // montre les limites 4
+    PARTIWATER      = 121,      // goutte d'eau
+    PARTIEXPLOG1    = 122,      // explosion balle 1
+    PARTIEXPLOG2    = 123,      // explosion balle 2
+    PARTIBASE       = 124,      // gaz du vaisseau spatial
+-   PARTITRACE0     = 140,      // trace
+-   PARTITRACE1     = 141,      // trace
+-   PARTITRACE2     = 142,      // trace
+-   PARTITRACE3     = 143,      // trace
+-   PARTITRACE4     = 144,      // trace
+-   PARTITRACE5     = 145,      // trace
+-   PARTITRACE6     = 146,      // trace
+-   PARTITRACE7     = 147,      // trace
+-   PARTITRACE8     = 148,      // trace
+-   PARTITRACE9     = 149,      // trace
+-   PARTITRACE10    = 150,      // trace
+-   PARTITRACE11    = 151,      // trace
+-   PARTITRACE12    = 152,      // trace
+-   PARTITRACE13    = 153,      // trace
+-   PARTITRACE14    = 154,      // trace
+-   PARTITRACE15    = 155,      // trace
+-   PARTITRACE16    = 156,      // trace
+-   PARTITRACE17    = 157,      // trace
+-   PARTITRACE18    = 158,      // trace
+-   PARTITRACE19    = 159,      // trace
++   PARTIWHEEL      = 125,      // trace de pneu
++   PARTIDUST1      = 127,      // poussière
++   PARTIDUST2      = 128,      // poussière
++   PARTIEXPLOA     = 129,      // explosion atomique (bleu)
++   PARTISTONE1     = 130,      // petite pierre
++   PARTISTONE2     = 131,      // petite pierre
++   PARTISTONE3     = 132,      // petite pierre
++   PARTISTONE4     = 133,      // petite pierre
++   PARTIREACTOR    = 134,      // flame de réacteur (échappement)
++   PARTITRACE1     = 140,      // trace de pneu (freinage)
++   PARTITRACE2     = 141,      // trace de pneu (accélération)
++   PARTITRACE3     = 142,      // trace d'explosion
++   PARTITRACE4     = 143,      // trace d'huile
++   PARTITRACE5     = 144,      // trace radioactive
++   PARTITRACE6     = 145,      // trace de pneu (sol mou)
++   PARTITRACE7     = 146,      // trace de pneu (jante)
++   PARTITRACE8     = 147,      // trace organique verte
++   PARTIBIGO       = 148,      // grande explosion organique
++   PARTIBIGT       = 149,      // grande explosion technique
++   PARTIBLITZb     = 150,      // éclair recharge batterie
+ };
+ 
+ enum ParticulePhase
+@@ -200,7 +179,6 @@ typedef struct
+    D3DVECTOR       pos;        // position absolue (relative si objet lié)
+    D3DVECTOR       goal;       // position but (si bRay)
+    D3DVECTOR       speed;      // vitesses de déplacement
+-   float           windSensitivity;
+    short           bounce;     // nb de rebonds
+    FPOINT          dim;        // dimensions du rectangle
+    float           zoom;       // zoom (0..1)
+@@ -253,23 +231,24 @@ public:
+ 
+    void        FlushParticule();
+    void        FlushParticule(int sheet);
+-   int         CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
+-   int         CreateFrag(D3DVECTOR pos, D3DVECTOR speed, D3DTriangle *triangle, ParticuleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
+-   int         CreatePart(D3DVECTOR pos, D3DVECTOR speed, ParticuleType type, float duration=1.0f, float mass=0.0f, float weight=0.0f, float windSensitivity=1.0f, int sheet=0);
++   int         CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim, ParticuleType type, float duration=1.0f, float mass=0.0f, int sheet=0);
++   int         CreateFrag(D3DVECTOR pos, D3DVECTOR speed, D3DTriangle *triangle, ParticuleType type, float duration=1.0f, float mass=0.0f, int sheet=0);
++   int         CreatePart(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float weight=0.0f, int sheet=0);
+    int         CreateRay(D3DVECTOR pos, D3DVECTOR goal, ParticuleType type, FPOINT dim, float duration=1.0f, int sheet=0);
+    int         CreateTrack(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float length=10.0f, float width=1.0f);
+    void        CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2, const D3DVECTOR &p3, const D3DVECTOR &p4, ParticuleType type);
+    void        DeleteParticule(ParticuleType type);
+    void        DeleteParticule(int channel);
+-   void        SetObjectLink(int channel, CObject *object);
+-   void        SetObjectFather(int channel, CObject *object);
+-   void        SetPosition(int channel, D3DVECTOR pos);
+-   void        SetDimension(int channel, FPOINT dim);
+-   void        SetZoom(int channel, float zoom);
+-   void        SetAngle(int channel, float angle);
+-   void        SetIntensity(int channel, float intensity);
+-   void        SetParam(int channel, D3DVECTOR pos, FPOINT dim, float zoom, float angle, float intensity);
+-   void        SetPhase(int channel, ParticulePhase phase, float duration);
++   BOOL        SetObjectLink(int channel, CObject *object);
++   BOOL        SetObjectFather(int channel, CObject *object);
++   BOOL        SetPosition(int channel, D3DVECTOR pos);
++   BOOL        SetGoal(int channel, D3DVECTOR pos);
++   BOOL        SetDimension(int channel, FPOINT dim);
++   BOOL        SetZoom(int channel, float zoom);
++   BOOL        SetAngle(int channel, float angle);
++   BOOL        SetIntensity(int channel, float intensity);
++   BOOL        SetParam(int channel, D3DVECTOR pos, FPOINT dim, float zoom, float angle, float intensity);
++   BOOL        SetPhase(int channel, ParticulePhase phase, float duration);
+    BOOL        GetPosition(int channel, D3DVECTOR &pos);
+ 
+    D3DCOLORVALUE RetFogColor(D3DVECTOR pos);
+@@ -278,8 +257,6 @@ public:
+    void        FrameParticule(float rTime);
+    void        DrawParticule(int sheet);
+ 
+-   BOOL        WriteWheelTrace(char *filename, int width, int height, D3DVECTOR dl, D3DVECTOR ur);
+-
+ protected:
+    void        DeleteRank(int rank);
+    BOOL        CheckChannel(int &channel);

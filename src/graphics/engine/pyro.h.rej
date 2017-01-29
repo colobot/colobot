@@ -1,0 +1,145 @@
+diff a/src/graphics/engine/pyro.h b/src/graphics/engine/pyro.h	(rejected hunks)
+@@ -20,30 +20,38 @@ class CSound;
+ enum PyroType
+ {
+    PT_NULL     = 0,
+-   PT_FRAGT    = 1,        // fragmentation objet technique
+-   PT_FRAGO    = 2,        // fragmentation objet organique
+-   PT_FRAGW    = 4,        // fragmentation objet sous l'eau
+-   PT_EXPLOT   = 5,        // explosion objet technique
+-   PT_EXPLOO   = 6,        // explosion objet organique
+-   PT_EXPLOW   = 8,        // explosion objet sous l'eau
+-   PT_SHOTT    = 9,        // coup objet technique
+-   PT_SHOTH    = 10,       // coup homme
+-   PT_SHOTM    = 11,       // coup pondeuse
+-   PT_SHOTW    = 12,       // coup sous l'eau
+-   PT_EGG      = 13,       // casse l'oeuf
+-   PT_BURNT    = 14,       // brûle objet technique
+-   PT_BURNO    = 15,       // brûle objet organique
+-   PT_SPIDER   = 16,       // explosion araignée
+-   PT_FALL     = 17,       // fret qui tombe
+-   PT_WPCHECK  = 18,       // indicateur atteint
+-   PT_FLCREATE = 19,       // drapeau créé
+-   PT_FLDELETE = 20,       // drapeau détruit
+-   PT_RESET    = 21,       // reset position de l'objet
+-   PT_WIN      = 22,       // feu d'artifice
+-   PT_LOST     = 23,       // fumée noire
+-   PT_DEADG    = 24,       // mort par balle
+-   PT_DEADW    = 25,       // mort noyé
+-   PT_FINDING  = 26,       // objet découvert
++   PT_FRAGT    = 10,       // fragmentation objet technique
++   PT_FRAGO    = 11,       // fragmentation objet organique
++   PT_FRAGW    = 12,       // fragmentation objet sous l'eau
++   PT_FRAGA    = 13,       // fragmentation objet atomique (bleu)
++   PT_EXPLOT   = 20,       // explosion objet technique
++   PT_EXPLOO   = 21,       // explosion objet organique
++   PT_EXPLOW   = 22,       // explosion objet sous l'eau
++   PT_EXPLOS   = 23,       // explosion seule
++   PT_EXPLOP   = 24,       // explosion partie voiture
++   PT_SHOTT    = 40,       // coup objet technique
++   PT_SHOTH    = 41,       // coup homme
++   PT_SHOTM    = 42,       // coup pondeuse
++   PT_SHOTW    = 43,       // coup sous l'eau
++   PT_BURNT    = 60,       // brûle objet technique
++   PT_BURNO    = 61,       // brûle objet organique
++   PT_BURNS    = 62,       // brûle objet seul
++   PT_EJECT    = 70,       // objet éjecté
++   PT_FINDING  = 71,       // objet découvert
++   PT_PAINTING = 72,       // voiture peinte
++   PT_ACROBATIC= 73,       // robot voltigeant suite à un choc
++   PT_PIECE    = 74,       // pièce de véhicule perdue
++   PT_SABOTAGE = 75,       // sabotage en cours
++   PT_WPCHECK  = 80,       // indicateur atteint
++   PT_WPVIBRA  = 81,       // indicateur touché
++   PT_FLCREATE = 82,       // drapeau créé
++   PT_FLDELETE = 83,       // drapeau détruit
++   PT_WIN      = 90,       // feu d'artifice
++   PT_LOST     = 91,       // fumée noire
++   PT_DEADG    = 92,       // mort par balle
++   PT_DEADW    = 93,       // mort noyé
++   PT_SPIDER   = 94,       // explosion araignée
++   PT_EGG      = 95,       // casse l'oeuf
+ };
+ 
+ 
+@@ -78,7 +86,8 @@ public:
+    ~CPyro();
+ 
+    void        DeleteObject(BOOL bAll=FALSE);
+-   BOOL        Create(PyroType type, CObject* pObj, float force=1.0f);
++   void        SetImpact(D3DVECTOR impact);
++   BOOL        Create(PyroType type, CObject* pObj, float force=1.0f, int param=0);
+    BOOL        EventProcess(const Event &event);
+    Error       IsEnded();
+    void        CutObjectLink(CObject* pObj);
+@@ -90,19 +99,24 @@ protected:
+ 
+    void        CreateTriangle(CObject* pObj, ObjectType oType, int part);
+ 
+-   void        ExploStart();
++   void        ExploStart(ObjectType oType);
+    void        ExploTerminate();
+ 
++   void        OrgaStart();
++   void        OrgaProgress();
++   void        OrgaTerminate();
++
+    void        BurnStart();
+    void        BurnAddPart(int part, D3DVECTOR pos, D3DVECTOR angle);
+    void        BurnProgress();
+    BOOL        BurnIsKeepPart(int part);
+    void        BurnTerminate();
+ 
+-   void        FallStart();
+-   CObject*    FallSearchBeeExplo();
+-   void        FallProgress(float rTime);
+-   Error       FallIsEnded();
++   void        AcrobaticStart(D3DVECTOR min, D3DVECTOR max);
++   void        AcrobaticTransform(ObjectType type, D3DVECTOR cdg, D3DVECTOR angle, D3DVECTOR min, D3DVECTOR max);
++   void        AcrobaticGroundAdapt(ObjectType type, D3DVECTOR &angle, D3DVECTOR &pos);
++   void        AcrobaticProgress();
++   void        AcrobaticTerminate();
+ 
+    void        LightOperFlush();
+    void        LightOperAdd(float progress, float intensity, float r, float g, float b);
+@@ -120,17 +134,26 @@ protected:
+    CRobotMain*     m_main;
+    CSound*         m_sound;
+ 
++   D3DVECTOR       m_impact;
++   D3DVECTOR       m_posStart;
++   D3DVECTOR       m_angleStart;
++   D3DVECTOR       m_angleGoal;
+    D3DVECTOR       m_pos;          // centre de l'effet
+-   D3DVECTOR       m_posPower;     // centre de la pile
+-   BOOL            m_bPower;       // pile existe ?
++   D3DVECTOR       m_posTracks;    // départ des traînées
++   BOOL            m_bTracks;      // traînées incandescentes ?
++   BOOL            m_bSphere;      // sphère translucide
++   BOOL            m_bChoc;        // onde de choc circulaire
+    PyroType        m_type;
+    float           m_force;
+    float           m_size;
++   float           m_height;
++   float           m_heightSuppl;
+    float           m_progress;
+    float           m_speed;
+    float           m_time;
+    float           m_lastParticule;
+    float           m_lastParticuleSmoke;
++   int             m_param;
+    int             m_soundChannel;
+ 
+    int             m_lightRank;
+@@ -144,11 +167,6 @@ protected:
+    int             m_burnKeepPart[10];
+    float           m_burnFall;
+ 
+-   float           m_fallFloor;
+-   float           m_fallSpeed;
+-   float           m_fallBulletTime;
+-   BOOL            m_bFallEnding;
+-
+    int             m_crashSphereUsed;  // nb de sphères utilisées
+    D3DVECTOR       m_crashSpherePos[50];
+    float           m_crashSphereRadius[50];

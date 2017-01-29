@@ -1,0 +1,409 @@
+diff a/src/ui/controls/list.cpp b/src/ui/controls/list.cpp	(rejected hunks)
+@@ -43,6 +43,7 @@ CList::CList(CInstanceManager* iMan) : CControl(iMan)
+        m_text[i][0] = 0;
+        m_check[i] = FALSE;
+        m_enable[i] = TRUE;
++       m_look[i] = 0;
+    }
+ 
+    for ( i=0 ; i<10 ; i++ )
+@@ -55,6 +56,7 @@ CList::CList(CInstanceManager* iMan) : CControl(iMan)
+    m_displayLine = 0;
+    m_selectLine = -1;
+    m_firstLine = 0;
++   m_multiple = 1;
+    m_bBlink = FALSE;
+    m_bSelectCap = TRUE;
+    m_blinkTime = 0.0f;
+@@ -241,6 +243,7 @@ BOOL CList::ClearState(int state)
+ BOOL CList::EventProcess(const Event &event)
+ {
+    int     i;
++   BOOL    bShift;
+ 
+    if ( m_bBlink                   &&  // clignotte ?
+         event.event == EVENT_FRAME )
+@@ -267,11 +270,14 @@ BOOL CList::EventProcess(const Event &event)
+    if ( (m_state & STATE_VISIBLE) == 0 )  return TRUE;
+    if ( (m_state & STATE_ENABLE) == 0 )  return TRUE;
+ 
++   bShift = (event.keyState&KS_SHIFT);
++
+    if ( event.event == EVENT_KEYDOWN &&
+         event.param == VK_WHEELUP    &&
+         Detect(event.pos)            )
+    {
+-       if ( m_firstLine > 0 )  m_firstLine --;
++       m_firstLine -= m_multiple;
++       if ( m_firstLine < 0 )  m_firstLine = 0;
+        UpdateScroll();
+        UpdateButton();
+        return TRUE;
+@@ -280,12 +286,72 @@ BOOL CList::EventProcess(const Event &event)
+         event.param == VK_WHEELDOWN  &&
+         Detect(event.pos)            )
+    {
+-       if ( m_firstLine < m_totalLine-m_displayLine )  m_firstLine ++;
++       m_firstLine += m_multiple;
++       if ( m_firstLine > m_totalLine-m_displayLine )  m_firstLine = m_totalLine-m_displayLine;
++       if ( m_firstLine < 0 )  m_firstLine = 0;
+        UpdateScroll();
+        UpdateButton();
+        return TRUE;
+    }
+ 
++   if ( m_bFocus &&
++        (m_state & STATE_VISIBLE) &&
++        (m_state & STATE_ENABLE)  &&
++        event.event == EVENT_KEYDOWN &&
++        (event.param == VK_UP ||
++         event.param == VK_JUP) )
++   {
++       m_selectLine --;
++       if ( m_selectLine < 0 )  m_selectLine = 0;
++       if ( m_selectLine < m_firstLine ||
++            m_selectLine >= m_firstLine+m_displayLine )
++       {
++           ShowSelect();
++       }
++       UpdateScroll();
++       UpdateButton();
++       Event newEvent = event;
++       newEvent.event = m_eventMsg;
++       m_event->AddEvent(newEvent);  // ligne sélectionnée changée
++       return TRUE;
++   }
++   if ( m_bFocus &&
++        (m_state & STATE_VISIBLE) &&
++        (m_state & STATE_ENABLE)  &&
++        event.event == EVENT_KEYDOWN &&
++        (event.param == VK_DOWN ||
++         event.param == VK_JDOWN) )
++   {
++       m_selectLine ++;
++       if ( m_selectLine >= m_totalLine )  m_selectLine = m_totalLine-1;
++       if ( m_selectLine < m_firstLine ||
++            m_selectLine >= m_firstLine+m_displayLine )
++       {
++           ShowSelect();
++       }
++       UpdateScroll();
++       UpdateButton();
++       Event newEvent = event;
++       newEvent.event = m_eventMsg;
++       m_event->AddEvent(newEvent);  // ligne sélectionnée changée
++       return TRUE;
++   }
++
++   if ( m_bFocus &&
++        (m_state & STATE_VISIBLE) &&
++        (m_state & STATE_ENABLE)  &&
++        (m_state & STATE_DEFAULT) &&
++        event.event == EVENT_KEYDOWN &&
++        (event.param == VK_RETURN ||
++         event.param == VK_BUTTON1) )
++   {
++       Event newEvent = event;
++       newEvent.event = EVENT_KEYDOWN;
++       newEvent.param = VK_DEFAULT;
++       m_event->AddEvent(newEvent);  // ligne sélectionnée changée
++       return TRUE;
++   }
++
+    CControl::EventProcess(event);
+ 
+    if ( event.event == EVENT_MOUSEMOVE && Detect(event.pos) )
+@@ -343,7 +409,7 @@ void CList::Draw()
+ {
+    FPOINT  uv1, uv2, corner, pos, dim, ppos, ddim;
+    float   dp;
+-   int     i, j;
++   int     i, j, look;
+    char    text[100];
+    char    *pb, *pe;
+ 
+@@ -353,6 +419,10 @@ void CList::Draw()
+    {
+        DrawShadow(m_pos, m_dim);
+    }
++   if ( m_bFocus )
++   {
++       DrawFocus(m_pos, m_dim);
++   }
+ 
+    dp = 0.5f/256.0f;
+ 
+@@ -362,23 +432,23 @@ void CList::Draw()
+ 
+        if ( m_icon == 0 )
+        {
+-           m_engine->SetTexture("button2.tga");
++           m_engine->SetTexture("button1.tga");
+            m_engine->SetState(D3DSTATENORMAL);
+ 
+-           uv1.x = 128.0f/256.0f;
+-           uv1.y =  64.0f/256.0f;  // u-v texture
+-           uv2.x = 160.0f/256.0f;
+-           uv2.y =  96.0f/256.0f;
++           uv1.x =  64.0f/256.0f;
++           uv1.y =   0.0f/256.0f;  // u-v texture
++           uv2.x =  96.0f/256.0f;
++           uv2.y =  32.0f/256.0f;
+        }
+        else
+        {
+-           m_engine->SetTexture("button2.tga");
++           m_engine->SetTexture("button1.tga");
+            m_engine->SetState(D3DSTATENORMAL);
+ 
+-           uv1.x = 132.0f/256.0f;
+-           uv1.y =  68.0f/256.0f;  // u-v texture
+-           uv2.x = 156.0f/256.0f;
+-           uv2.y =  92.0f/256.0f;
++           uv1.x =  64.0f/256.0f;
++           uv1.y =   0.0f/256.0f;  // u-v texture
++           uv2.x =  96.0f/256.0f;
++           uv2.y =  32.0f/256.0f;
+ 
+            if ( m_button[0] != 0 )
+            {
+@@ -408,12 +478,12 @@ void CList::Draw()
+            dim.y *= 0.4f;
+            pos.y -= dim.y;
+ 
+-           m_engine->SetTexture("button2.tga");
++           m_engine->SetTexture("button1.tga");
+            m_engine->SetState(D3DSTATETTw);
+-           uv1.x = 120.0f/256.0f;
+-           uv1.y =  64.0f/256.0f;
+-           uv2.x = 128.0f/256.0f;
+-           uv2.y =  48.0f/256.0f;
++           uv1.x =  24.0f/256.0f;
++           uv1.y =  48.0f/256.0f;
++           uv2.x =  32.0f/256.0f;
++           uv2.y =  32.0f/256.0f;
+            uv1.x += dp;
+            uv1.y -= dp;
+            uv2.x -= dp;
+@@ -432,6 +502,12 @@ void CList::Draw()
+            {
+                m_button[i]->SetState(STATE_ENABLE, m_enable[i+m_firstLine] && (m_state & STATE_ENABLE) );
+            }
++           m_button[i]->SetState(STATE_SIMPLY);
++
++           look = m_look[i+m_firstLine];
++           m_button[i]->SetState(STATE_LOOK1, look==1);
++           m_button[i]->SetState(STATE_LOOK2, look==2);
++
+            m_button[i]->Draw();  // dessine une case sans texte
+ 
+            // dessine le texte dans la case
+@@ -485,16 +561,16 @@ void CList::Draw()
+                if ( m_check[i+m_firstLine] )
+                {
+                    m_engine->SetTexture("button1.tga");
+-                   m_engine->SetState(D3DSTATENORMAL);
+-                   uv1.x = 64.0f/256.0f;
+-                   uv1.y =  0.0f/256.0f;
+-                   uv2.x = 96.0f/256.0f;
+-                   uv2.y = 32.0f/256.0f;
++                   m_engine->SetState(D3DSTATETTb);
++                   uv1.x =   0.0f/256.0f;
++                   uv1.y = 128.0f/256.0f;
++                   uv2.x =  64.0f/256.0f;
++                   uv2.y = 144.0f/256.0f;
+                    uv1.x += dp;
+                    uv1.y += dp;
+                    uv2.x -= dp;
+                    uv2.y -= dp;
+-                   DrawIcon(pos, dim, uv1, uv2);  // dessine carré
++                   DrawIcon(pos, dim, uv1, uv2);  // dessine carré vert
+ 
+                    m_engine->SetState(D3DSTATETTw);
+                    uv1.x =  0.0f/256.0f;  // v
+@@ -510,21 +586,22 @@ void CList::Draw()
+                else
+                {
+                    m_engine->SetTexture("button1.tga");
++                   m_engine->SetState(D3DSTATETTb);
++                   uv1.x =  32.0f/256.0f;
++                   uv1.y = 160.0f/256.0f;
++                   uv2.x =  64.0f/256.0f;
++                   uv2.y = 176.0f/256.0f;
++                   uv1.x += dp;
++                   uv1.y += dp;
++                   uv2.x -= dp;
++                   uv2.y -= dp;
++                   DrawIcon(pos, dim, uv1, uv2);  // dessine carré rouge
++
+                    m_engine->SetState(D3DSTATETTw);
+-                   if ( i+m_firstLine == m_selectLine )
+-                   {
+-                       uv1.x =224.0f/256.0f;  // <
+-                       uv1.y =192.0f/256.0f;
+-                       uv2.x =256.0f/256.0f;
+-                       uv2.y =224.0f/256.0f;
+-                   }
+-                   else
+-                   {
+-                       uv1.x = 96.0f/256.0f;  // x
+-                       uv1.y = 32.0f/256.0f;
+-                       uv2.x =128.0f/256.0f;
+-                       uv2.y = 64.0f/256.0f;
+-                   }
++                   uv1.x = 96.0f/256.0f;  // x
++                   uv1.y = 32.0f/256.0f;
++                   uv2.x =128.0f/256.0f;
++                   uv2.y = 64.0f/256.0f;
+                    uv1.x += dp;
+                    uv1.y += dp;
+                    uv2.x -= dp;
+@@ -535,6 +612,13 @@ void CList::Draw()
+        }
+    }
+ 
++   if ( (m_state & STATE_ENABLE) == 0 )
++   {
++       m_engine->SetTexture("button1.tga");
++       m_engine->SetState(D3DSTATETTb);
++       DrawPart(7, 1.0f, 8.0f/256.0f);  // blanc par-dessus
++   }
++
+    if ( m_scroll != 0 )
+    {
+        m_scroll->Draw();  // dessine l'ascenseur
+@@ -589,6 +673,21 @@ int CList::RetTotal()
+ }
+ 
+ 
++// Spécifie le nombre multiple pour la 1ère ligne.
++
++void CList::SetMultiple(int i)
++{
++   m_multiple = i;
++}
++
++// Retourne le nombre multiple pour la 1ère ligne.
++
++int CList::RetMultiple()
++{
++   return m_multiple;
++}
++
++
+ // Sélectionne une ligne.
+ 
+ void CList::SetSelect(int i)
+@@ -599,7 +698,7 @@ void CList::SetSelect(int i)
+    }
+    else
+    {
+-       m_firstLine = i;
++       m_firstLine = (i/m_multiple)*m_multiple;
+        UpdateScroll();
+    }
+ 
+@@ -733,6 +832,25 @@ BOOL CList::RetEnable(int i)
+ }
+ 
+ 
++// Spécifie le look d'une case.
++
++void CList::SetLook(int i, int look)
++{
++   if ( i < 0 || i >= m_totalLine )  return;
++
++   m_look[i] = look;
++}
++
++// Retourne le bit "enable" pour une case.
++
++int CList::RetLook(int i)
++{
++   if ( i < 0 || i >= m_totalLine )  return FALSE;
++
++   return m_look[i];
++}
++
++
+ // Gestion de la position des tabulateurs.
+ 
+ void CList::SetTabs(int i, float pos, int justif)
+@@ -751,23 +869,29 @@ float  CList::RetTabs(int i)
+ 
+ // Déplace l'ascenseur de la liste pour voir la ligne sélectionnée.
+ 
+-void CList::ShowSelect(BOOL bFixed)
++void CList::ShowSelect()
+ {
+    int     sel;
+ 
+-   if ( bFixed &&
+-        m_selectLine >= m_firstLine &&
+-        m_selectLine <  m_firstLine+m_displayLine )  return;  // tout bon
++//?    if ( m_selectLine >= m_firstLine &&
++//?         m_selectLine <  m_firstLine+m_displayLine )  return;  // tout bon
+ 
+    sel = m_selectLine;
+ 
+-   // Descend de 1/2*h.
+-   sel += m_displayLine/2;
+-   if ( sel > m_totalLine-1 )  sel = m_totalLine-1;
++   if ( m_multiple == 1 )
++   {
++       // Descend de 1/2*h.
++       sel += m_displayLine/2;
++       if ( sel > m_totalLine-1 )  sel = m_totalLine-1;
+ 
+-   // Remonte de h-1.
+-   sel -= m_displayLine-1;
+-   if ( sel < 0 )  sel = 0;
++       // Remonte de h-1.
++       sel -= m_displayLine-1;
++       if ( sel < 0 )  sel = 0;
++   }
++   else
++   {
++       sel = (sel/m_multiple)*m_multiple;
++   }
+ 
+    m_firstLine = sel;
+ 
+@@ -811,6 +935,7 @@ void CList::UpdateButton()
+ void CList::UpdateScroll()
+ {
+    float   ratio, value, step;
++   int     displayLine, totalLine, firstLine;
+ 
+    if ( m_scroll == 0 )  return;
+ 
+@@ -822,14 +947,18 @@ void CList::UpdateScroll()
+    }
+    else
+    {
+-       ratio = (float)m_displayLine/m_totalLine;
++       displayLine = m_displayLine/m_multiple;
++       totalLine   = m_totalLine/m_multiple;
++       firstLine   = m_firstLine/m_multiple;
++
++       ratio = (float)displayLine/totalLine;
+        if ( ratio > 1.0f )  ratio = 1.0f;
+ 
+-       value = (float)m_firstLine/(m_totalLine-m_displayLine);
++       value = (float)firstLine/(totalLine-displayLine);
+        if ( value < 0.0f )  value = 0.0f;
+        if ( value > 1.0f )  value = 1.0f;
+ 
+-       step = (float)1.0f/(m_totalLine-m_displayLine);
++       step = (float)1.0f/(totalLine-displayLine);
+        if ( step < 0.0f )  step = 0.0f;
+    }
+ 
+@@ -851,6 +980,7 @@ void CList::MoveScroll()
+    pos = m_scroll->RetVisibleValue();
+    pos += m_scroll->RetArrowStep()/2.0f;  // c'est magique !
+    m_firstLine = (int)(pos*n);
++   m_firstLine = (m_firstLine/m_multiple)*m_multiple;
+    if ( m_firstLine < 0 )  m_firstLine = 0;
+    if ( m_firstLine > n )  m_firstLine = n;
+ }

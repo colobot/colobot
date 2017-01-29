@@ -1,0 +1,578 @@
+diff a/src/graphics/engine/terrain.cpp b/src/graphics/engine/terrain.cpp	(rejected hunks)
+@@ -10,7 +10,6 @@
+ #include "struct.h"
+ #include "D3DEngine.h"
+ #include "D3DMath.h"
+-#include "language.h"
+ #include "event.h"
+ #include "misc.h"
+ #include "iman.h"
+@@ -34,22 +33,21 @@ CTerrain::CTerrain(CInstanceManager* iMan)
+    m_engine = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
+    m_water  = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
+ 
+-   m_mosaic        = 20;
+-   m_brick         = 1<<4;
+-   m_size          = 10.0f;
++   m_mosaic        = 10;
++   m_brick         = 1<<3;
++   m_size          = 40.0f;
+    m_vision        = 200.0f;
+    m_relief        = 0;
+    m_texture       = 0;
+    m_objRank       = 0;
+-   m_scaleMapping  = 0.01f;
++   m_scaleMapping  = 1.0f/(m_brick*m_size);
+    m_scaleRelief   = 1.0f;
+    m_subdivMapping = 1;
+-   m_depth         = 2;
++   m_depth         = 1;
+    m_texBaseName[0]= 0;
+    m_texBaseExt[0] = 0;
+    m_bMultiText    = TRUE;
+    m_bLevelText    = FALSE;
+-   m_resources     = 0;
+    m_levelMatTotal = 0;
+    m_levelMatMax   = 0;
+    m_levelDot      = 0;
+@@ -57,6 +55,7 @@ CTerrain::CTerrain(CInstanceManager* iMan)
+    m_defHardness   = 0.5f;
+ 
+    FlushBuildingLevel();
++   FlushSlowerZone();
+    FlushFlyingLimit();
+ }
+ 
+@@ -67,7 +66,6 @@ CTerrain::~CTerrain()
+    free(m_relief);
+    free(m_texture);
+    free(m_objRank);
+-   free(m_resources);
+ }
+ 
+ 
+@@ -229,89 +227,13 @@ BOOL CTerrain::LevelMaterial(int id, char* baseName, float u, float v,
+    if ( m_levelMatMax < left+1  )  m_levelMatMax = left+1;
+ 
+    m_bLevelText = TRUE;
+-   m_subdivMapping = 4;
++   m_subdivMapping = 8;
+ 
+    m_levelMatTotal ++;
+    return TRUE;
+ }
+ 
+ 
+-// Charge le relief dans un fichier BMP.
+-// La taille de l'image doit être de dimension dx et dy,
+-// avec dx=dy=(mosaic*brick)+1.
+-// L'image doit avoir 8 bits/pixels, 256 couleurs avec
+-// une palette standard.
+-
+-// Conversion coordonnée image (x;y) -> world (x;-;z) :
+-// Wx =   5*Ix-400
+-// Wz = -(5*Iy-400)
+-
+-// Conversion coordonnée world (x;-;z) -> image (x;y) :
+-// Ix = (400+Wx)/5
+-// Iy = (400-Wz)/5
+-
+-BOOL CTerrain::ResFromBMP(const char* filename)
+-{
+-   FILE*           file;
+-   int             size, sizem;
+-
+-   file = fopen(filename, "rb");
+-   if ( file == NULL )  return FALSE;
+-
+-   size  = (m_mosaic*m_brick)+1;
+-   sizem = ((size+4-1)/4)*4;  // taille multiple de 4 supérieur
+-
+-   if ( m_resources != 0 )
+-   {
+-       free(m_resources);
+-   }
+-
+-   m_resources = (unsigned char*)malloc(BMPHEAD+sizem*size);
+-   fread(m_resources, BMPHEAD+sizem*size, 1, file);
+-
+-   if ( m_resources[18] != (size&0xff) || m_resources[19] != (size>>8) ||
+-        m_resources[22] != (size&0xff) || m_resources[23] != (size>>8) )
+-   {
+-       free(m_resources);
+-       m_resources = 0;
+-       fclose(file);
+-       return FALSE;
+-   }
+-
+-   fclose(file);
+-   return TRUE;
+-}
+-
+-// Retourne le type de ressource disponible en sous-sol.
+-
+-TerrainRes CTerrain::RetResource(const D3DVECTOR &p)
+-{
+-   int     x, y, size, sizem, ress;
+-
+-   if ( m_resources == 0 )  return TR_NULL;
+-
+-   x = (int)((p.x + (m_mosaic*m_brick*m_size)/2.0f)/m_size);
+-   y = (int)((p.z + (m_mosaic*m_brick*m_size)/2.0f)/m_size);
+-
+-   if ( x < 0 || x > m_mosaic*m_brick ||
+-        y < 0 || y > m_mosaic*m_brick )  return TR_NULL;
+-
+-   size  = (m_mosaic*m_brick)+1;
+-   sizem = ((size+4-1)/4)*4;  // taille multiple de 4 supérieur
+-
+-   ress = m_resources[BMPHEAD+x+sizem*y];
+-   if ( ress ==  5 )  return TR_STONE;    // rouge ?
+-   if ( ress == 35 )  return TR_URANIUM;  // jaune ?
+-   if ( ress == 30 )  return TR_POWER;    // vert ?
+-   if ( ress == 24 )  return TR_KEYa;     // ~vert ?
+-   if ( ress == 25 )  return TR_KEYb;     // ~vert ?
+-   if ( ress == 26 )  return TR_KEYc;     // ~vert ?
+-   if ( ress == 27 )  return TR_KEYd;     // ~vert ?
+-
+-   return TR_NULL;
+-}
+-
+-
+ // Initialise un relief tout plat.
+ 
+ void CTerrain::FlushRelief()
+@@ -335,8 +257,7 @@ void CTerrain::FlushRelief()
+ // Ix = (400+Wx)/5
+ // Iy = (400-Wz)/5
+ 
+-BOOL CTerrain::ReliefFromBMP(const char* filename, float scaleRelief,
+-                            BOOL adjustBorder)
++BOOL CTerrain::ReliefFromBMP(const char* filename, float scaleRelief)
+ {
+    FILE*           file;
+    unsigned char*  buffer;
+@@ -372,12 +293,12 @@ BOOL CTerrain::ReliefFromBMP(const char* filename, float scaleRelief,
+ //?            dist = Length((float)(x-size/2), (float)(y-size/2));
+            dist = Max(Abs((float)(x-size/2)), Abs((float)(y-size/2)));
+            dist = dist/(float)(size/2);
+-           if ( dist > limit && adjustBorder )
++           if ( dist > limit )
+            {
+                dist = (dist-limit)/(1.0f-limit);  // 0..1
+                if ( dist > 1.0f )  dist = 1.0f;
+                border = 300.0f+Rand()*20.0f;
+-               level = level+dist*(border-level);
++//-                level = level+dist*(border-level);
+            }
+ 
+            m_relief[x+y*size] = level;
+@@ -556,11 +477,7 @@ void CTerrain::LimitPos(D3DVECTOR &pos)
+ {
+    float       dim;
+ 
+-#if _TEEN
+-   dim = (m_mosaic*m_brick*m_size)/2.0f*0.98f;
+-#else
+    dim = (m_mosaic*m_brick*m_size)/2.0f*0.92f;
+-#endif
+ 
+    if ( pos.x < -dim )  pos.x = -dim;
+    if ( pos.x >  dim )  pos.x =  dim;
+@@ -850,10 +767,10 @@ BOOL CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
+ 
+                    if ( m_bLevelText )
+                    {
+-                       p1.tu /= m_subdivMapping;  // 0..1 -> 0..0.25
+-                       p1.tv /= m_subdivMapping;
+-                       p2.tu /= m_subdivMapping;
+-                       p2.tv /= m_subdivMapping;
++                       p1.tu /= 4;  // 0..1 -> 0..0.25
++                       p1.tv /= 4;
++                       p2.tu /= 4;
++                       p2.tv /= 4;
+ 
+                        if ( x == 0 )
+                        {
+@@ -862,12 +779,12 @@ BOOL CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
+                        }
+                        if ( x == brick )
+                        {
+-                           p1.tu = (1.0f/m_subdivMapping)-dp;
+-                           p2.tu = (1.0f/m_subdivMapping)-dp;
++                           p1.tu = (1.0f/4)-dp;
++                           p2.tu = (1.0f/4)-dp;
+                        }
+                        if ( y == 0 )
+                        {
+-                           p1.tv = (1.0f/m_subdivMapping)-dp;
++                           p1.tv = (1.0f/4)-dp;
+                        }
+                        if ( y == brick-step )
+                        {
+@@ -1476,6 +1393,185 @@ BOOL CTerrain::LevelGenerate(int *id, float min, float max,
+    return TRUE;
+ }
+ 
++// Gestion spéciale des routes.
++
++#define RL (1<<0)  // left
++#define RUL    (1<<1)
++#define RU (1<<2)  // up
++#define RUR    (1<<3)
++#define RR (1<<4)  // right
++#define RDR    (1<<5)
++#define RD (1<<6)  //down
++#define RDL    (1<<7)
++
++short table_road[] =
++{
++    2, RL+RR,
++    3, RU+RD,
++    4, RD,
++    5, RD+RR,
++    6, RL+RD+RR,
++    7, RL+RD,
++    8, RU,
++    9, RU+RR+RD,
++   10, RU+RL+RR+RD,
++   11, RU+RL+RD,
++   12, RR,
++   13, RU+RR,
++   14, RU+RL+RR,
++   15, RU+RL,
++   16, RL,
++   17, RDL+RUR,
++   18, RDR,
++   19, RDL,
++   21, RUL+RDR,
++   22, RUR,
++   23, RUL,
++   25, RDL+RR,
++   26, RDR+RL,
++   27, RUR+RD,
++   28, RUL+RD,
++   29, RUL+RR,
++   30, RUR+RL,
++   31, RDR+RU,
++   32, RDL+RU,
++    0
++};
++
++int CTerrain::RoadSearchID(int bits)
++{
++   int     i = 0;
++   while ( table_road[i] != 0 )
++   {
++       if ( table_road[i+1] == bits )  return table_road[i];
++       i += 2;
++   }
++   return 0;
++}
++
++int CTerrain::RoadSearchBits(int id)
++{
++   int     i = 0;
++   while ( table_road[i] != 0 )
++   {
++       if ( table_road[i] == id )  return table_road[i+1];
++       i += 2;
++   }
++   return 0;
++}
++
++int CTerrain::RoadGetID(int x, int y)
++{
++   if ( x < 0 || x >= m_levelDotSize ||
++        y < 0 || y >= m_levelDotSize )  return 0;
++   return m_levelDot[x+y*m_levelDotSize].id;
++}
++
++// Cherche comment transformer une route pleine.
++
++int CTerrain::RoadSearchBitsFull(int x, int y, BOOL bF1)
++{
++   int     id, bits = 0;
++
++   id = RoadGetID(x, y);
++   if ( id <= 1 || id == 20  || id == 24 )  return bits;  // si pas route -> retour
++
++   if ( bF1 )  // green05/06-h ?
++   {
++       if ( id ==  4 )  return bits;  // 11 ?
++       if ( id ==  6 )  return bits;  // 23 ?
++       if ( id ==  8 )  return bits;  // 25 ?
++       if ( id ==  9 )  return bits;  // 36 ?
++       if ( id == 10 )  return bits;  // 37 ?
++       if ( id == 11 )  return bits;  // 52 ?
++       if ( id == 12 )  return bits;  // || ?
++       if ( id == 14 )  return bits;  // == ?
++       if ( id == 16 )  return bits;  // ^  ?
++   }
++
++   if ( RoadGetID(x-1, y-1) > 1 )  bits |= RDL;
++   if ( RoadGetID(x+0, y-1) > 1 )  bits |= RD;
++   if ( RoadGetID(x+1, y-1) > 1 )  bits |= RDR;
++   if ( RoadGetID(x-1, y+0) > 1 )  bits |= RL;
++   if ( RoadGetID(x+1, y+0) > 1 )  bits |= RR;
++   if ( RoadGetID(x-1, y+1) > 1 )  bits |= RUL;
++   if ( RoadGetID(x+0, y+1) > 1 )  bits |= RU;
++   if ( RoadGetID(x+1, y+1) > 1 )  bits |= RUR;
++
++   if ( bits & RL )  bits &= ~(RUL|RDL);
++   if ( bits & RR )  bits &= ~(RUR|RDR);
++   if ( bits & RD )  bits &= ~(RDL|RDR);
++   if ( bits & RU )  bits &= ~(RUL|RUR);
++
++   return bits;
++}
++
++// Cherche comment transformer un coin estétique.
++
++int CTerrain::RoadSearchBitsDiag(int x, int y)
++{
++   int     b, bits = 0;
++
++   if ( RoadGetID(x, y) > 1 )  return bits;  // si déjà route -> retour
++
++   b = RoadSearchBits(RoadGetID(x-1, y+0));  // à gauche
++   if ( b & RUR )  bits |= RUL;
++   if ( b & RDR )  bits |= RDL;
++
++   b = RoadSearchBits(RoadGetID(x+1, y+0));  // à droite
++   if ( b & RUL )  bits |= RUR;
++   if ( b & RDL )  bits |= RDR;
++
++   b = RoadSearchBits(RoadGetID(x+0, y-1));  // en bas
++   if ( b & RUL )  bits |= RDL;
++   if ( b & RUR )  bits |= RDR;
++
++   b = RoadSearchBits(RoadGetID(x+0, y+1));  // en haut
++   if ( b & RDL )  bits |= RUL;
++   if ( b & RDR )  bits |= RUR;
++
++   return bits;
++}
++
++// Adapte les routes.
++
++void CTerrain::LevelRoadAdapt(BOOL bF1)
++{
++   int     x, y, bits, id;
++
++   for ( y=0 ; y<m_levelDotSize ; y++ )
++   {
++       for ( x=0 ; x<m_levelDotSize ; x++ )
++       {
++           bits = RoadSearchBitsFull(x, y, bF1);
++           if ( bits != 0 )
++           {
++               id = RoadSearchID(bits);
++               if ( id != 0 )
++               {
++                   m_levelDot[x+y*m_levelDotSize].id = id;
++               }
++           }
++       }
++   }
++
++   for ( y=0 ; y<m_levelDotSize ; y++ )
++   {
++       for ( x=0 ; x<m_levelDotSize ; x++ )
++       {
++           bits = RoadSearchBitsDiag(x, y);
++           if ( bits != 0 )
++           {
++               id = RoadSearchID(bits);
++               if ( id != 0 )
++               {
++                   m_levelDot[x+y*m_levelDotSize].id = id;
++               }
++           }
++       }
++   }
++}
++
+ // Initialise une table des niveaux vide.
+ 
+ void CTerrain::LevelOpenTable()
+@@ -2067,6 +2163,100 @@ void CTerrain::AdjustBuildingLevel(D3DVECTOR &p)
+ }
+ 
+ 
++// Vide la table des zones de ralentissement.
++
++void CTerrain::FlushSlowerZone()
++{
++   m_slowerUsed = 0;
++}
++
++// Ajoute une nouvelle zone de ralentissement.
++
++BOOL CTerrain::AddSlowerZone(D3DVECTOR center, float min, float max, float factor)
++{
++   int     i;
++
++   for ( i=0 ; i<m_slowerUsed ; i++ )
++   {
++       if ( center.x == m_slowerTable[i].center.x &&
++            center.z == m_slowerTable[i].center.z )
++       {
++           goto update;
++       }
++   }
++
++   if ( m_slowerUsed >= MAXSLOWERZONE )  return FALSE;
++   i = m_slowerUsed++;
++
++   update:
++   m_slowerTable[i].center   = center;
++   m_slowerTable[i].min      = min;
++   m_slowerTable[i].max      = max;
++   m_slowerTable[i].factor   = factor;
++   m_slowerTable[i].bboxMinX = center.x-max;
++   m_slowerTable[i].bboxMaxX = center.x+max;
++   m_slowerTable[i].bboxMinZ = center.z-max;
++   m_slowerTable[i].bboxMaxZ = center.z+max;
++
++   return TRUE;
++}
++
++// Supprime une zone de ralentissement.
++
++BOOL CTerrain::DeleteSlowerZone(D3DVECTOR center)
++{
++   int     i, j;
++
++   for ( i=0 ; i<m_slowerUsed ; i++ )
++   {
++       if ( center.x == m_slowerTable[i].center.x &&
++            center.z == m_slowerTable[i].center.z )
++       {
++           for ( j=i+1 ; j<m_slowerUsed ; j++ )
++           {
++               m_slowerTable[j-1] = m_slowerTable[j];
++           }
++           m_slowerUsed --;
++           return TRUE;
++       }
++   }
++   return FALSE;
++}
++
++// Retourne le facteur de ralentissement si une position est sur une
++// zone lente.
++
++float CTerrain::RetSlowerZone(const D3DVECTOR &p)
++{
++   float       dist, factor;
++   int         i;
++
++   for ( i=0 ; i<m_slowerUsed ; i++ )
++   {
++       if ( p.x < m_slowerTable[i].bboxMinX ||
++            p.x > m_slowerTable[i].bboxMaxX ||
++            p.z < m_slowerTable[i].bboxMinZ ||
++            p.z > m_slowerTable[i].bboxMaxZ )  continue;
++
++       dist = Length2d(p, m_slowerTable[i].center);
++
++       if ( dist < m_slowerTable[i].max )
++       {
++           if ( dist <= m_slowerTable[i].min )
++           {
++               factor = 1.0f;
++           }
++           else
++           {
++               factor = (m_slowerTable[i].max-dist)/(m_slowerTable[i].max-m_slowerTable[i].min);
++           }
++           return (1.0f-factor) + (m_slowerTable[i].factor*factor);
++       }
++   }
++   return 1.0f;  // on est sur une zone normale
++}
++
++
+ // Retourne la dureté du terrain à un endroit donné.
+ // La dureté détermine le bruit (SOUND_STEP et SOUND_BOUM).
+ 
+@@ -2103,47 +2293,6 @@ float CTerrain::RetHardness(const D3DVECTOR &p)
+ }
+ 
+ 
+-// Montre les zones plates sur le terrain.
+-
+-void CTerrain::GroundFlat(D3DVECTOR pos)
+-{
+-   D3DVECTOR   p;
+-   float       rapport, angle;
+-   int         x, y, i;
+-   static char table[41*41];
+-
+-
+-   rapport = 3200.0f/1024.0f;
+-
+-   for ( y=0 ; y<=40 ; y++ )
+-   {
+-       for ( x=0 ; x<=40 ; x++ )
+-       {
+-           i = x + y*41;
+-           table[i] = 0;
+-
+-           p.x = (x-20)*rapport;
+-           p.z = (y-20)*rapport;
+-           p.y = 0.0f;
+-           if ( Length(p.x, p.y) > 20.0f*rapport )  continue;
+-
+-           angle = RetFineSlope(pos+p);
+-
+-           if ( angle < FLATLIMIT )
+-           {
+-               table[i] = 1;
+-           }
+-           else
+-           {
+-               table[i] = 2;
+-           }
+-       }
+-   }
+-
+-   m_engine->GroundMarkCreate(pos, 40.0f, 0.001f, 15.0f, 0.001f, 41, 41, table);
+-}
+-
+-
+ // Calcule le rayon de la plus grande zone platte disponible.
+ // Ce calcul n'est pas optimisé !
+ 
+@@ -2261,3 +2410,30 @@ float CTerrain::RetFlyingLimit(D3DVECTOR pos, BOOL bNoLimit)
+    return m_flyingMaxHeight;
+ }
+ 
++
++// Vide tous les points de trajectoire.
++
++void CTerrain::FlushTraject()
++{
++   m_trajectTotal = 0;
++}
++
++// Ajoute un point de trajectoire.
++
++BOOL CTerrain::AddTraject(const D3DVECTOR &pos)
++{
++   if ( m_trajectTotal >= MAXTRAJECT )  return FALSE;
++   m_trajectTable[m_trajectTotal++] = pos;
++   return TRUE;
++}
++
++// Donne un point de trajectoire.
++
++BOOL CTerrain::GetTraject(int rank, D3DVECTOR &pos)
++{
++   if ( rank >= m_trajectTotal )  return FALSE;
++   pos = m_trajectTable[rank];
++   return TRUE;
++}
++
++

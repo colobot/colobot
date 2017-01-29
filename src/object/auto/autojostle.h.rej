@@ -1,0 +1,19 @@
+diff a/src/object/auto/autojostle.h b/src/object/auto/autojostle.h	(rejected hunks)
+@@ -29,11 +29,12 @@ public:
+ protected:
+ 
+ protected:
+-   float           m_force;
+-   float           m_progress;
+-   float           m_speed;
+-   float           m_lastParticule;
+-   Error           m_error;
++   D3DVECTOR   m_zoom;
++   float       m_force;
++   float       m_progress;
++   float       m_speed;
++   float       m_lastParticule;
++   Error       m_error;
+ };
+ 
+ 

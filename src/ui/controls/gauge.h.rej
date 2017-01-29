@@ -1,0 +1,35 @@
+diff a/src/ui/controls/gauge.h b/src/ui/controls/gauge.h	(rejected hunks)
+@@ -10,6 +10,17 @@
+ class CD3DEngine;
+ 
+ 
++enum GaugeMode
++{
++   GM_NORMAL   = 0,
++   GM_SPEED    = 1,
++   GM_RPM      = 2,
++   GM_COMPASS  = 3,
++   GM_LEVEL1   = 4,
++   GM_LEVEL2   = 5,
++};
++
++
+ 
+ class CGauge : public CControl
+ {
+@@ -26,10 +37,14 @@ public:
+    void    SetLevel(float level);
+    float   RetLevel();
+ 
++   void    SetMode(GaugeMode mode);
++   GaugeMode RetMode();
++
+ protected:
+ 
+ protected:
+-   float   m_level;
++   float       m_level;
++   GaugeMode   m_mode;
+ };
+ 
+ 

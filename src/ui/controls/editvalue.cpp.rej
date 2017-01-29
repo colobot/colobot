@@ -1,0 +1,73 @@
+diff a/src/ui/controls/editvalue.cpp b/src/ui/controls/editvalue.cpp	(rejected hunks)
+@@ -133,12 +133,15 @@ void CEditValue::MoveAdjust()
+ BOOL CEditValue::EventProcess(const Event &event)
+ {
+    float   value;
++   BOOL    bShift;
+ 
+    CControl::EventProcess(event);
+ 
+    if ( (m_state & STATE_VISIBLE) == 0 )  return TRUE;
+    if ( (m_state & STATE_ENABLE) == 0 )  return TRUE;
+ 
++   bShift = (event.keyState&KS_SHIFT);
++
+    if ( m_edit != 0 )
+    {
+        if ( m_edit->RetFocus()           &&
+@@ -204,6 +207,31 @@ BOOL CEditValue::EventProcess(const Event &event)
+        HiliteValue(event);
+    }
+ 
++   if ( m_bFocus &&
++        (m_state & STATE_VISIBLE) &&
++        (m_state & STATE_ENABLE)  &&
++        event.event == EVENT_KEYDOWN &&
++        (event.param == VK_UP ||
++         event.param == VK_JUP) )
++   {
++       value = RetValue()+m_stepValue;
++       if ( value > m_maxValue )  value = m_maxValue;
++       SetValue(value, TRUE);
++       HiliteValue(event);
++   }
++   if ( m_bFocus &&
++        (m_state & STATE_VISIBLE) &&
++        (m_state & STATE_ENABLE)  &&
++        event.event == EVENT_KEYDOWN &&
++        (event.param == VK_DOWN ||
++         event.param == VK_JDOWN) )
++   {
++       value = RetValue()-m_stepValue;
++       if ( value < m_minValue )  value = m_minValue;
++       SetValue(value, TRUE);
++       HiliteValue(event);
++   }
++
+    return TRUE;
+ }
+ 
+@@ -242,6 +270,10 @@ void CEditValue::Draw()
+    {
+        DrawShadow(m_pos, m_dim);
+    }
++   if ( m_bFocus )
++   {
++       DrawFocus(m_pos, m_dim);
++   }
+ 
+    if ( m_edit != 0 )
+    {
+@@ -249,10 +281,12 @@ void CEditValue::Draw()
+    }
+    if ( m_buttonUp != 0 )
+    {
++       m_buttonUp->SetState(STATE_SIMPLY);
+        m_buttonUp->Draw();
+    }
+    if ( m_buttonDown != 0 )
+    {
++       m_buttonDown->SetState(STATE_SIMPLY);
+        m_buttonDown->Draw();
+    }
+ }

@@ -1,0 +1,74 @@
+diff a/src/ui/displaytext.h b/src/ui/displaytext.h	(rejected hunks)
+@@ -11,15 +11,23 @@ class CObject;
+ class CSound;
+ 
+ 
++
++#define FONTSIZE   12.0f
++
++
++
+ enum TextType
+ {
+    TT_ERROR    = 1,
+    TT_WARNING  = 2,
+    TT_INFO     = 3,
+    TT_MESSAGE  = 4,
++   TT_START    = 5,
+ };
+ 
+-#define MAXDTLINE  4
++enum Sound;
++
++#define MAXDTLINE  1
+ 
+ 
+ class CDisplayText
+@@ -32,30 +40,14 @@ public:
+ 
+    BOOL        EventProcess(const Event &event);
+ 
+-   void        DisplayError(Error err, CObject* pObj, float time=10.0f);
+-   void        DisplayError(Error err, D3DVECTOR goal, float height=15.0f, float dist=60.0f, float time=10.0f);
+-   void        DisplayText(char *text, CObject* pObj, float time=10.0f, TextType type=TT_INFO);
+-   void        DisplayText(char *text, D3DVECTOR goal, float height=15.0f, float dist=60.0f, float time=10.0f, TextType type=TT_INFO);
++   void        DisplayError(Error err, float time=10.0f, float size=FONTSIZE);
++   void        DisplayText(char *text, float time=10.0f, float size=FONTSIZE, TextType type=TT_INFO, Sound sound=SOUND_CLICK);
+    void        HideText(BOOL bHide);
+    void        ClearText();
+    BOOL        ClearLastText();
+    void        SetDelay(float factor);
+    void        SetEnable(BOOL bEnable);
+ 
+-   D3DVECTOR   RetVisitGoal(EventMsg event);
+-   float       RetVisitDist(EventMsg event);
+-   float       RetVisitHeight(EventMsg event);
+-
+-   float       RetIdealDist(CObject* pObj);
+-   float       RetIdealHeight(CObject* pObj);
+-
+-   void        ClearVisit();
+-   void        SetVisit(EventMsg event);
+-   BOOL        IsVisit(EventMsg event);
+-
+-protected:
+-   CObject*    SearchToto();
+-
+ protected:
+    CInstanceManager* m_iMan;
+    CD3DEngine*     m_engine;
+@@ -64,13 +56,11 @@ protected:
+ 
+    BOOL            m_bExist[MAXDTLINE];
+    float           m_time[MAXDTLINE];
+-   D3DVECTOR       m_visitGoal[MAXDTLINE];
+-   float           m_visitDist[MAXDTLINE];
+-   float           m_visitHeight[MAXDTLINE];
+ 
+    BOOL            m_bHide;
+    BOOL            m_bEnable;
+    float           m_delayFactor;
++   int             m_channelSound;
+ };
+ 
+ 

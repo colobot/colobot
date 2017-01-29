@@ -1,0 +1,27 @@
+diff a/src/object/motion/motionhuman.h b/src/object/motion/motionhuman.h	(rejected hunks)
+@@ -23,8 +23,8 @@ class CObject;
+ #define MH_SWIM            5
+ #define MH_SPEC            6
+ 
+-#define MHS_FIRE       0
+-#define MHS_GUN            1
++#define MHS_DRIVE1     0
++#define MHS_DRIVE2     1
+ #define MHS_TAKE       2
+ #define MHS_TAKEOTHER  3
+ #define MHS_TAKEHIGH   4
+@@ -48,13 +48,10 @@ public:
+    ~CMotionHuman();
+ 
+    void    DeleteObject(BOOL bAll=FALSE);
+-   BOOL    Create(D3DVECTOR pos, float angle, ObjectType type, float power);
++   BOOL    Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb);
+    BOOL    EventProcess(const Event &event);
+    Error   SetAction(int action, float time=0.2f);
+ 
+-   void    StartDisplayPerso();
+-   void    StopDisplayPerso();
+-
+ protected:
+    void    CreatePhysics(ObjectType type);
+    BOOL    EventFrame(const Event &event);
