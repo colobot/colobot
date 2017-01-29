@@ -9,6 +9,9 @@ add_subdirectory(unit)
 # CBot tests
 add_subdirectory(cbot)
 
+# Regression tests
+add_subdirectory(recorder)
+
 
 if(COLOBOT_LINT_BUILD)
     add_fake_header_sources("test")

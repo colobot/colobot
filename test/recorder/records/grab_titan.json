@@ -1,0 +1,4473 @@
+{
+    "category": 2,
+    "chapter": 1,
+    "events": [
+        {
+            "abs_time": 0.0,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.0,
+                "y": 0.0
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 22
+        },
+        {
+            "abs_time": 0.0,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 16
+        },
+        {
+            "abs_time": 0.0,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 22
+        },
+        {
+            "abs_time": 0.0,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 8
+        },
+        {
+            "abs_time": 0.0,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 9
+        },
+        {
+            "abs_time": 0.0,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 8
+        },
+        {
+            "abs_time": 0.0,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.0,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 21
+        },
+        {
+            "abs_time": 0.0079630883410573,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4287109375,
+                "y": 0.50071120262146
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.341149389743805,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4140625,
+                "y": 0.512091040611267
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.371843576431274,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4091796875,
+                "y": 0.516358494758606
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.411922216415405,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.408203125,
+                "y": 0.517780900001526
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.439762592315674,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.40234375,
+                "y": 0.522048354148865
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.469715029001236,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.3876953125,
+                "y": 0.539118051528931
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.50405889749527,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.365234375,
+                "y": 0.563300132751465
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.541764497756958,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.3134765625,
+                "y": 0.628733992576599
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.579671323299408,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.2626953125,
+                "y": 0.702702701091766
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.616160571575165,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.2021484375,
+                "y": 0.782361328601837
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.652639210224152,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.1767578125,
+                "y": 0.833570420742035
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.689471185207367,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.166015625,
+                "y": 0.862019896507263
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.723055243492126,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.158203125,
+                "y": 0.890469431877136
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.754863083362579,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.1494140625,
+                "y": 0.9174964427948
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.790086507797241,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.1328125,
+                "y": 0.944523453712463
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.820762038230896,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.1181640625,
+                "y": 0.968705534934998
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.852230310440063,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.107421875,
+                "y": 0.997155070304871
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 0.88786244392395,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.107421875,
+                "y": 1
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 9
+        },
+        {
+            "abs_time": 0.88786244392395,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.107421875,
+                "y": 1
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.2183952331543,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.1103515625,
+                "y": 0.997155070304871
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 8
+        },
+        {
+            "abs_time": 1.2183952331543,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.1103515625,
+                "y": 0.997155070304871
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.24619925022125,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.1103515625,
+                "y": 0.992887616157532
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.27817034721375,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.111328125,
+                "y": 0.987197697162628
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.31272923946381,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.1123046875,
+                "y": 0.982930302619934
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.34439563751221,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.11328125,
+                "y": 0.978662848472595
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.5509535074234,
+            "data": {
+                "button": 2,
+                "data_type": 3
+            },
+            "key_mod": 0,
+            "mouse_button_state": 2,
+            "mouse_pos": {
+                "x": 0.11328125,
+                "y": 0.978662848472595
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 3
+        },
+        {
+            "abs_time": 1.5509535074234,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 2,
+            "mouse_pos": {
+                "x": 0.11328125,
+                "y": 0.978662848472595
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 1502
+        },
+        {
+            "abs_time": 1.63334941864014,
+            "data": {
+                "button": 2,
+                "data_type": 3
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.11328125,
+                "y": 0.978662848472595
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 4
+        },
+        {
+            "abs_time": 1.71165287494659,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.1142578125,
+                "y": 0.975817918777466
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.73638224601746,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.1240234375,
+                "y": 0.963015675544739
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.76761710643768,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.1494140625,
+                "y": 0.934566140174866
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.79499578475952,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.1943359375,
+                "y": 0.890469431877136
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.81995558738708,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.2734375,
+                "y": 0.816500723361969
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.84595024585724,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.357421875,
+                "y": 0.739687085151672
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.87320196628571,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.396484375,
+                "y": 0.711237549781799
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.89967513084412,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.427734375,
+                "y": 0.682788014411926
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.92975378036499,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4404296875,
+                "y": 0.661450922489166
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.95515322685242,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4541015625,
+                "y": 0.640113830566406
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 1.95515322685242,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4541015625,
+                "y": 0.640113830566406
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 1.95515322685242,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4541015625,
+                "y": 0.640113830566406
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 1.98461556434631,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4599609375,
+                "y": 0.627311527729034
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.01231622695923,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.470703125,
+                "y": 0.605974435806274
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.05067420005798,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4755859375,
+                "y": 0.596017062664032
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.0797073841095,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.478515625,
+                "y": 0.587482213973999
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.10555815696716,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.48046875,
+                "y": 0.580369830131531
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.13256454467773,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4853515625,
+                "y": 0.568990051746368
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.16174125671387,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.48828125,
+                "y": 0.560455203056335
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.19013333320618,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4931640625,
+                "y": 0.549075365066528
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.21704077720642,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5009765625,
+                "y": 0.530583202838898
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.24556112289429,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5078125,
+                "y": 0.516358494758606
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.27067613601685,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.513671875,
+                "y": 0.502133727073669
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.29848146438599,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5205078125,
+                "y": 0.486486494541168
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.32701206207275,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5263671875,
+                "y": 0.473684191703796
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.3525447845459,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5361328125,
+                "y": 0.449502110481262
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.3812198638916,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5439453125,
+                "y": 0.432432413101196
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.40973448753357,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5458984375,
+                "y": 0.425320029258728
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.43655705451965,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.548828125,
+                "y": 0.416785180568695
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.46437573432922,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5498046875,
+                "y": 0.409672856330872
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.49428296089172,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5517578125,
+                "y": 0.402560472488403
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.52156758308411,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5517578125,
+                "y": 0.395448088645935
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.5479097366333,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5546875,
+                "y": 0.384068250656128
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 2.5479097366333,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5546875,
+                "y": 0.384068250656128
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 2.5479097366333,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5546875,
+                "y": 0.384068250656128
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.58265542984009,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5556640625,
+                "y": 0.375533401966095
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 2.58265542984009,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5556640625,
+                "y": 0.375533401966095
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 2.58265542984009,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5556640625,
+                "y": 0.375533401966095
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.61005687713623,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.368421077728271
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 2.61005687713623,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.368421077728271
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 2.61005687713623,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.368421077728271
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.64484596252441,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.365576088428497
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.67915606498718,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.364153623580933
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 2.67915606498718,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.364153623580933
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 2.67915606498718,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.364153623580933
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.70471549034119,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 2.70471549034119,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 2.70471549034119,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 2.75743174552917,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 2.75743174552917,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 2.7901303768158,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 2.7901303768158,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 2.84052324295044,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 2.84052324295044,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 2.87236189842224,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 2.87236189842224,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 2.90027165412903,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 2.90027165412903,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 2.95101642608643,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 2.95101642608643,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 2.97990608215332,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 2.97990608215332,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.02919602394104,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.02919602394104,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.08159852027893,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.08159852027893,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.10704898834229,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.10704898834229,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.16228866577148,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.16228866577148,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.19119930267334,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.354196310043335
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.19119930267334,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.354196310043335
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.19119930267334,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5576171875,
+                "y": 0.354196310043335
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.21668100357056,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5556640625,
+                "y": 0.348506391048431
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.24232268333435,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5546875,
+                "y": 0.341394007205963
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.24232268333435,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5546875,
+                "y": 0.341394007205963
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.24232268333435,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5546875,
+                "y": 0.341394007205963
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.26974678039551,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5537109375,
+                "y": 0.334281623363495
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.26974678039551,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5537109375,
+                "y": 0.334281623363495
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.26974678039551,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5537109375,
+                "y": 0.334281623363495
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.29942059516907,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.552734375,
+                "y": 0.330014228820801
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.32672929763794,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5517578125,
+                "y": 0.325746774673462
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.32672929763794,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5517578125,
+                "y": 0.325746774673462
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.32672929763794,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5517578125,
+                "y": 0.325746774673462
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.35195112228394,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.55078125,
+                "y": 0.321479380130768
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.35195112228394,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.55078125,
+                "y": 0.321479380130768
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.35195112228394,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.55078125,
+                "y": 0.321479380130768
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.3814594745636,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.55078125,
+                "y": 0.320056915283203
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.40544295310974,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5498046875,
+                "y": 0.315789461135864
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.40544295310974,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5498046875,
+                "y": 0.315789461135864
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.40544295310974,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5498046875,
+                "y": 0.315789461135864
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.43691420555115,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.548828125,
+                "y": 0.307254612445831
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.43691420555115,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.548828125,
+                "y": 0.307254612445831
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.43691420555115,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.548828125,
+                "y": 0.307254612445831
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.471599817276,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.301564693450928
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.471599817276,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.301564693450928
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.471599817276,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.301564693450928
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.50540924072266,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.50540924072266,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.50540924072266,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.56908392906189,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.56908392906189,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.60143136978149,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.60143136978149,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.631596326828,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.631596326828,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.66523861885071,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.66523861885071,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.72598123550415,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.72598123550415,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.75424075126648,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.75424075126648,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.79442501068115,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.79442501068115,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.82657647132874,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.82657647132874,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.8894202709198,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.8894202709198,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5478515625,
+                "y": 0.300142228603363
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.91953539848328,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.546875,
+                "y": 0.295874834060669
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.91953539848328,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.546875,
+                "y": 0.295874834060669
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.91953539848328,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.546875,
+                "y": 0.295874834060669
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.95077848434448,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.544921875,
+                "y": 0.29160737991333
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.95077848434448,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.544921875,
+                "y": 0.29160737991333
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.95077848434448,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.544921875,
+                "y": 0.29160737991333
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 3.9899275302887,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.544921875,
+                "y": 0.290184915065765
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 3.9899275302887,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.544921875,
+                "y": 0.290184915065765
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 3.9899275302887,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.544921875,
+                "y": 0.290184915065765
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 4.02923345565796,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.544921875,
+                "y": 0.288762450218201
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.02923345565796,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.544921875,
+                "y": 0.288762450218201
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.02923345565796,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.544921875,
+                "y": 0.288762450218201
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 4.06342792510986,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5439453125,
+                "y": 0.285917520523071
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 4.09588575363159,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5419921875,
+                "y": 0.280227601528168
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.09588575363159,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5419921875,
+                "y": 0.280227601528168
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.09588575363159,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5419921875,
+                "y": 0.280227601528168
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 4.12892293930054,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5380859375,
+                "y": 0.275960147380829
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.12892293930054,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5380859375,
+                "y": 0.275960147380829
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.12892293930054,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5380859375,
+                "y": 0.275960147380829
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 4.16190576553345,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5341796875,
+                "y": 0.268847823143005
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.16190576553345,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5341796875,
+                "y": 0.268847823143005
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.16190576553345,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5341796875,
+                "y": 0.268847823143005
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 4.19948720932007,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.53125,
+                "y": 0.266002833843231
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.19948720932007,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.53125,
+                "y": 0.266002833843231
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.19948720932007,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.53125,
+                "y": 0.266002833843231
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 4.23185443878174,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5302734375,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.23185443878174,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5302734375,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.23185443878174,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5302734375,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 4.29834270477295,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.29834270477295,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.29834270477295,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 4.33067607879639,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.33067607879639,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.3643946647644,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.3643946647644,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.40061140060425,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.40061140060425,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.46039247512817,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.46039247512817,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.49216079711914,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.49216079711914,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.53954648971558,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.53954648971558,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.5655951499939,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.5655951499939,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.61485910415649,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.61485910415649,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.66454076766968,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.66454076766968,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.69082403182983,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.69082403182983,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.7393741607666,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.7393741607666,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.78921222686768,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.78921222686768,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.81423234939575,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.81423234939575,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.86325263977051,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.86325263977051,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.89135074615479,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 4.89135074615479,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 4.93677091598511,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 11
+        },
+        {
+            "abs_time": 5.06027317047119,
+            "data": {
+                "data_type": 2,
+                "key": 97,
+                "slot": 0,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 5.06027317047119,
+            "data": {
+                "data_type": 5,
+                "text": "a"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.264580368995667
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 5.30449056625366,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5263671875,
+                "y": 0.263157904148102
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.33009719848633,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.515625,
+                "y": 0.258890450000763
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.35833501815796,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5068359375,
+                "y": 0.254623055458069
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.39120674133301,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4990234375,
+                "y": 0.248933136463165
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.41615629196167,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.486328125,
+                "y": 0.240398287773132
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.44249391555786,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4775390625,
+                "y": 0.233285903930664
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.47031354904175,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.470703125,
+                "y": 0.227596044540405
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.4965500831604,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4697265625,
+                "y": 0.226173520088196
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.52248382568359,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.46875,
+                "y": 0.224751055240631
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.57283782958984,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4677734375,
+                "y": 0.224751055240631
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.64909553527832,
+            "data": {
+                "data_type": 2,
+                "key": 97,
+                "slot": 0,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4677734375,
+                "y": 0.224751055240631
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 5.64909553527832,
+            "data": {
+                "data_type": 5,
+                "text": "a"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4677734375,
+                "y": 0.224751055240631
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 5.69865369796753,
+            "data": {
+                "data_type": 2,
+                "key": 97,
+                "slot": 0,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4677734375,
+                "y": 0.224751055240631
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 5.69865369796753,
+            "data": {
+                "data_type": 5,
+                "text": "a"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4677734375,
+                "y": 0.224751055240631
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 5.72497463226318,
+            "data": {
+                "data_type": 2,
+                "key": 97,
+                "slot": 0,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4677734375,
+                "y": 0.224751055240631
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 11
+        },
+        {
+            "abs_time": 5.78027772903442,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.466796875,
+                "y": 0.221906125545502
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.80540037155151,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.466796875,
+                "y": 0.211948812007904
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.83165216445923,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.466796875,
+                "y": 0.204836428165436
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.86101865768433,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.466796875,
+                "y": 0.199146509170532
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.89236259460449,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4658203125,
+                "y": 0.192034125328064
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.91620206832886,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.462890625,
+                "y": 0.180654346942902
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 5.94064044952393,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4609375,
+                "y": 0.173541963100433
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.02688598632812,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4580078125,
+                "y": 0.169274508953094
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.05959796905518,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4541015625,
+                "y": 0.1650071144104
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.08253002166748,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4501953125,
+                "y": 0.162162184715271
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.107834815979,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4462890625,
+                "y": 0.159317195415497
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.13406896591187,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4423828125,
+                "y": 0.155049800872803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.16024732589722,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4404296875,
+                "y": 0.150782346725464
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.18441390991211,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.439453125,
+                "y": 0.14651495218277
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.21159219741821,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4375,
+                "y": 0.140825033187866
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.23369312286377,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4345703125,
+                "y": 0.128022730350494
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.26306200027466,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.431640625,
+                "y": 0.116642951965332
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 10
+        },
+        {
+            "abs_time": 6.26306200027466,
+            "data": {
+                "data_type": 5,
+                "text": "w"
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.431640625,
+                "y": 0.116642951965332
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 12
+        },
+        {
+            "abs_time": 6.26306200027466,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.431640625,
+                "y": 0.116642951965332
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.29241514205933,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4306640625,
+                "y": 0.109530568122864
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.3162088394165,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4306640625,
+                "y": 0.103840708732605
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.33977937698364,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4306640625,
+                "y": 0.0995732545852661
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.36475324630737,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4296875,
+                "y": 0.0981507897377014
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.38977813720703,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4296875,
+                "y": 0.0967283248901367
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.41402769088745,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4296875,
+                "y": 0.0910384058952332
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.43835592269897,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4296875,
+                "y": 0.0896159410476685
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.49268817901611,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4296875,
+                "y": 0.0881934762001038
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.51642894744873,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4365234375,
+                "y": 0.0768136382102966
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.54056787490845,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4404296875,
+                "y": 0.0682787895202637
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.56680488586426,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4404296875,
+                "y": 0.066856324672699
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.59459781646729,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.44140625,
+                "y": 0.066856324672699
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 6.66342401504517,
+            "data": {
+                "data_type": 2,
+                "key": 119,
+                "slot": 2,
+                "virtual": false
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.44140625,
+                "y": 0.066856324672699
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 11
+        },
+        {
+            "abs_time": 6.89403200149536,
+            "data": {
+                "button": 2,
+                "data_type": 3
+            },
+            "key_mod": 0,
+            "mouse_button_state": 2,
+            "mouse_pos": {
+                "x": 0.44140625,
+                "y": 0.066856324672699
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 3
+        },
+        {
+            "abs_time": 6.99298858642578,
+            "data": {
+                "button": 2,
+                "data_type": 3
+            },
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.44140625,
+                "y": 0.066856324672699
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 4
+        },
+        {
+            "abs_time": 6.99298858642578,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.44140625,
+                "y": 0.066856324672699
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 1021
+        },
+        {
+            "abs_time": 7.37435626983643,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.443359375,
+                "y": 0.0839260220527649
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 7.39814615249634,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4482421875,
+                "y": 0.110953032970428
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 7.4234619140625,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4599609375,
+                "y": 0.155049800872803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 7.44614171981812,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.4775390625,
+                "y": 0.213371276855469
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 7.47131967544556,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5,
+                "y": 0.281650066375732
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 7.49583053588867,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5107421875,
+                "y": 0.310099601745605
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 7.51954126358032,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.521484375,
+                "y": 0.325746774673462
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 7.54320287704468,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.529296875,
+                "y": 0.344238996505737
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 7.57442474365234,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5390625,
+                "y": 0.357041239738464
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 7.5993824005127,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5458984375,
+                "y": 0.361308693885803
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 7.62512826919556,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5556640625,
+                "y": 0.366998553276062
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 7.64946842193604,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.56640625,
+                "y": 0.37411093711853
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 7.68049049377441,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.568359375,
+                "y": 0.378378391265869
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.32643699645996,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5771484375,
+                "y": 0.391180634498596
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.35199737548828,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.5849609375,
+                "y": 0.399715483188629
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.37629318237305,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.6015625,
+                "y": 0.413940250873566
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.40065383911133,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.72265625,
+                "y": 0.527738273143768
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.42798519134521,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.8203125,
+                "y": 0.627311527729034
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.45072746276855,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.875,
+                "y": 0.701280236244202
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.47500324249268,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.900390625,
+                "y": 0.752489328384399
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.49923324584961,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.9140625,
+                "y": 0.800853490829468
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.52477073669434,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.91796875,
+                "y": 0.85348504781723
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.54772472381592,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.919921875,
+                "y": 0.899004280567169
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.57355213165283,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.919921875,
+                "y": 0.911806523799896
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.59687519073486,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.9208984375,
+                "y": 0.93598860502243
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.62154769897461,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.9208984375,
+                "y": 0.948790907859802
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.64321136474609,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.9208984375,
+                "y": 0.960170686244965
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.66950130462646,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.9208984375,
+                "y": 0.967283070087433
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.69528102874756,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.9208984375,
+                "y": 0.972972989082336
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.71808624267578,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.9228515625,
+                "y": 0.988620221614838
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.74181365966797,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.927734375,
+                "y": 1
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 8.76638317108154,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.9287109375,
+                "y": 1
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 9
+        },
+        {
+            "abs_time": 8.76638317108154,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.9287109375,
+                "y": 1
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 7
+        },
+        {
+            "abs_time": 9.96612930297852,
+            "data": null,
+            "key_mod": 0,
+            "mouse_button_state": 0,
+            "mouse_pos": {
+                "x": 0.0,
+                "y": 0.0
+            },
+            "param": 0,
+            "time": 0.0,
+            "type": 1
+        }
+    ],
+    "level": 2,
+    "start_game": true
+}

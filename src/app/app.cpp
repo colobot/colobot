@@ -28,6 +28,7 @@
 #include "common/key.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
+#include "common/object_maker.h"
 #include "common/profiler.h"
 #include "common/stringutils.h"
 #include "common/version.h"
@@ -115,9 +116,10 @@ CApplication::CApplication(CSystemUtils* systemUtils)
     : m_systemUtils(systemUtils),
       m_private(MakeUnique<ApplicationPrivate>()),
       m_configFile(MakeUnique<CConfigFile>()),
-      m_input(MakeUnique<CInput>()),
       m_pathManager(MakeUnique<CPathManager>(systemUtils))
 {
+    m_input = CObjectMaker::GetInstancePointer()->MakeInput();
+    
     m_exitCode      = 0;
     m_active        = false;
     m_debugModes    = 0;
@@ -669,10 +671,10 @@ bool CApplication::Create()
         return false;
     }
 
-    m_eventQueue = MakeUnique<CEventQueue>();
+    m_eventQueue = CObjectMaker::GetInstancePointer()->MakeEventQueue();
 
     // Create the robot application.
-    m_controller = MakeUnique<CController>();
+    m_controller = CObjectMaker::GetInstancePointer()->MakeController();
 
     CThread musicLoadThread([this]()
     {

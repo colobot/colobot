@@ -17,42 +17,37 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file app/controller.h
- * \brief CController class
- */
 
-#pragma once
+#include "test/recorder/controller_mock.h"
 
-#include "level/level_category.h"
+#include "test/recorder/recorder.h"
 
-#include <memory>
-#include <string>
 
-class CRobotMain;
-struct Event;
-
-/**
- * \class CController
- * \brief Entry point into CRobotMain
- */
-class CController
+CControllerRecord::CControllerRecord(CRecord* record)
+    : m_record(record)
 {
-public:
-    CController();
-    ~CController();
+    
+}
 
-    //! Return CRobotMain instance
-    CRobotMain*      GetRobotMain();
+void CControllerRecord::ProcessEvent(Event& event)
+{
+	if (event.type != EVENT_FRAME) // don't record EVENT_FRAME, number of FPS can differ
+	{
+		Event cloneEvent = event.Clone();
+		RecordedEvent recordEvent(std::move(cloneEvent), m_app->GetAbsTime());
 
-    //! Event processing
-    TEST_VIRTUAL void ProcessEvent(Event &event);
+		m_record->WriteEvent(recordEvent);
+	}
 
-    //! Start the application
-    void StartApp();
-    //! Starts the simulation, loading the given scene
-    void StartGame(LevelCategory cat, int chap, int lvl);
+    CController::ProcessEvent(event);
+}
 
-private:
-    std::unique_ptr<CRobotMain> m_main;
-};
+void CControllerReplay::ProcessEvent(Event& event)
+{
+	if (event.type == EVENT_FRAME && !m_assertion.empty())
+	{
+		m_assertion(dynamic_cast<CApplicationMock*>(m_app));
+	}
+
+	CController::ProcessEvent(event);
+}

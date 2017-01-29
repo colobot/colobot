@@ -75,7 +75,7 @@ public:
     CInput();
 
     //! Process an incoming event, also sets .kmodState, .mousePos, .mouseButtonsState and .key.slot
-    void EventProcess(Event &event);
+    TEST_VIRTUAL void EventProcess(Event &event);
 
     //! Called by CApplication on SDL MOUSE_MOTION event
     void MouseMove(Math::IntPoint pos);

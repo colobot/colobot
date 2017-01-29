@@ -63,6 +63,7 @@ public:
     static void StopPerformanceCounter(PerformanceCounter counter);
     static long long GetPerformanceCounterTime(PerformanceCounter counter);
     static float GetPerformanceCounterFraction(PerformanceCounter counter);
+    static void Reset();
 
 private:
     static void ResetPerformanceCounters();

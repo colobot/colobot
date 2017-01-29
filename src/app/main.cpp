@@ -29,6 +29,7 @@
 
 #include "common/logger.h"
 #include "common/make_unique.h"
+#include "common/object_maker.h"
 #include "common/profiler.h"
 #include "common/restext.h"
 #include "common/version.h"
@@ -107,6 +108,8 @@ extern "C"
 
 int main(int argc, char *argv[])
 {
+    CObjectMaker objectMaker;
+    
     CLogger logger; // single instance of logger
     logger.AddOutput(stderr);
 

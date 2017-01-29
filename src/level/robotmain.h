@@ -180,6 +180,7 @@ public:
     Ui::CInterface* GetInterface();
     Ui::CDisplayText* GetDisplayText();
     CPauseManager* GetPauseManager();
+    CObjectManager* GetObjectManager();
 
     /**
      * \name Phase management

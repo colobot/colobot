@@ -166,7 +166,7 @@ public:
     //! Parses commandline arguments
     ParseArgsStatus ParseArguments(int argc, char *argv[]);
     //! Initializes the application
-    bool        Create();
+    TEST_VIRTUAL bool        Create();
     //! Main event loop
     int         Run();
     //! Returns the code to be returned at main() exit
@@ -282,7 +282,7 @@ protected:
     bool CreateVideoSurface();
 
     //! Processes the captured SDL event to Event struct
-    Event       ProcessSystemEvent();
+    TEST_VIRTUAL Event ProcessSystemEvent();
     //! If applicable, creates a virtual event to match the changed state as of new event
     Event       CreateVirtualEvent(const Event& sourceEvent);
     //! Prepares a simulation update event

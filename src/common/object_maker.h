@@ -17,42 +17,20 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file app/controller.h
- * \brief CController class
- */
 
 #pragma once
 
-#include "level/level_category.h"
+#include "app/controller.h"
+#include "app/input.h"
 
-#include <memory>
-#include <string>
+#include "common/event.h"
+#include "singleton.h"
 
-class CRobotMain;
-struct Event;
-
-/**
- * \class CController
- * \brief Entry point into CRobotMain
- */
-class CController
+class CObjectMaker : public CSingleton<CObjectMaker>
 {
 public:
-    CController();
-    ~CController();
-
-    //! Return CRobotMain instance
-    CRobotMain*      GetRobotMain();
-
-    //! Event processing
-    TEST_VIRTUAL void ProcessEvent(Event &event);
-
-    //! Start the application
-    void StartApp();
-    //! Starts the simulation, loading the given scene
-    void StartGame(LevelCategory cat, int chap, int lvl);
-
-private:
-    std::unique_ptr<CRobotMain> m_main;
+    virtual std::unique_ptr<CController> MakeController();
+    virtual std::unique_ptr<CEventQueue> MakeEventQueue();
+    virtual std::unique_ptr<CInput> MakeInput();
 };
+

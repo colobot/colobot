@@ -71,6 +71,18 @@ float CProfiler::GetPerformanceCounterFraction(PerformanceCounter counter)
     return static_cast<float>(m_prevPerformanceCounters[counter]) / static_cast<float>(m_prevPerformanceCounters[PCNT_ALL]);
 }
 
+void CProfiler::Reset()
+{
+    ResetPerformanceCounters();
+
+    while (! m_runningPerformanceCounters.empty())
+        m_runningPerformanceCounters.pop();
+
+    while (! m_runningPerformanceCountersType.empty())
+        m_runningPerformanceCountersType.pop();
+
+}
+
 void CProfiler::ResetPerformanceCounters()
 {
     for (int i = 0; i < PCNT_MAX; ++i)

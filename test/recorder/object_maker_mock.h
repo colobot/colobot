@@ -17,42 +17,39 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file app/controller.h
- * \brief CController class
- */
-
 #pragma once
 
-#include "level/level_category.h"
 
-#include <memory>
-#include <string>
+#include "common/object_maker.h"
 
-class CRobotMain;
-struct Event;
+#include "test/recorder/recorder.h"
 
-/**
- * \class CController
- * \brief Entry point into CRobotMain
- */
-class CController
+
+class CObjectMakerRecord : public CObjectMaker
 {
 public:
-    CController();
-    ~CController();
-
-    //! Return CRobotMain instance
-    CRobotMain*      GetRobotMain();
-
-    //! Event processing
-    TEST_VIRTUAL void ProcessEvent(Event &event);
-
-    //! Start the application
-    void StartApp();
-    //! Starts the simulation, loading the given scene
-    void StartGame(LevelCategory cat, int chap, int lvl);
-
-private:
-    std::unique_ptr<CRobotMain> m_main;
+    CObjectMakerRecord(CRecord* record);
+    
+    std::unique_ptr<CEventQueue> 	MakeEventQueue() override;
+    std::unique_ptr<CController> 	MakeController() override;
+    
+protected:
+    CRecord* m_record;
 };
+
+
+class CObjectMakerReplay : public CObjectMaker
+{
+public:
+    CObjectMakerReplay(CRecord* record);
+    
+    std::unique_ptr<CEventQueue> 	MakeEventQueue() override;
+    std::unique_ptr<CController> 	MakeController() override;
+    std::unique_ptr<CInput> 		MakeInput() override;
+    
+protected:
+    CRecord* m_record;
+};
+    
+ 
+ 

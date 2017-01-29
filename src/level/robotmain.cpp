@@ -306,6 +306,11 @@ CPauseManager* CRobotMain::GetPauseManager()
     return m_pause.get();
 }
 
+CObjectManager* CRobotMain::GetObjectManager()
+{
+	return m_objMan.get();
+}
+
 std::string PhaseToString(Phase phase)
 {
     if (phase == PHASE_WELCOME1) return "PHASE_WELCOME1";

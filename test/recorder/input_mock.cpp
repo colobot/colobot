@@ -17,42 +17,18 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file app/controller.h
- * \brief CController class
- */
+#include "test/recorder/input_mock.h"
 
-#pragma once
+#include "common/event.h"
 
-#include "level/level_category.h"
-
-#include <memory>
-#include <string>
-
-class CRobotMain;
-struct Event;
-
-/**
- * \class CController
- * \brief Entry point into CRobotMain
- */
-class CController
+void CInputMock::EventProcess(Event& event)
 {
-public:
-    CController();
-    ~CController();
+        Event e = event.Clone();
+        
+        CInput::EventProcess(event);
 
-    //! Return CRobotMain instance
-    CRobotMain*      GetRobotMain();
-
-    //! Event processing
-    TEST_VIRTUAL void ProcessEvent(Event &event);
-
-    //! Start the application
-    void StartApp();
-    //! Starts the simulation, loading the given scene
-    void StartGame(LevelCategory cat, int chap, int lvl);
-
-private:
-    std::unique_ptr<CRobotMain> m_main;
-};
+        // CInput::EventProcess() changes event, so we must restore part of variables
+        event.mousePos = e.mousePos;
+        event.mouseButtonsState = e.mouseButtonsState;
+        event.kmodState = e.kmodState;
+}

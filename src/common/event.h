@@ -876,11 +876,11 @@ public:
     ~CEventQueue();
 
     //! Checks if queue is empty
-    bool IsEmpty();
+    TEST_VIRTUAL bool IsEmpty();
     //! Adds an event to the queue
-    bool AddEvent(Event&& event);
+    TEST_VIRTUAL bool AddEvent(Event&& event);
     //! Removes and returns an event from queue front; if queue is empty, returns event of type EVENT_NULL
-    Event GetEvent();
+    TEST_VIRTUAL Event GetEvent();
 
 protected:
     CSDLMutexWrapper m_mutex;

@@ -124,10 +124,12 @@ public:
      */
     static bool ParseLogLevel(const std::string& str, LogLevel& logLevel);
 
+protected:
+    TEST_VIRTUAL void Log(LogLevel type, const char* str, va_list args);
+
 private:
     std::vector<FILE*> m_outputs;
     LogLevel m_logLevel;
-    void Log(LogLevel type, const char* str, va_list args);
 };
 
 

@@ -17,42 +17,41 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file app/controller.h
- * \brief CController class
- */
 
-#pragma once
+#include "test/recorder/event_queue_mock.h"
 
-#include "level/level_category.h"
 
-#include <memory>
-#include <string>
-
-class CRobotMain;
-struct Event;
-
-/**
- * \class CController
- * \brief Entry point into CRobotMain
- */
-class CController
+bool CEventQueueRecord::AddEvent(Event&& event)
 {
-public:
-    CController();
-    ~CController();
+    if (event.type == EVENT_SYS_QUIT || event.type == EVENT_QUIT || event.type == EVENT_RESOLUTION_CHANGED)
+    {
+        Event cloneEvent = event.Clone();
+        RecordedEvent recordedEvent(std::move(cloneEvent), m_app->GetAbsTime());
+        
+        m_record->WriteEvent(recordedEvent);
+    }
+    
+    return CEventQueue::AddEvent(std::move(event));
+}
 
-    //! Return CRobotMain instance
-    CRobotMain*      GetRobotMain();
+bool CEventQueueReplay::AddEvent(Event&& event)
+{
+    return true;
+}
 
-    //! Event processing
-    TEST_VIRTUAL void ProcessEvent(Event &event);
+Event CEventQueueReplay::GetEvent()
+{
+    if (m_record->CanReadEvent(m_app->GetAbsTime()))
+    {
+        Event e = m_record->ReadEvent();
+        
+        return e;
+    }
 
-    //! Start the application
-    void StartApp();
-    //! Starts the simulation, loading the given scene
-    void StartGame(LevelCategory cat, int chap, int lvl);
+    return Event();
+}
 
-private:
-    std::unique_ptr<CRobotMain> m_main;
-};
+bool CEventQueueReplay::IsEmpty()
+{
+    return !m_record->CanReadEvent(m_app->GetAbsTime());
+}
