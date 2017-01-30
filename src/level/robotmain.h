@@ -463,6 +463,8 @@ public:
     //! Check if crash sphere debug rendering is enabled
     bool GetDebugCrashSpheres();
 
+    int GetSelectedDifficulty();
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);

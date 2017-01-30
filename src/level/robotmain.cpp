@@ -3332,6 +3332,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 ObjectCreateParams params = CObject::ReadCreateParams(line.get());
 
+                int difficulty = line->GetParam("level")->AsInt(0);
+                if ( difficulty > 0 && difficulty !=  GetSelectedDifficulty() )  continue;
+                if ( difficulty < 0 && difficulty == -GetSelectedDifficulty() )  continue;
+
                 float objectProgress = static_cast<float>(rankObj) / static_cast<float>(numObjects);
                 std::string details = StrUtils::ToString<int>(rankObj+1)+" / "+StrUtils::ToString<int>(numObjects);
                 #if DEV_BUILD
@@ -5816,4 +5820,10 @@ std::string CRobotMain::GetPreviousFromCommandHistory()
     if (m_commandHistory.empty() || m_commandHistoryIndex < 1) // first or none element selected
         return "";
     return m_commandHistory[--m_commandHistoryIndex];
+}
+
+int CRobotMain::GetSelectedDifficulty()
+{
+    // TODO
+    return 2;
 }
