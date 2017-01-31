@@ -88,7 +88,7 @@ bool IsBreaker(char c)
 {
     return ( c == '.'  || c == '{' || c == '}' ||
              c == ';' || c == ':' || c == '[' || c == ']' ||
-             c == '(' || c == ')' || c == '=' );
+             c == '(' || c == ')' || c == '=' || c == '"' || c == '\'' );
 }
 
 bool IsDelimiter(char c)
@@ -2814,6 +2814,7 @@ void CEdit::DeleteWord(int dir)
             }
         }
         if ( IsBreaker( m_text[m_cursor2] ) ) ++m_cursor2;
+        if ( !IsDelimiter( m_text[m_cursor1] ) ) ++m_cursor1;
 
         Delete( -1 );
     }
