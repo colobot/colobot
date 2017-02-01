@@ -424,6 +424,18 @@ bool CALSound::Frequency(int channel, float frequency)
     return true;
 }
 
+bool CALSound::Amplitude(int channel, float amplitude)
+{
+    if (!CheckChannel(channel))
+    {
+        return false;
+    }
+
+    // TODO: check ~krzys_h
+    m_channels[channel]->SetVolume(powf(amplitude * m_channels[channel]->GetVolumeAtrib(), 0.2f) * m_audioVolume);
+    return true;
+}
+
 bool CALSound::Stop(int channel)
 {
     if (!CheckChannel(channel))

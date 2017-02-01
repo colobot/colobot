@@ -68,6 +68,11 @@ void COldObjectInterface::SetCirVibration(Math::Vector dir)
     throw std::logic_error("SetCirVibration: not implemented!");
 }
 
+void COldObjectInterface::SetCirChoc(Math::Vector dir)
+{
+    throw std::logic_error("SetCirChoc: not implemented!");
+}
+
 Math::Vector COldObjectInterface::GetTilt()
 {
     throw std::logic_error("GetTilt: not implemented!");
@@ -109,4 +114,15 @@ CAuto* COldObjectInterface::GetAuto()
 void COldObjectInterface::FlatParent()
 {
     throw std::logic_error("FlatParent: not implemented!");
+}
+
+void COldObjectInterface::SetBurnShield(float level)
+{
+    throw std::logic_error("SetBurnShield: not implemented!");
+}
+
+float COldObjectInterface::GetBurnShield()
+{
+    throw std::logic_error("GetBurnShield: not implemented!");
+    return 0;
 }

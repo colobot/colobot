@@ -30,6 +30,10 @@
 #include "level/parser/parserline.h"
 #include "level/parser/parserparam.h"
 
+#include "math/geometry.h"
+
+#include "object/object_manager.h"
+
 #include "script/scriptfunc.h"
 
 #include <stdexcept>
@@ -351,4 +355,160 @@ void CObject::SetLock(bool lock)
 bool CObject::GetLock()
 {
     return m_lock;
+}
+
+// Ajoute une nouvelle ligne.
+
+void CObject::AddCrashLine(const CrashLine &crashLine)
+{
+    m_crashLines.push_back(crashLine);
+}
+
+// Spécifie la hauteur de l'objet (ŕ partir du sol).
+
+void CObject::SetCrashLineHeight(float h)
+{
+    m_crashLineHeight = h;
+}
+
+// Retourne la hauteur de l'objet.
+
+float CObject::GetCrashLineHeight()
+{
+    return m_crashLineHeight;
+}
+
+// Retourne le nombre de lignes.
+
+int CObject::GetCrashLineCount()
+{
+    return m_crashLines.size();
+}
+
+// Retourne une ligne pour les collisions.
+// La position est absolue dans le monde.
+
+std::vector<CrashLine> CObject::GetAllCrashLines()
+{
+    std::vector<CrashLine> allCrashLines;
+
+    for (const auto& crashLine : m_crashLines)
+    {
+        CrashLine transformedCrashLine = crashLine;
+
+        transformedCrashLine.pos = Math::RotatePoint(-GetRotationY(), transformedCrashLine.pos);
+        transformedCrashLine.pos.x += GetPosition().x;
+        transformedCrashLine.pos.y += GetPosition().z;
+
+        allCrashLines.push_back(transformedCrashLine);
+    }
+
+    return allCrashLines;
+}
+
+// Supprime toutes les lignes utilisées pour les collisions.
+
+void CObject::DeleteAllCrashLines()
+{
+    m_crashLines.clear();
+}
+
+// Met ŕ jour la bbox.
+
+void CObject::UpdateBBoxCrashLine()
+{
+    m_crashLineMin = Math::Point( 10000.0f,  10000.0f);
+    m_crashLineMax = Math::Point(-10000.0f, -10000.0f);
+
+    for (const auto& crashLine : GetAllCrashLines())
+    {
+        if ( crashLine.pos.x < m_crashLineMin.x )  m_crashLineMin.x = crashLine.pos.x;
+        if ( crashLine.pos.y < m_crashLineMin.y )  m_crashLineMin.y = crashLine.pos.y;
+        if ( crashLine.pos.x > m_crashLineMax.x )  m_crashLineMax.x = crashLine.pos.x;
+        if ( crashLine.pos.y > m_crashLineMax.y )  m_crashLineMax.y = crashLine.pos.y;
+    }
+}
+
+void CObject::GetCrashLineBBox(Math::Point &min, Math::Point &max)
+{
+    min = m_crashLineMin;
+    max = m_crashLineMax;
+}
+
+// Indique s'il s'agit d'un objet fusionnable.
+// L'objet doit obligatoirement ętre indestructible !
+
+bool CObject::IsCrashLineFusion()
+{
+    return false;
+}
+
+// Essaye de fusionner les lignes de collision de l'objet courant
+// avec un autre. Ainsi, plusieurs barričres mises bout ŕ bout ne
+// formeront plus qu'un obstacle, regroupé dans la premičre barričre
+// crée. L'objet courant n'a alors plus aucune ligne de collision.
+
+void CObject::CrashLineFusion()
+{
+    if ( !IsCrashLineFusion() )  return;
+    if ( GetCrashLineCount() != 5 )  return;
+
+    float iLen = Math::Distance(m_crashLines[0].pos, m_crashLines[1].pos);
+    float iWidth = Math::Distance(m_crashLines[1].pos, m_crashLines[2].pos);
+
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
+        if ( !pObj->IsCrashLineFusion() )  continue;
+        if ( pObj->GetCrashLineCount() != 5 )  continue;
+        if ( pObj->GetRotationY() != GetRotationY() )  continue;
+
+        float oLen = Math::Distance(pObj->m_crashLines[0].pos, pObj->m_crashLines[1].pos);
+        float oWidth = Math::Distance(pObj->m_crashLines[1].pos, pObj->m_crashLines[2].pos);
+
+        if ( iWidth != oWidth )  continue;
+
+        auto iPos = GetAllCrashLines();
+        auto oPos = pObj->GetAllCrashLines();
+
+        if ( fabs(iPos[1].pos.x-oPos[0].pos.x) < 5.0f &&
+             fabs(iPos[1].pos.y-oPos[0].pos.y) < 5.0f &&
+             fabs(iPos[2].pos.x-oPos[3].pos.x) < 5.0f &&
+             fabs(iPos[2].pos.y-oPos[3].pos.y) < 5.0f )
+        {
+            pObj->m_crashLines[0].pos.x -= iLen;
+            pObj->m_crashLines[3].pos.x -= iLen;
+            pObj->m_crashLines[4].pos.x -= iLen;
+            pObj->UpdateBBoxCrashLine();
+            if ( !std::isnan(pObj->GetCrashLineHeight()) )
+            {
+                Math::Vector iCenter = GetPosition();
+                Math::Vector oCenter = pObj->GetPosition();
+                float h = iCenter.y-oCenter.y;
+                if (h < 0.0f)  h = 0.0f;
+                pObj->SetCrashLineHeight(pObj->GetCrashLineHeight()+h);
+            }
+            DeleteAllCrashLines();
+            return;
+        }
+
+        if ( fabs(iPos[0].pos.x-oPos[1].pos.x) < 5.0f &&
+             fabs(iPos[0].pos.y-oPos[1].pos.y) < 5.0f &&
+             fabs(iPos[3].pos.x-oPos[2].pos.x) < 5.0f &&
+             fabs(iPos[3].pos.y-oPos[2].pos.y) < 5.0f )
+        {
+            pObj->m_crashLines[1].pos.x += iLen;
+            pObj->m_crashLines[2].pos.x += iLen;
+            pObj->UpdateBBoxCrashLine();
+            if ( !std::isnan(pObj->GetCrashLineHeight()) )
+            {
+                Math::Vector iCenter = GetPosition();
+                Math::Vector oCenter = pObj->GetPosition();
+                float h = iCenter.y-oCenter.y;
+                if (h < 0.0f)  h = 0.0f;
+                pObj->SetCrashLineHeight(pObj->GetCrashLineHeight()+h);
+            }
+            DeleteAllCrashLines();
+            return;
+        }
+    }
 }

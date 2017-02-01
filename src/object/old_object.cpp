@@ -109,12 +109,15 @@ COldObject::COldObject(int id)
     m_camera      = m_main->GetCamera();
 
     m_type = OBJECT_NULL;
+    m_model = 0;
+    m_subModel = 0;
     m_option = 0;
     m_name = "";
     m_shadowLight   = -1;
     m_shadowHeight  = 0.0f;
     m_linVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_cirVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_cirChoc       = Math::Vector(0.0f, 0.0f, 0.0f);
     m_tilt   = Math::Vector(0.0f, 0.0f, 0.0f);
 
     m_power = nullptr;
@@ -122,6 +125,7 @@ COldObject::COldObject(int id)
     m_transporter = nullptr;
     m_transporterLink = 0;
     m_shield   = 1.0f;
+    m_burnShield = 1.0f;
     m_range    = 30.0f;
     m_lastEnergy = 999.9f;
     m_bSelect = false;
@@ -1306,6 +1310,24 @@ Math::Vector COldObject::GetTilt()
     return m_tilt;
 }
 
+// Donne la rotation circulaire suite � un choc.
+
+void COldObject::SetCirChoc(Math::Vector dir)
+{
+    if ( m_cirChoc.x != dir.x ||
+         m_cirChoc.y != dir.y ||
+         m_cirChoc.z != dir.z )
+    {
+        m_cirChoc = dir;
+        m_objectPart[0].bRotate = true;
+    }
+}
+
+Math::Vector COldObject::GetCirChoc()
+{
+    return m_cirChoc;
+}
+
 
 // Getes the position of center of the object.
 
@@ -1354,7 +1376,8 @@ void COldObject::SetPartRotation(int part, const Math::Vector &angle)
 
     if ( part == 0 && !m_bFlat )  // main part?
     {
-        m_engine->SetObjectShadowSpotAngle(m_objectPart[0].object, m_objectPart[0].angle.y);
+        float a = m_objectPart[0].angle.y+m_cirVibration.y+m_cirChoc.y+m_tilt.y;
+        m_engine->SetObjectShadowSpotAngle(m_objectPart[0].object, a);
     }
 }
 
@@ -1372,7 +1395,8 @@ void COldObject::SetPartRotationY(int part, float angle)
 
     if ( part == 0 && !m_bFlat )  // main part?
     {
-        m_engine->SetObjectShadowSpotAngle(m_objectPart[0].object, m_objectPart[0].angle.y);
+        float a = m_objectPart[0].angle.y+m_cirVibration.y+m_cirChoc.y+m_tilt.y;
+        m_engine->SetObjectShadowSpotAngle(m_objectPart[0].object, a);
     }
 }
 
@@ -1704,7 +1728,7 @@ bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
     if ( part == 0 )  // main part?
     {
         position += m_linVibration;
-        angle    += m_cirVibration+m_tilt;
+        angle    += m_cirVibration+m_cirChoc+m_tilt;
     }
 
     if ( m_objectPart[part].bTranslate ||
@@ -1801,39 +1825,44 @@ bool COldObject::UpdateTransformObject()
     }
     else
     {
-        parent1 = 0;
-        bUpdate1 = UpdateTransformObject(parent1, false);
-
-        for ( level1=0 ; level1<m_totalPart ; level1++ )
+        for (parent1 = 0; parent1 < m_totalPart; parent1++)
         {
-            rank = SearchDescendant(parent1, level1);
-            if ( rank == -1 )  break;
+            if (!m_objectPart[parent1].bUsed) continue;
+            if (m_objectPart[parent1].parentPart != -1) continue;
 
-            parent2 = rank;
-            bUpdate2 = UpdateTransformObject(rank, bUpdate1);
+            bUpdate1 = UpdateTransformObject(parent1, false);
 
-            for ( level2=0 ; level2<m_totalPart ; level2++ )
+            for (level1 = 0; level1 < m_totalPart; level1++)
             {
-                rank = SearchDescendant(parent2, level2);
-                if ( rank == -1 )  break;
+                rank = SearchDescendant(parent1, level1);
+                if (rank == -1) break;
 
-                parent3 = rank;
-                bUpdate3 = UpdateTransformObject(rank, bUpdate2);
+                parent2 = rank;
+                bUpdate2 = UpdateTransformObject(rank, bUpdate1);
 
-                for ( level3=0 ; level3<m_totalPart ; level3++ )
+                for (level2 = 0; level2 < m_totalPart; level2++)
                 {
-                    rank = SearchDescendant(parent3, level3);
-                    if ( rank == -1 )  break;
+                    rank = SearchDescendant(parent2, level2);
+                    if (rank == -1) break;
 
-                    parent4 = rank;
-                    bUpdate4 = UpdateTransformObject(rank, bUpdate3);
+                    parent3 = rank;
+                    bUpdate3 = UpdateTransformObject(rank, bUpdate2);
 
-                    for ( level4=0 ; level4<m_totalPart ; level4++ )
+                    for (level3 = 0; level3 < m_totalPart; level3++)
                     {
-                        rank = SearchDescendant(parent4, level4);
-                        if ( rank == -1 )  break;
+                        rank = SearchDescendant(parent3, level3);
+                        if (rank == -1) break;
 
-                        UpdateTransformObject(rank, bUpdate4);
+                        parent4 = rank;
+                        bUpdate4 = UpdateTransformObject(rank, bUpdate3);
+
+                        for (level4 = 0; level4 < m_totalPart; level4++)
+                        {
+                            rank = SearchDescendant(parent4, level4);
+                            if (rank == -1) break;
+
+                            UpdateTransformObject(rank, bUpdate4);
+                        }
                     }
                 }
             }
@@ -1853,22 +1882,40 @@ void COldObject::FlatParent()
 
     for ( i=0 ; i<m_totalPart ; i++ )
     {
-        m_objectPart[i].position.x = m_objectPart[i].matWorld.Get(1, 4);
-        m_objectPart[i].position.y = m_objectPart[i].matWorld.Get(2, 4);
-        m_objectPart[i].position.z = m_objectPart[i].matWorld.Get(3, 4);
-
-        m_objectPart[i].matWorld.Set(1, 4, 0.0f);
-        m_objectPart[i].matWorld.Set(2, 4, 0.0f);
-        m_objectPart[i].matWorld.Set(3, 4, 0.0f);
-
-        m_objectPart[i].matTranslate.Set(1, 4, 0.0f);
-        m_objectPart[i].matTranslate.Set(2, 4, 0.0f);
-        m_objectPart[i].matTranslate.Set(3, 4, 0.0f);
-
-        m_objectPart[i].parentPart = -1;  // more parents
+        if ( m_objectPart[i].bUsed )
+        {
+            FlatParent(i);
+        }
     }
 
     m_bFlat = true;
+}
+
+// Met un sous-objet ŕ plat (il devient pčre).
+// Ceci permet de faire partir le sous-objet sous forme d'un débris
+// indépendamment du reste de l'objet.
+
+bool COldObject::FlatParent(int part)
+{
+    int		i = part;
+
+    if ( m_objectPart[i].parentPart == -1 )  return false;
+
+    m_objectPart[i].position.x = m_objectPart[i].matWorld.Get(1, 4);
+    m_objectPart[i].position.y = m_objectPart[i].matWorld.Get(2, 4);
+    m_objectPart[i].position.z = m_objectPart[i].matWorld.Get(3, 4);
+
+    m_objectPart[i].matWorld.Set(1, 4, 0.0f);
+    m_objectPart[i].matWorld.Set(2, 4, 0.0f);
+    m_objectPart[i].matWorld.Set(3, 4, 0.0f);
+
+    m_objectPart[i].matTranslate.Set(1, 4, 0.0f);
+    m_objectPart[i].matTranslate.Set(2, 4, 0.0f);
+    m_objectPart[i].matTranslate.Set(3, 4, 0.0f);
+
+    m_objectPart[i].parentPart = -1;  // more parents
+
+    return true;
 }
 
 
@@ -2295,6 +2342,10 @@ void COldObject::AdjustCamera(Math::Vector &eye, float &dirH, float &dirV,
         eye.y =  6.0f;
         eye.z = -2.0f;
     }
+    else if ( m_type == OBJECT_CAR )
+    {
+        eye = m_character.camera;
+    }
     else
     {
         eye.x = 0.7f;  // between the brackets
@@ -2397,6 +2448,18 @@ void COldObject::SetRange(float delay)
 float COldObject::GetRange()
 {
     return m_range;
+}
+
+// Gestion du bouclier de r�sistance au feu.
+
+void COldObject::SetBurnShield(float level)
+{
+    m_burnShield = level;
+}
+
+float COldObject::GetBurnShield()
+{
+    return m_burnShield;
 }
 
 void COldObject::SetReactorRange(float reactorRange)
@@ -2534,6 +2597,13 @@ void COldObject::SetHighlight(bool highlight)
 
 void COldObject::SetSelect(bool select, bool bDisplayError)
 {
+    /* TODO (krzys_h): BC:
+    if ( m_main->GetFixScene() )
+    {
+        CreateSelectParticle();  // cr�e/supprime les particules
+        return;
+    }*/
+
     m_bSelect = select;
 
     // NOTE: Right now, Ui::CObjectInterface is only for programmable objects. Right now all selectable objects are programmable anyway.
@@ -3187,4 +3257,41 @@ bool COldObject::IsSelectableByDefault(ObjectType type)
         return false;
     }
     return true;
+}
+
+int COldObject::GetModel()
+{
+    return m_model;
+}
+
+void COldObject::SetModel(int model)
+{
+    m_model = model;
+}
+
+int COldObject::GetSubModel()
+{
+    return m_subModel;
+}
+
+void COldObject::SetSubModel(int subModel)
+{
+    m_subModel = subModel;
+}
+
+// Indique s'il s'agit d'un objet fusionnable.
+// L'objet doit obligatoirement ętre indestructible !
+
+bool COldObject::IsCrashLineFusion()
+{
+    return ( m_type == OBJECT_BARRIER6  ||
+             m_type == OBJECT_BARRIER7  ||
+             m_type == OBJECT_BARRIER8  ||
+             m_type == OBJECT_BARRIER9  ||
+             m_type == OBJECT_BARRIER10 ||
+             m_type == OBJECT_BARRIER11 ||
+             m_type == OBJECT_BARRIER12 ||
+             m_type == OBJECT_BARRIER14 ||
+             m_type == OBJECT_BARRIER15 ||
+             m_type == OBJECT_BARRIER16 );
 }

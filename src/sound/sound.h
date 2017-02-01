@@ -231,4 +231,6 @@ public:
       * \return nothing
       */
      virtual void StopPauseMusic();
+
+    virtual bool Amplitude(int channel, float amplitude);
 };

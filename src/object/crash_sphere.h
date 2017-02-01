@@ -56,3 +56,32 @@ struct CrashSphere
     //! "Hardness" of the sphere
     float hardness;
 };
+
+/**
+ * \struct CrashLine
+ * \brief Similar to CrashSphere but uses lines instead
+ * \todo Document this properly
+ */
+struct CrashLine
+{
+    CrashLine(const Math::Point& _pos = Math::Point(),
+                SoundType _sound = SOUND_NONE,
+                float _hardness = 0.45f,
+                bool _bNew = false)
+        : pos(_pos)
+        , sound(_sound)
+        , hardness(_hardness)
+        , bNew(_bNew)
+    {
+    }
+
+    //! Position
+    //! \todo See how it works
+    Math::Point pos;
+    //! Sound to be played on collision
+    SoundType sound;
+    //! "Hardness" of the line
+    float hardness;
+    //! \todo ?
+    bool bNew;
+};

@@ -140,6 +140,8 @@ public:
     Math::Vector    GetCirVibration();
     void        SetTilt(Math::Vector dir);
     Math::Vector    GetTilt() override;
+    void        SetCirChoc(Math::Vector dir) override;
+    Math::Vector    GetCirChoc();
 
     void        SetPartPosition(int part, const Math::Vector &pos);
     Math::Vector    GetPartPosition(int part) const;
@@ -205,6 +207,9 @@ public:
     void        SetRange(float delay) override;
     float       GetRange() override;
 
+    void        SetBurnShield(float level) override;
+    float       GetBurnShield() override;
+
     void        SetReactorRange(float reactorRange) override;
     float       GetReactorRange() override;
 
@@ -261,6 +266,7 @@ public:
     bool        CreateShadowLight(float height, Gfx::Color color);
 
     void        FlatParent() override;
+    bool        FlatParent(int part);
 
     void SetPosition(const Math::Vector& pos) override;
     Math::Vector GetPosition() const override;
@@ -287,6 +293,13 @@ public:
     float       GetShieldFullRegenTime() override;
 
     float       GetLightningHitProbability() override;
+
+    int GetModel();
+    void SetModel(int model);
+    int GetSubModel();
+    void SetSubModel(int subModel);
+
+    virtual bool IsCrashLineFusion() override;
 
 protected:
     bool        EventFrame(const Event &event);
@@ -322,6 +335,9 @@ protected:
     std::unique_ptr<CAuto> m_auto;
     std::unique_ptr<Ui::CObjectInterface> m_objectInterface;
 
+    int m_model;
+    int m_subModel;
+
     std::string  m_name;         // name of the object
     Character   m_character;            // characteristic
     int     m_option;           // option
@@ -329,6 +345,7 @@ protected:
     float       m_shadowHeight;         // height of light from the shadows
     Math::Vector    m_linVibration;         // linear vibration
     Math::Vector    m_cirVibration;         // circular vibration
+    Math::Vector    m_cirChoc;
     Math::Vector    m_tilt;          // tilt
     CObject*    m_power;            // battery used by the vehicle
     Math::Vector m_powerPosition;
@@ -337,6 +354,7 @@ protected:
     int     m_transporterLink;            // part
     float       m_lastEnergy;
     float       m_shield;           // shield
+    float       m_burnShield;
     float       m_range;            // flight range
     float       m_aTime;
     float       m_shotTime;         // time since last shot

@@ -60,6 +60,8 @@ CMotion::CMotion(COldObject* object)
     m_linVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_cirVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_inclinaison   = Math::Vector(0.0f, 0.0f, 0.0f);
+
+    m_wheelType = WT_NORM;
 }
 
 // Object's destructor.
@@ -213,4 +215,14 @@ void CMotion::SetTilt(Math::Vector dir)
 Math::Vector CMotion::GetTilt()
 {
     return m_inclinaison;
+}
+
+void CMotion::SetWheelType(WheelType type)
+{
+    m_wheelType = type;
+}
+
+WheelType CMotion::GetWheelType()
+{
+    return m_wheelType;
 }

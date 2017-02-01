@@ -139,6 +139,11 @@ bool CSoundInterface::Frequency(int channel, float frequency)
     return true;
 }
 
+bool CSoundInterface::Amplitude(int channel, float amplitude)
+{
+    return true;
+}
+
 bool CSoundInterface::Stop(int channel)
 {
     return true;

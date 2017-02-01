@@ -104,6 +104,7 @@ public:
     bool AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper) override;
     bool Position(int channel, const Math::Vector &pos) override;
     bool Frequency(int channel, float frequency) override;
+    bool Amplitude(int channel, float amplitude) override;
     bool Stop(int channel) override;
     bool StopAll() override;
     bool MuteAll(bool mute) override;

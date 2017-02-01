@@ -105,6 +105,8 @@ void CParticle::FlushParticle()
 
     m_wheelTraceTotal = 0;
     m_wheelTraceIndex = 0;
+    m_drawingPenTotal = 0;
+    m_drawingPenIndex = 0;
 
     for (int i = 0; i < SH_MAX; i++)
         m_frameUpdate[i] = true;
@@ -133,6 +135,8 @@ void CParticle::FlushParticle(int sheet)
     {
         m_wheelTraceTotal = 0;
         m_wheelTraceIndex = 0;
+        m_drawingPenTotal = 0;
+        m_drawingPenIndex = 0;
     }
 }
 
@@ -186,10 +190,14 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
 
     int t = -1;
     if ( type == PARTIEXPLOT   ||
+         type == PARTIEXPLOA   ||
          type == PARTIEXPLOO   ||
          type == PARTIMOTOR    ||
          type == PARTIBLITZ    ||
+         type == PARTIBLITZb   ||
          type == PARTICRASH    ||
+         type == PARTIDUST1    ||
+         type == PARTIDUST2    ||
          type == PARTIVAPOR    ||
          type == PARTIGAS      ||
          type == PARTIBASE     ||
@@ -211,6 +219,7 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
          type == PARTIERROR    ||
          type == PARTIWARNING  ||
          type == PARTIINFO     ||
+         type == PARTILAVA     ||
          type == PARTISPHERE1  ||
          type == PARTISPHERE2  ||
          type == PARTISPHERE4  ||
@@ -229,6 +238,7 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
          type == PARTITRACK10  ||
          type == PARTITRACK11  ||
          type == PARTITRACK12  ||
+         type == PARTITRACK13  ||
          type == PARTILENS1    ||
          type == PARTILENS2    ||
          type == PARTILENS3    ||
@@ -254,11 +264,14 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
          type == PARTIGUNDEL  ||
          type == PARTICONTROL ||
          type == PARTISHOW    ||
+// TODO (krzys_h):         type == PARTISPHERE1 ||
          type == PARTICHOC    ||
          type == PARTIFOG4    ||
          type == PARTIFOG5    ||
          type == PARTIFOG6    ||
-         type == PARTIFOG7    )
+         type == PARTIFOG7    ||
+         type == PARTIBIGO    ||
+         type == PARTIBIGT    )
     {
         t = 2;  // effect01
     }
@@ -277,9 +290,22 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
          type == PARTISMOKE2  ||
          type == PARTISMOKE3  ||
          type == PARTIBLOOD   ||
-         type == PARTIBLOODM  )
+         type == PARTIBLOODM  ||
+         type == PARTIWHEEL   ||
+         type == PARTITRACE1  ||
+         type == PARTITRACE2  ||
+         type == PARTITRACE3  ||
+         type == PARTITRACE4  ||
+         type == PARTITRACE5  ||
+         type == PARTITRACE6  ||
+         type == PARTITRACE7  ||
+         type == PARTITRACE8  ||
+         type == PARTISTONE1  ||
+         type == PARTISTONE2  ||
+         type == PARTISTONE3  ||
+         type == PARTISTONE4  )
     {
-        t = 4;  // effect03 (ENG_RSTATE_TTEXTURE_WHITE)
+        t = 4;  // effect03
     }
     if ( type == PARTIVIRUS )
     {
@@ -325,6 +351,7 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
             m_totalInterface[t][sheet] ++;
 
             if ( type == PARTIEXPLOT ||
+                 type == PARTIEXPLOA ||
                  type == PARTIEXPLOO )
             {
                 m_particle[i].angle = Math::Rand()*Math::PI*2.0f;
@@ -346,6 +373,12 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
             {
                 if (m_fogTotal < MAXPARTIFOG)
                 m_fog[m_fogTotal++] = i;
+            }
+
+            if ( type == PARTIDUST1 ||
+                 type == PARTIDUST2 )
+            {
+                m_particle[i].angle = Math::Rand()*Math::PI*2.0f;
             }
 
             return i | ((m_particle[i].uniqueStamp&0xffff)<<16);
@@ -599,19 +632,56 @@ int CParticle::CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim
     return channel;
 }
 
-void CParticle::CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2,
-                                 const Math::Vector &p3, const Math::Vector &p4,
-                                 TraceColor color)
+void CParticle::CreateDrawingPenTrace(const Math::Vector &p1, const Math::Vector &p2,
+                                      const Math::Vector &p3, const Math::Vector &p4,
+                                      TraceColor color)
 {
     int max = MAXWHEELTRACE;
+    int i = m_drawingPenIndex++;
+    if (m_drawingPenIndex > max)  m_drawingPenIndex = 0;
+
+    m_drawingPenTrace[i].color = color;
+    m_drawingPenTrace[i].pos[0] = p1;  // ul
+    m_drawingPenTrace[i].pos[1] = p2;  // dl
+    m_drawingPenTrace[i].pos[2] = p3;  // ur
+    m_drawingPenTrace[i].pos[3] = p4;  // dr
+
+    if (m_terrain == nullptr)
+        m_terrain = m_main->GetTerrain();
+
+    m_terrain->AdjustToFloor(m_drawingPenTrace[i].pos[0]);
+    m_drawingPenTrace[i].pos[0].y += 0.2f;  // just above the ground
+
+    m_terrain->AdjustToFloor(m_drawingPenTrace[i].pos[1]);
+    m_drawingPenTrace[i].pos[1].y += 0.2f;  // just above the ground
+
+    m_terrain->AdjustToFloor(m_drawingPenTrace[i].pos[2]);
+    m_drawingPenTrace[i].pos[2].y += 0.2f;  // just above the ground
+
+    m_terrain->AdjustToFloor(m_drawingPenTrace[i].pos[3]);
+    m_drawingPenTrace[i].pos[3].y += 0.2f;  // just above the ground
+
+    if (m_drawingPenTotal < max)
+        m_drawingPenTotal++;
+    else
+        m_drawingPenTotal = max;
+}
+
+void CParticle::CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2,
+                                 const Math::Vector &p3, const Math::Vector &p4,
+                                 ParticleType type)
+{
+    int max = MAXWHEELTRACE;
+    // TODO (krzys_h): max = (int)(m_engine->RetWheelTraceQuantity()*MAXWHEELTRACE);
     int i = m_wheelTraceIndex++;
     if (m_wheelTraceIndex > max)  m_wheelTraceIndex = 0;
 
-    m_wheelTrace[i].color = color;
+    m_wheelTrace[i].type = type;
     m_wheelTrace[i].pos[0] = p1;  // ul
     m_wheelTrace[i].pos[1] = p2;  // dl
     m_wheelTrace[i].pos[2] = p3;  // ur
     m_wheelTrace[i].pos[3] = p4;  // dr
+    m_wheelTrace[i].startTime = m_absTime;
 
     if (m_terrain == nullptr)
         m_terrain = m_main->GetTerrain();
@@ -832,7 +902,7 @@ void CParticle::FrameParticle(float rTime)
             if (m_particle[i].pos.y < h)  // impact with the ground?
             {
                 if ( m_particle[i].type == PARTIPART &&
-                     m_particle[i].weight > 3.0f &&  // heavy enough?
+                     m_particle[i].weight > 3.0f &&  // heavy enough? // TODO (krzys_h): BC uses >5.0f
                      m_particle[i].bounce < 3 )
                 {
                     float amplitude = m_particle[i].weight*0.1f;
@@ -840,7 +910,10 @@ void CParticle::FrameParticle(float rTime)
                     if (amplitude > 1.0f)  amplitude = 1.0f;
                     if (amplitude > 0.0f)
                     {
-                        Play(SOUND_BOUM, m_particle[i].pos, amplitude);
+                        // TODO (krzys_h): Sound has changed in BC
+//                        Play(SOUND_BOUM, m_particle[i].pos, amplitude);
+                        Play(static_cast<SoundType>(SOUND_FALLo1+rand()%2), m_particle[i].pos, amplitude);
+
                     }
                 }
 
@@ -854,7 +927,7 @@ void CParticle::FrameParticle(float rTime)
                 }
                 else    // disappears after 3 bounces?
                 {
-                    if ( m_particle[i].pos.y < h-10.0f ||
+                    if ( m_particle[i].pos.y < h-10.0f || // TODO (krzys_h): BC uses h-20.0f
                          m_particle[i].time >= 20.0f   )
                     {
                         DeleteRank(i);
@@ -909,7 +982,9 @@ void CParticle::FrameParticle(float rTime)
 
         if (m_particle[i].type == PARTITRACK4)  // insect explosion?
         {
-            m_particle[i].zoom = 1.0f-(m_particle[i].time-m_particle[i].duration);
+            // TODO (krzys_h): changed in BC
+//            m_particle[i].zoom = 1.0f-(m_particle[i].time-m_particle[i].duration);
+            m_particle[i].zoom = 1.0f-progress;
 
             ts.x = 0.625f;
             ts.y = 0.000f;
@@ -976,6 +1051,14 @@ void CParticle::FrameParticle(float rTime)
             ti.y = ts.y+0.125f;
         }
 
+        if (m_particle[i].type == PARTITRACK13)  // jet d'eau ?
+        {
+            ts.x = 0.0f;
+            ts.y = 0.0f;
+            ti.x = 0.0f;
+            ti.y = 0.0f;
+        }
+
         if (m_particle[i].type == PARTIMOTOR)
         {
             if (progress >= 1.0f)
@@ -1006,6 +1089,23 @@ void CParticle::FrameParticle(float rTime)
 
             ts.x = 0.125f;
             ts.y = 0.750f;
+            ti.x = ts.x+0.125f;
+            ti.y = ts.y+0.125f;
+        }
+
+        if (m_particle[i].type == PARTIBLITZb)
+        {
+            if ( progress >= 1.0f )
+            {
+                DeleteRank(i);
+                continue;
+            }
+
+            m_particle[i].zoom = 1.0f-progress;
+            m_particle[i].angle = Math::Rand()*Math::PI*2.0f;
+
+            ts.x = 0.375f;
+            ts.y = 0.875f;
             ti.x = ts.x+0.125f;
             ti.y = ts.y+0.125f;
         }
@@ -1607,6 +1707,7 @@ void CParticle::FrameParticle(float rTime)
         }
 
         if ( m_particle[i].type == PARTIEXPLOT ||
+             m_particle[i].type == PARTIEXPLOA ||
              m_particle[i].type == PARTIEXPLOO )
         {
             if (progress >= 1.0f)
@@ -1618,9 +1719,21 @@ void CParticle::FrameParticle(float rTime)
             m_particle[i].zoom = 1.0f-progress/2.0f;
             m_particle[i].intensity = 1.0f-progress;
 
-            if (m_particle[i].type == PARTIEXPLOT)  ts.x = 0.750f;
-            else                                    ts.x = 0.875f;
-            ts.y = 0.750f;
+            if ( m_particle[i].type == PARTIEXPLOT )
+            {
+                ts.x = 0.750f;  // orange
+                ts.y = 0.750f;
+            }
+            else if ( m_particle[i].type == PARTIEXPLOA )
+            {
+                ts.x = 0.625f;  // bleu
+                ts.y = 0.875f;
+            }
+            else
+            {
+                ts.x = 0.875f;  // vert
+                ts.y = 0.750f;
+            }
             ti.x = ts.x+0.125f;
             ti.y = ts.y+0.125f;
         }
@@ -1721,6 +1834,86 @@ void CParticle::FrameParticle(float rTime)
             ts.y = 0.750f;
             ti.x = ts.x+0.125f;
             ti.y = ts.y+0.125f;
+        }
+
+        if ( m_particle[i].type == PARTIWHEEL )
+        {
+            if ( progress >= 1.0f )
+            {
+                DeleteRank(i);
+                continue;
+            }
+
+//?			m_particule[i].intensity = 1.0f-progress;
+            if ( progress < 0.50f )
+            {
+                m_particle[i].intensity = 1.0f;
+            }
+            else
+            {
+                m_particle[i].intensity = 1.0f-(progress-0.50f)/0.50f;
+            }
+
+            ts.x = 0.00f;
+            ts.y = 0.75f;
+            ti.x = ts.x+0.25f;
+            ti.y = ts.y+0.25f;
+        }
+
+        if ( m_particle[i].type >= PARTISTONE1 &&
+            m_particle[i].type <= PARTISTONE4 )
+        {
+            if ( progress >= 1.0f )
+            {
+                DeleteRank(i);
+                continue;
+            }
+
+            if ( progress < 0.75f )
+            {
+                m_particle[i].intensity = 1.0f;
+            }
+            else
+            {
+                m_particle[i].intensity = 1.0f-(progress-0.75f)/0.25f;
+            }
+
+            ts.x = 0.500f+0.125f*(m_particle[i].type-PARTISTONE1);
+            ts.y = 0.000f;
+            ti.x = ts.x+0.125f;
+            ti.y = ts.y+0.125f;
+        }
+
+        if ( m_particle[i].type == PARTIBIGO )
+        {
+            if ( progress >= 1.0f )
+            {
+                DeleteRank(i);
+                continue;
+            }
+
+            m_particle[i].intensity = 1.0f-progress;
+
+            ts.x = 0.50f;
+            ts.y = 0.00f;
+            ti.x = ts.x+0.25f;
+            ti.y = ts.y+0.25f;
+        }
+
+        if ( m_particle[i].type == PARTIBIGT )
+        {
+            if ( progress >= 1.0f )
+            {
+                DeleteRank(i);
+                continue;
+            }
+
+            m_particle[i].intensity = 1.0f-progress;
+
+            ts.x = 0.25f;
+            ts.y = 0.00f;
+            ti.x = ts.x+0.25f;
+            ti.y = ts.y+0.25f;
         }
 
         if (m_particle[i].type == PARTIBLOOD)
@@ -2181,6 +2374,23 @@ void CParticle::FrameParticle(float rTime)
             m_particle[i].intensity = 1.0f-progress;
 
             ts.x = 0.750f;
+            ts.y = 0.875f;
+            ti.x = ts.x+0.125f;
+            ti.y = ts.y+0.125f;
+        }
+
+        if ( m_particle[i].type == PARTILAVA )
+        {
+            if ( progress >= 1.0f )
+            {
+                DeleteRank(i);
+                continue;
+            }
+
+            m_particle[i].zoom = progress*1.0f;
+            m_particle[i].intensity = 1.0f-progress;
+
+            ts.x = 0.500f;
             ts.y = 0.875f;
             ti.x = ts.x+0.125f;
             ti.y = ts.y+0.125f;
@@ -3049,6 +3259,7 @@ void CParticle::DrawParticleRay(int i)
 
     Math::Vector corner[4];
 
+    // TODO (krzys_h): BC: dim.y *= 0.5f;
     corner[0].x = adv;
     corner[2].x = adv;
     corner[0].y =  dim.y;
@@ -3107,14 +3318,21 @@ void CParticle::DrawParticleSphere(int i)
     m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE | ENG_RSTATE_WRAP,
                        IntensityToColor(m_particle[i].intensity));
 
+    Math::Vector pos = m_particle[i].pos;
+    CObject* object = m_particle[i].objLink;
+    if ( object != nullptr )
+    {
+        pos += object->GetPosition();
+    }
+
     Math::Matrix mat;
     mat.LoadIdentity();
     mat.Set(1, 1, zoom);
     mat.Set(2, 2, zoom);
     mat.Set(3, 3, zoom);
-    mat.Set(1, 4, m_particle[i].pos.x);
-    mat.Set(2, 4, m_particle[i].pos.y);
-    mat.Set(3, 4, m_particle[i].pos.z);
+    mat.Set(1, 4, pos.x);
+    mat.Set(2, 4, pos.y);
+    mat.Set(3, 4, pos.z);
 
     if (m_particle[i].angle != 0.0f)
     {
@@ -3310,23 +3528,23 @@ void CParticle::DrawParticleText(int i)
     DrawParticleNorm(i);
 }
 
-void CParticle::DrawParticleWheel(int i)
+void CParticle::DrawParticleDrawingPen(int i)
 {
-    float dist = Math::DistanceProjected(m_engine->GetEyePt(), m_wheelTrace[i].pos[0]);
+    float dist = Math::DistanceProjected(m_engine->GetEyePt(), m_drawingPenTrace[i].pos[0]);
     if (dist > 300.0f)  return;
 
-    if (m_wheelTrace[i].color == TraceColor::BlackArrow || m_wheelTrace[i].color == TraceColor::RedArrow)
+    Math::Vector pos[4];
+    pos[0] = m_drawingPenTrace[i].pos[0];
+    pos[1] = m_drawingPenTrace[i].pos[1];
+    pos[2] = m_drawingPenTrace[i].pos[2];
+    pos[3] = m_drawingPenTrace[i].pos[3];
+
+    Math::Vector n(0.0f, 1.0f, 0.0f);
+
+    if (m_drawingPenTrace[i].color == TraceColor::BlackArrow || m_drawingPenTrace[i].color == TraceColor::RedArrow)
     {
         m_engine->SetTexture("textures/effect03.png");
         m_engine->SetState(ENG_RSTATE_ALPHA);
-
-        Math::Vector pos[4];
-        pos[0] = m_wheelTrace[i].pos[0];
-        pos[1] = m_wheelTrace[i].pos[1];
-        pos[2] = m_wheelTrace[i].pos[2];
-        pos[3] = m_wheelTrace[i].pos[3];
-
-        Math::Vector n(0.0f, 1.0f, 0.0f);
 
         Math::Point ts(160.0f/256.0f, 224.0f/256.0f);
         Math::Point ti(ts.x+16.0f/256.0f, ts.y+16.0f/256.0f);
@@ -3343,30 +3561,127 @@ void CParticle::DrawParticleWheel(int i)
         vertex[2] = Vertex(pos[2], n, Math::Point(ts.x, ti.y));
         vertex[3] = Vertex(pos[3], n, Math::Point(ti.x, ti.y));
 
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_wheelTrace[i].color));
+        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_drawingPenTrace[i].color));
         m_engine->AddStatisticTriangle(2);
 
         m_engine->SetState(ENG_RSTATE_OPAQUE_COLOR);
     }
     else
     {
-        Math::Vector pos[4];
-        pos[0] = m_wheelTrace[i].pos[0];
-        pos[1] = m_wheelTrace[i].pos[1];
-        pos[2] = m_wheelTrace[i].pos[2];
-        pos[3] = m_wheelTrace[i].pos[3];
-
-        Math::Vector n(0.0f, 1.0f, 0.0f);
-
         Vertex vertex[4];
         vertex[0] = Vertex(pos[0], n);
         vertex[1] = Vertex(pos[1], n);
         vertex[2] = Vertex(pos[2], n);
         vertex[3] = Vertex(pos[3], n);
 
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_wheelTrace[i].color));
+        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_drawingPenTrace[i].color));
         m_engine->AddStatisticTriangle(2);
     }
+}
+
+void CParticle::DrawParticleWheel(int i)
+{
+    Math::Vector	pos[4], center;
+    Vertex	vertex[4];	// 2 triangles
+    Math::Vector	n;
+    Math::Point		ts, ti;
+    float		dp, time, zoom;
+
+    float dist = Math::DistanceProjected(m_engine->GetEyePt(), m_wheelTrace[i].pos[0]);
+    if (dist > 300.0f)  return;
+
+    pos[0] = m_wheelTrace[i].pos[0];
+    pos[1] = m_wheelTrace[i].pos[1];
+    pos[2] = m_wheelTrace[i].pos[2];
+    pos[3] = m_wheelTrace[i].pos[3];
+
+    if ( m_wheelTrace[i].type == PARTITRACE1 )  // pneu freinage ?
+    {
+        ts.x = 0.000f;
+        ts.y = 0.500f;
+        ti.x = ts.x+0.125f;
+        ti.y = ts.y+0.250f;
+    }
+    else if ( m_wheelTrace[i].type == PARTITRACE2 )  // pneu accélération ?
+    {
+        ts.x = 0.250f;
+        ts.y = 0.500f;
+        ti.x = ts.x+0.125f;
+        ti.y = ts.y+0.250f;
+    }
+    else if ( m_wheelTrace[i].type == PARTITRACE3 )  // explosion ?
+    {
+        ts.x = 0.000f;
+        ts.y = 0.250f;
+        ti.x = ts.x+0.250f;
+        ti.y = ts.y+0.250f;
+    }
+    else if ( m_wheelTrace[i].type == PARTITRACE4 )  // huile ?
+    {
+        ts.x = 0.250f;
+        ts.y = 0.250f;
+        ti.x = ts.x+0.250f;
+        ti.y = ts.y+0.250f;
+
+        time = m_absTime - m_wheelTrace[i].startTime;
+        if ( time < 5.0f )
+        {
+            zoom = powf(time/5.0f, 0.5f);
+            center = (pos[0]+pos[1]+pos[2]+pos[3])/4.0f;
+            pos[0] = center+(pos[0]-center)*zoom;
+            pos[1] = center+(pos[1]-center)*zoom;
+            pos[2] = center+(pos[2]-center)*zoom;
+            pos[3] = center+(pos[3]-center)*zoom;
+        }
+    }
+    else if ( m_wheelTrace[i].type == PARTITRACE5 )  // radioactif ?
+    {
+        ts.x = 0.500f;
+        ts.y = 0.250f;
+        ti.x = ts.x+0.250f;
+        ti.y = ts.y+0.250f;
+    }
+    else if ( m_wheelTrace[i].type == PARTITRACE6 )  // pneu tout-terrain ?
+    {
+        ts.x = 0.125f;
+        ts.y = 0.500f;
+        ti.x = ts.x+0.125f;
+        ti.y = ts.y+0.250f;
+    }
+    else if ( m_wheelTrace[i].type == PARTITRACE7 )  // jante ?
+    {
+        ts.x = 0.375f;
+        ts.y = 0.500f;
+        ti.x = ts.x+0.125f;
+        ti.y = ts.y+0.250f;
+    }
+    else if ( m_wheelTrace[i].type == PARTITRACE8 )  // bot3 ?
+    {
+        ts.x = 0.750f;
+        ts.y = 0.250f;
+        ti.x = ts.x+0.250f;
+        ti.y = ts.y+0.250f;
+    }
+    else
+    {
+        return;
+    }
+
+    dp = (1.0f/256.0f)/2.0f;
+    ts.x = ts.x+dp;
+    ts.y = ts.y+dp;
+    ti.x = ti.x-dp;
+    ti.y = ti.y-dp;
+
+    n = Math::Vector(0.0f, 1.0f, 0.0f);
+
+    vertex[0] = Vertex(pos[0], n, Math::Point(ts.x, ts.y));
+    vertex[1] = Vertex(pos[1], n, Math::Point(ti.x, ts.y));
+    vertex[2] = Vertex(pos[2], n, Math::Point(ts.x, ti.y));
+    vertex[3] = Vertex(pos[3], n, Math::Point(ti.x, ti.y));
+
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_engine->AddStatisticTriangle(2);
 }
 
 void CParticle::DrawParticle(int sheet)
@@ -3397,9 +3712,19 @@ void CParticle::DrawParticle(int sheet)
     m_engine->SetMaterial(mat);
 
     // Draw tire marks.
-    if (m_wheelTraceTotal > 0 && sheet == SH_WORLD)
+    if (m_drawingPenTotal > 0 && sheet == SH_WORLD)
     {
         m_engine->SetState(ENG_RSTATE_OPAQUE_COLOR);
+        Math::Matrix matrix;
+        matrix.LoadIdentity();
+        m_device->SetTransform(TRANSFORM_WORLD, matrix);
+
+        for (int i = 0; i < m_drawingPenTotal; i++)
+            DrawParticleDrawingPen(i);
+    }
+    if (m_wheelTraceTotal > 0 && sheet == SH_WORLD)
+    {
+        m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
         Math::Matrix matrix;
         matrix.LoadIdentity();
         m_device->SetTransform(TRANSFORM_WORLD, matrix);

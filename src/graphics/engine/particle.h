@@ -123,6 +123,7 @@ enum ParticleType
     PARTITRACK10    = 77,       //! < drag 10
     PARTITRACK11    = 78,       //! < drag 11
     PARTITRACK12    = 79,       //! < drag 12 (TODO: unused?)
+    PARTITRACK13    = 80,       // BC
     PARTIGLINTb     = 88,       //! < blue reflection
     PARTIGLINTr     = 89,       //! < red reflection
     PARTILENS1      = 90,       //! < brilliance 1 (orange)
@@ -152,6 +153,29 @@ enum ParticleType
     PARTIEXPLOG1    = 122,      //! < ball explosion 1
     PARTIEXPLOG2    = 123,      //! < ball explosion 2
     PARTIBASE       = 124,      //! < gases of spaceship
+
+    // BuzzingCars specific
+    PARTIWHEEL		= 125,		// trace de pneu
+    PARTIDUST1		= 127,		// poussičre
+    PARTIDUST2		= 128,		// poussičre
+    PARTIEXPLOA		= 129,		// explosion atomique (bleu)
+    PARTISTONE1		= 130,		// petite pierre
+    PARTISTONE2		= 131,		// petite pierre
+    PARTISTONE3		= 132,		// petite pierre
+    PARTISTONE4		= 133,		// petite pierre
+    PARTIREACTOR	= 134,		// flame de réacteur (échappement)
+    PARTITRACE1		= 140,		// trace de pneu (freinage)
+    PARTITRACE2		= 141,		// trace de pneu (accélération)
+    PARTITRACE3		= 142,		// trace d'explosion
+    PARTITRACE4		= 143,		// trace d'huile
+    PARTITRACE5		= 144,		// trace radioactive
+    PARTITRACE6		= 145,		// trace de pneu (sol mou)
+    PARTITRACE7		= 146,		// trace de pneu (jante)
+    PARTITRACE8		= 147,		// trace organique verte
+    PARTIBIGO		= 148,		// grande explosion organique
+    PARTIBIGT		= 149,		// grande explosion technique
+    PARTIBLITZb		= 150,		// éclair recharge batterie
+    PARTILAVA		= 151,		// toto dit non [old val: 53 ~krzys_h]
 };
 
 enum ParticlePhase
@@ -207,10 +231,17 @@ struct Track
     float           len[MAXTRACKLEN] = {};
 };
 
-struct WheelTrace
+struct DrawingPenTrace
 {
     TraceColor      color = TraceColor::Black;
     Math::Vector    pos[4];
+};
+
+struct WheelTrace
+{
+    ParticleType type; // type PARTI*
+    Math::Vector pos[4]; // positions rectangle
+    float startTime;
 };
 
 
@@ -258,9 +289,13 @@ public:
     int         CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim, ParticleType type,
                             float duration = 1.0f, float mass = 0.0f, float length = 10.0f, float width = 1.0f);
 
+    //! Creates a line drawn with pendown()
+    void        CreateDrawingPenTrace(const Math::Vector &p1, const Math::Vector &p2, const Math::Vector &p3,
+                                      const Math::Vector &p4, TraceColor color);
+
     //! Creates a tire mark
     void        CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2, const Math::Vector &p3,
-                                 const Math::Vector &p4, TraceColor color);
+                                 const Math::Vector &p4, ParticleType type);
 
     //! Removes all particles of a given type
     void        DeleteParticle(ParticleType type);
@@ -318,6 +353,8 @@ protected:
     void        DrawParticleText(int i);
     //! Draws a tire mark
     void        DrawParticleWheel(int i);
+    //! Draws a line drawn with pendown()
+    void        DrawParticleDrawingPen(int i);
     //! Seeks if an object collided with a bullet
     CObject*    SearchObjectGun(Math::Vector old, Math::Vector pos, ParticleType type, CObject *father);
     //! Seeks if an object collided with a ray
@@ -343,6 +380,9 @@ protected:
     int           m_wheelTraceTotal = 0;
     int           m_wheelTraceIndex = 0;
     WheelTrace    m_wheelTrace[MAXWHEELTRACE];
+    int           m_drawingPenTotal = 0;
+    int           m_drawingPenIndex = 0;
+    DrawingPenTrace    m_drawingPenTrace[MAXWHEELTRACE];
     int           m_totalInterface[MAXPARTITYPE][SH_MAX] = {};
     bool          m_frameUpdate[SH_MAX] = {};
     int           m_fogTotal = 0;

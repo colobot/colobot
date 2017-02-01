@@ -43,6 +43,12 @@ class CSoundInterface;
 class CLevelParserLine;
 struct Event;
 
+enum WheelType
+{
+    WT_NORM         = 0,        // roues normales
+    WT_BURN         = 1,        // roues cram�es
+    WT_SLIDE        = 2,        // roues glissantes
+};
 
 class CMotion
 {
@@ -71,6 +77,9 @@ public:
     virtual void            SetTilt(Math::Vector dir);
     virtual Math::Vector    GetTilt();
 
+    virtual void            SetWheelType(WheelType type);
+    virtual WheelType       GetWheelType();
+
 protected:
     CApplication*       m_app;
     Gfx::CEngine*       m_engine;
@@ -90,4 +99,6 @@ protected:
     Math::Vector        m_linVibration;     // linear vibration
     Math::Vector        m_cirVibration;     // circular vibration
     Math::Vector        m_inclinaison;      // tilt
+
+    WheelType           m_wheelType;
 };

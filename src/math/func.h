@@ -110,6 +110,15 @@ inline float Norm(float a)
     return a;
 }
 
+// Retourne la valeur normalisée (-1..1).
+
+inline float NormSign(float a)
+{
+    if ( a < -1.0f )  return -1.0f;
+    if ( a >  1.0f )  return  1.0f;
+    return a;
+}
+
 //! Swaps two integers
 inline void Swap(int &a, int &b)
 {
@@ -227,6 +236,29 @@ inline float Neutral(float value, float dead)
     }
 }
 
+// Fait progresser linéairement une valeur souhaitée ŕ partir
+// de sa valeur actuelle.
+
+inline float Linear(float actual, float hope, float time)
+{
+    float	futur;
+
+    if ( actual == hope )  return hope;
+
+    if ( hope > actual )
+    {
+        futur = actual+time;
+        if ( futur > hope )  futur = hope;
+    }
+    if ( hope < actual )
+    {
+        futur = actual-time;
+        if ( futur < hope )  futur = hope;
+    }
+
+    return futur;
+}
+
 //! Gently advances a desired value from its current value
 /** Over time, the progression is more rapid. */
 inline float Smooth(float actual, float hope, float time)
@@ -243,6 +275,81 @@ inline float Smooth(float actual, float hope, float time)
     }
 
     return future;
+}
+
+// Version précise et lente de Smooth.
+
+inline float SmoothP(float actual, float hope, float time)
+{
+    float	futur, step;
+    int		iter, i;
+
+    if ( actual == hope )  return hope;
+
+    if ( time < 0.001f )
+    {
+        futur = actual + (hope-actual)*time;
+    }
+    else
+    {
+        iter = static_cast<int>(time/0.001f);
+        step = time/iter;
+        futur = actual;
+        for ( i=0 ; i<iter ; i++ )
+        {
+            futur += (hope-futur)*step;
+        }
+    }
+
+    if ( hope > actual )
+    {
+        if ( futur > hope )  futur = hope;
+    }
+    if ( hope < actual )
+    {
+        if ( futur < hope )  futur = hope;
+    }
+
+    return futur;
+}
+
+// Version approximative et rapide de SmoothP.
+// Sur une machine rapide, lorsque le nombre de FPS devient grand,
+// les robots ont des mouvements d'amplitude trop grande en utilisant
+// Smooth. Cette procédure Smoove essaye de corriger cela empiriquement,
+// bien que cela soit mathématiquement faux !
+
+inline float SmoothA(float actual, float hope, float time)
+{
+    float	futur;
+
+    if ( actual == hope )  return hope;
+
+    futur = actual + (hope-actual)*powf(time, 0.5f);  // sqr
+
+    if ( hope > actual )
+    {
+        if ( futur > hope )  futur = hope;
+    }
+    if ( hope < actual )
+    {
+        if ( futur < hope )  futur = hope;
+    }
+
+    return futur;
+}
+
+// Transforme une progression pour obtenir un mouvement dou.
+
+inline float Soft(float progress, int iter)
+{
+    int		i;
+
+    for ( i=0 ; i<iter ; i++ )
+    {
+        progress = sinf(Math::PI*1.5f+progress*Math::PI)/2.0f+0.5f;
+    }
+    return progress;
 }
 
 //! Bounces any movement

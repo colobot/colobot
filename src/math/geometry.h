@@ -561,6 +561,106 @@ inline bool IsSamePlane(const Math::Vector (&plane1)[3], const Math::Vector (&pl
     return true;
 }
 
+// Calcule le point d'intersection entre deux droites ab et cd.
+// Utilise l'algorithme de Gauss-Jordan utilisé pour le calcul
+// matriciel. Les calculs ont été spécialisés au cas simple de
+// l'intersection de segments pour des questions de rapidité.
+//
+//        Q=BX-AX : T=BY-AY
+//        R=CX-DX : U=CY-DY   matrice  [ Q R | S ]
+//        S=CX-AX : V=CY-AY            [ T U | V ]
+//
+// Cette matrice représente les coefficients de l'équation
+// vectorielle suivante :
+//        AB*a + CD*b = AC
+//
+// La coordonnée du point "P" s'obtient par :
+//        P = OA + a*AB
+//
+// ou encore :
+//        P = OC + b*CD
+//
+// Traite les cas particuliers des segments confondus ou parallčles.
+
+inline bool Intersect(const Math::Point &a, const Math::Point &b,
+                      const Math::Point &c, const Math::Point &d,
+                      Math::Point &p)
+{
+    float    q,r,s,t,u,v;
+
+    q = b.x-a.x;
+    r = c.x-d.x;
+    s = c.x-a.x;
+    t = b.y-a.y;
+    u = c.y-d.y;
+    v = c.y-a.y;
+
+    if ( q == 0.0f )  // ab vertical ?
+    {
+        if ( r == 0.0f )  // cd vertical ?
+        {
+            return false;
+        }
+        else
+        {
+            p.x = ((d.x-c.x)*s/r)+c.x;
+            p.y = ((d.y-c.y)*s/r)+c.y;
+            return true;
+        }
+    }
+
+    if ( t != 0.0f )  // ab pas horizontal ?
+    {
+        u = u-(t*r)/q;
+        v = v-(t*s)/q;
+    }
+
+    if ( u == 0.0f )
+    {
+        return false;
+    }
+
+    p.x = ((d.x-c.x)*v/u)+c.x;
+    p.y = ((d.y-c.y)*v/u)+c.y;
+    return true;
+}
+
+// Teste si un point est dans un rectangle p1-p2.
+
+inline bool IsBBox(const Math::Point &p1, const Math::Point &p2, const Math::Point &p)
+{
+    if ( p1.x < p2.x )
+    {
+        if ( p.x < p1.x || p.x > p2.x )  return false;
+    }
+    else
+    {
+        if ( p.x < p2.x || p.x > p1.x )  return false;
+    }
+    if ( p1.y < p2.y )
+    {
+        if ( p.y < p1.y || p.y > p2.y )  return false;
+    }
+    else
+    {
+        if ( p.y < p2.y || p.y > p1.y )  return false;
+    }
+    return true;
+}
+
+// Intersection de deux droites, avec test si le point
+// est bien sur les deux segments ab et cd.
+
+inline bool IntersectSegment(const Math::Point &a, const Math::Point &b,
+                      const Math::Point &c, const Math::Point &d,
+                      Math::Point &p)
+{
+    if ( !Intersect(a,b, c,d, p) )  return false;
+    if ( !IsBBox(a,b, p) )  return false;
+    if ( !IsBBox(c,d, p) )  return false;
+    return true;
+}
+
 //! Calculates the intersection "i" right "of" the plane "abc" (TODO: ?)
 inline bool Intersect(const Math::Vector &a, const Math::Vector &b, const Math::Vector &c,
                       const Math::Vector &d, const Math::Vector &e, Math::Vector &i)
@@ -610,11 +710,102 @@ inline Math::Vector LookatPoint(const Math::Vector &eye, float angleH, float ang
     return lookat;
 }
 
+// Teste si un point p est "dans" un segment p1-p2.
+// Pour un segment vertical partant de bas en haut, ętre
+// dedans, c'est ętre ŕ gauche.
+// Une suite de segments CCW permet de décrire une forme.
+// Si un point est "IsInside" pour tous les segments, il est
+// ŕ l'intérieur la forme (si elle est convexe).
+
+inline bool IsInside(Math::Point p1, Math::Point p2, Math::Point p)
+{
+    p2.x -= p1.x;
+    p2.y -= p1.y;
+
+    p.x -= p1.x;
+    p.y -= p1.y;
+
+    if ( p2.y > 0.0f )
+    {
+        if ( p2.x > 0.0f )
+        {
+            if ( p2.x > p2.y )  // octan 1 ?
+            {
+                return p.y >= p2.y/p2.x*p.x;
+            }
+            else    // octan 2 ?
+            {
+                return p.x <= p2.x/p2.y*p.y;
+            }
+        }
+        else
+        {
+            if ( -p2.x < p2.y )  // octan 3 ?
+            {
+                return p.x <= p2.x/p2.y*p.y;
+            }
+            else    // octan 4 ?
+            {
+                return p.y <= p2.y/p2.x*p.x;
+            }
+        }
+    }
+    else
+    {
+        if ( p2.x < 0.0f )
+        {
+            if ( -p2.x > -p2.y )  // octan 5 ?
+            {
+                return p.y <= p2.y/p2.x*p.x;
+            }
+            else    // octan 6 ?
+            {
+                return p.x >= p2.x/p2.y*p.y;
+            }
+        }
+        else
+        {
+            if ( p2.x < -p2.y )  // octan 7 ?
+            {
+                return p.x >= p2.x/p2.y*p.y;
+            }
+            else    // octan 8 ?
+            {
+                return p.y >= p2.y/p2.x*p.x;
+            }
+        }
+    }
+}
+
+inline bool IsInSegment(Math::Point p1, Math::Point p2, Math::Point p)
+{
+    if ( p1.x > p2.x ) Math::Swap(p1.x, p2.x);
+    if ( p1.y > p2.y ) Math::Swap(p1.y, p2.y);
+
+    return ( p.x >= p1.x && p.x <= p2.x &&
+             p.y >= p1.y && p.y <= p2.y );
+}
+
 //! Transforms the point \a p by matrix \a m
 /** Is equal to multiplying the matrix by the vector (of course without perspective divide). */
 inline Math::Vector Transform(const Math::Matrix &m, const Math::Vector &p)
 {
     return MatrixVectorMultiply(m, p);
+}
+
+// Calcule la projection d'un point P sur une droite AB.
+
+inline Math::Point Projection(const Math::Point &a, const Math::Point &b, const Math::Point &p)
+{
+    Math::Point	pp;
+    float	k;
+
+    k  = (b.x-a.x)*(p.x-a.x) + (b.y-a.y)*(p.y-a.y);
+    k /= (b.x-a.x)*(b.x-a.x) + (b.y-a.y)*(b.y-a.y);
+
+    pp.x = a.x + k*(b.x-a.x);
+    pp.y = a.y + k*(b.y-a.y);
+    return pp;
 }
 
 //! Calculates the projection of the point \a p on a straight line \a a to \a b

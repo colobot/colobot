@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include "math/point.h"
+
 #include "object/crash_sphere.h"
 #include "object/object_create_params.h"
 #include "object/object_interface_type.h"
@@ -153,6 +155,25 @@ public:
     std::vector<CrashSphere> GetAllCrashSpheres();
     //! Removes all crash spheres
     void DeleteAllCrashSpheres();
+
+    //! Adds a new crash line
+    void AddCrashLine(const CrashLine& crashLine);
+    //! Sets the crash line height
+    void SetCrashLineHeight(float h);
+    //! Returns the crash line height
+    float GetCrashLineHeight();
+    //! Returns total number of crash lines
+    int GetCrashLineCount();
+    //! Returns all crash lines
+    std::vector<CrashLine> GetAllCrashLines();
+    //! Removes all crash lines
+    void DeleteAllCrashLines();
+
+    void UpdateBBoxCrashLine();
+    void GetCrashLineBBox(Math::Point &min, Math::Point &max);
+    virtual bool IsCrashLineFusion();
+    void CrashLineFusion();
+
     //! Returns true if this object can collide with the other one
     bool CanCollideWith(CObject* other);
 
@@ -220,6 +241,10 @@ protected:
     Math::Vector m_rotation;
     Math::Vector m_scale;
     std::vector<CrashSphere> m_crashSpheres; //!< crash spheres
+    std::vector<CrashLine> m_crashLines; //!< crash lines
+    float m_crashLineHeight; //!< crash line height
+    Math::Point m_crashLineMin;
+    Math::Point m_crashLineMax;
     Math::Sphere m_cameraCollisionSphere;
     bool m_animateOnReset;
     bool m_collisions;
