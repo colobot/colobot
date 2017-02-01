@@ -20,7 +20,7 @@
 #include "app/app.h"
 
 #include "common/make_unique.h"
-
+#include "common/object_maker.h"
 #include "common/system/system_other.h"
 
 #include <functional>
@@ -93,6 +93,7 @@ protected:
     MockRepository m_mocks;
     CSystemUtils* m_systemUtils;
     std::vector<std::unique_ptr<FakeSystemTimeStamp>> m_timeStamps;
+    std::unique_ptr<CObjectMaker> m_objectMaker;
 
 private:
     int m_stampUid;
@@ -101,6 +102,8 @@ private:
 
 void CApplicationUT::SetUp()
 {
+    m_objectMaker = MakeUnique<CObjectMaker>();
+
     m_systemUtils = m_mocks.Mock<CSystemUtils>();
 
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetDataPath).Return("");
@@ -119,6 +122,8 @@ void CApplicationUT::SetUp()
 void CApplicationUT::TearDown()
 {
     m_app.reset();
+
+    m_objectMaker.reset();
 }
 
 SystemTimeStamp* CApplicationUT::CreateTimeStamp()
