@@ -540,6 +540,20 @@ void CPhysics::ForceMotorSpeedZ(float speed)
     m_forceSpeed.z = speed;
 }
 
+// Retourne la valeur du compte tour (0..2).
+
+float CPhysics::GetMotorRPM()
+{
+    return m_motorRPM;
+}
+
+// Retourne le rapport de la boîte de vitesses.
+
+int CPhysics::GetMotorState()
+{
+    return m_motorState;
+}
+
 
 // Management of linear and angular velocities.
 // Specifies the speed parallel to the direction of travel.
@@ -945,6 +959,29 @@ float CPhysics::GetLinLength(float dist)
         return dist*m_linMotion.stopAccel.x /
                (m_linMotion.recedeAccel.x+m_linMotion.stopAccel.x);
     }
+}
+
+// Retourne la vitesse de rotation des roues.
+
+float CPhysics::GetWheelSpeed(bool bFront)
+{
+    float	speed;
+
+    if ( m_bBrake && !(m_bHandbrake && bFront) && fabs(m_motorSpeed.x) > 0.5f )
+    {
+        speed = 0.0f;  // roues bloquées (pas d'ABS !)
+    }
+    else
+    {
+        speed = m_linMotion.realSpeed.x / m_linMotion.advanceSpeed.x * 50.0f;
+
+        if ( !bFront )  // roues arričres (motrices) ?
+        {
+            speed += m_wheelSlide*40.0f;  // ajoute le patinage ŕ l'accélération
+        }
+    }
+
+    return speed;
 }
 
 

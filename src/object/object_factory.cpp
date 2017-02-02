@@ -44,6 +44,7 @@
 
 #include "object/subclass/buzzingcars/bc_barrier.h"
 #include "object/subclass/buzzingcars/bc_building.h"
+#include "object/subclass/buzzingcars/bc_car.h"
 #include "object/subclass/buzzingcars/bc_resource.h"
 
 #include "object/subclass/base_alien.h"
@@ -486,6 +487,14 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_BARRIER18:
         case OBJECT_BARRIER19:
             return CBCBarrier::Create(params, m_oldModelManager, m_engine);
+
+        case OBJECT_CAR:
+//        case OBJECT_MOBILEtg:
+        case OBJECT_MOBILEfb:
+        case OBJECT_MOBILEob:
+        case OBJECT_TRAX:
+        case OBJECT_UFO:
+            return CBCCar::Create(params, m_oldModelManager, m_engine);
 
         default:
             break;

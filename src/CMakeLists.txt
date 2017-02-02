@@ -337,6 +337,8 @@ set(BASE_SOURCES
     object/mission_type.h
     object/motion/motion.cpp
     object/motion/motion.h
+    object/motion/buzzingcars/motioncar.cpp
+    object/motion/buzzingcars/motioncar.h
     object/motion/motionant.cpp
     object/motion/motionant.h
     object/motion/motionbee.cpp
@@ -373,6 +375,8 @@ set(BASE_SOURCES
     object/subclass/buzzingcars/bc_barrier.h
     object/subclass/buzzingcars/bc_building.cpp
     object/subclass/buzzingcars/bc_building.h
+    object/subclass/buzzingcars/bc_car.cpp
+    object/subclass/buzzingcars/bc_car.h
     object/subclass/buzzingcars/bc_resource.cpp
     object/subclass/buzzingcars/bc_resource.h
     object/subclass/base_alien.cpp

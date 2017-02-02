@@ -43,6 +43,11 @@ class CSoundInterface;
 class CLevelParserLine;
 struct Event;
 
+enum TypePart
+{
+    TP_TOP          = 0,        // to�t
+};
+
 enum WheelType
 {
     WT_NORM         = 0,        // roues normales

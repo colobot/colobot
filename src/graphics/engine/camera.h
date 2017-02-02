@@ -229,6 +229,9 @@ public:
     //! Set camera speed
     void        SetCameraSpeed(float speed);
 
+    void SetBackDist(float dist);
+    float GetBackDist();
+
 protected:
     //! Advances the effect of the camera
     void        EffectFrame(const Event &event);

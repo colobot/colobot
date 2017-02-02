@@ -1487,4 +1487,14 @@ void CCamera::SetFreeze(bool freeze)
     m_freeze = freeze;
 }
 
+void CCamera::SetBackDist(float dist)
+{
+    m_backDist = dist;
+}
+
+float CCamera::GetBackDist()
+{
+    return m_backDist;
+}
+
 }

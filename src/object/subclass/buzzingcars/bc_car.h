@@ -19,42 +19,22 @@
 
 #pragma once
 
-#include "math/vector.h"
+#include "object/subclass/base_building.h"
 
-#include "object/object_type.h"
-
-struct ObjectCreateParams
+/**
+ * \class CBCBuilding
+ * \brief Base class for all BuzzingCars cars (or other vehicles?)
+ */
+class CBCCar : public COldObject
 {
-    Math::Vector pos;
-    float angle;
-    ObjectType type;
-    float power;
-    float height;
-    bool trainer;
-    bool toy;
-    int option;
-    int team;
-    int id;
-    float zoom; // TODO: ???
-    bool bPlumb; // TODO: ???
-    int model;
-    int subModel;
+public:
+    CBCCar(int id, ObjectType type);
+    virtual ~CBCCar();
 
-    ObjectCreateParams()
-    {
-        pos = Math::Vector(0.0f, 0.0f, 0.0f);
-        angle = 0.0f;
-        type = OBJECT_NULL;
-        power = -1.0f;
-        height = 0.0f;
-        trainer = false;
-        toy = false;
-        option = 0;
-        team = 0;
-        id = -1;
-        zoom = 1.0f;
-        bPlumb = true; // TODO: ?
-        model = 1;
-        subModel = 0;
-    }
+public:
+    static std::unique_ptr<CBCCar> Create(
+        const ObjectCreateParams& params,
+        Gfx::COldModelManager* modelManager,
+        Gfx::CEngine* engine);
 };
+
