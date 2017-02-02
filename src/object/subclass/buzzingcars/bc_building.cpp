@@ -28,10 +28,6 @@
 
 #include "object/object_create_params.h"
 
-// TODO
-// It's nice that they left some of the crash spheres in ;) ~krzys_h
-#define CRASH_LINES_ARE_NOT_YET_IMPLEMENTED 1
-
 
 CBCBuilding::CBCBuilding(int id, ObjectType type)
     : CBaseBuilding(id, type)
@@ -63,7 +59,7 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
+#if 0
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f,  0.0f,   0.0f), 40.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 30.0f,  5.0f,  10.0f),  9.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 30.0f,  5.0f,  30.0f),  9.0f, SOUND_BOUMm, 0.45f));
@@ -78,11 +74,11 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector(-20.0f,  5.0f,  35.0f),  5.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-30.0f,  5.0f,  35.0f),  5.0f, SOUND_BOUMm, 0.45f));
 #else
-        obj->CreateCrashLine(Math::Point(-35.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-35.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-35.0f, -40.0f), SOUND_BOUMm, 0.45f);
+        obj->AddCrashLine(CrashLine(Math::Point(-35.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-35.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-35.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -95,7 +91,7 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
+#if 0
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f,  0.0f,   0.0f), 40.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 26.0f,  3.0f,  26.0f), 14.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 26.0f,  3.0f, -26.0f), 14.0f, SOUND_BOUMm, 0.45f));
@@ -106,11 +102,11 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector(-36.0f,  3.0f,  36.0f),  4.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-36.0f,  3.0f, -36.0f),  4.0f, SOUND_BOUMm, 0.45f));
 #else
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -123,7 +119,7 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
+#if 0
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f,  0.0f,   0.0f), 40.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 26.0f,  3.0f,  26.0f), 14.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 26.0f,  3.0f, -26.0f), 14.0f, SOUND_BOUMm, 0.45f));
@@ -134,11 +130,11 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector(-36.0f,  3.0f,  36.0f),  4.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-36.0f,  3.0f, -36.0f),  4.0f, SOUND_BOUMm, 0.45f));
 #else
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -151,7 +147,7 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
+#if 0
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f,  0.0f,   0.0f), 40.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 15.0f,  3.0f,  37.0f),  3.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 37.0f,  3.0f,  15.0f),  3.0f, SOUND_BOUMm, 0.45f));
@@ -162,15 +158,15 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f,  3.0f, -37.0f),  3.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-37.0f,  3.0f, -15.0f),  3.0f, SOUND_BOUMm, 0.45f));
 #else
-        obj->CreateCrashLine(Math::Point(-17.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 17.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -17.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  17.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 17.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-17.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  17.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -17.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-17.0f, -40.0f), SOUND_BOUMm, 0.45f);
+        obj->AddCrashLine(CrashLine(Math::Point(-17.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 17.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -17.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  17.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 17.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-17.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  17.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -17.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-17.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -183,7 +179,7 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
+#if 0
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f,  0.0f,   0.0f), 40.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 35.0f,  3.0f,  15.0f),  5.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 35.0f,  3.0f,  25.0f),  5.0f, SOUND_BOUMm, 0.45f));
@@ -202,15 +198,15 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f,  3.0f, -35.0f),  5.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-25.0f,  3.0f, -35.0f),  5.0f, SOUND_BOUMm, 0.45f));
 #else
-        obj->CreateCrashLine(Math::Point(-30.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 30.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 30.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-30.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-30.0f, -40.0f), SOUND_BOUMm, 0.45f);
+        obj->AddCrashLine(CrashLine(Math::Point(-30.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 30.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 30.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-30.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-30.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -239,7 +235,7 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
+#if 0
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f,  0.0f,   0.0f), 40.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 26.0f,  3.0f,  26.0f), 14.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 26.0f,  3.0f, -26.0f), 14.0f, SOUND_BOUMm, 0.45f));
@@ -250,15 +246,15 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector(-36.0f,  3.0f,  36.0f),  4.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-36.0f,  3.0f, -36.0f),  4.0f, SOUND_BOUMm, 0.45f));
 #else
-        obj->CreateCrashLine(Math::Point(-30.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 30.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 30.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-30.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-30.0f, -40.0f), SOUND_BOUMm, 0.45f);
+        obj->AddCrashLine(CrashLine(Math::Point(-30.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 30.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 30.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-30.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-30.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -338,14 +334,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-18.0f, -4.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(  5.0f, -4.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(  5.0f,  4.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-18.0f,  4.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-18.0f, -4.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-18.0f, -4.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(  5.0f, -4.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(  5.0f,  4.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-18.0f,  4.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-18.0f, -4.0f), SOUND_BOUMm, 0.45f));
 #endif
 
 //?        obj->CreateShadowCircle(18.0f, 1.0f, D3DSHADOWBARRIER2);
@@ -371,14 +365,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetScale(params.zoom);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-20.0f, -20.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 20.0f, -20.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 20.0f,  20.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-20.0f,  20.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-20.0f, -20.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-20.0f, -20.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 20.0f, -20.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 20.0f,  20.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-20.0f,  20.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-20.0f, -20.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -389,14 +381,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -416,14 +406,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         modelManager->AddModelReference("buzzingcars/alien21.mod", false, rank, params.team);
         obj->SetPartPosition(1, Math::Vector(0.0f, 40.0f, 0.0f));
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -450,14 +438,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         modelManager->AddModelReference("buzzingcars/alien21.mod", false, rank, params.team);
         obj->SetPartPosition(2, Math::Vector(0.0f, 80.0f, 0.0f));
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -470,14 +456,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -498,14 +482,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetPartPosition(1, Math::Vector(0.0f, 25.0f, 17.0f));
 
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -532,14 +514,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         modelManager->AddModelReference("buzzingcars/alien62.mod", false, rank, params.team);
         obj->SetPartPosition(2, Math::Vector(26.0f, 13.0f, 0.0f));
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -552,14 +532,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -606,14 +584,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         // bouton rouge :
         obj->AddCrashSphere(CrashSphere(Math::Vector(-14.0f, 3.0f, 42.0f), 3.0f, SOUND_BOUMm, 0.44f));
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 40.0f));
@@ -647,14 +623,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         modelManager->AddModelReference("buzzingcars/alien93.mod", false, rank, params.team);
         obj->SetPartPosition(3, Math::Vector(0.0f, 1.0f, 0.0f));
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-15.0f, -15.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 15.0f, -15.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 15.0f,  15.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-15.0f,  15.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-15.0f, -15.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-15.0f, -15.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 15.0f, -15.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 15.0f,  15.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-15.0f,  15.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-15.0f, -15.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -665,14 +639,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -683,14 +655,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-10.0f, -10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 10.0f, -10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 10.0f,  10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-10.0f,  10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-10.0f, -10.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -701,14 +671,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-50.0f, -30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 50.0f, -30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 50.0f,  30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-50.0f,  30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-50.0f, -30.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-50.0f, -30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 50.0f, -30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 50.0f,  30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-50.0f,  30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-50.0f, -30.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -719,14 +687,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -10.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -10.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -737,14 +703,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -755,14 +719,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-10.0f, -10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 10.0f, -10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 10.0f,  10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-10.0f,  10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-10.0f, -10.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -804,14 +766,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         // bouton rouge :
         obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f, 3.0f,  0.0f), 3.0f, SOUND_BOUMm, 0.44f));
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-10.0f,  10.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-10.0f, -10.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-10.0f, -10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 10.0f, -10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 10.0f,  10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-10.0f,  10.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-10.0f, -10.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -822,14 +782,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -840,14 +798,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -858,14 +814,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f, -40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f,  40.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-40.0f, -40.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -877,14 +831,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetFloorHeight(0.0f);
         obj->SetScale(1.4f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-6.0f, -3.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 6.0f, -3.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 6.0f,  3.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-6.0f,  3.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-6.0f, -3.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-6.0f, -3.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 6.0f, -3.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 6.0f,  3.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-6.0f,  3.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-6.0f, -3.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         // TODO (krzys_h): obj->CreateShadowCircle(4.6f, 1.0f, D3DSHADOWCAR07);
@@ -899,14 +851,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetFloorHeight(0.0f);
         obj->SetScale(1.4f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-6.0f, -3.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 6.0f, -3.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 6.0f,  3.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-6.0f,  3.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-6.0f, -3.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-6.0f, -3.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 6.0f, -3.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 6.0f,  3.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-6.0f,  3.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-6.0f, -3.0f), SOUND_BOUMm, 0.45f));
 #endif
 
         obj->CreateShadowCircle(7.0f, 0.2f);
@@ -1101,7 +1051,7 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 35.0f, -12.0f),  6.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 35.0f, -24.0f),  6.0f, SOUND_BOUMm, 0.45f));
 
-#if CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
+#if 0
         obj->AddCrashSphere(CrashSphere(Math::Vector(  5.0f,  3.0f,  42.0f), 12.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( -5.0f,  3.0f,  42.0f), 12.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 14.0f,  3.0f,  33.0f),  3.5f, SOUND_BOUMm, 0.45f));
@@ -1117,17 +1067,17 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector(-14.0f,  3.0f, -51.0f),  3.5f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 36.0f, -38.0f),  9.0f, SOUND_BOUMm, 0.45f));
 #else
-        obj->CreateCrashLine(Math::Point(-17.0f,  30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 17.0f,  30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 17.0f,  55.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-17.0f,  55.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-17.0f,  30.0f), SOUND_BOUMm, 0.45f);
+        obj->AddCrashLine(CrashLine(Math::Point(-17.0f,  30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 17.0f,  30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 17.0f,  55.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-17.0f,  55.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-17.0f,  30.0f), SOUND_BOUMm, 0.45f));
 
-        obj->CreateCrashLine(Math::Point(-17.0f, -55.0f), SOUND_BOUMm, 0.45f, TRUE);
-        obj->CreateCrashLine(Math::Point( 17.0f, -55.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 17.0f, -30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-17.0f, -30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-17.0f, -55.0f), SOUND_BOUMm, 0.45f);
+        obj->AddCrashLine(CrashLine(Math::Point(-17.0f, -55.0f), SOUND_BOUMm, 0.45f, true));
+        obj->AddCrashLine(CrashLine(Math::Point( 17.0f, -55.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 17.0f, -30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-17.0f, -30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-17.0f, -55.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -1273,7 +1223,7 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         // Sphčre du mécanisme.
         obj->AddCrashSphere(CrashSphere(Math::Vector( 20.0f, 4.0f, -43.0f),  7.0f, SOUND_BOUMm, 0.44f));
 
-#if CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
+#if 0
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 5.0f, -48.0f), 20.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 15.0f, 5.0f, -35.0f),  5.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f, 5.0f, -35.0f),  5.0f, SOUND_BOUMm, 0.45f));
@@ -1295,17 +1245,17 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector( 25.0f, 3.0f,  32.5f),  3.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-25.0f, 3.0f,  32.5f),  3.0f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateCrashLine(Math::Point(-20.0f,  30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 20.0f,  30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 20.0f,  67.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-20.0f,  67.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-20.0f,  30.0f), SOUND_BOUMm, 0.45f);
+        obj->AddCrashLine(CrashLine(Math::Point(-20.0f,  30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 20.0f,  30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 20.0f,  67.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-20.0f,  67.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-20.0f,  30.0f), SOUND_BOUMm, 0.45f));
 
-        obj->CreateCrashLine(Math::Point(-20.0f, -67.0f), SOUND_BOUMm, 0.45f, TRUE);
-        obj->CreateCrashLine(Math::Point( 20.0f, -67.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 20.0f, -30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-20.0f, -30.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-20.0f, -67.0f), SOUND_BOUMm, 0.45f);
+        obj->AddCrashLine(CrashLine(Math::Point(-20.0f, -67.0f), SOUND_BOUMm, 0.45f, true));
+        obj->AddCrashLine(CrashLine(Math::Point( 20.0f, -67.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 20.0f, -30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-20.0f, -30.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-20.0f, -67.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -1365,7 +1315,7 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         engine->GetTerrain()->AddBuildingLevel(params.pos, 7.0f, 9.0f, 1.0f, 0.5f);
         // TODO (krzys_h): engine->GetTerrain()->AddSlowerZone(params.pos, 20.0f, 30.0f, 0.2f);
 
-#if CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
+#if 0
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 6.0f, 27.0f), 15.0f, SOUND_BOUMm, 0.45f));
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(-15.5f, 2.0f,-12.0f),  1.5f, SOUND_BOUMm, 0.45f));
@@ -1405,11 +1355,11 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->AddCrashSphere(CrashSphere(Math::Vector( 15.5f, 2.0f,-12.0f),  1.5f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 15.0f, 7.0f,-12.0f),  1.5f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateCrashLine(Math::Point(-15.0f, 12.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 15.0f, 12.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 15.0f, 42.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-15.0f, 42.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-15.0f, 12.0f), SOUND_BOUMm, 0.45f);
+        obj->AddCrashLine(CrashLine(Math::Point(-15.0f, 12.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 15.0f, 12.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 15.0f, 42.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-15.0f, 42.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-15.0f, 12.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 
@@ -1443,14 +1393,12 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
 
         engine->GetTerrain()->AddBuildingLevel(params.pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-30.0f, -60.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 22.0f, -60.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 22.0f,  60.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-30.0f,  60.0f), SOUND_BOUMm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-30.0f, -60.0f), SOUND_BOUMm, 0.45f);
-#else
-        // TODO: :(
+#if 1
+        obj->AddCrashLine(CrashLine(Math::Point(-30.0f, -60.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 22.0f, -60.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 22.0f,  60.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-30.0f,  60.0f), SOUND_BOUMm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-30.0f, -60.0f), SOUND_BOUMm, 0.45f));
 #endif
     }
 

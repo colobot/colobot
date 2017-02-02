@@ -28,8 +28,6 @@
 
 #include "object/object_create_params.h"
 
-#define CRASH_LINES_ARE_NOT_YET_IMPLEMENTED 1
-
 CBCResource::CBCResource(int id, ObjectType type)
     : COldObject(id)
 {
@@ -270,15 +268,11 @@ std::unique_ptr<CBCResource> CBCResource::Create(
     }
     else if ( params.type == OBJECT_PIPES )
     {
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-20.0f, -6.0f), SOUND_CHOCm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 20.0f, -6.0f), SOUND_CHOCm, 0.45f);
-        obj->CreateCrashLine(Math::Point( 20.0f,  6.0f), SOUND_CHOCm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-20.0f,  6.0f), SOUND_CHOCm, 0.45f);
-        obj->CreateCrashLine(Math::Point(-20.0f, -6.0f), SOUND_CHOCm, 0.45f);
-#else
-        // TODO: :(
-#endif
+        obj->AddCrashLine(CrashLine(Math::Point(-20.0f, -6.0f), SOUND_CHOCm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 20.0f, -6.0f), SOUND_CHOCm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 20.0f,  6.0f), SOUND_CHOCm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-20.0f,  6.0f), SOUND_CHOCm, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-20.0f, -6.0f), SOUND_CHOCm, 0.45f));
         radius  = 0.0f;
         obj->CreateShadowCircle(20.0f, 1.0f, Gfx::ENG_SHADOW_WORM);
     }
@@ -311,15 +305,11 @@ std::unique_ptr<CBCResource> CBCResource::Create(
               params.type <= OBJECT_PUB94 )
     {
         obj->SetScale(0.5f*params.zoom);  // pour éclaircir l'image !!!
-#if !CRASH_LINES_ARE_NOT_YET_IMPLEMENTED
-        obj->CreateCrashLine(Math::Point(-15.0f, -1.0f), SOUND_CHOCo, 0.45f);
-        obj->CreateCrashLine(Math::Point( 15.0f, -1.0f), SOUND_CHOCo, 0.45f);
-        obj->CreateCrashLine(Math::Point( 15.0f,  1.0f), SOUND_CHOCo, 0.45f);
-        obj->CreateCrashLine(Math::Point(-15.0f,  1.0f), SOUND_CHOCo, 0.45f);
-        obj->CreateCrashLine(Math::Point(-15.0f, -1.0f), SOUND_CHOCo, 0.45f);
-#else
-        // TODO: :(
-#endif
+        obj->AddCrashLine(CrashLine(Math::Point(-15.0f, -1.0f), SOUND_CHOCo, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 15.0f, -1.0f), SOUND_CHOCo, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point( 15.0f,  1.0f), SOUND_CHOCo, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-15.0f,  1.0f), SOUND_CHOCo, 0.45f));
+        obj->AddCrashLine(CrashLine(Math::Point(-15.0f, -1.0f), SOUND_CHOCo, 0.45f));
         radius  = 0.0f;
         bPlumb  = true;  // toujours droit
     }
