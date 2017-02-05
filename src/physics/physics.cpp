@@ -992,26 +992,21 @@ bool CPhysics::EventProcess(const Event &event)
 {
 // TODO: ? ~krzys_h    if ( !m_object->GetEnable() )  return true;
 
-    /* TODO (krzys_h)
-    if ( event.type == EVENT_KEYDOWN )
+    if ( event.type == EVENT_KEY_DOWN || event.type == EVENT_KEY_UP )
     {
-        if ( event.param == m_engine->GetKey(KEYRANK_HORN, 0) ||
-             event.param == m_engine->GetKey(KEYRANK_HORN, 1) )
+        if ( event.GetData<KeyEventData>()->slot == INPUT_SLOT_ACTION )
         {
-            HornEvent(true);
+            HornEvent(event.type == EVENT_KEY_DOWN);
+        }
+
+        // Original code did this by adding additional input axis. I think we can do without that, at least for now. ~krzys_h
+        if ( event.GetData<KeyEventData>()->key == KEY(SPACE) ) // TODO: keybinding?
+        {
+            m_motorSpeedWk = event.type == EVENT_KEY_DOWN ? 1.0f : 0.0f;
         }
     }
 
-    if ( event.type == EVENT_KEYUP )
-    {
-        if ( event.param == m_engine->GetKey(KEYRANK_HORN, 0) ||
-             event.param == m_engine->GetKey(KEYRANK_HORN, 1) )
-        {
-            HornEvent(false);
-        }
-    }
-
-    if ( event.type == EVENT_BUTTON_HORN )
+    /*if ( event.type == EVENT_BUTTON_HORN )
     {
         HornEvent(true);
     }
@@ -1024,8 +1019,7 @@ bool CPhysics::EventProcess(const Event &event)
     {
         HornEvent(false);
         m_motorSpeedWk = 0.0f;
-    }
-     */
+    }*/
 
     if ( event.type == EVENT_FRAME )
     {

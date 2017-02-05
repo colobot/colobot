@@ -837,39 +837,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
 
     type = m_object->GetType();
 
-    if ( type == OBJECT_MOBILEfa ||
-         type == OBJECT_MOBILEta ||
-         type == OBJECT_MOBILEwa ||
-         type == OBJECT_MOBILEia ||
-         type == OBJECT_MOBILEfc ||
-         type == OBJECT_MOBILEtc ||
-         type == OBJECT_MOBILEwc ||
-         type == OBJECT_MOBILEic ||
-         type == OBJECT_MOBILEfi ||
-         type == OBJECT_MOBILEti ||
-         type == OBJECT_MOBILEwi ||
-         type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEfs ||
-         type == OBJECT_MOBILEts ||
-         type == OBJECT_MOBILEws ||
-         type == OBJECT_MOBILEis ||
-         type == OBJECT_MOBILErt ||
-         type == OBJECT_MOBILErc ||
-         type == OBJECT_MOBILErr ||
-         type == OBJECT_MOBILErs ||
-         type == OBJECT_MOBILEsa ||
-         type == OBJECT_MOBILEtg ||
-         type == OBJECT_MOBILEft ||
-         type == OBJECT_MOBILEtt ||
-         type == OBJECT_MOBILEwt ||
-         type == OBJECT_MOBILEit ||
-         type == OBJECT_MOBILEdr ||
-         type == OBJECT_MOTHER   ||
-         type == OBJECT_ANT      ||
-         type == OBJECT_SPIDER   ||
-         type == OBJECT_BEE      ||
-         type == OBJECT_WORM     ||
-         type == OBJECT_CONTROLLER)  // vehicle?
+    if ( m_object->Implements(ObjectInterfaceType::Programmable) && type != OBJECT_HUMAN )  // vehicle?
     {
         if (m_main->GetMissionType() != MISSION_RETRO)
         {
@@ -1731,41 +1699,7 @@ void CObjectInterface::UpdateInterface()
         DeadInterface(pw, EVENT_OBJECT_GASDOWN, m_main->IsResearchDone(RESEARCH_FLY, m_object->GetTeam()));
     }
 
-    if ( type == OBJECT_HUMAN    ||
-         type == OBJECT_TECH     ||
-         type == OBJECT_MOBILEfa ||
-         type == OBJECT_MOBILEta ||
-         type == OBJECT_MOBILEwa ||
-         type == OBJECT_MOBILEia ||
-         type == OBJECT_MOBILEfc ||
-         type == OBJECT_MOBILEtc ||
-         type == OBJECT_MOBILEwc ||
-         type == OBJECT_MOBILEic ||
-         type == OBJECT_MOBILEfi ||
-         type == OBJECT_MOBILEti ||
-         type == OBJECT_MOBILEwi ||
-         type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEfs ||
-         type == OBJECT_MOBILEts ||
-         type == OBJECT_MOBILEws ||
-         type == OBJECT_MOBILEis ||
-         type == OBJECT_MOBILErt ||
-         type == OBJECT_MOBILErc ||
-         type == OBJECT_MOBILErr ||
-         type == OBJECT_MOBILErs ||
-         type == OBJECT_MOBILEsa ||
-         type == OBJECT_MOBILEtg ||
-         type == OBJECT_MOBILEft ||
-         type == OBJECT_MOBILEtt ||
-         type == OBJECT_MOBILEwt ||
-         type == OBJECT_MOBILEit ||
-         type == OBJECT_MOBILEdr ||
-         type == OBJECT_MOTHER   ||
-         type == OBJECT_ANT      ||
-         type == OBJECT_SPIDER   ||
-         type == OBJECT_BEE      ||
-         type == OBJECT_WORM     ||
-         type == OBJECT_CONTROLLER)  // vehicle?
+    if ( m_object->Implements(ObjectInterfaceType::Programmable) )  // vehicle?
     {
         bRun = false;
         if (m_selScript >= 0 && m_selScript < m_programStorage->GetProgramCount())

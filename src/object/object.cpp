@@ -45,6 +45,9 @@ CObject::CObject(int id, ObjectType type)
     , m_position(0.0f, 0.0f, 0.0f)
     , m_rotation(0.0f, 0.0f, 0.0f)
     , m_scale(1.0f, 1.0f, 1.0f)
+    , m_crashLineHeight(NAN)
+    , m_crashLineMin(Math::Point( 10000.0f,  10000.0f))
+    , m_crashLineMax(Math::Point(-10000.0f, -10000.0f))
     , m_animateOnReset(false)
     , m_collisions(true)
     , m_team(0)
@@ -411,6 +414,9 @@ std::vector<CrashLine> CObject::GetAllCrashLines()
 void CObject::DeleteAllCrashLines()
 {
     m_crashLines.clear();
+    m_crashLineMin = Math::Point( 10000.0f,  10000.0f);
+    m_crashLineMax = Math::Point(-10000.0f, -10000.0f);
+    m_crashLineHeight = NAN;
 }
 
 // Met ŕ jour la bbox.
