@@ -49,6 +49,12 @@ As of 0.1.5-alpha it's possible to compile binary with MSVC 2013. See [this post
 
 ### Compiling on Linux
 
+#### Compiling on Ubuntu
+
+See [INSTALL-Ubuntu.md](https://github.com/colobot/colobot/blob/master/INSTALL-Ubuntu.md)
+
+#### Generic instructions
+
 Since there are so many Linux flavors, it is difficult to write generic instructions. However, here is the general gist of what
 you will need to compile colobot.
 
