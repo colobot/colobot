@@ -27,7 +27,6 @@
 #include "common/make_unique.h"
 
 #include "level/level_category.h"
-#include "level/robotmain.h"
 
 #include "level/parser/parserexceptions.h"
 #include "level/parser/parserline.h"
@@ -37,7 +36,14 @@
 #include <vector>
 #include <memory>
 
-class CLevelParser
+class CLevelReadOnlyParser
+{
+public:
+    virtual const std::vector<CLevelParserLineUPtr>& GetLines() = 0;
+    virtual int CountLines(const std::string& command) = 0;
+};
+
+class CLevelParser : public CLevelReadOnlyParser
 {
 public:
     //! Create an empty level file
@@ -65,6 +71,8 @@ public:
     bool Exists();
     //! Load file
     void Load();
+    //! Load from raw text, '\n' splits text into lines
+    void LoadFromText();
     //! Save file
     void Save();
 
@@ -77,10 +85,7 @@ public:
     const std::string& GetFilename();
 
     //! Get all lines from file
-    inline const std::vector<CLevelParserLineUPtr>& GetLines()
-    {
-        return m_lines;
-    }
+    virtual const std::vector<CLevelParserLineUPtr>& GetLines();
 
     //! Insert new line to file
     void AddLine(CLevelParserLineUPtr line);
@@ -92,9 +97,11 @@ public:
     CLevelParserLine* GetIfDefined(const std::string &command);
 
     //! Count lines with given command
-    int CountLines(const std::string& command);
+    virtual int CountLines(const std::string& command);
 
 private:
+    void LoadFromStream(std::istream& stream);
+
     std::string m_filename;
     std::vector<CLevelParserLineUPtr> m_lines;
 
@@ -103,10 +110,9 @@ private:
     std::string m_pathLvl;
 };
 
-inline std::string InjectLevelPathsForCurrentLevel(const std::string& path, const std::string& defaultDir = "")
+inline std::string InjectLevelPathsForCurrentLevel(const std::string& path, LevelCategory category, int chap, int rank, const std::string& defaultDir = "")
 {
-    CRobotMain* main = CRobotMain::GetInstancePointer();
     auto levelParser = MakeUnique<CLevelParser>();
-    levelParser->SetLevelPaths(main->GetLevelCategory(), main->GetLevelChap(), main->GetLevelRank());
+    levelParser->SetLevelPaths(category, chap, rank);
     return levelParser->InjectLevelPaths(path, defaultDir);
 }

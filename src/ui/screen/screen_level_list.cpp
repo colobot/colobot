@@ -28,6 +28,7 @@
 #include "level/player_profile.h"
 
 #include "level/parser/parser.h"
+#include "level/robotmain.h"
 
 #include "ui/maindialog.h"
 

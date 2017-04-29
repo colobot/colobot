@@ -1564,6 +1564,21 @@ int CEngine::CreateGroundSpot()
     return index;
 }
 
+int CEngine::CreateGroundSpot(Math::Vector position, float radius, Gfx::Color color, float min, float max, float smooth)
+{
+    int rank = CreateGroundSpot();
+    if (rank != -1)
+    {
+        SetObjectGroundSpotPos(rank, position);
+        SetObjectGroundSpotRadius(rank, radius);
+        SetObjectGroundSpotColor(rank, color);
+        SetObjectGroundSpotSmooth(rank, smooth);
+        SetObjectGroundSpotMinMax(rank, min, max);
+    }
+
+    return rank;
+}
+
 void CEngine::DeleteGroundSpot(int rank)
 {
     assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));

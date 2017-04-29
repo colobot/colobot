@@ -147,6 +147,36 @@ Gfx::IntColor ResourceToColor(TerrainRes res);
 class CTerrain
 {
 public:
+    /**
+     * \struct FlyingLimit
+     * \brief Spherical limit of flight
+     */
+    struct FlyingLimit
+    {
+        Math::Vector center;
+        float        extRadius = 0.0f;
+        float        intRadius = 0.0f;
+        float        maxHeight = 0.0f;
+    };
+
+    /**
+     * \struct TerrainMaterial
+     * \brief Material for ground surface
+     */
+    struct TerrainMaterial
+    {
+        //! Unique ID
+        short       id = 0;
+        //! Texture
+        std::string texName;
+        //! UV texture coordinates
+        Math::Point uv;
+        //! Terrain hardness (defines e.g. sound of walking)
+        float       hardness = 0.0f;
+        //! IDs of neighbor materials: up, right, down, left
+        char        mat[4] = {};
+    };
+
     CTerrain();
     ~CTerrain();
 
@@ -161,6 +191,7 @@ public:
     //! Adds a terrain material the names of textures to use for the land
     void        AddMaterial(int id, const std::string& texName, const Math::Point& uv,
                             int up, int right, int down, int left, float hardness);
+    void        AddMaterial(TerrainMaterial material);
     //! Initializes all the ground with one material
     bool        InitMaterials(int id);
     //! Generates a level in the terrain
@@ -243,6 +274,7 @@ public:
     void        FlushFlyingLimit();
     //! Adds a new flying limit
     void        AddFlyingLimit(Math::Vector center, float extRadius, float intRadius, float maxHeight);
+    void        AddFlyingLimit(FlyingLimit limit);
     //! Returns the maximum height of flight
     float       GetFlyingLimit(Math::Vector pos, bool noLimit);
 
@@ -260,7 +292,6 @@ protected:
     //! Creates all objects in a mesh square ground
     bool        CreateSquare(int x, int y);
 
-    struct TerrainMaterial;
     //! Seeks a material based on its ID
     TerrainMaterial* FindMaterial(int id);
     //! Seeks a material based on neighbor values
@@ -323,23 +354,6 @@ protected:
     std::string     m_texBaseExt;
     //! Default hardness for level material
     float           m_defaultHardness;
-    /**
-     * \struct TerrainMaterial
-     * \brief Material for ground surface
-     */
-    struct TerrainMaterial
-    {
-        //! Unique ID
-        short       id = 0;
-        //! Texture
-        std::string texName;
-        //! UV texture coordinates
-        Math::Point uv;
-        //! Terrain hardness (defines e.g. sound of walking)
-        float       hardness = 0.0f;
-        //! IDs of neighbor materials: up, right, down, left
-        char        mat[4] = {};
-    };
     //! Terrain materials
     std::vector<TerrainMaterial> m_materials;
 
@@ -391,17 +405,6 @@ protected:
     //! Global flying height limit
     float           m_flyingMaxHeight;
 
-    /**
-     * \struct FlyingLimit
-     * \brief Spherical limit of flight
-     */
-    struct FlyingLimit
-    {
-        Math::Vector center;
-        float        extRadius = 0.0f;
-        float        intRadius = 0.0f;
-        float        maxHeight = 0.0f;
-    };
     //! List of local flight limits
     std::vector<FlyingLimit> m_flyingLimits;
 };

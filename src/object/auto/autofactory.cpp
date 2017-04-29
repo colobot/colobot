@@ -667,7 +667,7 @@ bool CAutoFactory::CreateVehicle()
         for (const std::string& name : m_main->GetNewScriptNames(m_type))
         {
             Program* prog = programStorage->AddProgram();
-            programStorage->ReadProgram(prog, InjectLevelPathsForCurrentLevel(name));
+            programStorage->ReadProgram(prog, InjectLevelPathsForCurrentLevel(name, m_main->GetLevelCategory(), m_main->GetLevelChap(), m_main->GetLevelRank()));
             prog->readOnly = true;
             prog->filename = name;
         }

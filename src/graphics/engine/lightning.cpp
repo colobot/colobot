@@ -177,15 +177,9 @@ bool CLightning::EventFrame(const Event &event)
 
 bool CLightning::Create(float sleep, float delay, float magnetic)
 {
-    m_lightningExists = true;
     if (sleep < 1.0f) sleep = 1.0f;
-    m_sleep = sleep;
-    m_delay = delay;
-    m_magnetic = magnetic;
 
-    m_phase    = LightningPhase::Wait;
-    m_progress = 0.0f;
-    m_speed    = 1.0f / m_sleep;
+    SetStatus(sleep, delay, magnetic, 0.0f);
 
     return false;
 }

@@ -34,6 +34,7 @@
 #include "graphics/engine/engine.h"
 
 #include "level/parser/parser.h"
+#include "level/robotmain.h"
 
 #include "script/script.h"
 
@@ -762,7 +763,7 @@ void CEdit::HyperFlush()
 
 // Indicates which is the home page.
 
-void CEdit::HyperHome(std::string filename)
+void CEdit::HyperHome(const std::string& filename)
 {
     HyperFlush();
     HyperAdd(filename, 0);
@@ -778,7 +779,7 @@ void CEdit::HyperJump(std::string name, std::string marker)
     }
 
     std::string filename = name + std::string(".txt");
-    filename = InjectLevelPathsForCurrentLevel(filename, "help/%lng%");
+    filename = InjectLevelPathsForCurrentLevel(filename, m_main->GetLevelCategory(), m_main->GetLevelChap(), m_main->GetLevelRank(), "help/%lng%");
     boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
 
     if ( ReadText(filename) )
@@ -1126,11 +1127,11 @@ void CEdit::Draw()
 
 // Draw an image part.
 
-std::string PrepareImageFilename(std::string name)
+std::string CEdit::PrepareImageFilename(const std::string& name)
 {
     std::string filename;
     filename = name + ".png";
-    filename = InjectLevelPathsForCurrentLevel(filename, "icons");
+    filename = InjectLevelPathsForCurrentLevel(filename, m_main->GetLevelCategory(), m_main->GetLevelChap(), m_main->GetLevelRank(), "icons");
     boost::replace_all(filename, "\\", "/"); // TODO: Fix this in files
     return filename;
 }
@@ -1410,7 +1411,7 @@ void CEdit::FreeImage()
 
 // Read from a text file.
 
-bool CEdit::ReadText(std::string filename)
+bool CEdit::ReadText(const std::string& filename)
 {
     int         len, len2, i, j, n, font, iLines, iCount;
     char        iName[50];

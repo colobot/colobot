@@ -1386,7 +1386,8 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 
     if (!name.empty())
     {
-        std::string name2 = InjectLevelPathsForCurrentLevel(name, "ai");
+        std::string name2 = InjectLevelPathsForCurrentLevel(name, script->m_main->GetLevelCategory(), script->m_main->GetLevelChap(),
+                                                            script->m_main->GetLevelRank(), "ai");
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(object);

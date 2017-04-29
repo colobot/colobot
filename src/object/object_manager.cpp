@@ -138,12 +138,9 @@ CObject* CObjectManager::CreateObject(ObjectCreateParams params)
         params.id = m_nextId;
         m_nextId++;
     }
-    else
+    else if (params.id >= m_nextId)
     {
-        if (params.id >= m_nextId)
-        {
-            m_nextId = params.id + 1;
-        }
+        m_nextId = params.id + 1;
     }
 
     assert(m_objects.find(params.id) == m_objects.end());

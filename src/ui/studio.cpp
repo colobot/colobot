@@ -185,12 +185,12 @@ bool CStudio::EventProcess(const Event &event)
     if ( event.type == EVENT_STUDIO_TOOL &&  // instructions?
          m_dialog == SD_NULL )
     {
-        m_main->StartDisplayInfo(SATCOM_HUSTON, false);
+        m_main->StartDisplayInfo(SatCom::Huston, false);
     }
     if ( event.type == EVENT_STUDIO_HELP &&  // help?
          m_dialog == SD_NULL )
     {
-        m_main->StartDisplayInfo(SATCOM_PROG, false);
+        m_main->StartDisplayInfo(SatCom::Prog, false);
     }
 
     if ( event.type == EVENT_STUDIO_COMPILE )  // compile?
