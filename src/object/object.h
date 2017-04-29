@@ -206,6 +206,11 @@ public:
     //! Is this object detectable (not dead and not underground)?
     virtual bool GetDetectable() { return true; }
 
+    //! Returns true if this object can collide with bullets even though it's not damageable itself
+    //! This is useful to make Barriers protect from bullets
+    //! \todo It will work like this for now but later I'd like to refactor this to something more manageable ~krzys_h
+    virtual bool IsBulletWall() { return false; }
+
 protected:
     //! Transform crash sphere by object's world matrix
     virtual void TransformCrashSphere(Math::Sphere& crashSphere) = 0;

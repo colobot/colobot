@@ -952,9 +952,8 @@ void CParticle::FrameParticle(float rTime)
         {
             CObject* object = SearchObjectGun(m_particle[i].goal, m_particle[i].pos, m_particle[i].type, m_particle[i].objFather);
             m_particle[i].goal = m_particle[i].pos;
-            if (object != nullptr)
+            if (object != nullptr && object->Implements(ObjectInterfaceType::Damageable))
             {
-                assert(object->Implements(ObjectInterfaceType::Damageable));
                 dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Phazer, 0.002f);
             }
 
@@ -1107,7 +1106,7 @@ void CParticle::FrameParticle(float rTime)
                 continue;
             }
 
-            if (m_particle[i].testTime >= 0.1f)
+            if (m_particle[i].testTime >= 0.05f)
             {
                 m_particle[i].testTime = 0.0f;
 
@@ -1156,8 +1155,10 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    assert(object->Implements(ObjectInterfaceType::Damageable));
-                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire, 0.002f);
+                    if (object->Implements(ObjectInterfaceType::Damageable))
+                    {
+                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire, 0.001f);
+                    }
 
                     m_exploGunCounter++;
 
@@ -1215,7 +1216,7 @@ void CParticle::FrameParticle(float rTime)
                 continue;
             }
 
-            if (m_particle[i].testTime >= 0.2f)
+            if (m_particle[i].testTime >= 0.1f)
             {
                 m_particle[i].testTime = 0.0f;
                 CObject* object = SearchObjectGun(m_particle[i].goal, m_particle[i].pos, m_particle[i].type, m_particle[i].objFather);
@@ -1238,8 +1239,10 @@ void CParticle::FrameParticle(float rTime)
                         if (object->GetType() != OBJECT_HUMAN)
                             Play(SOUND_TOUCH, m_particle[i].pos, 1.0f);
 
-                        assert(object->Implements(ObjectInterfaceType::Damageable));
-                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.2f);  // starts explosion
+                        if (object->Implements(ObjectInterfaceType::Damageable))
+                        {
+                            dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.1f);  // starts explosion
+                        }
                     }
                 }
             }
@@ -1261,7 +1264,7 @@ void CParticle::FrameParticle(float rTime)
                 continue;
             }
 
-            if (m_particle[i].testTime >= 0.2f)
+            if (m_particle[i].testTime >= 0.1f)
             {
                 m_particle[i].testTime = 0.0f;
                 CObject* object = SearchObjectGun(m_particle[i].goal, m_particle[i].pos, m_particle[i].type, m_particle[i].objFather);
@@ -1281,8 +1284,10 @@ void CParticle::FrameParticle(float rTime)
                     }
                     else
                     {
-                        assert(object->Implements(ObjectInterfaceType::Damageable));
-                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire);  // starts explosion
+                        if (object->Implements(ObjectInterfaceType::Damageable))
+                        {
+                            dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire);  // starts explosion
+                        }
                     }
                 }
             }
@@ -1301,7 +1306,7 @@ void CParticle::FrameParticle(float rTime)
                 continue;
             }
 
-            if (m_particle[i].testTime >= 0.1f)
+            if (m_particle[i].testTime >= 0.05f)
             {
                 m_particle[i].testTime = 0.0f;
 
@@ -1338,8 +1343,10 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    assert(object->Implements(ObjectInterfaceType::Damageable));
-                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.002f);
+                    if (object->Implements(ObjectInterfaceType::Damageable))
+                    {
+                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.0005f);
+                    }
 
                     m_exploGunCounter ++;
 
@@ -3502,6 +3509,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
     box2.z += min;
 
     CObject* best = nullptr;
+    float best_dist = std::numeric_limits<float>::infinity();
     bool shield = false;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -3535,7 +3543,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
         {
             continue;
         }
-        if (!obj->Implements(ObjectInterfaceType::Damageable))  continue;
+        if (!obj->Implements(ObjectInterfaceType::Damageable) && !obj->IsBulletWall())  continue;
 
         Math::Vector oPos = obj->GetPosition();
 
@@ -3563,8 +3571,12 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
         // Test the center of the object, which is necessary for objects
         // that have no sphere in the center (station).
         float dist = Math::Distance(oPos, pos)-4.0f;
-        if (dist < min)
+        float obj_dist = Math::Distance(old, oPos);
+        if (dist < min && obj_dist < best_dist)
+        {
             best = obj;
+            best_dist = obj_dist;
+        }
 
         for (const auto& crashSphere : obj->GetAllCrashSpheres())
         {
@@ -3577,8 +3589,12 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
 
             Math::Vector p = Math::Projection(old, pos, oPos);
             float ddist = Math::Distance(p, oPos)-oRadius;
-            if (ddist < min)
+            float obj_dist = Math::Distance(old, oPos);
+            if (ddist < min && obj_dist < best_dist)
+            {
                 best = obj;
+                best_dist = obj_dist;
+            }
         }
     }
 

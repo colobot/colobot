@@ -288,6 +288,9 @@ public:
 
     float       GetLightningHitProbability() override;
 
+    void        SetBulletWall(bool bulletWall);
+    bool        IsBulletWall() override;
+
 protected:
     bool        EventFrame(const Event &event);
     void        VirusFrame(float rTime);
@@ -376,4 +379,6 @@ protected:
     bool        m_traceDown;
     TraceColor  m_traceColor;
     float       m_traceWidth;
+
+    bool        m_bulletWall = false;
 };

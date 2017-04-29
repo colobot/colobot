@@ -940,6 +940,9 @@ void COldObject::Write(CLevelParserLine* line)
     if ( GetCameraLock() )
         line->AddParam("cameraLock", MakeUnique<CLevelParserParam>(GetCameraLock()));
 
+    if ( IsBulletWall() )
+        line->AddParam("bulletWall", MakeUnique<CLevelParserParam>(IsBulletWall()));
+
     if ( GetEnergyLevel() != 0.0f )
         line->AddParam("energy", MakeUnique<CLevelParserParam>(GetEnergyLevel()));
 
@@ -1034,6 +1037,8 @@ void COldObject::Read(CLevelParserLine* line)
 
     if (line->GetParam("pyro")->IsDefined())
         m_engine->GetPyroManager()->Create(line->GetParam("pyro")->AsPyroType(), this);
+
+    SetBulletWall(line->GetParam("bulletWall")->AsBool(false));
 
     SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
     SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
@@ -3187,4 +3192,14 @@ bool COldObject::IsSelectableByDefault(ObjectType type)
         return false;
     }
     return true;
+}
+
+void COldObject::SetBulletWall(bool bulletWall)
+{
+    m_bulletWall = bulletWall;
+}
+
+bool COldObject::IsBulletWall()
+{
+    return m_bulletWall;
 }
