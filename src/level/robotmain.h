@@ -91,6 +91,7 @@ class CPlayerProfile;
 class CSettings;
 class COldObject;
 class CPauseManager;
+class CLevelLoader;
 struct ActivePause;
 
 namespace Gfx
@@ -211,6 +212,8 @@ public:
     float       GetSpeed();
     //@}
 
+    void        ResetUnit();
+
     //! \brief Create the shortcuts at the top of the screen, if they should be visible
     //! \see CMainShort::CreateShortcuts
     bool        CreateShortcuts();
@@ -284,6 +287,7 @@ public:
     void        UpdatePauseMusic(PauseMusic music);
     void        ClearInterface();
     void        ChangeColor();
+    void        ResetColors();
 
     bool        FreeSpace(Math::Vector &center, float minRadius, float maxRadius, float space, CObject *exclu);
     bool        FlatFreeSpace(Math::Vector &center, float minFlat, float minRadius, float maxRadius, float space, CObject *exclu);
@@ -470,7 +474,6 @@ protected:
 
     void        ShowSaveIndicator(bool show);
 
-    void        CreateScene(bool soluce, bool fixScene, bool resetObject);
     void        ResetCreate();
 
     void        LevelLoadingError(const std::string& error, const std::runtime_error& exception, Phase exitPhase = PHASE_LEVEL_LIST);
@@ -697,4 +700,6 @@ protected:
     std::deque<std::string> m_commandHistory;
     //! Index of currently selected element in command history
     int             m_commandHistoryIndex;
+
+    friend class CLevelLoader;
 };
