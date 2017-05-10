@@ -2787,15 +2787,10 @@ void CEdit::DeleteWord(int dir)
         }
         else ++m_cursor1;
 
-        if ( !IsDelimiter(m_text[m_cursor1]) )
-        {
-            while ( m_cursor1 < m_len && !IsDelimiter(m_text[m_cursor1]) ) ++m_cursor1;
-        }
+        while ( m_cursor1 < m_len && !IsDelimiter(m_text[m_cursor1]) ) ++m_cursor1;
 
-        if ( IsSpace(m_text[m_cursor2]) )
-        {
-            while ( m_cursor2 > 0 && IsSpace(m_text[m_cursor2]) ) --m_cursor2;
-        }
+        while ( m_cursor2 > 0 && IsSpace(m_text[m_cursor2]) ) --m_cursor2;
+
         if ( !IsDelimiter(m_text[m_cursor2]) )
         {
             while ( m_cursor2 > 0 && !IsDelimiter(m_text[m_cursor2]) ) --m_cursor2;
@@ -2807,24 +2802,17 @@ void CEdit::DeleteWord(int dir)
     else
     {
         m_cursor2 = m_cursor1;
-        if ( m_cursor1 >= m_len ) return;
+
+        while ( m_cursor1 < m_len && IsSpace(m_text[m_cursor1]) ) ++m_cursor1;
 
         if ( IsBreaker(m_text[m_cursor1]) )
         {
+            ++m_cursor1;
             Delete(1);
             return;
         }
-        else ++m_cursor1;
 
-        if ( IsSpace(m_text[m_cursor1]) )
-        {
-            while ( m_cursor1 < m_len && IsSpace(m_text[m_cursor1]) ) ++m_cursor1;
-        }
-        if ( !IsDelimiter(m_text[m_cursor1]) )
-        {
-            while ( m_cursor1 < m_len && !IsDelimiter(m_text[m_cursor1]) ) ++m_cursor1;
-        }
-        else if( IsBreaker(m_text[m_cursor1]) ) ++m_cursor1;
+        while ( m_cursor1 < m_len && !IsDelimiter(m_text[m_cursor1]) ) ++m_cursor1;
 
         if ( !IsDelimiter(m_text[m_cursor2]) )
         {
