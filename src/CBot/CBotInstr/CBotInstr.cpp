@@ -361,7 +361,6 @@ CBotInstr* CBotInstr::CompileArray(CBotToken* &p, CBotCStack* pStack, CBotTypRes
 
 bool CBotInstr::HasReturn()
 {
-    assert(this != nullptr);
     if (m_next != nullptr) return m_next->HasReturn();
     return false; // end of the list
 }

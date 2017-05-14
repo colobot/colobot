@@ -1490,3 +1490,5 @@ protected:
 
 
 } // namespace Gfx
+
+template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance;

@@ -86,6 +86,8 @@ public:
                  CBotStack* &pj,
                  CBotVar* pInstance = nullptr);
 
+    using CBotInstr::Execute;
+
     /*!
      * \brief RestoreState
      * \param ppVars
@@ -95,6 +97,8 @@ public:
     void RestoreState(CBotVar** ppVars,
                       CBotStack* &pj,
                       CBotVar* pInstance = nullptr);
+
+    using CBotInstr::RestoreState;
 
     /*!
      * \brief Compile a function call

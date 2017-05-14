@@ -80,6 +80,8 @@ public:
      */
     bool ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep);
 
+    using CBotInstr::ExecuteVar;
+
     /*!
      * \brief RestoreStateVar Fetch variable at runtime.
      * \param pj

@@ -404,3 +404,5 @@ protected:
     //! Static buffer for putenv locale
     static char m_languageLocale[50];
 };
+
+template<> CApplication* CSingleton<CApplication>::m_instance;

@@ -413,7 +413,7 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     else
         err = ERR_WRONG_OBJ;
 
-	result->SetValInt(err); // indicates the error or ok
+    result->SetValInt(err); // indicates the error or ok
     if ( err != ERR_OK )
     {
         if ( script->m_errMode == ERM_STOP )
@@ -506,7 +506,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     else
         err = ERR_WRONG_OBJ;
 
-	result->SetValInt(err); // indicates the error or ok
+    result->SetValInt(err); // indicates the error or ok
     if ( err != ERR_OK )
     {
         if ( script->m_errMode == ERM_STOP )
@@ -581,7 +581,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
     else
         err = ERR_WRONG_OBJ;
 
-	result->SetValInt(err); // indicates the error or ok
+    result->SetValInt(err); // indicates the error or ok
     if ( err != ERR_OK )
     {
         if( script->m_errMode == ERM_STOP )
@@ -621,7 +621,7 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     else
         err = ERR_WRONG_OBJ;
 
-	result->SetValInt(err); // indicates the error or ok
+    result->SetValInt(err); // indicates the error or ok
     if ( err != ERR_OK )
     {
         if ( script->m_errMode == ERM_STOP )

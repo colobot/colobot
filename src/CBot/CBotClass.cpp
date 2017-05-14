@@ -93,8 +93,6 @@ void CBotClass::ClearPublic()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotClass::Purge()
 {
-    assert ( this != nullptr );
-
     delete      m_pVar;
     m_pVar      = nullptr;
     m_externalMethods->Clear();
@@ -202,7 +200,6 @@ std::string  CBotClass::GetName()
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass*  CBotClass::GetParent()
 {
-    assert ( this != nullptr );
     return m_parent;
 }
 
