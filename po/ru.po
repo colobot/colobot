@@ -27,6 +27,10 @@ msgstr "Ожидалось \" [ \""
 msgid "\" ] \" missing"
 msgstr "Отсутствует \"]\" "
 
+#, c-format
+msgid "%s: %d pts"
+msgstr ""
+
 msgid "..behind"
 msgstr "Сзади"
 
@@ -47,6 +51,18 @@ msgstr "<< Назад \\Вернуться на предыдущую стран�
 
 msgid "<<< Sorry; mission failed >>>"
 msgstr "<<< Миссия провалена >>>"
+
+#, c-format
+msgid "<<< Team %s finished! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s lost! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s recieved %d points >>>"
+msgstr ""
 
 msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Отлично, миссия выполнена >>>"
@@ -1250,6 +1266,9 @@ msgstr "Восстановление состояния CBot"
 msgid "Restoring saved objects"
 msgstr "Восстановить сохранённые объекты"
 
+msgid "Results"
+msgstr ""
+
 msgid "Return to start"
 msgstr "Вернуться в начало"
 
@@ -1473,6 +1492,9 @@ msgstr "Фильтрация текстур\\Фильтрация текстур
 
 msgid "Textures"
 msgstr "Текстуры"
+
+msgid "The battle has ended"
+msgstr ""
 
 msgid "The expression must return a boolean value"
 msgstr "Выражение должно возвращать логическое значение"

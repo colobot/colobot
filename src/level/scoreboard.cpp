@@ -19,6 +19,9 @@
 
 #include "level/scoreboard.h"
 
+#include "common/restext.h"
+#include "common/stringutils.h"
+
 #include "level/parser/parserline.h"
 
 #include "level/robotmain.h"
@@ -84,7 +87,13 @@ void CScoreboard::ProcessEndTake(int team)
 void CScoreboard::AddPoints(int team, int points)
 {
     GetLogger()->Info("Team %d earned %d points\n", team, points);
-    CRobotMain::GetInstancePointer()->GetDisplayText()->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" recieved "+boost::lexical_cast<std::string>(points)+" points! >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_WARNING);
+
+    CRobotMain* main = CRobotMain::GetInstancePointer();
+    std::string text;
+    GetResource(RES_ERR, INFO_TEAM_SCORE, text);
+    text = StrUtils::Format(text.c_str(), main->GetTeamName(team).c_str(), points);
+    main->GetDisplayText()->DisplayText(text.c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_WARNING);
+
     m_score[team] += points;
 }
 

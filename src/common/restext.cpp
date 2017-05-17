@@ -143,6 +143,10 @@ void InitializeRestext()
     stringsText[RT_LOADING_TERRAIN_TEX]    = TR("Textures");
     stringsText[RT_LOADING_TERRAIN_GEN]    = TR("Generating");
 
+    stringsText[RT_SCOREBOARD_RESULTS]     = TR("Results");
+    stringsText[RT_SCOREBOARD_RESULTS_TEXT]= TR("The battle has ended");
+    stringsText[RT_SCOREBOARD_RESULTS_LINE]= TR("%s: %d pts");
+
 
 
     stringsEvent[EVENT_BUTTON_OK]           = TR("OK");
@@ -671,6 +675,9 @@ void InitializeRestext()
     stringsErr[INFO_DELETEWORM]     = TR("Worm fatally wounded");
     stringsErr[INFO_DELETESPIDER]   = TR("Spider fatally wounded");
     stringsErr[INFO_BEGINSATCOM]    = TR("Press \\key help; to read instructions on your SatCom");
+    stringsErr[INFO_TEAM_FINISH]    = TR("<<< Team %s finished! >>>");
+    stringsErr[INFO_TEAM_DEAD]      = TR("<<< Team %s lost! >>>");
+    stringsErr[INFO_TEAM_SCORE]     = TR("<<< Team %s recieved %d points >>>");
 
 
 

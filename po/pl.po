@@ -27,6 +27,10 @@ msgstr "Oczekiwane \" [ \""
 msgid "\" ] \" missing"
 msgstr "Brak \" ] \""
 
+#, c-format
+msgid "%s: %d pts"
+msgstr "%s: %d pkt"
+
 msgid "..behind"
 msgstr "..za"
 
@@ -47,6 +51,18 @@ msgstr "<<  Wstecz  \\Wraca do poprzedniego ekranu"
 
 msgid "<<< Sorry; mission failed >>>"
 msgstr "<<< Niestety, misja nie powiodła się >>>"
+
+#, c-format
+msgid "<<< Team %s finished! >>>"
+msgstr "<<< Drużyna %s zakończyła rozgrywkę! >>>"
+
+#, c-format
+msgid "<<< Team %s lost! >>>"
+msgstr "<<< Drużyna %s odpadła! >>>"
+
+#, c-format
+msgid "<<< Team %s recieved %d points >>>"
+msgstr "<<< Drużyna %s zdobyła %d punktów >>>"
 
 msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Dobra robota, misja wypełniona >>>"
@@ -1238,6 +1254,9 @@ msgstr "Przywracanie stanu CBot"
 msgid "Restoring saved objects"
 msgstr "Przywracanie obiektów"
 
+msgid "Results"
+msgstr "Wyniki"
+
 msgid "Return to start"
 msgstr "Powrót do początku"
 
@@ -1459,6 +1478,9 @@ msgstr "Filtrowanie tekstur\\Filtrowanie tekstur"
 
 msgid "Textures"
 msgstr "Tekstury"
+
+msgid "The battle has ended"
+msgstr "Bitwa zakończyła się"
 
 msgid "The expression must return a boolean value"
 msgstr "Wyrażenie musi zwrócić wartość logiczną"

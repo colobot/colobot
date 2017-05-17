@@ -25,6 +25,10 @@ msgstr "\" [ \" attendu"
 msgid "\" ] \" missing"
 msgstr "\" ] \" attendu"
 
+#, c-format
+msgid "%s: %d pts"
+msgstr ""
+
 msgid "..behind"
 msgstr "..derrière"
 
@@ -45,6 +49,18 @@ msgstr "<<  Retour  \\Retour au niveau précédent"
 
 msgid "<<< Sorry; mission failed >>>"
 msgstr "<<< Désolé; mission échouée >>>"
+
+#, c-format
+msgid "<<< Team %s finished! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s lost! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s recieved %d points >>>"
+msgstr ""
 
 msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Bravo; mission terminée >>>"
@@ -1236,6 +1252,9 @@ msgstr "Restaurer l'état d'exécution CBOT"
 msgid "Restoring saved objects"
 msgstr "Restaurer des objets sauvés"
 
+msgid "Results"
+msgstr ""
+
 msgid "Return to start"
 msgstr "Remet au départ"
 
@@ -1457,6 +1476,9 @@ msgstr "Filtrage de textures\\Filtrage de textures"
 
 msgid "Textures"
 msgstr "Textures"
+
+msgid "The battle has ended"
+msgstr ""
 
 msgid "The expression must return a boolean value"
 msgstr "L'expression doit ętre un boolean"

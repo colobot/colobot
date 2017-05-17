@@ -29,6 +29,10 @@ msgstr "Es fehlt eine offene eckige Klammer \" [ \""
 msgid "\" ] \" missing"
 msgstr "Es fehlt eine geschlossene eckige Klammer \" ] \""
 
+#, c-format
+msgid "%s: %d pts"
+msgstr ""
+
 msgid "..behind"
 msgstr "..hinten"
 
@@ -49,6 +53,18 @@ msgstr "<<  Zurück  \\Zurück zum Hauptmenü"
 
 msgid "<<< Sorry; mission failed >>>"
 msgstr "<<< Mission gescheitert >>>"
+
+#, c-format
+msgid "<<< Team %s finished! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s lost! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s recieved %d points >>>"
+msgstr ""
 
 msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Bravo, Mission vollendet >>>"
@@ -1258,6 +1274,9 @@ msgstr ""
 msgid "Restoring saved objects"
 msgstr ""
 
+msgid "Results"
+msgstr ""
+
 msgid "Return to start"
 msgstr "Alles zurücksetzen"
 
@@ -1484,6 +1503,9 @@ msgid "Texture filtering\\Texture filtering"
 msgstr ""
 
 msgid "Textures"
+msgstr ""
+
+msgid "The battle has ended"
 msgstr ""
 
 msgid "The expression must return a boolean value"

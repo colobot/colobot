@@ -4958,16 +4958,22 @@ Error CRobotMain::ProcessEndMissionTake()
             GetLogger()->Info("All teams died, mission ended\n");
             if (m_scoreboard)
             {
+                std::string title, text, details_line;
+                GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS, title);
+                GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_TEXT, text);
+                GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_LINE, details_line);
                 std::string details = "";
                 for (auto it : teams)
                 {
                     int team = it.first;
                     if (team == 0) continue;
-                    details += "Team "+boost::lexical_cast<std::string>(team)+": "+boost::lexical_cast<std::string>(m_scoreboard->GetScore(team))+" points\n";
+                    if (!details.empty())
+                        details += ", ";
+                    details += StrUtils::Format(details_line.c_str(), GetTeamName(team).c_str(), m_scoreboard->GetScore(team));
                 }
                 m_ui->GetDialog()->StartInformation(
-                    "Results",
-                    "The battle has ended",
+                    title,
+                    text,
                     details,
                     false, true,
                     [&]() {
@@ -4994,7 +5000,10 @@ Error CRobotMain::ProcessEndMissionTake()
                 if (result == INFO_LOST || result == INFO_LOSTq)
                 {
                     GetLogger()->Info("Team %d lost\n", team);
-                    m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" lost! >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_ERROR);
+                    std::string text;
+                    GetResource(RES_ERR, INFO_TEAM_DEAD, text);
+                    text = StrUtils::Format(text.c_str(), GetTeamName(team).c_str());
+                    m_displayText->DisplayText(text.c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_ERROR);
 
                     m_displayText->SetEnable(false); // To prevent "bot destroyed" messages
                     m_objMan->DestroyTeam(team);
@@ -5022,7 +5031,10 @@ Error CRobotMain::ProcessEndMissionTake()
                     m_missionResult = ERR_OK;
                     return ERR_OK;*/
                     GetLogger()->Info("Team %d finished\n", team);
-                    m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" finished >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f));
+                    std::string text;
+                    GetResource(RES_ERR, INFO_TEAM_FINISH, text);
+                    text = StrUtils::Format(text.c_str(), GetTeamName(team).c_str());
+                    m_displayText->DisplayText(text.c_str(), Math::Vector(0.0f,0.0f,0.0f));
                     if (m_scoreboard)
                         m_scoreboard->ProcessEndTake(team);
                     m_objMan->DestroyTeam(team, DestructionType::Win);
