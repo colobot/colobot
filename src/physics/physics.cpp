@@ -2701,6 +2701,7 @@ bool CPhysics::ExploOther(ObjectType iType,
 
         if ( force > destructionForce )
         {
+            // TODO: implement "killer"?
             dynamic_cast<CDamageableObject*>(pObj)->DamageObject(damageType);
         }
     }
@@ -2726,6 +2727,7 @@ bool CPhysics::ExploOther(ObjectType iType,
             oType == OBJECT_HUSTON    )  // building?
         {
             assert(pObj->Implements(ObjectInterfaceType::Damageable));
+            // TODO: implement "killer"?
             dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Collision, force/400.0f);
         }
 
@@ -2756,6 +2758,7 @@ bool CPhysics::ExploOther(ObjectType iType,
             oType == OBJECT_MOBILEit  )  // vehicle?
         {
             assert(pObj->Implements(ObjectInterfaceType::Damageable));
+            // TODO: implement "killer"?
             dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Collision, force/200.0f);
         }
     }
@@ -2780,6 +2783,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 
     if ( force > destructionForce && destructionForce >= 0.0f )
     {
+        // TODO: implement "killer"?
         dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Explosive);
         return 2;
     }
@@ -2860,6 +2864,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
                 force /= 200.0f;
             }
 
+            // TODO: implement "killer"?
             if ( dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Collision, force) )  return 2;
         }
     }

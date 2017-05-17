@@ -2296,6 +2296,7 @@ void CPyro::FallProgress(float rTime)
                 if (floor)  // reaches the ground?
                 {
                     assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+                    // TODO: implement "killer"?
                     dynamic_cast<CDestroyableObject*>(m_object)->DestroyObject(DestructionType::Explosion);
                 }
             }
@@ -2319,6 +2320,7 @@ void CPyro::FallProgress(float rTime)
                     else
                     {
                         assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+                        // TODO: implement "killer"?
                         dynamic_cast<CDestroyableObject*>(m_object)->DestroyObject(DestructionType::Explosion);
                     }
                 }

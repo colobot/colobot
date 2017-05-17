@@ -131,7 +131,7 @@ bool CLightning::EventFrame(const Event &event)
                 else
                 {
                     assert(obj->Implements(ObjectInterfaceType::Destroyable));
-                    dynamic_cast<CDestroyableObject*>(obj)->DamageObject(DamageType::Lightning);
+                    dynamic_cast<CDestroyableObject*>(obj)->DamageObject(DamageType::Lightning, std::numeric_limits<float>::infinity());
                 }
             }
 

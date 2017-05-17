@@ -110,8 +110,8 @@ public:
 
     void        Simplify() override;
 
-    bool        DamageObject(DamageType type, float force = std::numeric_limits<float>::infinity()) override;
-    void        DestroyObject(DestructionType type) override;
+    bool        DamageObject(DamageType type, float force = std::numeric_limits<float>::infinity(), CObject* killer = nullptr) override;
+    void        DestroyObject(DestructionType type, CObject* killer = nullptr) override;
 
     bool EventProcess(const Event& event) override;
     void        UpdateMapping();

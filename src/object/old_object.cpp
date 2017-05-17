@@ -34,6 +34,7 @@
 #include "graphics/engine/terrain.h"
 
 #include "level/robotmain.h"
+#include "level/scoreboard.h"
 
 #include "level/parser/parserexceptions.h"
 #include "level/parser/parserline.h"
@@ -335,7 +336,7 @@ void COldObject::Simplify()
 }
 
 
-bool COldObject::DamageObject(DamageType type, float force)
+bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
 {
     assert(Implements(ObjectInterfaceType::Damageable));
     assert(!Implements(ObjectInterfaceType::Destroyable) || Implements(ObjectInterfaceType::Shielded) || Implements(ObjectInterfaceType::Fragile));
@@ -355,7 +356,7 @@ bool COldObject::DamageObject(DamageType type, float force)
     {
         if ( m_type == OBJECT_BOMB && type != DamageType::Explosive ) return false; // Mine can't be destroyed by shooting
 
-        DestroyObject(DestructionType::Explosion);
+        DestroyObject(DestructionType::Explosion, killer);
         return true;
     }
 
@@ -400,11 +401,11 @@ bool COldObject::DamageObject(DamageType type, float force)
     {
         if (type == DamageType::Fire)
         {
-            DestroyObject(DestructionType::Burn);
+            DestroyObject(DestructionType::Burn, killer);
         }
         else
         {
-            DestroyObject(DestructionType::Explosion);
+            DestroyObject(DestructionType::Explosion, killer);
         }
         return true;
     }
@@ -425,7 +426,7 @@ bool COldObject::DamageObject(DamageType type, float force)
     return false;
 }
 
-void COldObject::DestroyObject(DestructionType type)
+void COldObject::DestroyObject(DestructionType type, CObject* killer)
 {
     assert(Implements(ObjectInterfaceType::Destroyable));
 
@@ -522,6 +523,10 @@ void COldObject::DestroyObject(DestructionType type)
     {
         pyroType = Gfx::PT_DEADW;
     }
+    else if ( type == DestructionType::Win )
+    {
+        pyroType = Gfx::PT_WPCHECK;
+    }
     assert(pyroType != Gfx::PT_NULL);
     m_engine->GetPyroManager()->Create(pyroType, this);
 
@@ -538,6 +543,10 @@ void COldObject::DestroyObject(DestructionType type)
         m_main->DeselectAll();
     }
     m_main->RemoveFromSelectionHistory(this);
+
+    CScoreboard* scoreboard = m_main->GetScoreboard();
+    if (scoreboard)
+        scoreboard->ProcessKill(this, killer);
 
     m_team = 0; // Back to neutral on destruction
 

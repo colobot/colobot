@@ -55,6 +55,7 @@
 #include "level/mainmovie.h"
 #include "level/player_profile.h"
 #include "level/scene_conditions.h"
+#include "level/scoreboard.h"
 
 #include "level/parser/parser.h"
 
@@ -2518,7 +2519,7 @@ bool CRobotMain::EventFrame(const Event &event)
 
     if (m_phase == PHASE_SIMUL)
     {
-        if (!m_editLock)
+        if (!m_editLock && !m_engine->GetPause())
         {
             CheckEndMission(true);
             UpdateAudio(true);
@@ -2695,6 +2696,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_endTakeResearch = 0;
         m_endTakeWinDelay = 2.0f;
         m_endTakeLostDelay = 2.0f;
+        m_teamFinished.clear();
+        m_scoreboard.reset();
         m_globalMagnifyDamage = 1.0f;
         m_obligatoryTokens.clear();
         m_mapShow = true;
@@ -3549,6 +3552,34 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "EndMissionResearch" && !resetObject) // This is not used in any original Colobot levels, but we'll keep it for userlevel creators
             {
                 m_endTakeResearch |= line->GetParam("type")->AsResearchFlag();
+                continue;
+            }
+
+            if (line->GetCommand() == "Scoreboard" && !resetObject)
+            {
+                if (line->GetParam("enable")->AsBool(false))
+                {
+                    // Create the scoreboard
+                    m_scoreboard = MakeUnique<CScoreboard>();
+                }
+                continue;
+            }
+            if (line->GetCommand() == "ScoreboardKillRule" && !resetObject)
+            {
+                if (!m_scoreboard)
+                    throw CLevelParserException("ScoreboardKillRule encountered but scoreboard is not enabled");
+                auto rule = MakeUnique<CScoreboard::CScoreboardKillRule>();
+                rule->Read(line.get());
+                m_scoreboard->AddKillRule(std::move(rule));
+                continue;
+            }
+            if (line->GetCommand() == "ScoreboardEndTakeRule" && !resetObject)
+            {
+                if (!m_scoreboard)
+                    throw CLevelParserException("ScoreboardEndTakeRule encountered but scoreboard is not enabled");
+                auto rule = MakeUnique<CScoreboard::CScoreboardEndTakeRule>();
+                rule->Read(line.get());
+                m_scoreboard->AddEndTakeRule(std::move(rule));
                 continue;
             }
 
@@ -4909,7 +4940,7 @@ Error CRobotMain::ProcessEndMissionTake()
         int team = it.first;
         if (team == 0) continue;
         usesTeamConditions = true;
-        if (!m_objMan->TeamExists(team)) continue;
+        if (m_teamFinished[team]) continue;
         teamCount++;
     }
 
@@ -4924,8 +4955,32 @@ Error CRobotMain::ProcessEndMissionTake()
 
         if (teamCount == 0)
         {
-            GetLogger()->Info("All teams died, mission ended with failure\n");
-            m_missionResult = INFO_LOST;
+            GetLogger()->Info("All teams died, mission ended\n");
+            if (m_scoreboard)
+            {
+                std::string details = "";
+                for (auto it : teams)
+                {
+                    int team = it.first;
+                    if (team == 0) continue;
+                    details += "Team "+boost::lexical_cast<std::string>(team)+": "+boost::lexical_cast<std::string>(m_scoreboard->GetScore(team))+" points\n";
+                }
+                m_ui->GetDialog()->StartInformation(
+                    "Results",
+                    "The battle has ended",
+                    details,
+                    false, true,
+                    [&]() {
+                        ChangePhase(PHASE_WIN);
+                    }
+                );
+                m_endTakeWinDelay = 0.0f;
+                m_missionResult = ERR_OK;
+            }
+            else
+            {
+                m_missionResult = INFO_LOST;
+            }
         }
         else
         {
@@ -4933,7 +4988,7 @@ Error CRobotMain::ProcessEndMissionTake()
             {
                 int team = it.first;
                 if (team == 0) continue;
-                if (!m_objMan->TeamExists(team)) continue;
+                if (m_teamFinished[team]) continue;
 
                 Error result = ProcessEndMissionTakeForGroup(it.second);
                 if (result == INFO_LOST || result == INFO_LOSTq)
@@ -4944,10 +4999,12 @@ Error CRobotMain::ProcessEndMissionTake()
                     m_displayText->SetEnable(false); // To prevent "bot destroyed" messages
                     m_objMan->DestroyTeam(team);
                     m_displayText->SetEnable(true);
+
+                    m_teamFinished[team] = true;
                 }
                 else if (result == ERR_OK)
                 {
-                    if (m_winDelay == 0.0f)
+                    /*if (m_winDelay == 0.0f)
                     {
                         GetLogger()->Info("Team %d won\n", team);
 
@@ -4963,7 +5020,13 @@ Error CRobotMain::ProcessEndMissionTake()
                         m_displayText->SetEnable(false);
                     }
                     m_missionResult = ERR_OK;
-                    return ERR_OK;
+                    return ERR_OK;*/
+                    GetLogger()->Info("Team %d finished\n", team);
+                    m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" finished >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f));
+                    if (m_scoreboard)
+                        m_scoreboard->ProcessEndTake(team);
+                    m_objMan->DestroyTeam(team, DestructionType::Win);
+                    m_teamFinished[team] = true;
                 }
             }
         }
@@ -5816,4 +5879,9 @@ std::string CRobotMain::GetPreviousFromCommandHistory()
     if (m_commandHistory.empty() || m_commandHistoryIndex < 1) // first or none element selected
         return "";
     return m_commandHistory[--m_commandHistoryIndex];
+}
+
+CScoreboard* CRobotMain::GetScoreboard()
+{
+    return m_scoreboard.get();
 }
