@@ -47,6 +47,7 @@ void CScoreboard::CScoreboardEndTakeRule::Read(CLevelParserLine* line)
 {
     CScoreboardRule::Read(line);
     this->team = line->GetParam("team")->AsInt(0);
+    this->order = line->GetParam("order")->AsInt(0);
 }
 
 void CScoreboard::AddKillRule(std::unique_ptr<CScoreboardKillRule> rule)
@@ -75,9 +76,11 @@ void CScoreboard::ProcessKill(CObject* target, CObject* killer)
 
 void CScoreboard::ProcessEndTake(int team)
 {
+    m_finishCounter++;
     for (auto& rule : m_rulesEndTake)
     {
-        if (rule->team == team || rule->team == 0)
+        if ((rule->team == team || rule->team == 0) &&
+            (rule->order == m_finishCounter || rule->order == 0))
         {
             AddPoints(team, rule->score);
         }

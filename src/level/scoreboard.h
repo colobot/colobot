@@ -94,6 +94,7 @@ public:
     {
     public:
         int team = 0;
+        int order = 0;
 
         //! Read from line in scene file
         void Read(CLevelParserLine* line) override;
@@ -117,4 +118,5 @@ private:
     std::vector<std::unique_ptr<CScoreboardKillRule>> m_rulesKill = {};
     std::vector<std::unique_ptr<CScoreboardEndTakeRule>> m_rulesEndTake = {};
     std::map<int, int> m_score;
+    int m_finishCounter = 0;
 };
