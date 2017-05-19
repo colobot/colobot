@@ -101,7 +101,9 @@ public:
     };
 
 public:
+    //! Add ScoreboardKillRule
     void AddKillRule(std::unique_ptr<CScoreboardKillRule> rule);
+    //! Add ScoreboardEndTakeRule
     void AddEndTakeRule(std::unique_ptr<CScoreboardEndTakeRule> rule);
 
     //! Called after an object is destroyed by another object
