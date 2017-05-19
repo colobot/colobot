@@ -311,6 +311,12 @@ protected:
      */
     static bool IsSelectableByDefault(ObjectType type);
 
+    /**
+     * \brief Check if given object type should have bulletWall enabled by default
+     * \note This is a default value for the bulletWall= parameter and can still be overriden in the scene file
+     */
+    static bool IsBulletWallByDefault(ObjectType type);
+
 protected:
     Gfx::CEngine*       m_engine;
     Gfx::CLightManager* m_lightMan;

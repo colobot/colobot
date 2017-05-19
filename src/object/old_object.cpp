@@ -1047,7 +1047,7 @@ void COldObject::Read(CLevelParserLine* line)
     if (line->GetParam("pyro")->IsDefined())
         m_engine->GetPyroManager()->Create(line->GetParam("pyro")->AsPyroType(), this);
 
-    SetBulletWall(line->GetParam("bulletWall")->AsBool(false));
+    SetBulletWall(line->GetParam("bulletWall")->AsBool(IsBulletWallByDefault(m_type)));
 
     SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
     SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
@@ -3211,4 +3211,14 @@ void COldObject::SetBulletWall(bool bulletWall)
 bool COldObject::IsBulletWall()
 {
     return m_bulletWall;
+}
+
+bool COldObject::IsBulletWallByDefault(ObjectType type)
+{
+    if ( type == OBJECT_BARRICADE0 ||
+         type == OBJECT_BARRICADE1 )
+    {
+        return true;
+    }
+    return false;
 }

@@ -467,6 +467,8 @@ ObjectType CLevelParserParam::ToObjectType(std::string value)
     if (value == "Barrier1"          ) return OBJECT_BARRIER1;
     if (value == "Barrier2"          ) return OBJECT_BARRIER2;
     if (value == "Barrier3"          ) return OBJECT_BARRIER3;
+    if (value == "Barricade0"        ) return OBJECT_BARRICADE0;
+    if (value == "Barricade1"        ) return OBJECT_BARRICADE1;
     if (value == "Teen0"             ) return OBJECT_TEEN0;
     if (value == "Teen1"             ) return OBJECT_TEEN1;
     if (value == "Teen2"             ) return OBJECT_TEEN2;
@@ -662,6 +664,8 @@ const std::string CLevelParserParam::FromObjectType(ObjectType value)
     if (value == OBJECT_BARRIER1    ) return "Barrier1";
     if (value == OBJECT_BARRIER2    ) return "Barrier2";
     if (value == OBJECT_BARRIER3    ) return "Barrier3";
+    if (value == OBJECT_BARRICADE0  ) return "Barricade0";
+    if (value == OBJECT_BARRICADE1  ) return "Barricade1";
     if (value == OBJECT_TEEN0       ) return "Teen0";
     if (value == OBJECT_TEEN1       ) return "Teen1";
     if (value == OBJECT_TEEN2       ) return "Teen2";

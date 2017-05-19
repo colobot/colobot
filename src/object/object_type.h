@@ -146,6 +146,8 @@ enum ObjectType
     OBJECT_BARRIER1         = 401,  //!< Barrier1
     OBJECT_BARRIER2         = 402,  //!< Barrier2
     OBJECT_BARRIER3         = 403,  //!< Barrier3
+    OBJECT_BARRICADE0       = 410,  //!< Barricade0
+    OBJECT_BARRICADE1       = 411,  //!< Barricade1
     OBJECT_MOTHER           = 500,  //!< AlienQueen
     OBJECT_EGG              = 501,  //!< AlienEgg
     OBJECT_ANT              = 502,  //!< AlienAnt
