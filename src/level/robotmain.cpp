@@ -2569,6 +2569,8 @@ bool CRobotMain::EventFrame(const Event &event)
 
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
         }
+
+        UpdateCodeBattleInterface();
     }
 
     return true;
@@ -4929,31 +4931,23 @@ Error CRobotMain::ProcessEndMissionTakeForGroup(std::vector<CSceneEndCondition*>
 Error CRobotMain::ProcessEndMissionTake()
 {
     // Sort end conditions by teams
-    std::map<int, std::vector<CSceneEndCondition*>> teams;
+    std::map<int, std::vector<CSceneEndCondition*>> teamsEndTake;
     for (std::unique_ptr<CSceneEndCondition>& endTake : m_endTake)
-        teams[endTake->winTeam].push_back(endTake.get());
+        teamsEndTake[endTake->winTeam].push_back(endTake.get());
 
-    int teamCount = 0;
-    bool usesTeamConditions = false;
-    for (auto it : teams)
-    {
-        int team = it.first;
-        if (team == 0) continue;
-        usesTeamConditions = true;
-        if (m_teamFinished[team]) continue;
-        teamCount++;
-    }
+    // This is just a smart way to check if we have any map values other than 0 defined
+    bool usesTeamConditions = teamsEndTake.size() > teamsEndTake.count(0);
 
     if (!usesTeamConditions)
     {
-        m_missionResult = ProcessEndMissionTakeForGroup(teams[0]);
+        m_missionResult = ProcessEndMissionTakeForGroup(teamsEndTake[0]);
     }
     else
     {
         // Special handling for teams
         m_missionResult = ERR_MISSION_NOTERM;
 
-        if (teamCount == 0)
+        if (GetAllActiveTeams().empty())
         {
             GetLogger()->Info("All teams died, mission ended\n");
             if (m_scoreboard)
@@ -4963,10 +4957,8 @@ Error CRobotMain::ProcessEndMissionTake()
                 GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_TEXT, text);
                 GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_LINE, details_line);
                 std::string details = "";
-                for (auto it : teams)
+                for (int team : GetAllTeams())
                 {
-                    int team = it.first;
-                    if (team == 0) continue;
                     if (!details.empty())
                         details += ", ";
                     details += StrUtils::Format(details_line.c_str(), GetTeamName(team).c_str(), m_scoreboard->GetScore(team));
@@ -4990,7 +4982,7 @@ Error CRobotMain::ProcessEndMissionTake()
         }
         else
         {
-            for (auto it : teams)
+            for (auto it : teamsEndTake)
             {
                 int team = it.first;
                 if (team == 0) continue;
@@ -5792,12 +5784,16 @@ void CRobotMain::StartDetectEffect(COldObject* object, CObject* target)
 
 void CRobotMain::CreateCodeBattleInterface()
 {
-    if(m_phase == PHASE_SIMUL)
+    if (m_phase == PHASE_SIMUL)
     {
         Math::Point pos, ddim;
 
+        int numTeams = m_scoreboard ? GetAllTeams().size() : 0;
+        assert(numTeams < EVENT_SCOREBOARD_MAX-EVENT_SCOREBOARD+1);
+        float textHeight = m_engine->GetText()->GetAscent(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL);
+
         ddim.x = 100.0f/640.0f;
-        ddim.y = 100.0f/480.0f;
+        ddim.y = 100.0f/480.0f + numTeams * textHeight;
         pos.x = 540.0f/640.0f;
         pos.y = 100.0f/480.0f;
         Ui::CWindow* pw = m_interface->CreateWindows(pos, ddim, 3, EVENT_WINDOW6);
@@ -5805,7 +5801,7 @@ void CRobotMain::CreateCodeBattleInterface()
         ddim.x = 100.0f/640.0f;
         ddim.y = 16.0f/480.0f;
         pos.x = 540.0f/640.0f;
-        pos.y = 178.0f/480.0f;
+        pos.y = 178.0f/480.0f + numTeams * textHeight;
         pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, "Code battle");
 
         float titleBarSize = (11.0f/64.0f); // this is from the texture
@@ -5821,7 +5817,45 @@ void CRobotMain::CreateCodeBattleInterface()
         {
             pw->CreateButton(pos, ddim, 13, EVENT_CODE_BATTLE_SPECTATOR);
         }
+
+        pos.y += ddim.y;
+        ddim.y = textHeight;
+        for (int i = 0; i < numTeams; i++)
+        {
+            Ui::CLabel* pl;
+            pl = pw->CreateLabel(pos, ddim, 0, static_cast<EventType>(EVENT_SCOREBOARD+2*(numTeams-i-1)+0), "XXXXX");
+            pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+            pl = pw->CreateLabel(pos, ddim, 0, static_cast<EventType>(EVENT_SCOREBOARD+2*(numTeams-i-1)+1), "???");
+            pl->SetTextAlign(Gfx::TEXT_ALIGN_RIGHT);
+            pos.y += ddim.y;
+        }
     }
+}
+
+void CRobotMain::UpdateCodeBattleInterface()
+{
+    assert(GetMissionType() == MISSION_CODE_BATTLE);
+    if (!m_scoreboard) return;
+
+    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
+    assert(pw != nullptr);
+
+    int i = 0;
+    for (int team : GetAllTeams())
+    {
+        Ui::CLabel* pl;
+
+        pl = static_cast<Ui::CLabel*>(pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+0)));
+        assert(pl != nullptr);
+        pl->SetName(GetTeamName(team));
+
+        pl = static_cast<Ui::CLabel*>(pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+1)));
+        assert(pl != nullptr);
+        pl->SetName(StrUtils::ToString<int>(m_scoreboard->GetScore(team)));
+
+        i++;
+    }
+
 }
 
 void CRobotMain::DestroyCodeBattleInterface()
@@ -5896,4 +5930,26 @@ std::string CRobotMain::GetPreviousFromCommandHistory()
 CScoreboard* CRobotMain::GetScoreboard()
 {
     return m_scoreboard.get();
+}
+
+std::set<int> CRobotMain::GetAllTeams()
+{
+    std::set<int> teams = GetAllActiveTeams();
+    for(auto& it : m_teamFinished)
+    {
+        teams.insert(it.first);
+    }
+    return teams;
+}
+
+std::set<int> CRobotMain::GetAllActiveTeams()
+{
+    std::set<int> teams;
+    for (CObject* obj : m_objMan->GetAllObjects())
+    {
+        int team = obj->GetTeam();
+        if (team == 0) continue;
+        teams.insert(team);
+    }
+    return teams;
 }

@@ -468,6 +468,11 @@ public:
     //! Check if crash sphere debug rendering is enabled
     bool GetDebugCrashSpheres();
 
+    //! Returns a set of all team IDs in the current level
+    std::set<int> GetAllTeams();
+    //! Returns a set of all team IDs in the current level that are still active
+    std::set<int> GetAllActiveTeams();
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -512,6 +517,7 @@ protected:
     //! \name Code battle interface
     //@{
     void        CreateCodeBattleInterface();
+    void        UpdateCodeBattleInterface();
     void        DestroyCodeBattleInterface();
     void        SetCodeBattleSpectatorMode(bool mode);
     //@}
