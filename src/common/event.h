@@ -187,6 +187,8 @@ enum EventType
 
     EVENT_LOADING           = 120,
 
+    EVENT_LABEL_CODE_BATTLE = 121,
+
     EVENT_SCOREBOARD        = 130,
     EVENT_SCOREBOARD_MAX    = 169,
 

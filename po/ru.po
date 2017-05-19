@@ -388,6 +388,10 @@ msgstr "Закрыть"
 msgid "Closing bracket missing"
 msgstr "Закрывающая скобка отсутствует"
 
+#, fuzzy
+msgid "Code battle"
+msgstr "Битвы роботов"
+
 msgid "Code battles"
 msgstr "Битвы роботов"
 

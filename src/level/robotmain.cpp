@@ -5802,7 +5802,9 @@ void CRobotMain::CreateCodeBattleInterface()
         ddim.y = 16.0f/480.0f;
         pos.x = 540.0f/640.0f;
         pos.y = 178.0f/480.0f + numTeams * textHeight;
-        pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, "Code battle");
+        std::string text;
+        GetResource(RES_EVENT, EVENT_LABEL_CODE_BATTLE, text);
+        pw->CreateLabel(pos, ddim, 0, EVENT_LABEL_CODE_BATTLE, text);
 
         float titleBarSize = (11.0f/64.0f); // this is from the texture
         ddim.x = 80.0f/640.0f;

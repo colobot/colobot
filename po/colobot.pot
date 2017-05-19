@@ -270,6 +270,9 @@ msgstr ""
 msgid "%s: %d pts"
 msgstr ""
 
+msgid "Code battle"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 

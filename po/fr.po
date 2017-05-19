@@ -380,6 +380,10 @@ msgstr "Fermer"
 msgid "Closing bracket missing"
 msgstr "Il manque une parenthèse fermante"
 
+#, fuzzy
+msgid "Code battle"
+msgstr "Batailles de code"
+
 msgid "Code battles"
 msgstr "Batailles de code"
 

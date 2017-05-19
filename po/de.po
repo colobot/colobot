@@ -391,6 +391,9 @@ msgstr "Schließen"
 msgid "Closing bracket missing"
 msgstr "Es fehlt eine geschlossene Klammer \")\""
 
+msgid "Code battle"
+msgstr ""
+
 msgid "Code battles"
 msgstr ""
 

@@ -382,6 +382,9 @@ msgstr "Zamknij"
 msgid "Closing bracket missing"
 msgstr "Brak nawiasu zamykającego"
 
+msgid "Code battle"
+msgstr "Programobitwa"
+
 msgid "Code battles"
 msgstr "Programobitwy"
 

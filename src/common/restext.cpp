@@ -149,6 +149,8 @@ void InitializeRestext()
 
 
 
+    stringsEvent[EVENT_LABEL_CODE_BATTLE]   = TR("Code battle");
+
     stringsEvent[EVENT_BUTTON_OK]           = TR("OK");
     stringsEvent[EVENT_BUTTON_CANCEL]       = TR("Cancel");
     stringsEvent[EVENT_BUTTON_NEXT]         = TR("Next");
