@@ -2382,6 +2382,11 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
         if ( err != ERR_OK )
         {
             script->m_taskExecutor->StopForegroundTask();
+			if ( script->m_errMode == ERM_STOP )
+			{
+				exception = err;
+				return false;
+			}
             return true;
         }
     }
