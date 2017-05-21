@@ -1,5 +1,9 @@
 #!/usr/bin/env groovy
-properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '30', artifactNumToKeepStr: '20']]])
+if (env.BRANCH_NAME.startsWith('PR-')) {
+    properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactNumToKeepStr: '1']]])
+} else {
+    properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '30', artifactNumToKeepStr: '20']]])
+}
 
 node('master') {
     stage('Pull changes') {
