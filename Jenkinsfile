@@ -54,4 +54,10 @@ node('master') {
         }
         step([$class: 'XUnitBuilder', testTimeMargin: '3000', thresholdMode: 1, thresholds: [[$class: 'FailedThreshold', failureNewThreshold: '', failureThreshold: '', unstableNewThreshold: '', unstableThreshold: '0'], [$class: 'SkippedThreshold', failureNewThreshold: '', failureThreshold: '', unstableNewThreshold: '', unstableThreshold: '']], tools: [[$class: 'GoogleTestType', deleteOutputFiles: true, failIfNotNew: true, pattern: 'build/linux/gtestresults.xml', skipNoTestFiles: false, stopProcessingIfError: true]]])
     }
+
+    // Clean workspace after building pull requests
+    // to save disk space on the Jenkins host
+    if (env.BRANCH_NAME.startsWith('PR-')) {
+        cleanWs()
+    }
 }
