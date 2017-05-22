@@ -160,7 +160,7 @@ size_t CSDLFileWrapper::SDLRead(SDL_RWops *context, void *ptr, size_t size, size
         PHYSFS_File *file = static_cast<PHYSFS_File *>(context->hidden.unknown.data1);
         SDL_memset(ptr, 0, size * maxnum);
 
-        auto result = PHYSFS_read(file, ptr, size, maxnum);
+        auto result = PHYSFS_readBytes(file, ptr, size*maxnum);
         return (result >= 0) ? result : 0;
     }
 
