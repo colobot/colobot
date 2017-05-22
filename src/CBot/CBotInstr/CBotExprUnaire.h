@@ -34,12 +34,13 @@ public:
     ~CBotExprUnaire();
 
     /*!
-     * \brief Compile
-     * \param p
-     * \param pStack
-     * \return
+     * \brief Compile an expression with a unary operator
+     * \param p[in, out] Pointer to first token of the expression, will be updated to point to first token after the expression
+     * \param pStack Current compilation stack frame
+     * \param bLiteral If true, compiles only literal expressions Ex: ~11, -4.0, !false, not true
+     * \return The compiled instruction or nullptr
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, bool bLiteral = false);
 
     /*!
      * \brief Execute

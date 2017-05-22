@@ -41,7 +41,7 @@ CBotExprUnaire::~CBotExprUnaire()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotExprUnaire::Compile(CBotToken* &p, CBotCStack* pStack)
+CBotInstr* CBotExprUnaire::Compile(CBotToken* &p, CBotCStack* pStack, bool bLiteral)
 {
     int op = p->GetType();
     CBotToken*    pp = p;
@@ -52,7 +52,10 @@ CBotInstr* CBotExprUnaire::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotExprUnaire* inst = new CBotExprUnaire();
     inst->SetToken(pp);
 
-    if (nullptr != (inst->m_expr = CBotParExpr::Compile(p, pStk )))
+    if (!bLiteral) inst->m_expr = CBotParExpr::Compile(p, pStk);
+    else inst->m_expr = CBotParExpr::CompileLitExpr(p, pStk);
+
+    if (inst->m_expr != nullptr)
     {
         if (op == ID_ADD && pStk->GetType() < CBotTypBoolean)        // only with the number
             return pStack->Return(inst, pStk);

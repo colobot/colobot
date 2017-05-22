@@ -136,29 +136,37 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
     CBotDefParam*   p = this;
 
     bool useDefault = false;
+    CBotStack* pile = pj->AddStack();
 
     while ( p != nullptr )
     {
-        // creates a local variable on the stack
-        CBotVar*    newvar = CBotVar::Create(p->m_token.GetString(), p->m_type);
+        pile = pile->AddStack();
+        if (pile->GetState() == 1) // already done?
+        {
+            if (ppVars != nullptr && ppVars[i] != nullptr) ++i;
+            p = p->m_next;
+            continue;     // next param
+        }
 
         CBotVar*   pVar = nullptr;
-        CBotStack* pile = nullptr; // stack for default expression
 
         if (useDefault || (ppVars == nullptr || ppVars[i] == nullptr))
         {
             assert(p->m_expr != nullptr);
 
-            pile = pj->AddStack();
             useDefault = true;
 
-            while (pile->IsOk() && !p->m_expr->Execute(pile));
-            if (!pile->IsOk()) return pj->Return(pile);      // return the error
+            if (!p->m_expr->Execute(pile)) return false; // interupt here
 
             pVar = pile->GetVar();
         }
         else
             pVar = ppVars[i];
+
+        pile->SetState(1); // mark this param done
+
+        // creates a local variable on the stack
+        CBotVar*    newvar = CBotVar::Create(p->m_token.GetString(), p->m_type);
 
         // serves to make the transformation of types:
         if ((useDefault && pVar != nullptr) ||
@@ -202,7 +210,6 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
         pj->AddVar(newvar);     // add a variable
         p = p->m_next;
         if (!useDefault) i++;
-        if (pile != nullptr) pile->Delete();
     }
 
     return true;
@@ -217,14 +224,27 @@ bool CBotDefParam::HasDefault()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotDefParam::RestoreState(CBotStack* &pj, bool bMain)
 {
-//    int             i = 0;
+    assert(this != nullptr);
     CBotDefParam*   p = this;
+
+    CBotStack* pile = nullptr;
+    if (bMain) pile = pj->RestoreStack();
 
     while ( p != nullptr )
     {
+        if (bMain && pile != nullptr)
+        {
+            pile = pile->RestoreStack();
+            if (pile != nullptr && pile->GetState() == 0)
+            {
+                assert(p->m_expr != nullptr);
+                p->m_expr->RestoreState(pile, true);
+                return;
+            }
+        }
         // creates a local variable on the stack
         CBotVar*    var = pj->FindVar(p->m_token.GetString());
-        var->SetUniqNum(p->m_nIdent);
+        if (var != nullptr) var->SetUniqNum(p->m_nIdent);
         p = p->m_next;
     }
 }

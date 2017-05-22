@@ -2385,4 +2385,20 @@ TEST_F(CBotUT, ParametersWithDefaultValues)
         "\n",
         CBotErrAmbiguousCall
     );
+
+    ExecuteTest(
+        "extern void DefaultValueUnaryExpression() {\n"
+        "    TestNumbers();\n"
+        "    TestBool();\n"
+        "}\n"
+        "void TestNumbers(int i = -1, float f = -1, int ii = ~1) {\n"
+        "    ASSERT(i == -1);\n"
+        "    ASSERT(f == -1.0);\n"
+        "    ASSERT(ii == ~1);\n"
+        "}\n"
+        "void TestBool(bool b = !false, bool b2 = not false) {\n"
+        "    ASSERT(true == b);\n"
+        "    ASSERT(true == b2);\n"
+        "}\n"
+    );
 }
