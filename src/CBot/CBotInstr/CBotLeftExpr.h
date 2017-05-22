@@ -61,6 +61,8 @@ public:
      */
     bool Execute(CBotStack* &pStack, CBotStack* array);
 
+    using CBotInstr::Execute;
+
     /*!
      * \brief ExecuteVar Fetch a variable during compilation.
      * \param pVar
@@ -68,6 +70,8 @@ public:
      * \return
      */
     bool ExecuteVar(CBotVar* &pVar, CBotCStack* &pile) override;
+
+    using CBotInstr::ExecuteVar;
 
     /*!
      * \brief ExecuteVar Fetch the variable at runtume.

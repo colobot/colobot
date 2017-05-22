@@ -105,3 +105,5 @@ protected:
 
     Language m_language;
 };
+
+template<> CSettings* CSingleton<CSettings>::m_instance;

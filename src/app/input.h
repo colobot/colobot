@@ -161,3 +161,5 @@ private:
 
     std::map<InputSlot, std::string> m_keyTable;
 };
+
+template<> CInput* CSingleton<CInput>::m_instance;

@@ -302,7 +302,7 @@ CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
 
 bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
-    if ( pVar == nullptr ) return CBotErrLowParam;
+    if ( pVar == nullptr ) { ex = CBotErrLowParam; return true; }
 
     int i = 0;
     pVar = pVar->GetItemList();
