@@ -78,7 +78,7 @@ std::streambuf::int_type COutputStreamBuffer::overflow(std::streambuf::int_type 
         return 0;
 
     // save buffer
-    PHYSFS_sint64 bytes_written = PHYSFS_writeBytes(m_file, pbase(), pptr() - pbase());
+    PHYSFS_sint64 bytes_written = PHYSFS_write(m_file, pbase(), 1, pptr() - pbase());
     if (bytes_written <= 0)
         return traits_type::eof();
 
@@ -86,7 +86,7 @@ std::streambuf::int_type COutputStreamBuffer::overflow(std::streambuf::int_type 
     // write final char
     if (ch != traits_type::eof())
     {
-        bytes_written = PHYSFS_writeBytes(m_file, &ch, 1);
+        bytes_written = PHYSFS_write(m_file, &ch, 1, 1);
         if (bytes_written <= 0)
             return traits_type::eof();
     }

@@ -76,7 +76,7 @@ bool CResourceManager::AddLocation(const std::string &location, bool prepend)
 
 bool CResourceManager::RemoveLocation(const std::string &location)
 {
-    if (!PHYSFS_unmount(location.c_str()))
+    if (!PHYSFS_removeFromSearchPath(location.c_str()))
     {
         GetLogger()->Error("Error while unmounting \"%s\": %s\n", location.c_str(), PHYSFS_getLastError());
         return false;
@@ -135,15 +135,7 @@ bool CResourceManager::DirectoryExists(const std::string& directory)
 {
     if (PHYSFS_isInit())
     {
-        PHYSFS_Stat statInfo;
-        std::string cleanPath = CleanPath(directory);
-
-        if (!PHYSFS_stat(cleanPath.c_str(), &statInfo))
-        {
-            return false;
-        }
-
-        return PHYSFS_exists(cleanPath.c_str()) && statInfo.filetype == PHYSFS_FILETYPE_DIRECTORY;
+        return PHYSFS_exists(CleanPath(directory).c_str()) && PHYSFS_isDirectory(CleanPath(directory).c_str());
     }
     return false;
 }
@@ -197,19 +189,12 @@ std::vector<std::string> CResourceManager::ListDirectories(const std::string &di
 
     if (PHYSFS_isInit())
     {
-        PHYSFS_Stat statInfo;
         char **files = PHYSFS_enumerateFiles(CleanPath(directory).c_str());
 
         for (char **i = files; *i != nullptr; i++)
         {
             std::string path = CleanPath(directory) + "/" + (*i);
-
-            if (!PHYSFS_stat(path.c_str(), &statInfo))
-            {
-                continue;
-            }
-
-            if (statInfo.filetype == PHYSFS_FILETYPE_DIRECTORY)
+            if (PHYSFS_isDirectory(path.c_str()))
             {
                 result.push_back(*i);
             }
@@ -238,12 +223,7 @@ long long CResourceManager::GetLastModificationTime(const std::string& filename)
 {
     if (PHYSFS_isInit())
     {
-        PHYSFS_Stat statInfo;
-        if (!PHYSFS_stat(CleanPath(filename).c_str(), &statInfo))
-        {
-            return -1;
-        }
-        return statInfo.modtime;
+        return PHYSFS_getLastModTime(CleanPath(filename).c_str());
     }
     return -1;
 }
