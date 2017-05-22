@@ -84,7 +84,17 @@ bool IsSep(int character)
     return !IsWord(character);
 }
 
+bool IsBreaker(char c)
+{
+    return ( c == '.'  || c == '{' || c == '}' ||
+             c == ';' || c == ':' || c == '[' || c == ']' ||
+             c == '(' || c == ')' || c == '=' || c == '"' || c == '\'' );
+}
 
+bool IsDelimiter(char c)
+{
+    return IsSpace( c ) || IsBreaker( c );
+}
 
 //! Object's constructor.
 CEdit::CEdit()
@@ -445,6 +455,19 @@ bool CEdit::EventProcess(const Event &event)
         if ( data->key == KEY(DELETE) && !bControl )
         {
             Delete(1);
+            SendModifEvent();
+            return true;
+        }
+
+        if ( data->key == KEY(BACKSPACE) && bControl )
+        {
+            DeleteWord(-1);
+            SendModifEvent();
+            return true;
+        }
+        if ( data->key == KEY(DELETE) && bControl )
+        {
+            DeleteWord(1);
             SendModifEvent();
             return true;
         }
@@ -2746,6 +2769,60 @@ void CEdit::DeleteOne(int dir)
     m_cursor2 = m_cursor1;
 }
 
+// Delete word
+
+void CEdit::DeleteWord(int dir)
+{
+    if ( !m_bEdit ) return;
+
+    if ( dir < 0 )
+    {
+        if ( m_cursor1 > 0) m_cursor2 = --m_cursor1;
+        else m_cursor2 = m_cursor1;
+
+        if ( IsBreaker(m_text[m_cursor1]) )
+        {
+            Delete(1);
+            return;
+        }
+        else ++m_cursor1;
+
+        while ( m_cursor1 < m_len && !IsDelimiter(m_text[m_cursor1]) ) ++m_cursor1;
+
+        while ( m_cursor2 > 0 && IsSpace(m_text[m_cursor2]) ) --m_cursor2;
+
+        if ( !IsDelimiter(m_text[m_cursor2]) )
+        {
+            while ( m_cursor2 > 0 && !IsDelimiter(m_text[m_cursor2]) ) --m_cursor2;
+            if ( IsBreaker(m_text[m_cursor2]) ) ++m_cursor2;
+        }
+
+        Delete(-1);
+    }
+    else
+    {
+        m_cursor2 = m_cursor1;
+
+        while ( m_cursor1 < m_len && IsSpace(m_text[m_cursor1]) ) ++m_cursor1;
+
+        if ( IsBreaker(m_text[m_cursor1]) )
+        {
+            ++m_cursor1;
+            Delete(1);
+            return;
+        }
+
+        while ( m_cursor1 < m_len && !IsDelimiter(m_text[m_cursor1]) ) ++m_cursor1;
+
+        if ( !IsDelimiter(m_text[m_cursor2]) )
+        {
+            while ( m_cursor2 > 0 && !IsDelimiter(m_text[m_cursor2]) ) --m_cursor2;
+            if ( IsBreaker(m_text[m_cursor2]) ) ++m_cursor2;
+        }
+
+        Delete(-1);
+    }
+}
 
 // Calculates the indentation level of brackets {and}.
 
