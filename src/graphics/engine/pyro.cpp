@@ -2157,6 +2157,9 @@ bool CPyro::BurnIsKeepPart(int part)
 
 void CPyro::BurnTerminate()
 {
+    if (m_object == nullptr)
+        return;
+
     if (m_type == PT_BURNO)  // organic object is burning?
     {
         DeleteObject(true, true);  // removes the insect

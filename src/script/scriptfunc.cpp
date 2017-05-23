@@ -682,6 +682,16 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
         }
         else
         {
+            if (obj->Implements(ObjectInterfaceType::Old))
+            {
+                COldObject* oldobj = dynamic_cast<COldObject*>(obj);
+                if (oldobj->GetPower() != nullptr)
+                    CObjectManager::GetInstancePointer()->DeleteObject(oldobj->GetPower());
+                if (oldobj->GetCargo() != nullptr)
+                    CObjectManager::GetInstancePointer()->DeleteObject(oldobj->GetCargo());
+                oldobj->SetPower(nullptr);
+                oldobj->SetCargo(nullptr);
+            }
             CObjectManager::GetInstancePointer()->DeleteObject(obj);
         }
     }
