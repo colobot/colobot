@@ -530,6 +530,7 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
         pyroType = Gfx::PT_WPCHECK;
     }
     assert(pyroType != Gfx::PT_NULL);
+    SetDying(DeathType::Exploding);
     m_engine->GetPyroManager()->Create(pyroType, this);
 
     if ( Implements(ObjectInterfaceType::Programmable) )
