@@ -3740,4 +3740,24 @@ Color CParticle::GetFogColor(Math::Vector pos)
     return result;
 }
 
+void CParticle::CutObjectLink(CObject* obj)
+{
+    for (int i = 0; i < MAXPARTICULE*MAXPARTITYPE; i++)
+    {
+        if (!m_particle[i].used) continue;
+
+        if (m_particle[i].objLink == obj)
+        {
+            // If the object this particle's coordinates are linked to doesn't exist anymore, remove the particle
+            DeleteRank(i);
+        }
+
+        if (m_particle[i].objFather == obj)
+        {
+            // If the object that spawned this partcle doesn't exist anymore, remove the link
+            m_particle[i].objFather = nullptr;
+        }
+    }
+}
+
 } // namespace Gfx

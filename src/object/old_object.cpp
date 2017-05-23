@@ -203,6 +203,7 @@ void COldObject::DeleteObject(bool bAll)
     if ( !bAll )
     {
         m_engine->GetPyroManager()->CutObjectLink(this);
+        m_particle->CutObjectLink(this);
 
         if ( m_bSelect )
         {
