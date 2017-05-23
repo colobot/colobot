@@ -1281,7 +1281,7 @@ void CMap::UpdateObject(CObject* pObj)
 
     if ( color == MAPCOLOR_NULL )  return;
 
-    if (!m_fixImage.empty() && !m_bDebug)  // map with still image?
+    /*if (!m_fixImage.empty() && !m_bDebug)  // map with still image?
     {
         if ( (type == OBJECT_TEEN28 ||
               type == OBJECT_TEEN34 ) &&
@@ -1290,7 +1290,7 @@ void CMap::UpdateObject(CObject* pObj)
         if ( type != OBJECT_TEEN28 &&
              type != OBJECT_TEEN34 &&
              color != MAPCOLOR_MOVE )  return;
-    }
+    }*/
 
     if ( pObj->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(pObj)->GetSelect() )
     {
