@@ -67,6 +67,7 @@ void CScoreboard::ProcessKill(CObject* target, CObject* killer)
     for (auto& rule : m_rulesKill)
     {
         if ((rule->team == killer->GetTeam() || rule->team == 0) &&
+            killer->GetTeam() != 0 &&
             rule->CheckForObject(target))
         {
             AddPoints(killer->GetTeam(), rule->score);
@@ -76,6 +77,7 @@ void CScoreboard::ProcessKill(CObject* target, CObject* killer)
 
 void CScoreboard::ProcessEndTake(int team)
 {
+    if (team == 0) return;
     m_finishCounter++;
     for (auto& rule : m_rulesEndTake)
     {
