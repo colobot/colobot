@@ -73,3 +73,4 @@ private:
     CSingleton(const CSingleton<T> &) = delete;
 };
 
+template <typename T> T* CSingleton<T>::m_instance = nullptr;

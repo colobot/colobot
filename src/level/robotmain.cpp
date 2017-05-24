@@ -125,9 +125,6 @@ const Gfx::Color COLOR_REF_ALIEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.
 const Gfx::Color COLOR_REF_GREEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
 const Gfx::Color COLOR_REF_WATER = Gfx::Color( 25.0f/256.0f, 255.0f/256.0f, 240.0f/256.0f);  // cyan
 
-
-template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
-
 //! Constructor of robot application
 CRobotMain::CRobotMain()
 {

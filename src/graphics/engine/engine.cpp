@@ -64,8 +64,6 @@
 #include <SDL_surface.h>
 #include <SDL_thread.h>
 
-template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
-
 // Graphics module namespace
 namespace Gfx
 {

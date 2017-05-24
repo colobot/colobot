@@ -37,8 +37,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 
-template<> CPathManager* CSingleton<CPathManager>::m_instance = nullptr;
-
 CPathManager::CPathManager(CSystemUtils* systemUtils)
     : m_systemUtils(systemUtils)
 {

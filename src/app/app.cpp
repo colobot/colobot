@@ -61,9 +61,6 @@
 #include <getopt.h>
 #include <localename.h>
 
-
-template<> CApplication* CSingleton<CApplication>::m_instance = nullptr;
-
 char CApplication::m_languageLocale[] = { 0 };
 
 
