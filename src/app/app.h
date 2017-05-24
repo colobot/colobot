@@ -407,5 +407,3 @@ protected:
 
     std::map<int, bool> m_textInputEnabled;
 };
-
-template<> CApplication* CSingleton<CApplication>::m_instance;

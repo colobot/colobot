@@ -112,5 +112,3 @@ inline CConfigFile & GetConfigFile()
 {
     return CConfigFile::GetInstance();
 }
-
-template<> CConfigFile* CSingleton<CConfigFile>::m_instance;

@@ -136,5 +136,3 @@ inline CLogger* GetLogger()
 {
     return CLogger::GetInstancePointer();
 }
-
-template<> CLogger* CSingleton<CLogger>::m_instance;

@@ -716,5 +716,3 @@ protected:
     //! Index of currently selected element in command history
     int             m_commandHistoryIndex;
 };
-
-template<> CRobotMain* CSingleton<CRobotMain>::m_instance;

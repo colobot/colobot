@@ -67,5 +67,3 @@ private:
     //! Save path
     std::string m_savePath;
 };
-
-template<> CPathManager* CSingleton<CPathManager>::m_instance;

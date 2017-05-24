@@ -311,5 +311,3 @@ private:
     int m_activeObjectIterators;
     bool m_shouldCleanRemovedObjects;
 };
-
-template<> CObjectManager* CSingleton<CObjectManager>::m_instance;
