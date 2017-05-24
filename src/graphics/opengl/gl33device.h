@@ -115,6 +115,11 @@ public:
 
     void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT) override;
 
+    virtual void DrawPrimitive(PrimitiveType type, const void *vertices,
+        int size, const VertexFormat &format, int vertexCount) override;
+    virtual void DrawPrimitives(PrimitiveType type, const void *vertices,
+        int size, const VertexFormat &format, int first[], int count[], int drawCount) override;
+
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
@@ -193,16 +198,22 @@ public:
 private:
     //! Updates the texture params for given texture stage
     void UpdateTextureParams(int index);
-    //! Updates rendering mode
-    void UpdateRenderingMode();
+    //! Updates texture state
+    inline void UpdateTextureState(int index);
+    //! Update light parameters
+    void UpdateLights();
 
     //! Binds VBO
     inline void BindVBO(GLuint vbo);
     //! Binds VAO
     inline void BindVAO(GLuint vao);
+    //! Binds texture
+    inline void BindTexture(int index, GLuint texture);
 
     //! Uploads data to dynamic buffer and returns offset to it
-    unsigned int UploadVertexData(DynamicBuffer& buffer, void* data, unsigned int size);
+    unsigned int UploadVertexData(DynamicBuffer& buffer, const void* data, unsigned int size);
+
+    inline void UpdateVertexAttribute(int index, const VertexAttribute &attribute, int offset);
 
 private:
     //! Current config
@@ -226,6 +237,8 @@ private:
 
     //! Whether lighting is enabled
     bool m_lighting = false;
+    //! true means that light update is needed
+    bool m_updateLights = false;
     //! Current lights
     std::vector<Light> m_lights;
     //! Current lights enable status
@@ -240,6 +253,8 @@ private:
 
     //! Set of all created textures
     std::set<Texture> m_allTextures;
+    //! Free texture unit
+    const int m_freeTexture = 3;
 
     //! Type of vertex structure
     enum VertexType
@@ -283,7 +298,7 @@ private:
     //! Shader program for shadow rendering
     GLuint m_shadowProgram = 0;
 
-    DynamicBuffer m_dynamicBuffers[3];
+    DynamicBuffer m_dynamicBuffer;
 
     //! Current mode
     unsigned int m_mode = 0;

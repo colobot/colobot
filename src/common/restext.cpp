@@ -143,7 +143,13 @@ void InitializeRestext()
     stringsText[RT_LOADING_TERRAIN_TEX]    = TR("Textures");
     stringsText[RT_LOADING_TERRAIN_GEN]    = TR("Generating");
 
+    stringsText[RT_SCOREBOARD_RESULTS]     = TR("Results");
+    stringsText[RT_SCOREBOARD_RESULTS_TEXT]= TR("The battle has ended");
+    stringsText[RT_SCOREBOARD_RESULTS_LINE]= TR("%s: %d pts");
 
+
+
+    stringsEvent[EVENT_LABEL_CODE_BATTLE]   = TR("Code battle");
 
     stringsEvent[EVENT_BUTTON_OK]           = TR("OK");
     stringsEvent[EVENT_BUTTON_CANCEL]       = TR("Cancel");
@@ -563,6 +569,7 @@ void InitializeRestext()
 
     stringsErr[ERR_UNKNOWN]         = TR("Internal error - tell the developers");
     stringsErr[ERR_CMD]             = TR("Unknown command");
+    stringsErr[ERR_OBJ_BUSY]        = TR("This object is currently busy");
     stringsErr[ERR_MANIP_FLY]       = TR("Impossible when flying");
     stringsErr[ERR_MANIP_BUSY]      = TR("Already carrying something");
     stringsErr[ERR_MANIP_NIL]       = TR("Nothing to grab");
@@ -670,6 +677,9 @@ void InitializeRestext()
     stringsErr[INFO_DELETEWORM]     = TR("Worm fatally wounded");
     stringsErr[INFO_DELETESPIDER]   = TR("Spider fatally wounded");
     stringsErr[INFO_BEGINSATCOM]    = TR("Press \\key help; to read instructions on your SatCom");
+    stringsErr[INFO_TEAM_FINISH]    = TR("<<< Team %s finished! >>>");
+    stringsErr[INFO_TEAM_DEAD]      = TR("<<< Team %s lost! >>>");
+    stringsErr[INFO_TEAM_SCORE]     = TR("<<< Team %s recieved %d points >>>");
 
 
 
@@ -718,6 +728,10 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrNoPublic]      = TR("Public required");
     stringsCbot[CBot::CBotErrNoExpression]  = TR("Expression expected after =");
     stringsCbot[CBot::CBotErrAmbiguousCall] = TR("Ambiguous call to overloaded function");
+    stringsCbot[CBot::CBotErrFuncNotVoid]   = TR("Function needs return type \"void\"");
+    stringsCbot[CBot::CBotErrNoClassName]   = TR("Class name expected");
+    stringsCbot[CBot::CBotErrNoReturn]      = TR("Non-void function needs \"return;\"");
+    stringsCbot[CBot::CBotErrDefaultValue]  = TR("This parameter needs a default value");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");

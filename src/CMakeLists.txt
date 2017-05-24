@@ -165,6 +165,8 @@ set(BASE_SOURCES
     graphics/core/nulldevice.cpp
     graphics/core/nulldevice.h
     graphics/core/texture.h
+    graphics/core/type.cpp
+    graphics/core/type.h
     graphics/core/vertex.h
     graphics/engine/camera.cpp
     graphics/engine/camera.h
@@ -239,10 +241,14 @@ set(BASE_SOURCES
     level/robotmain.h
     level/scene_conditions.cpp
     level/scene_conditions.h
+    level/scoreboard.cpp
+    level/scoreboard.h
     math/all.h
     math/const.h
     math/func.h
     math/geometry.h
+    math/half.cpp
+    math/half.h
     math/intpoint.h
     math/matrix.h
     math/point.h

@@ -17,38 +17,40 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#pragma once
+/**
+* \file graphics/core/type.cpp
+* \brief Type support and conversion
+*/
 
-#include <cstddef>
-#include <memory>
-#include <streambuf>
-#include <string>
+#include "graphics/core/type.h"
 
-#include <physfs.h>
+#include <cassert>
 
-class COutputStreamBuffer : public std::streambuf
+// Graphics module namespace
+namespace Gfx
 {
-public:
-    COutputStreamBuffer(std::size_t bufferSize = 512);
-    virtual ~COutputStreamBuffer();
 
-    COutputStreamBuffer(const COutputStreamBuffer &) = delete;
-    COutputStreamBuffer &operator= (const COutputStreamBuffer &) = delete;
+//! Returns size in bytes of given type
+int GetTypeSize(Type type)
+{
+    switch (type)
+    {
+    case Type::BYTE:
+    case Type::UBYTE:
+        return 1;
+    case Type::SHORT:
+    case Type::USHORT:
+    case Type::HALF:
+        return 2;
+    case Type::INT:
+    case Type::UINT:
+    case Type::FLOAT:
+        return 4;
+    case Type::DOUBLE:
+        return 8;
+    default:
+        return 0;
+    }
+}
 
-    /** Open Stream Buffer for writing
-     *
-     * \param filename
-     * \param mode one of: std::ios_base::out - Open for writing, std::ios_base::app - Append to file
-     *
-     */
-    void open(const std::string &filename, std::ios_base::openmode mode);
-    void close();
-    bool is_open();
-
-private:
-    int_type overflow(int_type ch) override;
-    int sync() override;
-
-    PHYSFS_File *m_file;
-    std::unique_ptr<char[]> m_buffer;
-};
+} // namespace Gfx

@@ -26,6 +26,7 @@
 #include <string>
 #include <deque>
 #include <set>
+#include <list>
 
 namespace CBot
 {
@@ -37,6 +38,7 @@ class CBotStack;
 class CBotDefParam;
 class CBotToken;
 class CBotCStack;
+class CBotExternalCallList;
 
 /**
  * \brief A CBot class definition
@@ -102,7 +104,7 @@ class CBotCStack;
  *  float y = var->GetValFloat();
  *  \endcode
  */
-class CBotClass : public CBotLinkedList<CBotClass>
+class CBotClass
 {
 public:
     /*!
@@ -133,13 +135,8 @@ public:
                              bool intrinsic = false);
 
     /*!
-     * \brief AddFunction This call allows to add as external new method
-     * used by the objects of this class. See (**) at end of this file for
-     * more details.
-     * \param name
-     * \param rExec
-     * \param rCompile
-     * \return
+     * \brief Add a function that can be called from CBot
+     * \see CBotProgram::AddFunction
      */
     bool AddFunction(const std::string& name,
                      bool rExec(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
@@ -225,6 +222,13 @@ public:
     CBotVar* GetItemRef(int nIdent);
 
     /*!
+     * \brief Check whether a variable is already defined in a class
+     * \param name Name of the variable
+     * \return True if a variable is defined in the class
+     */
+    bool CheckVar(const std::string &name);
+
+    /*!
      * \brief CompileMethode Compiles a method associated with an instance of
      * class the method can be declared by the user or AddFunction.
      * \param name
@@ -234,11 +238,11 @@ public:
      * \param nIdent
      * \return
      */
-    CBotTypResult CompileMethode(const std::string& name,
+    CBotTypResult CompileMethode(CBotToken* name,
                                  CBotVar* pThis,
                                  CBotVar** ppParams,
                                  CBotCStack* pStack,
-                                 long& nIdent);
+                                 long &nIdent);
 
     /*!
      * \brief ExecuteMethode Executes a method.
@@ -246,18 +250,13 @@ public:
      * \param name
      * \param pThis
      * \param ppParams
-     * \param pResult
+     * \param pResultType
      * \param pStack
      * \param pToken
      * \return
      */
-    bool ExecuteMethode(long& nIdent,
-                        const std::string& name,
-                        CBotVar* pThis,
-                        CBotVar** ppParams,
-                        CBotVar*& pResult,
-                        CBotStack*& pStack,
-                        CBotToken* pToken);
+    bool ExecuteMethode(long &nIdent, CBotVar* pThis, CBotVar** ppParams, CBotTypResult pResultType,
+                        CBotStack*&pStack, CBotToken* pToken);
 
     /*!
      * \brief RestoreMethode Restored the execution stack.
@@ -267,11 +266,11 @@ public:
      * \param ppParams
      * \param pStack
      */
-    void RestoreMethode(long& nIdent,
-                        const std::string& name,
+    void RestoreMethode(long &nIdent,
+                        CBotToken* name,
                         CBotVar* pThis,
                         CBotVar** ppParams,
-                        CBotStack*& pStack);
+                        CBotStack*&pStack);
 
     /*!
      * \brief Compile Compiles a class declared by the user.
@@ -283,10 +282,15 @@ public:
                               CBotCStack* pStack);
 
     /*!
-     * \brief Compile1
-     * \param p
-     * \param pStack
-     * \return
+     * \brief Pre-compile a new class
+     * \param p[in, out] Pointer to first token of the class, will be updated to point to first token after the class definition
+     * \param pStack Compile stack
+     *
+     * This function is used to find the beginning and end of class definition.
+     *
+     * If any errors in the code are detected, this function will set the error on compile stack and return nullptr.
+     *
+     * \return Precompiled class, or nullptr in case of error
      */
     static CBotClass* Compile1(CBotToken* &p,
                                CBotCStack* pStack);
@@ -294,10 +298,10 @@ public:
     /*!
      * \brief DefineClasses Calls CompileDefItem for each class in a list
      * of classes, defining fields and pre-compiling methods.
-     * \param pClass List of classes
+     * \param pClassList List of classes
      * \param pStack
      */
-    static void DefineClasses(CBotClass* pClass, CBotCStack* pStack);
+    static void DefineClasses(std::list<CBotClass*> pClassList, CBotCStack* pStack);
 
     /*!
      * \brief CompileDefItem
@@ -388,9 +392,9 @@ private:
     //! Linked list of all class fields
     CBotVar* m_pVar;
     //! Linked list of all class external calls
-    CBotCallMethode* m_pCalls;
-    //! Linked list of all class methods
-    CBotFunction* m_pMethod;
+    CBotExternalCallList* m_externalMethods;
+    //! List of all class methods
+    std::list<CBotFunction*> m_pMethod{};
     void (*m_rUpdate)(CBotVar* thisVar, void* user);
 
     CBotToken* m_pOpenblk;

@@ -16,9 +16,9 @@ set(COLOBOT_VERSION_MINOR    1)
 set(COLOBOT_VERSION_REVISION 9)
 
 # Used on official releases
-set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
+#set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
 # Used on unreleased, development builds
-#set(COLOBOT_VERSION_UNRELEASED "+alpha")
+set(COLOBOT_VERSION_UNRELEASED "+alpha")
 
 # Append git characteristics to version
 if(DEFINED COLOBOT_VERSION_UNRELEASED)
@@ -132,8 +132,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
     message(STATUS "Detected GCC version 4.7+")
 
-    set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Wold-style-cast -pedantic-errors")
-    set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -fno-delete-null-pointer-checks") # Temporary hack, see #828
+    set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Werror -Wold-style-cast -pedantic-errors")
+    set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
     set(TEST_CXX_FLAGS "-pthread")
@@ -145,7 +145,8 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
     message(STATUS "Detected Clang version 3.1+")
 
-    set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Wold-style-cast -pedantic-errors")
+    set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Werror -Wold-style-cast -pedantic-errors")
+    set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
     set(TEST_CXX_FLAGS "-pthread")

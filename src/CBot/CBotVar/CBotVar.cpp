@@ -22,6 +22,7 @@
 
 #include "CBot/CBotStack.h"
 
+#include "CBot/CBotInstr/CBotInstr.h"
 #include "CBot/CBotVar/CBotVarArray.h"
 #include "CBot/CBotVar/CBotVarPointer.h"
 #include "CBot/CBotVar/CBotVarClass.h"
@@ -70,6 +71,8 @@ CBotVar::CBotVar(const CBotToken &name) : CBotVar()
 CBotVar::~CBotVar( )
 {
     delete  m_token;
+    delete  m_InitExpr;
+    delete  m_LimExpr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

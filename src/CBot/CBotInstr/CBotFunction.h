@@ -60,11 +60,16 @@ public:
                                  bool bLocal = true);
 
     /*!
-     * \brief Compile1 Pre-compile a new function.
-     * \param p
-     * \param pStack
-     * \param pClass
-     * \return
+     * \brief Pre-compile a new function
+     * \param p[in, out] Pointer to first token of the function, will be updated to point to first token after the function definition
+     * \param pStack Compile stack
+     * \param pClass If this is a class method, pointer to class this function is part of, otherwise nullptr
+     *
+     * This function is used to find the beginning and end of function definition.
+     *
+     * If any errors in the code are detected, this function will set the error on compile stack and return nullptr.
+     *
+     * \return Precompiled function, or nullptr in case of error
      */
     static CBotFunction* Compile1(CBotToken* &p,
                                   CBotCStack* pStack,
@@ -81,6 +86,8 @@ public:
                  CBotStack* &pj,
                  CBotVar* pInstance = nullptr);
 
+    using CBotInstr::Execute;
+
     /*!
      * \brief RestoreState
      * \param ppVars
@@ -91,40 +98,46 @@ public:
                       CBotStack* &pj,
                       CBotVar* pInstance = nullptr);
 
-    /*!
-     * \brief AddNext
-     * \param p
-     */
-    void AddNext(CBotFunction* p);
+    using CBotInstr::RestoreState;
 
     /*!
-     * \brief CompileCall
-     * \param name
-     * \param ppVars
-     * \param nIdent
-     * \return
+     * \brief Compile a function call
+     *
+     * See FindLocalOrPublic for more detailed explanation
+     *
+     * \param localFunctionList Linked list of local functions to search in, can be null
+     * \param name Name of the function
+     * \param ppVars List of function arguments
+     * \param nIdent[in, out] Unique identifier of the function
+     * \return Type returned by the function or error code
+     * \see FindLocalOrPublic
      */
-    CBotTypResult CompileCall(const std::string& name,
-                              CBotVar** ppVars,
-                              long& nIdent);
+    static CBotTypResult CompileCall(const std::list<CBotFunction*>& localFunctionList,
+                                     const std::string &name, CBotVar** ppVars, long &nIdent);
 
     /*!
-     * \brief FindLocalOrPublic Is a function according to its unique identifier
-     * if the identifier is not found, looking by name and parameters.
-     * \param nIdent
-     * \param name
-     * \param ppVars
-     * \param TypeOrError
-     * \param bPublic
-     * \return
+     * \brief Finds a local or public function
+     *
+     * <p>Finds a local or (if bPublic is true) public function to call
+     *
+     * <p>First, it looks for a function according to its unique identifier.<br>
+     * If the identifier is not found, looks by name and parameters.
+     *
+     * \param localFunctionList Linked list of local functions to search in, can be null
+     * \param nIdent[in, out] Unique identifier of the function
+     * \param name Name of the function
+     * \param ppVars List of function arguments
+     * \param TypeOrError Type returned by the function or error code
+     * \param bPublic Whether to look in public functions or not
+     * \return Pointer to found CBotFunction instance, or nullptr in case of no match or ambiguity (see TypeOrError for error code)
      */
-    CBotFunction* FindLocalOrPublic(long& nIdent, const std::string& name,
-                                    CBotVar** ppVars,
-                                    CBotTypResult& TypeOrError,
-                                    bool bPublic = true);
+    static CBotFunction* FindLocalOrPublic(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name,
+                                           CBotVar** ppVars, CBotTypResult &TypeOrError, bool bPublic = true);
 
     /*!
      * \brief DoCall Fait un appel à une fonction.
+     * \param program
+     * \param localFunctionList
      * \param nIdent
      * \param name
      * \param ppVars
@@ -133,27 +146,24 @@ public:
      * \return
      */
 
-    int DoCall(long& nIdent,
-               const std::string& name,
-               CBotVar** ppVars,
-               CBotStack* pStack,
-               CBotToken* pToken);
+    static int DoCall(CBotProgram* program, const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name,
+                      CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken);
 
     /*!
      * \brief RestoreCall
+     * \param localFunctionList
      * \param nIdent
      * \param name
      * \param ppVars
      * \param pStack
      */
-    void RestoreCall(long& nIdent,
-                     const std::string& name,
-                     CBotVar** ppVars,
-                     CBotStack* pStack);
+    static void RestoreCall(const std::list<CBotFunction*>& localFunctionList,
+                            long &nIdent, const std::string &name, CBotVar** ppVars, CBotStack* pStack);
 
     /*!
-     * \brief DoCall Makes call of a method note: this is already on the stack,
-     * the pointer pThis is just to simplify.
+     * \brief DoCall Makes call of a method
+     * note: this is already on the stack, the pointer pThis is just to simplify.
+     * \param localFunctionList
      * \param nIdent
      * \param name
      * \param pThis
@@ -163,16 +173,12 @@ public:
      * \param pClass
      * \return
      */
-    int DoCall(long& nIdent,
-               const std::string& name,
-               CBotVar* pThis,
-               CBotVar** ppVars,
-               CBotStack* pStack,
-               CBotToken* pToken,
-               CBotClass* pClass);
+    static int DoCall(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
+                      CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken, CBotClass* pClass);
 
     /*!
      * \brief RestoreCall
+     * \param localFunctionList
      * \param nIdent
      * \param name
      * \param pThis
@@ -181,12 +187,8 @@ public:
      * \param pClass
      * \return Returns true if the method call was restored.
      */
-    bool RestoreCall(long& nIdent,
-                     const std::string& name,
-                     CBotVar* pThis,
-                     CBotVar** ppVars,
-                     CBotStack* pStack,
-                     CBotClass* pClass);
+    static bool RestoreCall(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
+                            CBotVar** ppVars, CBotStack* pStack, CBotClass* pClass);
 
     /*!
      * \brief CheckParam See if the "signature" of parameters is identical.
@@ -226,12 +228,6 @@ public:
     bool IsExtern();
 
     /*!
-     * \brief Next
-     * \return
-     */
-    CBotFunction* Next();
-
-    /*!
      * \brief GetPosition
      * \param start
      * \param stop
@@ -242,6 +238,12 @@ public:
     bool GetPosition(int& start, int& stop,
                      CBotGet modestart,
                      CBotGet modestop);
+
+    /*!
+     * \brief Check if the function has a return statment that will execute.
+     * \return true if a return statment was found.
+     */
+    bool HasReturn() override;
 
 protected:
     virtual const std::string GetDebugName() override { return "CBotFunction"; }
@@ -258,7 +260,6 @@ private:
     CBotDefParam* m_param;
     //! The instruction block.
     CBotInstr* m_block;
-    CBotFunction* m_next;
     //! If returns CBotTypClass.
     CBotToken m_retToken;
     //! Complete type of the result.

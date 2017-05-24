@@ -225,8 +225,14 @@ bool rStrFind( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 
     // puts the result on the stack
     std::size_t res = s.find(s2);
-    pResult->SetValInt( res != std::string::npos ? res : -1 );
-    if ( res < 0 ) pResult->SetInit( CBotVar::InitType::IS_NAN );
+    if (res != std::string::npos)
+    {
+        pResult->SetValInt(res);
+    }
+    else
+    {
+        pResult->SetInit(CBotVar::InitType::IS_NAN);
+    }
     return true;
 }
 

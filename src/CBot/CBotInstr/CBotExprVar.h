@@ -40,14 +40,13 @@ public:
     ~CBotExprVar();
 
     /*!
-     * \brief Compile
-     * \param p
-     * \param pStack
-     * \param privat
+     * \brief Compile an expression of a variable, possibly chained with index operators and/or dot operators
+     * \param p[in, out] Pointer to first token of the expression, will be updated to point to first token after the expression
+     * \param pStack Current compilation stack frame
+     * \param bCheckReadOnly True for operations that would modify the value of the variable
      * \return
      */
-    static CBotInstr* Compile(CBotToken*& p, CBotCStack* pStack,
-                              CBotVar::ProtectionLevel privat = CBotVar::ProtectionLevel::Protected);
+    static CBotInstr* Compile(CBotToken*& p, CBotCStack* pStack, bool bCheckReadOnly = false);
 
     /*!
      * \brief CompileMethode
@@ -80,6 +79,8 @@ public:
      * \return
      */
     bool ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep);
+
+    using CBotInstr::ExecuteVar;
 
     /*!
      * \brief RestoreStateVar Fetch variable at runtime.

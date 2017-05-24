@@ -54,6 +54,14 @@ public:
      */
     static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
 
+    /*!
+     * \brief Compile a literal expression ("string", number, true, false, null, nan, new)
+     * \param p[in, out] Pointer to first token of the expression, will be updated to point to first token after the expression
+     * \param pStack Current compilation stack frame
+     * \return The compiled instruction or nullptr on error
+     */
+    static CBotInstr* CompileLitExpr(CBotToken* &p, CBotCStack* pStack);
+
 private:
     CBotParExpr() = delete;
     CBotParExpr(const CBotParExpr&) = delete;

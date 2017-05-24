@@ -34,12 +34,13 @@
 #include "object/tool_type.h"
 
 class CLevelParserLine;
+class CObject;
 
 /**
- * \class CSceneCondition
- * \brief Base scene condition structure
+ * \class CObjectCondition
+ * \brief Base object condition structure
  */
-class CSceneCondition
+class CObjectCondition
 {
 public:
     Math::Vector  pos = Math::Vector(0.0f, 0.0f, 0.0f)*g_unit;
@@ -52,11 +53,25 @@ public:
     bool          countTransported = true;
     int           team = 0;
 
+    //! Read from line in scene file
+    virtual void Read(CLevelParserLine* line);
+
+    //! Checks if this condition is met
+    bool CheckForObject(CObject* obj);
+};
+
+/**
+ * \class CSceneCondition
+ * \brief Base scene condition structure
+ */
+class CSceneCondition : public CObjectCondition
+{
+public:
     int           min = 1;        // wins if >
     int           max = 9999;     // wins if <
 
     //! Read from line in scene file
-    virtual void Read(CLevelParserLine* line);
+    void Read(CLevelParserLine* line) override;
 
     //! Checks if this condition is met
     bool Check();

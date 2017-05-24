@@ -237,6 +237,10 @@ enum CBotError : int
     CBotErrNoPublic      = 5042, //!< missing word "public"
     CBotErrNoExpression  = 5043, //!< expression expected after =
     CBotErrAmbiguousCall = 5044, //!< ambiguous call to overloaded function
+    CBotErrFuncNotVoid   = 5045, //!< function needs return type "void"
+    CBotErrNoClassName   = 5046, //!< class name expected
+    CBotErrNoReturn      = 5047, //!< non-void function needs "return;"
+    CBotErrDefaultValue  = 5048, //!< this parameter needs a default value
 
     // Runtime errors
     CBotErrZeroDiv       = 6000, //!< division by zero

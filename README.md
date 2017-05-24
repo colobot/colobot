@@ -6,7 +6,7 @@ This is official repository for the open-source Colobot: Gold Edition project de
 
 The source code contained here was released by Epsitec -- the original creator of the game -- on open source (GPLv3) license. The code was given and the rights granted specifically to ICC community in March 2012. Since then, we have been developing the game further.
 
-More information for developers (in English) can be found on the [developer wiki](http://colobot.info/wiki/dev/) or [our forum](http://colobot.info/forum/). However, the freshest source of information is our IRC channels (see below).
+More information for developers (in English) can be found on [our forum](http://colobot.info/forum/). However, the freshest source of information is our IRC channels (see below).
 
 This repository contains only the source code of the project. The game requires also data files which are now provided as git submodule and are hosted in [separate repository](https://github.com/colobot/colobot-data).
 

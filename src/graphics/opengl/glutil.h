@@ -93,6 +93,8 @@ GLenum TranslateTextureCoordinate(int index);
 
 GLenum TranslateTextureCoordinateGen(int index);
 
+GLenum TranslateType(Type type);
+
 std::string GetLastShaderError();
 
 GLint LoadShader(GLint type, const char* filename);
@@ -192,8 +194,8 @@ struct UniformLocations
     //! Shadow color
     GLint shadowColor = -1;
 
-    //! true enables lighting
-    GLint lightingEnabled = -1;
+    // Number of enabled lights
+    GLint lightCount = -1;
     //! Ambient color
     GLint ambientColor = -1;
     //! Diffuse color

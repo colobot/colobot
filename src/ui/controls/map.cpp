@@ -1164,12 +1164,20 @@ void CMap::UpdateObject(CObject* pObj)
     if ( !m_bEnable )  return;
     if ( m_totalFix >= m_totalMove )  return;  // full table?
 
+    type = pObj->GetType();
     if ( !pObj->GetDetectable() )  return;
-    if ( pObj->Implements(ObjectInterfaceType::Controllable) && !dynamic_cast<CControllableObject*>(pObj)->GetSelectable() )  return;
+    if ( type != OBJECT_MOTHER   &&
+         type != OBJECT_ANT      &&
+         type != OBJECT_SPIDER   &&
+         type != OBJECT_BEE      &&
+         type != OBJECT_WORM     &&
+         type != OBJECT_MOBILEtg )
+    {
+        if (pObj->Implements(ObjectInterfaceType::Controllable) && !dynamic_cast<CControllableObject*>(pObj)->GetSelectable()) return;
+    }
     if ( pObj->GetProxyActivate() )  return;
     if (IsObjectBeingTransported(pObj))  return;
 
-    type = pObj->GetType();
     pos  = pObj->GetPosition();
     dir  = -(pObj->GetRotationY()+Math::PI/2.0f);
 
@@ -1281,7 +1289,7 @@ void CMap::UpdateObject(CObject* pObj)
 
     if ( color == MAPCOLOR_NULL )  return;
 
-    if (!m_fixImage.empty() && !m_bDebug)  // map with still image?
+    /*if (!m_fixImage.empty() && !m_bDebug)  // map with still image?
     {
         if ( (type == OBJECT_TEEN28 ||
               type == OBJECT_TEEN34 ) &&
@@ -1290,7 +1298,7 @@ void CMap::UpdateObject(CObject* pObj)
         if ( type != OBJECT_TEEN28 &&
              type != OBJECT_TEEN34 &&
              color != MAPCOLOR_MOVE )  return;
-    }
+    }*/
 
     if ( pObj->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(pObj)->GetSelect() )
     {

@@ -107,7 +107,7 @@ Error CAutoDestroyer::StartAction(int param)
             m_bExplo   = false;
         }
         else
-            return ERR_UNKNOWN;
+            return ERR_OBJ_BUSY;
     }
     return ERR_OK;
 }

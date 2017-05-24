@@ -55,6 +55,12 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
+    /*!
+     * \brief Always returns true.
+     * \return true to signal a return statment has been found.
+     */
+    bool HasReturn() override;
+
 protected:
     virtual const std::string GetDebugName() override { return "CBotReturn"; }
     virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;

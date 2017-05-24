@@ -280,9 +280,9 @@ void CMainShort::SelectNext()
 
     CObject* pPrev = m_main->DeselectAll();
 
-    if(m_shortcuts.size() == 0)
+    if (m_shortcuts.size() == 0)
     {
-        m_main->SelectHuman();
+        m_main->SelectObject(m_main->SearchHuman());
         return;
     }
 

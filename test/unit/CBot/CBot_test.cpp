@@ -216,15 +216,15 @@ protected:
             if (error != CBotNoErr)
             {
                 ADD_FAILURE() << "Compile error - " << error << " (" << cursor1 << "-" << (cursor2 >= 0 ? cursor2 : cursor1) << ")" << std::endl << GetFormattedLineInfo(code, cursor1); // TODO: Error messages are on Colobot side
-                return std::move(program);
+                return program;
             }
             else
             {
                 ADD_FAILURE() << "No compile error, expected " << expectedCompileError; // TODO: Error messages are on Colobot side
-                return std::move(program);
+                return program;
             }
         }
-        if (expectedCompileError != CBotNoErr) return std::move(program);
+        if (expectedCompileError != CBotNoErr) return program;
 
         for (const std::string& test : tests)
         {
@@ -285,7 +285,7 @@ protected:
                 ADD_FAILURE() << ss.str();
             }
         }
-        return std::move(program); // Take it if you want, destroy on exit otherwise
+        return program; // Take it if you want, destroy on exit otherwise
     }
 };
 
@@ -295,6 +295,96 @@ TEST_F(CBotUT, EmptyTest)
         "extern void EmptyTest()\n"
         "{\n"
         "}\n"
+    );
+}
+
+TEST_F(CBotUT, FunctionCompileErrors)
+{
+    ExecuteTest(
+        "public",
+        CBotErrNoType
+    );
+
+    ExecuteTest(
+        "extern",
+        CBotErrNoType
+    );
+
+    ExecuteTest(
+        "public void",
+        CBotErrNoFunc
+    );
+
+    ExecuteTest(
+        "extern void",
+        CBotErrNoFunc
+    );
+
+    ExecuteTest(
+        "extern void MissingParameterType(",
+        CBotErrNoType
+    );
+
+    ExecuteTest(
+        "extern void MissingParamName(int",
+        CBotErrNoVar
+    );
+
+    ExecuteTest(
+        "extern void MissingCloseParen(int i",
+        CBotErrClosePar
+    );
+
+    ExecuteTest(
+        "extern void ParamTrailingComma(int i, ) {\n"
+        "}\n",
+        CBotErrNoType
+    );
+
+   ExecuteTest(
+        "extern void MissingOpenBlock(int i)",
+        CBotErrOpenBlock
+    );
+
+    ExecuteTest(
+        "extern void MissingCloseBlock()\n"
+        "{\n",
+        CBotErrCloseBlock
+    );
+
+}
+
+TEST_F(CBotUT, ClassCompileErrors)
+{
+    ExecuteTest(
+        "public class",
+        CBotErrNoClassName
+    );
+
+    ExecuteTest(
+        "public class 1234",
+        CBotErrNoClassName
+    );
+
+    ExecuteTest(
+        "public class TestClass",
+        CBotErrOpenBlock
+    );
+
+    ExecuteTest(
+        "public class TestClass\n"
+        "{\n",
+        CBotErrCloseBlock
+    );
+
+    ExecuteTest(
+        "public class TestClass extends",
+        CBotErrNoClassName
+    );
+
+    ExecuteTest(
+        "public class TestClass extends 1234",
+        CBotErrNoClassName
     );
 }
 
@@ -711,8 +801,7 @@ TEST_F(CBotUT, FunctionBadReturn)
     );
 }
 
-// TODO: Doesn't work
-TEST_F(CBotUT, DISABLED_FunctionNoReturn)
+TEST_F(CBotUT, FunctionNoReturn)
 {
     ExecuteTest(
         "int func()\n"
@@ -722,7 +811,49 @@ TEST_F(CBotUT, DISABLED_FunctionNoReturn)
         "{\n"
         "    func();\n"
         "}\n",
-        static_cast<CBotError>(-1) // TODO: no error for that
+        CBotErrNoReturn
+    );
+
+    ExecuteTest(
+        "int FuncDoesNotReturnAValue()\n"
+        "{\n"
+        "    if (false) return 1;\n"
+        "    while (false) return 1;\n"
+        "    if (true) ; else return 1;\n"
+        "    do { break; return 1; } while (false);\n"
+        "    do { continue; return 1; } while (false);\n"
+        "}\n",
+        CBotErrNoReturn
+    );
+
+    ExecuteTest(
+        "int FuncHasReturn()\n"
+        "{\n"
+        "    return 1;\n"
+        "}\n"
+        "int BlockHasReturn()\n"
+        "{\n"
+        "    {\n"
+        "        {\n"
+        "        }\n"
+        "        return 2;\n"
+        "    }\n"
+        "}\n"
+        "int IfElseHasReturn()\n"
+        "{\n"
+        "    if (false) {\n"
+        "        return 3;\n"
+        "    } else {\n"
+        "        if (false) return 3;\n"
+        "        else return 3;\n"
+        "    }\n"
+        "}\n"
+        "extern void Test()\n"
+        "{\n"
+        "    ASSERT(1 == FuncHasReturn());\n"
+        "    ASSERT(2 == BlockHasReturn());\n"
+        "    ASSERT(3 == IfElseHasReturn());\n"
+        "}\n"
     );
 }
 
@@ -867,14 +998,13 @@ TEST_F(CBotUT, ClassNullPointer)
     );
 }
 
-// TODO: This doesn't work
-TEST_F(CBotUT, DISABLED_ClassDestructorNaming)
+TEST_F(CBotUT, ClassDestructorNaming)
 {
     ExecuteTest(
         "public class TestClass {\n"
         "    public void ~SomethingElse() {}\n"
         "}\n",
-        static_cast<CBotError>(-1) // TODO: no error for that
+        CBotErrNoFunc
     );
     ExecuteTest(
         "public class SomethingElse {\n"
@@ -882,7 +1012,26 @@ TEST_F(CBotUT, DISABLED_ClassDestructorNaming)
         "public class TestClass2 {\n"
         "    public void ~SomethingElse() {}\n"
         "}\n",
-        static_cast<CBotError>(-1) // TODO: no error for that
+        CBotErrNoFunc
+    );
+}
+
+TEST_F(CBotUT, ClassDestructorSyntax)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    void ~TestClass(int i) {}\n"
+        "}\n"
+        "extern void DestructorNoParams() {}\n",
+        CBotErrClosePar
+    );
+
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int ~TestClass() {}\n"
+        "}\n"
+        "extern void DestructorReturnTypeVoid() {}\n",
+        CBotErrFuncNotVoid
     );
 }
 
@@ -930,15 +1079,68 @@ TEST_F(CBotUT, ClassMethodRedefined)
         "}\n",
         CBotErrRedefFunc
     );
+
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    void ~TestClass() {}\n"
+        "    void ~TestClass() {}\n"
+        "}\n",
+        CBotErrRedefFunc
+    );
 }
 
-// TODO: Not only doesn't work but segfaults
-TEST_F(CBotUT, DISABLED_ClassRedefined)
+TEST_F(CBotUT, ClassFieldNaming)
+{
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int ~i = 1;\n"
+        "}\n",
+        CBotErrNoVar
+    );
+
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int TestClass = 1;\n"
+        "}\n",
+        CBotErrNoVar
+    );
+
+    ExecuteTest(
+        "public class TestClass {\n"
+        "    int i = 1;\n"
+        "    int i = 2;\n"
+        "}\n",
+        CBotErrRedefVar
+    );
+}
+
+TEST_F(CBotUT, ClassRedefinedInDifferentPrograms)
+{
+    auto publicProgram = ExecuteTest(
+        "public class TestClass {}\n"
+    );
+
+    ExecuteTest(
+        "public class TestClass {}\n",
+        CBotErrRedefClass
+    );
+}
+
+TEST_F(CBotUT, ClassRedefinedInOneProgram)
 {
     ExecuteTest(
         "public class TestClass {}\n"
         "public class TestClass {}\n",
         CBotErrRedefClass
+    );
+}
+
+TEST_F(CBotUT, ClassMissingCloseBlock)
+{
+    ExecuteTest(
+        "public class Something\n"
+        "{\n",
+        CBotErrCloseBlock
     );
 }
 
@@ -1012,7 +1214,7 @@ TEST_F(CBotUT, ClassInheritanceAssignment)
         "public class BaseClass {}\n"
         "public class MidClass extends BaseClass {}\n"
         "public class SubClass extends MidClass {}\n"
-        "extern void ClassInheritanceVars()\n"
+        "extern void ClassInheritanceAssignment()\n"
         "{\n"
         "    BaseClass bc = new MidClass();\n"
         "    MidClass  mc = bc;\n"
@@ -1392,11 +1594,12 @@ TEST_F(CBotUT, StringFunctions)
     );
 }
 
-TEST_F(CBotUT, DISABLED_TestNANParam_Issue642)
+TEST_F(CBotUT, TestNANParam_Issue642)
 {
     ExecuteTest(
         "float test(float x) {\n"
-        "     return x;\n"
+        "    ASSERT(x == nan);\n"
+        "    return x;\n"
         "}\n"
         "extern void TestNANParam() {\n"
         "    ASSERT(nan == nan);\n" // TODO: Shouldn't it be nan != nan ??
@@ -2051,5 +2254,151 @@ TEST_F(CBotUT, ClassTestPrivateMember)
         "    }\n"
         "}\n",
         CBotErrPrivate
+    );
+}
+
+TEST_F(CBotUT, IncrementDecrementSyntax)
+{
+    auto publicProgram = ExecuteTest(
+        "public class TestClass {\n"
+        "    int GetInt() { return 1; }\n"
+        "}\n"
+        "extern void TestIncrementDecrement()\n"
+        "{\n"
+        "    int i = 1;\n"
+        "    ASSERT(2 == ++i);\n"
+        "    ASSERT(2 == i++);\n"
+        "    ASSERT(3 ==  i );\n"
+        "    ASSERT(2 == --i);\n"
+        "    ASSERT(2 == i--);\n"
+        "    ASSERT(1 ==  i );\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void PreIncrementMethodCall()\n"
+        "{\n"
+        "    TestClass tc();\n"
+        "    ++tc.GetInt();\n"
+        "}\n",
+        CBotErrBadType1
+    );
+
+    ExecuteTest(
+        "extern void PostIncrementMethodCall()\n"
+        "{\n"
+        "    TestClass tc();\n"
+        "    tc.GetInt()++;\n"
+        "}\n",
+        CBotErrBadType1
+    );
+
+    ExecuteTest(
+        "extern void BadPreIncrementEmpty()\n"
+        "{\n"
+        "    ++;\n"
+        "}\n",
+        CBotErrBadType1
+    );
+
+    ExecuteTest(
+        "extern void BadPreIncrementNotAVar()\n"
+        "{\n"
+        "    ++123;\n"
+        "}\n",
+        CBotErrBadType1
+    );
+}
+
+TEST_F(CBotUT, ParametersWithDefaultValues)
+{
+    ExecuteTest(
+        "extern void ParametersWithDefaultValues() {\n"
+        "    ASSERT(true == Test());\n"
+        "    ASSERT(true == Test(1));\n"
+        "    ASSERT(true == Test(1, 2));\n"
+        "}\n"
+        "bool Test(int i = 1, float f = 2.0) {\n"
+        "    return (i == 1) && (f == 2.0);\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void NotUsingDefaultValues() {\n"
+        "    ASSERT(true == Test(2, 4.0));\n"
+        "}\n"
+        "bool Test(int i = 1, float f = 2.0) {\n"
+        "    return (i == 2) && (f == 4.0);\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void NextParamNeedsDefaultValue() {\n"
+        "}\n"
+        "void Test(int i = 1, float f) {}\n"
+        "\n",
+        CBotErrDefaultValue
+    );
+
+    ExecuteTest(
+        "extern void ParamMissingExpression() {\n"
+        "}\n"
+        "void Test(int i = 1, float f = ) {}\n"
+        "\n",
+        CBotErrNoExpression
+    );
+
+    ExecuteTest(
+        "extern void ParamDefaultBadType() {\n"
+        "}\n"
+        "void Test(int i = 1, float f = null) {}\n"
+        "\n",
+        CBotErrBadType1
+    );
+
+    ExecuteTest(
+        "extern void DefaultValuesAmbiguousCall() {\n"
+        "    Test();\n"
+        "}\n"
+        "void Test(int i = 1) {}\n"
+        "void Test(float f = 2.0) {}\n"
+        "\n",
+        CBotErrAmbiguousCall
+    );
+
+    ExecuteTest(
+        "extern void AmbiguousCallOneDefault() {\n"
+        "    Test(1);\n"
+        "}\n"
+        "void Test(int i, float f = 2) {}\n"
+        "void Test(int i) {}\n"
+        "\n",
+        CBotErrAmbiguousCall
+    );
+
+    ExecuteTest(
+        "extern void DifferentNumberOfDefaultValues() {\n"
+        "    Test(1, 2.0);\n"
+        "}\n"
+        "void Test(int i, float f = 2.0) {}\n"
+        "void Test(int i, float f = 2.0, int ii = 1) {}\n"
+        "\n",
+        CBotErrAmbiguousCall
+    );
+
+    ExecuteTest(
+        "extern void DefaultValueUnaryExpression() {\n"
+        "    TestNumbers();\n"
+        "    TestBool();\n"
+        "}\n"
+        "void TestNumbers(int i = -1, float f = -1, int ii = ~1) {\n"
+        "    ASSERT(i == -1);\n"
+        "    ASSERT(f == -1.0);\n"
+        "    ASSERT(ii == ~1);\n"
+        "}\n"
+        "void TestBool(bool b = !false, bool b2 = not false) {\n"
+        "    ASSERT(true == b);\n"
+        "    ASSERT(true == b2);\n"
+        "}\n"
     );
 }

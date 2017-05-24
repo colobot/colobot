@@ -82,8 +82,6 @@ CBotStack* CBotStack::AllocateStack()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStack::Delete()
 {
-    assert ( this != nullptr );
-
     if (m_next != nullptr) m_next->Delete();
     if (m_next2 != nullptr) m_next2->Delete();
 
@@ -192,8 +190,18 @@ bool CBotStack::Return(CBotStack* pfils)
     m_var = pfils->m_var;                        // result transmitted
     pfils->m_var = nullptr;                        // not to destroy the variable
 
-    if (m_next != nullptr) m_next->Delete();m_next = nullptr;                // releases the stack above
-    if (m_next2 != nullptr) m_next2->Delete();m_next2 = nullptr;            // also the second stack (catch)
+    if (m_next != nullptr)
+    {
+        // releases the stack above
+        m_next->Delete();
+        m_next = nullptr;
+    }
+    if (m_next2 != nullptr)
+    {
+        // also the second stack (catch)
+        m_next2->Delete();
+        m_next2 = nullptr;
+    }
 
     return IsOk();                        // interrupted if error
 }
@@ -260,7 +268,7 @@ bool CBotStack::IfStep()
 bool CBotStack::BreakReturn(CBotStack* pfils, const std::string& name)
 {
     if ( m_error>=0 ) return false;                // normal output
-    if ( m_error==-3 ) return false;            // normal output (return current)
+    if ( m_error==CBotError(-3) ) return false;            // normal output (return current)
 
     if (!m_labelBreak.empty() && (name.empty() || m_labelBreak != name))
         return false;                            // it's not for me
@@ -273,7 +281,7 @@ bool CBotStack::BreakReturn(CBotStack* pfils, const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotStack::IfContinue(int state, const std::string& name)
 {
-    if ( m_error != -2 ) return false;
+    if ( m_error != CBotError(-2) ) return false;
 
     if (!m_labelBreak.empty() && (name.empty() || m_labelBreak != name))
         return false;                            // it's not for me
@@ -301,7 +309,7 @@ void CBotStack::SetBreak(int val, const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotStack::GetRetVar(bool bRet)
 {
-    if (m_error == -3)
+    if (m_error == CBotError(-3))
     {
         if ( m_var ) delete m_var;
         m_var        = m_retvar;
@@ -568,7 +576,7 @@ bool CBotStack::ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, con
     res = m_prog->GetExternalCalls()->DoCall(nullptr, nullptr, ppVar, this, rettype);
     if (res >= 0) return res;
 
-    res = m_prog->GetFunctions()->DoCall(nIdent, "", ppVar, this, token );
+    res = CBotFunction::DoCall(m_prog, m_prog->GetFunctions(), nIdent, "", ppVar, this, token);
     if (res >= 0) return res;
 
     // if not found (recompile?) seeks by name
@@ -577,7 +585,7 @@ bool CBotStack::ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, con
     res = m_prog->GetExternalCalls()->DoCall(token, nullptr, ppVar, this, rettype);
     if (res >= 0) return res;
 
-    res = m_prog->GetFunctions()->DoCall(nIdent, token->GetString(), ppVar, this, token );
+    res = CBotFunction::DoCall(m_prog, m_prog->GetFunctions(), nIdent, token->GetString(), ppVar, this, token);
     if (res >= 0) return res;
 
     SetError(CBotErrUndefFunc, token);
@@ -592,7 +600,7 @@ void CBotStack::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar)
     if (m_prog->GetExternalCalls()->RestoreCall(token, nullptr, ppVar, this))
         return;
 
-    m_prog->GetFunctions()->RestoreCall(nIdent, token->GetString(), ppVar, this);
+    CBotFunction::RestoreCall(m_prog->GetFunctions(), nIdent, token->GetString(), ppVar, this);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -727,12 +735,11 @@ bool CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
 {
     unsigned short w;
 
-    pStack = nullptr;
+    if (pStack != this) pStack = nullptr;
     if (!ReadWord(pf, w)) return false;
     if ( w == 0 ) return true; // 0 - terminator
 
-    if ( this == nullptr ) pStack = AllocateStack();
-    else pStack = AddStack();
+    if (pStack == nullptr) pStack = AddStack();
 
     if ( w == 2 ) // 2 - m_next2
     {

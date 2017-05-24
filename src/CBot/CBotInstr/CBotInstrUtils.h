@@ -45,7 +45,7 @@ CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars);
 
  * For assignment or compound assignment operations (it's reversed):
  * see CBotReturn::Compile & CBotExpression::Compile
- * TypeCompatible( valueType, varType, opType ) 
+ * TypeCompatible( valueType, varType, opType )
  * \param type1
  * \param type2
  * \param op

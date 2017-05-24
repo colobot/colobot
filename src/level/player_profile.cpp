@@ -133,7 +133,7 @@ std::string CPlayerProfile::GetLastName()
 {
     std::string name;
 
-    if(!GetConfigFile().GetStringProperty("Gamer", "LastName", name))
+    if(!GetConfigFile().GetStringProperty("Gamer", "LastName", name) || name.empty())
         GetResource(RES_TEXT, RT_NAME_DEFAULT, name);
 
     return name;

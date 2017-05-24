@@ -27,6 +27,10 @@ msgstr "Ожидалось \" [ \""
 msgid "\" ] \" missing"
 msgstr "Отсутствует \"]\" "
 
+#, c-format
+msgid "%s: %d pts"
+msgstr ""
+
 msgid "..behind"
 msgstr "Сзади"
 
@@ -47,6 +51,18 @@ msgstr "<< Назад \\Вернуться на предыдущую стран�
 
 msgid "<<< Sorry; mission failed >>>"
 msgstr "<<< Миссия провалена >>>"
+
+#, c-format
+msgid "<<< Team %s finished! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s lost! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s recieved %d points >>>"
+msgstr ""
 
 msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Отлично, миссия выполнена >>>"
@@ -85,7 +101,7 @@ msgid "Alternative camera mode\\Move sideways instead of rotating (in free camer
 msgstr "Альтернативный режим камеры\\Движение в стороны вместо поворачивания (в режиме свободной камеры)"
 
 msgid "Ambiguous call to overloaded function"
-msgstr ""
+msgstr "Странный вызов перегруженной функции"
 
 msgid "Analysis already performed"
 msgstr "Анализ уже выполнен"
@@ -353,6 +369,9 @@ msgstr "Консоль чит-кодов\\Показать консоль для
 msgid "Checkpoint"
 msgstr "Контрольная точка"
 
+msgid "Class name expected"
+msgstr ""
+
 msgid "Climb\\Increases the power of the jet"
 msgstr "Взлет и подъем\\Увеличивает мощность реактивного двигателя"
 
@@ -369,11 +388,15 @@ msgstr "Закрыть"
 msgid "Closing bracket missing"
 msgstr "Закрывающая скобка отсутствует"
 
+#, fuzzy
+msgid "Code battle"
+msgstr "Битвы роботов"
+
 msgid "Code battles"
-msgstr ""
+msgstr "Битвы роботов"
 
 msgid "Code battles\\Program your robot to be the best of them all!"
-msgstr "Code battles\\Запрограммируйте собственного робота чтобы быть лучшим среди них!"
+msgstr "Битвы роботов\\Запрограммируйте собственного робота чтобы быть лучшим среди них!"
 
 msgid "Colobot rules!"
 msgstr "Правила игры!"
@@ -612,6 +635,9 @@ msgstr "Функция уже существует"
 msgid "Function name missing"
 msgstr "Имя функции отсутствует"
 
+msgid "Function needs return type \"void\""
+msgstr ""
+
 msgid "Game speed"
 msgstr "Скорость игры"
 
@@ -817,7 +843,7 @@ msgid "Lunar Roving Vehicle"
 msgstr "Луноход"
 
 msgid "MSAA\\Multisample anti-aliasing"
-msgstr ""
+msgstr "MSAA\\Улучшенная фильтрация"
 
 msgid "Maximize"
 msgstr "Развернуть"
@@ -826,7 +852,7 @@ msgid "Minimize"
 msgstr "Свернуть"
 
 msgid "Mipmap level\\Mipmap level"
-msgstr ""
+msgstr "Уровень уменьшающей фильтрации\\Уровень уменьшающей фильтрации"
 
 msgid "Mission name"
 msgstr "Название миссии"
@@ -928,6 +954,9 @@ msgstr "Нет урана для преобразования"
 
 msgid "No userlevels installed!"
 msgstr "Не установленны пользовательские уровни!"
+
+msgid "Non-void function needs \"return;\""
+msgstr ""
 
 msgid "Normal size"
 msgstr "Нормальный размер"
@@ -1230,16 +1259,19 @@ msgid "Resolution:"
 msgstr "Разрешение:"
 
 msgid "Resources"
-msgstr ""
+msgstr "Ресурсы"
 
 msgid "Restart\\Restart the mission from the beginning"
 msgstr "Заново\\Начать данную миссию с начала"
 
 msgid "Restoring CBot execution state"
-msgstr ""
+msgstr "Восстановление состояния CBot"
 
 msgid "Restoring saved objects"
 msgstr "Восстановить сохранённые объекты"
+
+msgid "Results"
+msgstr ""
 
 msgid "Return to start"
 msgstr "Вернуться в начало"
@@ -1465,6 +1497,9 @@ msgstr "Фильтрация текстур\\Фильтрация текстур
 msgid "Textures"
 msgstr "Текстуры"
 
+msgid "The battle has ended"
+msgstr ""
+
 msgid "The expression must return a boolean value"
 msgstr "Выражение должно возвращать логическое значение"
 
@@ -1495,8 +1530,14 @@ msgstr "Эта метка не существует"
 msgid "This menu is for userlevels from mods, but you didn't install any"
 msgstr "Это меню для пользовательских уровней из модов, но вы ни одного не уставили"
 
+msgid "This object is currently busy"
+msgstr ""
+
 msgid "This object is not a member of a class"
 msgstr "Этот объект не член класса"
+
+msgid "This parameter needs a default value"
+msgstr ""
 
 msgid "This program is read-only, clone it to edit"
 msgstr "Эта программа только для чтения, для редактирования клонируйте её"

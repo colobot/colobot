@@ -172,7 +172,7 @@ enum EventType
     EVENT_LABEL16           = 106,
     EVENT_LABEL17           = 107,
     EVENT_LABEL18           = 108,
-    EVENT_LABEL19           = 109,
+    EVENT_LABEL19           = 109, // cursor position overlay
 
     EVENT_LIST0             = 110,
     EVENT_LIST1             = 111,
@@ -186,6 +186,11 @@ enum EventType
     EVENT_LIST9             = 119,
 
     EVENT_LOADING           = 120,
+
+    EVENT_LABEL_CODE_BATTLE = 121,
+
+    EVENT_SCOREBOARD        = 130,
+    EVENT_SCOREBOARD_MAX    = 169,
 
     EVENT_TOOLTIP           = 200,
 

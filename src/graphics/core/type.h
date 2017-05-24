@@ -17,38 +17,46 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+/**
+* \file graphics/core/type.h
+* \brief Type support and conversion
+*/
+
 #pragma once
 
-#include <cstddef>
-#include <memory>
-#include <streambuf>
-#include <string>
-
-#include <physfs.h>
-
-class COutputStreamBuffer : public std::streambuf
+// Graphics module namespace
+namespace Gfx
 {
-public:
-    COutputStreamBuffer(std::size_t bufferSize = 512);
-    virtual ~COutputStreamBuffer();
 
-    COutputStreamBuffer(const COutputStreamBuffer &) = delete;
-    COutputStreamBuffer &operator= (const COutputStreamBuffer &) = delete;
-
-    /** Open Stream Buffer for writing
-     *
-     * \param filename
-     * \param mode one of: std::ios_base::out - Open for writing, std::ios_base::app - Append to file
-     *
-     */
-    void open(const std::string &filename, std::ios_base::openmode mode);
-    void close();
-    bool is_open();
-
-private:
-    int_type overflow(int_type ch) override;
-    int sync() override;
-
-    PHYSFS_File *m_file;
-    std::unique_ptr<char[]> m_buffer;
+/**
+* \enum class Type
+* \brief Value types for vertex attributes
+*/
+enum class Type : unsigned char
+{
+    //! Unsigned byte (8-bit)
+    UBYTE = 0,
+    //! Signed byte (8-bit)
+    BYTE,
+    //! Unsigned short (16-bit)
+    USHORT,
+    //! Signed short (16-bit)
+    SHORT,
+    //! Unsigned int (32-bit)
+    UINT,
+    //! Signed int (32-bit)
+    INT,
+    //! Half precision floating-point (16-bit)
+    HALF,
+    //! Single precision floating-point (32-bit)
+    FLOAT,
+    //! Double precision floating-point (64-bit)
+    DOUBLE,
 };
+
+//! Returns size in bytes of given type
+int GetTypeSize(Type type);
+
+// TODO: functions for conversion between types
+
+} // namespace Gfx

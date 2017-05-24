@@ -30,6 +30,8 @@
 
 #include "CBot/stdlib/stdlib.h"
 
+#include <algorithm>
+
 namespace CBot
 {
 
@@ -47,27 +49,30 @@ CBotProgram::CBotProgram(CBotVar* thisVar)
 CBotProgram::~CBotProgram()
 {
 //  delete  m_classes;
-    if (m_classes != nullptr) m_classes->Purge();
-    m_classes = nullptr;
+    for (CBotClass* c : m_classes)
+        c->Purge();
+    m_classes.clear();
 
     CBotClass::FreeLock(this);
 
-    delete m_functions;
-    if (m_stack != nullptr) m_stack->Delete();
+    for (CBotFunction* f : m_functions) delete f;
+    m_functions.clear();
 }
 
-bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& functions, void* pUser)
+bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& externFunctions, void* pUser)
 {
     // Cleanup the previously compiled program
     Stop();
 
-//  delete      m_classes;
-    if (m_classes != nullptr) m_classes->Purge();      // purge the old definitions of classes
-                            // but without destroying the object
-    m_classes = nullptr;
-    delete m_functions; m_functions = nullptr;
+    for (CBotClass* c : m_classes)
+        c->Purge();      // purge the old definitions of classes
+                         // but without destroying the object
 
-    functions.clear();
+    m_classes.clear();
+    for (CBotFunction* f : m_functions) delete f;
+    m_functions.clear();
+
+    externFunctions.clear();
     m_error = CBotNoErr;
 
     // Step 1. Process the code into tokens
@@ -88,15 +93,15 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
         if ( p->GetType() == ID_CLASS ||
             ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
         {
-            CBotClass*  nxt = CBotClass::Compile1(p, pStack.get());
-            if (m_classes == nullptr ) m_classes = nxt;
-            else m_classes->AddNext(nxt);
+            CBotClass* newclass = CBotClass::Compile1(p, pStack.get());
+            if (newclass != nullptr)
+                m_classes.push_back(newclass);
         }
         else
         {
-            CBotFunction*   next = CBotFunction::Compile1(p, pStack.get(), nullptr);
-            if (m_functions == nullptr ) m_functions = next;
-            else m_functions->AddNext(next);
+            CBotFunction* newfunc  = CBotFunction::Compile1(p, pStack.get(), nullptr);
+            if (newfunc != nullptr)
+                m_functions.push_back(newfunc);
         }
     }
 
@@ -106,17 +111,14 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     if ( !pStack->IsOk() )
     {
         m_error = pStack->GetError(m_errorStart, m_errorEnd);
-        delete m_functions;
-        m_functions = nullptr;
+        for (CBotFunction* f : m_functions) delete f;
+        m_functions.clear();
         return false;
     }
 
     // Step 3. Real compilation
-//  CBotFunction*   temp = nullptr;
-    CBotFunction*   next = m_functions;      // rewind the list
-
+    std::list<CBotFunction*>::iterator next = m_functions.begin();
     p  = tokens.get()->GetNext();                             // returns to the beginning
-
     while ( pStack->IsOk() && p != nullptr && p->GetType() != 0 )
     {
         if ( IsOfType(p, ID_SEP) ) continue;                // semicolons lurking
@@ -128,43 +130,35 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
         }
         else
         {
-            CBotFunction::Compile(p, pStack.get(), next);
-            if (next->IsExtern()) functions.push_back(next->GetName()/* + next->GetParams()*/);
-            if (next->IsPublic()) CBotFunction::AddPublic(next);
-            next->m_pProg = this;                           // keeps pointers to the module
-            next = next->Next();
+            CBotFunction::Compile(p, pStack.get(), *next);
+            if ((*next)->IsExtern()) externFunctions.push_back((*next)->GetName()/* + next->GetParams()*/);
+            if ((*next)->IsPublic()) CBotFunction::AddPublic(*next);
+            (*next)->m_pProg = this;                           // keeps pointers to the module
+            ++next;
         }
     }
-
-//  delete m_Prog;          // the list of first pass
-//  m_Prog = temp;          // list of the second pass
 
     if ( !pStack->IsOk() )
     {
         m_error = pStack->GetError(m_errorStart, m_errorEnd);
-        delete m_functions;
-        m_functions = nullptr;
+        for (CBotFunction* f : m_functions) delete f;
+        m_functions.clear();
     }
 
-    return (m_functions != nullptr);
+    return !m_functions.empty();
 }
 
 bool CBotProgram::Start(const std::string& name)
 {
     Stop();
 
-    m_entryPoint = m_functions;
-    while (m_entryPoint != nullptr)
-    {
-        if (m_entryPoint->GetName() == name ) break;
-        m_entryPoint = m_entryPoint->m_next;
-    }
-
-    if (m_entryPoint == nullptr)
+    auto it = std::find_if(m_functions.begin(), m_functions.end(), [&name](CBotFunction* x) { return x->GetName() == name; });
+    if (it == m_functions.end())
     {
         m_error = CBotErrNoRun;
         return false;
     }
+    m_entryPoint = *it;
 
     m_stack = CBotStack::AllocateStack();
     m_stack->SetProgram(this);
@@ -174,16 +168,10 @@ bool CBotProgram::Start(const std::string& name)
 
 bool CBotProgram::GetPosition(const std::string& name, int& start, int& stop, CBotGet modestart, CBotGet modestop)
 {
-    CBotFunction* p = m_functions;
-    while (p != nullptr)
-    {
-        if ( p->GetName() == name ) break;
-        p = p->m_next;
-    }
+    auto it = std::find_if(m_functions.begin(), m_functions.end(), [&name](CBotFunction* x) { return x->GetName() == name; });
+    if (it == m_functions.end()) return false;
 
-    if ( p == nullptr ) return false;
-
-    p->GetPosition(start, stop, modestart, modestop);
+    (*it)->GetPosition(start, stop, modestart, modestop);
     return true;
 }
 
@@ -212,16 +200,16 @@ bool CBotProgram::Run(void* pUser, int timer)
     }
 
     // completed on a mistake?
-    if (!ok && !m_stack->IsOk())
+    if (ok || !m_stack->IsOk())
     {
         m_error = m_stack->GetError(m_errorStart, m_errorEnd);
         m_stack->Delete();
         m_stack = nullptr;
         CBotClass::FreeLock(this);
+        m_entryPoint = nullptr;
         return true;                                // execution is finished!
     }
 
-    if ( ok ) m_entryPoint = nullptr;                        // more function in execution
     return ok;
 }
 
@@ -288,9 +276,19 @@ bool CBotProgram::GetError(CBotError& code, int& start, int& end, CBotProgram*& 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotFunction* CBotProgram::GetFunctions()
+const std::list<CBotFunction*>& CBotProgram::GetFunctions()
 {
     return m_functions;
+}
+
+bool CBotProgram::ClassExists(std::string name)
+{
+    for (CBotClass* p : m_classes)
+    {
+        if ( p->GetName() == name ) return true;
+    }
+
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -304,7 +302,7 @@ CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
 
 bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
-    if ( pVar == nullptr ) return CBotErrLowParam;
+    if ( pVar == nullptr ) { ex = CBotErrLowParam; return true; }
 
     int i = 0;
     pVar = pVar->GetItemList();
@@ -375,8 +373,7 @@ bool CBotProgram::RestoreState(FILE* pf)
     }
 
     // retrieves the stack from the memory
-    // uses a nullptr pointer (m_stack) but it's ok like that
-    // TODO: no it's not okay like that! but it looks like it doesn't get optimized out at least ~krzys_h
+    m_stack = CBotStack::AllocateStack();
     if (!m_stack->RestoreState(pf, m_stack)) return false;
     m_stack->SetProgram(this);                     // bases for routines
 

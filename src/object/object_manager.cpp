@@ -199,7 +199,7 @@ bool CObjectManager::TeamExists(int team)
     return false;
 }
 
-void CObjectManager::DestroyTeam(int team)
+void CObjectManager::DestroyTeam(int team, DestructionType destructionType)
 {
     assert(team != 0);
 
@@ -209,7 +209,7 @@ void CObjectManager::DestroyTeam(int team)
         {
             if (object->Implements(ObjectInterfaceType::Destroyable))
             {
-                dynamic_cast<CDestroyableObject*>(object)->DestroyObject(DestructionType::Explosion);
+                dynamic_cast<CDestroyableObject*>(object)->DestroyObject(destructionType);
             }
             else
             {
@@ -311,7 +311,9 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
             }
 
             if ( oType == OBJECT_BARRIER2 ||
-                oType == OBJECT_BARRIER3 )  // barriers?
+                 oType == OBJECT_BARRIER3 ||
+                 oType == OBJECT_BARRICADE0 ||
+                 oType == OBJECT_BARRICADE1 )  // barriers?
             {
                 oType = OBJECT_BARRIER1;  // any barrier
             }

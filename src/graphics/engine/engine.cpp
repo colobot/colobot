@@ -2194,7 +2194,7 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetTextureStageWrap(0, TEX_WRAP_REPEAT, TEX_WRAP_REPEAT);
         m_device->SetTextureStageWrap(1, TEX_WRAP_REPEAT, TEX_WRAP_REPEAT);
     }
-    else // if (state & ENG_RSTATE_CLAMP) or otherwise
+    else if (state & ENG_RSTATE_CLAMP)
     {
         m_device->SetTextureStageWrap(0, TEX_WRAP_CLAMP, TEX_WRAP_CLAMP);
         m_device->SetTextureStageWrap(1, TEX_WRAP_CLAMP, TEX_WRAP_CLAMP);
@@ -3087,6 +3087,11 @@ const Math::Matrix& CEngine::GetMatView()
     return m_matView;
 }
 
+const Math::Matrix& CEngine::GetMatProj()
+{
+    return m_matProj;
+}
+
 Math::Vector CEngine::GetEyePt()
 {
     return m_eyePt;
@@ -3261,7 +3266,9 @@ void CEngine::Draw3DScene()
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProj);
     m_device->SetTransform(TRANSFORM_VIEW, m_matView);
 
-    m_water->DrawBack();  // draws water background
+    // TODO: This causes a rendering artifact and I can't see anything that breaks if you just comment it out
+    // So I'll just leave it like that for now ~krzys_h
+    //m_water->DrawBack();  // draws water background
 
     CProfiler::StartPerformanceCounter(PCNT_RENDER_TERRAIN);
 
@@ -4262,15 +4269,15 @@ void CEngine::UpdateGroundSpotTextures()
                             else
                                 intensity = Math::Point(ppx-cx, ppy-cy).Length()/dot;
 
-                            Gfx::Color color;
-                            color.r = Math::Norm(m_groundSpots[i].color.r+intensity);
-                            color.g = Math::Norm(m_groundSpots[i].color.g+intensity);
-                            color.b = Math::Norm(m_groundSpots[i].color.b+intensity);
-
                             ppx -= min.x;  // on the texture
                             ppy -= min.y;
+                            Math::IntPoint pp(ppx, ppy);
 
-                            shadowImg.SetPixel(Math::IntPoint(ppx, ppy), color);
+                            Gfx::Color color = shadowImg.GetPixel(pp);
+                            color.r *= Math::Norm(m_groundSpots[i].color.r+intensity);
+                            color.g *= Math::Norm(m_groundSpots[i].color.g+intensity);
+                            color.b *= Math::Norm(m_groundSpots[i].color.b+intensity);
+                            shadowImg.SetPixel(pp, color);
                         }
                     }
                 }
@@ -4298,12 +4305,13 @@ void CEngine::UpdateGroundSpotTextures()
 
                             if (intensity < 0.0f) intensity = 0.0f;
 
-                            Gfx::Color color;
-                            color.r = Math::Norm(m_groundSpots[i].color.r+intensity);
-                            color.g = Math::Norm(m_groundSpots[i].color.g+intensity);
-                            color.b = Math::Norm(m_groundSpots[i].color.b+intensity);
+                            Math::IntPoint pp(ix, iy);
 
-                            shadowImg.SetPixel(Math::IntPoint(ix, iy), color);
+                            Gfx::Color color = shadowImg.GetPixel(pp);
+                            color.r *= Math::Norm(m_groundSpots[i].color.r+intensity);
+                            color.g *= Math::Norm(m_groundSpots[i].color.g+intensity);
+                            color.b *= Math::Norm(m_groundSpots[i].color.b+intensity);
+                            shadowImg.SetPixel(pp, color);
                         }
                     }
                 }
@@ -4351,19 +4359,21 @@ void CEngine::UpdateGroundSpotTextures()
                         int j = (ix+dot) + (iy+dot) * m_groundMark.dx;
                         if (m_groundMark.table[j] == 1)  // green ?
                         {
-                            Gfx::Color color;
-                            color.r = Math::Norm(1.0f-intensity);
-                            color.g = 1.0f;
-                            color.b = Math::Norm(1.0f-intensity);
-                            shadowImg.SetPixel(Math::IntPoint(ppx, ppy), color);
+                            Math::IntPoint pp(ppx, ppy);
+                            Gfx::Color color = shadowImg.GetPixel(pp);
+                            color.r *= Math::Norm(1.0f-intensity);
+                            color.g *= 1.0f;
+                            color.b *= Math::Norm(1.0f-intensity);
+                            shadowImg.SetPixel(pp, color);
                         }
                         if (m_groundMark.table[j] == 2)  // red ?
                         {
-                            Gfx::Color color;
-                            color.r = 1.0f;
-                            color.g = Math::Norm(1.0f-intensity);
-                            color.b = Math::Norm(1.0f-intensity);
-                            shadowImg.SetPixel(Math::IntPoint(ppx, ppy), color);
+                            Math::IntPoint pp(ppx, ppy);
+                            Gfx::Color color = shadowImg.GetPixel(pp);
+                            color.r *= 1.0f;
+                            color.g *= Math::Norm(1.0f-intensity);
+                            color.b *= Math::Norm(1.0f-intensity);
+                            shadowImg.SetPixel(pp, color);
                         }
                     }
                 }
@@ -4401,6 +4411,9 @@ void CEngine::UpdateGroundSpotTextures()
                     {
                         int px = x / 4.0f / 254.0f * size.x;
                         int py = y / 4.0f / 254.0f * size.y;
+                        // This can happen because the shadow??.png textures have a 1 pixel margin around them
+                        if (px < 0 || px >= size.x || py < 0 || py >= size.y)
+                            continue;
                         shadowImg.SetPixelInt(Math::IntPoint(x-min.x, y-min.y), m_displayGotoImage->GetPixelInt(Math::IntPoint(px, py)));
                     }
                 }

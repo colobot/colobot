@@ -119,6 +119,11 @@ public:
 
     void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT) override;
 
+    virtual void DrawPrimitive(PrimitiveType type, const void *vertices,
+        int size, const VertexFormat &format, int vertexCount) override;
+    virtual void DrawPrimitives(PrimitiveType type, const void *vertices,
+        int size, const VertexFormat &format, int first[], int count[], int drawCount) override;
+
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
@@ -290,6 +295,14 @@ private:
     bool m_shadowMapping = false;
     //! true means that quality shadows are enabled
     bool m_shadowQuality = true;
+
+
+    //! Pointers to OpenGL functions
+    PFNGLGENBUFFERSPROC m_glGenBuffers = nullptr;
+    PFNGLDELETEBUFFERSPROC m_glDeleteBuffers = nullptr;
+    PFNGLBINDBUFFERPROC m_glBindBuffer = nullptr;
+    PFNGLBUFFERDATAPROC m_glBufferData = nullptr;
+    PFNGLBUFFERSUBDATAPROC m_glBufferSubData = nullptr;
 };
 
 

@@ -36,12 +36,15 @@ namespace CBot
 CBotNew::CBotNew()
 {
     m_parameters = nullptr;
+    m_exprRetVar = nullptr;
     m_nMethodeIdent = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotNew::~CBotNew()
 {
+    delete m_parameters;
+    delete m_exprRetVar;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +86,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
         if (!pStk->IsOk()) goto error;
 
         // constructor exist?
-        CBotTypResult r = pClass->CompileMethode(pClass->GetName(), pVar, ppVars, pStk, inst->m_nMethodeIdent);
+        CBotTypResult r = pClass->CompileMethode(&inst->m_vartoken, pVar, ppVars, pStk, inst->m_nMethodeIdent);
         delete pStk->TokenStack();  // release extra stack
         int typ = r.GetType();
 
@@ -197,12 +200,7 @@ bool CBotNew::Execute(CBotStack* &pj)
         }
         ppVars[i] = nullptr;
 
-        // create a variable for the result
-        CBotVar*    pResult = nullptr;     // constructos still void
-
-        if ( !pClass->ExecuteMethode(m_nMethodeIdent, pClass->GetName(),
-                                     pThis, ppVars,
-                                     pResult, pile2, GetToken())) return false;    // interrupt
+        if ( !pClass->ExecuteMethode(m_nMethodeIdent, pThis, ppVars, CBotTypResult(CBotTypVoid), pile2, &m_vartoken)) return false;    // interrupt
 
         pThis->ConstructorSet();    // indicates that the constructor has been called
     }
@@ -284,8 +282,7 @@ void CBotNew::RestoreState(CBotStack* &pj, bool bMain)
         }
         ppVars[i] = nullptr;
 
-        pClass->RestoreMethode(m_nMethodeIdent, m_vartoken.GetString(), pThis,
-                               ppVars, pile2)    ;        // interrupt here!
+        pClass->RestoreMethode(m_nMethodeIdent, &m_vartoken, pThis, ppVars, pile2);        // interrupt here!
     }
 }
 

@@ -413,9 +413,9 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     else
         err = ERR_WRONG_OBJ;
 
+    result->SetValInt(err); // indicates the error or ok
     if ( err != ERR_OK )
     {
-        result->SetValInt(err);  // return error
         if ( script->m_errMode == ERM_STOP )
         {
             exception = err;
@@ -506,9 +506,9 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     else
         err = ERR_WRONG_OBJ;
 
+    result->SetValInt(err); // indicates the error or ok
     if ( err != ERR_OK )
     {
-        result->SetValInt(err);  // return error
         if ( script->m_errMode == ERM_STOP )
         {
             exception = err;
@@ -581,9 +581,9 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
     else
         err = ERR_WRONG_OBJ;
 
+    result->SetValInt(err); // indicates the error or ok
     if ( err != ERR_OK )
     {
-        result->SetValInt(err);  // return error
         if( script->m_errMode == ERM_STOP )
         {
             exception = err;
@@ -591,7 +591,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
         }
         return true;
     }
-
+	
     return true;
 }
 
@@ -621,9 +621,9 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     else
         err = ERR_WRONG_OBJ;
 
+    result->SetValInt(err); // indicates the error or ok
     if ( err != ERR_OK )
     {
-        result->SetValInt(err);  // return error
         if ( script->m_errMode == ERM_STOP )
         {
             exception = err;
@@ -682,6 +682,16 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
         }
         else
         {
+            if (obj->Implements(ObjectInterfaceType::Old))
+            {
+                COldObject* oldobj = dynamic_cast<COldObject*>(obj);
+                if (oldobj->GetPower() != nullptr)
+                    CObjectManager::GetInstancePointer()->DeleteObject(oldobj->GetPower());
+                if (oldobj->GetCargo() != nullptr)
+                    CObjectManager::GetInstancePointer()->DeleteObject(oldobj->GetCargo());
+                oldobj->SetPower(nullptr);
+                oldobj->SetCargo(nullptr);
+            }
             CObjectManager::GetInstancePointer()->DeleteObject(obj);
         }
     }
@@ -1229,10 +1239,9 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
             }
         }
     }
-
+	result->SetValInt(err); // indicates the error or ok
     if ( err != ERR_OK )
     {
-        result->SetValInt(err);  // return error
         if ( script->m_errMode == ERM_STOP )
         {
             exception = err;
@@ -1393,6 +1402,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(object);
             Program* program = programStorage->AddProgram();
             programStorage->ReadProgram(program, name2.c_str());
+            program->readOnly = true;
             program->filename = name;
             dynamic_cast<CProgrammableObject*>(object)->RunProgram(program);
         }
@@ -2378,11 +2388,15 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
             if ( delay < 0.0f ) delay = -delay;
             err = script->m_taskExecutor->StartTaskFire(delay);
         }
-
+		result->SetValInt(err); // indicates the error or ok
         if ( err != ERR_OK )
         {
             script->m_taskExecutor->StopForegroundTask();
-            result->SetValInt(err);  // shows the error
+            if ( script->m_errMode == ERM_STOP )
+            {
+                exception = err;
+                return false;
+            }
             return true;
         }
     }

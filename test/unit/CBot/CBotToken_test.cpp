@@ -60,7 +60,7 @@ protected:
             ASSERT_EQ(token->GetType(), correct.type) << "type mismatch at token #" << (i+1);
             i++;
         }
-        while((token = token->GetNext()) != nullptr);
+        while((token = token->GetNext()) != nullptr && !IsOfType(token, TokenTypNone));
         ASSERT_EQ(i, data.size()) << "not enough tokens processed";
     }
 };

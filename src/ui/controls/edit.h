@@ -27,6 +27,7 @@
 
 #include "ui/controls/control.h"
 
+#include <array>
 #include <memory>
 
 namespace Ui
@@ -206,6 +207,7 @@ protected:
     void        InsertOne(char character);
     void        Delete(int dir);
     void        DeleteOne(int dir);
+    void        DeleteWord(int dir);
     int         IndentCompute();
     int         IndentTabCount();
     void        IndentTabAdjust(int number);

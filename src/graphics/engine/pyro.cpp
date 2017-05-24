@@ -2157,6 +2157,9 @@ bool CPyro::BurnIsKeepPart(int part)
 
 void CPyro::BurnTerminate()
 {
+    if (m_object == nullptr)
+        return;
+
     if (m_type == PT_BURNO)  // organic object is burning?
     {
         DeleteObject(true, true);  // removes the insect
@@ -2296,6 +2299,7 @@ void CPyro::FallProgress(float rTime)
                 if (floor)  // reaches the ground?
                 {
                     assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+                    // TODO: implement "killer"?
                     dynamic_cast<CDestroyableObject*>(m_object)->DestroyObject(DestructionType::Explosion);
                 }
             }
@@ -2319,6 +2323,7 @@ void CPyro::FallProgress(float rTime)
                     else
                     {
                         assert(m_object->Implements(ObjectInterfaceType::Destroyable));
+                        // TODO: implement "killer"?
                         dynamic_cast<CDestroyableObject*>(m_object)->DestroyObject(DestructionType::Explosion);
                     }
                 }

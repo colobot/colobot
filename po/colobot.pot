@@ -260,6 +260,19 @@ msgstr ""
 msgid "Generating"
 msgstr ""
 
+msgid "Results"
+msgstr ""
+
+msgid "The battle has ended"
+msgstr ""
+
+#, c-format
+msgid "%s: %d pts"
+msgstr ""
+
+msgid "Code battle"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 
@@ -1346,6 +1359,9 @@ msgstr ""
 msgid "Unknown command"
 msgstr ""
 
+msgid "This object is currently busy"
+msgstr ""
+
 msgid "Impossible when flying"
 msgstr ""
 
@@ -1598,6 +1614,18 @@ msgstr ""
 msgid "Press \\key help; to read instructions on your SatCom"
 msgstr ""
 
+#, c-format
+msgid "<<< Team %s finished! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s lost! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s recieved %d points >>>"
+msgstr ""
+
 msgid "Opening bracket missing"
 msgstr ""
 
@@ -1731,6 +1759,18 @@ msgid "Expression expected after ="
 msgstr ""
 
 msgid "Ambiguous call to overloaded function"
+msgstr ""
+
+msgid "Function needs return type \"void\""
+msgstr ""
+
+msgid "Class name expected"
+msgstr ""
+
+msgid "Non-void function needs \"return;\""
+msgstr ""
+
+msgid "This parameter needs a default value"
 msgstr ""
 
 msgid "Dividing by zero"

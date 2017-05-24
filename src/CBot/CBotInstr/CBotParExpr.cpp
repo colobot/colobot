@@ -90,17 +90,16 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
         // post incremented or decremented?
         if (IsOfType(p, ID_INC, ID_DEC))
         {
+            // recompile the variable for read-only
+            delete inst;
+            p = pvar;
+            inst = CBotExprVar::Compile(p, pStk, true);
             if (pStk->GetType() >= CBotTypBoolean)
             {
                 pStk->SetError(CBotErrBadType1, pp);
                 delete inst;
                 return pStack->Return(nullptr, pStk);
             }
-
-            // recompile the variable for read-only
-            delete inst;
-            p = pvar;
-            inst =  CBotExprVar::Compile(p, pStk, CBotVar::ProtectionLevel::ReadOnly);
             p = p->GetNext();
 
             CBotPostIncExpr* i = new CBotPostIncExpr();
@@ -115,25 +114,38 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotToken* pp = p;
     if (IsOfType(p, ID_INC, ID_DEC))
     {
-        CBotPreIncExpr* i = new CBotPreIncExpr();
-        i->SetToken(pp);
-
         if (p->GetType() == TokenTypVar)
         {
-            if (nullptr != (i->m_instr =  CBotExprVar::Compile(p, pStk, CBotVar::ProtectionLevel::ReadOnly)))
+            if (nullptr != (inst = CBotExprVar::Compile(p, pStk, true)))
             {
-                if (pStk->GetType() >= CBotTypBoolean)
+                if (pStk->GetType() < CBotTypBoolean) // a number ?
                 {
-                    pStk->SetError(CBotErrBadType1, pp);
-                    delete inst;
-                    return pStack->Return(nullptr, pStk);
+                    CBotPreIncExpr* i = new CBotPreIncExpr();
+                    i->SetToken(pp);
+                    i->m_instr = inst;
+                    return pStack->Return(i, pStk);
                 }
-                return pStack->Return(i, pStk);
+                delete inst;
             }
-            delete i;
-            return pStack->Return(nullptr, pStk);
         }
+        pStk->SetError(CBotErrBadType1, pp);
+        return pStack->Return(nullptr, pStk);
     }
+
+    return CBotParExpr::CompileLitExpr(p, pStack);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CBotInstr* CBotParExpr::CompileLitExpr(CBotToken* &p, CBotCStack* pStack)
+{
+    CBotCStack* pStk = pStack->TokenStack();
+
+    CBotToken* pp = p;
+
+    // is this a unary operation?
+    CBotInstr* inst = CBotExprUnaire::Compile(p, pStk, true);
+    if (inst != nullptr || !pStk->IsOk())
+        return pStack->Return(inst, pStk);
 
     // is it a number or DefineNum?
     if (p->GetType() == TokenTypNum ||

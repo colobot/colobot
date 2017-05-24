@@ -100,6 +100,11 @@ public:
 
     void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT) override;
 
+    virtual void DrawPrimitive(PrimitiveType type, const void *vertices,
+        int size, const VertexFormat &format, int vertexCount) override;
+    virtual void DrawPrimitives(PrimitiveType type, const void *vertices,
+        int size, const VertexFormat &format, int first[], int count[], int drawCount) override;
+
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
@@ -178,10 +183,14 @@ public:
 private:
     //! Updates the texture params for given texture stage
     void UpdateTextureParams(int index);
-    //! Updates texture status
-    void UpdateTextureStatus();
+    //! Updates texture state
+    void UpdateTextureState(int index);
+    //! Update light parameters
+    void UpdateLights();
     //! Binds VBO
     inline void BindVBO(GLuint vbo);
+    //! Binds texture
+    inline void BindTexture(int index, GLuint texture);
 
 private:
     //! Current config
@@ -203,6 +212,8 @@ private:
 
     //! Whether lighting is enabled
     bool m_lighting = false;
+    //! true means that lights need to be updated
+    bool m_updateLights = false;
     //! Current lights
     std::vector<Light> m_lights;
     //! Current lights enable status

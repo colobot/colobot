@@ -199,7 +199,6 @@ const CBotToken& CBotToken::operator=(const CBotToken& src)
 ////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetType()
 {
-    if (this == nullptr) return 0;
     if (m_type == TokenTypKeyWord) return m_keywordId;
     return m_type;
 }
@@ -225,14 +224,12 @@ void CBotToken::SetString(const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetStart()
 {
-    if (this == nullptr) return -1;
     return m_start;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetEnd()
 {
-    if (this == nullptr) return -1;
     return m_end;
 }
 
@@ -438,6 +435,13 @@ std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
         nxt->m_end  = pos - nxt->m_sep.length();
         pp = p;
     }
+
+    // terminator token
+    nxt = new CBotToken();
+    nxt->m_type = TokenTypNone;
+    nxt->m_end = nxt->m_start = pos;
+    prv->m_next = nxt;
+    nxt->m_prev = prv;
 
     return std::unique_ptr<CBotToken>(tokenbase);
 }
