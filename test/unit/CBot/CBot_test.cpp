@@ -216,15 +216,15 @@ protected:
             if (error != CBotNoErr)
             {
                 ADD_FAILURE() << "Compile error - " << error << " (" << cursor1 << "-" << (cursor2 >= 0 ? cursor2 : cursor1) << ")" << std::endl << GetFormattedLineInfo(code, cursor1); // TODO: Error messages are on Colobot side
-                return std::move(program);
+                return program;
             }
             else
             {
                 ADD_FAILURE() << "No compile error, expected " << expectedCompileError; // TODO: Error messages are on Colobot side
-                return std::move(program);
+                return program;
             }
         }
-        if (expectedCompileError != CBotNoErr) return std::move(program);
+        if (expectedCompileError != CBotNoErr) return program;
 
         for (const std::string& test : tests)
         {
@@ -285,7 +285,7 @@ protected:
                 ADD_FAILURE() << ss.str();
             }
         }
-        return std::move(program); // Take it if you want, destroy on exit otherwise
+        return program; // Take it if you want, destroy on exit otherwise
     }
 };
 

@@ -223,7 +223,6 @@ bool CBotDefParam::HasDefault()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotDefParam::RestoreState(CBotStack* &pj, bool bMain)
 {
-    assert(this != nullptr);
     CBotDefParam*   p = this;
 
     CBotStack* pile = nullptr;
