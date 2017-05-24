@@ -148,7 +148,7 @@ CEdit::~CEdit()
 
     if (m_bFocus)
     {
-        CApplication::GetInstancePointer()->SetTextInput(false, EVENT_OBJECT_PEN3);
+        CApplication::GetInstancePointer()->SetTextInput(false, m_eventType);
     }
 }
 
