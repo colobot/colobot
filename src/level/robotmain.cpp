@@ -3322,6 +3322,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 assert(m_controller->Implements(ObjectInterfaceType::Programmable));
                 assert(m_controller->Implements(ObjectInterfaceType::ProgramStorage));
 
+                assert(m_controller->Implements(ObjectInterfaceType::Old));
+                dynamic_cast<COldObject*>(m_controller)->SetCheckToken(false);
+
                 if (line->GetParam("script")->IsDefined())
                 {
                     CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(m_controller);
