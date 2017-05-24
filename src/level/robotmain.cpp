@@ -2563,6 +2563,7 @@ bool CRobotMain::EventFrame(const Event &event)
         if (!m_codeBattleStarted && m_userPause == nullptr)
         {
             m_codeBattleStarted = true;
+            ApplyCodeBattleInterface();
             CreateCodeBattleInterface();
 
             SetCodeBattleSpectatorMode(true);
@@ -5793,7 +5794,7 @@ void CRobotMain::CreateCodeBattleInterface()
 
         int numTeams = m_scoreboard ? GetAllTeams().size() : 0;
         assert(numTeams < EVENT_SCOREBOARD_MAX-EVENT_SCOREBOARD+1);
-        float textHeight = m_engine->GetText()->GetAscent(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL);
+        float textHeight = m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL);
 
         ddim.x = 100.0f/640.0f;
         ddim.y = 100.0f/480.0f + numTeams * textHeight;
@@ -5825,15 +5826,56 @@ void CRobotMain::CreateCodeBattleInterface()
 
         pos.y += ddim.y;
         ddim.y = textHeight;
-        for (int i = 0; i < numTeams; i++)
+        int i = 0;
+        auto teams = GetAllTeams();
+        for (auto it = teams.rbegin(); it != teams.rend(); ++it)
         {
-            Ui::CLabel* pl;
-            pl = pw->CreateLabel(pos, ddim, 0, static_cast<EventType>(EVENT_SCOREBOARD+2*(numTeams-i-1)+0), "XXXXX");
+            int team = *it;
+            Ui::CControl* pl;
+            ddim.x = 55.0f/640.0f;
+            pl = m_codeBattleStarted
+                 ? static_cast<Ui::CControl*>(pw->CreateLabel(pos, ddim, 0, static_cast<EventType>(EVENT_SCOREBOARD+2*(numTeams-i-1)+0), "XXXXX"))
+                 : static_cast<Ui::CControl*>(pw->CreateEdit( pos, ddim, 0, static_cast<EventType>(EVENT_SCOREBOARD+2*(numTeams-i-1)+0)));
             pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-            pl = pw->CreateLabel(pos, ddim, 0, static_cast<EventType>(EVENT_SCOREBOARD+2*(numTeams-i-1)+1), "???");
+            pl->SetFontSize(m_codeBattleStarted ? Gfx::FONT_SIZE_SMALL : Gfx::FONT_SIZE_SMALL*0.75f);
+            m_codeBattleStarted ? pl->SetName(GetTeamName(team)) : static_cast<Ui::CEdit*>(pl)->SetText(GetTeamName(team));
+            pos.x += 57.5f/640.0f;
+            ddim.x = 22.5f/640.0f;
+            pl = m_codeBattleStarted
+                 ? static_cast<Ui::CControl*>(pw->CreateLabel(pos, ddim, 0, static_cast<EventType>(EVENT_SCOREBOARD+2*(numTeams-i-1)+1), "???"))
+                 : static_cast<Ui::CControl*>(pw->CreateEdit( pos, ddim, 0, static_cast<EventType>(EVENT_SCOREBOARD+2*(numTeams-i-1)+1)));
             pl->SetTextAlign(Gfx::TEXT_ALIGN_RIGHT);
+            pl->SetFontSize(m_codeBattleStarted ? Gfx::FONT_SIZE_SMALL : Gfx::FONT_SIZE_SMALL*0.75f);
+            m_codeBattleStarted ? pl->SetName(StrUtils::ToString<int>(m_scoreboard->GetScore(team))) : static_cast<Ui::CEdit*>(pl)->SetText(StrUtils::ToString<int>(m_scoreboard->GetScore(team)));
+            pos.x -= 57.5f/640.0f;
             pos.y += ddim.y;
+            i++;
         }
+    }
+}
+
+void CRobotMain::ApplyCodeBattleInterface()
+{
+    assert(GetMissionType() == MISSION_CODE_BATTLE);
+    if (!m_scoreboard) return;
+
+    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
+    assert(pw != nullptr);
+
+    int i = 0;
+    for (int team : GetAllTeams())
+    {
+        Ui::CEdit* pl;
+
+        pl = static_cast<Ui::CEdit*>(pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+0)));
+        assert(pl != nullptr);
+        m_teamNames[team] = pl->GetText(pl->GetTextLength());
+
+        pl = static_cast<Ui::CEdit*>(pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+1)));
+        assert(pl != nullptr);
+        m_scoreboard->SetScore(team, StrUtils::FromString<int>(pl->GetText(pl->GetTextLength())));
+
+        i++;
     }
 }
 
@@ -5848,19 +5890,18 @@ void CRobotMain::UpdateCodeBattleInterface()
     int i = 0;
     for (int team : GetAllTeams())
     {
-        Ui::CLabel* pl;
+        Ui::CControl* pl;
 
-        pl = static_cast<Ui::CLabel*>(pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+0)));
+        pl = pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+0));
         assert(pl != nullptr);
         pl->SetName(GetTeamName(team));
 
-        pl = static_cast<Ui::CLabel*>(pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+1)));
+        pl = pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+1));
         assert(pl != nullptr);
         pl->SetName(StrUtils::ToString<int>(m_scoreboard->GetScore(team)));
 
         i++;
     }
-
 }
 
 void CRobotMain::DestroyCodeBattleInterface()

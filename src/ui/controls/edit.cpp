@@ -148,7 +148,7 @@ CEdit::~CEdit()
 
     if (m_bFocus)
     {
-        CApplication::GetInstancePointer()->SetTextInput(false);
+        CApplication::GetInstancePointer()->SetTextInput(false, EVENT_OBJECT_PEN3);
     }
 }
 
@@ -520,13 +520,20 @@ bool CEdit::EventProcess(const Event &event)
                 MouseClick(event.mousePos);
                 if ( m_bEdit || m_bHilite )  m_bCapture = true;
             }
-            m_bFocus = true;
-            UpdateFocus();
+
+            if (!m_bFocus)
+            {
+                m_bFocus = true;
+                UpdateFocus();
+            }
         }
         else
         {
-            m_bFocus = false;
-            UpdateFocus();
+            if (m_bFocus)
+            {
+                m_bFocus = false;
+                UpdateFocus();
+            }
         }
     }
 
@@ -730,7 +737,7 @@ int CEdit::MouseDetect(Math::Point mouse)
 
         if ( i >= m_lineFirst+m_lineVisible )  break;
 
-        pos.x = m_pos.x+(10.0f/640.0f);
+        pos.x = m_pos.x+(7.5f/640.0f)*(m_fontSize/Gfx::FONT_SIZE_SMALL);
         if ( m_bAutoIndent )
         {
             pos.x += indentLength*m_lineIndent[i];
@@ -945,7 +952,7 @@ void CEdit::Draw()
 
         if ( i >= m_lineFirst+m_lineVisible )  break;
 
-        pos.x = m_pos.x+(10.0f/640.0f);
+        pos.x = m_pos.x+(7.5f/640.0f)*(m_fontSize/Gfx::FONT_SIZE_SMALL);
         if ( m_bAutoIndent )
         {
             const char *s = "\t";  // line | dotted
@@ -1107,7 +1114,7 @@ void CEdit::Draw()
         {
             if ( i == m_lineTotal-1 || m_cursor1 < m_lineOffset[i+1] )
             {
-                pos.x = m_pos.x+(10.0f/640.0f);
+                pos.x = m_pos.x+(7.5f/640.0f)*(m_fontSize/Gfx::FONT_SIZE_SMALL);
                 if ( m_bAutoIndent )
                 {
                     pos.x += indentLength*m_lineIndent[i];
@@ -3003,7 +3010,7 @@ void CEdit::Justif()
     {
         bDual = false;
 
-        width = m_dim.x-(10.0f/640.0f)*2.0f-(m_bMulti?MARGX*2.0f+SCROLL_WIDTH:0.0f);
+        width = m_dim.x-(7.5f/640.0f)*(m_fontSize/Gfx::FONT_SIZE_SMALL)*2.0f-(m_bMulti?MARGX*2.0f+SCROLL_WIDTH:0.0f);
         if ( m_bAutoIndent )
         {
             width -= indentLength*m_lineIndent[m_lineTotal-1];
@@ -3276,7 +3283,7 @@ void CEdit::SetFocus(CControl* control)
 
 void CEdit::UpdateFocus()
 {
-    CApplication::GetInstancePointer()->SetTextInput(m_bFocus);
+    CApplication::GetInstancePointer()->SetTextInput(m_bFocus, m_eventType);
 }
 
 }

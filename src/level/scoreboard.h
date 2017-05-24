@@ -115,6 +115,7 @@ public:
 
     void AddPoints(int team, int points);
     int GetScore(int team);
+    void SetScore(int team, int score);
 
 private:
     std::vector<std::unique_ptr<CScoreboardKillRule>> m_rulesKill = {};

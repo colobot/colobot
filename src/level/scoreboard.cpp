@@ -106,3 +106,8 @@ int CScoreboard::GetScore(int team)
 {
     return m_score[team];
 }
+
+void CScoreboard::SetScore(int team, int points)
+{
+    m_score[team] = points;
+}

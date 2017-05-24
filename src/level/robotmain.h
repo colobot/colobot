@@ -518,6 +518,7 @@ protected:
     //@{
     void        CreateCodeBattleInterface();
     void        UpdateCodeBattleInterface();
+    void        ApplyCodeBattleInterface();
     void        DestroyCodeBattleInterface();
     void        SetCodeBattleSpectatorMode(bool mode);
     //@}

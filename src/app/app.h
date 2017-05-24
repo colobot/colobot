@@ -35,6 +35,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 
 class CEventQueue;
@@ -245,7 +246,7 @@ public:
 
     //! Enable/disable text input, this toggles the on-screen keyboard on some platforms
     /** This also allows for writing in CJK languages (not tested!), see https://wiki.libsdl.org/Tutorials/TextInput for detailed explanation */
-    void        SetTextInput(bool textInputEnabled);
+    void        SetTextInput(bool textInputEnabled, int id);
 
     //! Moves (warps) the mouse cursor to the specified position (in interface coords)
     void        MoveMouse(Math::Point pos);
@@ -403,6 +404,8 @@ protected:
 
     //! Static buffer for putenv locale
     static char m_languageLocale[50];
+
+    std::map<int, bool> m_textInputEnabled;
 };
 
 template<> CApplication* CSingleton<CApplication>::m_instance;
