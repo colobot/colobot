@@ -2548,30 +2548,30 @@ bool CRobotMain::EventFrame(const Event &event)
                     m_eventQueue->AddEvent(Event(EVENT_LOST));
             }
         }
-    }
 
-    if (GetMissionType() == MISSION_CODE_BATTLE)
-    {
-        if (!m_codeBattleInit)
+        if (GetMissionType() == MISSION_CODE_BATTLE)
         {
-            // NOTE: It's important to do this AFTER the first update event finished processing
-            //       because otherwise all robot parts are misplaced
-            m_userPause = m_pause->ActivatePause(PAUSE_ENGINE);
-            m_codeBattleInit = true; // Will start on resume
+            if (!m_codeBattleInit)
+            {
+                // NOTE: It's important to do this AFTER the first update event finished processing
+                //       because otherwise all robot parts are misplaced
+                m_userPause = m_pause->ActivatePause(PAUSE_ENGINE);
+                m_codeBattleInit = true; // Will start on resume
+            }
+
+            if (!m_codeBattleStarted && m_userPause == nullptr)
+            {
+                m_codeBattleStarted = true;
+                ApplyCodeBattleInterface();
+                CreateCodeBattleInterface();
+
+                SetCodeBattleSpectatorMode(true);
+
+                m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+            }
+
+            UpdateCodeBattleInterface();
         }
-
-        if (!m_codeBattleStarted && m_userPause == nullptr)
-        {
-            m_codeBattleStarted = true;
-            ApplyCodeBattleInterface();
-            CreateCodeBattleInterface();
-
-            SetCodeBattleSpectatorMode(true);
-
-            m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
-        }
-
-        UpdateCodeBattleInterface();
     }
 
     return true;
