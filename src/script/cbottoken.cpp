@@ -271,6 +271,7 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "factory"       ) == 0 )  helpfile = "cbot/factory";
     if ( strcmp(token, "destroy"       ) == 0 )  helpfile = "cbot/destroy";
     if ( strcmp(token, "search"        ) == 0 )  helpfile = "cbot/search";
+    if ( strcmp(token, "searchall"     ) == 0 )  helpfile = "cbot/searchall";
     if ( strcmp(token, "radar"         ) == 0 )  helpfile = "cbot/radar";
     if ( strcmp(token, "radarall"      ) == 0 )  helpfile = "cbot/radarall";
     if ( strcmp(token, "direction"     ) == 0 )  helpfile = "cbot/direct";
@@ -421,6 +422,7 @@ bool IsFunction(const char *token)
     if ( strcmp(token, "takeoff"      ) == 0 )  return true;
     if ( strcmp(token, "destroy"      ) == 0 )  return true;
     if ( strcmp(token, "search"       ) == 0 )  return true;
+    if ( strcmp(token, "searchall"    ) == 0 )  return true;
     if ( strcmp(token, "radar"        ) == 0 )  return true;
     if ( strcmp(token, "radarall"     ) == 0 )  return true;
     if ( strcmp(token, "detect"       ) == 0 )  return true;
@@ -522,7 +524,8 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "research"  ) == 0 )  return "object.research ( type );";
     if ( strcmp(token, "takeoff"   ) == 0 )  return "object.takeoff ( );";
     if ( strcmp(token, "destroy"   ) == 0 )  return "object.destroy ( );";
-    if ( strcmp(token, "search"    ) == 0 )  return "search ( cat, pos );";
+    if ( strcmp(token, "search"    ) == 0 )  return "search ( cat, pos, min, max, sens, filter );";
+    if ( strcmp(token, "searchall" ) == 0 )  return "searchall ( cat, pos, min, max, sens, filter );";
     if ( strcmp(token, "radar"     ) == 0 )  return "radar ( cat, angle, focus, min, max, sens, filter );";
     if ( strcmp(token, "radarall"  ) == 0 )  return "radarall ( cat, angle, focus, min, max, sens, filter );";
     if ( strcmp(token, "detect"    ) == 0 )  return "detect ( cat );";
