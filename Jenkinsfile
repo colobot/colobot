@@ -5,6 +5,10 @@ if (env.BRANCH_NAME.startsWith('PR-')) {
     properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '30', artifactNumToKeepStr: '20']]])
 }
 
+if (env.CHANGE_TARGET == 'master') {
+    error("This pull request targets the wrong branch. Please reopen the pull request targetting the dev branch.")
+}
+
 node('master') {
     stage('Pull changes') {
         checkout scm
