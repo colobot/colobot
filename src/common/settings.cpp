@@ -32,8 +32,6 @@
 
 #include "sound/sound.h"
 
-template<> CSettings* CSingleton<CSettings>::m_instance = nullptr;
-
 CSettings::CSettings()
 {
     m_tooltips       = true;

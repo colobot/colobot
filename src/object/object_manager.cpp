@@ -36,10 +36,6 @@
 
 #include <algorithm>
 
-
-template<> CObjectManager* CSingleton<CObjectManager>::m_instance = nullptr;
-
-
 CObjectManager::CObjectManager(Gfx::CEngine* engine,
                                Gfx::CTerrain* terrain,
                                Gfx::COldModelManager* oldModelManager,
