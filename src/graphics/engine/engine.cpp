@@ -3738,6 +3738,7 @@ void CEngine::RenderShadowMap()
                 m_shadowMapping = false;
                 m_offscreenShadowRendering = false;
                 m_qualityShadows = false;
+                CProfiler::StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
                 return;
             }
 
