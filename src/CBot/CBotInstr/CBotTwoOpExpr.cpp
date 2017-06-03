@@ -405,9 +405,20 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
     // creates a variable for the result
     CBotVar*    result = CBotVar::Create("", TypeRes);
 
+    // get left and right operands
+    CBotVar*    left  = pStk1->GetVar();
+    CBotVar*    right = pStk2->GetVar();
+
     // creates a variable to perform the calculation in the appropriate type
     if ( TypeRes != CBotTypString )                                     // keep string conversion
+    {
         TypeRes = std::max(type1.GetType(), type2.GetType());
+    }
+    else
+    {
+        left->Update(nullptr);
+        right->Update(nullptr);
+    }
 
     if ( GetTokenType() == ID_ADD && type1.Eq(CBotTypString) )
     {
@@ -422,8 +433,6 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
 
     CBotError err = CBotNoErr;
     // is a operation according to request
-    CBotVar*    left  = pStk1->GetVar();
-    CBotVar*    right = pStk2->GetVar();
 
     switch (GetTokenType())
     {
