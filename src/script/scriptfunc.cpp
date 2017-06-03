@@ -695,7 +695,11 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
             CObjectManager::GetInstancePointer()->DeleteObject(obj);
         }
     }
-    return true;
+
+    // Returning "false" here makes sure the program doesn't try to keep executing if the robot just destroyed itself
+    // using delete(this.id)
+    // See issue #925
+    return false;
 }
 
 CBotTypResult compileSearch(CBotVar* &var, void* user, CBotTypResult returnValue)
