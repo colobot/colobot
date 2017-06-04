@@ -147,6 +147,9 @@ enum Error
     INFO_DELETEWORM       = 10103,    //! <  insect killed
     INFO_DELETESPIDER     = 10104,    //! <  insect killed
     INFO_BEGINSATCOM      = 10105,    //! <  use your SatCom
+    INFO_TEAM_FINISH      = 10110,
+    INFO_TEAM_DEAD        = 10111,
+    INFO_TEAM_SCORE       = 10112,
 
     ERR_MAX //! < number of values
 };

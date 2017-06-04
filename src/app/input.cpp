@@ -32,9 +32,6 @@
 #include <boost/lexical_cast.hpp>
 #include <SDL_system.h>
 
-
-template<> CInput* CSingleton<CInput>::m_instance = nullptr;
-
 CInput::CInput()
     : m_keyPresses()
 {

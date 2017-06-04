@@ -370,11 +370,18 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
 
     pile->SetProgram(m_pProg);                              // bases for routines
 
+    if ( pile->IfStep() ) return false;
+
     if ( pile->GetState() == 0 )
     {
         if (m_param != nullptr)
         {
+            // stack for parameters and default args
+            CBotStack* pile3b = pile->AddStack();
+            pile3b->SetState(1);
+
             if ( !m_param->Execute(ppVars, pile) ) return false;    // define parameters
+            pile3b->Delete(); // done with param stack
         }
         pile->IncState();
     }
@@ -408,8 +415,6 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
         pile->IncState();
     }
 
-    if ( pile->IfStep() ) return false;
-
     if ( !m_block->Execute(pile) )
     {
         if ( pile->GetError() < 0 )
@@ -438,7 +443,22 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
         pile2->Delete();
     }
 
-    m_param->RestoreState(pile2, true);                 // parameters
+    if ( pile->GetState() == 0 )
+    {
+        if (m_param != nullptr)
+        {
+            CBotStack* pile3b = pile2->RestoreStack();
+
+            if (pile3b != nullptr && pile3b->GetState() == 1)
+                m_param->RestoreState(pile2, true); // restore executing default arguments
+            else
+                m_param->RestoreState(pile2, false); // restore parameter IDs
+        }
+        return;
+    }
+
+    if (m_param != nullptr)
+        m_param->RestoreState(pile2, false); // restore parameter IDs
 
     if ( !m_MasterClass.empty() )
     {
@@ -670,7 +690,10 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
 
         if ( pStk1->GetState() == 0 )
         {
-            if ( !pt->m_MasterClass.empty() )
+            // stack for parameters and default args
+            CBotStack* pStk3b = pStk3->AddStack();
+
+            if (pStk3b->GetState() == 0 && !pt->m_MasterClass.empty())
             {
                 CBotVar* pInstance = program->m_thisVar;
                 // make "this" known
@@ -696,20 +719,21 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
                 pThis->SetUniqNum(-2);
                 pStk1->AddVar(pThis);
             }
+            pStk3b->SetState(1); // set 'this' was created
 
             // initializes the variables as parameters
             if (pt->m_param != nullptr)
             {
-                if (!pt->m_param->Execute(ppVars, pStk3)) // interupts only if error on a default value
+                if (!pt->m_param->Execute(ppVars, pStk3)) // interupt here
                 {
-                    if ( pt->m_pProg != program )
+                    if (!pStk3->IsOk() && pt->m_pProg != program)
                     {
                         pStk3->SetPosError(pToken);       // indicates the error on the procedure call
                     }
-                    return pStack->Return(pStk3);
+                    return false;
                 }
             }
-
+            pStk3b->Delete(); // done with param stack
             pStk1->IncState();
         }
 
@@ -778,12 +802,21 @@ void CBotFunction::RestoreCall(const std::list<CBotFunction*>& localFunctionList
 
         if ( pStk1->GetState() == 0 )
         {
-            pt->m_param->RestoreState(pStk3, true);
+            if (pt->m_param != nullptr)
+            {
+                CBotStack* pStk3b = pStk3->RestoreStack();
+
+                if (pStk3b != nullptr && pStk3b->GetState() == 1)
+                    pt->m_param->RestoreState(pStk3, true); // restore executing default arguments
+                else
+                    pt->m_param->RestoreState(pStk3, false); // restore parameter IDs
+            }
             return;
         }
 
         // initializes the variables as parameters
-        pt->m_param->RestoreState(pStk3, false);
+        if (pt->m_param != nullptr)
+            pt->m_param->RestoreState(pStk3, false); // restore parameter IDs
         pt->m_block->RestoreState(pStk3, true);
     }
 }
@@ -811,33 +844,42 @@ int CBotFunction::DoCall(const std::list<CBotFunction*>& localFunctionList, long
 
         if ( pStk->GetState() == 0 )
         {
-            // sets the variable "this" on the stack
-            CBotVar* pthis = CBotVar::Create("this", CBotTypNullPointer);
-            pthis->Copy(pThis, false);
-            pthis->SetUniqNum(-2);      // special value
-            pStk->AddVar(pthis);
+            // stack for parameters and default args
+            CBotStack* pStk3b = pStk3->AddStack();
 
-            CBotClass*  pClass = pThis->GetClass()->GetParent();
-            if ( pClass )
+            if (pStk3b->GetState() == 0)
             {
-                // sets the variable "super" on the stack
-                CBotVar* psuper = CBotVar::Create("super", CBotTypNullPointer);
-                psuper->Copy(pThis, false); // in fact identical to "this"
-                psuper->SetUniqNum(-3);     // special value
-                pStk->AddVar(psuper);
+                // sets the variable "this" on the stack
+                CBotVar* pthis = CBotVar::Create("this", CBotTypNullPointer);
+                pthis->Copy(pThis, false);
+                pthis->SetUniqNum(-2);      // special value
+                pStk->AddVar(pthis);
+
+                CBotClass*  pClass = pThis->GetClass()->GetParent();
+                if ( pClass )
+                {
+                    // sets the variable "super" on the stack
+                    CBotVar* psuper = CBotVar::Create("super", CBotTypNullPointer);
+                    psuper->Copy(pThis, false); // in fact identical to "this"
+                    psuper->SetUniqNum(-3);     // special value
+                    pStk->AddVar(psuper);
+                }
             }
+            pStk3b->SetState(1); // set 'this' was created
+
             // initializes the variables as parameters
             if (pt->m_param != nullptr)
             {
-                if (!pt->m_param->Execute(ppVars, pStk3)) // interupts only if error on a default value
+                if (!pt->m_param->Execute(ppVars, pStk3)) // interupt here
                 {
-                    if ( pt->m_pProg != pProgCurrent )
+                    if (!pStk3->IsOk() && pt->m_pProg != pProgCurrent)
                     {
                         pStk3->SetPosError(pToken);       // indicates the error on the procedure call
                     }
-                    return pStack->Return(pStk3);
+                    return false;
                 }
             }
+            pStk3b->Delete(); // done with param stack
             pStk->IncState();
         }
 
@@ -905,7 +947,21 @@ bool CBotFunction::RestoreCall(const std::list<CBotFunction*>& localFunctionList
         CBotStack*  pStk3 = pStk->RestoreStack(nullptr);   // to set parameters passed
         if ( pStk3 == nullptr ) return true;
 
-        pt->m_param->RestoreState(pStk3, true);                 // parameters
+        if ( pStk->GetState() == 0 )
+        {
+            if (pt->m_param != nullptr)
+            {
+                CBotStack* pStk3b = pStk3->RestoreStack();
+                if (pStk3b != nullptr && pStk3b->GetState() == 1)
+                    pt->m_param->RestoreState(pStk3, true); // restore executing default arguments
+                else
+                    pt->m_param->RestoreState(pStk3, false); // restore parameter IDs
+            }
+            return true;
+        }
+
+        if (pt->m_param != nullptr)
+            pt->m_param->RestoreState(pStk3, false); // restore parameter IDs
 
         if ( pStk->GetState() > 1 &&                        // latching is effective?
              pt->m_bSynchro )

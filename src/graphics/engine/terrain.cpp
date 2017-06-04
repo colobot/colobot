@@ -229,7 +229,7 @@ bool CTerrain::LoadResources(const std::string& fileName)
 
     if ( (data->surface->w != size) || (data->surface->h != size) )
     {
-        GetLogger()->Error("Invalid resource file\n");
+        GetLogger()->Error("Invalid resource file! Expected %dx%d\n", size, size);
         return false;
     }
 
@@ -311,10 +311,11 @@ bool CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
     ImageData *data = img.GetData();
 
     int size = (m_mosaicCount*m_brickCount)+1;
+    GetLogger()->Debug("Expected relief size for current terrain configuration is %dx%d\n", size, size);
 
     if ( (data->surface->w != size) || (data->surface->h != size) )
     {
-        GetLogger()->Error("Invalid relief file!\n");
+        GetLogger()->Error("Invalid relief file! Expected %dx%d\n", size, size);
         return false;
     }
 

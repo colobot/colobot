@@ -234,8 +234,6 @@ void CCloud::Create(const std::string& fileName,
     m_lines.clear();
     for (int y = 0; y < m_brickCount; y++)
         CreateLine(0, y, m_brickCount);
-
-    return;
 }
 
 void CCloud::Flush()

@@ -110,8 +110,8 @@ public:
 
     void        Simplify() override;
 
-    bool        DamageObject(DamageType type, float force = std::numeric_limits<float>::infinity()) override;
-    void        DestroyObject(DestructionType type) override;
+    bool        DamageObject(DamageType type, float force = std::numeric_limits<float>::infinity(), CObject* killer = nullptr) override;
+    void        DestroyObject(DestructionType type, CObject* killer = nullptr) override;
 
     bool EventProcess(const Event& event) override;
     void        UpdateMapping();
@@ -294,12 +294,15 @@ public:
 
     float       GetLightningHitProbability() override;
 
+    void        SetBulletWall(bool bulletWall);
+    bool        IsBulletWall() override;
+
     int GetModel();
     void SetModel(int model);
     int GetSubModel();
     void SetSubModel(int subModel);
 
-    virtual bool IsCrashLineFusion() override;
+    bool IsCrashLineFusion() override;
 
 protected:
     bool        EventFrame(const Event &event);
@@ -320,6 +323,12 @@ protected:
      * \note This is a default value for the selectable= parameter and can still be overriden in the scene file or using the \a selectinsect cheat
      */
     static bool IsSelectableByDefault(ObjectType type);
+
+    /**
+     * \brief Check if given object type should have bulletWall enabled by default
+     * \note This is a default value for the bulletWall= parameter and can still be overriden in the scene file
+     */
+    static bool IsBulletWallByDefault(ObjectType type);
 
 protected:
     Gfx::CEngine*       m_engine;
@@ -394,4 +403,6 @@ protected:
     bool        m_traceDown;
     TraceColor  m_traceColor;
     float       m_traceWidth;
+
+    bool        m_bulletWall = false;
 };

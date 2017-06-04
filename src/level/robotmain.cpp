@@ -55,6 +55,7 @@
 #include "level/mainmovie.h"
 #include "level/player_profile.h"
 #include "level/scene_conditions.h"
+#include "level/scoreboard.h"
 
 #include "level/parser/parser.h"
 
@@ -123,9 +124,6 @@ const Gfx::Color COLOR_REF_BOT   = Gfx::Color( 10.0f/256.0f, 166.0f/256.0f, 254.
 const Gfx::Color COLOR_REF_ALIEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
 const Gfx::Color COLOR_REF_GREEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
 const Gfx::Color COLOR_REF_WATER = Gfx::Color( 25.0f/256.0f, 255.0f/256.0f, 240.0f/256.0f);  // cyan
-
-
-template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
 
 //! Constructor of robot application
 CRobotMain::CRobotMain()
@@ -2306,37 +2304,7 @@ void CRobotMain::InitEye()
 //! Advances the entire scene
 bool CRobotMain::EventFrame(const Event &event)
 {
-    // TODO: For some reason we're getting one big event with event.rTime > 0.1f after loading before the movie starts?
-    if (!m_immediatSatCom && !m_beginSatCom && !m_movieLock &&
-         m_gameTime > 0.1f && m_phase == PHASE_SIMUL)
-    {
-        m_displayText->DisplayError(INFO_BEGINSATCOM, Math::Vector(0.0f,0.0f,0.0f));
-        m_beginSatCom = true;  // message appears
-    }
-
     m_time += event.rTime;
-    if (!m_movieLock && !m_pause->IsPauseType(PAUSE_ENGINE))
-    {
-        m_gameTime += event.rTime;
-        m_gameTimeAbsolute += m_app->GetRealRelTime() / 1e9f;
-    }
-
-    if (!m_movieLock && !m_pause->IsPauseType(PAUSE_ENGINE) && m_missionTimerStarted)
-        m_missionTimer += event.rTime;
-
-    if (!m_pause->IsPauseType(PAUSE_ENGINE) && m_autosave && m_gameTimeAbsolute >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL)
-    {
-        if (m_levelCategory == LevelCategory::Missions    ||
-            m_levelCategory == LevelCategory::FreeGame    ||
-            m_levelCategory == LevelCategory::CustomLevels )
-        {
-            if (!IOIsBusy() && m_missionType != MISSION_CODE_BATTLE)
-            {
-                m_autosaveLast = m_gameTimeAbsolute;
-                Autosave();
-            }
-        }
-    }
 
     m_water->EventProcess(event);
     m_cloud->EventProcess(event);
@@ -2420,6 +2388,40 @@ bool CRobotMain::EventFrame(const Event &event)
     // Advances toto following the camera, because its position depends on the camera.
     if (toto != nullptr)
         dynamic_cast<CInteractiveObject*>(toto)->EventProcess(event);
+
+    // NOTE: m_movieLock is set only after the first update of CAutoBase finishes
+
+    if (m_phase == PHASE_SIMUL)
+    {
+        if (!m_immediatSatCom && !m_beginSatCom && !m_movieLock)
+        {
+            m_displayText->DisplayError(INFO_BEGINSATCOM, Math::Vector(0.0f, 0.0f, 0.0f));
+            m_beginSatCom = true;  // message appears
+        }
+
+        if (!m_pause->IsPauseType(PAUSE_ENGINE) && !m_movieLock)
+        {
+            m_gameTime += event.rTime;
+            m_gameTimeAbsolute += m_app->GetRealRelTime() / 1e9f;
+
+            if (m_missionTimerStarted)
+                m_missionTimer += event.rTime;
+
+            if (m_autosave && m_gameTimeAbsolute >= m_autosaveLast + (m_autosaveInterval * 60))
+            {
+                if (m_levelCategory == LevelCategory::Missions ||
+                    m_levelCategory == LevelCategory::FreeGame ||
+                    m_levelCategory == LevelCategory::CustomLevels)
+                {
+                    if (!IOIsBusy() && m_missionType != MISSION_CODE_BATTLE)
+                    {
+                        m_autosaveLast = m_gameTimeAbsolute;
+                        Autosave();
+                    }
+                }
+            }
+        }
+    }
 
     HiliteFrame(event.rTime);
 
@@ -2518,7 +2520,7 @@ bool CRobotMain::EventFrame(const Event &event)
 
     if (m_phase == PHASE_SIMUL)
     {
-        if (!m_editLock)
+        if (!m_editLock && !m_engine->GetPause())
         {
             CheckEndMission(true);
             UpdateAudio(true);
@@ -2547,26 +2549,29 @@ bool CRobotMain::EventFrame(const Event &event)
                     m_eventQueue->AddEvent(Event(EVENT_LOST));
             }
         }
-    }
 
-    if (GetMissionType() == MISSION_CODE_BATTLE)
-    {
-        if (!m_codeBattleInit)
+        if (GetMissionType() == MISSION_CODE_BATTLE)
         {
-            // NOTE: It's important to do this AFTER the first update event finished processing
-            //       because otherwise all robot parts are misplaced
-            m_userPause = m_pause->ActivatePause(PAUSE_ENGINE);
-            m_codeBattleInit = true; // Will start on resume
-        }
+            if (!m_codeBattleInit)
+            {
+                // NOTE: It's important to do this AFTER the first update event finished processing
+                //       because otherwise all robot parts are misplaced
+                m_userPause = m_pause->ActivatePause(PAUSE_ENGINE);
+                m_codeBattleInit = true; // Will start on resume
+            }
 
-        if (!m_codeBattleStarted && m_userPause == nullptr)
-        {
-            m_codeBattleStarted = true;
-            CreateCodeBattleInterface();
+            if (!m_codeBattleStarted && m_userPause == nullptr)
+            {
+                m_codeBattleStarted = true;
+                ApplyCodeBattleInterface();
+                CreateCodeBattleInterface();
 
-            SetCodeBattleSpectatorMode(true);
+                SetCodeBattleSpectatorMode(true);
 
-            m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+                m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+            }
+
+            UpdateCodeBattleInterface();
         }
     }
 
@@ -2695,6 +2700,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_endTakeResearch = 0;
         m_endTakeWinDelay = 2.0f;
         m_endTakeLostDelay = 2.0f;
+        m_teamFinished.clear();
+        m_scoreboard.reset();
         m_globalMagnifyDamage = 1.0f;
         m_obligatoryTokens.clear();
         m_mapShow = true;
@@ -3317,6 +3324,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 assert(m_controller->Implements(ObjectInterfaceType::Programmable));
                 assert(m_controller->Implements(ObjectInterfaceType::ProgramStorage));
 
+                assert(m_controller->Implements(ObjectInterfaceType::Old));
+                dynamic_cast<COldObject*>(m_controller)->SetCheckToken(false);
+
                 if (line->GetParam("script")->IsDefined())
                 {
                     CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(m_controller);
@@ -3556,6 +3566,34 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
+            if (line->GetCommand() == "Scoreboard" && !resetObject)
+            {
+                if (line->GetParam("enable")->AsBool(false))
+                {
+                    // Create the scoreboard
+                    m_scoreboard = MakeUnique<CScoreboard>();
+                }
+                continue;
+            }
+            if (line->GetCommand() == "ScoreboardKillRule" && !resetObject)
+            {
+                if (!m_scoreboard)
+                    throw CLevelParserException("ScoreboardKillRule encountered but scoreboard is not enabled");
+                auto rule = MakeUnique<CScoreboard::CScoreboardKillRule>();
+                rule->Read(line.get());
+                m_scoreboard->AddKillRule(std::move(rule));
+                continue;
+            }
+            if (line->GetCommand() == "ScoreboardEndTakeRule" && !resetObject)
+            {
+                if (!m_scoreboard)
+                    throw CLevelParserException("ScoreboardEndTakeRule encountered but scoreboard is not enabled");
+                auto rule = MakeUnique<CScoreboard::CScoreboardEndTakeRule>();
+                rule->Read(line.get());
+                m_scoreboard->AddEndTakeRule(std::move(rule));
+                continue;
+            }
+
             if (line->GetCommand() == "ObligatoryToken" && !resetObject)
             {
                 std::string token = line->GetParam("text")->AsString();
@@ -3615,12 +3653,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + line->GetLevelFilename() + ":" + boost::lexical_cast<std::string>(line->GetLineNumber()));
         }
 
+        // Do this here to prevent the first frame from taking a long time to render
+        m_engine->UpdateGroundSpotTextures();
+
         m_ui->GetLoadingScreen()->SetProgress(1.0f, RT_LOADING_FINISHED);
         if (m_ui->GetLoadingScreen()->IsVisible())
         {
-            // Force render of the "Loading finished" screen
-            // TODO: For some reason, rendering of the first frame after the simulation starts is very slow
-            // We're doing this because it looks weird when the progress bar is finished but it still says "Loading programs"
+            // Force render of the "Loading finished" screen because it looks weird when the progress bar disappears in the middle
             m_app->Render();
         }
 
@@ -4902,56 +4941,81 @@ Error CRobotMain::ProcessEndMissionTakeForGroup(std::vector<CSceneEndCondition*>
 Error CRobotMain::ProcessEndMissionTake()
 {
     // Sort end conditions by teams
-    std::map<int, std::vector<CSceneEndCondition*>> teams;
+    std::map<int, std::vector<CSceneEndCondition*>> teamsEndTake;
     for (std::unique_ptr<CSceneEndCondition>& endTake : m_endTake)
-        teams[endTake->winTeam].push_back(endTake.get());
+        teamsEndTake[endTake->winTeam].push_back(endTake.get());
 
-    int teamCount = 0;
-    bool usesTeamConditions = false;
-    for (auto it : teams)
-    {
-        int team = it.first;
-        if (team == 0) continue;
-        usesTeamConditions = true;
-        if (!m_objMan->TeamExists(team)) continue;
-        teamCount++;
-    }
+    // This is just a smart way to check if we have any map values other than 0 defined
+    bool usesTeamConditions = teamsEndTake.size() > teamsEndTake.count(0);
 
     if (!usesTeamConditions)
     {
-        m_missionResult = ProcessEndMissionTakeForGroup(teams[0]);
+        m_missionResult = ProcessEndMissionTakeForGroup(teamsEndTake[0]);
     }
     else
     {
         // Special handling for teams
         m_missionResult = ERR_MISSION_NOTERM;
 
-        if (teamCount == 0)
+        if (GetAllActiveTeams().empty())
         {
-            GetLogger()->Info("All teams died, mission ended with failure\n");
-            m_missionResult = INFO_LOST;
+            GetLogger()->Info("All teams died, mission ended\n");
+            if (m_scoreboard)
+            {
+                std::string title, text, details_line;
+                GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS, title);
+                GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_TEXT, text);
+                GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_LINE, details_line);
+                std::string details = "";
+                for (int team : GetAllTeams())
+                {
+                    if (!details.empty())
+                        details += ", ";
+                    details += StrUtils::Format(details_line.c_str(), GetTeamName(team).c_str(), m_scoreboard->GetScore(team));
+                }
+                m_ui->GetDialog()->StartInformation(
+                    title,
+                    text,
+                    details,
+                    false, true,
+                    [&]() {
+                        ChangePhase(PHASE_WIN);
+                    }
+                );
+                m_endTakeWinDelay = 0.0f;
+                m_missionResult = ERR_OK;
+            }
+            else
+            {
+                m_missionResult = INFO_LOST;
+            }
         }
         else
         {
-            for (auto it : teams)
+            for (auto it : teamsEndTake)
             {
                 int team = it.first;
                 if (team == 0) continue;
-                if (!m_objMan->TeamExists(team)) continue;
+                if (m_teamFinished[team]) continue;
 
                 Error result = ProcessEndMissionTakeForGroup(it.second);
                 if (result == INFO_LOST || result == INFO_LOSTq)
                 {
                     GetLogger()->Info("Team %d lost\n", team);
-                    m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" lost! >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_ERROR);
+                    std::string text;
+                    GetResource(RES_ERR, INFO_TEAM_DEAD, text);
+                    text = StrUtils::Format(text.c_str(), GetTeamName(team).c_str());
+                    m_displayText->DisplayText(text.c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_ERROR);
 
                     m_displayText->SetEnable(false); // To prevent "bot destroyed" messages
                     m_objMan->DestroyTeam(team);
                     m_displayText->SetEnable(true);
+
+                    m_teamFinished[team] = true;
                 }
                 else if (result == ERR_OK)
                 {
-                    if (m_winDelay == 0.0f)
+                    /*if (m_winDelay == 0.0f)
                     {
                         GetLogger()->Info("Team %d won\n", team);
 
@@ -4967,7 +5031,16 @@ Error CRobotMain::ProcessEndMissionTake()
                         m_displayText->SetEnable(false);
                     }
                     m_missionResult = ERR_OK;
-                    return ERR_OK;
+                    return ERR_OK;*/
+                    GetLogger()->Info("Team %d finished\n", team);
+                    std::string text;
+                    GetResource(RES_ERR, INFO_TEAM_FINISH, text);
+                    text = StrUtils::Format(text.c_str(), GetTeamName(team).c_str());
+                    m_displayText->DisplayText(text.c_str(), Math::Vector(0.0f,0.0f,0.0f));
+                    if (m_scoreboard)
+                        m_scoreboard->ProcessEndTake(team);
+                    m_objMan->DestroyTeam(team, DestructionType::Win);
+                    m_teamFinished[team] = true;
                 }
             }
         }
@@ -5721,12 +5794,16 @@ void CRobotMain::StartDetectEffect(COldObject* object, CObject* target)
 
 void CRobotMain::CreateCodeBattleInterface()
 {
-    if(m_phase == PHASE_SIMUL)
+    if (m_phase == PHASE_SIMUL)
     {
         Math::Point pos, ddim;
 
+        int numTeams = m_scoreboard ? GetAllTeams().size() : 0;
+        assert(numTeams < EVENT_SCOREBOARD_MAX-EVENT_SCOREBOARD+1);
+        float textHeight = m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL);
+
         ddim.x = 100.0f/640.0f;
-        ddim.y = 100.0f/480.0f;
+        ddim.y = 100.0f/480.0f + numTeams * textHeight;
         pos.x = 540.0f/640.0f;
         pos.y = 100.0f/480.0f;
         Ui::CWindow* pw = m_interface->CreateWindows(pos, ddim, 3, EVENT_WINDOW6);
@@ -5734,8 +5811,10 @@ void CRobotMain::CreateCodeBattleInterface()
         ddim.x = 100.0f/640.0f;
         ddim.y = 16.0f/480.0f;
         pos.x = 540.0f/640.0f;
-        pos.y = 178.0f/480.0f;
-        pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, "Code battle");
+        pos.y = 178.0f/480.0f + numTeams * textHeight;
+        std::string text;
+        GetResource(RES_EVENT, EVENT_LABEL_CODE_BATTLE, text);
+        pw->CreateLabel(pos, ddim, 0, EVENT_LABEL_CODE_BATTLE, text);
 
         float titleBarSize = (11.0f/64.0f); // this is from the texture
         ddim.x = 80.0f/640.0f;
@@ -5750,6 +5829,84 @@ void CRobotMain::CreateCodeBattleInterface()
         {
             pw->CreateButton(pos, ddim, 13, EVENT_CODE_BATTLE_SPECTATOR);
         }
+
+        pos.y += ddim.y;
+        ddim.y = textHeight;
+        int i = 0;
+        auto teams = GetAllTeams();
+        for (auto it = teams.rbegin(); it != teams.rend(); ++it)
+        {
+            int team = *it;
+            Ui::CControl* pl;
+            ddim.x = 55.0f/640.0f;
+            pl = m_codeBattleStarted
+                 ? static_cast<Ui::CControl*>(pw->CreateLabel(pos, ddim, 0, static_cast<EventType>(EVENT_SCOREBOARD+2*(numTeams-i-1)+0), "XXXXX"))
+                 : static_cast<Ui::CControl*>(pw->CreateEdit( pos, ddim, 0, static_cast<EventType>(EVENT_SCOREBOARD+2*(numTeams-i-1)+0)));
+            pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+            pl->SetFontSize(m_codeBattleStarted ? Gfx::FONT_SIZE_SMALL : Gfx::FONT_SIZE_SMALL*0.75f);
+            m_codeBattleStarted ? pl->SetName(GetTeamName(team)) : static_cast<Ui::CEdit*>(pl)->SetText(GetTeamName(team));
+            pos.x += 57.5f/640.0f;
+            ddim.x = 22.5f/640.0f;
+            pl = m_codeBattleStarted
+                 ? static_cast<Ui::CControl*>(pw->CreateLabel(pos, ddim, 0, static_cast<EventType>(EVENT_SCOREBOARD+2*(numTeams-i-1)+1), "???"))
+                 : static_cast<Ui::CControl*>(pw->CreateEdit( pos, ddim, 0, static_cast<EventType>(EVENT_SCOREBOARD+2*(numTeams-i-1)+1)));
+            pl->SetTextAlign(Gfx::TEXT_ALIGN_RIGHT);
+            pl->SetFontSize(m_codeBattleStarted ? Gfx::FONT_SIZE_SMALL : Gfx::FONT_SIZE_SMALL*0.75f);
+            m_codeBattleStarted ? pl->SetName(StrUtils::ToString<int>(m_scoreboard->GetScore(team))) : static_cast<Ui::CEdit*>(pl)->SetText(StrUtils::ToString<int>(m_scoreboard->GetScore(team)));
+            pos.x -= 57.5f/640.0f;
+            pos.y += ddim.y;
+            i++;
+        }
+    }
+}
+
+void CRobotMain::ApplyCodeBattleInterface()
+{
+    assert(GetMissionType() == MISSION_CODE_BATTLE);
+    if (!m_scoreboard) return;
+
+    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
+    assert(pw != nullptr);
+
+    int i = 0;
+    for (int team : GetAllTeams())
+    {
+        Ui::CEdit* pl;
+
+        pl = static_cast<Ui::CEdit*>(pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+0)));
+        assert(pl != nullptr);
+        m_teamNames[team] = pl->GetText(pl->GetTextLength());
+
+        pl = static_cast<Ui::CEdit*>(pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+1)));
+        assert(pl != nullptr);
+        m_scoreboard->SetScore(team, StrUtils::FromString<int>(pl->GetText(pl->GetTextLength())));
+
+        i++;
+    }
+}
+
+void CRobotMain::UpdateCodeBattleInterface()
+{
+    assert(GetMissionType() == MISSION_CODE_BATTLE);
+    if (!m_scoreboard) return;
+
+    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
+    assert(pw != nullptr);
+
+    int i = 0;
+    for (int team : GetAllTeams())
+    {
+        Ui::CControl* pl;
+
+        pl = pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+0));
+        assert(pl != nullptr);
+        pl->SetName(GetTeamName(team));
+
+        pl = pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+1));
+        assert(pl != nullptr);
+        pl->SetName(StrUtils::ToString<int>(m_scoreboard->GetScore(team)));
+
+        i++;
     }
 }
 
@@ -5820,6 +5977,33 @@ std::string CRobotMain::GetPreviousFromCommandHistory()
     if (m_commandHistory.empty() || m_commandHistoryIndex < 1) // first or none element selected
         return "";
     return m_commandHistory[--m_commandHistoryIndex];
+}
+
+CScoreboard* CRobotMain::GetScoreboard()
+{
+    return m_scoreboard.get();
+}
+
+std::set<int> CRobotMain::GetAllTeams()
+{
+    std::set<int> teams = GetAllActiveTeams();
+    for(auto& it : m_teamFinished)
+    {
+        teams.insert(it.first);
+    }
+    return teams;
+}
+
+std::set<int> CRobotMain::GetAllActiveTeams()
+{
+    std::set<int> teams;
+    for (CObject* obj : m_objMan->GetAllObjects())
+    {
+        int team = obj->GetTeam();
+        if (team == 0) continue;
+        teams.insert(team);
+    }
+    return teams;
 }
 
 int CRobotMain::GetSelectedDifficulty()

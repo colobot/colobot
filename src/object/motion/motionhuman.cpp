@@ -71,6 +71,7 @@ CMotionHuman::CMotionHuman(COldObject* object)
     m_time = 0.0f;
     m_tired = 0.0f;
     m_bDisplayPerso = false;
+    m_glassesRank = -1;
 }
 
 // Object's constructor.
@@ -198,12 +199,12 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     glasses = m_main->GetGamerGlasses();
     if ( glasses != 0 && type == OBJECT_HUMAN )
     {
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        m_object->SetObjectRank(15, rank);
+        m_glassesRank = m_engine->CreateObject();
+        m_engine->SetObjectType(m_glassesRank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        m_object->SetObjectRank(15, m_glassesRank);
         m_object->SetObjectParent(15, 1);
         sprintf(filename, "human2g%d.mod", glasses);
-        modelManager->AddModelReference(filename, false, rank);
+        modelManager->AddModelReference(filename, false, m_glassesRank);
     }
 
     // Creates the right arm.
@@ -650,6 +651,18 @@ bool CMotionHuman::EventFrame(const Event &event)
     if ( m_bDisplayPerso )
     {
         m_object->SetCirVibration(Math::Vector(0.0f, m_main->GetPersoAngle()+0.2f, 0.0f));
+    }
+
+    if ( m_glassesRank != -1 )
+    {
+        if ( m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD )
+        {
+            m_engine->SetObjectDrawWorld(m_glassesRank, false);
+        }
+        else
+        {
+            m_engine->SetObjectDrawWorld(m_glassesRank, true);
+        }
     }
 
     bSwim = m_physics->GetSwim();

@@ -91,4 +91,5 @@ protected:
     float       m_time;
     float       m_tired;
     bool        m_bDisplayPerso;
+    int         m_glassesRank;
 };

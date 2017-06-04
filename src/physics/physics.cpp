@@ -4950,22 +4950,21 @@ bool CPhysics::ExploOther(ObjectType iType,
         }
     }
 
-
-
-
-    if (pObj->Implements(ObjectInterfaceType::Fragile))
+    if (pObj->Implements(ObjectInterfaceType::Damageable))
     {
         // TODO: CFragileObject::GetDestructionForce (I can't do this now because you can't inherit both in COldObject ~krzys_h)
         DamageType damageType = DamageType::Collision;
-        float destructionForce = 50.0f; // Titanium, PowerCell, NuclearCell, default
+        float destructionForce = pObj->Implements(ObjectInterfaceType::Fragile) ? 50.0f : -1.0f; // Titanium, PowerCell, NuclearCell, default
         if (pObj->GetType() == OBJECT_STONE   ) { destructionForce = 25.0f; } // TitaniumOre
         if (pObj->GetType() == OBJECT_URANIUM ) { destructionForce = 25.0f; } // UraniumOre
-        if (pObj->GetType() == OBJECT_MOBILEtg) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // TargetBot
+        if (pObj->GetType() == OBJECT_MOBILEtg) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // TargetBot (something running into it)
+        if (iType           == OBJECT_MOBILEtg) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // TargetBot (it running into something)
         if (pObj->GetType() == OBJECT_TNT     ) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // TNT
         if (pObj->GetType() == OBJECT_BOMB    ) { destructionForce =  0.0f; damageType = DamageType::Explosive; } // Mine
 
-        if ( force > destructionForce )
+        if ( force > destructionForce && destructionForce >= 0.0f )
         {
+            // TODO: implement "killer"?
             dynamic_cast<CDamageableObject*>(pObj)->DamageObject(damageType);
         }
     }
@@ -4991,6 +4990,7 @@ bool CPhysics::ExploOther(ObjectType iType,
             oType == OBJECT_HUSTON    )  // building?
         {
             assert(pObj->Implements(ObjectInterfaceType::Damageable));
+            // TODO: implement "killer"?
             dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Collision, force/400.0f);
         }
 
@@ -5021,6 +5021,7 @@ bool CPhysics::ExploOther(ObjectType iType,
             oType == OBJECT_MOBILEit  )  // vehicle?
         {
             assert(pObj->Implements(ObjectInterfaceType::Damageable));
+            // TODO: implement "killer"?
             dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Collision, force/200.0f);
         }
     }
@@ -5363,11 +5364,13 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
     // TODO: CExplosiveObject? derrives from CFragileObject
     float destructionForce = -1.0f; // minimal force required to destroy an object using this explosive, default: not explosive
     if ( oType == OBJECT_TNT      ) destructionForce = 10.0f; // TNT
-    if ( oType == OBJECT_MOBILEtg ) destructionForce = 10.0f; // TargetBot
+    if ( oType == OBJECT_MOBILEtg ) destructionForce = 10.0f; // TargetBot (something running into it)
+    if ( iType == OBJECT_MOBILEtg ) destructionForce = 10.0f; // TargetBot (it running into something)
     if ( oType == OBJECT_BOMB     ) destructionForce =  0.0f; // Mine
 
     if ( force > destructionForce && destructionForce >= 0.0f )
     {
+        // TODO: implement "killer"?
         dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Explosive);
         return 2;
     }
@@ -5448,6 +5451,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
                 force /= 200.0f;
             }
 
+            // TODO: implement "killer"?
             if ( dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Collision, force) )  return 2;
         }
     }

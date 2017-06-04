@@ -87,6 +87,7 @@ class CInput;
 class CObjectManager;
 class CSceneEndCondition;
 class CAudioChangeCondition;
+class CScoreboard;
 class CPlayerProfile;
 class CSettings;
 class COldObject;
@@ -307,6 +308,10 @@ public:
     //! Return list of scripts to load to robot created in BotFactory
     std::vector<std::string> GetNewScriptNames(ObjectType type);
 
+    //! Return the scoreboard manager
+    //! Note: this may return nullptr if the scoreboard is not enabled!
+    CScoreboard* GetScoreboard();
+
     void        SelectPlayer(std::string playerName);
     CPlayerProfile* GetPlayerProfile();
 
@@ -463,6 +468,11 @@ public:
     //! Check if crash sphere debug rendering is enabled
     bool GetDebugCrashSpheres();
 
+    //! Returns a set of all team IDs in the current level
+    std::set<int> GetAllTeams();
+    //! Returns a set of all team IDs in the current level that are still active
+    std::set<int> GetAllActiveTeams();
+
     int GetSelectedDifficulty();
 
 protected:
@@ -509,6 +519,8 @@ protected:
     //! \name Code battle interface
     //@{
     void        CreateCodeBattleInterface();
+    void        UpdateCodeBattleInterface();
+    void        ApplyCodeBattleInterface();
     void        DestroyCodeBattleInterface();
     void        SetCodeBattleSpectatorMode(bool mode);
     //@}
@@ -657,8 +669,14 @@ protected:
     long            m_endTakeResearch = 0;
     float           m_endTakeWinDelay = 0.0f;
     float           m_endTakeLostDelay = 0.0f;
+    //! Set to true for teams that have already finished
+    std::map<int, bool> m_teamFinished;
 
     std::vector<std::unique_ptr<CAudioChangeCondition>> m_audioChange;
+
+    //! The scoreboard
+    //! If the scoreboard is not enabled for this level, this will be null
+    std::unique_ptr<CScoreboard> m_scoreboard;
 
     std::map<std::string, MinMax> m_obligatoryTokens;
 

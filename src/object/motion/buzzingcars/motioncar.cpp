@@ -2972,7 +2972,7 @@ void CMotionCar::GetStateBuffer(char *buffer)
     StateVehicle*    p;
     int                i;
 
-    p = (StateVehicle*)buffer;
+    p = reinterpret_cast<StateVehicle*>(buffer);
     for ( i=0 ; i<MAX_PART ; i++ )
     {
         p->state[i].bDeleted   = m_part[i].bDeleted;

@@ -1027,10 +1027,9 @@ void CParticle::FrameParticle(float rTime)
         {
             CObject* object = SearchObjectGun(m_particle[i].goal, m_particle[i].pos, m_particle[i].type, m_particle[i].objFather);
             m_particle[i].goal = m_particle[i].pos;
-            if (object != nullptr)
+            if (object != nullptr && object->Implements(ObjectInterfaceType::Damageable))
             {
-                assert(object->Implements(ObjectInterfaceType::Damageable));
-                dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Phazer, 0.002f);
+                dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Phazer, 0.002f, m_particle[i].objFather);
             }
 
             m_particle[i].zoom = 1.0f-(m_particle[i].time-m_particle[i].duration);
@@ -1207,7 +1206,7 @@ void CParticle::FrameParticle(float rTime)
                 continue;
             }
 
-            if (m_particle[i].testTime >= 0.1f)
+            if (m_particle[i].testTime >= 0.05f)
             {
                 m_particle[i].testTime = 0.0f;
 
@@ -1256,8 +1255,10 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    assert(object->Implements(ObjectInterfaceType::Damageable));
-                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire, 0.002f);
+                    if (object->Implements(ObjectInterfaceType::Damageable))
+                    {
+                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire, 0.001f, m_particle[i].objFather);
+                    }
 
                     m_exploGunCounter++;
 
@@ -1315,7 +1316,7 @@ void CParticle::FrameParticle(float rTime)
                 continue;
             }
 
-            if (m_particle[i].testTime >= 0.2f)
+            if (m_particle[i].testTime >= 0.1f)
             {
                 m_particle[i].testTime = 0.0f;
                 CObject* object = SearchObjectGun(m_particle[i].goal, m_particle[i].pos, m_particle[i].type, m_particle[i].objFather);
@@ -1338,8 +1339,10 @@ void CParticle::FrameParticle(float rTime)
                         if (object->GetType() != OBJECT_HUMAN)
                             Play(SOUND_TOUCH, m_particle[i].pos, 1.0f);
 
-                        assert(object->Implements(ObjectInterfaceType::Damageable));
-                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.2f);  // starts explosion
+                        if (object->Implements(ObjectInterfaceType::Damageable))
+                        {
+                            dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.1f, m_particle[i].objFather);  // starts explosion
+                        }
                     }
                 }
             }
@@ -1361,7 +1364,7 @@ void CParticle::FrameParticle(float rTime)
                 continue;
             }
 
-            if (m_particle[i].testTime >= 0.2f)
+            if (m_particle[i].testTime >= 0.1f)
             {
                 m_particle[i].testTime = 0.0f;
                 CObject* object = SearchObjectGun(m_particle[i].goal, m_particle[i].pos, m_particle[i].type, m_particle[i].objFather);
@@ -1381,8 +1384,10 @@ void CParticle::FrameParticle(float rTime)
                     }
                     else
                     {
-                        assert(object->Implements(ObjectInterfaceType::Damageable));
-                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire);  // starts explosion
+                        if (object->Implements(ObjectInterfaceType::Damageable))
+                        {
+                            dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire, std::numeric_limits<float>::infinity(), m_particle[i].objFather);  // starts explosion
+                        }
                     }
                 }
             }
@@ -1401,7 +1406,7 @@ void CParticle::FrameParticle(float rTime)
                 continue;
             }
 
-            if (m_particle[i].testTime >= 0.1f)
+            if (m_particle[i].testTime >= 0.05f)
             {
                 m_particle[i].testTime = 0.0f;
 
@@ -1438,8 +1443,10 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    assert(object->Implements(ObjectInterfaceType::Damageable));
-                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.002f);
+                    if (object->Implements(ObjectInterfaceType::Damageable))
+                    {
+                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.001f, m_particle[i].objFather);
+                    }
 
                     m_exploGunCounter ++;
 
@@ -2626,7 +2633,7 @@ void CParticle::FrameParticle(float rTime)
                 if (object != nullptr)
                 {
                     assert(object->Implements(ObjectInterfaceType::Damageable));
-                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Tower);
+                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Tower, std::numeric_limits<float>::infinity(), m_particle[i].objFather);
                 }
             }
 
@@ -3827,6 +3834,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
     box2.z += min;
 
     CObject* best = nullptr;
+    float best_dist = std::numeric_limits<float>::infinity();
     bool shield = false;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -3860,7 +3868,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
         {
             continue;
         }
-        if (!obj->Implements(ObjectInterfaceType::Damageable))  continue;
+        if (!obj->Implements(ObjectInterfaceType::Damageable) && !obj->IsBulletWall())  continue;
 
         Math::Vector oPos = obj->GetPosition();
 
@@ -3888,8 +3896,12 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
         // Test the center of the object, which is necessary for objects
         // that have no sphere in the center (station).
         float dist = Math::Distance(oPos, pos)-4.0f;
-        if (dist < min)
+        float obj_dist = Math::Distance(old, oPos);
+        if (dist < min && obj_dist < best_dist)
+        {
             best = obj;
+            best_dist = obj_dist;
+        }
 
         for (const auto& crashSphere : obj->GetAllCrashSpheres())
         {
@@ -3902,8 +3914,12 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
 
             Math::Vector p = Math::Projection(old, pos, oPos);
             float ddist = Math::Distance(p, oPos)-oRadius;
-            if (ddist < min)
+            float obj_dist = Math::Distance(old, oPos);
+            if (ddist < min && obj_dist < best_dist)
+            {
                 best = obj;
+                best_dist = obj_dist;
+            }
         }
     }
 
@@ -4047,6 +4063,26 @@ Color CParticle::GetFogColor(Math::Vector pos)
     if (result.b > 0.6f)  result.b = 0.6f;
 
     return result;
+}
+
+void CParticle::CutObjectLink(CObject* obj)
+{
+    for (int i = 0; i < MAXPARTICULE*MAXPARTITYPE; i++)
+    {
+        if (!m_particle[i].used) continue;
+
+        if (m_particle[i].objLink == obj)
+        {
+            // If the object this particle's coordinates are linked to doesn't exist anymore, remove the particle
+            DeleteRank(i);
+        }
+
+        if (m_particle[i].objFather == obj)
+        {
+            // If the object that spawned this partcle doesn't exist anymore, remove the link
+            m_particle[i].objFather = nullptr;
+        }
+    }
 }
 
 } // namespace Gfx

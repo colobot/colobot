@@ -468,7 +468,7 @@ void CObject::CrashLineFusion()
         if ( pObj->GetCrashLineCount() != 5 )  continue;
         if ( pObj->GetRotationY() != GetRotationY() )  continue;
 
-        float oLen = Math::Distance(pObj->m_crashLines[0].pos, pObj->m_crashLines[1].pos);
+        //float oLen = Math::Distance(pObj->m_crashLines[0].pos, pObj->m_crashLines[1].pos);
         float oWidth = Math::Distance(pObj->m_crashLines[1].pos, pObj->m_crashLines[2].pos);
 
         if ( iWidth != oWidth )  continue;

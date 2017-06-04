@@ -64,8 +64,6 @@
 #include <SDL_surface.h>
 #include <SDL_thread.h>
 
-template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
-
 // Graphics module namespace
 namespace Gfx
 {
@@ -3266,7 +3264,9 @@ void CEngine::Draw3DScene()
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProj);
     m_device->SetTransform(TRANSFORM_VIEW, m_matView);
 
-    m_water->DrawBack();  // draws water background
+    // TODO: This causes a rendering artifact and I can't see anything that breaks if you just comment it out
+    // So I'll just leave it like that for now ~krzys_h
+    //m_water->DrawBack();  // draws water background
 
     CProfiler::StartPerformanceCounter(PCNT_RENDER_TERRAIN);
 
@@ -3738,6 +3738,7 @@ void CEngine::RenderShadowMap()
                 m_shadowMapping = false;
                 m_offscreenShadowRendering = false;
                 m_qualityShadows = false;
+                CProfiler::StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
                 return;
             }
 

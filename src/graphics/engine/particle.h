@@ -326,6 +326,9 @@ public:
     //! Draws all the particles
     void        DrawParticle(int sheet);
 
+    //! Indicates that the object binds to the particle no longer exists, without deleting it
+    void        CutObjectLink(CObject* obj);
+
 protected:
     //! Removes a particle of given rank
     void        DeleteRank(int rank);

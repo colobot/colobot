@@ -109,7 +109,8 @@ const std::unordered_map<std::string, SoundType> SOUND_STRINGS =
     {"mushroom", SOUND_MUSHROOM},
     {"firep", SOUND_FIREp},
     {"explog1", SOUND_EXPLOg1},
-    {"explog2", SOUND_EXPLOg2}
+    {"explog2", SOUND_EXPLOg2},
+    {"alarms", SOUND_ALARMs}
 };
 
 } // anonymous namespace

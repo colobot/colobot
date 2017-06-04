@@ -34,9 +34,6 @@
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/regex.hpp>
 
-
-template<> CConfigFile* CSingleton<CConfigFile>::m_instance = nullptr;
-
 namespace bp = boost::property_tree;
 
 CConfigFile::CConfigFile()

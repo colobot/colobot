@@ -869,6 +869,9 @@ public:
     //! Specifies the location and direction of view
     void SetViewParams(const Math::Vector &eyePt, const Math::Vector &lookatPt, const Math::Vector &upVec);
 
+    //! Updates the textures used for drawing ground spot
+    void        UpdateGroundSpotTextures();
+
     //! Loads texture, creating it if not already present
     Texture         LoadTexture(const std::string& name);
     //! Loads texture from existing image
@@ -1196,9 +1199,6 @@ protected:
     void        DrawObject(const EngineBaseObjDataTier& p4);
     //! Draws the user interface over the scene
     void        DrawInterface();
-
-    //! Updates the textures used for drawing ground spot
-    void        UpdateGroundSpotTextures();
 
     //! Draws old-style shadow spots
     void        DrawShadowSpots();

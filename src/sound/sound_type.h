@@ -116,6 +116,7 @@ enum SoundType
   SOUND_EXPLOg1  = 79,  /*!< ShooterBots damaging objects. */
   SOUND_EXPLOg2  = 80,  /*!< OrgaShooterBots damaging objects. */
   SOUND_MOTORd  = 81,   /*!< Scribbler/ToyBot engine. */
+  SOUND_ALARMs  = 82,   /*!< Bot shield alarm. */
 
   // BuzzingCars specific
 SOUND_MOTOR1    = 105,

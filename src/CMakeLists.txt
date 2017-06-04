@@ -241,6 +241,8 @@ set(BASE_SOURCES
     level/robotmain.h
     level/scene_conditions.cpp
     level/scene_conditions.h
+    level/scoreboard.cpp
+    level/scoreboard.h
     math/all.h
     math/const.h
     math/func.h

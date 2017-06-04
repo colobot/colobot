@@ -82,8 +82,6 @@ CBotStack* CBotStack::AllocateStack()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStack::Delete()
 {
-    assert ( this != nullptr );
-
     if (m_next != nullptr) m_next->Delete();
     if (m_next2 != nullptr) m_next2->Delete();
 
@@ -270,7 +268,7 @@ bool CBotStack::IfStep()
 bool CBotStack::BreakReturn(CBotStack* pfils, const std::string& name)
 {
     if ( m_error>=0 ) return false;                // normal output
-    if ( m_error==-3 ) return false;            // normal output (return current)
+    if ( m_error==CBotError(-3) ) return false;            // normal output (return current)
 
     if (!m_labelBreak.empty() && (name.empty() || m_labelBreak != name))
         return false;                            // it's not for me
@@ -283,7 +281,7 @@ bool CBotStack::BreakReturn(CBotStack* pfils, const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotStack::IfContinue(int state, const std::string& name)
 {
-    if ( m_error != -2 ) return false;
+    if ( m_error != CBotError(-2) ) return false;
 
     if (!m_labelBreak.empty() && (name.empty() || m_labelBreak != name))
         return false;                            // it's not for me
@@ -311,7 +309,7 @@ void CBotStack::SetBreak(int val, const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotStack::GetRetVar(bool bRet)
 {
-    if (m_error == -3)
+    if (m_error == CBotError(-3))
     {
         if ( m_var ) delete m_var;
         m_var        = m_retvar;

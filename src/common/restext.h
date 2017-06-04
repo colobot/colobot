@@ -140,6 +140,10 @@ enum ResTextType
     RT_LOADING_TERRAIN_TEX    = 222,
     RT_LOADING_TERRAIN_GEN    = 223,
 
+    RT_SCOREBOARD_RESULTS     = 230,
+    RT_SCOREBOARD_RESULTS_TEXT= 231,
+    RT_SCOREBOARD_RESULTS_LINE= 232,
+
 
     RT_MAX //! < number of values
 };

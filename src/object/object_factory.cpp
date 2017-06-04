@@ -154,6 +154,8 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_BARRIER1:
         case OBJECT_BARRIER2:
         case OBJECT_BARRIER3:
+        case OBJECT_BARRICADE0:
+        case OBJECT_BARRICADE1:
             return CreateBarrier(params);
 
         case OBJECT_PLANT0:
@@ -762,6 +764,48 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(10.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
+    }
+
+    if ( type == OBJECT_BARRICADE0 )
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("barricade0.mod", false, rank, obj->GetTeam());
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 6.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 6.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.5f, 6.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+
+        obj->CreateShadowCircle(6.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
+    }
+
+    if ( type == OBJECT_BARRICADE1 )
+    {
+        int rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        obj->SetObjectRank(0, rank);
+        m_oldModelManager->AddModelReference("barricade1.mod", false, rank, obj->GetTeam());
+        obj->SetPosition(pos);
+        obj->SetRotationY(angle);
+
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 8.5f, 6.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 6.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 6.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.5f, 6.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-8.5f, 6.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+
+        obj->CreateShadowCircle(12.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
     }
 
     pos = obj->GetPosition();

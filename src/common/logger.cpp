@@ -22,10 +22,6 @@
 
 #include <stdio.h>
 
-
-template<> CLogger* CSingleton<CLogger>::m_instance = nullptr;
-
-
 CLogger::CLogger()
 {
     #if DEV_BUILD

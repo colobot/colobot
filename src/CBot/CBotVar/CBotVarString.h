@@ -48,12 +48,12 @@ public:
         SetValString(ToString(val));
     }
 
-    int GetValInt()
+    int GetValInt() override
     {
         return FromString<int>(GetValString());
     }
 
-    float GetValFloat()
+    float GetValFloat() override
     {
         return FromString<float>(GetValString());
     }

@@ -29,11 +29,13 @@
 #include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
 
+#include <limits>
 
-void CSceneCondition::Read(CLevelParserLine* line)
+
+void CObjectCondition::Read(CLevelParserLine* line)
 {
     this->pos      = line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
-    this->dist     = line->GetParam("dist")->AsFloat(8.0f)*g_unit;
+    this->dist     = line->GetParam("dist")->AsFloat(std::numeric_limits<float>::infinity())*g_unit;
     this->type     = line->GetParam("type")->AsObjectType(OBJECT_NULL);
     this->powermin = line->GetParam("powermin")->AsFloat(-1);
     this->powermax = line->GetParam("powermax")->AsFloat(100);
@@ -41,6 +43,82 @@ void CSceneCondition::Read(CLevelParserLine* line)
     this->drive    = line->GetParam("drive")->AsDriveType(DriveType::Other);
     this->countTransported = line->GetParam("countTransported")->AsBool(true);
     this->team     = line->GetParam("team")->AsInt(0);
+}
+
+bool CObjectCondition::CheckForObject(CObject* obj)
+{
+    if (!this->countTransported)
+    {
+        if (IsObjectBeingTransported(obj)) return false;
+    }
+
+    ObjectType type = obj->GetType();
+
+    ToolType tool = GetToolFromObject(type);
+    DriveType drive = GetDriveFromObject(type);
+    if (this->tool != ToolType::Other &&
+        tool != this->tool)
+        return false;
+
+    if (this->drive != DriveType::Other &&
+        drive != this->drive)
+        return false;
+
+    if (this->tool == ToolType::Other &&
+        this->drive == DriveType::Other &&
+        type != this->type &&
+        this->type != OBJECT_NULL)
+        return false;
+
+    if ((this->team > 0 && obj->GetTeam() != this->team) ||
+        (this->team < 0 && (obj->GetTeam() == -(this->team) || obj->GetTeam() == 0)))
+        return false;
+
+    float energyLevel = -1;
+    CPowerContainerObject* power = nullptr;
+    if (obj->Implements(ObjectInterfaceType::PowerContainer))
+    {
+        power = dynamic_cast<CPowerContainerObject*>(obj);
+    }
+    else if (obj->Implements(ObjectInterfaceType::Powered))
+    {
+        CObject* powerObj = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+        if(powerObj != nullptr && powerObj->Implements(ObjectInterfaceType::PowerContainer))
+        {
+            power = dynamic_cast<CPowerContainerObject*>(powerObj);
+        }
+    }
+
+    if (power != nullptr)
+    {
+        energyLevel = power->GetEnergy();
+        if (power->GetCapacity() > 1.0f) energyLevel *= 10; // TODO: Who designed it like that ?!?!
+    }
+    if (energyLevel < this->powermin || energyLevel > this->powermax) return false;
+
+    Math::Vector oPos;
+    if (IsObjectBeingTransported(obj))
+        oPos = dynamic_cast<CTransportableObject*>(obj)->GetTransporter()->GetPosition();
+    else
+        oPos = obj->GetPosition();
+    oPos.y = 0.0f;
+
+    Math::Vector bPos = this->pos;
+    bPos.y = 0.0f;
+
+    if (Math::DistanceProjected(oPos, bPos) <= this->dist)
+        return true;
+
+    return false;
+}
+
+void CSceneCondition::Read(CLevelParserLine* line)
+{
+    CObjectCondition::Read(line);
+
+    // Scene conditions STILL use a different default value
+    // See issue #759
+    this->dist     = line->GetParam("dist")->AsFloat(8.0f)*g_unit;
 
     this->min      = line->GetParam("min")->AsInt(1);
     this->max      = line->GetParam("max")->AsInt(9999);
@@ -48,74 +126,12 @@ void CSceneCondition::Read(CLevelParserLine* line)
 
 int CSceneCondition::CountObjects()
 {
-    Math::Vector bPos = this->pos;
-    bPos.y = 0.0f;
-
-    Math::Vector oPos;
-
     int nb = 0;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if (!obj->GetActive()) continue;
-
-        if (!this->countTransported)
-        {
-            if (IsObjectBeingTransported(obj)) continue;
-        }
-
-        ObjectType type = obj->GetType();
-
-        ToolType tool = GetToolFromObject(type);
-        DriveType drive = GetDriveFromObject(type);
-        if (this->tool != ToolType::Other &&
-            tool != this->tool)
-            continue;
-
-        if (this->drive != DriveType::Other &&
-            drive != this->drive)
-            continue;
-
-        if (this->tool == ToolType::Other &&
-            this->drive == DriveType::Other &&
-            type != this->type &&
-            this->type != OBJECT_NULL)
-            continue;
-
-        if ((this->team > 0 && obj->GetTeam() != this->team) ||
-            (this->team < 0 && (obj->GetTeam() == -(this->team) || obj->GetTeam() == 0)))
-            continue;
-
-        float energyLevel = -1;
-        CPowerContainerObject* power = nullptr;
-        if (obj->Implements(ObjectInterfaceType::PowerContainer))
-        {
-            power = dynamic_cast<CPowerContainerObject*>(obj);
-        }
-        else if (obj->Implements(ObjectInterfaceType::Powered))
-        {
-            CObject* powerObj = dynamic_cast<CPoweredObject*>(obj)->GetPower();
-            if(powerObj != nullptr && powerObj->Implements(ObjectInterfaceType::PowerContainer))
-            {
-                power = dynamic_cast<CPowerContainerObject*>(powerObj);
-            }
-        }
-
-        if (power != nullptr)
-        {
-            energyLevel = power->GetEnergy();
-            if (power->GetCapacity() > 1.0f) energyLevel *= 10; // TODO: Who designed it like that ?!?!
-        }
-        if (energyLevel < this->powermin || energyLevel > this->powermax) continue;
-
-        if (IsObjectBeingTransported(obj))
-            oPos = dynamic_cast<CTransportableObject*>(obj)->GetTransporter()->GetPosition();
-        else
-            oPos = obj->GetPosition();
-
-        oPos.y = 0.0f;
-
-        if (Math::DistanceProjected(oPos, bPos) <= this->dist)
-            nb ++;
+        if (!CheckForObject(obj)) continue;
+        nb ++;
     }
     return nb;
 }
@@ -125,7 +141,6 @@ bool CSceneCondition::Check()
     int nb = CountObjects();
     return nb >= this->min && nb <= this->max;
 }
-
 
 void CSceneEndCondition::Read(CLevelParserLine* line)
 {

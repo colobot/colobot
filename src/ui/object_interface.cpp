@@ -1452,7 +1452,25 @@ void CObjectInterface::UpdateInterface(float rTime)
     if ( pg != nullptr )
     {
         assert(m_object->Implements(ObjectInterfaceType::Shielded));
-        pg->SetLevel(dynamic_cast<CShieldedObject*>(m_object)->GetShield());
+        icon = 3;  // orange/gray
+        float shield = dynamic_cast<CShieldedObject*>(m_object)->GetShield();
+
+        if ( shield < 0.4f && shield != 0.0f) // low but not zero?
+        {
+            if ( m_lastAlarmTime >= 0.8f )  // blinks?
+            {
+                shield = 1.0f;
+                icon = 2;  // red
+            }
+            if ( m_lastAlarmTime >= 1.0f )
+            {
+                m_sound->Play(SOUND_ALARMs, 0.5f);  // beep-beep
+                m_lastAlarmTime = 0.0f;
+            }
+        }
+        
+        pg->SetLevel(shield);
+        pg->SetIcon(icon);
     }
 
     pg = static_cast< CGauge* >(pw->SearchControl(EVENT_OBJECT_GRANGE));
@@ -1462,7 +1480,7 @@ void CObjectInterface::UpdateInterface(float rTime)
         icon = 2;  // blue/red
         range = dynamic_cast<CJetFlyingObject*>(m_object)->GetReactorRange();
 
-        if ( range < 0.2f && range != 0.0f && !m_physics->GetLand() )
+        if ( range < 0.2f && range != 0.0f && !m_physics->GetLand() ) // low but not zero/landed?
         {
             if ( Math::Mod(m_time, 0.5f) >= 0.2f )  // blinks?
             {

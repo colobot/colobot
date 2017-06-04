@@ -61,9 +61,6 @@
 #include <getopt.h>
 #include <localename.h>
 
-
-template<> CApplication* CSingleton<CApplication>::m_instance = nullptr;
-
 char CApplication::m_languageLocale[] = { 0 };
 
 
@@ -1854,9 +1851,10 @@ bool CApplication::GetSceneTestMode()
     return m_sceneTest;
 }
 
-void CApplication::SetTextInput(bool textInputEnabled)
+void CApplication::SetTextInput(bool textInputEnabled, int id)
 {
-    if (textInputEnabled)
+    m_textInputEnabled[id] = textInputEnabled;
+    if (std::any_of(m_textInputEnabled.begin(), m_textInputEnabled.end(), [](std::pair<int, bool> v) { return v.second; }))
     {
         SDL_StartTextInput();
     }

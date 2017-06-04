@@ -34,6 +34,7 @@
 #include "graphics/engine/terrain.h"
 
 #include "level/robotmain.h"
+#include "level/scoreboard.h"
 
 #include "level/parser/parserexceptions.h"
 #include "level/parser/parserline.h"
@@ -206,6 +207,7 @@ void COldObject::DeleteObject(bool bAll)
     if ( !bAll )
     {
         m_engine->GetPyroManager()->CutObjectLink(this);
+        m_particle->CutObjectLink(this);
 
         if ( m_bSelect )
         {
@@ -339,7 +341,7 @@ void COldObject::Simplify()
 }
 
 
-bool COldObject::DamageObject(DamageType type, float force)
+bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
 {
     assert(Implements(ObjectInterfaceType::Damageable));
     assert(!Implements(ObjectInterfaceType::Destroyable) || Implements(ObjectInterfaceType::Shielded) || Implements(ObjectInterfaceType::Fragile));
@@ -358,8 +360,9 @@ bool COldObject::DamageObject(DamageType type, float force)
     else if ( Implements(ObjectInterfaceType::Fragile) )
     {
         if ( m_type == OBJECT_BOMB && type != DamageType::Explosive ) return false; // Mine can't be destroyed by shooting
+        if ( m_type == OBJECT_URANIUM ) return false; // UraniumOre is not destroyable (see #777)
 
-        DestroyObject(DestructionType::Explosion);
+        DestroyObject(DestructionType::Explosion, killer);
         return true;
     }
 
@@ -404,11 +407,11 @@ bool COldObject::DamageObject(DamageType type, float force)
     {
         if (type == DamageType::Fire)
         {
-            DestroyObject(DestructionType::Burn);
+            DestroyObject(DestructionType::Burn, killer);
         }
         else
         {
-            DestroyObject(DestructionType::Explosion);
+            DestroyObject(DestructionType::Explosion, killer);
         }
         return true;
     }
@@ -429,7 +432,7 @@ bool COldObject::DamageObject(DamageType type, float force)
     return false;
 }
 
-void COldObject::DestroyObject(DestructionType type)
+void COldObject::DestroyObject(DestructionType type, CObject* killer)
 {
     assert(Implements(ObjectInterfaceType::Destroyable));
 
@@ -526,7 +529,17 @@ void COldObject::DestroyObject(DestructionType type)
     {
         pyroType = Gfx::PT_DEADW;
     }
+    else if ( type == DestructionType::Win )
+    {
+        pyroType = Gfx::PT_WPCHECK;
+    }
     assert(pyroType != Gfx::PT_NULL);
+    if (pyroType == Gfx::PT_FRAGT ||
+        pyroType == Gfx::PT_FRAGO ||
+        pyroType == Gfx::PT_FRAGW)
+    {
+        SetDying(DeathType::Exploding);
+    }
     m_engine->GetPyroManager()->Create(pyroType, this);
 
     if ( Implements(ObjectInterfaceType::Programmable) )
@@ -542,6 +555,10 @@ void COldObject::DestroyObject(DestructionType type)
         m_main->DeselectAll();
     }
     m_main->RemoveFromSelectionHistory(this);
+
+    CScoreboard* scoreboard = m_main->GetScoreboard();
+    if (scoreboard)
+        scoreboard->ProcessKill(this, killer);
 
     m_team = 0; // Back to neutral on destruction
 
@@ -944,6 +961,9 @@ void COldObject::Write(CLevelParserLine* line)
     if ( GetCameraLock() )
         line->AddParam("cameraLock", MakeUnique<CLevelParserParam>(GetCameraLock()));
 
+    if ( IsBulletWall() )
+        line->AddParam("bulletWall", MakeUnique<CLevelParserParam>(IsBulletWall()));
+
     if ( GetEnergyLevel() != 0.0f )
         line->AddParam("energy", MakeUnique<CLevelParserParam>(GetEnergyLevel()));
 
@@ -1038,6 +1058,8 @@ void COldObject::Read(CLevelParserLine* line)
 
     if (line->GetParam("pyro")->IsDefined())
         m_engine->GetPyroManager()->Create(line->GetParam("pyro")->AsPyroType(), this);
+
+    SetBulletWall(line->GetParam("bulletWall")->AsBool(IsBulletWallByDefault(m_type)));
 
     SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
     SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
@@ -3257,6 +3279,26 @@ bool COldObject::IsSelectableByDefault(ObjectType type)
         return false;
     }
     return true;
+}
+
+void COldObject::SetBulletWall(bool bulletWall)
+{
+    m_bulletWall = bulletWall;
+}
+
+bool COldObject::IsBulletWall()
+{
+    return m_bulletWall;
+}
+
+bool COldObject::IsBulletWallByDefault(ObjectType type)
+{
+    if ( type == OBJECT_BARRICADE0 ||
+         type == OBJECT_BARRICADE1 )
+    {
+        return true;
+    }
+    return false;
 }
 
 int COldObject::GetModel()

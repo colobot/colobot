@@ -260,6 +260,19 @@ msgstr ""
 msgid "Generating"
 msgstr ""
 
+msgid "Results"
+msgstr ""
+
+msgid "The battle has ended"
+msgstr ""
+
+#, c-format
+msgid "%s: %d pts"
+msgstr ""
+
+msgid "Code battle"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 
@@ -1599,6 +1612,18 @@ msgid "Spider fatally wounded"
 msgstr ""
 
 msgid "Press \\key help; to read instructions on your SatCom"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s finished! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s lost! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s recieved %d points >>>"
 msgstr ""
 
 msgid "Opening bracket missing"

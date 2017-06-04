@@ -216,15 +216,15 @@ protected:
             if (error != CBotNoErr)
             {
                 ADD_FAILURE() << "Compile error - " << error << " (" << cursor1 << "-" << (cursor2 >= 0 ? cursor2 : cursor1) << ")" << std::endl << GetFormattedLineInfo(code, cursor1); // TODO: Error messages are on Colobot side
-                return std::move(program);
+                return program;
             }
             else
             {
                 ADD_FAILURE() << "No compile error, expected " << expectedCompileError; // TODO: Error messages are on Colobot side
-                return std::move(program);
+                return program;
             }
         }
-        if (expectedCompileError != CBotNoErr) return std::move(program);
+        if (expectedCompileError != CBotNoErr) return program;
 
         for (const std::string& test : tests)
         {
@@ -285,7 +285,7 @@ protected:
                 ADD_FAILURE() << ss.str();
             }
         }
-        return std::move(program); // Take it if you want, destroy on exit otherwise
+        return program; // Take it if you want, destroy on exit otherwise
     }
 };
 
@@ -2384,5 +2384,21 @@ TEST_F(CBotUT, ParametersWithDefaultValues)
         "void Test(int i, float f = 2.0, int ii = 1) {}\n"
         "\n",
         CBotErrAmbiguousCall
+    );
+
+    ExecuteTest(
+        "extern void DefaultValueUnaryExpression() {\n"
+        "    TestNumbers();\n"
+        "    TestBool();\n"
+        "}\n"
+        "void TestNumbers(int i = -1, float f = -1, int ii = ~1) {\n"
+        "    ASSERT(i == -1);\n"
+        "    ASSERT(f == -1.0);\n"
+        "    ASSERT(ii == ~1);\n"
+        "}\n"
+        "void TestBool(bool b = !false, bool b2 = not false) {\n"
+        "    ASSERT(true == b);\n"
+        "    ASSERT(true == b2);\n"
+        "}\n"
     );
 }

@@ -46,7 +46,7 @@ void CSignalHandlers::Init(CSystemUtils* systemUtils)
 
 void CSignalHandlers::SignalHandler(int sig)
 {
-    std::string signalStr = StrUtils::ToString(signal);
+    std::string signalStr = StrUtils::ToString(sig);
     switch(sig)
     {
         case SIGSEGV: signalStr = "SIGSEGV, segmentation fault"; break;
