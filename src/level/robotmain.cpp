@@ -2304,37 +2304,7 @@ void CRobotMain::InitEye()
 //! Advances the entire scene
 bool CRobotMain::EventFrame(const Event &event)
 {
-    // TODO: For some reason we're getting one big event with event.rTime > 0.1f after loading before the movie starts?
-    if (!m_immediatSatCom && !m_beginSatCom && !m_movieLock &&
-         m_gameTime > 0.1f && m_phase == PHASE_SIMUL)
-    {
-        m_displayText->DisplayError(INFO_BEGINSATCOM, Math::Vector(0.0f,0.0f,0.0f));
-        m_beginSatCom = true;  // message appears
-    }
-
     m_time += event.rTime;
-    if (!m_movieLock && !m_pause->IsPauseType(PAUSE_ENGINE))
-    {
-        m_gameTime += event.rTime;
-        m_gameTimeAbsolute += m_app->GetRealRelTime() / 1e9f;
-    }
-
-    if (!m_movieLock && !m_pause->IsPauseType(PAUSE_ENGINE) && m_missionTimerStarted)
-        m_missionTimer += event.rTime;
-
-    if (!m_pause->IsPauseType(PAUSE_ENGINE) && m_autosave && m_gameTimeAbsolute >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL)
-    {
-        if (m_levelCategory == LevelCategory::Missions    ||
-            m_levelCategory == LevelCategory::FreeGame    ||
-            m_levelCategory == LevelCategory::CustomLevels )
-        {
-            if (!IOIsBusy() && m_missionType != MISSION_CODE_BATTLE)
-            {
-                m_autosaveLast = m_gameTimeAbsolute;
-                Autosave();
-            }
-        }
-    }
 
     m_water->EventProcess(event);
     m_cloud->EventProcess(event);
@@ -2418,6 +2388,40 @@ bool CRobotMain::EventFrame(const Event &event)
     // Advances toto following the camera, because its position depends on the camera.
     if (toto != nullptr)
         dynamic_cast<CInteractiveObject*>(toto)->EventProcess(event);
+
+    // NOTE: m_movieLock is set only after the first update of CAutoBase finishes
+
+    if (m_phase == PHASE_SIMUL)
+    {
+        if (!m_immediatSatCom && !m_beginSatCom && !m_movieLock)
+        {
+            m_displayText->DisplayError(INFO_BEGINSATCOM, Math::Vector(0.0f, 0.0f, 0.0f));
+            m_beginSatCom = true;  // message appears
+        }
+
+        if (!m_pause->IsPauseType(PAUSE_ENGINE) && !m_movieLock)
+        {
+            m_gameTime += event.rTime;
+            m_gameTimeAbsolute += m_app->GetRealRelTime() / 1e9f;
+
+            if (m_missionTimerStarted)
+                m_missionTimer += event.rTime;
+
+            if (m_autosave && m_gameTimeAbsolute >= m_autosaveLast + (m_autosaveInterval * 60))
+            {
+                if (m_levelCategory == LevelCategory::Missions ||
+                    m_levelCategory == LevelCategory::FreeGame ||
+                    m_levelCategory == LevelCategory::CustomLevels)
+                {
+                    if (!IOIsBusy() && m_missionType != MISSION_CODE_BATTLE)
+                    {
+                        m_autosaveLast = m_gameTimeAbsolute;
+                        Autosave();
+                    }
+                }
+            }
+        }
+    }
 
     HiliteFrame(event.rTime);
 
@@ -3645,12 +3649,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + line->GetLevelFilename() + ":" + boost::lexical_cast<std::string>(line->GetLineNumber()));
         }
 
+        // Do this here to prevent the first frame from taking a long time to render
+        m_engine->UpdateGroundSpotTextures();
+
         m_ui->GetLoadingScreen()->SetProgress(1.0f, RT_LOADING_FINISHED);
         if (m_ui->GetLoadingScreen()->IsVisible())
         {
-            // Force render of the "Loading finished" screen
-            // TODO: For some reason, rendering of the first frame after the simulation starts is very slow
-            // We're doing this because it looks weird when the progress bar is finished but it still says "Loading programs"
+            // Force render of the "Loading finished" screen because it looks weird when the progress bar disappears in the middle
             m_app->Render();
         }
 
