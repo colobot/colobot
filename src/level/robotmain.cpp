@@ -968,33 +968,25 @@ bool CRobotMain::ProcessEvent(Event &event)
                 {
                     StartDisplayVisit(EVENT_NULL);
                 }
-                if (data->slot == INPUT_SLOT_SPEED05)
+                if (data->slot == INPUT_SLOT_SPEED_DEC)
                 {
-                    SetSpeed(0.5f);
+                    SetSpeed(GetSpeed()*0.5f);
                 }
-                if (data->slot == INPUT_SLOT_SPEED10)
+                if (data->slot == INPUT_SLOT_SPEED_RESET)
                 {
                     SetSpeed(1.0f);
                 }
-                if (data->slot == INPUT_SLOT_SPEED15)
+                if (data->slot == INPUT_SLOT_SPEED_INC)
                 {
-                    SetSpeed(1.5f);
+                    SetSpeed(GetSpeed()*2.0f);
                 }
-                if (data->slot == INPUT_SLOT_SPEED20)
+                if (data->slot == INPUT_SLOT_QUICKSAVE)
                 {
-                    SetSpeed(2.0f);
+                    QuickSave();
                 }
-                if (data->slot == INPUT_SLOT_SPEED30)
+                if (data->slot == INPUT_SLOT_QUICKLOAD)
                 {
-                    SetSpeed(3.0f);
-                }
-                if (data->slot == INPUT_SLOT_SPEED40)
-                {
-                    SetSpeed(4.0f);
-                }
-                if (data->slot == INPUT_SLOT_SPEED60)
-                {
-                    SetSpeed(6.0f);
+                    QuickLoad();
                 }
                 if (data->key == KEY(c) && ((event.kmodState & KEY_MOD(CTRL)) != 0) && m_engine->GetShowStats())
                 {
@@ -5563,6 +5555,30 @@ void CRobotMain::Autosave()
     std::string dir = m_playerProfile->GetSaveFile(std::string("autosave") + timestr);
 
     m_playerProfile->SaveScene(dir, info);
+}
+
+void CRobotMain::QuickSave()
+{
+    GetLogger()->Info("Quicksave!\n");
+    
+    char infostr[100];
+    time_t now = time(nullptr);
+    strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
+    std::string info = std::string("[QUICKSAVE]") + infostr;
+    std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
+    
+    m_playerProfile->SaveScene(dir, info);
+}
+
+void CRobotMain::QuickLoad()
+{
+    std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
+    if(!CResourceManager::Exists(dir))
+    {
+        GetLogger()->Debug("Quicksave slot not found\n");
+        return;
+    }
+    m_playerProfile->LoadScene(dir);
 }
 
 void CRobotMain::SetExitAfterMission(bool exit)
