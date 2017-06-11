@@ -1220,6 +1220,10 @@ msgstr ""
 msgid "Quick save\\Immediately save game"
 msgstr ""
 
+#, fuzzy
+msgid "Quicksave slot not found"
+msgstr "Объект не найден"
+
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr "Выход\\Выйти из Colobot: Gold Edition"
 
@@ -1950,9 +1954,6 @@ msgstr "epsitec.com"
 
 #~ msgid "Num of decorative objects\\Number of purely ornamental objects"
 #~ msgstr "Количество декораций\\Количество декоративных объектов"
-
-#~ msgid "Object not found"
-#~ msgstr "Объект не найден"
 
 #~ msgid "Planets and stars\\Astronomical objects in the sky"
 #~ msgstr "Планеты и звезды\\Астрономические объекты в небе"

@@ -641,6 +641,7 @@ void InitializeRestext()
     stringsErr[ERR_DELETEBUILDING]  = TR("Building destroyed");
     stringsErr[ERR_ENEMY_OBJECT]    = TR("Unable to control enemy objects");
     stringsErr[ERR_WRONG_BOT]       = TR("Inappropriate bot");
+    stringsErr[ERR_NO_QUICK_SLOT]   = TR("Quicksave slot not found");
 
     stringsErr[INFO_BUILD]          = TR("Building completed");
     stringsErr[INFO_CONVERT]        = TR("Titanium available");

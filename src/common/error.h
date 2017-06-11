@@ -112,6 +112,7 @@ enum Error
     ERR_PROHIBITEDTOKEN   = 801,      //!<  instruction prohibited
     ERR_AIM_IMPOSSIBLE    = 900,      //!<  cannot aim at specified angle(s)
     ERR_WRONG_BOT         = 910,      //!<  inappropriate bot
+    ERR_NO_QUICK_SLOT     = 920,      //!<  quicksave slot not found
 
     INFO_FIRST            = 10000,    //! <  first information
     INFO_BUILD            = 10001,    //! <  construction builded

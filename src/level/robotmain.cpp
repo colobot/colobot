@@ -5575,6 +5575,7 @@ void CRobotMain::QuickLoad()
     std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
     if(!CResourceManager::Exists(dir))
     {
+        m_displayText->DisplayError(ERR_NO_QUICK_SLOT, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
         GetLogger()->Debug("Quicksave slot not found\n");
         return;
     }

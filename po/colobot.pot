@@ -1527,6 +1527,9 @@ msgstr ""
 msgid "Inappropriate bot"
 msgstr ""
 
+msgid "Quicksave slot not found"
+msgstr ""
+
 msgid "Building completed"
 msgstr ""
 

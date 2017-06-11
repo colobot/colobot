@@ -1194,6 +1194,9 @@ msgstr "Szybkie wczytywanie\\Natychmiastowo wczytuje zapisaną grę"
 msgid "Quick save\\Immediately save game"
 msgstr "Szybki zapis\\Natychmiastowo zapisuje grę"
 
+msgid "Quicksave slot not found"
+msgstr "Nie odnaleziono slotu szybkiego zapisu"
+
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr "Wyjdź\\Kończy grę Colobot: Gold Edition"
 
