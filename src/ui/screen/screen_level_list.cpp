@@ -244,10 +244,11 @@ void CScreenLevelList::CreateInterface()
         if(m_customLevelList.size() == 0)
         {
             m_main->ChangePhase(PHASE_MAIN_MENU);
-            std::string title, text;
-            GetResource(RES_TEXT, RT_DIALOG_NOUSRLVL_TITLE, title);
+            std::string title, htext, text;
+            GetResource(RES_TEXT, RT_TITLE_APPNAME, title);
+            GetResource(RES_TEXT, RT_DIALOG_NOUSRLVL_TITLE, htext);
             GetResource(RES_TEXT, RT_DIALOG_NOUSRLVL_TEXT, text);
-            m_dialog->StartInformation(title, title, text);
+            m_dialog->StartInformation(title, htext, text);
         }
     }
 }
