@@ -1345,7 +1345,7 @@ void CParticle::FrameParticle(float rTime)
                 {
                     if (object->Implements(ObjectInterfaceType::Damageable))
                     {
-                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.001f, m_particle[i].objFather);
+                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.02f, m_particle[i].objFather);
                     }
 
                     m_exploGunCounter ++;
