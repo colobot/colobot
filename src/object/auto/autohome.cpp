@@ -61,7 +61,7 @@ CAutoHome::~CAutoHome()
 }
 
 
-// DÈtruit l'objet.
+// D√©truit l'objet.
 
 void CAutoHome::DeleteObject(BOOL bAll)
 {
@@ -84,7 +84,7 @@ void CAutoHome::Init()
 }
 
 
-// DÈmarre l'objet.
+// D√©marre l'objet.
 
 void CAutoHome::Start(int param)
 {
@@ -123,7 +123,7 @@ void CAutoHome::Start(int param)
            m_breakTimeBzzz[i] = m_breakTimeWait[i]+Rand()*(0.9f-m_breakTimeWait[i]);
        }
 
-       m_object->SetLock(TRUE);  // plus dÈtectÈ par la suite
+       m_object->SetLock(TRUE);  // plus d√©tect√© par la suite
        return;
    }
 
@@ -162,7 +162,7 @@ void CAutoHome::Start(int param)
 }
 
 
-// Gestion d'un ÈvÈnement.
+// Gestion d'un √©v√©nement.
 
 BOOL CAutoHome::EventProcess(const Event &event)
 {
@@ -291,7 +291,7 @@ BOOL CAutoHome::EventProcess(const Event &event)
            m_vehicle->SetLock(FALSE);
            m_camera->SetObject(m_vehicle);
            m_camera->SetType(m_cameraType);
-           m_main->SetStopwatch(TRUE);  // redÈmarre le chrono
+           m_main->SetStopwatch(TRUE);  // red√©marre le chrono
        }
    }
 
@@ -541,7 +541,7 @@ BOOL CAutoHome::EventProcess(const Event &event)
            if ( m_progress >= 1.0f && !m_bBreakFinish )
            {
                m_bBreakFinish = TRUE;
-               m_bot->SetExplo(TRUE);  // comme si plus l‡ !
+               m_bot->SetExplo(TRUE);  // comme si plus l√† !
                HappyBlupi();  // les blupis sont heureux
            }
        }
@@ -571,7 +571,7 @@ BOOL CAutoHome::Abort()
 }
 
 
-// Met ‡ jour les feux de stop.
+// Met √† jour les feux de stop.
 
 void CAutoHome::FireStopUpdate()
 {
@@ -591,7 +591,7 @@ void CAutoHome::FireStopUpdate()
        -3.0f,  6.0f,   0.0f,  // 2 feux sur la porte
    };
 
-   if ( m_phase == AHOP_WAIT )  // Èteint ?
+   if ( m_phase == AHOP_WAIT )  // √©teint ?
    {
        for ( i=0 ; i<6 ; i++ )
        {
@@ -639,7 +639,7 @@ void CAutoHome::FireStopUpdate()
 }
 
 
-// Retourne une erreur liÈe ‡ l'Ètat de l'automate.
+// Retourne une erreur li√©e √† l'√©tat de l'automate.
 
 Error CAutoHome::RetError()
 {
@@ -647,7 +647,7 @@ Error CAutoHome::RetError()
 }
 
 
-// GÈnËre les particules suite au dÈcollage.
+// G√©n√®re les particules suite au d√©collage.
 
 void CAutoHome::StartingEffect()
 {
@@ -671,7 +671,7 @@ void CAutoHome::StartingEffect()
    }
 }
 
-// DÈplace le robot du vÈhicule ‡ la maison.
+// D√©place le robot du v√©hicule √† la maison.
 
 void CAutoHome::MoveBot(float progress, float rTime)
 {
@@ -774,7 +774,7 @@ void CAutoHome::MoveBot(float progress, float rTime)
    }
 }
 
-// GÈnËre les particules suite ‡ l'atterrissage.
+// G√©n√®re les particules suite √† l'atterrissage.
 
 void CAutoHome::EndingEffect()
 {
@@ -810,7 +810,7 @@ void CAutoHome::EndingEffect()
    }
 }
 
-// Cherche l'objet vÈhicule.
+// Cherche l'objet v√©hicule.
 
 CObject* CAutoHome::SearchVehicle()
 {
@@ -867,7 +867,7 @@ CObject* CAutoHome::SearchObject(ObjectType type, D3DVECTOR center, float radius
        if ( pObj == 0 )  break;
 
        if ( pObj->RetExplo() )  continue;
-       if ( pObj->RetLock() )  continue;  // dÈj‡ stoppÈ ?
+       if ( pObj->RetLock() )  continue;  // d√©j√† stopp√© ?
 
        if ( type != pObj->RetType() )  continue;
 
@@ -883,7 +883,7 @@ CObject* CAutoHome::SearchObject(ObjectType type, D3DVECTOR center, float radius
    return pBest;
 }
 
-// VÈrifie si l'objet sÈlectionnÈ est proche.
+// V√©rifie si l'objet s√©lectionn√© est proche.
 
 BOOL CAutoHome::ProxiSelect(float dist)
 {
@@ -916,7 +916,7 @@ BOOL CAutoHome::ProxiSelect(float dist)
 #endif
 }
 
-// Cherche le point o˘ mettre du fret sur un vÈhicule.
+// Cherche le point o√π mettre du fret sur un v√©hicule.
 
 D3DVECTOR CAutoHome::RetVehiclePoint(CObject *pObj)
 {
@@ -931,7 +931,7 @@ D3DVECTOR CAutoHome::RetVehiclePoint(CObject *pObj)
    return pos;
 }
 
-// DÈmarre une action pour le vÈhicule.
+// D√©marre une action pour le v√©hicule.
 
 void CAutoHome::StartVehicleAction(int action)
 {
@@ -946,7 +946,7 @@ void CAutoHome::StartVehicleAction(int action)
    motion->SetAction(action, delay);
 }
 
-// DÈmarre une action "soulevÈ" pour l'objet pris par la grue.
+// D√©marre une action "soulev√©" pour l'objet pris par la grue.
 
 void CAutoHome::StartBotAction(int action, float delay)
 {

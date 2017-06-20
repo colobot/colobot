@@ -74,7 +74,7 @@ void CMotionBot::DeleteObject(BOOL bAll)
 }
 
 
-// Démarre une action spéciale.
+// DÃ©marre une action spÃ©ciale.
 
 Error CMotionBot::SetAction(int action, float time)
 {
@@ -129,7 +129,7 @@ Error CMotionBot::SetAction(int action, float time)
        if ( action == MB_BREAK )
        {
            m_bBreak = TRUE;
-           action = MB_WALK1;  // cassé
+           action = MB_WALK1;  // cassÃ©
        }
        if ( action == MB_REPAIR )
        {
@@ -146,7 +146,7 @@ Error CMotionBot::SetAction(int action, float time)
            UpdateFaceMapping(action-MB_HAPPY);
            return ERR_OK;
        }
-       if ( action == MB_WALK1 )  // oreilles cassées ?
+       if ( action == MB_WALK1 )  // oreilles cassÃ©es ?
        {
            UpdateFaceMapping(1);
        }
@@ -156,7 +156,7 @@ Error CMotionBot::SetAction(int action, float time)
    {
        if ( action == MB_WAIT && m_object->RetTruck() != 0 )
        {
-           action = MB_HOME2;  // transporté dans véhicule
+           action = MB_HOME2;  // transportÃ© dans vÃ©hicule
        }
    }
 
@@ -164,7 +164,7 @@ Error CMotionBot::SetAction(int action, float time)
    {
        if ( action == MB_WAIT && m_object->RetTruck() != 0 )
        {
-           action = MB_HOME2;  // transporté dans véhicule
+           action = MB_HOME2;  // transportÃ© dans vÃ©hicule
        }
    }
 
@@ -196,7 +196,7 @@ Error CMotionBot::SetAction(int action, float time)
 }
 
 
-// Crée un robot quelconque posé sur le sol.
+// CrÃ©e un robot quelconque posÃ© sur le sol.
 
 BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb)
 {
@@ -211,7 +211,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
    CreatePhysics();
    pModFile = new CModFile(m_iMan);
 
-   // Crée la base principale.
+   // CrÃ©e la base principale.
    rank = m_engine->CreateObject();
    m_engine->SetObjectType(rank, TYPEFIX);  // c'est un objet fixe
    m_object->SetObjectRank(0, rank);
@@ -238,7 +238,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
         type == OBJECT_STARTER ||
         type == OBJECT_GUIDE   )
    {
-       // Crée la jambe unique.
+       // CrÃ©e la jambe unique.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(1, rank);
@@ -247,7 +247,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(1, D3DVECTOR(0.0f, -2.3f, 0.0f));
 
-       // Crée le corps.
+       // CrÃ©e le corps.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(2, rank);
@@ -267,7 +267,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(2, D3DVECTOR(0.0f, 1.4f, 0.0f));
 
-       // Crée la tête.
+       // CrÃ©e la tÃªte.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(3, rank);
@@ -276,7 +276,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(3, D3DVECTOR(0.0f, 2.2f, 0.0f));
 
-       // Crée l'antenne droite.
+       // CrÃ©e l'antenne droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(4, rank);
@@ -285,7 +285,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(4, D3DVECTOR(-0.2f, 1.4f, -1.4f));
 
-       // Crée l'antenne gauche.
+       // CrÃ©e l'antenne gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(5, rank);
@@ -294,7 +294,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(5, D3DVECTOR(-0.2f, 1.4f, 1.4f));
 
-       // Crée le bras droite.
+       // CrÃ©e le bras droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(6, rank);
@@ -303,7 +303,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(6, D3DVECTOR(0.0f, 1.6f, -1.1f));
 
-       // Crée l'avant bras droite.
+       // CrÃ©e l'avant bras droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(7, rank);
@@ -312,7 +312,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(7, D3DVECTOR(0.0f, 0.0f, -1.9f));
 
-       // Crée le bras gauche.
+       // CrÃ©e le bras gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(8, rank);
@@ -322,7 +322,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(8, D3DVECTOR(0.0f, 1.6f, 1.1f));
 
-       // Crée l'avant bras gauche.
+       // CrÃ©e l'avant bras gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(9, rank);
@@ -342,7 +342,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
 
    if ( type == OBJECT_BOT2 )
    {
-       // Crée la tête.
+       // CrÃ©e la tÃªte.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(1, rank);
@@ -351,7 +351,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(1, D3DVECTOR(0.0f, 2.7f, 0.0f));
 
-       // Crée la jambe droite.
+       // CrÃ©e la jambe droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(2, rank);
@@ -360,7 +360,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(2, D3DVECTOR(0.0f, 0.0f, -0.25f));
 
-       // Crée le pied droite.
+       // CrÃ©e le pied droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(3, rank);
@@ -369,7 +369,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(3, D3DVECTOR(0.0f, -1.0f, 0.0f));
 
-       // Crée la jambe gauche.
+       // CrÃ©e la jambe gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(4, rank);
@@ -379,7 +379,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(4, D3DVECTOR(0.0f, 0.0f, 0.25f));
 
-       // Crée le pied gauche.
+       // CrÃ©e le pied gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(5, rank);
@@ -389,7 +389,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(5, D3DVECTOR(0.0f, -1.0f, 0.0f));
 
-       // Crée le bras droite.
+       // CrÃ©e le bras droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(6, rank);
@@ -398,7 +398,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(6, D3DVECTOR(0.0f, 1.8f, -1.15f));
 
-       // Crée la main droite.
+       // CrÃ©e la main droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(7, rank);
@@ -407,7 +407,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(7, D3DVECTOR(0.0f, -1.25f, 0.0f));
 
-       // Crée le bras gauche.
+       // CrÃ©e le bras gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(8, rank);
@@ -417,7 +417,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(8, D3DVECTOR(0.0f, 1.6f, 1.15f));
 
-       // Crée la main gauche.
+       // CrÃ©e la main gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(9, rank);
@@ -430,7 +430,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
 
    if ( type == OBJECT_BOT3 )
    {
-       // Crée la jambe droite.
+       // CrÃ©e la jambe droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(1, rank);
@@ -439,7 +439,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(1, D3DVECTOR(-0.5f, -0.3f, -0.9f));
 
-       // Crée la jambe droite.
+       // CrÃ©e la jambe droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(2, rank);
@@ -448,7 +448,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(2, D3DVECTOR(0.0f, -0.4f, 0.0f));
 
-       // Crée le pied droite.
+       // CrÃ©e le pied droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(3, rank);
@@ -457,7 +457,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(3, D3DVECTOR(0.0f, -0.4f, 0.0f));
 
-       // Crée la jambe gauche.
+       // CrÃ©e la jambe gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(4, rank);
@@ -467,7 +467,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(4, D3DVECTOR(-0.5f, -0.3f, 0.9f));
 
-       // Crée la jambe gauche.
+       // CrÃ©e la jambe gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(5, rank);
@@ -477,7 +477,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(5, D3DVECTOR(0.0f, -0.4f, 0.0f));
 
-       // Crée le pied gauche.
+       // CrÃ©e le pied gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(6, rank);
@@ -487,7 +487,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(6, D3DVECTOR(0.0f, -0.4f, 0.0f));
 
-       // Crée le bras droite.
+       // CrÃ©e le bras droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(7, rank);
@@ -496,7 +496,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(7, D3DVECTOR(-0.1f, 2.3f, -1.3f));
 
-       // Crée le bras droite.
+       // CrÃ©e le bras droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(8, rank);
@@ -505,7 +505,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(8, D3DVECTOR(0.0f, 0.0f, -1.45f));
 
-       // Crée la main droite.
+       // CrÃ©e la main droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(9, rank);
@@ -515,7 +515,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        m_object->SetPosition(9, D3DVECTOR(0.0f, 0.0f, -1.3f));
        m_object->SetZoom(9, 1.3f);
 
-       // Crée le bras gauche.
+       // CrÃ©e le bras gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(10, rank);
@@ -525,7 +525,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(10, D3DVECTOR(-0.1f, 2.3f, 1.3f));
 
-       // Crée le bras gauche.
+       // CrÃ©e le bras gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(11, rank);
@@ -535,7 +535,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, 1.45f));
 
-       // Crée la main gauche.
+       // CrÃ©e la main gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(12, rank);
@@ -546,7 +546,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        m_object->SetPosition(12, D3DVECTOR(0.0f, 0.0f, 1.3f));
        m_object->SetZoom(12, 1.3f);
 
-       // Crée le sourcil droite.
+       // CrÃ©e le sourcil droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(13, rank);
@@ -555,7 +555,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(13, D3DVECTOR(0.3f, 3.8f, -0.6f));
 
-       // Crée le sourcil gauche.
+       // CrÃ©e le sourcil gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(14, rank);
@@ -570,7 +570,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
         type == OBJECT_WALKER ||
         type == OBJECT_CRAZY  )
    {
-       // Crée le coup.
+       // CrÃ©e le coup.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(1, rank);
@@ -579,7 +579,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(1, D3DVECTOR(0.0f, 2.0f, 0.0f));
 
-       // Crée la tête.
+       // CrÃ©e la tÃªte.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(2, rank);
@@ -588,7 +588,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(2, D3DVECTOR(0.0f, 0.5f, 0.0f));
 
-       // Crée la jambe droite.
+       // CrÃ©e la jambe droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(3, rank);
@@ -597,7 +597,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(3, D3DVECTOR(0.0f, -0.4f, -0.7f));
 
-       // Crée la jambe droite.
+       // CrÃ©e la jambe droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(4, rank);
@@ -606,7 +606,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(4, D3DVECTOR(0.0f, -1.5f, 0.0f));
 
-       // Crée le pied droite.
+       // CrÃ©e le pied droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(5, rank);
@@ -615,7 +615,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(5, D3DVECTOR(0.0f, -1.6f, 0.0f));
 
-       // Crée la jambe gauche.
+       // CrÃ©e la jambe gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(6, rank);
@@ -625,7 +625,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(6, D3DVECTOR(0.0f, -0.4f, 0.7f));
 
-       // Crée la jambe gauche.
+       // CrÃ©e la jambe gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(7, rank);
@@ -635,7 +635,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(7, D3DVECTOR(0.0f, -1.5f, 0.0f));
 
-       // Crée le pied gauche.
+       // CrÃ©e le pied gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(8, rank);
@@ -645,7 +645,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(8, D3DVECTOR(0.0f, -1.6f, 0.0f));
 
-       // Crée le bras droite.
+       // CrÃ©e le bras droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(9, rank);
@@ -654,7 +654,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(9, D3DVECTOR(0.0f, 1.8f, -0.7f));
 
-       // Crée le bras droite.
+       // CrÃ©e le bras droite.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(10, rank);
@@ -663,7 +663,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(10, D3DVECTOR(0.0f, 0.0f, -1.5f));
 
-       // Crée la main droite sup.
+       // CrÃ©e la main droite sup.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(11, rank);
@@ -672,7 +672,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, -1.5f));
 
-       // Crée la main droite inf.
+       // CrÃ©e la main droite inf.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(12, rank);
@@ -681,7 +681,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(12, D3DVECTOR(0.0f, 0.0f, -1.5f));
 
-       // Crée le bras gauche.
+       // CrÃ©e le bras gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(13, rank);
@@ -691,7 +691,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(13, D3DVECTOR(0.0f, 1.8f, 0.7f));
 
-       // Crée le bras gauche.
+       // CrÃ©e le bras gauche.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(14, rank);
@@ -701,7 +701,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(14, D3DVECTOR(0.0f, 0.0f, 1.5f));
 
-       // Crée la main gauche sup.
+       // CrÃ©e la main gauche sup.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(15, rank);
@@ -711,7 +711,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
        pModFile->CreateEngineObject(rank);
        m_object->SetPosition(15, D3DVECTOR(0.0f, 0.0f, 1.5f));
 
-       // Crée la main gauche inf.
+       // CrÃ©e la main gauche inf.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(16, rank);
@@ -724,7 +724,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
 
    if ( type == OBJECT_EVIL1 )
    {
-       // Crée la trompe.
+       // CrÃ©e la trompe.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(1, rank);
@@ -738,7 +738,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
 
    if ( type == OBJECT_EVIL3 )  // roi ?
    {
-       // Crée la couronne.
+       // CrÃ©e la couronne.
        rank = m_engine->CreateObject();
        m_engine->SetObjectType(rank, TYPEDESCENDANT);
        m_object->SetObjectRank(1, rank);
@@ -777,7 +777,7 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
 }
 
 
-// Crée la physique de l'objet.
+// CrÃ©e la physique de l'objet.
 
 void CMotionBot::CreatePhysics()
 {
@@ -796,7 +796,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
            -15, -20,   0,  // bras droite
@@ -807,7 +807,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
            -65,   0,   0,  // antenne droite
             65,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -818,7 +818,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,  15,  // jambe
              0,   0, -30,  // corps
-             0,   0, -20,  // tête
+             0,   0, -20,  // tÃªte
              0,   0, -40,  // antenne droite
              0,   0, -40,  // antenne gauche
             20, -20, -15,  // bras droite
@@ -829,7 +829,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -840,7 +840,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
            -15, -20,   0,  // bras droite
@@ -851,7 +851,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              5, -20,   0,  // bras droite
@@ -862,29 +862,29 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0, -30,  // antenne droite
              0,   0, -30,  // antenne gauche
             35, -20,   0,  // bras droite
             55,  15, -10,  // avant-bras droite
             15,  20,   0,  // bras gauche
             55, 170,   5,  // avant-bras gauche
-                           // MB_WALK1:  (cassé au sol)
+                           // MB_WALK1:  (cassÃ© au sol)
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,  20,   0,  // tête
+             0,  20,   0,  // tÃªte
            -30,   0, -10,  // antenne droite
             30,   0,  40,  // antenne gauche
            -15,  10,   0,  // bras droite
            -70,  20,   0,  // avant-bras droite
             15, -10,   0,  // bras gauche
             70, -20,   0,  // avant-bras gauche
-                           // MB_WALK2:  (cassé transporté)
+                           // MB_WALK2:  (cassÃ© transportÃ©)
              0,   0,   0,  // socle
              0,   0,  20,  // jambe
              0,   0,  20,  // corps
-             0,   0,  30,  // tête
+             0,   0,  30,  // tÃªte
              0,   0,  30,  // antenne droite
              0,   0,  30,  // antenne gauche
              0,  70,   0,  // bras droite
@@ -895,7 +895,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -906,7 +906,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -929,7 +929,7 @@ void CMotionBot::CreatePhysics()
        {
                            // MB_WAIT:
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
              0,   0,   0,  // jambe gauche
@@ -940,7 +940,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // main gauche
                            // MB_TRUCK:
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
              0,   0,   0,  // jambe gauche
@@ -951,7 +951,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // main gauche
                            // MB_FEAR:
              0,   0,   0,  // corps
-             0,   0,   5,  // tête
+             0,   0,   5,  // tÃªte
              0,   0,  40,  // jambe droite
              0,   0, -20,  // pied droite
              0,   0,  40,  // jambe gauche
@@ -962,7 +962,7 @@ void CMotionBot::CreatePhysics()
              0,   0, -25,  // main gauche
                            // MB_GOHOME:
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
              0,   0,   0,  // jambe gauche
@@ -973,7 +973,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // main gauche
                            // MB_HOME1:
              0,   0,   0,  // corps
-             0,   0,   5,  // tête
+             0,   0,   5,  // tÃªte
              0,   0,  40,  // jambe droite
              0,   0, -20,  // pied droite
              0,   0,  40,  // jambe gauche
@@ -984,7 +984,7 @@ void CMotionBot::CreatePhysics()
              0,   0, -25,  // main gauche
                            // MB_HOME2: (tir)
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0, -55,  // jambe droite
              0,   0,  40,  // pied droite
              0,   0, -55,  // jambe gauche
@@ -995,7 +995,7 @@ void CMotionBot::CreatePhysics()
              0,   0, -15,  // main gauche
                            // MB_FLIC:
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
              0,   0,   0,  // jambe gauche
@@ -1006,7 +1006,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // main gauche
                            // MB_WALK1:
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
              0,   0,   0,  // jambe gauche
@@ -1017,7 +1017,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // main gauche
                            // MB_WALK2:
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
              0,   0,   0,  // jambe gauche
@@ -1028,7 +1028,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // main gauche
                            // MB_WALK3:
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
              0,   0,   0,  // jambe gauche
@@ -1039,7 +1039,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // main gauche
                            // MB_WALK4:
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
              0,   0,   0,  // jambe gauche
@@ -1178,7 +1178,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // main gauche
              0,   0,   0,  // sourcil droite
              0,   0,   0,  // sourcil gauche
-                           // MB_WALK1: (oreilles cassées)
+                           // MB_WALK1: (oreilles cassÃ©es)
              0,   0,   0,  // corps
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
@@ -1259,14 +1259,14 @@ void CMotionBot::CreatePhysics()
                            // MB_WAIT:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -15,  20,   0,  // bras droite (bras écartés)
+           -15,  20,   0,  // bras droite (bras Ã©cartÃ©s)
            -90, -30,  30,  // bras droite
              0,   0,   0,  // main droite sup
              0,   0,   0,  // main droite inf
@@ -1277,7 +1277,7 @@ void CMotionBot::CreatePhysics()
                            // MB_TRUCK:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,  10,  50,  // jambe droite
              0,   0,-100,  // jambe droite
              0,   0,  35,  // pied droite
@@ -1295,7 +1295,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FEAR:
              0,   0,   0,  // corps
              0,   0,  15,  // coup
-             0,   0,  10,  // tête
+             0,   0,  10,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -1313,7 +1313,7 @@ void CMotionBot::CreatePhysics()
                            // MB_GOHOME:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,  10,  50,  // jambe droite
              0,   0,-100,  // jambe droite
              0,   0,  35,  // pied droite
@@ -1331,7 +1331,7 @@ void CMotionBot::CreatePhysics()
                            // MB_HOME1:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -1346,17 +1346,17 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // bras gauche
              0,   0,   0,  // main gauche sup
              0,   0,   0,  // main gauche inf
-                           // MB_HOME2 (dans véhicule):
+                           // MB_HOME2 (dans vÃ©hicule):
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -30, -55,   0,  // bras droite (bras croisés)
+           -30, -55,   0,  // bras droite (bras croisÃ©s)
            -25, -90,  55,  // bras droite
             10, -40,   0,  // main droite sup
            -10, -40,   0,  // main droite inf
@@ -1367,7 +1367,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FLIC:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -1385,7 +1385,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK1:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -1403,7 +1403,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK2:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -1421,7 +1421,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK3:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -1439,7 +1439,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK4:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -1472,7 +1472,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
            -15, -20,   0,  // bras droite
@@ -1483,7 +1483,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
            -65,   0,   0,  // antenne droite
             65,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -1494,7 +1494,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,  15,  // jambe
              0,   0, -30,  // corps
-             0,   0, -20,  // tête
+             0,   0, -20,  // tÃªte
              0,   0, -40,  // antenne droite
              0,   0, -40,  // antenne gauche
             20, -20, -15,  // bras droite
@@ -1505,7 +1505,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -1516,7 +1516,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
            -15, -20,   0,  // bras droite
@@ -1527,7 +1527,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              5, -20,   0,  // bras droite
@@ -1538,7 +1538,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0, -30,  // antenne droite
              0,   0, -30,  // antenne gauche
             35, -20,   0,  // bras droite
@@ -1549,7 +1549,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -1560,7 +1560,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -1571,7 +1571,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -1582,7 +1582,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -1607,7 +1607,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
            -15, -20,   0,  // bras droite
@@ -1618,7 +1618,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
            -65,   0,   0,  // antenne droite
             65,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -1629,7 +1629,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,  15,  // jambe
              0,   0, -30,  // corps
-             0,   0, -20,  // tête
+             0,   0, -20,  // tÃªte
              0,   0, -40,  // antenne droite
              0,   0, -40,  // antenne gauche
             20, -20, -15,  // bras droite
@@ -1640,7 +1640,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -1651,7 +1651,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,  30,   0,  // tête
+             0,  30,   0,  // tÃªte
              0,   0,  40,  // antenne droite
              0,   0,  40,  // antenne gauche
             35, -20, -30,  // bras droite
@@ -1662,7 +1662,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              5, -20,   0,  // bras droite
@@ -1673,7 +1673,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0, -30,  // antenne droite
              0,   0, -30,  // antenne gauche
             35, -20, -30,  // bras droite
@@ -1684,7 +1684,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -1695,7 +1695,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -1706,7 +1706,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -1717,7 +1717,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -1741,14 +1741,14 @@ void CMotionBot::CreatePhysics()
                            // MB_WAIT:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -15,  20,   0,  // bras droite (bras écartés)
+           -15,  20,   0,  // bras droite (bras Ã©cartÃ©s)
            -90, -30,  30,  // bras droite
              0,   0,   0,  // main droite sup
              0,   0,   0,  // main droite inf
@@ -1759,7 +1759,7 @@ void CMotionBot::CreatePhysics()
                            // MB_TRUCK:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,  10,  50,  // jambe droite
              0,   0,-100,  // jambe droite
              0,   0,  35,  // pied droite
@@ -1777,7 +1777,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FEAR:
              0,   0,   0,  // corps
              0,   0,  15,  // coup
-             0,   0,  10,  // tête
+             0,   0,  10,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -1795,7 +1795,7 @@ void CMotionBot::CreatePhysics()
                            // MB_GOHOME:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0, -10,  // tête
+             0,   0, -10,  // tÃªte
              0,   5,  70,  // jambe droite
              0,   0,-130,  // jambe droite
              0,   0,  45,  // pied droite
@@ -1813,7 +1813,7 @@ void CMotionBot::CreatePhysics()
                            // MB_HOME1:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -1828,17 +1828,17 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // bras gauche
              0,   0,   0,  // main gauche sup
              0,   0,   0,  // main gauche inf
-                           // MB_HOME2 (dans véhicule):
+                           // MB_HOME2 (dans vÃ©hicule):
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -30, -55,   0,  // bras droite (bras croisés)
+           -30, -55,   0,  // bras droite (bras croisÃ©s)
            -25, -90,  55,  // bras droite
             10, -40,   0,  // main droite sup
            -10, -40,   0,  // main droite inf
@@ -1849,7 +1849,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FLIC:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  25,  // pied droite
@@ -1867,7 +1867,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK1:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0, -10,  // tête
+             0,   0, -10,  // tÃªte
             10,   5,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  30,  // pied droite
@@ -1885,7 +1885,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK2:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   5, -35,  // jambe droite
              0,   0, -60,  // jambe droite
              0,   0,  20,  // pied droite
@@ -1903,7 +1903,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK3:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0, -10,  // tête
+             0,   0, -10,  // tÃªte
              0,   5,  70,  // jambe droite
              0,   0,-130,  // jambe droite
              0,   0,  45,  // pied droite
@@ -1921,7 +1921,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK4:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   5,  80,  // jambe droite
              0,   0, -50,  // jambe droite
              0,   0,  10,  // pied droite
@@ -1953,14 +1953,14 @@ void CMotionBot::CreatePhysics()
                            // MB_WAIT:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -15,  20,   0,  // bras droite (bras écartés)
+           -15,  20,   0,  // bras droite (bras Ã©cartÃ©s)
            -90, -30,  30,  // bras droite
              0,   0,   0,  // main droite sup
              0,   0,   0,  // main droite inf
@@ -1971,7 +1971,7 @@ void CMotionBot::CreatePhysics()
                            // MB_TRUCK:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,  10,  50,  // jambe droite
              0,   0,-100,  // jambe droite
              0,   0,  35,  // pied droite
@@ -1989,7 +1989,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FEAR:
              0,   0,   0,  // corps
              0,   0,  15,  // coup
-             0,   0,  10,  // tête
+             0,   0,  10,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2007,7 +2007,7 @@ void CMotionBot::CreatePhysics()
                            // MB_GOHOME:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0, -10,  // tête
+             0,   0, -10,  // tÃªte
              0,   5,  70,  // jambe droite
              0,   0,-130,  // jambe droite
              0,   0,  45,  // pied droite
@@ -2025,7 +2025,7 @@ void CMotionBot::CreatePhysics()
                            // MB_HOME1:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2040,17 +2040,17 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // bras gauche
              0,   0,   0,  // main gauche sup
              0,   0,   0,  // main gauche inf
-                           // MB_HOME2 (dans véhicule):
+                           // MB_HOME2 (dans vÃ©hicule):
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -30, -55,   0,  // bras droite (bras croisés)
+           -30, -55,   0,  // bras droite (bras croisÃ©s)
            -25, -90,  55,  // bras droite
             10, -40,   0,  // main droite sup
            -10, -40,   0,  // main droite inf
@@ -2061,7 +2061,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FLIC:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  25,  // pied droite
@@ -2079,7 +2079,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK1:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0, -10,  // tête
+             0,   0, -10,  // tÃªte
             10,   5,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  30,  // pied droite
@@ -2097,7 +2097,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK2:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   5, -35,  // jambe droite
              0,   0, -60,  // jambe droite
              0,   0,  20,  // pied droite
@@ -2115,7 +2115,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK3:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0, -10,  // tête
+             0,   0, -10,  // tÃªte
              0,   5,  70,  // jambe droite
              0,   0,-130,  // jambe droite
              0,   0,  45,  // pied droite
@@ -2133,7 +2133,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK4:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   5,  80,  // jambe droite
              0,   0, -50,  // jambe droite
              0,   0,  10,  // pied droite
@@ -2155,7 +2155,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WAIT:
              0,   0,   0,  // corps
            -10,   0,   0,  // coup
-           -10,   0,   0,  // tête
+           -10,   0,   0,  // tÃªte
              0,   0, 100,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2170,17 +2170,17 @@ void CMotionBot::CreatePhysics()
              5,   0,   0,  // bras gauche
              0,   0,   0,  // main gauche sup
              0,   0,   0,  // main gauche inf
-                           // MB_TRUCK (attend ordi stoppé) :
+                           // MB_TRUCK (attend ordi stoppÃ©) :
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -15,  20,   0,  // bras droite (bras écartés)
+           -15,  20,   0,  // bras droite (bras Ã©cartÃ©s)
            -90, -30,  30,  // bras droite
              0,   0,   0,  // main droite sup
              0,   0,   0,  // main droite inf
@@ -2191,7 +2191,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FEAR:
              0,   0,   0,  // corps
              0,   0,  15,  // coup
-             0,   0,  10,  // tête
+             0,   0,  10,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2209,7 +2209,7 @@ void CMotionBot::CreatePhysics()
                            // MB_GOHOME:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0, -10,  // tête
+             0,   0, -10,  // tÃªte
              0,   5,  70,  // jambe droite
              0,   0,-130,  // jambe droite
              0,   0,  45,  // pied droite
@@ -2227,7 +2227,7 @@ void CMotionBot::CreatePhysics()
                            // MB_HOME1:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2242,17 +2242,17 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // bras gauche
              0,   0,   0,  // main gauche sup
              0,   0,   0,  // main gauche inf
-                           // MB_HOME2 (dans véhicule):
+                           // MB_HOME2 (dans vÃ©hicule):
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -30, -55,   0,  // bras droite (bras croisés)
+           -30, -55,   0,  // bras droite (bras croisÃ©s)
            -25, -90,  55,  // bras droite
             10, -40,   0,  // main droite sup
            -10, -40,   0,  // main droite inf
@@ -2263,7 +2263,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FLIC:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  25,  // pied droite
@@ -2281,7 +2281,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK1:
              0,   0,   0,  // corps
            -10,   0, -10,  // coup
-           -10,   0, -10,  // tête
+           -10,   0, -10,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  60,  // pied droite
@@ -2299,7 +2299,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK2:
              0,   0,   0,  // corps
              0,   0,  10,  // coup
-             0,   0,  10,  // tête
+             0,   0,  10,  // tÃªte
              0,   0, 120,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2317,7 +2317,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK3:
              0,   0,   0,  // corps
             10,   0, -10,  // coup
-            10,   0, -10,  // tête
+            10,   0, -10,  // tÃªte
              0,   0,  85,  // jambe droite
              0,   0, -65,  // jambe droite
              0,   0,  15,  // pied droite
@@ -2335,7 +2335,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK4:
              0,   0,   0,  // corps
              0,   0,  10,  // coup
-             0,   0,  10,  // tête
+             0,   0,  10,  // tÃªte
              0,   0, -35,  // jambe droite
              0,   0, -30,  // jambe droite
              0,   0,  -5,  // pied droite
@@ -2352,19 +2352,19 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // main gauche inf
        };
 
-       short member_crazy2[] =     // bras croisés
+       short member_crazy2[] =     // bras croisÃ©s
        {
                            // MB_WAIT:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0, 105,  // jambe droite
              0,   0,-150,  // jambe droite
              0,   0,  15,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -30, -55,   0,  // bras droite (bras croisés)
+           -30, -55,   0,  // bras droite (bras croisÃ©s)
            -25, -90,  55,  // bras droite
             10, -40,   0,  // main droite sup
            -10, -40,   0,  // main droite inf
@@ -2372,17 +2372,17 @@ void CMotionBot::CreatePhysics()
              0, 120,-110,  // bras gauche
            -10,  40,   0,  // main gauche sup
             10,  40,   0,  // main gauche inf
-                           // MB_TRUCK (attend ordi stoppé) :
+                           // MB_TRUCK (attend ordi stoppÃ©) :
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -15,  20,   0,  // bras droite (bras écartés)
+           -15,  20,   0,  // bras droite (bras Ã©cartÃ©s)
            -90, -30,  30,  // bras droite
              0,   0,   0,  // main droite sup
              0,   0,   0,  // main droite inf
@@ -2393,7 +2393,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FEAR:
              0,   0,   0,  // corps
              0,   0,  15,  // coup
-             0,   0,  10,  // tête
+             0,   0,  10,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2411,7 +2411,7 @@ void CMotionBot::CreatePhysics()
                            // MB_GOHOME:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0, -10,  // tête
+             0,   0, -10,  // tÃªte
              0,   5,  70,  // jambe droite
              0,   0,-130,  // jambe droite
              0,   0,  45,  // pied droite
@@ -2429,7 +2429,7 @@ void CMotionBot::CreatePhysics()
                            // MB_HOME1:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2444,17 +2444,17 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // bras gauche
              0,   0,   0,  // main gauche sup
              0,   0,   0,  // main gauche inf
-                           // MB_HOME2 (dans véhicule):
+                           // MB_HOME2 (dans vÃ©hicule):
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -30, -55,   0,  // bras droite (bras croisés)
+           -30, -55,   0,  // bras droite (bras croisÃ©s)
            -25, -90,  55,  // bras droite
             10, -40,   0,  // main droite sup
            -10, -40,   0,  // main droite inf
@@ -2465,7 +2465,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FLIC:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  25,  // pied droite
@@ -2483,14 +2483,14 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK1:
              0,   0,   0,  // corps
            -20,   0,   0,  // coup
-           -20,   0,   0,  // tête
+           -20,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  60,  // pied droite
              0,   0,  65,  // jambe gauche
              0,   0, -30,  // jambe gauche
              0,   0,  -5,  // pied gauche
-           -30, -55,   0,  // bras droite (bras croisés)
+           -30, -55,   0,  // bras droite (bras croisÃ©s)
            -25, -90,  55,  // bras droite
             10, -40,   0,  // main droite sup
            -10, -40,   0,  // main droite inf
@@ -2501,14 +2501,14 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK2:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0, 105,  // jambe droite
              0,   0,-150,  // jambe droite
              0,   0,  15,  // pied droite
              0,   0, -35,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  25,  // pied gauche
-           -30, -55,   0,  // bras droite (bras croisés)
+           -30, -55,   0,  // bras droite (bras croisÃ©s)
            -25, -90,  55,  // bras droite
             10, -40,   0,  // main droite sup
            -10, -40,   0,  // main droite inf
@@ -2519,14 +2519,14 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK3:
              0,   0,   0,  // corps
             20,   0,   0,  // coup
-            20,   0,   0,  // tête
+            20,   0,   0,  // tÃªte
              0,   0,  65,  // jambe droite
              0,   0, -30,  // jambe droite
              0,   0,  -5,  // pied droite
              0,   0,   0,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  60,  // pied gauche
-           -30, -55,   0,  // bras droite (bras croisés)
+           -30, -55,   0,  // bras droite (bras croisÃ©s)
            -25, -90,  55,  // bras droite
             10, -40,   0,  // main droite sup
            -10, -40,   0,  // main droite inf
@@ -2537,14 +2537,14 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK4:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0, -35,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  25,  // pied droite
              0,   0, 105,  // jambe gauche
              0,   0,-150,  // jambe gauche
              0,   0,  15,  // pied gauche
-           -30, -55,   0,  // bras droite (bras croisés)
+           -30, -55,   0,  // bras droite (bras croisÃ©s)
            -25, -90,  55,  // bras droite
             10, -40,   0,  // main droite sup
            -10, -40,   0,  // main droite inf
@@ -2559,14 +2559,14 @@ void CMotionBot::CreatePhysics()
                            // MB_WAIT:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -15,  20,   0,  // bras droite (bras écartés)
+           -15,  20,   0,  // bras droite (bras Ã©cartÃ©s)
            -90, -30,  30,  // bras droite
              0,   0,   0,  // main droite sup
              0,   0,   0,  // main droite inf
@@ -2574,17 +2574,17 @@ void CMotionBot::CreatePhysics()
             90,  30,  30,  // bras gauche
              0,   0,   0,  // main gauche sup
              0,   0,   0,  // main gauche inf
-                           // MB_TRUCK (attend ordi stoppé) :
+                           // MB_TRUCK (attend ordi stoppÃ©) :
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -15,  20,   0,  // bras droite (bras écartés)
+           -15,  20,   0,  // bras droite (bras Ã©cartÃ©s)
            -90, -30,  30,  // bras droite
              0,   0,   0,  // main droite sup
              0,   0,   0,  // main droite inf
@@ -2595,7 +2595,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FEAR:
              0,   0,   0,  // corps
              0,   0,  15,  // coup
-             0,   0,  10,  // tête
+             0,   0,  10,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2613,7 +2613,7 @@ void CMotionBot::CreatePhysics()
                            // MB_GOHOME:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0, -10,  // tête
+             0,   0, -10,  // tÃªte
              0,   5,  70,  // jambe droite
              0,   0,-130,  // jambe droite
              0,   0,  45,  // pied droite
@@ -2631,7 +2631,7 @@ void CMotionBot::CreatePhysics()
                            // MB_HOME1:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2646,17 +2646,17 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // bras gauche
              0,   0,   0,  // main gauche sup
              0,   0,   0,  // main gauche inf
-                           // MB_HOME2 (dans véhicule):
+                           // MB_HOME2 (dans vÃ©hicule):
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -30, -55,   0,  // bras droite (bras croisés)
+           -30, -55,   0,  // bras droite (bras croisÃ©s)
            -25, -90,  55,  // bras droite
             10, -40,   0,  // main droite sup
            -10, -40,   0,  // main droite inf
@@ -2667,7 +2667,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FLIC:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  25,  // pied droite
@@ -2685,7 +2685,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK1:
              0,   0,   0,  // corps
              0,   0,  10,  // coup
-             0,   0,  10,  // tête
+             0,   0,  10,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
@@ -2703,7 +2703,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK2:
              0,   0,   0,  // corps
              0,   0,  20,  // coup
-             0,   0,  20,  // tête
+             0,   0,  20,  // tÃªte
              0,   0,  90,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2721,7 +2721,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK3:
              0,   0,   0,  // corps
              0,   0,  10,  // coup
-             0,   0,  10,  // tête
+             0,   0,  10,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
@@ -2739,7 +2739,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK4:
              0,   0,   0,  // corps
              0,   0,  20,  // coup
-             0,   0,  20,  // tête
+             0,   0,  20,  // tÃªte
              0,   0, -30,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  30,  // pied droite
@@ -2761,14 +2761,14 @@ void CMotionBot::CreatePhysics()
                            // MB_WAIT:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -15,  20,   0,  // bras droite (bras écartés)
+           -15,  20,   0,  // bras droite (bras Ã©cartÃ©s)
            -90, -30,  30,  // bras droite
              0,   0,   0,  // main droite sup
              0,   0,   0,  // main droite inf
@@ -2776,17 +2776,17 @@ void CMotionBot::CreatePhysics()
             90,  30,  30,  // bras gauche
              0,   0,   0,  // main gauche sup
              0,   0,   0,  // main gauche inf
-                           // MB_TRUCK (attend ordi stoppé) :
+                           // MB_TRUCK (attend ordi stoppÃ©) :
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -15,  20,   0,  // bras droite (bras écartés)
+           -15,  20,   0,  // bras droite (bras Ã©cartÃ©s)
            -90, -30,  30,  // bras droite
              0,   0,   0,  // main droite sup
              0,   0,   0,  // main droite inf
@@ -2797,7 +2797,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FEAR:
              0,   0,   0,  // corps
              0,   0,  15,  // coup
-             0,   0,  10,  // tête
+             0,   0,  10,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2815,7 +2815,7 @@ void CMotionBot::CreatePhysics()
                            // MB_GOHOME:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0, -10,  // tête
+             0,   0, -10,  // tÃªte
              0,   5,  70,  // jambe droite
              0,   0,-130,  // jambe droite
              0,   0,  45,  // pied droite
@@ -2833,7 +2833,7 @@ void CMotionBot::CreatePhysics()
                            // MB_HOME1:
              0,   0,   0,  // corps
              0,   0,   0,  // coup
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2848,17 +2848,17 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // bras gauche
              0,   0,   0,  // main gauche sup
              0,   0,   0,  // main gauche inf
-                           // MB_HOME2 (dans véhicule):
+                           // MB_HOME2 (dans vÃ©hicule):
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  20,  // pied droite
              0,   0,  20,  // jambe gauche
              0,   0, -40,  // jambe gauche
              0,   0,  20,  // pied gauche
-           -30, -55,   0,  // bras droite (bras croisés)
+           -30, -55,   0,  // bras droite (bras croisÃ©s)
            -25, -90,  55,  // bras droite
             10, -40,   0,  // main droite sup
            -10, -40,   0,  // main droite inf
@@ -2869,7 +2869,7 @@ void CMotionBot::CreatePhysics()
                            // MB_FLIC:
              0,   0,   0,  // corps
              0,   0, -10,  // coup
-             0,   0,  -5,  // tête
+             0,   0,  -5,  // tÃªte
              0,   0,  20,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  25,  // pied droite
@@ -2887,7 +2887,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK1:
              0,   0,   0,  // corps
            -10,   0, -10,  // coup
-           -10,   0, -10,  // tête
+           -10,   0, -10,  // tÃªte
              0,   0,   0,  // jambe droite
              0,   0, -40,  // jambe droite
              0,   0,  60,  // pied droite
@@ -2905,7 +2905,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK2:
              0,   0,   0,  // corps
              0,   0,  10,  // coup
-             0,   0,  10,  // tête
+             0,   0,  10,  // tÃªte
              0,   0, 120,  // jambe droite
              0,   0,   0,  // jambe droite
              0,   0,   0,  // pied droite
@@ -2923,7 +2923,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK3:
              0,   0,   0,  // corps
             10,   0, -10,  // coup
-            10,   0, -10,  // tête
+            10,   0, -10,  // tÃªte
              0,   0,  85,  // jambe droite
              0,   0, -65,  // jambe droite
              0,   0,  15,  // pied droite
@@ -2941,7 +2941,7 @@ void CMotionBot::CreatePhysics()
                            // MB_WALK4:
              0,   0,   0,  // corps
              0,   0,  10,  // coup
-             0,   0,  10,  // tête
+             0,   0,  10,  // tÃªte
              0,   0, -35,  // jambe droite
              0,   0, -30,  // jambe droite
              0,   0,  -5,  // pied droite
@@ -2993,7 +2993,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
            -15, -20,   0,  // bras droite
@@ -3004,7 +3004,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
            -65,   0,   0,  // antenne droite
             65,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -3015,7 +3015,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,  15,  // jambe
              0,   0, -30,  // corps
-             0,   0, -20,  // tête
+             0,   0, -20,  // tÃªte
            -15,   0, -40,  // antenne droite
             30,   0, -40,  // antenne gauche
             20, -20, -15,  // bras droite
@@ -3026,7 +3026,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -3037,7 +3037,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,  30,   0,  // tête
+             0,  30,   0,  // tÃªte
              0,   0,  40,  // antenne droite
              0,   0,  40,  // antenne gauche
             35, -20, -30,  // bras droite
@@ -3048,7 +3048,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              5, -20,   0,  // bras droite
@@ -3059,7 +3059,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0, -30,  // antenne droite
              0,   0, -30,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -3070,7 +3070,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -3081,7 +3081,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -3092,7 +3092,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -3103,7 +3103,7 @@ void CMotionBot::CreatePhysics()
              0,   0,   0,  // socle
              0,   0,   0,  // jambe
              0,   0,   0,  // corps
-             0,   0,   0,  // tête
+             0,   0,   0,  // tÃªte
              0,   0,   0,  // antenne droite
              0,   0,   0,  // antenne gauche
              0,   0,   0,  // bras droite
@@ -3228,7 +3228,7 @@ void CMotionBot::CreatePhysics()
            m_physics->SetCirMotionY(MO_RECACCEL,  4.0f);
            m_physics->SetCirMotionY(MO_STOACCEL,  6.0f);
        }
-       if ( m_option == 2 )  // bras croisés ?
+       if ( m_option == 2 )  // bras croisÃ©s ?
        {
            m_physics->SetLinMotionX(MO_ADVSPEED,  8.0f);
            m_physics->SetLinMotionX(MO_RECSPEED,  4.0f);
@@ -3350,7 +3350,7 @@ void CMotionBot::CreatePhysics()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CMotionBot::EventProcess(const Event &event)
 {
@@ -3387,7 +3387,7 @@ BOOL CMotionBot::EventProcess(const Event &event)
    return TRUE;
 }
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CMotionBot::EventFrame(const Event &event)
 {
@@ -3483,7 +3483,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
                        m_camera->SetType(m_cameraType);
                        m_camera->SetSmooth(CS_NORM);
                    }
-                   else    // moteur explosé ?
+                   else    // moteur explosÃ© ?
                    {
                        SetAction(MB_FEAR);
                    }
@@ -3507,7 +3507,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
                        m_camera->SetType(m_cameraType);
                        m_camera->SetSmooth(CS_NORM);
                    }
-                   else    // moteur explosé ?
+                   else    // moteur explosÃ© ?
                    {
                        SetAction(MB_FEAR);
                    }
@@ -3552,7 +3552,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            effect[3*2+zz] = cosf(m_aTime*4.8f)*0.03f;
 
            effect[3*2+yy] = sinf(m_aTime*1.3f)*0.06f;  // corps
-           effect[3*3+xx] = sinf(m_aTime*9.0f)*0.04f;  // tête
+           effect[3*3+xx] = sinf(m_aTime*9.0f)*0.04f;  // tÃªte
            effect[3*3+yy] = sinf(m_aTime*1.0f)*0.30f;
            effect[3*6+xx] = sinf(m_aTime*3.0f)*0.02f;  // bras droite
            effect[3*7+xx] = sinf(m_aTime*3.3f)*0.02f;
@@ -3575,7 +3575,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            effect[3*2+zz] = cosf(m_aTime*5.0f)*0.1f;
            effect[3*3+zz] = cosf(m_aTime*5.0f)*0.1f;
 
-           // Correction pour que la tête reste immobile sur l'aimant.
+           // Correction pour que la tÃªte reste immobile sur l'aimant.
            rot.x = sinf(m_aTime*5.0f)*1.5f;
            rot.y = cosf(m_aTime*5.0f)*1.5f;
            rot = RotatePoint(-(m_object->RetAngleY(0)-PI*1.5f), rot);
@@ -3616,7 +3616,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            effect[3*2+zz] = cosf(m_aTime*4.8f)*0.03f;
 
            effect[3*2+yy] = sinf(m_aTime*1.3f)*0.06f;  // corps
-           effect[3*3+xx] = sinf(m_aTime*9.0f)*0.04f;  // tête
+           effect[3*3+xx] = sinf(m_aTime*9.0f)*0.04f;  // tÃªte
            effect[3*3+yy] = sinf(m_aTime*1.0f)*0.30f;
            effect[3*6+xx] = sinf(m_aTime*3.0f)*0.02f;  // bras droite
            effect[3*7+xx] = sinf(m_aTime*3.3f)*0.02f;
@@ -3633,7 +3633,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            effect[3*2+zz] = cosf(m_aTime*8.8f)*0.03f;
 
            effect[3*2+yy] = sinf(m_aTime*5.3f)*0.30f;  // corps
-           effect[3*3+xx] = sinf(m_aTime*9.0f)*0.04f;  // tête
+           effect[3*3+xx] = sinf(m_aTime*9.0f)*0.04f;  // tÃªte
            effect[3*3+yy] = sinf(m_aTime*3.1f)*0.30f;
            effect[3*3+zz] = sinf(m_aTime*8.1f)*0.30f;
            effect[3*4+zz] = sinf(m_aTime*8.1f)*0.60f;  // antenne droite
@@ -3652,16 +3652,16 @@ BOOL CMotionBot::EventFrame(const Event &event)
            effect[3*1+zz] = cosf(m_aTime*4.8f)*0.03f;
            effect[3*2+zz] = cosf(m_aTime*4.8f)*0.03f;
 
-           effect[3*3+yy] = sinf(m_aTime*2.3f)*0.30f;  // tête
+           effect[3*3+yy] = sinf(m_aTime*2.3f)*0.30f;  // tÃªte
            time *= 10.0f;
        }
 
-       if ( action == MB_WALK1 )  // cassé au sol ?
+       if ( action == MB_WALK1 )  // cassÃ© au sol ?
        {
            BubbleBot1();
        }
 
-       if ( action == MB_WALK2 )  // transporté cassé ?
+       if ( action == MB_WALK2 )  // transportÃ© cassÃ© ?
        {
            cirVib.z -= 40.0f*PI/180.0f;
            linVib.y += 1.1f;
@@ -3669,9 +3669,9 @@ BOOL CMotionBot::EventFrame(const Event &event)
            SpeedAdapt(effect, linVib, cirVib, event.rTime);
        }
 
-       if ( m_bBreak )  // cassé ?
+       if ( m_bBreak )  // cassÃ© ?
        {
-           cirVib.z += PI*0.53f;  // couché sur le dos
+           cirVib.z += PI*0.53f;  // couchÃ© sur le dos
            linVib.y -= 2.1f;
        }
    }
@@ -3767,7 +3767,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            cirVib.x = sinf(m_aTime*10.0f)*0.25f;
            cirVib.z = cosf(m_aTime*10.0f)*0.25f;
 
-           // Correction pour que la tête reste immobile sur l'aimant.
+           // Correction pour que la tÃªte reste immobile sur l'aimant.
            rot.x = sinf(m_aTime*10.0f)*1.0f;
            rot.y = cosf(m_aTime*10.0f)*1.0f;
            rot = RotatePoint(-(m_object->RetAngleY(0)-PI*1.5f), rot);
@@ -3806,7 +3806,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
 
        if ( action == MB_HOME2 )
        {
-           cirVib.z += 0.2f;  // assis en arrière
+           cirVib.z += 0.2f;  // assis en arriÃ¨re
            linVib.y -= 1.0f;
            time *= 10.0f;
        }
@@ -3836,7 +3836,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
        if ( action == MB_TRUCK )
        {
            effect[3* 1+yy] =  sinf(m_aTime*10.0f)*0.20f;  // coup
-           effect[3* 2+yy] =  sinf(m_aTime*10.0f)*0.20f;  // tête
+           effect[3* 2+yy] =  sinf(m_aTime*10.0f)*0.20f;  // tÃªte
            cirVib.y = -sinf(m_aTime*10.0f)*0.40f;
 
            effect[3* 3+zz] =  sinf(m_aTime*10.0f)*0.12f;  // jambe droite
@@ -3851,7 +3851,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            effect[3*14+xx] =  cosf(m_aTime*10.0f)*0.24f;
        }
 
-       if ( action == MB_HOME2 )  // transporté dans véhicule ?
+       if ( action == MB_HOME2 )  // transportÃ© dans vÃ©hicule ?
        {
            SpeedAdapt(effect, linVib, cirVib, event.rTime);
        }
@@ -3904,7 +3904,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
 
        if ( action == MB_TRUCK )
        {
-           linVib.y += 5.6f-5.6f*zoom.y;  // collé en haut
+           linVib.y += 5.6f-5.6f*zoom.y;  // collÃ© en haut
        }
 
        if ( action == MB_FIRE )  // tir peu efficace ?
@@ -3932,7 +3932,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            m_object->SetZoom(1, z);
        }
 
-       if ( action == MB_WALK1 )  // tir très efficace ?
+       if ( action == MB_WALK1 )  // tir trÃ¨s efficace ?
        {
            if ( m_progress < 0.1f )
            {
@@ -3980,7 +3980,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            effect[3*2+zz] = cosf(m_aTime*4.8f)*0.03f;
 
            effect[3*2+yy] = sinf(m_aTime*1.3f)*0.06f;  // corps
-           effect[3*3+xx] = sinf(m_aTime*9.0f)*0.04f;  // tête
+           effect[3*3+xx] = sinf(m_aTime*9.0f)*0.04f;  // tÃªte
            effect[3*3+yy] = sinf(m_aTime*1.0f)*0.30f;
            effect[3*6+xx] = sinf(m_aTime*3.0f)*0.02f;  // bras droite
            effect[3*7+xx] = sinf(m_aTime*3.3f)*0.02f;
@@ -3998,7 +3998,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
        {
            if ( m_starterTime >= 4.0f )
            {
-               effect[3*3+zz] = cosf((m_starterTime-2.5f)*PI*2.0f)*0.04f;  // tête
+               effect[3*3+zz] = cosf((m_starterTime-2.5f)*PI*2.0f)*0.04f;  // tÃªte
                effect[3*6+zz] = cosf((m_starterTime-2.5f)*PI*2.0f)*0.40f;  // bras droite
                factor = 0.1f;
            }
@@ -4018,7 +4018,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
        effect[3*2+zz] += cosf(m_aTime*PI*2.0f)*0.03f*factor;
 
        effect[3*2+yy] += sinf(m_aTime*PI*2.0f)*0.06f*factor;  // corps
-       effect[3*3+xx] += sinf(m_aTime*PI*2.0f)*0.04f*factor;  // tête
+       effect[3*3+xx] += sinf(m_aTime*PI*2.0f)*0.04f*factor;  // tÃªte
        effect[3*3+yy] += sinf(m_aTime*PI*2.0f)*0.10f*factor;
        effect[3*6+xx] += sinf(m_aTime*PI*2.0f)*0.02f;  // bras droite
        effect[3*7+xx] += sinf(m_aTime*PI*2.0f)*0.02f;
@@ -4110,7 +4110,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
        if ( m_actionType == MB_TRUCK )
        {
            effect[3* 1+yy] =  sinf(m_aTime*10.0f)*0.20f;  // coup
-           effect[3* 2+yy] =  sinf(m_aTime*10.0f)*0.20f;  // tête
+           effect[3* 2+yy] =  sinf(m_aTime*10.0f)*0.20f;  // tÃªte
            cirVib.y = -sinf(m_aTime*10.0f)*0.40f;
 
            effect[3* 3+zz] =  sinf(m_aTime*10.0f)*0.12f;  // jambe droite
@@ -4134,7 +4134,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            }
        }
 
-       if ( m_actionType == MB_HOME2 )  // transporté dans véhicule ?
+       if ( m_actionType == MB_HOME2 )  // transportÃ© dans vÃ©hicule ?
        {
            SpeedAdapt(effect, linVib, cirVib, event.rTime);
        }
@@ -4238,7 +4238,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
                    cirVib.z = -prog*0.8f;
                }
            }
-           if ( m_option == 2 )  // bras croisés ?
+           if ( m_option == 2 )  // bras croisÃ©s ?
            {
                prog = Mod(m_walkTime, 1.0f);
 
@@ -4397,7 +4397,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            {
                effect[3* 1+yy] =  sinf(m_aTime*40.0f)*0.20f;  // coup
                effect[3* 1+zz] =  sinf(m_aTime*37.0f)*0.20f;
-               effect[3* 2+yy] =  sinf(m_aTime*46.0f)*0.20f;  // tête
+               effect[3* 2+yy] =  sinf(m_aTime*46.0f)*0.20f;  // tÃªte
                effect[3* 2+zz] =  sinf(m_aTime*43.0f)*0.20f;
 
                effect[3* 9+xx] =  sinf(m_aTime*42.0f)*0.20f;  // bras droite
@@ -4423,7 +4423,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            else if ( m_option == 1 )  // fou ?
            {
                effect[3* 1+yy] =  sinf(m_aTime*10.0f)*0.20f;  // coup
-               effect[3* 2+yy] =  sinf(m_aTime*10.0f)*0.20f;  // tête
+               effect[3* 2+yy] =  sinf(m_aTime*10.0f)*0.20f;  // tÃªte
                cirVib.y = -sinf(m_aTime*10.0f)*0.40f;
                cirVib.x = 20.0f*PI/180.0f;  // penche
 
@@ -4443,7 +4443,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            else
            {
                effect[3* 1+yy] =  sinf(m_aTime*10.0f)*0.20f;  // coup
-               effect[3* 2+yy] =  sinf(m_aTime*10.0f)*0.20f;  // tête
+               effect[3* 2+yy] =  sinf(m_aTime*10.0f)*0.20f;  // tÃªte
                cirVib.y = -sinf(m_aTime*10.0f)*0.40f;
 
                effect[3* 3+zz] =  sinf(m_aTime*10.0f)*0.12f;  // jambe droite
@@ -4495,8 +4495,8 @@ BOOL CMotionBot::EventFrame(const Event &event)
 
        if ( action == MB_FLIC )
        {
-           effect[3*3+yy] = 0.5f;  // tête
-           effect[3*3+zz] = cosf((m_aTime*1.0f)*PI*2.0f)*0.20f;  // tête
+           effect[3*3+yy] = 0.5f;  // tÃªte
+           effect[3*3+zz] = cosf((m_aTime*1.0f)*PI*2.0f)*0.20f;  // tÃªte
            effect[3*8+xx] = cosf((m_aTime*1.0f)*PI*2.0f)*0.20f;  // bras droite
            effect[3*9+xx] = cosf((m_aTime*1.0f)*PI*2.0f)*0.70f;  // bras droite
            factor = 0.5f;
@@ -4508,7 +4508,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
        effect[3*2+zz] += cosf(m_aTime*PI*2.0f)*0.03f*factor;
 
        effect[3*2+yy] += sinf(m_aTime*PI*2.0f)*0.06f*factor;  // corps
-       effect[3*3+xx] += sinf(m_aTime*PI*2.0f)*0.04f*factor;  // tête
+       effect[3*3+xx] += sinf(m_aTime*PI*2.0f)*0.04f*factor;  // tÃªte
        effect[3*3+yy] += sinf(m_aTime*PI*2.0f)*0.10f*factor;
        effect[3*6+xx] += sinf(m_aTime*PI*2.0f)*0.02f;  // bras droite
        effect[3*7+xx] += sinf(m_aTime*PI*2.0f)*0.02f;
@@ -4536,8 +4536,8 @@ BOOL CMotionBot::EventFrame(const Event &event)
    }
 
 #if 0
-   // Si le robot est transporté par un véhicule et que la caméra
-   // est embarquée, met-le loin derrière pour ne pas le voir.
+   // Si le robot est transportÃ© par un vÃ©hicule et que la camÃ©ra
+   // est embarquÃ©e, met-le loin derriÃ¨re pour ne pas le voir.
    if ( m_object->RetTruck() != 0 &&
         m_camera->RetType() == CAMERA_ONBOARD )
    {
@@ -4553,7 +4553,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
             m_actionType == MB_HOME2 )
        {
            // Rotation du corps en fonction de l'angle des jambes et
-           // des pieds pour que les pieds restent plaqués au sol.
+           // des pieds pour que les pieds restent plaquÃ©s au sol.
            angle = m_object->RetAngleZ(2)+m_object->RetAngleZ(3);
            cirVib.z = -angle;
        }
@@ -4587,7 +4587,7 @@ void CMotionBot::SpeedAdapt(float effect[],
    CMotion*    motion;
    float       lin, cir, factor, top;
 
-   if ( m_bBreak )  // cassé ?
+   if ( m_bBreak )  // cassÃ© ?
    {
        vehicle = m_object->RetTruck();
        if ( vehicle == 0 )  return;
@@ -4613,16 +4613,16 @@ void CMotionBot::SpeedAdapt(float effect[],
    cir = NormSign(physics->RetCirMotionY(MO_REASPEED)/physics->RetCirMotionY(MO_ADVSPEED));
 
    top = 1.0f;
-   if ( !motion->ExistPart(TP_TOP) )  top = 2.0f;  // + si pas de toît
+   if ( !motion->ExistPart(TP_TOP) )  top = 2.0f;  // + si pas de toÃ®t
 
    type = m_object->RetType();
    tType = vehicle->RetType();
 
    if ( type == OBJECT_BOT1 )
    {
-       if ( m_actionType == MB_WALK2 )  // transporté cassé ?
+       if ( m_actionType == MB_WALK2 )  // transportÃ© cassÃ© ?
        {
-           effect[3*3+xx] += cir*1.00f;  // tête
+           effect[3*3+xx] += cir*1.00f;  // tÃªte
            effect[3*3+yy] += cir*0.50f;
            effect[3*6+xx] += cir*1.00f;  // bras droite
            effect[3*6+zz] -= cir*1.00f;
@@ -4638,7 +4638,7 @@ void CMotionBot::SpeedAdapt(float effect[],
            effect[3*1+zz] *= factor;
            effect[3*2+zz] *= factor;  // jambe et corps
 
-           effect[3*3+xx] *= factor;  // tête
+           effect[3*3+xx] *= factor;  // tÃªte
            effect[3*3+yy] *= factor;
 
            effect[3*1+zz] += lin*0.04f*top;  // jambe
@@ -4649,7 +4649,7 @@ void CMotionBot::SpeedAdapt(float effect[],
            effect[3*1+xx] += cir*0.04f*top;  // jambe
            effect[3*2+xx] += cir*0.04f*top;  // corps
            effect[3*2+yy] -= cir*0.10f;
-           effect[3*3+yy] -= cir*0.15f;  // tête
+           effect[3*3+yy] -= cir*0.15f;  // tÃªte
            effect[3*4+xx] += cir*0.15f;  // antenne droite
            effect[3*5+xx] += cir*0.15f;  // antenne gauche
        }
@@ -4770,7 +4770,7 @@ void CMotionBot::FireBot2()
    }
 }
 
-// Fait feu (moyeu) avec la trompe du méchant #1.
+// Fait feu (moyeu) avec la trompe du mÃ©chant #1.
 
 void CMotionBot::FireEvil1a()
 {
@@ -4799,7 +4799,7 @@ void CMotionBot::FireEvil1a()
    }
 }
 
-// Fait feu (très efficace) avec la trompe du méchant #1.
+// Fait feu (trÃ¨s efficace) avec la trompe du mÃ©chant #1.
 
 void CMotionBot::FireEvil1b()
 {
@@ -4827,7 +4827,7 @@ void CMotionBot::FireEvil1b()
    }
 }
 
-// Bulles émises sous l'eau par le robot cassé.
+// Bulles Ã©mises sous l'eau par le robot cassÃ©.
 
 void CMotionBot::BubbleBot1()
 {
@@ -4854,7 +4854,7 @@ void CMotionBot::BubbleBot1()
    }
 }
 
-// Met à jour le mapping de la texture du visage.
+// Met Ã  jour le mapping de la texture du visage.
 
 void CMotionBot::UpdateFaceMapping(int face)
 {

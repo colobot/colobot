@@ -59,8 +59,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  
  
 @@ -75,7 +72,6 @@ long  g_id;               // identificateur unique
- long   g_build;            // b‚timents constructibles
- long   g_researchDone;     // recherches effectuÈes
+ long   g_build;            // b√¢timents constructibles
+ long   g_researchDone;     // recherches effectu√©es
  long   g_researchEnable;   // recherches accessibles
 -float  g_unit;             // facteur de conversion
  
@@ -162,7 +162,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -
     g_id = 0;
     g_build = 0;
-    g_researchDone = 0;  // aucune recherche effectuÈe
+    g_researchDone = 0;  // aucune recherche effectu√©e
     g_researchEnable = 0;
 -   g_unit = 4.0f;
 +
@@ -248,8 +248,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  }
  
  
--// CrÈe le fichier colobot.ini la premiËre fois.
-+// CrÈe le fichier buzzingcars.ini la premiËre fois.
+-// Cr√©e le fichier colobot.ini la premi√®re fois.
++// Cr√©e le fichier buzzingcars.ini la premi√®re fois.
  
  void CRobotMain::CreateIni()
  {
@@ -288,7 +288,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +       m_phase = PHASE_LOST;
 +       m_bWinTerminate = FALSE;
 +
-+       DeselectAll();  // dÈsÈlectionne la voiture
++       DeselectAll();  // d√©s√©lectionne la voiture
 +       if ( m_bLostLookat )
 +       {
 +           m_camera->StartVisit(m_lostLookat, 200.0f);
@@ -327,7 +327,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +       pb->SetState(STATE_SHADOW);
 +       pb->SetTabOrder(1);
 +
-+       return;  // conserve la scËne en cours !
++       return;  // conserve la sc√®ne en cours !
 +   }
 +
 +   if ( phase == PHASE_NAME )
@@ -349,7 +349,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -#if _SCHOOL
 -       if ( TRUE )
 -#else
--       if ( m_gameTime > 10.0f )  // a-t-on jouÈ au moins 10 secondes ?
+-       if ( m_gameTime > 10.0f )  // a-t-on jou√© au moins 10 secondes ?
 -#endif
 +       if ( !m_dialog->RetDuel() )
         {
@@ -360,7 +360,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +           m_dialog->WriteGamerMission();
 +       }
 +
-+       if ( phase == PHASE_WIN )  // gagnÈ une simulation ?
++       if ( phase == PHASE_WIN )  // gagn√© une simulation ?
 +       {
 +           bonus = RetBonusPoints();
 +           value1 = (float)m_statEndVehicle/(float)m_statStartVehicle*100.0f;
@@ -382,8 +382,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +           if ( m_maxPesetas > 0 && !m_dialog->RetDuel() )
 +           {
 +               pesetas = points + m_dialog->RetPesetas();
-+               m_dialog->SetPesetas(pesetas);  // crÈdite le joueur
-+               m_dialog->PesetasUnlock();  // dÈbloque la suite si assez
++               m_dialog->SetPesetas(pesetas);  // cr√©dite le joueur
++               m_dialog->PesetasUnlock();  // d√©bloque la suite si assez
 +           }
 +           
 +           MemorizeCarState();
@@ -395,11 +395,11 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +               m_dialog->WriteGamerMission();
 +           }
 +
-+           if ( !m_bCheatUsed )  // gagnÈ sans tricher ?
++           if ( !m_bCheatUsed )  // gagn√© sans tricher ?
 +           {
 +               bWorld = m_dialog->AddRecord(m_statEndTime-m_statStartTime, bonus, value1, value2, points, 0);
-+               m_dialog->WriteRecord(rank, 0);  // Ècrit les records globaux
-+               m_dialog->WriteRecord(rank, 1);  // Ècrit les records par tours
++               m_dialog->WriteRecord(rank, 0);  // √©crit les records globaux
++               m_dialog->WriteRecord(rank, 1);  // √©crit les records par tours
 +
 +               if ( m_recorderRecord != 0 )
 +               {
@@ -407,7 +407,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +               }
 +               if ( bWorld && m_recorderRecord != 0 )  // record du monde ?
 +               {
-+                   RecorderWrite(rank, m_dialog->RetModel());  // Ècrit sur disque
++                   RecorderWrite(rank, m_dialog->RetModel());  // √©crit sur disque
 +               }
 +           }
 +
@@ -419,18 +419,18 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
         }
     }
  
--   if ( phase == PHASE_WIN )  // gagnÈ une simulation ?
+-   if ( phase == PHASE_WIN )  // gagn√© une simulation ?
 +   if ( phase != PHASE_WIN   && m_phase != PHASE_WRITE &&
 +        phase != PHASE_WRITE && m_phase != PHASE_WIN   )
     {
 -       rank = m_dialog->RetSceneRank();
 -       m_dialog->SetGamerInfoPassed(rank, TRUE);
--       m_dialog->NextMission();  // passe ‡ la mission suivante
+-       m_dialog->NextMission();  // passe √† la mission suivante
 -       m_dialog->WriteGamerInfo();
 +       FlushCarState();
     }
  
-    DeleteAllObjects();  // supprime toute la scËne 3D actuelle
+    DeleteAllObjects();  // supprime toute la sc√®ne 3D actuelle
 @@ -465,16 +538,21 @@ void CRobotMain::ChangePhase(Phase phase)
     m_phase        = phase;
     m_winDelay     = 0.0f;
@@ -481,7 +481,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   m_cameraZoom = 0.0f;
 -   m_bShortCut = TRUE;
  
-    // CrÈe et cache la console de commande.
+    // Cr√©e et cache la console de commande.
 +   pos.x = 100.0f/640.0f;
 +   pos.y = 452.0f/480.0f;
     dim.x = 200.0f/640.0f;
@@ -491,9 +491,9 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     pe = m_interface->CreateEdit(pos, dim, 0, EVENT_CMD);
     if ( pe == 0 )  return;
     pe->ClearState(STATE_VISIBLE);
-    m_bCmdEdit = FALSE;  // cachÈ pour l'instant
+    m_bCmdEdit = FALSE;  // cach√© pour l'instant
  
-    // CrÈe l'indicateur de vitesse.
+    // Cr√©e l'indicateur de vitesse.
 -#if _TEEN
 -   dim.x =  30.0f/640.0f;
 -   dim.y =  20.0f/480.0f;
@@ -512,7 +512,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     pb->SetState(STATE_SIMPLY);
     pb->ClearState(STATE_VISIBLE);
  
-+   // CrÈe l'indicateur de pause.
++   // Cr√©e l'indicateur de pause.
 +   pos.x =  20.0f/640.0f;
 +   pos.y = 420.0f/480.0f;
 +   dim.x =  40.0f/640.0f;
@@ -665,7 +665,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       bLoading = (read[0] != 0);
 -
 -       m_map->CreateMap();
--       CreateScene(m_dialog->RetSceneSoluce(), FALSE, FALSE);  // scËne interractive
+-       CreateScene(m_dialog->RetSceneSoluce(), FALSE, FALSE);  // sc√®ne interractive
 -       if ( m_bMapImage )
 -       {
 -           m_map->SetFixImage(m_mapFilename);
@@ -677,7 +677,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       ddim.y = 20.0f/480.0f;
 -       m_interface->CreateButton(pos, ddim, 11, EVENT_BUTTON_QUIT);
 +//?        m_map->CreateMap();
-+       CreateScene(FALSE);  // scËne interractive
++       CreateScene(FALSE);  // sc√®ne interractive
 +
 +//?        pos.x = 620.0f/640.0f;
 +//?        pos.y = 460.0f/480.0f;
@@ -685,7 +685,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +//?        ddim.y = 20.0f/480.0f;
 +//?        m_interface->CreateButton(pos, ddim, 11, EVENT_BUTTON_QUIT);
 +
-+       // CrÈe l'indicateur de temps.
++       // Cr√©e l'indicateur de temps.
 +       pos.x = 175.0f/640.0f;
 +       pos.y =  10.0f/480.0f;
 +       dim.x = 100.0f/640.0f;
@@ -695,7 +695,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +       pe->SetEditCap(FALSE);  // juste pour voir
 +       pe->SetHiliteCap(FALSE);
 +
-+       // CrÈe la jauge de temps.
++       // Cr√©e la jauge de temps.
 +       pos.x = 175.0f/640.0f;
 +       pos.y =  38.0f/480.0f;
 +       dim.x = 100.0f/640.0f;
@@ -707,7 +707,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +           pg->ClearState(STATE_VISIBLE);
 +       }
 +
-+       // CrÈe les boutons.
++       // Cr√©e les boutons.
 +       pos.x = 285.0f/640.0f;
 +       pos.y =  10.0f/480.0f;
 +       dim.x =  32.0f/640.0f;
@@ -724,7 +724,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +       pos.x += 37.0f/640.0f;
 +       pb = m_interface->CreateButton(pos, dim, 20, EVENT_BUTTON_QUIT);
 +
-+       // CrÈe l'indicateur de progression.
++       // Cr√©e l'indicateur de progression.
 +       pos.x = 285.0f/640.0f;
 +       pos.y =  38.0f/480.0f;
 +       dim.x = 180.0f/640.0f;
@@ -763,7 +763,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       if ( !m_bBase || bLoading )  StartMusic();
 +       pos.x = 630.0f/640.0f;
 +       pos.y =  10.0f/480.0f;
-+       m_engine->MoveMousePos(pos);  // met la souris en bas ‡ droite
++       m_engine->MoveMousePos(pos);  // met la souris en bas √† droite
     }
  
     if ( m_phase == PHASE_WIN )
@@ -782,8 +782,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
             m_dialog->SetSceneName("win");
 -#endif
             m_dialog->SetSceneRank(m_endingWinRank);
--           CreateScene(FALSE, TRUE, FALSE);  // scËne fixe
-+           CreateScene(TRUE);  // scËne fixe
+-           CreateScene(FALSE, TRUE, FALSE);  // sc√®ne fixe
++           CreateScene(TRUE);  // sc√®ne fixe
 +
 +           pos.x  =   0.0f/640.0f;
 +           pos.y  = 364.0f/480.0f;
@@ -796,7 +796,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +           ddim.y = 116.0f/480.0f;
 +           pgr = m_interface->CreateGroup(pos, ddim, 23, EVENT_LABEL1);
 +
-+           // Partie supÈrieure (pesetas)
++           // Partie sup√©rieure (pesetas)
 +           pos.x  =  30.0f/640.0f;
 +           pos.y  = 382.0f/480.0f;
 +           ddim.x =  80.0f/640.0f;
@@ -940,7 +940,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +               pg->SetLevel((float)points/maxPesetas);
 +           }
 +
-+           // Partie infÈrieure (records)
++           // Partie inf√©rieure (records)
 +           pos.x  =  30.0f/640.0f;
 +           pos.y  =  14.0f/480.0f;
 +           ddim.x =  80.0f/640.0f;
@@ -992,7 +992,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +           pa->SetTabs(1,110.0f/640.0f,  1, FONT_COLOBOT);  // voiture
 +           pa->SetTabs(2, 70.0f/640.0f,  1, FONT_COLOBOT);  // nom du joueur
 +           pa->SetTabs(3, 60.0f/640.0f, -1, FONT_COLOBOT);  // chrono
-+           pa->SetTabs(4, 55.0f/640.0f, -1, FONT_COLOBOT);  // crÈdits gagnÈs
++           pa->SetTabs(4, 55.0f/640.0f, -1, FONT_COLOBOT);  // cr√©dits gagn√©s
 +           pa->SetSelectCap(FALSE);
 +           pa->SetFontSize(9.0f);
 +           m_dialog->UpdateRecord(pa, 0);
@@ -1069,7 +1069,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -           m_bWinTerminate = FALSE;
 -           m_dialog->SetSceneName("lost");
 -           m_dialog->SetSceneRank(m_endingLostRank);
--           CreateScene(FALSE, TRUE, FALSE);  // scËne fixe
+-           CreateScene(FALSE, TRUE, FALSE);  // sc√®ne fixe
 -
 -           pos.x = ox+sx*1;  pos.y = oy+sy*1;
 -           ddim.x = dim.x*2;  ddim.y = dim.y*2;
@@ -1089,7 +1089,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +}
 +
 +
-+// LibËre l'Ètat du vÈhicule.
++// Lib√®re l'√©tat du v√©hicule.
 +
 +void CRobotMain::FlushCarState()
 +{
@@ -1100,7 +1100,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   }
 +}
 +
-+// MÈmorise l'Ètat du vÈhicule.
++// M√©morise l'√©tat du v√©hicule.
 +
 +void CRobotMain::MemorizeCarState()
 +{
@@ -1121,7 +1121,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   motion->GetStateBuffer(m_carState);
 +}
 +
-+// Donne l'Ètat du vÈhicule sauvegardÈ.
++// Donne l'√©tat du v√©hicule sauvegard√©.
 +
 +char* CRobotMain::GetCarState()
 +{
@@ -1129,7 +1129,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +}
 +
  
- // Traite un ÈvÈnement.
+ // Traite un √©v√©nement.
  
  BOOL CRobotMain::EventProcess(const Event &event)
  {
@@ -1160,7 +1160,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +
 +       if ( m_phase == PHASE_SIMUL &&
 +            !m_bPause && !m_bSuspend &&
-+            m_startCounter > 0 )  // dÈcompte 3,2,1,go ?
++            m_startCounter > 0 )  // d√©compte 3,2,1,go ?
         {
 -           type = m_movie->RetStopType();
 -           if ( type == MM_SATCOMopen )
@@ -1242,7 +1242,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       RemoteCamera(m_cameraPan, m_cameraZoom, event.rTime);
  
         m_interface->EventProcess(event);
--       if ( m_displayInfo != 0 )  // Èdition en cours ?
+-       if ( m_displayInfo != 0 )  // √©dition en cours ?
 -       {
 -           m_displayInfo->EventProcess(event);
 -       }
@@ -1297,8 +1297,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -                   m_particule->WriteWheelTrace("Savegame\\t.bmp", 256, 256, D3DVECTOR(16.0f, 0.0f, -368.0f), D3DVECTOR(140.0f, 0.0f, -248.0f));
 -                   return FALSE;
 -               }
--               if ( m_bEditLock )  // Èdition en cours ?
-+               if ( m_movieIndex < m_movieTotal-1 )  // film camÈra en cours ?
+-               if ( m_bEditLock )  // √©dition en cours ?
++               if ( m_movieIndex < m_movieTotal-1 )  // film cam√©ra en cours ?
                 {
 -                   if ( event.param == m_engine->RetKey(KEYRANK_HELP, 0) ||
 -                        event.param == m_engine->RetKey(KEYRANK_HELP, 1) )
@@ -1532,7 +1532,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
                 break;
  
 -           case EVENT_OBJECT_DELETE:
--               m_dialog->StartDeleteObject();  // voulez-vous dÈtruire ?
+-               m_dialog->StartDeleteObject();  // voulez-vous d√©truire ?
 +           case EVENT_BUTTON_HORN:
                 break;
  
@@ -1544,7 +1544,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -           case EVENT_OBJECT_SOLUCE:
 -               StartDisplayInfo(SATCOM_SOLUCE, TRUE);
 +           case EVENT_BUTTON_CAMERA:
-+               if ( m_movieIndex >= m_movieTotal-1 )  // pas de film camÈra en cours ?
++               if ( m_movieIndex >= m_movieTotal-1 )  // pas de film cam√©ra en cours ?
 +               {
 +                   ChangeCamera();
 +               }
@@ -1704,7 +1704,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +}
 +
 +
-+// DÈbut du film de camÈra.
++// D√©but du film de cam√©ra.
 +
 +void CRobotMain::MovieStart()
 +{
@@ -1733,7 +1733,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   }
 +}
 +
-+// Avance du film de camÈra.
++// Avance du film de cam√©ra.
 +
 +void CRobotMain::MovieFrame(float rTime)
 +{
@@ -1748,7 +1748,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +
 +   i = m_movieIndex;
 +
-+   if ( m_movieTable[i].delay < 0.0f )  // transition instantanÈe brusque ?
++   if ( m_movieTable[i].delay < 0.0f )  // transition instantan√©e brusque ?
 +   {
 +       pos = m_movieTable[i+1].eye;
 +       m_camera->SetScriptEye(pos);
@@ -1805,7 +1805,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   }
 +}
 +
-+// Stoppe le film de camÈra en cours.
++// Stoppe le film de cam√©ra en cours.
 +
 +void CRobotMain::MovieAbort()
 +{
@@ -1826,7 +1826,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +}
 +
  
- // ExÈcute une commande.
+ // Ex√©cute une commande.
  
 @@ -1263,54 +1755,92 @@ void CRobotMain::ExecuteCmd(char *cmd)
  
@@ -1838,7 +1838,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
             Event       newEvent;
             m_event->MakeEvent(newEvent, EVENT_WIN);
             m_event->AddEvent(newEvent);
-+           m_bCheatUsed = TRUE;  // gagnÈ en trichant
++           m_bCheatUsed = TRUE;  // gagn√© en trichant
         }
  
 -       if ( strcmp(cmd, "lostmission") == 0 )
@@ -1901,7 +1901,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +       return;
 +   }
  
--           g_researchDone = -1;  // toutes les recherches sont effectuÈes
+-           g_researchDone = -1;  // toutes les recherches sont effectu√©es
 +   if ( strcmp(cmd, "showpos") == 0 )
 +   {
 +       m_bShowPos = !m_bShowPos;
@@ -1972,7 +1972,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
             {
                 m_camera->SetType(CAMERA_FREE);
                 ChangePause(TRUE);
--               DeselectAll();  // enlËve les boutons de commande
+-               DeselectAll();  // enl√®ve les boutons de commande
 +               object = RetSelect();
 +               if ( object != 0 )
 +               {
@@ -2168,9 +2168,9 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   m_infoIndex = 0;
 -}
 -
--// DÈbut de l'affichage d'instructions.
+-// D√©but de l'affichage d'instructions.
 -// index: SATCOM_*
-+// DÈbut de l'affichage des instructions.
++// D√©but de l'affichage des instructions.
  
 -void CRobotMain::StartDisplayInfo(int index, BOOL bMovie)
 +void CRobotMain::StartDisplayInfo()
@@ -2208,7 +2208,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -           m_movie->Start(MM_SATCOMopen, 2.5f);
 -           ChangePause(TRUE);
 -//?            m_map->ShowMap(FALSE);
--           m_infoObject = DeselectAll();  // enlËve les boutons de commande
+-           m_infoObject = DeselectAll();  // enl√®ve les boutons de commande
 -           m_displayText->HideText(TRUE);
 -           return;
 -       }
@@ -2232,7 +2232,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   m_bDisplayInfo = TRUE;
  }
  
--// DÈbut de l'affichage d'instructions.
+-// D√©but de l'affichage d'instructions.
 +// Fin de l'affichage d'instructions.
  
 -void CRobotMain::StartDisplayInfo(char *filename, int index)
@@ -2244,12 +2244,12 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   if ( m_bCmdEdit )  return;
 -
 -   m_movieInfoIndex = -1;
--   ClearInterface();  // enlËve mise en Èvidence et tooltip
+-   ClearInterface();  // enl√®ve mise en √©vidence et tooltip
 -
 -   if ( !m_bEditLock )
 -   {
 -//?        m_map->ShowMap(FALSE);
--       m_infoObject = DeselectAll();  // enlËve les boutons de commande
+-       m_infoObject = DeselectAll();  // enl√®ve les boutons de commande
 -       m_displayText->HideText(TRUE);
 -       m_sound->MuteAll(TRUE);
 -   }
@@ -2331,14 +2331,14 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   if ( m_infoUsed == 0 )
 +   if ( m_geiger != 0 )
     {
--       m_displayText->ClearText();  // enlËve message "voir SatCom ..."
+-       m_displayText->ClearText();  // enl√®ve message "voir SatCom ..."
 +       pgg = (CGeiger*)m_interface->SearchControl(EVENT_OBJECT_GGEIGER);
 +       if ( pgg != 0 )  pgg->SetState(STATE_VISIBLE, bShow);
     }
 -   m_infoUsed ++;
 -}
  
--// Retourne le nom du texte ‡ afficher.
+-// Retourne le nom du texte √† afficher.
 +   pe = (CEdit*)m_interface->SearchControl(EVENT_TIME);
 +   if ( pe != 0 )  pe->SetState(STATE_VISIBLE, bShow);
  
@@ -2357,21 +2357,21 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   if ( pb != 0 )  pb->SetState(STATE_VISIBLE, bShow);
  }
  
--// Retourne le nom du texte ‡ afficher.
-+// DÈbut d'un dialogue pendant le jeu,
+-// Retourne le nom du texte √† afficher.
++// D√©but d'un dialogue pendant le jeu,
  
 -int CRobotMain::RetDisplayInfoPosition(int index)
 +void CRobotMain::StartSuspend()
  {
 -   return m_infoPos[index];
 +   m_map->ShowMap(FALSE);
-+   m_infoObject = DeselectAll();  // enlËve les boutons de commande
++   m_infoObject = DeselectAll();  // enl√®ve les boutons de commande
 +   m_displayText->HideText(TRUE);
 +   ShowHideButtons(FALSE);
 +   m_bSuspend = TRUE;
  }
  
--// Retourne le nom du texte ‡ afficher.
+-// Retourne le nom du texte √† afficher.
 +// Fin d'un dialogue pendant le jeu,
  
 -void CRobotMain::SetDisplayInfoPosition(int index, int pos)
@@ -2386,8 +2386,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  }
  
  
--// DÈbut d'un dialogue pendant le jeu,
-+// Enclanche ou dÈclanche le chrono.
+-// D√©but d'un dialogue pendant le jeu,
++// Enclanche ou d√©clanche le chrono.
  
 -void CRobotMain::StartSuspend()
 +void CRobotMain::SetStopwatch(BOOL bRun)
@@ -2397,7 +2397,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +}
  
 -   m_map->ShowMap(FALSE);
--   m_infoObject = DeselectAll();  // enlËve les boutons de commande
+-   m_infoObject = DeselectAll();  // enl√®ve les boutons de commande
 -   m_displayText->HideText(TRUE);
 +// Stoppe le starter lorsque le moteur explose.
  
@@ -2479,12 +2479,12 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +
  
  
- // Gestion de la taille des caractËres par dÈfaut.
+ // Gestion de la taille des caract√®res par d√©faut.
 @@ -1858,178 +2305,6 @@ FPOINT CRobotMain::RetIODim()
  
  
  
--// DÈbut de la visite du lieu d'une erreur.
+-// D√©but de la visite du lieu d'une erreur.
 -
 -void CRobotMain::StartDisplayVisit(EventMsg event)
 -{
@@ -2502,7 +2502,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -
 -   if ( event == EVENT_NULL )  // visite par raccourci clavier ?
 -   {
--       if ( m_visitLast != EVENT_NULL )  // dÈj‡ une visite en cours ?
+-       if ( m_visitLast != EVENT_NULL )  // d√©j√† une visite en cours ?
 -       {
 -           i = m_visitLast-EVENT_DT_VISIT0;
 -       }
@@ -2511,7 +2511,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -           i = MAXDTLINE;
 -       }
 -
--       // Cherche la prÈcÈdente.
+-       // Cherche la pr√©c√©dente.
 -       for ( j=0 ; j<MAXDTLINE ; j++ )
 -       {
 -           i --;
@@ -2530,25 +2530,25 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   }
 -   if ( event == EVENT_NULL )
 -   {
--       m_sound->Play(SOUND_TZOING);  // rien ‡ voir !
+-       m_sound->Play(SOUND_TZOING);  // rien √† voir !
 -       return;
 -   }
 -
 -   m_visitLast = event;
 -
--   ClearInterface();  // enlËve mise en Èvidence et tooltip
+-   ClearInterface();  // enl√®ve mise en √©vidence et tooltip
 -
--   if ( m_camera->RetType() == CAMERA_VISIT )  // dÈj‡ une visite en cours ?
+-   if ( m_camera->RetType() == CAMERA_VISIT )  // d√©j√† une visite en cours ?
 -   {
 -       m_camera->StopVisit();
 -       m_displayText->ClearVisit();
 -   }
 -   else
 -   {
--       m_visitObject = DeselectAll();  // enlËve les boutons de commande
+-       m_visitObject = DeselectAll();  // enl√®ve les boutons de commande
 -   }
 -
--   // CrÈe le bouton "continuer".
+-   // Cr√©e le bouton "continuer".
 -   if ( m_interface->SearchControl(EVENT_DT_END) == 0 )
 -   {
 -       pos.x = 10.0f/640.0f;
@@ -2558,7 +2558,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       m_interface->CreateButton(pos, dim, 16, EVENT_DT_END);
 -   }
 -
--   // CrÈe la flËche pour montrer l'endroit.
+-   // Cr√©e la fl√®che pour montrer l'endroit.
 -   if ( m_visitArrow != 0 )
 -   {
 -       m_visitArrow->DeleteObject();
@@ -2584,7 +2584,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   ChangePause(TRUE);
 -}
 -
--// Bouge la flËche de visite.
+-// Bouge la fl√®che de visite.
 -
 -void CRobotMain::FrameVisit(float rTime)
 -{
@@ -2594,7 +2594,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -
 -   if ( m_visitArrow == 0 )  return;
 -
--   // Bouge la flËche.
+-   // Bouge la fl√®che.
 -   m_visitTime += rTime;
 -
 -   pos = m_visitPosArrow;
@@ -2602,7 +2602,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   m_visitArrow->SetPosition(0, pos);
 -   m_visitArrow->SetAngleY(0, m_visitTime*2.0f);
 -
--   // GËre les particules "flËches".
+-   // G√®re les particules "fl√®ches".
 -   m_visitParticule -= rTime;
 -   if ( m_visitParticule <= 0.0f )
 -   {
@@ -2627,7 +2627,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   // Supprime le bouton.
 -   m_interface->DeleteControl(EVENT_DT_END);
 -
--   // Supprime la flËche.
+-   // Supprime la fl√®che.
 -   if ( m_visitArrow != 0 )
 -   {
 -       m_visitArrow->DeleteObject();
@@ -2635,7 +2635,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       m_visitArrow = 0;
 -   }
 -
--   // Supprime les particules "flËches".
+-   // Supprime les particules "fl√®ches".
 -   m_particule->DeleteParticule(PARTISHOW);
 -
 -   m_camera->StopVisit();
@@ -2650,20 +2650,20 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -
 -
 -
--// Met ‡ jour tous les raccourcis.
+-// Met √† jour tous les raccourcis.
 -
 -void CRobotMain::UpdateShortcuts()
 -{
 -   m_short->UpdateShortcuts();
 -}
  
- // Retourne l'objet par dÈfaut ‡ sÈlectionner aprËs la crÈation d'une scËne.
+ // Retourne l'objet par d√©faut √† s√©lectionner apr√®s la cr√©ation d'une sc√®ne.
  
 @@ -2059,93 +2334,33 @@ CObject* CRobotMain::DeselectAll()
     return pPrev;
  }
  
--// SÈlectionne un objet, sans s'occuper de dÈsÈlectionner le reste.
+-// S√©lectionne un objet, sans s'occuper de d√©s√©lectionner le reste.
 -
 -void CRobotMain::SelectOneObject(CObject* pObj, BOOL bDisplayError)
 -{
@@ -2723,7 +2723,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   }
 -}
 -
- // SÈlectionne l'objet visÈ par la souris.
+ // S√©lectionne l'objet vis√© par la souris.
  
  BOOL CRobotMain::SelectObject(CObject* pObj, BOOL bDisplayError)
  {
@@ -2752,7 +2752,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     return TRUE;
  }
  
-+// SÈlectionne un objet, sans s'occuper de dÈsÈlectionner le reste.
++// S√©lectionne un objet, sans s'occuper de d√©s√©lectionner le reste.
 +
 +void CRobotMain::SelectOneObject(CObject* pObj, BOOL bDisplayError)
 +{
@@ -2763,7 +2763,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   m_camera->SetType(m_dialog->RetDefCamera());
 +}
 +
- // DÈsÈlectionne l'objet sÈlectionnÈ.
+ // D√©s√©lectionne l'objet s√©lectionn√©.
  
  BOOL CRobotMain::DeselectObject()
 @@ -2159,10 +2374,6 @@ BOOL CRobotMain::DeselectObject()
@@ -2797,7 +2797,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
         delete pyro;
     }
  
--   // Supprime la flËche.
+-   // Supprime la fl√®che.
 -   if ( m_visitArrow != 0 )
 -   {
 -       m_visitArrow->DeleteObject();
@@ -2817,7 +2817,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     }
  }
  
--// SÈlectionne l'homme.
+-// S√©lectionne l'homme.
 -
 -void CRobotMain::SelectHuman()
 -{
@@ -2832,7 +2832,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  }
  
 -// Retourne l'objet de toto.
-+// Retourne l'objet sÈlectionnÈ.
++// Retourne l'objet s√©lectionn√©.
  
 -CObject* CRobotMain::SearchToto()
 +CObject* CRobotMain::RetSelect()
@@ -2855,7 +2855,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     return 0;
  }
  
--// Retourne l'objet sÈlectionnable le plus proche d'une position donnÈe.
+-// Retourne l'objet s√©lectionnable le plus proche d'une position donn√©e.
 -
 -CObject* CRobotMain::SearchNearest(D3DVECTOR pos, CObject* pExclu)
 +CObject* CRobotMain::SearchObject(ObjectType type)
@@ -2891,7 +2891,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   return pBest;
 -}
 -
--// Retourne l'objet sÈlectionnÈ.
+-// Retourne l'objet s√©lectionn√©.
 -
 -CObject* CRobotMain::RetSelect()
 -{
@@ -2913,7 +2913,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  }
  
 -CObject* CRobotMain::SearchObject(ObjectType type)
-+// Retourne le nombre de piËces du vÈhicule.
++// Retourne le nombre de pi√®ces du v√©hicule.
 +
 +int CRobotMain::RetVehiclePart()
  {
@@ -2939,8 +2939,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   return motion->RetUsedPart();
  }
  
--// DÈtecte l'objet visÈ par la souris.
-+// Retourne le nombre de cÙnes et d'autres objets destructibles.
+-// D√©tecte l'objet vis√© par la souris.
++// Retourne le nombre de c√¥nes et d'autres objets destructibles.
  
 -CObject* CRobotMain::DetectObject(FPOINT pos)
 +int CRobotMain::RetConeTotal()
@@ -2965,7 +2965,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +       if ( pObj->RetExplo() )  continue;
 +       if ( pObj->RetRuin() )  continue;
 +       if ( !pObj->RetEnable() )  continue;
-+       if ( pObj->RetGround() )  continue;  // objet renversÈ ?
++       if ( pObj->RetGround() )  continue;  // objet renvers√© ?
  
 -       pTarget = 0;
         type = pObj->RetType();
@@ -3080,7 +3080,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       }
 -       else if ( (type == OBJECT_POWER  ||
 -                 type == OBJECT_ATOMIC ) &&
--            pObj->RetTruck() != 0 )  // pile utilisÈe ?
+-            pObj->RetTruck() != 0 )  // pile utilis√©e ?
 -       {
 -           pTarget = pObj->RetTruck();
 -       }
@@ -3101,7 +3101,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   return 0;
 -}
 -
--// Indique si un objet est sÈlectionnable.
+-// Indique si un objet est s√©lectionnable.
 -
 -BOOL CRobotMain::IsSelectable(CObject* pObj)
 -{
@@ -3194,7 +3194,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  
  
 @@ -2589,7 +2552,6 @@ BOOL CRobotMain::DeleteObject()
-    pObj->SetSelect(FALSE);  // dÈsÈlectionne l'objet
+    pObj->SetSelect(FALSE);  // d√©s√©lectionne l'objet
     m_camera->SetType(CAMERA_EXPLO);
     DeselectAll();
 -   pObj->DeleteDeselList(pObj);
@@ -3203,12 +3203,12 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  }
 @@ -2605,8 +2567,6 @@ void CRobotMain::HiliteClear()
     ClearTooltip();
-    m_tooltipName[0] = 0;  // enlËve vraiment le tooltip
+    m_tooltipName[0] = 0;  // enl√®ve vraiment le tooltip
  
 -   if ( !m_bHilite )  return;
 -
     i = -1;
-    m_engine->SetHiliteRank(&i);  // plus rien de sÈlectionnÈ
+    m_engine->SetHiliteRank(&i);  // plus rien de s√©lectionn√©
  
 @@ -2617,72 +2577,27 @@ void CRobotMain::HiliteClear()
  
@@ -3220,7 +3220,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   m_bHilite = FALSE;
  }
  
- // Met en Èvidence l'objet survolÈ par la souris.
+ // Met en √©vidence l'objet survol√© par la souris.
  
  void CRobotMain::HiliteObject(FPOINT pos)
  {
@@ -3235,7 +3235,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     if ( m_movie->IsExist() )  return;
     if ( m_engine->RetMouseHide() )  return;
  
-    ClearInterface();  // enlËve mise en Èvidence et tooltip
+    ClearInterface();  // enl√®ve mise en √©vidence et tooltip
  
 -   pObj = m_short->DetectShort(pos);
 -
@@ -3317,7 +3317,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -}
 -
 -
- // Change le mode de la camÈra.
+ // Change le mode de la cam√©ra.
  
  void CRobotMain::ChangeCamera()
 @@ -2793,153 +2691,46 @@ void CRobotMain::ChangeCamera()
@@ -3368,7 +3368,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -                    if ( type == CAMERA_PLANE   )  type = CAMERA_BACK;
 -               else if ( type == CAMERA_BACK    )  type = CAMERA_PLANE;
 -           }
--           else if ( pObj->RetTrainer() )  // entraÓnement ?
+-           else if ( pObj->RetTrainer() )  // entra√Ænement ?
 -           {
 -                    if ( type == CAMERA_ONBOARD )  type = CAMERA_FIX;
 -               else if ( type == CAMERA_FIX     )  type = CAMERA_PLANE;
@@ -3411,7 +3411,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     }
  }
  
--// TÈlÈcommande la camÈra avec les touches flËches.
+-// T√©l√©commande la cam√©ra avec les touches fl√®ches.
 -
 -void CRobotMain::KeyCamera(EventMsg event, long param)
 -{
@@ -3445,7 +3445,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   }
 -
 -   if ( m_phase != PHASE_SIMUL )  return;
--   if ( m_bEditLock )  return;  // Èdition en cours ?
+-   if ( m_bEditLock )  return;  // √©dition en cours ?
 -   if ( m_bTrainerPilot )  return;
 -
 -   pObj = RetSelect();
@@ -3480,7 +3480,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   }
 -}
 -
--// Effectue un panoramique avec la camÈra si un bouton est enfoncÈ.
+-// Effectue un panoramique avec la cam√©ra si un bouton est enfonc√©.
 -
 -void CRobotMain::RemoteCamera(float pan, float zoom, float rTime)
 -{
@@ -3536,7 +3536,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     }
  }
  
-+// Initialise le point de vue pour un objet donnÈ.
++// Initialise le point de vue pour un objet donn√©.
 +
 +void CRobotMain::InitEye(CObject *pObj)
 +{
@@ -3563,7 +3563,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +}
 +
 +
- // Fait progresser toute la scËne.
+ // Fait progresser toute la sc√®ne.
  
  BOOL CRobotMain::EventFrame(const Event &event)
  {
@@ -3583,7 +3583,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   if ( IsGameTime() )
     {
 -       m_displayText->DisplayError(INFO_BEGINSATCOM, D3DVECTOR(0.0f,0.0f,0.0f));
--       m_bBeginSatCom = TRUE;  // message affichÈ
+-       m_bBeginSatCom = TRUE;  // message affich√©
 +       m_gameTime += event.rTime;
     }
 +   if ( IsRecordTime() )
@@ -3632,12 +3632,12 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -           }
 +           pObj->EventProcess(event);
         }
-        // Fait progresser tous les objets transportÈs par les robots.
+        // Fait progresser tous les objets transport√©s par les robots.
         for ( i=0 ; i<1000000 ; i++ )
 @@ -3087,7 +2894,7 @@ BOOL CRobotMain::EventFrame(const Event &event)
  
-    // Fait bouger la camÈra aprËs les objets, car sa position peut
-    // dÈpendre de l'objet sÈlectionnÈ (CAMERA_ONBOARD ou CAMERA_BACK).
+    // Fait bouger la cam√©ra apr√®s les objets, car sa position peut
+    // d√©pendre de l'objet s√©lectionn√© (CAMERA_ONBOARD ou CAMERA_BACK).
 -   if ( m_phase == PHASE_SIMUL && !m_bEditFull )
 +   if ( m_phase == PHASE_SIMUL )
     {
@@ -3657,14 +3657,14 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
         m_camera->EventProcess(event);
     }
  
--   // Fait progresser toto aprËs la camÈra, car sa position dÈpend
--   // de la camÈra.
+-   // Fait progresser toto apr√®s la cam√©ra, car sa position d√©pend
+-   // de la cam√©ra.
 -   if ( toto != 0 )
 -   {
 -       toto->EventProcess(event);
 -   }
 -
-    // Fait progresser le modËle.
+    // Fait progresser le mod√®le.
     if ( m_phase == PHASE_MODEL )
     {
 @@ -3120,20 +2920,21 @@ BOOL CRobotMain::EventFrame(const Event &event)
@@ -3674,7 +3674,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   // Fait bouger l'indicateur de film.
 -   if ( m_bMovieLock && !m_bEditLock )  // film en cours ?
 +   // Fait bouger l'indicateur de pause.
-+   if ( m_bPause &&  // Èdition en cours ?
++   if ( m_bPause &&  // √©dition en cours ?
 +        m_camera->RetType() != CAMERA_FREE )
     {
 -       CControl*   pc;
@@ -3707,8 +3707,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       }
 -   }
 -
--   // Fait bouger l'indicateur d'Èdition.
--   if ( m_bEditLock || m_bPause )  // Èdition en cours ?
+-   // Fait bouger l'indicateur d'√©dition.
+-   if ( m_bEditLock || m_bPause )  // √©dition en cours ?
 -   {
 -       CControl*   pc;
 -       FPOINT      pos, dim;
@@ -3744,7 +3744,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
         }
     }
  
--   // Fait bouger la flËche de visite.
+-   // Fait bouger la fl√®che de visite.
 -   if ( m_camera->RetType() == CAMERA_VISIT )
 -   {
 -       FrameVisit(event.rTime);
@@ -3772,7 +3772,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
                     Event       newEvent;
                     m_event->MakeEvent(newEvent, EVENT_WIN);
                     m_event->AddEvent(newEvent);
-+                   m_bCheatUsed = FALSE;  // gagnÈ sans tricher
++                   m_bCheatUsed = FALSE;  // gagn√© sans tricher
                 }
             }
         }
@@ -3909,7 +3909,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     CObject*    pObj;
 +   int         i;
  
-    DeleteAllObjects();  // supprime toute la scËne 3D actuelle
+    DeleteAllObjects();  // supprime toute la sc√®ne 3D actuelle
     m_engine->FlushObject();
     m_terrain->FlushRelief();  // tout plat
     m_terrain->FlushBuildingLevel();
@@ -3926,8 +3926,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   m_dialog->SetSceneName("perso");
 +   m_dialog->SetSceneName("car");  // car000.txt
     m_dialog->SetSceneRank(0);
--   CreateScene(FALSE, TRUE, FALSE);  // scËne fixe
-+   CreateScene(TRUE);  // scËne fixe
+-   CreateScene(FALSE, TRUE, FALSE);  // sc√®ne fixe
++   CreateScene(TRUE);  // sc√®ne fixe
  
 -   m_engine->SetDrawWorld(FALSE);  // ne dessine rien sous l'interface
 -   m_engine->SetDrawFront(TRUE);  // dessine human sur l'interface
@@ -3956,7 +3956,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     }
  }
  
- // CrÈe toute la scËne.
+ // Cr√©e toute la sc√®ne.
  
 -void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 +void CRobotMain::CreateScene(BOOL bFixScene)
@@ -4005,7 +4005,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   if ( !bResetObject )
 -   {
 -       g_build = 0;
--       g_researchDone = 0;  // aucune recherche effectuÈe
+-       g_researchDone = 0;  // aucune recherche effectu√©e
 -       g_researchEnable = 0;
 -
 -       FlushDisplayInfo();
@@ -4056,7 +4056,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       GetResource(RES_TEXT, RT_SCRIPT_NEW, m_scriptName);
 -       m_scriptFile[0] = 0;
 +   g_build = 0;
-+   g_researchDone = 0;  // aucune recherche effectuÈe
++   g_researchDone = 0;  // aucune recherche effectu√©e
 +   g_researchEnable = 0;
 +   m_startCounter = 0;
 +   m_selectObject = 0;
@@ -4645,7 +4645,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -                   pObj->SetInfo(i, info);
 -               }
 -
-                // Met les paramËtres de la ligne de commande.
+                // Met les param√®tres de la ligne de commande.
                 p = SearchOp(line, "cmdline");
                 for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
 @@ -4090,14 +3865,9 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
@@ -4680,7 +4680,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -                       if ( i != PARAM_FIXSCENE &&
 -                            !m_dialog->RetMovies() )  i = 0;
 +                       if ( !m_dialog->RetMovies() )  i = 0;
-                        pAuto->Start(i);  // dÈmarre le film
+                        pAuto->Start(i);  // d√©marre le film
                     }
                 }
 +           }
@@ -5083,7 +5083,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   if ( !bResetObject )
 -   {
 -       ChangeColor();  // change les couleurs des textures
--       m_short->SetMode(FALSE);  // vÈhicules
+-       m_short->SetMode(FALSE);  // v√©hicules
 -   }
 +   ChangeColor();  // change les couleurs des textures
  
@@ -5101,8 +5101,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     m_selectObject = pSel;
  
 -   if ( !m_bBase     &&  // pas de base principale ?
--        !m_bFixScene )   // scËne interractive ?
-+   if ( !m_bFixScene )   // scËne interractive ?
+-        !m_bFixScene )   // sc√®ne interractive ?
++   if ( !m_bFixScene )   // sc√®ne interractive ?
     {
         if ( pSel == 0 )
         {
@@ -5155,7 +5155,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       SelectObject(pSel);
 -       m_camera->SetObject(pSel);
 -
--       m_bBeginSatCom = TRUE;  // message dÈj‡ affichÈ
+-       m_bBeginSatCom = TRUE;  // message d√©j√† affich√©
 +       pSel->SetStarting(TRUE);  // n'avance pas
 +   }
 +   if ( m_movieTotal > 0 )  // commence par un "film" ?
@@ -5166,7 +5166,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   m_dialog->SetStackRead("");
  }
  
- // CrÈe un objet du dÈcor mobile ou fixe.
+ // Cr√©e un objet du d√©cor mobile ou fixe.
  
 -CObject* CRobotMain::CreateObject(D3DVECTOR pos, float angle, float zoom, float height,
 -                                 ObjectType type, float power,
@@ -5183,7 +5183,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     if ( type == OBJECT_NULL )  return 0;
  
 @@ -4492,32 +4323,36 @@ CObject* CRobotMain::CreateObject(D3DVECTOR pos, float angle, float zoom, float
-        bTrainer = FALSE;  // forcÈment
+        bTrainer = FALSE;  // forc√©ment
     }
  
 -   if ( type == OBJECT_PORTICO  ||
@@ -5595,7 +5595,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     return pObject;
  }
  
-+// Limite la quantitÈ d'un objet quelconque en dÈtruisant qq objets.
++// Limite la quantit√© d'un objet quelconque en d√©truisant qq objets.
 +
 +void CRobotMain::CreateLimit(ObjectType type, int max)
 +{
@@ -5624,14 +5624,14 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +       }
 +       while ( list[j] == 0 );
 +
-+       list[j]->DeleteObject(TRUE);  // dÈtruit rapidement
++       list[j]->DeleteObject(TRUE);  // d√©truit rapidement
 +       delete list[j];
 +       list[j] = 0;
 +   }
 +}
 +
  
- // CrÈe le modËle Èditable.
+ // Cr√©e le mod√®le √©ditable.
  
 @@ -4862,7 +4712,8 @@ void CRobotMain::CreateModel()
     m_engine->TimeInit();
@@ -5678,7 +5678,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   exclu[0] = FPOINT(192.0f/256.0f,   0.0f/256.0f);
 -   exclu[1] = FPOINT(256.0f/256.0f,  64.0f/256.0f);  // crystaux + bombonnes
 -   exclu[2] = FPOINT(208.0f/256.0f, 224.0f/256.0f);
--   exclu[3] = FPOINT(256.0f/256.0f, 256.0f/256.0f);  // Ècran SatCom
+-   exclu[3] = FPOINT(256.0f/256.0f, 256.0f/256.0f);  // √©cran SatCom
 -   exclu[4] = FPOINT(0.0f, 0.0f);
 -   exclu[5] = FPOINT(0.0f, 0.0f);  // terminateur
 -   m_engine->ChangeColor("human.tga", colorRef1, colorNew1, colorRef2, colorNew2, 0.30f, 0.01f, ts, ti, exclu);
@@ -5781,8 +5781,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     m_engine->ChangeColor("effect02.tga", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, TRUE);
  }
  
--// Met ‡ jour le nombre d'objets non indispansables.
-+// Change la couleur d'un modËle de voiture.
+-// Met √† jour le nombre d'objets non indispansables.
++// Change la couleur d'un mod√®le de voiture.
  
 -BOOL CRobotMain::TestGadgetQuantity(int rank)
 +void CRobotMain::ChangeColorCar(int model, int subModel, D3DCOLORVALUE color)
@@ -5858,7 +5858,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   if ( model == 3 )  // pickup ?
 +   {
 +       exclu[0] = FPOINT(  0.0f/256.0f, 160.0f/256.0f);
-+       exclu[1] = FPOINT( 96.0f/256.0f, 256.0f/256.0f);  // mÈtal
++       exclu[1] = FPOINT( 96.0f/256.0f, 256.0f/256.0f);  // m√©tal
 +       exclu[2] = FPOINT(0.0f, 0.0f);
 +       exclu[3] = FPOINT(0.0f, 0.0f);  // terminateur
 +       colorRef1.r =  72.0f/256.0f;
@@ -5909,7 +5909,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   }
 +}
 +
-+// Met ‡ jour le nombre d'objets non indispansables.
++// Met √† jour le nombre d'objets non indispansables.
 +
 +BOOL CRobotMain::TestGadgetQuantity(int rank)
 +{
@@ -5966,7 +5966,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  }
  
  
--// Cache la zone constructible lorsqu'un cube de mÈtal est repris.
+-// Cache la zone constructible lorsqu'un cube de m√©tal est repris.
 -
 -void CRobotMain::HideDropZone(CObject* metal)
 -{
@@ -5983,7 +5983,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   }
 -}
 -
--// Montre la zone constructible lorsqu'un cube de mÈtal est dÈposÈ.
+-// Montre la zone constructible lorsqu'un cube de m√©tal est d√©pos√©.
 -
 -void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 -{
@@ -5998,14 +5998,14 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   center = metal->RetPosition(0);
 -
 -   // Calcule le rayon maximal possible en fonction des autres objets.
--   oMax = 30.0f;  // rayon permettant de construire le plus grand b‚timent
+-   oMax = 30.0f;  // rayon permettant de construire le plus grand b√¢timent
 -   for ( i=0 ; i<1000000 ; i++ )
 -   {
 -       pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 -       if ( pObj == 0 )  break;
 -
 -       if ( !pObj->RetActif() )  continue;  // inactif ?
--       if ( pObj->RetTruck() != 0 )  continue;  // objet portÈ ?
+-       if ( pObj->RetTruck() != 0 )  continue;  // objet port√© ?
 -       if ( pObj == metal )  continue;
 -       if ( pObj == truck )  continue;
 -
@@ -6043,7 +6043,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -            type == OBJECT_INFO     ||
 -            type == OBJECT_PARA     ||
 -            type == OBJECT_SAFE     ||
--            type == OBJECT_HUSTON   )  // b‚timent ?
+-            type == OBJECT_HUSTON   )  // b√¢timent ?
 -       {
 -           j = 0;
 -           while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
@@ -6071,7 +6071,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   }
 -}
 -
--// Efface les limites montrÈes.
+-// Efface les limites montr√©es.
 -
 -void CRobotMain::FlushShowLimit(int i)
 -{
@@ -6095,7 +6095,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   m_showLimit[i].bUsed = FALSE;
 -}
 -
--// SpÈcifie les limites ‡ montrer.
+-// Sp√©cifie les limites √† montrer.
 -
 -void CRobotMain::SetShowLimit(int i, ParticuleType parti, CObject *pObj,
 -                             D3DVECTOR pos, float radius, float duration)
@@ -6134,14 +6134,14 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   }
 -}
 -
--// Ajuste les limites ‡ montrer.
+-// Ajuste les limites √† montrer.
 -
 -void CRobotMain::AdjustShowLimit(int i, D3DVECTOR pos)
 -{
 -   m_showLimit[i].pos = pos;
 -}
 -
--// Monter les limites de l'objet sÈlectionnÈ.
+-// Monter les limites de l'objet s√©lectionn√©.
 -
 -void CRobotMain::StartShowLimit()
 -{
@@ -6153,7 +6153,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   pObj->StartShowLimit();
 -}
 -
--// Fait avancer les limites montrÈes.
+-// Fait avancer les limites montr√©es.
 -
 -void CRobotMain::FrameShowLimit(float rTime)
 -{
@@ -6261,7 +6261,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       }
 -   }
 -
-    // DÈmarre tous les programmes selon la commande "run".
+    // D√©marre tous les programmes selon la commande "run".
     for ( i=0 ; i<1000000 ; i++ )
     {
 @@ -5572,911 +5170,55 @@ void CRobotMain::CompileScript(BOOL bSoluce)
@@ -6363,8 +6363,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  }
  
 -// Sauve tous les programmes d'un robot.
--// Si un programme n'existe pas, le fichier correspondant est dÈtruit.
-+// Retourne le type d'action pour le droÔde starter.
+-// Si un programme n'existe pas, le fichier correspondant est d√©truit.
++// Retourne le type d'action pour le dro√Øde starter.
  
 -void CRobotMain::SaveOneScript(CObject *pObj)
 +StarterType CRobotMain::RetStarterType()
@@ -6398,7 +6398,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -}
 -
 -// Sauve tous les programmes d'un robot.
--// Si un programme n'existe pas, le fichier correspondant est dÈtruit.
+-// Si un programme n'existe pas, le fichier correspondant est d√©truit.
 -
 -void CRobotMain::SaveFileScript(CObject *pObj, char* filename, int objRank)
 -{
@@ -6431,7 +6431,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   }
 -}
 -
--// Sauve le stack du programme en exÈcution d'un robot.
+-// Sauve le stack du programme en ex√©cution d'un robot.
 -
 -BOOL CRobotMain::SaveFileStack(CObject *pObj, FILE *file, int objRank)
 -{
@@ -6449,7 +6449,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   return brain->WriteStack(file);
 -}
 -
--// Reprend le stack du programme en exÈcution d'un robot.
+-// Reprend le stack du programme en ex√©cution d'un robot.
 -
 -BOOL CRobotMain::ReadFileStack(CObject *pObj, FILE *file, int objRank)
 -{
@@ -6500,7 +6500,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   return FALSE;
 -}
 -
--// Cherche un nom de script pour un type donnÈ.
+-// Cherche un nom de script pour un type donn√©.
 -
 -char*  CRobotMain::RetNewScriptName(ObjectType type, int rank)
 -{
@@ -6521,7 +6521,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -}
 -
 -
--// Cherche si un objet est occupÈ dans une t‚che, pour interdire
+-// Cherche si un objet est occup√© dans une t√¢che, pour interdire
 -// une sauvegarde de la partie.
 -
 -BOOL CRobotMain::IsBusy()
@@ -6619,7 +6619,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   sprintf(name, " option=%d", pObj->RetOption());
 -   strcat(line, name);
 -
--   if ( pObj == m_infoObject )  // objet sÈlectionnÈ ?
+-   if ( pObj == m_infoObject )  // objet s√©lectionn√© ?
 -   {
 -       sprintf(name, " select=1");
 -       strcat(line, name);
@@ -6629,7 +6629,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -
 -   if ( pObj->RetType() == OBJECT_BASE )
 -   {
--       sprintf(name, " run=3");  // stoppÈ et ouvert (PARAM_FIXSCENE)
+-       sprintf(name, " run=3");  // stopp√© et ouvert (PARAM_FIXSCENE)
 -       strcat(line, name);
 -   }
 -
@@ -6708,12 +6708,12 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       pPower = pObj->RetPower();
 -       pFret  = pObj->RetFret();
 -
--       if ( pFret != 0 )  // objet transportÈ ?
+-       if ( pFret != 0 )  // objet transport√© ?
 -       {
 -           IOWriteObject(file, pFret, "CreateFret");
 -       }
 -
--       if ( pPower != 0 )  // pile transportÈe ?
+-       if ( pPower != 0 )  // pile transport√©e ?
 -       {
 -           IOWriteObject(file, pPower, "CreatePower");
 -       }
@@ -6725,7 +6725,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   fclose(file);
 -
 -#if CBOT_STACK
--   // Ecrit le fichier des stacks d'exÈcution.
+-   // Ecrit le fichier des stacks d'ex√©cution.
 -   file = fOpen(filecbot, "wb");
 -   if ( file == NULL )  return FALSE;
 -
@@ -6756,7 +6756,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   return TRUE;
 -}
 -
--// Reprend un objet enregistrÈ.
+-// Reprend un objet enregistr√©.
 -
 -CObject* CRobotMain::IOReadObject(char *line, char* filename, int objRank)
 -{
@@ -6832,21 +6832,21 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       pBrain = pObj->RetBrain();
 -       if ( pBrain != 0 )
 -       {
--           pBrain->RunProgram(run-1);  // dÈmarre le programme
+-           pBrain->RunProgram(run-1);  // d√©marre le programme
 -       }
 -#endif
 -
 -       pAuto = pObj->RetAuto();
 -       if ( pAuto != 0 )
 -       {
--           pAuto->Start(run);  // dÈmarre le film
+-           pAuto->Start(run);  // d√©marre le film
 -       }
 -   }
 -
 -   return pObj;
 -}
 -
--// Reprend une partie enregistrÈe.
+-// Reprend une partie enregistr√©e.
 -
 -CObject* CRobotMain::IOReadScene(char *filename, char *filecbot)
 -{
@@ -6959,7 +6959,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   }
 -   while ( nbError > 0 && nbError != lastError );
 -
--   // Lit le fichier des stacks d'exÈcution.
+-   // Lit le fichier des stacks d'ex√©cution.
 -   file = fOpen(filecbot, "rb");
 -   if ( file != NULL )
 -   {
@@ -6994,7 +6994,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -}
 -
 -
--// Ecrit les paramËtres globaux pour le jeu libre.
+-// Ecrit les param√®tres globaux pour le jeu libre.
 -
 -void CRobotMain::WriteFreeParam()
 -{
@@ -7016,7 +7016,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   fclose(file);
 -}
 -
--// Lit les paramËtres globaux pour le jeu libre.
+-// Lit les param√®tres globaux pour le jeu libre.
 -
 -void CRobotMain::ReadFreeParam()
 -{
@@ -7042,7 +7042,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -}
 -
 -
--// Remet tous les objets ‡ leur place initiale.
+-// Remet tous les objets √† leur place initiale.
 -
 -void CRobotMain::ResetObject()
 -{
@@ -7142,7 +7142,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   return STARTER_321;
  }
  
--// Remet tous les objets ‡ leur place initiale.
+-// Remet tous les objets √† leur place initiale.
 +// Retourne le type de course.
  
 -void CRobotMain::ResetCreate()
@@ -7164,8 +7164,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   m_particule->DeleteParticule(PARTIGUN4);
 +// Retourne l'action pour le claxon.
  
--   DeselectAll();  // enlËve les boutons de commande
--   DeleteAllObjects();  // supprime toute la scËne 3D actuelle
+-   DeselectAll();  // enl√®ve les boutons de commande
+-   DeleteAllObjects();  // supprime toute la sc√®ne 3D actuelle
 +int CRobotMain::RetHornAction()
 +{
 +   return m_hornAction;
@@ -7180,8 +7180,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   m_camera->SetType(CAMERA_DIALOG);
  
 -   CreateScene(m_dialog->RetSceneSoluce(), FALSE, TRUE);
-+// Informe de l'objet tamponnÈ, pour Èventuellement exÈcuter
-+// trËs rapidement CheckEndMission.
++// Informe de l'objet tamponn√©, pour √©ventuellement ex√©cuter
++// tr√®s rapidement CheckEndMission.
  
 -   if ( !RetNiceReset() )  return;
 +void CRobotMain::InfoCollision(ObjectType type)
@@ -7256,7 +7256,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 @@ -6504,19 +5278,33 @@ Error CRobotMain::CheckEndMission(BOOL bFrame)
  
             // Ne pas utiliser RetActif(), car un ver invisible (sous terre)
-            // doit Ítre considÈrÈ comme existant ici !
+            // doit √™tre consid√©r√© comme existant ici !
 -           if ( pObj->RetLock() )  continue;
 +//?            if ( pObj->RetLock() )  continue;
             if ( pObj->RetRuin() )  continue;
@@ -7267,13 +7267,13 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -           if ( type == OBJECT_SCRAP2 ||
 -                type == OBJECT_SCRAP3 ||
 -                type == OBJECT_SCRAP4 ||
--                type == OBJECT_SCRAP5 )  // dÈchet ?
+-                type == OBJECT_SCRAP5 )  // d√©chet ?
 +           if ( type != m_endTake[t].type )  continue;
 +
 +           if ( type == OBJECT_CAR )  // voiture ?
             {
 -               type = OBJECT_SCRAP1;
-+               if ( pObj->RetDead() )  continue;  // ignore si cassÈ
++               if ( pObj->RetDead() )  continue;  // ignore si cass√©
 +           }
 +
 +           if ( type != OBJECT_WALKER &&
@@ -7283,12 +7283,12 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +               if ( pObj->RetExplo() )  continue;
 +           }
 +
-+           if ( type == OBJECT_ALIEN8   ||  // gÈnÈrateur ?
++           if ( type == OBJECT_ALIEN8   ||  // g√©n√©rateur ?
 +                type == OBJECT_ALIEN9   ||  // torture ?
 +                type == OBJECT_COMPUTER ||  // ordinateur ?
-+                type == OBJECT_REPAIR   )   // centre de rÈparation ?
++                type == OBJECT_REPAIR   )   // centre de r√©paration ?
 +           {
-+               if ( pObj->RetLock() )  continue;  // ignore si cassÈ
++               if ( pObj->RetLock() )  continue;  // ignore si cass√©
             }
 -           if ( type != m_endTake[t].type )  continue;
  
@@ -7325,17 +7325,17 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
         {
 -           if ( m_winDelay == 0.0f )
 -           {
--               m_winDelay  = m_endTakeWinDelay;  // gagnÈ dans x seconde
+-               m_winDelay  = m_endTakeWinDelay;  // gagn√© dans x seconde
 -               m_lostDelay = 0.0f;
 -           }
 -           m_displayText->SetEnable(FALSE);
--           return ERR_OK;  // mission terminÈe
+-           return ERR_OK;  // mission termin√©e
 +           goto win;
         }
     }
  
 @@ -6592,85 +5383,239 @@ Error CRobotMain::CheckEndMission(BOOL bFrame)
-        return ERR_OK;  // mission terminÈe
+        return ERR_OK;  // mission termin√©e
     }
  
 -   if ( bFrame && m_bBase )  return ERR_MISSION_NOTERM;
@@ -7344,7 +7344,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
     if ( m_winDelay == 0.0f )
     {
 -       m_displayText->DisplayError(INFO_WIN, D3DVECTOR(0.0f,0.0f,0.0f));
--       m_winDelay  = m_endTakeWinDelay;  // gagnÈ dans 2 secondes
+-       m_winDelay  = m_endTakeWinDelay;  // gagn√© dans 2 secondes
 +       if ( m_dialog->RetDuel()   &&  // duel ?
 +            m_recorderPlay != 0 )
 +       {
@@ -7385,14 +7385,14 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +               m_displayText->DisplayError(INFO_WIN);
 +           }
 +       }
-+       m_winDelay  = m_endTakeWinDelay;  // gagnÈ dans 6 secondes
++       m_winDelay  = m_endTakeWinDelay;  // gagn√© dans 6 secondes
         m_lostDelay = 0.0f;
     }
     m_displayText->SetEnable(FALSE);
-    return ERR_OK;  // mission terminÈe
+    return ERR_OK;  // mission termin√©e
  }
  
--// VÈrifie si la mission est terminÈe suite ‡ l'affichage d'un message.
+-// V√©rifie si la mission est termin√©e suite √† l'affichage d'un message.
 +// Retourne le nombre de portes par tour.
  
 -void CRobotMain::CheckEndMessage(char *message)
@@ -7403,7 +7403,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +}
  
 -   for ( t=0 ; t<m_endTakeTotal ; t++ )
-+// Retourne le type d'objet dÈtruit qui doit Ítre signalÈ dans la progression.
++// Retourne le type d'objet d√©truit qui doit √™tre signal√© dans la progression.
 +
 +ObjectType CRobotMain::RetTypeProgress()
 +{
@@ -7411,7 +7411,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +}
 +
 +// Avance la progression.
-+// Retourne TRUE si un son a ÈtÈ gÈnÈrÈ.
++// Retourne TRUE si un son a √©t√© g√©n√©r√©.
 +
 +BOOL CRobotMain::IncProgress()
 +{
@@ -7432,7 +7432,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +       if ( m_progressLevel+m_progressAdd > 0 )
         {
 -           m_displayText->DisplayError(INFO_WIN, D3DVECTOR(0.0f,0.0f,0.0f));
--           m_winDelay  = m_endTakeWinDelay;  // gagnÈ dans 2 secondes
+-           m_winDelay  = m_endTakeWinDelay;  // gagn√© dans 2 secondes
 -           m_lostDelay = 0.0f;
 +           record = m_dialog->TimeRecord(time, 1);
 +           if ( record > 0.0f && !m_dialog->FirstRecord(0) )
@@ -7496,7 +7496,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +                   m_messageDelay = 5.0f;
 +                   m_messageSize  = FONTSIZE*0.75f;
 +                   m_messageSound = sound;
-+                   m_messageTime  = 1.0f;  // sera affichÈ dans 1 seconde
++                   m_messageTime  = 1.0f;  // sera affich√© dans 1 seconde
 +               }
 +               else
 +               {
@@ -7519,7 +7519,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  }
  
 -// Retourne le nom d'une instruction obligatoire.
-+// Met ‡ jour la progression sur le but ‡ atteindre.
++// Met √† jour la progression sur le but √† atteindre.
  
 -char* CRobotMain::RetObligatoryToken(int i)
 +void CRobotMain::UpdateProgress()
@@ -7539,8 +7539,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   pp->SetProgress(m_progressLevel);
  }
  
--// VÈrifie si une instruction fait partie de la liste obligatoire.
-+// Met ‡ jour le temps ÈcoulÈ.
+-// V√©rifie si une instruction fait partie de la liste obligatoire.
++// Met √† jour le temps √©coul√©.
  
 -int CRobotMain::IsObligatoryToken(char *token)
 +void CRobotMain::UpdateTime()
@@ -7560,7 +7560,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -       if ( strcmp(token, m_obligatoryToken[i]) == 0 )
 +       if ( m_raceType == 1 )  // course contre la montre ?
 +       {
-+           time = m_bonusLimit-m_gameTime;  // dÈcompte
++           time = m_bonusLimit-m_gameTime;  // d√©compte
 +           if ( time < 0.0f )  time = 0.0f;
 +       }
 +       else
@@ -7585,8 +7585,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   return -1;
  }
  
--// VÈrifie si une instruction ne fait pas partie de la liste interdite.
-+// Retourne le nombre de points gagnÈs grace au bonus de temps.
+-// V√©rifie si une instruction ne fait pas partie de la liste interdite.
++// Retourne le nombre de points gagn√©s grace au bonus de temps.
  
 -BOOL CRobotMain::IsProhibitedToken(char *token)
 +float CRobotMain::RetBonusPoints()
@@ -7611,7 +7611,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  
  
 +
- // Indique s'il est possible de tÈlÈcommander un robot d'entraÓnement.
+ // Indique s'il est possible de t√©l√©commander un robot d'entra√Ænement.
  
  BOOL CRobotMain::RetTrainerPilot()
 @@ -6696,27 +5641,12 @@ char* CRobotMain::RetResume()
@@ -7684,28 +7684,28 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  }
  
  
--// Retourne la reprÈsentation ‡ utiliser pour le joueur.
+-// Retourne la repr√©sentation √† utiliser pour le joueur.
 -
 -int CRobotMain::RetGamerFace()
 -{
 -   return m_dialog->RetGamerFace();
 -}
 -
--// Retourne la reprÈsentation ‡ utiliser pour le joueur.
+-// Retourne la repr√©sentation √† utiliser pour le joueur.
 -
 -int CRobotMain::RetGamerGlasses()
 -{
 -   return m_dialog->RetGamerGlasses();
 -}
 -
--// Retourne le mode avec seulement la tÍte.
+-// Retourne le mode avec seulement la t√™te.
 -
 -BOOL CRobotMain::RetGamerOnlyHead()
 -{
 -   return m_dialog->RetGamerOnlyHead();
 -}
 -
--// Retourne l'angle de prÈsentation.
+-// Retourne l'angle de pr√©sentation.
 -
 -float CRobotMain::RetPersoAngle()
 -{
@@ -7738,7 +7738,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  }
  
  
--// CrÈe l'interface des raccourcis aux unitÈs.
+-// Cr√©e l'interface des raccourcis aux unit√©s.
 -
 -BOOL CRobotMain::CreateShortcuts()
 -{
@@ -7747,7 +7747,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -   return m_short->CreateShortcuts();
 -}
 -
- // Met ‡ jour la carte.
+ // Met √† jour la carte.
  
  void CRobotMain::UpdateMap()
 @@ -6879,7 +5776,7 @@ void CRobotMain::UpdateMap()
@@ -7779,7 +7779,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -}
 -
 -// Gestion du blocage de l'appel du SatCom.
-+// Indique un film dÈroulÈ par un automat.
++// Indique un film d√©roul√© par un automat.
  
 -void CRobotMain::SetSatComLock(BOOL bLock)
 +void CRobotMain::SetMovieAuto(CAuto *automat)
@@ -7795,7 +7795,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   return m_bFreePhoto;
  }
  
--// Gestion du mode de blocage pendant l'Èdition.
+-// Gestion du mode de blocage pendant l'√©dition.
  
 -void CRobotMain::SetEditLock(BOOL bLock, BOOL bEdit)
 +// Indique si la souris vise un objet ami, sur lequel il ne faut
@@ -7813,7 +7813,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   return m_bFriendAim;
 +}
  
--   // N'enlËve pas la carte si elle contient une image fixe.
+-   // N'enl√®ve pas la carte si elle contient une image fixe.
 -   if ( !bLock || !m_map->RetFixImage() )
 -   {
 -       m_map->ShowMap(!m_bEditLock && m_bMapShow);
@@ -7821,7 +7821,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  
 -   m_displayText->HideText(bLock);
 -   m_engine->FlushPressKey();
-+// Gestion des modes gagnÈ/perdu prioritaires.
++// Gestion des modes gagn√©/perdu prioritaires.
  
 -   if ( m_bEditLock )
 -   {
@@ -7843,7 +7843,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   m_bSuperLost = TRUE;
  }
  
--// Gestion du mode plein Ècran pendant l'Èdition.
+-// Gestion du mode plein √©cran pendant l'√©dition.
 -
 -void CRobotMain::SetEditFull(BOOL bFull)
 +void CRobotMain::SetSuperLost(D3DVECTOR lookat)
@@ -7857,7 +7857,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 -BOOL CRobotMain::RetEditFull()
 +
 +
-+// DÈbute la musique d'une mission.
++// D√©bute la musique d'une mission.
 +
 +void CRobotMain::StartMusic()
  {
@@ -7869,14 +7869,14 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   }
  }
  
-+// EnlËve tooltip.
++// Enl√®ve tooltip.
  
 -BOOL CRobotMain::RetFreePhoto()
 +void CRobotMain::ClearInterface()
  {
 -   return m_bFreePhoto;
-+   HiliteClear();  // enlËve la mise en Èvidence
-+   m_tooltipName[0] = 0;  // enlËve vraiment le tooltip
++   HiliteClear();  // enl√®ve la mise en √©vidence
++   m_tooltipName[0] = 0;  // enl√®ve vraiment le tooltip
  }
  
  
@@ -7933,7 +7933,7 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   }
 +}
  
--// Gestion de la prÈcision du dessin au sol.
+-// Gestion de la pr√©cision du dessin au sol.
 +// Indique si un fichier d'enregistrement existe.
  
 -void CRobotMain::SetTracePrecision(float factor)
@@ -7963,8 +7963,8 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
  }
  
  
--// DÈbute la musique d'une mission.
-+// Indique un changement de l'Ètat des dÈcors.
+-// D√©bute la musique d'une mission.
++// Indique un changement de l'√©tat des d√©cors.
  
 -void CRobotMain::StartMusic()
 +void CRobotMain::IncDecorStamp()
@@ -7977,14 +7977,14 @@ diff a/src/level/robotmain.cpp b/src/level/robotmain.cpp	(rejected hunks)
 +   m_decorStamp ++;
  }
  
--// EnlËve hilite et tooltip.
-+// Retourne l'Ètat des dÈcors.
+-// Enl√®ve hilite et tooltip.
++// Retourne l'√©tat des d√©cors.
  
 -void CRobotMain::ClearInterface()
 +int CRobotMain::RetDecorStamp()
  {
--   HiliteClear();  // enlËve la mise en Èvidence
--   m_tooltipName[0] = 0;  // enlËve vraiment le tooltip
+-   HiliteClear();  // enl√®ve la mise en √©vidence
+-   m_tooltipName[0] = 0;  // enl√®ve vraiment le tooltip
 +   return m_decorStamp;
  }
  

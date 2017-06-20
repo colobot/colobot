@@ -64,16 +64,16 @@ diff a/src/graphics/engine/terrain.cpp b/src/graphics/engine/terrain.cpp	(reject
  
  
 -// Charge le relief dans un fichier BMP.
--// La taille de l'image doit être de dimension dx et dy,
+-// La taille de l'image doit Ãªtre de dimension dx et dy,
 -// avec dx=dy=(mosaic*brick)+1.
 -// L'image doit avoir 8 bits/pixels, 256 couleurs avec
 -// une palette standard.
 -
--// Conversion coordonnée image (x;y) -> world (x;-;z) :
+-// Conversion coordonnÃ©e image (x;y) -> world (x;-;z) :
 -// Wx =   5*Ix-400
 -// Wz = -(5*Iy-400)
 -
--// Conversion coordonnée world (x;-;z) -> image (x;y) :
+-// Conversion coordonnÃ©e world (x;-;z) -> image (x;y) :
 -// Ix = (400+Wx)/5
 -// Iy = (400-Wz)/5
 -
@@ -86,7 +86,7 @@ diff a/src/graphics/engine/terrain.cpp b/src/graphics/engine/terrain.cpp	(reject
 -   if ( file == NULL )  return FALSE;
 -
 -   size  = (m_mosaic*m_brick)+1;
--   sizem = ((size+4-1)/4)*4;  // taille multiple de 4 supérieur
+-   sizem = ((size+4-1)/4)*4;  // taille multiple de 4 supÃ©rieur
 -
 -   if ( m_resources != 0 )
 -   {
@@ -124,7 +124,7 @@ diff a/src/graphics/engine/terrain.cpp b/src/graphics/engine/terrain.cpp	(reject
 -        y < 0 || y > m_mosaic*m_brick )  return TR_NULL;
 -
 -   size  = (m_mosaic*m_brick)+1;
--   sizem = ((size+4-1)/4)*4;  // taille multiple de 4 supérieur
+-   sizem = ((size+4-1)/4)*4;  // taille multiple de 4 supÃ©rieur
 -
 -   ress = m_resources[BMPHEAD+x+sizem*y];
 -   if ( ress ==  5 )  return TR_STONE;    // rouge ?
@@ -214,7 +214,7 @@ diff a/src/graphics/engine/terrain.cpp b/src/graphics/engine/terrain.cpp	(reject
     return TRUE;
  }
  
-+// Gestion spéciale des routes.
++// Gestion spÃ©ciale des routes.
 +
 +#define RL (1<<0)  // left
 +#define RUL    (1<<1)
@@ -327,19 +327,19 @@ diff a/src/graphics/engine/terrain.cpp b/src/graphics/engine/terrain.cpp	(reject
 +   return bits;
 +}
 +
-+// Cherche comment transformer un coin estétique.
++// Cherche comment transformer un coin estÃ©tique.
 +
 +int CTerrain::RoadSearchBitsDiag(int x, int y)
 +{
 +   int     b, bits = 0;
 +
-+   if ( RoadGetID(x, y) > 1 )  return bits;  // si déjà route -> retour
++   if ( RoadGetID(x, y) > 1 )  return bits;  // si dÃ©jÃ  route -> retour
 +
-+   b = RoadSearchBits(RoadGetID(x-1, y+0));  // à gauche
++   b = RoadSearchBits(RoadGetID(x-1, y+0));  // Ã  gauche
 +   if ( b & RUR )  bits |= RUL;
 +   if ( b & RDR )  bits |= RDL;
 +
-+   b = RoadSearchBits(RoadGetID(x+1, y+0));  // à droite
++   b = RoadSearchBits(RoadGetID(x+1, y+0));  // Ã  droite
 +   if ( b & RUL )  bits |= RUR;
 +   if ( b & RDL )  bits |= RDR;
 +
@@ -494,8 +494,8 @@ diff a/src/graphics/engine/terrain.cpp b/src/graphics/engine/terrain.cpp	(reject
 +}
 +
 +
- // Retourne la dureté du terrain à un endroit donné.
- // La dureté détermine le bruit (SOUND_STEP et SOUND_BOUM).
+ // Retourne la duretÃ© du terrain Ã  un endroit donnÃ©.
+ // La duretÃ© dÃ©termine le bruit (SOUND_STEP et SOUND_BOUM).
  
 @@ -2103,47 +2293,6 @@ float CTerrain::RetHardness(const D3DVECTOR &p)
  }
@@ -543,7 +543,7 @@ diff a/src/graphics/engine/terrain.cpp b/src/graphics/engine/terrain.cpp	(reject
 -
 -
  // Calcule le rayon de la plus grande zone platte disponible.
- // Ce calcul n'est pas optimisé !
+ // Ce calcul n'est pas optimisÃ© !
  
 @@ -2261,3 +2410,30 @@ float CTerrain::RetFlyingLimit(D3DVECTOR pos, BOOL bNoLimit)
     return m_flyingMaxHeight;

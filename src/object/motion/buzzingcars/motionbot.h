@@ -16,11 +16,11 @@ class CObject;
 
 
 #define MB_WAIT        0       // attend au repos
-#define MB_TRUCK   1       // soulevé par la grue
+#define MB_TRUCK   1       // soulevÃ© par la grue
 #define MB_FEAR        2       // peur
-#define MB_GOHOME  3       // va à la maison
-#define MB_HOME1   4       // à la maison 1
-#define MB_HOME2   5       // à la maison 2
+#define MB_GOHOME  3       // va Ã  la maison
+#define MB_HOME1   4       // Ã  la maison 1
+#define MB_HOME2   5       // Ã  la maison 2
 #define MB_FLIC        6       // gendarme (BOT1)
 #define MB_FIRE        6       // tir (EVIL1)
 #define MB_WALK1   7       // marche 1 (WALKER)

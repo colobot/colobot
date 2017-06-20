@@ -6,7 +6,7 @@ diff a/src/sound/sound.cpp b/src/sound/sound.cpp	(rejected hunks)
 +#define AMPFAC     0.2f
 +
 +#define FACTOR_AW  0.5f    // facteur amplitude sous l'eau
-+#define FACTOR_FW  0.5f    // facteur frÈquence sous l'eau
++#define FACTOR_FW  0.5f    // facteur fr√©quence sous l'eau
 +
  
  
@@ -84,7 +84,7 @@ diff a/src/sound/sound.cpp b/src/sound/sound.cpp	(rejected hunks)
 +}
 +
  
- // Retourne l'Ètat de DirectSound.
+ // Retourne l'√©tat de DirectSound.
  
 @@ -571,7 +607,7 @@ BOOL CSound::ReadFile(Sound sound, char *metaname, char *filename)
     int         err;
@@ -168,13 +168,13 @@ diff a/src/sound/sound.cpp b/src/sound/sound.cpp	(rejected hunks)
  
 -#if _TEEN
 -   dist = Length(pos, m_eye);
--   if ( dist >= 210.0f )  // trËs loin ?
+-   if ( dist >= 210.0f )  // tr√®s loin ?
 -   {
 -       m_channel[channel].volume = 0.0f;  // silence
 -       m_channel[channel].pan    = 0.0f;  // au centre
 -       return;
 -   }
--   if ( dist <= 10.0f )  // trËs proche ?
+-   if ( dist <= 10.0f )  // tr√®s proche ?
 -   {
 -       m_channel[channel].volume = 1.0f;  // volume maximal
 -       m_channel[channel].pan    = 0.0f;  // au centre
@@ -183,7 +183,7 @@ diff a/src/sound/sound.cpp b/src/sound/sound.cpp	(rejected hunks)
 -   m_channel[channel].volume = 1.0f-((dist-10.0f)/200.0f);
 -#else
     dist = Length(pos, m_eye);
-    if ( dist >= 110.0f )  // trËs loin ?
+    if ( dist >= 110.0f )  // tr√®s loin ?
     {
 @@ -955,7 +959,6 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
         return;
@@ -316,7 +316,7 @@ diff a/src/sound/sound.cpp b/src/sound/sound.cpp	(rejected hunks)
     {
         if ( m_channel[channel].oper[i].bUsed )  continue;
  
-+       if ( i == 0 )  // premiËre enveloppe ?
++       if ( i == 0 )  // premi√®re enveloppe ?
 +       {
 +           m_channel[channel].startAmplitude = amplitude;
 +           m_channel[channel].startFrequency = frequency;
@@ -416,7 +416,7 @@ diff a/src/sound/sound.cpp b/src/sound/sound.cpp	(rejected hunks)
 +//?    return m_channel[channel].changeAmplitude;
 +}
 +
-+// Retourne la frÈquence en cours.
++// Retourne la fr√©quence en cours.
 +
 +float CSound::RetFrequency(int channel)
 +{

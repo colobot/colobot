@@ -45,7 +45,7 @@ CAutoStand::~CAutoStand()
 }
 
 
-// Détruit l'objet.
+// DÃ©truit l'objet.
 
 void CAutoStand::DeleteObject(BOOL bAll)
 {
@@ -73,7 +73,7 @@ void CAutoStand::Init()
 }
 
 
-// Démarre l'objet.
+// DÃ©marre l'objet.
 
 void CAutoStand::Start(int param)
 {
@@ -145,7 +145,7 @@ void CAutoStand::Start(int param)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CAutoStand::EventProcess(const Event &event)
 {
@@ -202,7 +202,7 @@ BOOL CAutoStand::Abort()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liÃ©e Ã  l'Ã©tat de l'automate.
 
 Error CAutoStand::RetError()
 {

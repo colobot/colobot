@@ -17,12 +17,12 @@ enum ParticuleType;
 enum AutoRemotePhase
 {
    ARMP_WAIT       = 1,    // attend cosmonaute
-   ARMP_CAMERA1    = 2,    // derrière l'écran
+   ARMP_CAMERA1    = 2,    // derriÃ¨re l'Ã©cran
    ARMP_CAMERA2    = 3,    // remote de 3/4
-   ARMP_CAMERA3    = 4,    // sur le récepteur
-   ARMP_CAMERA4    = 5,    // récepteur + roue avant
-   ARMP_CAMERA5    = 6,    // derrière voiture
-   ARMP_TERM       = 7,    // terminé
+   ARMP_CAMERA3    = 4,    // sur le rÃ©cepteur
+   ARMP_CAMERA4    = 5,    // rÃ©cepteur + roue avant
+   ARMP_CAMERA5    = 6,    // derriÃ¨re voiture
+   ARMP_TERM       = 7,    // terminÃ©
 };
 
 

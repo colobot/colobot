@@ -58,7 +58,7 @@ CAutoHelico::~CAutoHelico()
 }
 
 
-// Détruit l'objet.
+// DÃ©truit l'objet.
 
 void CAutoHelico::DeleteObject(BOOL bAll)
 {
@@ -81,14 +81,14 @@ void CAutoHelico::Init()
 }
 
 
-// Démarre l'objet.
+// DÃ©marre l'objet.
 
 void CAutoHelico::Start(int param)
 {
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CAutoHelico::EventProcess(const Event &event)
 {
@@ -122,7 +122,7 @@ BOOL CAutoHelico::EventProcess(const Event &event)
    m_rotorSpeed = Smooth(m_rotorSpeed, hopeSpeed, event.rTime*2.0f);
    UpdateRotorMapping(m_rotorSpeed);
 
-   m_rotorAngle += event.rTime*m_rotorSpeed*2.0f;  // fait tourner l'hélice +/- vite
+   m_rotorAngle += event.rTime*m_rotorSpeed*2.0f;  // fait tourner l'hÃ©lice +/- vite
    m_object->SetAngleY(1, m_rotorAngle);
 
    if ( m_rotorSound == -1 )
@@ -148,7 +148,7 @@ BOOL CAutoHelico::Abort()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liÃ©e Ã  l'Ã©tat de l'automate.
 
 Error CAutoHelico::RetError()
 {
@@ -156,7 +156,7 @@ Error CAutoHelico::RetError()
 }
 
 
-// Met à jour le mapping du rotor.
+// Met Ã  jour le mapping du rotor.
 
 void CAutoHelico::UpdateRotorMapping(float speed)
 {

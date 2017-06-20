@@ -28,9 +28,9 @@ protected:
    float   DetectObject();
 
 protected:
-   ObjectType  m_type;     // objet à détecter
-   float       m_radius;   // rayon de détection
-   float       m_proxi;    // proximité de l'objet (0..1)
+   ObjectType  m_type;     // objet Ã  dÃ©tecter
+   float       m_radius;   // rayon de dÃ©tection
+   float       m_proxi;    // proximitÃ© de l'objet (0..1)
    float       m_lastDetect;
    float       m_phase;
    BOOL        m_bLightOn;

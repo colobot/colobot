@@ -10,7 +10,7 @@ diff a/src/object/motion/motion.cpp b/src/object/motion/motion.cpp	(rejected hun
  // Destructeur de l'objet.
 @@ -85,7 +87,7 @@ void CMotion::SetBrain(CBrain* brain)
  
- // Crée.
+ // CrÃ©e.
  
 -BOOL CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, float power)
 +BOOL CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb)
@@ -39,14 +39,14 @@ diff a/src/object/motion/motion.cpp b/src/object/motion/motion.cpp	(rejected hun
 +}
 +
  
- // Spécifie un paramètre spécial.
+ // SpÃ©cifie un paramÃ¨tre spÃ©cial.
  
 @@ -171,71 +179,114 @@ float CMotion::RetParam(int rank)
  }
  
  
--// Sauve tous les paramètres de l'objet.
-+// Donne la vibration linéaire.
+-// Sauve tous les paramÃ¨tres de l'objet.
++// Donne la vibration linÃ©aire.
  
 -BOOL CMotion::Write(char *line)
 +void CMotion::SetLinVibration(D3DVECTOR dir)
@@ -92,10 +92,10 @@ diff a/src/object/motion/motion.cpp b/src/object/motion/motion.cpp	(rejected hun
 +   return m_inclinaison;
  }
  
--// Restitue tous les paramètres de l'objet.
+-// Restitue tous les paramÃ¨tres de l'objet.
  
 -BOOL CMotion::Read(char *line)
-+// Initialse la torsion de toutes les pièces pour qu'elles soient
++// Initialse la torsion de toutes les piÃ¨ces pour qu'elles soient
 +// toutes droites.
 +
 +void CMotion::TwistInit()
@@ -105,13 +105,13 @@ diff a/src/object/motion/motion.cpp b/src/object/motion/motion.cpp	(rejected hun
 -   m_progress = OpFloat(line, "mProgress", 0.0f);
 +}
 +
-+// Tord qq pièces suite à un choc.
++// Tord qq piÃ¨ces suite Ã  un choc.
 +
 +void CMotion::TwistPart(D3DVECTOR impact, float force)
 +{
 +}
 +
-+// Retourne le numéro de la prochaine partie à détruire.
++// Retourne le numÃ©ro de la prochaine partie Ã  dÃ©truire.
 +
 +int CMotion::RetRemovePart(int &param)
 +{
@@ -126,16 +126,16 @@ diff a/src/object/motion/motion.cpp b/src/object/motion/motion.cpp	(rejected hun
     return FALSE;
  }
  
-+// Indique la présence d'une partie spécifique.
++// Indique la prÃ©sence d'une partie spÃ©cifique.
  
--// Donne la vibration linéaire.
+-// Donne la vibration linÃ©aire.
 +BOOL CMotion::ExistPart(TypePart part)
 +{
 +   return FALSE;
 +}
  
 -void CMotion::SetLinVibration(D3DVECTOR dir)
-+// Donne le nombre de pièces total du véhicule.
++// Donne le nombre de piÃ¨ces total du vÃ©hicule.
 +
 +int CMotion::RetTotalPart()
  {
@@ -144,7 +144,7 @@ diff a/src/object/motion/motion.cpp b/src/object/motion/motion.cpp	(rejected hun
  }
  
 -D3DVECTOR CMotion::RetLinVibration()
-+// Donne le nombre de pièces utilisées du véhicule.
++// Donne le nombre de piÃ¨ces utilisÃ©es du vÃ©hicule.
 +
 +int CMotion::RetUsedPart()
  {
@@ -173,7 +173,7 @@ diff a/src/object/motion/motion.cpp b/src/object/motion/motion.cpp	(rejected hun
 -// Donne l'inclinaison.
  
 -void CMotion::SetInclinaison(D3DVECTOR dir)
-+// Gestion de l'état d'un véhicule.
++// Gestion de l'Ã©tat d'un vÃ©hicule.
 +
 +int CMotion::RetStateLength()
  {

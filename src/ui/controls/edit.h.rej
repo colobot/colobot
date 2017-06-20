@@ -20,7 +20,7 @@ diff a/src/ui/controls/edit.h b/src/ui/controls/edit.h	(rejected hunks)
 -typedef struct
 -{
 -   char    filename[50];   // nom complet du fichier texte
--   int     firstLine;      // rang de la première ligne affichée
+-   int     firstLine;      // rang de la premiÃ¨re ligne affichÃ©e
 -}
 -HyperHistory;
 -

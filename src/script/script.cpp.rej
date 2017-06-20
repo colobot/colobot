@@ -84,17 +84,17 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -       if ( oType == OBJECT_SCRAP2 ||
 -            oType == OBJECT_SCRAP3 ||
 -            oType == OBJECT_SCRAP4 ||
--            oType == OBJECT_SCRAP5 )  // déchet ?
+-            oType == OBJECT_SCRAP5 )  // dÃ©chet ?
 +       if ( oType >= OBJECT_PLANT0  &&
 +            oType <= OBJECT_PLANT19 )
         {
--           oType = OBJECT_SCRAP1;  // n'importe quel déchet
+-           oType = OBJECT_SCRAP1;  // n'importe quel dÃ©chet
 -       }
 -
 -       if ( oType == OBJECT_BARRIER2 ||
--            oType == OBJECT_BARRIER3 )  // barrière ?
+-            oType == OBJECT_BARRIER3 )  // barriÃ¨re ?
 -       {
--           oType = OBJECT_BARRIER1;  // n'importe quelle barrière
+-           oType = OBJECT_BARRIER1;  // n'importe quelle barriÃ¨re
 +           oType = OBJECT_PLANT0;  // n'importe quelle ruine
         }
  
@@ -127,7 +127,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
                         if ( var != 0 )
 @@ -592,10 +584,8 @@ BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
  
-        if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+        if ( pObj->RetTruck() != 0 )  continue;  // objet transportÃ© ?
         if ( !pObj->RetActif() )  continue;
 -       if ( pObj->RetProxyActivate() )  continue;
  
@@ -143,17 +143,17 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -       if ( oType == OBJECT_SCRAP2 ||
 -            oType == OBJECT_SCRAP3 ||
 -            oType == OBJECT_SCRAP4 ||
--            oType == OBJECT_SCRAP5 )  // déchet ?
+-            oType == OBJECT_SCRAP5 )  // dÃ©chet ?
 -       {
--           oType = OBJECT_SCRAP1;  // n'importe quel déchet
+-           oType = OBJECT_SCRAP1;  // n'importe quel dÃ©chet
 -       }
 -
 -       if ( oType == OBJECT_BARRIER2 ||
--            oType == OBJECT_BARRIER3 )  // barrière ?
+-            oType == OBJECT_BARRIER3 )  // barriÃ¨re ?
 +       if ( oType >= OBJECT_PLANT0  &&
 +            oType <= OBJECT_PLANT19 )
         {
--           oType = OBJECT_BARRIER1;  // n'importe quelle barrière
+-           oType = OBJECT_BARRIER1;  // n'importe quelle barriÃ¨re
 +           oType = OBJECT_PLANT0;  // n'importe quelle ruine
         }
  
@@ -162,14 +162,14 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
  }
  
  
--// Suivi d'une tâche.
+-// Suivi d'une tÃ¢che.
 -
 -BOOL Process(CScript* script, CBotVar* result, int &exception)
 -{
 -   Error       err;
 -
 -   err = script->m_primaryTask->IsEnded();
--   if ( err != ERR_CONTINUE )  // tâche terminée ?
+-   if ( err != ERR_CONTINUE )  // tÃ¢che terminÃ©e ?
 -   {
 -       delete script->m_primaryTask;
 -       script->m_primaryTask = 0;
@@ -248,7 +248,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 +   maxDist = 1000.0f*UNIT;
 +   sens    = 1.0f;
  
--   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
 +   if ( var != 0 )
     {
 -       type    = OBJECT_NULL;
@@ -299,7 +299,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -           if ( pObj == 0 )  break;
 -           if ( pObj == pThis )  continue;
 -
--           if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+-           if ( pObj->RetTruck() != 0 )  continue;  // objet transportÃ© ?
 -           if ( !pObj->RetActif() )  continue;
 -           if ( pObj->RetProxyActivate() )  continue;
 -
@@ -326,18 +326,18 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -           if ( oType == OBJECT_SCRAP2 ||
 -                oType == OBJECT_SCRAP3 ||
 -                oType == OBJECT_SCRAP4 ||
--                oType == OBJECT_SCRAP5 )  // déchet ?
+-                oType == OBJECT_SCRAP5 )  // dÃ©chet ?
 -           {
--               oType = OBJECT_SCRAP1;  // n'importe quel déchet
+-               oType = OBJECT_SCRAP1;  // n'importe quel dÃ©chet
 -           }
 +   iPos   = pThis->RetPosition(0);
 +   iAngle = pThis->RetAngleY(0)+angle;
 +   iAngle = NormAngle(iAngle);  // 0..2*PI
  
 -           if ( oType == OBJECT_BARRIER2 ||
--                oType == OBJECT_BARRIER3 )  // barrière ?
+-                oType == OBJECT_BARRIER3 )  // barriÃ¨re ?
 -           {
--               oType = OBJECT_BARRIER1;  // n'importe quelle barrière
+-               oType = OBJECT_BARRIER1;  // n'importe quelle barriÃ¨re
 -           }
 +   if ( sens >= 0.0f )  best = 100000.0f;
 +   else                 best = 0.0f;
@@ -479,7 +479,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 +       pSub = pSub->GivNext();  // "z"
 +       pSub->SetValFloat(pos.y/UNIT);
     }
--   if ( !Process(script, result, exception) )  return FALSE;  // pas terminé
+-   if ( !Process(script, result, exception) )  return FALSE;  // pas terminÃ©
 -   result->SetValFloat(script->m_returnValue);
     return TRUE;
  }
@@ -638,14 +638,14 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
  }
  
  
-+// Suivi d'une tâche.
++// Suivi d'une tÃ¢che.
 +
 +BOOL Process(CScript* script, CBotVar* result, int &exception)
 +{
 +   Error       err;
 +
 +   err = script->m_primaryTask->IsEnded();
-+   if ( err != ERR_CONTINUE )  // tâche terminée ?
++   if ( err != ERR_CONTINUE )  // tÃ¢che terminÃ©e ?
 +   {
 +       delete script->m_primaryTask;
 +       script->m_primaryTask = 0;
@@ -746,7 +746,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
  
     exception = 0;
  
--   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
 -   {
 -       type    = OBJECT_NULL;
 -       angle   = 0.0f;
@@ -779,7 +779,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -           if ( pObj == 0 )  break;
 -           if ( pObj == pThis )  continue;
 -
--           if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+-           if ( pObj->RetTruck() != 0 )  continue;  // objet transportÃ© ?
 -           if ( !pObj->RetActif() )  continue;
 -           if ( pObj->RetProxyActivate() )  continue;
 -
@@ -802,16 +802,16 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -           if ( oType == OBJECT_SCRAP2 ||
 -                oType == OBJECT_SCRAP3 ||
 -                oType == OBJECT_SCRAP4 ||
--                oType == OBJECT_SCRAP5 )  // déchet ?
+-                oType == OBJECT_SCRAP5 )  // dÃ©chet ?
 -           {
--               oType = OBJECT_SCRAP1;  // n'importe quel déchet
+-               oType = OBJECT_SCRAP1;  // n'importe quel dÃ©chet
 -           }
 +// Instruction "fire(delay)".
  
 -           if ( oType == OBJECT_BARRIER2 ||
--                oType == OBJECT_BARRIER3 )  // barrière ?
+-                oType == OBJECT_BARRIER3 )  // barriÃ¨re ?
 -           {
--               oType = OBJECT_BARRIER1;  // n'importe quelle barrière
+-               oType = OBJECT_BARRIER1;  // n'importe quelle barriÃ¨re
 -           }
 -
 -           if ( bArray )
@@ -900,7 +900,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -
 -   exception = 0;
 -
--   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
 -   {
 -       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 -       if ( var == 0 )  type = TMA_FFRONT;
@@ -945,7 +945,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -
 -   exception = 0;
 -
--   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
 -   {
 -       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 -       if ( var == 0 )  type = TMA_FFRONT;
@@ -987,7 +987,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -
 -   exception = 0;
 -
--   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
 -   {
 -       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 -       err = script->m_primaryTask->StartTaskSearch();
@@ -1036,7 +1036,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -
 -   exception = 0;
 -
--   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
 -   {
 -       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 -
@@ -1060,7 +1060,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -           return TRUE;
 -       }
 -   }
--   if ( !Process(script, result, exception) )  return FALSE;  // pas terminé
+-   if ( !Process(script, result, exception) )  return FALSE;  // pas terminÃ©
 -
 -   value = pThis->RetInfoReturn();
 -   if ( value == NAN )
@@ -1110,7 +1110,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -
 -   exception = 0;
 -
--   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
 -   {
 -       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 -
@@ -1318,7 +1318,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
  
     exception = 0;
  
-    if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+    if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
     {
         script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 -       err = script->m_primaryTask->StartTaskTerraform();
@@ -1351,7 +1351,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 +       else             delay = var->GivValFloat();
 +       err = script->m_primaryTask->StartTaskFire(delay);
  
--   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
 -   {
 -       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 -       err = script->m_primaryTask->StartTaskRecover();
@@ -1408,7 +1408,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -   if ( radius > 25.0f )  radius = 25.0f;
 -   radius = (radius-10.0f)/15.0f;
 -
--   if ( *script->m_secondaryTask == 0 )  // bouclier replié ?
+-   if ( *script->m_secondaryTask == 0 )  // bouclier repliÃ© ?
 -   {
 -       if ( oper == 0.0f )  // down ?
 -       {
@@ -1428,7 +1428,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -           }
 -       }
 -   }
--   else    // bouclier deployé ?
+-   else    // bouclier deployÃ© ?
 -   {
 -       if ( oper == 0.0f )  // down ?
 -       {
@@ -1489,7 +1489,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -
 -   exception = 0;
 -
--   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
 -   {
 -       script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 -
@@ -1542,7 +1542,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 +   int         action;
 +   float       delay;
  
--   if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-   if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
 +   delay = 0.2f;
 +   action = var->GivValInt();
 +   var = var->GivNext();
@@ -1626,7 +1626,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -   {
 -       exception = 0;
 -
--       if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-       if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
 -       {
 -           if ( var != 0 )
 -           {
@@ -1712,7 +1712,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -   {
 -       exception = 0;
 -
--       if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-       if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
 -       {
 -           pThis->SetTraceDown(FALSE);
  
@@ -1763,7 +1763,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 +   return TRUE;
 +}
  
--       if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+-       if ( script->m_primaryTask == 0 )  // pas de tÃ¢che en cours ?
 -       {
 -           color = var->GivValInt();
 -           if ( color <  0 )  color =  0;
@@ -1898,7 +1898,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
  }
  
  
--// Donne le script éditable à un pavé de texte.
+-// Donne le script Ã©ditable Ã  un pavÃ© de texte.
 -
 -void CScript::PutScript(CEdit* edit, char* name)
 -{
@@ -1915,7 +1915,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -   edit->SetFocus(TRUE);
 -}
 -
- // Reprend le script d'un pavé de texte.
+ // Reprend le script d'un pavÃ© de texte.
  
  BOOL CScript::GetScript(CEdit* edit)
 @@ -2780,17 +1906,8 @@ BOOL CScript::GetScript(CEdit* edit)
@@ -1940,7 +1940,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
     return TRUE;
  }
  
--// Vérifie si un programme ne contient pas les instructions interdites
+-// VÃ©rifie si un programme ne contient pas les instructions interdites
 -// et s'il contient bien au moins une fois toutes les instructions
 -// obligatoires.
 -
@@ -1961,7 +1961,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -
 -   for ( i=0 ; i<m_main->RetObligatoryToken() ; i++ )
 -   {
--       used[i] = 0;  // token pas utilisé
+-       used[i] = 0;  // token pas utilisÃ©
 -   }
 -
 -   bt = CBotToken::CompileTokens(m_script, error);
@@ -1977,7 +1977,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -       i = m_main->IsObligatoryToken((char*)token);
 -       if ( i != -1 )
 -       {
--           used[i] = 1;  // token utilisé
+-           used[i] = 1;  // token utilisÃ©
 -       }
 -
 -       if ( !m_main->IsProhibitedToken((char*)token) )
@@ -1996,7 +1996,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -   // Au moins une fois chaque instruction obligatoire ?
 -   for ( i=0 ; i<m_main->RetObligatoryToken() ; i++ )
 -   {
--       if ( used[i] == 0 )  // token pas utilisé ?
+-       if ( used[i] == 0 )  // token pas utilisÃ© ?
 -       {
 -           strcpy(m_token, m_main->RetObligatoryToken(i));
 -           m_error = ERR_OBLIGATORYTOKEN;
@@ -2010,7 +2010,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -   return TRUE;
 -}
 -
- // Compile le script d'un pavé de texte.
+ // Compile le script d'un pavÃ© de texte.
  
  BOOL CScript::Compile()
 @@ -3040,7 +2087,7 @@ BOOL CScript::Continue(const Event &event)
@@ -2097,7 +2097,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -}
 -
  
- // Retourne le numéro de l'erreur.
+ // Retourne le numÃ©ro de l'erreur.
  
 @@ -3494,13 +2489,7 @@ void CScript::GetError(char* buffer)
     }
@@ -2141,7 +2141,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -   if ( strcmp(text, res) == 0 )
 -   {
 -       cursor1 = 20;
--       cursor2 = 20+strlen(text);  // màj "Nouveau"
+-       cursor2 = 20+strlen(text);  // mÃ j "Nouveau"
 -   }
 -   else
 -   {
@@ -2162,7 +2162,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -   edit->SetFocus(TRUE);
 -   
 -   sf = m_main->RetScriptFile();
--   if ( sf[0] != 0 )  // charge un programme vide spécifique ?
+-   if ( sf[0] != 0 )  // charge un programme vide spÃ©cifique ?
 -   {
 -       strcpy(filename, "script\\");
 -       strcat(filename, sf);
@@ -2229,7 +2229,7 @@ diff a/src/script/script.cpp b/src/script/script.cpp	(rejected hunks)
 -}
 -
 -
--// Fourni un script de toutes pièces.
+-// Fourni un script de toutes piÃ¨ces.
 -
 -BOOL CScript::SendScript(char* text)
 -{

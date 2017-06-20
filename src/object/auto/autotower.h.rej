@@ -4,7 +4,7 @@ diff a/src/object/auto/autotower.h b/src/object/auto/autotower.h	(rejected hunks
  enum AutoTowerPhase
  {
 -   ATP_WAIT        = 1,
--   ATP_ZERO        = 2,    // plus d'énergie
+-   ATP_ZERO        = 2,    // plus d'Ã©nergie
 -   ATP_SEARCH      = 3,    // cherche une cible
 -   ATP_TURN        = 4,    // tourne vers la cible
 -   ATP_FIRE        = 5,    // tire sur la cible

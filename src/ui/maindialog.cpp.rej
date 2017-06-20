@@ -29,15 +29,15 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 @@ -46,84 +54,32 @@
  
  
- #define KEY_VISIBLE        6       // nb de touches redÈfinissables visibles
+ #define KEY_VISIBLE        6       // nb de touches red√©finissables visibles
 -
 -#if _SCHOOL & _TEEN
--#define KEY_TOTAL      13      // nb total de touches redÈfinissables
+-#define KEY_TOTAL      13      // nb total de touches red√©finissables
 -#else
--#define KEY_TOTAL      21      // nb total de touches redÈfinissables
+-#define KEY_TOTAL      21      // nb total de touches red√©finissables
 -#endif
 -
-+#define KEY_TOTAL      8       // nb total de touches redÈfinissables
++#define KEY_TOTAL      8       // nb total de touches red√©finissables
  #define WELCOME_LENGTH 6.0f
  
  
@@ -47,7 +47,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -   // cheveux :
 -   193, 221, 226,  // blanc
 -   255, 255, 181,  // jaune
--   204, 155,  84,  // ch‚tin
+-   204, 155,  84,  // ch√¢tin
 -   165,  48,  10,  // roux
 -   140,  75,  84,  // brun
 -    83,  64,  51,  // brun
@@ -57,13 +57,13 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -     0,   0,   0,  // 
 -   // combinaison :
 -   203, 206, 204,  // blanc sale
--     0, 205, 203,  // bleutÈ
+-     0, 205, 203,  // bleut√©
 -   108, 176,   0,  // verdatre
 -   207, 207,  32,  // jaune
--   170, 141,   0,  // orangÈ
+-   170, 141,   0,  // orang√©
 -   108,  84,   0,  // brun
--     0,  84, 136,  // bleutÈ
--    56,  61, 146,  // bleutÈ
+-     0,  84, 136,  // bleut√©
+-    56,  61, 146,  // bleut√©
 -    56,  56,  56,  // noir
 -     0,   0,   0,  // 
 -   // bandes :
@@ -75,13 +75,13 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -     0, 255,   0,  // vert
 -     0, 255, 255,  // cyan
 -     0,   0, 255,  // bleu
--    70,  51,  84,  // foncÈ
+-    70,  51,  84,  // fonc√©
 -     0,   0,   0,  // 
 -};
 -
  
 -#if _NET
--// VÈrifie si la clÈ "school" est prÈsente dans la base de registres.
+-// V√©rifie si la cl√© "school" est pr√©sente dans la base de registres.
 -
 -BOOL SchoolCheck()
 +static int perso_color[3*15] =
@@ -116,7 +116,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +    20, 192,  20,  // vert
 +   255, 255,   0,  // jaune (car08)
 +     0,  53, 226,  // bleu royal
-+    89,  34, 172,  // violet foncÈ (car07)
++    89,  34, 172,  // violet fonc√© (car07)
 +   126, 186, 244,  // cyan
 +   149, 149, 149,  // gris
 +};
@@ -267,7 +267,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +       ddim.y = dim.y*1;
         pos.x = 0.40f;
 -       pos.y = oy+sy*7.9f;
--       pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orangÈ
+-       pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orang√©
 -       pg->SetState(STATE_SHADOW);
 -       pos.y = oy+sy*3.9f;
 -       pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // orange
@@ -287,7 +287,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -           pg->SetState(STATE_SHADOW);
 -       }
 -       pos.y = oy+sy*6.8f;
--       pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orangÈ
+-       pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orang√©
 -       pg->SetState(STATE_SHADOW);
 -       pos.y = oy+sy*3.9f;
 -       pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // orange
@@ -744,7 +744,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +           EVENT_INTERFACE_PCOLOR2,  // rouge
 +           EVENT_INTERFACE_PCOLOR6,  // brun
 +           EVENT_INTERFACE_PCOLOR3,  // noir
-+           EVENT_INTERFACE_PCOLOR12, // violet foncÈ
++           EVENT_INTERFACE_PCOLOR12, // violet fonc√©
 +           EVENT_INTERFACE_PCOLOR4,  // violet
 +           EVENT_INTERFACE_PCOLOR11, // bleu royal
 +           EVENT_INTERFACE_PCOLOR1,  // bleu
@@ -1212,7 +1212,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -       pos = pli->RetPos();
 -       ddim = pli->RetDim();
 -
--       // Affiche le rÈsumÈ :
+-       // Affiche le r√©sum√© :
 -       pos.x = ox+sx*3;
 -       pos.y = oy+sy*5.4f;
 -       ddim.x = dim.x*6.5f;
@@ -1279,7 +1279,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -           ddim.x = dim.x*2.5f;
 -           pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_READ);
 -           pb->SetState(STATE_SHADOW);
--           if ( !IsIOReadScene() )  // aucun fichier ‡ lire ?
+-           if ( !IsIOReadScene() )  // aucun fichier √† lire ?
 -           {
 -               pb->ClearState(STATE_ENABLE);
 -           }
@@ -1314,7 +1314,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
  
 -       pos.x = ox+sx*3;
 -       ddim.x = dim.x*4;
-+       // Affiche le rÈsumÈ :
++       // Affiche le r√©sum√© :
 +       pos.x  =  94.0f/640.0f;
 +       pos.y  = 126.0f/480.0f;
 +       ddim.x = 452.0f/640.0f;
@@ -2815,7 +2815,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -       FrameParticule(event.rTime);
 +//?        FrameParticule(event.rTime);
  
-        if ( m_bDialog )  // dialogue prÈsent ?
+        if ( m_bDialog )  // dialogue pr√©sent ?
         {
 @@ -2165,40 +1986,118 @@ BOOL CMainDialog::EventProcess(const Event &event)
         NiceParticule(event.pos, event.keyState&KS_MLEFT);
@@ -2851,7 +2851,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +       {
 +           window = EVENT_WINDOW4;
 +       }
-+       if ( m_bDialog )  // dialogue prÈsent ?
++       if ( m_bDialog )  // dialogue pr√©sent ?
 +       {
 +           window = EVENT_WINDOW9;
 +           bUpDown = TRUE;
@@ -2877,7 +2877,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +       }
 +   }
 +
-    if ( m_bDialog )  // dialogue prÈsent ?
+    if ( m_bDialog )  // dialogue pr√©sent ?
     {
         m_interface->EventProcess(event);
  
@@ -2945,7 +2945,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
             StopDialog();
 +           pos.x = 630.0f/640.0f;
 +           pos.y =  10.0f/480.0f;
-+           m_engine->MoveMousePos(pos);  // met la souris en bas ‡ droite
++           m_engine->MoveMousePos(pos);  // met la souris en bas √† droite
         }
         if ( event.event == EVENT_INTERFACE_SETUP )
         {
@@ -3728,7 +3728,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +               {
 +                   m_main->ChangePhase(PHASE_WIN);
 +               }
-+               if ( err == 2 )  // fichier existe dÈj‡ ?
++               if ( err == 2 )  // fichier existe d√©j√† ?
 +               {
 +                   StartDeleteFile(m_ghostName);
 +               }
@@ -3987,7 +3987,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   pn->SetFocus(TRUE);
 +}
 +
-+// DÈbute une mission.
++// D√©bute une mission.
 +
 +void CMainDialog::LaunchSimul()
 +{
@@ -4215,7 +4215,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +                                                Rand()*0.5f+0.5f, 2.0f,
                                                  SH_INTERFACE);
                 }
-                if ( m_partiPhase[i] == 2 )  // Ètincelles ?
+                if ( m_partiPhase[i] == 2 )  // √©tincelles ?
 @@ -3511,7 +3507,7 @@ void CMainDialog::FrameParticule(float rTime)
                     dim.x = 0.005f+Rand()*0.005f;
                     dim.y = dim.x/0.75f;
@@ -4233,7 +4233,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +                                                Rand()*0.5f+0.5f, 2.0f,
                                                  SH_INTERFACE);
                 }
-                if ( m_partiPhase[i] == 3 )  // fumÈe ?
+                if ( m_partiPhase[i] == 3 )  // fum√©e ?
 @@ -3538,7 +3534,7 @@ void CMainDialog::FrameParticule(float rTime)
                     dim.x = 0.03f+Rand()*0.07f;
                     dim.y = dim.x/0.75f;
@@ -4295,7 +4295,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
  
  
  
--// SpÈcifie le dossier spÈcial utilisateur si nÈcessaire.
+-// Sp√©cifie le dossier sp√©cial utilisateur si n√©cessaire.
 -
 -void CMainDialog::SetUserDir(char *base, int rank)
 -{
@@ -4361,7 +4361,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   pl->SetSelect(-1);
  }
  
- // Met ‡ jour les contrÙles des joueurs.
+ // Met √† jour les contr√¥les des joueurs.
 @@ -3708,192 +3714,103 @@ void CMainDialog::UpdateNameControl()
     CWindow*    pw;
     CList*      pl;
@@ -4426,7 +4426,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
     }
 -}
 -
--// Met ‡ jour la liste des joueurs en fonction du nom frapÈ.
+-// Met √† jour la liste des joueurs en fonction du nom frap√©.
 -
 -void CMainDialog::UpdateNameList()
 -{
@@ -4464,7 +4464,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -   pl->SetSelect(-1);
 -}
 -
--// Met ‡ jour le nom du joueur et fonction de la liste sÈlectionnÈe.
+-// Met √† jour le nom du joueur et fonction de la liste s√©lectionn√©e.
 -
 -void CMainDialog::UpdateNameEdit()
 -{
@@ -4501,7 +4501,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -   UpdateNameControl();
 -}
 -
--// Met ‡ jour la reprÈsentation du joueur en fonction de la liste sÈlectionnÈe.
+-// Met √† jour la repr√©sentation du joueur en fonction de la liste s√©lectionn√©e.
 -
 -void CMainDialog::UpdateNameFace()
 -{
@@ -4522,7 +4522,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -   ReadGamerPerso(name);
  }
  
- // SÈlectionne un joueur.
+ // S√©lectionne un joueur.
  
 -void CMainDialog::NameSelect()
 +BOOL CMainDialog::NameSelect()
@@ -4565,7 +4565,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return TRUE;
  }
  
- // CrÈe un nouveau joueur.
+ // Cr√©e un nouveau joueur.
  
 -void CMainDialog::NameCreate()
 +BOOL CMainDialog::NameCreate()
@@ -4718,7 +4718,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   if ( pc != 0 )  pc->SetFocus(FALSE);
  }
  
-+// Choix d'un autre niveau de difficultÈ.
++// Choix d'un autre niveau de difficult√©.
 +
 +void CMainDialog::LevelSelect(int level)
 +{
@@ -4740,7 +4740,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +}
  
  
- // Teste si deux couleurs sont Ègales ou presque.
+ // Teste si deux couleurs sont √©gales ou presque.
 @@ -4030,778 +4022,812 @@ BOOL EqColor(const D3DCOLORVALUE &c1, const D3DCOLORVALUE &c2)
  
  void CMainDialog::UpdatePerso()
@@ -4888,7 +4888,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   if ( m_perso.stateCars[m_perso.selectCar] != SC_FORSALE )
 +#else
 +   if ( m_perso.selectCar < m_perso.total ||
-+        m_perso.selectCar < m_perso.bonus )  // sÈlectionne ?
++        m_perso.selectCar < m_perso.bonus )  // s√©lectionne ?
 +#endif
 +   {
 +       pl = (CLabel*)pw->SearchControl(EVENT_INTERFACE_PPRICE);
@@ -4896,7 +4896,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +       pl->SetFontType(FONT_COLOBOT);
 +       pl->SetState(STATE_VISIBLE);
 +       NamePerso(car, m_perso.usedCars[m_perso.selectCar]);
-+       pl->SetName(car);  // nom du vÈhicule
++       pl->SetName(car);  // nom du v√©hicule
 +
 +       pl = (CLabel*)pw->SearchControl(EVENT_INTERFACE_PPESETAS);
 +       if ( pl == 0 )  return;
@@ -4908,7 +4908,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +       pb->SetName(res);
 +       pb->ClearState(STATE_CHECK);
 +   }
-+   else    // achËte ?
++   else    // ach√®te ?
 +   {
 +       pl = (CLabel*)pw->SearchControl(EVENT_INTERFACE_PPRICE);
 +       if ( pl == 0 )  return;
@@ -4917,7 +4917,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +       GetResource(RES_EVENT, EVENT_INTERFACE_PPRICE, res);
 +       NamePerso(car, m_perso.usedCars[m_perso.selectCar]);
 +       sprintf(text, res, car, PricePerso(m_perso.usedCars[m_perso.selectCar]));
-+       pl->SetName(text);  // prix du vÈhicule
++       pl->SetName(text);  // prix du v√©hicule
 +
 +       pl = (CLabel*)pw->SearchControl(EVENT_INTERFACE_PPESETAS);
 +       if ( pl == 0 )  return;
@@ -4933,8 +4933,8 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +       pb->SetState(STATE_CHECK);
 +   }
 +
-+   // Teste si la voiture choisie a des spÈcifications compatibles
-+   // avec la mission ‡ effectuer.
++   // Teste si la voiture choisie a des sp√©cifications compatibles
++   // avec la mission √† effectuer.
 +   bOK = TRUE;
 +   res[0] = 0;
 +   ReadCarSpec(m_sel[m_index], missionSpec);
@@ -5053,7 +5053,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -           pc->SetColor(color);
 -           pc->SetState(STATE_CHECK, EqColor(color, m_perso.colorCombi));
 -       }
-+// Met ‡ jour l'ÈlÈvation de la camÈra selon le slider correspondant.
++// Met √† jour l'√©l√©vation de la cam√©ra selon le slider correspondant.
  
 -       pc = (CColor*)pw->SearchControl((EventMsg)(EVENT_INTERFACE_PC0b+i));
 -       if ( pc == 0 )  break;
@@ -5102,7 +5102,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   m_persoElevation = ps->RetVisibleValue();
  }
  
- // Met ‡ jour la camÈra pour le personnage.
+ // Met √† jour la cam√©ra pour le personnage.
  
  void CMainDialog::CameraPerso()
  {
@@ -5168,7 +5168,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   WriteGamerInfo();
  }
  
--// Met ‡ jour les couleurs du personnage.
+-// Met √† jour les couleurs du personnage.
 -
 -void CMainDialog::ColorPerso()
 +int CMainDialog::RetPesetas()
@@ -5206,7 +5206,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return (m_bGhostExist && m_bGhostEnable);
  }
  
--// Met ‡ jour les paramËtres par dÈfaut du personnage.
+-// Met √† jour les param√®tres par d√©faut du personnage.
 -
 -void CMainDialog::DefPerso()
 +BOOL CMainDialog::RetGhostExist()
@@ -5235,7 +5235,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -       m_perso.colorHair.b =  51.0f/256.0f;  // brun
 -   }
 -   if ( m_perso.face == 2 )  // carlos ?
-+// Indique le niveau de difficultÈ.
++// Indique le niveau de difficult√©.
 +
 +int CMainDialog::RetLevel()
 +{
@@ -5277,7 +5277,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -   return TRUE;
  }
  
--// Construit le nom du fichier par dÈfaut.
+-// Construit le nom du fichier par d√©faut.
 +// Indique s'il est possible d'acheter une ou plusieurs voitures.
  
 -void CMainDialog::IOReadName()
@@ -5343,8 +5343,8 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return FALSE;
  }
  
--// Met ‡ jour la liste des parties enregistrÈes sur disque.
-+// Met ‡ jour toutes les voitures que le joueur peut acheter.
+-// Met √† jour la liste des parties enregistr√©es sur disque.
++// Met √† jour toutes les voitures que le joueur peut acheter.
  
 -void CMainDialog::IOReadList()
 +void CMainDialog::BuyablePerso()
@@ -5374,7 +5374,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -       if ( file == NULL )  break;
 +       m_perso.buyable = m_perso.total;
  
--       strcmp(name, filename);  // nom par dÈfaut
+-       strcmp(name, filename);  // nom par d√©faut
 -       while ( fgets(line, 500, file) != NULL )
 +       if ( !UsedPerso(8) )  // torpedo ?
         {
@@ -5414,10 +5414,10 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
     }
  
 -   pl->SetSelect(j-1);
--   pl->ShowSelect(FALSE);  // montre la ligne sÈlectionnÈe
+-   pl->ShowSelect(FALSE);  // montre la ligne s√©lectionn√©e
 -}
 -
--// Met ‡ jour les boutons en fonction de la partie sÈlectionnÈe
+-// Met √† jour les boutons en fonction de la partie s√©lectionn√©e
 -// dans la liste.
 -
 -void CMainDialog::IOUpdateList()
@@ -5461,7 +5461,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -           pi->SetFilenameImage(filename);
 +           m_perso.subModel[index] = 0;
 +           DefPerso(index);  // met la couleur standard
-+           m_perso.stateCars[index] = SC_FORSALE;  // voiture ‡ vendre
++           m_perso.stateCars[index] = SC_FORSALE;  // voiture √† vendre
 +           m_perso.buyable = index;
 +           m_perso.selectCar = index;
         }
@@ -5494,7 +5494,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   
 +   if ( index > m_perso.total )
 +   {
-+       m_perso.selectCar = index-1;  // sÈlectionne la voiture ‡ acheter
++       m_perso.selectCar = index-1;  // s√©lectionne la voiture √† acheter
 +   }
 +
 +   max = m_perso.total;
@@ -5508,8 +5508,8 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +#endif
  }
  
--// Supprime la scËne sÈlectionnÈe.
-+// SÈlectionne la voiture suivante ou prÈcÈdente.
+-// Supprime la sc√®ne s√©lectionn√©e.
++// S√©lectionne la voiture suivante ou pr√©c√©dente.
  
 -void CMainDialog::IODeleteScene()
 +void CMainDialog::NextPerso(int dir)
@@ -5548,7 +5548,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -   sprintf(dir, "%s\\%s\\save%c%.3d\\*", m_savegameDir, m_main->RetGamerName(), m_sceneName[0], sel);
 -   hFile = _findfirst(dir, &fBuffer);
 -   if ( hFile != -1 )
-+   else    // voiture prÈcÈdente ?
++   else    // voiture pr√©c√©dente ?
     {
 -       do
 +       i = m_perso.selectCar-1;
@@ -5573,7 +5573,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
  
 -   sprintf(dir, "%s\\%s\\save%c%.3d", m_savegameDir, m_main->RetGamerName(), m_sceneName[0], sel);
 -   if ( _rmdir(dir) != 0 )
-+// SÈlectionne ou achËte la voiture courante.
++// S√©lectionne ou ach√®te la voiture courante.
 +
 +void CMainDialog::SelectPerso()
 +{
@@ -5581,7 +5581,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   if ( m_perso.stateCars[m_perso.selectCar] != SC_FORSALE )
 +#else
 +   if ( m_perso.selectCar < m_perso.total ||
-+        m_perso.selectCar < m_perso.bonus )  // sÈlectionne ?
++        m_perso.selectCar < m_perso.bonus )  // s√©lectionne ?
 +#endif
     {
 -       m_sound->Play(SOUND_TZOING);
@@ -5591,7 +5591,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -
 -   max = pl->RetTotal();
 -   for ( i=sel+1 ; i<max ; i++ )
-+   else    // achËte ?
++   else    // ach√®te ?
     {
 -       sprintf(old, "%s\\%s\\save%c%.3d", m_savegameDir, m_main->RetGamerName(), m_sceneName[0], i);
 -       sprintf(dir, "%s\\%s\\save%c%.3d", m_savegameDir, m_main->RetGamerName(), m_sceneName[0], i-1);
@@ -5601,8 +5601,8 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -   IOReadList();
  }
  
--// Ecrit la scËne.
-+// AchËte une voiture.
+-// Ecrit la sc√®ne.
++// Ach√®te une voiture.
  
 -BOOL CMainDialog::IOWriteScene()
 +void CMainDialog::BuyPerso()
@@ -5651,14 +5651,14 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
  
 -   m_shotDelay = 3;
 -   sprintf(m_shotName, "%s\\%s\\save%c%.3d\\screen.bmp", m_savegameDir, m_main->RetGamerName(), m_sceneName[0], sel);
-+   m_perso.pesetas -= PricePerso(model);  // dÈbite le compte du joueur
++   m_perso.pesetas -= PricePerso(model);  // d√©bite le compte du joueur
  
 -   return TRUE;
 +   WriteGamerInfo();
  }
  
--// Lit la scËne.
-+// AchËte toutes les voitures.
+-// Lit la sc√®ne.
++// Ach√®te toutes les voitures.
  
 -BOOL CMainDialog::IOReadScene()
 +void CMainDialog::BuyAllPerso()
@@ -5721,7 +5721,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -       {
 -           OpString(line, "base", m_sceneName);
 -           m_sceneRank = OpInt(line, "rank", 0);
-+// Retourne le modËle d'une voiture dans l'ordre des performances.
++// Retourne le mod√®le d'une voiture dans l'ordre des performances.
  
 -           if ( strcmp(m_sceneName, "user") == 0 )
 -           {
@@ -5755,7 +5755,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return 0;  // terminateur
 +}
 +
-+// Retourne l'index d'un modËle de voiture.
++// Retourne l'index d'un mod√®le de voiture.
 +
 +int CMainDialog::IndexPerso(int model)
 +{
@@ -5774,7 +5774,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
  
 -   m_chap[m_index] = (m_sceneRank/100)-1;
 -   m_sel[m_index]  = (m_sceneRank%100)-1;
-+// Indique si un modËle de voiture est achetÈ par le joueur.
++// Indique si un mod√®le de voiture est achet√© par le joueur.
  
 -   strcpy(m_sceneRead, filename);
 -   strcpy(m_stackRead, filecbot);
@@ -5798,7 +5798,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return FALSE;
  }
  
-+// Retourne le prix d'un modËle de voiture.
++// Retourne le prix d'un mod√®le de voiture.
  
 -// Retourne le nombre de chapitres accessibles.
 +int CMainDialog::PricePerso(int model)
@@ -5815,7 +5815,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +}
  
 -int CMainDialog::RetChapPassed()
-+// Retourne le nom d'un modËle de voiture.
++// Retourne le nom d'un mod√®le de voiture.
 +
 +void CMainDialog::NamePerso(char *buffer, int model)
  {
@@ -5832,7 +5832,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +}
  
 -   if ( m_main->RetShowAll() )  return 9;
-+// Retourne les spÈcifications d'un modËle de voiture.
++// Retourne les sp√©cifications d'un mod√®le de voiture.
  
 -   for ( j=0 ; j<9 ; j++ )
 +void CMainDialog::SpecPerso(CarSpec &spec, int model)
@@ -5895,7 +5895,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   m_perso.colorBody[m_perso.selectCar].b = perso_color[rank*3+2]/255.0f;
 +}
 +
-+// Initialise le personnage de base lors de la crÈation d'un joueur.
++// Initialise le personnage de base lors de la cr√©ation d'un joueur.
 +
 +void CMainDialog::FlushPerso()
 +{
@@ -5906,11 +5906,11 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   m_perso.bonus = 1;
 +   m_perso.selectCar = 0;
 +   m_perso.pesetas = 0;
-+   m_perso.level = 3;  // niveau intermÈdiaire (costaud)
++   m_perso.level = 3;  // niveau interm√©diaire (costaud)
 +   DefPerso(0);  // met la couleur standard
 +}
 +
-+// Met la couleur standard ‡ une voiture.
++// Met la couleur standard √† une voiture.
 +
 +void CMainDialog::DefPerso(int rank)
 +{
@@ -5969,7 +5969,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   m_perso.colorBody[rank].a = 0.0f;
 +}
 +
-+// Retourne le modËle de la voiture choisie.
++// Retourne le mod√®le de la voiture choisie.
 +
 +int CMainDialog::RetModel()
 +{
@@ -5997,7 +5997,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
  }
  
 +
- // Met ‡ jour les listes selon le cheat code.
+ // Met √† jour les listes selon le cheat code.
  
  void CMainDialog::AllMissionUpdate()
  {
@@ -6016,8 +6016,8 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
     }
  }
  
--// Met ‡ jour les chapitres des exercices ou missions.
-+// Met ‡ jour la liste des missions.
+-// Met √† jour les chapitres des exercices ou missions.
++// Met √† jour la liste des missions.
  
 -void CMainDialog::UpdateSceneChap(int &chap)
 +void CMainDialog::UpdateSceneList(int &sel)
@@ -6089,7 +6089,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -           }
 -           else
 -           {
--               BuildResumeName(name, m_sceneName, j+1);  // nom par dÈfaut
+-               BuildResumeName(name, m_sceneName, j+1);  // nom par d√©faut
 -               while ( fgets(line, 500, file) != NULL )
 -               {
 -                   for ( i=0 ; i<500 ; i++ )
@@ -6216,12 +6216,12 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   }
  
 -   pl->SetSelect(chap);
--   pl->ShowSelect(FALSE);  // montre la ligne sÈlectionnÈe
+-   pl->ShowSelect(FALSE);  // montre la ligne s√©lectionn√©e
 +   pl->SetSelect(rsel);
-+   pl->ShowSelect();  // montre la ligne sÈlectionnÈe
++   pl->ShowSelect();  // montre la ligne s√©lectionn√©e
  }
  
--// Met ‡ jour la liste des exercices ou missions.
+-// Met √† jour la liste des exercices ou missions.
 +// Retourne s'il peut exister une voiture fantome.
  
 -void CMainDialog::UpdateSceneList(int chap, int &sel)
@@ -6271,7 +6271,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -       file = fopen(filename, "r");
 -       if ( file == NULL )  break;
 -
--       BuildResumeName(name, m_sceneName, j+1);  // nom par dÈfaut
+-       BuildResumeName(name, m_sceneName, j+1);  // nom par d√©faut
 -       while ( fgets(line, 500, file) != NULL )
 +       for ( i=0 ; i<500 ; i++ )
         {
@@ -6335,10 +6335,10 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -   if ( sel > j-1 )  sel = j-1;
 -
 -   pl->SetSelect(sel);
--   pl->ShowSelect(FALSE);  // montre la ligne sÈlectionnÈe
+-   pl->ShowSelect(FALSE);  // montre la ligne s√©lectionn√©e
 -}
 -
--// Met ‡ jour le bouton "solution" selon le cheat code.
+-// Met √† jour le bouton "solution" selon le cheat code.
 -
 -void CMainDialog::ShowSoluceUpdate()
 -{
@@ -6380,8 +6380,8 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return mode;
  }
  
--// Met ‡ jour un rÈsumÈ d'exercice ou de mission.
-+// Retourne les spÈcifications de la voiture requise.
+-// Met √† jour un r√©sum√© d'exercice ou de mission.
++// Retourne les sp√©cifications de la voiture requise.
  
 -void CMainDialog::UpdateSceneResume(int rank)
 +void CMainDialog::ReadCarSpec(int rank, CarSpec &spec)
@@ -6448,7 +6448,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   fclose(file);
 +}
 +
-+// Retourne le nb de pesetas limite ‡ accumuler pour passer plus loin.
++// Retourne le nb de pesetas limite √† accumuler pour passer plus loin.
 +
 +int CMainDialog::ReadPesetasNext()
 +{
@@ -6468,7 +6468,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +#endif
 +}
 +
-+// Retourne le nb de pesetas limite ‡ accumuler pour passer plus loin.
++// Retourne le nb de pesetas limite √† accumuler pour passer plus loin.
 +
 +int CMainDialog::ReadPesetasLimit(int rank)
 +{
@@ -6505,7 +6505,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return limit;
 +}
 +
-+// Met ‡ jour le gain du joueur.
++// Met √† jour le gain du joueur.
 +
 +void CMainDialog::UpdateScenePesetasPerso()
 +{
@@ -6520,7 +6520,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   pp->SetLevelCredit((float)m_perso.pesetas);
 +}
 +
-+// Met ‡ jour le gain max possible d'une mission.
++// Met √† jour le gain max possible d'une mission.
 +
 +void CMainDialog::UpdateScenePesetasMax(int rank)
 +{
@@ -6564,7 +6564,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   pp->SetLevelMission((float)max);
 +}
 +
-+// Met ‡ jour un rÈsumÈ d'exercice ou de mission.
++// Met √† jour un r√©sum√© d'exercice ou de mission.
 +
 +void CMainDialog::UpdateSceneResume(int rank)
 +{
@@ -6579,7 +6579,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   UpdateSceneResume(rank, pe);
 +}
 +
-+// Met ‡ jour un rÈsumÈ d'exercice ou de mission.
++// Met √† jour un r√©sum√© d'exercice ou de mission.
 +
 +void CMainDialog::UpdateSceneResume(int rank, CEdit *pe)
 +{
@@ -6615,7 +6615,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
     pe->SetText(name);
  }
  
-+// Met ‡ jour un rÈsumÈ d'exercice ou de mission.
++// Met √† jour un r√©sum√© d'exercice ou de mission.
 +
 +BOOL CMainDialog::ReadSceneTitle(char *scene, int rank, char *buffer)
 +{
@@ -6665,7 +6665,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return TRUE;
 +}
 +
-+// Met ‡ jour une image d'exercice ou de mission.
++// Met √† jour une image d'exercice ou de mission.
 +
 +void CMainDialog::UpdateSceneImage(int rank)
 +{
@@ -6682,7 +6682,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   pi->SetFilenameImage(filename);
 +}
 +
-+// Met ‡ jour le bouton play pour un exercice ou une mission.
++// Met √† jour le bouton play pour un exercice ou une mission.
 +
 +void CMainDialog::UpdateScenePlay(int rank)
 +{
@@ -6722,7 +6722,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   }
 +}
 +
-+// Met ‡ jour le bouton "voiture fantome".
++// Met √† jour le bouton "voiture fantome".
 +
 +void CMainDialog::UpdateSceneGhost(int rank)
 +{
@@ -6764,7 +6764,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   }
 +}
 +
- // Met ‡ jour la liste des devices.
+ // Met √† jour la liste des devices.
  
  void CMainDialog::UpdateDisplayDevice()
 @@ -5082,7 +5292,7 @@ void CMainDialog::UpdateDisplayDevice()
@@ -6818,7 +6818,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
  
 +// Calcule le checksum d'un fichier quelconque.
  
--// Met ‡ jour le bouton "appliquer".
+-// Met √† jour le bouton "appliquer".
 -
 -void CMainDialog::UpdateApply()
 +int CheckFile(char *filename)
@@ -6918,7 +6918,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +}
 +
 +
-+// Met ‡ jour le bouton "appliquer".
++// Met √† jour le bouton "appliquer".
 +
 +void CMainDialog::UpdateApply()
 +{
@@ -7185,7 +7185,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   }
  }
  
- // Met ‡ jour le moteur en fonction des boutons aprËs la phase de setup.
+ // Met √† jour le moteur en fonction des boutons apr√®s la phase de setup.
 @@ -5442,45 +5755,51 @@ void CMainDialog::UpdateSetupButtons()
  void CMainDialog::ChangeSetupButtons()
  {
@@ -7591,7 +7591,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -#endif
  };
  
- // Met ‡ jour la liste des touches.
+ // Met √† jour la liste des touches.
 @@ -6014,7 +6294,7 @@ void CMainDialog::UpdateKey()
     FPOINT      pos, dim;
     int         first, i;
@@ -7657,7 +7657,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -       pos.y = 0.62f;
 -       pb = pw->CreateButton(pos, dim, -1, EVENT_INTERFACE_WRITE);
 -       pb->SetState(STATE_SHADOW);
--       if ( m_main->IsBusy() )  // t‚che en cours ?
+-       if ( m_main->IsBusy() )  // t√¢che en cours ?
 -       {
 -           pb->ClearState(STATE_ENABLE);
 -       }
@@ -7665,7 +7665,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -       pos.y = 0.53f;
 -       pb = pw->CreateButton(pos, dim, -1, EVENT_INTERFACE_READ);
 -       pb->SetState(STATE_SHADOW);
--       if ( !IsIOReadScene() )  // aucun fichier ‡ lire ?
+-       if ( !IsIOReadScene() )  // aucun fichier √† lire ?
 -       {
 -           pb->ClearState(STATE_ENABLE);
 -       }
@@ -7703,8 +7703,8 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
     pb->SetName(name);
  }
  
--// Voulez-vous dÈtruire le b‚timent ?
-+// CrÈation d'un nouveau joueur.
+-// Voulez-vous d√©truire le b√¢timent ?
++// Cr√©ation d'un nouveau joueur.
  
 -void CMainDialog::StartDeleteObject()
 +void CMainDialog::StartCreateGame()
@@ -7776,7 +7776,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
     pb->SetName(name);
  }
  
-+// Voulez-vous dÈtruire le fichier ?
++// Voulez-vous d√©truire le fichier ?
 +
 +void CMainDialog::StartDeleteFile(char *filename)
 +{
@@ -7964,7 +7964,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 @@ -6500,7 +6886,6 @@ void CMainDialog::StartSuspend()
     m_bInitPause = m_engine->RetPause();
     m_engine->SetPause(TRUE);
-    m_engine->SetOverFront(FALSE);  // over plane derriËre
+    m_engine->SetOverFront(FALSE);  // over plane derri√®re
 -   m_main->CreateShortcuts();
     m_main->StartSuspend();
     m_initCamera = m_camera->RetType();
@@ -7983,35 +7983,35 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
  
 -
 -
--// SpÈcifie le nom de la scËne ‡ lire.
+-// Sp√©cifie le nom de la sc√®ne √† lire.
 -
 -void CMainDialog::SetSceneRead(char* name)
 -{
 -   strcpy(m_sceneRead, name);
 -}
 -
--// Retourne le nom de la scËne ‡ lire.
+-// Retourne le nom de la sc√®ne √† lire.
 -
 -char* CMainDialog::RetSceneRead()
 -{
 -   return m_sceneRead;
 -}
 -
--// SpÈcifie le nom de la scËne ‡ lire.
+-// Sp√©cifie le nom de la sc√®ne √† lire.
 -
 -void CMainDialog::SetStackRead(char* name)
 -{
 -   strcpy(m_stackRead, name);
 -}
 -
--// Retourne le nom de la scËne ‡ lire.
+-// Retourne le nom de la sc√®ne √† lire.
 -
 -char* CMainDialog::RetStackRead()
 -{
 -   return m_stackRead;
 -}
 -
- // SpÈcifie le nom de la scËne choisie pour jouer.
+ // Sp√©cifie le nom de la sc√®ne choisie pour jouer.
  
  void CMainDialog::SetSceneName(char* name)
 @@ -6579,6 +6933,11 @@ char* CMainDialog::RetSceneName()
@@ -8023,7 +8023,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return m_sceneBase;
 +}
 +
- // SpÈcifie le rang de la scËne choisie pour jouer.
+ // Sp√©cifie le rang de la sc√®ne choisie pour jouer.
  
  void CMainDialog::SetSceneRank(int rank)
 @@ -6599,19 +6958,12 @@ char* CMainDialog::RetSceneDir()
@@ -8073,15 +8073,15 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return m_bGlint;
  }
  
- // Indique s'il faut montrer les cinÈmatiques.
+ // Indique s'il faut montrer les cin√©matiques.
 @@ -6662,171 +7014,195 @@ BOOL CMainDialog::RetHimselfDamage()
     return m_bHimselfDamage;
  }
  
-+// Indique si le moteur peut exploser au dÈmarrage.
++// Indique si le moteur peut exploser au d√©marrage.
  
 -
--// Enregistre la reprÈsentation personnalisÈe du joueur.
+-// Enregistre la repr√©sentation personnalis√©e du joueur.
 -
 -void CMainDialog::WriteGamerPerso(char *gamer)
 +BOOL CMainDialog::RetMotorBlast()
@@ -8095,7 +8095,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -   sprintf(filename, "%s\\%s\\face.gam", m_savegameDir, gamer);
 -   file = fopen(filename, "w");
 -   if ( file == NULL )  return;
-+// Gestion de la camÈra par dÈfaut.
++// Gestion de la cam√©ra par d√©faut.
  
 -   sprintf(line, "Head face=%d glasses=%d hair=%.2f;%.2f;%.2f;%.2f\n",
 -               m_perso.face, m_perso.glasses,
@@ -8117,7 +8117,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   m_defCamera = type;
  }
  
--// Lit la reprÈsentation personnalisÈe du joueur.
+-// Lit la repr√©sentation personnalis√©e du joueur.
  
 -void CMainDialog::ReadGamerPerso(char *gamer)
 +// Lit le fichier du joueur.
@@ -8227,7 +8227,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
     fclose(file);
 -}
 -
--// SpÈcifie la reprÈsentation du joueur.
+-// Sp√©cifie la repr√©sentation du joueur.
 -
 -void CMainDialog::SetGamerFace(char *gamer, int face)
 -{
@@ -8235,7 +8235,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 -   WriteGamerPerso(gamer);
 -}
  
--// Donne la reprÈsentation du joueur.
+-// Donne la repr√©sentation du joueur.
 -
 -int CMainDialog::RetGamerFace(char *gamer)
 -{
@@ -8248,7 +8248,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return TRUE;
  }
  
--// Donne la reprÈsentation du joueur.
+-// Donne la repr√©sentation du joueur.
 +// Ecrit le fichier du joueur.
  
 -int CMainDialog::RetGamerFace()
@@ -8413,7 +8413,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
  }
  
 +
-+// Retourne la couleur de carrosserie du vÈhicule sÈlectionnÈ.
++// Retourne la couleur de carrosserie du v√©hicule s√©lectionn√©.
 +
 +D3DCOLORVALUE CMainDialog::RetGamerColorCar()
 +{
@@ -8468,7 +8468,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return TRUE;
 +}
 +
-+// Cherche la mission suivante par dÈfaut ‡ effectuer.
++// Cherche la mission suivante par d√©faut √† effectuer.
  
 -   if ( bPassed )
 +void CMainDialog::NextMission()
@@ -8477,7 +8477,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +
 +   if ( !m_bPesetas )  return;  // course libre ?
 +
-+   // Cherche une mission non passÈe dans le mÍme chapitre.
++   // Cherche une mission non pass√©e dans le m√™me chapitre.
 +   chap = m_sel[m_index]/10;
 +   for ( i=0 ; i<9 ; i++ )
     {
@@ -8487,7 +8487,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +       rank = chap*10+(i+1);
 +       if ( !MissionExist(rank) )  break;
 +
-+       if ( !m_sceneInfo[rank].bPassed )  // mission ‡ faire ?
++       if ( !m_sceneInfo[rank].bPassed )  // mission √† faire ?
         {
 -           bAll &= m_sceneInfo[chap*100+i+1].bPassed;
 +           m_sel[m_index] = rank;
@@ -8499,23 +8499,23 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +
 +   if ( !m_sceneInfo[chap*10].bPassed )  // chapitre suivant pas accessible ?
 +   {
-+       rank = chap*10+1;  // refait 1Ëre mission du chapitre
++       rank = chap*10+1;  // refait 1√®re mission du chapitre
 +       m_sel[m_index] = rank;
 +       return;
 +   }
 +
-+   rank = (chap+1)*10+1;  // 1Ëre mission du chapitre suivant
++   rank = (chap+1)*10+1;  // 1√®re mission du chapitre suivant
 +   if ( MissionExist(rank) )
 +   {
 +       m_sel[m_index] = rank;
 +       return;
 +   }
 +
-+   m_sel[m_index] = 11;  // recommence au tout dÈbut !
++   m_sel[m_index] = 11;  // recommence au tout d√©but !
  }
  
 -BOOL CMainDialog::RetGamerInfoPassed(int rank)
-+// DÈbloque les niveaux suivants si on a ÈconomisÈ assez de pesetas.
++// D√©bloque les niveaux suivants si on a √©conomis√© assez de pesetas.
 +
 +void CMainDialog::PesetasUnlock()
  {
@@ -8588,7 +8588,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +}
 +
 +// Ajoute un nouveau record.
-+// Retourne TRUE s'il s'agit d'un record du monde pour la voiture utilisÈe !
++// Retourne TRUE s'il s'agit d'un record du monde pour la voiture utilis√©e !
 +
 +BOOL CMainDialog::AddRecord(float time, float bonus, float value1, float value2, int points, int type)
 +{
@@ -8613,7 +8613,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +       }
 +   }
 +
-+   if ( i < MAXRECORD )  // ajoute ‡ la fin de la liste ?
++   if ( i < MAXRECORD )  // ajoute √† la fin de la liste ?
 +   {
 +       strcpy(record->list[i].gamerName, m_main->RetGamerName());
 +       record->list[i].time   = time;
@@ -8637,10 +8637,10 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return TRUE;  // c'est un record du monde
  }
  
-+// Indique si un temps donnÈ est un record absolu.
-+// Retourne une valeur >= 0 correspondant ‡ l'amÈlioration du temps.
++// Indique si un temps donn√© est un record absolu.
++// Retourne une valeur >= 0 correspondant √† l'am√©lioration du temps.
  
--// Passe ‡ la misison suivante, et Èventuellement au chapitre suivant.
+-// Passe √† la misison suivante, et √©ventuellement au chapitre suivant.
 +float CMainDialog::TimeRecord(float time, int type)
 +{
 +   RecordList* record;
@@ -8666,7 +8666,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return ( record->total == 0 );
 +}
 +
-+// Met ‡ jour le tableau des records.
++// Met √† jour le tableau des records.
 +
 +void CMainDialog::UpdateRecord(CArray *pa, int type)
 +{
@@ -8683,13 +8683,13 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   if ( m_bPesetas )  i = RT_WIN_HEADERm;
 +   else               i = RT_WIN_HEADERf;
 +   GetResource(RES_TEXT, i, text);
-+   pa->SetName(-1, text);  // texte de la lÈgende
++   pa->SetName(-1, text);  // texte de la l√©gende
  
--   if ( m_sel[m_index] >= m_maxList )  // derniËre mission du chapitre ?
+-   if ( m_sel[m_index] >= m_maxList )  // derni√®re mission du chapitre ?
 +   for ( i=0 ; i<record->total ; i++ )
     {
 -       m_chap[m_index] ++;  // chapitre suivant
--       m_sel[m_index] = 0;  // premiËre mission
+-       m_sel[m_index] = 0;  // premi√®re mission
 +       NamePerso(car, record->list[i].model);
 +       PutTime(time, record->list[i].time);
 +       if ( m_bPesetas )
@@ -8711,7 +8711,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +}
 +
 +
-+// Met ‡ jour la liste des voitures fantomes.
++// Met √† jour la liste des voitures fantomes.
 +
 +void CMainDialog::UpdateGhostList(BOOL bAll)
 +{
@@ -8826,13 +8826,13 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   while ( bDo );
 +
 +   GetResource(RES_TEXT, RT_IO_HEADER, name);
-+   pa->SetName(-1, name);  // texte de la lÈgende
++   pa->SetName(-1, name);  // texte de la l√©gende
 +
 +   for ( j=0 ; j<m_ghostTotal ; j++ )
 +   {
 +       strcpy(name, m_ghostList[j].filename);
 +       i = strlen(name);
-+       if ( i > 4 )  name[i-4] = 0;  // enlËve ".rec"
++       if ( i > 4 )  name[i-4] = 0;  // enl√®ve ".rec"
 +
 +       strcat(name, "\t");
 +       strcat(name, m_ghostList[j].title);  // titre de la mission
@@ -8844,7 +8844,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +       strcat(name, "\t");
 +       strcat(name, m_ghostList[j].gamer);  // nom du joueur
 +
-+       PutTime(sub, m_ghostList[j].chrono);  // temps effectuÈ
++       PutTime(sub, m_ghostList[j].chrono);  // temps effectu√©
 +       strcat(name, "\t");
 +       strcat(name, sub);
 +
@@ -8862,7 +8862,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   }
 +   else
 +   {
-+       pa->SetSelect(m_ghostSelect);  // sÈlectionne comme prÈcÈdemment
++       pa->SetSelect(m_ghostSelect);  // s√©lectionne comme pr√©c√©demment
 +       pa->ShowSelect();  // montre
 +   }
 +
@@ -8870,7 +8870,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +#endif
 +}
 +
-+// SÈlectionne une voiture fantome dans la liste.
++// S√©lectionne une voiture fantome dans la liste.
 +
 +void CMainDialog::SelectGhostList()
 +{
@@ -8939,7 +8939,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   strcat(m_ghostName, ".rec");
 +
 +   file = fopen(m_ghostName, "rb");
-+   if ( file != NULL )  // fichier existe dÈj‡ ?
++   if ( file != NULL )  // fichier existe d√©j√† ?
 +   {
 +       fclose(file);
 +       return 2;
@@ -8951,7 +8951,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
 +   return 0;
 +}
 +
-+// DÈtruit le fichier de la voiture fantome.
++// D√©truit le fichier de la voiture fantome.
 +
 +BOOL CMainDialog::DeleteGhostFile()
 +{
@@ -9010,7 +9010,7 @@ diff a/src/ui/maindialog.cpp b/src/ui/maindialog.cpp	(rejected hunks)
     return TRUE;
  }
  
-+// Retourne le nom du fichier de la voiture fantome ‡ utiliser.
++// Retourne le nom du fichier de la voiture fantome √† utiliser.
 +
 +char* CMainDialog::RetGhostRead()
 +{

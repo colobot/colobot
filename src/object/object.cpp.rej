@@ -74,9 +74,9 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  
  
  
- #define ADJUST_ONBOARD FALSE       // TRUE -> ajuste la caméra ONBOARD
+ #define ADJUST_ONBOARD FALSE       // TRUE -> ajuste la camÃ©ra ONBOARD
  #define ADJUST_ARM     FALSE       // TRUE -> ajuste le bras manipulateur
--#define VIRUS_DELAY        60.0f       // durée d'infection d'un virus
+-#define VIRUS_DELAY        60.0f       // durÃ©e d'infection d'un virus
  #define LOSS_SHIELD        0.24f       // perte du bouclier par coup
 -#define LOSS_SHIELD_H  0.10f       // perte du bouclier pour l'homme
 -#define LOSS_SHIELD_M  0.02f       // perte du bouclier pour la pondeuse
@@ -92,13 +92,13 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     if ( object == 0 )  return;
  
 @@ -116,7 +103,7 @@ void uObject(CBotVar* botThis, void* user)
-    // Met à jour le type de l'objet.
+    // Met Ã  jour le type de l'objet.
     pVar = botThis->GivItemList();  // "category"
     type = object->RetType();
 -   pVar->SetValInt(type, object->RetName());
 +   pVar->SetValInt(type, "");
  
-    // Met à jour la position de l'objet.
+    // Met Ã  jour la position de l'objet.
     pVar = pVar->GivNext();  // "position"
 @@ -125,11 +112,11 @@ void uObject(CBotVar* botThis, void* user)
         pos = object->RetPosition(0);
@@ -113,45 +113,45 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       pSub->SetValFloat(pos.y/g_unit);
 +       pSub->SetValFloat(pos.y/UNIT);
     }
-    else    // objet transporté ?
+    else    // objet transportÃ© ?
     {
 @@ -153,8 +140,7 @@ void uObject(CBotVar* botThis, void* user)
  
-    // Met à jour le niveau d'énergie de l'objet.
+    // Met Ã  jour le niveau d'Ã©nergie de l'objet.
     pVar = pVar->GivNext();  // "energyLevel"
 -   value = object->RetEnergy();
 -   pVar->SetValFloat(value);
 +   pVar->SetValFloat(1.0f);
  
-    // Met à jour le niveau du bouclier de l'objet.
+    // Met Ã  jour le niveau du bouclier de l'objet.
     pVar = pVar->GivNext();  // "shieldLevel"
 @@ -163,26 +149,19 @@ void uObject(CBotVar* botThis, void* user)
  
-    // Met à jour la température du bouclier.
+    // Met Ã  jour la tempÃ©rature du bouclier.
     pVar = pVar->GivNext();  // "temperature"
 -   if ( physics == 0 )  value = 0.0f;
 -   else                 value = 1.0f-physics->RetReactorRange();
 -   pVar->SetValFloat(value);
 +   pVar->SetValFloat(1.0f);
  
-    // Met à jour la hauteur au-dessus du sol.
+    // Met Ã  jour la hauteur au-dessus du sol.
     pVar = pVar->GivNext();  // "altitude"
     if ( physics == 0 )  value = 0.0f;
     else                 value = physics->RetFloorHeight();
 -   pVar->SetValFloat(value/g_unit);
 +   pVar->SetValFloat(value/UNIT);
  
-    // Met à jour le temps de l'objet.
+    // Met Ã  jour le temps de l'objet.
     pVar = pVar->GivNext();  // "lifeTime"
     value = object->RetAbsTime();
     pVar->SetValFloat(value);
  
--   // Met à jour la matière de l'objet.
+-   // Met Ã  jour la matiÃ¨re de l'objet.
 -   pVar = pVar->GivNext();  // "material"
 -   iValue = object->RetMaterial();
 -   pVar->SetValInt(iValue);
 -
-    // Met à jour le type de la pile.
+    // Met Ã  jour le type de la pile.
     pVar = pVar->GivNext();  // "energyCell"
     power = object->RetPower();
 @@ -224,89 +203,68 @@ CObject::CObject(CInstanceManager* iMan)
@@ -370,7 +370,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
         }
 @@ -442,12 +415,6 @@ void CObject::DeleteObject(BOOL bAll)
  
-    m_type = OBJECT_NULL;  // objet invalide jusqu'à destruction complète
+    m_type = OBJECT_NULL;  // objet invalide jusqu'Ã  destruction complÃ¨te
  
 -   if ( m_partiReactor != -1 )
 -   {
@@ -395,7 +395,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   if ( !bAll )  m_main->CreateShortcuts();
  }
  
- // Simplifie un objet (on lui ôte le cerveau, entre autres).
+ // Simplifie un objet (on lui Ã´te le cerveau, entre autres).
 @@ -512,7 +471,6 @@ void CObject::Simplify()
     {
         m_brain->StopProgram();
@@ -414,8 +414,8 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  
  
 @@ -550,35 +506,31 @@ void CObject::Simplify()
- // Si FALSE est retourné, l'objet n'est pas encore foutu.
- // Si TRUE est retourné, l'objet est détruit.
+ // Si FALSE est retournÃ©, l'objet n'est pas encore foutu.
+ // Si TRUE est retournÃ©, l'objet est dÃ©truit.
  
 -BOOL CObject::ExploObject(ExploType type, float force, float decay)
 +BOOL CObject::ExploObject(ExploType type, float force, D3DVECTOR impact)
@@ -443,8 +443,8 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -            m_type == OBJECT_SCRAP4   ||
 -            m_type == OBJECT_SCRAP5   ||
 -            m_type == OBJECT_BULLET   ||
--            m_type == OBJECT_EGG      )  // objet qui ne brûle pas ?
-+            m_type == OBJECT_BULLET   )  // objet qui ne brûle pas ?
+-            m_type == OBJECT_EGG      )  // objet qui ne brÃ»le pas ?
++            m_type == OBJECT_BULLET   )  // objet qui ne brÃ»le pas ?
         {
             type = EXPLO_BOUM;
             force = 1.0f;
@@ -485,7 +485,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       nb = (int)(loss*20.0f*level);
 +       if ( nb == 0 )  nb = 1;
 +       if ( nb >  5 )  nb = 5;
-+       if ( ExploPart(nb, force) )  // perd qq pièces
++       if ( ExploPart(nb, force) )  // perd qq piÃ¨ces
         {
 -           loss = LOSS_SHIELD_M;
 +           pyro = new CPyro(m_iMan);
@@ -496,7 +496,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
         else
         {
 -           loss = LOSS_SHIELD;
-+           return TRUE;  // voiture détruite
++           return TRUE;  // voiture dÃ©truite
         }
     }
 -   else
@@ -541,7 +541,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
                 pyroType = PT_SHOTT;
 @@ -648,12 +623,7 @@ BOOL CObject::ExploObject(ExploType type, float force, float decay)
     {
-        if ( type == EXPLO_BURN )  // brûle ?
+        if ( type == EXPLO_BURN )  // brÃ»le ?
         {
 -           if ( m_type == OBJECT_MOTHER ||
 -                m_type == OBJECT_ANT    ||
@@ -688,11 +688,11 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
             m_botVar->SetUserPtr(OBJECTDELETED);
         }
 @@ -787,6 +762,194 @@ BOOL CObject::ExploObject(ExploType type, float force, float decay)
- //     de fonctionner comme si de rien était !
+ //     de fonctionner comme si de rien Ã©tait !
  
  
-+// Crée des morceaux d'objet qui partent.
-+// Retourne FALSE si la voiture est détruite.
++// CrÃ©e des morceaux d'objet qui partent.
++// Retourne FALSE si la voiture est dÃ©truite.
 +
 +BOOL CObject::ExploPart(int total, float force)
 +{
@@ -701,7 +701,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   float       dim;
 +   int         i, part, param;
 +
-+   // Crée une tache d'huile au sol.
++   // CrÃ©e une tache d'huile au sol.
 +   if ( force > 0.2f &&
 +        m_objectPart[0].position.y > m_water->RetLevel() )
 +   {
@@ -748,15 +748,15 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +
 +           SetDead(TRUE);
 +           m_camera->SetType(CAMERA_BACK);
-+           return FALSE;  // voiture détruite
++           return FALSE;  // voiture dÃ©truite
 +       }
 +
 +       DetachPiece(part, param);
 +   }
-+   return TRUE;  // pas encore détruite
++   return TRUE;  // pas encore dÃ©truite
 +}
 +
-+// Crée un morceau d'objet qui part.
++// CrÃ©e un morceau d'objet qui part.
 +
 +BOOL CObject::DetachPart(int part, D3DVECTOR speed)
 +{
@@ -807,7 +807,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   return TRUE;
 +}
 +
-+// Crée un morceau d'objet qui devient une pièce indépendante.
++// CrÃ©e un morceau d'objet qui devient une piÃ¨ce indÃ©pendante.
 +
 +BOOL CObject::DetachPiece(int part, int param, D3DVECTOR speed)
 +{
@@ -825,7 +825,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   m_engine->GetBBox(objRank, min, max);
 +   dim = max-min;
 +
-+   m_objectPart[part].bUsed = FALSE;  // supprime pièce à la voiture
++   m_objectPart[part].bUsed = FALSE;  // supprime piÃ¨ce Ã  la voiture
 +   UpdateTotalPart();
 +
 +   pObj = new CObject(m_iMan);
@@ -862,7 +862,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   m_engine->GetBBox(objRank, min, max);
 +   dim = max-min;
 +
-+   m_objectPart[part].bUsed = FALSE;  // supprime pièce à la voiture
++   m_objectPart[part].bUsed = FALSE;  // supprime piÃ¨ce Ã  la voiture
 +   UpdateTotalPart();
 +
 +   pObj = new CObject(m_iMan);
@@ -891,7 +891,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  
 -   if ( m_type == OBJECT_MOBILErs )
 -   {
--       m_param = 1.0f;  // bouclier au maximum par défaut
+-       m_param = 1.0f;  // bouclier au maximum par dÃ©faut
 -   }
 +ObjectType CObject::RetType()
 +{
@@ -906,7 +906,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   {
 -       m_capacity = 1.0f;
 -   }
-+// Spécifie le modèle de voiture.
++// SpÃ©cifie le modÃ¨le de voiture.
  
 -   if ( m_type == OBJECT_MOBILEwc ||
 -        m_type == OBJECT_MOBILEtc ||
@@ -916,7 +916,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -        m_type == OBJECT_MOBILEti ||
 -        m_type == OBJECT_MOBILEfi ||
 -        m_type == OBJECT_MOBILEii ||
--        m_type == OBJECT_MOBILErc )  // véhicule canon ?
+-        m_type == OBJECT_MOBILErc )  // vÃ©hicule canon ?
 -   {
 -       m_cameraType = CAMERA_ONBOARD;
 -   }
@@ -944,13 +944,13 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   return m_subModel;
 +}
  
- // Choix de l'option à utiliser.
+ // Choix de l'option Ã  utiliser.
  
 @@ -970,441 +1121,501 @@ int CObject::RetID()
  }
  
  
--// Sauve tous les paramètres de l'objet.
+-// Sauve tous les paramÃ¨tres de l'objet.
  
 -BOOL CObject::Write(char *line)
 -{
@@ -959,7 +959,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   char        name[100];
 -   float       value;
 -   int         i;
-+// Cherche le nième fils d'un père.
++// Cherche le niÃ¨me fils d'un pÃ¨re.
  
 -   sprintf(name, " camera=%s", GetCamera(RetCameraType()));
 -   strcat(line, name);
@@ -998,7 +998,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       sprintf(name, " shield=%.2f", RetShield());
 -       strcat(line, name);
 -   }
-+// Supprime toutes les sphères utilisées pour les collisions.
++// Supprime toutes les sphÃ¨res utilisÃ©es pour les collisions.
  
 -   if ( RetRange() != 1.0f )
 -   {
@@ -1015,7 +1015,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       sprintf(name, " selectable=%d", RetSelectable());
 -       strcat(line, name);
 -   }
-+// Ajoute une nouvelle sphère.
++// Ajoute une nouvelle sphÃ¨re.
  
 -   if ( RetEnable() != 1 )
 -   {
@@ -1052,7 +1052,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       sprintf(name, " lock=%d", RetLock());
 -       strcat(line, name);
 -   }
-+// Déplace une sphère.
++// DÃ©place une sphÃ¨re.
  
 -   if ( RetProxyActivate() != 0 )
 -   {
@@ -1067,7 +1067,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       sprintf(name, " proxyDistance=%.2f", RetProxyDistance()/g_unit);
 -       strcat(line, name);
 -   }
-+// Retourne le nombre de sphères.
++// Retourne le nombre de sphÃ¨res.
  
 -   if ( RetMagnifyDamage() != 1.0f )
 -   {
@@ -1089,7 +1089,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       sprintf(name, " aimH=%.2f", RetGunGoalH());
 -       strcat(line, name);
 -   }
-+// Retourne une sphère pour les collisions.
++// Retourne une sphÃ¨re pour les collisions.
 +// La position est absolue dans le monde.
  
 -   if ( RetParam() != 0.0f )
@@ -1105,11 +1105,11 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( RetResetCap() != 0 )
-+   // Retourne la sphère pour les collisions, qui ne tient pas
-+   // compte de l'inclinaison du véhicule. Ceci est nécessaire
-+   // pour les collisions avec les véhicules, afin de ne pas tenir
++   // Retourne la sphÃ¨re pour les collisions, qui ne tient pas
++   // compte de l'inclinaison du vÃ©hicule. Ceci est nÃ©cessaire
++   // pour les collisions avec les vÃ©hicules, afin de ne pas tenir
 +   // compte de SetInclinaison, par exemple.
-+   // La sphère doit avoir obligatoirement un centre (0;y;0).
++   // La sphÃ¨re doit avoir obligatoirement un centre (0;y;0).
 +   if ( rank == 0 && m_crashSphereUsed == 1 &&
 +        m_crashSpherePos[0].x == 0.0f &&
 +        m_crashSpherePos[0].z == 0.0f )
@@ -1150,7 +1150,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       sprintf(name, " virusTime=%.2f", m_virusTime);
 -       strcat(line, name);
 -   }
-+// Retourne la dureté d'une sphère.
++// Retourne la duretÃ© d'une sphÃ¨re.
  
 -   // Met les infos dans borne (OBJECT_INFO).
 -   for ( i=0 ; i<m_infoTotal ; i++ )
@@ -1165,9 +1165,9 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       sprintf(name, " info%d=\"%s=%.2f\"", i+1, info.name, info.value);
 -       strcat(line, name);
 -   }
-+// Retourne la dureté d'une sphère.
++// Retourne la duretÃ© d'une sphÃ¨re.
  
--   // Met les paramètres de la ligne de commande.
+-   // Met les paramÃ¨tres de la ligne de commande.
 -   for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
 -   {
 -       value = RetCmdLine(i);
@@ -1186,7 +1186,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   {
 -       m_motion->Write(line);
 -   }
-+// Supprime une sphère.
++// Supprime une sphÃ¨re.
  
 -   if ( m_brain != 0 )
 -   {
@@ -1214,8 +1214,8 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   m_crashSphereUsed --;
  }
  
--// Restitue tous les paramètres de l'objet.
-+// Spécifie la sphère globale, relative à l'objet.
+-// Restitue tous les paramÃ¨tres de l'objet.
++// SpÃ©cifie la sphÃ¨re globale, relative Ã  l'objet.
  
 -BOOL CObject::Read(char *line)
 +void CObject::SetGlobalSphere(D3DVECTOR pos, float radius)
@@ -1275,7 +1275,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       SetInfo(i, info);
 -   }
 -
--   // Met les paramètres de la ligne de commande.
+-   // Met les paramÃ¨tres de la ligne de commande.
 -   p = SearchOp(line, "cmdline");
 -   for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
 -   {
@@ -1297,7 +1297,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   {
 -       m_brain->Read(line);
 -   }
-+// Retourne la sphère globale, dans l'univers.
++// Retourne la sphÃ¨re globale, dans l'univers.
  
 -   if ( m_physics != 0 )
 -   {
@@ -1315,7 +1315,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   }
  
 -   return TRUE;
-+// Spécifie la sphère de bousculade, relative à l'objet.
++// SpÃ©cifie la sphÃ¨re de bousculade, relative Ã  l'objet.
 +
 +void CObject::SetJotlerSphere(D3DVECTOR pos, float radius)
 +{
@@ -1323,7 +1323,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   m_jotlerSphereRadius = radius;
  }
  
-+// Retourne la sphère de bousculade, dans l'univers.
++// Retourne la sphÃ¨re de bousculade, dans l'univers.
 +
 +void CObject::GetJotlerSphere(D3DVECTOR &pos, float &radius)
 +{
@@ -1332,8 +1332,8 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +}
  
  
--// Cherche le nième fils d'un père.
-+// Supprime toutes les lignes utilisées pour les collisions.
+-// Cherche le niÃ¨me fils d'un pÃ¨re.
++// Supprime toutes les lignes utilisÃ©es pour les collisions.
  
 -int CObject::SearchDescendant(int parent, int n)
 +void CObject::FlushCrashLine()
@@ -1348,7 +1348,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   for ( i=0 ; i<m_totalPart ; i++ )
 -   {
 -       if ( !m_objectPart[i].bUsed )  continue;
-+// Spécifie la hauteur de l'objet (à partir du sol).
++// SpÃ©cifie la hauteur de l'objet (Ã  partir du sol).
  
 -       if ( parent == m_objectPart[i].parentPart )
 -       {
@@ -1363,7 +1363,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  
 +// Retourne la hauteur de l'objet.
  
--// Supprime toutes les sphères utilisées pour les collisions.
+-// Supprime toutes les sphÃ¨res utilisÃ©es pour les collisions.
 -
 -void CObject::FlushCrashShere()
 +float CObject::RetCrashLineHeight()
@@ -1372,7 +1372,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   return m_crashLineHeight;
  }
  
--// Ajoute une nouvelle sphère.
+-// Ajoute une nouvelle sphÃ¨re.
 +// Ajoute une nouvelle ligne.
  
 -int CObject::CreateCrashSphere(D3DVECTOR pos, float radius, Sound sound,
@@ -1399,7 +1399,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   m_crashLineHardness[m_crashLineUsed] = hardness;
 +   m_crashLineSound[m_crashLineUsed] = sound;
  
--// Retourne le nombre de sphères.
+-// Retourne le nombre de sphÃ¨res.
 +   if ( m_objectPart[0].bTranslate ||
 +        m_objectPart[0].bRotate    )
 +   {
@@ -1442,9 +1442,9 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +#endif
  }
  
--// Retourne une sphère pour les collisions.
+-// Retourne une sphÃ¨re pour les collisions.
 -// La position est absolue dans le monde.
-+// Met à jour la bbox.
++// Met Ã  jour la bbox.
  
 -BOOL CObject::GetCrashSphere(int rank, D3DVECTOR &pos, float &radius)
 +void CObject::UpdateBBoxCrashLine()
@@ -1463,11 +1463,11 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       UpdateTransformObject();
     }
  
--   // Retourne la sphère pour les collisions, qui ne tient pas
--   // compte de l'inclinaison du véhicule. Ceci est nécessaire
--   // pour les collisions avec les véhicules, afin de ne pas tenir
+-   // Retourne la sphÃ¨re pour les collisions, qui ne tient pas
+-   // compte de l'inclinaison du vÃ©hicule. Ceci est nÃ©cessaire
+-   // pour les collisions avec les vÃ©hicules, afin de ne pas tenir
 -   // compte de SetInclinaison, par exemple.
--   // La sphère doit avoir obligatoirement un centre (0;y;0).
+-   // La sphÃ¨re doit avoir obligatoirement un centre (0;y;0).
 -   if ( rank == 0 && m_crashSphereUsed == 1 &&
 -        m_crashSpherePos[0].x == 0.0f &&
 -        m_crashSpherePos[0].z == 0.0f )
@@ -1502,7 +1502,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   return TRUE;
 -}
  
--// Retourne la dureté d'une sphère.
+-// Retourne la duretÃ© d'une sphÃ¨re.
 +   m_crashLineMin = FPOINT( 10000.0f,  10000.0f);
 +   m_crashLineMax = FPOINT(-10000.0f, -10000.0f);
  
@@ -1522,7 +1522,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +#endif
  }
  
--// Retourne la dureté d'une sphère.
+-// Retourne la duretÃ© d'une sphÃ¨re.
 +// Retourne le nombre de lignes.
  
 -float CObject::RetCrashSphereHardness(int rank)
@@ -1532,7 +1532,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   return m_crashLineUsed;
  }
  
--// Supprime une sphère.
+-// Supprime une sphÃ¨re.
 +// Retourne une ligne pour les collisions.
 +// La position est absolue dans le monde.
  
@@ -1563,7 +1563,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   pos.x = p.x;
 +   pos.y = p.z;
  
--// Spécifie la sphère globale, relative à l'objet.
+-// SpÃ©cifie la sphÃ¨re globale, relative Ã  l'objet.
 +   bNew = m_crashLineNew[rank];
 +   return TRUE;
 +#else
@@ -1584,8 +1584,8 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +#endif
  }
  
--// Retourne la sphère globale, dans l'univers.
-+// Retourne la dureté d'une ligne.
+-// Retourne la sphÃ¨re globale, dans l'univers.
++// Retourne la duretÃ© d'une ligne.
  
 -void CObject::GetGlobalSphere(D3DVECTOR &pos, float &radius)
 +Sound CObject::RetCrashLineSound(int rank)
@@ -1595,9 +1595,9 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   return m_crashLineSound[rank];
  }
  
-+// Retourne la dureté d'une ligne.
++// Retourne la duretÃ© d'une ligne.
  
--// Spécifie la sphère de bousculade, relative à l'objet.
+-// SpÃ©cifie la sphÃ¨re de bousculade, relative Ã  l'objet.
 -
 -void CObject::SetJotlerSphere(D3DVECTOR pos, float radius)
 +float CObject::RetCrashLineHardness(int rank)
@@ -1607,7 +1607,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   return m_crashLineHardness[rank];
  }
  
--// Retourne la sphère de bousculade, dans l'univers.
+-// Retourne la sphÃ¨re de bousculade, dans l'univers.
 +// Retourne la bbox de toutes les lignes.
  
 -void CObject::GetJotlerSphere(D3DVECTOR &pos, float &radius)
@@ -1620,7 +1620,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  }
  
 +// Indique s'il s'agit d'un objet fusionnable.
-+// L'objet doit obligatoirement être indestructible !
++// L'objet doit obligatoirement Ãªtre indestructible !
 +
 +BOOL CObject::IsCrashLineFusion()
 +{
@@ -1636,11 +1636,11 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +            m_type == OBJECT_BARRIER16 );
 +}
  
--// Spécifie le rayon du bouclier.
+-// SpÃ©cifie le rayon du bouclier.
 +// Essaye de fusionner les lignes de collision de l'objet courant
-+// avec un autre. Ainsi, plusieurs barrières mises bout à bout ne
-+// formeront plus qu'un obstacle, regroupé dans la première barrière
-+// crée. L'objet courant n'a alors plus aucune ligne de collision.
++// avec un autre. Ainsi, plusieurs barriÃ¨res mises bout Ã  bout ne
++// formeront plus qu'un obstacle, regroupÃ© dans la premiÃ¨re barriÃ¨re
++// crÃ©e. L'objet courant n'a alors plus aucune ligne de collision.
  
 -void CObject::SetShieldRadius(float radius)
 +void CObject::CrashLineFusion()
@@ -1729,7 +1729,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  }
  
 -// Retourne le rayon du bouclier.
-+// Indique si la caméra est obstruée par un objet.
++// Indique si la camÃ©ra est obstruÃ©e par un objet.
  
 -float CObject::RetShieldRadius()
 +BOOL CObject::IsOccludeCamera(const D3DVECTOR &eye, const D3DVECTOR &look)
@@ -1749,7 +1749,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   l.y = look.z;
 +
 +   u = m_crashLineUsed;
-+   m_crashLineUsed = 5;  // à cause de CrashLineFusion
++   m_crashLineUsed = 5;  // Ã  cause de CrashLineFusion
 +   GetCrashLine(0, oP1, bNew);
 +   GetCrashLine(1, oP2, bNew);
 +   GetCrashLine(2, oP3, bNew);
@@ -1785,7 +1785,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  }
  
 -// Donne l'inclinaison.
-+// Donne la rotation circulaire suite à un choc.
++// Donne la rotation circulaire suite Ã  un choc.
  
 -void CObject::SetInclinaison(D3DVECTOR dir)
 +void CObject::SetCirChoc(D3DVECTOR dir)
@@ -1847,7 +1847,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       height = 0.0f;
         m_engine->SetObjectShadowHeight(rank, height);
  
-        // Calcul la normale au terrain en 9 points stratégiques,
+        // Calcul la normale au terrain en 9 points stratÃ©giques,
 @@ -1621,11 +1842,6 @@ void CObject::SetPosition(int part, const D3DVECTOR &pos)
             shPos.y += m_effectHeight;
             m_light->SetLightPos(m_effectLight, shPos);
@@ -1969,7 +1969,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -}
 -
  
- // Gestion de la particule maîtresse.
+ // Gestion de la particule maÃ®tresse.
  
 @@ -1931,69 +2083,6 @@ int CObject::RetTruckPart()
  }
@@ -2043,7 +2043,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     if ( rank < 0 || rank >= OBJECTMAXCMDLINE )  return FALSE;
 @@ -2070,20 +2159,37 @@ void CObject::SetDrawFront(BOOL bDraw)
  
- // Crée un véhicule roulant quelconque posé sur le sol.
+ // CrÃ©e un vÃ©hicule roulant quelconque posÃ© sur le sol.
  
 -BOOL CObject::CreateVehicle(D3DVECTOR pos, float angle, ObjectType type,
 -                           float power, BOOL bTrainer, BOOL bToy)
@@ -2152,7 +2152,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   return TRUE;
 -}
 -
--// Crée un insecte quelconque posé sur le sol.
+-// CrÃ©e un insecte quelconque posÃ© sur le sol.
 -
 -BOOL CObject::CreateInsect(D3DVECTOR pos, float angle, ObjectType type)
 -{
@@ -2206,7 +2206,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     m_engine->ShadowCreate(m_objectPart[0].object);
 @@ -2344,12 +2355,12 @@ BOOL CObject::CreateShadowCircle(float radius, float intensity,
  
- // Crée un batiment quelconque posé sur le sol.
+ // CrÃ©e un batiment quelconque posÃ© sur le sol.
  
 -BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 -                            ObjectType type, float power)
@@ -2279,7 +2279,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       SetObjectRank(3, rank);
 -       SetObjectParent(3, 2);
 -       pModFile->ReadModel("objects\\portico4.mod");
-+   if ( m_type == OBJECT_FACTORY2 )  // usine avec 2 cheminées ?
++   if ( m_type == OBJECT_FACTORY2 )  // usine avec 2 cheminÃ©es ?
 +   {
 +       pModFile->ReadModel("objects\\factory2.mod");
         pModFile->CreateEngineObject(rank);
@@ -2349,7 +2349,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       SetObjectRank(8, rank);
 -       SetObjectParent(8, 0);
 -       pModFile->ReadModel("objects\\portico6.mod");
-+   if ( m_type == OBJECT_FACTORY3 )  // usine avec toît /|/| ?
++   if ( m_type == OBJECT_FACTORY3 )  // usine avec toÃ®t /|/| ?
 +   {
 +       pModFile->ReadModel("objects\\factory3.mod");
         pModFile->CreateEngineObject(rank);
@@ -2563,7 +2563,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   }
  
 -       SetGlobalSphere(D3DVECTOR(0.0f, 45.0f, 0.0f), 10.0f);
-+   if ( m_type == OBJECT_FACTORY8 )  // départ tuyau 6 ?
++   if ( m_type == OBJECT_FACTORY8 )  // dÃ©part tuyau 6 ?
 +   {
 +       pModFile->ReadModel("objects\\factory8.mod");
 +       pModFile->CreateEngineObject(rank);
@@ -2694,7 +2694,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( m_type == OBJECT_RADAR )
-+   if ( m_type == OBJECT_FACTORY13 )  // cilo carré ?
++   if ( m_type == OBJECT_FACTORY13 )  // cilo carrÃ© ?
     {
 -       pModFile->ReadModel("objects\\radar1.mod");
 +       pModFile->ReadModel("objects\\factory13.mod");
@@ -2837,7 +2837,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
  
 -       m_character.posPower = D3DVECTOR(0.0f, 3.0f, 0.0f);
--       m_energy = power;  // initialise le niveau d'énergie
+-       m_energy = power;  // initialise le niveau d'Ã©nergie
 -
 -       CreateShadowCircle(6.0f, 0.5f);
 +       SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
@@ -3042,7 +3042,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( m_type == OBJECT_DESTROYER )
-+   if ( m_type == OBJECT_ALIEN6 )  // écraseur ?
++   if ( m_type == OBJECT_ALIEN6 )  // Ã©craseur ?
     {
 -       pModFile->ReadModel("objects\\destroy1.mod");
 +       pModFile->ReadModel("objects\\alien6.mod");
@@ -3083,7 +3083,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( m_type == OBJECT_STATION )
-+   if ( m_type == OBJECT_ALIEN7 )  // électrocuteur ?
++   if ( m_type == OBJECT_ALIEN7 )  // Ã©lectrocuteur ?
     {
 -       pModFile->ReadModel("objects\\station.mod");
 +       pModFile->ReadModel("objects\\alien7.mod");
@@ -3103,12 +3103,12 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       CreateCrashLine(FPOINT(-40.0f,  40.0f), SOUND_BOUMm, 0.45f);
 +       CreateCrashLine(FPOINT(-40.0f, -40.0f), SOUND_BOUMm, 0.45f);
  
--       m_energy = power;  // initialise le niveau d'énergie
+-       m_energy = power;  // initialise le niveau d'Ã©nergie
 +       SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 40.0f);
     }
  
 -   if ( m_type == OBJECT_CONVERT )
-+   if ( m_type == OBJECT_ALIEN8 )  // générateur ?
++   if ( m_type == OBJECT_ALIEN8 )  // gÃ©nÃ©rateur ?
     {
 -       pModFile->ReadModel("objects\\convert1.mod");
 +       pModFile->ReadModel("objects\\alien8.mod");
@@ -3359,7 +3359,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( m_type == OBJECT_SAFE )
-+   if ( m_type == OBJECT_INCA7 )  // temple électrocuteur ?
++   if ( m_type == OBJECT_INCA7 )  // temple Ã©lectrocuteur ?
     {
 -       pModFile->ReadModel("objects\\safe1.mod");
 +       pModFile->ReadModel("objects\\inca71.mod");
@@ -3421,7 +3421,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( m_type == OBJECT_HUSTON )
-+   if ( m_type == OBJECT_BUILDING1 )  // bâtiment ?
++   if ( m_type == OBJECT_BUILDING1 )  // bÃ¢timent ?
     {
 -       pModFile->ReadModel("objects\\huston1.mod");
 +       pModFile->ReadModel("objects\\buildin1.mod");
@@ -3451,7 +3451,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       SetObjectRank(2, rank);
 -       SetObjectParent(2, 1);
 -       pModFile->ReadModel("objects\\huston3.mod");
-+   if ( m_type == OBJECT_BUILDING2 )  // bâtiment ?
++   if ( m_type == OBJECT_BUILDING2 )  // bÃ¢timent ?
 +   {
 +       pModFile->ReadModel("objects\\buildin2.mod");
         pModFile->CreateEngineObject(rank);
@@ -3484,7 +3484,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( m_type == OBJECT_TARGET1 )
-+   if ( m_type == OBJECT_BUILDING3 )  // bâtiment ?
++   if ( m_type == OBJECT_BUILDING3 )  // bÃ¢timent ?
     {
 -       pModFile->ReadModel("objects\\target1.mod");
 +       pModFile->ReadModel("objects\\buildin3.mod");
@@ -3598,7 +3598,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -#if 0
--   if ( power > 0.0f )  // crée une pile ?
+-   if ( power > 0.0f )  // crÃ©e une pile ?
 +   if ( m_type == OBJECT_ORGA3 )  // organique ?
     {
 -       CObject*    pPower;
@@ -3788,7 +3788,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       pModFile->ReadModel("objects\\door11.mod");
 +       pModFile->CreateEngineObject(rank);
 +
-+       // Sphères déplacées par MoveCrashSphere.
++       // SphÃ¨res dÃ©placÃ©es par MoveCrashSphere.
 +       CreateCrashSphere(D3DVECTOR(  0.0f, 35.0f,  24.0f),  6.0f, SOUND_BOUMm, 0.45f);
 +       CreateCrashSphere(D3DVECTOR(  0.0f, 35.0f,  12.0f),  6.0f, SOUND_BOUMm, 0.45f);
 +       CreateCrashSphere(D3DVECTOR(  0.0f, 35.0f,   0.0f),  6.0f, SOUND_BOUMm, 0.45f);
@@ -3888,20 +3888,20 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       pModFile->CreateEngineObject(rank);
 +       SetPosition(6, D3DVECTOR(21.0f, 17.0f, -42.0f));
 +
-+       // Sphères déplacées par MoveCrashSphere.
++       // SphÃ¨res dÃ©placÃ©es par MoveCrashSphere.
 +       CreateCrashSphere(D3DVECTOR(-15.0f, 5.0f, -23.0f),  4.0f, SOUND_BOUMm, 0.45f);
 +       CreateCrashSphere(D3DVECTOR( -8.0f, 5.0f, -23.0f),  4.0f, SOUND_BOUMm, 0.45f);
 +       CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f, -23.0f),  4.0f, SOUND_BOUMm, 0.45f);
 +       CreateCrashSphere(D3DVECTOR(  8.0f, 5.0f, -23.0f),  4.0f, SOUND_BOUMm, 0.45f);
 +       CreateCrashSphere(D3DVECTOR( 15.0f, 5.0f, -23.0f),  4.0f, SOUND_BOUMm, 0.45f);
-+       // Sphères déplacées par MoveCrashSphere.
++       // SphÃ¨res dÃ©placÃ©es par MoveCrashSphere.
 +       CreateCrashSphere(D3DVECTOR(-15.0f, 5.0f,  23.0f),  4.0f, SOUND_BOUMm, 0.45f);
 +       CreateCrashSphere(D3DVECTOR( -8.0f, 5.0f,  23.0f),  4.0f, SOUND_BOUMm, 0.45f);
 +       CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f,  23.0f),  4.0f, SOUND_BOUMm, 0.45f);
 +       CreateCrashSphere(D3DVECTOR(  8.0f, 5.0f,  23.0f),  4.0f, SOUND_BOUMm, 0.45f);
 +       CreateCrashSphere(D3DVECTOR( 15.0f, 5.0f,  23.0f),  4.0f, SOUND_BOUMm, 0.45f);
 +
-+       // Sphère du mécanisme.
++       // SphÃ¨re du mÃ©canisme.
 +       CreateCrashSphere(D3DVECTOR( 20.0f, 4.0f, -38.0f),  7.0f, SOUND_BOUMm, 0.44f);
 +
 +       CreateCrashSphere(D3DVECTOR(-12.0f, 5.0f, -38.0f),  9.0f, SOUND_BOUMm, 0.45f);
@@ -3923,7 +3923,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       SetAngleY(0, angle);
 +       SetFloorHeight(0.0f);
 +
-+       // piston écraseur
++       // piston Ã©craseur
 +       rank = m_engine->CreateObject();
 +       m_engine->SetObjectType(rank, TYPEDESCENDANT);
 +       SetObjectRank(1, rank);
@@ -3968,7 +3968,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       pModFile->CreateEngineObject(rank);
 +       SetPosition(6, D3DVECTOR(21.0f, 17.0f, -47.0f));
 +
-+       // Sphères déplacées par MoveCrashSphere.
++       // SphÃ¨res dÃ©placÃ©es par MoveCrashSphere.
 +       CreateCrashSphere(D3DVECTOR( 14.0f, 25.0f,   0.0f),  6.0f, SOUND_BOUMm, 0.45f);
 +       CreateCrashSphere(D3DVECTOR(-14.0f, 25.0f,   0.0f),  6.0f, SOUND_BOUMm, 0.45f);
 +       CreateCrashSphere(D3DVECTOR(  0.0f, 25.0f,  14.0f),  6.0f, SOUND_BOUMm, 0.45f);
@@ -3978,7 +3978,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       CreateCrashSphere(D3DVECTOR(-10.0f, 25.0f,  10.0f),  6.0f, SOUND_BOUMm, 0.45f);
 +       CreateCrashSphere(D3DVECTOR(-10.0f, 25.0f, -10.0f),  6.0f, SOUND_BOUMm, 0.45f);
 +
-+       // Sphère du mécanisme.
++       // SphÃ¨re du mÃ©canisme.
 +       CreateCrashSphere(D3DVECTOR( 20.0f, 4.0f, -43.0f),  7.0f, SOUND_BOUMm, 0.44f);
 +
 +#if 0
@@ -4212,7 +4212,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     pos.y += height;
 @@ -3241,13 +3821,13 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
  
- // Crée une petite ressource posée sur le sol.
+ // CrÃ©e une petite ressource posÃ©e sur le sol.
  
 -BOOL CObject::CreateResource(D3DVECTOR pos, float angle, ObjectType type,
 -                            float power)
@@ -4519,7 +4519,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   else if ( type >= OBJECT_PUB11 &&
 +             type <= OBJECT_PUB94 )
 +   {
-+       SetZoom(0, 0.5f*zoom);  // pour éclaircir l'image !!!
++       SetZoom(0, 0.5f*zoom);  // pour Ã©claircir l'image !!!
 +       CreateCrashLine(FPOINT(-15.0f, -1.0f), SOUND_CHOCo, 0.45f);
 +       CreateCrashLine(FPOINT( 15.0f, -1.0f), SOUND_CHOCo, 0.45f);
 +       CreateCrashLine(FPOINT( 15.0f,  1.0f), SOUND_CHOCo, 0.45f);
@@ -4530,7 +4530,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   }
 +   else if ( type == OBJECT_TRAXf )
 +   {
-+       // Crée la chenille droite.
++       // CrÃ©e la chenille droite.
 +       rank = m_engine->CreateObject();
 +       m_engine->SetObjectType(rank, TYPEDESCENDANT);
 +       SetObjectRank(1, rank);
@@ -4539,7 +4539,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       pModFile->CreateEngineObject(rank);
 +       SetPosition(1, D3DVECTOR(-1.0f, 3.0f, -4.0f));
 +
-+       // Crée la chenille gauche.
++       // CrÃ©e la chenille gauche.
 +       rank = m_engine->CreateObject();
 +       m_engine->SetObjectType(rank, TYPEDESCENDANT);
 +       SetObjectRank(2, rank);
@@ -4548,7 +4548,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       pModFile->CreateEngineObject(rank);
 +       SetPosition(2, D3DVECTOR(-1.0f, 3.0f, 4.0f));
 +
-+       // Crée la pelle.
++       // CrÃ©e la pelle.
 +       rank = m_engine->CreateObject();
 +       m_engine->SetObjectType(rank, TYPEDESCENDANT);
 +       SetObjectRank(3, rank);
@@ -4557,7 +4557,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       pModFile->CreateEngineObject(rank);
 +       SetPosition(3, D3DVECTOR(-1.0f, 4.0f, 0.0f));
 +
-+       // Crée le levier droite.
++       // CrÃ©e le levier droite.
 +       rank = m_engine->CreateObject();
 +       m_engine->SetObjectType(rank, TYPEDESCENDANT);
 +       SetObjectRank(4, rank);
@@ -4566,7 +4566,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       pModFile->CreateEngineObject(rank);
 +       SetPosition(4, D3DVECTOR(-3.5f, 8.0f, -3.0f));
 +
-+       // Crée le levier gauche.
++       // CrÃ©e le levier gauche.
 +       rank = m_engine->CreateObject();
 +       m_engine->SetObjectType(rank, TYPEDESCENDANT);
 +       SetObjectRank(5, rank);
@@ -4608,7 +4608,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   return TRUE;
 -}
 -
--// Crée un drapeau posé sur le sol.
+-// CrÃ©e un drapeau posÃ© sur le sol.
 -
 -BOOL CObject::CreateFlag(D3DVECTOR pos, float angle, ObjectType type)
 -{
@@ -4675,8 +4675,8 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     return TRUE;
  }
  
--// Crée une barrière posée sur le sol.
-+// Crée un robot posé sur le sol.
+-// CrÃ©e une barriÃ¨re posÃ©e sur le sol.
++// CrÃ©e un robot posÃ© sur le sol.
  
 -BOOL CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
 -                           ObjectType type)
@@ -4828,8 +4828,8 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     return TRUE;
  }
  
--// Crée une plante posée sur le sol.
-+// Crée une object additionnel pour un véhicule.
+-// CrÃ©e une plante posÃ©e sur le sol.
++// CrÃ©e une object additionnel pour un vÃ©hicule.
  
 -BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 -                         ObjectType type)
@@ -4876,7 +4876,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  
 -   if ( type == OBJECT_PLANT5 ||
 -        type == OBJECT_PLANT6 ||
--        type == OBJECT_PLANT7 )  // trèfle ?
+-        type == OBJECT_PLANT7 )  // trÃ¨fle ?
 -   {
 -       rank = m_engine->CreateObject();
 -       m_engine->SetObjectType(rank, TYPEFIX);
@@ -4955,7 +4955,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -        type == OBJECT_PLANT16 ||
 -        type == OBJECT_PLANT17 ||
 -        type == OBJECT_PLANT18 ||
--        type == OBJECT_PLANT19 )  // fougère ?
+-        type == OBJECT_PLANT19 )  // fougÃ¨re ?
 -   {
         rank = m_engine->CreateObject();
 -       m_engine->SetObjectType(rank, TYPEFIX);
@@ -5123,7 +5123,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       SetPosition(3, D3DVECTOR(0.0f, -2.1f, 0.0f));
     }
  
--   if ( type == OBJECT_TREE5 )  // arbre géant (pour monde "teen")
+-   if ( type == OBJECT_TREE5 )  // arbre gÃ©ant (pour monde "teen")
 +   if ( type == OBJECT_AQUA )
     {
 -       rank = m_engine->CreateObject();
@@ -5168,8 +5168,8 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     return TRUE;
  }
  
--// Crée un champignon posé sur le sol.
-+// Crée une barrière posée sur le sol.
+-// CrÃ©e un champignon posÃ© sur le sol.
++// CrÃ©e une barriÃ¨re posÃ©e sur le sol.
  
 -BOOL CObject::CreateMushroom(D3DVECTOR pos, float angle, float height,
 -                            ObjectType type)
@@ -5183,7 +5183,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     SetType(type);
  
 -   if ( type == OBJECT_MUSHROOM1 )
-+   if ( type == OBJECT_BARRIER0 )  // barrière //// jaune-noire 2.5m
++   if ( type == OBJECT_BARRIER0 )  // barriÃ¨re //// jaune-noire 2.5m
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);
@@ -5207,7 +5207,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( type == OBJECT_MUSHROOM2 )
-+   if ( type == OBJECT_BARRIER1 )  // barrière //// jaune-noire 5m
++   if ( type == OBJECT_BARRIER1 )  // barriÃ¨re //// jaune-noire 5m
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);
@@ -5246,7 +5246,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   return TRUE;
 -}
 -
--// Crée un jouet posé sur le sol.
+-// CrÃ©e un jouet posÃ© sur le sol.
 -
 -BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 -                        ObjectType type)
@@ -5259,7 +5259,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   BOOL            bFloorAdjust = TRUE;
 -
 -   if ( m_engine->RetRestCreate() < 1 )  return FALSE;
-+   if ( type == OBJECT_BARRIER2 )  // barrière >>>> rouge-grise 10m
++   if ( type == OBJECT_BARRIER2 )  // barriÃ¨re >>>> rouge-grise 10m
 +   {
 +       rank = m_engine->CreateObject();
 +       m_engine->SetObjectType(rank, TYPEFIX);
@@ -5279,7 +5279,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   }
  
 -   SetType(type);
-+   if ( type == OBJECT_BARRIER3 )  // barrière carrée
++   if ( type == OBJECT_BARRIER3 )  // barriÃ¨re carrÃ©e
 +   {
 +       rank = m_engine->CreateObject();
 +       m_engine->SetObjectType(rank, TYPEFIX);
@@ -5300,7 +5300,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   }
  
 -   if ( type == OBJECT_TEEN0 )  // crayon orange lg=10
-+   if ( type == OBJECT_BARRIER4 )  // barrière en bois cassée 5m
++   if ( type == OBJECT_BARRIER4 )  // barriÃ¨re en bois cassÃ©e 5m
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);
@@ -5329,7 +5329,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( type == OBJECT_TEEN1 )  // crayon bleu lg=14
-+   if ( type == OBJECT_BARRIER5 )  // barrière en bois droite 5m
++   if ( type == OBJECT_BARRIER5 )  // barriÃ¨re en bois droite 5m
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);
@@ -5360,7 +5360,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( type == OBJECT_TEEN2 )  // crayon rouge lg=16
-+   if ( type == OBJECT_BARRIER6 )  // barrière métal 5m
++   if ( type == OBJECT_BARRIER6 )  // barriÃ¨re mÃ©tal 5m
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);
@@ -5391,7 +5391,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( type == OBJECT_TEEN3 )  // bocal avec crayon
-+   if ( type == OBJECT_BARRIER7 )  // barrière métal 10m
++   if ( type == OBJECT_BARRIER7 )  // barriÃ¨re mÃ©tal 10m
     {
         rank = m_engine->CreateObject();
 -//?        m_engine->SetObjectType(rank, TYPEFIX);
@@ -5418,7 +5418,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( type == OBJECT_TEEN4 )  // ciseaux
-+   if ( type == OBJECT_BARRIER8 )  // barrière métal 14m
++   if ( type == OBJECT_BARRIER8 )  // barriÃ¨re mÃ©tal 14m
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);
@@ -5449,7 +5449,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( type == OBJECT_TEEN5 )  // CD
-+   if ( type == OBJECT_BARRIER9 )  // barrière rouge-blanche 10m
++   if ( type == OBJECT_BARRIER9 )  // barriÃ¨re rouge-blanche 10m
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);
@@ -5475,7 +5475,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( type == OBJECT_TEEN6 )  // livre 1
-+   if ( type == OBJECT_BARRIER10 )  // tuyau extrémité 10m
++   if ( type == OBJECT_BARRIER10 )  // tuyau extrÃ©mitÃ© 10m
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);
@@ -5568,7 +5568,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( type == OBJECT_TEEN9 )  // pile de livres 2
-+   if ( type == OBJECT_BARRIER13 )  // tuyau aérien 10m
++   if ( type == OBJECT_BARRIER13 )  // tuyau aÃ©rien 10m
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);
@@ -5593,7 +5593,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       CreateShadowCircle(15.0f, 1.0f, D3DSHADOWBARRIER2);
     }
  
--   if ( type == OBJECT_TEEN10 )  // bibliothèque
+-   if ( type == OBJECT_TEEN10 )  // bibliothÃ¨que
 +   if ( type == OBJECT_BARRIER14 )  // mur 10m
     {
         rank = m_engine->CreateObject();
@@ -5688,8 +5688,8 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       bPlumb = TRUE;
     }
  
--   if ( type == OBJECT_TEEN13 )  // carton fermé
-+   if ( type == OBJECT_BARRIER17 )  // barrière panneaux >
+-   if ( type == OBJECT_TEEN13 )  // carton fermÃ©
++   if ( type == OBJECT_BARRIER17 )  // barriÃ¨re panneaux >
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);
@@ -5717,7 +5717,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       CreateCrashLine(FPOINT(-20.0f, -2.5f), SOUND_BOUMm, 0.45f);
 +       SetCrashLineHeight(3.0f);
 +   }
-+   if ( type == OBJECT_BARRIER18 )  // barrière panneaux <
++   if ( type == OBJECT_BARRIER18 )  // barriÃ¨re panneaux <
 +   {
 +       rank = m_engine->CreateObject();
 +       m_engine->SetObjectType(rank, TYPEFIX);
@@ -5793,7 +5793,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   return TRUE;
 +}
 +
-+// Crée une caisse posée sur le sol.
++// CrÃ©e une caisse posÃ©e sur le sol.
 +
 +BOOL CObject::CreateBox(D3DVECTOR pos, float angle, float zoom,
 +                       float height, ObjectType type, BOOL bPlumb)
@@ -6005,7 +6005,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       CreateShadowCircle(5.0f, 1.0f);
     }
  
--   if ( type == OBJECT_TEEN20 )  // mur avec étagère
+-   if ( type == OBJECT_TEEN20 )  // mur avec Ã©tagÃ¨re
 +   if ( type == OBJECT_BOX6 )
     {
         rank = m_engine->CreateObject();
@@ -6034,7 +6034,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       CreateShadowCircle(5.0f, 1.0f);
     }
  
--   if ( type == OBJECT_TEEN21 )  // mur avec fenêtre
+-   if ( type == OBJECT_TEEN21 )  // mur avec fenÃªtre
 +   if ( type == OBJECT_TOYS1 )
     {
         rank = m_engine->CreateObject();
@@ -6051,7 +6051,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       CreateShadowCircle(3.0f, 1.0f);
     }
  
--   if ( type == OBJECT_TEEN22 )  // mur avec porte et étagère
+-   if ( type == OBJECT_TEEN22 )  // mur avec porte et Ã©tagÃ¨re
 +   if ( type == OBJECT_TOYS2 )
     {
         rank = m_engine->CreateObject();
@@ -6159,7 +6159,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   return TRUE;
 +}
 +
-+// Crée une pierre posée sur le sol.
++// CrÃ©e une pierre posÃ©e sur le sol.
 +
 +BOOL CObject::CreateStone(D3DVECTOR pos, float angle, float zoom,
 +                       float height, ObjectType type, BOOL bPlumb)
@@ -6324,7 +6324,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     }
  
 -   if ( type == OBJECT_TEEN31 )  // basket ?
-+   if ( type == OBJECT_STONE6 )  // dalle haute pour piliers espacés d=60
++   if ( type == OBJECT_STONE6 )  // dalle haute pour piliers espacÃ©s d=60
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);
@@ -6386,7 +6386,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   return TRUE;
 +}
 +
-+// Crée une pièce mécanique posée sur le sol.
++// CrÃ©e une piÃ¨ce mÃ©canique posÃ©e sur le sol.
 +
 +BOOL CObject::CreatePiece(D3DVECTOR pos, float angle, float zoom,
 +                       float height, ObjectType type, BOOL bPlumb)
@@ -6425,7 +6425,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   return TRUE;
 +}
 +
-+// Crée une plante posée sur le sol.
++// CrÃ©e une plante posÃ©e sur le sol.
 +
 +BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float zoom,
 +                         float height, ObjectType type, BOOL bPlumb)
@@ -6473,7 +6473,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   if ( type == OBJECT_TEEN34 )  // caillou ?
 +   if ( type == OBJECT_PLANT5 ||
 +        type == OBJECT_PLANT6 ||
-+        type == OBJECT_PLANT7 )  // trèfle ?
++        type == OBJECT_PLANT7 )  // trÃ¨fle ?
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);
@@ -6556,7 +6556,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +        type == OBJECT_PLANT16 ||
 +        type == OBJECT_PLANT17 ||
 +        type == OBJECT_PLANT18 ||
-+        type == OBJECT_PLANT19 )  // fougère ?
++        type == OBJECT_PLANT19 )  // fougÃ¨re ?
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);
@@ -6608,7 +6608,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       m_engine->SetObjectType(rank, TYPEDESCENDANT);
 -       SetObjectRank(2, rank);
 -       SetObjectParent(2, 1);
--       pModFile->ReadModel("objects\\teen38c.mod");  // hélice
+-       pModFile->ReadModel("objects\\teen38c.mod");  // hÃ©lice
 -       pModFile->CreateEngineObject(rank);
 -       SetPosition(2, D3DVECTOR(0.0f, 0.0f, 0.0f));
 +       CreateCrashSphere(D3DVECTOR( 0.0f,  3.0f, 2.0f), 3.0f, SOUND_CHOCa, 0.45f);
@@ -6672,7 +6672,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       CreateShadowCircle(8.0f, 0.5f);
     }
  
--   if ( type == OBJECT_TEEN41 )  // clôture ?
+-   if ( type == OBJECT_TEEN41 )  // clÃ´ture ?
 +   if ( type == OBJECT_TREE3 )
     {
         rank = m_engine->CreateObject();
@@ -6693,7 +6693,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       CreateShadowCircle(8.0f, 0.5f);
     }
  
--   if ( type == OBJECT_TEEN42 )  // trèfle ?
+-   if ( type == OBJECT_TEEN42 )  // trÃ¨fle ?
 +   if ( type == OBJECT_TREE4 )
     {
         rank = m_engine->CreateObject();
@@ -6715,7 +6715,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       CreateShadowCircle(8.0f, 0.5f);
     }
  
--   if ( type == OBJECT_TEEN43 )  // trèfle ?
+-   if ( type == OBJECT_TEEN43 )  // trÃ¨fle ?
 +   SetZoom(0, zoom);
 +
 +   pos = RetPosition(0);
@@ -6732,7 +6732,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +   return TRUE;
 +}
 +
-+// Crée un champignon posé sur le sol.
++// CrÃ©e un champignon posÃ© sur le sol.
 +
 +BOOL CObject::CreateMushroom(D3DVECTOR pos, float angle, float zoom,
 +                            float height, ObjectType type, BOOL bPlumb)
@@ -6807,7 +6807,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     pos = RetPosition(0);
 @@ -4725,8 +5604,8 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
  
- // Crée un quartz posé sur le sol.
+ // CrÃ©e un quartz posÃ© sur le sol.
  
 -BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
 -                          ObjectType type)
@@ -6838,7 +6838,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     return TRUE;
 @@ -4838,8 +5719,8 @@ BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
  
- // Crée une racine posée sur le sol.
+ // CrÃ©e une racine posÃ©e sur le sol.
  
 -BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 -                        ObjectType type)
@@ -6903,7 +6903,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
         m_engine->SetObjectType(rank, TYPEDESCENDANT);
 @@ -5015,8 +5896,8 @@ BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
  
- // Crée une petite maison.
+ // CrÃ©e une petite maison.
  
 -BOOL CObject::CreateHome(D3DVECTOR pos, float angle, float height,
 -                        ObjectType type)
@@ -7041,7 +7041,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  
 @@ -5059,8 +6053,8 @@ BOOL CObject::CreateHome(D3DVECTOR pos, float angle, float height,
  
- // Crée une ruine posée sur le sol.
+ // CrÃ©e une ruine posÃ©e sur le sol.
  
 -BOOL CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 -                        ObjectType type)
@@ -7063,7 +7063,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     return TRUE;
  }
  
--// Crée un gadget apollo.
+-// CrÃ©e un gadget apollo.
 -
 -BOOL CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 -{
@@ -7088,7 +7088,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       SetZoom(0, 1.2f);
 -       SetFloorHeight(0.0f);
 -
--       for ( i=0 ; i<4 ; i++ )  // crée les pieds
+-       for ( i=0 ; i<4 ; i++ )  // crÃ©e les pieds
 -       {
 -           rank = m_engine->CreateObject();
 -           m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -7103,7 +7103,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       m_engine->SetObjectType(rank, TYPEDESCENDANT);
 -       SetObjectRank(5, rank);
 -       SetObjectParent(5, 0);
--       pModFile->ReadModel("objects\\apollol3.mod");  // échelle
+-       pModFile->ReadModel("objects\\apollol3.mod");  // Ã©chelle
 -       pModFile->CreateEngineObject(rank);
 -
 -//?        m_terrain->AddBuildingLevel(pos, 10.0f, 13.0f, 12.0f, 0.0f);
@@ -7178,7 +7178,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       m_engine->SetObjectType(rank, TYPEDESCENDANT);
 -       SetObjectRank(6, rank);
 -       SetObjectParent(6, 0);
--       pModFile->ReadModel("objects\\apolloj3.mod");  // caméra
+-       pModFile->ReadModel("objects\\apolloj3.mod");  // camÃ©ra
 -       pModFile->CreateEngineObject(rank);
 -       SetPosition(6, D3DVECTOR(5.5f, 2.8f, -2.0f));
 -       SetAngleY(6, 30.0f*PI/180.0f);
@@ -7258,7 +7258,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   return TRUE;
 -}
 -
- // Crée tous les sous-objets permettant de gérer cet objet.
+ // CrÃ©e tous les sous-objets permettant de gÃ©rer cet objet.
  
  void CObject::CreateOtherObject(ObjectType type)
  {
@@ -7526,12 +7526,12 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
     m_bFlat = TRUE;
  }
  
-+// Met un sous-objet à plat (il devient père).
-+// Ceci permet de faire partir le sous-objet sous forme d'un débris
-+// indépendamment du reste de l'objet.
++// Met un sous-objet Ã  plat (il devient pÃ¨re).
++// Ceci permet de faire partir le sous-objet sous forme d'un dÃ©bris
++// indÃ©pendamment du reste de l'objet.
  
 -
--// Met à jour la mapping de la texture de la pile.
+-// Met Ã  jour la mapping de la texture de la pile.
 -
 -void CObject::UpdateEnergyMapping()
 +BOOL CObject::FlatParent(int part)
@@ -7613,7 +7613,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  
     if ( m_physics != 0 )
     {
--       if ( !m_physics->EventProcess(event) )  // objet détruit ?
+-       if ( !m_physics->EventProcess(event) )  // objet dÃ©truit ?
 +       if ( m_bRecorderPlay && m_recorder != 0 )  // joue l'objet ?
 +       {
 +           RecorderEvent   re;
@@ -7626,7 +7626,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +
 +           if ( !m_main->IsRecordTime() && !m_engine->RetPause() )
 +           {
-+               pos.y -= 100.0f;  // voiture cachée
++               pos.y -= 100.0f;  // voiture cachÃ©e
 +           }
 +
 +           SetPosition(0, pos);
@@ -7638,14 +7638,14 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -                m_type != OBJECT_ANT    &&
 -                m_type != OBJECT_SPIDER &&
 -                m_type != OBJECT_BEE    )
-+           if ( !m_physics->EventProcess(event) )  // objet détruit ?
++           if ( !m_physics->EventProcess(event) )  // objet dÃ©truit ?
 +           {
 +               if ( RetSelect() )
 +               {
 +                   if ( !m_bDead )  m_camera->SetType(CAMERA_EXPLO);
 +                   m_main->DeselectAll();
 +               }
-+               m_main->StopStartCounter();  // moteur explosé
++               m_main->StopStartCounter();  // moteur explosÃ©
 +               return FALSE;
 +           }
 +
@@ -7673,7 +7673,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       m_auto->EventProcess(event);
 +       if ( !m_auto->EventProcess(event) )
 +       {
-+           return TRUE;  // bombe détruite
++           return TRUE;  // bombe dÃ©truite
 +       }
  
         if ( event.event == EVENT_FRAME &&
@@ -7771,7 +7771,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   }
 -}
 -
- // Gestion des particules maîtresses.
+ // Gestion des particules maÃ®tresses.
  
  void CObject::PartiFrame(float rTime)
 @@ -6342,73 +7065,15 @@ void CObject::SetViewFromHere(D3DVECTOR &eye, float &dirH, float &dirV,
@@ -7865,8 +7865,8 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  }
  
  
--// Gestion de l'énergie contenue dans une pile.
--// Seul l'objet pile possède de l'énergie, mais pas le véhicule
+-// Gestion de l'Ã©nergie contenue dans une pile.
+-// Seul l'objet pile possÃ¨de de l'Ã©nergie, mais pas le vÃ©hicule
 -// qui transporte la pile !
 -
 -void CObject::SetEnergy(float level)
@@ -7886,8 +7886,8 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -}
 -
 -
--// Gestion de la capacité d'une pile.
--// Seul l'objet pile possède une capacité, mais pas le véhicule
+-// Gestion de la capacitÃ© d'une pile.
+-// Seul l'objet pile possÃ¨de une capacitÃ©, mais pas le vÃ©hicule
 -// qui transporte la pile !
 -
 -void CObject::SetCapacity(float capacity)
@@ -7939,8 +7939,8 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  }
  
  
--// Gestion de l'autonomie de vol (zéro = infini).
-+// Gestion du bouclier de résistance au feu.
+-// Gestion de l'autonomie de vol (zÃ©ro = infini).
++// Gestion du bouclier de rÃ©sistance au feu.
  
 -void CObject::SetRange(float delay)
 +void CObject::SetBurnShield(float level)
@@ -7973,7 +7973,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  }
  
  
--// Gestion de la matière de l'objet.
+-// Gestion de la matiÃ¨re de l'objet.
 -
 -ObjectMaterial CObject::RetMaterial()
 -{
@@ -8026,7 +8026,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  }
  
  
--// Début de l'effet lorsque l'instruction "detect" est utilisée.
+-// DÃ©but de l'effet lorsque l'instruction "detect" est utilisÃ©e.
 -
 -void CObject::StartDetectEffect(CObject *target, BOOL bFound)
 -{
@@ -8078,7 +8078,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   {
 -       if ( !m_brain->IntroduceVirus() )  // essaye de contaminer
 -       {
--           m_bVirusMode = FALSE;  // pas de programme à contaminer !
+-           m_bVirusMode = FALSE;  // pas de programme Ã  contaminer !
 -       }
 -   }
 -}
@@ -8094,7 +8094,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -}
 -
 -
- // Gestion du mode de la caméra.
+ // Gestion du mode de la camÃ©ra.
  
  void CObject::SetCameraType(CameraType type)
 @@ -6834,6 +7348,12 @@ void CObject::SetSelect(BOOL bMode, BOOL bDisplayError)
@@ -8103,7 +8103,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  
 +   if ( m_main->RetFixScene() )
 +   {
-+       CreateSelectParticule();  // crée/supprime les particules
++       CreateSelectParticule();  // crÃ©e/supprime les particules
 +       return;
 +   }
 +
@@ -8119,12 +8119,12 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       m_auto->CreateInterface(m_bSelect);
 -   }
 -
-    CreateSelectParticule();  // crée/supprime les particules
+    CreateSelectParticule();  // crÃ©e/supprime les particules
  
     if ( !m_bSelect )
     {
 -       SetGunGoalH(0.0f);  // met le canon droit
-        return;  // fini si pas sélectionné
+        return;  // fini si pas sÃ©lectionnÃ©
     }
  
 @@ -6865,7 +7379,7 @@ void CObject::SetSelect(BOOL bMode, BOOL bDisplayError)
@@ -8140,14 +8140,14 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  }
  
  
--// Indique si faut vérifier les tokens de l'objet.
+-// Indique si faut vÃ©rifier les tokens de l'objet.
 -
 -void CObject::SetCheckToken(BOOL bMode)
 -{
 -   m_bCheckToken = bMode;
 -}
 -
--// Indique si faut vérifier les tokens de l'objet.
+-// Indique si faut vÃ©rifier les tokens de l'objet.
 -
 -BOOL CObject::RetCheckToken()
 -{
@@ -8155,14 +8155,14 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -}
 -
 -
- // Gestion de la visibilité d'un objet.
- // L'objet n'est pas caché visuellement ni inactif, mais ignoré
- // des détections ! Par exemple: ver sous terre.
+ // Gestion de la visibilitÃ© d'un objet.
+ // L'objet n'est pas cachÃ© visuellement ni inactif, mais ignorÃ©
+ // des dÃ©tections ! Par exemple: ver sous terre.
 @@ -6959,27 +7458,30 @@ BOOL CObject::RetEnable()
  }
  
  
--// Gestion du mode où un objet n'est activé que lorsqu'on
+-// Gestion du mode oÃ¹ un objet n'est activÃ© que lorsqu'on
 -// est proche.
 +// Gestion du mode fantome;
  
@@ -8182,7 +8182,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  
 -void CObject::SetProxyDistance(float distance)
 +
-+// Gestion du mode "à terre", lorsqu'un objet a été renversé
++// Gestion du mode "Ã  terre", lorsqu'un objet a Ã©tÃ© renversÃ©
 +// par PT_ACROBATIC;
 +
 +void CObject::SetGround(BOOL bGround)
@@ -8204,8 +8204,8 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  }
  
 -// Gestion du mode "en cours d'explosion" d'un objet.
--// Un objet dans ce mode n'est pas sauvegardé.
-+// Gestion du mode "bloqué" pendant le compte à rebour (3, 2, 1, GO).
+-// Un objet dans ce mode n'est pas sauvegardÃ©.
++// Gestion du mode "bloquÃ©" pendant le compte Ã  rebour (3, 2, 1, GO).
  
 -void CObject::SetExplo(BOOL bExplo)
 +void CObject::SetStarting(BOOL bStarting)
@@ -8222,7 +8222,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  }
  
 +// Gestion du mode "en cours d'explosion" d'un objet.
-+// Un objet dans ce mode n'est pas sauvegardé.
++// Un objet dans ce mode n'est pas sauvegardÃ©.
  
 -// Gestion du mode "cargaison du vaisseau" pendant les films.
 -
@@ -8250,7 +8250,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  }
  
  
--// Gestion du point de visée.
+-// Gestion du point de visÃ©e.
 -
 -void CObject::SetGunGoalV(float gunGoal)
 -{
@@ -8362,7 +8362,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 @@ -7219,7 +7647,7 @@ void CObject::CreateSelectParticule()
     int         i;
  
-    // Supprime les particules précédentes.
+    // Supprime les particules prÃ©cÃ©dentes.
 -   for ( i=0 ; i<4 ; i++ )
 +   for ( i=0 ; i<10 ; i++ )
     {
@@ -8375,7 +8375,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   if ( m_bSelect || IsProgram() )
 +   if ( m_bSelect || IsProgram() || m_main->RetFixScene() )
     {
-        // Crée les particules lens pour les phares.
+        // CrÃ©e les particules lens pour les phares.
 -       if ( m_type == OBJECT_MOBILEfa ||
 -            m_type == OBJECT_MOBILEta ||
 -            m_type == OBJECT_MOBILEwa ||
@@ -8403,11 +8403,11 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -            m_type == OBJECT_MOBILEtt ||
 -            m_type == OBJECT_MOBILEwt ||
 -            m_type == OBJECT_MOBILEit ||
--            m_type == OBJECT_MOBILEdr )  // véhicule ?
+-            m_type == OBJECT_MOBILEdr )  // vÃ©hicule ?
 +            m_type == OBJECT_MOBILEfb ||
 +            m_type == OBJECT_MOBILEob ||
 +            m_type == OBJECT_TRAX     ||
-+            m_type == OBJECT_UFO      )  // véhicule ?
++            m_type == OBJECT_UFO      )  // vÃ©hicule ?
         {
             pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
             speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
@@ -8511,7 +8511,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
         pos[1] = D3DVECTOR(4.2f, 2.5f, -1.5f);
     }
  
--   // Lens arrières rouges.
+-   // Lens arriÃ¨res rouges.
 -   if ( m_type == OBJECT_MOBILEfa ||
 -        m_type == OBJECT_MOBILEfc ||
 -        m_type == OBJECT_MOBILEfi ||
@@ -8563,7 +8563,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -       pos[3] = D3DVECTOR(-5.0f, 5.2f, -2.5f);
 -   }
 -   if ( m_type == OBJECT_MOBILEsa )  // sous-marin ?
-+   // Lens arrières rouges+blanche.
++   // Lens arriÃ¨res rouges+blanche.
 +   if ( m_type == OBJECT_CAR )
     {
 -       pos[2] = D3DVECTOR(-3.6f, 4.0f,  2.0f);
@@ -8615,7 +8615,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       {
 +           for ( i=0 ; i<6 ; i++ )
 +           {
-+               if ( !m_physics->RetLight(i) )  zoom[i] = 0.0f;  // éteint
++               if ( !m_physics->RetLight(i) )  zoom[i] = 0.0f;  // Ã©teint
 +               if ( m_main->RetFixScene() && (i==2 || i==3) )  zoom[i] = 0.5f;
 +           }
 +       }
@@ -8646,7 +8646,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 +       zoom[6] = 0.0f;
     }
  
-    // Met à jour tous les lens.
+    // Met Ã  jour tous les lens.
 -   for ( i=0 ; i<4 ; i++ )
 +   for ( i=0 ; i<7 ; i++ )
     {
@@ -8656,7 +8656,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
  }
  
  
--// Ajoute l'objet précédemment sélectionné dans la liste.
+-// Ajoute l'objet prÃ©cÃ©demment sÃ©lectionnÃ© dans la liste.
 -
 -void CObject::AddDeselList(CObject* pObj)
 -{
@@ -8674,7 +8674,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   m_objectDeselectList[m_totalDesectList++] = pObj;
 -}
 -
--// Enlève l'objet précédemment sélectionné dans la liste.
+-// EnlÃ¨ve l'objet prÃ©cÃ©demment sÃ©lectionnÃ© dans la liste.
 -
 -CObject* CObject::SubDeselList()
 -{
@@ -8683,7 +8683,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -   return m_objectDeselectList[--m_totalDesectList];
 -}
 -
--// Supprime un objet s'il est référencé dans la liste.
+-// Supprime un objet s'il est rÃ©fÃ©rencÃ© dans la liste.
 -
 -void CObject::DeleteDeselList(CObject* pObj)
 -{
@@ -8703,7 +8703,7 @@ diff a/src/object/object.cpp b/src/object/object.cpp	(rejected hunks)
 -
 +// Gestion du mode d'enregistrement.
  
--// Gestion de l'état du crayon du robot dessinateur.
+-// Gestion de l'Ã©tat du crayon du robot dessinateur.
 -
 -BOOL CObject::RetTraceDown()
 +void CObject::SetRecorderRecordMode(BOOL bRecord)

@@ -38,30 +38,30 @@
 
 struct RemovePart
 {
-    short        part;        // num�ro de la pi�ce
-    short        order;        // ordre pour destruction
-    float        x,y,z;        // position
-    short        light[4];    // phares attach�s � la pi�ce
-    short        top;        // 1 -> partie du to�t
-    short        file;        // num�ro pp dans "carmmpp.mod"
+    short       part;       // numéro de la pièce
+    short       order;      // ordre pour destruction
+    float       x,y,z;      // position
+    short       light[4];   // phares attachés à la pièce
+    short       top;        // 1 -> partie du toît
+    short       file;       // numéro pp dans "carmmpp.mod"
 };
 
 struct StatusPart
 {
-    char        bDeleted;    // pi�ce d�truite ?
-    short        part;        // num�ro de la pi�ce
-    short        order;        // ordre pour destruction
-    short        light[4];    // phares sur cette partie
-    short        top;        // fait partie du to�t ?
-    short        twistState;    // avancement du d�labrement
-    Math::Vector    twistAngle;    // angle max si d�labrement max
+    char        bDeleted;   // pièce détruite ?
+    short       part;       // numéro de la pièce
+    short       order;      // ordre pour destruction
+    short       light[4];   // phares sur cette partie
+    short       top;        // fait partie du toît ?
+    short       twistState; // avancement du délabrement
+    Math::Vector    twistAngle;    // angle max si délabrement max
 };
 
 struct StatePart
 {
-    char        bDeleted;    // pi�ce d�truite
-    short        twistState;    // avancement du d�labrement
-    Math::Vector    twistAngle;    // angle max si d�labrement max
+    char        bDeleted;   // pièce détruite
+    short       twistState; // avancement du délabrement
+    Math::Vector    twistAngle;    // angle max si délabrement max
 };
 
 struct StateVehicle
@@ -120,8 +120,8 @@ protected:
     StatusPart    m_part[MAX_PART];
     int            m_partTotal;
     int            m_partUsed;
-    int            m_topRest;        // nb de pi�ces du to�t restantes
-    bool        m_bLight[6];    // pr�sence des phares
+    int            m_topRest;        // nb de pièces du toît restantes
+    bool        m_bLight[6];    // présence des phares
     bool        m_bWater;
     bool        m_bHelico;
     Math::Vector    m_wheelLastPos;

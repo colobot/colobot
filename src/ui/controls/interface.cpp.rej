@@ -36,7 +36,7 @@ diff a/src/ui/controls/interface.cpp b/src/ui/controls/interface.cpp	(rejected h
     return 0;
  }
  
-+// Crée une nouvelle liste.
++// CrÃ©e une nouvelle liste.
 +
 +CArray* CInterface::CreateArray(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
 +                           float expand)
@@ -59,15 +59,15 @@ diff a/src/ui/controls/interface.cpp b/src/ui/controls/interface.cpp	(rejected h
 +   return 0;
 +}
 +
- // Crée un nouveau raccourci.
+ // CrÃ©e un nouveau raccourci.
  
  CShortcut* CInterface::CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 @@ -405,7 +430,7 @@ CShortcut* CInterface::CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg
     return 0;
  }
  
--// Crée un nouvelle boussole.
-+// Crée une nouvelle boussole.
+-// CrÃ©e un nouvelle boussole.
++// CrÃ©e une nouvelle boussole.
  
  CCompass* CInterface::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
  {
@@ -75,8 +75,8 @@ diff a/src/ui/controls/interface.cpp b/src/ui/controls/interface.cpp	(rejected h
     return 0;
  }
  
--// Crée un nouvelle cible.
-+// Crée une nouvelle jauge.
+-// CrÃ©e un nouvelle cible.
++// CrÃ©e une nouvelle jauge.
  
 -CTarget* CInterface::CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 +CGauge* CInterface::CreateGauge(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
@@ -101,7 +101,7 @@ diff a/src/ui/controls/interface.cpp b/src/ui/controls/interface.cpp	(rejected h
 +   return 0;
 +}
 +
-+// Crée une nouvelle jauge.
++// CrÃ©e une nouvelle jauge.
 +
 +CGeiger* CInterface::CreateGeiger(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 +{
@@ -123,7 +123,7 @@ diff a/src/ui/controls/interface.cpp b/src/ui/controls/interface.cpp	(rejected h
 +   return 0;
 +}
 +
-+// Crée un nouvel indicateur d'avance.
++// CrÃ©e un nouvel indicateur d'avance.
 +
 +CProgress* CInterface::CreateProgress(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 +{
@@ -145,7 +145,7 @@ diff a/src/ui/controls/interface.cpp b/src/ui/controls/interface.cpp	(rejected h
     return 0;
  }
  
-+// Donne un contrôle d'après son rang.
++// Donne un contrÃ´le d'aprÃ¨s son rang.
 +
 +CControl* CInterface::SearchControl(int tabOrder)
 +{
@@ -164,7 +164,7 @@ diff a/src/ui/controls/interface.cpp b/src/ui/controls/interface.cpp	(rejected h
 +   return 0;
 +}
 +
-+// Donne le contrôle qui a le focus.
++// Donne le contrÃ´le qui a le focus.
 +
 +CControl* CInterface::SearchControl()
 +{
@@ -183,7 +183,7 @@ diff a/src/ui/controls/interface.cpp b/src/ui/controls/interface.cpp	(rejected h
 +   return 0;
 +}
 +
- // Gestion d'un événement.
+ // Gestion d'un Ã©vÃ©nement.
  
  BOOL CInterface::EventProcess(const Event &event)
 @@ -519,11 +626,7 @@ BOOL CInterface::EventProcess(const Event &event)

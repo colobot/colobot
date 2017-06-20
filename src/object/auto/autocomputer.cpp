@@ -57,7 +57,7 @@ CAutoComputer::~CAutoComputer()
 }
 
 
-// DÈtruit l'objet.
+// D√©truit l'objet.
 
 void CAutoComputer::DeleteObject(BOOL bAll)
 {
@@ -80,13 +80,13 @@ void CAutoComputer::Init()
 }
 
 
-// DÈmarre l'objet.
+// D√©marre l'objet.
 
 void CAutoComputer::Start(int param)
 {
    int     rank, total;
 
-   if ( param >= 2 && param <= 4 &&  // bouton rouge pressÈ ?
+   if ( param >= 2 && param <= 4 &&  // bouton rouge press√© ?
         (m_flagStop & (1<<(param-2))) == 0 )
    {
        m_flagStop |= (1<<(param-2));
@@ -108,15 +108,15 @@ void CAutoComputer::Start(int param)
            m_sound->Play(SOUND_WAYPOINT, m_engine->RetEyePt(), 1.0f, 2.0f);
        }
 
-       if ( m_flagStop == ((1<<0)|(1<<1)|(1<<2)) )  // Èteint ?
+       if ( m_flagStop == ((1<<0)|(1<<1)|(1<<2)) )  // √©teint ?
        {
-           m_object->SetLock(TRUE);  // il ne sera plus comptÈ !
+           m_object->SetLock(TRUE);  // il ne sera plus compt√© !
        }
    }
 }
 
 
-// Gestion d'un ÈvÈnement.
+// Gestion d'un √©v√©nement.
 
 BOOL CAutoComputer::EventProcess(const Event &event)
 {
@@ -129,7 +129,7 @@ BOOL CAutoComputer::EventProcess(const Event &event)
    FireStopUpdate();
    m_progress += event.rTime*m_speed;
 
-   if ( m_flagStop == ((1<<0)|(1<<1)|(1<<2)) )  // Èteint ?
+   if ( m_flagStop == ((1<<0)|(1<<1)|(1<<2)) )  // √©teint ?
    {
        pos = m_pos;
        pos.y += sinf(m_time*40.0f)*0.1f;
@@ -179,7 +179,7 @@ void CAutoComputer::StopObject(ObjectType type, D3DVECTOR center, float radius)
    }
 }
 
-// Met ‡ jour les feux de stop.
+// Met √† jour les feux de stop.
 
 void CAutoComputer::FireStopUpdate()
 {
@@ -258,7 +258,7 @@ BOOL CAutoComputer::Abort()
 }
 
 
-// Retourne une erreur liÈe ‡ l'Ètat de l'automate.
+// Retourne une erreur li√©e √† l'√©tat de l'automate.
 
 Error CAutoComputer::RetError()
 {

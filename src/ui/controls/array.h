@@ -84,9 +84,9 @@ protected:
    float       m_expand;
    int         m_totalLine;    // nb total de lignes
    int         m_displayLine;  // nb de lignes visibles
-   int         m_selectLine;   // ligne sélectionnée
-   int         m_firstLine;    // première ligne visible
-   int         m_multiple;     // multiple pour 1ère ligne visible
+   int         m_selectLine;   // ligne sÃ©lectionnÃ©e
+   int         m_firstLine;    // premiÃ¨re ligne visible
+   int         m_multiple;     // multiple pour 1Ã¨re ligne visible
    BOOL        m_bBlink;
    BOOL        m_bSelectCap;
    float       m_blinkTime;

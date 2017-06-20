@@ -70,7 +70,7 @@ diff a/src/ui/controls/list.cpp b/src/ui/controls/list.cpp	(rejected hunks)
 +       UpdateButton();
 +       Event newEvent = event;
 +       newEvent.event = m_eventMsg;
-+       m_event->AddEvent(newEvent);  // ligne sélectionnée changée
++       m_event->AddEvent(newEvent);  // ligne sÃ©lectionnÃ©e changÃ©e
 +       return TRUE;
 +   }
 +   if ( m_bFocus &&
@@ -91,7 +91,7 @@ diff a/src/ui/controls/list.cpp b/src/ui/controls/list.cpp	(rejected hunks)
 +       UpdateButton();
 +       Event newEvent = event;
 +       newEvent.event = m_eventMsg;
-+       m_event->AddEvent(newEvent);  // ligne sélectionnée changée
++       m_event->AddEvent(newEvent);  // ligne sÃ©lectionnÃ©e changÃ©e
 +       return TRUE;
 +   }
 +
@@ -106,7 +106,7 @@ diff a/src/ui/controls/list.cpp b/src/ui/controls/list.cpp	(rejected hunks)
 +       Event newEvent = event;
 +       newEvent.event = EVENT_KEYDOWN;
 +       newEvent.param = VK_DEFAULT;
-+       m_event->AddEvent(newEvent);  // ligne sélectionnée changée
++       m_event->AddEvent(newEvent);  // ligne sÃ©lectionnÃ©e changÃ©e
 +       return TRUE;
 +   }
 +
@@ -216,8 +216,8 @@ diff a/src/ui/controls/list.cpp b/src/ui/controls/list.cpp	(rejected hunks)
                     uv1.y += dp;
                     uv2.x -= dp;
                     uv2.y -= dp;
--                   DrawIcon(pos, dim, uv1, uv2);  // dessine carré
-+                   DrawIcon(pos, dim, uv1, uv2);  // dessine carré vert
+-                   DrawIcon(pos, dim, uv1, uv2);  // dessine carrÃ©
++                   DrawIcon(pos, dim, uv1, uv2);  // dessine carrÃ© vert
  
                     m_engine->SetState(D3DSTATETTw);
                     uv1.x =  0.0f/256.0f;  // v
@@ -234,7 +234,7 @@ diff a/src/ui/controls/list.cpp b/src/ui/controls/list.cpp	(rejected hunks)
 +                   uv1.y += dp;
 +                   uv2.x -= dp;
 +                   uv2.y -= dp;
-+                   DrawIcon(pos, dim, uv1, uv2);  // dessine carré rouge
++                   DrawIcon(pos, dim, uv1, uv2);  // dessine carrÃ© rouge
 +
                     m_engine->SetState(D3DSTATETTw);
 -                   if ( i+m_firstLine == m_selectLine )
@@ -276,14 +276,14 @@ diff a/src/ui/controls/list.cpp b/src/ui/controls/list.cpp	(rejected hunks)
  }
  
  
-+// Spécifie le nombre multiple pour la 1ère ligne.
++// SpÃ©cifie le nombre multiple pour la 1Ã¨re ligne.
 +
 +void CList::SetMultiple(int i)
 +{
 +   m_multiple = i;
 +}
 +
-+// Retourne le nombre multiple pour la 1ère ligne.
++// Retourne le nombre multiple pour la 1Ã¨re ligne.
 +
 +int CList::RetMultiple()
 +{
@@ -291,7 +291,7 @@ diff a/src/ui/controls/list.cpp b/src/ui/controls/list.cpp	(rejected hunks)
 +}
 +
 +
- // Sélectionne une ligne.
+ // SÃ©lectionne une ligne.
  
  void CList::SetSelect(int i)
 @@ -599,7 +698,7 @@ void CList::SetSelect(int i)
@@ -307,7 +307,7 @@ diff a/src/ui/controls/list.cpp b/src/ui/controls/list.cpp	(rejected hunks)
  }
  
  
-+// Spécifie le look d'une case.
++// SpÃ©cifie le look d'une case.
 +
 +void CList::SetLook(int i, int look)
 +{
@@ -331,7 +331,7 @@ diff a/src/ui/controls/list.cpp b/src/ui/controls/list.cpp	(rejected hunks)
  void CList::SetTabs(int i, float pos, int justif)
 @@ -751,23 +869,29 @@ float  CList::RetTabs(int i)
  
- // Déplace l'ascenseur de la liste pour voir la ligne sélectionnée.
+ // DÃ©place l'ascenseur de la liste pour voir la ligne sÃ©lectionnÃ©e.
  
 -void CList::ShowSelect(BOOL bFixed)
 +void CList::ShowSelect()

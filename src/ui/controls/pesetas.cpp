@@ -40,7 +40,7 @@ CPesetas::~CPesetas()
 }
 
 
-// Crée un nouveau bouton.
+// CrÃ©e un nouveau bouton.
 
 BOOL CPesetas::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -51,7 +51,7 @@ BOOL CPesetas::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CPesetas::EventProcess(const Event &event)
 {

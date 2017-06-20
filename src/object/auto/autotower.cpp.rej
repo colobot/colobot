@@ -3,8 +3,8 @@ diff a/src/object/auto/autotower.cpp b/src/object/auto/autotower.cpp	(rejected h
  
  
  
--#define TOWER_SCOPE        200.0f      // portÈe du rayon
--#define ENERGY_FIRE        0.125f      // Ènergie consommÈe par tir
+-#define TOWER_SCOPE        200.0f      // port√©e du rayon
+-#define ENERGY_FIRE        0.125f      // √©nergie consomm√©e par tir
 -
  
  // Constructeur de l'objet.
@@ -50,7 +50,7 @@ diff a/src/object/auto/autotower.cpp b/src/object/auto/autotower.cpp	(rejected h
  
 -   m_timeVirus -= event.rTime;
 -
--   if ( m_object->RetVirusMode() )  // contaminÈ par un virus ?
+-   if ( m_object->RetVirusMode() )  // contamin√© par un virus ?
 -   {
 -       if ( m_timeVirus <= 0.0f )
 -       {
@@ -99,7 +99,7 @@ diff a/src/object/auto/autotower.cpp b/src/object/auto/autotower.cpp	(rejected h
 -
 -   if ( m_phase == ATP_SEARCH )
 -   {
--       FireStopUpdate(m_progress, FALSE);  // Èteint
+-       FireStopUpdate(m_progress, FALSE);  // √©teint
 -       if ( m_progress < 1.0f )
 -       {
 -           quick = 1.0f;
@@ -266,7 +266,7 @@ diff a/src/object/auto/autotower.cpp b/src/object/auto/autotower.cpp	(rejected h
 -}
 -
 -
- // Retourne une erreur liÈe ‡ l'Ètat de l'automate.
+ // Retourne une erreur li√©e √† l'√©tat de l'automate.
  
  Error CAutoTower::RetError()
  {
@@ -286,7 +286,7 @@ diff a/src/object/auto/autotower.cpp b/src/object/auto/autotower.cpp	(rejected h
 -   {
 -       if ( power->RetEnergy() < ENERGY_FIRE )
 -       {
--           return ERR_TOWER_ENERGY;  // plus assez d'Ènergie
+-           return ERR_TOWER_ENERGY;  // plus assez d'√©nergie
 -       }
 -   }
     return ERR_OK;
@@ -306,7 +306,7 @@ diff a/src/object/auto/autotower.cpp b/src/object/auto/autotower.cpp	(rejected h
 +        0.0f,  -9.0f,
     };
  
-    if ( !bLightOn )  // Èteint ?
+    if ( !bLightOn )  // √©teint ?
 @@ -395,153 +174,15 @@ void CAutoTower::FireStopUpdate(float progress, BOOL bLightOn)
             if ( m_partiStop[i] == -1 )
             {
@@ -326,7 +326,7 @@ diff a/src/object/auto/autotower.cpp b/src/object/auto/autotower.cpp	(rejected h
  }
  
  
--// CrÈe toute l'interface lorsque l'objet est sÈlectionnÈ.
+-// Cr√©e toute l'interface lorsque l'objet est s√©lectionn√©.
 -
 -BOOL CAutoTower::CreateInterface(BOOL bSelect)
 -{
@@ -367,8 +367,8 @@ diff a/src/object/auto/autotower.cpp b/src/object/auto/autotower.cpp	(rejected h
 -   return TRUE;
 -}
 -
--// Met ‡ jour l'Ètat de tous les boutons de l'interface,
--// suite au temps qui s'Ècoule ...
+-// Met √† jour l'√©tat de tous les boutons de l'interface,
+-// suite au temps qui s'√©coule ...
 -
 -void CAutoTower::UpdateInterface(float rTime)
 -{
@@ -401,7 +401,7 @@ diff a/src/object/auto/autotower.cpp b/src/object/auto/autotower.cpp	(rejected h
 -}
 -
 -
--// Sauve tous les paramËtres de l'automate.
+-// Sauve tous les param√®tres de l'automate.
 -
 -BOOL CAutoTower::Write(char *line)
 -{
@@ -441,7 +441,7 @@ diff a/src/object/auto/autotower.cpp b/src/object/auto/autotower.cpp	(rejected h
 -   return TRUE;
 -}
 -
--// Restitue tous les paramËtres de l'automate.
+-// Restitue tous les param√®tres de l'automate.
 -
 -BOOL CAutoTower::Read(char *line)
 -{

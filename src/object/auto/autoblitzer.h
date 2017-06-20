@@ -16,7 +16,7 @@ class CObject;
 enum AutoBlitzerPhase
 {
    ABLP_WAIT       = 1,    // attend cible
-   ABLP_BLITZ      = 2,    // électrocute
+   ABLP_BLITZ      = 2,    // Ã©lectrocute
    ABLP_WAITOUT    = 3,    // attend avant de recommencer
 };
 

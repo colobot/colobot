@@ -45,7 +45,7 @@ CAutoBarrel::~CAutoBarrel()
 }
 
 
-// Détruit l'objet.
+// DÃ©truit l'objet.
 
 void CAutoBarrel::DeleteObject(BOOL bAll)
 {
@@ -67,14 +67,14 @@ void CAutoBarrel::Init()
 }
 
 
-// Démarre l'objet.
+// DÃ©marre l'objet.
 
 void CAutoBarrel::Start(int param)
 {
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CAutoBarrel::EventProcess(const Event &event)
 {
@@ -210,7 +210,7 @@ BOOL CAutoBarrel::Abort()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liÃ©e Ã  l'Ã©tat de l'automate.
 
 Error CAutoBarrel::RetError()
 {

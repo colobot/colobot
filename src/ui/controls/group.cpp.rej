@@ -49,7 +49,7 @@ diff a/src/ui/controls/group.cpp b/src/ui/controls/group.cpp	(rejected hunks)
         uv1.y += dp;
 @@ -114,11 +111,11 @@ void CGroup::Draw()
     }
-    if ( m_icon == 2 )  // dégradé orange -> transparent ?
+    if ( m_icon == 2 )  // dÃ©gradÃ© orange -> transparent ?
     {
 -       m_engine->SetTexture("button2.tga");
 +       m_engine->SetTexture("button1.tga");
@@ -64,7 +64,7 @@ diff a/src/ui/controls/group.cpp b/src/ui/controls/group.cpp	(rejected hunks)
         uv1.y += dp;
 @@ -128,12 +125,12 @@ void CGroup::Draw()
     }
-    if ( m_icon == 3 )  // dégradé transparent -> gris ?
+    if ( m_icon == 3 )  // dÃ©gradÃ© transparent -> gris ?
     {
 -       m_engine->SetTexture("button2.tga");
 +       m_engine->SetTexture("button1.tga");
@@ -82,7 +82,7 @@ diff a/src/ui/controls/group.cpp b/src/ui/controls/group.cpp	(rejected hunks)
         uv2.x -= dp;
 @@ -142,12 +139,12 @@ void CGroup::Draw()
     }
-    if ( m_icon == 4 )  // coin bleu dégradé ?
+    if ( m_icon == 4 )  // coin bleu dÃ©gradÃ© ?
     {
 -       m_engine->SetTexture("button2.tga");
 +       m_engine->SetTexture("button1.tga");
@@ -98,7 +98,7 @@ diff a/src/ui/controls/group.cpp b/src/ui/controls/group.cpp	(rejected hunks)
         uv2.x -= dp;
 @@ -156,12 +153,12 @@ void CGroup::Draw()
     }
-    if ( m_icon == 5 )  // coin orange dégradé ?
+    if ( m_icon == 5 )  // coin orange dÃ©gradÃ© ?
     {
 -       m_engine->SetTexture("button2.tga");
 +       m_engine->SetTexture("button1.tga");
@@ -384,7 +384,7 @@ diff a/src/ui/controls/group.cpp b/src/ui/controls/group.cpp	(rejected hunks)
 -       corner.y = 6.0f/480.0f;
 -       DrawIcon(m_pos, m_dim, uv1, uv2, corner, 2.0f/256.0f);
     }
-    if ( m_icon == 18 )  // flèche > pour SatCom ?
+    if ( m_icon == 18 )  // flÃ¨che > pour SatCom ?
     {
 @@ -440,192 +320,174 @@ void CGroup::Draw()
     }
@@ -456,17 +456,17 @@ diff a/src/ui/controls/group.cpp b/src/ui/controls/group.cpp	(rejected hunks)
     }
 -   if ( m_icon == 24 )
 +
-+   if ( m_icon == 23 )  // bandes pour écran win ?
++   if ( m_icon == 23 )  // bandes pour Ã©cran win ?
     {
 -       m_engine->SetTexture("button3.tga");
 -       m_engine->SetState(D3DSTATENORMAL);
--       uv1.x =  80.0f/256.0f;  // orangé
+-       uv1.x =  80.0f/256.0f;  // orangÃ©
 -       uv1.y = 192.0f/256.0f;
 -       uv2.x =  96.0f/256.0f;
 -       uv2.y = 208.0f/256.0f;
 +       m_engine->SetTexture("button1.tga");
 +       m_engine->SetState(D3DSTATETTb);
-+       uv1.x = 128.0f/256.0f;  // gris foncé
++       uv1.x = 128.0f/256.0f;  // gris foncÃ©
 +       uv1.y =  16.0f/256.0f;
 +       uv2.x = 144.0f/256.0f;
 +       uv2.y =  32.0f/256.0f;
@@ -569,7 +569,7 @@ diff a/src/ui/controls/group.cpp b/src/ui/controls/group.cpp	(rejected hunks)
 +       DrawIcon(m_pos, m_dim, uv1, uv2, corner, 5.0f/256.0f);
     }
 -
--   if ( m_icon >= 100 && m_icon <= 120 )  // bâtiment ?
+-   if ( m_icon >= 100 && m_icon <= 120 )  // bÃ¢timent ?
 +   if ( m_icon == 28 )
     {
 -       pos = m_pos;
@@ -671,7 +671,7 @@ diff a/src/ui/controls/group.cpp b/src/ui/controls/group.cpp	(rejected hunks)
 -       if ( m_icon == 112 )  icon = 44;  // info ?
 -       if ( m_icon == 113 )  icon = 46;  // paratonnerre ?
 -       if ( m_icon == 114 )  icon = 47;  // coffre-fort ?
--       if ( m_icon == 115 )  icon = 48;  // centre de contrôle ?
+-       if ( m_icon == 115 )  icon = 48;  // centre de contrÃ´le ?
 -       uv1.x = (32.0f/256.0f)*(icon%8);
 -       uv1.y = (32.0f/256.0f)*(icon/8);  // uv texture
 -       uv2.x = uv1.x+32.0f/256.0f;

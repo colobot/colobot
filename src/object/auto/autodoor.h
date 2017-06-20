@@ -17,15 +17,15 @@ enum ParticuleType;
 enum AutoDoorPhase
 {
    ADOP_WAIT   = 1,    // attend porte ouverte
-   ADOP_BREAK  = 2,    // mécanisme porte cassé
-   ADOP_STOP   = 3,    // mécanisme porte stoppé
+   ADOP_BREAK  = 2,    // mÃ©canisme porte cassÃ©
+   ADOP_STOP   = 3,    // mÃ©canisme porte stoppÃ©
                        // DOOR1:
    ADOP_1DOWN  = 10,   // ferme la porte
-   ADOP_1CLOSE = 11,   // porte définitivement fermée
+   ADOP_1CLOSE = 11,   // porte dÃ©finitivement fermÃ©e
 
    ADOP_13WAIT = 12,   // attend condition d'ouverture
    ADOP_13UP   = 13,   // ouvre
-   ADOP_13OPEN = 14,   // porte définitivement ouverte
+   ADOP_13OPEN = 14,   // porte dÃ©finitivement ouverte
                        // DOOR2:
    ADOP_2CLOSE = 20,   // ferme les portes
    ADOP_2OPEN  = 21,   // ouvre les portes

@@ -45,13 +45,13 @@ struct Event;
 
 enum TypePart
 {
-    TP_TOP          = 0,        // to�t
+    TP_TOP          = 0,        // toît
 };
 
 enum WheelType
 {
     WT_NORM         = 0,        // roues normales
-    WT_BURN         = 1,        // roues cram�es
+    WT_BURN         = 1,        // roues cramées
     WT_SLIDE        = 2,        // roues glissantes
 };
 

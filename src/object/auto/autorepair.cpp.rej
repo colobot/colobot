@@ -55,7 +55,7 @@ diff a/src/object/auto/autorepair.cpp b/src/object/auto/autorepair.cpp	(rejected
  
 -   CAuto::Init();
 +
-+// DÈmarre l'objet.
++// D√©marre l'objet.
 +
 +void CAutoRepair::Start(int param)
 +{
@@ -84,7 +84,7 @@ diff a/src/object/auto/autorepair.cpp b/src/object/auto/autorepair.cpp	(rejected
 -   m_timeVirus -= event.rTime;
 +   progress = Norm(m_progress);
  
--   if ( m_object->RetVirusMode() )  // contaminÈ par un virus ?
+-   if ( m_object->RetVirusMode() )  // contamin√© par un virus ?
 +   if ( m_phase == AREP_WAIT )
     {
 -       if ( m_timeVirus <= 0.0f )
@@ -267,7 +267,7 @@ diff a/src/object/auto/autorepair.cpp b/src/object/auto/autorepair.cpp	(rejected
 +           m_bot->SetAngleY(0, m_object->RetAngleY(0));
 +           StartAction(MB_REPAIR, 1.0f);  // debout
 +           StartAction(MB_WAIT, 1.0f);  // normal
-+           m_object->SetLock(TRUE);  // b‚timent plus comptÈ par CheckEndMission
++           m_object->SetLock(TRUE);  // b√¢timent plus compt√© par CheckEndMission
 +//?            m_main->IncProgress();
 +
 +           m_phase    = AREP_TERM;
@@ -282,7 +282,7 @@ diff a/src/object/auto/autorepair.cpp b/src/object/auto/autorepair.cpp	(rejected
 -}
 -
 -
--// CrÈe toute l'interface lorsque l'objet est sÈlectionnÈ.
+-// Cr√©e toute l'interface lorsque l'objet est s√©lectionn√©.
 -
 -BOOL CAutoRepair::CreateInterface(BOOL bSelect)
 -{
@@ -322,7 +322,7 @@ diff a/src/object/auto/autorepair.cpp b/src/object/auto/autorepair.cpp	(rejected
  }
  
  
--// Cherche le vÈhicule placÈ sur la station.
+-// Cherche le v√©hicule plac√© sur la station.
 +// Cherche un objet proche.
  
 -CObject* CAutoRepair::SearchVehicle()
@@ -399,7 +399,7 @@ diff a/src/object/auto/autorepair.cpp b/src/object/auto/autorepair.cpp	(rejected
 +           if ( motion->RetAction() != MB_WALK1 )  continue;
 +       }
  
--// Retourne une erreur liÈe ‡ l'Ètat de l'automate.
+-// Retourne une erreur li√©e √† l'√©tat de l'automate.
 +       pos = pObj->RetPosition(0);
 +       dist = Length2d(pos, center);
  
@@ -419,9 +419,9 @@ diff a/src/object/auto/autorepair.cpp b/src/object/auto/autorepair.cpp	(rejected
 +   return pBest;
  }
  
-+// DÈmarre une action pour le robot.
++// D√©marre une action pour le robot.
  
--// Sauve tous les paramËtres de l'automate.
+-// Sauve tous les param√®tres de l'automate.
 -
 -BOOL CAutoRepair::Write(char *line)
 +void CAutoRepair::StartAction(int action, float delay)
@@ -456,7 +456,7 @@ diff a/src/object/auto/autorepair.cpp b/src/object/auto/autorepair.cpp	(rejected
     return TRUE;
  }
  
--// Restitue tous les paramËtres de l'automate.
+-// Restitue tous les param√®tres de l'automate.
 -
 -BOOL CAutoRepair::Read(char *line)
 -{
@@ -469,7 +469,7 @@ diff a/src/object/auto/autorepair.cpp b/src/object/auto/autorepair.cpp	(rejected
 -   m_speed = OpFloat(line, "aSpeed", 1.0f);
  
 -   m_lastParticule = 0.0f;
-+// Retourne une erreur liÈe ‡ l'Ètat de l'automate.
++// Retourne une erreur li√©e √† l'√©tat de l'automate.
  
 -   return TRUE;
 +Error CAutoRepair::RetError()

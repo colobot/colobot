@@ -67,7 +67,7 @@ CAutoRemote::~CAutoRemote()
 }
 
 
-// Détruit l'objet.
+// DÃ©truit l'objet.
 
 void CAutoRemote::DeleteObject(BOOL bAll)
 {
@@ -91,7 +91,7 @@ void CAutoRemote::Init()
 }
 
 
-// Démarre l'objet.
+// DÃ©marre l'objet.
 
 void CAutoRemote::Start(int param)
 {
@@ -112,7 +112,7 @@ void CAutoRemote::Start(int param)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CAutoRemote::EventProcess(const Event &event)
 {
@@ -157,7 +157,7 @@ BOOL CAutoRemote::EventProcess(const Event &event)
                m_eyeStart = m_engine->RetEyePt();
                m_lookatStart = m_engine->RetLookatPt();
 
-               // Derrière l'écran.
+               // DerriÃ¨re l'Ã©cran.
                mat = m_object->RetWorldMatrix(0);
 //?                m_eyeGoal = Transform(*mat, D3DVECTOR(0.0f, 8.0f, 0.0f));
 //?                m_lookatGoal = Transform(*mat, D3DVECTOR(2.0f, 7.0f, 0.0f));
@@ -229,7 +229,7 @@ BOOL CAutoRemote::EventProcess(const Event &event)
            m_eyeStart = m_eyeGoal;
            m_lookatStart = m_lookatGoal;
 
-           // A gauche de la voiture sur le récepteur.
+           // A gauche de la voiture sur le rÃ©cepteur.
            mat = m_vehicle->RetWorldMatrix(0);
 //?            m_eyeGoal = Transform(*mat, D3DVECTOR(0.0f, 6.0f, 6.0f));
 //?            m_lookatGoal = Transform(*mat, D3DVECTOR(0.0f, 4.0f, 0.0f));
@@ -262,7 +262,7 @@ BOOL CAutoRemote::EventProcess(const Event &event)
            m_eyeStart = m_eyeGoal;
            m_lookatStart = m_lookatGoal;
 
-           // Derrière la voiture.
+           // DerriÃ¨re la voiture.
            mat = m_vehicle->RetWorldMatrix(0);
            m_eyeGoal = Transform(*mat, D3DVECTOR(-20.0f, 6.0f, 5.0f));
            m_lookatGoal = Transform(*mat, D3DVECTOR(0.0f, 4.0f, 0.0f));
@@ -289,7 +289,7 @@ BOOL CAutoRemote::EventProcess(const Event &event)
            if ( !m_sound->RetComments() )  sound = SOUND_MESSAGE;
            m_sound->Play(sound, m_engine->RetLookatPt(), 1.0f, 1.0f);
            
-           m_main->SetStopwatch(TRUE);  // démarre le chrono
+           m_main->SetStopwatch(TRUE);  // dÃ©marre le chrono
            m_main->SetMovieAuto(0);
 
            m_phase    = ARMP_TERM;
@@ -314,7 +314,7 @@ BOOL CAutoRemote::Abort()
 }
 
 
-// Met à jour la caméra.
+// Met Ã  jour la camÃ©ra.
 
 void CAutoRemote::UpdateCamera(float progress)
 {
@@ -325,7 +325,7 @@ void CAutoRemote::UpdateCamera(float progress)
    m_engine->SetFocus(1.0f);
 }
 
-// Emission de particule de l'émetteur vers la voiture.
+// Emission de particule de l'Ã©metteur vers la voiture.
 
 void CAutoRemote::EmitParticule(BOOL bFirst)
 {
@@ -389,7 +389,7 @@ void CAutoRemote::EmitParticule(BOOL bFirst)
    }
 }
 
-// Petite démo du volant, même si le véhicule est inactif (SetLock).
+// Petite dÃ©mo du volant, mÃªme si le vÃ©hicule est inactif (SetLock).
 
 void CAutoRemote::DemoWheel(BOOL bStop)
 {
@@ -432,7 +432,7 @@ void CAutoRemote::DemoWheel(BOOL bStop)
        return;
    }
 
-   time = (m_time-m_startTime)*2.0f;  // temps relatif depuis début démo
+   time = (m_time-m_startTime)*2.0f;  // temps relatif depuis dÃ©but dÃ©mo
    if ( time < 13.0f )
    {
        physics->ForceMotorSpeedZ(sinf(time));
@@ -450,12 +450,12 @@ void CAutoRemote::DemoWheel(BOOL bStop)
    if ( time > 10.0f && !m_bForceSlow )
    {
        m_bForceSlow = TRUE;
-       physics->SetForceSlow(TRUE);  // démarre le moteur au ralenti
+       physics->SetForceSlow(TRUE);  // dÃ©marre le moteur au ralenti
    }
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liÃ©e Ã  l'Ã©tat de l'automate.
 
 Error CAutoRemote::RetError()
 {

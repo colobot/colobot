@@ -47,7 +47,7 @@ CAutoBomb::~CAutoBomb()
 }
 
 
-// Détruit l'objet.
+// DÃ©truit l'objet.
 
 void CAutoBomb::DeleteObject(BOOL bAll)
 {
@@ -70,7 +70,7 @@ void CAutoBomb::Init()
    m_speed    = 1.0f/2.0f;
 
    m_actionType = AB_STOP;
-   m_bBurn = FALSE;  // mèche éteinte
+   m_bBurn = FALSE;  // mÃ¨che Ã©teinte
    m_angle = D3DVECTOR(0.0f, 0.0f, 0.0f);
    m_lastParticule = 0.0f;
    m_fireDelay = NAN;
@@ -79,14 +79,14 @@ void CAutoBomb::Init()
 }
 
 
-// Démarre l'objet.
+// DÃ©marre l'objet.
 
 void CAutoBomb::Start(int param)
 {
 }
 
 
-// Démarre une action.
+// DÃ©marre une action.
 
 Error CAutoBomb::SetAction(int action, float time)
 {
@@ -103,13 +103,13 @@ Error CAutoBomb::SetAction(int action, float time)
            m_fireDelay = m_object->RetCmdLine(0);
            if ( m_fireDelay == NAN )  m_fireDelay = 10.0f;
        }
-       m_bBurn = TRUE;  // mèche allumée
+       m_bBurn = TRUE;  // mÃ¨che allumÃ©e
        return ERR_OK;
    }
 
    if ( action == AB_BURNOFF )
    {
-       m_bBurn = FALSE;  // mèche éteinte
+       m_bBurn = FALSE;  // mÃ¨che Ã©teinte
        return ERR_OK;
    }
 
@@ -118,7 +118,7 @@ Error CAutoBomb::SetAction(int action, float time)
 
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CAutoBomb::EventProcess(const Event &event)
 {
@@ -137,7 +137,7 @@ BOOL CAutoBomb::EventProcess(const Event &event)
 
    m_progress += event.rTime*m_speed;
 
-   // Calcule l'inclinaison de la mèche.
+   // Calcule l'inclinaison de la mÃ¨che.
    if ( m_actionType == AB_STOP )
    {
        factor = 0.2f;
@@ -157,13 +157,13 @@ BOOL CAutoBomb::EventProcess(const Event &event)
    if ( m_actionType == AB_TRUCK )  suppl = PI*0.5f;
    else                             suppl = 0.0f;
 
-   // Calcule la longueur de la mèche.
+   // Calcule la longueur de la mÃ¨che.
    zoom = 1.0f-m_fireProgress;
    if ( zoom < 0.01f )  zoom = 0.01f;
    m_object->SetZoomY(1, zoom);
    angle *= zoom;  // incline moins si petit !
 
-   if ( m_bBurn )  // mèche allumée ?
+   if ( m_bBurn )  // mÃ¨che allumÃ©e ?
    {
        if ( !m_object->RetLock() )
        {
@@ -219,7 +219,7 @@ BOOL CAutoBomb::EventProcess(const Event &event)
            return FALSE;
        }
    }
-   else    // mèche éteinte ?
+   else    // mÃ¨che Ã©teinte ?
    {
        if ( m_partiSpark != -1 )
        {
@@ -256,7 +256,7 @@ BOOL CAutoBomb::Abort()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liÃ©e Ã  l'Ã©tat de l'automate.
 
 Error CAutoBomb::RetError()
 {

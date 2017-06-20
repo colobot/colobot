@@ -3,9 +3,9 @@ diff a/src/object/task/taskfire.cpp b/src/object/task/taskfire.cpp	(rejected hun
  
  
  
--#define ENERGY_FIRE        (0.25f/2.5f)    // énergie consommée /s de tir
--#define ENERGY_FIREr   (0.25f/1.5f)    // énergie consommée /s de rayon
--#define ENERGY_FIREi   (0.10f/2.5f)    // énergie consommée /s d'organique
+-#define ENERGY_FIRE        (0.25f/2.5f)    // Ã©nergie consommÃ©e /s de tir
+-#define ENERGY_FIREr   (0.25f/1.5f)    // Ã©nergie consommÃ©e /s de rayon
+-#define ENERGY_FIREi   (0.10f/2.5f)    // Ã©nergie consommÃ©e /s d'organique
 -
 -
  // Constructeur de l'objet.
@@ -126,7 +126,7 @@ diff a/src/object/task/taskfire.cpp b/src/object/task/taskfire.cpp	(rejected hun
 -   float       energy, fire;
     ObjectType  type;
  
-    m_bError = TRUE;  // opération impossible
+    m_bError = TRUE;  // opÃ©ration impossible
  
     type = m_object->RetType();
 -   if ( type != OBJECT_MOBILEfc &&

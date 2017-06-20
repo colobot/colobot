@@ -6,14 +6,14 @@ diff a/src/object/motion/motion.h b/src/object/motion/motion.h	(rejected hunks)
 +
 +enum TypePart
 +{
-+   TP_TOP          = 0,        // toît
++   TP_TOP          = 0,        // toÃ®t
 +};
 +
 +
 +enum WheelType
 +{
 +   WT_NORM         = 0,        // roues normales
-+   WT_BURN         = 1,        // roues cramées
++   WT_BURN         = 1,        // roues cramÃ©es
 +   WT_SLIDE        = 2,        // roues glissantes
 +};
 +
@@ -64,7 +64,7 @@ diff a/src/object/motion/motion.h b/src/object/motion/motion.h	(rejected hunks)
  
  protected:
 @@ -69,6 +97,8 @@ protected:
-    D3DVECTOR       m_linVibration;     // vibration linéaire
+    D3DVECTOR       m_linVibration;     // vibration linÃ©aire
     D3DVECTOR       m_cirVibration;     // vibration circulaire
     D3DVECTOR       m_inclinaison;      // inclinaison
 +

@@ -4,9 +4,9 @@ diff a/src/ui/controls/slider.cpp b/src/ui/controls/slider.cpp	(rejected hunks)
     m_bHoriz = ( m_dim.x > m_dim.y );
  
 -   if ( ( m_bHoriz && m_dim.x < m_dim.y*4.0f) ||
--        (!m_bHoriz && m_dim.y < m_dim.x*4.0f) )  // slider très court ?
+-        (!m_bHoriz && m_dim.y < m_dim.x*4.0f) )  // slider trÃ¨s court ?
 +   if ( ( m_bHoriz && m_dim.x < m_dim.y*3.0f) ||
-+        (!m_bHoriz && m_dim.y < m_dim.x*3.0f) )  // slider très court ?
++        (!m_bHoriz && m_dim.y < m_dim.x*3.0f) )  // slider trÃ¨s court ?
     {
         delete m_buttonLeft;
         m_buttonLeft = 0;

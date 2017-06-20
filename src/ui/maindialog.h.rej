@@ -29,21 +29,21 @@ diff a/src/ui/maindialog.h b/src/ui/maindialog.h	(rejected hunks)
 +{
 +   SC_SHOWCASE,    // voiture en vitrine
 +   SC_OWNER,       // voiture acquise
-+   SC_FORSALE,     // voiture à vendre
++   SC_FORSALE,     // voiture Ã  vendre
 +};
 +
 +typedef struct
 +{
-+   int             total;          // nb de voitures achetées
++   int             total;          // nb de voitures achetÃ©es
 +   int             buyable;        // nb de voitures achetables
 +   int             bonus;          // nb de voitures dispo en bonus
 +   int             selectCar;      // voiture choisie (0..n)
-+   int             usedCars[50];   // voitures achetées (1..n)
-+   int             subModel[50];   // peintures utilisées (1..n)
++   int             usedCars[50];   // voitures achetÃ©es (1..n)
++   int             subModel[50];   // peintures utilisÃ©es (1..n)
 +   D3DCOLORVALUE   colorBody[50];  // couleurs carrosseries
-+   StateCar        stateCars[50];  // états des voitures (pour _SE)
++   StateCar        stateCars[50];  // Ã©tats des voitures (pour _SE)
 +   int             pesetas;        // argent disponible
-+   int             level;          // niveau de difficulté (1..3)
++   int             level;          // niveau de difficultÃ© (1..3)
  }
  GamerPerso;
  
@@ -53,11 +53,11 @@ diff a/src/ui/maindialog.h b/src/ui/maindialog.h	(rejected hunks)
 +typedef struct
 +{
 +   char        gamerName[20];      // nom du joueur
-+   float       time;               // temps effectué
++   float       time;               // temps effectuÃ©
 +   float       bonus, value1, value2;
 +   int         points;
-+   short       model;              // modèle de la voiture
-+   short       subModel;           // sous-modèle de la voiture
++   short       model;              // modÃ¨le de la voiture
++   short       subModel;           // sous-modÃ¨le de la voiture
 +   short       reserve;
 +}
 +RecordInfo;
@@ -66,7 +66,7 @@ diff a/src/ui/maindialog.h b/src/ui/maindialog.h	(rejected hunks)
 +{
 +   int         version;            // type d'enregistrement
 +   int         reserve;
-+   int         select;             // record à sélectionner
++   int         select;             // record Ã  sÃ©lectionner
 +   int         total;              // nb de records
 +   RecordInfo  list[MAXRECORD];    // liste des records
 +}
@@ -277,8 +277,8 @@ diff a/src/ui/maindialog.h b/src/ui/maindialog.h	(rejected hunks)
 -   GamerPerso      m_persoCopy;        // perso: copie pour annulation
 -   int             m_persoTab;         // perso: onglet choisi
 +   GamerPerso      m_persoCopy;        // perso: copie si annulation
-+   float           m_persoElevation;   // perso: élévation caméra
-    float           m_persoAngle;       // perso: angle de présentation
++   float           m_persoElevation;   // perso: Ã©lÃ©vation camÃ©ra
+    float           m_persoAngle;       // perso: angle de prÃ©sentation
 +   float           m_persoTime;        // perso: temps absolu
 +   BOOL            m_persoRun;         // perso: moteur tourne ?
  
@@ -294,15 +294,15 @@ diff a/src/ui/maindialog.h b/src/ui/maindialog.h	(rejected hunks)
 -   int             m_sel[10];          // mission choisie (0..98)
 -   int             m_maxList;
 -   int             m_accessChap;
--   char            m_sceneRead[100];   // nom de la scène à lire
--   char            m_stackRead[100];   // nom de la scène à lire
+-   char            m_sceneRead[100];   // nom de la scÃ¨ne Ã  lire
+-   char            m_stackRead[100];   // nom de la scÃ¨ne Ã  lire
 +   int             m_index;            // 0..5
 +   int             m_sel[6];           // mission choisie (0..99)
-    char            m_sceneName[20];    // nom de la scène à jouer
-+   char            m_sceneBase[20];    // nom de la scène à jouer
-    int             m_sceneRank;        // rang de la scène à jouer
+    char            m_sceneName[20];    // nom de la scÃ¨ne Ã  jouer
++   char            m_sceneBase[20];    // nom de la scÃ¨ne Ã  jouer
+    int             m_sceneRank;        // rang de la scÃ¨ne Ã  jouer
 -   BOOL            m_bSceneSoluce;     // montre la solution
-    BOOL            m_bSimulSetup;      // réglages pendant le jeu
+    BOOL            m_bSimulSetup;      // rÃ©glages pendant le jeu
     BOOL            m_accessEnable;
     BOOL            m_accessMission;
     BOOL            m_accessUser;
@@ -314,27 +314,27 @@ diff a/src/ui/maindialog.h b/src/ui/maindialog.h	(rejected hunks)
     int             m_userTotal;
     char            m_userList[USERLISTMAX][100];
 @@ -207,14 +305,14 @@ protected:
-    BOOL            m_bTooltip;         // info-bulles à afficher ?
+    BOOL            m_bTooltip;         // info-bulles Ã  afficher ?
     BOOL            m_bGlint;           // reflets sur boutons ?
     BOOL            m_bRain;            // pluie dans l'interface ?
 -   BOOL            m_bSoluce4;         // solutions dans programme 4 ?
-    BOOL            m_bMovies;          // cinématiques ?
+    BOOL            m_bMovies;          // cinÃ©matiques ?
     BOOL            m_bNiceReset;       // pour CTaskReset
     BOOL            m_bHimselfDamage;   // pour les tirs
 -   BOOL            m_bCameraScroll;    // pour CCamera
 -   BOOL            m_bCameraInvertX;   // pour CCamera
 -   BOOL            m_bCameraInvertY;   // pour CCamera
-+   BOOL            m_bOnBoard;         // caméra sur le capot
++   BOOL            m_bOnBoard;         // camÃ©ra sur le capot
     BOOL            m_bEffect;          // pour CCamera
 +   BOOL            m_bFlash;           // pour CCamera
 +   BOOL            m_bMotorBlast;      // explosion du moteur
-+   CameraType      m_defCamera;        // caméra par défaut
++   CameraType      m_defCamera;        // camÃ©ra par dÃ©faut
  
     FPOINT          m_glintMouse;
     float           m_glintTime;
 @@ -223,19 +321,40 @@ protected:
  
-    BOOL            m_bDialog;          // dialogue présent ?
+    BOOL            m_bDialog;          // dialogue prÃ©sent ?
     BOOL            m_bDialogFire;      // cadre en feu ?
 +   BOOL            m_bDialogCreate;
     BOOL            m_bDialogDelete;

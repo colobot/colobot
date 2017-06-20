@@ -37,7 +37,7 @@ CProgress::~CProgress()
 }
 
 
-// Crée un nouveau bouton.
+// CrÃ©e un nouveau bouton.
 
 BOOL CProgress::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -48,7 +48,7 @@ BOOL CProgress::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CProgress::EventProcess(const Event &event)
 {
@@ -132,7 +132,7 @@ void CProgress::Draw()
 }
 
 
-// Gestion du nombre total d'étapes.
+// Gestion du nombre total d'Ã©tapes.
 
 void CProgress::SetTotal(int total)
 {

@@ -33,7 +33,7 @@ diff a/src/ui/controls/control.cpp b/src/ui/controls/control.cpp	(rejected hunks
 +}
 +
 +
- // Retourne l'événement associé au contrôle.
+ // Retourne l'Ã©vÃ©nement associÃ© au contrÃ´le.
  
  EventMsg CControl::RetEventMsg()
 @@ -324,9 +338,10 @@ BOOL CControl::EventProcess(const Event &event)
@@ -111,7 +111,7 @@ diff a/src/ui/controls/control.cpp b/src/ui/controls/control.cpp	(rejected hunks
 +   if ( (m_state & STATE_FLASH) && Mod(m_time, 0.4f) < 0.2f )
     {
 -       m_engine->SetTexture("button3.tga");
--       icon = 3;  // jaune pressé avec point vert
+-       icon = 3;  // jaune pressÃ© avec point vert
 +       icon = 0;
     }
  
@@ -307,5 +307,5 @@ diff a/src/ui/controls/control.cpp b/src/ui/controls/control.cpp	(rejected hunks
 +}
 +
  
- // Détecte si une position est dans le bouton.
+ // DÃ©tecte si une position est dans le bouton.
  

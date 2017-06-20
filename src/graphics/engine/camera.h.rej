@@ -1,9 +1,9 @@
 diff a/src/graphics/engine/camera.h b/src/graphics/engine/camera.h	(rejected hunks)
 @@ -25,7 +25,6 @@ enum CameraType
-    CAMERA_INFO     = 8,    // caméra pendant l'affichage des informations
+    CAMERA_INFO     = 8,    // camÃ©ra pendant l'affichage des informations
     CAMERA_VISIT    = 9,    // visite du lieu d'une erreur
-    CAMERA_DIALOG   = 10,   // caméra pendant dialogue
--   CAMERA_PLANE    = 11,   // caméra fixe en hauteur
+    CAMERA_DIALOG   = 10,   // camÃ©ra pendant dialogue
+-   CAMERA_PLANE    = 11,   // camÃ©ra fixe en hauteur
  };
  
  enum CameraSmooth
@@ -11,9 +11,9 @@ diff a/src/graphics/engine/camera.h b/src/graphics/engine/camera.h	(rejected hun
     CS_NONE         = 0,    // brusque
     CS_NORM         = 1,    // normal
     CS_HARD         = 2,    // dur
--   CS_SPEC         = 3,    // spécial
+-   CS_SPEC         = 3,    // spÃ©cial
 +   CS_SOFT         = 3,    // dou
-+   CS_SPEC         = 4,    // spécial
++   CS_SPEC         = 4,    // spÃ©cial
  };
  
  enum CenteringPhase
@@ -24,12 +24,12 @@ diff a/src/graphics/engine/camera.h b/src/graphics/engine/camera.h	(rejected hun
 -   OE_FADEINw      = 2,    // blanc -> rien
 -   OE_FADEOUTw     = 3,    // rien -> blanc
 -   OE_FADEOUTb     = 4,    // rien -> bleu
--   OE_BLITZ        = 5,    // éclair
+-   OE_BLITZ        = 5,    // Ã©clair
 +   OE_ORGA         = 2,    // flash vert
 +   OE_FADEINw      = 3,    // blanc -> rien
 +   OE_FADEOUTw     = 4,    // rien -> blanc
 +   OE_FADEOUTb     = 5,    // rien -> bleu
-+   OE_BLITZ        = 6,    // éclair
++   OE_BLITZ        = 6,    // Ã©clair
 +   OE_CRASH        = 7,    // collision
  };
  
@@ -87,10 +87,10 @@ diff a/src/graphics/engine/camera.h b/src/graphics/engine/camera.h	(rejected hun
     BOOL        EventMouseMove(const Event &event);
 @@ -161,6 +168,7 @@ protected:
  
-    CameraType  m_type;             // type de la caméra (CAMERA_*)
+    CameraType  m_type;             // type de la camÃ©ra (CAMERA_*)
     CameraSmooth m_smooth;          // type de lissage
 +   CameraSmooth m_smoothNext;      // type de lissage
-    CObject*    m_cameraObj;        // objet lié à la caméra
+    CObject*    m_cameraObj;        // objet liÃ© Ã  la camÃ©ra
  
     float       m_eyeDistance;      // distance entre les yeux
 @@ -183,11 +191,17 @@ protected:
@@ -99,17 +99,17 @@ diff a/src/graphics/engine/camera.h b/src/graphics/engine/camera.h	(rejected hun
     float       m_heightEye;        // CAMERA_FREE: hauteur au-dessus du sol
 +   float       m_heightShift;      // CAMERA_FREE: shift vertical
     float       m_heightLookat;     // CAMERA_FREE: hauteur au-dessus du sol
-    float       m_speed;            // CAMERA_FREE: vitesse de déplacement
+    float       m_speed;            // CAMERA_FREE: vitesse de dÃ©placement
  
-    float       m_backDist;         // CAMERA_BACK: éloignement
-    float       m_backMin;          // CAMERA_BACK: éloignement minimal
-+   BOOL        m_bBackLockRotate;  // CAMERA_BACK: rotation autorisée ?
+    float       m_backDist;         // CAMERA_BACK: Ã©loignement
+    float       m_backMin;          // CAMERA_BACK: Ã©loignement minimal
++   BOOL        m_bBackLockRotate;  // CAMERA_BACK: rotation autorisÃ©e ?
 +   float       m_backMotorSpeed;   // CAMERA_BACK: vitesse moteur
-+   float       m_backSleepTime;    // CAMERA_BACK: durée depuis arrêt
++   float       m_backSleepTime;    // CAMERA_BACK: durÃ©e depuis arrÃªt
 +   float       m_backRotSpeed;     // CAMERA_BACK: vitesse angulaire
-+   float       m_rotDirectionH;    // CAMERA_BACK: direction supplémentaire
-    float       m_addDirectionH;    // CAMERA_BACK: direction supplémentaire
-    float       m_addDirectionV;    // CAMERA_BACK: direction supplémentaire
++   float       m_rotDirectionH;    // CAMERA_BACK: direction supplÃ©mentaire
+    float       m_addDirectionH;    // CAMERA_BACK: direction supplÃ©mentaire
+    float       m_addDirectionV;    // CAMERA_BACK: direction supplÃ©mentaire
     BOOL        m_bTransparency;
 @@ -205,16 +219,11 @@ protected:
  

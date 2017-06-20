@@ -52,7 +52,7 @@ CAutoInca::~CAutoInca()
 }
 
 
-// DÈtruit l'objet.
+// D√©truit l'objet.
 
 void CAutoInca::DeleteObject(BOOL bAll)
 {
@@ -76,7 +76,7 @@ void CAutoInca::Init()
 }
 
 
-// DÈmarre l'objet.
+// D√©marre l'objet.
 
 void CAutoInca::Start(int param)
 {
@@ -86,7 +86,7 @@ void CAutoInca::Start(int param)
    float       duration, mass;
    int         i;
 
-   if ( param == 2 && !m_bBlitz )  // bouton rouge pressÈ ?
+   if ( param == 2 && !m_bBlitz )  // bouton rouge press√© ?
    {
        m_bBlitz = TRUE;
 
@@ -121,7 +121,7 @@ void CAutoInca::Start(int param)
        }
        m_sound->Play(SOUND_BREAK2, m_engine->RetEyePt(), 1.0f, 0.7f);
 
-       m_object->SetLock(TRUE);  // il ne sera plus comptÈ !
+       m_object->SetLock(TRUE);  // il ne sera plus compt√© !
 
        m_phase    = AINP_OPEN;
        m_speed    = 1.0f/2.0f;
@@ -130,7 +130,7 @@ void CAutoInca::Start(int param)
 }
 
 
-// Gestion d'un ÈvÈnement.
+// Gestion d'un √©v√©nement.
 
 BOOL CAutoInca::EventProcess(const Event &event)
 {
@@ -257,7 +257,7 @@ CObject* CAutoInca::SearchObject(ObjectType type, D3DVECTOR center, float radius
    return pBest;
 }
 
-// DÈbut du cadrage pour la camÈra.
+// D√©but du cadrage pour la cam√©ra.
 
 void CAutoInca::CameraBegin()
 {
@@ -269,7 +269,7 @@ void CAutoInca::CameraBegin()
    m_main->SetStopwatch(FALSE);  // stoppe le chrono
 }
 
-// Fin du cadrage pour la camÈra.
+// Fin du cadrage pour la cam√©ra.
 
 void CAutoInca::CameraEnd()
 {
@@ -277,10 +277,10 @@ void CAutoInca::CameraEnd()
    m_camera->SetType(m_cameraType);
    m_camera->SetSmooth(CS_NORM);
 
-   m_main->SetStopwatch(TRUE);  // redÈmarre le chrono
+   m_main->SetStopwatch(TRUE);  // red√©marre le chrono
 }
 
-// CrÈe les Èclairs.
+// Cr√©e les √©clairs.
 
 void CAutoInca::CreateBlitz(float delay)
 {
@@ -323,7 +323,7 @@ void CAutoInca::CreateBlitz(float delay)
    SoundBlitz(delay);
 }
 
-// Fait Èvoluer les Èclairs.
+// Fait √©voluer les √©clairs.
 
 void CAutoInca::ProgressBlitz(float progress)
 {
@@ -361,7 +361,7 @@ void CAutoInca::ProgressBlitz(float progress)
    }
 }
 
-// Casse le mÈchant roi.
+// Casse le m√©chant roi.
 
 void CAutoInca::BreakDownEvil3()
 {
@@ -417,7 +417,7 @@ BOOL CAutoInca::Abort()
 }
 
 
-// Retourne une erreur liÈe ‡ l'Ètat de l'automate.
+// Retourne une erreur li√©e √† l'√©tat de l'automate.
 
 Error CAutoInca::RetError()
 {

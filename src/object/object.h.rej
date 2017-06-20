@@ -18,52 +18,52 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
  
  enum ObjectType
  {
--   OBJECT_NULL         = 0,    // objet dÈtruit
--   OBJECT_FIX          = 1,    // dÈcor fixe
+-   OBJECT_NULL         = 0,    // objet d√©truit
+-   OBJECT_FIX          = 1,    // d√©cor fixe
 -   OBJECT_PORTICO      = 2,    // portique
 -   OBJECT_BASE         = 3,    // grande base principale
 -   OBJECT_DERRICK      = 4,    // derrick fixe
 -   OBJECT_FACTORY      = 5,    // usine fixe
 -   OBJECT_STATION      = 6,    // station de recharge
 -   OBJECT_CONVERT      = 7,    // station de transformation
--   OBJECT_REPAIR       = 8,    // rÈparation
--   OBJECT_TOWER        = 9,    // tour de dÈfense
+-   OBJECT_REPAIR       = 8,    // r√©paration
+-   OBJECT_TOWER        = 9,    // tour de d√©fense
 -   OBJECT_NEST         = 10,   // nid
 -   OBJECT_RESEARCH     = 11,   // centre de recherches
 -   OBJECT_RADAR        = 12,   // radar
--   OBJECT_ENERGY       = 13,   // centrale d'Ènergie
+-   OBJECT_ENERGY       = 13,   // centrale d'√©nergie
 -   OBJECT_LABO         = 14,   // laboratoire d'analyse pour insectes
--   OBJECT_NUCLEAR      = 15,   // centrale nuclÈaire
--   OBJECT_START        = 16,   // dÈpart
--   OBJECT_END          = 17,   // arrivÈe
+-   OBJECT_NUCLEAR      = 15,   // centrale nucl√©aire
+-   OBJECT_START        = 16,   // d√©part
+-   OBJECT_END          = 17,   // arriv√©e
 -   OBJECT_INFO         = 18,   // borne d'information
 -   OBJECT_PARA         = 19,   // paratonnerre
 -   OBJECT_TARGET1      = 20,   // portique cible
 -   OBJECT_TARGET2      = 21,   // centre cible
 -   OBJECT_SAFE         = 22,   // coffre fort
--   OBJECT_HUSTON       = 23,   // centre de contrÙle
+-   OBJECT_HUSTON       = 23,   // centre de contr√¥le
 -   OBJECT_DESTROYER    = 24,   // destructeur
 -   OBJECT_FRET         = 30,   // transportable
 -   OBJECT_STONE        = 31,   // pierre
 -   OBJECT_URANIUM      = 32,   // uranium
--   OBJECT_METAL        = 33,   // mÈtal
+-   OBJECT_METAL        = 33,   // m√©tal
 -   OBJECT_POWER        = 34,   // pile normale
 -   OBJECT_ATOMIC       = 35,   // pile atomique
 -   OBJECT_BULLET       = 36,   // boulet
 -   OBJECT_BBOX         = 37,   // black-box
 -   OBJECT_TNT          = 38,   // caisse de TNT
--   OBJECT_SCRAP1       = 40,   // dÈchet mÈtallique
--   OBJECT_SCRAP2       = 41,   // dÈchet mÈtallique
--   OBJECT_SCRAP3       = 42,   // dÈchet mÈtallique
--   OBJECT_SCRAP4       = 43,   // dÈchet plastique
--   OBJECT_SCRAP5       = 44,   // dÈchet plastique
+-   OBJECT_SCRAP1       = 40,   // d√©chet m√©tallique
+-   OBJECT_SCRAP2       = 41,   // d√©chet m√©tallique
+-   OBJECT_SCRAP3       = 42,   // d√©chet m√©tallique
+-   OBJECT_SCRAP4       = 43,   // d√©chet plastique
+-   OBJECT_SCRAP5       = 44,   // d√©chet plastique
 -   OBJECT_MARKPOWER    = 50,   // marque pile en sous-sol
 -   OBJECT_MARKSTONE    = 51,   // marque minerai en sous-sol
 -   OBJECT_MARKURANIUM  = 52,   // marque uranium en sous-sol
--   OBJECT_MARKKEYa     = 53,   // marque clÈ en sous-sol
--   OBJECT_MARKKEYb     = 54,   // marque clÈ en sous-sol
--   OBJECT_MARKKEYc     = 55,   // marque clÈ en sous-sol
--   OBJECT_MARKKEYd     = 56,   // marque clÈ en sous-sol
+-   OBJECT_MARKKEYa     = 53,   // marque cl√© en sous-sol
+-   OBJECT_MARKKEYb     = 54,   // marque cl√© en sous-sol
+-   OBJECT_MARKKEYc     = 55,   // marque cl√© en sous-sol
+-   OBJECT_MARKKEYd     = 56,   // marque cl√© en sous-sol
 -   OBJECT_BOMB         = 60,   // bombe
 -   OBJECT_WINFIRE      = 61,   // feu d'artifice
 -   OBJECT_SHOW         = 62,   // montre un lieu
@@ -131,22 +131,22 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
 -   OBJECT_FLAGg        = 262,  // drapeau vert
 -   OBJECT_FLAGy        = 263,  // drapeau jaune
 -   OBJECT_FLAGv        = 264,  // drapeau violet
--   OBJECT_KEYa         = 270,  // clÈ a
--   OBJECT_KEYb         = 271,  // clÈ b
--   OBJECT_KEYc         = 272,  // clÈ c
--   OBJECT_KEYd         = 273,  // clÈ d
+-   OBJECT_KEYa         = 270,  // cl√© a
+-   OBJECT_KEYb         = 271,  // cl√© b
+-   OBJECT_KEYc         = 272,  // cl√© c
+-   OBJECT_KEYd         = 273,  // cl√© d
 -   OBJECT_HUMAN        = 300,  // homme
 -   OBJECT_TOTO         = 301,  // toto
 -   OBJECT_TECH         = 302,  // technicien
--   OBJECT_BARRIER0     = 400,  // barriËre
--   OBJECT_BARRIER1     = 401,  // barriËre
--   OBJECT_BARRIER2     = 402,  // barriËre
--   OBJECT_BARRIER3     = 403,  // barriËre
--   OBJECT_BARRIER4     = 404,  // barriËre
--   OBJECT_MOTHER       = 500,  // mËre pondeuse
+-   OBJECT_BARRIER0     = 400,  // barri√®re
+-   OBJECT_BARRIER1     = 401,  // barri√®re
+-   OBJECT_BARRIER2     = 402,  // barri√®re
+-   OBJECT_BARRIER3     = 403,  // barri√®re
+-   OBJECT_BARRIER4     = 404,  // barri√®re
+-   OBJECT_MOTHER       = 500,  // m√®re pondeuse
 -   OBJECT_EGG          = 501,  // oeuf
 -   OBJECT_ANT          = 502,  // fourmi
--   OBJECT_SPIDER       = 503,  // araignÈe
+-   OBJECT_SPIDER       = 503,  // araign√©e
 -   OBJECT_BEE          = 504,  // abeille
 -   OBJECT_WORM         = 505,  // ver
 -   OBJECT_RUINmobilew1 = 600,  // ruine 1
@@ -257,9 +257,9 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
 -   OBJECT_APOLLO3      = 902,  // apollo flag
 -   OBJECT_APOLLO4      = 903,  // apollo module
 -   OBJECT_APOLLO5      = 904,  // apollo antenna
-+   OBJECT_NULL         = 0,    // objet dÈtruit
-+   OBJECT_FIX          = 1,    // dÈcor fixe
-+   OBJECT_PIECE        = 2,    // piËce de voiture
++   OBJECT_NULL         = 0,    // objet d√©truit
++   OBJECT_FIX          = 1,    // d√©cor fixe
++   OBJECT_PIECE        = 2,    // pi√®ce de voiture
 +   OBJECT_FACTORY1     = 10,   // usine fixe
 +   OBJECT_FACTORY2     = 11,   // usine fixe
 +   OBJECT_FACTORY3     = 12,   // usine fixe
@@ -280,23 +280,23 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
 +   OBJECT_FACTORY18    = 27,   // usine fixe
 +   OBJECT_FACTORY19    = 28,   // usine fixe
 +   OBJECT_FACTORY20    = 29,   // usine fixe
-+   OBJECT_TOWER        = 30,   // tour de dÈfense
-+   OBJECT_NUCLEAR      = 31,   // centrale nuclÈaire
-+   OBJECT_START        = 32,   // dÈpart
-+   OBJECT_END          = 33,   // arrivÈe
++   OBJECT_TOWER        = 30,   // tour de d√©fense
++   OBJECT_NUCLEAR      = 31,   // centrale nucl√©aire
++   OBJECT_START        = 32,   // d√©part
++   OBJECT_END          = 33,   // arriv√©e
 +   OBJECT_PARA         = 34,   // paratonnerre
-+   OBJECT_SUPPORT      = 35,   // prÈsentoir
++   OBJECT_SUPPORT      = 35,   // pr√©sentoir
 +   OBJECT_DOCK         = 36,   // portique
-+   OBJECT_REMOTE       = 37,   // tÈlÈcommande
++   OBJECT_REMOTE       = 37,   // t√©l√©commande
 +   OBJECT_STAND        = 38,   // tribune
-+   OBJECT_GENERATOR    = 39,   // gÈnÈrateur
++   OBJECT_GENERATOR    = 39,   // g√©n√©rateur
 +   OBJECT_DOOR1        = 40,   // porte 1
 +   OBJECT_DOOR2        = 41,   // porte 2
 +   OBJECT_DOOR3        = 42,   // porte 3
 +   OBJECT_DOOR4        = 43,   // porte 4
 +   OBJECT_DOOR5        = 44,   // porte 5
 +   OBJECT_COMPUTER     = 45,   // ordi
-+   OBJECT_REPAIR       = 46,   // center de rÈparation
++   OBJECT_REPAIR       = 46,   // center de r√©paration
 +   OBJECT_SWEET        = 47,   // maisonette
 +   OBJECT_ROADSIGN1    = 60,   // signal 1
 +   OBJECT_ROADSIGN2    = 61,   // signal 2
@@ -367,7 +367,7 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
 +   OBJECT_FRET         = 150,  // transportable
 +   OBJECT_STONE        = 151,  // pierre
 +   OBJECT_URANIUM      = 152,  // uranium
-+   OBJECT_METAL        = 153,  // mÈtal
++   OBJECT_METAL        = 153,  // m√©tal
 +   OBJECT_BARREL       = 154,  // tonneau
 +   OBJECT_BARRELa      = 155,  // tonneau radioactif
 +   OBJECT_ATOMIC       = 156,  // pile atomique
@@ -376,15 +376,15 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
 +   OBJECT_TNT          = 159,  // caisse de TNT
 +   OBJECT_MINE         = 160,  // bombe fixe
 +   OBJECT_POLE         = 161,  // poteau
-+   OBJECT_CONE         = 162,  // cÙne
++   OBJECT_CONE         = 162,  // c√¥ne
 +   OBJECT_AQUA         = 163,  // aquarium
 +   OBJECT_PIPES        = 164,  // tuyaux
 +   OBJECT_GRAVEL       = 165,  // tas de gravier
 +   OBJECT_TUB          = 166,  // bac de gravier
 +   OBJECT_FIRE         = 170,  // lance d'incendie
-+   OBJECT_HELICO       = 171,  // hÈlicoptËre
++   OBJECT_HELICO       = 171,  // h√©licopt√®re
 +   OBJECT_COMPASS      = 172,  // boussole
-+   OBJECT_BLITZER      = 173,  // Èlectrocuteur
++   OBJECT_BLITZER      = 173,  // √©lectrocuteur
 +   OBJECT_HOOK         = 174,  // crochet
 +   OBJECT_TOYS1        = 180,  // jouet 1
 +   OBJECT_TOYS2        = 181,  // jouet 2
@@ -440,12 +440,12 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
 +   OBJECT_BOT3         = 322,  // robot 3
 +   OBJECT_BOT4         = 323,  // robot 4
 +   OBJECT_BOT5         = 324,  // robot 5
-+   OBJECT_EVIL1        = 330,  // mÈchant 1
-+   OBJECT_EVIL2        = 331,  // mÈchant 2
-+   OBJECT_EVIL3        = 332,  // mÈchant 3
-+   OBJECT_EVIL4        = 333,  // mÈchant 4
-+   OBJECT_EVIL5        = 334,  // mÈchant 5
-+   OBJECT_CARROT       = 340,  // carotte ‡ suivre
++   OBJECT_EVIL1        = 330,  // m√©chant 1
++   OBJECT_EVIL2        = 331,  // m√©chant 2
++   OBJECT_EVIL3        = 332,  // m√©chant 3
++   OBJECT_EVIL4        = 333,  // m√©chant 4
++   OBJECT_EVIL5        = 334,  // m√©chant 5
++   OBJECT_CARROT       = 340,  // carotte √† suivre
 +   OBJECT_STARTER      = 341,  // starter
 +   OBJECT_WALKER       = 342,  // marcheur
 +   OBJECT_CRAZY        = 343,  // fou
@@ -458,32 +458,32 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
 +   OBJECT_FLAGg        = 362,  // drapeau vert
 +   OBJECT_FLAGy        = 363,  // drapeau jaune
 +   OBJECT_FLAGv        = 364,  // drapeau violet
-+   OBJECT_KEYa         = 370,  // clÈ a
-+   OBJECT_KEYb         = 371,  // clÈ b
-+   OBJECT_KEYc         = 372,  // clÈ c
-+   OBJECT_KEYd         = 373,  // clÈ d
++   OBJECT_KEYa         = 370,  // cl√© a
++   OBJECT_KEYb         = 371,  // cl√© b
++   OBJECT_KEYc         = 372,  // cl√© c
++   OBJECT_KEYd         = 373,  // cl√© d
 +   OBJECT_HUMAN        = 400,  // homme
 +   OBJECT_TECH         = 402,  // technicien
-+   OBJECT_BARRIER0     = 500,  // barriËre
-+   OBJECT_BARRIER1     = 501,  // barriËre
-+   OBJECT_BARRIER2     = 502,  // barriËre
-+   OBJECT_BARRIER3     = 503,  // barriËre
-+   OBJECT_BARRIER4     = 504,  // barriËre
-+   OBJECT_BARRIER5     = 505,  // barriËre
-+   OBJECT_BARRIER6     = 506,  // barriËre
-+   OBJECT_BARRIER7     = 507,  // barriËre
-+   OBJECT_BARRIER8     = 508,  // barriËre
-+   OBJECT_BARRIER9     = 509,  // barriËre
-+   OBJECT_BARRIER10    = 510,  // barriËre
-+   OBJECT_BARRIER11    = 511,  // barriËre
-+   OBJECT_BARRIER12    = 512,  // barriËre
-+   OBJECT_BARRIER13    = 513,  // barriËre
-+   OBJECT_BARRIER14    = 514,  // barriËre
-+   OBJECT_BARRIER15    = 515,  // barriËre
-+   OBJECT_BARRIER16    = 516,  // barriËre
-+   OBJECT_BARRIER17    = 517,  // barriËre
-+   OBJECT_BARRIER18    = 518,  // barriËre
-+   OBJECT_BARRIER19    = 519,  // barriËre
++   OBJECT_BARRIER0     = 500,  // barri√®re
++   OBJECT_BARRIER1     = 501,  // barri√®re
++   OBJECT_BARRIER2     = 502,  // barri√®re
++   OBJECT_BARRIER3     = 503,  // barri√®re
++   OBJECT_BARRIER4     = 504,  // barri√®re
++   OBJECT_BARRIER5     = 505,  // barri√®re
++   OBJECT_BARRIER6     = 506,  // barri√®re
++   OBJECT_BARRIER7     = 507,  // barri√®re
++   OBJECT_BARRIER8     = 508,  // barri√®re
++   OBJECT_BARRIER9     = 509,  // barri√®re
++   OBJECT_BARRIER10    = 510,  // barri√®re
++   OBJECT_BARRIER11    = 511,  // barri√®re
++   OBJECT_BARRIER12    = 512,  // barri√®re
++   OBJECT_BARRIER13    = 513,  // barri√®re
++   OBJECT_BARRIER14    = 514,  // barri√®re
++   OBJECT_BARRIER15    = 515,  // barri√®re
++   OBJECT_BARRIER16    = 516,  // barri√®re
++   OBJECT_BARRIER17    = 517,  // barri√®re
++   OBJECT_BARRIER18    = 518,  // barri√®re
++   OBJECT_BARRIER19    = 519,  // barri√®re
 +   OBJECT_BOX1         = 520,  // caisse
 +   OBJECT_BOX2         = 521,  // caisse
 +   OBJECT_BOX3         = 522,  // caisse
@@ -504,16 +504,16 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
 +   OBJECT_STONE8       = 537,  // pierre
 +   OBJECT_STONE9       = 538,  // pierre
 +   OBJECT_STONE10      = 539,  // pierre
-+   OBJECT_PIECE0       = 540,  // piËce
-+   OBJECT_PIECE1       = 541,  // piËce
-+   OBJECT_PIECE2       = 542,  // piËce
-+   OBJECT_PIECE3       = 543,  // piËce
-+   OBJECT_PIECE4       = 544,  // piËce
-+   OBJECT_PIECE5       = 545,  // piËce
-+   OBJECT_PIECE6       = 546,  // piËce
-+   OBJECT_PIECE7       = 547,  // piËce
-+   OBJECT_PIECE8       = 548,  // piËce
-+   OBJECT_PIECE9       = 549,  // piËce
++   OBJECT_PIECE0       = 540,  // pi√®ce
++   OBJECT_PIECE1       = 541,  // pi√®ce
++   OBJECT_PIECE2       = 542,  // pi√®ce
++   OBJECT_PIECE3       = 543,  // pi√®ce
++   OBJECT_PIECE4       = 544,  // pi√®ce
++   OBJECT_PIECE5       = 545,  // pi√®ce
++   OBJECT_PIECE6       = 546,  // pi√®ce
++   OBJECT_PIECE7       = 547,  // pi√®ce
++   OBJECT_PIECE8       = 548,  // pi√®ce
++   OBJECT_PIECE9       = 549,  // pi√®ce
 +   OBJECT_RUINmobilew1 = 700,  // ruine 1
 +   OBJECT_RUINmobilew2 = 701,  // ruine 1
 +   OBJECT_RUINmobilet1 = 702,  // ruine 2
@@ -592,16 +592,16 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
 +   OBJECT_INCA8        = 937,  // temple
 +   OBJECT_INCA9        = 938,  // temple
 +   OBJECT_INCA10       = 939,  // temple
-+   OBJECT_BUILDING1    = 940,  // b‚timent
-+   OBJECT_BUILDING2    = 941,  // b‚timent
-+   OBJECT_BUILDING3    = 942,  // b‚timent
-+   OBJECT_BUILDING4    = 943,  // b‚timent
-+   OBJECT_BUILDING5    = 944,  // b‚timent
-+   OBJECT_BUILDING6    = 945,  // b‚timent
-+   OBJECT_BUILDING7    = 946,  // b‚timent
-+   OBJECT_BUILDING8    = 947,  // b‚timent
-+   OBJECT_BUILDING9    = 948,  // b‚timent
-+   OBJECT_BUILDING10   = 949,  // b‚timent
++   OBJECT_BUILDING1    = 940,  // b√¢timent
++   OBJECT_BUILDING2    = 941,  // b√¢timent
++   OBJECT_BUILDING3    = 942,  // b√¢timent
++   OBJECT_BUILDING4    = 943,  // b√¢timent
++   OBJECT_BUILDING5    = 944,  // b√¢timent
++   OBJECT_BUILDING6    = 945,  // b√¢timent
++   OBJECT_BUILDING7    = 946,  // b√¢timent
++   OBJECT_BUILDING8    = 947,  // b√¢timent
++   OBJECT_BUILDING9    = 948,  // b√¢timent
++   OBJECT_BUILDING10   = 949,  // b√¢timent
 +   OBJECT_CARCASS1     = 950,  // carcasse
 +   OBJECT_CARCASS2     = 951,  // carcasse
 +   OBJECT_CARCASS3     = 952,  // carcasse
@@ -627,7 +627,7 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
  
 -enum ObjectMaterial
 -{
--   OM_METAL            = 0,    // mÈtal
+-   OM_METAL            = 0,    // m√©tal
 -   OM_PLASTIC          = 1,    // plastique
 -   OM_HUMAN            = 2,    // cosmonaute
 -   OM_ANIMAL           = 3,    // insecte
@@ -643,33 +643,33 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
  typedef struct
  {
 -   float       wheelFront;     // position X des roues avant
--   float       wheelBack;      // position X des roues arriËres
+-   float       wheelBack;      // position X des roues arri√®res
 -   float       wheelLeft;      // position Z des roues gauches
 -   float       wheelRight;     // position Z des roues droites
 +   D3DVECTOR   wheelFrontPos;  // position roue avant gauche
-+   D3DVECTOR   wheelBackPos;   // position roue arriËre gauche
++   D3DVECTOR   wheelBackPos;   // position roue arri√®re gauche
 +   float       wheelFrontDim;  // rayon roues avants
-+   float       wheelBackDim;   // rayon roues arriËres
++   float       wheelBackDim;   // rayon roues arri√®res
 +   float       wheelFrontWidth;// largeur des pneus avants
-+   float       wheelBackWidth; // largeur des pneus arriËres
-+   float       crashFront;     // distance jusqu'‡ l'avant pour collisions
-+   float       crashBack;      // distance jusqu'‡ l'arriËre pour collisions
-+   float       crashWidth;     // distance latÈrale pour collisions
++   float       wheelBackWidth; // largeur des pneus arri√®res
++   float       crashFront;     // distance jusqu'√† l'avant pour collisions
++   float       crashBack;      // distance jusqu'√† l'arri√®re pour collisions
++   float       crashWidth;     // distance lat√©rale pour collisions
     float       height;         // hauteur normale au-dessus du sol
 -   D3DVECTOR   posPower;       // position de la pile
-+   float       suspDetect;     // dÈtection suspension
++   float       suspDetect;     // d√©tection suspension
 +   float       suspHeight;     // hauteur suspension
-+   float       suspFrequency;  // frÈquence suspension
++   float       suspFrequency;  // fr√©quence suspension
 +   float       suspAbsorber;   // amortisseur suspension
 +   float       rolling;        // tandance au roulis dans les virages
-+   float       nicking;        // tandance au nick avant/arriËre
++   float       nicking;        // tandance au nick avant/arri√®re
 +   float       maxRolling;     // angle max de roulis
 +   float       maxNicking;     // angle max de nick
-+   float       overProp;       // tandance ‡ survirer si propulsion
++   float       overProp;       // tandance √† survirer si propulsion
 +   float       overFactor;     // tandance au survirage dans les courbes
 +   float       overAngle;      // angle max de survirage
 +   float       overMul;        // accentiation de l'effet de survirage
-+   float       brakeDir;       // efficacitÈ direction pendant freinage
++   float       brakeDir;       // efficacit√© direction pendant freinage
 +   D3DVECTOR   posFret;        // position pour le fret
 +   D3DVECTOR   angleFret;      // angle pour le fret
 +   D3DVECTOR   antenna;        // pointe de l'antenne
@@ -679,15 +679,15 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
 +   D3DVECTOR   lightSR;        // phase stop droite
 +   D3DVECTOR   lightRL;        // phase recule gauche
 +   D3DVECTOR   lightRR;        // phase recule droite
-+   D3DVECTOR   camera;         // position camÈra en mode CAMERA_ONBOARD
++   D3DVECTOR   camera;         // position cam√©ra en mode CAMERA_ONBOARD
 +   float       hookDist;       // distance pour porter avec le crochet
-+   float       mass;           // poid du vÈhicule
++   float       mass;           // poid du v√©hicule
 +   float       turnSlide;      // glissement si virage rapide
-+   float       gripLimit;      // limite d'adÈrance latÈrale
-+   float       gripSlide;      // tenue de route latÈrale
-+   float       accelLow;       // facteur d'accÈlÈration si vitesse nulle
-+   float       accelHigh;      // facteur d'accÈlÈration si vitesse max
-+   float       accelSmooth;    // progresion de l'accÈlÈration
++   float       gripLimit;      // limite d'ad√©rance lat√©rale
++   float       gripSlide;      // tenue de route lat√©rale
++   float       accelLow;       // facteur d'acc√©l√©ration si vitesse nulle
++   float       accelHigh;      // facteur d'acc√©l√©ration si vitesse max
++   float       accelSmooth;    // progresion de l'acc√©l√©ration
 +   int         motorSound;     // son pour le moteur
  }
  Character;
@@ -993,46 +993,46 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
     CScript*        m_runScript;
  
     ObjectType  m_type;             // OBJECT_*
-+   int         m_model;            // modËle de voiture
-+   int         m_subModel;         // modËle de la peinture
++   int         m_model;            // mod√®le de voiture
++   int         m_subModel;         // mod√®le de la peinture
     int         m_id;               // identificateur unique
 -   char        m_name[50];         // nom de l'objet
-    Character   m_character;        // caractÈristiques
+    Character   m_character;        // caract√©ristiques
     int         m_option;           // option
--   int         m_partiReactor;     // numÈro de la particule du rÈacteur
-    int         m_shadowLight;      // numÈro de la lumiËre de l'ombre
-    float       m_shadowHeight;     // hauteur de la lumiËre de l'ombre
-    int         m_effectLight;      // numÈro de la lumiËre des effets
-    float       m_effectHeight;     // hauteur de la lumiËre des effets
-    D3DVECTOR   m_linVibration;     // vibration linÈaire
+-   int         m_partiReactor;     // num√©ro de la particule du r√©acteur
+    int         m_shadowLight;      // num√©ro de la lumi√®re de l'ombre
+    float       m_shadowHeight;     // hauteur de la lumi√®re de l'ombre
+    int         m_effectLight;      // num√©ro de la lumi√®re des effets
+    float       m_effectHeight;     // hauteur de la lumi√®re des effets
+    D3DVECTOR   m_linVibration;     // vibration lin√©aire
     D3DVECTOR   m_cirVibration;     // vibration circulaire
-+   D3DVECTOR   m_cirChoc;          // rotation suite ‡ un choc
++   D3DVECTOR   m_cirChoc;          // rotation suite √† un choc
     D3DVECTOR   m_inclinaison;      // inclinaison
-    CObject*    m_power;            // pile utilisÈe par le vÈhicule
-    CObject*    m_fret;             // objet transportÈ
+    CObject*    m_power;            // pile utilis√©e par le v√©hicule
+    CObject*    m_fret;             // objet transport√©
     CObject*    m_truck;            // objet portant celui-ci
     int         m_truckLink;        // partie
--   float       m_energy;           // Ènergie contenue (si pile)
+-   float       m_energy;           // √©nergie contenue (si pile)
 -   float       m_lastEnergy;
--   float       m_capacity;         // capacitÈ (si pile)
+-   float       m_capacity;         // capacit√© (si pile)
     float       m_shield;           // bouclier
 -   float       m_range;            // autonomie de vol
-+   float       m_burnShield;       // bouclier de rÈsistance au feu
++   float       m_burnShield;       // bouclier de r√©sistance au feu
     float       m_transparency;     // transparence (0..1)
--   int         m_material;         // matiËre (0..n)
+-   int         m_material;         // mati√®re (0..n)
     float       m_aTime;
     float       m_shotTime;         // temps depuis dernier coup
--   BOOL        m_bVirusMode;       // virus enclanchÈ/dÈclanchÈ
+-   BOOL        m_bVirusMode;       // virus enclanch√©/d√©clanch√©
 -   float       m_virusTime;        // temps de vie du virus
 -   float       m_lastVirusParticule;
     float       m_lastParticule;
     BOOL        m_bHilite;
-    BOOL        m_bSelect;          // objet sÈlectionnÈ
-    BOOL        m_bSelectable;      // objet sÈlectionnable
--   BOOL        m_bCheckToken;      // objet avec tokens vÈrifiÈs
-    BOOL        m_bVisible;         // objet actif mais indÈtectable
+    BOOL        m_bSelect;          // objet s√©lectionn√©
+    BOOL        m_bSelectable;      // objet s√©lectionnable
+-   BOOL        m_bCheckToken;      // objet avec tokens v√©rifi√©s
+    BOOL        m_bVisible;         // objet actif mais ind√©tectable
     BOOL        m_bEnable;          // objet mort
--   BOOL        m_bProxyActivate;   // objet activÈ si proche
+-   BOOL        m_bProxyActivate;   // objet activ√© si proche
     BOOL        m_bGadget;          // objet non indispensable
     BOOL        m_bLock;
 +   BOOL        m_bStarting;
@@ -1041,8 +1041,8 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
     BOOL        m_bBurn;
     BOOL        m_bDead;
     BOOL        m_bFlat;
-    BOOL        m_bTrainer;         // vÈhicule d'entraÓnement (sans tÈlÈcommande)
--   BOOL        m_bToy;             // jouet ‡ clÈ
+    BOOL        m_bTrainer;         // v√©hicule d'entra√Ænement (sans t√©l√©commande)
+-   BOOL        m_bToy;             // jouet √† cl√©
 -   BOOL        m_bManual;          // commandes manuelles (Scribbler)
     BOOL        m_bFixed;
     BOOL        m_bClip;
@@ -1060,14 +1060,14 @@ diff a/src/object/object.h b/src/object/object.h	(rejected hunks)
 -   float       m_proxyDistance;
     float       m_param;
  
-    int         m_crashSphereUsed;  // nb de sphËres utilisÈes
+    int         m_crashSphereUsed;  // nb de sph√®res utilis√©es
 @@ -739,28 +833,29 @@ protected:
     float       m_globalSphereRadius;
     D3DVECTOR   m_jotlerSpherePos;
     float       m_jotlerSphereRadius;
 -   float       m_shieldRadius;
 +
-+   int         m_crashLineUsed;    // nb de lignes utilisÈes
++   int         m_crashLineUsed;    // nb de lignes utilis√©es
 +   FPOINT      m_crashLinePos[MAXCRASHLINE];
 +   char        m_crashLineNew[MAXCRASHLINE];
 +   float       m_crashLineHardness[MAXCRASHLINE];

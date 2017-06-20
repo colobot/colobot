@@ -18,7 +18,7 @@ enum AutoIncaPhase
    AINP_WAIT       = 1,    // attend qu'on presse le bouton
    AINP_OPEN       = 2,    // ouvre les 2 portes
    AINP_DOWN       = 3,    // descend la colonne
-   AINP_BLITZ      = 4,    // démarre les éclairs
+   AINP_BLITZ      = 4,    // dÃ©marre les Ã©clairs
    AINP_TERM       = 5,    // attente finale
 };
 

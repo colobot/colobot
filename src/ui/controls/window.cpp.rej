@@ -28,7 +28,7 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
     return 0;
  }
  
-+// Crée une nouvelle liste.
++// CrÃ©e une nouvelle liste.
 +
 +CArray* CWindow::CreateArray(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
 +                        float expand)
@@ -51,15 +51,15 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
 +   return 0;
 +}
 +
- // Crée un nouveau raccourci.
+ // CrÃ©e un nouveau raccourci.
  
  CShortcut* CWindow::CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 @@ -476,11 +502,11 @@ CGauge* CWindow::CreateGauge(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg
     return 0;
  }
  
--// Crée une nouvelle boussole.
-+// Crée une nouvelle jauge.
+-// CrÃ©e une nouvelle boussole.
++// CrÃ©e une nouvelle jauge.
  
 -CCompass* CWindow::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 +CPesetas* CWindow::CreatePesetas(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
@@ -84,8 +84,8 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
     return 0;
  }
  
--// Crée une nouvelle cible.
-+// Crée une nouvelle jauge.
+-// CrÃ©e une nouvelle cible.
++// CrÃ©e une nouvelle jauge.
  
 -CTarget* CWindow::CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 +CGeiger* CWindow::CreateGeiger(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
@@ -110,7 +110,7 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
 +   return 0;
 +}
 +
-+// Crée un nouvel indicateur d'avance.
++// CrÃ©e un nouvel indicateur d'avance.
 +
 +CProgress* CWindow::CreateProgress(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 +{
@@ -132,7 +132,7 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
 +   return 0;
 +}
 +
-+// Crée une nouvelle boussole.
++// CrÃ©e une nouvelle boussole.
 +
 +CCompass* CWindow::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 +{
@@ -154,8 +154,8 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
     return FALSE;
  }
  
--// Donne un contrôle.
-+// Donne un contrôle d'après son événement.
+-// Donne un contrÃ´le.
++// Donne un contrÃ´le d'aprÃ¨s son Ã©vÃ©nement.
  
  CControl* CWindow::SearchControl(EventMsg eventMsg)
  {
@@ -163,7 +163,7 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
     return 0;
  }
  
-+// Donne un contrôle d'après son rang.
++// Donne un contrÃ´le d'aprÃ¨s son rang.
 +
 +CControl* CWindow::SearchControl(int tabOrder)
 +{
@@ -182,7 +182,7 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
 +   return 0;
 +}
 +
-+// Donne le contrôle qui a le focus.
++// Donne le contrÃ´le qui a le focus.
 +
 +CControl* CWindow::SearchControl()
 +{
@@ -202,7 +202,7 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
 +}
 +
  
- // Donne le tooltip lié à la fenêtre.
+ // Donne le tooltip liÃ© Ã  la fenÃªtre.
  
 @@ -686,14 +794,14 @@ void CWindow::MoveAdjust()
     FPOINT      pos, dim;
@@ -414,7 +414,7 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
 -       m_engine->SetTexture("button2.tga");
 +       m_engine->SetTexture("button1.tga");
         m_engine->SetState(D3DSTATETTw);
--       uv1.x =  64.0f/256.0f;  // bleu foncé transparent
+-       uv1.x =  64.0f/256.0f;  // bleu foncÃ© transparent
 -       uv1.y =  64.0f/256.0f;
 -       uv2.x = 128.0f/256.0f;
 -       uv2.y = 128.0f/256.0f;
@@ -449,7 +449,7 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
 -       m_engine->SetTexture("button2.tga");
 +       m_engine->SetTexture("button1.tga");
         m_engine->SetState(D3DSTATETTb);
--       uv1.x =   0.0f/256.0f;  // bleu transparent avec barre jaune supérieure
+-       uv1.x =   0.0f/256.0f;  // bleu transparent avec barre jaune supÃ©rieure
 -       uv1.y =  64.0f/256.0f;
 -       uv2.x =  64.0f/256.0f;
 -       uv2.y = 128.0f/256.0f;
@@ -479,7 +479,7 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
 -       uv1.y += dp;
 -       uv2.x -= dp;
 -       uv2.y -= dp;
--       DrawIcon(pos, dim, uv1, uv2);  // vêtement
+-       DrawIcon(pos, dim, uv1, uv2);  // vÃªtement
 -
 -       pos.x += 20.0f/640.0f;
 -       pos.y -= 10.0f/480.0f;
@@ -550,7 +550,7 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
 -       uv1.y += dp;
 -       uv2.x -= dp;
 -       uv2.y -= dp;
--       DrawIcon(pos, dim, uv1, uv2);  // fond bleu foncé
+-       DrawIcon(pos, dim, uv1, uv2);  // fond bleu foncÃ©
 -
 -       m_engine->SetTexture("button2.tga");
 -       uv1.x = 224.0f/256.0f;
@@ -731,7 +731,7 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
         DrawIcon(pos, dim, uv1, uv2, 8.0f/256.0f);
     }
 -   else if ( icon == 12 )
-+   else if ( icon == 12 )  // fenêtre de l'interface ?
++   else if ( icon == 12 )  // fenÃªtre de l'interface ?
     {
         m_engine->SetTexture("button1.tga");
 -       m_engine->SetState(D3DSTATENORMAL);
@@ -773,9 +773,9 @@ diff a/src/ui/controls/window.cpp b/src/ui/controls/window.cpp	(rejected hunks)
 +       uv2.y -= dp;
 +
 +       p1.x = 30.0f/640.0f;  // bord gauche
-+       p1.y = 64.0f/480.0f;  // bord inférieur
++       p1.y = 64.0f/480.0f;  // bord infÃ©rieur
 +       p2.x = 30.0f/640.0f;  // bord droite
-+       p2.y = 90.0f/480.0f;  // bord supérieur
++       p2.y = 90.0f/480.0f;  // bord supÃ©rieur
 +
 +       ppos.y = pos.y;
 +       ddim.y = p1.y;

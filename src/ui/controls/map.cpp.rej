@@ -23,7 +23,7 @@ diff a/src/ui/controls/map.cpp b/src/ui/controls/map.cpp	(rejected hunks)
  }
  
  
--// Choix de l'offset, lorsqu'une image fixe est affichée.
+-// Choix de l'offset, lorsqu'une image fixe est affichÃ©e.
 -
 -void CMap::SetOffset(float ox, float oy)
 -{
@@ -39,14 +39,14 @@ diff a/src/ui/controls/map.cpp b/src/ui/controls/map.cpp	(rejected hunks)
 -   m_angle = angle;
 -}
 -
--// Spécifie le mode spécial.
+-// SpÃ©cifie le mode spÃ©cial.
 -
 -void CMap::SetMode(int mode)
 -{
 -   m_mode = mode;
 -}
 -
--// Spécifie le type de l'icône pour l'objet sélectionné.
+-// SpÃ©cifie le type de l'icÃ´ne pour l'objet sÃ©lectionnÃ©.
 -
 -void CMap::SetToy(BOOL bToy)
 -{
@@ -74,13 +74,13 @@ diff a/src/ui/controls/map.cpp b/src/ui/controls/map.cpp	(rejected hunks)
  
 -// Choix d'un offset fixe.
  
- // Active ou désactive la carte.
+ // Active ou dÃ©sactive la carte.
  
 @@ -158,21 +114,6 @@ void CMap::SetWaterColor(D3DCOLORVALUE color)
  }
  
  
--// Spécifie une image fixe à la place du dessin du relief.
+-// SpÃ©cifie une image fixe Ã  la place du dessin du relief.
 -
 -void CMap::SetFixImage(char *filename)
 -{
@@ -95,7 +95,7 @@ diff a/src/ui/controls/map.cpp b/src/ui/controls/map.cpp	(rejected hunks)
 -}
 -
 -
- // Gestion d'un événement.
+ // Gestion d'un Ã©vÃ©nement.
  
  BOOL CMap::EventProcess(const Event &event)
 @@ -231,7 +172,6 @@ void CMap::SetHilite(CObject* pObj)
@@ -146,7 +146,7 @@ diff a/src/ui/controls/map.cpp b/src/ui/controls/map.cpp	(rejected hunks)
 +   DrawVertex(uv1, uv2, 0.97f);  // dessine la carte
  
     i = MAPMAXOBJECT-1;
-    if ( m_map[i].bUsed )  // sélection :
+    if ( m_map[i].bUsed )  // sÃ©lection :
 @@ -427,7 +353,6 @@ void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
     BOOL    bEnding;
     int     quart;
@@ -324,7 +324,7 @@ diff a/src/ui/controls/map.cpp b/src/ui/controls/map.cpp	(rejected hunks)
 -   uv1.y += dp;
 -   uv2.x -= dp;
 -   uv2.y -= dp;
--   DrawIcon(pos, dim, uv1, uv2);  // fond coloré
+-   DrawIcon(pos, dim, uv1, uv2);  // fond colorÃ©
 -
 -   if ( bHilite )
 -   {
@@ -394,11 +394,11 @@ diff a/src/ui/controls/map.cpp b/src/ui/controls/map.cpp	(rejected hunks)
 -       uv1.y += dp;
 -       uv2.x -= dp;
 -       uv2.y -= dp;
--       DrawIcon(pos, dim, uv1, uv2);  // icône
+-       DrawIcon(pos, dim, uv1, uv2);  // icÃ´ne
 -   }
  }
  
- // Dessine l'objet survolé par la souris.
+ // Dessine l'objet survolÃ© par la souris.
 @@ -885,8 +648,6 @@ void CMap::DrawHilite(FPOINT pos)
     FPOINT      dim, uv1, uv2;
     BOOL        bOut, bUp, bDown, bLeft, bRight;
@@ -412,7 +412,7 @@ diff a/src/ui/controls/map.cpp b/src/ui/controls/map.cpp	(rejected hunks)
     m_engine->AddStatisticTriangle(1);
  }
  
--// Dessine une icône pentagonulaire (à 5 côtés, quoi !).
+-// Dessine une icÃ´ne pentagonulaire (Ã  5 cÃ´tÃ©s, quoi !).
 -
 -void CMap::DrawPenta(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT p4, FPOINT p5, FPOINT uv1, FPOINT uv2)
 -{
@@ -616,9 +616,9 @@ diff a/src/ui/controls/map.cpp b/src/ui/controls/map.cpp	(rejected hunks)
 -        type == OBJECT_MOBILEft ||
 -        type == OBJECT_MOBILEit ||
 -        type == OBJECT_MOBILEdr ||
--        type == OBJECT_APOLLO2  )  // véhicule mobile ?
+-        type == OBJECT_APOLLO2  )  // vÃ©hicule mobile ?
 +        type == OBJECT_MOBILEfb ||
-+        type == OBJECT_MOBILEob )  // véhicule mobile ?
++        type == OBJECT_MOBILEob )  // vÃ©hicule mobile ?
     {
         color = MAPCOLOR_MOVE;
     }

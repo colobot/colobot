@@ -31,8 +31,8 @@
 
 
 #define HEIGHT     -26.0f      // abaissement de la porte
-#define TIME_CLOSE 1.0f        // durÈe fermeture
-#define TIME_OPEN  5.0f        // durÈe ouverture
+#define TIME_CLOSE 1.0f        // dur√©e fermeture
+#define TIME_OPEN  5.0f        // dur√©e ouverture
 
 
 
@@ -61,7 +61,7 @@ CAutoDoor::~CAutoDoor()
 }
 
 
-// DÈtruit l'objet.
+// D√©truit l'objet.
 
 void CAutoDoor::DeleteObject(BOOL bAll)
 {
@@ -100,7 +100,7 @@ void CAutoDoor::Init()
 }
 
 
-// DÈmarre l'objet.
+// D√©marre l'objet.
 
 void CAutoDoor::Start(int param)
 {
@@ -110,12 +110,12 @@ void CAutoDoor::Start(int param)
    float       angle, value;
    int         bot, i;
 
-   if ( param == 2 &&  // casse le mÈcanisme ?
+   if ( param == 2 &&  // casse le m√©canisme ?
         (m_type == OBJECT_DOOR2 ||
          m_type == OBJECT_DOOR3 ) )
    {
        if ( m_phase == ADOP_BREAK ||
-            m_phase == ADOP_STOP  )  return;  // dÈj‡ cassÈ ?
+            m_phase == ADOP_STOP  )  return;  // d√©j√† cass√© ?
 
        i = m_sound->Play(SOUND_BREAK1, m_engine->RetEyePt(), 1.0f, 0.5f, TRUE);
        m_sound->AddEnvelope(i, 1.0f, 2.0f, 6.0f, SOPER_CONTINUE);
@@ -149,7 +149,7 @@ void CAutoDoor::Start(int param)
        {
            pos = m_object->RetPosition(1);
            pos.y = HEIGHT;
-           m_object->SetPosition(1, pos);  // porte fermÈe
+           m_object->SetPosition(1, pos);  // porte ferm√©e
            UpdateCrashSphere();
 
            m_phase    = ADOP_13WAIT;
@@ -178,7 +178,7 @@ void CAutoDoor::Start(int param)
        m_time = 0.0f;
    }
 
-   // CrÈe la croix (invisible) sous la porte.
+   // Cr√©e la croix (invisible) sous la porte.
    if ( (m_type == OBJECT_DOOR1 || m_type == OBJECT_DOOR4) && param != 3 )
    {
        pos = m_object->RetPosition(0);
@@ -197,7 +197,7 @@ void CAutoDoor::Start(int param)
        }
    }
 
-   // CrÈe le robot s'occupant de la porte.
+   // Cr√©e le robot s'occupant de la porte.
    if ( (m_type == OBJECT_DOOR2 ||
          m_type == OBJECT_DOOR3 ) && bot == 1 )
    {
@@ -228,7 +228,7 @@ void CAutoDoor::Start(int param)
 }
 
 
-// Gestion d'un ÈvÈnement.
+// Gestion d'un √©v√©nement.
 
 BOOL CAutoDoor::EventProcess(const Event &event)
 {
@@ -344,7 +344,7 @@ BOOL CAutoDoor::EventProcess(const Event &event)
                m_progress = 0.0f;
                m_speed    = 1.0f/1.0f;
 
-               FireStopUpdate();  // Èteint
+               FireStopUpdate();  // √©teint
                m_sound->Play(SOUND_CLOSE, m_object->RetPosition(0));
            }
        }
@@ -544,7 +544,7 @@ BOOL CAutoDoor::EventProcess(const Event &event)
                                         duration, mass, Rand()+0.7f, 1.0f);
            }
 
-           // Donne une apparance cassÈe au mÈcanisme.
+           // Donne une apparance cass√©e au m√©canisme.
            pos = m_object->RetPosition(3);
            pos.y -= 3.0f;
            m_object->SetPosition(3, pos);
@@ -567,7 +567,7 @@ BOOL CAutoDoor::EventProcess(const Event &event)
            speed.x = 10.0f+Rand()*10.0f;
            speed.y = 10.0f+Rand()*15.0f;
            speed.z = (Rand()-0.5f)*1.0f;
-           DetachPart(6, speed);  // dÈtache le petit engrenage
+           DetachPart(6, speed);  // d√©tache le petit engrenage
 
            m_phase    = ADOP_STOP;
            m_progress = 0.0f;
@@ -587,10 +587,10 @@ BOOL CAutoDoor::EventProcess(const Event &event)
    if ( m_type == OBJECT_DOOR2 ||
         m_type == OBJECT_DOOR3 )
    {
-       // Fait tourner le mÈcanisme "roue-piston-bielle".
+       // Fait tourner le m√©canisme "roue-piston-bielle".
        a = piston*PI*2.0f;
-       m_object->SetAngleX(3, -a);  // grande roue (diamËtre = 7)
-       m_object->SetAngleX(6, a*7.0f/2.0f);  // petite roue (diamËtre = 2)
+       m_object->SetAngleX(3, -a);  // grande roue (diam√®tre = 7)
+       m_object->SetAngleX(6, a*7.0f/2.0f);  // petite roue (diam√®tre = 2)
 
        d = cosf(a)*5.0f;  // R = 5
        h = sinf(a)*5.0f;
@@ -607,7 +607,7 @@ BOOL CAutoDoor::EventProcess(const Event &event)
    return TRUE;
 }
 
-// Symboles du systËme "roue-piston-bielle" :
+// Symboles du syst√®me "roue-piston-bielle" :
 //
 //             o <----- bas du piston mobile |
 //            /|
@@ -615,9 +615,9 @@ BOOL CAutoDoor::EventProcess(const Event &event)
 //          /<--------- bielle
 //       L /   | D
 //        /    |
-//       /    a|   (ici angle a = 120 degrÈs)
+//       /    a|   (ici angle a = 120 degr√©s)
 //      /  R __o <----- centre de la roue fixe
-//     / __--  | d (ici nÈgatif)
+//     / __--  | d (ici n√©gatif)
 //    o--      o
 //    <----h--->
 //
@@ -629,7 +629,7 @@ BOOL CAutoDoor::EventProcess(const Event &event)
 //     b = atan(h/(D-d))      angle de la bielle
 
 
-// CrÈe un morceau d'objet qui part.
+// Cr√©e un morceau d'objet qui part.
 
 BOOL CAutoDoor::DetachPart(int part, D3DVECTOR speed)
 {
@@ -667,7 +667,7 @@ BOOL CAutoDoor::Abort()
 }
 
 
-// Met ‡ jour la position des portes.
+// Met √† jour la position des portes.
 
 void CAutoDoor::MoveDoor(float progress)
 {
@@ -701,7 +701,7 @@ void CAutoDoor::MoveDoor(float progress)
    UpdateCrashSphere();
 }
 
-// Met ‡ jour les sphËres de collision.
+// Met √† jour les sph√®res de collision.
 
 void CAutoDoor::UpdateCrashSphere()
 {
@@ -754,7 +754,7 @@ void CAutoDoor::UpdateCrashSphere()
    }
 }
 
-// Met ‡ jour les feux de stop.
+// Met √† jour les feux de stop.
 
 void CAutoDoor::FireStopUpdate()
 {
@@ -776,7 +776,7 @@ void CAutoDoor::FireStopUpdate()
         -4.5f,  9.0f,   0.0f,  // 2 feux sur la porte
    };
 
-   if ( m_phase == ADOP_WAIT   ||  // Èteint ?
+   if ( m_phase == ADOP_WAIT   ||  // √©teint ?
         m_phase == ADOP_13OPEN )
    {
        for ( i=0 ; i<6 ; i++ )
@@ -845,7 +845,7 @@ void CAutoDoor::FireStopUpdate()
 }
 
 
-// Retourne une erreur liÈe ‡ l'Ètat de l'automate.
+// Retourne une erreur li√©e √† l'√©tat de l'automate.
 
 Error CAutoDoor::RetError()
 {
@@ -884,7 +884,7 @@ CObject* CAutoDoor::SearchTarget()
    return 0;
 }
 
-// Cherche le vÈhicule sous la porte.
+// Cherche le v√©hicule sous la porte.
 
 CObject* CAutoDoor::SearchVehicle(float radius)
 {
@@ -915,7 +915,7 @@ CObject* CAutoDoor::SearchVehicle(float radius)
    return 0;
 }
 
-// Ecrase un vÈhicule sous la porte.
+// Ecrase un v√©hicule sous la porte.
 
 void CAutoDoor::CrashVehicle(CObject *vehicle, BOOL bFlat)
 {

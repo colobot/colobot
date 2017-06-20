@@ -50,7 +50,7 @@ CGeiger::~CGeiger()
 }
 
 
-// Crée un nouveau bouton.
+// CrÃ©e un nouveau bouton.
 
 BOOL CGeiger::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -86,7 +86,7 @@ BOOL CGeiger::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CGeiger::EventProcess(const Event &event)
 {
@@ -226,7 +226,7 @@ void CGeiger::Draw()
 }
 
 
-// Détecte l'objet le plus proche et retourne la "distance" (0..1).
+// DÃ©tecte l'objet le plus proche et retourne la "distance" (0..1).
 
 float CGeiger::DetectObject()
 {

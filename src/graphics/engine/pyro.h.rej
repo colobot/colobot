@@ -14,19 +14,19 @@ diff a/src/graphics/engine/pyro.h b/src/graphics/engine/pyro.h	(rejected hunks)
 -   PT_SHOTM    = 11,       // coup pondeuse
 -   PT_SHOTW    = 12,       // coup sous l'eau
 -   PT_EGG      = 13,       // casse l'oeuf
--   PT_BURNT    = 14,       // brûle objet technique
--   PT_BURNO    = 15,       // brûle objet organique
--   PT_SPIDER   = 16,       // explosion araignée
+-   PT_BURNT    = 14,       // brÃ»le objet technique
+-   PT_BURNO    = 15,       // brÃ»le objet organique
+-   PT_SPIDER   = 16,       // explosion araignÃ©e
 -   PT_FALL     = 17,       // fret qui tombe
 -   PT_WPCHECK  = 18,       // indicateur atteint
--   PT_FLCREATE = 19,       // drapeau créé
--   PT_FLDELETE = 20,       // drapeau détruit
+-   PT_FLCREATE = 19,       // drapeau crÃ©Ã©
+-   PT_FLDELETE = 20,       // drapeau dÃ©truit
 -   PT_RESET    = 21,       // reset position de l'objet
 -   PT_WIN      = 22,       // feu d'artifice
--   PT_LOST     = 23,       // fumée noire
+-   PT_LOST     = 23,       // fumÃ©e noire
 -   PT_DEADG    = 24,       // mort par balle
--   PT_DEADW    = 25,       // mort noyé
--   PT_FINDING  = 26,       // objet découvert
+-   PT_DEADW    = 25,       // mort noyÃ©
+-   PT_FINDING  = 26,       // objet dÃ©couvert
 +   PT_FRAGT    = 10,       // fragmentation objet technique
 +   PT_FRAGO    = 11,       // fragmentation objet organique
 +   PT_FRAGW    = 12,       // fragmentation objet sous l'eau
@@ -40,24 +40,24 @@ diff a/src/graphics/engine/pyro.h b/src/graphics/engine/pyro.h	(rejected hunks)
 +   PT_SHOTH    = 41,       // coup homme
 +   PT_SHOTM    = 42,       // coup pondeuse
 +   PT_SHOTW    = 43,       // coup sous l'eau
-+   PT_BURNT    = 60,       // brûle objet technique
-+   PT_BURNO    = 61,       // brûle objet organique
-+   PT_BURNS    = 62,       // brûle objet seul
-+   PT_EJECT    = 70,       // objet éjecté
-+   PT_FINDING  = 71,       // objet découvert
++   PT_BURNT    = 60,       // brÃ»le objet technique
++   PT_BURNO    = 61,       // brÃ»le objet organique
++   PT_BURNS    = 62,       // brÃ»le objet seul
++   PT_EJECT    = 70,       // objet Ã©jectÃ©
++   PT_FINDING  = 71,       // objet dÃ©couvert
 +   PT_PAINTING = 72,       // voiture peinte
-+   PT_ACROBATIC= 73,       // robot voltigeant suite à un choc
-+   PT_PIECE    = 74,       // pièce de véhicule perdue
++   PT_ACROBATIC= 73,       // robot voltigeant suite Ã  un choc
++   PT_PIECE    = 74,       // piÃ¨ce de vÃ©hicule perdue
 +   PT_SABOTAGE = 75,       // sabotage en cours
 +   PT_WPCHECK  = 80,       // indicateur atteint
-+   PT_WPVIBRA  = 81,       // indicateur touché
-+   PT_FLCREATE = 82,       // drapeau créé
-+   PT_FLDELETE = 83,       // drapeau détruit
++   PT_WPVIBRA  = 81,       // indicateur touchÃ©
++   PT_FLCREATE = 82,       // drapeau crÃ©Ã©
++   PT_FLDELETE = 83,       // drapeau dÃ©truit
 +   PT_WIN      = 90,       // feu d'artifice
-+   PT_LOST     = 91,       // fumée noire
++   PT_LOST     = 91,       // fumÃ©e noire
 +   PT_DEADG    = 92,       // mort par balle
-+   PT_DEADW    = 93,       // mort noyé
-+   PT_SPIDER   = 94,       // explosion araignée
++   PT_DEADW    = 93,       // mort noyÃ©
++   PT_SPIDER   = 94,       // explosion araignÃ©e
 +   PT_EGG      = 95,       // casse l'oeuf
  };
  
@@ -113,9 +113,9 @@ diff a/src/graphics/engine/pyro.h b/src/graphics/engine/pyro.h	(rejected hunks)
     D3DVECTOR       m_pos;          // centre de l'effet
 -   D3DVECTOR       m_posPower;     // centre de la pile
 -   BOOL            m_bPower;       // pile existe ?
-+   D3DVECTOR       m_posTracks;    // départ des traînées
-+   BOOL            m_bTracks;      // traînées incandescentes ?
-+   BOOL            m_bSphere;      // sphère translucide
++   D3DVECTOR       m_posTracks;    // dÃ©part des traÃ®nÃ©es
++   BOOL            m_bTracks;      // traÃ®nÃ©es incandescentes ?
++   BOOL            m_bSphere;      // sphÃ¨re translucide
 +   BOOL            m_bChoc;        // onde de choc circulaire
     PyroType        m_type;
     float           m_force;
@@ -140,6 +140,6 @@ diff a/src/graphics/engine/pyro.h b/src/graphics/engine/pyro.h	(rejected hunks)
 -   float           m_fallBulletTime;
 -   BOOL            m_bFallEnding;
 -
-    int             m_crashSphereUsed;  // nb de sphères utilisées
+    int             m_crashSphereUsed;  // nb de sphÃ¨res utilisÃ©es
     D3DVECTOR       m_crashSpherePos[50];
     float           m_crashSphereRadius[50];

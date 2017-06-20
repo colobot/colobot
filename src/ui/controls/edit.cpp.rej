@@ -101,7 +101,7 @@ diff a/src/ui/controls/edit.cpp b/src/ui/controls/edit.cpp	(rejected hunks)
  }
  
  
--// Détecte si la souris est sur un caractère lien hypertexte.
+-// DÃ©tecte si la souris est sur un caractÃ¨re lien hypertexte.
 -
 -BOOL CEdit::IsLinkPos(FPOINT pos)
 -{
@@ -118,7 +118,7 @@ diff a/src/ui/controls/edit.cpp b/src/ui/controls/edit.cpp	(rejected hunks)
 -}
 -
 -
- // Positionne le curseur suite à un double-clic.
+ // Positionne le curseur suite Ã  un double-clic.
  
  void CEdit::MouseDoubleClick(FPOINT mouse)
 @@ -614,28 +576,6 @@ void CEdit::MouseClick(FPOINT mouse)
@@ -149,7 +149,7 @@ diff a/src/ui/controls/edit.cpp b/src/ui/controls/edit.cpp	(rejected hunks)
 -   }
  }
  
- // Positionne le curseur suite à un déplacement.
+ // Positionne le curseur suite Ã  un dÃ©placement.
 @@ -731,139 +671,6 @@ int CEdit::MouseDetect(FPOINT mouse)
  }
  
@@ -170,7 +170,7 @@ diff a/src/ui/controls/edit.cpp b/src/ui/controls/edit.cpp	(rejected hunks)
 -   HyperAdd(filename, 0);
 -}
 -
--// Effectue un hyper saut à travers un lien.
+-// Effectue un hyper saut Ã  travers un lien.
 -
 -void CEdit::HyperJump(char *name, char *marker)
 -{
@@ -221,7 +221,7 @@ diff a/src/ui/controls/edit.cpp b/src/ui/controls/edit.cpp	(rejected hunks)
 -   }
 -}
 -
--// Ajoute un texte visité à l'historique.
+-// Ajoute un texte visitÃ© Ã  l'historique.
 -
 -BOOL CEdit::HyperAdd(char *filename, int firstLine)
 -{
@@ -257,7 +257,7 @@ diff a/src/ui/controls/edit.cpp b/src/ui/controls/edit.cpp	(rejected hunks)
 -   return FALSE;
 -}
 -
--// Effectue l'action correspondant à un bouton EVENT_HYPER_*.
+-// Effectue l'action correspondant Ã  un bouton EVENT_HYPER_*.
 -
 -BOOL CEdit::HyperGo(EventMsg event)
 -{
@@ -287,7 +287,7 @@ diff a/src/ui/controls/edit.cpp b/src/ui/controls/edit.cpp	(rejected hunks)
 -}
 -
 -
- // Dessine la ligne éditable.
+ // Dessine la ligne Ã©ditable.
  
  void CEdit::Draw()
 @@ -1144,29 +951,22 @@ void CEdit::DrawBack(FPOINT pos, FPOINT dim)

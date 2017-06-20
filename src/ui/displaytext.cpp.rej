@@ -24,7 +24,7 @@ diff a/src/ui/displaytext.cpp b/src/ui/displaytext.cpp	(rejected hunks)
 -       m_visitGoal[i] = D3DVECTOR(0.0f, 0.0f, 0.0f);
 -       m_visitDist[i] = 0.0f;
 -       m_visitHeight[i] = 0.0f;
-        m_time[i] = 0.0f;  // rien d'affiché
+        m_time[i] = 0.0f;  // rien d'affichÃ©
     }
  
     m_bHide = FALSE;
@@ -338,12 +338,12 @@ diff a/src/ui/displaytext.cpp b/src/ui/displaytext.cpp	(rejected hunks)
     if ( pw == 0 )  return FALSE;
  
 -   pb2 = (CButton*)pw->SearchControl(EVENT_DT_VISIT0);
--   if ( pb2 == 0 )  return FALSE;  // même pas de première ligne
+-   if ( pb2 == 0 )  return FALSE;  // mÃªme pas de premiÃ¨re ligne
     pg2 = (CGroup*)pw->SearchControl(EVENT_DT_GROUP0);
     if ( pg2 == 0 )  return FALSE;
     pl2 = (CLabel*)pw->SearchControl(EVENT_DT_LABEL0);
 -   if ( pl2 == 0 )  return FALSE;
-+   if ( pl2 == 0 )  return FALSE;  // même pas de première ligne
++   if ( pl2 == 0 )  return FALSE;  // mÃªme pas de premiÃ¨re ligne
  
     for ( i=0 ; i<MAXDTLINE-1 ; i++ )
     {
@@ -413,7 +413,7 @@ diff a/src/ui/displaytext.cpp b/src/ui/displaytext.cpp	(rejected hunks)
 -}
 -
 -
--// Retourne la distance de visite idéale pour un objet donné.
+-// Retourne la distance de visite idÃ©ale pour un objet donnÃ©.
 -
 -float CDisplayText::RetIdealDist(CObject* pObj)
 -{
@@ -432,7 +432,7 @@ diff a/src/ui/displaytext.cpp b/src/ui/displaytext.cpp	(rejected hunks)
 -   return 60.0f;
 -}
 -
--// Retourne la hauteur de visite idéale pour un objet donné.
+-// Retourne la hauteur de visite idÃ©ale pour un objet donnÃ©.
 -
 -float CDisplayText::RetIdealHeight(CObject* pObj)
 -{

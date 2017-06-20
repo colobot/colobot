@@ -35,8 +35,8 @@
 
 
 #define HIGHPOS        16.0f       // position haute de la grue
-#define MOVESPEEDv 16.0f       // vitesse de la grue ‡ vide
-#define MOVESPEEDc 8.0f        // vitesse de la grue chargÈe
+#define MOVESPEEDv 16.0f       // vitesse de la grue √† vide
+#define MOVESPEEDc 8.0f        // vitesse de la grue charg√©e
 
 
 
@@ -66,7 +66,7 @@ CAutoDock::~CAutoDock()
 }
 
 
-// DÈtruit l'objet.
+// D√©truit l'objet.
 
 void CAutoDock::DeleteObject(BOOL bAll)
 {
@@ -93,14 +93,14 @@ void CAutoDock::Init()
 }
 
 
-// DÈmarre l'objet.
+// D√©marre l'objet.
 
 void CAutoDock::Start(int param)
 {
 }
 
 
-// Gestion d'un ÈvÈnement.
+// Gestion d'un √©v√©nement.
 
 BOOL CAutoDock::EventProcess(const Event &event)
 {
@@ -237,7 +237,7 @@ BOOL CAutoDock::EventProcess(const Event &event)
            m_fret = SearchStockOut();
            if ( m_fret == 0 )
            {
-               FireStopUpdate(FALSE);  // Èteint
+               FireStopUpdate(FALSE);  // √©teint
                m_phase    = ADCP_WAIT;
                m_progress = 0.0f;
                m_speed    = 1.0f/0.5f;
@@ -282,13 +282,13 @@ BOOL CAutoDock::EventProcess(const Event &event)
        }
    }
 
-   if ( m_phase == ADCP_OUTMOVE2 )  // va vers vÈhicule ?
+   if ( m_phase == ADCP_OUTMOVE2 )  // va vers v√©hicule ?
    {
        MoveDock();
        FireStopUpdate(TRUE);  // clignotte
        if ( m_progress >= 1.0f )
        {
-           m_fret->SetTruck(m_vehicle);  // bot4 bras croisÈs
+           m_fret->SetTruck(m_vehicle);  // bot4 bras crois√©s
            TruckObject(m_fret, FALSE);
            m_fret->SetTruck(0);  // vraiment fait phase suivante
            m_startPos = m_currentPos;
@@ -336,14 +336,14 @@ BOOL CAutoDock::EventProcess(const Event &event)
            m_vehicle->SetLock(FALSE);
            StartVehicleAction(MV_CLOSE);
            CameraEnd();
-           FireStopUpdate(FALSE);  // Èteint
+           FireStopUpdate(FALSE);  // √©teint
            m_phase    = ADCP_START;
            m_progress = 0.0f;
            m_speed    = 1.0f/10.0f;
        }
    }
    
-   if ( m_phase == ADCP_INMOVE1 )  // va vers vÈhicule ?
+   if ( m_phase == ADCP_INMOVE1 )  // va vers v√©hicule ?
    {
        MoveDock();
        FireStopUpdate(TRUE);  // clignotte
@@ -410,7 +410,7 @@ BOOL CAutoDock::EventProcess(const Event &event)
                m_vehicle->SetLock(FALSE);
                StartVehicleAction(MV_CLOSE);
                CameraEnd();
-               FireStopUpdate(FALSE);  // Èteint
+               FireStopUpdate(FALSE);  // √©teint
                m_phase    = ADCP_WAIT;
                m_progress = 0.0f;
                m_speed    = 1.0f/5.0f;
@@ -423,7 +423,7 @@ BOOL CAutoDock::EventProcess(const Event &event)
                m_goalPos  = pos-m_center;
                m_goalPos.y = HIGHPOS;
                m_startAngle = NormAngle(m_vehicle->RetAngleY(0));
-               m_goalAngle = PI*0.5f;  // dÈpose de face
+               m_goalAngle = PI*0.5f;  // d√©pose de face
                m_phase    = ADCP_INMOVE2;
                m_progress = 0.0f;
                m_speed    = 1.0f/(Length2d(m_startPos, m_goalPos)/MOVESPEEDc+0.1f);
@@ -480,7 +480,7 @@ BOOL CAutoDock::EventProcess(const Event &event)
            m_vehicle->SetLock(FALSE);
            StartVehicleAction(MV_CLOSE);
            CameraEnd();
-           FireStopUpdate(FALSE);  // Èteint
+           FireStopUpdate(FALSE);  // √©teint
            m_phase    = ADCP_START;
            m_progress = 0.0f;
            m_speed    = 1.0f/10.0f;
@@ -509,7 +509,7 @@ BOOL CAutoDock::Abort()
 }
 
 
-// Met ‡ jour les feux de stop.
+// Met √† jour les feux de stop.
 
 void CAutoDock::FireStopUpdate(BOOL bLightOn)
 {
@@ -528,7 +528,7 @@ void CAutoDock::FireStopUpdate(BOOL bLightOn)
         15.0f, 10.0f, -14.0f,
    };
 
-   if ( !bLightOn )  // Èteint ?
+   if ( !bLightOn )  // √©teint ?
    {
        for ( i=0 ; i<6 ; i++ )
        {
@@ -575,7 +575,7 @@ void CAutoDock::FireStopUpdate(BOOL bLightOn)
 }
 
 
-// Retourne une erreur liÈe ‡ l'Ètat de l'automate.
+// Retourne une erreur li√©e √† l'√©tat de l'automate.
 
 Error CAutoDock::RetError()
 {
@@ -583,7 +583,7 @@ Error CAutoDock::RetError()
 }
 
 
-// DÈplace la grue.
+// D√©place la grue.
 
 void CAutoDock::MoveDock()
 {
@@ -639,7 +639,7 @@ void CAutoDock::MoveDock()
    }
 }
 
-// Cherche un mÈchant proche.
+// Cherche un m√©chant proche.
 
 CObject* CAutoDock::SearchEvil()
 {
@@ -673,7 +673,7 @@ CObject* CAutoDock::SearchEvil()
    return 0;
 }
 
-// Cherche un vÈhicule sur le quai.
+// Cherche un v√©hicule sur le quai.
 
 CObject* CAutoDock::SearchVehicle()
 {
@@ -706,7 +706,7 @@ CObject* CAutoDock::SearchVehicle()
        if ( physics != 0 )
        {
            speed = physics->RetLinMotion(MO_REASPEED);
-           if ( speed.x > 0.01f )  continue;  // vÈhicule en mouvement ?
+           if ( speed.x > 0.01f )  continue;  // v√©hicule en mouvement ?
        }
 
        oPos = pObj->RetPosition(0);
@@ -796,7 +796,7 @@ float CAutoDock::RetObjectHeight(CObject *pObj)
    return 2.0f;
 }
 
-// Cherche le point o˘ mettre du fret sur un vÈhicule.
+// Cherche le point o√π mettre du fret sur un v√©hicule.
 
 D3DVECTOR CAutoDock::RetVehiclePoint(CObject *pObj)
 {
@@ -811,7 +811,7 @@ D3DVECTOR CAutoDock::RetVehiclePoint(CObject *pObj)
    return pos;
 }
 
-// Cherche une position libre ou dÈposer un objet.
+// Cherche une position libre ou d√©poser un objet.
 
 BOOL CAutoDock::SearchFreePos(D3DVECTOR &pos)
 {
@@ -880,7 +880,7 @@ BOOL CAutoDock::SearchFreePos(D3DVECTOR &pos)
    return FALSE;
 }
 
-// Fait Èvoluer les particules.
+// Fait √©voluer les particules.
 
 void CAutoDock::ParticuleFrame(float rTime)
 {
@@ -991,7 +991,7 @@ void CAutoDock::SoundManip(float time, float amplitude, float frequency)
    m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);
 }
 
-// Fait entendre le son de l'Èlectro-aimant.
+// Fait entendre le son de l'√©lectro-aimant.
 
 void CAutoDock::StartBzzz()
 {
@@ -1000,7 +1000,7 @@ void CAutoDock::StartBzzz()
    m_sound->AddEnvelope(m_channelSound, 0.5f, 1.0f, 1.0f, SOPER_LOOP);
 }
 
-// Stoppe le son de l'Èlectro-aimant.
+// Stoppe le son de l'√©lectro-aimant.
 
 void CAutoDock::StopBzzz()
 {
@@ -1010,7 +1010,7 @@ void CAutoDock::StopBzzz()
    m_channelSound = -1;
 }
 
-// DÈmarre une action pour le vÈhicule.
+// D√©marre une action pour le v√©hicule.
 
 void CAutoDock::StartVehicleAction(int action)
 {
@@ -1025,7 +1025,7 @@ void CAutoDock::StartVehicleAction(int action)
    motion->SetAction(action, delay);
 }
 
-// DÈmarre une action "soulevÈ" pour l'objet pris par la grue.
+// D√©marre une action "soulev√©" pour l'objet pris par la grue.
 
 void CAutoDock::TruckObject(CObject *pObj, BOOL bTake)
 {
@@ -1090,7 +1090,7 @@ void CAutoDock::ArmObject(CObject *pObj, BOOL bTake)
 }
 
 
-// DÈbut du cadrage pour la camÈra.
+// D√©but du cadrage pour la cam√©ra.
 
 void CAutoDock::CameraBegin()
 {
@@ -1119,7 +1119,7 @@ void CAutoDock::CameraBegin()
    m_main->SetStopwatch(FALSE);  // stoppe le chrono
 }
 
-// Fin du cadrage pour la camÈra.
+// Fin du cadrage pour la cam√©ra.
 
 void CAutoDock::CameraEnd()
 {
@@ -1133,6 +1133,6 @@ void CAutoDock::CameraEnd()
    m_camera->SetSmooth(CS_NORM);
 #endif
 
-   m_main->SetStopwatch(TRUE);  // redÈmarre le chrono
+   m_main->SetStopwatch(TRUE);  // red√©marre le chrono
 }
 

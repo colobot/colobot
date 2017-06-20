@@ -50,7 +50,7 @@ diff a/src/object/auto/auto.cpp b/src/object/auto/auto.cpp	(rejected hunks)
  }
  
  
--// Crée toute l'interface lorsque l'objet est sélectionné.
+-// CrÃ©e toute l'interface lorsque l'objet est sÃ©lectionnÃ©.
 -
 -BOOL CAuto::CreateInterface(BOOL bSelect)
 -{
@@ -62,8 +62,8 @@ diff a/src/object/auto/auto.cpp b/src/object/auto/auto.cpp	(rejected hunks)
 -   pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
 -   if ( pw != 0 )
 -   {
--       pw->Flush();  // détruit les boutons de la fenêtre
--       m_interface->DeleteControl(EVENT_WINDOW0);  // détruit la fenêtre
+-       pw->Flush();  // dÃ©truit les boutons de la fenÃªtre
+-       m_interface->DeleteControl(EVENT_WINDOW0);  // dÃ©truit la fenÃªtre
 -   }
 -
 -   if ( !bSelect )  return TRUE;
@@ -164,7 +164,7 @@ diff a/src/object/auto/auto.cpp b/src/object/auto/auto.cpp	(rejected hunks)
 -   return TRUE;
 -}
 -
--// Modifie l'état d'un bouton de l'interface.
+-// Modifie l'Ã©tat d'un bouton de l'interface.
 -
 -void CAuto::CheckInterface(CWindow *pw, EventMsg event, BOOL bState)
 -{
@@ -176,7 +176,7 @@ diff a/src/object/auto/auto.cpp b/src/object/auto/auto.cpp	(rejected hunks)
 -   control->SetState(STATE_CHECK, bState);
 -}
 -
--// Modifie l'état d'un bouton de l'interface.
+-// Modifie l'Ã©tat d'un bouton de l'interface.
 -
 -void CAuto::EnableInterface(CWindow *pw, EventMsg event, BOOL bState)
 -{
@@ -187,9 +187,9 @@ diff a/src/object/auto/auto.cpp b/src/object/auto/auto.cpp	(rejected hunks)
 -
 -   control->SetState(STATE_ENABLE, bState);
 -}
-+// Démarre une action.
++// DÃ©marre une action.
  
--// Modifie l'état d'un bouton de l'interface.
+-// Modifie l'Ã©tat d'un bouton de l'interface.
 -
 -void CAuto::VisibleInterface(CWindow *pw, EventMsg event, BOOL bState)
 +Error CAuto::SetAction(int action, float time)
@@ -206,7 +206,7 @@ diff a/src/object/auto/auto.cpp b/src/object/auto/auto.cpp	(rejected hunks)
 +   return ERR_OK;
  }
  
--// Modifie l'état d'un bouton de l'interface.
+-// Modifie l'Ã©tat d'un bouton de l'interface.
 +// Retourne l'action en cours.
  
 -void CAuto::DeadInterface(CWindow *pw, EventMsg event, BOOL bState)
@@ -221,7 +221,7 @@ diff a/src/object/auto/auto.cpp b/src/object/auto/auto.cpp	(rejected hunks)
 +   return m_actionType;
  }
  
--// Met à jour l'état de tous les boutons de l'interface.
+-// Met Ã  jour l'Ã©tat de tous les boutons de l'interface.
 -
 -void CAuto::UpdateInterface()
 -{
@@ -235,8 +235,8 @@ diff a/src/object/auto/auto.cpp b/src/object/auto/auto.cpp	(rejected hunks)
 -   VisibleInterface(pw, EVENT_OBJECT_GPROGRESS, m_bBusy);
 -}
  
- // Met à jour l'état de tous les boutons de l'interface,
- // suite au temps qui s'écoule ...
+ // Met Ã  jour l'Ã©tat de tous les boutons de l'interface,
+ // suite au temps qui s'Ã©coule ...
 @@ -349,7 +196,7 @@ void CAuto::UpdateInterface(float rTime)
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
     if ( pw == 0 )  return;
@@ -250,7 +250,7 @@ diff a/src/object/auto/auto.cpp b/src/object/auto/auto.cpp	(rejected hunks)
  }
  
  
--// Sauve tous les paramètres de l'automate.
+-// Sauve tous les paramÃ¨tres de l'automate.
 -
 -BOOL CAuto::Write(char *line)
 -{
@@ -274,7 +274,7 @@ diff a/src/object/auto/auto.cpp b/src/object/auto/auto.cpp	(rejected hunks)
 -   return FALSE;
 -}
 -
--// Restitue tous les paramètres de l'automate.
+-// Restitue tous les paramÃ¨tres de l'automate.
 -
 -BOOL CAuto::Read(char *line)
 -{

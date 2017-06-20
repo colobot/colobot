@@ -21,14 +21,14 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
  }
  
  
-+// DÈtermine le point d'impact.
++// D√©termine le point d'impact.
 +
 +void CPyro::SetImpact(D3DVECTOR impact)
 +{
 +   m_impact = impact;
 +}
 +
- // CrÈe un effet pyrotechnique.
+ // Cr√©e un effet pyrotechnique.
  
 -BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 +BOOL CPyro::Create(PyroType type, CObject* pObj, float force, int param)
@@ -58,7 +58,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 -   pos = pObj->RetPosition(0);
 +   pos = m_posStart;
  
-    DisplayError(type, pObj);  // affiche message Èventuel
+    DisplayError(type, pObj);  // affiche message √©ventuel
  
 @@ -106,26 +117,26 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
     m_crashSphereUsed = i;
@@ -106,7 +106,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
  
 -   if ( oType == OBJECT_TEEN28 ||
 -        oType == OBJECT_TEEN31 )
-+   // Cherche s'il faut gÈnÈrer les traÓnÈes.
++   // Cherche s'il faut g√©n√©rer les tra√Æn√©es.
 +   m_bTracks = FALSE;
 +   m_posTracks = m_pos;
 +
@@ -190,7 +190,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
     }
 -   if ( oType == OBJECT_PARA )
 +
-+   // Cherche s'il faut gÈnÈrer la sphËre.
++   // Cherche s'il faut g√©n√©rer la sph√®re.
 +   m_bSphere = FALSE;
 +
 +   if ( m_type == PT_FRAGT  ||
@@ -205,9 +205,9 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +       }
     }
 -   if ( oType == OBJECT_SCRAP4 ||
--        oType == OBJECT_SCRAP5 )  // matiËre plastique ?
+-        oType == OBJECT_SCRAP5 )  // mati√®re plastique ?
 +
-+   // Cherche s'il faut gÈnÈrer l'onde de choc.
++   // Cherche s'il faut g√©n√©rer l'onde de choc.
 +   m_bChoc = FALSE;
 +
 +   if ( type == PT_FRAGT  ||
@@ -237,7 +237,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
          type == PT_EXPLOW )
     {
 -       if ( m_bPower )
-+       m_main->IncDecorStamp();  // un objet sera dÈtruit
++       m_main->IncDecorStamp();  // un objet sera d√©truit
 +
 +       if ( m_bTracks )
         {
@@ -342,7 +342,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 -           m_sound->Play(SOUND_AIE, m_pos);
 -           m_sound->Play(SOUND_AIE, m_engine->RetEyePt());
 -       }
-+       // CrÈe une tache au sol.
++       // Cr√©e une tache au sol.
 +       p1 = p2 = p3 = p4 = m_pos;
 +       p1.x -= 8.0f;  p1.z += 8.0f;
 +       p2.x += 8.0f;  p2.z += 8.0f;
@@ -352,7 +352,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +   }
 +   if ( type == PT_FRAGA )
 +   {
-+       // CrÈe une tache au sol.
++       // Cr√©e une tache au sol.
 +       p1 = p2 = p3 = p4 = m_pos;
 +       p1.x -= 24.0f;  p1.z += 24.0f;
 +       p2.x += 24.0f;  p2.z += 24.0f;
@@ -362,7 +362,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +   }
 +   if ( type == PT_EXPLOO )
 +   {
-+       // CrÈe une tache au sol.
++       // Cr√©e une tache au sol.
 +       p1 = p2 = p3 = p4 = m_pos;
 +       p1.x -= 24.0f;  p1.z += 24.0f;
 +       p2.x += 24.0f;  p2.z += 24.0f;
@@ -471,12 +471,12 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
         m_speed = 1.0f/15.0f;
  
         LightOperAdd(0.00f, 0.0f,  2.0f,  1.0f,  0.0f);  // rouge-orange
--       LightOperAdd(0.30f, 1.0f, -0.8f, -0.8f, -0.8f);  // gris foncÈ
--       LightOperAdd(0.80f, 1.0f, -0.8f, -0.8f, -0.8f);  // gris foncÈ
--       LightOperAdd(1.00f, 0.0f, -0.8f, -0.8f, -0.8f);  // gris foncÈ
-+       LightOperAdd(0.30f, 1.0f, -0.4f, -0.4f, -0.4f);  // gris foncÈ
-+       LightOperAdd(0.80f, 1.0f, -0.4f, -0.4f, -0.4f);  // gris foncÈ
-+       LightOperAdd(1.00f, 0.0f, -0.4f, -0.4f, -0.4f);  // gris foncÈ
+-       LightOperAdd(0.30f, 1.0f, -0.8f, -0.8f, -0.8f);  // gris fonc√©
+-       LightOperAdd(0.80f, 1.0f, -0.8f, -0.8f, -0.8f);  // gris fonc√©
+-       LightOperAdd(1.00f, 0.0f, -0.8f, -0.8f, -0.8f);  // gris fonc√©
++       LightOperAdd(0.30f, 1.0f, -0.4f, -0.4f, -0.4f);  // gris fonc√©
++       LightOperAdd(0.80f, 1.0f, -0.4f, -0.4f, -0.4f);  // gris fonc√©
++       LightOperAdd(1.00f, 0.0f, -0.4f, -0.4f, -0.4f);  // gris fonc√©
         CreateLight(m_pos, 40.0f);
         return TRUE;
     }
@@ -487,7 +487,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 -   if ( m_type != PT_EGG  &&
 -        m_type != PT_WIN  &&
 -        m_type != PT_LOST )
-+   // GÈnËre les effets de lumiËre.
++   // G√©n√®re les effets de lumi√®re.
 +   if ( m_type != PT_EGG       &&
 +        m_type != PT_WIN       &&
 +        m_type != PT_LOST      &&
@@ -501,9 +501,9 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
         if ( m_type == PT_FRAGO  ||
              m_type == PT_EXPLOO )
         {
--           LightOperAdd(0.00f, 0.0f, -1.0f, -0.5f, -1.0f);  // vert foncÈ
--           LightOperAdd(0.05f, 1.0f, -1.0f, -0.5f, -1.0f);  // vert foncÈ
--           LightOperAdd(1.00f, 0.0f, -1.0f, -0.5f, -1.0f);  // vert foncÈ
+-           LightOperAdd(0.00f, 0.0f, -1.0f, -0.5f, -1.0f);  // vert fonc√©
+-           LightOperAdd(0.05f, 1.0f, -1.0f, -0.5f, -1.0f);  // vert fonc√©
+-           LightOperAdd(1.00f, 0.0f, -1.0f, -0.5f, -1.0f);  // vert fonc√©
 +           LightOperAdd(0.00f, 0.0f,  4.0f,  4.0f,  4.0f);  // blanc
 +           LightOperAdd(0.05f, 1.0f, -1.0f,  4.0f, -1.0f);  // vert clair
 +           LightOperAdd(1.00f, 0.0f, -1.0f,  4.0f, -1.0f);  // vert clair
@@ -516,16 +516,16 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
         {
             LightOperAdd(0.00f, 1.0f,  4.0f,  4.0f,  2.0f);  // jaune
             LightOperAdd(0.02f, 1.0f,  4.0f,  2.0f,  0.0f);  // rouge-orange
--           LightOperAdd(0.16f, 1.0f, -0.8f, -0.8f, -0.8f);  // gris foncÈ
--           LightOperAdd(1.00f, 0.0f, -0.8f, -0.8f, -0.8f);  // gris foncÈ
+-           LightOperAdd(0.16f, 1.0f, -0.8f, -0.8f, -0.8f);  // gris fonc√©
+-           LightOperAdd(1.00f, 0.0f, -0.8f, -0.8f, -0.8f);  // gris fonc√©
 -           h = m_size*2.0f;
-+           LightOperAdd(0.16f, 1.0f, -0.4f, -0.4f, -0.4f);  // gris foncÈ
-+           LightOperAdd(1.00f, 0.0f, -0.4f, -0.4f, -0.4f);  // gris foncÈ
++           LightOperAdd(0.16f, 1.0f, -0.4f, -0.4f, -0.4f);  // gris fonc√©
++           LightOperAdd(1.00f, 0.0f, -0.4f, -0.4f, -0.4f);  // gris fonc√©
 +           h = m_size*5.0f;
 +       }
 +       else if ( m_type == PT_FRAGA )
 +       {
-+           LightOperAdd(0.00f, 1.0f, -0.4f, -0.4f, -0.4f);  // gris foncÈ
++           LightOperAdd(0.00f, 1.0f, -0.4f, -0.4f, -0.4f);  // gris fonc√©
 +           LightOperAdd(0.05f, 1.0f, -2.0f,  4.0f,  4.0f);  // bleu
 +           LightOperAdd(1.00f, 0.0f, -2.0f,  4.0f,  4.0f);  // bleu
 +           h = m_size*10.0f;
@@ -533,7 +533,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
         else if ( m_type == PT_SPIDER )
         {
 @@ -444,28 +534,30 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
-            LightOperAdd(1.00f, 0.0f, -0.5f, -0.5f, -1.0f);  // jaune foncÈ
+            LightOperAdd(1.00f, 0.0f, -0.5f, -0.5f, -1.0f);  // jaune fonc√©
         }
         else if ( m_type == PT_WPCHECK  ||
 +                 m_type == PT_WPVIBRA  ||
@@ -549,12 +549,12 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
         }
         else
         {
--           LightOperAdd(0.00f, 0.0f, -0.8f, -0.8f, -0.8f);  // gris foncÈ
--           LightOperAdd(0.05f, 1.0f, -0.8f, -0.8f, -0.8f);  // gris foncÈ
--           LightOperAdd(1.00f, 0.0f, -0.8f, -0.8f, -0.8f);  // gris foncÈ
-+           LightOperAdd(0.00f, 0.0f, -0.4f, -0.4f, -0.4f);  // gris foncÈ
-+           LightOperAdd(0.05f, 1.0f, -0.4f, -0.4f, -0.4f);  // gris foncÈ
-+           LightOperAdd(1.00f, 0.0f, -0.4f, -0.4f, -0.4f);  // gris foncÈ
+-           LightOperAdd(0.00f, 0.0f, -0.8f, -0.8f, -0.8f);  // gris fonc√©
+-           LightOperAdd(0.05f, 1.0f, -0.8f, -0.8f, -0.8f);  // gris fonc√©
+-           LightOperAdd(1.00f, 0.0f, -0.8f, -0.8f, -0.8f);  // gris fonc√©
++           LightOperAdd(0.00f, 0.0f, -0.4f, -0.4f, -0.4f);  // gris fonc√©
++           LightOperAdd(0.05f, 1.0f, -0.4f, -0.4f, -0.4f);  // gris fonc√©
++           LightOperAdd(1.00f, 0.0f, -0.4f, -0.4f, -0.4f);  // gris fonc√©
         }
         CreateLight(m_pos, h);
  
@@ -572,7 +572,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
         }
 @@ -475,13 +567,11 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
     
-    // GÈnËre les triangles de l'explosion.
+    // G√©n√®re les triangles de l'explosion.
     if ( m_type == PT_FRAGT  ||
 +        m_type == PT_FRAGA  ||
          m_type == PT_FRAGO  ||
@@ -592,7 +592,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
  
 -   if ( m_type == PT_FRAGT  ||
 -        m_type == PT_EXPLOT )
-+   // GÈnËre les particules avec traÓnÈes.
++   // G√©n√®re les particules avec tra√Æn√©es.
 +   if ( m_bTracks )
     {
 -       if ( m_bPower )
@@ -667,8 +667,8 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
         }
     }
  
-+   // GÈnËre la grosse sphËre translucide.
-+   if ( m_bSphere )  // sphËre ?
++   // G√©n√®re la grosse sph√®re translucide.
++   if ( m_bSphere )  // sph√®re ?
 +   {
 +       if ( m_bTracks )
 +       {
@@ -1372,7 +1372,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
     {
         LightOperFrame(event.rTime);
 @@ -1378,6 +1468,7 @@ Error CPyro::IsEnded()
-    // du Create, car c'est parfois l'objet lui-mÍme qui fait le Create :
+    // du Create, car c'est parfois l'objet lui-m√™me qui fait le Create :
     //  pyro->Create(PT_FRAGT, this);
     if ( m_type == PT_FRAGT  ||
 +        m_type == PT_FRAGA  ||
@@ -1416,7 +1416,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +   }
 +
     if ( m_type == PT_BURNT ||
-         m_type == PT_BURNO )  // br˚le ?
+         m_type == PT_BURNO )  // br√ªle ?
     {
 @@ -1426,13 +1524,6 @@ Error CPyro::IsEnded()
         m_object->SetZoom(0, 1.0f);
@@ -1438,7 +1438,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
  
 -   if ( m_object->RetResetCap() == RESET_MOVE )  // objet resetable ?
 -   {
--       m_object->SetEnable(FALSE);  // objet cachÈ et inactif
+-       m_object->SetEnable(FALSE);  // objet cach√© et inactif
 -       pos = m_object->RetPosition(0);
 -       pos.y = -100.0f;
 -       m_object->SetPosition(0, pos);
@@ -1456,7 +1456,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
         if ( sub != 0 )
 @@ -1603,9 +1682,10 @@ BOOL CPyro::CreateLight(D3DVECTOR pos, float height)
  
- // DÈmarre l'explosion d'un vÈhicule.
+ // D√©marre l'explosion d'un v√©hicule.
  
 -void CPyro::ExploStart()
 +void CPyro::ExploStart(ObjectType oType)
@@ -1534,13 +1534,13 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +       m_engine->LoadTexture("dirty04.tga", 1);
 +   }
  
-    DeleteObject(FALSE, TRUE);  // dÈtruit l'objet transportÈ + la pile
+    DeleteObject(FALSE, TRUE);  // d√©truit l'objet transport√© + la pile
  }
 @@ -1672,6 +1763,352 @@ void CPyro::ExploTerminate()
  }
  
  
-+// DÈmarre l'explosion d'un objet organique vert.
++// D√©marre l'explosion d'un objet organique vert.
 +
 +void CPyro::OrgaStart()
 +{
@@ -1610,7 +1610,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +}
 +
 +
-+// DÈmarre la voltige d'un robot ou d'un objet heurtÈ.
++// D√©marre la voltige d'un robot ou d'un objet heurt√©.
 +
 +void CPyro::AcrobaticStart(D3DVECTOR min, D3DVECTOR max)
 +{
@@ -1644,7 +1644,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +   m_object->SetLock(TRUE);  // plus utilisable
 +   m_object->SetExplo(TRUE);  // en cours de destruction
 +
-+   cdg = (min+max)/2.0f;  // centre de gravitÈ
++   cdg = (min+max)/2.0f;  // centre de gravit√©
 +   size = max-min;  // dimensions
 +
 +   d = 1.2f-Norm(Length(size)*0.2f)*0.4f;
@@ -1652,7 +1652,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +   m_speed *= 1.0f/d;
 +
 +   type = m_object->RetType();
-+   if ( m_type == PT_PIECE )  // piËce de voiture ?
++   if ( m_type == PT_PIECE )  // pi√®ce de voiture ?
 +   {
 +       m_heightSuppl = -m_terrain->RetFloorHeight(m_posStart);
 +
@@ -1661,15 +1661,15 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +       {
 +           little = size.z;
 +       }
-+       if ( size.x == little )  // piËce mince en x ?
++       if ( size.x == little )  // pi√®ce mince en x ?
 +       {
 +           angle = D3DVECTOR(0.0f, 0.0f, -PI/2.0f);
 +       }
-+       else if ( size.z == little )  // piËce mince en z ?
++       else if ( size.z == little )  // pi√®ce mince en z ?
 +       {
 +           angle = D3DVECTOR(-PI/2.0f, 0.0f, 0.0f);
 +       }
-+       else    // piËce mince en y ?
++       else    // pi√®ce mince en y ?
 +       {
 +           angle = D3DVECTOR(0.0f, 0.0f, 0.0f);
 +       }
@@ -1698,7 +1698,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +            type != OBJECT_CRAZY   &&
 +            type != OBJECT_GUIDE   )
 +       {
-+           if ( !m_object->RetGround() )  // pas encore ‡ terre ?
++           if ( !m_object->RetGround() )  // pas encore √† terre ?
 +           {
 +               angle = D3DVECTOR(-PI/2.0f, 0.0f, 0.0f);
 +               AcrobaticTransform(type, cdg, angle, min, max);
@@ -1748,7 +1748,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +   }
 +}
 +
-+// Transforme un objet pour qu'il devienne indÈpendant.
++// Transforme un objet pour qu'il devienne ind√©pendant.
 +
 +void CPyro::AcrobaticTransform(ObjectType type, D3DVECTOR cdg, D3DVECTOR angle,
 +                              D3DVECTOR min, D3DVECTOR max)
@@ -1814,16 +1814,16 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +   }
 +   if ( type == OBJECT_CARCASS1 )
 +   {
-+       angle.x -= 20.0f*PI/180.0f;  // sur le cÙtÈ
++       angle.x -= 20.0f*PI/180.0f;  // sur le c√¥t√©
 +   }
 +   if ( type == OBJECT_CARCASS2 )
 +   {
-+       angle.x += 160.0f*PI/180.0f;  // sur le toÓt
++       angle.x += 160.0f*PI/180.0f;  // sur le to√Æt
 +       m_posStart.y += 1.0f;
 +   }
 +}
 +
-+// Fait progresser la voltige d'un robor heurtÈ.
++// Fait progresser la voltige d'un robor heurt√©.
 +
 +void CPyro::AcrobaticProgress()
 +{
@@ -1855,7 +1855,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +   m_object->SetAngle(0, angle);
 +}
 +
-+// Termine la voltige d'un robor heurtÈ.
++// Termine la voltige d'un robor heurt√©.
 +
 +void CPyro::AcrobaticTerminate()
 +{
@@ -1881,12 +1881,12 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 +   }
 +
 +   m_object->SetLock(FALSE);  // de nouveau utilisable
-+   m_object->SetExplo(FALSE);  // destruction terminÈe
-+   m_object->SetGround(TRUE);  // ‡ terre
++   m_object->SetExplo(FALSE);  // destruction termin√©e
++   m_object->SetGround(TRUE);  // √† terre
 +}
 +
 +
- // DÈmarre le feu d'un vÈhicule.
+ // D√©marre le feu d'un v√©hicule.
  
  void CPyro::BurnStart()
 @@ -1686,6 +2123,7 @@ void CPyro::BurnStart()
@@ -1994,7 +1994,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
     }
 @@ -1804,52 +2209,6 @@ void CPyro::BurnStart()
  
-    m_burnKeepPart[0] = -1;  // rien ‡ garder
+    m_burnKeepPart[0] = -1;  // rien √† garder
  
 -   if ( m_burnType == OBJECT_DERRICK )
 -   {
@@ -2057,7 +2057,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 -       angle.x = (Rand()-0.5f)*0.2f;
 -       angle.y = (Rand()-0.5f)*0.2f;
 -       angle.z = 0.0f;
--       BurnAddPart(1, pos, angle);  // descend l'anÈmomËtre
+-       BurnAddPart(1, pos, angle);  // descend l'an√©mom√®tre
 -   }
 -
 -   if ( m_burnType == OBJECT_RADAR )
@@ -2310,7 +2310,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 -   }
  }
  
- // Ajoute une partie ‡ bouger.
+ // Ajoute une partie √† bouger.
 @@ -2165,15 +2312,11 @@ void CPyro::BurnAddPart(int part, D3DVECTOR pos, D3DVECTOR angle)
  
  void CPyro::BurnProgress()
@@ -2322,9 +2322,9 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
  
 -   if ( m_burnType == OBJECT_TEEN31 )  // basket ?
 -   {
--       m_object->SetZoomY(0, 1.0f-m_progress*0.5f);  // lÈger applatissement
+-       m_object->SetZoomY(0, 1.0f-m_progress*0.5f);  // l√©ger applatissement
 -   }
-+//?    m_object->SetZoomY(0, 1.0f-m_progress*0.2f);  // lÈger applatissement
++//?    m_object->SetZoomY(0, 1.0f-m_progress*0.2f);  // l√©ger applatissement
  
     for ( i=0 ; i<m_burnPartTotal ; i++ )
     {
@@ -2344,7 +2344,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
  
 @@ -2234,22 +2377,12 @@ void CPyro::BurnTerminate()
  
-    DeleteObject(FALSE, TRUE);  // dÈtruit l'objet transportÈ + la pile
+    DeleteObject(FALSE, TRUE);  // d√©truit l'objet transport√© + la pile
  
 -   if ( m_burnType == OBJECT_DERRICK  ||
 -        m_burnType == OBJECT_STATION  ||
@@ -2373,7 +2373,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
  }
  
  
--// DÈbut d'un objet fret qui tombe.
+-// D√©but d'un objet fret qui tombe.
 -
 -void CPyro::FallStart()
 -{
@@ -2388,7 +2388,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 -   m_bFallEnding = FALSE;
 -}
 -
--// Cherche un objet ‡ exploser par le boulet de l'abeille qui tombe.
+-// Cherche un objet √† exploser par le boulet de l'abeille qui tombe.
 -
 -CObject* CPyro::FallSearchBeeExplo()
 -{
@@ -2455,7 +2455,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 -            oType != OBJECT_POWER    &&
 -            oType != OBJECT_ATOMIC   )  continue;
 -
--       if ( pObj->RetTruck() != 0 )  continue;  // objet transportÈ ?
+-       if ( pObj->RetTruck() != 0 )  continue;  // objet transport√© ?
 -
 -       oPos = pObj->RetPosition(0);
 -
@@ -2472,12 +2472,12 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 -           if ( distance < 25.0f )  return pObj;
 -       }
 -
--       // Test au centre de l'objet, ce qui est nÈcessaire pour
--       // les objets qui n'ont pas de sphËre au centre (station).
+-       // Test au centre de l'objet, ce qui est n√©cessaire pour
+-       // les objets qui n'ont pas de sph√®re au centre (station).
 -       distance = Length(oPos, iPos)-4.0f;
 -       if ( distance < 5.0f )  return pObj;
 -
--       // Test avec toutes les sphËres de l'objet.
+-       // Test avec toutes les sph√®res de l'objet.
 -       j = 0;
 -       while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 -       {
@@ -2523,14 +2523,14 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 -           pObj = FallSearchBeeExplo();
 -           if ( pObj == 0 )
 -           {
--               if ( bFloor )  // arrivÈ au niveau du sol ?
+-               if ( bFloor )  // arriv√© au niveau du sol ?
 -               {
--                   m_object->ExploObject(EXPLO_BOUM, 0.0f);  // dÈmarre explosion
+-                   m_object->ExploObject(EXPLO_BOUM, 0.0f);  // d√©marre explosion
 -               }
 -           }
 -           else
 -           {
--               if ( pObj->RetShieldRadius() > 0.0f )  // protÈgÈ par bouclier ?
+-               if ( pObj->RetShieldRadius() > 0.0f )  // prot√©g√© par bouclier ?
 -               {
 -                   m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), FPOINT(6.0f, 6.0f), PARTIGUNDEL, 2.0f, 0.0f, 0.0f);
 -                   m_sound->Play(SOUND_GUNDEL);
@@ -2539,13 +2539,13 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 -               }
 -               else
 -               {
--                   if ( pObj->ExploObject(EXPLO_BOUM, 1.0f) )  // dÈmarre explosion
+-                   if ( pObj->ExploObject(EXPLO_BOUM, 1.0f) )  // d√©marre explosion
 -                   {
 -                       DeleteObject(TRUE, TRUE);  // supprime le boulet
 -                   }
 -                   else
 -                   {
--                       m_object->ExploObject(EXPLO_BOUM, 0.0f);  // dÈmarre explosion
+-                       m_object->ExploObject(EXPLO_BOUM, 0.0f);  // d√©marre explosion
 -                   }
 -               }
 -           }
@@ -2558,7 +2558,7 @@ diff a/src/graphics/engine/pyro.cpp b/src/graphics/engine/pyro.cpp	(rejected hun
 -   }
 -}
 -
--// Indique si la chute est terminÈe.
+-// Indique si la chute est termin√©e.
 -
 -Error CPyro::FallIsEnded()
 -{

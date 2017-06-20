@@ -16,24 +16,24 @@ enum ParticuleType;
 
 enum AutoDockPhase
 {
-   ADCP_WAIT       = 1,    // attend véhicule
-   ADCP_STOPCHECK  = 2,    // attend véhicule immobile
+   ADCP_WAIT       = 1,    // attend vÃ©hicule
+   ADCP_STOPCHECK  = 2,    // attend vÃ©hicule immobile
 
    ADCP_OUTMOVE1   = 10,   // va vers stock
    ADCP_OUTDOWN1   = 11,   // 
    ADCP_OUTUP1     = 12,   // 
-   ADCP_OUTMOVE2   = 13,   // va vers véhicule
+   ADCP_OUTMOVE2   = 13,   // va vers vÃ©hicule
    ADCP_OUTDOWN2   = 14,   // 
    ADCP_OUTUP2     = 15,   // 
 
-   ADCP_INMOVE1    = 20,   // va vers véhicule
+   ADCP_INMOVE1    = 20,   // va vers vÃ©hicule
    ADCP_INDOWN1    = 21,   // 
    ADCP_INUP1      = 22,   // 
    ADCP_INMOVE2    = 23,   // va vers stock
    ADCP_INDOWN2    = 24,   // 
    ADCP_INUP2      = 25,   // 
 
-   ADCP_START      = 30,   // attend le départ
+   ADCP_START      = 30,   // attend le dÃ©part
 };
 
 

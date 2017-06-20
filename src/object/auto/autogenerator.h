@@ -18,7 +18,7 @@ enum ParticuleType;
 enum AutoGeneratorPhase
 {
    AGEP_WAIT       = 1,    // attend
-   AGEP_CREATE     = 2,    // crée
+   AGEP_CREATE     = 2,    // crÃ©e
 };
 
 

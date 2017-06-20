@@ -78,7 +78,7 @@ CArray::~CArray()
 }
 
 
-// Crée une nouvelle liste.
+// CrÃ©e une nouvelle liste.
 
 BOOL CArray::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
                   float expand)
@@ -95,7 +95,7 @@ BOOL CArray::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
    return MoveAdjust();
 }
 
-// Ajuste après un changement de dimensions.
+// Ajuste aprÃ¨s un changement de dimensions.
 
 BOOL CArray::MoveAdjust()
 {
@@ -242,7 +242,7 @@ BOOL CArray::ClearState(int state)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CArray::EventProcess(const Event &event)
 {
@@ -313,7 +313,7 @@ BOOL CArray::EventProcess(const Event &event)
        UpdateButton();
        Event newEvent = event;
        newEvent.event = m_eventMsg;
-       m_event->AddEvent(newEvent);  // ligne sélectionnée changée
+       m_event->AddEvent(newEvent);  // ligne sÃ©lectionnÃ©e changÃ©e
        return TRUE;
    }
    if ( m_bFocus &&
@@ -334,7 +334,7 @@ BOOL CArray::EventProcess(const Event &event)
        UpdateButton();
        Event newEvent = event;
        newEvent.event = m_eventMsg;
-       m_event->AddEvent(newEvent);  // ligne sélectionnée changée
+       m_event->AddEvent(newEvent);  // ligne sÃ©lectionnÃ©e changÃ©e
        return TRUE;
    }
 
@@ -349,7 +349,7 @@ BOOL CArray::EventProcess(const Event &event)
        Event newEvent = event;
        newEvent.event = EVENT_KEYDOWN;
        newEvent.param = VK_DEFAULT;
-       m_event->AddEvent(newEvent);  // ligne sélectionnée changée
+       m_event->AddEvent(newEvent);  // ligne sÃ©lectionnÃ©e changÃ©e
        return TRUE;
    }
 
@@ -386,7 +386,7 @@ BOOL CArray::EventProcess(const Event &event)
 
                    Event newEvent = event;
                    newEvent.event = m_eventMsg;
-                   m_event->AddEvent(newEvent);  // ligne sélectionnée changée
+                   m_event->AddEvent(newEvent);  // ligne sÃ©lectionnÃ©e changÃ©e
                }
            }
        }
@@ -455,7 +455,7 @@ void CArray::Draw()
            if ( m_button[0] != 0 )
            {
                dim = m_button[0]->RetDim();
-               dim.y *= m_displayLine+1;  // fond pile-poil derrière
+               dim.y *= m_displayLine+1;  // fond pile-poil derriÃ¨re
            }
        }
 
@@ -494,7 +494,7 @@ void CArray::Draw()
        }
    }
 
-   DrawLine(h_headPos, h_headDim, m_head, FALSE);  // dessine l'en-tête
+   DrawLine(h_headPos, h_headDim, m_head, FALSE);  // dessine l'en-tÃªte
    
    for ( i=0 ; i<m_displayLine ; i++ )
    {
@@ -602,7 +602,7 @@ void CArray::DrawCase(char *text, FPOINT pos, float width, int justif, FontType 
 }
 
 
-// Vide complètement la liste.
+// Vide complÃ¨tement la liste.
 
 void CArray::Flush()
 {
@@ -614,7 +614,7 @@ void CArray::Flush()
 }
 
 
-// Spécifie le nombre total de lignes.
+// SpÃ©cifie le nombre total de lignes.
 
 void CArray::SetTotal(int i)
 {
@@ -629,14 +629,14 @@ int CArray::RetTotal()
 }
 
 
-// Spécifie le nombre multiple pour la 1ère ligne.
+// SpÃ©cifie le nombre multiple pour la 1Ã¨re ligne.
 
 void CArray::SetMultiple(int i)
 {
    m_multiple = i;
 }
 
-// Retourne le nombre multiple pour la 1ère ligne.
+// Retourne le nombre multiple pour la 1Ã¨re ligne.
 
 int CArray::RetMultiple()
 {
@@ -644,7 +644,7 @@ int CArray::RetMultiple()
 }
 
 
-// Sélectionne une ligne.
+// SÃ©lectionne une ligne.
 
 void CArray::SetSelect(int i)
 {
@@ -652,7 +652,7 @@ void CArray::SetSelect(int i)
    UpdateButton();
 }
 
-// Retourne la ligne sélectionnée.
+// Retourne la ligne sÃ©lectionnÃ©e.
 
 int CArray::RetSelect()
 {
@@ -660,7 +660,7 @@ int CArray::RetSelect()
 }
 
 
-// Gestion de la capacité à sélectionner une case.
+// Gestion de la capacitÃ© Ã  sÃ©lectionner une case.
 
 void CArray::SetSelectCap(BOOL bEnable)
 {
@@ -673,7 +673,7 @@ BOOL CArray::RetSelectCap()
 }
 
 
-// Spécifie le bit "enable" pour une case.
+// SpÃ©cifie le bit "enable" pour une case.
 
 void CArray::SetEnable(int i, BOOL bMode)
 {
@@ -720,7 +720,7 @@ BOOL CArray::RetBlink()
 }
 
 
-// Spécifie le texte d'une ligne.
+// SpÃ©cifie le texte d'une ligne.
 
 void CArray::SetName(int i, char* name)
 {
@@ -776,7 +776,7 @@ float  CArray::RetTabs(int i)
 }
 
 
-// Déplace l'ascenseur de la liste pour voir la ligne sélectionnée.
+// DÃ©place l'ascenseur de la liste pour voir la ligne sÃ©lectionnÃ©e.
 
 void CArray::ShowSelect()
 {
@@ -809,7 +809,7 @@ void CArray::ShowSelect()
 }
 
 
-// Met à jour tous les noms des boutons.
+// Met Ã  jour tous les noms des boutons.
 
 void CArray::UpdateButton()
 {
@@ -839,7 +839,7 @@ void CArray::UpdateButton()
    }
 }
 
-// Met à jour l'ascenseur.
+// Met Ã  jour l'ascenseur.
 
 void CArray::UpdateScroll()
 {
@@ -876,7 +876,7 @@ void CArray::UpdateScroll()
    m_scroll->SetArrowStep(step);
 }
 
-// Mise à jour lorsque l'ascenseur a été bougé.
+// Mise Ã  jour lorsque l'ascenseur a Ã©tÃ© bougÃ©.
 
 void CArray::MoveScroll()
 {

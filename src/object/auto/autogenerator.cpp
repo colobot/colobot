@@ -47,7 +47,7 @@ CAutoGenerator::~CAutoGenerator()
 }
 
 
-// Détruit l'objet.
+// DÃ©truit l'objet.
 
 void CAutoGenerator::DeleteObject(BOOL bAll)
 {
@@ -73,7 +73,7 @@ void CAutoGenerator::Init()
 }
 
 
-// Démarre l'objet.
+// DÃ©marre l'objet.
 
 void CAutoGenerator::Start(int param)
 {
@@ -125,7 +125,7 @@ void CAutoGenerator::Start(int param)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CAutoGenerator::EventProcess(const Event &event)
 {
@@ -144,10 +144,10 @@ BOOL CAutoGenerator::EventProcess(const Event &event)
        if ( m_progress >= 1.0f )
        {
            pObj = SearchObject();
-           if ( pObj != 0 ||  // position occupée ?
-                m_totalCreate == 0 ||  // plus rien à créer ?
+           if ( pObj != 0 ||  // position occupÃ©e ?
+                m_totalCreate == 0 ||  // plus rien Ã  crÃ©er ?
                 CountObject(OBJECT_EVIL1) >= m_maxCreate ||  // trop d'objets ?
-                !m_main->IsGameTime() )  // partie terminée ?
+                !m_main->IsGameTime() )  // partie terminÃ©e ?
            {
                m_phase    = AGEP_WAIT;
                m_progress = 0.0f;
@@ -259,7 +259,7 @@ BOOL CAutoGenerator::Abort()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liÃ©e Ã  l'Ã©tat de l'automate.
 
 Error CAutoGenerator::RetError()
 {
@@ -267,7 +267,7 @@ Error CAutoGenerator::RetError()
 }
 
 
-// Cherche un objet sous le générateur.
+// Cherche un objet sous le gÃ©nÃ©rateur.
 
 CObject* CAutoGenerator::SearchObject()
 {
@@ -297,7 +297,7 @@ CObject* CAutoGenerator::SearchObject()
    return 0;
 }
 
-// Cherche un objet sous le générateur.
+// Cherche un objet sous le gÃ©nÃ©rateur.
 
 CObject* CAutoGenerator::SearchObject(ObjectType type)
 {
@@ -349,7 +349,7 @@ int CAutoGenerator::CountObject(ObjectType type)
    return total;
 }
 
-// Crée un objet sous le générateur.
+// CrÃ©e un objet sous le gÃ©nÃ©rateur.
 
 BOOL CAutoGenerator::CreateObject(ObjectType type)
 {
@@ -367,11 +367,11 @@ BOOL CAutoGenerator::CreateObject(ObjectType type)
        return FALSE;
    }
    bot->SetZoom(0, 0.0f);  // minuscule
-   StartAction(bot, -1);  // zoom manuel (pas géré par CMotion)
+   StartAction(bot, -1);  // zoom manuel (pas gÃ©rÃ© par CMotion)
    return TRUE;
 }
 
-// Démarre une action pour un objet.
+// DÃ©marre une action pour un objet.
 
 void CAutoGenerator::StartAction(CObject *pObj, int action)
 {

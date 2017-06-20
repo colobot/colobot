@@ -20,7 +20,7 @@ typedef struct RecorderBloc
    int             total;      // 0..RECORDERBLOC
    float           time[RECORDERBLOC];
    RecorderEvent   event[RECORDERBLOC];
-   RecorderBloc*   prev;       // *bloc précédent
+   RecorderBloc*   prev;       // *bloc prÃ©cÃ©dent
    RecorderBloc*   next;       // *bloc suivant
 }
 RecorderBloc;
@@ -76,13 +76,13 @@ protected:
    float           m_lastTime;
    RecorderBloc*   m_bloc;     // *premier bloc
    RecorderBloc*   m_record;   // *dernier bloc
-   int             m_model;    // modèle de la voiture (1..n)
-   int             m_subModel; // modèle de la peinture (1..n)
+   int             m_model;    // modÃ¨le de la voiture (1..n)
+   int             m_subModel; // modÃ¨le de la peinture (1..n)
    D3DCOLORVALUE   m_color;    // couleur de la voiture
    int             m_type;     // type de la mission
-   int             m_mission;  // numéro de la mission
+   int             m_mission;  // numÃ©ro de la mission
    int             m_check[10];// checksums divers
-   int             m_level;    // niveau de difficulté
+   int             m_level;    // niveau de difficultÃ©
    char            m_gamer[20];// nom du joueur
    float           m_chrono;   // temps record
 };

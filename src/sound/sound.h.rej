@@ -31,7 +31,7 @@ diff a/src/sound/sound.h b/src/sound/sound.h	(rejected hunks)
 -   SOUND_SWIM      = 28,
 -   SOUND_RADAR     = 29,
 -   SOUND_BUILD     = 30,
--   SOUND_ALARM     = 31,   // alarme énergie
+-   SOUND_ALARM     = 31,   // alarme Ã©nergie
 -   SOUND_SLIDE     = 32,
 -   SOUND_EXPLOi    = 33,   // insect
 -   SOUND_INSECTa   = 34,   // ant
@@ -70,10 +70,10 @@ diff a/src/sound/sound.h b/src/sound/sound.h	(rejected hunks)
 -   SOUND_JOSTLE    = 67,
 -   SOUND_GFLAT     = 68,
 -   SOUND_DEADg     = 69,   // mort par balle
--   SOUND_DEADw     = 70,   // mort noyé
+-   SOUND_DEADw     = 70,   // mort noyÃ©
 -   SOUND_FLYf      = 71,   // reactor fail
--   SOUND_ALARMt    = 72,   // alarme température
--   SOUND_FINDING   = 73,   // trouvé un objet caché
+-   SOUND_ALARMt    = 72,   // alarme tempÃ©rature
+-   SOUND_FINDING   = 73,   // trouvÃ© un objet cachÃ©
 -   SOUND_THUMP     = 74,
 -   SOUND_TOUCH     = 75,
 -   SOUND_BLITZ     = 76,
@@ -81,7 +81,7 @@ diff a/src/sound/sound.h b/src/sound/sound.h	(rejected hunks)
 -   SOUND_FIREp     = 78,   // tir avec phazer
 -   SOUND_EXPLOg1   = 79,   // impact gun 1
 -   SOUND_EXPLOg2   = 80,   // impact gun 2
--   SOUND_MOTORd    = 81,   // moteur à friction
+-   SOUND_MOTORd    = 81,   // moteur Ã  friction
 +   SOUND_FLY       = 3,
 +   SOUND_STEPs     = 4,    // smooth
 +   SOUND_MOTOR1    = 5,
@@ -99,7 +99,7 @@ diff a/src/sound/sound.h b/src/sound/sound.h	(rejected hunks)
 +   SOUND_MANIP     = 17,
 +   SOUND_SWIM      = 18,
 +   SOUND_RADAR     = 19,
-+   SOUND_ALARM     = 20,   // alarme énergie
++   SOUND_ALARM     = 20,   // alarme Ã©nergie
 +   SOUND_PSHHH     = 21,
 +   SOUND_NUCLEAR   = 22,
 +   SOUND_INFO      = 23,
@@ -118,7 +118,7 @@ diff a/src/sound/sound.h b/src/sound/sound.h	(rejected hunks)
 +   SOUND_POWEROFF  = 36,
 +   SOUND_WAYPOINT  = 37,
 +   SOUND_JOSTLE    = 38,
-+   SOUND_FINDING   = 39,   // trouvé un objet caché
++   SOUND_FINDING   = 39,   // trouvÃ© un objet cachÃ©
 +   SOUND_FIREp     = 40,   // tir avec phazer
 +   SOUND_WHEEL     = 41,   // roue avec pneu
 +   SOUND_WHEELb    = 42,   // roue sur la jante
@@ -156,14 +156,14 @@ diff a/src/sound/sound.h b/src/sound/sound.h	(rejected hunks)
 +   SOUND_BOT4p     = 74,
 +   SOUND_EVIL1     = 75,
 +   SOUND_WHEELg    = 76,   // roue sur gravier
-+   SOUND_CHOCm     = 77,   // choc métalique
++   SOUND_CHOCm     = 77,   // choc mÃ©talique
 +   SOUND_CHOCa     = 78,   // choc arbre
 +   SOUND_FALLg     = 79,   // tombe dans le gravier
 +   SOUND_CHOCo     = 80,   // choc objet
 +   SOUND_FALLo1    = 81,   // objet tombe
 +   SOUND_FALLo2    = 82,   // objet tombe
 +   SOUND_FALLo3    = 83,   // objet tombe
-+   SOUND_MOTORs    = 84,   // démarrage moteur
++   SOUND_MOTORs    = 84,   // dÃ©marrage moteur
  };
  
  enum SoundNext

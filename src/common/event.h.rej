@@ -540,8 +540,8 @@ diff a/src/common/event.h b/src/common/event.h	(rejected hunks)
     EVENT_USER              = 10000,
     EVENT_FORCE_DWORD       = 0x7fffffff
 @@ -515,9 +357,10 @@ typedef struct
-    EventMsg    event;      // événement (EVENT_*)
-    long        param;      // paramètre
+    EventMsg    event;      // Ã©vÃ©nement (EVENT_*)
+    long        param;      // paramÃ¨tre
     FPOINT      pos;        // position de la souris (0..1)
 -   float       axeX;       // commande de l'axe X (-1..1)
 -   float       axeY;       // commande de l'axe Y (-1..1)
@@ -549,8 +549,8 @@ diff a/src/common/event.h b/src/common/event.h	(rejected hunks)
 +   float       axeX;       // commande de l'axe X (-1..1) avancer/reculer
 +   float       axeY;       // commande de l'axe Y (-1..1) tourner
 +   float       axeZ;       // commande de l'axe Z (-1..1) monter/descendre
-+   float       axeW;       // commande de l'axe W (-1..1) frain à main
-    short       keyState;   // état du clavier (KS_*)
++   float       axeW;       // commande de l'axe W (-1..1) frain Ã  main
+    short       keyState;   // Ã©tat du clavier (KS_*)
     float       rTime;      // temps relatif
  }
 @@ -557,8 +400,15 @@ Event;
@@ -567,7 +567,7 @@ diff a/src/common/event.h b/src/common/event.h	(rejected hunks)
 +#define VK_WHEELUP     (0x200+10)  // molette souris up
 +#define VK_WHEELDOWN   (0x200+11)  // molette souris down
 +
-+#define VK_DEFAULT     (0x200+12)  // action par défaut
++#define VK_DEFAULT     (0x200+12)  // action par dÃ©faut
  
  
  enum KeyRank

@@ -63,7 +63,7 @@ diff a/src/ui/controls/check.cpp b/src/ui/controls/check.cpp	(rejected hunks)
 -           icon = 16;  // vu
 +           if ( m_state & STATE_RADIO )  icon = 30;  // rond
 +           else                          icon = 16;  // vu
-            DrawPart(icon, zoomInt, 0.0f);  // dessine l'icône
+            DrawPart(icon, zoomInt, 0.0f);  // dessine l'icÃ´ne
         }
     }
 @@ -148,8 +165,8 @@ void CCheck::Draw()

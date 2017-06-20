@@ -230,7 +230,7 @@ diff a/src/ui/mainmap.cpp b/src/ui/mainmap.cpp	(rejected hunks)
     }
  }
  
--// Spécifie le type de l'icône pour l'objet sélectionné.
+-// SpÃ©cifie le type de l'icÃ´ne pour l'objet sÃ©lectionnÃ©.
 -
 -void CMainMap::SetToy(BOOL bToy)
 -{
@@ -246,7 +246,7 @@ diff a/src/ui/mainmap.cpp b/src/ui/mainmap.cpp	(rejected hunks)
 -   pm->SetToy(bToy);
 -}
 -
--// Spécifie les paramètres lors de l'usage d'une image fixe.
+-// SpÃ©cifie les paramÃ¨tres lors de l'usage d'une image fixe.
 -
 -void CMainMap::SetFixParam(float zoom, float ox, float oy, float angle,
 -                          int mode, BOOL bDebug)
@@ -267,7 +267,7 @@ diff a/src/ui/mainmap.cpp b/src/ui/mainmap.cpp	(rejected hunks)
 -   pm->SetDebug(bDebug);
 -}
 -
- // Met à jour la mini-carte suite à un changement du terrain.
+ // Met Ã  jour la mini-carte suite Ã  un changement du terrain.
  
  void CMainMap::UpdateMap()
  {
@@ -295,7 +295,7 @@ diff a/src/ui/mainmap.cpp b/src/ui/mainmap.cpp	(rejected hunks)
 -}
 -
  
- // Détecte l'objet visé dans la mini-carte.
+ // DÃ©tecte l'objet visÃ© dans la mini-carte.
  
  CObject* CMainMap::DetectMap(FPOINT pos, BOOL &bInMap)
  {

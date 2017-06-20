@@ -46,11 +46,11 @@
 
 // TODO: Copied from motionbot.h temporairly
 #define MB_WAIT        0       // attend au repos
-#define MB_TRUCK   1       // soulev� par la grue
+#define MB_TRUCK   1       // soulevé par la grue
 #define MB_FEAR        2       // peur
-#define MB_GOHOME  3       // va � la maison
-#define MB_HOME1   4       // � la maison 1
-#define MB_HOME2   5       // � la maison 2
+#define MB_GOHOME  3       // va à la maison
+#define MB_HOME1   4       // à la maison 1
+#define MB_HOME2   5       // à la maison 2
 #define MB_FLIC        6       // gendarme (BOT1)
 #define MB_FIRE        6       // tir (EVIL1)
 #define MB_WALK1   7       // marche 1 (WALKER)
@@ -69,10 +69,10 @@
 
 RemovePart tableCar01[] =    // tijuana taxi
 {
-    {10, 0, -1.0f,  6.0f,  0.0f, {-1,-1,-1,-1}, 1, 10},  // to�t
-    {11, 1, -4.2f,  5.4f,  0.0f, {-1,-1,-1,-1}, 1, 11},  // fen�tre ar
-    {12, 0, -3.2f,  5.0f,  2.5f, {-1,-1,-1,-1}, 1, 12},  // fen�tre lat�rale g
-    {13, 0, -3.2f,  5.0f, -2.5f, {-1,-1,-1,-1}, 1, 13},  // fen�tre lat�rale d
+    {10, 0, -1.0f,  6.0f,  0.0f, {-1,-1,-1,-1}, 1, 10},  // toît
+    {11, 1, -4.2f,  5.4f,  0.0f, {-1,-1,-1,-1}, 1, 11},  // fenêtre ar
+    {12, 0, -3.2f,  5.0f,  2.5f, {-1,-1,-1,-1}, 1, 12},  // fenêtre latérale g
+    {13, 0, -3.2f,  5.0f, -2.5f, {-1,-1,-1,-1}, 1, 13},  // fenêtre latérale d
     {14, 3, -0.7f,  5.0f,  0.0f, {-1,-1,-1,-1}, 1, 14},  // montant central
     {15, 3,  1.7f,  4.7f,  0.0f, {-1,-1,-1,-1}, 0, 15},  // montant av
     {16, 2, -3.9f,  3.0f,  0.0f, { 2, 3, 4, 5}, 0, 16},  // carro ar
@@ -95,10 +95,10 @@ RemovePart tableCar01[] =    // tijuana taxi
 
 RemovePart tableCar02[] =    // ford 32
 {
-    {10, 0, -0.7f,  5.5f,  0.0f, {-1,-1,-1,-1}, 0, 10},  // to�t
-    {11, 0, -2.6f,  4.8f,  0.0f, {-1,-1,-1,-1}, 0, 11},  // fen�tre ar
-    {12, 1, -2.0f,  4.7f, -2.9f, {-1,-1,-1,-1}, 0, 12},  // fen�tre lat�rale d
-    {13, 1, -2.0f,  4.7f,  2.9f, {-1,-1,-1,-1}, 0, 13},  // fen�tre lat�rale g
+    {10, 0, -0.7f,  5.5f,  0.0f, {-1,-1,-1,-1}, 0, 10},  // toît
+    {11, 0, -2.6f,  4.8f,  0.0f, {-1,-1,-1,-1}, 0, 11},  // fenêtre ar
+    {12, 1, -2.0f,  4.7f, -2.9f, {-1,-1,-1,-1}, 0, 12},  // fenêtre latérale d
+    {13, 1, -2.0f,  4.7f,  2.9f, {-1,-1,-1,-1}, 0, 13},  // fenêtre latérale g
     {14, 1,  1.2f,  4.4f,  0.0f, {-1,-1,-1,-1}, 0, 14},  // montant av
     {15, 2, -1.1f,  2.5f, -2.9f, {-1,-1,-1,-1}, 0, 15},  // porte droite
     {16, 2, -1.1f,  2.5f,  2.9f, {-1,-1,-1,-1}, 0, 16},  // porte gauche
@@ -117,17 +117,17 @@ RemovePart tableCar02[] =    // ford 32
 
 RemovePart tableCar03[] =    // pickup
 {
-    {10, 0, -0.9f,  5.3f,  0.0f, {-1,-1,-1,-1}, 0, 10},  // to�t
-    {11, 0, -2.4f,  4.3f,  0.0f, {-1,-1,-1,-1}, 0, 11},  // fen�tre ar
-    {12, 1, -2.0f,  4.4f, -1.9f, {-1,-1,-1,-1}, 0, 12},  // fen�tre lat�rale d
-    {13, 1, -2.0f,  4.4f,  1.9f, {-1,-1,-1,-1}, 0, 13},  // fen�tre lat�rale g
+    {10, 0, -0.9f,  5.3f,  0.0f, {-1,-1,-1,-1}, 0, 10},  // toît
+    {11, 0, -2.4f,  4.3f,  0.0f, {-1,-1,-1,-1}, 0, 11},  // fenêtre ar
+    {12, 1, -2.0f,  4.4f, -1.9f, {-1,-1,-1,-1}, 0, 12},  // fenêtre latérale d
+    {13, 1, -2.0f,  4.4f,  1.9f, {-1,-1,-1,-1}, 0, 13},  // fenêtre latérale g
     {14, 1,  0.6f,  4.3f,  0.0f, {-1,-1,-1,-1}, 0, 14},  // montant av
-    {15, 0,  0.8f,  5.2f,  0.0f, {-1,-1,-1,-1}, 0, 15},  // visi�re
+    {15, 0,  0.8f,  5.2f,  0.0f, {-1,-1,-1,-1}, 0, 15},  // visière
     {16, 0, -0.5f,  2.5f, -1.9f, {-1,-1,-1,-1}, 0, 16},  // porte droite
     {17, 0, -0.5f,  2.5f,  1.9f, {-1,-1,-1,-1}, 0, 17},  // porte gauche
     {18, 2, -2.4f,  2.5f,  0.0f, {-1,-1,-1,-1}, 0, 18},  // carro ar
-    {19, 2, -2.0f,  2.5f, -1.9f, {-1,-1,-1,-1}, 0, 19},  // carro lat�rale d
-    {20, 2, -2.0f,  2.5f,  1.9f, {-1,-1,-1,-1}, 0, 20},  // carro lat�rale g
+    {19, 2, -2.0f,  2.5f, -1.9f, {-1,-1,-1,-1}, 0, 19},  // carro latérale d
+    {20, 2, -2.0f,  2.5f,  1.9f, {-1,-1,-1,-1}, 0, 20},  // carro latérale g
     {21, 2,  0.8f,  2.5f,  0.0f, {-1,-1,-1,-1}, 0, 21},  // carro av
     {22, 0,  4.7f,  2.2f, -1.4f, { 1,-1,-1,-1}, 0, 22},  // phare av d
     {23, 0,  4.7f,  2.2f,  1.4f, { 0,-1,-1,-1}, 0, 22},  // phare av g
@@ -138,8 +138,8 @@ RemovePart tableCar03[] =    // pickup
     {28, 0,  3.0f,  2.0f,  2.5f, {-1,-1,-1,-1}, 0, 28},  // garde-boue av g
     {29, 0, -4.0f,  2.0f, -2.5f, {-1,-1,-1,-1}, 0, 29},  // garde-boue ar d
     {30, 0, -4.0f,  2.0f,  2.5f, {-1,-1,-1,-1}, 0, 30},  // garde-boue ar g
-    {31, 0, -4.5f,  3.5f, -2.2f, {-1,-1,-1,-1}, 0, 31},  // barri�re d
-    {32, 0, -4.5f,  3.5f,  2.2f, {-1,-1,-1,-1}, 0, 32},  // barri�re g
+    {31, 0, -4.5f,  3.5f, -2.2f, {-1,-1,-1,-1}, 0, 31},  // barrière d
+    {32, 0, -4.5f,  3.5f,  2.2f, {-1,-1,-1,-1}, 0, 32},  // barrière g
     {33, 0,  0.2f,  3.0f,  0.0f, {-1,-1,-1,-1}, 0, 33},  // tableau de bord
     {34, 0, -5.4f,  2.5f, -2.6f, { 3, 5,-1,-1}, 0, 34},  // phare ar d
     {35, 0, -5.4f,  2.5f,  2.6f, { 2, 4,-1,-1}, 0, 35},  // phare ar g
@@ -148,14 +148,14 @@ RemovePart tableCar03[] =    // pickup
 
 RemovePart tableCar04[] =    // firecraker
 {
-    {10, 1,  2.3f,  4.8f,  0.0f, {-1,-1,-1,-1}, 0, 10},  // fen�tre av
+    {10, 1,  2.3f,  4.8f,  0.0f, {-1,-1,-1,-1}, 0, 10},  // fenêtre av
     {11, 0,  1.0f,  1.8f, -1.9f, {-1,-1,-1,-1}, 0, 11},  // triangle d
     {12, 0,  1.0f,  1.8f,  1.9f, {-1,-1,-1,-1}, 0, 12},  // triangle g
     {13, 0,  1.6f,  3.3f,  0.0f, {-1,-1,-1,-1}, 0, 13},  // tableau de bord
     {14, 2,  2.0f,  2.5f,  0.0f, {-1,-1,-1,-1}, 0, 14},  // carro av
-    {15, 2, -1.5f,  3.8f,  0.0f, {-1,-1,-1,-1}, 0, 15},  // si�ge
-    {16, 0, -3.5f,  4.0f, -2.1f, {-1,-1,-1,-1}, 0, 16},  // barri�re d
-    {17, 0, -3.5f,  4.0f,  2.1f, {-1,-1,-1,-1}, 0, 16},  // barri�re g
+    {15, 2, -1.5f,  3.8f,  0.0f, {-1,-1,-1,-1}, 0, 15},  // siège
+    {16, 0, -3.5f,  4.0f, -2.1f, {-1,-1,-1,-1}, 0, 16},  // barrière d
+    {17, 0, -3.5f,  4.0f,  2.1f, {-1,-1,-1,-1}, 0, 16},  // barrière g
     {18, 0, -1.0f,  1.5f, -2.7f, {-1,-1,-1,-1}, 0, 18},  // marche pied d
     {19, 0, -1.0f,  1.5f,  2.7f, {-1,-1,-1,-1}, 0, 19},  // marche pied g
     {20, 0,  4.5f,  1.8f, -2.7f, {-1,-1,-1,-1}, 0, 20},  // garde-boue av d
@@ -177,7 +177,7 @@ RemovePart tableCar04[] =    // firecraker
 
 RemovePart tableCar05[] =    // hooligan
 {
-    {10, 0,  1.0f,  4.3f,  0.0f, {-1,-1,-1,-1}, 0, 10},  // fen�tre av
+    {10, 0,  1.0f,  4.3f,  0.0f, {-1,-1,-1,-1}, 0, 10},  // fenêtre av
     {11, 0, -0.4f,  2.6f, -2.2f, {-1,-1,-1,-1}, 0, 11},  // porte d
     {12, 0, -0.4f,  2.6f,  2.2f, {-1,-1,-1,-1}, 0, 12},  // porte g
     {13, 1,  1.3f,  2.7f,  0.0f, {-1,-1,-1,-1}, 0, 13},  // carro av
@@ -197,15 +197,15 @@ RemovePart tableCar05[] =    // hooligan
     {27, 0, -5.7f,  3.0f,  2.9f, { 2, 4,-1,-1}, 0, 27},  // phare ar g
     {28, 1, -4.0f,  2.8f, -2.1f, {-1,-1,-1,-1}, 0, 28},  // aile ar d
     {29, 1, -4.0f,  2.8f,  2.1f, {-1,-1,-1,-1}, 0, 29},  // aile ar g
-    {30, 0, -6.2f,  1.8f,  0.0f, {-1,-1,-1,-1}, 0, 30},  // parchoc arri�re
+    {30, 0, -6.2f,  1.8f,  0.0f, {-1,-1,-1,-1}, 0, 30},  // parchoc arrière
     {-1}
 };
 
 RemovePart tableCar06[] =    // chevy
 {
-    {10, 0, -1.0f,  5.0f,  0.0f, {-1,-1,-1,-1}, 1, 10},  // to�t
-    {11, 0,  2.2f,  4.0f,  0.0f, {-1,-1,-1,-1}, 0, 11},  // fen�tre av
-    {12, 0, -4.0f,  4.0f,  0.0f, {-1,-1,-1,-1}, 0, 12},  // fen�tre ar
+    {10, 0, -1.0f,  5.0f,  0.0f, {-1,-1,-1,-1}, 1, 10},  // toît
+    {11, 0,  2.2f,  4.0f,  0.0f, {-1,-1,-1,-1}, 0, 11},  // fenêtre av
+    {12, 0, -4.0f,  4.0f,  0.0f, {-1,-1,-1,-1}, 0, 12},  // fenêtre ar
     {13, 1,  1.7f,  4.0f, -2.6f, {-1,-1,-1,-1}, 0, 13},  // montant av d
     {14, 1,  1.7f,  4.0f,  2.6f, {-1,-1,-1,-1}, 0, 14},  // montant av g
     {15, 1, -3.5f,  3.8f, -2.6f, {-1,-1,-1,-1}, 0, 15},  // montant ar d
@@ -225,18 +225,18 @@ RemovePart tableCar06[] =    // chevy
 
 RemovePart tableCar07[] =    // reo
 {
-    {10, 0, -1.8f,  5.3f,  0.0f, {-1,-1,-1,-1}, 1, 10},  // to�t
-    {11, 1, -4.7f,  4.5f,  0.0f, {-1,-1,-1,-1}, 0, 11},  // fen�tre ar
-    {12, 1, -4.2f,  4.5f, -1.9f, {-1,-1,-1,-1}, 1, 12},  // fen�tre lat�rale d
-    {13, 1, -4.2f,  4.5f,  1.9f, {-1,-1,-1,-1}, 1, 13},  // fen�tre lat�rale g
-    {14, 1, -1.2f,  4.5f, -1.9f, {-1,-1,-1,-1}, 1, 14},  // montant lat�ral d
-    {15, 1, -1.2f,  4.5f,  1.9f, {-1,-1,-1,-1}, 1, 15},  // montant lat�ral g
+    {10, 0, -1.8f,  5.3f,  0.0f, {-1,-1,-1,-1}, 1, 10},  // toît
+    {11, 1, -4.7f,  4.5f,  0.0f, {-1,-1,-1,-1}, 0, 11},  // fenêtre ar
+    {12, 1, -4.2f,  4.5f, -1.9f, {-1,-1,-1,-1}, 1, 12},  // fenêtre latérale d
+    {13, 1, -4.2f,  4.5f,  1.9f, {-1,-1,-1,-1}, 1, 13},  // fenêtre latérale g
+    {14, 1, -1.2f,  4.5f, -1.9f, {-1,-1,-1,-1}, 1, 14},  // montant latéral d
+    {15, 1, -1.2f,  4.5f,  1.9f, {-1,-1,-1,-1}, 1, 15},  // montant latéral g
     {16, 1,  1.2f,  4.5f,  0.0f, {-1,-1,-1,-1}, 0, 16},  // montant av
     {17, 0,  0.1f,  2.5f, -1.8f, {-1,-1,-1,-1}, 0, 17},  // porte droite
     {18, 0,  0.1f,  2.5f,  1.8f, {-1,-1,-1,-1}, 0, 18},  // porte gauche
     {19, 2, -5.0f,  2.5f,  0.0f, {-1,-1,-1,-1}, 0, 19},  // carro ar
-    {20, 2, -3.0f,  2.5f, -1.9f, {-1,-1,-1,-1}, 0, 20},  // carro lat�rale d
-    {21, 2, -3.0f,  2.5f,  1.9f, {-1,-1,-1,-1}, 0, 21},  // carro lat�rale g
+    {20, 2, -3.0f,  2.5f, -1.9f, {-1,-1,-1,-1}, 0, 20},  // carro latérale d
+    {21, 2, -3.0f,  2.5f,  1.9f, {-1,-1,-1,-1}, 0, 21},  // carro latérale g
     {22, 2,  1.5f,  2.5f,  0.0f, {-1,-1,-1,-1}, 0, 22},  // carro av
     {23, 0,  5.0f,  2.8f, -1.4f, { 1,-1,-1,-1}, 0, 23},  // phare av d
     {24, 0,  5.0f,  2.8f,  1.4f, { 0,-1,-1,-1}, 0, 24},  // phare av g
@@ -262,7 +262,7 @@ RemovePart tableCar08[] =    // torpedo
     {14, 1, -4.5f,  2.5f,  1.4f, {-1,-1,-1,-1}, 0, 14},  // aile g
     {15, 0, -7.0f,  2.5f,  0.0f, {-1,-1,-1,-1}, 0, 15},  // coffre ar
     {16, 1, -2.1f,  3.0f,  0.0f, {-1,-1,-1,-1}, 0, 16},  // tableau de bord
-    {17, 0, -4.2f,  2.5f,  1.8f, {-1,-1,-1,-1}, 0, 17},  // frein � main
+    {17, 0, -4.2f,  2.5f,  1.8f, {-1,-1,-1,-1}, 0, 17},  // frein à main
     {-1}
 };
 
@@ -276,7 +276,7 @@ void CalcInclinaison(float hl, float hr, float radius,
     angle = atanf((hl+offset)/radius);
 }
 
-// Calcule l'offset d'une rotation d�centr�e.
+// Calcule l'offset d'une rotation décentrée.
 
 Math::Point AdjustRot(float x, float y, float angle)
 {
@@ -335,7 +335,7 @@ void CMotionCar::DeleteObject(bool bAll)
 }
 
 
-// D�marre une action sp�ciale.
+// Démarre une action spéciale.
 
 Error CMotionCar::SetAction(int action, float time)
 {
@@ -370,7 +370,7 @@ Error CMotionCar::SetAction(int action, float time)
     return CMotion::SetAction(action, time);
 }
 
-// Ecrase un v�hicule sous la porte 2 ou 3 (mince ou plat).
+// Ecrase un véhicule sous la porte 2 ou 3 (mince ou plat).
 
 bool CMotionCar::CrashVehicle(Math::Vector zoom)
 {
@@ -390,7 +390,7 @@ bool CMotionCar::CrashVehicle(Math::Vector zoom)
     bNormal = ( zoom.x == 1.0f && zoom.y == 1.0f && zoom.z == 1.0f );
 
     fret = m_object->GetCargo();
-    if ( fret != 0 )  // robot transport� ?
+    if ( fret != 0 )  // robot transporté ?
     {
         assert(fret->Implements(ObjectInterfaceType::Transportable));
         mat = m_object->GetWorldMatrix(0);
@@ -399,7 +399,7 @@ bool CMotionCar::CrashVehicle(Math::Vector zoom)
         dynamic_cast<CTransportableObject*>(fret)->SetTransporter(0);
         fret->SetPosition(pos);
 
-        m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, fret);  // explose le robot transport�
+        m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, fret);  // explose le robot transporté
     }
 
     m_object->SetScale(zoom);
@@ -448,7 +448,7 @@ bool CMotionCar::CrashVehicle(Math::Vector zoom)
 }
 
 
-// Cr�e un v�hicule roulant quelconque pos� sur le sol.
+// Crée un véhicule roulant quelconque posé sur le sol.
 
 void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager)
 {
@@ -464,7 +464,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
     CreatePhysics();
     character = m_object->GetCharacter();
 
-    // Cr�e la base principale.
+    // Crée la base principale.
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // c'est un objet mobile
     m_object->SetObjectRank(0, rank);
@@ -524,7 +524,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
     m_object->SetPosition(pos);
     m_object->SetRotationY(angle);
 
-    // Un v�hicule doit avoir obligatoirement une sph�re de
+    // Un véhicule doit avoir obligatoirement une sphère de
     // collision avec un centre (0;0;0) (voir GetCrashSphere).
     if ( type == OBJECT_CAR )
     {
@@ -551,7 +551,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
 
     if ( type == OBJECT_CAR && m_model == 1 )  // tijuana taxi ?
     {
-        // Cr�e l'axe avant.
+        // Crée l'axe avant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
@@ -559,7 +559,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0101.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(5.0f, 1.0f, 0.0f));
 
-        // Cr�e l'axe arri�re.
+        // Crée l'axe arrière.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
@@ -567,10 +567,10 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0102.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(-4.0f, 1.3f, 0.0f));
 
-        // Cr�e les roues.
+        // Crée les roues.
         CreateWheel(modelManager, m_nameObjWheel);
 
-        // Cr�e le moteur.
+        // Crée le moteur.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
@@ -578,7 +578,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0107.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(7, Math::Vector(3.2f, 1.7f, 0.0f));
 
-        // Cr�e le volant.
+        // Crée le volant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
@@ -586,7 +586,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0108.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(8, Math::Vector(0.8f, 1.3f, 0.7f));
 
-        // Cr�e la t�l�commande.
+        // Crée la télécommande.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
@@ -603,7 +603,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
 
     if ( type == OBJECT_CAR && m_model == 2 )  // ford 32 ?
     {
-        // Cr�e l'axe avant.
+        // Crée l'axe avant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
@@ -611,7 +611,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0201.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(5.0f, 1.0f, 0.0f));
 
-        // Cr�e l'axe arri�re.
+        // Crée l'axe arrière.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
@@ -619,10 +619,10 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0202.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(-5.0f, 1.2f, 0.0f));
 
-        // Cr�e les roues.
+        // Crée les roues.
         CreateWheel(modelManager, m_nameObjWheel);
 
-        // Cr�e le moteur.
+        // Crée le moteur.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
@@ -630,7 +630,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0207.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(7, Math::Vector(3.2f, 2.0f, 0.0f));
 
-        // Cr�e le volant.
+        // Crée le volant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
@@ -638,7 +638,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0208.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(8, Math::Vector(-0.2f, 1.1f, 0.8f));
 
-        // Cr�e la t�l�commande.
+        // Crée la télécommande.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
@@ -654,7 +654,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
 
     if ( type == OBJECT_CAR && m_model == 3 )  // pickup ?
     {
-        // Cr�e l'axe avant.
+        // Crée l'axe avant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
@@ -662,7 +662,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0301.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(5.0f, 1.0f, 0.0f)*1.1f);
 
-        // Cr�e l'axe arri�re.
+        // Crée l'axe arrière.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
@@ -670,7 +670,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0302.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(-4.0f, 1.1f, 0.0f)*1.1f);
 
-        // Cr�e l'amortisseur arri�re droite.
+        // Crée l'amortisseur arrière droite.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(38, rank);
@@ -678,7 +678,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0338.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(38, Math::Vector(0.0f, 0.0f, -1.8f)*1.1f);
 
-        // Cr�e l'amortisseur arri�re gauche.
+        // Crée l'amortisseur arrière gauche.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(39, rank);
@@ -686,10 +686,10 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0338.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(39, Math::Vector(0.0f, 0.0f, 1.8f)*1.1f);
 
-        // Cr�e les roues.
+        // Crée les roues.
         CreateWheel(modelManager, m_nameObjWheel);
 
-        // Cr�e le moteur.
+        // Crée le moteur.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
@@ -698,7 +698,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         m_object->SetPartPosition(7, Math::Vector(2.4f, 2.3f, 0.0f)*1.1f);
         m_object->SetPartRotationZ(7, 10.0f*Math::PI/180.0f);
 
-        // Cr�e le volant.
+        // Crée le volant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
@@ -706,7 +706,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0308.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(8, Math::Vector(-0.5f, 1.5f, 0.7f)*1.1f);
 
-        // Cr�e la t�l�commande.
+        // Crée la télécommande.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
@@ -722,7 +722,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
 
     if ( type == OBJECT_CAR && m_model == 4 )  // firecraker ?
     {
-        // Cr�e l'axe avant.
+        // Crée l'axe avant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
@@ -730,7 +730,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0401.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(5.0f, 1.0f, 0.0f));
 
-        // Cr�e l'axe arri�re.
+        // Crée l'axe arrière.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
@@ -738,10 +738,10 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0402.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(-5.5f, 1.4f, 0.0f));
 
-        // Cr�e les roues.
+        // Crée les roues.
         CreateWheel(modelManager, m_nameObjWheel);
 
-        // Cr�e le moteur.
+        // Crée le moteur.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
@@ -749,7 +749,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0407.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(7, Math::Vector(3.0f, 2.2f, 0.0f));
 
-        // Cr�e le support du volant.
+        // Crée le support du volant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(34, rank);
@@ -758,7 +758,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         m_object->SetPartPosition(34, Math::Vector(1.8f, 2.1f, 0.7f));
         m_object->SetPartRotationZ(34, 35.0f*Math::PI/180.0f);
 
-        // Cr�e le volant.
+        // Crée le volant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
@@ -766,7 +766,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0408.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(8, Math::Vector(0.0f, 1.0f, 0.0f));
 
-        // Cr�e la t�l�commande.
+        // Crée la télécommande.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
@@ -782,7 +782,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
 
     if ( type == OBJECT_CAR && m_model == 5 )  // hooligan ?
     {
-        // Cr�e l'axe avant.
+        // Crée l'axe avant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
@@ -790,7 +790,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0501.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(5.0f, 1.1f, 0.0f));
 
-        // Cr�e l'axe arri�re.
+        // Crée l'axe arrière.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
@@ -798,10 +798,10 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0502.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(-5.0f, 1.2f, 0.0f));
 
-        // Cr�e les roues.
+        // Crée les roues.
         CreateWheel(modelManager, m_nameObjWheel);
 
-        // Cr�e le moteur.
+        // Crée le moteur.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
@@ -809,7 +809,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0507.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(7, Math::Vector(3.2f, 2.0f, 0.0f));
 
-        // Cr�e le volant.
+        // Crée le volant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
@@ -817,7 +817,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0508.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(8, Math::Vector(-0.2f, 1.2f, 0.8f));
 
-        // Cr�e la t�l�commande.
+        // Crée la télécommande.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
@@ -833,7 +833,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
 
     if ( type == OBJECT_CAR && m_model == 6 )  // chevy ?
     {
-        // Cr�e l'axe avant.
+        // Crée l'axe avant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
@@ -841,7 +841,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0601.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(5.0f, 1.0f, 0.0f));
 
-        // Cr�e l'axe arri�re.
+        // Crée l'axe arrière.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
@@ -849,10 +849,10 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0602.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(-4.0f, 1.1f, 0.0f));
 
-        // Cr�e les roues.
+        // Crée les roues.
         CreateWheel(modelManager, m_nameObjWheel);
 
-        // Cr�e le moteur.
+        // Crée le moteur.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
@@ -867,7 +867,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         }
         m_object->SetPartPosition(7, Math::Vector(4.2f, 2.3f, 0.0f));
 
-        // Cr�e le volant.
+        // Crée le volant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
@@ -891,7 +891,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
 
     if ( type == OBJECT_CAR && m_model == 7 )  // reo ?
     {
-        // Cr�e l'axe avant.
+        // Crée l'axe avant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
@@ -899,7 +899,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0701.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(5.0f, 1.0f, 0.0f)*1.1f);
 
-        // Cr�e l'axe arri�re.
+        // Crée l'axe arrière.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
@@ -907,10 +907,10 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0702.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(-4.0f, 1.1f, 0.0f)*1.1f);
 
-        // Cr�e les roues.
+        // Crée les roues.
         CreateWheel(modelManager, m_nameObjWheel);
 
-        // Cr�e le moteur.
+        // Crée le moteur.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
@@ -918,7 +918,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0707.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(7, Math::Vector(3.2f, 2.2f, 0.0f)*1.1f);
 
-        // Cr�e le volant.
+        // Crée le volant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
@@ -926,7 +926,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0708.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(8, Math::Vector(0.3f, 1.5f, 0.8f)*1.1f);
 
-        // Cr�e la t�l�commande.
+        // Crée la télécommande.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
@@ -942,7 +942,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
 
     if ( type == OBJECT_CAR && m_model == 8 )  // torpedo ?
     {
-        // Cr�e l'axe avant.
+        // Crée l'axe avant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
@@ -950,7 +950,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0801.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(6.3f, 1.0f, 0.0f)*1.1f);
 
-        // Cr�e l'axe arri�re.
+        // Crée l'axe arrière.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
@@ -958,10 +958,10 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0802.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(-4.0f, 1.1f, 0.0f)*1.1f);
 
-        // Cr�e les roues.
+        // Crée les roues.
         CreateWheel(modelManager, m_nameObjWheel);
 
-        // Cr�e le moteur.
+        // Crée le moteur.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
@@ -969,7 +969,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0807.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(7, Math::Vector(1.5f, 2.2f, 0.0f)*1.1f);
 
-        // Cr�e le volant.
+        // Crée le volant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
@@ -977,7 +977,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car0808.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(8, Math::Vector(-2.0f, 4.0f, 0.0f)*1.1f);
 
-        // Cr�e la t�l�commande.
+        // Crée la télécommande.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
@@ -993,7 +993,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
 
     if ( type == OBJECT_CAR && m_model == 99 )  // fantome ?
     {
-        // Cr�e l'axe avant.
+        // Crée l'axe avant.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
@@ -1001,7 +1001,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car9901.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(5.0f, 1.0f, 0.0f)*1.1f);
 
-        // Cr�e l'axe arri�re.
+        // Crée l'axe arrière.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
@@ -1009,7 +1009,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/car9902.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(-4.0f, 1.1f, 0.0f)*1.1f);
 
-        // Cr�e les roues.
+        // Crée les roues.
         CreateWheel(modelManager, m_nameObjWheel);
 
         m_object->SetFloorHeight(0.0f);
@@ -1026,7 +1026,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         bot->SetRotation(character->angleFret);
     }
 
-    if ( type == OBJECT_CAR && m_option == 2 )  // helicopt�re ?
+    if ( type == OBJECT_CAR && m_option == 2 )  // helicoptère ?
     {
         COldObject* bot = dynamic_cast<COldObject*>(objMan->CreateObject(pos, 0.0f, OBJECT_HELICO));
         bot->SetTransporter(m_object);
@@ -1044,7 +1044,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         bot->SetRotation(character->angleFret);
     }
 
-    if ( type == OBJECT_CAR && m_option == 4 )  // �lectrocuteur ?
+    if ( type == OBJECT_CAR && m_option == 4 )  // électrocuteur ?
     {
         COldObject* bot = dynamic_cast<COldObject*>(objMan->CreateObject(pos, 0.0f, OBJECT_BLITZER));
         bot->SetTransporter(m_object);
@@ -1075,14 +1075,14 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
 
     if ( type == OBJECT_MOBILEtg )
     {
-        // Cr�e la roue arri�re-droite.
+        // Crée la roue arrière-droite.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
         modelManager->AddModelReference("buzzingcars/lem2w.mod", false, rank, m_object->GetTeam());
     
-        // Cr�e la roue arri�re-gauche.
+        // Crée la roue arrière-gauche.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
@@ -1090,14 +1090,14 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/lem2w.mod", false, rank, m_object->GetTeam());
         m_object->SetPartRotationY(7, Math::PI);
 
-        // Cr�e la roue avant-droite.
+        // Crée la roue avant-droite.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
         m_object->SetObjectParent(8, 0);
         modelManager->AddModelReference("buzzingcars/lem2w.mod", false, rank, m_object->GetTeam());
     
-        // Cr�e la roue avant-gauche.
+        // Crée la roue avant-gauche.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
@@ -1111,7 +1111,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
 
     if ( type == OBJECT_TRAX )
     {
-        // Cr�e la chenille droite.
+        // Crée la chenille droite.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
@@ -1119,7 +1119,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/trax2.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(-1.0f, 3.0f, -4.0f));
 
-        // Cr�e la chenille gauche.
+        // Crée la chenille gauche.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
@@ -1127,7 +1127,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/trax3.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(-1.0f, 3.0f, 4.0f));
 
-        // Cr�e la pelle.
+        // Crée la pelle.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
@@ -1135,7 +1135,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/trax4.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(3, Math::Vector(-1.0f, 4.0f, 0.0f));
 
-        // Cr�e le levier droite.
+        // Crée le levier droite.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(4, rank);
@@ -1143,7 +1143,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
         modelManager->AddModelReference("buzzingcars/trax5.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(4, Math::Vector(-3.5f, 8.0f, -3.0f));
 
-        // Cr�e le levier gauche.
+        // Crée le levier gauche.
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(5, rank);
@@ -1198,7 +1198,7 @@ void CMotionCar::Create(Math::Vector pos, float angle, ObjectType type, float po
     m_engine->LoadAllTextures();
 }
 
-// Cr�e les roues.
+// Crée les roues.
 
 void CMotionCar::CreateWheel(Gfx::COldModelManager* modelManager, char* name)
 {
@@ -1212,7 +1212,7 @@ void CMotionCar::CreateWheel(Gfx::COldModelManager* modelManager, char* name)
     zoom.y = character->wheelFrontDim;
     zoom.z = character->wheelFrontWidth;
 
-    // Cr�e la roue avant-droite.
+    // Crée la roue avant-droite.
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(3, rank);
@@ -1221,7 +1221,7 @@ void CMotionCar::CreateWheel(Gfx::COldModelManager* modelManager, char* name)
     m_object->SetPartPosition(3, Math::Vector(0.0f, 0.0f, -character->wheelFrontPos.z));
     m_object->SetPartScale(3, zoom);
 
-    // Cr�e la roue avant-gauche.
+    // Crée la roue avant-gauche.
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(4, rank);
@@ -1235,7 +1235,7 @@ void CMotionCar::CreateWheel(Gfx::COldModelManager* modelManager, char* name)
     zoom.y = character->wheelBackDim;
     zoom.z = character->wheelBackWidth;
 
-    // Cr�e la roue arri�re-droite.
+    // Crée la roue arrière-droite.
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(5, rank);
@@ -1244,7 +1244,7 @@ void CMotionCar::CreateWheel(Gfx::COldModelManager* modelManager, char* name)
     m_object->SetPartPosition(5, Math::Vector(0.0f, 0.0f, -character->wheelBackPos.z));
     m_object->SetPartScale(5, zoom);
 
-    // Cr�e la roue arri�re-gauche.
+    // Crée la roue arrière-gauche.
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(6, rank);
@@ -1255,7 +1255,7 @@ void CMotionCar::CreateWheel(Gfx::COldModelManager* modelManager, char* name)
     m_object->SetPartRotationY(6, Math::PI);
 }
 
-// Cr�e toutes les parties mobiles du v�hicule.
+// Crée toutes les parties mobiles du véhicule.
 
 void CMotionCar::CreatePart(Gfx::COldModelManager* modelManager, RemovePart* table, float zoom)
 {
@@ -1305,7 +1305,7 @@ void CMotionCar::CreatePart(Gfx::COldModelManager* modelManager, RemovePart* tab
 
         if ( m_model == 6 &&  // chevy ?
              m_option != 0 &&
-             table[i].part == 10 )  // to�t + transport ?
+             table[i].part == 10 )  // toît + transport ?
         {
             OpenClosePart(1.0f);
         }
@@ -1325,7 +1325,7 @@ void CMotionCar::CreatePart(Gfx::COldModelManager* modelManager, RemovePart* tab
     m_partUsed = m_partTotal;
 }
 
-// Cr�e la physique de l'objet.
+// Crée la physique de l'objet.
 
 void CMotionCar::CreatePhysics()
 {
@@ -2135,7 +2135,7 @@ void CMotionCar::CreatePhysics()
     }
 }
 
-// Indique si le v�hicule est sous l'eau.
+// Indique si le véhicule est sous l'eau.
 
 bool CMotionCar::IsUnderWater()
 {
@@ -2146,7 +2146,7 @@ bool CMotionCar::IsUnderWater()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 bool CMotionCar::EventProcess(const Event &event)
 {
@@ -2160,7 +2160,7 @@ bool CMotionCar::EventProcess(const Event &event)
     return true;
 }
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 bool CMotionCar::EventFrame(const Event &event)
 {
@@ -2222,7 +2222,7 @@ bool CMotionCar::EventFrame(const Event &event)
         UpdateWheelMapping(s, true);
         m_object->SetPartRotationZ(3, m_object->GetPartRotationZ(3)+event.rTime*-s);
         m_object->SetPartRotationZ(4, m_object->GetPartRotationZ(4)+event.rTime* s);
-        s = m_physics->GetWheelSpeed(false);  // roues arri�res
+        s = m_physics->GetWheelSpeed(false);  // roues arrières
         UpdateWheelMapping(s, false);
         m_object->SetPartRotationZ(5, m_object->GetPartRotationZ(5)+event.rTime*-s);
         m_object->SetPartRotationZ(6, m_object->GetPartRotationZ(6)+event.rTime* s);
@@ -2274,7 +2274,7 @@ bool CMotionCar::EventFrame(const Event &event)
             pos.y = character->wheelFrontPos.y+d;
             m_object->SetPartPosition(1, pos);
 
-            pos.x =  character->wheelBackPos.x;  // roue arri�re droite
+            pos.x =  character->wheelBackPos.x;  // roue arrière droite
             pos.z = -character->wheelBackPos.z;
             pos.y = -character->height;
             pos = Transform(*mat, pos);
@@ -2282,7 +2282,7 @@ bool CMotionCar::EventFrame(const Event &event)
             if ( hr >  max )  hr =  max;
             if ( hr < -max )  hr = -max;
 
-            pos.x =  character->wheelBackPos.x;  // roue arri�re gauche
+            pos.x =  character->wheelBackPos.x;  // roue arrière gauche
             pos.z =  character->wheelBackPos.z;
             pos.y = -character->height;
             pos = Transform(*mat, pos);
@@ -2309,7 +2309,7 @@ bool CMotionCar::EventFrame(const Event &event)
         else
         {
             m_object->SetPartRotationX(1, 0.0f);  // axe avant
-            m_object->SetPartRotationX(2, 0.0f);  // axe arri�re
+            m_object->SetPartRotationX(2, 0.0f);  // axe arrière
         }
 
         if ( m_model == 1 )
@@ -2354,8 +2354,8 @@ bool CMotionCar::EventFrame(const Event &event)
 
     if ( type == OBJECT_CAR )
     {
-        if ( m_actionType == MV_OPEN  ||  // ouvre le to�t ?
-             m_actionType == MV_CLOSE )   // ferme le to�t ?
+        if ( m_actionType == MV_OPEN  ||  // ouvre le toît ?
+             m_actionType == MV_CLOSE )   // ferme le toît ?
         {
             if ( m_model == 1 )  // tijuana taxi ?
             {
@@ -2363,18 +2363,18 @@ bool CMotionCar::EventFrame(const Event &event)
                 if ( m_actionType == MV_CLOSE )  progress = 1.0f-m_progress;
 
                 a = progress*Math::PI*1.4f;
-                m_object->SetPartRotationZ(10, a);  // to�t
+                m_object->SetPartRotationZ(10, a);  // toît
                 rot = AdjustRot(-3.1f, 0.4f, a);
                 pos = Math::Vector(-1.0f+rot.x, 6.0f+rot.y, 0.0f);
                 m_object->SetPartPosition(10, pos);
 
                 a = progress*Math::PI*0.4f;
-                m_object->SetPartRotationX(12, a);  // fen�tre gauche
+                m_object->SetPartRotationX(12, a);  // fenêtre gauche
                 rot = AdjustRot(0.0f, -0.8f, -a);
                 pos = Math::Vector(-3.2f, 5.0f+rot.y, 2.5f+rot.x);
                 m_object->SetPartPosition(12, pos);
 
-                m_object->SetPartRotationX(13, -a);  // fen�tre droite
+                m_object->SetPartRotationX(13, -a);  // fenêtre droite
                 rot = AdjustRot(0.0f, -0.8f, a);
                 pos = Math::Vector(-3.2f, 5.0f+rot.y, -2.5f+rot.x);
                 m_object->SetPartPosition(13, pos);
@@ -2449,18 +2449,18 @@ bool CMotionCar::EventFrame(const Event &event)
                 if ( m_actionType == MV_CLOSE )  progress = 1.0f-m_progress;
 
                 a = progress*Math::PI*1.3f;
-                m_object->SetPartRotationZ(10, a);  // to�t
+                m_object->SetPartRotationZ(10, a);  // toît
                 rot = AdjustRot(-2.9f*1.1f, 0.0f*1.1f, a);
                 pos = Math::Vector(-1.8f*1.1f+rot.x, 5.3f*1.1f+rot.y, 0.0f*1.1f);
                 m_object->SetPartPosition(10, pos);
 
                 a = progress*Math::PI*0.4f;
-                m_object->SetPartRotationX(13, a);  // fen�tre gauche
+                m_object->SetPartRotationX(13, a);  // fenêtre gauche
                 rot = AdjustRot(0.0f*1.1f, -0.6f*1.1f, -a);
                 pos = Math::Vector(-4.2f*1.1f, 4.5f*1.1f+rot.y, 1.9f*1.1f+rot.x);
                 m_object->SetPartPosition(13, pos);
 
-                m_object->SetPartRotationX(12, -a);  // fen�tre droite
+                m_object->SetPartRotationX(12, -a);  // fenêtre droite
                 rot = AdjustRot(0.0f*1.1f, -0.6f*1.1f, a);
                 pos = Math::Vector(-4.2f*1.1f, 4.5f*1.1f+rot.y, -1.9f*1.1f+rot.x);
                 m_object->SetPartPosition(12, pos);
@@ -2529,7 +2529,7 @@ bool CMotionCar::EventFrame(const Event &event)
                 pos = Transform(*mat, pos);
                 a1 = atanf(m_terrain->GetHeightToFloor(pos)/character->wheelFrontPos.x);
 
-                pos.x = -character->wheelBackPos.x;  // roue arri�re droite
+                pos.x = -character->wheelBackPos.x;  // roue arrière droite
                 pos.z = -character->wheelBackPos.z;
                 pos.y =  0.0f;
                 pos = Transform(*mat, pos);
@@ -2546,7 +2546,7 @@ bool CMotionCar::EventFrame(const Event &event)
                 pos = Transform(*mat, pos);
                 a1 = atanf(m_terrain->GetHeightToFloor(pos)/character->wheelFrontPos.x);
 
-                pos.x = -character->wheelBackPos.x;  // roue arri�re gauche
+                pos.x = -character->wheelBackPos.x;  // roue arrière gauche
                 pos.z =  character->wheelBackPos.z;
                 pos.y =  0.0f;
                 pos = Transform(*mat, pos);
@@ -2581,7 +2581,7 @@ bool CMotionCar::EventFrame(const Event &event)
     return true;
 }
 
-// Ouvre ou ferme une partie de la voiture lorsqu'un objet est transport�.
+// Ouvre ou ferme une partie de la voiture lorsqu'un objet est transporté.
 
 void CMotionCar::OpenClosePart(float progress)
 {
@@ -2598,7 +2598,7 @@ void CMotionCar::OpenClosePart(float progress)
     if ( m_model == 6 )  // chevy ?
     {
         a = progress*Math::PI*0.5f;
-        m_object->SetPartRotationZ(10, a);  // to�t
+        m_object->SetPartRotationZ(10, a);  // toît
         rot = Math::RotatePoint(progress*Math::PI/2.0f, Math::Point(0.0f, 2.5f));
         pos.x = -1.0f+rot.x;
         pos.y =  2.5f+rot.y;
@@ -2610,7 +2610,7 @@ void CMotionCar::OpenClosePart(float progress)
 }
 
 
-// Met � jour le mapping de la texture des roues.
+// Met à jour le mapping de la texture des roues.
 
 void CMotionCar::UpdateWheelMapping(float speed, bool bFront)
 {
@@ -2677,7 +2677,7 @@ void CMotionCar::UpdateWheelMapping(float speed, bool bFront)
     }
 }
 
-// Met � jour le mapping de la texture des vitres.
+// Met à jour le mapping de la texture des vitres.
 
 void CMotionCar::UpdateGlassMapping(int part, float min, float max,
                                     float dir, Gfx::EngineTextureMapping mode, bool bBlack)
@@ -2711,7 +2711,7 @@ void CMotionCar::UpdateGlassMapping(int part, float min, float max,
     }
 }
 
-// Met � jour le mapping de la texture des chenilles.
+// Met à jour le mapping de la texture des chenilles.
 
 void CMotionCar::UpdateTrackMapping(float left, float right)
 {
@@ -2737,7 +2737,7 @@ void CMotionCar::UpdateTrackMapping(float left, float right)
 }
 
 
-// Initialse la torsion de toutes les pi�ces pour qu'elles soient
+// Initialse la torsion de toutes les pièces pour qu'elles soient
 // toutes droites.
 
 void CMotionCar::TwistInit()
@@ -2781,7 +2781,7 @@ void CMotionCar::TwistInit()
     }
 }
 
-// Initialise les torsions selon une copie de l'�tat.
+// Initialise les torsions selon une copie de l'état.
 
 void CMotionCar::TwistInit(StateVehicle *sv)
 {
@@ -2800,7 +2800,7 @@ void CMotionCar::TwistInit(StateVehicle *sv)
     }
 }
 
-// Tord qq pi�ces suite � un choc.
+// Tord qq pièces suite à un choc.
 
 void CMotionCar::TwistPart(Math::Vector impact, float force)
 {
@@ -2812,10 +2812,10 @@ void CMotionCar::TwistPart(Math::Vector impact, float force)
     {
         if ( total >= 5 ) break;  // termine si 5 pces tordues
 
-        i = rand()%MAX_PART;  // choix d'une pi�ce zau zazar
+        i = rand()%MAX_PART;  // choix d'une pièce zau zazar
 
-        if ( m_model == 2 && m_part[i].part == 24 )  continue;  // coffre arri�re ?
-        if ( m_model == 6 && m_part[i].part == 10 )  continue;  // to�t ?
+        if ( m_model == 2 && m_part[i].part == 24 )  continue;  // coffre arrière ?
+        if ( m_model == 6 && m_part[i].part == 10 )  continue;  // toît ?
 
         if ( m_part[i].bDeleted )  continue;
         if ( m_part[i].twistState >= 4 )  continue;
@@ -2828,8 +2828,8 @@ void CMotionCar::TwistPart(Math::Vector impact, float force)
     }
 }
 
-// Getourne le num�ro de la prochaine partie � d�truire,
-// et consid�re quelle est d�j� virtuellement d�truite.
+// Retourne le numéro de la prochaine partie à détruire,
+// et considère quelle est déjà virtuellement détruite.
 
 int CMotionCar::GetRemovePart(int &param)
 {
@@ -2860,7 +2860,7 @@ int CMotionCar::GetRemovePart(int &param)
     {
         if ( m_part[i].light[j] != -1 )
         {
-            m_bLight[m_part[i].light[j]] = false;  // un phare cass�
+            m_bLight[m_part[i].light[j]] = false;  // un phare cassé
         }
     }
 
@@ -2870,7 +2870,7 @@ int CMotionCar::GetRemovePart(int &param)
 
     if ( m_model == 2 )  // ford 32 ?
     {
-        if ( m_part[i].part == 24 )  // coffre arri�re ?
+        if ( m_part[i].part == 24 )  // coffre arrière ?
         {
             param = 1;  // force une rotation en x
         }
@@ -2879,7 +2879,7 @@ int CMotionCar::GetRemovePart(int &param)
     if ( m_model == 6 )  // chevy ?
     {
         if ( m_part[i].part == 19 ||  // coffre avant ?
-             m_part[i].part == 20 )   // coffre arri�re ?
+             m_part[i].part == 20 )   // coffre arrière ?
         {
             param = 1;  // force une rotation en x
         }
@@ -2896,7 +2896,7 @@ bool CMotionCar::GetLight(int rank)
     return m_bLight[rank];
 }
 
-// Indique la pr�sence d'une partie sp�cifique.
+// Indique la présence d'une partie spécifique.
 
 bool CMotionCar::ExistPart(TypePart part)
 {
@@ -2904,14 +2904,14 @@ bool CMotionCar::ExistPart(TypePart part)
     return false;
 }
 
-// Donne le nombre de pi�ces total du v�hicule.
+// Donne le nombre de pièces total du véhicule.
 
 int CMotionCar::GetTotalPart()
 {
     return m_partTotal;
 }
 
-// Donne le nombre de pi�ces utilis�es du v�hicule.
+// Donne le nombre de pièces utilisées du véhicule.
 
 int CMotionCar::GetUsedPart()
 {
@@ -2925,7 +2925,7 @@ void CMotionCar::SetWheelType(WheelType type)
 {
     Gfx::COldModelManager* modelManager = m_engine->GetModelManager();
 
-    if ( type == m_wheelType )  return;  // inchang� ?
+    if ( type == m_wheelType )  return;  // inchangé ?
 
     CMotion::SetWheelType(type);
 
@@ -2938,7 +2938,7 @@ void CMotionCar::SetWheelType(WheelType type)
 
         CreateWheel(modelManager, m_nameObjWheel);
 
-        CreatePhysics();  // recr�e une physique adapt�e
+        CreatePhysics();  // recrée une physique adaptée
     }
 
     if ( type == WT_BURN )
@@ -2950,7 +2950,7 @@ void CMotionCar::SetWheelType(WheelType type)
 
         CreateWheel(modelManager, m_nameObjWBurn);
 
-        CreatePhysics();  // recr�e une physique adapt�e
+        CreatePhysics();  // recrée une physique adaptée
     }
 }
 
@@ -2960,7 +2960,7 @@ WheelType CMotionCar::GetWheelType()
 }
 
 
-// Gestion de l'�tat du v�hicule.
+// Gestion de l'état du véhicule.
 
 int CMotionCar::GetStateLength()
 {
@@ -3008,12 +3008,12 @@ void CMotionCar::ActionLoadBot(float rTime)
 
         s = fabs(m_physics->GetLinMotionX(MO_REASPEED));
 
-        if ( m_lbWalker == 0           ||  // rien trouv� ?
-             s > 1.0f                  ||  // voiture pas arr�t� ?
+        if ( m_lbWalker == 0           ||  // rien trouvé ?
+             s > 1.0f                  ||  // voiture pas arrêté ?
              physics == 0              ||  // pas de physique
              !m_lbWalker->IsProgram()  ||  // ne marche pas ?
-             m_object->GetCargo() != 0 ||  // porte d�j� qq chose ?
-             m_object->GetLock()       )   // occup� ?
+             m_object->GetCargo() != 0 ||  // porte déjà qq chose ?
+             m_object->GetLock()       )   // occupé ?
         {
             m_lbAction = false;
             SetAction(-1);
@@ -3102,7 +3102,7 @@ void CMotionCar::ActionLoadBot(float rTime)
     }
 }
 
-// Cherche le point o� mettre du fret sur un v�hicule.
+// Cherche le point où mettre du fret sur un véhicule.
 
 Math::Vector CMotionCar::GetVehiclePoint(CObject *pObj)
 {
@@ -3117,7 +3117,7 @@ Math::Vector CMotionCar::GetVehiclePoint(CObject *pObj)
     return pos;
 }
 
-// D�marre une action pour un objet.
+// Démarre une action pour un objet.
 
 void CMotionCar::StartObjectAction(COldObject* pObj, int action)
 {

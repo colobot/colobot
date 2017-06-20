@@ -52,7 +52,7 @@ CAutoBlitzer::~CAutoBlitzer()
 }
 
 
-// Détruit l'objet.
+// DÃ©truit l'objet.
 
 void CAutoBlitzer::DeleteObject(BOOL bAll)
 {
@@ -74,14 +74,14 @@ void CAutoBlitzer::Init()
 }
 
 
-// Démarre l'objet.
+// DÃ©marre l'objet.
 
 void CAutoBlitzer::Start(int param)
 {
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CAutoBlitzer::EventProcess(const Event &event)
 {
@@ -264,7 +264,7 @@ BOOL CAutoBlitzer::EventProcess(const Event &event)
            m_camera->SetBackHoriz(0.0f);
            m_camera->SetLockRotate(FALSE);
            m_camera->ResetLockRotate();
-           m_main->SetStopwatch(TRUE);  // redémarre le chrono
+           m_main->SetStopwatch(TRUE);  // redÃ©marre le chrono
 
            m_phase = ABLP_WAITOUT;
            m_speed = 1.0f/1.0f;
@@ -305,7 +305,7 @@ CObject* CAutoBlitzer::SearchObject(int total, ObjectType *type,
        if ( pObj == 0 )  break;
 
        if ( pObj->RetExplo() )  continue;
-       if ( pObj->RetLock() )  continue;  // déjà stoppé ?
+       if ( pObj->RetLock() )  continue;  // dÃ©jÃ  stoppÃ© ?
 
        oType = pObj->RetType();
 
@@ -347,7 +347,7 @@ void CAutoBlitzer::BreakDownFactory()
    automat->Start(2);
 }
 
-// Casse le méchant vilain pas bô.
+// Casse le mÃ©chant vilain pas bÃ´.
 
 void CAutoBlitzer::BreakDownEvil1()
 {
@@ -372,7 +372,7 @@ void CAutoBlitzer::BreakDownEvil1()
    pyro->Create(PT_BURNO, evil);  // destruction totale
 }
 
-// Casse le méchant roi.
+// Casse le mÃ©chant roi.
 
 void CAutoBlitzer::BreakDownEvil3()
 {
@@ -401,7 +401,7 @@ BOOL CAutoBlitzer::Abort()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liÃ©e Ã  l'Ã©tat de l'automate.
 
 Error CAutoBlitzer::RetError()
 {

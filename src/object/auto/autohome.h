@@ -16,12 +16,12 @@ enum ParticuleType;
 
 enum AutoHomePhase
 {
-   AHOP_WAIT       = 1,    // attend véhicule avec robot
-   AHOP_STOPCHECK  = 2,    // attend véhicule immobile
-   AHOP_OPEN       = 3,    // ouvre le toît
-   AHOP_MOVE       = 4,    // déplace le robot
-   AHOP_CLOSE      = 5,    // ferme le toît
-   AHOP_LIVE1      = 6,    // maison définitivement habitée
+   AHOP_WAIT       = 1,    // attend vÃ©hicule avec robot
+   AHOP_STOPCHECK  = 2,    // attend vÃ©hicule immobile
+   AHOP_OPEN       = 3,    // ouvre le toÃ®t
+   AHOP_MOVE       = 4,    // dÃ©place le robot
+   AHOP_CLOSE      = 5,    // ferme le toÃ®t
+   AHOP_LIVE1      = 6,    // maison dÃ©finitivement habitÃ©e
    AHOP_LIVE2      = 7,    // 
    AHOP_LIVE3      = 8,    // 
    AHOP_LIVE4      = 9,    // 

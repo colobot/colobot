@@ -116,7 +116,7 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
 -//?        if ( m_physics->RetType() == TYPE_FLYING &&
 -//?             m_physics->RetLand()                )  // volant au sol ?
 -//?        {
--//?            cirSpeed *= 4.0f;  // plus de pèche
+-//?            cirSpeed *= 4.0f;  // plus de pÃ¨che
 -//?        }
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
         if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
@@ -126,7 +126,7 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
 -//?        if ( m_physics->RetType() == TYPE_FLYING &&
 -//?             m_physics->RetLand()                )  // volant au sol ?
 -//?        {
--//?            linSpeed *= 8.0f;  // plus de pèche
+-//?            linSpeed *= 8.0f;  // plus de pÃ¨che
 -//?        }
         if ( linSpeed > 1.0f )  linSpeed =  1.0f;
  
@@ -199,7 +199,7 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
 -            oType != OBJECT_SAFE     &&
 -            oType != OBJECT_HUSTON   )  continue;
 -
--       if ( pObj->RetVirusMode() )  continue;  // objet infecté ?
+-       if ( pObj->RetVirusMode() )  continue;  // objet infectÃ© ?
 -
 -       if ( !pObj->GetCrashSphere(0, oPos, radius) )  continue;
 -       distance = Length2d(oPos, iPos);
@@ -236,7 +236,7 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
 -           dist = Length(pos, impact);
 -           if ( dist <= 15.0f )
 -           {
--               pObj->SetVirusMode(TRUE);  // paf, infecté !
+-               pObj->SetVirusMode(TRUE);  // paf, infectÃ© !
 -           }
 -       }
 -   }
@@ -244,8 +244,8 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
 -
 -
  
- // Assigne le but à atteindre.
- // "dist" est la distance de laquelle il faut s'éloigner pour
+ // Assigne le but Ã  atteindre.
+ // "dist" est la distance de laquelle il faut s'Ã©loigner pour
 @@ -628,27 +437,11 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
     if ( goalMode == TGG_DEFAULT )
     {
@@ -314,16 +314,16 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
         m_bApprox = TRUE;
     }
 @@ -739,19 +529,9 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
-            m_bTake = TRUE;  // objet à prendre à l'arrivée (rotation finale)
+            m_bTake = TRUE;  // objet Ã  prendre Ã  l'arrivÃ©e (rotation finale)
         }
  
 -       if ( m_physics->RetType() == TYPE_FLYING && m_altitude == 0.0f )
 -       {
 -           pos = m_object->RetPosition(0);
 -           dist = Length2d(pos, m_goal);
--           if ( dist > FLY_DIST_GROUND )  // plus de 20 mètres ?
+-           if ( dist > FLY_DIST_GROUND )  // plus de 20 mÃ¨tres ?
 -           {
--               m_altitude = FLY_DEF_HEIGHT;  // altitude par défaut
+-               m_altitude = FLY_DEF_HEIGHT;  // altitude par dÃ©faut
 -           }
 -       }
 -
@@ -345,14 +345,14 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
     if ( m_error != ERR_OK )  return m_error;
 @@ -809,38 +589,16 @@ Error CTaskGoto::IsEnded()
  
-    if ( m_phase == TGP_BEAMWCOLD )  // attend refroidissement réacteur ?
+    if ( m_phase == TGP_BEAMWCOLD )  // attend refroidissement rÃ©acteur ?
     {
 -       if ( m_altitude != 0.0f &&
 -            m_physics->RetReactorRange() < 1.0f )  return ERR_CONTINUE;
         m_phase = TGP_BEAMUP;
     }
  
-    if ( m_phase == TGP_BEAMUP )  // décolle ?
+    if ( m_phase == TGP_BEAMUP )  // dÃ©colle ?
     {
 -       if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )
 -       {
@@ -362,7 +362,7 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
 -           if ( h > limit )  h = limit;
 -           if ( pos.y < h-1.0f )  return ERR_CONTINUE;
 -
--           m_physics->SetMotorSpeedY(0.0f);  // stoppe la montée
+-           m_physics->SetMotorSpeedY(0.0f);  // stoppe la montÃ©e
 -       }
         m_phase = TGP_BEAMGOTO;
     }
@@ -469,7 +469,7 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
          type == OBJECT_RUINmobilew1 ||
          type == OBJECT_RUINmobilew2 ||
 @@ -1135,51 +865,6 @@ BOOL CTaskGoto::AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance)
-        return TRUE;  // approche par tous les côtés
+        return TRUE;  // approche par tous les cÃ´tÃ©s
     }
  
 -   if ( type == OBJECT_BASE )
@@ -478,7 +478,7 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
 -       goal = pObj->RetPosition(0);
 -       dist = Length(goal, pos);
 -       pos = (pos-goal)*(TAKE_DIST+distance)/dist + goal;
--       return TRUE;  // approche par tous les côtés
+-       return TRUE;  // approche par tous les cÃ´tÃ©s
 -   }
 -
 -   if ( type == OBJECT_MOBILEfa ||
@@ -728,7 +728,7 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
     dir.x = 0.0f;
     dir.y = 0.0f;
  
--   // Le ver passe partout et à travers tout !
+-   // Le ver passe partout et Ã  travers tout !
     iType = m_object->RetType();
 -   if ( iType == OBJECT_WORM )  return;
  
@@ -788,7 +788,7 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
         add = 4.0f;
         fac = 1.5f;
     }
--   if ( iType == OBJECT_BEE )  // guêpe ?
+-   if ( iType == OBJECT_BEE )  // guÃªpe ?
 -   {
 -       if ( m_physics->RetLand() )
 -       {
@@ -850,7 +850,7 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
 -       if ( iType == OBJECT_BEE &&
 -            oType == OBJECT_BEE )
 -       {
--           addi = 2.0f;  // entre guèpes, faut pas trop s'embêter
+-           addi = 2.0f;  // entre guÃ¨pes, faut pas trop s'embÃªter
 -       }
         
         j = 0;
@@ -862,7 +862,7 @@ diff a/src/object/task/taskgoto.cpp b/src/object/task/taskgoto.cpp	(rejected hun
 -#endif
  }
  
- // Calcule la force de répulsion verticale en fonction des obstacles.
+ // Calcule la force de rÃ©pulsion verticale en fonction des obstacles.
 @@ -1656,8 +1103,6 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
  
         oType = pObj->RetType();

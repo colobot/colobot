@@ -52,7 +52,7 @@ CAutoHook::~CAutoHook()
 }
 
 
-// Détruit l'objet.
+// DÃ©truit l'objet.
 
 void CAutoHook::DeleteObject(BOOL bAll)
 {
@@ -74,14 +74,14 @@ void CAutoHook::Init()
 }
 
 
-// Démarre l'objet.
+// DÃ©marre l'objet.
 
 void CAutoHook::Start(int param)
 {
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CAutoHook::EventProcess(const Event &event)
 {
@@ -139,7 +139,7 @@ BOOL CAutoHook::EventProcess(const Event &event)
                m_target = SearchObject(OBJECT_BOT1, car->RetPosition(0), 0.0f, 14.0f);
                if ( m_target != 0 )
                {
-                   car->SetLock(TRUE);  // voiture stoppée
+                   car->SetLock(TRUE);  // voiture stoppÃ©e
                    m_target->SetLock(TRUE);  // robot pris
 
                    m_targetPos = m_target->RetPosition(0);
@@ -186,12 +186,12 @@ BOOL CAutoHook::EventProcess(const Event &event)
                    progress = 0.0f;
                }
            }
-           else    // dépose ?
+           else    // dÃ©pose ?
            {
                m_target = SearchObject(OBJECT_REPAIR, car->RetPosition(0), 5.0f, 14.0f);
                if ( m_target != 0 )
                {
-                   car->SetLock(TRUE);  // voiture stoppée
+                   car->SetLock(TRUE);  // voiture stoppÃ©e
 
                    m_targetPos = m_target->RetPosition(0);
                    pos = car->RetPosition(0);
@@ -257,13 +257,13 @@ BOOL CAutoHook::EventProcess(const Event &event)
                m_goalHeight = m_targetPos.y-pos.y-2.0f;
                m_startHeight = -2.1f;
            }
-           else    // dépose ?
+           else    // dÃ©pose ?
            {
                mat = m_object->RetWorldMatrix(3);
                pos = Transform(*mat, D3DVECTOR(0.0f, 1.2f, 0.0f));
                m_goalHeight = m_targetPos.y-pos.y+2.2f;
                m_startHeight = -2.1f;
-               StartAction(MB_WALK1, 1.0f);  // cassé au sol
+               StartAction(MB_WALK1, 1.0f);  // cassÃ© au sol
            }
 
            SoundManip(0.5f, 0.8f, 1.5f);
@@ -295,9 +295,9 @@ BOOL CAutoHook::EventProcess(const Event &event)
                m_startRot = NormAngle(m_startRot);
                if ( m_startRot > PI )  m_startRot -= PI*2.0f;
                m_load->SetAngleY(0, m_startRot);
-               StartAction(MB_WALK2, 1.0f);  // cassé transporté
+               StartAction(MB_WALK2, 1.0f);  // cassÃ© transportÃ©
            }
-           else    // dépose ?
+           else    // dÃ©pose ?
            {
                mat = m_object->RetWorldMatrix(3);
                pos = Transform(*mat, D3DVECTOR(0.0f, 1.2f, 0.0f));
@@ -344,7 +344,7 @@ BOOL CAutoHook::EventProcess(const Event &event)
                m_startHeight = m_goalHeight;
                m_goalHeight = -2.1f;
            }
-           else    // dépose ?
+           else    // dÃ©pose ?
            {
                m_startAngle = m_goalAngle;
                if ( m_startAngle < 0.0f )  m_goalAngle = -PI;
@@ -382,7 +382,7 @@ BOOL CAutoHook::EventProcess(const Event &event)
            m_camera->SetBackHoriz(0.0f);
            m_camera->SetLockRotate(FALSE);
            m_camera->ResetLockRotate();
-           m_main->SetStopwatch(TRUE);  // redémarre le chrono
+           m_main->SetStopwatch(TRUE);  // redÃ©marre le chrono
 
            m_phase = AHKP_WAIT;
            m_speed = 1.0f/4.0f;
@@ -414,7 +414,7 @@ CObject* CAutoHook::SearchObject(ObjectType type, D3DVECTOR center,
        if ( pObj == 0 )  break;
 
        if ( pObj->RetExplo() )  continue;
-       if ( pObj->RetLock() )  continue;  // déjà pris ?
+       if ( pObj->RetLock() )  continue;  // dÃ©jÃ  pris ?
 
        if ( type != pObj->RetType() )  continue;
 
@@ -437,7 +437,7 @@ CObject* CAutoHook::SearchObject(ObjectType type, D3DVECTOR center,
    return pBest;
 }
 
-// Démarre une action pour le robot transporté.
+// DÃ©marre une action pour le robot transportÃ©.
 
 void CAutoHook::StartAction(int action, float delay)
 {
@@ -476,7 +476,7 @@ BOOL CAutoHook::Abort()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liÃ©e Ã  l'Ã©tat de l'automate.
 
 Error CAutoHook::RetError()
 {

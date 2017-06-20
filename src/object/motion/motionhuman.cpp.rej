@@ -6,7 +6,7 @@ diff a/src/object/motion/motionhuman.cpp b/src/object/motion/motionhuman.cpp	(re
 -#define ADJUST_ACTION  (3*3*3*3*MH_SPEC+3*3*3*MHS_SATCOM)
 +#define ADJUST_ACTION  (3*3*3*3*MH_SPEC+3*3*3*MHS_DRIVE1)
  
- #define START_TIME     1000.0f     // début du temps relatif
+ #define START_TIME     1000.0f     // dÃ©but du temps relatif
 +#define ZOOM           0.7f
  
  
@@ -21,7 +21,7 @@ diff a/src/object/motion/motionhuman.cpp b/src/object/motion/motionhuman.cpp	(re
  // Destructeur de l'objet.
 @@ -91,12 +91,10 @@ Error CMotionHuman::SetAction(int action, float time)
  
- // Crée le cosmonaute posé sur le sol.
+ // CrÃ©e le cosmonaute posÃ© sur le sol.
  
 -BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 -                         float power)
@@ -69,20 +69,20 @@ diff a/src/object/motion/motionhuman.cpp b/src/object/motion/motionhuman.cpp	(re
 -       return TRUE;
 -   }
 -
-    // Crée la base principale.
+    // CrÃ©e la base principale.
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, TYPEVEHICULE);  // c'est un objet mobile
     m_object->SetObjectRank(0, rank);
 -
--   if ( option == 0 )  // tête dans casque ?
+-   if ( option == 0 )  // tÃªte dans casque ?
 -   {
 -       pModFile->ReadModel("objects\\human1c.mod");
 -   }
--   if ( option == 1 )  // tête à l'air ?
+-   if ( option == 1 )  // tÃªte Ã  l'air ?
 -   {
 -       pModFile->ReadModel("objects\\human1h.mod");
 -   }
--   if ( option == 2 )  // sans sac à dos ?
+-   if ( option == 2 )  // sans sac Ã  dos ?
 -   {
 -       pModFile->ReadModel("objects\\human1v.mod");
 -   }
@@ -93,13 +93,13 @@ diff a/src/object/motion/motionhuman.cpp b/src/object/motion/motionhuman.cpp	(re
     m_object->SetAngleY(0, angle);
 +   m_object->SetZoom(0, ZOOM);
  
-    // Un véhicule doit avoir obligatoirement une sphère de
+    // Un vÃ©hicule doit avoir obligatoirement une sphÃ¨re de
     // collision avec un centre (0;y;0) (voir GetCrashSphere).
 -   m_object->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 2.0f, SOUND_AIE, 0.20f);
 +   m_object->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.20f);
     m_object->SetGlobalSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 4.0f);
  
-    // Crée la tête.
+    // CrÃ©e la tÃªte.
 @@ -168,47 +124,18 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, TYPEDESCENDANT);
     m_object->SetObjectRank(1, rank);
@@ -107,14 +107,14 @@ diff a/src/object/motion/motionhuman.cpp b/src/object/motion/motionhuman.cpp	(re
 -
 -   if ( type == OBJECT_HUMAN )
 -   {
--       if ( option == 0 )  // tête dans casque ?
+-       if ( option == 0 )  // tÃªte dans casque ?
 -       {
 -           face = m_main->RetGamerFace();
 -           sprintf(filename, "objects\\human2c%d.mod", face+1);
 -           pModFile->ReadModel(filename);
 -       }
--       if ( option == 1 ||  // tête à l'air ?
--            option == 2 )   // sans sac à dos ?
+-       if ( option == 1 ||  // tÃªte Ã  l'air ?
+-            option == 2 )   // sans sac Ã  dos ?
 -       {
 -           face = m_main->RetGamerFace();
 -           sprintf(filename, "objects\\human2h%d.mod", face+1);
@@ -128,14 +128,14 @@ diff a/src/object/motion/motionhuman.cpp b/src/object/motion/motionhuman.cpp	(re
 +   pModFile->ReadModel("objects\\human2.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(1, D3DVECTOR(0.0f, 2.7f, 0.0f));
--   if ( option == 1 ||  // tête à l'air ?
--        option == 2 )   // sans sac à dos ?
+-   if ( option == 1 ||  // tÃªte Ã  l'air ?
+-        option == 2 )   // sans sac Ã  dos ?
 -   {
 -       m_object->SetZoom(1, D3DVECTOR(1.0f, 1.05f, 1.0f));
 -   }
 +   m_object->SetZoom(1, D3DVECTOR(1.1f, 1.2f, 1.1f));
  
-    // Crée les lunettes.
+    // CrÃ©e les lunettes.
 -   glasses = m_main->RetGamerGlasses();
 -   if ( glasses != 0 && type == OBJECT_HUMAN )
 -   {
@@ -154,7 +154,7 @@ diff a/src/object/motion/motionhuman.cpp b/src/object/motion/motionhuman.cpp	(re
 +   pModFile->ReadModel("objects\\human2g.mod");
 +   pModFile->CreateEngineObject(rank);
  
-    // Crée le bras droite.
+    // CrÃ©e le bras droite.
     rank = m_engine->CreateObject();
 @@ -225,7 +152,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -178,8 +178,8 @@ diff a/src/object/motion/motionhuman.cpp b/src/object/motion/motionhuman.cpp	(re
     m_object->SetPosition(13, D3DVECTOR(0.0f, -1.5f, 0.0f));
     m_object->SetAngle(13, D3DVECTOR(10.0f*PI/180.0f, -5.0f*PI/180.0f, 5.0f*PI/180.0f));
  
--   // Crée le pistolet.
--   if ( option != 2 )  // avec sac à dos ?
+-   // CrÃ©e le pistolet.
+-   if ( option != 2 )  // avec sac Ã  dos ?
 -   {
 -       rank = m_engine->CreateObject();
 -       m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -216,7 +216,7 @@ diff a/src/object/motion/motionhuman.cpp b/src/object/motion/motionhuman.cpp	(re
 +       0,35,-20,   10,0,5,     0,0,0,      // s0: bras/cuisses/-
 +       0,-95,5,    0,0,-10,    0,0,0,      // s0: avant-bras/jambes/-
 +       0,45,25,    -10,5,5,    0,0,0,      // s0: mains/pieds/-
-                                            // porte à terre :
+                                            // porte Ã  terre :
         25,40,-40,  10,0,60,    0,0,0,      // s2: bras/cuisses/-
         0,-45,0,    0,0,-120,   0,0,0,      // s2: avant-bras/jambes/-
 @@ -560,19 +474,31 @@ void CMotionHuman::CreatePhysics(ObjectType type)
@@ -276,11 +276,11 @@ diff a/src/object/motion/motionhuman.cpp b/src/object/motion/motionhuman.cpp	(re
 -   }
 -
     shield = m_object->RetShield();
-    shield += event.rTime*(1.0f/120.0f);  // régénération en 120 secondes
+    shield += event.rTime*(1.0f/120.0f);  // rÃ©gÃ©nÃ©ration en 120 secondes
     if ( shield > 1.0f )  shield = 1.0f;
 @@ -971,7 +885,10 @@ BOOL CMotionHuman::EventFrame(const Event &event)
         }
-        else if ( m_actionType != -1 )  // action spéciale en cours ?
+        else if ( m_actionType != -1 )  // action spÃ©ciale en cours ?
         {
 -           st = 3*3*3*3*MH_SPEC + 3*3*3*m_actionType + (i%2)*3;
 +           ii = m_actionType;
@@ -302,7 +302,7 @@ diff a/src/object/motion/motionhuman.cpp b/src/object/motion/motionhuman.cpp	(re
  
 -       dir.x = (Rand()-0.5f)/8.0f;
 -       dir.z = (Rand()-0.5f)/8.0f;
--       dir.y = -0.5f;  // légèrement plus bas
+-       dir.y = -0.5f;  // lÃ©gÃ¨rement plus bas
 -       actual = m_object->RetLinVibration();
 -       dir.x = Smooth(actual.x, dir.x, time);
 -//?        dir.y = Smooth(actual.y, dir.y, time);
@@ -315,7 +315,7 @@ diff a/src/object/motion/motionhuman.cpp b/src/object/motion/motionhuman.cpp	(re
  
         dir.x = 0.0f;
 -       dir.y = (Rand()-0.5f)/3.0f;
--       dir.z = -0.1f;  // légèrement penché en avant
+-       dir.z = -0.1f;  // lÃ©gÃ¨rement penchÃ© en avant
 +       dir.z = 0.0f;
 +       dir.y = m_progress*0.4f;
 +       if ( m_actionType == MHS_DRIVE2 )  dir.y = -dir.y;

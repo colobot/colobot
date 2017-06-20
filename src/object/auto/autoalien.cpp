@@ -58,7 +58,7 @@ CAutoAlien::~CAutoAlien()
 }
 
 
-// Détruit l'objet.
+// DÃ©truit l'objet.
 
 void CAutoAlien::DeleteObject(BOOL bAll)
 {
@@ -90,14 +90,14 @@ void CAutoAlien::Init()
    {
        m_speed = 1.0f/8.0f;
    }
-   if ( m_type == OBJECT_ALIEN8 )  // générateur ?
+   if ( m_type == OBJECT_ALIEN8 )  // gÃ©nÃ©rateur ?
    {
        m_speed = 1.0f/3.0f;
    }
 }
 
 
-// Démarre l'objet.
+// DÃ©marre l'objet.
 
 void CAutoAlien::Start(int param)
 {
@@ -109,11 +109,11 @@ void CAutoAlien::Start(int param)
 
    if ( m_type == OBJECT_ALIEN5 )  // marteau ?
    {
-       if ( param == 2 )  // synchronisé avec générateur ?
+       if ( param == 2 )  // synchronisÃ© avec gÃ©nÃ©rateur ?
        {
            m_bSynchro = TRUE;
        }
-       if ( param == 3 && m_bSynchro )  // synchro venant du générateur ?
+       if ( param == 3 && m_bSynchro )  // synchro venant du gÃ©nÃ©rateur ?
        {
            m_progress = 0.0f;
            m_speed    = 1.0f/8.0f;
@@ -125,9 +125,9 @@ void CAutoAlien::Start(int param)
        }
    }
 
-   if ( m_type == OBJECT_ALIEN8 )  // générateur ?
+   if ( m_type == OBJECT_ALIEN8 )  // gÃ©nÃ©rateur ?
    {
-       if ( param == 2 && !m_bStop )  // bouton rouge pressé ?
+       if ( param == 2 && !m_bStop )  // bouton rouge pressÃ© ?
        {
            m_bStop = TRUE;
 
@@ -154,14 +154,14 @@ void CAutoAlien::Start(int param)
 
            m_sound->Play(SOUND_BREAK2, m_engine->RetEyePt(), 1.0f, 0.7f);
 
-           m_object->SetLock(TRUE);  // il ne sera plus compté !
+           m_object->SetLock(TRUE);  // il ne sera plus comptÃ© !
            SynchroHammer(4);  // stoppe
        }
    }
 
    if ( m_type == OBJECT_ALIEN9 )  // torture ?
    {
-       if ( param == 1 )  // démarre ?
+       if ( param == 1 )  // dÃ©marre ?
        {
            value = m_object->RetCmdLine(0);
            if ( value == NAN || value == 0.0f )
@@ -204,7 +204,7 @@ void CAutoAlien::Start(int param)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CAutoAlien::EventProcess(const Event &event)
 {
@@ -381,7 +381,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
 
            if ( progress >= 1.0f )
            {
-               if ( m_bStop )  // bouton rouge pressé ?
+               if ( m_bStop )  // bouton rouge pressÃ© ?
                {
                    m_progress = 0.0f;
                    m_speed    = 1.0f/1.0f;
@@ -403,7 +403,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
        {
            if ( progress >= 1.0f )
            {
-               if ( m_bStop )  // bouton rouge pressé ?
+               if ( m_bStop )  // bouton rouge pressÃ© ?
                {
                    m_progress = 0.0f;
                    m_speed    = 1.0f/1.0f;
@@ -426,7 +426,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
 
            if ( progress >= 1.0f )
            {
-               if ( m_bStop )  // bouton rouge pressé ?
+               if ( m_bStop )  // bouton rouge pressÃ© ?
                {
                    m_progress = 0.0f;
                    m_speed    = 1.0f/1.0f;
@@ -490,7 +490,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
        {
            if ( progress >= 1.0f )
            {
-               if ( m_bStop )  // bouton rouge pressé ?
+               if ( m_bStop )  // bouton rouge pressÃ© ?
                {
                    m_progress = 0.0f;
                    m_speed    = 1.0f/1.0f;
@@ -513,7 +513,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
        }
    }
 
-   if ( m_type == OBJECT_ALIEN6 )  // écraseur ?
+   if ( m_type == OBJECT_ALIEN6 )  // Ã©craseur ?
    {
        if ( m_phase == 0 )  // up ?
        {
@@ -611,7 +611,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
        }
    }
 
-   if ( m_type == OBJECT_ALIEN7 )  // électrocuteur ?
+   if ( m_type == OBJECT_ALIEN7 )  // Ã©lectrocuteur ?
    {
        if ( progress >= 1.0f )
        {
@@ -640,7 +640,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
    }
 
 
-   if ( m_type == OBJECT_ALIEN8 )  // générateur ?
+   if ( m_type == OBJECT_ALIEN8 )  // gÃ©nÃ©rateur ?
    {
        FireStopUpdate();
 
@@ -699,7 +699,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
 
            if ( progress >= 1.0f )
            {
-               if ( m_bStop )  // bouton rouge pressé ?
+               if ( m_bStop )  // bouton rouge pressÃ© ?
                {
                    m_progress = 0.0f;
                    m_speed    = 1.0f/1.0f;
@@ -723,7 +723,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
 
            if ( progress >= 1.0f )
            {
-               if ( m_bStop )  // bouton rouge pressé ?
+               if ( m_bStop )  // bouton rouge pressÃ© ?
                {
                    m_progress = 0.0f;
                    m_speed    = 1.0f/1.0f;
@@ -780,7 +780,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
 
            if ( progress >= 1.0f )
            {
-               if ( m_bStop )  // bouton rouge pressé ?
+               if ( m_bStop )  // bouton rouge pressÃ© ?
                {
                    m_progress = 0.0f;
                    m_speed    = 1.0f/1.0f;
@@ -803,7 +803,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
 
            if ( progress >= 1.0f )
            {
-               if ( m_bStop )  // bouton rouge pressé ?
+               if ( m_bStop )  // bouton rouge pressÃ© ?
                {
                    m_progress = 0.0f;
                    m_speed    = 1.0f/1.0f;
@@ -849,7 +849,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
 
            if ( progress >= 1.0f )
            {
-               if ( m_bStop )  // bouton rouge pressé ?
+               if ( m_bStop )  // bouton rouge pressÃ© ?
                {
                    m_progress = 0.0f;
                    m_speed    = 1.0f/1.0f;
@@ -929,7 +929,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
 
            if ( progress >= 1.0f )
            {
-               m_object->SetLock(TRUE);  // plus détecté par la suite
+               m_object->SetLock(TRUE);  // plus dÃ©tectÃ© par la suite
                m_main->SetSuperLost(m_object->RetPosition(0));
 
                if ( m_bot != 0 )
@@ -1025,24 +1025,24 @@ BOOL CAutoAlien::EventProcess(const Event &event)
                speed.x = (Rand()-0.5f)*20.0f;
                speed.z = (Rand()-0.5f)*20.0f;
                speed.y = 10.0f+Rand()*10.0f;
-//?                m_object->DetachPart(3, speed);  // détache le piston
+//?                m_object->DetachPart(3, speed);  // dÃ©tache le piston
                m_object->ExploPiece(3);
 
                speed.x = (Rand()-0.5f)*20.0f;
                speed.z = (Rand()-0.5f)*20.0f;
                speed.y = 10.0f+Rand()*10.0f;
-               m_object->DetachPart(2, speed);  // détache le piston
+               m_object->DetachPart(2, speed);  // dÃ©tache le piston
 //?                m_object->ExploPiece(2);
 
                speed.x = (Rand()-0.5f)*20.0f;
                speed.z = (Rand()-0.5f)*20.0f;
                speed.y = 10.0f+Rand()*10.0f;
-               m_object->DetachPart(1, speed);  // détache le piston
+               m_object->DetachPart(1, speed);  // dÃ©tache le piston
 //?                m_object->ExploPiece(1);
 
                BotAction(m_bot, MB_GOHOME, 1.0f);  // blupi debout
                BotAction(m_bot, MB_HAPPY, 1.0f);  // blupi heureux
-               m_object->SetLock(TRUE);  // plus détecté par la suite
+               m_object->SetLock(TRUE);  // plus dÃ©tectÃ© par la suite
 
                m_progress = 0.0f;
                m_speed    = 1.0f/5.0f;
@@ -1072,7 +1072,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
            }
            pos = src+(dst-src)*skip;
            pos.y += m_bot->RetCharacter()->height;
-           m_bot->SetPosition(0, pos);  // déplace blupi
+           m_bot->SetPosition(0, pos);  // dÃ©place blupi
            if ( skip == 1.0f )
            {
                BotAction(m_bot, MB_WAIT, 1.0f);  // blupi attend
@@ -1130,7 +1130,7 @@ BOOL CAutoAlien::EventProcess(const Event &event)
 }
 
 // Calcule la position et l'orientation du robot au bout du bras
-// selon l'angle (50..-50), pour le générateur.
+// selon l'angle (50..-50), pour le gÃ©nÃ©rateur.
 
 void CAutoAlien::ArmPosition(D3DVECTOR &pos, float &dir, float angle, float lin)
 {
@@ -1152,7 +1152,7 @@ void CAutoAlien::ArmPosition(D3DVECTOR &pos, float &dir, float angle, float lin)
    dir = angle + m_object->RetAngleY(0) + PI/2.0f;
 }
 
-// Démarre une action pour le robot.
+// DÃ©marre une action pour le robot.
 
 void CAutoAlien::BotAction(CObject *bot, int action, float delay)
 {
@@ -1166,7 +1166,7 @@ void CAutoAlien::BotAction(CObject *bot, int action, float delay)
    motion->SetAction(action, delay);
 }
 
-// Cherche l'objet marteau à droite pour le synchroniser.
+// Cherche l'objet marteau Ã  droite pour le synchroniser.
 
 void CAutoAlien::SynchroHammer(int action)
 {
@@ -1218,7 +1218,7 @@ CObject* CAutoAlien::SearchObject(ObjectType type, D3DVECTOR center, float radiu
    return pBest;
 }
 
-// Met à jour les feux de stop.
+// Met Ã  jour les feux de stop.
 
 void CAutoAlien::FireStopUpdate()
 {
@@ -1246,7 +1246,7 @@ void CAutoAlien::FireStopUpdate()
        -19.0f, 33.0f,   1.5f,
    };
 
-   if ( m_bStop )  // éteint ?
+   if ( m_bStop )  // Ã©teint ?
    {
        for ( i=0 ; i<12 ; i++ )
        {
@@ -1304,7 +1304,7 @@ BOOL CAutoAlien::Abort()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liÃ©e Ã  l'Ã©tat de l'automate.
 
 Error CAutoAlien::RetError()
 {
@@ -1312,7 +1312,7 @@ Error CAutoAlien::RetError()
 }
 
 
-// Met à jour le mapping de la texture des chenilles.
+// Met Ã  jour le mapping de la texture des chenilles.
 
 void CAutoAlien::UpdateTrackMapping(float progress)
 {

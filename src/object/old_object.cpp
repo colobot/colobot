@@ -1332,7 +1332,7 @@ Math::Vector COldObject::GetTilt()
     return m_tilt;
 }
 
-// Donne la rotation circulaire suite � un choc.
+// Donne la rotation circulaire suite à un choc.
 
 void COldObject::SetCirChoc(Math::Vector dir)
 {
@@ -2472,7 +2472,7 @@ float COldObject::GetRange()
     return m_range;
 }
 
-// Gestion du bouclier de r�sistance au feu.
+// Gestion du bouclier de résistance au feu.
 
 void COldObject::SetBurnShield(float level)
 {
@@ -2622,7 +2622,7 @@ void COldObject::SetSelect(bool select, bool bDisplayError)
     /* TODO (krzys_h): BC:
     if ( m_main->GetFixScene() )
     {
-        CreateSelectParticle();  // cr�e/supprime les particules
+        CreateSelectParticle();  // crée/supprime les particules
         return;
     }*/
 

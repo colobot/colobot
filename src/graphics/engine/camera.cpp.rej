@@ -89,7 +89,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 -   m_bCameraInvertY = bInvert;
 -}
  
-+// Indique la consigne de vitesse moteur avant/arrière.
++// Indique la consigne de vitesse moteur avant/arriÃ¨re.
  
 -// Retourne une force additionnelle pour tourner.
 -
@@ -148,7 +148,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 -        type == CAMERA_PLANE )
 +   if ( type == CAMERA_FIX )
     {
-        AbortCentering();  // stoppe cadrage spécial
+        AbortCentering();  // stoppe cadrage spÃ©cial
     }
  
 -   m_fixDist = 50.0f;
@@ -159,7 +159,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 -
     if ( type == CAMERA_BACK )
     {
-        AbortCentering();  // stoppe cadrage spécial
+        AbortCentering();  // stoppe cadrage spÃ©cial
 +       m_rotDirectionH = 0.0f;
         m_addDirectionH = 0.0f;
         m_addDirectionV = -PI*0.05f;
@@ -280,7 +280,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
  }
  
  
--// Gestion de la télécommande panoramique de la caméra.
+-// Gestion de la tÃ©lÃ©commande panoramique de la camÃ©ra.
 +// Gestion de l'angle horizontal.
  
 -void CCamera::SetRemotePan(float value)
@@ -297,7 +297,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 +   return m_addDirectionH;
  }
  
--// Gestion de la télécommande zoom (0..1) de la caméra.
+-// Gestion de la tÃ©lÃ©commande zoom (0..1) de la camÃ©ra.
  
 -void CCamera::SetRemoteZoom(float value)
 +void CCamera::ResetLockRotate()
@@ -364,7 +364,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 +}
 +
  
- // Début d'une visite circulaire avec la caméra.
+ // DÃ©but d'une visite circulaire avec la camÃ©ra.
  
 @@ -548,6 +552,9 @@ BOOL CCamera::StopCentering(CObject *object, float time)
     m_centeringTime     = time;
@@ -459,7 +459,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 +#endif
  }
  
- // Spécifie l'emplacement et la direction du point de vue au moteur 3D.
+ // SpÃ©cifie l'emplacement et la direction du point de vue au moteur 3D.
 @@ -889,7 +937,7 @@ void CCamera::SetViewTime(const D3DVECTOR &vEyePt,
                           float rTime)
  {
@@ -588,7 +588,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 -   max.y = Max(eye.y, lookat.y);
 -   max.z = Max(eye.z, lookat.z);
 -
--   prox = 8.0f;  // proximité maximale du véhicule
+-   prox = 8.0f;  // proximitÃ© maximale du vÃ©hicule
 -
 -   for ( i=0 ; i<1000000 ; i++ )
 -   {
@@ -699,7 +699,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
  
         if ( pObj == m_cameraObj )  continue;
  
--       if ( iType == OBJECT_BASE     ||  // bâtiment ?
+-       if ( iType == OBJECT_BASE     ||  // bÃ¢timent ?
 -            iType == OBJECT_DERRICK  ||
 -            iType == OBJECT_FACTORY  ||
 -            iType == OBJECT_STATION  ||
@@ -849,7 +849,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
  }
  
  
--// Retourne le sprite par défaut à utiliser pour la souris.
+-// Retourne le sprite par dÃ©faut Ã  utiliser pour la souris.
 -
 -D3DMouse CCamera::RetMouseDef(FPOINT pos)
 -{
@@ -860,7 +860,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 -
 -   if ( m_type == CAMERA_INFO )  return type;
 -
--   if ( m_bRightDown )  // bouton droite pressé ?
+-   if ( m_bRightDown )  // bouton droite pressÃ© ?
 -   {
 -       m_rightPosMove.x = pos.x - m_rightPosCenter.x;
 -       m_rightPosMove.y = pos.y - m_rightPosCenter.y;
@@ -934,7 +934,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 -
 -
  
- // Déplace le point de vue.
+ // DÃ©place le point de vue.
  
 @@ -1485,7 +1318,7 @@ BOOL CCamera::EventFrameFree(const Event &event)
     }
@@ -1054,7 +1054,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 +//?        if ( m_backDist > 200.0f )  m_backDist = 200.0f;
 +//?    }
 +
-+   if ( Abs(m_backMotorSpeed) <= 0.1f &&  // véhicule arrêté ?
++   if ( Abs(m_backMotorSpeed) <= 0.1f &&  // vÃ©hicule arrÃªtÃ© ?
 +        !m_bBackLockRotate )
 +   {
 +       m_backSleepTime += event.rTime;
@@ -1091,7 +1091,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 -   m_motorTurn = 0.0f;
 -
 -   if ( m_bRightDown )
-+   // Fait tourner la caméra après un certain temps d'arrêt.
++   // Fait tourner la camÃ©ra aprÃ¨s un certain temps d'arrÃªt.
 +   if ( m_backSleepTime < 5.0f )
     {
 -       m_addDirectionH =  m_rightPosMove.x*6.0f;
@@ -1159,7 +1159,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 +           vLookatPt = Transform(*mat, D3DVECTOR(0.0f, 0.0f, 27.0f));
 +       }
  
-        h = -m_cameraObj->RetAngleY(0);  // angle véhicule/batiment
+        h = -m_cameraObj->RetAngleY(0);  // angle vÃ©hicule/batiment
 -       
 -       if ( type == OBJECT_DERRICK  ||
 -            type == OBJECT_FACTORY  ||
@@ -1244,7 +1244,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 +       {
 +           h += 0.0f;  // de face
 +       }
-        else    // véhicule ?
+        else    // vÃ©hicule ?
         {
             h += PI;  // de dos
         }
@@ -1259,7 +1259,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
  
 -       if ( type == OBJECT_MOBILEdr )  // dessinateur ?
 -       {
--           v -= 0.3f;  // caméra plus haute
+-           v -= 0.3f;  // camÃ©ra plus haute
 -       }
 -
         v += m_centeringCurrentV;
@@ -1300,7 +1300,7 @@ diff a/src/graphics/engine/camera.cpp b/src/graphics/engine/camera.cpp	(rejected
 -
     if ( m_mouseDirH != 0 || m_mouseDirV != 0 )
     {
-        AbortCentering();  // stoppe cadrage spécial
+        AbortCentering();  // stoppe cadrage spÃ©cial
 @@ -1860,14 +1733,10 @@ BOOL CCamera::EventFrameFix(const Event &event)
     {
         vLookatPt = m_cameraObj->RetPosition(0);

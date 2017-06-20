@@ -1,6 +1,6 @@
 diff a/src/ui/controls/control.h b/src/ui/controls/control.h	(rejected hunks)
 @@ -31,6 +31,10 @@ enum FontType;
- #define STATE_WARNING  (1<<14) // cadre hachuré jaune/noir
+ #define STATE_WARNING  (1<<14) // cadre hachurÃ© jaune/noir
  #define STATE_VALUE        (1<<15) // affiche la valeur
  #define STATE_RUN      (1<<16) // programme en cours
 +#define STATE_LOOK1        (1<<17) // aspect #1

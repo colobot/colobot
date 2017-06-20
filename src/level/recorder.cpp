@@ -38,7 +38,7 @@ CRecorder::~CRecorder()
 }
 
 
-// Prépare le premier bloc, prêt à l'emploi.
+// PrÃ©pare le premier bloc, prÃªt Ã  l'emploi.
 
 void CRecorder::Init()
 {
@@ -67,7 +67,7 @@ void CRecorder::Init()
    }
 }
 
-// Libère tous les blocs.
+// LibÃ¨re tous les blocs.
 
 void CRecorder::Flush()
 {
@@ -94,7 +94,7 @@ void CRecorder::Flush()
 }
 
 
-// Gestion du modèle de la voiture.
+// Gestion du modÃ¨le de la voiture.
 
 void CRecorder::SetModel(int model)
 {
@@ -143,7 +143,7 @@ int CRecorder::RetType()
 }
 
 
-// Gestion du numéro de mission.
+// Gestion du numÃ©ro de mission.
 
 void CRecorder::SetMission(int rank)
 {
@@ -169,7 +169,7 @@ int CRecorder::RetCheck(int rank)
 }
 
 
-// Gestion du niveau de difficulté.
+// Gestion du niveau de difficultÃ©.
 
 void CRecorder::SetLevel(int level)
 {
@@ -208,7 +208,7 @@ float CRecorder::RetChrono()
 }
 
 
-// Ajoute un nouvel événement.
+// Ajoute un nouvel Ã©vÃ©nement.
 
 BOOL CRecorder::Put(float time, const RecorderEvent &event)
 {
@@ -238,9 +238,9 @@ BOOL CRecorder::Put(float time, const RecorderEvent &event)
    return TRUE;
 }
 
-// Retourne un événement pour un temps quelconque.
-// On calcule la valeur la plus proche par approximation linéaire
-// entre les événements précédents et suivants.
+// Retourne un Ã©vÃ©nement pour un temps quelconque.
+// On calcule la valeur la plus proche par approximation linÃ©aire
+// entre les Ã©vÃ©nements prÃ©cÃ©dents et suivants.
 
 BOOL CRecorder::Get(float time, RecorderEvent &event)
 {
@@ -292,7 +292,7 @@ BOOL CRecorder::Get(float time, RecorderEvent &event)
 }
 
 
-// En-tête des fichiers.
+// En-tÃªte des fichiers.
 
 typedef struct
 {
@@ -314,7 +314,7 @@ typedef struct
 RecorderHeader;
 
 
-// Ecrit tous les événements sur disque.
+// Ecrit tous les Ã©vÃ©nements sur disque.
 
 BOOL CRecorder::Write(char *filename)
 {
@@ -352,7 +352,7 @@ BOOL CRecorder::Write(char *filename)
    header.level = m_level;
    strcpy(header.gamer, m_gamer);
    header.chrono = m_chrono;
-   fwrite(&header, sizeof(RecorderHeader), 1, file);  // écrit l'en-tête
+   fwrite(&header, sizeof(RecorderHeader), 1, file);  // Ã©crit l'en-tÃªte
 
    bloc = m_bloc;
    do
@@ -366,7 +366,7 @@ BOOL CRecorder::Write(char *filename)
    return TRUE;
 }
 
-// Lit tous les événements sur disque.
+// Lit tous les Ã©vÃ©nements sur disque.
 
 BOOL CRecorder::Read(char *filename)
 {
@@ -380,7 +380,7 @@ BOOL CRecorder::Read(char *filename)
 
    Flush();
 
-   nb = fread(&header, sizeof(RecorderHeader), 1, file);  // lit l'en-tête
+   nb = fread(&header, sizeof(RecorderHeader), 1, file);  // lit l'en-tÃªte
    if ( nb == 0 )
    {
        fclose(file);
@@ -417,7 +417,7 @@ BOOL CRecorder::Read(char *filename)
            Flush();
            return FALSE;
        }
-       bloc->prev = 0;  // data lu forcément faux (pointeurs)
+       bloc->prev = 0;  // data lu forcÃ©ment faux (pointeurs)
        bloc->next = 0;
 
        if ( i == 0 )  // premier bloc ?
@@ -437,7 +437,7 @@ BOOL CRecorder::Read(char *filename)
    return TRUE;
 }
 
-// Lit juste l'en-tête sur disque.
+// Lit juste l'en-tÃªte sur disque.
 
 BOOL CRecorder::ReadHeader(char *filename)
 {
@@ -450,7 +450,7 @@ BOOL CRecorder::ReadHeader(char *filename)
 
    Flush();
 
-   nb = fread(&header, sizeof(RecorderHeader), 1, file);  // lit l'en-tête
+   nb = fread(&header, sizeof(RecorderHeader), 1, file);  // lit l'en-tÃªte
    if ( nb == 0 )
    {
        fclose(file);

@@ -65,8 +65,8 @@ diff a/src/level/robotmain.h b/src/level/robotmain.h	(rejected hunks)
  
  typedef struct
 @@ -82,49 +91,24 @@ typedef struct
-    int         min;        // gagnÈ si >
-    int         max;        // gagnÈ si <
+    int         min;        // gagn√© si >
+    int         max;        // gagn√© si <
     int         lost;       // perdu si <=
 +   int         show;       // affiche ?
 +   int         last;
@@ -83,11 +83,11 @@ diff a/src/level/robotmain.h b/src/level/robotmain.h	(rejected hunks)
 -   BOOL        bUsed;
 -   ObjectType  type;
 -   char        name[40];
-+   D3DVECTOR   eye;        // oeil camÈra
-+   D3DVECTOR   look;       // visÈe camÈra
-+   float       delay;      // durÈe du pas
++   D3DVECTOR   eye;        // oeil cam√©ra
++   D3DVECTOR   look;       // vis√©e cam√©ra
++   float       delay;      // dur√©e du pas
 +   float       progress;   // progression de pas
-+   Sound       sound;      // son a gÈnÈrer
++   Sound       sound;      // son a g√©n√©rer
  }
 -NewScriptName;
 +MovieStep;
@@ -373,11 +373,11 @@ diff a/src/level/robotmain.h b/src/level/robotmain.h	(rejected hunks)
     float           m_checkEndTime;
     float           m_winDelay;
     float           m_lostDelay;
-    BOOL            m_bFixScene;    // scËne fixe, sans interraction
+    BOOL            m_bFixScene;    // sc√®ne fixe, sans interraction
 -   BOOL            m_bBase;        // OBJECT_BASE existe dans mission
 -   FPOINT          m_lastMousePos;
     CObject*        m_selectObject;
-+   char*           m_carState;     // Ètat du vÈhicule
++   char*           m_carState;     // √©tat du v√©hicule
 +   char            m_sceneName[20];
  
     Phase           m_phase;
@@ -403,14 +403,14 @@ diff a/src/level/robotmain.h b/src/level/robotmain.h	(rejected hunks)
 +   FPOINT          m_lastMousePos;
  
 -   BOOL            m_bImmediatSatCom;  // SatCom tout de suite ?
--   BOOL            m_bBeginSatCom;     // message SatCom affichÈ ?
+-   BOOL            m_bBeginSatCom;     // message SatCom affich√© ?
     BOOL            m_bMovieLock;       // film en cours ?
 -   BOOL            m_bSatComLock;      // appel du SatCom possible ?
--   BOOL            m_bEditLock;        // Èdition en cours ?
--   BOOL            m_bEditFull;        // Èdition en plein Ècran ?
+-   BOOL            m_bEditLock;        // √©dition en cours ?
+-   BOOL            m_bEditFull;        // √©dition en plein √©cran ?
     BOOL            m_bPause;           // simulation en pause
 -   BOOL            m_bHilite;
-    BOOL            m_bTrainerPilot;    // tÈlÈcommande trainer ?
+    BOOL            m_bTrainerPilot;    // t√©l√©commande trainer ?
     BOOL            m_bSuspend;
     BOOL            m_bFriendAim;
 -   BOOL            m_bResetCreate;
@@ -487,8 +487,8 @@ diff a/src/level/robotmain.h b/src/level/robotmain.h	(rejected hunks)
  
     char            m_gamerName[100];
  
-    long            m_freeBuild;        // b‚timents constructibles
-    long            m_freeResearch;     // recherches effectuÈes
+    long            m_freeBuild;        // b√¢timents constructibles
+    long            m_freeResearch;     // recherches effectu√©es
  
 -   ShowLimit       m_showLimit[MAXSHOWLIMIT];
 -
@@ -503,8 +503,8 @@ diff a/src/level/robotmain.h b/src/level/robotmain.h	(rejected hunks)
 +   BOOL            m_bStatRecordAll;
 +   BOOL            m_bStatRecordOne;
 +
-+   int             m_starterTry;       // nb d'animation dÈj‡ effectuÈes
-+   int             m_starterLast;      // derniËre mission jouÈe avec starter
++   int             m_starterTry;       // nb d'animation d√©j√† effectu√©es
++   int             m_starterLast;      // derni√®re mission jou√©e avec starter
 +   int             m_raceType;
 +   int             m_hornAction;
 +
@@ -521,8 +521,8 @@ diff a/src/level/robotmain.h b/src/level/robotmain.h	(rejected hunks)
 +   CRecorder*      m_recorderRecord;
 +   CRecorder*      m_recorderPlay;
 +
-+   int             m_repeat;           // 1 -> rÈpÈtition d'une mission
-+   int             m_lastRank;         // derniËre mission jouÈe
++   int             m_repeat;           // 1 -> r√©p√©tition d'une mission
++   int             m_lastRank;         // derni√®re mission jou√©e
 +
 +   float           m_messageTime;
 +   Sound           m_messageSound;

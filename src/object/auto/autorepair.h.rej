@@ -9,14 +9,14 @@ diff a/src/object/auto/autorepair.h b/src/object/auto/autorepair.h	(rejected hun
  
  enum AutoRepairPhase
  {
--   ARP_WAIT        = 1,    // attend métal
+-   ARP_WAIT        = 1,    // attend mÃ©tal
 -   ARP_DOWN        = 2,    // descend le couvercle
--   ARP_REPAIR      = 3,    // construit le véhicule
+-   ARP_REPAIR      = 3,    // construit le vÃ©hicule
 -   ARP_UP          = 4,    // remonte le couvercle
 +   AREP_WAIT       = 1,    // attend robot
 +   AREP_DOWN       = 2,    // descend le capteur
-+   AREP_REPAIR1    = 3,    // répare
-+   AREP_REPAIR2    = 4,    // répare
++   AREP_REPAIR1    = 3,    // rÃ©pare
++   AREP_REPAIR2    = 4,    // rÃ©pare
 +   AREP_TERM       = 5,    // c'est fini
  };
  

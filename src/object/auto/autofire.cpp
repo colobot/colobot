@@ -53,7 +53,7 @@ CAutoFire::~CAutoFire()
 }
 
 
-// Détruit l'objet.
+// DÃ©truit l'objet.
 
 void CAutoFire::DeleteObject(BOOL bAll)
 {
@@ -75,14 +75,14 @@ void CAutoFire::Init()
 }
 
 
-// Démarre l'objet.
+// DÃ©marre l'objet.
 
 void CAutoFire::Start(int param)
 {
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un Ã©vÃ©nement.
 
 BOOL CAutoFire::EventProcess(const Event &event)
 {
@@ -232,7 +232,7 @@ BOOL CAutoFire::EventProcess(const Event &event)
                pos.z += (Rand()-0.5f)*15.0f;
                m_terrain->MoveOnFloor(pos);
                dim.x = 5.0f+5.0f*Rand();  // hauteur
-               dim.y = 3.0f+3.0f*Rand();  // diamètre
+               dim.y = 3.0f+3.0f*Rand();  // diamÃ¨tre
                m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), dim, PARTIPLOUF0, 1.4f, 0.0f);
            }
 
@@ -281,7 +281,7 @@ BOOL CAutoFire::EventProcess(const Event &event)
            m_camera->SetBackHoriz(0.0f);
            m_camera->SetLockRotate(FALSE);
            m_camera->ResetLockRotate();
-           m_main->SetStopwatch(TRUE);  // redémarre le chrono
+           m_main->SetStopwatch(TRUE);  // redÃ©marre le chrono
 
            m_phase = AFIP_WAITOUT;
            m_speed = 1.0f/4.0f;
@@ -320,7 +320,7 @@ CObject* CAutoFire::SearchObject(ObjectType type, D3DVECTOR center, float radius
        if ( pObj == 0 )  break;
 
        if ( pObj->RetExplo() )  continue;
-       if ( pObj->RetLock() )  continue;  // déjà stoppé ?
+       if ( pObj->RetLock() )  continue;  // dÃ©jÃ  stoppÃ© ?
 
        if ( type != pObj->RetType() )  continue;
 
@@ -362,7 +362,7 @@ BOOL CAutoFire::Abort()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liÃ©e Ã  l'Ã©tat de l'automate.
 
 Error CAutoFire::RetError()
 {
