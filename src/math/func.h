@@ -241,22 +241,22 @@ inline float Neutral(float value, float dead)
 
 inline float Linear(float actual, float hope, float time)
 {
-    float	futur;
+    float	future = actual;
 
     if ( actual == hope )  return hope;
 
     if ( hope > actual )
     {
-        futur = actual+time;
-        if ( futur > hope )  futur = hope;
+        future = actual+time;
+        if ( future > hope )  future = hope;
     }
     if ( hope < actual )
     {
-        futur = actual-time;
-        if ( futur < hope )  futur = hope;
+        future = actual-time;
+        if ( future < hope )  future = hope;
     }
 
-    return futur;
+    return future;
 }
 
 //! Gently advances a desired value from its current value

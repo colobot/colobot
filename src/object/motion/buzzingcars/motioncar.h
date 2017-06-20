@@ -79,7 +79,7 @@ public:
     void        DeleteObject(bool bAll=false) override;
     void        Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager) override;
     bool        EventProcess(const Event &event) override;
-    Error       SetAction(int action, float time=0.2f);
+    Error       SetAction(int action, float time=0.2f) override;
 
     void        TwistInit();
     void        TwistPart(Math::Vector impact, float force);
@@ -89,8 +89,8 @@ public:
     int         GetTotalPart();
     int         GetUsedPart();
 
-    void        SetWheelType(WheelType type);
-    WheelType   GetWheelType();
+    void        SetWheelType(WheelType type) override;
+    WheelType   GetWheelType() override;
 
     int         GetStateLength();
     void        GetStateBuffer(char *buffer);

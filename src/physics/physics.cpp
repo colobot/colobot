@@ -3823,7 +3823,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
     Math::Vector    norm, iPos, nAngle;
     Math::Matrix    matRotate;
     Math::Point        v;
-    float        level, h, f, a1, volume, freq, force, centri, speed, accel, mass;
+    float        level, h, f, a1, volume, freq, force=0, centri, speed, accel, mass;
     bool        bSlopingTerrain;
 
     type = m_object->GetType();
@@ -4438,15 +4438,15 @@ void CPhysics::FloorAngle(const Math::Vector &pos, Math::Vector &angle)
 int CPhysics::ObjectAdapt(Math::Vector &pos, Math::Vector &angle,
                           float aTime, float rTime)
 {
-    CObject        *maxObj;
+    CObject        *maxObj=nullptr;
     Math::Matrix    matRotate;
     Math::Vector    iPos, oAngle, oSpeed, repulse;
     Math::Point        adjust, inter, maxAdjust, maxInter;
-    SoundType        sound, maxSound;
-    float        distance, force, volume, hardness, maxHardness;
-    float        iMass, oMass, factor, chocAngle, len, maxLen, maxAngle;
-    float        priority, maxPriority;
-    int           colType;
+    SoundType        sound, maxSound=SOUND_NONE;
+    float        distance, force, volume, hardness, maxHardness=0;
+    float        iMass, oMass, factor, chocAngle, len, maxLen, maxAngle=0;
+    float        priority, maxPriority=0;
+    int           colType=0;
     ObjectType    iType, oType;
 
     if ( m_object->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(m_object)->IsDying() )  return 0;  // is burning or exploding?
@@ -5546,11 +5546,11 @@ int CPhysics::CrashCornerRect(CObject *pObj, const Math::Vector &pos, const Math
     Math::Point        t1,t2, p, pp, oneP, oneT1,oneT2;
     Math::Point        maxAdjust, minAdjust, maxImpact, minImpact;
     Math::Point        maxP1,minP1, maxP2,minP2;
-    SoundType        maxSound, minSound, oneSound;
-    float        maxHardness, minHardness, oneHardness;
-    float        maxPriority, minPriority, onePriority;
+    SoundType        maxSound=SOUND_NONE, minSound=SOUND_NONE, oneSound;
+    float        maxHardness=0, minHardness=0, oneHardness;
+    float        maxPriority=0, minPriority=0, onePriority;
     float        maxLen, minLen;
-    float        len, a, h;
+    float        len, a=0, h;
     int            max, nbInter, onePart;
 
     max = pObj->GetCrashLineCount();
@@ -5805,7 +5805,7 @@ int CPhysics::CrashCornerCircle(CObject *pObj, const Math::Vector &pos, const Ma
 {
     Character*    character;
     Math::Point        cc, t1,t2, c, pp;
-    float        iRad, distance, min, a, max;
+    float        iRad, distance, min, a=0, max;
     int            i;
 
     character = m_object->GetCharacter();
