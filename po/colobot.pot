@@ -516,25 +516,19 @@ msgstr ""
 msgid "Origin of last message\\Shows where the last message was sent from"
 msgstr ""
 
-msgid "Speed 0.5x\\Half speed"
+msgid "Lower speed\\Decrease speed by half"
 msgstr ""
 
-msgid "Speed 1.0x\\Normal speed"
+msgid "Standard speed\\Reset speed to normal"
 msgstr ""
 
-msgid "Speed 1.5x\\1.5 times faster"
+msgid "Higher speed\\Doubles speed"
 msgstr ""
 
-msgid "Speed 2.0x\\Double speed"
+msgid "Quick save\\Immediately save game"
 msgstr ""
 
-msgid "Speed 3.0x\\Triple speed"
-msgstr ""
-
-msgid "Speed 4.0x\\Quadruple speed"
-msgstr ""
-
-msgid "Speed 6.0x\\Sextuple speed"
+msgid "Quick load\\Immediately load game"
 msgstr ""
 
 msgid "Pause\\Pause the game without opening menu"
@@ -1531,6 +1525,9 @@ msgid "Unable to control enemy objects"
 msgstr ""
 
 msgid "Inappropriate bot"
+msgstr ""
+
+msgid "Quicksave slot not found"
 msgstr ""
 
 msgid "Building completed"

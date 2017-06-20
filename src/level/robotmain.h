@@ -512,6 +512,8 @@ protected:
 
     void        AutosaveRotate();
     void        Autosave();
+    void        QuickSave();
+    void        QuickLoad();
     bool        DestroySelectedObject();
     void        PushToSelectionHistory(CObject* obj);
     CObject*    PopFromSelectionHistory();

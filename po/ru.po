@@ -686,6 +686,10 @@ msgstr "Справка о выбранном объекте"
 msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Подсказки\\Объяснение функций кнопок"
 
+#, fuzzy
+msgid "Higher speed\\Doubles speed"
+msgstr "Скорость 2.0х\\В два раза быстрее"
+
 msgid "Highest\\Highest graphic quality (lowest frame rate)"
 msgstr "Высок.\\Самые высокие настройки графики (лучшее качество)"
 
@@ -835,6 +839,23 @@ msgstr "Загрузка объектов"
 
 msgid "Loading terrain"
 msgstr "Загрузка местности"
+
+# msgid "Speed 0.5x\\Half speed"
+# msgstr ""
+# msgid "Speed 1.0x\\Normal speed"
+# msgstr ""
+# msgid "Speed 1.5x\\1.5 times faster"
+# msgstr ""
+# msgid "Speed 2.0x\\Double speed"
+# msgstr ""
+# msgid "Speed 3.0x\\Triple speed"
+# msgstr ""
+# msgid "Speed 4.0x\\Quadruple speed"
+# msgstr ""
+# msgid "Speed 6.0x\\Sextuple speed"
+# msgstr ""
+msgid "Lower speed\\Decrease speed by half"
+msgstr ""
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
 msgstr "Низкое\\Минимальное качество графики (быстро)"
@@ -1193,6 +1214,16 @@ msgstr "Общее\\Общая папка"
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Землетряс. при взрывах\\Тряска экрана при взрывах"
 
+msgid "Quick load\\Immediately load game"
+msgstr ""
+
+msgid "Quick save\\Immediately save game"
+msgstr ""
+
+#, fuzzy
+msgid "Quicksave slot not found"
+msgstr "Объект не найден"
+
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr "Выход\\Выйти из Colobot: Gold Edition"
 
@@ -1406,27 +1437,6 @@ msgstr "Космический корабль"
 msgid "Spaceship ruin"
 msgstr "Обломки корабля"
 
-msgid "Speed 0.5x\\Half speed"
-msgstr "Скорость 0.5х\\В два раза медленнее"
-
-msgid "Speed 1.0x\\Normal speed"
-msgstr "Скорость 1.0х\\Нормальная скорость"
-
-msgid "Speed 1.5x\\1.5 times faster"
-msgstr "Скорость 1.5х\\В полтора раза быстрее"
-
-msgid "Speed 2.0x\\Double speed"
-msgstr "Скорость 2.0х\\В два раза быстрее"
-
-msgid "Speed 3.0x\\Triple speed"
-msgstr "Скорость 3.0х\\В три раза быстрее"
-
-msgid "Speed 4.0x\\Quadruple speed"
-msgstr "Скорость 4.0х\\В четыре раза быстрее"
-
-msgid "Speed 6.0x\\Sextuple speed"
-msgstr "Скорость 6.0х\\В шесть раз быстрее"
-
 msgid "Spider"
 msgstr "Паук"
 
@@ -1441,6 +1451,9 @@ msgstr "Стандартное действие\\Стандартное дейс
 
 msgid "Standard controls\\Standard key functions"
 msgstr "Стандартное управление\\Сделать управление по умолчанию"
+
+msgid "Standard speed\\Reset speed to normal"
+msgstr ""
 
 msgid "Standard\\Standard appearance settings"
 msgstr "По умолчанию\\Настройки внешнего вида по умолчанию"
@@ -1942,9 +1955,6 @@ msgstr "epsitec.com"
 #~ msgid "Num of decorative objects\\Number of purely ornamental objects"
 #~ msgstr "Количество декораций\\Количество декоративных объектов"
 
-#~ msgid "Object not found"
-#~ msgstr "Объект не найден"
-
 #~ msgid "Planets and stars\\Astronomical objects in the sky"
 #~ msgstr "Планеты и звезды\\Астрономические объекты в небе"
 
@@ -1960,8 +1970,26 @@ msgstr "epsitec.com"
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Небо\\Облака и туманности"
 
+#~ msgid "Speed 0.5x\\Half speed"
+#~ msgstr "Скорость 0.5х\\В два раза медленнее"
+
+#~ msgid "Speed 1.0x\\Normal speed"
+#~ msgstr "Скорость 1.0х\\Нормальная скорость"
+
+#~ msgid "Speed 1.5x\\1.5 times faster"
+#~ msgstr "Скорость 1.5х\\В полтора раза быстрее"
+
 #~ msgid "Speed 3.0x\\Three times faster"
 #~ msgstr "Скорость 3.0х\\В три раза быстрее"
+
+#~ msgid "Speed 3.0x\\Triple speed"
+#~ msgstr "Скорость 3.0х\\В три раза быстрее"
+
+#~ msgid "Speed 4.0x\\Quadruple speed"
+#~ msgstr "Скорость 4.0х\\В четыре раза быстрее"
+
+#~ msgid "Speed 6.0x\\Sextuple speed"
+#~ msgstr "Скорость 6.0х\\В шесть раз быстрее"
 
 #~ msgid "Sunbeams\\Sunbeams in the sky"
 #~ msgstr "Солнечные лучи\\Солнечные лучи в небе"

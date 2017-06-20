@@ -677,6 +677,10 @@ msgstr "Instructions sur la sélection"
 msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Bulles d'aide\\Bulles explicatives"
 
+#, fuzzy
+msgid "Higher speed\\Doubles speed"
+msgstr "Vitesse 2.0x\\Deux fois plus rapide"
+
 msgid "Highest\\Highest graphic quality (lowest frame rate)"
 msgstr "Maxi\\Haute qualité (+ lent)"
 
@@ -826,6 +830,23 @@ msgstr "Chargement des objets"
 
 msgid "Loading terrain"
 msgstr "Chargement du terrain"
+
+# msgid "Speed 0.5x\\Half speed"
+# msgstr ""
+# msgid "Speed 1.0x\\Normal speed"
+# msgstr ""
+# msgid "Speed 1.5x\\1.5 times faster"
+# msgstr ""
+# msgid "Speed 2.0x\\Double speed"
+# msgstr ""
+# msgid "Speed 3.0x\\Triple speed"
+# msgstr ""
+# msgid "Speed 4.0x\\Quadruple speed"
+# msgstr ""
+# msgid "Speed 6.0x\\Sextuple speed"
+# msgstr ""
+msgid "Lower speed\\Decrease speed by half"
+msgstr ""
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
 msgstr "Mini\\Qualité minimale (+ rapide)"
@@ -1181,6 +1202,16 @@ msgstr "Public\\Dossier commun à tous les joueurs"
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Secousses lors d'explosions\\L'écran vibre lors d'une explosion"
 
+msgid "Quick load\\Immediately load game"
+msgstr ""
+
+msgid "Quick save\\Immediately save game"
+msgstr ""
+
+#, fuzzy
+msgid "Quicksave slot not found"
+msgstr "Objet n'existe pas"
+
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr "Quitter\\Quitter Colobot : Édition Gold"
 
@@ -1391,27 +1422,6 @@ msgstr "Vaisseau spatial"
 msgid "Spaceship ruin"
 msgstr "Epave de vaisseau spatial"
 
-msgid "Speed 0.5x\\Half speed"
-msgstr "Vitesse 0.5x\\Demi-vitesse"
-
-msgid "Speed 1.0x\\Normal speed"
-msgstr "Vitesse 1.0x\\Vitesse normale"
-
-msgid "Speed 1.5x\\1.5 times faster"
-msgstr "Vitesse 1.5x\\Une fois et demi plus rapide"
-
-msgid "Speed 2.0x\\Double speed"
-msgstr "Vitesse 2.0x\\Deux fois plus rapide"
-
-msgid "Speed 3.0x\\Triple speed"
-msgstr "Vitesse 3.0x\\Trois fois plus rapide "
-
-msgid "Speed 4.0x\\Quadruple speed"
-msgstr "Vitesse 4.0x\\Quatre fois plus rapide"
-
-msgid "Speed 6.0x\\Sextuple speed"
-msgstr "Vitesse 6.0x\\Six fois plus rapide"
-
 msgid "Spider"
 msgstr "Araignée"
 
@@ -1426,6 +1436,9 @@ msgstr "Action standard\\Action du bouton avec le cadre rouge"
 
 msgid "Standard controls\\Standard key functions"
 msgstr "Tout réinitialiser\\Remet toutes les touches standards"
+
+msgid "Standard speed\\Reset speed to normal"
+msgstr ""
 
 msgid "Standard\\Standard appearance settings"
 msgstr "Standard\\Remet les couleurs standards"
@@ -1932,9 +1945,6 @@ msgstr "epsitec.com"
 #~ msgid "Num of decorative objects\\Number of purely ornamental objects"
 #~ msgstr "Nb d'objets décoratifs\\Qualité d'objets non indispensables"
 
-#~ msgid "Object not found"
-#~ msgstr "Objet n'existe pas"
-
 #~ msgid "Planets and stars\\Astronomical objects in the sky"
 #~ msgstr "Planètes et étoiles\\Motifs mobiles dans le ciel"
 
@@ -1950,8 +1960,26 @@ msgstr "epsitec.com"
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Ciel\\Ciel et nuages"
 
+#~ msgid "Speed 0.5x\\Half speed"
+#~ msgstr "Vitesse 0.5x\\Demi-vitesse"
+
+#~ msgid "Speed 1.0x\\Normal speed"
+#~ msgstr "Vitesse 1.0x\\Vitesse normale"
+
+#~ msgid "Speed 1.5x\\1.5 times faster"
+#~ msgstr "Vitesse 1.5x\\Une fois et demi plus rapide"
+
 #~ msgid "Speed 3.0x\\Three times faster"
 #~ msgstr "Vitesse 3.0x\\Trois fois plus rapide"
+
+#~ msgid "Speed 3.0x\\Triple speed"
+#~ msgstr "Vitesse 3.0x\\Trois fois plus rapide "
+
+#~ msgid "Speed 4.0x\\Quadruple speed"
+#~ msgstr "Vitesse 4.0x\\Quatre fois plus rapide"
+
+#~ msgid "Speed 6.0x\\Sextuple speed"
+#~ msgstr "Vitesse 6.0x\\Six fois plus rapide"
 
 #~ msgid "Sunbeams\\Sunbeams in the sky"
 #~ msgstr "Rayons du soleil\\Rayons selon l'orientation"
