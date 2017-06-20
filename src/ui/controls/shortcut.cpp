@@ -109,6 +109,12 @@ void CShortcut::Draw()
         zoom = 1.0f;
         mode = Gfx::ENG_RSTATE_NORMAL;
     }
+    if ( m_state & STATE_DAMAGE  )
+    {
+        icon = 59;
+        zoom = 0.8f;
+        mode = Gfx::ENG_RSTATE_NORMAL;
+    }
     if ( m_icon == 128+6 || m_icon == 128+7 || m_icon == 58 )  // pause or film?
     {
         icon = -1;  // no bottom

@@ -57,7 +57,8 @@ enum ControlState
     STATE_FRAME     = (1<<13),  // framework highlighting
     STATE_WARNING   = (1<<14),  // framework hatched yellow / black
     STATE_VALUE     = (1<<15),  // displays the value
-    STATE_RUN       = (1<<16)   // running program
+    STATE_RUN       = (1<<16),  // running program
+    STATE_DAMAGE    = (1<<17)   // taking damage
 };
 
 

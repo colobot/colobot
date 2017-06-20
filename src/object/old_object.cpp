@@ -137,6 +137,7 @@ COldObject::COldObject(int id)
     m_bVirusMode = false;
     m_virusTime = 0.0f;
     m_lastVirusParticle = 0.0f;
+    m_damaging = false;
     m_dying = DeathType::Alive;
     m_bFlat  = false;
     m_gunGoalV = 0.0f;
@@ -387,6 +388,9 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
             float shield = GetShield();
             shield -= loss;
             SetShield(shield);
+
+            // Sending info about taking damage
+            SetDamaging(true);
         }
         else
         {
@@ -394,6 +398,7 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
             {
                 // Dead immediately
                 SetShield(0.0f);
+                SetDamaging(false);
             }
         }
         dead = (GetShield() <= 0.0f);
@@ -425,6 +430,9 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
         m_engine->GetPyroManager()->Create(Gfx::PT_SHOTT, this, loss);
     }
 
+    /*if ( m_time < 2.0f && m_damaging == true )  SetDamaging(false);
+    m_time = 0.0f;*/ // TODO: Make DamageAlarm Icon Dissapear after 2 seconds
+
     return false;
 }
 
@@ -440,6 +448,7 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
     if (Implements(ObjectInterfaceType::Shielded))
     {
         SetShield(0.0f);
+        SetDamaging(false);
     }
 
     Gfx::PyroType pyroType = Gfx::PT_NULL;
@@ -2652,6 +2661,15 @@ float COldObject::GetMagnifyDamage()
     return m_magnifyDamage;
 }
 
+void COldObject::SetDamaging(bool damaging)
+{
+    m_damaging = damaging;
+}
+
+bool COldObject::IsDamaging()
+{
+    return m_damaging;
+}
 
 void COldObject::SetDying(DeathType deathType)
 {
