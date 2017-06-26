@@ -110,6 +110,8 @@ protected:
     Math::Point     m_editFinalDim;
     Math::Point     m_windowPos;
     Math::Point     m_windowDim;
+    Math::Point     m_dialogPos;
+    Math::Point     m_dialogDim;
 
     float        m_time;
     float        m_fixInfoTextTime;
