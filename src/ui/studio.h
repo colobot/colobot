@@ -108,6 +108,8 @@ protected:
     Math::Point     m_editActualDim;
     Math::Point     m_editFinalPos;
     Math::Point     m_editFinalDim;
+    Math::Point     m_windowPos;
+    Math::Point     m_windowDim;
 
     float        m_time;
     float        m_fixInfoTextTime;

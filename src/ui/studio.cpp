@@ -249,16 +249,16 @@ bool CStudio::EventProcess(const Event &event)
     {
         m_editActualPos = m_editFinalPos = pw->GetPos();
         m_editActualDim = m_editFinalDim = pw->GetDim();
-        m_settings->SetWindowPos(m_editActualPos);
-        m_settings->SetWindowDim(m_editActualDim);
+        m_windowPos = m_editActualPos;
+        m_windowDim = m_editActualDim;
         AdjustEditScript();
     }
     if ( event.type == pw->GetEventTypeReduce() )
     {
         if ( m_bEditMinimized )
         {
-            m_editFinalPos = m_settings->GetWindowPos();
-            m_editFinalDim = m_settings->GetWindowDim();
+            m_editFinalPos = m_windowPos;
+            m_editFinalDim = m_windowDim;
             m_bEditMinimized = false;
             m_bEditMaximized = false;
         }
@@ -283,8 +283,8 @@ bool CStudio::EventProcess(const Event &event)
     {
         if ( m_bEditMaximized )
         {
-            m_editFinalPos = m_settings->GetWindowPos();
-            m_editFinalDim = m_settings->GetWindowDim();
+            m_editFinalPos = m_windowPos;
+            m_editFinalDim = m_windowDim;
             m_bEditMinimized = false;
             m_bEditMaximized = false;
         }
@@ -579,8 +579,25 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
     if (pw != nullptr) pw->ClearState(STATE_VISIBLE | STATE_ENABLE);
 
-    pos = m_editFinalPos = m_editActualPos = m_settings->GetWindowPos();
-    dim = m_editFinalDim = m_editActualDim = m_settings->GetWindowDim();
+    m_windowPos = m_settings->GetWindowPos();
+    m_windowDim = m_settings->GetWindowDim();
+    m_bEditMaximized = m_settings->GetWindowMax();
+
+    if ( m_bEditMaximized )
+    {
+        m_editFinalPos.x = 0.00f;
+        m_editFinalPos.y = 0.00f;
+        m_editFinalDim.x = 1.00f;
+        m_editFinalDim.y = 1.00f;
+    }
+    else
+    {
+        m_editFinalPos = m_windowPos;
+        m_editFinalDim = m_windowDim;
+    }
+    pos = m_editActualPos = m_editFinalPos;
+    dim = m_editActualDim = m_editFinalDim;
+
     pw = m_interface->CreateWindows(pos, dim, 8, EVENT_WINDOW3);
     if (pw == nullptr)
         return;
@@ -597,6 +614,8 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     pw->SetMinDim(Math::Point(0.49f, 0.50f));
     pw->SetMaximized(m_bEditMaximized);
     pw->SetMinimized(m_bEditMinimized);
+
+    // stop camera control if maximized
     m_main->SetEditFull(m_bEditMaximized);
 
     edit = pw->CreateEdit(pos, dim, 0, EVENT_STUDIO_EDIT);
@@ -910,6 +929,10 @@ bool CStudio::StopEditScript(bool closeWithErrors)
     m_runningPause = nullptr;
     m_main->SetEditLock(false, true);
     m_camera->SetType(m_editCamera);
+
+    m_settings->SetWindowPos(m_windowPos);
+    m_settings->SetWindowDim(m_windowDim);
+    m_settings->SetWindowMax(m_bEditMaximized);
     return true;
 }
 
