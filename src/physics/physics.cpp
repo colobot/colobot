@@ -5546,9 +5546,9 @@ int CPhysics::CrashCornerRect(CObject *pObj, const Math::Vector &pos, const Math
     Math::Point        t1,t2, p, pp, oneP, oneT1,oneT2;
     Math::Point        maxAdjust, minAdjust, maxImpact, minImpact;
     Math::Point        maxP1,minP1, maxP2,minP2;
-    SoundType        maxSound=SOUND_NONE, minSound=SOUND_NONE, oneSound;
-    float        maxHardness=0, minHardness=0, oneHardness;
-    float        maxPriority=0, minPriority=0, onePriority;
+    SoundType        maxSound=SOUND_NONE, minSound=SOUND_NONE, oneSound=SOUND_NONE;
+    float        maxHardness=0, minHardness=0, oneHardness=0;
+    float        maxPriority=0, minPriority=0, onePriority=0;
     float        maxLen, minLen;
     float        len, a=0, h;
     int            max, nbInter, onePart;
