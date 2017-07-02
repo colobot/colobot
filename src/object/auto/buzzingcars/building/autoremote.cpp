@@ -107,7 +107,6 @@ bool CAutoRemote::EventProcess(const Event &event)
    CMotion*    motion;
    SoundType       sound;
    int         i;
-   char        text[100];
    float       angle;
 
    CAuto::EventProcess(event);
@@ -122,8 +121,9 @@ bool CAutoRemote::EventProcess(const Event &event)
        if ( !m_bDisplayText )
        {
            m_bDisplayText = true;
-//TODO (krzys_h):           GetResource(RES_TEXT, RT_START_REMOTE, text);
-//TODO (krzys_h):           m_displayText->DisplayText(text, 8.0f);
+           std::string text;
+           GetResource(RES_TEXT, RT_START_REMOTE, text);
+           m_main->GetDisplayText()->DisplayText(text.c_str(), Math::Vector(), 15.0f, 60.0f, 8.0f);
        }
 
        if ( m_progress >= 1.0f )
@@ -273,8 +273,9 @@ bool CAutoRemote::EventProcess(const Event &event)
            DemoWheel(true);  // remet au neutre
            m_main->SelectObject(m_vehicle);
 
-//TODO (krzys_h):           GetResource(RES_TEXT, RT_START_GO, text);
-//TODO (krzys_h):           m_displayText->DisplayText(text, 3.0f, 20.0f, TT_START);
+           std::string text;
+           GetResource(RES_TEXT, RT_START_GO, text);
+           m_main->GetDisplayText()->DisplayText(text.c_str(), Math::Vector(), 15.0f, 60.0f, 3.0f, Ui::TT_START);
            sound = SOUND_STARTGO;
 //TODO (krzys_h):           if ( !m_sound->GetComments() )  sound = SOUND_MESSAGE;
            m_sound->Play(sound, m_engine->GetLookatPt(), 1.0f, 1.0f);
