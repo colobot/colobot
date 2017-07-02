@@ -444,6 +444,9 @@ void CObject::UpdateBBoxCrashLine()
 
 void CObject::GetCrashLineBBox(Math::Point &min, Math::Point &max)
 {
+    // TODO (krzys_h): There is something wrong with UpdateBBoxCrashLine not being called for objects with IsCrashLineFusion()=false. I have no idea where it's supposed to be called from so I'm just throwing it here for now, but that should be fixed for performance reasons
+    UpdateBBoxCrashLine();
+
     min = m_crashLineMin;
     max = m_crashLineMax;
 }
