@@ -670,6 +670,75 @@ bool CRobotMain::ProcessEvent(Event &event)
             }
         }
 
+        if ( m_phase == PHASE_SIMUL &&
+             m_suspend == nullptr && !m_engine->GetPause() &&
+             m_startCounter > 0 )  // décompte 3,2,1,go ?
+        {
+            m_startDelay -= event.rTime;
+            if ( m_startDelay <= 0.0f )
+            {
+                m_startCounter --;
+                m_startDelay = 1.0f;
+                if ( GetStarterType() == STARTER_321 )  // normal ?
+                {
+                    if ( m_startCounter == 4 )
+                    {
+                        m_startDelay = 1.5f;
+                        std::string text;
+                        GetResource(RES_TEXT, RT_START_READY, text);
+                        SoundType sound = SOUND_STARTREADY;
+//TODO (krzys_h):                        if ( !m_sound->RetComments() )  sound = SOUND_MESSAGE;
+                        //m_displayText->DisplayText(text, 2.0f, 20.0f, Ui::TT_START, sound);
+                        m_displayText->DisplayText(text.c_str(), Math::Vector(), 15.0f, 60.0f, 2.0f, Ui::TT_START, sound);
+                    }
+                    if ( m_startCounter >= 1 && m_startCounter <= 3 )
+                    {
+                        std::string res;
+                        GetResource(RES_TEXT, RT_START_123, res);
+                        std::string text = StrUtils::Format(res.c_str(), m_startCounter);
+                        SoundType sound;
+                        if ( m_startCounter == 3 )  sound = SOUND_START3;
+                        if ( m_startCounter == 2 )  sound = SOUND_START2;
+                        if ( m_startCounter == 1 )  sound = SOUND_START1;
+//TODO (krzys_h):                        if ( !m_sound->RetComments() )  sound = SOUND_MESSAGE;
+                        //m_displayText->DisplayText(text, 2.0f, 20.0f, Ui::TT_START, sound);
+                        m_displayText->DisplayText(text.c_str(), Math::Vector(), 15.0f, 60.0f, 2.0f, Ui::TT_START, sound);
+                    }
+                }
+                else	// quick ?
+                {
+                    if ( m_startCounter == 1 )
+                    {
+                        m_startDelay = 1.0f;
+                        std::string text;
+                        GetResource(RES_TEXT, RT_START_QUICK, text);
+                        SoundType sound = SOUND_STARTREADY;
+//TODO (krzys_h):                        if ( !m_sound->RetComments() )  sound = SOUND_MESSAGE;
+                        //m_displayText->DisplayText(text, 2.0f, 20.0f, Ui::TT_START, sound);
+                        m_displayText->DisplayText(text.c_str(), Math::Vector(), 15.0f, 60.0f, 2.0f, Ui::TT_START, sound);
+                    }
+                }
+                if ( m_startCounter == 0 )
+                {
+                    std::string text;
+                    GetResource(RES_TEXT, RT_START_GO, text);
+                    SoundType sound = SOUND_STARTGO;
+//TODO (krzys_h):                    if ( !m_sound->RetComments() )  sound = SOUND_MESSAGE;
+                    //m_displayText->DisplayText(text, 2.0f, 20.0f, Ui::TT_START, sound);
+                    m_displayText->DisplayText(text.c_str(), Math::Vector(), 15.0f, 60.0f, 2.0f, Ui::TT_START, sound);
+                    CObject* pObj = GetSelect();
+                    if ( pObj != 0 && pObj->Implements(ObjectInterfaceType::Old) )
+                    {
+//TODO (krzys_h):                        dynamic_cast<COldObject*>(pObj)->SetStarting(false);  // on peut avancer
+                    }
+                    m_camera->SetLockRotate(false);
+                    m_camera->ResetLockRotate();
+//TODO (krzys_h):                    m_starterTry ++;
+//TODO (krzys_h):                    m_starterLast = m_dialog->RetSceneRank();
+                }
+            }
+        }
+
         m_displayText->EventProcess(event);
 
         if (m_displayInfo != nullptr)  // current edition?
@@ -2672,6 +2741,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         g_unit = UNIT;
 
+        m_startCounter = 0;
+
         FlushDisplayInfo();
         m_terrain->FlushMaterials();
         m_audioTrack = "";
@@ -3518,6 +3589,22 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                         line->GetParam("extRadius")->AsFloat(20.0f)*g_unit,
                                         line->GetParam("intRadius")->AsFloat(10.0f)*g_unit,
                                         line->GetParam("maxHeight")->AsFloat(200.0f));
+                continue;
+            }
+
+            if (line->GetCommand() == "StartDelay" && !resetObject)
+            {
+                if ( GetStarterType() == STARTER_321 )
+                {
+                    m_startCounter = 5;
+                    m_startDelay = 2.5f;
+                }
+                else
+                {
+                    m_startCounter = 2;
+                    m_startDelay = 1.5f;
+                }
+                m_camera->SetLockRotate(true);
                 continue;
             }
 
@@ -6037,14 +6124,6 @@ int CRobotMain::GetSelectedDifficulty()
     return 2;
 }
 
-// Indique si le chrono tourne.
-
-bool CRobotMain::IsGameTime()
-{
-    // TODO: && m_startCounter == 0 && m_bStopwatch && !m_bSuperWin
-    return ( !m_movieLock && m_suspend == nullptr && m_engine->GetPause() && m_winDelay == 0.0f && m_lostDelay == 0.0f );
-}
-
 // Enclanche ou déclanche le chrono.
 
 void CRobotMain::SetStopwatch(bool bRun)
@@ -6053,9 +6132,59 @@ void CRobotMain::SetStopwatch(bool bRun)
     // I believe this is supposed to temporairly stop the timer while animation is playing
 }
 
+// Stoppe le starter lorsque le moteur explose.
+
+void CRobotMain::StopStartCounter()
+{
+    m_startCounter = -1;
+}
+
+// Indique si le starter est en fonction.
+
+bool CRobotMain::IsStartCounter()
+{
+    return (m_startCounter != -1);
+}
+
+// Indique s'il existe un starter.
+
+bool CRobotMain::IsStarter()
+{
+    return (m_startCounter != 0);
+}
+
+// Indique si le chrono tourne.
+
+bool CRobotMain::IsGameTime()
+{
+    // TODO: && m_startCounter == 0 && m_bStopwatch && !m_bSuperWin
+    return ( !m_movieLock && m_suspend == nullptr && m_engine->GetPause() && m_winDelay == 0.0f && m_lostDelay == 0.0f );
+}
+
 // Indique si le chrono tourne.
 
 bool CRobotMain::GetEndingGame()
 {
     return ( m_winDelay != 0.0f || m_lostDelay != 0.0f );
+}
+
+// Recommencer avec un starter lent.
+
+void CRobotMain::FlushStarterType()
+{
+//TODO (krzys_h):    m_starterLast = 0;
+//TODO (krzys_h):    m_starterTry  = 0;
+}
+
+// Retourne le type d'action pour le droïde starter.
+
+StarterType CRobotMain::GetStarterType()
+{
+//TODO (krzys_h):    if ( m_starterLast == m_dialog->RetSceneRank() ||
+//TODO (krzys_h):         m_starterTry >= 2 )
+    if (false)
+    {
+        return STARTER_QUICK;
+    }
+    return STARTER_321;
 }

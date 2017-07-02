@@ -216,6 +216,9 @@ public:
     void        SetScriptCameraAnimateLookat(Math::Vector lookat);
     //@}
 
+    //! Make the camera move to animation target position immediately
+    void        FixCamera();
+
     //! \name Configuration settings
     //@{
     void        SetEffect(bool enable);
@@ -238,6 +241,18 @@ public:
 
     void SetBackDist(float dist);
     float GetBackDist();
+
+    void		SetBackVerti(float angle);
+    float		GetBackVerti();
+
+    void		SetBackHoriz(float angle);
+    float		GetBackHoriz();
+
+    void		ResetLockRotate();
+    void		SetLockRotate(bool bLock);
+    bool		GetLockRotate();
+
+    void		SetMotorSpeed(float speed);
 
 protected:
     //! Advances the effect of the camera
@@ -347,6 +362,11 @@ protected:
     float       m_backDist;
     //! CAM_TYPE_BACK: minimal distance
     float       m_backMin;
+    bool		m_bBackLockRotate;	// CAMERA_BACK: rotation autorisée ?
+    float		m_backMotorSpeed;	// CAMERA_BACK: vitesse moteur
+    float		m_backSleepTime;	// CAMERA_BACK: durée depuis arrêt
+    float		m_backRotSpeed;		// CAMERA_BACK: vitesse angulaire
+    float		m_rotDirectionH;	// CAMERA_BACK: direction supplémentaire
     //! CAM_TYPE_BACK: additional horizontal direction
     float       m_addDirectionH;
     //! CAM_TYPE_BACK: additional vertical direction

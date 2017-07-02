@@ -135,12 +135,12 @@ bool CAutoBlitzer::EventProcess(const Event &event)
                angle = Math::NormAngle(goalAngle);
                if ( angle < Math::PI )  angle -= Math::PI*0.15f;
                else               angle += Math::PI*0.15f;
-//TODO (krzys_h):               m_camera->SetBackHoriz(-angle);
+               m_camera->SetBackHoriz(-angle);
                if ( m_targetType == OBJECT_EVIL3 )
                {
                    m_camera->SetBackDist(50.0f);
                }
-//TODO (krzys_h):               m_camera->SetLockRotate(true);
+               m_camera->SetLockRotate(true);
                m_main->SetStopwatch(false);  // stoppe le chrono
 
                mat = m_object->GetWorldMatrix(0);
@@ -250,9 +250,9 @@ bool CAutoBlitzer::EventProcess(const Event &event)
            car->SetLock(false);
 
            m_camera->SetType(m_cameraType);
-//TODO (krzys_h):           m_camera->SetBackHoriz(0.0f);
-//TODO (krzys_h):           m_camera->SetLockRotate(false);
-//TODO (krzys_h):           m_camera->ResetLockRotate();
+           m_camera->SetBackHoriz(0.0f);
+           m_camera->SetLockRotate(false);
+           m_camera->ResetLockRotate();
            m_main->SetStopwatch(true);  // redémarre le chrono
 
            m_phase = ABLP_WAITOUT;

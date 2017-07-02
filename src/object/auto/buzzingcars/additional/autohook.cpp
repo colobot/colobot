@@ -138,8 +138,8 @@ bool CAutoHook::EventProcess(const Event &event)
                    angle = Math::NormAngle(goalAngle);
                    if ( angle < Math::PI )  angle =  Math::PI*0.1f;
                    else               angle = -Math::PI*0.1f;
-//TODO (krzys_h):                   m_camera->SetBackHoriz(angle);
-//TODO (krzys_h):                   m_camera->SetLockRotate(true);
+                   m_camera->SetBackHoriz(angle);
+                   m_camera->SetLockRotate(true);
                    m_main->SetStopwatch(false);  // stoppe le chrono
 
                    pos = car->GetCharacter()->posFret;
@@ -189,8 +189,8 @@ bool CAutoHook::EventProcess(const Event &event)
                    angle = Math::NormAngle(goalAngle);
                    if ( angle < Math::PI )  angle =  Math::PI*0.1f;
                    else               angle = -Math::PI*0.1f;
-//TODO (krzys_h):                   m_camera->SetBackHoriz(angle);
-//TODO (krzys_h):                   m_camera->SetLockRotate(true);
+                   m_camera->SetBackHoriz(angle);
+                   m_camera->SetLockRotate(true);
                    m_main->SetStopwatch(false);  // stoppe le chrono
 
                    pos = car->GetCharacter()->posFret;
@@ -365,9 +365,9 @@ bool CAutoHook::EventProcess(const Event &event)
            car->SetLock(false);  // voiture de nouveau mobile
 
            m_camera->SetType(m_cameraType);
-//TODO (krzys_h):           m_camera->SetBackHoriz(0.0f);
-//TODO (krzys_h):           m_camera->SetLockRotate(false);
-//TODO (krzys_h):           m_camera->ResetLockRotate();
+           m_camera->SetBackHoriz(0.0f);
+           m_camera->SetLockRotate(false);
+           m_camera->ResetLockRotate();
            m_main->SetStopwatch(true);  // redémarre le chrono
 
            m_phase = AHKP_WAIT;

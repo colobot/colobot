@@ -131,8 +131,8 @@ bool CAutoFire::EventProcess(const Event &event)
                angle = Math::NormAngle(m_goalAngleH);
                if ( angle < Math::PI )  angle -= Math::PI*0.15f;
                else               angle += Math::PI*0.15f;
-//TODO (krzys_h):               m_camera->SetBackHoriz(-angle);
-//TODO (krzys_h):               m_camera->SetLockRotate(true);
+               m_camera->SetBackHoriz(-angle);
+               m_camera->SetLockRotate(true);
                m_main->SetStopwatch(false);  // stoppe le chrono
 
                m_phase = AFIP_TURNIN;
@@ -264,9 +264,9 @@ bool CAutoFire::EventProcess(const Event &event)
            m_object->SetPartRotationZ(2, m_startAngleV);
 
            m_camera->SetType(m_cameraType);
-//TODO (krzys_h):           m_camera->SetBackHoriz(0.0f);
-//TODO (krzys_h):           m_camera->SetLockRotate(false);
-//TODO (krzys_h):           m_camera->ResetLockRotate();
+           m_camera->SetBackHoriz(0.0f);
+           m_camera->SetLockRotate(false);
+           m_camera->ResetLockRotate();
            m_main->SetStopwatch(true);  // redémarre le chrono
 
            m_phase = AFIP_WAITOUT;

@@ -129,6 +129,12 @@ void InitializeRestext()
 
     stringsText[RT_INTERFACE_REC]    = TR("Recorder");
 
+    stringsText[RT_START_READY]      = "Ready ?";
+    stringsText[RT_START_QUICK]      = "3, 2, 1  ...  Ready ?";
+    stringsText[RT_START_123]        = "%d ...";
+    stringsText[RT_START_GO]         = "GO !";
+    stringsText[RT_START_REMOTE]     = "Remote control your car";
+
     stringsText[RT_LOADING_INIT]           = TR("Starting...");
     stringsText[RT_LOADING_PROCESSING]     = TR("Processing level file");
     stringsText[RT_LOADING_LEVEL_SETTINGS] = TR("Loading basic level settings");

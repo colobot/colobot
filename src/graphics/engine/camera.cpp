@@ -222,6 +222,7 @@ void CCamera::Init(Math::Vector eye, Math::Vector lookat, float delay)
     m_heightLookat = 10.0f;
     m_backDist = 30.0f;
     m_backMin  = 10.0f;
+    m_rotDirectionH = 0.0f;
     m_addDirectionH = 0.0f;
     m_addDirectionV = -Math::PI*0.05f;
     m_fixDist = 50.0f;
@@ -314,6 +315,7 @@ void CCamera::SetType(CameraType type)
     if ( type == CAM_TYPE_BACK )
     {
         AbortCentering();  // Special stops framing
+        m_rotDirectionH = 0.0f;
         m_addDirectionH = 0.0f;
         m_addDirectionV = -Math::PI*0.05f;
 
@@ -323,7 +325,7 @@ void CCamera::SetType(CameraType type)
 
         m_backDist = 30.0f;
         if ( oType == OBJECT_BASE     )  m_backDist = 200.0f;
-        if ( oType == OBJECT_HUMAN    )  m_backDist =  20.0f;
+        if ( oType == OBJECT_HUMAN    )  m_backDist =  20.0f; // TODO (krzys_h): 15.0f
         if ( oType == OBJECT_TECH     )  m_backDist =  20.0f;
         if ( oType == OBJECT_FACTORY  )  m_backDist =  50.0f;
         if ( oType == OBJECT_RESEARCH )  m_backDist =  40.0f;
@@ -337,6 +339,15 @@ void CCamera::SetType(CameraType type)
         if ( oType == OBJECT_HUSTON   )  m_backDist = 120.0f;
         if ( oType == OBJECT_MOTHER   )  m_backDist =  55.0f;
 
+        if ( oType == OBJECT_DOCK     )  m_backDist =  50.0f;
+        if ( oType == OBJECT_HOME1    )  m_backDist =  40.0f;
+        if ( oType == OBJECT_HOME2    )  m_backDist =  40.0f;
+        if ( oType == OBJECT_HOME3    )  m_backDist =  40.0f;
+        if ( oType == OBJECT_HOME4    )  m_backDist =  40.0f;
+        if ( oType == OBJECT_HOME5    )  m_backDist =  40.0f;
+        if ( oType == OBJECT_STARTER  )  m_backDist =   5.0f;
+        if ( oType == OBJECT_INCA7    )  m_backDist = 100.0f;
+
         m_backMin = m_backDist/3.0f;
         if ( oType == OBJECT_HUMAN    )  m_backMin =  10.0f;
         if ( oType == OBJECT_TECH     )  m_backMin =  10.0f;
@@ -346,6 +357,25 @@ void CCamera::SetType(CameraType type)
         if ( oType == OBJECT_PARA     )  m_backMin =  40.0f;
         if ( oType == OBJECT_SAFE     )  m_backMin =  25.0f;
         if ( oType == OBJECT_HUSTON   )  m_backMin =  80.0f;
+
+        if ( oType == OBJECT_DOCK     )  m_backMin =  20.0f;
+
+        if ( oType == OBJECT_HOME1 ||
+             oType == OBJECT_HOME3 ||
+             oType == OBJECT_HOME4 ||
+             oType == OBJECT_HOME5 )
+        {
+            m_addDirectionV = -Math::PI*0.10f;
+        }
+        if ( oType == OBJECT_HOME2 )
+        {
+            m_addDirectionV = -Math::PI*0.04f;
+        }
+        if ( oType == OBJECT_INCA7 )
+        {
+            m_addDirectionV = Math::PI*0.02f;
+            m_addDirectionH = Math::PI*1.0f;
+        }
     }
 
     //if ( type != CAM_TYPE_ONBOARD && m_cameraObj != 0 )
@@ -1149,6 +1179,54 @@ bool CCamera::EventFrameFree(const Event &event, bool keysAllowed)
 
 bool CCamera::EventFrameBack(const Event &event)
 {
+    ObjectType type = OBJECT_NULL;
+    if ( m_cameraObj != nullptr )
+    {
+        type = m_cameraObj->GetType();
+    }
+
+    if ( abs(m_backMotorSpeed) <= 0.1f &&  // véhicule arrêté ?
+         !m_bBackLockRotate )
+    {
+        m_backSleepTime += event.rTime;
+    }
+    else
+    {
+        m_backSleepTime = 0.0f;
+        m_backRotSpeed  = 0.0f;
+    }
+    if ( type != OBJECT_CAR    &&
+         type != OBJECT_HUMAN  &&
+         type != OBJECT_BOT1   &&
+         type != OBJECT_BOT2   &&
+         type != OBJECT_BOT3   &&
+         type != OBJECT_BOT4   &&
+         type != OBJECT_BOT5   &&
+         type != OBJECT_WALKER &&
+         type != OBJECT_CRAZY  )
+    {
+        m_backSleepTime = 0.0f;
+        m_backRotSpeed  = 0.0f;
+    }
+    if ( m_centeringPhase != CAM_PHASE_NULL )
+    {
+        m_backSleepTime = 0.0f;
+        m_backRotSpeed  = 0.0f;
+    }
+
+    // Fait tourner la caméra après un certain temps d'arrêt.
+    if ( m_backSleepTime < 5.0f )
+    {
+        m_rotDirectionH = Math::Smooth(m_rotDirectionH, 0.0f, event.rTime*5.0f);
+    }
+    else
+    {
+        m_backRotSpeed = Math::Smooth(m_backRotSpeed, 1.0f, event.rTime);
+        m_rotDirectionH -= event.rTime*m_backRotSpeed*0.5f;
+        m_rotDirectionH = Math::NormAngle(m_rotDirectionH);
+        if ( m_rotDirectionH > Math::PI )  m_rotDirectionH -= Math::PI*2.0f;
+    }
+
     Math::Vector cameraMove = CalculateCameraMovement(event);
     m_addDirectionH += cameraMove.x;
     m_addDirectionV += cameraMove.y;
@@ -1205,7 +1283,14 @@ bool CCamera::EventFrameBack(const Event &event)
              if (type == OBJECT_BASE ) lookatPt.y += 40.0f;
         else if (type == OBJECT_HUMAN) lookatPt.y +=  1.0f;
         else if (type == OBJECT_TECH ) lookatPt.y +=  1.0f;
+        else if (type == OBJECT_STARTER) lookatPt.y +=  1.5f;
         else                           lookatPt.y +=  4.0f;
+
+        if ( type == OBJECT_DOCK )
+        {
+            Math::Matrix* mat = m_cameraObj->GetWorldMatrix(0);
+            lookatPt = Math::Transform(*mat, Math::Vector(0.0f, 0.0f, 27.0f));
+        }
 
         float h = -m_cameraObj->GetRotationY();  // angle vehicle / building
 
@@ -1226,9 +1311,64 @@ bool CCamera::EventFrameBack(const Event &event)
              type == OBJECT_SAFE     ||
              type == OBJECT_HUSTON   ||
              type == OBJECT_START    ||
-             type == OBJECT_END      )  // building?
+             type == OBJECT_END      ||
+            type == OBJECT_FACTORY1  ||
+            type == OBJECT_FACTORY2  ||
+            type == OBJECT_FACTORY3  ||
+            type == OBJECT_FACTORY4  ||
+            type == OBJECT_FACTORY5  ||
+            type == OBJECT_FACTORY6  ||
+            type == OBJECT_FACTORY7  ||
+            type == OBJECT_FACTORY8  ||
+            type == OBJECT_FACTORY9  ||
+            type == OBJECT_FACTORY10 ||
+            type == OBJECT_ALIEN1    ||
+            type == OBJECT_ALIEN2    ||
+            type == OBJECT_ALIEN3    ||
+            type == OBJECT_ALIEN4    ||
+            type == OBJECT_ALIEN5    ||
+            type == OBJECT_ALIEN6    ||
+            type == OBJECT_ALIEN7    ||
+            type == OBJECT_ALIEN8    ||
+            type == OBJECT_ALIEN9    ||
+            type == OBJECT_ALIEN10   ||
+            type == OBJECT_INCA1     ||
+            type == OBJECT_INCA2     ||
+            type == OBJECT_INCA3     ||
+            type == OBJECT_INCA4     ||
+            type == OBJECT_INCA5     ||
+            type == OBJECT_INCA6     ||
+            type == OBJECT_INCA7     ||
+            type == OBJECT_INCA8     ||
+            type == OBJECT_INCA9     ||
+            type == OBJECT_INCA10    ||
+            type == OBJECT_BUILDING1 ||
+            type == OBJECT_BUILDING2 ||
+            type == OBJECT_BUILDING3 ||
+            type == OBJECT_BUILDING4 ||
+            type == OBJECT_BUILDING5 ||
+            type == OBJECT_BUILDING6 ||
+            type == OBJECT_BUILDING7 ||
+            type == OBJECT_BUILDING8 ||
+            type == OBJECT_BUILDING9 ||
+            type == OBJECT_BUILDING10||
+            type == OBJECT_COMPUTER  ||
+            type == OBJECT_SWEET     ||
+            type == OBJECT_DOOR1     ||
+            type == OBJECT_DOOR2     ||
+            type == OBJECT_DOOR3     ||
+            type == OBJECT_DOOR4     ||
+            type == OBJECT_DOOR5     )  // building?
         {
             h += Math::PI * 0.20f;  // nearly face
+        }
+        else if ( type == OBJECT_DOCK )
+        {
+            h += -Math::PI*0.45f;  // zouli
+        }
+        else if ( type == OBJECT_STARTER )
+        {
+            h += 0.0f;  // de face
         }
         else    // vehicle?
         {
@@ -1239,6 +1379,7 @@ bool CCamera::EventFrameBack(const Event &event)
 
         h += m_centeringCurrentH;
         h += m_addDirectionH * (1.0f - centeringH);
+        h += m_rotDirectionH * (1.0f - centeringH);
         h = Math::NormAngle(h);
 
         if (type == OBJECT_MOBILEdr)  // designer?
@@ -1405,7 +1546,6 @@ void CCamera::SetScriptCameraAnimateLookat(Math::Vector lookat)
 void CCamera::SetScriptCamera(Math::Vector eye, Math::Vector lookat)
 {
     SetScriptCameraAnimate(eye, lookat);
-
     m_initDelay    = 0.0f;
     m_actualEye    = m_finalEye    = m_scriptEye;
     m_actualLookat = m_finalLookat = m_scriptLookat;
@@ -1415,6 +1555,21 @@ void CCamera::SetScriptCameraAnimate(Math::Vector eye, Math::Vector lookat)
 {
     m_scriptEye = eye;
     m_scriptLookat = lookat;
+}
+
+void CCamera::FixCamera()
+{
+    /*m_initDelay    = 0.0f;
+    m_actualEye    = m_finalEye    = m_scriptEye;
+    m_actualLookat = m_finalLookat = m_scriptLookat;*/
+
+    m_initDelay     = 0.0f;
+    m_backSleepTime = 0.0f;
+    m_backRotSpeed  = 0.0f;
+
+    EventProcess(Event(EVENT_FRAME));
+
+    UpdateCameraAnimation(m_finalEye, m_finalLookat, 100.0f);
 }
 
 void CCamera::SetViewParams(const Math::Vector &eye, const Math::Vector &lookat,
@@ -1519,6 +1674,55 @@ void CCamera::SetBackDist(float dist)
 float CCamera::GetBackDist()
 {
     return m_backDist;
+}
+
+// Gestion de l'angle vertical.
+
+void CCamera::SetBackVerti(float angle)
+{
+    m_addDirectionV = angle;
+}
+
+float CCamera::GetBackVerti()
+{
+    return m_addDirectionV;
+}
+
+
+// Gestion de l'angle horizontal.
+
+void CCamera::SetBackHoriz(float angle)
+{
+    m_addDirectionH = angle;
+}
+
+float CCamera::GetBackHoriz()
+{
+    return m_addDirectionH;
+}
+
+
+void CCamera::ResetLockRotate()
+{
+    m_backSleepTime = 0.0f;
+    m_backRotSpeed  = 0.0f;
+}
+
+void CCamera::SetLockRotate(bool bLock)
+{
+    m_bBackLockRotate = bLock;
+}
+
+bool CCamera::GetLockRotate()
+{
+    return m_bBackLockRotate;
+}
+
+// Indique la consigne de vitesse moteur avant/arrière.
+
+void CCamera::SetMotorSpeed(float speed)
+{
+    m_backMotorSpeed = speed;
 }
 
 }

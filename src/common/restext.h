@@ -126,6 +126,12 @@ enum ResTextType
 
     RT_INTERFACE_REC        = 180,
 
+    RT_START_READY            = 190,
+    RT_START_QUICK            = 191,
+    RT_START_123              = 192,
+    RT_START_GO               = 193,
+    RT_START_REMOTE           = 194,
+
     RT_LOADING_INIT           = 210,
     RT_LOADING_PROCESSING     = 211,
     RT_LOADING_LEVEL_SETTINGS = 212,

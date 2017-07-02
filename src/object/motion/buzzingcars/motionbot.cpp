@@ -3348,12 +3348,11 @@ bool CMotionBot::EventFrame(const Event &event)
                m_camera->SetType(Gfx::CAM_TYPE_BACK);
                m_camera->SetBackDist(65.0f);
                m_camera->SetSmooth(Gfx::CAM_SMOOTH_HARD);
-//TODO (krzys_h):               m_camera->FixCamera();
+               m_camera->FixCamera();
            }
            m_starterTime += event.rTime;
 
-// TODO (krzys_h):           if ( m_main->GetStarterType() == STARTER_321 )
-           if (false)
+           if ( m_main->GetStarterType() == STARTER_321 )
            {
                if ( m_starterTime >= 2.5f && m_starterPhase == 0 )
                {
@@ -3389,8 +3388,7 @@ bool CMotionBot::EventFrame(const Event &event)
 
                if ( m_starterTime >= 7.0f )
                {
-//TODO (krzys_h):                   if ( m_main->IsStartCounter() )
-                   if (false)
+                   if ( m_main->IsStartCounter() )
                    {
                        SetAction(MB_HOME1);
                        m_camera->SetControllingObject(m_cameraObj);
@@ -3414,8 +3412,7 @@ bool CMotionBot::EventFrame(const Event &event)
                }
                if ( m_starterTime >= 2.5f )
                {
-//TODO (krzys_h):                   if ( m_main->IsStartCounter() )
-                   if (false)
+                   if ( m_main->IsStartCounter() )
                    {
                        SetAction(MB_HOME1);
                        m_camera->SetControllingObject(m_cameraObj);

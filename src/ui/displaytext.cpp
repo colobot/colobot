@@ -171,7 +171,7 @@ void CDisplayText::DisplayText(const char *text, CObject* pObj,
 // Displays text.
 
 void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height,
-                               float dist, float time, TextType type)
+                               float dist, float time, TextType type, SoundType sound)
 {
     CObject*    toto;
     CMotion*    motion;
@@ -180,7 +180,6 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     Ui::CGroup*     group;
     Ui::CLabel*     label;
     Math::Point     pos, ppos, dim;
-    SoundType   sound;
     float       hLine, hBox;
     int         nLine, icon, i;
 
@@ -223,6 +222,7 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     if ( type == TT_WARNING )  icon = 10;  // blue
     if ( type == TT_INFO    )  icon =  8;  // green
     if ( type == TT_MESSAGE )  icon = 11;  // yellow
+    if ( type == TT_START   )  icon =  8;  // green
     pw->CreateGroup(pos, dim, icon, EventType(EVENT_DT_GROUP0+nLine));
 
     pw->SetTrashEvent(false);
@@ -284,11 +284,15 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     }
     else
     {
-        sound = SOUND_NONE;
-        if ( type == TT_ERROR   )  sound = SOUND_ERROR;
-        if ( type == TT_WARNING )  sound = SOUND_WARNING;
-        if ( type == TT_INFO    )  sound = SOUND_INFO;
-        if ( type == TT_MESSAGE )  sound = SOUND_MESSAGE;
+        if ( sound == SOUND_NONE )
+        {
+            if ( type == TT_ERROR   )  sound = SOUND_ERROR;
+            if ( type == TT_WARNING )  sound = SOUND_WARNING;
+            if ( type == TT_INFO    )  sound = SOUND_INFO;
+            if ( type == TT_MESSAGE )  sound = SOUND_MESSAGE;
+            if ( type == TT_START   )  sound = SOUND_NONE;
+        }
+
 
         if ( sound != SOUND_NONE )
         {

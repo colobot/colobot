@@ -159,6 +159,13 @@ const int SATCOM_PROG       = 4;
 const int SATCOM_SOLUCE     = 5;
 const int SATCOM_MAX        = 6;
 
+enum StarterType
+{
+    STARTER_NONE	= 0,
+    STARTER_321		= 1,
+    STARTER_QUICK	= 2,
+};
+
 /**
  * \brief Main class managing the game world
  *
@@ -475,9 +482,16 @@ public:
     std::set<int> GetAllActiveTeams();
 
     int GetSelectedDifficulty();
-    bool IsGameTime();
-    void SetStopwatch(bool bRun);
-    bool GetEndingGame();
+
+    void		SetStopwatch(bool bRun);
+    void		StopStartCounter();
+    bool		IsStartCounter();
+    bool		IsStarter();
+    bool		IsGameTime();
+    bool		GetEndingGame();
+
+    void FlushStarterType();
+    StarterType GetStarterType();
 
 protected:
     bool        EventFrame(const Event &event);
@@ -679,6 +693,9 @@ protected:
     std::map<int, bool> m_teamFinished;
 
     std::vector<std::unique_ptr<CAudioChangeCondition>> m_audioChange;
+
+    int				m_startCounter;
+    float			m_startDelay;
 
     //! The scoreboard
     //! If the scoreboard is not enabled for this level, this will be null

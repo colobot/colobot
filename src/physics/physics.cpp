@@ -436,7 +436,7 @@ bool CPhysics::GetFreeze()
 bool CPhysics::GetLight(int rank)
 {
     if ( m_object->IsDying() )  return false;
-//TODO (krzys_h):    if ( !m_motion->GetLight(rank) )  return false;
+    if ( !m_motion->GetLight(rank) )  return false;
 
     if ( rank == 0 || rank == 1 )  // phares avant ?
     {
@@ -2274,7 +2274,7 @@ bool CPhysics::EventFrame(const Event &event)
 
     if ( m_timeMotorBurn >= 1.9f )  // moteur explose ?
     {
-//TODO (krzys_h):        m_main->FlushStarterType();  // recommence avec un starter lent
+        m_main->FlushStarterType();  // recommence avec un starter lent
         m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, m_object);  // destruction totale
         return false;
     }
@@ -2444,16 +2444,17 @@ bool CPhysics::EventFrame(const Event &event)
         FFBFrame(m_time, event.rTime);
     }
 
-    /* TODO (krzys_h)
     if ( m_object->GetSelect() &&
          m_type == TYPE_RACE   &&
          m_camera->GetControllingObject() == m_object )
     {
         m_camera->SetMotorSpeed(m_linMotion.realSpeed.x);
 
+        /* TODO (krzys_h): There is soething wrong with this code
         if ( !GetLock() && !m_object->IsDying() )
         {
             // Eloigne la caméra en marche arričre.
+            float hope, current;
             if ( m_motorSpeed.x < 0.0f && !m_bBrake )
             {
                 hope = 50.0f;
@@ -2469,19 +2470,19 @@ bool CPhysics::EventFrame(const Event &event)
 
             if ( m_motorSpeed.x < 0.0f && !m_bBrake )
             {
-                hope = -PI*0.10f;
+                hope = -Math::PI*0.10f;
                 factor = 1.0f;
             }
             else
             {
-                hope = -PI*0.05f;
+                hope = -Math::PI*0.05f;
                 factor = 0.6f;
             }
             current = m_camera->GetBackVerti();
             m_camera->SetBackVerti(Math::Smooth(current, hope, event.rTime*factor));
         }
+        */
     }
-    */
 
     if ( m_bLand && m_fallingHeight != 0.0f ) // if fell
     {
@@ -2506,8 +2507,8 @@ bool CPhysics::EventFrame(const Event &event)
 
 bool CPhysics::GetLock()
 {
-    if ( m_type == TYPE_RACE
-         /* TODO (krzys_h): && !m_main->IsStarter() */ )   // pas de starter ?
+    if ( m_type == TYPE_RACE &&
+         !m_main->IsStarter() )   // pas de starter ?
     {
         if ( m_object->GetLock() )
         {
