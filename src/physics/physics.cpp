@@ -5032,22 +5032,19 @@ bool CPhysics::ExploOther(ObjectType iType,
          (oType == OBJECT_FRET  ||
           oType == OBJECT_METAL ) )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_EXPLOT, pObj);  // destruction totale
+        m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, pObj);  // destruction totale
     }
 
     if ( force > 0.0f &&
          oType == OBJECT_BARREL )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_FRAGT, pObj);  // destruction totale
+        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // destruction totale
     }
     if ( force > 0.0f &&
          (oType == OBJECT_BARRELa ||
           oType == OBJECT_ATOMIC  ) )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_FRAGA, pObj);  // destruction totale
+        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGA, pObj);  // destruction totale
     }
 
     if ( force > 25.0f &&
@@ -5097,15 +5094,13 @@ bool CPhysics::ExploOther(ObjectType iType,
     if ( force > 25.0f &&
          (oType >= OBJECT_BOX5 && oType <= OBJECT_BOX6) )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_ACROBATIC, pObj, f);  // voltige
+        m_engine->GetPyroManager()->Create(Gfx::PT_ACROBATIC, pObj, f);  // voltige
     }
 
     if ( force > 25.0f &&
          (oType >= OBJECT_TOYS1 && oType <= OBJECT_TOYS5) )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_ACROBATIC, pObj, f);  // voltige
+        m_engine->GetPyroManager()->Create(Gfx::PT_ACROBATIC, pObj, f);  // voltige
     }
 
     if ( oType == OBJECT_PIECE ||
@@ -5120,8 +5115,7 @@ bool CPhysics::ExploOther(ObjectType iType,
          (oType == OBJECT_EVIL1 ||
           oType == OBJECT_EVIL3 ) )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_EXPLOO, pObj);  // destruction totale
+        m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOO, pObj);  // destruction totale
     }
 
     if ( force > 10.0f &&
@@ -5136,8 +5130,7 @@ bool CPhysics::ExploOther(ObjectType iType,
           oType == OBJECT_CRAZY   ||
           oType == OBJECT_GUIDE   ) )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_ACROBATIC, pObj, f);  // voltige
+        m_engine->GetPyroManager()->Create(Gfx::PT_ACROBATIC, pObj, f);  // voltige
     }
 
     if ( force > 25.0f &&
@@ -5158,8 +5151,7 @@ bool CPhysics::ExploOther(ObjectType iType,
     {
         if ( hardness > 0.5f )  // bouton arričre touché ?
         {
-            pyro = new CPyro(m_iMan);
-            pyro->Create(PT_EXPLOT, pObj);  // destruction totale
+            m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, pObj);  // destruction totale
         }
     }
 
@@ -5167,15 +5159,13 @@ bool CPhysics::ExploOther(ObjectType iType,
          (oType == OBJECT_MOBILEtg ||
           oType == OBJECT_TNT      ) )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_FRAGT, pObj);  // destruction totale
+        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // destruction totale
     }
 
     if ( force > 0.0f &&
          oType == OBJECT_MINE )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_FRAGT, pObj);  // destruction totale
+        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // destruction totale
     }
     */
 
@@ -5468,7 +5458,6 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
 
 void CPhysics::DoorCounter(CObject *pObj, ObjectType oType)
 {
-    /* TODO (krzys_h)
     float        freq;
     int            rank, counter, lap;
     bool        bSound;
@@ -5476,6 +5465,7 @@ void CPhysics::DoorCounter(CObject *pObj, ObjectType oType)
     if ( pObj == m_lastDoorCounter )  return;
     m_lastDoorCounter = pObj;
 
+    /* TODO (krzys_h):
     rank = pObj->GetRankCounter();
     lap = m_main->GetLapProgress();
     if ( lap == 0 )  lap = 1000;
@@ -5490,25 +5480,25 @@ void CPhysics::DoorCounter(CObject *pObj, ObjectType oType)
     }
 
     counter = pObj->GetPassCounter();
-    if ( counter == 0 )
+    if ( counter == 0 )*/
+    if (false)
     {
-        m_main->InfoCollision(oType);
+//TODO (krzys_h):        m_main->InfoCollision(oType);
 
         if ( oType == OBJECT_TARGET )  freq = 1.0f;
         else                           freq = 1.5f;
         m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition(), 1.0f, freq);
 
         pObj->SetLock(true);
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_WPCHECK, pObj);
+        m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, pObj);
     }
     else
     {
-        bSound = m_main->IncProgress();
+//TODO (krzys_h):        bSound = m_main->IncProgress();
         counter --;
-        pObj->SetPassCounter(counter);
+//TODO (krzys_h):        pObj->SetPassCounter(counter);
 
-        m_main->InfoCollision(oType);
+//TODO (krzys_h):        m_main->InfoCollision(oType);
 
         if ( !bSound )
         {
@@ -5518,19 +5508,17 @@ void CPhysics::DoorCounter(CObject *pObj, ObjectType oType)
             m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition(), 1.0f, freq);
         }
 
-        if ( counter == 0 )
+//TODO (krzys_h):        if ( counter == 0 )
+        if (false)
         {
             pObj->SetLock(true);
-            pyro = new CPyro(m_iMan);
-            pyro->Create(PT_WPCHECK, pObj);
+            m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, pObj);
         }
         else
         {
-            pyro = new CPyro(m_iMan);
-            pyro->Create(PT_WPVIBRA, pObj);
+            m_engine->GetPyroManager()->Create(Gfx::PT_WPVIBRA, pObj);
         }
     }
-    */
 }
 
 
