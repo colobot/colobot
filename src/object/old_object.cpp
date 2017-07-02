@@ -397,13 +397,7 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer, Mat
         if ( nb >  5 )  nb = 5;
         if ( ExploPart(nb, force) )  // perd qq pièces
         {
-            /* TODO (krzys_h) get the impact thing working
-             * Original code looks like this:
-            CPyro* pyro = new CPyro(m_iMan);
-            pyro->SetImpact(impact);
-            pyro->Create(PT_EXPLOP, this, 1.0f);
-            */
-            m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOP, this, 1.0f);
+            m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOP, this, 1.0f, 0, impact);
             return false;
         }
         else
@@ -757,8 +751,7 @@ bool COldObject::DetachPiece(int part, int param, Math::Vector speed)
     pObj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), radius, SOUND_CHOCo, 0.45f));
     pObj->CreateShadowCircle(radius*1.5f, 0.3f);
 
-    // TODO (krzys_h) param?!?!?! m_engine->GetPyroManager()->Create(Gfx::PT_PIECE, pObj, 1.0f, param);  // voltige
-    m_engine->GetPyroManager()->Create(Gfx::PT_PIECE, pObj, 1.0f);  // voltige
+    m_engine->GetPyroManager()->Create(Gfx::PT_PIECE, pObj, 1.0f, param);  // voltige
 
     return true;
 }

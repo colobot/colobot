@@ -26,6 +26,8 @@
 
 #include "graphics/engine/pyro_type.h"
 
+#include "math/vector.h"
+
 #include <memory>
 #include <set>
 
@@ -44,7 +46,7 @@ public:
     CPyroManager();
     ~CPyroManager();
 
-    void Create(PyroType type, CObject* obj, float force=1.0f);
+    void Create(PyroType type, CObject* obj, float force = 1.0f, int param = 0, Math::Vector impact = Math::Vector(NAN, NAN, NAN));
     void DeleteAll();
 
     void CutObjectLink(CObject* obj);

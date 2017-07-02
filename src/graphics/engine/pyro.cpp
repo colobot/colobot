@@ -76,6 +76,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force, int param, Math::Ve
     m_object = obj;
     m_force = force;
     m_param = param;
+    m_impact = impact;
 
     m_posStart = obj->GetPosition();
     m_angleStart = obj->GetRotation();

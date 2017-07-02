@@ -33,10 +33,10 @@ Gfx::CPyroManager::CPyroManager()
 CPyroManager::~CPyroManager()
 {}
 
-void Gfx::CPyroManager::Create(PyroType type, CObject* obj, float force)
+void Gfx::CPyroManager::Create(PyroType type, CObject* obj, float force, int param, Math::Vector impact)
 {
     auto pyroUPtr = MakeUnique<CPyro>();
-    pyroUPtr->Create(type, obj, force);
+    pyroUPtr->Create(type, obj, force, param, impact);
     m_pyros.insert(std::move(pyroUPtr));
 }
 
