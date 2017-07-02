@@ -341,7 +341,7 @@ void COldObject::Simplify()
 }
 
 
-bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
+bool COldObject::DamageObject(DamageType type, float force, CObject* killer, Math::Vector impact)
 {
     assert(Implements(ObjectInterfaceType::Damageable));
     assert(!Implements(ObjectInterfaceType::Destroyable) || Implements(ObjectInterfaceType::Shielded) || Implements(ObjectInterfaceType::Fragile));
@@ -376,30 +376,67 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
     }
 
     float loss = 1.0f;
-    bool dead = true;
     if (Implements(ObjectInterfaceType::Shielded))
     {
+        // Calculate the shield lost by the explosion
         float magnifyDamage = m_magnifyDamage * m_main->GetGlobalMagnifyDamage();
-        if (force != std::numeric_limits<float>::infinity())
-        {
-            // Calculate the shield lost by the explosion
-            loss = force * magnifyDamage;
-            if (m_type == OBJECT_HUMAN) loss /= 2.5f; // Me is more resistant
-            if (loss > 1.0f) loss = 1.0f;
+        loss = force * magnifyDamage;
+        if (m_type == OBJECT_HUMAN) loss /= 2.5f; // Me is more resistant
+    }
 
-            // Decreases the the shield
-            float shield = GetShield();
-            shield -= loss;
-            SetShield(shield);
+    // Diminue la puissance du bouclier.
+    if ( m_type == OBJECT_CAR )  // voiture ?
+    {
+        m_motion->TwistPart(impact, force);
+
+//?		nb = (int)(loss*60.0f);
+        int level = m_main->GetSelectedDifficulty()-1;  // 0..3
+        if ( level < 1 )  level = 1;  // 1..3
+        int nb = (int)(loss*20.0f*level);
+        if ( nb == 0 )  nb = 1;
+        if ( nb >  5 )  nb = 5;
+        if ( ExploPart(nb, force) )  // perd qq pièces
+        {
+            /* TODO (krzys_h) get the impact thing working
+             * Original code looks like this:
+            CPyro* pyro = new CPyro(m_iMan);
+            pyro->SetImpact(impact);
+            pyro->Create(PT_EXPLOP, this, 1.0f);
+            */
+            m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOP, this, 1.0f);
+            return false;
         }
         else
         {
-            if ( magnifyDamage != 0.0f )
+            return true;  // voiture détruite
+        }
+    }
+
+    if ( m_type == OBJECT_UFO )
+    {
+        int total = 0;
+        for ( int i=0 ; i<100 ; i++ )
+        {
+            int part = 1+rand()%18;
+            int objRank = GetObjectRank(part);
+            if ( objRank != -1 )
             {
-                // Dead immediately
-                SetShield(0.0f);
+                ExploPiece(part);
+                total ++;
+                if ( total >= 6 )  break;
             }
         }
+    }
+
+    bool dead = true;
+    if (Implements(ObjectInterfaceType::Shielded))
+    {
+        // Decreases the the shield
+        float shield = GetShield();
+        shield -= loss;
+        if (shield < 0.0f) shield = 0.0f;
+        SetShield(shield);
+
         dead = (GetShield() <= 0.0f);
     }
 
@@ -574,6 +611,189 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
 // (*)  If a robot or cosmonaut dies, the subject must continue to exist,
 //  so that programs of the ants continue to operate as usual.
 
+
+// Crée des morceaux d'objet qui partent.
+// Retourne FALSE si la voiture est détruite.
+
+bool COldObject::ExploPart(int total, float force)
+{
+    Math::Vector	p1, p2, p3, p4;
+    Gfx::CPyro*		pyro;
+    float		dim;
+    int			i, part, param;
+
+    // Crée une tache d'huile au sol.
+    if ( force > 0.2f &&
+         m_objectPart[0].position.y > m_engine->GetWater()->GetLevel() )
+    {
+        dim = force*20.0f;
+        if ( dim > 20.0f )  dim = 20.0f;
+        p1 = p2 = p3 = p4 = GetPosition();
+        p1.x -= dim;  p1.z += dim;
+        p2.x += dim;  p2.z += dim;
+        p3.x -= dim;  p3.z -= dim;
+        p4.x += dim;  p4.z -= dim;
+        m_particle->CreateWheelTrace(p1, p2, p3, p4, Gfx::PARTITRACE4);
+    }
+
+    if ( total > 1 && GetSelect() )
+    {
+        m_camera->StartOver(Gfx::CAM_OVER_EFFECT_CRASH, GetPosition(), force);
+    }
+
+    for ( i=0 ; i<total ; i++ )
+    {
+        part = m_motion->GetRemovePart(param);
+        if ( part == -1 )
+        {
+            if ( total == 999 )  return true;
+
+            m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOS, this, 1.0f);
+
+            m_engine->GetPyroManager()->Create(Gfx::PT_BURNS, this, 1.0f);
+
+            DetachPart(3);
+            DetachPart(4);
+            DetachPart(5);
+            DetachPart(6);  // 4 roues
+            DetachPart(7);  // moteur
+            DetachPart(8);  // volant
+
+            if ( m_cargo != 0 )  // transporte un robot ?
+            {
+                m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, m_cargo, 1.0f);
+            }
+
+            SetDying(DeathType::Exploding);
+            m_camera->SetType(Gfx::CAM_TYPE_BACK);
+            return false;  // voiture détruite
+        }
+
+        DetachPiece(part, param);
+    }
+    return true;  // pas encore détruite
+}
+
+// Crée un morceau d'objet qui part.
+
+bool COldObject::DetachPart(int part, Math::Vector speed)
+{
+    Math::Vector	pos, min, max;
+    Math::Point		dim, p;
+    float		speedx, speedy, duration, mass;
+    int			channel, objRank;
+
+    if ( !FlatParent(part) )  return false;
+
+    pos = GetPartPosition(part);
+    pos.y += 2.0f;
+
+    if ( speed.x == 0.0f && speed.y == 0.0f && speed.z == 0.0f )
+    {
+        if ( m_physics == 0 )
+        {
+            speedx = 0.0f;
+            speedy = 0.0f;
+        }
+        else
+        {
+            speedx = m_physics->GetLinMotionX(MO_REASPEED)/m_physics->GetLinMotionX(MO_ADVSPEED);
+            speedy = m_physics->GetCirMotionY(MO_REASPEED)/m_physics->GetCirMotionY(MO_ADVSPEED);
+        }
+
+        speed.x = speedx*0.8f;
+        speed.y = 10.0f+speedx*10.0f;
+        speed.z = speedy*0.8f;
+        p = RotatePoint(-GetPartRotationY(part), Math::Point(speed.x, speed.z));
+        speed.x = p.x;
+        speed.z = p.y;
+        speed *= 2.0f;
+    }
+
+    objRank = GetObjectRank(part);
+    m_engine->GetObjectBBox(objRank, min, max);
+    dim.x = Math::Distance(min, max)/2.0f;
+    dim.y = dim.x;
+    duration = 6.0f+Math::Rand()*8.0f;
+    mass = 12.0f+Math::Rand()*16.0f;
+
+    channel = m_particle->CreatePart(pos, speed, dim, Gfx::PARTIPART, duration, mass, 10.0f, 0);
+    if ( channel != -1 )
+    {
+        SetMasterParticle(part, channel);
+    }
+    return true;
+}
+
+// Crée un morceau d'objet qui devient une pièce indépendante.
+
+bool COldObject::DetachPiece(int part, int param, Math::Vector speed)
+{
+    COldObject*	pObj;
+    Gfx::CPyro*		pyro;
+    Math::Vector	pos, angle, min, max, dim;
+    float		radius;
+    int			objRank;
+
+    if ( !FlatParent(part) )  return false;
+    pos = GetPartPosition(part);
+    angle = GetPartRotation(0);
+
+    objRank = GetObjectRank(part);
+    m_engine->GetObjectBBox(objRank, min, max);
+    dim = max-min;
+
+    m_objectPart[part].bUsed = false;  // supprime pièce à la voiture
+    UpdateTotalPart();
+
+    pObj = CObjectManager::GetInstancePointer()->CreateEmptyObject();
+    pObj->SetType(OBJECT_PIECE);
+    m_engine->SetObjectType(objRank, Gfx::ENG_OBJTYPE_FIX);
+    pObj->SetObjectRank(0, objRank);
+    pObj->SetPartPosition(0, pos);
+    pObj->SetPartRotation(0, angle);
+
+    radius = (dim.x+dim.y+dim.z)/3.0f/2.0f;
+    pObj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), radius, SOUND_CHOCo, 0.45f));
+    pObj->CreateShadowCircle(radius*1.5f, 0.3f);
+
+    // TODO (krzys_h) param?!?!?! m_engine->GetPyroManager()->Create(Gfx::PT_PIECE, pObj, 1.0f, param);  // voltige
+    m_engine->GetPyroManager()->Create(Gfx::PT_PIECE, pObj, 1.0f);  // voltige
+
+    return true;
+}
+
+// Fait exploser un morceau d'objet.
+
+bool COldObject::ExploPiece(int part)
+{
+    COldObject*	pObj;
+    Gfx::CPyro*		pyro;
+    Math::Vector	pos, angle, min, max, dim;
+    int			objRank;
+
+    if ( !FlatParent(part) )  return false;
+    pos = GetPartPosition(part);
+    angle = GetPartRotation(0);
+
+    objRank = GetObjectRank(part);
+    m_engine->GetObjectBBox(objRank, min, max);
+    dim = max-min;
+
+    m_objectPart[part].bUsed = false;  // supprime pièce à la voiture
+    UpdateTotalPart();
+
+    pObj = CObjectManager::GetInstancePointer()->CreateEmptyObject();
+    pObj->SetType(OBJECT_PIECE);
+    m_engine->SetObjectType(objRank, Gfx::ENG_OBJTYPE_FIX);
+    pObj->SetObjectRank(0, objRank);
+    pObj->SetPartPosition(0, pos);
+    pObj->SetPartRotation(0, angle);
+
+    m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // explosion
+
+    return true;
+}
 
 // Initializes a new part.
 
@@ -1081,14 +1301,13 @@ void COldObject::Read(CLevelParserLine* line)
     if (Implements(ObjectInterfaceType::Programmable))
     {
         SetCheckToken(!line->GetParam("checkToken")->IsDefined() ? GetSelectable() : line->GetParam("checkToken")->AsBool(true));
-
-        if (line->GetParam("cmdline")->IsDefined())
+    }
+    if (line->GetParam("cmdline")->IsDefined())
+    {
+        const auto& cmdline = line->GetParam("cmdline")->AsArray();
+        for (unsigned int i = 0; i < cmdline.size(); i++)
         {
-            const auto& cmdline = line->GetParam("cmdline")->AsArray();
-            for (unsigned int i = 0; i < cmdline.size(); i++)
-            {
-                SetCmdLine(i, cmdline[i]->AsFloat());
-            }
+            SetCmdLine(i, cmdline[i]->AsFloat());
         }
     }
 

@@ -1,17 +1,18 @@
 // autoremote.h
 
-#ifndef _AUTOREMOTE_H_
-#define    _AUTOREMOTE_H_
+#pragma once
+
+#include "object/auto/auto.h"
 
 
-class CInstanceManager;
-class CD3DEngine;
-class CParticule;
+namespace Gfx
+{
+class CEngine;
+class CParticle;
 class CTerrain;
 class CCamera;
-class CObject;
-
-enum ParticuleType;
+}
+class COldObject;
 
 
 enum AutoRemotePhase
@@ -30,23 +31,23 @@ enum AutoRemotePhase
 class CAutoRemote : public CAuto
 {
 public:
-   CAutoRemote(CInstanceManager* iMan, CObject* object);
+   CAutoRemote(COldObject* object);
    ~CAutoRemote();
 
-   void        DeleteObject(BOOL bAll=FALSE);
+   void        DeleteObject(bool bAll=false);
 
    void        Init();
    void        Start(int param);
-   BOOL        EventProcess(const Event &event);
-   BOOL        Abort();
-   Error       RetError();
+   bool        EventProcess(const Event &event);
+   bool        Abort();
+   Error       GetError();
 
 protected:
    void        UpdateCamera(float progress);
-   void        EmitParticule(BOOL bFirst);
-   void        DemoWheel(BOOL bStop);
-   CObject*    SearchHuman();
-   CObject*    SearchVehicle();
+   void        EmitParticle(bool bFirst);
+   void        DemoWheel(bool bStop);
+   COldObject*    SearchHuman();
+   COldObject*    SearchVehicle();
 
 protected:
    int             m_param;
@@ -56,18 +57,15 @@ protected:
    int             m_partiStop[6];
    float           m_lastParticule;
    float           m_lastSound;
-   BOOL            m_bDisplayText;
-   BOOL            m_bStartDemoWheel;
-   BOOL            m_bForceSlow;
+   bool            m_bDisplayText;
+   bool            m_bStartDemoWheel;
+   bool            m_bForceSlow;
    float           m_startTime;
-   CObject*        m_vehicle;
-   CObject*        m_human;
-   D3DVECTOR       m_eyeStart;
-   D3DVECTOR       m_lookatStart;
-   D3DVECTOR       m_eyeGoal;
-   D3DVECTOR       m_lookatGoal;
+   COldObject*        m_vehicle;
+   COldObject*        m_human;
+   Math::Vector       m_eyeStart;
+   Math::Vector       m_lookatStart;
+   Math::Vector       m_eyeGoal;
+   Math::Vector       m_lookatGoal;
    float           m_distance;
 };
-
-
-#endif //_AUTOREMOTE_H_

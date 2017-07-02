@@ -73,6 +73,10 @@ enum CameraSmooth
     CAM_SMOOTH_NORM         = 1,
     //! Hard
     CAM_SMOOTH_HARD         = 2,
+    //! Soft
+    CAM_SMOOTH_SOFT	        = 3,
+    //! Special
+    CAM_SMOOTH_SPEC	        = 4,
 };
 
 enum CenteringPhase
@@ -115,6 +119,8 @@ enum CameraOverEffect
     CAM_OVER_EFFECT_FADEOUT_BLACK  = 4,
     //! Lightning
     CAM_OVER_EFFECT_LIGHTNING      = 5,
+    //! Collision
+    CAM_OVER_EFFECT_CRASH          = 6,
 };
 
 

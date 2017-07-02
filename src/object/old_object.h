@@ -110,8 +110,14 @@ public:
 
     void        Simplify() override;
 
-    bool        DamageObject(DamageType type, float force = std::numeric_limits<float>::infinity(), CObject* killer = nullptr) override;
+    bool        DamageObject(DamageType type, float force = std::numeric_limits<float>::infinity(), CObject* killer = nullptr, Math::Vector impact = Math::Vector(NAN, NAN, NAN)) override;
     void        DestroyObject(DestructionType type, CObject* killer = nullptr) override;
+
+    // TODO (krzys_h): Get one of these new interfaces for this?
+    bool ExploPart(int total, float force);
+    bool DetachPart(int part, Math::Vector speed = Math::Vector(0.0f, 0.0f, 0.0f));
+    bool DetachPiece(int part, int param, Math::Vector speed = Math::Vector(0.0f, 0.0f, 0.0f));
+    bool ExploPiece(int part);
 
     bool EventProcess(const Event& event) override;
     void        UpdateMapping();

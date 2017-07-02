@@ -27,6 +27,8 @@
 namespace Gfx
 {
 
+// TODO (krzys_h): New pyro types are not yet implemented
+
 /**
  * \enum PyroType
  * \brief Type of pyro effect
@@ -37,9 +39,12 @@ enum PyroType
     PT_FRAGT    = 1,        //! < fragmentation of technical object
     PT_FRAGO    = 2,        //! < fragmentation of organic object
     PT_FRAGW    = 4,        //! < fragmentation of object under water
+    PT_FRAGA	= 113,		// fragmentation objet atomique (bleu)
     PT_EXPLOT   = 5,        //! < explosion of technical object
     PT_EXPLOO   = 6,        //! < explosion of organic object
     PT_EXPLOW   = 8,        //! < explosion of object under water
+    PT_EXPLOS	= 123,		// explosion seule
+    PT_EXPLOP	= 124,		// explosion partie voiture
     PT_SHOTT    = 9,        //! < hit technical object
     PT_SHOTH    = 10,       //! < hit human
     PT_SHOTM    = 11,       //! < hit queen
@@ -47,9 +52,16 @@ enum PyroType
     PT_EGG      = 13,       //! < break the egg
     PT_BURNT    = 14,       //! < burning of technical object
     PT_BURNO    = 15,       //! < burning of organic object
+    PT_BURNS	= 162,		// brûle objet seul
     PT_SPIDER   = 16,       //! < spider explosion
     PT_FALL     = 17,       //! < cargo falling
+    PT_EJECT	= 170,		// objet éjecté
+    PT_PAINTING	= 172,		// voiture peinte
+    PT_ACROBATIC= 173,		// robot voltigeant suite à un choc
+    PT_PIECE	= 174,		// pièce de véhicule perdue
+    PT_SABOTAGE	= 175,		// sabotage en cour
     PT_WPCHECK  = 18,       //! < indicator reaches
+    PT_WPVIBRA	= 181,		// indicateur touché
     PT_FLCREATE = 19,       //! < flag create
     PT_FLDELETE = 20,       //! < flag destroy
     PT_RESET    = 21,       //! < reset position of the object

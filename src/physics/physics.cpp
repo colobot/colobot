@@ -4599,7 +4599,7 @@ int CPhysics::ObjectAdapt(Math::Vector &pos, Math::Vector &angle,
                         hardness = crashSphere.hardness;
                         force *= crashSphere.hardness*2.0f;
                         if ( ExploOther(iType, pObj, oType, force, hardness) )  continue;
-                        colType = ExploHimself(iType, oType, force, hardness, Math::Vector()); // TODO NAN, NAN, NAN
+                        colType = ExploHimself(iType, oType, force, hardness, Math::Vector(NAN, NAN, NAN));
                         if ( colType == 2 )  return 2;  // destroyed?
                         if ( colType == 0 )  continue;  // ignores?
                     }
@@ -5371,7 +5371,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
     if ( force > destructionForce && destructionForce >= 0.0f )
     {
         // TODO: implement "killer"?
-        dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Explosive);
+        dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Explosive, std::numeric_limits<float>::infinity(), nullptr, impact);
         return 2;
     }
 
@@ -5403,8 +5403,9 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
              iType == OBJECT_MOBILEtt ||
              iType == OBJECT_MOBILEft ||
              iType == OBJECT_MOBILEit ||
-             iType == OBJECT_MOBILEdr ||
-             iType == OBJECT_APOLLO2  )  // vehicle?
+             iType == OBJECT_MOBILEdr ||  // vehicle?
+             iType == OBJECT_APOLLO2  ||
+             iType == OBJECT_CAR      ) // TODO (krzys_h): just added this manually to test, find the full list in sources
         {
             if ( oType == OBJECT_DERRICK  ||
                  oType == OBJECT_FACTORY  ||
@@ -5452,7 +5453,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
             }
 
             // TODO: implement "killer"?
-            if ( dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Collision, force) )  return 2;
+            if ( dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Collision, force, nullptr, impact) )  return 2;
         }
     }
 

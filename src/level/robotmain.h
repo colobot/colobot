@@ -45,6 +45,7 @@
 
 #include <deque>
 #include <stdexcept>
+#include <FreeImage.h>
 
 enum Phase
 {
@@ -237,6 +238,7 @@ public:
     void        ResetObject();
     void        UpdateAudio(bool frame);
     void        SetMissionResultFromScript(Error result, float delay);
+    void        SetMissionResult(Error result, Math::Vector lookat = Math::Vector(NAN, NAN, NAN));
     Error       CheckEndMission(bool frame);
     Error       ProcessEndMissionTake();
     Error       ProcessEndMissionTakeForGroup(std::vector<CSceneEndCondition*>& endTakes);
@@ -474,6 +476,9 @@ public:
     std::set<int> GetAllActiveTeams();
 
     int GetSelectedDifficulty();
+    bool IsGameTime();
+    void SetStopwatch(bool bRun);
+    bool GetEndingGame();
 
 protected:
     bool        EventFrame(const Event &event);

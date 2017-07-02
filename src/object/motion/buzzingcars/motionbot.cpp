@@ -1,34 +1,23 @@
 // motionbot.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
-
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
-
-#include "struct.h"
-#include "D3DEngine.h"
-#include "math3d.h"
-#include "event.h"
-#include "misc.h"
-#include "iman.h"
-#include "light.h"
-#include "particule.h"
-#include "terrain.h"
-#include "object.h"
-#include "physics.h"
-#include "brain.h"
-#include "camera.h"
-#include "modfile.h"
-#include "sound.h"
-#include "robotmain.h"
-#include "motion.h"
-#include "motionbot.h"
+#include "graphics/engine/engine.h"
+#include "math/all.h"
+#include "common/event.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/terrain.h"
+#include "object/object.h"
+#include "physics/physics.h"
+#include "graphics/engine/camera.h"
+#include "sound/sound.h"
+#include "level/robotmain.h"
+#include "object/motion/motion.h"
+#include "object/motion/buzzingcars/motionbot.h"
+#include "object/old_object.h"
+#include "graphics/engine/oldmodelmanager.h"
 
 
 
-#define ADJUST_ANGLE   FALSE       // TRUE -> ajuste les angles des membres
+#define ADJUST_ANGLE   false       // true -> ajuste les angles des membres
 
 #define xx 0
 #define yy 1
@@ -38,21 +27,20 @@
 
 // Constructeur de l'objet.
 
-CMotionBot::CMotionBot(CInstanceManager* iMan, CObject* object)
-                             : CMotion(iMan, object)
+CMotionBot::CMotionBot(COldObject* object)
+                             : CMotion(object)
 {
-   CMotion::CMotion(iMan, object);
    m_option = 0;
    m_face = 0;
-   m_aTime = Rand()*10.0f;
-   m_lastParticule = 0.0f;
+   m_aTime = Math::Rand()*10.0f;
+   m_lastParticle = 0.0f;
    m_lastSound = 0.0f;
    m_walkTime = 0.0f;
    m_starterTime = 0.0f;
    m_starterPhase = 0;
    m_partiGuide = -1;
-   m_cirVib = D3DVECTOR(0.0f, 0.0f, 0.0f);
-   m_bBreak = FALSE;
+   m_cirVib = Math::Vector(0.0f, 0.0f, 0.0f);
+   m_bBreak = false;
 }
 
 // Destructeur de l'objet.
@@ -61,7 +49,7 @@ CMotionBot::~CMotionBot()
 {
    if ( m_partiGuide != -1 )
    {
-       m_particule->DeleteParticule(m_partiGuide);
+       m_particle->DeleteParticle(m_partiGuide);
        m_partiGuide = -1;
    }
 }
@@ -69,7 +57,7 @@ CMotionBot::~CMotionBot()
 
 // Supprime un objet.
 
-void CMotionBot::DeleteObject(BOOL bAll)
+void CMotionBot::DeleteObject(bool bAll)
 {
 }
 
@@ -79,14 +67,14 @@ void CMotionBot::DeleteObject(BOOL bAll)
 Error CMotionBot::SetAction(int action, float time)
 {
    ObjectType  type;
-   D3DMATRIX*  mat;
-   D3DVECTOR   pos;
-   FPOINT      dim;
-   Sound       sound;
+   Math::Matrix*  mat;
+   Math::Vector   pos;
+   Math::Point      dim;
+   SoundType       sound;
 
-   type = m_object->RetType();
+   type = m_object->GetType();
 
-   if ( action == MB_FEAR && RetAction() != MB_FEAR )
+   if ( action == MB_FEAR && GetAction() != MB_FEAR )
    {
        sound = SOUND_CLICK;
        if ( type == OBJECT_BOT1   )  sound = SOUND_BOT1p;
@@ -97,17 +85,17 @@ Error CMotionBot::SetAction(int action, float time)
        if ( type == OBJECT_CRAZY  )  sound = SOUND_BOT4p;
        if ( sound != SOUND_CLICK )
        {
-           mat = m_object->RetWorldMatrix(0);
-           pos = Transform(*mat, D3DVECTOR(0.0f, 0.0f, 0.0f));
+           mat = m_object->GetWorldMatrix(0);
+           pos = Transform(*mat, Math::Vector(0.0f, 0.0f, 0.0f));
            m_sound->Play(sound, pos);
        }
    }
 
-   if ( (action == MB_WAIT   && RetAction() != MB_WAIT  ) ||
-        (action == MB_TRUCK  && RetAction() != MB_TRUCK ) ||
-        (action == MB_GOHOME && RetAction() != MB_GOHOME) ||
-        (action == MB_HOME1  && RetAction() != MB_HOME1 ) ||
-        (action == MB_HOME2  && RetAction() != MB_HOME2 ) )
+   if ( (action == MB_WAIT   && GetAction() != MB_WAIT  ) ||
+        (action == MB_TRUCK  && GetAction() != MB_TRUCK ) ||
+        (action == MB_GOHOME && GetAction() != MB_GOHOME) ||
+        (action == MB_HOME1  && GetAction() != MB_HOME1 ) ||
+        (action == MB_HOME2  && GetAction() != MB_HOME2 ) )
    {
        sound = SOUND_CLICK;
        if ( type == OBJECT_BOT1   )  sound = SOUND_BOT1c;
@@ -118,8 +106,8 @@ Error CMotionBot::SetAction(int action, float time)
        if ( type == OBJECT_CRAZY  )  sound = SOUND_BOT4c;
        if ( sound != SOUND_CLICK )
        {
-           mat = m_object->RetWorldMatrix(0);
-           pos = Transform(*mat, D3DVECTOR(0.0f, 0.0f, 0.0f));
+           mat = m_object->GetWorldMatrix(0);
+           pos = Transform(*mat, Math::Vector(0.0f, 0.0f, 0.0f));
            m_sound->Play(sound, pos);
        }
    }
@@ -128,12 +116,12 @@ Error CMotionBot::SetAction(int action, float time)
    {
        if ( action == MB_BREAK )
        {
-           m_bBreak = TRUE;
+           m_bBreak = true;
            action = MB_WALK1;  // cassé
        }
        if ( action == MB_REPAIR )
        {
-           m_bBreak = FALSE;
+           m_bBreak = false;
            return ERR_OK;
        }
    }
@@ -154,7 +142,7 @@ Error CMotionBot::SetAction(int action, float time)
 
    if ( type == OBJECT_BOT4 )
    {
-       if ( action == MB_WAIT && m_object->RetTruck() != 0 )
+       if ( action == MB_WAIT && m_object->GetTransporter() != 0 )
        {
            action = MB_HOME2;  // transporté dans véhicule
        }
@@ -162,7 +150,7 @@ Error CMotionBot::SetAction(int action, float time)
 
    if ( type == OBJECT_WALKER )
    {
-       if ( action == MB_WAIT && m_object->RetTruck() != 0 )
+       if ( action == MB_WAIT && m_object->GetTransporter() != 0 )
        {
            action = MB_HOME2;  // transporté dans véhicule
        }
@@ -176,9 +164,9 @@ Error CMotionBot::SetAction(int action, float time)
            {
                dim.x = 1.5f;
                dim.y = dim.x;
-               m_partiGuide = m_particule->CreateParticule(D3DVECTOR(0.0f, 0.0f, 0.0f),
-                                                           D3DVECTOR(0.0f, 0.0f, 0.0f),
-                                                           dim, PARTISELY,
+               m_partiGuide = m_particle->CreateParticle(Math::Vector(0.0f, 0.0f, 0.0f),
+                                                           Math::Vector(0.0f, 0.0f, 0.0f),
+                                                           dim, Gfx::PARTISELY,
                                                            1.0f, 0.0f);
            }
        }
@@ -186,7 +174,7 @@ Error CMotionBot::SetAction(int action, float time)
        {
            if ( m_partiGuide != -1 )
            {
-               m_particule->DeleteParticule(m_partiGuide);
+               m_particle->DeleteParticle(m_partiGuide);
                m_partiGuide = -1;
            }
        }
@@ -198,38 +186,36 @@ Error CMotionBot::SetAction(int action, float time)
 
 // Crée un robot quelconque posé sur le sol.
 
-BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb)
+void CMotionBot::Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager)
 {
-   CModFile*   pModFile;
    float       radius;
    int         rank, option;
 
-   if ( m_engine->RetRestCreate() < 10 )  return FALSE;
+// TODO: I think this is one of the old removed config options but I'm not sure ~krzys_h
+//   if ( m_engine->GetRestCreate() < 10 )  return false;
 
    m_object->SetType(type);
-   m_option = m_object->RetOption();
+   m_option = m_object->GetOption();
    CreatePhysics();
-   pModFile = new CModFile(m_iMan);
 
    // Crée la base principale.
    rank = m_engine->CreateObject();
-   m_engine->SetObjectType(rank, TYPEFIX);  // c'est un objet fixe
+   m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // c'est un objet fixe
    m_object->SetObjectRank(0, rank);
-   if ( type == OBJECT_BOT1    )  pModFile->ReadModel("objects\\bot101.mod");
-   if ( type == OBJECT_BOT2    )  pModFile->ReadModel("objects\\bot201.mod");
-   if ( type == OBJECT_BOT3    )  pModFile->ReadModel("objects\\bot301.mod");
-   if ( type == OBJECT_BOT4    )  pModFile->ReadModel("objects\\bot401.mod");
-   if ( type == OBJECT_CARROT  )  pModFile->ReadModel("objects\\bot101.mod");
-   if ( type == OBJECT_STARTER )  pModFile->ReadModel("objects\\bot101.mod");
-   if ( type == OBJECT_WALKER  )  pModFile->ReadModel("objects\\bot401.mod");
-   if ( type == OBJECT_CRAZY   )  pModFile->ReadModel("objects\\bot401.mod");
-   if ( type == OBJECT_GUIDE   )  pModFile->ReadModel("objects\\bot101.mod");
-   if ( type == OBJECT_EVIL1   )  pModFile->ReadModel("objects\\evil101.mod");
-   if ( type == OBJECT_EVIL2   )  pModFile->ReadModel("objects\\evil101.mod");
-   if ( type == OBJECT_EVIL3   )  pModFile->ReadModel("objects\\evil301.mod");
-   pModFile->CreateEngineObject(rank);
-   m_object->SetPosition(0, pos);
-   m_object->SetAngleY(0, angle);
+   if ( type == OBJECT_BOT1    )  modelManager->AddModelReference("buzzingcars/bot101.mod", false, rank, m_object->GetTeam());
+   if ( type == OBJECT_BOT2    )  modelManager->AddModelReference("buzzingcars/bot201.mod", false, rank, m_object->GetTeam());
+   if ( type == OBJECT_BOT3    )  modelManager->AddModelReference("buzzingcars/bot301.mod", false, rank, m_object->GetTeam());
+   if ( type == OBJECT_BOT4    )  modelManager->AddModelReference("buzzingcars/bot401.mod", false, rank, m_object->GetTeam());
+   if ( type == OBJECT_CARROT  )  modelManager->AddModelReference("buzzingcars/bot101.mod", false, rank, m_object->GetTeam());
+   if ( type == OBJECT_STARTER )  modelManager->AddModelReference("buzzingcars/bot101.mod", false, rank, m_object->GetTeam());
+   if ( type == OBJECT_WALKER  )  modelManager->AddModelReference("buzzingcars/bot401.mod", false, rank, m_object->GetTeam());
+   if ( type == OBJECT_CRAZY   )  modelManager->AddModelReference("buzzingcars/bot401.mod", false, rank, m_object->GetTeam());
+   if ( type == OBJECT_GUIDE   )  modelManager->AddModelReference("buzzingcars/bot101.mod", false, rank, m_object->GetTeam());
+   if ( type == OBJECT_EVIL1   )  modelManager->AddModelReference("buzzingcars/evil101.mod", false, rank, m_object->GetTeam());
+   if ( type == OBJECT_EVIL2   )  modelManager->AddModelReference("buzzingcars/evil101.mod", false, rank, m_object->GetTeam());
+   if ( type == OBJECT_EVIL3   )  modelManager->AddModelReference("buzzingcars/evil301.mod", false, rank, m_object->GetTeam());
+   m_object->SetPartPosition(0, pos);
+   m_object->SetPartRotationY(0, angle);
 
    radius = 2.0f;
 
@@ -240,330 +226,285 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
    {
        // Crée la jambe unique.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(1, rank);
        m_object->SetObjectParent(1, 0);
-       pModFile->ReadModel("objects\\bot102.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(1, D3DVECTOR(0.0f, -2.3f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot102.mod", false, rank, m_object->GetTeam());  
+       m_object->SetPartPosition(1, Math::Vector(0.0f, -2.3f, 0.0f));
 
        // Crée le corps.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(2, rank);
        m_object->SetObjectParent(2, 1);
        if ( type == OBJECT_BOT1 )
        {
-           pModFile->ReadModel("objects\\bot103.mod");
+           modelManager->AddModelReference("buzzingcars/bot103.mod", false, rank, m_object->GetTeam());
        }
        else if ( type == OBJECT_GUIDE )
        {
-           pModFile->ReadModel("objects\\bot103g.mod");
+           modelManager->AddModelReference("buzzingcars/bot103g.mod", false, rank, m_object->GetTeam());
        }
        else
        {
-           pModFile->ReadModel("objects\\bot103b.mod");
+           modelManager->AddModelReference("buzzingcars/bot103b.mod", false, rank, m_object->GetTeam());
        }
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(2, D3DVECTOR(0.0f, 1.4f, 0.0f));
+       m_object->SetPartPosition(2, Math::Vector(0.0f, 1.4f, 0.0f));
 
        // Crée la tête.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(3, rank);
        m_object->SetObjectParent(3, 2);
-       pModFile->ReadModel("objects\\bot104.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(3, D3DVECTOR(0.0f, 2.2f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot104.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(3, Math::Vector(0.0f, 2.2f, 0.0f));
 
        // Crée l'antenne droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(4, rank);
        m_object->SetObjectParent(4, 3);
-       pModFile->ReadModel("objects\\bot105.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(4, D3DVECTOR(-0.2f, 1.4f, -1.4f));
+       modelManager->AddModelReference("buzzingcars/bot105.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(4, Math::Vector(-0.2f, 1.4f, -1.4f));
 
        // Crée l'antenne gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(5, rank);
        m_object->SetObjectParent(5, 3);
-       pModFile->ReadModel("objects\\bot105.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(5, D3DVECTOR(-0.2f, 1.4f, 1.4f));
+       modelManager->AddModelReference("buzzingcars/bot105.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(5, Math::Vector(-0.2f, 1.4f, 1.4f));
 
        // Crée le bras droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(6, rank);
        m_object->SetObjectParent(6, 2);
-       pModFile->ReadModel("objects\\bot106.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(6, D3DVECTOR(0.0f, 1.6f, -1.1f));
+       modelManager->AddModelReference("buzzingcars/bot106.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(6, Math::Vector(0.0f, 1.6f, -1.1f));
 
        // Crée l'avant bras droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(7, rank);
        m_object->SetObjectParent(7, 6);
-       pModFile->ReadModel("objects\\bot107.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(7, D3DVECTOR(0.0f, 0.0f, -1.9f));
+       modelManager->AddModelReference("buzzingcars/bot107.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(7, Math::Vector(0.0f, 0.0f, -1.9f));
 
        // Crée le bras gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(8, rank);
        m_object->SetObjectParent(8, 2);
-       pModFile->ReadModel("objects\\bot106.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(8, D3DVECTOR(0.0f, 1.6f, 1.1f));
+       modelManager->AddModelReference("buzzingcars/bot106.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(8, Math::Vector(0.0f, 1.6f, 1.1f));
 
        // Crée l'avant bras gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(9, rank);
        m_object->SetObjectParent(9, 8);
        if ( type == OBJECT_GUIDE )
        {
-           pModFile->ReadModel("objects\\bot107g.mod");
+           modelManager->AddModelReference("buzzingcars/bot107g.mod", true, rank, m_object->GetTeam());
        }
        else
        {
-           pModFile->ReadModel("objects\\bot107.mod");
+           modelManager->AddModelReference("buzzingcars/bot107.mod", true, rank, m_object->GetTeam());
        }
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(9, D3DVECTOR(0.0f, 0.0f, 1.9f));
+       m_object->SetPartPosition(9, Math::Vector(0.0f, 0.0f, 1.9f));
    }
 
    if ( type == OBJECT_BOT2 )
    {
        // Crée la tête.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(1, rank);
        m_object->SetObjectParent(1, 0);
-       pModFile->ReadModel("objects\\bot202.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(1, D3DVECTOR(0.0f, 2.7f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot202.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(1, Math::Vector(0.0f, 2.7f, 0.0f));
 
        // Crée la jambe droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(2, rank);
        m_object->SetObjectParent(2, 0);
-       pModFile->ReadModel("objects\\bot203.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(2, D3DVECTOR(0.0f, 0.0f, -0.25f));
+       modelManager->AddModelReference("buzzingcars/bot203.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(2, Math::Vector(0.0f, 0.0f, -0.25f));
 
        // Crée le pied droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(3, rank);
        m_object->SetObjectParent(3, 2);
-       pModFile->ReadModel("objects\\bot204.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(3, D3DVECTOR(0.0f, -1.0f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot204.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(3, Math::Vector(0.0f, -1.0f, 0.0f));
 
        // Crée la jambe gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(4, rank);
        m_object->SetObjectParent(4, 0);
-       pModFile->ReadModel("objects\\bot203.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(4, D3DVECTOR(0.0f, 0.0f, 0.25f));
+       modelManager->AddModelReference("buzzingcars/bot203.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(4, Math::Vector(0.0f, 0.0f, 0.25f));
 
        // Crée le pied gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(5, rank);
        m_object->SetObjectParent(5, 4);
-       pModFile->ReadModel("objects\\bot204.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(5, D3DVECTOR(0.0f, -1.0f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot204.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(5, Math::Vector(0.0f, -1.0f, 0.0f));
 
        // Crée le bras droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(6, rank);
        m_object->SetObjectParent(6, 0);
-       pModFile->ReadModel("objects\\bot205.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(6, D3DVECTOR(0.0f, 1.8f, -1.15f));
+       modelManager->AddModelReference("buzzingcars/bot205.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(6, Math::Vector(0.0f, 1.8f, -1.15f));
 
        // Crée la main droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(7, rank);
        m_object->SetObjectParent(7, 6);
-       pModFile->ReadModel("objects\\bot206.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(7, D3DVECTOR(0.0f, -1.25f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot206.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(7, Math::Vector(0.0f, -1.25f, 0.0f));
 
        // Crée le bras gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(8, rank);
        m_object->SetObjectParent(8, 0);
-       pModFile->ReadModel("objects\\bot205.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(8, D3DVECTOR(0.0f, 1.6f, 1.15f));
+       modelManager->AddModelReference("buzzingcars/bot205.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(8, Math::Vector(0.0f, 1.6f, 1.15f));
 
        // Crée la main gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(9, rank);
        m_object->SetObjectParent(9, 8);
-       pModFile->ReadModel("objects\\bot206.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(9, D3DVECTOR(0.0f, -1.25f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot206.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(9, Math::Vector(0.0f, -1.25f, 0.0f));
    }
 
    if ( type == OBJECT_BOT3 )
    {
        // Crée la jambe droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(1, rank);
        m_object->SetObjectParent(1, 0);
-       pModFile->ReadModel("objects\\bot302.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(1, D3DVECTOR(-0.5f, -0.3f, -0.9f));
+       modelManager->AddModelReference("buzzingcars/bot302.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(1, Math::Vector(-0.5f, -0.3f, -0.9f));
 
        // Crée la jambe droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(2, rank);
        m_object->SetObjectParent(2, 1);
-       pModFile->ReadModel("objects\\bot303.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(2, D3DVECTOR(0.0f, -0.4f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot303.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(2, Math::Vector(0.0f, -0.4f, 0.0f));
 
        // Crée le pied droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(3, rank);
        m_object->SetObjectParent(3, 2);
-       pModFile->ReadModel("objects\\bot304.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(3, D3DVECTOR(0.0f, -0.4f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot304.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(3, Math::Vector(0.0f, -0.4f, 0.0f));
 
        // Crée la jambe gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(4, rank);
        m_object->SetObjectParent(4, 0);
-       pModFile->ReadModel("objects\\bot302.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(4, D3DVECTOR(-0.5f, -0.3f, 0.9f));
+       modelManager->AddModelReference("buzzingcars/bot302.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(4, Math::Vector(-0.5f, -0.3f, 0.9f));
 
        // Crée la jambe gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(5, rank);
        m_object->SetObjectParent(5, 4);
-       pModFile->ReadModel("objects\\bot303.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(5, D3DVECTOR(0.0f, -0.4f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot303.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(5, Math::Vector(0.0f, -0.4f, 0.0f));
 
        // Crée le pied gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(6, rank);
        m_object->SetObjectParent(6, 5);
-       pModFile->ReadModel("objects\\bot304.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(6, D3DVECTOR(0.0f, -0.4f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot304.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(6, Math::Vector(0.0f, -0.4f, 0.0f));
 
        // Crée le bras droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(7, rank);
        m_object->SetObjectParent(7, 0);
-       pModFile->ReadModel("objects\\bot305.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(7, D3DVECTOR(-0.1f, 2.3f, -1.3f));
+       modelManager->AddModelReference("buzzingcars/bot305.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(7, Math::Vector(-0.1f, 2.3f, -1.3f));
 
        // Crée le bras droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(8, rank);
        m_object->SetObjectParent(8, 7);
-       pModFile->ReadModel("objects\\bot306.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(8, D3DVECTOR(0.0f, 0.0f, -1.45f));
+       modelManager->AddModelReference("buzzingcars/bot306.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(8, Math::Vector(0.0f, 0.0f, -1.45f));
 
        // Crée la main droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(9, rank);
        m_object->SetObjectParent(9, 8);
-       pModFile->ReadModel("objects\\bot307.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(9, D3DVECTOR(0.0f, 0.0f, -1.3f));
-       m_object->SetZoom(9, 1.3f);
+       modelManager->AddModelReference("buzzingcars/bot307.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(9, Math::Vector(0.0f, 0.0f, -1.3f));
+       m_object->SetPartScale(9, 1.3f);
 
        // Crée le bras gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(10, rank);
        m_object->SetObjectParent(10, 0);
-       pModFile->ReadModel("objects\\bot305.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(10, D3DVECTOR(-0.1f, 2.3f, 1.3f));
+       modelManager->AddModelReference("buzzingcars/bot305.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(10, Math::Vector(-0.1f, 2.3f, 1.3f));
 
        // Crée le bras gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(11, rank);
        m_object->SetObjectParent(11, 10);
-       pModFile->ReadModel("objects\\bot306.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, 1.45f));
+       modelManager->AddModelReference("buzzingcars/bot306.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(11, Math::Vector(0.0f, 0.0f, 1.45f));
 
        // Crée la main gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(12, rank);
        m_object->SetObjectParent(12, 11);
-       pModFile->ReadModel("objects\\bot307.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(12, D3DVECTOR(0.0f, 0.0f, 1.3f));
-       m_object->SetZoom(12, 1.3f);
+       modelManager->AddModelReference("buzzingcars/bot307.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(12, Math::Vector(0.0f, 0.0f, 1.3f));
+       m_object->SetPartScale(12, 1.3f);
 
        // Crée le sourcil droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(13, rank);
        m_object->SetObjectParent(13, 0);
-       pModFile->ReadModel("objects\\bot308.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(13, D3DVECTOR(0.3f, 3.8f, -0.6f));
+       modelManager->AddModelReference("buzzingcars/bot308.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(13, Math::Vector(0.3f, 3.8f, -0.6f));
 
        // Crée le sourcil gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(14, rank);
        m_object->SetObjectParent(14, 0);
-       pModFile->ReadModel("objects\\bot308.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(14, D3DVECTOR(0.3f, 3.8f, 0.6f));
+       modelManager->AddModelReference("buzzingcars/bot308.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(14, Math::Vector(0.3f, 3.8f, 0.6f));
    }
 
    if ( type == OBJECT_BOT4   ||
@@ -572,197 +513,172 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
    {
        // Crée le coup.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(1, rank);
        m_object->SetObjectParent(1, 0);
-       pModFile->ReadModel("objects\\bot402.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(1, D3DVECTOR(0.0f, 2.0f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot402.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(1, Math::Vector(0.0f, 2.0f, 0.0f));
 
        // Crée la tête.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(2, rank);
        m_object->SetObjectParent(2, 1);
-       pModFile->ReadModel("objects\\bot403.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(2, D3DVECTOR(0.0f, 0.5f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot403.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(2, Math::Vector(0.0f, 0.5f, 0.0f));
 
        // Crée la jambe droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(3, rank);
        m_object->SetObjectParent(3, 0);
-       pModFile->ReadModel("objects\\bot404.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(3, D3DVECTOR(0.0f, -0.4f, -0.7f));
+       modelManager->AddModelReference("buzzingcars/bot404.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(3, Math::Vector(0.0f, -0.4f, -0.7f));
 
        // Crée la jambe droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(4, rank);
        m_object->SetObjectParent(4, 3);
-       pModFile->ReadModel("objects\\bot405.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(4, D3DVECTOR(0.0f, -1.5f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot405.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(4, Math::Vector(0.0f, -1.5f, 0.0f));
 
        // Crée le pied droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(5, rank);
        m_object->SetObjectParent(5, 4);
-       pModFile->ReadModel("objects\\bot406.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(5, D3DVECTOR(0.0f, -1.6f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot406.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(5, Math::Vector(0.0f, -1.6f, 0.0f));
 
        // Crée la jambe gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(6, rank);
        m_object->SetObjectParent(6, 0);
-       pModFile->ReadModel("objects\\bot404.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(6, D3DVECTOR(0.0f, -0.4f, 0.7f));
+       modelManager->AddModelReference("buzzingcars/bot404.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(6, Math::Vector(0.0f, -0.4f, 0.7f));
 
        // Crée la jambe gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(7, rank);
        m_object->SetObjectParent(7, 6);
-       pModFile->ReadModel("objects\\bot405.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(7, D3DVECTOR(0.0f, -1.5f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot405.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(7, Math::Vector(0.0f, -1.5f, 0.0f));
 
        // Crée le pied gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(8, rank);
        m_object->SetObjectParent(8, 7);
-       pModFile->ReadModel("objects\\bot406.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(8, D3DVECTOR(0.0f, -1.6f, 0.0f));
+       modelManager->AddModelReference("buzzingcars/bot406.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(8, Math::Vector(0.0f, -1.6f, 0.0f));
 
        // Crée le bras droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(9, rank);
        m_object->SetObjectParent(9, 0);
-       pModFile->ReadModel("objects\\bot407.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(9, D3DVECTOR(0.0f, 1.8f, -0.7f));
+       modelManager->AddModelReference("buzzingcars/bot407.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(9, Math::Vector(0.0f, 1.8f, -0.7f));
 
        // Crée le bras droite.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(10, rank);
        m_object->SetObjectParent(10, 9);
-       pModFile->ReadModel("objects\\bot408.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(10, D3DVECTOR(0.0f, 0.0f, -1.5f));
+       modelManager->AddModelReference("buzzingcars/bot408.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(10, Math::Vector(0.0f, 0.0f, -1.5f));
 
        // Crée la main droite sup.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(11, rank);
        m_object->SetObjectParent(11, 10);
-       pModFile->ReadModel("objects\\bot409.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, -1.5f));
+       modelManager->AddModelReference("buzzingcars/bot409.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(11, Math::Vector(0.0f, 0.0f, -1.5f));
 
        // Crée la main droite inf.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(12, rank);
        m_object->SetObjectParent(12, 10);
-       pModFile->ReadModel("objects\\bot410.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(12, D3DVECTOR(0.0f, 0.0f, -1.5f));
+       modelManager->AddModelReference("buzzingcars/bot410.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(12, Math::Vector(0.0f, 0.0f, -1.5f));
 
        // Crée le bras gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(13, rank);
        m_object->SetObjectParent(13, 0);
-       pModFile->ReadModel("objects\\bot407.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(13, D3DVECTOR(0.0f, 1.8f, 0.7f));
+       modelManager->AddModelReference("buzzingcars/bot407.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(13, Math::Vector(0.0f, 1.8f, 0.7f));
 
        // Crée le bras gauche.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(14, rank);
        m_object->SetObjectParent(14, 13);
-       pModFile->ReadModel("objects\\bot408.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(14, D3DVECTOR(0.0f, 0.0f, 1.5f));
+       modelManager->AddModelReference("buzzingcars/bot408.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(14, Math::Vector(0.0f, 0.0f, 1.5f));
 
        // Crée la main gauche sup.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(15, rank);
        m_object->SetObjectParent(15, 14);
-       pModFile->ReadModel("objects\\bot409.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(15, D3DVECTOR(0.0f, 0.0f, 1.5f));
+       modelManager->AddModelReference("buzzingcars/bot409.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(15, Math::Vector(0.0f, 0.0f, 1.5f));
 
        // Crée la main gauche inf.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(16, rank);
        m_object->SetObjectParent(16, 14);
-       pModFile->ReadModel("objects\\bot410.mod");
-       pModFile->Mirror();
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(16, D3DVECTOR(0.0f, 0.0f, 1.5f));
+       modelManager->AddModelReference("buzzingcars/bot410.mod", true, rank, m_object->GetTeam());
+       m_object->SetPartPosition(16, Math::Vector(0.0f, 0.0f, 1.5f));
    }
 
    if ( type == OBJECT_EVIL1 )
    {
        // Crée la trompe.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(1, rank);
        m_object->SetObjectParent(1, 0);
-       pModFile->ReadModel("objects\\evil102.mod");
-       pModFile->CreateEngineObject(rank);
-       m_object->SetPosition(1, D3DVECTOR(0.7f, 5.6f, 0.0f));
-       m_object->SetAngleZ(1, 120.0f*PI/180.0f);
-       m_object->SetZoom(1, 0.2f);
+       modelManager->AddModelReference("buzzingcars/evil102.mod", false, rank, m_object->GetTeam());
+       m_object->SetPartPosition(1, Math::Vector(0.7f, 5.6f, 0.0f));
+       m_object->SetPartRotationZ(1, 120.0f*Math::PI/180.0f);
+       m_object->SetPartScale(1, 0.2f);
    }
 
    if ( type == OBJECT_EVIL3 )  // roi ?
    {
        // Crée la couronne.
        rank = m_engine->CreateObject();
-       m_engine->SetObjectType(rank, TYPEDESCENDANT);
+       m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
        m_object->SetObjectRank(1, rank);
        m_object->SetObjectParent(1, 0);
-//?        pModFile->ReadModel("objects\\evil302.mod");
-       pModFile->ReadModel("objects\\crown.mod");
-       pModFile->CreateEngineObject(rank);
-//?        m_object->SetPosition(1, D3DVECTOR(0.0f, 35.0f, 0.0f));
-       m_object->SetPosition(1, D3DVECTOR(0.0f, 31.0f, 0.0f));
+//?        modelManager->AddModelReference("buzzingcars/evil302.mod", false, rank, m_object->GetTeam());
+       modelManager->AddModelReference("buzzingcars/crown.mod", false, rank, m_object->GetTeam());
+//?        m_object->SetPartPosition(1, Math::Vector(0.0f, 35.0f, 0.0f));
+       m_object->SetPartPosition(1, Math::Vector(0.0f, 31.0f, 0.0f));
 
        radius = 10.0f;
    }
 
-   m_object->CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f);
-   m_object->SetGlobalSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 2.0f);
+   m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f));
+   m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f));
    m_object->CreateShadowCircle(radius, 1.0f);
    m_object->SetFloorHeight(0.0f);
 
-   pos = m_object->RetPosition(0);
-   m_object->SetPosition(0, pos);  // pour afficher les ombres tout de suite
+   pos = m_object->GetPosition();
+   m_object->SetPosition(pos);  // pour afficher les ombres tout de suite
 
-   m_engine->LoadAllTexture();
+   m_engine->LoadAllTextures();
 
-   option = m_object->RetOption();
+   option = m_object->GetOption();
    if ( option == 0 )
    {
        SetAction(MB_WAIT);
@@ -771,9 +687,6 @@ BOOL CMotionBot::Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb
    {
        SetAction(option);
    }
-
-   delete pModFile;
-   return TRUE;
 }
 
 
@@ -785,8 +698,8 @@ void CMotionBot::CreatePhysics()
    ObjectType  type;
    int         i;
 
-   character = m_object->RetCharacter();
-   type = m_object->RetType();
+   character = m_object->GetCharacter();
+   type = m_object->GetType();
 
    if ( type == OBJECT_BOT1 )
    {
@@ -3124,8 +3037,8 @@ void CMotionBot::CreatePhysics()
    {
        m_physics->SetType(TYPE_TANK);
 
-       character->wheelFrontPos = D3DVECTOR( 6.0f, 3.0f, 7.0f);
-       character->wheelBackPos  = D3DVECTOR(-8.0f, 3.0f, 7.0f);
+       character->wheelFrontPos = Math::Vector( 6.0f, 3.0f, 7.0f);
+       character->wheelBackPos  = Math::Vector(-8.0f, 3.0f, 7.0f);
        character->wheelFrontDim = 1.0f;
        character->wheelBackDim  = 1.0f;
        character->suspDetect    = 2.0f;
@@ -3142,8 +3055,8 @@ void CMotionBot::CreatePhysics()
        m_physics->SetLinMotionZ(MO_TERFORCE, 30.0f);
        m_physics->SetLinMotionZ(MO_MOTACCEL, 20.0f);
 
-       m_physics->SetCirMotionY(MO_ADVSPEED,  2.0f*PI);
-       m_physics->SetCirMotionY(MO_RECSPEED,  2.0f*PI);
+       m_physics->SetCirMotionY(MO_ADVSPEED,  2.0f*Math::PI);
+       m_physics->SetCirMotionY(MO_RECSPEED,  2.0f*Math::PI);
        m_physics->SetCirMotionY(MO_ADVACCEL,  8.0f);
        m_physics->SetCirMotionY(MO_RECACCEL,  8.0f);
        m_physics->SetCirMotionY(MO_STOACCEL, 12.0f);
@@ -3153,8 +3066,8 @@ void CMotionBot::CreatePhysics()
    {
        m_physics->SetType(TYPE_TANK);
 
-       character->wheelFrontPos = D3DVECTOR( 6.0f, 3.0f, 7.0f);
-       character->wheelBackPos  = D3DVECTOR(-8.0f, 3.0f, 7.0f);
+       character->wheelFrontPos = Math::Vector( 6.0f, 3.0f, 7.0f);
+       character->wheelBackPos  = Math::Vector(-8.0f, 3.0f, 7.0f);
        character->wheelFrontDim = 1.0f;
        character->wheelBackDim  = 1.0f;
        character->suspDetect    = 2.0f;
@@ -3171,8 +3084,8 @@ void CMotionBot::CreatePhysics()
        m_physics->SetLinMotionZ(MO_TERFORCE, 30.0f);
        m_physics->SetLinMotionZ(MO_MOTACCEL, 20.0f);
 
-       m_physics->SetCirMotionY(MO_ADVSPEED,  2.0f*PI);
-       m_physics->SetCirMotionY(MO_RECSPEED,  2.0f*PI);
+       m_physics->SetCirMotionY(MO_ADVSPEED,  2.0f*Math::PI);
+       m_physics->SetCirMotionY(MO_RECSPEED,  2.0f*Math::PI);
        m_physics->SetCirMotionY(MO_ADVACCEL,  8.0f);
        m_physics->SetCirMotionY(MO_RECACCEL,  8.0f);
        m_physics->SetCirMotionY(MO_STOACCEL, 12.0f);
@@ -3183,8 +3096,8 @@ void CMotionBot::CreatePhysics()
    {
        m_physics->SetType(TYPE_TANK);
 
-       character->wheelFrontPos = D3DVECTOR( 6.0f, 3.0f, 7.0f);
-       character->wheelBackPos  = D3DVECTOR(-8.0f, 3.0f, 7.0f);
+       character->wheelFrontPos = Math::Vector( 6.0f, 3.0f, 7.0f);
+       character->wheelBackPos  = Math::Vector(-8.0f, 3.0f, 7.0f);
        character->wheelFrontDim = 1.0f;
        character->wheelBackDim  = 1.0f;
        character->suspDetect    = 2.0f;
@@ -3203,8 +3116,8 @@ void CMotionBot::CreatePhysics()
            m_physics->SetLinMotionZ(MO_TERFORCE, 10.0f);
            m_physics->SetLinMotionZ(MO_MOTACCEL, 20.0f);
 
-           m_physics->SetCirMotionY(MO_ADVSPEED,  1.0f*PI);
-           m_physics->SetCirMotionY(MO_RECSPEED,  1.0f*PI);
+           m_physics->SetCirMotionY(MO_ADVSPEED,  1.0f*Math::PI);
+           m_physics->SetCirMotionY(MO_RECSPEED,  1.0f*Math::PI);
            m_physics->SetCirMotionY(MO_ADVACCEL,  8.0f);
            m_physics->SetCirMotionY(MO_RECACCEL,  8.0f);
            m_physics->SetCirMotionY(MO_STOACCEL, 12.0f);
@@ -3222,8 +3135,8 @@ void CMotionBot::CreatePhysics()
            m_physics->SetLinMotionZ(MO_TERFORCE, 10.0f);
            m_physics->SetLinMotionZ(MO_MOTACCEL, 20.0f);
 
-           m_physics->SetCirMotionY(MO_ADVSPEED,  0.5f*PI);
-           m_physics->SetCirMotionY(MO_RECSPEED,  0.5f*PI);
+           m_physics->SetCirMotionY(MO_ADVSPEED,  0.5f*Math::PI);
+           m_physics->SetCirMotionY(MO_RECSPEED,  0.5f*Math::PI);
            m_physics->SetCirMotionY(MO_ADVACCEL,  4.0f);
            m_physics->SetCirMotionY(MO_RECACCEL,  4.0f);
            m_physics->SetCirMotionY(MO_STOACCEL,  6.0f);
@@ -3241,8 +3154,8 @@ void CMotionBot::CreatePhysics()
            m_physics->SetLinMotionZ(MO_TERFORCE, 10.0f);
            m_physics->SetLinMotionZ(MO_MOTACCEL, 20.0f);
 
-           m_physics->SetCirMotionY(MO_ADVSPEED,  1.0f*PI);
-           m_physics->SetCirMotionY(MO_RECSPEED,  1.0f*PI);
+           m_physics->SetCirMotionY(MO_ADVSPEED,  1.0f*Math::PI);
+           m_physics->SetCirMotionY(MO_RECSPEED,  1.0f*Math::PI);
            m_physics->SetCirMotionY(MO_ADVACCEL,  8.0f);
            m_physics->SetCirMotionY(MO_RECACCEL,  8.0f);
            m_physics->SetCirMotionY(MO_STOACCEL, 12.0f);
@@ -3260,8 +3173,8 @@ void CMotionBot::CreatePhysics()
            m_physics->SetLinMotionZ(MO_TERFORCE, 10.0f);
            m_physics->SetLinMotionZ(MO_MOTACCEL, 20.0f);
 
-           m_physics->SetCirMotionY(MO_ADVSPEED,  1.0f*PI);
-           m_physics->SetCirMotionY(MO_RECSPEED,  1.0f*PI);
+           m_physics->SetCirMotionY(MO_ADVSPEED,  1.0f*Math::PI);
+           m_physics->SetCirMotionY(MO_RECSPEED,  1.0f*Math::PI);
            m_physics->SetCirMotionY(MO_ADVACCEL,  8.0f);
            m_physics->SetCirMotionY(MO_RECACCEL,  8.0f);
            m_physics->SetCirMotionY(MO_STOACCEL, 12.0f);
@@ -3279,8 +3192,8 @@ void CMotionBot::CreatePhysics()
            m_physics->SetLinMotionZ(MO_TERFORCE, 10.0f);
            m_physics->SetLinMotionZ(MO_MOTACCEL, 20.0f);
 
-           m_physics->SetCirMotionY(MO_ADVSPEED, 10.0f*PI);
-           m_physics->SetCirMotionY(MO_RECSPEED, 10.0f*PI);
+           m_physics->SetCirMotionY(MO_ADVSPEED, 10.0f*Math::PI);
+           m_physics->SetCirMotionY(MO_RECSPEED, 10.0f*Math::PI);
            m_physics->SetCirMotionY(MO_ADVACCEL, 80.0f);
            m_physics->SetCirMotionY(MO_RECACCEL, 80.0f);
            m_physics->SetCirMotionY(MO_STOACCEL, 99.0f);
@@ -3291,8 +3204,8 @@ void CMotionBot::CreatePhysics()
    {
        m_physics->SetType(TYPE_TANK);
 
-       character->wheelFrontPos = D3DVECTOR( 6.0f, 3.0f, 7.0f);
-       character->wheelBackPos  = D3DVECTOR(-8.0f, 3.0f, 7.0f);
+       character->wheelFrontPos = Math::Vector( 6.0f, 3.0f, 7.0f);
+       character->wheelBackPos  = Math::Vector(-8.0f, 3.0f, 7.0f);
        character->wheelFrontDim = 1.0f;
        character->wheelBackDim  = 1.0f;
        character->suspDetect    = 2.0f;
@@ -3309,8 +3222,8 @@ void CMotionBot::CreatePhysics()
        m_physics->SetLinMotionZ(MO_TERFORCE, 30.0f);
        m_physics->SetLinMotionZ(MO_MOTACCEL, 20.0f);
 
-       m_physics->SetCirMotionY(MO_ADVSPEED,  2.0f*PI);
-       m_physics->SetCirMotionY(MO_RECSPEED,  2.0f*PI);
+       m_physics->SetCirMotionY(MO_ADVSPEED,  2.0f*Math::PI);
+       m_physics->SetCirMotionY(MO_RECSPEED,  2.0f*Math::PI);
        m_physics->SetCirMotionY(MO_ADVACCEL,  8.0f);
        m_physics->SetCirMotionY(MO_RECACCEL,  8.0f);
        m_physics->SetCirMotionY(MO_STOACCEL, 12.0f);
@@ -3321,8 +3234,8 @@ void CMotionBot::CreatePhysics()
    {
        m_physics->SetType(TYPE_TANK);
 
-       character->wheelFrontPos = D3DVECTOR( 2.0f, 0.0f, 2.0f);
-       character->wheelBackPos  = D3DVECTOR(-2.0f, 0.0f, 2.0f);
+       character->wheelFrontPos = Math::Vector( 2.0f, 0.0f, 2.0f);
+       character->wheelBackPos  = Math::Vector(-2.0f, 0.0f, 2.0f);
        character->wheelFrontDim = 1.0f;
        character->wheelBackDim  = 1.0f;
        character->suspDetect    = 2.0f;
@@ -3339,8 +3252,8 @@ void CMotionBot::CreatePhysics()
        m_physics->SetLinMotionZ(MO_TERFORCE, 30.0f);
        m_physics->SetLinMotionZ(MO_MOTACCEL, 20.0f);
 
-       m_physics->SetCirMotionY(MO_ADVSPEED,  2.0f*PI);
-       m_physics->SetCirMotionY(MO_RECSPEED,  2.0f*PI);
+       m_physics->SetCirMotionY(MO_ADVSPEED,  2.0f*Math::PI);
+       m_physics->SetCirMotionY(MO_RECSPEED,  2.0f*Math::PI);
        m_physics->SetCirMotionY(MO_ADVACCEL,  8.0f);
        m_physics->SetCirMotionY(MO_RECACCEL,  8.0f);
        m_physics->SetCirMotionY(MO_STOACCEL, 12.0f);
@@ -3352,16 +3265,16 @@ void CMotionBot::CreatePhysics()
 
 // Gestion d'un événement.
 
-BOOL CMotionBot::EventProcess(const Event &event)
+bool CMotionBot::EventProcess(const Event &event)
 {
    CMotion::EventProcess(event);
 
-   if ( event.event == EVENT_FRAME )
+   if ( event.type == EVENT_FRAME )
    {
        return EventFrame(event);
    }
 
-   if ( event.event == EVENT_KEYDOWN )
+   if ( event.type == EVENT_KEY_DOWN )
    {
 #if ADJUST_ANGLE
        int     i;
@@ -3384,34 +3297,33 @@ BOOL CMotionBot::EventProcess(const Event &event)
 #endif
    }
 
-   return TRUE;
+   return true;
 }
 
 // Gestion d'un événement.
 
-BOOL CMotionBot::EventFrame(const Event &event)
+bool CMotionBot::EventFrame(const Event &event)
 {
-   CBrain*     brain;
    ObjectType  type;
-   D3DMATRIX*  mat;
-   D3DVECTOR   linVib, cirVib, zoom, zFactor, pos;
-   FPOINT      rot;
+   Math::Matrix*  mat;
+   Math::Vector   linVib, cirVib, zoom, zFactor, pos;
+   Math::Point      rot;
    float       time, effect[3*20], angle, z, progress, dist, factor, s, prog;
    int         i, j, is, ie, max, action;
 
-   if ( m_engine->RetPause() )  return TRUE;
-//?    if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return TRUE;
+   if ( m_engine->GetPause() )  return true;
+//?    if ( !m_engine->IsVisiblePoint(m_object->GetPosition()) )  return true;
 
-   type = m_object->RetType();
+   type = m_object->GetType();
 
    if ( (type != OBJECT_BOT1 || m_actionType != MB_WALK1) &&
         type != OBJECT_GUIDE )
    {
-       if ( m_object->RetExplo() )  return TRUE;  // en cours d'explosion ?
+       if ( m_object->IsDying() )  return true;  // en cours d'explosion ?
    }
 
 #if ADJUST_ANGLE
-   if ( m_object->RetSelect() )
+   if ( m_object->GetSelect() )
    {
        char s[100];
        sprintf(s, "Q:part=%d", m_armPartIndex);
@@ -3430,17 +3342,18 @@ BOOL CMotionBot::EventFrame(const Event &event)
        {
            if ( m_starterTime == 0.0f )
            {
-               m_cameraType = m_camera->RetType();
-               m_cameraObj = m_camera->RetObject();
-               m_camera->SetObject(m_object);
-               m_camera->SetType(CAMERA_BACK);
+               m_cameraType = m_camera->GetType();
+               m_cameraObj = m_camera->GetControllingObject();
+               m_camera->SetControllingObject(m_object);
+               m_camera->SetType(Gfx::CAM_TYPE_BACK);
                m_camera->SetBackDist(65.0f);
-               m_camera->SetSmooth(CS_HARD);
-               m_camera->FixCamera();
+               m_camera->SetSmooth(Gfx::CAM_SMOOTH_HARD);
+//TODO (krzys_h):               m_camera->FixCamera();
            }
            m_starterTime += event.rTime;
 
-           if ( m_main->RetStarterType() == STARTER_321 )
+// TODO (krzys_h):           if ( m_main->GetStarterType() == STARTER_321 )
+           if (false)
            {
                if ( m_starterTime >= 2.5f && m_starterPhase == 0 )
                {
@@ -3460,7 +3373,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
                }
                if ( m_starterPhase == 2 )
                {
-                   dist = Mod(m_starterTime-3.5f, 1.0f);
+                   dist = Math::Mod(m_starterTime-3.5f, 1.0f);
                    if ( dist < 0.5f )
                    {
                        dist = dist/0.5f;
@@ -3476,12 +3389,13 @@ BOOL CMotionBot::EventFrame(const Event &event)
 
                if ( m_starterTime >= 7.0f )
                {
-                   if ( m_main->IsStartCounter() )
+//TODO (krzys_h):                   if ( m_main->IsStartCounter() )
+                   if (false)
                    {
                        SetAction(MB_HOME1);
-                       m_camera->SetObject(m_cameraObj);
+                       m_camera->SetControllingObject(m_cameraObj);
                        m_camera->SetType(m_cameraType);
-                       m_camera->SetSmooth(CS_NORM);
+                       m_camera->SetSmooth(Gfx::CAM_SMOOTH_NORM);
                    }
                    else    // moteur explosé ?
                    {
@@ -3500,12 +3414,13 @@ BOOL CMotionBot::EventFrame(const Event &event)
                }
                if ( m_starterTime >= 2.5f )
                {
-                   if ( m_main->IsStartCounter() )
+//TODO (krzys_h):                   if ( m_main->IsStartCounter() )
+                   if (false)
                    {
                        SetAction(MB_HOME1);
-                       m_camera->SetObject(m_cameraObj);
+                       m_camera->SetControllingObject(m_cameraObj);
                        m_camera->SetType(m_cameraType);
-                       m_camera->SetSmooth(CS_NORM);
+                       m_camera->SetSmooth(Gfx::CAM_SMOOTH_NORM);
                    }
                    else    // moteur explosé ?
                    {
@@ -3539,8 +3454,8 @@ BOOL CMotionBot::EventFrame(const Event &event)
    {
        effect[i] = 0.0f;
    }
-   linVib = D3DVECTOR(0.0f, 0.0f, 0.0f);
-   cirVib = D3DVECTOR(0.0f, 0.0f, 0.0f);
+   linVib = Math::Vector(0.0f, 0.0f, 0.0f);
+   cirVib = Math::Vector(0.0f, 0.0f, 0.0f);
 
    if ( type == OBJECT_BOT1 )
    {
@@ -3578,7 +3493,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            // Correction pour que la tête reste immobile sur l'aimant.
            rot.x = sinf(m_aTime*5.0f)*1.5f;
            rot.y = cosf(m_aTime*5.0f)*1.5f;
-           rot = RotatePoint(-(m_object->RetAngleY(0)-PI*1.5f), rot);
+           rot = Math::RotatePoint(-(m_object->GetRotationY()-Math::PI*1.5f), rot);
            linVib.x += rot.x;
            linVib.z += rot.y;
 
@@ -3663,7 +3578,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
 
        if ( action == MB_WALK2 )  // transporté cassé ?
        {
-           cirVib.z -= 40.0f*PI/180.0f;
+           cirVib.z -= 40.0f*Math::PI/180.0f;
            linVib.y += 1.1f;
            linVib.z -= 0.5f;
            SpeedAdapt(effect, linVib, cirVib, event.rTime);
@@ -3671,7 +3586,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
 
        if ( m_bBreak )  // cassé ?
        {
-           cirVib.z += PI*0.53f;  // couché sur le dos
+           cirVib.z += Math::PI*0.53f;  // couché sur le dos
            linVib.y -= 2.1f;
        }
    }
@@ -3704,7 +3619,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
 
        if ( action == MB_FEAR )
        {
-//?            cirVib.z += -20.0f*PI/180.0f;  // penche en avant
+//?            cirVib.z += -20.0f*Math::PI/180.0f;  // penche en avant
            linVib.x += -0.3f;
            linVib.y += -0.3f;
            time *= 5.0f;
@@ -3770,7 +3685,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            // Correction pour que la tête reste immobile sur l'aimant.
            rot.x = sinf(m_aTime*10.0f)*1.0f;
            rot.y = cosf(m_aTime*10.0f)*1.0f;
-           rot = RotatePoint(-(m_object->RetAngleY(0)-PI*1.5f), rot);
+           rot = Math::RotatePoint(-(m_object->GetRotationY()-Math::PI*1.5f), rot);
            linVib.x += rot.x;
            linVib.z += rot.y;
 
@@ -3824,10 +3739,10 @@ BOOL CMotionBot::EventFrame(const Event &event)
            float head[] = {0.0f, 0.0f, 0.0f, 0.4f, 0.0f, 0.0f, 0.0f, -0.4f};
            effect[3* 2+yy] = head[(int)(m_aTime*2.0f)%8];
 
-           effect[3* 9+xx] = -powf(Abs( sinf(m_aTime*1.0f)), 0.5f)*0.08f;
-           effect[3*10+xx] =  powf(Abs(-sinf(m_aTime*1.0f)), 0.5f)*0.08f;
-           effect[3*13+xx] =  powf(Abs( sinf(m_aTime*1.0f)), 0.5f)*0.08f;
-           effect[3*14+xx] = -powf(Abs(-sinf(m_aTime*1.0f)), 0.5f)*0.08f;
+           effect[3* 9+xx] = -powf(abs( sinf(m_aTime*1.0f)), 0.5f)*0.08f;
+           effect[3*10+xx] =  powf(abs(-sinf(m_aTime*1.0f)), 0.5f)*0.08f;
+           effect[3*13+xx] =  powf(abs( sinf(m_aTime*1.0f)), 0.5f)*0.08f;
+           effect[3*14+xx] = -powf(abs(-sinf(m_aTime*1.0f)), 0.5f)*0.08f;
            effect[3* 9+zz] =  sinf(m_aTime*0.5f)*0.04f;
            effect[3*13+zz] = -sinf(m_aTime*0.5f)*0.04f;
            SpeedAdapt(effect, linVib, cirVib, event.rTime);
@@ -3871,8 +3786,8 @@ BOOL CMotionBot::EventFrame(const Event &event)
         type == OBJECT_EVIL2 ||
         type == OBJECT_EVIL3 )
    {
-       cirVib = m_object->RetCirVibration();
-       zFactor = D3DVECTOR(1.0f, 1.0f, 1.0f);
+       cirVib = m_object->GetCirVibration();
+       zFactor = Math::Vector(1.0f, 1.0f, 1.0f);
 
        if ( action == MB_WAIT )
        {
@@ -3881,7 +3796,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
 
        if ( action == MB_TRUCK )
        {
-           zFactor = D3DVECTOR(3.0f, 4.0f, 3.0f);
+           zFactor = Math::Vector(3.0f, 4.0f, 3.0f);
        }
 
        if ( action == MB_FEAR )
@@ -3899,7 +3814,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            zoom.x = 1.0f+(sinf(m_aTime*1.7f)*0.10f+sinf(m_aTime*5.0f)*0.06f+cosf(m_aTime*15.0f)*0.03f)*zFactor.x;
            zoom.y = 1.0f+(sinf(m_aTime*1.9f)*0.05f+sinf(m_aTime*3.3f)*0.03f+cosf(m_aTime*13.1f)*0.02f)*zFactor.y;
            zoom.z = 1.0f+(sinf(m_aTime*1.3f)*0.10f+sinf(m_aTime*4.2f)*0.06f+cosf(m_aTime*17.9f)*0.03f)*zFactor.z;
-           m_object->SetZoom(0, zoom);
+           m_object->SetPartScale(0, zoom);
        }
 
        if ( action == MB_TRUCK )
@@ -3912,7 +3827,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            if ( m_progress < 0.2f )
            {
                progress = m_progress/0.2f;
-               angle = 120.0f*PI/180.0f*(1.0f-progress);
+               angle = 120.0f*Math::PI/180.0f*(1.0f-progress);
                z = 0.2f+progress*0.8f;
            }
            else if ( m_progress < 0.8f )
@@ -3925,11 +3840,11 @@ BOOL CMotionBot::EventFrame(const Event &event)
            else
            {
                progress = (m_progress-0.8f)/0.2f;
-               angle = 120.0f*PI/180.0f*progress;
+               angle = 120.0f*Math::PI/180.0f*progress;
                z = 0.2f+(1.0f-progress)*0.8f;
            }
-           m_object->SetAngleZ(1, angle);
-           m_object->SetZoom(1, z);
+           m_object->SetPartRotationZ(1, angle);
+           m_object->SetPartScale(1, z);
        }
 
        if ( action == MB_WALK1 )  // tir très efficace ?
@@ -3937,7 +3852,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            if ( m_progress < 0.1f )
            {
                progress = m_progress/0.1f;
-               angle = 120.0f*PI/180.0f*(1.0f-progress*0.6f);
+               angle = 120.0f*Math::PI/180.0f*(1.0f-progress*0.6f);
                z = 0.2f+progress*0.8f;
                pos.x = 0.7f+progress*0.3f;
                pos.y = 5.6f;
@@ -3947,7 +3862,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
            {
                FireEvil1b();
                progress = (m_progress-0.1f)/0.8f;
-               angle = 120.0f*PI/180.0f*(1.0f-0.6f);
+               angle = 120.0f*Math::PI/180.0f*(1.0f-0.6f);
                z = 1.0f;
                pos.x = 0.7f+0.3f;
                pos.y = 5.6f;
@@ -3956,15 +3871,15 @@ BOOL CMotionBot::EventFrame(const Event &event)
            else
            {
                progress = (m_progress-0.9f)/0.1f;
-               angle = 120.0f*PI/180.0f*(0.4f+progress*0.6f);
+               angle = 120.0f*Math::PI/180.0f*(0.4f+progress*0.6f);
                z = 0.2f+(1.0f-progress)*0.8f;
                pos.x = 0.7f+(1.0f-progress)*0.3f;
                pos.y = 5.6f;
                pos.z = 0.0f;
            }
-           m_object->SetAngleZ(1, angle);
-           m_object->SetZoom(1, z);
-           m_object->SetPosition(1, pos);
+           m_object->SetPartRotationZ(1, angle);
+           m_object->SetPartScale(1, z);
+           m_object->SetPartPosition(1, pos);
        }
 
        cirVib.y = sinf(m_aTime*2.8f)*0.3f+cosf(m_aTime*3.9f)*0.2f;
@@ -3998,48 +3913,48 @@ BOOL CMotionBot::EventFrame(const Event &event)
        {
            if ( m_starterTime >= 4.0f )
            {
-               effect[3*3+zz] = cosf((m_starterTime-2.5f)*PI*2.0f)*0.04f;  // tête
-               effect[3*6+zz] = cosf((m_starterTime-2.5f)*PI*2.0f)*0.40f;  // bras droite
+               effect[3*3+zz] = cosf((m_starterTime-2.5f)*Math::PI*2.0f)*0.04f;  // tête
+               effect[3*6+zz] = cosf((m_starterTime-2.5f)*Math::PI*2.0f)*0.40f;  // bras droite
                factor = 0.1f;
            }
        }
        if ( action == MB_HOME1 )
        {
-           effect[3*7+xx] = sinf(m_aTime*PI*2.0f)*0.5f;  // bras droite
-           effect[3*7+zz] = cosf(m_aTime*PI*2.0f)*0.5f;
-           effect[3*9+xx] = sinf(m_aTime*PI*2.0f)*0.5f;  // bras gauche
-           effect[3*9+zz] = cosf(m_aTime*PI*2.0f)*0.5f;
+           effect[3*7+xx] = sinf(m_aTime*Math::PI*2.0f)*0.5f;  // bras droite
+           effect[3*7+zz] = cosf(m_aTime*Math::PI*2.0f)*0.5f;
+           effect[3*9+xx] = sinf(m_aTime*Math::PI*2.0f)*0.5f;  // bras gauche
+           effect[3*9+zz] = cosf(m_aTime*Math::PI*2.0f)*0.5f;
            factor = 2.0f;
        }
 
-       effect[3*1+xx] += sinf(m_aTime*PI*2.0f)*0.03f*factor;  // jambe et corps
-       effect[3*2+xx] += sinf(m_aTime*PI*2.0f)*0.03f*factor;
-       effect[3*1+zz] += cosf(m_aTime*PI*2.0f)*0.03f*factor;
-       effect[3*2+zz] += cosf(m_aTime*PI*2.0f)*0.03f*factor;
+       effect[3*1+xx] += sinf(m_aTime*Math::PI*2.0f)*0.03f*factor;  // jambe et corps
+       effect[3*2+xx] += sinf(m_aTime*Math::PI*2.0f)*0.03f*factor;
+       effect[3*1+zz] += cosf(m_aTime*Math::PI*2.0f)*0.03f*factor;
+       effect[3*2+zz] += cosf(m_aTime*Math::PI*2.0f)*0.03f*factor;
 
-       effect[3*2+yy] += sinf(m_aTime*PI*2.0f)*0.06f*factor;  // corps
-       effect[3*3+xx] += sinf(m_aTime*PI*2.0f)*0.04f*factor;  // tête
-       effect[3*3+yy] += sinf(m_aTime*PI*2.0f)*0.10f*factor;
-       effect[3*6+xx] += sinf(m_aTime*PI*2.0f)*0.02f;  // bras droite
-       effect[3*7+xx] += sinf(m_aTime*PI*2.0f)*0.02f;
-       effect[3*8+xx] += sinf(m_aTime*PI*2.0f)*0.02f;  // bras gauche
-       effect[3*9+xx] += sinf(m_aTime*PI*2.0f)*0.02f;
+       effect[3*2+yy] += sinf(m_aTime*Math::PI*2.0f)*0.06f*factor;  // corps
+       effect[3*3+xx] += sinf(m_aTime*Math::PI*2.0f)*0.04f*factor;  // tête
+       effect[3*3+yy] += sinf(m_aTime*Math::PI*2.0f)*0.10f*factor;
+       effect[3*6+xx] += sinf(m_aTime*Math::PI*2.0f)*0.02f;  // bras droite
+       effect[3*7+xx] += sinf(m_aTime*Math::PI*2.0f)*0.02f;
+       effect[3*8+xx] += sinf(m_aTime*Math::PI*2.0f)*0.02f;  // bras gauche
+       effect[3*9+xx] += sinf(m_aTime*Math::PI*2.0f)*0.02f;
 
        time *= 5.0f;
    }
 
    if ( type == OBJECT_WALKER )
    {
-       s = m_physics->RetLinMotionX(MO_REASPEED)/m_physics->RetLinMotionX(MO_ADVSPEED);
+       s = m_physics->GetLinMotionX(MO_REASPEED)/m_physics->GetLinMotionX(MO_ADVSPEED);
        if ( s != 0.0f )
        {
            m_walkTime += event.rTime;
-           prog = Mod(m_walkTime, 1.0f);
+           prog = Math::Mod(m_walkTime, 1.0f);
 
-           cirVib.x = -cosf(prog*PI*2.0f)*0.2f;
-           cirVib.y =  sinf(prog*PI*2.0f)*0.2f;
+           cirVib.x = -cosf(prog*Math::PI*2.0f)*0.2f;
+           cirVib.y =  sinf(prog*Math::PI*2.0f)*0.2f;
            linVib.z = -tanf(cirVib.x)*0.5f;
-           linVib.y =  sinf(prog*PI*4.0f)*0.5f;
+           linVib.y =  sinf(prog*Math::PI*4.0f)*0.5f;
 
            if ( prog < 0.25f )
            {
@@ -4072,24 +3987,24 @@ BOOL CMotionBot::EventFrame(const Event &event)
 
            for ( i=1 ; i<max ; i++ )
            {
-               m_object->SetAngleX(i, Prop(m_armAngles[is*3*max+i*3+xx], m_armAngles[ie*3*max+i*3+xx], prog));
-               m_object->SetAngleY(i, Prop(m_armAngles[is*3*max+i*3+yy], m_armAngles[ie*3*max+i*3+yy], prog));
-               m_object->SetAngleZ(i, Prop(m_armAngles[is*3*max+i*3+zz], m_armAngles[ie*3*max+i*3+zz], prog));
+               m_object->SetPartRotationX(i, Math::PropAngle(m_armAngles[is*3*max+i*3+xx], m_armAngles[ie*3*max+i*3+xx], prog));
+               m_object->SetPartRotationY(i, Math::PropAngle(m_armAngles[is*3*max+i*3+yy], m_armAngles[ie*3*max+i*3+yy], prog));
+               m_object->SetPartRotationZ(i, Math::PropAngle(m_armAngles[is*3*max+i*3+zz], m_armAngles[ie*3*max+i*3+zz], prog));
            }
 
-           pos = m_object->RetLinVibration();
-           linVib.x = SmoothA(pos.x, linVib.x, event.rTime*12.0f);
-           linVib.y = SmoothA(pos.y, linVib.y, event.rTime*12.0f);
-           linVib.z = SmoothA(pos.z, linVib.z, event.rTime*12.0f);
+           pos = m_object->GetLinVibration();
+           linVib.x = Math::SmoothA(pos.x, linVib.x, event.rTime*12.0f);
+           linVib.y = Math::SmoothA(pos.y, linVib.y, event.rTime*12.0f);
+           linVib.z = Math::SmoothA(pos.z, linVib.z, event.rTime*12.0f);
 
-           pos = m_object->RetCirVibration();
-           cirVib.x = SmoothA(pos.x, cirVib.x, event.rTime*12.0f);
-           cirVib.y = SmoothA(pos.y, cirVib.y, event.rTime*12.0f);
-           cirVib.z = SmoothA(pos.z, cirVib.z, event.rTime*12.0f);
+           pos = m_object->GetCirVibration();
+           cirVib.x = Math::SmoothA(pos.x, cirVib.x, event.rTime*12.0f);
+           cirVib.y = Math::SmoothA(pos.y, cirVib.y, event.rTime*12.0f);
+           cirVib.z = Math::SmoothA(pos.z, cirVib.z, event.rTime*12.0f);
 
            m_object->SetLinVibration(linVib);
            m_object->SetCirVibration(cirVib);
-           return TRUE;
+           return true;
        }
        m_walkTime = 0.0f;
        
@@ -4098,10 +4013,10 @@ BOOL CMotionBot::EventFrame(const Event &event)
            float head[] = {0.0f, 0.0f, 0.0f, 0.4f, 0.0f, 0.0f, 0.0f, -0.4f};
            effect[3* 2+yy] = head[(int)(m_aTime*2.0f)%8];
 
-           effect[3* 9+xx] = -powf(Abs( sinf(m_aTime*1.0f)), 0.5f)*0.08f;
-           effect[3*10+xx] =  powf(Abs(-sinf(m_aTime*1.0f)), 0.5f)*0.08f;
-           effect[3*13+xx] =  powf(Abs( sinf(m_aTime*1.0f)), 0.5f)*0.08f;
-           effect[3*14+xx] = -powf(Abs(-sinf(m_aTime*1.0f)), 0.5f)*0.08f;
+           effect[3* 9+xx] = -powf(abs( sinf(m_aTime*1.0f)), 0.5f)*0.08f;
+           effect[3*10+xx] =  powf(abs(-sinf(m_aTime*1.0f)), 0.5f)*0.08f;
+           effect[3*13+xx] =  powf(abs( sinf(m_aTime*1.0f)), 0.5f)*0.08f;
+           effect[3*14+xx] = -powf(abs(-sinf(m_aTime*1.0f)), 0.5f)*0.08f;
            effect[3* 9+zz] =  sinf(m_aTime*0.5f)*0.04f;
            effect[3*13+zz] = -sinf(m_aTime*0.5f)*0.04f;
            SpeedAdapt(effect, linVib, cirVib, event.rTime);
@@ -4143,33 +4058,33 @@ BOOL CMotionBot::EventFrame(const Event &event)
 
        if ( m_actionType == MB_WAIT )
        {
-           pos = m_object->RetLinVibration();
-           linVib.x = SmoothA(pos.x, linVib.x, event.rTime*2.0f);
-           linVib.y = SmoothA(pos.y, linVib.y, event.rTime*2.0f);
-           linVib.z = SmoothA(pos.z, linVib.z, event.rTime*2.0f);
+           pos = m_object->GetLinVibration();
+           linVib.x = Math::SmoothA(pos.x, linVib.x, event.rTime*2.0f);
+           linVib.y = Math::SmoothA(pos.y, linVib.y, event.rTime*2.0f);
+           linVib.z = Math::SmoothA(pos.z, linVib.z, event.rTime*2.0f);
 
-           pos = m_object->RetCirVibration();
-           cirVib.x = SmoothA(pos.x, cirVib.x, event.rTime*2.0f);
-           cirVib.y = SmoothA(pos.y, cirVib.y, event.rTime*2.0f);
-           cirVib.z = SmoothA(pos.z, cirVib.z, event.rTime*2.0f);
+           pos = m_object->GetCirVibration();
+           cirVib.x = Math::SmoothA(pos.x, cirVib.x, event.rTime*2.0f);
+           cirVib.y = Math::SmoothA(pos.y, cirVib.y, event.rTime*2.0f);
+           cirVib.z = Math::SmoothA(pos.z, cirVib.z, event.rTime*2.0f);
        }
    }
 
    if ( type == OBJECT_CRAZY )
    {
-       s = m_physics->RetLinMotionX(MO_REASPEED)/m_physics->RetLinMotionX(MO_ADVSPEED);
+       s = m_physics->GetLinMotionX(MO_REASPEED)/m_physics->GetLinMotionX(MO_ADVSPEED);
        if ( s != 0.0f )
        {
            m_walkTime += event.rTime;
 
            if ( m_option == 0 )
            {
-               prog = Mod(m_walkTime, 1.0f);
+               prog = Math::Mod(m_walkTime, 1.0f);
 
-               cirVib.x = -cosf(prog*PI*2.0f)*0.2f;
-               cirVib.y =  sinf(prog*PI*2.0f)*0.2f;
+               cirVib.x = -cosf(prog*Math::PI*2.0f)*0.2f;
+               cirVib.y =  sinf(prog*Math::PI*2.0f)*0.2f;
                linVib.z = -tanf(cirVib.x)*0.5f;
-               linVib.y =  sinf(prog*PI*4.0f)*0.5f;
+               linVib.y =  sinf(prog*Math::PI*4.0f)*0.5f;
 
                if ( prog < 0.25f )
                {
@@ -4202,12 +4117,12 @@ BOOL CMotionBot::EventFrame(const Event &event)
            }
            if ( m_option == 1 )  // fou ?
            {
-               prog = Mod(m_walkTime, 1.2f)/1.2f;
+               prog = Math::Mod(m_walkTime, 1.2f)/1.2f;
 
-               cirVib.x = -cosf(prog*PI*2.0f)*0.1f;
-               cirVib.y =  sinf(prog*PI*2.0f)*0.4f;
+               cirVib.x = -cosf(prog*Math::PI*2.0f)*0.1f;
+               cirVib.y =  sinf(prog*Math::PI*2.0f)*0.4f;
                linVib.z = -tanf(cirVib.x)*0.5f;
-               linVib.y =  sinf(prog*PI*4.0f)*0.5f;
+               linVib.y =  sinf(prog*Math::PI*4.0f)*0.5f;
 
                if ( prog < 0.25f )
                {
@@ -4240,12 +4155,12 @@ BOOL CMotionBot::EventFrame(const Event &event)
            }
            if ( m_option == 2 )  // bras croisés ?
            {
-               prog = Mod(m_walkTime, 1.0f);
+               prog = Math::Mod(m_walkTime, 1.0f);
 
-               cirVib.x = -cosf(prog*PI*2.0f)*0.2f;
-               cirVib.y =  sinf(prog*PI*2.0f)*0.1f;
+               cirVib.x = -cosf(prog*Math::PI*2.0f)*0.2f;
+               cirVib.y =  sinf(prog*Math::PI*2.0f)*0.1f;
                linVib.z = -tanf(cirVib.x)*1.0f;
-               linVib.y =  sinf(prog*PI*4.0f)*1.0f;
+               linVib.y =  sinf(prog*Math::PI*4.0f)*1.0f;
 
                if ( prog < 0.25f )
                {
@@ -4278,13 +4193,13 @@ BOOL CMotionBot::EventFrame(const Event &event)
            }
            if ( m_option == 3 )  // ss ?
            {
-               prog = Mod(m_walkTime, 1.4f)/1.4f;
+               prog = Math::Mod(m_walkTime, 1.4f)/1.4f;
 
-//?                cirVib.x = -cosf(prog*PI*2.0f)*0.05f;
-//?                cirVib.y =  sinf(prog*PI*2.0f)*0.05f;
+//?                cirVib.x = -cosf(prog*Math::PI*2.0f)*0.05f;
+//?                cirVib.y =  sinf(prog*Math::PI*2.0f)*0.05f;
 //?                linVib.z = -tanf(cirVib.x)*0.1f;
-               linVib.y =  sinf(prog*PI*4.0f)*0.1f;
-               linVib.x =  sinf(prog*PI*4.0f)*1.0f;
+               linVib.y =  sinf(prog*Math::PI*4.0f)*0.1f;
+               linVib.x =  sinf(prog*Math::PI*4.0f)*1.0f;
 
                if ( prog < 0.25f )
                {
@@ -4317,12 +4232,12 @@ BOOL CMotionBot::EventFrame(const Event &event)
            }
            if ( m_option == 4 )  // random ?
            {
-               prog = Mod(m_walkTime, 1.0f);
+               prog = Math::Mod(m_walkTime, 1.0f);
 
-               cirVib.x = -cosf(prog*PI*2.0f)*0.2f;
-               cirVib.y =  sinf(prog*PI*2.0f)*0.2f;
+               cirVib.x = -cosf(prog*Math::PI*2.0f)*0.2f;
+               cirVib.y =  sinf(prog*Math::PI*2.0f)*0.2f;
                linVib.z = -tanf(cirVib.x)*0.5f;
-               linVib.y =  sinf(prog*PI*4.0f)*0.5f;
+               linVib.y =  sinf(prog*Math::PI*4.0f)*0.5f;
 
                if ( prog < 0.25f )
                {
@@ -4357,32 +4272,31 @@ BOOL CMotionBot::EventFrame(const Event &event)
            time *= 4.0f;
            for ( i=1 ; i<max ; i++ )
            {
-               m_object->SetAngleX(i, SmoothA(m_object->RetAngleX(i), Prop(m_armAngles[is*3*max+i*3+xx], m_armAngles[ie*3*max+i*3+xx], prog), time));
-               m_object->SetAngleY(i, SmoothA(m_object->RetAngleY(i), Prop(m_armAngles[is*3*max+i*3+yy], m_armAngles[ie*3*max+i*3+yy], prog), time));
-               m_object->SetAngleZ(i, SmoothA(m_object->RetAngleZ(i), Prop(m_armAngles[is*3*max+i*3+zz], m_armAngles[ie*3*max+i*3+zz], prog), time));
+               m_object->SetPartRotationX(i, Math::SmoothA(m_object->GetPartRotationX(i), Math::PropAngle(m_armAngles[is*3*max+i*3+xx], m_armAngles[ie*3*max+i*3+xx], prog), time));
+               m_object->SetPartRotationY(i, Math::SmoothA(m_object->GetPartRotationY(i), Math::PropAngle(m_armAngles[is*3*max+i*3+yy], m_armAngles[ie*3*max+i*3+yy], prog), time));
+               m_object->SetPartRotationZ(i, Math::SmoothA(m_object->GetPartRotationZ(i), Math::PropAngle(m_armAngles[is*3*max+i*3+zz], m_armAngles[ie*3*max+i*3+zz], prog), time));
            }
 
-           rot = RotatePoint(-m_object->RetAngleY(0), FPOINT(linVib.x, linVib.z));
+           rot = Math::RotatePoint(-m_object->GetRotationY(), Math::Point(linVib.x, linVib.z));
            linVib.x = rot.x;
            linVib.z = rot.y;
-           pos = m_object->RetLinVibration();
-           linVib.x = SmoothA(pos.x, linVib.x, event.rTime*12.0f);
-           linVib.y = SmoothA(pos.y, linVib.y, event.rTime*12.0f);
-           linVib.z = SmoothA(pos.z, linVib.z, event.rTime*12.0f);
+           pos = m_object->GetLinVibration();
+           linVib.x = Math::SmoothA(pos.x, linVib.x, event.rTime*12.0f);
+           linVib.y = Math::SmoothA(pos.y, linVib.y, event.rTime*12.0f);
+           linVib.z = Math::SmoothA(pos.z, linVib.z, event.rTime*12.0f);
 
-           pos = m_object->RetCirVibration();
-           cirVib.x = SmoothA(pos.x, cirVib.x, event.rTime*12.0f);
-           cirVib.y = SmoothA(pos.y, cirVib.y, event.rTime*12.0f);
-           cirVib.z = SmoothA(pos.z, cirVib.z, event.rTime*12.0f);
+           pos = m_object->GetCirVibration();
+           cirVib.x = Math::SmoothA(pos.x, cirVib.x, event.rTime*12.0f);
+           cirVib.y = Math::SmoothA(pos.y, cirVib.y, event.rTime*12.0f);
+           cirVib.z = Math::SmoothA(pos.z, cirVib.z, event.rTime*12.0f);
 
            m_object->SetLinVibration(linVib);
            m_object->SetCirVibration(cirVib);
-           return TRUE;
+           return true;
        }
        m_walkTime = 0.0f;
-       
-       brain = m_object->RetBrain();
-       if ( brain != 0 && brain->IsProgram() )
+
+       if ( m_object->IsProgram() )
        {
            action = MB_WAIT;
        }
@@ -4425,7 +4339,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
                effect[3* 1+yy] =  sinf(m_aTime*10.0f)*0.20f;  // coup
                effect[3* 2+yy] =  sinf(m_aTime*10.0f)*0.20f;  // tête
                cirVib.y = -sinf(m_aTime*10.0f)*0.40f;
-               cirVib.x = 20.0f*PI/180.0f;  // penche
+               cirVib.x = 20.0f*Math::PI/180.0f;  // penche
 
                effect[3* 3+zz] =  sinf(m_aTime*10.0f)*0.20f;  // jambe droite
                effect[3* 4+zz] = -sinf(m_aTime*10.0f)*0.40f;
@@ -4460,10 +4374,10 @@ BOOL CMotionBot::EventFrame(const Event &event)
            float head[] = {0.0f, 0.0f, 0.0f, 0.4f, 0.0f, 0.0f, 0.0f, -0.4f};
            effect[3* 2+yy] = head[(int)(m_aTime*2.0f)%8];
 
-           effect[3* 9+xx] = -powf(Abs( sinf(m_aTime*1.0f)), 0.5f)*0.08f;
-           effect[3*10+xx] =  powf(Abs(-sinf(m_aTime*1.0f)), 0.5f)*0.08f;
-           effect[3*13+xx] =  powf(Abs( sinf(m_aTime*1.0f)), 0.5f)*0.08f;
-           effect[3*14+xx] = -powf(Abs(-sinf(m_aTime*1.0f)), 0.5f)*0.08f;
+           effect[3* 9+xx] = -powf(abs( sinf(m_aTime*1.0f)), 0.5f)*0.08f;
+           effect[3*10+xx] =  powf(abs(-sinf(m_aTime*1.0f)), 0.5f)*0.08f;
+           effect[3*13+xx] =  powf(abs( sinf(m_aTime*1.0f)), 0.5f)*0.08f;
+           effect[3*14+xx] = -powf(abs(-sinf(m_aTime*1.0f)), 0.5f)*0.08f;
            effect[3* 9+zz] =  sinf(m_aTime*0.5f)*0.04f;
            effect[3*13+zz] = -sinf(m_aTime*0.5f)*0.04f;
            SpeedAdapt(effect, linVib, cirVib, event.rTime);
@@ -4473,15 +4387,15 @@ BOOL CMotionBot::EventFrame(const Event &event)
 
        if ( action == MB_WAIT )  // demi-tour ?
        {
-           pos = m_object->RetLinVibration();
-           linVib.x = SmoothA(pos.x, linVib.x, event.rTime*2.0f);
-           linVib.y = SmoothA(pos.y, linVib.y, event.rTime*2.0f);
-           linVib.z = SmoothA(pos.z, linVib.z, event.rTime*2.0f);
+           pos = m_object->GetLinVibration();
+           linVib.x = Math::SmoothA(pos.x, linVib.x, event.rTime*2.0f);
+           linVib.y = Math::SmoothA(pos.y, linVib.y, event.rTime*2.0f);
+           linVib.z = Math::SmoothA(pos.z, linVib.z, event.rTime*2.0f);
 
-           pos = m_object->RetCirVibration();
-           cirVib.x = SmoothA(pos.x, cirVib.x, event.rTime*2.0f);
-           cirVib.y = SmoothA(pos.y, cirVib.y, event.rTime*2.0f);
-           cirVib.z = SmoothA(pos.z, cirVib.z, event.rTime*2.0f);
+           pos = m_object->GetCirVibration();
+           cirVib.x = Math::SmoothA(pos.x, cirVib.x, event.rTime*2.0f);
+           cirVib.y = Math::SmoothA(pos.y, cirVib.y, event.rTime*2.0f);
+           cirVib.z = Math::SmoothA(pos.z, cirVib.z, event.rTime*2.0f);
        }
    }
 
@@ -4496,24 +4410,24 @@ BOOL CMotionBot::EventFrame(const Event &event)
        if ( action == MB_FLIC )
        {
            effect[3*3+yy] = 0.5f;  // tête
-           effect[3*3+zz] = cosf((m_aTime*1.0f)*PI*2.0f)*0.20f;  // tête
-           effect[3*8+xx] = cosf((m_aTime*1.0f)*PI*2.0f)*0.20f;  // bras droite
-           effect[3*9+xx] = cosf((m_aTime*1.0f)*PI*2.0f)*0.70f;  // bras droite
+           effect[3*3+zz] = cosf((m_aTime*1.0f)*Math::PI*2.0f)*0.20f;  // tête
+           effect[3*8+xx] = cosf((m_aTime*1.0f)*Math::PI*2.0f)*0.20f;  // bras droite
+           effect[3*9+xx] = cosf((m_aTime*1.0f)*Math::PI*2.0f)*0.70f;  // bras droite
            factor = 0.5f;
        }
 
-       effect[3*1+xx] += sinf(m_aTime*PI*2.0f)*0.03f*factor;  // jambe et corps
-       effect[3*2+xx] += sinf(m_aTime*PI*2.0f)*0.03f*factor;
-       effect[3*1+zz] += cosf(m_aTime*PI*2.0f)*0.03f*factor;
-       effect[3*2+zz] += cosf(m_aTime*PI*2.0f)*0.03f*factor;
+       effect[3*1+xx] += sinf(m_aTime*Math::PI*2.0f)*0.03f*factor;  // jambe et corps
+       effect[3*2+xx] += sinf(m_aTime*Math::PI*2.0f)*0.03f*factor;
+       effect[3*1+zz] += cosf(m_aTime*Math::PI*2.0f)*0.03f*factor;
+       effect[3*2+zz] += cosf(m_aTime*Math::PI*2.0f)*0.03f*factor;
 
-       effect[3*2+yy] += sinf(m_aTime*PI*2.0f)*0.06f*factor;  // corps
-       effect[3*3+xx] += sinf(m_aTime*PI*2.0f)*0.04f*factor;  // tête
-       effect[3*3+yy] += sinf(m_aTime*PI*2.0f)*0.10f*factor;
-       effect[3*6+xx] += sinf(m_aTime*PI*2.0f)*0.02f;  // bras droite
-       effect[3*7+xx] += sinf(m_aTime*PI*2.0f)*0.02f;
-       effect[3*8+xx] += sinf(m_aTime*PI*2.0f)*0.02f;  // bras gauche
-       effect[3*9+xx] += sinf(m_aTime*PI*2.0f)*0.02f;
+       effect[3*2+yy] += sinf(m_aTime*Math::PI*2.0f)*0.06f*factor;  // corps
+       effect[3*3+xx] += sinf(m_aTime*Math::PI*2.0f)*0.04f*factor;  // tête
+       effect[3*3+yy] += sinf(m_aTime*Math::PI*2.0f)*0.10f*factor;
+       effect[3*6+xx] += sinf(m_aTime*Math::PI*2.0f)*0.02f;  // bras droite
+       effect[3*7+xx] += sinf(m_aTime*Math::PI*2.0f)*0.02f;
+       effect[3*8+xx] += sinf(m_aTime*Math::PI*2.0f)*0.02f;  // bras gauche
+       effect[3*9+xx] += sinf(m_aTime*Math::PI*2.0f)*0.02f;
 
        time *= 5.0f;
    }
@@ -4524,22 +4438,22 @@ BOOL CMotionBot::EventFrame(const Event &event)
 
    for ( i=1 ; i<max ; i++ )
    {
-//?        m_object->SetAngleX(i, SmoothA(m_object->RetAngleX(i), m_armAngles[i*3+xx+j*3*max]*PI/180.0f, time)+effect[i*3+xx]);
-//?        m_object->SetAngleY(i, SmoothA(m_object->RetAngleY(i), m_armAngles[i*3+yy+j*3*max]*PI/180.0f, time)+effect[i*3+yy]);
-//?        m_object->SetAngleZ(i, SmoothA(m_object->RetAngleZ(i), m_armAngles[i*3+zz+j*3*max]*PI/180.0f, time)+effect[i*3+zz]);
-       m_object->SetAngleX(i, SmoothA(m_object->RetAngleX(i), m_armAngles[i*3+xx+j*3*max]*PI/180.0f+effect[i*3+xx], time));
-       m_object->SetAngleY(i, SmoothA(m_object->RetAngleY(i), m_armAngles[i*3+yy+j*3*max]*PI/180.0f+effect[i*3+yy], time));
-       m_object->SetAngleZ(i, SmoothA(m_object->RetAngleZ(i), m_armAngles[i*3+zz+j*3*max]*PI/180.0f+effect[i*3+zz], time));
-//?        m_object->SetAngleX(i, m_armAngles[i*3+xx+j*3*max]*PI/180.0f+effect[i*3+xx]);
-//?        m_object->SetAngleY(i, m_armAngles[i*3+yy+j*3*max]*PI/180.0f+effect[i*3+yy]);
-//?        m_object->SetAngleZ(i, m_armAngles[i*3+zz+j*3*max]*PI/180.0f+effect[i*3+zz]);
+//?        m_object->SetPartRotationX(i, Math::SmoothA(m_object->GetPartRotationX(i), m_armAngles[i*3+xx+j*3*max]*Math::PI/180.0f, time)+effect[i*3+xx]);
+//?        m_object->SetPartRotationY(i, Math::SmoothA(m_object->GetPartRotationY(i), m_armAngles[i*3+yy+j*3*max]*Math::PI/180.0f, time)+effect[i*3+yy]);
+//?        m_object->SetPartRotationZ(i, Math::SmoothA(m_object->GetPartRotationZ(i), m_armAngles[i*3+zz+j*3*max]*Math::PI/180.0f, time)+effect[i*3+zz]);
+       m_object->SetPartRotationX(i, Math::SmoothA(m_object->GetPartRotationX(i), m_armAngles[i*3+xx+j*3*max]*Math::PI/180.0f+effect[i*3+xx], time));
+       m_object->SetPartRotationY(i, Math::SmoothA(m_object->GetPartRotationY(i), m_armAngles[i*3+yy+j*3*max]*Math::PI/180.0f+effect[i*3+yy], time));
+       m_object->SetPartRotationZ(i, Math::SmoothA(m_object->GetPartRotationZ(i), m_armAngles[i*3+zz+j*3*max]*Math::PI/180.0f+effect[i*3+zz], time));
+//?        m_object->SetPartRotationX(i, m_armAngles[i*3+xx+j*3*max]*Math::PI/180.0f+effect[i*3+xx]);
+//?        m_object->SetPartRotationY(i, m_armAngles[i*3+yy+j*3*max]*Math::PI/180.0f+effect[i*3+yy]);
+//?        m_object->SetPartRotationZ(i, m_armAngles[i*3+zz+j*3*max]*Math::PI/180.0f+effect[i*3+zz]);
    }
 
 #if 0
    // Si le robot est transporté par un véhicule et que la caméra
    // est embarquée, met-le loin derrière pour ne pas le voir.
-   if ( m_object->RetTruck() != 0 &&
-        m_camera->RetType() == CAMERA_ONBOARD )
+   if ( m_object->GetTransporter() != 0 &&
+        m_camera->GetType() == CAMERA_ONBOARD )
    {
        linVib.x -= 10.0f;
    }
@@ -4554,7 +4468,7 @@ BOOL CMotionBot::EventFrame(const Event &event)
        {
            // Rotation du corps en fonction de l'angle des jambes et
            // des pieds pour que les pieds restent plaqués au sol.
-           angle = m_object->RetAngleZ(2)+m_object->RetAngleZ(3);
+           angle = m_object->GetPartRotationZ(2)+m_object->GetPartRotationZ(3);
            cirVib.z = -angle;
        }
    }
@@ -4566,57 +4480,57 @@ BOOL CMotionBot::EventFrame(const Event &event)
    {
        if ( m_partiGuide != -1 )
        {
-           mat = m_object->RetWorldMatrix(9);
-           pos = Transform(*mat, D3DVECTOR(0.4f, 1.9f, 2.2f));
-           m_particule->SetPosition(m_partiGuide, pos);
+           mat = m_object->GetWorldMatrix(9);
+           pos = Transform(*mat, Math::Vector(0.4f, 1.9f, 2.2f));
+           m_particle->SetPosition(m_partiGuide, pos);
        }
    }
 
-   return TRUE;
+   return true;
 }
 
 // Adapte le robot en fonction de la vitesse du transporteur.
 
 void CMotionBot::SpeedAdapt(float effect[],
-                           D3DVECTOR &linVib, D3DVECTOR &cirVib,
+                           Math::Vector &linVib, Math::Vector &cirVib,
                            float rTime)
 {
    ObjectType  type, tType;
-   CObject*    vehicle;
+   COldObject*    vehicle;
    CPhysics*   physics;
    CMotion*    motion;
    float       lin, cir, factor, top;
 
    if ( m_bBreak )  // cassé ?
    {
-       vehicle = m_object->RetTruck();
+       vehicle = dynamic_cast<COldObject*>(m_object->GetTransporter());
        if ( vehicle == 0 )  return;
-       if ( vehicle->RetType() != OBJECT_HOOK )  return;
-       vehicle = vehicle->RetTruck();
+       if ( vehicle->GetType() != OBJECT_HOOK )  return;
+       vehicle = dynamic_cast<COldObject*>(vehicle->GetTransporter());
        if ( vehicle == 0 )  return;
-       physics = vehicle->RetPhysics();
+       physics = vehicle->GetPhysics();
        if ( physics == 0 )  return;
-       motion = vehicle->RetMotion();
+       motion = vehicle->GetMotion();
        if ( motion == 0 )  return;
    }
    else
    {
-       vehicle = m_object->RetTruck();
+       vehicle = dynamic_cast<COldObject*>(m_object->GetTransporter());
        if ( vehicle == 0 )  return;
-       physics = vehicle->RetPhysics();
+       physics = vehicle->GetPhysics();
        if ( physics == 0 )  return;
-       motion = vehicle->RetMotion();
+       motion = vehicle->GetMotion();
        if ( motion == 0 )  return;
    }
 
-   lin = NormSign(physics->RetLinMotionX(MO_REAACCEL)/50.0f);
-   cir = NormSign(physics->RetCirMotionY(MO_REASPEED)/physics->RetCirMotionY(MO_ADVSPEED));
+   lin = Math::NormSign(physics->GetLinMotionX(MO_REAACCEL)/50.0f);
+   cir = Math::NormSign(physics->GetCirMotionY(MO_REASPEED)/physics->GetCirMotionY(MO_ADVSPEED));
 
    top = 1.0f;
    if ( !motion->ExistPart(TP_TOP) )  top = 2.0f;  // + si pas de toît
 
-   type = m_object->RetType();
-   tType = vehicle->RetType();
+   type = m_object->GetType();
+   tType = vehicle->GetType();
 
    if ( type == OBJECT_BOT1 )
    {
@@ -4632,7 +4546,7 @@ void CMotionBot::SpeedAdapt(float effect[],
        else
        {
            // Diminue certains mouvements plus on va vite.
-           factor = 1.0f-Norm(Max(Abs(lin), Abs(cir))*1.5f);
+           factor = 1.0f-Math::Norm(Math::Max(abs(lin), abs(cir))*1.5f);
            effect[3*1+xx] *= factor;
            effect[3*2+xx] *= factor;
            effect[3*1+zz] *= factor;
@@ -4679,15 +4593,15 @@ void CMotionBot::SpeedAdapt(float effect[],
            effect[3*6+zz] -= cir*0.20f*top;
        }
 
-       m_cirVib.z = SmoothA(m_cirVib.z,  lin*0.3f*top, rTime*2.0f*top);
-       m_cirVib.x = SmoothA(m_cirVib.x, -cir*0.6f*top, rTime*2.0f*top);
+       m_cirVib.z = Math::SmoothA(m_cirVib.z,  lin*0.3f*top, rTime*2.0f*top);
+       m_cirVib.x = Math::SmoothA(m_cirVib.x, -cir*0.6f*top, rTime*2.0f*top);
        if ( m_cirVib.z >  0.2f )  m_cirVib.z =  0.2f;
        if ( m_cirVib.z < -0.2f )  m_cirVib.z = -0.2f;
        if ( m_cirVib.x >  0.2f )  m_cirVib.x =  0.2f;
        if ( m_cirVib.x < -0.2f )  m_cirVib.x = -0.2f;
        cirVib += m_cirVib;
 
-       linVib.y -= tanf(Abs(cirVib.x)+Abs(cirVib.z))*0.7f;
+       linVib.y -= tanf(abs(cirVib.x)+abs(cirVib.z))*0.7f;
    }
 
    if ( type == OBJECT_BOT4 )
@@ -4701,13 +4615,13 @@ void CMotionBot::SpeedAdapt(float effect[],
    {
        if ( tType == OBJECT_TRAX )
        {
-           m_cirVib.z = SmoothA(m_cirVib.z, lin*0.4f, rTime*1.0f);
-           m_cirVib.x = SmoothA(m_cirVib.x, cir*0.4f, rTime*1.0f);
+           m_cirVib.z = Math::SmoothA(m_cirVib.z, lin*0.4f, rTime*1.0f);
+           m_cirVib.x = Math::SmoothA(m_cirVib.x, cir*0.4f, rTime*1.0f);
        }
        else
        {
-           m_cirVib.z = SmoothA(m_cirVib.z, lin*0.2f*top, rTime*2.0f*top);
-           m_cirVib.x = SmoothA(m_cirVib.x, cir*0.2f*top, rTime*2.0f*top);
+           m_cirVib.z = Math::SmoothA(m_cirVib.z, lin*0.2f*top, rTime*2.0f*top);
+           m_cirVib.x = Math::SmoothA(m_cirVib.x, cir*0.2f*top, rTime*2.0f*top);
        }
        if ( m_cirVib.z >  0.2f )  m_cirVib.z =  0.2f;
        if ( m_cirVib.z < -0.2f )  m_cirVib.z = -0.2f;
@@ -4721,51 +4635,51 @@ void CMotionBot::SpeedAdapt(float effect[],
 
 void CMotionBot::FireBot2()
 {
-   D3DMATRIX*  mat;
-   D3DVECTOR   pos, speed;
-   FPOINT      dim;
+   Math::Matrix*  mat;
+   Math::Vector   pos, speed;
+   Math::Point      dim;
    int         i, channel;
 
    if ( m_lastSound <= 0.0f )
    {
-       m_lastSound = Rand()*0.4f+0.4f;
-       m_sound->Play(SOUND_FIREp, m_object->RetPosition(0));
+       m_lastSound = Math::Rand()*0.4f+0.4f;
+       m_sound->Play(SOUND_FIREp, m_object->GetPosition());
    }
 
-   if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_aTime )
+   if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_aTime )
    {
-       m_lastParticule = m_aTime;
+       m_lastParticle = m_aTime;
 
        for ( i=0 ; i<4 ; i++ )
        {
-           mat = m_object->RetWorldMatrix(7+2*(i/2));  // canon droite/gauche
-           pos = D3DVECTOR(1.2f, 0.6f, (i/2==0)?-0.5f:0.5f);
+           mat = m_object->GetWorldMatrix(7+2*(i/2));  // canon droite/gauche
+           pos = Math::Vector(1.2f, 0.6f, (i/2==0)?-0.5f:0.5f);
            pos = Transform(*mat, pos);
 
-           speed = D3DVECTOR(200.0f, 0.0f, 0.0f);
-           speed.x += (Rand()-0.5f)*12.0f;
-           speed.y += (Rand()-0.5f)*24.0f;
-           speed.z += (Rand()-0.5f)*24.0f;
+           speed = Math::Vector(200.0f, 0.0f, 0.0f);
+           speed.x += (Math::Rand()-0.5f)*12.0f;
+           speed.y += (Math::Rand()-0.5f)*24.0f;
+           speed.z += (Math::Rand()-0.5f)*24.0f;
            speed = Transform(*mat, speed);
            speed -= pos;
 
            dim.x = 1.0f;
            dim.y = dim.x;
-           channel = m_particule->CreateTrack(pos, speed, dim, PARTITRACK11,
+           channel = m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK11,
                                               2.0f, 200.0f, 0.5f, 1.0f);
-           m_particule->SetObjectFather(channel, m_object);
+           m_particle->SetObjectFather(channel, m_object);
 
-           speed = D3DVECTOR(5.0f, 0.0f, 0.0f);
-           speed.x += (Rand()-0.5f)*1.0f;
-           speed.y += (Rand()-0.5f)*2.0f;
-           speed.z += (Rand()-0.5f)*2.0f;
+           speed = Math::Vector(5.0f, 0.0f, 0.0f);
+           speed.x += (Math::Rand()-0.5f)*1.0f;
+           speed.y += (Math::Rand()-0.5f)*2.0f;
+           speed.z += (Math::Rand()-0.5f)*2.0f;
            speed = Transform(*mat, speed);
            speed -= pos;
            speed.y += 5.0f;
 
            dim.x = 2.0f;
            dim.y = dim.x;
-           m_particule->CreateParticule(pos, speed, dim, PARTISMOKE2, 2.0f, 0.0f);
+           m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE2, 2.0f, 0.0f);
        }
    }
 }
@@ -4774,28 +4688,28 @@ void CMotionBot::FireBot2()
 
 void CMotionBot::FireEvil1a()
 {
-   D3DMATRIX*  mat;
-   D3DVECTOR   pos, speed;
-   FPOINT      dim;
+   Math::Matrix*  mat;
+   Math::Vector   pos, speed;
+   Math::Point      dim;
    int         channel;
 
-   if ( m_lastParticule+0.05f <= m_aTime )
+   if ( m_lastParticle+0.05f <= m_aTime )
    {
-       m_lastParticule = m_aTime;
+       m_lastParticle = m_aTime;
 
-       mat = m_object->RetWorldMatrix(0);
-       pos = D3DVECTOR(0.6f, 6.7f, 0.0f);
-       speed.x = Rand()*60.0f;
-       speed.y = (Rand()-0.5f)*8.0f;
-       speed.z = (Rand()-0.5f)*8.0f;
+       mat = m_object->GetWorldMatrix(0);
+       pos = Math::Vector(0.6f, 6.7f, 0.0f);
+       speed.x = Math::Rand()*60.0f;
+       speed.y = (Math::Rand()-0.5f)*8.0f;
+       speed.z = (Math::Rand()-0.5f)*8.0f;
        speed += pos;
        pos = Transform(*mat, pos);
        speed = Transform(*mat, speed);
        speed -= pos;
        dim.x = 0.8f;
        dim.y = dim.x;
-       channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN2, 2.0f, 100.0f);
-       m_particule->SetObjectFather(channel, m_object);
+       channel = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGUN2, 2.0f, 100.0f);
+       m_particle->SetObjectFather(channel, m_object);
    }
 }
 
@@ -4803,26 +4717,26 @@ void CMotionBot::FireEvil1a()
 
 void CMotionBot::FireEvil1b()
 {
-   D3DVECTOR   pos, speed;
-   FPOINT      dim, rot;
+   Math::Vector   pos, speed;
+   Math::Point      dim, rot;
    int         channel, i;
 
-   if ( m_lastParticule+0.05f <= m_aTime )
+   if ( m_lastParticle+0.05f <= m_aTime )
    {
-       m_lastParticule = m_aTime;
+       m_lastParticle = m_aTime;
 
        for ( i=0 ; i<5 ; i++ )
        {
-           pos = m_object->RetPosition(0);
+           pos = m_object->GetPosition();
            pos.y += 6.7f;
-           rot = RotatePoint(Rand()*PI*2.0f, 20.0f+Rand()*20.0f);
+           rot = Math::RotatePoint(Math::Rand()*Math::PI*2.0f, 20.0f+Math::Rand()*20.0f);
            speed.x = rot.x;
            speed.z = rot.y;
-           speed.y = 15.0f+Rand()*15.0f;
+           speed.y = 15.0f+Math::Rand()*15.0f;
            dim.x = 0.8f;
            dim.y = dim.x;
-           channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN2, 2.0f, 100.0f);
-           m_particule->SetObjectFather(channel, m_object);
+           channel = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGUN2, 2.0f, 100.0f);
+           m_particle->SetObjectFather(channel, m_object);
        }
    }
 }
@@ -4831,26 +4745,26 @@ void CMotionBot::FireEvil1b()
 
 void CMotionBot::BubbleBot1()
 {
-   D3DMATRIX*  mat;
-   D3DVECTOR   pos, speed;
-   FPOINT      dim;
+   Math::Matrix*  mat;
+   Math::Vector   pos, speed;
+   Math::Point      dim;
    int         channel;
 
-   if ( m_lastParticule+0.05f <= m_aTime )
+   if ( m_lastParticle+0.05f <= m_aTime )
    {
-       m_lastParticule = m_aTime;
+       m_lastParticle = m_aTime;
 
-       mat = m_object->RetWorldMatrix(0);
-       pos.x = (Rand()-0.5f)*1.0f;
-       pos.z = (Rand()-0.5f)*1.0f;
+       mat = m_object->GetWorldMatrix(0);
+       pos.x = (Math::Rand()-0.5f)*1.0f;
+       pos.z = (Math::Rand()-0.5f)*1.0f;
        pos.y = 2.2f;
        pos = Transform(*mat, pos);
-       speed.y = (Rand()-0.5f)*8.0f+8.0f;
-       speed.x = (Rand()-0.5f)*0.2f;
-       speed.z = (Rand()-0.5f)*0.2f;
-       dim.x = Rand()*0.1f+0.2f;
+       speed.y = (Math::Rand()-0.5f)*8.0f+8.0f;
+       speed.x = (Math::Rand()-0.5f)*0.2f;
+       speed.z = (Math::Rand()-0.5f)*0.2f;
+       dim.x = Math::Rand()*0.1f+0.2f;
        dim.y = dim.x;
-       channel = m_particule->CreateParticule(pos, speed, dim, PARTIBUBBLE, 3.0f, 0.0f);
+       channel = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBUBBLE, 3.0f, 0.0f);
    }
 }
 
@@ -4858,14 +4772,13 @@ void CMotionBot::BubbleBot1()
 
 void CMotionBot::UpdateFaceMapping(int face)
 {
-   D3DMATERIAL7    mat;
-   float           limit[4], au, bu;
+   Gfx::Material    mat;
+   float           au, bu;
    int             i;
 
    if ( face == m_face )  return;
    m_face = face;
 
-   ZeroMemory( &mat, sizeof(D3DMATERIAL7) );
    mat.diffuse.r = 1.0f;
    mat.diffuse.g = 1.0f;
    mat.diffuse.b = 1.0f;  // blanc
@@ -4873,24 +4786,16 @@ void CMotionBot::UpdateFaceMapping(int face)
    mat.ambient.g = 0.5f;
    mat.ambient.b = 0.5f;
 
-//?    limit[0] = 0.0f;
-//?    limit[1] = m_engine->RetLimitLOD(0);
-//?    limit[2] = limit[1];
-//?    limit[3] = m_engine->RetLimitLOD(1);
-   limit[0] = 0.0f;
-   limit[1] = 1000000.0f;
-   limit[2] = 0.0f;
-   limit[3] = 1000000.0f;
-
    // faces des roues :
    au = 0.25f/2.0f/1.4f;
    bu = 0.25f/2.0f+face*0.25f;
    for ( i=0 ; i<1 ; i++ )
    {
-       m_engine->ChangeTextureMapping(m_object->RetObjectRank(0),
-                                      mat, D3DSTATEPART1, "bot2.tga", "",
-                                      limit[i*2+0], limit[i*2+1], D3DMAPPING1Z,
+       m_engine->ChangeTextureMapping(m_object->GetObjectRank(0),
+                                      mat, Gfx::ENG_RSTATE_PART1, "bot2.tga", "",
+                                      Gfx::ENG_TEX_MAPPING_1Z,
                                       au, bu, 1.0f, 0.0f);
+       // TODO (krzys_h): hey, don't forget to update all these ChangeTextureMapping paths later! ;)
    }
 }
 

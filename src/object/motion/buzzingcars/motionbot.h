@@ -1,16 +1,18 @@
 // motionbot.h
 
-#ifndef _MOTIONBOT_H_
-#define    _MOTIONBOT_H_
+#pragma once
+
+#include "object/motion/motion.h"
 
 
-class CInstanceManager;
+namespace Gfx
+{
 class CEngine;
 class CLight;
-class CParticule;
+class CParticle;
 class CTerrain;
 class CCamera;
-class CBrain;
+}
 class CPhysics;
 class CObject;
 
@@ -39,18 +41,18 @@ class CObject;
 class CMotionBot : public CMotion
 {
 public:
-   CMotionBot(CInstanceManager* iMan, CObject* object);
+   CMotionBot(COldObject* object);
    ~CMotionBot();
 
-   void        DeleteObject(BOOL bAll=FALSE);
-   BOOL        Create(D3DVECTOR pos, float angle, ObjectType type, BOOL bPlumb);
-   BOOL        EventProcess(const Event &event);
+   void        DeleteObject(bool bAll=false);
+   void        Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager);
+   bool        EventProcess(const Event &event);
    Error       SetAction(int action, float time=0.2f);
 
 protected:
    void        CreatePhysics();
-   BOOL        EventFrame(const Event &event);
-   void        SpeedAdapt(float effect[], D3DVECTOR &linVib, D3DVECTOR &cirVib, float rTime);
+   bool        EventFrame(const Event &event);
+   void        SpeedAdapt(float effect[], Math::Vector &linVib, Math::Vector &cirVib, float rTime);
    void        FireBot2();
    void        FireEvil1a();
    void        FireEvil1b();
@@ -63,17 +65,14 @@ protected:
    float       m_aTime;
    short       m_armAngles[3*20*MB_MAX];
    int         m_armPartIndex;
-   float       m_lastParticule;
+   float       m_lastParticle;
    float       m_lastSound;
    float       m_walkTime;
    float       m_starterTime;
    int         m_starterPhase;
    int         m_partiGuide;
-   CameraType  m_cameraType;
+   Gfx::CameraType  m_cameraType;
    CObject*    m_cameraObj;
-   D3DVECTOR   m_cirVib;
-   BOOL        m_bBreak;
+   Math::Vector   m_cirVib;
+   bool        m_bBreak;
 };
-
-
-#endif //_MOTIONBOT_H_

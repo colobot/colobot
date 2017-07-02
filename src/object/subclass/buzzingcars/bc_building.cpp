@@ -28,6 +28,17 @@
 
 #include "object/object_create_params.h"
 
+#include "object/auto/buzzingcars/autoalien.h"
+#include "object/auto/buzzingcars/autobarrel.h"
+#include "object/auto/buzzingcars/autocomputer.h"
+#include "object/auto/buzzingcars/autodock.h"
+#include "object/auto/buzzingcars/autodoor.h"
+#include "object/auto/buzzingcars/autogenerator.h"
+#include "object/auto/buzzingcars/autohome.h"
+#include "object/auto/buzzingcars/autoinca.h"
+#include "object/auto/buzzingcars/autoremote.h"
+#include "object/auto/buzzingcars/autostand.h"
+
 
 CBCBuilding::CBCBuilding(int id, ObjectType type)
     : CBaseBuilding(id, type)
@@ -1442,7 +1453,117 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
     pos.y += height;
     obj->SetPosition(pos);  // to display the shadows immediately
 
-    // TODO (krzys_h): CreateOtherObject(type);
+    std::unique_ptr<CAuto> objAuto;
+    /*if ( params.type == OBJECT_TOWER )
+    {
+        objAuto = MakeUnique<CAutoTower>(obj.get());
+    }*/
+    if ( params.type == OBJECT_DOOR1 ||
+         params.type == OBJECT_DOOR2 ||
+         params.type == OBJECT_DOOR3 ||
+         params.type == OBJECT_DOOR4 )
+    {
+        objAuto = MakeUnique<CAutoDoor>(obj.get());
+    }
+    if ( params.type == OBJECT_ALIEN2 ||
+         params.type == OBJECT_ALIEN3 ||
+         params.type == OBJECT_ALIEN5 ||
+         params.type == OBJECT_ALIEN6 ||
+         params.type == OBJECT_ALIEN7 ||
+         params.type == OBJECT_ALIEN8 ||
+         params.type == OBJECT_ALIEN9 )
+    {
+        objAuto = MakeUnique<CAutoAlien>(obj.get());
+    }
+    if ( params.type == OBJECT_DOCK )
+    {
+        objAuto = MakeUnique<CAutoDock>(obj.get());
+    }
+    if ( params.type == OBJECT_REMOTE )
+    {
+        objAuto = MakeUnique<CAutoRemote>(obj.get());
+    }
+    if ( params.type == OBJECT_STAND )
+    {
+        objAuto = MakeUnique<CAutoStand>(obj.get());
+    }
+    if ( params.type == OBJECT_GENERATOR )
+    {
+        objAuto = MakeUnique<CAutoGenerator>(obj.get());
+    }
+    if ( params.type == OBJECT_COMPUTER )
+    {
+        objAuto = MakeUnique<CAutoComputer>(obj.get());
+    }
+    /*if ( params.type == OBJECT_REPAIR )
+    {
+        objAuto = MakeUnique<CAutoRepair>(obj.get());
+    }*/
+    if ( params.type == OBJECT_INCA7 )
+    {
+        objAuto = MakeUnique<CAutoInca>(obj.get());
+    }
+    if ( params.type == OBJECT_CARCASS1  ||
+         params.type == OBJECT_CARCASS2  ||
+         params.type == OBJECT_CARCASS3  ||
+         params.type == OBJECT_CARCASS4  ||
+         params.type == OBJECT_CARCASS5  ||
+         params.type == OBJECT_CARCASS6  ||
+         params.type == OBJECT_CARCASS7  ||
+         params.type == OBJECT_CARCASS8  ||
+         params.type == OBJECT_CARCASS9  ||
+         params.type == OBJECT_CARCASS10 )
+    {
+        objAuto = MakeUnique<CAutoBarrel>(obj.get());
+    }
+    /*if ( params.type == OBJECT_BOMB )
+    {
+        objAuto = MakeUnique<CAutoBomb>(obj.get());
+    }*/
+    if ( params.type == OBJECT_HOME1 || //?
+         params.type == OBJECT_HOME2 ||
+         params.type == OBJECT_HOME3 ||
+         params.type == OBJECT_HOME4 ||
+         params.type == OBJECT_HOME5 )
+    {
+        objAuto = MakeUnique<CAutoHome>(obj.get());
+    }
+    /* TODO: this is the same as Colobot, right?
+    if ( params.type == OBJECT_ROOT5 )
+    {
+        objAuto = MakeUnique<CAutoRoot>(obj.get());
+    }
+    */
+
+    /* TODO: Not implemented yet
+    if ( params.type == OBJECT_FIRE ) //?
+    {
+        objAuto = MakeUnique<CAutoFire>(obj.get());
+    }
+    if ( params.type == OBJECT_HELICO ) //?
+    {
+        objAuto = MakeUnique<CAutoHelico>(obj.get());
+    }
+    if ( params.type == OBJECT_COMPASS ) //?
+    {
+        objAuto = MakeUnique<CAutoCompass>(obj.get());
+    }
+    if ( params.type == OBJECT_BLITZER ) //?
+    {
+        objAuto = MakeUnique<CAutoBlitzer>(obj.get());
+    }
+    if ( params.type == OBJECT_HOOK ) //?
+    {
+        objAuto = MakeUnique<CAutoHook>(obj.get());
+    }
+    */
+
+    if (objAuto != nullptr)
+    {
+        objAuto->Init();
+        obj->SetAuto(std::move(objAuto));
+    }
+
     engine->LoadAllTextures();
 
     return obj;

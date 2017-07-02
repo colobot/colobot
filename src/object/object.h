@@ -145,6 +145,8 @@ public:
     //! Adds a new crash sphere
     /** Crash sphere position is given in object coordinates */
     void AddCrashSphere(const CrashSphere& crashSphere);
+
+    void MoveCrashSphere(int rank, Math::Sphere sphere);
     //! Returns total number of crash spheres
     int GetCrashSphereCount();
     //! Returns the first crash sphere (assumes it exists)

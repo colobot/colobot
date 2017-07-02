@@ -621,6 +621,16 @@ void CCamera::StartOver(CameraOverEffect effect, Math::Vector pos, float force)
         m_overForce   = 1.0f;
     }
 
+    if ( m_overType == CAM_OVER_EFFECT_CRASH )
+    {
+        m_overColor   = Color(0.8f, 0.8f, 0.8f);  // blanc
+        m_overMode    = ENG_RSTATE_TCOLOR_BLACK;
+
+        m_overFadeIn  = 0.0f;
+        m_overFadeOut = 0.2f;
+        m_overForce   = 1.0f;
+    }
+
     if ( m_overType == CAM_OVER_EFFECT_FADEIN_WHITE )
     {
         m_overColor   = Color(1.0f, 1.0f, 1.0f); // white
@@ -767,10 +777,12 @@ void CCamera::UpdateCameraAnimation(const Math::Vector &eyePt,
     float prog = 0.0f;
     float dist = Math::Distance(m_finalEye, m_actualEye);
 
-    if (m_smooth == CAM_SMOOTH_NONE) prog = dist;
-    if (m_smooth == CAM_SMOOTH_NORM) prog = powf(dist, 1.5f) * rTime * 0.75f;
-    if (m_smooth == CAM_SMOOTH_HARD) prog = dist * rTime * 4.0f;
-    if (dist == 0.0f)
+    if ( m_smooth == CAM_SMOOTH_NONE ) prog = dist;
+    if ( m_smooth == CAM_SMOOTH_NORM ) prog = powf(dist, 1.5f) * rTime * 0.75f;
+    if ( m_smooth == CAM_SMOOTH_SOFT ) prog = dist * rTime * 3.0f;
+    if ( m_smooth == CAM_SMOOTH_HARD ) prog = dist * rTime * 4.0f;
+    if ( m_smooth == CAM_SMOOTH_SPEC ) prog = dist * rTime * 4.0f;
+    if ( dist == 0.0f )
     {
         m_actualEye = m_finalEye;
     }
@@ -784,7 +796,9 @@ void CCamera::UpdateCameraAnimation(const Math::Vector &eyePt,
     dist = Math::Distance(m_finalLookat, m_actualLookat);
     if ( m_smooth == CAM_SMOOTH_NONE ) prog = dist;
     if ( m_smooth == CAM_SMOOTH_NORM ) prog = powf(dist, 1.5f) * rTime * 3.0f;
+    if ( m_smooth == CAM_SMOOTH_SOFT ) prog = dist * rTime * 3.0f;
     if ( m_smooth == CAM_SMOOTH_HARD ) prog = dist * rTime * 4.0f;
+    if ( m_smooth == CAM_SMOOTH_SPEC ) prog = dist * rTime * 4.0f;
     if ( dist == 0.0f )
     {
         m_actualLookat = m_finalLookat;

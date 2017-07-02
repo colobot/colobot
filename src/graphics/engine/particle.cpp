@@ -494,7 +494,7 @@ int CParticle::CreateFrag(Math::Vector pos, Math::Vector speed,
 
 
 /** Returns the channel of the particle created or -1 on error */
-int CParticle::CreatePart(Math::Vector pos, Math::Vector speed,
+int CParticle::CreatePart(Math::Vector pos, Math::Vector speed, Math::Point dim,
                           ParticleType type,
                           float duration, float mass, float weight,
                           float windSensitivity, int sheet)
@@ -517,6 +517,7 @@ int CParticle::CreatePart(Math::Vector pos, Math::Vector speed,
             m_particle[i].pos       = pos;
             m_particle[i].goal      = pos;
             m_particle[i].speed     = speed;
+            m_particle[i].dim       = dim;
             m_particle[i].windSensitivity = windSensitivity;
             m_particle[i].zoom      = 1.0f;
             m_particle[i].angle     = 0.0f;
@@ -826,6 +827,12 @@ void CParticle::SetPhase(int channel, ParticlePhase phase, float duration)
     m_particle[channel].phase = phase;
     m_particle[channel].duration = duration;
     m_particle[channel].phaseTime = m_particle[channel].time;
+}
+
+void CParticle::SetGoal(int channel, Math::Vector goal)
+{
+    if (!CheckChannel(channel))  return;
+    m_particle[channel].goal = goal;
 }
 
 bool CParticle::GetPosition(int channel, Math::Vector &pos)

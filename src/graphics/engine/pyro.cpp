@@ -1599,7 +1599,7 @@ void CPyro::ExploStart()
             speed.z = (Math::Rand()-0.5f)*20.0f;
         }
 
-        int channel = m_particle->CreatePart(pos, speed, PARTIPART, 10.0f, 20.0f, weight, 0.5f);
+        int channel = m_particle->CreatePart(pos, speed, Math::Point(), PARTIPART, 10.0f, 20.0f, weight, 0.5f, 0);
         if (channel != -1)
             m_object->SetMasterParticle(i, channel);
     }

@@ -20,6 +20,7 @@
 #include "object/object_factory.h"
 
 #include "common/make_unique.h"
+#include "common/stringutils.h"
 
 #include "graphics/engine/engine.h"
 #include "graphics/engine/lightning.h"
@@ -32,6 +33,7 @@
 
 #include "math/geometry.h"
 
+#include "object/object_create_exception.h"
 #include "object/object_create_params.h"
 #include "object/old_object.h"
 
@@ -43,6 +45,7 @@
 #include "object/auto/autoroot.h"
 
 #include "object/subclass/buzzingcars/bc_barrier.h"
+#include "object/subclass/buzzingcars/bc_bot.h"
 #include "object/subclass/buzzingcars/bc_building.h"
 #include "object/subclass/buzzingcars/bc_car.h"
 #include "object/subclass/buzzingcars/bc_resource.h"
@@ -498,11 +501,28 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_UFO:
             return CBCCar::Create(params, m_oldModelManager, m_engine);
 
+        case OBJECT_BOT1:
+        case OBJECT_BOT2:
+        case OBJECT_BOT3:
+        case OBJECT_BOT4:
+        case OBJECT_BOT5:
+        case OBJECT_CARROT:
+        case OBJECT_STARTER:
+        case OBJECT_WALKER:
+        case OBJECT_CRAZY:
+        case OBJECT_GUIDE:
+        case OBJECT_EVIL1:
+        case OBJECT_EVIL2:
+        case OBJECT_EVIL3:
+        case OBJECT_EVIL4:
+        case OBJECT_EVIL5:
+            return CBCBot::Create(params, m_oldModelManager, m_engine);
+
         default:
             break;
     }
 
-    return nullptr;
+    throw CObjectCreateException("Tried to create object of unknown type", params.type);
 }
 
 // Creates a small resource set on the ground.

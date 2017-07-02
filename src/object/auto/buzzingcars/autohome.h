@@ -1,17 +1,20 @@
 // autohome.h
 
-#ifndef _AUTOHOME_H_
-#define    _AUTOHOME_H_
+#pragma once
+
+#include "object/auto/auto.h"
+
+#include "graphics/engine/camera.h"
 
 
-class CInstanceManager;
-class CD3DEngine;
-class CParticule;
+namespace Gfx
+{
+class CEngine;
+class CParticle;
 class CTerrain;
 class CCamera;
-class CObject;
-
-enum ParticuleType;
+}
+class COldObject;
 
 
 enum AutoHomePhase
@@ -34,26 +37,26 @@ enum AutoHomePhase
 class CAutoHome : public CAuto
 {
 public:
-   CAutoHome(CInstanceManager* iMan, CObject* object);
+   CAutoHome(COldObject* object);
    ~CAutoHome();
 
-   void        DeleteObject(BOOL bAll=FALSE);
+   void        DeleteObject(bool bAll=false);
 
    void        Init();
    void        Start(int param);
-   BOOL        EventProcess(const Event &event);
-   BOOL        Abort();
-   Error       RetError();
+   bool        EventProcess(const Event &event);
+   bool        Abort();
+   Error       GetError();
 
 protected:
    void        FireStopUpdate();
    void        StartingEffect();
    void        MoveBot(float progress, float rTime);
    void        EndingEffect();
-   CObject*    SearchVehicle();
-   CObject*    SearchObject(ObjectType type, D3DVECTOR center, float radius);
-   BOOL        ProxiSelect(float dist);
-   D3DVECTOR   RetVehiclePoint(CObject *pObj);
+   COldObject*    SearchVehicle();
+   COldObject*    SearchObject(ObjectType type, Math::Vector center, float radius);
+   bool        ProxiSelect(float dist);
+   Math::Vector   GetVehiclePoint(COldObject *pObj);
    void        StartVehicleAction(int action);
    void        StartBotAction(int action, float delay=2.0f);
    void        HappyBlupi();
@@ -65,24 +68,21 @@ protected:
    float           m_lastParticule;
    int             m_partiStop[6];
    ObjectType      m_type;
-   CObject*        m_vehicle;
-   CObject*        m_bot;
-   D3DVECTOR       m_vehiclePos;
-   D3DVECTOR       m_startPos;
-   D3DVECTOR       m_goalPos;
-   D3DVECTOR       m_dir;
+   COldObject*        m_vehicle;
+   COldObject*        m_bot;
+   Math::Vector       m_vehiclePos;
+   Math::Vector       m_startPos;
+   Math::Vector       m_goalPos;
+   Math::Vector       m_dir;
    float           m_startAngle;
    float           m_goalAngle;
    float           m_beforeClose;
-   CameraType      m_cameraType;
-   BOOL            m_bZoomIn;
-   BOOL            m_bBreakFinish;
+   Gfx::CameraType      m_cameraType;
+   bool            m_bZoomIn;
+   bool            m_bBreakFinish;
    int             m_breakPhase[4];
    float           m_breakTimeWait[4];
    float           m_breakTimeBzzz[4];
    int             m_lastDir;
    int             m_channelSound;
 };
-
-
-#endif //_AUTOHOME_H_

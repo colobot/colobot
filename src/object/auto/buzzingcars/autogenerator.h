@@ -1,17 +1,18 @@
 // autogenerator.h
 
-#ifndef _AUTOGENERATOR_H_
-#define    _AUTOGENERATOR_H_
+#pragma once
+
+#include "object/auto/auto.h"
 
 
-class CInstanceManager;
-class CD3DEngine;
-class CParticule;
+namespace Gfx
+{
+class CEngine;
+class CParticle;
 class CTerrain;
 class CCamera;
-class CObject;
-
-enum ParticuleType;
+}
+class COldObject;
 
 
 
@@ -25,23 +26,23 @@ enum AutoGeneratorPhase
 class CAutoGenerator : public CAuto
 {
 public:
-   CAutoGenerator(CInstanceManager* iMan, CObject* object);
+   CAutoGenerator(COldObject* object);
    ~CAutoGenerator();
 
-   void        DeleteObject(BOOL bAll=FALSE);
+   void        DeleteObject(bool bAll=false);
 
    void        Init();
    void        Start(int param);
-   BOOL        EventProcess(const Event &event);
-   BOOL        Abort();
-   Error       RetError();
+   bool        EventProcess(const Event &event);
+   bool        Abort();
+   Error       GetError();
 
 protected:
-   CObject*    SearchObject();
-   CObject*    SearchObject(ObjectType type);
+   COldObject*    SearchObject();
+   COldObject*    SearchObject(ObjectType type);
    int         CountObject(ObjectType type);
-   BOOL        CreateObject(ObjectType type);
-   void        StartAction(CObject *pObj, int action);
+   bool        CreateObject(ObjectType type);
+   void        StartAction(COldObject *pObj, int action);
 
 protected:
    AutoGeneratorPhase m_phase;
@@ -53,6 +54,3 @@ protected:
    int         m_programNumber;
    float       m_lastParticule;
 };
-
-
-#endif //_AUTOGENERATOR_H_

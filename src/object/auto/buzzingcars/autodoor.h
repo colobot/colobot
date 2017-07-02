@@ -1,17 +1,18 @@
 // autodoor.h
 
-#ifndef _AUTODOOR_H_
-#define    _AUTODOOR_H_
+#pragma once
+
+#include "object/auto/auto.h"
 
 
-class CInstanceManager;
-class CD3DEngine;
-class CParticule;
+namespace Gfx
+{
+class CEngine;
+class CParticle;
 class CTerrain;
 class CCamera;
-class CObject;
-
-enum ParticuleType;
+}
+class COldObject;
 
 
 enum AutoDoorPhase
@@ -39,26 +40,26 @@ enum AutoDoorPhase
 class CAutoDoor : public CAuto
 {
 public:
-   CAutoDoor(CInstanceManager* iMan, CObject* object);
+   CAutoDoor(COldObject* object);
    ~CAutoDoor();
 
-   void        DeleteObject(BOOL bAll=FALSE);
+   void        DeleteObject(bool bAll=false);
 
    void        Init();
    void        Start(int param);
-   BOOL        EventProcess(const Event &event);
-   BOOL        Abort();
-   Error       RetError();
+   bool        EventProcess(const Event &event);
+   bool        Abort();
+   Error       GetError();
 
 protected:
    void        MoveDoor(float progress);
-   BOOL        DetachPart(int part, D3DVECTOR speed);
+   bool        DetachPart(int part, Math::Vector speed);
    void        UpdateCrashSphere();
    void        FireStopUpdate();
-   CObject*    SearchTarget();
-   CObject*    SearchVehicle(float radius=20.0f);
-   void        CrashVehicle(CObject *vehicle, BOOL bFlat);
-   void        DownParticule(float rTime, D3DVECTOR pos);
+   COldObject*    SearchTarget();
+   COldObject*    SearchVehicle(float radius=20.0f);
+   void        CrashVehicle(COldObject *vehicle, bool bFlat);
+   void        DownParticule(float rTime, Math::Vector pos);
 
 protected:
    ObjectType      m_type;     // OBJECT_DOORn
@@ -74,8 +75,5 @@ protected:
    float           m_doorProgress;
    float           m_doorStart;
    int             m_partiStop[6];
-   D3DVECTOR       m_botPos;
+   Math::Vector       m_botPos;
 };
-
-
-#endif //_AUTODOOR_H_

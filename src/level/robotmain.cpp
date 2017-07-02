@@ -4901,6 +4901,14 @@ void CRobotMain::SetMissionResultFromScript(Error result, float delay)
     m_missionResultFromScript = true;
 }
 
+void CRobotMain::SetMissionResult(Error result, Math::Vector lookat)
+{
+    m_missionResult = result;
+    m_missionResultFromScript = true;
+    // TODO (krzys_h): m_bLostLookat = TRUE;
+    // TODO (krzys_h): m_lostLookat = lookat;
+}
+
 Error CRobotMain::ProcessEndMissionTakeForGroup(std::vector<CSceneEndCondition*>& endTakes)
 {
     Error finalResult = ERR_OK;
@@ -6027,4 +6035,27 @@ int CRobotMain::GetSelectedDifficulty()
 {
     // TODO
     return 2;
+}
+
+// Indique si le chrono tourne.
+
+bool CRobotMain::IsGameTime()
+{
+    // TODO: && m_startCounter == 0 && m_bStopwatch && !m_bSuperWin
+    return ( !m_movieLock && m_suspend == nullptr && m_engine->GetPause() && m_winDelay == 0.0f && m_lostDelay == 0.0f );
+}
+
+// Enclanche ou déclanche le chrono.
+
+void CRobotMain::SetStopwatch(bool bRun)
+{
+    // TODO (krzys_h): m_bStopwatch = bRun;
+    // I believe this is supposed to temporairly stop the timer while animation is playing
+}
+
+// Indique si le chrono tourne.
+
+bool CRobotMain::GetEndingGame()
+{
+    return ( m_winDelay != 0.0f || m_lostDelay != 0.0f );
 }

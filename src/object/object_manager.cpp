@@ -424,3 +424,16 @@ CObject*  CObjectManager::FindNearest(CObject* pThis, Math::Vector thisPosition,
 {
     return Radar(pThis, thisPosition, 0.0f, type, 0.0f, Math::PI*2.0f, 0.0f, maxDist, false, FILTER_NONE, cbotTypes);
 }
+
+COldObject* CObjectManager::CreateEmptyObject()
+{
+    int id = m_nextId++;
+
+    auto objectUPtr = MakeUnique<COldObject>(id);
+
+    COldObject* objectPtr = objectUPtr.get();
+
+    m_objects[id] = std::move(objectUPtr);
+
+    return objectPtr;
+}

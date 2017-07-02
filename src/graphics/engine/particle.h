@@ -277,7 +277,7 @@ public:
                            float windSensitivity = 1.0f, int sheet = 0);
 
     //! Creates a new particle being a part of object
-    int         CreatePart(Math::Vector pos, Math::Vector speed, ParticleType type,
+    int         CreatePart(Math::Vector pos, Math::Vector speed, Math::Point dim, ParticleType type,
                            float duration = 1.0f, float mass = 0.0f, float weight = 0.0f,
                            float windSensitivity = 1.0f, int sheet = 0);
 
@@ -312,6 +312,7 @@ public:
     void        SetIntensity(int channel, float intensity);
     void        SetParam(int channel, Math::Vector pos, Math::Point dim, float zoom, float angle, float intensity);
     void        SetPhase(int channel, ParticlePhase phase, float duration);
+    void        SetGoal(int channel, Math::Vector goal);
 
     //! Returns the position of the particle
     bool        GetPosition(int channel, Math::Vector &pos);

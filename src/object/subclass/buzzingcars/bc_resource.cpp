@@ -28,6 +28,8 @@
 
 #include "object/object_create_params.h"
 
+#include "object/auto/buzzingcars/autobarrel.h"
+
 CBCResource::CBCResource(int id, ObjectType type)
     : COldObject(id)
 {
@@ -375,7 +377,20 @@ std::unique_ptr<CBCResource> CBCResource::Create(
     }
 
     obj->SetFloorHeight(0.0f);
-    // TODO (krzys_h): CreateOtherObject(type);
+
+    std::unique_ptr<CAuto> objAuto;
+    if ( params.type == OBJECT_BARREL    ||
+         params.type == OBJECT_BARRELa   )
+    {
+        objAuto = MakeUnique<CAutoBarrel>(obj.get());
+    }
+
+    if (objAuto != nullptr)
+    {
+        objAuto->Init();
+        obj->SetAuto(std::move(objAuto));
+    }
+
     engine->LoadAllTextures();
     if ( !bPlumb )  obj->FloorAdjust();
 

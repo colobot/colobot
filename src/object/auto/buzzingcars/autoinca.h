@@ -1,15 +1,20 @@
 // autoinca.h
 
-#ifndef _AUTOINCA_H_
-#define    _AUTOINCA_H_
+#pragma once
+
+#include "object/auto/auto.h"
+
+#include "graphics/engine/camera.h"
 
 
-class CInstanceManager;
-class CD3DEngine;
-class CParticule;
+namespace Gfx
+{
+class CEngine;
+class CParticle;
 class CTerrain;
 class CCamera;
-class CObject;
+}
+class COldObject;
 
 
 
@@ -26,19 +31,19 @@ enum AutoIncaPhase
 class CAutoInca : public CAuto
 {
 public:
-   CAutoInca(CInstanceManager* iMan, CObject* object);
+   CAutoInca(COldObject* object);
    ~CAutoInca();
 
-   void        DeleteObject(BOOL bAll=FALSE);
+   void        DeleteObject(bool bAll=false);
 
    void        Init();
    void        Start(int param);
-   BOOL        EventProcess(const Event &event);
-   BOOL        Abort();
-   Error       RetError();
+   bool        EventProcess(const Event &event);
+   bool        Abort();
+   Error       GetError();
 
 protected:
-   CObject*    SearchObject(ObjectType type, D3DVECTOR center, float radius);
+   COldObject*    SearchObject(ObjectType type, Math::Vector center, float radius);
    void        CameraBegin();
    void        CameraEnd();
    void        CreateBlitz(float delay);
@@ -52,14 +57,11 @@ protected:
    float       m_progress;
    float       m_speed;
 
-   CObject*    m_vehicle;
-   CObject*    m_king;
+   COldObject*    m_vehicle;
+   COldObject*    m_king;
    float       m_lastParticule;
-   D3DVECTOR   m_targetPos;
-   CameraType  m_cameraType;
+   Math::Vector   m_targetPos;
+   Gfx::CameraType  m_cameraType;
    int         m_channelRay;
-   BOOL        m_bBlitz;
+   bool        m_bBlitz;
 };
-
-
-#endif //_AUTOINCA_H_

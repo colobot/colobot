@@ -95,6 +95,13 @@ void CObject::AddCrashSphere(const CrashSphere& crashSphere)
     m_crashSpheres.push_back(crashSphere);
 }
 
+// Déplace une sphère.
+
+void CObject::MoveCrashSphere(int rank, Math::Sphere sphere)
+{
+    m_crashSpheres[rank].sphere = sphere;
+}
+
 CrashSphere CObject::GetFirstCrashSphere()
 {
     assert(m_crashSpheres.size() >= 1);

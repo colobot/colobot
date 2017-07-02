@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "object/subclass/buzzingcars/bc_car.h"
+#include "object/subclass/buzzingcars/bc_bot.h"
 
 #include "common/make_unique.h"
 
@@ -28,47 +28,57 @@
 
 #include "object/object_create_params.h"
 
-#include "object/motion/buzzingcars/motioncar.h"
+#include "object/motion/buzzingcars/motionbot.h"
 
 #include "physics/physics.h"
 
 
-CBCCar::CBCCar(int id, ObjectType type)
+CBCBot::CBCBot(int id, ObjectType type)
     : COldObject(id)
 {
     SetType(type);
 }
 
-CBCCar::~CBCCar()
+CBCBot::~CBCBot()
 {}
 
-std::unique_ptr<CBCCar> CBCCar::Create(
+std::unique_ptr<CBCBot> CBCBot::Create(
     const ObjectCreateParams& params,
     Gfx::COldModelManager* modelManager,
     Gfx::CEngine* engine)
 {
-    auto obj = MakeUnique<CBCCar>(params.id, params.type);
+    auto obj = MakeUnique<CBCBot>(params.id, params.type);
 
     obj->SetOption(params.option);
     obj->SetTeam(params.team);
-    obj->SetTrainer(params.trainer);
-    obj->SetModel(params.model);
-    obj->SetSubModel(params.subModel);
 
-    auto physics = MakeUnique<CPhysics>(obj.get());
-    std::unique_ptr<CMotion> motion = MakeUnique<CMotionCar>(obj.get());
+    if ( params.type == OBJECT_CARROT  ||
+         params.type == OBJECT_STARTER ||
+         params.type == OBJECT_WALKER  ||
+         params.type == OBJECT_CRAZY   ||
+         params.type == OBJECT_GUIDE   ||
+         params.type == OBJECT_EVIL1   ||
+         params.type == OBJECT_EVIL3   ||
+         params.type == OBJECT_EVIL4   ||
+         params.type == OBJECT_EVIL5   )
+    {
+        auto physics = MakeUnique<CPhysics>(obj.get());
+        std::unique_ptr<CMotion> motion = MakeUnique<CMotionBot>(obj.get());
 
-    motion->SetPhysics(physics.get());
-    physics->SetMotion(motion.get());
+        motion->SetPhysics(physics.get());
+        physics->SetMotion(motion.get());
 
-    motion->Create(params.pos, params.angle, params.type, params.power, modelManager);
+        motion->Create(params.pos, params.angle, params.type, params.power, modelManager);
 
-    obj->SetProgrammable();
-    obj->SetMovable(std::move(motion), std::move(physics));
-
-    obj->m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Controllable)] = true;
-    
-    obj->m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true; // TODO (krzys_h): hardcoding, yey!
+        obj->SetProgrammable();
+        obj->SetMovable(std::move(motion), std::move(physics));
+    }
+    else
+    {
+        std::unique_ptr<CMotion> motion = MakeUnique<CMotionBot>(obj.get());
+        motion->Create(params.pos, params.angle, params.type, params.power, modelManager);
+        obj->SetMovable(std::move(motion), nullptr);
+    }
 
     return obj;
 }

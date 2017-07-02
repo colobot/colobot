@@ -22,17 +22,17 @@
 #include "object/old_object.h"
 
 /**
- * \class CBCCar
- * \brief Base class for all BuzzingCars cars (or other vehicles?)
+ * \class CBCBot
+ * \brief Base class for all BuzzingCars bots
  */
-class CBCCar : public COldObject
+class CBCBot : public COldObject
 {
 public:
-    CBCCar(int id, ObjectType type);
-    virtual ~CBCCar();
+    CBCBot(int id, ObjectType type);
+    virtual ~CBCBot();
 
 public:
-    static std::unique_ptr<CBCCar> Create(
+    static std::unique_ptr<CBCBot> Create(
         const ObjectCreateParams& params,
         Gfx::COldModelManager* modelManager,
         Gfx::CEngine* engine);

@@ -82,8 +82,19 @@ public:
     virtual void            SetTilt(Math::Vector dir);
     virtual Math::Vector    GetTilt();
 
+    virtual void	TwistInit();
+    virtual void	TwistPart(Math::Vector impact, float force);
+    virtual int		GetRemovePart(int &param);
+    virtual bool	GetLight(int rank);
+    virtual	bool	ExistPart(TypePart part);
+    virtual int		GetTotalPart();
+    virtual int		GetUsedPart();
+
     virtual void            SetWheelType(WheelType type);
     virtual WheelType       GetWheelType();
+
+    virtual int		GetStateLength();
+    virtual void	GetStateBuffer(char *buffer);
 
 protected:
     CApplication*       m_app;

@@ -34,35 +34,15 @@
 #include "object/old_object.h"
 #include "object/object_manager.h"
 
+#include "object/motion/buzzingcars/motionbot.h"
+
 #include "physics/physics.h"
 
 #include "sound/sound.h"
 
 //const float ARM_NEUTRAL_ANGLE1 = 110.0f*Math::Math::PI/180.0f;
 //const float ARM_NEUTRAL_ANGLE2 = -130.0f*Math::Math::PI/180.0f;
-//const float ARM_NEUTRAL_ANGLE3 = -50.0f*Math::Math::PI/180.0f;
-
-
-
-// TODO: Copied from motionbot.h temporairly
-#define MB_WAIT        0       // attend au repos
-#define MB_TRUCK   1       // soulevé par la grue
-#define MB_FEAR        2       // peur
-#define MB_GOHOME  3       // va à la maison
-#define MB_HOME1   4       // à la maison 1
-#define MB_HOME2   5       // à la maison 2
-#define MB_FLIC        6       // gendarme (BOT1)
-#define MB_FIRE        6       // tir (EVIL1)
-#define MB_WALK1   7       // marche 1 (WALKER)
-#define MB_WALK2   8       // marche 2 (WALKER)
-#define MB_WALK3   9       // marche 3 (WALKER)
-#define MB_WALK4   10      // marche 4 (WALKER)
-#define MB_MAX     11
-
-#define MB_HAPPY   100
-#define MB_ANGRY   101
-#define MB_BREAK   102
-#define MB_REPAIR  103
+//const float ARM_NEUTRAL_ANGLE3 = -50.0f*Math::Math::PI/180.0f
 
 
 
@@ -2828,7 +2808,7 @@ void CMotionCar::TwistPart(Math::Vector impact, float force)
     }
 }
 
-// Retourne le numéro de la prochaine partie à détruire,
+// Getourne le numéro de la prochaine partie à détruire,
 // et considère quelle est déjà virtuellement détruite.
 
 int CMotionCar::GetRemovePart(int &param)

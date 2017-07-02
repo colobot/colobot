@@ -400,7 +400,6 @@ std::unique_ptr<CBCBarrier> CBCBarrier::Create(
     obj->SetPosition(pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
-    // TODO (krzys_h): CreateOtherObject(type);
     if ( !bPlumb )
     {
         obj->FloorAdjust();

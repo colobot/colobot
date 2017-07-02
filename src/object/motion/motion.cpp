@@ -217,6 +217,55 @@ Math::Vector CMotion::GetTilt()
     return m_inclinaison;
 }
 
+// Initialse la torsion de toutes les pièces pour qu'elles soient
+// toutes droites.
+
+void CMotion::TwistInit()
+{
+}
+
+// Tord qq pièces suite à un choc.
+
+void CMotion::TwistPart(Math::Vector impact, float force)
+{
+}
+
+// Retourne le numéro de la prochaine partie à détruire.
+
+int CMotion::GetRemovePart(int &param)
+{
+    param = 0;
+    return -1;
+}
+
+// Indique si un phare existe.
+
+bool CMotion::GetLight(int rank)
+{
+    return false;
+}
+
+// Indique la présence d'une partie spécifique.
+
+bool CMotion::ExistPart(TypePart part)
+{
+    return false;
+}
+
+// Donne le nombre de pièces total du véhicule.
+
+int CMotion::GetTotalPart()
+{
+    return 0;
+}
+
+// Donne le nombre de pièces utilisées du véhicule.
+
+int CMotion::GetUsedPart()
+{
+    return 0;
+}
+
 void CMotion::SetWheelType(WheelType type)
 {
     m_wheelType = type;
@@ -225,4 +274,16 @@ void CMotion::SetWheelType(WheelType type)
 WheelType CMotion::GetWheelType()
 {
     return m_wheelType;
+}
+
+
+// Gestion de l'état d'un véhicule.
+
+int CMotion::GetStateLength()
+{
+    return 0;
+}
+
+void CMotion::GetStateBuffer(char *buffer)
+{
 }

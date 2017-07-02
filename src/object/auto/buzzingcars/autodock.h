@@ -1,17 +1,20 @@
 // autodock.h
 
-#ifndef _AUTODOCK_H_
-#define    _AUTODOCK_H_
+#pragma once
+
+#include "object/auto/auto.h"
+
+#include "graphics/engine/camera.h"
 
 
-class CInstanceManager;
-class CD3DEngine;
-class CParticule;
+namespace Gfx
+{
+class CEngine;
+class CParticle;
 class CTerrain;
 class CCamera;
-class CObject;
-
-enum ParticuleType;
+}
+class COldObject;
 
 
 enum AutoDockPhase
@@ -41,33 +44,33 @@ enum AutoDockPhase
 class CAutoDock : public CAuto
 {
 public:
-   CAutoDock(CInstanceManager* iMan, CObject* object);
+   CAutoDock(COldObject* object);
    ~CAutoDock();
 
-   void        DeleteObject(BOOL bAll=FALSE);
+   void        DeleteObject(bool bAll=false);
 
    void        Init();
    void        Start(int param);
-   BOOL        EventProcess(const Event &event);
-   BOOL        Abort();
-   Error       RetError();
+   bool        EventProcess(const Event &event);
+   bool        Abort();
+   Error       GetError();
 
 protected:
-   void        FireStopUpdate(BOOL bLightOn);
+   void        FireStopUpdate(bool bLightOn);
    void        MoveDock();
-   CObject*    SearchEvil();
-   CObject*    SearchVehicle();
-   CObject*    SearchStockOut();
-   float       RetObjectHeight(CObject *pObj);
-   D3DVECTOR   RetVehiclePoint(CObject *pObj);
-   BOOL        SearchFreePos(D3DVECTOR &os);
-   void        ParticuleFrame(float rTime);
+   COldObject*    SearchEvil();
+   COldObject*    SearchVehicle();
+   COldObject*    SearchStockOut();
+   float       GetObjectHeight(COldObject *pObj);
+   Math::Vector   GetVehiclePoint(COldObject *pObj);
+   bool        SearchFreePos(Math::Vector &os);
+   void        ParticleFrame(float rTime);
    void        SoundManip(float time, float amplitude=1.0f, float frequency=1.0f);
    void        StartBzzz();
    void        StopBzzz();
    void        StartVehicleAction(int action);
-   void        TruckObject(CObject *pObj, BOOL bTake);
-   void        ArmObject(CObject *pObj, BOOL bTake);
+   void        TruckObject(COldObject *pObj, bool bTake);
+   void        ArmObject(COldObject *pObj, bool bTake);
    void        CameraBegin();
    void        CameraEnd();
 
@@ -76,24 +79,21 @@ protected:
    float           m_progress;
    float           m_speed;
    int             m_partiStop[6];
-   D3DVECTOR       m_center;
-   D3DVECTOR       m_currentPos;
-   D3DVECTOR       m_startPos;
-   D3DVECTOR       m_goalPos;
+   Math::Vector       m_center;
+   Math::Vector       m_currentPos;
+   Math::Vector       m_startPos;
+   Math::Vector       m_goalPos;
    float           m_startAngle;
    float           m_goalAngle;
    float           m_heightFret;
    float           m_heightVehicle;
-   CObject*        m_vehicle;
-   CObject*        m_fret;
-   D3DVECTOR       m_fretPos;
-   D3DVECTOR       m_fretOffset;
-   D3DVECTOR       m_vehiclePos;
+   COldObject*        m_vehicle;
+   COldObject*        m_fret;
+   Math::Vector       m_fretPos;
+   Math::Vector       m_fretOffset;
+   Math::Vector       m_vehiclePos;
    float           m_lastParticule;
    float           m_lastEffect;
    int             m_channelSound;
-   CameraType      m_cameraType;
+   Gfx::CameraType      m_cameraType;
 };
-
-
-#endif //_AUTODOCK_H_

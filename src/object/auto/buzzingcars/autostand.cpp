@@ -1,39 +1,27 @@
 // autostand.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
-
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
-
-#include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
-#include "event.h"
-#include "misc.h"
-#include "iman.h"
-#include "math3d.h"
-#include "particule.h"
-#include "terrain.h"
-#include "camera.h"
-#include "object.h"
-#include "interface.h"
-#include "button.h"
-#include "window.h"
-#include "sound.h"
-#include "auto.h"
-#include "autostand.h"
+#include "graphics/engine/engine.h"
+#include "math/all.h"
+#include "common/event.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/terrain.h"
+#include "graphics/engine/camera.h"
+#include "object/old_object.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/button.h"
+#include "ui/controls/window.h"
+#include "sound/sound.h"
+#include "object/auto/auto.h"
+#include "object/auto/buzzingcars/autostand.h"
+#include "object/object_manager.h"
 
 
 
 // Constructeur de l'objet.
 
-CAutoStand::CAutoStand(CInstanceManager* iMan, CObject* object)
-                        : CAuto(iMan, object)
+CAutoStand::CAutoStand(COldObject* object)
+                        : CAuto(object)
 {
-   CAuto::CAuto(iMan, object);
-
    Init();
 }
 
@@ -41,13 +29,12 @@ CAutoStand::CAutoStand(CInstanceManager* iMan, CObject* object)
 
 CAutoStand::~CAutoStand()
 {
-   CAuto::~CAuto();
 }
 
 
 // Détruit l'objet.
 
-void CAutoStand::DeleteObject(BOOL bAll)
+void CAutoStand::DeleteObject(bool bAll)
 {
    if ( m_channelSound != -1 )
    {
@@ -77,15 +64,15 @@ void CAutoStand::Init()
 
 void CAutoStand::Start(int param)
 {
-   D3DMATRIX*  mat;
+   Math::Matrix*  mat;
    CObject*    object;
    ObjectType  type;
-   D3DVECTOR   pos;
-   BOOL        occupied[8*4];
+   Math::Vector   pos;
+   bool        occupied[8*4];
    float       value, angle, percent;
    int         i, r, x, y;
 
-   value = m_object->RetCmdLine(0);
+   value = m_object->GetCmdLine(0);
    if ( value == NAN )
    {
        m_totalPerso = 0;
@@ -93,18 +80,19 @@ void CAutoStand::Start(int param)
    else
    {
        m_totalPerso = (int)value;
-       percent = m_engine->RetGadgetQuantity();
+//       percent = m_engine->GetGadgetQuantity();
+       percent = 1.0f; // TODO (krzys_h): cleanup
        m_totalPerso = (int)(percent*m_totalPerso);
    }
    if ( m_totalPerso > 8*4 )  m_totalPerso = 8*4;
 
    for ( i=0 ; i<8*4 ; i++ )
    {
-       occupied[i] = FALSE;
+       occupied[i] = false;
    }
 
-   mat = m_object->RetWorldMatrix(0);
-   angle = m_object->RetAngleY(0);
+   mat = m_object->GetWorldMatrix(0);
+   angle = m_object->GetPartRotationY(0);
    for ( i=0 ; i<m_totalPerso ; i++ )
    {
        r = rand()%4;
@@ -113,7 +101,7 @@ void CAutoStand::Start(int param)
        if ( r == 2 )  type = OBJECT_BOT3;
        if ( r == 3 )  type = OBJECT_BOT4;
 
-       while ( TRUE )
+       while ( true )
        {
            int rank[16] = {0,0,0,0,0,0,0,0,1,1,1,1,1,2,2,3};
            x = rank[rand()%16];  // rempli mieux les premiers rangs
@@ -121,56 +109,49 @@ void CAutoStand::Start(int param)
            pos.y = 4.0f+x*4.0f;
 
            y = rand()%8;
-           pos.z = y*10.0f-40.0f+(Rand()-0.5f)*6.0f;
+           pos.z = y*10.0f-40.0f+(Math::Rand()-0.5f)*6.0f;
 
-           if ( occupied[x*8+y] == FALSE )
+           if ( occupied[x*8+y] == false )
            {
-               occupied[x*8+y] = TRUE;
+               occupied[x*8+y] = true;
                break;
            }
        }
-       pos = Transform(*mat, pos);
+       pos = Math::Transform(*mat, pos);
 
-       object = new CObject(m_iMan);
-       if ( !object->CreateBot(pos, angle, 1.0f, type, TRUE) )
-       {
-           delete object;
-       }
-       else
-       {
-           pos.y += object->RetCharacter()->height;
-           object->SetPosition(0, pos);
-       }
+       object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type); // TODO (krzys_h): bPlumb = true
+       pos.y += object->GetCharacter()->height;
+       object->SetPosition(pos);
    }
 }
 
 
 // Gestion d'un événement.
 
-BOOL CAutoStand::EventProcess(const Event &event)
+bool CAutoStand::EventProcess(const Event &event)
 {
    CAuto::EventProcess(event);
 
-   if ( m_engine->RetPause() )  return TRUE;
+   if ( m_engine->GetPause() )  return true;
 
    m_progress += event.rTime*m_speed;
    SoundFrame(event.rTime);
 
-   return TRUE;
+   return true;
 }
 
 // Gestion du son.
 
 void CAutoStand::SoundFrame(float rTime)
 {
-   D3DVECTOR   pos, look;
+   Math::Vector   pos, look;
    float       dist;
 
    if ( m_totalPerso == 0 )  return;
 
-   pos = m_object->RetPosition(0);
-   look = m_engine->RetLookatPt();
-   dist = Length(pos, look);
+   pos = m_object->GetPartPosition(0);
+   look = m_engine->GetLookatPt();
+   dist = Math::Distance(pos, look);
 
    if ( dist >= 400.0f )
    {
@@ -185,7 +166,7 @@ void CAutoStand::SoundFrame(float rTime)
    {
        if ( m_channelSound == -1 )
        {
-           m_channelSound = m_sound->Play(SOUND_RESEARCH, pos, 0.0f, 1.0f, TRUE);
+           m_channelSound = m_sound->Play(SOUND_RESEARCH, pos, 0.0f, 1.0f, true);
            m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, 2.0f, SOPER_CONTINUE);
            m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, 1.0f, SOPER_LOOP);
        }
@@ -196,15 +177,15 @@ void CAutoStand::SoundFrame(float rTime)
 
 // Stoppe l'automate.
 
-BOOL CAutoStand::Abort()
+bool CAutoStand::Abort()
 {
-   return TRUE;
+   return true;
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Getourne une erreur liée à l'état de l'automate.
 
-Error CAutoStand::RetError()
+Error CAutoStand::GetError()
 {
    return ERR_OK;
 }

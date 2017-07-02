@@ -48,6 +48,7 @@ class CTerrain;
 } // namespace Gfx
 
 class CObject;
+class COldObject;
 class CObjectFactory;
 
 enum RadarFilter
@@ -161,6 +162,9 @@ public:
     CObject*  CreateObject(ObjectCreateParams params);
     CObject*  CreateObject(Math::Vector pos, float angle, ObjectType type, float power = -1.0f);
     //@}
+
+    // TODO (krzys_h): Figure out a better way to do this
+    COldObject* CreateEmptyObject();
 
     //! Deletes the object
     bool      DeleteObject(CObject* instance);
