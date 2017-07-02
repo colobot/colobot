@@ -2668,6 +2668,7 @@ void CMotionCar::UpdateGlassMapping(int part, float min, float max,
     int                rank, i, mmode;
 
     rank = m_object->GetObjectRank(part);
+    if (rank == -1) return;
 
     mat.diffuse = Gfx::Color(1.0f, 1.0f, 1.0f);  // blanc
     mat.ambient = Gfx::Color(0.5f, 0.5f, 0.5f);
