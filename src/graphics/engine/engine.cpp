@@ -1166,6 +1166,101 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
     }
 }
 
+
+// Transforme un objet au complet.
+// Effectue dans l'ordre :
+//	1)	Une translation "move1"
+//	2)	Une rotation "angle"
+//	3)	Une translation "move2"
+
+void CEngine::TransformObject(int objRank, Math::Vector move1, Math::Vector angle, Math::Vector move2)
+{
+    // TODO (krzys_h): I have no idea what I'm doing
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return;
+
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+    EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+    for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+    {
+        EngineBaseObjTexTier& p2 = p1.next[l2];
+        for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+        {
+            EngineBaseObjDataTier& p3 = p2.next[l3];
+            TransformVertex(p3.vertices, move1, angle, move2);
+        }
+    }
+}
+
+// Transforme une liste de vertex.
+
+void CEngine::TransformVertex(std::vector<VertexTex2>& pv,
+                                 const Math::Vector &move1,
+                                 const Math::Vector &angle,
+                                 const Math::Vector &move2)
+{
+    Math::Point	rot;
+    int		i;
+
+    for ( i=0 ; i<pv.size() ; i++ )
+    {
+        pv[i].coord.x += move1.x;
+        pv[i].coord.y += move1.y;
+        pv[i].coord.z += move1.z;
+
+        if ( angle.x != 0.0f )
+        {
+            rot.x = pv[i].coord.z;
+            rot.y = pv[i].coord.y;
+            rot = Math::RotatePoint(angle.x, rot);
+            pv[i].coord.z = rot.x;
+            pv[i].coord.y = rot.y;
+
+            rot.x = pv[i].normal.z;
+            rot.y = pv[i].normal.y;
+            rot = Math::RotatePoint(angle.x, rot);
+            pv[i].normal.z = rot.x;
+            pv[i].normal.y = rot.y;
+        }
+        if ( angle.y != 0.0f )
+        {
+            rot.x = pv[i].coord.x;
+            rot.y = pv[i].coord.z;
+            rot = Math::RotatePoint(angle.y, rot);
+            pv[i].coord.x = rot.x;
+            pv[i].coord.z = rot.y;
+
+            rot.x = pv[i].normal.x;
+            rot.y = pv[i].normal.z;
+            rot = Math::RotatePoint(angle.y, rot);
+            pv[i].normal.x = rot.x;
+            pv[i].normal.z = rot.y;
+        }
+        if ( angle.z != 0.0f )
+        {
+            rot.x = pv[i].coord.x;
+            rot.y = pv[i].coord.y;
+            rot = Math::RotatePoint(angle.z, rot);
+            pv[i].coord.x = rot.x;
+            pv[i].coord.y = rot.y;
+
+            rot.x = pv[i].normal.x;
+            rot.y = pv[i].normal.y;
+            rot = Math::RotatePoint(angle.z, rot);
+            pv[i].normal.x = rot.x;
+            pv[i].normal.y = rot.y;
+        }
+
+        pv[i].coord.x += move2.x;
+        pv[i].coord.y += move2.y;
+        pv[i].coord.z += move2.z;
+    }
+}
+
 void CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
                                    const std::string& tex1Name, const std::string& tex2Name,
                                    EngineTextureMapping mode,

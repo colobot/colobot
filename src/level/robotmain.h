@@ -45,7 +45,6 @@
 
 #include <deque>
 #include <stdexcept>
-#include <FreeImage.h>
 
 enum Phase
 {

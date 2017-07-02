@@ -621,6 +621,16 @@ void CCamera::StartOver(CameraOverEffect effect, Math::Vector pos, float force)
         m_overForce   = 1.0f;
     }
 
+    if ( m_overType == CAM_OVER_EFFECT_ORGA )
+    {
+        m_overColor = Color(0.1f, 0.8f, 0.1f);  // vert
+        m_overMode    = ENG_RSTATE_TCOLOR_BLACK;
+
+        m_overFadeIn  = 0.4f;
+        m_overFadeOut = 0.8f;
+        m_overForce   = 1.0f;
+    }
+
     if ( m_overType == CAM_OVER_EFFECT_CRASH )
     {
         m_overColor   = Color(0.8f, 0.8f, 0.8f);  // blanc

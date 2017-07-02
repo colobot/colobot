@@ -71,10 +71,14 @@ void CPyro::DeleteObject()
     }
 }
 
-bool CPyro::Create(PyroType type, CObject* obj, float force)
+bool CPyro::Create(PyroType type, CObject* obj, float force, int param, Math::Vector impact)
 {
     m_object = obj;
     m_force = force;
+    m_param = param;
+
+    m_posStart = obj->GetPosition();
+    m_angleStart = obj->GetRotation();
 
     ObjectType oType = obj->GetType();
     int objRank = obj->GetObjectRank(0);
@@ -82,7 +86,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     Math::Vector min, max;
     m_engine->GetObjectBBox(objRank, min, max);
-    Math::Vector pos = obj->GetPosition();
+    Math::Vector pos = m_posStart;
 
     DisplayError(type, obj);  // displays eventual messages
 
@@ -106,15 +110,25 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         if ( m_size > 80.0f )  m_size = 80.0f;
     }
     if ( oType == OBJECT_TNT  ||
+         oType == OBJECT_MINE ||
          oType == OBJECT_BOMB )
     {
         m_size *= 2.0f;
     }
 
-    m_pos = pos+(min+max)/2.0f;
+    if ( m_impact.x == NAN )
+    {
+        m_pos = pos+(min+max)/2.0f;
+    }
+    else
+    {
+        m_pos = m_impact;
+    }
+
     m_type = type;
     m_progress = 0.0f;
-    m_speed = 1.0f/20.0f;    m_time = 0.0f;
+    m_speed = 1.0f/20.0f;
+    m_time = 0.0f;
     m_lastParticle = 0.0f;
     m_lastParticleSmoke = 0.0f;
     m_lightRank = -1;
@@ -123,6 +137,83 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
          oType == OBJECT_TEEN31 )
     {
         m_pos.y = pos.y+1.0f;
+    }
+
+    if ( type == PT_EXPLOS ||
+         type == PT_EXPLOP )
+    {
+        m_bTracks = true;
+    }
+    if ( type == PT_EXPLOO )
+    {
+        m_terrain->AdjustToFloor(m_pos);
+        m_pos.y += 0.2f;
+        m_speed = 1.0f/5.0f;
+    }
+    if ( oType == OBJECT_BARREL   ||
+         oType == OBJECT_BARRELa  ||
+         oType == OBJECT_ATOMIC   ||
+         oType == OBJECT_URANIUM  ||
+         oType == OBJECT_TNT      ||
+         oType == OBJECT_MINE     ||
+         oType == OBJECT_BOMB     )
+    {
+        m_bTracks = true;
+        m_posTracks = m_pos;
+        m_posTracks.y += 1.0f;
+        m_pos = m_posTracks;
+    }
+    if ( oType >= OBJECT_BOX1  &&
+         oType <= OBJECT_BOX10 )
+    {
+        m_bTracks = true;
+        m_posTracks = m_pos;
+        m_posTracks.y += 1.0f;
+        m_pos = m_posTracks;
+    }
+    if ( oType == OBJECT_NUCLEAR )
+    {
+        m_bTracks = true;
+    }
+    if ( oType == OBJECT_PARA )
+    {
+        m_bTracks = true;
+    }
+    if ( oType == OBJECT_TRAX )
+    {
+        m_bTracks = true;
+    }
+
+    // Cherche s'il faut générer la sphère.
+    m_bSphere = false;
+
+    if ( m_type == PT_FRAGT  ||
+         m_type == PT_EXPLOT ||
+         m_type == PT_EXPLOS )
+    {
+        if ( m_size > 30.0f )
+        {
+            m_bSphere = true;
+        }
+    }
+
+    // Cherche s'il faut générer l'onde de choc.
+    m_bChoc = false;
+
+    if ( type == PT_FRAGT  ||
+         type == PT_FRAGW  ||
+         type == PT_EXPLOT ||
+         type == PT_EXPLOS ||
+         type == PT_EXPLOW )
+    {
+        if ( m_size > 10.0f || m_bTracks )
+        {
+            m_bChoc = true;
+        }
+        if ( oType >= OBJECT_BOX1 && oType <= OBJECT_BOX10 )
+        {
+            m_bChoc = false;
+        }
     }
 
     // Seeking the position of the battery.
@@ -182,10 +273,14 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     // Plays the sound of a pyrotechnic effect.
     if ( type == PT_FRAGT  ||
+         type == PT_FRAGA  ||
          type == PT_FRAGW  ||
          type == PT_EXPLOT ||
+         type == PT_EXPLOS ||
          type == PT_EXPLOW )
     {
+//TODO (krzys_h): ???        m_main->IncDecorStamp();  // un objet sera détruit
+
         SoundType sound;
         if ( m_power )
         {
@@ -202,15 +297,20 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
              oType == OBJECT_KEYa    ||
              oType == OBJECT_KEYb    ||
              oType == OBJECT_KEYc    ||
-             oType == OBJECT_KEYd    )
+             oType == OBJECT_KEYd    ||
+             (oType >= OBJECT_ROADSIGN1 && oType <= OBJECT_ROADSIGN30) )
         {
             sound = SOUND_EXPLOl;
         }
         if ( oType == OBJECT_URANIUM ||
+             oType == OBJECT_BARREL  ||
+             oType == OBJECT_BARRELa ||
              oType == OBJECT_POWER   ||
              oType == OBJECT_ATOMIC  ||
              oType == OBJECT_TNT     ||
-             oType == OBJECT_BOMB    )
+             oType == OBJECT_MINE    ||
+             oType == OBJECT_BOMB    ||
+             (oType >= OBJECT_BOX1 && oType <= OBJECT_BOX10) )
         {
             sound = SOUND_EXPLOlp;
         }
@@ -222,9 +322,18 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
          type == PT_SHOTM  )
     {
         m_sound->Play(SOUND_EXPLOi, m_pos);
+        // TODO (krzys_h): BC uses SOUND_EXPLOlp for PT_FRAGO
+    }
+    if ( type == PT_EJECT )
+    {
+        if ( oType >= OBJECT_CARCASS1 && oType <= OBJECT_CARCASS10 )
+        {
+            m_sound->Play(SOUND_BOUMm, m_pos);
+        }
     }
     if ( type == PT_BURNT ||
-         type == PT_BURNO )
+         type == PT_BURNO ||
+         type == PT_BURNS )
     {
         m_soundChannel = m_sound->Play(SOUND_BURN, m_pos, 1.0f, 1.0f, true);
         m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 12.0f, SOPER_CONTINUE);
@@ -232,6 +341,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     }
     if ( type == PT_BURNO )
     {
+        // TODO (krzys_h): BC uses SOUND_EVIL1 here
         m_sound->Play(SOUND_DEADi, m_pos);
         m_sound->Play(SOUND_DEADi, m_engine->GetEyePt());
     }
@@ -261,6 +371,42 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
             m_sound->Play(SOUND_AIE, m_pos);
             m_sound->Play(SOUND_AIE, m_engine->GetEyePt());
         }
+    }
+
+    Math::Vector p1, p2, p3, p4;
+    if ( type == PT_FRAGT  ||
+         type == PT_FRAGW  ||
+         type == PT_EXPLOT ||
+         type == PT_EXPLOS ||
+         type == PT_EXPLOW )
+    {
+        // Crée une tache au sol.
+        p1 = p2 = p3 = p4 = m_pos;
+        p1.x -= 8.0f;  p1.z += 8.0f;
+        p2.x += 8.0f;  p2.z += 8.0f;
+        p3.x -= 8.0f;  p3.z -= 8.0f;
+        p4.x += 8.0f;  p4.z -= 8.0f;
+        m_particle->CreateWheelTrace(p1, p2, p3, p4, PARTITRACE3);
+    }
+    if ( type == PT_FRAGA )
+    {
+        // Crée une tache au sol.
+        p1 = p2 = p3 = p4 = m_pos;
+        p1.x -= 24.0f;  p1.z += 24.0f;
+        p2.x += 24.0f;  p2.z += 24.0f;
+        p3.x -= 24.0f;  p3.z -= 24.0f;
+        p4.x += 24.0f;  p4.z -= 24.0f;
+        m_particle->CreateWheelTrace(p1, p2, p3, p4, PARTITRACE5);
+    }
+    if ( type == PT_EXPLOO )
+    {
+        // Crée une tache au sol.
+        p1 = p2 = p3 = p4 = m_pos;
+        p1.x -= 24.0f;  p1.z += 24.0f;
+        p2.x += 24.0f;  p2.z += 24.0f;
+        p3.x -= 24.0f;  p3.z -= 24.0f;
+        p4.x += 24.0f;  p4.z -= 24.0f;
+        m_particle->CreateWheelTrace(p1, p2, p3, p4, PARTITRACE8);
     }
 
     if ( m_type == PT_FRAGT ||
@@ -315,12 +461,18 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         return true;
     }
 
+    if ( m_type == PT_EXPLOO )
+    {
+        m_camera->StartOver(Gfx::CAM_OVER_EFFECT_ORGA, m_pos, 1.0f);
+    }
+
     if ( m_type == PT_SHOTW )
     {
         m_speed = 1.0f/1.0f;
     }
 
-    if ( m_type == PT_BURNT )
+    if ( m_type == PT_BURNT ||
+         m_type == PT_BURNO )
     {
         BurnStart();
     }
@@ -329,6 +481,10 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     {
         m_speed = 1.0f/8.0f;
         m_object->SetLock(true);  // object more functional
+    }
+    if ( m_type == PT_WPVIBRA )
+    {
+        m_speed = 1.0f/4.0f;
     }
     if ( m_type == PT_FLCREATE )
     {
@@ -351,14 +507,35 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         if (oType == OBJECT_APOLLO2) limit = 2.0f;
         m_speed = 1.0f/limit;
     }
+    if ( m_type == PT_PAINTING )
+    {
+        float limit = (m_size-1.0f)/8.0f;
+        if ( limit > 4.0f )  limit = 4.0f;
+        m_speed = 1.0f/limit;
+    }
 
     if ( m_type == PT_EXPLOT ||
          m_type == PT_EXPLOO ||
-         m_type == PT_EXPLOW )
+         m_type == PT_EXPLOW ||
+         m_type == PT_EJECT  )
     {
         CreateTriangle(obj, oType, 0);
         m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
-        ExploStart();
+        ExploStart(oType);
+    }
+    /* TODO (krzys_h):
+    if ( m_type == PT_EXPLOO )
+    {
+        m_engine->ShadowDelete(m_object->RetObjectRank(0));
+        OrgaStart();
+    }
+    */
+
+    if ( m_type == PT_ACROBATIC ||
+         m_type == PT_SABOTAGE  ||
+         m_type == PT_PIECE     )
+    {
+        AcrobaticStart(min, max);
     }
 
     if ( m_type == PT_FALL )
@@ -368,7 +545,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     }
 
     if ( m_type == PT_BURNT ||
-         m_type == PT_BURNO )
+         m_type == PT_BURNO ||
+         m_type == PT_BURNS )
     {
         m_speed = 1.0f/15.0f;
 
@@ -393,7 +571,12 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     if ( m_type != PT_EGG  &&
          m_type != PT_WIN  &&
-         m_type != PT_LOST )
+         m_type != PT_LOST &&
+         m_type != PT_EJECT     &&
+         m_type != PT_EXPLOP    &&
+         m_type != PT_SABOTAGE  &&
+         m_type != PT_ACROBATIC &&
+         m_type != PT_PIECE     )
     {
         float h = 40.0f;
         if ( m_type == PT_FRAGO  ||
@@ -404,13 +587,21 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
             LightOperAdd(1.00f, 0.0f, -1.0f, -0.5f, -1.0f);  // dark green
         }
         else if ( m_type == PT_FRAGT  ||
-                  m_type == PT_EXPLOT )
+                  m_type == PT_EXPLOT ||
+                  m_type == PT_EXPLOS )
         {
             LightOperAdd(0.00f, 1.0f,  4.0f,  4.0f,  2.0f);  // yellow
             LightOperAdd(0.02f, 1.0f,  4.0f,  2.0f,  0.0f);  // red-orange
             LightOperAdd(0.16f, 1.0f, -0.8f, -0.8f, -0.8f);  // dark gray
             LightOperAdd(1.00f, 0.0f, -0.8f, -0.8f, -0.8f);  // dark gray
             h = m_size*2.0f;
+        }
+        else if ( m_type == PT_FRAGA )
+        {
+            LightOperAdd(0.00f, 1.0f, -0.4f, -0.4f, -0.4f);  // gris foncé
+            LightOperAdd(0.05f, 1.0f, -2.0f,  4.0f,  4.0f);  // bleu
+            LightOperAdd(1.00f, 0.0f, -2.0f,  4.0f,  4.0f);  // bleu
+            h = m_size*10.0f;
         }
         else if ( m_type == PT_SPIDER )
         {
@@ -427,10 +618,12 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
             LightOperAdd(1.00f, 0.0f, -0.5f, -0.5f, -1.0f);  // dark yellow
         }
         else if ( m_type == PT_WPCHECK  ||
+                  m_type == PT_WPVIBRA  ||
                   m_type == PT_FLCREATE ||
                   m_type == PT_FLDELETE ||
                   m_type == PT_RESET    ||
-                  m_type == PT_FINDING  )
+                  m_type == PT_FINDING  ||
+                  m_type == PT_PAINTING )
         {
             LightOperAdd(0.00f, 1.0f,  4.0f,  4.0f,  2.0f);  // yellow
             LightOperAdd(1.00f, 0.0f,  4.0f,  4.0f,  2.0f);  // yellow
@@ -445,10 +638,12 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
         if ( m_type != PT_SHOTW    &&
              m_type != PT_WPCHECK  &&
+             m_type != PT_WPVIBRA  &&
              m_type != PT_FLCREATE &&
              m_type != PT_FLDELETE &&
              m_type != PT_RESET    &&
-             m_type != PT_FINDING  )
+             m_type != PT_FINDING  &&
+             m_type != PT_PAINTING )
         {
             m_camera->StartEffect(CAM_EFFECT_EXPLO, m_pos, force);
         }
@@ -458,6 +653,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     // Generates the triangles of the explosion.
     if ( m_type == PT_FRAGT  ||
+         m_type == PT_FRAGA  ||
          m_type == PT_FRAGO  ||
          m_type == PT_FRAGW  ||
          m_type == PT_SPIDER ||
@@ -472,17 +668,22 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         }
     }
 
-    if ( m_type == PT_FRAGT  ||
-         m_type == PT_EXPLOT )
+    if ( m_power || m_bTracks ) // TODO (krzys_h): Check this power/track mess, I think this is correct but I'm not sure
     {
-        if ( m_power )
+        Math::Vector powertrackspos = m_bTracks ? m_posTracks : m_posPower;
+        if ( m_type == PT_FRAGT  ||
+             m_type == PT_FRAGA  ||
+             m_type == PT_EXPLOT ||
+             m_type == PT_EXPLOS )
         {
             int total = static_cast<int>(10.0f*m_engine->GetParticleDensity());
             if ( oType == OBJECT_TNT  ||
-                 oType == OBJECT_BOMB )  total *= 3;
+                 oType == OBJECT_MINE ||
+                 oType == OBJECT_BOMB ||
+                 oType == OBJECT_TRAX )  total *= 3;
             for (int i = 0; i < total; i++)
             {
-                pos = m_posPower;
+                pos = powertrackspos;
                 Math::Vector speed;
                 speed.x = (Math::Rand()-0.5f)*30.0f;
                 speed.z = (Math::Rand()-0.5f)*30.0f;
@@ -492,33 +693,83 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
                 dim.y = dim.x;
                 float duration = Math::Rand()*3.0f+2.0f;
                 float mass = Math::Rand()*10.0f+15.0f;
+                ParticleType pType;
+                if ( oType >= OBJECT_BOX1 && oType <= OBJECT_BOX10 )
+                {
+                    pType = (ParticleType)(PARTITRACK1+rand()%4);
+                }
+                else if ( m_type == PT_FRAGA )
+                {
+                    pType = PARTITRACK2;  // bleu
+                }
+                else
+                {
+                    pType = PARTITRACK1;  // orange
+                }
                 m_particle->CreateTrack(pos, speed, dim, PARTITRACK1,
                                          duration, mass, Math::Rand()+0.7f, 1.0f);
             }
         }
-
-        if (m_size > 10.0f)  // large enough (freight excluded)?
+        if ( m_type == PT_EXPLOP )
         {
-            if (m_power)
+            int total = (int)(10.0f*m_engine->GetParticleDensity());
+            for ( int i=0 ; i<total ; i++ )
             {
-                pos = m_posPower;
+                pos = powertrackspos;
+                Math::Vector speed;
+                speed.x = (Math::Rand()-0.5f)*60.0f;
+                speed.z = (Math::Rand()-0.5f)*60.0f;
+                speed.y = Math::Rand()*30.0f;
+                Math::Point dim;
+                dim.x = 0.5f;
+                dim.y = dim.x;
+                float duration = Math::Rand()*0.2f+0.2f;
+                float mass = Math::Rand()*5.0f+5.0f;
+                m_particle->CreateTrack(pos, speed, dim, PARTITRACK1,
+                                         duration, mass, 10.0f);
             }
-            else
-            {
-                pos = m_pos;
-                m_terrain->AdjustToFloor(pos);
-                pos.y += 1.0f;
-            }
-            Math::Point dim;
-            dim.x = m_size*0.4f;
-            dim.y = dim.x;
-            m_particle->CreateParticle(pos, Math::Vector(0.0f,0.0f,0.0f), dim, PARTISPHERE0, 2.0f, 0.0f, 0.0f);
         }
+    }
+
+
+    if (m_bSphere)  // large enough (freight excluded)?
+    {
+        if (m_power)
+        {
+            pos = m_posPower;
+        }
+        else if ( m_bTracks )
+        {
+            pos = m_posTracks;
+        }
+        else
+        {
+            pos = m_pos;
+            m_terrain->AdjustToFloor(pos);
+            pos.y += 1.0f;
+        }
+        Math::Point dim;
+        dim.x = m_size*0.4f;
+        dim.y = dim.x;
+        m_particle->CreateParticle(pos, Math::Vector(0.0f,0.0f,0.0f), dim, (m_type==PT_FRAGA)?PARTISPHERE3:PARTISPHERE0, 2.0f, 0.0f, 0.0f);
     }
 
     if ( m_type == PT_FRAGO  ||
          m_type == PT_EXPLOO )
     {
+        // TODO (krzys_h): Added by BC, check impact on Colobot
+        {
+            pos = m_pos;
+            pos.y += 5.0f;
+            Math::Vector speed;
+            speed = Math::Vector(0.0f, 0.0f, 0.0f);
+            Math::Point dim;
+            dim.x = 8.0f;
+            dim.y = dim.x;
+            float duration = 0.3f;
+            m_particle->CreateParticle(pos, speed, dim, PARTIBIGO, duration);
+        }
+
         int total = static_cast<int>(10.0f*m_engine->GetParticleDensity());
         for (int i = 0; i < total; i++)
         {
@@ -590,20 +841,14 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         }
     }
 
-    if ( type == PT_FRAGT  ||
-         type == PT_FRAGW  ||
-         type == PT_EXPLOT ||
-         type == PT_EXPLOW )
+    if ( m_bChoc )  // onde de choc circulaire et horizontale ?
     {
-        if (m_size > 10.0f || m_power)
-        {
-            pos = m_pos;
-            Math::Vector speed(0.0f, 0.0f, 0.0f);
-            Math::Point dim;
-            dim.x = m_size;
-            dim.y = dim.x;
-            m_particle->CreateParticle(pos, speed, dim, PARTICHOC, 2.0f);
-        }
+        pos = m_pos;
+        Math::Vector speed(0.0f, 0.0f, 0.0f);
+        Math::Point dim;
+        dim.x = m_size;
+        dim.y = dim.x;
+        m_particle->CreateParticle(pos, speed, dim, PARTICHOC, 2.0f);
     }
 
     return true;
@@ -666,6 +911,7 @@ bool CPyro::EventProcess(const Event &event)
         }
     }
 
+    // TODO (krzys_h): BC has PARTIBLOOD disabled in SHOTH and SHOTM
     if ( m_camera->GetBlood() && m_type == PT_SHOTH &&
          m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
     {
@@ -768,7 +1014,7 @@ bool CPyro::EventProcess(const Event &event)
         m_particle->CreateParticle(pos, speed, dim, PARTICRASH, 4.0f);
     }
 
-    if ( (m_type == PT_FRAGT || m_type == PT_EXPLOT) &&
+    if ( (m_type == PT_FRAGT || m_type == PT_EXPLOT || m_type == PT_EXPLOS) &&
          m_progress < 0.05f &&
          m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
     {
@@ -786,7 +1032,25 @@ bool CPyro::EventProcess(const Event &event)
         m_particle->CreateParticle(pos, speed, dim, PARTIEXPLOT);
     }
 
-    if ( (m_type == PT_FRAGT || m_type == PT_EXPLOT) &&
+    if ( m_type == PT_FRAGA &&
+         m_progress < 0.05f &&
+         m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
+    {
+        m_lastParticle = m_time;
+
+        Math::Vector pos = m_pos;
+        Math::Vector speed;
+        speed.x = (Math::Rand()-0.5f)*m_size*1.0f;
+        speed.z = (Math::Rand()-0.5f)*m_size*1.0f;
+        speed.y = Math::Rand()*m_size*0.50f;
+        Math::Point dim;
+        dim.x = Math::Rand()*m_size/5.0f+m_size/5.0f;
+        dim.y = dim.x;
+
+        m_particle->CreateParticle(pos, speed, dim, PARTIEXPLOA);
+    }
+
+    if ( (m_type == PT_FRAGT || m_type == PT_EXPLOT || m_type == PT_EXPLOS) &&
          m_progress < 0.10f &&
          m_lastParticleSmoke+m_engine->ParticleAdapt(0.10f) <= m_time )
     {
@@ -812,6 +1076,28 @@ bool CPyro::EventProcess(const Event &event)
         m_particle->CreateParticle(pos, speed, dim, type, 6.0f);
     }
 
+    if ( m_type == PT_FRAGA &&
+         m_progress < 0.10f &&
+         m_lastParticleSmoke+m_engine->ParticleAdapt(0.10f) <= m_time )
+    {
+        m_lastParticleSmoke = m_time;
+
+        Math::Point dim;
+        dim.x = Math::Rand()*m_size/1.5f+m_size/1.5f;
+        dim.y = dim.x;
+        Math::Vector pos = m_pos;
+        pos.x += (Math::Rand()-0.5f)*m_size*2.0f;
+        pos.z += (Math::Rand()-0.5f)*m_size*2.0f;
+        m_terrain->AdjustToFloor(pos);
+        Math::Vector speed;
+        speed.x = 0.0f;
+        speed.z = 0.0f;
+        speed.y = -dim.x/2.0f/4.0f;
+        pos.y += dim.x/2.0f;
+
+        m_particle->CreateParticle(pos, speed, dim, PARTIEJECT, 6.0f);
+    }
+
     if ( (m_type == PT_FRAGO || m_type == PT_EXPLOO) &&
          m_progress < 0.03f &&
          m_lastParticle+m_engine->ParticleAdapt(0.1f) <= m_time )
@@ -827,8 +1113,22 @@ bool CPyro::EventProcess(const Event &event)
         dim.x = Math::Rand()*m_size/2.0f+m_size/2.0f;
         dim.y = dim.x;
 
+        // TODO (krzys_h): This line is disabled in BC
         m_particle->CreateParticle(pos, speed, dim, PARTIEXPLOO);
     }
+    if ( m_type == PT_EXPLOO )
+    {
+//        TODO (krzys_h): BC has some different logic here, this is likely why the above is disabled
+//        OrgaProgress();
+    }
+
+    if ( m_type == PT_ACROBATIC ||
+         m_type == PT_SABOTAGE  ||
+         m_type == PT_PIECE     )
+    {
+        AcrobaticProgress();
+    }
+
 
     if ( (m_type == PT_FRAGW || m_type == PT_EXPLOW) &&
          m_progress < 0.05f &&
@@ -883,14 +1183,14 @@ bool CPyro::EventProcess(const Event &event)
 
             Math::Vector pos = m_pos;
             pos.y += factor;
-            pos.x += (Math::Rand()-0.5f)*3.0f;
-            pos.z += (Math::Rand()-0.5f)*3.0f;
+            pos.x += (Math::Rand()-0.5f)*3.0f; //TODO (krzys_h): BC changed to *9.0f
+            pos.z += (Math::Rand()-0.5f)*3.0f; //TODO (krzys_h): BC changed to *9.0f
             Math::Vector speed;
             speed.x = 0.0f;
             speed.z = 0.0f;
             speed.y = 5.0f+Math::Rand()*5.0f;
             Math::Point dim;
-            dim.x = Math::Rand()*1.5f+1.5f;
+            dim.x = Math::Rand()*1.5f+1.5f; //TODO (krzys_h): BC changed to *2.0f*2.0f
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f);
         }
@@ -911,6 +1211,37 @@ bool CPyro::EventProcess(const Event &event)
             {
                 m_object->SetScale(1.0f-(m_progress-0.85f)/0.15f);
             }
+        }
+    }
+
+    if ( m_type == PT_WPVIBRA )
+    {
+        if ( m_progress < 0.85f &&
+             m_lastParticle+m_engine->ParticleAdapt(0.10f) <= m_time )
+        {
+            m_lastParticle = m_time;
+
+            Math::Vector pos = m_pos;
+            pos.x += (Math::Rand()-0.5f)*3.0f; //TODO (krzys_h): BC changed to *9.0f
+            pos.z += (Math::Rand()-0.5f)*3.0f; //TODO (krzys_h): BC changed to *9.0f
+            Math::Vector speed;
+            speed.x = 0.0f;
+            speed.z = 0.0f;
+            speed.y = 5.0f+Math::Rand()*5.0f;
+            Math::Point dim;
+            dim.x = Math::Rand()*1.5f+1.5f; //TODO (krzys_h): BC changed to *2.0f*2.0f
+            dim.y = dim.x;
+            m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f);
+        }
+
+        if(m_object != nullptr)
+        {
+            Math::Vector angle = m_object->GetRotation();
+            angle.y = m_progress*20.0f;
+            angle.x = sinf(m_progress*49.0f)*0.3f;
+            angle.z = sinf(m_progress*47.0f)*0.2f;
+            angle *= (1.0f-m_progress);
+            m_object->SetRotation(angle);
         }
     }
 
@@ -1042,7 +1373,31 @@ bool CPyro::EventProcess(const Event &event)
         }
     }
 
-    if ( (m_type == PT_BURNT || m_type == PT_BURNO) &&
+    if ( m_type == PT_PAINTING )
+    {
+        if ( m_object != nullptr &&
+             m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
+        {
+            m_lastParticle = m_time;
+
+            float factor = m_size*0.3f;
+            if (factor > 40.0f) factor = 40.0f;
+            Math::Vector pos = m_pos;
+            m_terrain->AdjustToFloor(pos);
+            pos.x += (Math::Rand()-0.5f)*factor;
+            pos.z += (Math::Rand()-0.5f)*factor;
+            Math::Vector speed;
+            speed.x = (Math::Rand()-0.5f)*1.0f;
+            speed.z = (Math::Rand()-0.5f)*1.0f;
+            speed.y = 2.0f+Math::Rand()*2.0f;
+            Math::Point dim;
+            dim.x = (Math::Rand()*0.2f+0.2f)*(1.0f-m_progress*0.9f);
+            dim.y = dim.x;
+            m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.5f);
+        }
+    }
+
+    if ( (m_type == PT_BURNT || m_type == PT_BURNO || m_type == PT_BURNS) &&
          m_object != nullptr )
     {
         if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
@@ -1085,12 +1440,55 @@ bool CPyro::EventProcess(const Event &event)
             dim.x = (Math::Rand()*1.5f+1.0f+m_progress*3.0f)*factor;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTISMOKE3, 4.0f);
+
+            if ( m_type == PT_BURNO )
+            {
+                pos = m_object->GetPosition();
+                pos.y += 4.0f*(1.0f-m_progress);
+                speed.x = (Math::Rand()-0.5f)*20.0f;
+                speed.z = (Math::Rand()-0.5f)*20.0f;
+                speed.y = 5.0f+Math::Rand()*10.0f;
+                dim.x = 0.8f*(1.0f-m_progress);
+                dim.y = dim.x;
+                m_particle->CreateParticle(pos, speed, dim, PARTIBLITZ, 1.0f, 40.0f);
+
+                if ( Math::Rand() < 0.05f )  // assez rare ?
+                {
+                    speed.x = (Math::Rand()-0.5f)*30.0f;
+                    speed.z = (Math::Rand()-0.5f)*30.0f;
+                    speed.y = Math::Rand()*30.0f+15.0f;
+                    dim.x = Math::Rand()*1.0f+1.0f;
+                    dim.y = dim.x;
+                    m_particle->CreateTrack(pos, speed, dim, PARTITRACK4, 2.0f, 50.0f, 1.2f, 1.8f);
+                }
+            }
         }
 
         if ( m_type == PT_BURNT )
         {
             BurnProgress();
         }
+        if ( m_type == PT_BURNO )
+        {
+            Math::Vector speed;
+            speed.y = 0.0f;
+            speed.x = (Math::Rand()-0.5f)*m_progress*0.5f;
+            speed.z = (Math::Rand()-0.5f)*m_progress*0.5f;
+            m_object->SetLinVibration(speed);
+            speed.y = (Math::Rand()-0.5f)*m_progress*2.0f;
+            speed.x = (Math::Rand()-0.5f)*m_progress*0.5f;
+            speed.z = (Math::Rand()-0.5f)*m_progress*0.5f;
+            m_object->SetCirVibration(speed);
+            float factor = 1.0f-powf(m_progress, 2.0f);
+            if ( factor < 0.1f )  factor = 0.1f;
+            m_object->SetScale(factor);
+
+            if ( m_object->GetType() == OBJECT_EVIL3 )  // roi ?
+            {
+                dynamic_cast<COldObject*>(m_object)->SetPartScale(1, 1.0f/factor);
+            }
+        }
+        /* TODO (krzys_h): Check, PT_BURNO changed by BC, Colobot code:
         else
         {
             Math::Vector speed;
@@ -1104,7 +1502,7 @@ bool CPyro::EventProcess(const Event &event)
                 m_object->SetScale(1.0f-prog*0.5f);
             }
             m_object->SetLinVibration(speed);
-        }
+        }*/
     }
 
     if ( m_type == PT_WIN &&
@@ -1167,6 +1565,7 @@ Error CPyro::IsEnded()
     //because it is sometimes the object itself that makes the Create:
     //  pyro->Create(PT_FRAGT, this);
     if ( m_type == PT_FRAGT  ||
+         m_type == PT_FRAGA  ||
          m_type == PT_FRAGO  ||
          m_type == PT_FRAGW  ||
          m_type == PT_SPIDER ||
@@ -1191,9 +1590,24 @@ Error CPyro::IsEnded()
 
     if ( m_type == PT_EXPLOT ||
          m_type == PT_EXPLOO ||
-         m_type == PT_EXPLOW )  // explosion?
+         m_type == PT_EXPLOW ||
+         m_type == PT_EJECT  )  // explosion?
     {
         ExploTerminate();
+    }
+
+    /* TODO (krzys_h)
+    if ( m_type == PT_EXPLOO )  // explosion ?
+    {
+        OrgaTerminate();
+    }
+    */
+
+    if ( m_type == PT_ACROBATIC ||
+         m_type == PT_SABOTAGE  ||
+         m_type == PT_PIECE     )
+    {
+        AcrobaticTerminate();
     }
 
     if ( m_type == PT_BURNT ||
@@ -1418,10 +1832,13 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
     if (total < 20) percent = 0.50f;
     if (m_type == PT_EGG) percent = 0.30f;
 
-    if (oType == OBJECT_POWER    ||
+    if (oType == OBJECT_BARREL   ||
+        oType == OBJECT_BARRELa  ||
+        oType == OBJECT_POWER    ||
         oType == OBJECT_ATOMIC   ||
         oType == OBJECT_URANIUM  ||
         oType == OBJECT_TNT      ||
+        oType == OBJECT_MINE     ||
         oType == OBJECT_BOMB     ||
         oType == OBJECT_TEEN28)
     {
@@ -1431,6 +1848,8 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
     {
         percent = 0.50f;
     }
+    if ( oType == OBJECT_MARK     )  percent = 0.75f;
+    if ( oType >= OBJECT_BOX1 && oType <= OBJECT_BOX10 )  percent = 1.00f;
 
     std::vector<EngineTriangle> buffer;
     total = m_engine->GetPartialTriangles(objRank, percent, 100, buffer);
@@ -1530,13 +1949,14 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
         }
         if ( oType == OBJECT_STONE   )  speed *= 0.5f;
         if ( oType == OBJECT_URANIUM )  speed *= 0.4f;
+        if ( oType >= OBJECT_CARCASS1 && oType <= OBJECT_CARCASS10 )  speed *= 0.1f;
         float duration = Math::Rand()*3.0f+3.0f;
         m_particle->CreateFrag(pos, speed, &buffer[i], PARTIFRAG,
                                duration, mass, 0.5f);
     }
 }
 
-void CPyro::ExploStart()
+void CPyro::ExploStart(ObjectType oType)
 {
     m_burnType = m_object->GetType();
 
@@ -1563,14 +1983,17 @@ void CPyro::ExploStart()
         if (objRank == -1) continue;
 
         // TODO: refactor later to material change
-        int oldBaseObjRank = m_engine->GetObjectBaseRank(objRank);
-        if (oldBaseObjRank != -1)
+        if ( m_type != PT_EJECT )
         {
-            int newBaseObjRank = m_engine->CreateBaseObject();
-            m_engine->CopyBaseObject(oldBaseObjRank, newBaseObjRank);
-            m_engine->SetObjectBaseRank(objRank, newBaseObjRank);
+            int oldBaseObjRank = m_engine->GetObjectBaseRank(objRank);
+            if (oldBaseObjRank != -1)
+            {
+                int newBaseObjRank = m_engine->CreateBaseObject();
+                m_engine->CopyBaseObject(oldBaseObjRank, newBaseObjRank);
+                m_engine->SetObjectBaseRank(objRank, newBaseObjRank);
 
-            m_engine->ChangeSecondTexture(objRank, "dirty04.png");
+                m_engine->ChangeSecondTexture(objRank, "dirty04.png");
+            }
         }
 
         // TODO: temporary hack (hopefully)
@@ -1580,6 +2003,7 @@ void CPyro::ExploStart()
         Math::Vector speed;
         float weight;
 
+        // TODO (krzys_h): BC doesn't handle main part differently
         if (i == 0)  // main part?
         {
             weight = 0.0f;
@@ -1598,18 +2022,380 @@ void CPyro::ExploStart()
             speed.x = (Math::Rand()-0.5f)*20.0f;
             speed.z = (Math::Rand()-0.5f)*20.0f;
         }
+        
+        if ( m_type == PT_EJECT )
+        {
+            pos.y += 3.0f;
+            speed.y *= 0.8f;
+
+            if ( oType >= OBJECT_CARCASS1 && oType <= OBJECT_CARCASS10 )
+            {
+                pos.y += 3.0f;
+                speed.y *= 1.5f;
+            }
+        }
 
         int channel = m_particle->CreatePart(pos, speed, Math::Point(), PARTIPART, 10.0f, 20.0f, weight, 0.5f, 0);
         if (channel != -1)
             m_object->SetMasterParticle(i, channel);
     }
-    m_engine->LoadTexture("textures/dirty04.png");
+    if ( m_type != PT_EJECT )
+    {
+        m_engine->LoadTexture("textures/dirty04.png");
+    }
 
     DeleteObject(false, true);  // destroys the object transported + the battery
 }
 void CPyro::ExploTerminate()
 {
     DeleteObject(true, false);  // removes the main object
+}
+
+
+// Démarre l'explosion d'un objet organique vert.
+
+void CPyro::OrgaStart()
+{
+    m_object->SetLock(true);  // plus utilisable
+    dynamic_cast<COldObject*>(m_object)->SetDying(DeathType::Exploding);  // en cours de destruction
+
+    /* TODO (krzys_h):
+    if ( m_object->GetType() == m_main->GetTypeProgress() )
+    {
+        m_main->IncProgress();
+    }
+    */
+}
+
+// Fait progresser l'explosion d'un objet organique vert.
+
+void CPyro::OrgaProgress()
+{
+#if 1
+    Math::Vector	zoom;
+    float		progress;
+
+    if ( m_progress < 0.1f )
+    {
+        progress = m_progress/0.1f;
+        zoom.y = 1.0f-progress;
+        if ( zoom.y < 0.01f )  zoom.y = 0.01f;
+        zoom.x = 1.0f+progress*1.0f;
+        zoom.z = zoom.x;
+    }
+    else if ( m_progress < 0.7f )
+    {
+        progress = (m_progress-0.1f)/0.6f;
+        zoom.y = 0.01f;
+        zoom.x = 2.0f;
+        zoom.z = zoom.x;
+    }
+    else
+    {
+        progress = (m_progress-0.7f)/0.3f;
+        zoom.y = 0.01f;
+        zoom.x = 2.0f-progress*2.0f;
+        zoom.z = zoom.x;
+    }
+    m_object->SetScale(zoom);
+#else
+    float	zoom;
+	float	progress;
+
+	if ( m_progress < 0.1f )
+	{
+		progress = m_progress/0.1f;
+		zoom = 1.0f-progress;
+	}
+	else
+	{
+		zoom = 0.0f;
+	}
+	m_object->SetScale(zoom);
+#endif
+}
+
+// Termine l'explosion d'un objet organique vert.
+
+void CPyro::OrgaTerminate()
+{
+    DeleteObject(true, true);
+}
+
+
+// Démarre la voltige d'un robot ou d'un objet heurté.
+
+void CPyro::AcrobaticStart(Math::Vector min, Math::Vector max)
+{
+    ObjectType	type;
+    Math::Matrix*	mat;
+    Math::Vector	cdg, pos, n, angle, speed, size;
+    Math::Point		nn, dim;
+    float		a, duration, little, radius, d;
+
+    m_angleStart.x = Math::NormAngle(m_angleStart.x);
+    m_angleStart.y = Math::NormAngle(m_angleStart.y);
+    m_angleStart.z = Math::NormAngle(m_angleStart.z);
+
+    m_angleGoal = m_angleStart;
+
+    m_height = m_force*10.0f;
+    if ( m_height > 16.0f )  m_height = 16.0f;
+
+    if ( m_height < 6.0f )
+    {
+        m_speed = 1.0f/1.0f;
+        m_height = 0.0f;
+    }
+    else
+    {
+        m_speed = 1.0f/(1.0f+(m_height/16.0f));
+    }
+
+    m_heightSuppl = 0.0f;
+
+    m_object->SetLock(true);  // plus utilisable
+    dynamic_cast<COldObject*>(m_object)->SetDying(DeathType::Exploding);  // en cours de destruction
+
+    cdg = (min+max)/2.0f;  // centre de gravité
+    size = max-min;  // dimensions
+
+    d = 1.2f-Math::Norm(size.Length()*0.2f)*0.4f;
+    m_height *= d;
+    m_speed *= 1.0f/d;
+
+    type = m_object->GetType();
+    if ( m_type == PT_PIECE )  // pièce de voiture ?
+    {
+        m_heightSuppl = -m_terrain->GetFloorLevel(m_posStart);
+
+        little = Math::Min(size.x, size.y, size.z);
+        if ( m_param == 1 )  // force rotation en x ?
+        {
+            little = size.z;
+        }
+        if ( size.x == little )  // pièce mince en x ?
+        {
+            angle = Math::Vector(0.0f, 0.0f, -Math::PI/2.0f);
+        }
+        else if ( size.z == little )  // pièce mince en z ?
+        {
+            angle = Math::Vector(-Math::PI/2.0f, 0.0f, 0.0f);
+        }
+        else	// pièce mince en y ?
+        {
+            angle = Math::Vector(0.0f, 0.0f, 0.0f);
+        }
+        AcrobaticTransform(type, cdg, angle, min, max);
+
+        m_angleGoal.y += (Math::Rand()-0.5f)*Math::PI*2.0f;  // autre orientation
+
+        if ( m_terrain->GetNormal(n, m_posStart) )
+        {
+            a = m_angleGoal.y;
+            nn = RotatePoint(-a, Math::Point(n.z, n.x));
+            m_angleGoal.x =  sinf(nn.x);
+            m_angleGoal.z = -sinf(nn.y);  // plaque au sol
+        }
+    }
+    else
+    {
+        if ( type != OBJECT_BOT1    &&
+             type != OBJECT_BOT2    &&
+             type != OBJECT_BOT3    &&
+             type != OBJECT_BOT4    &&
+             type != OBJECT_BOT5    &&
+             type != OBJECT_CARROT  &&
+             type != OBJECT_STARTER &&
+             type != OBJECT_WALKER  &&
+             type != OBJECT_CRAZY   &&
+             type != OBJECT_GUIDE   )
+        {
+            if ( false /* TODO (krzys_h): !m_object->GetGround() */ )  // pas encore à terre ?
+            {
+                angle = Math::Vector(-Math::PI/2.0f, 0.0f, 0.0f);
+                AcrobaticTransform(type, cdg, angle, min, max);
+            }
+            m_angleGoal.y += (Math::Rand()-0.5f)*Math::PI*2.0f;  // autre orientation
+
+            pos = m_object->GetPosition();
+            if ( m_terrain->GetNormal(n, pos) )
+            {
+                a = m_angleGoal.y;
+                nn = RotatePoint(-a, Math::Point(n.z, n.x));
+                m_angleGoal.x =  sinf(nn.x);
+                m_angleGoal.z = -sinf(nn.y);  // plaque au sol
+                m_angleGoal.x = m_angleStart.x+Math::Direction(m_angleStart.x, m_angleGoal.x);
+                m_angleGoal.z = m_angleStart.z+Math::Direction(m_angleStart.z, m_angleGoal.z);
+            }
+        }
+    }
+
+    if ( m_height == 0.0f )
+    {
+        m_angleGoal.y += Math::PI*2.0f;  // pirouette
+    }
+    else if ( m_height < 11.0f )
+    {
+        m_angleGoal.y += Math::PI*2.0f;
+        m_angleGoal.z += Math::PI*2.0f;  // pirouette
+    }
+    else
+    {
+        m_angleGoal.x += Math::PI*2.0f;
+        m_angleGoal.y += Math::PI*2.0f;
+        m_angleGoal.z += Math::PI*2.0f;  // pirouette
+    }
+
+    radius = size.Length()/2.0f;
+    dim.x = Math::Distance(max, min)*0.7f*(m_height/5.0f);
+    if ( radius > 3.0f && dim.x > 4.0f )
+    {
+        if ( dim.x > 12.0f )  dim.x = 12.0f;
+        dim.y = dim.x;
+        mat = m_object->GetWorldMatrix(0);
+        pos = Math::Transform(*mat, cdg);
+        speed = Math::Vector(0.0f, 0.0f, 0.0f);
+        duration = 0.3f;
+        m_particle->CreateParticle(pos, speed, dim, PARTIBIGT, duration);
+    }
+}
+
+// Transforme un objet pour qu'il devienne indépendant.
+
+void CPyro::AcrobaticTransform(ObjectType type, Math::Vector cdg, Math::Vector angle,
+                               Math::Vector min, Math::Vector max)
+{
+    Math::Vector	move1, move2;
+    int			i, objRank;
+
+    if ( angle.z != 0.0f )
+    {
+        move1 = -cdg;
+        move2 = Math::Vector(0.0f, 0.0f, 0.0f);
+        AcrobaticGroundAdapt(type, angle, move2);
+
+        for ( i=0 ; i<OBJECTMAXPART ; i++ )
+        {
+            objRank = m_object->GetObjectRank(i);
+            if ( objRank == -1 )  continue;
+            m_engine->TransformObject(objRank, move1, angle, move2);
+        }
+
+        m_posStart.y += -min.x;
+    }
+    else if ( angle.x != 0.0f )
+    {
+        move1 = -cdg;
+        move2 = Math::Vector(0.0f, 0.0f, 0.0f);
+        AcrobaticGroundAdapt(type, angle, move2);
+
+        for ( i=0 ; i<OBJECTMAXPART ; i++ )
+        {
+            objRank = m_object->GetObjectRank(i);
+            if ( objRank == -1 )  continue;
+            m_engine->TransformObject(objRank, move1, angle, move2);
+        }
+
+        m_posStart.y += -min.z;
+    }
+    else
+    {
+        m_posStart.y += -min.y;
+    }
+}
+
+// Adapte l'angle d'un objet pour qu'il repose au sol sur le flan.
+
+void CPyro::AcrobaticGroundAdapt(ObjectType type, Math::Vector &angle, Math::Vector &pos)
+{
+    if ( type == OBJECT_CONE )
+    {
+        angle.x -= 17.0f*Math::PI/180.0f;
+        m_posStart.y -= 0.4f;
+    }
+    if ( type == OBJECT_BARRIER4 )
+    {
+        angle.z -= 6.0f*Math::PI/180.0f;
+        angle.x -= 3.0f*Math::PI/180.0f;
+        m_posStart.y -= 0.5f;
+    }
+    if ( type == OBJECT_BARRIER5 )
+    {
+        angle.x -= 3.0f*Math::PI/180.0f;
+        m_posStart.y -= 0.1f;
+    }
+    if ( type == OBJECT_CARCASS1 )
+    {
+        angle.x -= 20.0f*Math::PI/180.0f;  // sur le côté
+    }
+    if ( type == OBJECT_CARCASS2 )
+    {
+        angle.x += 160.0f*Math::PI/180.0f;  // sur le toît
+        m_posStart.y += 1.0f;
+    }
+}
+
+// Fait progresser la voltige d'un robor heurté.
+
+void CPyro::AcrobaticProgress()
+{
+    Math::Vector	pos, angle;
+    float		progress;
+
+    progress = Math::Norm(m_progress);
+
+    pos = m_posStart;
+    pos.y += sinf(progress*Math::PI)*m_height;
+
+    if ( progress > 0.5f )
+    {
+        pos.y += m_heightSuppl*((progress-0.5f)/0.5f);
+    }
+
+    if ( m_type == PT_SABOTAGE )
+    {
+        pos.x += (m_impact.x-pos.x)*progress;
+        pos.z += (m_impact.z-pos.z)*progress;
+    }
+    m_object->SetPosition(pos);
+
+//?	angle = m_angleStart+(m_angleGoal-m_angleStart)*progress;
+    angle = m_angleStart+(m_angleGoal-m_angleStart)*powf(progress, 0.5f);
+//?	angle.x += Math::PI*2.0f*powf(progress, 0.5f);  // pirouette
+//?	angle.y += Math::PI*2.0f*powf(progress, 0.5f);  // pirouette
+//?	angle.z += Math::PI*2.0f*powf(progress, 0.5f);  // pirouette
+    m_object->SetRotation(angle);
+}
+
+// Termine la voltige d'un robor heurté.
+
+void CPyro::AcrobaticTerminate()
+{
+    ObjectType	type;
+    SoundType		sound;
+
+    m_progress = 1.0f;
+    AcrobaticProgress();
+
+    if ( m_height > 0.0f )
+    {
+        type = m_object->GetType();
+
+        if ( type == OBJECT_CONE )
+        {
+            sound = SOUND_BOUMv;
+        }
+        else
+        {
+            sound = (SoundType)(SOUND_FALLo1+rand()%2);
+        }
+        m_sound->Play(sound, m_posStart);
+    }
+
+    m_object->SetLock(false);  // de nouveau utilisable
+    dynamic_cast<COldObject*>(m_object)->SetDying(DeathType::Alive);  // destruction terminée
+//TODO (krzys_h):    m_object->SetGround(true);  // à terre
 }
 
 void CPyro::BurnStart()
@@ -1735,6 +2521,33 @@ void CPyro::BurnStart()
         pos.y =   0.0f;
         pos.z =   0.0f;
         angle.x = (Math::Rand()-0.5f)*0.8f;
+        angle.y = 0.0f;
+        angle.z = (Math::Rand()-0.5f)*0.2f;
+    }
+    else if ( m_burnType == OBJECT_CAR )
+    {
+        pos.x =   0.0f;
+        pos.y = -(0.5f+Math::Rand()*1.0f);
+        pos.z =   0.0f;
+        angle.x = (Math::Rand()-0.5f)*0.8f;
+        angle.y = 0.0f;
+        angle.z = (Math::Rand()-0.5f)*0.4f;
+    }
+    else if ( m_burnType == OBJECT_EVIL1 )
+    {
+        pos.x =   0.0f;
+        pos.y =  -7.0f;
+        pos.z =   0.0f;
+        angle.x = (Math::Rand()-0.5f)*0.8f;
+        angle.y = 0.0f;
+        angle.z = (Math::Rand()-0.5f)*0.4f;
+    }
+    else if ( m_burnType == OBJECT_EVIL3 )
+    {
+        pos.x =   0.0f;
+        pos.y = -20.0f;
+        pos.z =   0.0f;
+        angle.x = (Math::Rand()-0.5f)*0.4f;
         angle.y = 0.0f;
         angle.z = (Math::Rand()-0.5f)*0.2f;
     }
@@ -2092,6 +2905,66 @@ void CPyro::BurnStart()
             BurnAddPart(6+i, pos, angle);  // leg
         }
     }
+    if ( m_burnType == OBJECT_MOBILEfb )
+    {
+        pos.x = -1.5f;
+        pos.y = -5.0f;
+        pos.z =  0.0f;
+        angle.x = (Math::Rand()-0.5f)*0.2f;
+        angle.y = (Math::Rand()-0.5f)*0.2f;
+        angle.z = -25.0f*Math::PI/180.0f;
+        BurnAddPart(1, pos, angle);  // descend le canon
+    }
+
+    if ( m_burnType == OBJECT_MOBILEob )
+    {
+        pos.x = -1.5f;
+        pos.y = -5.0f;
+        pos.z =  0.0f;
+        angle.x = (Math::Rand()-0.5f)*0.2f;
+        angle.y = (Math::Rand()-0.5f)*0.2f;
+        angle.z = -25.0f*Math::PI/180.0f;
+        BurnAddPart(1, pos, angle);  // descend le canon-insecte
+    }
+
+    if ( m_burnType == OBJECT_CAR      ||
+         m_burnType == OBJECT_MOBILEtg )  // roues ?
+    {
+        int i;
+        for ( i=0 ; i<4 ; i++ )
+        {
+            pos.x = 0.0f;
+            pos.y = Math::Rand()*0.5f;
+            pos.z = 0.0f;
+            angle.x = (Math::Rand()-0.5f)*Math::PI/2.0f;
+            angle.y = (Math::Rand()-0.5f)*Math::PI/2.0f;
+            angle.z = 0.0f;
+            BurnAddPart(6+i, pos, angle);  // roue
+
+            m_burnKeepPart[i] = 6+i;  // on garde les roues
+        }
+        m_burnKeepPart[i] = -1;
+    }
+
+    if ( m_burnType == OBJECT_MOBILEfb ||
+         m_burnType == OBJECT_MOBILEob )  // chenilles ?
+    {
+        pos.x =   0.0f;
+        pos.y =  -4.0f;
+        pos.z =   2.0f;
+        angle.x = (Math::Rand()-0.5f)*20.0f*Math::PI/180.0f;
+        angle.y = (Math::Rand()-0.5f)*10.0f*Math::PI/180.0f;
+        angle.z = (Math::Rand()-0.5f)*30.0f*Math::PI/180.0f;
+        BurnAddPart(6, pos, angle);  // descend la chenille droite
+
+        pos.x =   0.0f;
+        pos.y =  -4.0f;
+        pos.z =  -2.0f;
+        angle.x = (Math::Rand()-0.5f)*20.0f*Math::PI/180.0f;
+        angle.y = (Math::Rand()-0.5f)*10.0f*Math::PI/180.0f;
+        angle.z = (Math::Rand()-0.5f)*30.0f*Math::PI/180.0f;
+        BurnAddPart(7, pos, angle);  // descend la chenille gauche
+    }
 }
 
 void CPyro::BurnAddPart(int part, Math::Vector pos, Math::Vector angle)
@@ -2143,6 +3016,12 @@ void CPyro::BurnProgress()
         if (sub != nullptr)  // is there a battery?
             sub->SetScaleY(1.0f - m_progress);  // complete flattening
     }
+
+    if ( m_burnType == OBJECT_EVIL1 ||
+         m_burnType == OBJECT_EVIL3 )
+    {
+        m_object->SetScaleY(1.0f-m_progress);  // aplatissement complet
+    }
 }
 
 bool CPyro::BurnIsKeepPart(int part)
@@ -2193,6 +3072,9 @@ void CPyro::BurnTerminate()
          m_burnType == OBJECT_PARA     ||
          m_burnType == OBJECT_SAFE     ||
          m_burnType == OBJECT_HUSTON   ||
+         m_burnType == OBJECT_DOCK     ||
+         m_burnType == OBJECT_REMOTE   ||
+         m_burnType == OBJECT_STAND    ||
          m_burnType == OBJECT_START    ||
          m_burnType == OBJECT_END      )
     {

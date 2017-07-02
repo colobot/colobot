@@ -65,7 +65,7 @@ protected:
     friend class CPyroManager;
 
     //! Creates pyrotechnic effect
-    bool        Create(PyroType type, CObject* obj, float force);
+    bool        Create(PyroType type, CObject* obj, float force = 1.0f, int param = 0, Math::Vector impact = Math::Vector(NAN, NAN, NAN));
     //! Destroys the object
     void        DeleteObject();
 
@@ -96,9 +96,13 @@ protected:
     void        CreateTriangle(CObject* obj, ObjectType oType, int part);
 
     //! Starts the explosion of a vehicle
-    void        ExploStart();
+    void        ExploStart(ObjectType oType);
     //! Ends the explosion of a vehicle
     void        ExploTerminate();
+
+    void        OrgaStart();
+    void        OrgaProgress();
+    void        OrgaTerminate();
 
     //! Starts a vehicle fire
     void        BurnStart();
@@ -120,6 +124,12 @@ protected:
     //! Indicates whether the fall is over
     Error       FallIsEnded();
 
+    void        AcrobaticStart(Math::Vector min, Math::Vector max);
+    void        AcrobaticTransform(ObjectType type, Math::Vector cdg, Math::Vector angle, Math::Vector min, Math::Vector max);
+    void        AcrobaticGroundAdapt(ObjectType type, Math::Vector &angle, Math::Vector &pos);
+    void        AcrobaticProgress();
+    void        AcrobaticTerminate();
+
     //! Empty the table of operations of animation of light
     void        LightOperFlush();
     //! Adds an animation operation of the light
@@ -137,17 +147,28 @@ protected:
     CRobotMain*       m_main = nullptr;
     CSoundInterface*  m_sound = nullptr;
 
+    Math::Vector    m_impact = Math::Vector(NAN, NAN, NAN);
+    Math::Vector    m_posStart;
+    Math::Vector    m_angleStart;
+    Math::Vector    m_angleGoal;
     Math::Vector    m_pos;          // center of the effect
     Math::Vector    m_posPower;     // center of the battery
     bool            m_power = false;       // battery exists?
+    Math::Vector    m_posTracks;    // départ des traînées
+    bool            m_bTracks;      // traînées incandescentes ?
+    bool            m_bSphere;      // sphère translucide
+    bool            m_bChoc;        // onde de choc circulaire
     PyroType        m_type = PT_NULL;
     float           m_force = 0.0f;
     float           m_size = 0.0f;
+    float           m_height;
+    float           m_heightSuppl;
     float           m_progress = 0.0f;
     float           m_speed = 0.0f;
     float           m_time = 0.0f;
     float           m_lastParticle = 0.0f;
     float           m_lastParticleSmoke = 0.0f;
+    int             m_param = 0;
     int             m_soundChannel = -1;
 
     int             m_lightRank = -1;

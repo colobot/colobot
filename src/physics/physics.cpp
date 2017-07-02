@@ -6301,7 +6301,7 @@ void CPhysics::CrashParticle(float crash, bool bCrash)
 
     if ( bCrash )
     {
-//TODO (krzys_h):        m_camera->StartEffect(CE_CRASH, pos, crash);
+        m_camera->StartEffect(Gfx::CAM_EFFECT_CRASH, pos, crash);
         FFBCrash(crash, 0.4f, 5.0f);
 //?char s[100];
 //?sprintf(s, "crash=%.2f\n", crash);

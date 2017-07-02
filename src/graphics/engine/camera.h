@@ -111,16 +111,17 @@ enum CameraOverEffect
     CAM_OVER_EFFECT_NULL           = 0,
     //! Flash red
     CAM_OVER_EFFECT_BLOOD          = 1,
+    CAM_OVER_EFFECT_ORGA		    = 2,	// flash vert
     //! White -> nothing
-    CAM_OVER_EFFECT_FADEIN_WHITE   = 2,
+    CAM_OVER_EFFECT_FADEIN_WHITE   = 3,
     //! Nothing -> white
-    CAM_OVER_EFFECT_FADEOUT_WHITE  = 3,
+    CAM_OVER_EFFECT_FADEOUT_WHITE  = 4,
     //! Nothing -> blue
-    CAM_OVER_EFFECT_FADEOUT_BLACK  = 4,
+    CAM_OVER_EFFECT_FADEOUT_BLACK  = 5,
     //! Lightning
-    CAM_OVER_EFFECT_LIGHTNING      = 5,
+    CAM_OVER_EFFECT_LIGHTNING      = 6,
     //! Collision
-    CAM_OVER_EFFECT_CRASH          = 6,
+    CAM_OVER_EFFECT_CRASH          = 7,
 };
 
 

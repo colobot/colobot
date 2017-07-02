@@ -805,6 +805,8 @@ public:
                                         EngineTextureMapping mode,
                                         float pos, float factor, float tl, float ts, float tt);
 
+    void		TransformObject(int objRank, Math::Vector move1, Math::Vector angle, Math::Vector move2);
+
     //! Detects the target object that is selected with the mouse
     /** Returns the rank of the object or -1. */
     int             DetectObject(Math::Point mouse, Math::Vector& targetPos, bool terrain = false);
@@ -1234,6 +1236,8 @@ protected:
 
     //! Create texture and add it to cache
     Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr);
+
+    void		TransformVertex(std::vector<VertexTex2>& pv, const Math::Vector &move1, const Math::Vector &angle, const Math::Vector &move2);
 
     //! Tests whether the given object is visible
     bool        IsVisible(int objRank);
