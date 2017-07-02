@@ -18,7 +18,7 @@
 #include "sound/sound.h"
 #include "ui/displaytext.h"
 #include "object/auto/auto.h"
-#include "object/auto/buzzingcars/autoremote.h"
+#include "object/auto/buzzingcars/building/autoremote.h"
 #include "object/object_manager.h"
 
 

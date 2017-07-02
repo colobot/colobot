@@ -28,7 +28,7 @@
 
 #include "object/object_create_params.h"
 
-#include "object/auto/buzzingcars/autobarrel.h"
+#include "object/auto/buzzingcars/building/autobarrel.h"
 
 CBCResource::CBCResource(int id, ObjectType type)
     : COldObject(id)

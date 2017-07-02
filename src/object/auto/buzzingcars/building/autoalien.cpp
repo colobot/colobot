@@ -16,7 +16,7 @@
 #include "object/motion/motion.h"
 #include "object/motion/buzzingcars/motionbot.h"
 #include "object/auto/auto.h"
-#include "object/auto/buzzingcars/autoalien.h"
+#include "object/auto/buzzingcars/building/autoalien.h"
 #include "graphics/engine/pyro_manager.h"
 #include "object/object_manager.h"
 

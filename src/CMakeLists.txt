@@ -304,26 +304,38 @@ set(BASE_SOURCES
     object/auto/autotower.h
     object/auto/autovault.cpp
     object/auto/autovault.h
-    object/auto/buzzingcars/autoalien.cpp
-    object/auto/buzzingcars/autoalien.h
-    object/auto/buzzingcars/autobarrel.cpp
-    object/auto/buzzingcars/autobarrel.h
-    object/auto/buzzingcars/autocomputer.cpp
-    object/auto/buzzingcars/autocomputer.h
-    object/auto/buzzingcars/autodock.cpp
-    object/auto/buzzingcars/autodock.h
-    object/auto/buzzingcars/autodoor.cpp
-    object/auto/buzzingcars/autodoor.h
-    object/auto/buzzingcars/autogenerator.cpp
-    object/auto/buzzingcars/autogenerator.h
-    object/auto/buzzingcars/autohome.cpp
-    object/auto/buzzingcars/autohome.h
-    object/auto/buzzingcars/autoinca.cpp
-    object/auto/buzzingcars/autoinca.h
-    object/auto/buzzingcars/autoremote.cpp
-    object/auto/buzzingcars/autoremote.h
-    object/auto/buzzingcars/autostand.cpp
-    object/auto/buzzingcars/autostand.h
+    object/auto/buzzingcars/additional/autoblitzer.cpp
+    object/auto/buzzingcars/additional/autoblitzer.h
+    object/auto/buzzingcars/additional/autocompass.cpp
+    object/auto/buzzingcars/additional/autocompass.h
+    object/auto/buzzingcars/additional/autofire.cpp
+    object/auto/buzzingcars/additional/autofire.h
+    object/auto/buzzingcars/additional/autohelico.cpp
+    object/auto/buzzingcars/additional/autohelico.h
+    object/auto/buzzingcars/additional/autohook.cpp
+    object/auto/buzzingcars/additional/autohook.h
+    object/auto/buzzingcars/building/autoalien.cpp
+    object/auto/buzzingcars/building/autoalien.h
+    object/auto/buzzingcars/building/autobarrel.cpp
+    object/auto/buzzingcars/building/autobarrel.h
+    #object/auto/buzzingcars/building/autobomb.cpp # TODO
+    #object/auto/buzzingcars/building/autobomb.h # TODO
+    object/auto/buzzingcars/building/autocomputer.cpp
+    object/auto/buzzingcars/building/autocomputer.h
+    object/auto/buzzingcars/building/autodock.cpp
+    object/auto/buzzingcars/building/autodock.h
+    object/auto/buzzingcars/building/autodoor.cpp
+    object/auto/buzzingcars/building/autodoor.h
+    object/auto/buzzingcars/building/autogenerator.cpp
+    object/auto/buzzingcars/building/autogenerator.h
+    object/auto/buzzingcars/building/autohome.cpp
+    object/auto/buzzingcars/building/autohome.h
+    object/auto/buzzingcars/building/autoinca.cpp
+    object/auto/buzzingcars/building/autoinca.h
+    object/auto/buzzingcars/building/autoremote.cpp
+    object/auto/buzzingcars/building/autoremote.h
+    object/auto/buzzingcars/building/autostand.cpp
+    object/auto/buzzingcars/building/autostand.h
     object/crash_sphere.h
     object/drive_type.cpp
     object/drive_type.h
@@ -395,6 +407,8 @@ set(BASE_SOURCES
     object/old_object.h
     object/old_object_interface.cpp
     object/old_object_interface.h
+    object/subclass/buzzingcars/bc_additional.cpp
+    object/subclass/buzzingcars/bc_additional.h
     object/subclass/buzzingcars/bc_barrier.cpp
     object/subclass/buzzingcars/bc_barrier.h
     object/subclass/buzzingcars/bc_bot.cpp

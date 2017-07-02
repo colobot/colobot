@@ -28,16 +28,16 @@
 
 #include "object/object_create_params.h"
 
-#include "object/auto/buzzingcars/autoalien.h"
-#include "object/auto/buzzingcars/autobarrel.h"
-#include "object/auto/buzzingcars/autocomputer.h"
-#include "object/auto/buzzingcars/autodock.h"
-#include "object/auto/buzzingcars/autodoor.h"
-#include "object/auto/buzzingcars/autogenerator.h"
-#include "object/auto/buzzingcars/autohome.h"
-#include "object/auto/buzzingcars/autoinca.h"
-#include "object/auto/buzzingcars/autoremote.h"
-#include "object/auto/buzzingcars/autostand.h"
+#include "object/auto/buzzingcars/building/autoalien.h"
+#include "object/auto/buzzingcars/building/autobarrel.h"
+#include "object/auto/buzzingcars/building/autocomputer.h"
+#include "object/auto/buzzingcars/building/autodock.h"
+#include "object/auto/buzzingcars/building/autodoor.h"
+#include "object/auto/buzzingcars/building/autogenerator.h"
+#include "object/auto/buzzingcars/building/autohome.h"
+#include "object/auto/buzzingcars/building/autoinca.h"
+#include "object/auto/buzzingcars/building/autoremote.h"
+#include "object/auto/buzzingcars/building/autostand.h"
 
 
 CBCBuilding::CBCBuilding(int id, ObjectType type)
@@ -1532,29 +1532,6 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
     if ( params.type == OBJECT_ROOT5 )
     {
         objAuto = MakeUnique<CAutoRoot>(obj.get());
-    }
-    */
-
-    /* TODO: Not implemented yet
-    if ( params.type == OBJECT_FIRE ) //?
-    {
-        objAuto = MakeUnique<CAutoFire>(obj.get());
-    }
-    if ( params.type == OBJECT_HELICO ) //?
-    {
-        objAuto = MakeUnique<CAutoHelico>(obj.get());
-    }
-    if ( params.type == OBJECT_COMPASS ) //?
-    {
-        objAuto = MakeUnique<CAutoCompass>(obj.get());
-    }
-    if ( params.type == OBJECT_BLITZER ) //?
-    {
-        objAuto = MakeUnique<CAutoBlitzer>(obj.get());
-    }
-    if ( params.type == OBJECT_HOOK ) //?
-    {
-        objAuto = MakeUnique<CAutoHook>(obj.get());
     }
     */
 

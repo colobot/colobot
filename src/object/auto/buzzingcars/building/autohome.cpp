@@ -16,7 +16,7 @@
 #include "level/robotmain.h"
 #include "sound/sound.h"
 #include "object/auto/auto.h"
-#include "object/auto/buzzingcars/autohome.h"
+#include "object/auto/buzzingcars/building/autohome.h"
 #include "object/object_manager.h"
 
 

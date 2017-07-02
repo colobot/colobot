@@ -1,31 +1,34 @@
 // autohelico.h
 
-#ifndef _AUTOHELICO_H_
-#define    _AUTOHELICO_H_
+#pragma once
+
+#include "object/auto/auto.h"
 
 
-class CInstanceManager;
-class CD3DEngine;
-class CParticule;
+namespace Gfx
+{
+class CEngine;
+class CParticle;
 class CTerrain;
 class CCamera;
-class CObject;
+}
+class COldObject;
 
 
 
 class CAutoHelico : public CAuto
 {
 public:
-   CAutoHelico(CInstanceManager* iMan, CObject* object);
+   CAutoHelico(COldObject* object);
    ~CAutoHelico();
 
-   void        DeleteObject(BOOL bAll=FALSE);
+   void        DeleteObject(bool bAll=false);
 
    void        Init();
    void        Start(int param);
-   BOOL        EventProcess(const Event &event);
-   BOOL        Abort();
-   Error       RetError();
+   bool        EventProcess(const Event &event);
+   bool        Abort();
+   Error       GetError();
 
 protected:
    void        UpdateRotorMapping(float speed);
@@ -38,6 +41,3 @@ protected:
    int         m_rotorSound;
    int         m_lastRotorSpeed;
 };
-
-
-#endif //_AUTOHELICO_H_

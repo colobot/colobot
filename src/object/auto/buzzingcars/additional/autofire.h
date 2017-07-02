@@ -1,17 +1,18 @@
 // autofire.h
 
-#ifndef _AUTOFIRE_H_
-#define    _AUTOFIRE_H_
+#pragma once
+
+#include "object/auto/auto.h"
 
 
-class CInstanceManager;
-class CD3DEngine;
-class CParticule;
+namespace Gfx
+{
+class CEngine;
+class CParticle;
 class CTerrain;
 class CCamera;
-class CObject;
-
-enum ParticuleType;
+}
+class COldObject;
 
 
 enum AutoFirePhase
@@ -28,19 +29,19 @@ enum AutoFirePhase
 class CAutoFire : public CAuto
 {
 public:
-   CAutoFire(CInstanceManager* iMan, CObject* object);
+   CAutoFire(COldObject* object);
    ~CAutoFire();
 
-   void        DeleteObject(BOOL bAll=FALSE);
+   void        DeleteObject(bool bAll=false);
 
    void        Init();
    void        Start(int param);
-   BOOL        EventProcess(const Event &event);
-   BOOL        Abort();
-   Error       RetError();
+   bool        EventProcess(const Event &event);
+   bool        Abort();
+   Error       GetError();
 
 protected:
-   CObject*    SearchObject(ObjectType type, D3DVECTOR center, float radius);
+   COldObject*    SearchObject(ObjectType type, Math::Vector center, float radius);
    void        BreakDown();
 
 protected:
@@ -53,13 +54,10 @@ protected:
    float       m_goalAngleH;
    float       m_goalAngleV;
    float       m_trackMass;
-   float       m_lastParticule;
+   float       m_lastParticle;
    float       m_lastPlouf;
    float       m_lastSound;
    float       m_lastBreakdown;
-   D3DVECTOR   m_targetPos;
-   CameraType  m_cameraType;
+   Math::Vector   m_targetPos;
+   Gfx::CameraType  m_cameraType;
 };
-
-
-#endif //_AUTOFIRE_H_

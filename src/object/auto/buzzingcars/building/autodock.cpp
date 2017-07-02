@@ -11,7 +11,7 @@
 #include "object/motion/buzzingcars/motioncar.h"
 #include "object/motion/buzzingcars/motionbot.h"
 #include "object/auto/auto.h"
-//#include "object/auto/buzzingcars/autobomb.h"
+//#include "object/auto/buzzingcars/building/autobomb.h"
 #include "physics/physics.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/button.h"
@@ -19,7 +19,7 @@
 #include "level/robotmain.h"
 #include "sound/sound.h"
 #include "object/auto/auto.h"
-#include "object/auto/buzzingcars/autodock.h"
+#include "object/auto/buzzingcars/building/autodock.h"
 #include "object/object_manager.h"
 
 

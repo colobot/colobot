@@ -1,15 +1,20 @@
 // autohook.h
 
-#ifndef _AUTOHOOK_H_
-#define    _AUTOHOOK_H_
+#pragma once
+
+#include "object/auto/auto.h"
+
+#include "graphics/engine/camera.h"
 
 
-class CInstanceManager;
-class CD3DEngine;
-class CParticule;
+namespace Gfx
+{
+class CEngine;
+class CParticle;
 class CTerrain;
 class CCamera;
-class CObject;
+}
+class COldObject;
 
 
 
@@ -26,19 +31,19 @@ enum AutoHookPhase
 class CAutoHook : public CAuto
 {
 public:
-   CAutoHook(CInstanceManager* iMan, CObject* object);
+   CAutoHook(COldObject* object);
    ~CAutoHook();
 
-   void        DeleteObject(BOOL bAll=FALSE);
+   void        DeleteObject(bool bAll=false);
 
    void        Init();
    void        Start(int param);
-   BOOL        EventProcess(const Event &event);
-   BOOL        Abort();
-   Error       RetError();
+   bool        EventProcess(const Event &event);
+   bool        Abort();
+   Error       GetError();
 
 protected:
-   CObject*    SearchObject(ObjectType type, D3DVECTOR center, float minRadius, float maxRadius);
+   COldObject*    SearchObject(ObjectType type, Math::Vector center, float minRadius, float maxRadius);
    void        StartAction(int action, float delay);
    void        SoundManip(float time, float amplitude, float frequency);
 
@@ -47,9 +52,9 @@ protected:
    float       m_progress;
    float       m_speed;
 
-   float       m_lastParticule;
-   D3DVECTOR   m_targetPos;
-   CameraType  m_cameraType;
+   float       m_lastParticle;
+   Math::Vector   m_targetPos;
+   Gfx::CameraType  m_cameraType;
    float       m_startAngle;
    float       m_goalAngle;
    float       m_startDist;
@@ -58,10 +63,8 @@ protected:
    float       m_goalHeight;
    float       m_startRot;
    float       m_goalRot;
-   BOOL        m_bGrab;
-   CObject*    m_target;
-   CObject*    m_load;
+   bool        m_bGrab;
+   COldObject*    m_target;
+   COldObject*    m_load;
 };
 
-
-#endif //_AUTOHOOK_H_

@@ -16,7 +16,7 @@
 #include "sound/sound.h"
 #include "graphics/engine/pyro.h"
 #include "object/auto/auto.h"
-#include "object/auto/buzzingcars/autoinca.h"
+#include "object/auto/buzzingcars/building/autoinca.h"
 #include "graphics/engine/pyro_manager.h"
 #include "object/object_manager.h"
 

@@ -44,6 +44,7 @@
 #include "object/auto/automush.h"
 #include "object/auto/autoroot.h"
 
+#include "object/subclass/buzzingcars/bc_additional.h"
 #include "object/subclass/buzzingcars/bc_barrier.h"
 #include "object/subclass/buzzingcars/bc_bot.h"
 #include "object/subclass/buzzingcars/bc_box.h"
@@ -562,6 +563,14 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_PIECE8:
         case OBJECT_PIECE9:
             return CBCPiece::Create(params, m_oldModelManager, m_engine);
+
+        case OBJECT_FIRE:
+        case OBJECT_HELICO:
+        case OBJECT_COMPASS:
+        case OBJECT_BLITZER:
+        case OBJECT_HOOK:
+        case OBJECT_AQUA:
+            return CBCAdditional::Create(params, m_oldModelManager, m_engine);
 
         default:
             break;

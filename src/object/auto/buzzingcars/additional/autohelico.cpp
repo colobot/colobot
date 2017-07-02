@@ -1,34 +1,22 @@
 // autohelico.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
-
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
-
-#include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
-#include "event.h"
-#include "misc.h"
-#include "iman.h"
-#include "math3d.h"
-#include "particule.h"
-#include "camera.h"
-#include "object.h"
-#include "physics.h"
-#include "brain.h"
-#include "terrain.h"
-#include "motion.h"
-#include "motionbot.h"
-#include "interface.h"
-#include "button.h"
-#include "window.h"
-#include "robotmain.h"
-#include "sound.h"
-#include "auto.h"
-#include "autohelico.h"
+#include "graphics/engine/engine.h"
+#include "math/all.h"
+#include "common/event.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/camera.h"
+#include "object/old_object.h"
+#include "physics/physics.h"
+#include "graphics/engine/terrain.h"
+#include "object/motion/motion.h"
+#include "object/motion/buzzingcars/motionbot.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/button.h"
+#include "ui/controls/window.h"
+#include "level/robotmain.h"
+#include "sound/sound.h"
+#include "object/auto/auto.h"
+#include "object/auto/buzzingcars/additional/autohelico.h"
 
 
 
@@ -36,11 +24,9 @@
 
 // Constructeur de l'objet.
 
-CAutoHelico::CAutoHelico(CInstanceManager* iMan, CObject* object)
-                        : CAuto(iMan, object)
+CAutoHelico::CAutoHelico(COldObject* object)
+                        : CAuto(object)
 {
-   CAuto::CAuto(iMan, object);
-
    Init();
 }
 
@@ -54,13 +40,12 @@ CAutoHelico::~CAutoHelico()
        m_sound->AddEnvelope(m_rotorSound, 0.0f, 1.0f, 0.3f, SOPER_STOP);
        m_rotorSound = -1;
    }
-   CAuto::~CAuto();
 }
 
 
 // Détruit l'objet.
 
-void CAutoHelico::DeleteObject(BOOL bAll)
+void CAutoHelico::DeleteObject(bool bAll)
 {
    CAuto::DeleteObject(bAll);
 }
@@ -90,17 +75,17 @@ void CAutoHelico::Start(int param)
 
 // Gestion d'un événement.
 
-BOOL CAutoHelico::EventProcess(const Event &event)
+bool CAutoHelico::EventProcess(const Event &event)
 {
-   CObject*    car;
+   COldObject*    car;
    CPhysics*   physics;
    float       hopeSpeed;
 
    CAuto::EventProcess(event);
 
-   if ( m_engine->RetPause() )  return TRUE;
+   if ( m_engine->GetPause() )  return true;
 
-   car = m_object->RetTruck();
+   car = dynamic_cast<COldObject*>(m_object->GetTransporter());
    if ( car == 0 )
    {
        if ( m_rotorSound != -1 )
@@ -110,47 +95,47 @@ BOOL CAutoHelico::EventProcess(const Event &event)
            m_rotorSound = -1;
        }
        UpdateRotorMapping(0.0f);
-       return TRUE;
+       return true;
    }
 
    hopeSpeed = 4.0f;  // vitesse au sol
-   physics = car->RetPhysics();
-   if ( physics != 0 && physics->RetFloorHeight() > 0.0f )
+   physics = car->GetPhysics();
+   if ( physics != 0 && physics->GetFloorHeight() > 0.0f )
    {
        hopeSpeed = 20.0f;  // vitesse en l'air
    }
-   m_rotorSpeed = Smooth(m_rotorSpeed, hopeSpeed, event.rTime*2.0f);
+   m_rotorSpeed = Math::Smooth(m_rotorSpeed, hopeSpeed, event.rTime*2.0f);
    UpdateRotorMapping(m_rotorSpeed);
 
    m_rotorAngle += event.rTime*m_rotorSpeed*2.0f;  // fait tourner l'hélice +/- vite
-   m_object->SetAngleY(1, m_rotorAngle);
+   m_object->SetPartRotationY(1, m_rotorAngle);
 
    if ( m_rotorSound == -1 )
    {
-       m_rotorSound = m_sound->Play(SOUND_HELICO, car->RetPosition(0), 1.0f, 1.0f, TRUE);
+       m_rotorSound = m_sound->Play(SOUND_HELICO, car->GetPartPosition(0), 1.0f, 1.0f, true);
    }
    if ( m_rotorSound != -1 )
    {
-       m_sound->Position(m_rotorSound, car->RetPosition(0));
+       m_sound->Position(m_rotorSound, car->GetPartPosition(0));
        m_sound->Frequency(m_rotorSound, m_rotorSpeed/10.0f);
        m_sound->Amplitude(m_rotorSound, 1.0f);
    }
 
-   return TRUE;
+   return true;
 }
 
 
 // Stoppe l'automate.
 
-BOOL CAutoHelico::Abort()
+bool CAutoHelico::Abort()
 {
-   return TRUE;
+   return true;
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Getourne une erreur liée à l'état de l'automate.
 
-Error CAutoHelico::RetError()
+Error CAutoHelico::GetError()
 {
    return ERR_OK;
 }
@@ -160,11 +145,11 @@ Error CAutoHelico::RetError()
 
 void CAutoHelico::UpdateRotorMapping(float speed)
 {
-   D3DMATERIAL7    mat;
-   float           limit[4], au, bu, x1, x2;
+   Gfx::Material    mat;
+   float           au, bu, x1, x2;
    int             rotor, i, s;
 
-   speed = Abs(speed);
+   speed = abs(speed);
         if ( speed <  4.0f )  s = 0;
    else if ( speed <  8.0f )  s = 1;
    else if ( speed < 14.0f )  s = 2;
@@ -173,7 +158,6 @@ void CAutoHelico::UpdateRotorMapping(float speed)
    if ( s == m_lastRotorSpeed )  return;
    m_lastRotorSpeed = s;
 
-   ZeroMemory( &mat, sizeof(D3DMATERIAL7) );
    mat.diffuse.r = 1.0f;
    mat.diffuse.g = 1.0f;
    mat.diffuse.b = 1.0f;  // blanc
@@ -181,16 +165,7 @@ void CAutoHelico::UpdateRotorMapping(float speed)
    mat.ambient.g = 0.5f;
    mat.ambient.b = 0.5f;
 
-   rotor = m_object->RetObjectRank(1);  // helico2.mod
-
-//?    limit[0] = 0.0f;
-//?    limit[1] = m_engine->RetLimitLOD(0);
-//?    limit[2] = limit[1];
-//?    limit[3] = m_engine->RetLimitLOD(1);
-   limit[0] = 0.0f;
-   limit[1] = 1000000.0f;
-   limit[2] = 0.0f;
-   limit[3] = 1000000.0f;
+   rotor = m_object->GetObjectRank(1);  // helico2.mod
 
    x1 = (119.0f+26.0f*s)/256.0f;
    x2 = x1+26.0f/256.0f;
@@ -200,9 +175,9 @@ void CAutoHelico::UpdateRotorMapping(float speed)
    for ( i=0 ; i<1 ; i++ )
    {
        m_engine->ChangeTextureMapping(rotor,
-                                      mat, D3DSTATETTw|D3DSTATE2FACE,
+                                      mat, Gfx::ENG_RSTATE_TTEXTURE_WHITE|Gfx::ENG_RSTATE_2FACE,
                                       "search.tga", "",
-                                      limit[i*2+0], limit[i*2+1], D3DMAPPING1X,
+                                      Gfx::ENG_TEX_MAPPING_1X,
                                       au, bu, 1.0f, 0.0f);
    }
 }

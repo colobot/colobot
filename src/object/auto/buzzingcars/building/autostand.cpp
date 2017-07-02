@@ -12,7 +12,7 @@
 #include "ui/controls/window.h"
 #include "sound/sound.h"
 #include "object/auto/auto.h"
-#include "object/auto/buzzingcars/autostand.h"
+#include "object/auto/buzzingcars/building/autostand.h"
 #include "object/object_manager.h"
 
 

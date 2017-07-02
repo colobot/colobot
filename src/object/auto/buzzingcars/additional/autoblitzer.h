@@ -1,15 +1,20 @@
 // autoblitzer.h
 
-#ifndef _AUTOBLITZER_H_
-#define    _AUTOBLITZER_H_
+#pragma once
+
+#include "object/auto/auto.h"
+
+#include "graphics/engine/camera.h"
 
 
-class CInstanceManager;
-class CD3DEngine;
-class CParticule;
+namespace Gfx
+{
+class CEngine;
+class CParticle;
 class CTerrain;
 class CCamera;
-class CObject;
+}
+class COldObject;
 
 
 
@@ -24,19 +29,19 @@ enum AutoBlitzerPhase
 class CAutoBlitzer : public CAuto
 {
 public:
-   CAutoBlitzer(CInstanceManager* iMan, CObject* object);
+   CAutoBlitzer(COldObject* object);
    ~CAutoBlitzer();
 
-   void        DeleteObject(BOOL bAll=FALSE);
+   void        DeleteObject(bool bAll=false);
 
    void        Init();
    void        Start(int param);
-   BOOL        EventProcess(const Event &event);
-   BOOL        Abort();
-   Error       RetError();
+   bool        EventProcess(const Event &event);
+   bool        Abort();
+   Error       GetError();
 
 protected:
-   CObject*    SearchObject(int total, ObjectType *type, float *radius, D3DVECTOR center);
+   COldObject*    SearchObject(int total, ObjectType *type, float *radius, Math::Vector center);
    void        BreakDownFactory();
    void        BreakDownEvil1();
    void        BreakDownEvil3();
@@ -46,14 +51,11 @@ protected:
    float       m_progress;
    float       m_speed;
 
-   float       m_lastParticule;
-   D3DVECTOR   m_targetPos;
-   CameraType  m_cameraType;
+   float       m_lastParticle;
+   Math::Vector   m_targetPos;
+   Gfx::CameraType  m_cameraType;
    ObjectType  m_targetType;
    float       m_delayBlitz;
    float       m_delayTotal;
    int         m_channelSphere;
 };
-
-
-#endif //_AUTOBLITZER_H_
