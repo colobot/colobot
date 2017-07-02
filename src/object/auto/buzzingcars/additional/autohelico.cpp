@@ -176,7 +176,7 @@ void CAutoHelico::UpdateRotorMapping(float speed)
    {
        m_engine->ChangeTextureMapping(rotor,
                                       mat, Gfx::ENG_RSTATE_TTEXTURE_WHITE|Gfx::ENG_RSTATE_2FACE,
-                                      "search.tga", "",
+                                      "objects/search.png", "",
                                       Gfx::ENG_TEX_MAPPING_1X,
                                       au, bu, 1.0f, 0.0f);
    }

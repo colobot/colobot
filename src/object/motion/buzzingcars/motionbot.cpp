@@ -4789,10 +4789,9 @@ void CMotionBot::UpdateFaceMapping(int face)
    for ( i=0 ; i<1 ; i++ )
    {
        m_engine->ChangeTextureMapping(m_object->GetObjectRank(0),
-                                      mat, Gfx::ENG_RSTATE_PART1, "bot2.tga", "",
+                                      mat, Gfx::ENG_RSTATE_PART1, "objects/bot2.png", "",
                                       Gfx::ENG_TEX_MAPPING_1Z,
                                       au, bu, 1.0f, 0.0f);
-       // TODO (krzys_h): hey, don't forget to update all these ChangeTextureMapping paths later! ;)
    }
 }
 

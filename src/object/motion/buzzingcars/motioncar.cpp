@@ -1430,7 +1430,7 @@ void CMotionCar::CreatePhysics()
 
         strcpy(m_nameObjWheel, "buzzingcars/car0103.mod");
         strcpy(m_nameObjWBurn, "buzzingcars/car0103b.mod");
-        strcpy(m_nameTexWheel, "wheel01.tga");
+        strcpy(m_nameTexWheel, "objects/wheel01.png");
     }
 
     if ( type == OBJECT_CAR && m_model == 2 )  // ford 32 ?
@@ -1501,7 +1501,7 @@ void CMotionCar::CreatePhysics()
 
         strcpy(m_nameObjWheel, "buzzingcars/car0203.mod");
         strcpy(m_nameObjWBurn, "buzzingcars/car0203b.mod");
-        strcpy(m_nameTexWheel, "wheel02.tga");
+        strcpy(m_nameTexWheel, "objects/wheel02.png");
     }
 
     if ( type == OBJECT_CAR && m_model == 3 )  // pickup ?
@@ -1572,7 +1572,7 @@ void CMotionCar::CreatePhysics()
 
         strcpy(m_nameObjWheel, "buzzingcars/car0303.mod");
         strcpy(m_nameObjWBurn, "buzzingcars/car0303b.mod");
-        strcpy(m_nameTexWheel, "wheel03.tga");
+        strcpy(m_nameTexWheel, "objects/wheel03.png");
     }
 
     if ( type == OBJECT_CAR && m_model == 4 )  // firecraker ?
@@ -1643,7 +1643,7 @@ void CMotionCar::CreatePhysics()
 
         strcpy(m_nameObjWheel, "buzzingcars/car0403.mod");
         strcpy(m_nameObjWBurn, "buzzingcars/car0403b.mod");
-        strcpy(m_nameTexWheel, "wheel04.tga");
+        strcpy(m_nameTexWheel, "objects/wheel04.png");
     }
 
     if ( type == OBJECT_CAR && m_model == 5 )  // hooligan ?
@@ -1714,7 +1714,7 @@ void CMotionCar::CreatePhysics()
 
         strcpy(m_nameObjWheel, "buzzingcars/car0503.mod");
         strcpy(m_nameObjWBurn, "buzzingcars/car0503b.mod");
-        strcpy(m_nameTexWheel, "wheel05.tga");
+        strcpy(m_nameTexWheel, "objects/wheel05.png");
     }
 
     if ( type == OBJECT_CAR && m_model == 6 )  // chevy ?
@@ -1784,7 +1784,7 @@ void CMotionCar::CreatePhysics()
 
         strcpy(m_nameObjWheel, "buzzingcars/car0603.mod");
         strcpy(m_nameObjWBurn, "buzzingcars/car0603b.mod");
-        strcpy(m_nameTexWheel, "wheel06.tga");
+        strcpy(m_nameTexWheel, "objects/wheel06.png");
     }
 
     if ( type == OBJECT_CAR && m_model == 7 )  // reo ?
@@ -1854,7 +1854,7 @@ void CMotionCar::CreatePhysics()
 
         strcpy(m_nameObjWheel, "buzzingcars/car0703.mod");
         strcpy(m_nameObjWBurn, "buzzingcars/car0703b.mod");
-        strcpy(m_nameTexWheel, "wheel07.tga");
+        strcpy(m_nameTexWheel, "objects/wheel07.png");
     }
 
     if ( type == OBJECT_CAR && m_model == 8 )  // torpedo ?
@@ -1924,7 +1924,7 @@ void CMotionCar::CreatePhysics()
 
         strcpy(m_nameObjWheel, "buzzingcars/car0803.mod");
         strcpy(m_nameObjWBurn, "buzzingcars/car0803b.mod");
-        strcpy(m_nameTexWheel, "wheel08.tga");
+        strcpy(m_nameTexWheel, "objects/wheel08.png");
     }
 
     if ( type == OBJECT_CAR && m_model == 99 )  // fantome ?
