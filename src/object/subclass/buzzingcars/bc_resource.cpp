@@ -51,7 +51,7 @@ std::unique_ptr<CBCResource> CBCResource::Create(
     int rank = engine->CreateObject();
     engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // c'est un objet fixe
     obj->SetObjectRank(0, rank);
-    // TODO (krzys_h): m_character.mass = 1000.0f;
+    obj->GetCharacter()->mass = 1000.0f;
 
     bool bPlumb = params.bPlumb;
 
@@ -259,14 +259,14 @@ std::unique_ptr<CBCResource> CBCResource::Create(
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f));
         radius  = 3.0f;
         density = 0.6f;
-        // TODO (krzys_h): m_character.mass = 1500.0f;
+        obj->GetCharacter()->mass = 1500.0f;
     }
     else if ( params.type == OBJECT_CONE )
     {
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMv, 0.45f));
         radius  = 1.2f;
         density = 1.0f;
-        // TODO (krzys_h): m_character.mass = 700.0f;
+        obj->GetCharacter()->mass = 700.0f;
     }
     else if ( params.type == OBJECT_PIPES )
     {

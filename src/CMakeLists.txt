@@ -399,12 +399,18 @@ set(BASE_SOURCES
     object/subclass/buzzingcars/bc_barrier.h
     object/subclass/buzzingcars/bc_bot.cpp
     object/subclass/buzzingcars/bc_bot.h
+    object/subclass/buzzingcars/bc_box.cpp
+    object/subclass/buzzingcars/bc_box.h
     object/subclass/buzzingcars/bc_building.cpp
     object/subclass/buzzingcars/bc_building.h
     object/subclass/buzzingcars/bc_car.cpp
     object/subclass/buzzingcars/bc_car.h
+    object/subclass/buzzingcars/bc_piece.cpp
+    object/subclass/buzzingcars/bc_piece.h
     object/subclass/buzzingcars/bc_resource.cpp
     object/subclass/buzzingcars/bc_resource.h
+    object/subclass/buzzingcars/bc_stone.cpp
+    object/subclass/buzzingcars/bc_stone.h
     object/subclass/base_alien.cpp
     object/subclass/base_alien.h
     object/subclass/base_building.cpp

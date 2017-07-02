@@ -46,9 +46,12 @@
 
 #include "object/subclass/buzzingcars/bc_barrier.h"
 #include "object/subclass/buzzingcars/bc_bot.h"
+#include "object/subclass/buzzingcars/bc_box.h"
 #include "object/subclass/buzzingcars/bc_building.h"
 #include "object/subclass/buzzingcars/bc_car.h"
+#include "object/subclass/buzzingcars/bc_piece.h"
 #include "object/subclass/buzzingcars/bc_resource.h"
+#include "object/subclass/buzzingcars/bc_stone.h"
 
 #include "object/subclass/base_alien.h"
 #include "object/subclass/base_building.h"
@@ -517,6 +520,48 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_EVIL4:
         case OBJECT_EVIL5:
             return CBCBot::Create(params, m_oldModelManager, m_engine);
+
+        case OBJECT_BOX1:
+        case OBJECT_BOX2:
+        case OBJECT_BOX3:
+        case OBJECT_BOX4:
+        case OBJECT_BOX5:
+        case OBJECT_BOX6:
+        case OBJECT_BOX7:
+        case OBJECT_BOX8:
+        case OBJECT_BOX9:
+        case OBJECT_BOX10:
+        case OBJECT_TOYS1:
+        case OBJECT_TOYS2:
+        case OBJECT_TOYS3:
+        case OBJECT_TOYS4:
+        case OBJECT_TOYS5:
+            return CBCBox::Create(params, m_oldModelManager, m_engine);
+
+        case OBJECT_STONE1:
+        case OBJECT_STONE2:
+        case OBJECT_STONE3:
+        case OBJECT_STONE4:
+        case OBJECT_STONE5:
+        case OBJECT_STONE6:
+        case OBJECT_STONE7:
+        case OBJECT_STONE8:
+        case OBJECT_STONE9:
+        case OBJECT_STONE10:
+        case OBJECT_CROSS1:
+            return CBCStone::Create(params, m_oldModelManager, m_engine);
+
+        case OBJECT_PIECE0:
+        case OBJECT_PIECE1:
+        case OBJECT_PIECE2:
+        case OBJECT_PIECE3:
+        case OBJECT_PIECE4:
+        case OBJECT_PIECE5:
+        case OBJECT_PIECE6:
+        case OBJECT_PIECE7:
+        case OBJECT_PIECE8:
+        case OBJECT_PIECE9:
+            return CBCPiece::Create(params, m_oldModelManager, m_engine);
 
         default:
             break;
