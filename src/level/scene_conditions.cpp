@@ -129,7 +129,7 @@ int CSceneCondition::CountObjects()
     int nb = 0;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (!obj->GetActive()) continue;
+        if (!obj->GetActive() && !obj->GetLock()) continue;
         if (!CheckForObject(obj)) continue;
         nb ++;
     }

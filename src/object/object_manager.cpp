@@ -186,7 +186,7 @@ bool CObjectManager::TeamExists(int team)
 
     for (CObject* object : GetAllObjects())
     {
-        if (!object->GetActive())
+        if (!object->GetActive() && !object->GetLock())
             continue;
 
         if (object->GetTeam() == team)
