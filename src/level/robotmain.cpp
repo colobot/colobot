@@ -6443,7 +6443,7 @@ bool CRobotMain::IncProgress()
 //TODO (krzys_h):                    m_messageSound = sound;
 //TODO (krzys_h):                    m_messageTime  = 1.0f;  // sera affiché dans 1 seconde
 //TODO (krzys_h):                }
-                else
+//TODO (krzys_h):                else
                 {
 //                    m_displayText->DisplayText(res, 5.0f, FONTSIZE*0.75f, TT_START, sound);
                     m_displayText->DisplayText(res.c_str(), 5.0f, Ui::TT_START, sound);
