@@ -157,10 +157,11 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_FLAGv:
             return CreateFlag(params);
 
-        case OBJECT_BARRIER0:
-        case OBJECT_BARRIER1:
-        case OBJECT_BARRIER2:
-        case OBJECT_BARRIER3:
+//TODO (krzys_h): BuzzingCars barriers replace these, we need to figure a way to provide compatibility with both
+//        case OBJECT_BARRIER0:
+//        case OBJECT_BARRIER1:
+//        case OBJECT_BARRIER2:
+//        case OBJECT_BARRIER3:
         case OBJECT_BARRICADE0:
         case OBJECT_BARRICADE1:
             return CreateBarrier(params);
@@ -479,6 +480,10 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_TRAXf:
             return CBCResource::Create(params, m_oldModelManager, m_engine);
 
+        case OBJECT_BARRIER0:
+        case OBJECT_BARRIER1:
+        case OBJECT_BARRIER2:
+        case OBJECT_BARRIER3:
         case OBJECT_BARRIER4:
         case OBJECT_BARRIER5:
         case OBJECT_BARRIER6:
