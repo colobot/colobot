@@ -190,6 +190,9 @@ CRobotMain::CRobotMain()
     m_selectObject = nullptr;
     m_infoUsed     = 0;
 
+    m_movieTotal = 0;
+    m_movieIndex = 0;
+
     m_controller   = nullptr;
     m_missionType  = MISSION_NORMAL;
     m_immediatSatCom = false;
@@ -673,6 +676,11 @@ bool CRobotMain::ProcessEvent(Event &event)
             }
         }
 
+        if ( m_movieIndex < m_movieTotal-1 )
+        {
+            MovieFrame(event.rTime);
+        }
+
         if ( m_phase == PHASE_SIMUL &&
              m_suspend == nullptr && !m_engine->GetPause() &&
              m_startCounter > 0 )  // décompte 3,2,1,go ?
@@ -957,6 +965,15 @@ bool CRobotMain::ProcessEvent(Event &event)
                     }
                     break;
                 }
+                if ( m_movieIndex < m_movieTotal-1 )  // film caméra en cours ?
+                {
+                    if (data->slot == INPUT_SLOT_QUIT ||
+                        data->key == KEY(ESCAPE))
+                    {
+                        MovieAbort();
+                    }
+                    return false;
+                }
                 if (m_movieLock)  // current movie?
                 {
                     if (data->slot == INPUT_SLOT_QUIT ||
@@ -1007,7 +1024,10 @@ bool CRobotMain::ProcessEvent(Event &event)
                 }
                 if (data->slot == INPUT_SLOT_CAMERA)
                 {
-                    ChangeCamera();
+                    if ( m_movieIndex >= m_movieTotal-1 )  // pas de film caméra en cours ?
+                    {
+                        ChangeCamera();
+                    }
                 }
                 if (data->slot == INPUT_SLOT_DESEL)
                 {
@@ -2780,6 +2800,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         m_controller = nullptr;
 
+        m_movieTotal = 0;
+        m_movieIndex = 0;
+
         m_progressTotal = 0;
         m_progressLap   = 0;
         m_progressLevel = 0;
@@ -3607,6 +3630,27 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
+            if (line->GetCommand() == "Movie" && !resetObject)
+            {
+                // TODO (krzys_h): Rewrite to remove the limit to 20
+                int i = m_movieTotal;
+                if ( i < 20 )
+                {
+                    Math::Vector pos;
+                    pos = line->GetParam("eye")->AsPoint()*g_unit;
+                    pos.y += m_terrain->GetFloorLevel(pos);
+                    m_movieTable[i].eye = pos;
+                    pos = line->GetParam("look")->AsPoint()*g_unit;
+                    pos.y += m_terrain->GetFloorLevel(pos);
+                    m_movieTable[i].look = pos;
+                    m_movieTable[i].delay = line->GetParam("delay")->AsFloat(1.0f);
+                    m_movieTable[i].sound = (SoundType)line->GetParam("sound")->AsInt(SOUND_NONE); // TODO (krzys_h): This is going to break as the sound ids have changed
+                    m_movieTable[i].progress = 0.0f;
+                    m_movieTotal ++;
+                } else throw CLevelParserException("TODO: \"Movie\" command is limited to 20 entries");
+                continue;
+            }
+
             if (line->GetCommand() == "StartDelay" && !resetObject)
             {
                 if ( GetStarterType() == STARTER_321 )
@@ -3839,6 +3883,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_camera->SetControllingObject(sel);
 
             m_beginSatCom = true;  // message already displayed
+        }
+
+        if ( m_movieTotal > 0 )  // commence par un "film" ?
+        {
+            MovieStart();
         }
     }
     catch (...)
@@ -6533,3 +6582,115 @@ float CRobotMain::GetBonusPoints()
     return pts;
 }
 */
+
+// Début du film de caméra.
+
+void CRobotMain::MovieStart()
+{
+    m_movieIndex = 0;
+    SetMovieLock(true);
+
+    m_movieType = m_camera->GetType();
+    m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
+    m_camera->SetSmooth(Gfx::CAM_SMOOTH_SOFT);
+
+    m_camera->SetScriptCamera(m_movieTable[0].eye, m_movieTable[0].look);
+
+    if ( m_movieTable[0].sound != SOUND_NONE )
+    {
+        m_sound->Play(m_movieTable[0].sound, m_movieTable[0].look);
+    }
+
+    /* TODO (krzys_h)
+    CObject*	pObj = GetSelect();
+    if ( pObj != 0 )
+    {
+        pObj->SetStarting(true);  // n'avance pas
+    }
+    */
+}
+
+// Avance du film de caméra.
+
+void CRobotMain::MovieFrame(float rTime)
+{
+    SoundType		sound;
+    float		progress;
+    int			i;
+    std::string		text;
+
+    if ( m_engine->GetPause() )  return;
+
+    i = m_movieIndex;
+
+    if ( m_movieTable[i].delay < 0.0f )  // transition instantanée brusque ?
+    {
+        m_camera->SetScriptCamera(m_movieTable[i+1].eye, m_movieTable[i+1].look);
+        m_movieIndex ++;
+
+        i = m_movieIndex;
+        if ( m_movieTable[i].sound != SOUND_NONE )
+        {
+            m_sound->Play(m_movieTable[i].sound, m_movieTable[i].look);
+        }
+        return;
+    }
+
+    m_movieTable[i].progress += rTime/m_movieTable[i].delay;
+    progress = Math::Norm(m_movieTable[i].progress);
+
+    Math::Vector eye = m_movieTable[i].eye+(m_movieTable[i+1].eye-m_movieTable[i].eye)*progress;
+    Math::Vector look = m_movieTable[i].look+(m_movieTable[i+1].look-m_movieTable[i].look)*progress;
+    m_camera->SetScriptCameraAnimate(eye, look);
+
+    if ( m_movieTable[i].progress >= 1.0f )
+    {
+        m_movieIndex ++;
+
+        i = m_movieIndex;
+        if ( m_movieTable[i].sound != SOUND_NONE )
+        {
+            m_sound->Play(m_movieTable[i].sound, m_movieTable[i].look);
+        }
+
+        if ( m_movieIndex >= m_movieTotal-1 )
+        {
+            m_camera->SetType(m_movieType);
+            m_camera->SetSmooth(Gfx::CAM_SMOOTH_NORM);
+            SetMovieLock(false);
+            GetResource(RES_TEXT, RT_START_GO, text);
+            sound = SOUND_STARTGO;
+//TODO (krzys_h):            if ( !m_sound->RetComments() )  sound = SOUND_MESSAGE;
+//            m_displayText->DisplayText(text, 2.0f, 20.0f, Ui::TT_START, sound);
+            m_displayText->DisplayText(text.c_str(), 2.0f, Ui::TT_START, sound);
+
+            /* TODO (krzys_h):
+            CObject* pObj = GetSelect();
+            if ( pObj != 0 )
+            {
+                pObj->SetStarting(false);  // on peut avancer
+            }
+            */
+        }
+    }
+}
+
+// Stoppe le film de caméra en cours.
+
+void CRobotMain::MovieAbort()
+{
+    m_movieIndex = m_movieTotal;
+
+    m_camera->SetType(m_movieType);
+    m_camera->SetSmooth(Gfx::CAM_SMOOTH_NORM);
+    m_camera->FixCamera();
+    SetMovieLock(false);
+
+    /* TODO (krzys_h):
+    CObject* pObj = GetSelect();
+    if ( pObj != 0 )
+    {
+        pObj->SetStarting(false);  // on peut avancer
+    }
+    */
+}

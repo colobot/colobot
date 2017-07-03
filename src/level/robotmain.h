@@ -127,6 +127,17 @@ struct NewScriptName
 };
 
 
+
+struct MovieStep
+{
+    Math::Vector	eye;		// oeil caméra
+    Math::Vector	look;		// visée caméra
+    float		delay;		// durée du pas
+    float		progress;	// progression de pas
+    SoundType		sound;		// son a générer
+};
+
+
 const int MAXSHOWLIMIT      = 5;
 const int MAXSHOWPARTI      = 200;
 const float SHOWLIMITTIME   = 20.0f;
@@ -562,6 +573,10 @@ protected:
 
     void ChangeColorCar(int model, int subModel, Gfx::Color color);
 
+    void		MovieStart();
+    void		MovieFrame(float rTime);
+    void		MovieAbort();
+
 protected:
     CApplication*       m_app = nullptr;
     CEventQueue*        m_eventQueue = nullptr;
@@ -764,4 +779,9 @@ protected:
     float			m_statBestTime;
 //    bool			m_bStatRecordAll;
 //    bool			m_bStatRecordOne;
+
+    int				m_movieTotal;
+    int				m_movieIndex;
+    MovieStep		m_movieTable[20];
+    Gfx::CameraType		m_movieType;
 };
