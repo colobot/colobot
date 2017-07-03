@@ -42,6 +42,7 @@
 
 #include "ui/screen/screen.h"
 #include "ui/screen/screen_apperance.h"
+#include "ui/screen/buzzingcars/screen_car.h"
 #include "ui/screen/screen_io_read.h"
 #include "ui/screen/screen_io_write.h"
 #include "ui/screen/screen_level_list.h"
@@ -74,6 +75,7 @@ CMainUserInterface::CMainUserInterface()
     m_dialog     = MakeUnique<CMainDialog>();
 
     m_screenAppearance = MakeUnique<CScreenApperance>();
+    m_screenCar = MakeUnique<CScreenCar>();
     m_screenLevelList = MakeUnique<CScreenLevelList>(m_dialog.get());
     m_screenIORead = MakeUnique<CScreenIORead>(m_screenLevelList.get());
     m_screenIOWrite = MakeUnique<CScreenIOWrite>(m_screenLevelList.get());
@@ -172,6 +174,10 @@ void CMainUserInterface::ChangePhase(Phase phase)
     if (m_phase == PHASE_APPERANCE)
     {
         m_currentScreen = m_screenAppearance.get();
+    }
+    if (m_phase == PHASE_CAR)
+    {
+        m_currentScreen = m_screenCar.get();
     }
     if (m_phase == PHASE_MAIN_MENU)
     {
@@ -829,6 +835,21 @@ std::string CMainUserInterface::GetCustomLevelName(int id)
 const std::vector<std::string>& CMainUserInterface::GetCustomLevelList()
 {
     return m_screenLevelList->GetCustomLevelList();
+}
+
+int CMainUserInterface::GetModel()
+{
+    return m_screenCar->GetModel();
+}
+
+int CMainUserInterface::GetSubModel()
+{
+    return m_screenCar->GetSubModel();
+}
+
+Gfx::Color CMainUserInterface::GetColorCar()
+{
+    return m_screenCar->GetGamerColorCar();
 }
 
 

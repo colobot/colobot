@@ -42,6 +42,7 @@ class CInterface;
 class CMainDialog;
 
 class CScreen;
+class CScreenCar;
 class CScreenApperance;
 class CScreenIORead;
 class CScreenIOWrite;
@@ -88,6 +89,10 @@ public:
     std::string GetCustomLevelName(int id);
     const std::vector<std::string>& GetCustomLevelList();
 
+    int		GetModel();
+    int		GetSubModel();
+    Gfx::Color GetColorCar();
+
 protected:
     void    GlintMove();
     void    FrameParticle(float rTime);
@@ -108,6 +113,7 @@ protected:
 
     CScreen* m_currentScreen;
     std::unique_ptr<CScreenApperance> m_screenAppearance;
+    std::unique_ptr<CScreenCar> m_screenCar;
     std::unique_ptr<CScreenIORead> m_screenIORead;
     std::unique_ptr<CScreenIOWrite> m_screenIOWrite;
     std::unique_ptr<CScreenLevelList> m_screenLevelList;

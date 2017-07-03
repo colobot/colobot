@@ -297,7 +297,8 @@ bool CScreenLevelList::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_PLAY:
             m_main->SetLevel(m_category, m_chap[m_category]+1, m_sel[m_category]+1);
-            m_main->ChangePhase(PHASE_SIMUL);
+            // TODO (krzys_h): This obviously needs some better triggering condition
+            m_main->ChangePhase(m_category == LevelCategory::CustomLevels ? PHASE_CAR : PHASE_SIMUL);
             break;
 
         case EVENT_INTERFACE_READ:

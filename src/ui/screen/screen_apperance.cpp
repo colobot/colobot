@@ -309,7 +309,7 @@ void CScreenApperance::CreateInterface()
     m_apperanceAngle = -0.6f;
     m_main->GetPlayerProfile()->LoadApperance();
     UpdatePerso();
-    m_main->ScenePerso();
+    m_main->ScenePerso("levels/other/perso.txt");
     CameraPerso();
 }
 
@@ -340,13 +340,13 @@ bool CScreenApperance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PHEAD:
             m_apperanceTab = 0;
             UpdatePerso();
-            m_main->ScenePerso();
+            m_main->ScenePerso("levels/other/perso.txt");
             CameraPerso();
             break;
         case EVENT_INTERFACE_PBODY:
             m_apperanceTab = 1;
             UpdatePerso();
-            m_main->ScenePerso();
+            m_main->ScenePerso("levels/other/perso.txt");
             CameraPerso();
             break;
 
@@ -357,7 +357,7 @@ bool CScreenApperance::EventProcess(const Event &event)
             apperance.face = event.type-EVENT_INTERFACE_PFACE1;
             apperance.DefHairColor();
             UpdatePerso();
-            m_main->ScenePerso();
+            m_main->ScenePerso("levels/other/perso.txt");
             break;
 
         case EVENT_INTERFACE_PGLASS0:
@@ -372,7 +372,7 @@ bool CScreenApperance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PGLASS9:
             apperance.glasses = event.type-EVENT_INTERFACE_PGLASS0;
             UpdatePerso();
-            m_main->ScenePerso();
+            m_main->ScenePerso("levels/other/perso.txt");
             break;
 
         case EVENT_INTERFACE_PC0a:
@@ -387,7 +387,7 @@ bool CScreenApperance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PC9a:
             FixPerso(event.type-EVENT_INTERFACE_PC0a, 0);
             UpdatePerso();
-            m_main->ScenePerso();
+            m_main->ScenePerso("levels/other/perso.txt");
             break;
 
         case EVENT_INTERFACE_PC0b:
@@ -402,7 +402,7 @@ bool CScreenApperance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PC9b:
             FixPerso(event.type-EVENT_INTERFACE_PC0b, 1);
             UpdatePerso();
-            m_main->ScenePerso();
+            m_main->ScenePerso("levels/other/perso.txt");
             break;
 
         case EVENT_INTERFACE_PCRa:
@@ -413,13 +413,13 @@ bool CScreenApperance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PCBb:
             ColorPerso();
             UpdatePerso();
-            m_main->ScenePerso();
+            m_main->ScenePerso("levels/other/perso.txt");
             break;
 
         case EVENT_INTERFACE_PDEF:
             apperance.DefPerso();
             UpdatePerso();
-            m_main->ScenePerso();
+            m_main->ScenePerso("levels/other/perso.txt");
             break;
 
         case EVENT_INTERFACE_PLROT:
@@ -457,11 +457,14 @@ float CScreenApperance::GetPersoAngle()
 
 // Tests whether two colors are equal or nearly are.
 
+namespace
+{
 bool EqColor(const Gfx::Color &c1, const Gfx::Color &c2)
 {
     return (fabs(c1.r-c2.r) < 0.01f &&
             fabs(c1.g-c2.g) < 0.01f &&
             fabs(c1.b-c2.b) < 0.01f );
+}
 }
 
 // Updates all the buttons for the character.

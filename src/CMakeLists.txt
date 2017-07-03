@@ -585,6 +585,8 @@ set(BASE_SOURCES
     ui/screen/screen_setup_sound.h
     ui/screen/screen_welcome.cpp
     ui/screen/screen_welcome.h
+    ui/screen/buzzingcars/screen_car.cpp
+    ui/screen/buzzingcars/screen_car.h
     ui/studio.cpp
     ui/studio.h
 )

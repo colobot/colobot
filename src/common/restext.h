@@ -71,6 +71,7 @@ enum ResTextType
     RT_TITLE_WRITE          = 50,
     RT_TITLE_READ           = 51,
     RT_TITLE_USER           = 52,
+    RT_TITLE_CAR            = 53,
 
     RT_PLAY_CHAP_CHAPTERS   = 60,
     RT_PLAY_CHAP_PLANETS    = 61,
@@ -131,6 +132,8 @@ enum ResTextType
     RT_START_123              = 192,
     RT_START_GO               = 193,
     RT_START_REMOTE           = 194,
+
+    RT_PERSO_BUY              = 195,
 
     RT_LOADING_INIT           = 210,
     RT_LOADING_PROCESSING     = 211,

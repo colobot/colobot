@@ -56,6 +56,7 @@ enum Phase
     PHASE_MAIN_MENU,
     PHASE_LEVEL_LIST,
     PHASE_SIMUL,
+    PHASE_CAR,
     PHASE_SETUPd,
     PHASE_SETUPg,
     PHASE_SETUPp,
@@ -199,7 +200,7 @@ public:
     //@}
 
     //! Load the scene for apperance customization
-    void        ScenePerso();
+    void        ScenePerso(std::string levelFile);
 
     void        SetMovieLock(bool lock);
     bool        GetMovieLock();
@@ -554,6 +555,8 @@ protected:
     std::string    GetNextFromCommandHistory();
     std::string    GetPreviousFromCommandHistory();
     //@}
+
+    void ChangeColorCar(int model, int subModel, Gfx::Color color);
 
 protected:
     CApplication*       m_app = nullptr;

@@ -74,6 +74,7 @@ void InitializeRestext()
     stringsText[RT_TITLE_PERSO]      = TR("Customize your appearance");
     stringsText[RT_TITLE_WRITE]      = TR("Save the current mission");
     stringsText[RT_TITLE_READ]       = TR("Load a saved mission");
+    stringsText[RT_TITLE_CAR]        = "Select your car";
 
     stringsText[RT_PLAY_CHAP_CHAPTERS]   = TR("Chapters:");
     stringsText[RT_PLAY_CHAP_PLANETS]    = TR("Planets:");
@@ -134,6 +135,8 @@ void InitializeRestext()
     stringsText[RT_START_123]        = "%d ...";
     stringsText[RT_START_GO]         = "GO !";
     stringsText[RT_START_REMOTE]     = "Remote control your car";
+
+    stringsText[RT_PERSO_BUY]        = "Buy";
 
     stringsText[RT_LOADING_INIT]           = TR("Starting...");
     stringsText[RT_LOADING_PROCESSING]     = TR("Processing level file");
@@ -309,6 +312,40 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_PGLASS3]   = TR("\\Eyeglasses 3");
     stringsEvent[EVENT_INTERFACE_PGLASS4]   = TR("\\Eyeglasses 4");
     stringsEvent[EVENT_INTERFACE_PGLASS5]   = TR("\\Eyeglasses 5");
+
+    stringsEvent[EVENT_INTERFACE_PCAROK]    = "Select\\Start with this car";
+    stringsEvent[EVENT_INTERFACE_PNEXT]     = "Next >\\Next car";
+    stringsEvent[EVENT_INTERFACE_PPREV]     = "< Previous\\Previous car";
+    stringsEvent[EVENT_INTERFACE_PGSPEED]   = "Max speed\\";
+    stringsEvent[EVENT_INTERFACE_PGACCEL]   = "Acceleration\\";
+    stringsEvent[EVENT_INTERFACE_PGGRIP]    = "Grip\\";
+    stringsEvent[EVENT_INTERFACE_PGSOLID]   = "Solidity\\";
+    stringsEvent[EVENT_INTERFACE_PPRICE]    = "%s (vehicle price: %d credits)";
+    stringsEvent[EVENT_INTERFACE_PPESETAS]  = "Your savings: %d credits";
+    stringsEvent[EVENT_INTERFACE_PSUBMOD0]  = "A\\Change the look";
+    stringsEvent[EVENT_INTERFACE_PSUBMOD1]  = "B\\Change the look";
+    stringsEvent[EVENT_INTERFACE_PSUBMOD2]  = "C\\Change the look";
+    stringsEvent[EVENT_INTERFACE_PSUBMOD3]  = "D\\Change the look";
+    stringsEvent[EVENT_INTERFACE_PCOLOR0]   = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR1]   = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR2]   = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR3]   = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR4]   = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR5]   = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR6]   = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR7]   = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR8]   = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR9]   = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR10]  = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR11]  = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR12]  = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR13]  = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR14]  = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR15]  = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR16]  = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR17]  = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR18]  = "\\Change the color";
+    stringsEvent[EVENT_INTERFACE_PCOLOR19]  = "\\Change the color";
 
     stringsEvent[EVENT_OBJECT_DESELECT]     = TR("Previous selection (\\key desel;)");
     stringsEvent[EVENT_OBJECT_LEFT]         = TR("Turn left (\\key left;)");

@@ -55,6 +55,27 @@ std::unique_ptr<CBCCar> CBCCar::Create(
     obj->SetModel(params.model);
     obj->SetSubModel(params.subModel);
 
+    /* TODO (krzys_h):
+    if ( m_subModel == 1 )
+	{
+		sprintf(actualTex, "car%.2d.tga", m_model);
+		sprintf(futureTex, "car%.2db.tga", m_model);
+		m_engine->SetReplaceTex(actualTex, futureTex);
+	}
+	if ( m_subModel == 2 )
+	{
+		sprintf(actualTex, "car%.2d.tga", m_model);
+		sprintf(futureTex, "car%.2dc.tga", m_model);
+		m_engine->SetReplaceTex(actualTex, futureTex);
+	}
+	if ( m_subModel == 3 )
+	{
+		sprintf(actualTex, "car%.2d.tga", m_model);
+		sprintf(futureTex, "car%.2dd.tga", m_model);
+		m_engine->SetReplaceTex(actualTex, futureTex);
+	}
+    */
+
     auto physics = MakeUnique<CPhysics>(obj.get());
     std::unique_ptr<CMotion> motion = MakeUnique<CMotionCar>(obj.get());
 

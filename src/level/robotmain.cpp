@@ -314,6 +314,7 @@ std::string PhaseToString(Phase phase)
     if (phase == PHASE_MAIN_MENU) return "PHASE_MAIN_MENU";
     if (phase == PHASE_LEVEL_LIST) return "PHASE_LEVEL_LIST";
     if (phase == PHASE_SIMUL) return "PHASE_SIMUL";
+    if (phase == PHASE_CAR) return "PHASE_CAR";
     if (phase == PHASE_SETUPd) return "PHASE_SETUPd";
     if (phase == PHASE_SETUPg) return "PHASE_SETUPg";
     if (phase == PHASE_SETUPp) return "PHASE_SETUPp";
@@ -345,6 +346,7 @@ bool IsPhaseWithWorld(Phase phase)
     if (phase == PHASE_WIN      ) return true;
     if (phase == PHASE_LOST     ) return true;
     if (phase == PHASE_APPERANCE) return true;
+    if (phase == PHASE_CAR) return true;
     if (IsInSimulationConfigPhase(phase)) return true;
     return false;
 }
@@ -352,6 +354,7 @@ bool IsPhaseWithWorld(Phase phase)
 bool IsMainMenuPhase(Phase phase)
 {
     if (phase == PHASE_APPERANCE) return true;
+    if (phase == PHASE_CAR) return true;
     return !IsPhaseWithWorld(phase);
 }
 
@@ -521,7 +524,7 @@ void CRobotMain::ChangePhase(Phase phase)
     float sx = (32.0f+2.0f)/640.0f;
     float sy = (32.0f+2.0f)/480.0f;
 
-    if (m_phase != PHASE_APPERANCE)
+    if (m_phase != PHASE_APPERANCE && m_phase != PHASE_CAR)
     {
         m_engine->SetDrawWorld(true);
         m_engine->SetDrawFront(false);
@@ -1184,7 +1187,7 @@ bool CRobotMain::ProcessEvent(Event &event)
         return false;
     }
 
-    if (m_phase == PHASE_APPERANCE)
+    if (m_phase == PHASE_APPERANCE || m_phase == PHASE_CAR)
         EventObject(event);
 
     if (m_phase == PHASE_WIN  ||
@@ -2096,7 +2099,7 @@ void CRobotMain::HiliteClear()
 //! Highlights the object with the mouse hovers over
 void CRobotMain::HiliteObject(Math::Point pos)
 {
-    if (m_fixScene && m_phase != PHASE_APPERANCE) return;
+    if (m_fixScene && m_phase != PHASE_APPERANCE && m_phase != PHASE_CAR) return;
     if (m_movieLock) return;
     if (m_movie->IsExist()) return;
     if (m_app->GetMouseMode() == MOUSE_NONE) return;
@@ -2162,7 +2165,7 @@ void CRobotMain::HiliteObject(Math::Point pos)
 //! Highlights the object with the mouse hovers over
 void CRobotMain::HiliteFrame(float rTime)
 {
-    if (m_fixScene && m_phase != PHASE_APPERANCE) return;
+    if (m_fixScene && m_phase != PHASE_APPERANCE && m_phase != PHASE_CAR) return;
     if (m_movieLock) return;
     if (m_movie->IsExist()) return;
 
@@ -2440,6 +2443,7 @@ bool CRobotMain::EventFrame(const Event &event)
             m_camera->SetOverBaseColor(m_particle->GetFogColor(m_engine->GetEyePt()));
     }
     if (m_phase == PHASE_APPERANCE ||
+        m_phase == PHASE_CAR ||
         m_phase == PHASE_WIN   ||
         m_phase == PHASE_LOST)
     {
@@ -2691,7 +2695,7 @@ bool CRobotMain::EventObject(const Event &event)
 
 
 
-void CRobotMain::ScenePerso()
+void CRobotMain::ScenePerso(std::string levelFile)
 {
     DeleteAllObjects();  // removes all the current 3D Scene
     m_terrain->FlushRelief();
@@ -2702,7 +2706,8 @@ void CRobotMain::ScenePerso()
     m_lightMan->FlushLights();
     m_particle->FlushParticle();
 
-    m_levelFile = "levels/other/perso.txt";
+    std::string currentLevelFile = m_levelFile;
+    m_levelFile = levelFile;
     try
     {
         CreateScene(false, true, false);  // sets scene
@@ -2711,12 +2716,14 @@ void CRobotMain::ScenePerso()
     {
         LevelLoadingError("An error occurred while trying to load apperance scene", e, PHASE_PLAYER_SELECT);
     }
+    m_levelFile = currentLevelFile;
 
-    m_engine->SetDrawWorld(false);  // does not draw anything on the interface
-    m_engine->SetDrawFront(true);  // draws on the human interface
     CObject* obj = SearchHuman();
     if (obj != nullptr)
     {
+        m_engine->SetDrawWorld(false);  // does not draw anything on the interface
+        m_engine->SetDrawFront(true);  // draws on the human interface
+
         obj->SetDrawFront(true);  // draws the interface
 
         assert(obj->Implements(ObjectInterfaceType::Movable));
@@ -3405,6 +3412,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 ObjectCreateParams params = CObject::ReadCreateParams(line.get());
 
+                params.model = m_ui->GetModel();
+                params.subModel = m_ui->GetSubModel();
+
                 int difficulty = line->GetParam("level")->AsInt(0);
                 if ( difficulty > 0 && difficulty !=  GetSelectedDifficulty() )  continue;
                 if ( difficulty < 0 && difficulty == -GetSelectedDifficulty() )  continue;
@@ -3902,7 +3912,8 @@ void CRobotMain::ChangeColor()
         m_phase != PHASE_SETUPss  &&
         m_phase != PHASE_WIN      &&
         m_phase != PHASE_LOST     &&
-        m_phase != PHASE_APPERANCE ) return;
+        m_phase != PHASE_APPERANCE &&
+        m_phase != PHASE_CAR     ) return;
 
     // Player texture
 
@@ -3986,6 +3997,15 @@ void CRobotMain::ChangeColor()
     colorNew2.g = 0.0f;
     colorNew2.b = 0.0f;
 
+    /*COldObject* vehicle = dynamic_cast<COldObject*>(m_objMan->FindNearest(nullptr, OBJECT_CAR));
+    if ( vehicle != 0 )
+    {
+        int model = vehicle->GetModel();
+        int subModel = vehicle->GetSubModel();
+        ChangeColorCar(model, subModel, m_ui->GetColorCar());
+    }*/
+    ChangeColorCar(m_ui->GetModel(), m_ui->GetSubModel(), m_ui->GetColorCar());
+
     // VehicleColor
 
     for (auto it : m_colorNewBot)
@@ -4027,6 +4047,13 @@ void CRobotMain::ChangeColor()
     m_engine->ChangeTextureColor("textures/objects/ant.png",     COLOR_REF_ALIEN, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
     m_engine->ChangeTextureColor("textures/objects/mother.png",  COLOR_REF_ALIEN, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
+    // BotColor
+//    m_colorRefBot.r = 110.0f/256.0f;
+//    m_colorRefBot.g = 161.0f/256.0f;
+//    m_colorRefBot.b = 208.0f/256.0f;  // bleu
+//    m_colorRefBot.a = 0.0f;
+//TODO (krzys_h):    m_engine->ChangeColor("bot1.tga",    m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, TRUE);
+
     // GreeneryColor
     m_engine->ChangeTextureColor("textures/objects/plant.png",   COLOR_REF_GREEN, m_colorNewGreen, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
@@ -4041,6 +4068,115 @@ void CRobotMain::ChangeColor()
     ts = Math::Point(0.00f, 0.75f);
     ti = Math::Point(0.25f, 1.00f);
     m_engine->ChangeTextureColor("textures/effect02.png", COLOR_REF_WATER, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
+}
+
+void CRobotMain::ChangeColorCar(int model, int subModel, Gfx::Color color)
+{
+    Gfx::Color	colorRef1, colorNew1, colorRef2, colorNew2;
+    Math::Point			ts, ti;
+    Math::Point			exclu[6];
+    char			texName[50];
+
+    colorRef1.a = 0.0f;
+    colorRef2.a = 0.0f;
+    colorNew1.a = 0.0f;
+    colorNew2.a = 0.0f;
+
+    ts = Math::Point(0.0f, 0.0f);
+    ti = Math::Point(1.0f, 1.0f);  // toute l'image
+
+    colorRef2.r = 0.0f;
+    colorRef2.g = 0.0f;
+    colorRef2.b = 0.0f;
+    colorNew2.r = 0.0f;
+    colorNew2.g = 0.0f;
+    colorNew2.b = 0.0f;
+
+    if ( subModel == 0 )
+    {
+        sprintf(texName, "textures/objects/car%.2d.png", model);
+    }
+    if ( subModel == 1 )
+    {
+        sprintf(texName, "textures/objects/car%.2db.png", model);
+    }
+    if ( subModel == 2 )
+    {
+        sprintf(texName, "textures/objects/car%.2dc.png", model);
+    }
+    if ( subModel == 3 )
+    {
+        sprintf(texName, "textures/objects/car%.2dd.png", model);
+    }
+
+    if ( model == 1 )  // tijuana taxi ?
+    {
+        colorRef1.r =  71.0f/256.0f;
+        colorRef1.g =  67.0f/256.0f;
+        colorRef1.b = 255.0f/256.0f;  // bleu
+        colorNew1 = color;
+        m_engine->ChangeTextureColor(texName, colorRef1, colorNew1, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, 0, true);
+    }
+    if ( model == 2 )  // ford 32 ?
+    {
+        colorRef1.r = 143.0f/256.0f;
+        colorRef1.g =  88.0f/256.0f;
+        colorRef1.b = 224.0f/256.0f;  // violet
+        colorNew1 = color;
+        m_engine->ChangeTextureColor(texName, colorRef1, colorNew1, colorRef2, colorNew2, 0.08f, -1.0f, ts, ti, nullptr, 0, true);
+    }
+    if ( model == 3 )  // pickup ?
+    {
+        exclu[0] = Math::Point(  0.0f/256.0f, 160.0f/256.0f);
+        exclu[1] = Math::Point( 96.0f/256.0f, 256.0f/256.0f);  // métal
+        exclu[2] = Math::Point(0.0f, 0.0f);
+        exclu[3] = Math::Point(0.0f, 0.0f);  // terminateur
+        colorRef1.r =  72.0f/256.0f;
+        colorRef1.g = 153.0f/256.0f;
+        colorRef1.b = 236.0f/256.0f;  // bleu
+        colorNew1 = color;
+        m_engine->ChangeTextureColor(texName, colorRef1, colorNew1, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, exclu, 0, true);
+    }
+    if ( model == 4 )  // firecraker ?
+    {
+        colorRef1.r =  56.0f/256.0f;
+        colorRef1.g =  66.0f/256.0f;
+        colorRef1.b = 196.0f/256.0f;  // bleu
+        colorNew1 = color;
+        m_engine->ChangeTextureColor(texName, colorRef1, colorNew1, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, 0, true);
+    }
+    if ( model == 5 )  // hooligan ?
+    {
+        colorRef1.r =   0.0f/256.0f;
+        colorRef1.g =   0.0f/256.0f;
+        colorRef1.b = 255.0f/256.0f;  // bleu
+        colorNew1 = color;
+        m_engine->ChangeTextureColor(texName, colorRef1, colorNew1, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, 0, true);
+    }
+    if ( model == 6 )  // chevy ?
+    {
+        colorRef1.r =   0.0f/256.0f;
+        colorRef1.g =   0.0f/256.0f;
+        colorRef1.b = 255.0f/256.0f;  // bleu
+        colorNew1 = color;
+        m_engine->ChangeTextureColor(texName, colorRef1, colorNew1, colorRef2, colorNew2, 0.08f, -1.0f, ts, ti, nullptr, 0, true);
+    }
+    if ( model == 7 )  // reo ?
+    {
+        colorRef1.r =   0.0f/256.0f;
+        colorRef1.g =   0.0f/256.0f;
+        colorRef1.b = 255.0f/256.0f;  // bleu
+        colorNew1 = color;
+        m_engine->ChangeTextureColor(texName, colorRef1, colorNew1, colorRef2, colorNew2, 0.08f, -1.0f, ts, ti, nullptr, 0, true);
+    }
+    if ( model == 8 )  // torpedo ?
+    {
+        colorRef1.r =  71.0f/256.0f;
+        colorRef1.g =  67.0f/256.0f;
+        colorRef1.b = 255.0f/256.0f;  // bleu
+        colorNew1 = color;
+        m_engine->ChangeTextureColor(texName, colorRef1, colorNew1, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, 0, true);
+    }
 }
 
 //! Calculates the distance to the nearest object
