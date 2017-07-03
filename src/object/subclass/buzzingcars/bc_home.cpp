@@ -28,6 +28,8 @@
 
 #include "object/object_create_params.h"
 
+#include "object/auto/buzzingcars/building/autohome.h"
+
 CBCHome::CBCHome(int id, ObjectType type)
     : COldObject(id)
 {
@@ -173,6 +175,21 @@ std::unique_ptr<CBCHome> CBCHome::Create(
     }
 
     obj->SetFloorHeight(0.0f);
+
+    std::unique_ptr<CAuto> objAuto;
+    if ( params.type == OBJECT_HOME1 ||
+         params.type == OBJECT_HOME2 ||
+         params.type == OBJECT_HOME3 ||
+         params.type == OBJECT_HOME4 ||
+         params.type == OBJECT_HOME5 )
+    {
+        objAuto = MakeUnique<CAutoHome>(obj.get());
+    }
+    if (objAuto != nullptr)
+    {
+        objAuto->Init();
+        obj->SetAuto(std::move(objAuto));
+    }
 
     engine->LoadAllTextures();
     if ( !bPlumb )  obj->FloorAdjust();

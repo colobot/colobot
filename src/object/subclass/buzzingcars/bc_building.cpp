@@ -1520,15 +1520,7 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
     {
         objAuto = MakeUnique<CAutoBomb>(obj.get());
     }*/
-    if ( params.type == OBJECT_HOME1 || //?
-         params.type == OBJECT_HOME2 ||
-         params.type == OBJECT_HOME3 ||
-         params.type == OBJECT_HOME4 ||
-         params.type == OBJECT_HOME5 )
-    {
-        objAuto = MakeUnique<CAutoHome>(obj.get());
-    }
-    /* TODO: this is the same as Colobot, right?
+    /* TODO (krzys_h): this is the same as Colobot, right?
     if ( params.type == OBJECT_ROOT5 )
     {
         objAuto = MakeUnique<CAutoRoot>(obj.get());
