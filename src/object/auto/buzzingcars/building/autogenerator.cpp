@@ -224,8 +224,9 @@ bool CAutoGenerator::EventProcess(const Event &event)
            {
                char    name[100];
                sprintf(name, "auto%.2d.txt", m_programNumber);
-               pObj->ReadProgram(0, name);
-               pObj->RunProgram(0);
+               Program* prog = pObj->GetOrAddProgram(0);
+               pObj->ReadProgram(prog, name);
+               pObj->RunProgram(prog);
            }
 
            m_phase    = AGEP_WAIT;

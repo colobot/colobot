@@ -195,8 +195,9 @@ void CAutoDoor::Start(int param)
        {
            char    name[100];
            sprintf(name, "auto%.2d.txt", m_programNumber);
-           object->ReadProgram(0, name);
-           object->RunProgram(0);
+           Program* prog = object->GetOrAddProgram(0);
+           object->ReadProgram(prog, name);
+           object->RunProgram(prog);
        }
    }
 }
