@@ -419,6 +419,8 @@ set(BASE_SOURCES
     object/subclass/buzzingcars/bc_building.h
     object/subclass/buzzingcars/bc_car.cpp
     object/subclass/buzzingcars/bc_car.h
+    object/subclass/buzzingcars/bc_home.cpp
+    object/subclass/buzzingcars/bc_home.h
     object/subclass/buzzingcars/bc_piece.cpp
     object/subclass/buzzingcars/bc_piece.h
     object/subclass/buzzingcars/bc_resource.cpp

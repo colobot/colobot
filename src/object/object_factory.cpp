@@ -50,6 +50,7 @@
 #include "object/subclass/buzzingcars/bc_box.h"
 #include "object/subclass/buzzingcars/bc_building.h"
 #include "object/subclass/buzzingcars/bc_car.h"
+#include "object/subclass/buzzingcars/bc_home.h"
 #include "object/subclass/buzzingcars/bc_piece.h"
 #include "object/subclass/buzzingcars/bc_resource.h"
 #include "object/subclass/buzzingcars/bc_stone.h"
@@ -576,6 +577,13 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_HOOK:
         case OBJECT_AQUA:
             return CBCAdditional::Create(params, m_oldModelManager, m_engine);
+
+//TODO (krzys_h):        case OBJECT_HOME1:
+        case OBJECT_HOME2:
+        case OBJECT_HOME3:
+        case OBJECT_HOME4:
+        case OBJECT_HOME5:
+            return CBCHome::Create(params, m_oldModelManager, m_engine);
 
         default:
             break;
