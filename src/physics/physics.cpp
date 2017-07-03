@@ -2243,6 +2243,8 @@ bool CPhysics::EventFrame(const Event &event)
 
     character = m_object->GetCharacter();
     type = m_object->GetType();
+    iPos      = m_object->GetPosition();
+    iAngle    = m_object->GetRotation();
 
     if ( type == OBJECT_CARROT  ||
          type == OBJECT_STARTER ||
@@ -2270,8 +2272,8 @@ bool CPhysics::EventFrame(const Event &event)
     EffectUpdate(m_time, event.rTime);
     WaterFrame(m_time, event.rTime);
 
-    iPos   = pos   = m_object->GetPosition();
-    iAngle = angle = m_object->GetRotation();
+    pos   = m_object->GetPosition();
+    angle = m_object->GetRotation();
 
     if ( m_timeMotorBurn >= 1.9f )  // moteur explose ?
     {
