@@ -3844,7 +3844,16 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
                    fabs(m_linMotion.realSpeed.x),
                    fabs(m_cirMotion.realSpeed.y*15.0f));
 
-    if ( !m_object->Implements(ObjectInterfaceType::Flying) )
+    if ( !m_object->Implements(ObjectInterfaceType::Flying) &&
+         type != OBJECT_CARROT  && // TODO (krzys_h): Terrible hacks, yey!
+         type != OBJECT_STARTER && // TODO (krzys_h): Make sure this list is OK
+         type != OBJECT_WALKER  &&
+         type != OBJECT_CRAZY   &&
+         type != OBJECT_GUIDE   &&
+         type != OBJECT_EVIL1   &&
+         type != OBJECT_EVIL3   &&
+         type != OBJECT_EVIL4   &&
+         type != OBJECT_EVIL5)
     {
         pos.y -= h;  // plate to the ground immediately
         pos.y += character->height;
