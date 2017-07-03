@@ -6157,8 +6157,8 @@ bool CRobotMain::IsStarter()
 
 bool CRobotMain::IsGameTime()
 {
-    // TODO: && m_startCounter == 0 && m_bStopwatch && !m_bSuperWin
-    return ( !m_movieLock && m_suspend == nullptr && m_engine->GetPause() && m_winDelay == 0.0f && m_lostDelay == 0.0f );
+    // TODO: && m_bStopwatch && !m_bSuperWin
+    return ( !m_movieLock && m_suspend == nullptr && !m_engine->GetPause() && m_winDelay == 0.0f && m_lostDelay == 0.0f && m_startCounter == 0 );
 }
 
 // Indique si le chrono tourne.
