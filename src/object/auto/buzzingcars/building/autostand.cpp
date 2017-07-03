@@ -73,7 +73,7 @@ void CAutoStand::Start(int param)
    int         i, r, x, y;
 
    value = m_object->GetCmdLine(0);
-   if ( value == NAN )
+   if ( std::isnan(value) )
    {
        m_totalPerso = 0;
    }

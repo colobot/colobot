@@ -677,7 +677,7 @@ void CScreenCar::UpdatePerso()
     res[0] = 0;
     ReadCarSpec(m_sel[m_index], missionSpec);
     SpecPerso(carSpec, m_perso.usedCars[m_perso.selectCar]);
-//?	if ( m_perso.level < 3 && carSpec.minSpeed != NAN )
+//?	if ( m_perso.level < 3 && !std::isnan(carSpec.minSpeed) )
 #if _DEMO
     if ( m_perso.selectCar != 2 )  // pas tijuana taxi ?
 	{
@@ -703,15 +703,15 @@ void CScreenCar::UpdatePerso()
 		bOK = false;
 	}
 #else
-    if ( carSpec.minSpeed != NAN )
+    if ( !std::isnan(carSpec.minSpeed) )
     {
-        if ( missionSpec.minSpeed != NAN &&
+        if ( !std::isnan(missionSpec.minSpeed) &&
              carSpec.minSpeed < missionSpec.minSpeed )
         {
             bOK = false;
             GetResource(RES_TEXT, RT_SPEC_MINSPEED, res);
         }
-        if ( missionSpec.maxSpeed != NAN &&
+        if ( !std::isnan(missionSpec.maxSpeed) &&
              carSpec.minSpeed > missionSpec.maxSpeed )
         {
             bOK = false;

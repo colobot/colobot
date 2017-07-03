@@ -117,7 +117,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force, int param, Math::Ve
         m_size *= 2.0f;
     }
 
-    if ( m_impact.x == NAN )
+    if ( std::isnan(m_impact.x) )
     {
         m_pos = pos+(min+max)/2.0f;
     }

@@ -692,7 +692,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                         SoundType sound = SOUND_STARTREADY;
 //TODO (krzys_h):                        if ( !m_sound->RetComments() )  sound = SOUND_MESSAGE;
                         //m_displayText->DisplayText(text, 2.0f, 20.0f, Ui::TT_START, sound);
-                        m_displayText->DisplayText(text.c_str(), Math::Vector(), 15.0f, 60.0f, 2.0f, Ui::TT_START, sound);
+                        m_displayText->DisplayText(text.c_str(), 2.0f, Ui::TT_START, sound);
                     }
                     if ( m_startCounter >= 1 && m_startCounter <= 3 )
                     {
@@ -705,7 +705,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                         if ( m_startCounter == 1 )  sound = SOUND_START1;
 //TODO (krzys_h):                        if ( !m_sound->RetComments() )  sound = SOUND_MESSAGE;
                         //m_displayText->DisplayText(text, 2.0f, 20.0f, Ui::TT_START, sound);
-                        m_displayText->DisplayText(text.c_str(), Math::Vector(), 15.0f, 60.0f, 2.0f, Ui::TT_START, sound);
+                        m_displayText->DisplayText(text.c_str(), 2.0f, Ui::TT_START, sound);
                     }
                 }
                 else	// quick ?
@@ -718,7 +718,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                         SoundType sound = SOUND_STARTREADY;
 //TODO (krzys_h):                        if ( !m_sound->RetComments() )  sound = SOUND_MESSAGE;
                         //m_displayText->DisplayText(text, 2.0f, 20.0f, Ui::TT_START, sound);
-                        m_displayText->DisplayText(text.c_str(), Math::Vector(), 15.0f, 60.0f, 2.0f, Ui::TT_START, sound);
+                        m_displayText->DisplayText(text.c_str(), 2.0f, Ui::TT_START, sound);
                     }
                 }
                 if ( m_startCounter == 0 )
@@ -728,7 +728,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     SoundType sound = SOUND_STARTGO;
 //TODO (krzys_h):                    if ( !m_sound->RetComments() )  sound = SOUND_MESSAGE;
                     //m_displayText->DisplayText(text, 2.0f, 20.0f, Ui::TT_START, sound);
-                    m_displayText->DisplayText(text.c_str(), Math::Vector(), 15.0f, 60.0f, 2.0f, Ui::TT_START, sound);
+                    m_displayText->DisplayText(text.c_str(), 2.0f, Ui::TT_START, sound);
                     CObject* pObj = GetSelect();
                     if ( pObj != 0 && pObj->Implements(ObjectInterfaceType::Old) )
                     {
@@ -2780,6 +2780,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         m_controller = nullptr;
 
+        m_progressTotal = 0;
+        m_progressLap   = 0;
+        m_progressLevel = 0;
+//TODO (krzys_h):        m_progressType = OBJECT_NULL;
+
         m_colorNewBot.clear();
         m_colorNewBot[0] = COLOR_REF_BOT;
         m_colorNewAlien = COLOR_REF_ALIEN;
@@ -3652,6 +3657,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "EndMissionResearch" && !resetObject) // This is not used in any original Colobot levels, but we'll keep it for userlevel creators
             {
                 m_endTakeResearch |= line->GetParam("type")->AsResearchFlag();
+                continue;
+            }
+
+            if (line->GetCommand() == "ProgressInfo" && !resetObject)
+            {
+                m_progressTotal = line->GetParam("total")->AsInt(0);
+                m_progressLap   = line->GetParam("lap")->AsInt(0);
+                m_progressAdd   = line->GetParam("add")->AsInt(0);
+//TODO (krzys_h):                m_progressType  = OpTypeObject(line, "deleteType", OBJECT_NULL);
                 continue;
             }
 
@@ -6324,3 +6338,198 @@ StarterType CRobotMain::GetStarterType()
     }
     return STARTER_321;
 }
+
+
+// Getourne le nombre de portes par tour.
+
+int CRobotMain::GetLapProgress()
+{
+    return m_progressLap;
+}
+
+// Getourne le type d'objet détruit qui doit être signalé dans la progression.
+
+/* TODO (krzys_h):
+ObjectType CRobotMain::GetTypeProgress()
+{
+    return m_progressType;
+}
+*/
+
+// Avance la progression.
+// Getourne true si un son a été généré.
+
+bool CRobotMain::IncProgress()
+{
+    float	time, record;
+    std::string res, text;
+    bool	bSound = false;
+    SoundType	sound;
+    int		rank;
+
+    // TODO (krzys_h): Make sure I understand these values correctly
+    GetLogger()->Info("We have progress! Now %d/%d (%d/%d in lap %d/%d)\n", m_progressLevel+m_progressAdd+1, m_progressTotal, (m_progressLevel+m_progressAdd)%m_progressLap+1, m_progressLap, (m_progressLevel+m_progressAdd)/m_progressLap+1, m_progressTotal/m_progressLap);
+
+    if ( m_progressLap > 0 && m_progressLevel%m_progressLap == 0 )
+    {
+        time = m_gameTime-m_statLapTime;  // temps pour faire un tour
+        m_statLapTime = m_gameTime;
+
+        if ( m_progressLevel+m_progressAdd > 0 )
+        {
+            /* TODO (krzys_h):
+            record = m_dialog->TimeRecord(time, 1);
+            if ( record > 0.0f && !m_dialog->FirstRecord(0) )
+            {
+                GetResource(RES_TEXT, RT_RECORD_GONE, res);
+                sprintf(text, res, record);
+                sound = SOUND_RECORDgone;
+                if ( !m_sound->GetComments() )  sound = SOUND_MESSAGE;
+                m_displayText->DisplayText(text, 10.0f, FONTSIZE, TT_START, sound);
+                bSound = true;
+                m_bStatRecordOne = true;
+            }
+            else
+            {
+                record = m_statBestTime-time;
+                if ( m_statBestTime != 0.0f && record > 0.0f )
+                {
+                    GetResource(RES_TEXT, RT_RECORD_LONE, res);
+                    sprintf(text, res, record);
+                    sound = SOUND_RECORDlone;
+                    if ( !m_sound->GetComments() )  sound = SOUND_MESSAGE;
+                    m_displayText->DisplayText(text, 10.0f, FONTSIZE*0.75f, TT_START, sound);
+                    bSound = true;
+                }
+            }
+            */
+
+            m_statBestTime = time;
+//TODO (krzys_h):            m_dialog->AddRecord(time, 0.0f, 0.0f, 0.0f, 0, 1);
+
+            rank = (m_progressTotal-m_progressLevel-m_progressAdd)/m_progressLap;
+            if ( rank >= 1 && rank <= 4 )
+            {
+                if ( rank == 4 )
+                {
+                    GetResource(RES_TEXT, RT_RACE_LAP4, res);
+                    sound = SOUND_LAP4;
+//TODO (krzys_h):                    if ( !m_sound->GetComments() )  sound = SOUND_MESSAGE;
+                }
+                if ( rank == 3 )
+                {
+                    GetResource(RES_TEXT, RT_RACE_LAP3, res);
+                    sound = SOUND_LAP3;
+//TODO (krzys_h):                    if ( !m_sound->GetComments() )  sound = SOUND_MESSAGE;
+                }
+                if ( rank == 2 )
+                {
+                    GetResource(RES_TEXT, RT_RACE_LAP2, res);
+                    sound = SOUND_LAP2;
+//TODO (krzys_h):                    if ( !m_sound->GetComments() )  sound = SOUND_MESSAGE;
+                }
+                if ( rank == 1 )
+                {
+                    GetResource(RES_TEXT, RT_RACE_LAP1, res);
+                    sound = SOUND_LAP1;
+//TODO (krzys_h):                    if ( !m_sound->GetComments() )  sound = SOUND_MESSAGE;
+                }
+
+//TODO (krzys_h):                if ( bSound )
+//TODO (krzys_h):                {
+//TODO (krzys_h):                    strcpy(m_messageText, res);
+//TODO (krzys_h):                    m_messageDelay = 5.0f;
+//TODO (krzys_h):                    m_messageSize  = FONTSIZE*0.75f;
+//TODO (krzys_h):                    m_messageSound = sound;
+//TODO (krzys_h):                    m_messageTime  = 1.0f;  // sera affiché dans 1 seconde
+//TODO (krzys_h):                }
+                else
+                {
+//                    m_displayText->DisplayText(res, 5.0f, FONTSIZE*0.75f, TT_START, sound);
+                    m_displayText->DisplayText(res.c_str(), 5.0f, Ui::TT_START, sound);
+                    bSound = true;
+                }
+            }
+        }
+    }
+
+    m_progressLevel ++;
+
+    return bSound;
+}
+
+// Met à jour la progression sur le but à atteindre.
+
+/* TODO (krzys_h):
+void CRobotMain::UpdateProgress()
+{
+    CProgress*	pp;
+
+    if ( m_progressTotal == 0 ||
+         m_bSuspend           ||
+         m_bPause             )  return;
+
+    pp = (CProgress*)m_interface->SearchControl(EVENT_PROGRESS);
+    if ( pp == 0 )  return;
+
+    pp->SetState(STATE_VISIBLE);
+    pp->SetTotal(m_progressTotal);
+    pp->SetProgress(m_progressLevel);
+}
+*/
+
+// Met à jour le temps écoulé.
+
+/* TODO (krzys_h):
+void CRobotMain::UpdateTime()
+{
+    CEdit*	pe;
+    CGauge*	pg;
+    float	time;
+    char	text[50];
+
+    pe = (CEdit*)m_interface->SearchControl(EVENT_TIME);
+    if ( pe == 0 )  return;
+
+    if ( m_phase == PHASE_SIMUL )
+    {
+        if ( m_raceType == 1 )  // course contre la montre ?
+        {
+            time = m_bonusLimit-m_gameTime;  // décompte
+            if ( time < 0.0f )  time = 0.0f;
+        }
+        else
+        {
+            time = m_gameTime;  // compte
+        }
+        PutTime(text, time);
+        pe->SetText(text);
+    }
+    else
+    {
+        pe->ClearState(STATE_VISIBLE);
+    }
+
+    if ( m_bonusLimit != 0.0f )
+    {
+        pg = (CGauge*)m_interface->SearchControl(EVENT_BONUS);
+        if ( pg == 0 )  return;
+        pg->SetLevel(m_gameTime*(1.0f/m_bonusLimit));
+    }
+}
+*/
+
+// Getourne le nombre de points gagnés grace au bonus de temps.
+
+/* TODO (krzys_h):
+float CRobotMain::GetBonusPoints()
+{
+    float	pts;
+
+    if ( m_bonusLimit == 0.0f )  return -1.0f;
+
+    pts = ((m_statEndTime-m_statStartTime)-m_bonusRecord)/(m_bonusLimit-m_bonusRecord);
+    pts = Norm(1.0f-pts)*100.0f;
+    return pts;
+}
+*/

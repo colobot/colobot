@@ -494,6 +494,10 @@ public:
     void FlushStarterType();
     StarterType GetStarterType();
 
+    int			GetLapProgress();
+    ObjectType	GetTypeProgress();
+    bool		IncProgress();
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -743,4 +747,21 @@ protected:
     std::deque<std::string> m_commandHistory;
     //! Index of currently selected element in command history
     int             m_commandHistoryIndex;
+
+    int				m_progressTotal;
+    int				m_progressLap;
+    int				m_progressAdd;
+    int				m_progressLevel;
+    //TODO (krzys_h): ObjectType		m_progressType;
+
+//    int				m_statStartVehicle;
+//    int				m_statEndVehicle;
+//    int				m_statStartCone;
+//    int				m_statEndCone;
+//    float			m_statStartTime;
+//    float			m_statEndTime;
+    float			m_statLapTime;
+    float			m_statBestTime;
+//    bool			m_bStatRecordAll;
+//    bool			m_bStatRecordOne;
 };

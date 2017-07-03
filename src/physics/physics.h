@@ -250,7 +250,7 @@ protected:
 
     bool        ExploOther(ObjectType iType, CObject *pObj, ObjectType oType, float force, float hardness);
     int         ExploHimself(ObjectType iType, ObjectType oType, float force, float hardness, Math::Vector impact);
-    void        DoorCounter(CObject *pObj, ObjectType oType); // BC
+    void        DoorCounter(COldObject* pObj, ObjectType oType); // BC
     void        HornAction(); // BC
 
     void        PowerParticle(float factor, bool bBreak);

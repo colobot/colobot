@@ -409,7 +409,7 @@ void CProgrammableObjectImpl::SetCmdLine(unsigned int rank, float value)
 
 float CProgrammableObjectImpl::GetCmdLine(unsigned int rank)
 {
-    if ( rank >= m_cmdLine.size() )  return 0.0f;
+    if ( rank >= m_cmdLine.size() )  return NAN;
     return m_cmdLine[rank];
 }
 

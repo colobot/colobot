@@ -152,6 +152,18 @@ enum ResTextType
     RT_SCOREBOARD_RESULTS     = 230,
     RT_SCOREBOARD_RESULTS_TEXT= 231,
     RT_SCOREBOARD_RESULTS_LINE= 232,
+    
+    RT_RECORD_GALL            = 240,
+    RT_RECORD_GONE            = 241,
+    RT_RECORD_LONE            = 242,
+    RT_RECORD_QALL            = 243,
+    RT_RECORD_QONE            = 244,
+    RT_RACE_LAP4              = 245,
+    RT_RACE_LAP3              = 246,
+    RT_RACE_LAP2              = 247,
+    RT_RACE_LAP1              = 248,
+    RT_DUEL_WIN               = 249,
+    RT_DUEL_LOST              = 250,
 
 
     RT_MAX //! < number of values

@@ -152,7 +152,7 @@ void CAutoAlien::Start(int param)
        if ( param == 1 )  // démarre ?
        {
            value = m_object->GetCmdLine(0);
-           if ( value == NAN || value == 0.0f )
+           if ( std::isnan(value) || value == 0.0f )
            {
                m_speed = 1.0f/10.0f;
            }

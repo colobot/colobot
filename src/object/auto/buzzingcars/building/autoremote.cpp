@@ -123,7 +123,7 @@ bool CAutoRemote::EventProcess(const Event &event)
            m_bDisplayText = true;
            std::string text;
            GetResource(RES_TEXT, RT_START_REMOTE, text);
-           m_main->GetDisplayText()->DisplayText(text.c_str(), Math::Vector(), 15.0f, 60.0f, 8.0f);
+           m_main->GetDisplayText()->DisplayText(text.c_str(), 8.0f);
        }
 
        if ( m_progress >= 1.0f )
@@ -275,7 +275,7 @@ bool CAutoRemote::EventProcess(const Event &event)
 
            std::string text;
            GetResource(RES_TEXT, RT_START_GO, text);
-           m_main->GetDisplayText()->DisplayText(text.c_str(), Math::Vector(), 15.0f, 60.0f, 3.0f, Ui::TT_START);
+           m_main->GetDisplayText()->DisplayText(text.c_str(), 3.0f, Ui::TT_START);
            sound = SOUND_STARTGO;
 //TODO (krzys_h):           if ( !m_sound->GetComments() )  sound = SOUND_MESSAGE;
            m_sound->Play(sound, m_engine->GetLookatPt(), 1.0f, 1.0f);

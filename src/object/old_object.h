@@ -310,6 +310,11 @@ public:
 
     bool IsCrashLineFusion() override;
 
+    void		SetPassCounter(int counter);
+    int			GetPassCounter();
+    void		SetRankCounter(int rank);
+    int			GetRankCounter();
+
 protected:
     bool        EventFrame(const Event &event);
     void        VirusFrame(float rTime);
@@ -411,4 +416,7 @@ protected:
     float       m_traceWidth;
 
     bool        m_bulletWall = false;
+
+    int			m_passCounter;
+    int			m_rankCounter;
 };

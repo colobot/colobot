@@ -102,7 +102,7 @@ bool CAutoCompass::EventProcess(const Event &event)
    car = dynamic_cast<COldObject*>(m_object->GetTransporter());
    if ( car == 0 )  // boussole seule ?
    {
-       if ( m_targetPos.x == NAN )
+       if ( std::isnan(m_targetPos.x) )
        {
            angle = 0.0f;
        }
@@ -126,7 +126,7 @@ bool CAutoCompass::EventProcess(const Event &event)
            speed = abs(physics->GetLinMotionX(MO_REASPEED)/physics->GetLinMotionX(MO_ADVSPEED));
        }
 
-       if ( m_targetPos.x == NAN )
+       if ( std::isnan(m_targetPos.x) )
        {
            angle = 0.0f;
        }

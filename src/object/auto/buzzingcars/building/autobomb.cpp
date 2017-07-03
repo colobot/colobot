@@ -85,10 +85,10 @@ Error CAutoBomb::SetAction(int action, float time)
 
    if ( action == AB_BURNON )
    {
-       if ( m_fireDelay == NAN )
+       if ( std::isnan(m_fireDelay) )
        {
            m_fireDelay = m_object->GetCmdLine(0);
-           if ( m_fireDelay == NAN )  m_fireDelay = 10.0f;
+           if ( std::isnan(m_fireDelay) )  m_fireDelay = 10.0f;
        }
        m_bBurn = true;  // mèche allumée
        return ERR_OK;

@@ -67,7 +67,7 @@ void CAutoGenerator::Start(int param)
    float       value;
 
    value = m_object->GetCmdLine(0);
-   if ( value == NAN )
+   if ( std::isnan(value) )
    {
        m_totalCreate = 0;
    }
@@ -77,7 +77,7 @@ void CAutoGenerator::Start(int param)
    }
 
    value = m_object->GetCmdLine(1);
-   if ( value == NAN )
+   if ( std::isnan(value) )
    {
        m_maxCreate = 10;
    }
@@ -87,7 +87,7 @@ void CAutoGenerator::Start(int param)
    }
 
    value = m_object->GetCmdLine(2);
-   if ( value == NAN )
+   if ( std::isnan(value) )
    {
        m_delay = 10.0f;
    }
@@ -97,7 +97,7 @@ void CAutoGenerator::Start(int param)
    }
 
    value = m_object->GetCmdLine(3);
-   if ( value == NAN )
+   if ( std::isnan(value) )
    {
        m_programNumber = -1;
    }

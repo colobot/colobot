@@ -105,6 +105,7 @@ CPhysics::CPhysics(COldObject* object)
     m_bCollision = false;
     m_bObstacle = false;
     m_repeatCollision = 0;
+    m_doorRank = 0;
     m_linVibrationFactor = 1.0f;
     m_cirVibrationFactor = 1.0f;
     m_inclinaisonFactor  = 1.0f;
@@ -4522,7 +4523,8 @@ int CPhysics::ObjectAdapt(Math::Vector &pos, Math::Vector &angle,
             distance = Math::DistanceProjected(oPos, iPos);
             if ( distance < 40.0f )
             {
-                DoorCounter(pObj, oType);
+                assert(pObj->Implements(ObjectInterfaceType::Old));
+                DoorCounter(dynamic_cast<COldObject*>(pObj), oType);
             }
         }
 
@@ -5456,7 +5458,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
 // Gestion du passage multiple sur un objet, dans les circuits
 // ŕ plusieurs tours.
 
-void CPhysics::DoorCounter(CObject *pObj, ObjectType oType)
+void CPhysics::DoorCounter(COldObject* pObj, ObjectType oType)
 {
     float        freq;
     int            rank, counter, lap;
@@ -5465,7 +5467,6 @@ void CPhysics::DoorCounter(CObject *pObj, ObjectType oType)
     if ( pObj == m_lastDoorCounter )  return;
     m_lastDoorCounter = pObj;
 
-    /* TODO (krzys_h):
     rank = pObj->GetRankCounter();
     lap = m_main->GetLapProgress();
     if ( lap == 0 )  lap = 1000;
@@ -5473,15 +5474,16 @@ void CPhysics::DoorCounter(CObject *pObj, ObjectType oType)
     {
         if ( m_doorRank%lap != rank )
         {
+            GetLogger()->Info("Passed through INCORRECT door %d, should be %d (%d/%d on lap %d)\n", (m_doorRank/lap)*lap + rank, m_doorRank, m_doorRank%lap+1, lap, m_doorRank/lap+1);
             m_sound->Play(SOUND_ERROR, m_object->GetPosition(), 1.0f, 1.0f);
             return;
         }
+        GetLogger()->Info("Passed through CORRECT door %d (%d/%d on lap %d)\n", m_doorRank, m_doorRank%lap+1, lap, m_doorRank/lap+1);
         m_doorRank ++;
     }
 
     counter = pObj->GetPassCounter();
-    if ( counter == 0 )*/
-    if (false)
+    if ( counter == 0 )
     {
 //TODO (krzys_h):        m_main->InfoCollision(oType);
 
@@ -5494,9 +5496,9 @@ void CPhysics::DoorCounter(CObject *pObj, ObjectType oType)
     }
     else
     {
-//TODO (krzys_h):        bSound = m_main->IncProgress();
+        bSound = m_main->IncProgress();
         counter --;
-//TODO (krzys_h):        pObj->SetPassCounter(counter);
+        pObj->SetPassCounter(counter);
 
 //TODO (krzys_h):        m_main->InfoCollision(oType);
 
@@ -5508,8 +5510,7 @@ void CPhysics::DoorCounter(CObject *pObj, ObjectType oType)
             m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition(), 1.0f, freq);
         }
 
-//TODO (krzys_h):        if ( counter == 0 )
-        if (false)
+        if ( counter == 0 )
         {
             pObj->SetLock(true);
             m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, pObj);

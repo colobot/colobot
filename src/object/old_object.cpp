@@ -179,6 +179,9 @@ COldObject::COldObject(int id)
     m_traceColor = TraceColor::Black;
     m_traceWidth = 0.5f;
 
+    m_passCounter = 0;
+    m_rankCounter = -1;
+
     DeleteAllCrashSpheres();
 }
 
@@ -3548,4 +3551,28 @@ bool COldObject::IsCrashLineFusion()
              m_type == OBJECT_BARRIER14 ||
              m_type == OBJECT_BARRIER15 ||
              m_type == OBJECT_BARRIER16 );
+}
+
+// Gestion du compteur du nombre de passages.
+
+void COldObject::SetPassCounter(int counter)
+{
+    m_passCounter = counter;
+}
+
+int COldObject::GetPassCounter()
+{
+    return m_passCounter;
+}
+
+// Gestion de l'ordre de passages.
+
+void COldObject::SetRankCounter(int rank)
+{
+    m_rankCounter = rank;
+}
+
+int COldObject::GetRankCounter()
+{
+    return m_rankCounter;
 }

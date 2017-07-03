@@ -156,6 +156,18 @@ void InitializeRestext()
     stringsText[RT_SCOREBOARD_RESULTS_TEXT]= TR("The battle has ended");
     stringsText[RT_SCOREBOARD_RESULTS_LINE]= TR("%s: %d pts");
 
+    stringsText[RT_RECORD_GALL]            = "Circuit record (-%.2f) !";
+    stringsText[RT_RECORD_GONE]            = "Lap record (-%.2f) !";
+    stringsText[RT_RECORD_LONE]            = "Best lap (-%.2f) !";
+    stringsText[RT_RECORD_QALL]            = "> Circuit record <";
+    stringsText[RT_RECORD_QONE]            = "> Best lap <";
+    stringsText[RT_RACE_LAP4]              = "4 laps to go";
+    stringsText[RT_RACE_LAP3]              = "3 laps to go";
+    stringsText[RT_RACE_LAP2]              = "2 laps to go";
+    stringsText[RT_RACE_LAP1]              = "Final lap";
+    stringsText[RT_DUEL_WIN]               = "Ghost car defeated (-%.2f) !";
+    stringsText[RT_DUEL_LOST]              = "Too slow (+%.2f) !";
+
 
 
     stringsEvent[EVENT_LABEL_CODE_BATTLE]   = TR("Code battle");

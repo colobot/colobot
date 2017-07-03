@@ -124,13 +124,13 @@ void CAutoDoor::Start(int param)
         m_type == OBJECT_DOOR4 )
    {
        m_initialDelay = m_object->GetCmdLine(0);
-       if ( m_initialDelay == NAN )  m_initialDelay = 0.0f;
+       if ( std::isnan(m_initialDelay) )  m_initialDelay = 0.0f;
 
        value = m_object->GetCmdLine(1);
-       if ( value != NAN )  m_counter = (int)value;
+       if ( !std::isnan(value) )  m_counter = (int)value;
 
        value = m_object->GetCmdLine(2);
-       if ( value != NAN )  m_rank = (int)value;
+       if ( !std::isnan(value) )  m_rank = (int)value;
 
        if ( param == 3 )  // attend une condition pour s'ouvrir ?
        {
@@ -149,14 +149,14 @@ void CAutoDoor::Start(int param)
         m_type == OBJECT_DOOR3 )
    {
        m_cycleDelay = m_object->GetCmdLine(0);
-       if ( m_cycleDelay == NAN )  m_cycleDelay = 15.0f;
+       if ( std::isnan(m_cycleDelay) )  m_cycleDelay = 15.0f;
        if ( m_cycleDelay < 7.0f )  m_cycleDelay = 7.0f;
 
        bot = (int)m_object->GetCmdLine(1);
-       if ( bot == NAN )  bot = 0;
+       if ( std::isnan(bot) )  bot = 0;
 
        m_programNumber = (int)m_object->GetCmdLine(2);
-       if ( m_programNumber == NAN )  m_programNumber = -1;
+       if ( std::isnan(m_programNumber) )  m_programNumber = -1;
 
        m_phase    = ADOP_WAIT;
        m_progress = 0.0f;
@@ -173,8 +173,8 @@ void CAutoDoor::Start(int param)
        angle = m_object->GetPartRotationY(0)+Math::PI/2.0f;
        object = dynamic_cast<COldObject*>(CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_TARGET)); // TODO (krzys_h): bPlumb = true (?)
        object->SetPosition(pos);
-//TODO(krzys_h):       object->SetPassCounter(m_counter);
-//TODO(krzys_h):       object->SetRankCounter(m_rank);
+       object->SetPassCounter(m_counter);
+       object->SetRankCounter(m_rank);
    }
 
    // Crée le robot s'occupant de la porte.
