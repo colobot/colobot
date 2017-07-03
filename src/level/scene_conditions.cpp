@@ -129,7 +129,9 @@ int CSceneCondition::CountObjects()
     int nb = 0;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (!obj->GetActive() && !obj->GetLock()) continue;
+        // The Car gets locked during animations and that shouldn't cause the mission to end
+        // TODO (krzys_h): This is ugly...
+        if (!obj->GetActive() && (obj->GetType() != OBJECT_CAR || !obj->GetLock())) continue;
         if (!CheckForObject(obj)) continue;
         nb ++;
     }
