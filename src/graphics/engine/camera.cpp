@@ -1196,7 +1196,7 @@ bool CCamera::EventFrameBack(const Event &event)
         m_backRotSpeed  = 0.0f;
     }
     if ( type != OBJECT_CAR    &&
-         type != OBJECT_HUMAN  &&
+         //type != OBJECT_HUMAN  &&
          type != OBJECT_BOT1   &&
          type != OBJECT_BOT2   &&
          type != OBJECT_BOT3   &&
