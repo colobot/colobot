@@ -260,8 +260,9 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_ROOT5:
             return CreateRoot(params);
 
-        case OBJECT_HOME1:
-            return CreateHome(params);
+//TODO (krzys_h): BuzzingCars replaces this
+//        case OBJECT_HOME1:
+//            return CreateHome(params);
 
         case OBJECT_RUINmobilew1:
         case OBJECT_RUINmobilew2:
@@ -578,7 +579,7 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_AQUA:
             return CBCAdditional::Create(params, m_oldModelManager, m_engine);
 
-//TODO (krzys_h):        case OBJECT_HOME1:
+        case OBJECT_HOME1:
         case OBJECT_HOME2:
         case OBJECT_HOME3:
         case OBJECT_HOME4:
