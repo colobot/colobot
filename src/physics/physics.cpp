@@ -1133,8 +1133,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
     if ( m_type == TYPE_RACE )
     {
         // Avance moins vite sur les zones lentes.
-//TODO (krzys_h):        factor = m_terrain->GetSlowerZone(m_object->GetPosition());
-        factor = 1.0f;
+        factor = m_terrain->GetSlowerZone(m_object->GetPosition());
         if ( m_motorSpeed.x > 0.0f )
         {
             m_motorSpeed.x *= factor;

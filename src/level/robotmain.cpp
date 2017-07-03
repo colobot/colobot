@@ -447,7 +447,9 @@ void CRobotMain::ChangePhase(Phase phase)
         SetSpeed(1.0f);
         m_terrain->SetWind(Math::Vector(0.0f, 0.0f, 0.0f));
         m_terrain->FlushBuildingLevel();
+        m_terrain->FlushSlowerZone();
         m_terrain->FlushFlyingLimit();
+        m_terrain->FlushTraject();
         m_lightMan->FlushLights();
         m_particle->FlushParticle();
         m_water->Flush();
@@ -2722,7 +2724,9 @@ void CRobotMain::ScenePerso(std::string levelFile)
     m_engine->DeleteAllObjects();
     m_oldModelManager->DeleteAllModelCopies();
     m_terrain->FlushBuildingLevel();
+    m_terrain->FlushSlowerZone();
     m_terrain->FlushFlyingLimit();
+    m_terrain->FlushTraject();
     m_lightMan->FlushLights();
     m_particle->FlushParticle();
 
@@ -3383,6 +3387,73 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
+            if (line->GetCommand() == "TerrainRoute" && !resetObject)
+            {
+                Math::Vector	p1, p2;
+                int			id[50];
+
+                auto& idArray = line->GetParam("id")->AsArray();
+
+                if (idArray.size() > 50)
+                    throw CLevelParserException("In TerrainRoute: id array size must be < 50");
+
+                unsigned int i = 0;
+                while (i < 50)
+                {
+                    id[i] = idArray[i]->AsInt();
+                    i++;
+                    if (i >= idArray.size()) break;
+                }
+                id[i] = 0;
+
+                p1 = line->GetParam("p1")->AsPoint()*g_unit;
+                if (!line->GetParam("p2")->IsDefined())
+                    p2 = p1;
+                else
+                    p2 = line->GetParam("p2")->AsPoint()*g_unit;
+
+                if ( p1.z == p2.z )  // horizontal ?
+                {
+                    if ( p1.x > p2.x )  Math::Swap(p1.x, p2.x);
+                    while ( p1.x <= p2.x )
+                    {
+                        m_terrain->GenerateMaterials(id, 0.0f, 100.0f*g_unit, 5.0f,
+                                                 100.0f, p1, 1.0f*g_unit);
+                        p1.x += 10.0f*g_unit;
+                    }
+                }
+                else if ( p1.x == p2.x )  // vertical ?
+                {
+                    if ( p1.z > p2.z )  Math::Swap(p1.z, p2.z);
+                    while ( p1.z <= p2.z )
+                    {
+                        m_terrain->GenerateMaterials(id, 0.0f, 100.0f*g_unit, 5.0f,
+                                                 100.0f, p1, 1.0f*g_unit);
+                        p1.z += 10.0f*g_unit;
+                    }
+                }
+                else if ( abs(p1.x-p2.x) == abs(p1.z-p2.z) )  // diagonal ?
+                {
+                    while ( true )
+                    {
+                        m_terrain->GenerateMaterials(id, 0.0f, 100.0f*g_unit, 5.0f,
+                                                 100.0f, p1, 1.0f*g_unit);
+                        if ( p1.x == p2.x )  break;
+                        if ( p1.x < p2.x )  p1.x += 20.0f*g_unit;
+                        else                p1.x -= 20.0f*g_unit;
+                        if ( p1.z < p2.z )  p1.z += 20.0f*g_unit;
+                        else                p1.z -= 20.0f*g_unit;
+                    }
+                }
+                continue;
+            }
+
+            if (line->GetCommand() == "TerrainJoin" && !resetObject)
+            {
+                m_terrain->LevelRoadAdapt(line->GetParam("f1")->AsBool(false));
+                continue;
+            }
+
             if (line->GetCommand() == "TerrainCreate" && !resetObject)
             {
                 m_ui->GetLoadingScreen()->SetProgress(0.2f+(4.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_GEN);
@@ -3501,6 +3572,18 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
+            if (line->GetCommand() == "CreateTraject" && !resetObject)
+            {
+                Math::Vector pos = line->GetParam("pos")->AsPoint()*g_unit;
+                m_terrain->AddTraject(pos);
+
+                if ( line->GetParam("show")->AsBool(false) )
+                {
+                    m_objMan->CreateObject(pos, 0.0f, OBJECT_WAYPOINT);
+                }
+                continue;
+            }
+
             if (line->GetCommand() == "CreateFog" && !resetObject)
             {
                 Gfx::ParticleType type = static_cast<Gfx::ParticleType>(Gfx::PARTIFOG0+(line->GetParam("type")->AsInt()));
@@ -3578,6 +3661,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     m_engine->SetObjectGroundSpotMinMax(rank, line->GetParam("min")->AsFloat(0.0f)*g_unit,
                                                         line->GetParam("max")->AsFloat(0.0f)*g_unit);
                 }
+                continue;
+            }
+
+            if (line->GetCommand() == "SlowerZone" && !resetObject)
+            {
+                m_terrain->AddSlowerZone(line->GetParam("pos")->AsPoint()*g_unit,
+                                         line->GetParam("min")->AsFloat(10.0f)*g_unit,
+                                         line->GetParam("max")->AsFloat(20.0f)*g_unit,
+                                         line->GetParam("factor")->AsFloat(0.5f));
                 continue;
             }
 

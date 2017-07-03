@@ -46,6 +46,20 @@ struct Material;
 //! Limit of slope considered a flat piece of land
 const float TERRAIN_FLATLIMIT = (5.0f*Math::PI/180.0f);
 
+#define MAXSLOWERZONE	10
+#define MAXTRAJECT	200
+
+struct SlowerZone
+{
+    Math::Vector	center;
+    float		min;
+    float		max;
+    float		factor;
+    float		bboxMinX;
+    float		bboxMaxX;
+    float		bboxMinZ;
+    float		bboxMaxZ;
+};
 
 /**
  * \enum TerrainRes
@@ -166,6 +180,8 @@ public:
     //! Generates a level in the terrain
     bool        GenerateMaterials(int *id, float min, float max, float slope, float freq, Math::Vector center, float radius);
 
+    void		LevelRoadAdapt(bool bF1);
+
     //! Clears the relief, resources and all other associated data
     void        FlushRelief();
     //! Load relief from image
@@ -220,6 +236,11 @@ public:
     //! Returns the hardness of the ground in a given place
     float       GetHardness(const Math::Vector& pos);
 
+    void		FlushSlowerZone();
+    bool		AddSlowerZone(Math::Vector center, float min, float max, float factor);
+    bool		DeleteSlowerZone(Math::Vector center);
+    float		GetSlowerZone(const Math::Vector &p);
+
     //! Returns number of mosaics
     int         GetMosaicCount();
     //! Returns number of bricks in mosaic
@@ -245,6 +266,10 @@ public:
     void        AddFlyingLimit(Math::Vector center, float extRadius, float intRadius, float maxHeight);
     //! Returns the maximum height of flight
     float       GetFlyingLimit(Math::Vector pos, bool noLimit);
+
+    void		FlushTraject();
+    bool		AddTraject(const Math::Vector &pos);
+    bool		GetTraject(int rank, Math::Vector &pos);
 
 protected:
     //! Adds a point of elevation in the buffer of relief
@@ -281,6 +306,12 @@ protected:
     void        InitMaterialPoints();
     //! Clears the material points
     void        FlushMaterialPoints();
+
+    int			RoadSearchID(int bits);
+    int			RoadSearchBits(int id);
+    int			RoadGetID(int x, int y);
+    int			RoadSearchBitsFull(int x, int y, bool bF1);
+    int			RoadSearchBitsDiag(int x, int y);
 
     //! Adjusts a position according to a possible rise
     void        AdjustBuildingLevel(Math::Vector &p);
@@ -385,6 +416,9 @@ protected:
     };
     std::vector<BuildingLevel> m_buildingLevels;
 
+    int				m_slowerUsed;
+    BuildingLevel	m_slowerTable[MAXSLOWERZONE];
+
     //! Wind speed
     Math::Vector    m_wind;
 
@@ -404,6 +438,9 @@ protected:
     };
     //! List of local flight limits
     std::vector<FlyingLimit> m_flyingLimits;
+
+    int				m_trajectTotal;
+    Math::Vector		m_trajectTable[MAXTRAJECT];
 };
 
 

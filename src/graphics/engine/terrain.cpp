@@ -49,7 +49,7 @@ CTerrain::CTerrain()
     m_brickCount      = 1 << 4;
     m_brickSize       = 10.0f;
     m_vision          = 200.0f;
-    m_textureScale    = 0.01f;
+    m_textureScale    = 1.0f/(m_brickCount*m_brickSize); // TODO (krzys_h): 0.01f in Colobot
     m_scaleRelief     = 1.0f;
     m_textureSubdivCount   = 1;
     m_depth           = 2;
@@ -64,6 +64,7 @@ CTerrain::CTerrain()
     m_materialPointCount = 0;
 
     FlushBuildingLevel();
+    FlushSlowerZone();
     FlushFlyingLimit();
     FlushMaterials();
 }
@@ -188,7 +189,7 @@ void CTerrain::AddMaterial(int id, const std::string& texName, const Math::Point
     if (m_maxMaterialID < left+1 )  m_maxMaterialID = left+1;
 
     m_useMaterials = true;
-    m_textureSubdivCount = 4;
+    m_textureSubdivCount = 8; // TODO (krzys_h): 4 in Colobot
 }
 
 
@@ -672,10 +673,10 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 
                     if (m_useMaterials)
                     {
-                        p1.texCoord.x /= m_textureSubdivCount;  // 0..1 -> 0..0.25
-                        p1.texCoord.y /= m_textureSubdivCount;
-                        p2.texCoord.x /= m_textureSubdivCount;
-                        p2.texCoord.y /= m_textureSubdivCount;
+                        p1.texCoord.x /= 4;  // 0..1 -> 0..0.25 // TODO (krzys_h): /m_textureSubdivCount in Colobot
+                        p1.texCoord.y /= 4; // TODO (krzys_h): /m_textureSubdivCount in Colobot
+                        p2.texCoord.x /= 4; // TODO (krzys_h): /m_textureSubdivCount in Colobot
+                        p2.texCoord.y /= 4; // TODO (krzys_h): /m_textureSubdivCount in Colobot
 
                         if (x == 0)
                         {
@@ -684,11 +685,11 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
                         }
                         if (x == brick)
                         {
-                            p1.texCoord.x = (1.0f/m_textureSubdivCount)-dp;
-                            p2.texCoord.x = (1.0f/m_textureSubdivCount)-dp;
+                            p1.texCoord.x = (1.0f/4)-dp; // TODO (krzys_h): /m_textureSubdivCount in Colobot
+                            p2.texCoord.x = (1.0f/4)-dp; // TODO (krzys_h): /m_textureSubdivCount in Colobot
                         }
                         if (y == 0)
-                            p1.texCoord.y = (1.0f/m_textureSubdivCount)-dp;
+                            p1.texCoord.y = (1.0f/4)-dp; // TODO (krzys_h): /m_textureSubdivCount in Colobot
 
                         if (y == brick - step)
                             p2.texCoord.y = 0.0f+dp;
@@ -1228,6 +1229,185 @@ bool CTerrain::GenerateMaterials(int *id, float min, float max,
     return true;
 }
 
+// Gestion spéciale des routes.
+
+#define RL	(1<<0)	// left
+#define RUL	(1<<1)
+#define RU	(1<<2)	// up
+#define RUR	(1<<3)
+#define RR	(1<<4)	// right
+#define RDR	(1<<5)
+#define RD	(1<<6)	//down
+#define RDL	(1<<7)
+
+short table_road[] =
+    {
+        2,	RL+RR,
+        3,	RU+RD,
+        4,	RD,
+        5,	RD+RR,
+        6,	RL+RD+RR,
+        7,	RL+RD,
+        8,	RU,
+        9,	RU+RR+RD,
+        10,	RU+RL+RR+RD,
+        11,	RU+RL+RD,
+        12,	RR,
+        13,	RU+RR,
+        14,	RU+RL+RR,
+        15,	RU+RL,
+        16,	RL,
+        17,	RDL+RUR,
+        18,	RDR,
+        19,	RDL,
+        21,	RUL+RDR,
+        22,	RUR,
+        23,	RUL,
+        25,	RDL+RR,
+        26,	RDR+RL,
+        27,	RUR+RD,
+        28,	RUL+RD,
+        29,	RUL+RR,
+        30,	RUR+RL,
+        31,	RDR+RU,
+        32,	RDL+RU,
+        0
+    };
+
+int CTerrain::RoadSearchID(int bits)
+{
+    int		i = 0;
+    while ( table_road[i] != 0 )
+    {
+        if ( table_road[i+1] == bits )  return table_road[i];
+        i += 2;
+    }
+    return 0;
+}
+
+int CTerrain::RoadSearchBits(int id)
+{
+    int		i = 0;
+    while ( table_road[i] != 0 )
+    {
+        if ( table_road[i] == id )  return table_road[i+1];
+        i += 2;
+    }
+    return 0;
+}
+
+int CTerrain::RoadGetID(int x, int y)
+{
+    if ( x < 0 || x >= m_materialPointCount ||
+         y < 0 || y >= m_materialPointCount )  return 0;
+    return m_materialPoints[x+y*m_materialPointCount].id;
+}
+
+// Cherche comment transformer une route pleine.
+
+int CTerrain::RoadSearchBitsFull(int x, int y, bool bF1)
+{
+    int		id, bits = 0;
+
+    id = RoadGetID(x, y);
+    if ( id <= 1 || id == 20  || id == 24 )  return bits;  // si pas route -> retour
+
+    if ( bF1 )  // green05/06-h ?
+    {
+        if ( id ==  4 )  return bits;  // 11 ?
+        if ( id ==  6 )  return bits;  // 23 ?
+        if ( id ==  8 )  return bits;  // 25 ?
+        if ( id ==  9 )  return bits;  // 36 ?
+        if ( id == 10 )  return bits;  // 37 ?
+        if ( id == 11 )  return bits;  // 52 ?
+        if ( id == 12 )  return bits;  // || ?
+        if ( id == 14 )  return bits;  // == ?
+        if ( id == 16 )  return bits;  // ^  ?
+    }
+
+    if ( RoadGetID(x-1, y-1) > 1 )  bits |= RDL;
+    if ( RoadGetID(x+0, y-1) > 1 )  bits |= RD;
+    if ( RoadGetID(x+1, y-1) > 1 )  bits |= RDR;
+    if ( RoadGetID(x-1, y+0) > 1 )  bits |= RL;
+    if ( RoadGetID(x+1, y+0) > 1 )  bits |= RR;
+    if ( RoadGetID(x-1, y+1) > 1 )  bits |= RUL;
+    if ( RoadGetID(x+0, y+1) > 1 )  bits |= RU;
+    if ( RoadGetID(x+1, y+1) > 1 )  bits |= RUR;
+
+    if ( bits & RL )  bits &= ~(RUL|RDL);
+    if ( bits & RR )  bits &= ~(RUR|RDR);
+    if ( bits & RD )  bits &= ~(RDL|RDR);
+    if ( bits & RU )  bits &= ~(RUL|RUR);
+
+    return bits;
+}
+
+// Cherche comment transformer un coin estétique.
+
+int CTerrain::RoadSearchBitsDiag(int x, int y)
+{
+    int		b, bits = 0;
+
+    if ( RoadGetID(x, y) > 1 )  return bits;  // si déjà route -> retour
+
+    b = RoadSearchBits(RoadGetID(x-1, y+0));  // à gauche
+    if ( b & RUR )  bits |= RUL;
+    if ( b & RDR )  bits |= RDL;
+
+    b = RoadSearchBits(RoadGetID(x+1, y+0));  // à droite
+    if ( b & RUL )  bits |= RUR;
+    if ( b & RDL )  bits |= RDR;
+
+    b = RoadSearchBits(RoadGetID(x+0, y-1));  // en bas
+    if ( b & RUL )  bits |= RDL;
+    if ( b & RUR )  bits |= RDR;
+
+    b = RoadSearchBits(RoadGetID(x+0, y+1));  // en haut
+    if ( b & RDL )  bits |= RUL;
+    if ( b & RDR )  bits |= RUR;
+
+    return bits;
+}
+
+// Adapte les routes.
+
+void CTerrain::LevelRoadAdapt(bool bF1)
+{
+    int		x, y, bits, id;
+
+    for ( y=0 ; y<m_materialPointCount ; y++ )
+    {
+        for ( x=0 ; x<m_materialPointCount ; x++ )
+        {
+            bits = RoadSearchBitsFull(x, y, bF1);
+            if ( bits != 0 )
+            {
+                id = RoadSearchID(bits);
+                if ( id != 0 )
+                {
+                    m_materialPoints[x+y*m_materialPointCount].id = id;
+                }
+            }
+        }
+    }
+
+    for ( y=0 ; y<m_materialPointCount ; y++ )
+    {
+        for ( x=0 ; x<m_materialPointCount ; x++ )
+        {
+            bits = RoadSearchBitsDiag(x, y);
+            if ( bits != 0 )
+            {
+                id = RoadSearchID(bits);
+                if ( id != 0 )
+                {
+                    m_materialPoints[x+y*m_materialPointCount].id = id;
+                }
+            }
+        }
+    }
+}
+
 void CTerrain::InitMaterialPoints()
 {
     if (! m_useMaterials) return;
@@ -1737,6 +1917,99 @@ void CTerrain::AdjustBuildingLevel(Math::Vector &p)
     }
 }
 
+// Vide la table des zones de ralentissement.
+
+void CTerrain::FlushSlowerZone()
+{
+    m_slowerUsed = 0;
+}
+
+// Ajoute une nouvelle zone de ralentissement.
+
+bool CTerrain::AddSlowerZone(Math::Vector center, float min, float max, float factor)
+{
+    int		i;
+
+    for ( i=0 ; i<m_slowerUsed ; i++ )
+    {
+        if ( center.x == m_slowerTable[i].center.x &&
+             center.z == m_slowerTable[i].center.z )
+        {
+            goto update;
+        }
+    }
+
+    if ( m_slowerUsed >= MAXSLOWERZONE )  return false;
+    i = m_slowerUsed++;
+
+    update:
+    m_slowerTable[i].center   = center;
+    m_slowerTable[i].min      = min;
+    m_slowerTable[i].max      = max;
+    m_slowerTable[i].factor   = factor;
+    m_slowerTable[i].bboxMinX = center.x-max;
+    m_slowerTable[i].bboxMaxX = center.x+max;
+    m_slowerTable[i].bboxMinZ = center.z-max;
+    m_slowerTable[i].bboxMaxZ = center.z+max;
+
+    return true;
+}
+
+// Supprime une zone de ralentissement.
+
+bool CTerrain::DeleteSlowerZone(Math::Vector center)
+{
+    int		i, j;
+
+    for ( i=0 ; i<m_slowerUsed ; i++ )
+    {
+        if ( center.x == m_slowerTable[i].center.x &&
+             center.z == m_slowerTable[i].center.z )
+        {
+            for ( j=i+1 ; j<m_slowerUsed ; j++ )
+            {
+                m_slowerTable[j-1] = m_slowerTable[j];
+            }
+            m_slowerUsed --;
+            return true;
+        }
+    }
+    return false;
+}
+
+// Retourne le facteur de ralentissement si une position est sur une
+// zone lente.
+
+float CTerrain::GetSlowerZone(const Math::Vector &p)
+{
+    float		dist, factor;
+    int			i;
+
+    for ( i=0 ; i<m_slowerUsed ; i++ )
+    {
+        if ( p.x < m_slowerTable[i].bboxMinX ||
+             p.x > m_slowerTable[i].bboxMaxX ||
+             p.z < m_slowerTable[i].bboxMinZ ||
+             p.z > m_slowerTable[i].bboxMaxZ )  continue;
+
+        dist = Math::DistanceProjected(p, m_slowerTable[i].center);
+
+        if ( dist < m_slowerTable[i].max )
+        {
+            if ( dist <= m_slowerTable[i].min )
+            {
+                factor = 1.0f;
+            }
+            else
+            {
+                factor = (m_slowerTable[i].max-dist)/(m_slowerTable[i].max-m_slowerTable[i].min);
+            }
+            return (1.0f-factor) + (m_slowerTable[i].factor*factor);
+        }
+    }
+    return 1.0f;  // on est sur une zone normale
+}
+
 float CTerrain::GetHardness(const Math::Vector &pos)
 {
     float factor = GetBuildingFactor(pos);
@@ -1888,6 +2161,32 @@ float CTerrain::GetFlyingLimit(Math::Vector pos, bool noLimit)
     }
 
     return m_flyingMaxHeight;
+}
+
+
+// Vide tous les points de trajectoire.
+
+void CTerrain::FlushTraject()
+{
+    m_trajectTotal = 0;
+}
+
+// Ajoute un point de trajectoire.
+
+bool CTerrain::AddTraject(const Math::Vector &pos)
+{
+    if ( m_trajectTotal >= MAXTRAJECT )  return false;
+    m_trajectTable[m_trajectTotal++] = pos;
+    return true;
+}
+
+// Donne un point de trajectoire.
+
+bool CTerrain::GetTraject(int rank, Math::Vector &pos)
+{
+    if ( rank >= m_trajectTotal )  return false;
+    pos = m_trajectTable[rank];
+    return true;
 }
 
 

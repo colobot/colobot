@@ -1324,7 +1324,7 @@ std::unique_ptr<CBCBuilding> CBCBuilding::Create(
         obj->SetPartPosition(5, Math::Vector(0.0f, 16.0f-14.0f, 0.0f));
 
         engine->GetTerrain()->AddBuildingLevel(params.pos, 7.0f, 9.0f, 1.0f, 0.5f);
-        // TODO (krzys_h): engine->GetTerrain()->AddSlowerZone(params.pos, 20.0f, 30.0f, 0.2f);
+        engine->GetTerrain()->AddSlowerZone(params.pos, 20.0f, 30.0f, 0.2f);
 
 #if 0
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 6.0f, 27.0f), 15.0f, SOUND_BOUMm, 0.45f));
