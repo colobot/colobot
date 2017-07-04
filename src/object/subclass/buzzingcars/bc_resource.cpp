@@ -29,6 +29,7 @@
 #include "object/object_create_params.h"
 
 #include "object/auto/buzzingcars/building/autobarrel.h"
+#include "object/auto/buzzingcars/building/autobomb.h"
 
 CBCResource::CBCResource(int id, ObjectType type)
     : COldObject(id)
@@ -69,9 +70,9 @@ std::unique_ptr<CBCResource> CBCResource::Create(
 //    if ( params.type == OBJECT_KEYc        )  name = "buzzingcars/keyc.mod";
 //    if ( params.type == OBJECT_KEYd        )  name = "buzzingcars/keyd.mod";
 //    if ( params.type == OBJECT_TNT         )  name = "buzzingcars/tnt.mod";
-    if ( params.type == OBJECT_MINE        )  name = "buzzingcars/mine.mod";
+//    if ( params.type == OBJECT_MINE        )  name = "buzzingcars/mine.mod";
     if ( params.type == OBJECT_POLE        )  name = "buzzingcars/pole.mod";
-//    if ( params.type == OBJECT_BOMB        )  name = "buzzingcars/bomb1.mod";
+    if ( params.type == OBJECT_BOMB        )  name = "buzzingcars/bomb1.mod";
     if ( params.type == OBJECT_CONE        )  name = "buzzingcars/cone.mod";
     if ( params.type == OBJECT_PIPES       )  name = "buzzingcars/pipes.mod";
 //    if ( params.type == OBJECT_WAYPOINT    )  name = "buzzingcars/waypoint.mod";
@@ -173,36 +174,36 @@ std::unique_ptr<CBCResource> CBCResource::Create(
     float density = 1.0f;
     float height  = 0.0f;
 
-//    if ( params.type == OBJECT_BOMB )
-//    {
-//        rank = engine->CreateObject();
-//        engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-//        obj->SetObjectRank(1, rank);
-//        obj->SetObjectParent(1, 0);
-//        modelManager->AddModelReference("buzzingcars/bomb2.mod", false, rank, params.team);
-//        obj->SetPartPosition(1, Math::Vector(0.0f, 4.2f, 0.0f));
-//
-//        rank = engine->CreateObject();
-//        engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-//        obj->SetObjectRank(2, rank);
-//        obj->SetObjectParent(2, 1);
-//        modelManager->AddModelReference("buzzingcars/bomb2.mod", false, rank, params.team);
-//        obj->SetPartPosition(2, Math::Vector(0.0f, 2.0f, 0.0f));
-//
-//        rank = engine->CreateObject();
-//        engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-//        obj->SetObjectRank(3, rank);
-//        obj->SetObjectParent(3, 2);
-//        modelManager->AddModelReference("buzzingcars/bomb2.mod", false, rank, params.team);
-//        obj->SetPartPosition(3, Math::Vector(0.0f, 2.0f, 0.0f));
-//
-//        rank = engine->CreateObject();
-//        engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-//        obj->SetObjectRank(4, rank);
-//        obj->SetObjectParent(4, 3);
-//        modelManager->AddModelReference("buzzingcars/bomb2.mod", false, rank, params.team);
-//        obj->SetPartPosition(4, Math::Vector(0.0f, 2.0f, 0.0f));
-//    }
+    if ( params.type == OBJECT_BOMB )
+    {
+        rank = engine->CreateObject();
+        engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        obj->SetObjectRank(1, rank);
+        obj->SetObjectParent(1, 0);
+        modelManager->AddModelReference("buzzingcars/bomb2.mod", false, rank, params.team);
+        obj->SetPartPosition(1, Math::Vector(0.0f, 4.2f, 0.0f));
+
+        rank = engine->CreateObject();
+        engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        obj->SetObjectRank(2, rank);
+        obj->SetObjectParent(2, 1);
+        modelManager->AddModelReference("buzzingcars/bomb2.mod", false, rank, params.team);
+        obj->SetPartPosition(2, Math::Vector(0.0f, 2.0f, 0.0f));
+
+        rank = engine->CreateObject();
+        engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        obj->SetObjectRank(3, rank);
+        obj->SetObjectParent(3, 2);
+        modelManager->AddModelReference("buzzingcars/bomb2.mod", false, rank, params.team);
+        obj->SetPartPosition(3, Math::Vector(0.0f, 2.0f, 0.0f));
+
+        rank = engine->CreateObject();
+        engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        obj->SetObjectRank(4, rank);
+        obj->SetObjectParent(4, 3);
+        modelManager->AddModelReference("buzzingcars/bomb2.mod", false, rank, params.team);
+        obj->SetPartPosition(4, Math::Vector(0.0f, 2.0f, 0.0f));
+    }
 
     if ( params.type == OBJECT_WAYPOINT    )
     {
@@ -217,26 +218,26 @@ std::unique_ptr<CBCResource> CBCResource::Create(
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 1.0f, 0.0f), 2.0f));
         radius = 3.0f;
     }
-    else if ( params.type == OBJECT_MINE )
-    {
-        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, -1.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
-        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f));
-        radius = 3.0f;
-    }
+//    else if ( params.type == OBJECT_MINE )
+//    {
+//        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, -1.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
+//        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f));
+//        radius = 3.0f;
+//    }
     else if ( params.type == OBJECT_POLE )
     {
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.5f, SOUND_BOUMm, 0.45f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.5f));
         radius = 3.0f;
     }
-    else if ( params.type == OBJECT_BAG )
-    {
-        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
-        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f));
-        obj->SetScale(1.5f);
-        radius =  5.0f;
-        height = -1.4f;
-    }
+//    else if ( params.type == OBJECT_BAG )
+//    {
+//        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
+//        obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f));
+//        obj->SetScale(1.5f);
+//        radius =  5.0f;
+//        height = -1.4f;
+//    }
     else if ( params.type == OBJECT_MARK )
     {
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 3.0f, 4.0f), 6.0f, SOUND_BOUMm, 0.45f));
@@ -383,6 +384,10 @@ std::unique_ptr<CBCResource> CBCResource::Create(
          params.type == OBJECT_BARRELa   )
     {
         objAuto = MakeUnique<CAutoBarrel>(obj.get());
+    }
+    if ( params.type == OBJECT_BOMB )
+    {
+        objAuto = MakeUnique<CAutoBomb>(obj.get());
     }
 
     if (objAuto != nullptr)

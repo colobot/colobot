@@ -318,8 +318,8 @@ set(BASE_SOURCES
     object/auto/buzzingcars/building/autoalien.h
     object/auto/buzzingcars/building/autobarrel.cpp
     object/auto/buzzingcars/building/autobarrel.h
-    #object/auto/buzzingcars/building/autobomb.cpp # TODO
-    #object/auto/buzzingcars/building/autobomb.h # TODO
+    object/auto/buzzingcars/building/autobomb.cpp
+    object/auto/buzzingcars/building/autobomb.h
     object/auto/buzzingcars/building/autocomputer.cpp
     object/auto/buzzingcars/building/autocomputer.h
     object/auto/buzzingcars/building/autodock.cpp

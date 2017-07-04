@@ -240,7 +240,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force, int param, Math::Ve
          oType == OBJECT_ATOMIC  ||
          oType == OBJECT_URANIUM ||
          oType == OBJECT_TNT     ||
-         oType == OBJECT_BOMB    )
+         oType == OBJECT_MINE    )
     {
         m_power = true;
         m_posPower = m_pos;

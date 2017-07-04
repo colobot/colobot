@@ -66,6 +66,9 @@ public:
 
     virtual Error   StartAction(int param);
 
+    virtual	Error	SetAction(int action, float time=0.2f);
+    virtual int		GetAction();
+
     virtual bool    SetType(ObjectType type);
     virtual bool    SetValue(int rank, float value);
     virtual bool    SetString(char *string);
@@ -114,4 +117,7 @@ protected:
     float       m_lastUpdateTime = 0.0f;
     float       m_progressTime = 0.0f;
     float       m_progressTotal = 0.0f;
+    int				m_actionType;
+    float			m_actionTime;
+    float			m_actionProgress;
 };

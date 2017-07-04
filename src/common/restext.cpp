@@ -549,7 +549,7 @@ void InitializeRestext()
     stringsObject[OBJECT_KEYc]         = TR("Key C");
     stringsObject[OBJECT_KEYd]         = TR("Key D");
     stringsObject[OBJECT_TNT]          = TR("Explosive");
-    stringsObject[OBJECT_BOMB]         = TR("Fixed mine");
+    stringsObject[OBJECT_MINE]         = TR("Fixed mine");
     stringsObject[OBJECT_BAG]          = TR("Survival kit");
     stringsObject[OBJECT_WAYPOINT]     = TR("Checkpoint");
     stringsObject[OBJECT_FLAGb]        = TR("Blue flag");

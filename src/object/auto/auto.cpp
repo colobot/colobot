@@ -63,6 +63,9 @@ CAuto::CAuto(COldObject* object)
     m_bMotor = false;
     m_progressTime = 0.0f;
     m_progressTotal = 1.0f;
+    m_actionType = -1;
+    m_actionTime = 0.0f;
+    m_actionProgress = 0.0f;
 
     Init();
 }
@@ -144,6 +147,10 @@ bool CAuto::EventProcess(const Event &event)
          !m_engine->GetPause() )
     {
         m_time += event.rTime;
+
+        m_actionProgress += event.rTime*m_actionTime;
+        if ( m_actionProgress > 1.0f )  m_actionProgress = 1.0f;
+
         UpdateInterface(event.rTime);
     }
 
@@ -167,6 +174,24 @@ Error CAuto::IsEnded()
 bool CAuto::Abort()
 {
     return false;
+}
+
+
+// Démarre une action.
+
+Error CAuto::SetAction(int action, float time)
+{
+    m_actionType = action;
+    m_actionTime = 1.0f/time;
+    m_actionProgress = 0.0f;
+    return ERR_OK;
+}
+
+// Retourne l'action en cours.
+
+int CAuto::GetAction()
+{
+    return m_actionType;
 }
 
 

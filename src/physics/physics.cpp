@@ -4967,7 +4967,7 @@ bool CPhysics::ExploOther(ObjectType iType,
         if (pObj->GetType() == OBJECT_MOBILEtg) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // TargetBot (something running into it)
         if (iType           == OBJECT_MOBILEtg) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // TargetBot (it running into something)
         if (pObj->GetType() == OBJECT_TNT     ) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // TNT
-        if (pObj->GetType() == OBJECT_BOMB    ) { destructionForce =  0.0f; damageType = DamageType::Explosive; } // Mine
+        if (pObj->GetType() == OBJECT_MINE    ) { destructionForce =  0.0f; damageType = DamageType::Explosive; } // Mine
 
         if ( force > destructionForce && destructionForce >= 0.0f )
         {
@@ -5355,7 +5355,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
     if ( oType == OBJECT_TNT      ) destructionForce = 10.0f; // TNT
     if ( oType == OBJECT_MOBILEtg ) destructionForce = 10.0f; // TargetBot (something running into it)
     if ( iType == OBJECT_MOBILEtg ) destructionForce = 10.0f; // TargetBot (it running into something)
-    if ( oType == OBJECT_BOMB     ) destructionForce =  0.0f; // Mine
+    if ( oType == OBJECT_MINE     ) destructionForce =  0.0f; // Mine
 
     if ( force > destructionForce && destructionForce >= 0.0f )
     {

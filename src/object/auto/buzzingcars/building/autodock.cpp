@@ -11,7 +11,7 @@
 #include "object/motion/buzzingcars/motioncar.h"
 #include "object/motion/buzzingcars/motionbot.h"
 #include "object/auto/auto.h"
-//#include "object/auto/buzzingcars/building/autobomb.h"
+#include "object/auto/buzzingcars/building/autobomb.h"
 #include "physics/physics.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/button.h"
@@ -1032,7 +1032,6 @@ void CAutoDock::TruckObject(COldObject *pObj, bool bTake)
        }
    }
 
-   /* TODO (krzys_h)
    if ( type == OBJECT_BOMB )
    {
        automat = pObj->GetAuto();
@@ -1048,7 +1047,6 @@ void CAutoDock::TruckObject(COldObject *pObj, bool bTake)
            automat->SetAction(AB_STOP, 1.0f);
        }
    }
-   */
 }
 
 // Math::Modifie l'objet lorsque le bras de la grue arrive dessus.

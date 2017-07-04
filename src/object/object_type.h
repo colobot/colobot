@@ -71,7 +71,7 @@ enum ObjectType
     OBJECT_MARKKEYb         = 54,   //!< KeyBSpot
     OBJECT_MARKKEYc         = 55,   //!< KeyCSpot
     OBJECT_MARKKEYd         = 56,   //!< KeyDSpot
-    OBJECT_BOMB             = 60,   //!< Mine
+    OBJECT_MINE             = 60,   //!< Mine
     OBJECT_WINFIRE          = 61,   //!< Firework
     OBJECT_SHOW             = 62,   //!< arrow above object (Visit)
     OBJECT_BAG              = 63,   //!< Bag
@@ -350,7 +350,7 @@ enum ObjectType
 //    OBJECT_BULLET       = 1157,  // boulet
 //    OBJECT_BBOX         = 1158,  // black-box
 //    OBJECT_TNT          = 1159,  // caisse de TNT
-    OBJECT_MINE         = 1160,  // bombe fixe
+//    OBJECT_MINE         = 1160,  // bombe fixe
     OBJECT_POLE         = 1161,  // poteau
     OBJECT_CONE         = 1162,  // cône
     OBJECT_AQUA         = 1163,  // aquarium
@@ -367,7 +367,7 @@ enum ObjectType
     OBJECT_TOYS3        = 1182,  // jouet 3
     OBJECT_TOYS4        = 1183,  // jouet 4
     OBJECT_TOYS5        = 1184,  // jouet 5
-//    OBJECT_BOMB         = 1190,  // bombe transportable
+    OBJECT_BOMB         = 1190,  // bombe transportable
 //    OBJECT_WINFIRE      = 1191,  // feu d'artifice
 //    OBJECT_SHOW         = 1192,  // montre un lieu
 //    OBJECT_BAG          = 1193,  // sac de survie

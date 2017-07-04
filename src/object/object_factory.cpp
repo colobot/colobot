@@ -136,7 +136,7 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_KEYc:
         case OBJECT_KEYd:
         case OBJECT_TNT:
-        case OBJECT_BOMB:
+        case OBJECT_MINE:
         case OBJECT_WAYPOINT:
         case OBJECT_SHOW:
         case OBJECT_WINFIRE:
@@ -400,9 +400,9 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
 //        case OBJECT_KEYc:
 //        case OBJECT_KEYd:
 //        case OBJECT_TNT:
-        case OBJECT_MINE:
+//        case OBJECT_MINE:
         case OBJECT_POLE:
-//        case OBJECT_BOMB:
+        case OBJECT_BOMB:
         case OBJECT_CONE:
         case OBJECT_PIPES:
 //        case OBJECT_WAYPOINT:
@@ -625,7 +625,7 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     if ( type == OBJECT_KEYc        )  name = "keyc.mod";
     if ( type == OBJECT_KEYd        )  name = "keyd.mod";
     if ( type == OBJECT_TNT         )  name = "tnt.mod";
-    if ( type == OBJECT_BOMB        )  name = "bomb.mod";
+    if ( type == OBJECT_MINE        )  name = "bomb.mod";
     if ( type == OBJECT_WAYPOINT    )  name = "waypoint.mod";
     if ( type == OBJECT_SHOW        )  name = "show.mod";
     if ( type == OBJECT_WINFIRE     )  name = "winfire.mod";

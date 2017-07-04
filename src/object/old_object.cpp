@@ -362,7 +362,7 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer, Mat
     }
     else if ( Implements(ObjectInterfaceType::Fragile) )
     {
-        if ( m_type == OBJECT_BOMB && type != DamageType::Explosive ) return false; // Mine can't be destroyed by shooting
+        if ( m_type == OBJECT_MINE && type != DamageType::Explosive ) return false; // Mine can't be destroyed by shooting
         if ( m_type == OBJECT_URANIUM ) return false; // UraniumOre is not destroyable (see #777)
 
         DestroyObject(DestructionType::Explosion, killer);
@@ -960,7 +960,7 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_TNT      ||
          m_type == OBJECT_BULLET   ||
          m_type == OBJECT_EGG      ||
-         m_type == OBJECT_BOMB     ||
+         m_type == OBJECT_MINE     ||
          m_type == OBJECT_ANT      ||
          m_type == OBJECT_WORM     ||
          m_type == OBJECT_SPIDER   ||

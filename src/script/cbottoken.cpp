@@ -67,7 +67,7 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_KEYc        )  return "KeyC";
     if ( type == OBJECT_KEYd        )  return "KeyD";
     if ( type == OBJECT_TNT         )  return "TNT";
-    if ( type == OBJECT_BOMB        )  return "Mine";
+    if ( type == OBJECT_MINE        )  return "Mine";
     if ( type == OBJECT_BARRIER1    )  return "Barrier";
     if ( type == OBJECT_WAYPOINT    )  return "WayPoint";
     if ( type == OBJECT_FLAGb       )  return "BlueFlag";
@@ -175,10 +175,8 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_BOT4        )  return "Bot4";
     if ( type == OBJECT_BOT5        )  return "Bot5";
     if ( type == OBJECT_TNT         )  return "TNT";
-    // TODO (krzys_h): In Colobot OBJECT_BOMB is Mine
-//    if ( type == OBJECT_MINE        )  return "Mine";
     if ( type == OBJECT_POLE        )  return "Pole";
-//    if ( type == OBJECT_BOMB        )  return "Bomb";
+    if ( type == OBJECT_BOMB        )  return "Bomb";
     if ( type == OBJECT_CONE        )  return "Cone";
     if ( type == OBJECT_BARRIER1    )  return "Barrier";
     if ( type == OBJECT_WAYPOINT    )  return "WayPoint";

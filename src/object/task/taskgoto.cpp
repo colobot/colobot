@@ -1509,7 +1509,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
         if ( bAlien )
         {
             if ( pObj->Implements(ObjectInterfaceType::Transportable) ||
-                 oType == OBJECT_BOMB    ||
+                 oType == OBJECT_MINE    ||
                 (oType >= OBJECT_PLANT0    &&
                  oType <= OBJECT_PLANT19   ) ||
                 (oType >= OBJECT_MUSHROOM1 &&
