@@ -52,6 +52,8 @@
 #include "object/motion/motionhuman.h"
 #include "object/motion/motionvehicle.h"
 
+#include "object/motion/buzzingcars/motionbot.h"
+
 #include "object/subclass/base_alien.h"
 
 #include "object/task/task.h"
@@ -5031,10 +5033,13 @@ bool CPhysics::ExploOther(ObjectType iType,
         }
     }
 
-    /* TODO (krzys_h)
+    // TODO (krzys_h): Port this to the new DamageObject code
+
+    float f = Math::Norm(force/40.0f);
+
     if ( force > 50.0f &&
-         (oType == OBJECT_FRET  ||
-          oType == OBJECT_METAL ) )
+         (oType == OBJECT_FRET  /*||
+          oType == OBJECT_METAL*/ ) )
     {
         m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, pObj);  // destruction totale
     }
@@ -5045,8 +5050,8 @@ bool CPhysics::ExploOther(ObjectType iType,
         m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // destruction totale
     }
     if ( force > 0.0f &&
-         (oType == OBJECT_BARRELa ||
-          oType == OBJECT_ATOMIC  ) )
+         (oType == OBJECT_BARRELa /*||
+          oType == OBJECT_ATOMIC*/  ) )
     {
         m_engine->GetPyroManager()->Create(Gfx::PT_FRAGA, pObj);  // destruction totale
     }
@@ -5054,45 +5059,40 @@ bool CPhysics::ExploOther(ObjectType iType,
     if ( force > 25.0f &&
          (oType >= OBJECT_CARCASS1 && oType <= OBJECT_CARCASS10) )
     {
-        pyro = new CPyro(m_iMan);
-//-        pyro->Create(PT_EJECT, pObj);  // destruction totale
-        pyro->Create(PT_ACROBATIC, pObj, f);  // voltige
+//-        m_engine->GetPyroManager()->Create(Gfx::PT_EJECT, pObj);  // destruction totale
+        m_engine->GetPyroManager()->Create(Gfx::PT_ACROBATIC, pObj, f);  // voltige
     }
 
     if ( force > 25.0f &&
          (oType == OBJECT_STONE   ||
           oType == OBJECT_URANIUM ) )
     {
-        pyro = new CPyro(m_iMan);
-//-        pyro->Create(PT_FRAGT, pObj);  // destruction totale
-        pyro->Create(PT_ACROBATIC, pObj, f);  // voltige
+//-        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // destruction totale
+        m_engine->GetPyroManager()->Create(Gfx::PT_ACROBATIC, pObj, f);  // voltige
     }
 
     if ( force > 25.0f &&
          ((oType >= OBJECT_BARRIER4 && oType <= OBJECT_BARRIER5) ||
           oType == OBJECT_BARRIER19 ) )
     {
-        pyro = new CPyro(m_iMan);
-//-        pyro->Create(PT_EJECT, pObj);  // destruction totale
-        pyro->Create(PT_ACROBATIC, pObj, f);  // voltige
+//-        m_engine->GetPyroManager()->Create(Gfx::PT_EJECT, pObj);  // destruction totale
+        m_engine->GetPyroManager()->Create(Gfx::PT_ACROBATIC, pObj, f);  // voltige
     }
 
     if ( force > 25.0f &&
          ((oType >= OBJECT_ROADSIGN1  && oType <= OBJECT_ROADSIGN21) ||
           (oType >= OBJECT_ROADSIGN26 && oType <= OBJECT_ROADSIGN30) ) )
     {
-        pyro = new CPyro(m_iMan);
-//-        pyro->Create(PT_EJECT, pObj);  // destruction totale
-        pyro->Create(PT_ACROBATIC, pObj, f);  // voltige
+//-        m_engine->GetPyroManager()->Create(Gfx::PT_EJECT, pObj);  // destruction totale
+        m_engine->GetPyroManager()->Create(Gfx::PT_ACROBATIC, pObj, f);  // voltige
     }
 
     if ( force > 25.0f &&
 //?         (oType >= OBJECT_BOX1 && oType <= OBJECT_BOX10) )
          (oType >= OBJECT_BOX1 && oType <= OBJECT_BOX3) )
     {
-        pyro = new CPyro(m_iMan);
-//?        pyro->Create(PT_EJECT, pObj);  // destruction totale
-        pyro->Create(PT_FRAGT, pObj);  // destruction totale
+//-        m_engine->GetPyroManager()->Create(Gfx::PT_EJECT, pObj);  // destruction totale
+        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // voltige
     }
 
     if ( force > 25.0f &&
@@ -5110,9 +5110,8 @@ bool CPhysics::ExploOther(ObjectType iType,
     if ( oType == OBJECT_PIECE ||
          oType == OBJECT_CONE  )
     {
-        pyro = new CPyro(m_iMan);
-//-        pyro->Create(PT_EJECT, pObj);  // destruction totale
-        pyro->Create(PT_ACROBATIC, pObj, f);  // voltige
+//-        m_engine->GetPyroManager()->Create(Gfx::PT_EJECT, pObj);  // destruction totale
+        m_engine->GetPyroManager()->Create(Gfx::PT_ACROBATIC, pObj, f);  // voltige
     }
 
     if ( force > 0.0f &&
@@ -5140,13 +5139,13 @@ bool CPhysics::ExploOther(ObjectType iType,
     if ( force > 25.0f &&
          oType == OBJECT_CAR )  // véhicule ?
     {
-        pObj->ExploObject(EXPLO_BOUM, force/200.0f);
+        dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Explosive, force/200.0f);
     }
 
     if ( force > 25.0f &&
          oType == OBJECT_UFO )  // soucoupe ?
     {
-        pObj->ExploObject(EXPLO_BOUM, force/200.0f);
+        dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Explosive, force/200.0f);
     }
 
     if ( force > 25.0f &&
@@ -5159,7 +5158,7 @@ bool CPhysics::ExploOther(ObjectType iType,
         }
     }
 
-    if ( force > 10.0f &&
+    /*if ( force > 10.0f &&
          (oType == OBJECT_MOBILEtg ||
           oType == OBJECT_TNT      ) )
     {
@@ -5170,8 +5169,7 @@ bool CPhysics::ExploOther(ObjectType iType,
          oType == OBJECT_MINE )
     {
         m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // destruction totale
-    }
-    */
+    }*/
 
     return false;
 }
@@ -5185,22 +5183,18 @@ bool CPhysics::ExploOther(ObjectType iType,
 int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
                            float force, float hardness, Math::Vector impact)
 {
-    if (!m_object->Implements(ObjectInterfaceType::Damageable)) return 1;
-
-    /* TODO (krzys_h)
-
-    PyroType    type;
+    // TODO (krzys_h): Review this code and refactor to new DamageObject
+    Gfx::PyroType    type;
     ObjectType    fType;
     CObject*    fret;
     CMotion*    motion;
-    CPyro*        pyro;
     int            colli;
 
-    m_main->InfoCollision(oType);
+//TODO (krzys_h):    m_main->InfoCollision(oType);
 
     FFBCrash(force/50.0f, 0.3f, 2.0f);
 
-    fret = m_object->GetFret();
+    fret = m_object->Implements(ObjectInterfaceType::Carrier) ? dynamic_cast<CCarrierObject*>(m_object)->GetCargo() : nullptr;
     if ( fret != 0 )
     {
         fType = fret->GetType();
@@ -5212,7 +5206,8 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
              fType == OBJECT_WALKER ||
              fType == OBJECT_CRAZY  )
         {
-            motion = fret->GetMotion();
+            assert(fret->Implements(ObjectInterfaceType::Old));
+            motion = dynamic_cast<COldObject*>(fret)->GetMotion();
             if ( motion != 0 )
             {
                 motion->SetAction(MB_FEAR, 10.0f);  // le robot a peur !
@@ -5228,14 +5223,13 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
         return 3;  // passe au travers sans aucun dégat
     }
 
-    if ( force > 10.0f &&
+    /*if ( force > 10.0f &&
          (oType == OBJECT_TNT      ||
           oType == OBJECT_MOBILEtg ) )
     {
-        if ( iType == OBJECT_HUMAN )  type = PT_DEADG;
-        else                          type = PT_EXPLOT;
-        pyro = new CPyro(m_iMan);
-        pyro->Create(type, m_object);  // destruction totale
+        if ( iType == OBJECT_HUMAN )  type = Gfx::PT_DEADG;
+        else                          type = Gfx::PT_EXPLOT;
+        m_engine->GetPyroManager()->Create(type, m_object);  // destruction totale
         return 2;
     }
 
@@ -5244,16 +5238,15 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
     {
         if ( iType == OBJECT_HUMAN )
         {
-            type = PT_DEADG;
+            type = Gfx::PT_DEADG;
         }
         else
         {
-            type = PT_EXPLOT;
+            type = Gfx::PT_EXPLOT;
         }
-        pyro = new CPyro(m_iMan);
-        pyro->Create(type, m_object);  // destruction totale
+        m_engine->GetPyroManager()->Create(type, m_object);  // destruction totale
         return 2;
-    }
+    }*/
 
     if ( force > 0.0f &&
          iType != OBJECT_TRAX &&
@@ -5261,7 +5254,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
          hardness < 0.5f )  // pas le bouton arričre ?
     {
         force /= 10.0f;
-        if ( m_object->ExploObject(EXPLO_BOUM, force) )  return 2;
+        if ( dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Explosive, force) )  return 2;
         return 1;
     }
 
@@ -5277,21 +5270,20 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
           iType == OBJECT_CRAZY   ||
           iType == OBJECT_GUIDE   ) )
     {
-//?        pyro = new CPyro(m_iMan);
-//?        pyro->Create(PT_ACROBATIC, m_object, f);  // voltige
+//?        m_engine->GetPyroManager()->Create(PT_ACROBATIC, m_object, f);  // voltige
         return 3;  // passe au travers sans aucun dégat
     }
 
     colli = 1;  // immobile
 
     if ( force > 25.0f &&
-         (iType == OBJECT_HUMAN ||
+         (//iType == OBJECT_HUMAN ||
           iType == OBJECT_CAR   ||
           iType == OBJECT_UFO   ) )  // véhicule ?
     {
-        if ( oType == OBJECT_TOWER    ||
-             oType == OBJECT_NUCLEAR  ||
-             oType == OBJECT_PARA     ||
+        if ( //oType == OBJECT_TOWER    ||
+             //oType == OBJECT_NUCLEAR  ||
+             //oType == OBJECT_PARA     ||
              oType == OBJECT_COMPUTER ||
              oType == OBJECT_DOCK     ||
              oType == OBJECT_REMOTE   ||
@@ -5313,8 +5305,8 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
         }
         else
         if ( oType == OBJECT_FRET     ||
-             oType == OBJECT_STONE    ||
-             oType == OBJECT_METAL    ||
+             /*oType == OBJECT_STONE    ||
+             oType == OBJECT_METAL    ||*/
              (oType >= OBJECT_BARRIER4 && oType <= OBJECT_BARRIER5) ||
              oType == OBJECT_BARRIER19 ||
              (oType >= OBJECT_ROADSIGN1  && oType <= OBJECT_ROADSIGN21) ||
@@ -5338,10 +5330,10 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
             return 3;  // passe au travers sans aucun dégat
         }
         else
-        if ( oType == OBJECT_URANIUM ||
+        if ( /*oType == OBJECT_URANIUM ||*/
              oType == OBJECT_BARREL  ||
-             oType == OBJECT_BARRELa ||
-             oType == OBJECT_ATOMIC  )
+             oType == OBJECT_BARRELa /*||
+             oType == OBJECT_ATOMIC*/  )
         {
             force /= 500.0f;
             colli = 3;  // passe au travers
@@ -5351,10 +5343,12 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
             force /= 200.0f;
         }
 
-        if ( m_object->ExploObject(EXPLO_BOUM, force, impact) )  return 2;
+        if ( dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Explosive, force, nullptr, impact) )  return 2;
     }
 
-    */
+
+
+    if (!m_object->Implements(ObjectInterfaceType::Damageable)) return 1;
 
     // TODO: CExplosiveObject? derrives from CFragileObject
     float destructionForce = -1.0f; // minimal force required to destroy an object using this explosive, default: not explosive
@@ -5452,7 +5446,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType,
         }
     }
 
-    return 1;
+    return colli;
 }
 
 
