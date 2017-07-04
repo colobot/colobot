@@ -43,6 +43,8 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
+#include "object/auto/auto.h"
+
 #include "object/interface/carrier_object.h"
 #include "object/interface/jostleable_object.h"
 #include "object/interface/powered_object.h"
@@ -4911,7 +4913,7 @@ bool CPhysics::ExploOther(ObjectType iType,
         automatic = pObj->GetAuto();
         if ( automatic != 0 )
         {
-//TODO            automatic->Start(2);  // casse le mécanisme
+            automatic->Start(2);  // casse le mécanisme
         }
     }
     if ( force > 0.0f &&
@@ -4921,7 +4923,7 @@ bool CPhysics::ExploOther(ObjectType iType,
         automatic = pObj->GetAuto();
         if ( automatic != 0 )
         {
-//TODO            automatic->Start(2);  // casse le mécanisme
+            automatic->Start(2);  // casse le mécanisme
         }
     }
     if ( force > 0.0f &&
@@ -4934,15 +4936,15 @@ bool CPhysics::ExploOther(ObjectType iType,
         {
             if ( hardness == 0.44f )
             {
-//TODO                automatic->Start(2);  // casse le mécanisme
+                automatic->Start(2);  // casse le mécanisme
             }
             if ( hardness == 0.43f )
             {
-//TODO                automatic->Start(3);  // casse le mécanisme
+                automatic->Start(3);  // casse le mécanisme
             }
             if ( hardness == 0.42f )
             {
-//TODO                automatic->Start(4);  // casse le mécanisme
+                automatic->Start(4);  // casse le mécanisme
             }
         }
     }
@@ -4953,7 +4955,7 @@ bool CPhysics::ExploOther(ObjectType iType,
         automatic = pObj->GetAuto();
         if ( automatic != 0 )
         {
-//TODO            automatic->Start(2);  // casse le mécanisme
+            automatic->Start(2);  // casse le mécanisme
         }
     }
 
