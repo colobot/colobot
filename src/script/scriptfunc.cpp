@@ -31,6 +31,7 @@
 #include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
 
+#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 
@@ -46,6 +47,8 @@
 #include "object/auto/auto.h"
 #include "object/auto/autobase.h"
 #include "object/auto/autofactory.h"
+
+#include "object/motion/motion.h"
 
 #include "object/interface/destroyable_object.h"
 #include "object/interface/programmable_object.h"
@@ -1468,6 +1471,17 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
             dynamic_cast<COldObject*>(object)->SetManual(true);
         }
         script->m_main->CreateShortcuts();
+    }
+
+    // BuzzingCars
+    if ( type >= OBJECT_PIECE0 &&
+         type <= OBJECT_PIECE9 )
+    {
+        Math::Vector impact;
+        impact.x = pos.x+(Math::Rand()-0.5f)*40.0f;
+        impact.z = pos.z+(Math::Rand()-0.5f)*40.0f;
+        impact.y = pos.y;
+        script->m_engine->GetPyroManager()->Create(Gfx::PT_SABOTAGE, object, 1.0f, 0, impact);
     }
 
     if (!name.empty())
@@ -2977,6 +2991,333 @@ bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exceptio
 }
 
 
+// Instruction "superwin()".
+
+bool CScriptFunctions::rSuperWin(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript* script = static_cast<CScript*>(user);
+
+    script->m_main->SetMissionResult(ERR_OK); // TODO (krzys_h): Convert the scripts to use endmission()
+    return true;
+}
+
+// Instruction "superlost()".
+
+bool CScriptFunctions::rSuperLost(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript* script = static_cast<CScript*>(user);
+
+    script->m_main->SetMissionResult(INFO_LOST); // TODO (krzys_h): Convert the scripts to use endmission()
+    return true;
+}
+
+// Instruction "GameLevel()".
+
+bool CScriptFunctions::rGameLevel(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    // TODO (krzys_h): More appropariate name?
+    CScript* script = static_cast<CScript*>(user);
+    float		value;
+
+    value = (float)script->m_main->GetSelectedDifficulty();
+    result->SetValFloat(value);
+    return true;
+}
+
+// Instruction "iprogress()".
+
+bool CScriptFunctions::rIProgress(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript* script = static_cast<CScript*>(user);
+
+    script->m_main->IncProgress();
+    return true;
+}
+
+// Instruction "tstarter()".
+
+bool CScriptFunctions::rTStarter(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript* script = static_cast<CScript*>(user);
+    float		value;
+
+    value = (float)script->m_main->GetStarterType();
+    result->SetValFloat(value);
+    return true;
+}
+
+// Instruction "language()".
+
+bool CScriptFunctions::rLanguage(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript* script = static_cast<CScript*>(user);
+
+    // TODO (krzys_h): Use strings instead of floats?
+    switch(CApplication::GetInstancePointer()->GetLanguage())
+    {
+        case LANGUAGE_FRENCH:
+            result->SetValFloat(1);
+            break;
+        case LANGUAGE_ENGLISH:
+            result->SetValFloat(2);
+            break;
+        case LANGUAGE_GERMAN:
+            result->SetValFloat(3);
+            break;
+//TODO (krzys_h):
+//        case LANGUAGE_ITALIAN:
+//            result->SetValFloat(4);
+//            break;
+//        case LANGUAGE_SPANISH:
+//            result->SetValFloat(5);
+//            break;
+//        case LANGUAGE_PORTUGUESE:
+//            result->SetValFloat(6);
+//            break;
+        default:
+            result->SetValFloat(2); // TODO (krzys_h): Implement other languages
+            break;
+    }
+    return true;
+}
+
+// Instruction "decorstamp()".
+
+bool CScriptFunctions::rDecorStamp(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript* script = static_cast<CScript*>(user);
+    float		stamp;
+
+//TODO (krzys_h):    stamp = (float)script->m_main->GetDecorStamp();
+    stamp = 0.0f;
+    result->SetValFloat(stamp);
+    return true;
+}
+
+// Compilation de l'instruction "action(n, delay)".
+
+CBotTypResult CScriptFunctions::cAction(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+
+    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+
+    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+
+    return CBotTypResult(CBotTypFloat);
+}
+
+// Instruction "action(n, delay)".
+
+bool CScriptFunctions::rAction(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript* script = static_cast<CScript*>(user);
+    COldObject*    pThis = script->m_object;
+    CMotion*	motion = pThis->GetMotion();
+    int			action;
+    float		delay;
+
+    delay = 0.2f;
+    action = var->GetValInt();
+    var = var->GetNext();
+    if ( var != 0 )
+    {
+        delay = var->GetValFloat();
+    }
+    motion->SetAction(action, delay);
+    return true;
+}
+
+
+// Compilation de l'instruction "trajrank(angle, focus, min, max, sens)".
+
+CBotTypResult CScriptFunctions::cTrajRank(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // angle
+    var = var->GetNext();
+    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // focus
+    var = var->GetNext();
+    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // min
+    var = var->GetNext();
+    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // max
+    var = var->GetNext();
+    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // sens
+    var = var->GetNext();
+    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    return CBotTypResult(CBotErrOverParam);
+}
+
+// Instruction "trajrank(angle, focus, min, max, sens)".
+
+bool CScriptFunctions::rTrajRank(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript* script = static_cast<CScript*>(user);
+    COldObject*    pThis = script->m_object;
+    Math::Vector	iPos, oPos;
+    float		best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
+    int			i, iBest;
+
+    angle   = 0.0f;
+    focus   = Math::PI*2.0f;
+    minDist = 0.0f*g_unit;
+    maxDist = 1000.0f*g_unit;
+    sens    = 1.0f;
+
+    if ( var != 0 )
+    {
+        angle = -var->GetValFloat()*Math::PI/180.0f;
+
+        var = var->GetNext();
+        if ( var != 0 )
+        {
+            focus = var->GetValFloat()*Math::PI/180.0f;
+
+            var = var->GetNext();
+            if ( var != 0 )
+            {
+                minDist = var->GetValFloat()*g_unit;
+
+                var = var->GetNext();
+                if ( var != 0 )
+                {
+                    maxDist = var->GetValFloat()*g_unit;
+
+                    var = var->GetNext();
+                    if ( var != 0 )
+                    {
+                        sens = var->GetValFloat();
+                    }
+                }
+            }
+        }
+    }
+
+    iPos   = pThis->GetPosition();
+    iAngle = pThis->GetRotationY()+angle;
+    iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
+
+    if ( sens >= 0.0f )  best = 100000.0f;
+    else                 best = 0.0f;
+    iBest = -1;
+    for ( i=0 ; i<1000000 ; i++ )
+    {
+        if ( !script->m_terrain->GetTraject(i, oPos) )  break;
+
+        d = Math::DistanceProjected(iPos, oPos);
+        if ( d < minDist || d > maxDist )  continue;  // trop proche ou trop loin ?
+
+        if ( focus >= Math::PI*2.0f )
+        {
+            if ( (sens >= 0.0f && d < best) ||
+                 (sens <  0.0f && d > best) )
+            {
+                best = d;
+                iBest = i;
+            }
+            continue;
+        }
+
+        a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+        if ( Math::TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
+        {
+            if ( (sens >= 0.0f && d < best) ||
+                 (sens <  0.0f && d > best) )
+            {
+                best = d;
+                iBest = i;
+            }
+        }
+    }
+
+    result->SetValInt(iBest);
+    return true;
+}
+
+// Compilation de l'instruction "trajpos(rank)".
+
+CBotTypResult CScriptFunctions::cTrajPos(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    return CBotTypResult(CBotTypIntrinsic, "point");
+}
+
+// Instruction "trajpos(rank)".
+
+bool CScriptFunctions::rTrajPos(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript* script = static_cast<CScript*>(user);
+    CBotVar*	pSub;
+    Math::Vector	pos;
+    int			rank;
+
+    rank = var->GetValInt();
+
+    if ( !script->m_terrain->GetTraject(rank, pos) )
+    {
+        pos = Math::Vector(0.0f, 0.0f, 0.0f);
+    }
+
+    pSub = result->GetItemList();
+    if ( pSub != 0 )
+    {
+        pSub->SetValFloat(pos.x/g_unit);
+        pSub = pSub->GetNext();  // "y"
+        pSub->SetValFloat(pos.z/g_unit);
+        pSub = pSub->GetNext();  // "z"
+        pSub->SetValFloat(pos.y/g_unit);
+    }
+    return true;
+}
+
+// Instruction "turnim(angle)".
+
+bool CScriptFunctions::rTurnIm(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript* script = static_cast<CScript*>(user);
+    COldObject*    pThis = script->m_object;
+    float		value;
+
+    exception = 0;
+
+    value = var->GetValFloat();
+    value = -value*Math::PI/180.0f;
+    pThis->SetRotationY(pThis->GetRotationY()+value);
+    return true;
+}
+
+// Instruction "gotoim(pos)".
+
+bool CScriptFunctions::rGotoIm(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript* script = static_cast<CScript*>(user);
+    COldObject*    pThis = script->m_object;
+    Math::Vector	pos;
+
+    exception = 0;
+
+    if ( !GetPoint(var, exception, pos) )  return true;
+
+    // TODO (krzys_h): Added this here I have no idea how the original code didn't do that and still worked
+    script->m_terrain->AdjustToFloor(pos);
+    pos.y += pThis->GetCharacter()->height;
+
+    pThis->SetPosition(pos);
+    return true;
+}
+
+
 // Compilation of class "point".
 
 CBotTypResult CScriptFunctions::cPointConstructor(CBotVar* pThis, CBotVar* &var)
@@ -3367,6 +3708,21 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("penwidth",  rPenWidth,  cOneFloat);
 
     CBotProgram::AddFunction("camerafocus", rCameraFocus, cOneObject);
+
+    // BuzzingCars-specific
+
+    CBotProgram::AddFunction("trajrank",  rTrajRank,  cTrajRank);
+    CBotProgram::AddFunction("trajpos",   rTrajPos,   cTrajPos);
+    CBotProgram::AddFunction("turnim",    rTurnIm,    cOneFloat);
+    CBotProgram::AddFunction("gotoim",    rGotoIm,    cOnePoint);
+    CBotProgram::AddFunction("action",    rAction,    cAction);
+    CBotProgram::AddFunction("superwin",  rSuperWin,  cNull);
+    CBotProgram::AddFunction("superlost", rSuperLost, cNull);
+    CBotProgram::AddFunction("gamelevel", rGameLevel, cNull);
+    CBotProgram::AddFunction("iprogress", rIProgress, cNull);
+    CBotProgram::AddFunction("tstarter",  rTStarter,  cNull);
+    CBotProgram::AddFunction("language",  rLanguage,  cNull);
+    CBotProgram::AddFunction("decorstamp",rDecorStamp,cNull);
 
     SetFileAccessHandler(MakeUnique<CBotFileAccessHandlerColobot>());
 }

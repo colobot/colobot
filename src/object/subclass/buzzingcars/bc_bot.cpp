@@ -80,5 +80,7 @@ std::unique_ptr<CBCBot> CBCBot::Create(
         obj->SetMovable(std::move(motion), nullptr);
     }
 
+    obj->m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Controllable)] = true; // TODO (krzys_h): testing
+
     return obj;
 }

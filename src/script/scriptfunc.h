@@ -145,6 +145,24 @@ private:
     static bool rCameraFocus(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
 
 
+    // BuzzingCars
+    static bool rSuperWin(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rSuperLost(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rGameLevel(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rIProgress(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rTStarter(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rLanguage(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rDecorStamp(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static CBot::CBotTypResult cAction(CBot::CBotVar* &var, void* user);
+    static bool rAction(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static CBot::CBotTypResult cTrajRank(CBot::CBotVar* &var, void* user);
+    static bool rTrajRank(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static CBot::CBotTypResult cTrajPos(CBot::CBotVar* &var, void* user);
+    static bool rTrajPos(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rTurnIm(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rGotoIm(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+
+
     static CBot::CBotTypResult cBusy(CBot::CBotVar* thisclass, CBot::CBotVar* &var);
     static CBot::CBotTypResult cFactory(CBot::CBotVar* thisclass, CBot::CBotVar* &var);
     static CBot::CBotTypResult cClassNull(CBot::CBotVar* thisclass, CBot::CBotVar* &var);

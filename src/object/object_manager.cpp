@@ -306,6 +306,13 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
                 oType = OBJECT_RUINmobilew1;  // any ruin
             }
 
+            // BuzzingCars
+            if ( oType >= OBJECT_PLANT0  &&
+                 oType <= OBJECT_PLANT19 )
+            {
+                oType = OBJECT_PLANT0;  // any ruin
+            }
+
             if ( oType == OBJECT_BARRIER2 ||
                  oType == OBJECT_BARRIER3 ||
                  oType == OBJECT_BARRICADE0 ||

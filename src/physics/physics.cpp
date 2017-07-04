@@ -3836,8 +3836,8 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
     SetSwim( pos.y < level );
 
     m_floorLevel = m_terrain->GetFloorLevel(pos);  // height above the ground
+    m_floorLevel += character->height;
     h = pos.y-m_floorLevel;
-    h -= character->height;
     m_floorHeight = h;
 
     WaterParticle(aTime, pos, type, m_floorLevel,
@@ -3845,18 +3845,10 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
                    fabs(m_cirMotion.realSpeed.y*15.0f));
 
     if ( !m_object->Implements(ObjectInterfaceType::Flying) &&
-         type != OBJECT_CARROT  && // TODO (krzys_h): Terrible hacks, yey!
-         type != OBJECT_STARTER && // TODO (krzys_h): Make sure this list is OK
-         type != OBJECT_WALKER  &&
-         type != OBJECT_CRAZY   &&
-         type != OBJECT_GUIDE   &&
-         type != OBJECT_EVIL1   &&
-         type != OBJECT_EVIL3   &&
-         type != OBJECT_EVIL4   &&
-         type != OBJECT_EVIL5)
+        type != OBJECT_UFO ) // TODO (krzys_h): UFO is flying, obviously
     {
         pos.y -= h;  // plate to the ground immediately
-        pos.y += character->height;
+//TODO (krzys_h): I think this line is what required the previous hacks        pos.y += character->height;
         m_floorHeight = 0.0f;
     }
 
