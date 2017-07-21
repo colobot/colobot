@@ -363,12 +363,47 @@ bool CTaskTerraform::Terraform()
         type = pObj->GetType();
         if ( type == OBJECT_NULL )  continue;
 
-        if ( type == OBJECT_TEEN34 )  // stone?
+        if ( type == OBJECT_TEEN34       || 
+             type == OBJECT_POWER        ||
+             type == OBJECT_ATOMIC       ||
+             type == OBJECT_STONE        ||
+             type == OBJECT_URANIUM      ||
+             type == OBJECT_METAL        ||
+             type == OBJECT_BULLET       ||
+             type == OBJECT_BBOX         ||
+             type == OBJECT_KEYa         ||
+             type == OBJECT_KEYb         ||
+             type == OBJECT_KEYc         ||
+             type == OBJECT_KEYd         ||
+             type == OBJECT_TNT          ||
+             type == OBJECT_NEST         ||
+             type == OBJECT_BOMB         ||
+             type == OBJECT_RUINmobilew1 ||
+             type == OBJECT_RUINmobilew2 ||
+             type == OBJECT_RUINmobilet1 ||
+             type == OBJECT_RUINmobilet2 ||
+             type == OBJECT_RUINdoor     ||
+             type == OBJECT_RUINsupport  ||
+             type == OBJECT_RUINradar )  // small/transportable objects?
         {
             dist = Math::Distance(m_terraPos, pObj->GetPosition());
             if ( dist > 20.0f )  continue;
-
-            m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);
+            
+            if (type == OBJECT_BULLET ||
+                type == OBJECT_NEST )
+            {
+                m_engine->GetPyroManager()->Create(Gfx::PT_FRAGO, pObj);
+            }
+            else if (type == OBJECT_TNT  ||
+                     type == OBJECT_BOMB)
+            {
+                m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, pObj);
+                dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Explosive, 0.9f);
+            }
+            else
+            {
+                m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);
+            }
         }
         else
         {
