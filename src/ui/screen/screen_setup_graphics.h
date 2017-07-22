@@ -37,6 +37,14 @@ protected:
     void UpdateSetupButtons();
     void ChangeSetupButtons();
     void ChangeSetupQuality(int quality);
+    void UpdateDisplayMode();
+    void ChangeDisplay();
+    void UpdateApply();
+
+protected:
+    int m_setupSelMode;
+    bool m_setupFull;
+    bool m_change;
 };
 
 } // namespace Ui

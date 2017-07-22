@@ -474,9 +474,6 @@ msgstr "Уничтожить здание"
 msgid "Destroyer"
 msgstr "Уничтожитель"
 
-msgid "Device\\Driver and resolution settings"
-msgstr "Устройство\\Драйвер и настройки разрешения"
-
 msgid "Dividing by zero"
 msgstr "Деление на ноль (запрещено!)"
 

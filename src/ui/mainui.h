@@ -116,7 +116,6 @@ protected:
     std::unique_ptr<CScreenPlayerSelect> m_screenPlayerSelect;
     std::unique_ptr<CScreenQuit> m_screenQuit;
     std::unique_ptr<CScreenSetupControls> m_screenSetupControls;
-    std::unique_ptr<CScreenSetupDisplay> m_screenSetupDisplay;
     std::unique_ptr<CScreenSetupGame> m_screenSetupGame;
     std::unique_ptr<CScreenSetupGraphics> m_screenSetupGraphics;
     std::unique_ptr<CScreenSetupSound> m_screenSetupSound;

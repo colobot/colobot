@@ -465,9 +465,6 @@ msgstr "Démolit le bâtiment"
 msgid "Destroyer"
 msgstr "Destructeur"
 
-msgid "Device\\Driver and resolution settings"
-msgstr "Affichage\\Pilote et résolution d'affichage"
-
 msgid "Dividing by zero"
 msgstr "Division par zéro"
 

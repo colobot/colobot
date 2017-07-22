@@ -50,7 +50,6 @@
 #include "ui/screen/screen_player_select.h"
 #include "ui/screen/screen_quit.h"
 #include "ui/screen/screen_setup_controls.h"
-#include "ui/screen/screen_setup_display.h"
 #include "ui/screen/screen_setup_game.h"
 #include "ui/screen/screen_setup_graphics.h"
 #include "ui/screen/screen_setup_sound.h"
@@ -79,7 +78,6 @@ CMainUserInterface::CMainUserInterface()
     m_screenIOWrite = MakeUnique<CScreenIOWrite>(m_screenLevelList.get());
     m_screenLoading = MakeUnique<CScreenLoading>();
     m_screenSetupControls = MakeUnique<CScreenSetupControls>();
-    m_screenSetupDisplay = MakeUnique<CScreenSetupDisplay>();
     m_screenSetupGame = MakeUnique<CScreenSetupGame>();
     m_screenSetupGraphics = MakeUnique<CScreenSetupGraphics>();
     m_screenSetupSound = MakeUnique<CScreenSetupSound>();
@@ -137,7 +135,6 @@ CScreenLoading* CMainUserInterface::GetLoadingScreen()
 
 CScreenSetup* CMainUserInterface::GetSetupScreen(Phase phase)
 {
-    if(phase == PHASE_SETUPd) return m_screenSetupDisplay.get();
     if(phase == PHASE_SETUPg) return m_screenSetupGraphics.get();
     if(phase == PHASE_SETUPp) return m_screenSetupGame.get();
     if(phase == PHASE_SETUPc) return m_screenSetupControls.get();
@@ -182,16 +179,16 @@ void CMainUserInterface::ChangePhase(Phase phase)
         m_screenLevelList->SetLevelCategory(m_main->GetLevelCategory());
         m_currentScreen = m_screenLevelList.get();
     }
-    if (m_phase >= PHASE_SETUPd && m_phase <= PHASE_SETUPs)
+    if (m_phase >= PHASE_SETUPg && m_phase <= PHASE_SETUPs)
     {
         CScreenSetup* screenSetup = GetSetupScreen(m_phase);
         screenSetup->SetInSimulation(false);
         screenSetup->SetActive();
         m_currentScreen = screenSetup;
     }
-    if (m_phase >= PHASE_SETUPds && m_phase <= PHASE_SETUPss)
+    if (m_phase >= PHASE_SETUPgs && m_phase <= PHASE_SETUPss)
     {
-        CScreenSetup* screenSetup = GetSetupScreen(static_cast<Phase>(m_phase - PHASE_SETUPds + PHASE_SETUPd));
+        CScreenSetup* screenSetup = GetSetupScreen(static_cast<Phase>(m_phase - PHASE_SETUPgs + PHASE_SETUPg));
         screenSetup->SetInSimulation(true);
         screenSetup->SetActive();
         m_currentScreen = screenSetup;
@@ -340,12 +337,10 @@ void CMainUserInterface::GlintMove()
         }
     }
 
-    if ( m_phase == PHASE_SETUPd  ||
-            m_phase == PHASE_SETUPg  ||
+    if ( m_phase == PHASE_SETUPg  ||
             m_phase == PHASE_SETUPp  ||
             m_phase == PHASE_SETUPc  ||
             m_phase == PHASE_SETUPs  ||
-            m_phase == PHASE_SETUPds ||
             m_phase == PHASE_SETUPgs ||
             m_phase == PHASE_SETUPps ||
             m_phase == PHASE_SETUPcs ||
@@ -529,7 +524,6 @@ void CMainUserInterface::FrameParticle(float rTime)
     }
     else if ( m_phase == PHASE_PLAYER_SELECT    ||
             m_phase == PHASE_LEVEL_LIST ||
-            m_phase == PHASE_SETUPd  ||
             m_phase == PHASE_SETUPg  ||
             m_phase == PHASE_SETUPp  ||
             m_phase == PHASE_SETUPc  ||

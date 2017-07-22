@@ -102,7 +102,6 @@ bool CMainDialog::EventProcess(const Event &event)
             {
                 StopDialog();
                 m_main->StartSuspend();
-                if ( CScreenSetup::GetTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPds);
                 if ( CScreenSetup::GetTab() == PHASE_SETUPg )  m_main->ChangePhase(PHASE_SETUPgs);
                 if ( CScreenSetup::GetTab() == PHASE_SETUPp )  m_main->ChangePhase(PHASE_SETUPps);
                 if ( CScreenSetup::GetTab() == PHASE_SETUPc )  m_main->ChangePhase(PHASE_SETUPcs);

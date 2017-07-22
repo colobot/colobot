@@ -468,9 +468,6 @@ msgstr "Gebäude sprengen"
 msgid "Destroyer"
 msgstr "Einstampfer"
 
-msgid "Device\\Driver and resolution settings"
-msgstr "Bildschirm\\Driver und Bildschirmauflösung"
-
 msgid "Dividing by zero"
 msgstr "Division durch Null"
 

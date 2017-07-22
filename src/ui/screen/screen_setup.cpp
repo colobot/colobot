@@ -83,16 +83,10 @@ void CScreenSetup::CreateInterface()
     ddim.y = 0.05f;
     pw->CreateGroup(pos, ddim, 3, EVENT_NULL);  // transparent -> gray
 
-    ddim.x = 0.78f/5-0.01f;
+    ddim.x = 0.975f/5-0.01f;
     ddim.y = 0.06f;
     pos.x = 0.115f;
     pos.y = 0.76f;
-    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_SETUPd);
-    pb->SetState(STATE_SHADOW);
-    pb->SetState(STATE_CARD);
-    pb->SetState(STATE_CHECK, (m_tab == PHASE_SETUPd));
-
-    pos.x += ddim.x+0.01f;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_SETUPg);
     pb->SetState(STATE_SHADOW);
     pb->SetState(STATE_CARD);
@@ -159,10 +153,6 @@ bool CScreenSetup::EventProcess(const Event &event)
 
         switch( event.type )
         {
-            case EVENT_INTERFACE_SETUPd:
-                m_main->ChangePhase(PHASE_SETUPd);
-                return false;
-
             case EVENT_INTERFACE_SETUPg:
                 m_main->ChangePhase(PHASE_SETUPg);
                 return false;
@@ -201,10 +191,6 @@ bool CScreenSetup::EventProcess(const Event &event)
 
         switch( event.type )
         {
-            case EVENT_INTERFACE_SETUPd:
-                m_main->ChangePhase(PHASE_SETUPds);
-                return false;
-
             case EVENT_INTERFACE_SETUPg:
                 m_main->ChangePhase(PHASE_SETUPgs);
                 return false;

@@ -519,8 +519,6 @@ set(BASE_SOURCES
     ui/screen/screen_setup.h
     ui/screen/screen_setup_controls.cpp
     ui/screen/screen_setup_controls.h
-    ui/screen/screen_setup_display.cpp
-    ui/screen/screen_setup_display.h
     ui/screen/screen_setup_game.cpp
     ui/screen/screen_setup_game.h
     ui/screen/screen_setup_graphics.cpp
