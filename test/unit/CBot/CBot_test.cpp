@@ -1533,6 +1533,120 @@ TEST_F(CBotUT, String)
         "    ASSERT(c == \"Colobot!\");\n"
         "}\n"
     );
+
+    ExecuteTest(
+        "extern void MissingEndQuote()\n"
+        "{\n"
+        "    \"Colobot...\n"
+        "}\n",
+        CBotErrEndQuote
+    );
+}
+
+TEST_F(CBotUT, StringEscapeCodes)
+{
+    ExecuteTest(
+        "extern void HexEscapeCodes()\n"
+        "{\n"
+        "    ASSERT(\"  \\x07  \" == \"  \\a  \");\n"
+        "    ASSERT(\"  \\x08  \" == \"  \\b  \");\n"
+        "    ASSERT(\"  \\x09  \" == \"  \\t  \");\n"
+        "    ASSERT(\"  \\x0A  \" == \"  \\n  \");\n"
+        "    ASSERT(\"  \\x0B  \" == \"  \\v  \");\n"
+        "    ASSERT(\"  \\x0C  \" == \"  \\f  \");\n"
+        "    ASSERT(\"  \\x0D  \" == \"  \\r  \");\n"
+        "    ASSERT(\"  \\x22  \" == \"  \\\"  \");\n"
+        "    ASSERT(\"  \\x27  \" == \"  \\\'  \");\n"
+        "    ASSERT(\"  \\x5C  \" == \"  \\\\  \");\n"
+        "    string test = \"\\x31 \\x32 \\x33\";\n"
+        "    ASSERT(test == \"1 2 3\");\n"
+        "}\n"
+        "extern void OctalEscapeCodes()\n"
+        "{\n"
+        "    ASSERT(\"  \\000  \" == \"  \\x00  \");\n"
+        "    ASSERT(\"  \\007  \" == \"  \\x07  \");\n"
+        "    ASSERT(\"  \\010  \" == \"  \\x08  \");\n"
+        "    ASSERT(\"  \\011  \" == \"  \\x09  \");\n"
+        "    ASSERT(\"  \\012  \" == \"  \\x0A  \");\n"
+        "    ASSERT(\"  \\013  \" == \"  \\x0B  \");\n"
+        "    ASSERT(\"  \\014  \" == \"  \\x0C  \");\n"
+        "    ASSERT(\"  \\015  \" == \"  \\x0D  \");\n"
+        "    ASSERT(\"  \\042  \" == \"  \\x22  \");\n"
+        "    ASSERT(\"  \\047  \" == \"  \\x27  \");\n"
+        "    ASSERT(\"  \\134  \" == \"  \\x5C  \");\n"
+        "    string test = \"\\101 \\102 \\103\";\n"
+        "    ASSERT(test == \"A B C\");\n"
+        "}\n"
+        "extern void UnicodeEscapeCodesToUTF_8()\n"
+        "{\n"
+        "    ASSERT(\"  \\u0000  \" == \"  \\0  \");\n"
+        "    ASSERT(\"  \\u0007  \" == \"  \\a  \");\n"
+        "    ASSERT(\"  \\u0008  \" == \"  \\b  \");\n"
+        "    ASSERT(\"  \\u0009  \" == \"  \\t  \");\n"
+        "    ASSERT(\"  \\u000A  \" == \"  \\n  \");\n"
+        "    ASSERT(\"  \\u000B  \" == \"  \\v  \");\n"
+        "    ASSERT(\"  \\u000C  \" == \"  \\f  \");\n"
+        "    ASSERT(\"  \\u000D  \" == \"  \\r  \");\n"
+        "    ASSERT(\"  \\u0022  \" == \"  \\\"  \");\n"
+        "    ASSERT(\"  \\u0027  \" == \"  \\\'  \");\n"
+        "    ASSERT(\"  \\u005C  \" == \"  \\\\  \");\n"
+        "\n"
+        "    ASSERT(\"\\u00A9\" == \"\\xC2\\xA9\");\n"
+        "    ASSERT(\"\\u00AE\" == \"\\xC2\\xAE\");\n"
+        "    ASSERT(\"\\u262E\" == \"\\xE2\\x98\\xAE\");\n"
+        "    ASSERT(\"\\u262F\" == \"\\xE2\\x98\\xAF\");\n"
+        "    ASSERT(\"\\U0001F60E\" == \"\\xF0\\x9F\\x98\\x8E\");\n"
+        "    ASSERT(\"\\U0001F61C\" == \"\\xF0\\x9F\\x98\\x9C\");\n"
+        "    ASSERT(\"\\U0001F6E0\" == \"\\xF0\\x9F\\x9B\\xA0\");\n"
+        "}\n"
+        "extern void UnicodeMaxCharacterNameToUTF_8()\n"
+        "{\n"
+        "    ASSERT(\"\\U0010FFFF\" == \"\\xF4\\x8F\\xBF\\xBF\");\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, StringEscapeCodeErrors)
+{
+    ExecuteTest(
+        "extern void UnknownEscapeSequence()\n"
+        "{\n"
+        "    \"Unknown: \\p \";\n"
+        "}\n",
+        CBotErrBadEscape
+    );
+
+    ExecuteTest(
+        "extern void MissingHexDigits()\n"
+        "{\n"
+        "    \"  \\x  \";\n"
+        "}\n",
+        CBotErrHexDigits
+    );
+
+    ExecuteTest(
+        "extern void HexValueOutOfRange()\n"
+        "{\n"
+        "    \"  \\x100  \";\n"
+        "}\n",
+        CBotErrHexRange
+    );
+
+    ExecuteTest(
+        "extern void OctalValueOutOfRange()\n"
+        "{\n"
+        "    \"  \\400  \";\n"
+        "}\n",
+        CBotErrOctalRange
+    );
+
+    ExecuteTest(
+        "extern void BadUnicodeCharacterName()\n"
+        "{\n"
+        "    \"  \\U00110000  \";\n"
+        "}\n",
+        CBotErrUnicodeName
+    );
 }
 
 // TODO: not implemented, see issue #694

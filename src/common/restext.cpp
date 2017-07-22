@@ -731,6 +731,12 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrNoClassName]   = TR("Class name expected");
     stringsCbot[CBot::CBotErrNoReturn]      = TR("Non-void function needs \"return;\"");
     stringsCbot[CBot::CBotErrDefaultValue]  = TR("This parameter needs a default value");
+    stringsCbot[CBot::CBotErrEndQuote]      = TR("Missing end quote");
+    stringsCbot[CBot::CBotErrBadEscape]     = TR("Unknown escape sequence");
+    stringsCbot[CBot::CBotErrOctalRange]    = TR("Octal value out of range");
+    stringsCbot[CBot::CBotErrHexDigits]     = TR("Missing hex digits after escape sequence");
+    stringsCbot[CBot::CBotErrHexRange]      = TR("Hex value out of range");
+    stringsCbot[CBot::CBotErrUnicodeName]   = TR("Invalid universal character name");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");

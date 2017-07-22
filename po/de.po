@@ -680,6 +680,9 @@ msgstr "Anweisungen über das ausgewählte Objekt"
 msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Hilfeblasen\\Hilfeblasen"
 
+msgid "Hex value out of range"
+msgstr ""
+
 #, fuzzy
 msgid "Higher speed\\Doubles speed"
 msgstr "Geschwindigkeit 2.0x\\Spielgeschwindigkeit doppelt so schnell"
@@ -758,6 +761,9 @@ msgstr "Anweisungen\\Anweisungen für die Mission oder Übung"
 
 msgid "Internal error - tell the developers"
 msgstr "Interner Fehler - Benachrichtige bitte die Entwickler"
+
+msgid "Invalid universal character name"
+msgstr ""
 
 msgid "Invert\\Invert values on this axis"
 msgstr "Invertieren\\Die Werte dieser Achse invertieren"
@@ -868,6 +874,12 @@ msgstr "Verkleinern"
 
 msgid "Mipmap level\\Mipmap level"
 msgstr "Mipmap-Level\\Mipmap-Level"
+
+msgid "Missing end quote"
+msgstr ""
+
+msgid "Missing hex digits after escape sequence"
+msgstr ""
 
 msgid "Mission name"
 msgstr "Name der Mission"
@@ -1030,6 +1042,9 @@ msgstr "OK\\Programm kompilieren"
 
 msgid "Object too close"
 msgstr "Gegenstand zu nahe"
+
+msgid "Octal value out of range"
+msgstr ""
 
 msgid "One step"
 msgstr "Ein Schritt"
@@ -1631,6 +1646,9 @@ msgstr "Das Objekt existiert nicht"
 
 msgid "Unknown command"
 msgstr "Befehl unbekannt"
+
+msgid "Unknown escape sequence"
+msgstr ""
 
 msgid "Unknown function"
 msgstr "Unbekannte Funktion"

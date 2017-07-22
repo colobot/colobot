@@ -1770,6 +1770,24 @@ msgstr ""
 msgid "This parameter needs a default value"
 msgstr ""
 
+msgid "Missing end quote"
+msgstr ""
+
+msgid "Unknown escape sequence"
+msgstr ""
+
+msgid "Octal value out of range"
+msgstr ""
+
+msgid "Missing hex digits after escape sequence"
+msgstr ""
+
+msgid "Hex value out of range"
+msgstr ""
+
+msgid "Invalid universal character name"
+msgstr ""
+
 msgid "Dividing by zero"
 msgstr ""
 

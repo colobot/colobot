@@ -686,6 +686,9 @@ msgstr "Справка о выбранном объекте"
 msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Подсказки\\Объяснение функций кнопок"
 
+msgid "Hex value out of range"
+msgstr ""
+
 #, fuzzy
 msgid "Higher speed\\Doubles speed"
 msgstr "Скорость 2.0х\\В два раза быстрее"
@@ -764,6 +767,9 @@ msgstr "Инструкции\\Показывает инструкции по т�
 
 msgid "Internal error - tell the developers"
 msgstr "Внутренняя ошибка - сообщите разработчикам"
+
+msgid "Invalid universal character name"
+msgstr ""
 
 msgid "Invert\\Invert values on this axis"
 msgstr "Инвертир.\\Инвертировать значения по этой оси"
@@ -874,6 +880,12 @@ msgstr "Свернуть"
 
 msgid "Mipmap level\\Mipmap level"
 msgstr "Уровень уменьшающей фильтрации\\Уровень уменьшающей фильтрации"
+
+msgid "Missing end quote"
+msgstr ""
+
+msgid "Missing hex digits after escape sequence"
+msgstr ""
 
 msgid "Mission name"
 msgstr "Название миссии"
@@ -1038,6 +1050,9 @@ msgstr "ОК\\Закрыть редактор программ и вернуть
 
 msgid "Object too close"
 msgstr "Объект слишком близок"
+
+msgid "Octal value out of range"
+msgstr ""
 
 msgid "One step"
 msgstr "Один шаг"
@@ -1644,6 +1659,9 @@ msgstr "Неизвестный объект"
 
 msgid "Unknown command"
 msgstr "Неизвестная команда"
+
+msgid "Unknown escape sequence"
+msgstr ""
 
 msgid "Unknown function"
 msgstr "Неизвестная функция"
