@@ -36,6 +36,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
+
 // Graphics module namespace
 namespace Gfx
 {
