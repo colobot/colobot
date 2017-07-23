@@ -85,7 +85,7 @@ void CScreenIOWrite::CreateInterface()
     ddim.y =  18.0f/480.0f;
     pe = pw->CreateEdit(pos, ddim, 0, EVENT_INTERFACE_IONAME);
     pe->SetState(STATE_SHADOW);
-    pe->SetFontType(Gfx::FONT_COLOBOT);
+    pe->SetFontType(Gfx::FONT_COMMON);
     pe->SetMaxChar(35);
     IOReadName();
 

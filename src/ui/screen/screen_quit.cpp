@@ -61,7 +61,7 @@ void CScreenQuit::CreateInterface()
     pe->SetGenericMode(true);
     pe->SetEditCap(false);
     pe->SetHighlightCap(false);
-    pe->SetFontType(Gfx::FONT_COURIER);
+    pe->SetFontType(Gfx::FONT_STUDIO);
     pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
     pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/authors.txt"));
 
@@ -71,13 +71,13 @@ void CScreenQuit::CreateInterface()
     ddim.y =  16.0f/480.0f;
     GetResource(RES_TEXT, RT_GENERIC_DEV1, name);
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
-    pl->SetFontType(Gfx::FONT_COURIER);
+    pl->SetFontType(Gfx::FONT_STUDIO);
     pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
     pos.y  =  13.0f/480.0f;
     GetResource(RES_TEXT, RT_GENERIC_DEV2, name);
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, name);
-    pl->SetFontType(Gfx::FONT_COURIER);
+    pl->SetFontType(Gfx::FONT_STUDIO);
     pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
     pos.x  = 355.0f/640.0f;
@@ -86,13 +86,13 @@ void CScreenQuit::CreateInterface()
     ddim.y =  16.0f/480.0f;
     GetResource(RES_TEXT, RT_GENERIC_EDIT1, name);
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL3, name);
-    pl->SetFontType(Gfx::FONT_COURIER);
+    pl->SetFontType(Gfx::FONT_STUDIO);
     pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
     pos.y  =  13.0f/480.0f;
     GetResource(RES_TEXT, RT_GENERIC_EDIT2, name);
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL4, name);
-    pl->SetFontType(Gfx::FONT_COURIER);
+    pl->SetFontType(Gfx::FONT_STUDIO);
     pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
     pos.x  = 306.0f/640.0f;
