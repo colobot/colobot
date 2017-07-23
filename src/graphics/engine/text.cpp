@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 
+#include "common/config_file.h"
 #include "common/image.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
@@ -34,7 +35,6 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
-
 
 // Graphics module namespace
 namespace Gfx
@@ -122,17 +122,52 @@ bool CText::Create()
         return false;
     }
 
+    std::string str;
+
     // User Interface Fonts
-    m_fonts[FONT_COMMON]        = MakeUnique<MultisizeFont>("fonts/common.ttf");
-    m_fonts[FONT_COMMON_BOLD]   = MakeUnique<MultisizeFont>("fonts/common_bold.ttf");
-    m_fonts[FONT_COMMON_ITALIC] = MakeUnique<MultisizeFont>("fonts/common_italic.ttf");
+    if(!GetConfigFile().GetStringProperty("Fonts", "Common", str))
+    {
+        str = "common";
+        GetConfigFile().SetStringProperty("Fonts","Common", str);
+    }
+    m_fonts[FONT_COMMON]        = MakeUnique<MultisizeFont>("fonts/" + str + ".ttf");
+
+    if(!GetConfigFile().GetStringProperty("Fonts", "Common_Bold", str))
+    {
+        str = "common_bold";
+        GetConfigFile().SetStringProperty("Fonts","Common_Bold", str);
+    }
+    m_fonts[FONT_COMMON_BOLD]   = MakeUnique<MultisizeFont>("fonts/" + str + ".ttf");
+
+    if(!GetConfigFile().GetStringProperty("Fonts", "Common_Italic", str))
+    {
+        str = "common_italic";
+        GetConfigFile().SetStringProperty("Fonts","Common_Italic", str);
+    }
+    m_fonts[FONT_COMMON_ITALIC] = MakeUnique<MultisizeFont>("fonts/" + str + ".ttf");
 
     // SatCom Fonts
-    m_fonts[FONT_SATCOM]        = MakeUnique<MultisizeFont>("fonts/satcom.ttf");
+    if(!GetConfigFile().GetStringProperty("Fonts", "SatCom", str))
+    {
+        str = "satcom";
+        GetConfigFile().SetStringProperty("Fonts","SatCom", str);
+    }
+    m_fonts[FONT_SATCOM]        = MakeUnique<MultisizeFont>("fonts/" + str + ".ttf");
 
     // Program Editor Fonts
-    m_fonts[FONT_STUDIO]        = MakeUnique<MultisizeFont>("fonts/studio.ttf");
-    m_fonts[FONT_STUDIO_BOLD]   = MakeUnique<MultisizeFont>("fonts/studio_bold.ttf");
+    if(!GetConfigFile().GetStringProperty("Fonts", "Studio", str))
+    {
+        str = "studio";
+        GetConfigFile().SetStringProperty("Fonts","Studio", str);
+    }
+    m_fonts[FONT_STUDIO]        = MakeUnique<MultisizeFont>("fonts/" + str + ".ttf");
+
+    if(!GetConfigFile().GetStringProperty("Fonts", "Studio_Bold", str))
+    {
+        str = "studio_bold";
+        GetConfigFile().SetStringProperty("Fonts","Studio_Bold", str);
+    }
+    m_fonts[FONT_STUDIO_BOLD]   = MakeUnique<MultisizeFont>("fonts/" + str + ".ttf");
 
     for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
     {
