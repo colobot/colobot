@@ -363,7 +363,7 @@ bool CTaskTerraform::Terraform()
         type = pObj->GetType();
         if ( type == OBJECT_NULL )  continue;
 
-        if ( type == OBJECT_TEEN34       || 
+        if ( type == OBJECT_TEEN34       ||
              type == OBJECT_POWER        ||
              type == OBJECT_ATOMIC       ||
              type == OBJECT_STONE        ||
@@ -387,8 +387,8 @@ bool CTaskTerraform::Terraform()
              type == OBJECT_RUINradar )  // small/transportable objects?
         {
             dist = Math::Distance(m_terraPos, pObj->GetPosition());
-            if ( dist > 20.0f )  continue;
-            
+            if ( dist > 5.0f )  continue;
+
             if (type == OBJECT_BULLET ||
                 type == OBJECT_NEST )
             {
