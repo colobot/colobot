@@ -128,21 +128,21 @@ bool CText::Create()
     // User Interface Fonts
     if(!GetConfigFile().GetStringProperty("Fonts", "Common", str))
     {
-        str = "common";
+        str = "dvu_sans";
         GetConfigFile().SetStringProperty("Fonts","Common", str);
     }
     m_fonts[FONT_COMMON]        = MakeUnique<MultisizeFont>("fonts/" + str + ".ttf");
 
     if(!GetConfigFile().GetStringProperty("Fonts", "Common_Bold", str))
     {
-        str = "common_bold";
+        str = "dvu_sans_bold";
         GetConfigFile().SetStringProperty("Fonts","Common_Bold", str);
     }
     m_fonts[FONT_COMMON_BOLD]   = MakeUnique<MultisizeFont>("fonts/" + str + ".ttf");
 
     if(!GetConfigFile().GetStringProperty("Fonts", "Common_Italic", str))
     {
-        str = "common_italic";
+        str = "dvu_sans_italic";
         GetConfigFile().SetStringProperty("Fonts","Common_Italic", str);
     }
     m_fonts[FONT_COMMON_ITALIC] = MakeUnique<MultisizeFont>("fonts/" + str + ".ttf");
@@ -150,7 +150,7 @@ bool CText::Create()
     // SatCom Fonts
     if(!GetConfigFile().GetStringProperty("Fonts", "SatCom", str))
     {
-        str = "satcom";
+        str = "dvu_sans";
         GetConfigFile().SetStringProperty("Fonts","SatCom", str);
     }
     m_fonts[FONT_SATCOM]        = MakeUnique<MultisizeFont>("fonts/" + str + ".ttf");
@@ -158,14 +158,14 @@ bool CText::Create()
     // Program Editor Fonts
     if(!GetConfigFile().GetStringProperty("Fonts", "Studio", str))
     {
-        str = "studio";
+        str = "dvu_sans_mono";
         GetConfigFile().SetStringProperty("Fonts","Studio", str);
     }
     m_fonts[FONT_STUDIO]        = MakeUnique<MultisizeFont>("fonts/" + str + ".ttf");
 
     if(!GetConfigFile().GetStringProperty("Fonts", "Studio_Bold", str))
     {
-        str = "studio_bold";
+        str = "dvu_sans_mono_bold";
         GetConfigFile().SetStringProperty("Fonts","Studio_Bold", str);
     }
     m_fonts[FONT_STUDIO_BOLD]   = MakeUnique<MultisizeFont>("fonts/" + str + ".ttf");
