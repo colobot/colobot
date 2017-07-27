@@ -461,11 +461,6 @@ bool CTaskTerraform::Terraform()
                 if ( dist > 15.0f )  continue;
                 dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Explosive, 0.2f);
             }
-            else if (type == OBJECT_STATION) // PowerStation?
-            {
-                if ( dist > 15.0f )  continue;
-                m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, pObj);
-            }
             else // Other?
             {
                 if ( dist > 5.0f )  continue;
