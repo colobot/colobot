@@ -2700,6 +2700,10 @@ bool CPhysics::ExploOther(ObjectType iType,
         if (pObj->GetType() == OBJECT_TNT     ) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // TNT
         if (pObj->GetType() == OBJECT_BOMB    ) { destructionForce =  0.0f; damageType = DamageType::Explosive; } // Mine
 
+        CObject* cargo = dynamic_cast<CCarrierObject*>(m_object)->GetCargo();
+        if (cargo != nullptr)
+            if (cargo->GetType() == OBJECT_TNT) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // Holding TNT
+
         if ( force > destructionForce && destructionForce >= 0.0f )
         {
             // TODO: implement "killer"?
@@ -2782,6 +2786,10 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
     if ( oType == OBJECT_MOBILEtg ) destructionForce = 10.0f; // TargetBot (something running into it)
     if ( iType == OBJECT_MOBILEtg ) destructionForce = 10.0f; // TargetBot (it running into something)
     if ( oType == OBJECT_BOMB     ) destructionForce =  0.0f; // Mine
+
+    CObject* cargo = dynamic_cast<CCarrierObject*>(m_object)->GetCargo();
+    if (cargo != nullptr)
+        if (cargo->GetType() == OBJECT_TNT) destructionForce = 10.0f; // Holding TNT
 
     if ( force > destructionForce && destructionForce >= 0.0f )
     {
