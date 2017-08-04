@@ -556,7 +556,7 @@ void CTaskShield::IncreaseShield()
         float dist = Math::Distance(oPos, m_shieldPos);
         if ( dist <= GetRadius()+10.0f )
         {
-            shielded->SetShield(shielded->GetShield() + 0.1f);
+            shielded->SetShield(shielded->GetShield() + 0.001f);
         }
     }
 }
