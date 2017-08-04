@@ -712,71 +712,70 @@ bool CAutoFactory::CreateInterface(bool bSelect)
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == nullptr )  return false;
 
-    dim.x = 33.0f/640.0f;
-    dim.y = 33.0f/480.0f;
+    dim.x = 22.0f/640.0f;
+    dim.y = 22.0f/480.0f;
     ox = 3.0f/640.0f;
     oy = 3.0f/480.0f;
-    sx = 33.0f/640.0f;
-    sy = 33.0f/480.0f;
+    sx = 22.0f/640.0f;
+    sy = 22.0f/480.0f;
 
-    pos.x = 0.0f;
-    pos.y = oy+sy*2.6f;
-    ddim.x = 138.0f/640.0f;
-    ddim.y = 222.0f/480.0f;
-    pw->CreateGroup(pos, ddim, 6, EVENT_WINDOW3);
-
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*8.2f;
+    pos.x = ox+sx*4.5f;
+    pos.y = oy+sy*1.5f;
     pw->CreateButton(pos, dim, 128+9, EVENT_OBJECT_FACTORYwa);
     pos.x += dim.x;
     pw->CreateButton(pos, dim, 128+10, EVENT_OBJECT_FACTORYta);
-    pos.x += dim.x;
+    pos.x = ox+sx*4.5f;
+    pos.y = oy+sy*0.5f;
     pw->CreateButton(pos, dim, 128+11, EVENT_OBJECT_FACTORYfa);
     pos.x += dim.x;
     pw->CreateButton(pos, dim, 128+22, EVENT_OBJECT_FACTORYia);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*7.1f;
+    pos.x = ox+sx*7.0f;
+    pos.y = oy+sy*1.5f;
     pw->CreateButton(pos, dim, 128+12, EVENT_OBJECT_FACTORYws);
     pos.x += dim.x;
     pw->CreateButton(pos, dim, 128+13, EVENT_OBJECT_FACTORYts);
-    pos.x += dim.x;
+    pos.x = ox+sx*7.0f;
+    pos.y = oy+sy*0.5f;
     pw->CreateButton(pos, dim, 128+14, EVENT_OBJECT_FACTORYfs);
     pos.x += dim.x;
     pw->CreateButton(pos, dim, 128+24, EVENT_OBJECT_FACTORYis);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*6.0f;
+    pos.x = ox+sx*9.5f;
+    pos.y = oy+sy*1.5f;
     pw->CreateButton(pos, dim, 128+15, EVENT_OBJECT_FACTORYwc);
     pos.x += dim.x;
     pw->CreateButton(pos, dim, 128+16, EVENT_OBJECT_FACTORYtc);
-    pos.x += dim.x;
+    pos.x = ox+sx*9.5f;
+    pos.y = oy+sy*0.5f;
     pw->CreateButton(pos, dim, 128+17, EVENT_OBJECT_FACTORYfc);
     pos.x += dim.x;
     pw->CreateButton(pos, dim, 128+23, EVENT_OBJECT_FACTORYic);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*4.9f;
+    pos.x = ox+sx*12.0f;
+    pos.y = oy+sy*1.5f;
     pw->CreateButton(pos, dim, 128+25, EVENT_OBJECT_FACTORYwi);
     pos.x += dim.x;
     pw->CreateButton(pos, dim, 128+26, EVENT_OBJECT_FACTORYti);
-    pos.x += dim.x;
+    pos.x = ox+sx*12.0f;
+    pos.y = oy+sy*0.5f;
     pw->CreateButton(pos, dim, 128+27, EVENT_OBJECT_FACTORYfi);
     pos.x += dim.x;
     pw->CreateButton(pos, dim, 128+28, EVENT_OBJECT_FACTORYii);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*3.8f;
+    pos.x = ox+sx*14.5f;
+    pos.y = oy+sy*1.5f;
     pw->CreateButton(pos, dim, 128+18, EVENT_OBJECT_FACTORYrt);
     pos.x += dim.x;
     pw->CreateButton(pos, dim, 128+19, EVENT_OBJECT_FACTORYrc);
-    pos.x += dim.x;
+    pos.x = ox+sx*14.5f;
+    pos.y = oy+sy*0.5f;
     pw->CreateButton(pos, dim, 128+20, EVENT_OBJECT_FACTORYrr);
     pos.x += dim.x;
     pw->CreateButton(pos, dim, 128+29, EVENT_OBJECT_FACTORYrs);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*2.7f;
+    pos.x = ox+sx*17.0f;
+    pos.y = oy+sy*1.0f;
     pw->CreateButton(pos, dim, 128+21, EVENT_OBJECT_FACTORYsa);
 
     pos.x = ox+sx*0.0f;
