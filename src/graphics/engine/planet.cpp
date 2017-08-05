@@ -115,8 +115,16 @@ void CPlanet::Draw()
 
         Math::Point p1, p2;
 
-        float a = eyeDirH + planet.angle.x;
-        p1.x = Math::Mod(a, Math::PI*2.0f)-0.5f;
+        // Determine the 2D coordinates of the centre of the planet.
+
+        // Not sure why this is + when you'd expect -. Perhaps one of the angles is inverted.
+        // Compute the camera-relative angles. (0, 0) is straight ahead (the dead centre of the screen).
+
+        // Why -1.0f? Simply because the old formula included that, and we need it to
+        // be consistent for the outer space cutscenes to work.
+        float a = planet.angle.x + eyeDirH - 1.0f;
+        a = Math::Mod(a+Math::PI, Math::PI*2.0f)-Math::PI; // normalize to -pi <= a < pi
+        p1.x = a/m_engine->GetHFovAngle() + 0.5f;
 
         a = eyeDirV + planet.angle.y;
         p1.y = 0.4f+(Math::Mod(a+Math::PI, Math::PI*2.0f)-Math::PI)*(2.0f/Math::PI);
