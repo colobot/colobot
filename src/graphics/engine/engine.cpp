@@ -4741,8 +4741,9 @@ void CEngine::DrawBackgroundImage()
         if (a >  Math::PI/4.0f)  a =  Math::PI/4.0f;
         if (a < -Math::PI/4.0f)  a = -Math::PI/4.0f;
 
-        u1 = -m_eyeDirH/Math::PI;
-        u2 = u1+1.0f/Math::PI;
+        // Note the background covers Math::PI radians, i.e. it repeats twice per rotation!
+        u1 = (-m_eyeDirH - GetHFovAngle()/2.0f) / Math::PI;
+        u2 = u1 + (GetHFovAngle() / Math::PI);
 
         v1 = (1.0f-h)*(0.5f+a/(2.0f*Math::PI/4.0f))+0.1f;
         v2 = v1+h;
