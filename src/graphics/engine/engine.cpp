@@ -2631,12 +2631,26 @@ void CEngine::SetFocus(float focus)
     float farPlane = m_deepView[0] * m_clippingDistance;
 
     float aspect = static_cast<float>(m_size.x) / static_cast<float>(m_size.y);
+
+    // Compute H-FoV from V-FoV and aspect ratio.
+    m_hfov = 2.0f * atan(aspect * tan(focus / 2.0f));
+
     Math::LoadProjectionMatrix(m_matProj, m_focus, aspect, 0.5f, farPlane);
 }
 
 float CEngine::GetFocus()
 {
     return m_focus;
+}
+
+float CEngine::GetVFovAngle()
+{
+    return m_focus;
+}
+
+float CEngine::GetHFovAngle()
+{
+    return m_hfov;
 }
 
 void CEngine::SetShadowColor(float value)

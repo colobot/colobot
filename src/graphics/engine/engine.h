@@ -921,12 +921,16 @@ public:
     void            SetTerrainVision(float vision);
 
     //@{
-    //! Management of camera angle
-    /**
+    //! Management of camera vertical field-of-view angle.
+    /** This is specified in radians.
+    Horizontal FoV is calculated based on vertical FoV and aspect ratio.
     0.75 = normal
     1.50 = wide-angle */
     void            SetFocus(float focus);
+    //! Deprecated alias for GetVFovAngle
     float           GetFocus();
+    float           GetVFovAngle();
+    float           GetHFovAngle();
     //@}
 
     //@{
@@ -1318,8 +1322,10 @@ protected:
     Math::Matrix    m_matProj;
     //! View matrix for 3D scene
     Math::Matrix    m_matView;
-    //! Camera angle for 3D scene
+    //! Camera vertical field-of-view angle for 3D scene. A.k.a. m_vfov
     float           m_focus;
+    //! Horizontal field-of-view angle, calculated from vertical FOV and aspect ratio
+    float           m_hfov;
 
     //! Projection matrix for rendering shadow maps
     Math::Matrix    m_shadowProjMat;
