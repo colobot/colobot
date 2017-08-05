@@ -614,7 +614,8 @@ bool CAutoFactory::NearestVehicle()
              type != OBJECT_ANT      &&
              type != OBJECT_SPIDER   &&
              type != OBJECT_BEE      &&
-             type != OBJECT_WORM     )  continue;
+             type != OBJECT_WORM     &&
+             type != OBJECT_APOLLO2  )  continue;
 
         if (obj->GetCrashSphereCount() == 0) continue;
 
