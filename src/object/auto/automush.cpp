@@ -273,7 +273,8 @@ bool CAutoMush::SearchTarget()
              type != OBJECT_LABO     &&
              type != OBJECT_NUCLEAR  &&
              type != OBJECT_PARA     &&
-             type != OBJECT_HUMAN    )  continue;
+             type != OBJECT_HUMAN    &&
+             type != OBJECT_APOLLO2  )  continue;
 
        Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, iPos);

@@ -2760,7 +2760,8 @@ bool CPhysics::ExploOther(ObjectType iType,
             oType == OBJECT_MOBILEwt ||
             oType == OBJECT_MOBILEtt ||
             oType == OBJECT_MOBILEft ||
-            oType == OBJECT_MOBILEit  )  // vehicle?
+            oType == OBJECT_MOBILEit ||
+            oType == OBJECT_APOLLO2   )  // vehicle?
         {
             assert(pObj->Implements(ObjectInterfaceType::Damageable));
             // TODO: implement "killer"?

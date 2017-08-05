@@ -1281,7 +1281,8 @@ void CPyro::DisplayError(PyroType type, CObject* obj)
              oType == OBJECT_MOBILEtt ||
              oType == OBJECT_MOBILEft ||
              oType == OBJECT_MOBILEit ||
-             oType == OBJECT_MOBILEdr )
+             oType == OBJECT_MOBILEdr ||
+             oType == OBJECT_APOLLO2  )
         {
             err = ERR_DELETEMOBILE;
         }

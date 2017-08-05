@@ -792,7 +792,8 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_LABO     ||
          m_type == OBJECT_NUCLEAR  ||
          m_type == OBJECT_PARA     ||
-         m_type == OBJECT_MOTHER    )
+         m_type == OBJECT_MOTHER   ||
+         m_type == OBJECT_APOLLO2   )
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
