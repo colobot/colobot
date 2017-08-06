@@ -34,6 +34,11 @@ void CSystemUtilsOther::GetCurrentTimeStamp(SystemTimeStamp* stamp)
     stamp->sdlTicks = SDL_GetTicks();
 }
 
+void CSystemUtilsOther::InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i)
+{
+    dst->sdlTicks = a->sdlTicks + static_cast<Uint32>((b->sdlTicks - a->sdlTicks) * i);
+}
+
 long long int CSystemUtilsOther::TimeStampExactDiff(SystemTimeStamp* before, SystemTimeStamp* after)
 {
     return (after->sdlTicks - before->sdlTicks) * 1000000ll;
