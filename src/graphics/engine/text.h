@@ -76,19 +76,20 @@ enum FontType
     //! Flag for italic font subtype
     FONT_ITALIC     = 0x08,
 
-    //! Default colobot font used for interface
-    FONT_COLOBOT    = 0x00,
+    //! Colobot font used for interface
+    FONT_COMMON    = 0x00,
     //! Alias for bold colobot font
-    FONT_COLOBOT_BOLD = FONT_COLOBOT | FONT_BOLD,
+    FONT_COMMON_BOLD = FONT_COMMON | FONT_BOLD,
     //! Alias for italic colobot font
-    FONT_COLOBOT_ITALIC = FONT_COLOBOT | FONT_ITALIC,
+    FONT_COMMON_ITALIC = FONT_COMMON | FONT_ITALIC,
 
-    //! Courier (monospace) font used mainly in code editor (only regular & bold)
-    FONT_COURIER    = 0x01,
-    //! Alias for bold courier font
-    FONT_COURIER_BOLD = FONT_COURIER | FONT_BOLD,
+    //! SatCom font used for interface
+    FONT_SATCOM    = 0x01,
 
-    // 0x02 left for possible another font
+    //! Program Editor font used mainly in code editor (only regular & bold)
+    FONT_STUDIO    = 0x02,
+    //! Alias for bold program editor font
+    FONT_STUDIO_BOLD = FONT_STUDIO | FONT_BOLD,
 
     //! Pseudo-font loaded from textures for buttons, icons, etc.
     FONT_BUTTON     = 0x03,

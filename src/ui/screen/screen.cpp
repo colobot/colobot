@@ -71,7 +71,7 @@ void CScreen::CreateVersionDisplay()
         ddim.x =  90.0f/640.0f;
         ddim.y =  10.0f/480.0f;
         CLabel* pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, COLOBOT_VERSION_DISPLAY);
-        pl->SetFontType(Gfx::FONT_COURIER);
+        pl->SetFontType(Gfx::FONT_STUDIO);
         pl->SetFontSize(9.0f);
     }
 }
