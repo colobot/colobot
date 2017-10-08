@@ -44,6 +44,7 @@ class CSoundInterface;
 class CInput;
 class CPathManager;
 class CConfigFile;
+class CFontConfigFile;
 class CSystemUtils;
 struct SystemTimeStamp;
 

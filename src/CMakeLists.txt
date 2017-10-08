@@ -106,6 +106,8 @@ set(BASE_SOURCES
     common/error.h
     common/event.cpp
     common/event.h
+    common/font_file.h
+    common/font_file.cpp
     common/global.h
     common/image.cpp
     common/image.h

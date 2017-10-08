@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 
+#include "common/font_file.h"
 #include "common/image.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
@@ -116,18 +117,23 @@ CText::~CText()
 
 bool CText::Create()
 {
+    CFontConfigFile fontconfig;
+    if (!GetFontConfigFile().Init())
+    {
+        GetLogger()->Warn("Error on parsing fonts config file: failed to open file\n");
+    }
     if (TTF_Init() != 0)
     {
         m_error = std::string("TTF_Init error: ") + std::string(TTF_GetError());
         return false;
     }
 
-    m_fonts[FONT_COLOBOT]        = MakeUnique<MultisizeFont>("fonts/dvu_sans.ttf");
-    m_fonts[FONT_COLOBOT_BOLD]   = MakeUnique<MultisizeFont>("fonts/dvu_sans_bold.ttf");
-    m_fonts[FONT_COLOBOT_ITALIC] = MakeUnique<MultisizeFont>("fonts/dvu_sans_italic.ttf");
+    m_fonts[FONT_COLOBOT]        = MakeUnique<MultisizeFont>(GetFontConfigFile().GetCommonFont());
+    m_fonts[FONT_COLOBOT_BOLD]   = MakeUnique<MultisizeFont>(GetFontConfigFile().GetCommonBoldFont());
+    m_fonts[FONT_COLOBOT_ITALIC] = MakeUnique<MultisizeFont>(GetFontConfigFile().GetCommonItalicFont());
 
-    m_fonts[FONT_COURIER]        = MakeUnique<MultisizeFont>("fonts/dvu_sans_mono.ttf");
-    m_fonts[FONT_COURIER_BOLD]   = MakeUnique<MultisizeFont>("fonts/dvu_sans_mono_bold.ttf");
+    m_fonts[FONT_COURIER]        = MakeUnique<MultisizeFont>(GetFontConfigFile().GetStudioFont());
+    m_fonts[FONT_COURIER_BOLD]   = MakeUnique<MultisizeFont>(GetFontConfigFile().GetStudioBoldFont());
 
     for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
     {
