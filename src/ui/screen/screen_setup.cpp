@@ -67,7 +67,7 @@ void CScreenSetup::CreateInterface()
     ddim.x = 0.80f;
     ddim.y = 0.80f;
     pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
-    pw->SetClosable(true);
+    pw->SetClosable(false);
     GetResource(RES_TEXT, RT_TITLE_SETUP, name);
     pw->SetName(name);
 

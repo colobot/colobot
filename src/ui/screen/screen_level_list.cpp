@@ -80,7 +80,7 @@ void CScreenLevelList::CreateInterface()
     ddim.x = 0.80f;
     ddim.y = 0.80f;
     pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
-    pw->SetClosable(true);
+    pw->SetClosable(false);
     if ( m_category == LevelCategory::Exercises    )  res = RT_TITLE_TRAINER;
     if ( m_category == LevelCategory::Challenges   )  res = RT_TITLE_DEFI;
     if ( m_category == LevelCategory::Missions     )  res = RT_TITLE_MISSION;
