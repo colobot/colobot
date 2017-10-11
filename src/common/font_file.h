@@ -47,98 +47,43 @@ public:
     * \return return true on success
     */
     bool Init();
-    
-    /** Saves fonts.ini
-    * \return return true on success
-    */
-    bool Save();
-    
+
     /** Reads common font from file
     * \return return path to font file
     */
-    
     std::string GetCommonFont();
-    
-    /** Writes common font to file
-    * \return return true on success
-    */
-    
-    bool SetCommonFont(std::string filename);
-    
+
     /** Reads common bold font from file
     * \return return path to font file
     */
-    
     std::string GetCommonBoldFont();
-    
-    /** Writes common bold font to file
-    * \return return true on success
-    */
-    
-    bool SetCommonBoldFont(std::string filename);
-    
+
     /** Reads common italic font from file
     * \return return path to font file
     */
-    
     std::string GetCommonItalicFont();
-    
-    /** Writes common italic font to file
-    * \return return true on success
-    */
-    
-    bool SetCommonItalicFont(std::string filename);
-    
+
     /** Reads studio font from file
     * \return return path to font file
     */
-    
     std::string GetStudioFont();
-    
-    /** Writes studio font to file
-    * \return return true on success
-    */
-    
-    bool SetStudioFont(std::string filename);
     
     /** Reads studio bold font from file
     * \return returns path to font file
     */
-    
     std::string GetStudioBoldFont();
     
-    /** Writes studio bold font to file
-    * \return return true on success
+    /** Reads satcom font from file
+    * \return returns path to font file
     */
-    
-    bool SetStudioBoldFont(std::string filename);
+    std::string GetSatComFont();
     
 private:
     boost::property_tree::ptree m_propertyTree;
     bool m_needsSave;
     bool m_useCurrentDirectory;
     bool m_loaded;
-    
-    /*std::string m_colobotFont;
-    std::string m_colobotFontb;
-    std::string m_colobotFonti;
-    
-    std::string m_courierFont;
-    std::string m_courierFontb;*/
 };
-
-/**
- * \enum Fonts
- * \brief enum of types of fonts used in game
- *//*
-enum Fonts
-{
-    FONT_COLOBOT = 0,
-    FONT_COLOBOT_BOLD = 1,
-    FONT_COLOBOT_ITALIC = 2,
-    FONT_COURIER = 3,
-    FONT_COURIER_BOLD = 4
-};*/
 
 //! Global function to get config file instance
 inline CFontConfigFile & GetFontConfigFile()

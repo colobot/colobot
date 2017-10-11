@@ -88,7 +88,9 @@ enum FontType
     //! Alias for bold courier font
     FONT_COURIER_BOLD = FONT_COURIER | FONT_BOLD,
 
-    // 0x02 left for possible another font
+    //! SatCom font used for interface
+    
+    FONT_SATCOM = 0x02,
 
     //! Pseudo-font loaded from textures for buttons, icons, etc.
     FONT_BUTTON     = 0x03,

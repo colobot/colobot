@@ -44,11 +44,6 @@ CFontConfigFile::CFontConfigFile()
 
 CFontConfigFile::~CFontConfigFile()
 {
-    if (m_needsSave)
-    {
-        GetLogger()->Warn("Font config file was not properly saved! Saving now...\n");
-        Save();
-    }
 }
 
 bool CFontConfigFile::Init()
@@ -59,13 +54,13 @@ bool CFontConfigFile::Init()
         bool good;
         if (m_useCurrentDirectory)
         {
-            auto inputStream = MakeUnique<std::ifstream>("./fonts.ini");
+            auto inputStream = MakeUnique<std::ifstream>("/fonts/fonts.ini");
             good = inputStream->good();
             stream = std::move(inputStream);
         }
         else
         {
-            auto inputStream = MakeUnique<CInputStream>("fonts.ini");
+            auto inputStream = MakeUnique<CInputStream>("/fonts/fonts.ini");
             good = inputStream->is_open();
             stream = std::move(inputStream);
         }
@@ -73,6 +68,7 @@ bool CFontConfigFile::Init()
         if (good)
         {
             bp::ini_parser::read_ini(*stream, m_propertyTree);
+            GetLogger()->Debug("Fonts config file loaded correctly. \n");
             m_loaded = true;
         }
         else
@@ -88,198 +84,92 @@ bool CFontConfigFile::Init()
     return true;
 }
 
-bool CFontConfigFile::Save()
-{
-    if (m_needsSave)
-    {
-        try
-        {
-            std::unique_ptr<std::ostream> stream;
-            bool good;
-            if (m_useCurrentDirectory)
-            {
-                auto outputStream = MakeUnique<std::ofstream>("./fonts.ini");
-                good = outputStream->good();
-                stream = std::move(outputStream);
-            }
-            else
-            {
-                auto outputStream = MakeUnique<COutputStream>("fonts.ini");
-                good = outputStream->is_open();
-                stream = std::move(outputStream);
-            }
-
-            if (good)
-            {
-                bp::ini_parser::write_ini(*stream, m_propertyTree);
-                m_needsSave = false;
-            }
-            else
-            {
-                GetLogger()->Error("Error on storing fonts config file: failed to open file\n");
-                return false;
-            }
-        }
-        catch (std::exception & e)
-        {
-            GetLogger()->Error("Error on storing fonts config file: %s\n", e.what());
-            return false;
-        }
-    }
-    return true;
-}
-
 std::string CFontConfigFile::GetCommonFont()
 {
     try
     {
-        std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FONT_COMMON");
+        std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FontCommon");
         return path;
     }
     catch (std::exception & e)
     {
         GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
-        SetCommonFont("dvu_sans.ttf");
         return "/fonts/dvu_sans.ttf";
     }
     return "";
-}
-
-bool CFontConfigFile::SetCommonFont(std::string filename)
-{
-    try
-    {
-        m_propertyTree.put("FONT_COMMON", filename);
-        m_needsSave = true;
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error on editing config file: %s\n", e.what());
-        return false;
-    }
-    return true;
 }
 
 std::string CFontConfigFile::GetCommonBoldFont()
 {
     try
     {
-        std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FONT_COMMON_BOLD");
+        std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FontCommonBold");
         return path;
     }
     catch (std::exception & e)
     {
         GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
-        SetCommonBoldFont("dvu_sans_bold.ttf");
         return "/fonts/dvu_sans_bold.ttf";
     }
     return "";
-}
-
-bool CFontConfigFile::SetCommonBoldFont(std::string filename)
-{
-    try
-    {
-        m_propertyTree.put("FONT_COMMON_BOLD", filename);
-        m_needsSave = true;
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error on editing config file: %s\n", e.what());
-        return false;
-    }
-    return true;
 }
 
 std::string CFontConfigFile::GetCommonItalicFont()
 {
     try
     {
-        std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FONT_COMMON_ITALIC");
+        std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FontCommonItalic");
         return path;
     }
     catch (std::exception & e)
     {
         GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
-        SetCommonItalicFont("dvu_sans_italic.ttf");
         return "/fonts/dvu_sans_italic.ttf";
     }
     return "";
-}
-
-bool CFontConfigFile::SetCommonItalicFont(std::string filename)
-{
-    try
-    {
-        m_propertyTree.put("FONT_COMMON_ITALIC", filename);
-        m_needsSave = true;
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error on editing config file: %s\n", e.what());
-        return false;
-    }
-    return true;
 }
 
 std::string CFontConfigFile::GetStudioFont()
 {
     try
     {
-        std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FONT_STUDIO");
+        std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FontStudio");
         return path;
     }
     catch (std::exception & e)
     {
         GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
-        SetStudioFont("dvu_sans_mono.ttf");
         return "/fonts/dvu_sans_mono.ttf";
     }
     return "";
-}
-
-bool CFontConfigFile::SetStudioFont(std::string filename)
-{
-    try
-    {
-        m_propertyTree.put("FONT_STUDIO", filename);
-        m_needsSave = true;
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error on editing config file: %s\n", e.what());
-        return false;
-    }
-    return true;
 }
 
 std::string CFontConfigFile::GetStudioBoldFont()
 {
     try
     {
-        std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FONT_STUDIO_BOLD");
+        std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FontStudioBold");
         return path;
     }
     catch (std::exception & e)
     {
         GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
-        SetStudioBoldFont("dvu_sans_mono_bold.ttf");
         return "/fonts/dvu_sans_mono_bold.ttf";
     }
     return "";
 }
 
-bool CFontConfigFile::SetStudioBoldFont(std::string filename)
+std::string CFontConfigFile::GetSatComFont()
 {
     try
     {
-        m_propertyTree.put("FONT_STUDIO_BOLD", filename);
-        m_needsSave = true;
+        std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FontSatCom");
+        return path;
     }
     catch (std::exception & e)
     {
-        GetLogger()->Error("Error on editing config file: %s\n", e.what());
-        return false;
+        GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
+        return "/fonts/dvu_sans.ttf";
     }
-    return true;
+    return "";
 }

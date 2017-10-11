@@ -131,6 +131,8 @@ bool CText::Create()
     m_fonts[FONT_COLOBOT]        = MakeUnique<MultisizeFont>(GetFontConfigFile().GetCommonFont());
     m_fonts[FONT_COLOBOT_BOLD]   = MakeUnique<MultisizeFont>(GetFontConfigFile().GetCommonBoldFont());
     m_fonts[FONT_COLOBOT_ITALIC] = MakeUnique<MultisizeFont>(GetFontConfigFile().GetCommonItalicFont());
+    
+    m_fonts[FONT_SATCOM]         = MakeUnique<MultisizeFont>(GetFontConfigFile().GetSatComFont());
 
     m_fonts[FONT_COURIER]        = MakeUnique<MultisizeFont>(GetFontConfigFile().GetStudioFont());
     m_fonts[FONT_COURIER_BOLD]   = MakeUnique<MultisizeFont>(GetFontConfigFile().GetStudioBoldFont());
