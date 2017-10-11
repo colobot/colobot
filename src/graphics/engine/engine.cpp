@@ -5045,7 +5045,7 @@ void CEngine::DrawStats()
     if (!m_showStats)
         return;
 
-    float height = m_text->GetAscent(FONT_COLOBOT, 13.0f);
+    float height = m_text->GetAscent(FONT_COMMON, 13.0f);
     float width = 0.4f;
     const int TOTAL_LINES = 22;
 
@@ -5072,13 +5072,13 @@ void CEngine::DrawStats()
     auto drawStatsLine = [&](const std::string& name, const std::string& value, const std::string& value2)
     {
         if (!name.empty())
-            m_text->DrawText(name+":", FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+            m_text->DrawText(name+":", FONT_COMMON, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
         pos.x += 0.25f;
         if (!value.empty())
-            m_text->DrawText(value, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+            m_text->DrawText(value, FONT_COMMON, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
         pos.x += 0.15f;
         if (!value2.empty())
-            m_text->DrawText(value2, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+            m_text->DrawText(value2, FONT_COMMON, 12.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
         pos.x -= 0.4f;
         pos.y -= height;
     };
@@ -5146,8 +5146,8 @@ void CEngine::DrawTimer()
 {
     SetState(ENG_RSTATE_TEXT);
 
-    Math::Point pos(0.98f, 0.98f-m_text->GetAscent(FONT_COLOBOT, 15.0f));
-    m_text->DrawText(m_timerText, FONT_COLOBOT, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+    Math::Point pos(0.98f, 0.98f-m_text->GetAscent(FONT_COMMON, 15.0f));
+    m_text->DrawText(m_timerText, FONT_COMMON, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelTriangle>& triangles)

@@ -323,7 +323,7 @@ void CMainDialog::StartInformation(const std::string& title, const std::string& 
     ddim.x = 1.00f;
     ddim.y = 0.05f;
     pl = pw->CreateLabel(pos, ddim, -1, EVENT_DIALOG_LABEL, text);
-    pl->SetFontType(Gfx::FONT_COLOBOT_BOLD);
+    pl->SetFontType(Gfx::FONT_COMMON_BOLD);
     //TODO: Add \n support in CLabel
     pos.y -= ddim.y;
     pl = pw->CreateLabel(pos, ddim, -1, EVENT_DIALOG_LABEL1, details);

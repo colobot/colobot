@@ -159,7 +159,7 @@ void CScreenMainMenu::CreateInterface()
     pg->SetState(STATE_SHADOW);
     pos.y -=  5.0f/480.0f;
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, "TerranovaTeam");
-    pl->SetFontType(Gfx::FONT_COURIER);
+    pl->SetFontType(Gfx::FONT_STUDIO);
     pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
     // SatCom button
