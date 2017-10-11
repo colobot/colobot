@@ -41,4 +41,5 @@ protected:
     float       m_finalAngle = 0.0f;
     bool        m_bLeft = false;
     bool        m_bError = false;
+    bool        m_bDecel = false;
 };
