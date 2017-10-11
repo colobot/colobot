@@ -226,6 +226,7 @@ void CScreenLevelList::CreateInterface()
         ddim.y = dim.y*1;
         pb = pw->CreateButton(pos, ddim, 57, EVENT_INTERFACE_OPEN_MODS_DIR);
         pb->SetState(STATE_SHADOW);
+        pb->ClearState(STATE_ENABLE); // TODO: Remove this after write EVENT_INTERFACE_OPEN_MODS_DIR to work
 
         pos.x += dim.x*1.3f;
         pb = pw->CreateButton(pos, ddim, 40, EVENT_INTERFACE_REFRESH);
@@ -328,28 +329,7 @@ bool CScreenLevelList::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_OPEN_MODS_DIR:
-            #if DEV_BUILD
-                #ifdef _WIN32
-                    system("start \""+m_dataPath+"/mods\"");
-                #endif
-                #ifdef __linux__
-                    //system("xdg-open \""+m_dataPath+"/mods\""); // TODO: Make this working
-                    m_sound->Play(SOUND_TZOING); // "Not working" warning sound...
-                #endif
-                #ifdef __APPLE__
-                    system("open \""+m_dataPath+"/mods\"");
-                #endif
-            #else
-                #ifdef _WIN32
-                    system("start \""+m_savePath+"/mods\"");
-                #endif
-                #ifdef __linux__
-                    system("xdg-open \""+m_savePath+"/mods\"");
-                #endif
-                #ifdef __APPLE__
-                    system("open \""+m_savePath+"/mods\"");
-                #endif
-            #endif
+            //TODO
             break;
 
         case EVENT_INTERFACE_REFRESH:
