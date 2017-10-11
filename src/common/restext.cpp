@@ -175,6 +175,8 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_QUIT]      = TR("Quit\\Quit Colobot: Gold Edition");
     stringsEvent[EVENT_INTERFACE_BACK]      = TR("<<  Back  \\Back to the previous screen");
     stringsEvent[EVENT_INTERFACE_PLAY]      = TR("Play\\Start mission!");
+    stringsEvent[EVENT_INTERFACE_REFRESH]   = TR("Refresh\\Refresh User Levels list");
+    stringsEvent[EVENT_INTERFACE_OPEN_MODS_DIR] = TR("Open Directory\\Open Mods Directory");
     stringsEvent[EVENT_INTERFACE_SETUPg]    = TR("Graphics\\Graphics settings");
     stringsEvent[EVENT_INTERFACE_SETUPp]    = TR("Game\\Game settings");
     stringsEvent[EVENT_INTERFACE_SETUPc]    = TR("Controls\\Keyboard, joystick and mouse settings");
