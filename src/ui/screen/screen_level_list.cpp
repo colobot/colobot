@@ -29,8 +29,6 @@
 
 #include "level/parser/parser.h"
 
-#include "sound/sound.h"
-
 #include "ui/maindialog.h"
 
 #include "ui/controls/button.h"
@@ -224,12 +222,12 @@ void CScreenLevelList::CreateInterface()
         pos.y  = oy+sy*2;
         ddim.x = dim.x*1;
         ddim.y = dim.y*1;
-        pb = pw->CreateButton(pos, ddim, 57, EVENT_INTERFACE_OPEN_MODS_DIR);
+        pb = pw->CreateButton(pos, ddim, 57, EVENT_INTERFACE_MODS_DIR);
         pb->SetState(STATE_SHADOW);
         pb->ClearState(STATE_ENABLE); // TODO: Remove this after write EVENT_INTERFACE_OPEN_MODS_DIR to work
 
         pos.x += dim.x*1.3f;
-        pb = pw->CreateButton(pos, ddim, 40, EVENT_INTERFACE_REFRESH);
+        pb = pw->CreateButton(pos, ddim, 40, EVENT_INTERFACE_WORKSHOP);
         pb->SetState(STATE_SHADOW);
 
         pos.x += dim.x*1.3f;
@@ -328,13 +326,20 @@ bool CScreenLevelList::EventProcess(const Event &event)
             pb->SetState(STATE_CHECK, m_sceneSoluce);
             break;
 
-        case EVENT_INTERFACE_OPEN_MODS_DIR:
+        case EVENT_INTERFACE_MODS_DIR:
             //TODO
             break;
 
-        case EVENT_INTERFACE_REFRESH:
-            m_main->ChangePhase(PHASE_LEVEL_LIST);
-            m_sound->Play(SOUND_RADAR, 2.0f, 1.5f);
+        case EVENT_INTERFACE_WORKSHOP:
+            #ifdef _WIN32
+                system("start \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
+            #endif
+            #ifdef __linux__
+                system("xdg-open \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
+            #endif
+            #ifdef __APPLE__
+                system("open \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
+            #endif
             break;
 
         case EVENT_INTERFACE_PLAY:
