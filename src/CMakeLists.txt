@@ -511,6 +511,8 @@ set(BASE_SOURCES
     ui/screen/screen_loading.h
     ui/screen/screen_main_menu.cpp
     ui/screen/screen_main_menu.h
+    ui/screen/screen_mod_manager.cpp
+    ui/screen/screen_mod_manager.h
     ui/screen/screen_player_select.cpp
     ui/screen/screen_player_select.h
     ui/screen/screen_quit.cpp

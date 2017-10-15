@@ -47,6 +47,7 @@
 #include "ui/screen/screen_level_list.h"
 #include "ui/screen/screen_loading.h"
 #include "ui/screen/screen_main_menu.h"
+#include "ui/screen/screen_mod_manager.h"
 #include "ui/screen/screen_player_select.h"
 #include "ui/screen/screen_quit.h"
 #include "ui/screen/screen_setup_controls.h"
@@ -85,6 +86,7 @@ CMainUserInterface::CMainUserInterface()
     m_screenPlayerSelect = MakeUnique<CScreenPlayerSelect>(m_dialog.get());
     m_screenQuit = MakeUnique<CScreenQuit>();
     m_screenWelcome = MakeUnique<CScreenWelcome>();
+    m_screenModManager = MakeUnique<CScreenModManager>(m_dialog.get());
 
     m_currentScreen = nullptr;
 
@@ -173,6 +175,10 @@ void CMainUserInterface::ChangePhase(Phase phase)
     if (m_phase == PHASE_MAIN_MENU)
     {
         m_currentScreen = m_screenMainMenu.get();
+    }
+    if (m_phase == PHASE_MOD_MANAGER)
+    {
+        m_currentScreen = m_screenModManager.get();
     }
     if (m_phase == PHASE_LEVEL_LIST)
     {

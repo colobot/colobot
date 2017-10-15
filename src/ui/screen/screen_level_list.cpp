@@ -194,44 +194,13 @@ void CScreenLevelList::CreateInterface()
     UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
 
     if ( m_category == LevelCategory::Missions    ||
-         m_category == LevelCategory::FreeGame    )
+         m_category == LevelCategory::FreeGame    ||
+         m_category == LevelCategory::CustomLevels )
     {
         pos.x = ox+sx*9.5f;
         pos.y = oy+sy*2;
         ddim.x = dim.x*3.7f;
         ddim.y = dim.y*1;
-        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PLAY);
-        pb->SetState(STATE_SHADOW);
-        if ( m_maxList == 0 )
-        {
-            pb->ClearState(STATE_ENABLE);
-        }
-
-        pos.x += dim.x*4.0f;
-        ddim.x = dim.x*2.5f;
-        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_READ);
-        pb->SetState(STATE_SHADOW);
-        if ( !m_main->GetPlayerProfile()->HasAnySavedScene() )  // no file to read?
-        {
-            pb->ClearState(STATE_ENABLE);
-        }
-    }
-    else if ( m_category == LevelCategory::CustomLevels )
-    {
-        pos.x  = ox+sx*7.1f;
-        pos.y  = oy+sy*2;
-        ddim.x = dim.x*1;
-        ddim.y = dim.y*1;
-        pb = pw->CreateButton(pos, ddim, 57, EVENT_INTERFACE_MODS_DIR);
-        pb->SetState(STATE_SHADOW);
-        pb->ClearState(STATE_ENABLE); // TODO: Remove this after write EVENT_INTERFACE_OPEN_MODS_DIR to work
-
-        pos.x += dim.x*1.3f;
-        pb = pw->CreateButton(pos, ddim, 40, EVENT_INTERFACE_WORKSHOP);
-        pb->SetState(STATE_SHADOW);
-
-        pos.x += dim.x*1.3f;
-        ddim.x = dim.x*3.7f;
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PLAY);
         pb->SetState(STATE_SHADOW);
         if ( m_maxList == 0 )
@@ -324,22 +293,6 @@ bool CScreenLevelList::EventProcess(const Event &event)
             if ( pb == nullptr )  break;
             m_sceneSoluce = !m_sceneSoluce;
             pb->SetState(STATE_CHECK, m_sceneSoluce);
-            break;
-
-        case EVENT_INTERFACE_MODS_DIR:
-            //TODO
-            break;
-
-        case EVENT_INTERFACE_WORKSHOP:
-            #ifdef _WIN32
-                system("start \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
-            #endif
-            #ifdef __linux__
-                system("xdg-open \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
-            #endif
-            #ifdef __APPLE__
-                system("open \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
-            #endif
             break;
 
         case EVENT_INTERFACE_PLAY:

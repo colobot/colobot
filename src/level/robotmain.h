@@ -71,6 +71,7 @@ enum Phase
     PHASE_LOST,
     PHASE_QUIT_SCREEN,
     PHASE_SATCOM,
+    PHASE_MOD_MANAGER,
 };
 std::string PhaseToString(Phase phase);
 bool IsInSimulationConfigPhase(Phase phase);

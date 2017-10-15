@@ -71,6 +71,7 @@ enum ResTextType
     RT_TITLE_WRITE          = 50,
     RT_TITLE_READ           = 51,
     RT_TITLE_USER           = 52,
+    RT_TITLE_MOD_MANAGER    = 53,
 
     RT_PLAY_CHAP_CHAPTERS   = 60,
     RT_PLAY_CHAP_PLANETS    = 61,
@@ -81,6 +82,10 @@ enum ResTextType
     RT_PLAY_LIST_MISSIONS   = 66,
     RT_PLAY_LIST_FREEGAME   = 67,
     RT_PLAY_RESUME          = 68,
+
+    RT_MODLIST_UNLOADED     = 71,
+    RT_MODLIST_LOADED       = 72,
+    RT_MODLIST_DESCRIPTION  = 73,
 
     RT_SETUP_MODE           = 81,
     RT_SETUP_KEY1           = 82,
@@ -102,6 +107,8 @@ enum ResTextType
     RT_DIALOG_OK            = 110,
     RT_DIALOG_NOUSRLVL_TITLE = 111,
     RT_DIALOG_NOUSRLVL_TEXT = 112,
+    RT_DIALOG_MODSCHANGE_TITLE = 113,
+    RT_DIALOG_MODSCHANGE_TEXT = 114,
 
     RT_STUDIO_LISTTT        = 120,
     RT_STUDIO_COMPOK        = 121,

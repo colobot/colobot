@@ -48,11 +48,11 @@ class CScreenIOWrite;
 class CScreenLevelList;
 class CScreenLoading;
 class CScreenMainMenu;
+class CScreenModManager;
 class CScreenPlayerSelect;
 class CScreenQuit;
 class CScreenSetup;
 class CScreenSetupControls;
-class CScreenSetupDisplay;
 class CScreenSetupGame;
 class CScreenSetupGraphics;
 class CScreenSetupSound;
@@ -120,6 +120,7 @@ protected:
     std::unique_ptr<CScreenSetupGraphics> m_screenSetupGraphics;
     std::unique_ptr<CScreenSetupSound> m_screenSetupSound;
     std::unique_ptr<CScreenWelcome> m_screenWelcome;
+    std::unique_ptr<CScreenModManager> m_screenModManager;
 
     Phase                m_phase;            // copy of CRobotMain
 

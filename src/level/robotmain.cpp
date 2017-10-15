@@ -329,6 +329,7 @@ std::string PhaseToString(Phase phase)
     if (phase == PHASE_LOST) return "PHASE_LOST";
     if (phase == PHASE_QUIT_SCREEN) return "PHASE_QUIT_SCREEN";
     if (phase == PHASE_SATCOM) return "PHASE_SATCOM";
+    if (phase == PHASE_MOD_MANAGER) return "PHASE_MOD_MANAGER";
     return "(unknown)";
 }
 
@@ -5557,13 +5558,13 @@ void CRobotMain::Autosave()
 void CRobotMain::QuickSave()
 {
     GetLogger()->Info("Quicksave!\n");
-    
+
     char infostr[100];
     time_t now = time(nullptr);
     strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
     std::string info = std::string("[QUICKSAVE]") + infostr;
     std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
-    
+
     m_playerProfile->SaveScene(dir, info);
 }
 

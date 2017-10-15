@@ -76,8 +76,17 @@ void CPathManager::SetSavePath(std::string savePath)
 
 void CPathManager::AddMod(std::string modPath)
 {
-    GetLogger()->Info("Loading mod: '%s'\n", modPath.c_str());
-    CResourceManager::AddLocation(modPath, true);
+    std::string::size_type ON;
+    ON = modPath.find('~');
+    if (ON == std::string::npos)
+    {
+        GetLogger()->Info("Loading mod: '%s'\n", modPath.c_str());
+        CResourceManager::AddLocation(modPath, true);
+    }
+    else
+    {
+        GetLogger()->Info("Found Excluded mod: '%s'\n", modPath.c_str());
+    }
 }
 
 const std::string& CPathManager::GetDataPath()
