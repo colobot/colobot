@@ -58,7 +58,6 @@ public:
 private:
     boost::property_tree::ptree m_propertyTree;
     bool m_needsSave;
-    bool m_useCurrentDirectory;
     bool m_loaded;
 };
 

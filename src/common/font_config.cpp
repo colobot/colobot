@@ -39,7 +39,6 @@ namespace bp = boost::property_tree;
 
 CFontConfigFile::CFontConfigFile()
    : m_needsSave(false)
-   , m_useCurrentDirectory(false)
    , m_loaded(false)
 {
 }
@@ -54,18 +53,9 @@ bool CFontConfigFile::Init()
     {
         std::unique_ptr<std::istream> stream;
         bool good;
-        if (m_useCurrentDirectory)
-        {
-            auto inputStream = MakeUnique<std::ifstream>("/fonts/fonts.ini");
-            good = inputStream->good();
-            stream = std::move(inputStream);
-        }
-        else
-        {
-            auto inputStream = MakeUnique<CInputStream>("/fonts/fonts.ini");
-            good = inputStream->is_open();
-            stream = std::move(inputStream);
-        }
+        auto inputStream = MakeUnique<CInputStream>("/fonts/fonts.ini");
+        good = inputStream->is_open();
+        stream = std::move(inputStream);
         
         if (good)
         {
