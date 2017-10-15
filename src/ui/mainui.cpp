@@ -350,7 +350,8 @@ void CMainUserInterface::GlintMove()
             m_phase == PHASE_SETUPgs ||
             m_phase == PHASE_SETUPps ||
             m_phase == PHASE_SETUPcs ||
-            m_phase == PHASE_SETUPss )
+            m_phase == PHASE_SETUPss ||
+            m_phase == PHASE_MOD_MANAGER )
     {
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTu));
         if ( pg != nullptr )
@@ -534,7 +535,8 @@ void CMainUserInterface::FrameParticle(float rTime)
             m_phase == PHASE_SETUPp  ||
             m_phase == PHASE_SETUPc  ||
             m_phase == PHASE_SETUPs  ||
-            m_phase == PHASE_READ    )
+            m_phase == PHASE_READ    ||
+            m_phase == PHASE_MOD_MANAGER )
     {
         pParti = partiPosBig;
         pGlint = glintPosBig;

@@ -189,12 +189,12 @@ bool CScreenModManager::EventProcess(const Event &event)
          event.type == EVENT_INTERFACE_BACK    ||
          (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
     {
+        m_main->ChangePhase(PHASE_MAIN_MENU);
         std::string title, htext, text;
         GetResource(RES_TEXT, RT_TITLE_APPNAME, title);
         GetResource(RES_TEXT, RT_DIALOG_MODSCHANGE_TITLE, htext);
         GetResource(RES_TEXT, RT_DIALOG_MODSCHANGE_TEXT, text);
         m_dialog->StartInformation(title, htext, text);
-        m_main->ChangePhase(PHASE_MAIN_MENU);
         return false;
     }
 
