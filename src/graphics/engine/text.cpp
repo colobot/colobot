@@ -117,8 +117,8 @@ CText::~CText()
 
 bool CText::Create()
 {
-    CFontConfigFile fontconfig;
-    if (!GetFontConfigFile().Init())
+    CFontConfig fontConfig;
+    if (!fontConfig.Init())
     {
         GetLogger()->Warn("Error on parsing fonts config file: failed to open file\n");
     }
@@ -128,14 +128,14 @@ bool CText::Create()
         return false;
     }
     
-    m_fonts[FONT_COMMON]        = MakeUnique<MultisizeFont>(GetFontConfigFile().GetFont(FONT_COMMON));
-    m_fonts[FONT_COMMON_BOLD]   = MakeUnique<MultisizeFont>(GetFontConfigFile().GetFont(FONT_COMMON_BOLD));
-    m_fonts[FONT_COMMON_ITALIC] = MakeUnique<MultisizeFont>(GetFontConfigFile().GetFont(FONT_COMMON_ITALIC));
+    m_fonts[FONT_COMMON]        = MakeUnique<MultisizeFont>(fontConfig.GetFont(FONT_COMMON));
+    m_fonts[FONT_COMMON_BOLD]   = MakeUnique<MultisizeFont>(fontConfig.GetFont(FONT_COMMON_BOLD));
+    m_fonts[FONT_COMMON_ITALIC] = MakeUnique<MultisizeFont>(fontConfig.GetFont(FONT_COMMON_ITALIC));
     
-    m_fonts[FONT_SATCOM]        = MakeUnique<MultisizeFont>(GetFontConfigFile().GetFont(FONT_SATCOM));
+    m_fonts[FONT_SATCOM]        = MakeUnique<MultisizeFont>(fontConfig.GetFont(FONT_SATCOM));
 
-    m_fonts[FONT_STUDIO]        = MakeUnique<MultisizeFont>(GetFontConfigFile().GetFont(FONT_STUDIO));
-    m_fonts[FONT_STUDIO_BOLD]   = MakeUnique<MultisizeFont>(GetFontConfigFile().GetFont(FONT_STUDIO_BOLD));
+    m_fonts[FONT_STUDIO]        = MakeUnique<MultisizeFont>(fontConfig.GetFont(FONT_STUDIO));
+    m_fonts[FONT_STUDIO_BOLD]   = MakeUnique<MultisizeFont>(fontConfig.GetFont(FONT_STUDIO_BOLD));
     
     for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
     {

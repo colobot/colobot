@@ -37,17 +37,17 @@
 
 namespace bp = boost::property_tree;
 
-CFontConfigFile::CFontConfigFile()
+CFontConfig::CFontConfig()
    : m_needsSave(false)
    , m_loaded(false)
 {
 }
 
-CFontConfigFile::~CFontConfigFile()
+CFontConfig::~CFontConfig()
 {
 }
 
-bool CFontConfigFile::Init()
+bool CFontConfig::Init()
 {
     try
     {
@@ -76,7 +76,7 @@ bool CFontConfigFile::Init()
     return true;
 }
 
-std::string CFontConfigFile::GetFont(Gfx::FontType type)
+std::string CFontConfig::GetFont(Gfx::FontType type)
 {
     switch(type)
     {

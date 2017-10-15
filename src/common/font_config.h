@@ -33,17 +33,17 @@
 #include <string>
 
 /**
-* \class CFontConfigFile
+* \class CFontConfig
 *
 * \brief Class for loading config file
 *
 */
 
-class CFontConfigFile : public CSingleton<CFontConfigFile>
+class CFontConfig
 {
 public:
-    CFontConfigFile();
-    virtual ~CFontConfigFile();
+    CFontConfig();
+    virtual ~CFontConfig();
     
     /** Loads fonts.ini
     * \return return true on success
@@ -60,9 +60,3 @@ private:
     bool m_needsSave;
     bool m_loaded;
 };
-
-//! Global function to get config file instance
-inline CFontConfigFile & GetFontConfigFile()
-{
-    return CFontConfigFile::GetInstance();
-}
