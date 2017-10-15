@@ -21,6 +21,8 @@
 
 #include "app/app.h"
 
+#include "common/config.h"
+
 #include "common/logger.h"
 
 #include "common/settings.h"
@@ -93,7 +95,7 @@ void CScreenModManager::CreateInterface()
     pb->SetState(STATE_SHADOW);
     pb->SetState(STATE_CARD);
     pb->SetState(STATE_CHECK, (m_global == true));
-    pb->ClearState(STATE_ENABLE);
+    pb->ClearState(STATE_ENABLE); // TODO: Remove This Line while /data mods Support is Finished.
 
     pos.x  = 0.10f;
     ddim.x = 0.80f;
@@ -177,10 +179,7 @@ bool CScreenModManager::EventProcess(const Event &event)
     CButton*               pb;
     CList*                 pl;
     int                    result;
-    std::string            OFF = "~";
-    std::string            modName;
-    std::string            modPath;
-    std::string            modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
+    std::string            modName, modPath, modPathRaw, OFF = "~";
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return false;
@@ -190,6 +189,7 @@ bool CScreenModManager::EventProcess(const Event &event)
          (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
     {
         m_main->ChangePhase(PHASE_MAIN_MENU);
+        //TODO: Make Resource Reloader
         std::string title, htext, text;
         GetResource(RES_TEXT, RT_TITLE_APPNAME, title);
         GetResource(RES_TEXT, RT_DIALOG_MODSCHANGE_TITLE, htext);
@@ -203,9 +203,18 @@ bool CScreenModManager::EventProcess(const Event &event)
         pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MODLIST_UNLOADED));
         if ( pl == nullptr )  return false;
         modName = pl->GetItemName(pl->GetSelect());
-        modPath = modPathRaw.c_str();
-        boost::filesystem::rename(modPath+OFF+modName, modPath+modName);
-        m_main->ChangePhase(PHASE_MOD_MANAGER);
+
+        if(m_global == false)
+        {
+            modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
+            modPath = modPathRaw.c_str();
+            boost::filesystem::rename(modPath+OFF+modName, modPath+modName);
+            m_main->ChangePhase(PHASE_MOD_MANAGER);
+        }
+        else
+        {
+            //TODO
+        }
     }
 
     if (event.type == EVENT_INTERFACE_UNLOAD)
@@ -213,9 +222,41 @@ bool CScreenModManager::EventProcess(const Event &event)
         pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MODLIST_LOADED));
         if ( pl == nullptr )  return false;
         modName = pl->GetItemName(pl->GetSelect());
-        modPath = modPathRaw.c_str();
-        boost::filesystem::rename(modPath+modName, modPath+OFF+modName);
-        m_main->ChangePhase(PHASE_MOD_MANAGER);
+
+        if(m_global == false)
+        {
+            modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
+            modPath = modPathRaw.c_str();
+            boost::filesystem::rename(modPath+modName, modPath+OFF+modName);
+            m_main->ChangePhase(PHASE_MOD_MANAGER);
+        }
+        else
+        {
+            //TODO
+        }
+    }
+
+    if (event.type == EVENT_INTERFACE_MODS_DIR)
+    {
+        if(m_global == false)
+        {
+            modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods";
+            #if defined(PLATFORM_WINDOWS)
+                result = system(("start \""+modPathRaw+"\"").c_str());
+            #elif defined(PLATFORM_LINUX)
+                result = system(("xdg-open \""+modPathRaw+"\"").c_str());
+            #elif defined(PLATFORM_MACOSX)
+                result = system(("open \""+modPathRaw+"\"").c_str());
+            #endif
+            if (result == -1)
+            {
+                GetLogger()->Error("Failed to open Mods Directory! Is directory Exists?\n");
+            }
+        }
+        else
+        {
+            //TODO
+        }
     }
 
     switch (event.type)
@@ -254,31 +295,12 @@ bool CScreenModManager::EventProcess(const Event &event)
             pb->SetState(STATE_ENABLE);
             break;
 
-        case EVENT_INTERFACE_MODS_DIR:
-            modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods";
-            #ifdef _WIN32
-                result = system(("start \""+modPathRaw+"\"").c_str());
-            #endif
-            #ifdef __linux__
-                result = system(("xdg-open \""+modPathRaw+"\"").c_str());
-            #endif
-            #ifdef __APPLE__
-                result = system(("open \""+modPathRaw+"\"").c_str());
-            #endif
-            if (result == -1)
-            {
-                GetLogger()->Error("Failed to open Mods Directory! Is directory Exists?\n");
-            }
-            break;
-
         case EVENT_INTERFACE_WORKSHOP:
-            #ifdef _WIN32
+            #if defined(PLATFORM_WINDOWS)
                 result = system("start \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
-            #endif
-            #ifdef __linux__
+            #elif defined(PLATFORM_LINUX)
                 result = system("xdg-open \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
-            #endif
-            #ifdef __APPLE__
+            #elif defined(PLATFORM_MACOSX)
                 result = system("open \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
             #endif
             if (result == -1)
@@ -293,57 +315,73 @@ bool CScreenModManager::EventProcess(const Event &event)
     return false;
 }
 
-void CScreenModManager::UpdateUnloadedModList()
+void CScreenModManager::UpdateUnloadedModList() //TODO: Make Support for /data mods
 {
     CWindow*    pw;
     CList*      pl;
     int         i = 0;
     std::string modName;
-    auto        modsDir = CResourceManager::ListDirectories("mods/");
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MODLIST_UNLOADED));
     if ( pl == nullptr )  return;
 
-    std::sort(modsDir.begin(), modsDir.end());
     pl->Flush();
 
-    for(auto const& modNameRaw : modsDir)
+    if(m_global == false)
     {
-        modName = modNameRaw;
-        std::string::size_type ON;
-        ON = modName.find('~');
-        if (ON != std::string::npos)
+        auto modsDir = CResourceManager::ListDirectories("mods/");
+        std::sort(modsDir.begin(), modsDir.end());
+
+        for(auto const& modNameRaw : modsDir)
         {
-            modName.erase(0,1);
-            pl->SetItemName(i++, modName);
+            modName = modNameRaw;
+            std::string::size_type ON;
+            ON = modName.find('~');
+            if (ON != std::string::npos)
+            {
+                modName.erase(0,1);
+                pl->SetItemName(i++, modName);
+            }
         }
+    }
+    else
+    {
+        //TODO
     }
     pl->ShowSelect(false);  // shows the selected columns
 }
 
-void CScreenModManager::UpdateLoadedModList()
+void CScreenModManager::UpdateLoadedModList() //TODO: Make Support for /data mods
 {
     CWindow*    pw;
     CList*      pl;
     int         i = 0;
-    auto        modsDir = CResourceManager::ListDirectories("mods/");
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MODLIST_LOADED));
     if ( pl == nullptr )  return;
 
-    std::sort(modsDir.begin(), modsDir.end());
     pl->Flush();
 
-    for(auto const &modName : modsDir)
+    if(m_global == false)
     {
-        std::string::size_type ON;
-        ON = modName.find('~');
-        if (ON == std::string::npos)
-            pl->SetItemName(i++, modName);
+        auto modsDir = CResourceManager::ListDirectories("mods/");
+        std::sort(modsDir.begin(), modsDir.end());
+
+        for(auto const &modName : modsDir)
+        {
+            std::string::size_type ON;
+            ON = modName.find('~');
+            if (ON == std::string::npos)
+                pl->SetItemName(i++, modName);
+        }
+    }
+    else
+    {
+        //TODO
     }
     pl->ShowSelect(false);  // shows the selected columns
 }
