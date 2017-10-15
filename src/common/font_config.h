@@ -26,6 +26,8 @@
 
 #include "common/singleton.h"
 
+#include "graphics/engine/text.h"
+
 #include <boost/property_tree/ptree.hpp>
 
 #include <string>
@@ -48,35 +50,10 @@ public:
     */
     bool Init();
 
-    /** Reads common font from file
+    /** Reads given font from file
     * \return return path to font file
     */
-    std::string GetCommonFont();
-
-    /** Reads common bold font from file
-    * \return return path to font file
-    */
-    std::string GetCommonBoldFont();
-
-    /** Reads common italic font from file
-    * \return return path to font file
-    */
-    std::string GetCommonItalicFont();
-
-    /** Reads studio font from file
-    * \return return path to font file
-    */
-    std::string GetStudioFont();
-    
-    /** Reads studio bold font from file
-    * \return returns path to font file
-    */
-    std::string GetStudioBoldFont();
-    
-    /** Reads satcom font from file
-    * \return returns path to font file
-    */
-    std::string GetSatComFont();
+    std::string GetFont(Gfx::FontType type);
     
 private:
     boost::property_tree::ptree m_propertyTree;

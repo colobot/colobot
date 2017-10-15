@@ -127,16 +127,16 @@ bool CText::Create()
         m_error = std::string("TTF_Init error: ") + std::string(TTF_GetError());
         return false;
     }
-
-    m_fonts[FONT_COMMON]        = MakeUnique<MultisizeFont>(GetFontConfigFile().GetCommonFont());
-    m_fonts[FONT_COMMON_BOLD]   = MakeUnique<MultisizeFont>(GetFontConfigFile().GetCommonBoldFont());
-    m_fonts[FONT_COMMON_ITALIC] = MakeUnique<MultisizeFont>(GetFontConfigFile().GetCommonItalicFont());
     
-    m_fonts[FONT_SATCOM]         = MakeUnique<MultisizeFont>(GetFontConfigFile().GetSatComFont());
+    m_fonts[FONT_COMMON]        = MakeUnique<MultisizeFont>(GetFontConfigFile().GetFont(FONT_COMMON));
+    m_fonts[FONT_COMMON_BOLD]   = MakeUnique<MultisizeFont>(GetFontConfigFile().GetFont(FONT_COMMON_BOLD));
+    m_fonts[FONT_COMMON_ITALIC] = MakeUnique<MultisizeFont>(GetFontConfigFile().GetFont(FONT_COMMON_ITALIC));
+    
+    m_fonts[FONT_SATCOM]        = MakeUnique<MultisizeFont>(GetFontConfigFile().GetFont(FONT_SATCOM));
 
-    m_fonts[FONT_STUDIO]        = MakeUnique<MultisizeFont>(GetFontConfigFile().GetStudioFont());
-    m_fonts[FONT_STUDIO_BOLD]   = MakeUnique<MultisizeFont>(GetFontConfigFile().GetStudioBoldFont());
-
+    m_fonts[FONT_STUDIO]        = MakeUnique<MultisizeFont>(GetFontConfigFile().GetFont(FONT_STUDIO));
+    m_fonts[FONT_STUDIO_BOLD]   = MakeUnique<MultisizeFont>(GetFontConfigFile().GetFont(FONT_STUDIO_BOLD));
+    
     for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
     {
         FontType type = (*it).first;
