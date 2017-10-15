@@ -267,7 +267,7 @@ bool CScreenModManager::EventProcess(const Event &event)
             #endif
             if (result == -1)
             {
-                GetLogger()->Error("Failed to Open Mods Directory! Is Directory doesn't Exists?\n");
+                GetLogger()->Error("Failed to open Mods Directory! Is directory Exists?\n");
             }
             break;
 
@@ -283,7 +283,7 @@ bool CScreenModManager::EventProcess(const Event &event)
             #endif
             if (result == -1)
             {
-                GetLogger()->Error("Failed to Open Workshop! Is any Web Broswer Installed?\n");
+                GetLogger()->Error("Failed to open Workshop! Is any Web Broswer Installed?\n");
             }
             break;
 
