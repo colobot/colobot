@@ -22,7 +22,7 @@
 
 #include "app/app.h"
 
-#include "common/font_file.h"
+#include "common/font_config.h"
 #include "common/image.h"
 #include "common/logger.h"
 #include "common/stringutils.h"

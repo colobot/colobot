@@ -18,7 +18,7 @@
  */
  
  /**
- * \file common/font_file.h
+ * \file common/font_config.h
  * \brief Class for loading fonts from /data/fonts/fonts.ini
  */
  

@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
  
-#include "common/font_file.h"
+#include "common/font_config.h"
 
 #include "common/logger.h"
 #include "common/make_unique.h"
