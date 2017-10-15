@@ -250,7 +250,7 @@ bool CScreenModManager::EventProcess(const Event &event)
             #endif
             if (result == -1)
             {
-                GetLogger()->Error("Failed to open Mods Directory! Is directory Exists?\n");
+                GetLogger()->Error("Failed to open Mods Directory! Does directory Exists?\n");
             }
         }
         else
