@@ -21,6 +21,8 @@
 
 #include "app/app.h"
 
+#include "common/logger.h"
+
 #include "common/settings.h"
 
 #include "common/resources/resourcemanager.h"
@@ -174,6 +176,7 @@ bool CScreenModManager::EventProcess(const Event &event)
     CWindow*               pw;
     CButton*               pb;
     CList*                 pl;
+    int                    result;
     std::string            OFF = "~";
     std::string            modName;
     std::string            modPath;
@@ -254,26 +257,34 @@ bool CScreenModManager::EventProcess(const Event &event)
         case EVENT_INTERFACE_MODS_DIR:
             modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods";
             #ifdef _WIN32
-                system(("start \""+modPathRaw+"\"").c_str());
+                result = system(("start \""+modPathRaw+"\"").c_str());
             #endif
             #ifdef __linux__
-                system(("xdg-open \""+modPathRaw+"\"").c_str());
+                result = system(("xdg-open \""+modPathRaw+"\"").c_str());
             #endif
             #ifdef __APPLE__
-                system(("open \""+modPathRaw+"\"").c_str());
+                result = system(("open \""+modPathRaw+"\"").c_str());
             #endif
+            if (result == -1)
+            {
+                GetLogger()->Error("Failed to Open Mods Directory! Is Directory doesn't Exists?\n");
+            }
             break;
 
         case EVENT_INTERFACE_WORKSHOP:
             #ifdef _WIN32
-                system("start \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
+                result = system("start \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
             #endif
             #ifdef __linux__
-                system("xdg-open \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
+                result = system("xdg-open \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
             #endif
             #ifdef __APPLE__
-                system("open \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
+                result = system("open \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
             #endif
+            if (result == -1)
+            {
+                GetLogger()->Error("Failed to Open Workshop! Is any Web Broswer Installed?\n");
+            }
             break;
 
         default:
