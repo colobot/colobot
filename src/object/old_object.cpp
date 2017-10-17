@@ -390,7 +390,12 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
             SetShield(shield);
 
             // Sending info about taking damage
-            SetDamaging(true);
+            if (!m_damaging)
+            {
+                SetDamaging(true);
+                m_main->UpdateShortcuts();
+            }
+            m_damageTime = m_time;
         }
         else
         {
@@ -429,10 +434,6 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
     {
         m_engine->GetPyroManager()->Create(Gfx::PT_SHOTT, this, loss);
     }
-
-    /*if ( m_time < 2.0f && m_damaging == true )  SetDamaging(false);
-    m_time = 0.0f;*/ // TODO: Make DamageAlarm Icon Dissapear after 2 seconds
-
     return false;
 }
 
@@ -2155,6 +2156,12 @@ bool COldObject::EventFrame(const Event &event)
     if (Implements(ObjectInterfaceType::ShieldedAutoRegen))
     {
         SetShield(GetShield() + event.rTime*(1.0f/GetShieldFullRegenTime()));
+    }
+
+    if (m_damaging && m_time - m_damageTime > 2.0f)
+    {
+        SetDamaging(false);
+        m_main->UpdateShortcuts();
     }
 
     return true;

@@ -109,7 +109,7 @@ void CShortcut::Draw()
         zoom = 1.0f;
         mode = Gfx::ENG_RSTATE_NORMAL;
     }
-    if ( m_state & STATE_DAMAGE  )
+    if ( (m_state & STATE_DAMAGE) && Math::Mod(m_time, 0.7f) >= 0.3f )
     {
         icon = 59;
         zoom = 0.8f;

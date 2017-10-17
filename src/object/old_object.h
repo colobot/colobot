@@ -360,6 +360,7 @@ protected:
     bool        m_bCheckToken;          // object with audited tokens
     bool        m_underground;         // object active but undetectable
     bool        m_damaging;
+    float       m_damageTime;
     DeathType   m_dying;
     bool        m_bFlat;
     bool        m_bTrainer;         // drive vehicle (without remote)
