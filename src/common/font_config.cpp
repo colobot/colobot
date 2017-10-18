@@ -42,14 +42,6 @@ CFontConfig::CFontConfig()
    : m_needsSave(false)
    , m_loaded(false)
 {
-    //default fonts
-    m_defaultFont[Gfx::FONT_COMMON] = "/fonts/dvu_sans.ttf";
-    m_defaultFont[Gfx::FONT_COMMON_BOLD] = "/fonts/dvu_sans_bold.ttf";
-    m_defaultFont[Gfx::FONT_COMMON_ITALIC] = "/fonts/dvu_sans_italic.ttf";
-    m_defaultFont[Gfx::FONT_STUDIO] = "/fonts/dvu_sans_mono.ttf";
-    m_defaultFont[Gfx::FONT_STUDIO_BOLD] = "/fonts/dvu_sans_mono_bold.ttf";
-    m_defaultFont[Gfx::FONT_SATCOM] = "/fonts/dvu_sans.ttf";
-    
     m_font[Gfx::FONT_COMMON] = "FontCommon";
     m_font[Gfx::FONT_COMMON_BOLD] = "FontCommonBold";
     m_font[Gfx::FONT_COMMON_ITALIC] = "FontCommonItalic";
@@ -93,14 +85,10 @@ bool CFontConfig::Init()
 
 std::string CFontConfig::GetFont(Gfx::FontType type)
 {
-    try
-    {
-        std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>(m_font[type]);
-        return path;
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
-        return m_defaultFont[type];
-    } 
+    return std::string("/fonts/") + m_propertyTree.get<std::string>(m_font[type], GetDefaultFont(type));
+}
+
+std::string CFontConfig::GetDefaultFont(Gfx::FontType type) const
+{
+    return defaultFont.at(type);
 }
