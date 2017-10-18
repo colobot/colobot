@@ -59,4 +59,5 @@ private:
     boost::property_tree::ptree m_propertyTree;
     bool m_needsSave;
     bool m_loaded;
+    std::map<Gfx::FontType, std::string> m_font, m_defaultFont;
 };

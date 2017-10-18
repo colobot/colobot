@@ -29,6 +29,7 @@
 
 #include "graphics/engine/text.h"
 
+#include <map>
 #include <memory>
 #include <utility>
 #include <cstring>
@@ -41,6 +42,20 @@ CFontConfig::CFontConfig()
    : m_needsSave(false)
    , m_loaded(false)
 {
+    //default fonts
+    m_defaultFont[Gfx::FONT_COMMON] = "/fonts/dvu_sans.ttf";
+    m_defaultFont[Gfx::FONT_COMMON_BOLD] = "/fonts/dvu_sans_bold.ttf";
+    m_defaultFont[Gfx::FONT_COMMON_ITALIC] = "/fonts/dvu_sans_italic.ttf";
+    m_defaultFont[Gfx::FONT_STUDIO] = "/fonts/dvu_sans_mono.ttf";
+    m_defaultFont[Gfx::FONT_STUDIO_BOLD] = "/fonts/dvu_sans_mono_bold.ttf";
+    m_defaultFont[Gfx::FONT_SATCOM] = "/fonts/dvu_sans.ttf";
+    
+    m_font[Gfx::FONT_COMMON] = "FontCommon";
+    m_font[Gfx::FONT_COMMON_BOLD] = "FontCommonBold";
+    m_font[Gfx::FONT_COMMON_ITALIC] = "FontCommonItalic";
+    m_font[Gfx::FONT_STUDIO] = "FontStudio";
+    m_font[Gfx::FONT_STUDIO_BOLD] = "FontStudioBold";
+    m_font[Gfx::FONT_SATCOM] = "FontSatCom";
 }
 
 CFontConfig::~CFontConfig()
@@ -78,90 +93,14 @@ bool CFontConfig::Init()
 
 std::string CFontConfig::GetFont(Gfx::FontType type)
 {
-    switch(type)
+    try
     {
-        case Gfx::FONT_COMMON:
-        {
-            try
-            {
-                std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FontCommon");
-                return path;
-            }
-            catch (std::exception & e)
-            {
-                GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
-                return "/fonts/dvu_sans.ttf";
-            } 
-        }
-        case Gfx::FONT_COMMON_BOLD:
-        {
-            try
-            {
-                std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FontCommonBold");
-                return path;
-            }
-            catch (std::exception & e)
-            {
-                GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
-                return "/fonts/dvu_sans_bold.ttf";
-            }
-        }
-        case Gfx::FONT_COMMON_ITALIC:
-        {
-            try
-            {
-                std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FontCommonItalic");
-                return path;
-            }
-            catch (std::exception & e)
-            {
-                GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
-                return "/fonts/dvu_sans_italic.ttf";
-            }
-        }
-        case Gfx::FONT_STUDIO:
-        {
-            try
-            {
-                std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FontStudio");
-                return path;
-            }
-            catch (std::exception & e)
-            {
-                GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
-                return "/fonts/dvu_sans_mono.ttf";
-            }
-        }
-        case Gfx::FONT_STUDIO_BOLD:
-        {
-            try
-            {
-                std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FontStudioBold");
-                return path;
-            }
-            catch (std::exception & e)
-            {
-                GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
-                return "/fonts/dvu_sans_mono_bold.ttf";
-            }
-        }
-        case Gfx::FONT_SATCOM:
-        {
-            try
-            {
-                std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>("FontSatCom");
-                return path;
-            }
-            catch (std::exception & e)
-            {
-                GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
-                return "/fonts/dvu_sans.ttf";
-            }
-        }
-        default:
-        {
-            GetLogger()->Debug("Incorrect font type: %i.\n", type);
-            return nullptr;
-        }
+        std::string path = std::string("/fonts/") + m_propertyTree.get<std::string>(m_font[type]);
+        return path;
     }
+    catch (std::exception & e)
+    {
+        GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s. Default font will be used instead.\n", e.what());
+        return m_defaultFont[type];
+    } 
 }
