@@ -240,7 +240,7 @@ bool CScreenModManager::EventProcess(const Event &event)
     {
         if(m_global == false)
         {
-            modPathRaw = GetSavePath() + "/" + "mods";
+            modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods";
             #if defined(PLATFORM_WINDOWS)
                 result = system(("start \""+modPathRaw+"\"").c_str());
             #elif defined(PLATFORM_LINUX)
