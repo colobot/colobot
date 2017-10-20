@@ -1178,6 +1178,10 @@ public:
     void            EnablePauseBlur();
     void            DisablePauseBlur();
 
+    //! Reloads all textures
+    /** This additionally sends EVENT_RELOAD_TEXTURES to reload all textures not maintained by CEngine **/
+    void            ReloadAllTextures();
+
 protected:
     //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
     /** Instead of calling this directly, send EVENT_RESOLUTION_CHANGED event **/
@@ -1275,10 +1279,6 @@ protected:
         std::string fileName;
     };
     static void WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data);
-
-    //! Reloads all textures
-    /** This additionally sends EVENT_RELOAD_TEXTURES to reload all textures not maintained by CEngine **/
-    void ReloadAllTextures();
 
 protected:
     CApplication*     m_app;

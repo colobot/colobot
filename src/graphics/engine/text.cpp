@@ -182,6 +182,8 @@ void CText::FlushCache()
     m_lastCachedFont = nullptr;
     m_lastFontType = FONT_COLOBOT;
     m_lastFontSize = 0;
+
+    Create();
 }
 
 int CText::GetTabSize()

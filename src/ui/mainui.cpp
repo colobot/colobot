@@ -86,7 +86,7 @@ CMainUserInterface::CMainUserInterface()
     m_screenPlayerSelect = MakeUnique<CScreenPlayerSelect>(m_dialog.get());
     m_screenQuit = MakeUnique<CScreenQuit>();
     m_screenWelcome = MakeUnique<CScreenWelcome>();
-    m_screenModManager = MakeUnique<CScreenModManager>(m_dialog.get());
+    m_screenModManager = MakeUnique<CScreenModManager>();
 
     m_currentScreen = nullptr;
 

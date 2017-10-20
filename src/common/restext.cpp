@@ -88,7 +88,6 @@ void InitializeRestext()
 
     stringsText[RT_MODLIST_UNLOADED]     = TR("Unloaded Mods:");
     stringsText[RT_MODLIST_LOADED]       = TR("Loaded Mods:");
-    stringsText[RT_MODLIST_DESCRIPTION]  = TR("Mod Description:");
 
     stringsText[RT_SETUP_MODE]       = TR("Resolution:");
     stringsText[RT_SETUP_KEY1]       = TR("1) First click on the key you want to redefine.");
@@ -185,8 +184,8 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_PLAY]      = TR("Play\\Start mission!");
     stringsEvent[EVENT_INTERFACE_MODLIST_LOCAL] = TR("Local\\Local Mods");
     stringsEvent[EVENT_INTERFACE_MODLIST_GLOBAL] = TR("Global\\Global Mods");
-    stringsEvent[EVENT_INTERFACE_MODS_DIR]  = TR("Open Directory\\Open Mods Directory");
     stringsEvent[EVENT_INTERFACE_WORKSHOP]  = TR("Workshop\\Open Workshop to Search Mods");
+    stringsEvent[EVENT_INTERFACE_MODS_DIR]  = TR("Open Directory\\Open Mods Directory");
     stringsEvent[EVENT_INTERFACE_LOAD]      = TR("Load\\Load Mod");
     stringsEvent[EVENT_INTERFACE_UNLOAD]    = TR("Unload\\Unload Mod");
     stringsEvent[EVENT_INTERFACE_SETUPg]    = TR("Graphics\\Graphics settings");

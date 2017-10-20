@@ -23,14 +23,15 @@
 
 #include <vector>
 
+class CPathManager;
+
 namespace Ui
 {
-class CMainDialog;
 
 class CScreenModManager : public CScreen
 {
 public:
-    CScreenModManager(Ui::CMainDialog* mainDialog);
+    CScreenModManager();
 
     void CreateInterface() override;
     bool EventProcess(const Event &event) override;
@@ -39,7 +40,7 @@ public:
     void UpdateLoadedModList();
 
 protected:
-    Ui::CMainDialog* m_dialog;
+    CPathManager* m_pathManager;
 
     bool m_global = false;
 

@@ -85,7 +85,6 @@ enum ResTextType
 
     RT_MODLIST_UNLOADED     = 71,
     RT_MODLIST_LOADED       = 72,
-    RT_MODLIST_DESCRIPTION  = 73,
 
     RT_SETUP_MODE           = 81,
     RT_SETUP_KEY1           = 82,

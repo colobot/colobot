@@ -20,6 +20,7 @@
 #include "ui/screen/screen_mod_manager.h"
 
 #include "app/app.h"
+#include "app/pathman.h"
 
 #include "common/config.h"
 
@@ -30,6 +31,8 @@
 #include "common/resources/resourcemanager.h"
 
 #include "level/parser/parser.h"
+
+#include "sound/oalsound/alsound.h"
 
 #include "ui/maindialog.h"
 
@@ -46,8 +49,7 @@
 namespace Ui
 {
 
-CScreenModManager::CScreenModManager(CMainDialog* mainDialog)
-    : m_dialog(mainDialog)
+CScreenModManager::CScreenModManager()
 {
 }
 
@@ -189,12 +191,6 @@ bool CScreenModManager::EventProcess(const Event &event)
          (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
     {
         m_main->ChangePhase(PHASE_MAIN_MENU);
-        //TODO: Make Resource Reloader
-        std::string title, htext, text;
-        GetResource(RES_TEXT, RT_TITLE_APPNAME, title);
-        GetResource(RES_TEXT, RT_DIALOG_MODSCHANGE_TITLE, htext);
-        GetResource(RES_TEXT, RT_DIALOG_MODSCHANGE_TEXT, text);
-        m_dialog->StartInformation(title, htext, text);
         return false;
     }
 
@@ -209,6 +205,8 @@ bool CScreenModManager::EventProcess(const Event &event)
             modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
             modPath = modPathRaw.c_str();
             boost::filesystem::rename(modPath+OFF+modName, modPath+modName);
+            m_pathManager->AddMod(modPath+modName);
+            m_app->Reload();
             m_main->ChangePhase(PHASE_MOD_MANAGER);
         }
         else
@@ -227,7 +225,9 @@ bool CScreenModManager::EventProcess(const Event &event)
         {
             modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
             modPath = modPathRaw.c_str();
+            m_pathManager->RemoveMod(modPath+modName);
             boost::filesystem::rename(modPath+modName, modPath+OFF+modName);
+            m_app->Reload();
             m_main->ChangePhase(PHASE_MOD_MANAGER);
         }
         else
@@ -240,7 +240,7 @@ bool CScreenModManager::EventProcess(const Event &event)
     {
         if(m_global == false)
         {
-            modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods";
+            modPathRaw = GetSavePath() + "/" + "mods";
             #if defined(PLATFORM_WINDOWS)
                 result = system(("start \""+modPathRaw+"\"").c_str());
             #elif defined(PLATFORM_LINUX)
@@ -385,5 +385,4 @@ void CScreenModManager::UpdateLoadedModList() //TODO: Make Support for /data mod
     }
     pl->ShowSelect(false);  // shows the selected columns
 }
-
 } // namespace Ui
