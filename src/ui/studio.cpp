@@ -249,16 +249,16 @@ bool CStudio::EventProcess(const Event &event)
     {
         m_editActualPos = m_editFinalPos = pw->GetPos();
         m_editActualDim = m_editFinalDim = pw->GetDim();
-        m_settings->SetWindowPos(m_editActualPos);
-        m_settings->SetWindowDim(m_editActualDim);
+        m_windowPos = m_editActualPos;
+        m_windowDim = m_editActualDim;
         AdjustEditScript();
     }
     if ( event.type == pw->GetEventTypeReduce() )
     {
         if ( m_bEditMinimized )
         {
-            m_editFinalPos = m_settings->GetWindowPos();
-            m_editFinalDim = m_settings->GetWindowDim();
+            m_editFinalPos = m_windowPos;
+            m_editFinalDim = m_windowDim;
             m_bEditMinimized = false;
             m_bEditMaximized = false;
         }
@@ -283,8 +283,8 @@ bool CStudio::EventProcess(const Event &event)
     {
         if ( m_bEditMaximized )
         {
-            m_editFinalPos = m_settings->GetWindowPos();
-            m_editFinalDim = m_settings->GetWindowDim();
+            m_editFinalPos = m_windowPos;
+            m_editFinalDim = m_windowDim;
             m_bEditMinimized = false;
             m_bEditMaximized = false;
         }
@@ -579,8 +579,27 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
     if (pw != nullptr) pw->ClearState(STATE_VISIBLE | STATE_ENABLE);
 
-    pos = m_editFinalPos = m_editActualPos = m_settings->GetWindowPos();
-    dim = m_editFinalDim = m_editActualDim = m_settings->GetWindowDim();
+    m_dialogPos = m_settings->GetIOPos();
+    m_dialogDim = m_settings->GetIODim();
+    m_windowPos = m_settings->GetWindowPos();
+    m_windowDim = m_settings->GetWindowDim();
+    m_bEditMaximized = m_settings->GetWindowMax();
+
+    if ( m_bEditMaximized )
+    {
+        m_editFinalPos.x = 0.00f;
+        m_editFinalPos.y = 0.00f;
+        m_editFinalDim.x = 1.00f;
+        m_editFinalDim.y = 1.00f;
+    }
+    else
+    {
+        m_editFinalPos = m_windowPos;
+        m_editFinalDim = m_windowDim;
+    }
+    pos = m_editActualPos = m_editFinalPos;
+    dim = m_editActualDim = m_editFinalDim;
+
     pw = m_interface->CreateWindows(pos, dim, 8, EVENT_WINDOW3);
     if (pw == nullptr)
         return;
@@ -597,6 +616,8 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     pw->SetMinDim(Math::Point(0.49f, 0.50f));
     pw->SetMaximized(m_bEditMaximized);
     pw->SetMinimized(m_bEditMinimized);
+
+    // stop camera control if maximized
     m_main->SetEditFull(m_bEditMaximized);
 
     edit = pw->CreateEdit(pos, dim, 0, EVENT_STUDIO_EDIT);
@@ -910,6 +931,12 @@ bool CStudio::StopEditScript(bool closeWithErrors)
     m_runningPause = nullptr;
     m_main->SetEditLock(false, true);
     m_camera->SetType(m_editCamera);
+
+    m_settings->SetIOPos(m_dialogPos);
+    m_settings->SetIODim(m_dialogDim);
+    m_settings->SetWindowPos(m_windowPos);
+    m_settings->SetWindowDim(m_windowDim);
+    m_settings->SetWindowMax(m_bEditMaximized);
     return true;
 }
 
@@ -1249,8 +1276,8 @@ void CStudio::AdjustDialog()
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
 
-    wpos = pw->GetPos();
-    wdim = pw->GetDim();
+    m_dialogPos = wpos = pw->GetPos();
+    m_dialogDim = wdim = pw->GetDim();
     pw->SetPos(wpos);  // to move the buttons on the titlebar
 
     if ( m_dialog == SD_OPEN ||
@@ -1300,10 +1327,9 @@ void CStudio::AdjustDialog()
             pe->SetPos(ppos);
             pe->SetDim(ddim);
 
-            nch = static_cast< int >((ddim.x*640.0f-22.0f)/8.0f);
-            name = pe->GetText(100);
+            nch = static_cast< int >((ddim.x*640.0f-22.0f)/5.75f);
+            name = pe->GetText(nch); // truncates the text according to max
             pe->SetMaxChar(nch);
-            name[nch] = 0;  // truncates the text according to max
             pe->SetText(name);
         }
 
@@ -1361,19 +1387,10 @@ void CStudio::AdjustDialog()
 
 bool CStudio::EventDialog(const Event &event)
 {
-    CWindow*    pw;
-    Math::Point     wpos, wdim;
-
-    pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
-    if ( pw == nullptr )  return false;
-
     if ( event.type == EVENT_WINDOW9 )  // window is moved?
     {
-        wpos = pw->GetPos();
-        wdim = pw->GetDim();
-        m_settings->SetIOPos(wpos);
-        m_settings->SetIODim(wdim);
         AdjustDialog();
+        return true;
     }
 
     if ( m_dialog == SD_OPEN ||
@@ -1417,6 +1434,9 @@ bool CStudio::EventDialog(const Event &event)
         StopDialog();
         return true;
     }
+
+    CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
+    if ( pw == nullptr ) return false;
 
     if ( event.type == EVENT_DIALOG_CANCEL ||
          (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) ||
