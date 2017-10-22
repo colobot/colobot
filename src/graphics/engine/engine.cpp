@@ -2631,12 +2631,26 @@ void CEngine::SetFocus(float focus)
     float farPlane = m_deepView[0] * m_clippingDistance;
 
     float aspect = static_cast<float>(m_size.x) / static_cast<float>(m_size.y);
+
+    // Compute H-FoV from V-FoV and aspect ratio.
+    m_hfov = 2.0f * atan(aspect * tan(focus / 2.0f));
+
     Math::LoadProjectionMatrix(m_matProj, m_focus, aspect, 0.5f, farPlane);
 }
 
 float CEngine::GetFocus()
 {
     return m_focus;
+}
+
+float CEngine::GetVFovAngle()
+{
+    return m_focus;
+}
+
+float CEngine::GetHFovAngle()
+{
+    return m_hfov;
 }
 
 void CEngine::SetShadowColor(float value)
@@ -4727,8 +4741,9 @@ void CEngine::DrawBackgroundImage()
         if (a >  Math::PI/4.0f)  a =  Math::PI/4.0f;
         if (a < -Math::PI/4.0f)  a = -Math::PI/4.0f;
 
-        u1 = -m_eyeDirH/Math::PI;
-        u2 = u1+1.0f/Math::PI;
+        // Note the background covers Math::PI radians, i.e. it repeats twice per rotation!
+        u1 = (-m_eyeDirH - GetHFovAngle()/2.0f) / Math::PI;
+        u2 = u1 + (GetHFovAngle() / Math::PI);
 
         v1 = (1.0f-h)*(0.5f+a/(2.0f*Math::PI/4.0f))+0.1f;
         v2 = v1+h;
