@@ -42,15 +42,136 @@ CBotInstr* CBotExprLitString::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     CBotCStack* pStk = pStack->TokenStack();
 
-    CBotExprLitString* inst = new CBotExprLitString();
+    std::string s = p->GetString();
 
-    inst->SetToken(p);
-    p = p->GetNext();
+    auto it = s.cbegin();
+    if (++it != s.cend())
+    {
+        int pos = p->GetStart();
+        std::string valstring = "";
+        while (it != s.cend() && *it != '\"')
+        {
+            pStk->SetStartError(++pos);
+            if (*it != '\\') // not escape sequence ?
+            {
+                valstring += *(it++);
+                continue;
+            }
 
-    CBotVar*    var = CBotVar::Create("", CBotTypString);
-    pStk->SetVar(var);
+            if (++it == s.cend()) break;
 
-    return pStack->Return(inst, pStk);
+            if (CharInList(*it, "01234567"))          // octal
+            {
+                std::string octal = "";
+
+                for (int i = 0; i < 3; i++)
+                {
+                    if (!CharInList(*it, "01234567")) break;
+                    ++pos;
+                    octal += *it;
+                    if (++it == s.cend()) break;
+                }
+
+                unsigned int val = std::stoi(octal, nullptr, 8);
+                if (val <= 255)
+                {
+                    valstring.push_back(val);
+                    continue;
+                }
+                pStk->SetError(CBotErrOctalRange, pos + 1);
+            }
+            else
+            {
+                ++pos;
+                unsigned char c = *(it++);
+                if (c == '\"' || c == '\'' || c == '\\') valstring += c;
+                else if (c == 'a') valstring += '\a'; // alert bell
+                else if (c == 'b') valstring += '\b'; // backspace
+                else if (c == 'f') valstring += '\f'; // form feed
+                else if (c == 'n') valstring += '\n'; // new line
+                else if (c == 'r') valstring += '\r'; // carriage return
+                else if (c == 't') valstring += '\t'; // horizontal tab
+                else if (c == 'v') valstring += '\v'; // vertical tab
+                else if (c == 'x' || c == 'u' || c == 'U') // hex or unicode
+                {
+                    if (it != s.cend())
+                    {
+                        std::string hex = "";
+                        bool isHexCode = (c == 'x');
+                        size_t maxlen = (c == 'u') ? 4 : 8;
+
+                        for (size_t i = 0; isHexCode || i < maxlen; i++)
+                        {
+                            if (!CharInList(*it, "0123456789ABCDEFabcdef")) break;
+                            ++pos;
+                            hex += *it;
+                            if (++it == s.cend()) break;
+                        }
+
+                        if (!hex.empty())
+                        {
+                            unsigned int val = 0;
+                            try
+                            {
+                                val = std::stoi(hex, nullptr, 16);
+                            }
+                            catch (const std::out_of_range& e)
+                            {
+                                pStk->SetError(CBotErrHexRange, pos + 1);
+                            }
+
+                            if (pStk->IsOk())
+                            {
+                                if (isHexCode)        // hexadecimal
+                                {
+                                    if (val <= 255)
+                                    {
+                                        valstring.push_back(val);
+                                        continue;
+                                    }
+                                    pStk->SetError(CBotErrHexRange, pos + 1);
+                                }
+                                else if (maxlen == hex.length()) // unicode character
+                                {
+                                    if (val < 0xD800 || (0xDFFF < val && val < 0x110000))
+                                    {
+                                        valstring += CodePointToUTF8(val);
+                                        continue;
+                                    }
+                                    pStk->SetError(CBotErrUnicodeName, pos + 1);
+                                }
+                            }
+                        }
+                    }
+
+                    pStk->SetError(CBotErrHexDigits, pos + 1);
+                }
+                else
+                    pStk->SetError(CBotErrBadEscape, pos + 1);   // unknown escape code
+            }
+
+            if (!pStk->IsOk()) break;
+        }
+
+        if (it == s.cend() || *it != '\"')
+            pStk->SetError(CBotErrEndQuote, p);
+
+        if (pStk->IsOk())
+        {
+            CBotExprLitString* inst = new CBotExprLitString();
+            inst->m_valstring.swap(valstring);
+            inst->SetToken(p);
+            p = p->GetNext();
+
+            CBotVar* var = CBotVar::Create("", CBotTypString);
+            pStk->SetVar(var);
+
+            return pStack->Return(inst, pStk);
+        }
+    }
+
+    pStk->SetError(CBotErrEndQuote, p);
+    return pStack->Return(nullptr, pStk);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -62,10 +183,7 @@ bool CBotExprLitString::Execute(CBotStack* &pj)
 
     CBotVar*    var = CBotVar::Create("", CBotTypString);
 
-    std::string    chaine = m_token.GetString();
-    chaine = chaine.substr(1, chaine.length()-2);    // removes the quotes
-
-    var->SetValString(chaine);                    // value of the number
+    var->SetValString(m_valstring);
 
     pile->SetVar(var);                            // put on the stack
 

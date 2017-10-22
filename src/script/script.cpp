@@ -589,6 +589,56 @@ void CScript::UpdateList(Ui::CList* list)
     list->SetState(Ui::STATE_ENABLE);
 }
 
+// Colorize a string literal with escape sequences also colored
+
+void HighlightString(Ui::CEdit* edit, const std::string& s, int start)
+{
+    edit->SetFormat(start, start + 1, Gfx::FONT_HIGHLIGHT_STRING);
+
+    auto it = s.cbegin() + 1;
+
+    ++start;
+    while (it != s.cend() && *it != '\"')
+    {
+        if (*(it++) != '\\') // not escape sequence
+        {
+            edit->SetFormat(start, start + 1, Gfx::FONT_HIGHLIGHT_STRING);
+            ++start;
+            continue;
+        }
+
+        if (it == s.cend()) break;
+
+        int end = start + 2;
+
+        if (CBot::CharInList(*it, "01234567"))           // octal escape sequence
+        {
+            for (int i = 0; ++it != s.cend() && i < 2; i++, end++)
+            {
+                if (!CBot::CharInList(*it, "01234567")) break;
+            }
+        }
+        else if (*it == 'x' || *it == 'u' || *it == 'U') // hex or unicode escape
+        {
+            bool isHexCode = (*it == 'x');
+            int maxlen = (*it == 'u') ? 4 : 8;
+
+            for (int i = 0; ++it != s.cend(); i++, end++)
+            {
+                if (!isHexCode && i >= maxlen) break;
+                if (!CBot::CharInList(*it, "0123456789ABCDEFabcdef")) break;
+            }
+        }
+        else      // n, r, t, etc.
+            ++it;
+
+        edit->SetFormat(start, end, Gfx::FONT_HIGHLIGHT_NONE);
+        start = end;
+    }
+
+    if (it != s.cend())
+        edit->SetFormat(start, start + 1, Gfx::FONT_HIGHLIGHT_STRING);
+}
 
 // Colorize the text according to syntax.
 
@@ -643,9 +693,15 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
         {
             color = Gfx::FONT_HIGHLIGHT_CONST;
         }
-        else if (type == CBot::TokenTypString || type == CBot::TokenTypNum) // string literals and numbers
+        else if (type == CBot::TokenTypNum) // numbers
         {
             color = Gfx::FONT_HIGHLIGHT_STRING;
+        }
+        else if (type == CBot::TokenTypString) // string literals
+        {
+            HighlightString(edit, token, cursor1);
+            bt = bt->GetNext();
+            continue;
         }
 
         assert(cursor1 < cursor2);

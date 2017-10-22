@@ -678,6 +678,9 @@ msgstr "Pomoc na temat zaznaczonego obiektu"
 msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Dymki pomocy\\Wyjaśnia funkcje przycisków"
 
+msgid "Hex value out of range"
+msgstr ""
+
 msgid "Higher speed\\Doubles speed"
 msgstr "Zwiększ prędkość\\Podwaja prędkość"
 
@@ -755,6 +758,9 @@ msgstr "Rozkazy\\Pokazuje rozkazy dotyczące bieżącej misji"
 
 msgid "Internal error - tell the developers"
 msgstr "Błąd wewnętrzny - powiadom twórców gry"
+
+msgid "Invalid universal character name"
+msgstr ""
 
 msgid "Invert\\Invert values on this axis"
 msgstr "Odwróć\\Odwróć wartości na tej osi"
@@ -851,6 +857,12 @@ msgstr "Pomniejsz"
 
 msgid "Mipmap level\\Mipmap level"
 msgstr "Poziom mipmap\\Poziom mipmap"
+
+msgid "Missing end quote"
+msgstr ""
+
+msgid "Missing hex digits after escape sequence"
+msgstr ""
 
 msgid "Mission name"
 msgstr "Nazwa misji"
@@ -1013,6 +1025,9 @@ msgstr "OK\\Zamyka edytor programu i powraca do gry"
 
 msgid "Object too close"
 msgstr "Obiekt za blisko"
+
+msgid "Octal value out of range"
+msgstr ""
 
 msgid "One step"
 msgstr "Jeden krok"
@@ -1613,6 +1628,9 @@ msgstr "Obiekt nieznany"
 
 msgid "Unknown command"
 msgstr "Nieznane polecenie"
+
+msgid "Unknown escape sequence"
+msgstr ""
 
 msgid "Unknown function"
 msgstr "Funkcja nieznana"

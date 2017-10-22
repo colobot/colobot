@@ -677,6 +677,9 @@ msgstr "Instructions sur la sélection"
 msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Bulles d'aide\\Bulles explicatives"
 
+msgid "Hex value out of range"
+msgstr ""
+
 #, fuzzy
 msgid "Higher speed\\Doubles speed"
 msgstr "Vitesse 2.0x\\Deux fois plus rapide"
@@ -755,6 +758,9 @@ msgstr "Instructions mission\\Marche à suivre"
 
 msgid "Internal error - tell the developers"
 msgstr "Erreur interne - contacter les développeurs"
+
+msgid "Invalid universal character name"
+msgstr ""
 
 msgid "Invert\\Invert values on this axis"
 msgstr "Inversion\\Inverse les valeurs sur cet axe"
@@ -865,6 +871,12 @@ msgstr "Taille réduite"
 
 msgid "Mipmap level\\Mipmap level"
 msgstr "Niveau de MIP mapping\\Niveau de MIP mapping"
+
+msgid "Missing end quote"
+msgstr ""
+
+msgid "Missing hex digits after escape sequence"
+msgstr ""
 
 msgid "Mission name"
 msgstr "Nom de la mission"
@@ -1027,6 +1039,9 @@ msgstr "D'accord\\Compiler le programme"
 
 msgid "Object too close"
 msgstr "Objet trop proche"
+
+msgid "Octal value out of range"
+msgstr ""
 
 msgid "One step"
 msgstr "Un pas"
@@ -1628,6 +1643,9 @@ msgstr "Objet n'existe pas"
 
 msgid "Unknown command"
 msgstr "Commande inconnue"
+
+msgid "Unknown escape sequence"
+msgstr ""
 
 msgid "Unknown function"
 msgstr "Routine inconnue"
