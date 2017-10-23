@@ -49,6 +49,16 @@ const std::map<Gfx::FontType, std::string> defaultFont =
     { Gfx::FONT_SATCOM, "dvu_sans.ttf" },
 };
 
+const std::map<Gfx::FontType, std::string> fontType = 
+{
+    { Gfx::FONT_COMMON, "FontCommon" },
+    { Gfx::FONT_COMMON_BOLD, "FontCommonBold" },
+    { Gfx::FONT_COMMON_ITALIC, "FontCommonItalic" },
+    { Gfx::FONT_STUDIO, "FontStudio" },
+    { Gfx::FONT_STUDIO_BOLD, "FontStudioBold" },
+    { Gfx::FONT_SATCOM, "FontSatCom" },
+};
+
 class CFontConfig
 {
 public:
@@ -70,9 +80,15 @@ public:
     * \return return filename of default path
     */
     std::string GetDefaultFont(Gfx::FontType type) const;
+    
+    /** Const type method converting Gfx::FontType to string
+    * \return return id of font used in fonts.ini file
+    */
+    
+    std::string GetFontType(Gfx::FontType type) const;
+    
 private:
     boost::property_tree::ptree m_propertyTree;
     bool m_needsSave;
     bool m_loaded;
-    std::map<Gfx::FontType, std::string> m_font;
 };

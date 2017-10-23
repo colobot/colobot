@@ -42,12 +42,6 @@ CFontConfig::CFontConfig()
    : m_needsSave(false)
    , m_loaded(false)
 {
-    m_font[Gfx::FONT_COMMON] = "FontCommon";
-    m_font[Gfx::FONT_COMMON_BOLD] = "FontCommonBold";
-    m_font[Gfx::FONT_COMMON_ITALIC] = "FontCommonItalic";
-    m_font[Gfx::FONT_STUDIO] = "FontStudio";
-    m_font[Gfx::FONT_STUDIO_BOLD] = "FontStudioBold";
-    m_font[Gfx::FONT_SATCOM] = "FontSatCom";
 }
 
 CFontConfig::~CFontConfig()
@@ -85,10 +79,15 @@ bool CFontConfig::Init()
 
 std::string CFontConfig::GetFont(Gfx::FontType type)
 {
-    return std::string("/fonts/") + m_propertyTree.get<std::string>(m_font[type], GetDefaultFont(type));
+    return std::string("/fonts/") + m_propertyTree.get<std::string>(GetFontType(type), GetDefaultFont(type));
 }
 
 std::string CFontConfig::GetDefaultFont(Gfx::FontType type) const
 {
     return defaultFont.at(type);
+}
+
+std::string CFontConfig::GetFontType(Gfx::FontType type) const
+{
+    return fontType.at(type);
 }
