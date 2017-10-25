@@ -955,6 +955,14 @@ void CParticle::FrameParticle(float rTime)
             if (object != nullptr && object->Implements(ObjectInterfaceType::Damageable))
             {
                 dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Phazer, 0.002f, m_particle[i].objFather);
+
+                CCarrierObject* carrierObject = dynamic_cast<CCarrierObject*>(object);
+                CObject* cargo = carrierObject->GetCargo();
+                if (cargo != nullptr)
+                {
+                    if (cargo->GetType() == OBJECT_TNT)
+                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Explosive, std::numeric_limits<float>::infinity(), m_particle[i].objFather);  // starts explosion
+                }
             }
 
             m_particle[i].zoom = 1.0f-(m_particle[i].time-m_particle[i].duration);
@@ -1158,6 +1166,14 @@ void CParticle::FrameParticle(float rTime)
                     if (object->Implements(ObjectInterfaceType::Damageable))
                     {
                         dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire, 0.001f, m_particle[i].objFather);
+
+                        CCarrierObject* carrierObject = dynamic_cast<CCarrierObject*>(object);
+                        CObject* cargo = carrierObject->GetCargo();
+                        if (cargo != nullptr)
+                        {
+                            if (cargo->GetType() == OBJECT_TNT)
+                                dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Explosive, std::numeric_limits<float>::infinity(), m_particle[i].objFather);  // starts explosion
+                        }
                     }
 
                     m_exploGunCounter++;
@@ -1242,6 +1258,14 @@ void CParticle::FrameParticle(float rTime)
                         if (object->Implements(ObjectInterfaceType::Damageable))
                         {
                             dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.1f, m_particle[i].objFather);  // starts explosion
+
+                            CCarrierObject* carrierObject = dynamic_cast<CCarrierObject*>(object);
+                            CObject* cargo = carrierObject->GetCargo();
+                            if (cargo != nullptr)
+                            {
+                                if (cargo->GetType() == OBJECT_TNT)
+                                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Explosive, std::numeric_limits<float>::infinity(), m_particle[i].objFather);  // starts explosion
+                            }
                         }
                     }
                 }
@@ -1346,6 +1370,14 @@ void CParticle::FrameParticle(float rTime)
                     if (object->Implements(ObjectInterfaceType::Damageable))
                     {
                         dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.02f, m_particle[i].objFather);
+
+                        CCarrierObject* carrierObject = dynamic_cast<CCarrierObject*>(object);
+                        CObject* cargo = carrierObject->GetCargo();
+                        if (cargo != nullptr)
+                        {
+                            if (cargo->GetType() == OBJECT_TNT)
+                                dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Explosive, std::numeric_limits<float>::infinity(), m_particle[i].objFather);  // starts explosion
+                        }
                     }
 
                     m_exploGunCounter ++;
