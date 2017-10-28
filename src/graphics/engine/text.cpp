@@ -128,14 +128,12 @@ bool CText::Create()
         return false;
     }
     
-    m_fonts[FONT_COMMON]        = MakeUnique<MultisizeFont>(fontConfig.GetFont(FONT_COMMON));
-    m_fonts[FONT_COMMON_BOLD]   = MakeUnique<MultisizeFont>(fontConfig.GetFont(FONT_COMMON_BOLD));
-    m_fonts[FONT_COMMON_ITALIC] = MakeUnique<MultisizeFont>(fontConfig.GetFont(FONT_COMMON_ITALIC));
-    
-    m_fonts[FONT_SATCOM]        = MakeUnique<MultisizeFont>(fontConfig.GetFont(FONT_SATCOM));
-
-    m_fonts[FONT_STUDIO]        = MakeUnique<MultisizeFont>(fontConfig.GetFont(FONT_STUDIO));
-    m_fonts[FONT_STUDIO_BOLD]   = MakeUnique<MultisizeFont>(fontConfig.GetFont(FONT_STUDIO_BOLD));
+    for (auto type : {FONT_COMMON, FONT_STUDIO, FONT_SATCOM})
+    {
+        m_fonts[static_cast<Gfx::FontType>(type)] = MakeUnique<MultisizeFont>(fontConfig.GetFont(type));
+        m_fonts[static_cast<Gfx::FontType>(type|FONT_BOLD)] = MakeUnique<MultisizeFont>(fontConfig.GetFont(static_cast<Gfx::FontType>(type|FONT_BOLD)));
+        m_fonts[static_cast<Gfx::FontType>(type|FONT_ITALIC)] = MakeUnique<MultisizeFont>(fontConfig.GetFont(static_cast<Gfx::FontType>(type|FONT_ITALIC)));
+    }
     
     for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
     {

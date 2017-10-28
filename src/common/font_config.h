@@ -46,7 +46,10 @@ const std::map<Gfx::FontType, std::string> defaultFont =
     { Gfx::FONT_COMMON_ITALIC, "dvu_sans_italic.ttf" },
     { Gfx::FONT_STUDIO, "dvu_sans_mono.ttf" },
     { Gfx::FONT_STUDIO_BOLD, "dvu_sans_mono_bold.ttf" },
+    { Gfx::FONT_STUDIO_ITALIC, "dvu_sans_mono_italic.ttf" },
     { Gfx::FONT_SATCOM, "dvu_sans.ttf" },
+    { Gfx::FONT_SATCOM_BOLD, "dvu_sans_bold.ttf" },
+    { Gfx::FONT_SATCOM_ITALIC, "dvu_sans_italic.ttf" },
 };
 
 const std::map<Gfx::FontType, std::string> fontType = 
@@ -56,7 +59,10 @@ const std::map<Gfx::FontType, std::string> fontType =
     { Gfx::FONT_COMMON_ITALIC, "FontCommonItalic" },
     { Gfx::FONT_STUDIO, "FontStudio" },
     { Gfx::FONT_STUDIO_BOLD, "FontStudioBold" },
+    { Gfx::FONT_STUDIO_ITALIC, "FontStudioItalic" },
     { Gfx::FONT_SATCOM, "FontSatCom" },
+    { Gfx::FONT_SATCOM_BOLD, "FontSatComBold" },
+    { Gfx::FONT_SATCOM_ITALIC, "FontSatComItalic" },
 };
 
 class CFontConfig
