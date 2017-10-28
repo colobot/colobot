@@ -95,6 +95,4 @@ public:
     
 private:
     boost::property_tree::ptree m_propertyTree;
-    bool m_needsSave;
-    bool m_loaded;
 };

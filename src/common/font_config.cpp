@@ -39,8 +39,6 @@
 namespace bp = boost::property_tree;
 
 CFontConfig::CFontConfig()
-   : m_needsSave(false)
-   , m_loaded(false)
 {
 }
 
@@ -62,7 +60,6 @@ bool CFontConfig::Init()
         {
             bp::ini_parser::read_ini(*stream, m_propertyTree);
             GetLogger()->Debug("Fonts config file loaded correctly. \n");
-            m_loaded = true;
         }
         else
         {
