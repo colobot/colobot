@@ -247,6 +247,7 @@ bool CMainShort::UpdateShortcuts()
             assert(m_shortcuts[i]->Implements(ObjectInterfaceType::Controllable));
             pc->SetState(STATE_CHECK, dynamic_cast<CControllableObject*>(m_shortcuts[i])->GetSelect());
             pc->SetState(STATE_RUN, m_shortcuts[i]->Implements(ObjectInterfaceType::Programmable) && dynamic_cast<CProgrammableObject*>(m_shortcuts[i])->IsProgram());
+            pc->SetState(STATE_DAMAGE, dynamic_cast<CDamageableObject*>(m_shortcuts[i])->IsDamaging());
         }
     }
     return true;

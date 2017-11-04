@@ -237,6 +237,9 @@ public:
     void        SetMagnifyDamage(float factor) override;
     float       GetMagnifyDamage() override;
 
+    void        SetDamaging(bool damaging);
+    bool        IsDamaging()  override;
+
     void        SetDying(DeathType deathType) override;
     DeathType   GetDying() override;
     bool        IsDying() override;
@@ -356,6 +359,8 @@ protected:
     bool        m_bSelectable;          // selectable object
     bool        m_bCheckToken;          // object with audited tokens
     bool        m_underground;         // object active but undetectable
+    bool        m_damaging;
+    float       m_damageTime;
     DeathType   m_dying;
     bool        m_bFlat;
     bool        m_bTrainer;         // drive vehicle (without remote)
