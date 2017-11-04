@@ -72,6 +72,8 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
                 // this is an element of the current class
                 // adds the equivalent of this. before
                 CBotToken pthis("this");
+                // invisible 'this.' highlights member token on error
+                pthis.SetPos(p->GetStart(), p->GetEnd());
                 inst->SetToken(&pthis);
                 inst->m_nIdent = -2;    // indent for this
 

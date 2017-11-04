@@ -1010,6 +1010,8 @@ void COldObject::Write(CLevelParserLine* line)
     if ( m_virusTime != 0.0f )
         line->AddParam("virusTime", MakeUnique<CLevelParserParam>(m_virusTime));
 
+    line->AddParam("lifetime", MakeUnique<CLevelParserParam>(m_aTime));
+
     // Sets the parameters of the command line.
     CLevelParserParamVec cmdline;
     for(float value : GetCmdLine())
@@ -1143,6 +1145,8 @@ void COldObject::Read(CLevelParserLine* line)
         SetDying(DeathType::Burning);
     m_bVirusMode = line->GetParam("virusMode")->AsBool(false);
     m_virusTime = line->GetParam("virusTime")->AsFloat(0.0f);
+
+    m_aTime = line->GetParam("lifetime")->AsFloat(0.0f);
 
     if ( m_motion != nullptr )
     {

@@ -3689,7 +3689,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         // TODO: m_engine->TimeInit(); ??
         m_input->ResetKeyStates();
         m_time = 0.0f;
-        m_gameTime = 0.0f;
+        if (m_sceneReadPath.empty()) m_gameTime = 0.0f;
         m_gameTimeAbsolute = 0.0f;
         m_autosaveLast = 0.0f;
         m_infoUsed = 0;
@@ -4542,6 +4542,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     else
         line->AddParam("chap", MakeUnique<CLevelParserParam>(m_levelChap));
     line->AddParam("rank", MakeUnique<CLevelParserParam>(m_levelRank));
+    line->AddParam("gametime", MakeUnique<CLevelParserParam>(GetGameTime()));
     levelParser.AddLine(std::move(line));
 
     line = MakeUnique<CLevelParserLine>("Map");
@@ -4722,6 +4723,9 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
     int objCounter = 0;
     for (auto& line : levelParser.GetLines())
     {
+        if (line->GetCommand() == "Mission")
+            m_gameTime = line->GetParam("gametime")->AsFloat(0.0f);
+
         if (line->GetCommand() == "Map")
             m_map->ZoomMap(line->GetParam("zoom")->AsFloat());
 
