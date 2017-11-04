@@ -5843,6 +5843,7 @@ void CRobotMain::CreateCodeBattleInterface()
             pw->CreateButton(pos, ddim, 13, EVENT_CODE_BATTLE_SPECTATOR);
         }
 
+        if (!m_scoreboard) return;
         pos.y += ddim.y;
         ddim.y = textHeight;
         int i = 0;
