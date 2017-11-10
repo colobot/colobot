@@ -209,6 +209,27 @@ void CShortcut::Draw()
 
         DrawIcon(m_pos, m_dim, uv1, uv2);
     }
+    if ( (m_state & STATE_DAMAGE) && Math::Mod(m_time, 0.7f) >= 0.3f )
+    {
+      Math::Point uv1, uv2;
+      float   dp;
+
+      m_engine->SetTexture("textures/interface/button2.png");
+      m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+
+      uv1.x = 159.0f/256.0f;
+      uv1.y = 240.0f/256.0f;
+      uv2.x = 145.0f/256.0f;
+      uv2.y = 256.0f/256.0f;
+
+      dp = 0.5f/256.0f;
+      uv1.x += dp;
+      uv1.y += dp;
+      uv2.x -= dp;
+      uv2.y -= dp;
+
+      DrawIcon(m_pos, m_dim, uv1, uv2);
+    }
 }
 
 // Draw the vertex array.

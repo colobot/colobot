@@ -96,6 +96,21 @@ long GetNumInt(const std::string& str);
  */
 float GetNumFloat(const std::string& str);
 
+/*!
+ * \brief Search a null-terminated string for a char value.
+ * \param c The char to find.
+ * \param list The string to search.
+ * \return true if the char is found.
+ */
+bool CharInList(const char c, const char* list);
+
+/*!
+ * \brief Converts a Unicode code point to UTF-8 encoded character.
+ * \param val Code point value.
+ * \return UTF-8 encoded string or empty string.
+ */
+std::string CodePointToUTF8(unsigned int val);
+
 template<typename T> class CBotLinkedList
 {
 public:

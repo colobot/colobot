@@ -678,6 +678,12 @@ msgstr "Pomoc na temat zaznaczonego obiektu"
 msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Dymki pomocy\\Wyjaśnia funkcje przycisków"
 
+msgid "Hex value out of range"
+msgstr ""
+
+msgid "Higher speed\\Doubles speed"
+msgstr "Zwiększ prędkość\\Podwaja prędkość"
+
 msgid "Highest\\Highest graphic quality (lowest frame rate)"
 msgstr "Najwyższa\\Maksymalna jakość grafiki (najniższa częstotliwość odświeżania)"
 
@@ -752,6 +758,9 @@ msgstr "Rozkazy\\Pokazuje rozkazy dotyczące bieżącej misji"
 
 msgid "Internal error - tell the developers"
 msgstr "Błąd wewnętrzny - powiadom twórców gry"
+
+msgid "Invalid universal character name"
+msgstr ""
 
 msgid "Invert\\Invert values on this axis"
 msgstr "Odwróć\\Odwróć wartości na tej osi"
@@ -828,6 +837,9 @@ msgstr "Wczytywanie obiektów"
 msgid "Loading terrain"
 msgstr "Wczytywanie terenu"
 
+msgid "Lower speed\\Decrease speed by half"
+msgstr "Zmniejsz prędkość\\Zmniejsza prędkość o połowę"
+
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
 msgstr "Najniższa\\Minimalna jakość grafiki (najwyższa częstotliwość odświeżania)"
 
@@ -845,6 +857,12 @@ msgstr "Pomniejsz"
 
 msgid "Mipmap level\\Mipmap level"
 msgstr "Poziom mipmap\\Poziom mipmap"
+
+msgid "Missing end quote"
+msgstr ""
+
+msgid "Missing hex digits after escape sequence"
+msgstr ""
 
 msgid "Mission name"
 msgstr "Nazwa misji"
@@ -1007,6 +1025,9 @@ msgstr "OK\\Zamyka edytor programu i powraca do gry"
 
 msgid "Object too close"
 msgstr "Obiekt za blisko"
+
+msgid "Octal value out of range"
+msgstr ""
 
 msgid "One step"
 msgstr "Jeden krok"
@@ -1181,6 +1202,15 @@ msgstr "Publiczny\\Folder ogólnodostępny"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Wstrząsy przy wybuchach\\Ekran trzęsie się podczas wybuchów"
+
+msgid "Quick load\\Immediately load game"
+msgstr "Szybkie wczytywanie\\Natychmiastowo wczytuje zapisaną grę"
+
+msgid "Quick save\\Immediately save game"
+msgstr "Szybki zapis\\Natychmiastowo zapisuje grę"
+
+msgid "Quicksave slot not found"
+msgstr "Nie odnaleziono slotu szybkiego zapisu"
 
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr "Wyjdź\\Kończy grę Colobot: Gold Edition"
@@ -1392,27 +1422,6 @@ msgstr "Statek kosmiczny"
 msgid "Spaceship ruin"
 msgstr "Ruiny statku kosmicznego"
 
-msgid "Speed 0.5x\\Half speed"
-msgstr "Prędkość 0,5x\\Połowa prękości"
-
-msgid "Speed 1.0x\\Normal speed"
-msgstr "Prędkość 1,0x\\Prędkość normalna"
-
-msgid "Speed 1.5x\\1.5 times faster"
-msgstr "Prędkość 1,5x\\1,5 raza szybciej"
-
-msgid "Speed 2.0x\\Double speed"
-msgstr "Prędkość 2,0x\\Dwa razy szybciej"
-
-msgid "Speed 3.0x\\Triple speed"
-msgstr "Prędkość 3,0x\\Trzy razy szybciej"
-
-msgid "Speed 4.0x\\Quadruple speed"
-msgstr "Prędkość 4,0x\\Cztery razy szybciej"
-
-msgid "Speed 6.0x\\Sextuple speed"
-msgstr "Prędkość 6,0x\\Sześć razy szybciej"
-
 msgid "Spider"
 msgstr "Pająk"
 
@@ -1427,6 +1436,9 @@ msgstr "Standardowa akcja\\Standardowa akcja robota (podnieś/upuść, strzelaj,
 
 msgid "Standard controls\\Standard key functions"
 msgstr "Standardowa kontrola\\Standardowe klawisze funkcyjne"
+
+msgid "Standard speed\\Reset speed to normal"
+msgstr "Standardowa prędkość\\Resetuje prędkość do wartości domyślnej"
 
 msgid "Standard\\Standard appearance settings"
 msgstr "Standardowe\\Standardowe ustawienia wyglądu"
@@ -1616,6 +1628,9 @@ msgstr "Obiekt nieznany"
 
 msgid "Unknown command"
 msgstr "Nieznane polecenie"
+
+msgid "Unknown escape sequence"
+msgstr ""
 
 msgid "Unknown function"
 msgstr "Funkcja nieznana"

@@ -100,9 +100,7 @@ msgid "Already carrying something"
 msgstr "Trägt schon etwas"
 
 msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
-msgstr ""
-"Alternativer Kameramodus\\Seitwärts bewegen statt rotieren (bei freier "
-"Kamera)"
+msgstr "Alternativer Kameramodus\\Seitwärts bewegen statt rotieren (bei freier Kamera)"
 
 msgid "Ambiguous call to overloaded function"
 msgstr ""
@@ -144,14 +142,10 @@ msgid "Automatic indent\\When program editing"
 msgstr "Automatisches Einrücken\\Beim Bearbeiten der Programme"
 
 msgid "Autosave interval\\How often your game will autosave"
-msgstr ""
-"Auto-Speichern Zeitintervall\\Wie oft das Spiel automatisch abgespeichert "
-"wird"
+msgstr "Auto-Speichern Zeitintervall\\Wie oft das Spiel automatisch abgespeichert wird"
 
 msgid "Autosave slots\\How many autosave slots you'll have"
-msgstr ""
-"Auto-Speicherplätze\\Wie viele Plätze zum automatischen Speichern zur "
-"Verfügung stehen"
+msgstr "Auto-Speicherplätze\\Wie viele Plätze zum automatischen Speichern zur Verfügung stehen"
 
 msgid "Autosave\\Enables autosave"
 msgstr "Auto-Speichern\\Aktiviert die automatische Speicherung"
@@ -316,9 +310,7 @@ msgid "Camera back\\Moves the camera backward"
 msgstr "Kamera weiter\\Bewegung der Kamera rückwärts"
 
 msgid "Camera border scrolling\\Scrolling when the mouse touches right or left border"
-msgstr ""
-"Kamerabewegung am Bildschirmrand\\Die Kamera dreht wenn die Maus den rechten "
-"oder linken Rand erreicht"
+msgstr "Kamerabewegung am Bildschirmrand\\Die Kamera dreht wenn die Maus den rechten oder linken Rand erreicht"
 
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera näher\\Bewegung der Kamera vorwärts"
@@ -688,6 +680,13 @@ msgstr "Anweisungen über das ausgewählte Objekt"
 msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Hilfeblasen\\Hilfeblasen"
 
+msgid "Hex value out of range"
+msgstr ""
+
+#, fuzzy
+msgid "Higher speed\\Doubles speed"
+msgstr "Geschwindigkeit 2.0x\\Spielgeschwindigkeit doppelt so schnell"
+
 msgid "Highest\\Highest graphic quality (lowest frame rate)"
 msgstr "Max.\\Beste Qualität (niedriges Framerate)"
 
@@ -762,6 +761,9 @@ msgstr "Anweisungen\\Anweisungen für die Mission oder Übung"
 
 msgid "Internal error - tell the developers"
 msgstr "Interner Fehler - Benachrichtige bitte die Entwickler"
+
+msgid "Invalid universal character name"
+msgstr ""
 
 msgid "Invert\\Invert values on this axis"
 msgstr "Invertieren\\Die Werte dieser Achse invertieren"
@@ -838,6 +840,23 @@ msgstr "Lade Objekte"
 msgid "Loading terrain"
 msgstr "Lade Gelände"
 
+# msgid "Speed 0.5x\\Half speed"
+# msgstr ""
+# msgid "Speed 1.0x\\Normal speed"
+# msgstr ""
+# msgid "Speed 1.5x\\1.5 times faster"
+# msgstr ""
+# msgid "Speed 2.0x\\Double speed"
+# msgstr ""
+# msgid "Speed 3.0x\\Triple speed"
+# msgstr ""
+# msgid "Speed 4.0x\\Quadruple speed"
+# msgstr ""
+# msgid "Speed 6.0x\\Sextuple speed"
+# msgstr ""
+msgid "Lower speed\\Decrease speed by half"
+msgstr ""
+
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
 msgstr "Min.\\Minimale Qualität (großes Framerate)"
 
@@ -855,6 +874,12 @@ msgstr "Verkleinern"
 
 msgid "Mipmap level\\Mipmap level"
 msgstr "Mipmap-Level\\Mipmap-Level"
+
+msgid "Missing end quote"
+msgstr ""
+
+msgid "Missing hex digits after escape sequence"
+msgstr ""
 
 msgid "Mission name"
 msgstr "Name der Mission"
@@ -1018,6 +1043,9 @@ msgstr "OK\\Programm kompilieren"
 msgid "Object too close"
 msgstr "Gegenstand zu nahe"
 
+msgid "Octal value out of range"
+msgstr ""
+
 msgid "One step"
 msgstr "Ein Schritt"
 
@@ -1064,9 +1092,7 @@ msgid "Pause blur\\Blur the background on the pause screen"
 msgstr "Pausen-Unschärfe\\Während der Pause den Hintergrund unscharf zeichnen"
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
-msgstr ""
-"Pausieren im Hintergrund\\Spiel anhalten,enn das Spielfenster im Hintergrund "
-"ist"
+msgstr "Pausieren im Hintergrund\\Spiel anhalten,enn das Spielfenster im Hintergrund ist"
 
 msgid "Pause/continue"
 msgstr "Pause/Weitermachen"
@@ -1193,6 +1219,16 @@ msgstr "Öffentlich\\Gemeinsamer Ordner für alle Spieler"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Beben bei Explosionen\\Die Kamera bebt bei Explosionen"
+
+msgid "Quick load\\Immediately load game"
+msgstr ""
+
+msgid "Quick save\\Immediately save game"
+msgstr ""
+
+#, fuzzy
+msgid "Quicksave slot not found"
+msgstr "Das Objekt existiert nicht"
 
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr "Beenden\\Colobot: Gold Edition schließen"
@@ -1404,27 +1440,6 @@ msgstr "Raumschiff"
 msgid "Spaceship ruin"
 msgstr "Raumschiffswrack"
 
-msgid "Speed 0.5x\\Half speed"
-msgstr "Geschwindigkeit 0.5x\\Halbe Spielgeschwindigkeit"
-
-msgid "Speed 1.0x\\Normal speed"
-msgstr "Geschwindigkeit 1.0x\\Normale Spielgeschwindigkeit"
-
-msgid "Speed 1.5x\\1.5 times faster"
-msgstr "Geschwindigkeit 1.5x\\Spielgeschwindigkeit anderthalb Mal schneller"
-
-msgid "Speed 2.0x\\Double speed"
-msgstr "Geschwindigkeit 2.0x\\Spielgeschwindigkeit doppelt so schnell"
-
-msgid "Speed 3.0x\\Triple speed"
-msgstr "Geschwindigkeit 3.0x\\Dreifache Spielgeschwindigkeit"
-
-msgid "Speed 4.0x\\Quadruple speed"
-msgstr "Geschwindigkeit 4.0x\\Vierfache Spielgeschwindigkeit"
-
-msgid "Speed 6.0x\\Sextuple speed"
-msgstr "Geschwindigkeit 6.0x\\Sechsfache Spielgeschwindigkeit"
-
 msgid "Spider"
 msgstr "Spinne"
 
@@ -1439,6 +1454,9 @@ msgstr "Standardhandlung\\Führt die Standardhandlung des Roboters aus"
 
 msgid "Standard controls\\Standard key functions"
 msgstr "Alles zurücksetzen\\Standarddefinition aller Tasten"
+
+msgid "Standard speed\\Reset speed to normal"
+msgstr ""
 
 msgid "Standard\\Standard appearance settings"
 msgstr "Standard\\Standardfarben einsetzen"
@@ -1525,9 +1543,7 @@ msgid "This label does not exist"
 msgstr "Dieses Label existiert nicht"
 
 msgid "This menu is for userlevels from mods, but you didn't install any"
-msgstr ""
-"Dieses Menü ist für nachinstallierte Benutzer-Level, aber Du hast keine "
-"installiert"
+msgstr "Dieses Menü ist für nachinstallierte Benutzer-Level, aber Du hast keine installiert"
 
 msgid "This object is currently busy"
 msgstr ""
@@ -1630,6 +1646,9 @@ msgstr "Das Objekt existiert nicht"
 
 msgid "Unknown command"
 msgstr "Befehl unbekannt"
+
+msgid "Unknown escape sequence"
+msgstr ""
 
 msgid "Unknown function"
 msgstr "Unbekannte Funktion"
@@ -1740,22 +1759,14 @@ msgstr "Sie haben ein brauchbares Objekt gefunden"
 #, c-format
 msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
 msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
-msgstr[0] ""
-"In dieser Übung \"%1$s\" muß mindestens einmal verwendet werden (benutzt: %"
-"2$d)"
-msgstr[1] ""
-"In dieser Übung muß \"%1$s\" mindestes %3$d Mal verwendet werden (benutzt: %"
-"2$d)"
+msgstr[0] "In dieser Übung \"%1$s\" muß mindestens einmal verwendet werden (benutzt: %2$d)"
+msgstr[1] "In dieser Übung muß \"%1$s\" mindestes %3$d Mal verwendet werden (benutzt: %2$d)"
 
 #, c-format
 msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
 msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
-msgstr[0] ""
-"In dieser Übung darf \"%1$s\" höchstens einmal verwendet werden (benutzt: %"
-"2$d)"
-msgstr[1] ""
-"In dieser Übung darf \"%1$s\" höchstens %3$d Mal verwendet werden (benutzt: %"
-"2$d)"
+msgstr[0] "In dieser Übung darf \"%1$s\" höchstens einmal verwendet werden (benutzt: %2$d)"
+msgstr[1] "In dieser Übung darf \"%1$s\" höchstens %3$d Mal verwendet werden (benutzt: %2$d)"
 
 msgid "You must get on the spaceship to take off"
 msgstr "Begib Dich an Bord, bevor Du abhebst"
@@ -1950,9 +1961,6 @@ msgstr "epsitec.com"
 #~ msgid "Num of decorative objects\\Number of purely ornamental objects"
 #~ msgstr "Anzahl Ziergegenstände\\Anzahl Gegenstände ohne Funktion"
 
-#~ msgid "Object not found"
-#~ msgstr "Das Objekt existiert nicht"
-
 #~ msgid "Planets and stars\\Astronomical objects in the sky"
 #~ msgstr "Planeten und Sterne\\Kreisende Planeten und Sterne"
 
@@ -1968,8 +1976,26 @@ msgstr "epsitec.com"
 #~ msgid "Sky\\Clouds and nebulae"
 #~ msgstr "Himmel\\Himmel und Wolken"
 
+#~ msgid "Speed 0.5x\\Half speed"
+#~ msgstr "Geschwindigkeit 0.5x\\Halbe Spielgeschwindigkeit"
+
+#~ msgid "Speed 1.0x\\Normal speed"
+#~ msgstr "Geschwindigkeit 1.0x\\Normale Spielgeschwindigkeit"
+
+#~ msgid "Speed 1.5x\\1.5 times faster"
+#~ msgstr "Geschwindigkeit 1.5x\\Spielgeschwindigkeit anderthalb Mal schneller"
+
 #~ msgid "Speed 3.0x\\Three times faster"
 #~ msgstr "Geschwindigkeit 3.0x\\Spielgeschwindigkeit drei Mal schneller"
+
+#~ msgid "Speed 3.0x\\Triple speed"
+#~ msgstr "Geschwindigkeit 3.0x\\Dreifache Spielgeschwindigkeit"
+
+#~ msgid "Speed 4.0x\\Quadruple speed"
+#~ msgstr "Geschwindigkeit 4.0x\\Vierfache Spielgeschwindigkeit"
+
+#~ msgid "Speed 6.0x\\Sextuple speed"
+#~ msgstr "Geschwindigkeit 6.0x\\Sechsfache Spielgeschwindigkeit"
 
 #~ msgid "Sunbeams\\Sunbeams in the sky"
 #~ msgstr "Sonnenstrahlen\\Sonnenstrahlen"

@@ -57,6 +57,7 @@ private:
     static CBot::CBotTypResult cGetObject(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cDelete(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cSearch(CBot::CBotVar* &var, void* user);
+    static CBot::CBotTypResult cSearchAll(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cRadar(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cRadarAll(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cDetect(CBot::CBotVar* &var, void* user);
@@ -81,7 +82,6 @@ private:
     static CBot::CBotTypResult cPenDown(CBot::CBotVar* &var, void* user);
 
     static CBot::CBotTypResult cOnePoint(CBot::CBotVar* &var, void* user);
-    static CBot::CBotTypResult cPoint(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cOneObject(CBot::CBotVar* &var, void* user);
 
     static bool rEndMission(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
@@ -97,6 +97,7 @@ private:
     static bool rGetObject(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rDelete(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rSearch(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rSearchAll(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rRadar(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rRadarAll(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rDetect(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);

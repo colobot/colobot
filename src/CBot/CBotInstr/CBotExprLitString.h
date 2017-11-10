@@ -58,6 +58,9 @@ public:
 protected:
     virtual const std::string GetDebugName() override { return "CBotExprLitString"; }
     virtual std::string GetDebugData() override;
+
+private:
+    std::string m_valstring = "";
 };
 
 } // namespace CBot

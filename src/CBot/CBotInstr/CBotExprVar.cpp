@@ -76,6 +76,8 @@ CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, bool bCheckRe
                 // This is an element of the current class
                 // ads the equivalent of this. before
                 CBotToken token("this");
+                // invisible 'this.' highlights member token on error
+                token.SetPos(p->GetStart(), p->GetEnd());
                 inst->SetToken(&token);
                 (static_cast<CBotExprVar*>(inst))->m_nIdent = -2;    // identificator for this
 
@@ -196,6 +198,8 @@ CBotInstr* CBotExprVar::CompileMethode(CBotToken* &p, CBotCStack* pStack)
         // this is an element of the current class
         // adds the equivalent of this. before
 
+        // invisible 'this.' highlights member token on error
+        pthis.SetPos(pp->GetStart(), pp->GetEnd());
         inst->SetToken(&pthis);
         (static_cast<CBotExprVar*>(inst))->m_nIdent = -2;    // ident for this
 

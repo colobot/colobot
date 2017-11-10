@@ -137,6 +137,7 @@ COldObject::COldObject(int id)
     m_bVirusMode = false;
     m_virusTime = 0.0f;
     m_lastVirusParticle = 0.0f;
+    m_damaging = false;
     m_dying = DeathType::Alive;
     m_bFlat  = false;
     m_gunGoalV = 0.0f;
@@ -387,6 +388,14 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
             float shield = GetShield();
             shield -= loss;
             SetShield(shield);
+
+            // Sending info about taking damage
+            if (!m_damaging)
+            {
+                SetDamaging(true);
+                m_main->UpdateShortcuts();
+            }
+            m_damageTime = m_time;
         }
         else
         {
@@ -394,6 +403,7 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
             {
                 // Dead immediately
                 SetShield(0.0f);
+                SetDamaging(false);
             }
         }
         dead = (GetShield() <= 0.0f);
@@ -424,7 +434,6 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
     {
         m_engine->GetPyroManager()->Create(Gfx::PT_SHOTT, this, loss);
     }
-
     return false;
 }
 
@@ -440,6 +449,7 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
     if (Implements(ObjectInterfaceType::Shielded))
     {
         SetShield(0.0f);
+        SetDamaging(false);
     }
 
     Gfx::PyroType pyroType = Gfx::PT_NULL;
@@ -1010,6 +1020,8 @@ void COldObject::Write(CLevelParserLine* line)
     if ( m_virusTime != 0.0f )
         line->AddParam("virusTime", MakeUnique<CLevelParserParam>(m_virusTime));
 
+    line->AddParam("lifetime", MakeUnique<CLevelParserParam>(m_aTime));
+
     // Sets the parameters of the command line.
     CLevelParserParamVec cmdline;
     for(float value : GetCmdLine())
@@ -1143,6 +1155,8 @@ void COldObject::Read(CLevelParserLine* line)
         SetDying(DeathType::Burning);
     m_bVirusMode = line->GetParam("virusMode")->AsBool(false);
     m_virusTime = line->GetParam("virusTime")->AsFloat(0.0f);
+
+    m_aTime = line->GetParam("lifetime")->AsFloat(0.0f);
 
     if ( m_motion != nullptr )
     {
@@ -2148,6 +2162,12 @@ bool COldObject::EventFrame(const Event &event)
         SetShield(GetShield() + event.rTime*(1.0f/GetShieldFullRegenTime()));
     }
 
+    if (m_damaging && m_time - m_damageTime > 2.0f)
+    {
+        SetDamaging(false);
+        m_main->UpdateShortcuts();
+    }
+
     return true;
 }
 
@@ -2652,6 +2672,15 @@ float COldObject::GetMagnifyDamage()
     return m_magnifyDamage;
 }
 
+void COldObject::SetDamaging(bool damaging)
+{
+    m_damaging = damaging;
+}
+
+bool COldObject::IsDamaging()
+{
+    return m_damaging;
+}
 
 void COldObject::SetDying(DeathType deathType)
 {

@@ -241,23 +241,13 @@ void CBotToken::SetPos(int start, int end)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CharInList(const char c, const char* list)
-{
-    int     i = 0;
 
-    while (true)
-    {
-        if (c == list[i++]) return true;
-        if (list[i] == 0) return false;
-    }
-}
-
-static char    sep1[] = " \r\n\t,:()[]{}-+*/=;><!~^|&%.";
+static char    sep1[] = " \r\n\t,:()[]{}-+*/=;><!~^|&%.\"\'?";
 static char    sep2[] = " \r\n\t";                           // only separators
-static char    sep3[] = ",:()[]{}-+*/=;<>!~^|&%.";           // operational separators
+static char    sep3[] = ",:()[]{}-+*/=;<>!~^|&%.?";          // operational separators
 static char    num[]  = "0123456789";                        // point (single) is tested separately
 static char    hexnum[]   = "0123456789ABCDEFabcdef";
-static char    nch[]  = "\"\r\n\t";                          // forbidden in chains
+static char    nch[]  = "\r\n\t";                            // forbidden in chains
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotToken*  CBotToken::NextToken(const char*& program, bool first)
@@ -278,14 +268,13 @@ CBotToken*  CBotToken::NextToken(const char*& program, bool first)
         // special case for strings
         if (token[0] == '\"' )
         {
-            while (c != 0 && !CharInList(c, nch))
+            while (c != 0 && c != '\"' && !CharInList(c, nch))
             {
                 if ( c == '\\' )
                 {
-                    c   = *(program++);                 // next character
-                    if ( c == 'n' ) c = '\n';
-                    if ( c == 'r' ) c = '\r';
-                    if ( c == 't' ) c = '\t';
+                    token += c;
+                    c = *(program++);
+                    if (c == 0 || CharInList(c, nch)) break;
                 }
                 token += c;
                 c = *(program++);

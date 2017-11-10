@@ -240,13 +240,11 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_HELP]        = TR("Instructions\\Shows the instructions for the current mission");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_PROG]        = TR("Programming help\\Gives more detailed help with programming");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_VISIT]       = TR("Origin of last message\\Shows where the last message was sent from");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED05]     = TR("Speed 0.5x\\Half speed");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED10]     = TR("Speed 1.0x\\Normal speed");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED15]     = TR("Speed 1.5x\\1.5 times faster");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED20]     = TR("Speed 2.0x\\Double speed");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED30]     = TR("Speed 3.0x\\Triple speed");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED40]     = TR("Speed 4.0x\\Quadruple speed");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED60]     = TR("Speed 6.0x\\Sextuple speed");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED_DEC]   = TR("Lower speed\\Decrease speed by half");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED_RESET] = TR("Standard speed\\Reset speed to normal");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED_INC]   = TR("Higher speed\\Doubles speed");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_QUICKSAVE]   = TR("Quick save\\Immediately save game");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_QUICKLOAD]   = TR("Quick load\\Immediately load game");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_PAUSE]       = TR("Pause\\Pause the game without opening menu");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CMDLINE]     = TR("Cheat console\\Show cheat console");
 
@@ -643,6 +641,7 @@ void InitializeRestext()
     stringsErr[ERR_DELETEBUILDING]  = TR("Building destroyed");
     stringsErr[ERR_ENEMY_OBJECT]    = TR("Unable to control enemy objects");
     stringsErr[ERR_WRONG_BOT]       = TR("Inappropriate bot");
+    stringsErr[ERR_NO_QUICK_SLOT]   = TR("Quicksave slot not found");
 
     stringsErr[INFO_BUILD]          = TR("Building completed");
     stringsErr[INFO_CONVERT]        = TR("Titanium available");
@@ -732,6 +731,12 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrNoClassName]   = TR("Class name expected");
     stringsCbot[CBot::CBotErrNoReturn]      = TR("Non-void function needs \"return;\"");
     stringsCbot[CBot::CBotErrDefaultValue]  = TR("This parameter needs a default value");
+    stringsCbot[CBot::CBotErrEndQuote]      = TR("Missing end quote");
+    stringsCbot[CBot::CBotErrBadEscape]     = TR("Unknown escape sequence");
+    stringsCbot[CBot::CBotErrOctalRange]    = TR("Octal value out of range");
+    stringsCbot[CBot::CBotErrHexDigits]     = TR("Missing hex digits after escape sequence");
+    stringsCbot[CBot::CBotErrHexRange]      = TR("Hex value out of range");
+    stringsCbot[CBot::CBotErrUnicodeName]   = TR("Invalid universal character name");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");

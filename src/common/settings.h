@@ -70,6 +70,9 @@ public:
 
     void        SetWindowDim(Math::Point dim);
     Math::Point GetWindowDim();
+
+    void        SetWindowMax(bool max);
+    bool        GetWindowMax();
     //@}
 
     //! Managing windows open/save
@@ -98,6 +101,7 @@ protected:
     float           m_fontSize;
     Math::Point     m_windowPos;
     Math::Point     m_windowDim;
+    bool            m_windowMax;
 
     bool            m_IOPublic;
     Math::Point     m_IOPos;

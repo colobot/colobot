@@ -32,8 +32,6 @@
 
 #include "sound/sound.h"
 
-template<> CSettings* CSingleton<CSettings>::m_instance = nullptr;
-
 CSettings::CSettings()
 {
     m_tooltips       = true;
@@ -123,6 +121,8 @@ void CSettings::SaveSettings()
     GetConfigFile().SetFloatProperty("Edit", "WindowPosY", m_windowPos.y);
     GetConfigFile().SetFloatProperty("Edit", "WindowDimX", m_windowDim.x);
     GetConfigFile().SetFloatProperty("Edit", "WindowDimY", m_windowDim.y);
+    GetConfigFile().SetBoolProperty ("Edit", "WindowMaximized", m_windowMax);
+
     GetConfigFile().SetBoolProperty("Edit", "IOPublic", m_IOPublic);
     GetConfigFile().SetFloatProperty("Edit", "IOPosX", m_IOPos.x);
     GetConfigFile().SetFloatProperty("Edit", "IOPosY", m_IOPos.y);
@@ -283,6 +283,7 @@ void CSettings::LoadSettings()
     GetConfigFile().GetFloatProperty("Edit", "WindowPosY",  m_windowPos.y);
     GetConfigFile().GetFloatProperty("Edit", "WindowDimX",  m_windowDim.x);
     GetConfigFile().GetFloatProperty("Edit", "WindowDimY",  m_windowDim.y);
+    GetConfigFile().GetBoolProperty ("Edit", "WindowMaximized", m_windowMax);
 
     GetConfigFile().GetBoolProperty ("Edit", "IOPublic", m_IOPublic);
     GetConfigFile().GetFloatProperty("Edit", "IOPosX",   m_IOPos.x);
@@ -393,6 +394,18 @@ void CSettings::SetWindowDim(Math::Point dim)
 Math::Point CSettings::GetWindowDim()
 {
     return m_windowDim;
+}
+
+void CSettings::SetWindowMax(bool max)
+{
+    m_windowMax = max;
+    GetConfigFile().SetBoolProperty("Edit", "WindowMaximized", m_windowMax);
+    GetConfigFile().Save();
+}
+
+bool CSettings::GetWindowMax()
+{
+    return m_windowMax;
 }
 
 void CSettings::SetIOPublic(bool mode)

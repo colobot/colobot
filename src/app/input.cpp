@@ -32,9 +32,6 @@
 #include <boost/lexical_cast.hpp>
 #include <SDL_system.h>
 
-
-template<> CInput* CSingleton<CInput>::m_instance = nullptr;
-
 CInput::CInput()
     : m_keyPresses()
 {
@@ -62,13 +59,11 @@ CInput::CInput()
         { INPUT_SLOT_HELP,     "help"    },
         { INPUT_SLOT_PROG,     "prog"    },
         { INPUT_SLOT_VISIT,    "visit"   },
-        { INPUT_SLOT_SPEED05,  "speed05" },
-        { INPUT_SLOT_SPEED10,  "speed10" },
-        { INPUT_SLOT_SPEED15,  "speed15" },
-        { INPUT_SLOT_SPEED20,  "speed20" },
-        { INPUT_SLOT_SPEED30,  "speed30" },
-        { INPUT_SLOT_SPEED40,  "speed40" },
-        { INPUT_SLOT_SPEED60,  "speed60" },
+        { INPUT_SLOT_SPEED_DEC,  "speed_dec" },
+        { INPUT_SLOT_SPEED_RESET,"speed_reset" },
+        { INPUT_SLOT_SPEED_INC,  "speed_inc" },
+        { INPUT_SLOT_QUICKSAVE,  "quicksave" },
+        { INPUT_SLOT_QUICKLOAD,  "quickload" },
         { INPUT_SLOT_PAUSE,    "pause"   },
         { INPUT_SLOT_CMDLINE,  "cmdline" },
     };
@@ -277,13 +272,11 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_HELP   ].primary   = KEY(F1);
     m_inputBindings[INPUT_SLOT_PROG   ].primary   = KEY(F2);
     m_inputBindings[INPUT_SLOT_VISIT  ].primary   = KEY(KP_PERIOD);
-    m_inputBindings[INPUT_SLOT_SPEED05].primary   = KEY(F3);
-    m_inputBindings[INPUT_SLOT_SPEED10].primary   = KEY(F4);
-    m_inputBindings[INPUT_SLOT_SPEED15].primary   = KEY(F5);
-    m_inputBindings[INPUT_SLOT_SPEED20].primary   = KEY(F6);
-    m_inputBindings[INPUT_SLOT_SPEED30].primary   = KEY(F7);
-    m_inputBindings[INPUT_SLOT_SPEED40].primary   = KEY(F8);
-    m_inputBindings[INPUT_SLOT_SPEED60].primary   = KEY(F9);
+    m_inputBindings[INPUT_SLOT_QUICKSAVE].primary   = KEY(F5);
+    m_inputBindings[INPUT_SLOT_SPEED_DEC].primary   = KEY(F6);
+    m_inputBindings[INPUT_SLOT_SPEED_RESET].primary   = KEY(F7);
+    m_inputBindings[INPUT_SLOT_SPEED_INC].primary   = KEY(F8);
+    m_inputBindings[INPUT_SLOT_QUICKLOAD].primary   = KEY(F9);
     m_inputBindings[INPUT_SLOT_PAUSE].primary       = KEY(PAUSE);
     m_inputBindings[INPUT_SLOT_PAUSE].secondary     = KEY(p);
     m_inputBindings[INPUT_SLOT_CMDLINE].primary     = KEY(BACKQUOTE);

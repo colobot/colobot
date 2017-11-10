@@ -125,9 +125,6 @@ const Gfx::Color COLOR_REF_ALIEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.
 const Gfx::Color COLOR_REF_GREEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
 const Gfx::Color COLOR_REF_WATER = Gfx::Color( 25.0f/256.0f, 255.0f/256.0f, 240.0f/256.0f);  // cyan
 
-
-template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
-
 //! Constructor of robot application
 CRobotMain::CRobotMain()
 {
@@ -971,33 +968,25 @@ bool CRobotMain::ProcessEvent(Event &event)
                 {
                     StartDisplayVisit(EVENT_NULL);
                 }
-                if (data->slot == INPUT_SLOT_SPEED05)
+                if (data->slot == INPUT_SLOT_SPEED_DEC)
                 {
-                    SetSpeed(0.5f);
+                    SetSpeed(GetSpeed()*0.5f);
                 }
-                if (data->slot == INPUT_SLOT_SPEED10)
+                if (data->slot == INPUT_SLOT_SPEED_RESET)
                 {
                     SetSpeed(1.0f);
                 }
-                if (data->slot == INPUT_SLOT_SPEED15)
+                if (data->slot == INPUT_SLOT_SPEED_INC)
                 {
-                    SetSpeed(1.5f);
+                    SetSpeed(GetSpeed()*2.0f);
                 }
-                if (data->slot == INPUT_SLOT_SPEED20)
+                if (data->slot == INPUT_SLOT_QUICKSAVE)
                 {
-                    SetSpeed(2.0f);
+                    QuickSave();
                 }
-                if (data->slot == INPUT_SLOT_SPEED30)
+                if (data->slot == INPUT_SLOT_QUICKLOAD)
                 {
-                    SetSpeed(3.0f);
-                }
-                if (data->slot == INPUT_SLOT_SPEED40)
-                {
-                    SetSpeed(4.0f);
-                }
-                if (data->slot == INPUT_SLOT_SPEED60)
-                {
-                    SetSpeed(6.0f);
+                    QuickLoad();
                 }
                 if (data->key == KEY(c) && ((event.kmodState & KEY_MOD(CTRL)) != 0) && m_engine->GetShowStats())
                 {
@@ -2307,37 +2296,7 @@ void CRobotMain::InitEye()
 //! Advances the entire scene
 bool CRobotMain::EventFrame(const Event &event)
 {
-    // TODO: For some reason we're getting one big event with event.rTime > 0.1f after loading before the movie starts?
-    if (!m_immediatSatCom && !m_beginSatCom && !m_movieLock &&
-         m_gameTime > 0.1f && m_phase == PHASE_SIMUL)
-    {
-        m_displayText->DisplayError(INFO_BEGINSATCOM, Math::Vector(0.0f,0.0f,0.0f));
-        m_beginSatCom = true;  // message appears
-    }
-
     m_time += event.rTime;
-    if (!m_movieLock && !m_pause->IsPauseType(PAUSE_ENGINE))
-    {
-        m_gameTime += event.rTime;
-        m_gameTimeAbsolute += m_app->GetRealRelTime() / 1e9f;
-    }
-
-    if (!m_movieLock && !m_pause->IsPauseType(PAUSE_ENGINE) && m_missionTimerStarted)
-        m_missionTimer += event.rTime;
-
-    if (!m_pause->IsPauseType(PAUSE_ENGINE) && m_autosave && m_gameTimeAbsolute >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL)
-    {
-        if (m_levelCategory == LevelCategory::Missions    ||
-            m_levelCategory == LevelCategory::FreeGame    ||
-            m_levelCategory == LevelCategory::CustomLevels )
-        {
-            if (!IOIsBusy() && m_missionType != MISSION_CODE_BATTLE)
-            {
-                m_autosaveLast = m_gameTimeAbsolute;
-                Autosave();
-            }
-        }
-    }
 
     m_water->EventProcess(event);
     m_cloud->EventProcess(event);
@@ -2421,6 +2380,40 @@ bool CRobotMain::EventFrame(const Event &event)
     // Advances toto following the camera, because its position depends on the camera.
     if (toto != nullptr)
         dynamic_cast<CInteractiveObject*>(toto)->EventProcess(event);
+
+    // NOTE: m_movieLock is set only after the first update of CAutoBase finishes
+
+    if (m_phase == PHASE_SIMUL)
+    {
+        if (!m_immediatSatCom && !m_beginSatCom && !m_movieLock)
+        {
+            m_displayText->DisplayError(INFO_BEGINSATCOM, Math::Vector(0.0f, 0.0f, 0.0f));
+            m_beginSatCom = true;  // message appears
+        }
+
+        if (!m_pause->IsPauseType(PAUSE_ENGINE) && !m_movieLock)
+        {
+            m_gameTime += event.rTime;
+            m_gameTimeAbsolute += m_app->GetRealRelTime() / 1e9f;
+
+            if (m_missionTimerStarted)
+                m_missionTimer += event.rTime;
+
+            if (m_autosave && m_gameTimeAbsolute >= m_autosaveLast + (m_autosaveInterval * 60))
+            {
+                if (m_levelCategory == LevelCategory::Missions ||
+                    m_levelCategory == LevelCategory::FreeGame ||
+                    m_levelCategory == LevelCategory::CustomLevels)
+                {
+                    if (!IOIsBusy() && m_missionType != MISSION_CODE_BATTLE)
+                    {
+                        m_autosaveLast = m_gameTimeAbsolute;
+                        Autosave();
+                    }
+                }
+            }
+        }
+    }
 
     HiliteFrame(event.rTime);
 
@@ -3648,12 +3641,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + line->GetLevelFilename() + ":" + boost::lexical_cast<std::string>(line->GetLineNumber()));
         }
 
+        // Do this here to prevent the first frame from taking a long time to render
+        m_engine->UpdateGroundSpotTextures();
+
         m_ui->GetLoadingScreen()->SetProgress(1.0f, RT_LOADING_FINISHED);
         if (m_ui->GetLoadingScreen()->IsVisible())
         {
-            // Force render of the "Loading finished" screen
-            // TODO: For some reason, rendering of the first frame after the simulation starts is very slow
-            // We're doing this because it looks weird when the progress bar is finished but it still says "Loading programs"
+            // Force render of the "Loading finished" screen because it looks weird when the progress bar disappears in the middle
             m_app->Render();
         }
 
@@ -3695,7 +3689,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         // TODO: m_engine->TimeInit(); ??
         m_input->ResetKeyStates();
         m_time = 0.0f;
-        m_gameTime = 0.0f;
+        if (m_sceneReadPath.empty()) m_gameTime = 0.0f;
         m_gameTimeAbsolute = 0.0f;
         m_autosaveLast = 0.0f;
         m_infoUsed = 0;
@@ -4548,6 +4542,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     else
         line->AddParam("chap", MakeUnique<CLevelParserParam>(m_levelChap));
     line->AddParam("rank", MakeUnique<CLevelParserParam>(m_levelRank));
+    line->AddParam("gametime", MakeUnique<CLevelParserParam>(GetGameTime()));
     levelParser.AddLine(std::move(line));
 
     line = MakeUnique<CLevelParserLine>("Map");
@@ -4728,6 +4723,9 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
     int objCounter = 0;
     for (auto& line : levelParser.GetLines())
     {
+        if (line->GetCommand() == "Mission")
+            m_gameTime = line->GetParam("gametime")->AsFloat(0.0f);
+
         if (line->GetCommand() == "Map")
             m_map->ZoomMap(line->GetParam("zoom")->AsFloat());
 
@@ -5563,6 +5561,31 @@ void CRobotMain::Autosave()
     m_playerProfile->SaveScene(dir, info);
 }
 
+void CRobotMain::QuickSave()
+{
+    GetLogger()->Info("Quicksave!\n");
+    
+    char infostr[100];
+    time_t now = time(nullptr);
+    strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
+    std::string info = std::string("[QUICKSAVE]") + infostr;
+    std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
+    
+    m_playerProfile->SaveScene(dir, info);
+}
+
+void CRobotMain::QuickLoad()
+{
+    std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
+    if(!CResourceManager::Exists(dir))
+    {
+        m_displayText->DisplayError(ERR_NO_QUICK_SLOT, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
+        GetLogger()->Debug("Quicksave slot not found\n");
+        return;
+    }
+    m_playerProfile->LoadScene(dir);
+}
+
 void CRobotMain::SetExitAfterMission(bool exit)
 {
     m_exitAfterMission = exit;
@@ -5824,6 +5847,7 @@ void CRobotMain::CreateCodeBattleInterface()
             pw->CreateButton(pos, ddim, 13, EVENT_CODE_BATTLE_SPECTATOR);
         }
 
+        if (!m_scoreboard) return;
         pos.y += ddim.y;
         ddim.y = textHeight;
         int i = 0;

@@ -47,9 +47,9 @@
 namespace Ui
 {
 
-const float MARGX           = (5.0f/640.0f);
-const float MARGY           = (5.0f/480.0f);
-const float MARGYS          = (4.0f/480.0f);
+const float MARGX           = (3.75f/640.0f);
+const float MARGY           = (3.75f/480.0f);
+const float MARGYS          = (2.75f/480.0f);
 const float MARGY1          = (1.0f/480.0f);
 //! time limit for double-click
 const float DELAY_DBCLICK   = 0.75f;

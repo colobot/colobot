@@ -109,7 +109,7 @@ Error CTaskTurn::IsEnded()
 
     if ( m_bLeft )
     {
-        if ( angle <= m_startAngle+m_angle )
+        if ( angle <= m_finalAngle )
         {
             m_physics->SetMotorSpeedZ(0.0f);
 //?         m_physics->SetCirMotionY(MO_MOTSPEED, 0.0f);
@@ -118,10 +118,15 @@ Error CTaskTurn::IsEnded()
             m_object->SetRotationY(m_finalAngle);
             return ERR_STOP;
         }
+        if ( !m_bDecel && angle <= m_startAngle+m_angle)
+        {
+            m_bDecel = true;
+            m_physics->SetMotorSpeedZ(-0.5f);
+        }
     }
     else
     {
-        if ( angle >= m_startAngle+m_angle )
+        if ( angle >= m_finalAngle )
         {
             m_physics->SetMotorSpeedZ(0.0f);
 //?         m_physics->SetCirMotionY(MO_MOTSPEED, 0.0f);
@@ -129,6 +134,11 @@ Error CTaskTurn::IsEnded()
 //?         m_physics->SetCirMotionY(MO_REASPEED, 0.0f);
             m_object->SetRotationY(m_finalAngle);
             return ERR_STOP;
+        }
+        if ( !m_bDecel && angle >= m_startAngle+m_angle)
+        {
+            m_bDecel = true;
+            m_physics->SetMotorSpeedZ(0.5f);
         }
     }
 
