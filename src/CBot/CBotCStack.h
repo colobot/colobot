@@ -101,6 +101,25 @@ public:
     void AddVar(CBotVar* p);
 
     /*!
+     * \brief Create 'this' as a local variable.
+     * \param pClass The current class referred to by 'this'
+     */
+    void CreateVarThis(CBotClass* pClass);
+
+    /*!
+     * \brief Create 'super' as a local variable.
+     * \param pClass The parent class referred to by 'super'
+     */
+    void CreateVarSuper(CBotClass* pClass);
+
+    /*!
+     * \brief Create member variables of the current class as local variables.
+     * \param pClass The current class.
+     * \param setDefined Whether to mark the variables as initialized.
+     */
+    void CreateMemberVars(CBotClass* pClass, bool setDefined);
+
+    /*!
      * \brief FindVar Finds a variable. Seeks a variable on the stack the token
      * may be a result of TokenTypVar (object of a class) or a pointer in the
      * source.
@@ -235,11 +254,12 @@ public:
 
     /*!
      * \brief CheckCall Test if a procedure name is already defined somewhere.
-     * \param pToken
-     * \param pParam
+     * \param pToken Token representing the name of a function.
+     * \param pParam List of parameters.
+     * \param className Name of a class when checking for methods.
      * \return
      */
-    bool CheckCall(CBotToken* &pToken, CBotDefParam* pParam);
+    bool CheckCall(CBotToken* &pToken, CBotDefParam* pParam, const std::string& className);
 
     /*!
      * \brief NextToken
