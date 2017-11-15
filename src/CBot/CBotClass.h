@@ -304,6 +304,12 @@ public:
     static void DefineClasses(std::list<CBotClass*> pClassList, CBotCStack* pStack);
 
     /*!
+     * \brief Get the list of user-defined methods in this class.
+     * \return List of methods, can be empty.
+     */
+    const std::list<CBotFunction*>& GetFunctions();
+
+    /*!
      * \brief CompileDefItem
      * \param p
      * \param pStack
