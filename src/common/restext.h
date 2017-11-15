@@ -118,6 +118,7 @@ enum ResTextType
     RT_IO_DIR               = 154,
     RT_IO_PRIVATE           = 155,
     RT_IO_PUBLIC            = 156,
+    RT_IO_REPLACE           = 157,
 
     RT_GENERIC_DEV1         = 170,
     RT_GENERIC_DEV2         = 171,

@@ -37,16 +37,7 @@ namespace Ui
 
 class CEdit;
 class CInterface;
-
-enum StudioDialog
-{
-    SD_NULL,
-    SD_OPEN,
-    SD_SAVE,
-    SD_FIND,
-    SD_REPLACE,
-};
-
+class CFileDialog;
 
 
 class CStudio
@@ -71,20 +62,9 @@ protected:
     void        UpdateFlux();
     void        UpdateButtons();
 
-    void        StartDialog(StudioDialog type);
+    void        StartDialog(const Event &event);
     void        StopDialog();
-    void        AdjustDialog();
     bool        EventDialog(const Event &event);
-    void        UpdateChangeList();
-    void        UpdateChangeEdit();
-    void        UpdateDialogAction();
-    void        UpdateDialogPublic();
-    void        UpdateDialogList();
-    std::string  SearchDirectory(bool bCreate);
-    bool        ReadProgram();
-    bool        WriteProgram();
-
-    void        SetFilenameField(CEdit* edit, const std::string& filename);
 
 protected:
     Gfx::CEngine*    m_engine;
@@ -121,7 +101,7 @@ protected:
     ActivePause* m_runningPause = nullptr;
     std::string  m_helpFilename;
 
-    StudioDialog m_dialog;
+    std::unique_ptr<CFileDialog>  m_dialog;
 };
 
 
