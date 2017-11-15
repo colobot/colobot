@@ -284,6 +284,18 @@ public:
     bool IsPublic();
 
     /*!
+     * \brief Check if a method is protected.
+     * \return true if a method was compiled with "protected" keyword.
+     */
+    bool IsProtected();
+
+    /*!
+     * \brief Check if a method is private.
+     * \return true if a method was compiled with "private" keyword.
+     */
+    bool IsPrivate();
+
+    /*!
      * \brief IsExtern
      * \return
      */
@@ -328,6 +340,10 @@ private:
     CBotTypResult m_retTyp;
     //! Public function.
     bool m_bPublic;
+    //! Protected method.
+    bool m_bProtect = false;
+    //! Private method.
+    bool m_bPrivate = false;
     //! Extern function.
     bool m_bExtern;
     //! Name of the class we are part of

@@ -77,6 +77,18 @@ bool CBotFunction::IsPublic()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool CBotFunction::IsProtected()
+{
+    return m_bProtect;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CBotFunction::IsPrivate()
+{
+    return m_bPrivate;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool CBotFunction::IsExtern()
 {
     return m_bExtern;
@@ -135,13 +147,11 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
 
     while (true)
     {
-        if ( IsOfType(p, ID_PUBLIC) )
-        {
-            func->m_bPublic = true;
-            continue;
-        }
+        if (IsOfType(p, ID_PRIVATE)) break;
+        if (IsOfType(p, ID_PROTECTED)) break;
+        if (IsOfType(p, ID_PUBLIC)) continue;
         pp = p;
-        if ( IsOfType(p, ID_EXTERN) )
+        if (IsOfType(p, ID_EXTERN))
         {
             func->m_extern = *pp;        // for the position of the word "extern"
             func->m_bExtern = true;
@@ -249,14 +259,30 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
 
     CBotCStack* pStk = pStack->TokenStack(p, true);
 
+    CBotToken* pPriv = p;
+
     while (true)
     {
-        if ( IsOfType(p, ID_PUBLIC) )
+        if (!func->m_bPublic) // don't repeat 'public'
         {
-        //  func->m_bPublic = true;     // will be done in two passes
-            continue;
+            pPriv = p;
+            if (IsOfType(p, ID_PRIVATE))
+            {
+                func->m_bPrivate = true;
+                break;
+            }
+            if (IsOfType(p, ID_PROTECTED))
+            {
+                func->m_bProtect = true;
+                break;
+            }
+            if (IsOfType(p, ID_PUBLIC))
+            {
+                func->m_bPublic = true;
+                continue;
+            }
         }
-        if ( IsOfType(p, ID_EXTERN) )
+        if (!func->m_bExtern && IsOfType(p, ID_EXTERN))
         {
             func->m_bExtern = true;
             continue;
@@ -291,6 +317,14 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
                 func->m_token = *p;
                 if (!IsOfType(p, TokenTypVar)) goto bad;
 
+            }
+            else if (pClass == nullptr) // not method in a class ?
+            {
+                if (func->m_bPrivate || func->m_bProtect) // not allowed for regular functions
+                {
+                    pStk->SetError(CBotErrNoType, pPriv);
+                    goto bad;
+                }
             }
 
             CBotToken* openPar = p;
@@ -877,6 +911,25 @@ CBotTypResult CBotFunction::CompileMethodCall(const std::string& name, CBotVar**
 
     if (pt != nullptr)
     {
+        CBotToken token("this");
+        CBotVar* pThis = pStack->FindVar(token); // for 'this' context
+
+        if (pThis == nullptr || pThis->GetType() != CBotTypPointer) // called from inside a function
+        {
+            if (pt->IsPrivate() || pt->IsProtected())
+                type.SetType(CBotErrPrivate);
+        }
+        else     // called from inside a method
+        {
+            CBotClass* thisClass = pThis->GetClass(); // current class
+            CBotClass* funcClass = CBotClass::Find(pt->m_MasterClass); // class of the method
+
+            if (pt->IsPrivate() && thisClass != funcClass)
+                type.SetType(CBotErrPrivate);
+
+            if (pt->IsProtected() && !thisClass->IsChildOf(funcClass))
+                type.SetType(CBotErrPrivate);
+        }
     }
 
     return type;

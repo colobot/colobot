@@ -3068,3 +3068,132 @@ TEST_F(CBotUT, ClassInheritanceTestThisOutOfClass)
         "}\n"
     );
 }
+
+TEST_F(CBotUT, ClassTestProtectedMethod)
+{
+    auto publicProgram = ExecuteTest(
+        "public class BaseClass {\n"
+        "    protected bool BaseClassProtected() {\n"
+        "        return true;\n"
+        "    }\n"
+        "    bool NoErrorProtectedSameClass() {\n"
+        "        BaseClass b();\n"
+        "        ASSERT(true == b.BaseClassProtected());\n"
+        "        return BaseClassProtected();\n"
+        "    }\n"
+        "}\n"
+        "extern void Test() {\n"
+        "    BaseClass b();\n"
+        "    ASSERT(true == b.NoErrorProtectedSameClass());\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "public class SubClass extends BaseClass {\n"
+        "    bool NoErrorProtectedSubClass() {\n"
+        "        ASSERT(true == BaseClassProtected());\n"
+        "        ASSERT(true == this.BaseClassProtected());\n"
+        "        ASSERT(true == super.BaseClassProtected());\n"
+        "        return true;\n"
+        "    }\n"
+        "}\n"
+        "extern void TestNoErrorProtected() {\n"
+        "    SubClass s();\n"
+        "    ASSERT(true == s.NoErrorProtectedSubClass());\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void TestErrorProtected_1() {\n"
+        "    BaseClass b();\n"
+        "    b.BaseClassProtected();\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SubClass extends BaseClass {}\n"
+        "\n"
+        "extern void TestErrorProtected_2() {\n"
+        "    SubClass s();\n"
+        "    s.BaseClassProtected();\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SomeOtherClass {\n"
+        "    void testErrorProtected() {\n"
+        "        BaseClass b();\n"
+        "        b.BaseClassProtected();\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+}
+
+TEST_F(CBotUT, ClassTestPrivateMethod)
+{
+    auto publicProgram = ExecuteTest(
+        "public class BaseClass {\n"
+        "    private bool BaseClassPrivate() {\n"
+        "        return true;\n"
+        "    }\n"
+        "    bool NoErrorPrivateSameClass() {\n"
+        "        BaseClass b();\n"
+        "        ASSERT(true == b.BaseClassPrivate());\n"
+        "        return BaseClassPrivate();\n"
+        "    }\n"
+        "}\n"
+        "extern void Test() {\n"
+        "    BaseClass b();\n"
+        "    ASSERT(true == b.NoErrorPrivateSameClass());\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "public class SubClass extends BaseClass {\n"
+        "    void ErrorPrivateThis() {\n"
+        "        this.BaseClassPrivate();\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SubClass extends BaseClass {\n"
+        "    void ErrorPrivateSuper() {\n"
+        "        super.BaseClassPrivate();\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "extern void TestErrorPrivate_1() {\n"
+        "    BaseClass b();\n"
+        "    b.BaseClassPrivate();\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SubClass extends BaseClass {}\n"
+        "\n"
+        "extern void TestErrorPrivate_2() {\n"
+        "    SubClass s();\n"
+        "    s.BaseClassPrivate();\n"
+        "}\n",
+        CBotErrPrivate
+    );
+
+    ExecuteTest(
+        "public class SomeOtherClass {\n"
+        "    void ErrorPrivate() {\n"
+        "        BaseClass b();\n"
+        "        b.BaseClassPrivate();\n"
+        "    }\n"
+        "}\n",
+        CBotErrPrivate
+    );
+}
