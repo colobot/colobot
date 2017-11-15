@@ -63,7 +63,6 @@ CBotStack* CBotStack::AllocateStack()
     memset(p, 0, size);
 
     p->m_block = BlockVisibilityType::BLOCK;
-    m_timer = m_initimer;                // sets the timer at the beginning
 
     CBotStack* pp = p;
     pp += MAXSTACK;
