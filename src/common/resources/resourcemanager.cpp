@@ -164,7 +164,7 @@ bool CResourceManager::RemoveDirectory(const std::string& directory)
     return false;
 }
 
-std::vector<std::string> CResourceManager::ListFiles(const std::string &directory)
+std::vector<std::string> CResourceManager::ListFiles(const std::string &directory, bool excludeDirs)
 {
     std::vector<std::string> result;
 
@@ -174,6 +174,11 @@ std::vector<std::string> CResourceManager::ListFiles(const std::string &director
 
         for (char **i = files; *i != nullptr; i++)
         {
+            if (excludeDirs)
+            {
+                std::string path = CleanPath(directory) + "/" + (*i);
+                if (PHYSFS_isDirectory(path.c_str())) continue;
+            }
             result.push_back(*i);
         }
 

@@ -906,6 +906,9 @@ msgstr "Nowy"
 msgid "New ..."
 msgstr "Nowy ..."
 
+msgid "New Folder"
+msgstr ""
+
 msgid "New bot available"
 msgstr "Dostępny nowy robot"
 
@@ -1061,6 +1064,9 @@ msgstr "Miejsce nadania wiadomości\\Pokazuje skąd została wysłana ostatnia w
 
 msgid "Original game developed by:"
 msgstr "Twórcy oryginalnej gry:"
+
+msgid "Overwrite existing file?"
+msgstr ""
 
 msgid "Parameters missing"
 msgstr "Brak wymaganego parametru"

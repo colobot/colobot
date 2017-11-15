@@ -485,6 +485,8 @@ set(BASE_SOURCES
     ui/displayinfo.h
     ui/displaytext.cpp
     ui/displaytext.h
+    ui/filedialog.cpp
+    ui/filedialog.h
     ui/maindialog.cpp
     ui/maindialog.h
     ui/mainmap.cpp

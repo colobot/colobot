@@ -121,6 +121,7 @@ void InitializeRestext()
     stringsText[RT_IO_DIR]           = TR("Folder:");
     stringsText[RT_IO_PRIVATE]       = TR("Private\\Private folder");
     stringsText[RT_IO_PUBLIC]        = TR("Public\\Common folder");
+    stringsText[RT_IO_REPLACE]       = TR("Overwrite existing file?");
 
     stringsText[RT_GENERIC_DEV1]     = TR("Original game developed by:");
     stringsText[RT_GENERIC_DEV2]     = TR("epsitec.com");
@@ -158,6 +159,7 @@ void InitializeRestext()
 
     stringsEvent[EVENT_DIALOG_OK]           = TR("OK");
     stringsEvent[EVENT_DIALOG_CANCEL]       = TR("Cancel");
+    stringsEvent[EVENT_DIALOG_NEWDIR]       = TR("New Folder");
 
     stringsEvent[EVENT_INTERFACE_TRAINER]   = TR("Exercises\\Programming exercises");
     stringsEvent[EVENT_INTERFACE_DEFI]      = TR("Challenges\\Programming challenges");
