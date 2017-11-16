@@ -355,6 +355,10 @@ ObjectType CLevelParserParam::ToObjectType(std::string value)
     if (value == "TrackedSniffer"    ) return OBJECT_MOBILEts;
     if (value == "WheeledSniffer"    ) return OBJECT_MOBILEws;
     if (value == "LeggedSniffer"     ) return OBJECT_MOBILEis;
+    if (value == "WingedBuilder"     ) return OBJECT_MOBILEfb;
+    if (value == "TrackedBuilder"    ) return OBJECT_MOBILEtb;
+    if (value == "WheeledBuilder"    ) return OBJECT_MOBILEwb;
+    if (value == "LeggedBuilder"     ) return OBJECT_MOBILEib;
     if (value == "Thumper"           ) return OBJECT_MOBILErt;
     if (value == "PhazerShooter"     ) return OBJECT_MOBILErc;
     if (value == "Recycler"          ) return OBJECT_MOBILErr;
@@ -556,6 +560,10 @@ const std::string CLevelParserParam::FromObjectType(ObjectType value)
     if (value == OBJECT_MOBILEts    ) return "TrackedSniffer";
     if (value == OBJECT_MOBILEws    ) return "WheeledSniffer";
     if (value == OBJECT_MOBILEis    ) return "LeggedSniffer";
+    if (value == OBJECT_MOBILEfb    ) return "WingedBuilder";
+    if (value == OBJECT_MOBILEtb    ) return "TrackedBuilder";
+    if (value == OBJECT_MOBILEwb    ) return "WheeledBuilder";
+    if (value == OBJECT_MOBILEib    ) return "LeggedBuilder";
     if (value == OBJECT_MOBILErt    ) return "Thumper";
     if (value == OBJECT_MOBILErc    ) return "PhazerShooter";
     if (value == OBJECT_MOBILErr    ) return "Recycler";

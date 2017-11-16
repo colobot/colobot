@@ -854,6 +854,10 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
         if ( type == OBJECT_MOBILEta )  icon = 10;
         if ( type == OBJECT_MOBILEwa )  icon =  9;
         if ( type == OBJECT_MOBILEia )  icon = 22;
+        if ( type == OBJECT_MOBILEfb )  icon = 32; //placeholder icon
+        if ( type == OBJECT_MOBILEtb )  icon = 32;
+        if ( type == OBJECT_MOBILEwb )  icon = 32;
+        if ( type == OBJECT_MOBILEib )  icon = 32;
         if ( type == OBJECT_MOBILEfc )  icon = 17;
         if ( type == OBJECT_MOBILEtc )  icon = 16;
         if ( type == OBJECT_MOBILEwc )  icon = 15;
@@ -1231,6 +1235,10 @@ void CMap::UpdateObject(CObject* pObj)
          type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEfa ||
          type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEwb ||
+         type == OBJECT_MOBILEtb ||
+         type == OBJECT_MOBILEfb ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEwc ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEfc ||

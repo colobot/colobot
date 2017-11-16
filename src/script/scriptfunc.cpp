@@ -1291,10 +1291,10 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
 
     oType = pThis->GetType();
 
-    if ( oType != OBJECT_MOBILEfa &&  // allowed only for grabber bots && humans
-         oType != OBJECT_MOBILEta &&
-         oType != OBJECT_MOBILEwa &&
-         oType != OBJECT_MOBILEia &&
+    if ( oType != OBJECT_MOBILEfb &&  // allowed only for builder bots && humans
+         oType != OBJECT_MOBILEtb &&
+         oType != OBJECT_MOBILEwb &&
+         oType != OBJECT_MOBILEib &&
          oType != OBJECT_HUMAN    &&
          oType != OBJECT_TECH      )
     {

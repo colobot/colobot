@@ -988,6 +988,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
     {
         factor = 1.0f;
         if ( type == OBJECT_MOBILEia ||
+             type == OBJECT_MOBILEib ||
              type == OBJECT_MOBILEis ||
              type == OBJECT_MOBILEic ||
              type == OBJECT_MOBILEii )  factor = 0.5f;
@@ -1148,6 +1149,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
     }
 
     if ( type == OBJECT_MOBILEwa ||
+         type == OBJECT_MOBILEwb ||
          type == OBJECT_MOBILEwc ||
          type == OBJECT_MOBILEwi ||
          type == OBJECT_MOBILEws ||
@@ -1193,6 +1195,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
     }
 
     if ( type == OBJECT_MOBILEfa ||
+         type == OBJECT_MOBILEfb ||
          type == OBJECT_MOBILEfc ||
          type == OBJECT_MOBILEfi ||
          type == OBJECT_MOBILEfs ||
@@ -1800,6 +1803,10 @@ void CPhysics::WaterFrame(float aTime, float rTime)
          type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEfb ||
+         type == OBJECT_MOBILEtb ||
+         type == OBJECT_MOBILEwb ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEfc ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEwc ||
@@ -1838,6 +1845,7 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
     float       amplitude, time, freq;
 
     if ( type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
          type == OBJECT_MOBILEis )
@@ -1953,6 +1961,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
     int         i, max;
 
     if ( type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
          type == OBJECT_MOBILEis )
@@ -1980,6 +1989,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
         amplitude = 0.9f;
     }
     else if ( type == OBJECT_MOBILEta ||
+              type == OBJECT_MOBILEtb ||
               type == OBJECT_MOBILEtc ||
               type == OBJECT_MOBILEti ||
               type == OBJECT_MOBILEts )
@@ -2074,6 +2084,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 void CPhysics::SoundMotorStop(float rTime, ObjectType type)
 {
     if ( type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
          type == OBJECT_MOBILEis )
@@ -2736,6 +2747,10 @@ bool CPhysics::ExploOther(ObjectType iType,
             oType == OBJECT_MOBILEta ||
             oType == OBJECT_MOBILEfa ||
             oType == OBJECT_MOBILEia ||
+            oType == OBJECT_MOBILEwb ||
+            oType == OBJECT_MOBILEtb ||
+            oType == OBJECT_MOBILEfb ||
+            oType == OBJECT_MOBILEib ||
             oType == OBJECT_MOBILEwc ||
             oType == OBJECT_MOBILEtc ||
             oType == OBJECT_MOBILEfc ||
@@ -2797,6 +2812,10 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
              iType == OBJECT_MOBILEta ||
              iType == OBJECT_MOBILEfa ||
              iType == OBJECT_MOBILEia ||
+             iType == OBJECT_MOBILEwb ||
+             iType == OBJECT_MOBILEtb ||
+             iType == OBJECT_MOBILEfb ||
+             iType == OBJECT_MOBILEib ||
              iType == OBJECT_MOBILEwc ||
              iType == OBJECT_MOBILEtc ||
              iType == OBJECT_MOBILEfc ||
@@ -3019,6 +3038,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
     type = m_object->GetType();
 
     if ( type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
          type == OBJECT_MOBILEis ||  // legs?
@@ -3124,6 +3144,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
     }
 
     if ( type == OBJECT_MOBILEta ||
+         type == OBJECT_MOBILEtb ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEti ||
          type == OBJECT_MOBILEts )  // caterpillars?

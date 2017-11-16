@@ -284,6 +284,10 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_MOBILEta:
         case OBJECT_MOBILEwa:
         case OBJECT_MOBILEia:
+        case OBJECT_MOBILEfb:
+        case OBJECT_MOBILEtb:
+        case OBJECT_MOBILEwb:
+        case OBJECT_MOBILEib:
         case OBJECT_MOBILEfc:
         case OBJECT_MOBILEtc:
         case OBJECT_MOBILEwc:

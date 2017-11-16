@@ -1814,6 +1814,10 @@ void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
          type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEfb ||
+         type == OBJECT_MOBILEtb ||
+         type == OBJECT_MOBILEwb ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEfc ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEwc ||
@@ -2195,6 +2199,10 @@ void CRobotMain::ChangeCamera()
          oType != OBJECT_MOBILEta &&
          oType != OBJECT_MOBILEwa &&
          oType != OBJECT_MOBILEia &&
+         oType != OBJECT_MOBILEfb &&
+         oType != OBJECT_MOBILEtb &&
+         oType != OBJECT_MOBILEwb &&
+         oType != OBJECT_MOBILEib &&
          oType != OBJECT_MOBILEfc &&
          oType != OBJECT_MOBILEtc &&
          oType != OBJECT_MOBILEwc &&

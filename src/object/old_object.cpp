@@ -678,6 +678,7 @@ void COldObject::SetType(ObjectType type)
 
     // TODO: Temporary hack
     if ( m_type == OBJECT_MOBILEfa || // WingedGrabber
+         m_type == OBJECT_MOBILEfb || // WingedBuilder
          m_type == OBJECT_MOBILEfs || // WingedSniffer
          m_type == OBJECT_MOBILEfc || // WingedShooter
          m_type == OBJECT_MOBILEfi || // WingedOrgaShooter
@@ -705,6 +706,10 @@ void COldObject::SetType(ObjectType type)
         m_type == OBJECT_MOBILEta ||
         m_type == OBJECT_MOBILEwa ||
         m_type == OBJECT_MOBILEia ||
+        m_type == OBJECT_MOBILEfb ||
+        m_type == OBJECT_MOBILEtb ||
+        m_type == OBJECT_MOBILEwb ||
+        m_type == OBJECT_MOBILEib ||
         m_type == OBJECT_MOBILEfc ||
         m_type == OBJECT_MOBILEtc ||
         m_type == OBJECT_MOBILEwc ||
@@ -767,6 +772,10 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILEta ||
          m_type == OBJECT_MOBILEwa ||
          m_type == OBJECT_MOBILEia ||
+         m_type == OBJECT_MOBILEfb ||
+         m_type == OBJECT_MOBILEtb ||
+         m_type == OBJECT_MOBILEwb ||
+         m_type == OBJECT_MOBILEib ||
          m_type == OBJECT_MOBILEfc ||
          m_type == OBJECT_MOBILEtc ||
          m_type == OBJECT_MOBILEwc ||
@@ -856,6 +865,10 @@ void COldObject::SetType(ObjectType type)
         m_type == OBJECT_MOBILEta ||
         m_type == OBJECT_MOBILEwa ||
         m_type == OBJECT_MOBILEia ||
+        m_type == OBJECT_MOBILEfb ||
+        m_type == OBJECT_MOBILEtb ||
+        m_type == OBJECT_MOBILEwb ||
+        m_type == OBJECT_MOBILEib ||
         m_type == OBJECT_MOBILEfc ||
         m_type == OBJECT_MOBILEtc ||
         m_type == OBJECT_MOBILEwc ||
@@ -2832,6 +2845,10 @@ void COldObject::CreateSelectParticle()
              m_type == OBJECT_MOBILEta ||
              m_type == OBJECT_MOBILEwa ||
              m_type == OBJECT_MOBILEia ||
+             m_type == OBJECT_MOBILEfb ||
+             m_type == OBJECT_MOBILEtb ||
+             m_type == OBJECT_MOBILEwb ||
+             m_type == OBJECT_MOBILEib ||
              m_type == OBJECT_MOBILEfc ||
              m_type == OBJECT_MOBILEtc ||
              m_type == OBJECT_MOBILEwc ||
@@ -2930,6 +2947,7 @@ void COldObject::UpdateSelectParticle()
 
     // Red back lens
     if ( m_type == OBJECT_MOBILEfa ||
+         m_type == OBJECT_MOBILEfb ||
          m_type == OBJECT_MOBILEfc ||
          m_type == OBJECT_MOBILEfi ||
          m_type == OBJECT_MOBILEfs ||
@@ -2941,6 +2959,7 @@ void COldObject::UpdateSelectParticle()
         dim[3].x = 0.6f;
     }
     if ( m_type == OBJECT_MOBILEwa ||
+         m_type == OBJECT_MOBILEwb ||
          m_type == OBJECT_MOBILEwc ||
          m_type == OBJECT_MOBILEwi ||
          m_type == OBJECT_MOBILEws )  // wheels?
@@ -2954,6 +2973,7 @@ void COldObject::UpdateSelectParticle()
         pos[3] = Math::Vector(-4.0f, 2.5f, -2.2f);
     }
     if ( m_type == OBJECT_MOBILEia ||
+         m_type == OBJECT_MOBILEib ||
          m_type == OBJECT_MOBILEic ||
          m_type == OBJECT_MOBILEii ||
          m_type == OBJECT_MOBILEis ||
@@ -2963,6 +2983,7 @@ void COldObject::UpdateSelectParticle()
         pos[3] = Math::Vector(-4.5f, 2.7f, -2.8f);
     }
     if ( m_type == OBJECT_MOBILEta ||
+         m_type == OBJECT_MOBILEtb ||
          m_type == OBJECT_MOBILEtc ||
          m_type == OBJECT_MOBILEti ||
          m_type == OBJECT_MOBILEts ||
@@ -3198,6 +3219,10 @@ float COldObject::GetLightningHitProbability()
          m_type == OBJECT_MOBILEta ||
          m_type == OBJECT_MOBILEwa ||
          m_type == OBJECT_MOBILEia ||
+         m_type == OBJECT_MOBILEfb ||
+         m_type == OBJECT_MOBILEtb ||
+         m_type == OBJECT_MOBILEwb ||
+         m_type == OBJECT_MOBILEib ||
          m_type == OBJECT_MOBILEfc ||
          m_type == OBJECT_MOBILEtc ||
          m_type == OBJECT_MOBILEwc ||

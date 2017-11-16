@@ -99,6 +99,10 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_MOBILEts    )  return "TrackedSniffer";
     if ( type == OBJECT_MOBILEfs    )  return "WingedSniffer";
     if ( type == OBJECT_MOBILEis    )  return "LeggedSniffer";
+    if ( type == OBJECT_MOBILEwb    )  return "WheeledBuilder";
+    if ( type == OBJECT_MOBILEtb    )  return "TrackedBuilder";
+    if ( type == OBJECT_MOBILEfb    )  return "WingedBuilder";
+    if ( type == OBJECT_MOBILEib    )  return "LeggedBuilder";
     if ( type == OBJECT_MOBILErt    )  return "Thumper";
     if ( type == OBJECT_MOBILErc    )  return "PhazerShooter";
     if ( type == OBJECT_MOBILErr    )  return "Recycler";

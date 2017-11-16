@@ -129,6 +129,10 @@ enum ObjectType
     OBJECT_MOBILEtg         = 211,  //!< TargetBot
     OBJECT_MOBILEdr         = 212,  //!< Scribbler
     OBJECT_CONTROLLER       = 213,  //!< MissionController
+    OBJECT_MOBILEwb         = 220,  //!< WheeledBuilder
+    OBJECT_MOBILEtb         = 221,  //!< TrackedBuilder
+    OBJECT_MOBILEfb         = 222,  //!< WingedBuilder
+    OBJECT_MOBILEib         = 223,  //!< LeggedBuilder
     OBJECT_WAYPOINT         = 250,  //!< WayPoint
     OBJECT_FLAGb            = 260,  //!< BlueFlag
     OBJECT_FLAGr            = 261,  //!< RedFlag

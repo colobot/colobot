@@ -28,6 +28,7 @@ DriveType GetDriveFromObject(ObjectType type)
         case OBJECT_MOBILEwc:
         case OBJECT_MOBILEwi:
         case OBJECT_MOBILEws:
+        case OBJECT_MOBILEwb:
             return DriveType::Wheeled;
 
         case OBJECT_MOBILEtt:
@@ -35,6 +36,7 @@ DriveType GetDriveFromObject(ObjectType type)
         case OBJECT_MOBILEtc:
         case OBJECT_MOBILEti:
         case OBJECT_MOBILEts:
+        case OBJECT_MOBILEtb:
             return DriveType::Tracked;
 
         case OBJECT_MOBILEft:
@@ -42,6 +44,7 @@ DriveType GetDriveFromObject(ObjectType type)
         case OBJECT_MOBILEfc:
         case OBJECT_MOBILEfi:
         case OBJECT_MOBILEfs:
+        case OBJECT_MOBILEfb:
             return DriveType::Winged;
 
         case OBJECT_MOBILEit:
@@ -49,6 +52,7 @@ DriveType GetDriveFromObject(ObjectType type)
         case OBJECT_MOBILEic:
         case OBJECT_MOBILEii:
         case OBJECT_MOBILEis:
+        case OBJECT_MOBILEib:
             return DriveType::Legged;
 
         case OBJECT_MOBILErt:

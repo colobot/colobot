@@ -321,10 +321,10 @@ bool CTaskBuild::EventProcess(const Event &event)
                 mat = m_object->GetWorldMatrix(14);
                 break;
 
-            case OBJECT_MOBILEfa:
-            case OBJECT_MOBILEta:
-            case OBJECT_MOBILEwa:
-            case OBJECT_MOBILEia:
+            case OBJECT_MOBILEfb:
+            case OBJECT_MOBILEtb:
+            case OBJECT_MOBILEwb:
+            case OBJECT_MOBILEib:
                 mat = m_object->GetWorldMatrix(3);
                 break;
 

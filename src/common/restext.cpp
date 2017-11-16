@@ -517,6 +517,10 @@ void InitializeRestext()
     stringsObject[OBJECT_MOBILEta]     = TR("Tracked grabber");
     stringsObject[OBJECT_MOBILEwa]     = TR("Wheeled grabber");
     stringsObject[OBJECT_MOBILEia]     = TR("Legged grabber");
+    stringsObject[OBJECT_MOBILEfb]     = TR("Winged builder");
+    stringsObject[OBJECT_MOBILEtb]     = TR("Tracked builder");
+    stringsObject[OBJECT_MOBILEwb]     = TR("Wheeled builder");
+    stringsObject[OBJECT_MOBILEib]     = TR("Legged builder");
     stringsObject[OBJECT_MOBILEfc]     = TR("Winged shooter");
     stringsObject[OBJECT_MOBILEtc]     = TR("Tracked shooter");
     stringsObject[OBJECT_MOBILEwc]     = TR("Wheeled shooter");

@@ -101,6 +101,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(0, rank);
 
     if (type == OBJECT_MOBILEfa ||
+        type == OBJECT_MOBILEfb ||
         type == OBJECT_MOBILEfc ||
         type == OBJECT_MOBILEfi ||
         type == OBJECT_MOBILEfs)
@@ -108,6 +109,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         modelManager->AddModelReference("lem1f.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEta ||
+             type == OBJECT_MOBILEtb ||
              type == OBJECT_MOBILEtc ||
              type == OBJECT_MOBILEti ||
              type == OBJECT_MOBILEts)
@@ -115,6 +117,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         modelManager->AddModelReference("lem1t.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEwa ||
+             type == OBJECT_MOBILEwb ||
              type == OBJECT_MOBILEwc ||
              type == OBJECT_MOBILEwi ||
              type == OBJECT_MOBILEws)
@@ -129,6 +132,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         }
     }
     else if (type == OBJECT_MOBILEia ||
+             type == OBJECT_MOBILEib ||
              type == OBJECT_MOBILEic ||
              type == OBJECT_MOBILEii ||
              type == OBJECT_MOBILEis)
@@ -331,8 +335,25 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetPartPosition(2, Math::Vector(0.0f, 2.5f, 0.0f));
         m_object->SetPartRotationZ(2, 0.0f);
     }
+	
+    if (type == OBJECT_MOBILEfb ||
+        type == OBJECT_MOBILEtb ||
+        type == OBJECT_MOBILEwb ||
+        type == OBJECT_MOBILEib)
+    {
+        // Creates the neutron gun.
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        m_object->SetObjectRank(1, rank);
+        m_object->SetObjectParent(1, 0);
+        modelManager->AddModelReference("neutron.mod", false, rank, m_object->GetTeam());
+//?     m_object->SetPartPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
+        m_object->SetPartPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
+        m_object->SetPartRotationZ(1, 0.0f);
+    }
 
     if (type == OBJECT_MOBILEwa ||
+        type == OBJECT_MOBILEwb ||
         type == OBJECT_MOBILEwc ||
         type == OBJECT_MOBILEws ||
         type == OBJECT_MOBILEwi ||
@@ -411,6 +432,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     }
 
     if (type == OBJECT_MOBILEta ||
+        type == OBJECT_MOBILEtb ||
         type == OBJECT_MOBILEtc ||
         type == OBJECT_MOBILEti ||
         type == OBJECT_MOBILEts)  // caterpillars?
@@ -493,6 +515,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     }
 
     if (type == OBJECT_MOBILEfa ||
+        type == OBJECT_MOBILEfb ||
         type == OBJECT_MOBILEfc ||
         type == OBJECT_MOBILEfs ||
         type == OBJECT_MOBILEfi ||
@@ -526,6 +549,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     }
 
     if (type == OBJECT_MOBILEia ||
+        type == OBJECT_MOBILEib ||
         type == OBJECT_MOBILEic ||
         type == OBJECT_MOBILEis ||
         type == OBJECT_MOBILEii)  // insect legs?
@@ -867,6 +891,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->CreateShadowCircle(6.0f, 1.0f);
     }
     else if (type == OBJECT_MOBILEta ||
+             type == OBJECT_MOBILEtb ||
              type == OBJECT_MOBILEtc ||
              type == OBJECT_MOBILEti ||
              type == OBJECT_MOBILEts ||
@@ -888,6 +913,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     }
 
     if (type == OBJECT_MOBILEfa ||
+        type == OBJECT_MOBILEfb ||
         type == OBJECT_MOBILEfc ||
         type == OBJECT_MOBILEfi ||
         type == OBJECT_MOBILEfs ||
@@ -948,6 +974,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
     character = m_object->GetCharacter();
 
     if ( type == OBJECT_MOBILEwa ||
+         type == OBJECT_MOBILEwb ||
          type == OBJECT_MOBILEwc ||
          type == OBJECT_MOBILEwi ||
          type == OBJECT_MOBILEws ||
@@ -1004,6 +1031,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
     }
 
     if ( type == OBJECT_MOBILEta ||
+         type == OBJECT_MOBILEtb ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEti ||
          type == OBJECT_MOBILEts )  // caterpillars?
@@ -1033,6 +1061,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
     }
 
     if ( type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
          type == OBJECT_MOBILEis )  // legs?
@@ -1063,6 +1092,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
     }
 
     if ( type == OBJECT_MOBILEfa ||
+         type == OBJECT_MOBILEfb ||
          type == OBJECT_MOBILEfc ||
          type == OBJECT_MOBILEfi ||
          type == OBJECT_MOBILEfs ||
@@ -1240,6 +1270,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
     type = m_object->GetType();
 
     if ( type == OBJECT_MOBILEwa ||
+         type == OBJECT_MOBILEwb ||
          type == OBJECT_MOBILEwc ||
          type == OBJECT_MOBILEwi ||
          type == OBJECT_MOBILEws ||
@@ -1406,6 +1437,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
     }
 
     if ( type == OBJECT_MOBILEta ||
+         type == OBJECT_MOBILEtb ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEti ||
          type == OBJECT_MOBILEts ||
@@ -1524,6 +1556,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
     }
 
     if ( type == OBJECT_MOBILEfa ||
+         type == OBJECT_MOBILEfb ||
          type == OBJECT_MOBILEfc ||
          type == OBJECT_MOBILEfi ||
          type == OBJECT_MOBILEfs ||
@@ -1533,6 +1566,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
     }
 
     if ( type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
          type == OBJECT_MOBILEis )  // legs?
