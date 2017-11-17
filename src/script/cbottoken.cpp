@@ -269,7 +269,7 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "trunc"         ) == 0 )  helpfile = "cbot/trunc";
     if ( strcmp(token, "retobject"     ) == 0 )  helpfile = "cbot/retobj";
     if ( strcmp(token, "errmode"       ) == 0 )  helpfile = "cbot/errmode";
-    if ( strcmp(token, "busy"          ) == 0 )  helpfile = "cbot/busy";
+    if ( strcmp(token, "isbusy"          ) == 0 )  helpfile = "cbot/isbusy";
     if ( strcmp(token, "takeoff"       ) == 0 )  helpfile = "cbot/takeoff";
     if ( strcmp(token, "research"      ) == 0 )  helpfile = "cbot/research";
     if ( strcmp(token, "factory"       ) == 0 )  helpfile = "cbot/factory";
@@ -420,7 +420,7 @@ bool IsFunction(const char *token)
     if ( strcmp(token, "trunc"        ) == 0 )  return true;
     if ( strcmp(token, "retobjectbyid") == 0 )  return true;
     if ( strcmp(token, "retobject"    ) == 0 )  return true;
-    if ( strcmp(token, "busy"         ) == 0 )  return true;
+    if ( strcmp(token, "isbusy"         ) == 0 )  return true;
     if ( strcmp(token, "factory"      ) == 0 )  return true;
     if ( strcmp(token, "research"     ) == 0 )  return true;
     if ( strcmp(token, "takeoff"      ) == 0 )  return true;
@@ -523,11 +523,11 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "retobject"    ) == 0 )  return "retobject ( rank );";
     if ( strcmp(token, "retobjectbyid") == 0 )  return "retobjectbyid ( rank );";
     if ( strcmp(token, "progfunc"  ) == 0 )  return "progfunc ( funcname );";
-    if ( strcmp(token, "busy"      ) == 0 )  return "busy ( );";
+    if ( strcmp(token, "isbusy"      ) == 0 )  return "isbusy ( object );";
     if ( strcmp(token, "factory"   ) == 0 )  return "factory ( cat, program, object );";
-    if ( strcmp(token, "research"  ) == 0 )  return "research ( type );";
-    if ( strcmp(token, "takeoff"   ) == 0 )  return "takeoff ( );";
-    if ( strcmp(token, "destroy"   ) == 0 )  return "destroy ( );";
+    if ( strcmp(token, "research"  ) == 0 )  return "research ( type, object );";
+    if ( strcmp(token, "takeoff"   ) == 0 )  return "takeoff ( object );";
+    if ( strcmp(token, "destroy"   ) == 0 )  return "destroy ( object );";
     if ( strcmp(token, "search"    ) == 0 )  return "search ( cat, pos, min, max, sens, filter );";
     if ( strcmp(token, "searchall" ) == 0 )  return "searchall ( cat, pos, min, max, sens, filter );";
     if ( strcmp(token, "radar"     ) == 0 )  return "radar ( cat, angle, focus, min, max, sens, filter );";
