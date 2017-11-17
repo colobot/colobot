@@ -416,6 +416,7 @@ Error CTaskBuild::IsEnded()
 {
     CAuto*      automat;
     float       angle, dist, time;
+    Math::Vector       pv,   pm;
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
@@ -482,6 +483,14 @@ Error CTaskBuild::IsEnded()
             m_object->SetPartPosition(14, Math::Vector(0.6f, 0.1f, 0.3f));
             m_object->SetPartRotationZ(14, 0.0f);
         }
+        if (m_object->GetType() == OBJECT_MOBILEfb ||
+            m_object->GetType() == OBJECT_MOBILEib ||
+            m_object->GetType() == OBJECT_MOBILEtb ||
+            m_object->GetType() == OBJECT_MOBILEwb)
+        {
+            m_object->SetObjectParent(1, 0);
+            m_object->StartTaskGunGoal(-15*Math::PI/180.0f, 0.0f);
+        }
 
         m_phase = TBP_PREP;
         m_speed = 1.0f/1.0f;
@@ -542,6 +551,8 @@ Error CTaskBuild::IsEnded()
             m_object->SetPartPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
             m_object->SetPartRotationZ(14, Math::PI);
         }
+        else
+            m_object->StartTaskGunGoal(0.0f, 0.0f);
 
         if ( m_type == OBJECT_FACTORY  ||
              m_type == OBJECT_RESEARCH ||
