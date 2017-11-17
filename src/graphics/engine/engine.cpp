@@ -2309,6 +2309,7 @@ bool CEngine::LoadAllTextures()
     LoadTexture("textures/interface/button1.png");
     LoadTexture("textures/interface/button2.png");
     LoadTexture("textures/interface/button3.png");
+    LoadTexture("textures/interface/button4.png");
     LoadTexture("textures/effect00.png");
     LoadTexture("textures/effect01.png");
     LoadTexture("textures/effect02.png");
