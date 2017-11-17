@@ -80,6 +80,10 @@ private:
     static CBot::CBotTypResult cTopo(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cMessage(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cPenDown(CBot::CBotVar* &var, void* user);
+    
+    static CBot::CBotTypResult cFactory(CBot::CBotVar* &var, void* user);
+    //static CBot::CBotTypResult cTakeOff(CBot::CBotVar* &var, void* user);
+    
 
     static CBot::CBotTypResult cOnePoint(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cOneObject(CBot::CBotVar* &var, void* user);
@@ -143,17 +147,16 @@ private:
     static bool rPenColor(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rPenWidth(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rCameraFocus(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
-
+    
+    static bool rTakeOff(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rFactory(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
 
     static CBot::CBotTypResult cBusy(CBot::CBotVar* thisclass, CBot::CBotVar* &var);
-    static CBot::CBotTypResult cFactory(CBot::CBotVar* thisclass, CBot::CBotVar* &var);
     static CBot::CBotTypResult cClassNull(CBot::CBotVar* thisclass, CBot::CBotVar* &var);
     static CBot::CBotTypResult cClassOneFloat(CBot::CBotVar* thisclass, CBot::CBotVar* &var);
 
     static bool rBusy(CBot::CBotVar* thisclass, CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
-    static bool rFactory(CBot::CBotVar* thisclass, CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rResearch(CBot::CBotVar* thisclass, CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
-    static bool rTakeOff(CBot::CBotVar* thisclass, CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rDestroy(CBot::CBotVar* thisclass, CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
 
     static CBot::CBotTypResult cPointConstructor(CBot::CBotVar* pThis, CBot::CBotVar* &var);

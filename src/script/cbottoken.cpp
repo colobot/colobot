@@ -99,6 +99,10 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_MOBILEts    )  return "TrackedSniffer";
     if ( type == OBJECT_MOBILEfs    )  return "WingedSniffer";
     if ( type == OBJECT_MOBILEis    )  return "LeggedSniffer";
+    if ( type == OBJECT_MOBILEwb    )  return "WheeledBuilder";
+    if ( type == OBJECT_MOBILEtb    )  return "TrackedBuilder";
+    if ( type == OBJECT_MOBILEfb    )  return "WingedBuilder";
+    if ( type == OBJECT_MOBILEib    )  return "LeggedBuilder";
     if ( type == OBJECT_MOBILErt    )  return "Thumper";
     if ( type == OBJECT_MOBILErc    )  return "PhazerShooter";
     if ( type == OBJECT_MOBILErr    )  return "Recycler";
@@ -519,11 +523,11 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "retobject"    ) == 0 )  return "retobject ( rank );";
     if ( strcmp(token, "retobjectbyid") == 0 )  return "retobjectbyid ( rank );";
     if ( strcmp(token, "progfunc"  ) == 0 )  return "progfunc ( funcname );";
-    if ( strcmp(token, "busy"      ) == 0 )  return "object.busy ( );";
-    if ( strcmp(token, "factory"   ) == 0 )  return "object.factory ( cat, program );";
-    if ( strcmp(token, "research"  ) == 0 )  return "object.research ( type );";
-    if ( strcmp(token, "takeoff"   ) == 0 )  return "object.takeoff ( );";
-    if ( strcmp(token, "destroy"   ) == 0 )  return "object.destroy ( );";
+    if ( strcmp(token, "busy"      ) == 0 )  return "busy ( );";
+    if ( strcmp(token, "factory"   ) == 0 )  return "factory ( cat, program, object );";
+    if ( strcmp(token, "research"  ) == 0 )  return "research ( type );";
+    if ( strcmp(token, "takeoff"   ) == 0 )  return "takeoff ( );";
+    if ( strcmp(token, "destroy"   ) == 0 )  return "destroy ( );";
     if ( strcmp(token, "search"    ) == 0 )  return "search ( cat, pos, min, max, sens, filter );";
     if ( strcmp(token, "searchall" ) == 0 )  return "searchall ( cat, pos, min, max, sens, filter );";
     if ( strcmp(token, "radar"     ) == 0 )  return "radar ( cat, angle, focus, min, max, sens, filter );";

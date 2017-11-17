@@ -428,25 +428,30 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 }
 
 
-// Compilation of instruction "object.factory(cat, program)"
+// Compilation of instruction "factory(cat, program [, object])"
 
-CBotTypResult CScriptFunctions::cFactory(CBotVar* thisclass, CBotVar* &var)
+CBotTypResult CScriptFunctions::cFactory(CBotVar* &var, void* user)
 {
     if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
     if ( var != nullptr )
     {
-        if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadNum);
+        if ( var->GetType() != CBotTypPointer )  return CBotTypResult(CBotErrBadParam);
         var = var->GetNext();
-        if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
+        if ( var != nullptr )
+        {
+            if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadParam);
+            var = var->GetNext();
+            if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
+        }
     }
     return CBotTypResult(CBotTypFloat);
 }
 
-// Instruction "object.factory(cat, program)"
+// Instruction "factory(cat, program [, object])"
 
-bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
+bool CScriptFunctions::rFactory(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
     CObject*    pThis = script->m_object;
@@ -457,20 +462,23 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 
     ObjectType type = static_cast<ObjectType>(var->GetValInt());
     var = var->GetNext();
-    std::string program;
-    if ( var != nullptr )
-        program = var->GetValString();
-    else
-        program = "";
-
-    CObject* factory = static_cast<CObject*>(thisclass->GetUserPtr());
+    
+    CObject* factory = static_cast<CObject*>(var->GetUserPtr());
     if (factory == nullptr)
     {
         exception = ERR_UNKNOWN;
         result->SetValInt(ERR_UNKNOWN);
-        GetLogger()->Error("in object.factory() - factory is nullptr");
+        GetLogger()->Error("in factory() - factory is nullptr");
         return false;
     }
+    
+    var = var->GetNext();
+    std::string program;
+    if ( var != nullptr )
+        program = var->GetValString();
+        
+    else
+        program = "";
 
     if ( pThis->GetTeam() != factory->GetTeam() && factory->GetTeam() != 0 )
     {
@@ -486,7 +494,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         {
             exception = ERR_UNKNOWN;
             result->SetValInt(ERR_UNKNOWN);
-            GetLogger()->Error("in object.factory() - automat is nullptr");
+            GetLogger()->Error("in factory() - automat is nullptr");
             return false;
         }
 
@@ -597,7 +605,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
 
 // Instruction "object.takeoff()"
 
-bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
+bool CScriptFunctions::rTakeOff(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
     CObject*    pThis = script->m_object;
@@ -605,8 +613,7 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     Error       err;
 
     exception = 0;
-
-    CObject* base = static_cast<CObject*>(thisclass->GetUserPtr());
+    CObject* base = static_cast<CObject*>(var->GetUserPtr());
     CAuto* automat = base->GetAuto();
 
     if ( pThis->GetTeam() != base->GetTeam() && base->GetTeam() != 0 )
@@ -1291,10 +1298,10 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
 
     oType = pThis->GetType();
 
-    if ( oType != OBJECT_MOBILEfa &&  // allowed only for grabber bots && humans
-         oType != OBJECT_MOBILEta &&
-         oType != OBJECT_MOBILEwa &&
-         oType != OBJECT_MOBILEia &&
+    if ( oType != OBJECT_MOBILEfb &&  // allowed only for builder bots && humans
+         oType != OBJECT_MOBILEtb &&
+         oType != OBJECT_MOBILEwb &&
+         oType != OBJECT_MOBILEib &&
          oType != OBJECT_HUMAN    &&
          oType != OBJECT_TECH      )
     {
@@ -3298,9 +3305,9 @@ void CScriptFunctions::Init()
     bc->AddItem("team",        CBotTypResult(CBotTypInt), CBotVar::ProtectionLevel::ReadOnly);
     bc->AddItem("velocity",    CBotTypResult(CBotTypClass, "point"), CBotVar::ProtectionLevel::ReadOnly);
     bc->AddFunction("busy",     rBusy,     cBusy);
-    bc->AddFunction("factory",  rFactory,  cFactory);
+    //bc->AddFunction("factory",  rFactory,  cFactory);
     bc->AddFunction("research", rResearch, cClassOneFloat);
-    bc->AddFunction("takeoff",  rTakeOff,  cClassNull);
+    //bc->AddFunction("takeoff",  rTakeOff);
     bc->AddFunction("destroy",  rDestroy,  cClassNull);
 
     CBotProgram::AddFunction("endmission",rEndMission,cEndMission);
@@ -3365,8 +3372,10 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("penup",     rPenUp,     cNull);
     CBotProgram::AddFunction("pencolor",  rPenColor,  cOneFloat);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  cOneFloat);
+    CBotProgram::AddFunction("factory",   rFactory,   cFactory);
 
     CBotProgram::AddFunction("camerafocus", rCameraFocus, cOneObject);
+    CBotProgram::AddFunction("takeoff",   rTakeOff, cOneObject);
 
     SetFileAccessHandler(MakeUnique<CBotFileAccessHandlerColobot>());
 }
