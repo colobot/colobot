@@ -98,7 +98,7 @@ void CFileDialog::StartDialog()
 
     if ( m_dialogtype != CFileDialog::Type::None )
     {
-        StartFileDialog(m_dialogtype);
+        StartFileDialog();
     }
     else
     {
@@ -197,13 +197,12 @@ std::string CFileDialog::GetFilename()
 
 // Start display of Open or Save dialogue
 
-void CFileDialog::StartFileDialog(CFileDialog::Type type)
+void CFileDialog::StartFileDialog()
 {
-    m_dialogtype = type;
     m_captureClick = false;
     Math::Point pos = m_windowPos;
     Math::Point dim = m_windowDim;
-    int icon = (type == CFileDialog::Type::Open) ? 14 : 13 ;
+    int icon = (m_dialogtype == CFileDialog::Type::Open) ? 14 : 13 ;
 
     CWindow* pw = m_interface->CreateWindows(pos, dim, icon, m_windowEvent);
     if ( pw == nullptr ) return;
@@ -220,8 +219,11 @@ void CFileDialog::StartFileDialog(CFileDialog::Type type)
 
     if ( m_title.empty() )
     {
-        if ( type == CFileDialog::Type::Open ) GetResource(RES_TEXT, RT_IO_OPEN, m_title);
-        if ( type == CFileDialog::Type::Save ) GetResource(RES_TEXT, RT_IO_SAVE, m_title);
+        if (m_dialogtype == CFileDialog::Type::Open)
+            GetResource(RES_TEXT, RT_IO_OPEN, m_title);
+
+        if (m_dialogtype == CFileDialog::Type::Save)
+            GetResource(RES_TEXT, RT_IO_SAVE, m_title);
     }
     pw->SetName(m_title);
 
@@ -698,6 +700,7 @@ bool CFileDialog::StopNewFolderMode(bool bCancel)
     CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT2)); // new folder edit box
     if ( pe != nullptr )
     {
+        pe->SetText("");
         pe->ClearState(STATE_VISIBLE | STATE_ENABLE);
     }
 
@@ -766,8 +769,6 @@ bool CFileDialog::EventNewFolder(const Event &event)
 
 void CFileDialog::GetListChoice()
 {
-    if ( ListItemIsFolder() ) return; // don't change text if a folder was clicked
-
     CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(m_windowEvent));
     if ( pw == nullptr )  return;
     CList* pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
@@ -962,19 +963,19 @@ void CFileDialog::PopulateList()
     }
 
     // list all files
-    std::vector<std::string> programs = CResourceManager::ListFiles(SearchDirectory(false), true);
-    auto it = std::remove_if(programs.begin(), programs.end(), [this](const std::string& name)
+    std::vector<std::string> files = CResourceManager::ListFiles(SearchDirectory(false), true);
+    auto it = std::remove_if(files.begin(), files.end(), [this](const std::string& name)
     {
         return !CheckFilename(name);
     });
-    programs.erase(it, programs.end()); // remove invalid file names
+    files.erase(it, files.end()); // remove invalid file names
 
-    for (auto& prog : programs)
+    for (auto& filename : files)
     {
         std::ostringstream temp;
-        time_t now = CResourceManager::GetLastModificationTime(SearchDirectory(false) + prog);
+        time_t now = CResourceManager::GetLastModificationTime(SearchDirectory(false) + filename);
         strftime(timestr, 99, "%x %X", localtime(&now));
-        temp << prog << '\t' << CResourceManager::GetFileSize(SearchDirectory(false) + prog) << "  \t" << timestr;
+        temp << filename << '\t' << CResourceManager::GetFileSize(SearchDirectory(false) + filename) << "  \t" << timestr;
         pl->SetItemName(i++, temp.str().c_str());
     }
 }
@@ -1117,12 +1118,14 @@ bool CFileDialog::ActionOpen()
     if ( !CheckFilename(filename) ) // add default extension ?
     {
         if ( !m_extension.empty() ) filename += m_extension;
+        if ( !CheckFilename(filename) ) return false; // file name is ok ?
     }
-
-    if ( !CheckFilename(filename) ) return false; // file name is ok ?
 
     SearchDirectory(true);
     SetFilename(filename);
+    SetFilenameField(pe, filename);
+    pe->SetCursor(999, 0);  // select all
+    pw->SetFocus(pe);
 
     return true;
 }
@@ -1140,9 +1143,8 @@ bool CFileDialog::ActionSave(bool checkFileExist)
     if ( !CheckFilename(filename) ) // add default extension ?
     {
         if ( !m_extension.empty() ) filename += m_extension;
+        if ( !CheckFilename(filename) ) return false; // file name is ok ?
     }
-
-    if ( !CheckFilename(filename) ) return false; // file name is ok ?
 
     SearchDirectory(true);
 
@@ -1156,6 +1158,9 @@ bool CFileDialog::ActionSave(bool checkFileExist)
     }
 
     SetFilename(filename);
+    SetFilenameField(pe, filename);
+    pe->SetCursor(999, 0);  // select all
+    pw->SetFocus(pe);
 
     return true;
 }

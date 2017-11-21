@@ -101,7 +101,7 @@ protected:
     ActivePause* m_runningPause = nullptr;
     std::string  m_helpFilename;
 
-    std::unique_ptr<CFileDialog>  m_dialog;
+    std::unique_ptr<CFileDialog>  m_fileDialog;
 };
 
 

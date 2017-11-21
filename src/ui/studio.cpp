@@ -94,7 +94,7 @@ CStudio::CStudio()
     m_bRealTime = true;
     m_bRunning  = false;
     m_fixInfoTextTime = 0.0f;
-    m_dialog = nullptr;
+    m_fileDialog = nullptr;
     m_editCamera = Gfx::CAM_TYPE_NULL;
 }
 
@@ -113,7 +113,7 @@ bool CStudio::EventProcess(const Event &event)
     CEdit*      edit;
     CSlider*    slider;
 
-    if ( m_dialog != nullptr )  // dialogue exists?
+    if (m_fileDialog != nullptr)  // dialogue exists?
     {
         return EventDialog(event);
     }
@@ -151,13 +151,11 @@ bool CStudio::EventProcess(const Event &event)
 
     if ( event.type == EVENT_STUDIO_OPEN )  // open?
     {
-        pw->SetFocus(edit); // focus on edit box after dialog is closed
         StartDialog(event);
         return true;
     }
     if ( event.type == EVENT_STUDIO_SAVE )  // save?
     {
-        pw->SetFocus(edit);
         StartDialog(event);
         return true;
     }
@@ -985,34 +983,34 @@ void CStudio::StartDialog(const Event &event)
 {
     if ( event.type == EVENT_STUDIO_OPEN )
     {
-        m_dialog = MakeUnique<CFileDialog>();
-        m_dialog->SetDialogType(CFileDialog::Type::Open);
+        m_fileDialog = MakeUnique<CFileDialog>();
+        m_fileDialog->SetDialogType(CFileDialog::Type::Open);
     }
     if ( event.type == EVENT_STUDIO_SAVE )
     {
-        m_dialog = MakeUnique<CFileDialog>();
-        m_dialog->SetDialogType(CFileDialog::Type::Save);
+        m_fileDialog = MakeUnique<CFileDialog>();
+        m_fileDialog->SetDialogType(CFileDialog::Type::Save);
     }
 
-    if ( m_dialog != nullptr ) // a dialog was created?
+    if (m_fileDialog != nullptr) // a dialog was created?
     {
         m_main->SetSatComLock(true);  // impossible to use the SatCom
 
-        m_dialog->SetWindowEvent(EVENT_WINDOW9);
-        m_dialog->SetWindowPos(m_dialogPos);
-        m_dialog->SetWindowDim(m_dialogDim);
+        m_fileDialog->SetWindowEvent(EVENT_WINDOW9);
+        m_fileDialog->SetWindowPos(m_dialogPos);
+        m_fileDialog->SetWindowDim(m_dialogDim);
 
-        m_dialog->SetAutoExtension(".cbot");
-        m_dialog->AddOptionalExtension(".txt");
+        m_fileDialog->SetAutoExtension(".cbot");
+        m_fileDialog->AddOptionalExtension(".txt");
 
-        m_dialog->SetUsePublicPrivate(true);
-        m_dialog->SetPublic(m_settings->GetIOPublic());
-        m_dialog->SetPublicFolder("program");
-        m_dialog->SetPrivateFolder(m_main->GetPlayerProfile()->GetSaveFile("program"));
+        m_fileDialog->SetUsePublicPrivate(true);
+        m_fileDialog->SetPublic(m_settings->GetIOPublic());
+        m_fileDialog->SetPublicFolder("program");
+        m_fileDialog->SetPrivateFolder(m_main->GetPlayerProfile()->GetSaveFile("program"));
 
         if ( event.type == EVENT_STUDIO_SAVE )
         {
-            m_dialog->SetConfirmOverwrite(true);
+            m_fileDialog->SetConfirmOverwrite(true);
 
             // filename in CScript may include sub-folder
             std::string filename = m_script->GetFilename();
@@ -1021,14 +1019,14 @@ void CStudio::StartDialog(const Event &event)
                 size_t pos = filename.find_last_of("/");
                 if (pos != std::string::npos)    // split subfolder from filename
                 {
-                    m_dialog->SetSubFolderPath(filename.substr(0, pos));
+                    m_fileDialog->SetSubFolderPath(filename.substr(0, pos));
                     filename = filename.substr(pos+1, filename.length()-pos-1);
                 }
             }
-            m_dialog->SetFilename(filename);
+            m_fileDialog->SetFilename(filename);
         }
 
-        m_dialog->StartDialog();
+        m_fileDialog->StartDialog();
     }
 }
 
@@ -1036,13 +1034,13 @@ void CStudio::StartDialog(const Event &event)
 
 void CStudio::StopDialog()
 {
-    if ( m_dialog != nullptr ) // a dialog exists?
+    if (m_fileDialog != nullptr) // a dialog exists?
     {
-        m_settings->SetIOPublic(m_dialog->GetPublic());
-        m_dialogPos = m_dialog->GetWindowPos();
-        m_dialogDim = m_dialog->GetWindowDim();
-        m_dialog->StopDialog();
-        m_dialog.reset();
+        m_settings->SetIOPublic(m_fileDialog->GetPublic());
+        m_dialogPos = m_fileDialog->GetWindowPos();
+        m_dialogDim = m_fileDialog->GetWindowDim();
+        m_fileDialog->StopDialog();
+        m_fileDialog.reset();
     }
 
     m_main->SetSatComLock(false);  // possible to use the SatCom
@@ -1052,7 +1050,7 @@ void CStudio::StopDialog()
 
 bool CStudio::EventDialog(const Event &event)
 {
-    if ( m_dialog != nullptr )  // a dialog exists?
+    if (m_fileDialog != nullptr)  // a dialog exists?
     {
         if ( event.type == EVENT_DIALOG_STOP )
         {
@@ -1067,13 +1065,13 @@ bool CStudio::EventDialog(const Event &event)
             CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
             if ( pe == nullptr ) return false;
 
-            std::string path = m_dialog->GetBasePath() + "/";  // public/private folder
-            std::string subpath = m_dialog->GetSubFolderPath();// sub-folder
+            std::string path = m_fileDialog->GetBasePath() + "/";  // public/private folder
+            std::string subpath = m_fileDialog->GetSubFolderPath();// sub-folder
 
             // filename in CScript may include sub-folder
             std::string filename = subpath.empty() ? "" : subpath + "/";
-            filename += m_dialog->GetFilename();
-            CFileDialog::Type type = m_dialog->GetDialogType();
+            filename += m_fileDialog->GetFilename();
+            CFileDialog::Type type = m_fileDialog->GetDialogType();
 
             if ( type == CFileDialog::Type::Save )
             {
@@ -1092,7 +1090,7 @@ bool CStudio::EventDialog(const Event &event)
             return true;
         }
 
-        return m_dialog->EventProcess(event);
+        return m_fileDialog->EventProcess(event);
     }
 
     return true;
