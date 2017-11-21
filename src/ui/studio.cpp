@@ -1075,13 +1075,21 @@ bool CStudio::EventDialog(const Event &event)
 
             if ( type == CFileDialog::Type::Save )
             {
-                if ( !pe->WriteText(path + filename) ) return true;
+                if (!pe->WriteText(path + filename))
+                {
+                    m_sound->Play(SOUND_TZOING);
+                    return true;
+                }
                 if ( !m_program->readOnly )
                     m_script->SetFilename(filename);
             }
             else if ( type == CFileDialog::Type::Open )
             {
-                if ( !pe->ReadText(path + filename) ) return true;
+                if (!pe->ReadText(path + filename))
+                {
+                    m_sound->Play(SOUND_TZOING);
+                    return true;
+                }
                 m_script->SetFilename(filename);
                 ColorizeScript(pe);
             }
