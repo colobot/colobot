@@ -92,7 +92,7 @@ public:
 
 private:
 
-    void        StartFileDialog(CFileDialog::Type type);
+    void        StartFileDialog();
     void        AdjustDialog();
 
     void        PopulateList();
