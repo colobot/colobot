@@ -325,7 +325,8 @@ bool CTaskBuild::EventProcess(const Event &event)
             case OBJECT_MOBILEtb:
             case OBJECT_MOBILEwb:
             case OBJECT_MOBILEib:
-                mat = m_object->GetWorldMatrix(3);
+                mat = m_object->GetWorldMatrix(1);
+                pos.y += 1.5f;
                 break;
 
             default:
