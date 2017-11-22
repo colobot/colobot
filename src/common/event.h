@@ -593,6 +593,8 @@ enum EventType
 
     EVENT_CODE_BATTLE_START = 2200, //!< button that starts the code battle
     EVENT_CODE_BATTLE_SPECTATOR = 2201, //!< button that controls the code battle spectator camera
+    
+    EVENT_OBJECT_RBUILDER       = 2300,
 
     //! Maximum value of standard events
     EVENT_STD_MAX,

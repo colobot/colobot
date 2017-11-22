@@ -907,6 +907,7 @@ int CLevelParserParam::ToResearchFlag(std::string value)
     if (value == "RECYCLER") return RESEARCH_RECYCLER;
     if (value == "SUBBER"  ) return RESEARCH_SUBM;
     if (value == "SNIFFER" ) return RESEARCH_SNIFFER;
+    if (value == "BUILDER" ) return RESEARCH_BUILDER;
     return Cast<int>(value, "researchflag");
 }
 

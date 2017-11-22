@@ -38,5 +38,6 @@ enum ResearchType
     RESEARCH_iGUN       = (1<<9),       //! < cannon of insects
     RESEARCH_RECYCLER   = (1<<10),      //! < recycler
     RESEARCH_SUBM       = (1<<11),      //! < submarine
-    RESEARCH_SNIFFER    = (1<<12)       //! < sniffer
+    RESEARCH_SNIFFER    = (1<<12),      //! < sniffer
+    RESEARCH_BUILDER    = (1<<13)       //! < builder
 };

@@ -138,6 +138,7 @@ enum Error
     INFO_RESEARCHPHAZER   = 10035,    //! <  research ended
     INFO_RESEARCHSHIELD   = 10036,    //! <  research ended
     INFO_RESEARCHATOMIC   = 10037,    //! <  research ended
+    INFO_RESEARCHBUILDER  = 10038,    //! <  research ended
     INFO_WIN              = 10040,    //! <  win
     INFO_LOST             = 10041,    //! <  lost
     INFO_LOSTq            = 10042,    //! <  lost immediately

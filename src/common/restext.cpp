@@ -372,6 +372,7 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_RATOMIC]      = TR("Run research program for nuclear power");
     stringsEvent[EVENT_OBJECT_RiPAW]        = TR("Run research program for legged bots");
     stringsEvent[EVENT_OBJECT_RiGUN]        = TR("Run research program for orga shooter");
+    stringsEvent[EVENT_OBJECT_RBUILDER]     = TR("Run research program for builder");
     stringsEvent[EVENT_OBJECT_RESET]        = TR("Return to start");
     stringsEvent[EVENT_OBJECT_SEARCH]       = TR("Sniff (\\key action;)");
     stringsEvent[EVENT_OBJECT_TERRAFORM]    = TR("Thump (\\key action;)");
@@ -658,6 +659,7 @@ void InitializeRestext()
     stringsErr[INFO_RESEARCHPHAZER] = TR("Plans for phazer shooter available");
     stringsErr[INFO_RESEARCHSHIELD] = TR("Plans for shielder available");
     stringsErr[INFO_RESEARCHATOMIC] = TR("Plans for nuclear power plant available");
+    stringsErr[INFO_RESEARCHBUILDER]= TR("Plans for builder available");
     stringsErr[INFO_FACTORY]        = TR("New bot available");
     stringsErr[INFO_LABO]           = TR("Analysis performed");
     stringsErr[INFO_ENERGY]         = TR("Power cell available");

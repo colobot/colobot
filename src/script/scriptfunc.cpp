@@ -3268,6 +3268,7 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("ResearchRecycler",      RESEARCH_RECYCLER);
     CBotProgram::DefineNum("ResearchSubber",        RESEARCH_SUBM);
     CBotProgram::DefineNum("ResearchSniffer",       RESEARCH_SNIFFER);
+    CBotProgram::DefineNum("ResearchBuilder",       RESEARCH_BUILDER);
 
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
