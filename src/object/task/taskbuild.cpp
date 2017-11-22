@@ -246,8 +246,16 @@ bool CTaskBuild::EventProcess(const Event &event)
     {
         dist = Math::Distance(m_object->GetPosition(), m_metal->GetPosition());
         linSpeed = 0.0f;
-        if ( dist > 30.0f )  linSpeed =  1.0f;
-        if ( dist < 30.0f )  linSpeed = -1.0f;
+        if ( m_physics->GetLand() )
+        {
+            if ( dist > 30.0f )  linSpeed =  1.0f;
+            if ( dist < 30.0f )  linSpeed = -1.0f;
+        }
+        else
+        {
+            if ( dist > 55.0f )  linSpeed =  0.5f;
+            if ( dist < 35.0f )  linSpeed = -0.5f;
+        }
         m_physics->SetMotorSpeedX(linSpeed);  // forward/backward
         return true;
     }
@@ -326,7 +334,7 @@ bool CTaskBuild::EventProcess(const Event &event)
             case OBJECT_MOBILEwb:
             case OBJECT_MOBILEib:
                 mat = m_object->GetWorldMatrix(1);
-                pos.y += 1.5f;
+                pos.y += 2.0f;
                 break;
 
             default:
@@ -373,7 +381,7 @@ Error CTaskBuild::Start(ObjectType type)
     pos = m_object->GetPosition();
     if ( pos.y < m_water->GetLevel() )  return ERR_BUILD_WATER;
 
-    if ( !m_physics->GetLand() )  return ERR_BUILD_FLY;
+    if ( !m_physics->GetLand() && m_object->GetType()!=OBJECT_MOBILEfb)  return ERR_BUILD_FLY;
 
     speed = m_physics->GetMotorSpeed();
     if ( speed.x != 0.0f ||
@@ -393,15 +401,17 @@ Error CTaskBuild::Start(ObjectType type)
     err = FlatFloor();
     if ( err != ERR_OK )  return err;
 
+    pv = m_object->GetPosition();
+    pm = m_metal->GetPosition();
+    if(!m_physics->GetLand() && abs(pm.y-pv.y)>8.0f) return ERR_BUILD_METALAWAY;
+    
     m_metal->SetLock(true);  // not usable
     m_camera->StartCentering(m_object, Math::PI*0.15f, 99.9f, 0.0f, 1.0f);
 
     m_phase = TBP_TURN;  // rotation necessary preliminary
     m_angleY = oAngle;  // angle was reached
 
-    pv = m_object->GetPosition();
     pv.y += 8.3f;
-    pm = m_metal->GetPosition();
     m_angleZ = Math::RotateAngle(Math::DistanceProjected(pv, pm), fabs(pv.y-pm.y));
 
     m_physics->SetFreeze(true);  // it does not move
@@ -416,8 +426,8 @@ Error CTaskBuild::Start(ObjectType type)
 Error CTaskBuild::IsEnded()
 {
     CAuto*      automat;
-    float       angle, dist, time;
-    Math::Vector       pv,   pm;
+    float       angle, dist, time, diff;
+    Math::Vector       pv,   pm,   tilt;
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
@@ -452,7 +462,19 @@ Error CTaskBuild::IsEnded()
     {
         dist = Math::Distance(m_object->GetPosition(), m_metal->GetPosition());
 
-        if ( dist >= 25.0f && dist <= 35.0f )
+        if ( !m_physics->GetLand())
+        {
+            if(dist >= 35.0f && dist <= 55.0f)
+            {
+                m_physics->SetMotorSpeedX(0.0f);
+                m_motion->SetAction(MHS_GUN);  // takes gun
+
+                m_phase = TBP_TAKE;
+                m_speed = 1.0f/1.0f;
+                m_progress = 0.0f;
+            }
+        }
+        else if ( dist >= 25.0f && dist <= 35.0f)
         {
             m_physics->SetMotorSpeedX(0.0f);
             m_motion->SetAction(MHS_GUN);  // takes gun
@@ -490,7 +512,12 @@ Error CTaskBuild::IsEnded()
             m_object->GetType() == OBJECT_MOBILEwb)
         {
             m_object->SetObjectParent(1, 0);
-            m_object->StartTaskGunGoal(-15*Math::PI/180.0f, 0.0f);
+            pv = m_object->GetPosition();
+            pm = m_metal->GetPosition();
+            dist = Math::Distance(pv, pm);
+            diff = pm.y - 8.0f - pv.y;
+            tilt = m_object->GetRotation();
+            if(dist) m_object->StartTaskGunGoal(asin(diff/dist)-tilt.z, 0.0f);
         }
 
         m_phase = TBP_PREP;
