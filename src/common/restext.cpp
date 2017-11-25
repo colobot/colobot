@@ -357,6 +357,10 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_FACTORYts]    = TR("Build a tracked sniffer");
     stringsEvent[EVENT_OBJECT_FACTORYws]    = TR("Build a wheeled sniffer");
     stringsEvent[EVENT_OBJECT_FACTORYis]    = TR("Build a legged sniffer");
+    stringsEvent[EVENT_OBJECT_FACTORYfb]    = TR("Build a winged builder");
+    stringsEvent[EVENT_OBJECT_FACTORYtb]    = TR("Build a tracked builder");
+    stringsEvent[EVENT_OBJECT_FACTORYwb]    = TR("Build a wheeled builder");
+    stringsEvent[EVENT_OBJECT_FACTORYib]    = TR("Build a legged builder");
     stringsEvent[EVENT_OBJECT_FACTORYrt]    = TR("Build a thumper");
     stringsEvent[EVENT_OBJECT_FACTORYrc]    = TR("Build a phazer shooter");
     stringsEvent[EVENT_OBJECT_FACTORYrr]    = TR("Build a recycler");

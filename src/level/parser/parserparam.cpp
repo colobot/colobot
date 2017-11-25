@@ -787,6 +787,7 @@ ToolType CLevelParserParam::ToToolType(std::string value)
     if (value == "Sniffer"    ) return ToolType::Sniffer;
     if (value == "Shooter"    ) return ToolType::Shooter;
     if (value == "OrgaShooter") return ToolType::OrganicShooter;
+    if (value == "Builder"    ) return ToolType::Builder;
     if (value == "Other"      ) return ToolType::Other;
     return static_cast<ToolType>(Cast<int>(value, "tool"));
 }
