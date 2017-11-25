@@ -378,6 +378,7 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_TERRAFORM]    = TR("Thump (\\key action;)");
     stringsEvent[EVENT_OBJECT_FIRE]         = TR("Shoot (\\key action;)");
     stringsEvent[EVENT_OBJECT_SPIDEREXPLO]  = TR("Explode (\\key action;)");
+    stringsEvent[EVENT_OBJECT_BUILD]        = TR("Build (\\key action;)");
     stringsEvent[EVENT_OBJECT_RECOVER]      = TR("Recycle (\\key action;)");
     stringsEvent[EVENT_OBJECT_BEGSHIELD]    = TR("Extend shield (\\key action;)");
     stringsEvent[EVENT_OBJECT_ENDSHIELD]    = TR("Withdraw shield (\\key action;)");
