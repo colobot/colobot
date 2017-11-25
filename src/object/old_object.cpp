@@ -941,10 +941,6 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILEtc ||
          m_type == OBJECT_MOBILEfc ||
          m_type == OBJECT_MOBILEic ||
-         m_type == OBJECT_MOBILEwb ||
-         m_type == OBJECT_MOBILEtb ||
-         m_type == OBJECT_MOBILEfb ||
-         m_type == OBJECT_MOBILEib ||
          m_type == OBJECT_MOBILEwi ||
          m_type == OBJECT_MOBILEti ||
          m_type == OBJECT_MOBILEfi ||
