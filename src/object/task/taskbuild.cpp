@@ -202,9 +202,9 @@ void CTaskBuild::BlackLight()
 bool CTaskBuild::EventProcess(const Event &event)
 {
     Math::Matrix*       mat;
-    Math::Vector        pos, dir, speed;
+    Math::Vector        pos, dir, speed, pv, pm, tilt;
     Math::Point         dim;
-    float           a, g, cirSpeed, dist, linSpeed;
+    float           a, g, cirSpeed, dist, linSpeed, diff;
 
     if ( m_engine->GetPause() )  return true;
     if ( event.type != EVENT_FRAME )  return true;
@@ -354,6 +354,16 @@ bool CTaskBuild::EventProcess(const Event &event)
         {
             m_sound->Play(SOUND_BUILD, m_object->GetPosition(), 0.5f, 1.0f*Math::Rand()*1.5f);
         }
+    }
+    
+    if(m_object->GetType() == OBJECT_MOBILEfb && m_object->GetReactorRange()<0.2f && m_phase != TBP_MOVE)
+    {
+        pv = m_object->GetPosition();
+        pm = m_metal->GetPosition();
+        dist = Math::Distance(pv, pm);
+        diff = pm.y - 8.0f - pv.y;
+        tilt = m_object->GetRotation();
+        m_object->StartTaskGunGoal(asin(diff/dist)-tilt.z, 0.0f);
     }
 
     return true;
