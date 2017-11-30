@@ -200,6 +200,10 @@ std::string GetHelpFilename(ObjectType type)
     if ( type == OBJECT_MOBILEtc    )  helpfile = "object/botfc";
     if ( type == OBJECT_MOBILEfc    )  helpfile = "object/botfj";
     if ( type == OBJECT_MOBILEic    )  helpfile = "object/botfs";
+    if ( type == OBJECT_MOBILEwb    )  helpfile = "object/botbr";
+    if ( type == OBJECT_MOBILEtb    )  helpfile = "object/botbc";
+    if ( type == OBJECT_MOBILEfb    )  helpfile = "object/botbj";
+    if ( type == OBJECT_MOBILEib    )  helpfile = "object/botbs";
     if ( type == OBJECT_MOBILErt    )  helpfile = "object/bottump";
     if ( type == OBJECT_MOBILErc    )  helpfile = "object/botphaz";
     if ( type == OBJECT_MOBILErr    )  helpfile = "object/botrecy";
