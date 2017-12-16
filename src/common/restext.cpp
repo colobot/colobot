@@ -122,6 +122,7 @@ void InitializeRestext()
     stringsText[RT_IO_PRIVATE]       = TR("Private\\Private folder");
     stringsText[RT_IO_PUBLIC]        = TR("Public\\Common folder");
     stringsText[RT_IO_REPLACE]       = TR("Overwrite existing file?");
+    stringsText[RT_IO_SELECT_DIR]    = TR("Select Folder");
 
     stringsText[RT_GENERIC_DEV1]     = TR("Original game developed by:");
     stringsText[RT_GENERIC_DEV2]     = TR("epsitec.com");

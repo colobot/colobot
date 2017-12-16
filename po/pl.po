@@ -1356,6 +1356,9 @@ msgstr "Zapisz\\Zapisuje bieżącą misję"
 msgid "Save\\Saves the current mission"
 msgstr "Zapisz\\Zapisuje bieżącą misję"
 
+msgid "Select Folder"
+msgstr ""
+
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Zaznacz astronautę\\Zaznacza astronautę"
 
