@@ -46,11 +46,15 @@ public:
     void        StopDialog();
     bool        EventProcess(const Event &event);
 
+    /**
+     * \brief Identifies the type of dialog to display.
+     */
     enum class Type
     {
-        None,
-        Open,
-        Save,
+        None,    //!< Type was not set
+        Open,    //!< Open dialog
+        Save,    //!< Save dialog
+        Folder,  //!< Select Folder dialog
     };
 
     void              SetDialogType(CFileDialog::Type type) { m_dialogtype = type; }
@@ -111,6 +115,9 @@ private:
     void        UpdateNewFolder();
     void        CreateNewFolder();
 
+    bool        EventSelectFolder(const Event &event);
+    void        UpdateSelectFolder();
+
     bool        ListItemIsFolder();
     bool        DirectoryExists(const std::string &name);
 
@@ -157,6 +164,7 @@ private:
     bool         m_captureClick = false;
 
     bool         m_newFolderMode = false;
+    bool         m_selectFolderMode = false;
     bool         m_askOverwriteMode = false;
     bool         m_confirmOverwrite = false;
 

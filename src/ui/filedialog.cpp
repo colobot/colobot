@@ -224,6 +224,9 @@ void CFileDialog::StartFileDialog()
 
         if (m_dialogtype == CFileDialog::Type::Save)
             GetResource(RES_TEXT, RT_IO_SAVE, m_title);
+
+        if (m_dialogtype == CFileDialog::Type::Folder)
+            GetResource(RES_TEXT, RT_IO_SELECT_DIR, m_title);
     }
     pw->SetName(m_title);
 
@@ -237,21 +240,12 @@ void CFileDialog::StartFileDialog()
 
     CButton* pb = pw->CreateButton(pos, dim, -1, EVENT_DIALOG_NEWDIR);     // New Folder button
     pb->SetState(STATE_SHADOW);
-    GetResource(RES_EVENT, EVENT_DIALOG_NEWDIR, name);
-    pb->SetName(name);
 
     CList* pli = pw->CreateList(pos, dim, 0, EVENT_DIALOG_LIST);           // file list
     pli->SetState(STATE_SHADOW);
 
     CEdit* pe = pw->CreateEdit(pos, dim, 0, EVENT_DIALOG_EDIT2);           // new folder edit box
     pe->ClearState(STATE_VISIBLE | STATE_ENABLE);
-
-    GetResource(RES_TEXT, RT_IO_NAME, name);
-    pla = pw->CreateLabel(pos, dim, 0, EVENT_DIALOG_LABEL2, name);         // "Name:" label
-    pla->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-
-    pe = pw->CreateEdit(pos, dim, 0, EVENT_DIALOG_EDIT);                   // file name edit box
-    pe->SetState(STATE_SHADOW);
 
     if ( m_usePublicPrivate )
     {
@@ -270,16 +264,33 @@ void CFileDialog::StartFileDialog()
         pc->SetState(STATE_SHADOW);
     }
 
+    pb = pw->CreateButton(pos, dim, -1, EVENT_DIALOG_CANCEL);              // Cancel button
+    pb->SetState(STATE_SHADOW);
+
     pb = pw->CreateButton(pos, dim, -1, EVENT_DIALOG_OK);                  // open/save button
     pb->SetState(STATE_SHADOW);
+
+    if (m_dialogtype == CFileDialog::Type::Folder)
+    {
+        m_selectFolderMode = true;
+        AdjustDialog();
+        UpdatePublic(m_public);
+        PopulateList();
+        UpdatePathLabel();
+        UpdateSelectFolder();
+        return;
+    }
+
     GetResource(RES_TEXT, RT_IO_OPEN, name);
     if ( m_dialogtype == CFileDialog::Type::Save ) GetResource(RES_TEXT, RT_IO_SAVE, name);
     pb->SetName(name);
 
-    pb = pw->CreateButton(pos, dim, -1, EVENT_DIALOG_CANCEL);              // Cancel button
-    pb->SetState(STATE_SHADOW);
-    GetResource(RES_EVENT, EVENT_DIALOG_CANCEL, name);
-    pb->SetName(name);
+    GetResource(RES_TEXT, RT_IO_NAME, name);
+    pla = pw->CreateLabel(pos, dim, 0, EVENT_DIALOG_LABEL2, name);         // "Name:" label
+    pla->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+
+    pe = pw->CreateEdit(pos, dim, 0, EVENT_DIALOG_EDIT);                   // file name edit box
+    pe->SetState(STATE_SHADOW);
 
     // create "Overwrite existing file?" controls
     CGroup* pg = pw->CreateGroup(pos, dim, 0, EVENT_DIALOG_GROUP1);   // box "Overwrite ?"
@@ -393,29 +404,32 @@ void CFileDialog::AdjustDialog()
         }
     }
 
-    ppos.y = wpos.y+30.0f/480.0f;
-    ddim.x = 50.0f/640.0f;
-    ddim.y = 20.0f/480.0f;
-    pla = static_cast< CLabel* >(pw->SearchControl(EVENT_DIALOG_LABEL2)); // "Name:" label
-    if ( pla != nullptr )
+    if (!m_selectFolderMode)
     {
-        pla->SetPos(ppos);
-        pla->SetDim(ddim);
-    }
+        ppos.y = wpos.y+30.0f/480.0f;
+        ddim.x = 50.0f/640.0f;
+        ddim.y = 20.0f/480.0f;
+        pla = static_cast< CLabel* >(pw->SearchControl(EVENT_DIALOG_LABEL2)); // "Name:" label
+        if ( pla != nullptr )
+        {
+            pla->SetPos(ppos);
+            pla->SetDim(ddim);
+        }
 
-    ppos.x += 50.0f/640.0f;
-    ppos.y = wpos.y+36.0f/480.0f;
-    ddim.x = wdim.x-170.0f/640.0f;
-    CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT)); // file name edit box
-    if ( pe != nullptr )
-    {
-        pe->SetPos(ppos);
-        pe->SetDim(ddim);
+        ppos.x += 50.0f/640.0f;
+        ppos.y = wpos.y+36.0f/480.0f;
+        ddim.x = wdim.x-170.0f/640.0f;
+        CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT)); // file name edit box
+        if ( pe != nullptr )
+        {
+            pe->SetPos(ppos);
+            pe->SetDim(ddim);
 
-        int nch = static_cast< int >((ddim.x*640.0f-22.0f)/5.75f);
-        std::string name = pe->GetText(nch);
-        pe->SetMaxChar(nch);
-        pe->SetText(name);
+            int nch = static_cast< int >((ddim.x*640.0f-22.0f)/5.75f);
+            std::string name = pe->GetText(nch);
+            pe->SetMaxChar(nch);
+            pe->SetText(name);
+        }
     }
 
     if ( m_usePublicPrivate )
@@ -561,12 +575,19 @@ bool CFileDialog::EventProcess(const Event &event)
                 m_captureClick = true;
                 m_lastTimeClickDir = m_time;
             }
+            if (m_selectFolderMode) UpdateSelectFolder();
             return true;
         }
 
         // a file name was clicked
-        if ( !m_newFolderMode ) GetListChoice();
         m_captureClick = false;
+        if (m_selectFolderMode)
+        {
+            UpdateSelectFolder();
+            return true;
+        }
+
+        if (!m_newFolderMode) GetListChoice();
         return true;
     }
 
@@ -598,6 +619,7 @@ bool CFileDialog::EventProcess(const Event &event)
             PopulateList();
             UpdatePathLabel();
             if (pe != nullptr) SearchList(pe->GetText(999), m_newFolderMode);
+            if (m_selectFolderMode) UpdateSelectFolder();
         }
         else if ( event.type == EVENT_DIALOG_CHECK2 )  // public?
         {
@@ -606,6 +628,7 @@ bool CFileDialog::EventProcess(const Event &event)
             PopulateList();
             UpdatePathLabel();
             if (pe != nullptr) SearchList(pe->GetText(999), m_newFolderMode);
+            if (m_selectFolderMode) UpdateSelectFolder();
         }
     }
 
@@ -621,6 +644,8 @@ bool CFileDialog::EventProcess(const Event &event)
         if ( !StartNewFolderMode() ) StopNewFolderMode(true);
         return true;
     }
+
+    if (m_selectFolderMode) return EventSelectFolder(event);
 
     if ( event.type == EVENT_DIALOG_OK ||
          (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(RETURN)) )
@@ -650,9 +675,12 @@ bool CFileDialog::StartNewFolderMode()
     CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(m_windowEvent)); // dialog window
     if ( pw == nullptr ) return false;
 
-    CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));    // filename edit box
-    if ( pe == nullptr ) return false;
-    pe->SetState(STATE_ENABLE, false);
+    if (!m_selectFolderMode)
+    {
+        CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));   // filename edit box
+        if ( pe == nullptr ) return false;
+        pe->SetState(STATE_ENABLE, false);
+    }
 
     CButton* pb = static_cast< CButton* >(pw->SearchControl(EVENT_DIALOG_NEWDIR)); // new folder button
     if ( pb == nullptr ) return false;
@@ -674,7 +702,7 @@ bool CFileDialog::StartNewFolderMode()
     pos.y += dim.y-3.0f/480.0f;
     dim.y = 20.0f/480.0f;
 
-    pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT2));  // new folder edit box
+    CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT2));  // new folder edit box
     if ( pe == nullptr ) return false;
     pe->SetState(STATE_VISIBLE, true);
     pe->SetState(STATE_ENABLE, true);
@@ -704,11 +732,14 @@ bool CFileDialog::StopNewFolderMode(bool bCancel)
         pe->ClearState(STATE_VISIBLE | STATE_ENABLE);
     }
 
-    pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));      // filename edit box
-    if ( pe != nullptr )
+    if (!m_selectFolderMode)
     {
-        pe->SetState(STATE_ENABLE, true);
-        pw->SetFocus(pe);
+        pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));      // filename edit box
+        if ( pe != nullptr )
+        {
+            pe->SetState(STATE_ENABLE, true);
+            pw->SetFocus(pe);
+        }
     }
 
     CButton* pb = static_cast< CButton* >(pw->SearchControl(EVENT_DIALOG_NEWDIR)); // new folder button
@@ -720,6 +751,12 @@ bool CFileDialog::StopNewFolderMode(bool bCancel)
     }
 
     AdjustDialog();
+
+    if (m_selectFolderMode)
+    {
+        UpdateSelectFolder();
+        return true;
+    }
 
     if ( pe != nullptr )
     {
@@ -759,6 +796,48 @@ bool CFileDialog::EventNewFolder(const Event &event)
             if (pb->GetName() == text) return true;
             CreateNewFolder();
             return StopNewFolderMode();
+        }
+    }
+
+    return true;
+}
+
+bool CFileDialog::EventSelectFolder(const Event &event)
+{
+    CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(m_windowEvent));
+    if ( pw == nullptr ) return false;
+
+    if ( event.type == EVENT_DIALOG_OK )
+    {
+        CList* pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
+        if ( pl == nullptr ) return false;
+        std::string name = pl->GetItemName(pl->GetSelect());
+        name = name.substr(0, name.find_first_of("\t"));
+        m_subDirPath += m_subDirPath.empty() ? name : "/" + name;
+        m_eventQueue->AddEvent(Event(EVENT_DIALOG_ACTION));
+    }
+
+    if (event.type == EVENT_KEY_DOWN)
+    {
+        if (event.GetData<KeyEventData>()->key == KEY(ESCAPE))
+        {
+            m_eventQueue->AddEvent(Event(EVENT_DIALOG_STOP));
+        }
+
+        if (event.GetData<KeyEventData>()->key == KEY(RETURN))
+        {
+            if ( ListItemIsFolder() )
+            {
+                CList* pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
+                if ( pl == nullptr ) return false;
+                std::string name = pl->GetItemName(pl->GetSelect());
+                name = name.substr(0, name.find_first_of("\t"));
+                if ( name != ".." )
+                {
+                    m_subDirPath += m_subDirPath.empty() ? name : "/" + name;
+                    m_eventQueue->AddEvent(Event(EVENT_DIALOG_ACTION));
+                }
+            }
         }
     }
 
@@ -858,6 +937,28 @@ void CFileDialog::UpdateAction()
 
         if (!bError && !CheckFilename(text))
             bError = !CheckFilename(text+m_extension);
+    }
+
+    pb->SetState(STATE_ENABLE, !bError);
+}
+
+void CFileDialog::UpdateSelectFolder()
+{
+    CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(m_windowEvent));
+    if ( pw == nullptr ) return;
+    CButton* pb = static_cast< CButton* >(pw->SearchControl(EVENT_DIALOG_OK));
+    if ( pb == nullptr ) return;
+
+    bool bError = true;
+    if (!m_newFolderMode && ListItemIsFolder())
+    {
+        CList* pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
+        if ( pl != nullptr )
+        {
+            std::string name = pl->GetItemName(pl->GetSelect());
+            name = name.substr(0, name.find_first_of("\t"));
+            if (name != "..") bError = false;
+        }
     }
 
     pb->SetState(STATE_ENABLE, !bError);

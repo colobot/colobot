@@ -209,6 +209,9 @@ msgstr ""
 msgid "Overwrite existing file?"
 msgstr ""
 
+msgid "Select Folder"
+msgstr ""
+
 msgid "Original game developed by:"
 msgstr ""
 

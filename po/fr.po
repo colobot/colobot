@@ -1382,6 +1382,9 @@ msgstr "Enregistrer\\Enregistrer la mission en cours"
 msgid "Save\\Saves the current mission"
 msgstr "Enregistrer\\Enregistrer la mission en cours"
 
+msgid "Select Folder"
+msgstr ""
+
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Sélectionner le cosmonaute\\Sélectionner le cosmonaute"
 

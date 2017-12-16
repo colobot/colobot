@@ -1380,6 +1380,9 @@ msgstr "Speichern\\Aktuelle Mission speichern"
 msgid "Save\\Saves the current mission"
 msgstr "Speichern\\Speichert die Mission"
 
+msgid "Select Folder"
+msgstr ""
+
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Astronauten auswählen\\Astronauten auswählen"
 

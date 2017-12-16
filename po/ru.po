@@ -1391,6 +1391,9 @@ msgstr "Сохранить\\Сохранить текущую миссию"
 msgid "Save\\Saves the current mission"
 msgstr "Сохранить\\Сохранить текущую миссию"
 
+msgid "Select Folder"
+msgstr ""
+
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Выбор астронавта\\Выбор астронавта"
 
