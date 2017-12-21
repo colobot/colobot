@@ -339,6 +339,10 @@ ObjectType CLevelParserParam::ToObjectType(std::string value)
     if (value == "Portico"           ) return OBJECT_PORTICO;
     if (value == "SpaceShip"         ) return OBJECT_BASE;
     if (value == "PracticeBot"       ) return OBJECT_MOBILEwt;
+    if (value == "WingedTrainer"     ) return OBJECT_MOBILEft;
+    if (value == "TrackedTrainer"    ) return OBJECT_MOBILEtt;
+    if (value == "WheeledTrainer"    ) return OBJECT_MOBILEwt;
+    if (value == "LeggedTrainer"     ) return OBJECT_MOBILEit;
     if (value == "WingedGrabber"     ) return OBJECT_MOBILEfa;
     if (value == "TrackedGrabber"    ) return OBJECT_MOBILEta;
     if (value == "WheeledGrabber"    ) return OBJECT_MOBILEwa;
@@ -543,7 +547,10 @@ const std::string CLevelParserParam::FromObjectType(ObjectType value)
 {
     if (value == OBJECT_PORTICO     ) return "Portico";
     if (value == OBJECT_BASE        ) return "SpaceShip";
-    if (value == OBJECT_MOBILEwt    ) return "PracticeBot";
+    if (value == OBJECT_MOBILEwt    ) return "WheeledTrainer";
+    if (value == OBJECT_MOBILEft    ) return "WingedTrainer";
+    if (value == OBJECT_MOBILEtt    ) return "TrackedTrainer";
+    if (value == OBJECT_MOBILEit    ) return "LeggedTrainer";
     if (value == OBJECT_MOBILEfa    ) return "WingedGrabber";
     if (value == OBJECT_MOBILEta    ) return "TrackedGrabber";
     if (value == OBJECT_MOBILEwa    ) return "WheeledGrabber";

@@ -100,21 +100,60 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
 
+    if (m_object->GetTrainer()  ||
+        type == OBJECT_MOBILEwt ||
+        type == OBJECT_MOBILEtt ||
+        type == OBJECT_MOBILEft ||
+        type == OBJECT_MOBILEit)
+    {
+        modelManager->AddModelReference("trainer.mod", false, rank, m_object->GetTeam());
+    }
+    
     if (type == OBJECT_MOBILEfa ||
         type == OBJECT_MOBILEfb ||
         type == OBJECT_MOBILEfc ||
         type == OBJECT_MOBILEfi ||
         type == OBJECT_MOBILEfs)
     {
-        modelManager->AddModelReference("lem1f.mod", false, rank, m_object->GetTeam());
+        if (!m_object->GetTrainer())
+            modelManager->AddModelReference("lem1f.mod", false, rank, m_object->GetTeam());
+        else
+        {
+            rank = m_engine->CreateObject();
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+            m_object->SetObjectRank(28, rank);
+            m_object->SetObjectParent(28, 0);
+            modelManager->AddModelReference("trainerf.mod", false, rank, m_object->GetTeam());
+            
+            rank = m_engine->CreateObject();
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+            m_object->SetObjectRank(29, rank);
+            m_object->SetObjectParent(29, 0);
+            modelManager->AddModelReference("trainera.mod", false, rank, m_object->GetTeam());
+        }
     }
     else if (type == OBJECT_MOBILEta ||
              type == OBJECT_MOBILEtb ||
              type == OBJECT_MOBILEtc ||
              type == OBJECT_MOBILEti ||
              type == OBJECT_MOBILEts)
-    {
-        modelManager->AddModelReference("lem1t.mod", false, rank, m_object->GetTeam());
+    { 
+        if (!m_object->GetTrainer())
+            modelManager->AddModelReference("lem1t.mod", false, rank, m_object->GetTeam());
+        else
+        {
+            rank = m_engine->CreateObject();
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+            m_object->SetObjectRank(28, rank);
+            m_object->SetObjectParent(28, 0);
+            modelManager->AddModelReference("trainert.mod", false, rank, m_object->GetTeam());
+            
+            rank = m_engine->CreateObject();
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+            m_object->SetObjectRank(29, rank);
+            m_object->SetObjectParent(29, 0);
+            modelManager->AddModelReference("trainera.mod", false, rank, m_object->GetTeam());
+        }
     }
     else if (type == OBJECT_MOBILEwa ||
              type == OBJECT_MOBILEwb ||
@@ -122,13 +161,21 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
              type == OBJECT_MOBILEwi ||
              type == OBJECT_MOBILEws)
     {
-        if (m_object->GetTrainer())
-        {
-            modelManager->AddModelReference("lem1wt.mod", false, rank, m_object->GetTeam());
-        }
+        if (!m_object->GetTrainer())
+            modelManager->AddModelReference("lem1w.mod", false, rank, m_object->GetTeam());
         else
         {
-            modelManager->AddModelReference("lem1w.mod", false, rank, m_object->GetTeam());
+            rank = m_engine->CreateObject();
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+            m_object->SetObjectRank(28, rank);
+            m_object->SetObjectParent(28, 0);
+            modelManager->AddModelReference("trainerw.mod", false, rank, m_object->GetTeam());
+            
+            rank = m_engine->CreateObject();
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+            m_object->SetObjectRank(29, rank);
+            m_object->SetObjectParent(29, 0);
+            modelManager->AddModelReference("trainera.mod", false, rank, m_object->GetTeam());
         }
     }
     else if (type == OBJECT_MOBILEia ||
@@ -137,7 +184,22 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
              type == OBJECT_MOBILEii ||
              type == OBJECT_MOBILEis)
     {
-        modelManager->AddModelReference("lem1i.mod", false, rank, m_object->GetTeam());
+        if (!m_object->GetTrainer())
+            modelManager->AddModelReference("lem1i.mod", false, rank, m_object->GetTeam());
+        else
+        {
+            rank = m_engine->CreateObject();
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+            m_object->SetObjectRank(28, rank);
+            m_object->SetObjectParent(28, 0);
+            modelManager->AddModelReference("traineri.mod", false, rank, m_object->GetTeam());
+            
+            rank = m_engine->CreateObject();
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+            m_object->SetObjectRank(29, rank);
+            m_object->SetObjectParent(29, 0);
+            modelManager->AddModelReference("trainera.mod", false, rank, m_object->GetTeam());
+        }
     }
     else if (type == OBJECT_MOBILErt ||
              type == OBJECT_MOBILErc ||
@@ -156,18 +218,34 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     }
     else if (type == OBJECT_MOBILEwt)
     {
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        m_object->SetObjectRank(28, rank);
+        m_object->SetObjectParent(28, 0);
         modelManager->AddModelReference("trainerw.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEft)
     {
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        m_object->SetObjectRank(28, rank);
+        m_object->SetObjectParent(28, 0);
         modelManager->AddModelReference("trainerf.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEtt)
     {
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        m_object->SetObjectRank(28, rank);
+        m_object->SetObjectParent(28, 0);
         modelManager->AddModelReference("trainert.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEit)
     {
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        m_object->SetObjectRank(28, rank);
+        m_object->SetObjectParent(28, 0);
         modelManager->AddModelReference("traineri.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEdr)
@@ -435,7 +513,8 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         type == OBJECT_MOBILEtb ||
         type == OBJECT_MOBILEtc ||
         type == OBJECT_MOBILEti ||
-        type == OBJECT_MOBILEts)  // caterpillars?
+        type == OBJECT_MOBILEts ||
+        type == OBJECT_MOBILEtt)  // caterpillars?
     {
         // Creates the right caterpillar.
         rank = m_engine->CreateObject();
@@ -443,7 +522,10 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
         modelManager->AddModelCopy("lem2t.mod", false, rank, m_object->GetTeam());
-        m_object->SetPartPosition(6, Math::Vector(0.0f, 2.0f, -3.0f));
+        if (m_object->GetTrainer() || type == OBJECT_MOBILEtt)
+            m_object->SetPartPosition(6, Math::Vector(0.0f, 2.0f, -3.8f));
+        else
+            m_object->SetPartPosition(6, Math::Vector(0.0f, 2.0f, -3.0f));
 
         // Creates the left caterpillar.
         rank = m_engine->CreateObject();
@@ -451,7 +533,10 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
         modelManager->AddModelCopy("lem3t.mod", false, rank, m_object->GetTeam());
-        m_object->SetPartPosition(7, Math::Vector(0.0f, 2.0f, 3.0f));
+        if (m_object->GetTrainer() || type == OBJECT_MOBILEtt)
+            m_object->SetPartPosition(7, Math::Vector(0.0f, 2.0f, 3.8f));
+        else
+            m_object->SetPartPosition(7, Math::Vector(0.0f, 2.0f, 3.0f));
     }
 
     if (type == OBJECT_MOBILErt ||
@@ -552,7 +637,8 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         type == OBJECT_MOBILEib ||
         type == OBJECT_MOBILEic ||
         type == OBJECT_MOBILEis ||
-        type == OBJECT_MOBILEii)  // insect legs?
+        type == OBJECT_MOBILEii ||
+        type == OBJECT_MOBILEit)  // insect legs?
     {
         float       table[] =
         {
@@ -895,6 +981,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
              type == OBJECT_MOBILEtc ||
              type == OBJECT_MOBILEti ||
              type == OBJECT_MOBILEts ||
+             type == OBJECT_MOBILEtt ||
              type == OBJECT_MOBILEsa)
     {
         m_object->CreateShadowCircle(5.0f, 1.0f);
@@ -1034,7 +1121,8 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
          type == OBJECT_MOBILEtb ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEti ||
-         type == OBJECT_MOBILEts )  // caterpillars?
+         type == OBJECT_MOBILEts ||
+         type == OBJECT_MOBILEtt )  // caterpillars?
     {
         character->wheelFront = 4.0f;
         character->wheelBack  = 4.0f;
@@ -1064,7 +1152,8 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
          type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEis )  // legs?
+         type == OBJECT_MOBILEis ||
+         type == OBJECT_MOBILEit)  // legs?
     {
         character->wheelFront = 4.0f;
         character->wheelBack  = 4.0f;
@@ -1441,6 +1530,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEti ||
          type == OBJECT_MOBILEts ||
+         type == OBJECT_MOBILEtt ||
          type == OBJECT_MOBILErt ||
          type == OBJECT_MOBILErc ||
          type == OBJECT_MOBILErr ||
@@ -1471,7 +1561,8 @@ bool CMotionVehicle::EventFrame(const Event &event)
             if ( type == OBJECT_MOBILEta ||
                  type == OBJECT_MOBILEtc ||
                  type == OBJECT_MOBILEti ||
-                 type == OBJECT_MOBILEts )
+                 type == OBJECT_MOBILEts ||
+                 type == OBJECT_MOBILEtt )
             {
                 limit[0] =   8.0f*Math::PI/180.0f;
                 limit[1] = -12.0f*Math::PI/180.0f;
@@ -1569,7 +1660,8 @@ bool CMotionVehicle::EventFrame(const Event &event)
          type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEis )  // legs?
+         type == OBJECT_MOBILEis ||
+         type == OBJECT_MOBILEit )  // legs?
     {
         EventFrameInsect(event);
     }

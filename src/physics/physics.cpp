@@ -991,7 +991,8 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
              type == OBJECT_MOBILEib ||
              type == OBJECT_MOBILEis ||
              type == OBJECT_MOBILEic ||
-             type == OBJECT_MOBILEii )  factor = 0.5f;
+             type == OBJECT_MOBILEii ||
+             type == OBJECT_MOBILEit )  factor = 0.5f;
 
         energy = power->GetEnergy();
         energy -= fabs(motorSpeed.x)*rTime*factor*0.005f;
@@ -1848,7 +1849,8 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
          type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEis )
+         type == OBJECT_MOBILEis ||
+         type == OBJECT_MOBILEit )
     {
         if ( m_soundChannel == -1 )
         {
@@ -1893,7 +1895,8 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
     else if ( type == OBJECT_MOBILEta ||
               type == OBJECT_MOBILEtc ||
               type == OBJECT_MOBILEti ||
-              type == OBJECT_MOBILEts )
+              type == OBJECT_MOBILEts ||
+              type == OBJECT_MOBILEtt )
     {
         sound = SOUND_MOTORt;
         amplitude = 1.0f;
@@ -1964,7 +1967,8 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
          type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEis )
+         type == OBJECT_MOBILEis ||
+         type == OBJECT_MOBILEit )
     {
         if ( m_soundChannel != -1 )  // engine is running?
         {
@@ -1992,7 +1996,8 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
               type == OBJECT_MOBILEtb ||
               type == OBJECT_MOBILEtc ||
               type == OBJECT_MOBILEti ||
-              type == OBJECT_MOBILEts )
+              type == OBJECT_MOBILEts ||
+              type == OBJECT_MOBILEtt )
     {
         sound = SOUND_MOTORt;
         amplitude = 0.7f;
@@ -2087,7 +2092,8 @@ void CPhysics::SoundMotorStop(float rTime, ObjectType type)
          type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEis )
+         type == OBJECT_MOBILEis ||
+         type == OBJECT_MOBILEit )
     {
         if ( m_soundChannel != -1 )  // engine is running?
         {
@@ -3041,7 +3047,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
          type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEis ||  // legs?
+         type == OBJECT_MOBILEis ||
+         type == OBJECT_MOBILEit ||  // legs?
          type == OBJECT_MOBILEdr ||
          type == OBJECT_MOTHER   ||
          type == OBJECT_ANT      ||
@@ -3147,7 +3154,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
          type == OBJECT_MOBILEtb ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEti ||
-         type == OBJECT_MOBILEts )  // caterpillars?
+         type == OBJECT_MOBILEts ||
+         type == OBJECT_MOBILEtt )  // caterpillars?
     {
         if ( aTime-m_lastSlideParticle >= m_engine->ParticleAdapt(0.05f) )
         {

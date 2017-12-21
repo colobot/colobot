@@ -101,10 +101,10 @@ enum ObjectType
     OBJECT_TREE3            = 93,   //!< Tree3
     OBJECT_TREE4            = 94,   //!< Tree4
     OBJECT_TREE5            = 95,   //!< Tree5
-    OBJECT_MOBILEwt         = 100,  //!< PracticeBot
-    OBJECT_MOBILEtt         = 101,  //!< track-trainer (unused)
-    OBJECT_MOBILEft         = 102,  //!< fly-trainer (unused)
-    OBJECT_MOBILEit         = 103,  //!< insect-trainer (unused)
+    OBJECT_MOBILEwt         = 100,  //!< WheeledTrainer (PracticeBot)
+    OBJECT_MOBILEtt         = 101,  //!< TrackedTrainer
+    OBJECT_MOBILEft         = 102,  //!< WingedTrainer
+    OBJECT_MOBILEit         = 103,  //!< LeggedTrainer
     OBJECT_MOBILEwa         = 110,  //!< WheeledGrabber
     OBJECT_MOBILEta         = 111,  //!< TrackedGrabber
     OBJECT_MOBILEfa         = 112,  //!< WingedGrabber
@@ -133,6 +133,7 @@ enum ObjectType
     OBJECT_MOBILEtb         = 221,  //!< TrackedBuilder
     OBJECT_MOBILEfb         = 222,  //!< WingedBuilder
     OBJECT_MOBILEib         = 223,  //!< LeggedBuilder
+    OBJECT_MOBILEpr         = 224,  //!< PracticeBot (alias)
     OBJECT_WAYPOINT         = 250,  //!< WayPoint
     OBJECT_FLAGb            = 260,  //!< BlueFlag
     OBJECT_FLAGr            = 261,  //!< RedFlag

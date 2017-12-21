@@ -682,7 +682,7 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILEfs || // WingedSniffer
          m_type == OBJECT_MOBILEfc || // WingedShooter
          m_type == OBJECT_MOBILEfi || // WingedOrgaShooter
-         m_type == OBJECT_MOBILEft || // winged PracticeBot (unused)
+         m_type == OBJECT_MOBILEft || // WingedTrainer
          m_type == OBJECT_HUMAN    || // Me
          m_type == OBJECT_TECH     || // Tech
          m_type == OBJECT_CONTROLLER)
@@ -2922,16 +2922,6 @@ void COldObject::UpdateSelectParticle()
         dim[0].x = 1.5f;
         dim[1].x = 1.5f;
     }
-    else if ( m_type == OBJECT_MOBILEwt ||
-              m_type == OBJECT_MOBILEtt ||
-              m_type == OBJECT_MOBILEft ||
-              m_type == OBJECT_MOBILEit )  // trainer ?
-    {
-        pos[0] = Math::Vector(4.2f, 2.5f,  1.2f);
-        pos[1] = Math::Vector(4.2f, 2.5f, -1.2f);
-        dim[0].x = 1.5f;
-        dim[1].x = 1.5f;
-    }
     else if ( m_type == OBJECT_MOBILEsa )  // submarine?
     {
         pos[0] = Math::Vector(3.6f, 4.0f,  2.0f);
@@ -2947,6 +2937,17 @@ void COldObject::UpdateSelectParticle()
         pos[0] = Math::Vector(4.9f, 3.5f,  2.5f);
         pos[1] = Math::Vector(4.9f, 3.5f, -2.5f);
     }
+    else if ( m_type == OBJECT_MOBILEwt ||
+              m_type == OBJECT_MOBILEtt ||
+              m_type == OBJECT_MOBILEft ||
+              m_type == OBJECT_MOBILEit ||
+              GetTrainer())                // trainer ?
+    {
+        pos[0] = Math::Vector(4.2f, 2.5f,  1.2f);
+        pos[1] = Math::Vector(4.2f, 2.5f, -1.2f);
+        dim[0].x = 1.5f;
+        dim[1].x = 1.5f;
+    }
     else
     {
         pos[0] = Math::Vector(4.2f, 2.5f,  1.5f);
@@ -2954,48 +2955,49 @@ void COldObject::UpdateSelectParticle()
     }
 
     // Red back lens
-    if ( m_type == OBJECT_MOBILEfa ||
-         m_type == OBJECT_MOBILEfb ||
-         m_type == OBJECT_MOBILEfc ||
-         m_type == OBJECT_MOBILEfi ||
-         m_type == OBJECT_MOBILEfs ||
-         m_type == OBJECT_MOBILEft )  // flying?
+    if ( m_type == OBJECT_MOBILEwt ||
+         m_type == OBJECT_MOBILEtt ||
+         m_type == OBJECT_MOBILEft ||
+         m_type == OBJECT_MOBILEit ||
+         GetTrainer())               // trainer?
+    {
+        pos[2] = Math::Vector(-4.0f, 2.5f,  2.2f);
+        pos[3] = Math::Vector(-4.0f, 2.5f, -2.2f);
+    }
+    else if ( m_type == OBJECT_MOBILEfa ||
+              m_type == OBJECT_MOBILEfb ||
+              m_type == OBJECT_MOBILEfc ||
+              m_type == OBJECT_MOBILEfi ||
+              m_type == OBJECT_MOBILEfs )  // flying?
     {
         pos[2] = Math::Vector(-4.0f, 3.1f,  4.5f);
         pos[3] = Math::Vector(-4.0f, 3.1f, -4.5f);
         dim[2].x = 0.6f;
         dim[3].x = 0.6f;
     }
-    if ( m_type == OBJECT_MOBILEwa ||
-         m_type == OBJECT_MOBILEwb ||
-         m_type == OBJECT_MOBILEwc ||
-         m_type == OBJECT_MOBILEwi ||
-         m_type == OBJECT_MOBILEws )  // wheels?
+    else if ( m_type == OBJECT_MOBILEwa ||
+              m_type == OBJECT_MOBILEwb ||
+              m_type == OBJECT_MOBILEwc ||
+              m_type == OBJECT_MOBILEwi ||
+              m_type == OBJECT_MOBILEws )  // wheels?
     {
         pos[2] = Math::Vector(-4.5f, 2.7f,  2.8f);
         pos[3] = Math::Vector(-4.5f, 2.7f, -2.8f);
     }
-    if ( m_type == OBJECT_MOBILEwt )  // wheels?
-    {
-        pos[2] = Math::Vector(-4.0f, 2.5f,  2.2f);
-        pos[3] = Math::Vector(-4.0f, 2.5f, -2.2f);
-    }
-    if ( m_type == OBJECT_MOBILEia ||
-         m_type == OBJECT_MOBILEib ||
-         m_type == OBJECT_MOBILEic ||
-         m_type == OBJECT_MOBILEii ||
-         m_type == OBJECT_MOBILEis ||
-         m_type == OBJECT_MOBILEit )  // legs?
+    else if ( m_type == OBJECT_MOBILEia ||
+              m_type == OBJECT_MOBILEib ||
+              m_type == OBJECT_MOBILEic ||
+              m_type == OBJECT_MOBILEii ||
+              m_type == OBJECT_MOBILEis )  // legs?
     {
         pos[2] = Math::Vector(-4.5f, 2.7f,  2.8f);
         pos[3] = Math::Vector(-4.5f, 2.7f, -2.8f);
     }
-    if ( m_type == OBJECT_MOBILEta ||
-         m_type == OBJECT_MOBILEtb ||
-         m_type == OBJECT_MOBILEtc ||
-         m_type == OBJECT_MOBILEti ||
-         m_type == OBJECT_MOBILEts ||
-         m_type == OBJECT_MOBILEtt )  // caterpillars?
+    else if ( m_type == OBJECT_MOBILEta ||
+              m_type == OBJECT_MOBILEtb ||
+              m_type == OBJECT_MOBILEtc ||
+              m_type == OBJECT_MOBILEti ||
+              m_type == OBJECT_MOBILEts )  // caterpillars?
     {
         pos[2] = Math::Vector(-3.6f, 4.2f,  3.0f);
         pos[3] = Math::Vector(-3.6f, 4.2f, -3.0f);
