@@ -809,15 +809,29 @@ bool runSearch(CBotVar* var, Math::Vector pos, int& exception, std::function<boo
     {
         while ( array != nullptr )
         {
+            if (array->GetValInt() == OBJECT_MOBILEpr)
+            {
+                type_v.push_back(OBJECT_MOBILEwt);
+                type_v.push_back(OBJECT_MOBILEtt);
+                type_v.push_back(OBJECT_MOBILEft);
+                type_v.push_back(OBJECT_MOBILEit);
+            }
             type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
             array = array->GetNext();
         }
     }
     else
     {
-        if (type != OBJECT_NULL)
+        if (type != OBJECT_NULL && type != OBJECT_MOBILEpr)
         {
             type_v.push_back(static_cast<ObjectType>(type));
+        }
+        else if (type == OBJECT_MOBILEpr)
+        {
+           type_v.push_back(OBJECT_MOBILEwt);
+           type_v.push_back(OBJECT_MOBILEtt);
+           type_v.push_back(OBJECT_MOBILEft);
+           type_v.push_back(OBJECT_MOBILEit);
         }
     }
 
@@ -1169,15 +1183,29 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
         {
             while ( array != nullptr )
             {
+                if (array->GetValInt() == OBJECT_MOBILEpr)
+                {
+                    type_v.push_back(OBJECT_MOBILEwt);
+                    type_v.push_back(OBJECT_MOBILEtt);
+                    type_v.push_back(OBJECT_MOBILEft);
+                    type_v.push_back(OBJECT_MOBILEit);
+                }
                 type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
                 array = array->GetNext();
             }
         }
         else
         {
-            if (type != OBJECT_NULL)
+            if (type != OBJECT_NULL && type != OBJECT_MOBILEpr)
             {
                 type_v.push_back(static_cast<ObjectType>(type));
+            }
+            else if (type == OBJECT_MOBILEpr)
+            {
+                type_v.push_back(OBJECT_MOBILEwt);
+                type_v.push_back(OBJECT_MOBILEtt);
+                type_v.push_back(OBJECT_MOBILEft);
+                type_v.push_back(OBJECT_MOBILEit);
             }
         }
 
