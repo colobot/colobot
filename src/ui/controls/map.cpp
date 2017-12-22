@@ -876,10 +876,10 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
             case OBJECT_MOBILErr:   icon = 20; break;
             case OBJECT_MOBILErs:   icon = 29; break;
             case OBJECT_MOBILEsa:   icon = 21; break;
-            case OBJECT_MOBILEft:   icon = 30; break;
-            case OBJECT_MOBILEtt:   icon = 30; break;
+            case OBJECT_MOBILEft:   icon =  6; break;
+            case OBJECT_MOBILEtt:   icon =  5; break;
             case OBJECT_MOBILEwt:   icon = 30; break;
-            case OBJECT_MOBILEit:   icon = 30; break;
+            case OBJECT_MOBILEit:   icon =  7; break;
             case OBJECT_MOBILEtg:   icon = 45; break;
             case OBJECT_MOBILEdr:   icon = 48; break;
             case OBJECT_APOLLO2:    icon = 49; break;
@@ -900,6 +900,9 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
             case OBJECT_MOBILEtb:
             case OBJECT_MOBILEwb:
             case OBJECT_MOBILEib:
+            case OBJECT_MOBILEft:
+            case OBJECT_MOBILEtt:
+            case OBJECT_MOBILEit:
                 m_engine->SetTexture("textures/interface/button4.png"); break;
             default: ; // button3.png
         }
