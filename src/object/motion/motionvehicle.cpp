@@ -413,7 +413,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetPartPosition(2, Math::Vector(0.0f, 2.5f, 0.0f));
         m_object->SetPartRotationZ(2, 0.0f);
     }
-	
+    
     if (type == OBJECT_MOBILEfb ||
         type == OBJECT_MOBILEtb ||
         type == OBJECT_MOBILEwb ||
@@ -523,7 +523,10 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(6, 0);
         modelManager->AddModelCopy("lem2t.mod", false, rank, m_object->GetTeam());
         if (m_object->GetTrainer() || type == OBJECT_MOBILEtt)
-            m_object->SetPartPosition(6, Math::Vector(0.0f, 2.0f, -3.8f));
+        {
+            m_object->SetPartPosition(6, Math::Vector(0.0f, 2.0f, -3.6f));
+            m_object->SetPartScaleZ(6, 0.7f);
+        }
         else
             m_object->SetPartPosition(6, Math::Vector(0.0f, 2.0f, -3.0f));
 
@@ -534,7 +537,10 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(7, 0);
         modelManager->AddModelCopy("lem3t.mod", false, rank, m_object->GetTeam());
         if (m_object->GetTrainer() || type == OBJECT_MOBILEtt)
-            m_object->SetPartPosition(7, Math::Vector(0.0f, 2.0f, 3.8f));
+        {
+            m_object->SetPartPosition(7, Math::Vector(0.0f, 2.0f, 3.6f));
+            m_object->SetPartScaleZ(7, 0.7f);
+        }
         else
             m_object->SetPartPosition(7, Math::Vector(0.0f, 2.0f, 3.0f));
     }
