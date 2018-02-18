@@ -237,7 +237,7 @@ public:
     void        SetMagnifyDamage(float factor) override;
     float       GetMagnifyDamage() override;
 
-    void        SetDamaging(bool damaging);
+    void        SetDamaging(bool damaging) override;
     bool        IsDamaging()  override;
 
     void        SetDying(DeathType deathType) override;
