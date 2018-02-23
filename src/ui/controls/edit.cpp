@@ -489,7 +489,19 @@ bool CEdit::EventProcess(const Event &event)
     if ( event.type == EVENT_TEXT_INPUT && !bControl && m_bFocus )
     {
         auto data = event.GetData<TextInputData>();
-        Insert(data->text[0]); // TODO: insert utf-8 char
+        Insert(data->text[0]); // insert utf-8 char (and permit also ANSI/ASCII or else)
+        //  memo UTF8:
+        // 1 byte  : 0xxxxxxx
+        // 2 bytes : 110xxxxx 10xxxxxx
+        // 3 bytes : 1110xxxx 10xxxxxx 10xxxxxx
+        if((0xC0 == (data->text[0] & 0xE0) || 0xE0 == (data->text[0] & 0xF0))
+            && 0x80 == (data->text[1] & 0xC0))
+                Insert(data->text[1]);
+        if( 0xE0 == (data->text[0] & 0xF0)
+            && 0x80 == (data->text[1] & 0xC0)
+            && 0x80 == (data->text[2] & 0xC0))
+                Insert(data->text[2]);
+        // TODO : check side effects between the 3 "Insert" instead of "InsertOne"
         SendModifEvent();
         return true;
     }
@@ -1458,6 +1470,12 @@ bool CEdit::ReadText(std::string filename)
         GetLogger()->Error("Failed to load text file %s\n", filename.c_str());
         return false;
     }
+
+    //TODO : check BOM : 
+    // UTF8 : 3 1st bytes = EF BB BF
+    // UTF-16/UCS-2 (big-endian) :    2 1st bytes = FE FF
+    // UTF-16/UCS-2 (little-endian) : 2 1st bytes = FF FE
+    // ASCII/ANSI : no BOM, direct content. : ANSI or UTF-8 without BOM
 
     len = stream.size();
     len2 = len + 1;
