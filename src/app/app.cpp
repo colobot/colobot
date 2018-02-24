@@ -1699,6 +1699,10 @@ char CApplication::GetLanguageChar() const
             langChar = 'E';
             break;
 
+        case LANGUAGE_CZECH:
+            langChar = 'C';
+            break;
+
         case LANGUAGE_GERMAN:
             langChar = 'D';
             break;
@@ -1750,6 +1754,10 @@ void CApplication::SetLanguage(Language language)
             {
                 m_language = LANGUAGE_ENGLISH;
             }
+            else if (strncmp(envLang,"cs",2) == 0)
+            {
+                m_language = LANGUAGE_CZECH;
+            }
             else if (strncmp(envLang,"de",2) == 0)
             {
                 m_language = LANGUAGE_GERMAN;
@@ -1779,6 +1787,10 @@ void CApplication::SetLanguage(Language language)
     {
         default:
             locale = "";
+            break;
+
+        case LANGUAGE_CZECH:
+            locale = "cs_CZ.utf8";
             break;
 
         case LANGUAGE_ENGLISH:
