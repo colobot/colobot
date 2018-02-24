@@ -62,38 +62,46 @@ const float BIG_FONT        = 1.6f;
 
 //! Indicates whether a character is a space.
 
-bool IsSpace(int character)
+bool IsSpace(const int character)   //TODO : int->char ?
 {
     return ( character == ' '  ||
              character == '\t' ||
              character == '\n' );
 }
 
-//! Indicates whether a character is part of a word.
-
-bool IsWord(char c)
-{
-    return ( isalnum(c) || c == '_');
-}
-
-//! Indicates whether a character is a word separator.
-
-bool IsSep(int character)
-{
-    if ( IsSpace(character) )  return false;
-    return !IsWord(character);
-}
-
-bool IsBreaker(char c)
+// (nota : used only into CEdit::DeleteWord function)
+bool IsBreaker(const char c)
 {
     return ( c == '.'  || c == '{' || c == '}' ||
              c == ';' || c == ':' || c == '[' || c == ']' ||
              c == '(' || c == ')' || c == '=' || c == '"' || c == '\'' );
 }
 
-bool IsDelimiter(char c)
+bool IsDelimiter(const char c)
 {
     return IsSpace( c ) || IsBreaker( c );
+}
+
+//! Indicates whether a character is part of a word.
+
+bool IsWord(const char c)
+{
+    // return ( isalnum(c) || c == '_');
+    //TOCHECK : next OR fix previous with UTF8 ending char (if no side effect)
+    return c!='+' && c!='-' && c!='*' && c!='/' && c!='%' && c!='?' && c!='^'
+        && c!='|' && c!='&' && c!='>' && c!='<' && c!='!' && c!='~' && c!='\\'
+        && c!=','
+        // TODO : Check if missings or if some have to be inside IsBreaker.
+        // TODO?: find a way to ignore escaped char ?
+        && !IsDelimiter(c);
+}
+
+//! Indicates whether a character is a word separator.
+
+bool IsSep(const int character)   //TODO : int->char ?
+{
+    if ( IsSpace(character) )  return false;
+    return !IsWord(character);
 }
 
 //! Object's constructor.
@@ -2269,106 +2277,151 @@ void CEdit::MoveEnd(bool bWord, bool bSelect)
 
 void CEdit::MoveChar(int move, bool bWord, bool bSelect)
 {
-    int     character;
+    int     character;  //TODO: int->char +avoid all that non needed static_cast
 
-    if ( move == -1 )  // back?
+    if (0>move)  // back?
     {
-        if ( bWord )
-        {
-            while ( m_cursor1 > 0 )
+        while(0>move++)
+            if ( bWord )
             {
-                character = static_cast<unsigned char>(m_text[m_cursor1-1]);
-                if ( !IsSpace(character) )  break;
-                m_cursor1 --;
-            }
+                while ( m_cursor1 > 0 )
+                {
+                    character = static_cast<unsigned char>(m_text[m_cursor1-1]);
+                    if ( !IsSpace(character) )  break;
+                    do
+                        --m_cursor1;
+                    while (0<m_cursor1 && 0x80==(m_text[m_cursor1] & 0xC0)); //UTF8 mgt
+                }
 
-            if ( m_cursor1 > 0 )
-            {
-                character = static_cast<unsigned char>(m_text[m_cursor1-1]);
-                if ( IsSpace(character) )
+                if ( m_cursor1 > 0 )
                 {
-                    while ( m_cursor1 > 0 )
+                    character = static_cast<unsigned char>(m_text[m_cursor1-1]);
+                    if ( IsSpace(character) )
                     {
-                        character = static_cast<unsigned char>(m_text[m_cursor1-1]);
-                        if ( !IsSpace(character) )  break;
-                        m_cursor1 --;
+                        while ( m_cursor1 > 0 )
+                        {
+                            character = static_cast<unsigned char>(m_text[m_cursor1-1]);
+                            if ( !IsSpace(character) )  break;
+                            do
+                                --m_cursor1;
+                            while (0<m_cursor1 && 0x80==(m_text[m_cursor1] & 0xC0)); //UTF8 mgt
+                        }
                     }
-                }
-                else if ( IsWord(character) )
-                {
-                    while ( m_cursor1 > 0 )
+                    else if ( IsWord(character) )
                     {
-                        character = static_cast<unsigned char>(m_text[m_cursor1-1]);
-                        if ( !IsWord(character) )  break;
-                        m_cursor1 --;
+                        while ( m_cursor1 > 0 )
+                        {
+                            character = static_cast<unsigned char>(m_text[m_cursor1-1]);
+                            if ( !IsWord(character) )  break;
+                            do
+                                --m_cursor1;
+                            while (0<m_cursor1 && 0x80==(m_text[m_cursor1] & 0xC0)); //UTF8 mgt
+                        }
                     }
-                }
-                else if ( IsSep(character) )
-                {
-                    while ( m_cursor1 > 0 )
+                    else if ( IsSep(character) )
                     {
-                        character = static_cast<unsigned char>(m_text[m_cursor1-1]);
-                        if ( !IsSep(character) )  break;
-                        m_cursor1 --;
+                        while ( m_cursor1 > 0 )
+                        {
+                            character = static_cast<unsigned char>(m_text[m_cursor1-1]);
+                            if ( !IsSep(character) )  break;
+                            do
+                                --m_cursor1;
+                            while (0<m_cursor1 && 0x80==(m_text[m_cursor1] & 0xC0)); //UTF8 mgt
+                        }
                     }
                 }
             }
-        }
-        else
-        {
-            m_cursor1 --;
-            if ( m_cursor1 < 0 )  m_cursor1 = 0;
-        }
+            else
+            {
+                do
+                    --m_cursor1;
+                while (0<m_cursor1 && 0x80==(m_text[m_cursor1] & 0xC0)); //UTF8 mgt
+                if (0>m_cursor1)
+                {
+                    m_cursor1 = 0;
+                    break;
+                }
+            }
     }
-
-    if ( move == 1 )  // advance?
+    else if ( 0<move )  // advance?
     {
-        if ( bWord )
-        {
-            if ( m_cursor1 < m_len )
+        while(0<move--)
+            if ( bWord )
             {
-                character = static_cast<unsigned char>(m_text[m_cursor1]);
-                if ( IsSpace(character) )
+                if ( m_cursor1 < m_len )
                 {
-                    while ( m_cursor1 < m_len )
+                    character = static_cast<unsigned char>(m_text[m_cursor1]);
+                    if ( IsSpace(character) )
                     {
-                        character = static_cast<unsigned char>(m_text[m_cursor1]);
-                        if ( !IsSpace(character) )  break;
-                        m_cursor1 ++;
+                        while ( m_cursor1 < m_len )
+                        {
+                            character = static_cast<unsigned char>(m_text[m_cursor1]);
+                            if ( !IsSpace(character) )  break;
+                            if(m_cursor1<m_len && 0xC0==(character & 0xE0))    //UTF8 mgt
+                                m_cursor1+=2;
+                            else if(m_cursor1<m_len && 0xE0==(character & 0xF0))    //UTF8 mgt
+                                m_cursor1+=3;
+                            else
+                                ++m_cursor1;
+                        }
+                    }
+                    else if ( IsWord(character) )
+                    {
+                        while ( m_cursor1 < m_len )
+                        {
+                            character = static_cast<unsigned char>(m_text[m_cursor1]);
+                            if ( !IsWord(character) )  break;
+                            if(m_cursor1<m_len && 0xC0==(character & 0xE0))    //UTF8 mgt
+                                m_cursor1+=2;
+                            else if(m_cursor1<m_len && 0xE0==(character & 0xF0))    //UTF8 mgt
+                                m_cursor1+=3;
+                            else
+                                ++m_cursor1;
+                        }
+                    }
+                    else if ( IsSep(character) )
+                    {
+                        while ( m_cursor1 < m_len )
+                        {
+                            character = static_cast<unsigned char>(m_text[m_cursor1]);
+                            if ( !IsSep(character) )  break;
+                            if(m_cursor1<m_len && 0xC0==(character & 0xE0))    //UTF8 mgt
+                                m_cursor1+=2;
+                            else if(m_cursor1<m_len && 0xE0==(character & 0xF0))    //UTF8 mgt
+                                m_cursor1+=3;
+                            else
+                                ++m_cursor1;
+                        }
                     }
                 }
-                else if ( IsWord(character) )
-                {
-                    while ( m_cursor1 < m_len )
-                    {
-                        character = static_cast<unsigned char>(m_text[m_cursor1]);
-                        if ( !IsWord(character) )  break;
-                        m_cursor1 ++;
-                    }
-                }
-                else if ( IsSep(character) )
-                {
-                    while ( m_cursor1 < m_len )
-                    {
-                        character = static_cast<unsigned char>(m_text[m_cursor1]);
-                        if ( !IsSep(character) )  break;
-                        m_cursor1 ++;
-                    }
-                }
-            }
+                else
+                    break;
 
-            while ( m_cursor1 < m_len )
-            {
-                character = static_cast<unsigned char>(m_text[m_cursor1]);
-                if ( !IsSpace(character) )  break;
-                m_cursor1 ++;
+                while ( m_cursor1 < m_len )
+                {
+                    character = static_cast<unsigned char>(m_text[m_cursor1]);
+                    if ( !IsSpace(character) )  break;
+                    if(m_cursor1<m_len && 0xC0==(m_text[m_cursor1] & 0xE0))    //UTF8 mgt
+                        m_cursor1+=2;
+                    else if(m_cursor1<m_len && 0xE0==(m_text[m_cursor1] & 0xF0))    //UTF8 mgt
+                        m_cursor1+=3;
+                    else
+                        ++m_cursor1;
+                }
             }
-        }
-        else
-        {
-            m_cursor1 ++;
-            if ( m_cursor1 > m_len )  m_cursor1 = m_len;
-        }
+            else
+            {
+                if(m_cursor1<m_len && 0xC0==(m_text[m_cursor1] & 0xE0))    //UTF8 mgt
+                    ++move;
+                if(m_cursor1<m_len && 0xE0==(m_text[m_cursor1] & 0xF0))    //UTF8 mgt
+                    move+=2;
+                m_cursor1 ++;
+                if ( m_cursor1 > m_len )
+                {
+                    m_cursor1 = m_len;
+                    break;
+                }
+            }
     }
 
     if ( !bSelect )  m_cursor2 = m_cursor1;
@@ -2387,7 +2440,9 @@ void CEdit::MoveLine(int move, bool bWord, bool bSelect)
 
     if ( move == 0 )  return;
 
-    for ( i=0 ; i>move ; i-- )  // back?
+    for ( i=0 ; i>move //
+        && m_cursor1 > 0    // FIX risk of infinite loop.
+        ; i-- )  // back?
     {
         while ( m_cursor1 > 0 && m_text[m_cursor1-1] != '\n' )
         {
@@ -2407,7 +2462,9 @@ void CEdit::MoveLine(int move, bool bWord, bool bSelect)
         }
     }
 
-    for ( i=0 ; i<move ; i++ )  // advance?
+    for ( i=0 ; i<move //
+        && m_cursor1 < m_len    // FIX risk of infinite loop.
+        ; i++ )  // advance?
     {
         while ( m_cursor1 < m_len )
         {
@@ -2756,7 +2813,7 @@ void CEdit::Delete(int dir)
     ColumnFix();
 }
 
-// Deletes the character left of cursor or all selected plain characters.
+// Deletes the character left of cursor or right, or all selected plain characters.
 
 void CEdit::DeleteOne(int dir)
 {
@@ -2769,13 +2826,14 @@ void CEdit::DeleteOne(int dir)
         if ( dir < 0 )
         {
             if ( m_cursor1 == 0 )  return;
-            m_cursor1 --;
+            //m_cursor1 --;
         }
         else
         {
             if ( m_cursor2 == m_len )  return;
-            m_cursor2 ++;
+            //m_cursor2 ++;
         }
+        MoveChar(dir, false, true); // warning : m_cursor1 > m_cursor2 possible
     }
 
     if ( m_cursor1 > m_cursor2 )  Math::Swap(m_cursor1, m_cursor2);
@@ -2800,9 +2858,19 @@ void CEdit::DeleteWord(int dir)
 {
     if ( !m_bEdit ) return;
 
+    // TODO : check if following 2 func should be equivalent to next of this function
+    //   (if ok, it will fix all the utf8 word selection there)
+    //  
+    //  if(m_cursor1<m_len && IsWord(m_text[m_cursor1])  MoveChar(dir,true,false);
+    //  MoveChar(dir,true,true);
+    //  Delete(0);
+
     if ( dir < 0 )
     {
-        if ( m_cursor1 > 0) m_cursor2 = --m_cursor1;
+        if ( m_cursor1 > 0) //m_cursor2 = --m_cursor1;    //??
+            do
+                m_cursor2 = --m_cursor1;    //??
+            while (0<m_cursor1 && 0x80==(m_text[m_cursor1] & 0xC0)); //UTF8 mgt
         else m_cursor2 = m_cursor1;
 
         if ( IsBreaker(m_text[m_cursor1]) )
@@ -2867,7 +2935,7 @@ int CEdit::IndentCompute()
 }
 
 // Counts the number of tabs before the cursor.
-// Returns -1 if there is something else.
+// Returns -1 if there is something else or if there is a selection
 
 int CEdit::IndentTabCount()
 {
@@ -2906,7 +2974,8 @@ void CEdit::IndentTabAdjust(int number)
 
 
 // Indent the left or right the entire selection.
-
+//  Nota    : don't remember to see working; how is it suppose to be call ??
+//          : allways see a replacement by a tab...
 bool CEdit::Shift(bool bLeft)
 {
     bool    bInvert = false;
@@ -2938,7 +3007,7 @@ bool CEdit::Shift(bool bLeft)
         i = c1;
         while ( i < c2 )
         {
-            if ( m_text[i] == '\t' )
+            if ( m_text[i] == '\t' )    //improbable with m_bAutoIndent...
             {
                 m_cursor1 = i;
                 m_cursor2 = i+1;
@@ -2970,7 +3039,7 @@ bool CEdit::Shift(bool bLeft)
     return true;
 }
 
-// Math::Min conversion <-> shift the selection.
+// upper case or lower case conversion of the selection.
 
 bool CEdit::MinMaj(bool bMaj)
 {
@@ -2990,6 +3059,10 @@ bool CEdit::MinMaj(bool bMaj)
         if ( bMaj )  character = toupper(character);
         else         character = tolower(character);
         m_text[i] = character;
+        if(i<m_len && 0xC0==(m_text[i] & 0xE0))    //UTF8 mgt
+            i++;
+        else if(i<m_len && 0xE0==(m_text[i] & 0xF0))    //UTF8 mgt
+            i+=2;
     }
 
     Justif();
