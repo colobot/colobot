@@ -497,19 +497,37 @@ bool CEdit::EventProcess(const Event &event)
     if ( event.type == EVENT_TEXT_INPUT && !bControl && m_bFocus )
     {
         auto data = event.GetData<TextInputData>();
-        Insert(data->text[0]); // insert utf-8 char (and permit also ANSI/ASCII or else)
         //  memo UTF8:
-        // 1 byte  : 0xxxxxxx
-        // 2 bytes : 110xxxxx 10xxxxxx
-        // 3 bytes : 1110xxxx 10xxxxxx 10xxxxxx
-        if((0xC0 == (data->text[0] & 0xE0) || 0xE0 == (data->text[0] & 0xF0))
-            && 0x80 == (data->text[1] & 0xC0))
-                Insert(data->text[1]);
-        if( 0xE0 == (data->text[0] & 0xF0)
-            && 0x80 == (data->text[1] & 0xC0)
-            && 0x80 == (data->text[2] & 0xC0))
-                Insert(data->text[2]);
-        // TODO : check side effects between the 3 "Insert" instead of "InsertOne"
+        // 1 byte  : 00000000 -- 0000007F:  0xxxxxxx
+        // 2 bytes : 00000080 -- 000007FF:  110xxxxx 10xxxxxx
+        // 3 bytes : 00000800 -- 0000FFFF:  1110xxxx 10xxxxxx 10xxxxxx
+        // 4 bytes : 00010000 -- 001FFFFF:  11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+        short nbBytes=1, i;
+        if(0         == (data->text[0] & 0x80))
+            nbBytes=1;
+        else if(0xC0 == (data->text[0] & 0xE0))
+            nbBytes=2;
+        else if(0xE0 == (data->text[0] & 0xF0))
+            nbBytes=3;
+        else if(0xF0 == (data->text[0] & 0xF8))
+            nbBytes=4;
+        else
+        {
+            //potential character error !! (non UTF8)
+            GetLogger()->Trace("Bad non UTF8 input : %s (TODO : potentially extended ANSI to convert)\n",data->text.c_str());
+            //guess ANSI & try to convert it into UTF8 !
+            // TODO
+        }
+        for(i=1;i<nbBytes;++i)
+            if(0x80 != (data->text[i] & 0xC0))
+            {
+                GetLogger()->Trace("Bad non UTF8 input : %s\n",data->text.c_str());
+                return false;   //error : bad UTF8 !! => dismiss it
+            }
+        // insert utf-8 char (and permit also ANSI/ASCII or else)
+        for(i=0;i<nbBytes;++i)
+            Insert(data->text[i]);
+        // TODO : check side effects between the "Insert" instead of "InsertOne"
         SendModifEvent();
         return true;
     }
@@ -2359,8 +2377,10 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
                             if ( !IsSpace(character) )  break;
                             if(m_cursor1<m_len && 0xC0==(character & 0xE0))    //UTF8 mgt
                                 m_cursor1+=2;
-                            else if(m_cursor1<m_len && 0xE0==(character & 0xF0))    //UTF8 mgt
+                            else if(m_cursor1<m_len && 0xE0==(character & 0xF0))
                                 m_cursor1+=3;
+                            else if(m_cursor1<m_len && 0xF0==(character & 0xF8))
+                                m_cursor1+=4;
                             else
                                 ++m_cursor1;
                         }
@@ -2373,8 +2393,10 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
                             if ( !IsWord(character) )  break;
                             if(m_cursor1<m_len && 0xC0==(character & 0xE0))    //UTF8 mgt
                                 m_cursor1+=2;
-                            else if(m_cursor1<m_len && 0xE0==(character & 0xF0))    //UTF8 mgt
+                            else if(m_cursor1<m_len && 0xE0==(character & 0xF0))
                                 m_cursor1+=3;
+                            else if(m_cursor1<m_len && 0xF0==(character & 0xF8))
+                                m_cursor1+=4;
                             else
                                 ++m_cursor1;
                         }
@@ -2387,8 +2409,10 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
                             if ( !IsSep(character) )  break;
                             if(m_cursor1<m_len && 0xC0==(character & 0xE0))    //UTF8 mgt
                                 m_cursor1+=2;
-                            else if(m_cursor1<m_len && 0xE0==(character & 0xF0))    //UTF8 mgt
+                            else if(m_cursor1<m_len && 0xE0==(character & 0xF0))
                                 m_cursor1+=3;
+                            else if(m_cursor1<m_len && 0xF0==(character & 0xF8))
+                                m_cursor1+=4;
                             else
                                 ++m_cursor1;
                         }
@@ -2403,8 +2427,10 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
                     if ( !IsSpace(character) )  break;
                     if(m_cursor1<m_len && 0xC0==(m_text[m_cursor1] & 0xE0))    //UTF8 mgt
                         m_cursor1+=2;
-                    else if(m_cursor1<m_len && 0xE0==(m_text[m_cursor1] & 0xF0))    //UTF8 mgt
+                    else if(m_cursor1<m_len && 0xE0==(m_text[m_cursor1] & 0xF0))
                         m_cursor1+=3;
+                    else if(m_cursor1<m_len && 0xF0==(m_text[m_cursor1] & 0xF8))
+                        m_cursor1+=4;
                     else
                         ++m_cursor1;
                 }
@@ -2413,8 +2439,10 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
             {
                 if(m_cursor1<m_len && 0xC0==(m_text[m_cursor1] & 0xE0))    //UTF8 mgt
                     ++move;
-                if(m_cursor1<m_len && 0xE0==(m_text[m_cursor1] & 0xF0))    //UTF8 mgt
+                if(m_cursor1<m_len && 0xE0==(m_text[m_cursor1] & 0xF0))
                     move+=2;
+                else if(m_cursor1<m_len && 0xF0==(m_text[m_cursor1] & 0xF8))
+                    move+=3;
                 m_cursor1 ++;
                 if ( m_cursor1 > m_len )
                 {
@@ -2612,6 +2640,8 @@ bool CEdit::Paste()
 {
     char    c;
     char*   text;
+    bool    bOk;
+    short   j;      //subIndex for multiBytes UTF8
 
     if ( !m_bEdit )
     {
@@ -2637,7 +2667,38 @@ bool CEdit::Paste()
         {
             continue;
         }
-        InsertOne(c);
+        //control UTF8 validity of injected elements
+        short nbBytes=1;
+        if(0         == (c & 0x80))
+            nbBytes=1;
+        else if(0xC0 == (c & 0xE0))
+            nbBytes=2;
+        else if(0xE0 == (c & 0xF0))
+            nbBytes=3;
+        else if(0xF0 == (c & 0xF8))
+            nbBytes=4;
+        else
+        {
+            //potential character error !! (non UTF8)
+            GetLogger()->Trace("Bad non Paste UTF8 input : %c (TODO : potentially extended ANSI to convert)\n",c);
+            continue;
+            //guess ANSI & try to convert it into UTF8 !
+            // TODO
+        }
+        bOk=true;
+        for(j=1;j<nbBytes;++j)
+            if(0x80 != (text[i+j] & 0xC0))
+            {
+                GetLogger()->Trace("Bad non UTF8 input : %s\n",text+i);
+                bOk=false;
+                break;   //error : bad UTF8 !! => dismiss it
+            }
+        if(!bOk)
+            continue;
+        // insert utf-8 char (and permit also ANSI/ASCII or else)
+        for(j=0;j<nbBytes;++j)
+            InsertOne(text[i+j]);
+        i+=nbBytes-1;
     }
 
     SDL_free(text);
@@ -2861,7 +2922,7 @@ void CEdit::DeleteWord(int dir)
     // TODO : check if following 2 func should be equivalent to next of this function
     //   (if ok, it will fix all the utf8 word selection there)
     //  
-    //  if(m_cursor1<m_len && IsWord(m_text[m_cursor1])  MoveChar(dir,true,false);
+    //  if(m_cursor1<m_len && IsWord(m_text[m_cursor1])  MoveChar(-dir,true,false);
     //  MoveChar(dir,true,true);
     //  Delete(0);
 
@@ -3059,10 +3120,13 @@ bool CEdit::MinMaj(bool bMaj)
         if ( bMaj )  character = toupper(character);
         else         character = tolower(character);
         m_text[i] = character;
+        // TODO : use towupper & towlower
         if(i<m_len && 0xC0==(m_text[i] & 0xE0))    //UTF8 mgt
             i++;
-        else if(i<m_len && 0xE0==(m_text[i] & 0xF0))    //UTF8 mgt
+        else if(i<m_len && 0xE0==(m_text[i] & 0xF0))
             i+=2;
+        else if(i<m_len && 0xF0==(m_text[i] & 0xF8))
+            i+=3;
     }
 
     Justif();
