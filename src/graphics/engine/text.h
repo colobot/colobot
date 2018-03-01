@@ -152,17 +152,19 @@ enum FontMask
  * \struct UTF8Char
  * \brief UTF-8 character in font cache
  *
- * Only 3-byte chars are supported
+ * 4-bytes chars are supported (neither the rare 5 bytes nor 6 bytes)
  */
 struct UTF8Char
 {
-    char c1, c2, c3;
-    // Padding for 4-byte alignment
-    // It also seems to fix some problems reported by valgrind
-    char pad;
+    char c1, c2, c3, c4;
+    //    // Padding for 4-byte alignment
+    //    // It also seems to fix some problems reported by valgrind
+    //    char pad;
 
-    explicit UTF8Char(char ch1 = '\0', char ch2 = '\0', char ch3 = '\0')
-        : c1(ch1), c2(ch2), c3(ch3), pad('\0') {}
+    explicit UTF8Char(const char ch1 = '\0', const char ch2 = '\0',
+        const char ch3 = '\0', const char ch4 = '\0')
+        : c1(ch1), c2(ch2), c3(ch3), c4(ch4)
+    {}
 
     inline bool operator<(const UTF8Char &other) const
     {
@@ -176,12 +178,18 @@ struct UTF8Char
         else if (c2 > other.c2)
             return false;
 
-        return c3 < other.c3;
+        if (c3 < other.c3)
+            return true;
+        else if (c3 > other.c3)
+            return false;
+
+        return c4 < other.c4;
     }
 
     inline bool operator==(const UTF8Char &other) const
     {
-        return c1 == other.c1 && c2 == other.c2 && c3 == other.c3;
+        return c1 == other.c1 && c2 == other.c2
+            && c3 == other.c3 && c4 == other.c4;
     }
 };
 
@@ -240,7 +248,7 @@ public:
     void        SetDevice(CDevice *device);
 
     //! Returns the last encountered error
-    std::string GetError();
+    std::string GetError()const;
 
     //! Initializes the font engine; must be called after SetDevice()
     bool        Create();
@@ -252,69 +260,97 @@ public:
 
     //@{
     //! Tab size management
-    void        SetTabSize(int tabSize);
-    int         GetTabSize();
+    void        SetTabSize(const int tabSize);
+    int         GetTabSize()const;
     //@}
 
     //! Draws text (multi-format)
-    void        DrawText(const std::string &text, std::vector<FontMetaChar>::iterator format,
-                         std::vector<FontMetaChar>::iterator end,
-                         float size, Math::Point pos, float width, TextAlign align,
-                         int eol, Color color = Color(0.0f, 0.0f, 0.0f, 1.0f));
+    void        DrawText(const std::string &text,
+                         const std::vector<FontMetaChar>::iterator format,
+                         const std::vector<FontMetaChar>::iterator end,
+                         const float size,
+                         Math::Point pos,
+                         const float width,
+                         const TextAlign align,
+                         const int eol,
+                         const Color color = Color(0.0f, 0.0f, 0.0f, 1.0f));
     //! Draws text (one font)
-    void        DrawText(const std::string &text, FontType font,
-                         float size, Math::Point pos, float width, TextAlign align,
-                         int eol, Color color = Color(0.0f, 0.0f, 0.0f, 1.0f));
+    void        DrawText(const std::string &text,
+                         const FontType font,
+                         const float size,
+                         Math::Point pos,
+                         const float width,
+                         const TextAlign align,
+                         const int eol,
+                         const Color color = Color(0.0f, 0.0f, 0.0f, 1.0f));
 
     //! Calculates dimensions for text (multi-format)
-    void        SizeText(const std::string &text, std::vector<FontMetaChar>::iterator format,
-                         std::vector<FontMetaChar>::iterator endFormat,
-                         float size, Math::Point pos, TextAlign align,
+    void        SizeText(const std::string &text,
+                         const std::vector<FontMetaChar>::iterator format,
+                         const std::vector<FontMetaChar>::iterator endFormat,
+                         const float size,
+                         const Math::Point pos,
+                         const TextAlign align,
                          Math::Point &start, Math::Point &end);
     //! Calculates dimensions for text (one font)
-    void        SizeText(const std::string &text, FontType font,
-                         float size, Math::Point pos, TextAlign align,
-                         Math::Point &start, Math::Point &end);
+    void        SizeText(const std::string &text,
+                         const FontType font,
+                         const float size,
+                         const Math::Point pos,
+                         const TextAlign align,
+                         Math::Point &start,
+                         Math::Point &end);
 
     //! Returns the ascent font metric
-    float       GetAscent(FontType font, float size);
+    float       GetAscent(const FontType font, const float size);
     //! Returns the descent font metric
-    float       GetDescent(FontType font, float size);
+    float       GetDescent(const FontType font, const float size);
     //! Returns the height font metric
-    float       GetHeight(FontType font, float size);
-    int GetHeightInt(FontType font, float size);
+    float       GetHeight(const FontType font, const float size);
+    int GetHeightInt(const FontType font, const float size);
 
     //! Returns width of string (multi-format)
     TEST_VIRTUAL float GetStringWidth(const std::string& text,
-                                      std::vector<FontMetaChar>::iterator format,
-                                      std::vector<FontMetaChar>::iterator end, float size);
+                                      const std::vector<FontMetaChar>::iterator format,
+                                      const std::vector<FontMetaChar>::iterator end,
+                                      const float size);      // warning : TEST_VIRTUAL <-> const everywhere
     //! Returns width of string (single font)
-    TEST_VIRTUAL float GetStringWidth(std::string text, FontType font, float size);
+    TEST_VIRTUAL float GetStringWidth(std::string text, const FontType font, const float size);      // warning : TEST_VIRTUAL <-> const everywhere
     //! Returns width of single character
-    TEST_VIRTUAL float GetCharWidth(UTF8Char ch, FontType font, float size, float offset);
-    int GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset);
+    TEST_VIRTUAL float GetCharWidth(UTF8Char ch, const FontType font, const float size, const float offset);    // warning : TEST_VIRTUAL <-> const everywhere
+    int GetCharWidthInt(UTF8Char ch, const FontType font, const float size, const float offset);
 
     //! Justifies a line of text (multi-format)
-    int         Justify(const std::string &text, std::vector<FontMetaChar>::iterator format,
-                        std::vector<FontMetaChar>::iterator end,
-                        float size, float width);
+    int         Justify(const std::string &text,
+                        const std::vector<FontMetaChar>::iterator format,
+                        const std::vector<FontMetaChar>::iterator end,
+                        const float size,
+                        const float width);
     //! Justifies a line of text (one font)
-    int         Justify(const std::string &text, FontType font, float size, float width);
+    int         Justify(const std::string &text,
+                        const FontType font,
+                        const float size,
+                        const float width);
 
     //! Returns the most suitable position to a given offset (multi-format)
-    int         Detect(const std::string &text, std::vector<FontMetaChar>::iterator format,
-                       std::vector<FontMetaChar>::iterator end,
-                       float size, float offset);
+    int         Detect(const std::string &text,
+                       const std::vector<FontMetaChar>::iterator format,
+                       const std::vector<FontMetaChar>::iterator end,
+                       const float size,
+                       const float offset);
     //! Returns the most suitable position to a given offset (one font)
-    int         Detect(const std::string &text, FontType font, float size, float offset);
+    int         Detect(const std::string &text,
+                       const FontType font,
+                       const float size,
+                       const float offset);
 
-    UTF8Char    TranslateSpecialChar(int specialChar);
+    UTF8Char    TranslateSpecialChar(const char specialChar)const;
 
-    CharTexture GetCharTexture(UTF8Char ch, FontType font, float size);
-    Math::IntPoint GetFontTextureSize();
+    CharTexture GetCharTexture(const UTF8Char ch, const FontType font, const float size);
+    Math::IntPoint GetFontTextureSize()const;
 
 protected:
-    CachedFont* GetOrOpenFont(FontType font, float size);
+    CachedFont* GetOrOpenFont(const FontType font, const float size);
     CharTexture CreateCharTexture(UTF8Char ch, CachedFont* font);
     FontTexture* GetOrCreateFontTexture(Math::IntPoint tileSize);
     FontTexture CreateFontTexture(Math::IntPoint tileSize);
@@ -326,7 +362,7 @@ protected:
     void        DrawString(const std::string &text, FontType font,
                            float size, Math::IntPoint pos, int width, int eol, Color color);
     void        DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint size);
-    void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::IntPoint &pos, Color color);
+    void        DrawCharAndAdjustPos(UTF8Char ch, const FontType font, const float size, Math::IntPoint &pos, Color color);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end);
 

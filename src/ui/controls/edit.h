@@ -38,20 +38,20 @@ class CScroll;
 //! max number of levels preserves
 const int EDITHISTORYMAX    = 50;
 //! max number of successive undo
-const int EDITUNDOMAX = 20;
+const short EDITUNDOMAX = 20;
 
 struct EditUndo
 {
     //! original text
     std::string text;
     //! length of the text
-    int     len = 0;
+    std::size_t     len = 0;
     //! offset cursor
-    int     cursor1 = 0;
+    std::size_t     cursor1 = 0;
     //! offset cursor
-    int     cursor2 = 0;
+    std::size_t     cursor2 = 0;
     //! the first line displayed.
-    int     lineFirst = 0;
+    std::size_t     lineFirst = 0;
 
 };
 
@@ -90,7 +90,7 @@ struct HyperMarker
     //! name of the marker
     std::string    name;
     //! position in the text
-    int pos = 0;
+    std::size_t pos = 0;
 };
 
 struct HyperHistory
@@ -119,75 +119,75 @@ public:
     bool        EventProcess(const Event &event) override;
     void        Draw() override;
 
-    void               SetText(const std::string& text, bool bNew=true);
-    std::string        GetText(int max);
-    const std::string& GetText();
-    int                GetTextLength();
+    void               SetText(const std::string& text, const bool bNew=true);
+    std::string        GetText(std::size_t max)const;
+    const std::string& GetText()const;
+    std::size_t        GetTextLength()const;
 
-    bool        ReadText(std::string filename);
-    bool        WriteText(std::string filename);
+    bool        ReadText(const std::string& filename);
+    bool        WriteText(const std::string& filename);
 
-    void        SetMaxChar(int max);
-    int         GetMaxChar();
+    void        SetMaxChar(const std::size_t max);
+    std::size_t GetMaxChar()const;
 
-    void        SetEditCap(bool bMode);
-    bool        GetEditCap();
+    void        SetEditCap(const bool bMode);
+    bool        GetEditCap()const;
 
-    void        SetHighlightCap(bool bEnable);
-    bool        GetHighlightCap();
+    void        SetHighlightCap(const bool bEnable);
+    bool        GetHighlightCap()const;
 
-    void        SetInsideScroll(bool bInside);
-    bool        GetInsideScroll();
+    void        SetInsideScroll(const bool bInside);
+    bool        GetInsideScroll()const;
 
-    void        SetSoluceMode(bool bSoluce);
-    bool        GetSoluceMode();
+    void        SetSoluceMode(const bool bSoluce);
+    bool        GetSoluceMode()const;
 
-    void        SetGenericMode(bool bGeneric);
-    bool        GetGenericMode();
+    void        SetGenericMode(const bool bGeneric);
+    bool        GetGenericMode()const;
 
-    void        SetAutoIndent(bool bMode);
-    bool        GetAutoIndent();
+    void        SetAutoIndent(const bool bMode);
+    bool        GetAutoIndent()const;
 
-    void        SetCursor(int cursor1, int cursor2);
-    void        GetCursor(int &cursor1, int &cursor2);
+    void        SetCursor(std::size_t cursor1, std::size_t cursor2);
+    void        GetCursor(std::size_t &cursor1, std::size_t &cursor2)const;
 
-    void        SetFirstLine(int rank);
-    int         GetFirstLine();
+    void        SetFirstLine(const int rank);
+    int         GetFirstLine()const;
     void        ShowSelect();
 
-    void        SetDisplaySpec(bool bDisplay);
-    bool        GetDisplaySpec();
+    void        SetDisplaySpec(const bool bDisplay);
+    bool        GetDisplaySpec()const;
 
-    void        SetMultiFont(bool bMulti);
-    bool        GetMultiFont();
+    void        SetMultiFont(const bool bMulti);
+    bool        GetMultiFont()const;
 
     bool        Cut();
-    bool        Copy(bool memorize_cursor = false);
+    bool        Copy(const bool memorize_cursor = false);
     bool        Paste();
     bool        Undo();
 
     void        HyperFlush();
-    void        HyperHome(std::string filename);
-    bool        HyperTest(EventType event);
-    bool        HyperGo(EventType event);
+    void        HyperHome(const std::string& filename);
+    bool        HyperTest(const EventType event);
+    bool        HyperGo(const EventType event);
 
-    void        SetFontSize(float size) override;
+    void        SetFontSize(const float size) override;
 
     bool        ClearFormat();
-    bool        SetFormat(int cursor1, int cursor2, int format);
+    bool        SetFormat(const std::size_t cursor1, const std::size_t cursor2, const int format);
 
 protected:
     void        SendModifEvent();
-    bool        IsLinkPos(Math::Point pos);
-    void        MouseDoubleClick(Math::Point mouse);
-    void        MouseClick(Math::Point mouse);
+    bool        IsLinkPos(const Math::Point pos);
+    void        MouseDoubleClick(const Math::Point mouse);
+    void        MouseClick(const Math::Point mouse);
     void        MouseMove(Math::Point mouse);
-    void        MouseRelease(Math::Point mouse);
-    int         MouseDetect(Math::Point mouse);
+    void        MouseRelease(const Math::Point mouse);
+    std::size_t      MouseDetect(const Math::Point mouse);
     void        MoveAdjust();
 
-    void        HyperJump(std::string name, std::string marker);
-    bool        HyperAdd(std::string filename, int firstLine);
+    void        HyperJump(const std::string& name, const std::string& marker);
+    bool        HyperAdd(const std::string& filename, const int firstLine);
 
     void        DrawImage(Math::Point pos, std::string name, float width, float offset, float height, int nbLine);
     void        DrawBack(Math::Point pos, Math::Point dim);
@@ -196,25 +196,36 @@ protected:
     void        DrawColor(Math::Point pos, Math::Point dim, Gfx::Color color);
 
     void        FreeImage();
-    void        Scroll(int pos, bool bAdjustCursor);
+    void        Scroll(const std::size_t pos, const bool bAdjustCursor);
     void        Scroll();
-    void        MoveChar(int move, bool bWord, bool bSelect);
-    void        MoveLine(int move, bool bWord, bool bSelect);
-    void        MoveHome(bool bWord, bool bSelect);
-    void        MoveEnd(bool bWord, bool bSelect);
+    void        MoveChar(int move, const bool bWord, const bool bSelect);
+    void        MoveLine(int move, const bool bWord, const bool bSelect);
+    void        MoveHome(const bool bWord, const bool bSelect);
+    void        MoveEnd(const bool bEoF, const bool bSelect);
     void        ColumnFix();
-    void        Insert(char character);
-    void        InsertOne(char character);
-    void        Delete(int dir);
-    void        DeleteOne(int dir);
-    void        DeleteWord(int dir);
-    int         IndentCompute();
-    int         IndentTabCount();
-    void        IndentTabAdjust(int number);
-    bool        Shift(bool bLeft);
-    bool        MinMaj(bool bMaj);
+    void        Insert(const char character);
+    void        InsertOne(const char character);
+
+    // Inserts a string (ended by a null char)
+    inline void InsertTxt(const char* str)
+    {
+        for(std::size_t i=0;i<strlen(str);++i)
+            InsertOne(str[i]);
+    }
+    inline void InsertTxt(const std::string& str)
+    {
+        InsertTxt(str.c_str());
+    }
+    void        Delete(const int dir);
+    void        DeleteOne(const int dir);
+    void        DeleteWord(const int dir);
+    int         IndentCompute()const;
+    int         IndentTabCount()const;
+    void        IndentTabAdjust(const int number);
+    bool        Shift(const bool bLeft);
+    bool        MinMaj(const bool bMaj);
     void        Justif();
-    int         GetCursorLine(int cursor);
+    int         GetCursorLine(const std::size_t cursor)const;
 
     void        UndoFlush();
     void        UndoMemorize(OperUndo oper);
@@ -225,48 +236,49 @@ protected:
     void        SetFocus(CControl* control) override;
     void        UpdateFocus();      // Start/stop text input mode, this toggles the on-screen keyboard
 
-    void        GetIndentedText(std::ostream& stream, unsigned int start, unsigned int end);
+    void        GetIndentedText(std::ostream& stream, const std::size_t start, const std::size_t end);
 
 protected:
     std::unique_ptr<CScroll> m_scroll;           // vertical scrollbar on the right
 
-    int m_maxChar;
+    std::size_t m_maxChar;
     std::string m_text;             // text (without zero terminator)
     std::vector<Gfx::FontMetaChar> m_format;           // format characters
-    int     m_len;              // length used in m_text
-    int     m_cursor1;          // offset cursor
-    int     m_cursor2;          // offset cursor
 
-    bool        m_bMulti;           // true -> multi-line
-    bool        m_bEdit;            // true -> editable
-    bool        m_bHilite;          // true -> hilitable
-    bool        m_bInsideScroll;        // true -> lift as part
-    bool        m_bDisplaySpec;         // true -> displays the special characters
-    bool        m_bMultiFont;           // true -> more fonts possible
-    bool        m_bSoluce;          // true -> shows the links-solution
-    bool        m_bGeneric;         // true -> generic that defile
-    bool        m_bAutoIndent;          // true -> automatic indentation
-    float       m_lineHeight;           // height of a row
-    float       m_lineAscent;           // height above the baseline
-    float       m_lineDescent;          // height below the baseline
-    int     m_lineVisible;          // total number of viewable lines
-    int     m_lineFirst;            // the first line displayed
-    int     m_lineTotal;            // number lines used (in m_lineOffset)
-    std::vector<int> m_lineOffset;
-    std::vector<char> m_lineIndent;
-    std::vector<ImageLine> m_image;
-    std::vector<HyperLink> m_link;
+    std::size_t m_len;              // length used in m_text
+    std::size_t m_cursor1;          // offset cursor
+    std::size_t m_cursor2;          // offset cursor
+
+    bool                     m_bMulti;           // true -> multi-line
+    bool                     m_bEdit;            // true -> editable
+    bool                     m_bHilite;          // true -> hilitable
+    bool                     m_bInsideScroll;        // true -> lift as part
+    bool                     m_bDisplaySpec;         // true -> displays the special characters
+    bool                     m_bMultiFont;           // true -> more fonts possible
+    bool                     m_bSoluce;          // true -> shows the links-solution
+    bool                     m_bGeneric;         // true -> generic that defile
+    bool                     m_bAutoIndent;          // true -> automatic indentation
+    float                    m_lineHeight;           // height of a row
+    float                    m_lineAscent;           // height above the baseline
+    float                    m_lineDescent;          // height below the baseline
+    int                      m_lineVisible;          // total number of viewable lines
+    int                      m_lineFirst;            // the first line displayed
+    int                      m_lineTotal;            // number lines used (in m_lineOffset)
+    std::vector<std::size_t> m_lineOffset;
+    std::vector<short>       m_lineIndent;
+    std::vector<ImageLine>   m_image;
+    std::vector<HyperLink>   m_link;
     std::vector<HyperMarker> m_marker;
-    int     m_historyTotal;
-    int     m_historyCurrent;
+    int                      m_historyTotal;
+    int                      m_historyCurrent;
     std::array<HyperHistory, EDITHISTORYMAX> m_history;
-    float       m_time;             // absolute time
-    float       m_timeBlink;
-    float       m_timeLastClick;
-    float       m_timeLastScroll;
-    Math::Point     m_mouseFirstPos;
-    Math::Point     m_mouseLastPos;
-    float       m_column;
+    float                    m_time;             // absolute time
+    float                    m_timeBlink;
+    float                    m_timeLastClick;
+    float                    m_timeLastScroll;
+    Math::Point              m_mouseFirstPos;
+    Math::Point              m_mouseLastPos;
+    float                    m_column;
 
     bool        m_bCapture;
 

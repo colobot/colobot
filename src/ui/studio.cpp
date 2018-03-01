@@ -338,7 +338,7 @@ bool CStudio::EventFrame(const Event &event)
     CEdit*      edit;
     CList*      list;
     float       time;
-    int         cursor1, cursor2, iCursor1, iCursor2;
+    std::size_t      cursor1, cursor2, iCursor1, iCursor2;
 
     m_time += event.rTime;
     m_fixInfoTextTime -= event.rTime;
@@ -424,10 +424,25 @@ bool CStudio::EventFrame(const Event &event)
 
 
 // Indicates whether a character is part of a word.
+//  note : @see IsWord func of edit.cpp => this one to upd ??
 
-bool IsToken(char c)
+bool IsToken(const char c)
 {
+    /*  //old version
     return ( isalnum(c) || c == '_' );
+    /*/ //new version (cf IsWord func of edit.cpp)
+    //TOCHECK : next OR fix previous with UTF8 ending char (if no side effect)
+    return c!='+' && c!='-' && c!='*' && c!='/' && c!='%' && c!='?' && c!='^'
+        && c!='|' && c!='&' && c!='>' && c!='<' && c!='!' && c!='~' && c!='\\'
+        && c!=','
+        // TODO : Check if missings or if some have to be inside IsBreaker.
+        // TODO?: find a way to ignore escaped char ?
+        //  next rewrite from called funcs
+        && c != ' '  && c != '\t' && c != '\n'
+        && c != '.'  && c != '{'  && c != '}'
+        && c != ';' && c != ':' && c != '[' && c != ']'
+        && c != '(' && c != ')' && c != '=' && c != '"' && c != '\'';
+    // */
 }
 
 // Seeks if the cursor is on a keyword.
@@ -435,7 +450,8 @@ bool IsToken(char c)
 void CStudio::SearchToken(CEdit* edit)
 {
     ObjectType  type;
-    int         len, cursor1, cursor2, i, character, level;
+    int         character, level;
+    std::size_t      i, len, cursor1, cursor2;
     std::string text;
     std::string token( 100, '\0');
 
@@ -1442,6 +1458,7 @@ bool CStudio::EventDialog(const Event &event)
          (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) ||
          event.type == pw->GetEventTypeClose() )
     {
+        //stop the save or open dialog
         StopDialog();
         return true;
     }
@@ -1513,8 +1530,8 @@ void CStudio::UpdateDialogAction()
     CWindow*    pw;
     CEdit*      pe;
     CButton*    pb;
-    std::string        name;
-    int         len, i;
+    std::string name;
+    std::size_t len, i;
     bool        bError;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
@@ -1638,9 +1655,9 @@ bool CStudio::ReadProgram()
 {
     CWindow*    pw;
     CEdit*      pe;
-    std::string        filename;
-    std::string        dir;
-    size_t p;
+    std::string filename;
+    std::string dir;
+    std::size_t p;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return false;
@@ -1676,9 +1693,9 @@ bool CStudio::WriteProgram()
 {
     CWindow*    pw;
     CEdit*      pe;
-    std::string        filename;
-    std::string        dir;
-    size_t p;
+    std::string filename;
+    std::string dir;
+    std::size_t p;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return false;

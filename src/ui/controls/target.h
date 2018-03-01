@@ -41,7 +41,7 @@ public:
 
     bool        EventProcess(const Event &event) override;
     void        Draw() override;
-    bool        GetTooltip(Math::Point pos, std::string &name) override;
+    bool        GetTooltip(Math::Point pos, std::string &name)const override;
 
 protected:
     CObject*    DetectFriendObject(Math::Point pos);

@@ -82,7 +82,7 @@ unsigned int Utf8CharToUnicode(const std::string &ch);
 std::wstring Utf8StringToUnicode(const std::string &str);
 
 //! Returns the size in bytes of UTF-8 character at given \a pos in a UTF-8 \a str
-int Utf8CharSizeAt(const std::string &str, unsigned int pos);
+short Utf8CharSizeAt(const std::string &str, const std::size_t pos);
 
 //! Returns the length in characters of UTF-8 string \a str
 std::size_t Utf8StringLength(const std::string &str);

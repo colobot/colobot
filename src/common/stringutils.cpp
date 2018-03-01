@@ -24,6 +24,8 @@
 #include <cstdio>
 #include <vector>
 
+#include <cstring>          // memset used for trace
+#include "common/logger.h"
 
 unsigned int StrUtils::HexStringToInt(const std::string& str)
 {
@@ -44,7 +46,7 @@ std::string VFormat(const char *fmt, va_list ap)
     std::vector<char> dynamicbuf;
     char *buf = &stackbuf[0];
 
-    while (1)
+    while (true)
     {
         int needed = vsnprintf (buf, size, fmt, ap);
 
@@ -88,23 +90,42 @@ std::string StrUtils::UnicodeCharToUtf8(unsigned int ch)
     if (ch < 0x0080)
     {
         result += static_cast<char>(ch);
+        //GetLogger()->Trace("StrUtils::UnicodeCharToUtf8 1: %d <%s>\n",ch,result.c_str());
     }
     else if (ch < 0x0800)
     {
-        char ch1 = 0xC0 | ((ch & 0x07C0) >> 6);
+        char ch1 = 0xC0 | (ch >> 6);
         char ch2 = 0x80 | (ch & 0x3F);
         result += ch1;
         result += ch2;
+        GetLogger()->Trace("StrUtils::UnicodeCharToUtf8 2: %d <%s>\n",ch,result.c_str());
     }
-    else
+    else if(0xd800<=ch && ch<=0xdfff)   //invalid block of utf8
+        GetLogger()->Trace("StrUtils::UnicodeCharToUtf8 INVALID UNICODE CHAR: %d %c\n",ch,ch);
+    else if(ch<=0xFFFF)
     {
-        char ch1 = 0xE0 | ((ch & 0xF000) >> 12);
-        char ch2 = 0x80 | ((ch & 0x07C0) >> 6);
-        char ch3 = 0x80 | (ch & 0x3F);
+        char ch1 = 0xE0 |  (ch >> 12);
+        char ch2 = 0x80 | ((ch >> 6) & 0x3F);
+        char ch3 = 0x80 |  (ch & 0x3F);
         result += ch1;
         result += ch2;
         result += ch3;
+        GetLogger()->Trace("StrUtils::UnicodeCharToUtf8 3: %d <%s>\n",ch,result.c_str());
     }
+    else if(ch<=0x10FFFF)
+    {
+        char ch1 = 0xF0 | (ch >> 18);
+        char ch2 = 0x80 | ((ch >> 12) & 0x3F);
+        char ch3 = 0x80 | ((ch >> 6) & 0x3F);
+        char ch4 = 0x80 | (ch & 0x3F);
+        result += ch1;
+        result += ch2;
+        result += ch3;
+        result += ch4;
+        GetLogger()->Trace("StrUtils::UnicodeCharToUtf8 4: %d <%s>\n",ch,result.c_str());
+    }
+    else
+        GetLogger()->Warn("StrUtils::UnicodeCharToUtf8 FAIL (size>=5? UTF16?): %d\n",ch);
     return result;
 }
 
@@ -126,27 +147,56 @@ unsigned int StrUtils::Utf8CharToUnicode(const std::string &ch)
     if ((ch[0] & 0x80) == 0)
     {
         if (ch.size() == 1)
-        result = static_cast<unsigned int>(ch[0]);
+        {
+            result = static_cast<unsigned int>(ch[0]);
+            GetLogger()->Trace("StrUtils::Utf8CharToUnicode 1: <%s> %d\n",ch.c_str(),result);
+        }
+        else
+            GetLogger()->Warn("StrUtils::Utf8CharToUnicode Bad UTF8 1 char input ? : <%s>\n",ch.c_str());
     }
-    else if ((ch[0] & 0xC0) == 0xC0)
+    else if ((ch[0] & 0xE0) == 0xC0)
     {
         if (ch.size() == 2)
         {
             unsigned int ch1 = (ch[0] & 0x1F) << 6;
             unsigned int ch2 = (ch[1] & 0x3F);
             result = ch1 | ch2;
+            GetLogger()->Trace("StrUtils::Utf8CharToUnicode 2: <%s> %d\n",ch.c_str(),result);
         }
+        else
+            GetLogger()->Warn("StrUtils::Utf8CharToUnicode Bad UTF8 2 char input ? : <%s>\n",ch.c_str());
     }
-    else
+    else if (0xED==static_cast<unsigned char>(ch[0]) && (ch[1] & 0xA0) == 0xA0)
+        GetLogger()->Warn("StrUtils::Utf8CharToUnicode Bad UTF8 2 char input ? : EDA0? <%s>\n",ch.c_str());
+    else if ((ch[0] & 0xF0) == 0xE0)
     {
         if (ch.size() == 3)
         {
-            unsigned int ch1 = (ch[0] & 0xF0) << 12;
-            unsigned int ch2 = (ch[1] & 0xC0) << 6;
-            unsigned int ch3 = (ch[2] & 0xC0);
+            unsigned int ch1 = (ch[0] & 0x0F) << 12;
+            unsigned int ch2 = (ch[1] & 0x3F) << 6;
+            unsigned int ch3 = (ch[2] & 0x3F);
             result = ch1 | ch2 | ch3;
+            GetLogger()->Trace("StrUtils::Utf8CharToUnicode 3: <%s> %d\n",ch.c_str(),result);
         }
+        else
+            GetLogger()->Warn("StrUtils::Utf8CharToUnicode Bad UTF8 3 char input ? : <%s>\n",ch.c_str());
     }
+    else if ((ch[0] & 0xF8) == 0xF0)
+    {
+        if (ch.size() == 4)
+        {
+            unsigned int ch1 = (ch[0] & 0x07) << 18;
+            unsigned int ch2 = (ch[1] & 0x3F) << 12;
+            unsigned int ch3 = (ch[2] & 0x3F) << 6;
+            unsigned int ch4 = (ch[3] & 0x3F) ;
+            result = ch1 | ch2 | ch3 | ch4;
+            GetLogger()->Trace("StrUtils::Utf8CharToUnicode 4: <%s> %d\n",ch.c_str(),result);
+        }
+        else
+            GetLogger()->Warn("StrUtils::Utf8CharToUnicode Bad UTF8 4 char input ? : <%s>\n",ch.c_str());
+    }
+    else
+        GetLogger()->Warn("StrUtils::Utf8CharToUnicode Bad UTF8 (more than 4 char inputs ?) : <%s>\n",ch.c_str());
 
     return result;
 }
@@ -154,10 +204,11 @@ unsigned int StrUtils::Utf8CharToUnicode(const std::string &ch)
 std::wstring StrUtils::Utf8StringToUnicode(const std::string &str)
 {
     std::wstring result;
-    unsigned int pos = 0;
+    std::size_t pos = 0;
+    short len;
     while (pos < str.size())
     {
-        int len = StrUtils::Utf8CharSizeAt(str, pos);
+        len = StrUtils::Utf8CharSizeAt(str, pos);
         if (len == 0)
             break;
 
@@ -168,28 +219,60 @@ std::wstring StrUtils::Utf8StringToUnicode(const std::string &str)
     return result;
 }
 
-int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
+short StrUtils::Utf8CharSizeAt(const std::string &str, const std::size_t pos)
 {
     if (pos >= str.size())
         return 0;
 
     if ((str[pos] & 0x80) == 0)
         return 1;
-    else if ((str[pos] & 0xC0) == 0xC0)
+    //nota:  quick header check without checking inside.
+    if ((str[pos] & 0xE0) == 0xC0)
         return 2;
-    else
+    if ((str[pos] & 0xF0) == 0xE0)
         return 3;
-
+    if ((str[pos] & 0xF8) == 0xF0)
+        return 4;
+    if ((str[pos] & 0xFC) == 0xF8)
+    {
+        GetLogger()->Warn("UTF8 input with 5 bytes - UTF16 ?\n");
+        return 5;
+    }
+    if ((str[pos] & 0xFE) == 0xFC)
+    {
+        GetLogger()->Warn("UTF8 input with 6 bytes - UTF16 ?\n");
+        return 6;
+    }
+    {
+        // this block can be removed, just tmp there for rescue...
+        short ret=1;
+        char plomp[9];
+        while (pos+ret<str.size() && 0x80==(str[pos+ret] & 0xC0))
+            ++ret;
+        std::memset(plomp,0,9);
+        for(short i=0;i<8 && pos+i<str.size();++i)
+            plomp[i]=str[pos+i];
+        GetLogger()->Warn("Bad UTF8 input : <%s> - => try rescue : %d\n", plomp,ret);
+        return ret;
+    }
+    //tmp dead code...
     return 0;
 }
 
 std::size_t StrUtils::Utf8StringLength(const std::string &str)
 {
     std::size_t result = 0;
-    unsigned int i = 0;
+    std::size_t i = 0;
+    short tmp;
     while (i < str.size())
     {
-        i += Utf8CharSizeAt(str, i);
+        tmp = Utf8CharSizeAt(str, i);
+        if(!tmp)
+        {
+            GetLogger()->Warn("Bad UTF8 input : <%s> a 0 size elt at : %d, nb %d\n", str.c_str(),i,result);
+            break;
+        }
+        i+=tmp;
         ++result;
     }
     return result;

@@ -114,7 +114,7 @@ void CTarget::Draw()
 
 // Returns the tooltip.
 
-bool CTarget::GetTooltip(Math::Point pos, std::string &name)
+bool CTarget::GetTooltip(Math::Point pos, std::string &name)const
 {
     if ( (m_state & STATE_VISIBLE) == 0 )  return false;
 
@@ -122,7 +122,8 @@ bool CTarget::GetTooltip(Math::Point pos, std::string &name)
     {
         if ( !m_main->GetFriendAim() )
         {
-            m_tooltip = name;
+            //BUG?? - TOCHECK - old:    m_tooltip = name;
+            name=m_tooltip;
             return true;  // does not detect objects below!
         }
     }
