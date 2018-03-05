@@ -111,7 +111,7 @@ CBotTypResult ArrayType(CBotToken* &p, CBotCStack* pile, CBotTypResult type)
 ////////////////////////////////////////////////////////////////////////////////
 bool WriteWord(FILE* pf, unsigned short w)
 {
-    size_t  lg;
+    std::size_t  lg;
 
     lg = fwrite(&w, sizeof( unsigned short ), 1, pf );
 
@@ -121,7 +121,7 @@ bool WriteWord(FILE* pf, unsigned short w)
 ////////////////////////////////////////////////////////////////////////////////
 bool WriteString(FILE* pf, std::string s)
 {
-    size_t  lg1, lg2;
+    std::size_t  lg1, lg2;
 
     lg1 = s.size();
     if (!WriteWord(pf, lg1)) return false;
@@ -133,7 +133,7 @@ bool WriteString(FILE* pf, std::string s)
 ////////////////////////////////////////////////////////////////////////////////
 bool WriteFloat(FILE* pf, float w)
 {
-    size_t  lg;
+    std::size_t  lg;
 
     lg = fwrite(&w, sizeof( float ), 1, pf );
 

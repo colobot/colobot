@@ -81,7 +81,7 @@ const int kStdErrFileno = STDERR_FILENO;
 
 // Returns the number of threads running in the process, or 0 to indicate that
 // we cannot detect it.
-size_t GetThreadCount() {
+std::size_t GetThreadCount() {
   const task_t task = mach_task_self();
   mach_msg_type_number_t thread_count;
   thread_act_array_t thread_list;
@@ -100,7 +100,7 @@ size_t GetThreadCount() {
 
 #else
 
-size_t GetThreadCount() {
+std::size_t GetThreadCount() {
   // There's no portable way to detect the number of threads, so we just
   // return 0 to indicate that we cannot detect it.
   return 0;
@@ -147,7 +147,7 @@ void RE::Init(const char* regex) {
 
   // Reserves enough bytes to hold the regular expression used for a
   // full match.
-  const size_t full_regex_len = strlen(regex) + 10;
+  const std::size_t full_regex_len = strlen(regex) + 10;
   char* const full_pattern = new char[full_regex_len];
 
   snprintf(full_pattern, full_regex_len, "^(%s)$", regex);
@@ -295,13 +295,13 @@ bool ValidateRegex(const char* regex) {
 bool MatchRepetitionAndRegexAtHead(
     bool escaped, char c, char repeat, const char* regex,
     const char* str) {
-  const size_t min_count = (repeat == '+') ? 1 : 0;
-  const size_t max_count = (repeat == '?') ? 1 :
+  const std::size_t min_count = (repeat == '+') ? 1 : 0;
+  const std::size_t max_count = (repeat == '?') ? 1 :
       static_cast<size_t>(-1) - 1;
   // We cannot call numeric_limits::max() as it conflicts with the
   // max() macro on Windows.
 
-  for (size_t i = 0; i <= max_count; ++i) {
+  for (std::size_t i = 0; i <= max_count; ++i) {
     // We know that the atom matches each of the first i characters in str.
     if (i >= min_count && MatchRegexAtHead(regex, str + i)) {
       // We have enough matches at the head, and the tail matches too.
@@ -401,7 +401,7 @@ void RE::Init(const char* regex) {
     return;
   }
 
-  const size_t len = strlen(regex);
+  const std::size_t len = strlen(regex);
   // Reserves enough bytes to hold the regular expression used for a
   // full match: we need space to prepend a '^', append a '$', and
   // terminate the string with '\0'.
@@ -542,7 +542,7 @@ class CapturedStream {
   static String ReadEntireFile(FILE* file);
 
   // Returns the size (in bytes) of a file.
-  static size_t GetFileSize(FILE* file);
+  static std::size_t GetFileSize(FILE* file);
 
   const int fd_;  // A stream to capture.
   int uncaptured_fd_;
@@ -553,18 +553,18 @@ class CapturedStream {
 };
 
 // Returns the size (in bytes) of a file.
-size_t CapturedStream::GetFileSize(FILE* file) {
+std::size_t CapturedStream::GetFileSize(FILE* file) {
   fseek(file, 0, SEEK_END);
   return static_cast<size_t>(ftell(file));
 }
 
 // Reads the entire content of a file as a string.
 String CapturedStream::ReadEntireFile(FILE* file) {
-  const size_t file_size = GetFileSize(file);
+  const std::size_t file_size = GetFileSize(file);
   char* const buffer = new char[file_size];
 
-  size_t bytes_last_read = 0;  // # of bytes read in the last fread()
-  size_t bytes_read = 0;       // # of bytes read so far
+  std::size_t bytes_last_read = 0;  // # of bytes read in the last fread()
+  std::size_t bytes_read = 0;       // # of bytes read so far
 
   fseek(file, 0, SEEK_SET);
 
@@ -652,7 +652,7 @@ static String FlagToEnvVar(const char* flag) {
       (Message() << GTEST_FLAG_PREFIX_ << flag).GetString();
 
   Message env_var;
-  for (size_t i = 0; i != full_flag.length(); i++) {
+  for (std::size_t i = 0; i != full_flag.length(); i++) {
     env_var << ToUpper(full_flag.c_str()[i]);
   }
 

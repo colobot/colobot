@@ -153,7 +153,7 @@ Sint64 CSDLFileWrapper::SDLSize(SDL_RWops *context)
     return -1; // Not needed for now
 }
 
-size_t CSDLFileWrapper::SDLRead(SDL_RWops *context, void *ptr, size_t size, size_t maxnum)
+std::size_t CSDLFileWrapper::SDLRead(SDL_RWops *context, void *ptr, std::size_t size, std::size_t maxnum)
 {
     if (CheckSDLContext(context))
     {
@@ -167,7 +167,7 @@ size_t CSDLFileWrapper::SDLRead(SDL_RWops *context, void *ptr, size_t size, size
     return 0;
 }
 
-size_t CSDLFileWrapper::SDLWrite(SDL_RWops *context, const void *ptr, size_t size, size_t num)
+std::size_t CSDLFileWrapper::SDLWrite(SDL_RWops *context, const void *ptr, std::size_t size, std::size_t num)
 {
     assert(!!"Writing to CSDLFileWrapper is currently not supported");
     return 0;

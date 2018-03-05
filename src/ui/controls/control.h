@@ -73,29 +73,29 @@ public:
 
     virtual bool          EventProcess(const Event &event);
 
-    virtual void          SetPos(Math::Point pos);
-    virtual Math::Point   GetPos();
-    virtual void          SetDim(Math::Point dim);
-    virtual Math::Point   GetDim();
-    virtual bool          SetState(int state, bool bState);
-    virtual bool          SetState(int state);
-    virtual bool          ClearState(int state);
-    virtual bool          TestState(int state);
-    virtual int           GetState();
-    virtual void          SetIcon(int icon);
-    virtual int           GetIcon();
-    virtual void          SetName(std::string name, bool bTooltip=true);
-    virtual std::string   GetName();
-    virtual void          SetTextAlign(Gfx::TextAlign mode);
-    virtual int           GetTextAlign();
-    virtual void          SetFontSize(float size);
-    virtual float         GetFontSize();
-    virtual void          SetFontStretch(float stretch);
-    virtual float         GetFontStretch();
-    virtual void          SetFontType(Gfx::FontType font);
-    virtual Gfx::FontType GetFontType();
-    virtual bool          SetTooltip(std::string name);
-    virtual bool          GetTooltip(Math::Point pos, std::string &name);
+    virtual void          SetPos(const Math::Point pos);
+    virtual Math::Point   GetPos()const;
+    virtual void          SetDim(const Math::Point dim);
+    virtual Math::Point   GetDim()const;
+    virtual bool          SetState(const int state, const bool bState);
+    virtual bool          SetState(const int state);
+    virtual bool          ClearState(const int state);
+    virtual bool          TestState(const int state)const;
+    virtual int           GetState()const;
+    virtual void          SetIcon(const int icon);
+    virtual int           GetIcon()const;
+    virtual void          SetName(std::string name, const bool bTooltip=true);
+    virtual std::string   GetName()const;
+    virtual void          SetTextAlign(const Gfx::TextAlign mode);
+    virtual int           GetTextAlign()const;
+    virtual void          SetFontSize(const float size);
+    virtual float         GetFontSize()const;
+    virtual void          SetFontStretch(const float stretch);
+    virtual float         GetFontStretch()const;
+    virtual void          SetFontType(const Gfx::FontType font);
+    virtual Gfx::FontType GetFontType()const;
+    virtual bool          SetTooltip(const std::string& name);
+    virtual bool          GetTooltip(Math::Point pos, std::string &name)const;
     virtual void          SetFocus(CControl* focusControl);
     virtual bool          GetFocus();
 
@@ -112,7 +112,7 @@ protected:
             void    DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math::Point uv2, Math::Point corner, float ex);
             void    DrawWarning(Math::Point pos, Math::Point dim);
             void    DrawShadow(Math::Point pos, Math::Point dim, float deep=1.0f);
-    virtual bool    Detect(Math::Point pos);
+    virtual bool    Detect(Math::Point pos)const;
 
     std::string     GetResourceName(EventType eventType);
 

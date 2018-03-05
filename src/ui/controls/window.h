@@ -80,7 +80,7 @@ public:
     EventType    GetEventTypeFull();
     EventType    GetEventTypeClose();
 
-    void SetName(std::string name, bool tooltip = true) override;
+    void SetName(std::string name, const bool tooltip = true) override;
 
     void        SetTrashEvent(bool bTrash);
     bool        GetTrashEvent();
@@ -109,7 +109,7 @@ public:
     void        SetFixed(bool bFix);
     bool        GetFixed();
 
-    bool        GetTooltip(Math::Point pos, std::string &name) override;
+    bool        GetTooltip(Math::Point pos, std::string &name)const override;
 
     bool        EventProcess(const Event &event) override;
 

@@ -65,7 +65,7 @@ public:
      * \param end
      * \return
      */
-    CBotError GetError(int& start, int& end);
+    CBotError GetError(std::size_t& start, std::size_t& end);
 
     /*!
      * \brief SetType Set the type of instruction on the stack.
@@ -176,21 +176,21 @@ public:
      * \brief SetStartError
      * \param pos
      */
-    void SetStartError(int pos);
+    void SetStartError(const std::size_t pos);
 
     /*!
      * \brief SetError
      * \param n
      * \param pos
      */
-    void SetError(CBotError n, int pos);
+    void SetError(const CBotError n, const std::size_t pos);
 
     /*!
      * \brief SetError
      * \param n
      * \param p
      */
-    void SetError(CBotError n, CBotToken* p);
+    void SetError(const CBotError n, const CBotToken* p);
 
     /*!
      * \brief ResetError
@@ -198,7 +198,7 @@ public:
      * \param start
      * \param end
      */
-    void ResetError(CBotError n, int start, int end);
+    void ResetError(const CBotError n, const std::size_t start, const std::size_t end);
 
     /*!
      * \brief SetRetType
@@ -253,8 +253,8 @@ private:
     CBotCStack* m_prev;
 
     static CBotError m_error;
-    static int m_end;
-    int m_start;
+    static std::size_t m_end;
+    std::size_t m_start;
 
     //! Result of the operations.
     CBotVar* m_var;

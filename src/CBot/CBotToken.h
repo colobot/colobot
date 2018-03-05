@@ -98,8 +98,8 @@ public:
      */
     CBotToken(const std::string& text,
               const std::string& sep = "",
-              int start = 0,
-              int end = 0);
+              std::size_t start = 0,
+              std::size_t end = 0);
 
     /**
      * \brief Destructor
@@ -114,13 +114,13 @@ public:
      * \brief Return the token type or the keyword id
      * \return A value from ::TokenType. For ::TokenTypKeyWord, returns the keyword ID instead.
      */
-    int GetType();
+    int GetType()const;
 
     /**
      * \brief Return the token string
      * \return The string associated with this token
      */
-    std::string GetString();
+    std::string GetString()const;
 
     /**
      * \brief Set the token string
@@ -131,25 +131,25 @@ public:
     /**
      * \brief Return the beginning location of this token in the original program string
      */
-    int GetStart();
+    std::size_t GetStart()const;
 
     /**
      * \brief Return the ending location of this token in the original program string
      */
-    int GetEnd();
+    std::size_t GetEnd()const;
 
     /**
      * \brief SetPos Set the token position in the CBot program
      * \param start The start position of the token
      * \param end The end position of the token
      */
-    void SetPos(int start, int end);
+    void SetPos(const std::size_t start, const std::size_t end);
 
     /**
      * \brief Get the keyword id
      * \return The keyword id, see ::TokenId
      */
-    long GetKeywordId();
+    long GetKeywordId()const;
 
     /**
      * \brief Copy operator
@@ -187,7 +187,7 @@ private:
      * \param first true if this is the first call (beginning of the program string)
      * \return A processed CBotToken
      */
-    static CBotToken* NextToken(const char*& program, bool first);
+    static CBotToken* NextToken(const char*& program, const bool first);
 
 private:
     //! The token type
@@ -201,9 +201,9 @@ private:
     std::string m_sep = "";
 
     //! The strat position of the token in the CBotProgram
-    int m_start = 0;
+    std::size_t m_start = 0;
     //! The end position of the token in the CBotProgram
-    int m_end = 0;
+    std::size_t m_end = 0;
 
     //! Map of all defined constants (see DefineNum())
     static std::map<std::string, long> m_defineNum;
@@ -231,7 +231,7 @@ private:
  * \param type2 Second token type to comapre to the token
  * \return true if the type of the token matches one of the parameters
  */
-extern bool IsOfType(CBotToken* &p, int type1, int type2 = -1);
+extern bool IsOfType(CBotToken* &p, const int type1, const int type2 = -1);
 
 /**
  * \brief Check if this token is of specified type
@@ -239,7 +239,7 @@ extern bool IsOfType(CBotToken* &p, int type1, int type2 = -1);
  * \param type1 The list of token types to comapre to the token, 0-terminated
  * \return true if the type of the tokens matched one of the parameters
  */
-extern bool IsOfTypeList(CBotToken* &p, int type1, ...);
+extern bool IsOfTypeList(CBotToken* &p, const int type1, ...);
 
 /**
  * \brief Maps given ID to its string equivalent

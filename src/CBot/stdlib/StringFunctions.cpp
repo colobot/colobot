@@ -69,6 +69,7 @@ bool rStrLeft( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 
     // retrieves this number
     int n = pVar->GetValInt();
+    // TODO : std::size_t + rm static_cast??
 
     if (n > static_cast<int>(s.length())) n = s.length();
     if (n < 0) n = 0;
@@ -105,6 +106,7 @@ bool rStrRight( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 
     // retrieves this number
     int n = pVar->GetValInt();
+    // TODO : std::size_t + rm static_cast??
 
     if (n > static_cast<int>(s.length())) n = s.length();
     if (n < 0) n = 0;
@@ -141,6 +143,7 @@ bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 
     // retrieves this number
     int n = pVar->GetValInt();
+    // TODO : std::size_t + rm static_cast??
 
     if (n > static_cast<int>(s.length())) n = s.length();
     if (n < 0) n = 0;
@@ -155,6 +158,7 @@ bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 
         // retrieves this number
         int l = pVar->GetValInt();
+        // TODO : std::size_t + rm static_cast??
 
         if (l > static_cast<int>(s.length())) l = s.length();
         if (l < 0) l = 0;

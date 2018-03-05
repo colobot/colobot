@@ -33,7 +33,7 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotProgram* CBotCStack::m_prog    = nullptr;            // init the static variable
 CBotError CBotCStack::m_error   = CBotNoErr;
-int CBotCStack::m_end      = 0;
+std::size_t CBotCStack::m_end      = 0;
 CBotTypResult CBotCStack::m_retTyp  = CBotTypResult(0);
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ CBotFunction* CBotCStack::ReturnFunc(CBotFunction* inst, CBotCStack* pfils)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotError CBotCStack::GetError(int& start, int& end)
+CBotError CBotCStack::GetError(std::size_t& start, std::size_t& end)
 {
     start = m_start;
     end      = m_end;
@@ -214,14 +214,14 @@ bool CBotCStack::IsOk()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotCStack::SetStartError( int pos )
+void CBotCStack::SetStartError( const std::size_t pos )
 {
     if ( m_error != 0) return;            // does not change existing error
     m_start = pos;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotCStack::SetError(CBotError n, int pos)
+void CBotCStack::SetError(const CBotError n, const std::size_t pos)
 {
     if ( n!= 0 && m_error != 0) return;    // does not change existing error
     m_error = n;
@@ -229,7 +229,7 @@ void CBotCStack::SetError(CBotError n, int pos)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotCStack::SetError(CBotError n, CBotToken* p)
+void CBotCStack::SetError(const CBotError n, const CBotToken* p)
 {
     if (m_error) return;    // does not change existing error
     m_error = n;
@@ -238,7 +238,7 @@ void CBotCStack::SetError(CBotError n, CBotToken* p)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotCStack::ResetError(CBotError n, int start, int end)
+void CBotCStack::ResetError(const CBotError n, const std::size_t start, const std::size_t end)
 {
     m_error = n;
     m_start    = start;

@@ -44,9 +44,9 @@ int         CBotStack::m_initimer = DEFAULT_TIMER;
 int         CBotStack::m_timer = 0;
 CBotVar*    CBotStack::m_retvar = nullptr;
 CBotError   CBotStack::m_error = CBotNoErr;
-int         CBotStack::m_start = 0;
-int         CBotStack::m_end   = 0;
-std::string  CBotStack::m_labelBreak="";
+std::size_t CBotStack::m_start = 0;
+std::size_t CBotStack::m_end   = 0;
+std::string CBotStack::m_labelBreak="";
 void*       CBotStack::m_pUser = nullptr;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -438,11 +438,11 @@ void CBotStack::SetError(CBotError n, CBotToken* token)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotStack::ResetError(CBotError n, int start, int end)
+void CBotStack::ResetError(CBotError n, std::size_t start, std::size_t end)
 {
     m_error = n;
-    m_start    = start;
-    m_end    = end;
+    m_start = start;
+    m_end   = end;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -604,14 +604,14 @@ void CBotStack::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotStack::GetRunPos(std::string& functionName, int& start, int& end)
+void CBotStack::GetRunPos(std::string& functionName, std::size_t& start, std::size_t& end)const
 {
     CBotProgram*    prog = m_prog;                        // Current program
 
     CBotInstr*        funct = nullptr;                        // function found
     CBotInstr*        instr = nullptr;                        // the highest intruction
 
-    CBotStack*        p = this;
+    const CBotStack*        p = this;
 
     while (p->m_next != nullptr)
     {
@@ -623,8 +623,10 @@ void CBotStack::GetRunPos(std::string& functionName, int& start, int& end)
         else                                        p = p->m_next;
     }
 
-    if ( p->m_instr != nullptr ) instr = p->m_instr;
-    if (p->m_func == IsFunction::YES && p->m_instr != nullptr ) funct = p->m_instr;
+    if ( p->m_instr != nullptr )
+        instr = p->m_instr;
+    if ( p->m_func == IsFunction::YES && p->m_instr != nullptr )
+        funct = p->m_instr;
 
     if ( funct == nullptr ) return;
 

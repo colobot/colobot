@@ -66,7 +66,7 @@ std::size_t fRead(void *buffer,
 ////////////////////////////////////////////////////////////////////////////////
 bool ReadWord(FILE* pf, unsigned short& w)
 {
-    size_t  lg;
+    std::size_t  lg;
 
     lg = fread(&w, sizeof( unsigned short ), 1, pf );
 
@@ -76,7 +76,7 @@ bool ReadWord(FILE* pf, unsigned short& w)
 ////////////////////////////////////////////////////////////////////////////////
 bool ReadFloat(FILE* pf, float& w)
 {
-    size_t  lg;
+    std::size_t  lg;
 
     lg = fread(&w, sizeof( float ), 1, pf );
 
@@ -86,7 +86,7 @@ bool ReadFloat(FILE* pf, float& w)
 ////////////////////////////////////////////////////////////////////////////////
 bool WriteLong(FILE* pf, long w)
 {
-    size_t  lg;
+    std::size_t  lg;
 
     lg = fwrite(&w, sizeof( long ), 1, pf );
 
@@ -96,7 +96,7 @@ bool WriteLong(FILE* pf, long w)
 ////////////////////////////////////////////////////////////////////////////////
 bool ReadLong(FILE* pf, long& w)
 {
-    size_t  lg;
+    std::size_t  lg;
 
     lg = fread(&w, sizeof( long ), 1, pf );
 
@@ -108,7 +108,7 @@ bool ReadString(FILE* pf, std::string& s)
 {
     unsigned short  w;
     char    buf[1000];
-    size_t  lg1, lg2;
+    std::size_t  lg1, lg2;
 
     if (!ReadWord(pf, w)) return false;
     lg1 = w;

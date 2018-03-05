@@ -319,7 +319,7 @@ bool CInterface::EventProcess(const Event &event)
 
 // Gives the tooltip binding to the window.
 
-bool CInterface::GetTooltip(Math::Point pos, std::string &name)
+bool CInterface::GetTooltip(Math::Point pos, std::string &name)const
 {
     for (auto& control : boost::adaptors::reverse(m_controls))
     {

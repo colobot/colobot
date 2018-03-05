@@ -68,7 +68,7 @@ class CBotExternalCallList;
  * if (!ok)
  * {
  *     CBotError error;
- *     int cursor1, cursor2;
+ *     std::size_t cursor1, cursor2;
  *     program->GetError(error, cursor1, cursor2);
  *     // Handle the error
  * }
@@ -146,7 +146,7 @@ public:
      * \param[out] end Ending position in the code string of this error
      * \return false if no error has occurred
      */
-    bool GetError(CBotError& code, int& start, int& end);
+    bool GetError(CBotError& code, std::size_t& start, std::size_t& end);
 
     /**
      * \brief Returns the last error
@@ -156,7 +156,7 @@ public:
      * \param[out] pProg Program that caused the error (TODO: This always returns "this"... what?)
      * \return false if no error has occurred
      */
-    bool GetError(CBotError& code, int& start, int& end, CBotProgram*& pProg);
+    bool GetError(CBotError& code, std::size_t& start, std::size_t& end, CBotProgram*& pProg);
 
     /**
      * \brief Starts the program using given function as an entry point. The function must be declared as "extern"
@@ -185,7 +185,7 @@ public:
      * \param[out] end Ending position in the code string of currently executed instruction
      * \return false if it is not running (program completion)
      */
-    bool GetRunPos(std::string& functionName, int& start, int& end);
+    bool GetRunPos(std::string& functionName, std::size_t& start, std::size_t& end)const;
 
     /**
      * \brief Provides the pointer to the variables on the execution stack
@@ -319,8 +319,8 @@ public:
      * \return
      */
     bool GetPosition(const std::string& name,
-                     int& start,
-                     int& stop,
+                     std::size_t& start,
+                     std::size_t& stop,
                      CBotGet modestart = GetPosExtern,
                      CBotGet modestop = GetPosBloc);
 
@@ -361,8 +361,8 @@ private:
     friend class CBotDebug;
 
     CBotError m_error = CBotNoErr;
-    int m_errorStart = 0;
-    int m_errorEnd = 0;
+    std::size_t m_errorStart = 0;
+    std::size_t m_errorEnd = 0;
 };
 
 } // namespace CBot

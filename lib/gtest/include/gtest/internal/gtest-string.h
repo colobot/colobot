@@ -205,7 +205,7 @@ class GTEST_API_ String {
   // buffer.  E.g. String("hello", 3) creates the string "hel",
   // String("a\0bcd", 4) creates "a\0bc", String(NULL, 0) creates "",
   // and String(NULL, 1) results in access violation.
-  String(const char* buffer, size_t a_length) {
+  String(const char* buffer, std::size_t a_length) {
     ConstructNonNull(buffer, a_length);
   }
 
@@ -267,7 +267,7 @@ class GTEST_API_ String {
 
   // Returns the length of the encapsulated string, or 0 if the
   // string is NULL.
-  size_t length() const { return length_; }
+  std::size_t length() const { return length_; }
 
   // Gets the 0-terminated C string this String object represents.
   // The String object still owns the string.  Therefore the caller
@@ -299,7 +299,7 @@ class GTEST_API_ String {
   // function can only be called when c_str_ has not been allocated.
   // ConstructNonNull(NULL, 0) results in an empty string ("").
   // ConstructNonNull(NULL, non_zero) is undefined behavior.
-  void ConstructNonNull(const char* buffer, size_t a_length) {
+  void ConstructNonNull(const char* buffer, std::size_t a_length) {
     char* const str = new char[a_length + 1];
     memcpy(str, buffer, a_length);
     str[a_length] = '\0';
@@ -308,7 +308,7 @@ class GTEST_API_ String {
   }
 
   const char* c_str_;
-  size_t length_;
+  std::size_t length_;
 };  // class String
 
 // Streams a String to an ostream.  Each '\0' character in the String
@@ -318,7 +318,7 @@ inline ::std::ostream& operator<<(::std::ostream& os, const String& str) {
     os << "(null)";
   } else {
     const char* const c_str = str.c_str();
-    for (size_t i = 0; i != str.length(); i++) {
+    for (std::size_t i = 0; i != str.length(); i++) {
       if (c_str[i] == '\0') {
         os << "\\0";
       } else {

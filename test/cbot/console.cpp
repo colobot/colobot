@@ -51,6 +51,7 @@ int main(int argc, char* argv[])
     // Read program code from stdin
     std::string code = "";
     std::string line;
+    std::size_t cursor1, cursor2;
     while (std::getline(std::cin, line))
     {
         code += line;
@@ -71,7 +72,6 @@ int main(int argc, char* argv[])
     if (!program->Compile(code.c_str(), externFunctions, nullptr))
     {
         CBotError error;
-        int cursor1, cursor2;
         program->GetError(error, cursor1, cursor2);
         std::string errorStr;
         GetResource(RES_CBOT, error, errorStr);
@@ -99,7 +99,6 @@ int main(int argc, char* argv[])
         while (!program->Run(nullptr)); // Run the program
 
         CBotError error;
-        int cursor1, cursor2;
         program->GetError(error, cursor1, cursor2);
         if (error != 0)
         {

@@ -94,21 +94,22 @@ public:
      * \param[out] end Ending position in code of the error
      * \return Error number
      */
-    CBotError GetError(int& start, int& end) { start = m_start; end = m_end; return m_error; }
+    CBotError GetError(std::size_t& start, std::size_t& end)const
+    { start = m_start; end = m_end; return m_error; }
 
     /**
      * \brief Get last error
      * \return Error number
-     * \see GetError(int&, int&) for error position in code
+     * \see GetError(std::size_t&, std::size_t&) for error position in code
      */
-    CBotError GetError() { return m_error; }
+    CBotError GetError()const { return m_error; }
 
     /**
      * \brief Check if there was an error
      * \return false if an error occurred
      * \see GetError()
      */
-    bool IsOk()
+    bool IsOk()const
     {
         return m_error == CBotNoErr;
     }
@@ -132,7 +133,7 @@ public:
      *
      * \see SetError() to set error only if it is not set already
      */
-    void            ResetError(CBotError n, int start, int end);
+    void            ResetError(CBotError n, std::size_t start, std::size_t end);
     /**
      * \todo Document
      *
@@ -458,7 +459,7 @@ public:
      * \param[out] start Start position of currently executed token
      * \param[out] end End position of currently executed token
      */
-    void            GetRunPos(std::string& functionName, int& start, int& end);
+    void            GetRunPos(std::string& functionName, std::size_t& start, std::size_t& end)const;
 
     /**
      * \brief Get local variables at the given stack level
@@ -477,8 +478,8 @@ private:
     int               m_state;
     int               m_step;
     static CBotError  m_error;
-    static int        m_start;
-    static int        m_end;
+    static std::size_t     m_start;
+    static std::size_t     m_end;
     static CBotVar*   m_retvar;                    // result of a return
 
     CBotVar*        m_var;                        // result of the operations

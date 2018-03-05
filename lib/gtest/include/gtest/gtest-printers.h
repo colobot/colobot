@@ -112,7 +112,7 @@ namespace internal2 {
 // Prints the given number of bytes in the given object to the given
 // ostream.
 GTEST_API_ void PrintBytesInObjectTo(const unsigned char* obj_bytes,
-                                     size_t count,
+                                     std::size_t count,
                                      ::std::ostream* os);
 
 // For selecting which printer to use when a given type has neither <<
@@ -141,7 +141,7 @@ class TypeWithoutFormatter {
 // We print a protobuf using its ShortDebugString() when the string
 // doesn't exceed this many characters; otherwise we print it using
 // DebugString() for better readability.
-const size_t kProtobufOneLinerMaxLength = 50;
+const std::size_t kProtobufOneLinerMaxLength = 50;
 
 template <typename T>
 class TypeWithoutFormatter<T, kProtobuf> {
@@ -269,9 +269,9 @@ template <typename C>
 void DefaultPrintTo(IsContainer /* dummy */,
                     false_type /* is not a pointer */,
                     const C& container, ::std::ostream* os) {
-  const size_t kMaxCount = 32;  // The maximum number of elements to print.
+  const std::size_t kMaxCount = 32;  // The maximum number of elements to print.
   *os << '{';
-  size_t count = 0;
+  std::size_t count = 0;
   for (typename C::const_iterator it = container.begin();
        it != container.end(); ++it, ++count) {
     if (count > 0) {
@@ -444,9 +444,9 @@ inline void PrintTo(wchar_t* s, ::std::ostream* os) {
 // Prints the given number of elements in an array, without printing
 // the curly braces.
 template <typename T>
-void PrintRawArrayTo(const T a[], size_t count, ::std::ostream* os) {
+void PrintRawArrayTo(const T a[], std::size_t count, ::std::ostream* os) {
   UniversalPrint(a[0], os);
-  for (size_t i = 1; i != count; i++) {
+  for (std::size_t i = 1; i != count; i++) {
     *os << ", ";
     UniversalPrint(a[i], os);
   }
@@ -608,13 +608,13 @@ class UniversalPrinter {
 // UniversalPrintArray(begin, len, os) prints an array of 'len'
 // elements, starting at address 'begin'.
 template <typename T>
-void UniversalPrintArray(const T* begin, size_t len, ::std::ostream* os) {
+void UniversalPrintArray(const T* begin, std::size_t len, ::std::ostream* os) {
   if (len == 0) {
     *os << "{}";
   } else {
     *os << "{ ";
-    const size_t kThreshold = 18;
-    const size_t kChunkSize = 8;
+    const std::size_t kThreshold = 18;
+    const std::size_t kChunkSize = 8;
     // If the array has more than kThreshold elements, we'll have to
     // omit some details by printing only the first and the last
     // kChunkSize elements.
@@ -631,11 +631,11 @@ void UniversalPrintArray(const T* begin, size_t len, ::std::ostream* os) {
 }
 // This overload prints a (const) char array compactly.
 GTEST_API_ void UniversalPrintArray(const char* begin,
-                                    size_t len,
+                                    std::size_t len,
                                     ::std::ostream* os);
 
 // Implements printing an array type T[N].
-template <typename T, size_t N>
+template <typename T, std::size_t N>
 class UniversalPrinter<T[N]> {
  public:
   // Prints the given array, omitting some elements when there are too
@@ -708,7 +708,7 @@ typedef ::std::vector<string> Strings;
 // TuplePrefixPrinter<N - 1>.
 
 // The inductive case.
-template <size_t N>
+template <std::size_t N>
 struct TuplePrefixPrinter {
   // Prints the first N fields of a tuple.
   template <typename Tuple>

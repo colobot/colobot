@@ -54,8 +54,8 @@ public:
     void        StartDisplayInfo(std::string filename, int index, bool bSoluce);
     void        StopDisplayInfo();
 
-    void        SetPosition(int pos);
-    int         GetPosition();
+    void        SetPosition(const std::size_t pos);
+    std::size_t GetPosition()const;
 
 protected:
     bool        EventFrame(const Event &event);
@@ -77,10 +77,10 @@ protected:
     Gfx::CLightManager* m_light;
     CPauseManager*      m_pause;
 
-    bool        m_bInfoMaximized;
-    bool        m_bInfoMinimized;
+    bool            m_bInfoMaximized;
+    bool            m_bInfoMinimized;
 
-    int         m_index;
+    int             m_index;
     Math::Point     m_infoNormalPos;
     Math::Point     m_infoNormalDim;
     Math::Point     m_infoActualPos;

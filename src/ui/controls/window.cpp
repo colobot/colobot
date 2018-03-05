@@ -297,7 +297,7 @@ CControl* CWindow::SearchControl(EventType eventMsg)
 
 // Makes the tooltip binds to the window.
 
-bool CWindow::GetTooltip(Math::Point pos, std::string &name)
+bool CWindow::GetTooltip(Math::Point pos, std::string &name)const
 {
     for (auto& control : m_controls)
     {
@@ -333,7 +333,7 @@ bool CWindow::GetTooltip(Math::Point pos, std::string &name)
 
 // Specifies the name for the title bar.
 
-void CWindow::SetName(std::string name, bool tooltip)
+void CWindow::SetName(std::string name, const bool tooltip)
 {
     CControl::SetName(name, tooltip);
 

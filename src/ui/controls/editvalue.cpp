@@ -203,11 +203,9 @@ void CEditValue::HiliteValue(const Event &event)
 {
     if (m_edit == nullptr)  return;
 
-    int pos = m_edit->GetTextLength();
+    std::size_t pos = m_edit->GetTextLength();
     if ( m_type == EVT_100 && pos > 0 )
-    {
-        pos --;  // not only selects the "%"
-    }
+        pos --;  // unselect the "%" symbol
 
     m_edit->SetCursor(pos, 0);
     m_interface->SetFocus(m_edit.get());

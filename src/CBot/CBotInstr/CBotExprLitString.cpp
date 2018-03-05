@@ -47,7 +47,7 @@ CBotInstr* CBotExprLitString::Compile(CBotToken* &p, CBotCStack* pStack)
     auto it = s.cbegin();
     if (++it != s.cend())
     {
-        int pos = p->GetStart();
+        std::size_t pos = p->GetStart();
         std::string valstring = "";
         while (it != s.cend() && *it != '\"')
         {
@@ -98,9 +98,9 @@ CBotInstr* CBotExprLitString::Compile(CBotToken* &p, CBotCStack* pStack)
                     {
                         std::string hex = "";
                         bool isHexCode = (c == 'x');
-                        size_t maxlen = (c == 'u') ? 4 : 8;
+                        std::size_t  maxlen = (c == 'u') ? 4 : 8;
 
-                        for (size_t i = 0; isHexCode || i < maxlen; i++)
+                        for (std::size_t  i = 0; isHexCode || i < maxlen; i++)
                         {
                             if (!CharInList(*it, "0123456789ABCDEFabcdef")) break;
                             ++pos;

@@ -141,7 +141,7 @@ CBotToken::CBotToken()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotToken::CBotToken(const std::string& text, const std::string& sep, int start, int end)
+CBotToken::CBotToken(const std::string& text, const std::string& sep, std::size_t start, std::size_t end)
 {
     m_text  = text;
     m_sep   = sep;
@@ -197,20 +197,20 @@ const CBotToken& CBotToken::operator=(const CBotToken& src)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotToken::GetType()
+int CBotToken::GetType()const
 {
     if (m_type == TokenTypKeyWord) return m_keywordId;
     return m_type;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-long CBotToken::GetKeywordId()
+long CBotToken::GetKeywordId()const
 {
     return m_keywordId;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CBotToken::GetString()
+std::string CBotToken::GetString()const
 {
     return m_text;
 }
@@ -222,19 +222,19 @@ void CBotToken::SetString(const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotToken::GetStart()
+std::size_t CBotToken::GetStart()const
 {
     return m_start;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotToken::GetEnd()
+std::size_t CBotToken::GetEnd()const
 {
     return m_end;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotToken::SetPos(int start, int end)
+void CBotToken::SetPos(const std::size_t start, const std::size_t end)
 {
     m_start = start;
     m_end   = end;
@@ -250,7 +250,7 @@ static char    hexnum[]   = "0123456789ABCDEFabcdef";
 static char    nch[]  = "\r\n\t";                            // forbidden in chains
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotToken*  CBotToken::NextToken(const char*& program, bool first)
+CBotToken*  CBotToken::NextToken(const char*& program, const bool first)
 {
     std::string token; // found token
     std::string sep;   // separators after the token
@@ -401,7 +401,7 @@ std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
 {
     CBotToken       *nxt, *prv, *tokenbase;
     const char*     p = program.c_str();
-    int             pos = 0;
+    std::size_t     pos = 0;
 
     prv = tokenbase = NextToken(p, true);
 
@@ -472,7 +472,7 @@ bool CBotToken::DefineNum(const std::string& name, long val)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool IsOfType(CBotToken* &p, int type1, int type2)
+bool IsOfType(CBotToken* &p, const int type1, const int type2)
 {
     if (p->GetType() == type1 ||
         p->GetType() == type2 )
@@ -484,7 +484,7 @@ bool IsOfType(CBotToken* &p, int type1, int type2)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool IsOfTypeList(CBotToken* &p, int type1, ...)
+bool IsOfTypeList(CBotToken* &p, const int type1, ...)
 {
     int     i = type1;
     int     max = 20;

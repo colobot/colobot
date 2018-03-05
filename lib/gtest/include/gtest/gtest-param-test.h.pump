@@ -313,7 +313,7 @@ ValuesIn(ForwardIterator begin, ForwardIterator end) {
       new internal::ValuesInIteratorRangeGenerator<ParamType>(begin, end));
 }
 
-template <typename T, size_t N>
+template <typename T, std::size_t N>
 internal::ParamGenerator<T> ValuesIn(const T (&array)[N]) {
   return ValuesIn(array, array + N);
 }

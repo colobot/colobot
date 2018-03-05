@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
     if (!program->Compile(code.c_str(), externFunctions, nullptr))
     {
         CBotError error;
-        int cursor1, cursor2;
+        std::size_t cursor1, cursor2;
         program->GetError(error, cursor1, cursor2);
         std::cerr << "COMPILE ERROR: " << error << " @ " << cursor1 << " - " << cursor2 << std::endl;
         return 1;

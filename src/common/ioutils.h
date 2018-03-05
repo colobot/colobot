@@ -135,10 +135,10 @@ inline float ReadBinaryFloat(std::istream &istr)
 template<int N>
 void WriteBinaryString(const std::string &value, std::ostream &ostr)
 {
-    int length = value.size();
-    WriteBinary<N, int>(length, ostr);
+    std::size_t length = value.size();
+    WriteBinary<N, std::size_t>(length, ostr);
 
-    for (int i = 0; i < length; ++i)
+    for (std::size_t i = 0; i < length; ++i)
         ostr.put(value[i]);
 }
 
@@ -150,11 +150,11 @@ void WriteBinaryString(const std::string &value, std::ostream &ostr)
 template<int N>
 std::string ReadBinaryString(std::istream &istr)
 {
-    int length = ReadBinary<N, int>(istr);
+    std::size_t length = ReadBinary<N, std::size_t>(istr);
 
     std::string str;
     char c = 0;
-    for (int i = 0; i < length; ++i)
+    for (std::size_t i = 0; i < length; ++i)
     {
         istr.read(&c, 1);
         str += c;

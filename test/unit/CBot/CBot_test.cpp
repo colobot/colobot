@@ -47,14 +47,14 @@ private:
         {
         }
 
-        CBotTestFail(std::string message, int cursor1, int cursor2) : CBotTestFail(message)
+        CBotTestFail(std::string message, std::size_t cursor1, std::size_t cursor2) : CBotTestFail(message)
         {
             this->cursor1 = cursor1;
             this->cursor2 = cursor2;
         }
 
-        int cursor1 = -1;
-        int cursor2 = -1;
+        std::size_t cursor1 = SIZE_MAX;
+        std::size_t cursor2 = SIZE_MAX;
     };
 
     static CBotTypResult cFail(CBotVar* &var, void* user)
@@ -208,14 +208,14 @@ protected:
         program->Compile(code, tests);
 
         CBotError error;
-        int cursor1, cursor2;
+        std::size_t cursor1, cursor2;
         program->GetError(error, cursor1, cursor2);
         if (error != expectedCompileError)
         {
             std::stringstream ss;
             if (error != CBotNoErr)
             {
-                ADD_FAILURE() << "Compile error - " << error << " (" << cursor1 << "-" << (cursor2 >= 0 ? cursor2 : cursor1) << ")" << std::endl << GetFormattedLineInfo(code, cursor1); // TODO: Error messages are on Colobot side
+                ADD_FAILURE() << "Compile error - " << error << " (" << cursor1 << "-" << (cursor2) << ")" << std::endl << GetFormattedLineInfo(code, cursor1); // TODO: Error messages are on Colobot side
                 return program;
             }
             else
@@ -258,12 +258,12 @@ protected:
                 bool unknown = true;
                 if (!funcName.empty())
                 {
-                    ss << "    while executing function " << funcName << " (" << cursor1 << "-" << (cursor2 >= 0 ? cursor2 : cursor1) << ")" << std::endl << GetFormattedLineInfo(code, cursor1);
+                    ss << "    while executing function " << funcName << " (" << cursor1 << "-" << (cursor2) << ")" << std::endl << GetFormattedLineInfo(code, cursor1);
                     unknown = false;
                 }
                 else if(e.cursor1 > 0 || e.cursor2 > 0)
                 {
-                    ss << "    at unknown location " << e.cursor1 << "-" << (e.cursor2 >= 0 ? e.cursor2 : e.cursor1) << std::endl << GetFormattedLineInfo(code, e.cursor1);
+                    ss << "    at unknown location " << e.cursor1 << "-" << (e.cursor2) << std::endl << GetFormattedLineInfo(code, e.cursor1);
                     unknown = false;
                 }
                 ss << std::endl;

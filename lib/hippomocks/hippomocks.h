@@ -214,7 +214,7 @@ namespace HippoMocks {
 class Unprotect
 {
 public:
-  Unprotect(void *location, size_t byteCount)
+  Unprotect(void *location, std::size_t byteCount)
   : origFunc(location)
   , byteCount(byteCount)
   {
@@ -227,7 +227,7 @@ public:
   }
 private:
   void *origFunc;
-  size_t byteCount;
+  std::size_t byteCount;
   unsigned long oldprotect;
 };
 #else
@@ -237,7 +237,7 @@ private:
 class Unprotect
 {
 public:
-  Unprotect(void *location, size_t byteCount)
+  Unprotect(void *location, std::size_t byteCount)
   : origFunc((intptr_t)location & (~0xFFF))
   , byteCount(byteCount + ((intptr_t)location - origFunc))
   {
@@ -817,12 +817,12 @@ public:
 
 #ifdef LINUX_TARGET
 		void* stacktrace[256];
-		size_t size = backtrace( stacktrace, sizeof(stacktrace) );
+		std::size_t size = backtrace( stacktrace, sizeof(stacktrace) );
 		if( size > 0 )
 		{
 			text << "Stackdump:" << std::endl;
 			char **symbols = backtrace_symbols( stacktrace, size );
-			for( size_t i = 0; i < size; i = i + 1 )
+			for( std::size_t i = 0; i < size; i = i + 1 )
 			{
 				text << symbols[i] << std::endl;
 			}
@@ -855,12 +855,12 @@ public:
 
 #ifdef LINUX_TARGET
     void* stacktrace[256];
-    size_t size = backtrace( stacktrace, sizeof(stacktrace) );
+    std::size_t size = backtrace( stacktrace, sizeof(stacktrace) );
     if( size > 0 )
     {
       text << "Stackdump:" << std::endl;
       char **symbols = backtrace_symbols( stacktrace, size );
-      for( size_t i = 0; i < size; i = i + 1 )
+      for( std::size_t i = 0; i < size; i = i + 1 )
       {
         text << symbols[i] << std::endl;
       }
@@ -888,12 +888,12 @@ public:
 
 #ifdef LINUX_TARGET
     void* stacktrace[256];
-    size_t size = backtrace( stacktrace, sizeof(stacktrace) );
+    std::size_t size = backtrace( stacktrace, sizeof(stacktrace) );
     if( size > 0 )
     {
       text << "Stackdump:" << std::endl;
       char **symbols = backtrace_symbols( stacktrace, size );
-      for( size_t i = 0; i < size; i = i + 1 )
+      for( std::size_t i = 0; i < size; i = i + 1 )
       {
         text << symbols[i] << std::endl;
       }

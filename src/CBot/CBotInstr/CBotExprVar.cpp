@@ -213,10 +213,10 @@ CBotInstr* CBotExprVar::CompileMethode(CBotToken* &p, CBotCStack* pStack)
                 if (pStk->IsOk())
                 {
                     inst->AddNext3(i);                            // add after
-                    p = pp;                                        // previous instruction
+                    p = pp;                                       // previous instruction
                     return pStack->Return(inst, pStk);
                 }
-                pStk->SetError(CBotNoErr, 0);                            // the error is not adressed here
+                pStk->SetError(CBotNoErr, static_cast<std::size_t>(0));             // the error is not adressed here
             }
         }
         delete inst;

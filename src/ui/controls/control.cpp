@@ -97,21 +97,22 @@ bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventType even
 }
 
 
-void CControl::SetPos(Math::Point pos)
+void CControl::SetPos(const Math::Point pos)
 {
+    Math::Point pos2;
     m_pos = pos;
 
-    pos.x = m_pos.x;
-    pos.y = m_pos.y + m_dim.y;
-    GlintCreate(pos);
+    pos2.x = m_pos.x;
+    pos2.y = m_pos.y + m_dim.y;
+    GlintCreate(pos2);
 }
 
-Math::Point CControl::GetPos()
+Math::Point CControl::GetPos()const
 {
     return m_pos;
 }
 
-void CControl::SetDim(Math::Point dim)
+void CControl::SetDim(const Math::Point dim)
 {
     Math::Point pos;
 
@@ -122,7 +123,7 @@ void CControl::SetDim(Math::Point dim)
     GlintCreate(pos);
 }
 
-Math::Point CControl::GetDim()
+Math::Point CControl::GetDim()const
 {
     return m_dim;
 }
@@ -130,7 +131,7 @@ Math::Point CControl::GetDim()
 
 // Modify an attribute of state.
 
-bool CControl::SetState(int state, bool bState)
+bool CControl::SetState(const int state, const bool bState)
 {
     if ( bState )  m_state |= state;
     else           m_state &= ~state;
@@ -139,7 +140,7 @@ bool CControl::SetState(int state, bool bState)
 
 // Sets an attribute of state.
 
-bool CControl::SetState(int state)
+bool CControl::SetState(const int state)
 {
     m_state |= state;
     return true;
@@ -147,7 +148,7 @@ bool CControl::SetState(int state)
 
 // Removes an attribute of state.
 
-bool CControl::ClearState(int state)
+bool CControl::ClearState(const int state)
 {
     m_state &= ~state;
     return true;
@@ -155,14 +156,14 @@ bool CControl::ClearState(int state)
 
 // Tests an attribute of state.
 
-bool CControl::TestState(int state)
+bool CControl::TestState(const int state)const
 {
     return (m_state & state) ? true:false;
 }
 
 // Returns all attributes of state.
 
-int CControl::GetState()
+int CControl::GetState()const
 {
     return m_state;
 }
@@ -170,12 +171,12 @@ int CControl::GetState()
 
 // Management icon.
 
-void CControl::SetIcon(int icon)
+void CControl::SetIcon(const int icon)
 {
     m_icon = icon;
 }
 
-int CControl::GetIcon()
+int CControl::GetIcon()const
 {
     return m_icon;
 }
@@ -183,7 +184,7 @@ int CControl::GetIcon()
 
 // Management of the button name.
 
-void CControl::SetName(std::string name, bool bTooltip)
+void CControl::SetName(std::string name, const bool bTooltip)
 {
     if ( bTooltip )
     {
@@ -200,7 +201,7 @@ void CControl::SetName(std::string name, bool bTooltip)
         m_name = name;
 }
 
-std::string CControl::GetName()
+std::string CControl::GetName()const
 {
     return m_name;
 }
@@ -208,13 +209,13 @@ std::string CControl::GetName()
 
 // Management of the mode of justification (-1,0,1).
 
-void CControl::SetTextAlign(Gfx::TextAlign mode)
+void CControl::SetTextAlign(const Gfx::TextAlign mode)
 {
     m_textAlign = mode;
 //    m_justif = mode;
 }
 
-int CControl::GetTextAlign()
+int CControl::GetTextAlign()const
 {
     return m_textAlign;
 //    return m_justif;
@@ -223,12 +224,12 @@ int CControl::GetTextAlign()
 
 // Management of the size of the font.
 
-void CControl::SetFontSize(float size)
+void CControl::SetFontSize(const float size)
 {
     m_fontSize = size;
 }
 
-float CControl::GetFontSize()
+float CControl::GetFontSize()const
 {
     return m_fontSize;
 }
@@ -236,12 +237,12 @@ float CControl::GetFontSize()
 
 // Management of the stretch of font.
 
-void CControl::SetFontStretch(float stretch)
+void CControl::SetFontStretch(const float stretch)
 {
     m_fontStretch = stretch;
 }
 
-float CControl::GetFontStretch()
+float CControl::GetFontStretch()const
 {
     return m_fontStretch;
 }
@@ -249,12 +250,12 @@ float CControl::GetFontStretch()
 
 // Choice of the font.
 
-void CControl::SetFontType(Gfx::FontType font)
+void CControl::SetFontType(const Gfx::FontType font)
 {
     m_fontType = font;
 }
 
-Gfx::FontType CControl::GetFontType()
+Gfx::FontType CControl::GetFontType()const
 {
     return m_fontType;
 }
@@ -262,13 +263,13 @@ Gfx::FontType CControl::GetFontType()
 
 // Specifies the tooltip.
 
-bool CControl::SetTooltip(std::string name)
+bool CControl::SetTooltip(const std::string& name)
 {
     m_tooltip = name;
     return true;
 }
 
-bool CControl::GetTooltip(Math::Point pos, std::string &name)
+bool CControl::GetTooltip(Math::Point pos, std::string &name)const
 {
     if ( m_tooltip.length() == 0 ) return false;
     if ( (m_state & STATE_VISIBLE) == 0 ) return false;
@@ -831,7 +832,7 @@ void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
 
 // Detects whether a position is in the button.
 
-bool CControl::Detect(Math::Point pos)
+bool CControl::Detect(Math::Point pos)const
 {
     return ( pos.x >= m_pos.x           &&
               pos.x <= m_pos.x + m_dim.x &&

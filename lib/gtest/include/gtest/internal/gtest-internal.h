@@ -323,14 +323,14 @@ class FloatingPoint {
   // Constants.
 
   // # of bits in a number.
-  static const size_t kBitCount = 8*sizeof(RawType);
+  static const std::size_t kBitCount = 8*sizeof(RawType);
 
   // # of fraction bits in a number.
-  static const size_t kFractionBitCount =
+  static const std::size_t kFractionBitCount =
     std::numeric_limits<RawType>::digits - 1;
 
   // # of exponent bits in a number.
-  static const size_t kExponentBitCount = kBitCount - 1 - kFractionBitCount;
+  static const std::size_t kExponentBitCount = kBitCount - 1 - kFractionBitCount;
 
   // The mask for the sign bit.
   static const Bits kSignBitMask = static_cast<Bits>(1) << (kBitCount - 1);
@@ -354,7 +354,7 @@ class FloatingPoint {
   //
   // See the following article for more details on ULP:
   // http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm.
-  static const size_t kMaxUlps = 4;
+  static const std::size_t kMaxUlps = 4;
 
   // Constructs a FloatingPoint from a raw floating-point number.
   //
@@ -800,7 +800,7 @@ struct RemoveConst<const T> { typedef T type; };  // NOLINT
 // However, it causes trouble with GCC and thus needs to be
 // conditionally compiled.
 #if defined(_MSC_VER) || defined(__SUNPRO_CC) || defined(__IBMCPP__)
-template <typename T, size_t N>
+template <typename T, std::size_t N>
 struct RemoveConst<const T[N]> {
   typedef typename RemoveConst<T>::type type[N];
 };
@@ -950,14 +950,14 @@ template<> struct EnableIf<true> { typedef void type; };  // NOLINT
 // 0, ArrayEq() degenerates into comparing a single pair of values.
 
 template <typename T, typename U>
-bool ArrayEq(const T* lhs, size_t size, const U* rhs);
+bool ArrayEq(const T* lhs, std::size_t size, const U* rhs);
 
 // This generic version is used when k is 0.
 template <typename T, typename U>
 inline bool ArrayEq(const T& lhs, const U& rhs) { return lhs == rhs; }
 
 // This overload is used when k >= 1.
-template <typename T, typename U, size_t N>
+template <typename T, typename U, std::size_t N>
 inline bool ArrayEq(const T(&lhs)[N], const U(&rhs)[N]) {
   return internal::ArrayEq(lhs, N, rhs);
 }
@@ -966,8 +966,8 @@ inline bool ArrayEq(const T(&lhs)[N], const U(&rhs)[N]) {
 // the previous ArrayEq() function, arrays with different sizes would
 // lead to different copies of the template code.
 template <typename T, typename U>
-bool ArrayEq(const T* lhs, size_t size, const U* rhs) {
-  for (size_t i = 0; i != size; i++) {
+bool ArrayEq(const T* lhs, std::size_t size, const U* rhs) {
+  for (std::size_t i = 0; i != size; i++) {
     if (!internal::ArrayEq(lhs[i], rhs[i]))
       return false;
   }
@@ -990,14 +990,14 @@ Iter ArrayAwareFind(Iter begin, Iter end, const Element& elem) {
 // CopyArray() degenerates into copying a single value.
 
 template <typename T, typename U>
-void CopyArray(const T* from, size_t size, U* to);
+void CopyArray(const T* from, std::size_t size, U* to);
 
 // This generic version is used when k is 0.
 template <typename T, typename U>
 inline void CopyArray(const T& from, U* to) { *to = from; }
 
 // This overload is used when k >= 1.
-template <typename T, typename U, size_t N>
+template <typename T, typename U, std::size_t N>
 inline void CopyArray(const T(&from)[N], U(*to)[N]) {
   internal::CopyArray(from, N, *to);
 }
@@ -1006,8 +1006,8 @@ inline void CopyArray(const T(&from)[N], U(*to)[N]) {
 // the previous CopyArray() function, arrays with different sizes
 // would lead to different copies of the template code.
 template <typename T, typename U>
-void CopyArray(const T* from, size_t size, U* to) {
-  for (size_t i = 0; i != size; i++) {
+void CopyArray(const T* from, std::size_t size, U* to) {
+  for (std::size_t i = 0; i != size; i++) {
     internal::CopyArray(from[i], to + i);
   }
 }
@@ -1037,7 +1037,7 @@ class NativeArray {
   typedef const Element* const_iterator;
 
   // Constructs from a native array.
-  NativeArray(const Element* array, size_t count, RelationToSource relation) {
+  NativeArray(const Element* array, std::size_t count, RelationToSource relation) {
     Init(array, count, relation);
   }
 
@@ -1056,7 +1056,7 @@ class NativeArray {
   }
 
   // STL-style container methods.
-  size_t size() const { return size_; }
+  std::size_t size() const { return size_; }
   const_iterator begin() const { return array_; }
   const_iterator end() const { return array_ + size_; }
   bool operator==(const NativeArray& rhs) const {
@@ -1067,7 +1067,7 @@ class NativeArray {
  private:
   // Initializes this object; makes a copy of the input array if
   // 'relation' is kCopy.
-  void Init(const Element* array, size_t a_size, RelationToSource relation) {
+  void Init(const Element* array, std::size_t a_size, RelationToSource relation) {
     if (relation == kReference) {
       array_ = array;
     } else {
@@ -1080,7 +1080,7 @@ class NativeArray {
   }
 
   const Element* array_;
-  size_t size_;
+  std::size_t size_;
   RelationToSource relation_to_source_;
 
   GTEST_DISALLOW_ASSIGN_(NativeArray);

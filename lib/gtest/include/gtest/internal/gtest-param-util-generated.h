@@ -63,7 +63,7 @@ internal::ParamGenerator<
   typename ::testing::internal::IteratorTraits<ForwardIterator>::value_type>
 ValuesIn(ForwardIterator begin, ForwardIterator end);
 
-template <typename T, size_t N>
+template <typename T, std::size_t N>
 internal::ParamGenerator<T> ValuesIn(const T (&array)[N]);
 
 template <class Container>

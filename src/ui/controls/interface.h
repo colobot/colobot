@@ -63,7 +63,7 @@ public:
     ~CInterface();
 
     bool        EventProcess(const Event &event);
-    bool        GetTooltip(Math::Point pos, std::string &name);
+    bool        GetTooltip(Math::Point pos, std::string &name)const;
 
     void        Flush();
     CButton*    CreateButton(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);

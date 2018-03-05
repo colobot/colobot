@@ -166,7 +166,7 @@ bool CBotProgram::Start(const std::string& name)
     return true; // we are ready for Run()
 }
 
-bool CBotProgram::GetPosition(const std::string& name, int& start, int& stop, CBotGet modestart, CBotGet modestop)
+bool CBotProgram::GetPosition(const std::string& name, std::size_t& start, std::size_t& stop, CBotGet modestart, CBotGet modestop)
 {
     auto it = std::find_if(m_functions.begin(), m_functions.end(), [&name](CBotFunction* x) { return x->GetName() == name; });
     if (it == m_functions.end()) return false;
@@ -225,7 +225,7 @@ void CBotProgram::Stop()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotProgram::GetRunPos(std::string& functionName, int& start, int& end)
+bool CBotProgram::GetRunPos(std::string& functionName, std::size_t& start, std::size_t& end)const
 {
     functionName = "";
     start = end = 0;
@@ -257,7 +257,7 @@ CBotError CBotProgram::GetError()
 }
 
 
-bool CBotProgram::GetError(CBotError& code, int& start, int& end)
+bool CBotProgram::GetError(CBotError& code, std::size_t& start, std::size_t& end)
 {
     code  = m_error;
     start = m_errorStart;
@@ -266,7 +266,7 @@ bool CBotProgram::GetError(CBotError& code, int& start, int& end)
 }
 
 
-bool CBotProgram::GetError(CBotError& code, int& start, int& end, CBotProgram*& pProg)
+bool CBotProgram::GetError(CBotError& code, std::size_t& start, std::size_t& end, CBotProgram*& pProg)
 {
     code    = m_error;
     start   = m_errorStart;

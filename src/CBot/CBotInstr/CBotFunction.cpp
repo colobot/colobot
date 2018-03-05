@@ -83,7 +83,7 @@ bool CBotFunction::IsExtern()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotFunction::GetPosition(int& start, int& stop, CBotGet modestart, CBotGet modestop)
+bool CBotFunction::GetPosition(std::size_t& start, std::size_t& stop, CBotGet modestart, CBotGet modestop)
 {
     start = m_extern.GetStart();
     stop = m_closeblk.GetEnd();
@@ -230,7 +230,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
                 {
                     if (!func->m_retTyp.Eq(CBotTypVoid) && !func->HasReturn())
                     {
-                        int errPos = func->m_closeblk.GetStart();
+                        std::size_t errPos = func->m_closeblk.GetStart();
                         pStk->ResetError(CBotErrNoReturn, errPos, errPos);
                         goto bad;
                     }

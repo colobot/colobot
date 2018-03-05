@@ -109,7 +109,7 @@ inline float Norm(float a)
     if ( a > 1.0f ) return 1.0f;
     return a;
 }
-
+/*
 //! Swaps two integers
 inline void Swap(int &a, int &b)
 {
@@ -122,6 +122,15 @@ inline void Swap(int &a, int &b)
 inline void Swap(float &a, float &b)
 {
     float c = a;
+    a = b;
+    b = c;
+}
+*/
+
+template<typename T>
+inline void Swap(T &a, T &b)
+{
+    T c = a;
     a = b;
     b = c;
 }

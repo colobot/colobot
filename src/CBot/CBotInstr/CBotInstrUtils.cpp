@@ -41,7 +41,7 @@ CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars)
 
     if (IsOfType(p, ID_OPENPAR))
     {
-        int    start, end;
+        std::size_t    start, end;
         if (!IsOfType(p, ID_CLOSEPAR)) while (true)
         {
             start = p->GetStart();
