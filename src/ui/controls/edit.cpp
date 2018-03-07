@@ -350,6 +350,11 @@ bool CEdit::EventProcess(const Event &event)
             m_event->AddEvent(Event(EVENT_STUDIO_SAVE));
         }
 
+        if ( data->key == KEY(w) && !bShift && bControl )
+        {
+            m_event->AddEvent(Event(EVENT_STUDIO_CANCEL));
+            return true;
+        }
         if ( data->key == KEY(z) && !bShift && bControl )
         {
             Undo();
@@ -423,12 +428,12 @@ bool CEdit::EventProcess(const Event &event)
                 return true;
             }
 
-            if ( data->key == KEY(PAGEUP) )  // PageUp ?
+            if ( data->key == KEY(PAGEUP) )
             {
                 Scroll(m_lineFirst-(m_lineVisible-1), true);
                 return true;
             }
-            if ( data->key == KEY(PAGEDOWN) )  // PageDown ?
+            if ( data->key == KEY(PAGEDOWN) )
             {
                 Scroll(m_lineFirst+(m_lineVisible-1), true);
                 return true;
@@ -446,7 +451,8 @@ bool CEdit::EventProcess(const Event &event)
             return true;
         }
 
-        if ( data->key == KEY(BACKSPACE) && !bControl )  // backspace ( <- ) ?
+        // TODO : check if the SendModifEvent of 6 next is used even if !m_bEdit
+        if ( data->key == KEY(BACKSPACE) && !bControl )  // backspace ( <- )
         {
             Delete(-1);
             SendModifEvent();
@@ -927,7 +933,8 @@ void CEdit::Draw()
     // Displays all lines.
     c1 = m_cursor1;
     c2 = m_cursor2;
-    if ( c1 > c2 )  Math::Swap(c1, c2);  // always c1 <= c2
+    if ( c1 > c2 )
+        Math::Swap(c1, c2);  // always c1 <= c2
 
     if ( m_bInsideScroll )
     {
@@ -936,7 +943,8 @@ void CEdit::Draw()
 
     if ( m_bAutoIndent )
     {
-        indentLength = m_engine->GetText()->GetCharWidth(static_cast<Gfx::UTF8Char>(' '), m_fontType, m_fontSize, 0.0f)
+        indentLength = m_engine->GetText()->GetCharWidth(
+            static_cast<Gfx::UTF8Char>(' '), m_fontType, m_fontSize, 0.0f)
                         * m_engine->GetEditIndentValue();
     }
 
@@ -1293,8 +1301,18 @@ void CEdit::SetText(const std::string& text, bool bNew)
 
     m_len = text.size();
 
-    if( m_len >= GetMaxChar() ) m_len = GetMaxChar();
-
+    if( m_len >= GetMaxChar() )
+    {
+        m_len = GetMaxChar();
+        // TODO : remove that static_cast after PR UTF8 acceptance
+            if(static_cast<std::size_t>(m_len)<text.size() && 0x80==(text[m_len] & 0xC0))
+        {   //FIX issue : can cut UTF8 char !!!
+            do
+                --m_len;
+            while (0<m_len && 0x80==(text[m_len] & 0xC0)); //UTF8 mgt
+            --m_len;
+        }
+    }
     m_text.resize( m_len + 1, '\0' );
     m_format.resize( m_len + 1, m_fontType );
 
@@ -1381,8 +1399,17 @@ const std::string& CEdit::GetText()
 std::string CEdit::GetText(int max)
 {
     if ( m_len < max )  max = m_len;
-    if ( m_len > max )  max = max-1;
-
+    if ( m_len > max )
+    {
+        --max;
+        if(max<m_len && 0x80==(m_text[max] & 0xC0))
+        {   //FIX issue : can cut UTF8 char !!!
+            do
+                --max;
+            while (0<max && 0x80==(m_text[max] & 0xC0)); //UTF8 mgt
+            --max;
+        }
+    }
     return std::string( m_text, 0, max );
 }
 
@@ -1952,6 +1979,7 @@ bool CEdit::GetEditCap()
 }
 
 // Mode management "hilitable" (that's the franch).
+//  ie: don't display carret nor highlight selection (but permit it :( )
 
 void CEdit::SetHighlightCap(bool bEnable)
 {
@@ -2593,7 +2621,12 @@ void CEdit::Insert(char character)
     int     i, level, tab;
 
     if ( !m_bEdit )
+        return;
+    if (m_len>=GetMaxChar())
     {
+        GetLogger()->Warn("CEdit::Insert Max size reached, reject %c",character);
+        //FIXME: issue : can cut UTF8 char !!!
+        // => check if lasts char are part of UTF8 + clean it/them
         return;
     }
 
@@ -2697,8 +2730,14 @@ void CEdit::InsertOne(char character)
         DeleteOne(0);  // deletes the selected characters
     }
 
-    if ( m_len >= GetMaxChar() )  return;
-
+    if ( m_len >= GetMaxChar() )
+    {
+        GetLogger()->Warn("CEdit::InsertOne Max size reached, reject %c",
+            character);
+        //FIXME: issue : can cut UTF8 char !!!
+        // => check if lasts char are part of UTF8 + clean it/them
+        return;
+    }
     m_text.resize( m_text.size() + 1, '\0' );
     m_format.resize( m_format.size() + 1, m_fontType );
 
@@ -2774,6 +2813,7 @@ void CEdit::DeleteOne(int dir)
     }
     m_len -= hole;
     m_cursor2 = m_cursor1;
+    m_text[m_len]='\0'; //fix end...
 }
 
 // Delete word
@@ -3117,7 +3157,7 @@ void CEdit::Justif()
     {
         m_lineFirst = 0;
     }
-
+    m_text[m_len]='\0';  //fix end...
     UpdateScroll();
 
     m_timeBlink = 0.0f;  // lights the cursor immediately
@@ -3276,9 +3316,7 @@ void CEdit::SetFocus(CControl* control)
     CControl::SetFocus(control);
 
     if (oldFocus != m_bFocus)
-    {
         UpdateFocus();
-    }
 }
 
 void CEdit::UpdateFocus()

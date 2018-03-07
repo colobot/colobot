@@ -36,9 +36,9 @@ namespace Ui
 class CScreenSetup : public CScreen
 {
 public:
-    CScreenSetup();
+    CScreenSetup(const std::vector<EventType> tabOrder={});
 
-    void SetInSimulation(bool simulationSetup);
+    void SetInSimulation(const bool simulationSetup);
     virtual void SetActive() = 0;
     static Phase GetTab();
 

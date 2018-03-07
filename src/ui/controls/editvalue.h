@@ -53,22 +53,23 @@ public:
     bool        EventProcess(const Event &event) override;
     void        Draw() override;
 
-    void        SetType(EditValueType type);
-    EditValueType GetType();
+    void        SetType(const EditValueType type);
+    EditValueType GetType()const;
 
-    void        SetValue(float value, bool bSendMessage=false);
-    float       GetValue();
+    void        SetValue(const float value, const bool bSendMessage=false);
+    float       GetValue()const;
 
-    void        SetStepValue(float value);
-    float       GetStepValue();
+    void        SetStepValue(const float value);
+    float       GetStepValue()const;
 
-    void        SetMinValue(float value);
-    float       GetMinValue();
+    void        SetMinValue(const float value);
+    float       GetMinValue()const;
 
-    void        SetMaxValue(float value);
-    float       GetMaxValue();
+    void        SetMaxValue(const float value);
+    float       GetMaxValue()const;
 
     void        SetInterface(Ui::CInterface* interface);
+    void        SetFocus(CControl* control) override;
 
 protected:
     void        MoveAdjust();

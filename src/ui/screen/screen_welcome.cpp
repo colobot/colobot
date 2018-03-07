@@ -36,8 +36,9 @@ namespace Ui
 const float WELCOME_LENGTH = 3.0f;
 
 CScreenWelcome::CScreenWelcome()
-    : m_imageIndex(0),
-      m_time(0.0f)
+    : CScreen(EVENT_WINDOW5)
+    , m_imageIndex(0)
+    , m_time(0.0f)
 {
 }
 

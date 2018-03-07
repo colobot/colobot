@@ -20,14 +20,14 @@
 #pragma once
 
 #include "math/point.h"
+#include "common/event.h"   //needed by enum EventType
 
 #include <string>
+#include <vector>
 
 class CRobotMain;
 class CApplication;
-class CEventQueue;
 class CSoundInterface;
-struct Event;
 
 namespace Gfx
 {
@@ -41,17 +41,23 @@ class CInterface;
 
 class CScreen
 {
-public:
+private:
     CScreen();
+public:
+    CScreen(const EventType windowOwnerEvt,
+            const std::vector<EventType> tabOrder={});
     virtual ~CScreen();
 
     virtual void CreateInterface() = 0;
     virtual bool EventProcess(const Event &event) = 0;
-
 protected:
     void CreateVersionDisplay();
     void SetBackground(const std::string& filename, bool scaled = false);
-
+    virtual void DisplayActive( const short slide,
+        const bool bUnselectEdit =false);
+    bool IsItemEnabled( const EventType item)const;
+    bool EventProcessTabStop(const Event &event,
+        const bool bUnselectEdit = false);
 protected:
     CRobotMain* m_main;
     CInterface* m_interface;
@@ -63,6 +69,11 @@ protected:
     const Math::Point dim = Math::Point(32.0f/640.0f, 32.0f/480.0f);
     const float ox = 3.0f/640.0f,         oy = 3.0f/480.0f;
     const float sx = (32.0f+2.0f)/640.0f, sy = (32.0f+2.0f)/480.0f;
+    const EventType m_windowOwnerEvt;      // windows Owner
+        // windows that own all ctrl of m_tabOrder
+        //  by default : EVENT_WINDOW5
+    short m_iCurrentSelectedItem; // current item (space action)
+    const std::vector<EventType> m_tabOrder;    //items tab-order (tab-stop)
 };
 
 } // namespace Ui

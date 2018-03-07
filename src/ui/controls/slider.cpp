@@ -23,6 +23,7 @@
 #include "common/event.h"
 #include "common/stringutils.h"
 
+#include "graphics/core/color.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/text.h"
 
@@ -233,40 +234,97 @@ bool CSlider::EventProcess(const Event &event)
 {
     Math::Point pos, dim;
     float   value;
-
-    if ( (m_state & STATE_VISIBLE) == 0 )  return true;
-
+    EventType et=EVENT_OBJECT_DESELECT;
+    if ( (m_state & STATE_VISIBLE) == 0 )
+        return true;
     CControl::EventProcess(event);
+    if ( GetFocus() && event.type == EVENT_KEY_DOWN )
+        switch(event.GetData<KeyEventData>()->key)
+        {
+        case KEY(LEFT):
+            if(m_bHoriz)
+            {
+                if(m_buttonLeft)
+                {
+                    m_event->AddEvent(Event(m_buttonLeft->GetEventType()));
+                    return false;
+                }
+                else
+                    et=EVENT_OBJECT_LEFT;
+            }
+            break;
+        case KEY(DOWN):
+            if(!m_bHoriz)
+            {
+                if(m_buttonLeft)
+                {
+                    m_event->AddEvent(Event(m_buttonLeft->GetEventType()));
+                    return false;
+                }
+                else
+                    et=EVENT_OBJECT_LEFT;
+            }
+            break;
+        case KEY(RIGHT):
+            if(m_bHoriz)
+            {
+                if(m_buttonRight)
+                {
+                    m_event->AddEvent(Event(m_buttonRight->GetEventType()));
+                    return false;
+                }
+                else
+                    et=EVENT_OBJECT_RIGHT;
+            }
+            break;
+        case KEY(UP):
+            if(!m_bHoriz)
+            {
+                if( m_buttonRight)
+                {
+                    m_event->AddEvent(Event(m_buttonRight->GetEventType()));
+                    return false;
+                }
+                else
+                    et=EVENT_OBJECT_RIGHT;
+            }
+            break;
+        }
 
     if (m_buttonLeft != nullptr && !m_bCapture)
-    {
-        if ( !m_buttonLeft->EventProcess(event) )  return false;
-    }
+        if ( !m_buttonLeft->EventProcess(event) )
+            return false;
     if (m_buttonRight != nullptr && !m_bCapture)
-    {
-        if ( !m_buttonRight->EventProcess(event) )  return false;
-    }
+        if ( !m_buttonRight->EventProcess(event) )
+            return false;
 
-    if (m_buttonLeft != nullptr && event.type == m_buttonLeft->GetEventType() && m_step > 0.0f )
+    if ( ( (m_buttonLeft != nullptr
+        && event.type == m_buttonLeft->GetEventType() )
+        || EVENT_OBJECT_LEFT==et )
+        && m_step > 0.0f )
     {
         m_visibleValue -= m_bHoriz?m_step:-m_step;
-        if ( m_visibleValue < 0.0f )  m_visibleValue = 0.0f;
-        if ( m_visibleValue > 1.0f )  m_visibleValue = 1.0f;
+        if ( m_visibleValue < 0.0f )
+            m_visibleValue = 0.0f;
+        else if ( m_visibleValue > 1.0f )
+            m_visibleValue = 1.0f;
         AdjustGlint();
-
         m_event->AddEvent(Event(m_eventType));
     }
 
-    if (m_buttonRight != nullptr && event.type == m_buttonRight->GetEventType() && m_step > 0.0f )
+    if (((m_buttonRight != nullptr
+        && event.type == m_buttonRight->GetEventType() )
+        || EVENT_OBJECT_RIGHT==et)
+        && m_step > 0.0f )
     {
         m_visibleValue += m_bHoriz?m_step:-m_step;
-        if ( m_visibleValue < 0.0f )  m_visibleValue = 0.0f;
-        if ( m_visibleValue > 1.0f )  m_visibleValue = 1.0f;
+        if ( m_visibleValue < 0.0f )
+            m_visibleValue = 0.0f;
+        else if ( m_visibleValue > 1.0f )
+            m_visibleValue = 1.0f;
         AdjustGlint();
-
         m_event->AddEvent(Event(m_eventType));
     }
-
     if (event.type == EVENT_MOUSE_BUTTON_DOWN &&
         event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT &&
         (m_state & STATE_VISIBLE) &&
@@ -288,13 +346,13 @@ bool CSlider::EventProcess(const Event &event)
                 value = (event.mousePos.y-pos.y-CURSOR_WIDTH/2.0f);
                 value /= (dim.y-CURSOR_WIDTH);
             }
-            if ( value < 0.0f )  value = 0.0f;
-            if ( value > 1.0f )  value = 1.0f;
+            if ( value < 0.0f )
+                value = 0.0f;
+            else if ( value > 1.0f )
+                value = 1.0f;
             m_visibleValue = value;
             AdjustGlint();
-
             m_event->AddEvent(Event(m_eventType));
-
             m_bCapture = true;
             m_pressPos = event.mousePos;
             m_pressValue = m_visibleValue;
@@ -317,14 +375,14 @@ bool CSlider::EventProcess(const Event &event)
             value = (event.mousePos.y-pos.y-CURSOR_WIDTH/2.0f);
             value /= (dim.y-CURSOR_WIDTH);
         }
-        if ( value < 0.0f )  value = 0.0f;
-        if ( value > 1.0f )  value = 1.0f;
-
+        if ( value < 0.0f )
+            value = 0.0f;
+        if ( value > 1.0f )
+            value = 1.0f;
         if ( value != m_visibleValue )
         {
             m_visibleValue = value;
             AdjustGlint();
-
             m_event->AddEvent(Event(m_eventType));
         }
     }
@@ -332,9 +390,7 @@ bool CSlider::EventProcess(const Event &event)
     if (event.type == EVENT_MOUSE_BUTTON_UP &&
         event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT  &&
         m_bCapture)
-    {
         m_bCapture = false;
-    }
 
     if (event.type == EVENT_MOUSE_WHEEL &&
         Detect(event.mousePos))
@@ -343,27 +399,23 @@ bool CSlider::EventProcess(const Event &event)
         if (data->y > 0)
         {
             if (m_buttonLeft != nullptr)
-            {
                 for (int i = 0; i < data->y; i++)
                     m_event->AddEvent(Event(m_buttonLeft->GetEventType()));
-            }
         }
         else
         {
             if (m_buttonRight != nullptr)
-            {
                 for (int i = 0; i < -(data->y); i++)
                     m_event->AddEvent(Event(m_buttonRight->GetEventType()));
-            }
         }
         return false;
     }
-
+    if (EVENT_OBJECT_DESELECT != et)
+        return false;
     return true;
 }
 
-
-// Draws button.
+// Draws Slider
 
 void CSlider::Draw()
 {
@@ -417,8 +469,7 @@ void CSlider::Draw()
         DrawShadow(spos, ddim);
     }
 
-    if ( m_state & STATE_ENABLE )  icon = 0;
-    else                           icon = 1;
+    icon = ( m_state & STATE_ENABLE ) ? 0 : 1;
     DrawVertex(ppos, ddim, icon);
 
     // Draws the cabin.
@@ -443,9 +494,7 @@ void CSlider::Draw()
     }
 
     if (m_buttonRight != nullptr)
-    {
         m_buttonRight->Draw();
-    }
 
     if ( m_bHoriz )
     {
@@ -455,8 +504,12 @@ void CSlider::Draw()
             h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
             pos.x = m_pos.x+m_dim.x+(10.0f/640.0f);
             pos.y = m_pos.y+(m_dim.y-h)/2.0f;
-            m_engine->GetText()->DrawText(text, m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, 0);
-        }
+            m_engine->GetText()->DrawText(text, m_fontType, m_fontSize, pos,
+                m_dim.x, Gfx::TEXT_ALIGN_LEFT,0,
+                GetFocus()
+                    ? Gfx::Color(0.218f, 0.211f, 0.415, 1.0f)
+                    : Gfx::Color(0.f,0.f,0.f,1.f));
+            }
     }
     else
     {
@@ -469,7 +522,10 @@ void CSlider::Draw()
             dim.x = 50.0f/640.0f;
             dim.y = 16.0f/480.0f;
             std::string text = GetLabel();
-            m_engine->GetText()->DrawText(text, m_fontType, m_fontSize, pos, dim.x, Gfx::TEXT_ALIGN_RIGHT, 0);
+            m_engine->GetText()->DrawText(text, m_fontType, m_fontSize, pos, dim.x, Gfx::TEXT_ALIGN_RIGHT, 0,
+                GetFocus()
+                    ? Gfx::Color(0.218f, 0.211f, 0.415, 1.0f)
+                    : Gfx::Color(0.f,0.f,0.f,1.f));
         }
     }
 }
@@ -537,7 +593,6 @@ void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     DrawIcon(pos, dim, uv1, uv2, corner, ex);
 }
 
-
 void CSlider::SetLimit(float min, float max)
 {
     m_min = min;
@@ -568,6 +623,5 @@ float CSlider::GetArrowStep()
 {
     return m_step*(m_max-m_min);
 }
-
 
 }

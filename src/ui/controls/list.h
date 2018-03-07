@@ -34,7 +34,7 @@
 namespace Ui
 {
 
-const int LISTMAXDISPLAY = 20;  // maximum number of visible lines
+const short LISTMAXDISPLAY = 20;  // maximum number of visible lines
 
 
 
@@ -58,34 +58,37 @@ public:
 
     void        Flush();
 
-    void        SetTotal(int i);
-    int         GetTotal();
+    void        SetTotal(const short i);
+    short         GetTotal()const;
 
-    void        SetSelect(int i);
-    int         GetSelect();
+    void        SetSelect(const short i);
+    short         GetSelect()const;
 
-    void        SetSelectCap(bool bEnable);
-    bool        GetSelectCap();
+    void        SetSelectCap(const bool bEnable);
+    bool        GetSelectCap()const;
 
-    void        SetBlink(bool bEnable);
-    bool        GetBlink();
+    void        SetBlink(const bool bEnable);
+    bool        GetBlink()const;
 
-    void        SetItemName(int i, const std::string& name);
-    const std::string& GetItemName(int i);
+    void        SetKeyCtrl(const bool bEnable)  {m_bKeyCtrl=bEnable;}
+    bool        GetKeyCtrl()const               {return m_bKeyCtrl;}
 
-    void        SetCheck(int i, bool bMode);
-    bool        GetCheck(int i);
+    void        SetItemName(const short i, const std::string& name);
+    const std::string& GetItemName(const short i)const;
 
-    void        SetEnable(int i, bool enable);
-    bool        GetEnable(int i);
+    void        SetCheck(const short i, const bool bMode);
+    bool        GetCheck(const short i)const;
 
-    void        SetTabs(int i, float pos, Gfx::TextAlign justif=Gfx::TEXT_ALIGN_LEFT);
-    float       GetTabs(int i);
+    void        SetEnable(const short i, const bool enable);
+    bool        GetEnable(const short i)const;
 
-    void        ShowSelect(bool bFixed);
+    void        SetTabs(const short i, const float pos, const Gfx::TextAlign justif=Gfx::TEXT_ALIGN_LEFT);
+    float       GetTabs(const short i)const;
 
-    EventType    GetEventMsgButton(int i);
-    EventType    GetEventMsgScroll();
+    void        ShowSelect(const bool bFixed);
+
+    EventType    GetEventMsgButton(const short i)const;
+    EventType    GetEventMsgScroll()const;
 
 protected:
     bool        MoveAdjust();
@@ -103,13 +106,15 @@ protected:
     std::unique_ptr<CScroll> m_scroll;
 
     float       m_expand;
-    int         m_totalLine;    // total number of lines
-    int         m_displayLine;  // number of visible lines
-    int         m_selectLine;   // selected line
-    int         m_firstLine;    // first visible line
-    bool        m_bBlink;
-    bool        m_bSelectCap;
-    float       m_blinkTime;
+    short         m_totalLine;  // total number of lines
+    short         m_displayLine;// number of visible lines
+    short         m_selectLine; // selected line
+    short         m_firstLine;  // first visible line
+    bool        m_bBlink;       // selected blink into 4 1st elts (FIXME?)
+    bool        m_bSelectCap;   //capability has a select box
+    bool        m_bKeyCtrl;     //manage arrows & pg-up/pg-down & beg/end
+                                // Nota : better one max per windows!
+    float       m_blinkTime;    // period used by m_bBlink
     float       m_tabs[10];
     Gfx::TextAlign m_justifs[10];
 

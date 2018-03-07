@@ -152,7 +152,10 @@ void CCheck::Draw()
     pos.x = m_pos.x + m_dim.y / 0.9f;
     pos.y = m_pos.y + m_dim.y * 0.50f;
     pos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize)/2.0f;
-    m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, 0);
+    m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, 0,
+        GetFocus()   //cf FONT_HIGHLIGHT_STRING
+            ? Gfx::Color(0.218f, 0.211f, 0.415, 1.0f)
+            : Gfx::Color(0.f,0.f,0.f,1.f));
 }
 
 }

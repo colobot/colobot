@@ -33,8 +33,9 @@ namespace Ui
 {
 
 CScreenLoading::CScreenLoading()
-    : m_visible(false),
-      m_lastProgress(0.0f)
+    : CScreen(EVENT_WINDOW5)
+    , m_visible(false)
+    , m_lastProgress(0.0f)
 {
 }
 

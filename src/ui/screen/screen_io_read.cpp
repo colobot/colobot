@@ -81,15 +81,14 @@ void CScreenIORead::CreateInterface()
     ddim.y = 190.0f/480.0f;
     pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_IOLIST);
     pli->SetState(STATE_SHADOW);
+    pli->SetKeyCtrl(true);
 
     pos.y  = oy+sy*2;
     ddim.y = dim.y*1;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_IOREAD);
     pb->SetState(STATE_SHADOW);
     if ( m_inSimulation )
-    {
         pb->SetState(STATE_WARNING);
-    }
 
     pos.x  = 105.0f/640.0f;
     pos.y  = 160.0f/480.0f;
@@ -124,27 +123,23 @@ void CScreenIORead::CreateInterface()
 
 bool CScreenIORead::EventProcess(const Event &event)
 {
-    if (!m_inSimulation)
-    {
-        CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-        if ( pw == nullptr )  return false;
+    if(!EventProcessTabStop(event))
+        return false;   //mgd
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if ( pw == nullptr )
+        return false;
 
-        if ( event.type == pw->GetEventTypeClose() ||
-                event.type == EVENT_INTERFACE_BACK   ||
-                (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
+    if ( event.type == pw->GetEventTypeClose() ||
+            event.type == EVENT_INTERFACE_BACK   ||
+            (event.type == EVENT_KEY_DOWN
+                && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
+    {
+        if (!m_inSimulation)
         {
             m_main->ChangePhase(PHASE_LEVEL_LIST);
             return false;
         }
-    }
-    else
-    {
-        CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-        if ( pw == nullptr )  return false;
-
-        if ( event.type == pw->GetEventTypeClose() ||
-                event.type == EVENT_INTERFACE_BACK   ||
-                (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
+        else
         {
             m_interface->DeleteControl(EVENT_WINDOW5);
             m_main->ChangePhase(PHASE_SIMUL);
@@ -152,7 +147,6 @@ bool CScreenIORead::EventProcess(const Event &event)
             return false;
         }
     }
-
     if ( event.type == EVENT_INTERFACE_IOLIST )
     {
         IOUpdateList(false);
@@ -166,7 +160,9 @@ bool CScreenIORead::EventProcess(const Event &event)
         return false;
     }
 
-    if ( event.type == EVENT_INTERFACE_IOREAD )
+    if ( event.type == EVENT_INTERFACE_IOREAD
+        || (event.type == EVENT_KEY_DOWN
+            && event.GetData<KeyEventData>()->key == KEY(RETURN)) )
     {
         IOReadScene();
         if(m_inSimulation)
@@ -176,7 +172,6 @@ bool CScreenIORead::EventProcess(const Event &event)
         }
         return false;
     }
-
     return true;
 }
 

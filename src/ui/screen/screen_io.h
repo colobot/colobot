@@ -35,8 +35,8 @@ protected:
     CScreenIO(CScreenLevelList* screenLevelList);
 
     void IOReadName();
-    void IOReadList(bool isWrite);
-    void IOUpdateList(bool isWrite);
+    void IOReadList(const bool isWrite);
+    void IOUpdateList(const bool isWrite);
     void IODeleteScene();
     void IOWriteScene();
     void IOReadScene();

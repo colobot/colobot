@@ -39,6 +39,34 @@ namespace Ui
 {
 
 CScreenSetupGame::CScreenSetupGame()
+    : CScreenSetup({
+        // EVENT_INTERFACE_SETUPd,
+        // EVENT_INTERFACE_SETUPg,
+        // EVENT_INTERFACE_SETUPp,  //0
+        EVENT_INTERFACE_SETUPc,
+        EVENT_INTERFACE_SETUPs,
+
+        EVENT_INTERFACE_MOVIES,            //Check
+        EVENT_INTERFACE_SCROLL,            //Check
+        EVENT_INTERFACE_INVERTX,           //Check
+        EVENT_INTERFACE_INVERTY,           //Check
+        EVENT_INTERFACE_EFFECT,            //Check
+        EVENT_INTERFACE_BLOOD,             //Check
+        EVENT_INTERFACE_AUTOSAVE_ENABLE,   //Check
+        EVENT_INTERFACE_AUTOSAVE_INTERVAL, //Slider
+        EVENT_INTERFACE_AUTOSAVE_SLOTS,    //Slider
+        EVENT_INTERFACE_TOOLTIP,           //Check
+        EVENT_INTERFACE_GLINT,             //Check
+        EVENT_INTERFACE_RAIN,              //Check
+        EVENT_INTERFACE_BGPAUSE,           //Check
+        EVENT_INTERFACE_EDITMODE,          //Check
+        EVENT_INTERFACE_EDITVALUE,         //Check
+        EVENT_INTERFACE_LANGUAGE,          //List
+
+        EVENT_INTERFACE_BACK,
+        EVENT_INTERFACE_SETUPd,
+        EVENT_INTERFACE_SETUPg,
+        })
 {
 }
 
@@ -141,6 +169,7 @@ void CScreenSetupGame::CreateInterface()
     pos.y -= ddim.y;
     pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_LANGUAGE);
     pli->SetState(STATE_SHADOW);
+    pli->SetKeyCtrl(true);
     // TODO: Add something like GetSupportedLanguages() and GetLanguageFriendlyName() for this
     pli->SetItemName(1+LANGUAGE_ENV, "[System default]");
     pli->SetItemName(1+LANGUAGE_ENGLISH, "English");
@@ -154,8 +183,8 @@ void CScreenSetupGame::CreateInterface()
 
 bool CScreenSetupGame::EventProcess(const Event &event)
 {
-    if (!CScreenSetup::EventProcess(event)) return false;
-
+    if (!CScreenSetup::EventProcess(event))
+        return false;
     switch( event.type )
     {
         case EVENT_INTERFACE_TOOLTIP:
@@ -190,13 +219,9 @@ bool CScreenSetupGame::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_EDITVALUE:
             if ( m_engine->GetEditIndentValue() == 2 )
-            {
                 m_engine->SetEditIndentValue(4);
-            }
             else
-            {
                 m_engine->SetEditIndentValue(2);
-            }
             ChangeSetupButtons();
             UpdateSetupButtons();
             break;
@@ -272,91 +297,64 @@ void CScreenSetupGame::UpdateSetupButtons()
     CList*      pli;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_TOOLTIP));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_settings->GetTooltips());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_GLINT));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_settings->GetInterfaceGlint());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_RAIN));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_settings->GetInterfaceRain());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_BGPAUSE));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_settings->GetFocusLostPause());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITMODE));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_engine->GetEditIndentMode());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITVALUE));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_engine->GetEditIndentValue()>2);
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE4));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_settings->GetSoluce4());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOVIES));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_settings->GetMovies());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SCROLL));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_camera->GetOldCameraScroll());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTX));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_camera->GetCameraInvertX());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTY));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_camera->GetCameraInvertY());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EFFECT));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_camera->GetEffect());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_BLOOD));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_camera->GetBlood());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_ENABLE));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_main->GetAutosave());
-    }
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_INTERVAL));
     if ( ps != nullptr )
@@ -375,9 +373,9 @@ void CScreenSetupGame::UpdateSetupButtons()
 
     pli = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LANGUAGE));
     if ( pli != nullptr )
-    {
         pli->SetSelect(1+m_settings->GetLanguage());
-    }
+    if(0<m_iCurrentSelectedItem)
+        DisplayActive(0);
 }
 
 // Updates the engine function of the buttons after the setup phase.

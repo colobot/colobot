@@ -47,6 +47,16 @@ namespace Ui
 // Constructor of robot application.
 
 CMainDialog::CMainDialog()
+    : m_iCurrentSelectedItem(0)
+    , m_tabOrder    //specific for PauseMenu
+        {
+            EVENT_DIALOG_CANCEL,    //0
+            EVENT_INTERFACE_WRITE,  //opt 1
+            EVENT_INTERFACE_READ,   //opt 2
+            EVENT_INTERFACE_SETUP,  //3
+            EVENT_INTERFACE_AGAIN,  //4
+            EVENT_DIALOG_OK         //5
+        }
 {
     m_main       = CRobotMain::GetInstancePointer();
     m_engine     = Gfx::CEngine::GetInstancePointer();
@@ -56,7 +66,7 @@ CMainDialog::CMainDialog()
     m_settings   = CSettings::GetInstancePointer();
 
     m_dialogOpen = false;
-    m_dialogType = {};
+    m_dialogType = {};  // ?? enum: Question / PauseMenu
     m_dialogFireParticles = false;
     m_dialogTime = 0.0f;
     m_dialogParti = 0.0f;
@@ -82,31 +92,92 @@ bool CMainDialog::EventProcess(const Event &event)
         }
 
         EventType pressedButton = event.type;
-        if (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(RETURN) )
+        if (EVENT_KEY_DOWN == event.type)
         {
-            pressedButton = EVENT_DIALOG_OK;
-        }
-        if (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE) )
-        {
-            pressedButton = EVENT_DIALOG_CANCEL;
+            if( (event.kmodState & KEY_MOD(ALT) ) != 0 )
+                DisplayActive(0);
+            switch (event.GetData<KeyEventData>()->key)
+            {
+            case KEY(RETURN):
+                pressedButton = EVENT_DIALOG_OK;
+                break;
+            case KEY(ESCAPE):
+                pressedButton = EVENT_DIALOG_CANCEL;
+                //nota: even on info/warning dialog
+                break;
+            case KEY(LEFT):
+            case KEY(UP):
+                DisplayActive(-1);
+                return false;
+            case KEY(RIGHT):
+            case KEY(DOWN):
+                DisplayActive(1);
+                return false;
+            case KEY(TAB):
+                DisplayActive(event.kmodState & KEY_MOD(SHIFT) ? -1 : 1);
+                return false;
+            }
+            if (INPUT_SLOT_ACTION==event.GetData<KeyEventData>()->slot)
+                pressedButton = EVENT_DIALOG_OK;
         }
 
         if ( m_dialogType == DialogType::PauseMenu )
         {
-            if ( pressedButton == EVENT_DIALOG_CANCEL )
+            // 0     : EVENT_DIALOG_CANCEL
+            // opt 1 : EVENT_INTERFACE_WRITE
+            // opt 2 : EVENT_INTERFACE_READ
+            // 3     : EVENT_INTERFACE_SETUP
+            // 4     : EVENT_INTERFACE_AGAIN
+            // 5     : EVENT_DIALOG_OK
+            if (EVENT_KEY_DOWN == event.type)
             {
-                StopDialog();
+                switch (event.GetData<KeyEventData>()->key)
+                {
+                case KEY(SPACE):
+                    switch(m_iCurrentSelectedItem)
+                    {
+                    case 1: //opt
+                        pressedButton = EVENT_INTERFACE_WRITE;
+                        break;
+                    case 2: //opt
+                        pressedButton = EVENT_INTERFACE_READ;
+                        break;
+                    case 3:
+                        pressedButton = EVENT_INTERFACE_SETUP;
+                        break;
+                    case 4:
+                        pressedButton = EVENT_INTERFACE_AGAIN;
+                        break;
+                    case 5:
+                        pressedButton = EVENT_DIALOG_OK;
+                        break;
+                    default:    //case 0:
+                        pressedButton = EVENT_DIALOG_CANCEL;
+                    }
+                    break;
+                case KEY(s):
+                    pressedButton = EVENT_INTERFACE_SETUP;
+                    break;
+                case KEY(q):
+                    pressedButton = EVENT_DIALOG_OK;
+                    break;
+                //case KEY(RETURN): //filter finally wantted
+                case KEY(ESCAPE):
+                    break;  //don't filter
+                //space let for shortcut-keys
+                default:
+                    return false;   //try to capture KeyBoard !
+                }
             }
+            if ( pressedButton == EVENT_DIALOG_CANCEL )
+                StopDialog();
 
             if ( pressedButton == EVENT_INTERFACE_SETUP )
             {
                 StopDialog();
                 m_main->StartSuspend();
-                if ( CScreenSetup::GetTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPds);
-                if ( CScreenSetup::GetTab() == PHASE_SETUPg )  m_main->ChangePhase(PHASE_SETUPgs);
-                if ( CScreenSetup::GetTab() == PHASE_SETUPp )  m_main->ChangePhase(PHASE_SETUPps);
-                if ( CScreenSetup::GetTab() == PHASE_SETUPc )  m_main->ChangePhase(PHASE_SETUPcs);
-                if ( CScreenSetup::GetTab() == PHASE_SETUPs )  m_main->ChangePhase(PHASE_SETUPss);
+                m_main->ChangePhase(static_cast<const Phase>
+                    (CScreenSetup::GetTab() + PHASE_SETUPds - PHASE_SETUPd));
             }
 
             if ( pressedButton == EVENT_INTERFACE_WRITE )
@@ -135,9 +206,31 @@ bool CMainDialog::EventProcess(const Event &event)
                 m_main->ChangePhase(PHASE_LEVEL_LIST);
             }
         }
-
-        if ( m_dialogType == DialogType::Question )
+        else    //  DialogType::Question
         {
+            assert ( m_dialogType == DialogType::Question );
+            //  0    : EVENT_DIALOG_OK
+            // opt 1 : EVENT_DIALOG_CANCEL
+
+            if (EVENT_KEY_DOWN == event.type)
+            {
+                if( (event.kmodState & KEY_MOD(ALT) ) != 0 )
+                    DisplayActive(0);
+                switch (event.GetData<KeyEventData>()->key)
+                {
+                case KEY(SPACE):
+                    if(0==m_iCurrentSelectedItem)
+                        pressedButton = EVENT_DIALOG_OK;
+                    else
+                        pressedButton = EVENT_DIALOG_CANCEL;
+                    break;
+                case KEY(RETURN):
+                case KEY(ESCAPE):
+                    break;  //don't filter
+                default:
+                    return false;   //try to capture KeyBoard !
+                }
+            }
             if ( pressedButton == EVENT_DIALOG_OK )
             {
                 StopDialog();
@@ -146,7 +239,6 @@ bool CMainDialog::EventProcess(const Event &event)
                     m_callbackYes();
                 }
             }
-
             if ( pressedButton == EVENT_DIALOG_CANCEL )
             {
                 StopDialog();
@@ -156,7 +248,6 @@ bool CMainDialog::EventProcess(const Event &event)
                 }
             }
         }
-
         return false;
     }
 
@@ -274,7 +365,10 @@ void CMainDialog::StartQuestion(const std::string& text, bool warningYes, bool w
     if (warningYes)
     {
         pb->SetState(STATE_WARNING);
+        m_iCurrentSelectedItem=1;
     }
+    else
+        m_iCurrentSelectedItem=0;
 
     pos.x  = 0.50f+0.02f;
     pos.y  = 0.50f-dim.y/2.0f+0.03f;
@@ -287,6 +381,7 @@ void CMainDialog::StartQuestion(const std::string& text, bool warningYes, bool w
     if (warningNo)
     {
         pb->SetState(STATE_WARNING);
+        m_iCurrentSelectedItem=0;
     }
 }
 
@@ -338,9 +433,7 @@ void CMainDialog::StartInformation(const std::string& title, const std::string& 
     GetResource(RES_TEXT, RT_DIALOG_OK, name);
     pb->SetName(name);
     if (warning)
-    {
         pb->SetState(STATE_WARNING);
-    }
 }
 
 // Beginning of displaying a dialog.
@@ -485,8 +578,8 @@ void CMainDialog::FrameDialog(float rTime)
         dim.x = 0.01f+Math::Rand()*0.01f;
         dim.y = dim.x/0.75f;
         m_particle->CreateParticle(pos, speed, dim,
-                                     static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
-                                     1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE);
+            static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
+            1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE);
 
         // Right.
         pos.y = dpos.y + ddim.y*Math::Rand();
@@ -496,8 +589,8 @@ void CMainDialog::FrameDialog(float rTime)
         dim.x = 0.01f+Math::Rand()*0.01f;
         dim.y = dim.x/0.75f;
         m_particle->CreateParticle(pos, speed, dim,
-                                     static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
-                                     1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE);
+            static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
+            1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE);
     }
 }
 
@@ -545,6 +638,81 @@ void CMainDialog::StopDialog()
 bool CMainDialog::IsDialog()
 {
     return m_dialogOpen;
+}
+
+/**
+ * display current active button highlighted (and reset other highlight)
+ *  + manage current button modif (tab-stops)
+ * @param slide : optionnal slide : 0:none, 1:next, -1: previous
+ */
+void CMainDialog::DisplayActive(const short slide)
+{
+    if(!m_dialogOpen)
+        return ;
+    assert(DialogType::PauseMenu == m_dialogType
+        || DialogType::Question == m_dialogType);
+
+    const short nbCtrl =
+        DialogType::PauseMenu == m_dialogType
+        ? m_tabOrder.size()
+        : 2;    //  m_dialogType == DialogType::Question
+
+    CButton* pb;
+    CWindow* pw = static_cast<CWindow*>
+        (m_interface->SearchControl(EVENT_WINDOW9));
+    if ( pw == nullptr )
+        return;
+    m_iCurrentSelectedItem+=slide;
+    if(nbCtrl-1<m_iCurrentSelectedItem)
+        m_iCurrentSelectedItem=0;
+    else if(0>m_iCurrentSelectedItem)
+        m_iCurrentSelectedItem=nbCtrl-1;
+
+    if(DialogType::Question == m_dialogType)
+    {
+        // 0    : EVENT_DIALOG_OK
+        //opt 1 : EVENT_DIALOG_CANCEL
+        pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_CANCEL));
+        if ( pb == nullptr )
+            //in fact, info/warning box !
+            m_iCurrentSelectedItem=0;
+        else
+            // a real yes/no dialog !
+            pb->SetState(STATE_HILIGHT,1==m_iCurrentSelectedItem);
+        pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_OK));
+        if (pb != nullptr && pb->TestState(STATE_ENABLE))
+            pb->SetState(STATE_HILIGHT,0==m_iCurrentSelectedItem);
+    }
+    else    //DialogType::PauseMenu
+    {
+        //check ctrl activable (or try next...)
+        CControl* pc = pw->SearchControl(m_tabOrder[m_iCurrentSelectedItem]);
+        if (nullptr==pc || !pc->TestState(STATE_ENABLE))
+        {
+            if (slide)
+            {
+                DisplayActive(slide);
+                return;
+            }
+            else
+                m_iCurrentSelectedItem=0;
+        }
+        //update highLights
+        short iPlace=0;
+        for (EventType id:m_tabOrder)
+        {
+            pc = pw->SearchControl(id);
+            if (nullptr!=pc)
+            {
+                pc->SetState(STATE_HILIGHT,iPlace==m_iCurrentSelectedItem);
+                if (iPlace==m_iCurrentSelectedItem)
+                    pc->SetFocus(pc);
+                else
+                    pc->SetFocus(nullptr);
+            }
+            ++iPlace;
+        }
+    }
 }
 
 } // namespace Ui

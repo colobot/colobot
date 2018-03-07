@@ -46,7 +46,12 @@ namespace Ui
 {
 
 CScreenPlayerSelect::CScreenPlayerSelect(CMainDialog* mainDialog)
-    : m_dialog(mainDialog)
+    : CScreen(EVENT_WINDOW5,
+       {EVENT_INTERFACE_NEDIT,      //0
+        EVENT_INTERFACE_NOK,        //1
+        EVENT_INTERFACE_PERSO,      //2
+        EVENT_INTERFACE_NDELETE})    //3
+    , m_dialog(mainDialog)
 {
 }
 
@@ -102,13 +107,9 @@ void CScreenPlayerSelect::CreateInterface()
     pe = pw->CreateEdit(pos, ddim, 0, EVENT_INTERFACE_NEDIT);
     pe->SetMaxChar(15);
     if(m_main->GetPlayerProfile() != nullptr)
-    {
         name = m_main->GetPlayerProfile()->GetName();
-    }
     else
-    {
         name = CPlayerProfile::GetLastName();
-    }
     pe->SetText(name.c_str());
     pe->SetCursor(name.length(), 0);
     m_interface->SetFocus(pe);
@@ -133,6 +134,7 @@ void CScreenPlayerSelect::CreateInterface()
     ddim.y = 160.0f/480.0f;
     pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_NLIST);
     pli->SetState(STATE_SHADOW);
+    pli->SetKeyCtrl(true);
 
     pos.x = 200.0f/640.0f;
     pos.y = 100.0f/480.0f;
@@ -151,6 +153,10 @@ void CScreenPlayerSelect::CreateInterface()
 
 bool CScreenPlayerSelect::EventProcess(const Event &event)
 {
+    if(m_dialog->IsDialog())
+        return true;
+    if(!EventProcessTabStop(event))
+        return false;   //mgd
     CWindow* pw;
     CList*   pl;
     std::string name;
@@ -158,53 +164,63 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
 
     switch( event.type )
     {
-        case EVENT_KEY_DOWN:
+    case EVENT_KEY_DOWN:
+        switch (event.GetData<KeyEventData>()->key)
         {
-            auto data = event.GetData<KeyEventData>();
-            if (data->key == KEY(RETURN) || data->key == KEY(ESCAPE))
-            {
-                NameSelect();
-            }
+        case KEY(RETURN):
+            if(IsItemEnabled(EVENT_INTERFACE_NOK))
+                return EventProcess(Event(EVENT_INTERFACE_NOK));
             break;
+        case KEY(F2):
+            m_main->ChangePhase(PHASE_SATCOM);
+            return false;       //managed
+        case KEY(DELETE): // to let ?
+            if(IsItemEnabled(EVENT_INTERFACE_NDELETE))
+                return EventProcess(Event(EVENT_INTERFACE_NDELETE));
+            break;
+        case KEY(a):
+            if(event.kmodState & KEY_MOD(ALT)
+                && IsItemEnabled(EVENT_INTERFACE_PERSO))
+                return EventProcess(Event(EVENT_INTERFACE_PERSO));
         }
+        return true;    //non managed
 
-        case EVENT_INTERFACE_NEDIT:
-            UpdateNameList();
-            UpdateNameControl();
-            break;
+    case EVENT_INTERFACE_NEDIT:
+        UpdateNameList();
+        UpdateNameControl();
+        break;
 
-        case EVENT_INTERFACE_NLIST:
-            UpdateNameEdit();
-            break;
+    case EVENT_INTERFACE_NLIST:
+        UpdateNameEdit();
+        break;
 
-        case EVENT_INTERFACE_NOK:
-            NameSelect();
-            break;
+    case EVENT_INTERFACE_NOK:
+        NameSelect();
+        break;
 
-        case EVENT_INTERFACE_PERSO:
-            NameSelect();
-            m_main->ChangePhase(PHASE_APPERANCE);
-            break;
+    case EVENT_INTERFACE_PERSO:
+        NameSelect();
+        m_main->ChangePhase(PHASE_APPERANCE);
+        break;
 
-        case EVENT_INTERFACE_NDELETE:
-            pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-            if ( pw == nullptr )  break;
-            pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-            if ( pl == nullptr )  break;
+    case EVENT_INTERFACE_NDELETE:
+        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+        if ( pw == nullptr )  break;
+        pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
+        if ( pl == nullptr )  break;
 
-            GetResource(RES_TEXT, RT_DIALOG_DELGAME, name);
-            gamer = pl->GetItemName(pl->GetSelect());
-            m_dialog->StartQuestion(
-                StrUtils::Format(name.c_str(), gamer.c_str()), true, false, false,
-                [&]()
-                {
-                    NameDelete();
-                }
-            );
-            break;
+        GetResource(RES_TEXT, RT_DIALOG_DELGAME, name);
+        gamer = pl->GetItemName(pl->GetSelect());
+        m_dialog->StartQuestion(
+            StrUtils::Format(name.c_str(), gamer.c_str()), true, false, false,
+            [&]()
+            {
+                NameDelete();
+            });
+        break;
 
-        default:
-            return true;
+    default:
+        return true;
     }
     return false;
 }
@@ -248,6 +264,13 @@ void CScreenPlayerSelect::UpdateNameControl()
     sel   = pl->GetSelect();
     name = pe->GetText(100);
     boost::trim(name);
+    if(strcmp(name.c_str(),pe->GetText().c_str()))
+        pe->SetText(name);
+    int c1,c2;  //TODO upd : std::size_t
+    pe->GetCursor(c1,c2);
+    if(c1!=c2)
+        pe->SetCursor(c2,c2);
+    // TODO clean name: removing special chars...1
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NDELETE));
     if ( pb != nullptr )
@@ -286,6 +309,8 @@ void CScreenPlayerSelect::UpdateNameList()
     if ( pe == nullptr )  return;
 
     name = pe->GetText(100);
+    boost::trim(name);
+    // TODO clean name: removing special chars...2
     total = pl->GetTotal();
 
     for ( i=0 ; i<total ; i++ )
@@ -298,7 +323,6 @@ void CScreenPlayerSelect::UpdateNameList()
             return;
         }
     }
-
     pl->SetSelect(-1);
 }
 
@@ -341,30 +365,23 @@ void CScreenPlayerSelect::NameSelect()
 {
     CWindow*    pw;
     CList*      pl;
-    CEdit*      pe;
-    std::string name;
     int         sel;
+    bool        bOk;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
     if ( pl == nullptr )  return;
-    pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
-    if ( pe == nullptr )  return;
 
-    name = pe->GetText(100);
     sel  = pl->GetSelect();
 
     if ( sel == -1 )
-    {
-        NameCreate();
-    }
+        bOk = NameCreate();
     else
-    {
-        m_main->SelectPlayer(pl->GetItemName(sel));
-    }
+        bOk = m_main->SelectPlayer(pl->GetItemName(sel));
 
-    m_main->ChangePhase(PHASE_MAIN_MENU);
+    if(bOk)
+        m_main->ChangePhase(PHASE_MAIN_MENU);
 }
 
 // Creates a new player.
@@ -383,16 +400,16 @@ bool CScreenPlayerSelect::NameCreate()
     std::string name;
     name = pe->GetText(100);
     boost::trim(name);
+    // TODO clean name: removing special chars...3 + see @CRobotMain::SelectPlayer
     if ( name.empty() )
     {
         m_sound->Play(SOUND_TZOING);
         return false;
     }
 
-    m_main->SelectPlayer(name);
-    m_main->GetPlayerProfile()->Create();
-
-    return true;
+    if(!m_main->SelectPlayer(name))
+        return false;
+    return m_main->GetPlayerProfile()->Create();
 }
 
 // Removes a player.
@@ -426,10 +443,23 @@ void CScreenPlayerSelect::NameDelete()
     {
         pe->SetText("");
     }
-
     ReadNameList();
     UpdateNameList();
     UpdateNameControl();
+}
+
+/**
+ * Display current active ctrl highlighted (and reset other highlight)
+ *  + manage selection modif (tab-stops - taborder)
+ * @param slide         optionnal slide : 0:none, 1:next, -1: previous
+ * @param bUnselectEdit undisplay carret on eventual other edit areas
+ *  or let carret to opt CEdit in case of need
+ */
+void CScreenPlayerSelect::DisplayActive(const short slide, const bool bUnselectEdit)
+{
+    if(m_dialog->IsDialog())
+        return;
+    CScreen::DisplayActive(slide, bUnselectEdit);
 }
 
 } // namespace Ui

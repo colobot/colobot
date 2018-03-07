@@ -40,6 +40,16 @@ namespace Ui
 {
 
 CScreenMainMenu::CScreenMainMenu()
+    : CScreen(EVENT_WINDOW5,{
+            EVENT_INTERFACE_MISSION,      //0
+            EVENT_INTERFACE_FREE,         //1
+            EVENT_INTERFACE_TRAINER,      //2
+            EVENT_INTERFACE_DEFI,         //3
+            EVENT_INTERFACE_CODE_BATTLES, //4
+            EVENT_INTERFACE_USER,         //5
+            EVENT_INTERFACE_NAME,         //6
+            EVENT_INTERFACE_SETUP,        //7
+            EVENT_INTERFACE_QUIT})        //8
 {
 }
 
@@ -80,7 +90,8 @@ void CScreenMainMenu::CreateInterface()
     pg->SetState(STATE_SHADOW);
     ddim.y = dim.y*2.95f;
     pos.y = oy+sy*6.7f;
-    pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // exercises + challenges
+    pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // exercises
+                                                        //+ challenges + battle
     pg->SetState(STATE_SHADOW);
     ddim.y = dim.y*1.6f;
     pos.y = oy+sy*3.4f;
@@ -176,69 +187,97 @@ void CScreenMainMenu::CreateInterface()
 
 bool CScreenMainMenu::EventProcess(const Event &event)
 {
+    if(!EventProcessTabStop(event))
+        return false;   //mgd
     switch (event.type)
     {
-        case EVENT_KEY_DOWN:
-            if ( event.GetData<KeyEventData>()->key == KEY(ESCAPE) )
-            {
-                m_sound->Play(SOUND_TZOING);
-                m_main->ChangePhase(PHASE_QUIT_SCREEN);
-                return false;
-            }
-            return true;
-            break;
+    case EVENT_KEY_DOWN:
+        switch (event.GetData<KeyEventData>()->key)
+        {
+        case KEY(UP):
+        case KEY(LEFT):
+            DisplayActive(-1);
+            return false;
+        case KEY(DOWN):
+        case KEY(RIGHT):
+            DisplayActive(1);
+            return false;
+        case KEY(ESCAPE):
+        case KEY(q):
+            return EventProcess(Event(EVENT_INTERFACE_QUIT));
+        case KEY(p):
+        case KEY(t):
+            return EventProcess(Event(EVENT_INTERFACE_TRAINER));
+        case KEY(d):
+            return EventProcess(Event(EVENT_INTERFACE_DEFI));
+        case KEY(m):
+            return EventProcess(Event(EVENT_INTERFACE_MISSION));
+        case KEY(f):
+            return EventProcess(Event(EVENT_INTERFACE_FREE));
+        case KEY(b):
+            return EventProcess(Event(EVENT_INTERFACE_CODE_BATTLES));
+        case KEY(u):
+            return EventProcess(Event(EVENT_INTERFACE_USER));
+        case KEY(s):
+            return EventProcess(Event(EVENT_INTERFACE_SETUP));
+        case KEY(n):
+            return EventProcess(Event(EVENT_INTERFACE_NAME));
+        case KEY(F2):
+            return EventProcess(Event(EVENT_INTERFACE_SATCOM));
+        }
+        return true;    //non managed
 
-        case EVENT_INTERFACE_QUIT:
-            m_sound->Play(SOUND_TZOING);
-            m_main->ChangePhase(PHASE_QUIT_SCREEN);
-            break;
+    case EVENT_INTERFACE_QUIT:
+        m_sound->Play(SOUND_TZOING);
+        m_main->ChangePhase(PHASE_QUIT_SCREEN);
+        break;
 
-        case EVENT_INTERFACE_TRAINER:
-            m_main->SetLevel(LevelCategory::Exercises, 0, 0);
-            m_main->ChangePhase(PHASE_LEVEL_LIST);
-            break;
+    case EVENT_INTERFACE_TRAINER:
+        m_main->SetLevel(LevelCategory::Exercises, 0, 0);
+        m_main->ChangePhase(PHASE_LEVEL_LIST);
+        break;
 
-        case EVENT_INTERFACE_DEFI:
-            m_main->SetLevel(LevelCategory::Challenges, 0, 0);
-            m_main->ChangePhase(PHASE_LEVEL_LIST);
-            break;
+    case EVENT_INTERFACE_DEFI:
+        m_main->SetLevel(LevelCategory::Challenges, 0, 0);
+        m_main->ChangePhase(PHASE_LEVEL_LIST);
+        break;
 
-        case EVENT_INTERFACE_MISSION:
-            m_main->SetLevel(LevelCategory::Missions, 0, 0);
-            m_main->ChangePhase(PHASE_LEVEL_LIST);
-            break;
+    case EVENT_INTERFACE_MISSION:
+        m_main->SetLevel(LevelCategory::Missions, 0, 0);
+        m_main->ChangePhase(PHASE_LEVEL_LIST);
+        break;
 
-        case EVENT_INTERFACE_FREE:
-            m_main->SetLevel(LevelCategory::FreeGame, 0, 0);
-            m_main->ChangePhase(PHASE_LEVEL_LIST);
-            break;
+    case EVENT_INTERFACE_FREE:
+        m_main->SetLevel(LevelCategory::FreeGame, 0, 0);
+        m_main->ChangePhase(PHASE_LEVEL_LIST);
+        break;
 
-        case EVENT_INTERFACE_CODE_BATTLES:
-            m_main->SetLevel(LevelCategory::CodeBattles, 0, 0);
-            m_main->ChangePhase(PHASE_LEVEL_LIST);
-            break;
+    case EVENT_INTERFACE_CODE_BATTLES:
+        m_main->SetLevel(LevelCategory::CodeBattles, 0, 0);
+        m_main->ChangePhase(PHASE_LEVEL_LIST);
+        break;
 
-        case EVENT_INTERFACE_USER:
-            m_main->SetLevel(LevelCategory::CustomLevels, 0, 0);
-            m_main->ChangePhase(PHASE_LEVEL_LIST);
-            break;
+    case EVENT_INTERFACE_USER:
+        m_main->SetLevel(LevelCategory::CustomLevels, 0, 0);
+        m_main->ChangePhase(PHASE_LEVEL_LIST);
+        break;
 
-        case EVENT_INTERFACE_SETUP:
-            m_main->ChangePhase(CScreenSetup::GetTab());
-            break;
+    case EVENT_INTERFACE_SETUP:
+        m_main->ChangePhase(CScreenSetup::GetTab());
+        break;
 
-        case EVENT_INTERFACE_NAME:
-            m_main->ChangePhase(PHASE_PLAYER_SELECT);
-            break;
+    case EVENT_INTERFACE_NAME:
+        m_main->ChangePhase(PHASE_PLAYER_SELECT);
+        break;
 
-        case EVENT_INTERFACE_SATCOM:
-            m_main->ChangePhase(PHASE_SATCOM);
-            break;
+    case EVENT_INTERFACE_SATCOM:
+        m_main->ChangePhase(PHASE_SATCOM);
+        break;
 
-        default:
-            return true;
+    default:
+        return true;    //non managed
     }
-    return false;
+    return false;       //managed
 }
 
 } // namespace Ui

@@ -111,6 +111,7 @@
 #include <stdexcept>
 #include <ctime>
 
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 
 
@@ -127,6 +128,7 @@ const Gfx::Color COLOR_REF_WATER = Gfx::Color( 25.0f/256.0f, 255.0f/256.0f, 240.
 
 //! Constructor of robot application
 CRobotMain::CRobotMain()
+    :  m_playerProfile(nullptr)
 {
     m_app        = CApplication::GetInstancePointer();
 
@@ -269,7 +271,7 @@ CRobotMain::CRobotMain()
     m_settings->SaveSettings();
     m_settings->SaveResolutionSettings(m_app->GetVideoConfig());
 
-    SelectPlayer(CPlayerProfile::GetLastName());
+    // SelectPlayer(CPlayerProfile::GetLastName());
 
     CScriptFunctions::Init();
 }
@@ -304,7 +306,7 @@ CPauseManager* CRobotMain::GetPauseManager()
     return m_pause.get();
 }
 
-std::string PhaseToString(Phase phase)
+const std::string PhaseToString(const Phase phase)
 {
     if (phase == PHASE_WELCOME1) return "PHASE_WELCOME1";
     if (phase == PHASE_WELCOME2) return "PHASE_WELCOME2";
@@ -334,12 +336,13 @@ std::string PhaseToString(Phase phase)
     return "(unknown)";
 }
 
-bool IsInSimulationConfigPhase(Phase phase)
+bool IsInSimulationConfigPhase(const Phase phase)
 {
-    return (phase >= PHASE_SETUPds && phase <= PHASE_SETUPss) || phase == PHASE_READs || phase == PHASE_WRITEs;
+    return (phase >= PHASE_SETUPds && phase <= PHASE_SETUPss)
+        || phase == PHASE_READs || phase == PHASE_WRITEs;
 }
 
-bool IsPhaseWithWorld(Phase phase)
+bool IsPhaseWithWorld(const Phase phase)
 {
     if (phase == PHASE_SIMUL    ) return true;
     if (phase == PHASE_WIN      ) return true;
@@ -349,17 +352,20 @@ bool IsPhaseWithWorld(Phase phase)
     return false;
 }
 
-bool IsMainMenuPhase(Phase phase)
+bool IsMainMenuPhase(const Phase phase)
 {
     if (phase == PHASE_APPERANCE) return true;
     return !IsPhaseWithWorld(phase);
 }
 
 //! Changes phase
-void CRobotMain::ChangePhase(Phase phase)
+void CRobotMain::ChangePhase(const Phase phase)
 {
     bool resetWorld = false;
-    if ((IsPhaseWithWorld(m_phase) || IsPhaseWithWorld(phase)) && !IsInSimulationConfigPhase(m_phase) && !IsInSimulationConfigPhase(phase))
+    if ((IsPhaseWithWorld(m_phase)
+        || IsPhaseWithWorld(phase))
+            && !IsInSimulationConfigPhase(m_phase)
+            && !IsInSimulationConfigPhase(phase))
     {
         if (IsPhaseWithWorld(m_phase) && !IsPhaseWithWorld(phase) && m_exitAfterMission)
         {
@@ -385,6 +391,7 @@ void CRobotMain::ChangePhase(Phase phase)
 
             if (m_gameTime > 10.0f)  // did you play at least 10 seconds?
             {
+                assert(nullptr!=m_playerProfile);
                 m_playerProfile->IncrementLevelTryCount(m_levelCategory, m_levelChap, m_levelRank);
             }
 
@@ -397,6 +404,7 @@ void CRobotMain::ChangePhase(Phase phase)
 
         if (phase == PHASE_WIN)  // wins a simulation?
         {
+            assert(nullptr!=m_playerProfile);
             m_playerProfile->SetLevelPassed(m_levelCategory, m_levelChap, m_levelRank, true);
             m_ui->NextMission();  // passes to the next mission
         }
@@ -408,8 +416,10 @@ void CRobotMain::ChangePhase(Phase phase)
 
     if (m_phase != PHASE_SIMUL)
     {
+        // codeBattle specific
         Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
-        if ( pw != nullptr )  pw->ClearState(Ui::STATE_VISIBLE | Ui::STATE_ENABLE);
+        if ( pw != nullptr )
+            pw->ClearState(Ui::STATE_VISIBLE | Ui::STATE_ENABLE);
     }
 
     if (resetWorld)
@@ -636,7 +646,7 @@ void CRobotMain::ChangePhase(Phase phase)
     m_engine->LoadAllTextures();
 }
 
-Phase CRobotMain::GetPhase()
+Phase CRobotMain::GetPhase()const
 {
     return m_phase;
 }
@@ -644,13 +654,15 @@ Phase CRobotMain::GetPhase()
 //! Processes an event
 bool CRobotMain::ProcessEvent(Event &event)
 {
-    if (!m_ui->EventProcess(event)) return false;
+    if (!m_ui->EventProcess(event))
+        return false;
     if (m_phase == PHASE_SIMUL)
     {
         if (!m_editFull)
             m_camera->EventProcess(event);
     }
-    if (!m_debugMenu->EventProcess(event)) return false;
+    if (!m_debugMenu->EventProcess(event))
+        return false;
 
     if (event.type == EVENT_FRAME)
     {
@@ -854,8 +866,12 @@ bool CRobotMain::ProcessEvent(Event &event)
             StopDisplayInfo();
 
         if (m_displayInfo == nullptr && m_phase == PHASE_SATCOM)
-            ChangePhase(PHASE_MAIN_MENU);
-
+        {
+            if (nullptr==m_playerProfile)   //from 1st menu
+                ChangePhase(PHASE_PLAYER_SELECT);
+            else    //from main menu
+                ChangePhase(PHASE_MAIN_MENU);
+        }
         return false;
     }
 
@@ -907,6 +923,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     }
                     return false;
                 }
+                //Nota: KO with switch on data->slot due to same values
                 if (data->slot == INPUT_SLOT_QUIT)
                 {
                     if (m_movie->IsExist())
@@ -918,7 +935,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     else if (!m_cmdEdit)
                         m_ui->GetDialog()->StartPauseMenu();  // do you want to leave?
                 }
-                if (data->slot == INPUT_SLOT_PAUSE)
+                else if (data->slot == INPUT_SLOT_PAUSE)
                 {
                     if (m_userPause == nullptr)
                     {
@@ -933,58 +950,59 @@ bool CRobotMain::ProcessEvent(Event &event)
                         m_userPause = nullptr;
                     }
                 }
-                if (data->slot == INPUT_SLOT_CAMERA)
+                else if (data->slot == INPUT_SLOT_CAMERA)
                 {
                     ChangeCamera();
                 }
-                if (data->slot == INPUT_SLOT_DESEL)
+                else if (data->slot == INPUT_SLOT_DESEL)
                 {
                     if (m_shortCut)
                         DeselectObject();
                 }
-                if (data->slot == INPUT_SLOT_HUMAN)
+                else if (data->slot == INPUT_SLOT_HUMAN)
                 {
                     SelectObject(SearchHuman());
                 }
-                if (data->slot == INPUT_SLOT_NEXT && ((event.kmodState & KEY_MOD(CTRL)) != 0))
+                else if (data->slot == INPUT_SLOT_NEXT && ((event.kmodState & KEY_MOD(CTRL)) != 0))
                 {
-                    m_short->SelectShortcut(EVENT_OBJECT_SHORTCUT_MODE); // switch bots <-> buildings
+                    // switch bots <-> buildings
+                    m_short->SelectShortcut(EVENT_OBJECT_SHORTCUT_MODE);
                     return false;
                 }
-                if (data->slot == INPUT_SLOT_NEXT)
+                else if (data->slot == INPUT_SLOT_NEXT)
                 {
                     if (m_shortCut)
                         m_short->SelectNext();
                 }
-                if (data->slot == INPUT_SLOT_HELP)
+                else if (data->slot == INPUT_SLOT_HELP)
                 {
                     StartDisplayInfo(SATCOM_HUSTON, true);
                 }
-                if (data->slot == INPUT_SLOT_PROG)
+                else if (data->slot == INPUT_SLOT_PROG)
                 {
                     StartDisplayInfo(SATCOM_PROG, true);
                 }
-                if (data->slot == INPUT_SLOT_VISIT)
+                else if (data->slot == INPUT_SLOT_VISIT)
                 {
                     StartDisplayVisit(EVENT_NULL);
                 }
-                if (data->slot == INPUT_SLOT_SPEED_DEC)
+                else if (data->slot == INPUT_SLOT_SPEED_DEC)
                 {
                     SetSpeed(GetSpeed()*0.5f);
                 }
-                if (data->slot == INPUT_SLOT_SPEED_RESET)
+                else if (data->slot == INPUT_SLOT_SPEED_RESET)
                 {
                     SetSpeed(1.0f);
                 }
-                if (data->slot == INPUT_SLOT_SPEED_INC)
+                else if (data->slot == INPUT_SLOT_SPEED_INC)
                 {
                     SetSpeed(GetSpeed()*2.0f);
                 }
-                if (data->slot == INPUT_SLOT_QUICKSAVE)
+                else if (data->slot == INPUT_SLOT_QUICKSAVE)
                 {
                     QuickSave();
                 }
-                if (data->slot == INPUT_SLOT_QUICKLOAD)
+                else if (data->slot == INPUT_SLOT_QUICKLOAD)
                 {
                     QuickLoad();
                 }
@@ -2624,6 +2642,7 @@ bool CRobotMain::EventObject(const Event &event)
 
 void CRobotMain::ScenePerso()
 {
+    assert(nullptr!=m_playerProfile);
     DeleteAllObjects();  // removes all the current 3D Scene
     m_terrain->FlushRelief();
     m_engine->DeleteAllObjects();
@@ -2659,6 +2678,7 @@ void CRobotMain::ScenePerso()
 //! Creates the whole scene
 void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 {
+    assert(nullptr!=m_playerProfile);
     m_fixScene = fixScene;
 
     m_base = nullptr;
@@ -3744,7 +3764,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     CreateShortcuts();
 }
 
-void CRobotMain::LevelLoadingError(const std::string& error, const std::runtime_error& exception, Phase exitPhase)
+void CRobotMain::LevelLoadingError(const std::string& error, const std::runtime_error& exception, const Phase exitPhase)
 {
     m_ui->ShowLoadingScreen(false);
 
@@ -3813,6 +3833,7 @@ void CRobotMain::ChangeColor()
         m_phase != PHASE_LOST     &&
         m_phase != PHASE_APPERANCE ) return;
 
+    assert(nullptr!=m_playerProfile);
     // Player texture
 
     Math::Point ts = Math::Point(0.0f, 0.0f);
@@ -4381,6 +4402,7 @@ void CRobotMain::SaveAllScript()
 void CRobotMain::SaveOneScript(CObject *obj)
 {
     if (! obj->Implements(ObjectInterfaceType::ProgramStorage)) return;
+    assert(nullptr!=m_playerProfile);
 
     CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
 
@@ -4818,16 +4840,28 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
 
 
 //! Changes current player
-void CRobotMain::SelectPlayer(std::string playerName)
+bool CRobotMain::SelectPlayer(std::string playerName)
 {
     assert(!playerName.empty());
-
+    // TODO clean name: trim + remove special chars...(see @screen_player_select)
+    boost::trim(playerName);
+    if(playerName.empty())
+    {
+        //used by SatCom from screen_player_select
+        m_playerProfile=nullptr;
+        SetGlobalGamerName("Profil-Error");
+        return false;
+    }
     m_playerProfile = MakeUnique<CPlayerProfile>(playerName);
+    assert(nullptr!=m_playerProfile);
     SetGlobalGamerName(playerName);
+    return true;
 }
 
 CPlayerProfile* CRobotMain::GetPlayerProfile()
 {
+    if(nullptr==m_playerProfile)
+        GetLogger()->Trace("CRobotMain::GetPlayerProfile nullptr...\n");
     return m_playerProfile.get();
 }
 
@@ -5201,12 +5235,14 @@ MissionType CRobotMain::GetMissionType()
 //! Returns the representation to use for the player
 int CRobotMain::GetGamerFace()
 {
+    assert(nullptr!=m_playerProfile);
     return m_playerProfile->GetApperance().face;
 }
 
 //! Returns the representation to use for the player
 int CRobotMain::GetGamerGlasses()
 {
+    assert(nullptr!=m_playerProfile);
     return m_playerProfile->GetApperance().glasses;
 }
 
@@ -5549,6 +5585,7 @@ void CRobotMain::Autosave()
 {
     AutosaveRotate();
     GetLogger()->Info("Autosave!\n");
+    assert(nullptr!=m_playerProfile);
 
     char timestr[100];
     char infostr[100];
@@ -5564,18 +5601,19 @@ void CRobotMain::Autosave()
 void CRobotMain::QuickSave()
 {
     GetLogger()->Info("Quicksave!\n");
-    
+    assert(nullptr!=m_playerProfile);
     char infostr[100];
     time_t now = time(nullptr);
     strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
     std::string info = std::string("[QUICKSAVE]") + infostr;
     std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
-    
+
     m_playerProfile->SaveScene(dir, info);
 }
 
 void CRobotMain::QuickLoad()
 {
+    assert(nullptr!=m_playerProfile);
     std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
     if(!CResourceManager::Exists(dir))
     {
@@ -5689,6 +5727,7 @@ bool CRobotMain::IsResearchDone(ResearchType type, int team)
 
 void CRobotMain::MarkResearchDone(ResearchType type, int team)
 {
+    assert(nullptr!=m_playerProfile);
     if(team != 0 && m_researchDone.count(team) == 0)
     {
         // Initialize with defaults
@@ -6022,4 +6061,10 @@ std::set<int> CRobotMain::GetAllActiveTeams()
         teams.insert(team);
     }
     return teams;
+}
+
+Ui::CMainDialog* CRobotMain::GetDialog()
+{
+    assert(m_ui);
+    return m_ui->GetDialog();
 }

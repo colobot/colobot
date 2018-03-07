@@ -135,6 +135,10 @@ msgstr ""
 msgid "Strip color:"
 msgstr ""
 
+#, c-format
+msgid "Are you sure to delete the program <%s>?"
+msgstr ""
+
 msgid "Abort\\Abort the current mission"
 msgstr ""
 

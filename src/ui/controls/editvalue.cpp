@@ -54,11 +54,12 @@ CEditValue::~CEditValue()
 }
 
 
-// Creates a new button.
+// Creates a new area with Edit & 2 buttons
 
 bool CEditValue::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
+    if ( eventType == EVENT_NULL )
+        eventType = GetUniqueEventType();
     CControl::Create(pos, dim, icon, eventType);
 
     GlintDelete();
@@ -150,12 +151,23 @@ bool CEditValue::EventProcess(const Event &event)
             SetValue(value, true);
             HiliteValue(event);
         }
-        if ( !m_edit->EventProcess(event) )  return false;
-
+        if ( !m_edit->EventProcess(event) )
+            return false;
+        if ( (GetFocus() || m_edit->GetFocus()) &&
+             event.type == EVENT_KEY_DOWN )
+            switch(event.GetData<KeyEventData>()->key)
+            {
+            case KEY(UP):
+                if(m_buttonUp)
+                    return EventProcess(Event(m_buttonUp->GetEventType()));
+                break;
+            case KEY(DOWN):
+                if(m_buttonDown)
+                    return EventProcess(Event(m_buttonDown->GetEventType()));
+                break;
+            }
         if ( event.type == m_edit->GetEventType() )
-        {
             m_event->AddEvent(Event(m_eventType));
-        }
     }
 
     if (m_buttonUp != nullptr)
@@ -163,11 +175,13 @@ bool CEditValue::EventProcess(const Event &event)
         if ( event.type == m_buttonUp->GetEventType() )
         {
             float value = GetValue()+m_stepValue;
-            if ( value > m_maxValue )  value = m_maxValue;
+            if ( value > m_maxValue )
+                value = m_maxValue;
             SetValue(value, true);
             HiliteValue(event);
         }
-        if ( !m_buttonUp->EventProcess(event) )  return false;
+        if ( !m_buttonUp->EventProcess(event) )
+            return false;
     }
 
     if (m_buttonDown != nullptr)
@@ -175,19 +189,24 @@ bool CEditValue::EventProcess(const Event &event)
         if ( event.type == m_buttonDown->GetEventType() )
         {
             float value = GetValue()-m_stepValue;
-            if ( value < m_minValue )  value = m_minValue;
+            if ( value < m_minValue )
+                value = m_minValue;
             SetValue(value, true);
             HiliteValue(event);
         }
-        if ( !m_buttonDown->EventProcess(event) )  return false;
+        if ( !m_buttonDown->EventProcess(event) )
+            return false;
     }
 
     if (event.type == EVENT_MOUSE_WHEEL &&
         Detect(event.mousePos))
     {
-        float value = GetValue() + (m_stepValue * event.GetData<MouseWheelEventData>()->y);
-        if ( value < m_minValue )  value = m_minValue;
-        if ( value > m_maxValue )  value = m_maxValue;
+        float value = GetValue() +
+            (m_stepValue * event.GetData<MouseWheelEventData>()->y);
+        if ( value < m_minValue )
+            value = m_minValue;
+        if ( value > m_maxValue )
+            value = m_maxValue;
         SetValue(value, true);
         HiliteValue(event);
         return false;
@@ -205,9 +224,7 @@ void CEditValue::HiliteValue(const Event &event)
 
     int pos = m_edit->GetTextLength();
     if ( m_type == EVT_100 && pos > 0 )
-    {
-        pos --;  // not only selects the "%"
-    }
+        pos --;  // unselect the "%" symbol
 
     m_edit->SetCursor(pos, 0);
     m_interface->SetFocus(m_edit.get());
@@ -223,12 +240,11 @@ void CEditValue::HiliteValue(const Event &event)
 
 void CEditValue::Draw()
 {
-    if ( (m_state & STATE_VISIBLE) == 0 )  return;
+    if ( (m_state & STATE_VISIBLE) == 0 )
+        return;
 
     if ( m_state & STATE_SHADOW )
-    {
         DrawShadow(m_pos, m_dim);
-    }
 
     if (m_edit != nullptr)
     {
@@ -250,12 +266,12 @@ void CEditValue::Draw()
 
 // Choosing the type of value.
 
-void CEditValue::SetType(EditValueType type)
+void CEditValue::SetType(const EditValueType type)
 {
     m_type = type;
 }
 
-EditValueType CEditValue::GetType()
+EditValueType CEditValue::GetType()const
 {
     return m_type;
 }
@@ -263,40 +279,33 @@ EditValueType CEditValue::GetType()
 
 // Changes the value.
 
-void CEditValue::SetValue(float value, bool bSendMessage)
+void CEditValue::SetValue(const float value, const bool bSendMessage)
 {
     char    text[100];
 
-    if ( m_edit == nullptr )  return;
+    if ( m_edit == nullptr )
+        return;
 
     text[0] = 0;
 
     if ( m_type == EVT_INT )
-    {
         sprintf(text, "%d", static_cast<int>(value));
-    }
 
     if ( m_type == EVT_FLOAT )
-    {
         sprintf(text, "%.2f", value);
-    }
 
     if ( m_type == EVT_100 )
-    {
         sprintf(text, "%d%%", static_cast<int>(value*100.0f));
-    }
 
     m_edit->SetText(text);
 
     if ( bSendMessage )
-    {
         m_event->AddEvent(Event(m_eventType));
-    }
 }
 
 // Return the edited value.
 
-float CEditValue::GetValue()
+float CEditValue::GetValue()const
 {
     std::string text;
     float   value = 0.0f;
@@ -309,21 +318,22 @@ float CEditValue::GetValue()
         if ( m_type == EVT_100 )
         {
             value = (value+0.5f)/100.0f;
-            if ( value < 0.01f )  value = 0.0f;  // less than 1%?
+            if ( value < 0.01f )    // less than 1%?
+                value = 0.0f;
         }
     }
     return value;
 }
 
 
-// Management not for buttons.
+// Step management for buttons.
 
-void CEditValue::SetStepValue(float value)
+void CEditValue::SetStepValue(const float value)
 {
     m_stepValue = value;
 }
 
-float CEditValue::GetStepValue()
+float CEditValue::GetStepValue()const
 {
     return m_stepValue;
 }
@@ -331,12 +341,12 @@ float CEditValue::GetStepValue()
 
 // Management of the minimum value.
 
-void CEditValue::SetMinValue(float value)
+void CEditValue::SetMinValue(const float value)
 {
     m_minValue = value;
 }
 
-float CEditValue::GetMinValue()
+float CEditValue::GetMinValue()const
 {
     return m_minValue;
 }
@@ -344,12 +354,12 @@ float CEditValue::GetMinValue()
 
 // Management of the maximum value.
 
-void CEditValue::SetMaxValue(float value)
+void CEditValue::SetMaxValue(const float value)
 {
     m_maxValue = value;
 }
 
-float CEditValue::GetMaxValue()
+float CEditValue::GetMaxValue()const
 {
     return m_maxValue;
 }
@@ -357,6 +367,22 @@ float CEditValue::GetMaxValue()
 void CEditValue::SetInterface(CInterface* interface)
 {
     m_interface = interface;
+}
+
+void CEditValue::SetFocus(CControl* control)
+{
+    CControl::SetFocus(control);
+    if (m_edit != nullptr)
+    {
+        m_edit->SetState(STATE_HILIGHT,TestState(STATE_HILIGHT));
+        if(this==control)
+        {
+            HiliteValue(Event(m_edit->GetEventType()));
+            m_edit->SetFocus(m_edit.get());
+        }
+        else
+            m_edit->SetFocus(control);  //unselect on need
+    }
 }
 
 }

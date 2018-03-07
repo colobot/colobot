@@ -130,6 +130,10 @@ msgstr "Принять\\Принять изменения настроек"
 msgid "Appropriate constructor missing"
 msgstr "Соответствующий конструктор отсутствует"
 
+#, c-format
+msgid "Are you sure to delete the program <%s>?"
+msgstr ""
+
 msgid "Assignment impossible"
 msgstr "Назначение невозможно"
 

@@ -138,7 +138,7 @@ protected:
     bool              m_bFocus;
     bool              m_bCapture;
 
-    bool              m_bGlint;
+    bool              m_bGlint;     // reflection
     Math::Point       m_glintCorner1;
     Math::Point       m_glintCorner2;
     float             m_glintProgress;

@@ -31,6 +31,8 @@ CEnumSlider::CEnumSlider() : CSlider()
 void CEnumSlider::SetPossibleValues(const std::vector<float>& values)
 {
     m_values = values;
+    if(m_values.size()>1)
+        SetArrowStep(1.0/(m_values.size()-1));
 }
 
 void CEnumSlider::SetPossibleValues(const std::map<float, std::string>& values)
@@ -42,6 +44,8 @@ void CEnumSlider::SetPossibleValues(const std::map<float, std::string>& values)
         m_values.push_back(it->first);
         m_labels.push_back(it->second);
     }
+    if(m_values.size()>1)
+        SetArrowStep(1.0/(m_values.size()-1));
 }
 
 void CEnumSlider::SetVisibleValue(float value)

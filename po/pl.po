@@ -130,6 +130,10 @@ msgstr "Zastosuj zmiany\\Aktywuje zmienione ustawienia"
 msgid "Appropriate constructor missing"
 msgstr "Brak odpowiedniego konstruktora"
 
+#, c-format
+msgid "Are you sure to delete the program <%s>?"
+msgstr ""
+
 msgid "Assignment impossible"
 msgstr "Przypisanie niemożliwe"
 

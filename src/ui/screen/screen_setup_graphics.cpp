@@ -41,6 +41,34 @@ namespace Ui
 {
 
 CScreenSetupGraphics::CScreenSetupGraphics()
+    : CScreenSetup({
+        // EVENT_INTERFACE_SETUPd,
+        // EVENT_INTERFACE_SETUPg, //0
+        EVENT_INTERFACE_SETUPp,
+        EVENT_INTERFACE_SETUPc,
+        EVENT_INTERFACE_SETUPs,
+
+        EVENT_INTERFACE_PARTI,                  //EditValue
+        EVENT_INTERFACE_CLIP,                   //EditValue
+        EVENT_INTERFACE_DIRTY,                  //Check
+        EVENT_INTERFACE_FOG,                    //Check
+        EVENT_INTERFACE_LIGHT,                  //Check
+        EVENT_INTERFACE_PAUSE_BLUR,             //Check
+        EVENT_INTERFACE_SHADOW_SPOTS,           //Check
+        EVENT_INTERFACE_SHADOW_MAPPING,         //Check
+        EVENT_INTERFACE_SHADOW_MAPPING_QUALITY, //Check
+        EVENT_INTERFACE_SHADOW_MAPPING_BUFFER,  //EnumSlider
+        EVENT_INTERFACE_MSAA,                   //EnumSlider
+        EVENT_INTERFACE_TEXTURE_FILTER,         //EnumSlider
+        EVENT_INTERFACE_TEXTURE_MIPMAP,         //EnumSlider
+        EVENT_INTERFACE_TEXTURE_ANISOTROPY,     //EnumSlider
+        EVENT_INTERFACE_MIN,                    //Button
+        EVENT_INTERFACE_NORM,                   //Button
+        EVENT_INTERFACE_MAX,                    //Button
+
+        EVENT_INTERFACE_BACK,
+        EVENT_INTERFACE_SETUPd,
+    })
 {
 }
 
@@ -246,7 +274,8 @@ void CScreenSetupGraphics::CreateInterface()
 
 bool CScreenSetupGraphics::EventProcess(const Event &event)
 {
-    if (!CScreenSetup::EventProcess(event)) return false;
+    if (!CScreenSetup::EventProcess(event))
+        return false;
 
     switch( event.type )
     {

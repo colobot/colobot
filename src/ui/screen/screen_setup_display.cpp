@@ -40,8 +40,21 @@ namespace Ui
 {
 
 CScreenSetupDisplay::CScreenSetupDisplay()
-    : m_setupSelMode{0},
-      m_setupFull{false}
+    : CScreenSetup({
+        //EVENT_INTERFACE_SETUPd,   //0
+        EVENT_INTERFACE_SETUPg,
+        EVENT_INTERFACE_SETUPp,
+        EVENT_INTERFACE_SETUPc,
+        EVENT_INTERFACE_SETUPs,
+
+        EVENT_LIST2,
+        EVENT_INTERFACE_FULL,
+        EVENT_INTERFACE_APPLY,
+
+        EVENT_INTERFACE_BACK,
+    })
+    , m_setupSelMode{0}
+    , m_setupFull{false}
 {
 }
 
@@ -91,6 +104,7 @@ void CScreenSetupDisplay::CreateInterface()
     ddim.y = dim.y*4.5f;
     pli = pw->CreateList(pos, ddim, 0, EVENT_LIST2);
     pli->SetState(STATE_SHADOW);
+    pli->SetKeyCtrl(true);
     UpdateDisplayMode();
 
     ddim.x = dim.x*4;
@@ -112,7 +126,8 @@ void CScreenSetupDisplay::CreateInterface()
 
 bool CScreenSetupDisplay::EventProcess(const Event &event)
 {
-    if (!CScreenSetup::EventProcess(event)) return false;
+    if (!CScreenSetup::EventProcess(event))
+        return false;
 
     CWindow* pw;
     CCheck* pc;

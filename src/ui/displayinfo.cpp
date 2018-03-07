@@ -382,7 +382,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     if ( edit == nullptr )  return;
     edit->SetState(STATE_SHADOW);
     edit->SetMultiFont(true);
-    edit->SetMaxChar(10000);
+//no more needed a-priori    edit->SetMaxChar(10000);
     edit->SetFontType(Gfx::FONT_COLOBOT);
     edit->SetSoluceMode(bSoluce);
     edit->ReadText(filename.c_str());

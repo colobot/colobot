@@ -74,10 +74,10 @@ enum Phase
     PHASE_QUIT_SCREEN,
     PHASE_SATCOM,
 };
-std::string PhaseToString(Phase phase);
-bool IsInSimulationConfigPhase(Phase phase);
-bool IsPhaseWithWorld(Phase phase);
-bool IsMainMenuPhase(Phase phase);
+const std::string PhaseToString(const Phase phase);
+bool IsInSimulationConfigPhase(const Phase phase);
+bool IsPhaseWithWorld(const Phase phase);
+bool IsMainMenuPhase(const Phase phase);
 
 
 class CEventQueue;
@@ -115,6 +115,7 @@ class CInterface;
 class CDisplayText;
 class CDisplayInfo;
 class CDebugMenu;
+class CMainDialog;
 }
 
 struct NewScriptName
@@ -182,13 +183,15 @@ public:
     Ui::CDisplayText* GetDisplayText();
     CPauseManager* GetPauseManager();
 
+    Ui::CMainDialog* GetDialog();
+
     /**
      * \name Phase management
      */
     //@{
-    void        ChangePhase(Phase phase);
+    void        ChangePhase(const Phase phase);
     bool        ProcessEvent(Event &event);
-    Phase       GetPhase();
+    Phase       GetPhase()const;
     //@}
 
     //! Load the scene for apperance customization
@@ -312,7 +315,7 @@ public:
     //! Note: this may return nullptr if the scoreboard is not enabled!
     CScoreboard* GetScoreboard();
 
-    void        SelectPlayer(std::string playerName);
+    bool        SelectPlayer(std::string playerName);
     CPlayerProfile* GetPlayerProfile();
 
     /**
@@ -483,7 +486,7 @@ protected:
     void        CreateScene(bool soluce, bool fixScene, bool resetObject);
     void        ResetCreate();
 
-    void        LevelLoadingError(const std::string& error, const std::runtime_error& exception, Phase exitPhase = PHASE_LEVEL_LIST);
+    void        LevelLoadingError(const std::string& error, const std::runtime_error& exception, const Phase exitPhase = PHASE_LEVEL_LIST);
 
     int         CreateLight(Math::Vector direction, Gfx::Color color);
     void        HiliteClear();

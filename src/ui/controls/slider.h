@@ -73,9 +73,8 @@ protected:
     float       m_marginButton;
 
     bool        m_bCapture;
-    Math::Point     m_pressPos;
+    Math::Point m_pressPos;
     float       m_pressValue;
 };
-
 
 }

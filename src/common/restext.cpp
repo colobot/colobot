@@ -95,6 +95,7 @@ void InitializeRestext()
     stringsText[RT_PERSO_COMBI]      = TR("Suit color:");
     stringsText[RT_PERSO_BAND]       = TR("Strip color:");
 
+    stringsText[RT_DIALOG_DELGAME]   = TR("Are you sure to delete the program <%s>?");
     stringsText[RT_DIALOG_ABORT]     = TR("Abort\\Abort the current mission");
     stringsText[RT_DIALOG_CONTINUE]  = TR("Continue\\Continue the current mission");
     stringsText[RT_DIALOG_DELOBJ]    = TR("Do you really want to destroy the selected building?");
@@ -759,11 +760,15 @@ void InitializeRestext()
 
 namespace
 {
-char g_gamerName[100];
+char g_gamerName[16];
+    //nota cf current hmi 15 char limit:
+    //  if choice 15 utf8 visible char
+    //      change here 16 => 61 (15*4+1)
 } // anonymous namespace
 
-void SetGlobalGamerName(std::string name)
+void SetGlobalGamerName(const std::string& name)
 {
+    assert(name.length()<16);   //To upgrade also to 61 cf upper
     strcpy(g_gamerName, name.c_str());
 }
 

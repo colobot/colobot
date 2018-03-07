@@ -40,6 +40,35 @@ namespace Ui
 const int KEY_VISIBLE = 8;      // number of visible keys redefinable
 
 CScreenSetupControls::CScreenSetupControls()
+     : CScreenSetup({
+        // EVENT_INTERFACE_SETUPd,
+        // EVENT_INTERFACE_SETUPg,
+        // EVENT_INTERFACE_SETUPp,
+        //EVENT_INTERFACE_SETUPc,
+        EVENT_INTERFACE_SETUPs,
+
+        EVENT_INTERFACE_KSCROLL,           //Scroll
+        EVENT_INTERFACE_JOYSTICK,          //List
+        EVENT_INTERFACE_JOYSTICK_X,
+        EVENT_INTERFACE_JOYSTICK_X_INVERT,
+        EVENT_INTERFACE_JOYSTICK_Y,
+        EVENT_INTERFACE_JOYSTICK_Y_INVERT,
+        EVENT_INTERFACE_JOYSTICK_Z,
+        EVENT_INTERFACE_JOYSTICK_Z_INVERT,
+        EVENT_INTERFACE_JOYSTICK_CAM_X,
+        EVENT_INTERFACE_JOYSTICK_CAM_X_INVERT,
+        EVENT_INTERFACE_JOYSTICK_CAM_Y,
+        EVENT_INTERFACE_JOYSTICK_CAM_Y_INVERT,
+        EVENT_INTERFACE_JOYSTICK_CAM_Z,
+        EVENT_INTERFACE_JOYSTICK_CAM_Z_INVERT,
+        EVENT_INTERFACE_JOYSTICK_DEADZONE, //EditValue
+        EVENT_INTERFACE_KDEF,              //Button
+
+        EVENT_INTERFACE_BACK,
+        EVENT_INTERFACE_SETUPd,
+        EVENT_INTERFACE_SETUPg,
+        EVENT_INTERFACE_SETUPp,
+    })
 {
     m_input = CInput::GetInstancePointer();
 }
@@ -58,7 +87,7 @@ void CScreenSetupControls::CreateInterface()
     CButton*        pb;
     CGroup*         pg;
     CList*          pli;
-    CEditValue* pev;
+    CEditValue*     pev;
     Math::Point     pos, ddim;
     std::string     name;
 
@@ -164,7 +193,9 @@ void CScreenSetupControls::CreateInterface()
 
 bool CScreenSetupControls::EventProcess(const Event &event)
 {
-    if (!CScreenSetup::EventProcess(event)) return false;
+    if (!CScreenSetup::EventProcess(event))
+        return false;
+    // TODO : check if keyboard navigation there don't break anything
 
     switch( event.type )
     {

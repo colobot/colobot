@@ -132,6 +132,10 @@ msgstr "Änderungen anwenden\\Getätigte Einstellungen anwenden"
 msgid "Appropriate constructor missing"
 msgstr "Es gibt keinen geeigneten Konstruktor"
 
+#, c-format
+msgid "Are you sure to delete the program <%s>?"
+msgstr "Wollen Sie <%s> Programm wirklich zerstören ?"
+
 msgid "Assignment impossible"
 msgstr "Zuweisung unmöglich"
 
