@@ -112,3 +112,13 @@ void CScoreboard::SetScore(int team, int points)
 {
     m_score[team].points = points;
 }
+
+SortType CScoreboard::GetSortType()
+{
+    return m_sorttype;
+}
+
+void CScoreboard::SetSortType(SortType type)
+{
+    m_sorttype = type;
+}

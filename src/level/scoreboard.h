@@ -42,6 +42,12 @@ struct Score
     float time = 0; //! Time when points were scored 
 };
 
+enum SortType
+{
+    SORT_ID, //Sort by team ID
+    SORT_POINTS, //Sort by points
+};
+
 /**
  * \class CScoreboard
  * \brief Scoreboard used to score complex code battles
@@ -55,6 +61,7 @@ struct Score
  * \section example Usage example
  * \code{.scene}
  * Scoreboard enable=true // enable the scoreboard
+ * ScoreboardSortType SortBy="Name" // sort teams alphabetically, another option is SortBy="Points", sorting teams in order of points
  * ScoreboardKillRule type=WheeledShooter team=1 score=500 // destruction of team 1's WheeledShooter gives 100 points to the team that destroyed it
  * ScoreboardKillRule type=TargetBot score=100 // destruction of TargetBot (any team) gives 100 points
  * ScoreboardEndTakeRule score=1000 // completion of EndMissionTake objectives for any team results in 1000 points for that team
@@ -127,9 +134,13 @@ public:
     Score GetScore(int team);
     void SetScore(int team, int score);
 
+    SortType GetSortType();
+    void SetSortType(SortType type);
+
 private:
     std::vector<std::unique_ptr<CScoreboardKillRule>> m_rulesKill = {};
     std::vector<std::unique_ptr<CScoreboardEndTakeRule>> m_rulesEndTake = {};
     std::map<int, Score> m_score;
     int m_finishCounter = 0;
+    SortType m_sorttype = SORT_ID;
 };

@@ -3563,6 +3563,22 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 }
                 continue;
             }
+
+            if (line->GetCommand() == "ScoreboardSortType" && !resetObject)
+            {
+                if (line->GetParam("SortBy")->AsString() == "Points")
+                {
+                    // Sort teams by points
+                    m_scoreboard->SetSortType(SORT_POINTS);
+                }
+                else if (line->GetParam("SortBy")->AsString() == "Name")
+                {
+                    // Sort teams alphabetically
+                    m_scoreboard->SetSortType(SORT_ID);
+                }
+                continue;
+            }
+
             if (line->GetCommand() == "ScoreboardKillRule" && !resetObject)
             {
                 if (!m_scoreboard)
@@ -5912,14 +5928,18 @@ void CRobotMain::UpdateCodeBattleInterface()
     assert(pw != nullptr);
     std::set<int> teams = GetAllTeams();
     std::vector<int> sortedTeams(teams.begin(), teams.end());
-    std::sort(sortedTeams.begin(), sortedTeams.end(), [this](int teamA, int teamB) 
-    { 
-        if (m_scoreboard->GetScore(teamA).points > m_scoreboard->GetScore(teamB).points) return true; //Team A have more points than B?
-        if (m_scoreboard->GetScore(teamA).points < m_scoreboard->GetScore(teamB).points) return false; //Team A have less points than B?
-        
-        if (m_scoreboard->GetScore(teamA).time < m_scoreboard->GetScore(teamB).time) return true; //Team A scored faster than B?
-        else return false; //Team A scored slower than B?
-    });
+    if(m_scoreboard->GetSortType() == SORT_POINTS)
+    {
+        std::sort(sortedTeams.begin(), sortedTeams.end(), [this](int teamA, int teamB)
+        {
+            if (m_scoreboard->GetScore(teamA).points > m_scoreboard->GetScore(teamB).points) return true; //Team A have more points than B?
+            if (m_scoreboard->GetScore(teamA).points < m_scoreboard->GetScore(teamB).points) return false; //Team A have less points than B?
+
+            if (m_scoreboard->GetScore(teamA).time < m_scoreboard->GetScore(teamB).time) return true; //Team A scored faster than B?
+            else return false; //Team A scored slower than B?
+        });
+    }
+
     int i = 0;
     for (int team : sortedTeams)
     {
