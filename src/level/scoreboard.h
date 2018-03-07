@@ -33,6 +33,16 @@
 class CObject;
 
 /**
+ * \struct Score
+ * \brief Struct containing score of individual team and additional variables to allow sorting teams through different criteria
+*/
+struct Score
+{
+    int points = 0; //! Team score
+    float time = 0; //! Time when points were scored 
+};
+
+/**
  * \class CScoreboard
  * \brief Scoreboard used to score complex code battles
  *
@@ -114,12 +124,12 @@ public:
     void ProcessEndTake(int team);
 
     void AddPoints(int team, int points);
-    int GetScore(int team);
+    Score GetScore(int team);
     void SetScore(int team, int score);
 
 private:
     std::vector<std::unique_ptr<CScoreboardKillRule>> m_rulesKill = {};
     std::vector<std::unique_ptr<CScoreboardEndTakeRule>> m_rulesEndTake = {};
-    std::map<int, int> m_score;
+    std::map<int, Score> m_score;
     int m_finishCounter = 0;
 };

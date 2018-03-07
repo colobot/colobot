@@ -99,15 +99,16 @@ void CScoreboard::AddPoints(int team, int points)
     text = StrUtils::Format(text.c_str(), main->GetTeamName(team).c_str(), points);
     main->GetDisplayText()->DisplayText(text.c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_WARNING);
 
-    m_score[team] += points;
+    m_score[team].points += points;
+    m_score[team].time = main->GetGameTime();
 }
 
-int CScoreboard::GetScore(int team)
+Score CScoreboard::GetScore(int team)
 {
     return m_score[team];
 }
 
 void CScoreboard::SetScore(int team, int points)
 {
-    m_score[team] = points;
+    m_score[team].points = points;
 }
