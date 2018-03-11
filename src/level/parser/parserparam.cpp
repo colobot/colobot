@@ -28,6 +28,7 @@
 #include "common/resources/resourcemanager.h"
 
 #include "level/robotmain.h"
+#include "level/scoreboard.h"
 
 #include "level/parser/parser.h"
 
@@ -916,6 +917,26 @@ int CLevelParserParam::AsResearchFlag(int def)
     return AsResearchFlag();
 }
 
+int CLevelParserParam::ToSortType(std::string value)
+{
+    if (value == "Points" ) return SORT_POINTS;
+    if (value == "Name"  ) return SORT_ID;
+    return Cast<int>(value, "sorttype");
+}
+
+int CLevelParserParam::AsSortType()
+{
+    if (m_empty)
+        throw CLevelParserExceptionMissingParam(this);
+    return ToSortType(m_value);
+}
+
+int CLevelParserParam::AsSortType(int def)
+{
+    if (m_empty)
+        return def;
+    return AsSortType();
+}
 
 Gfx::PyroType CLevelParserParam::ToPyroType(std::string value)
 {

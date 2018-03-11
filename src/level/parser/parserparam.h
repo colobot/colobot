@@ -85,6 +85,7 @@ public:
     Gfx::EngineObjectType AsTerrainType();
     int AsBuildFlag();
     int AsResearchFlag();
+    int AsSortType();
     Gfx::PyroType AsPyroType();
     Gfx::CameraType AsCameraType();
     MissionType AsMissionType();
@@ -108,6 +109,7 @@ public:
     Gfx::EngineObjectType AsTerrainType(Gfx::EngineObjectType def);
     int AsBuildFlag(int def);
     int AsResearchFlag(int def);
+    int AsSortType(int def);
     Gfx::PyroType AsPyroType(Gfx::PyroType def);
     Gfx::CameraType AsCameraType(Gfx::CameraType def);
     MissionType AsMissionType(MissionType def);
@@ -139,6 +141,7 @@ private:
     Gfx::EngineObjectType ToTerrainType(std::string value);
     int ToBuildFlag(std::string value);
     int ToResearchFlag(std::string value);
+    int ToSortType(std::string value);
     Gfx::PyroType ToPyroType(std::string value);
     Gfx::CameraType ToCameraType(std::string value);
     MissionType ToMissionType(std::string value);

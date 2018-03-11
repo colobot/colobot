@@ -3566,16 +3566,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "ScoreboardSortType" && !resetObject)
             {
-                if (line->GetParam("SortBy")->AsString() == "Points")
-                {
-                    // Sort teams by points
-                    m_scoreboard->SetSortType(SORT_POINTS);
-                }
-                else if (line->GetParam("SortBy")->AsString() == "Name")
-                {
-                    // Sort teams alphabetically
-                    m_scoreboard->SetSortType(SORT_ID);
-                }
+                m_scoreboard->SetSortType(static_cast<SortType>(line->GetParam("sort")->AsSortType() ) );
                 continue;
             }
 

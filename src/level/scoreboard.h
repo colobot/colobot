@@ -61,7 +61,7 @@ enum SortType
  * \section example Usage example
  * \code{.scene}
  * Scoreboard enable=true // enable the scoreboard
- * ScoreboardSortType SortBy="Name" // sort teams alphabetically, another option is SortBy="Points", sorting teams in order of points
+ * ScoreboardSortType sort=Name // sort teams alphabetically, another option is sort=Points, sorting teams in order of points
  * ScoreboardKillRule type=WheeledShooter team=1 score=500 // destruction of team 1's WheeledShooter gives 100 points to the team that destroyed it
  * ScoreboardKillRule type=TargetBot score=100 // destruction of TargetBot (any team) gives 100 points
  * ScoreboardEndTakeRule score=1000 // completion of EndMissionTake objectives for any team results in 1000 points for that team
