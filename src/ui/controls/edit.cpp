@@ -1337,8 +1337,19 @@ void CEdit::SetText(const std::string& text, const bool bNew)
 
     m_len = text.size();
 
-    if( m_len >= GetMaxChar() ) m_len = GetMaxChar();
-
+    if( m_len >= GetMaxChar() )
+    {
+        m_len = GetMaxChar();
+        if(m_len<text.size() && 0x80==(text[m_len] & 0xC0))
+        {   //FIX issue : can cut UTF8 char !
+            do
+                --m_len;
+            while (0<m_len && 0x80==(text[m_len] & 0xC0));
+            --m_len;
+            GetLogger()->Warn("CEdit::SetText cut, reject <%s>\n",
+                text.c_str()+m_len);
+        }
+    }
     m_text.resize( m_len + 1, '\0' );
     m_format.resize( m_len + 1, m_fontType );
 
@@ -1426,8 +1437,17 @@ const std::string& CEdit::GetText()const
 std::string CEdit::GetText(std::size_t max)const
 {
     if ( m_len < max )  max = m_len;
-    if ( m_len > max )  max = max-1;
-
+    if ( m_len > max )
+    {
+        --max;
+        if(max<m_len && 0x80==(m_text[max] & 0xC0))
+        {   //FIX issue : can cut UTF8 char !
+            do
+                --max;
+            while (0<max && 0x80==(m_text[max] & 0xC0));
+            --max;
+        }
+    }
     return std::string( m_text, 0, max );
 }
 
@@ -2740,6 +2760,13 @@ void CEdit::Insert(const char character)
 
     if ( !m_bEdit )
         return;
+    if (m_len>=GetMaxChar())
+    {
+        GetLogger()->Warn("CEdit::Insert Max size reached, reject %c\n",character);
+        //FIXME: issue : can cut UTF8 char !
+        // => check if lasts chars are part of UTF8 + clean it/them
+        return;
+    }
 
     if ( !m_bMulti )  // single-line?
     {
@@ -2841,8 +2868,14 @@ void CEdit::InsertOne(const char character)
         DeleteOne(0);  // deletes the selected characters
     }
 
-    if ( m_len >= GetMaxChar() )  return;
-
+    if ( m_len >= GetMaxChar() )
+    {
+        GetLogger()->Warn("CEdit::InsertOne Max size reached, reject %c\n",
+            character);
+        //FIXME: issue : can cut UTF8 char !!!
+        // => check if lasts chars are part of UTF8 + clean it/them
+        return;
+    }
     m_text.resize( m_text.size() + 1, '\0' );
     m_format.resize( m_format.size() + 1, m_fontType );
 
@@ -3472,6 +3505,27 @@ void CEdit::SetFocus(CControl* control)
 void CEdit::UpdateFocus()
 {
     CApplication::GetInstancePointer()->SetTextInput(m_bFocus, m_eventType);
+}
+
+// Inserts a string (ended by a null char)
+void CEdit::InsertTxt(const char* str)
+{
+    size_t len=strlen(str);
+    if (m_len+len>=GetMaxChar())
+    {
+        len = GetMaxChar()-m_len;
+        if(len>0 && len<strlen(str) && 0x80==(str[len] & 0xC0))
+        {   //FIX issue : can cut UTF8 char !
+            do
+                --len;
+            while (0<len && 0x80==(str[len] & 0xC0));
+            --len;
+        }
+        GetLogger()->Warn("CEdit::InsertTxt cut, reject <%s>\n",str+len);
+        return;
+    }
+    for(std::size_t i=0;i<len;++i)
+        InsertOne(str[i]);
 }
 
 }

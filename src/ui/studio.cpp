@@ -1500,7 +1500,16 @@ void CStudio::SetFilenameField(CEdit* edit, const std::string& filename)
         if (name.length() > static_cast<unsigned int>(edit->GetMaxChar()))
         {
             GetLogger()->Warn("Tried to load too long filename!\n");
-            name = name.substr(0, edit->GetMaxChar());  // truncates according to max length
+            //FIX issue : UTF8 char truncate inside a printable char
+            size_t len=edit->GetMaxChar();
+            if(len<name.size() && 0x80==(name[len] & 0xC0))
+            {
+                do
+                    --len;
+                while (0<len && 0x80==(name[len] & 0xC0)); //UTF8 mgt
+                --len;
+            }
+            name = name.substr(0, len);  // truncates according to max length
         }
     }
     edit->SetText(name);

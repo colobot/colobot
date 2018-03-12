@@ -207,11 +207,7 @@ protected:
     void        InsertOne(const char character);
 
     // Inserts a string (ended by a null char)
-    inline void InsertTxt(const char* str)
-    {
-        for(std::size_t i=0;i<strlen(str);++i)
-            InsertOne(str[i]);
-    }
+    void InsertTxt(const char* str);
     inline void InsertTxt(const std::string& str)
     {
         InsertTxt(str.c_str());
